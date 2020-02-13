@@ -21,6 +21,7 @@ import java.util.List;
 import java.util.Objects;
 
 import org.kie.pmml.commons.model.KiePMMLModel;
+import org.kie.pmml.commons.model.KiePMMLOutputField;
 import org.kie.pmml.commons.model.enums.MINING_FUNCTION;
 import org.kie.pmml.commons.model.enums.OP_TYPE;
 import org.kie.pmml.commons.model.enums.PMML_MODEL;
@@ -43,6 +44,10 @@ public class KiePMMLRegressionModel extends KiePMMLModel {
     private REGRESSION_NORMALIZATION_METHOD regressionNormalizationMethod = null;
     private boolean isScorable = true;
     private List<Serializable> targetValues;
+    private List<KiePMMLOutputField> outputFields;
+
+    protected KiePMMLRegressionModel() {
+    }
 
     public static Builder builder(String name, MINING_FUNCTION miningFunction) {
         return new Builder(name, miningFunction);
@@ -80,6 +85,10 @@ public class KiePMMLRegressionModel extends KiePMMLModel {
         return targetValues;
     }
 
+    public List<KiePMMLOutputField> getOutputFields() {
+        return outputFields;
+    }
+
     public boolean isRegression() {
         return Objects.equals(MINING_FUNCTION.REGRESSION, miningFunction) && (targetField == null || Objects.equals(OP_TYPE.CONTINUOUS, targetOpType));
     }
@@ -92,14 +101,16 @@ public class KiePMMLRegressionModel extends KiePMMLModel {
     public String toString() {
         return "KiePMMLRegressionModel{" +
                 "regressionTables=" + regressionTables +
-                ", miningFunction=" + miningFunction +
                 ", algorithmName='" + algorithmName + '\'' +
                 ", modelType=" + modelType +
-                ", targetField='" + targetField + '\'' +
                 ", targetOpType=" + targetOpType +
                 ", regressionNormalizationMethod=" + regressionNormalizationMethod +
                 ", isScorable=" + isScorable +
+                ", targetValues=" + targetValues +
+                ", outputFields=" + outputFields +
                 ", pmmlMODEL=" + pmmlMODEL +
+                ", miningFunction=" + miningFunction +
+                ", targetField='" + targetField + '\'' +
                 ", name='" + name + '\'' +
                 ", id='" + id + '\'' +
                 ", parentId='" + parentId + '\'' +
@@ -120,12 +131,12 @@ public class KiePMMLRegressionModel extends KiePMMLModel {
         KiePMMLRegressionModel that = (KiePMMLRegressionModel) o;
         return isScorable == that.isScorable &&
                 Objects.equals(regressionTables, that.regressionTables) &&
-                miningFunction == that.miningFunction &&
                 Objects.equals(algorithmName, that.algorithmName) &&
                 modelType == that.modelType &&
-                Objects.equals(targetField, that.targetField) &&
                 targetOpType == that.targetOpType &&
-                regressionNormalizationMethod == that.regressionNormalizationMethod;
+                regressionNormalizationMethod == that.regressionNormalizationMethod &&
+                Objects.equals(targetValues, that.targetValues) &&
+                Objects.equals(outputFields, that.outputFields);
     }
 
     @Override
@@ -133,10 +144,9 @@ public class KiePMMLRegressionModel extends KiePMMLModel {
         return Objects.hash(super.hashCode(), regressionTables, miningFunction, algorithmName, modelType, targetField, targetOpType, regressionNormalizationMethod, isScorable);
     }
 
-    protected KiePMMLRegressionModel() {
-    }
-
     public static class Builder extends KiePMMLModel.Builder<KiePMMLRegressionModel> {
+
+        private List<KiePMMLOutputField> outputFields;
 
         private Builder(String name, MINING_FUNCTION miningFunction) {
             super(name, "RegressionModel-", PMML_MODEL_TYPE, miningFunction, KiePMMLRegressionModel::new);
@@ -174,6 +184,11 @@ public class KiePMMLRegressionModel extends KiePMMLModel {
 
         public Builder withScorable(boolean scorable) {
             toBuild.isScorable = scorable;
+            return this;
+        }
+
+        public Builder withOutputFields(List<KiePMMLOutputField> outputFields) {
+            toBuild.outputFields = outputFields;
             return this;
         }
 

@@ -15,6 +15,8 @@
  */
 package org.kie.pmml.runtime.regression.executor;
 
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
@@ -27,6 +29,7 @@ import org.apache.commons.math3.distribution.NormalDistribution;
 import org.kie.api.pmml.PMML4Result;
 import org.kie.api.pmml.PMMLRequestData;
 import org.kie.pmml.commons.exceptions.KiePMMLException;
+import org.kie.pmml.commons.model.KiePMMLOutputField;
 import org.kie.pmml.commons.model.enums.OP_TYPE;
 import org.kie.pmml.models.regression.api.model.KiePMMLRegressionModel;
 import org.kie.pmml.models.regression.api.model.KiePMMLRegressionTable;
@@ -44,10 +47,10 @@ public class PMMLClassificationModelEvaluator {
     }
 
     public static PMML4Result evaluateClassification(KiePMMLRegressionModel regressionModel, PMMLContext context) throws KiePMMLException {
-        return evaluateClassification(regressionModel.getTargetField(), regressionModel.getRegressionNormalizationMethod(), regressionModel.getTargetOpType(), regressionModel.getRegressionTables(), context.getRequestData());
+        return evaluateClassification(regressionModel.getTargetField(), regressionModel.getRegressionNormalizationMethod(), regressionModel.getTargetOpType(), regressionModel.getRegressionTables(), regressionModel.getOutputFields(), context.getRequestData());
     }
 
-    protected static PMML4Result evaluateClassification(String targetFieldName, REGRESSION_NORMALIZATION_METHOD regressionNormalizationMethod,  OP_TYPE opType,  final List<KiePMMLRegressionTable> regressionTables, PMMLRequestData requestData) throws KiePMMLException {
+    protected static PMML4Result evaluateClassification(String targetFieldName, REGRESSION_NORMALIZATION_METHOD regressionNormalizationMethod, OP_TYPE opType, final List<KiePMMLRegressionTable> regressionTables, final List<KiePMMLOutputField> outputFields, PMMLRequestData requestData) throws KiePMMLException {
         final LinkedHashMap<String, Double> resultMap = regressionTables.stream()
                 .collect(Collectors.toMap(kiePMMLRegressionTable -> kiePMMLRegressionTable.getTargetCategory().toString(),
                                           throwingFunctionWrapper(kiePMMLRegressionTable -> {
@@ -60,10 +63,34 @@ public class PMMLClassificationModelEvaluator {
                                           (o1, o2) -> o1,
                                           (Supplier<LinkedHashMap<String, Double>>) LinkedHashMap::new));
         final Map<String, Double> probabilityMap = getProbabilityMap(regressionNormalizationMethod, opType, resultMap);
+        final Map.Entry<String, Double> predictedEntry = Collections.max(probabilityMap.entrySet(), Comparator.comparing(Map.Entry::getValue));
+
         PMML4Result toReturn = new PMML4Result();
         toReturn.addResultVariable(targetFieldName, probabilityMap);
         toReturn.setResultObjectName(targetFieldName);
         toReturn.setResultCode(OK.getName());
+        if (outputFields != null) {
+            outputFields.forEach(outputField -> {
+                Object toPut = null;
+                switch (outputField.getResultFeature()) {
+                    case PREDICTED_VALUE:
+                        toPut = predictedEntry.getKey();
+                        break;
+                    case PROBABILITY:
+                        if (outputField.getValue() == null) {
+                            toPut = predictedEntry.getValue();
+                        } else if (probabilityMap.containsKey(outputField.getValue())){
+                            toPut = probabilityMap.get(outputField.getValue());
+                        }
+                        break;
+                    default:
+                        // noop
+                }
+                if (toPut != null) {
+                    toReturn.addResultVariable(outputField.getName(), toPut);
+                }
+            });
+        }
         return toReturn;
     }
 

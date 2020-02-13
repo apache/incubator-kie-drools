@@ -15,15 +15,16 @@
  */
 package org.kie.pmml.runtime.regression.executor;
 
-import java.util.List;
-import java.util.concurrent.atomic.AtomicReference;
+import java.util.Collection;
+import java.util.Map;
 
 import org.kie.api.pmml.ParameterInfo;
 import org.kie.pmml.commons.exceptions.KiePMMLException;
 import org.kie.pmml.models.regression.api.model.KiePMMLRegressionTable;
-import org.kie.pmml.models.regression.api.model.predictors.KiePMMLCategoricalPredictor;
+import org.kie.pmml.models.regression.api.model.predictors.KiePMMLPredictorTerm;
 
 import static org.kie.pmml.commons.interfaces.FunctionalWrapperFactory.throwingConsumerWrapper;
+import static org.kie.pmml.runtime.core.utils.Converter.getUnwrappedParametersMap;
 
 public class PMMLRegresssionModelUtils {
 
@@ -32,22 +33,23 @@ public class PMMLRegresssionModelUtils {
     }
 
     @SuppressWarnings("rawtypes")
-    public static void evaluateNumericPredictors(KiePMMLRegressionTable regressionTable, ParameterInfo parameterInfo, AtomicReference<Double> result) throws KiePMMLException {
+    public static void evaluateNumericPredictors(KiePMMLRegressionTable regressionTable, ParameterInfo parameterInfo, Map<String, Double> resultMap) throws KiePMMLException {
         regressionTable.getKiePMMLNumericPredictorByName(parameterInfo.getName())
-                .ifPresent(throwingConsumerWrapper(kiePMMLRegressionTablePredictor ->
-                                                           result.accumulateAndGet(kiePMMLRegressionTablePredictor.evaluate(parameterInfo.getValue()), Double::sum)));
+                .ifPresent(throwingConsumerWrapper(kiePMMLRegressionTablePredictor -> resultMap.put(kiePMMLRegressionTablePredictor.getName(), kiePMMLRegressionTablePredictor.evaluate(parameterInfo.getValue()))));
     }
 
     @SuppressWarnings("rawtypes")
-    public static void evaluateCategoricalPredictors(KiePMMLRegressionTable regressionTable, ParameterInfo parameterInfo, AtomicReference<Double> result) throws KiePMMLException {
-        regressionTable.getKiePMMLCategoricalPredictorsByName(parameterInfo.getName())
-                .ifPresent(throwingConsumerWrapper(predictors -> evaluateCategoricalPredictors(predictors, parameterInfo, result)));
+    public static void evaluateCategoricalPredictors(KiePMMLRegressionTable regressionTable, ParameterInfo parameterInfo, Map<String, Double> resultMap) {
+        regressionTable.getKiePMMLCategoricalPredictorByNameAndValue(parameterInfo.getName(), parameterInfo.getValue())
+                .ifPresent(throwingConsumerWrapper(kiePMMLRegressionTablePredictor -> resultMap.put(kiePMMLRegressionTablePredictor.getName(), kiePMMLRegressionTablePredictor.evaluate(parameterInfo.getValue()))));
     }
 
-    @SuppressWarnings("rawtypes")
-    public static void evaluateCategoricalPredictors(List<KiePMMLCategoricalPredictor> predictors, ParameterInfo parameterInfo, AtomicReference<Double> result) throws KiePMMLException {
-        predictors
-                .forEach(throwingConsumerWrapper(kiePMMLRegressionTablePredictor ->
-                                                         result.accumulateAndGet(kiePMMLRegressionTablePredictor.evaluate(parameterInfo.getValue()), Double::sum)));
+    public static void evaluatePredictorTerms(KiePMMLRegressionTable regressionTable, Collection<ParameterInfo> parameterInfos, Map<String, Double> resultMap) throws KiePMMLException {
+        regressionTable.getPredictorTerms()
+                .forEach(throwingConsumerWrapper(predictor -> evaluatePredictorTerm(predictor, getUnwrappedParametersMap(parameterInfos), resultMap)));
+    }
+
+    public static void evaluatePredictorTerm(KiePMMLPredictorTerm predictorTerm, Map<String, Object> parameterInfos, Map<String, Double> resultMap) throws KiePMMLException {
+        resultMap.put(predictorTerm.getName(), predictorTerm.evaluate(parameterInfos));
     }
 }

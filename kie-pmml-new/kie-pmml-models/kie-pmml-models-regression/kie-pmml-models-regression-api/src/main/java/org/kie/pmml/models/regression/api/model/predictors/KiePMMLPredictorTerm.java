@@ -16,6 +16,7 @@
 package org.kie.pmml.models.regression.api.model.predictors;
 
 import java.util.List;
+import java.util.Map;
 import java.util.concurrent.atomic.AtomicReference;
 
 import org.kie.pmml.commons.exceptions.KiePMMLException;
@@ -43,8 +44,22 @@ public class KiePMMLPredictorTerm extends KiePMMLRegressionTablePredictor {
 
     @Override
     public double evaluate(Object input) throws KiePMMLException {
+        if (!(input instanceof Map)) {
+            throw new KiePMMLException("Expecting a Map<String, Double>, received " + input.getClass().getName());
+        }
+        Map<String, Double> resultMap;
+        try {
+            resultMap = (Map<String, Double>) input;
+        } catch (ClassCastException e) {
+            throw new KiePMMLException("Expecting a Map<String, Double>, received " + input.getClass().getName());
+        }
         AtomicReference<Double> result = new AtomicReference<>(1.0);
-        predictors.forEach(throwingConsumerWrapper(predictor -> result.set(result.get() * predictor.evaluate(input))));
+        predictors.forEach(predictor -> {
+            if (resultMap.containsKey(predictor.getName())) {
+                result.set(result.get() * resultMap.get(predictor.getName()));
+            }
+
+        });
         double toReturn =result.get() * coefficient.doubleValue();
         logger.info("{} evaluate {} return {}", this, input, toReturn);
         return toReturn;

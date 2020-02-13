@@ -15,6 +15,7 @@
  */
 package org.kie.pmml.runtime.core.utils;
 
+import java.util.Collection;
 import java.util.Map;
 import java.util.stream.Collectors;
 
@@ -35,5 +36,17 @@ public class Converter {
                 .stream()
                 .collect(Collectors.toMap(Map.Entry::getKey,
                                           e -> e.getValue().getValue()));
+    }
+
+    /**
+     * <b>Extract</b> the objects from the <code>ParameterInfo</code> of the given collection.
+     * @param parameterInfos
+     * @return
+     */
+    public static Map<String, Object> getUnwrappedParametersMap(Collection<ParameterInfo> parameterInfos) {
+        return parameterInfos
+                .stream()
+                .collect(Collectors.toMap(ParameterInfo::getName,
+                                          ParameterInfo::getValue));
     }
 }

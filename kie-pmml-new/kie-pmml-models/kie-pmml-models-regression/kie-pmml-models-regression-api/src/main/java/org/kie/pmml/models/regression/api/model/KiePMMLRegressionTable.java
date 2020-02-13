@@ -54,8 +54,11 @@ public class KiePMMLRegressionTable extends KiePMMLIDed {
         return numericPredictorsMap.containsKey(fieldName) ? Optional.of(numericPredictorsMap.get(fieldName)) : Optional.empty();
     }
 
-    public Optional<List<KiePMMLCategoricalPredictor>> getKiePMMLCategoricalPredictorsByName(String fieldName) {
-        return categoricalPredictorMaps.containsKey(fieldName) ? Optional.of(categoricalPredictorMaps.get(fieldName)) : Optional.empty();
+    public Optional<KiePMMLCategoricalPredictor> getKiePMMLCategoricalPredictorByNameAndValue(String fieldName, Object value) {
+        if (!categoricalPredictorMaps.containsKey(fieldName)) {
+            return Optional.empty();
+        }
+        return categoricalPredictorMaps.get(fieldName).stream().filter(categoricalPredictor -> Objects.equals(fieldName, categoricalPredictor.getName()) && Objects.equals(value, categoricalPredictor.getValue())).findFirst();
     }
 
     public Number getIntercept() {

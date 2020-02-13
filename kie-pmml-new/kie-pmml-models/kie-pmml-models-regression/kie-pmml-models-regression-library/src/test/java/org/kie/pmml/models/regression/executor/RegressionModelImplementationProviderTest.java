@@ -16,6 +16,7 @@
 
 package org.kie.pmml.models.regression.executor;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
@@ -116,9 +117,9 @@ public class RegressionModelImplementationProviderTest {
     }
 
     private void commonVerifyCategoricalPredictors(KiePMMLRegressionTable retrieved, String name) {
-        final Optional<List<KiePMMLCategoricalPredictor>> optionalPredictor = retrieved.getKiePMMLCategoricalPredictorsByName(name);
-        assertTrue(optionalPredictor.isPresent());
-        List<KiePMMLCategoricalPredictor> predictors = optionalPredictor.get();
+        List<KiePMMLCategoricalPredictor> predictors = new ArrayList<>();
+        retrieved.getKiePMMLCategoricalPredictorByNameAndValue(name, "carpark").ifPresent(predictors::add);
+        retrieved.getKiePMMLCategoricalPredictorByNameAndValue(name, "street").ifPresent(predictors::add);
         assertEquals(2, predictors.size());
         commonVerifyCategoricalPredictors(predictors, name, "carpark", 41.1);
         commonVerifyCategoricalPredictors(predictors, name, "street", 325.03);

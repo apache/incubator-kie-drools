@@ -15,7 +15,9 @@
  */
 package org.kie.pmml.runtime.regression.executor;
 
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.concurrent.atomic.AtomicReference;
 
 import org.apache.commons.math3.distribution.NormalDistribution;
@@ -31,6 +33,7 @@ import static org.kie.pmml.commons.enums.StatusCode.OK;
 import static org.kie.pmml.commons.interfaces.FunctionalWrapperFactory.throwingConsumerWrapper;
 import static org.kie.pmml.runtime.regression.executor.PMMLRegresssionModelUtils.evaluateCategoricalPredictors;
 import static org.kie.pmml.runtime.regression.executor.PMMLRegresssionModelUtils.evaluateNumericPredictors;
+import static org.kie.pmml.runtime.regression.executor.PMMLRegresssionModelUtils.evaluatePredictorTerms;
 
 public class PMMLRegresssionModelEvaluator {
 
@@ -45,10 +48,13 @@ public class PMMLRegresssionModelEvaluator {
 
     public static PMML4Result evaluateRegression(String targetFieldName, REGRESSION_NORMALIZATION_METHOD regressionNormalizationMethod, KiePMMLRegressionTable regressionTable, PMMLRequestData requestData) throws KiePMMLException {
         final AtomicReference<Double> result = new AtomicReference<>(regressionTable.getIntercept().doubleValue());
+        Map<String, Double> resultMap = new HashMap<>();
         requestData.getRequestParams().forEach(throwingConsumerWrapper(parameterInfo -> {
-            evaluateNumericPredictors(regressionTable, parameterInfo, result);
-            evaluateCategoricalPredictors(regressionTable, parameterInfo, result);
+            evaluateNumericPredictors(regressionTable, parameterInfo, resultMap);
+            evaluateCategoricalPredictors(regressionTable, parameterInfo, resultMap);
         }));
+        evaluatePredictorTerms(regressionTable, requestData.getRequestParams(), resultMap);
+        resultMap.values().forEach(value -> result.accumulateAndGet(value, Double::sum));
         if (regressionNormalizationMethod != null) {
             switch (regressionNormalizationMethod) {
                 case SOFTMAX:

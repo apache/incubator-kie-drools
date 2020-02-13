@@ -49,13 +49,12 @@ import org.slf4j.LoggerFactory;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
-import static org.kie.pmml.runtime.regression.executor.TestUtils.TARGETFIELD_NAME;
 import static org.kie.test.util.filesystem.FileUtils.getFile;
 
 @RunWith(Parameterized.class)
-public class RoundtripPMMLRegresssionModelEvaluatorParameterizedTests {
+public class RoundtripClassificationModelEvaluatorParameterizedTests {
 
-    private static final Logger logger = LoggerFactory.getLogger(RoundtripPMMLRegresssionModelEvaluatorParameterizedTests.class);
+    private static final Logger logger = LoggerFactory.getLogger(RoundtripClassificationModelEvaluatorParameterizedTests.class);
 
     private static final String SOURCE1 = "test_regression.pmml";
     private static final String SOURCE2 = "test_regression_clax.pmml";
@@ -70,55 +69,40 @@ public class RoundtripPMMLRegresssionModelEvaluatorParameterizedTests {
 
     private String releaseId;
 
-    @Parameterized.Parameters
-    public static Collection<Object[]> data() {
-        return Arrays.asList(new Object[][] {
-                {1.0, 1.0, "x"},
-                {0.9, 0.3, "x"},
-                {12.0, 25.0, "x"},
-                {0.2, 0.1, "x"},
-                {5, 8, "y"},
-        });
-    }
-
-    public RoundtripPMMLRegresssionModelEvaluatorParameterizedTests(double fld1, double fld2, String fld3) {
+    public RoundtripClassificationModelEvaluatorParameterizedTests(double fld1, double fld2, String fld3) {
         this.fld1 = fld1;
         this.fld2 = fld2;
         this.fld3 = fld3;
     }
 
+    @Parameterized.Parameters
+    public static Collection<Object[]> data() {
+        return Arrays.asList(new Object[][]{
+                {1.0, 1.0, "x"},
+//                {0.9, 0.3, "x"},
+//                {12.0, 25.0, "x"},
+//                {0.2, 0.1, "x"},
+//                {5, 8, "y"},
+        });
+    }
 
-    @Test
-    public void evaluateRegression() throws KiePMMLException {
-        commonSetup(SOURCE1);
-        String modelName = "LinReg";
-        PMMLRequestData pmmlRequestData = new PMMLRequestData("123",modelName);
-        pmmlRequestData.addRequestParam("fld1",fld1);
-        pmmlRequestData.addRequestParam("fld2", fld2);
-        pmmlRequestData.addRequestParam("fld3", fld3);
-        PMMLContext pmmlContext = new PMMLContextImpl(pmmlRequestData);
-        final KiePMMLModel model = pmmlRuntime.getModel(pmmlContext.getRequestData().getModelName()).orElseThrow(() -> new KiePMMLException("Failed to retrieve the model"));
-        assertEquals(PMML_MODEL.REGRESSION_MODEL, model.getPmmlMODEL());
-        assertTrue(model instanceof KiePMMLRegressionModel);
-        assertEquals(1, ((KiePMMLRegressionModel) model).getRegressionTables().size());
-        assertEquals("fld4", model.getTargetField());
-        PMML4Result retrieved = pmmlRuntime.evaluate(model, pmmlContext, releaseId);
-        assertNotNull(retrieved);
-        assertEquals("OK",retrieved.getResultCode());
-
-        assertEquals(model.getTargetField(), retrieved.getResultObjectName());
-        assertNotNull(retrieved.getResultVariables().get(model.getTargetField()));
-        double retrievedDouble = (double) retrieved.getResultVariables().get(model.getTargetField());
-        final double expectedValue = simpleRegressionResult(fld1, fld2, fld3);
-        assertEquals(expectedValue, retrievedDouble, COMPARISON_DELTA);
+    private static double fld3Coefficient(String fld3) {
+        switch (fld3) {
+            case "x":
+                return -3.0; // Coefficient for the "x" CategoricalPredictor
+            case "y":
+                return 3.0; // Coefficient for the "y" CategoricalPredictor
+            default:
+                return 0;
+        }
     }
 
     @Test
     public void evaluateClassification() throws KiePMMLException {
         commonSetup(SOURCE2);
         String modelName = "LinReg";
-        PMMLRequestData pmmlRequestData = new PMMLRequestData("123",modelName);
-        pmmlRequestData.addRequestParam("fld1",fld1);
+        PMMLRequestData pmmlRequestData = new PMMLRequestData("123", modelName);
+        pmmlRequestData.addRequestParam("fld1", fld1);
         pmmlRequestData.addRequestParam("fld2", fld2);
         pmmlRequestData.addRequestParam("fld3", fld3);
         PMMLContext pmmlContext = new PMMLContextImpl(pmmlRequestData);
@@ -128,7 +112,7 @@ public class RoundtripPMMLRegresssionModelEvaluatorParameterizedTests {
         assertEquals(4, ((KiePMMLRegressionModel) model).getRegressionTables().size());
         PMML4Result retrieved = pmmlRuntime.evaluate(model, pmmlContext, releaseId);
         assertNotNull(retrieved);
-        assertEquals("OK",retrieved.getResultCode());
+        assertEquals("OK", retrieved.getResultCode());
 
         Map<String, Double> expectedProbabilities = categoryProbabilities(fld1, fld2, fld3);
         String maxCategory = null;
@@ -144,32 +128,12 @@ public class RoundtripPMMLRegresssionModelEvaluatorParameterizedTests {
         assertNotNull(retrieved.getResultVariables().get("RegProb"));
         assertNotNull(retrieved.getResultVariables().get("RegProbA"));
 
-        String regOut  = (String) retrieved.getResultVariables().get("RegOut");
-        double regProb  = (double) retrieved.getResultVariables().get("RegProb");
-        double regProbA  = (double) retrieved.getResultVariables().get("RegProbA");
+        String regOut = (String) retrieved.getResultVariables().get("RegOut");
+        double regProb = (double) retrieved.getResultVariables().get("RegProb");
+        double regProbA = (double) retrieved.getResultVariables().get("RegProbA");
         assertEquals("cat" + maxCategory, regOut);
         assertEquals(maxValue, regProb, COMPARISON_DELTA);
         assertEquals(expectedProbabilities.get("A"), regProbA, COMPARISON_DELTA);
-
-    }
-
-    private static double fld3Coefficient(String fld3) {
-        switch (fld3) {
-            case "x" :
-                return -3.0; // Coefficient for the "x" CategoricalPredictor
-            case "y":
-                return 3.0; // Coefficient for the "y" CategoricalPredictor
-            default:
-                return 0;
-        }
-//
-//        final Map<String, Double> fld3ValueMap = new HashMap<>();
-//        fld3ValueMap.put("x", -3.0);
-//        fld3ValueMap.put("y", 3.0);
-//        if (!fld3ValueMap.containsKey(fld3)) {
-//            return 0;
-//        }
-//        return fld3ValueMap.get(fld3);
     }
 
     private Map<String, Double> categoryProbabilities(double fld1, double fld2, String fld3) {
@@ -195,16 +159,6 @@ public class RoundtripPMMLRegresssionModelEvaluatorParameterizedTests {
         return regressionTablesValues;
     }
 
-    private double simpleRegressionResult(double fld1, double fld2, String fld3) {
-        double expectedFld1 = Math.pow(fld1, 2) * 5.0;
-        double expectedFld2 = fld2 * 2.0;
-
-
-        double result = 0.5 + 5 * fld1 * fld1 + 2 * fld2 + fld3Coefficient(fld3) + 0.4 * fld1 * fld2;
-        result = 1.0 / (1.0 + Math.exp(-result));
-        return result;
-    }
-
     private void commonSetup(String fileName) {
         KieServices ks = KieServices.Factory.get();
         KieFileSystem kfs = ks.newKieFileSystem();
@@ -223,7 +177,7 @@ public class RoundtripPMMLRegresssionModelEvaluatorParameterizedTests {
 
     @FunctionalInterface
     private interface RegressionInterface {
+
         Double apply(double fld1, double fld2, String fld3);
     }
-
 }
