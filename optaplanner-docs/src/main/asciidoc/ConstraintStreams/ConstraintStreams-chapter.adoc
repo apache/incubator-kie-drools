@@ -478,9 +478,35 @@ The following example finds a computer which runs the most power-demanding proce
                 .groupBy(CloudProcess::getComputer, max(CloudProcess::getRequiredCpuPower))
                 .penalize("computerWithBiggestProcess",
                         HardSoftScore.ONE_HARD,
-                        computer -> ...);
+                        (computer, biggestProcess) -> ...);
     }
 ----
+
+[collectorsCollection]
+===== Collection collectors
+
+To extract all elements in the group into a collection, use the `ConstraintCollectors.toList(...)` and
+`ConstraintCollectors.toSet(...)` collectors respectively.
+`ConstraintCollectors.toCollection(...)` enables you to use a custom `Collection` implementation.
+
+The following example retrieves all processes running on a computer in a `List`:
+
+[source,java,options="nowrap"]
+----
+    private Constraint computerWithBiggestProcess(ConstraintFactory constraintFactory) {
+        return constraintFactory.from(CloudProcess.class)
+                .groupBy(CloudProcess::getComputer, toList())
+                .penalize("computerAndItsProcesses",
+                        HardSoftScore.ONE_HARD,
+                        (computer, processList) -> ...);
+    }
+----
+
+[NOTE]
+====
+The iteration order of elements in the resulting collection is not guaranteed to be stable.
+To achieve stable iteration order, use `ConstraintCollectors.toCollection()` together with a sorted collection, such as `TreeSet`.
+====
 
 
 [[constraintStreamsConditionalPropagation]]
