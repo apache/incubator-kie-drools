@@ -80,10 +80,6 @@ public abstract class BaseDMNTypeImpl
         return collection;
     }
 
-    public void setCollection(boolean collection) {
-        this.collection = collection;
-    }
-
     @Override
     public Map<String, DMNType> getFields() {
         return Collections.emptyMap();
