@@ -62,9 +62,9 @@ public class InputStreamResource extends BaseResource implements InternalResourc
 
     public Reader getReader() throws IOException {
         if (this.encoding != null) {
-            return new InputStreamReader( getInputStream(), this.encoding );
+            return new InputStreamReader( new ByteArrayInputStream( getBytes() ), this.encoding );
         } else {
-            return new InputStreamReader( getInputStream(), IoUtils.UTF8_CHARSET );
+            return new InputStreamReader( new ByteArrayInputStream( getBytes() ), IoUtils.UTF8_CHARSET );
         }
     }
 
