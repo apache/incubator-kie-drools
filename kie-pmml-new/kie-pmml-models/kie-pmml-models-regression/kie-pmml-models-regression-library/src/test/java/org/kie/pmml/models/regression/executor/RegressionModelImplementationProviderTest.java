@@ -41,6 +41,9 @@ public class RegressionModelImplementationProviderTest {
 
     private final static RegressionModelImplementationProvider PROVIDER = new RegressionModelImplementationProvider();
     private final static String RELEASE_ID = "org.drools:kie-pmml-models-testing:1.0";
+    private static final String SOURCE_1 = "LinearRegressionSample.xml";
+    private static final String SOURCE_2 = "test_regression.pmml";
+    private static final String SOURCE_3 = "test_regression_clax.pmml";
 
     @Test
     public void getPMMLModelType() {
@@ -49,10 +52,29 @@ public class RegressionModelImplementationProviderTest {
 
     @Test
     public void getKiePMMLModel() throws Exception {
-        final PMML pmml = TestUtils.loadFromFile("LinearRegressionSample.xml");
+        final PMML pmml = TestUtils.loadFromFile(SOURCE_1);
         assertNotNull(pmml);
         assertEquals(1, pmml.getModels().size());
+        assertTrue(pmml.getModels().get(0) instanceof RegressionModel);
         commonVerifyKiePMMLRegressionModel(PROVIDER.getKiePMMLModel(pmml.getDataDictionary(), (RegressionModel) pmml.getModels().get(0), RELEASE_ID));
+    }
+
+    @Test
+    public void validateSource2() throws Exception {
+        commonValidateSource(SOURCE_2);
+    }
+
+    @Test
+    public void validateSource3() throws Exception {
+        commonValidateSource(SOURCE_3);
+    }
+
+    private void commonValidateSource(String sourceFile) throws Exception {
+        final PMML pmml = TestUtils.loadFromFile(sourceFile);
+        assertNotNull(pmml);
+        assertEquals(1, pmml.getModels().size());
+        assertTrue(pmml.getModels().get(0) instanceof RegressionModel);
+        PROVIDER.validate(pmml.getDataDictionary(), (RegressionModel) pmml.getModels().get(0));
     }
 
     private void commonVerifyKiePMMLRegressionModel(KiePMMLRegressionModel retrieved) {

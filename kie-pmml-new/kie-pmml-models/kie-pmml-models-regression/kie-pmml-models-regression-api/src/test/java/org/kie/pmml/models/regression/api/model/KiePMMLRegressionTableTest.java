@@ -37,7 +37,7 @@ public class KiePMMLRegressionTableTest {
     private static final Object TARGET_CATEGORY = "TARGET_CATEGORY";
     private static final List<KiePMMLExtension> EXTENSIONS = new ArrayList<>();
     private static final Set<KiePMMLNumericPredictor> NUMERIC_PREDICTORS = new HashSet<>();
-    private static final List<KiePMMLCategoricalPredictor> CATEGORICAL_PREDICTORS = new ArrayList<>();
+    private static final Set<KiePMMLCategoricalPredictor> CATEGORICAL_PREDICTORS = new HashSet<>();
     private static final Set<KiePMMLPredictorTerm> PREDICTOR_TERMS = new HashSet<>();
 
     @Test

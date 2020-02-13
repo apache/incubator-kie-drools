@@ -54,7 +54,7 @@ public class PMMLCompilerImplTest {
 
     @Test
     public void getResults() throws Exception {
-        final List<KiePMMLModel> results = EXECUTOR.getResults(getFileInputStream("org/kie/pmml/runtime/regression/LinearRegressionSample.xml"), kieBuilder);
+        final List<KiePMMLModel> results = EXECUTOR.getResults(getFileInputStream("org/kie/pmml/runtime/regression/LinearRegressionSample.pmml"), kieBuilder);
         assertNotNull(results);
         assertEquals(1, results.size());
         assertTrue(results.get(0) instanceof KiePMMLRegressionModel);

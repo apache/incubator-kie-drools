@@ -61,7 +61,7 @@ public class RoundtripPMMLRegresssionModelEvaluatorTest {
 
     private static final Logger logger = LoggerFactory.getLogger(RoundtripPMMLRegresssionModelEvaluatorTest.class);
 
-    private static final String SOURCE = "LinearRegressionSample.xml";
+    private static final String SOURCE = "LinearRegressionSample.pmml";
 
     private PMMLRuntime pmmlRuntime;
 

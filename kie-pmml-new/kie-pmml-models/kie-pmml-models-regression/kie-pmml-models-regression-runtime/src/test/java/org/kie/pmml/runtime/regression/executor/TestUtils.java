@@ -74,17 +74,17 @@ public class TestUtils {
                 .build();
     }
 
-    public static List<KiePMMLCategoricalPredictor> getKiePMMLCategoricalPredictor() {
-        List<KiePMMLCategoricalPredictor> toReturn = new ArrayList<>();
-        toReturn.add(new KiePMMLCategoricalPredictor("car_location", CARPARK, CARPARK_COEFF));
-        toReturn.add(new KiePMMLCategoricalPredictor("car_location", STREET, STREET_COEFF));
+    public static Set<KiePMMLCategoricalPredictor> getKiePMMLCategoricalPredictor() {
+        Set<KiePMMLCategoricalPredictor> toReturn = new HashSet<>();
+        toReturn.add(new KiePMMLCategoricalPredictor("car_location", CARPARK, CARPARK_COEFF, new ArrayList<>()));
+        toReturn.add(new KiePMMLCategoricalPredictor("car_location", STREET, STREET_COEFF, new ArrayList<>()));
         return toReturn;
     }
 
     public static Set<KiePMMLNumericPredictor> getKiePMMLNumericPredictors() {
         Set<KiePMMLNumericPredictor> toReturn = new HashSet<>();
-        toReturn.add(new KiePMMLNumericPredictor("age", 1, AGE_COEFF));
-        toReturn.add(new KiePMMLNumericPredictor("salary", 1, SALARY_COEFF));
+        toReturn.add(new KiePMMLNumericPredictor("age", 1, AGE_COEFF, new ArrayList<>()));
+        toReturn.add(new KiePMMLNumericPredictor("salary", 1, SALARY_COEFF, new ArrayList<>()));
         return toReturn;
     }
 
