@@ -597,9 +597,6 @@ public class DMNCompilerImpl implements DMNCompiler {
             // this is a composite type
             DMNCompilerHelper.checkVariableName( dmnModel, itemDef, itemDef.getName() );
             CompositeTypeImpl compType = new CompositeTypeImpl( dmnModel.getNamespace(), itemDef.getName(), itemDef.getId(), itemDef.isIsCollection() );
-            if (compType.isCollection()) {
-                compType.setFeelType(new GenListType(compType.getFeelType()));
-            }
             type = compType;
             if( topLevel ) {
                 DMNType registered = dmnModel.getTypeRegistry().registerType( type );
