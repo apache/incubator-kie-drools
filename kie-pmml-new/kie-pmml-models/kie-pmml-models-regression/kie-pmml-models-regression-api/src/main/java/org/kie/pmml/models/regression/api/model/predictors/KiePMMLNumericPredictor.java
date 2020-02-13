@@ -15,9 +15,11 @@
  */
 package org.kie.pmml.models.regression.api.model.predictors;
 
+import java.util.List;
 import java.util.Objects;
 
 import org.kie.pmml.commons.exceptions.KiePMMLException;
+import org.kie.pmml.commons.model.KiePMMLExtension;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -27,8 +29,8 @@ public class KiePMMLNumericPredictor extends KiePMMLRegressionTablePredictor {
     private static final Logger logger = LoggerFactory.getLogger(KiePMMLNumericPredictor.class.getName());
     private int exponent;
 
-    public KiePMMLNumericPredictor(String name, int exponent, Number coefficient) {
-        super(name, coefficient);
+    public KiePMMLNumericPredictor(String name, int exponent, Number coefficient, List<KiePMMLExtension> extensions) {
+        super(name, coefficient, extensions);
         this.exponent = exponent;
     }
 

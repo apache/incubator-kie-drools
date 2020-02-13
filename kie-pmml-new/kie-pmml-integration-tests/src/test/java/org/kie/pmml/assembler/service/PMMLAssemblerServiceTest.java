@@ -47,12 +47,12 @@ public class PMMLAssemblerServiceTest {
     @Before
     public void setUp() throws Exception {
         knowledgeBuilder = new KnowledgeBuilderImpl(new KnowledgeBaseImpl("TESTING", new RuleBaseConfiguration()));
-        firstSampleResource = new InputStreamResource(getFileInputStream("FirstLinearRegressionSample.xml"));
+        firstSampleResource = new InputStreamResource(getFileInputStream("org/kie/pmml/runtime/regression/FirstLinearRegressionSample.xml"));
     }
 
     @Test
     public void addResources() throws Exception {
-        Resource secondSampleResource = new InputStreamResource(getFileInputStream("SecondLinearRegressionSample.xml"));
+        Resource secondSampleResource = new InputStreamResource(getFileInputStream("org/kie/pmml/runtime/regression/SecondLinearRegressionSample.xml"));
         ResourceWithConfiguration firstResourceWithConfiguration = new ResourceWithConfigurationImpl(firstSampleResource, new ResourceConfigurationImpl(), o -> {
         }, o -> {
         });

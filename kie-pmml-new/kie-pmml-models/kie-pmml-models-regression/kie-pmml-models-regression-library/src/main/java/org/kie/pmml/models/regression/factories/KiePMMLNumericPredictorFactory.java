@@ -22,6 +22,8 @@ import java.util.stream.Collectors;
 import org.dmg.pmml.regression.NumericPredictor;
 import org.kie.pmml.models.regression.api.model.predictors.KiePMMLNumericPredictor;
 
+import static org.kie.pmml.library.commons.factories.KiePMMLExtensionFactory.getKiePMMLExtensions;
+
 public class KiePMMLNumericPredictorFactory {
 
     private KiePMMLNumericPredictorFactory() {
@@ -34,6 +36,7 @@ public class KiePMMLNumericPredictorFactory {
     public static KiePMMLNumericPredictor getKiePMMLNumericPredictor(NumericPredictor numericPredictor) {
         return new KiePMMLNumericPredictor(numericPredictor.getName().getValue(),
                                            numericPredictor.getExponent(),
-                                           numericPredictor.getCoefficient());
+                                           numericPredictor.getCoefficient(),
+                                           getKiePMMLExtensions(numericPredictor.getExtensions()));
     }
 }

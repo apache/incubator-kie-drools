@@ -28,6 +28,7 @@ import org.kie.pmml.commons.model.abstracts.KiePMMLIDed;
 import org.kie.pmml.commons.model.abstracts.KiePMMLNamed;
 import org.kie.pmml.models.regression.api.model.predictors.KiePMMLCategoricalPredictor;
 import org.kie.pmml.models.regression.api.model.predictors.KiePMMLNumericPredictor;
+import org.kie.pmml.models.regression.api.model.predictors.KiePMMLPredictorTerm;
 import org.kie.pmml.models.regression.api.model.predictors.KiePMMLRegressionTablePredictor;
 
 public class KiePMMLRegressionTable extends KiePMMLIDed {
@@ -37,7 +38,7 @@ public class KiePMMLRegressionTable extends KiePMMLIDed {
     private Object targetCategory;
     private List<KiePMMLExtension> extensions;
     private Set<KiePMMLNumericPredictor> numericPredictors;
-    private List<KiePMMLCategoricalPredictor> categoricalPredictors;
+    private Set<KiePMMLCategoricalPredictor> categoricalPredictors;
     private Set<KiePMMLPredictorTerm> predictorTerms;
     private Map<String, KiePMMLNumericPredictor> numericPredictorsMap = new HashMap<>();
     private Map<String, List<KiePMMLCategoricalPredictor>> categoricalPredictorMaps = new HashMap<>();
@@ -73,7 +74,7 @@ public class KiePMMLRegressionTable extends KiePMMLIDed {
         return numericPredictors;
     }
 
-    public List<KiePMMLCategoricalPredictor> getCategoricalPredictors() {
+    public Set<KiePMMLCategoricalPredictor> getCategoricalPredictors() {
         return categoricalPredictors;
     }
 
@@ -153,7 +154,7 @@ public class KiePMMLRegressionTable extends KiePMMLIDed {
             return this;
         }
 
-        public Builder withCategoricalPredictors(List<KiePMMLCategoricalPredictor> categoricalPredictors) {
+        public Builder withCategoricalPredictors(Set<KiePMMLCategoricalPredictor> categoricalPredictors) {
             toBuild.categoricalPredictors = categoricalPredictors;
             toBuild.categoricalPredictorMaps = categoricalPredictors.stream()
                     .collect(Collectors.groupingBy(KiePMMLNamed::getName));

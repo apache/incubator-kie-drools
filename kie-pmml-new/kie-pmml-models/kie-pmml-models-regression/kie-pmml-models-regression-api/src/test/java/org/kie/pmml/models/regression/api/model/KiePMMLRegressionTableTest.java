@@ -25,6 +25,7 @@ import org.junit.Test;
 import org.kie.pmml.commons.model.KiePMMLExtension;
 import org.kie.pmml.models.regression.api.model.predictors.KiePMMLCategoricalPredictor;
 import org.kie.pmml.models.regression.api.model.predictors.KiePMMLNumericPredictor;
+import org.kie.pmml.models.regression.api.model.predictors.KiePMMLPredictorTerm;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;

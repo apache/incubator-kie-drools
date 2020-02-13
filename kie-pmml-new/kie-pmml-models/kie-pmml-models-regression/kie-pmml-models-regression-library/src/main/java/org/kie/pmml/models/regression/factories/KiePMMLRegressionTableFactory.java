@@ -15,16 +15,23 @@
  */
 package org.kie.pmml.models.regression.factories;
 
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 import java.util.stream.Collectors;
 
 import org.dmg.pmml.regression.RegressionTable;
 import org.kie.pmml.models.regression.api.model.KiePMMLRegressionTable;
+import org.kie.pmml.models.regression.api.model.predictors.KiePMMLCategoricalPredictor;
+import org.kie.pmml.models.regression.api.model.predictors.KiePMMLNumericPredictor;
+import org.kie.pmml.models.regression.api.model.predictors.KiePMMLRegressionTablePredictor;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import static org.kie.pmml.library.commons.factories.KiePMMLExtensionFactory.getKiePMMLExtensions;
+import static org.kie.pmml.models.regression.factories.KiePMMLCategoricalPredictorFactory.getKiePMMLCategoricalPredictors;
 import static org.kie.pmml.models.regression.factories.KiePMMLNumericPredictorFactory.getKiePMMLNumericPredictors;
+import static org.kie.pmml.models.regression.factories.KiePMMLPredictorTermFactory.getKiePMMLPredictorTerms;
 
 public class KiePMMLRegressionTableFactory {
 
@@ -37,12 +44,17 @@ public class KiePMMLRegressionTableFactory {
 
     public static KiePMMLRegressionTable getRegressionTable(RegressionTable regressionTable) {
         logger.info("getRegressionTable {}", regressionTable);
+        final Set<KiePMMLCategoricalPredictor> categoricalPredictors = getKiePMMLCategoricalPredictors(regressionTable.getCategoricalPredictors());
+        final Set<KiePMMLNumericPredictor> numericPredictors = getKiePMMLNumericPredictors(regressionTable.getNumericPredictors());
+        final Set<KiePMMLRegressionTablePredictor> numericCategoricalPredictors = new  HashSet<>();
+        numericCategoricalPredictors.addAll(categoricalPredictors);
+        numericCategoricalPredictors.addAll(numericPredictors);
         return KiePMMLRegressionTable.builder()
                 .withIntercept(regressionTable.getIntercept())
-                .withCategoricalPredictors(KiePMMLCategoricalPredictorFactory.getKiePMMLCategoricalPredictors(regressionTable.getCategoricalPredictors()))
                 .withExtensions(getKiePMMLExtensions(regressionTable.getExtensions()))
-                .withNumericPredictors(getKiePMMLNumericPredictors(regressionTable.getNumericPredictors()))
-                .withPredictorTerms(KiePMMLPredictorTermFactory.getKiePMMLPredictorTerms(regressionTable.getPredictorTerms()))
+                .withCategoricalPredictors(categoricalPredictors)
+                .withNumericPredictors(numericPredictors)
+                .withPredictorTerms(getKiePMMLPredictorTerms(regressionTable.getPredictorTerms(), numericCategoricalPredictors))
                 .withTargetCategory(regressionTable.getTargetCategory())
                 .build();
     }

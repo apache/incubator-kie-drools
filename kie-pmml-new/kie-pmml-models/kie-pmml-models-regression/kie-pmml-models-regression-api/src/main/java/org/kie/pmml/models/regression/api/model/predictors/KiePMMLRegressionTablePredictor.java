@@ -15,18 +15,21 @@
  */
 package org.kie.pmml.models.regression.api.model.predictors;
 
+import java.util.List;
 import java.util.Objects;
 
 import org.kie.pmml.commons.exceptions.KiePMMLException;
+import org.kie.pmml.commons.model.KiePMMLExtension;
+import org.kie.pmml.commons.model.abstracts.KiePMMLExtensionedTerm;
 import org.kie.pmml.commons.model.abstracts.KiePMMLTerm;
 
-public abstract class KiePMMLRegressionTablePredictor extends KiePMMLTerm {
+public abstract class KiePMMLRegressionTablePredictor extends KiePMMLExtensionedTerm {
 
     private static final long serialVersionUID = -3937947927611073965L;
     protected final Number coefficient;
 
-    public KiePMMLRegressionTablePredictor(String name, Number coefficient) {
-        super(name);
+    public KiePMMLRegressionTablePredictor(String name, Number coefficient, List<KiePMMLExtension> extensions) {
+        super(name, extensions);
         this.coefficient = coefficient;
     }
 

@@ -28,7 +28,6 @@ import org.kie.api.builder.KieFileSystem;
 import org.kie.api.builder.Message;
 import org.kie.api.builder.ReleaseId;
 import org.kie.api.builder.Results;
-import org.kie.api.io.Resource;
 import org.kie.api.io.ResourceType;
 import org.kie.api.pmml.PMML4Result;
 import org.kie.api.pmml.PMMLRequestData;
@@ -47,7 +46,6 @@ import org.slf4j.LoggerFactory;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
-
 import static org.kie.pmml.runtime.regression.executor.TestUtils.AGE_COEFF;
 import static org.kie.pmml.runtime.regression.executor.TestUtils.CARPARK;
 import static org.kie.pmml.runtime.regression.executor.TestUtils.CARPARK_COEFF;
@@ -63,17 +61,17 @@ public class RoundtripPMMLRegresssionModelEvaluatorTest {
 
     private static final Logger logger = LoggerFactory.getLogger(RoundtripPMMLRegresssionModelEvaluatorTest.class);
 
-    private PMMLRuntime pmmlRuntime;
+    private static final String SOURCE = "LinearRegressionSample.xml";
 
-    private Resource firstSampleResource;
+    private PMMLRuntime pmmlRuntime;
 
     private String releaseId;
 
     @Before
-    public void setUp() throws Exception {
+    public void setup() {
         KieServices ks = KieServices.Factory.get();
         KieFileSystem kfs = ks.newKieFileSystem();
-        kfs.write(ResourceFactory.newFileResource(getFile("LinearRegressionSample.xml")).setResourceType(ResourceType.PMML));
+        kfs.write(ResourceFactory.newFileResource(getFile(SOURCE)).setResourceType(ResourceType.PMML));
         final KieBuilder kieBuilder = ks.newKieBuilder(kfs).buildAll();
         final ReleaseId relId = kieBuilder.getKieModule().getReleaseId();
         releaseId = relId.toExternalForm();
@@ -86,16 +84,17 @@ public class RoundtripPMMLRegresssionModelEvaluatorTest {
         assertNotNull(pmmlRuntime);
     }
 
+
     @Test
-    public void evaluateRegressionWithTable() throws KiePMMLException {
+    public void evaluateSimpleRegression() throws KiePMMLException {
         String modelName = "Sample for linear regression";
-        commonEvaluate(20, 1950, STREET, modelName);
-        commonEvaluate(20, 1950, CARPARK, modelName);
-        commonEvaluate(59, 3750, STREET, modelName);
-        commonEvaluate(35, 1800, CARPARK, modelName);
+        commonEvaluateSimpleRegression(20, 1950, STREET, modelName);
+        commonEvaluateSimpleRegression(20, 1950, CARPARK, modelName);
+        commonEvaluateSimpleRegression(59, 3750, STREET, modelName);
+        commonEvaluateSimpleRegression(35, 1800, CARPARK, modelName);
     }
 
-    private void commonEvaluate(int age, double salary, String carLocation, String modelName) throws KiePMMLException {
+    private void commonEvaluateSimpleRegression(int age, double salary, String carLocation, String modelName) throws KiePMMLException {
         Map<String, Object> inputData = new HashMap<>();
         inputData.put("age", age);
         inputData.put("salary", salary);
@@ -108,10 +107,10 @@ public class RoundtripPMMLRegresssionModelEvaluatorTest {
         } else if (STREET.equals(carLocation)) {
             expected += STREET_COEFF;
         }
-        commonEvaluate(pmmlContext, expected);
+        commonEvaluateSimpleRegression(pmmlContext, expected);
     }
 
-    private void commonEvaluate(PMMLContext pmmlContext, double expected) throws KiePMMLException {
+    private void commonEvaluateSimpleRegression(PMMLContext pmmlContext, double expected) throws KiePMMLException {
         final KiePMMLModel model = pmmlRuntime.getModel(pmmlContext.getRequestData().getModelName()).orElseThrow(() -> new KiePMMLException("Failed to retrieve the model"));
         assertEquals(PMML_MODEL.REGRESSION_MODEL, model.getPmmlMODEL());
         assertTrue(model instanceof KiePMMLRegressionModel);

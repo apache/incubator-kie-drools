@@ -15,8 +15,10 @@
  */
 package org.kie.pmml.models.regression.api.model.predictors;
 
+import java.util.List;
 import java.util.Objects;
 
+import org.kie.pmml.commons.model.KiePMMLExtension;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -26,8 +28,8 @@ public class KiePMMLCategoricalPredictor extends KiePMMLRegressionTablePredictor
     private static final Logger logger = LoggerFactory.getLogger(KiePMMLCategoricalPredictor.class.getName());
     private Object value;
 
-    public KiePMMLCategoricalPredictor(String name, Object value, Number coefficient) {
-        super(name, coefficient);
+    public KiePMMLCategoricalPredictor(String name, Object value, Number coefficient, List<KiePMMLExtension> extensions) {
+        super(name, coefficient, extensions);
         this.value = value;
     }
 
