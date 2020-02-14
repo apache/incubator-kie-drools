@@ -50,83 +50,63 @@ import static org.junit.Assert.assertTrue;
 import static org.kie.test.util.filesystem.FileUtils.getFile;
 
 @RunWith(Parameterized.class)
-public class RoundtripRegresssionModelEvaluatorParameterizedTests {
+public class RoundtripClassificationModelEvaluatorJobCatParameterizedTests {
 
-    private static final Logger logger = LoggerFactory.getLogger(RoundtripRegresssionModelEvaluatorParameterizedTests.class);
+    private static final Logger logger = LoggerFactory.getLogger(RoundtripClassificationModelEvaluatorJobCatParameterizedTests.class);
 
-    private static final String SOURCE = "test_regression.pmml";
+    private static final String SOURCE = "JobCat.pmml";
 
-    private static final double COMPARISON_DELTA = 0.00001;
 
-    private double fld1;
-    private double fld2;
-    private String fld3;
+    private double age;
+    private double work;
+    private String sex;
+    private String minority;
+    private String expected;
 
     private PMMLRuntime pmmlRuntime;
 
     private String releaseId;
 
-    public RoundtripRegresssionModelEvaluatorParameterizedTests(double fld1, double fld2, String fld3) {
-        this.fld1 = fld1;
-        this.fld2 = fld2;
-        this.fld3 = fld3;
+    public RoundtripClassificationModelEvaluatorJobCatParameterizedTests(double age, double work, String sex, String minority, String expected) {
+        this.age = age;
+        this.work = work;
+        this.sex = sex;
+        this.minority = minority;
+        this.expected = expected;
     }
 
     @Parameterized.Parameters
     public static Collection<Object[]> data() {
         return Arrays.asList(new Object[][]{
-                {1.0, 1.0, "x"},
-                {0.9, 0.3, "x"},
-                {12.0, 25.0, "x"},
-                {0.2, 0.1, "x"},
-                {5, 8, "y"},
+                {27.0, 3.5, "0", "0", "professional"},
+                {64.0, 27.4, "0", "0", "clerical"},
+                {53.0, 12.6, "1", "1", "clerical"},
+                {14.0, 0.5, "1", "0", "professional"},
+                {51.0, 20.0, "0", "1", "clerical"},
         });
     }
 
-    private static double fld3Coefficient(String fld3) {
-        switch (fld3) {
-            case "x":
-                return -3.0; // Coefficient for the "x" CategoricalPredictor
-            case "y":
-                return 3.0; // Coefficient for the "y" CategoricalPredictor
-            default:
-                return 0;
-        }
-    }
-
     @Test
-    public void evaluateRegression() throws KiePMMLException {
+    public void evaluateClassification() throws KiePMMLException {
         commonSetup(SOURCE);
-        String modelName = "LinReg";
+        String modelName = "Sample for logistic regression";
         PMMLRequestData pmmlRequestData = new PMMLRequestData("123", modelName);
-        pmmlRequestData.addRequestParam("fld1", fld1);
-        pmmlRequestData.addRequestParam("fld2", fld2);
-        pmmlRequestData.addRequestParam("fld3", fld3);
+        pmmlRequestData.addRequestParam("age", age);
+        pmmlRequestData.addRequestParam("work", work);
+        pmmlRequestData.addRequestParam("sex", sex);
+        pmmlRequestData.addRequestParam("minority", minority);
         PMMLContext pmmlContext = new PMMLContextImpl(pmmlRequestData);
         final KiePMMLModel model = pmmlRuntime.getModel(pmmlContext.getRequestData().getModelName()).orElseThrow(() -> new KiePMMLException("Failed to retrieve the model"));
         assertEquals(PMML_MODEL.REGRESSION_MODEL, model.getPmmlMODEL());
         assertTrue(model instanceof KiePMMLRegressionModel);
-        assertEquals(1, ((KiePMMLRegressionModel) model).getRegressionTables().size());
-        assertEquals("fld4", model.getTargetField());
+        assertEquals(4, ((KiePMMLRegressionModel) model).getRegressionTables().size());
         PMML4Result retrieved = pmmlRuntime.evaluate(model, pmmlContext, releaseId);
         assertNotNull(retrieved);
         assertEquals("OK", retrieved.getResultCode());
-
-        assertEquals(model.getTargetField(), retrieved.getResultObjectName());
-        assertNotNull(retrieved.getResultVariables().get(model.getTargetField()));
-        double retrievedDouble = (double) retrieved.getResultVariables().get(model.getTargetField());
-        final double expectedValue = simpleRegressionResult(fld1, fld2, fld3);
-        assertEquals(expectedValue, retrievedDouble, COMPARISON_DELTA);
-    }
-
-    private double simpleRegressionResult(double fld1, double fld2, String fld3) {
-        double expectedFld1 = Math.pow(fld1, 2) * 5.0;
-        double expectedFld2 = fld2 * 2.0;
-        double expectedFldPredictor = 0.4 * fld1 * fld2;
-
-        double result = 0.5 + expectedFld1 + expectedFld2 + fld3Coefficient(fld3) + expectedFldPredictor;
-        result = 1.0 / (1.0 + Math.exp(-result));
-        return result;
+        assertEquals("jobcat", model.getTargetField());
+        assertEquals("jobcat", retrieved.getResultObjectName());
+        assertTrue(retrieved.getResultVariables().containsKey("jobcat"));
+        assertEquals(expected, retrieved.getResultVariables().get("jobcat"));
     }
 
     private void commonSetup(String fileName) {

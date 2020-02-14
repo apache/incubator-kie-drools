@@ -55,7 +55,7 @@ public class PMMLClassificationModelEvaluator {
                 .collect(Collectors.toMap(kiePMMLRegressionTable -> kiePMMLRegressionTable.getTargetCategory().toString(),
                                           throwingFunctionWrapper(kiePMMLRegressionTable -> {
                                               PMML4Result retrieved = PMMLRegresssionModelEvaluator.evaluateRegression(kiePMMLRegressionTable.getTargetCategory().toString(),
-                                                                                                                       regressionNormalizationMethod,
+                                                                                                                       REGRESSION_NORMALIZATION_METHOD.NONE,
                                                                                                                        kiePMMLRegressionTable,
                                                                                                                        requestData);
                                               return (Double) retrieved.getResultVariables().get(retrieved.getResultObjectName());
@@ -66,7 +66,7 @@ public class PMMLClassificationModelEvaluator {
         final Map.Entry<String, Double> predictedEntry = Collections.max(probabilityMap.entrySet(), Comparator.comparing(Map.Entry::getValue));
 
         PMML4Result toReturn = new PMML4Result();
-        toReturn.addResultVariable(targetFieldName, probabilityMap);
+        toReturn.addResultVariable(targetFieldName, predictedEntry.getKey());
         toReturn.setResultObjectName(targetFieldName);
         toReturn.setResultCode(OK.getName());
         if (outputFields != null) {

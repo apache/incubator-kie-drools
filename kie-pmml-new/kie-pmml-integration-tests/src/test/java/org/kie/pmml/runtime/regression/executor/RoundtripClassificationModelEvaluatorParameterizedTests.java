@@ -56,8 +56,7 @@ public class RoundtripClassificationModelEvaluatorParameterizedTests {
 
     private static final Logger logger = LoggerFactory.getLogger(RoundtripClassificationModelEvaluatorParameterizedTests.class);
 
-    private static final String SOURCE1 = "test_regression.pmml";
-    private static final String SOURCE2 = "test_regression_clax.pmml";
+    private static final String SOURCE = "test_regression_clax.pmml";
 
     private static final double COMPARISON_DELTA = 0.00001;
 
@@ -79,10 +78,10 @@ public class RoundtripClassificationModelEvaluatorParameterizedTests {
     public static Collection<Object[]> data() {
         return Arrays.asList(new Object[][]{
                 {1.0, 1.0, "x"},
-//                {0.9, 0.3, "x"},
-//                {12.0, 25.0, "x"},
-//                {0.2, 0.1, "x"},
-//                {5, 8, "y"},
+                {0.9, 0.3, "x"},
+                {12.0, 25.0, "x"},
+                {0.2, 0.1, "x"},
+                {5, 8, "y"},
         });
     }
 
@@ -99,7 +98,7 @@ public class RoundtripClassificationModelEvaluatorParameterizedTests {
 
     @Test
     public void evaluateClassification() throws KiePMMLException {
-        commonSetup(SOURCE2);
+        commonSetup(SOURCE);
         String modelName = "LinReg";
         PMMLRequestData pmmlRequestData = new PMMLRequestData("123", modelName);
         pmmlRequestData.addRequestParam("fld1", fld1);
@@ -124,6 +123,13 @@ public class RoundtripClassificationModelEvaluatorParameterizedTests {
                 maxValue = value;
             }
         }
+        String expected = "cat" + maxCategory;
+
+        assertEquals("fld4", model.getTargetField());
+        assertEquals("fld4", retrieved.getResultObjectName());
+        assertTrue(retrieved.getResultVariables().containsKey("fld4"));
+        assertEquals(expected, retrieved.getResultVariables().get("fld4"));
+
         assertNotNull(retrieved.getResultVariables().get("RegOut"));
         assertNotNull(retrieved.getResultVariables().get("RegProb"));
         assertNotNull(retrieved.getResultVariables().get("RegProbA"));
@@ -131,7 +137,7 @@ public class RoundtripClassificationModelEvaluatorParameterizedTests {
         String regOut = (String) retrieved.getResultVariables().get("RegOut");
         double regProb = (double) retrieved.getResultVariables().get("RegProb");
         double regProbA = (double) retrieved.getResultVariables().get("RegProbA");
-        assertEquals("cat" + maxCategory, regOut);
+        assertEquals(expected, regOut);
         assertEquals(maxValue, regProb, COMPARISON_DELTA);
         assertEquals(expectedProbabilities.get("A"), regProbA, COMPARISON_DELTA);
     }
