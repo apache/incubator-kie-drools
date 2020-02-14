@@ -21,6 +21,8 @@ import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
+import java.io.ObjectInput;
+import java.io.ObjectOutput;
 import java.io.Reader;
 import java.net.URL;
 import java.util.Collection;
@@ -28,6 +30,8 @@ import java.util.Collection;
 import org.drools.core.io.internal.InternalResource;
 import org.drools.core.util.IoUtils;
 import org.kie.api.io.Resource;
+
+import static org.drools.core.util.IoUtils.readBytesFromInputStream;
 
 public class InputStreamResource extends BaseResource implements InternalResource {
 
@@ -49,22 +53,47 @@ public class InputStreamResource extends BaseResource implements InternalResourc
         this.encoding = encoding;
     }
 
-    public InputStream getInputStream() throws IOException {
-        if (bytes != null) {
-            return new ByteArrayInputStream( bytes );
-        }
-        return stream;
+    @Override
+    public void readExternal( ObjectInput in) throws IOException, ClassNotFoundException {
+        super.readExternal( in );
+        encoding = (String) in.readObject();
     }
 
+    @Override
+    public void writeExternal( ObjectOutput out) throws IOException {
+        getBytes();
+        super.writeExternal( out );
+        out.writeObject( encoding );
+    }
+
+    @Override
+    public byte[] getBytes() {
+        if (bytes == null) {
+            try {
+                bytes = readBytesFromInputStream( stream );
+            } catch (IOException e) {
+                throw new RuntimeException( e );
+            }
+        }
+        return bytes;
+    }
+
+    @Override
+    public InputStream getInputStream() throws IOException {
+        return new ByteArrayInputStream( getBytes() );
+    }
+
+    @Override
     public String getEncoding() {
         return encoding;
     }
 
+    @Override
     public Reader getReader() throws IOException {
         if (this.encoding != null) {
-            return new InputStreamReader( new ByteArrayInputStream( getBytes() ), this.encoding );
+            return new InputStreamReader( getInputStream(), this.encoding );
         } else {
-            return new InputStreamReader( new ByteArrayInputStream( getBytes() ), IoUtils.UTF8_CHARSET );
+            return new InputStreamReader( getInputStream(), IoUtils.UTF8_CHARSET );
         }
     }
 
