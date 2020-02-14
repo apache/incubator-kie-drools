@@ -33,24 +33,4 @@
     </dependency>
   </dependencies>
 
-  <dependencyManagement>
-    <dependencies>
-      <!-- PMML -->
-      <dependency>
-        <groupId>org.drools</groupId>
-        <artifactId>kie-pmml-commons</artifactId>
-        <version>${version.org.kie}</version>
-      </dependency>
-      <!-- EXTERNAL -->
-      <!-- TEST -->
-      <dependency>
-        <groupId>org.kie</groupId>
-        <artifactId>kie-test-util</artifactId>
-        <version>${version.org.kie}</version>
-        <scope>test</scope>
-      </dependency>
-    </dependencies>
-  </dependencyManagement>
-
-
 </project>

@@ -32,10 +32,10 @@
   <description>Support for PMML-Encoded Predictive Models</description>
 
   <modules>
-    <module>kie-pmml-compiler</module>
-    <module>kie-pmml-models</module>
-    <module>kie-pmml-evaluator</module>
     <module>kie-pmml-commons</module>
+    <module>kie-pmml-compiler</module>
+    <module>kie-pmml-evaluator</module>
+    <module>kie-pmml-models</module>
     <module>kie-pmml-integration-tests</module>
   </modules>
 
@@ -61,5 +61,58 @@
     </pluginManagement>
   </build>
 
+  <dependencyManagement>
+    <dependencies>
+      <!-- PMML -->
+      <dependency>
+        <groupId>org.drools</groupId>
+        <artifactId>kie-pmml-commons</artifactId>
+        <version>${version.org.kie}</version>
+      </dependency>
+      <dependency>
+        <groupId>org.drools</groupId>
+        <artifactId>kie-pmml-compiler-api</artifactId>
+        <version>${version.org.kie}</version>
+      </dependency>
+      <dependency>
+        <groupId>org.drools</groupId>
+        <artifactId>kie-pmml-compiler-core</artifactId>
+        <version>${version.org.kie}</version>
+      </dependency>
+      <dependency>
+        <groupId>org.drools</groupId>
+        <artifactId>kie-pmml-compiler-commons</artifactId>
+        <version>${version.org.kie}</version>
+      </dependency>
+      <dependency>
+        <groupId>org.drools</groupId>
+        <artifactId>kie-pmml-compiler-commons</artifactId>
+        <version>${version.org.kie}</version>
+      </dependency>
+      <dependency>
+        <groupId>org.drools</groupId>
+        <artifactId>kie-pmml-evaluator-api</artifactId>
+        <version>${version.org.kie}</version>
+      </dependency>
+      <dependency>
+        <groupId>org.drools</groupId>
+        <artifactId>kie-pmml-evaluator-assembler</artifactId>
+        <version>${version.org.kie}</version>
+      </dependency>
+      <!-- EXTERNAL -->
+      <!-- TEST -->
+      <dependency>
+        <groupId>org.drools</groupId>
+        <artifactId>kie-pmml-compiler-api</artifactId>
+        <version>${version.org.kie}</version>
+        <classifier>tests</classifier>
+      </dependency>
+      <dependency>
+        <groupId>org.kie</groupId>
+        <artifactId>kie-test-util</artifactId>
+        <version>${version.org.kie}</version>
+      </dependency>
+    </dependencies>
+  </dependencyManagement>
 
 </project>

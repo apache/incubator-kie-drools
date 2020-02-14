@@ -40,22 +40,4 @@
     <!-- TEST -->
   </dependencies>
 
-  <dependencyManagement>
-    <dependencies>
-      <!-- PMML -->
-      <dependency>
-        <groupId>org.drools</groupId>
-        <artifactId>kie-pmml-evaluator-api</artifactId>
-        <version>${version.org.kie}</version>
-      </dependency>
-      <dependency>
-        <groupId>org.drools</groupId>
-        <artifactId>kie-pmml-compiler-core</artifactId>
-        <version>${version.org.kie}</version>
-      </dependency>
-      <!-- EXTERNAL -->
-      <!-- TEST -->
-    </dependencies>
-  </dependencyManagement>
-
 </project>

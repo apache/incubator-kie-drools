@@ -29,19 +29,4 @@
     <!-- TEST -->
   </dependencies>
 
-  <dependencyManagement>
-    <dependencies>
-      <!-- PMML -->
-      <dependency>
-        <groupId>org.drools</groupId>
-        <artifactId>kie-pmml-evaluator-api</artifactId>
-        <version>${version.org.kie}</version>
-      </dependency>
-      <!-- DROOLS -->
-      <!-- EXTERNAL -->
-      <!-- TEST -->
-    </dependencies>
-  </dependencyManagement>
-
-
 </project>

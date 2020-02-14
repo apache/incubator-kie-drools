@@ -31,25 +31,4 @@
     </dependency>
   </dependencies>
 
-  <dependencyManagement>
-    <dependencies>
-      <!-- PMML -->
-      <dependency>
-        <groupId>org.drools</groupId>
-        <artifactId>kie-pmml-compiler-commons</artifactId>
-        <version>${version.org.kie}</version>
-      </dependency>
-      <!-- EXTERNAL -->
-      <!-- TEST -->
-      <dependency>
-        <groupId>org.drools</groupId>
-        <artifactId>kie-pmml-compiler-api</artifactId>
-        <classifier>tests</classifier>
-        <scope>test</scope>
-        <version>${version.org.kie}</version>
-      </dependency>
-    </dependencies>
-  </dependencyManagement>
-
-
 </project>
