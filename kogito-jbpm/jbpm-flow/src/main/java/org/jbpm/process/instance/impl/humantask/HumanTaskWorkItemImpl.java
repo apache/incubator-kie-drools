@@ -16,6 +16,7 @@
 package org.jbpm.process.instance.impl.humantask;
 
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 
 import org.drools.core.process.instance.impl.WorkItemImpl;
@@ -137,12 +138,14 @@ public class HumanTaskWorkItemImpl extends WorkItemImpl implements HumanTaskWork
                 }
             }
         }
+        boolean authorized = true;
         // there might have not been any policies given so let's ensure task is protected if any assignments is set
-        if (getActualOwner() != null || !getPotentialUsers().isEmpty()) {
-            return false;
+        String currentOwner = getActualOwner();
+        if ((currentOwner != null && !currentOwner.trim().isEmpty()) || !getPotentialUsers().isEmpty()) {
+            authorized = false;
         }
 
-        return true;
+        return authorized;
     }
 
     protected void enforceAuthorization(IdentityProvider identity) {
@@ -156,20 +159,27 @@ public class HumanTaskWorkItemImpl extends WorkItemImpl implements HumanTaskWork
             if (currentOwner != null && !currentOwner.trim().isEmpty() && !user.equals(currentOwner)) {
                 logger.debug("Work item {} has already owner assigned so requesting user must match - owner '{}' == requestor '{}'", getId(), currentOwner, user);
                 throw new NotAuthorizedException("User " + user + " is not authorized to access task instance with id " + getId());
-            } else {
-                // is not in the excluded users
-                if (getExcludedUsers().contains(user)) {
-                    logger.debug("Requesting user '{}' is excluded from the potential workers on work item {}", user, getId());
-                    throw new NotAuthorizedException("User " + user + " is not authorized to access task instance with id " + getId());
-                }
-
-                // check if user is in potential users or groups 
-                if (!getPotentialUsers().contains(user) &&
-                    !getPotentialGroups().stream().anyMatch(identity.getRoles()::contains)) {
-                    throw new NotAuthorizedException("User " + user + " is not authorized to access task instance with id " + getId());
-                }
-
-            }
+            } 
+            
+            checkAssignedOwners(user, identity.getRoles());
+        }
+    }
+    
+    protected void checkAssignedOwners(String user, List<String> roles) {
+     // is not in the excluded users
+        if (getExcludedUsers().contains(user)) {
+            logger.debug("Requesting user '{}' is excluded from the potential workers on work item {}", user, getId());
+            throw new NotAuthorizedException("User " + user + " is not authorized to access task instance with id " + getId());
+        }
+        
+        // if there are no assignments means open to everyone
+        if (getPotentialUsers().isEmpty() && getPotentialGroups().isEmpty()) {
+            return;
+        }
+        // check if user is in potential users or groups 
+        if (!getPotentialUsers().contains(user) &&
+            getPotentialGroups().stream().noneMatch(roles::contains)) {
+            throw new NotAuthorizedException("User " + user + " is not authorized to access task instance with id " + getId());
         }
     }
 }

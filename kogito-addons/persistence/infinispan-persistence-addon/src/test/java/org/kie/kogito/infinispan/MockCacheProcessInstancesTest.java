@@ -113,6 +113,31 @@ public class MockCacheProcessInstancesTest {
     }
     
     @Test
+    public void testBasicFlowNoActors() {
+        
+        BpmnProcess process = (BpmnProcess) BpmnProcess.from(new ClassPathResource("BPMN2-UserTask-NoActors.bpmn2")).get(0);
+        process.setProcessInstancesFactory(new CacheProcessInstancesFactory(cacheManager));
+        process.configure();
+                                     
+        ProcessInstance<BpmnVariables> processInstance = process.createInstance(BpmnVariables.create(Collections.singletonMap("test", "test")));
+
+        processInstance.start();
+        assertThat(processInstance.status()).isEqualTo(STATE_ACTIVE);
+        
+
+        WorkItem workItem = processInstance.workItems().get(0);
+        assertThat(workItem).isNotNull();
+        assertThat(workItem.getParameters().get("ActorId")).isNull();
+        
+        
+        List<WorkItem> workItems = processInstance.workItems(SecurityPolicy.of(new StaticIdentityProvider("john")));
+        assertThat(workItems).hasSize(1);
+        
+        processInstance.completeWorkItem(workItem.getId(), null);
+        assertThat(processInstance.status()).isEqualTo(STATE_COMPLETED);
+    }
+    
+    @Test
     public void testProcessInstanceNotFound() {
         
         BpmnProcess process = (BpmnProcess) BpmnProcess.from(new ClassPathResource("BPMN2-UserTask.bpmn2")).get(0);
