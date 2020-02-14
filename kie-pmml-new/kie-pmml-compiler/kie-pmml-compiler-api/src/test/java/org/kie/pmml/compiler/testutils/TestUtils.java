@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.kie.pmml.library.testutils;
+package org.kie.pmml.compiler.testutils;
 
 import java.io.ByteArrayInputStream;
 import java.io.IOException;

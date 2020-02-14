@@ -13,15 +13,15 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.kie.pmml.library.commons.implementations;
+package org.kie.pmml.compiler.commons.implementations;
 
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 import java.util.ServiceLoader;
 
-import org.kie.pmml.library.api.implementations.ModelImplementationProvider;
-import org.kie.pmml.library.api.implementations.ModelImplementationProviderFinder;
+import org.kie.pmml.compiler.api.provider.ModelImplementationProvider;
+import org.kie.pmml.compiler.api.provider.ModelImplementationProviderFinder;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 

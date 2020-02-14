@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.kie.pmml.library.commons.utils;
+package org.kie.pmml.compiler.commons.utils;
 
 import java.util.Optional;
 

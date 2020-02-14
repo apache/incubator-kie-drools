@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.kie.pmml.library.api.implementations;
+package org.kie.pmml.compiler.api.provider;
 
 import org.dmg.pmml.DataDictionary;
 import org.dmg.pmml.Model;

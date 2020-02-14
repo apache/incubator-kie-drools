@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.kie.pmml.library.commons.implementations;
+package org.kie.pmml.compiler.commons.implementations;
 
 import java.util.Optional;
 
@@ -22,7 +22,7 @@ import org.dmg.pmml.Model;
 import org.kie.pmml.commons.exceptions.KiePMMLException;
 import org.kie.pmml.commons.model.KiePMMLModel;
 import org.kie.pmml.commons.model.enums.PMML_MODEL;
-import org.kie.pmml.library.api.implementations.ModelImplementationProviderFinder;
+import org.kie.pmml.compiler.api.provider.ModelImplementationProviderFinder;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
