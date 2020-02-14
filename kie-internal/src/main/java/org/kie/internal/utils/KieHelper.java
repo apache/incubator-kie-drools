@@ -27,6 +27,7 @@ import org.kie.api.builder.Message;
 import org.kie.api.builder.Results;
 import org.kie.api.builder.model.KieModuleModel;
 import org.kie.api.conf.KieBaseOption;
+import org.kie.api.definition.KieDescr;
 import org.kie.api.io.Resource;
 import org.kie.api.io.ResourceType;
 import org.kie.api.runtime.KieContainer;
@@ -68,7 +69,11 @@ public class KieHelper {
     }
 
     public KieBase build(KieBaseOption... options) {
-        KieContainer kieContainer = getKieContainer();
+        return build( null, options );
+    }
+
+    public KieBase build(Class<? extends KieBuilder.ProjectType> projectType, KieBaseOption... options) {
+        KieContainer kieContainer = getKieContainer(projectType);
         if (options == null || options.length == 0) {
             return kieContainer.getKieBase();
         }
@@ -81,7 +86,11 @@ public class KieHelper {
     }
 
     public KieContainer getKieContainer() {
-        KieBuilder kieBuilder = buildAllWithDrlOrDefault();
+        return getKieContainer( null );
+    }
+
+    public KieContainer getKieContainer(Class<? extends KieBuilder.ProjectType> projectType) {
+        KieBuilder kieBuilder = ks.newKieBuilder( kfs, classLoader ).buildAll(projectType);
         Results results = kieBuilder.getResults();
         if (results.hasMessages(Message.Level.ERROR)) {
             throw new RuntimeException(results.getMessages().toString());
@@ -90,18 +99,8 @@ public class KieHelper {
         return kieContainer;
     }
 
-    private KieBuilder buildAllWithDrlOrDefault() {
-        Class<? extends KieBuilder.ProjectType> canonicalModelKieProjectClass;
-        try {
-            canonicalModelKieProjectClass = (Class<? extends KieBuilder.ProjectType>) Class.forName("org.drools.compiler.kie.builder.impl.DrlProject");
-            return ks.newKieBuilder( kfs, classLoader ).buildAll(canonicalModelKieProjectClass);
-        } catch (ClassNotFoundException e) {
-            return ks.newKieBuilder( kfs, classLoader ).buildAll();
-        }
-    }
-
     public Results verify() {
-        KieBuilder kieBuilder = buildAllWithDrlOrDefault();
+        KieBuilder kieBuilder = ks.newKieBuilder( kfs, classLoader ).buildAll();
         return kieBuilder.getResults();
     }
 
@@ -113,6 +112,10 @@ public class KieHelper {
     public KieHelper setKieModuleModel(KieModuleModel kieModel) {
         kfs.writeKModuleXML(kieModel.toXML());
         return this;
+    }
+
+    public KieHelper addContent( KieDescr descr ) {
+        return addResource( ks.getResources().newDescrResource( descr ), ResourceType.DESCR );
     }
 
     public KieHelper addContent(String content, ResourceType type) {
@@ -150,6 +153,9 @@ public class KieHelper {
     public KieHelper addResource(Resource resource, ResourceType type) {
         if (resource.getSourcePath() == null && resource.getTargetPath() == null) {
             resource.setSourcePath(generateResourceName(type));
+        }
+        if (resource.getResourceType() == null) {
+            resource.setResourceType( type );
         }
         return addResource(resource);
     }
