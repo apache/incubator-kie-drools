@@ -17,7 +17,7 @@
   -->
 
 <!DOCTYPE module PUBLIC "-//Google Inc.//DTD Google Web Toolkit 2.8.2//EN"
-    "http://google-web-toolkit.googlecode.com/svn/tags/2.8.2/distro-source/core/src/gwt-module.dtd">
+    "http://www.gwtproject.org/doctype/2.8.2/gwt-module.dtd">
 <module>
 
   <!-- Here are included all required classes for manage DMN Feel type in a client GWT environment  -->
