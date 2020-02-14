@@ -26,6 +26,7 @@ import java.util.Properties;
 
 import org.drools.compiler.compiler.io.memory.MemoryFileSystem;
 import org.drools.compiler.kproject.models.KieModuleModelImpl;
+import org.drools.core.io.internal.InternalResource;
 import org.drools.core.util.IoUtils;
 import org.kie.api.builder.KieFileSystem;
 import org.kie.api.builder.ReleaseId;
@@ -38,7 +39,6 @@ import org.slf4j.LoggerFactory;
 
 import static org.drools.compiler.kie.builder.impl.KieBuilderImpl.JAVA_ROOT;
 import static org.drools.compiler.kie.builder.impl.KieBuilderImpl.RESOURCES_ROOT;
-import static org.drools.core.util.IoUtils.readBytesFromInputStream;
 
 public class KieFileSystemImpl
         implements
@@ -57,24 +57,18 @@ public class KieFileSystemImpl
         this.mfs = mfs;
     }
 
-    public KieFileSystem write(String path,
-                               byte[] content) {
+    public KieFileSystem write(String path, byte[] content) {
         mfs.write( path, content, true );
         return this;
     }
 
-    public KieFileSystem write(String path,
-                               String text) {
+    public KieFileSystem write(String path, String text) {
         return write( path, text.getBytes( IoUtils.UTF8_CHARSET ) );
     }
 
-    public KieFileSystem write(String path,
-                               Resource resource) {
-        try {
-            return write( path, readBytesFromInputStream(resource.getInputStream()) );
-        } catch (IOException e) {
-            throw new UncheckedIOException("Unable to write Resource: " + resource.toString(), e);
-        }
+    public KieFileSystem write(String path, Resource resource) {
+        mfs.write( path, resource );
+        return this;
     }
 
     public KieFileSystem write(Resource resource) {
@@ -84,7 +78,11 @@ public class KieFileSystemImpl
                 String prefix = resource.getResourceType() == ResourceType.JAVA ? JAVA_ROOT : RESOURCES_ROOT;
                 int prefixPos = target.indexOf( prefix );
                 String path = prefixPos >= 0 ? target.substring( prefixPos ) : prefix + target;
-                write( path, readBytesFromInputStream(resource.getInputStream()) );
+                if (resource.getResourceType() == ResourceType.XSD) {
+                    write( path, (( InternalResource ) resource).getBytes() );
+                } else {
+                    write( path, resource );
+                }
                 ResourceConfiguration conf = resource.getConfiguration();
                 if( conf != null ) {
                     Properties prop = ResourceTypeImpl.toProperties(conf);

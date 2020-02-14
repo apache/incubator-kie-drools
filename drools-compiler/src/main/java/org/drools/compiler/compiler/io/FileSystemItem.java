@@ -16,7 +16,7 @@
 package org.drools.compiler.compiler.io;
 
 
-public interface Resource {
+public interface FileSystemItem {
 
-    public Path getPath();
+    Path getPath();
 }

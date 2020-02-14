@@ -194,6 +194,9 @@ public class KieBuilderImpl
 
     @Override
     public KieBuilder buildAll( Class<? extends ProjectType> projectClass ) {
+        if (projectClass == null) {
+            return buildAll();
+        }
         try {
             BiFunction<InternalKieModule, ClassLoader, KieModuleKieProject> kprojectSupplier = getSupplier(projectClass);
             return buildAll( kprojectSupplier, o -> true);
@@ -308,10 +311,10 @@ public class KieBuilderImpl
         if ( !fileName.startsWith( RESOURCES_ROOT ) ) {
             return null;
         }
-        byte[] bytes = srcMfs.getBytes( fileName );
+        Resource resource = srcMfs.getResource( fileName );
         String trgFileName = fileName.substring( RESOURCES_ROOT.length() );
-        if ( bytes != null ) {
-            trgMfs.write( trgFileName, bytes, true );
+        if ( resource != null ) {
+            trgMfs.write( trgFileName, resource, true );
         } else {
             trgMfs.remove( trgFileName );
         }
@@ -342,9 +345,8 @@ public class KieBuilderImpl
     private void addMetaInfBuilder() {
         for ( String fileName : srcMfs.getFileNames()) {
             if ( fileName.startsWith( RESOURCES_ROOT ) && !isKieExtension( fileName ) ) {
-                byte[] bytes = srcMfs.getBytes( fileName );
                 trgMfs.write( fileName.substring( RESOURCES_ROOT.length() - 1 ),
-                              bytes,
+                              srcMfs.getResource( fileName ),
                               true );
             }
         }
@@ -674,7 +676,7 @@ public class KieBuilderImpl
         for ( String fileName : srcMfs.getFileNames() ) {
             if ( fileName.endsWith( ".class" ) ) {
                 trgMfs.write( fileName,
-                              srcMfs.getBytes( fileName ),
+                              srcMfs.getResource( fileName ),
                               true );
                 classFiles.add( fileName.substring( 0,
                                                     fileName.length() - ".class".length() ) );

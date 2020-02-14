@@ -137,6 +137,8 @@ public class RuleContext {
                 String drlFileName = drlFile.substring(drlFile.lastIndexOf('/')+1);
                 unitName = packageModel.getName() + '.' + drlFileName.substring(0, drlFileName.length() - ".drl".length());
                 useNamingConvention = true;
+            } else {
+                return;
             }
         }
 
