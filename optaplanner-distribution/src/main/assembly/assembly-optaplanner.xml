@@ -113,12 +113,9 @@
       <includes>
         <include>org.optaplanner:optaplanner-docs:zip</include>
       </includes>
-      <useProjectArtifact>false</useProjectArtifact>
       <outputDirectory>reference_manual</outputDirectory>
-      <!-- Workaround for https://jira.codehaus.org/browse/MASSEMBLY-557 -->
-      <fileMode>644</fileMode>
-      <directoryMode>755</directoryMode>
       <unpack>true</unpack>
+      <useProjectArtifact>false</useProjectArtifact>
       <useStrictFiltering>true</useStrictFiltering>
       <useTransitiveFiltering>false</useTransitiveFiltering><!-- Only include zip -->
     </dependencySet>
