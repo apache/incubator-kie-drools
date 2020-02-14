@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<!--
+  ~ Copyright 2020 Red Hat, Inc. and/or its affiliates.
+  ~
+  ~ Licensed under the Apache License, Version 2.0 (the "License");
+  ~ you may not use this file except in compliance with the License.
+  ~ You may obtain a copy of the License at
+  ~
+  ~       http://www.apache.org/licenses/LICENSE-2.0
+  ~
+  ~ Unless required by applicable law or agreed to in writing, software
+  ~ distributed under the License is distributed on an "AS IS" BASIS,
+  ~ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+  ~ See the License for the specific language governing permissions and
+  ~ limitations under the License.
+  -->
+
+<!DOCTYPE module PUBLIC "-//Google Inc.//DTD Google Web Toolkit 2.8.2//EN"
+    "http://google-web-toolkit.googlecode.com/svn/tags/2.8.2/distro-source/core/src/gwt-module.dtd">
+<module>
+
+  <!-- Here are included all required classes for manage DMN Feel type in a client GWT environment  -->
+  <!-- PLEASE NOTE! BuiltInType.class contains type NOT compatible with GWT eg. new java Time api   -->
+  <!-- Therefore, when importing this module in your GWT project, you must substitute BuiltInType   -->
+  <!-- with a specific class compatible with GWT. To substitute it, just insert in your GWT project -->
+  <!-- a new BuiltInType.java class in a "org.kie.dmn.feel.lang.type" defined package.              -->
+  <source path="lang" includes="**/CompositeType.java"/>
+  <source path="lang" includes="**/Scope.java"/>
+  <source path="lang" includes="**/SimpleType.java"/>
+  <source path="lang" includes="**/Symbol.java"/>
+  <source path="lang" includes="**/Type.java"/>
+  <source path="lang/impl" includes="**/MapBackedType.java"/>
+  <source path="lang/types" includes="**/BaseSymbol.java"/>
+  <source path="lang/types" includes="**/BuiltInType.java"/>
+  <source path="lang/types" includes="**/BuiltInTypeSymbol.java"/>
+
+</module>
