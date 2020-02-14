@@ -1,5 +1,5 @@
 /*
- * Copyright 2016 Red Hat, Inc. and/or its affiliates.
+ * Copyright 2020 Red Hat, Inc. and/or its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -28,8 +28,10 @@ public class HardSoftScoreJaxbXmlAdapterTest extends AbstractScoreJaxbXmlAdapter
     @Test
     public void serializeAndDeserialize() {
         assertSerializeAndDeserialize(null, new TestHardSoftScoreWrapper(null));
+
         HardSoftScore score = HardSoftScore.of(1200, 34);
         assertSerializeAndDeserialize(score, new TestHardSoftScoreWrapper(score));
+
         score = HardSoftScore.ofUninitialized(-7, 1200, 34);
         assertSerializeAndDeserialize(score, new TestHardSoftScoreWrapper(score));
     }

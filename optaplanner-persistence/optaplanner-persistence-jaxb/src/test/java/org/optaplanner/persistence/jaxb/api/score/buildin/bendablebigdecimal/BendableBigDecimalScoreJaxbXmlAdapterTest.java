@@ -1,5 +1,5 @@
 /*
- * Copyright 2016 Red Hat, Inc. and/or its affiliates.
+ * Copyright 2020 Red Hat, Inc. and/or its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -29,9 +29,11 @@ public class BendableBigDecimalScoreJaxbXmlAdapterTest extends AbstractScoreJaxb
     @Test
     public void serializeAndDeserialize() {
         assertSerializeAndDeserialize(null, new TestBendableBigDecimalScoreWrapper(null));
+
         BendableBigDecimalScore score = BendableBigDecimalScore.of(
                 new BigDecimal[]{new BigDecimal("1000.0001"), new BigDecimal("200.0020")}, new BigDecimal[]{new BigDecimal("34.4300")});
         assertSerializeAndDeserialize(score, new TestBendableBigDecimalScoreWrapper(score));
+
         score = BendableBigDecimalScore.ofUninitialized(-7,
                 new BigDecimal[]{new BigDecimal("1000.0001"), new BigDecimal("200.0020")}, new BigDecimal[]{new BigDecimal("34.4300")});
         assertSerializeAndDeserialize(score, new TestBendableBigDecimalScoreWrapper(score));

@@ -1,5 +1,5 @@
 /*
- * Copyright 2016 Red Hat, Inc. and/or its affiliates.
+ * Copyright 2020 Red Hat, Inc. and/or its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -19,11 +19,14 @@ package org.optaplanner.persistence.jaxb.api.score;
 import java.io.Serializable;
 import java.io.StringReader;
 import java.io.StringWriter;
+
 import javax.xml.bind.JAXBContext;
 import javax.xml.bind.JAXBException;
 import javax.xml.bind.Marshaller;
 import javax.xml.bind.Unmarshaller;
 
+import org.eclipse.persistence.jaxb.MarshallerProperties;
+import org.eclipse.persistence.jaxb.UnmarshallerProperties;
 import org.optaplanner.core.api.score.Score;
 
 import static org.junit.Assert.*;
@@ -35,6 +38,11 @@ public abstract class AbstractScoreJaxbXmlAdapterTest {
     // ************************************************************************
 
     protected <S extends Score, W extends TestScoreWrapper<S>> void assertSerializeAndDeserialize(S expectedScore, W input) {
+        assertSerializeAndDeserializeXML(expectedScore, input);
+        assertSerializeAndDeserializeJson(expectedScore, input);
+    }
+
+    protected <S extends Score, W extends TestScoreWrapper<S>> void assertSerializeAndDeserializeXML(S expectedScore, W input) {
         String xmlString;
         W output;
         try {
@@ -64,6 +72,53 @@ public abstract class AbstractScoreJaxbXmlAdapterTest {
         }
         if (!xmlString.matches(regex)) {
             fail("Regular expression match failed.\nExpected regular expression: " + regex + "\nActual string: " + xmlString);
+        }
+    }
+
+    protected <S extends Score, W extends TestScoreWrapper<S>> void assertSerializeAndDeserializeJson(S expectedScore, W input) {
+        System.setProperty("javax.xml.bind.context.factory", "org.eclipse.persistence.jaxb.JAXBContextFactory");
+
+        String jsonString;
+        W output;
+        try {
+            JAXBContext jaxbContext = JAXBContext.newInstance(input.getClass());
+
+            Marshaller jaxbMarshaller = jaxbContext.createMarshaller();
+            jaxbMarshaller.setProperty(MarshallerProperties.MEDIA_TYPE, "application/json");
+            jaxbMarshaller.setProperty(MarshallerProperties.JSON_INCLUDE_ROOT, true);
+            jaxbMarshaller.setProperty(Marshaller.JAXB_FORMATTED_OUTPUT, true);
+            StringWriter writer = new StringWriter();
+            jaxbMarshaller.marshal(input, writer);
+            jsonString = writer.toString();
+
+            Unmarshaller unmarshaller = jaxbContext.createUnmarshaller();
+            unmarshaller.setProperty(UnmarshallerProperties.MEDIA_TYPE, "application/json");
+            unmarshaller.setProperty(UnmarshallerProperties.JSON_INCLUDE_ROOT, true);
+
+            StringReader reader = new StringReader(jsonString);
+            output = (W) unmarshaller.unmarshal(reader);
+
+            System.clearProperty("javax.xml.bind.context.factory");
+        } catch (JAXBException e) {
+            throw new IllegalStateException("Marshalling or unmarshalling for input (" + input + ") failed.", e);
+        }
+        assertEquals(expectedScore, output.getScore());
+        String regex;
+        if (expectedScore != null) {
+            regex = "\\{\n" // Opening bracket
+                    + "\\s*\"([\\w]+)\"\\s:\\s\\{\n" // Start of element
+                    + "\\s*\"score\"\\s:\\s\"" // Start of element
+                    + expectedScore.toString().replaceAll("\\[", "\\\\[").replaceAll("\\]", "\\\\]") // Score
+                    + "\"\\s*\\}\n" // End of element
+                    + "\\}"; // Closing bracket
+        } else {
+            regex = "\\{\n" // Opening bracket
+                    + "\\s*\"([\\w]+)\"\\s:\\s\\{\n" // Start of element
+                    + "\\s*\\}\n" // End of element
+                    + "\\}"; // Closing bracket
+        }
+        if (!jsonString.matches(regex)) {
+            fail("Regular expression match failed.\nExpected regular expression: " + regex + "\nActual string: " + jsonString);
         }
     }
 
