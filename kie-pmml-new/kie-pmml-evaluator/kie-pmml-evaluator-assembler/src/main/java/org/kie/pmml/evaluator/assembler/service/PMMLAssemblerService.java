@@ -30,10 +30,10 @@ import org.kie.api.io.ResourceConfiguration;
 import org.kie.api.io.ResourceType;
 import org.kie.api.io.ResourceWithConfiguration;
 import org.kie.pmml.commons.model.KiePMMLModel;
-import org.kie.pmml.evaluator.assembler.container.PMMLPackageImpl;
 import org.kie.pmml.compiler.executor.PMMLCompiler;
 import org.kie.pmml.compiler.executor.PMMLCompilerImpl;
 import org.kie.pmml.evaluator.api.container.PMMLPackage;
+import org.kie.pmml.evaluator.assembler.container.PMMLPackageImpl;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
