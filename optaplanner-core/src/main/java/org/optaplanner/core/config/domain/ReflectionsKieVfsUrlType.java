@@ -27,7 +27,7 @@ import java.util.List;
 
 import org.drools.compiler.compiler.io.File;
 import org.drools.compiler.compiler.io.Folder;
-import org.drools.compiler.compiler.io.Resource;
+import org.drools.compiler.compiler.io.FileSystemItem;
 import org.drools.compiler.compiler.io.memory.MemoryFileSystem;
 import org.drools.core.impl.InternalKieContainer;
 import org.drools.compiler.kie.builder.impl.MemoryKieModule;
@@ -82,20 +82,20 @@ public class ReflectionsKieVfsUrlType implements Vfs.UrlType {
         @Override
         public Iterable<Vfs.File> getFiles() {
             List<Vfs.File> vfsFileList = new ArrayList<>();
-            Deque<Resource> resourceDeque = new ArrayDeque<>();
-            Collection<? extends Resource> mainMembers = kieFolder.getMembers();
+            Deque<FileSystemItem> resourceDeque = new ArrayDeque<>();
+            Collection<? extends FileSystemItem> mainMembers = kieFolder.getMembers();
             if (mainMembers != null) {
                 resourceDeque.addAll(mainMembers);
             }
             while (!resourceDeque.isEmpty()) {
-                Resource resource = resourceDeque.pop();
+                FileSystemItem resource = resourceDeque.pop();
                 if (resource instanceof File) {
                     File file = (File) resource;
                     if (file.getName().endsWith(".class")) {
                         vfsFileList.add(new ReflectionsKieVfsFile(file));
                     }
                 } else if (resource instanceof Folder) {
-                    Collection<? extends Resource> members = ((Folder) resource).getMembers();
+                    Collection<? extends FileSystemItem> members = ((Folder) resource).getMembers();
                     if (members != null) {
                         resourceDeque.addAll(members);
                     }
