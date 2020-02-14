@@ -123,6 +123,18 @@
     <profile>
       <id>run-code-coverage</id>
       <build>
+        <pluginManagement>
+          <plugins>
+            <plugin>
+              <groupId>org.apache.maven.plugins</groupId>
+              <artifactId>maven-surefire-plugin</artifactId>
+              <configuration>
+                <!-- Append jacoco.agent.argLine property populated by JaCoCo's prepare-agent goal. -->
+                <argLine>@{jacoco.agent.argLine}</argLine>
+              </configuration>
+            </plugin>
+          </plugins>
+        </pluginManagement>
         <plugins>
           <plugin>
             <groupId>org.jacoco</groupId>
@@ -266,14 +278,6 @@
               </configuration>
             </execution>
           </executions>
-        </plugin>
-        <plugin>
-          <groupId>org.apache.maven.plugins</groupId>
-          <artifactId>maven-surefire-plugin</artifactId>
-          <configuration>
-            <!-- Append jacoco.agent.argLine property populated by JaCoCo's prepare-agent goal. -->
-            <argLine>@{jacoco.agent.argLine}</argLine>
-          </configuration>
         </plugin>
       </plugins>
     </pluginManagement>
