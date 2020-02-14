@@ -3,29 +3,40 @@
          xmlns="http://maven.apache.org/POM/4.0.0"
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
   <parent>
-    <artifactId>kie-pmml-runtime</artifactId>
+    <artifactId>kie-pmml-evaluator</artifactId>
     <groupId>org.drools</groupId>
     <version>7.33.0-SNAPSHOT</version>
   </parent>
   <modelVersion>4.0.0</modelVersion>
 
-  <artifactId>kie-pmml-runtime-core</artifactId>
+  <artifactId>kie-pmml-evaluator-assembler</artifactId>
 
-  <name>KIE :: PMML :: Runtime :: Core</name>
-  <description>Execution of PMML models inside KIE runtime environment</description>
+  <name>KIE :: PMML :: Evaluator :: Assembler</name>
+  <description>Population of KIE knowledge base</description>
 
   <dependencies>
     <!-- PMML -->
     <dependency>
       <groupId>org.drools</groupId>
-      <artifactId>kie-pmml-runtime-api</artifactId>
+      <artifactId>kie-pmml-evaluator-api</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>org.drools</groupId>
+      <artifactId>kie-pmml-compiler-core</artifactId>
     </dependency>
     <!-- DROOLS -->
+    <dependency>
+      <groupId>org.kie</groupId>
+      <artifactId>kie-internal</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>org.drools</groupId>
+      <artifactId>drools-compiler</artifactId>
+    </dependency>
     <dependency>
       <groupId>org.drools</groupId>
       <artifactId>drools-core</artifactId>
     </dependency>
-    <!-- EXTERNAL -->
     <!-- TEST -->
   </dependencies>
 
@@ -34,14 +45,17 @@
       <!-- PMML -->
       <dependency>
         <groupId>org.drools</groupId>
-        <artifactId>kie-pmml-runtime-api</artifactId>
+        <artifactId>kie-pmml-evaluator-api</artifactId>
         <version>${version.org.kie}</version>
       </dependency>
-      <!-- DROOLS -->
+      <dependency>
+        <groupId>org.drools</groupId>
+        <artifactId>kie-pmml-compiler-core</artifactId>
+        <version>${version.org.kie}</version>
+      </dependency>
       <!-- EXTERNAL -->
       <!-- TEST -->
     </dependencies>
   </dependencyManagement>
-
 
 </project>

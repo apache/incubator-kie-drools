@@ -47,12 +47,12 @@
     <!-- Runtime -->
     <dependency>
       <groupId>org.drools</groupId>
-      <artifactId>kie-pmml-runtime-api</artifactId>
+      <artifactId>kie-pmml-evaluator-api</artifactId>
       <scope>test</scope>
     </dependency>
     <dependency>
       <groupId>org.drools</groupId>
-      <artifactId>kie-pmml-runtime-assembler</artifactId>
+      <artifactId>kie-pmml-evaluator-assembler</artifactId>
       <scope>test</scope>
     </dependency>
     <!-- Runtime :: Implementations -->
@@ -94,7 +94,7 @@
       </dependency>
       <dependency>
         <groupId>org.drools</groupId>
-        <artifactId>kie-pmml-runtime-api</artifactId>
+        <artifactId>kie-pmml-evaluator-api</artifactId>
         <version>${version.org.kie}</version>
         <scope>test</scope>
       </dependency>
@@ -125,7 +125,7 @@
       </dependency>
       <dependency>
         <groupId>org.drools</groupId>
-        <artifactId>kie-pmml-runtime-assembler</artifactId>
+        <artifactId>kie-pmml-evaluator-assembler</artifactId>
         <version>${version.org.kie}</version>
         <scope>test</scope>
       </dependency>
