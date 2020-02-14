@@ -14,7 +14,7 @@
     <fileSet><!-- Note: going outside the module dir is bad, but it is not fetching generated files -->
       <directory>..</directory>
       <includes>
-        <include>LICENSE-ASL-2.0.txt</include>
+        <include>LICENSE-Apache-2.0.txt</include>
       </includes>
       <outputDirectory/>
     </fileSet>
