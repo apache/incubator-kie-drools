@@ -22,7 +22,7 @@
     </dependency>
     <dependency>
       <groupId>org.drools</groupId>
-      <artifactId>kie-pmml-library-compiler</artifactId>
+      <artifactId>kie-pmml-compiler-core</artifactId>
     </dependency>
     <!-- DROOLS -->
     <dependency>
@@ -50,7 +50,7 @@
       </dependency>
       <dependency>
         <groupId>org.drools</groupId>
-        <artifactId>kie-pmml-library-compiler</artifactId>
+        <artifactId>kie-pmml-compiler-core</artifactId>
         <version>${version.org.kie}</version>
       </dependency>
       <!-- EXTERNAL -->

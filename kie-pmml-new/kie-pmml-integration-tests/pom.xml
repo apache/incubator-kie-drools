@@ -24,23 +24,23 @@
     </dependency>
     <dependency>
       <groupId>org.drools</groupId>
-      <artifactId>kie-pmml-library-api</artifactId>
+      <artifactId>kie-pmml-compiler-api</artifactId>
       <scope>test</scope>
     </dependency>
     <dependency>
       <groupId>org.drools</groupId>
-      <artifactId>kie-pmml-library-api</artifactId>
+      <artifactId>kie-pmml-compiler-api</artifactId>
       <classifier>tests</classifier>
       <scope>test</scope>
     </dependency>
     <dependency>
       <groupId>org.drools</groupId>
-      <artifactId>kie-pmml-library-commons</artifactId>
+      <artifactId>kie-pmml-compiler-commons</artifactId>
       <scope>test</scope>
     </dependency>
     <dependency>
       <groupId>org.drools</groupId>
-      <artifactId>kie-pmml-library-compiler</artifactId>
+      <artifactId>kie-pmml-compiler-core</artifactId>
       <scope>test</scope>
     </dependency>
     <!-- Library :: Models -->
@@ -100,26 +100,26 @@
       </dependency>
       <dependency>
         <groupId>org.drools</groupId>
-        <artifactId>kie-pmml-library-api</artifactId>
+        <artifactId>kie-pmml-compiler-api</artifactId>
         <version>${version.org.kie}</version>
         <scope>test</scope>
       </dependency>
       <dependency>
         <groupId>org.drools</groupId>
-        <artifactId>kie-pmml-library-api</artifactId>
+        <artifactId>kie-pmml-compiler-api</artifactId>
         <classifier>tests</classifier>
         <scope>test</scope>
         <version>${version.org.kie}</version>
       </dependency>
       <dependency>
         <groupId>org.drools</groupId>
-        <artifactId>kie-pmml-library-commons</artifactId>
+        <artifactId>kie-pmml-compiler-commons</artifactId>
         <version>${version.org.kie}</version>
         <scope>test</scope>
       </dependency>
       <dependency>
         <groupId>org.drools</groupId>
-        <artifactId>kie-pmml-library-compiler</artifactId>
+        <artifactId>kie-pmml-compiler-core</artifactId>
         <version>${version.org.kie}</version>
         <scope>test</scope>
       </dependency>

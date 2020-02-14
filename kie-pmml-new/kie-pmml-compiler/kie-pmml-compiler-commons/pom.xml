@@ -3,29 +3,28 @@
          xmlns="http://maven.apache.org/POM/4.0.0"
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
   <parent>
+    <artifactId>kie-pmml-compiler</artifactId>
     <groupId>org.drools</groupId>
-    <artifactId>kie-pmml-library</artifactId>
     <version>7.33.0-SNAPSHOT</version>
   </parent>
   <modelVersion>4.0.0</modelVersion>
 
-  <artifactId>kie-pmml-library-compiler</artifactId>
+  <artifactId>kie-pmml-compiler-commons</artifactId>
 
-  <name>KIE :: PMML :: Library :: Compiler</name>
-  <description>PMML Compiler</description>
-
+  <name>KIE :: PMML :: Compiler :: Commons</name>
+  <description>Kie PMML Compiler Commons</description>
 
   <dependencies>
     <!-- PMML -->
     <dependency>
       <groupId>org.drools</groupId>
-      <artifactId>kie-pmml-library-commons</artifactId>
+      <artifactId>kie-pmml-compiler-api</artifactId>
     </dependency>
     <!-- EXTERNAL -->
     <!-- TEST -->
     <dependency>
       <groupId>org.drools</groupId>
-      <artifactId>kie-pmml-library-api</artifactId>
+      <artifactId>kie-pmml-compiler-api</artifactId>
       <classifier>tests</classifier>
       <scope>test</scope>
     </dependency>
@@ -36,14 +35,14 @@
       <!-- PMML -->
       <dependency>
         <groupId>org.drools</groupId>
-        <artifactId>kie-pmml-library-commons</artifactId>
+        <artifactId>kie-pmml-compiler-api</artifactId>
         <version>${version.org.kie}</version>
       </dependency>
       <!-- EXTERNAL -->
       <!-- TEST -->
       <dependency>
         <groupId>org.drools</groupId>
-        <artifactId>kie-pmml-library-api</artifactId>
+        <artifactId>kie-pmml-compiler-api</artifactId>
         <classifier>tests</classifier>
         <scope>test</scope>
         <version>${version.org.kie}</version>

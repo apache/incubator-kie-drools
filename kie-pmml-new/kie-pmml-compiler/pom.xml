@@ -9,16 +9,16 @@
   </parent>
   <modelVersion>4.0.0</modelVersion>
 
-  <artifactId>kie-pmml-library</artifactId>
+  <artifactId>kie-pmml-compiler</artifactId>
   <packaging>pom</packaging>
 
-  <name>KIE :: PMML :: Library</name>
+  <name>KIE :: PMML :: Compiler</name>
   <description>PMML evaluator</description>
 
   <modules>
-    <module>kie-pmml-library-api</module>
-    <module>kie-pmml-library-commons</module>
-    <module>kie-pmml-library-compiler</module>
+    <module>kie-pmml-compiler-api</module>
+    <module>kie-pmml-compiler-commons</module>
+    <module>kie-pmml-compiler-core</module>
   </modules>
 
 

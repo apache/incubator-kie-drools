@@ -3,29 +3,32 @@
          xmlns="http://maven.apache.org/POM/4.0.0"
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
   <parent>
-    <artifactId>kie-pmml-library</artifactId>
     <groupId>org.drools</groupId>
+    <artifactId>kie-pmml-compiler</artifactId>
     <version>7.33.0-SNAPSHOT</version>
   </parent>
   <modelVersion>4.0.0</modelVersion>
 
-  <artifactId>kie-pmml-library-commons</artifactId>
+  <artifactId>kie-pmml-compiler-api</artifactId>
 
-  <name>KIE :: PMML :: Library :: Commons</name>
-  <description>Kie PMML Commons</description>
+  <name>KIE :: PMML :: Compiler :: API</name>
+  <description>API specific for PMML Compiler</description>
 
   <dependencies>
     <!-- PMML -->
     <dependency>
       <groupId>org.drools</groupId>
-      <artifactId>kie-pmml-library-api</artifactId>
+      <artifactId>kie-pmml-commons</artifactId>
     </dependency>
     <!-- EXTERNAL -->
+    <dependency>
+      <groupId>org.jpmml</groupId>
+      <artifactId>pmml-model</artifactId>
+    </dependency>
     <!-- TEST -->
     <dependency>
-      <groupId>org.drools</groupId>
-      <artifactId>kie-pmml-library-api</artifactId>
-      <classifier>tests</classifier>
+      <groupId>org.kie</groupId>
+      <artifactId>kie-test-util</artifactId>
       <scope>test</scope>
     </dependency>
   </dependencies>
@@ -35,17 +38,16 @@
       <!-- PMML -->
       <dependency>
         <groupId>org.drools</groupId>
-        <artifactId>kie-pmml-library-api</artifactId>
+        <artifactId>kie-pmml-commons</artifactId>
         <version>${version.org.kie}</version>
       </dependency>
       <!-- EXTERNAL -->
       <!-- TEST -->
       <dependency>
-        <groupId>org.drools</groupId>
-        <artifactId>kie-pmml-library-api</artifactId>
-        <classifier>tests</classifier>
-        <scope>test</scope>
+        <groupId>org.kie</groupId>
+        <artifactId>kie-test-util</artifactId>
         <version>${version.org.kie}</version>
+        <scope>test</scope>
       </dependency>
     </dependencies>
   </dependencyManagement>

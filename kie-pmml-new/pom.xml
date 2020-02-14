@@ -32,7 +32,7 @@
   <description>Support for PMML-Encoded Predictive Models</description>
 
   <modules>
-    <module>kie-pmml-library</module>
+    <module>kie-pmml-compiler</module>
     <module>kie-pmml-models</module>
     <module>kie-pmml-runtime</module>
     <module>kie-pmml-commons</module>
