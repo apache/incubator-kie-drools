@@ -13,23 +13,12 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.kie.pmml.runtime.core;
+package org.kie.pmml.evaluator.api.executor;
 
-import org.drools.core.command.impl.ContextImpl;
 import org.kie.api.pmml.PMMLRequestData;
-import org.kie.pmml.runtime.api.executor.PMMLContext;
+import org.kie.api.runtime.Context;
 
-public class PMMLContextImpl extends ContextImpl implements PMMLContext {
+public interface PMMLContext extends Context {
 
-    private static final String PMML_REQUEST_DATA = "PMML_REQUEST_DATA";
-
-    public PMMLContextImpl(PMMLRequestData pmmlRequestData) {
-        super();
-        set(PMML_REQUEST_DATA, pmmlRequestData);
-    }
-
-    @Override
-    public PMMLRequestData getRequestData() {
-        return (PMMLRequestData) get(PMML_REQUEST_DATA);
-    }
+    PMMLRequestData getRequestData();
 }

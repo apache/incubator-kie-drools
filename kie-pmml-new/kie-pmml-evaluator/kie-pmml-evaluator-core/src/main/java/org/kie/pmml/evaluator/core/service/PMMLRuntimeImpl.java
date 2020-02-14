@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.kie.pmml.runtime.core.service;
+package org.kie.pmml.evaluator.core.service;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -27,11 +27,11 @@ import org.kie.api.pmml.PMML4Result;
 import org.kie.pmml.commons.exceptions.KiePMMLException;
 import org.kie.pmml.commons.model.KiePMMLModel;
 import org.kie.pmml.commons.model.enums.PMML_MODEL;
-import org.kie.pmml.runtime.api.container.PMMLPackage;
-import org.kie.pmml.runtime.api.executor.PMMLContext;
-import org.kie.pmml.runtime.api.executor.PMMLRuntime;
-import org.kie.pmml.runtime.core.executor.PMMLModelExecutor;
-import org.kie.pmml.runtime.core.executor.PMMLModelExecutorFinderImpl;
+import org.kie.pmml.evaluator.api.container.PMMLPackage;
+import org.kie.pmml.evaluator.api.executor.PMMLContext;
+import org.kie.pmml.evaluator.api.executor.PMMLRuntime;
+import org.kie.pmml.evaluator.core.executor.PMMLModelExecutor;
+import org.kie.pmml.evaluator.core.executor.PMMLModelExecutorFinderImpl;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 

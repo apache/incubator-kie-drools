@@ -1,4 +1,4 @@
-package org.kie.pmml.runtime.core.executor;
+package org.kie.pmml.evaluator.core.executor;
 
 import java.util.List;
 

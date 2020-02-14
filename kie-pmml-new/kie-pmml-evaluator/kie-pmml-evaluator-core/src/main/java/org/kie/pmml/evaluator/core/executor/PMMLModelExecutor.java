@@ -13,13 +13,13 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.kie.pmml.runtime.core.executor;
+package org.kie.pmml.evaluator.core.executor;
 
 import org.kie.api.pmml.PMML4Result;
 import org.kie.pmml.commons.exceptions.KiePMMLException;
 import org.kie.pmml.commons.model.KiePMMLModel;
 import org.kie.pmml.commons.model.enums.PMML_MODEL;
-import org.kie.pmml.runtime.api.executor.PMMLContext;
+import org.kie.pmml.evaluator.api.executor.PMMLContext;
 
 public interface PMMLModelExecutor {
 

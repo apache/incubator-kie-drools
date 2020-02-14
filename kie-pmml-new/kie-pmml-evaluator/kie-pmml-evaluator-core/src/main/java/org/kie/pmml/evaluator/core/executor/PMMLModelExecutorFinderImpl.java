@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.kie.pmml.runtime.core.executor;
+package org.kie.pmml.evaluator.core.executor;
 
 import java.util.ArrayList;
 import java.util.Iterator;

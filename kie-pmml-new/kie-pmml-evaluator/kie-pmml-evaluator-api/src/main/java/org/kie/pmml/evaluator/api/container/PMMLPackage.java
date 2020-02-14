@@ -13,12 +13,22 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.kie.pmml.runtime.api.executor;
+package org.kie.pmml.evaluator.api.container;
 
-import org.kie.api.pmml.PMMLRequestData;
-import org.kie.api.runtime.Context;
+import java.util.Collection;
+import java.util.Map;
 
-public interface PMMLContext extends Context {
+import org.kie.api.internal.io.ResourceTypePackage;
+import org.kie.pmml.commons.model.KiePMMLModel;
 
-    PMMLRequestData getRequestData();
+/**
+ *
+ */
+public interface PMMLPackage extends ResourceTypePackage<KiePMMLModel> {
+
+    KiePMMLModel getModelByName(String name);
+
+    Map<String, KiePMMLModel> getAllModels();
+
+    void addAll(Collection<KiePMMLModel> toAdd);
 }

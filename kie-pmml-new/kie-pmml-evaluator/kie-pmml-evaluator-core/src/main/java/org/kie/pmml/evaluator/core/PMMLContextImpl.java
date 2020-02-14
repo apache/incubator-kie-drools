@@ -13,20 +13,23 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.kie.pmml.runtime.api.exceptions;
+package org.kie.pmml.evaluator.core;
 
-import org.kie.pmml.commons.exceptions.KiePMMLException;
+import org.drools.core.command.impl.ContextImpl;
+import org.kie.api.pmml.PMMLRequestData;
+import org.kie.pmml.evaluator.api.executor.PMMLContext;
 
-/**
- * Exception raised whenever there is an error on the <code>KiePMMLModel</code> as whole (e.g. un unexpected implementation received)
- */
-public class KiePMMLModelException extends KiePMMLException {
+public class PMMLContextImpl extends ContextImpl implements PMMLContext {
 
-    public KiePMMLModelException(String message, Throwable cause) {
-        super(message, cause);
+    private static final String PMML_REQUEST_DATA = "PMML_REQUEST_DATA";
+
+    public PMMLContextImpl(PMMLRequestData pmmlRequestData) {
+        super();
+        set(PMML_REQUEST_DATA, pmmlRequestData);
     }
 
-    public KiePMMLModelException(String message) {
-        super(message);
+    @Override
+    public PMMLRequestData getRequestData() {
+        return (PMMLRequestData) get(PMML_REQUEST_DATA);
     }
 }

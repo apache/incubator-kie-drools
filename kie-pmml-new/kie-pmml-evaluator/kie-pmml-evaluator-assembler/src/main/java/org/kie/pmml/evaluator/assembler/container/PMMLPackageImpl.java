@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.kie.pmml.assembler.container;
+package org.kie.pmml.evaluator.assembler.container;
 
 import java.util.Collection;
 import java.util.Collections;
@@ -23,7 +23,7 @@ import java.util.Map;
 
 import org.kie.api.io.ResourceType;
 import org.kie.pmml.commons.model.KiePMMLModel;
-import org.kie.pmml.runtime.api.container.PMMLPackage;
+import org.kie.pmml.evaluator.api.container.PMMLPackage;
 
 public class PMMLPackageImpl implements PMMLPackage {
 

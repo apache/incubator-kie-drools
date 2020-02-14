@@ -1,4 +1,4 @@
-package org.kie.pmml.assembler;
+package org.kie.pmml.evaluator.assembler;
 
 import org.drools.core.definitions.InternalKnowledgePackage;
 import org.drools.core.definitions.ResourceTypePackageRegistry;
@@ -6,8 +6,8 @@ import org.kie.api.KieBase;
 import org.kie.api.definition.KiePackage;
 import org.kie.api.internal.weaver.KieWeaverService;
 import org.kie.api.io.ResourceType;
-import org.kie.pmml.assembler.container.PMMLPackageImpl;
-import org.kie.pmml.runtime.api.container.PMMLPackage;
+import org.kie.pmml.evaluator.assembler.container.PMMLPackageImpl;
+import org.kie.pmml.evaluator.api.container.PMMLPackage;
 
 public class PMMLWeaverService implements KieWeaverService<PMMLPackage> {
 

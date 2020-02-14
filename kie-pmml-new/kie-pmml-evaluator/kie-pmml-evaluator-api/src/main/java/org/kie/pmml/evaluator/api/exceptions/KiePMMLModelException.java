@@ -13,22 +13,20 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.kie.pmml.runtime.api.container;
+package org.kie.pmml.evaluator.api.exceptions;
 
-import java.util.Collection;
-import java.util.Map;
-
-import org.kie.api.internal.io.ResourceTypePackage;
-import org.kie.pmml.commons.model.KiePMMLModel;
+import org.kie.pmml.commons.exceptions.KiePMMLException;
 
 /**
- *
+ * Exception raised whenever there is an error on the <code>KiePMMLModel</code> as whole (e.g. un unexpected implementation received)
  */
-public interface PMMLPackage extends ResourceTypePackage<KiePMMLModel> {
+public class KiePMMLModelException extends KiePMMLException {
 
-    KiePMMLModel getModelByName(String name);
+    public KiePMMLModelException(String message, Throwable cause) {
+        super(message, cause);
+    }
 
-    Map<String, KiePMMLModel> getAllModels();
-
-    void addAll(Collection<KiePMMLModel> toAdd);
+    public KiePMMLModelException(String message) {
+        super(message);
+    }
 }
