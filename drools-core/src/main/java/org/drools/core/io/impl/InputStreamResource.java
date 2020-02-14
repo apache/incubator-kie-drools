@@ -16,10 +16,7 @@
 
 package org.drools.core.io.impl;
 
-import org.drools.core.io.internal.InternalResource;
-import org.drools.core.util.IoUtils;
-import org.kie.api.io.Resource;
-
+import java.io.ByteArrayInputStream;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
@@ -27,6 +24,10 @@ import java.io.InputStreamReader;
 import java.io.Reader;
 import java.net.URL;
 import java.util.Collection;
+
+import org.drools.core.io.internal.InternalResource;
+import org.drools.core.util.IoUtils;
+import org.kie.api.io.Resource;
 
 public class InputStreamResource extends BaseResource implements InternalResource {
 
@@ -49,6 +50,9 @@ public class InputStreamResource extends BaseResource implements InternalResourc
     }
 
     public InputStream getInputStream() throws IOException {
+        if (bytes != null) {
+            return new ByteArrayInputStream( bytes );
+        }
         return stream;
     }
 
@@ -58,9 +62,9 @@ public class InputStreamResource extends BaseResource implements InternalResourc
 
     public Reader getReader() throws IOException {
         if (this.encoding != null) {
-            return new InputStreamReader( getInputStream(), this.encoding );
+            return new InputStreamReader( new ByteArrayInputStream( getBytes() ), this.encoding );
         } else {
-            return new InputStreamReader( getInputStream(), IoUtils.UTF8_CHARSET );
+            return new InputStreamReader( new ByteArrayInputStream( getBytes() ), IoUtils.UTF8_CHARSET );
         }
     }
 
@@ -70,14 +74,6 @@ public class InputStreamResource extends BaseResource implements InternalResourc
     
     public boolean hasURL() {
         return false;
-    }
-    
-    public long getLastModified() {
-        throw new IllegalStateException( "InputStream does have a modified date" );
-    }
-    
-    public long getLastRead() {
-        throw new IllegalStateException( "InputStream does have a modified date" );
     }
     
     public boolean isDirectory() {

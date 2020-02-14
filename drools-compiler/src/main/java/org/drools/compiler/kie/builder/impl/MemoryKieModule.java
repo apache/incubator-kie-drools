@@ -28,14 +28,15 @@ import java.nio.charset.StandardCharsets;
 import java.util.Collection;
 
 import org.drools.compiler.commons.jci.readers.ResourceReader;
+import org.drools.compiler.compiler.io.FileSystemItem;
 import org.drools.compiler.compiler.io.Folder;
-import org.drools.compiler.compiler.io.Resource;
 import org.drools.compiler.compiler.io.memory.MemoryFileSystem;
 import org.drools.compiler.kproject.models.KieModuleModelImpl;
 import org.drools.reflective.ResourceProvider;
 import org.kie.api.builder.ReleaseId;
 import org.kie.api.builder.model.KieBaseModel;
 import org.kie.api.builder.model.KieModuleModel;
+import org.kie.api.io.Resource;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -71,6 +72,11 @@ public class MemoryKieModule extends AbstractKieModule
     @Override
     public byte[] getBytes(String path) {
         return mfs.getBytes( path );
+    }
+
+    @Override
+    public Resource getResource( String fileName) {
+        return mfs.getResource( fileName );
     }
 
     @Override
@@ -272,9 +278,9 @@ public class MemoryKieModule extends AbstractKieModule
 
         private InputStream folderMembersToInputStream(Folder folder) {
             StringBuilder sb = new StringBuilder();
-            Collection<? extends Resource> members = folder.getMembers();
+            Collection<? extends FileSystemItem> members = folder.getMembers();
             if (members != null) {
-                for (Resource resource : members) {
+                for (FileSystemItem resource : members) {
                     // take just the name of the member, no the whole path
                     sb.append(resource.getPath().toRelativePortableString(folder.getPath()));
                     // append "\n" to be in sync with the JDK's ClassLoader (returns "\n" even on Windows)

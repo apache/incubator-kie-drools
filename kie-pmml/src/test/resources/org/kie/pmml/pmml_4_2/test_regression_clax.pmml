@@ -8,10 +8,10 @@
       <Value value="y"/>
     </DataField>
     <DataField dataType="string" name="fld4" optype="categorical">
-      <Value value="klassA"/>
-      <Value value="klassB"/>
-      <Value value="klassC"/>
-      <Value value="klassD"/>
+      <Value value="catA"/>
+      <Value value="catB"/>
+      <Value value="catC"/>
+      <Value value="catD"/>
     </DataField>
   </DataDictionary>
   <RegressionModel algorithmName="linearRegression" functionName="classification" modelName="LinReg" normalizationMethod="softmax" targetFieldName="fld4">
