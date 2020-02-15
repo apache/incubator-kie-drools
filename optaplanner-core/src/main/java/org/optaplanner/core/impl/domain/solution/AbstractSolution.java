@@ -20,7 +20,9 @@ import java.io.Serializable;
 import java.lang.reflect.Field;
 import java.lang.reflect.Method;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collection;
+import java.util.Comparator;
 import java.util.List;
 import java.util.Map;
 
@@ -74,7 +76,9 @@ public abstract class AbstractSolution<S extends Score> implements Serializable 
             // The field score should not be included
             return;
         }
-        for (Field field : instanceClass.getDeclaredFields()) {
+        Field[] fields = instanceClass.getDeclaredFields();
+        Arrays.sort(fields, Comparator.comparing(Field::getName));
+        for (Field field : fields) {
             field.setAccessible(true);
             if (isFieldAPlanningEntityPropertyOrPlanningEntityCollectionProperty(field, instanceClass)) {
                 continue;

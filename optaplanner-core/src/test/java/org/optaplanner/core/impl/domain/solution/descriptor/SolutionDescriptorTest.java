@@ -188,7 +188,7 @@ public class SolutionDescriptorTest {
         solution.setExtraObject(new TestdataValue("extra"));
         solution.setEntityList(Arrays.asList(new TestdataEntity("e1"), new TestdataEntity("e2")));
 
-        assertAllCodesOfCollection(solutionDescriptor.getAllFacts(solution), "e1", "e2", "v1", "v2", "extra");
+        assertAllCodesOfCollection(solutionDescriptor.getAllFacts(solution), "e1", "e2", "extra", "v1", "v2");
     }
 
     @Test
@@ -208,7 +208,7 @@ public class SolutionDescriptorTest {
         solution.setExtraObject(new TestdataValue("extra"));
         solution.setEntityList(Arrays.asList(new TestdataEntity("e1"), new TestdataEntity("e2")));
 
-        assertAllCodesOfCollection(solutionDescriptor.getAllFacts(solution), "e1", "e2", "v1", "v2", "extra");
+        assertAllCodesOfCollection(solutionDescriptor.getAllFacts(solution), "e1", "e2", "extra", "v1", "v2");
     }
 
     // ************************************************************************
