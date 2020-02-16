@@ -17,12 +17,14 @@
 package org.kie.kogito.jobs.service.scheduler;
 
 import java.time.Duration;
+import java.time.ZonedDateTime;
 import java.util.Optional;
 import java.util.UUID;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.CompletionStage;
 
 import io.reactivex.Flowable;
+import io.reactivex.disposables.Disposable;
 import io.reactivex.functions.Consumer;
 import org.eclipse.microprofile.reactive.streams.operators.PublisherBuilder;
 import org.eclipse.microprofile.reactive.streams.operators.ReactiveStreams;
@@ -43,8 +45,10 @@ import org.mockito.Mock;
 import org.reactivestreams.Publisher;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.kie.kogito.jobs.service.model.JobStatus.SCHEDULED;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.eq;
+import static org.mockito.Mockito.atLeastOnce;
 import static org.mockito.Mockito.lenient;
 import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.times;
@@ -79,17 +83,23 @@ public abstract class BaseTimerJobSchedulerTest {
 
     public JobExecutionResponse errorResponse;
 
+    public ZonedDateTime expirationTime;
+
     @BeforeEach
     public void setUp() {
+        tested().schedulerChunkInMinutes = 5;
+        //expiration on the current scheduler chunk
+        expirationTime = DateUtil.now().plusMinutes(tested().schedulerChunkInMinutes - 1);
 
         job = JobBuilder.builder()
                 .id(JOB_ID)
-                .expirationTime(DateUtil.now().plusMinutes(10))
+                .expirationTime(expirationTime)
                 .build();
 
-        scheduledJob = ScheduledJob.builder().job(job).status(JobStatus.SCHEDULED).build();
+        scheduledJob = ScheduledJob.builder().job(job).status(SCHEDULED).build();
         scheduled = CompletableFuture.completedFuture(scheduledJob);
         lenient().when(jobRepository.get(JOB_ID)).thenReturn(scheduled);
+        lenient().when(jobExecutor.execute(any())).thenReturn(scheduled);
 
         errorResponse = JobExecutionResponse.builder()
                 .jobId(JOB_ID)
@@ -105,23 +115,23 @@ public abstract class BaseTimerJobSchedulerTest {
         when(jobRepository.exists(JOB_ID)).thenReturn(CompletableFuture.completedFuture(false));
         Publisher<ScheduledJob> schedule = tested().schedule(job);
         verify(tested(), never()).doSchedule(delayCaptor.capture(), eq(job));
-        Flowable.fromPublisher(schedule).subscribe(dummyCallback(), dummyCallback());
+        subscribeOn(schedule);
         verify(tested()).doSchedule(delayCaptor.capture(), eq(job));
         verify(jobRepository).save(scheduleCaptor.capture());
         ScheduledJob scheduledJob = scheduleCaptor.getValue();
         assertThat(scheduledJob.getScheduledId()).isEqualTo(SCHEDULED_ID);
         assertThat(scheduledJob.getId()).isEqualTo(JOB_ID);
-        assertThat(scheduledJob.getStatus()).isEqualTo(JobStatus.SCHEDULED);
+        assertThat(scheduledJob.getStatus()).isEqualTo(SCHEDULED);
     }
 
     @Test
     void testScheduleExistingJob() {
-        testExistingJob(false, JobStatus.SCHEDULED);
+        testExistingJob(false, SCHEDULED);
     }
 
     @Test
     void testScheduleExistingJobExpired() {
-        testExistingJob(true, JobStatus.SCHEDULED);
+        testExistingJob(true, SCHEDULED);
     }
 
     private void testExistingJob(boolean expired, JobStatus jobStatus) {
@@ -142,15 +152,16 @@ public abstract class BaseTimerJobSchedulerTest {
         CompletableFuture<ScheduledJob> scheduledJobCompletableFuture = CompletableFuture.completedFuture(scheduledJob);
 
         lenient().when(jobRepository.delete(JOB_ID)).thenReturn(scheduledJobCompletableFuture);
+        lenient().when(jobRepository.delete(any(ScheduledJob.class))).thenReturn(scheduledJobCompletableFuture);
         lenient().when(jobRepository.get(JOB_ID)).thenReturn(scheduledJobCompletableFuture);
 
         Publisher<ScheduledJob> schedule = tested().schedule(job);
 
         verify(tested(), never()).doSchedule(delayCaptor.capture(), eq(job));
 
-        Flowable.fromPublisher(schedule).subscribe(dummyCallback(), dummyCallback());
+        subscribeOn(schedule);
 
-        verify(jobRepository, expired ? times(1) : never()).delete(any(ScheduledJob.class));
+        verify(jobRepository, expired || SCHEDULED.equals(jobStatus) ? atLeastOnce() : never()).delete(any(ScheduledJob.class));
         verify(tested(), expired ? never() : times(1)).doSchedule(delayCaptor.capture(), eq(job));
         verify(jobRepository, expired ? never() : times(1)).save(scheduleCaptor.capture());
 
@@ -175,7 +186,7 @@ public abstract class BaseTimerJobSchedulerTest {
     @Test
     void testScheduleExistingJobPeriodic() {
         job = createPeriodicJob();
-        testExistingJob(false, JobStatus.SCHEDULED);
+        testExistingJob(false, SCHEDULED);
     }
 
     @Test
@@ -183,7 +194,7 @@ public abstract class BaseTimerJobSchedulerTest {
         PublisherBuilder<ScheduledJob> executionSuccess = tested().handleJobExecutionSuccess(scheduledJob);
         verify(tested(), never()).cancel(scheduleCaptorFuture.capture());
 
-        Flowable.fromPublisher(executionSuccess.buildRs()).subscribe(dummyCallback(), dummyCallback());
+        subscribeOn(executionSuccess.buildRs());
         verify(tested()).cancel(scheduleCaptorFuture.capture());
     }
 
@@ -191,19 +202,19 @@ public abstract class BaseTimerJobSchedulerTest {
     void testHandleJobExecutionSuccessPeriodicFirstExecution() {
         job = createPeriodicJob();
 
-        scheduledJob = ScheduledJob.builder().job(job).status(JobStatus.SCHEDULED).build();
+        scheduledJob = ScheduledJob.builder().job(job).status(SCHEDULED).build();
 
         PublisherBuilder<ScheduledJob> executionSuccess = tested().handleJobExecutionSuccess(scheduledJob);
         verify(tested(), never()).cancel(scheduleCaptorFuture.capture());
 
-        Flowable.fromPublisher(executionSuccess.buildRs()).subscribe(dummyCallback(), dummyCallback());
+        subscribeOn(executionSuccess.buildRs());
         verify(tested()).doPeriodicSchedule(delayCaptor.capture(), scheduleCaptor.capture());
     }
 
     private Job createPeriodicJob() {
         return JobBuilder.builder()
                 .id(JOB_ID)
-                .expirationTime(DateUtil.now().plusMinutes(10))
+                .expirationTime(expirationTime)
                 .repeatLimit(10)
                 .repeatInterval(2l)
                 .build();
@@ -213,15 +224,15 @@ public abstract class BaseTimerJobSchedulerTest {
     void testHandleJobExecutionSuccessPeriodic() {
         job = createPeriodicJob();
 
-        scheduledJob = ScheduledJob.builder().job(job).status(JobStatus.SCHEDULED).build();
+        scheduledJob = ScheduledJob.builder().job(job).status(SCHEDULED).build();
 
         PublisherBuilder<ScheduledJob> executionSuccess = tested().handleJobExecutionSuccess(scheduledJob);
         verify(tested(), never()).cancel(scheduleCaptorFuture.capture());
 
-        Flowable.fromPublisher(executionSuccess.buildRs()).subscribe(dummyCallback(), dummyCallback());
+        subscribeOn(executionSuccess.buildRs());
         verify(jobRepository).save(scheduleCaptor.capture());
         ScheduledJob scheduleCaptorValue = scheduleCaptor.getValue();
-        assertThat(scheduleCaptorValue.getStatus()).isEqualTo(JobStatus.SCHEDULED);
+        assertThat(scheduleCaptorValue.getStatus()).isEqualTo(SCHEDULED);
         assertThat(scheduleCaptorValue.getExecutionCounter()).isEqualTo(1);
     }
 
@@ -230,7 +241,7 @@ public abstract class BaseTimerJobSchedulerTest {
         PublisherBuilder<ScheduledJob> scheduledJobPublisher = tested().handleJobExecutionError(errorResponse);
 
         verify(tested(), never()).doSchedule(delayCaptor.capture(), eq(scheduledJob));
-        Flowable.fromPublisher(scheduledJobPublisher.buildRs()).subscribe(dummyCallback(), dummyCallback());
+        subscribeOn(scheduledJobPublisher.buildRs());
         verify(tested()).doSchedule(delayCaptor.capture(), eq(scheduledJob));
 
         verify(jobRepository).save(scheduleCaptor.capture());
@@ -246,7 +257,7 @@ public abstract class BaseTimerJobSchedulerTest {
         PublisherBuilder<ScheduledJob> scheduledJobPublisher = tested().handleJobExecutionError(errorResponse);
 
         verify(tested(), never()).doSchedule(delayCaptor.capture(), eq(scheduledJob));
-        Flowable.fromPublisher(scheduledJobPublisher.buildRs()).subscribe(dummyCallback(), dummyCallback());
+        subscribeOn(scheduledJobPublisher.buildRs());
         verify(tested(), never()).doSchedule(delayCaptor.capture(), eq(scheduledJob));
     }
 
@@ -279,5 +290,54 @@ public abstract class BaseTimerJobSchedulerTest {
         tested().cancel(scheduled);
         verify(tested()).doCancel(scheduledJob);
         verify(jobRepository).delete(scheduledJob);
+    }
+
+    @Test
+    void testScheduleOutOfCurrentChunk(){
+        expirationTime = DateUtil.now().plusMinutes(tested().schedulerChunkInMinutes + 10);
+
+        job = JobBuilder.builder()
+                .id(JOB_ID)
+                .expirationTime(expirationTime)
+                .build();
+
+        when(jobRepository.exists(any())).thenReturn(CompletableFuture.completedFuture(Boolean.FALSE));
+
+        subscribeOn(tested().schedule(job));
+
+        verify(tested(), never()).doSchedule(any(Duration.class), eq(job));
+        verify(jobRepository).save(scheduleCaptor.capture());
+        ScheduledJob current = scheduleCaptor.getValue();
+        assertThat(current.getId()).isEqualTo(JOB_ID);
+        assertThat(current.getStatus()).isEqualTo(SCHEDULED);
+        assertThat(current.getScheduledId()).isNull();
+    }
+
+    @Test
+    void testScheduleInCurrentChunk(){
+        when(jobRepository.exists(any())).thenReturn(CompletableFuture.completedFuture(Boolean.FALSE));
+
+        subscribeOn(tested().schedule(job));
+
+        verify(tested()).doSchedule(any(Duration.class), eq(job));
+        verify(jobRepository).save(scheduleCaptor.capture());
+        ScheduledJob current = scheduleCaptor.getValue();
+        assertThat(current.getId()).isEqualTo(JOB_ID);
+        assertThat(current.getStatus()).isEqualTo(SCHEDULED);
+        assertThat(current.getScheduledId()).isNotNull();
+    }
+
+
+    @Test
+    void testScheduled(){
+        testExistingJob(false, SCHEDULED);
+        Optional<ZonedDateTime> scheduled = tested().scheduled(JOB_ID);
+        assertThat(scheduled).isNotNull();
+        assertThat(scheduled.isPresent()).isTrue();
+    }
+
+    @NotNull
+    private Disposable subscribeOn(Publisher<ScheduledJob> schedule) {
+        return Flowable.fromPublisher(schedule).subscribe(dummyCallback(), dummyCallback());
     }
 }

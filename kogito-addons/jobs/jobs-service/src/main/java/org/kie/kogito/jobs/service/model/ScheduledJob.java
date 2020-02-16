@@ -92,6 +92,7 @@ public class ScheduledJob extends Job {
                 .add("lastUpdate=" + lastUpdate)
                 .add("executionResponse=" + executionResponse)
                 .add("executionCounter=" + executionCounter)
+                .add("job=" + super.toString())
                 .toString();
     }
 

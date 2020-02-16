@@ -48,7 +48,7 @@ public class VertxJobScheduler extends BaseTimerJobScheduler {
     @Inject
     Vertx vertx;
 
-    public VertxJobScheduler() {
+    protected VertxJobScheduler() {
     }
 
     public VertxJobScheduler(Vertx vertx, JobExecutor jobExecutor, ReactiveJobRepository jobRepository,

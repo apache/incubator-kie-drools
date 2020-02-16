@@ -18,11 +18,16 @@ package org.kie.kogito.jobs.service.repository.infinispan.marshaller;
 
 import java.io.IOException;
 import java.time.ZonedDateTime;
+import java.util.Optional;
 
+import org.apache.commons.lang3.StringUtils;
 import org.kie.kogito.jobs.api.Job;
 import org.kie.kogito.jobs.api.JobBuilder;
 import org.kie.kogito.jobs.service.model.JobStatus;
 import org.kie.kogito.jobs.service.model.ScheduledJob;
+
+import static org.kie.kogito.jobs.service.utils.DateUtil.instantToZonedDateTime;
+import static org.kie.kogito.jobs.service.utils.DateUtil.zonedDateTimeToInstant;
 
 public class ScheduledJobMarshaller extends BaseMarshaller<ScheduledJob> {
 
@@ -51,7 +56,7 @@ public class ScheduledJobMarshaller extends BaseMarshaller<ScheduledJob> {
 
         writer.writeString("scheduledId", job.getScheduledId());
         writer.writeInt("retries", job.getRetries());
-        writer.writeString("status", job.getStatus().name());
+        writer.writeString("status", Optional.ofNullable(job.getStatus()).map(Enum::name).orElse(""));
         writer.writeInstant("lastUpdate", zonedDateTimeToInstant(job.getLastUpdate()));
         writer.writeInt("executionCounter", job.getExecutionCounter());
     }
@@ -83,7 +88,10 @@ public class ScheduledJobMarshaller extends BaseMarshaller<ScheduledJob> {
 
         String scheduledId = reader.readString("scheduledId");
         Integer retries = reader.readInt("retries");
-        JobStatus status = JobStatus.valueOf(reader.readString("status"));
+        JobStatus status = Optional.ofNullable(reader.readString("status"))
+                .filter(StringUtils::isNotBlank)
+                .map(JobStatus::valueOf)
+                .orElse(null);
         ZonedDateTime lastUpdate = instantToZonedDateTime(reader.readInstant("lastUpdate"));
         Integer executionCounter = reader.readInt("executionCounter");
         return ScheduledJob.builder()

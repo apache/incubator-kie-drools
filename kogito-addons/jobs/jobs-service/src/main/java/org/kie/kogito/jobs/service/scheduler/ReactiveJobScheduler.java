@@ -33,5 +33,4 @@ public interface ReactiveJobScheduler<T> extends JobScheduler<Publisher<T>, Comp
     PublisherBuilder<ScheduledJob> handleJobExecutionError(JobExecutionResponse errorResponse);
 
     PublisherBuilder<ScheduledJob> handleJobExecutionSuccess(JobExecutionResponse errorResponse);
-
 }

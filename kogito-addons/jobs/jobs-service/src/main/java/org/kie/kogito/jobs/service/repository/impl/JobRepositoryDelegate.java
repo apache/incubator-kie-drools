@@ -16,6 +16,7 @@
 
 package org.kie.kogito.jobs.service.repository.impl;
 
+import java.time.ZonedDateTime;
 import java.util.Optional;
 import java.util.concurrent.CompletionStage;
 
@@ -87,5 +88,10 @@ public class JobRepositoryDelegate implements ReactiveJobRepository {
     @Override
     public PublisherBuilder<ScheduledJob> findAll() {
         return delegate.findAll();
+    }
+
+    @Override
+    public PublisherBuilder<ScheduledJob> findByStatusBetweenDatesOrderByPriority(ZonedDateTime from, ZonedDateTime to, JobStatus... status) {
+        return delegate.findByStatusBetweenDatesOrderByPriority(from, to, status);
     }
 }

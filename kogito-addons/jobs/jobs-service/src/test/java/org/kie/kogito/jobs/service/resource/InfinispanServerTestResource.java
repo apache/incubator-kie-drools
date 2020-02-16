@@ -18,6 +18,7 @@ package org.kie.kogito.jobs.service.resource;
 
 import java.util.Collections;
 import java.util.Map;
+import java.util.Optional;
 
 import io.quarkus.test.common.QuarkusTestResourceLifecycleManager;
 import org.slf4j.Logger;
@@ -25,10 +26,11 @@ import org.slf4j.LoggerFactory;
 import org.testcontainers.containers.FixedHostPortGenericContainer;
 import org.testcontainers.containers.GenericContainer;
 import org.testcontainers.containers.output.Slf4jLogConsumer;
+import org.testcontainers.containers.wait.strategy.Wait;
 
 public class InfinispanServerTestResource implements QuarkusTestResourceLifecycleManager {
 
-    private static final String INFINISPAN_VERSION = System.getProperty("infinispan.version");
+    private static final String INFINISPAN_VERSION = Optional.ofNullable(System.getProperty("infinispan.version")).orElse("latest");
     private static final Logger LOGGER = LoggerFactory.getLogger(InfinispanServerTestResource.class);
     private GenericContainer infinispan;
 
@@ -40,6 +42,8 @@ public class InfinispanServerTestResource implements QuarkusTestResourceLifecycl
         LOGGER.info("Using Infinispan image version: {}", INFINISPAN_VERSION);
         infinispan = new FixedHostPortGenericContainer("quay.io/infinispan/server:" + INFINISPAN_VERSION)
                 .withFixedExposedPort(11232, 11222)
+                //wait for the server to be  fully started
+                .waitingFor(Wait.forLogMessage(".*\\bstarted\\b.*", 1))
                 .withEnv("USER", "admin")
                 .withEnv("PASS", "admin")
                 .withLogConsumer(new Slf4jLogConsumer(LOGGER));

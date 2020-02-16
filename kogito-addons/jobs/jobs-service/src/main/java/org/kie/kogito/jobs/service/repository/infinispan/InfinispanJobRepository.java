@@ -16,9 +16,8 @@
 
 package org.kie.kogito.jobs.service.repository.infinispan;
 
+import java.time.ZonedDateTime;
 import java.util.Arrays;
-import java.util.Collections;
-import java.util.Optional;
 import java.util.concurrent.CompletionStage;
 import java.util.stream.Collectors;
 
@@ -33,12 +32,14 @@ import org.infinispan.client.hotrod.RemoteCache;
 import org.infinispan.client.hotrod.RemoteCacheManager;
 import org.infinispan.client.hotrod.Search;
 import org.infinispan.query.dsl.QueryFactory;
+import org.infinispan.query.dsl.SortOrder;
 import org.kie.kogito.jobs.service.model.JobStatus;
 import org.kie.kogito.jobs.service.model.ScheduledJob;
 import org.kie.kogito.jobs.service.qualifier.Repository;
 import org.kie.kogito.jobs.service.repository.ReactiveJobRepository;
 import org.kie.kogito.jobs.service.repository.impl.BaseReactiveJobRepository;
 import org.kie.kogito.jobs.service.stream.JobStreams;
+import org.kie.kogito.jobs.service.utils.DateUtil;
 
 import static org.kie.kogito.jobs.service.repository.infinispan.InfinispanConfiguration.Caches.SCHEDULED_JOBS;
 
@@ -64,6 +65,7 @@ public class InfinispanJobRepository extends BaseReactiveJobRepository implement
 
     @Override
     public CompletionStage<ScheduledJob> doSave(ScheduledJob job) {
+
         return runAsync(() -> cache.put(job.getId(), job))
                 .thenCompose(j -> get(job.getId()));
     }
@@ -88,9 +90,9 @@ public class InfinispanJobRepository extends BaseReactiveJobRepository implement
     @Override
     public PublisherBuilder<ScheduledJob> findAll() {
         return ReactiveStreams
-                .fromIterable(Optional.ofNullable(cache)
-                                      .<Iterable<ScheduledJob>>map(RemoteCache::values)
-                                      .orElse(Collections.emptyList()));
+                .fromIterable(queryFactory.from(ScheduledJob.class)
+                                      .build()
+                                      .list());
     }
 
     @Override
@@ -100,7 +102,22 @@ public class InfinispanJobRepository extends BaseReactiveJobRepository implement
                                                     .in(Arrays.stream(status)
                                                                 .map(JobStatus::name)
                                                                 .collect(Collectors.toList()))
-                                                    .maxResults(50000)
+                                                    .build()
+                                                    .list());
+    }
+
+    public PublisherBuilder<ScheduledJob> findByStatusBetweenDatesOrderByPriority(ZonedDateTime from, ZonedDateTime to,
+                                                                                  JobStatus... status) {
+        return ReactiveStreams.fromIterable(queryFactory.from(ScheduledJob.class)
+                                                    .having("status")
+                                                    .in(Arrays.stream(status)
+                                                                .map(JobStatus::name)
+                                                                .collect(Collectors.toList()))
+                                                    .and()
+                                                    .having("expirationTime")
+                                                    .between(DateUtil.zonedDateTimeToInstant(from),
+                                                             DateUtil.zonedDateTimeToInstant(to))
+                                                    .orderBy("priority", SortOrder.DESC)
                                                     .build()
                                                     .list());
     }

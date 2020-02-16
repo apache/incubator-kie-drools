@@ -16,12 +16,7 @@
 
 package org.kie.kogito.jobs.service.repository.infinispan.marshaller;
 
-import java.time.Instant;
-import java.time.ZonedDateTime;
-import java.util.Optional;
-
 import org.infinispan.protostream.MessageMarshaller;
-import org.kie.kogito.jobs.service.utils.DateUtil;
 
 public abstract class BaseMarshaller<T> implements MessageMarshaller<T> {
 
@@ -29,15 +24,5 @@ public abstract class BaseMarshaller<T> implements MessageMarshaller<T> {
 
     public String getPackage() {
         return JOB_SERVICE_PKG;
-    }
-
-    protected Instant zonedDateTimeToInstant(ZonedDateTime dateTime) {
-        return Optional.ofNullable(dateTime).map(ZonedDateTime::toInstant).orElse(null);
-    }
-
-    protected ZonedDateTime instantToZonedDateTime(Instant instant){
-        return Optional.ofNullable(instant)
-                .map(i -> ZonedDateTime.ofInstant(i, DateUtil.DEFAULT_ZONE))
-                .orElse(null);
     }
 }

@@ -16,6 +16,7 @@
 
 package org.kie.kogito.jobs.service.repository;
 
+import java.time.ZonedDateTime;
 import java.util.concurrent.CompletionStage;
 
 import org.eclipse.microprofile.reactive.streams.operators.PublisherBuilder;
@@ -38,4 +39,5 @@ public interface ReactiveJobRepository {
 
     PublisherBuilder<ScheduledJob> findAll();
 
+    PublisherBuilder<ScheduledJob> findByStatusBetweenDatesOrderByPriority(ZonedDateTime from, ZonedDateTime to, JobStatus... status);
 }

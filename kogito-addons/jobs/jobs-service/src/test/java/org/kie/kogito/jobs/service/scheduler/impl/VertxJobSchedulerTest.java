@@ -73,7 +73,6 @@ class VertxJobSchedulerTest extends BaseTimerJobSchedulerTest {
         super.setUp();
         lenient().when(vertx.setTimer(anyLong(), any())).thenReturn(Long.valueOf(SCHEDULED_ID));
         lenient().when(vertx.setPeriodic(anyLong(), any())).thenReturn(Long.valueOf(SCHEDULED_ID));
-
     }
 
     @Override

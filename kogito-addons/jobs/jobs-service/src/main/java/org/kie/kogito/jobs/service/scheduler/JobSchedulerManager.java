@@ -16,16 +16,22 @@
 
 package org.kie.kogito.jobs.service.scheduler;
 
-import java.util.concurrent.CompletionStage;
+import java.util.Optional;
+import java.util.concurrent.TimeUnit;
 
 import javax.enterprise.event.Observes;
 import javax.inject.Inject;
 import javax.inject.Singleton;
 
 import io.quarkus.runtime.StartupEvent;
+import io.vertx.axle.core.Vertx;
+import org.eclipse.microprofile.config.inject.ConfigProperty;
+import org.eclipse.microprofile.reactive.streams.operators.PublisherBuilder;
 import org.kie.kogito.jobs.service.model.JobStatus;
+import org.kie.kogito.jobs.service.model.ScheduledJob;
 import org.kie.kogito.jobs.service.repository.ReactiveJobRepository;
 import org.kie.kogito.jobs.service.scheduler.impl.VertxJobScheduler;
+import org.kie.kogito.jobs.service.utils.DateUtil;
 import org.kie.kogito.jobs.service.utils.ErrorHandling;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -35,22 +41,65 @@ public class JobSchedulerManager {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(JobSchedulerManager.class);
 
+    /**
+     * The current chunk size  in minutes the scheduler handles, it is used to keep a limit number of jobs scheduled
+     * in the in-memory scheduler.
+     */
+    @ConfigProperty(name = "kogito.jobs-service.schedulerChunkInMinutes")
+    long schedulerChunkInMinutes;
+
+    /**
+     * The interval the job loading method runs to fetch the persisted jobs from the repository.
+     */
+    @ConfigProperty(name = "kogito.jobs-service.loadJobIntervalInMinutes")
+    long loadJobIntervalInMinutes;
+
     @Inject
     VertxJobScheduler scheduler;
 
     @Inject
     ReactiveJobRepository repository;
 
-    CompletionStage<Void> loadScheduledJobs(@Observes StartupEvent startupEvent) {
-        LOGGER.info("Loading scheduled jobs");
-        return repository.findByStatus(JobStatus.SCHEDULED, JobStatus.RETRY)
-                //is is necessary to skip error on the publisher to continue processing, otherwise the subscribe
-                // terminated
+    @Inject
+    Vertx vertx;
+
+    void onStartup(@Observes StartupEvent startupEvent) {
+        if (loadJobIntervalInMinutes > schedulerChunkInMinutes) {
+            LOGGER.warn("The loadJobIntervalInMinutes ({}) cannot be greater than schedulerChunkInMinutes ({}), " +
+                                "setting value {} for both",
+                        loadJobIntervalInMinutes,
+                        schedulerChunkInMinutes,
+                        schedulerChunkInMinutes);
+            loadJobIntervalInMinutes = schedulerChunkInMinutes;
+        }
+
+        //first execution
+        vertx.runOnContext(v -> loadScheduledJobs());
+        //periodic execution
+        vertx.setPeriodic(TimeUnit.MINUTES.toMillis(loadJobIntervalInMinutes), id -> loadScheduledJobs());
+    }
+
+    //Runs periodically loading the jobs from the repository in chunks
+    void loadScheduledJobs() {
+        loadJobsInCurrentChunk()
+                .filter(j -> !scheduler.scheduled(j.getId()).isPresent())//not consider already scheduled jobs
                 .flatMapRsPublisher(t -> ErrorHandling.skipErrorPublisher(scheduler::schedule, t))
-                .onError(ex -> LOGGER.error("Error loading jobs", ex))
-                .forEach(a -> LOGGER.info("Loaded and scheduled job {}", a))
+                .forEach(a -> LOGGER.debug("Loaded and scheduled job {}", a))
                 .run()
-                .thenAccept(c -> LOGGER.info("Loading scheduled jobs completed !"));
+                .whenComplete((v, t) -> Optional.ofNullable(t)
+                        .map(ex -> {
+                            LOGGER.error("Error Loading scheduled jobs!", ex);
+                            return null;
+                        })
+                        .orElseGet(() -> {
+                            LOGGER.info("Loading scheduled jobs completed !");
+                            return null;
+                        })
+                );
+    }
+
+    private PublisherBuilder<ScheduledJob> loadJobsInCurrentChunk() {
+        return repository.findByStatusBetweenDatesOrderByPriority(DateUtil.now(), DateUtil.now().plusMinutes(schedulerChunkInMinutes),
+                                                                  JobStatus.SCHEDULED, JobStatus.RETRY);
     }
 }
-
