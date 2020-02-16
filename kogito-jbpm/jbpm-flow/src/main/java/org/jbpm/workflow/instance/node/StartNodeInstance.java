@@ -61,7 +61,7 @@ public class StartNodeInstance extends NodeInstanceImpl {
     			event = transformer.transformEvent(event);
     		}
             
-            variableScopeInstance.setVariable(variableName, event);
+            variableScopeInstance.setVariable(this, variableName, event);
         }
         triggerCompleted();
     }

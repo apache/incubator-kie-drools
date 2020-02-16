@@ -20,13 +20,16 @@ import static com.github.javaparser.StaticJavaParser.parse;
 import static com.github.javaparser.StaticJavaParser.parseClassOrInterfaceType;
 
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.NoSuchElementException;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 import org.drools.core.util.StringUtils;
 import org.kie.api.definition.process.WorkflowProcess;
 import org.kie.internal.kogito.codegen.Generated;
+import org.kie.internal.kogito.codegen.VariableInfo;
 
 import com.github.javaparser.ast.CompilationUnit;
 import com.github.javaparser.ast.Modifier;
@@ -169,12 +172,14 @@ public class ModelMetaData {
             staticFromMap.addStatement(new AssignExpr(idField, new NameExpr("id"), AssignExpr.Operator.ASSIGN));
         }
 
-        for (Map.Entry<String, String> variable : variableScope.getTypes().entrySet()) {
-
-            String vname = variable.getKey();
-            String vtype = variable.getValue();
+        for (String vname : variableScope.getTypes().keySet()) {
+            
+            String vtype = variableScope.getType(vname);
             FieldDeclaration fd = declareField(vname, vtype);
             modelClass.addMember(fd);
+            
+            List<String> tags = variableScope.getTags(vname);
+            fd.addAnnotation(new NormalAnnotationExpr(new Name(VariableInfo.class.getCanonicalName()), NodeList.nodeList(new MemberValuePair("tags", new StringLiteralExpr(tags.stream().collect(Collectors.joining(",")))))));
 
             fd.createGetter();
             fd.createSetter();

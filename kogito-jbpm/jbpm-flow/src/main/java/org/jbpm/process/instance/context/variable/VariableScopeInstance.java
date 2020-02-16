@@ -28,6 +28,7 @@ import org.jbpm.process.instance.InternalProcessRuntime;
 import org.jbpm.process.instance.context.AbstractContextInstance;
 import org.jbpm.workflow.core.Node;
 import org.jbpm.workflow.instance.node.CompositeContextNodeInstance;
+import org.kie.api.runtime.process.NodeInstance;
 import org.kie.kogito.process.VariableViolationException;
 
 /**
@@ -77,6 +78,10 @@ public class VariableScopeInstance extends AbstractContextInstance {
     }
 
     public void setVariable(String name, Object value) {
+        setVariable(null, name, value);
+    }
+    
+    public void setVariable(NodeInstance nodeInstance, String name, Object value) {
         if (name == null) {
             throw new IllegalArgumentException(
                 "The name of a variable may not be null!");
@@ -98,12 +103,14 @@ public class VariableScopeInstance extends AbstractContextInstance {
 			(variableIdPrefix == null ? "" : variableIdPrefix + ":") + name,
 			(variableInstanceIdPrefix == null? "" : variableInstanceIdPrefix + ":") + name,
 			oldValue, value, getVariableScope().tags(name), getProcessInstance(),
+			nodeInstance,
 			getProcessInstance().getKnowledgeRuntime());
         internalSetVariable(name, value);
         processEventSupport.fireAfterVariableChanged(
 			(variableIdPrefix == null ? "" : variableIdPrefix + ":") + name,
 			(variableInstanceIdPrefix == null? "" : variableInstanceIdPrefix + ":") + name,
     		oldValue, value, getVariableScope().tags(name), getProcessInstance(),
+    		nodeInstance,
 			getProcessInstance().getKnowledgeRuntime());
     }
     

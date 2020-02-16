@@ -292,7 +292,7 @@ public class WorkItemNodeInstance extends StateBasedNodeInstance implements Even
 
                             variableScopeInstance.getVariableScope().validateVariable(getProcessInstance().getProcessName(), association.getTarget(), parameterValue);
 
-                            variableScopeInstance.setVariable(association.getTarget(), parameterValue);
+                            variableScopeInstance.setVariable(this, association.getTarget(), parameterValue);
                         } else {
                             logger.warn("Could not find variable scope for variable {}", association.getTarget());
                             logger.warn("when trying to complete Work Item {}", workItem.getName());
@@ -322,7 +322,7 @@ public class WorkItemNodeInstance extends StateBasedNodeInstance implements Even
                         } else {
                             variableScopeInstance.getVariableScope().validateVariable(getProcessInstance().getProcessName(), association.getTarget(), value);
                         }
-                        variableScopeInstance.setVariable(association.getTarget(), value);
+                        variableScopeInstance.setVariable(this, association.getTarget(), value);
                     } else {
                         logger.warn("Could not find variable scope for variable {}", association.getTarget());
                         logger.warn("when trying to complete Work Item {}", workItem.getName());

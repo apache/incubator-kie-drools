@@ -70,7 +70,7 @@ public class EventNodeInstance extends ExtendedNodeInstanceImpl implements Event
         		if (transformer != null) {
         			event = transformer.transformEvent(event);
         		}
-        		variableScopeInstance.setVariable(variableName, event);
+        		variableScopeInstance.setVariable(this, variableName, event);
         	}
         	triggerCompleted();
         }

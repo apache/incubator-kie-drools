@@ -39,6 +39,7 @@ import io.smallrye.reactive.messaging.annotations.Emitter;
 public class ReactiveMessagingEventPublisher implements EventPublisher {
     private static final String PI_TOPIC_NAME = "kogito-processinstances-events";
     private static final String UI_TOPIC_NAME = "kogito-usertaskinstances-events";
+    private static final String VI_TOPIC_NAME = "kogito-variables-events";
     
     private static final Logger logger = LoggerFactory.getLogger(ReactiveMessagingEventPublisher.class);
     private ObjectMapper json = new ObjectMapper();
@@ -52,12 +53,20 @@ public class ReactiveMessagingEventPublisher implements EventPublisher {
     Emitter<String> userTasksEventsEmitter;
     
     @Inject
+    @Channel(VI_TOPIC_NAME)
+    Emitter<String> variablesEventsEmitter;
+    
+    @Inject
     @ConfigProperty(name = "kogito.events.processinstances.enabled")
     Optional<Boolean> processInstancesEvents;
     
     @Inject
     @ConfigProperty(name = "kogito.events.usertasks.enabled")
     Optional<Boolean> userTasksEvents;
+    
+    @Inject
+    @ConfigProperty(name = "kogito.events.variables.enabled")
+    Optional<Boolean> variablesEvents;
     
     @PostConstruct
     public void configure() {
@@ -72,6 +81,9 @@ public class ReactiveMessagingEventPublisher implements EventPublisher {
         } else if (event.getType().equals("UserTaskInstanceEvent") && userTasksEvents.orElse(true)) {
             
             publishToTopic(event, userTasksEventsEmitter, UI_TOPIC_NAME);
+        } else if (event.getType().equals("VariableInstanceEvent") && variablesEvents.orElse(true)) {
+            
+            publishToTopic(event, variablesEventsEmitter, VI_TOPIC_NAME);
         } else {
             logger.warn("Unknown type of event '{}', ignoring", event.getType());
         }

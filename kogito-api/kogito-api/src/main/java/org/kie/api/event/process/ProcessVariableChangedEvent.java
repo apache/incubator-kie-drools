@@ -18,6 +18,8 @@ package org.kie.api.event.process;
 
 import java.util.List;
 
+import org.kie.api.runtime.process.NodeInstance;
+
 /**
  * An event when a variable inside a process instance has been changed.
  */
@@ -69,4 +71,11 @@ public interface ProcessVariableChangedEvent
      * @return returns true if given tag is associated with variable otherwise false
      */
     boolean hasTag(String tag);
+    
+    /**
+     * Returns node instance associated with this variable change, if available
+     * @return node instance that changed the variable or null of not available
+     */
+    NodeInstance getNodeInstance();
+    
 }

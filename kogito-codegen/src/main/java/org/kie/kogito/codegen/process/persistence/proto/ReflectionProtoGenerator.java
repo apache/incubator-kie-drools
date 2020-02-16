@@ -17,6 +17,7 @@ import java.util.HashSet;
 import java.util.Set;
 
 import org.kie.internal.kogito.codegen.Generated;
+import org.kie.internal.kogito.codegen.VariableInfo;
 
 public class ReflectionProtoGenerator implements ProtoGenerator<Class<?>> {
 
@@ -87,7 +88,7 @@ public class ReflectionProtoGenerator implements ProtoGenerator<Class<?>> {
         ProtoMessage message = new ProtoMessage(name, packageName == null ? clazz.getPackage().getName() : packageName);
 
         for (PropertyDescriptor pd : beanInfo.getPropertyDescriptors()) {
-            
+            String completeFieldComment = fieldComment;
             if (pd.getName().equals("class")) {
                 continue;
             }
@@ -95,6 +96,11 @@ public class ReflectionProtoGenerator implements ProtoGenerator<Class<?>> {
             int mod = clazz.getDeclaredField(pd.getName()).getModifiers();
             if (Modifier.isStatic(mod) || Modifier.isTransient(mod)) {
                 continue;
+            }
+            
+            VariableInfo varInfo = clazz.getDeclaredField(pd.getName()).getAnnotation(VariableInfo.class);
+            if (varInfo != null) {
+                completeFieldComment = fieldComment + "\n @VariableInfo(tags=\"" + varInfo.tags() + "\")";
             }
             
             String fieldTypeString = pd.getPropertyType().getCanonicalName();
@@ -120,7 +126,7 @@ public class ReflectionProtoGenerator implements ProtoGenerator<Class<?>> {
                 protoType = another.getName();
             }
 
-            message.addField(applicabilityByType(fieldTypeString), protoType, pd.getName()).setComment(fieldComment);
+            message.addField(applicabilityByType(fieldTypeString), protoType, pd.getName()).setComment(completeFieldComment);
         }
         message.setComment(messageComment);
         proto.addMessage(message);

@@ -145,7 +145,7 @@ public class ForEachNodeInstance extends CompositeContextNodeInstance {
                     NodeInstance nodeInstance = ((NodeInstanceContainer) getNodeInstanceContainer()).getNodeInstance(getForEachSplitNode().getTo().getTo());
                     VariableScopeInstance variableScopeInstance = (VariableScopeInstance)
                             nodeInstance.resolveContextInstance(VariableScope.VARIABLE_SCOPE, variableName);
-                    variableScopeInstance.setVariable(variableName, o);
+                    variableScopeInstance.setVariable(this, variableName, o);
                     nodeInstances.add(nodeInstance);
                 }
                 for (NodeInstance nodeInstance : nodeInstances) {
@@ -189,7 +189,7 @@ public class ForEachNodeInstance extends CompositeContextNodeInstance {
                 }
                 outputCollection.add(outputVariable);
 
-                subprocessVariableScopeInstance.setVariable(TEMP_OUTPUT_VAR, outputCollection);
+                subprocessVariableScopeInstance.setVariable(this, TEMP_OUTPUT_VAR, outputCollection);
                 // add temp collection under actual mi output name for completion condition evaluation
                 tempVariables.put(getForEachNode().getOutputVariableName(), outputVariable);
                 String outputCollectionName = getForEachNode().getOutputCollectionExpression();
@@ -206,7 +206,7 @@ public class ForEachNodeInstance extends CompositeContextNodeInstance {
                     } else {
                         outputVariable = (Collection<Object>) subprocessVariableScopeInstance.getVariable(TEMP_OUTPUT_VAR);
                     }
-                    variableScopeInstance.setVariable(outputCollection, outputVariable);
+                    variableScopeInstance.setVariable(this, outputCollection, outputVariable);
                 }
                 ((NodeInstanceContainer) getNodeInstanceContainer()).removeNodeInstance(this);
                 if (getForEachNode().isWaitForCompletion()) {

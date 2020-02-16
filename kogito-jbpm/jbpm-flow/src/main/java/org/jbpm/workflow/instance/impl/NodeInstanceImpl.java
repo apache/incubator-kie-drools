@@ -514,7 +514,7 @@ public abstract class NodeInstanceImpl implements org.jbpm.workflow.instance.Nod
     		variableScope = (VariableScopeInstance) ((ProcessInstance) 
     			getProcessInstance()).getContextInstance(VariableScope.VARIABLE_SCOPE);
     	}
-    	variableScope.setVariable(variableName, value);
+    	variableScope.setVariable(this, variableName, value);
     }
 
     public String getUniqueId() {

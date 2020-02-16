@@ -21,6 +21,7 @@ import java.util.List;
 
 import org.kie.api.event.process.ProcessVariableChangedEvent;
 import org.kie.api.runtime.KieRuntime;
+import org.kie.api.runtime.process.NodeInstance;
 import org.kie.api.runtime.process.ProcessInstance;
 
 public class ProcessVariableChangedEventImpl extends ProcessEvent implements ProcessVariableChangedEvent {
@@ -32,11 +33,14 @@ public class ProcessVariableChangedEventImpl extends ProcessEvent implements Pro
     private Object oldValue;
     private Object newValue;
     private List<String> tags;
+    
+    private NodeInstance nodeInstance;
 
     public ProcessVariableChangedEventImpl(final String id, final String instanceId,
             final Object oldValue, final Object newValue, List<String> tags,
-            final ProcessInstance processInstance, KieRuntime kruntime ) {
+            final ProcessInstance processInstance, NodeInstance nodeInstance, KieRuntime kruntime ) {
         super( processInstance, kruntime );
+        this.nodeInstance = nodeInstance;
         this.id = id;
         this.instanceId = instanceId;
         this.oldValue = oldValue;
@@ -68,8 +72,14 @@ public class ProcessVariableChangedEventImpl extends ProcessEvent implements Pro
         return tags;
     }
 
+    @Override
+    public NodeInstance getNodeInstance() {        
+        return this.nodeInstance;
+    }
+    
     public String toString() {
         return "==>[ProcessVariableChanged(id=" + id + "; instanceId=" + instanceId + "; oldValue=" + oldValue + "; newValue=" + newValue
             + "; processName=" + getProcessInstance().getProcessName() + "; processId=" + getProcessInstance().getProcessId() + ")]";
     }
+
 }

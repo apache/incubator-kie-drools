@@ -320,7 +320,7 @@ public class SubProcessNodeInstance extends StateBasedNodeInstance implements Ev
                         resolveContextInstance(VariableScope.VARIABLE_SCOPE, mapping.getTarget());
                         if (variableScopeInstance != null && parameterValue != null) {
 
-                            variableScopeInstance.setVariable(mapping.getTarget(), parameterValue);
+                            variableScopeInstance.setVariable(this, mapping.getTarget(), parameterValue);
                         } else {
                             logger.warn("Could not find variable scope for variable {}", mapping.getTarget());
                             logger.warn("Continuing without setting variable.");
@@ -338,7 +338,7 @@ public class SubProcessNodeInstance extends StateBasedNodeInstance implements Ev
 			            		// do nothing
 			            	}
 			        	}
-			            variableScopeInstance.setVariable(mapping.getTarget(), value);
+			            variableScopeInstance.setVariable(this, mapping.getTarget(), value);
 			        } else {
 			            logger.error("Could not find variable scope for variable {}", mapping.getTarget());
 			            logger.error("when trying to complete SubProcess node {}", getSubProcessNode().getName());

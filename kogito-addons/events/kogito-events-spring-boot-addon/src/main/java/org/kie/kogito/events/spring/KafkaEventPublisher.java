@@ -35,6 +35,7 @@ public class KafkaEventPublisher implements EventPublisher {
     
     private static final String PI_TOPIC_NAME = "kogito-processinstances-events";
     private static final String UI_TOPIC_NAME = "kogito-usertaskinstances-events";
+    private static final String VI_TOPIC_NAME = "kogito-variables-events";
     
     private static final Logger logger = LoggerFactory.getLogger(KafkaEventPublisher.class);
 
@@ -48,6 +49,9 @@ public class KafkaEventPublisher implements EventPublisher {
     
     @Value("${kogito.events.usertasks.enabled:true}")
     private boolean userTasksEvents;
+    
+    @Value("${kogito.events.variables.enabled:true}")
+    private boolean variablesEvents;
         
     public KafkaEventPublisher() {
         json.setDateFormat(new StdDateFormat().withColonInTimeZone(true).withTimeZone(TimeZone.getDefault()));
@@ -61,6 +65,9 @@ public class KafkaEventPublisher implements EventPublisher {
         } else if (event.getType().equals("UserTaskInstanceEvent") && userTasksEvents) {
             
             publishToTopic(event, eventsEmitter, UI_TOPIC_NAME);
+        } else if (event.getType().equals("VariableInstanceEvent") && variablesEvents) {
+            
+            publishToTopic(event, eventsEmitter, VI_TOPIC_NAME);
         } else {
             logger.warn("Unknown type of event '{}', ignoring", event.getType());
         }       

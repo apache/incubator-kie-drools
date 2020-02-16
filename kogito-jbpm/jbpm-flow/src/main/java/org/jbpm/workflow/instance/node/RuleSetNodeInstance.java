@@ -295,7 +295,7 @@ public class RuleSetNodeInstance extends StateBasedNodeInstance implements Event
                         VariableScopeInstance variableScopeInstance = (VariableScopeInstance)
                                 resolveContextInstance(VariableScope.VARIABLE_SCOPE, association.getTarget());
                         if (variableScopeInstance != null && parameterValue != null) {
-                            variableScopeInstance.setVariable(association.getTarget(), parameterValue);
+                            variableScopeInstance.setVariable(this, association.getTarget(), parameterValue);
                         } else {
                             logger.warn("Could not find variable scope for variable {}", association.getTarget());
                             logger.warn("Continuing without setting variable.");
@@ -319,7 +319,7 @@ public class RuleSetNodeInstance extends StateBasedNodeInstance implements Event
                         if (!dataType.getStringType().endsWith("java.lang.Object") && value instanceof String) {
                             value = dataType.readValue((String) value);
                         }
-                        variableScopeInstance.setVariable(association.getTarget(), value);
+                        variableScopeInstance.setVariable(this, association.getTarget(), value);
                     } else {
                         logger.warn("Could not find variable scope for variable {}", association.getTarget());
                     }

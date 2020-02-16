@@ -21,6 +21,7 @@ import java.util.Collections;
 
 import org.junit.jupiter.api.Test;
 import org.kie.kogito.codegen.data.Person;
+import org.kie.kogito.codegen.data.PersonVarInfo;
 import org.kie.kogito.codegen.data.PersonWithAddress;
 import org.kie.kogito.codegen.data.PersonWithAddresses;
 import org.kie.kogito.codegen.data.PersonWithList;
@@ -303,5 +304,44 @@ public class ReflectionProtoGeneratorTest {
         assertThat(field.getType()).isEqualTo("string");
         assertThat(field.getApplicability()).isEqualTo("optional");
         assertThat(field.getComment()).isEqualTo("@Field(store = Store.YES)");
+    }
+    
+    @Test
+    public void testPersonWithVariableInfoAsModelProtoFile() {
+        
+        Proto proto = generator.generate("@Indexed", "@Field(store = Store.YES)", "org.kie.kogito.test.persons", PersonVarInfo.class);
+        assertThat(proto).isNotNull();
+        
+        assertThat(proto.getPackageName()).isEqualTo("org.kie.kogito.test.persons");
+        assertThat(proto.getSyntax()).isEqualTo("proto2");
+        assertThat(proto.getMessages()).hasSize(1);
+        
+        ProtoMessage person = proto.getMessages().get(0);
+        assertThat(person).isNotNull();
+        assertThat(person.getName()).isEqualTo("PersonVarInfo");
+        assertThat(person.getComment()).isEqualTo("@Indexed");
+        assertThat(person.getJavaPackageOption()).isEqualTo("org.kie.kogito.test.persons");        
+        assertThat(person.getFields()).hasSize(3);
+        
+        ProtoField field = person.getFields().get(0);
+        assertThat(field).isNotNull();
+        assertThat(field.getName()).isEqualTo("adult");
+        assertThat(field.getType()).isEqualTo("bool");
+        assertThat(field.getApplicability()).isEqualTo("optional");
+        assertThat(field.getComment()).isEqualTo("@Field(store = Store.YES)");
+        
+        field = person.getFields().get(1);
+        assertThat(field).isNotNull();
+        assertThat(field.getName()).isEqualTo("age");
+        assertThat(field.getType()).isEqualTo("int32");
+        assertThat(field.getApplicability()).isEqualTo("optional");
+        assertThat(field.getComment()).isEqualTo("@Field(store = Store.YES)");
+        
+        field = person.getFields().get(2);
+        assertThat(field).isNotNull();
+        assertThat(field.getName()).isEqualTo("name");
+        assertThat(field.getType()).isEqualTo("string");
+        assertThat(field.getApplicability()).isEqualTo("optional");
+        assertThat(field.getComment()).isEqualTo("@Field(store = Store.YES)\n @VariableInfo(tags=\"test\")");
     }
 }
