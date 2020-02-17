@@ -20,16 +20,15 @@ import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
-import javax.xml.bind.JAXBException;
-
 import org.dmg.pmml.DataDictionary;
 import org.dmg.pmml.PMML;
+import org.kie.pmml.commons.exceptions.ExternalException;
 import org.kie.pmml.commons.exceptions.KiePMMLException;
+import org.kie.pmml.commons.exceptions.KiePMMLInternalException;
 import org.kie.pmml.commons.model.KiePMMLModel;
 import org.kie.pmml.compiler.utils.KiePMMLUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.xml.sax.SAXException;
 
 import static org.kie.pmml.commons.interfaces.FunctionalWrapperFactory.throwingFunctionWrapper;
 import static org.kie.pmml.compiler.commons.implementations.KiePMMLModelRetriever.getFromDataDictionaryAndModel;
@@ -41,14 +40,19 @@ public class PMMLCompilerImpl implements PMMLCompiler {
 
     private static final Logger logger = LoggerFactory.getLogger(PMMLCompilerImpl.class.getName());
 
-    public PMMLCompilerImpl() {
-    }
-
     @Override
-    public List<KiePMMLModel> getResults(InputStream inputStream, Object kbuilder) throws JAXBException, SAXException, KiePMMLException {
+    public List<KiePMMLModel> getModels(InputStream inputStream, Object kbuilder) throws KiePMMLException, ExternalException {
         logger.info("getResults {}", inputStream);
-        PMML commonPMMLModel = KiePMMLUtil.load(inputStream);
-        return getResults(commonPMMLModel, kbuilder);
+        try {
+            PMML commonPMMLModel = KiePMMLUtil.load(inputStream);
+            return getResults(commonPMMLModel, kbuilder);
+        } catch (KiePMMLInternalException e) {
+            throw new KiePMMLException("KiePMMLInternalException", e);
+        } catch (KiePMMLException e) {
+            throw e;
+        } catch (Exception e) {
+            throw new ExternalException("ExternalException", e);
+        }
     }
 
     /**
@@ -56,6 +60,7 @@ public class PMMLCompilerImpl implements PMMLCompiler {
      * @param pmml
      * @param kbuilder Using <code>Object</code> to avoid coupling with drools
      * @return
+     * @throws KiePMMLException if any <code>KiePMMLInternalException</code> has been thrown during execution
      */
     private List<KiePMMLModel> getResults(PMML pmml, Object kbuilder) throws KiePMMLException {
         logger.info("getResults {}", pmml);

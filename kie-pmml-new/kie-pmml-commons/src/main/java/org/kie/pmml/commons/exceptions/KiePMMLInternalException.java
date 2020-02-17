@@ -15,15 +15,16 @@
  */
 package org.kie.pmml.commons.exceptions;
 
-public class KieDataFieldException extends KiePMMLInternalException {
+/**
+ * Internal unchecked Exceptions to be wrapped to <b>checked</b> one only at <i>customer</i> API boundaries
+ */
+public class KiePMMLInternalException extends RuntimeException {
 
-    private static final long serialVersionUID = -2024081845051149460L;
-
-    public KieDataFieldException(String message, Throwable cause) {
+    public KiePMMLInternalException(String message, Throwable cause) {
         super(message, cause);
     }
 
-    public KieDataFieldException(String message) {
+    public KiePMMLInternalException(String message) {
         super(message);
     }
 }

@@ -18,6 +18,7 @@ package org.kie.pmml.compiler.api.provider;
 import org.dmg.pmml.DataDictionary;
 import org.dmg.pmml.Model;
 import org.kie.pmml.commons.exceptions.KiePMMLException;
+import org.kie.pmml.commons.exceptions.KiePMMLInternalException;
 import org.kie.pmml.commons.model.KiePMMLModel;
 import org.kie.pmml.commons.model.enums.PMML_MODEL;
 
@@ -33,7 +34,7 @@ public interface ModelImplementationProvider<T extends Model, E extends KiePMMLM
      * @param model
      * @param kBuilder Using <code>Object</code> to avoid coupling with drools
      * @return
-     * @throws KiePMMLException
+     * @throws KiePMMLInternalException
      */
     E getKiePMMLModel(DataDictionary dataDictionary, T model, Object kBuilder) throws KiePMMLException;
 }

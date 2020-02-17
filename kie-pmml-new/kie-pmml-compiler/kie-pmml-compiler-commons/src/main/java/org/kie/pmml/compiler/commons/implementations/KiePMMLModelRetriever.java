@@ -20,6 +20,7 @@ import java.util.Optional;
 import org.dmg.pmml.DataDictionary;
 import org.dmg.pmml.Model;
 import org.kie.pmml.commons.exceptions.KiePMMLException;
+import org.kie.pmml.commons.exceptions.KiePMMLInternalException;
 import org.kie.pmml.commons.model.KiePMMLModel;
 import org.kie.pmml.commons.model.enums.PMML_MODEL;
 import org.kie.pmml.compiler.api.provider.ModelImplementationProviderFinder;
@@ -39,7 +40,7 @@ public class KiePMMLModelRetriever {
      * @param model
      * @param kBuilder Using <code>Object</code> to avoid coupling with drools
      * @return
-     * @throws KiePMMLException
+     * @throws KiePMMLInternalException
      */
     @SuppressWarnings("unchecked")
     public static Optional<KiePMMLModel> getFromDataDictionaryAndModel(DataDictionary dataDictionary, Model model, Object kBuilder) throws KiePMMLException {

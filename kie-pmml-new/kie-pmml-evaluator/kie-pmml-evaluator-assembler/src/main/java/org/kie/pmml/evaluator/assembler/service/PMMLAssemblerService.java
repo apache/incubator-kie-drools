@@ -15,6 +15,7 @@
  */
 package org.kie.pmml.evaluator.assembler.service;
 
+import java.io.IOException;
 import java.util.Collection;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -29,6 +30,8 @@ import org.kie.api.io.Resource;
 import org.kie.api.io.ResourceConfiguration;
 import org.kie.api.io.ResourceType;
 import org.kie.api.io.ResourceWithConfiguration;
+import org.kie.pmml.commons.exceptions.ExternalException;
+import org.kie.pmml.commons.exceptions.KiePMMLException;
 import org.kie.pmml.commons.model.KiePMMLModel;
 import org.kie.pmml.compiler.executor.PMMLCompiler;
 import org.kie.pmml.compiler.executor.PMMLCompilerImpl;
@@ -71,6 +74,13 @@ public class PMMLAssemblerService implements KieAssemblerService {
         pmmlPkg.addAll(toAdd);
     }
 
+    /**
+     * @param kbuilderImpl
+     * @param resourceWithConfigurations
+     * @return
+     * @throws KiePMMLException if any <code>KiePMMLInternalException</code> has been thrown during execution
+     * @throws ExternalException if any other kind of <code>Exception</code> has been thrown during execution
+     */
     protected List<KiePMMLModel> getKiePMMLModelsFromResourcesWithConfigurations(KnowledgeBuilderImpl kbuilderImpl, Collection<ResourceWithConfiguration> resourceWithConfigurations) throws Exception {
         return resourceWithConfigurations.stream()
                 .map(ResourceWithConfiguration::getResource)
@@ -78,11 +88,22 @@ public class PMMLAssemblerService implements KieAssemblerService {
                 .collect(Collectors.toList());
     }
 
-    protected List<KiePMMLModel> getKiePMMLModelsFromResource(KnowledgeBuilderImpl kbuilderImpl, Resource resource) throws Exception {
+    /**
+     * @param kbuilderImpl
+     * @param resource
+     * @return
+     * @throws KiePMMLException if any <code>KiePMMLInternalException</code> has been thrown during execution
+     * @throws ExternalException if any other kind of <code>Exception</code> has been thrown during execution
+     */
+    protected List<KiePMMLModel> getKiePMMLModelsFromResource(KnowledgeBuilderImpl kbuilderImpl, Resource resource) throws KiePMMLException, ExternalException {
         PMMLCompiler pmmlCompiler = kbuilderImpl.getCachedOrCreate(PMML_COMPILER_CACHE_KEY, () -> getCompiler(kbuilderImpl));
         final String releaseId = kbuilderImpl.getKnowledgeBase().getResolvedReleaseId().toExternalForm();
         logger.info("getKiePMMLModelsFromResource releaseId {}", releaseId);
-        return pmmlCompiler.getResults(resource.getInputStream(), releaseId);
+        try {
+            return pmmlCompiler.getModels(resource.getInputStream(), releaseId);
+        } catch (IOException e) {
+            throw new ExternalException("ExternalException", e);
+        }
     }
 
     private PMMLCompiler getCompiler(KnowledgeBuilderImpl kbuilderImpl) {

@@ -3,8 +3,8 @@
          xmlns="http://maven.apache.org/POM/4.0.0"
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
   <parent>
+    <groupId>org.kie</groupId>
     <artifactId>kie-pmml-new</artifactId>
-    <groupId>org.drools</groupId>
     <version>7.33.0-SNAPSHOT</version>
   </parent>
   <modelVersion>4.0.0</modelVersion>
@@ -18,40 +18,40 @@
     <!-- TEST -->
     <!-- PMML -->
     <dependency>
-      <groupId>org.drools</groupId>
+      <groupId>org.kie</groupId>
       <artifactId>kie-pmml-commons</artifactId>
       <scope>test</scope>
     </dependency>
     <dependency>
-      <groupId>org.drools</groupId>
+      <groupId>org.kie</groupId>
       <artifactId>kie-pmml-compiler-api</artifactId>
       <scope>test</scope>
     </dependency>
     <dependency>
-      <groupId>org.drools</groupId>
+      <groupId>org.kie</groupId>
       <artifactId>kie-pmml-compiler-api</artifactId>
       <classifier>tests</classifier>
       <scope>test</scope>
     </dependency>
     <dependency>
-      <groupId>org.drools</groupId>
+      <groupId>org.kie</groupId>
       <artifactId>kie-pmml-compiler-commons</artifactId>
       <scope>test</scope>
     </dependency>
     <dependency>
-      <groupId>org.drools</groupId>
+      <groupId>org.kie</groupId>
       <artifactId>kie-pmml-compiler-core</artifactId>
       <scope>test</scope>
     </dependency>
     <!-- Library :: Models -->
     <!-- Runtime -->
     <dependency>
-      <groupId>org.drools</groupId>
+      <groupId>org.kie</groupId>
       <artifactId>kie-pmml-evaluator-api</artifactId>
       <scope>test</scope>
     </dependency>
     <dependency>
-      <groupId>org.drools</groupId>
+      <groupId>org.kie</groupId>
       <artifactId>kie-pmml-evaluator-assembler</artifactId>
       <scope>test</scope>
     </dependency>
