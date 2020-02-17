@@ -16,6 +16,7 @@
 package org.kie.pmml.commons.model.enums;
 
 import java.util.Arrays;
+import java.util.Objects;
 
 import org.kie.pmml.commons.exceptions.KieEnumException;
 
@@ -51,8 +52,8 @@ public enum PMML_MODEL {
         this.name = name;
     }
 
-    public static PMML_MODEL byName(String name) throws KieEnumException {
-        return Arrays.stream(PMML_MODEL.values()).filter(value -> name.equals(value.name)).findFirst().orElseThrow(() -> new KieEnumException("Failed to find PMMLModelType with name: " + name));
+    public static PMML_MODEL byName(String name) {
+        return Arrays.stream(PMML_MODEL.values()).filter(value -> Objects.equals(name, value.name)).findFirst().orElseThrow(() -> new KieEnumException("Failed to find PMMLModelType with name: " + name));
     }
 
     public String getName() {

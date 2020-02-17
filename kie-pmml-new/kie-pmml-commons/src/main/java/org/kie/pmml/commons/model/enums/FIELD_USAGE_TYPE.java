@@ -16,6 +16,7 @@
 package org.kie.pmml.commons.model.enums;
 
 import java.util.Arrays;
+import java.util.Objects;
 
 import org.kie.pmml.commons.exceptions.KieEnumException;
 
@@ -39,8 +40,8 @@ public enum FIELD_USAGE_TYPE {
         this.name = name;
     }
 
-    public static FIELD_USAGE_TYPE byName(String name) throws KieEnumException {
-        return Arrays.stream(FIELD_USAGE_TYPE.values()).filter(value -> name.equals(value.name)).findFirst().orElseThrow(() -> new KieEnumException("Failed to find FIELD_USAGE_TYPE with name: " + name));
+    public static FIELD_USAGE_TYPE byName(String name) {
+        return Arrays.stream(FIELD_USAGE_TYPE.values()).filter(value -> Objects.equals(name, value.name)).findFirst().orElseThrow(() -> new KieEnumException("Failed to find FIELD_USAGE_TYPE with name: " + name));
     }
 
     public String getName() {

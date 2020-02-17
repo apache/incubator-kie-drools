@@ -16,6 +16,7 @@
 package org.kie.pmml.commons.model.enums;
 
 import java.util.Arrays;
+import java.util.Objects;
 
 import org.kie.pmml.commons.exceptions.KieEnumException;
 
@@ -38,8 +39,8 @@ public enum INVALID_VALUE_TREATMENT_METHOD {
         this.name = name;
     }
 
-    public static INVALID_VALUE_TREATMENT_METHOD byName(String name) throws KieEnumException {
-        return Arrays.stream(INVALID_VALUE_TREATMENT_METHOD.values()).filter(value -> name.equals(value.name)).findFirst().orElseThrow(() -> new KieEnumException("Failed to find MINING_FUNCTION with name: " + name));
+    public static INVALID_VALUE_TREATMENT_METHOD byName(String name) {
+        return Arrays.stream(INVALID_VALUE_TREATMENT_METHOD.values()).filter(value -> Objects.equals(name, value.name)).findFirst().orElseThrow(() -> new KieEnumException("Failed to find MINING_FUNCTION with name: " + name));
     }
 
     public String getName() {
