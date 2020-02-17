@@ -1115,7 +1115,7 @@ These connect the constraint weight with the constraint implementation.
 *For each constraint weight, there must be a constraint implementation with the same package and the same name.*
 
 * The `@ConstraintConfiguration` annotation has a `constraintPackage` property that defaults to the package of the constraint configuration class.
-Most cases with <<droolsScoreCalculation,Drools score calculation>>, need to override that because the DRL's use another package.
+Most cases with <<droolsScoreCalculation,Drools score calculation>>, need to override that because the DRLs use another package.
 For example, the DRL below uses the package `...conferencescheduling.solver`,
 so the constraint configuration above specifies a `constraintPackage`.
 Cases with <<constraintStreams,Constraint streams>>, normally don't need to specify it.

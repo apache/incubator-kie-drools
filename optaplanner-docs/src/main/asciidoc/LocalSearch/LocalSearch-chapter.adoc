@@ -312,7 +312,7 @@ Simplest configuration:
   </localSearch>
 ----
 
-When Tabu Search takes steps it creates one or more tabu's.
+When Tabu Search takes steps it creates one or more tabus.
 For a number of steps, it does not accept a move if that move breaks tabu.
 That number of steps is the tabu size.
 Advanced configuration:

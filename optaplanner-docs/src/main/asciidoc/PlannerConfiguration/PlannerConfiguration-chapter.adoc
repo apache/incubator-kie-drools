@@ -45,7 +45,7 @@ However, for portability reasons, a classpath resource is recommended.
 
 [NOTE]
 ====
-On some environments (<<integrationWithOSGi,OSGi>>, <<integrationWithJBossModules,JBoss modules>>, ...), classpath resources (such as the solver config, score DRL's and domain classes) in your jars might not be available to the default `ClassLoader` of the `optaplanner-core` jar.
+On some environments (<<integrationWithOSGi,OSGi>>, <<integrationWithJBossModules,JBoss modules>>, ...), classpath resources (such as the solver config, score DRLs and domain classes) in your jars might not be available to the default `ClassLoader` of the `optaplanner-core` jar.
 In those cases, provide the `ClassLoader` of your classes as a parameter:
 
 [source,java,options="nowrap"]

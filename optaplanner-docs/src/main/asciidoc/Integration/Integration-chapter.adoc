@@ -11,12 +11,12 @@
 [[integrationOverview]]
 == Overview
 
-OptaPlanner's input and output data (the planning problem and the best solution) are plain old JavaBeans (POJO's), so integration with other Java technologies is straightforward.
+OptaPlanner's input and output data (the planning problem and the best solution) are plain old JavaBeans (POJOs), so integration with other Java technologies is straightforward.
 For example:
 
-* To read a planning problem from the database (and store the best solution in it), annotate the domain POJO's with JPA annotations.
-* To read a planning problem from an XML file (and store the best solution in it), annotate the domain POJO's with XStream or JAXB annotations.
-* To expose the Solver as a REST Service that reads the planning problem and responds with the best solution, annotate the domain POJO's with XStream, JAXB or Jackson annotations and hook the `Solver` in Camel or RESTEasy.
+* To read a planning problem from the database (and store the best solution in it), annotate the domain POJOs with JPA annotations.
+* To read a planning problem from an XML file (and store the best solution in it), annotate the domain POJOs with XStream or JAXB annotations.
+* To expose the Solver as a REST Service that reads the planning problem and responds with the best solution, annotate the domain POJOs with XStream, JAXB or Jackson annotations and hook the `Solver` in Camel or RESTEasy.
 
 image::Integration/integrationOverview.png[align="center"]
 
@@ -28,7 +28,7 @@ image::Integration/integrationOverview.png[align="center"]
 [[integrationWithJpaAndHibernate]]
 === Database: JPA and Hibernate
 
-Enrich domain POJO's (solution, entities and problem facts) with JPA annotations
+Enrich domain POJOs (solution, entities and problem facts) with JPA annotations
 to store them in a database by calling `EntityManager.persist()`.
 
 [NOTE]
@@ -189,7 +189,7 @@ Neglecting to do this can lead to persisting duplicate solutions, JPA exceptions
 [[integrationWithXStream]]
 === XML or JSON: XStream
 
-Enrich domain POJO's (solution, entities and problem facts) with XStream annotations to serialize them to/from XML or JSON.
+Enrich domain POJOs (solution, entities and problem facts) with XStream annotations to serialize them to/from XML or JSON.
 
 Add a dependency to the `optaplanner-persistence-xstream` jar to take advantage of these extra integration features:
 
@@ -257,7 +257,7 @@ must always be in sync with those in the solver.
 [[integrationWithJaxb]]
 === XML or JSON: JAXB
 
-Enrich domain POJO's (solution, entities and problem facts) with JAXB annotations to serialize them to/from XML or JSON.
+Enrich domain POJOs (solution, entities and problem facts) with JAXB annotations to serialize them to/from XML or JSON.
 
 Add a dependency to the `optaplanner-persistence-jaxb` jar to take advantage of these extra integration features:
 
@@ -324,7 +324,7 @@ The `hardLevelsSize` and `softLevelsSize` implied, when reading a bendable score
 [[integrationWithJackson]]
 === JSON: Jackson
 
-Enrich domain POJO's (solution, entities and problem facts) with Jackson annotations to serialize them to/from JSON.
+Enrich domain POJOs (solution, entities and problem facts) with Jackson annotations to serialize them to/from JSON.
 
 Add a dependency to the `optaplanner-persistence-jackson` jar and register `OptaPlannerJacksonModule`:
 
@@ -488,7 +488,7 @@ That component works in Karaf too.
 === JBoss Modules, WildFly, and JBoss EAP
 
 Because of JBoss Modules' `ClassLoader` magic, provide the `ClassLoader` of your classes <<solverConfigurationByXML,during the SolverFactory creation>>,
-so it can find the classpath resources (such as the solver config, score DRL's and domain classes) in your jars.
+so it can find the classpath resources (such as the solver config, score DRLs and domain classes) in your jars.
 
 It's also recommended <<customThreadFactory,to plug in WildFly's thread factory>>,
 especially with <<multithreadedSolving,multithreaded solving>>.
@@ -624,7 +624,7 @@ The `optaplanner-core` jar includes OSGi metadata in its `MANIFEST.MF` file to f
 Furthermore, the maven artifact `kie-karaf-features` contains a `features.xml` file that supports the OSGi-feature ``optaplanner-engine``.
 
 Because of the OSGi's `ClassLoader` magic, provide the `ClassLoader` of your classes <<solverConfigurationByXML,during the SolverFactory creation>>,
-so it can find the classpath resources (such as the solver config, score DRL's and domain classes) in your jars.
+so it can find the classpath resources (such as the solver config, score DRLs and domain classes) in your jars.
 
 [NOTE]
 ====
