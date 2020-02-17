@@ -23,8 +23,9 @@
   <!-- Here are included all required classes for manage DMN Feel type in a client GWT environment  -->
   <!-- PLEASE NOTE! BuiltInType.class contains type NOT compatible with GWT eg. new java Time api   -->
   <!-- Therefore, when importing this module in your GWT project, you must substitute BuiltInType   -->
-  <!-- with a specific class compatible with GWT. To substitute it, just insert in your GWT project -->
-  <!-- a new BuiltInType.java class in a "org.kie.dmn.feel.lang.type" defined package.              -->
+  <!-- with a specific class compatible with GWT. To substitute it, just define a super-source      -->
+  <!-- in your GWT project and insert a new BuiltInType.java class in a "org.kie.dmn.feel.lang.type"-->
+  <!-- package compatible with GWT.                                                                 -->
   <source path="lang" includes="**/CompositeType.java"/>
   <source path="lang" includes="**/Scope.java"/>
   <source path="lang" includes="**/SimpleType.java"/>
