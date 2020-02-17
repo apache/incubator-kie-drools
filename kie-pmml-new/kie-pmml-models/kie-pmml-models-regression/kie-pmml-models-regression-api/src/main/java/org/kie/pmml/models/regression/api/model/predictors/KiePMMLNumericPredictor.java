@@ -18,7 +18,7 @@ package org.kie.pmml.models.regression.api.model.predictors;
 import java.util.List;
 import java.util.Objects;
 
-import org.kie.pmml.commons.exceptions.KiePMMLException;
+import org.kie.pmml.commons.exceptions.KiePMMLInternalException;
 import org.kie.pmml.commons.model.KiePMMLExtension;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -39,9 +39,9 @@ public class KiePMMLNumericPredictor extends KiePMMLRegressionTablePredictor {
     }
 
     @Override
-    public double evaluate(Object input) throws KiePMMLException {
+    public double evaluate(Object input) {
         if (!(input instanceof Number)) {
-            throw new KiePMMLException("Expected a Number, received a " + input.getClass().getName());
+            throw new KiePMMLInternalException("Expected a Number, received a " + input.getClass().getName());
         }
         double inputDouble = ((Number) input).doubleValue();
         double toReturn = exponent == 1 ? inputDouble * coefficient.doubleValue() : Math.pow(inputDouble, exponent) * coefficient.doubleValue();

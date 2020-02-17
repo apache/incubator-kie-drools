@@ -16,9 +16,9 @@
 package org.kie.pmml.models.regression.api.model;
 
 import java.io.Serializable;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
+import java.util.Optional;
 
 import org.kie.pmml.commons.model.KiePMMLModel;
 import org.kie.pmml.commons.model.KiePMMLOutputField;
@@ -36,21 +36,21 @@ public class KiePMMLRegressionModel extends KiePMMLModel {
     public static final PMML_MODEL PMML_MODEL_TYPE = PMML_MODEL.REGRESSION_MODEL;
     private static final long serialVersionUID = 2690863539104500649L;
 
-    private List<KiePMMLRegressionTable> regressionTables = new ArrayList<>();
+    private List<KiePMMLRegressionTable> regressionTables;
 
-    private String algorithmName;
-    private MODEL_TYPE modelType;
+    private REGRESSION_NORMALIZATION_METHOD regressionNormalizationMethod = REGRESSION_NORMALIZATION_METHOD.NONE;
     private OP_TYPE targetOpType;
-    private REGRESSION_NORMALIZATION_METHOD regressionNormalizationMethod = null;
     private boolean isScorable = true;
-    private List<Serializable> targetValues;
-    private List<KiePMMLOutputField> outputFields;
+    private Optional<String> algorithmName = Optional.empty();
+    private Optional<MODEL_TYPE> modelType = Optional.empty();
+    private Optional<List<Serializable>> targetValues = Optional.empty();
+    private Optional<List<KiePMMLOutputField>> outputFields = Optional.empty();
 
     protected KiePMMLRegressionModel() {
     }
 
-    public static Builder builder(String name, MINING_FUNCTION miningFunction) {
-        return new Builder(name, miningFunction);
+    public static Builder builder(String name, MINING_FUNCTION miningFunction, List<KiePMMLRegressionTable> regressionTables, OP_TYPE targetOpType) {
+        return new Builder(name, miningFunction, regressionTables, targetOpType);
     }
 
     public static PMML_MODEL getPmmlModelType() {
@@ -61,11 +61,11 @@ public class KiePMMLRegressionModel extends KiePMMLModel {
         return regressionTables;
     }
 
-    public String getAlgorithmName() {
+    public Optional<String> getAlgorithmName() {
         return algorithmName;
     }
 
-    public MODEL_TYPE getModelType() {
+    public Optional<MODEL_TYPE> getModelType() {
         return modelType;
     }
 
@@ -81,11 +81,11 @@ public class KiePMMLRegressionModel extends KiePMMLModel {
         return isScorable;
     }
 
-    public List<Serializable> getTargetValues() {
+    public Optional<List<Serializable>> getTargetValues() {
         return targetValues;
     }
 
-    public List<KiePMMLOutputField> getOutputFields() {
+    public Optional<List<KiePMMLOutputField>> getOutputFields() {
         return outputFields;
     }
 
@@ -94,7 +94,7 @@ public class KiePMMLRegressionModel extends KiePMMLModel {
     }
 
     public boolean isBinary() {
-        return Objects.equals(OP_TYPE.CATEGORICAL, targetOpType) && (targetValues != null && targetValues.size() == 2);
+        return Objects.equals(OP_TYPE.CATEGORICAL, targetOpType) && (targetValues.isPresent() && targetValues.get().size() == 2);
     }
 
     @Override
@@ -146,34 +146,24 @@ public class KiePMMLRegressionModel extends KiePMMLModel {
 
     public static class Builder extends KiePMMLModel.Builder<KiePMMLRegressionModel> {
 
-        private List<KiePMMLOutputField> outputFields;
-
-        private Builder(String name, MINING_FUNCTION miningFunction) {
+        private Builder(String name, MINING_FUNCTION miningFunction, List<KiePMMLRegressionTable> regressionTables, OP_TYPE targetOpType) {
             super(name, "RegressionModel-", PMML_MODEL_TYPE, miningFunction, KiePMMLRegressionModel::new);
-        }
-
-        public Builder withRegressionTables(List<KiePMMLRegressionTable> regressionTables) {
             toBuild.regressionTables = regressionTables;
-            return this;
+            toBuild.targetOpType = targetOpType;
         }
 
         public Builder withAlgorithmName(String algorithmName) {
-            toBuild.algorithmName = algorithmName;
+            toBuild.algorithmName = Optional.ofNullable(algorithmName);
             return this;
         }
 
         public Builder withModelType(MODEL_TYPE modelType) {
-            toBuild.modelType = modelType;
-            return this;
-        }
-
-        public Builder withTargetOpType(OP_TYPE targetOpType) {
-            toBuild.targetOpType = targetOpType;
+            toBuild.modelType = Optional.ofNullable(modelType);
             return this;
         }
 
         public Builder withTargetValues(List<Serializable> targetValues) {
-            toBuild.targetValues = targetValues;
+            toBuild.targetValues = Optional.ofNullable(targetValues);
             return this;
         }
 
@@ -188,7 +178,7 @@ public class KiePMMLRegressionModel extends KiePMMLModel {
         }
 
         public Builder withOutputFields(List<KiePMMLOutputField> outputFields) {
-            toBuild.outputFields = outputFields;
+            toBuild.outputFields = Optional.ofNullable(outputFields);
             return this;
         }
 

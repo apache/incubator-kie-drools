@@ -16,7 +16,6 @@
 package org.kie.pmml.commons.model.expressions;
 
 import java.util.List;
-import java.util.Objects;
 
 import org.kie.pmml.commons.model.KiePMMLExtension;
 import org.kie.pmml.commons.model.abstracts.KiePMMLExtensionedNamed;
@@ -34,34 +33,5 @@ public class KiePMMLFieldRef extends KiePMMLExtensionedNamed implements KiePMMLE
 
     public String getMapMissingTo() {
         return mapMissingTo;
-    }
-
-    @Override
-    public String toString() {
-        return "KiePMMLFieldRef{" +
-                "mapMissingTo='" + mapMissingTo + '\'' +
-                ", extensions=" + extensions +
-                ", name='" + name + '\'' +
-                '}';
-    }
-
-    @Override
-    public boolean equals(Object o) {
-        if (this == o) {
-            return true;
-        }
-        if (o == null || getClass() != o.getClass()) {
-            return false;
-        }
-        if (!super.equals(o)) {
-            return false;
-        }
-        KiePMMLFieldRef that = (KiePMMLFieldRef) o;
-        return Objects.equals(mapMissingTo, that.mapMissingTo);
-    }
-
-    @Override
-    public int hashCode() {
-        return Objects.hash(super.hashCode(), mapMissingTo);
     }
 }

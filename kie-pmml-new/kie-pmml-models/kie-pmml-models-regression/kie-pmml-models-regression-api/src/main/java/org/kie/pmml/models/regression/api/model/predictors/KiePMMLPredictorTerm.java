@@ -19,21 +19,19 @@ import java.util.List;
 import java.util.Map;
 import java.util.concurrent.atomic.AtomicReference;
 
-import org.kie.pmml.commons.exceptions.KiePMMLException;
+import org.kie.pmml.commons.exceptions.KiePMMLInternalException;
 import org.kie.pmml.commons.model.KiePMMLExtension;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import static org.kie.pmml.commons.interfaces.FunctionalWrapperFactory.throwingConsumerWrapper;
-
 public class KiePMMLPredictorTerm extends KiePMMLRegressionTablePredictor {
 
     private static final long serialVersionUID = 4077271967051895553L;
-    private List<KiePMMLRegressionTablePredictor> predictors;
     private static final Logger logger = LoggerFactory.getLogger(KiePMMLPredictorTerm.class.getName());
+    private List<KiePMMLRegressionTablePredictor> predictors;
 
     public KiePMMLPredictorTerm(String name, List<KiePMMLRegressionTablePredictor> predictors, Number coefficient, List<KiePMMLExtension> extensions) {
-        super(name,  coefficient, extensions);
+        super(name, coefficient, extensions);
         this.predictors = predictors;
     }
 
@@ -43,24 +41,23 @@ public class KiePMMLPredictorTerm extends KiePMMLRegressionTablePredictor {
     }
 
     @Override
-    public double evaluate(Object input) throws KiePMMLException {
+    public double evaluate(Object input) {
         if (!(input instanceof Map)) {
-            throw new KiePMMLException("Expecting a Map<String, Double>, received " + input.getClass().getName());
+            throw new KiePMMLInternalException("Expecting a Map<String, Double>, received " + input.getClass().getName());
         }
         Map<String, Double> resultMap;
         try {
             resultMap = (Map<String, Double>) input;
         } catch (ClassCastException e) {
-            throw new KiePMMLException("Expecting a Map<String, Double>, received " + input.getClass().getName());
+            throw new KiePMMLInternalException("Expecting a Map<String, Double>, received " + input.getClass().getName());
         }
         AtomicReference<Double> result = new AtomicReference<>(1.0);
         predictors.forEach(predictor -> {
             if (resultMap.containsKey(predictor.getName())) {
                 result.set(result.get() * resultMap.get(predictor.getName()));
             }
-
         });
-        double toReturn =result.get() * coefficient.doubleValue();
+        double toReturn = result.get() * coefficient.doubleValue();
         logger.info("{} evaluate {} return {}", this, input, toReturn);
         return toReturn;
     }

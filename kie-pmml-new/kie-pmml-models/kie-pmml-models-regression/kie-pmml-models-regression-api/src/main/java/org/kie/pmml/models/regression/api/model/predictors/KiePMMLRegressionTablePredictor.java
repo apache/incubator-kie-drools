@@ -18,10 +18,9 @@ package org.kie.pmml.models.regression.api.model.predictors;
 import java.util.List;
 import java.util.Objects;
 
-import org.kie.pmml.commons.exceptions.KiePMMLException;
+import org.kie.pmml.commons.exceptions.KiePMMLInternalException;
 import org.kie.pmml.commons.model.KiePMMLExtension;
 import org.kie.pmml.commons.model.abstracts.KiePMMLExtensionedTerm;
-import org.kie.pmml.commons.model.abstracts.KiePMMLTerm;
 
 public abstract class KiePMMLRegressionTablePredictor extends KiePMMLExtensionedTerm {
 
@@ -42,9 +41,9 @@ public abstract class KiePMMLRegressionTablePredictor extends KiePMMLExtensioned
      * Returns the predictor value of the current instance for the given input
      * @param input
      * @return
-     * @throws KiePMMLException
+     * @throws KiePMMLInternalException
      */
-    public abstract double evaluate(Object input) throws KiePMMLException;
+    public abstract double evaluate(Object input) throws KiePMMLInternalException;
 
     @Override
     public boolean equals(Object o) {

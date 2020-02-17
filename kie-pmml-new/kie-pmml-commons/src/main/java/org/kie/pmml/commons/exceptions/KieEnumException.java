@@ -15,7 +15,7 @@
  */
 package org.kie.pmml.commons.exceptions;
 
-public class KieEnumException extends KiePMMLException {
+public class KieEnumException extends KiePMMLInternalException {
 
     public KieEnumException(String message, Throwable cause) {
         super(message, cause);

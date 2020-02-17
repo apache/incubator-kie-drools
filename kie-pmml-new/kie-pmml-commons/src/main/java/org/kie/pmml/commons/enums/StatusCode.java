@@ -33,9 +33,7 @@ public enum StatusCode {
         return Arrays.stream(StatusCode.values()).filter(value -> name.equals(value.name)).findFirst().orElseThrow(() -> new KieEnumException("Failed to find StatusCode with name: " + name));
     }
 
-
     public String getName() {
         return name;
     }
-
 }

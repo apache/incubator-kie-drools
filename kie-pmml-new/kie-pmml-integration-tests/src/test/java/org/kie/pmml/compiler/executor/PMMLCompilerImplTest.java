@@ -35,8 +35,8 @@ import org.kie.pmml.models.regression.api.model.predictors.KiePMMLCategoricalPre
 import org.kie.pmml.models.regression.api.model.predictors.KiePMMLNumericPredictor;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
 import static org.kie.test.util.filesystem.FileUtils.getFileInputStream;
 
@@ -54,21 +54,22 @@ public class PMMLCompilerImplTest {
     }
 
     @Test
-    public void getResults() throws Exception {
-        final List<KiePMMLModel> results = EXECUTOR.getResults(getFileInputStream("org/kie/pmml/runtime/regression/LinearRegressionSample.pmml"), kieBuilder);
+    public void getModels() throws Exception {
+        final List<KiePMMLModel> results = EXECUTOR.getModels(getFileInputStream("LinearRegressionSample.pmml"), kieBuilder);
         assertNotNull(results);
         assertEquals(1, results.size());
         assertTrue(results.get(0) instanceof KiePMMLRegressionModel);
         commonVerifyKiePMMLRegressionModel((KiePMMLRegressionModel) results.get(0));
     }
 
-    // TODO {gcardosi} Carbon-copy of org.kie.pmml.regression.executor.RegressionModelImplementationProviderTest
+    // TODO {gcardosi} Carbon-copy of org.kie.pmml.regression.evaluator.RegressionModelImplementationProviderTest
 
     private void commonVerifyKiePMMLRegressionModel(KiePMMLRegressionModel retrieved) {
         assertNotNull(retrieved);
         assertEquals(MINING_FUNCTION.REGRESSION, retrieved.getMiningFunction());
-        assertEquals("linearRegression", retrieved.getAlgorithmName());
-        assertNull(retrieved.getModelType());
+        assertTrue(retrieved.getAlgorithmName().isPresent());
+        assertEquals("linearRegression", retrieved.getAlgorithmName().get());
+        assertFalse(retrieved.getModelType().isPresent());
         assertEquals("number_of_claims", retrieved.getTargetField());
         assertEquals(OP_TYPE.CONTINUOUS, retrieved.getTargetOpType());
         assertEquals(REGRESSION_NORMALIZATION_METHOD.NONE, retrieved.getRegressionNormalizationMethod());
@@ -81,10 +82,12 @@ public class PMMLCompilerImplTest {
     private void commonVerifyKiePMMLRegressionTable(KiePMMLRegressionTable retrieved) {
         assertNotNull(retrieved);
         assertEquals(132.37, retrieved.getIntercept());
-        assertNull(retrieved.getTargetCategory());
-        assertTrue(retrieved.getExtensions().isEmpty());
-        assertEquals(2, retrieved.getNumericPredictors().size());
-        assertEquals(2, retrieved.getCategoricalPredictors().size());
+        assertFalse(retrieved.getTargetCategory().isPresent());
+        assertTrue(retrieved.getExtensions().isPresent());
+        assertTrue(retrieved.getNumericPredictors().isPresent());
+        assertEquals(2, retrieved.getNumericPredictors().get().size());
+        assertTrue(retrieved.getCategoricalPredictors().isPresent());
+        assertEquals(2, retrieved.getCategoricalPredictors().get().size());
         commonVerifyNumericPredictors(retrieved, "age", 1, 7.1);
         commonVerifyNumericPredictors(retrieved, "salary", 1, 0.01);
         commonVerifyCategoricalPredictors(retrieved, "car_location");

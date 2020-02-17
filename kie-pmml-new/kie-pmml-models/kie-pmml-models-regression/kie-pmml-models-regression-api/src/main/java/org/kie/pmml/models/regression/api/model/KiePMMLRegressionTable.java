@@ -35,19 +35,19 @@ public class KiePMMLRegressionTable extends KiePMMLIDed {
 
     private static final long serialVersionUID = 1703573265998162350L;
     private Number intercept;
-    private Object targetCategory;
-    private List<KiePMMLExtension> extensions;
-    private Set<KiePMMLNumericPredictor> numericPredictors;
-    private Set<KiePMMLCategoricalPredictor> categoricalPredictors;
-    private Set<KiePMMLPredictorTerm> predictorTerms;
+    private Optional<Object> targetCategory = Optional.empty();
+    private Optional<List<KiePMMLExtension>> extensions = Optional.empty();
+    private Optional<Set<KiePMMLNumericPredictor>> numericPredictors = Optional.empty();
+    private Optional<Set<KiePMMLCategoricalPredictor>> categoricalPredictors = Optional.empty();
+    private Optional<Set<KiePMMLPredictorTerm>> predictorTerms = Optional.empty();
     private Map<String, KiePMMLNumericPredictor> numericPredictorsMap = new HashMap<>();
     private Map<String, List<KiePMMLCategoricalPredictor>> categoricalPredictorMaps = new HashMap<>();
 
     private KiePMMLRegressionTable() {
     }
 
-    public static Builder builder() {
-        return new Builder();
+    public static Builder builder(Number intercept) {
+        return new Builder(intercept);
     }
 
     public Optional<KiePMMLNumericPredictor> getKiePMMLNumericPredictorByName(String fieldName) {
@@ -65,23 +65,23 @@ public class KiePMMLRegressionTable extends KiePMMLIDed {
         return intercept;
     }
 
-    public Object getTargetCategory() {
+    public Optional<Object> getTargetCategory() {
         return targetCategory;
     }
 
-    public List<KiePMMLExtension> getExtensions() {
+    public Optional<List<KiePMMLExtension>> getExtensions() {
         return extensions;
     }
 
-    public Set<KiePMMLNumericPredictor> getNumericPredictors() {
+    public Optional<Set<KiePMMLNumericPredictor>> getNumericPredictors() {
         return numericPredictors;
     }
 
-    public Set<KiePMMLCategoricalPredictor> getCategoricalPredictors() {
+    public Optional<Set<KiePMMLCategoricalPredictor>> getCategoricalPredictors() {
         return categoricalPredictors;
     }
 
-    public Set<KiePMMLPredictorTerm> getPredictorTerms() {
+    public Optional<Set<KiePMMLPredictorTerm>> getPredictorTerms() {
         return predictorTerms;
     }
 
@@ -130,27 +130,23 @@ public class KiePMMLRegressionTable extends KiePMMLIDed {
 
     public static class Builder extends KiePMMLIDed.Builder<KiePMMLRegressionTable> {
 
-        private Builder() {
+        private Builder(Number intercept) {
             super("RegressionTable-", KiePMMLRegressionTable::new);
-        }
-
-        public Builder withIntercept(Number intercept) {
             toBuild.intercept = intercept;
-            return this;
         }
 
         public Builder withTargetCategory(Object targetCategory) {
-            toBuild.targetCategory = targetCategory;
+            toBuild.targetCategory = Optional.ofNullable(targetCategory);
             return this;
         }
 
         public Builder withExtensions(List<KiePMMLExtension> extensions) {
-            toBuild.extensions = extensions;
+            toBuild.extensions = Optional.ofNullable(extensions);
             return this;
         }
 
         public Builder withNumericPredictors(Set<KiePMMLNumericPredictor> numericPredictors) {
-            toBuild.numericPredictors = numericPredictors;
+            toBuild.numericPredictors = Optional.of(numericPredictors);
             toBuild.numericPredictorsMap.putAll(numericPredictors.stream().collect(Collectors.toMap(
                     KiePMMLRegressionTablePredictor::getName,
                     predictor -> predictor)));
@@ -158,14 +154,14 @@ public class KiePMMLRegressionTable extends KiePMMLIDed {
         }
 
         public Builder withCategoricalPredictors(Set<KiePMMLCategoricalPredictor> categoricalPredictors) {
-            toBuild.categoricalPredictors = categoricalPredictors;
+            toBuild.categoricalPredictors = Optional.of(categoricalPredictors);
             toBuild.categoricalPredictorMaps = categoricalPredictors.stream()
                     .collect(Collectors.groupingBy(KiePMMLNamed::getName));
             return this;
         }
 
         public Builder withPredictorTerms(Set<KiePMMLPredictorTerm> predictorTerms) {
-            toBuild.predictorTerms = predictorTerms;
+            toBuild.predictorTerms = Optional.of(predictorTerms);
             return this;
         }
     }

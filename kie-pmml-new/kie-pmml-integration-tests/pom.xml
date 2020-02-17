@@ -1,10 +1,10 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<project xmlns="http://maven.apache.org/POM/4.0.0"
-         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+<project xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xmlns="http://maven.apache.org/POM/4.0.0"
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
   <parent>
+    <groupId>org.kie</groupId>
     <artifactId>kie-pmml-new</artifactId>
-    <groupId>org.drools</groupId>
     <version>7.33.0-SNAPSHOT</version>
   </parent>
   <modelVersion>4.0.0</modelVersion>
@@ -18,57 +18,74 @@
     <!-- TEST -->
     <!-- PMML -->
     <dependency>
-      <groupId>org.drools</groupId>
+      <groupId>org.kie</groupId>
       <artifactId>kie-pmml-commons</artifactId>
       <scope>test</scope>
     </dependency>
+    <!-- Compiler -->
     <dependency>
-      <groupId>org.drools</groupId>
-      <artifactId>kie-pmml-library-api</artifactId>
+      <groupId>org.kie</groupId>
+      <artifactId>kie-pmml-compiler-api</artifactId>
       <scope>test</scope>
     </dependency>
     <dependency>
-      <groupId>org.drools</groupId>
-      <artifactId>kie-pmml-library-api</artifactId>
+      <groupId>org.kie</groupId>
+      <artifactId>kie-pmml-compiler-api</artifactId>
       <classifier>tests</classifier>
       <scope>test</scope>
     </dependency>
     <dependency>
-      <groupId>org.drools</groupId>
-      <artifactId>kie-pmml-library-commons</artifactId>
+      <groupId>org.kie</groupId>
+      <artifactId>kie-pmml-compiler-commons</artifactId>
       <scope>test</scope>
     </dependency>
     <dependency>
-      <groupId>org.drools</groupId>
-      <artifactId>kie-pmml-library-compiler</artifactId>
+      <groupId>org.kie</groupId>
+      <artifactId>kie-pmml-compiler-core</artifactId>
       <scope>test</scope>
     </dependency>
-    <!-- Library :: Models -->
+    <!-- Evaluator -->
     <dependency>
-      <groupId>org.drools</groupId>
-      <artifactId>kie-pmml-models-regression-library</artifactId>
-      <scope>test</scope>
-    </dependency>
-    <!-- Runtime -->
-    <dependency>
-      <groupId>org.drools</groupId>
-      <artifactId>kie-pmml-runtime-api</artifactId>
+      <groupId>org.kie</groupId>
+      <artifactId>kie-pmml-evaluator-api</artifactId>
       <scope>test</scope>
     </dependency>
     <dependency>
-      <groupId>org.drools</groupId>
-      <artifactId>kie-pmml-runtime-assembler</artifactId>
-      <scope>test</scope>
-    </dependency>
-    <!-- Runtime :: Implementations -->
-    <dependency>
-      <groupId>org.drools</groupId>
-      <artifactId>kie-pmml-models-regression-runtime</artifactId>
+      <groupId>org.kie</groupId>
+      <artifactId>kie-pmml-evaluator-core</artifactId>
       <scope>test</scope>
     </dependency>
     <dependency>
-      <groupId>org.drools</groupId>
-      <artifactId>kie-pmml-models-regression-runtime</artifactId>
+      <groupId>org.kie</groupId>
+      <artifactId>kie-pmml-evaluator-assembler</artifactId>
+      <scope>test</scope>
+    </dependency>
+    <!-- Implementations -->
+    <!-- Regression -->
+    <dependency>
+      <groupId>org.kie</groupId>
+      <artifactId>kie-pmml-models-regression-api</artifactId>
+      <scope>test</scope>
+    </dependency>
+    <dependency>
+      <groupId>org.kie</groupId>
+      <artifactId>kie-pmml-models-regression-compiler</artifactId>
+      <scope>test</scope>
+    </dependency>
+    <dependency>
+      <groupId>org.kie</groupId>
+      <artifactId>kie-pmml-models-regression-compiler</artifactId>
+      <classifier>tests</classifier>
+      <scope>test</scope>
+    </dependency>
+    <dependency>
+      <groupId>org.kie</groupId>
+      <artifactId>kie-pmml-models-regression-evaluator</artifactId>
+      <scope>test</scope>
+    </dependency>
+    <dependency>
+      <groupId>org.kie</groupId>
+      <artifactId>kie-pmml-models-regression-evaluator</artifactId>
       <classifier>tests</classifier>
       <scope>test</scope>
     </dependency>
@@ -99,73 +116,5 @@
       <scope>test</scope>
     </dependency>
   </dependencies>
-
-  <dependencyManagement>
-    <dependencies>
-      <dependency>
-        <groupId>org.drools</groupId>
-        <artifactId>kie-pmml-commons</artifactId>
-        <version>${version.org.kie}</version>
-        <scope>test</scope>
-      </dependency>
-      <dependency>
-        <groupId>org.drools</groupId>
-        <artifactId>kie-pmml-runtime-api</artifactId>
-        <version>${version.org.kie}</version>
-        <scope>test</scope>
-      </dependency>
-      <dependency>
-        <groupId>org.drools</groupId>
-        <artifactId>kie-pmml-library-api</artifactId>
-        <version>${version.org.kie}</version>
-        <scope>test</scope>
-      </dependency>
-      <dependency>
-        <groupId>org.drools</groupId>
-        <artifactId>kie-pmml-library-api</artifactId>
-        <classifier>tests</classifier>
-        <scope>test</scope>
-        <version>${version.org.kie}</version>
-      </dependency>
-      <dependency>
-        <groupId>org.drools</groupId>
-        <artifactId>kie-pmml-library-commons</artifactId>
-        <version>${version.org.kie}</version>
-        <scope>test</scope>
-      </dependency>
-      <dependency>
-        <groupId>org.drools</groupId>
-        <artifactId>kie-pmml-library-compiler</artifactId>
-        <version>${version.org.kie}</version>
-        <scope>test</scope>
-      </dependency>
-      <dependency>
-        <groupId>org.drools</groupId>
-        <artifactId>kie-pmml-models-regression-library</artifactId>
-        <version>${version.org.kie}</version>
-        <scope>test</scope>
-      </dependency>
-      <dependency>
-        <groupId>org.drools</groupId>
-        <artifactId>kie-pmml-runtime-assembler</artifactId>
-        <version>${version.org.kie}</version>
-        <scope>test</scope>
-      </dependency>
-      <dependency>
-        <groupId>org.drools</groupId>
-        <artifactId>kie-pmml-models-regression-runtime</artifactId>
-        <version>${version.org.kie}</version>
-        <scope>test</scope>
-      </dependency>
-      <dependency>
-        <groupId>org.drools</groupId>
-        <artifactId>kie-pmml-models-regression-runtime</artifactId>
-        <version>${version.org.kie}</version>
-        <classifier>tests</classifier>
-        <scope>test</scope>
-      </dependency>
-    </dependencies>
-  </dependencyManagement>
-
 
 </project>

@@ -18,6 +18,5 @@ package org.kie.pmml.commons;
 public class Constants {
 
     // TODO {gcardosi} replace with dynamically generated one
-    public static final String RELEASE_ID = "org.drools:kie-pmml-new:7.33.0-SNAPSHOT";
-
+    public static final String RELEASE_ID = "org.kie:kie-pmml-new:7.33.0-SNAPSHOT";
 }
