@@ -20,16 +20,22 @@ import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.stream.Collectors;
 
 import org.dmg.pmml.DataField;
+import org.dmg.pmml.DataType;
 import org.dmg.pmml.Interval;
+import org.dmg.pmml.Model;
+import org.dmg.pmml.OutputField;
 import org.dmg.pmml.PMML;
 import org.dmg.pmml.Value;
 import org.kie.dmn.api.core.DMNType;
 import org.kie.dmn.core.compiler.DMNCompilerConfigurationImpl;
 import org.kie.dmn.core.compiler.DMNFEELHelper;
+import org.kie.dmn.core.impl.CompositeTypeImpl;
 import org.kie.dmn.core.impl.DMNModelImpl;
 import org.kie.dmn.core.impl.SimpleTypeImpl;
 import org.kie.dmn.feel.lang.FEELProfile;
@@ -57,32 +63,7 @@ public class DMNImportPMMLInfo extends PMMLInfo<DMNPMMLModelInfo> {
             PMMLHeaderInfo h = PMMLInfo.pmmlToHeaderInfo(pmml, pmml.getHeader());
             for (DataField df : pmml.getDataDictionary().getDataFields()) {
                 String dfName = df.getName().getValue();
-                BuiltInType ft = null;
-                switch (df.getDataType()) {
-                    case BOOLEAN:
-                        ft = BuiltInType.BOOLEAN;
-                        break;
-                    case DATE:
-                        ft = BuiltInType.DATE;
-                        break;
-                    case DATE_TIME:
-                        ft = BuiltInType.DATE_TIME;
-                        break;
-                    case DOUBLE:
-                    case FLOAT:
-                    case INTEGER:
-                        ft = BuiltInType.NUMBER;
-                        break;
-                    case STRING:
-                        ft = BuiltInType.STRING;
-                        break;
-                    case TIME:
-                        ft = BuiltInType.TIME;
-                        break;
-                    default:
-                        ft = BuiltInType.UNKNOWN;
-                        break;
-                }
+                BuiltInType ft = getBuiltInTypeByDataType(df.getDataType());
                 List<FEELProfile> helperFEELProfiles = cc.getFeelProfiles();
                 DMNFEELHelper feel = new DMNFEELHelper(cc.getRootClassLoader(), helperFEELProfiles);
                 List<UnaryTest> av = new ArrayList<>();
@@ -114,6 +95,9 @@ public class DMNImportPMMLInfo extends PMMLInfo<DMNPMMLModelInfo> {
                 DMNType type = new SimpleTypeImpl(i.getNamespace(), dfName, null, false, av, null, ft);
                 model.getTypeRegistry().registerType(type);
             }
+
+            pmml.getModels().stream().forEach(m -> registerOutputFieldType(m, model, i));
+
             List<DMNPMMLModelInfo> models = pmml.getModels()
                                                 .stream()
                                                 .map(m -> PMMLInfo.pmmlToModelInfo(m))
@@ -123,6 +107,63 @@ public class DMNImportPMMLInfo extends PMMLInfo<DMNPMMLModelInfo> {
         } catch (Throwable e) {
             return Either.ofLeft(new Exception("Unable to process DMNImportPMMLInfo", e));
         }
+    }
+
+    private static void registerOutputFieldType(Model pmmlModel, DMNModelImpl dmnModel, Import i) {
+        String modelName = pmmlModel.getModelName();
+        List<OutputField> outputFields = pmmlModel.getOutput() == null ? Collections.emptyList() : pmmlModel.getOutput().getOutputFields();
+        if (outputFields.size() > 1) {
+            if (modelName != null && !modelName.isEmpty()) {
+                // In case of multiple output fields,
+                // register <import name>.<pmml MODEL name>, being a composite type of the different model outputs fields
+                Map<String, DMNType> typeMap = new HashMap<>();
+                outputFields.stream().forEach(field -> {
+                    String fieldName = field.getName().getValue();
+                    BuiltInType ft = getBuiltInTypeByDataType(field.getDataType());
+                    DMNType type = new SimpleTypeImpl(i.getNamespace(), fieldName, null, false, null, null, ft);
+                    typeMap.put(fieldName, type);
+                });
+                DMNType compositeType = new CompositeTypeImpl(i.getNamespace(), modelName, null, false, typeMap, null, null);
+                dmnModel.getTypeRegistry().registerType(compositeType);
+                return;
+            } else {
+                // Case of multiple/complex output AND model without name, raise a Warning from the compilation/engine side (for the editor to use FEEL Any as the typeRef in the BKM)
+                LOG.warn("PMML modelName is not provided, while output is a composite / multiple fields. Unable to synthesize CompositeType for DMN side.");
+            }
+        }
+    }
+
+    private static BuiltInType getBuiltInTypeByDataType(DataType dt) {
+        BuiltInType ft = null;
+        if (dt == null) {
+            return ft;
+        }
+        switch (dt) {
+            case BOOLEAN:
+                ft = BuiltInType.BOOLEAN;
+                break;
+            case DATE:
+                ft = BuiltInType.DATE;
+                break;
+            case DATE_TIME:
+                ft = BuiltInType.DATE_TIME;
+                break;
+            case DOUBLE:
+            case FLOAT:
+            case INTEGER:
+                ft = BuiltInType.NUMBER;
+                break;
+            case STRING:
+                ft = BuiltInType.STRING;
+                break;
+            case TIME:
+                ft = BuiltInType.TIME;
+                break;
+            default:
+                ft = BuiltInType.UNKNOWN;
+                break;
+        }
+        return ft;
     }
 
     public String getImportName() {

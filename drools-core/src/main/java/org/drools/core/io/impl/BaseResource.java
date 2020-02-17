@@ -55,6 +55,7 @@ public abstract class BaseResource
         targetPath = (String) in.readObject();
         description = (String) in.readObject();
         categories = (List<String>) in.readObject();
+        bytes = (byte[]) in.readObject();
     }
 
     public void writeExternal(ObjectOutput out) throws IOException {
@@ -64,6 +65,7 @@ public abstract class BaseResource
         out.writeObject( targetPath );
         out.writeObject( description );
         out.writeObject( categories );
+        out.writeObject( bytes );
     }
 
     public ResourceConfiguration getConfiguration() {
