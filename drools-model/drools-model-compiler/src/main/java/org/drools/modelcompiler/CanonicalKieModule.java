@@ -51,6 +51,7 @@ import org.drools.core.RuleBaseConfiguration;
 import org.drools.core.definitions.InternalKnowledgePackage;
 import org.drools.core.definitions.impl.KnowledgePackageImpl;
 import org.drools.core.impl.InternalKnowledgeBase;
+import org.drools.core.io.internal.InternalResource;
 import org.drools.core.util.Drools;
 import org.drools.core.util.IoUtils;
 import org.drools.core.util.StringUtils;
@@ -682,7 +683,7 @@ public class CanonicalKieModule implements InternalKieModule {
     }
 
     @Override
-    public Resource getResource( String fileName ) {
+    public InternalResource getResource( String fileName ) {
         return internalKieModule.getResource( fileName );
     }
 
