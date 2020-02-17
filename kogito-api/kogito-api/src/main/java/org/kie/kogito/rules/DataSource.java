@@ -24,6 +24,7 @@ public interface DataSource<T> {
     interface Factory {
         <T> DataStream<T> createStream();
         <T> DataStore<T> createStore();
+        <T> SingletonStore<T> createSingleton();
     }
 
     static <T> DataStream<T> createStream() {
@@ -32,6 +33,10 @@ public interface DataSource<T> {
 
     static <T> DataStore<T> createStore() {
         return FactoryHolder.get().createStore();
+    }
+
+    static <T> SingletonStore<T> createSingleton() {
+        return FactoryHolder.get().createSingleton();
     }
 
     class FactoryHolder {

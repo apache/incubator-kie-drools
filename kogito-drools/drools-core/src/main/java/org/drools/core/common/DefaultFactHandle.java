@@ -33,7 +33,7 @@ import org.drools.core.impl.InternalKnowledgeBase;
 import org.drools.core.reteoo.LeftTuple;
 import org.drools.core.reteoo.ObjectTypeNode;
 import org.drools.core.reteoo.RightTuple;
-import org.drools.core.ruleunit.InternalDataStore;
+import org.drools.core.ruleunit.InternalStoreCallback;
 import org.drools.core.spi.Tuple;
 import org.drools.core.util.AbstractBaseLinkedListNode;
 import org.drools.core.util.StringUtils;
@@ -79,7 +79,7 @@ public class DefaultFactHandle extends AbstractBaseLinkedListNode<DefaultFactHan
 
     protected LinkedTuples          linkedTuples;
 
-    private InternalDataStore<?>    dataStore;
+    private InternalStoreCallback dataStore;
     private DataHandle              dataHandle;
 
     // ----------------------------------------------------------------------
@@ -945,12 +945,12 @@ public class DefaultFactHandle extends AbstractBaseLinkedListNode<DefaultFactHan
     }
 
     @Override
-    public InternalDataStore<?> getDataStore() {
+    public InternalStoreCallback getDataStore() {
         return dataStore;
     }
 
     @Override
-    public void setDataStore( InternalDataStore<?> dataStore ) {
+    public void setDataStore( InternalStoreCallback dataStore ) {
         this.dataStore = dataStore;
     }
 

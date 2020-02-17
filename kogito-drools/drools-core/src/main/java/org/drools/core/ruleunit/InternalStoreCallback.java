@@ -22,9 +22,8 @@ import org.drools.core.reteoo.TerminalNode;
 import org.drools.core.spi.Activation;
 import org.drools.core.util.bitmask.BitMask;
 import org.kie.api.runtime.rule.FactHandle;
-import org.kie.kogito.rules.DataStore;
 
-public interface InternalDataStore<T> extends DataStore<T> {
+public interface InternalStoreCallback {
     void update( InternalFactHandle fh, Object obj, BitMask mask, Class<?> modifiedClass, Activation activation);
     void delete( InternalFactHandle fh, RuleImpl rule, TerminalNode terminalNode, FactHandle.State fhState);
 }

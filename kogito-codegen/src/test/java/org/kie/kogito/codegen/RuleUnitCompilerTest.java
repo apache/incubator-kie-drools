@@ -18,12 +18,15 @@ package org.kie.kogito.codegen;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.concurrent.atomic.AtomicReference;
 
 import org.junit.jupiter.api.Test;
 import org.kie.api.time.SessionPseudoClock;
 import org.kie.kogito.Application;
 import org.kie.kogito.codegen.data.Person;
 import org.kie.kogito.codegen.rules.multiunit.MultiUnit;
+import org.kie.kogito.codegen.rules.singleton.Datum;
+import org.kie.kogito.codegen.rules.singleton.Singleton;
 import org.kie.kogito.codegen.unit.AdultUnit;
 import org.kie.kogito.codegen.unit.PersonsUnit;
 import org.kie.kogito.rules.DataHandle;
@@ -193,6 +196,34 @@ public class RuleUnitCompilerTest extends AbstractCodegenTest {
         instance.fire();
 
         assertEquals(asList("start", "middle", "done"), strings);
+
+    }
+
+    @Test
+    public void singletonStore() throws Exception {
+        Application application = generateCodeRulesOnly(
+                "org/kie/kogito/codegen/rules/singleton/Singleton.drl");
+
+        ArrayList<String> data = new ArrayList<>();
+        AtomicReference<Datum> lastSeen = new AtomicReference<>();
+
+        RuleUnit<Singleton> mu = application.ruleUnits().create(Singleton.class);
+        Singleton unitData = new Singleton();
+        RuleUnitInstance<Singleton> instance = mu.createInstance(unitData);
+        unitData.getOutput().subscribe(
+                DataObserver.ofUpdatable(v ->  data.add(v == null? null : v.getValue())));
+        unitData.getOutput().subscribe(
+                DataObserver.of(lastSeen::set));
+
+        unitData.getInput().set(new Datum("start"));
+        instance.fire();
+        assertEquals(asList("continue", "updated", null, "done"), data);
+
+        lastSeen.get().setValue("updated");
+        unitData.getOutput().update();
+        instance.fire();
+
+        assertEquals(asList("continue", "updated", null, "done", "updated", null, "done"), data);
 
     }
 }

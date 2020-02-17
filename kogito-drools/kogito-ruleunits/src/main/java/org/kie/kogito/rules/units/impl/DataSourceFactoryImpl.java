@@ -19,6 +19,8 @@ package org.kie.kogito.rules.units.impl;
 import org.kie.kogito.rules.DataSource;
 import org.kie.kogito.rules.DataStore;
 import org.kie.kogito.rules.DataStream;
+import org.kie.kogito.rules.SingletonStore;
+import org.kie.kogito.rules.units.FieldDataStore;
 import org.kie.kogito.rules.units.ListDataStore;
 import org.kie.kogito.rules.units.ListDataStream;
 
@@ -30,5 +32,9 @@ public class DataSourceFactoryImpl implements DataSource.Factory {
 
     public <T> DataStore<T> createStore() {
         return new ListDataStore<>();
+    }
+
+    public <T> SingletonStore<T> createSingleton() {
+        return new FieldDataStore<>();
     }
 }

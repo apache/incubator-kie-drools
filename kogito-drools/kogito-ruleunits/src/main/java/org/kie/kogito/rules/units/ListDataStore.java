@@ -23,15 +23,17 @@ import java.util.Map;
 import org.drools.core.common.InternalFactHandle;
 import org.drools.core.definitions.rule.impl.RuleImpl;
 import org.drools.core.reteoo.TerminalNode;
-import org.drools.core.ruleunit.InternalDataStore;
+import org.drools.core.ruleunit.InternalStoreCallback;
 import org.drools.core.spi.Activation;
 import org.drools.core.util.bitmask.BitMask;
 import org.kie.api.runtime.rule.FactHandle;
 import org.kie.kogito.rules.DataHandle;
 import org.kie.kogito.rules.DataProcessor;
+import org.kie.kogito.rules.DataStore;
 import org.kie.kogito.rules.units.impl.DataHandleImpl;
 
-public class ListDataStore<T> implements InternalDataStore<T> {
+public class ListDataStore<T> implements DataStore<T>,
+                                         InternalStoreCallback {
     private final Map<Object, DataHandle> store = new IdentityHashMap<>();
 
     private final List<EntryPointDataProcessor> entryPointSubscribers = new ArrayList<>();
@@ -47,7 +49,7 @@ public class ListDataStore<T> implements InternalDataStore<T> {
 
     @Override
     public void update(DataHandle handle, T object) {
-        entryPointSubscribers.forEach( s -> s.update( handle, object ) );
+        entryPointSubscribers.forEach( s -> s.update( handle, handle.getObject() ) );
         subscribers.forEach( s -> s.update( handle, object ) );
     }
 
