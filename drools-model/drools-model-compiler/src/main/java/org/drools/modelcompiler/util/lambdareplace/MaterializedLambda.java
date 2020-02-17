@@ -32,12 +32,17 @@ import com.github.javaparser.ast.body.MethodDeclaration;
 import com.github.javaparser.ast.body.Parameter;
 import com.github.javaparser.ast.expr.Expression;
 import com.github.javaparser.ast.expr.LambdaExpr;
+import com.github.javaparser.ast.expr.MethodCallExpr;
+import com.github.javaparser.ast.expr.NameExpr;
+import com.github.javaparser.ast.nodeTypes.NodeWithMembers;
 import com.github.javaparser.ast.type.ClassOrInterfaceType;
 import com.github.javaparser.ast.type.Type;
 import com.github.javaparser.ast.type.UnknownType;
 import org.drools.modelcompiler.builder.JavaParserCompiler;
 
 import static org.drools.modelcompiler.util.StringUtil.md5Hash;
+
+import static com.github.javaparser.StaticJavaParser.parseType;
 
 abstract class MaterializedLambda {
 
@@ -81,12 +86,12 @@ abstract class MaterializedLambda {
 
     private void addImports(Collection<String> imports, Collection<String> staticImports, CompilationUnit compilationUnit) {
         compilationUnit.addImport(ruleClassName, true, true);
-        for(String i : imports) {
+        for (String i : imports) {
             compilationUnit.addImport(i);
         }
-        for(String si : staticImports) {
+        for (String si : staticImports) {
             String replace = si;
-            if(si.endsWith(".*")) { // JP doesn't want the * in the import
+            if (si.endsWith(".*")) { // JP doesn't want the * in the import
                 replace = si.replace(".*", "");
                 compilationUnit.addImport(replace, true, true);
             } else {
@@ -113,7 +118,7 @@ abstract class MaterializedLambda {
         }
     }
 
-    private EnumDeclaration create(CompilationUnit compilationUnit) {
+    protected EnumDeclaration create(CompilationUnit compilationUnit) {
         EnumDeclaration lambdaClass = compilationUnit.addEnum(temporaryClassName);
         lambdaClass.addAnnotation(org.drools.compiler.kie.builder.MaterializedLambda.class.getCanonicalName());
         lambdaClass.setImplementedTypes(createImplementedType());
@@ -128,7 +133,7 @@ abstract class MaterializedLambda {
         ClassOrInterfaceType functionType = functionType();
 
         List<Type> typeArguments = lambdaParametersToType();
-        if(!typeArguments.isEmpty()) {
+        if (!typeArguments.isEmpty()) {
             functionType.setTypeArguments(NodeList.nodeList(typeArguments));
         }
         return NodeList.nodeList(functionType);
@@ -154,6 +159,55 @@ abstract class MaterializedLambda {
         LambdaParameter(String name, Type type) {
             this.name = name;
             this.type = type;
+        }
+    }
+
+    interface BitMaskVariable {
+
+        void generateBitMaskField(NodeWithMembers<EnumDeclaration> clazz);
+    }
+
+    static class AllSetButLastBitMask implements BitMaskVariable {
+
+        String maskName;
+        String bitMaskString = "org.drools.model.bitmask.AllSetButLastBitMask";
+
+        public AllSetButLastBitMask(String maskName) {
+            this.maskName = maskName;
+        }
+
+        @Override
+        public void generateBitMaskField(NodeWithMembers<EnumDeclaration> clazz) {
+            Type bitMaskType = parseType(bitMaskString);
+
+            MethodCallExpr methodCallExpr = new MethodCallExpr(new NameExpr(bitMaskString), "get");
+            clazz.addFieldWithInitializer(bitMaskType, maskName, methodCallExpr, Modifier.Keyword.PRIVATE, Modifier.Keyword.FINAL);
+        }
+    }
+
+    static class BitMaskVariableWithFields implements BitMaskVariable {
+
+        String bitMaskString = "org.drools.model.BitMask";
+
+        String domainClassMetadata;
+        List<String> fields;
+        String maskName;
+
+        public BitMaskVariableWithFields(String domainClassMetadata, List<String> fields, String maskName) {
+            this.domainClassMetadata = domainClassMetadata;
+            this.fields = fields;
+            this.maskName = maskName;
+        }
+
+        @Override
+        public void generateBitMaskField(NodeWithMembers<EnumDeclaration> clazz) {
+            Type bitMaskType = parseType(bitMaskString);
+
+            NodeList<Expression> args = new NodeList<>();
+            args.add(new NameExpr(domainClassMetadata));
+            args.addAll(fields.stream().map(NameExpr::new).collect(Collectors.toList()));
+            MethodCallExpr methodCallExpr = new MethodCallExpr(new NameExpr(bitMaskString), "getPatternMask", args);
+            clazz.addFieldWithInitializer(bitMaskType, maskName, methodCallExpr, Modifier.Keyword.PRIVATE, Modifier.Keyword.FINAL);
         }
     }
 }
