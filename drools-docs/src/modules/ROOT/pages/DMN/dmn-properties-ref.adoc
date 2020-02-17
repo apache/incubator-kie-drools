@@ -49,6 +49,18 @@ When valorized with a Java fully qualified name, this property loads a DMN profi
 //I removed `[source]` for this last snippet because it rendered unlike all the others in community output otherwise for some reason. (SJR)
 --
 
+org.kie.dmn.runtime.listeners.$LISTENER_NAME::
+When valorized with a Java fully qualified name, this property loads and registers a DMN Runtime Listener onto the {DECISION_ENGINE} at start time.
+You can use this property to register a DMN listener in order to be notified of several events during DMN model evaluations.
+You can also configure this property in the `kmodule.xml` file in your project.
++
+--
+----
+-Dorg.kie.dmn.runtime.listeners.mylistener=org.acme.MyDMNListener
+----
+//kept removed `[source]` for this last snippet because it rendered unlike all the others in community output otherwise for some reason. as per SJR comment above.
+--
+
 org.kie.dmn.compiler.execmodel::
 When enabled, this property enables DMN decision table logic to be compiled into executable rule models during run time. You can use this property to evaluate DMN decision table logic more efficiently. This property is helpful when the executable model compilation was not originally performed during project compile time. Enabling this property may result in added compile time during the first evaluation by the {DECISION_ENGINE}, but subsequent compilations are more efficient.
 +
