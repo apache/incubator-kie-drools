@@ -120,7 +120,7 @@
     <version.org.infinispan.image>10.0.0.Final-1</version.org.infinispan.image>
     <version.org.infinispan.protostream>4.3.0.Final</version.org.infinispan.protostream>
     <version.org.jboss.spec.javax.ws.rs.jboss-jaxrs-api_2.1_spec>1.0.1.Final</version.org.jboss.spec.javax.ws.rs.jboss-jaxrs-api_2.1_spec>
-    <version.org.junit.minor>5.0</version.org.junit.minor> <!-- so that org.junit.platform and org.junit can share the same minor version -->
+    <version.org.junit.minor>6.0</version.org.junit.minor> <!-- so that org.junit.platform and org.junit can share the same minor version -->
     <version.org.junit>5.${version.org.junit.minor}</version.org.junit>
     <version.org.junit.jupiter>${version.org.junit}</version.org.junit.jupiter>
     <version.org.junit.vintage>${version.org.junit}</version.org.junit.vintage>
@@ -208,6 +208,7 @@
     <module>kogito-maven-plugin</module>
     <module>archetypes</module>
     <module>data-index</module>
+    <module>kogito-quarkus-extension</module>
   </modules>
 
   <dependencyManagement>
@@ -856,29 +857,6 @@
       <build>
         <pluginManagement>
           <plugins>
-            <plugin>
-              <artifactId>maven-failsafe-plugin</artifactId>
-              <version>${version.surefire}</version>
-              <executions>
-                <execution>
-                  <goals>
-                    <goal>integration-test</goal>
-                    <goal>verify</goal>
-                  </goals>
-                  <configuration>
-                    <includes>
-                      <include>**/*IntegrationTest.java</include>
-                      <include>**/*IT.java</include>
-                    </includes>
-                    <excludes>
-                      <exclude>**/Native*IntegrationTest.java</exclude>
-                      <exclude>**/Native*IT.java</exclude>
-                    </excludes>
-                    <argLine>-Xmx1024m -Dfile.encoding=UTF-8</argLine>
-                  </configuration>
-                </execution>
-              </executions>
-            </plugin>
             <plugin>
               <groupId>org.sonarsource.scanner.maven</groupId>
               <artifactId>sonar-maven-plugin</artifactId>
