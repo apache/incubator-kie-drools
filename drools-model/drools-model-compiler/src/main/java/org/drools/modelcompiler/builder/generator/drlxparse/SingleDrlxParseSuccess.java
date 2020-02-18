@@ -50,7 +50,7 @@ public class SingleDrlxParseSuccess extends AbstractDrlxParseSuccess {
     private Expression expr;
     private final Type exprType;
 
-    private final String exprId;
+    private String exprId;
     private String patternBinding;
     private String accumulateBinding;
     private boolean isPatternBindingUnification = false;
@@ -353,6 +353,11 @@ public class SingleDrlxParseSuccess extends AbstractDrlxParseSuccess {
                 .setUnification( this.isUnification() || otherDrlx.isUnification()).setReactOnProperties( newReactOnProperties ).setBetaNode(isBetaNode)
                 .setLeft( new TypedExpression( this.expr, boolean.class ) )
                 .setRight( new TypedExpression( otherDrlx.expr, boolean.class ) );
+    }
+
+    @Override
+    public void setExprId(String exprId) {
+        this.exprId = exprId;
     }
 }
 

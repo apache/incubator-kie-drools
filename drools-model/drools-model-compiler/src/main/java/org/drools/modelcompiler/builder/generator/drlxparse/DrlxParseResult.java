@@ -28,4 +28,6 @@ public interface DrlxParseResult {
     boolean isSuccess();
 
     DrlxParseResult combineWith( DrlxParseResult other, BinaryExpr.Operator operator);
+
+    void setExprId(String exprId);
 }

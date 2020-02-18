@@ -52,6 +52,10 @@ public class DrlxParseFail implements DrlxParseResult {
         return this;
     }
 
+    @Override
+    public void setExprId(String exprId) {
+    }
+
     public DroolsError getError() {
         return error;
     }
