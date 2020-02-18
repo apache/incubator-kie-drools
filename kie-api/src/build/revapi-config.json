@@ -148,7 +148,25 @@
            "methodName": "value",
            "elementKind": "method",
            "justification": "kogito unfork"
-         }
+         },
+         {
+          "code": "java.method.addedToInterface",
+          "new": "method java.util.List<java.lang.String> org.kie.api.event.process.ProcessVariableChangedEvent::getTags()",
+          "package": "org.kie.api.event.process",
+          "classSimpleName": "ProcessVariableChangedEvent",
+          "methodName": "getTags",
+          "elementKind": "method",
+          "justification": "add the possibility to retrieve custom tags associated with variables"
+        },
+        {
+          "code": "java.method.addedToInterface",
+          "new": "method boolean org.kie.api.event.process.ProcessVariableChangedEvent::hasTag(java.lang.String)",
+          "package": "org.kie.api.event.process",
+          "classSimpleName": "ProcessVariableChangedEvent",
+          "methodName": "hasTag",
+          "elementKind": "method",
+          "justification": "add the possibility to find out if custom tag is associated with variables"
+        }       
       ]
     }
   }
