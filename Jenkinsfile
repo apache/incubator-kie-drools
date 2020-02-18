@@ -26,6 +26,11 @@ pipeline {
             steps {
                 script {
                     maven.runMavenWithSubmarineSettings('clean install -Prun-code-coverage', false)
+                    /*
+                       The analysis must happen before the other stages as these clone different projects into a root
+                       directory of kogito-runtimes and are by mistake incorporated in a test coverage report.
+                     */
+                    maven.runMavenWithSubmarineSettings('-e -nsu validate -Psonarcloud-analysis', false)
                 }
             }
         }
@@ -54,13 +59,6 @@ pipeline {
                         // Don't run with tests so far, see: https://github.com/quarkusio/quarkus/issues/6885
                         maven.runMavenWithSubmarineSettings('clean install -Ppersistence', true)
                     }
-                }
-            }
-        }
-        stage('Analyze kogito-runtimes') {
-            steps {
-                script {
-                    maven.runMavenWithSubmarineSettings('-e -nsu generate-resources -Psonarcloud-analysis', false)
                 }
             }
         }
