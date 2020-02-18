@@ -73,9 +73,8 @@ public class SingleDrlxParseSuccess extends AbstractDrlxParseSuccess {
     private boolean unification;
     private boolean temporal;
 
-    public SingleDrlxParseSuccess(Class<?> patternType, String exprId, String patternBinding, Expression expr, Type exprType) {
+    public SingleDrlxParseSuccess(Class<?> patternType, String patternBinding, Expression expr, Type exprType) {
         this.patternType = patternType;
-        this.exprId = exprId;
         this.patternBinding = patternBinding;
         this.expr = expr;
         this.exprType = exprType;
@@ -348,16 +347,22 @@ public class SingleDrlxParseSuccess extends AbstractDrlxParseSuccess {
         newReactOnProperties.addAll( this.reactOnProperties );
         newReactOnProperties.addAll( otherDrlx.reactOnProperties );
 
-        return new SingleDrlxParseSuccess(patternType, exprId, patternBinding, new BinaryExpr( expr, otherDrlx.expr, operator), exprType)
-                .setDecodeConstraintType( Index.ConstraintType.UNKNOWN ).setUsedDeclarations( newUsedDeclarations ).setUsedDeclarationsOnLeft( newUsedDeclarationsOnLeft )
-                .setUnification( this.isUnification() || otherDrlx.isUnification()).setReactOnProperties( newReactOnProperties ).setBetaNode(isBetaNode)
-                .setLeft( new TypedExpression( this.expr, boolean.class ) )
-                .setRight( new TypedExpression( otherDrlx.expr, boolean.class ) );
+        return new SingleDrlxParseSuccess(patternType, patternBinding, new BinaryExpr(expr, otherDrlx.expr, operator), exprType)
+                .setDecodeConstraintType(Index.ConstraintType.UNKNOWN).setUsedDeclarations(newUsedDeclarations).setUsedDeclarationsOnLeft(newUsedDeclarationsOnLeft)
+                .setUnification(this.isUnification() || otherDrlx.isUnification()).setReactOnProperties(newReactOnProperties).setBetaNode(isBetaNode)
+                .setLeft(new TypedExpression(this.expr, boolean.class))
+                .setRight(new TypedExpression(otherDrlx.expr, boolean.class))
+                .setExprIdT(exprId);
     }
 
     @Override
     public void setExprId(String exprId) {
         this.exprId = exprId;
+    }
+
+    public SingleDrlxParseSuccess setExprIdT(String exprId) {
+        setExprId(exprId);
+        return this;
     }
 }
 

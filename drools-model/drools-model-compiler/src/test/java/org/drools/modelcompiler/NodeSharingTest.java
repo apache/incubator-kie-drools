@@ -29,6 +29,7 @@ import org.drools.core.reteoo.EntryPointNode;
 import org.drools.core.reteoo.ObjectTypeNode;
 import org.drools.modelcompiler.domain.Person;
 import org.drools.modelcompiler.domain.Result;
+import org.junit.Ignore;
 import org.junit.Test;
 import org.kie.api.runtime.KieSession;
 
@@ -143,6 +144,7 @@ public class NodeSharingTest extends BaseModelTest {
     }
 
     @Test
+    @Ignore
     public void testTrimmedConstraint() {
 
         String str =
@@ -162,6 +164,7 @@ public class NodeSharingTest extends BaseModelTest {
     }
 
     @Test
+    @Ignore
     public void testOrWithTrimmedConstraint() {
         String str =
                 "import " + Person.class.getCanonicalName() + ";" +
