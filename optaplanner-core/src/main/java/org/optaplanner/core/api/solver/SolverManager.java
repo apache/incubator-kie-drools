@@ -235,6 +235,10 @@ public interface SolverManager<Solution_, ProblemId_> extends AutoCloseable {
      * Does nothing if the solver already terminated or the problemId was never added.
      * To distinguish between both cases, use {@link SolverJob#terminateEarly()} instead.
      * Here, that distinction is not supported because it would cause a memory leak.
+     * <p>
+     * Waits for the termination or cancellation to complete before returning.
+     * During termination, a {@code bestSolutionConsumer} could still be called (on a consumer thread),
+     * before this method returns.
      * @param problemId never null, a value given to {@link #solve(Object, Function, Consumer)}
      * or {@link #solveAndListen(Object, Function, Consumer)}
      */

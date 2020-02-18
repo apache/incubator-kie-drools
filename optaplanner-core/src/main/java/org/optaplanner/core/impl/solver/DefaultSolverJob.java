@@ -18,6 +18,7 @@ package org.optaplanner.core.impl.solver;
 
 import java.util.UUID;
 import java.util.concurrent.Callable;
+import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.Future;
 import java.util.function.BiConsumer;
@@ -28,12 +29,16 @@ import org.optaplanner.core.api.domain.solution.PlanningSolution;
 import org.optaplanner.core.api.solver.Solver;
 import org.optaplanner.core.api.solver.SolverJob;
 import org.optaplanner.core.api.solver.SolverStatus;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * @param <Solution_> the solution type, the class with the {@link PlanningSolution} annotation
  * @param <ProblemId_> the ID type of a submitted problem, such as {@link Long} or {@link UUID}.
  */
 public final class DefaultSolverJob<Solution_, ProblemId_> implements SolverJob<Solution_, ProblemId_>, Callable<Solution_> {
+
+    protected final transient Logger logger = LoggerFactory.getLogger(getClass());
 
     private final DefaultSolverManager<Solution_, ProblemId_> solverManager;
     private final Solver<Solution_> solver;
@@ -43,6 +48,7 @@ public final class DefaultSolverJob<Solution_, ProblemId_> implements SolverJob<
     private final BiConsumer<? super ProblemId_, ? super Throwable> exceptionHandler;
 
     private volatile SolverStatus solverStatus;
+    private CountDownLatch terminatedLatch;
     private Future<Solution_> future;
 
     public DefaultSolverJob(
@@ -58,6 +64,7 @@ public final class DefaultSolverJob<Solution_, ProblemId_> implements SolverJob<
         this.finalBestSolutionConsumer = finalBestSolutionConsumer;
         this.exceptionHandler = exceptionHandler;
         solverStatus = SolverStatus.SOLVING_SCHEDULED;
+        terminatedLatch = new CountDownLatch(1);
     }
 
     public void setFuture(Future<Solution_> future) {
@@ -89,9 +96,9 @@ public final class DefaultSolverJob<Solution_, ProblemId_> implements SolverJob<
             exceptionHandler.accept(problemId, e);
             throw new IllegalStateException("Solving failed for problemId (" + problemId + ").", e);
         } finally {
-            // TODO What happens if this code throws an exception? Is it eaten?
             solverManager.getProblemIdToSolverJobMap().remove(problemId);
-            solverStatus = SolverStatus.NOT_SOLVING; // TODO FIXME race condition, lock on problemId
+            solverStatus = SolverStatus.NOT_SOLVING;
+            terminatedLatch.countDown();
         }
     }
 
@@ -109,7 +116,20 @@ public final class DefaultSolverJob<Solution_, ProblemId_> implements SolverJob<
 
     @Override
     public void terminateEarly() {
-        solver.terminateEarly();
+        boolean cancelled = future.cancel(false);
+        if (cancelled) {
+            solverStatus = SolverStatus.NOT_SOLVING;
+        } else {
+            // The solver is either actively solving or has already terminated
+            solver.terminateEarly();
+            try {
+                // Don't return until bestSolutionConsumer won't be called any more
+                terminatedLatch.await();
+            } catch (InterruptedException e) {
+                Thread.currentThread().interrupt();
+                logger.warn("The terminateEarly() call is interrupted.", e);
+            }
+        }
     }
 
     @Override
