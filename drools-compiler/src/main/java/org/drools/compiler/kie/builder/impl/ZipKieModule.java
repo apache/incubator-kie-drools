@@ -31,9 +31,9 @@ import java.util.Map;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipInputStream;
 
+import org.drools.core.io.internal.InternalResource;
 import org.kie.api.builder.ReleaseId;
 import org.kie.api.builder.model.KieModuleModel;
-import org.kie.api.io.Resource;
 import org.kie.internal.io.ResourceFactory;
 
 import static org.drools.core.util.IoUtils.readBytesFromInputStream;
@@ -55,10 +55,10 @@ public class ZipKieModule extends AbstractKieModule implements InternalKieModule
     }
 
     @Override
-    public Resource getResource( String fileName) {
+    public InternalResource getResource( String fileName) {
         byte[] bytes = getBytes(fileName);
         if (bytes != null && bytes.length > 0) {
-            return ResourceFactory.newByteArrayResource(bytes).setSourcePath(fileName);
+            return (InternalResource) ResourceFactory.newByteArrayResource(bytes).setSourcePath(fileName);
         }
         return null;
     }

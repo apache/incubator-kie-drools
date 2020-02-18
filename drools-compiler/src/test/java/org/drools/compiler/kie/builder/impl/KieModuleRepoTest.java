@@ -20,6 +20,7 @@ import org.drools.compiler.kproject.ReleaseIdImpl;
 import org.drools.compiler.kproject.models.KieBaseModelImpl;
 import org.drools.core.definitions.InternalKnowledgePackage;
 import org.drools.core.impl.InternalKnowledgeBase;
+import org.drools.core.io.internal.InternalResource;
 import org.drools.reflective.ResourceProvider;
 import org.junit.After;
 import org.junit.Before;
@@ -33,7 +34,6 @@ import org.kie.api.builder.Results;
 import org.kie.api.builder.model.KieBaseModel;
 import org.kie.api.builder.model.KieModuleModel;
 import org.kie.api.definition.KiePackage;
-import org.kie.api.io.Resource;
 import org.kie.api.io.ResourceConfiguration;
 import org.kie.internal.builder.CompositeKnowledgeBuilder;
 import org.kie.internal.builder.KnowledgeBuilder;
@@ -302,7 +302,7 @@ public class KieModuleRepoTest {
         }
 
         @Override
-        public Resource getResource( String fileName ) {
+        public InternalResource getResource( String fileName ) {
             throw new UnsupportedOperationException();
         }
 

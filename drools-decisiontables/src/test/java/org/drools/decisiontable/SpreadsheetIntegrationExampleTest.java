@@ -21,15 +21,19 @@ import java.util.List;
 
 import org.acme.insurance.launcher.PricingRuleLauncher;
 import org.junit.Test;
+import org.kie.api.KieBase;
 import org.kie.api.KieServices;
 import org.kie.api.builder.KieBuilder;
 import org.kie.api.builder.KieFileSystem;
+import org.kie.api.builder.model.KieModuleModel;
 import org.kie.api.io.Resource;
+import org.kie.api.io.ResourceType;
 import org.kie.api.runtime.KieSession;
 import org.kie.internal.builder.DecisionTableConfiguration;
 import org.kie.internal.builder.DecisionTableInputType;
 import org.kie.internal.builder.KnowledgeBuilderFactory;
 import org.kie.internal.io.ResourceFactory;
+import org.kie.internal.utils.KieHelper;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
@@ -157,5 +161,22 @@ public class SpreadsheetIntegrationExampleTest {
         } finally {
             System.clearProperty( "drools.trimCellsInDTable" );
         }
+    }
+
+    @Test
+    public void testPackageName() throws Exception {
+        // DROOLS-4967
+        KieServices ks = KieServices.get();
+
+        KieModuleModel kmodel = ks.newKieModuleModel();
+        kmodel.newKieBaseModel( "kbase1" )
+                .addPackage( "org.drools.simple.candrink" )
+                .setDefault( true );
+
+        KieBase kbase = new KieHelper().setKieModuleModel( kmodel )
+                .addResource( ks.getResources().newClassPathResource( "/data/CanNotDrink2.xls", getClass() ), ResourceType.DTABLE )
+                .build();
+
+        assertEquals( 2, kbase.getKiePackage( "org.drools.simple.candrink" ).getRules().size() );
     }
 }
