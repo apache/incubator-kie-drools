@@ -46,6 +46,7 @@ import org.kie.kogito.Model;
 import org.kie.kogito.auth.IdentityProvider;
 import org.kie.kogito.auth.SecurityPolicy;
 import org.kie.kogito.codegen.AbstractCodegenTest;
+import org.kie.kogito.codegen.data.Person;
 import org.kie.kogito.process.Process;
 import org.kie.kogito.process.ProcessInstance;
 import org.kie.kogito.process.VariableViolationException;
@@ -799,4 +800,36 @@ public class UserTaskTest extends AbstractCodegenTest {
         
         assertEquals(org.kie.api.runtime.process.ProcessInstance.STATE_ABORTED, processInstance.status());
     } 
+    
+    @Test
+    public void testUserTaskWithIOexpressionProcess() throws Exception {
+        
+        Application app = generateCodeProcessesOnly("usertask/UserTaskWithIOexpression.bpmn2");        
+        assertThat(app).isNotNull();     
+                
+        Process<? extends Model> p = app.processes().processById("UserTask");
+        
+        Model m = p.createModel();
+        Map<String, Object> parameters = new HashMap<>();
+        parameters.put("person", new Person("john", 0));
+        m.fromMap(parameters);
+        
+        ProcessInstance<?> processInstance = p.createInstance(m);
+        processInstance.start();
+        
+        assertThat(processInstance.status()).isEqualTo(ProcessInstance.STATE_ACTIVE); 
+        
+        List<WorkItem> workItems = processInstance.workItems(securityPolicy);
+        assertEquals(1, workItems.size());
+        assertEquals("Hello", workItems.get(0).getName());
+        assertEquals("john", workItems.get(0).getParameters().get("personName"));
+        
+        processInstance.completeWorkItem(workItems.get(0).getId(), Collections.singletonMap("personAge", 50), securityPolicy);       
+        assertThat(processInstance.status()).isEqualTo(ProcessInstance.STATE_COMPLETED);
+        
+        Model output = (Model) processInstance.variables();
+        Person person = (Person) output.toMap().get("person");
+        assertEquals(50, person.getAge());
+        
+    }
 }

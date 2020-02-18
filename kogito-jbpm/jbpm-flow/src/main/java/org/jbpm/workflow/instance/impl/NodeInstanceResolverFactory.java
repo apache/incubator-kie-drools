@@ -65,4 +65,7 @@ public class NodeInstanceResolverFactory extends ImmutableDefaultFactory {
 		return new SimpleValueResolver(value);
 	}
 	
+	public void addExtraParameters(Map<String, Object> parameters) {
+	    this.extraParameters.putAll(parameters);
+	}
 }

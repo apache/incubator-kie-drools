@@ -16,6 +16,7 @@
 
 package org.jbpm.workflow.instance.node;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Date;
@@ -65,6 +66,7 @@ import org.kie.api.runtime.process.DataTransformer;
 import org.kie.api.runtime.process.EventListener;
 import org.kie.api.runtime.process.NodeInstance;
 import org.kie.api.runtime.process.ProcessWorkItemHandlerException;
+import org.mvel2.MVEL;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -324,9 +326,23 @@ public class WorkItemNodeInstance extends StateBasedNodeInstance implements Even
                         }
                         variableScopeInstance.setVariable(this, association.getTarget(), value);
                     } else {
-                        logger.warn("Could not find variable scope for variable {}", association.getTarget());
-                        logger.warn("when trying to complete Work Item {}", workItem.getName());
-                        logger.warn("Continuing without setting variable.");
+                        String output = association.getSources().get(0);
+                        String target = association.getTarget();
+                                                
+                        Matcher matcher = PatternConstants.PARAMETER_MATCHER.matcher(target);
+                        if (matcher.find()) {
+                            String paramName = matcher.group(1);
+                            
+                            String expression = paramName + " = " + output;
+                            NodeInstanceResolverFactory resolver = new NodeInstanceResolverFactory(this);
+                            resolver.addExtraParameters(workItem.getResults());
+                            Serializable compiled = MVEL.compileExpression(expression);
+                            MVELSafeHelper.getEvaluator().executeExpression(compiled, resolver);
+                        } else {                        
+                            logger.warn("Could not find variable scope for variable {}", association.getTarget());
+                            logger.warn("when trying to complete Work Item {}", workItem.getName());
+                            logger.warn("Continuing without setting variable.");
+                        }
                     }
 
                 } else {

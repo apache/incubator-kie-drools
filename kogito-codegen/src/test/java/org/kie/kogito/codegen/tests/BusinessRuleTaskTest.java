@@ -20,6 +20,7 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.concurrent.atomic.AtomicInteger;
 
 import org.drools.core.config.DefaultRuleEventListenerConfig;
@@ -31,6 +32,7 @@ import org.kie.api.event.rule.AfterMatchFiredEvent;
 import org.kie.kogito.Application;
 import org.kie.kogito.Model;
 import org.kie.kogito.codegen.AbstractCodegenTest;
+import org.kie.kogito.codegen.data.Account;
 import org.kie.kogito.codegen.data.Person;
 import org.kie.kogito.process.Process;
 import org.kie.kogito.process.ProcessInstance;
@@ -199,5 +201,30 @@ public class BusinessRuleTaskTest extends AbstractCodegenTest {
                     .isNotNull()
                     .isEqualTo(BigDecimal.valueOf(30));
         }
+    }
+    
+    @Test
+    public void testBusinessRuleTaskWithIOExpression() throws Exception {
+
+        Application app = generateCode(Collections.singletonList("ruletask/BusinessRuleTaskWithIOExpression.bpmn2"), Collections.singletonList("ruletask/BusinessRuleTask.drl"));
+        assertThat(app).isNotNull();
+
+        Process<? extends Model> p = app.processes().processById("BusinessRuleTask");
+
+        Model m = p.createModel();
+        Map<String, Object> params = new HashMap<>();
+        params.put("person", new Person("john", 25));
+        params.put("account", new Account());
+        m.fromMap(params);
+
+        ProcessInstance<?> processInstance = p.createInstance(m);
+        processInstance.start();
+
+        assertThat(processInstance.status()).isEqualTo(ProcessInstance.STATE_COMPLETED);
+        Model result = (Model)processInstance.variables();
+        assertThat(result.toMap()).hasSize(2).containsKeys("person", "account");
+        assertThat(result.toMap().get("person")).isNotNull().hasFieldOrPropertyWithValue("adult", true);
+        assertThat(result.toMap().get("account")).isNotNull();
+        assertThat(((Account)result.toMap().get("account")).getPerson()).isNotNull();
     }
 }

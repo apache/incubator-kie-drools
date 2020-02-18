@@ -5,6 +5,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
+import java.util.regex.Matcher;
 import java.util.Optional;
 
 import com.github.javaparser.ast.CompilationUnit;
@@ -31,6 +32,8 @@ import com.github.javaparser.ast.type.ClassOrInterfaceType;
 import org.drools.core.util.StringUtils;
 import org.jbpm.process.core.context.variable.Variable;
 import org.jbpm.process.core.context.variable.VariableScope;
+import org.jbpm.process.core.datatype.impl.type.ObjectDataType;
+import org.jbpm.util.PatternConstants;
 import org.jbpm.workflow.core.node.HumanTaskNode;
 
 import static com.github.javaparser.StaticJavaParser.parse;
@@ -220,6 +223,7 @@ public class UserTaskModelMetaData {
         return compilationUnit;
     }
 
+    @SuppressWarnings({"unchecked"})
     private CompilationUnit compilationUnitOutput() {
         CompilationUnit compilationUnit = parse(this.getClass().getResourceAsStream("/class-templates/TaskOutputTemplate.java"));
         compilationUnit.setPackageDeclaration(packageName);
@@ -247,7 +251,16 @@ public class UserTaskModelMetaData {
             Variable variable = variableScope.findVariable(entry.getValue());
 
             if (variable == null) {
-                throw new IllegalStateException("Task " + humanTaskNode.getName() +" (output) " + entry.getKey() + " reference not existing variable " + entry.getValue());
+                // check if given mapping is an expression
+                Matcher matcher = PatternConstants.PARAMETER_MATCHER.matcher(entry.getValue());
+                if (matcher.find()) {                    
+                    Map<String, String> dataOutputs = (Map<String, String>) humanTaskNode.getMetaData("DataOutputs");
+                    variable = new Variable();
+                    variable.setName(entry.getKey());
+                    variable.setType(new ObjectDataType(dataOutputs.get(entry.getKey())));
+                } else {
+                    throw new IllegalStateException("Task " + humanTaskNode.getName() +" (output) " + entry.getKey() + " reference not existing variable " + entry.getValue());
+                }
             }
 
             FieldDeclaration fd = new FieldDeclaration().addVariable(

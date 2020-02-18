@@ -34,6 +34,7 @@ import java.util.Map;
 import org.jbpm.bpmn2.handler.ReceiveTaskHandler;
 import org.jbpm.bpmn2.handler.SendTaskHandler;
 import org.jbpm.bpmn2.handler.ServiceTaskHandler;
+import org.jbpm.bpmn2.objects.Account;
 import org.jbpm.bpmn2.objects.Address;
 import org.jbpm.bpmn2.objects.HelloService;
 import org.jbpm.bpmn2.objects.Person;
@@ -1855,5 +1856,75 @@ public class ActivityTest extends JbpmBpmn2TestCase {
         params.put("choice", 2);
         processInstance = ksession.startProcess("XORTest.XOR2", params);
         assertProcessInstanceCompleted(processInstance);
+    }
+    
+    @Test
+    public void testUserTaskWithExpressionsForIO() throws Exception {
+        KieBase kbase = createKnowledgeBase("BPMN2-UserTaskWithIOexpression.bpmn2");
+        KieSession ksession = createKnowledgeSession(kbase);
+        TestWorkItemHandler workItemHandler = new TestWorkItemHandler();
+        ksession.getWorkItemManager().registerWorkItemHandler("Human Task", workItemHandler);
+        
+        Map<String, Object> parameters = new HashMap<>();
+        parameters.put("person", new Person("john"));
+        
+        ProcessInstance processInstance = ksession.startProcess("UserTask", parameters);
+        assertTrue(processInstance.getState() == ProcessInstance.STATE_ACTIVE);
+        ksession = restoreSession(ksession, true);
+        WorkItem workItem = workItemHandler.getWorkItem();
+        assertNotNull(workItem);
+        assertEquals("john", workItem.getParameter("ActorId"));
+        assertEquals("john", workItem.getParameter("personName"));
+        
+        ksession.getWorkItemManager().completeWorkItem(workItem.getId(), Collections.singletonMap("personAge", 50));
+        
+        Person person = (Person) processInstance.getVariables().get("person");
+        assertEquals(50, person.getAge());
+        assertProcessInstanceFinished(processInstance, ksession);
+        ksession.dispose();
+    }
+    
+    @Test
+    public void testCallActivitykWithExpressionsForIO() throws Exception {
+        KieBase kbase = createKnowledgeBase("BPMN2-CallActivityWithIOexpression.bpmn2", "BPMN2-CallActivitySubProcess.bpmn2");
+        ksession = createKnowledgeSession(kbase);
+        TestWorkItemHandler workItemHandler = new TestWorkItemHandler();
+        ksession.getWorkItemManager().registerWorkItemHandler("Human Task", workItemHandler);
+        Map<String, Object> params = new HashMap<String, Object>();
+        params.put("person", new Person("john"));
+        ProcessInstance processInstance = ksession.startProcess("ParentProcess", params);
+        assertProcessInstanceActive(processInstance);
+        
+        Person person = (Person) processInstance.getVariables().get("person");
+        assertEquals("new value", person.getName());
+
+        ksession = restoreSession(ksession, true);
+        WorkItem workItem = workItemHandler.getWorkItem();
+        assertNotNull(workItem);
+        assertEquals("krisv", workItem.getParameter("ActorId"));
+        ksession.getWorkItemManager().completeWorkItem(workItem.getId(), null);
+
+        assertProcessInstanceFinished(processInstance, ksession);
+    }
+    
+    @Test
+    @RequirePersistence(false)
+    public void testBusinessRuleTaskWithExpressionsForIO() throws Exception {
+        KieBase kbase = createKnowledgeBaseWithoutDumper("BPMN2-BusinessRuleTaskWithDataInputIOExpression.bpmn2",
+                "BPMN2-BusinessRuleTaskWithDataInput.drl");
+        ksession = createKnowledgeSession(kbase);
+        ksession.addEventListener(new RuleAwareProcessEventListener());
+        
+        Map<String, Object> params = new HashMap<String, Object>();
+        params.put("person", new Person(null));
+        params.put("account", new Account());
+        ProcessInstance processInstance = ksession
+                .startProcess("BPMN2-BusinessRuleTask", params);
+        assertProcessInstanceFinished(processInstance, ksession);
+        Person person = (Person) processInstance.getVariables().get("person");
+        assertEquals("john", person.getName());
+        
+        Account account = (Account) processInstance.getVariables().get("account");
+        assertNotNull(account.getPerson());
     }
 }

@@ -16,6 +16,7 @@
 
 package org.jbpm.workflow.instance.node;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Iterator;
@@ -59,6 +60,7 @@ import org.kie.internal.KieInternalServices;
 import org.kie.internal.process.CorrelationAwareProcessRuntime;
 import org.kie.internal.process.CorrelationKey;
 import org.kie.internal.process.CorrelationKeyFactory;
+import org.mvel2.MVEL;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -340,9 +342,23 @@ public class SubProcessNodeInstance extends StateBasedNodeInstance implements Ev
 			        	}
 			            variableScopeInstance.setVariable(this, mapping.getTarget(), value);
 			        } else {
-			            logger.error("Could not find variable scope for variable {}", mapping.getTarget());
-			            logger.error("when trying to complete SubProcess node {}", getSubProcessNode().getName());
-			            logger.error("Continuing without setting variable.");
+			            String output = mapping.getSources().get(0);
+                        String target = mapping.getTarget();
+                                                
+                        Matcher matcher = PatternConstants.PARAMETER_MATCHER.matcher(target);
+                        if (matcher.find()) {
+                            String paramName = matcher.group(1);
+                            
+                            String expression = paramName + " = " + output;
+                            VariableScopeResolverFactory resolver = new VariableScopeResolverFactory(subProcessVariableScopeInstance);
+                            resolver.addExtraParameters(((VariableScopeInstance)getProcessInstance().getContextInstance(VariableScope.VARIABLE_SCOPE)).getVariables());
+                            Serializable compiled = MVEL.compileExpression(expression);
+                            MVELSafeHelper.getEvaluator().executeExpression(compiled, resolver);
+                        } else {                             
+    			            logger.error("Could not find variable scope for variable {}", mapping.getTarget());
+    			            logger.error("when trying to complete SubProcess node {}", getSubProcessNode().getName());
+    			            logger.error("Continuing without setting variable.");
+                        }
 			        }
                 }
 		    }
