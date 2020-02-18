@@ -41,6 +41,7 @@ import com.github.javaparser.ast.stmt.ExpressionStmt;
 import com.github.javaparser.ast.type.PrimitiveType;
 import com.github.javaparser.ast.type.Type;
 import org.drools.model.Index;
+import org.drools.modelcompiler.builder.PackageModel;
 import org.drools.modelcompiler.builder.errors.InvalidExpressionErrorResult;
 import org.drools.modelcompiler.builder.generator.DeclarationSpec;
 import org.drools.modelcompiler.builder.generator.RuleContext;
@@ -65,9 +66,11 @@ import static org.drools.mvel.parser.printer.PrintUtil.printConstraint;
 public abstract class AbstractExpressionBuilder {
 
     protected RuleContext context;
+    protected PackageModel packageModel;
 
-    protected AbstractExpressionBuilder( RuleContext context ) {
+    protected AbstractExpressionBuilder(RuleContext context, PackageModel packageModel) {
         this.context = context;
+        this.packageModel = packageModel;
     }
 
     public void processExpression(DrlxParseSuccess drlxParseResult) {
@@ -192,8 +195,8 @@ public abstract class AbstractExpressionBuilder {
         return scope instanceof NameExpr ? (( NameExpr ) scope).getNameAsString() : null;
     }
 
-    public static AbstractExpressionBuilder getExpressionBuilder(RuleContext context) {
-        return context.isPatternDSL() ? new PatternExpressionBuilder( context ) : new FlowExpressionBuilder( context );
+    public static AbstractExpressionBuilder getExpressionBuilder(RuleContext context, PackageModel packageModel) {
+        return context.isPatternDSL() ? new PatternExpressionBuilder( context, packageModel) : new FlowExpressionBuilder( context, packageModel );
     }
 
     protected Expression narrowExpressionToType( TypedExpression right, java.lang.reflect.Type leftType ) {

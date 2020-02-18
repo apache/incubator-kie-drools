@@ -18,6 +18,7 @@
 package org.drools.modelcompiler.builder.generator.drlxparse;
 
 import com.github.javaparser.ast.expr.BinaryExpr;
+import org.drools.modelcompiler.builder.generator.DRLIdGenerator;
 
 public interface DrlxParseResult {
 
@@ -30,4 +31,6 @@ public interface DrlxParseResult {
     DrlxParseResult combineWith( DrlxParseResult other, BinaryExpr.Operator operator);
 
     void setExprId(String exprId);
+
+    String getExprId(DRLIdGenerator exprIdGenerator);
 }

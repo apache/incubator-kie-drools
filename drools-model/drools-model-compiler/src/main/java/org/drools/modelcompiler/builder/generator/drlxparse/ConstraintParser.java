@@ -101,9 +101,7 @@ public class ConstraintParser {
         DrlxParseResult drlxParseResult = getDrlxParseResult(patternType, bindingId, expression, drlx.getExpr(), hasBind, isPositional );
 
         if (GENERATE_EXPR_ID) {
-            String expressionString = expression.getExpression();
-            String expressionWithoutBind = hasBind ? expressionString.substring(expressionString.indexOf(':') + 1).trim() : expressionString;
-            String exprId = context.getExprId(patternType, expressionWithoutBind);
+            String exprId = drlxParseResult.getExprId(packageModel.getExprIdGenerator());
             drlxParseResult.setExprId(exprId);
         }
 

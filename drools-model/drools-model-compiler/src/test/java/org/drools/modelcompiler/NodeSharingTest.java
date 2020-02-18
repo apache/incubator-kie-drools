@@ -144,7 +144,6 @@ public class NodeSharingTest extends BaseModelTest {
     }
 
     @Test
-    @Ignore
     public void testTrimmedConstraint() {
 
         String str =

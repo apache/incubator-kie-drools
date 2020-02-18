@@ -30,6 +30,7 @@ import com.github.javaparser.ast.expr.EnclosedExpr;
 import com.github.javaparser.ast.expr.Expression;
 import com.github.javaparser.ast.expr.UnaryExpr;
 import org.drools.model.Index;
+import org.drools.modelcompiler.builder.generator.DRLIdGenerator;
 import org.drools.modelcompiler.builder.generator.TypedExpression;
 
 import static com.github.javaparser.ast.expr.BinaryExpr.Operator.AND;
@@ -153,8 +154,19 @@ public class SingleDrlxParseSuccess extends AbstractDrlxParseSuccess {
         return this;
     }
 
-    public String getExprId() {
-        return exprId;
+    public String getExprId(DRLIdGenerator exprIdGenerator) {
+        String constraint;
+        if (expr != null) {
+            try {
+                constraint = expr.toString();
+            } catch (NullPointerException e) {
+                constraint = left.toString(); // TODO nasty hack fix
+            }
+        } else {
+            constraint = left.toString();
+        }
+
+        return exprIdGenerator.getExprId(patternType, constraint);
     }
 
     public String getPatternBinding() {

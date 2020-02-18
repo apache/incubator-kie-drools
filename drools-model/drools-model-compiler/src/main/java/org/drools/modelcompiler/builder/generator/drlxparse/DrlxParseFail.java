@@ -19,6 +19,7 @@ package org.drools.modelcompiler.builder.generator.drlxparse;
 
 import org.drools.compiler.compiler.DroolsError;
 import com.github.javaparser.ast.expr.BinaryExpr;
+import org.drools.modelcompiler.builder.generator.DRLIdGenerator;
 
 public class DrlxParseFail implements DrlxParseResult {
 
@@ -54,6 +55,11 @@ public class DrlxParseFail implements DrlxParseResult {
 
     @Override
     public void setExprId(String exprId) {
+    }
+
+    @Override
+    public String getExprId(DRLIdGenerator exprIdGenerator) {
+        return "invalidEpxr";
     }
 
     public DroolsError getError() {

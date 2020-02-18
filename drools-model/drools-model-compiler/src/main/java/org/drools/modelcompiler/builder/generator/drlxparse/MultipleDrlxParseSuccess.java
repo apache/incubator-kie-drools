@@ -16,10 +16,13 @@
 
 package org.drools.modelcompiler.builder.generator.drlxparse;
 
+import java.util.Arrays;
+import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 import com.github.javaparser.ast.expr.BinaryExpr;
 import com.github.javaparser.ast.expr.Expression;
+import org.drools.modelcompiler.builder.generator.DRLIdGenerator;
 
 public class MultipleDrlxParseSuccess extends AbstractDrlxParseSuccess {
 
@@ -51,6 +54,11 @@ public class MultipleDrlxParseSuccess extends AbstractDrlxParseSuccess {
 
     @Override
     public void setExprId(String exprId) {
+    }
+
+    @Override
+    public String getExprId(DRLIdGenerator exprIdGenerator) {
+        return Arrays.stream(results).map(s -> s.getExprId(exprIdGenerator)).collect(Collectors.joining());
     }
 
     @Override

@@ -48,7 +48,7 @@ public class EvalVisitor {
             Expression rewriteExprAsLambdaWithoutThisParam = DrlxParseUtil.generateLambdaWithoutParameters(singleResult.getUsedDeclarations(), singleResult.getExpr(), true, Optional.empty());
             singleResult.setExpr(rewriteExprAsLambdaWithoutThisParam); // rewrites the DrlxParserResult expr as directly the lambda to use
             singleResult.setStatic(true);
-            new FlowExpressionBuilder(context).processExpression(drlxParseSuccess);
+            new FlowExpressionBuilder(context, packageModel).processExpression(drlxParseSuccess);
         });
 
     }

@@ -44,7 +44,7 @@ public class AccumulateVisitorPatternDSL extends AccumulateVisitor {
 
     public AccumulateVisitorPatternDSL(ModelGeneratorVisitor modelGeneratorVisitor, RuleContext context, PackageModel packageModel) {
         super(context, modelGeneratorVisitor, packageModel);
-        this.expressionBuilder = new PatternExpressionBuilder(context);
+        this.expressionBuilder = new PatternExpressionBuilder(context, context.getPackageModel());
     }
 
     @Override

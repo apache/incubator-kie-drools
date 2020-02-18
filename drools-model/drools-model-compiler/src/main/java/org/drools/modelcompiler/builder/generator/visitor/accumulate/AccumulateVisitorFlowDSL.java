@@ -52,7 +52,7 @@ public class AccumulateVisitorFlowDSL extends AccumulateVisitor {
 
     public AccumulateVisitorFlowDSL(ModelGeneratorVisitor modelGeneratorVisitor, RuleContext context, PackageModel packageModel) {
         super(context, modelGeneratorVisitor, packageModel);
-        expressionBuilder = new FlowExpressionBuilder(context);
+        expressionBuilder = new FlowExpressionBuilder(context, context.getPackageModel());
     }
 
     @Override
