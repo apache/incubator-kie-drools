@@ -23,6 +23,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import org.dmg.pmml.pmml_4_2.descr.PMML;
 import org.drools.compiler.builder.impl.KnowledgeBuilderConfigurationImpl;
 import org.drools.compiler.builder.impl.KnowledgeBuilderImpl;
 import org.drools.compiler.builder.impl.errors.SrcError;
@@ -107,9 +108,10 @@ public class PMMLAssemblerService implements KieAssemblerService {
         }
         if (pmmlCompiler != null) {
             if (pmmlCompiler.getResults().isEmpty()) {
-                addPMMLPojos(pmmlCompiler, resource);
+                PMML pmml = pmmlCompiler.loadModel(PMML4Compiler.PMML, resource.getInputStream());
+                addPMMLPojos(pmmlCompiler, resource, pmml);
                 if (pmmlCompiler.getResults().isEmpty()) {
-                    List<PackageDescr> packages = getPackageDescrs(resource);
+                    List<PackageDescr> packages = getPackageDescrs(resource, pmml);
                     if (packages != null && !packages.isEmpty()) {
                         for (PackageDescr descr : packages) {
                             this.kbuilder.addPackage(descr);
@@ -131,8 +133,8 @@ public class PMMLAssemblerService implements KieAssemblerService {
      * @throws DroolsParserException
      * @throws IOException
      */
-    private List<PackageDescr> getPackageDescrs(Resource resource) throws DroolsParserException, IOException {
-        List<PMMLResource> resources = pmmlCompiler.precompile(resource.getInputStream(), null, null);
+    private List<PackageDescr> getPackageDescrs(Resource resource, PMML pmml) throws DroolsParserException, IOException {
+        List<PMMLResource> resources = pmmlCompiler.precompile(pmml, null);
         if (resources != null && !resources.isEmpty()) {
             return generatedResourcesToPackageDescr(resource, resources);
         }
@@ -188,16 +190,14 @@ public class PMMLAssemblerService implements KieAssemblerService {
         }
     }
 
-    private void addPMMLPojos(PMML4Compiler compiler, Resource resource) {
+    private void addPMMLPojos(PMML4Compiler compiler, Resource resource, PMML pmml) {
         KieFileSystem javaSource = KieServices.Factory.get().newKieFileSystem();
         Map<String, String> javaSources = new HashMap<>();
         Map<String, String> modelSources = null;
         try {
-            modelSources = compiler.getJavaClasses(resource.getInputStream());
+            modelSources = compiler.getJavaClasses(pmml);
         } catch (PMML4Exception px) {
             kbuilder.addBuilderResult(new SrcError(resource, px.getMessage()));
-        } catch (IOException e) {
-            kbuilder.addBuilderResult(new SrcError(resource, e.getMessage()));
         }
         if (compiler.getResults().isEmpty()) {
             if (modelSources != null && !modelSources.isEmpty()) {

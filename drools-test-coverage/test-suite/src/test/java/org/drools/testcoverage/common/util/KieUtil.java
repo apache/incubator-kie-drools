@@ -264,7 +264,7 @@ public final class KieUtil {
 
     public static Resource getResource(final String content, final String path) {
         final KieServices kieServices = KieServices.get();
-        final Resource resource = kieServices.getResources().newReaderResource(new StringReader(content));
+        final Resource resource = kieServices.getResources().newByteArrayResource( content.getBytes() );
         resource.setSourcePath(path);
         return resource;
     }

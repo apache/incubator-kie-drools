@@ -33,10 +33,14 @@ import org.kie.dmn.api.core.DMNContext;
 import org.kie.dmn.api.core.DMNModel;
 import org.kie.dmn.api.core.DMNResult;
 import org.kie.dmn.api.core.DMNRuntime;
+import org.kie.dmn.api.core.DMNType;
 import org.kie.dmn.core.api.DMNFactory;
 import org.kie.dmn.core.assembler.DMNAssemblerService;
+import org.kie.dmn.core.impl.CompositeTypeImpl;
 import org.kie.dmn.core.impl.DMNModelImpl;
+import org.kie.dmn.core.impl.SimpleTypeImpl;
 import org.kie.dmn.core.util.DMNRuntimeUtil;
+import org.kie.dmn.feel.lang.types.BuiltInType;
 import org.kie.internal.builder.IncrementalResults;
 import org.kie.internal.builder.InternalKieBuilder;
 import org.kie.internal.services.KieAssemblersImpl;
@@ -59,6 +63,8 @@ public class DMNRuntimePMMLTest {
     }
 
     public static final Logger LOG = LoggerFactory.getLogger(DMNRuntimePMMLTest.class);
+
+    private static final double COMPARISON_DELTA = 0.000001;
 
     @Test
     public void testBasic() {
@@ -104,6 +110,8 @@ public class DMNRuntimePMMLTest {
         assertThat(m0.getInputFields(), hasEntry(is("validLicense"), anything()));
         assertThat(m0.getInputFields(), not(hasEntry(is("overallScore"), anything())));
         assertThat(m0.getInputFields(), not(hasEntry(is("calculatedScore"), anything())));
+
+        assertThat(m0.getOutputFields(), hasEntry(is("calculatedScore"), anything()));
     }
 
     /**
@@ -133,5 +141,70 @@ public class DMNRuntimePMMLTest {
         DMNRuntime dmnRuntime = KieRuntimeFactory.of(kieContainer.getKieBase()).get(DMNRuntime.class);
 
         runDMNModelInvokingPMML(dmnRuntime);
+    }
+
+    @Test
+    public void testMultiOutputs() {
+        final DMNRuntime runtime = DMNRuntimeUtil.createRuntimeWithAdditionalResources("KiePMMLRegressionClax.dmn",
+                                                                                       DMNRuntimePMMLTest.class,
+                                                                                       "test_regression_clax.pmml");
+        final DMNModel dmnModel = runtime.getModel("http://www.trisotech.com/definitions/_ca466dbe-20b4-4e88-a43f-4ce3aff26e4f", "KiePMMLRegressionClax");
+        assertThat( dmnModel, notNullValue() );
+        assertThat( DMNRuntimeUtil.formatMessages( dmnModel.getMessages() ), dmnModel.hasErrors(), is( false ) );
+
+        final DMNContext dmnContext = DMNFactory.newContext();
+        dmnContext.set("fld1", 1.0);
+        dmnContext.set("fld2", 1.0);
+        dmnContext.set("fld3", "x");
+
+        final DMNResult dmnResult = runtime.evaluateAll(dmnModel, dmnContext);
+        LOG.debug("{}", dmnResult);
+        assertThat(DMNRuntimeUtil.formatMessages(dmnResult.getMessages()), dmnResult.hasErrors(), is(false));
+
+        final DMNContext resultContext = dmnResult.getContext();
+        final Map<String, Object> result = (Map<String, Object>) resultContext.get("my decision");
+        assertEquals("catD", (String)result.get("RegOut"));
+        assertEquals(0.8279559384018024, ((BigDecimal)result.get("RegProb")).doubleValue(), COMPARISON_DELTA);
+        assertEquals(0.0022681396056233208, ((BigDecimal)result.get("RegProbA")).doubleValue(), COMPARISON_DELTA);
+
+        // additional import info.
+        Map<String, DMNImportPMMLInfo> pmmlImportInfo = ((DMNModelImpl) dmnModel).getPmmlImportInfo();
+        assertThat(pmmlImportInfo.keySet(), hasSize(1));
+        DMNImportPMMLInfo p0 = pmmlImportInfo.values().iterator().next();
+        assertThat(p0.getImportName(), is("test_regression_clax"));
+        assertThat(p0.getModels(), hasSize(1));
+        DMNPMMLModelInfo m0 = p0.getModels().iterator().next();
+        assertThat(m0.getName(), is("LinReg"));
+
+        Map<String, DMNType> inputFields = m0.getInputFields();
+        SimpleTypeImpl fld1 = (SimpleTypeImpl)inputFields.get("fld1");
+        assertEquals("test_regression_clax", fld1.getNamespace());
+        assertEquals(BuiltInType.NUMBER, fld1.getFeelType());
+
+        SimpleTypeImpl fld2 = (SimpleTypeImpl)inputFields.get("fld2");
+        assertEquals("test_regression_clax", fld2.getNamespace());
+        assertEquals(BuiltInType.NUMBER, fld1.getFeelType());
+
+        SimpleTypeImpl fld3 = (SimpleTypeImpl)inputFields.get("fld3");
+        assertEquals("test_regression_clax", fld3.getNamespace());
+        assertEquals(BuiltInType.STRING, fld3.getFeelType());
+
+        Map<String, DMNType> outputFields = m0.getOutputFields();
+        CompositeTypeImpl output = (CompositeTypeImpl)outputFields.get("LinReg");
+        assertEquals("test_regression_clax", output.getNamespace());
+
+        Map<String, DMNType> fields = output.getFields();
+        SimpleTypeImpl regOut = (SimpleTypeImpl)fields.get("RegOut");
+
+        assertEquals("test_regression_clax", regOut.getNamespace());
+        assertEquals(BuiltInType.STRING, regOut.getFeelType());
+
+        SimpleTypeImpl regProb = (SimpleTypeImpl)fields.get("RegProb");
+        assertEquals("test_regression_clax", regProb.getNamespace());
+        assertEquals(BuiltInType.NUMBER, regProb.getFeelType());
+
+        SimpleTypeImpl regProbA = (SimpleTypeImpl)fields.get("RegProbA");
+        assertEquals("test_regression_clax", regProbA.getNamespace());
+        assertEquals(BuiltInType.NUMBER, regProbA.getFeelType());
     }
 }

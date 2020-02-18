@@ -221,7 +221,7 @@ public class KieBuilderSetImpl implements KieBuilderSet {
                                  String resourceName,
                                  boolean useFolders ) {
         return !resourceName.endsWith(".properties") &&
-               filterFileInKBase(kieModule, kieBaseModel, resourceName, () -> kieModule.getBytes( resourceName ), useFolders) &&
+               filterFileInKBase(kieModule, kieBaseModel, resourceName, () -> kieModule.getResource( resourceName ), useFolders) &&
                kieModule.addResourceToCompiler(ckbuilder, kieBaseModel, resourceName);
     }
 
@@ -250,16 +250,6 @@ public class KieBuilderSetImpl implements KieBuilderSet {
 
         @Override
         public Collection<Resource> listResources() {
-            throw new UnsupportedOperationException();
-        }
-
-        @Override
-        public long getLastModified() {
-            throw new UnsupportedOperationException();
-        }
-
-        @Override
-        public long getLastRead() {
             throw new UnsupportedOperationException();
         }
 

@@ -22,7 +22,7 @@ import java.util.Collections;
 import org.drools.compiler.compiler.io.File;
 import org.drools.compiler.compiler.io.Folder;
 import org.drools.compiler.compiler.io.Path;
-import org.drools.compiler.compiler.io.Resource;
+import org.drools.compiler.compiler.io.FileSystemItem;
 import org.drools.core.util.StringUtils;
 
 public class MemoryFolder
@@ -120,8 +120,8 @@ public class MemoryFolder
         return p;
     }
 
-    public Collection<? extends Resource> getMembers() {
-        Collection<? extends Resource> members = mfs.getMembers( this );
+    public Collection<? extends FileSystemItem> getMembers() {
+        Collection<? extends FileSystemItem> members = mfs.getMembers( this );
         return members != null ? members : Collections.emptyList();
     }
 

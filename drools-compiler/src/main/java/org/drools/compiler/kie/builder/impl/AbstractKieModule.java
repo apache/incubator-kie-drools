@@ -65,7 +65,6 @@ import org.kie.internal.builder.DecisionTableInputType;
 import org.kie.internal.builder.KnowledgeBuilder;
 import org.kie.internal.builder.KnowledgeBuilderConfiguration;
 import org.kie.internal.builder.ResourceChangeSet;
-import org.kie.internal.io.ResourceFactory;
 import org.kie.internal.io.ResourceTypeImpl;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -299,14 +298,6 @@ public abstract class AbstractKieModule
     public boolean hasResource(String fileName) {
         byte[] bytes = getBytes(fileName);
         return bytes != null && bytes.length > 0;
-    }
-
-    public Resource getResource(String fileName) {
-        byte[] bytes = getBytes(fileName);
-        if (bytes != null && bytes.length > 0) {
-            return ResourceFactory.newByteArrayResource(bytes).setSourcePath(fileName);
-        }
-        return null;
     }
 
     public ResourceConfiguration getResourceConfiguration(String fileName) {

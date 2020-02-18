@@ -17,6 +17,7 @@
 package org.drools.core.event;
 
 import java.util.Iterator;
+import java.util.List;
 
 import org.kie.api.event.process.ProcessCompletedEvent;
 import org.kie.api.event.process.ProcessEventListener;
@@ -129,12 +130,13 @@ public class ProcessEventSupport extends AbstractEventSupport<ProcessEventListen
 
     public void fireBeforeVariableChanged(final String id, final String instanceId, 
             final Object oldValue, final Object newValue,
+            final List<String> tags,
             final ProcessInstance processInstance, KieRuntime kruntime) {
         final Iterator<ProcessEventListener> iter = getEventListenersIterator();
 
         if (iter.hasNext()) {
             final ProcessVariableChangedEvent event = new ProcessVariableChangedEventImpl(
-                id, instanceId, oldValue, newValue, processInstance, kruntime);
+                id, instanceId, oldValue, newValue, tags, processInstance, kruntime);
 
             do {
                 iter.next().beforeVariableChanged(event);
@@ -144,12 +146,13 @@ public class ProcessEventSupport extends AbstractEventSupport<ProcessEventListen
 
     public void fireAfterVariableChanged(final String name, final String id, 
             final Object oldValue, final Object newValue,
+            final List<String> tags,
             final ProcessInstance processInstance, KieRuntime kruntime) {
         final Iterator<ProcessEventListener> iter = getEventListenersIterator();
 
         if (iter.hasNext()) {
             final ProcessVariableChangedEvent event = new ProcessVariableChangedEventImpl(
-                name, id, oldValue, newValue, processInstance, kruntime);
+                name, id, oldValue, newValue, tags, processInstance, kruntime);
 
             do {
                 iter.next().afterVariableChanged(event);

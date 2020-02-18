@@ -18,29 +18,24 @@ package org.drools.core.io.impl;
 
 import java.io.Externalizable;
 import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileNotFoundException;
-import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.ObjectInput;
 import java.io.ObjectOutput;
 import java.io.Reader;
-import java.io.UnsupportedEncodingException;
 import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.net.URLConnection;
-import java.net.URLEncoder;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 
 import org.apache.commons.codec.binary.Base64;
+import org.drools.core.io.internal.InternalResource;
 import org.drools.core.util.IoUtils;
 import org.drools.core.util.StringUtils;
-import org.drools.core.io.internal.InternalResource;
 import org.kie.api.io.Resource;
 import org.kie.api.io.ResourceType;
 
@@ -59,10 +54,7 @@ public class UrlResource extends BaseResource
 
     private static final int    DEFAULT_BUFFER_SIZE      = 1024 * 4;
 
-    public static final File    CACHE_DIR                = getCacheDir();
-
     private URL                 url;
-    private long                lastRead                 = -1;
     private static final String DROOLS_RESOURCE_URLCACHE = "drools.resource.urlcache";
     private String              basicAuthentication      = "disabled";
     private String              username                 = "";
@@ -156,85 +148,21 @@ public class UrlResource extends BaseResource
      * @see java.net.URLConnection#getInputStream()
      */
     public InputStream getInputStream() throws IOException {
-        try {
-            long lastMod = grabLastMod();
-            if (lastMod == 0) {
-                //we will try the cache...
-                if (cacheFileExists())
-                    return fromCache();
+        URLConnection con = openURLConnection(this.url);
+        con.setUseCaches(false);
+
+        if (con instanceof HttpURLConnection) {
+            if ("enabled".equalsIgnoreCase(basicAuthentication)) {
+                String userpassword = username + ":" + password;
+                byte[] authEncBytes = Base64.encodeBase64( userpassword.getBytes(IoUtils.UTF8_CHARSET) );
+
+                ((HttpURLConnection) con).setRequestProperty("Authorization",
+                        "Basic " + new String(authEncBytes, IoUtils.UTF8_CHARSET));
             }
-            if (lastMod > 0 && lastMod > lastRead) {
-                if (CACHE_DIR != null && (url.getProtocol().equals("http") || url.getProtocol().equals("https"))) {
-                    //lets grab a copy and cache it in case we need it in future...
-                    cacheStream();
-                    lastMod = getCacheFile().lastModified();
-                    this.lastRead = lastMod;
-                    return fromCache();
-                }
-            }
-            this.lastRead = lastMod;
-            return grabStream();
-        } catch (IOException e) {
-            if (cacheFileExists()) {
-                return fromCache();
-            } else {
-                throw e;
-            }
+
         }
-    }
 
-    private boolean cacheFileExists() {
-        return CACHE_DIR != null && getCacheFile().exists();
-    }
-
-    private InputStream fromCache() throws FileNotFoundException, UnsupportedEncodingException {
-        File fi = getCacheFile();
-        return new FileInputStream(fi);
-    }
-
-    private File getCacheFile() {
-        try {
-            return new File(CACHE_DIR, URLEncoder.encode(this.url.toString(), "UTF-8"));
-        } catch (UnsupportedEncodingException e) {
-            throw new RuntimeException(e);
-        }
-    }
-
-    private File getTemproralCacheFile() {
-        try {
-            return new File(CACHE_DIR, URLEncoder.encode(this.url.toString(), "UTF-8") + "_tmp");
-        } catch (UnsupportedEncodingException e) {
-            throw new RuntimeException(e);
-        }
-    }
-
-    /**
-     * Save a copy in the local cache - in case remote source is not available in future.
-     */
-    private void cacheStream() {
-        try {
-            File fi = getTemproralCacheFile();
-            if (fi.exists()) {
-                if (!fi.delete()) {
-                    throw new IllegalStateException("Cannot delete file " + fi.getAbsolutePath() + "!");
-                }
-            }
-            try (FileOutputStream fout = new FileOutputStream(fi);
-                 InputStream in = grabStream()) {
-                byte[] buffer = new byte[DEFAULT_BUFFER_SIZE];
-                int n;
-                while (-1 != (n = in.read(buffer))) {
-                    fout.write(buffer, 0, n);
-                }
-            }
-            
-            File cacheFile = getCacheFile();
-            if (!fi.renameTo(cacheFile)) {
-                throw new IllegalStateException("Cannot rename file \"" + fi.getAbsolutePath() + "\" to \"" + cacheFile.getAbsolutePath() + "\"!");
-            }
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
+        return con.getInputStream();
     }
 
     private URLConnection openURLConnection(URL url) throws IOException {
@@ -301,60 +229,6 @@ public class UrlResource extends BaseResource
         } catch (Exception e) {
             throw new RuntimeException("Unable to get File for url " + this.url, e);
         }
-    }
-
-    public long getLastModified() {
-        try {
-            long lm = grabLastMod();
-            //try the cache.
-            if (lm == 0 && cacheFileExists()) {
-                //OK we will return it from the local cached copy, as remote one isn't available..
-                return getCacheFile().lastModified();
-            }
-            return lm;
-        } catch (IOException e) {
-            //try the cache...
-            if (cacheFileExists()) {
-                //OK we will return it from the local cached copy, as remote one isn't available..
-                return getCacheFile().lastModified();
-            } else {
-                throw new RuntimeException("Unable to get LastModified for ClasspathResource",
-                        e);
-            }
-        }
-    }
-
-    private long grabLastMod() throws IOException {
-        // use File if possible, as http rounds milliseconds on some machines, this fine level of granularity is only really an issue for testing
-        // http://bugs.sun.com/bugdatabase/view_bug.do?bug_id=4504473
-        if ("file".equals(url.getProtocol())) {
-            File file = getFile();
-            return file.lastModified();
-        } else {
-            URLConnection conn = openURLConnection(getURL());
-            if (conn instanceof HttpURLConnection) {
-                ((HttpURLConnection) conn).setRequestMethod("HEAD");
-                if ("enabled".equalsIgnoreCase(basicAuthentication)) {
-                    String userpassword = username + ":" + password;
-                    byte[] authEncBytes = Base64.encodeBase64( userpassword.getBytes(IoUtils.UTF8_CHARSET) );
-
-                    ((HttpURLConnection) conn).setRequestProperty("Authorization",
-                            "Basic " + new String(authEncBytes, IoUtils.UTF8_CHARSET));
-                }
-            }
-            long date = conn.getLastModified();
-            if (date == 0) {
-                try {
-                    date = Long.parseLong(conn.getHeaderField("lastModified"));
-                } catch (Exception e) { /* well, we tried ... */
-                }
-            }
-            return date;
-        }
-    }
-
-    public long getLastRead() {
-        return this.lastRead;
     }
 
     public boolean isDirectory() {

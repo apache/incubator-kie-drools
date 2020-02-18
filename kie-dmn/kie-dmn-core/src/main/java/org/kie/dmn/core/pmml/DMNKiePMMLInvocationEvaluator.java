@@ -17,6 +17,7 @@
 package org.kie.dmn.core.pmml;
 
 import java.lang.reflect.Method;
+import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Map.Entry;
@@ -28,11 +29,13 @@ import org.kie.api.pmml.PMML4Field;
 import org.kie.api.pmml.PMML4Result;
 import org.kie.dmn.api.core.DMNMessage;
 import org.kie.dmn.api.core.DMNResult;
+import org.kie.dmn.api.core.DMNType;
 import org.kie.dmn.api.core.event.DMNRuntimeEventManager;
 import org.kie.dmn.core.api.EvaluatorResult;
 import org.kie.dmn.core.api.EvaluatorResult.ResultType;
 import org.kie.dmn.core.ast.DMNFunctionDefinitionEvaluator.FormalParameter;
 import org.kie.dmn.core.ast.EvaluatorResultImpl;
+import org.kie.dmn.core.impl.CompositeTypeImpl;
 import org.kie.dmn.core.impl.DMNResultImpl;
 import org.kie.dmn.core.util.Msg;
 import org.kie.dmn.core.util.MsgUtil;
@@ -76,19 +79,30 @@ public class DMNKiePMMLInvocationEvaluator extends AbstractPMMLInvocationEvaluat
         PMML4Result resultHolder = helper.submitRequest(request.build());
 
         Map<String, Object> resultVariables = resultHolder.getResultVariables();
+
         Map<String, Object> result = new HashMap<>();
         for (Entry<String, Object> kv : resultVariables.entrySet()) {
             Object r = kv.getValue();
             if (r instanceof PMML4Field) {
-                PMML4Field pmml4Field = (PMML4Field) r;
                 final String resultName = kv.getKey();
                 if (resultName != null && !resultName.isEmpty()) {
-                    Optional<String> outputFieldNameFromInfo = pmmlInfo.getModels()
-                                                                       .stream()
-                                                                       .filter(m -> model.equals(m.getName()))
-                                                                       .flatMap(m -> m.getOutputFieldNames().stream())
-                                                                       .filter(ofn -> ofn.equalsIgnoreCase(resultName))
-                                                                       .findFirst();
+                    Optional<String> outputFieldNameFromInfo;
+                    Optional<DMNType> opt = getCompositeOutput();
+                    if (opt.isPresent()) {
+                        CompositeTypeImpl type = (CompositeTypeImpl) opt.get();
+                        outputFieldNameFromInfo = type.getFields()
+                                                      .keySet()
+                                                      .stream()
+                                                      .filter(k -> k.equalsIgnoreCase(resultName))
+                                                      .findFirst();
+                    } else {
+                        outputFieldNameFromInfo = pmmlInfo.getModels()
+                                                          .stream()
+                                                          .filter(m -> model.equals(m.getName()))
+                                                          .flatMap(m -> m.getOutputFieldNames().stream())
+                                                          .filter(ofn -> ofn.equalsIgnoreCase(resultName))
+                                                          .findFirst();
+                    }
                     if (outputFieldNameFromInfo.isPresent()) {
                         String name = outputFieldNameFromInfo.get();
                         try {
@@ -114,6 +128,18 @@ public class DMNKiePMMLInvocationEvaluator extends AbstractPMMLInvocationEvaluat
 
         Object coercedResult = result.size() > 1 ? result : result.values().iterator().next();
         return new EvaluatorResultImpl(coercedResult, ResultType.SUCCESS);
+    }
+
+    private Optional<DMNType> getCompositeOutput() {
+        Collection<? extends PMMLModelInfo> models = pmmlInfo.getModels();
+        return models.stream()
+                .filter(m -> model.equals(m.getName()))
+                .filter(m -> m instanceof DMNPMMLModelInfo)
+                .flatMap(m -> ((DMNPMMLModelInfo)m).getOutputFields().entrySet().stream())
+                .filter(e -> e.getKey().equals(model))
+                .filter(e -> e.getValue() instanceof CompositeTypeImpl)
+                .map(Map.Entry::getValue)
+                .findFirst();
     }
 
 }

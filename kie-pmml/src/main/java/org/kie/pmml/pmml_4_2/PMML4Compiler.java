@@ -511,18 +511,8 @@ public class PMML4Compiler {
         return is;
     }
 
-    
-    public Map<String, String> getJavaClasses(String fileName) throws PMML4Exception {
-        InputStream is = getInputStreamByFileName(fileName);
-        if (is != null) {
-            return getJavaClasses(is);
-        }
-        return new HashMap<>();
-    }
-    
-    public Map<String, String> getJavaClasses(InputStream stream) throws PMML4Exception {
+    public Map<String, String> getJavaClasses(PMML pmml) throws PMML4Exception {
         Map<String, String> javaClasses = new HashMap<>();
-        PMML pmml = loadModel(PMML, stream);
         if (pmml != null && results.isEmpty()) {
             PMML4Unit unit = new PMML4UnitImpl(pmml);
             if (unit != null) {
@@ -553,12 +543,11 @@ public class PMML4Compiler {
         return javaClasses;
     }
 
-    public List<PMMLResource> precompile(InputStream stream, ClassLoader classLoader, KieBaseModel rootKieBaseModel) {
+    public List<PMMLResource> precompile(PMML pmml, ClassLoader classLoader) {
         List<PMMLResource> resources = new ArrayList<>();
         KieServices services = KieServices.Factory.get();
         KieModuleModel module = services.newKieModuleModel();
         this.results = new ArrayList<KnowledgeBuilderResult>();
-        PMML pmml = loadModel(PMML, stream);
         helper.setResolver(classLoader);
         PMML4Unit unit = new PMML4UnitImpl(pmml);
         if (unit.containsMiningModel()) {
