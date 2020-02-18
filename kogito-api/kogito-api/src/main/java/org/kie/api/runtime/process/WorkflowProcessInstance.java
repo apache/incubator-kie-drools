@@ -79,5 +79,12 @@ public interface WorkflowProcessInstance
      * @return error message
      */
     String getErrorMessage();
+    
+    
+    /**
+     * Returns optional correlation key assigned to process instance
+     * @return correlation key if present otherwise null
+     */
+    String getCorrelationKey();
 
 }

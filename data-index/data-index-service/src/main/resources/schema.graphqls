@@ -30,6 +30,7 @@ type ProcessInstance {
     error: ProcessInstanceError
     addons: [String!]
     lastUpdate: DateTime!
+    businessKey: String
 }
 
 type KogitoMetadata {
@@ -61,6 +62,7 @@ type ProcessInstanceMeta {
     start: DateTime!
     end: DateTime
     lastUpdate: DateTime!
+    businessKey: String
 }
 
 type ProcessInstanceError {
@@ -96,6 +98,7 @@ input ProcessInstanceOrderBy {
     end: OrderBy
     error: ProcessInstanceErrorOrderBy
     lastUpdate: OrderBy
+    businessKey: OrderBy
 }
 
 input ProcessInstanceErrorOrderBy {
@@ -121,6 +124,7 @@ input ProcessInstanceArgument {
     end: DateArgument
     addons: StringArrayArgument
     lastUpdate: DateArgument
+    businessKey: StringArgument
 }
 
 input ProcessInstanceErrorArgument {
@@ -140,6 +144,7 @@ input ProcessInstanceMetaArgument {
     roles: StringArrayArgument
     start: DateArgument
     end: DateArgument
+    businessKey: StringArgument
 }
 
 input NodeInstanceArgument {

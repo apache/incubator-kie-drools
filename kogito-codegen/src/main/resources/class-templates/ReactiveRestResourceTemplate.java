@@ -15,6 +15,8 @@ import javax.ws.rs.DefaultValue;
 import javax.ws.rs.PathParam;
 import javax.ws.rs.QueryParam;
 import javax.ws.rs.Produces;
+import javax.ws.rs.core.Context;
+import javax.ws.rs.core.HttpHeaders;
 import javax.ws.rs.core.MediaType;
 
 
@@ -41,15 +43,22 @@ public class $Type$ReactiveResource {
     @POST()
     @Produces(MediaType.APPLICATION_JSON)
     @Consumes(MediaType.APPLICATION_JSON)    
-    public CompletionStage<$Type$Output> createResource_$name$($Type$Input resource) {
+    public CompletionStage<$Type$Output> createResource_$name$(@Context HttpHeaders httpHeaders, @QueryParam("businessKey") String businessKey, $Type$Input resource) {
         if (resource == null) {
             resource = new $Type$Input();
         }
         final $Type$Input value = resource;
         return CompletableFuture.supplyAsync(() -> {
             return org.kie.kogito.services.uow.UnitOfWorkExecutor.executeInUnitOfWork(application.unitOfWorkManager(), () -> {
-                ProcessInstance<$Type$> pi = process.createInstance(mapInput(value, new $Type$()));
-                pi.start();
+                ProcessInstance<$Type$> pi = process.createInstance(businessKey, mapInput(value, new $Type$()));
+                String startFromNode = httpHeaders.getHeaderString("X-KOGITO-StartFromNode");
+                
+                if (startFromNode != null) {
+                    pi.startFrom(startFromNode);
+                } else {
+                
+                    pi.start();
+                }
                 return getModel(pi);
             });
         });

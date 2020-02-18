@@ -35,7 +35,9 @@ message ProcessInstanceMeta {
     /* @Field(store = Store.YES) */
     optional string processName = 11;
     /* @Field(store = Store.YES) */
-    optional int64 lastUpdate = 12;
+    optional int64 lastUpdate = 12;    
+    /* @Field(store = Store.YES, indexNullAs = "__DEFAULT_NULL_TOKEN__") */
+    optional string businessKey = 13;
 }
 
 /* @Indexed */
@@ -68,6 +70,8 @@ message ProcessInstance {
     repeated string addons = 15;
     /* @Field(store = Store.YES) */
     optional int64 lastUpdate = 16;
+    /* @Field(store = Store.YES, indexNullAs = "__DEFAULT_NULL_TOKEN__") */
+    optional string businessKey = 17;
 }
 
 /* @Indexed */

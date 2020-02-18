@@ -142,6 +142,12 @@ public interface ProcessInstance<T> {
     String id();
     
     /**
+     * Returns optional business key associated with this process instance
+     * @return business key if available otherwise null
+     */
+    String businessKey();
+    
+    /**
      * Returns process error in case process instance is in error state.
      * @return returns process error
      */

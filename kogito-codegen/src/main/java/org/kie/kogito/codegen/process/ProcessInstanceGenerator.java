@@ -17,6 +17,12 @@ package org.kie.kogito.codegen.process;
 
 import java.nio.charset.StandardCharsets;
 
+import org.drools.compiler.compiler.io.memory.MemoryFileSystem;
+import org.jbpm.compiler.canonical.ModelMetaData;
+import org.kie.api.runtime.process.ProcessRuntime;
+import org.kie.kogito.codegen.BodyDeclarationComparator;
+import org.kie.kogito.process.impl.AbstractProcessInstance;
+
 import com.github.javaparser.ast.CompilationUnit;
 import com.github.javaparser.ast.Modifier;
 import com.github.javaparser.ast.body.ClassOrInterfaceDeclaration;
@@ -28,13 +34,12 @@ import com.github.javaparser.ast.stmt.BlockStmt;
 import com.github.javaparser.ast.stmt.ReturnStmt;
 import com.github.javaparser.ast.type.ClassOrInterfaceType;
 import com.github.javaparser.ast.type.VoidType;
-import org.drools.compiler.compiler.io.memory.MemoryFileSystem;
-import org.jbpm.compiler.canonical.ModelMetaData;
-import org.kie.api.runtime.process.ProcessRuntime;
-import org.kie.kogito.codegen.BodyDeclarationComparator;
-import org.kie.kogito.process.impl.AbstractProcessInstance;
 
 public class ProcessInstanceGenerator {
+    
+    private static final String PROCESS = "process";
+    private static final String VALUE = "value";
+    private static final String PROCESS_RUNTIME = "processRuntime";
 
     private final String packageName;
     private final String typeName;
@@ -83,6 +88,7 @@ public class ProcessInstanceGenerator {
                         new ClassOrInterfaceType(null, AbstractProcessInstance.class.getCanonicalName())
                                 .setTypeArguments(new ClassOrInterfaceType(null, model.getModelClassSimpleName())))
                 .addMember(constructorDecl())
+                .addMember(constructorWithBusinessKeyDecl())
                 .addMember(bind())
                 .addMember(unbind());
         classDecl.getMembers().sort(new BodyDeclarationComparator());
@@ -127,14 +133,30 @@ public class ProcessInstanceGenerator {
         return new ConstructorDeclaration()
                 .setName(targetTypeName)
                 .addModifier(Modifier.Keyword.PUBLIC)
-                .addParameter(ProcessGenerator.processType(canonicalName), "process")
-                .addParameter(model.getModelClassSimpleName(), "value")
-                .addParameter(ProcessRuntime.class.getCanonicalName(), "processRuntime")
+                .addParameter(ProcessGenerator.processType(canonicalName), PROCESS)
+                .addParameter(model.getModelClassSimpleName(), VALUE)
+                .addParameter(ProcessRuntime.class.getCanonicalName(), PROCESS_RUNTIME)
                 .setBody(new BlockStmt().addStatement(new MethodCallExpr(
                         "super",
-                        new NameExpr("process"),
-                        new NameExpr("value"),
-                        new NameExpr("processRuntime"))));
+                        new NameExpr(PROCESS),
+                        new NameExpr(VALUE),
+                        new NameExpr(PROCESS_RUNTIME))));
+    }
+    
+    private ConstructorDeclaration constructorWithBusinessKeyDecl() {
+        return new ConstructorDeclaration()
+                .setName(targetTypeName)
+                .addModifier(Modifier.Keyword.PUBLIC)
+                .addParameter(ProcessGenerator.processType(canonicalName), PROCESS)
+                .addParameter(model.getModelClassSimpleName(), VALUE)
+                .addParameter(String.class.getCanonicalName(), "businessKey")
+                .addParameter(ProcessRuntime.class.getCanonicalName(), PROCESS_RUNTIME)
+                .setBody(new BlockStmt().addStatement(new MethodCallExpr(
+                        "super",
+                        new NameExpr(PROCESS),
+                        new NameExpr(VALUE),
+                        new NameExpr("businessKey"),
+                        new NameExpr(PROCESS_RUNTIME))));
     }
 
     public String targetTypeName() {

@@ -27,6 +27,7 @@ public class ProcessInstanceMeta {
     private String processId;
     private String processName;
     private Integer state;
+    private String businessKey;
     private String endpoint;
     private Set<String> roles;
     @JsonProperty("startDate")
@@ -72,6 +73,16 @@ public class ProcessInstanceMeta {
 
     public void setState(Integer state) {
         this.state = state;
+    }
+    
+    public String getBusinessKey() {
+        return businessKey;
+    }
+    
+    public void setBusinessKey(String businessKey) {
+        if (businessKey != null && !businessKey.trim().isEmpty()) {
+            this.businessKey = businessKey;
+        }
     }
 
     public Set<String> getRoles() {
@@ -149,6 +160,7 @@ public class ProcessInstanceMeta {
                 ", processId='" + processId + '\'' +
                 ", processName='" + processName + '\'' +
                 ", state=" + state +
+                ", businessKey=" + businessKey +
                 ", endpoint='" + endpoint + '\'' +
                 ", roles=" + roles +
                 ", start=" + start +

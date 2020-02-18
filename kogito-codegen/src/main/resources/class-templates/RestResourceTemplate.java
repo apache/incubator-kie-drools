@@ -41,14 +41,14 @@ public class $Type$Resource {
     @POST()
     @Produces(MediaType.APPLICATION_JSON)
     @Consumes(MediaType.APPLICATION_JSON)    
-    public $Type$Output createResource_$name$(@Context HttpHeaders httpHeaders, $Type$Input resource) {
+    public $Type$Output createResource_$name$(@Context HttpHeaders httpHeaders, @QueryParam("businessKey") String businessKey, $Type$Input resource) {
         if (resource == null) {
             resource = new $Type$Input();
         }
         final $Type$Input value = resource;
 
         return org.kie.kogito.services.uow.UnitOfWorkExecutor.executeInUnitOfWork(application.unitOfWorkManager(), () -> {
-            ProcessInstance<$Type$> pi = process.createInstance(mapInput(value, new $Type$()));
+            ProcessInstance<$Type$> pi = process.createInstance(businessKey, mapInput(value, new $Type$()));
             String startFromNode = httpHeaders.getHeaderString("X-KOGITO-StartFromNode");
             
             if (startFromNode != null) {

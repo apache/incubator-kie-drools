@@ -69,6 +69,8 @@ import org.kie.kogito.process.impl.AbstractProcess;
  * @see org.kie.kogito.process.Process
  */
 public class ProcessGenerator {
+    
+    private static final String BUSINESS_KEY = "businessKey";
 
     private final String packageName;
     private final WorkflowProcess process;
@@ -155,6 +157,28 @@ public class ProcessGenerator {
         return methodDeclaration;
     }
     
+    private MethodDeclaration createInstanceWithBusinessKeyMethod(String processInstanceFQCN) {
+        MethodDeclaration methodDeclaration = new MethodDeclaration();
+
+        ReturnStmt returnStmt = new ReturnStmt(
+                new ObjectCreationExpr()
+                        .setType(processInstanceFQCN)
+                        .setArguments(NodeList.nodeList(
+                                new ThisExpr(),
+                                new NameExpr("value"),
+                                new NameExpr(BUSINESS_KEY),
+                                createProcessRuntime())));
+
+        methodDeclaration.setName("createInstance")
+                .addModifier(Modifier.Keyword.PUBLIC)
+                .addParameter(String.class.getCanonicalName(), BUSINESS_KEY)
+                .addParameter(modelTypeName, "value")
+                .setType(processInstanceFQCN)
+                .setBody(new BlockStmt()
+                                 .addStatement(returnStmt));
+        return methodDeclaration;
+    }
+    
     private MethodDeclaration createInstanceGenericMethod(String processInstanceFQCN) {
         MethodDeclaration methodDeclaration = new MethodDeclaration();
 
@@ -169,6 +193,25 @@ public class ProcessGenerator {
                                  .addStatement(returnStmt));
         return methodDeclaration;
     }
+    
+    private MethodDeclaration createInstanceGenericWithBusinessKeyMethod(String processInstanceFQCN) {
+        MethodDeclaration methodDeclaration = new MethodDeclaration();
+
+        ReturnStmt returnStmt = new ReturnStmt(
+                new MethodCallExpr(new ThisExpr(), "createInstance")
+                .addArgument(new NameExpr(BUSINESS_KEY))
+                .addArgument(new CastExpr(new ClassOrInterfaceType(null, modelTypeName), new NameExpr("value"))));
+
+        methodDeclaration.setName("createInstance")
+                .addModifier(Modifier.Keyword.PUBLIC)
+                .addParameter(String.class.getCanonicalName(), BUSINESS_KEY)
+                .addParameter(Model.class.getCanonicalName(), "value")
+                .setType(processInstanceFQCN)
+                .setBody(new BlockStmt()
+                                 .addStatement(returnStmt));
+        return methodDeclaration;
+    }
+
 
     private MethodDeclaration legacyProcess(ProcessMetaData processMetaData) {
         return processMetaData.getGeneratedClassModel()
@@ -354,22 +397,21 @@ public class ProcessGenerator {
                                                                              NodeList.nodeList()))));               
         
         ProcessMetaData processMetaData = legacyProcessGenerator.generate();
-        
-        MethodDeclaration methodDeclaration = createInstanceMethod(processInstanceFQCN);
-        MethodDeclaration genericMethodDeclaration = createInstanceGenericMethod(processInstanceFQCN);
+
         cls.addExtendedType(abstractProcessType(modelTypeName))
                 .addMember(fieldDeclaration)
                 .addMember(emptyConstructorDeclaration)
                 .addMember(constructorDeclaration)
-                .addMember(methodDeclaration)
+                .addMember(createInstanceMethod(processInstanceFQCN))
+                .addMember(createInstanceWithBusinessKeyMethod(processInstanceFQCN))
                 .addMember(createModelMethod)
-                .addMember(genericMethodDeclaration)
+                .addMember(createInstanceGenericMethod(processInstanceFQCN))
+                .addMember(createInstanceGenericWithBusinessKeyMethod(processInstanceFQCN))
                 .addMember(internalConfigure(processMetaData))
                 .addMember(internalRegisterListeners(processMetaData))
                 .addMember(legacyProcess(processMetaData));
         
         if (persistence) {
-
         
             if (useInjection()) {
                 

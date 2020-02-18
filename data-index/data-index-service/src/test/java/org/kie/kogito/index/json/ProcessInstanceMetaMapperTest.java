@@ -62,4 +62,38 @@ public class ProcessInstanceMetaMapperTest {
                 a -> a.node(piPrefix + "[0].lastUpdate").isEqualTo(event.getData().getLastUpdate().toInstant().toEpochMilli())
         );
     }
+    
+    @Test
+    public void testProcessInstanceMapperWithBusinessKey() {
+        String processId = "travels";
+        String rootProcessId = "root_travels";
+        String processInstanceId = UUID.randomUUID().toString();
+        String rootProcessInstanceId = UUID.randomUUID().toString();
+        String piPrefix = KOGITO_DOMAIN_ATTRIBUTE + "." + PROCESS_INSTANCES_DOMAIN_ATTRIBUTE;
+        KogitoProcessCloudEvent event = getProcessCloudEvent(processId, processInstanceId, ProcessInstanceState.COMPLETED, rootProcessInstanceId, rootProcessId, rootProcessInstanceId);
+        event.getData().setBusinessKey("custom-key");
+        ObjectNode json = new ProcessInstanceMetaMapper().apply(event);
+        assertThat(json).isNotNull();
+        assertThatJson(json.toString()).and(
+                a -> a.node("id").isEqualTo(rootProcessInstanceId),
+                a -> a.node("processId").isEqualTo(rootProcessId),
+                a -> a.node("traveller.firstName").isEqualTo("Maciej"),
+                a -> a.node("hotel.name").isEqualTo("Meriton"),
+                a -> a.node("flight.flightNumber").isEqualTo("MX555"),
+                a -> a.node(KOGITO_DOMAIN_ATTRIBUTE).isNotNull(),
+                a -> a.node(KOGITO_DOMAIN_ATTRIBUTE + ".lastUpdate").isEqualTo(event.getTime().toInstant().toEpochMilli()),
+                a -> a.node(piPrefix).isArray().hasSize(1),
+                a -> a.node(piPrefix + "[0].id").isEqualTo(processInstanceId),
+                a -> a.node(piPrefix + "[0].processId").isEqualTo(processId),
+                a -> a.node(piPrefix + "[0].rootProcessInstanceId").isEqualTo(rootProcessInstanceId),
+                a -> a.node(piPrefix + "[0].parentProcessInstanceId").isEqualTo(rootProcessInstanceId),
+                a -> a.node(piPrefix + "[0].rootProcessId").isEqualTo(rootProcessId),
+                a -> a.node(piPrefix + "[0].state").isEqualTo(ProcessInstanceState.COMPLETED.ordinal()),
+                a -> a.node(piPrefix + "[0].endpoint").isEqualTo(event.getSource().toString()),
+                a -> a.node(piPrefix + "[0].start").isEqualTo(event.getData().getStart().toInstant().toEpochMilli()),
+                a -> a.node(piPrefix + "[0].end").isEqualTo(event.getData().getEnd().toInstant().toEpochMilli()),
+                a -> a.node(piPrefix + "[0].lastUpdate").isEqualTo(event.getData().getLastUpdate().toInstant().toEpochMilli()),
+                a -> a.node(piPrefix + "[0].businessKey").isEqualTo(event.getData().getBusinessKey())
+        );
+    }
 }

@@ -16,6 +16,7 @@
 package org.kie.kogito.process.impl;
 
 import java.lang.reflect.Field;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -37,6 +38,9 @@ import org.kie.api.definition.process.Node;
 import org.kie.api.runtime.process.EventListener;
 import org.kie.api.runtime.process.ProcessRuntime;
 import org.kie.api.runtime.process.WorkItemNotFoundException;
+import org.kie.internal.process.CorrelationAwareProcessRuntime;
+import org.kie.internal.process.CorrelationKey;
+import org.kie.internal.process.CorrelationProperty;
 import org.kie.kogito.Model;
 import org.kie.kogito.process.MutableProcessInstances;
 import org.kie.kogito.process.NodeInstanceNotFoundException;
@@ -44,6 +48,7 @@ import org.kie.kogito.process.NodeNotFoundException;
 import org.kie.kogito.process.Process;
 import org.kie.kogito.process.ProcessError;
 import org.kie.kogito.process.ProcessInstance;
+import org.kie.kogito.process.ProcessInstanceDuplicatedException;
 import org.kie.kogito.process.ProcessInstanceNotFoundException;
 import org.kie.kogito.process.Signal;
 import org.kie.kogito.process.WorkItem;
@@ -60,6 +65,7 @@ public abstract class AbstractProcessInstance<T extends Model> implements Proces
     
     private Integer status;
     private String id;
+    private String businessKey;
     
     private ProcessError processError;
     
@@ -68,15 +74,29 @@ public abstract class AbstractProcessInstance<T extends Model> implements Proces
     private CompletionEventListener completionEventListener = new CompletionEventListener();
 
     public AbstractProcessInstance(AbstractProcess<T> process, T variables, ProcessRuntime rt) {
+        this(process, variables, null, rt);
+    }
+    
+    public AbstractProcessInstance(AbstractProcess<T> process, T variables, String businessKey, ProcessRuntime rt) {
         this.process = process;
         this.rt = rt;
         this.variables = variables;
         
+        CorrelationKey correlationKey = null;
+        if(businessKey != null && !businessKey.trim().isEmpty()) {
+            correlationKey = new StringCorrelationKey(businessKey);
+        }
+        
         Map<String, Object> map = bind(variables);
         String processId = process.legacyProcess().getId();
-        this.legacyProcessInstance = rt.createProcessInstance(processId, map);
+        this.legacyProcessInstance = ((CorrelationAwareProcessRuntime)rt).createProcessInstance(processId, correlationKey, map);
         this.id = legacyProcessInstance.getId();
+        this.businessKey = ((WorkflowProcessInstance)legacyProcessInstance).getCorrelationKey();
         this.status = ProcessInstance.STATE_PENDING;
+        // this applies to business keys only as non business keys process instances id are always unique
+        if (correlationKey != null && process.instances.exists(id)) {
+            throw new ProcessInstanceDuplicatedException(businessKey);
+        }
     }
     
     // for marshaller/persistence only
@@ -87,6 +107,7 @@ public abstract class AbstractProcessInstance<T extends Model> implements Proces
         this.legacyProcessInstance = legacyProcessInstance;
         this.status = legacyProcessInstance.getState();
         this.id = legacyProcessInstance.getId();
+        this.businessKey = ((WorkflowProcessInstance)legacyProcessInstance).getCorrelationKey();
         ((WorkflowProcessInstanceImpl) this.legacyProcessInstance).setKnowledgeRuntime( ((InternalProcessRuntime)rt).getInternalKieRuntime() );
         ((WorkflowProcessInstanceImpl) this.legacyProcessInstance).reconnect();
         
@@ -98,8 +119,7 @@ public abstract class AbstractProcessInstance<T extends Model> implements Proces
                 ((WorkItemNodeInstance) nodeInstance).internalRegisterWorkItem();
             }
         }
-        
-        
+                
         unbind(variables, legacyProcessInstance.getVariables());
     }
     
@@ -132,7 +152,7 @@ public abstract class AbstractProcessInstance<T extends Model> implements Proces
         }
         
         org.kie.api.runtime.process.ProcessInstance processInstance = this.rt.startProcessInstance(this.id, trigger);
-        addToUnitOfWork(pi -> ((MutableProcessInstances<T>)process.instances()).update(pi.id(), pi));
+        addToUnitOfWork(pi -> ((MutableProcessInstances<T>)process.instances()).create(pi.id(), pi));
         unbind(variables, processInstance.getVariables());
         if (legacyProcessInstance != null) {
             this.status = legacyProcessInstance.getState();
@@ -180,6 +200,11 @@ public abstract class AbstractProcessInstance<T extends Model> implements Proces
     @Override
     public String id() {
         return this.id;
+    }
+        
+    @Override
+    public String businessKey() {
+        return this.businessKey;
     }
     
     @Override
@@ -334,6 +359,7 @@ public abstract class AbstractProcessInstance<T extends Model> implements Proces
 
             this.status = legacyProcessInstance.getState();
             this.id = legacyProcessInstance.getId();
+            this.businessKey = ((WorkflowProcessInstance)legacyProcessInstance).getCorrelationKey();
             
             addToUnitOfWork(pi -> ((MutableProcessInstances<T>)process.instances()).remove(pi.id()));
             
@@ -407,19 +433,6 @@ public abstract class AbstractProcessInstance<T extends Model> implements Proces
             return false;
         return true;
     }
-
-    private class CompletionEventListener implements EventListener {
-        
-        @Override
-        public void signalEvent(String type, Object event) {
-            removeOnFinish();
-        }
-        
-        @Override
-        public String[] getEventTypes() {
-            return new String[] {"processInstanceCompleted:"+legacyProcessInstance.getId()};
-        }
-    }
     
     protected ProcessError buildProcessError() {
         WorkflowProcessInstanceImpl pi = (WorkflowProcessInstanceImpl) legacyProcessInstance();
@@ -459,5 +472,45 @@ public abstract class AbstractProcessInstance<T extends Model> implements Proces
                 removeOnFinish();
             }
         };
+    }
+    
+
+    private class CompletionEventListener implements EventListener {
+        
+        @Override
+        public void signalEvent(String type, Object event) {
+            removeOnFinish();
+        }
+        
+        @Override
+        public String[] getEventTypes() {
+            return new String[] {"processInstanceCompleted:"+legacyProcessInstance.getId()};
+        }
+    }
+    
+    private class StringCorrelationKey implements CorrelationKey {
+
+        private final String correlationKey;
+        
+        
+        public StringCorrelationKey(String correlationKey) {
+            this.correlationKey = correlationKey;
+        }
+        
+        @Override
+        public String getName() {
+            return correlationKey;
+        }
+
+        @Override
+        public List<CorrelationProperty<?>> getProperties() {
+            return Collections.emptyList();
+        }
+
+        @Override
+        public String toExternalForm() {
+            return correlationKey;
+        }
+        
     }
 }

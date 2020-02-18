@@ -79,6 +79,15 @@ public class MockCacheProcessInstancesTest {
                 return mockCache.put(key, value);
             }
         });
+        when(cache.putIfAbsent(any(), any())).then(new Answer<Object>() {
+
+            @Override
+            public Object answer(InvocationOnMock invocation) throws Throwable {
+                Object key = invocation.getArgument(0, Object.class);
+                Object value = invocation.getArgument(1, Object.class);
+                return mockCache.put(key, value);
+            }
+        });
         
         when(cache.get(any())).then(new Answer<Object>() {
 

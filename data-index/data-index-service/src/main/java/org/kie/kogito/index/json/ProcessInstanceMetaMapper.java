@@ -76,6 +76,9 @@ public class ProcessInstanceMetaMapper implements Function<KogitoProcessCloudEve
         if (pi.getLastUpdate() != null) {
             json.put(LAST_UPDATE, pi.getLastUpdate().toInstant().toEpochMilli());
         }
+        if (pi.getBusinessKey() != null) {
+            json.put("businessKey", pi.getBusinessKey());
+        }
         return json;
     }
 }

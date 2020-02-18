@@ -55,7 +55,6 @@ public abstract class AbstractProcess<T extends Model> implements Process<T> {
         this.instances = new MapProcessInstances<>();   
         
     }
-
     
     @Override
     public String id() {
@@ -65,13 +64,17 @@ public abstract class AbstractProcess<T extends Model> implements Process<T> {
     @Override
     public T createModel() {
         return null;
-    }
+    }    
 
     @Override
     public ProcessInstance<T> createInstance(Model m) {
         return createInstance((T) m);
     }
 
+    @Override
+    public ProcessInstance<T> createInstance(String businessKey, Model m) {
+        return createInstance(businessKey, m);
+    }
 
     @Override
     public ProcessInstances<T> instances() {

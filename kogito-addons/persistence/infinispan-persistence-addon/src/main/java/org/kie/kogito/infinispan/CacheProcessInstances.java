@@ -25,6 +25,7 @@ import org.infinispan.protostream.MessageMarshaller;
 import org.kie.kogito.process.MutableProcessInstances;
 import org.kie.kogito.process.Process;
 import org.kie.kogito.process.ProcessInstance;
+import org.kie.kogito.process.ProcessInstanceDuplicatedException;
 import org.kie.kogito.process.impl.AbstractProcessInstance;
 import org.kie.kogito.process.impl.marshalling.ProcessInstanceMarshaller;
 
@@ -46,7 +47,7 @@ public class CacheProcessInstances implements MutableProcessInstances {
     
     @Override
     public Optional<? extends ProcessInstance> findById(String id) {
-        byte[] data = cache.get(id);
+        byte[] data = cache.get(resolveId(id));
         if (data == null) {
             return Optional.empty();
         }
@@ -62,17 +63,49 @@ public class CacheProcessInstances implements MutableProcessInstances {
                 .map(data -> marshaller.unmarshallProcessInstance(data, process))
                 .collect(Collectors.toList());
     }
-
-    @SuppressWarnings("unchecked")
+    
     @Override
     public void update(String id, ProcessInstance instance) {
+        updateStorage(id, instance, false);
+    }
+
+    @Override
+    public void remove(String id) {
+        cache.remove(resolveId(id));
+    }
+
+    protected String ignoreNullOrEmpty(String value) {
+        if (value == null || value.trim().isEmpty()) {
+            return null;
+        }
+        
+        return value;
+    }
+
+
+    @Override
+    public void create(String id, ProcessInstance instance) {
+        updateStorage(id, instance, true);
+        
+    }
+    
+    @SuppressWarnings("unchecked")
+    protected void updateStorage(String id, ProcessInstance instance, boolean checkDuplicates) {
         if (isActive(instance)) {
+            String resolvedId = resolveId(id);
             byte[] data = marshaller.marhsallProcessInstance(instance);
             
-            cache.put(instance.id(), data);
+            if (checkDuplicates) {
+                byte[] existing = cache.putIfAbsent(resolvedId, data);
+                if (existing != null) {
+                    throw new ProcessInstanceDuplicatedException(id);
+                }
+            } else {
+                cache.put(resolvedId, data);
+            }
             
             ((AbstractProcessInstance<?>) instance).internalRemoveProcessInstance(() -> {
-                byte[] reloaded = cache.get(id);
+                byte[] reloaded = cache.get(resolvedId);
                 if (reloaded != null) {
                     return ((AbstractProcessInstance<?>)marshaller.unmarshallProcessInstance(reloaded, process, (AbstractProcessInstance<?>) instance)).internalGetProcessInstance();                    
                 }
@@ -82,16 +115,9 @@ public class CacheProcessInstances implements MutableProcessInstances {
         }
     }
 
-    @Override
-    public void remove(String id) {
-        cache.remove(id);
-    }
 
-    protected String ignoreNullOrEmpty(String value) {
-        if (value == null || value.trim().isEmpty()) {
-            return null;
-        }
-        
-        return value;
+    @Override
+    public boolean exists(String id) {
+        return cache.containsKey(id);
     }
 }

@@ -42,6 +42,8 @@ public class ProcessInstanceEventBody {
     private Date endDate;
     
     private Integer state;
+    
+    private String businessKey;
 
     private Set<NodeInstanceEventBody> nodeInstances = new LinkedHashSet<>();
 
@@ -88,8 +90,12 @@ public class ProcessInstanceEventBody {
     
     public Integer getState() {
         return state;
-    }
+    }    
     
+    public String getBusinessKey() {
+        return businessKey;
+    }
+
     public ProcessErrorEventBody getError() {
         return error;
     }
@@ -205,6 +211,11 @@ public class ProcessInstanceEventBody {
         
         public Builder state(Integer state) {
             instance.state = state;
+            return this;
+        }
+        
+        public Builder businessKey(String businessKey) {
+            instance.businessKey = businessKey;
             return this;
         }
         

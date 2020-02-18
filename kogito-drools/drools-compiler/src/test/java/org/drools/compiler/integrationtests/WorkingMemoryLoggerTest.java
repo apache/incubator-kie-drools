@@ -331,5 +331,10 @@ public class WorkingMemoryLoggerTest extends CommonTestMethodBase {
             return null;
         }
 
+        @Override
+        public String getCorrelationKey() {
+            return null;
+        }
+
     }
 }

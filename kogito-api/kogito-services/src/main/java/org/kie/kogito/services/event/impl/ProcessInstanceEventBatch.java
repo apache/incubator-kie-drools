@@ -179,6 +179,7 @@ public class ProcessInstanceEventBatch implements EventBatch {
                 .startDate(pi.getStartDate())
                 .endDate(pi.getEndDate())
                 .state(pi.getState())
+                .businessKey(pi.getCorrelationKey())
                 .variables(pi.getVariables());
         
         if (pi.getState() == ProcessInstance.STATE_ERROR) {
