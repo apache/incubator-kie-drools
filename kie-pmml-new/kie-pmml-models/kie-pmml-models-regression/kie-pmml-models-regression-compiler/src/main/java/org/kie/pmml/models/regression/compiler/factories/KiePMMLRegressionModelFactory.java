@@ -42,15 +42,15 @@ import static org.kie.pmml.models.regression.compiler.factories.KiePMMLRegressio
 
 public class KiePMMLRegressionModelFactory {
 
-    private static final Logger log = LoggerFactory.getLogger(KiePMMLRegressionModelFactory.class.getName());
+    private static final Logger logger = LoggerFactory.getLogger(KiePMMLRegressionModelFactory.class.getName());
 
     private KiePMMLRegressionModelFactory() {
     }
 
     public static KiePMMLRegressionModel getKiePMMLRegressionModel(DataDictionary dataDictionary, RegressionModel model) throws KiePMMLException {
-        log.info("getKiePMMLModel {}", model);
+        logger.debug("getKiePMMLRegressionModel {}", model);
         String name = model.getModelName();
-        Optional<String> targetFieldName = getTargetField(model);
+        Optional<String> targetFieldName = getTargetField(dataDictionary, model);
         final Optional<DataField> targetDataField = dataDictionary.getDataFields().stream()
                 .filter(field -> Objects.equals(targetFieldName.orElse(null), field.getName().getValue()))
                 .findFirst();

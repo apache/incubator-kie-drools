@@ -30,7 +30,6 @@ public class PMMLModelExecutorFinderImpl implements PMMLModelExecutorFinder {
     private ServiceLoader<PMMLModelExecutor> loader = ServiceLoader.load(PMMLModelExecutor.class);
 
     @Override
-    @SuppressWarnings("rawtypes")
     public List<PMMLModelExecutor> getImplementations(boolean refresh) {
         log.info("getImplementations {}", refresh);
         List<PMMLModelExecutor> toReturn = new ArrayList<>();
@@ -41,7 +40,6 @@ public class PMMLModelExecutorFinderImpl implements PMMLModelExecutorFinder {
         return toReturn;
     }
 
-    @SuppressWarnings("rawtypes")
     private Iterator<PMMLModelExecutor> getProviders(boolean refresh) {
         if (refresh) {
             loader.reload();

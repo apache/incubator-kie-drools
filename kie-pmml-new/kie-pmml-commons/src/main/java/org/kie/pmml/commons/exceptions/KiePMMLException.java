@@ -16,9 +16,9 @@
 package org.kie.pmml.commons.exceptions;
 
 /**
- * Checked Exceptions to be wrapping to <b>unchecked</b> ones at <i>customer</i> API boundaries
+ * <code>RuntimeException</code>s to be wrapping to <b>unchecked</b> ones at <i>customer</i> API boundaries
  */
-public class KiePMMLException extends Exception {
+public class KiePMMLException extends RuntimeException {
 
     public KiePMMLException(String message, Throwable cause) {
         super(message, cause);

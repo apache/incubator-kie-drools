@@ -16,9 +16,9 @@
 package org.kie.pmml.commons.exceptions;
 
 /**
- * Checked Exceptions wrapping all <b>not-KiePMML</b> ones at <i>customer</i> API boundaries
+ * <code>RuntimeException</code>s wrapping all <b>not-KiePMML</b> ones at <i>customer</i> API boundaries
  */
-public class ExternalException extends Exception {
+public class ExternalException extends RuntimeException {
 
     public ExternalException(String message, Throwable cause) {
         super(message, cause);

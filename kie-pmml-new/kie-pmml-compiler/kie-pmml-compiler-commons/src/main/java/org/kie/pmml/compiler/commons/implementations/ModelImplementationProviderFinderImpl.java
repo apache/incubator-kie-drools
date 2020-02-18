@@ -20,6 +20,8 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.ServiceLoader;
 
+import org.dmg.pmml.Model;
+import org.kie.pmml.commons.model.KiePMMLModel;
 import org.kie.pmml.compiler.api.provider.ModelImplementationProvider;
 import org.kie.pmml.compiler.api.provider.ModelImplementationProviderFinder;
 import org.slf4j.Logger;
@@ -36,9 +38,9 @@ public class ModelImplementationProviderFinderImpl implements ModelImplementatio
 
     @Override
     @SuppressWarnings("rawtypes")
-    public List<ModelImplementationProvider> getImplementations(boolean refresh) {
+    public <T extends Model, E extends KiePMMLModel> List<ModelImplementationProvider<T, E>>  getImplementations(boolean refresh) {
         logger.debug("getImplementations {}", refresh);
-        List<ModelImplementationProvider> toReturn = new ArrayList<>();
+        List<ModelImplementationProvider<T, E>> toReturn = new ArrayList<>();
         Iterator<ModelImplementationProvider> providers = getProviders(refresh);
         providers.forEachRemaining(toReturn::add);
         logger.debug("toReturn {} {}", toReturn, toReturn.size());

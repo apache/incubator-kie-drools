@@ -22,9 +22,11 @@ import java.util.stream.Collectors;
 import org.dmg.pmml.DataDictionary;
 import org.dmg.pmml.DataField;
 import org.dmg.pmml.MiningFunction;
+import org.dmg.pmml.Model;
 import org.dmg.pmml.OpType;
 import org.dmg.pmml.regression.RegressionModel;
 import org.kie.pmml.commons.exceptions.KiePMMLException;
+import org.kie.pmml.commons.model.KiePMMLModel;
 import org.kie.pmml.commons.model.KiePMMLNameOpType;
 import org.kie.pmml.commons.model.enums.OP_TYPE;
 import org.kie.pmml.commons.model.enums.PMML_MODEL;
@@ -41,7 +43,7 @@ import static org.kie.pmml.models.regression.api.model.KiePMMLRegressionModel.PM
 /**
  * Default <code>ModelImplementationProvider</code> for <b>Regression</b>
  */
-public class RegressionModelImplementationProvider implements ModelImplementationProvider<RegressionModel, KiePMMLRegressionModel> {
+public class RegressionModelImplementationProvider implements ModelImplementationProvider <RegressionModel, KiePMMLRegressionModel> {
 
     private static final Logger logger = LoggerFactory.getLogger(RegressionModelImplementationProvider.class.getName());
     private static final String INVALID_NORMALIZATION_METHOD = "Invalid Normalization Method ";
@@ -93,7 +95,7 @@ public class RegressionModelImplementationProvider implements ModelImplementatio
 
     private void validateClassification(DataDictionary dataDictionary, RegressionModel toValidate) throws KiePMMLException {
         final String categoricalTargeName = getCategoricalTargetName(dataDictionary, toValidate);
-        final OP_TYPE opType = getOpType(dataDictionary, categoricalTargeName);
+        final OP_TYPE opType = getOpType(dataDictionary, toValidate, categoricalTargeName);
         switch (opType) {
             case CATEGORICAL:
                 validateClassificationCategorical(dataDictionary, toValidate, categoricalTargeName);
