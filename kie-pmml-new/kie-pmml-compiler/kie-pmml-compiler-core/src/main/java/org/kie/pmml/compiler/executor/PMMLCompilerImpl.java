@@ -30,7 +30,6 @@ import org.kie.pmml.compiler.commons.utils.KiePMMLUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import static org.kie.pmml.commons.interfaces.FunctionalWrapperFactory.throwingFunctionWrapper;
 import static org.kie.pmml.compiler.commons.implementations.KiePMMLModelRetriever.getFromDataDictionaryAndModel;
 
 /**
@@ -41,7 +40,7 @@ public class PMMLCompilerImpl implements PMMLCompiler {
     private static final Logger logger = LoggerFactory.getLogger(PMMLCompilerImpl.class.getName());
 
     @Override
-    public List<KiePMMLModel> getModels(InputStream inputStream, Object kbuilder) throws KiePMMLException, ExternalException {
+    public List<KiePMMLModel> getModels(InputStream inputStream, Object kbuilder) {
         logger.debug("getModels {}", inputStream);
         try {
             PMML commonPMMLModel = KiePMMLUtil.load(inputStream);
@@ -62,13 +61,13 @@ public class PMMLCompilerImpl implements PMMLCompiler {
      * @return
      * @throws KiePMMLException if any <code>KiePMMLInternalException</code> has been thrown during execution
      */
-    private List<KiePMMLModel> getModels(PMML pmml, Object kbuilder) throws KiePMMLException {
+    private List<KiePMMLModel> getModels(PMML pmml, Object kbuilder) {
         logger.debug("getModels {}", pmml);
         DataDictionary dataDictionary = pmml.getDataDictionary();
         return pmml
                 .getModels()
                 .stream()
-                .map(throwingFunctionWrapper(model -> getFromDataDictionaryAndModel(dataDictionary, model, kbuilder)))
+                .map(model -> getFromDataDictionaryAndModel(dataDictionary, model, kbuilder))
                 .filter(Optional::isPresent)
                 .map(Optional::get)
                 .collect(Collectors.toList());

@@ -40,8 +40,6 @@ import org.kie.pmml.evaluator.assembler.container.PMMLPackageImpl;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import static org.kie.pmml.commons.interfaces.FunctionalWrapperFactory.throwingFunctionWrapper;
-
 public class PMMLAssemblerService implements KieAssemblerService {
 
     public static final String PMML_COMPILER_CACHE_KEY = "PMML_COMPILER_CACHE_KEY";
@@ -53,13 +51,13 @@ public class PMMLAssemblerService implements KieAssemblerService {
     }
 
     @Override
-    public void addResources(Object kbuilder, Collection<ResourceWithConfiguration> resources, ResourceType type) throws Exception {
+    public void addResources(Object kbuilder, Collection<ResourceWithConfiguration> resources, ResourceType type) {
         KnowledgeBuilderImpl kbuilderImpl = (KnowledgeBuilderImpl) kbuilder;
         addModels(kbuilderImpl, getKiePMMLModelsFromResourcesWithConfigurations(kbuilderImpl, resources));
     }
 
     @Override
-    public void addResource(Object kbuilder, Resource resource, ResourceType type, ResourceConfiguration configuration) throws Exception {
+    public void addResource(Object kbuilder, Resource resource, ResourceType type, ResourceConfiguration configuration) {
         logger.warn("invoked legacy addResource (no control on the order of the assembler compilation): {}", resource.getSourcePath());
         KnowledgeBuilderImpl kbuilderImpl = (KnowledgeBuilderImpl) kbuilder;
         addModels(kbuilderImpl, getKiePMMLModelsFromResource(kbuilderImpl, resource));
@@ -81,10 +79,10 @@ public class PMMLAssemblerService implements KieAssemblerService {
      * @throws KiePMMLException if any <code>KiePMMLInternalException</code> has been thrown during execution
      * @throws ExternalException if any other kind of <code>Exception</code> has been thrown during execution
      */
-    protected List<KiePMMLModel> getKiePMMLModelsFromResourcesWithConfigurations(KnowledgeBuilderImpl kbuilderImpl, Collection<ResourceWithConfiguration> resourceWithConfigurations) throws Exception {
+    protected List<KiePMMLModel> getKiePMMLModelsFromResourcesWithConfigurations(KnowledgeBuilderImpl kbuilderImpl, Collection<ResourceWithConfiguration> resourceWithConfigurations) {
         return resourceWithConfigurations.stream()
                 .map(ResourceWithConfiguration::getResource)
-                .flatMap(throwingFunctionWrapper(resource -> getKiePMMLModelsFromResource(kbuilderImpl, resource).stream()))
+                .flatMap(resource -> getKiePMMLModelsFromResource(kbuilderImpl, resource).stream())
                 .collect(Collectors.toList());
     }
 
@@ -95,7 +93,7 @@ public class PMMLAssemblerService implements KieAssemblerService {
      * @throws KiePMMLException if any <code>KiePMMLInternalException</code> has been thrown during execution
      * @throws ExternalException if any other kind of <code>Exception</code> has been thrown during execution
      */
-    protected List<KiePMMLModel> getKiePMMLModelsFromResource(KnowledgeBuilderImpl kbuilderImpl, Resource resource) throws KiePMMLException, ExternalException {
+    protected List<KiePMMLModel> getKiePMMLModelsFromResource(KnowledgeBuilderImpl kbuilderImpl, Resource resource) {
         PMMLCompiler pmmlCompiler = kbuilderImpl.getCachedOrCreate(PMML_COMPILER_CACHE_KEY, () -> getCompiler(kbuilderImpl));
         final String releaseId = kbuilderImpl.getKnowledgeBase().getResolvedReleaseId().toExternalForm();
         logger.debug("getKiePMMLModelsFromResource releaseId {}", releaseId);

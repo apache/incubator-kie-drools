@@ -26,8 +26,6 @@ import org.kie.pmml.compiler.api.provider.ModelImplementationProviderFinder;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import static org.kie.pmml.commons.interfaces.FunctionalWrapperFactory.throwingFunctionWrapper;
-
 public class KiePMMLModelRetriever {
 
     private static final Logger logger = LoggerFactory.getLogger(KiePMMLModelRetriever.class.getName());
@@ -42,14 +40,14 @@ public class KiePMMLModelRetriever {
      * @throws KiePMMLException if any <code>KiePMMLInternalException</code> has been thrown during execution
      */
     @SuppressWarnings("unchecked")
-    public static Optional<KiePMMLModel> getFromDataDictionaryAndModel(DataDictionary dataDictionary, Model model, Object kBuilder) throws KiePMMLException {
+    public static Optional<KiePMMLModel> getFromDataDictionaryAndModel(DataDictionary dataDictionary, Model model, Object kBuilder) {
         logger.debug("getFromDataDictionaryAndModel {}", model);
         final PMML_MODEL pmmlMODEL = PMML_MODEL.byName(model.getClass().getSimpleName());
         logger.debug("pmmlModelType {}", pmmlMODEL);
         return modelImplementationProviderFinder.getImplementations(false)
                 .stream()
                 .filter(implementation -> pmmlMODEL.equals(implementation.getPMMLModelType()))
-                .map(throwingFunctionWrapper(implementation -> implementation.getKiePMMLModel(dataDictionary, model, kBuilder)))
+                .map(implementation -> implementation.getKiePMMLModel(dataDictionary, model, kBuilder))
                 .findFirst();
     }
 }

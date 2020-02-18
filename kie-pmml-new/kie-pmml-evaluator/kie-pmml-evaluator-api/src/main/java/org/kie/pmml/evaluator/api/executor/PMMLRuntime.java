@@ -20,8 +20,6 @@ import java.util.List;
 import java.util.Optional;
 
 import org.kie.api.pmml.PMML4Result;
-import org.kie.pmml.commons.exceptions.ExternalException;
-import org.kie.pmml.commons.exceptions.KiePMMLException;
 import org.kie.pmml.commons.model.KiePMMLModel;
 
 public interface PMMLRuntime {
@@ -49,5 +47,5 @@ public interface PMMLRuntime {
      * @param releaseId Used to indirectly retrieve same instance of kiecontainer
      * @return the result of the evaluation
      */
-    PMML4Result evaluate(KiePMMLModel model, PMMLContext context, String releaseId) throws KiePMMLException, ExternalException;
+    PMML4Result evaluate(KiePMMLModel model, PMMLContext context, String releaseId);
 }

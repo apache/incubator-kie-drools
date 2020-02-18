@@ -36,8 +36,6 @@ public class KiePMMLModelRetrieverTest {
     private static final String ONE_MINING_TARGET_SOURCE = "OneMiningTargetFieldSample.pmml";
     private PMML pmmlModel;
 
-
-
     @Test
     public void getFromDataDictionaryAndModelWithProvider() throws Exception {
         pmmlModel = KiePMMLUtil.load(getFileInputStream(MULTIPLE_TARGETS_SOURCE));
