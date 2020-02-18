@@ -4,12 +4,15 @@ import java.util.Objects;
 
 import org.kie.pmml.commons.model.enums.OP_TYPE;
 
-public class NameOpType {
+/**
+ * Helper DTO to represent a field by its name and <b>operation type</b>
+ */
+public class KiePMMLNameOpType {
 
     private final String name;
     private final OP_TYPE opType;
 
-    public NameOpType(String name, OP_TYPE opType) {
+    public KiePMMLNameOpType(String name, OP_TYPE opType) {
         this.name = name;
         this.opType = opType;
     }
@@ -38,7 +41,7 @@ public class NameOpType {
         if (o == null || getClass() != o.getClass()) {
             return false;
         }
-        NameOpType that = (NameOpType) o;
+        KiePMMLNameOpType that = (KiePMMLNameOpType) o;
         return Objects.equals(name, that.name) &&
                 opType == that.opType;
     }

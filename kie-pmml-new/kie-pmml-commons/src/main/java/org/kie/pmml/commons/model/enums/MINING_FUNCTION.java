@@ -16,6 +16,7 @@
 package org.kie.pmml.commons.model.enums;
 
 import java.util.Arrays;
+import java.util.Objects;
 
 import org.kie.pmml.commons.exceptions.KieEnumException;
 
@@ -38,8 +39,8 @@ public enum MINING_FUNCTION {
         this.name = name;
     }
 
-    public static MINING_FUNCTION byName(String name) throws KieEnumException {
-        return Arrays.stream(MINING_FUNCTION.values()).filter(value -> name.equals(value.name)).findFirst().orElseThrow(() -> new KieEnumException("Failed to find MINING_FUNCTION with name: " + name));
+    public static MINING_FUNCTION byName(String name) {
+        return Arrays.stream(MINING_FUNCTION.values()).filter(value -> Objects.equals(name, value.name)).findFirst().orElseThrow(() -> new KieEnumException("Failed to find MINING_FUNCTION with name: " + name));
     }
 
     public String getName() {

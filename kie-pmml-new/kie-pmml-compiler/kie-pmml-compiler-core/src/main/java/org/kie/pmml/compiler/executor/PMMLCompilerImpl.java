@@ -42,7 +42,7 @@ public class PMMLCompilerImpl implements PMMLCompiler {
 
     @Override
     public List<KiePMMLModel> getModels(InputStream inputStream, Object kbuilder) throws KiePMMLException, ExternalException {
-        logger.info("getResults {}", inputStream);
+        logger.debug("getResults {}", inputStream);
         try {
             PMML commonPMMLModel = KiePMMLUtil.load(inputStream);
             return getModels(commonPMMLModel, kbuilder);
@@ -63,7 +63,7 @@ public class PMMLCompilerImpl implements PMMLCompiler {
      * @throws KiePMMLException if any <code>KiePMMLInternalException</code> has been thrown during execution
      */
     private List<KiePMMLModel> getModels(PMML pmml, Object kbuilder) throws KiePMMLException {
-        logger.info("getResults {}", pmml);
+        logger.debug("getResults {}", pmml);
         DataDictionary dataDictionary = pmml.getDataDictionary();
         return pmml
                 .getModels()

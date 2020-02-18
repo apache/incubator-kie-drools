@@ -16,6 +16,7 @@
 package org.kie.pmml.commons.model.enums;
 
 import java.util.Arrays;
+import java.util.Objects;
 
 import org.kie.pmml.commons.exceptions.KieEnumException;
 
@@ -34,8 +35,8 @@ public enum VALUE_PROPERTY {
         this.name = name;
     }
 
-    public static VALUE_PROPERTY byName(String name) throws KieEnumException {
-        return Arrays.stream(VALUE_PROPERTY.values()).filter(value -> name.equals(value.name)).findFirst().orElseThrow(() -> new KieEnumException("Failed to find VALUE_PROPERTY with name: " + name));
+    public static VALUE_PROPERTY byName(String name) {
+        return Arrays.stream(VALUE_PROPERTY.values()).filter(value -> Objects.equals(name, value.name)).findFirst().orElseThrow(() -> new KieEnumException("Failed to find VALUE_PROPERTY with name: " + name));
     }
 
     public String getName() {

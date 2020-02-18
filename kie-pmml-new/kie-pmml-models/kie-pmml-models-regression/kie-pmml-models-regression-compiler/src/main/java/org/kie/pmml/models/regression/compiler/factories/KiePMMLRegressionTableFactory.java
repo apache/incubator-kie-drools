@@ -38,12 +38,12 @@ public class KiePMMLRegressionTableFactory {
     private static final Logger logger = LoggerFactory.getLogger(KiePMMLRegressionTableFactory.class.getName());
 
     public static List<KiePMMLRegressionTable> getRegressionTables(List<RegressionTable> regressionTables) {
-        logger.info("getRegressionTables {}", regressionTables);
+        logger.debug("getRegressionTables {}", regressionTables);
         return regressionTables.stream().map(KiePMMLRegressionTableFactory::getRegressionTable).collect(Collectors.toList());
     }
 
     public static KiePMMLRegressionTable getRegressionTable(RegressionTable regressionTable) {
-        logger.info("getRegressionTable {}", regressionTable);
+        logger.debug("getRegressionTable {}", regressionTable);
         final Set<KiePMMLCategoricalPredictor> categoricalPredictors = getKiePMMLCategoricalPredictors(regressionTable.getCategoricalPredictors());
         final Set<KiePMMLNumericPredictor> numericPredictors = getKiePMMLNumericPredictors(regressionTable.getNumericPredictors());
         final Set<KiePMMLRegressionTablePredictor> numericCategoricalPredictors = new HashSet<>();

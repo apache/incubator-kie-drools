@@ -25,7 +25,7 @@ import org.dmg.pmml.MiningFunction;
 import org.dmg.pmml.OpType;
 import org.dmg.pmml.regression.RegressionModel;
 import org.kie.pmml.commons.exceptions.KiePMMLException;
-import org.kie.pmml.commons.model.NameOpType;
+import org.kie.pmml.commons.model.KiePMMLNameOpType;
 import org.kie.pmml.commons.model.enums.OP_TYPE;
 import org.kie.pmml.commons.model.enums.PMML_MODEL;
 import org.kie.pmml.compiler.api.provider.ModelImplementationProvider;
@@ -43,18 +43,18 @@ import static org.kie.pmml.models.regression.api.model.KiePMMLRegressionModel.PM
  */
 public class RegressionModelImplementationProvider implements ModelImplementationProvider<RegressionModel, KiePMMLRegressionModel> {
 
-    private static final Logger log = LoggerFactory.getLogger(RegressionModelImplementationProvider.class.getName());
+    private static final Logger logger = LoggerFactory.getLogger(RegressionModelImplementationProvider.class.getName());
     private static final String INVALID_NORMALIZATION_METHOD = "Invalid Normalization Method ";
 
     @Override
     public PMML_MODEL getPMMLModelType() {
-        log.info("getPMMLModelType");
+        logger.debug("getPMMLModelType");
         return PMML_MODEL_TYPE;
     }
 
     @Override
     public KiePMMLRegressionModel getKiePMMLModel(DataDictionary dataDictionary, RegressionModel model, Object kBuilder) throws KiePMMLException {
-        log.info("getKiePMMLModel {} {}", dataDictionary, model);
+        logger.debug("getKiePMMLModel {} {}", dataDictionary, model);
         validate(dataDictionary, model);
         return KiePMMLRegressionModelFactory.getKiePMMLRegressionModel(dataDictionary, model);
     }
@@ -64,14 +64,14 @@ public class RegressionModelImplementationProvider implements ModelImplementatio
             throw new KiePMMLException("At least one RegressionTable required");
         }
         if (isRegression(toValidate)) {
-            List<NameOpType> targetFields = getTargetFields(dataDictionary, toValidate);
+            List<KiePMMLNameOpType> targetFields = getTargetFields(dataDictionary, toValidate);
             validateRegression(targetFields, toValidate);
         } else {
             validateClassification(dataDictionary, toValidate);
         }
     }
 
-    private void validateRegression(List<NameOpType> targetFields, RegressionModel toValidate) throws KiePMMLException {
+    private void validateRegression(List<KiePMMLNameOpType> targetFields, RegressionModel toValidate) throws KiePMMLException {
         validateRegressionTargetField(targetFields, toValidate);
         if (toValidate.getRegressionTables().size() != 1) {
             throw new KiePMMLException("Expected one RegressionTable, retrieved " + toValidate.getRegressionTables().size());
@@ -166,7 +166,7 @@ public class RegressionModelImplementationProvider implements ModelImplementatio
         }
     }
 
-    private void validateRegressionTargetField(List<NameOpType> targetFields, RegressionModel toValidate) throws KiePMMLException {
+    private void validateRegressionTargetField(List<KiePMMLNameOpType> targetFields, RegressionModel toValidate) throws KiePMMLException {
         if (targetFields.size() != 1) {
             throw new KiePMMLException("Expected one target field, retrieved " + targetFields.size());
         }
@@ -186,12 +186,12 @@ public class RegressionModelImplementationProvider implements ModelImplementatio
     }
 
     private String getCategoricalTargetName(DataDictionary dataDictionary, RegressionModel toValidate) throws KiePMMLException {
-        List<NameOpType> targetFields = getTargetFields(dataDictionary, toValidate);
+        List<KiePMMLNameOpType> targetFields = getTargetFields(dataDictionary, toValidate);
         final List<String> categoricalFields = dataDictionary.getDataFields().stream()
                 .filter(dataField -> OpType.CATEGORICAL.equals(dataField.getOpType()))
                 .map(dataField -> dataField.getName().getValue())
                 .collect(Collectors.toList());
-        final List<NameOpType> categoricalNameTypes = targetFields.stream().filter(targetField -> categoricalFields.contains(targetField.getName())).collect(Collectors.toList());
+        final List<KiePMMLNameOpType> categoricalNameTypes = targetFields.stream().filter(targetField -> categoricalFields.contains(targetField.getName())).collect(Collectors.toList());
         if (categoricalNameTypes.size() != 1) {
             throw new KiePMMLException(String.format("Expected exactly one categorical targets, found %s", categoricalNameTypes.size()));
         }

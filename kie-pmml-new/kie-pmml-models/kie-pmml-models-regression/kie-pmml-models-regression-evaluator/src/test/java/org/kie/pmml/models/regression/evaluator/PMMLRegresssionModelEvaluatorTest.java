@@ -102,7 +102,7 @@ public class PMMLRegresssionModelEvaluatorTest {
 
     private void commonEvaluate(PMML4Result toEvaluate, int age, double salary, String carLocation) {
         assertNotNull(toEvaluate);
-        logger.info(toEvaluate.toString());
+        logger.debug(toEvaluate.toString());
         assertNotNull(toEvaluate.getResultVariables());
         assertTrue(toEvaluate.getResultVariables().containsKey(TestUtils.TARGETFIELD_NAME));
         double expected = TestUtils.INTERCEPT + TestUtils.AGE_COEFF * age + TestUtils.SALARY_COEFF * salary;
@@ -113,6 +113,6 @@ public class PMMLRegresssionModelEvaluatorTest {
         }
         double retrievedDouble = (double) toEvaluate.getResultVariables().get(TestUtils.TARGETFIELD_NAME);
         assertEquals(expected, retrievedDouble, 0.00001);
-        logger.info("Expected {} retrieved {}", expected, retrievedDouble);
+        logger.debug("Expected {} retrieved {}", expected, retrievedDouble);
     }
 }

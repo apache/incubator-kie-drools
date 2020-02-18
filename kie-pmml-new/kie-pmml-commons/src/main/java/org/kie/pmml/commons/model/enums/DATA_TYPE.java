@@ -17,6 +17,7 @@ package org.kie.pmml.commons.model.enums;
 
 import java.util.Arrays;
 import java.util.Date;
+import java.util.Objects;
 
 import org.kie.pmml.commons.exceptions.KieEnumException;
 
@@ -51,8 +52,8 @@ public enum DATA_TYPE {
         mappedClass = c;
     }
 
-    public static DATA_TYPE byName(String name) throws KieEnumException {
-        return Arrays.stream(DATA_TYPE.values()).filter(value -> name.equals(value.name)).findFirst().orElseThrow(() -> new KieEnumException("Failed to find DATA_TYPE with name: " + name));
+    public static DATA_TYPE byName(String name) {
+        return Arrays.stream(DATA_TYPE.values()).filter(value -> Objects.equals(name, value.name)).findFirst().orElseThrow(() -> new KieEnumException("Failed to find DATA_TYPE with name: " + name));
     }
 
     public String getName() {

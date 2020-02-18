@@ -40,7 +40,7 @@ public class KiePMMLCategoricalPredictor extends KiePMMLRegressionTablePredictor
     @Override
     public double evaluate(Object input) {
         double toReturn = Objects.equals(value, input) ? coefficient.doubleValue() : 0.0;
-        logger.info("{} evaluate {} return {}", this, input, toReturn);
+        logger.debug("{} evaluate {} return {}", this, input, toReturn);
         return toReturn;
     }
 

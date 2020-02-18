@@ -45,7 +45,7 @@ public class KiePMMLNumericPredictor extends KiePMMLRegressionTablePredictor {
         }
         double inputDouble = ((Number) input).doubleValue();
         double toReturn = exponent == 1 ? inputDouble * coefficient.doubleValue() : Math.pow(inputDouble, exponent) * coefficient.doubleValue();
-        logger.info("{} evaluate {} return {}", this, input, toReturn);
+        logger.debug("{} evaluate {} return {}", this, input, toReturn);
         return toReturn;
     }
 

@@ -24,7 +24,7 @@ import org.dmg.pmml.DataDictionary;
 import org.dmg.pmml.MiningField;
 import org.dmg.pmml.Model;
 import org.kie.pmml.commons.exceptions.KiePMMLException;
-import org.kie.pmml.commons.model.NameOpType;
+import org.kie.pmml.commons.model.KiePMMLNameOpType;
 import org.kie.pmml.commons.model.enums.OP_TYPE;
 
 import static org.kie.pmml.commons.interfaces.FunctionalWrapperFactory.throwingFunctionWrapper;
@@ -50,19 +50,19 @@ public class ModelUtils {
                 .findFirst();
     }
 
-    public static List<NameOpType> getTargetFields(DataDictionary dataDictionary, Model model) throws KiePMMLException {
+    public static List<KiePMMLNameOpType> getTargetFields(DataDictionary dataDictionary, Model model) throws KiePMMLException {
         if (model.getTargets() != null && model.getTargets().getTargets() != null) {
             return model.getTargets().getTargets().stream()
                     .map(throwingFunctionWrapper(target -> {
                         OP_TYPE opType = target.getOpType() != null ? OP_TYPE.byName(target.getOpType().value()) : getOpType(dataDictionary, target.getField().getValue());
-                        return new NameOpType(target.getField().getValue(), opType);
+                        return new KiePMMLNameOpType(target.getField().getValue(), opType);
                     })).collect(Collectors.toList());
         } else {
             return model.getMiningSchema().getMiningFields().stream()
                     .filter(miningField -> MiningField.UsageType.TARGET.equals(miningField.getUsageType()) || MiningField.UsageType.PREDICTED.equals(miningField.getUsageType()))
                     .map(throwingFunctionWrapper(miningField -> {
                         OP_TYPE opType = miningField.getOpType() != null ? OP_TYPE.byName(miningField.getOpType().value()) : getOpType(dataDictionary, miningField.getName().getValue());
-                        return new NameOpType(miningField.getName().getValue(), opType);
+                        return new KiePMMLNameOpType(miningField.getName().getValue(), opType);
                     }))
                     .collect(Collectors.toList());
         }

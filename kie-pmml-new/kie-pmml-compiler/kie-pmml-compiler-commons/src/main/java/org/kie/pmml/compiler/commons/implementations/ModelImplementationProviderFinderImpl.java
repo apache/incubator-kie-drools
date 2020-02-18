@@ -37,12 +37,12 @@ public class ModelImplementationProviderFinderImpl implements ModelImplementatio
     @Override
     @SuppressWarnings("rawtypes")
     public List<ModelImplementationProvider> getImplementations(boolean refresh) {
-        logger.info("getImplementations {}", refresh);
+        logger.debug("getImplementations {}", refresh);
         List<ModelImplementationProvider> toReturn = new ArrayList<>();
         Iterator<ModelImplementationProvider> providers = getProviders(refresh);
         providers.forEachRemaining(toReturn::add);
-        logger.info("toReturn {} {}", toReturn, toReturn.size());
-        toReturn.forEach(provider -> logger.info("{} : {}", provider.getPMMLModelType(), provider));
+        logger.debug("toReturn {} {}", toReturn, toReturn.size());
+        toReturn.forEach(provider -> logger.debug("{} : {}", provider.getPMMLModelType(), provider));
         return toReturn;
     }
 

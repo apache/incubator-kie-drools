@@ -16,6 +16,7 @@
 package org.kie.pmml.commons.enums;
 
 import java.util.Arrays;
+import java.util.Objects;
 
 import org.kie.pmml.commons.exceptions.KieEnumException;
 
@@ -29,8 +30,8 @@ public enum StatusCode {
         this.name = name;
     }
 
-    public static StatusCode byName(String name) throws KieEnumException {
-        return Arrays.stream(StatusCode.values()).filter(value -> name.equals(value.name)).findFirst().orElseThrow(() -> new KieEnumException("Failed to find StatusCode with name: " + name));
+    public static StatusCode byName(String name) {
+        return Arrays.stream(StatusCode.values()).filter(value -> Objects.equals(name, value.name)).findFirst().orElseThrow(() -> new KieEnumException("Failed to find StatusCode with name: " + name));
     }
 
     public String getName() {

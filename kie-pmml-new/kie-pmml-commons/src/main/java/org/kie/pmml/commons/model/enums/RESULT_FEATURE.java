@@ -16,6 +16,7 @@
 package org.kie.pmml.commons.model.enums;
 
 import java.util.Arrays;
+import java.util.Objects;
 
 import org.kie.pmml.commons.exceptions.KieEnumException;
 
@@ -54,8 +55,8 @@ public enum RESULT_FEATURE {
         this.name = name;
     }
 
-    public static RESULT_FEATURE byName(String name) throws KieEnumException {
-        return Arrays.stream(RESULT_FEATURE.values()).filter(value -> name.equals(value.name)).findFirst().orElseThrow(() -> new KieEnumException("Failed to find REGRESSION_NORMALIZATION_METHOD with name: " + name));
+    public static RESULT_FEATURE byName(String name) {
+        return Arrays.stream(RESULT_FEATURE.values()).filter(value -> Objects.equals(name, value.name)).findFirst().orElseThrow(() -> new KieEnumException("Failed to find REGRESSION_NORMALIZATION_METHOD with name: " + name));
     }
 
     public String getName() {

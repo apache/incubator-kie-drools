@@ -58,7 +58,7 @@ public class KiePMMLPredictorTerm extends KiePMMLRegressionTablePredictor {
             }
         });
         double toReturn = result.get() * coefficient.doubleValue();
-        logger.info("{} evaluate {} return {}", this, input, toReturn);
+        logger.debug("{} evaluate {} return {}", this, input, toReturn);
         return toReturn;
     }
 

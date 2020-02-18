@@ -44,9 +44,9 @@ public class KiePMMLModelRetriever {
      */
     @SuppressWarnings("unchecked")
     public static Optional<KiePMMLModel> getFromDataDictionaryAndModel(DataDictionary dataDictionary, Model model, Object kBuilder) throws KiePMMLException {
-        logger.info("getFromModel {}", model);
+        logger.debug("getFromModel {}", model);
         final PMML_MODEL pmmlMODEL = PMML_MODEL.byName(model.getClass().getSimpleName());
-        logger.info("pmmlModelType {}", pmmlMODEL);
+        logger.debug("pmmlModelType {}", pmmlMODEL);
         return modelImplementationProviderFinder.getImplementations(false)
                 .stream()
                 .filter(implementation -> pmmlMODEL.equals(implementation.getPMMLModelType()))
