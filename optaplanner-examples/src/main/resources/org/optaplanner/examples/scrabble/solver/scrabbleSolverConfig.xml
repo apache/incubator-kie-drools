@@ -9,7 +9,11 @@
 
   <!-- Score configuration -->
   <scoreDirectorFactory>
+    <!--<constraintProviderClass>org.optaplanner.examples.scrabble.optional.score.ScrabbleConstraintProvider</constraintProviderClass>-->
     <scoreDrl>org/optaplanner/examples/scrabble/solver/scrabbleScoreRules.drl</scoreDrl>
+    <!--<assertionScoreDirectorFactory>-->
+      <!--<scoreDrl>org/optaplanner/examples/scrabble/solver/scrabbleScoreRules.drl</scoreDrl>-->
+    <!--</assertionScoreDirectorFactory> -->
     <initializingScoreTrend>ONLY_DOWN</initializingScoreTrend>
   </scoreDirectorFactory>
 </solver>
