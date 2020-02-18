@@ -24,7 +24,7 @@ interface IOwnProps {
   filters: any;
   setFilters: any;
 }
-const DataToolbarWithFilter: React.FC<IOwnProps> = ({
+const DataToolbarComponent: React.FC<IOwnProps> = ({
   checkedArray,
   filterClick,
   setCheckedArray,
@@ -32,10 +32,9 @@ const DataToolbarWithFilter: React.FC<IOwnProps> = ({
   setFilters,
   setIsStatusSelected
 }) => {
-  const [isExpanded, setisExpanded] = useState(false);
-
-  const [isFilterClicked, setIsFilterClicked] = useState(false);
-  const [isClearAllClicked, setIsClearAllClicked] = useState(false);
+  const [isExpanded, setIsExpanded] = useState<boolean>(false);
+  const [isFilterClicked, setIsFilterClicked] = useState<boolean>(false);
+  const [isClearAllClicked, setIsClearAllClicked] = useState<boolean>(false);
 
   const onFilterClick = () => {
     if (checkedArray.length === 0) {
@@ -104,7 +103,7 @@ const DataToolbarWithFilter: React.FC<IOwnProps> = ({
     }
   };
   const onStatusToggle = isExpandedItem => {
-    setisExpanded(isExpandedItem);
+    setIsExpanded(isExpandedItem);
   };
   const statusMenuItems = [
     <SelectOption key="ACTIVE" value="ACTIVE" />,
@@ -171,4 +170,4 @@ const DataToolbarWithFilter: React.FC<IOwnProps> = ({
   );
 };
 
-export default DataToolbarWithFilter;
+export default DataToolbarComponent;

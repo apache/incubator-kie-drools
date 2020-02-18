@@ -6,23 +6,22 @@ const HOST = process.env.HOST || 'localhost';
 const PORT = process.env.PORT || '9000';
 
 module.exports = merge(common, {
-  mode: 'development',
-  devtool: 'source-map',
   devServer: {
-    contentBase: './dist',
-    host: HOST,
-    port: PORT,
     compress: true,
-    inline: true,
+    contentBase: './dist',
     historyApiFallback: true,
+    host: HOST,
     hot: true,
+    inline: true,
+    open: true,
     overlay: true,
-    open: true
+    port: PORT
   },
+  devtool: 'source-map',
+  mode: 'development',
   module: {
     rules: [
       {
-        test: /\.css$/,
         include: [
           path.resolve(__dirname, 'src'),
           path.resolve('../../node_modules/patternfly'),
@@ -41,6 +40,7 @@ module.exports = merge(common, {
             '../../node_modules/@patternfly/react-table/node_modules/@patternfly/react-styles/css'
           )
         ],
+        test: /\.css$/,
         use: ['style-loader', 'css-loader']
       }
     ]

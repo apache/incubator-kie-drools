@@ -1,11 +1,5 @@
 import { TimeAgo } from '@n1ru4l/react-time-ago';
-import {
-  Card,
-  CardBody,
-  CardFooter,
-  CardHeader,
-  Title
-} from '@patternfly/react-core';
+import { Card, CardBody, CardHeader, Title } from '@patternfly/react-core';
 import { ServicesIcon, UserIcon } from '@patternfly/react-icons';
 import React from 'react';
 import './ProcessDetailsTimeline.css';

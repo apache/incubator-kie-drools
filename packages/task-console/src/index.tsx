@@ -1,5 +1,4 @@
 import '@patternfly/patternfly/patternfly.css';
-import ApolloClient from 'apollo-boost';
 import React from 'react';
 import ReactDOM from 'react-dom';
 

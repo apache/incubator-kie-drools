@@ -1,3 +1,7 @@
 {
-    "extends": "../../tsconfig.json"
+  "extends": "../../tsconfig.json",
+  "exclude": [
+    "src/graphql/queries.tsx",
+    "node_modules"
+  ]
 }

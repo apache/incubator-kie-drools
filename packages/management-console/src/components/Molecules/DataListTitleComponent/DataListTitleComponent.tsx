@@ -1,9 +1,7 @@
 import React from 'react';
-import { Title, TextContent, Text, TextVariants } from '@patternfly/react-core';
+import { Title } from '@patternfly/react-core';
 
-export interface IOwnProps {}
-
-const DataListTitleComponent: React.FC<IOwnProps> = () => {
+const DataListTitleComponent: React.FC = () => {
   return (
     <React.Fragment>
       <Title headingLevel="h1" size="4xl">

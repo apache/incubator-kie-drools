@@ -4,9 +4,7 @@ import Avatar from '../../Atoms/AvatarComponent/AvatarComponent';
 import PageToolbarComponent from '../PageToolbarComponent/PageToolbarComponent';
 import BrandComponent from '../../Atoms/BrandComponent/BrandComponent';
 
-interface IOwnProps {}
-
-const HeaderComponent: React.FC<IOwnProps> = () => {
+const HeaderComponent: React.FC = () => {
   return (
     <PageHeader
       logo={<BrandComponent />}

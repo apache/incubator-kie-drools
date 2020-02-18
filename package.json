@@ -14,7 +14,8 @@
   },
   "husky": {
     "hooks": {
-      "pre-commit": "lint-staged"
+      "pre-commit": "lerna run --concurrency 1 --stream precommit",
+      "post-commit": "git update-index --again"
     }
   },
   "lint-staged": {
@@ -25,10 +26,10 @@
     ]
   },
   "devDependencies": {
-    "lerna": "3.18.1"
-  },
-  "dependencies": {
-    "strip-ansi": "^5.2.0",
-    "yarn": "^1.21.1"
+    "husky": "4.2.3",
+    "lerna": "3.20.2",
+    "lint-staged": "^9.5.0",
+    "strip-ansi": "6.0.0",
+    "yarn": "^1.22.0"
   }
 }

@@ -6,7 +6,7 @@ import DataListContainer from '../DataListContainer/DataListContainer';
 import ProcessDetailsPage from '../ProcessDetailsPage/ProcessDetailsPage';
 import './Dashboard.css';
 
-const Dashboard: React.FC<{}> = () => {
+const Dashboard: React.FC = () => {
   const pageId = 'main-content-page-layout-default-nav';
   const PageSkipToContent = (
     <SkipToContent href={`#${pageId}`}>Skip to Content</SkipToContent>

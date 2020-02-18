@@ -58,16 +58,6 @@ const props2 = {
   childResult: []
 };
 
-const props3 = {
-  loading: true,
-  data: {
-    ProcessInstances: [
-      {
-        end: '2019-10-22T03:40:44.089Z'
-      }
-    ]
-  }
-};
 describe('Process Details component', () => {
   it('Snapshot tests', () => {
     const wrapper = shallow(<ProcessDetails {...props} />);

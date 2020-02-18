@@ -4,7 +4,10 @@ import DataListItemComponent from '../../Molecules/DataListItemComponent/DataLis
 import SpinnerComponent from '../../Atoms/SpinnerComponent/SpinnerComponent';
 import EmptyStateComponent from '../../Atoms/EmptyStateComponent/EmptyStateComponent';
 import '@patternfly/patternfly/patternfly-addons.css';
-import { useGetProcessInstancesQuery } from '../.././../graphql/types';
+import {
+  useGetProcessInstancesQuery,
+  ProcessInstanceState
+} from '../.././../graphql/types';
 
 interface IOwnProps {
   setInitData: any;
@@ -12,15 +15,6 @@ interface IOwnProps {
   isLoading: boolean;
   setIsError: any;
   setIsLoading: any;
-}
-
-enum ProcessInstanceState {
-  Pending = 'PENDING',
-  Active = 'ACTIVE',
-  Completed = 'COMPLETED',
-  Aborted = 'ABORTED',
-  Suspended = ' SUSPENDED',
-  Error = 'ERROR'
 }
 
 const DataListComponent: React.FC<IOwnProps> = ({
