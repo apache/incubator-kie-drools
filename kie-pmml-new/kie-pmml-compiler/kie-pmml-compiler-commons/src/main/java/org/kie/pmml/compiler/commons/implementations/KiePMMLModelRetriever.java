@@ -20,7 +20,6 @@ import java.util.Optional;
 import org.dmg.pmml.DataDictionary;
 import org.dmg.pmml.Model;
 import org.kie.pmml.commons.exceptions.KiePMMLException;
-import org.kie.pmml.commons.exceptions.KiePMMLInternalException;
 import org.kie.pmml.commons.model.KiePMMLModel;
 import org.kie.pmml.commons.model.enums.PMML_MODEL;
 import org.kie.pmml.compiler.api.provider.ModelImplementationProviderFinder;
@@ -35,12 +34,12 @@ public class KiePMMLModelRetriever {
     private static final ModelImplementationProviderFinder modelImplementationProviderFinder = new ModelImplementationProviderFinderImpl();
 
     /**
-     * Read the given <code>DataDictionary</code> and <code>Model</code>> to returns a <code>Optional&lt;KiePMMLModel&gt;</code>
+     * Read the given <code>DataDictionary</code> and <code>Model</code>> to return an <code>Optional&lt;KiePMMLModel&gt;</code>
      * @param dataDictionary
      * @param model
      * @param kBuilder Using <code>Object</code> to avoid coupling with drools
      * @return
-     * @throws KiePMMLInternalException
+     * @throws KiePMMLException if any <code>KiePMMLInternalException</code> has been thrown during execution
      */
     @SuppressWarnings("unchecked")
     public static Optional<KiePMMLModel> getFromDataDictionaryAndModel(DataDictionary dataDictionary, Model model, Object kBuilder) throws KiePMMLException {

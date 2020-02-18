@@ -70,6 +70,7 @@
         <artifactId>kie-pmml-commons</artifactId>
         <version>${version.org.kie}</version>
       </dependency>
+      <!-- Compiler -->
       <dependency>
         <groupId>org.kie</groupId>
         <artifactId>kie-pmml-compiler-api</artifactId>
@@ -85,6 +86,7 @@
         <artifactId>kie-pmml-compiler-commons</artifactId>
         <version>${version.org.kie}</version>
       </dependency>
+      <!-- Evaluator -->
       <dependency>
         <groupId>org.kie</groupId>
         <artifactId>kie-pmml-evaluator-api</artifactId>
