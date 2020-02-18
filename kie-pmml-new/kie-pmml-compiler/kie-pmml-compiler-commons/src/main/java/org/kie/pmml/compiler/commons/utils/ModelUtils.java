@@ -24,8 +24,8 @@ import org.dmg.pmml.DataDictionary;
 import org.dmg.pmml.MiningField;
 import org.dmg.pmml.Model;
 import org.kie.pmml.commons.exceptions.KiePMMLInternalException;
-import org.kie.pmml.commons.model.KiePMMLNameOpType;
 import org.kie.pmml.commons.model.enums.OP_TYPE;
+import org.kie.pmml.commons.model.tuples.KiePMMLNameOpType;
 
 /**
  * Class to provide common methods to interact with <code>Model</code>

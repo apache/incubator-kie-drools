@@ -1,11 +1,11 @@
-package org.kie.pmml.commons.model;
+package org.kie.pmml.commons.model.tuples;
 
 import java.util.Objects;
 
 import org.kie.pmml.commons.model.enums.OP_TYPE;
 
 /**
- * Helper DTO to represent a field by its name and <b>operation type</b>
+ * Class to represent a <b>name/operation type</b> tupla
  */
 public class KiePMMLNameOpType {
 

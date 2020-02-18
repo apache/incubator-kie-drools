@@ -23,7 +23,11 @@ import org.kie.pmml.commons.model.KiePMMLExtension;
 public abstract class KiePMMLExtensioned implements Serializable {
 
     private static final long serialVersionUID = 7584716149775970999L;
-    protected final List<KiePMMLExtension> extensions;
+    protected List<KiePMMLExtension> extensions;
+
+    public KiePMMLExtensioned() {
+        // Serialization
+    }
 
     public KiePMMLExtensioned(List<KiePMMLExtension> extensions) {
         this.extensions = extensions;

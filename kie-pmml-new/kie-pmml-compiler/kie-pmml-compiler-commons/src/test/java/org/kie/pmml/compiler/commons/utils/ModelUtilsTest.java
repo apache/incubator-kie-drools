@@ -22,8 +22,8 @@ import java.util.Optional;
 import org.dmg.pmml.PMML;
 import org.junit.Test;
 import org.kie.pmml.commons.exceptions.KiePMMLInternalException;
-import org.kie.pmml.commons.model.KiePMMLNameOpType;
 import org.kie.pmml.commons.model.enums.OP_TYPE;
+import org.kie.pmml.commons.model.tuples.KiePMMLNameOpType;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
