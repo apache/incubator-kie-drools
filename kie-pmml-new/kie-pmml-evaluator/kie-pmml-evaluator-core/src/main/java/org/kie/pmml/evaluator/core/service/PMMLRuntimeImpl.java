@@ -49,7 +49,7 @@ public class PMMLRuntimeImpl implements PMMLRuntime {
 
     @Override
     public List<KiePMMLModel> getModels() {
-        logger.info("getModels");
+        logger.debug("getModels");
         List<KiePMMLModel> models = new ArrayList<>();
         knowledgeBase.getKiePackages().forEach(kpkg -> {
             PMMLPackage pmmlPackage = (PMMLPackage) ((InternalKnowledgePackage) kpkg).getResourceTypePackages().get(ResourceType.PMML);
@@ -62,7 +62,7 @@ public class PMMLRuntimeImpl implements PMMLRuntime {
 
     @Override
     public Optional<KiePMMLModel> getModel(String modelName) {
-        logger.info("getModels {}", modelName);
+        logger.debug("getModels {}", modelName);
         return getModels()
                 .stream()
                 .filter(model -> Objects.equals(modelName, model.getName()))
@@ -71,7 +71,7 @@ public class PMMLRuntimeImpl implements PMMLRuntime {
 
     @Override
     public PMML4Result evaluate(KiePMMLModel model, PMMLContext context, String releaseId) throws KiePMMLInternalException {
-        logger.info("evaluate {} {}", model, context);
+        logger.debug("evaluate {} {}", model, context);
         Optional<PMMLModelExecutor> pmmlModelExecutor = getFromPMMLModelType(model.getPmmlMODEL());
         return pmmlModelExecutor.isPresent() ? pmmlModelExecutor.get().evaluate(model, context, releaseId) : new PMML4Result();
     }
@@ -83,7 +83,7 @@ public class PMMLRuntimeImpl implements PMMLRuntime {
      * @return
      */
     private Optional<PMMLModelExecutor> getFromPMMLModelType(PMML_MODEL pmmlMODEL) {
-        logger.info("getFromPMMLModelType {}", pmmlMODEL);
+        logger.debug("getFromPMMLModelType {}", pmmlMODEL);
         return pmmlModelExecutorFinder.getImplementations(false)
                 .stream()
                 .filter(implementation -> pmmlMODEL.equals(implementation.getPMMLModelType()))

@@ -98,7 +98,7 @@ public class PMMLAssemblerService implements KieAssemblerService {
     protected List<KiePMMLModel> getKiePMMLModelsFromResource(KnowledgeBuilderImpl kbuilderImpl, Resource resource) throws KiePMMLException, ExternalException {
         PMMLCompiler pmmlCompiler = kbuilderImpl.getCachedOrCreate(PMML_COMPILER_CACHE_KEY, () -> getCompiler(kbuilderImpl));
         final String releaseId = kbuilderImpl.getKnowledgeBase().getResolvedReleaseId().toExternalForm();
-        logger.info("getKiePMMLModelsFromResource releaseId {}", releaseId);
+        logger.debug("getKiePMMLModelsFromResource releaseId {}", releaseId);
         try {
             return pmmlCompiler.getModels(resource.getInputStream(), releaseId);
         } catch (IOException e) {
