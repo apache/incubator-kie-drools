@@ -59,7 +59,7 @@ public class ConstraintExpression {
             int position = ((ExprConstraintDescr ) constraint).getPosition();
             return getFieldAtPosition(patternType, position) + " == " + constraint.toString();
         }
-        return constraint.toString();
+        return constraint.toString().replace(" ", "");
     }
 
     private static String getFieldAtPosition(Class<?> patternType, int position) {
