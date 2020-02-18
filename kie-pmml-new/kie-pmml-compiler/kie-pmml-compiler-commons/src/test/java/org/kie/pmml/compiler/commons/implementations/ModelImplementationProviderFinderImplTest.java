@@ -18,8 +18,10 @@ package org.kie.pmml.compiler.commons.implementations;
 
 import java.util.List;
 
+import org.dmg.pmml.Model;
 import org.junit.Before;
 import org.junit.Test;
+import org.kie.pmml.commons.model.KiePMMLModel;
 import org.kie.pmml.compiler.api.provider.ModelImplementationProvider;
 import org.kie.pmml.compiler.commons.mocks.TestingModelImplementationProvider;
 
@@ -37,8 +39,8 @@ public class ModelImplementationProviderFinderImplTest {
     }
 
     @Test
-    public void getImplementations() {
-        final List<ModelImplementationProvider> retrieved = modelImplementationProviderFinder.getImplementations(false);
+    public <T extends Model, E extends KiePMMLModel> void getImplementations() {
+        final List<ModelImplementationProvider<T, E>> retrieved = modelImplementationProviderFinder.getImplementations(false);
         assertNotNull(retrieved);
         assertEquals(1, retrieved.size());
         assertTrue(retrieved.get(0) instanceof TestingModelImplementationProvider);

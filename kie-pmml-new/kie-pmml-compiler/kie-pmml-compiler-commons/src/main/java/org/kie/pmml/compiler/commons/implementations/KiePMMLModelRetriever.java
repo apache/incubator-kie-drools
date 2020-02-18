@@ -39,7 +39,6 @@ public class KiePMMLModelRetriever {
      * @return
      * @throws KiePMMLException if any <code>KiePMMLInternalException</code> has been thrown during execution
      */
-    @SuppressWarnings("unchecked")
     public static Optional<KiePMMLModel> getFromDataDictionaryAndModel(DataDictionary dataDictionary, Model model, Object kBuilder) {
         logger.debug("getFromDataDictionaryAndModel {}", model);
         final PMML_MODEL pmmlMODEL = PMML_MODEL.byName(model.getClass().getSimpleName());
@@ -49,5 +48,8 @@ public class KiePMMLModelRetriever {
                 .filter(implementation -> pmmlMODEL.equals(implementation.getPMMLModelType()))
                 .map(implementation -> implementation.getKiePMMLModel(dataDictionary, model, kBuilder))
                 .findFirst();
+    }
+
+    private KiePMMLModelRetriever() {
     }
 }
