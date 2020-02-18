@@ -482,6 +482,14 @@ The following example finds a computer which runs the most power-demanding proce
     }
 ----
 
+[NOTE]
+====
+`Comparator` and `Comparable` implementations used with `min(...)` and `max(...)` constraint collectors are expected to
+be consistent with `equals(...)`.
+See https://docs.oracle.com/javase/8/docs/api/java/lang/Comparable.html[Javadoc for `Comparable`] to learn more.
+====
+
+
 [collectorsCollection]
 ===== Collection collectors
 

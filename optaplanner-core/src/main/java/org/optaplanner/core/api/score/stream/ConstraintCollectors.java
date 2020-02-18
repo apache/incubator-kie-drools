@@ -41,6 +41,7 @@ import java.util.function.ToIntFunction;
 import java.util.function.ToLongBiFunction;
 import java.util.function.ToLongFunction;
 
+import org.optaplanner.core.api.domain.solution.PlanningSolution;
 import org.optaplanner.core.api.function.QuadFunction;
 import org.optaplanner.core.api.function.ToIntQuadFunction;
 import org.optaplanner.core.api.function.ToIntTriFunction;
@@ -526,36 +527,276 @@ public final class ConstraintCollectors {
     // min
     // ************************************************************************
 
-    public static <A> UniConstraintCollector<A, ?, A> min(Comparator<A> comparator) {
-        return minOrMax(comparator, true);
+    /**
+     * Returns a collector that finds a minimum value in a group of {@link Comparable} elements.
+     * <p>
+     * Important: The {@link Comparable}'s {@link Comparable#compareTo(Object)} must be <i>consistent with equals</i>,
+     * such that <tt>e1.compareTo(e2) == 0</tt> has the same boolean value as <tt>e1.equals(e2)</tt>.
+     * In other words, if two elements compare to zero, any of them can be returned by the collector.
+     * It can even differ between 2 score calculations on the exact same {@link PlanningSolution} state, due to
+     * incremental score calculation.
+     * <p>
+     * For example, {@code [Ann(age = 20), Beth(age = 25), Cathy(age = 30), David(age = 30), Eric(age = 20)]} with
+     * {@code .groupBy(min())} returns either {@code Ann} or {@code Eric} arbitrarily, assuming the objects are
+     * {@link Comparable} by the {@code age} field.
+     * To avoid this, always end your {@link Comparator} by an identity comparison, such as
+     * {@code Comparator.comparing(Person::getAge).comparing(Person::getId))}.
+     *
+     * @param <A> type of the matched fact
+     * @return never null
+     */
+    public static <A extends Comparable<A>> UniConstraintCollector<A, ?, A> min() {
+        return min(Function.identity(), Comparable::compareTo);
     }
 
-    public static <A extends Comparable<A>> UniConstraintCollector<A, ?, A> min() {
-        return min(Comparable::compareTo);
+    /**
+     * Returns a collector that finds a minimum value in a group of {@link Comparable} elements.
+     * <p>
+     * Important: The {@link Comparable}'s {@link Comparable#compareTo(Object)} must be <i>consistent with equals</i>,
+     * such that <tt>e1.compareTo(e2) == 0</tt> has the same boolean value as <tt>e1.equals(e2)</tt>.
+     * In other words, if two elements compare to zero, any of them can be returned by the collector.
+     * It can even differ between 2 score calculations on the exact same {@link PlanningSolution} state, due to
+     * incremental score calculation.
+     * <p>
+     * For example, {@code [Ann(age = 20), Beth(age = 25), Cathy(age = 30), David(age = 30), Eric(age = 20)]} with
+     * {@code .groupBy(min(Person::getAge))} returns {@code 20}.
+     *
+     * @param <A> type of the matched fact
+     * @param <Mapped> type of the result
+     * @param groupValueMapping never null, maps facts from the matched type to the result type
+     * @return never null
+     */
+    public static <A, Mapped extends Comparable<Mapped>> UniConstraintCollector<A, ?, Mapped> min(
+            Function<A, Mapped> groupValueMapping) {
+        return min(groupValueMapping, Comparable::compareTo);
+    }
+
+    /**
+     * As defined by {@link #min()}, only with a custom {@link Comparator}.
+     */
+    public static <A> UniConstraintCollector<A, ?, A> min(Comparator<A> comparator) {
+        return min(Function.identity(), comparator);
+    }
+
+    /**
+     * As defined by {@link #min(Function)}, only with a custom {@link Comparator}.
+     */
+    public static <A, Mapped> UniConstraintCollector<A, ?, Mapped> min(Function<A, Mapped> groupValueMapping,
+            Comparator<Mapped> comparator) {
+        return minOrMax(groupValueMapping, comparator, true);
+    }
+
+    /**
+     * As defined by {@link #min(Function)}.
+     */
+    public static <A, B, Mapped extends Comparable<Mapped>> BiConstraintCollector<A, B, ?, Mapped> min(
+            BiFunction<A, B, Mapped> groupValueMapping) {
+        return min(groupValueMapping, Comparable::compareTo);
+    }
+
+    /**
+     * As defined by {@link #min(Function)}, only with a custom {@link Comparator}.
+     */
+    public static <A, B, Mapped> BiConstraintCollector<A, B, ?, Mapped> min(BiFunction<A, B, Mapped> groupValueMapping,
+            Comparator<Mapped> comparator) {
+        return minOrMax(groupValueMapping, comparator, true);
+    }
+
+    /**
+     * As defined by {@link #min(Function)}.
+     */
+    public static <A, B, C, Mapped extends Comparable<Mapped>> TriConstraintCollector<A, B, C, ?, Mapped> min(
+            TriFunction<A, B, C, Mapped> groupValueMapping) {
+        return min(groupValueMapping, Comparable::compareTo);
+    }
+
+    /**
+     * As defined by {@link #min(Function)}, only with a custom {@link Comparator}.
+     */
+    public static <A, B, C, Mapped> TriConstraintCollector<A, B, C, ?, Mapped> min(
+            TriFunction<A, B, C, Mapped> groupValueMapping, Comparator<Mapped> comparator) {
+        return minOrMax(groupValueMapping, comparator, true);
+    }
+
+    /**
+     * As defined by {@link #min(Function)}.
+     */
+    public static <A, B, C, D, Mapped extends Comparable<Mapped>> QuadConstraintCollector<A, B, C, D, ?, Mapped> min(
+            QuadFunction<A, B, C, D, Mapped> groupValueMapping) {
+        return min(groupValueMapping, Comparable::compareTo);
+    }
+
+    /**
+     * As defined by {@link #min(Function)}, only with a custom {@link Comparator}.
+     */
+    public static <A, B, C, D, Mapped> QuadConstraintCollector<A, B, C, D, ?, Mapped> min(
+            QuadFunction<A, B, C, D, Mapped> groupValueMapping, Comparator<Mapped> comparator) {
+        return minOrMax(groupValueMapping, comparator, true);
     }
 
     // ************************************************************************
     // max
     // ************************************************************************
 
-    public static <A> UniConstraintCollector<A, ?, A> max(Comparator<A> comparator) {
-        return minOrMax(comparator, false);
-    }
-
+    /**
+     * Returns a collector that finds a maximum value in a group of {@link Comparable} elements.
+     * <p>
+     * Important: The {@link Comparable}'s {@link Comparable#compareTo(Object)} must be <i>consistent with equals</i>,
+     * such that <tt>e1.compareTo(e2) == 0</tt> has the same boolean value as <tt>e1.equals(e2)</tt>.
+     * In other words, if two elements compare to zero, any of them can be returned by the collector.
+     * It can even differ between 2 score calculations on the exact same {@link PlanningSolution} state, due to
+     * incremental score calculation.
+     * <p>
+     * For example, {@code [Ann(age = 20), Beth(age = 25), Cathy(age = 30), David(age = 30), Eric(age = 20)]} with
+     * {@code .groupBy(max())} returns either {@code Cathy} or {@code David} arbitrarily, assuming the objects are
+     * {@link Comparable} by the {@code age} field.
+     * To avoid this, always end your {@link Comparator} by an identity comparison, such as
+     * {@code Comparator.comparing(Person::getAge).comparing(Person::getId))}.
+     *
+     * @param <A> type of the matched fact
+     * @return never null
+     */
     public static <A extends Comparable<A>> UniConstraintCollector<A, ?, A> max() {
-        return max(Comparable::compareTo);
+        return max(Function.identity(), Comparable::compareTo);
     }
 
-    private static <A> UniConstraintCollector<A, SortedMap<A, Long>, A> minOrMax(Comparator<A> comparator,
-            boolean min) {
-        Function<SortedMap<A, Long>, A> keySupplier = min ? SortedMap::firstKey : SortedMap::lastKey;
+    /**
+     * Returns a collector that finds a maximum value in a group of {@link Comparable} elements.
+     * <p>
+     * Important: The {@link Comparable}'s {@link Comparable#compareTo(Object)} must be <i>consistent with equals</i>,
+     * such that <tt>e1.compareTo(e2) == 0</tt> has the same boolean value as <tt>e1.equals(e2)</tt>.
+     * In other words, if two elements compare to zero, any of them can be returned by the collector.
+     * It can even differ between 2 score calculations on the exact same {@link PlanningSolution} state, due to
+     * incremental score calculation.
+     * <p>
+     * For example, {@code [Ann(age = 20), Beth(age = 25), Cathy(age = 30), David(age = 30), Eric(age = 20)]} with
+     * {@code .groupBy(max(Person::getAge))} returns {@code 30}.
+     *
+     * @param <A> type of the matched fact
+     * @param <Mapped> type of the result
+     * @param groupValueMapping never null, maps facts from the matched type to the result type
+     * @return never null
+     */
+    public static <A, Mapped extends Comparable<Mapped>> UniConstraintCollector<A, ?, Mapped> max(
+            Function<A, Mapped> groupValueMapping) {
+        return max(groupValueMapping, Comparable::compareTo);
+    }
+
+    /**
+     * As defined by {@link #max()}, only with a custom {@link Comparator}.
+     */
+    public static <A> UniConstraintCollector<A, ?, A> max(Comparator<A> comparator) {
+        return max(Function.identity(), comparator);
+    }
+
+    /**
+     * As defined by {@link #max(Function)}, only with a custom {@link Comparator}.
+     */
+    public static <A, Mapped> UniConstraintCollector<A, ?, Mapped> max(Function<A, Mapped> groupValueMapping,
+            Comparator<Mapped> comparator) {
+        return minOrMax(groupValueMapping, comparator, false);
+    }
+
+    private static <A, Mapped> UniConstraintCollector<A, SortedMap<Mapped, Long>, Mapped> minOrMax(
+            Function<A, Mapped> groupValueMapping, Comparator<Mapped> comparator, boolean min) {
         return new DefaultUniConstraintCollector<>(
                 () -> new TreeMap<>(comparator),
                 (resultContainer, a) -> {
-                    resultContainer.compute(a, (key, value) -> value == null ? 1 : value + 1);
-                    return () -> resultContainer.compute(a, (key, value) -> value == 1 ? null : value - 1);
+                    Mapped mapped = groupValueMapping.apply(a);
+                    return minOrMaxAccumulator(resultContainer, mapped);
                 },
-                (resultContainer) -> resultContainer.isEmpty() ? null : keySupplier.apply(resultContainer));
+                resultContainer -> minOrMaxFinisher(resultContainer, min));
+    }
+
+    /**
+     * As defined by {@link #max(Function)}.
+     */
+    public static <A, B, Mapped extends Comparable<Mapped>> BiConstraintCollector<A, B, ?, Mapped> max(
+            BiFunction<A, B, Mapped> groupValueMapping) {
+        return max(groupValueMapping, Comparable::compareTo);
+    }
+
+    /**
+     * As defined by {@link #max(Function)}, only with a custom {@link Comparator}.
+     */
+    public static <A, B, Mapped> BiConstraintCollector<A, B, ?, Mapped> max(BiFunction<A, B, Mapped> groupValueMapping,
+            Comparator<Mapped> comparator) {
+        return minOrMax(groupValueMapping, comparator, false);
+    }
+
+    private static <A, B, Mapped> BiConstraintCollector<A, B, SortedMap<Mapped, Long>, Mapped> minOrMax(
+            BiFunction<A, B, Mapped> groupValueMapping, Comparator<Mapped> comparator, boolean min) {
+        return new DefaultBiConstraintCollector<>(
+                () -> new TreeMap<>(comparator),
+                (resultContainer, a, b) -> {
+                    Mapped mapped = groupValueMapping.apply(a, b);
+                    return minOrMaxAccumulator(resultContainer, mapped);
+                },
+                resultContainer -> minOrMaxFinisher(resultContainer, min));
+    }
+
+    /**
+     * As defined by {@link #max(Function)}.
+     */
+    public static <A, B, C, Mapped extends Comparable<Mapped>> TriConstraintCollector<A, B, C, ?, Mapped> max(
+            TriFunction<A, B, C, Mapped> groupValueMapping) {
+        return max(groupValueMapping, Comparable::compareTo);
+    }
+
+    /**
+     * As defined by {@link #max(Function)}, only with a custom {@link Comparator}.
+     */
+    public static <A, B, C, Mapped> TriConstraintCollector<A, B, C, ?, Mapped> max(
+            TriFunction<A, B, C, Mapped> groupValueMapping, Comparator<Mapped> comparator) {
+        return minOrMax(groupValueMapping, comparator, false);
+    }
+
+    private static <A, B, C, Mapped> TriConstraintCollector<A, B, C, SortedMap<Mapped, Long>, Mapped> minOrMax(
+            TriFunction<A, B, C, Mapped> groupValueMapping, Comparator<Mapped> comparator, boolean min) {
+        return new DefaultTriConstraintCollector<>(
+                () -> new TreeMap<>(comparator),
+                (resultContainer, a, b, c) -> {
+                    Mapped mapped = groupValueMapping.apply(a, b, c);
+                    return minOrMaxAccumulator(resultContainer, mapped);
+                },
+                resultContainer -> minOrMaxFinisher(resultContainer, min));
+    }
+
+    /**
+     * As defined by {@link #max(Function)}.
+     */
+    public static <A, B, C, D, Mapped extends Comparable<Mapped>> QuadConstraintCollector<A, B, C, D, ?, Mapped> max(
+            QuadFunction<A, B, C, D, Mapped> groupValueMapping) {
+        return max(groupValueMapping, Comparable::compareTo);
+    }
+
+    /**
+     * As defined by {@link #max(Function)}, only with a custom {@link Comparator}.
+     */
+    public static <A, B, C, D, Mapped> QuadConstraintCollector<A, B, C, D, ?, Mapped> max(
+            QuadFunction<A, B, C, D, Mapped> groupValueMapping, Comparator<Mapped> comparator) {
+        return minOrMax(groupValueMapping, comparator, false);
+    }
+
+    private static <A, B, C, D, Mapped> QuadConstraintCollector<A, B, C, D, SortedMap<Mapped, Long>, Mapped> minOrMax(
+            QuadFunction<A, B, C, D, Mapped> groupValueMapping, Comparator<Mapped> comparator, boolean min) {
+        return new DefaultQuadConstraintCollector<>(
+                () -> new TreeMap<>(comparator),
+                (resultContainer, a, b, c, d) -> {
+                    Mapped mapped = groupValueMapping.apply(a, b, c, d);
+                    return minOrMaxAccumulator(resultContainer, mapped);
+                },
+                resultContainer -> minOrMaxFinisher(resultContainer, min));
+    }
+
+    private static <Mapped> Runnable minOrMaxAccumulator(SortedMap<Mapped, Long> resultContainer, Mapped mapped) {
+        resultContainer.compute(mapped, (key, value) -> value == null ? 1L : value + 1L);
+        return () -> resultContainer.compute(mapped, (key, value) -> value == 1L ? null : value - 1L);
+    }
+
+    private static <Mapped> Mapped minOrMaxFinisher(SortedMap<Mapped, Long> resultContainer, boolean min) {
+        Function<SortedMap<Mapped, Long>, Mapped> keySupplier = min ? SortedMap::firstKey : SortedMap::lastKey;
+        return resultContainer.isEmpty() ? null : keySupplier.apply(resultContainer);
     }
 
     // ************************************************************************
@@ -591,11 +832,11 @@ public final class ConstraintCollectors {
     }
 
     public static <A, Mapped, Result extends Collection<Mapped>> UniConstraintCollector<A, ?, Result> toCollection(
-            Function<A, Mapped> mappingFunction, IntFunction<Result> collectionFunction) {
+            Function<A, Mapped> groupValueMapping, IntFunction<Result> collectionFunction) {
         return new DefaultUniConstraintCollector<>(
                 (Supplier<List<Mapped>>) ArrayList::new,
                 (resultContainer, a) -> {
-                    Mapped mapped = mappingFunction.apply(a);
+                    Mapped mapped = groupValueMapping.apply(a);
                     resultContainer.add(mapped);
                     return () -> resultContainer.remove(mapped);
                 },
@@ -615,13 +856,13 @@ public final class ConstraintCollectors {
     /**
      * As defined by {@link #toList(Function)}, with {@link Set} as the resulting collection.
      *
-     * @param mappingFunction never null, converts matched facts to elements of the resulting collection
+     * @param groupValueMapping never null, converts matched facts to elements of the resulting collection
      * @param <A> type of the matched fact
      * @param <Mapped> type of elements in the resulting collection
      * @return never null
      */
-    public static <A, Mapped> UniConstraintCollector<A, ?, Set<Mapped>> toSet(Function<A, Mapped> mappingFunction) {
-        return toCollection(mappingFunction, LinkedHashSet::new);
+    public static <A, Mapped> UniConstraintCollector<A, ?, Set<Mapped>> toSet(Function<A, Mapped> groupValueMapping) {
+        return toCollection(groupValueMapping, LinkedHashSet::new);
     }
 
     /**
@@ -629,21 +870,21 @@ public final class ConstraintCollectors {
      * Makes no guarantees on iteration order.
      * For stable iteration order, use {@link #toCollection(Function, IntFunction)} together with a sorted collection.
      *
-     * @param mappingFunction never null, converts matched facts to elements of the resulting collection
+     * @param groupValueMapping never null, converts matched facts to elements of the resulting collection
      * @param <A> type of the matched fact
      * @param <Mapped> type of elements in the resulting collection
      * @return never null
      */
-    public static <A, Mapped> UniConstraintCollector<A, ?, List<Mapped>> toList(Function<A, Mapped> mappingFunction) {
-        return toCollection(mappingFunction, ArrayList::new);
+    public static <A, Mapped> UniConstraintCollector<A, ?, List<Mapped>> toList(Function<A, Mapped> groupValueMapping) {
+        return toCollection(groupValueMapping, ArrayList::new);
     }
 
     public static <A, B, Mapped, Result extends Collection<Mapped>> BiConstraintCollector<A, B, ?, Result> toCollection(
-            BiFunction<A, B, Mapped> mappingFunction, IntFunction<Result> collectionFunction) {
+            BiFunction<A, B, Mapped> groupValueMapping, IntFunction<Result> collectionFunction) {
         return new DefaultBiConstraintCollector<>(
                 (Supplier<List<Mapped>>) ArrayList::new,
                 (resultContainer, a, b) -> {
-                    Mapped mapped = mappingFunction.apply(a, b);
+                    Mapped mapped = groupValueMapping.apply(a, b);
                     resultContainer.add(mapped);
                     return () -> resultContainer.remove(mapped);
                 },
@@ -653,15 +894,15 @@ public final class ConstraintCollectors {
     /**
      * As defined by {@link #toList(BiFunction)}, with {@link Set} as the resulting collection.
      *
-     * @param mappingFunction never null, converts matched facts to elements of the resulting collection
+     * @param groupValueMapping never null, converts matched facts to elements of the resulting collection
      * @param <A> type of the first matched fact
      * @param <B> type of the second matched fact
      * @param <Mapped> type of elements in the resulting collection
      * @return never null
      */
     public static <A, B, Mapped> BiConstraintCollector<A, B, ?, Set<Mapped>> toSet(
-            BiFunction<A, B, Mapped> mappingFunction) {
-        return toCollection(mappingFunction, LinkedHashSet::new);
+            BiFunction<A, B, Mapped> groupValueMapping) {
+        return toCollection(groupValueMapping, LinkedHashSet::new);
     }
 
     /**
@@ -669,23 +910,23 @@ public final class ConstraintCollectors {
      * Makes no guarantees on iteration order.
      * For stable iteration order, use {@link #toCollection(BiFunction, IntFunction)} together with a sorted collection.
      *
-     * @param mappingFunction never null, converts matched facts to elements of the resulting collection
+     * @param groupValueMapping never null, converts matched facts to elements of the resulting collection
      * @param <A> type of the first matched fact
      * @param <B> type of the second matched fact
      * @param <Mapped> type of elements in the resulting collection
      * @return never null
      */
     public static <A, B, Mapped> BiConstraintCollector<A, B, ?, List<Mapped>> toList(
-            BiFunction<A, B, Mapped> mappingFunction) {
-        return toCollection(mappingFunction, ArrayList::new);
+            BiFunction<A, B, Mapped> groupValueMapping) {
+        return toCollection(groupValueMapping, ArrayList::new);
     }
 
     public static <A, B, C, Mapped, Result extends Collection<Mapped>> TriConstraintCollector<A, B, C, ?, Result>
-    toCollection(TriFunction<A, B, C, Mapped> mappingFunction, IntFunction<Result> collectionFunction) {
+    toCollection(TriFunction<A, B, C, Mapped> groupValueMapping, IntFunction<Result> collectionFunction) {
         return new DefaultTriConstraintCollector<>(
                 (Supplier<List<Mapped>>) ArrayList::new,
                 (resultContainer, a, b, c) -> {
-                    Mapped mapped = mappingFunction.apply(a, b, c);
+                    Mapped mapped = groupValueMapping.apply(a, b, c);
                     resultContainer.add(mapped);
                     return () -> resultContainer.remove(mapped);
                 },
@@ -695,7 +936,7 @@ public final class ConstraintCollectors {
     /**
      * As defined by {@link #toList(TriFunction)}, with {@link Set} as the resulting collection.
      *
-     * @param mappingFunction never null, converts matched facts to elements of the resulting collection
+     * @param groupValueMapping never null, converts matched facts to elements of the resulting collection
      * @param <A> type of the first matched fact
      * @param <B> type of the second matched fact
      * @param <C> type of the third matched fact
@@ -703,8 +944,8 @@ public final class ConstraintCollectors {
      * @return never null
      */
     public static <A, B, C, Mapped> TriConstraintCollector<A, B, C, ?, Set<Mapped>> toSet(
-            TriFunction<A, B, C, Mapped> mappingFunction) {
-        return toCollection(mappingFunction, LinkedHashSet::new);
+            TriFunction<A, B, C, Mapped> groupValueMapping) {
+        return toCollection(groupValueMapping, LinkedHashSet::new);
     }
 
     /**
@@ -712,7 +953,7 @@ public final class ConstraintCollectors {
      * Makes no guarantees on iteration order.
      * For stable iteration order, use {@link #toCollection(TriFunction, IntFunction)} together with a sorted collection.
      *
-     * @param mappingFunction never null, converts matched facts to elements of the resulting collection
+     * @param groupValueMapping never null, converts matched facts to elements of the resulting collection
      * @param <A> type of the first matched fact
      * @param <B> type of the second matched fact
      * @param <C> type of the third matched fact
@@ -720,16 +961,16 @@ public final class ConstraintCollectors {
      * @return never null
      */
     public static <A, B, C, Mapped> TriConstraintCollector<A, B, C, ?, List<Mapped>> toList(
-            TriFunction<A, B, C, Mapped> mappingFunction) {
-        return toCollection(mappingFunction, ArrayList::new);
+            TriFunction<A, B, C, Mapped> groupValueMapping) {
+        return toCollection(groupValueMapping, ArrayList::new);
     }
 
     public static <A, B, C, D, Mapped, Result extends Collection<Mapped>> QuadConstraintCollector<A, B, C, D, ?, Result>
-    toCollection(QuadFunction<A, B, C, D, Mapped> mappingFunction, IntFunction<Result> collectionFunction) {
+    toCollection(QuadFunction<A, B, C, D, Mapped> groupValueMapping, IntFunction<Result> collectionFunction) {
         return new DefaultQuadConstraintCollector<>(
                 (Supplier<List<Mapped>>) ArrayList::new,
                 (resultContainer, a, b, c, d) -> {
-                    Mapped mapped = mappingFunction.apply(a, b, c, d);
+                    Mapped mapped = groupValueMapping.apply(a, b, c, d);
                     resultContainer.add(mapped);
                     return () -> resultContainer.remove(mapped);
                 },
@@ -739,7 +980,7 @@ public final class ConstraintCollectors {
     /**
      * As defined by {@link #toList(QuadFunction)}, with {@link Set} as the resulting collection.
      *
-     * @param mappingFunction never null, converts matched facts to elements of the resulting collection
+     * @param groupValueMapping never null, converts matched facts to elements of the resulting collection
      * @param <A> type of the first matched fact
      * @param <B> type of the second matched fact
      * @param <C> type of the third matched fact
@@ -748,8 +989,8 @@ public final class ConstraintCollectors {
      * @return never null
      */
     public static <A, B, C, D, Mapped> QuadConstraintCollector<A, B, C, D, ?, Set<Mapped>> toSet(
-            QuadFunction<A, B, C, D, Mapped> mappingFunction) {
-        return toCollection(mappingFunction, LinkedHashSet::new);
+            QuadFunction<A, B, C, D, Mapped> groupValueMapping) {
+        return toCollection(groupValueMapping, LinkedHashSet::new);
     }
 
     /**
@@ -757,7 +998,7 @@ public final class ConstraintCollectors {
      * Makes no guarantees on iteration order.
      * For stable iteration order, use {@link #toCollection(QuadFunction, IntFunction)} together with a sorted collection.
      *
-     * @param mappingFunction never null, converts matched facts to elements of the resulting collection
+     * @param groupValueMapping never null, converts matched facts to elements of the resulting collection
      * @param <A> type of the first matched fact
      * @param <B> type of the second matched fact
      * @param <C> type of the third matched fact
@@ -766,8 +1007,8 @@ public final class ConstraintCollectors {
      * @return never null
      */
     public static <A, B, C, D, Mapped> QuadConstraintCollector<A, B, C, D, ?, List<Mapped>> toList(
-            QuadFunction<A, B, C, D, Mapped> mappingFunction) {
-        return toCollection(mappingFunction, ArrayList::new);
+            QuadFunction<A, B, C, D, Mapped> groupValueMapping) {
+        return toCollection(groupValueMapping, ArrayList::new);
     }
 
     private ConstraintCollectors() {

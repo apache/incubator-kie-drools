@@ -24,6 +24,7 @@ import java.util.Comparator;
 import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Set;
+import java.util.function.BiFunction;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 
@@ -40,6 +41,11 @@ import static java.util.Collections.emptySet;
 import static java.util.Collections.singleton;
 import static java.util.Collections.singletonList;
 import static org.junit.Assert.assertEquals;
+import static org.optaplanner.core.api.score.stream.ConstraintCollectors.countLongBi;
+import static org.optaplanner.core.api.score.stream.ConstraintCollectors.countLongQuad;
+import static org.optaplanner.core.api.score.stream.ConstraintCollectors.countLongTri;
+import static org.optaplanner.core.api.score.stream.ConstraintCollectors.max;
+import static org.optaplanner.core.api.score.stream.ConstraintCollectors.min;
 
 public class ConstraintCollectorsTest {
 
@@ -129,7 +135,7 @@ public class ConstraintCollectorsTest {
 
     @Test
     public void countBiLong() {
-        BiConstraintCollector<Integer, Integer, ?, Long> collector = ConstraintCollectors.countLongBi();
+        BiConstraintCollector<Integer, Integer, ?, Long> collector = countLongBi();
         Object container = collector.supplier().get();
         // Add first value, we have one now.
         int firstValueA = 2;
@@ -187,7 +193,7 @@ public class ConstraintCollectorsTest {
 
     @Test
     public void countTriLong() {
-        TriConstraintCollector<Integer, Integer, Integer, ?, Long> collector = ConstraintCollectors.countLongTri();
+        TriConstraintCollector<Integer, Integer, Integer, ?, Long> collector = countLongTri();
         Object container = collector.supplier().get();
         // Add first value, we have one now.
         int firstValueA = 2;
@@ -253,7 +259,7 @@ public class ConstraintCollectorsTest {
     @Test
     public void countQuadLong() {
         QuadConstraintCollector<Integer, Integer, Integer, Integer, ?, Long> collector =
-                ConstraintCollectors.countLongQuad();
+                countLongQuad();
         Object container = collector.supplier().get();
         // Add first value, we have one now.
         int firstValueA = 2;
@@ -542,20 +548,20 @@ public class ConstraintCollectorsTest {
         // Add first value, we have one now.
         int firstValue = 2;
         Runnable firstRetractor = accumulate(collector, container, firstValue);
-        assertResult(collector, container, firstValue);
+        assertResult(collector, container, 2);
         // Add second value, we have two now.
         int secondValue = 1;
         Runnable secondRetractor = accumulate(collector, container, secondValue);
-        assertResult(collector, container,firstValue + secondValue);
+        assertResult(collector, container,3);
         // Add third value, same as the second. We now have three values, two of which are the same.
         Runnable thirdRetractor = accumulate(collector, container, secondValue);
-        assertResult(collector, container, firstValue + 2 * secondValue);
+        assertResult(collector, container, 4);
         // Retract one instance of the second value; we only have two values now.
         secondRetractor.run();
-        assertResult(collector, container, firstValue + secondValue);
+        assertResult(collector, container, 3);
         // Retract final instance of the second value; we only have one value now.
         thirdRetractor.run();
-        assertResult(collector, container, firstValue);
+        assertResult(collector, container, 2);
         // Retract last value; there are no values now.
         firstRetractor.run();
         assertResult(collector, container, 0);
@@ -568,20 +574,20 @@ public class ConstraintCollectorsTest {
         // Add first value, we have one now.
         long firstValue = 2;
         Runnable firstRetractor = accumulate(collector, container, firstValue);
-        assertResult(collector, container, firstValue);
+        assertResult(collector, container, 2L);
         // Add second value, we have two now.
         long secondValue = 1;
         Runnable secondRetractor = accumulate(collector, container, secondValue);
-        assertResult(collector, container, firstValue + secondValue);
+        assertResult(collector, container, 3L);
         // Add third value, same as the second. We now have three values, two of which are the same.
         Runnable thirdRetractor = accumulate(collector, container, secondValue);
-        assertResult(collector, container, firstValue + 2 * secondValue);
+        assertResult(collector, container, 4L);
         // Retract one instance of the second value; we only have two values now.
         secondRetractor.run();
-        assertResult(collector, container, firstValue + secondValue);
+        assertResult(collector, container, 3L);
         // Retract final instance of the second value; we only have one value now.
         thirdRetractor.run();
-        assertResult(collector, container, firstValue);
+        assertResult(collector, container, 2L);
         // Retract last value; there are no values now.
         firstRetractor.run();
         assertResult(collector, container, 0L);
@@ -594,7 +600,7 @@ public class ConstraintCollectorsTest {
         // Add first value, we have one now.
         BigDecimal firstValue = BigDecimal.ONE;
         Runnable firstRetractor = accumulate(collector, container, firstValue);
-        assertResult(collector, container, firstValue);
+        assertResult(collector, container, BigDecimal.ONE);
         // Add second value, we have two now.
         BigDecimal secondValue = BigDecimal.TEN;
         Runnable secondRetractor = accumulate(collector, container, secondValue);
@@ -607,7 +613,7 @@ public class ConstraintCollectorsTest {
         assertResult(collector, container, BigDecimal.valueOf(11));
         // Retract final instance of the second value; we only have one value now.
         thirdRetractor.run();
-        assertResult(collector, container, firstValue);
+        assertResult(collector, container, BigDecimal.ONE);
         // Retract last value; there are no values now.
         firstRetractor.run();
         assertResult(collector, container, BigDecimal.ZERO);
@@ -620,7 +626,7 @@ public class ConstraintCollectorsTest {
         // Add first value, we have one now.
         BigInteger firstValue = BigInteger.ONE;
         Runnable firstRetractor = accumulate(collector, container, firstValue);
-        assertResult(collector, container, firstValue);
+        assertResult(collector, container, BigInteger.ONE);
         // Add second value, we have two now.
         BigInteger secondValue = BigInteger.TEN;
         Runnable secondRetractor = accumulate(collector, container, secondValue);
@@ -633,7 +639,7 @@ public class ConstraintCollectorsTest {
         assertResult(collector, container, BigInteger.valueOf(11));
         // Retract final instance of the second value; we only have one value now.
         thirdRetractor.run();
-        assertResult(collector, container, firstValue);
+        assertResult(collector, container, BigInteger.ONE);
         // Retract last value; there are no values now.
         firstRetractor.run();
         assertResult(collector, container, BigInteger.ZERO);
@@ -699,21 +705,21 @@ public class ConstraintCollectorsTest {
         int firstValueA = 2;
         int firstValueB = 3;
         Runnable firstRetractor = accumulate(collector, container, firstValueA, firstValueB);
-        assertResult(collector, container, firstValueA + firstValueB);
+        assertResult(collector, container, 5);
         // Add second value, we have two now.
         int secondValueA = 4;
         int secondValueB = 5;
         Runnable secondRetractor = accumulate(collector, container, secondValueA, secondValueB);
-        assertResult(collector, container,firstValueA + firstValueB + secondValueA + secondValueB);
+        assertResult(collector, container,14);
         // Add third value, same as the second. We now have three values, two of which are the same.
         Runnable thirdRetractor = accumulate(collector, container, secondValueA, secondValueB);
-        assertResult(collector, container, firstValueA + firstValueB + 2 * (secondValueA + secondValueB));
+        assertResult(collector, container, 23);
         // Retract one instance of the second value; we only have two values now.
         secondRetractor.run();
-        assertResult(collector, container, firstValueA + firstValueB + secondValueA + secondValueB);
+        assertResult(collector, container, 14);
         // Retract final instance of the second value; we only have one value now.
         thirdRetractor.run();
-        assertResult(collector, container, firstValueA + firstValueB);
+        assertResult(collector, container, 5);
         // Retract last value; there are no values now.
         firstRetractor.run();
         assertResult(collector, container, 0);
@@ -727,21 +733,21 @@ public class ConstraintCollectorsTest {
         int firstValueA = 2;
         int firstValueB = 3;
         Runnable firstRetractor = accumulate(collector, container, firstValueA, firstValueB);
-        assertResult(collector, container, (long)firstValueA + firstValueB);
+        assertResult(collector, container, 5L);
         // Add second value, we have two now.
         int secondValueA = 4;
         int secondValueB = 5;
         Runnable secondRetractor = accumulate(collector, container, secondValueA, secondValueB);
-        assertResult(collector, container,(long)firstValueA + firstValueB + secondValueA + secondValueB);
+        assertResult(collector, container,14L);
         // Add third value, same as the second. We now have three values, two of which are the same.
         Runnable thirdRetractor = accumulate(collector, container, secondValueA, secondValueB);
-        assertResult(collector, container, (long)firstValueA + firstValueB + 2 * (secondValueA + secondValueB));
+        assertResult(collector, container, 23L);
         // Retract one instance of the second value; we only have two values now.
         secondRetractor.run();
-        assertResult(collector, container, (long)firstValueA + firstValueB + secondValueA + secondValueB);
+        assertResult(collector, container, 14L);
         // Retract final instance of the second value; we only have one value now.
         thirdRetractor.run();
-        assertResult(collector, container, (long)firstValueA + firstValueB);
+        assertResult(collector, container, 5L);
         // Retract last value; there are no values now.
         firstRetractor.run();
         assertResult(collector, container, 0L);
@@ -872,25 +878,23 @@ public class ConstraintCollectorsTest {
         int firstValueA = 2;
         int firstValueB = 3;
         int firstValueC = 1;
-        int firstSum = firstValueA + firstValueB + firstValueC;
         Runnable firstRetractor = accumulate(collector, container, firstValueA, firstValueB, firstValueC);
-        assertResult(collector, container, firstSum);
+        assertResult(collector, container, 6);
         // Add second value, we have two now.
         int secondValueA = 4;
         int secondValueB = 5;
         int secondValueC = 1;
-        int secondSum = secondValueA + secondValueB + secondValueC;
         Runnable secondRetractor = accumulate(collector, container, secondValueA, secondValueB, secondValueC);
-        assertResult(collector, container,firstSum + secondSum);
+        assertResult(collector, container,16);
         // Add third value, same as the second. We now have three values, two of which are the same.
         Runnable thirdRetractor = accumulate(collector, container, secondValueA, secondValueB, secondValueC);
-        assertResult(collector, container, firstSum + 2 * secondSum);
+        assertResult(collector, container, 26);
         // Retract one instance of the second value; we only have two values now.
         secondRetractor.run();
-        assertResult(collector, container, firstSum + secondSum);
+        assertResult(collector, container, 16);
         // Retract final instance of the second value; we only have one value now.
         thirdRetractor.run();
-        assertResult(collector, container, firstSum);
+        assertResult(collector, container, 6);
         // Retract last value; there are no values now.
         firstRetractor.run();
         assertResult(collector, container, 0);
@@ -905,25 +909,24 @@ public class ConstraintCollectorsTest {
         int firstValueA = 2;
         int firstValueB = 3;
         int firstValueC = 1;
-        int firstSum = firstValueA + firstValueB + firstValueC;
         Runnable firstRetractor = accumulate(collector, container, firstValueA, firstValueB, firstValueC);
-        assertResult(collector, container, (long) firstSum);
+        assertResult(collector, container, 6L);
         // Add second value, we have two now.
         int secondValueA = 4;
         int secondValueB = 5;
         int secondValueC = 1;
         int secondSum = secondValueA + secondValueB + secondValueC;
         Runnable secondRetractor = accumulate(collector, container, secondValueA, secondValueB, secondValueC);
-        assertResult(collector, container,(long) firstSum + secondSum);
+        assertResult(collector, container,16L);
         // Add third value, same as the second. We now have three values, two of which are the same.
         Runnable thirdRetractor = accumulate(collector, container, secondValueA, secondValueB, secondValueC);
-        assertResult(collector, container, (long) firstSum + 2 * secondSum);
+        assertResult(collector, container, 26L);
         // Retract one instance of the second value; we only have two values now.
         secondRetractor.run();
-        assertResult(collector, container, (long) firstSum + secondSum);
+        assertResult(collector, container, 16L);
         // Retract final instance of the second value; we only have one value now.
         thirdRetractor.run();
-        assertResult(collector, container, (long) firstSum);
+        assertResult(collector, container, 6L);
         // Retract last value; there are no values now.
         firstRetractor.run();
         assertResult(collector, container, 0L);
@@ -1063,28 +1066,26 @@ public class ConstraintCollectorsTest {
         int firstValueB = 3;
         int firstValueC = 1;
         int firstValueD = 4;
-        int firstSum = firstValueA + firstValueB + firstValueC + firstValueD;
         Runnable firstRetractor = accumulate(collector, container, firstValueA, firstValueB, firstValueC, firstValueD);
-        assertResult(collector, container, firstSum);
+        assertResult(collector, container, 10);
         // Add second value, we have two now.
         int secondValueA = 4;
         int secondValueB = 5;
         int secondValueC = 1;
         int secondValueD = 2;
-        int secondSum = secondValueA + secondValueB + secondValueC + secondValueD;
         Runnable secondRetractor = accumulate(collector, container, secondValueA, secondValueB, secondValueC,
                 secondValueD);
-        assertResult(collector, container,firstSum + secondSum);
+        assertResult(collector, container,22);
         // Add third value, same as the second. We now have three values, two of which are the same.
         Runnable thirdRetractor = accumulate(collector, container, secondValueA, secondValueB, secondValueC,
                 secondValueD);
-        assertResult(collector, container, firstSum + 2 * secondSum);
+        assertResult(collector, container, 34);
         // Retract one instance of the second value; we only have two values now.
         secondRetractor.run();
-        assertResult(collector, container, firstSum + secondSum);
+        assertResult(collector, container, 22);
         // Retract final instance of the second value; we only have one value now.
         thirdRetractor.run();
-        assertResult(collector, container, firstSum);
+        assertResult(collector, container, 10);
         // Retract last value; there are no values now.
         firstRetractor.run();
         assertResult(collector, container, 0);
@@ -1102,7 +1103,7 @@ public class ConstraintCollectorsTest {
         int firstValueD = 4;
         int firstSum = firstValueA + firstValueB + firstValueC + firstValueD;
         Runnable firstRetractor = accumulate(collector, container, firstValueA, firstValueB, firstValueC, firstValueD);
-        assertResult(collector, container, (long) firstSum);
+        assertResult(collector, container, 10L);
         // Add second value, we have two now.
         int secondValueA = 4;
         int secondValueB = 5;
@@ -1111,17 +1112,17 @@ public class ConstraintCollectorsTest {
         int secondSum = secondValueA + secondValueB + secondValueC + secondValueD;
         Runnable secondRetractor = accumulate(collector, container, secondValueA, secondValueB, secondValueC,
                 secondValueD);
-        assertResult(collector, container,(long) firstSum + secondSum);
+        assertResult(collector, container,22L);
         // Add third value, same as the second. We now have three values, two of which are the same.
         Runnable thirdRetractor = accumulate(collector, container, secondValueA, secondValueB, secondValueC,
                 secondValueD);
-        assertResult(collector, container, (long) firstSum + 2 * secondSum);
+        assertResult(collector, container, 34L);
         // Retract one instance of the second value; we only have two values now.
         secondRetractor.run();
-        assertResult(collector, container, (long) firstSum + secondSum);
+        assertResult(collector, container, 22L);
         // Retract final instance of the second value; we only have one value now.
         thirdRetractor.run();
-        assertResult(collector, container, (long) firstSum);
+        assertResult(collector, container, 10L);
         // Retract last value; there are no values now.
         firstRetractor.run();
         assertResult(collector, container, 0L);
@@ -1273,7 +1274,7 @@ public class ConstraintCollectorsTest {
 
     @Test
     public void minComparable() {
-        UniConstraintCollector<Integer, ?, Integer> collector = ConstraintCollectors.min();
+        UniConstraintCollector<Integer, ?, Integer> collector = min();
         Object container = collector.supplier().get();
         // add first value, which becomes the min
         int firstValue = 2;
@@ -1299,15 +1300,14 @@ public class ConstraintCollectorsTest {
 
     @Test
     public void minNotComparable() {
-        UniConstraintCollector<Class, ?, Class> collector =
-                ConstraintCollectors.min(Comparator.comparing(Class::getCanonicalName));
+        UniConstraintCollector<Object, ?, Object> collector = min(Comparator.comparing(o -> (String)o));
         Object container = collector.supplier().get();
         // add first value, which becomes the min
-        Class firstValue = ConstraintCollectorsTest.class;
+        String firstValue = "b";
         Runnable firstRetractor = accumulate(collector, container, firstValue);
         assertResult(collector, container, firstValue);
         // add second value, lesser than the first, becomes the new min
-        Class secondValue = ConstraintCollectors.class;
+        String secondValue = "a";
         Runnable secondRetractor = accumulate(collector, container, secondValue);
         assertResult(collector, container, secondValue);
         // add third value, same as the second, result does not change
@@ -1324,13 +1324,175 @@ public class ConstraintCollectorsTest {
         assertResult(collector, container, null);
     }
 
+    @Test
+    public void minComparableBi() {
+        BiConstraintCollector<Integer, Integer, ?, Integer> collector = min(
+                (BiFunction<Integer, Integer, Integer>) Integer::sum);
+        Object container = collector.supplier().get();
+        // add first value, which becomes the min
+        int firstValueA = 2;
+        Runnable firstRetractor = accumulate(collector, container, firstValueA, 0);
+        assertResult(collector, container, 2);
+        // add second value, lesser than the first, becomes the new min
+        int secondValueA = 1;
+        Runnable secondRetractor = accumulate(collector, container, secondValueA, 0);
+        assertResult(collector, container, 1);
+        // add third value, same as the second, result does not change
+        Runnable thirdRetractor = accumulate(collector, container, secondValueA, 0);
+        assertResult(collector, container, 1);
+        // retract one instance of the second value; second value is still the min value, nothing should change
+        secondRetractor.run();
+        assertResult(collector, container, 1);
+        // retract final instance of the second value; first value is now the min value
+        thirdRetractor.run();
+        assertResult(collector, container, 2);
+        // retract last value; there are no values now
+        firstRetractor.run();
+        assertResult(collector, container, null);
+    }
+
+    @Test
+    public void minNotComparableBi() {
+        BiConstraintCollector<String, String, ?, String> collector =
+                min((a, b) -> a, Comparator.comparing(o -> (String)o));
+        Object container = collector.supplier().get();
+        // add first value, which becomes the min
+        String firstValue = "b";
+        Runnable firstRetractor = accumulate(collector, container, firstValue, null);
+        assertResult(collector, container, firstValue);
+        // add second value, lesser than the first, becomes the new min
+        String secondValue = "a";
+        Runnable secondRetractor = accumulate(collector, container, secondValue, null);
+        assertResult(collector, container, secondValue);
+        // add third value, same as the second, result does not change
+        Runnable thirdRetractor = accumulate(collector, container, secondValue, null);
+        assertResult(collector, container, secondValue);
+        // retract one instance of the second value; second value is still the min value, nothing should change
+        secondRetractor.run();
+        assertResult(collector, container, secondValue);
+        // retract final instance of the second value; first value is now the min value
+        thirdRetractor.run();
+        assertResult(collector, container, firstValue);
+        // retract last value; there are no values now
+        firstRetractor.run();
+        assertResult(collector, container, null);
+    }
+
+    @Test
+    public void minComparableTri() {
+        TriConstraintCollector<Integer, Integer, Integer, ?, Integer> collector = min((a, b, c) -> a + b + c);
+        Object container = collector.supplier().get();
+        // add first value, which becomes the min
+        int firstValue = 2;
+        Runnable firstRetractor = accumulate(collector, container, firstValue, 0, 0);
+        assertResult(collector, container, 2);
+        // add second value, lesser than the first, becomes the new min
+        int secondValue = 1;
+        Runnable secondRetractor = accumulate(collector, container, secondValue, 0, 0);
+        assertResult(collector, container, 1);
+        // add third value, same as the second, result does not change
+        Runnable thirdRetractor = accumulate(collector, container, secondValue, 0, 0);
+        assertResult(collector, container, 1);
+        // retract one instance of the second value; second value is still the min value, nothing should change
+        secondRetractor.run();
+        assertResult(collector, container, 1);
+        // retract final instance of the second value; first value is now the min value
+        thirdRetractor.run();
+        assertResult(collector, container, 2);
+        // retract last value; there are no values now
+        firstRetractor.run();
+        assertResult(collector, container, null);
+    }
+
+    @Test
+    public void minNotComparableTri() {
+        TriConstraintCollector<String, String, String, ?, String> collector =
+                min((a, b, c) -> a, Comparator.comparing(o -> (String)o));
+        Object container = collector.supplier().get();
+        // add first value, which becomes the min
+        String firstValue = "b";
+        Runnable firstRetractor = accumulate(collector, container, firstValue, null, null);
+        assertResult(collector, container, firstValue);
+        // add second value, lesser than the first, becomes the new min
+        String secondValue = "a";
+        Runnable secondRetractor = accumulate(collector, container, secondValue, null, null);
+        assertResult(collector, container, secondValue);
+        // add third value, same as the second, result does not change
+        Runnable thirdRetractor = accumulate(collector, container, secondValue, null, null);
+        assertResult(collector, container, secondValue);
+        // retract one instance of the second value; second value is still the min value, nothing should change
+        secondRetractor.run();
+        assertResult(collector, container, secondValue);
+        // retract final instance of the second value; first value is now the min value
+        thirdRetractor.run();
+        assertResult(collector, container, firstValue);
+        // retract last value; there are no values now
+        firstRetractor.run();
+        assertResult(collector, container, null);
+    }
+
+    @Test
+    public void minComparableQuad() {
+        QuadConstraintCollector<Integer, Integer, Integer, Integer, ?, Integer> collector =
+                min((a, b, c, d) -> a + b + c + d);
+        Object container = collector.supplier().get();
+        // add first value, which becomes the min
+        int firstValue = 2;
+        Runnable firstRetractor = accumulate(collector, container, firstValue, 0, 0, 0);
+        assertResult(collector, container, 2);
+        // add second value, lesser than the first, becomes the new min
+        int secondValue = 1;
+        Runnable secondRetractor = accumulate(collector, container, secondValue, 0, 0, 0);
+        assertResult(collector, container, 1);
+        // add third value, same as the second, result does not change
+        Runnable thirdRetractor = accumulate(collector, container, secondValue, 0, 0, 0);
+        assertResult(collector, container, 1);
+        // retract one instance of the second value; second value is still the min value, nothing should change
+        secondRetractor.run();
+        assertResult(collector, container, 1);
+        // retract final instance of the second value; first value is now the min value
+        thirdRetractor.run();
+        assertResult(collector, container, 2);
+        // retract last value; there are no values now
+        firstRetractor.run();
+        assertResult(collector, container, null);
+    }
+
+    @Test
+    public void minNotComparableQuad() {
+        QuadConstraintCollector<String, String, String, String, ?, String> collector =
+                min((a, b, c, d) -> a, Comparator.comparing(o -> (String)o));
+        Object container = collector.supplier().get();
+        // add first value, which becomes the min
+        String firstValue = "b";
+        Runnable firstRetractor = accumulate(collector, container, firstValue, null, null, null);
+        assertResult(collector, container, firstValue);
+        // add second value, lesser than the first, becomes the new min
+        String secondValue = "a";
+        Runnable secondRetractor = accumulate(collector, container, secondValue, null, null, null);
+        assertResult(collector, container, secondValue);
+        // add third value, same as the second, result does not change
+        Runnable thirdRetractor = accumulate(collector, container, secondValue, null, null, null);
+        assertResult(collector, container, secondValue);
+        // retract one instance of the second value; second value is still the min value, nothing should change
+        secondRetractor.run();
+        assertResult(collector, container, secondValue);
+        // retract final instance of the second value; first value is now the min value
+        thirdRetractor.run();
+        assertResult(collector, container, firstValue);
+        // retract last value; there are no values now
+        firstRetractor.run();
+        assertResult(collector, container, null);
+    }
+
+
     // ************************************************************************
     // max
     // ************************************************************************
 
     @Test
     public void maxComparable() {
-        UniConstraintCollector<Integer, ?, Integer> collector = ConstraintCollectors.max();
+        UniConstraintCollector<Integer, ?, Integer> collector = max();
         Object container = collector.supplier().get();
         // add first value, which becomes the max
         int firstValue = 2;
@@ -1356,15 +1518,14 @@ public class ConstraintCollectorsTest {
 
     @Test
     public void maxNotComparable() {
-        UniConstraintCollector<Class, ?, Class> collector =
-                ConstraintCollectors.max(Comparator.comparing(Class::getCanonicalName));
+        UniConstraintCollector<String, ?, String> collector = max(Comparator.comparing(o -> (String)o));
         Object container = collector.supplier().get();
         // add first value, which becomes the max
-        Class firstValue = ConstraintCollectorsTest.class;
+        String firstValue = "b";
         Runnable firstRetractor = accumulate(collector, container, firstValue);
         assertResult(collector, container, firstValue);
         // add second value, lesser than the first, result does not change
-        Class secondValue = ConstraintCollectors.class;
+        String secondValue = "a";
         Runnable secondRetractor = accumulate(collector, container, secondValue);
         assertResult(collector, container, firstValue);
         // add third value, same as the first, result does not change
@@ -1380,6 +1541,168 @@ public class ConstraintCollectorsTest {
         secondRetractor.run();
         assertResult(collector, container, null);
     }
+
+    @Test
+    public void maxComparableBi() {
+        BiConstraintCollector<Integer, Integer, ?, Integer> collector = max(
+                (BiFunction<Integer, Integer, Integer>) Integer::sum);
+        Object container = collector.supplier().get();
+        // add first value, which becomes the max
+        int firstValue = 2;
+        Runnable firstRetractor = accumulate(collector, container, firstValue, 0);
+        assertResult(collector, container, 2);
+        // add second value, lesser than the first, result does not change
+        int secondValue = 1;
+        Runnable secondRetractor = accumulate(collector, container, secondValue, 0);
+        assertResult(collector, container, 2);
+        // add third value, same as the first, result does not change
+        Runnable thirdRetractor = accumulate(collector, container, firstValue, 0);
+        assertResult(collector, container, 2);
+        // retract one instance of the first value; first value is still the max value, nothing should change
+        firstRetractor.run();
+        assertResult(collector, container, 2);
+        // retract final instance of the first value; second value is now the max value
+        thirdRetractor.run();
+        assertResult(collector, container, 1);
+        // retract last value; there are no values now
+        secondRetractor.run();
+        assertResult(collector, container, null);
+    }
+
+    @Test
+    public void maxNotComparableBi() {
+        BiConstraintCollector<String, String, ?, String> collector =
+                max((a, b) -> a, Comparator.comparing(o -> (String)o));
+        Object container = collector.supplier().get();
+        // add first value, which becomes the max
+        String firstValue = "b";
+        Runnable firstRetractor = accumulate(collector, container, firstValue, null);
+        assertResult(collector, container, firstValue);
+        // add second value, lesser than the first, result does not change
+        String secondValue = "a";
+        Runnable secondRetractor = accumulate(collector, container, secondValue, null);
+        assertResult(collector, container, firstValue);
+        // add third value, same as the first, result does not change
+        Runnable thirdRetractor = accumulate(collector, container, firstValue, null);
+        assertResult(collector, container, firstValue);
+        // retract one instance of the first value; first value is still the max value, nothing should change
+        firstRetractor.run();
+        assertResult(collector, container, firstValue);
+        // retract final instance of the first value; second value is now the max value
+        thirdRetractor.run();
+        assertResult(collector, container, secondValue);
+        // retract last value; there are no values now
+        secondRetractor.run();
+        assertResult(collector, container, null);
+    }
+
+    @Test
+    public void maxComparableTri() {
+        TriConstraintCollector<Integer, Integer, Integer, ?, Integer> collector = max((a, b, c) -> a + b + c);
+        Object container = collector.supplier().get();
+        // add first value, which becomes the max
+        int firstValue = 2;
+        Runnable firstRetractor = accumulate(collector, container, firstValue, 0, 0);
+        assertResult(collector, container, 2);
+        // add second value, lesser than the first, result does not change
+        int secondValue = 1;
+        Runnable secondRetractor = accumulate(collector, container, secondValue, 0, 0);
+        assertResult(collector, container, 2);
+        // add third value, same as the first, result does not change
+        Runnable thirdRetractor = accumulate(collector, container, firstValue, 0, 0);
+        assertResult(collector, container, 2);
+        // retract one instance of the first value; first value is still the max value, nothing should change
+        firstRetractor.run();
+        assertResult(collector, container, 2);
+        // retract final instance of the first value; second value is now the max value
+        thirdRetractor.run();
+        assertResult(collector, container, 1);
+        // retract last value; there are no values now
+        secondRetractor.run();
+        assertResult(collector, container, null);
+    }
+
+    @Test
+    public void maxNotComparableTri() {
+        TriConstraintCollector<String, String, String,?, String> collector =
+                max((a, b, c) -> a, Comparator.comparing(o -> (String)o));
+        Object container = collector.supplier().get();
+        // add first value, which becomes the max
+        String firstValue = "b";
+        Runnable firstRetractor = accumulate(collector, container, firstValue, null, null);
+        assertResult(collector, container, firstValue);
+        // add second value, lesser than the first, result does not change
+        String secondValue = "a";
+        Runnable secondRetractor = accumulate(collector, container, secondValue, null, null);
+        assertResult(collector, container, firstValue);
+        // add third value, same as the first, result does not change
+        Runnable thirdRetractor = accumulate(collector, container, firstValue, null, null);
+        assertResult(collector, container, firstValue);
+        // retract one instance of the first value; first value is still the max value, nothing should change
+        firstRetractor.run();
+        assertResult(collector, container, firstValue);
+        // retract final instance of the first value; second value is now the max value
+        thirdRetractor.run();
+        assertResult(collector, container, secondValue);
+        // retract last value; there are no values now
+        secondRetractor.run();
+        assertResult(collector, container, null);
+    }
+
+    @Test
+    public void maxComparableQuad() {
+        QuadConstraintCollector<Integer, Integer, Integer, Integer, ?, Integer> collector =
+                max((a, b, c, d) -> a + b + c + d);
+        Object container = collector.supplier().get();
+        // add first value, which becomes the max
+        int firstValue = 2;
+        Runnable firstRetractor = accumulate(collector, container, firstValue, 0, 0, 0);
+        assertResult(collector, container, 2);
+        // add second value, lesser than the first, result does not change
+        int secondValue = 1;
+        Runnable secondRetractor = accumulate(collector, container, secondValue, 0, 0, 0);
+        assertResult(collector, container, 2);
+        // add third value, same as the first, result does not change
+        Runnable thirdRetractor = accumulate(collector, container, firstValue, 0, 0, 0);
+        assertResult(collector, container, 2);
+        // retract one instance of the first value; first value is still the max value, nothing should change
+        firstRetractor.run();
+        assertResult(collector, container, 2);
+        // retract final instance of the first value; second value is now the max value
+        thirdRetractor.run();
+        assertResult(collector, container, 1);
+        // retract last value; there are no values now
+        secondRetractor.run();
+        assertResult(collector, container, null);
+    }
+
+    @Test
+    public void maxNotComparableQuad() {
+        QuadConstraintCollector<String, String, String, String, ?, String> collector =
+                max((a, b, c, d) -> a, Comparator.comparing(o -> (String)o));
+        Object container = collector.supplier().get();
+        // add first value, which becomes the max
+        String firstValue = "b";
+        Runnable firstRetractor = accumulate(collector, container, firstValue, null, null, null);
+        assertResult(collector, container, firstValue);
+        // add second value, lesser than the first, result does not change
+        String secondValue = "a";
+        Runnable secondRetractor = accumulate(collector, container, secondValue, null, null, null);
+        assertResult(collector, container, firstValue);
+        // add third value, same as the first, result does not change
+        Runnable thirdRetractor = accumulate(collector, container, firstValue, null, null, null);
+        assertResult(collector, container, firstValue);
+        // retract one instance of the first value; first value is still the max value, nothing should change
+        firstRetractor.run();
+        assertResult(collector, container, firstValue);
+        // retract final instance of the first value; second value is now the max value
+        thirdRetractor.run();
+        assertResult(collector, container, secondValue);
+        // retract last value; there are no values now
+        secondRetractor.run();
+        assertResult(collector, container, null);
+    }
+
 
     // ************************************************************************
     // toCollection
