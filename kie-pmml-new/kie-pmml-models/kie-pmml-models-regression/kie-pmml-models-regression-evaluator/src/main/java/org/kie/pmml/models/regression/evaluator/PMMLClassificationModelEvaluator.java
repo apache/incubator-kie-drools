@@ -38,7 +38,6 @@ import org.kie.pmml.models.regression.api.model.KiePMMLRegressionTable;
 import org.kie.pmml.models.regression.api.model.enums.REGRESSION_NORMALIZATION_METHOD;
 
 import static org.kie.pmml.commons.enums.StatusCode.OK;
-import static org.kie.pmml.commons.interfaces.FunctionalWrapperFactory.throwingFunctionWrapper;
 
 public class PMMLClassificationModelEvaluator {
 
@@ -53,13 +52,13 @@ public class PMMLClassificationModelEvaluator {
     protected static PMML4Result evaluateClassification(String targetFieldName, REGRESSION_NORMALIZATION_METHOD regressionNormalizationMethod, OP_TYPE opType, final List<KiePMMLRegressionTable> regressionTables, final Optional<List<KiePMMLOutputField>> outputFields, PMMLRequestData requestData) {
         final LinkedHashMap<String, Double> resultMap = regressionTables.stream()
                 .collect(Collectors.toMap(kiePMMLRegressionTable -> kiePMMLRegressionTable.getTargetCategory().toString(),
-                                          throwingFunctionWrapper(kiePMMLRegressionTable -> {
+                                          kiePMMLRegressionTable -> {
                                               PMML4Result retrieved = PMMLRegresssionModelEvaluator.evaluateRegression(kiePMMLRegressionTable.getTargetCategory().toString(),
                                                                                                                        REGRESSION_NORMALIZATION_METHOD.NONE,
                                                                                                                        kiePMMLRegressionTable,
                                                                                                                        requestData);
                                               return (Double) retrieved.getResultVariables().get(retrieved.getResultObjectName());
-                                          }),
+                                          },
                                           (o1, o2) -> o1,
                                           (Supplier<LinkedHashMap<String, Double>>) LinkedHashMap::new));
         final Map<String, Double> probabilityMap = getProbabilityMap(regressionNormalizationMethod, opType, resultMap);

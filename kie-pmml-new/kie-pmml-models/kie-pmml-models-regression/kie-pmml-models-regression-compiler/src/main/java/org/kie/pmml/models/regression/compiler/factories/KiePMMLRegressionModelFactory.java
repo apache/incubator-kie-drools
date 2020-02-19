@@ -36,7 +36,6 @@ import org.kie.pmml.models.regression.api.model.enums.REGRESSION_NORMALIZATION_M
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import static org.kie.pmml.commons.interfaces.FunctionalWrapperFactory.throwingFunctionWrapper;
 import static org.kie.pmml.compiler.commons.utils.ModelUtils.getTargetField;
 import static org.kie.pmml.models.regression.compiler.factories.KiePMMLRegressionTableFactory.getRegressionTables;
 
@@ -56,10 +55,10 @@ public class KiePMMLRegressionModelFactory {
                 .findFirst();
         List<KiePMMLOutputField> outputFields = null;
         if (model.getOutput() != null) {
-            outputFields = model.getOutput().getOutputFields().stream().map(throwingFunctionWrapper(KiePMMLRegressionModelFactory::getKiePMMLOutputField)).collect(Collectors.toList());
+            outputFields = model.getOutput().getOutputFields().stream().map(KiePMMLRegressionModelFactory::getKiePMMLOutputField).collect(Collectors.toList());
         }
         final OP_TYPE opType = targetDataField
-                .map(throwingFunctionWrapper(field -> OP_TYPE.byName(field.getOpType().value()))).orElseThrow(() -> new KiePMMLException("Failed to find OpType for TargetField"));
+                .map(field -> OP_TYPE.byName(field.getOpType().value())).orElseThrow(() -> new KiePMMLException("Failed to find OpType for TargetField"));
 
         return KiePMMLRegressionModel.builder(name, MINING_FUNCTION.byName(model.getMiningFunction().value()), getRegressionTables(model.getRegressionTables()), opType)
                 .withAlgorithmName(model.getAlgorithmName())
