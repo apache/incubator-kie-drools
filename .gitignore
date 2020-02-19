@@ -10,3 +10,11 @@ out/
 **/stats.json
 **/junit.xml
 package-lock.json
+
+# Eclipse, Netbeans and IntelliJ files
+/.*
+!.gitignore
+/nbproject
+/*.ipr
+/*.iws
+**/*.iml

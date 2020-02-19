@@ -31,7 +31,7 @@ pipeline {
                 dir("kogito-runtimes") {
                     script {
                         githubscm.checkoutIfExists('kogito-runtimes', "$CHANGE_AUTHOR", "$CHANGE_BRANCH", 'kiegroup', "$CHANGE_TARGET")
-                        maven.runMavenWithSubmarineSettings('clean install -Prun-code-coverage', false)
+                        maven.runMavenWithSubmarineSettings('clean install', false)
                     }
                 }
             }
