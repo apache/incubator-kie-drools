@@ -76,8 +76,6 @@ import static org.drools.mvel.parser.printer.PrintUtil.printConstraint;
 
 public class ConstraintParser {
 
-    public static final boolean GENERATE_EXPR_ID = true;
-
     private RuleContext context;
     private PackageModel packageModel;
 
@@ -101,11 +99,6 @@ public class ConstraintParser {
                 getDrlxParseResult(patternType, bindingId, constraint, drlx.getExpr(), hasBind, isPositional )
                 .setOriginalDrlConstraint(constraint.getExpression());
 
-        if (GENERATE_EXPR_ID) {
-            String exprId = drlxParseResult.getExprId(packageModel.getExprIdGenerator());
-            drlxParseResult.setExprId(exprId);
-        }
-
         drlxParseResult.accept(result -> {
             if (hasBind) {
                 SingleDrlxParseSuccess singleResult = (SingleDrlxParseSuccess) result;
@@ -113,7 +106,6 @@ public class ConstraintParser {
                 context.addDeclaration( bindId, singleResult.getExprRawClass() );
                 singleResult.setExprBinding( bindId );
             }
-
         });
 
         return drlxParseResult;

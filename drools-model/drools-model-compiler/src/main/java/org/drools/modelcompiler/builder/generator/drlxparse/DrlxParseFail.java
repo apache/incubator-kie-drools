@@ -55,10 +55,6 @@ public class DrlxParseFail implements DrlxParseResult {
     }
 
     @Override
-    public void setExprId(String exprId) {
-    }
-
-    @Override
     public String getExprId(DRLIdGenerator exprIdGenerator) {
         return "invalidEpxr";
     }

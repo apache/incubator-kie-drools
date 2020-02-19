@@ -53,10 +53,6 @@ public class MultipleDrlxParseSuccess extends AbstractDrlxParseSuccess {
     }
 
     @Override
-    public void setExprId(String exprId) {
-    }
-
-    @Override
     public String getExprId(DRLIdGenerator exprIdGenerator) {
         return Arrays.stream(results).map(s -> s.getExprId(exprIdGenerator)).collect(Collectors.joining());
     }

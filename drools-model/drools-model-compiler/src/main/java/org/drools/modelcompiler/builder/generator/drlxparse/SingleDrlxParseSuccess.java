@@ -55,7 +55,6 @@ public class SingleDrlxParseSuccess extends AbstractDrlxParseSuccess {
     private final Type exprType;
 
     private String originalDrlConstraint;
-    private String exprId;
     private String patternBinding;
     private String accumulateBinding;
     private boolean isPatternBindingUnification = false;
@@ -374,20 +373,7 @@ public class SingleDrlxParseSuccess extends AbstractDrlxParseSuccess {
                 .setDecodeConstraintType(Index.ConstraintType.UNKNOWN).setUsedDeclarations(newUsedDeclarations).setUsedDeclarationsOnLeft(newUsedDeclarationsOnLeft)
                 .setUnification(this.isUnification() || otherDrlx.isUnification()).setReactOnProperties(newReactOnProperties).setBetaNode(isBetaNode)
                 .setLeft(new TypedExpression(this.expr, boolean.class))
-                .setRight(new TypedExpression(otherDrlx.expr, boolean.class))
-                .setExprIdT(exprId);
-    }
-
-    @Override
-    public void setExprId(String exprId) {
-        this.exprId = exprId;
-    }
-
-
-    // TODO fix
-    public SingleDrlxParseSuccess setExprIdT(String exprId) {
-        setExprId(exprId);
-        return this;
+                .setRight(new TypedExpression(otherDrlx.expr, boolean.class));
     }
 
     @Override

@@ -30,8 +30,6 @@ public interface DrlxParseResult {
 
     DrlxParseResult combineWith( DrlxParseResult other, BinaryExpr.Operator operator);
 
-    void setExprId(String exprId);
-
     String getExprId(DRLIdGenerator exprIdGenerator);
 
     DrlxParseResult setOriginalDrlConstraint(String originalDrlConstraint);
