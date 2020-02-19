@@ -33,7 +33,6 @@ import com.github.javaparser.ast.expr.MethodCallExpr;
 import com.github.javaparser.ast.expr.NameExpr;
 import com.github.javaparser.ast.expr.StringLiteralExpr;
 import com.github.javaparser.ast.stmt.ExpressionStmt;
-import org.drools.modelcompiler.builder.PackageModel;
 import org.drools.modelcompiler.builder.generator.RuleContext;
 import org.drools.modelcompiler.builder.generator.TypedExpression;
 import org.drools.modelcompiler.builder.generator.drlxparse.DrlxParseSuccess;
@@ -59,8 +58,8 @@ public class PatternExpressionBuilder extends AbstractExpressionBuilder {
     public static final String END_OR_CALL = "endOr";
     public static final String END_AND_CALL = "endAnd";
 
-    public PatternExpressionBuilder(RuleContext context, PackageModel packageModel) {
-        super(context, packageModel);
+    public PatternExpressionBuilder(RuleContext context) {
+        super(context);
     }
 
     @Override
@@ -95,7 +94,7 @@ public class PatternExpressionBuilder extends AbstractExpressionBuilder {
     }
 
     private MethodCallExpr buildSingleExpressionWithIndexing(SingleDrlxParseSuccess drlxParseResult) {
-        String exprId = drlxParseResult.getExprId(packageModel.getExprIdGenerator());
+        String exprId = drlxParseResult.getExprId(context.getPackageModel().getExprIdGenerator());
         MethodCallExpr exprDSL = new MethodCallExpr(null, EXPR_CALL);
         if (exprId != null && !"".equals(exprId)) {
             exprDSL.addArgument(new StringLiteralExpr(exprId));

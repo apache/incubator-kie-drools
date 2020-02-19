@@ -55,7 +55,7 @@ class FlowAccumulateConstraint implements DSLNode {
 
             drlxParseResult.accept(success -> {
                 (( SingleDrlxParseSuccess ) success).setSkipThisAsParam(true);
-                new FlowExpressionBuilder(context, packageModel).processExpression(success );
+                new FlowExpressionBuilder(context).processExpression(success );
             });
         }
     }

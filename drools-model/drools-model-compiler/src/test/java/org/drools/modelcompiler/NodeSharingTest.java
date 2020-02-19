@@ -163,7 +163,6 @@ public class NodeSharingTest extends BaseModelTest {
     }
 
     @Test
-    @Ignore
     public void testOrWithTrimmedConstraint() {
         String str =
                 "import " + Person.class.getCanonicalName() + ";" +

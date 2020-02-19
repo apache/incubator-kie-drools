@@ -47,6 +47,6 @@ class FlowDSLSimpleConstraint implements DSLNode {
             (( SingleDrlxParseSuccess ) drlxParseResult).setPatternBindingUnification(true);
         }
 
-        new FlowExpressionBuilder(context, context.getPackageModel()).processExpression(drlxParseResult);
+        new FlowExpressionBuilder(context).processExpression(drlxParseResult);
     }
 }

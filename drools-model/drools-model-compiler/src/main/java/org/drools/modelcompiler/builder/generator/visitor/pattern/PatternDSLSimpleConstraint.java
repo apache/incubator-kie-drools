@@ -42,6 +42,6 @@ class PatternDSLSimpleConstraint implements DSLNode {
             (( SingleDrlxParseSuccess ) drlxParseResult).setPatternBindingUnification(true);
         }
 
-        new PatternExpressionBuilder(context, context.getPackageModel()).processExpression(drlxParseResult);
+        new PatternExpressionBuilder(context).processExpression(drlxParseResult);
     }
 }
