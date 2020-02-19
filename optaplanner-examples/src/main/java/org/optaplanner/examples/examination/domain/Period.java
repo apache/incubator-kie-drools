@@ -89,4 +89,42 @@ public class Period extends AbstractPersistable implements Labeled {
         return startDateTimeString;
     }
 
+    // ************************************************************************
+    // With methods
+    // ************************************************************************
+
+    public Period withId(long id) {
+        this.setId(id);
+        return this;
+    }
+
+    public Period withStartDateTimeString(String startDateTimeString) {
+        this.setStartDateTimeString(startDateTimeString);
+        return this;
+    }
+
+    public Period withPeriodIndex(int periodIndex) {
+        this.setPeriodIndex(periodIndex);
+        return this;
+    }
+
+    public Period withDayIndex(int dayIndex) {
+        this.setDayIndex(dayIndex);
+        return this;
+    }
+
+    public Period withDuration(int duration) {
+        this.setDuration(duration);
+        return this;
+    }
+
+    public Period withPenalty(int penalty) {
+        this.setPenalty(penalty);
+        return this;
+    }
+
+    public Period withFrontLoadLast(boolean frontLoadLast) {
+        this.setFrontLoadLast(frontLoadLast);
+        return this;
+    }
 }

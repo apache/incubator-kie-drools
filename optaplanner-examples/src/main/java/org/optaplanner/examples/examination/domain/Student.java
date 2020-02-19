@@ -25,5 +25,10 @@ import com.thoughtworks.xstream.annotations.XStreamAlias;
  */
 @XStreamAlias("Student")
 public class Student extends AbstractPersistable {
+    public Student() {
+    }
 
+    public Student(long id) {
+        super(id);
+    }
 }

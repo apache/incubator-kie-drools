@@ -52,6 +52,35 @@ public class FollowingExam extends Exam {
     }
 
     // ************************************************************************
+    // With methods
+    // ************************************************************************
+
+    public FollowingExam withId(long id) {
+        this.setId(id);
+        return this;
+    }
+
+    public FollowingExam withTopic(Topic topic) {
+        this.setTopic(topic);
+        return this;
+    }
+
+    public FollowingExam withRoom(Room room) {
+        this.setRoom(room);
+        return this;
+    }
+
+    public FollowingExam withPeriod(Period period) {
+        this.setPeriod(period);
+        return this;
+    }
+
+    public FollowingExam withLeadingExam(LeadingExam leadingExam) {
+        this.setLeadingExam(leadingExam);
+        return this;
+    }
+
+    // ************************************************************************
     // Complex methods
     // ************************************************************************
 

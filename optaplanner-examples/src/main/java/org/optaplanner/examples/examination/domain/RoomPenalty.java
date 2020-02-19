@@ -47,4 +47,23 @@ public class RoomPenalty extends AbstractPersistable {
         return roomPenaltyType + "@" + topic.getId();
     }
 
+    // ************************************************************************
+    // With methods
+    // ************************************************************************
+
+    public RoomPenalty withId(long id) {
+        this.setId(id);
+        return this;
+    }
+
+    public RoomPenalty withRoomPenaltyType(RoomPenaltyType type) {
+        this.setRoomPenaltyType(type);
+        return this;
+    }
+
+    public RoomPenalty withTopic(Topic topic) {
+        this.setTopic(topic);
+        return this;
+    }
+
 }

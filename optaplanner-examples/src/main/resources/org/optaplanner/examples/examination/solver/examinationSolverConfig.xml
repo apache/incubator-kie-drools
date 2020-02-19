@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <solver>
   <!--<environmentMode>FULL_ASSERT</environmentMode>--><!-- To slowly prove there are no bugs in this code -->
-  <moveThreadCount>AUTO</moveThreadCount><!-- To solve faster by saturating multiple CPU cores -->
+  <!--<moveThreadCount>AUTO</moveThreadCount>--><!-- To solve faster by saturating multiple CPU cores -->
 
   <solutionClass>org.optaplanner.examples.examination.domain.Examination</solutionClass>
   <entityClass>org.optaplanner.examples.examination.domain.Exam</entityClass>
@@ -11,6 +11,10 @@
   <scoreDirectorFactory>
     <scoreDrl>org/optaplanner/examples/examination/solver/examinationConstraints.drl</scoreDrl>
     <initializingScoreTrend>ONLY_DOWN</initializingScoreTrend>
+    <!--<constraintProviderClass>org.optaplanner.examples.examination.solver.score.ExaminationConstraintProvider</constraintProviderClass>-->
+    <!--<assertionScoreDirectorFactory>-->
+    <!--  <scoreDrl>org/optaplanner/examples/examination/solver/examinationConstraints.drl</scoreDrl>-->
+    <!--</assertionScoreDirectorFactory>-->
   </scoreDirectorFactory>
 
   <termination>

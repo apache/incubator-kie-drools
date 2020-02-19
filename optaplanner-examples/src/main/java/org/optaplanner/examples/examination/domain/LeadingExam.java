@@ -51,6 +51,35 @@ public class LeadingExam extends Exam {
     }
 
     // ************************************************************************
+    // With methods
+    // ************************************************************************
+
+    public LeadingExam withId(long id) {
+        this.setId(id);
+        return this;
+    }
+
+    public LeadingExam withTopic(Topic topic) {
+        this.setTopic(topic);
+        return this;
+    }
+
+    public LeadingExam withRoom(Room room) {
+        this.setRoom(room);
+        return this;
+    }
+
+    public LeadingExam withPeriod(Period period) {
+        this.setPeriod(period);
+        return this;
+    }
+
+    public LeadingExam withFollowingExamList(List<FollowingExam> followingExamList) {
+        this.setFollowingExamList(followingExamList);
+        return this;
+    }
+
+    // ************************************************************************
     // Complex methods
     // ************************************************************************
 

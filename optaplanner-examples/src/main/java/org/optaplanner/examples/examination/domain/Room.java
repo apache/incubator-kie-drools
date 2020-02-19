@@ -53,4 +53,23 @@ public class Room extends AbstractPersistable implements Labeled {
         return Long.toString(id);
     }
 
+    // ************************************************************************
+    // With methods
+    // ************************************************************************
+
+    public Room withId(long id) {
+        this.setId(id);
+        return this;
+    }
+
+    public Room withCapacity(int capacity) {
+        this.setCapacity(capacity);
+        return this;
+    }
+
+    public Room withPenalty(int penalty) {
+        this.setPenalty(penalty);
+        return this;
+    }
+
 }

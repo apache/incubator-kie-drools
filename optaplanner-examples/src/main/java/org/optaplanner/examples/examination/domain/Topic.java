@@ -78,4 +78,32 @@ public class Topic extends AbstractPersistable {
         return Long.toString(id);
     }
 
+    // ************************************************************************
+    // With methods
+    // ************************************************************************
+
+    public Topic withId(long id) {
+        this.setId(id);
+        return this;
+    }
+
+    public Topic withDuration(int duration) {
+        this.setDuration(duration);
+        return this;
+    }
+
+    public Topic withStudentList(List<Student> studentList) {
+        this.setStudentList(studentList);
+        return this;
+    }
+
+    public Topic withFrontLoadLarge(boolean frontLoadLarge) {
+        this.setFrontLoadLarge(frontLoadLarge);
+        return this;
+    }
+
+    public Topic withCoincidenceTopicSet(Set<Topic> coincidenceTopicSet) {
+        this.setCoincidenceTopicSet(coincidenceTopicSet);
+        return this;
+    }
 }
