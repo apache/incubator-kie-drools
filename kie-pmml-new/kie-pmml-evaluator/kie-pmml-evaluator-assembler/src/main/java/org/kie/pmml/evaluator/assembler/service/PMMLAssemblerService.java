@@ -54,7 +54,7 @@ public class PMMLAssemblerService implements KieAssemblerService {
     }
 
     @Override
-    public void addResources(Object kbuilder, Collection<ResourceWithConfiguration> resources, ResourceType type) throws Exception {
+    public void addResources(Object kbuilder, Collection<ResourceWithConfiguration> resources, ResourceType type) {
         KnowledgeBuilderImpl kbuilderImpl = (KnowledgeBuilderImpl) kbuilder;
         addModels(kbuilderImpl, getKiePMMLModelsFromResourcesWithConfigurations(kbuilderImpl, resources));
     }
@@ -82,10 +82,10 @@ public class PMMLAssemblerService implements KieAssemblerService {
      * @throws KiePMMLException if any <code>KiePMMLInternalException</code> has been thrown during execution
      * @throws ExternalException if any other kind of <code>Exception</code> has been thrown during execution
      */
-    protected List<KiePMMLModel> getKiePMMLModelsFromResourcesWithConfigurations(KnowledgeBuilderImpl kbuilderImpl, Collection<ResourceWithConfiguration> resourceWithConfigurations) throws Exception {
+    protected List<KiePMMLModel> getKiePMMLModelsFromResourcesWithConfigurations(KnowledgeBuilderImpl kbuilderImpl, Collection<ResourceWithConfiguration> resourceWithConfigurations) {
         return resourceWithConfigurations.stream()
                 .map(ResourceWithConfiguration::getResource)
-                .flatMap(throwingFunctionWrapper(resource -> getKiePMMLModelsFromResource(kbuilderImpl, resource).stream()))
+                .flatMap(resource -> getKiePMMLModelsFromResource(kbuilderImpl, resource).stream())
                 .collect(Collectors.toList());
     }
 

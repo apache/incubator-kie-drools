@@ -29,6 +29,10 @@ public class KiePMMLExtension implements Serializable {
     private String value;
     private List<Object> content;
 
+    public KiePMMLExtension() {
+        // Serialization
+    }
+
     public KiePMMLExtension(String extender, String name, String value, List<Object> content) {
         this.extender = extender;
         this.name = name;

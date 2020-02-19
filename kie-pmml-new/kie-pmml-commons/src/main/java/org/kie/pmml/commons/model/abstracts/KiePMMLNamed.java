@@ -21,7 +21,11 @@ import java.util.Objects;
 public abstract class KiePMMLNamed implements Serializable {
 
     private static final long serialVersionUID = -6357112249914060778L;
-    protected final String name;
+    protected String name;
+
+    public KiePMMLNamed() {
+        // Serialization
+    }
 
     public KiePMMLNamed(String name) {
         this.name = name;

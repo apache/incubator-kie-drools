@@ -13,27 +13,17 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.kie.pmml.commons.model.abstracts;
+package org.kie.pmml.compiler.commons.mocks;
 
-import java.io.Serializable;
-import java.util.List;
+import org.kie.pmml.commons.model.KiePMMLModel;
+import org.kie.pmml.commons.model.enums.PMML_MODEL;
 
-import org.kie.pmml.commons.model.KiePMMLExtension;
+/**
+ * <b>Fake</b> model used for testing. It is mapped to <code>PMML_MODEL.REGRESSION_MODEL</code>
+ */
+public class KiePMMLTestingModel extends KiePMMLModel {
 
-public abstract class KiePMMLExtensioned implements Serializable {
+    public static final PMML_MODEL PMML_MODEL_TYPE = PMML_MODEL.REGRESSION_MODEL;
 
-    private static final long serialVersionUID = 7584716149775970999L;
-    protected List<KiePMMLExtension> extensions;
-
-    public KiePMMLExtensioned() {
-        // Serialization
-    }
-
-    public KiePMMLExtensioned(List<KiePMMLExtension> extensions) {
-        this.extensions = extensions;
-    }
-
-    public List<KiePMMLExtension> getExtensions() {
-        return extensions;
-    }
+    private static final long serialVersionUID = -3197536256173718262L;
 }
