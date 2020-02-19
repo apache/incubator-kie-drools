@@ -207,7 +207,6 @@
     <module>addons</module>
     <module>kogito-maven-plugin</module>
     <module>archetypes</module>
-    <module>data-index</module>
     <module>kogito-quarkus-extension</module>
   </modules>
 
