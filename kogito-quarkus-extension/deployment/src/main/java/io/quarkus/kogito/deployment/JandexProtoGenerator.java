@@ -26,10 +26,12 @@ public class JandexProtoGenerator implements ProtoGenerator<ClassInfo> {
 
     private final IndexView index;
     private final DotName generatedAnnotation;
+    private final DotName variableInfoAnnotation;
 
-    public JandexProtoGenerator(IndexView index, DotName generatedAnnotation) {
+    public JandexProtoGenerator(IndexView index, DotName generatedAnnotation, DotName variableInfoAnnotation) {
         this.index = index;
         this.generatedAnnotation = generatedAnnotation;
+        this.variableInfoAnnotation = variableInfoAnnotation;
     }
 
     public Proto generate(String packageName, Collection<ClassInfo> dataModel, String... headers) {
@@ -62,6 +64,11 @@ public class JandexProtoGenerator implements ProtoGenerator<ClassInfo> {
             String messageComment, String fieldComment)
             throws Exception {
 
+        if (isHidden(clazz)) {
+            // since class is marked as hidden skip processing of that class
+            return null;
+        }
+
         String name = clazz.simpleName();
         String altName = getReferenceOfModel(clazz, "name");
         if (altName != null) {
@@ -71,10 +78,17 @@ public class JandexProtoGenerator implements ProtoGenerator<ClassInfo> {
         ProtoMessage message = new ProtoMessage(name, packageName == null ? clazz.name().prefix().toString() : packageName);
 
         for (FieldInfo pd : clazz.fields()) {
-
+            String completeFieldComment = fieldComment;
             // ignore static and/or transient fields
             if (Modifier.isStatic(pd.flags()) || Modifier.isTransient(pd.flags())) {
                 continue;
+            }
+
+            AnnotationInstance variableInfo = pd.annotation(variableInfoAnnotation);
+
+            if (variableInfo != null) {
+                completeFieldComment = fieldComment + "\n @VariableInfo(tags=\"" + variableInfo.value("tags").asString()
+                        + "\")";
             }
 
             String fieldTypeString = pd.type().name().toString();
@@ -105,7 +119,7 @@ public class JandexProtoGenerator implements ProtoGenerator<ClassInfo> {
                 protoType = another.getName();
             }
 
-            message.addField(applicabilityByType(fieldTypeString), protoType, pd.name()).setComment(fieldComment);
+            message.addField(applicabilityByType(fieldTypeString), protoType, pd.name()).setComment(completeFieldComment);
         }
         message.setComment(messageComment);
         proto.addMessage(message);
@@ -151,6 +165,11 @@ public class JandexProtoGenerator implements ProtoGenerator<ClassInfo> {
                     "option kogito_model = \"" + name + "\";",
                     "option kogito_id = \"" + processId + "\";");
 
+            if (modelProto.getMessages().isEmpty()) {
+                // no messages, nothing to do
+                return;
+            }
+
             ProtoMessage modelMessage = modelProto.getMessages().stream().filter(msg -> msg.getName().equals(name)).findFirst()
                     .orElseThrow(() -> new IllegalStateException("Unable to find model message"));
             modelMessage.addField("optional", "org.kie.kogito.index.model.KogitoMetadata", "metadata")
@@ -174,4 +193,14 @@ public class JandexProtoGenerator implements ProtoGenerator<ClassInfo> {
         return null;
     }
 
+    protected boolean isHidden(ClassInfo modelClazz) {
+        AnnotationInstance generatedData = modelClazz.classAnnotation(generatedAnnotation);
+
+        if (generatedData != null) {
+
+            return generatedData.value("hidden").asBoolean();
+        }
+
+        return false;
+    }
 }

@@ -15,7 +15,6 @@ import java.util.Set;
 import java.util.function.BiFunction;
 import java.util.stream.Collectors;
 
-import io.quarkus.bootstrap.BootstrapDependencyProcessingException;
 import org.drools.compiler.commons.jci.compilers.CompilationResult;
 import org.drools.compiler.commons.jci.compilers.JavaCompiler;
 import org.drools.compiler.commons.jci.compilers.JavaCompilerSettings;
@@ -32,6 +31,7 @@ import org.jboss.jandex.Indexer;
 import org.jboss.jandex.MethodInfo;
 import org.kie.api.builder.model.KieModuleModel;
 import org.kie.internal.kogito.codegen.Generated;
+import org.kie.internal.kogito.codegen.VariableInfo;
 import org.kie.kogito.Model;
 import org.kie.kogito.codegen.ApplicationGenerator;
 import org.kie.kogito.codegen.GeneratedFile;
@@ -44,6 +44,7 @@ import org.kie.kogito.codegen.process.persistence.PersistenceGenerator;
 import org.kie.kogito.codegen.rules.IncrementalRuleCodegen;
 
 import io.quarkus.arc.deployment.GeneratedBeanBuildItem;
+import io.quarkus.bootstrap.BootstrapDependencyProcessingException;
 import io.quarkus.bootstrap.model.AppDependency;
 import io.quarkus.bootstrap.model.AppModel;
 import io.quarkus.builder.item.BuildItem;
@@ -107,7 +108,8 @@ public class KogitoAssetsProcessor {
 
         PersistenceGenerator persistenceGenerator = new PersistenceGenerator(new File(projectPath.toFile(), "target"),
                 modelClasses, usePersistence,
-                new JandexProtoGenerator(index, createDotName(Generated.class.getCanonicalName())),
+                new JandexProtoGenerator(index, createDotName(Generated.class.getCanonicalName()),
+                        createDotName(VariableInfo.class.getCanonicalName())),
                 parameters);
         persistenceGenerator.setDependencyInjection(new CDIDependencyInjectionAnnotator());
         persistenceGenerator.setPackageName(appPackageName);
