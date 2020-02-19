@@ -22,7 +22,6 @@ import org.kie.api.pmml.ParameterInfo;
 import org.kie.pmml.models.regression.api.model.KiePMMLRegressionTable;
 import org.kie.pmml.models.regression.api.model.predictors.KiePMMLPredictorTerm;
 
-import static org.kie.pmml.commons.interfaces.FunctionalWrapperFactory.throwingConsumerWrapper;
 import static org.kie.pmml.evaluator.core.utils.Converter.getUnwrappedParametersMap;
 
 public class PMMLRegresssionModelUtils {
@@ -44,7 +43,7 @@ public class PMMLRegresssionModelUtils {
     }
 
     public static void evaluatePredictorTerms(KiePMMLRegressionTable regressionTable, Collection<ParameterInfo> parameterInfos, Map<String, Double> resultMap) {
-        regressionTable.getPredictorTerms().ifPresent(predictors -> predictors.forEach(throwingConsumerWrapper(predictor -> evaluatePredictorTerm(predictor, getUnwrappedParametersMap(parameterInfos), resultMap))));
+        regressionTable.getPredictorTerms().ifPresent(predictors -> predictors.forEach(predictor -> evaluatePredictorTerm(predictor, getUnwrappedParametersMap(parameterInfos), resultMap)));
     }
 
     public static void evaluatePredictorTerm(KiePMMLPredictorTerm predictorTerm, Map<String, Object> parameterInfos, Map<String, Double> resultMap) {

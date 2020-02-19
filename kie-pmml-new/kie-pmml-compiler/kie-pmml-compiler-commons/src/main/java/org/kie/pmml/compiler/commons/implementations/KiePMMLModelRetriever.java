@@ -31,6 +31,9 @@ public class KiePMMLModelRetriever {
     private static final Logger logger = LoggerFactory.getLogger(KiePMMLModelRetriever.class.getName());
     private static final ModelImplementationProviderFinder modelImplementationProviderFinder = new ModelImplementationProviderFinderImpl();
 
+    private KiePMMLModelRetriever() {
+    }
+
     /**
      * Read the given <code>DataDictionary</code> and <code>Model</code>> to return an <code>Optional&lt;KiePMMLModel&gt;</code>
      * @param dataDictionary
@@ -48,8 +51,5 @@ public class KiePMMLModelRetriever {
                 .filter(implementation -> pmmlMODEL.equals(implementation.getPMMLModelType()))
                 .map(implementation -> implementation.getKiePMMLModel(dataDictionary, model, kBuilder))
                 .findFirst();
-    }
-
-    private KiePMMLModelRetriever() {
     }
 }

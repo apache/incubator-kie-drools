@@ -25,9 +25,9 @@ import org.dmg.pmml.MiningFunction;
 import org.dmg.pmml.OpType;
 import org.dmg.pmml.regression.RegressionModel;
 import org.kie.pmml.commons.exceptions.KiePMMLException;
-import org.kie.pmml.commons.model.tuples.KiePMMLNameOpType;
 import org.kie.pmml.commons.model.enums.OP_TYPE;
 import org.kie.pmml.commons.model.enums.PMML_MODEL;
+import org.kie.pmml.commons.model.tuples.KiePMMLNameOpType;
 import org.kie.pmml.compiler.api.provider.ModelImplementationProvider;
 import org.kie.pmml.models.regression.api.model.KiePMMLRegressionModel;
 import org.kie.pmml.models.regression.compiler.factories.KiePMMLRegressionModelFactory;
@@ -41,7 +41,7 @@ import static org.kie.pmml.models.regression.api.model.KiePMMLRegressionModel.PM
 /**
  * Default <code>ModelImplementationProvider</code> for <b>Regression</b>
  */
-public class RegressionModelImplementationProvider implements ModelImplementationProvider <RegressionModel, KiePMMLRegressionModel> {
+public class RegressionModelImplementationProvider implements ModelImplementationProvider<RegressionModel, KiePMMLRegressionModel> {
 
     private static final Logger logger = LoggerFactory.getLogger(RegressionModelImplementationProvider.class.getName());
     private static final String INVALID_NORMALIZATION_METHOD = "Invalid Normalization Method ";

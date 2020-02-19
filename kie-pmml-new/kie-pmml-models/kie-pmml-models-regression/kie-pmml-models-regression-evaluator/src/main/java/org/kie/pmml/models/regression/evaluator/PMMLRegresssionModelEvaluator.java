@@ -29,7 +29,6 @@ import org.kie.pmml.models.regression.api.model.KiePMMLRegressionTable;
 import org.kie.pmml.models.regression.api.model.enums.REGRESSION_NORMALIZATION_METHOD;
 
 import static org.kie.pmml.commons.enums.StatusCode.OK;
-import static org.kie.pmml.commons.interfaces.FunctionalWrapperFactory.throwingConsumerWrapper;
 
 public class PMMLRegresssionModelEvaluator {
 
@@ -45,10 +44,10 @@ public class PMMLRegresssionModelEvaluator {
     public static PMML4Result evaluateRegression(String targetFieldName, REGRESSION_NORMALIZATION_METHOD regressionNormalizationMethod, KiePMMLRegressionTable regressionTable, PMMLRequestData requestData) {
         final AtomicReference<Double> result = new AtomicReference<>(regressionTable.getIntercept().doubleValue());
         Map<String, Double> resultMap = new HashMap<>();
-        requestData.getRequestParams().forEach(throwingConsumerWrapper(parameterInfo -> {
+        requestData.getRequestParams().forEach(parameterInfo -> {
             PMMLRegresssionModelUtils.evaluateNumericPredictors(regressionTable, parameterInfo, resultMap);
             PMMLRegresssionModelUtils.evaluateCategoricalPredictors(regressionTable, parameterInfo, resultMap);
-        }));
+        });
         PMMLRegresssionModelUtils.evaluatePredictorTerms(regressionTable, requestData.getRequestParams(), resultMap);
         resultMap.values().forEach(value -> result.accumulateAndGet(value, Double::sum));
         if (regressionNormalizationMethod != null) {
