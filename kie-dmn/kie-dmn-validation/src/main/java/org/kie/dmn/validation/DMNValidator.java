@@ -130,6 +130,13 @@ public interface DMNValidator {
         public ValidatorBuilder usingImports(ValidatorImportReaderResolver r);
 
         /**
+         *
+         * @param locale Locale for reporting with i18nized messages.
+         * @return a reference to this, so the API can be used fluently
+         */
+        public ValidatorBuilder usingLocale(String locale);
+
+        /**
          * Validate the models and return the results. 
          * 
          * @see DMNValidator#validateUsing(Validation...)

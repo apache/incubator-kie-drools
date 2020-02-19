@@ -512,7 +512,7 @@ public class DMNCompilerImpl implements DMNCompiler {
                                            model,
                                            null,
                                            null,
-                                          Msg.REQ_BKM_NOT_FOUND_FOR_NODE, // TODO or a DS ?
+                                           Msg.REQ_BKM_NOT_FOUND_FOR_NODE, // TODO or a DS ?
                                            id,
                                            node.getName() );
                 }

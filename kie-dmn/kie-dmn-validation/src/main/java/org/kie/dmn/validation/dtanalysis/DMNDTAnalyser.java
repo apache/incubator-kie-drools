@@ -32,6 +32,7 @@ import org.kie.dmn.api.core.DMNModel;
 import org.kie.dmn.core.compiler.DMNCompilerImpl;
 import org.kie.dmn.core.compiler.DMNProfile;
 import org.kie.dmn.core.impl.DMNModelImpl;
+import org.kie.dmn.core.util.AnalyticsMsg;
 import org.kie.dmn.core.util.Msg;
 import org.kie.dmn.core.util.MsgUtil;
 import org.kie.dmn.feel.codegen.feel11.ProcessedExpression;
@@ -79,6 +80,8 @@ public class DMNDTAnalyser {
     private final DMNDTAnalyserValueFromNodeVisitor valueFromNodeVisitor;
     private final DMNDTAnalyserOutputClauseVisitor outputClauseVisitor;
 
+    private AnalyticsMsg MSG = AnalyticsMsg.INSTANCE;
+
     public DMNDTAnalyser(List<DMNProfile> dmnProfiles) {
         FEEL = org.kie.dmn.feel.FEEL.newInstance((List) dmnProfiles);
         valueFromNodeVisitor = new DMNDTAnalyserValueFromNodeVisitor((List) dmnProfiles);
@@ -110,7 +113,7 @@ public class DMNDTAnalyser {
         compileTableRules(dt, ddtaTable);
         compileTableComputeColStringMissingEnum(model, dt, ddtaTable);
         printDebugTableInfo(ddtaTable);
-        DTAnalysis analysis = new DTAnalysis(dt, ddtaTable);
+        DTAnalysis analysis = new DTAnalysis(dt, ddtaTable, MSG);
         if (!dt.getHitPolicy().equals(HitPolicy.COLLECT)) {
             if (ddtaTable.getColIDsStringWithoutEnum().isEmpty()) {
                 LOG.debug("findGaps");
@@ -196,7 +199,7 @@ public class DMNDTAnalyser {
                 for (Interval interval : ddtaInputEntry.getIntervals()) {
                     Interval domainMinMax = ddtaTable.getInputs().get(jColIdx).getDomainMinMax();
                     if (!domainMinMax.includes(interval)) {
-                        throw new IllegalStateException(MsgUtil.createMessage(Msg.DTANALYSIS_ERROR_RULE_OUTSIDE_DOMAIN, jRowIdx + 1, interval, domainMinMax, jColIdx + 1));
+                        throw new IllegalStateException(MsgUtil.createMessage(MSG.DTANALYSIS_ERROR_RULE_OUTSIDE_DOMAIN(), jRowIdx + 1, interval, domainMinMax, jColIdx + 1));
                     }
                 }
                 ddtaRule.getInputEntry().add(ddtaInputEntry);
@@ -610,5 +613,9 @@ public class DMNDTAnalyser {
 
     private Comparable<?> valueFromNode(BaseNode node) {
         return valueFromNode(node, valueFromNodeVisitor);
+    }
+
+    public void setMSG(AnalyticsMsg MSG) {
+        this.MSG = MSG;
     }
 }

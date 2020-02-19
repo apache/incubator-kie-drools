@@ -62,6 +62,7 @@ import org.kie.dmn.core.compiler.DMNCompilerConfigurationImpl;
 import org.kie.dmn.core.compiler.DMNCompilerImpl;
 import org.kie.dmn.core.compiler.DMNProfile;
 import org.kie.dmn.core.impl.DMNMessageImpl;
+import org.kie.dmn.core.util.AnalyticsMsg;
 import org.kie.dmn.core.util.DefaultDMNMessagesManager;
 import org.kie.dmn.core.util.KieHelper;
 import org.kie.dmn.core.util.Msg;
@@ -137,6 +138,7 @@ public class DMNValidatorImpl implements DMNValidator {
     private final DMNCompilerConfiguration dmnCompilerConfig;
 
     private final DMNDTAnalyser dmnDTValidator;
+    private AnalyticsMsg MSG = AnalyticsMsg.INSTANCE;
 
     public DMNValidatorImpl(List<DMNProfile> dmnProfiles) {
         final KieServices ks = KieServices.Factory.get();
@@ -178,8 +180,8 @@ public class DMNValidatorImpl implements DMNValidator {
         } else {
             this.kieContainer = Optional.empty();
             LOG.error("Unable to load embedded DMN validation rules file." );
-            String message = MsgUtil.createMessage( Msg.FAILED_VALIDATOR );
-            failedInitMsg.add(new DMNMessageImpl(DMNMessage.Severity.ERROR, message, Msg.FAILED_VALIDATOR.getType(), null ) );
+            String message = MsgUtil.createMessage( MSG.FAILED_VALIDATOR() );
+            failedInitMsg.add(new DMNMessageImpl(DMNMessage.Severity.ERROR, message, MSG.FAILED_VALIDATOR().getType(), null ) );
         }
         ChainedProperties localChainedProperties = new ChainedProperties();
         this.dmnProfiles.addAll(DMNAssemblerService.getDefaultDMNProfiles(localChainedProperties));
@@ -198,6 +200,7 @@ public class DMNValidatorImpl implements DMNValidator {
         private final EnumSet<Validation> flags;
         private final DMNValidatorImpl validator;
         private ValidatorImportReaderResolver importResolver;
+        private AnalyticsMsg MSG = AnalyticsMsg.INSTANCE;
 
         public ValidatorBuilderImpl(DMNValidatorImpl dmnValidatorImpl, Validation[] options) {
             this.validator = dmnValidatorImpl;
@@ -207,6 +210,14 @@ public class DMNValidatorImpl implements DMNValidator {
         @Override
         public ValidatorBuilder usingImports(ValidatorImportReaderResolver r) {
             this.importResolver = r;
+            return this;
+        }
+
+        @Override
+        public ValidatorBuilder usingLocale(String locale) {
+            MSG = AnalyticsMsg.create(locale);
+            this.validator.MSG = AnalyticsMsg.create(locale);
+            this.validator.dmnDTValidator.setMSG(MSG);
             return this;
         }
 
@@ -226,7 +237,7 @@ public class DMNValidatorImpl implements DMNValidator {
                                       results,
                                       t,
                                       null,
-                                      Msg.VALIDATION_RUNTIME_PROBLEM,
+                                      MSG.VALIDATION_RUNTIME_PROBLEM(),
                                       t.getMessage());
             }
             return results.getMessages();
@@ -251,7 +262,7 @@ public class DMNValidatorImpl implements DMNValidator {
                                           results,
                                           t,
                                           null,
-                                          Msg.VALIDATION_RUNTIME_PROBLEM,
+                                          MSG.VALIDATION_RUNTIME_PROBLEM(),
                                           t.getMessage());
                 }
             }
@@ -263,7 +274,7 @@ public class DMNValidatorImpl implements DMNValidator {
                                           results,
                                           null,
                                           null,
-                                          Msg.VALIDATION_STOPPED);
+                                          MSG.VALIDATION_STOPPED());
                     return results.getMessages();
                 }
                 validateDefinitions(internalValidatorSortModels(models), results);
@@ -281,7 +292,7 @@ public class DMNValidatorImpl implements DMNValidator {
                                       results,
                                       null,
                                       null,
-                                      Msg.FAILED_NO_XML_SOURCE);
+                                      MSG.FAILED_NO_XML_SOURCE());
             }
             if (flags.contains(VALIDATE_MODEL) || flags.contains(VALIDATE_COMPILATION) || flags.contains(ANALYZE_DECISION_TABLE)) {
                 if (results.hasErrors()) {
@@ -291,7 +302,7 @@ public class DMNValidatorImpl implements DMNValidator {
                                           results,
                                           null,
                                           null,
-                                          Msg.VALIDATION_STOPPED);
+                                          MSG.VALIDATION_STOPPED());
                     return results.getMessages();
                 }
                 validateDefinitions(internalValidatorSortModels(Arrays.asList(models)), results);
@@ -349,7 +360,7 @@ public class DMNValidatorImpl implements DMNValidator {
                                           results,
                                           t,
                                           null,
-                                          Msg.VALIDATION_RUNTIME_PROBLEM,
+                                          MSG.VALIDATION_RUNTIME_PROBLEM(),
                                           t.getMessage());
                 }
             }
@@ -383,7 +394,7 @@ public class DMNValidatorImpl implements DMNValidator {
                                    results,
                                    null,
                                    null,
-                                   Msg.FAILED_NO_XML_SOURCE );
+                                   MSG.FAILED_NO_XML_SOURCE() );
         }
         try {
             validateModelCompilation( dmnModel, results, flags );
@@ -394,7 +405,7 @@ public class DMNValidatorImpl implements DMNValidator {
                                   results,
                                   t,
                                   null,
-                                  Msg.VALIDATION_RUNTIME_PROBLEM,
+                                  MSG.VALIDATION_RUNTIME_PROBLEM(),
                                   t.getMessage());
         }
         return results.getMessages();
@@ -425,7 +436,7 @@ public class DMNValidatorImpl implements DMNValidator {
                                       results,
                                       t,
                                       null,
-                                      Msg.VALIDATION_RUNTIME_PROBLEM,
+                                      MSG.VALIDATION_RUNTIME_PROBLEM(),
                                       t.getMessage());
             }
         }
@@ -457,7 +468,7 @@ public class DMNValidatorImpl implements DMNValidator {
                                   results,
                                   t,
                                   null,
-                                  Msg.VALIDATION_RUNTIME_PROBLEM,
+                                  MSG.VALIDATION_RUNTIME_PROBLEM(),
                                   t.getMessage());
         }
         return results.getMessages();
@@ -509,7 +520,7 @@ public class DMNValidatorImpl implements DMNValidator {
                     return validateSchema(s, schemav1_3);
             }
         } catch (Exception e) {
-            problems.add(new DMNMessageImpl(DMNMessage.Severity.ERROR, MsgUtil.createMessage(Msg.FAILED_XML_VALIDATION, e.getMessage()), Msg.FAILED_XML_VALIDATION.getType(), null, e));
+            problems.add(new DMNMessageImpl(DMNMessage.Severity.ERROR, MsgUtil.createMessage(MSG.FAILED_XML_VALIDATION(), e.getMessage()), MSG.FAILED_XML_VALIDATION().getType(), null, e));
         }
         return problems;
     }
@@ -531,7 +542,7 @@ public class DMNValidatorImpl implements DMNValidator {
                     return validateSchema(s, schemav1_3);
             }
         } catch (Exception e) {
-            problems.add(new DMNMessageImpl(DMNMessage.Severity.ERROR, MsgUtil.createMessage(Msg.FAILED_XML_VALIDATION, e.getMessage()), Msg.FAILED_XML_VALIDATION.getType(), null, e));
+            problems.add(new DMNMessageImpl(DMNMessage.Severity.ERROR, MsgUtil.createMessage(MSG.FAILED_XML_VALIDATION(), e.getMessage()), MSG.FAILED_XML_VALIDATION().getType(), null, e));
         }
         return problems;
     }
@@ -544,7 +555,7 @@ public class DMNValidatorImpl implements DMNValidator {
             validator.setProperty(XMLConstants.ACCESS_EXTERNAL_SCHEMA, "");
             validator.validate(s);
         } catch (SAXException | IOException e) {
-            problems.add(new DMNMessageImpl(DMNMessage.Severity.ERROR, MsgUtil.createMessage(Msg.FAILED_XML_VALIDATION, e.getMessage()), Msg.FAILED_XML_VALIDATION.getType(), null, e));
+            problems.add(new DMNMessageImpl(DMNMessage.Severity.ERROR, MsgUtil.createMessage(MSG.FAILED_XML_VALIDATION(), e.getMessage()), MSG.FAILED_XML_VALIDATION().getType(), null, e));
             logDebugMessages(problems);
         }
         return problems;
