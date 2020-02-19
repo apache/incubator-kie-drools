@@ -59,7 +59,7 @@ public class PMMLAssemblerService implements KieAssemblerService {
     }
 
     @Override
-    public void addResource(Object kbuilder, Resource resource, ResourceType type, ResourceConfiguration configuration) throws Exception {
+    public void addResource(Object kbuilder, Resource resource, ResourceType type, ResourceConfiguration configuration) {
         logger.warn("invoked legacy addResource (no control on the order of the assembler compilation): {}", resource.getSourcePath());
         KnowledgeBuilderImpl kbuilderImpl = (KnowledgeBuilderImpl) kbuilder;
         addModels(kbuilderImpl, getKiePMMLModelsFromResource(kbuilderImpl, resource));
@@ -95,7 +95,7 @@ public class PMMLAssemblerService implements KieAssemblerService {
      * @throws KiePMMLException if any <code>KiePMMLInternalException</code> has been thrown during execution
      * @throws ExternalException if any other kind of <code>Exception</code> has been thrown during execution
      */
-    protected List<KiePMMLModel> getKiePMMLModelsFromResource(KnowledgeBuilderImpl kbuilderImpl, Resource resource) throws KiePMMLException, ExternalException {
+    protected List<KiePMMLModel> getKiePMMLModelsFromResource(KnowledgeBuilderImpl kbuilderImpl, Resource resource) {
         PMMLCompiler pmmlCompiler = kbuilderImpl.getCachedOrCreate(PMML_COMPILER_CACHE_KEY, () -> getCompiler(kbuilderImpl));
         // TODO {gcardosi} replace with dynamically generated one
         logger.debug("getKiePMMLModelsFromResource releaseId {}", RELEASE_ID);

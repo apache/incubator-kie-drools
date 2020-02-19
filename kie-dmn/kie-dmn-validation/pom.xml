@@ -24,11 +24,6 @@
         <scope>import</scope>
       </dependency>
       <dependency>
-        <groupId>org.drools</groupId>
-        <artifactId>kie-pmml</artifactId>
-        <version>${version.org.kie}</version>
-      </dependency>
-      <dependency>
         <groupId>org.kie</groupId>
         <artifactId>kie-dmn-core</artifactId>
         <classifier>tests</classifier>
