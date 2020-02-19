@@ -444,6 +444,19 @@ public class ValidatorTest extends AbstractValidatorTest {
     }
 
     @Test
+    public void testSomethingInBetweenOC() {
+        List<DMNMessage> validate = validator.validateUsing(VALIDATE_SCHEMA,
+                                                            VALIDATE_MODEL,
+                                                            VALIDATE_COMPILATION)
+                                             .theseModels(getReader("somethingInBetween.dmn"));
+        assertThat(ValidatorUtil.formatMessages(validate), validate.size(), is(1));
+        assertTrue(ValidatorUtil.formatMessages(validate),
+                   validate.stream().anyMatch(p -> p.getLevel() == Level.ERROR &&
+                                                   p.getMessageType().equals(DMNMessageType.ERR_COMPILING_FEEL) &&
+                                                   p.getSourceId().equals("_841ed91c-db69-401e-890b-08a5bf44222d")));
+    }
+
+    @Test
     public void testDMNv1_3_ch11example2() {
         List<DMNMessage> validate = validator.validateUsing(VALIDATE_SCHEMA,
                                                             VALIDATE_MODEL,
