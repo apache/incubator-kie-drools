@@ -38,13 +38,12 @@
         <artifactId>maven-assembly-plugin</artifactId>
       </plugin>
     </plugins>
-    
+
     <pluginManagement>
       <plugins>
         <plugin>
           <groupId>org.asciidoctor</groupId>
           <artifactId>asciidoctor-maven-plugin</artifactId>
-          <version>1.5.7.1</version>
           <configuration>
             <imagesDir>.</imagesDir>
             <attributes>
@@ -86,18 +85,6 @@
               </configuration>
             </execution>
           </executions>
-          <dependencies>
-            <dependency>
-              <groupId>org.asciidoctor</groupId>
-              <artifactId>asciidoctorj</artifactId>
-              <version>1.5.8.1</version>
-            </dependency>
-            <dependency>
-              <groupId>org.asciidoctor</groupId>
-              <artifactId>asciidoctorj-pdf</artifactId>
-              <version>1.5.0-alpha.16</version>
-            </dependency>
-          </dependencies>
         </plugin>
         <plugin>
           <groupId>org.apache.maven.plugins</groupId>
@@ -125,7 +112,7 @@
       </plugins>
     </pluginManagement>
   </build>
- 
+
   <profiles>
     <profile>
       <id>community</id>
@@ -158,12 +145,12 @@
           <name>productizationDocs</name>
         </property>
       </activation>
-      
+
       <properties>
         <!-- This file does not exist in the community repository, but it does exist in the product-docs repo -->
         <source.document.name>product-index.adoc</source.document.name>
       </properties>
-      
+
       <build>
         <pluginManagement>
           <plugins>
@@ -183,5 +170,5 @@
       </build>
     </profile>
   </profiles>
-  
+
 </project>
