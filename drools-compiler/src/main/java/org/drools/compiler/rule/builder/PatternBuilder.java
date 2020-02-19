@@ -61,6 +61,7 @@ import org.drools.compiler.rule.builder.dialect.DialectUtil;
 import org.drools.compiler.rule.builder.dialect.java.JavaDialect;
 import org.drools.compiler.rule.builder.dialect.mvel.MVELAnalysisResult;
 import org.drools.compiler.rule.builder.dialect.mvel.MVELDialect;
+import org.drools.compiler.rule.builder.util.ConstraintUtils;
 import org.drools.compiler.builder.DroolsAssemblerContext;
 import org.drools.core.base.ClassFieldReader;
 import org.drools.core.base.ClassObjectType;
@@ -604,6 +605,8 @@ public class PatternBuilder
             } else {
                 expression = b.getText();
             }
+
+            expression = ConstraintUtils.normalizeConstraintExpression(expression, pattern.getObjectType().getClassType());
 
             ConstraintConnectiveDescr result = parseExpression(context,
                                                                patternDescr,
