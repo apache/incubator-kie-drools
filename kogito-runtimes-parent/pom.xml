@@ -894,7 +894,6 @@
             </plugin>
             <plugin>
               <artifactId>maven-failsafe-plugin</artifactId>
-              <version>${version.surefire}</version>
               <executions>
                 <execution>
                   <goals>
@@ -1007,6 +1006,10 @@
           <configuration>
             <encoding>UTF-8</encoding>
           </configuration>
+        </plugin>
+        <plugin>
+          <artifactId>maven-failsafe-plugin</artifactId>
+          <version>${version.surefire}</version>
         </plugin>
         <plugin>
           <groupId>org.apache.maven.plugins</groupId>
