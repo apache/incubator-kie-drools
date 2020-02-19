@@ -169,13 +169,6 @@ public class TypedExpression {
         return Objects.hash(expression, type, fieldName);
     }
 
-    public Optional<UnificationTypedExpression> asUnificationTypedExpression() {
-        if(this instanceof UnificationTypedExpression) {
-            return Optional.of((UnificationTypedExpression) this);
-        }
-        return Optional.empty();
-    }
-
     public Expression uncastExpression() {
         return DrlxParseUtil.uncastExpr(expression);
     }

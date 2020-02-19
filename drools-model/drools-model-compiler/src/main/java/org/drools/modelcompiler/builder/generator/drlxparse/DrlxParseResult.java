@@ -33,4 +33,7 @@ public interface DrlxParseResult {
     void setExprId(String exprId);
 
     String getExprId(DRLIdGenerator exprIdGenerator);
+
+    DrlxParseResult setOriginalDrlConstraint(String originalDrlConstraint);
+
 }

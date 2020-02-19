@@ -54,6 +54,7 @@ public class SingleDrlxParseSuccess extends AbstractDrlxParseSuccess {
     private Expression expr;
     private final Type exprType;
 
+    private String originalDrlConstraint;
     private String exprId;
     private String patternBinding;
     private String accumulateBinding;
@@ -113,9 +114,8 @@ public class SingleDrlxParseSuccess extends AbstractDrlxParseSuccess {
         return this;
     }
 
-    public SingleDrlxParseSuccess setPatternBindingUnification(Boolean unification) {
+    public void setPatternBindingUnification(Boolean unification) {
         this.isPatternBindingUnification = unification;
-        return this;
     }
 
     public SingleDrlxParseSuccess addReactOnProperty(String reactOnProperty ) {
@@ -160,17 +160,22 @@ public class SingleDrlxParseSuccess extends AbstractDrlxParseSuccess {
 
     public String getExprId(DRLIdGenerator exprIdGenerator) {
         String constraint;
-        if (expr != null) {
-            try {
-                constraint = expr.toString();
-            } catch (NullPointerException e) {
-                constraint = left.toString(); // TODO nasty hack fix
-            }
+        if(asUnificationTypedExpression(left).isPresent() || asUnificationTypedExpression(right).isPresent()) {
+            constraint = originalDrlConstraint;
+        } else if (expr != null) {
+            constraint = expr.toString();
         } else {
             constraint = left.toString();
         }
 
         return exprIdGenerator.getExprId(patternType, constraint);
+    }
+
+    public Optional<UnificationTypedExpression> asUnificationTypedExpression(TypedExpression expression) {
+        if(expression instanceof UnificationTypedExpression) {
+            return Optional.of((UnificationTypedExpression) expression);
+        }
+        return Optional.empty();
     }
 
     public String getPatternBinding() {
@@ -179,10 +184,6 @@ public class SingleDrlxParseSuccess extends AbstractDrlxParseSuccess {
 
     public void setExpr(Expression expr) {
         this.expr = expr;
-    }
-
-    public void setPatternBinding(String patternBinding) {
-        this.patternBinding = patternBinding;
     }
 
     public String getAccumulateBinding() {
@@ -199,8 +200,8 @@ public class SingleDrlxParseSuccess extends AbstractDrlxParseSuccess {
     }
 
     public boolean hasUnificationVariable() {
-        return ofNullable(left).flatMap(TypedExpression::asUnificationTypedExpression).flatMap(UnificationTypedExpression::getUnificationVariable).isPresent() ||
-                ofNullable(right).flatMap(TypedExpression::asUnificationTypedExpression).flatMap(UnificationTypedExpression::getUnificationVariable).isPresent();
+        return ofNullable(left).flatMap(this::asUnificationTypedExpression).flatMap(UnificationTypedExpression::getUnificationVariable).isPresent() ||
+                ofNullable(right).flatMap(this::asUnificationTypedExpression).flatMap(UnificationTypedExpression::getUnificationVariable).isPresent();
     }
 
     public String getUnificationVariable() {
@@ -213,13 +214,13 @@ public class SingleDrlxParseSuccess extends AbstractDrlxParseSuccess {
 
     public Class<?> getUnificationVariableType() {
         // Do not use the type of unificationTypeExpression
-        return left.asUnificationTypedExpression().isPresent() ? right.getRawClass() : left.getRawClass();
+        return asUnificationTypedExpression(left).isPresent() ? right.getRawClass() : left.getRawClass();
     }
 
     private <T> T leftOrRightAsUnificationTypedExpression(Function<? super UnificationTypedExpression, Optional<T>> mapper) {
-        return left.asUnificationTypedExpression().flatMap(mapper)
+        return asUnificationTypedExpression(left).flatMap(mapper)
                 .map(Optional::of)
-                .orElseGet(() -> right.asUnificationTypedExpression().flatMap(mapper))
+                .orElseGet(() -> asUnificationTypedExpression(right).flatMap(mapper))
                 .orElseThrow(() -> new IllegalStateException("Left or Right unification not present!"));
     }
 
@@ -382,8 +383,16 @@ public class SingleDrlxParseSuccess extends AbstractDrlxParseSuccess {
         this.exprId = exprId;
     }
 
+
+    // TODO fix
     public SingleDrlxParseSuccess setExprIdT(String exprId) {
         setExprId(exprId);
+        return this;
+    }
+
+    @Override
+    public DrlxParseResult setOriginalDrlConstraint(String originalDrlConstraint) {
+        this.originalDrlConstraint = originalDrlConstraint;
         return this;
     }
 }

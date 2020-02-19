@@ -62,6 +62,11 @@ public class MultipleDrlxParseSuccess extends AbstractDrlxParseSuccess {
     }
 
     @Override
+    public DrlxParseResult setOriginalDrlConstraint(String originalDrlConstraint) {
+        return this;
+    }
+
+    @Override
     public boolean isValidExpression() {
         return Stream.of(results).allMatch( DrlxParseSuccess::isValidExpression );
     }
