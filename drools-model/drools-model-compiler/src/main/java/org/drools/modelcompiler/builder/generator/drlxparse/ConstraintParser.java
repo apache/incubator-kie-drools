@@ -425,25 +425,14 @@ public class ConstraintParser {
 
         MethodCallExpr methodCallExpr = new MethodCallExpr( null, equalsMethod );
         // Avoid casts, by using an helper method we leverage autoboxing and equals
-        methodCallExpr.addArgument(uncastExpr(left.getExpression()));
-        methodCallExpr.addArgument(uncastExpr(right.getExpression()));
+        methodCallExpr.addArgument(left.uncastExpression());
+        methodCallExpr.addArgument(right.uncastExpression());
         Expression expression = operator == BinaryExpr.Operator.EQUALS ? methodCallExpr : new UnaryExpr(methodCallExpr, UnaryExpr.Operator.LOGICAL_COMPLEMENT);
         return new SpecialComparisonResult(expression, left, right);
     }
 
     static Boolean isNumber(TypedExpression left) {
         return left.getBoxedType().map(ConstraintParser::isNumericType).orElse(false);
-    }
-
-    static Expression uncastExpr(Expression e) {
-        if(e == null) { // Not sure why a null should be here - check QueryTest.testPositionalRecursiveQuery
-            return null;
-        }
-        if(e.isCastExpr()) {
-            return e.asCastExpr().getExpression();
-        } else {
-            return e;
-        }
     }
 
     private static SpecialComparisonResult handleSpecialComparisonCases(BinaryExpr.Operator operator, TypedExpression left, TypedExpression right) {

@@ -23,6 +23,7 @@ import java.util.HashSet;
 import java.util.LinkedHashSet;
 import java.util.Optional;
 import java.util.Set;
+import java.util.function.Function;
 
 import com.github.javaparser.StaticJavaParser;
 import com.github.javaparser.ast.expr.BinaryExpr;
@@ -32,6 +33,7 @@ import com.github.javaparser.ast.expr.UnaryExpr;
 import org.drools.model.Index;
 import org.drools.modelcompiler.builder.generator.DRLIdGenerator;
 import org.drools.modelcompiler.builder.generator.TypedExpression;
+import org.drools.modelcompiler.builder.generator.UnificationTypedExpression;
 
 import static com.github.javaparser.ast.expr.BinaryExpr.Operator.AND;
 import static com.github.javaparser.ast.expr.BinaryExpr.Operator.EQUALS;
@@ -41,6 +43,7 @@ import static com.github.javaparser.ast.expr.BinaryExpr.Operator.LESS;
 import static com.github.javaparser.ast.expr.BinaryExpr.Operator.LESS_EQUALS;
 import static com.github.javaparser.ast.expr.BinaryExpr.Operator.NOT_EQUALS;
 import static com.github.javaparser.ast.expr.BinaryExpr.Operator.OR;
+import static java.util.Optional.ofNullable;
 import static org.drools.modelcompiler.util.ClassUtil.getAccessibleProperties;
 import static org.drools.modelcompiler.util.ClassUtil.toNonPrimitiveType;
 import static org.drools.modelcompiler.util.ClassUtil.toRawClass;
@@ -65,6 +68,7 @@ public class SingleDrlxParseSuccess extends AbstractDrlxParseSuccess {
 
     private TypedExpression left;
     private TypedExpression right;
+
     private Object rightLiteral;
     private boolean isStatic;
     private boolean isValidExpression;
@@ -195,22 +199,28 @@ public class SingleDrlxParseSuccess extends AbstractDrlxParseSuccess {
     }
 
     public boolean hasUnificationVariable() {
-        return Optional.ofNullable(left).flatMap(TypedExpression::getUnificationVariable).isPresent() ||
-                Optional.ofNullable(right).flatMap(TypedExpression::getUnificationVariable).isPresent();
+        return ofNullable(left).flatMap(TypedExpression::asUnificationTypedExpression).flatMap(UnificationTypedExpression::getUnificationVariable).isPresent() ||
+                ofNullable(right).flatMap(TypedExpression::asUnificationTypedExpression).flatMap(UnificationTypedExpression::getUnificationVariable).isPresent();
     }
 
     public String getUnificationVariable() {
-        return left.getUnificationVariable().orElseGet(
-                () -> right.getUnificationVariable().orElseThrow(() -> new IllegalStateException("Right unification variable is not present!")));
+        return leftOrRightAsUnificationTypedExpression(UnificationTypedExpression::getUnificationVariable);
     }
 
     public String getUnificationName() {
-        return left.getUnificationName().orElseGet(
-                () -> right.getUnificationName().orElseThrow(() -> new IllegalStateException("Right unification name is not present!")));
+        return leftOrRightAsUnificationTypedExpression(UnificationTypedExpression::getUnificationName);
     }
 
     public Class<?> getUnificationVariableType() {
-        return left.getUnificationVariable().isPresent() ? right.getRawClass() : left.getRawClass();
+        // Do not use the type of unificationTypeExpression
+        return left.asUnificationTypedExpression().isPresent() ? right.getRawClass() : left.getRawClass();
+    }
+
+    private <T> T leftOrRightAsUnificationTypedExpression(Function<? super UnificationTypedExpression, Optional<T>> mapper) {
+        return left.asUnificationTypedExpression().flatMap(mapper)
+                .map(Optional::of)
+                .orElseGet(() -> right.asUnificationTypedExpression().flatMap(mapper))
+                .orElseThrow(() -> new IllegalStateException("Left or Right unification not present!"));
     }
 
     public Expression getExpr() {

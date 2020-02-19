@@ -828,6 +828,14 @@ public class DrlxParseUtil {
         return block.endsWith(";") ? block : block + ";";
     }
 
+    public static Expression uncastExpr(Expression e) {
+        if(e.isCastExpr()) {
+            return e.asCastExpr().getExpression();
+        } else {
+            return e;
+        }
+    }
+
     private DrlxParseUtil() {
         // It is not allowed to create instances of util classes.
     }
