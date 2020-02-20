@@ -1,0 +1,7 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`Brand component tests snapshot testing 1`] = `
+<ContextConsumer>
+  <Component />
+</ContextConsumer>
+`;

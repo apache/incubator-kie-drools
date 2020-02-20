@@ -61,8 +61,8 @@ const Dashboard: React.FC<{}> = (props: any) => {
         header={Header}
         skipToContent={PageSkipToContent}
         mainContainerId={pageId}
-        className="page"
         sidebar={Sidebar}
+        className="kogito-management-console--dashboard-page"
       >
         <Route
           exact

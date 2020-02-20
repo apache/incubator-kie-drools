@@ -1,0 +1,93 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`Dashboard component tests snapshot testing 1`] = `
+<Fragment>
+  <Page
+    breadcrumb={null}
+    className="kogito-management-console--dashboard-page"
+    defaultManagedSidebarIsOpen={true}
+    header={
+      <PageHeader
+        avatar={<AvatarComponent />}
+        isNavOpen={false}
+        logo={<withRouter(BrandComponent) />}
+        onNavToggle={[Function]}
+        showNavToggle={true}
+        toolbar={<PageToolbarComponent />}
+      />
+    }
+    isManagedSidebar={false}
+    mainContainerId="main-content-page-layout-default-nav"
+    onPageResize={[Function]}
+    sidebar={
+      <PageSidebar
+        isNavOpen={false}
+        nav={
+          <Unknown
+            aria-label="Nav"
+            theme="dark"
+          >
+            <NavList
+              ariaLeftScroll="Scroll left"
+              ariaRightScroll="Scroll right"
+              className=""
+              variant="default"
+            >
+              <NavItem
+                isActive={true}
+              >
+                <ForwardRef
+                  to="/ProcessInstances"
+                >
+                  Process Instances
+                </ForwardRef>
+              </NavItem>
+              <NavItem
+                isActive={false}
+              >
+                <ForwardRef
+                  to="/DomainExplorer"
+                >
+                  Domain Explorer
+                </ForwardRef>
+              </NavItem>
+            </NavList>
+          </Unknown>
+        }
+        theme="dark"
+      />
+    }
+    skipToContent={
+      <SkipToContent
+        className=""
+        component="a"
+        href="#main-content-page-layout-default-nav"
+        show={false}
+      >
+        Skip to Content
+      </SkipToContent>
+    }
+  >
+    <Route
+      exact={true}
+      path="/"
+      render={[Function]}
+    />
+    <Route
+      component={[Function]}
+      exact={true}
+      path="/ProcessInstances"
+    />
+    <Route
+      component={[Function]}
+      exact={true}
+      path="/ProcessInstances/:instanceID"
+    />
+    <Route
+      component={[Function]}
+      exact={true}
+      path="/DomainExplorer"
+    />
+  </Page>
+</Fragment>
+`;

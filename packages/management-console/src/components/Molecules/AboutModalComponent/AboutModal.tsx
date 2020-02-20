@@ -7,14 +7,13 @@ import {
   TextListItem
 } from '@patternfly/react-core';
 import './AboutModal.css';
-import aboutPageLogo from '../../../static/kogitoLogoAboutPage.svg';
+import aboutPageLogo from '../../../static/managementConsoleLogo.svg';
 import aboutPageBackground from '../../../static/KogitoAbout.png';
 import { version } from '../../../../package.json';
 export interface IOwnProps {
   isOpenProp: boolean;
   handleModalToggleProp: any;
 }
-
 const AboutModalBox: React.FC<IOwnProps> = ({
   isOpenProp,
   handleModalToggleProp
