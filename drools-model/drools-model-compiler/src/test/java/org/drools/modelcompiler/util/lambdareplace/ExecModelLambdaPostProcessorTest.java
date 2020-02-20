@@ -36,26 +36,6 @@ public class ExecModelLambdaPostProcessorTest {
         assertThat(actual.toString(), equalToIgnoringWhiteSpace(expectedResult.toString()));
     }
 
-    @Test
-    public void convertFlowLambdaDoNotConvertConsequenceWhenDrools() throws Exception {
-
-        CompilationUnit inputCU = parseResource("org/drools/modelcompiler/util/lambdareplace/FlowConsequenceTestHarness.java");
-        CompilationUnit clone = inputCU.clone();
-
-        new ExecModelLambdaPostProcessor(new HashMap<>(), "mypackage", "rulename", new ArrayList<>(), new ArrayList<>(), clone).convertLambdas();
-
-        String FLOW_HARNESS = "FlowTestHarness";
-        MethodDeclaration expectedResultNotConverted = getMethodChangingName(inputCU, FLOW_HARNESS, "expectedOutputNotConverted");
-        MethodDeclaration actualNotConverted = getMethodChangingName(clone, FLOW_HARNESS, "inputMethodNotConverted");
-
-        assertThat(actualNotConverted.toString(), equalToIgnoringWhiteSpace(expectedResultNotConverted.toString()));
-
-        MethodDeclaration expectedResultConverted = getMethodChangingName(inputCU, FLOW_HARNESS, "expectedOutputConverted");
-        MethodDeclaration actualConverted = getMethodChangingName(clone, FLOW_HARNESS, "inputMethodConverted");
-
-        assertThat(actualConverted.toString(), equalToIgnoringWhiteSpace(expectedResultConverted.toString()));
-    }
-
     private MethodDeclaration getMethodChangingName(CompilationUnit inputCU, String className, String methodName) {
         return inputCU.getClassByName(className)
                 .map(c -> c.getMethodsByName(methodName))

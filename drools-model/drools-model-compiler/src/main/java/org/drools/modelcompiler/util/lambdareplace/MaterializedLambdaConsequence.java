@@ -17,6 +17,9 @@
 
 package org.drools.modelcompiler.util.lambdareplace;
 
+import java.util.List;
+
+import com.github.javaparser.ast.CompilationUnit;
 import com.github.javaparser.ast.Modifier;
 import com.github.javaparser.ast.NodeList;
 import com.github.javaparser.ast.body.EnumDeclaration;
@@ -32,9 +35,11 @@ import static org.drools.modelcompiler.util.StringUtil.md5Hash;
 public class MaterializedLambdaConsequence extends MaterializedLambda {
 
     private final static String CLASS_NAME_PREFIX = "LambdaConsequence";
+    private final List<BitMaskVariable> bitMaskVariables;
 
-    MaterializedLambdaConsequence(String packageName, String ruleClassName) {
+    MaterializedLambdaConsequence(String packageName, String ruleClassName, List<BitMaskVariable> bitMaskVariables) {
         super(packageName, ruleClassName);
+        this.bitMaskVariables = bitMaskVariables;
     }
 
     protected String className(String sourceCode) {
@@ -43,11 +48,6 @@ public class MaterializedLambdaConsequence extends MaterializedLambda {
 
     @Override
     void createMethodDeclaration(EnumDeclaration classDeclaration) {
-        boolean hasDroolsParameter = lambdaParameters.stream().anyMatch(this::isDroolsParameter);
-        if(hasDroolsParameter) {
-            throw new DroolsNeededInConsequenceException(lambdaExpr.toString());
-        }
-
         MethodDeclaration methodDeclaration = classDeclaration.addMethod("execute", Modifier.Keyword.PUBLIC);
         methodDeclaration.setThrownExceptions(NodeList.nodeList(parseClassOrInterfaceType("java.lang.Exception")));
         methodDeclaration.addAnnotation("Override");
@@ -63,6 +63,17 @@ public class MaterializedLambdaConsequence extends MaterializedLambda {
             BlockStmt clone = (BlockStmt) body.clone();
             methodDeclaration.setBody(clone);
         }
+    }
+
+    @Override
+    protected EnumDeclaration create(CompilationUnit compilationUnit) {
+        EnumDeclaration lambdaClass = super.create(compilationUnit);
+
+        boolean hasDroolsParameter = lambdaParameters.stream().anyMatch(this::isDroolsParameter);
+        if (hasDroolsParameter) {
+            bitMaskVariables.forEach(vd -> vd.generateBitMaskField(lambdaClass));
+        }
+        return lambdaClass;
     }
 
     private boolean isDroolsParameter(LambdaParameter p) {

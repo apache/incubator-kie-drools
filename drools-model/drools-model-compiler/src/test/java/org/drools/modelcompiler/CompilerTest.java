@@ -39,6 +39,7 @@ import org.drools.modelcompiler.domain.Child;
 import org.drools.modelcompiler.domain.Man;
 import org.drools.modelcompiler.domain.Overloaded;
 import org.drools.modelcompiler.domain.Person;
+import org.drools.modelcompiler.domain.Pet;
 import org.drools.modelcompiler.domain.Result;
 import org.drools.modelcompiler.domain.StockTick;
 import org.drools.modelcompiler.domain.Toy;
@@ -2002,6 +2003,64 @@ public class CompilerTest extends BaseModelTest {
         ksession.insert( me );
 
         assertEquals( 1, ksession.fireAllRules() );
+    }
+
+    @Test()
+    public void testMultipleModify() {
+        String str =
+                "import " + Person.class.getCanonicalName() + ";" +
+                "rule R when\n" +
+                "  $p1 : Person(name == \"John\")\n" +
+                "  $p2 : Person(name == \"Paul\")\n" +
+                "then\n" +
+                "  modify($p1) { setAge($p1.getAge()+1) }\n" +
+                "  modify($p2) { setAge($p2.getAge()+5) }\n" +
+                "end";
+
+        KieSession ksession = getKieSession( str );
+
+        Person p1 = new Person( "John", 40 );
+        Person p2 = new Person( "Paul", 38 );
+
+        ksession.insert( p1 );
+        ksession.insert( p2 );
+        ksession.fireAllRules();
+
+        assertEquals( 41, p1.getAge() );
+        assertEquals( 43, p2.getAge() );
+    }
+
+    @Test()
+    public void testMultipleModifyWithDifferentFacts() {
+        String str =
+                "import " + Person.class.getCanonicalName() + ";" +
+                "import " + Pet.class.getCanonicalName() + ";" +
+                "rule R1 when\n" +
+                "  $person : Person(name == \"John\")\n" +
+                "  $pet : Pet(owner == $person)\n" +
+                "then\n" +
+                "  modify($person) { setName(\"George\") }\n" +
+                "  modify($pet) { setAge($pet.getAge()+1) }\n" +
+                "end\n" +
+                "rule R2 when\n" +
+                "  $person : Person(name == \"George\")\n" +
+                "  $pet : Pet(owner == $person)\n" +
+                "then\n" +
+                "  modify($pet) { setAge($pet.getAge()+1) }\n" +
+                "end";
+
+        KieSession ksession = getKieSession( str );
+
+        Person person = new Person( "John", 40 );
+        Pet pet = new Pet( Pet.PetType.dog, 3 );
+        pet.setOwner(person);
+
+        ksession.insert( person );
+        ksession.insert( pet );
+        ksession.fireAllRules();
+
+        assertEquals( "George", person.getName() );
+        assertEquals( 5, pet.getAge() );
     }
 
     @Test
