@@ -1,5 +1,5 @@
 /*
- * Copyright 2019 Red Hat, Inc. and/or its affiliates.
+ * Copyright 2020 Red Hat, Inc. and/or its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -16,6 +16,7 @@
 
 package org.optaplanner.core.impl.testdata.domain.score;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import org.optaplanner.core.api.domain.solution.PlanningEntityCollectionProperty;
@@ -34,6 +35,28 @@ public class TestdataSimpleLongScoreSolution extends TestdataObject {
 
     public static SolutionDescriptor<TestdataSimpleLongScoreSolution> buildSolutionDescriptor() {
         return SolutionDescriptor.buildSolutionDescriptor(TestdataSimpleLongScoreSolution.class, TestdataEntity.class);
+    }
+
+    public static TestdataSimpleLongScoreSolution generateSolution() {
+        return generateSolution(5, 7);
+    }
+
+    public static TestdataSimpleLongScoreSolution generateSolution(int valueListSize, int entityListSize) {
+        TestdataSimpleLongScoreSolution solution = new TestdataSimpleLongScoreSolution("Generated Solution 0");
+        List<TestdataValue> valueList = new ArrayList<>(valueListSize);
+        for (int i = 0; i < valueListSize; i++) {
+            TestdataValue value = new TestdataValue("Generated Value " + i);
+            valueList.add(value);
+        }
+        solution.setValueList(valueList);
+        List<TestdataEntity> entityList = new ArrayList<>(entityListSize);
+        for (int i = 0; i < entityListSize; i++) {
+            TestdataValue value = valueList.get(i % valueListSize);
+            TestdataEntity entity = new TestdataEntity("Generated Entity " + i, value);
+            entityList.add(entity);
+        }
+        solution.setEntityList(entityList);
+        return solution;
     }
 
     private List<TestdataValue> valueList;

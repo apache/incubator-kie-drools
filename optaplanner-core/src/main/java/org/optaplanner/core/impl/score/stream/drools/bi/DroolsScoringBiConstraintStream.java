@@ -25,6 +25,7 @@ import java.util.function.ToLongBiFunction;
 import org.drools.model.Global;
 import org.drools.model.RuleItemBuilder;
 import org.optaplanner.core.api.score.holder.AbstractScoreHolder;
+import org.optaplanner.core.impl.score.stream.drools.DroolsConstraint;
 import org.optaplanner.core.impl.score.stream.drools.DroolsConstraintFactory;
 import org.optaplanner.core.impl.score.stream.drools.common.DroolsAbstractConstraintStream;
 
@@ -83,14 +84,15 @@ public final class DroolsScoringBiConstraintStream<Solution_, A, B> extends Droo
     // ************************************************************************
 
     @Override
-    public List<RuleItemBuilder<?>> createRuleItemBuilders(Global<? extends AbstractScoreHolder<?>> scoreHolderGlobal) {
+    public List<RuleItemBuilder<?>> createRuleItemBuilders(DroolsConstraint<?> constraint,
+            Global<? extends AbstractScoreHolder<?>> scoreHolderGlobal) {
         DroolsBiCondition<A, B, ?> condition = parent.getCondition();
         if (intMatchWeigher != null) {
-            return condition.completeWithScoring(scoreHolderGlobal, intMatchWeigher);
+            return condition.completeWithScoring(constraint, scoreHolderGlobal, intMatchWeigher);
         } else if (longMatchWeigher != null) {
-            return condition.completeWithScoring(scoreHolderGlobal, longMatchWeigher);
+            return condition.completeWithScoring(constraint, scoreHolderGlobal, longMatchWeigher);
         } else if (bigDecimalMatchWeigher != null) {
-            return condition.completeWithScoring(scoreHolderGlobal, bigDecimalMatchWeigher);
+            return condition.completeWithScoring(constraint, scoreHolderGlobal, bigDecimalMatchWeigher);
         } else if (noMatchWeigher) {
             return condition.completeWithScoring(scoreHolderGlobal);
         } else {

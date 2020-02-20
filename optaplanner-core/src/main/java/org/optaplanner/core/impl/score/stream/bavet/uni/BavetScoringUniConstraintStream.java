@@ -111,7 +111,7 @@ public final class BavetScoringUniConstraintStream<Solution_, A> extends BavetAb
             if (intMatchWeigher != null) {
                 scoreImpacter = (A a, Consumer<Score<?>> matchScoreConsumer) -> {
                     int matchWeight = intMatchWeigher.applyAsInt(a);
-                    assertPositiveImpact(constraint, matchWeight);
+                    constraint.assertCorrectImpact(matchWeight);
                     return castedWeightedScoreImpacter.impactScore(matchWeight, matchScoreConsumer);
                 };
             } else if (noMatchWeigher) {
@@ -127,7 +127,7 @@ public final class BavetScoringUniConstraintStream<Solution_, A> extends BavetAb
             if (longMatchWeigher != null) {
                 scoreImpacter = (A a, Consumer<Score<?>> matchScoreConsumer) -> {
                     long matchWeight = longMatchWeigher.applyAsLong(a);
-                    assertPositiveImpact(constraint, matchWeight);
+                    constraint.assertCorrectImpact(matchWeight);
                     return castedWeightedScoreImpacter.impactScore(matchWeight, matchScoreConsumer);
                 };
             } else if (noMatchWeigher) {
@@ -143,7 +143,7 @@ public final class BavetScoringUniConstraintStream<Solution_, A> extends BavetAb
             if (bigDecimalMatchWeigher != null) {
                 scoreImpacter = (A a, Consumer<Score<?>> matchScoreConsumer) -> {
                     BigDecimal matchWeight = bigDecimalMatchWeigher.apply(a);
-                    assertPositiveImpact(constraint, matchWeight);
+                    constraint.assertCorrectImpact(matchWeight);
                     return castedWeightedScoreImpacter.impactScore(matchWeight, matchScoreConsumer);
                 };
             } else if (noMatchWeigher) {

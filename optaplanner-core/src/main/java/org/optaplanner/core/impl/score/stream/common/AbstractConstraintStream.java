@@ -1,5 +1,5 @@
 /*
- * Copyright 2019 Red Hat, Inc. and/or its affiliates.
+ * Copyright 2020 Red Hat, Inc. and/or its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -68,7 +68,7 @@ public abstract class AbstractConstraintStream<Solution_> implements ConstraintS
         return solution -> constraintWeight;
     }
 
-    protected void validateConstraintId(String constraintPackage, String constraintName) {
+    private static void validateConstraintId(String constraintPackage, String constraintName) {
         if (constraintPackage == null) {
             throw new IllegalStateException("The constraint (" + constraintName
                     + ") cannot have a null package (" + constraintPackage + ").");
@@ -87,28 +87,33 @@ public abstract class AbstractConstraintStream<Solution_> implements ConstraintS
 
     @Override
     public final Constraint penalize(String constraintPackage, String constraintName, Score<?> constraintWeight) {
-        return impactScore(constraintPackage, constraintName, constraintWeight, false);
+        return impactScore(constraintPackage, constraintName, constraintWeight, ScoreImpactType.PENALTY);
     }
 
     @Override
     public final Constraint penalizeConfigurable(String constraintPackage, String constraintName) {
-        return impactScoreConfigurable(constraintPackage, constraintName, false);
+        return impactScoreConfigurable(constraintPackage, constraintName, ScoreImpactType.PENALTY);
     }
 
     @Override
     public final Constraint reward(String constraintPackage, String constraintName, Score<?> constraintWeight) {
-        return impactScore(constraintPackage, constraintName, constraintWeight,true);
+        return impactScore(constraintPackage, constraintName, constraintWeight, ScoreImpactType.REWARD);
     }
 
     @Override
     public final Constraint rewardConfigurable(String constraintPackage, String constraintName) {
-        return impactScoreConfigurable(constraintPackage, constraintName, true);
+        return impactScoreConfigurable(constraintPackage, constraintName, ScoreImpactType.REWARD);
+    }
+
+    @Override
+    public final Constraint impact(String constraintPackage, String constraintName, Score<?> constraintWeight) {
+        return impactScore(constraintPackage, constraintName, constraintWeight, ScoreImpactType.MIXED);
     }
 
     abstract protected Constraint impactScore(String constraintPackage, String constraintName,
-            Score<?> constraintWeight, boolean positive);
+            Score<?> constraintWeight, ScoreImpactType impactType);
 
     abstract protected Constraint impactScoreConfigurable(String constraintPackage, String constraintName,
-            boolean positive);
+            ScoreImpactType impactType);
 
 }

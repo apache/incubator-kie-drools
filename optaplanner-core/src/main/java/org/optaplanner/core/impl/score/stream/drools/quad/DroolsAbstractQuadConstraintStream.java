@@ -33,6 +33,7 @@ import org.optaplanner.core.api.score.stream.quad.QuadConstraintCollector;
 import org.optaplanner.core.api.score.stream.quad.QuadConstraintStream;
 import org.optaplanner.core.api.score.stream.tri.TriConstraintStream;
 import org.optaplanner.core.api.score.stream.uni.UniConstraintStream;
+import org.optaplanner.core.impl.score.stream.common.ScoreImpactType;
 import org.optaplanner.core.impl.score.stream.drools.DroolsConstraintFactory;
 import org.optaplanner.core.impl.score.stream.drools.bi.DroolsGroupingBiConstraintStream;
 import org.optaplanner.core.impl.score.stream.drools.common.DroolsAbstractConstraintStream;
@@ -171,73 +172,74 @@ public abstract class DroolsAbstractQuadConstraintStream<Solution_, A, B, C, D>
 
     @Override
     protected Constraint impactScore(String constraintPackage, String constraintName, Score<?> constraintWeight,
-            boolean positive) {
+            ScoreImpactType impactType) {
         DroolsScoringQuadConstraintStream<Solution_, A, B, C, D> stream =
                 new DroolsScoringQuadConstraintStream<>(constraintFactory, this);
         addChildStream(stream);
-        return buildConstraint(constraintPackage, constraintName, constraintWeight, positive, stream);
+        return buildConstraint(constraintPackage, constraintName, constraintWeight, impactType, stream);
     }
 
     @Override
     public Constraint impactScore(String constraintPackage, String constraintName, Score<?> constraintWeight,
-            ToIntQuadFunction<A, B, C, D> matchWeigher, boolean positive) {
+            ToIntQuadFunction<A, B, C, D> matchWeigher, ScoreImpactType impactType) {
         DroolsScoringQuadConstraintStream<Solution_, A, B, C, D> stream =
                 new DroolsScoringQuadConstraintStream<>(constraintFactory, this, matchWeigher);
         addChildStream(stream);
-        return buildConstraint(constraintPackage, constraintName, constraintWeight, positive, stream);
+        return buildConstraint(constraintPackage, constraintName, constraintWeight, impactType, stream);
     }
 
     @Override
     public Constraint impactScoreLong(String constraintPackage, String constraintName, Score<?> constraintWeight,
-            ToLongQuadFunction<A, B, C, D> matchWeigher, boolean positive) {
+            ToLongQuadFunction<A, B, C, D> matchWeigher, ScoreImpactType impactType) {
         DroolsScoringQuadConstraintStream<Solution_, A, B, C, D> stream =
                 new DroolsScoringQuadConstraintStream<>(constraintFactory, this, matchWeigher);
         addChildStream(stream);
-        return buildConstraint(constraintPackage, constraintName, constraintWeight, positive, stream);
+        return buildConstraint(constraintPackage, constraintName, constraintWeight, impactType, stream);
     }
 
     @Override
     public Constraint impactScoreBigDecimal(String constraintPackage, String constraintName, Score<?> constraintWeight,
-            QuadFunction<A, B, C, D, BigDecimal> matchWeigher, boolean positive) {
+            QuadFunction<A, B, C, D, BigDecimal> matchWeigher, ScoreImpactType impactType) {
         DroolsScoringQuadConstraintStream<Solution_, A, B, C, D> stream =
                 new DroolsScoringQuadConstraintStream<>(constraintFactory, this, matchWeigher);
         addChildStream(stream);
-        return buildConstraint(constraintPackage, constraintName, constraintWeight, positive, stream);
+        return buildConstraint(constraintPackage, constraintName, constraintWeight, impactType, stream);
     }
 
     @Override
-    protected Constraint impactScoreConfigurable(String constraintPackage, String constraintName, boolean positive) {
+    protected Constraint impactScoreConfigurable(String constraintPackage, String constraintName,
+            ScoreImpactType impactType) {
         DroolsScoringQuadConstraintStream<Solution_, A, B, C, D> stream =
                 new DroolsScoringQuadConstraintStream<>(constraintFactory, this);
         addChildStream(stream);
-        return buildConstraintConfigurable(constraintPackage, constraintName, positive, stream);
+        return buildConstraintConfigurable(constraintPackage, constraintName, impactType, stream);
     }
 
     @Override
     public Constraint impactScoreConfigurable(String constraintPackage, String constraintName,
-            ToIntQuadFunction<A, B, C, D> matchWeigher, boolean positive) {
+            ToIntQuadFunction<A, B, C, D> matchWeigher, ScoreImpactType impactType) {
         DroolsScoringQuadConstraintStream<Solution_, A, B, C, D> stream =
                 new DroolsScoringQuadConstraintStream<>(constraintFactory, this, matchWeigher);
         addChildStream(stream);
-        return buildConstraintConfigurable(constraintPackage, constraintName, positive, stream);
+        return buildConstraintConfigurable(constraintPackage, constraintName, impactType, stream);
     }
 
     @Override
     public Constraint impactScoreConfigurableLong(String constraintPackage, String constraintName,
-            ToLongQuadFunction<A, B, C, D> matchWeigher, boolean positive) {
+            ToLongQuadFunction<A, B, C, D> matchWeigher, ScoreImpactType impactType) {
         DroolsScoringQuadConstraintStream<Solution_, A, B, C, D> stream =
                 new DroolsScoringQuadConstraintStream<>(constraintFactory, this, matchWeigher);
         addChildStream(stream);
-        return buildConstraintConfigurable(constraintPackage, constraintName, positive, stream);
+        return buildConstraintConfigurable(constraintPackage, constraintName, impactType, stream);
     }
 
     @Override
     public Constraint impactScoreConfigurableBigDecimal(String constraintPackage, String constraintName,
-            QuadFunction<A, B, C, D, BigDecimal> matchWeigher, boolean positive) {
+            QuadFunction<A, B, C, D, BigDecimal> matchWeigher, ScoreImpactType impactType) {
         DroolsScoringQuadConstraintStream<Solution_, A, B, C, D> stream =
                 new DroolsScoringQuadConstraintStream<>(constraintFactory, this, matchWeigher);
         addChildStream(stream);
-        return buildConstraintConfigurable(constraintPackage, constraintName, positive, stream);
+        return buildConstraintConfigurable(constraintPackage, constraintName, impactType, stream);
     }
 
     // ************************************************************************

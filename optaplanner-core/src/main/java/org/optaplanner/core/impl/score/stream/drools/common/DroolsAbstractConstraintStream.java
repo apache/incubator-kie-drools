@@ -27,6 +27,7 @@ import org.drools.model.RuleItemBuilder;
 import org.optaplanner.core.api.score.Score;
 import org.optaplanner.core.api.score.holder.AbstractScoreHolder;
 import org.optaplanner.core.impl.score.stream.common.AbstractConstraintStream;
+import org.optaplanner.core.impl.score.stream.common.ScoreImpactType;
 import org.optaplanner.core.impl.score.stream.drools.DroolsConstraint;
 import org.optaplanner.core.impl.score.stream.drools.DroolsConstraintFactory;
 import org.optaplanner.core.impl.score.stream.drools.uni.DroolsFromUniConstraintStream;
@@ -46,21 +47,22 @@ public abstract class DroolsAbstractConstraintStream<Solution_> extends Abstract
     // ************************************************************************
 
     protected DroolsConstraint<Solution_> buildConstraint(String constraintPackage, String constraintName,
-            Score<?> constraintWeight, boolean positive, DroolsAbstractConstraintStream<Solution_> scoringStream) {
+            Score<?> constraintWeight, ScoreImpactType impactType,
+            DroolsAbstractConstraintStream<Solution_> scoringStream) {
         Function<Solution_, Score<?>> constraintWeightExtractor = buildConstraintWeightExtractor(
                 constraintPackage, constraintName, constraintWeight);
         List<DroolsFromUniConstraintStream<Solution_, Object>> fromStreamList = getFromStreamList();
-        return new DroolsConstraint<>(constraintFactory,
-                constraintPackage, constraintName, constraintWeightExtractor, positive, fromStreamList, scoringStream);
+        return new DroolsConstraint<>(constraintFactory, constraintPackage, constraintName, constraintWeightExtractor,
+                impactType, fromStreamList, scoringStream);
     }
 
-    protected DroolsConstraint<Solution_> buildConstraintConfigurable(String constraintPackage, String constraintName
-            , boolean positive, DroolsAbstractConstraintStream<Solution_> scoringStream) {
+    protected DroolsConstraint<Solution_> buildConstraintConfigurable(String constraintPackage, String constraintName,
+            ScoreImpactType impactType, DroolsAbstractConstraintStream<Solution_> scoringStream) {
         Function<Solution_, Score<?>> constraintWeightExtractor = buildConstraintWeightExtractor(
                 constraintPackage, constraintName);
         List<DroolsFromUniConstraintStream<Solution_, Object>> fromStreamList = getFromStreamList();
-        return new DroolsConstraint<>(constraintFactory,
-                constraintPackage, constraintName, constraintWeightExtractor, positive, fromStreamList, scoringStream);
+        return new DroolsConstraint<>(constraintFactory, constraintPackage, constraintName, constraintWeightExtractor,
+                impactType, fromStreamList, scoringStream);
     }
 
     // ************************************************************************
@@ -85,10 +87,12 @@ public abstract class DroolsAbstractConstraintStream<Solution_> extends Abstract
      * Assemble elements of the rule that will process this stream and turn it into a constraint match. Will be ignored
      * unless on a scoring stream such as {@link DroolsScoringUniConstraintStream}.
      *
+     * @param constraint constraint which is being scored
      * @param scoreHolderGlobal contains the score to be affected
      * @return rule representing this constraint stream
      */
-    public List<RuleItemBuilder<?>> createRuleItemBuilders(Global<? extends AbstractScoreHolder<?>> scoreHolderGlobal) {
+    public List<RuleItemBuilder<?>> createRuleItemBuilders(DroolsConstraint<?> constraint,
+            Global<? extends AbstractScoreHolder<?>> scoreHolderGlobal) {
         throw new UnsupportedOperationException("Non-scoring stream (" + this + ") can not create a rule.");
     }
 

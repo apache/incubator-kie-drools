@@ -25,47 +25,32 @@ import org.drools.model.Rule;
 import org.drools.model.RuleItemBuilder;
 import org.optaplanner.core.api.score.Score;
 import org.optaplanner.core.api.score.holder.AbstractScoreHolder;
-import org.optaplanner.core.api.score.stream.Constraint;
+import org.optaplanner.core.impl.score.stream.common.AbstractConstraint;
+import org.optaplanner.core.impl.score.stream.common.ScoreImpactType;
 import org.optaplanner.core.impl.score.stream.drools.common.DroolsAbstractConstraintStream;
 import org.optaplanner.core.impl.score.stream.drools.common.DroolsRuleStructure;
 import org.optaplanner.core.impl.score.stream.drools.uni.DroolsFromUniConstraintStream;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-public class DroolsConstraint<Solution_> implements Constraint {
+public class DroolsConstraint<Solution_> extends AbstractConstraint<Solution_, DroolsConstraintFactory<Solution_>> {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(DroolsConstraint.class);
-    private final DroolsConstraintFactory<Solution_> constraintFactory;
-    private final String constraintPackage;
-    private final String constraintName;
-    private final boolean positive;
     private final List<DroolsFromUniConstraintStream<Solution_, Object>> fromStreamList;
     private final DroolsAbstractConstraintStream<Solution_> scoringStream;
-    private Function<Solution_, Score<?>> constraintWeightExtractor;
 
-    public DroolsConstraint(DroolsConstraintFactory<Solution_> constraintFactory,
-            String constraintPackage, String constraintName,
-            Function<Solution_, Score<?>> constraintWeightExtractor, boolean positive,
-            List<DroolsFromUniConstraintStream<Solution_, Object>> fromStreamList,
+    public DroolsConstraint(DroolsConstraintFactory<Solution_> constraintFactory, String constraintPackage,
+            String constraintName, Function<Solution_, Score<?>> constraintWeightExtractor,
+            ScoreImpactType scoreImpactType, List<DroolsFromUniConstraintStream<Solution_, Object>> fromStreamList,
             DroolsAbstractConstraintStream<Solution_> scoringStream) {
-        this.constraintFactory = constraintFactory;
-        this.constraintPackage = constraintPackage;
-        this.constraintName = constraintName;
-        this.constraintWeightExtractor = constraintWeightExtractor;
-        this.positive = positive;
+        super(constraintFactory, constraintPackage, constraintName, constraintWeightExtractor, scoreImpactType);
         this.fromStreamList = fromStreamList;
         this.scoringStream = scoringStream;
     }
 
-    public Score<?> extractConstraintWeight(Solution_ workingSolution) {
-        Score<?> constraintWeight = constraintWeightExtractor.apply(workingSolution);
-        constraintFactory.getSolutionDescriptor().validateConstraintWeight(constraintPackage, constraintName, constraintWeight);
-        return positive ? constraintWeight : constraintWeight.negate();
-    }
-
     public Rule createRule(Global<? extends AbstractScoreHolder<?>> scoreHolderGlobal) {
         final Rule result = PatternDSL.rule(getConstraintPackage(), getConstraintName())
-                .build(scoringStream.createRuleItemBuilders(scoreHolderGlobal)
+                .build(scoringStream.createRuleItemBuilders(this, scoreHolderGlobal)
                         .toArray(new RuleItemBuilder<?>[0]));
         LOGGER.trace("Constraint stream {} resulted in a new Drools rule: {}.", scoringStream, result);
         return result;
@@ -74,21 +59,6 @@ public class DroolsConstraint<Solution_> implements Constraint {
     // ************************************************************************
     // Getters/setters
     // ************************************************************************
-
-    @Override
-    public DroolsConstraintFactory<Solution_> getConstraintFactory() {
-        return constraintFactory;
-    }
-
-    @Override
-    public String getConstraintPackage() {
-        return constraintPackage;
-    }
-
-    @Override
-    public String getConstraintName() {
-        return constraintName;
-    }
 
     /**
      * As defined by {@link DroolsRuleStructure#getExpectedJustificationTypes()}.

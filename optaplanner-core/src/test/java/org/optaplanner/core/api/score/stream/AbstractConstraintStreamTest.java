@@ -20,6 +20,7 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
 import java.util.function.Function;
+import java.util.function.Supplier;
 import java.util.stream.Collectors;
 
 import org.junit.Assume;
@@ -28,6 +29,7 @@ import org.junit.runners.Parameterized;
 import org.optaplanner.core.api.score.buildin.simple.SimpleScore;
 import org.optaplanner.core.api.score.constraint.ConstraintMatch;
 import org.optaplanner.core.api.score.constraint.ConstraintMatchTotal;
+import org.optaplanner.core.impl.domain.solution.descriptor.SolutionDescriptor;
 import org.optaplanner.core.impl.score.director.InnerScoreDirector;
 import org.optaplanner.core.impl.score.director.stream.ConstraintStreamScoreDirectorFactory;
 import org.optaplanner.core.impl.testdata.domain.score.lavish.TestdataLavishSolution;
@@ -74,9 +76,15 @@ public abstract class AbstractConstraintStreamTest {
     // ************************************************************************
 
     protected InnerScoreDirector<TestdataLavishSolution> buildScoreDirector(Function<ConstraintFactory, Constraint> function) {
-        ConstraintStreamScoreDirectorFactory<TestdataLavishSolution> scoreDirectorFactory
+        return buildScoreDirector(TestdataLavishSolution::buildSolutionDescriptor, function);
+    }
+
+    protected <Solution_> InnerScoreDirector<Solution_> buildScoreDirector(
+            Supplier<SolutionDescriptor<Solution_>> solutionDescriptorSupplier,
+            Function<ConstraintFactory, Constraint> function) {
+        ConstraintStreamScoreDirectorFactory<Solution_> scoreDirectorFactory
                 = new ConstraintStreamScoreDirectorFactory<>(
-                TestdataLavishSolution.buildSolutionDescriptor(),
+                solutionDescriptorSupplier.get(),
                 (constraintFactory) -> new Constraint[] {function.apply(constraintFactory)},
                 constraintStreamImplType);
         return scoreDirectorFactory.buildScoreDirector(false, constraintMatchEnabled);

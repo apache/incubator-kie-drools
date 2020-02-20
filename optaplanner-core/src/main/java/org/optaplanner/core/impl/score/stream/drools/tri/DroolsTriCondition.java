@@ -38,6 +38,7 @@ import org.optaplanner.core.api.function.TriPredicate;
 import org.optaplanner.core.api.score.holder.AbstractScoreHolder;
 import org.optaplanner.core.api.score.stream.quad.QuadJoiner;
 import org.optaplanner.core.api.score.stream.tri.TriConstraintCollector;
+import org.optaplanner.core.impl.score.stream.drools.DroolsConstraint;
 import org.optaplanner.core.impl.score.stream.drools.bi.DroolsBiCondition;
 import org.optaplanner.core.impl.score.stream.drools.common.BiTuple;
 import org.optaplanner.core.impl.score.stream.drools.common.DroolsCondition;
@@ -206,23 +207,28 @@ public final class DroolsTriCondition<A, B, C, PatternVar>
                 (drools, scoreHolder, a, b, c) -> impactScore(drools, scoreHolder));
     }
 
-    public List<RuleItemBuilder<?>> completeWithScoring(Global<? extends AbstractScoreHolder<?>> scoreHolderGlobal,
+    public List<RuleItemBuilder<?>> completeWithScoring(DroolsConstraint<?> constraint,
+            Global<? extends AbstractScoreHolder<?>> scoreHolderGlobal,
             ToIntTriFunction<A, B, C> matchWeighter) {
         return completeWithScoring(scoreHolderGlobal,
-                (drools, scoreHolder, a, b, c) -> impactScore(drools, scoreHolder, matchWeighter.applyAsInt(a, b, c)));
+                (drools, scoreHolder, a, b, c) -> impactScore(constraint, drools, scoreHolder,
+                        matchWeighter.applyAsInt(a, b, c)));
 
     }
 
-    public List<RuleItemBuilder<?>> completeWithScoring(Global<? extends AbstractScoreHolder<?>> scoreHolderGlobal,
-            ToLongTriFunction<A, B, C> matchWeighter) {
+    public List<RuleItemBuilder<?>> completeWithScoring(DroolsConstraint<?> constraint,
+            Global<? extends AbstractScoreHolder<?>> scoreHolderGlobal, ToLongTriFunction<A, B, C> matchWeighter) {
         return completeWithScoring(scoreHolderGlobal,
-                (drools, scoreHolder, a, b, c) -> impactScore(drools, scoreHolder, matchWeighter.applyAsLong(a, b, c)));
+                (drools, scoreHolder, a, b, c) -> impactScore(constraint, drools, scoreHolder,
+                        matchWeighter.applyAsLong(a, b, c)));
     }
 
-    public List<RuleItemBuilder<?>> completeWithScoring(Global<? extends AbstractScoreHolder<?>> scoreHolderGlobal,
+    public List<RuleItemBuilder<?>> completeWithScoring(DroolsConstraint<?> constraint,
+            Global<? extends AbstractScoreHolder<?>> scoreHolderGlobal,
             TriFunction<A, B, C, BigDecimal> matchWeighter) {
         return completeWithScoring(scoreHolderGlobal,
-                (drools, scoreHolder, a, b, c) -> impactScore(drools, scoreHolder, matchWeighter.apply(a, b, c)));
+                (drools, scoreHolder, a, b, c) -> impactScore(constraint, drools, scoreHolder,
+                        matchWeighter.apply(a, b, c)));
     }
 
     private <ScoreHolder extends AbstractScoreHolder<?>> List<RuleItemBuilder<?>> completeWithScoring(

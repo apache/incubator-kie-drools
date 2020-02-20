@@ -36,6 +36,7 @@ import org.optaplanner.core.impl.score.stream.bavet.BavetConstraint;
 import org.optaplanner.core.impl.score.stream.bavet.BavetConstraintFactory;
 import org.optaplanner.core.impl.score.stream.bavet.common.BavetAbstractConstraintStream;
 import org.optaplanner.core.impl.score.stream.bavet.common.BavetNodeBuildPolicy;
+import org.optaplanner.core.impl.score.stream.common.ScoreImpactType;
 import org.optaplanner.core.impl.score.stream.tri.InnerTriConstraintStream;
 
 public abstract class BavetAbstractTriConstraintStream<Solution_, A, B, C> extends BavetAbstractConstraintStream<Solution_>
@@ -131,9 +132,9 @@ public abstract class BavetAbstractTriConstraintStream<Solution_, A, B, C> exten
 
     @Override
     public final Constraint impactScore(String constraintPackage, String constraintName, Score<?> constraintWeight,
-            boolean positive) {
+            ScoreImpactType impactType) {
         BavetConstraint<Solution_> constraint = buildConstraint(constraintPackage, constraintName, constraintWeight,
-                positive);
+                impactType);
         BavetScoringTriConstraintStream<Solution_, A, B, C> stream =
                 new BavetScoringTriConstraintStream<>(constraintFactory, this, constraint);
         childStreamList.add(stream);
@@ -142,9 +143,9 @@ public abstract class BavetAbstractTriConstraintStream<Solution_, A, B, C> exten
 
     @Override
     public final Constraint impactScore(String constraintPackage, String constraintName, Score<?> constraintWeight,
-            ToIntTriFunction<A, B, C> matchWeigher, boolean positive) {
+            ToIntTriFunction<A, B, C> matchWeigher, ScoreImpactType impactType) {
         BavetConstraint<Solution_> constraint = buildConstraint(constraintPackage, constraintName, constraintWeight,
-                positive);
+                impactType);
         BavetScoringTriConstraintStream<Solution_, A, B, C> stream =
                 new BavetScoringTriConstraintStream<>(constraintFactory, this, constraint, matchWeigher);
         childStreamList.add(stream);
@@ -153,9 +154,9 @@ public abstract class BavetAbstractTriConstraintStream<Solution_, A, B, C> exten
 
     @Override
     public final Constraint impactScoreLong(String constraintPackage, String constraintName,
-            Score<?> constraintWeight, ToLongTriFunction<A, B, C> matchWeigher, boolean positive) {
+            Score<?> constraintWeight, ToLongTriFunction<A, B, C> matchWeigher, ScoreImpactType impactType) {
         BavetConstraint<Solution_> constraint = buildConstraint(constraintPackage, constraintName, constraintWeight,
-                positive);
+                impactType);
         BavetScoringTriConstraintStream<Solution_, A, B, C> stream =
                 new BavetScoringTriConstraintStream<>(constraintFactory, this, constraint, matchWeigher);
         childStreamList.add(stream);
@@ -164,9 +165,9 @@ public abstract class BavetAbstractTriConstraintStream<Solution_, A, B, C> exten
 
     @Override
     public final Constraint impactScoreBigDecimal(String constraintPackage, String constraintName,
-            Score<?> constraintWeight, TriFunction<A, B, C, BigDecimal> matchWeigher, boolean positive) {
+            Score<?> constraintWeight, TriFunction<A, B, C, BigDecimal> matchWeigher, ScoreImpactType impactType) {
         BavetConstraint<Solution_> constraint = buildConstraint(constraintPackage, constraintName, constraintWeight,
-                positive);
+                impactType);
         BavetScoringTriConstraintStream<Solution_, A, B, C> stream =
                 new BavetScoringTriConstraintStream<>(constraintFactory, this, constraint, matchWeigher);
         childStreamList.add(stream);
@@ -174,9 +175,10 @@ public abstract class BavetAbstractTriConstraintStream<Solution_, A, B, C> exten
     }
 
     @Override
-    public final Constraint impactScoreConfigurable(String constraintPackage, String constraintName, boolean positive) {
+    public final Constraint impactScoreConfigurable(String constraintPackage, String constraintName,
+            ScoreImpactType impactType) {
         BavetConstraint<Solution_> constraint = buildConstraintConfigurable(constraintPackage, constraintName,
-                positive);
+                impactType);
         BavetScoringTriConstraintStream<Solution_, A, B, C> stream =
                 new BavetScoringTriConstraintStream<>(constraintFactory, this, constraint);
         childStreamList.add(stream);
@@ -185,9 +187,9 @@ public abstract class BavetAbstractTriConstraintStream<Solution_, A, B, C> exten
 
     @Override
     public final Constraint impactScoreConfigurable(String constraintPackage, String constraintName,
-            ToIntTriFunction<A, B, C> matchWeigher, boolean positive) {
+            ToIntTriFunction<A, B, C> matchWeigher, ScoreImpactType impactType) {
         BavetConstraint<Solution_> constraint = buildConstraintConfigurable(constraintPackage, constraintName,
-                positive);
+                impactType);
         BavetScoringTriConstraintStream<Solution_, A, B, C> stream =
                 new BavetScoringTriConstraintStream<>(constraintFactory, this, constraint, matchWeigher);
         childStreamList.add(stream);
@@ -196,9 +198,9 @@ public abstract class BavetAbstractTriConstraintStream<Solution_, A, B, C> exten
 
     @Override
     public final Constraint impactScoreConfigurableLong(String constraintPackage, String constraintName,
-            ToLongTriFunction<A, B, C> matchWeigher, boolean positive) {
+            ToLongTriFunction<A, B, C> matchWeigher, ScoreImpactType impactType) {
         BavetConstraint<Solution_> constraint = buildConstraintConfigurable(constraintPackage, constraintName,
-                positive);
+                impactType);
         BavetScoringTriConstraintStream<Solution_, A, B, C> stream =
                 new BavetScoringTriConstraintStream<>(constraintFactory, this, constraint, matchWeigher);
         childStreamList.add(stream);
@@ -207,9 +209,9 @@ public abstract class BavetAbstractTriConstraintStream<Solution_, A, B, C> exten
 
     @Override
     public final Constraint impactScoreConfigurableBigDecimal(String constraintPackage, String constraintName,
-            TriFunction<A, B, C, BigDecimal> matchWeigher, boolean positive) {
+            TriFunction<A, B, C, BigDecimal> matchWeigher, ScoreImpactType impactType) {
         BavetConstraint<Solution_> constraint = buildConstraintConfigurable(constraintPackage, constraintName,
-                positive);
+                impactType);
         BavetScoringTriConstraintStream<Solution_, A, B, C> stream =
                 new BavetScoringTriConstraintStream<>(constraintFactory, this, constraint, matchWeigher);
         childStreamList.add(stream);

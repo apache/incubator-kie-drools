@@ -25,6 +25,7 @@ import org.optaplanner.core.api.function.QuadFunction;
 import org.optaplanner.core.api.function.ToIntQuadFunction;
 import org.optaplanner.core.api.function.ToLongQuadFunction;
 import org.optaplanner.core.api.score.holder.AbstractScoreHolder;
+import org.optaplanner.core.impl.score.stream.drools.DroolsConstraint;
 import org.optaplanner.core.impl.score.stream.drools.DroolsConstraintFactory;
 
 public final class DroolsScoringQuadConstraintStream<Solution_, A, B, C, D>
@@ -83,15 +84,16 @@ public final class DroolsScoringQuadConstraintStream<Solution_, A, B, C, D>
     // ************************************************************************
 
     @Override
-    public List<RuleItemBuilder<?>> createRuleItemBuilders(Global<? extends AbstractScoreHolder<?>> scoreHolderGlobal) {
+    public List<RuleItemBuilder<?>> createRuleItemBuilders(DroolsConstraint<?> constraint,
+            Global<? extends AbstractScoreHolder<?>> scoreHolderGlobal) {
         DroolsQuadCondition<A, B, C, D, ?> condition =
                 ((DroolsAbstractQuadConstraintStream<Solution_, A, B, C, D>) parent).getCondition();
         if (intMatchWeigher != null) {
-            return condition.completeWithScoring(scoreHolderGlobal, intMatchWeigher);
+            return condition.completeWithScoring(constraint, scoreHolderGlobal, intMatchWeigher);
         } else if (longMatchWeigher != null) {
-            return condition.completeWithScoring(scoreHolderGlobal, longMatchWeigher);
+            return condition.completeWithScoring(constraint, scoreHolderGlobal, longMatchWeigher);
         } else if (bigDecimalMatchWeigher != null) {
-            return condition.completeWithScoring(scoreHolderGlobal, bigDecimalMatchWeigher);
+            return condition.completeWithScoring(constraint, scoreHolderGlobal, bigDecimalMatchWeigher);
         } else if (noMatchWeigher) {
             return condition.completeWithScoring(scoreHolderGlobal);
         } else {

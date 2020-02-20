@@ -33,6 +33,7 @@ import org.optaplanner.core.api.score.stream.quad.QuadJoiner;
 import org.optaplanner.core.api.score.stream.tri.TriConstraintCollector;
 import org.optaplanner.core.api.score.stream.tri.TriConstraintStream;
 import org.optaplanner.core.api.score.stream.uni.UniConstraintStream;
+import org.optaplanner.core.impl.score.stream.common.ScoreImpactType;
 import org.optaplanner.core.impl.score.stream.drools.DroolsConstraintFactory;
 import org.optaplanner.core.impl.score.stream.drools.bi.DroolsGroupingBiConstraintStream;
 import org.optaplanner.core.impl.score.stream.drools.common.DroolsAbstractConstraintStream;
@@ -185,73 +186,74 @@ public abstract class DroolsAbstractTriConstraintStream<Solution_, A, B, C>
 
     @Override
     protected Constraint impactScore(String constraintPackage, String constraintName, Score<?> constraintWeight,
-            boolean positive) {
+            ScoreImpactType impactType) {
         DroolsScoringTriConstraintStream<Solution_, A, B, C> stream =
                 new DroolsScoringTriConstraintStream<>(constraintFactory, this);
         addChildStream(stream);
-        return buildConstraint(constraintPackage, constraintName, constraintWeight, positive, stream);
+        return buildConstraint(constraintPackage, constraintName, constraintWeight, impactType, stream);
     }
 
     @Override
     public Constraint impactScore(String constraintPackage, String constraintName, Score<?> constraintWeight,
-            ToIntTriFunction<A, B, C> matchWeigher, boolean positive) {
+            ToIntTriFunction<A, B, C> matchWeigher, ScoreImpactType impactType) {
         DroolsScoringTriConstraintStream<Solution_, A, B, C> stream =
                 new DroolsScoringTriConstraintStream<>(constraintFactory, this, matchWeigher);
         addChildStream(stream);
-        return buildConstraint(constraintPackage, constraintName, constraintWeight, positive, stream);
+        return buildConstraint(constraintPackage, constraintName, constraintWeight, impactType, stream);
     }
 
     @Override
     public Constraint impactScoreLong(String constraintPackage, String constraintName, Score<?> constraintWeight,
-            ToLongTriFunction<A, B, C> matchWeigher, boolean positive) {
+            ToLongTriFunction<A, B, C> matchWeigher, ScoreImpactType impactType) {
         DroolsScoringTriConstraintStream<Solution_, A, B, C> stream =
                 new DroolsScoringTriConstraintStream<>(constraintFactory, this, matchWeigher);
         addChildStream(stream);
-        return buildConstraint(constraintPackage, constraintName, constraintWeight, positive, stream);
+        return buildConstraint(constraintPackage, constraintName, constraintWeight, impactType, stream);
     }
 
     @Override
     public Constraint impactScoreBigDecimal(String constraintPackage, String constraintName, Score<?> constraintWeight,
-            TriFunction<A, B, C, BigDecimal> matchWeigher, boolean positive) {
+            TriFunction<A, B, C, BigDecimal> matchWeigher, ScoreImpactType impactType) {
         DroolsScoringTriConstraintStream<Solution_, A, B, C> stream =
                 new DroolsScoringTriConstraintStream<>(constraintFactory, this, matchWeigher);
         addChildStream(stream);
-        return buildConstraint(constraintPackage, constraintName, constraintWeight, positive, stream);
+        return buildConstraint(constraintPackage, constraintName, constraintWeight, impactType, stream);
     }
 
     @Override
-    protected Constraint impactScoreConfigurable(String constraintPackage, String constraintName, boolean positive) {
+    protected Constraint impactScoreConfigurable(String constraintPackage, String constraintName,
+            ScoreImpactType impactType) {
         DroolsScoringTriConstraintStream<Solution_, A, B, C> stream =
                 new DroolsScoringTriConstraintStream<>(constraintFactory, this);
         addChildStream(stream);
-        return buildConstraintConfigurable(constraintPackage, constraintName, positive, stream);
+        return buildConstraintConfigurable(constraintPackage, constraintName, impactType, stream);
     }
 
     @Override
     public Constraint impactScoreConfigurable(String constraintPackage, String constraintName,
-            ToIntTriFunction<A, B, C> matchWeigher, boolean positive) {
+            ToIntTriFunction<A, B, C> matchWeigher, ScoreImpactType impactType) {
         DroolsScoringTriConstraintStream<Solution_, A, B, C> stream =
                 new DroolsScoringTriConstraintStream<>(constraintFactory, this, matchWeigher);
         addChildStream(stream);
-        return buildConstraintConfigurable(constraintPackage, constraintName, positive, stream);
+        return buildConstraintConfigurable(constraintPackage, constraintName, impactType, stream);
     }
 
     @Override
     public Constraint impactScoreConfigurableLong(String constraintPackage, String constraintName,
-            ToLongTriFunction<A, B, C> matchWeigher, boolean positive) {
+            ToLongTriFunction<A, B, C> matchWeigher, ScoreImpactType impactType) {
         DroolsScoringTriConstraintStream<Solution_, A, B, C> stream =
                 new DroolsScoringTriConstraintStream<>(constraintFactory, this, matchWeigher);
         addChildStream(stream);
-        return buildConstraintConfigurable(constraintPackage, constraintName, positive, stream);
+        return buildConstraintConfigurable(constraintPackage, constraintName, impactType, stream);
     }
 
     @Override
     public Constraint impactScoreConfigurableBigDecimal(String constraintPackage, String constraintName,
-            TriFunction<A, B, C, BigDecimal> matchWeigher, boolean positive) {
+            TriFunction<A, B, C, BigDecimal> matchWeigher, ScoreImpactType impactType) {
         DroolsScoringTriConstraintStream<Solution_, A, B, C> stream =
                 new DroolsScoringTriConstraintStream<>(constraintFactory, this, matchWeigher);
         addChildStream(stream);
-        return buildConstraintConfigurable(constraintPackage, constraintName, positive, stream);
+        return buildConstraintConfigurable(constraintPackage, constraintName, impactType, stream);
     }
 
     // ************************************************************************

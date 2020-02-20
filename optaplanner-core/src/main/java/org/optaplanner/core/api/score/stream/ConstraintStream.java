@@ -1,5 +1,5 @@
 /*
- * Copyright 2019 Red Hat, Inc. and/or its affiliates.
+ * Copyright 2020 Red Hat, Inc. and/or its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -124,7 +124,7 @@ public interface ConstraintStream {
      * <p>
      * The constraintWeight comes from an {@link ConstraintWeight} annotated member on the {@link ConstraintConfiguration},
      * so end users can change the constraint weights dynamically.
-     * This constraint is deactivated if the {@link ConstraintWeight} is zero.
+     * This constraint may be deactivated if the {@link ConstraintWeight} is zero.
      * If there is no {@link ConstraintConfiguration}, use {@link #penalize(String, Score)} instead.
      * <p>
      * The {@link Constraint#getConstraintPackage()} defaults to {@link ConstraintConfiguration#constraintPackage()}.
@@ -172,7 +172,7 @@ public interface ConstraintStream {
      * <p>
      * The constraintWeight comes from an {@link ConstraintWeight} annotated member on the {@link ConstraintConfiguration},
      * so end users can change the constraint weights dynamically.
-     * This constraint is deactivated if the {@link ConstraintWeight} is zero.
+     * This constraint may be deactivated if the {@link ConstraintWeight} is zero.
      * If there is no {@link ConstraintConfiguration}, use {@link #reward(String, Score)} instead.
      * <p>
      * The {@link Constraint#getConstraintPackage()} defaults to {@link ConstraintConfiguration#constraintPackage()}.
@@ -190,5 +190,29 @@ public interface ConstraintStream {
      * @return never null
      */
     Constraint rewardConfigurable(String constraintPackage, String constraintName);
+
+    /**
+     * Positively or negatively impact the {@link Score} by the constraintWeight for each match.
+     * <p>
+     * Use {@code penalize(...)} or {@code reward(...)} instead, unless this constraint can both have positive and
+     * negative weights.
+     * <p>
+     * The {@link Constraint#getConstraintPackage()} defaults to the package of the {@link PlanningSolution} class.
+     * @param constraintName never null, shows up in {@link ConstraintMatchTotal} during score justification
+     * @param constraintWeight never null
+     * @return never null
+     */
+    default Constraint impact(String constraintName, Score<?> constraintWeight) {
+        return impact(getConstraintFactory().getDefaultConstraintPackage(), constraintName, constraintWeight);
+    }
+
+    /**
+     * As defined by {@link #impact(String, Score)}.
+     * @param constraintPackage never null
+     * @param constraintName never null
+     * @param constraintWeight never null
+     * @return never null
+     */
+    Constraint impact(String constraintPackage, String constraintName, Score<?> constraintWeight);
 
 }

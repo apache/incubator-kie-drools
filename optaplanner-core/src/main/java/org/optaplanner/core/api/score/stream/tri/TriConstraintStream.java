@@ -21,6 +21,7 @@ import java.util.Objects;
 import java.util.function.BiFunction;
 import java.util.function.Function;
 
+import org.optaplanner.core.api.domain.constraintweight.ConstraintConfiguration;
 import org.optaplanner.core.api.domain.constraintweight.ConstraintWeight;
 import org.optaplanner.core.api.function.QuadPredicate;
 import org.optaplanner.core.api.function.ToIntTriFunction;
@@ -754,4 +755,186 @@ public interface TriConstraintStream<A, B, C> extends ConstraintStream {
     Constraint rewardConfigurableBigDecimal(String constraintPackage, String constraintName,
             TriFunction<A, B, C, BigDecimal> matchWeigher);
 
+    /**
+     * Positively or negatively impact the {@link Score} by the constraintWeight multiplied by the match weight.
+     * Otherwise as defined by {@link #impact(String, Score)}.
+     * <p>
+     * Use {@code penalize(...)} or {@code reward(...)} instead, unless this constraint can both have positive and
+     * negative weights.
+     * <p>
+     * For non-int {@link Score} types use {@link #impactLong(String, Score, ToLongTriFunction)} or
+     * {@link #impactBigDecimal(String, Score, TriFunction)} instead.
+     * @param constraintName never null, shows up in {@link ConstraintMatchTotal} during score justification
+     * @param constraintWeight never null
+     * @param matchWeigher never null, the result of this function (matchWeight) is multiplied by the constraintWeight
+     * @return never null
+     */
+    default Constraint impact(String constraintName, Score<?> constraintWeight,
+            ToIntTriFunction<A, B, C> matchWeigher) {
+        return impact(getConstraintFactory().getDefaultConstraintPackage(), constraintName, constraintWeight,
+                matchWeigher);
+    }
+
+    /**
+     * As defined by {@link #impact(String, Score, ToIntTriFunction)}.
+     * @param constraintPackage never null
+     * @param constraintName never null
+     * @param constraintWeight never null
+     * @param matchWeigher never null
+     * @return never null
+     */
+    Constraint impact(String constraintPackage, String constraintName, Score<?> constraintWeight,
+            ToIntTriFunction<A, B, C> matchWeigher);
+
+    /**
+     * Positively or negatively impact the {@link Score} by the constraintWeight multiplied by the match weight.
+     * Otherwise as defined by {@link #impact(String, Score)}.
+     * <p>
+     * Use {@code penalizeLong(...)} or {@code rewardLong(...)} instead, unless this constraint can both have positive
+     * and negative weights.
+     * @param constraintName never null, shows up in {@link ConstraintMatchTotal} during score justification
+     * @param constraintWeight never null
+     * @param matchWeigher never null, the result of this function (matchWeight) is multiplied by the constraintWeight
+     * @return never null
+     */
+    default Constraint impactLong(String constraintName, Score<?> constraintWeight,
+            ToLongTriFunction<A, B, C> matchWeigher) {
+        return impactLong(getConstraintFactory().getDefaultConstraintPackage(), constraintName, constraintWeight,
+                matchWeigher);
+    }
+
+    /**
+     * As defined by {@link #impactLong(String, Score, ToLongTriFunction)}.
+     * @param constraintPackage never null
+     * @param constraintName never null
+     * @param constraintWeight never null
+     * @param matchWeigher never null
+     * @return never null
+     */
+    Constraint impactLong(String constraintPackage, String constraintName, Score<?> constraintWeight,
+            ToLongTriFunction<A, B, C> matchWeigher);
+
+    /**
+     * Positively or negatively impact the {@link Score} by the constraintWeight multiplied by the match weight.
+     * Otherwise as defined by {@link #impact(String, Score)}.
+     * <p>
+     * Use {@code penalizeBigDecimal(...)} or {@code rewardBigDecimal(...)} unless you intend to mix positive and
+     * negative weights.
+     * @param constraintName never null, shows up in {@link ConstraintMatchTotal} during score justification
+     * @param constraintWeight never null
+     * @param matchWeigher never null, the result of this function (matchWeight) is multiplied by the constraintWeight
+     * @return never null
+     */
+    default Constraint impactBigDecimal(String constraintName, Score<?> constraintWeight,
+            TriFunction<A, B, C, BigDecimal> matchWeigher) {
+        return impactBigDecimal(getConstraintFactory().getDefaultConstraintPackage(), constraintName,
+                constraintWeight, matchWeigher);
+    }
+
+    /**
+     * As defined by {@link #impactBigDecimal(String, Score, TriFunction)}.
+     * @param constraintPackage never null
+     * @param constraintName never null
+     * @param constraintWeight never null
+     * @param matchWeigher never null
+     * @return never null
+     */
+    Constraint impactBigDecimal(String constraintPackage, String constraintName, Score<?> constraintWeight,
+            TriFunction<A, B, C, BigDecimal> matchWeigher);
+
+    /**
+     * Positively or negatively impact the {@link Score} by the {@link ConstraintWeight} for each match.
+     * <p>
+     * Use {@code penalizeConfigurable(...)} or {@code rewardConfigurable(...)} instead, unless this constraint can both
+     * have positive and negative weights.
+     * <p>
+     * For non-int {@link Score} types use {@link #impactConfigurableLong(String, ToLongTriFunction)} or
+     * {@link #impactConfigurableBigDecimal(String, TriFunction)} instead.
+     * <p>
+     * The constraintWeight comes from an {@link ConstraintWeight} annotated member on the
+     * {@link ConstraintConfiguration}, so end users can change the constraint weights dynamically.
+     * This constraint may be deactivated if the {@link ConstraintWeight} is zero.
+     * If there is no {@link ConstraintConfiguration}, use {@link #impact(String, Score)} instead.
+     * <p>
+     * The {@link Constraint#getConstraintPackage()} defaults to {@link ConstraintConfiguration#constraintPackage()}.
+     * @param constraintName never null, shows up in {@link ConstraintMatchTotal} during score justification
+     * @param matchWeigher never null, the result of this function (matchWeight) is multiplied by the constraintWeight
+     * @return never null
+     */
+    default Constraint impactConfigurable(String constraintName, ToIntTriFunction<A, B, C> matchWeigher) {
+        return impactConfigurable(getConstraintFactory().getDefaultConstraintPackage(), constraintName, matchWeigher);
+    }
+
+    /**
+     * As defined by {@link #impactConfigurable(String, ToIntTriFunction)}.
+     * @param constraintPackage never null
+     * @param constraintName never null
+     * @param matchWeigher never null
+     * @return never null
+     */
+    Constraint impactConfigurable(String constraintPackage, String constraintName,
+            ToIntTriFunction<A, B, C> matchWeigher);
+
+    /**
+     * Positively or negatively impact the {@link Score} by the {@link ConstraintWeight} for each match.
+     * <p>
+     * Use {@code penalizeConfigurableLong(...)} or {@code rewardConfigurableLong(...)} instead, unless this constraint
+     * can both have positive and negative weights.
+     * <p>
+     * The constraintWeight comes from an {@link ConstraintWeight} annotated member on the
+     * {@link ConstraintConfiguration}, so end users can change the constraint weights dynamically.
+     * This constraint may be deactivated if the {@link ConstraintWeight} is zero.
+     * If there is no {@link ConstraintConfiguration}, use {@link #impact(String, Score)} instead.
+     * <p>
+     * The {@link Constraint#getConstraintPackage()} defaults to {@link ConstraintConfiguration#constraintPackage()}.
+     * @param constraintName never null, shows up in {@link ConstraintMatchTotal} during score justification
+     * @param matchWeigher never null, the result of this function (matchWeight) is multiplied by the constraintWeight
+     * @return never null
+     */
+    default Constraint impactConfigurableLong(String constraintName, ToLongTriFunction<A, B, C> matchWeigher) {
+        return impactConfigurableLong(getConstraintFactory().getDefaultConstraintPackage(), constraintName,
+                matchWeigher);
+    }
+
+    /**
+     * As defined by {@link #impactConfigurableLong(String, ToLongTriFunction)}.
+     * @param constraintPackage never null
+     * @param constraintName never null
+     * @param matchWeigher never null
+     * @return never null
+     */
+    Constraint impactConfigurableLong(String constraintPackage, String constraintName,
+            ToLongTriFunction<A, B, C> matchWeigher);
+
+    /**
+     * Positively or negatively impact the {@link Score} by the {@link ConstraintWeight} for each match.
+     * <p>
+     * Use {@code penalizeConfigurableBigDecimal(...)} or {@code rewardConfigurableLong(...)} instead, unless this
+     * constraint can both have positive and negative weights.
+     * <p>
+     * The constraintWeight comes from an {@link ConstraintWeight} annotated member on the
+     * {@link ConstraintConfiguration}, so end users can change the constraint weights dynamically.
+     * This constraint may be deactivated if the {@link ConstraintWeight} is zero.
+     * If there is no {@link ConstraintConfiguration}, use {@link #impact(String, Score)} instead.
+     * <p>
+     * The {@link Constraint#getConstraintPackage()} defaults to {@link ConstraintConfiguration#constraintPackage()}.
+     * @param constraintName never null, shows up in {@link ConstraintMatchTotal} during score justification
+     * @param matchWeigher never null, the result of this function (matchWeight) is multiplied by the constraintWeight
+     * @return never null
+     */
+    default Constraint impactConfigurableBigDecimal(String constraintName,
+            TriFunction<A, B, C, BigDecimal> matchWeigher) {
+        return impactConfigurableBigDecimal(getConstraintFactory().getDefaultConstraintPackage(), constraintName,
+                matchWeigher);
+    }
+
+    /**
+     * As defined by {@link #impactConfigurableBigDecimal(String, TriFunction)}.
+     * @param constraintPackage never null
+     * @param constraintName never null
+     * @param matchWeigher never null
+     * @return never null
+     */
+    Constraint impactConfigurableBigDecimal(String constraintPackage, String constraintName,
+            TriFunction<A, B, C, BigDecimal> matchWeigher);
 }

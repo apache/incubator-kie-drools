@@ -37,6 +37,7 @@ import org.kie.api.runtime.rule.RuleContext;
 import org.optaplanner.core.api.function.TriFunction;
 import org.optaplanner.core.api.score.Score;
 import org.optaplanner.core.api.score.holder.AbstractScoreHolder;
+import org.optaplanner.core.impl.score.stream.drools.DroolsConstraint;
 import org.optaplanner.core.impl.score.stream.drools.bi.DroolsBiCondition;
 import org.optaplanner.core.impl.score.stream.drools.bi.DroolsBiRuleStructure;
 import org.optaplanner.core.impl.score.stream.drools.quad.DroolsQuadCondition;
@@ -164,51 +165,26 @@ public abstract class DroolsCondition<PatternVar, T extends DroolsRuleStructure<
         scoreHolder.impactScore(kcontext);
     }
 
-    protected <S extends Score<S>, H extends AbstractScoreHolder<S>> void impactScore(Drools drools, H scoreHolder,
-            int impact) {
+    protected <S extends Score<S>, H extends AbstractScoreHolder<S>> void impactScore(DroolsConstraint<?> constraint,
+            Drools drools, H scoreHolder, int impact) {
         RuleContext kcontext = (RuleContext) drools;
-        assertPositiveImpact(kcontext, impact);
+        constraint.assertCorrectImpact(impact);
         scoreHolder.impactScore(kcontext, impact);
     }
 
-    protected <S extends Score<S>, H extends AbstractScoreHolder<S>> void impactScore(Drools drools, H scoreHolder,
-            long impact) {
+    protected <S extends Score<S>, H extends AbstractScoreHolder<S>> void impactScore(DroolsConstraint<?> constraint,
+            Drools drools, H scoreHolder, long impact) {
         RuleContext kcontext = (RuleContext) drools;
-        assertPositiveImpact(kcontext, impact);
+        constraint.assertCorrectImpact(impact);
         scoreHolder.impactScore(kcontext, impact);
     }
 
-    protected <S extends Score<S>, H extends AbstractScoreHolder<S>> void impactScore(Drools drools, H scoreHolder,
-            BigDecimal impact) {
+    protected <S extends Score<S>, H extends AbstractScoreHolder<S>> void impactScore(DroolsConstraint<?> constraint,
+            Drools drools, H scoreHolder, BigDecimal impact) {
         RuleContext kcontext = (RuleContext) drools;
-        assertPositiveImpact(kcontext, impact);
+        constraint.assertCorrectImpact(impact);
         scoreHolder.impactScore(kcontext, impact);
     }
-
-    private static void assertPositiveImpact(RuleContext kcontext, int impact) {
-        if (impact < 0) {
-            throwOnNegativeImpact(kcontext, impact);
-        }
-    }
-
-    private static void assertPositiveImpact(RuleContext kcontext, long impact) {
-        if (impact < 0L) {
-            throwOnNegativeImpact(kcontext, impact);
-        }
-    }
-
-    private static void assertPositiveImpact(RuleContext kcontext, BigDecimal impact) {
-        if (impact.signum() < 0) {
-            throwOnNegativeImpact(kcontext, impact);
-        }
-    }
-
-    private static void throwOnNegativeImpact(RuleContext constraint, Object impact) {
-        String name = constraint.getRule().getPackageName() + "." + constraint.getRule().getName();
-        throw new IllegalStateException("Negative match weight (" + impact + ") for constraint (" + name + "). " +
-                "Check constraint provider implementation.");
-    }
-
 
     protected ViewItem<?> getInnerAccumulatePattern(PatternDef<PatternVar> mainAccumulatePattern) {
         Stream<ViewItemBuilder<?>> primaryAndPrerequisites = Stream.concat(ruleStructure.getPrerequisites().stream(),
