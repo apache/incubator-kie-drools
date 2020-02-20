@@ -19,20 +19,29 @@ package org.jbpm.compiler.canonical;
 import java.io.InputStream;
 import java.util.Map;
 import java.util.Optional;
+import java.util.regex.Matcher;
 
 import com.github.javaparser.ast.body.MethodDeclaration;
+import com.github.javaparser.ast.expr.AssignExpr;
 import com.github.javaparser.ast.expr.BooleanLiteralExpr;
+import com.github.javaparser.ast.expr.CastExpr;
 import com.github.javaparser.ast.expr.Expression;
 import com.github.javaparser.ast.expr.LongLiteralExpr;
 import com.github.javaparser.ast.expr.MethodCallExpr;
 import com.github.javaparser.ast.expr.NameExpr;
 import com.github.javaparser.ast.expr.StringLiteralExpr;
+import com.github.javaparser.ast.expr.VariableDeclarationExpr;
 import com.github.javaparser.ast.stmt.BlockStmt;
+import com.github.javaparser.ast.stmt.ExpressionStmt;
 import com.github.javaparser.ast.stmt.ReturnStmt;
 import com.github.javaparser.ast.type.ClassOrInterfaceType;
+
+import org.drools.core.util.StringUtils;
 import org.jbpm.process.core.context.variable.Variable;
 import org.jbpm.process.core.context.variable.VariableScope;
+import org.jbpm.process.core.datatype.impl.type.ObjectDataType;
 import org.jbpm.ruleflow.core.factory.SubProcessNodeFactory;
+import org.jbpm.util.PatternConstants;
 import org.jbpm.workflow.core.node.SubProcessNode;
 import org.kie.api.definition.process.Node;
 import org.kie.api.definition.process.WorkflowProcess;
@@ -109,10 +118,23 @@ public class LambdaSubProcessNodeVisitor extends AbstractVisitor {
         actionBody.addStatement(subProcessModel.newInstance("model"));
 
         for (Map.Entry<String, String> e : subProcessNode.getInMappings().entrySet()) {
-            Variable v = variableScope.findVariable(extractVariableFromExpression(e.getValue()));
-            if (v != null) {
+            // check if given mapping is an expression
+            Matcher matcher = PatternConstants.PARAMETER_MATCHER.matcher(e.getValue());
+            if (matcher.find()) {  
+                
+                String expression = matcher.group(1);  
+                String topLevelVariable = expression.split("\\.")[0];
+                Variable v = variableScope.findVariable(topLevelVariable);
+                
                 actionBody.addStatement(makeAssignment(v));
-                actionBody.addStatement(subProcessModel.callSetter("model", e.getKey(), e.getValue()));
+                actionBody.addStatement(subProcessModel.callSetter("model", e.getKey(), dotNotationToGetExpression(expression)));
+            } else {
+            
+                Variable v = variableScope.findVariable(e.getValue());
+                if (v != null) {
+                    actionBody.addStatement(makeAssignment(v));
+                    actionBody.addStatement(subProcessModel.callSetter("model", e.getKey(), e.getValue()));
+                }
             }
         }
 
@@ -136,15 +158,87 @@ public class LambdaSubProcessNodeVisitor extends AbstractVisitor {
         BlockStmt stmts = new BlockStmt();
 
         for (Map.Entry<String, String> e : subProcessNode.getOutMappings().entrySet()) {
-            stmts.addStatement(makeAssignmentFromModel(variableScope.findVariable(e.getValue()), e.getKey()));
-            stmts.addStatement(new MethodCallExpr()
+            
+            // check if given mapping is an expression
+            Matcher matcher = PatternConstants.PARAMETER_MATCHER.matcher(e.getValue());
+            if (matcher.find()) {  
+                
+                String expression = matcher.group(1);
+                String topLevelVariable = expression.split("\\.")[0];
+                Map<String, String> dataOutputs = (Map<String, String>) subProcessNode.getMetaData("BPMN.OutputTypes");
+                Variable variable = new Variable();
+                variable.setName(topLevelVariable);
+                variable.setType(new ObjectDataType(dataOutputs.get(e.getKey())));
+                
+                stmts.addStatement(makeAssignment(variableScope.findVariable(topLevelVariable)));                
+                stmts.addStatement(makeAssignmentFromModel(variable, e.getKey()));
+                
+                stmts.addStatement(dotNotationToSetExpression(expression, e.getKey()));
+                
+                stmts.addStatement(new MethodCallExpr()
+                                   .setScope(new NameExpr("kcontext"))
+                                   .setName("setVariable")
+                                   .addArgument(new StringLiteralExpr(topLevelVariable))
+                                   .addArgument(topLevelVariable));
+            } else {
+
+                stmts.addStatement(makeAssignmentFromModel(variableScope.findVariable(e.getValue()), e.getKey()));
+                stmts.addStatement(new MethodCallExpr()
                                        .setScope(new NameExpr("kcontext"))
                                        .setName("setVariable")
                                        .addArgument(new StringLiteralExpr(e.getValue()))
                                        .addArgument(e.getKey()));
+            }
+            
         }
 
         return stmts;
+    }
+    
+    protected Expression dotNotationToSetExpression(String dotNotation, String value) {
+        String[] elements = dotNotation.split("\\.");
+        Expression scope = new NameExpr(elements[0]);
+        if (elements.length == 1) {
+            AssignExpr assignExpr = new AssignExpr(
+                                                   scope,
+                                                   new NameExpr(value),
+                                                   AssignExpr.Operator.ASSIGN);
+
+            return assignExpr;            
+        }
+        for (int i = 1; i < elements.length - 1; i++) {
+            MethodCallExpr get = new MethodCallExpr()
+                .setScope(scope)
+                .setName("get" + StringUtils.capitalize(elements[i]));
+            
+            scope = get;
+        }
+        
+        MethodCallExpr set = new MethodCallExpr()
+                .setScope(scope)
+                .setName("set" + StringUtils.capitalize(elements[elements.length - 1]))
+                .addArgument(value);
+        
+        return set;
+    }
+    
+    protected Expression dotNotationToGetExpression(String dotNotation) {
+        String[] elements = dotNotation.split("\\.");
+        Expression scope = new NameExpr(elements[0]);
+        
+        if (elements.length == 1) {
+            return scope;
+        }
+        
+        for (int i = 1; i < elements.length; i++) {
+            MethodCallExpr get = new MethodCallExpr()
+                .setScope(scope)
+                .setName("get" + StringUtils.capitalize(elements[i]));
+            
+            scope = get;
+        }
+   
+        return scope;
     }
     
 }

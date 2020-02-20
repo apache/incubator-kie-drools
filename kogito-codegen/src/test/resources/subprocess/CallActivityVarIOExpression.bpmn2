@@ -1,0 +1,94 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- origin at X=0.0 Y=0.0 -->
+<bpmn2:definitions xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:bpmn2="http://www.omg.org/spec/BPMN/20100524/MODEL" xmlns:bpmndi="http://www.omg.org/spec/BPMN/20100524/DI" xmlns:dc="http://www.omg.org/spec/DD/20100524/DC" xmlns:di="http://www.omg.org/spec/DD/20100524/DI" xmlns:java="http://www.java.com/javaTypes" xmlns:tns="http://www.jboss.org/drools" xmlns="http://www.jboss.org/drools" xsi:schemaLocation="http://www.omg.org/spec/BPMN/20100524/MODEL BPMN20.xsd http://www.jboss.org/drools drools.xsd http://www.bpsim.org/schemas/1.0 bpsim.xsd" id="Definition" exporter="org.eclipse.bpmn2.modeler.core" exporterVersion="1.5.0.Final-v20180515-1642-B1" expressionLanguage="http://www.mvel.org/2.0" targetNamespace="http://www.example.org/MinimalExample" typeLanguage="http://www.java.com/javaTypes">
+  <bpmn2:itemDefinition id="_xItem" isCollection="false" structureRef="String"/>
+  <bpmn2:itemDefinition id="_yItem" isCollection="false" structureRef="String"/>
+  <bpmn2:process id="ParentProcess" name="Parent Process" isExecutable="true" processType="Private">
+    <bpmn2:property id="x" itemSubjectRef="_xItem" name="x"/>
+    <bpmn2:property id="y" itemSubjectRef="_yItem" name="y"/>
+    <bpmn2:startEvent id="_1" name="StartProcess">
+      <bpmn2:extensionElements>
+        <tns:metaData name="elementname">
+          <tns:metaValue><![CDATA[StartProcess]]></tns:metaValue>
+        </tns:metaData>
+      </bpmn2:extensionElements>
+      <bpmn2:outgoing>_1-_2</bpmn2:outgoing>
+    </bpmn2:startEvent>
+    <bpmn2:callActivity id="_2" name="CallActivity" calledElement="SubProcess">
+      <bpmn2:extensionElements>
+        <tns:metaData name="elementname">
+          <tns:metaValue><![CDATA[CallActivity]]></tns:metaValue>
+        </tns:metaData>
+      </bpmn2:extensionElements>
+      <bpmn2:incoming>_1-_2</bpmn2:incoming>
+      <bpmn2:outgoing>_2-_3</bpmn2:outgoing>
+      <bpmn2:ioSpecification id="InputOutputSpecification_1">
+        <bpmn2:dataInput id="_2_subXInput" tns:dtype="String" name="subX"/>
+        <bpmn2:dataOutput id="_2_subYOutput" tns:dtype="String" name="subY"/>
+        <bpmn2:inputSet id="InputSet_1">
+          <bpmn2:dataInputRefs>_2_subXInput</bpmn2:dataInputRefs>
+        </bpmn2:inputSet>
+        <bpmn2:outputSet id="OutputSet_1">
+          <bpmn2:dataOutputRefs>_2_subYOutput</bpmn2:dataOutputRefs>
+        </bpmn2:outputSet>
+      </bpmn2:ioSpecification>
+      <bpmn2:dataInputAssociation id="DataInputAssociation_1">
+        <bpmn2:targetRef>_2_subXInput</bpmn2:targetRef>
+        <bpmn2:assignment id="Assignment_1">
+          <bpmn2:from xsi:type="bpmn2:tFormalExpression" id="FormalExpression_3">#{x}</bpmn2:from>
+          <bpmn2:to xsi:type="bpmn2:tFormalExpression" id="FormalExpression_1">_2_subXInput</bpmn2:to>
+        </bpmn2:assignment>
+      </bpmn2:dataInputAssociation>
+      <bpmn2:dataOutputAssociation id="DataOutputAssociation_1">
+        <bpmn2:sourceRef>_2_subYOutput</bpmn2:sourceRef>
+        <bpmn2:assignment id="Assignment_3">
+          <bpmn2:from xsi:type="bpmn2:tFormalExpression" id="FormalExpression_7">_2_subYOutput</bpmn2:from>
+          <bpmn2:to xsi:type="bpmn2:tFormalExpression" id="FormalExpression_9">#{y}</bpmn2:to>
+        </bpmn2:assignment>
+      </bpmn2:dataOutputAssociation>
+    </bpmn2:callActivity>
+    <bpmn2:endEvent id="_3" name="EndProcess">
+      <bpmn2:extensionElements>
+        <tns:metaData name="elementname">
+          <tns:metaValue><![CDATA[EndProcess]]></tns:metaValue>
+        </tns:metaData>
+      </bpmn2:extensionElements>
+      <bpmn2:incoming>_2-_3</bpmn2:incoming>
+      <bpmn2:terminateEventDefinition id="TerminateEventDefinition_1"/>
+    </bpmn2:endEvent>
+    <bpmn2:sequenceFlow id="_1-_2" sourceRef="_1" targetRef="_2"/>
+    <bpmn2:sequenceFlow id="_2-_3" sourceRef="_2" targetRef="_3"/>
+  </bpmn2:process>
+  <bpmndi:BPMNDiagram id="BPMNDiagram_1">
+    <bpmndi:BPMNPlane id="BPMNPlane_Process_1" bpmnElement="ParentProcess">
+      <bpmndi:BPMNShape id="BPMNShape_StartEvent_1" bpmnElement="_1">
+        <dc:Bounds height="48.0" width="48.0" x="16.0" y="16.0"/>
+        <bpmndi:BPMNLabel>
+          <dc:Bounds height="11.0" width="52.0" x="14.0" y="64.0"/>
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="BPMNShape_CallActivity_1" bpmnElement="_2" isExpanded="true">
+        <dc:Bounds height="48.0" width="110.0" x="96.0" y="16.0"/>
+        <bpmndi:BPMNLabel>
+          <dc:Bounds height="11.0" width="45.0" x="128.0" y="34.0"/>
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="BPMNShape_EndEvent_1" bpmnElement="_3">
+        <dc:Bounds height="48.0" width="48.0" x="238.0" y="16.0"/>
+        <bpmndi:BPMNLabel>
+          <dc:Bounds height="11.0" width="49.0" x="238.0" y="64.0"/>
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNEdge id="BPMNEdge_SequenceFlow_1" bpmnElement="_1-_2" sourceElement="BPMNShape_StartEvent_1" targetElement="BPMNShape_CallActivity_1">
+        <di:waypoint xsi:type="dc:Point" x="40.0" y="40.0"/>
+        <di:waypoint xsi:type="dc:Point" x="151.0" y="40.0"/>
+        <bpmndi:BPMNLabel/>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="BPMNEdge_SequenceFlow_2" bpmnElement="_2-_3" sourceElement="BPMNShape_CallActivity_1" targetElement="BPMNShape_EndEvent_1">
+        <di:waypoint xsi:type="dc:Point" x="151.0" y="40.0"/>
+        <di:waypoint xsi:type="dc:Point" x="262.0" y="40.0"/>
+        <bpmndi:BPMNLabel/>
+      </bpmndi:BPMNEdge>
+    </bpmndi:BPMNPlane>
+  </bpmndi:BPMNDiagram>
+</bpmn2:definitions>
