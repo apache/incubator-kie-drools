@@ -9,7 +9,7 @@ import {
 import _ from 'lodash';
 import React, { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
-import DataListTitleComponent from '../../Molecules/DataListTitleComponent/DataListTitleComponent';
+import PageTitleComponent from '../../Molecules/PageTitleComponent/PageTitleComponent';
 import DataToolbarComponent from '../../Molecules/DataToolbarComponent/DataToolbarComponent';
 import './DataList.css';
 import DataListComponent from '../../Organisms/DataListComponent/DataListComponent';
@@ -44,7 +44,7 @@ const DataListContainer: React.FC<{}> = () => {
   return (
     <React.Fragment>
       <PageSection variant="light">
-        <DataListTitleComponent />
+        <PageTitleComponent title="Process Instances" />
         <Breadcrumb>
           <BreadcrumbItem>
             <Link to={'/'}>Home</Link>

@@ -1,14 +1,18 @@
 import React from 'react';
 import { Title } from '@patternfly/react-core';
 
-const DataListTitleComponent: React.FC = () => {
+export interface IOwnProps {
+  title: any;
+}
+
+const PageTitleComponent: React.FC<IOwnProps> = ({ title }) => {
   return (
     <React.Fragment>
       <Title headingLevel="h1" size="4xl">
-        Process Instances
+        {title}
       </Title>
     </React.Fragment>
   );
 };
 
-export default DataListTitleComponent;
+export default PageTitleComponent;
