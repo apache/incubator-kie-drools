@@ -36,7 +36,6 @@ import static org.kie.pmml.compiler.commons.utils.ModelUtils.getTargetField;
 import static org.kie.pmml.compiler.commons.utils.ModelUtils.getTargetFields;
 import static org.kie.test.util.filesystem.FileUtils.getFileInputStream;
 
-
 public class KiePMMLModelUtilsTest {
 
     private static final String NO_TARGET_SOURCE = "NoTargetFieldSample.pmml";

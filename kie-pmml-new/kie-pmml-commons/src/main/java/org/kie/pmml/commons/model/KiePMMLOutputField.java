@@ -27,7 +27,7 @@ import org.kie.pmml.commons.model.enums.RESULT_FEATURE;
 public class KiePMMLOutputField extends KiePMMLIDedNamed {
 
     private RESULT_FEATURE resultFeature = RESULT_FEATURE.PREDICTED_VALUE;
-    private Optional<String> targetField  = Optional.empty();
+    private Optional<String> targetField = Optional.empty();
     private Object value;
 
     public static Builder builder(String name) {

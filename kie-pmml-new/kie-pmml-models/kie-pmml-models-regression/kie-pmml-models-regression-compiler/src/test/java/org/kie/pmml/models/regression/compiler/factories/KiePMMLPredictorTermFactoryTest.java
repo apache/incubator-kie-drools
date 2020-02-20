@@ -50,14 +50,6 @@ public class KiePMMLPredictorTermFactoryTest {
     private Set<KiePMMLRegressionTablePredictor> kiePMMLRegressionTablePredictors;
     private Set<String> kiePMMLRegressionTablePredictorNames;
 
-    @Parameterized.Parameters
-    public static Collection<Object[]> data() {
-        return Arrays.asList(new Object[][]{
-                {"firstProfessional", 4, 3.5, "firstClerical", 5, 27.4, "firstTerm", 12.4},
-                {"secondProfessional", 2, 12.55, "secondClerical", 11, 2743.22, "secondTerm", 0.33},
-        });
-    }
-
     public KiePMMLPredictorTermFactoryTest(String nameA, int exponentA, double coefficientA, String nameB, int exponentB, double coefficientB, String name, double coefficient) {
         this.name = name;
         this.coefficient = coefficient;
@@ -66,6 +58,14 @@ public class KiePMMLPredictorTermFactoryTest {
         KiePMMLNumericPredictor kiePMMLNumericPredictorB = getKiePMMLNumericPredictor(getNumericPredictor(nameB, exponentB, coefficientB));
         kiePMMLRegressionTablePredictors = new HashSet<>(Arrays.asList(kiePMMLNumericPredictorA, kiePMMLNumericPredictorB));
         kiePMMLRegressionTablePredictorNames = new HashSet<>(kiePMMLRegressionTablePredictors.stream().map(KiePMMLRegressionTablePredictor::getName).collect(Collectors.toList()));
+    }
+
+    @Parameterized.Parameters
+    public static Collection<Object[]> data() {
+        return Arrays.asList(new Object[][]{
+                {"firstProfessional", 4, 3.5, "firstClerical", 5, 27.4, "firstTerm", 12.4},
+                {"secondProfessional", 2, 12.55, "secondClerical", 11, 2743.22, "secondTerm", 0.33},
+        });
     }
 
     @Test

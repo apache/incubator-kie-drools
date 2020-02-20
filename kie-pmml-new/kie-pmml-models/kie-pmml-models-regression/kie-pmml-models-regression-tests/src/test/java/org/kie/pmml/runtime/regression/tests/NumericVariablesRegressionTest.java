@@ -16,6 +16,10 @@
 
 package org.kie.pmml.runtime.regression.tests;
 
+import java.io.InputStream;
+import java.util.HashMap;
+import java.util.Map;
+
 import org.assertj.core.api.Assertions;
 import org.dmg.pmml.PMML;
 import org.dmg.pmml.regression.RegressionModel;
@@ -30,10 +34,6 @@ import org.kie.pmml.evaluator.core.utils.PMMLRequestDataBuilder;
 import org.kie.pmml.models.regression.compiler.executor.RegressionModelImplementationProvider;
 import org.kie.pmml.models.regression.evaluator.PMMLRegressionModelExecutor;
 
-import java.io.InputStream;
-import java.util.HashMap;
-import java.util.Map;
-
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 
@@ -47,6 +47,21 @@ public class NumericVariablesRegressionTest {
     private static final PMMLModelExecutor EXECUTOR = new PMMLRegressionModelExecutor();
     private static final String RELEASE_ID = "org.drools:kie-pmml-models-testing:1.0";
 
+    public static PMMLRequestData getPMMLRequestData(String modelName, Map<String, Object> parameters) {
+        String correlationId = "CORRELATION_ID";
+        PMMLRequestDataBuilder pmmlRequestDataBuilder = new PMMLRequestDataBuilder(correlationId, modelName);
+        for (Map.Entry<String, Object> entry : parameters.entrySet()) {
+            Object pValue = entry.getValue();
+            Class class1 = pValue.getClass();
+            pmmlRequestDataBuilder.addParameter(entry.getKey(), pValue, class1);
+        }
+        return pmmlRequestDataBuilder.build();
+    }
+
+    private static double regressionFunction(double x, double y) {
+        return 2 * x + y + 5;
+    }
+
     @Test
     public void testNumericVariableRegression() throws Exception {
         final PMML pmml;
@@ -58,7 +73,7 @@ public class NumericVariablesRegressionTest {
         assertTrue(pmml.getModels().get(0) instanceof RegressionModel);
 
         final KiePMMLModel pmmlModel = PROVIDER.getKiePMMLModel(pmml.getDataDictionary(),
-                (RegressionModel) pmml.getModels().get(0), RELEASE_ID);
+                                                                (RegressionModel) pmml.getModels().get(0), RELEASE_ID);
         Assertions.assertThat(pmmlModel).isNotNull();
 
         double x = 1;
@@ -74,20 +89,5 @@ public class NumericVariablesRegressionTest {
         Assertions.assertThat(pmml4Result.getResultVariables()).containsKey(TARGET_FIELD);
         Assertions.assertThat((Double) pmml4Result.getResultVariables().get(TARGET_FIELD))
                 .isEqualTo(regressionFunction(x, y));
-    }
-
-    public static PMMLRequestData getPMMLRequestData(String modelName, Map<String, Object> parameters) {
-        String correlationId = "CORRELATION_ID";
-        PMMLRequestDataBuilder pmmlRequestDataBuilder = new PMMLRequestDataBuilder(correlationId, modelName);
-        for (Map.Entry<String, Object> entry : parameters.entrySet()) {
-            Object pValue = entry.getValue();
-            Class class1 = pValue.getClass();
-            pmmlRequestDataBuilder.addParameter(entry.getKey(), pValue, class1);
-        }
-        return pmmlRequestDataBuilder.build();
-    }
-
-    private static double regressionFunction(double x, double y) {
-        return 2*x + y + 5;
     }
 }

@@ -16,14 +16,14 @@
 package org.kie.pmml.compiler.commons.testutils;
 
 import java.util.List;
-import java.util.Map;
-import java.util.stream.Collectors;
 
 import org.dmg.pmml.DataDictionary;
 import org.dmg.pmml.DataField;
 import org.dmg.pmml.FieldName;
 import org.dmg.pmml.FieldRef;
 import org.dmg.pmml.MiningField;
+import org.dmg.pmml.MiningFunction;
+import org.dmg.pmml.MiningSchema;
 import org.dmg.pmml.OpType;
 import org.dmg.pmml.regression.CategoricalPredictor;
 import org.dmg.pmml.regression.NumericPredictor;
@@ -36,16 +36,26 @@ import org.dmg.pmml.regression.RegressionTable;
  */
 public class PMMLModelTestUtils {
 
-    public static DataDictionary getDataDictionary(Map<String, OpType> dataFieldsMap) {
-        final List<DataField> dataFieldList = dataFieldsMap.entrySet().stream().map((entry) -> getDataField(entry.getKey(), entry.getValue())).collect(Collectors.toList());
+    public static DataDictionary getDataDictionary(List<DataField> dataFields) {
         DataDictionary toReturn = new DataDictionary();
-        toReturn.addDataFields(dataFieldList.toArray(new DataField[0]));
+        toReturn.addDataFields(dataFields.toArray(new DataField[0]));
         return toReturn;
     }
 
-//    public static RegressionModel getRegressionModel(String modelName, List<MiningField> miningFields, List<RegressionTable> regressionTables) {
-//
-//    }
+    public static MiningSchema getMiningSchema(List<MiningField> miningFields) {
+        MiningSchema toReturn = new MiningSchema();
+        toReturn.addMiningFields(miningFields.toArray(new MiningField[0]));
+        return toReturn;
+    }
+
+    public static RegressionModel getRegressionModel(String modelName, MiningFunction miningFunction, MiningSchema miningSchema, List<RegressionTable> regressionTables) {
+        RegressionModel toReturn = new RegressionModel();
+        toReturn.setModelName(modelName);
+        toReturn.setMiningFunction(miningFunction);
+        toReturn.setMiningSchema(miningSchema);
+        toReturn.addRegressionTables(regressionTables.toArray(new RegressionTable[0]));
+        return toReturn;
+    }
 
     public static RegressionTable getRegressionTable(List<CategoricalPredictor> categoricalPredictors, List<NumericPredictor> numericPredictors, List<PredictorTerm> predictorTerms, double intercept, Object targetCategory) {
         RegressionTable toReturn = new RegressionTable();

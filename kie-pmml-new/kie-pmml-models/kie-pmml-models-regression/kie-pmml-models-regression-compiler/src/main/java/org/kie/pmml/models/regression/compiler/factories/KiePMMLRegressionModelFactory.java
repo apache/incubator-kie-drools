@@ -24,7 +24,6 @@ import org.dmg.pmml.DataDictionary;
 import org.dmg.pmml.DataField;
 import org.dmg.pmml.OutputField;
 import org.dmg.pmml.regression.RegressionModel;
-import org.kie.pmml.commons.exceptions.KieEnumException;
 import org.kie.pmml.commons.exceptions.KiePMMLException;
 import org.kie.pmml.commons.model.KiePMMLOutputField;
 import org.kie.pmml.commons.model.enums.MINING_FUNCTION;
@@ -73,7 +72,7 @@ public class KiePMMLRegressionModelFactory {
     private static KiePMMLOutputField getKiePMMLOutputField(OutputField outputField) {
         return KiePMMLOutputField.builder(outputField.getName().getValue())
                 .withResultFeature(RESULT_FEATURE.byName(outputField.getResultFeature().value()))
-                .withTargetField(outputField.getTargetField()!= null ? outputField.getTargetField().getValue() : null)
+                .withTargetField(outputField.getTargetField() != null ? outputField.getTargetField().getValue() : null)
                 .withValue(outputField.getValue())
                 .build();
     }
