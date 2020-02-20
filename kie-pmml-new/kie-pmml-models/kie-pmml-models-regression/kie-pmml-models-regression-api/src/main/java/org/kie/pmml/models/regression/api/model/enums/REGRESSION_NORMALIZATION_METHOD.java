@@ -39,7 +39,7 @@ public enum REGRESSION_NORMALIZATION_METHOD {
         this.name = name;
     }
 
-    public static REGRESSION_NORMALIZATION_METHOD byName(String name) throws KieEnumException {
+    public static REGRESSION_NORMALIZATION_METHOD byName(String name) {
         return Arrays.stream(REGRESSION_NORMALIZATION_METHOD.values()).filter(value -> name.equals(value.name)).findFirst().orElseThrow(() -> new KieEnumException("Failed to find REGRESSION_NORMALIZATION_METHOD with name: " + name));
     }
 

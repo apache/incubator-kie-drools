@@ -34,7 +34,7 @@ public enum MODEL_TYPE {
         this.name = name;
     }
 
-    public static MODEL_TYPE byName(String name) throws KieEnumException {
+    public static MODEL_TYPE byName(String name) {
         return Arrays.stream(MODEL_TYPE.values()).filter(value -> name.equals(value.name)).findFirst().orElseThrow(() -> new KieEnumException("Failed to find MODEL_TYPE with name: " + name));
     }
 

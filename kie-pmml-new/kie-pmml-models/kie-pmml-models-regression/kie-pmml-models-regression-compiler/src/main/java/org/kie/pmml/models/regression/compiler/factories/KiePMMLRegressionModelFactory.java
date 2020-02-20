@@ -70,10 +70,10 @@ public class KiePMMLRegressionModelFactory {
                 .build();
     }
 
-    private static KiePMMLOutputField getKiePMMLOutputField(OutputField outputField) throws KieEnumException {
+    private static KiePMMLOutputField getKiePMMLOutputField(OutputField outputField) {
         return KiePMMLOutputField.builder(outputField.getName().getValue())
                 .withResultFeature(RESULT_FEATURE.byName(outputField.getResultFeature().value()))
-                .withTargetField(outputField.getTargetField().getValue())
+                .withTargetField(outputField.getTargetField()!= null ? outputField.getTargetField().getValue() : null)
                 .withValue(outputField.getValue())
                 .build();
     }

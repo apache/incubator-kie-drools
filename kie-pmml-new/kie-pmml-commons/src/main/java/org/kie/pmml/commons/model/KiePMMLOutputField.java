@@ -16,6 +16,7 @@
 package org.kie.pmml.commons.model;
 
 import java.util.Objects;
+import java.util.Optional;
 
 import org.kie.pmml.commons.model.abstracts.KiePMMLIDedNamed;
 import org.kie.pmml.commons.model.enums.RESULT_FEATURE;
@@ -26,7 +27,7 @@ import org.kie.pmml.commons.model.enums.RESULT_FEATURE;
 public class KiePMMLOutputField extends KiePMMLIDedNamed {
 
     private RESULT_FEATURE resultFeature = RESULT_FEATURE.PREDICTED_VALUE;
-    private String targetField;
+    private Optional<String> targetField  = Optional.empty();
     private Object value;
 
     public static Builder builder(String name) {
@@ -37,7 +38,7 @@ public class KiePMMLOutputField extends KiePMMLIDedNamed {
         return resultFeature;
     }
 
-    public String getTargetField() {
+    public Optional<String> getTargetField() {
         return targetField;
     }
 
@@ -91,7 +92,7 @@ public class KiePMMLOutputField extends KiePMMLIDedNamed {
         }
 
         public Builder withTargetField(String targetField) {
-            toBuild.targetField = targetField;
+            toBuild.targetField = Optional.ofNullable(targetField);
             return this;
         }
 

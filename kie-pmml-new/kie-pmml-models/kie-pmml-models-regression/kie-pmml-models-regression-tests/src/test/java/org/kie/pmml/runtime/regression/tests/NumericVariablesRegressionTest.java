@@ -23,12 +23,12 @@ import org.junit.Test;
 import org.kie.api.pmml.PMML4Result;
 import org.kie.api.pmml.PMMLRequestData;
 import org.kie.pmml.commons.model.KiePMMLModel;
-import org.kie.pmml.library.testutils.TestUtils;
-import org.kie.pmml.models.regression.executor.RegressionModelImplementationProvider;
-import org.kie.pmml.runtime.core.PMMLContextImpl;
-import org.kie.pmml.runtime.core.executor.PMMLModelExecutor;
-import org.kie.pmml.runtime.core.utils.PMMLRequestDataBuilder;
-import org.kie.pmml.runtime.regression.executor.PMMLRegressionModelExecutor;
+import org.kie.pmml.compiler.testutils.TestUtils;
+import org.kie.pmml.evaluator.core.PMMLContextImpl;
+import org.kie.pmml.evaluator.core.executor.PMMLModelExecutor;
+import org.kie.pmml.evaluator.core.utils.PMMLRequestDataBuilder;
+import org.kie.pmml.models.regression.compiler.executor.RegressionModelImplementationProvider;
+import org.kie.pmml.models.regression.evaluator.PMMLRegressionModelExecutor;
 
 import java.io.InputStream;
 import java.util.HashMap;
@@ -43,9 +43,9 @@ public class NumericVariablesRegressionTest {
     private static final String PMML_SOURCE = "/numericRegression.pmml";
     private static final String TARGET_FIELD = "result";
 
-    private final static RegressionModelImplementationProvider PROVIDER = new RegressionModelImplementationProvider();
-    private final static PMMLModelExecutor EXECUTOR = new PMMLRegressionModelExecutor();
-    private final static String RELEASE_ID = "org.drools:kie-pmml-models-testing:1.0";
+    private static final RegressionModelImplementationProvider PROVIDER = new RegressionModelImplementationProvider();
+    private static final PMMLModelExecutor EXECUTOR = new PMMLRegressionModelExecutor();
+    private static final String RELEASE_ID = "org.drools:kie-pmml-models-testing:1.0";
 
     @Test
     public void testNumericVariableRegression() throws Exception {
@@ -60,8 +60,6 @@ public class NumericVariablesRegressionTest {
         final KiePMMLModel pmmlModel = PROVIDER.getKiePMMLModel(pmml.getDataDictionary(),
                 (RegressionModel) pmml.getModels().get(0), RELEASE_ID);
         Assertions.assertThat(pmmlModel).isNotNull();
-
-        final PMMLModelExecutor pmmlModelExecutor = new PMMLRegressionModelExecutor();
 
         double x = 1;
         double y = 5;

@@ -3,27 +3,29 @@
          xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
   <parent>
+    <groupId>org.kie</groupId>
     <artifactId>kie-pmml-models-regression</artifactId>
-    <groupId>org.drools</groupId>
-    <version>7.33.0-SNAPSHOT</version>
+    <version>7.34.0-SNAPSHOT</version>
   </parent>
   <modelVersion>4.0.0</modelVersion>
 
   <artifactId>kie-pmml-models-regression-tests</artifactId>
+  <name>KIE :: PMML :: Models :: Regression :: Tests</name>
+  <description>PMML Regression Tests</description>
 
   <dependencies>
     <dependency>
-      <groupId>org.drools</groupId>
+      <groupId>org.kie</groupId>
       <artifactId>kie-pmml-models-regression-api</artifactId>
     </dependency>
 
     <dependency>
-      <groupId>org.drools</groupId>
-      <artifactId>kie-pmml-models-regression-library</artifactId>
+      <groupId>org.kie</groupId>
+      <artifactId>kie-pmml-models-regression-compiler</artifactId>
     </dependency>
     <dependency>
-      <groupId>org.drools</groupId>
-      <artifactId>kie-pmml-models-regression-runtime</artifactId>
+      <groupId>org.kie</groupId>
+      <artifactId>kie-pmml-models-regression-evaluator</artifactId>
     </dependency>
 
     <dependency>
@@ -33,8 +35,8 @@
     </dependency>
 
     <dependency>
-      <groupId>org.drools</groupId>
-      <artifactId>kie-pmml-library-api</artifactId>
+      <groupId>org.kie</groupId>
+      <artifactId>kie-pmml-compiler-api</artifactId>
       <classifier>tests</classifier>
       <scope>test</scope>
     </dependency>
@@ -44,31 +46,5 @@
       <scope>test</scope>
     </dependency>
   </dependencies>
-
-  <dependencyManagement>
-    <dependencies>
-      <dependency>
-        <groupId>org.drools</groupId>
-        <artifactId>kie-pmml-models-regression-api</artifactId>
-        <version>${version.org.kie}</version>
-      </dependency>
-      <dependency>
-        <groupId>org.drools</groupId>
-        <artifactId>kie-pmml-models-regression-library</artifactId>
-        <version>${version.org.kie}</version>
-      </dependency>
-      <dependency>
-        <groupId>org.drools</groupId>
-        <artifactId>kie-pmml-models-regression-runtime</artifactId>
-        <version>${version.org.kie}</version>
-      </dependency>
-      <dependency>
-        <groupId>org.drools</groupId>
-        <artifactId>kie-pmml-library-api</artifactId>
-        <classifier>tests</classifier>
-        <version>${version.org.kie}</version>
-      </dependency>
-    </dependencies>
-  </dependencyManagement>
 
 </project>
