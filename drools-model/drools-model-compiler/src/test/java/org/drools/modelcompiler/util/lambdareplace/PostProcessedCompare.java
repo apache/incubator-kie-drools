@@ -8,14 +8,20 @@ import static org.junit.Assert.assertThat;
 
 public class PostProcessedCompare {
 
-    final String prefix;
+    final String[] prefixes;
 
-    public PostProcessedCompare(String prefix) {
-        this.prefix = prefix;
+    public PostProcessedCompare(String... prefixes) {
+        this.prefixes = prefixes;
     }
 
     public void compareIgnoringHash(String result, String expectedResult) {
-        assertThat(replaceHash(prefix, result), equalToIgnoringWhiteSpace(replaceHash(prefix, expectedResult)));
+        String actual = result;
+        String expectedString = expectedResult;
+        for (String p : prefixes) {
+            actual = replaceHash(p, actual);
+            expectedString = replaceHash(p, expectedString);
+        }
+        assertThat(actual, equalToIgnoringWhiteSpace(expectedString));
     }
 
     public static String replaceHash(String prefix, String string) {

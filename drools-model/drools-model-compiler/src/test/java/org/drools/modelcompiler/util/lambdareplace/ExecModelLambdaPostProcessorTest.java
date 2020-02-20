@@ -11,10 +11,10 @@ import org.junit.Before;
 import org.junit.Test;
 
 import static com.github.javaparser.StaticJavaParser.parseResource;
-import static org.hamcrest.Matchers.equalToIgnoringWhiteSpace;
-import static org.junit.Assert.assertThat;
 
 public class ExecModelLambdaPostProcessorTest {
+
+    PostProcessedCompare postProcessedCompareConsequence = new PostProcessedCompare("LambdaConsequence", "LambdaExtractor", "LambdaPredicate");
 
     @Before
     public void configJP() {
@@ -33,7 +33,7 @@ public class ExecModelLambdaPostProcessorTest {
         MethodDeclaration expectedResult = getMethodChangingName(inputCU, PATTERN_HARNESS, "expectedOutput");
         MethodDeclaration actual = getMethodChangingName(clone, PATTERN_HARNESS, "inputMethod");
 
-        assertThat(actual.toString(), equalToIgnoringWhiteSpace(expectedResult.toString()));
+        postProcessedCompareConsequence.compareIgnoringHash(actual.toString(), expectedResult.toString());
     }
 
     private MethodDeclaration getMethodChangingName(CompilationUnit inputCU, String className, String methodName) {
