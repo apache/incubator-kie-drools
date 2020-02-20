@@ -50,7 +50,7 @@ Therefore, all the optimization algorithms are confronted with `Move` selection:
 
 
 [[whatIsAMoveSelector]]
-=== What is a `MoveSelector?
+=== What is a `MoveSelector`?
 
 A ``MoveSelector``'s main function is to create `Iterator<Move>` when needed.
 An optimization algorithm will iterate through a subset of those moves.
@@ -109,7 +109,7 @@ The root of this tree is a `MoveSelector` which is injected into the optimizatio
 [[genericMoveSelectorsOverview]]
 === Generic `MoveSelectors` overview
 
-[cols="1,2a,2a"]
+[cols="1,2a,2a",options="header"]
 |===
 |Name |Description |`toString()` example
 
@@ -536,7 +536,7 @@ and step caching scales badly memory wise.
 
 
 [[combiningMultipleMoveSelectors]]
-== Combining multiple `MoveSelector`s
+== Combining multiple ``MoveSelector``s
 
 
 [[unionMoveSelector]]
@@ -1729,7 +1729,7 @@ add the `moveListFactoryCustomProperties` element and use <<customPropertiesConf
 
 [WARNING]
 ====
-A custom `MoveListFactory`implementation must ensure
+A custom `MoveListFactory` implementation must ensure
 that it does not move <<immovablePlanningEntities, immovable entities>>.
 ====
 

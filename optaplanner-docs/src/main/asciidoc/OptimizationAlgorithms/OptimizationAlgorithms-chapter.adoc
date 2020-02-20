@@ -845,7 +845,7 @@ and slow down the <<scoreCalculationSpeed,score calculation speed>>.
 ====
 
 [[planningId]]
-=== ``@PlanningId`
+=== `@PlanningId`
 
 For some functionality (such as multithreaded solving and real-time planning),
 OptaPlanner needs to map problem facts and planning entities to an ID.

@@ -195,7 +195,7 @@ There are several ways to serialize a solution:
 
 
 [[xStreamSolutionFileIO]]
-==== `XStreamSolutionFileIO: serialize to and from an XML format
+==== `XStreamSolutionFileIO`: serialize to and from an XML format
 
 To use the `XStreamSolutionFileIO` instance to read and write solutions,
 configure your `@PlanningSolution` class as an ``xStreamAnnotatedClass``:

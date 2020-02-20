@@ -340,7 +340,7 @@ objectMapper.registerModule(OptaPlannerJacksonModule.createModule());
 
 When a `Score` is marshalled to/from JSON by the default Jackson configuration, it fails.
 The `OptaPlannerJacksonModule` fixes that, by using `HardSoftScoreJacksonJsonSerializer`,
-HardSoftScoreJacksonJsonDeserializer`, etc.
+`HardSoftScoreJacksonJsonDeserializer`, etc.
 
 [source,java,options="nowrap"]
 ----
