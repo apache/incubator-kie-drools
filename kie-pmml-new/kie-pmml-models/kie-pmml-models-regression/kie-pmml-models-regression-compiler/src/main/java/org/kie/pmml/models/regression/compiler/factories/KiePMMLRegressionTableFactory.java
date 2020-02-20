@@ -21,10 +21,10 @@ import java.util.Set;
 import java.util.stream.Collectors;
 
 import org.dmg.pmml.regression.RegressionTable;
-import org.kie.pmml.models.regression.api.model.KiePMMLRegressionTable;
-import org.kie.pmml.models.regression.api.model.predictors.KiePMMLCategoricalPredictor;
-import org.kie.pmml.models.regression.api.model.predictors.KiePMMLNumericPredictor;
-import org.kie.pmml.models.regression.api.model.predictors.KiePMMLRegressionTablePredictor;
+import org.kie.pmml.models.regression.model.KiePMMLRegressionTable;
+import org.kie.pmml.models.regression.model.predictors.KiePMMLCategoricalPredictor;
+import org.kie.pmml.models.regression.model.predictors.KiePMMLNumericPredictor;
+import org.kie.pmml.models.regression.model.predictors.KiePMMLRegressionTablePredictor;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 

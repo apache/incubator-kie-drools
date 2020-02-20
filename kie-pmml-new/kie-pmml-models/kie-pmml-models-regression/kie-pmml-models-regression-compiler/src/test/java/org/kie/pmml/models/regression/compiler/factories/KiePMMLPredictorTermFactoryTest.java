@@ -28,9 +28,9 @@ import org.dmg.pmml.regression.PredictorTerm;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.Parameterized;
-import org.kie.pmml.models.regression.api.model.predictors.KiePMMLNumericPredictor;
-import org.kie.pmml.models.regression.api.model.predictors.KiePMMLPredictorTerm;
-import org.kie.pmml.models.regression.api.model.predictors.KiePMMLRegressionTablePredictor;
+import org.kie.pmml.models.regression.model.predictors.KiePMMLNumericPredictor;
+import org.kie.pmml.models.regression.model.predictors.KiePMMLPredictorTerm;
+import org.kie.pmml.models.regression.model.predictors.KiePMMLRegressionTablePredictor;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;

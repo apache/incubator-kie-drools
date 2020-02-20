@@ -29,14 +29,14 @@ import org.kie.pmml.commons.model.enums.OP_TYPE;
 import org.kie.pmml.commons.model.enums.PMML_MODEL;
 import org.kie.pmml.commons.model.tuples.KiePMMLNameOpType;
 import org.kie.pmml.compiler.api.provider.ModelImplementationProvider;
-import org.kie.pmml.models.regression.api.model.KiePMMLRegressionModel;
+import org.kie.pmml.models.regression.model.KiePMMLRegressionModel;
 import org.kie.pmml.models.regression.compiler.factories.KiePMMLRegressionModelFactory;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import static org.kie.pmml.compiler.commons.utils.ModelUtils.getOpType;
 import static org.kie.pmml.compiler.commons.utils.ModelUtils.getTargetFields;
-import static org.kie.pmml.models.regression.api.model.KiePMMLRegressionModel.PMML_MODEL_TYPE;
+import static org.kie.pmml.models.regression.model.KiePMMLRegressionModel.PMML_MODEL_TYPE;
 
 /**
  * Default <code>ModelImplementationProvider</code> for <b>Regression</b>

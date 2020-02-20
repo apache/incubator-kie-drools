@@ -40,7 +40,7 @@ import org.dmg.pmml.regression.RegressionTable;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.Parameterized;
-import org.kie.pmml.models.regression.api.model.KiePMMLRegressionModel;
+import org.kie.pmml.models.regression.model.KiePMMLRegressionModel;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;

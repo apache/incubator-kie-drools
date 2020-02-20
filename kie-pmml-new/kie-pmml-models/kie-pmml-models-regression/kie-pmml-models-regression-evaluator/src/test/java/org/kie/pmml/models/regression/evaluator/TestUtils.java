@@ -26,12 +26,12 @@ import org.kie.api.pmml.PMMLRequestData;
 import org.kie.pmml.commons.model.enums.MINING_FUNCTION;
 import org.kie.pmml.commons.model.enums.OP_TYPE;
 import org.kie.pmml.evaluator.core.utils.PMMLRequestDataBuilder;
-import org.kie.pmml.models.regression.api.model.KiePMMLRegressionModel;
-import org.kie.pmml.models.regression.api.model.KiePMMLRegressionTable;
-import org.kie.pmml.models.regression.api.model.enums.MODEL_TYPE;
-import org.kie.pmml.models.regression.api.model.enums.REGRESSION_NORMALIZATION_METHOD;
-import org.kie.pmml.models.regression.api.model.predictors.KiePMMLCategoricalPredictor;
-import org.kie.pmml.models.regression.api.model.predictors.KiePMMLNumericPredictor;
+import org.kie.pmml.models.regression.model.KiePMMLRegressionModel;
+import org.kie.pmml.models.regression.model.KiePMMLRegressionTable;
+import org.kie.pmml.models.regression.model.enums.MODEL_TYPE;
+import org.kie.pmml.models.regression.model.enums.REGRESSION_NORMALIZATION_METHOD;
+import org.kie.pmml.models.regression.model.predictors.KiePMMLCategoricalPredictor;
+import org.kie.pmml.models.regression.model.predictors.KiePMMLNumericPredictor;
 
 /**
  * @see <a href=http://dmg.org/pmml/v4-2-1/Regression.html>Regression</a>

@@ -19,8 +19,8 @@ import java.util.Collection;
 import java.util.Map;
 
 import org.kie.api.pmml.ParameterInfo;
-import org.kie.pmml.models.regression.api.model.KiePMMLRegressionTable;
-import org.kie.pmml.models.regression.api.model.predictors.KiePMMLPredictorTerm;
+import org.kie.pmml.models.regression.model.KiePMMLRegressionTable;
+import org.kie.pmml.models.regression.model.predictors.KiePMMLPredictorTerm;
 
 import static org.kie.pmml.evaluator.core.utils.Converter.getUnwrappedParametersMap;
 

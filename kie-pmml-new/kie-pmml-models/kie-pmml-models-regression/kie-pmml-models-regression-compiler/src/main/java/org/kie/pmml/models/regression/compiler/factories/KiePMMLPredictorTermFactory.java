@@ -21,8 +21,8 @@ import java.util.concurrent.atomic.AtomicInteger;
 import java.util.stream.Collectors;
 
 import org.dmg.pmml.regression.PredictorTerm;
-import org.kie.pmml.models.regression.api.model.predictors.KiePMMLPredictorTerm;
-import org.kie.pmml.models.regression.api.model.predictors.KiePMMLRegressionTablePredictor;
+import org.kie.pmml.models.regression.model.predictors.KiePMMLPredictorTerm;
+import org.kie.pmml.models.regression.model.predictors.KiePMMLRegressionTablePredictor;
 
 import static org.kie.pmml.compiler.commons.factories.KiePMMLExtensionFactory.getKiePMMLExtensions;
 

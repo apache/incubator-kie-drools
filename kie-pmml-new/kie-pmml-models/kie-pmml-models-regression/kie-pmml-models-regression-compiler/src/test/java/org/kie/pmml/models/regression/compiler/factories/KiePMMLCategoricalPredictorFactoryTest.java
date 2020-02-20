@@ -26,7 +26,7 @@ import org.dmg.pmml.regression.CategoricalPredictor;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.Parameterized;
-import org.kie.pmml.models.regression.api.model.predictors.KiePMMLCategoricalPredictor;
+import org.kie.pmml.models.regression.model.predictors.KiePMMLCategoricalPredictor;
 
 import static org.junit.Assert.assertEquals;
 import static org.kie.pmml.compiler.commons.testutils.PMMLModelTestUtils.getCategoricalPredictor;

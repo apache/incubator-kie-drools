@@ -20,7 +20,7 @@ import java.util.Set;
 import java.util.stream.Collectors;
 
 import org.dmg.pmml.regression.CategoricalPredictor;
-import org.kie.pmml.models.regression.api.model.predictors.KiePMMLCategoricalPredictor;
+import org.kie.pmml.models.regression.model.predictors.KiePMMLCategoricalPredictor;
 
 import static org.kie.pmml.compiler.commons.factories.KiePMMLExtensionFactory.getKiePMMLExtensions;
 

@@ -29,9 +29,9 @@ import org.kie.pmml.commons.model.KiePMMLOutputField;
 import org.kie.pmml.commons.model.enums.MINING_FUNCTION;
 import org.kie.pmml.commons.model.enums.OP_TYPE;
 import org.kie.pmml.commons.model.enums.RESULT_FEATURE;
-import org.kie.pmml.models.regression.api.model.KiePMMLRegressionModel;
-import org.kie.pmml.models.regression.api.model.enums.MODEL_TYPE;
-import org.kie.pmml.models.regression.api.model.enums.REGRESSION_NORMALIZATION_METHOD;
+import org.kie.pmml.models.regression.model.KiePMMLRegressionModel;
+import org.kie.pmml.models.regression.model.enums.MODEL_TYPE;
+import org.kie.pmml.models.regression.model.enums.REGRESSION_NORMALIZATION_METHOD;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 

@@ -40,7 +40,7 @@ import org.kie.pmml.commons.model.enums.PMML_MODEL;
 import org.kie.pmml.evaluator.api.executor.PMMLContext;
 import org.kie.pmml.evaluator.api.executor.PMMLRuntime;
 import org.kie.pmml.evaluator.core.PMMLContextImpl;
-import org.kie.pmml.models.regression.api.model.KiePMMLRegressionModel;
+import org.kie.pmml.models.regression.model.KiePMMLRegressionModel;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 

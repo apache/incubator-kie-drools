@@ -33,9 +33,9 @@ import org.kie.pmml.commons.model.KiePMMLOutputField;
 import org.kie.pmml.commons.model.enums.OP_TYPE;
 import org.kie.pmml.evaluator.api.exceptions.KiePMMLModelException;
 import org.kie.pmml.evaluator.api.executor.PMMLContext;
-import org.kie.pmml.models.regression.api.model.KiePMMLRegressionModel;
-import org.kie.pmml.models.regression.api.model.KiePMMLRegressionTable;
-import org.kie.pmml.models.regression.api.model.enums.REGRESSION_NORMALIZATION_METHOD;
+import org.kie.pmml.models.regression.model.KiePMMLRegressionModel;
+import org.kie.pmml.models.regression.model.KiePMMLRegressionTable;
+import org.kie.pmml.models.regression.model.enums.REGRESSION_NORMALIZATION_METHOD;
 
 import static org.kie.pmml.commons.enums.StatusCode.OK;
 

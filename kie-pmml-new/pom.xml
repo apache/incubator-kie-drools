@@ -105,7 +105,7 @@
       <!-- Regression -->
       <dependency>
         <groupId>org.kie</groupId>
-        <artifactId>kie-pmml-models-regression-api</artifactId>
+        <artifactId>kie-pmml-models-regression-model</artifactId>
         <version>${version.org.kie}</version>
       </dependency>
       <dependency>

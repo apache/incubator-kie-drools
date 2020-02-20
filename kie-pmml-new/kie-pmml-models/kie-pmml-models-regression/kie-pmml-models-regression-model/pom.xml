@@ -9,38 +9,23 @@
   </parent>
   <modelVersion>4.0.0</modelVersion>
 
-  <artifactId>kie-pmml-models-regression-compiler</artifactId>
+  <artifactId>kie-pmml-models-regression-model</artifactId>
 
-  <name>KIE :: PMML :: Models :: Regression :: Compiler</name>
-  <description>PMML Regression Compiler</description>
+  <name>KIE :: PMML :: Models :: Regression :: Model</name>
+  <description>KiePMML Model for Regression implementation</description>
 
   <dependencies>
     <!-- PMML -->
     <dependency>
       <groupId>org.kie</groupId>
-      <artifactId>kie-pmml-compiler-commons</artifactId>
-    </dependency>
-    <dependency>
-      <groupId>org.kie</groupId>
-      <artifactId>kie-pmml-models-regression-model</artifactId>
+      <artifactId>kie-pmml-commons</artifactId>
     </dependency>
     <!-- EXTERNAL -->
     <!-- TEST -->
     <dependency>
       <groupId>org.kie</groupId>
-      <artifactId>kie-pmml-compiler-api</artifactId>
+      <artifactId>kie-pmml-commons</artifactId>
       <classifier>tests</classifier>
-      <scope>test</scope>
-    </dependency>
-    <dependency>
-      <groupId>org.kie</groupId>
-      <artifactId>kie-pmml-compiler-commons</artifactId>
-      <classifier>tests</classifier>
-      <scope>test</scope>
-    </dependency>
-    <dependency>
-      <groupId>org.kie</groupId>
-      <artifactId>kie-test-util</artifactId>
       <scope>test</scope>
     </dependency>
   </dependencies>

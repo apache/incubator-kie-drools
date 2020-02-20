@@ -20,7 +20,7 @@ import java.util.Set;
 import java.util.stream.Collectors;
 
 import org.dmg.pmml.regression.NumericPredictor;
-import org.kie.pmml.models.regression.api.model.predictors.KiePMMLNumericPredictor;
+import org.kie.pmml.models.regression.model.predictors.KiePMMLNumericPredictor;
 
 import static org.kie.pmml.compiler.commons.factories.KiePMMLExtensionFactory.getKiePMMLExtensions;
 

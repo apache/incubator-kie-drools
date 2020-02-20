@@ -24,9 +24,9 @@ import org.apache.commons.math3.distribution.NormalDistribution;
 import org.kie.api.pmml.PMML4Result;
 import org.kie.api.pmml.PMMLRequestData;
 import org.kie.pmml.evaluator.api.executor.PMMLContext;
-import org.kie.pmml.models.regression.api.model.KiePMMLRegressionModel;
-import org.kie.pmml.models.regression.api.model.KiePMMLRegressionTable;
-import org.kie.pmml.models.regression.api.model.enums.REGRESSION_NORMALIZATION_METHOD;
+import org.kie.pmml.models.regression.model.KiePMMLRegressionModel;
+import org.kie.pmml.models.regression.model.KiePMMLRegressionTable;
+import org.kie.pmml.models.regression.model.enums.REGRESSION_NORMALIZATION_METHOD;
 
 import static org.kie.pmml.commons.enums.StatusCode.OK;
 

@@ -16,7 +16,7 @@
   <description>PMML Regression implementation</description>
 
   <modules>
-    <module>kie-pmml-models-regression-api</module>
+    <module>kie-pmml-models-regression-model</module>
     <module>kie-pmml-models-regression-compiler</module>
     <module>kie-pmml-models-regression-evaluator</module>
     <module>kie-pmml-models-regression-tests</module>

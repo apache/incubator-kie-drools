@@ -26,7 +26,7 @@ import org.dmg.pmml.regression.NumericPredictor;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.Parameterized;
-import org.kie.pmml.models.regression.api.model.predictors.KiePMMLNumericPredictor;
+import org.kie.pmml.models.regression.model.predictors.KiePMMLNumericPredictor;
 
 import static org.junit.Assert.assertEquals;
 import static org.kie.pmml.compiler.commons.testutils.PMMLModelTestUtils.getNumericPredictor;
