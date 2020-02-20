@@ -6,6 +6,9 @@ import java.util.regex.Pattern;
 import static org.hamcrest.Matchers.equalToIgnoringWhiteSpace;
 import static org.junit.Assert.assertThat;
 
+/* Hashes are computed using the whole string, and on windows the String generated is different"
+  Avoid using hashes comparison, as it's annoying anyway to update the test each time.
+ */
 public class PostProcessedCompare {
 
     public void compareIgnoringHash(String result, String expectedResult) {
