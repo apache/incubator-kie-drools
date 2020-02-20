@@ -13,7 +13,7 @@ public class PostProcessedCompare {
     }
 
     public static String replaceHash(String string) {
-        Pattern regexp = Pattern.compile("([A-Z|\\d]{32})(\\s|\")");
+        Pattern regexp = Pattern.compile("([A-Z|\\d]{32})(\\s|\"|\\.)");
 
         Matcher matcher = regexp.matcher(string);
 
