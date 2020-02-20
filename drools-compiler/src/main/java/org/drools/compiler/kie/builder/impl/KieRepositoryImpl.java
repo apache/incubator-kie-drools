@@ -159,7 +159,7 @@ public class KieRepositoryImpl
                                                        pomPropertiesUrl.getPath());
         if (pomReleaseId.equals(releaseId)) {
             String path = pomPropertiesUrl.getPath();
-            String pathToJar = path.substring( 0, path.indexOf( ".jar!" ) + 4 );
+            String pathToJar = path.substring( 0, Math.max(path.indexOf( ".jar!" ) + 4, path.indexOf( ".kjar!" ) + 5) );
 
             URL pathToKmodule;
             try {
