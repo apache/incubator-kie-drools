@@ -5,15 +5,15 @@ import java.util.ArrayList;
 import org.junit.Test;
 
 import static org.drools.modelcompiler.util.lambdareplace.Util.newLine;
-import static org.hamcrest.Matchers.equalToIgnoringWhiteSpace;
-import static org.junit.Assert.assertThat;
 
 
 public class MaterializedLambdaPredicateTest {
 
+    PostProcessedCompare postProcessedCompare = new PostProcessedCompare("LambdaPredicate");
+
     @Test
     public void createClassWithOneParameter() {
-        CreatedClass aClass = new MaterializedLambdaPredicate("org.drools.modelcompiler.util.lambdareplace", "rulename")
+        CreatedClass result = new MaterializedLambdaPredicate("org.drools.modelcompiler.util.lambdareplace", "rulename")
                 .create("(org.drools.modelcompiler.domain.Person p) -> p.getAge() > 35", new ArrayList<>(), new ArrayList());
 
         //language=JAVA
@@ -32,13 +32,13 @@ public class MaterializedLambdaPredicateTest {
                 "        }" + newLine()  +
                 "    }" + newLine() ;
 
-        assertThat(aClass.getCompilationUnitAsString(), equalToIgnoringWhiteSpace(expectedResult));
+        postProcessedCompare.compareIgnoringHash(result.getCompilationUnitAsString(), expectedResult);
 
     }
 
     @Test
     public void createClassWithTwoParameters() {
-        CreatedClass aClass = new MaterializedLambdaPredicate("org.drools.modelcompiler.util.lambdareplace", "rulename")
+        CreatedClass result = new MaterializedLambdaPredicate("org.drools.modelcompiler.util.lambdareplace", "rulename")
                 .create("(org.drools.modelcompiler.domain.Person p1, org.drools.modelcompiler.domain.Person p2) -> p1.getAge() > p2.getAge()", new ArrayList<>(), new ArrayList());
 
         //language=JAVA
@@ -57,7 +57,8 @@ public class MaterializedLambdaPredicateTest {
                 "        }" + newLine()  +
                 "    }" + newLine() ;
 
-        assertThat(aClass.getCompilationUnitAsString(), equalToIgnoringWhiteSpace(expectedResult));
+        postProcessedCompare.compareIgnoringHash(result.getCompilationUnitAsString(), expectedResult);
 
     }
+
 }

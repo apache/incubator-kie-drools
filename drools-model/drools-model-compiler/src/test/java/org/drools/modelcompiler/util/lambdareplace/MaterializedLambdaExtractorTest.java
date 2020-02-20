@@ -10,6 +10,8 @@ import static org.junit.Assert.*;
 
 public class MaterializedLambdaExtractorTest {
 
+    PostProcessedCompare postProcessedCompare = new PostProcessedCompare("LambdaExtractor");
+
     @Test
     public void createExtractor() {
         CreatedClass aClass = new MaterializedLambdaExtractor("org.drools.modelcompiler.util.lambdareplace", "rulename", String.class.getCanonicalName())
@@ -31,6 +33,6 @@ public class MaterializedLambdaExtractorTest {
                 "        }" + newLine()  +
                 "    }" + newLine() ;
 
-        assertThat(aClass.getCompilationUnitAsString(), equalToIgnoringWhiteSpace(expectedResult));
+        postProcessedCompare.compareIgnoringHash(aClass.getCompilationUnitAsString(), expectedResult);
     }
 }

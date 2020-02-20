@@ -12,6 +12,8 @@ import static org.junit.Assert.*;
 
 public class MaterializedLambdaConsequenceTest {
 
+    PostProcessedCompare postProcessedCompare = new PostProcessedCompare("LambdaConsequence");
+
     @Test
     public void createConsequence() {
         CreatedClass aClass = new MaterializedLambdaConsequence("org.drools.modelcompiler.util.lambdareplace", "rulename", new ArrayList<>())
@@ -33,7 +35,7 @@ public class MaterializedLambdaConsequenceTest {
                 "        }" + newLine()  +
                 "    }" + newLine() ;
 
-        assertThat(aClass.getCompilationUnitAsString(), equalToIgnoringWhiteSpace(expectedResult));
+        postProcessedCompare.compareIgnoringHash(aClass.getCompilationUnitAsString(), expectedResult);
 
     }
 
@@ -66,7 +68,7 @@ public class MaterializedLambdaConsequenceTest {
                 "        }" + newLine()  +
                 "    }" + newLine() ;
 
-        assertThat(aClass.getCompilationUnitAsString(), equalToIgnoringWhiteSpace(expectedResult));
+        postProcessedCompare.compareIgnoringHash(aClass.getCompilationUnitAsString(), expectedResult);
     }
 
     @Test
@@ -110,7 +112,7 @@ public class MaterializedLambdaConsequenceTest {
                 "    }" + newLine()  +
                 "}";
 
-        assertThat(aClass.getCompilationUnitAsString(), equalToIgnoringWhiteSpace(expectedResult));
+        postProcessedCompare.compareIgnoringHash(aClass.getCompilationUnitAsString(), expectedResult);
     }
 
     @Test
@@ -150,6 +152,6 @@ public class MaterializedLambdaConsequenceTest {
                 "    }" + newLine()  +
                 "}";
 
-        assertThat(aClass.getCompilationUnitAsString(), equalToIgnoringWhiteSpace(expectedResult));
+        postProcessedCompare.compareIgnoringHash(aClass.getCompilationUnitAsString(), expectedResult);
     }
 }
