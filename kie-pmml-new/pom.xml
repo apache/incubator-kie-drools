@@ -134,6 +134,12 @@
       </dependency>
       <dependency>
         <groupId>org.kie</groupId>
+        <artifactId>kie-pmml-compiler-commons</artifactId>
+        <classifier>tests</classifier>
+        <version>${version.org.kie}</version>
+      </dependency>
+      <dependency>
+        <groupId>org.kie</groupId>
         <artifactId>kie-pmml-models-regression-compiler</artifactId>
         <classifier>tests</classifier>
         <version>${version.org.kie}</version>

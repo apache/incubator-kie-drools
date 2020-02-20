@@ -34,15 +34,14 @@ public class KiePMMLPredictorTermFactory {
     private KiePMMLPredictorTermFactory() {
     }
 
-    public static Set<KiePMMLPredictorTerm> getKiePMMLPredictorTerms(List<PredictorTerm> predictorTerms, Set<KiePMMLRegressionTablePredictor> numericCategoricalPredictors) {
-        return predictorTerms.stream().map(predictorTerm -> getKiePMMLPredictorTerm(predictorTerm, numericCategoricalPredictors)).collect(Collectors.toSet());
+    public static Set<KiePMMLPredictorTerm> getKiePMMLPredictorTerms(List<PredictorTerm> predictorTerms, Set<KiePMMLRegressionTablePredictor> kiePMMLRegressionTablePredictors) {
+        return predictorTerms.stream().map(predictorTerm -> getKiePMMLPredictorTerm(predictorTerm, kiePMMLRegressionTablePredictors)).collect(Collectors.toSet());
     }
 
-    public static KiePMMLPredictorTerm getKiePMMLPredictorTerm(PredictorTerm predictorTerm, Set<KiePMMLRegressionTablePredictor> numericCategoricalPredictors) {
+    public static KiePMMLPredictorTerm getKiePMMLPredictorTerm(PredictorTerm predictorTerm, Set<KiePMMLRegressionTablePredictor> kiePMMLRegressionTablePredictors) {
         String name = predictorTerm.getName() != null && predictorTerm.getName().getValue() != null ? predictorTerm.getName().getValue() : PREFIX + counter.getAndAdd(1);
-
         final List<String> mappedPredictors = predictorTerm.getFieldRefs().stream().map(fieldRef -> fieldRef.getField().getValue()).collect(Collectors.toList());
-        List<KiePMMLRegressionTablePredictor> predictors = numericCategoricalPredictors.stream()
+        List<KiePMMLRegressionTablePredictor> predictors = kiePMMLRegressionTablePredictors.stream()
                 .filter(numCatPredictor -> mappedPredictors.contains(numCatPredictor.getName()))
                 .collect(Collectors.toList());
         return new KiePMMLPredictorTerm(name,

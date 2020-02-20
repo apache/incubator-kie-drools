@@ -34,6 +34,13 @@
     </dependency>
     <dependency>
       <groupId>org.kie</groupId>
+      <artifactId>kie-pmml-compiler-commons</artifactId>
+      <classifier>tests</classifier>
+      <version>${version.org.kie}</version>
+      <scope>test</scope>
+    </dependency>
+    <dependency>
+      <groupId>org.kie</groupId>
       <artifactId>kie-test-util</artifactId>
       <scope>test</scope>
     </dependency>
