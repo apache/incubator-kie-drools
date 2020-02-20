@@ -9,7 +9,7 @@ import static org.drools.modelcompiler.util.lambdareplace.Util.newLine;
 
 public class MaterializedLambdaPredicateTest {
 
-    PostProcessedCompare postProcessedCompare = new PostProcessedCompare("LambdaPredicate");
+    PostProcessedCompare postProcessedCompare = new PostProcessedCompare();
 
     @Test
     public void createClassWithOneParameter() {

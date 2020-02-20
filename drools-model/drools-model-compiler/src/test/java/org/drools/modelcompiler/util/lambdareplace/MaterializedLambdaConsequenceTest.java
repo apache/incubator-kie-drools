@@ -7,12 +7,10 @@ import java.util.Collections;
 import org.junit.Test;
 
 import static org.drools.modelcompiler.util.lambdareplace.Util.newLine;
-import static org.hamcrest.Matchers.equalToIgnoringWhiteSpace;
-import static org.junit.Assert.*;
 
 public class MaterializedLambdaConsequenceTest {
 
-    PostProcessedCompare postProcessedCompare = new PostProcessedCompare("LambdaConsequence");
+    PostProcessedCompare postProcessedCompare = new PostProcessedCompare();
 
     @Test
     public void createConsequence() {

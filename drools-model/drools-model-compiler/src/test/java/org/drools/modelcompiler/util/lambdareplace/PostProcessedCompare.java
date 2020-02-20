@@ -8,32 +8,20 @@ import static org.junit.Assert.assertThat;
 
 public class PostProcessedCompare {
 
-    final String[] prefixes;
-
-    public PostProcessedCompare(String... prefixes) {
-        this.prefixes = prefixes;
-    }
-
     public void compareIgnoringHash(String result, String expectedResult) {
-        String actual = result;
-        String expectedString = expectedResult;
-        for (String p : prefixes) {
-            actual = replaceHash(p, actual);
-            expectedString = replaceHash(p, expectedString);
-        }
-        assertThat(actual, equalToIgnoringWhiteSpace(expectedString));
+        assertThat(replaceHash(result), equalToIgnoringWhiteSpace(replaceHash(expectedResult)));
     }
 
-    public static String replaceHash(String prefix, String string) {
-        Pattern regexp = Pattern.compile(prefix + "([A-Z|\\d]+)");
+    public static String replaceHash(String string) {
+        Pattern regexp = Pattern.compile("([A-Z|\\d]{32})(\\s|\")");
 
         Matcher matcher = regexp.matcher(string);
 
-        boolean b = matcher.find();
-        if (!b) {
-            throw new RuntimeException();
+        boolean found = matcher.find();
+        if (found) {
+            return matcher.replaceAll("");
+        } else {
+            return string;
         }
-
-        return matcher.replaceAll(prefix);
     }
 }

@@ -5,12 +5,10 @@ import java.util.ArrayList;
 import org.junit.Test;
 
 import static org.drools.modelcompiler.util.lambdareplace.Util.newLine;
-import static org.hamcrest.Matchers.equalToIgnoringWhiteSpace;
-import static org.junit.Assert.*;
 
 public class MaterializedLambdaExtractorTest {
 
-    PostProcessedCompare postProcessedCompare = new PostProcessedCompare("LambdaExtractor");
+    PostProcessedCompare postProcessedCompare = new PostProcessedCompare();
 
     @Test
     public void createExtractor() {

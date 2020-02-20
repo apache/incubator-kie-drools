@@ -14,7 +14,7 @@ import static com.github.javaparser.StaticJavaParser.parseResource;
 
 public class ExecModelLambdaPostProcessorTest {
 
-    PostProcessedCompare postProcessedCompareConsequence = new PostProcessedCompare("LambdaConsequence", "LambdaExtractor", "LambdaPredicate");
+    PostProcessedCompare postProcessedCompareConsequence = new PostProcessedCompare();
 
     @Before
     public void configJP() {
