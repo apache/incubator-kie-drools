@@ -24,6 +24,4 @@ public class Constants {
     public static final String EXPECTED_TWO_ENTRIES_RETRIEVED = "Expected two entries, retrieved %d";
     public static final String UNEXPECTED_OPERATION_TYPE = "Unexpected Operation Type %s";
     public static final String UNEXPECTED_NORMALIZATION_METHOD = "Unexpected Normalization Method %s";
-
-
 }

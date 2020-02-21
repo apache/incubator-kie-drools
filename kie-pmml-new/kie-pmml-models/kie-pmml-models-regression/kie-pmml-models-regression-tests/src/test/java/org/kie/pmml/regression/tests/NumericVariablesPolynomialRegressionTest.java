@@ -16,6 +16,11 @@
 
 package org.kie.pmml.regression.tests;
 
+import java.util.Arrays;
+import java.util.Collection;
+import java.util.HashMap;
+import java.util.Map;
+
 import org.assertj.core.api.Assertions;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -24,11 +29,6 @@ import org.kie.api.pmml.PMML4Result;
 import org.kie.api.pmml.PMMLRequestData;
 import org.kie.pmml.commons.model.KiePMMLModel;
 import org.kie.pmml.evaluator.core.PMMLContextImpl;
-
-import java.util.Arrays;
-import java.util.Collection;
-import java.util.HashMap;
-import java.util.Map;
 
 @RunWith(Parameterized.class)
 public class NumericVariablesPolynomialRegressionTest extends AbstractPMMLRegressionTest {
@@ -40,17 +40,21 @@ public class NumericVariablesPolynomialRegressionTest extends AbstractPMMLRegres
     private double x;
     private double y;
 
-    @Parameterized.Parameters
-    public static Collection<Object[]> data() {
-        return Arrays.asList(new Object[][] {
-                { 0, 0 }, { -1, 2}, { 0.5, -2.5 }, { 3, 1 }, { 25, 50 },
-                { -100, 250 }, { -100.1, 800}, { -8, 12.5 }, { -1001.1, -500.2 }, { -1701, 508 }
-        });
-    }
-
     public NumericVariablesPolynomialRegressionTest(double x, double y) {
         this.x = x;
         this.y = y;
+    }
+
+    @Parameterized.Parameters
+    public static Collection<Object[]> data() {
+        return Arrays.asList(new Object[][]{
+                {0, 0}, {-1, 2}, {0.5, -2.5}, {3, 1}, {25, 50},
+                {-100, 250}, {-100.1, 800}, {-8, 12.5}, {-1001.1, -500.2}, {-1701, 508}
+        });
+    }
+
+    private static double regressionFunction(double x, double y) {
+        return 3 * Math.pow(x, 5) + 2 * Math.pow(y, 2) + 5;
     }
 
     @Test
@@ -68,9 +72,5 @@ public class NumericVariablesPolynomialRegressionTest extends AbstractPMMLRegres
         Assertions.assertThat(pmml4Result.getResultVariables()).containsKey(TARGET_FIELD);
         Assertions.assertThat((Double) pmml4Result.getResultVariables().get(TARGET_FIELD))
                 .isEqualTo(regressionFunction(x, y));
-    }
-
-    private static double regressionFunction(double x, double y) {
-        return 3 * Math.pow(x, 5) + 2 * Math.pow(y, 2) + 5;
     }
 }

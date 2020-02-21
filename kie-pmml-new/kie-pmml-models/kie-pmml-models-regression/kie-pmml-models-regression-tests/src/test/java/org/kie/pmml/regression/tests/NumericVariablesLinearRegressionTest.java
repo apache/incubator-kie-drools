@@ -40,17 +40,21 @@ public class NumericVariablesLinearRegressionTest extends AbstractPMMLRegression
     private double x;
     private double y;
 
-    @Parameterized.Parameters
-    public static Collection<Object[]> data() {
-        return Arrays.asList(new Object[][] {
-                { 0, 0 }, { -1, 2}, { 0.5, -2.5 }, { 3, 1 }, { 25, 50 },
-                { -100, 250 }, { -100.1, 800}, { -8, 12.5 }, { -1001.1, -500.2 }, { -1701, 508 }
-        });
-    }
-
     public NumericVariablesLinearRegressionTest(double x, double y) {
         this.x = x;
         this.y = y;
+    }
+
+    @Parameterized.Parameters
+    public static Collection<Object[]> data() {
+        return Arrays.asList(new Object[][]{
+                {0, 0}, {-1, 2}, {0.5, -2.5}, {3, 1}, {25, 50},
+                {-100, 250}, {-100.1, 800}, {-8, 12.5}, {-1001.1, -500.2}, {-1701, 508}
+        });
+    }
+
+    private static double regressionFunction(double x, double y) {
+        return 2 * x + y + 5;
     }
 
     @Test
@@ -68,9 +72,5 @@ public class NumericVariablesLinearRegressionTest extends AbstractPMMLRegression
         Assertions.assertThat(pmml4Result.getResultVariables()).containsKey(TARGET_FIELD);
         Assertions.assertThat((Double) pmml4Result.getResultVariables().get(TARGET_FIELD))
                 .isEqualTo(regressionFunction(x, y));
-    }
-
-    private static double regressionFunction(double x, double y) {
-        return 2 * x + y + 5;
     }
 }

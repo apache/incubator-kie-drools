@@ -16,6 +16,9 @@
 
 package org.kie.pmml.regression.tests;
 
+import java.io.InputStream;
+import java.util.Map;
+
 import org.assertj.core.api.Assertions;
 import org.dmg.pmml.PMML;
 import org.dmg.pmml.regression.RegressionModel;
@@ -27,9 +30,6 @@ import org.kie.pmml.evaluator.core.utils.PMMLRequestDataBuilder;
 import org.kie.pmml.models.regression.compiler.executor.RegressionModelImplementationProvider;
 import org.kie.pmml.models.regression.evaluator.PMMLRegressionModelExecutor;
 
-import java.io.InputStream;
-import java.util.Map;
-
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 
@@ -38,6 +38,17 @@ public abstract class AbstractPMMLRegressionTest {
     protected static final RegressionModelImplementationProvider PROVIDER = new RegressionModelImplementationProvider();
     protected static final PMMLModelExecutor EXECUTOR = new PMMLRegressionModelExecutor();
     protected static final String RELEASE_ID = "org.drools:kie-pmml-models-testing:1.0";
+
+    protected static PMMLRequestData getPMMLRequestData(String modelName, Map<String, Object> parameters) {
+        String correlationId = "CORRELATION_ID";
+        PMMLRequestDataBuilder pmmlRequestDataBuilder = new PMMLRequestDataBuilder(correlationId, modelName);
+        for (Map.Entry<String, Object> entry : parameters.entrySet()) {
+            Object pValue = entry.getValue();
+            Class class1 = pValue.getClass();
+            pmmlRequestDataBuilder.addParameter(entry.getKey(), pValue, class1);
+        }
+        return pmmlRequestDataBuilder.build();
+    }
 
     protected KiePMMLModel loadPMMLModel(final String resourcePath) {
         final PMML pmml;
@@ -51,20 +62,9 @@ public abstract class AbstractPMMLRegressionTest {
         assertTrue(pmml.getModels().get(0) instanceof RegressionModel);
 
         final KiePMMLModel pmmlModel = PROVIDER.getKiePMMLModel(pmml.getDataDictionary(),
-                (RegressionModel) pmml.getModels().get(0), RELEASE_ID);
+                                                                (RegressionModel) pmml.getModels().get(0), RELEASE_ID);
         Assertions.assertThat(pmmlModel).isNotNull();
 
         return pmmlModel;
-    }
-
-    protected static PMMLRequestData getPMMLRequestData(String modelName, Map<String, Object> parameters) {
-        String correlationId = "CORRELATION_ID";
-        PMMLRequestDataBuilder pmmlRequestDataBuilder = new PMMLRequestDataBuilder(correlationId, modelName);
-        for (Map.Entry<String, Object> entry : parameters.entrySet()) {
-            Object pValue = entry.getValue();
-            Class class1 = pValue.getClass();
-            pmmlRequestDataBuilder.addParameter(entry.getKey(), pValue, class1);
-        }
-        return pmmlRequestDataBuilder.build();
     }
 }

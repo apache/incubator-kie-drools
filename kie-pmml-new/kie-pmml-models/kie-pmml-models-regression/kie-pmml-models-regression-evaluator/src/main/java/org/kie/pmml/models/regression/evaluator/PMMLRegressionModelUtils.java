@@ -24,9 +24,9 @@ import org.kie.pmml.models.regression.model.predictors.KiePMMLPredictorTerm;
 
 import static org.kie.pmml.evaluator.core.utils.Converter.getUnwrappedParametersMap;
 
-public class PMMLRegresssionModelUtils {
+public class PMMLRegressionModelUtils {
 
-    private PMMLRegresssionModelUtils() {
+    private PMMLRegressionModelUtils() {
         // Avoid instantiation
     }
 

@@ -49,10 +49,10 @@ public class PMMLRegresssionModelEvaluator {
         final AtomicReference<Double> result = new AtomicReference<>(regressionTable.getIntercept().doubleValue());
         Map<String, Double> resultMap = new HashMap<>();
         requestData.getRequestParams().forEach(parameterInfo -> {
-            PMMLRegresssionModelUtils.evaluateNumericPredictors(regressionTable, parameterInfo, resultMap);
-            PMMLRegresssionModelUtils.evaluateCategoricalPredictors(regressionTable, parameterInfo, resultMap);
+            PMMLRegressionModelUtils.evaluateNumericPredictors(regressionTable, parameterInfo, resultMap);
+            PMMLRegressionModelUtils.evaluateCategoricalPredictors(regressionTable, parameterInfo, resultMap);
         });
-        PMMLRegresssionModelUtils.evaluatePredictorTerms(regressionTable, requestData.getRequestParams(), resultMap);
+        PMMLRegressionModelUtils.evaluatePredictorTerms(regressionTable, requestData.getRequestParams(), resultMap);
         resultMap.values().forEach(value -> result.accumulateAndGet(value, Double::sum));
         updateResult(regressionNormalizationMethod, opType, result);
         PMML4Result toReturn = new PMML4Result();

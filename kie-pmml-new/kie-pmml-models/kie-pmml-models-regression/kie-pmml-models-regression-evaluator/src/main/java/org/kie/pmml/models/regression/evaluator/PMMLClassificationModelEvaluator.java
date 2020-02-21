@@ -55,9 +55,9 @@ public class PMMLClassificationModelEvaluator {
 
     protected static PMML4Result evaluateClassification(String targetFieldName, REGRESSION_NORMALIZATION_METHOD regressionNormalizationMethod, OP_TYPE opType, final List<KiePMMLRegressionTable> regressionTables, final Optional<List<KiePMMLOutputField>> outputFields, PMMLRequestData requestData) {
         final LinkedHashMap<String, Double> resultMap = regressionTables.stream()
-                .collect(Collectors.toMap(kiePMMLRegressionTable -> kiePMMLRegressionTable.getTargetCategory().orElseGet(() ->"UNKNOWN").toString(),
+                .collect(Collectors.toMap(kiePMMLRegressionTable -> kiePMMLRegressionTable.getTargetCategory().orElseGet(() -> "UNKNOWN").toString(),
                                           kiePMMLRegressionTable -> {
-                                              PMML4Result retrieved = PMMLRegresssionModelEvaluator.evaluateRegression(kiePMMLRegressionTable.getTargetCategory().orElseGet(() ->"UNKNOWN").toString(),
+                                              PMML4Result retrieved = PMMLRegresssionModelEvaluator.evaluateRegression(kiePMMLRegressionTable.getTargetCategory().orElseGet(() -> "UNKNOWN").toString(),
                                                                                                                        REGRESSION_NORMALIZATION_METHOD.NONE,
                                                                                                                        OP_TYPE.ORDINAL,
                                                                                                                        kiePMMLRegressionTable,
