@@ -514,6 +514,18 @@
         <classifier>sources</classifier>
       </dependency>
 
+      <!-- Quarkus extension -->
+      <dependency>
+        <groupId>org.kie.kogito</groupId>
+        <artifactId>kogito-quarkus</artifactId>
+        <version>${project.version}</version>
+      </dependency>
+      <dependency>
+        <groupId>org.kie.kogito</groupId>
+        <artifactId>kogito-quarkus</artifactId>
+        <version>${project.version}</version>
+        <classifier>sources</classifier>
+      </dependency>
     </dependencies>
 
   </dependencyManagement>

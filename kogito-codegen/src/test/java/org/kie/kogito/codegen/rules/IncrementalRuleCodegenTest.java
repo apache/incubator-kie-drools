@@ -17,7 +17,6 @@ package org.kie.kogito.codegen.rules;
 
 import java.io.File;
 import java.nio.file.Paths;
-import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 
@@ -30,6 +29,7 @@ import org.kie.api.io.ResourceType;
 import org.kie.kogito.codegen.GeneratedFile;
 
 import static java.util.Arrays.asList;
+
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 
@@ -50,7 +50,7 @@ public class IncrementalRuleCodegenTest {
         incrementalRuleCodegen.setPackageName("com.acme");
 
         List<GeneratedFile> generatedFiles = incrementalRuleCodegen.withHotReloadMode().generate();
-        assertRules(2, 1, generatedFiles.size());
+        assertRules(3, 1, generatedFiles.size());
     }
 
     @Test
@@ -62,7 +62,7 @@ public class IncrementalRuleCodegenTest {
         incrementalRuleCodegen.setPackageName("com.acme");
 
         List<GeneratedFile> generatedFiles = incrementalRuleCodegen.withHotReloadMode().generate();
-        assertRules(4, 1, generatedFiles.size());
+        assertRules(5, 1, generatedFiles.size());
     }
 
 
@@ -88,7 +88,7 @@ public class IncrementalRuleCodegenTest {
         incrementalRuleCodegen.setPackageName("com.acme");
 
         List<GeneratedFile> generatedFiles = incrementalRuleCodegen.withHotReloadMode().generate();
-        assertRules(12, 5, 3, generatedFiles.size());
+        assertRules(14, 5, 3, generatedFiles.size());
     }
 
     @Test
@@ -126,7 +126,7 @@ public class IncrementalRuleCodegenTest {
 
         List<GeneratedFile> generatedFiles = incrementalRuleCodegen.withHotReloadMode().generate();
         int externalizedLambda = 2;
-        assertRules(1, 1, generatedFiles.size() - externalizedLambda);
+        assertRules(2, 1, generatedFiles.size() - externalizedLambda);
     }
 
     @Test

@@ -108,6 +108,7 @@ public class CompositeKnowledgeBuilderImpl implements CompositeKnowledgeBuilder 
         }
         buildProcesses();
         buildOthers();
+        kBuilder.postBuild();
         resourcesByType.clear();
         if (buildException != null) {
             throw buildException;

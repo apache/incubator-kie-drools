@@ -1,4 +1,4 @@
-package io.quarkus.kogito.deployment;
+package org.kie.kogito.quarkus.deployment;
 
 import java.lang.reflect.Modifier;
 import java.nio.charset.StandardCharsets;

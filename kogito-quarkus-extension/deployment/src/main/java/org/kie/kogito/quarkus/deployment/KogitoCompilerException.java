@@ -1,4 +1,4 @@
-package io.quarkus.kogito.deployment;
+package org.kie.kogito.quarkus.deployment;
 
 public class KogitoCompilerException extends RuntimeException {
 

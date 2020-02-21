@@ -53,7 +53,6 @@ import org.kie.api.runtime.conf.ClockTypeOption;
 import org.kie.internal.builder.CompositeKnowledgeBuilder;
 import org.kie.internal.ruleunit.RuleUnitDescription;
 import org.kie.kogito.codegen.AbstractGenerator;
-import org.kie.kogito.codegen.ApplicationGenerator;
 import org.kie.kogito.codegen.ApplicationSection;
 import org.kie.kogito.codegen.ConfigGenerator;
 import org.kie.kogito.codegen.GeneratorContext;
@@ -65,8 +64,9 @@ import org.kie.kogito.conf.ClockType;
 import org.kie.kogito.conf.EventProcessingType;
 import org.kie.kogito.rules.RuleUnitConfig;
 
-import static com.github.javaparser.StaticJavaParser.parse;
 import static java.util.stream.Collectors.toList;
+
+import static com.github.javaparser.StaticJavaParser.parse;
 import static org.drools.compiler.kie.builder.impl.KieBuilderImpl.setDefaultsforEmptyKieModule;
 import static org.kie.kogito.codegen.ApplicationGenerator.log;
 
@@ -220,8 +220,9 @@ public class IncrementalRuleCodegen extends AbstractGenerator {
 
             pkgSources.collectGeneratedFiles( modelFiles );
 
-            if (pkgSources.getReflectConfigSource() != null) {
-                addGeneratedFile( modelFiles, pkgSources.getReflectConfigSource(), "../../classes/" );
+            GeneratedFile reflectConfigSource = pkgSources.getReflectConfigSource();
+            if (reflectConfigSource != null) {
+                modelFiles.add(new GeneratedFile(GeneratedFile.Type.RULE, "../../classes/" + reflectConfigSource.getPath(), new String(reflectConfigSource.getData(), StandardCharsets.UTF_8)));
             }
 
             Collection<RuleUnitDescription> ruleUnits = pkgSources.getRuleUnits();
@@ -342,11 +343,6 @@ public class IncrementalRuleCodegen extends AbstractGenerator {
 
     private String ruleUnit2KieSessionName(String ruleUnit) {
         return ruleUnit.replace( '.', '$' )  + "KieSession";
-    }
-
-    private void addGeneratedFile( List<GeneratedFile> generatedFiles, GeneratedFile source, String pathPrefix ) {
-        ApplicationGenerator.log( source.getData() );
-        generatedFiles.add(new GeneratedFile(GeneratedFile.Type.RULE, pathPrefix + source.getPath(), new String(source.getData(), StandardCharsets.UTF_8)));
     }
 
     @Override

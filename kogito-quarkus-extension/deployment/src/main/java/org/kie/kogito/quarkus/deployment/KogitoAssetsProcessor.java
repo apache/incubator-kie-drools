@@ -1,4 +1,4 @@
-package io.quarkus.kogito.deployment;
+package org.kie.kogito.quarkus.deployment;
 
 import java.io.ByteArrayInputStream;
 import java.io.File;
@@ -176,13 +176,15 @@ public class KogitoAssetsProcessor {
                 generateProcesses, generateDecisions, combinedIndexBuildItem);
         Collection<GeneratedFile> generatedFiles = appGen.generate();
 
-        if (!generatedFiles.isEmpty()) {
+        Collection<GeneratedFile> javaFiles = generatedFiles.stream().filter( f -> f.relativePath().endsWith( ".java" ) ).collect( Collectors.toCollection( ArrayList::new ));
+
+        if (!javaFiles.isEmpty()) {
 
             Indexer kogitoIndexer = new Indexer();
             Set<DotName> kogitoIndex = new HashSet<>();
 
             MemoryFileSystem trgMfs = new MemoryFileSystem();
-            CompilationResult result = compile(root, trgMfs, curateOutcomeBuildItem.getEffectiveModel(), generatedFiles,
+            CompilationResult result = compile(root, trgMfs, curateOutcomeBuildItem.getEffectiveModel(), javaFiles,
                     launchMode.getLaunchMode(),
                     targetClassesPath);
             register(trgMfs, generatedBeans, (className, data) -> {

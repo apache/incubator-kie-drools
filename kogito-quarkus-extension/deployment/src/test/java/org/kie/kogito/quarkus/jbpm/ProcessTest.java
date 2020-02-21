@@ -1,4 +1,4 @@
-package io.quarkus.kogito.jbpm;
+package org.kie.kogito.quarkus.jbpm;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 

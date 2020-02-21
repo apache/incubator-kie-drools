@@ -344,7 +344,7 @@ public class KieBuilderImpl
         }
         trgMfs = trgMfs.clone();
         init();
-        kModule = ((MemoryKieModule)kModule).cloneForIncrementalCompilation( adapt( releaseId ), kModuleModel, trgMfs );
+        kModule = kModule.cloneForIncrementalCompilation( adapt( releaseId ), kModuleModel, trgMfs );
     }
 
     private void addMetaInfBuilder() {

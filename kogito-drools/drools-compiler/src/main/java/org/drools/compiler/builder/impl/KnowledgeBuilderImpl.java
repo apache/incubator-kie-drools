@@ -2382,6 +2382,8 @@ public class KnowledgeBuilderImpl implements KnowledgeBuilder,
         buildRules(packages);
     }
 
+    public void postBuild() { }
+
     public void buildPackagesWithoutRules(Collection<CompositePackageDescr> packages ) {
         initPackageRegistries(packages);
         normalizeTypeAnnotations( packages );

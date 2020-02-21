@@ -1,4 +1,4 @@
-package io.quarkus.kogito.jbpm;
+package org.kie.kogito.quarkus.jbpm;
 
 import static io.restassured.RestAssured.given;
 import static org.hamcrest.Matchers.hasKey;

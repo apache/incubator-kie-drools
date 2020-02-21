@@ -1,4 +1,4 @@
-package io.quarkus.kogito.deployment;
+package org.kie.kogito.quarkus.deployment;
 
 import java.io.File;
 import java.io.IOException;
@@ -44,6 +44,7 @@ public abstract class KogitoCompilationProvider extends JavaCompilationProvider 
             ApplicationGenerator appGen = new ApplicationGenerator(appPackageName, outputDirectory)
                     .withDependencyInjection(new CDIDependencyInjectionAnnotator())
                     .withGeneratorContext(generationContext);
+
             addGenerator(appGen, filesToCompile, context);
 
             Collection<GeneratedFile> generatedFiles = appGen.generate();

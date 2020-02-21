@@ -128,7 +128,7 @@
     <version.org.keycloak.image>8.0.1</version.org.keycloak.image>
     <version.org.mockito>3.0.0</version.org.mockito>
     <version.org.mvel>2.4.4.Final</version.org.mvel>
-    <version.org.kie7>7.32.0.Final</version.org.kie7>
+    <version.org.kie7>7.33.0.Final</version.org.kie7>
     <version.org.reflections>0.9.11</version.org.reflections>
     <version.org.slf4j>1.7.25</version.org.slf4j>
     <version.org.springframework.kafka>2.2.2.RELEASE</version.org.springframework.kafka>
@@ -575,27 +575,12 @@
         <version>${version.javax.activation}</version>
       </dependency>
 
-      <!-- Quarkus -->
-      <dependency>
-        <groupId>io.quarkus</groupId>
-        <artifactId>quarkus-resteasy</artifactId>
-        <version>${version.io.quarkus}</version>
-      </dependency>
-      <dependency>
-        <groupId>io.quarkus</groupId>
-        <artifactId>quarkus-arc</artifactId>
-        <version>${version.io.quarkus}</version>
-      </dependency>
-      <dependency>
-        <groupId>io.quarkus</groupId>
-        <artifactId>quarkus-junit5</artifactId>
-        <version>${version.io.quarkus}</version>
-      </dependency>
       <dependency>
         <groupId>com.oracle.substratevm</groupId>
         <artifactId>svm</artifactId>
         <version>${version.com.oracle.substratevm}</version>
       </dependency>
+
       <dependency>
         <groupId>io.smallrye.reactive</groupId>
         <artifactId>smallrye-reactive-messaging-provider</artifactId>
@@ -868,58 +853,6 @@
               <groupId>org.sonarsource.scanner.maven</groupId>
               <artifactId>sonar-maven-plugin</artifactId>
               <version>${version.sonar.plugin}</version>
-            </plugin>
-          </plugins>
-        </pluginManagement>
-      </build>
-    </profile>
-
-    <profile>
-      <id>native</id>
-      <activation>
-        <property>
-          <name>native</name>
-        </property>
-      </activation>
-      <build>
-        <pluginManagement>
-          <plugins>
-            <plugin>
-              <groupId>io.quarkus</groupId>
-              <artifactId>quarkus-maven-plugin</artifactId>
-              <version>${version.io.quarkus}</version>
-              <executions>
-                <execution>
-                  <goals>
-                    <goal>native-image</goal>
-                  </goals>
-                  <configuration>
-                    <enableHttpUrlHandler>true</enableHttpUrlHandler>
-                  </configuration>
-                </execution>
-              </executions>
-            </plugin>
-            <plugin>
-              <artifactId>maven-failsafe-plugin</artifactId>
-              <executions>
-                <execution>
-                  <goals>
-                    <goal>integration-test</goal>
-                    <goal>verify</goal>
-                  </goals>
-                  <configuration>
-                    <includes>
-                      <include>**/*IntegrationTest.java</include>
-                      <include>**/*IT.java</include>
-                    </includes>
-                    <argLine>-Xmx1024m -Dfile.encoding=UTF-8</argLine>
-                    <systemProperties>
-                      <native.image.path>${project.build.directory}/${project.build.finalName}-runner
-                      </native.image.path>
-                    </systemProperties>
-                  </configuration>
-                </execution>
-              </executions>
             </plugin>
           </plugins>
         </pluginManagement>
@@ -1265,11 +1198,6 @@
           <groupId>org.apache.maven.plugins</groupId>
           <artifactId>maven-plugin-plugin</artifactId>
           <version>${version.plugin.plugin}</version>
-        </plugin>
-        <plugin>
-          <groupId>io.quarkus</groupId>
-          <artifactId>quarkus-maven-plugin</artifactId>
-          <version>${version.io.quarkus}</version>
         </plugin>
         <plugin>
           <groupId>io.openapitools.swagger</groupId>

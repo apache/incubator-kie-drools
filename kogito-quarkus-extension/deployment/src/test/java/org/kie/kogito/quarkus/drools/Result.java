@@ -1,4 +1,4 @@
-package io.quarkus.kogito.drools;
+package org.kie.kogito.quarkus.drools;
 
 import java.util.ArrayList;
 import java.util.Collection;

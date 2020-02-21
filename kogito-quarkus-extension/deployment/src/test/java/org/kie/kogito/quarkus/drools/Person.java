@@ -1,4 +1,4 @@
-package io.quarkus.kogito.drools;
+package org.kie.kogito.quarkus.drools;
 
 public class Person {
     String name;

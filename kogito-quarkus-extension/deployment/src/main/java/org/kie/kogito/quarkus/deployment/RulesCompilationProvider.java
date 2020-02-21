@@ -1,4 +1,4 @@
-package io.quarkus.kogito.deployment;
+package org.kie.kogito.quarkus.deployment;
 
 import java.io.File;
 import java.io.IOException;
@@ -11,11 +11,11 @@ import org.kie.kogito.codegen.ApplicationGenerator;
 import org.kie.kogito.codegen.Generator;
 import org.kie.kogito.codegen.rules.IncrementalRuleCodegen;
 
-public class DecisionTablesCompilationProvider extends KogitoCompilationProvider {
+public class RulesCompilationProvider extends KogitoCompilationProvider {
 
     @Override
     public Set<String> handledExtensions() {
-        return Collections.singleton(".xls");
+        return Collections.singleton(".drl");
     }
 
     @Override
@@ -25,8 +25,9 @@ public class DecisionTablesCompilationProvider extends KogitoCompilationProvider
         return appGen.withGenerator(
                 IncrementalRuleCodegen.ofFiles(
                         files,
-                        ResourceType.DTABLE))
+                        ResourceType.DRL))
                 .withClassLoader(Thread.currentThread().getContextClassLoader())
                 .withHotReloadMode();
     }
+
 }
