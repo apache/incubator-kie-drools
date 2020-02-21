@@ -37,7 +37,7 @@ public class CreatedClass {
 
     public String getCompilationUnitAsString() {
         PrettyPrinterConfiguration configuration = new PrettyPrinterConfiguration();
-        configuration.setEndOfLineCharacter(System.lineSeparator());
+        configuration.setEndOfLineCharacter("\n"); // hashes will be stable also while testing on windows
         return new PrettyPrinter(configuration).print(compilationUnit);
     }
 
