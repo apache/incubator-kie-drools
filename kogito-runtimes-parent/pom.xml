@@ -718,6 +718,14 @@
       <build>
         <plugins>
           <plugin>
+            <groupId>org.apache.maven.plugins</groupId>
+            <artifactId>maven-surefire-plugin</artifactId>
+            <configuration>
+              <!-- Append jacoco.agent.argLine property populated by JaCoCo's prepare-agent goal. -->
+              <argLine>@{jacoco.agent.argLine} -Xmx1024m -Dfile.encoding=UTF-8</argLine>
+            </configuration>
+          </plugin>
+          <plugin>
             <groupId>org.jacoco</groupId>
             <artifactId>jacoco-maven-plugin</artifactId>
           </plugin>
@@ -1021,8 +1029,7 @@
             <excludes>
               <exclude>**/*IntegrationTest.java</exclude>
             </excludes>
-            <!-- Append jacoco.agent.argLine property populated by JaCoCo's prepare-agent goal. -->
-            <argLine>@{jacoco.agent.argLine} -Xmx1024m -Dfile.encoding=UTF-8</argLine>
+            <argLine>-Xmx1024m -Dfile.encoding=UTF-8</argLine>
             <systemPropertyVariables>
               <apple.awt.UIElement>true</apple.awt.UIElement>
               <org.uberfire.nio.git.daemon.enabled>false</org.uberfire.nio.git.daemon.enabled>
