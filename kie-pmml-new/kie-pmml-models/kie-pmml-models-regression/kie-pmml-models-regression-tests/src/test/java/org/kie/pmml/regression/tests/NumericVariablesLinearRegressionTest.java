@@ -14,43 +14,28 @@
  * limitations under the License.
  */
 
-package org.kie.pmml.runtime.regression.tests;
+package org.kie.pmml.regression.tests;
 
-import java.io.InputStream;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
 
 import org.assertj.core.api.Assertions;
-import org.dmg.pmml.PMML;
-import org.dmg.pmml.regression.RegressionModel;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.Parameterized;
 import org.kie.api.pmml.PMML4Result;
 import org.kie.api.pmml.PMMLRequestData;
 import org.kie.pmml.commons.model.KiePMMLModel;
-import org.kie.pmml.compiler.testutils.TestUtils;
 import org.kie.pmml.evaluator.core.PMMLContextImpl;
-import org.kie.pmml.evaluator.core.executor.PMMLModelExecutor;
-import org.kie.pmml.evaluator.core.utils.PMMLRequestDataBuilder;
-import org.kie.pmml.models.regression.compiler.executor.RegressionModelImplementationProvider;
-import org.kie.pmml.models.regression.evaluator.PMMLRegressionModelExecutor;
-
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertTrue;
 
 @RunWith(Parameterized.class)
-public class NumericVariablesLinearRegressionTest {
+public class NumericVariablesLinearRegressionTest extends AbstractPMMLRegressionTest {
 
     private static final String MODEL_NAME = "lm_Model";
-    private static final String PMML_SOURCE = "/numericRegression.pmml";
+    private static final String PMML_SOURCE = "/numericVariablesLinearRegression.pmml";
     private static final String TARGET_FIELD = "result";
-
-    private static final RegressionModelImplementationProvider PROVIDER = new RegressionModelImplementationProvider();
-    private static final PMMLModelExecutor EXECUTOR = new PMMLRegressionModelExecutor();
-    private static final String RELEASE_ID = "org.drools:kie-pmml-models-testing:1.0";
 
     private double x;
     private double y;
@@ -70,17 +55,7 @@ public class NumericVariablesLinearRegressionTest {
 
     @Test
     public void testNumericVariableLinearRegression() throws Exception {
-        final PMML pmml;
-        try (final InputStream inputStream = NumericVariablesLinearRegressionTest.class.getResourceAsStream(PMML_SOURCE)) {
-            pmml = TestUtils.loadFromInputStream(inputStream);
-        }
-        Assertions.assertThat(pmml).isNotNull();
-        assertEquals(1, pmml.getModels().size());
-        assertTrue(pmml.getModels().get(0) instanceof RegressionModel);
-
-        final KiePMMLModel pmmlModel = PROVIDER.getKiePMMLModel(pmml.getDataDictionary(),
-                                                                (RegressionModel) pmml.getModels().get(0), RELEASE_ID);
-        Assertions.assertThat(pmmlModel).isNotNull();
+        final KiePMMLModel pmmlModel = loadPMMLModel(PMML_SOURCE);
 
         final Map<String, Object> inputData = new HashMap<>();
         inputData.put("x", x);
@@ -93,17 +68,6 @@ public class NumericVariablesLinearRegressionTest {
         Assertions.assertThat(pmml4Result.getResultVariables()).containsKey(TARGET_FIELD);
         Assertions.assertThat((Double) pmml4Result.getResultVariables().get(TARGET_FIELD))
                 .isEqualTo(regressionFunction(x, y));
-    }
-
-    public static PMMLRequestData getPMMLRequestData(String modelName, Map<String, Object> parameters) {
-        String correlationId = "CORRELATION_ID";
-        PMMLRequestDataBuilder pmmlRequestDataBuilder = new PMMLRequestDataBuilder(correlationId, modelName);
-        for (Map.Entry<String, Object> entry : parameters.entrySet()) {
-            Object pValue = entry.getValue();
-            Class class1 = pValue.getClass();
-            pmmlRequestDataBuilder.addParameter(entry.getKey(), pValue, class1);
-        }
-        return pmmlRequestDataBuilder.build();
     }
 
     private static double regressionFunction(double x, double y) {
