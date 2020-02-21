@@ -279,18 +279,18 @@ public class PMMLClassificationModelEvaluatorTest {
         }
     }
 
-    private void commonVerifyPMM4Result(PMML4Result toVerify) {
-        assertNotNull(toVerify);
-        assertEquals(StatusCode.OK.getName(), toVerify.getResultCode());
-        assertEquals(TARGET_FIELD_NAME, toVerify.getResultObjectName());
-        assertEquals("clerical", toVerify.getResultVariables().get(TARGET_FIELD_NAME));
-    }
-
     private LinkedHashMap<String, Double> getResultMap(int size) {
         return IntStream.range(0, size).boxed().collect(Collectors.toMap(integer -> "Field-" + integer,
                                                                          Integer::doubleValue,
                                                                          (o1, o2) -> o1,
                                                                          LinkedHashMap::new));
+    }
+
+    private void commonVerifyPMM4Result(PMML4Result toVerify) {
+        assertNotNull(toVerify);
+        assertEquals(StatusCode.OK.getName(), toVerify.getResultCode());
+        assertEquals(TARGET_FIELD_NAME, toVerify.getResultObjectName());
+        assertEquals("clerical", toVerify.getResultVariables().get(TARGET_FIELD_NAME));
     }
 
     private PMMLContext getContext() {

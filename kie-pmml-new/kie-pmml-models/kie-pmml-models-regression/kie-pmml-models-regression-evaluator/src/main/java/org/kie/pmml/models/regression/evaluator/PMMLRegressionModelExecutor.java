@@ -29,7 +29,13 @@ import static org.kie.pmml.models.regression.evaluator.PMMLRegresssionModelEvalu
 
 public class PMMLRegressionModelExecutor implements PMMLModelExecutor {
 
-    private static final String INVALID_NORMALIZATION_METHOD = "Invalid Normalization Method ";
+    private static final String INVALID_NORMALIZATION_METHOD = "Invalid Normalization Method %s";
+    private static final String EXPECTED_AT_LEAST_TWO_REGRESSION_TABLES_RETRIEVED = "Expected at least two RegressionTables, retrieved %s";
+    private static final String EXPECTED_TWO_REGRESSION_TABLES_RETRIEVED = "Expected two RegressionTables, retrieved %s";
+    private static final String EXPECTED_A_KIE_PMMLREGRESSION_MODEL_RECEIVED = "Expected a KiePMMLRegressionModel, received %s ";
+    private static final String TARGET_FIELD_REQUIRED_RETRIEVED = "TargetField required, retrieved %s";
+    private static final String EXPECTED_ONE_REGRESSION_TABLE_RETRIEVED = "Expected one RegressionTable, retrieved %s";
+    private static final String INVALID_TARGET_TYPE = "Invalid target type %s";
 
     @Override
     public PMML_MODEL getPMMLModelType() {
@@ -45,7 +51,7 @@ public class PMMLRegressionModelExecutor implements PMMLModelExecutor {
 
     private void validate(KiePMMLModel toValidate) {
         if (!(toValidate instanceof KiePMMLRegressionModel)) {
-            throw new KiePMMLModelException("Expected a KiePMMLRegressionModel, received a " + toValidate.getClass().getName());
+            throw new KiePMMLModelException(String.format(EXPECTED_A_KIE_PMMLREGRESSION_MODEL_RECEIVED, toValidate.getClass().getName()));
         }
         if (((KiePMMLRegressionModel) toValidate).getRegressionTables() == null || ((KiePMMLRegressionModel) toValidate).getRegressionTables().isEmpty()) {
             throw new KiePMMLModelException("At least one RegressionTable required");
@@ -59,10 +65,10 @@ public class PMMLRegressionModelExecutor implements PMMLModelExecutor {
 
     private void validateRegression(KiePMMLRegressionModel toValidate) {
         if (toValidate.getTargetField() == null || StringUtils.isEmpty(toValidate.getTargetField().trim())) {
-            throw new KiePMMLInternalException("TargetField required, retrieved " + toValidate.getTargetField());
+            throw new KiePMMLInternalException(String.format(TARGET_FIELD_REQUIRED_RETRIEVED, toValidate.getTargetField()));
         }
         if (toValidate.getRegressionTables().size() != 1) {
-            throw new KiePMMLModelException("Expected one RegressionTable, retrieved " + toValidate.getRegressionTables().size());
+            throw new KiePMMLModelException(String.format(EXPECTED_ONE_REGRESSION_TABLE_RETRIEVED, toValidate.getRegressionTables().size()));
         }
         switch (toValidate.getRegressionNormalizationMethod()) {
             case NONE:
@@ -75,7 +81,7 @@ public class PMMLRegressionModelExecutor implements PMMLModelExecutor {
             case CAUCHIT:
                 return;
             default:
-                throw new KiePMMLModelException(INVALID_NORMALIZATION_METHOD + toValidate.getRegressionNormalizationMethod());
+                throw new KiePMMLModelException(String.format(INVALID_NORMALIZATION_METHOD, toValidate.getRegressionNormalizationMethod()));
         }
     }
 
@@ -88,7 +94,7 @@ public class PMMLRegressionModelExecutor implements PMMLModelExecutor {
                 validateClassificationOrdinal(toValidate);
                 break;
             default:
-                throw new KiePMMLModelException("Invalid target type " + toValidate.getTargetOpType());
+                throw new KiePMMLModelException(String.format(INVALID_TARGET_TYPE, toValidate.getTargetOpType()));
         }
     }
 
@@ -109,11 +115,11 @@ public class PMMLRegressionModelExecutor implements PMMLModelExecutor {
             case LOGLOG:
             case NONE:
                 if (toValidate.getRegressionTables().size() != 2) {
-                    throw new KiePMMLModelException("Expected two RegressionTables, retrieved " + toValidate.getRegressionTables().size());
+                    throw new KiePMMLModelException(String.format(EXPECTED_TWO_REGRESSION_TABLES_RETRIEVED, toValidate.getRegressionTables().size()));
                 }
                 return;
             default:
-                throw new KiePMMLModelException(INVALID_NORMALIZATION_METHOD + toValidate.getRegressionNormalizationMethod());
+                throw new KiePMMLModelException(String.format(INVALID_NORMALIZATION_METHOD, toValidate.getRegressionNormalizationMethod()));
         }
     }
 
@@ -121,17 +127,13 @@ public class PMMLRegressionModelExecutor implements PMMLModelExecutor {
         switch (toValidate.getRegressionNormalizationMethod()) {
             case SOFTMAX:
             case SIMPLEMAX:
-                if (toValidate.getRegressionTables().size() < 2) {
-                    throw new KiePMMLModelException("Expected at least two RegressionTables, retrieved " + toValidate.getRegressionTables().size());
-                }
-                return;
             case NONE:
-                if (toValidate.getRegressionTables().size() < 3) {
-                    throw new KiePMMLModelException("Expected three RegressionTables, retrieved " + toValidate.getRegressionTables().size());
+                if (toValidate.getRegressionTables().size() < 2) {
+                    throw new KiePMMLModelException(String.format(EXPECTED_AT_LEAST_TWO_REGRESSION_TABLES_RETRIEVED, toValidate.getRegressionTables().size()));
                 }
                 return;
             default:
-                throw new KiePMMLModelException(INVALID_NORMALIZATION_METHOD + toValidate.getRegressionNormalizationMethod());
+                throw new KiePMMLModelException(String.format(INVALID_NORMALIZATION_METHOD, toValidate.getRegressionNormalizationMethod()));
         }
     }
 
@@ -144,11 +146,11 @@ public class PMMLRegressionModelExecutor implements PMMLModelExecutor {
             case LOGLOG:
             case NONE:
                 if (toValidate.getRegressionTables().size() < 2) {
-                    throw new KiePMMLModelException("Expected at least two RegressionTables, retrieved " + toValidate.getRegressionTables().size());
+                    throw new KiePMMLModelException(String.format(EXPECTED_AT_LEAST_TWO_REGRESSION_TABLES_RETRIEVED, toValidate.getRegressionTables().size()));
                 }
                 return;
             default:
-                throw new KiePMMLModelException(INVALID_NORMALIZATION_METHOD + toValidate.getRegressionNormalizationMethod());
+                throw new KiePMMLModelException(String.format(INVALID_NORMALIZATION_METHOD, toValidate.getRegressionNormalizationMethod()));
         }
     }
 }
