@@ -21,9 +21,15 @@ import java.math.BigInteger;
 import java.time.Duration;
 import java.time.Period;
 import java.util.Comparator;
+import java.util.LinkedHashMap;
 import java.util.LinkedHashSet;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
+import java.util.SortedMap;
+import java.util.SortedSet;
+import java.util.TreeMap;
+import java.util.TreeSet;
 import java.util.function.BiFunction;
 import java.util.function.Function;
 import java.util.stream.Collectors;
@@ -37,7 +43,10 @@ import org.optaplanner.core.api.score.stream.uni.UniConstraintCollector;
 import static java.util.Arrays.asList;
 import static java.util.Arrays.stream;
 import static java.util.Collections.emptyList;
+import static java.util.Collections.emptyMap;
 import static java.util.Collections.emptySet;
+import static java.util.Collections.emptySortedMap;
+import static java.util.Collections.emptySortedSet;
 import static java.util.Collections.singleton;
 import static java.util.Collections.singletonList;
 import static org.junit.Assert.assertEquals;
@@ -1735,6 +1744,32 @@ public class ConstraintCollectorsTest {
     }
 
     @Test
+    public void toSortedSet() {
+        UniConstraintCollector<Integer, ?, SortedSet<Integer>> collector = ConstraintCollectors.toSortedSet();
+        Object container = collector.supplier().get();
+        // Add first value, we have one now.
+        int firstValue = 2;
+        Runnable firstRetractor = accumulate(collector, container, firstValue);
+        assertResult(collector, container, asSortedSet(firstValue));
+        // Add second value, we have two now.
+        int secondValue = 1;
+        Runnable secondRetractor = accumulate(collector, container, secondValue);
+        assertResult(collector, container, asSortedSet(firstValue, secondValue));
+        // Add third value, same as the second. We now have three values, two of which are the same.
+        Runnable thirdRetractor = accumulate(collector, container, secondValue);
+        assertResult(collector, container, asSortedSet(firstValue, secondValue));
+        // Retract one instance of the second value; we only have two values now.
+        secondRetractor.run();
+        assertResult(collector, container,asSortedSet(firstValue, secondValue));
+        // Retract final instance of the second value; we only have one value now.
+        thirdRetractor.run();
+        assertResult(collector, container, asSortedSet(firstValue));
+        // Retract last value; there are no values now.
+        firstRetractor.run();
+        assertResult(collector, container, emptySortedSet());
+    }
+
+    @Test
     public void toList() {
         UniConstraintCollector<Integer, ?, List<Integer>> collector = ConstraintCollectors.toList();
         Object container = collector.supplier().get();
@@ -1786,6 +1821,35 @@ public class ConstraintCollectorsTest {
         // Retract last value; there are no values now.
         firstRetractor.run();
         assertResult(collector, container, emptySet());
+    }
+
+    @Test
+    public void toSortedSetBi() {
+        BiConstraintCollector<Integer, Integer, ?, SortedSet<Integer>> collector =
+                ConstraintCollectors.toSortedSet(Integer::sum);
+        Object container = collector.supplier().get();
+        // Add first value, we have one now.
+        int firstValueA = 2;
+        int firstValueB = 1;
+        Runnable firstRetractor = accumulate(collector, container, firstValueA, firstValueB);
+        assertResult(collector, container, asSortedSet(3));
+        // Add second value, we have two now.
+        int secondValueA = 3;
+        int secondValueB = 4;
+        Runnable secondRetractor = accumulate(collector, container, secondValueA, secondValueB);
+        assertResult(collector, container, asSortedSet(3, 7));
+        // Add third value, same as the second. We now have three values, two of which are the same.
+        Runnable thirdRetractor = accumulate(collector, container, secondValueA, secondValueB);
+        assertResult(collector, container, asSortedSet(3, 7));
+        // Retract one instance of the second value; we only have two values now.
+        secondRetractor.run();
+        assertResult(collector, container, asSortedSet(3, 7));
+        // Retract final instance of the second value; we only have one value now.
+        thirdRetractor.run();
+        assertResult(collector, container, asSortedSet(3));
+        // Retract last value; there are no values now.
+        firstRetractor.run();
+        assertResult(collector, container, emptySortedSet());
     }
 
     @Test
@@ -1845,6 +1909,37 @@ public class ConstraintCollectorsTest {
         // Retract last value; there are no values now.
         firstRetractor.run();
         assertResult(collector, container, emptySet());
+    }
+
+    @Test
+    public void toSortedSetTri() {
+        TriConstraintCollector<Integer, Integer, Integer, ?, SortedSet<Integer>> collector =
+                ConstraintCollectors.toSortedSet((a, b, c) -> a + b + c);
+        Object container = collector.supplier().get();
+        // Add first value, we have one now.
+        int firstValueA = 2;
+        int firstValueB = 1;
+        int firstValueC = 3;
+        Runnable firstRetractor = accumulate(collector, container, firstValueA, firstValueB, firstValueC);
+        assertResult(collector, container, asSortedSet(6));
+        // Add second value, we have two now.
+        int secondValueA = 3;
+        int secondValueB = 4;
+        int secondValueC = 2;
+        Runnable secondRetractor = accumulate(collector, container, secondValueA, secondValueB, secondValueC);
+        assertResult(collector, container, asSortedSet(6, 9));
+        // Add third value, same as the second. We now have three values, two of which are the same.
+        Runnable thirdRetractor = accumulate(collector, container, secondValueA, secondValueB, secondValueC);
+        assertResult(collector, container, asSortedSet(6, 9));
+        // Retract one instance of the second value; we only have two values now.
+        secondRetractor.run();
+        assertResult(collector, container, asSortedSet(6, 9));
+        // Retract final instance of the second value; we only have one value now.
+        thirdRetractor.run();
+        assertResult(collector, container, asSortedSet(6));
+        // Retract last value; there are no values now.
+        firstRetractor.run();
+        assertResult(collector, container, emptySortedSet());
     }
 
     @Test
@@ -1912,6 +2007,39 @@ public class ConstraintCollectorsTest {
     }
 
     @Test
+    public void toSortedSetQuad() {
+        QuadConstraintCollector<Integer, Integer, Integer, Integer, ?, SortedSet<Integer>> collector =
+                ConstraintCollectors.toSortedSet((a, b, c, d) -> a + b + c + d);
+        Object container = collector.supplier().get();
+        // Add first value, we have one now.
+        int firstValueA = 2;
+        int firstValueB = 1;
+        int firstValueC = 3;
+        int firstValueD = 4;
+        Runnable firstRetractor = accumulate(collector, container, firstValueA, firstValueB, firstValueC, firstValueD);
+        assertResult(collector, container, asSortedSet(10));
+        // Add second value, we have two now.
+        int secondValueA = 3;
+        int secondValueB = 4;
+        int secondValueC = 2;
+        int secondValueD = 5;
+        Runnable secondRetractor = accumulate(collector, container, secondValueA, secondValueB, secondValueC, secondValueD);
+        assertResult(collector, container, asSortedSet(10, 14));
+        // Add third value, same as the second. We now have three values, two of which are the same.
+        Runnable thirdRetractor = accumulate(collector, container, secondValueA, secondValueB, secondValueC, secondValueD);
+        assertResult(collector, container, asSortedSet(10, 14));
+        // Retract one instance of the second value; we only have two values now.
+        secondRetractor.run();
+        assertResult(collector, container, asSortedSet(10, 14));
+        // Retract final instance of the second value; we only have one value now.
+        thirdRetractor.run();
+        assertResult(collector, container, asSortedSet(10));
+        // Retract last value; there are no values now.
+        firstRetractor.run();
+        assertResult(collector, container, emptySortedSet());
+    }
+
+    @Test
     public void toListQuad() {
         QuadConstraintCollector<Integer, Integer, Integer, Integer, ?, List<Integer>> collector =
                 ConstraintCollectors.toList((a, b, c, d) -> a + b + c + d);
@@ -1942,6 +2070,470 @@ public class ConstraintCollectorsTest {
         // Retract last value; there are no values now.
         firstRetractor.run();
         assertResult(collector, container, emptyList());
+    }
+
+    @Test
+    public void toMap() {
+        UniConstraintCollector<Integer, ?, Map<Integer, Set<Integer>>> collector =
+                ConstraintCollectors.toMap(Function.identity(), Function.identity());
+        Object container = collector.supplier().get();
+
+        assertResult(collector, container, emptyMap());
+        // Add first value, we have one now.
+        int firstValue = 2;
+        Runnable firstRetractor = accumulate(collector, container, firstValue);
+        assertResult(collector, container, asMap(2, singleton(2)));
+        // Add second value, we have two now.
+        int secondValue = 1;
+        Runnable secondRetractor = accumulate(collector, container, secondValue);
+        assertResult(collector, container, asMap(2, singleton(2), 1, singleton(1)));
+        // Add third value, same as the second. We now have three values, two of which map to the same key.
+        Runnable thirdRetractor = accumulate(collector, container, secondValue);
+        assertResult(collector, container, asMap(2, singleton(2), 1, singleton(1)));
+        // Retract one instance of the second value; we only have two values now.
+        secondRetractor.run();
+        assertResult(collector, container, asMap(2, singleton(2), 1, singleton(1)));
+        // Retract final instance of the second value; we only have one value now.
+        thirdRetractor.run();
+        assertResult(collector, container, asMap(2, singleton(2)));
+        // Retract last value; there are no values now.
+        firstRetractor.run();
+        assertResult(collector, container, emptyMap());
+    }
+
+    @Test
+    public void toMapMerged() {
+        UniConstraintCollector<Integer, ?, Map<Integer, Integer>> collector =
+                ConstraintCollectors.toMap(Function.identity(), Function.identity(), Integer::sum);
+        Object container = collector.supplier().get();
+
+        assertResult(collector, container, emptyMap());
+        // Add first value, we have one now.
+        int firstValue = 2;
+        Runnable firstRetractor = accumulate(collector, container, firstValue);
+        assertResult(collector, container, asMap(2, 2));
+        // Add second value, we have two now.
+        int secondValue = 1;
+        Runnable secondRetractor = accumulate(collector, container, secondValue);
+        assertResult(collector, container, asMap(2, 2, 1, 1));
+        // Add third value, same as the second. We now have three values, two of which map to the same key.
+        Runnable thirdRetractor = accumulate(collector, container, secondValue);
+        assertResult(collector, container, asMap(2, 2, 1, 1));
+        // Retract one instance of the second value; we only have two values now.
+        secondRetractor.run();
+        assertResult(collector, container, asMap(2, 2, 1, 1));
+        // Retract final instance of the second value; we only have one value now.
+        thirdRetractor.run();
+        assertResult(collector, container, asMap(2, 2));
+        // Retract last value; there are no values now.
+        firstRetractor.run();
+        assertResult(collector, container, emptyMap());
+    }
+
+    @Test
+    public void toBiMap() {
+        BiConstraintCollector<Integer, Integer, ?, Map<Integer, Set<Integer>>> collector =
+                ConstraintCollectors.toMap(Integer::sum, Integer::sum);
+        Object container = collector.supplier().get();
+
+        assertResult(collector, container, emptyMap());
+        // Add first value, we have one now.
+        int firstValue = 2;
+        Runnable firstRetractor = accumulate(collector, container, firstValue, 0);
+        assertResult(collector, container, asMap(2, singleton(2)));
+        // Add second value, we have two now.
+        int secondValue = 1;
+        Runnable secondRetractor = accumulate(collector, container, secondValue, 0);
+        assertResult(collector, container, asMap(2, singleton(2), 1, singleton(1)));
+        // Add third value, same as the second. We now have three values, two of which map to the same key.
+        Runnable thirdRetractor = accumulate(collector, container, secondValue, 0);
+        assertResult(collector, container, asMap(2, singleton(2), 1, singleton(1)));
+        // Retract one instance of the second value; we only have two values now.
+        secondRetractor.run();
+        assertResult(collector, container, asMap(2, singleton(2), 1, singleton(1)));
+        // Retract final instance of the second value; we only have one value now.
+        thirdRetractor.run();
+        assertResult(collector, container, asMap(2, singleton(2)));
+        // Retract last value; there are no values now.
+        firstRetractor.run();
+        assertResult(collector, container, emptyMap());
+    }
+
+    @Test
+    public void toMapBiMerged() {
+        BiConstraintCollector<Integer, Integer, ?, Map<Integer, Integer>> collector =
+                ConstraintCollectors.toMap(Integer::sum, Integer::sum, Integer::sum);
+        Object container = collector.supplier().get();
+
+        assertResult(collector, container, emptyMap());
+        // Add first value, we have one now.
+        int firstValue = 2;
+        Runnable firstRetractor = accumulate(collector, container, firstValue, 0);
+        assertResult(collector, container, asMap(2, 2));
+        // Add second value, we have two now.
+        int secondValue = 1;
+        Runnable secondRetractor = accumulate(collector, container, secondValue, 0);
+        assertResult(collector, container, asMap(2, 2, 1, 1));
+        // Add third value, same as the second. We now have three values, two of which map to the same key.
+        Runnable thirdRetractor = accumulate(collector, container, secondValue, 0);
+        assertResult(collector, container, asMap(2, 2, 1, 1));
+        // Retract one instance of the second value; we only have two values now.
+        secondRetractor.run();
+        assertResult(collector, container, asMap(2, 2, 1, 1));
+        // Retract final instance of the second value; we only have one value now.
+        thirdRetractor.run();
+        assertResult(collector, container, asMap(2, 2));
+        // Retract last value; there are no values now.
+        firstRetractor.run();
+        assertResult(collector, container, emptyMap());
+    }
+
+    @Test
+    public void toMapTri() {
+        TriConstraintCollector<Integer, Integer, Integer, ?, Map<Integer, Set<Integer>>> collector =
+                ConstraintCollectors.toMap((a, b, c) -> a + b + c, (a, b, c) -> a + b + c);
+        Object container = collector.supplier().get();
+
+        assertResult(collector, container, emptyMap());
+        // Add first value, we have one now.
+        int firstValue = 2;
+        Runnable firstRetractor = accumulate(collector, container, firstValue, 0, 0);
+        assertResult(collector, container, asMap(2, singleton(2)));
+        // Add second value, we have two now.
+        int secondValue = 1;
+        Runnable secondRetractor = accumulate(collector, container, secondValue, 0, 0);
+        assertResult(collector, container, asMap(2, singleton(2), 1, singleton(1)));
+        // Add third value, same as the second. We now have three values, two of which map to the same key.
+        Runnable thirdRetractor = accumulate(collector, container, secondValue, 0, 0);
+        assertResult(collector, container, asMap(2, singleton(2), 1, singleton(1)));
+        // Retract one instance of the second value; we only have two values now.
+        secondRetractor.run();
+        assertResult(collector, container, asMap(2, singleton(2), 1, singleton(1)));
+        // Retract final instance of the second value; we only have one value now.
+        thirdRetractor.run();
+        assertResult(collector, container, asMap(2, singleton(2)));
+        // Retract last value; there are no values now.
+        firstRetractor.run();
+        assertResult(collector, container, emptyMap());
+    }
+
+    @Test
+    public void toMapTriMerged() {
+        TriConstraintCollector<Integer, Integer, Integer, ?, Map<Integer, Integer>> collector =
+                ConstraintCollectors.toMap((a, b, c) -> a + b + c, (a, b, c) -> a + b + c, Integer::sum);
+        Object container = collector.supplier().get();
+
+        assertResult(collector, container, emptyMap());
+        // Add first value, we have one now.
+        int firstValue = 2;
+        Runnable firstRetractor = accumulate(collector, container, firstValue, 0, 0);
+        assertResult(collector, container, asMap(2, 2));
+        // Add second value, we have two now.
+        int secondValue = 1;
+        Runnable secondRetractor = accumulate(collector, container, secondValue, 0, 0);
+        assertResult(collector, container, asMap(2, 2, 1, 1));
+        // Add third value, same as the second. We now have three values, two of which map to the same key.
+        Runnable thirdRetractor = accumulate(collector, container, secondValue, 0, 0);
+        assertResult(collector, container, asMap(2, 2, 1, 1));
+        // Retract one instance of the second value; we only have two values now.
+        secondRetractor.run();
+        assertResult(collector, container, asMap(2, 2, 1, 1));
+        // Retract final instance of the second value; we only have one value now.
+        thirdRetractor.run();
+        assertResult(collector, container, asMap(2, 2));
+        // Retract last value; there are no values now.
+        firstRetractor.run();
+        assertResult(collector, container, emptyMap());
+    }
+
+    @Test
+    public void toMapQuad() {
+        QuadConstraintCollector<Integer, Integer, Integer, Integer, ?, Map<Integer, Set<Integer>>> collector =
+                ConstraintCollectors.toMap((a, b, c, d) -> a + b + c + d, (a, b, c, d) -> a + b + c + d);
+        Object container = collector.supplier().get();
+
+        assertResult(collector, container, emptyMap());
+        // Add first value, we have one now.
+        int firstValue = 2;
+        Runnable firstRetractor = accumulate(collector, container, firstValue, 0, 0, 0);
+        assertResult(collector, container, asMap(2, singleton(2)));
+        // Add second value, we have two now.
+        int secondValue = 1;
+        Runnable secondRetractor = accumulate(collector, container, secondValue, 0, 0, 0);
+        assertResult(collector, container, asMap(2, singleton(2), 1, singleton(1)));
+        // Add third value, same as the second. We now have three values, two of which map to the same key.
+        Runnable thirdRetractor = accumulate(collector, container, secondValue, 0, 0, 0);
+        assertResult(collector, container, asMap(2, singleton(2), 1, singleton(1)));
+        // Retract one instance of the second value; we only have two values now.
+        secondRetractor.run();
+        assertResult(collector, container, asMap(2, singleton(2), 1, singleton(1)));
+        // Retract final instance of the second value; we only have one value now.
+        thirdRetractor.run();
+        assertResult(collector, container, asMap(2, singleton(2)));
+        // Retract last value; there are no values now.
+        firstRetractor.run();
+        assertResult(collector, container, emptyMap());
+    }
+
+    @Test
+    public void toMapQuadMerged() {
+        QuadConstraintCollector<Integer, Integer, Integer, Integer, ?, Map<Integer, Integer>> collector =
+                ConstraintCollectors.toMap((a, b, c, d) -> a + b + c + d, (a, b, c, d) -> a + b + c + d, Integer::sum);
+        Object container = collector.supplier().get();
+
+        assertResult(collector, container, emptyMap());
+        // Add first value, we have one now.
+        int firstValue = 2;
+        Runnable firstRetractor = accumulate(collector, container, firstValue, 0, 0, 0);
+        assertResult(collector, container, asMap(2, 2));
+        // Add second value, we have two now.
+        int secondValue = 1;
+        Runnable secondRetractor = accumulate(collector, container, secondValue, 0, 0, 0);
+        assertResult(collector, container, asMap(2, 2, 1, 1));
+        // Add third value, same as the second. We now have three values, two of which map to the same key.
+        Runnable thirdRetractor = accumulate(collector, container, secondValue, 0, 0, 0);
+        assertResult(collector, container, asMap(2, 2, 1, 1));
+        // Retract one instance of the second value; we only have two values now.
+        secondRetractor.run();
+        assertResult(collector, container, asMap(2, 2, 1, 1));
+        // Retract final instance of the second value; we only have one value now.
+        thirdRetractor.run();
+        assertResult(collector, container, asMap(2, 2));
+        // Retract last value; there are no values now.
+        firstRetractor.run();
+        assertResult(collector, container, emptyMap());
+    }
+
+    @Test
+    public void toSortedMap() {
+        UniConstraintCollector<Integer, ?, SortedMap<Integer, Set<Integer>>> collector =
+                ConstraintCollectors.toSortedMap(a -> a, Function.identity());
+        Object container = collector.supplier().get();
+
+        assertResult(collector, container, emptySortedMap());
+        // Add first value, we have one now.
+        int firstValue = 2;
+        Runnable firstRetractor = accumulate(collector, container, firstValue);
+        assertResult(collector, container, asSortedMap(2, singleton(2)));
+        // Add second value, we have two now.
+        int secondValue = 1;
+        Runnable secondRetractor = accumulate(collector, container, secondValue);
+        assertResult(collector, container, asSortedMap(2, singleton(2), 1, singleton(1)));
+        // Add third value, same as the second. We now have three values, two of which map to the same key.
+        Runnable thirdRetractor = accumulate(collector, container, secondValue);
+        assertResult(collector, container, asSortedMap(2, singleton(2), 1, singleton(1)));
+        // Retract one instance of the second value; we only have two values now.
+        secondRetractor.run();
+        assertResult(collector, container, asSortedMap(2, singleton(2), 1, singleton(1)));
+        // Retract final instance of the second value; we only have one value now.
+        thirdRetractor.run();
+        assertResult(collector, container, asSortedMap(2, singleton(2)));
+        // Retract last value; there are no values now.
+        firstRetractor.run();
+        assertResult(collector, container, emptySortedMap());
+    }
+
+    @Test
+    public void toSortedMapMerged() {
+        UniConstraintCollector<Integer, ?, SortedMap<Integer, Integer>> collector =
+                ConstraintCollectors.toSortedMap(a -> a, Function.identity(), Integer::sum);
+        Object container = collector.supplier().get();
+
+        assertResult(collector, container, emptySortedMap());
+        // Add first value, we have one now.
+        int firstValue = 2;
+        Runnable firstRetractor = accumulate(collector, container, firstValue);
+        assertResult(collector, container, asSortedMap(2, 2));
+        // Add second value, we have two now.
+        int secondValue = 1;
+        Runnable secondRetractor = accumulate(collector, container, secondValue);
+        assertResult(collector, container, asSortedMap(2, 2, 1, 1));
+        // Add third value, same as the second. We now have three values, two of which map to the same key.
+        Runnable thirdRetractor = accumulate(collector, container, secondValue);
+        assertResult(collector, container, asSortedMap(2, 2, 1, 1));
+        // Retract one instance of the second value; we only have two values now.
+        secondRetractor.run();
+        assertResult(collector, container, asSortedMap(2, 2, 1, 1));
+        // Retract final instance of the second value; we only have one value now.
+        thirdRetractor.run();
+        assertResult(collector, container, asSortedMap(2, 2));
+        // Retract last value; there are no values now.
+        firstRetractor.run();
+        assertResult(collector, container, emptySortedMap());
+    }
+
+    @Test
+    public void toSortedMapBi() {
+        BiConstraintCollector<Integer, Integer, ?, SortedMap<Integer, Set<Integer>>> collector =
+                ConstraintCollectors.toSortedMap(Integer::sum, Integer::sum);
+        Object container = collector.supplier().get();
+
+        assertResult(collector, container, emptySortedMap());
+        // Add first value, we have one now.
+        int firstValue = 2;
+        Runnable firstRetractor = accumulate(collector, container, firstValue, 0);
+        assertResult(collector, container, asSortedMap(2, singleton(2)));
+        // Add second value, we have two now.
+        int secondValue = 1;
+        Runnable secondRetractor = accumulate(collector, container, secondValue, 0);
+        assertResult(collector, container, asSortedMap(2, singleton(2), 1, singleton(1)));
+        // Add third value, same as the second. We now have three values, two of which map to the same key.
+        Runnable thirdRetractor = accumulate(collector, container, secondValue, 0);
+        assertResult(collector, container, asSortedMap(2, singleton(2), 1, singleton(1)));
+        // Retract one instance of the second value; we only have two values now.
+        secondRetractor.run();
+        assertResult(collector, container, asSortedMap(2, singleton(2), 1, singleton(1)));
+        // Retract final instance of the second value; we only have one value now.
+        thirdRetractor.run();
+        assertResult(collector, container, asSortedMap(2, singleton(2)));
+        // Retract last value; there are no values now.
+        firstRetractor.run();
+        assertResult(collector, container, emptySortedMap());
+    }
+
+    @Test
+    public void toSortedMapBiMerged() {
+        BiConstraintCollector<Integer, Integer, ?, SortedMap<Integer, Integer>> collector =
+                ConstraintCollectors.toSortedMap(Integer::sum, Integer::sum, Integer::sum);
+        Object container = collector.supplier().get();
+
+        assertResult(collector, container, emptySortedMap());
+        // Add first value, we have one now.
+        int firstValue = 2;
+        Runnable firstRetractor = accumulate(collector, container, firstValue, 0);
+        assertResult(collector, container, asSortedMap(2, 2));
+        // Add second value, we have two now.
+        int secondValue = 1;
+        Runnable secondRetractor = accumulate(collector, container, secondValue, 0);
+        assertResult(collector, container, asSortedMap(2, 2, 1, 1));
+        // Add third value, same as the second. We now have three values, two of which map to the same key.
+        Runnable thirdRetractor = accumulate(collector, container, secondValue, 0);
+        assertResult(collector, container, asSortedMap(2, 2, 1, 1));
+        // Retract one instance of the second value; we only have two values now.
+        secondRetractor.run();
+        assertResult(collector, container, asSortedMap(2, 2, 1, 1));
+        // Retract final instance of the second value; we only have one value now.
+        thirdRetractor.run();
+        assertResult(collector, container, asSortedMap(2, 2));
+        // Retract last value; there are no values now.
+        firstRetractor.run();
+        assertResult(collector, container, emptySortedMap());
+    }
+
+    @Test
+    public void toSortedMapTri() {
+        TriConstraintCollector<Integer, Integer, Integer, ?, SortedMap<Integer, Set<Integer>>> collector =
+                ConstraintCollectors.toSortedMap((a, b, c) -> a + b + c, (a, b, c) -> a + b + c);
+        Object container = collector.supplier().get();
+
+        assertResult(collector, container, emptySortedMap());
+        // Add first value, we have one now.
+        int firstValue = 2;
+        Runnable firstRetractor = accumulate(collector, container, firstValue, 0, 0);
+        assertResult(collector, container, asSortedMap(2, singleton(2)));
+        // Add second value, we have two now.
+        int secondValue = 1;
+        Runnable secondRetractor = accumulate(collector, container, secondValue, 0, 0);
+        assertResult(collector, container, asSortedMap(2, singleton(2), 1, singleton(1)));
+        // Add third value, same as the second. We now have three values, two of which map to the same key.
+        Runnable thirdRetractor = accumulate(collector, container, secondValue, 0, 0);
+        assertResult(collector, container, asSortedMap(2, singleton(2), 1, singleton(1)));
+        // Retract one instance of the second value; we only have two values now.
+        secondRetractor.run();
+        assertResult(collector, container, asSortedMap(2, singleton(2), 1, singleton(1)));
+        // Retract final instance of the second value; we only have one value now.
+        thirdRetractor.run();
+        assertResult(collector, container, asSortedMap(2, singleton(2)));
+        // Retract last value; there are no values now.
+        firstRetractor.run();
+        assertResult(collector, container, emptySortedMap());
+    }
+
+    @Test
+    public void toSortedMapTriMerged() {
+        TriConstraintCollector<Integer, Integer, Integer, ?, SortedMap<Integer, Integer>> collector =
+                ConstraintCollectors.toSortedMap((a, b, c) -> a + b + c, (a, b, c) -> a + b + c, Integer::sum);
+        Object container = collector.supplier().get();
+
+        assertResult(collector, container, emptySortedMap());
+        // Add first value, we have one now.
+        int firstValue = 2;
+        Runnable firstRetractor = accumulate(collector, container, firstValue, 0, 0);
+        assertResult(collector, container, asSortedMap(2, 2));
+        // Add second value, we have two now.
+        int secondValue = 1;
+        Runnable secondRetractor = accumulate(collector, container, secondValue, 0, 0);
+        assertResult(collector, container, asSortedMap(2, 2, 1, 1));
+        // Add third value, same as the second. We now have three values, two of which map to the same key.
+        Runnable thirdRetractor = accumulate(collector, container, secondValue, 0, 0);
+        assertResult(collector, container, asSortedMap(2, 2, 1, 1));
+        // Retract one instance of the second value; we only have two values now.
+        secondRetractor.run();
+        assertResult(collector, container, asSortedMap(2, 2, 1, 1));
+        // Retract final instance of the second value; we only have one value now.
+        thirdRetractor.run();
+        assertResult(collector, container, asSortedMap(2, 2));
+        // Retract last value; there are no values now.
+        firstRetractor.run();
+        assertResult(collector, container, emptySortedMap());
+    }
+
+    @Test
+    public void toSortedMapQuad() {
+        QuadConstraintCollector<Integer, Integer, Integer, Integer, ?, SortedMap<Integer, Set<Integer>>> collector =
+                ConstraintCollectors.toSortedMap((a, b, c, d) -> a + b + c + d, (a, b, c, d) -> a + b + c + d);
+        Object container = collector.supplier().get();
+
+        assertResult(collector, container, emptySortedMap());
+        // Add first value, we have one now.
+        int firstValue = 2;
+        Runnable firstRetractor = accumulate(collector, container, firstValue, 0, 0, 0);
+        assertResult(collector, container, asSortedMap(2, singleton(2)));
+        // Add second value, we have two now.
+        int secondValue = 1;
+        Runnable secondRetractor = accumulate(collector, container, secondValue, 0, 0, 0);
+        assertResult(collector, container, asSortedMap(2, singleton(2), 1, singleton(1)));
+        // Add third value, same as the second. We now have three values, two of which map to the same key.
+        Runnable thirdRetractor = accumulate(collector, container, secondValue, 0, 0, 0);
+        assertResult(collector, container, asSortedMap(2, singleton(2), 1, singleton(1)));
+        // Retract one instance of the second value; we only have two values now.
+        secondRetractor.run();
+        assertResult(collector, container, asSortedMap(2, singleton(2), 1, singleton(1)));
+        // Retract final instance of the second value; we only have one value now.
+        thirdRetractor.run();
+        assertResult(collector, container, asSortedMap(2, singleton(2)));
+        // Retract last value; there are no values now.
+        firstRetractor.run();
+        assertResult(collector, container, emptySortedMap());
+    }
+
+    @Test
+    public void toSortedMapQuadMerged() {
+        QuadConstraintCollector<Integer, Integer, Integer, Integer, ?, SortedMap<Integer, Integer>> collector =
+                ConstraintCollectors.toSortedMap((a, b, c, d) -> a + b + c + d, (a, b, c, d) -> a + b + c + d, Integer::sum);
+        Object container = collector.supplier().get();
+
+        assertResult(collector, container, emptySortedMap());
+        // Add first value, we have one now.
+        int firstValue = 2;
+        Runnable firstRetractor = accumulate(collector, container, firstValue, 0, 0, 0);
+        assertResult(collector, container, asSortedMap(2, 2));
+        // Add second value, we have two now.
+        int secondValue = 1;
+        Runnable secondRetractor = accumulate(collector, container, secondValue, 0, 0, 0);
+        assertResult(collector, container, asSortedMap(2, 2, 1, 1));
+        // Add third value, same as the second. We now have three values, two of which map to the same key.
+        Runnable thirdRetractor = accumulate(collector, container, secondValue, 0, 0, 0);
+        assertResult(collector, container, asSortedMap(2, 2, 1, 1));
+        // Retract one instance of the second value; we only have two values now.
+        secondRetractor.run();
+        assertResult(collector, container, asSortedMap(2, 2, 1, 1));
+        // Retract final instance of the second value; we only have one value now.
+        thirdRetractor.run();
+        assertResult(collector, container, asSortedMap(2, 2));
+        // Retract last value; there are no values now.
+        firstRetractor.run();
+        assertResult(collector, container, emptySortedMap());
     }
 
     private static <A, B, C, D> Runnable accumulate(QuadConstraintCollector<A, A, A, A, B, C> collector, Object container,
@@ -1987,8 +2579,38 @@ public class ConstraintCollectorsTest {
         assertEquals("Collector (" + collector + ") did not produce expected result.", expectedResult, actualResult);
     }
 
+    @SafeVarargs
     private static <X> Set<X> asSet(X... items) {
         return stream(items).collect(Collectors.toCollection(LinkedHashSet::new));
+    }
+
+    @SafeVarargs
+    private static <X> SortedSet<X> asSortedSet(X... items) {
+        return stream(items).collect(Collectors.toCollection(TreeSet::new));
+    }
+
+    private static <X, Y> Map<X, Y> asMap(X x1, Y y1) {
+        Map<X, Y> result = new LinkedHashMap<>(0);
+        result.put(x1, y1);
+        return result;
+    }
+
+    private static <X, Y> Map<X, Y> asMap(X x1, Y y1, X x2, Y y2) {
+        Map<X, Y> result = asMap(x1, y1);
+        result.put(x2, y2);
+        return result;
+    }
+
+    private static <X extends Comparable<X>, Y> SortedMap<X, Y> asSortedMap(X x1, Y y1) {
+        SortedMap<X, Y> result = new TreeMap<>();
+        result.put(x1, y1);
+        return result;
+    }
+
+    private static <X extends Comparable<X>, Y> SortedMap<X, Y> asSortedMap(X x1, Y y1, X x2, Y y2) {
+        SortedMap<X, Y> result = asSortedMap(x1, y1);
+        result.put(x2, y2);
+        return result;
     }
 
 }
