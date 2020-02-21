@@ -15,7 +15,6 @@
  */
 package org.kie.pmml.models.regression.model;
 
-import java.io.Serializable;
 import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
@@ -43,7 +42,7 @@ public class KiePMMLRegressionModel extends KiePMMLModel {
     private boolean isScorable = true;
     private Optional<String> algorithmName = Optional.empty();
     private Optional<MODEL_TYPE> modelType = Optional.empty();
-    private Optional<List<Serializable>> targetValues = Optional.empty();
+    private Optional<List<Object>> targetValues = Optional.empty();
     private Optional<List<KiePMMLOutputField>> outputFields = Optional.empty();
 
     protected KiePMMLRegressionModel() {
@@ -81,7 +80,7 @@ public class KiePMMLRegressionModel extends KiePMMLModel {
         return isScorable;
     }
 
-    public Optional<List<Serializable>> getTargetValues() {
+    public Optional<List<Object>> getTargetValues() {
         return targetValues;
     }
 
@@ -162,7 +161,7 @@ public class KiePMMLRegressionModel extends KiePMMLModel {
             return this;
         }
 
-        public Builder withTargetValues(List<Serializable> targetValues) {
+        public Builder withTargetValues(List<Object> targetValues) {
             toBuild.targetValues = Optional.ofNullable(targetValues);
             return this;
         }

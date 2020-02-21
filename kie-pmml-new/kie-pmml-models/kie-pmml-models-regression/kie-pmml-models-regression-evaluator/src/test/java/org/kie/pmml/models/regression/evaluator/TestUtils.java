@@ -42,7 +42,7 @@ public class TestUtils {
     public static final String ALGORITHM_NAME = "linearRegression";
     public static final MINING_FUNCTION _MINING_FUNCTION = MINING_FUNCTION.REGRESSION;
     public static final MODEL_TYPE _MODEL_TYPE = MODEL_TYPE.LINEAR_REGRESSION;
-    public static final REGRESSION_NORMALIZATION_METHOD _REGRESSION_NORMALIZATION_METHOD = REGRESSION_NORMALIZATION_METHOD.SIMPLEMAX;
+    public static final REGRESSION_NORMALIZATION_METHOD _REGRESSION_NORMALIZATION_METHOD = REGRESSION_NORMALIZATION_METHOD.SOFTMAX;
     public static final boolean SCORABLE = true;
     public static final String TARGETFIELD_NAME = "number_of_claims";
     public static final OP_TYPE _OP_TYPE = OP_TYPE.CONTINUOUS;

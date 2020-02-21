@@ -20,7 +20,6 @@ import java.util.Objects;
 import java.util.stream.Collectors;
 
 import org.dmg.pmml.DataDictionary;
-import org.dmg.pmml.DataField;
 import org.dmg.pmml.MiningFunction;
 import org.dmg.pmml.OpType;
 import org.dmg.pmml.regression.RegressionModel;
@@ -29,8 +28,8 @@ import org.kie.pmml.commons.model.enums.OP_TYPE;
 import org.kie.pmml.commons.model.enums.PMML_MODEL;
 import org.kie.pmml.commons.model.tuples.KiePMMLNameOpType;
 import org.kie.pmml.compiler.api.provider.ModelImplementationProvider;
-import org.kie.pmml.models.regression.model.KiePMMLRegressionModel;
 import org.kie.pmml.models.regression.compiler.factories.KiePMMLRegressionModelFactory;
+import org.kie.pmml.models.regression.model.KiePMMLRegressionModel;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -181,8 +180,8 @@ public class RegressionModelImplementationProvider implements ModelImplementatio
 
     private boolean isBinary(DataDictionary dataDictionary, String categoricalFieldName) {
         return dataDictionary.getDataFields().stream()
-                .filter(dataField -> Objects.equals(dataField.getName().getValue(), categoricalFieldName))
-                .map(DataField::getValues).count() == 2;
+                .filter(dataField -> Objects.equals(dataField.getName().getValue(), categoricalFieldName)).mapToDouble(dataField -> dataField.getValues().size())
+                .findFirst().orElse(0) == 2;
     }
 
     private String getCategoricalTargetName(DataDictionary dataDictionary, RegressionModel toValidate) throws KiePMMLException {

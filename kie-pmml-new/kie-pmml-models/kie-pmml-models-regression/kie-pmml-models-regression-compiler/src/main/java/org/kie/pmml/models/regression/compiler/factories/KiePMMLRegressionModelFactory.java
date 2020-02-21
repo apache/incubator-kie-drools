@@ -15,6 +15,7 @@
  */
 package org.kie.pmml.models.regression.compiler.factories;
 
+import java.util.Collections;
 import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
@@ -23,6 +24,7 @@ import java.util.stream.Collectors;
 import org.dmg.pmml.DataDictionary;
 import org.dmg.pmml.DataField;
 import org.dmg.pmml.OutputField;
+import org.dmg.pmml.Value;
 import org.dmg.pmml.regression.RegressionModel;
 import org.kie.pmml.commons.exceptions.KiePMMLException;
 import org.kie.pmml.commons.model.KiePMMLOutputField;
@@ -65,6 +67,7 @@ public class KiePMMLRegressionModelFactory {
                 .withRegressionNormalizationMethod(REGRESSION_NORMALIZATION_METHOD.byName(model.getNormalizationMethod().value()))
                 .withScorable(model.isScorable())
                 .withTargetField(targetFieldName.orElse(null))
+                .withTargetValues(targetDataField.map(dataField -> dataField.getValues().stream().map(Value::getValue).collect(Collectors.toList())).orElse(Collections.emptyList()))
                 .withOutputFields(outputFields)
                 .build();
     }

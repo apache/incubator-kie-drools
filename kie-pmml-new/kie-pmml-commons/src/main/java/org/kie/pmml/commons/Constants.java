@@ -19,4 +19,11 @@ public class Constants {
 
     // TODO {gcardosi} replace with dynamically generated one
     public static final String RELEASE_ID = "org.kie:kie-pmml-new:7.33.0-SNAPSHOT";
+
+    public static final String UNEXPECTED_OP_TYPE = "Unexpected opType %s";
+    public static final String EXPECTED_TWO_ENTRIES_RETRIEVED = "Expected two entries, retrieved %d";
+    public static final String UNEXPECTED_OPERATION_TYPE = "Unexpected Operation Type %s";
+    public static final String UNEXPECTED_NORMALIZATION_METHOD = "Unexpected Normalization Method %s";
+
+
 }

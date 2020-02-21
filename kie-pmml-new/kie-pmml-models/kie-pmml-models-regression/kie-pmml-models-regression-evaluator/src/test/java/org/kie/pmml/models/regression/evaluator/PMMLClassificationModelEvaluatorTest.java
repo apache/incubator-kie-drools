@@ -78,7 +78,7 @@ public class PMMLClassificationModelEvaluatorTest {
     }
 
     @Test
-    public void getNONECATEGORICALProbabilityMap() {
+    public void getNONEProbabilityMap() {
          /*
         pj = yj for j = 1 to N - 1,
         pN = 1 - Sum[ i = 1 to N - 1 ]( pi )
@@ -88,7 +88,7 @@ public class PMMLClassificationModelEvaluatorTest {
         resultMap.put("y_professional", 0.26);
         resultMap.put("y_trainee", 0.11);
         final double sum = 0.34 + 0.26;
-        final LinkedHashMap<String, Double> retrieved = PMMLClassificationModelEvaluator.getNONECATEGORICALProbabilityMap(resultMap);
+        final LinkedHashMap<String, Double> retrieved = PMMLClassificationModelEvaluator.getNONEProbabilityMap(resultMap);
         commonVerifyMap(resultMap, retrieved);
         String[] retrievedKeys = retrieved.keySet().toArray(new String[0]);
         for (int i = 0; i < retrieved.size(); i++) {
@@ -97,45 +97,18 @@ public class PMMLClassificationModelEvaluatorTest {
         }
     }
 
-    @Test
-    public void getNONEORDINALProbabilityMap() {
-        /*
-        p1 = y1
-        pj = yj - yj-1, for 2 ≤ j < N
-        pN = 1 - yN-1
-         */
-        final LinkedHashMap<String, Double> resultMap = new LinkedHashMap<>();
-        resultMap.put("y_clerical", 0.34);
-        resultMap.put("y_professional", 0.26);
-        resultMap.put("y_trainee", 0.11);
-        final LinkedHashMap<String, Double> retrieved = PMMLClassificationModelEvaluator.getNONEORDINALProbabilityMap(resultMap);
-        commonVerifyMap(resultMap, retrieved);
-        String[] retrievedKeys = retrieved.keySet().toArray(new String[0]);
-        for (int i = 0; i < retrieved.size(); i++) {
-            double expected;
-            if (i == 0) {
-                expected = resultMap.get(retrievedKeys[i]);
-            } else if (i < retrieved.size() - 1) {
-                expected = resultMap.get(retrievedKeys[i]) - resultMap.get(retrievedKeys[i - 1]);
-            } else {
-                expected = 1 - retrieved.get(retrievedKeys[i - 1]);
-            }
-            assertEquals(expected, retrieved.get(retrievedKeys[i]), 0.0);
-        }
+    @Test(expected = KiePMMLModelException.class)
+    public void getLOGITProbabilityMapSmallerSize() {
+        PMMLClassificationModelEvaluator.getLOGITProbabilityMap(new LinkedHashMap<>());
     }
 
     @Test(expected = KiePMMLModelException.class)
-    public void getLOGITCATEGORICALProbabilityMapSmallerSize() {
-        PMMLClassificationModelEvaluator.getLOGITCATEGORICALProbabilityMap(new LinkedHashMap<>());
-    }
-
-    @Test(expected = KiePMMLModelException.class)
-    public void getLOGITCATEGORICALProbabilityMapBiggerSize() {
-        PMMLClassificationModelEvaluator.getLOGITCATEGORICALProbabilityMap(getResultMap(3));
+    public void getLOGITProbabilityMapBiggerSize() {
+        PMMLClassificationModelEvaluator.getLOGITProbabilityMap(getResultMap(3));
     }
 
     @Test
-    public void getLOGITCATEGORICALProbabilityMap() {
+    public void getLOGITProbabilityMap() {
         /*
         p1 = 1 / ( 1 + exp( -y1 ) ),
         p2 = 1 - p1
@@ -143,7 +116,7 @@ public class PMMLClassificationModelEvaluatorTest {
         final LinkedHashMap<String, Double> resultMap = new LinkedHashMap<>();
         resultMap.put("y_clerical", 0.34);
         resultMap.put("y_professional", 0.26);
-        final LinkedHashMap<String, Double> retrieved = PMMLClassificationModelEvaluator.getLOGITCATEGORICALProbabilityMap(resultMap);
+        final LinkedHashMap<String, Double> retrieved = PMMLClassificationModelEvaluator.getLOGITProbabilityMap(resultMap);
         commonVerifyMap(resultMap, retrieved);
         String[] retrievedKeys = retrieved.keySet().toArray(new String[0]);
         for (int i = 0; i < retrieved.size(); i++) {
@@ -158,109 +131,85 @@ public class PMMLClassificationModelEvaluatorTest {
         }
     }
 
-    @Test
-    public void getLOGITORDINALProbabilityMap() {
-        /*
-        inverse of logit function: F(y)= 1/(1+exp(-y)), e.g. F(15) = 1
-        p1 = F(y1)
-        pj = F(yj) - F(yj-1), for 2 ≤ j < N
-        pN = 1 - F(yN-1)
-         */
-        final LinkedHashMap<String, Double> resultMap = new LinkedHashMap<>();
-        resultMap.put("y_clerical", 0.34);
-        resultMap.put("y_professional", 0.26);
-        resultMap.put("y_trainee", 0.11);
-        final LinkedHashMap<String, Double> retrieved = PMMLClassificationModelEvaluator.getLOGITORDINALProbabilityMap(resultMap);
-        commonVerifyMap(resultMap, retrieved);
-        String[] retrievedKeys = retrieved.keySet().toArray(new String[0]);
-        for (int i = 0; i < retrieved.size(); i++) {
-            double value = resultMap.get(retrievedKeys[i]);
-            double expected;
-            if (i == 0) {
-                expected = 1 / (1 + Math.exp(-value));
-            } else if (i < retrieved.size() - 1) {
-                expected = (1 / (1 + Math.exp(-value))) - retrieved.get(retrievedKeys[i - 1]);
-            } else {
-                expected = 1 - retrieved.get(retrievedKeys[i - 1]);
-            }
-            assertEquals(expected, retrieved.get(retrievedKeys[i]), 0.0);
-        }
+    @Test(expected = KiePMMLModelException.class)
+    public void getPROBITProbabilityMapSmallerSize() {
+        PMMLClassificationModelEvaluator.getPROBITProbabilityMap(new LinkedHashMap<>());
     }
 
     @Test(expected = KiePMMLModelException.class)
-    public void getPROBITCATEGORICALProbabilityMapSmallerSize() {
-        PMMLClassificationModelEvaluator.getPROBITCATEGORICALProbabilityMap(new LinkedHashMap<>());
-    }
-
-    @Test(expected = KiePMMLModelException.class)
-    public void getPROBITCATEGORICALProbabilityMapBiggerSize() {
-        PMMLClassificationModelEvaluator.getPROBITCATEGORICALProbabilityMap(getResultMap(3));
+    public void getPROBITProbabilityMapBiggerSize() {
+        PMMLClassificationModelEvaluator.getPROBITProbabilityMap(getResultMap(3));
     }
 
     @Test
-    public void getPROBITCATEGORICALProbabilityMap() {
+    public void getPROBITProbabilityMap() {
         /*
         p1 = integral(from -∞ to y1)(1/sqrt(2*π))exp(-0.5*u*u)du,
         p2 = 1 - p1
          */
         final LinkedHashMap<String, Double> resultMap = new LinkedHashMap<>();
-        resultMap.put("y_clerical", 0.34);
-        resultMap.put("y_professional", 0.26);
-        final LinkedHashMap<String, Double> retrieved = PMMLClassificationModelEvaluator.getPROBITCATEGORICALProbabilityMap(resultMap);
+        resultMap.put("clerical", 3.5503450000000036);
+        resultMap.put("professional", 3.725499999999993);
+        final LinkedHashMap<String, Double> expectedMap = new LinkedHashMap<>();
+        expectedMap.put("clerical", 0.9998076366940838);
+        expectedMap.put("professional", 1.9236330591620998E-4);
+        final LinkedHashMap<String, Double> retrieved = PMMLClassificationModelEvaluator.getPROBITProbabilityMap(resultMap);
         commonVerifyMap(resultMap, retrieved);
-        String[] retrievedKeys = retrieved.keySet().toArray(new String[0]);
-        for (int i = 0; i < retrieved.size(); i++) {
-            double value = resultMap.get(retrievedKeys[i]);
-            double expected;
-            if (i == 0) {
-                expected = 1 / (1 + Math.exp(-value));
-            } else if (i < retrieved.size() - 1) {
-                expected = (1 / (1 + Math.exp(-value))) - retrieved.get(retrievedKeys[i - 1]);
-            } else {
-                expected = 1 - retrieved.get(retrievedKeys[i - 1]);
-            }
-            assertEquals(expected, retrieved.get(retrievedKeys[i]), 0.0);
-        }
-    }
-
-    @Test
-    public void getPROBITORDINALProbabilityMap() {
+        retrieved.forEach((s, aDouble) -> assertEquals(expectedMap.get(s), aDouble));
     }
 
     @Test(expected = KiePMMLModelException.class)
-    public void getCLOGLOGCATEGORICALProbabilityMapSmallerSize() {
-        PMMLClassificationModelEvaluator.getCLOGLOGCATEGORICALProbabilityMap(new LinkedHashMap<>());
+    public void getCLOGLOGProbabilityMapSmallerSize() {
+        PMMLClassificationModelEvaluator.getCLOGLOGProbabilityMap(new LinkedHashMap<>());
     }
 
     @Test(expected = KiePMMLModelException.class)
-    public void getCLOGLOGCATEGORICALProbabilityMapBiggerSize() {
-        PMMLClassificationModelEvaluator.getCLOGLOGCATEGORICALProbabilityMap(getResultMap(3));
+    public void getCLOGLOGProbabilityMapBiggerSize() {
+        PMMLClassificationModelEvaluator.getCLOGLOGProbabilityMap(getResultMap(3));
     }
 
     @Test
-    public void getCLOGLOGCATEGORICALProbabilityMap() {
-    }
-
-    @Test
-    public void getCLOGLOGORDINALProbabilityMap() {
+    public void getCLOGLOGProbabilityMap() {
+        /*
+        p1 = 1 - exp( -exp( y1 ) ),
+        p2 = 1 - p1
+         */
+        final LinkedHashMap<String, Double> resultMap = new LinkedHashMap<>();
+        resultMap.put("clerical", 3.5503450000000036);
+        resultMap.put("professional", 3.725499999999993);
+        final LinkedHashMap<String, Double> expectedMap = new LinkedHashMap<>();
+        expectedMap.put("clerical", 0.9999999999999992);
+        expectedMap.put("professional", 7.771561172376096E-16);
+        final LinkedHashMap<String, Double> retrieved = PMMLClassificationModelEvaluator.getCLOGLOGProbabilityMap(resultMap);
+        commonVerifyMap(resultMap, retrieved);
+        retrieved.forEach((s, aDouble) -> assertEquals(expectedMap.get(s), aDouble));
     }
 
     @Test(expected = KiePMMLModelException.class)
-    public void getCAUCHITCATEGORICALProbabilityMapSmallerSize() {
-        PMMLClassificationModelEvaluator.getCAUCHITCATEGORICALProbabilityMap(new LinkedHashMap<>());
+    public void getCAUCHITProbabilityMapSmallerSize() {
+        PMMLClassificationModelEvaluator.getCAUCHITProbabilityMap(new LinkedHashMap<>());
     }
 
     @Test(expected = KiePMMLModelException.class)
-    public void getCAUCHITCATEGORICALProbabilityMapBiggerSize() {
-        PMMLClassificationModelEvaluator.getCAUCHITCATEGORICALProbabilityMap(getResultMap(3));
+    public void getCAUCHITProbabilityMapBiggerSize() {
+        PMMLClassificationModelEvaluator.getCAUCHITProbabilityMap(getResultMap(3));
     }
 
     @Test
-    public void getCAUCHITCATEGORICALProbabilityMap() {
-    }
-
-    @Test
-    public void getCAUCHITORDINALProbabilityMap() {
+    public void getCAUCHITProbabilityMap() {
+        /*
+        p1 = 0.5 + (1/π) arctan( y1 ),
+        p2 = 1 - p1
+         */
+        final LinkedHashMap<String, Double> resultMap = new LinkedHashMap<>();
+        resultMap.put("clerical", 3.5503450000000036);
+        resultMap.put("professional", 3.725499999999993);
+        final LinkedHashMap<String, Double> expectedMap = new LinkedHashMap<>();
+        expectedMap.put("clerical", 0.9126080459780144);
+        expectedMap.put("professional", 0.08739195402198563);
+        final LinkedHashMap<String, Double> retrieved = PMMLClassificationModelEvaluator.getCAUCHITProbabilityMap(resultMap);
+        commonVerifyMap(resultMap, retrieved);
+        retrieved.forEach((s, aDouble) -> assertEquals(expectedMap.get(s), aDouble));
     }
 
     private void commonVerifyMap(LinkedHashMap<String, Double> resultMap, LinkedHashMap<String, Double> retrieved) {

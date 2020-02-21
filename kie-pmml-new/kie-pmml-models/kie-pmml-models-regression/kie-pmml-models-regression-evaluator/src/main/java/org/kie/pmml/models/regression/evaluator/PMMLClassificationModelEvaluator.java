@@ -22,6 +22,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 import java.util.concurrent.atomic.AtomicReference;
+import java.util.function.DoubleUnaryOperator;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 
@@ -36,14 +37,13 @@ import org.kie.pmml.models.regression.model.KiePMMLRegressionModel;
 import org.kie.pmml.models.regression.model.KiePMMLRegressionTable;
 import org.kie.pmml.models.regression.model.enums.REGRESSION_NORMALIZATION_METHOD;
 
+import static org.kie.pmml.commons.Constants.EXPECTED_TWO_ENTRIES_RETRIEVED;
+import static org.kie.pmml.commons.Constants.UNEXPECTED_NORMALIZATION_METHOD;
+import static org.kie.pmml.commons.Constants.UNEXPECTED_OPERATION_TYPE;
+import static org.kie.pmml.commons.Constants.UNEXPECTED_OP_TYPE;
 import static org.kie.pmml.commons.enums.StatusCode.OK;
 
 public class PMMLClassificationModelEvaluator {
-
-    private static final String UNEXPECTED_OP_TYPE = "Unexpected opType %s";
-    private static final String EXPECTED_TWO_ENTRIES_RETRIEVED = "Expected two entries, retrieved %d";
-    private static final String UNEXPECTED_OPERATION_TYPE = "Unexpected Operation Type %s";
-    private static final String UNEXPECTED_NORMALIZATION_METHOD = "Unexpected Normalization Method %s";
 
     private PMMLClassificationModelEvaluator() {
         // Avoid instantiation
@@ -59,6 +59,7 @@ public class PMMLClassificationModelEvaluator {
                                           kiePMMLRegressionTable -> {
                                               PMML4Result retrieved = PMMLRegresssionModelEvaluator.evaluateRegression(kiePMMLRegressionTable.getTargetCategory().toString(),
                                                                                                                        REGRESSION_NORMALIZATION_METHOD.NONE,
+                                                                                                                       OP_TYPE.ORDINAL,
                                                                                                                        kiePMMLRegressionTable,
                                                                                                                        requestData);
                                               return (Double) retrieved.getResultVariables().get(retrieved.getResultObjectName());
@@ -104,45 +105,35 @@ public class PMMLClassificationModelEvaluator {
             case NONE:
                 switch (opType) {
                     case CATEGORICAL:
-                        return getNONECATEGORICALProbabilityMap(resultMap);
-                    case ORDINAL:
-                        return getNONEORDINALProbabilityMap(resultMap);
+                        return getNONEProbabilityMap(resultMap);
                     default:
                         throw new KiePMMLModelException(String.format(UNEXPECTED_OP_TYPE, opType));
                 }
             case LOGIT:
                 switch (opType) {
                     case CATEGORICAL:
-                        return getLOGITCATEGORICALProbabilityMap(resultMap);
-                    case ORDINAL:
-                        return getLOGITORDINALProbabilityMap(resultMap);
+                        return getLOGITProbabilityMap(resultMap);
                     default:
                         throw new KiePMMLModelException(String.format(UNEXPECTED_OP_TYPE, opType));
                 }
             case PROBIT:
                 switch (opType) {
                     case CATEGORICAL:
-                        return getPROBITCATEGORICALProbabilityMap(resultMap);
-                    case ORDINAL:
-                        return getPROBITORDINALProbabilityMap(resultMap);
+                        return getPROBITProbabilityMap(resultMap);
                     default:
                         throw new KiePMMLModelException(String.format(UNEXPECTED_OP_TYPE, opType));
                 }
             case CLOGLOG:
                 switch (opType) {
                     case CATEGORICAL:
-                        return getCLOGLOGCATEGORICALProbabilityMap(resultMap);
-                    case ORDINAL:
-                        return getCLOGLOGORDINALProbabilityMap(resultMap);
+                        return getCLOGLOGProbabilityMap(resultMap);
                     default:
                         throw new KiePMMLModelException(String.format(UNEXPECTED_OP_TYPE, opType));
                 }
             case CAUCHIT:
                 switch (opType) {
                     case CATEGORICAL:
-                        return getCAUCHITCATEGORICALProbabilityMap(resultMap);
-                    case ORDINAL:
-                        return getCAUCHITORDINALProbabilityMap(resultMap);
+                        return getCAUCHITProbabilityMap(resultMap);
                     default:
                         throw new KiePMMLModelException(String.format(UNEXPECTED_OPERATION_TYPE, opType));
                 }
@@ -152,8 +143,10 @@ public class PMMLClassificationModelEvaluator {
     }
 
     protected static LinkedHashMap<String, Double> getSOFTMAXProbabilityMap(final LinkedHashMap<String, Double> resultMap) {
-        Map<String, Double> tmp = resultMap.entrySet().stream().collect(Collectors.toMap(Map.Entry::getKey,
-                                                                                         entry -> Math.exp(entry.getValue())));
+        LinkedHashMap<String, Double> tmp = resultMap.entrySet().stream().collect(Collectors.toMap(Map.Entry::getKey,
+                                                                                                   entry -> Math.exp(entry.getValue()),
+                                                                                                   (o1, o2) -> o1,
+                                                                                                   LinkedHashMap::new));
         double sum = tmp.values().stream().mapToDouble(value -> value).sum();
         return tmp.entrySet().stream().collect(Collectors.toMap(Map.Entry::getKey,
                                                                 entry -> entry.getValue() / sum,
@@ -169,7 +162,7 @@ public class PMMLClassificationModelEvaluator {
                                                                       LinkedHashMap::new));
     }
 
-    protected static LinkedHashMap<String, Double> getNONECATEGORICALProbabilityMap(final LinkedHashMap<String, Double> resultMap) {
+    protected static LinkedHashMap<String, Double> getNONEProbabilityMap(final LinkedHashMap<String, Double> resultMap) {
         LinkedHashMap<String, Double> toReturn = new LinkedHashMap<>();
         String[] resultMapKeys = resultMap.keySet().toArray(new String[0]);
         AtomicReference<Double> sumCounter = new AtomicReference<>(0.0);
@@ -186,162 +179,40 @@ public class PMMLClassificationModelEvaluator {
         return toReturn;
     }
 
-    protected static LinkedHashMap<String, Double> getNONEORDINALProbabilityMap(final LinkedHashMap<String, Double> resultMap) {
-        LinkedHashMap<String, Double> toReturn = new LinkedHashMap<>();
-        String[] resultMapKeys = resultMap.keySet().toArray(new String[0]);
-        AtomicReference<Double> sumCounter = new AtomicReference<>(0.0);
-        IntStream.range(0, resultMap.size()).forEach(index -> {
-            String key = resultMapKeys[index];
-            double value = resultMap.get(key);
-            if (index == 0) {
-                toReturn.put(key, value);
-                sumCounter.set(value);
-            } else if (index < resultMapKeys.length - 1) {
-                double y = value - sumCounter.get();
-                toReturn.put(key, y);
-                sumCounter.set(y);
-            } else { // last element
-                toReturn.put(key, 1 - sumCounter.get());
-            }
-        });
-        return toReturn;
+    protected static LinkedHashMap<String, Double> getLOGITProbabilityMap(final LinkedHashMap<String, Double> resultMap) {
+        DoubleUnaryOperator firstItemOperator = aDouble -> 1 / (1 + Math.exp(0 - aDouble));
+        DoubleUnaryOperator secondItemOperator = aDouble -> 1 - aDouble;
+        return getProbabilityMap(resultMap, firstItemOperator, secondItemOperator);
     }
 
-    protected static LinkedHashMap<String, Double> getLOGITCATEGORICALProbabilityMap(final LinkedHashMap<String, Double> resultMap) {
+    protected static LinkedHashMap<String, Double> getPROBITProbabilityMap(final LinkedHashMap<String, Double> resultMap) {
+        DoubleUnaryOperator firstItemOperator = aDouble -> new NormalDistribution().cumulativeProbability(aDouble);
+        DoubleUnaryOperator secondItemOperator = aDouble -> 1 - aDouble;
+        return getProbabilityMap(resultMap, firstItemOperator, secondItemOperator);
+    }
+
+    protected static LinkedHashMap<String, Double> getCLOGLOGProbabilityMap(final LinkedHashMap<String, Double> resultMap) {
+        DoubleUnaryOperator firstItemOperator = aDouble -> 1 - Math.exp(0 - Math.exp(aDouble));
+        DoubleUnaryOperator secondItemOperator = aDouble -> 1 - aDouble;
+        return getProbabilityMap(resultMap, firstItemOperator, secondItemOperator);
+    }
+
+    protected static LinkedHashMap<String, Double> getCAUCHITProbabilityMap(final LinkedHashMap<String, Double> resultMap) {
+        DoubleUnaryOperator firstItemOperator = aDouble -> 0.5 + (1 / Math.PI) * Math.atan(aDouble);
+        DoubleUnaryOperator secondItemOperator = aDouble -> 1 - aDouble;
+        return getProbabilityMap(resultMap, firstItemOperator, secondItemOperator);
+    }
+
+    protected static LinkedHashMap<String, Double> getProbabilityMap(final LinkedHashMap<String, Double> resultMap, DoubleUnaryOperator firstItemOperator, DoubleUnaryOperator secondItemOperator) {
         if (resultMap.size() != 2) {
             throw new KiePMMLModelException(String.format(EXPECTED_TWO_ENTRIES_RETRIEVED, resultMap.size()));
         }
         LinkedHashMap<String, Double> toReturn = new LinkedHashMap<>();
         String[] resultMapKeys = resultMap.keySet().toArray(new String[0]);
-        double y = 1 / (1 + Math.exp(0 - resultMap.get(resultMapKeys[0])));
-        toReturn.put(resultMapKeys[0], y);
-        toReturn.put(resultMapKeys[1], 1 - y);
-        return toReturn;
-    }
-
-    protected static LinkedHashMap<String, Double> getLOGITORDINALProbabilityMap(final LinkedHashMap<String, Double> resultMap) {
-        LinkedHashMap<String, Double> toReturn = new LinkedHashMap<>();
-        String[] resultMapKeys = resultMap.keySet().toArray(new String[0]);
-        AtomicReference<Double> sumCounter = new AtomicReference<>(0.0);
-        IntStream.range(0, resultMap.size()).forEach(index -> {
-            String key = resultMapKeys[index];
-            if (index == 0) {
-                double y1 = 1 / (1 + Math.exp(0 - resultMap.get(key)));
-                toReturn.put(key, y1);
-                sumCounter.set(y1);
-            } else if (index < resultMapKeys.length - 1) {
-                double y1 = (1 / (1 + Math.exp(0 - resultMap.get(key)))) - sumCounter.get();
-                toReturn.put(key, y1);
-                sumCounter.set(y1);
-            } else { // last element
-                toReturn.put(key, 1 - sumCounter.get());
-            }
-        });
-        return toReturn;
-    }
-
-    protected static LinkedHashMap<String, Double> getPROBITCATEGORICALProbabilityMap(final LinkedHashMap<String, Double> resultMap) {
-        if (resultMap.size() != 2) {
-            throw new KiePMMLModelException(String.format(EXPECTED_TWO_ENTRIES_RETRIEVED, resultMap.size()));
-        }
-        LinkedHashMap<String, Double> toReturn = new LinkedHashMap<>();
-        Map.Entry<String, Double>[] entrySet = (Map.Entry<String, Double>[]) resultMap.entrySet().toArray();
-        Map.Entry<String, Double> entry = entrySet[0];
-        double y = new NormalDistribution().cumulativeProbability(entry.getValue());
-        toReturn.put(entry.getKey(), y);
-        entry = entrySet[1];
-        toReturn.put(entry.getKey(), 1 - y);
-        return toReturn;
-    }
-
-    protected static LinkedHashMap<String, Double> getPROBITORDINALProbabilityMap(final LinkedHashMap<String, Double> resultMap) {
-        LinkedHashMap<String, Double> toReturn = new LinkedHashMap<>();
-        Map.Entry<String, Double>[] entrySet = (Map.Entry<String, Double>[]) resultMap.entrySet().toArray();
-        AtomicReference<Double> sumCounter = new AtomicReference<>(0.0);
-        IntStream.range(0, resultMap.size()).forEach(index -> {
-            Map.Entry<String, Double> entry1 = entrySet[index];
-            if (index == 0) {
-                double y1 = new NormalDistribution().cumulativeProbability(entry1.getValue());
-                toReturn.put(entry1.getKey(), y1);
-                sumCounter.set(y1);
-            } else if (index < entrySet.length - 1) {
-                double y1 = new NormalDistribution().cumulativeProbability(entry1.getValue()) - sumCounter.get();
-                toReturn.put(entry1.getKey(), y1);
-                sumCounter.set(y1);
-            } else { // last element
-                toReturn.put(entry1.getKey(), 1 - sumCounter.get());
-            }
-        });
-        return toReturn;
-    }
-
-    protected static LinkedHashMap<String, Double> getCLOGLOGCATEGORICALProbabilityMap(final LinkedHashMap<String, Double> resultMap) {
-        if (resultMap.size() != 2) {
-            throw new KiePMMLModelException(String.format(EXPECTED_TWO_ENTRIES_RETRIEVED, resultMap.size()));
-        }
-        LinkedHashMap<String, Double> toReturn = new LinkedHashMap<>();
-        Map.Entry<String, Double>[] entrySet = (Map.Entry<String, Double>[]) resultMap.entrySet().toArray();
-        Map.Entry<String, Double> entry = entrySet[0];
-        double y = 1 - Math.exp(0 - Math.exp(entry.getValue()));
-        toReturn.put(entry.getKey(), y);
-        entry = entrySet[1];
-        toReturn.put(entry.getKey(), 1 - y);
-        return toReturn;
-    }
-
-    protected static LinkedHashMap<String, Double> getCLOGLOGORDINALProbabilityMap(final LinkedHashMap<String, Double> resultMap) {
-        LinkedHashMap<String, Double> toReturn = new LinkedHashMap<>();
-        Map.Entry<String, Double>[] entrySet = (Map.Entry<String, Double>[]) resultMap.entrySet().toArray();
-        AtomicReference<Double> sumCounter = new AtomicReference<>(0.0);
-        IntStream.range(0, resultMap.size()).forEach(index -> {
-            Map.Entry<String, Double> entry1 = entrySet[index];
-            if (index == 0) {
-                double y1 = 1 - Math.exp(0 - Math.exp(entry1.getValue()));
-                toReturn.put(entry1.getKey(), y1);
-                sumCounter.set(y1);
-            } else if (index < entrySet.length - 1) {
-                double y1 = (1 - Math.exp(0 - Math.exp(entry1.getValue()))) - sumCounter.get();
-                toReturn.put(entry1.getKey(), y1);
-                sumCounter.set(y1);
-            } else { // last element
-                toReturn.put(entry1.getKey(), 1 - sumCounter.get());
-            }
-        });
-        return toReturn;
-    }
-
-    protected static LinkedHashMap<String, Double> getCAUCHITCATEGORICALProbabilityMap(final LinkedHashMap<String, Double> resultMap) {
-        if (resultMap.size() != 2) {
-            throw new KiePMMLModelException(String.format(EXPECTED_TWO_ENTRIES_RETRIEVED, resultMap.size()));
-        }
-        LinkedHashMap<String, Double> toReturn = new LinkedHashMap<>();
-        Map.Entry<String, Double>[] entrySet = (Map.Entry<String, Double>[]) resultMap.entrySet().toArray();
-        Map.Entry<String, Double> entry = entrySet[0];
-        double y = 0.5 + (1 / Math.PI) * Math.atan(entry.getValue());
-        toReturn.put(entry.getKey(), y);
-        entry = entrySet[1];
-        toReturn.put(entry.getKey(), 1 - y);
-        return toReturn;
-    }
-
-    protected static LinkedHashMap<String, Double> getCAUCHITORDINALProbabilityMap(final LinkedHashMap<String, Double> resultMap) {
-        LinkedHashMap<String, Double> toReturn = new LinkedHashMap<>();
-        Map.Entry<String, Double>[] entrySet = (Map.Entry<String, Double>[]) resultMap.entrySet().toArray();
-        AtomicReference<Double> sumCounter = new AtomicReference<>(0.0);
-        IntStream.range(0, resultMap.size()).forEach(index -> {
-            Map.Entry<String, Double> entry1 = entrySet[index];
-            if (index == 0) {
-                double y1 = 0.5 + (1 / Math.PI) * Math.atan(entry1.getValue());
-                toReturn.put(entry1.getKey(), y1);
-                sumCounter.set(y1);
-            } else if (index < entrySet.length - 1) {
-                double y1 = (0.5 + (1 / Math.PI) * Math.atan(entry1.getValue())) - sumCounter.get();
-                toReturn.put(entry1.getKey(), y1);
-                sumCounter.set(y1);
-            } else { // last element
-                toReturn.put(entry1.getKey(), 1 - sumCounter.get());
-            }
-        });
+        double firstItem = firstItemOperator.applyAsDouble(resultMap.get(resultMapKeys[0]));
+        double secondItem = secondItemOperator.applyAsDouble(firstItem);
+        toReturn.put(resultMapKeys[0], firstItem);
+        toReturn.put(resultMapKeys[1], secondItem);
         return toReturn;
     }
 }
