@@ -36,6 +36,7 @@ import org.drools.compiler.rule.builder.dialect.mvel.MVELDialect;
 import org.drools.core.base.ClassObjectType;
 import org.drools.core.base.DroolsQuery;
 import org.drools.core.base.EvaluatorWrapper;
+import org.drools.core.base.SimpleValueType;
 import org.drools.core.base.ValueType;
 import org.drools.core.base.evaluators.EvaluatorDefinition;
 import org.drools.core.base.evaluators.Operator;
@@ -196,7 +197,7 @@ public class MVELConstraintBuilder implements ConstraintBuilder {
             return new EvaluatorConstraint(field, evaluator, extractor);
         }
 
-        String mvelExpr = normalizeMVELLiteralExpression(expression, leftValue, operator, rightValue, restrictionDescr);
+        String mvelExpr = normalizeMVELLiteralExpression(vtype, field, expression, leftValue, operator, rightValue, negated, restrictionDescr);
         IndexUtil.ConstraintType constraintType = IndexUtil.ConstraintType.decode(operator, negated);
         MVELCompilationUnit compilationUnit = buildCompilationUnit(context, pattern, mvelExpr, aliases);
         EvaluatorWrapper[] operators = getOperators(buildOperators(context, pattern, restrictionDescr, aliases));
@@ -214,11 +215,18 @@ public class MVELConstraintBuilder implements ConstraintBuilder {
         return leftValue + " == " + rightValue;
     }
 
-    protected static String normalizeMVELLiteralExpression(String expr,
+    protected static String normalizeMVELLiteralExpression(ValueType vtype,
+                                                           FieldValue field,
+                                                           String expr,
                                                            String leftValue,
                                                            String operator,
                                                            String rightValue,
+                                                           boolean negated,
                                                            LiteralRestrictionDescr restrictionDescr) {
+        if (vtype.getSimpleType() == SimpleValueType.DATE) {
+            String normalized = leftValue + " " + operator + getNormalizeDate( vtype, field );
+            return negated ? "!(" + normalized + ")" : normalized;
+        }
         if (operator.equals("str")) {
             return normalizeStringOperator( leftValue, rightValue, restrictionDescr );
         }
