@@ -34,6 +34,7 @@ import com.github.javaparser.ast.expr.Expression;
 import com.github.javaparser.ast.expr.LambdaExpr;
 import com.github.javaparser.ast.expr.MethodCallExpr;
 import com.github.javaparser.ast.expr.NameExpr;
+import com.github.javaparser.ast.expr.StringLiteralExpr;
 import com.github.javaparser.ast.nodeTypes.NodeWithMembers;
 import com.github.javaparser.ast.type.ClassOrInterfaceType;
 import com.github.javaparser.ast.type.Type;
@@ -123,7 +124,8 @@ abstract class MaterializedLambda {
         lambdaClass.setImplementedTypes(createImplementedType());
         lambdaClass.addEntry(new EnumConstantDeclaration("INSTANCE"));
 
-        lambdaClass.addFieldWithInitializer(String.class, "EXPRESSION_HASH", StaticJavaParser.parseExpression("\"" + (md5Hash(lambdaExpr.toString())) + "\""),
+        String expressionHash = md5Hash(MATERIALIZED_LAMBDA_PRETTY_PRINTER.print(lambdaExpr));
+        lambdaClass.addFieldWithInitializer(String.class, "EXPRESSION_HASH", new StringLiteralExpr(expressionHash),
                                             Modifier.Keyword.PUBLIC, Modifier.Keyword.STATIC, Modifier.Keyword.FINAL);
         return lambdaClass;
     }
