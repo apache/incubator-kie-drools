@@ -503,6 +503,7 @@ public interface QuadConstraintStream<A, B, C, D> extends ConstraintStream {
      * As defined by {@link #reward(String, Score, ToIntQuadFunction)}.
      * @param constraintPackage never null
      * @param constraintName never null
+     * @param constraintWeight never null
      * @param matchWeigher never null
      * @return never null
      */
@@ -526,6 +527,7 @@ public interface QuadConstraintStream<A, B, C, D> extends ConstraintStream {
      * As defined by {@link #rewardLong(String, Score, ToLongQuadFunction)}.
      * @param constraintPackage never null
      * @param constraintName never null
+     * @param constraintWeight never null
      * @param matchWeigher never null
      * @return never null
      */
@@ -550,6 +552,7 @@ public interface QuadConstraintStream<A, B, C, D> extends ConstraintStream {
      * As defined by {@link #rewardBigDecimal(String, Score, QuadFunction)}.
      * @param constraintPackage never null
      * @param constraintName never null
+     * @param constraintWeight never null
      * @param matchWeigher never null
      * @return never null
      */

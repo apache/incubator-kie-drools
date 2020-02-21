@@ -829,6 +829,7 @@ public interface UniConstraintStream<A> extends ConstraintStream {
      * As defined by {@link #reward(String, Score, ToIntFunction)}.
      * @param constraintPackage never null
      * @param constraintName never null
+     * @param constraintWeight never null
      * @param matchWeigher never null
      * @return never null
      */
@@ -852,6 +853,7 @@ public interface UniConstraintStream<A> extends ConstraintStream {
      * As defined by {@link #rewardLong(String, Score, ToLongFunction)}.
      * @param constraintPackage never null
      * @param constraintName never null
+     * @param constraintWeight never null
      * @param matchWeigher never null
      * @return never null
      */
@@ -876,6 +878,7 @@ public interface UniConstraintStream<A> extends ConstraintStream {
      * As defined by {@link #rewardBigDecimal(String, Score, Function)}.
      * @param constraintPackage never null
      * @param constraintName never null
+     * @param constraintWeight never null
      * @param matchWeigher never null
      * @return never null
      */

@@ -632,6 +632,7 @@ public interface TriConstraintStream<A, B, C> extends ConstraintStream {
      * As defined by {@link #reward(String, Score, ToIntTriFunction)}.
      * @param constraintPackage never null
      * @param constraintName never null
+     * @param constraintWeight never null
      * @param matchWeigher never null
      * @return never null
      */
@@ -656,6 +657,7 @@ public interface TriConstraintStream<A, B, C> extends ConstraintStream {
      * As defined by {@link #rewardLong(String, Score, ToLongTriFunction)}.
      * @param constraintPackage never null
      * @param constraintName never null
+     * @param constraintWeight never null
      * @param matchWeigher never null
      * @return never null
      */
@@ -680,6 +682,7 @@ public interface TriConstraintStream<A, B, C> extends ConstraintStream {
      * As defined by {@link #rewardBigDecimal(String, Score, TriFunction)}.
      * @param constraintPackage never null
      * @param constraintName never null
+     * @param constraintWeight never null
      * @param matchWeigher never null
      * @return never null
      */

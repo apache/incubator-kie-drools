@@ -629,6 +629,7 @@ public interface BiConstraintStream<A, B> extends ConstraintStream {
      * As defined by {@link #reward(String, Score, ToIntBiFunction)}.
      * @param constraintPackage never null
      * @param constraintName never null
+     * @param constraintWeight never null
      * @param matchWeigher never null
      * @return never null
      */
@@ -653,6 +654,7 @@ public interface BiConstraintStream<A, B> extends ConstraintStream {
      * As defined by {@link #rewardLong(String, Score, ToLongBiFunction)}.
      * @param constraintPackage never null
      * @param constraintName never null
+     * @param constraintWeight never null
      * @param matchWeigher never null
      * @return never null
      */
@@ -677,6 +679,7 @@ public interface BiConstraintStream<A, B> extends ConstraintStream {
      * As defined by {@link #rewardBigDecimal(String, Score, BiFunction)}.
      * @param constraintPackage never null
      * @param constraintName never null
+     * @param constraintWeight never null
      * @param matchWeigher never null
      * @return never null
      */
