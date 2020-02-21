@@ -16,11 +16,6 @@
 
 package org.kie.pmml.regression.tests;
 
-import java.util.Arrays;
-import java.util.Collection;
-import java.util.HashMap;
-import java.util.Map;
-
 import org.assertj.core.api.Assertions;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -30,11 +25,16 @@ import org.kie.api.pmml.PMMLRequestData;
 import org.kie.pmml.commons.model.KiePMMLModel;
 import org.kie.pmml.evaluator.core.PMMLContextImpl;
 
-@RunWith(Parameterized.class)
-public class NumericVariablesLinearRegressionTest extends AbstractPMMLRegressionTest {
+import java.util.Arrays;
+import java.util.Collection;
+import java.util.HashMap;
+import java.util.Map;
 
-    private static final String MODEL_NAME = "lm_Model";
-    private static final String PMML_SOURCE = "/numericVariablesLinearRegression.pmml";
+@RunWith(Parameterized.class)
+public class NumericVariablesPolynomialRegressionTest extends AbstractPMMLRegressionTest {
+
+    private static final String MODEL_NAME = "polynomial_Model";
+    private static final String PMML_SOURCE = "/numericVariablesPolynomialRegression.pmml";
     private static final String TARGET_FIELD = "result";
 
     private double x;
@@ -48,13 +48,13 @@ public class NumericVariablesLinearRegressionTest extends AbstractPMMLRegression
         });
     }
 
-    public NumericVariablesLinearRegressionTest(double x, double y) {
+    public NumericVariablesPolynomialRegressionTest(double x, double y) {
         this.x = x;
         this.y = y;
     }
 
     @Test
-    public void testNumericVariableLinearRegression() throws Exception {
+    public void testNumericVariablePolynomialRegression() throws Exception {
         final KiePMMLModel pmmlModel = loadPMMLModel(PMML_SOURCE);
 
         final Map<String, Object> inputData = new HashMap<>();
@@ -71,6 +71,6 @@ public class NumericVariablesLinearRegressionTest extends AbstractPMMLRegression
     }
 
     private static double regressionFunction(double x, double y) {
-        return 2 * x + y + 5;
+        return 3 * Math.pow(x, 5) + 2 * Math.pow(y, 2) + 5;
     }
 }
