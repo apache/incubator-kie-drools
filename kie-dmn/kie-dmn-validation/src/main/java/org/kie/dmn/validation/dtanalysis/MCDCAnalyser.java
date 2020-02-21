@@ -3,10 +3,8 @@ package org.kie.dmn.validation.dtanalysis;
 import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.Collections;
-import java.util.HashSet;
 import java.util.List;
 import java.util.Optional;
-import java.util.Set;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
@@ -68,118 +66,54 @@ public class MCDCAnalyser {
             Collections.sort(bounds);
             LOG.debug("bounds (sorted) {}", bounds);
 
-            ColEnumValues enumValues = new ColEnumValues();
-            Set<Integer> seenRules = new HashSet<>();
-
-            Set<Integer> ofPrev = new HashSet<>();
-            Set<Integer> ofCur = new HashSet<>();
+            List<Object> enumValues = new ArrayList<>();
 
             Bound<?> prevBound = bounds.remove(0);
-            boolean prevBoundIsElse = isBoundOnElseRule(prevBound);
-            if (prevBound.isLowerBound()) {
-                addToActive(prevBound, ofPrev);
-            }
             while (bounds.size() > 0 && bounds.get(0).compareTo(prevBound) == 0) {
                 prevBound = bounds.remove(0); //look-ahead.
-                prevBoundIsElse &= isBoundOnElseRule(prevBound);
-                if (prevBound.isLowerBound()) {
-                    addToActive(prevBound, ofPrev);
-                }
             }
             while (bounds.size() > 0) {
                 Bound<?> curBound = bounds.remove(0);
-                boolean curBoundIsElse = isBoundOnElseRule(curBound);
-                if (curBound.isUpperBound()) {
-                    addToActive(curBound, ofCur);
-                }
                 while (bounds.size() > 0 && bounds.get(0).compareTo(curBound) == 0) {
                     curBound = bounds.remove(0); //look-ahead.
-                    curBoundIsElse &= isBoundOnElseRule(curBound);
-                    if (curBound.isUpperBound()) {
-                        addToActive(curBound, ofCur);
-                    }
                 }
                 
-                LOG.debug("prev {} {}, cur {} {}", prevBound, prevBoundIsElse, curBound, curBoundIsElse);
+                LOG.debug("prev {} {}, cur {} {}", prevBound, null, curBound, null);
                 if (prevBound.isUpperBound() && curBound.isLowerBound()) {
-                    // do nothing.
-                } else if (seenRules.containsAll(ofPrev) && seenRules.containsAll(ofCur)) {
-                    LOG.debug("containsAll");
                     // do nothing.
                 } else if (prevBound.isUpperBound() && curBound.isUpperBound()) {
                     if (curBound.getBoundaryType() == RangeBoundary.CLOSED && !isBoundInfinity(curBound)) {
-                        enumValues.safeAdd(curBound.getValue(), curBoundIsElse);
+                        enumValues.add(curBound.getValue());
                     } else {
                         LOG.debug("looking for value in-between {} {} ", prevBound, curBound);
-                        enumValues.safeAdd(inBetween(prevBound, curBound), prevBoundIsElse || curBoundIsElse);
+                        enumValues.add(inBetween(prevBound, curBound));
                     }
                 } else if (prevBound.isLowerBound() && curBound.isLowerBound()) {
                     if (prevBound.getBoundaryType() == RangeBoundary.CLOSED && !isBoundInfinity(prevBound)) {
-                        enumValues.safeAdd(prevBound.getValue(), prevBoundIsElse);
+                        enumValues.add(prevBound.getValue());
                     } else {
                         LOG.debug("looking for value in-between {} {} ", prevBound, curBound);
-                        enumValues.safeAdd(inBetween(prevBound, curBound), prevBoundIsElse || curBoundIsElse);
+                        enumValues.add(inBetween(prevBound, curBound));
                     }
                 } else {
                     if (prevBound.getBoundaryType() == RangeBoundary.CLOSED && !isBoundInfinity(prevBound)) {
-                        enumValues.safeAdd(prevBound.getValue(), prevBoundIsElse);
+                        enumValues.add(prevBound.getValue());
                     } else if (curBound.getBoundaryType() == RangeBoundary.CLOSED && !isBoundInfinity(curBound)) {
-                        enumValues.safeAdd(curBound.getValue(), curBoundIsElse);
+                        enumValues.add(curBound.getValue());
                     } else {
                         LOG.debug("looking for value in-between {} {} ", prevBound, curBound);
-                        enumValues.safeAdd(inBetween(prevBound, curBound), prevBoundIsElse || curBoundIsElse);
+                        enumValues.add(inBetween(prevBound, curBound));
                     }
                 }
-
-                seenRules.addAll(ofPrev);
-                seenRules.addAll(ofCur);
-                seenRules.remove(elseRuleIdx.orElse(-1) + 1);
-                ofPrev = new HashSet<>();
-                ofCur = new HashSet<>();
 
                 prevBound = curBound;
-                prevBoundIsElse = curBoundIsElse;
-                if (prevBound.isLowerBound()) {
-                    addToActive(prevBound, ofPrev);
-                }
                 while (bounds.size() > 0 && bounds.get(0).compareTo(prevBound) == 0) {
                     prevBound = bounds.remove(0); //look-ahead.
-                    prevBoundIsElse &= isBoundOnElseRule(prevBound);
-                    if (prevBound.isLowerBound()) {
-                        addToActive(prevBound, ofPrev);
-                    }
                 }
             }
 
             LOG.debug("enumValues: {}", enumValues);
         }
-    }
-
-    public static class ColEnumValues {
-
-        private List<Object> enumValues = new ArrayList<>();
-        private Object elseValue = null;
-
-        public void safeAdd(Object value, boolean isElseValue) {
-            if (!isElseValue) {
-                enumValues.add(value);
-            } else if (elseValue == null) {
-                elseValue = value;
-            } else {
-                LOG.debug("will not overwrite elseValue: {}", value);
-            }
-        }
-
-        @Override
-        public String toString() {
-            return "ColEnumValues [enumValues= " + enumValues.stream().map(Object::toString).collect(Collectors.joining(", ")) + " ; elseValue=" + elseValue + "]";
-        }
-
-    }
-
-
-    private void addToActive(Bound<?> prevBound, Set<Integer> activeRules) {
-        activeRules.add(prevBound.getParent().getRule());
     }
 
     private boolean isBoundOnElseRule(Bound b) {
