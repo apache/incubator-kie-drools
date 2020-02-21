@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package org.kie.pmml.runtime.regression.tests;
+package org.kie.pmml.regression.tests;
 
 import java.io.InputStream;
 import java.util.Arrays;
