@@ -1,0 +1,58 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<semantic:definitions xmlns:semantic="http://www.omg.org/spec/DMN/20180521/MODEL/"  xmlns:triso="http://www.trisotech.com/2015/triso/modeling"  xmlns:dmndi="http://www.omg.org/spec/DMN/20180521/DMNDI/"  xmlns:di="http://www.omg.org/spec/DMN/20180521/DI/"  xmlns:dc="http://www.omg.org/spec/DMN/20180521/DC/"  xmlns:trisodmn="http://www.trisotech.com/2016/triso/dmn"  xmlns:feel="http://www.omg.org/spec/DMN/20180521/FEEL/"  xmlns:tc="http://www.omg.org/spec/DMN/20160719/testcase"  xmlns:drools="http://www.drools.org/kie/dmn/1.1"  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"  xmlns:rss="http://purl.org/rss/2.0/"  xmlns:openapi="https://openapis.org/omg/extension/1.0"  xmlns:xsd="http://www.w3.org/2001/XMLSchema"  xmlns="http://www.trisotech.com/definitions/_4adfe4ba-dc83-4662-b17a-33d422203e83" id="_4adfe4ba-dc83-4662-b17a-33d422203e83" name="Drawing 1" namespace="http://www.trisotech.com/definitions/_4adfe4ba-dc83-4662-b17a-33d422203e83" exporter="Decision Modeler" exporterVersion="6.9.0" triso:logoChoice="Default">
+    <semantic:inputData id="_5aa81f07-8a70-48fd-9aa8-ce2e8091022e" name="my number">
+        <semantic:variable name="my number" id="_3e78ecfe-59bd-4d80-ad1e-5df962f5754e" typeRef="number"/>
+    </semantic:inputData>
+    <semantic:decision id="_a2ba91cf-2122-4e4e-82e2-29fe44fb1d7b" name="hardcoded">
+        <semantic:variable name="hardcoded" id="_f445d4d0-6910-4a55-9e14-d451fc23bc04" typeRef="string"/>
+        <semantic:informationRequirement id="_6b328ac8-53fc-493a-9537-f061c76e3a6a">
+            <semantic:requiredInput href="#_5aa81f07-8a70-48fd-9aa8-ce2e8091022e"/>
+        </semantic:informationRequirement>
+        <semantic:decisionTable id="_3b5ba4bf-9c3c-45f0-812d-f0cff6d72dce" hitPolicy="PRIORITY" outputLabel="hardcoded" typeRef="string" triso:expressionId="_56c6db84-de78-44b6-ba4a-95bdca3b309f">
+            <semantic:input id="_50835f78-4c80-4c6a-bb27-e0755d9ad6c7" label="my number">
+                <semantic:inputExpression typeRef="number">
+                    <semantic:text>my number</semantic:text>
+                </semantic:inputExpression>
+            </semantic:input>
+            <semantic:output id="_df9ad992-9fa8-4b1b-af63-cec172e76460" triso:allowNull="true">
+                <semantic:outputValues triso:constraintsType="enumeration">
+                    <semantic:text>"A","B","boh",null</semantic:text>
+                </semantic:outputValues>
+            </semantic:output>
+            <semantic:annotation name="Description"/>
+            <semantic:rule id="_9740a69a-a84b-4d2f-8b08-81e41e47d5b5">
+                <semantic:inputEntry id="_cfeefc30-0814-48a9-89f5-667e2dde6b75">
+                    <semantic:text>[0..100]</semantic:text>
+                </semantic:inputEntry>
+                <semantic:outputEntry id="_ba1b826e-58e8-4b99-8a08-277546f44d91">
+                    <semantic:text>"A"</semantic:text>
+                </semantic:outputEntry>
+                <semantic:annotationEntry>
+                    <semantic:text/>
+                </semantic:annotationEntry>
+            </semantic:rule>
+            <semantic:rule id="_02ad8ee9-5060-430a-a46f-951f9997ecc0">
+                <semantic:inputEntry id="_dd4b5518-ada9-4a0c-a364-d0aef586820b">
+                    <semantic:text>[25..75]</semantic:text>
+                </semantic:inputEntry>
+                <semantic:outputEntry id="_cd6ac6b3-af8e-4505-a382-553d030e7110">
+                    <semantic:text>"B"</semantic:text>
+                </semantic:outputEntry>
+                <semantic:annotationEntry>
+                    <semantic:text/>
+                </semantic:annotationEntry>
+            </semantic:rule>
+            <semantic:rule id="_c6599ae0-01a0-44ee-b208-513c88924c3b">
+                <semantic:inputEntry id="_5615cf9a-924e-4f06-a666-1496cb6a3fef">
+                    <semantic:text>-</semantic:text>
+                </semantic:inputEntry>
+                <semantic:outputEntry id="_15f4337d-40cd-4a14-9f55-d4441a513354">
+                    <semantic:text>"boh"</semantic:text>
+                </semantic:outputEntry>
+                <semantic:annotationEntry>
+                    <semantic:text/>
+                </semantic:annotationEntry>
+            </semantic:rule>
+        </semantic:decisionTable>
+    </semantic:decision>
+</semantic:definitions>

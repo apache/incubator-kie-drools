@@ -26,7 +26,7 @@ import org.kie.dmn.model.api.Definitions;
 public interface DMNValidator {
 
     enum Validation {
-        VALIDATE_SCHEMA, VALIDATE_MODEL, VALIDATE_COMPILATION, ANALYZE_DECISION_TABLE
+        VALIDATE_SCHEMA, VALIDATE_MODEL, VALIDATE_COMPILATION, ANALYZE_DECISION_TABLE, COMPUTE_DECISION_TABLE_MCDC
     }
 
     /**
