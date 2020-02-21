@@ -46,11 +46,11 @@ class PatternTestHarness {
         Rule rule = rule("beta")
                 .build(
                         pattern(markV)
-                                .expr("exprA", mypackage.LambdaPredicate3BC479A1F3E07E22E6B04B826FEF3203.INSTANCE,
+                                .expr("exprA", mypackage.LambdaPredicateB79EF47A20EF5A14907461DD258F6B5B.INSTANCE,
                                       alphaIndexedBy(String.class, Index.ConstraintType.EQUAL, 1, mypackage.LambdaExtractorC0580DCF55156DB718A1BF6A277561D8.INSTANCE, "Mark"),
                                       reactOn("name", "age")),
                         pattern(olderV)
-                                .expr("exprB", mypackage.LambdaPredicate3EA0E684DE1924A84F80BB5426A04F64.INSTANCE,
+                                .expr("exprB", mypackage.LambdaPredicateF94E637E0793B5BA5EC5501FC8A76BE3.INSTANCE,
                                       alphaIndexedBy(String.class, Index.ConstraintType.NOT_EQUAL, 1, mypackage.LambdaExtractorC0580DCF55156DB718A1BF6A277561D8.INSTANCE, "Mark"),
                                       reactOn("name"))
                                 .expr("exprC", markV, mypackage.LambdaPredicate990437E290E3F025EA5B68860D6AEBF7.INSTANCE,

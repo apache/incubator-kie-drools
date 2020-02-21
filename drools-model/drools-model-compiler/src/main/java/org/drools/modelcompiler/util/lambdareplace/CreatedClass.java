@@ -20,8 +20,8 @@ package org.drools.modelcompiler.util.lambdareplace;
 import java.util.Objects;
 
 import com.github.javaparser.ast.CompilationUnit;
-import com.github.javaparser.printer.PrettyPrinter;
-import com.github.javaparser.printer.PrettyPrinterConfiguration;
+
+import static org.drools.modelcompiler.util.lambdareplace.ExecModelLambdaPostProcessor.MATERIALIZED_LAMBDA_PRETTY_PRINTER;
 
 public class CreatedClass {
 
@@ -36,13 +36,7 @@ public class CreatedClass {
     }
 
     public String getCompilationUnitAsString() {
-        PrettyPrinterConfiguration configuration = new PrettyPrinterConfiguration();
-        configuration.setEndOfLineCharacter("\n"); // hashes will be stable also while testing on windows
-        return new PrettyPrinter(configuration).print(compilationUnit);
-    }
-
-    public String getClassNameWithoutPackage() {
-        return className;
+        return MATERIALIZED_LAMBDA_PRETTY_PRINTER.print(compilationUnit);
     }
 
     public String getClassNameWithPackage() {
