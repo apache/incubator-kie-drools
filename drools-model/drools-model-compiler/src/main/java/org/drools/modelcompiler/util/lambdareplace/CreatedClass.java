@@ -21,6 +21,7 @@ import java.util.Objects;
 
 import com.github.javaparser.ast.CompilationUnit;
 import com.github.javaparser.printer.PrettyPrinter;
+import com.github.javaparser.printer.PrettyPrinterConfiguration;
 
 public class CreatedClass {
 
@@ -35,7 +36,9 @@ public class CreatedClass {
     }
 
     public String getCompilationUnitAsString() {
-        return new PrettyPrinter().print(compilationUnit);
+        PrettyPrinterConfiguration configuration = new PrettyPrinterConfiguration();
+        configuration.setEndOfLineCharacter(System.lineSeparator());
+        return new PrettyPrinter(configuration).print(compilationUnit);
     }
 
     public String getClassNameWithoutPackage() {
