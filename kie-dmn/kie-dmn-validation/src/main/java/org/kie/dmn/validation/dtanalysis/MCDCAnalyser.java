@@ -27,6 +27,7 @@ public class MCDCAnalyser {
     private final DecisionTable dt;
 
     private Optional<Integer> elseRuleIdx = Optional.empty();
+    private List<List<?>> allEnumValues = new ArrayList<>();
 
     public MCDCAnalyser(DDTATable ddtaTable, DecisionTable dt) {
         this.ddtaTable = ddtaTable;
@@ -39,28 +40,16 @@ public class MCDCAnalyser {
         }
         // TODO if not enumerated output values, cannot analyse.
 
-        if (dt.getHitPolicy() == HitPolicy.PRIORITY) {// calculate "else" rule if present.
-            for (int ruleIdx = ddtaTable.getRule().size() - 1; ruleIdx>=0 && !elseRuleIdx.isPresent(); ruleIdx--) {
-                DDTARule rule = ddtaTable.getRule().get(ruleIdx);
-                List<DDTAInputEntry> ie = rule.getInputEntry();
-                boolean checkAll = true;
-                for (int colIdx = 0; colIdx < ie.size() && checkAll; colIdx++) {
-                    DDTAInputEntry ieIDX = ie.get(colIdx);
-                    boolean idIDXsize1 = ieIDX.getIntervals().size() == 1;
-                    Interval ieIDXint0 = ieIDX.getIntervals().get(0);
-                    Interval domainMinMax = ddtaTable.getInputs().get(colIdx).getDomainMinMax();
-                    boolean equals = ieIDXint0.equals(domainMinMax);
-                    checkAll &= idIDXsize1 && equals;
-                }
-                if (checkAll) {
-                    LOG.debug("I believe P table with else rule: {}", ruleIdx);
-                    elseRuleIdx = Optional.of(ruleIdx);
-                }
-            }
-        }
+        calculateElseRuleIdx();
+        calculateAllEnumValues();
+    }
 
-        List<List<?>> allEnumValues = new ArrayList<>();
+    private void calculateAllEnumValues() {
         for (int idx = 0; idx < ddtaTable.inputCols(); idx++) {
+            if (ddtaTable.getInputs().get(idx).isDiscreteDomain()) {
+                allEnumValues.add(ddtaTable.getInputs().get(idx).getDiscreteValues()); // add _the collection_
+                continue;
+            }
             List<Interval> colIntervals = ddtaTable.projectOnColumnIdx(idx);
             List<Bound> bounds = colIntervals.stream().flatMap(i -> Stream.of(i.getLowerBound(), i.getUpperBound())).collect(Collectors.toList());
             Collections.sort(bounds);
@@ -113,6 +102,33 @@ public class MCDCAnalyser {
             }
 
             LOG.debug("enumValues: {}", enumValues);
+            allEnumValues.add(enumValues);
+        }
+        LOG.debug("allEnumValues:");
+        for (int idx = 0; idx < allEnumValues.size(); idx++) {
+            LOG.debug("allEnumValues {}: {}", idx, allEnumValues.get(idx));
+        }
+    }
+
+    private void calculateElseRuleIdx() {
+        if (dt.getHitPolicy() == HitPolicy.PRIORITY) {// calculate "else" rule if present.
+            for (int ruleIdx = ddtaTable.getRule().size() - 1; ruleIdx>=0 && !elseRuleIdx.isPresent(); ruleIdx--) {
+                DDTARule rule = ddtaTable.getRule().get(ruleIdx);
+                List<DDTAInputEntry> ie = rule.getInputEntry();
+                boolean checkAll = true;
+                for (int colIdx = 0; colIdx < ie.size() && checkAll; colIdx++) {
+                    DDTAInputEntry ieIDX = ie.get(colIdx);
+                    boolean idIDXsize1 = ieIDX.getIntervals().size() == 1;
+                    Interval ieIDXint0 = ieIDX.getIntervals().get(0);
+                    Interval domainMinMax = ddtaTable.getInputs().get(colIdx).getDomainMinMax();
+                    boolean equals = ieIDXint0.equals(domainMinMax);
+                    checkAll &= idIDXsize1 && equals;
+                }
+                if (checkAll) {
+                    LOG.debug("I believe P table with else rule: {}", ruleIdx);
+                    elseRuleIdx = Optional.of(ruleIdx);
+                }
+            }
         }
     }
 
