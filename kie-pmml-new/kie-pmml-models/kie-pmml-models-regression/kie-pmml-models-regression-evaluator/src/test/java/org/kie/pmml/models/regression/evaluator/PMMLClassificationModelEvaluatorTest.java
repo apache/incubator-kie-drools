@@ -16,27 +16,85 @@
 
 package org.kie.pmml.models.regression.evaluator;
 
+import java.util.Arrays;
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.HashSet;
 import java.util.LinkedHashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.Optional;
+import java.util.Set;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 
 import org.junit.Test;
+import org.kie.api.pmml.PMML4Result;
+import org.kie.api.pmml.PMMLRequestData;
+import org.kie.pmml.commons.enums.StatusCode;
+import org.kie.pmml.commons.model.enums.MINING_FUNCTION;
+import org.kie.pmml.commons.model.enums.OP_TYPE;
 import org.kie.pmml.evaluator.api.exceptions.KiePMMLModelException;
+import org.kie.pmml.evaluator.api.executor.PMMLContext;
+import org.kie.pmml.evaluator.core.PMMLContextImpl;
+import org.kie.pmml.models.regression.model.KiePMMLRegressionModel;
+import org.kie.pmml.models.regression.model.KiePMMLRegressionTable;
+import org.kie.pmml.models.regression.model.enums.REGRESSION_NORMALIZATION_METHOD;
+import org.kie.pmml.models.regression.model.predictors.KiePMMLNumericPredictor;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
 
 public class PMMLClassificationModelEvaluatorTest {
 
+    private static final String MODEL_NAME = "Sample for logistic regression";
+    private static final String TARGET_FIELD_NAME = "jobcat";
+
     @Test
     public void evaluateClassification() {
+        final PMML4Result retrieved = PMMLClassificationModelEvaluator.evaluateClassification(getModel(), getContext());
+        commonVerifyPMM4Result(retrieved);
     }
 
     @Test
     public void testEvaluateClassification() {
+        final PMML4Result retrieved = PMMLClassificationModelEvaluator.evaluateClassification(TARGET_FIELD_NAME, REGRESSION_NORMALIZATION_METHOD.CLOGLOG, OP_TYPE.CATEGORICAL, getTables(), Optional.empty(), getRequestData());
+        commonVerifyPMM4Result(retrieved);
     }
 
-    @Test
-    public void getProbabilityMap() {
+    @Test(expected = KiePMMLModelException.class)
+    public void getProbabilityMapSOFTMAXNotCATEGORICAL() {
+        PMMLClassificationModelEvaluator.getProbabilityMap(REGRESSION_NORMALIZATION_METHOD.SOFTMAX, OP_TYPE.ORDINAL, new LinkedHashMap<>());
+    }
+
+    @Test(expected = KiePMMLModelException.class)
+    public void getProbabilityMapSIMPLEMAXNotCATEGORICAL() {
+        PMMLClassificationModelEvaluator.getProbabilityMap(REGRESSION_NORMALIZATION_METHOD.SIMPLEMAX, OP_TYPE.ORDINAL, new LinkedHashMap<>());
+    }
+
+    @Test(expected = KiePMMLModelException.class)
+    public void getProbabilityMapNONENotCATEGORICAL() {
+        PMMLClassificationModelEvaluator.getProbabilityMap(REGRESSION_NORMALIZATION_METHOD.NONE, OP_TYPE.ORDINAL, new LinkedHashMap<>());
+    }
+
+    @Test(expected = KiePMMLModelException.class)
+    public void getProbabilityMapLOGITNotCATEGORICAL() {
+        PMMLClassificationModelEvaluator.getProbabilityMap(REGRESSION_NORMALIZATION_METHOD.LOGIT, OP_TYPE.ORDINAL, new LinkedHashMap<>());
+    }
+
+    @Test(expected = KiePMMLModelException.class)
+    public void getProbabilityMapPROBITNotCATEGORICAL() {
+        PMMLClassificationModelEvaluator.getProbabilityMap(REGRESSION_NORMALIZATION_METHOD.PROBIT, OP_TYPE.ORDINAL, new LinkedHashMap<>());
+    }
+
+    @Test(expected = KiePMMLModelException.class)
+    public void getProbabilityMapCLOGLOGNotCATEGORICAL() {
+        PMMLClassificationModelEvaluator.getProbabilityMap(REGRESSION_NORMALIZATION_METHOD.CLOGLOG, OP_TYPE.ORDINAL, new LinkedHashMap<>());
+    }
+
+    @Test(expected = KiePMMLModelException.class)
+    public void getProbabilityMapCAUCHITNotCATEGORICAL() {
+        PMMLClassificationModelEvaluator.getProbabilityMap(REGRESSION_NORMALIZATION_METHOD.CAUCHIT, OP_TYPE.ORDINAL, new LinkedHashMap<>());
     }
 
     @Test
@@ -221,10 +279,57 @@ public class PMMLClassificationModelEvaluatorTest {
         }
     }
 
+    private void commonVerifyPMM4Result(PMML4Result toVerify) {
+        assertNotNull(toVerify);
+        assertEquals(StatusCode.OK.getName(), toVerify.getResultCode());
+        assertEquals(TARGET_FIELD_NAME, toVerify.getResultObjectName());
+        assertEquals("clerical", toVerify.getResultVariables().get(TARGET_FIELD_NAME));
+    }
+
     private LinkedHashMap<String, Double> getResultMap(int size) {
         return IntStream.range(0, size).boxed().collect(Collectors.toMap(integer -> "Field-" + integer,
                                                                          Integer::doubleValue,
                                                                          (o1, o2) -> o1,
                                                                          LinkedHashMap::new));
+    }
+
+    private PMMLContext getContext() {
+        return new PMMLContextImpl(getRequestData());
+    }
+
+    private PMMLRequestData getRequestData() {
+        Map<String, Object> inputMap = new HashMap<>();
+        inputMap.put("age", 27.0);
+        inputMap.put("work", 3.5);
+        inputMap.put("sex", "0");
+        inputMap.put("minority", "0");
+        return TestUtils.getPMMLRequestData(MODEL_NAME, inputMap);
+    }
+
+    private KiePMMLRegressionModel getModel() {
+        return KiePMMLRegressionModel.builder(MODEL_NAME, MINING_FUNCTION.CLASSIFICATION, getTables(), OP_TYPE.CATEGORICAL)
+                .withTargetField(TARGET_FIELD_NAME)
+                .build();
+    }
+
+    private List<KiePMMLRegressionTable> getTables() {
+        Set<KiePMMLNumericPredictor> firstNumericPredictors = new HashSet<>(Arrays.asList(
+                new KiePMMLNumericPredictor("age", 1, -0.132, Collections.emptyList()),
+                new KiePMMLNumericPredictor("work", 1, 7.867E-02, Collections.emptyList())
+        ));
+
+        KiePMMLRegressionTable firstTable = KiePMMLRegressionTable.builder(46.418)
+                .withTargetCategory("clerical")
+                .withNumericPredictors(firstNumericPredictors)
+                .build();
+        Set<KiePMMLNumericPredictor> secondNumericPredictors = new HashSet<>(Arrays.asList(
+                new KiePMMLNumericPredictor("age", 1, -0.302, Collections.emptyList()),
+                new KiePMMLNumericPredictor("work", 1, 0.155, Collections.emptyList())
+        ));
+        KiePMMLRegressionTable secondTable = KiePMMLRegressionTable.builder(51.169)
+                .withTargetCategory("professional")
+                .withNumericPredictors(secondNumericPredictors)
+                .build();
+        return Arrays.asList(firstTable, secondTable);
     }
 }

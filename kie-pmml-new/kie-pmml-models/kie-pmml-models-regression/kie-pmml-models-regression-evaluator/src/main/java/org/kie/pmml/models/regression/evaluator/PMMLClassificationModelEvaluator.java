@@ -55,9 +55,9 @@ public class PMMLClassificationModelEvaluator {
 
     protected static PMML4Result evaluateClassification(String targetFieldName, REGRESSION_NORMALIZATION_METHOD regressionNormalizationMethod, OP_TYPE opType, final List<KiePMMLRegressionTable> regressionTables, final Optional<List<KiePMMLOutputField>> outputFields, PMMLRequestData requestData) {
         final LinkedHashMap<String, Double> resultMap = regressionTables.stream()
-                .collect(Collectors.toMap(kiePMMLRegressionTable -> kiePMMLRegressionTable.getTargetCategory().toString(),
+                .collect(Collectors.toMap(kiePMMLRegressionTable -> kiePMMLRegressionTable.getTargetCategory().orElseGet(() ->"UNKNOWN").toString(),
                                           kiePMMLRegressionTable -> {
-                                              PMML4Result retrieved = PMMLRegresssionModelEvaluator.evaluateRegression(kiePMMLRegressionTable.getTargetCategory().toString(),
+                                              PMML4Result retrieved = PMMLRegresssionModelEvaluator.evaluateRegression(kiePMMLRegressionTable.getTargetCategory().orElseGet(() ->"UNKNOWN").toString(),
                                                                                                                        REGRESSION_NORMALIZATION_METHOD.NONE,
                                                                                                                        OP_TYPE.ORDINAL,
                                                                                                                        kiePMMLRegressionTable,
@@ -99,9 +99,19 @@ public class PMMLClassificationModelEvaluator {
     protected static LinkedHashMap<String, Double> getProbabilityMap(REGRESSION_NORMALIZATION_METHOD regressionNormalizationMethod, OP_TYPE opType, final LinkedHashMap<String, Double> resultMap) {
         switch (regressionNormalizationMethod) {
             case SOFTMAX:
-                return getSOFTMAXProbabilityMap(resultMap);
+                switch (opType) {
+                    case CATEGORICAL:
+                        return getSOFTMAXProbabilityMap(resultMap);
+                    default:
+                        throw new KiePMMLModelException(String.format(UNEXPECTED_OP_TYPE, opType));
+                }
             case SIMPLEMAX:
-                return getSIMPLEMAXProbabilityMap(resultMap);
+                switch (opType) {
+                    case CATEGORICAL:
+                        return getSIMPLEMAXProbabilityMap(resultMap);
+                    default:
+                        throw new KiePMMLModelException(String.format(UNEXPECTED_OP_TYPE, opType));
+                }
             case NONE:
                 switch (opType) {
                     case CATEGORICAL:
@@ -203,7 +213,7 @@ public class PMMLClassificationModelEvaluator {
         return getProbabilityMap(resultMap, firstItemOperator, secondItemOperator);
     }
 
-    protected static LinkedHashMap<String, Double> getProbabilityMap(final LinkedHashMap<String, Double> resultMap, DoubleUnaryOperator firstItemOperator, DoubleUnaryOperator secondItemOperator) {
+    private static LinkedHashMap<String, Double> getProbabilityMap(final LinkedHashMap<String, Double> resultMap, DoubleUnaryOperator firstItemOperator, DoubleUnaryOperator secondItemOperator) {
         if (resultMap.size() != 2) {
             throw new KiePMMLModelException(String.format(EXPECTED_TWO_ENTRIES_RETRIEVED, resultMap.size()));
         }
