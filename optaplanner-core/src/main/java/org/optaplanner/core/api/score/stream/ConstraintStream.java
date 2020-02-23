@@ -98,7 +98,7 @@ public interface ConstraintStream {
     /**
      * Negatively impact the {@link Score}: subtract the constraintWeight for each match.
      * <p>
-     * To avoid hard-coding the constraintWeight, to allow end-users to weak it,
+     * To avoid hard-coding the constraintWeight, to allow end-users to tweak it,
      * use {@link #penalizeConfigurable(String)} and a {@link ConstraintConfiguration} instead.
      * <p>
      * The {@link Constraint#getConstraintPackage()} defaults to the package of the {@link PlanningSolution} class.
@@ -146,7 +146,7 @@ public interface ConstraintStream {
     /**
      * Positively impact the {@link Score}: add the constraintWeight for each match.
      * <p>
-     * To avoid hard-coding the constraintWeight, to allow end-users to weak it,
+     * To avoid hard-coding the constraintWeight, to allow end-users to tweak it,
      * use {@link #penalizeConfigurable(String)} and a {@link ConstraintConfiguration} instead.
      * <p>
      * The {@link Constraint#getConstraintPackage()} defaults to the package of the {@link PlanningSolution} class.
