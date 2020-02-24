@@ -14,7 +14,17 @@ image::dmn/dmn-gs-context-table.png[]
 
 .Procedure
 . To calculate the fine, in the DMN designer canvas, select the *Fine* decision node and click the *Edit* icon to open the DMN boxed expression designer.
++
+
+.Decision node edit icon
+image::dmn/decision_node_edit.png[]
+
 . Click *Select expression* -> *Decision Table*.
++
+
+.Select Decisiong Table logic type
+image::dmn/select_logic_type.png[]
+
 . For the *Violation.Date*, *Violation.Code*, and *Violation.Speed Limit* parameter fields, right-click and select *Delete* for each field.
 . Click the *Violation.Actual Speed* column header and enter the expression `Violation.Actual Speed - Violation.Speed Limit` in the *Name* field.
 . Right-click the *Fine* parameter field and select either `Insert left` or `Insert right`.

@@ -53,7 +53,7 @@ The following tables list the `tDriver`, `tViolation`, and `tFine` custom data t
 * You created the traffic violations DMN decision requirements diagram (DRDs) in {CENTRAL}.
 
 .Procedure
-. To create the `tDriver` custom data type, click *Add* on the *Data Types* tab, enter `tDriver` in the *Name* field, and select `Structure` from the *Type* list.
+. To create the `tDriver` custom data type, click *Add a custom Data Type* on the *Data Types* tab, enter `tDriver` in the *Name* field, and select `Structure` from the *Type* list.
 . Click the check mark to the right of the new data type to save your changes.
 +
 .The tDriver custom data type
@@ -66,7 +66,7 @@ image::dmn/dmn-tDriver-custom-datatype.png[]
 * `City` (string)
 * `Points` (number)
 
-. To create the `tViolation` custom data type, click *Add* on the *Data Types* tab, enter `tViolation` in the *Name* field, and select `Structure` from the *Type* list.
+. To create the `tViolation` custom data type, click *New Data Type*, enter `tViolation` in the *Name* field, and select `Structure` from the *Type* list.
 . Click the check mark to the right of the new data type to save your changes.
 +
 .The tViolation custom data type
@@ -86,7 +86,7 @@ image::dmn/dmn-tViolation-custom-datatype.png[]
 * `driving under the influence`
 
 . Click *OK*, then click the check mark to the right of the *Type* data type to save your changes.
-. To create the `tFine` custom data type, click *Add* on the *Data Types* tab, enter `tFine` in the *Name* field, select `Structure` from the *Type* list, and click *Save*.
+. To create the `tFine` custom data type, click *New Data Type*, enter `tFine` in the *Name* field, select `Structure` from the *Type* list, and click *Save*.
 +
 .The tFine custom data type
 image::dmn/dmn-tFine-custom-datatype.png[]

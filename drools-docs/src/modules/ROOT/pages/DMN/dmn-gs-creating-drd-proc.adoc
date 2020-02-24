@@ -16,7 +16,13 @@ image::dmn/dmn-traffic-violations-drd.png[]
 .. From the *Package* list, select `org.kie.example.traffic.traffic_violation`.
 .. Click *Ok*. The DMN asset in the DMN designer is opened.
 . In the DMN designer canvas, drag two *DMN Input Data* input nodes on to the canvas.
-. Double-click each input node and rename one to `Driver` and the other to `Violation`.
++
+
+.DMN Input Data nodes
+image::dmn/library_objects.png[]
+
+. In the upper-right corner, click the *Properties* image:getting-started/diagram_properties.png[] icon.
+. Double-click each input node, and in the *Name* field, rename one to `Driver` and the other to `Violation`.
 . Drag a *DMN Decision* decision node on to the canvas.
 . Double-click the decision node and rename it to `Fine`.
 . Click the *Violation* input node, select the *Create DMN Information Requirement* icon and click the `Fine` decision node to link the two nodes.
