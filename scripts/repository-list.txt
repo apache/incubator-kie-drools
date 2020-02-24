@@ -1,3 +1,4 @@
 kogito-runtimes
+kogito-apps
 kogito-cloud
 kogito-examples
