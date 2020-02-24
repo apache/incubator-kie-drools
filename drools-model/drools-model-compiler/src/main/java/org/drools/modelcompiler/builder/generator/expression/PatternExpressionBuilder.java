@@ -94,7 +94,7 @@ public class PatternExpressionBuilder extends AbstractExpressionBuilder {
     }
 
     private MethodCallExpr buildSingleExpressionWithIndexing(SingleDrlxParseSuccess drlxParseResult) {
-        String exprId = drlxParseResult.getExprId();
+        String exprId = drlxParseResult.getExprId(context.getPackageModel().getExprIdGenerator());
         MethodCallExpr exprDSL = new MethodCallExpr(null, EXPR_CALL);
         if (exprId != null && !"".equals(exprId)) {
             exprDSL.addArgument(new StringLiteralExpr(exprId));

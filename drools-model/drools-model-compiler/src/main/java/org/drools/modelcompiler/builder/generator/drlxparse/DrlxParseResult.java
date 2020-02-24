@@ -18,6 +18,7 @@
 package org.drools.modelcompiler.builder.generator.drlxparse;
 
 import com.github.javaparser.ast.expr.BinaryExpr;
+import org.drools.modelcompiler.builder.generator.DRLIdGenerator;
 
 public interface DrlxParseResult {
 
@@ -28,4 +29,9 @@ public interface DrlxParseResult {
     boolean isSuccess();
 
     DrlxParseResult combineWith( DrlxParseResult other, BinaryExpr.Operator operator);
+
+    String getExprId(DRLIdGenerator exprIdGenerator);
+
+    DrlxParseResult setOriginalDrlConstraint(String originalDrlConstraint);
+
 }

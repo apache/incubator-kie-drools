@@ -17,19 +17,21 @@
 
 package org.drools.modelcompiler.builder.generator.drlxparse;
 
-import org.drools.compiler.compiler.DroolsError;
 import com.github.javaparser.ast.expr.BinaryExpr;
+import org.drools.compiler.compiler.DroolsError;
+import org.drools.modelcompiler.builder.errors.InvalidExpressionErrorResult;
+import org.drools.modelcompiler.builder.generator.DRLIdGenerator;
 
 public class DrlxParseFail implements DrlxParseResult {
 
-    private final DroolsError error;
+    private DroolsError specificError;
+    private String originalDrlConstraint;
 
     public DrlxParseFail() {
-        this(null);
     }
 
-    public DrlxParseFail( DroolsError error ) {
-        this.error = error;
+    public DrlxParseFail(DroolsError specificError) {
+        this.specificError = specificError;
     }
 
     @Override
@@ -48,11 +50,26 @@ public class DrlxParseFail implements DrlxParseResult {
     }
 
     @Override
-    public DrlxParseResult combineWith( DrlxParseResult other, BinaryExpr.Operator operator ) {
+    public DrlxParseResult combineWith(DrlxParseResult other, BinaryExpr.Operator operator) {
+        return this;
+    }
+
+    @Override
+    public String getExprId(DRLIdGenerator exprIdGenerator) {
+        return "invalidEpxr";
+    }
+
+    @Override
+    public DrlxParseResult setOriginalDrlConstraint(String originalDrlConstraint) {
+        this.originalDrlConstraint = originalDrlConstraint;
         return this;
     }
 
     public DroolsError getError() {
-        return error;
+        if(specificError != null) {
+            return specificError;
+        } else {
+            return new InvalidExpressionErrorResult("Unable to parse left part of expression: " + originalDrlConstraint);
+        }
     }
 }

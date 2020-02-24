@@ -65,6 +65,7 @@ import org.drools.modelcompiler.builder.generator.DrlxParseUtil;
 import org.drools.modelcompiler.builder.generator.ModelGenerator;
 import org.drools.modelcompiler.builder.generator.RuleContext;
 import org.drools.modelcompiler.builder.generator.TypedExpression;
+import org.drools.modelcompiler.builder.generator.UnificationTypedExpression;
 import org.drools.modelcompiler.builder.generator.operatorspec.CustomOperatorSpec;
 import org.drools.modelcompiler.builder.generator.operatorspec.NativeOperatorSpec;
 import org.drools.modelcompiler.builder.generator.operatorspec.OperatorSpec;
@@ -337,7 +338,7 @@ public class ExpressionTyper {
 
         } else if (isPositional || ruleContext.isQuery()) {
             String unificationVariable = ruleContext.getOrCreateUnificationId(name);
-            expression = new TypedExpression(unificationVariable, typeCursor, name);
+            expression = new UnificationTypedExpression(unificationVariable, typeCursor, name);
             return of(expression);
         }
 
