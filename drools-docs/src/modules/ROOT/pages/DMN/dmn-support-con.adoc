@@ -1,7 +1,7 @@
 [id='dmn-support-con_{context}']
 = DMN support in {PRODUCT}
 
-{PRODUCT} provides design and runtime support for DMN 1.2 models at conformance level 3, and runtime-only support for DMN 1.1 models at conformance level 3. You can integrate DMN models with your {PRODUCT} decision services in several ways:
+{PRODUCT} provides design and runtime support for DMN 1.2 models at conformance level 3, and runtime-only support for DMN 1.1 and 1.3 models at conformance level 3. You can integrate DMN models with your {PRODUCT} decision services in several ways:
 
 * Design your DMN models directly in {CENTRAL} using the DMN designer.
 * Import DMN files into your project in {CENTRAL} (*Menu -> Design -> Projects -> Import Asset*). Any DMN 1.1 models that you import into {CENTRAL}, open in the DMN designer, and save are converted to DMN 1.2 models.

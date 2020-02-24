@@ -40,12 +40,12 @@ A decision table in DMN is a visual representation of one or more rules in a tab
 .Managing data types for a column header value
 image::dmn/dmn-manage-data-types.png[]
 
-. On the *Data Types* page, click *Add* to add a new data type or click *Import Data Object* to import an existing data object from your project that you want to use as a DMN data type.
+. On the *Data Types* page, click *New Data Type* to add a new data type or click *Import Data Object* to import an existing data object from your project that you want to use as a DMN data type.
 +
 --
 If you import a data object from your project as a DMN data type and then that object is updated, you must re-import the data object as a DMN data type to apply the changes in your DMN model.
 
-For this example, click *Add* and create a *Credit_Score_Rating* data type as a `string`:
+For this example, click *New Data Type* and create a *Credit_Score_Rating* data type as a `string`:
 
 .Adding a new data type
 image::dmn/dmn-custom-data-type-add.png[]
