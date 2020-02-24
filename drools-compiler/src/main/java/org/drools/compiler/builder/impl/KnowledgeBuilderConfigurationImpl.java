@@ -67,7 +67,6 @@ import org.kie.internal.builder.conf.ProcessStringEscapesOption;
 import org.kie.internal.builder.conf.PropertySpecificOption;
 import org.kie.internal.builder.conf.SingleValueKnowledgeBuilderOption;
 import org.kie.internal.builder.conf.TrimCellsInDTableOption;
-import org.kie.internal.builder.conf.ExternaliseCanonicalModelLambdaOption;
 import org.kie.internal.utils.ChainedProperties;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -132,7 +131,6 @@ public class KnowledgeBuilderConfigurationImpl
     private boolean                           classLoaderCache                      = true;
     private boolean                           trimCellsInDTable                     = true;
     private boolean                           groupDRLsInKieBasesByFolder           = false;
-    private boolean                           externaliseCanonicalModelLambda       = false;
 
     private static final PropertySpecificOption DEFAULT_PROP_SPEC_OPT = PropertySpecificOption.ALWAYS;
     private PropertySpecificOption            propertySpecificOption  = DEFAULT_PROP_SPEC_OPT;
@@ -254,9 +252,6 @@ public class KnowledgeBuilderConfigurationImpl
                     this.chainedProperties.getProperty(DefaultPackageNameOption.PROPERTY_NAME,
                                                        DEFAULT_PACKAGE));
 
-        setProperty(ExternaliseCanonicalModelLambdaOption.PROPERTY_NAME,
-                    this.chainedProperties.getProperty(ExternaliseCanonicalModelLambdaOption.PROPERTY_NAME,"false"));
-
         this.componentFactory = new DroolsCompilerComponentFactory();
 
         this.classBuilderFactory = new ClassBuilderFactory();
@@ -320,9 +315,7 @@ public class KnowledgeBuilderConfigurationImpl
             }
         } else if (name.equals(ParallelRulesBuildThresholdOption.PROPERTY_NAME)) {
         	setParallelRulesBuildThreshold(Integer.valueOf(value));
-        }  else if (name.equals(ExternaliseCanonicalModelLambdaOption.PROPERTY_NAME)) {
-            setExternaliseCanonicalModelLambda(Boolean.valueOf(value));
-        } else {
+        }  else {
             // if the property from the kmodule was not intercepted above, just add it to the chained properties.
             Properties additionalProperty = new Properties();
             additionalProperty.setProperty(name, value);
@@ -366,8 +359,6 @@ public class KnowledgeBuilderConfigurationImpl
             return "" + getLanguageLevel();
         } else if (name.equals(ParallelRulesBuildThresholdOption.PROPERTY_NAME)) {
         	return String.valueOf(getParallelRulesBuildThreshold());
-        } else if (name.equals(ExternaliseCanonicalModelLambdaOption.PROPERTY_NAME)) {
-        	return String.valueOf(isExternaliseCanonicalModelLambda());
         }
         return null;
     }
@@ -739,14 +730,6 @@ public class KnowledgeBuilderConfigurationImpl
         this.propertySpecificOption = propertySpecificOption;
     }
 
-    public boolean isExternaliseCanonicalModelLambda() {
-        return externaliseCanonicalModelLambda;
-    }
-
-    public void setExternaliseCanonicalModelLambda(boolean externaliseCanonicalModelLambda) {
-        this.externaliseCanonicalModelLambda = externaliseCanonicalModelLambda;
-    }
-
     @SuppressWarnings("unchecked")
     public <T extends SingleValueKnowledgeBuilderOption> T getOption(Class<T> option) {
         if (DefaultDialectOption.class.equals(option)) {
@@ -767,8 +750,6 @@ public class KnowledgeBuilderConfigurationImpl
             return (T) propertySpecificOption;
         } else if (LanguageLevelOption.class.equals(option)) {
             return (T) languageLevel;
-        } else if (ExternaliseCanonicalModelLambdaOption.class.equals(option)) {
-            return (T) (externaliseCanonicalModelLambda ? ExternaliseCanonicalModelLambdaOption.ENABLED : ExternaliseCanonicalModelLambdaOption.DISABLED);
         }
         return null;
     }
@@ -828,8 +809,6 @@ public class KnowledgeBuilderConfigurationImpl
             propertySpecificOption = (PropertySpecificOption) option;
         } else if (option instanceof LanguageLevelOption) {
             this.languageLevel = ((LanguageLevelOption) option);
-        } else if (option instanceof ExternaliseCanonicalModelLambdaOption) {
-            this.externaliseCanonicalModelLambda = ((ExternaliseCanonicalModelLambdaOption) option).isCanonicalModelLambdaExternalized();
         }
     }
 
