@@ -87,7 +87,7 @@ public class RoundtripClassificationModelEvaluatorJobCatParameterizedTests {
     }
 
     @Test
-    public void evaluateClassification() throws KiePMMLException, ExternalException {
+    public void evaluateClassification() , ExternalException {
         commonSetup(SOURCE);
         String modelName = "Sample for logistic regression";
         PMMLRequestData pmmlRequestData = new PMMLRequestData("123", modelName);

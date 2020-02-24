@@ -43,7 +43,7 @@ public abstract class KiePMMLRegressionTablePredictor extends KiePMMLExtensioned
      * @return
      * @throws KiePMMLInternalException
      */
-    public abstract double evaluate(Object input) throws KiePMMLInternalException;
+    public abstract double evaluate(Object input) ;
 
     @Override
     public boolean equals(Object o) {

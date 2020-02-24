@@ -98,7 +98,7 @@ public class RoundtripClassificationModelEvaluatorParameterizedTests {
     }
 
     @Test
-    public void evaluateClassification() throws KiePMMLException, ExternalException {
+    public void evaluateClassification() , ExternalException {
         commonSetup(SOURCE);
         String modelName = "LinReg";
         PMMLRequestData pmmlRequestData = new PMMLRequestData("123", modelName);

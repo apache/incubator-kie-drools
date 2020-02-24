@@ -96,7 +96,7 @@ public class RoundtripRegresssionModelEvaluatorParameterizedTests {
     }
 
     @Test
-    public void evaluateRegression() throws KiePMMLException, ExternalException {
+    public void evaluateRegression() , ExternalException {
         commonSetup(SOURCE);
         String modelName = "LinReg";
         PMMLRequestData pmmlRequestData = new PMMLRequestData("123", modelName);

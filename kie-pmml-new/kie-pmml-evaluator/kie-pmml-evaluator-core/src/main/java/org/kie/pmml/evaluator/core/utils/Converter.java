@@ -26,6 +26,10 @@ import org.kie.api.pmml.ParameterInfo;
  */
 public class Converter {
 
+    private Converter() {
+        // Avoid instantiation
+    }
+
     /**
      * <b>Extract</b> the objects from the <code>ParameterInfo</code> values of the given map.
      * @param parameterMap

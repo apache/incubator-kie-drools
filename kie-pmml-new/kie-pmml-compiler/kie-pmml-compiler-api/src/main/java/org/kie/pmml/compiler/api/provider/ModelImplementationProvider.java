@@ -17,7 +17,6 @@ package org.kie.pmml.compiler.api.provider;
 
 import org.dmg.pmml.DataDictionary;
 import org.dmg.pmml.Model;
-import org.kie.pmml.commons.exceptions.KiePMMLException;
 import org.kie.pmml.commons.exceptions.KiePMMLInternalException;
 import org.kie.pmml.commons.model.KiePMMLModel;
 import org.kie.pmml.commons.model.enums.PMML_MODEL;
@@ -36,5 +35,5 @@ public interface ModelImplementationProvider<T extends Model, E extends KiePMMLM
      * @return
      * @throws KiePMMLInternalException
      */
-    E getKiePMMLModel(DataDictionary dataDictionary, T model, Object kBuilder) throws KiePMMLException;
+    E getKiePMMLModel(DataDictionary dataDictionary, T model, Object kBuilder);
 }

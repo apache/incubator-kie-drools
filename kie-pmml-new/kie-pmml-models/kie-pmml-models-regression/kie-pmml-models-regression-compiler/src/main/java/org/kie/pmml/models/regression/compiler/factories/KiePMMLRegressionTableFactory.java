@@ -57,4 +57,8 @@ public class KiePMMLRegressionTableFactory {
                 .withTargetCategory(regressionTable.getTargetCategory())
                 .build();
     }
+
+    private KiePMMLRegressionTableFactory() {
+        // Avoid instantiation
+    }
 }

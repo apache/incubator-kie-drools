@@ -47,7 +47,7 @@ public class KiePMMLRegressionModelFactory {
     private KiePMMLRegressionModelFactory() {
     }
 
-    public static KiePMMLRegressionModel getKiePMMLRegressionModel(DataDictionary dataDictionary, RegressionModel model) throws KiePMMLException {
+    public static KiePMMLRegressionModel getKiePMMLRegressionModel(DataDictionary dataDictionary, RegressionModel model) {
         logger.debug("getKiePMMLRegressionModel {}", model);
         String name = model.getModelName();
         Optional<String> targetFieldName = getTargetField(dataDictionary, model);

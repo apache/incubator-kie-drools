@@ -70,7 +70,7 @@ public class PMMLRuntimeImpl implements PMMLRuntime {
     }
 
     @Override
-    public PMML4Result evaluate(KiePMMLModel model, PMMLContext context, String releaseId) throws KiePMMLInternalException {
+    public PMML4Result evaluate(KiePMMLModel model, PMMLContext context, String releaseId)  {
         logger.debug("evaluate {} {}", model, context);
         Optional<PMMLModelExecutor> pmmlModelExecutor = getFromPMMLModelType(model.getPmmlMODEL());
         return pmmlModelExecutor.isPresent() ? pmmlModelExecutor.get().evaluate(model, context, releaseId) : new PMML4Result();

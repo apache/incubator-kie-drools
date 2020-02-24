@@ -17,7 +17,10 @@
 package org.kie.pmml.models.regression.model;
 
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
+import java.util.Objects;
 
 import org.junit.Assert;
 import org.junit.Test;
@@ -56,11 +59,11 @@ public class KiePMMLRegressionModelTest {
         assertEquals(MODEL_NAME, retrieved.getName());
         assertEquals(_MINING_FUNCTION, retrieved.getMiningFunction());
         assertEquals(_OP_TYPE, retrieved.getTargetOpType());
-        Assert.assertEquals(_REGRESSION_NORMALIZATION_METHOD, retrieved.getRegressionNormalizationMethod());
+        assertEquals(_REGRESSION_NORMALIZATION_METHOD, retrieved.getRegressionNormalizationMethod());
         assertTrue(retrieved.getAlgorithmName().isPresent());
         assertEquals(ALGORITHM_NAME, retrieved.getAlgorithmName().get());
         assertTrue(retrieved.getModelType().isPresent());
-        Assert.assertEquals(_MODEL_TYPE, retrieved.getModelType().get());
+        assertEquals(_MODEL_TYPE, retrieved.getModelType().get());
         assertTrue(retrieved.getModelType().isPresent());
         assertEquals(SCORABLE, retrieved.isScorable());
         assertEquals(TARGETFIELD_NAME, retrieved.getTargetField());
@@ -88,5 +91,38 @@ public class KiePMMLRegressionModelTest {
                 .withTargetField(TARGETFIELD_NAME)
                 .build();
         assertFalse(retrieved.isRegression());
+    }
+
+    @Test
+    public void isBinaryTrue() {
+        List<Object> targetValues = Arrays.asList("FIRST", "SECOND");
+        KiePMMLRegressionModel retrieved = KiePMMLRegressionModel.builder(MODEL_NAME, MINING_FUNCTION.CLASSIFICATION, REGRESSION_TABLES, OP_TYPE.CATEGORICAL)
+                .withTargetValues(targetValues)
+                .build();
+        assertTrue(retrieved.isBinary());
+    }
+
+    @Test
+    public void isBinaryFalse() {
+        List<Object> targetValues = Arrays.asList("FIRST", "SECOND");
+        KiePMMLRegressionModel retrieved = KiePMMLRegressionModel.builder(MODEL_NAME, MINING_FUNCTION.CLASSIFICATION, REGRESSION_TABLES, OP_TYPE.ORDINAL)
+                .withTargetValues(targetValues)
+                .build();
+        assertFalse(retrieved.isBinary());
+        retrieved = KiePMMLRegressionModel.builder(MODEL_NAME, MINING_FUNCTION.CLASSIFICATION, REGRESSION_TABLES, OP_TYPE.CONTINUOUS)
+                .withTargetValues(targetValues)
+                .build();
+        assertFalse(retrieved.isBinary());
+        retrieved = KiePMMLRegressionModel.builder(MODEL_NAME, MINING_FUNCTION.CLASSIFICATION, REGRESSION_TABLES, OP_TYPE.CATEGORICAL)
+                .build();
+        assertFalse(retrieved.isBinary());
+        retrieved = KiePMMLRegressionModel.builder(MODEL_NAME, MINING_FUNCTION.CLASSIFICATION, REGRESSION_TABLES, OP_TYPE.CATEGORICAL)
+                .withTargetValues(Collections.emptyList())
+                .build();
+        assertFalse(retrieved.isBinary());
+        retrieved = KiePMMLRegressionModel.builder(MODEL_NAME, MINING_FUNCTION.CLASSIFICATION, REGRESSION_TABLES, OP_TYPE.CATEGORICAL)
+                .withTargetValues(Collections.singletonList("FIRST"))
+                .build();
+        assertFalse(retrieved.isBinary());
     }
 }

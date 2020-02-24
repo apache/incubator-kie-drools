@@ -95,15 +95,4 @@ public class PMMLAssemblerServiceTest {
         });
     }
 
-    @Test
-    public void addModels() {
-    }
-
-    @Test
-    public void getKiePMMLModelsFromResourcesWithConfigurations() {
-    }
-
-    @Test
-    public void getKiePMMLModelsFromResource() {
-    }
 }
