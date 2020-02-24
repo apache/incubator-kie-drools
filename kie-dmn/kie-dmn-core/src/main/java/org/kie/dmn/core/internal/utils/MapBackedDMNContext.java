@@ -16,33 +16,38 @@
 
 package org.kie.dmn.core.internal.utils;
 
-import java.util.Deque;
-import java.util.HashMap;
-import java.util.LinkedHashMap;
-import java.util.LinkedList;
-import java.util.Map;
-import java.util.Optional;
-
 import org.kie.dmn.api.core.DMNContext;
+import org.kie.dmn.api.core.DMNMetadata;
+import org.kie.dmn.core.impl.DMNMetadataImpl;
+
+import java.util.*;
 
 public class MapBackedDMNContext implements DMNContext {
     
     private Map<String, Object> ctx = new HashMap<>();
     private Deque<ScopeReference> stack = new LinkedList<>();
+    private DMNMetadata metadata = new DMNMetadataImpl();
     
     private MapBackedDMNContext() {
         // intentional
     }
-    
+
     public static MapBackedDMNContext of(Map<String, Object> ctx) {
         MapBackedDMNContext result = new MapBackedDMNContext();
         result.ctx = ctx;
         return result;
     }
 
+    public static MapBackedDMNContext of(Map<String, Object> ctx, Map<String, Object> metadataAttributes) {
+        MapBackedDMNContext result = new MapBackedDMNContext();
+        result.ctx = ctx;
+        result.metadata = new DMNMetadataImpl(metadataAttributes);
+        return result;
+    }
+
     @Override
     public DMNContext clone() {
-        return of(this.ctx);
+        return of(this.ctx, this.metadata.getAttributes());
     }
 
     @Override
@@ -92,7 +97,12 @@ public class MapBackedDMNContext implements DMNContext {
     public boolean isDefined(String name) {
         return getCurrentEntries().containsKey(name);
     }
-    
+
+    @Override
+    public DMNMetadata getMetadata() {
+        return metadata;
+    }
+
     public static class ScopeReference {
 
         private final String name;

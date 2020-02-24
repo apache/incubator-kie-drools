@@ -16,25 +16,30 @@
 
 package org.kie.dmn.core.impl;
 
-import java.util.Deque;
-import java.util.LinkedHashMap;
-import java.util.LinkedList;
-import java.util.Map;
-import java.util.Optional;
-
 import org.kie.dmn.api.core.DMNContext;
+import org.kie.dmn.api.core.DMNMetadata;
+
+import java.util.*;
 
 public class DMNContextImpl implements DMNContext {
     private static final String DEFAULT_IDENT = "    ";
 
     private Map<String, Object> entries    = new LinkedHashMap<String, Object>();
     private Deque<ScopeReference> stack    = new LinkedList<>();
+    private DMNMetadata metadata;
 
     public DMNContextImpl() {
+        this.metadata = new DMNMetadataImpl();
     }
 
     public DMNContextImpl(Map<String, Object> entries) {
         this.entries.putAll(entries);
+        this.metadata = new DMNMetadataImpl();
+    }
+
+    public DMNContextImpl(Map<String, Object> entries, Map<String, Object> metadataAttributes) {
+        this.entries.putAll(entries);
+        this.metadata = new DMNMetadataImpl(metadataAttributes);
     }
 
     @Override
@@ -86,8 +91,13 @@ public class DMNContextImpl implements DMNContext {
     }
 
     @Override
+    public DMNMetadata getMetadata() {
+        return metadata;
+    }
+
+    @Override
     public DMNContext clone() {
-        DMNContextImpl newCtx = new DMNContextImpl(new LinkedHashMap<>(entries));
+        DMNContextImpl newCtx = new DMNContextImpl(new LinkedHashMap<>(entries), metadata.getAttributes());
         for (ScopeReference e : stack) {
             newCtx.pushScope(e.getName(), e.getNamespace());
         }
