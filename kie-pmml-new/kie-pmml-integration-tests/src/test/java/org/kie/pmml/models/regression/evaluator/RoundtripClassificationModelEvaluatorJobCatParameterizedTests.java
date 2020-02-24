@@ -34,7 +34,6 @@ import org.kie.api.pmml.PMML4Result;
 import org.kie.api.pmml.PMMLRequestData;
 import org.kie.api.runtime.KieSession;
 import org.kie.internal.io.ResourceFactory;
-import org.kie.pmml.commons.exceptions.ExternalException;
 import org.kie.pmml.commons.exceptions.KiePMMLException;
 import org.kie.pmml.commons.model.KiePMMLModel;
 import org.kie.pmml.commons.model.enums.PMML_MODEL;
@@ -87,7 +86,7 @@ public class RoundtripClassificationModelEvaluatorJobCatParameterizedTests {
     }
 
     @Test
-    public void evaluateClassification() , ExternalException {
+    public void evaluateClassification() {
         commonSetup(SOURCE);
         String modelName = "Sample for logistic regression";
         PMMLRequestData pmmlRequestData = new PMMLRequestData("123", modelName);

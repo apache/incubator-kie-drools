@@ -39,7 +39,6 @@ import org.kie.pmml.models.regression.model.enums.REGRESSION_NORMALIZATION_METHO
 
 import static org.kie.pmml.commons.Constants.EXPECTED_TWO_ENTRIES_RETRIEVED;
 import static org.kie.pmml.commons.Constants.UNEXPECTED_NORMALIZATION_METHOD;
-import static org.kie.pmml.commons.Constants.UNEXPECTED_OPERATION_TYPE;
 import static org.kie.pmml.commons.Constants.UNEXPECTED_OP_TYPE;
 import static org.kie.pmml.commons.enums.StatusCode.OK;
 
@@ -97,56 +96,24 @@ public class PMMLClassificationModelEvaluator {
     }
 
     protected static LinkedHashMap<String, Double> getProbabilityMap(REGRESSION_NORMALIZATION_METHOD regressionNormalizationMethod, OP_TYPE opType, final LinkedHashMap<String, Double> resultMap) {
+        if (!OP_TYPE.CATEGORICAL.equals(opType)) {
+            throw new KiePMMLModelException(String.format(UNEXPECTED_OP_TYPE, opType));
+        }
         switch (regressionNormalizationMethod) {
             case SOFTMAX:
-                switch (opType) {
-                    case CATEGORICAL:
-                        return getSOFTMAXProbabilityMap(resultMap);
-                    default:
-                        throw new KiePMMLModelException(String.format(UNEXPECTED_OP_TYPE, opType));
-                }
+                return getSOFTMAXProbabilityMap(resultMap);
             case SIMPLEMAX:
-                switch (opType) {
-                    case CATEGORICAL:
-                        return getSIMPLEMAXProbabilityMap(resultMap);
-                    default:
-                        throw new KiePMMLModelException(String.format(UNEXPECTED_OP_TYPE, opType));
-                }
+                return getSIMPLEMAXProbabilityMap(resultMap);
             case NONE:
-                switch (opType) {
-                    case CATEGORICAL:
-                        return getNONEProbabilityMap(resultMap);
-                    default:
-                        throw new KiePMMLModelException(String.format(UNEXPECTED_OP_TYPE, opType));
-                }
+                return getNONEProbabilityMap(resultMap);
             case LOGIT:
-                switch (opType) {
-                    case CATEGORICAL:
-                        return getLOGITProbabilityMap(resultMap);
-                    default:
-                        throw new KiePMMLModelException(String.format(UNEXPECTED_OP_TYPE, opType));
-                }
+                return getLOGITProbabilityMap(resultMap);
             case PROBIT:
-                switch (opType) {
-                    case CATEGORICAL:
-                        return getPROBITProbabilityMap(resultMap);
-                    default:
-                        throw new KiePMMLModelException(String.format(UNEXPECTED_OP_TYPE, opType));
-                }
+                return getPROBITProbabilityMap(resultMap);
             case CLOGLOG:
-                switch (opType) {
-                    case CATEGORICAL:
-                        return getCLOGLOGProbabilityMap(resultMap);
-                    default:
-                        throw new KiePMMLModelException(String.format(UNEXPECTED_OP_TYPE, opType));
-                }
+                return getCLOGLOGProbabilityMap(resultMap);
             case CAUCHIT:
-                switch (opType) {
-                    case CATEGORICAL:
-                        return getCAUCHITProbabilityMap(resultMap);
-                    default:
-                        throw new KiePMMLModelException(String.format(UNEXPECTED_OPERATION_TYPE, opType));
-                }
+                return getCAUCHITProbabilityMap(resultMap);
             default:
                 throw new KiePMMLModelException(String.format(UNEXPECTED_NORMALIZATION_METHOD, regressionNormalizationMethod));
         }

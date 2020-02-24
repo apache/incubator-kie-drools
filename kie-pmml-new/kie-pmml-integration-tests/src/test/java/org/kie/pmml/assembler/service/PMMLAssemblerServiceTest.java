@@ -94,5 +94,4 @@ public class PMMLAssemblerServiceTest {
             assertNotNull(pmmlPackage.getModelByName("Second sample for first linear regression"));
         });
     }
-
 }

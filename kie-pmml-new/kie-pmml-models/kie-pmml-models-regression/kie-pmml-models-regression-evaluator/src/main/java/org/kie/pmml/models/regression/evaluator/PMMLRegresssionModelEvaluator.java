@@ -63,55 +63,28 @@ public class PMMLRegresssionModelEvaluator {
     }
 
     protected static void updateResult(REGRESSION_NORMALIZATION_METHOD regressionNormalizationMethod, OP_TYPE opType, final AtomicReference<Double> toUpdate) {
+        if (OP_TYPE.CATEGORICAL.equals(opType)) {
+            throw new KiePMMLModelException(String.format(UNEXPECTED_OP_TYPE, opType));
+        }
         switch (regressionNormalizationMethod) {
             case SOFTMAX:
             case LOGIT:
-                switch (opType) {
-                    case CATEGORICAL:
-                        throw new KiePMMLModelException(String.format(UNEXPECTED_OP_TYPE, opType));
-                    default:
-                        toUpdate.updateAndGet(y -> 1.0 / (1.0 + Math.exp(-y)));
-                        return;
-                }
+                toUpdate.updateAndGet(y -> 1.0 / (1.0 + Math.exp(-y)));
+                return;
             case EXP:
-                switch (opType) {
-                    case CATEGORICAL:
-                        throw new KiePMMLModelException(String.format(UNEXPECTED_OP_TYPE, opType));
-                    default:
-                        toUpdate.updateAndGet(Math::exp);
-                        return;
-                }
+                toUpdate.updateAndGet(Math::exp);
+                return;
             case PROBIT:
-                switch (opType) {
-                    case CATEGORICAL:
-                        throw new KiePMMLModelException(String.format(UNEXPECTED_OP_TYPE, opType));
-                    default:
-                        toUpdate.updateAndGet(y -> new NormalDistribution().cumulativeProbability(y));
-                        return;
-                }
+                toUpdate.updateAndGet(y -> new NormalDistribution().cumulativeProbability(y));
+                return;
             case CLOGLOG:
-                switch (opType) {
-                    case CATEGORICAL:
-                        throw new KiePMMLModelException(String.format(UNEXPECTED_OP_TYPE, opType));
-                    default:
-                        toUpdate.updateAndGet(y -> 1.0 - Math.exp(-Math.exp(y)));
-                        return;
-                }
+                toUpdate.updateAndGet(y -> 1.0 - Math.exp(-Math.exp(y)));
+                return;
             case CAUCHIT:
-                switch (opType) {
-                    case CATEGORICAL:
-                        throw new KiePMMLModelException(String.format(UNEXPECTED_OP_TYPE, opType));
-                    default:
-                        toUpdate.updateAndGet(y -> 0.5 + (1 / Math.PI) * Math.atan(y));
-                        return;
-                }
+                toUpdate.updateAndGet(y -> 0.5 + (1 / Math.PI) * Math.atan(y));
+                return;
             case NONE:
-                switch (opType) {
-                    case CATEGORICAL:
-                        throw new KiePMMLModelException(String.format(UNEXPECTED_OP_TYPE, opType));
-                    default:
-                        return;
-                }
+                return;
             default:
                 throw new KiePMMLModelException(String.format(UNEXPECTED_NORMALIZATION_METHOD, regressionNormalizationMethod));
         }

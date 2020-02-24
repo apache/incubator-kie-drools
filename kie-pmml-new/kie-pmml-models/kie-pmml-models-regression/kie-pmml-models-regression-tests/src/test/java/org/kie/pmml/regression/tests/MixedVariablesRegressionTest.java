@@ -16,6 +16,11 @@
 
 package org.kie.pmml.regression.tests;
 
+import java.util.Arrays;
+import java.util.Collection;
+import java.util.HashMap;
+import java.util.Map;
+
 import org.assertj.core.api.Assertions;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -24,11 +29,6 @@ import org.kie.api.pmml.PMML4Result;
 import org.kie.api.pmml.PMMLRequestData;
 import org.kie.pmml.commons.model.KiePMMLModel;
 import org.kie.pmml.evaluator.core.PMMLContextImpl;
-
-import java.util.Arrays;
-import java.util.Collection;
-import java.util.HashMap;
-import java.util.Map;
 
 @RunWith(Parameterized.class)
 public class MixedVariablesRegressionTest extends AbstractPMMLRegressionTest {

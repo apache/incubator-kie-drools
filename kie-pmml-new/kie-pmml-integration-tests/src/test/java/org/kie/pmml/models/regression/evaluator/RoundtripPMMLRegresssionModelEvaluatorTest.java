@@ -33,7 +33,6 @@ import org.kie.api.pmml.PMML4Result;
 import org.kie.api.pmml.PMMLRequestData;
 import org.kie.api.runtime.KieSession;
 import org.kie.internal.io.ResourceFactory;
-import org.kie.pmml.commons.exceptions.ExternalException;
 import org.kie.pmml.commons.exceptions.KiePMMLException;
 import org.kie.pmml.commons.model.KiePMMLModel;
 import org.kie.pmml.commons.model.enums.PMML_MODEL;
@@ -86,7 +85,7 @@ public class RoundtripPMMLRegresssionModelEvaluatorTest {
     }
 
     @Test
-    public void evaluateSimpleRegression() , ExternalException {
+    public void evaluateSimpleRegression() {
         String modelName = "Sample for linear regression";
         commonEvaluateSimpleRegression(20, 1950, STREET, modelName);
         commonEvaluateSimpleRegression(20, 1950, CARPARK, modelName);
@@ -94,7 +93,7 @@ public class RoundtripPMMLRegresssionModelEvaluatorTest {
         commonEvaluateSimpleRegression(35, 1800, CARPARK, modelName);
     }
 
-    private void commonEvaluateSimpleRegression(int age, double salary, String carLocation, String modelName) , ExternalException {
+    private void commonEvaluateSimpleRegression(int age, double salary, String carLocation, String modelName) {
         Map<String, Object> inputData = new HashMap<>();
         inputData.put("age", age);
         inputData.put("salary", salary);
@@ -110,7 +109,7 @@ public class RoundtripPMMLRegresssionModelEvaluatorTest {
         commonEvaluateSimpleRegression(pmmlContext, expected);
     }
 
-    private void commonEvaluateSimpleRegression(PMMLContext pmmlContext, double expected) , ExternalException {
+    private void commonEvaluateSimpleRegression(PMMLContext pmmlContext, double expected) {
         final KiePMMLModel model = pmmlRuntime.getModel(pmmlContext.getRequestData().getModelName()).orElseThrow(() -> new KiePMMLException("Failed to retrieve the model"));
         assertEquals(PMML_MODEL.REGRESSION_MODEL, model.getPmmlMODEL());
         assertTrue(model instanceof KiePMMLRegressionModel);

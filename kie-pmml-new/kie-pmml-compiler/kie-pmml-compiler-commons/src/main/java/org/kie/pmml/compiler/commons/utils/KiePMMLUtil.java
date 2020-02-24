@@ -29,6 +29,10 @@ import org.xml.sax.SAXException;
  */
 public class KiePMMLUtil {
 
+    private KiePMMLUtil() {
+        // Avoid instantiation
+    }
+
     /**
      * @param source
      * @return
@@ -48,9 +52,5 @@ public class KiePMMLUtil {
      */
     public static PMML load(InputStream is) throws SAXException, JAXBException {
         return org.jpmml.model.PMMLUtil.unmarshal(is);
-    }
-
-    private KiePMMLUtil() {
-        // Avoid instantiation
     }
 }

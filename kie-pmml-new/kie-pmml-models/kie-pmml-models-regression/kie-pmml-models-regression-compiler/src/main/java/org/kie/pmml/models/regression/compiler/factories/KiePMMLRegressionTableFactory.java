@@ -37,6 +37,10 @@ public class KiePMMLRegressionTableFactory {
 
     private static final Logger logger = LoggerFactory.getLogger(KiePMMLRegressionTableFactory.class.getName());
 
+    private KiePMMLRegressionTableFactory() {
+        // Avoid instantiation
+    }
+
     public static List<KiePMMLRegressionTable> getRegressionTables(List<RegressionTable> regressionTables) {
         logger.debug("getRegressionTables {}", regressionTables);
         return regressionTables.stream().map(KiePMMLRegressionTableFactory::getRegressionTable).collect(Collectors.toList());
@@ -56,9 +60,5 @@ public class KiePMMLRegressionTableFactory {
                 .withPredictorTerms(getKiePMMLPredictorTerms(regressionTable.getPredictorTerms(), numericCategoricalPredictors))
                 .withTargetCategory(regressionTable.getTargetCategory())
                 .build();
-    }
-
-    private KiePMMLRegressionTableFactory() {
-        // Avoid instantiation
     }
 }
