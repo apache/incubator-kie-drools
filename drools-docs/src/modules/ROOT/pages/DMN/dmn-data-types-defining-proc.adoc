@@ -34,12 +34,12 @@ The data type that you define for a specified cell in a boxed expression determi
 
 In this example, an output column *Credit Score Rating* for a DMN decision table defines a set of custom credit score ratings based on an applicant's credit score.
 --
-. On the *Data Types* page, click *Add* to add a new data type or click *Import Data Object* to import an existing data object from your project that you want to use as a DMN data type.
+. On the *Data Types* page, click *New Data Type* to add a new data type or click *Import Data Object* to import an existing data object from your project that you want to use as a DMN data type.
 +
 --
 If you import a data object from your project as a DMN data type and then that object is updated, you must re-import the data object as a DMN data type to apply the changes in your DMN model.
 
-For this example, click *Add* and create a *Credit_Score_Rating* data type as a `string`:
+For this example, click *New Data Type* and create a *Credit_Score_Rating* data type as a `string`:
 
 .Adding a new data type
 image::dmn/dmn-custom-data-type-add.png[]
@@ -79,7 +79,7 @@ In the DMN decision model for this scenario, the *Credit Score Rating* decision 
 .Decision table for loan prequalification
 image::dmn/dmn-manage-data-types-blank.png[]
 --
-. Continuing with this example, return to the *Data Types* window, click *Add*, and create a *Loan_Qualification* data type as a `Structure` with no constraints.
+. Continuing with this example, return to the *Data Types* window, click *New Data Type*, and create a *Loan_Qualification* data type as a `Structure` with no constraints.
 +
 --
 When you save the new structured data type, the first sub-field appears so that you can begin defining nested data fields in this parent data type. You can use these sub-fields in association with the parent structured data type in boxed expressions, such as nested column headers in decision tables or nested table parameters in context or function expressions.
