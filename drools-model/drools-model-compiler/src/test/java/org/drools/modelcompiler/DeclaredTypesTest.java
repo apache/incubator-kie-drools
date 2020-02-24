@@ -19,6 +19,7 @@ package org.drools.modelcompiler;
 import java.lang.reflect.Constructor;
 import java.lang.reflect.Field;
 import java.lang.reflect.Method;
+import java.text.SimpleDateFormat;
 import java.util.Collection;
 import java.util.Iterator;
 import java.util.List;
@@ -32,6 +33,7 @@ import org.drools.core.spi.AlphaNodeFieldConstraint;
 import org.drools.modelcompiler.domain.Person;
 import org.drools.modelcompiler.domain.Result;
 import org.junit.Test;
+import org.kie.api.KieBase;
 import org.kie.api.definition.type.FactType;
 import org.kie.api.runtime.KieSession;
 
@@ -509,5 +511,39 @@ public class DeclaredTypesTest extends BaseModelTest {
         Field f = pojo.getClass().getDeclaredField( "serialVersionUID" );
         f.setAccessible( true );
         assertEquals(42L, (long)f.get( pojo ));
+    }
+
+    @Test
+    public void testNestedDateConstraint() throws Exception {
+        String str =
+                "package org.test;\n" +
+                "declare Fact\n" +
+                "    n : Nested\n" +
+                "end\n" +
+                "declare Nested\n" +
+                "    d : java.util.Date\n" +
+                "end\n" +
+                "\n" +
+                "rule \"with nested date\" when\n" +
+                "    Fact(n.d >= \"01-Jan-2020\")\n" +
+                "then\n" +
+                "end";
+
+        KieSession ksession = getKieSession( str );
+        KieBase kbase = ksession.getKieBase();
+
+        FactType factType = kbase.getFactType("org.test", "Fact");
+        FactType nestedType = kbase.getFactType("org.test", "Nested");
+
+        Object f1 = factType.newInstance();
+        Object n1 = nestedType.newInstance();
+
+        SimpleDateFormat df = new SimpleDateFormat("dd-MMM-yyyy");
+
+        nestedType.set(n1, "d", df.parse("01-Jan-2020"));
+        factType.set(f1, "n", n1);
+
+        ksession.insert(f1);
+        assertEquals( 1, ksession.fireAllRules() );
     }
 }
