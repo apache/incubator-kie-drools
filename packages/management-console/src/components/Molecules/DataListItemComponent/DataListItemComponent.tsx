@@ -30,6 +30,7 @@ import {
 import { Link } from 'react-router-dom';
 import SpinnerComponent from '../../Atoms/SpinnerComponent/SpinnerComponent';
 import { useGetChildInstancesLazyQuery } from '../../../graphql/types';
+import EmptyStateComponent from '../../Atoms/EmptyStateComponent/EmptyStateComponent';
 
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faInfoCircle, faTimesCircle } from '@fortawesome/free-solid-svg-icons';
@@ -513,6 +514,16 @@ const DataListItemComponent: React.FC<IOwnProps> = ({
                 />
               );
             })}
+          {isLoaded &&
+            childList['ProcessInstances'] !== undefined &&
+            childList['ProcessInstances'].length === 0 && (
+              <EmptyStateComponent
+                iconType="infoCircleIcon"
+                title="No child process instances"
+                body="This process has no related sub processes"
+              />
+            )}
+
           {!isLoaded && (
             <Bullseye>
               <SpinnerComponent spinnerText="Loading process instances..." />

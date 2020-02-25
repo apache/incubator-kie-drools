@@ -1,0 +1,30 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`Emptystate component tests snapshot testing 1`] = `
+<Bullseye>
+  <EmptyState
+    variant="full"
+  >
+    <EmptyStateIcon
+      color="var(--pf-global--warning-color--100)"
+      icon={[Function]}
+      size="sm"
+    />
+    <Title
+      headingLevel="h5"
+      size="lg"
+    >
+      No child process instances
+    </Title>
+    <EmptyStateBody>
+      This process has no related sub processes
+    </EmptyStateBody>
+    <Component
+      onClick={[Function]}
+      variant="primary"
+    >
+      Refresh
+    </Component>
+  </EmptyState>
+</Bullseye>
+`;

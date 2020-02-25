@@ -575,9 +575,10 @@ module.exports = data = [
     ]
   },
   {
-    id: '8035b580-6ae4-4aa8-9ec0-e18e19809e0basadadads',
+    id: '8035b580-6ae4-4aa8-9ec0-e18e19809e0blmnop',
     processId: 'travels',
     parentProcessInstanceId: null,
+    parentProcessInstance: null,
     processName: 'travels',
     roles: [],
     state: 'ACTIVE',
@@ -760,7 +761,7 @@ module.exports = data = [
         type: 'StartNode'
       }
     ],
-    childProcessInstanceId: []
+    childProcessInstances: []
   },
   {
     id: 'c54ca5b0-b975-46e2-a9a0-6a86bf7ac21e',
