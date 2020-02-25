@@ -27,6 +27,7 @@ import com.github.javaparser.ast.type.ClassOrInterfaceType;
 import org.drools.modelcompiler.builder.JavaParserCompiler;
 import org.kie.internal.ruleunit.RuleUnitVariable;
 import org.kie.kogito.codegen.FileGenerator;
+import org.kie.kogito.rules.DataStore;
 import org.kie.kogito.rules.RuleUnitData;
 import org.kie.kogito.rules.units.GeneratedRuleUnitDescription;
 
@@ -56,16 +57,19 @@ public class RuleUnitPojoGenerator implements FileGenerator {
         for (RuleUnitVariable v : ruleUnitDescription.getUnitVarDeclarations()) {
             ClassOrInterfaceType t = new ClassOrInterfaceType()
                     .setName(v.getType().getCanonicalName());
+            FieldDeclaration f = new FieldDeclaration();
+            VariableDeclarator vd = new VariableDeclarator(t, v.getName());
+            f.getVariables().add(vd);
             if (v.isDataSource()) {
                 t.setTypeArguments(
                         StaticJavaParser.parseType(
                                 v.getDataSourceParameterType().getCanonicalName()));
+                if (DataStore.class.isAssignableFrom(v.getType())) {
+                    vd.setInitializer("org.kie.kogito.rules.DataSource.createStore()");
+                } else {
+                    vd.setInitializer("org.kie.kogito.rules.DataSource.createSingleton()");
+                }
             }
-            FieldDeclaration f = new FieldDeclaration();
-            f.getVariables().add(
-                    new VariableDeclarator(t, v.getName())
-                    .setInitializer("org.kie.kogito.rules.DataSource.createStore()")
-            );
             c.addMember(f);
             f.createGetter();
         }

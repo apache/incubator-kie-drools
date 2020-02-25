@@ -37,7 +37,7 @@ public class HumanTaskNodeVisitor extends AbstractVisitor {
         addFactoryMethodWithArgs(body, "humanTaskNode" + node.getId(), "name", new StringLiteralExpr(getOrDefault(humanTaskNode.getName(), "Task")));            
         
         addWorkItemParameters(work, body, "humanTaskNode" + node.getId());
-        addWorkItemMappings(humanTaskNode, body, "humanTaskNode" + node.getId());
+        addNodeMappings(humanTaskNode, body, "humanTaskNode" + node.getId());
         
         addFactoryMethodWithArgs(body, "humanTaskNode" + node.getId(), "done");
         

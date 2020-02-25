@@ -35,6 +35,19 @@ import org.slf4j.LoggerFactory;
 
 import static com.github.javaparser.StaticJavaParser.parse;
 
+/*
+ *
+ * Input/Output mapping with Rule Units:
+ *
+ * | Mapping | Process Variable | Rule Unit field   | Action
+ * | IN      | scalar           | scalar            | Assignment
+ * | IN      | scalar           | data source 	    | Add to (i.e. insert into) data source
+ * | IN      | collection       | data source 	    | Add all contents from data source
+ * | OUT     | scalar           | scalar 	        | Assignment
+ * | OUT     | scalar           | data source 	    | get 1 value off the data source
+ * | OUT     | collection       | data source 	    | Add all contents to the data source
+ *
+ */
 public class RuleUnitHandler {
 
     public static final Logger logger = LoggerFactory.getLogger(ProcessToExecModelGenerator.class);

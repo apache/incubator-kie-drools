@@ -17,8 +17,6 @@
 package org.jbpm.compiler.canonical;
 
 import java.text.MessageFormat;
-import java.util.Collection;
-import java.util.Map.Entry;
 
 import com.github.javaparser.ast.NodeList;
 import com.github.javaparser.ast.body.Parameter;
@@ -39,27 +37,15 @@ import org.jbpm.workflow.core.node.RuleSetNode;
 import org.kie.api.definition.process.Node;
 import org.kie.internal.ruleunit.RuleUnitComponentFactory;
 import org.kie.internal.ruleunit.RuleUnitDescription;
-import org.kie.kogito.rules.DataStore;
 import org.kie.kogito.rules.RuleUnitData;
+import org.kie.kogito.rules.SingletonStore;
 import org.kie.kogito.rules.units.GeneratedRuleUnitDescription;
 import org.kie.kogito.rules.units.ReflectiveRuleUnitDescription;
 import org.kie.kogito.rules.units.impl.RuleUnitComponentFactoryImpl;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-/*
- *
- * Input/Output mapping with Rule Units:
- *
- * | Mapping | Process Variable | Rule Unit field   | Action
- * | IN      | scalar           | scalar            | Assignment
- * | IN      | scalar           | data source 	    | Add to (i.e. insert into) data source
- * | IN      | collection       | data source 	    | Add all contents from data source
- * | OUT     | scalar           | scalar 	        | Assignment
- * | OUT     | scalar           | data source 	    | get 1 value off the data source
- * | OUT     | collection       | data source 	    | Add all contents to the data source
- *
- */
+
 public class RuleSetNodeVisitor extends AbstractVisitor {
 
     public static final Logger logger = LoggerFactory.getLogger(ProcessToExecModelGenerator.class);
@@ -86,6 +72,8 @@ public class RuleSetNodeVisitor extends AbstractVisitor {
                             "Rule task \"{0}\" is invalid: you did not set a unit name, a rule flow group or a decision model.", nodeName));
         }
 
+        addNodeMappings(ruleSetNode, body, callTargetName);
+
         NameExpr methodScope = new NameExpr(callTargetName);
         MethodCallExpr m;
         if (ruleType.isRuleFlowGroup()) {
@@ -100,27 +88,10 @@ public class RuleSetNodeVisitor extends AbstractVisitor {
         m.setScope(methodScope);
         body.addStatement(m);
 
-        for (Entry<String, String> entry : ruleSetNode.getInMappings().entrySet()) {
-            addFactoryMethodWithArgs(body, callTargetName, "inMapping", new StringLiteralExpr(entry.getKey()), new StringLiteralExpr(entry.getValue()));
-        }
-        for (Entry<String, String> entry : ruleSetNode.getOutMappings().entrySet()) {
-            addFactoryMethodWithArgs(body, callTargetName, "outMapping", new StringLiteralExpr(entry.getKey()), new StringLiteralExpr(entry.getValue()));
-        }
-
         visitMetaData(ruleSetNode.getMetaData(), body, callTargetName);
 
         addFactoryMethodWithArgs(body, callTargetName, "done");
 
-        if (ruleType.isRuleUnit()) {
-            if (ruleSetNode.getInMappings().isEmpty()) {
-                GeneratedRuleUnitDescription generatedRuleUnitDescription = new GeneratedRuleUnitDescription(ruleType.getName(), contextClassLoader);
-                for (Variable v : variableScope.getVariables()) {
-                    generatedRuleUnitDescription.putDatasourceVar(v.getName(), DataStore.class.getCanonicalName(), v.getType().getStringType());
-                }
-                RuleUnitComponentFactoryImpl impl = (RuleUnitComponentFactoryImpl) RuleUnitComponentFactory.get();
-                impl.registerRuleUnitDescription(generatedRuleUnitDescription);
-            }
-        }
     }
 
     private MethodCallExpr handleDecision(RuleSetNode.RuleType.Decision ruleType) {
@@ -160,7 +131,10 @@ public class RuleSetNodeVisitor extends AbstractVisitor {
             logger.warn("Rule task \"{}\": cannot load class {}. " +
                                 "The unit data object will be generated.", nodeName, unitName);
 
-            description = generateRuleUnitDescription(unitName, processContext);
+            GeneratedRuleUnitDescription d = generateRuleUnitDescription(unitName, processContext);
+            RuleUnitComponentFactoryImpl impl = (RuleUnitComponentFactoryImpl) RuleUnitComponentFactory.get();
+            impl.registerRuleUnitDescription(d);
+            description = d;
         }
 
         RuleUnitHandler handler = new RuleUnitHandler(description, processContext, ruleSetNode);
@@ -175,10 +149,9 @@ public class RuleSetNodeVisitor extends AbstractVisitor {
     private GeneratedRuleUnitDescription generateRuleUnitDescription(String unitName, ProcessContextMetaModel processContext) {
         GeneratedRuleUnitDescription d = new GeneratedRuleUnitDescription(unitName, contextClassLoader);
         for (Variable variable : processContext.getVariables()) {
-            // fixme: if var is scalar, we should use a different type of data source: KOGITO-892
             d.putDatasourceVar(
                     variable.getName(),
-                    DataStore.class.getCanonicalName(),
+                    SingletonStore.class.getCanonicalName(),
                     variable.getType().getStringType());
         }
         return d;

@@ -33,6 +33,7 @@ import org.kie.internal.ruleunit.RuleUnitVariable;
 import org.kie.kogito.rules.DataObserver;
 import org.kie.kogito.rules.DataStore;
 import org.kie.kogito.rules.DataStream;
+import org.kie.kogito.rules.SingletonStore;
 
 import static com.github.javaparser.StaticJavaParser.parseExpression;
 
@@ -144,6 +145,8 @@ public class RuleUnitMetaModel {
             appendMethod = "append";
         } else if (type.isAssignableFrom(DataStore.class)) {
             appendMethod = "add";
+        } else if (type.isAssignableFrom(SingletonStore.class)) {
+            appendMethod = "set";
         } else {
             throw new IllegalArgumentException("Unknown data source type " + type.getCanonicalName());
         }

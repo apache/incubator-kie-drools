@@ -72,7 +72,7 @@ public class WorkItemNodeVisitor extends AbstractVisitor {
         addFactoryMethodWithArgs(body, "workItemNode" + node.getId(), "workName", new StringLiteralExpr(workName));
 
         addWorkItemParameters(work, body, "workItemNode" + node.getId());
-        addWorkItemMappings(workItemNode, body, "workItemNode" + node.getId());
+        addNodeMappings(workItemNode, body, "workItemNode" + node.getId());
         
         addFactoryMethodWithArgs(body, "workItemNode" + node.getId(), "done");
         

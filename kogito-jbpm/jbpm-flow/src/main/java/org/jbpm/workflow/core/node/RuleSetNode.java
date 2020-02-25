@@ -28,6 +28,7 @@ import java.util.function.Supplier;
 import org.jbpm.process.core.Context;
 import org.jbpm.process.core.ContextContainer;
 import org.jbpm.process.core.context.AbstractContext;
+import org.jbpm.process.core.context.variable.Mappable;
 import org.jbpm.process.core.impl.ContextContainerImpl;
 import org.kie.api.definition.process.Connection;
 import org.kie.api.runtime.KieRuntime;
@@ -37,7 +38,8 @@ import org.kie.kogito.rules.RuleUnitData;
 /**
  * Default implementation of a RuleSet node.
  */
-public class RuleSetNode extends StateBasedNode implements ContextContainer {
+public class RuleSetNode extends StateBasedNode implements ContextContainer,
+                                                           Mappable {
 
 
     public static abstract class RuleType implements Serializable {
