@@ -90,14 +90,20 @@ under the License.
   </modules>
   <requiredProperties>
     <requiredProperty key="modelName"/>
+    <requiredProperty key="modelNameInternal">
+      <defaultValue>${modelName}</defaultValue>
+    </requiredProperty>
     <requiredProperty key="packageModelName">
-      <defaultValue>${modelName.replaceAll("(.)([A-Z])", "$1_$2").toLowerCase()}</defaultValue>
+      <defaultValue>${modelNameInternal.replaceAll("(.)([A-Z])", "$1_$2").toLowerCase()}</defaultValue>
     </requiredProperty>
     <requiredProperty key="artifactModelName">
-      <defaultValue>${modelName.toLowerCase()}</defaultValue>
+      <defaultValue>${modelNameInternal.toLowerCase()}</defaultValue>
+    </requiredProperty>
+    <requiredProperty key="artifactId">
+      <defaultValue>kie-pmml-models-${artifactModelName}</defaultValue>
     </requiredProperty>
     <requiredProperty key="modelNameUppercase">
-      <defaultValue>${modelName.toUpperCase()}</defaultValue>
+      <defaultValue>${modelNameInternal.toUpperCase()}</defaultValue>
     </requiredProperty>
     <requiredProperty key="groupId">
       <defaultValue>${groupId}</defaultValue>
