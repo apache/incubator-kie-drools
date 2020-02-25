@@ -2850,5 +2850,26 @@ public class DMNRuntimeTest extends BaseInterpretedVsCompiledTest {
         assertThat(DMNRuntimeUtil.formatMessages(dmnResult.getMessages()), dmnResult.hasErrors(), is(false));
         assertThat(dmnResult.getDecisionResultByName("Decision-2").getResult(), is(true));
     }
+
+    @Test
+    public void testUniqueMissingMatchDefaultEmpty() {
+        final DMNRuntime runtime = DMNRuntimeUtil.createRuntime("uniqueNoMatch.dmn", this.getClass());
+        final DMNModel dmnModel = runtime.getModel("http://activiti.org/schema/1.0/dmn", "decisionmulti");
+        assertThat(dmnModel, notNullValue());
+        assertThat(DMNRuntimeUtil.formatMessages(dmnModel.getMessages()), dmnModel.hasErrors(), is(false));
+
+        checkUniqueMissingMatchDefaultEmpty(runtime, dmnModel, 11, true);
+        checkUniqueMissingMatchDefaultEmpty(runtime, dmnModel, 12, null);
+    }
+
+    private void checkUniqueMissingMatchDefaultEmpty(final DMNRuntime runtime, final DMNModel dmnModel, int input, Boolean output) {
+        final DMNContext context = DMNFactory.newContext();
+        context.set("inputInteger", input);
+
+        final DMNResult dmnResult = runtime.evaluateAll(dmnModel, context);
+        LOG.debug("{}", dmnResult);
+        assertThat(DMNRuntimeUtil.formatMessages(dmnResult.getMessages()), dmnResult.hasErrors(), is(false));
+        assertThat(dmnResult.getDecisionResultByName("Decision_decisionboolean").getResult(), is(output));
+    }
 }
 
