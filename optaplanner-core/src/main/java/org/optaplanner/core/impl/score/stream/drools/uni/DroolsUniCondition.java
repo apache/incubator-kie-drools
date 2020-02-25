@@ -100,9 +100,15 @@ public final class DroolsUniCondition<A, PatternVar>
         return new DroolsUniCondition<>(newStructure);
     }
 
+    @Override
+    protected <InTuple> PatternDef<PatternVar> bindTupleVariableOnFirstGrouping(PatternDef<PatternVar> pattern,
+            Variable<InTuple> tupleVariable) {
+        return pattern.bind(tupleVariable, a -> (InTuple) a);
+    }
+
     public <NewA, __> DroolsUniCondition<NewA, NewA> andCollect(UniConstraintCollector<A, __, NewA> collector) {
         DroolsUniAccumulateFunctionBridge<A, __, NewA> bridge = new DroolsUniAccumulateFunctionBridge<>(collector);
-        return collect(bridge, (pattern, tuple) -> pattern.bind(tuple, a -> (A) a));
+        return collect(bridge);
     }
 
     public <NewA> DroolsUniCondition<NewA, NewA> andGroup(Function<A, NewA> groupKeyMapping) {

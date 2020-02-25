@@ -37,8 +37,8 @@ import org.optaplanner.core.api.score.stream.bi.BiConstraintStream;
 import org.optaplanner.core.api.score.stream.quad.QuadConstraintStream;
 import org.optaplanner.core.api.score.stream.quad.QuadJoiner;
 import org.optaplanner.core.api.score.stream.uni.UniConstraintStream;
-import org.optaplanner.core.impl.score.stream.quad.AbstractQuadJoiner;
 import org.optaplanner.core.impl.score.stream.quad.NoneQuadJoiner;
+import org.optaplanner.core.impl.score.stream.tri.TriConstraintStreamHelper;
 
 /**
  * A {@link ConstraintStream} that matches three facts.
@@ -150,7 +150,7 @@ public interface TriConstraintStream<A, B, C> extends ConstraintStream {
      */
     default <D> QuadConstraintStream<A, B, C, D> join(Class<D> otherClass, QuadJoiner<A, B, C, D> joiner1,
             QuadJoiner<A, B, C, D> joiner2) {
-        return join(otherClass, AbstractQuadJoiner.merge(joiner1, joiner2));
+        return join(otherClass, new QuadJoiner[] {joiner1, joiner2});
     }
 
     /**
@@ -165,7 +165,7 @@ public interface TriConstraintStream<A, B, C> extends ConstraintStream {
      */
     default <D> QuadConstraintStream<A, B, C, D> join(Class<D> otherClass, QuadJoiner<A, B, C, D> joiner1,
             QuadJoiner<A, B, C, D> joiner2, QuadJoiner<A, B, C, D> joiner3) {
-        return join(otherClass, AbstractQuadJoiner.merge(joiner1, joiner2, joiner3));
+        return join(otherClass, new QuadJoiner[] {joiner1, joiner2, joiner3});
     }
 
     /**
@@ -181,7 +181,7 @@ public interface TriConstraintStream<A, B, C> extends ConstraintStream {
      */
     default <D> QuadConstraintStream<A, B, C, D> join(Class<D> otherClass, QuadJoiner<A, B, C, D> joiner1,
             QuadJoiner<A, B, C, D> joiner2, QuadJoiner<A, B, C, D> joiner3, QuadJoiner<A, B, C, D> joiner4) {
-        return join(otherClass, AbstractQuadJoiner.merge(joiner1, joiner2, joiner3, joiner4));
+        return join(otherClass, new QuadJoiner[] {joiner1, joiner2, joiner3, joiner4});
     }
 
     /**
@@ -197,7 +197,8 @@ public interface TriConstraintStream<A, B, C> extends ConstraintStream {
      * {@link QuadJoiner joiners} are true
      */
     default <D> QuadConstraintStream<A, B, C, D> join(Class<D> otherClass, QuadJoiner<A, B, C, D>... joiners) {
-        return join(otherClass, AbstractQuadJoiner.merge(joiners));
+        TriConstraintStreamHelper<A, B, C, D> helper = new TriConstraintStreamHelper<>(this);
+        return helper.join(otherClass, joiners);
     }
 
     // ************************************************************************

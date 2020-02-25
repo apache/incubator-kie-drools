@@ -107,11 +107,6 @@ public final class DroolsGroupingUniConstraintStream<Solution_, NewA>
         return parent.getFromStreamList();
     }
 
-    @Override
-    public boolean isGroupByAllowed() {
-        return false;
-    }
-
     // ************************************************************************
     // Pattern creation
     // ************************************************************************

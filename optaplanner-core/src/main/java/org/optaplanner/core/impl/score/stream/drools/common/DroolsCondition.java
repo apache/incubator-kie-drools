@@ -65,13 +65,21 @@ public abstract class DroolsCondition<PatternVar, T extends DroolsRuleStructure<
         this.ruleStructure = ruleStructure;
     }
 
+    protected abstract <InTuple> PatternDef<PatternVar> bindTupleVariableOnFirstGrouping(PatternDef<PatternVar> pattern,
+            Variable<InTuple> tupleVariable);
+
     protected <NewA, InTuple, OutTuple, __> DroolsUniCondition<NewA, NewA> collect(
-            DroolsAbstractAccumulateFunctionBridge<__, InTuple, OutTuple> accumulateFunctionBridge,
-            BiFunction<PatternDef<PatternVar>, Variable<InTuple>, PatternDef<PatternVar>> bindFunction) {
-        Variable<InTuple> tupleVariable = ruleStructure.createVariable("tuple");
-        PatternDef<PatternVar> mainAccumulatePattern = ruleStructure.getPrimaryPatternBuilder()
-                .expand(p -> bindFunction.apply(p, tupleVariable))
-                .build();
+            DroolsAbstractAccumulateFunctionBridge<__, InTuple, OutTuple> accumulateFunctionBridge) {
+        PatternDef<PatternVar> mainAccumulatePattern = ruleStructure.getPrimaryPatternBuilder().build();
+        Variable<PatternVar> baseVariable = ruleStructure.getPrimaryPatternBuilder().getBaseVariable();
+        boolean isRegrouping = FactTuple.class.isAssignableFrom(baseVariable.getType());
+        Variable<InTuple> tupleVariable;
+        if (isRegrouping) {
+            tupleVariable = (Variable<InTuple>) mainAccumulatePattern.getFirstVariable();
+        } else {
+            tupleVariable = ruleStructure.createVariable("tuple");
+            mainAccumulatePattern = bindTupleVariableOnFirstGrouping(mainAccumulatePattern, tupleVariable);
+        }
         ViewItem<?> innerAccumulatePattern = getInnerAccumulatePattern(mainAccumulatePattern);
         Variable<NewA> outputVariable = ruleStructure.createVariable("collected");
         ViewItem<?> outerAccumulatePattern = DSL.accumulate(innerAccumulatePattern,

@@ -100,17 +100,6 @@ public abstract class DroolsAbstractConstraintStream<Solution_> extends Abstract
     // Getters/setters
     // ************************************************************************
 
-    /**
-     * @return true when a groupBy() call is supported on this stream.
-     */
-    public abstract boolean isGroupByAllowed();
-
-    protected void throwWhenGroupByNotAllowed() {
-        if (!isGroupByAllowed()) {
-            throw new UnsupportedOperationException("Repeated groupBy() calls are not yet supported.");
-        }
-    }
-
     @Override
     public DroolsConstraintFactory<Solution_> getConstraintFactory() {
         return constraintFactory;

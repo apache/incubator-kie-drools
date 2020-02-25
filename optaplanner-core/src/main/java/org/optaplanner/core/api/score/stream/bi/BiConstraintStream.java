@@ -37,7 +37,7 @@ import org.optaplanner.core.api.score.stream.quad.QuadConstraintStream;
 import org.optaplanner.core.api.score.stream.tri.TriConstraintStream;
 import org.optaplanner.core.api.score.stream.tri.TriJoiner;
 import org.optaplanner.core.api.score.stream.uni.UniConstraintStream;
-import org.optaplanner.core.impl.score.stream.tri.AbstractTriJoiner;
+import org.optaplanner.core.impl.score.stream.bi.BiConstraintStreamHelper;
 import org.optaplanner.core.impl.score.stream.tri.NoneTriJoiner;
 
 /**
@@ -149,7 +149,7 @@ public interface BiConstraintStream<A, B> extends ConstraintStream {
      */
     default <C> TriConstraintStream<A, B, C> join(Class<C> otherClass, TriJoiner<A, B, C> joiner1,
             TriJoiner<A, B, C> joiner2) {
-        return join(otherClass, AbstractTriJoiner.merge(joiner1, joiner2));
+        return join(otherClass, new TriJoiner[] {joiner1, joiner2});
     }
 
     /**
@@ -164,7 +164,7 @@ public interface BiConstraintStream<A, B> extends ConstraintStream {
      */
     default <C> TriConstraintStream<A, B, C> join(Class<C> otherClass, TriJoiner<A, B, C> joiner1,
             TriJoiner<A, B, C> joiner2, TriJoiner<A, B, C> joiner3) {
-        return join(otherClass, AbstractTriJoiner.merge(joiner1, joiner2, joiner3));
+        return join(otherClass, new TriJoiner[] {joiner1, joiner2, joiner3});
     }
 
     /**
@@ -180,7 +180,7 @@ public interface BiConstraintStream<A, B> extends ConstraintStream {
      */
     default <C> TriConstraintStream<A, B, C> join(Class<C> otherClass, TriJoiner<A, B, C> joiner1,
             TriJoiner<A, B, C> joiner2, TriJoiner<A, B, C> joiner3, TriJoiner<A, B, C> joiner4) {
-        return join(otherClass, AbstractTriJoiner.merge(joiner1, joiner2, joiner3, joiner4));
+        return join(otherClass, new TriJoiner[] {joiner1, joiner2, joiner3, joiner4});
     }
 
     /**
@@ -196,7 +196,8 @@ public interface BiConstraintStream<A, B> extends ConstraintStream {
      * {@link TriJoiner joiners} are true
      */
     default <C> TriConstraintStream<A, B, C> join(Class<C> otherClass, TriJoiner<A, B, C>... joiners) {
-        return join(otherClass, AbstractTriJoiner.merge(joiners));
+        BiConstraintStreamHelper<A, B, C> helper = new BiConstraintStreamHelper<>(this);
+        return helper.join(otherClass, joiners);
     }
 
     // ************************************************************************

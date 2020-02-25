@@ -38,9 +38,8 @@ import org.optaplanner.core.api.score.stream.bi.BiConstraintStream;
 import org.optaplanner.core.api.score.stream.bi.BiJoiner;
 import org.optaplanner.core.api.score.stream.quad.QuadConstraintStream;
 import org.optaplanner.core.api.score.stream.tri.TriConstraintStream;
-import org.optaplanner.core.impl.score.stream.bi.AbstractBiJoiner;
-import org.optaplanner.core.impl.score.stream.bi.FilteringBiJoiner;
 import org.optaplanner.core.impl.score.stream.bi.NoneBiJoiner;
+import org.optaplanner.core.impl.score.stream.uni.UniConstraintStreamHelper;
 
 /**
  * A {@link ConstraintStream} that matches one fact.
@@ -194,42 +193,8 @@ public interface UniConstraintStream<A> extends ConstraintStream {
      * are true
      */
     default <B> BiConstraintStream<A, B> join(Class<B> otherClass, BiJoiner<A, B>... joiners) {
-        int joinerCount = joiners.length;
-        int indexOfFirstFilter = -1;
-        // Make sure all indexing joiners, if any, come before filtering joiners. This is necessary for performance.
-        for (int i = 0; i < joinerCount; i++) {
-            BiJoiner<A, B> joiner = joiners[i];
-            if (indexOfFirstFilter >= 0) {
-                if (!(joiner instanceof FilteringBiJoiner)) {
-                    throw new IllegalStateException("Indexing joiner (" + joiner + ") must not follow " +
-                            "a filtering joiner (" + joiners[indexOfFirstFilter] + ").\n" +
-                            "Maybe reorder the joiners such that filtering() joiners are later in the parameter list.");
-                }
-            } else {
-                if (joiner instanceof FilteringBiJoiner) { // From now on, we only allow filtering joiners.
-                    indexOfFirstFilter = i;
-                }
-            }
-        }
-        if (indexOfFirstFilter < 0) { // Only found indexing joiners.
-            return join(otherClass, AbstractBiJoiner.merge(joiners));
-        }
-        // Assemble the join stream that may be followed by filter stream.
-        BiConstraintStream<A, B> joined = indexOfFirstFilter == 0 ?
-                join(otherClass) :
-                join(otherClass, Arrays.copyOf(joiners, indexOfFirstFilter));
-        int filterCount = joinerCount - indexOfFirstFilter;
-        if (filterCount == 0) { // No filters, return the original join stream.
-            return joined;
-        }
-        // We merge all filters into one, so that we don't pay the penalty for lack of indexing more than once.
-        FilteringBiJoiner<A, B> filteringJoiner = (FilteringBiJoiner<A, B>) joiners[indexOfFirstFilter];
-        BiPredicate<A, B> resultingFilter = filteringJoiner.getFilter();
-        for (int i = indexOfFirstFilter + 1; i < joinerCount; i++) {
-            FilteringBiJoiner<A, B> anoterFilteringJoiner = (FilteringBiJoiner<A, B>) joiners[i];
-            resultingFilter = resultingFilter.and(anoterFilteringJoiner.getFilter());
-        }
-        return joined.filter(resultingFilter);
+        UniConstraintStreamHelper<A, B> helper = new UniConstraintStreamHelper<>(this);
+        return helper.join(otherClass, joiners);
     }
 
     // ************************************************************************

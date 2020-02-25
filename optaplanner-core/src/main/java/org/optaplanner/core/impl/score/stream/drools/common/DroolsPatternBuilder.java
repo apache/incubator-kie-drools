@@ -1,5 +1,5 @@
 /*
- * Copyright 2019 Red Hat, Inc. and/or its affiliates.
+ * Copyright 2020 Red Hat, Inc. and/or its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -58,7 +58,7 @@ public final class DroolsPatternBuilder<T> {
      */
     public DroolsPatternBuilder(Variable<T> baseVariable) {
         this.baseVariable = baseVariable;
-        this.builder = Function.identity();
+        this.builder = null;
     }
 
     private DroolsPatternBuilder(Variable<T> baseVariable,
@@ -73,12 +73,17 @@ public final class DroolsPatternBuilder<T> {
      * @return copy of the {@link DroolsPatternBuilder} with the new expanding operation included.
      */
     public DroolsPatternBuilder<T> expand(UnaryOperator<PatternDSL.PatternDef<T>> expander) {
-        Function<PatternDSL.PatternDef<T>, PatternDSL.PatternDef<T>> newBuilder = builder.andThen(expander);
+        Function<PatternDSL.PatternDef<T>, PatternDSL.PatternDef<T>> newBuilder =
+                builder == null ? expander : builder.andThen(expander);
         return new DroolsPatternBuilder<>(baseVariable, newBuilder);
     }
 
     private PatternDSL.PatternDef<T> build(PatternDSL.PatternDef<T> basePattern) {
-        return builder.apply(basePattern);
+        if (builder == null) {
+            return basePattern;
+        } else {
+            return builder.apply(basePattern);
+        }
     }
 
     /**
@@ -99,4 +104,9 @@ public final class DroolsPatternBuilder<T> {
     public PatternDSL.PatternDef<T> build(DeclarationSource declarationSource) {
         return build(pattern(baseVariable, declarationSource));
     }
+
+    public Variable<T> getBaseVariable() {
+        return baseVariable;
+    }
+
 }

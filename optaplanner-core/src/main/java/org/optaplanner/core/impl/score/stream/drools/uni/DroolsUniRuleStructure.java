@@ -43,8 +43,8 @@ public final class DroolsUniRuleStructure<A, PatternVar> extends DroolsRuleStruc
         super(variableIdSupplier);
         this.a = aVariable;
         this.aPattern = aPattern;
-        this.shelved = Collections.unmodifiableList(prerequisites);
-        this.prerequisites = Collections.unmodifiableList(shelved);
+        this.shelved = Collections.unmodifiableList(shelved);
+        this.prerequisites = Collections.unmodifiableList(prerequisites);
         this.dependents = Collections.unmodifiableList(dependents);
     }
 

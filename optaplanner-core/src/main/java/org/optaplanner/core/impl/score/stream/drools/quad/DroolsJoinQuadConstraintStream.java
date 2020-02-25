@@ -61,11 +61,6 @@ public final class DroolsJoinQuadConstraintStream<Solution_, A, B, C, D>
     }
 
     @Override
-    public boolean isGroupByAllowed() {
-        return leftParentStream.isGroupByAllowed() && rightParentStream.isGroupByAllowed();
-    }
-
-    @Override
     public String toString() {
         return "QuadJoin() with " + getChildStreams().size()  + " children";
     }

@@ -50,11 +50,11 @@ public final class DroolsBiRuleStructure<A, B, PatternVar> extends DroolsRuleStr
         List<ViewItemBuilder<?>> newShelved = new ArrayList<>(aRuleStructure.getShelvedRuleItems());
         newShelved.addAll(bRuleStructure.getShelvedRuleItems());
         this.shelved = Collections.unmodifiableList(newShelved);
-        List<ViewItemBuilder<?>> newOpenItems = new ArrayList<>(aRuleStructure.getPrerequisites());
-        newOpenItems.add(aRuleStructure.getPrimaryPatternBuilder().build());
-        newOpenItems.addAll(aRuleStructure.getDependents());
-        newOpenItems.addAll(bRuleStructure.getPrerequisites());
-        this.prerequisites = Collections.unmodifiableList(newOpenItems);
+        List<ViewItemBuilder<?>> newPrerequisites = new ArrayList<>(aRuleStructure.getPrerequisites());
+        newPrerequisites.add(aRuleStructure.getPrimaryPatternBuilder().build());
+        newPrerequisites.addAll(aRuleStructure.getDependents());
+        newPrerequisites.addAll(bRuleStructure.getPrerequisites());
+        this.prerequisites = Collections.unmodifiableList(newPrerequisites);
         this.dependents = Collections.unmodifiableList(bRuleStructure.getDependents());
     }
 

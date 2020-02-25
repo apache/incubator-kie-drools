@@ -209,8 +209,8 @@ public abstract class DroolsRuleStructure<PatternVar> {
      */
     public abstract List<ViewItemBuilder<?>> getDependents();
 
-    protected List<ViewItemBuilder<?>> mergeShelved(ViewItemBuilder<?>... newClosedItems) {
-        return Stream.concat(getShelvedRuleItems().stream(), Stream.of(newClosedItems))
+    protected List<ViewItemBuilder<?>> mergeShelved(ViewItemBuilder<?>... newShelvedItems) {
+        return Stream.concat(getShelvedRuleItems().stream(), Stream.of(newShelvedItems))
                 .collect(Collectors.toList());
     }
 
@@ -221,10 +221,8 @@ public abstract class DroolsRuleStructure<PatternVar> {
 
     public <NewA> DroolsUniRuleStructure<NewA, NewA> recollect(Variable<NewA> newA, ViewItem<?> accumulatePattern) {
         DroolsPatternBuilder<NewA> newPrimaryPattern = new DroolsPatternBuilder<>(newA);
-        // The accumulate pattern is the new prerequisite, as it is where the primary pattern gets the variable from.
-        List<ViewItemBuilder<?>> newPrerequisites = Collections.singletonList(accumulatePattern);
-        return new DroolsUniRuleStructure<>(newA, newPrimaryPattern, getShelvedRuleItems(), newPrerequisites,
-                getDependents(), getVariableIdSupplier());
+        return new DroolsUniRuleStructure<>(newA, newPrimaryPattern, mergeShelved(accumulatePattern),
+                Collections.emptyList(), getDependents(), getVariableIdSupplier());
     }
 
     public <NewA> DroolsUniRuleStructure<NewA, NewA> regroup(Variable<Set<NewA>> newASource,

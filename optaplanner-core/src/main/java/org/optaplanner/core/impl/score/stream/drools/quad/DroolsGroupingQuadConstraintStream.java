@@ -92,11 +92,6 @@ public final class DroolsGroupingQuadConstraintStream<Solution_, NewA, NewB, New
     // ************************************************************************
 
     @Override
-    public boolean isGroupByAllowed() {
-        return false;
-    }
-
-    @Override
     public String toString() {
         return "QuadGroupBy() with " + getChildStreams().size()  + " children";
     }

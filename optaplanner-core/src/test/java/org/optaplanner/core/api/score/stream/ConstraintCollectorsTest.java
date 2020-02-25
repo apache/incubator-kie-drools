@@ -21,18 +21,13 @@ import java.math.BigInteger;
 import java.time.Duration;
 import java.time.Period;
 import java.util.Comparator;
-import java.util.LinkedHashMap;
-import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.SortedMap;
 import java.util.SortedSet;
-import java.util.TreeMap;
-import java.util.TreeSet;
 import java.util.function.BiFunction;
 import java.util.function.Function;
-import java.util.stream.Collectors;
 
 import org.junit.Test;
 import org.optaplanner.core.api.score.stream.bi.BiConstraintCollector;
@@ -41,7 +36,6 @@ import org.optaplanner.core.api.score.stream.tri.TriConstraintCollector;
 import org.optaplanner.core.api.score.stream.uni.UniConstraintCollector;
 
 import static java.util.Arrays.asList;
-import static java.util.Arrays.stream;
 import static java.util.Collections.emptyList;
 import static java.util.Collections.emptyMap;
 import static java.util.Collections.emptySet;
@@ -55,6 +49,10 @@ import static org.optaplanner.core.api.score.stream.ConstraintCollectors.countLo
 import static org.optaplanner.core.api.score.stream.ConstraintCollectors.countLongTri;
 import static org.optaplanner.core.api.score.stream.ConstraintCollectors.max;
 import static org.optaplanner.core.api.score.stream.ConstraintCollectors.min;
+import static org.optaplanner.core.impl.testdata.util.PlannerTestUtils.asMap;
+import static org.optaplanner.core.impl.testdata.util.PlannerTestUtils.asSet;
+import static org.optaplanner.core.impl.testdata.util.PlannerTestUtils.asSortedMap;
+import static org.optaplanner.core.impl.testdata.util.PlannerTestUtils.asSortedSet;
 
 public class ConstraintCollectorsTest {
 
@@ -2577,40 +2575,6 @@ public class ConstraintCollectorsTest {
             C expectedResult) {
         C actualResult = collector.finisher().apply((B) container);
         assertEquals("Collector (" + collector + ") did not produce expected result.", expectedResult, actualResult);
-    }
-
-    @SafeVarargs
-    private static <X> Set<X> asSet(X... items) {
-        return stream(items).collect(Collectors.toCollection(LinkedHashSet::new));
-    }
-
-    @SafeVarargs
-    private static <X> SortedSet<X> asSortedSet(X... items) {
-        return stream(items).collect(Collectors.toCollection(TreeSet::new));
-    }
-
-    private static <X, Y> Map<X, Y> asMap(X x1, Y y1) {
-        Map<X, Y> result = new LinkedHashMap<>(0);
-        result.put(x1, y1);
-        return result;
-    }
-
-    private static <X, Y> Map<X, Y> asMap(X x1, Y y1, X x2, Y y2) {
-        Map<X, Y> result = asMap(x1, y1);
-        result.put(x2, y2);
-        return result;
-    }
-
-    private static <X extends Comparable<X>, Y> SortedMap<X, Y> asSortedMap(X x1, Y y1) {
-        SortedMap<X, Y> result = new TreeMap<>();
-        result.put(x1, y1);
-        return result;
-    }
-
-    private static <X extends Comparable<X>, Y> SortedMap<X, Y> asSortedMap(X x1, Y y1, X x2, Y y2) {
-        SortedMap<X, Y> result = asSortedMap(x1, y1);
-        result.put(x2, y2);
-        return result;
     }
 
 }

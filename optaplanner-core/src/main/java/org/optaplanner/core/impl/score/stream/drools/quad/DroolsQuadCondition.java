@@ -144,13 +144,18 @@ public final class DroolsQuadCondition<A, B, C, D, PatternVar> extends
         return new DroolsQuadCondition<>(ruleStructure.existsOrNot(possiblyFilteredExistencePattern, shouldExist));
     }
 
+    @Override
+    protected <InTuple> PatternDef<PatternVar> bindTupleVariableOnFirstGrouping(PatternDef<PatternVar> pattern,
+            Variable<InTuple> tupleVariable) {
+        return pattern.bind(tupleVariable, ruleStructure.getA(), ruleStructure.getB(), ruleStructure.getC(),
+                (d, a, b, c) -> (InTuple) new QuadTuple<>(a, b, c, (D) d));
+    }
+
     public <NewA, __> DroolsUniCondition<NewA, NewA> andCollect(
             QuadConstraintCollector<A, B, C, D, __, NewA> collector) {
         DroolsQuadAccumulateFunctionBridge<A, B, C, D, __, NewA> bridge =
                 new DroolsQuadAccumulateFunctionBridge<>(collector);
-        return collect(bridge, (pattern, tuple) -> pattern.bind(tuple, ruleStructure.getA(),
-                ruleStructure.getB(), ruleStructure.getC(),
-                (d, a, b, c) -> new QuadTuple<>(a, b, c, (D) d)));
+        return collect(bridge);
     }
 
     public <NewA> DroolsUniCondition<NewA, NewA> andGroup(QuadFunction<A, B, C, D, NewA> groupKeyMapping) {

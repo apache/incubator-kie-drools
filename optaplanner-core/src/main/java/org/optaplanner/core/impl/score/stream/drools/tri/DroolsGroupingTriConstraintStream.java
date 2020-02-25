@@ -74,11 +74,6 @@ public class DroolsGroupingTriConstraintStream<Solution_, NewA, NewB, NewC>
     }
 
     @Override
-    public boolean isGroupByAllowed() {
-        return false;
-    }
-
-    @Override
     public String toString() {
         return "TriGroup() with " + getChildStreams().size() + " children";
     }

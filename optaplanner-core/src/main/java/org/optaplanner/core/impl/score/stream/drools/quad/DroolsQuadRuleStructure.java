@@ -62,11 +62,11 @@ public class DroolsQuadRuleStructure<A, B, C, D, PatternVar> extends DroolsRuleS
         List<ViewItemBuilder<?>> newShelved = new ArrayList<>(abcRuleStructure.getShelvedRuleItems());
         newShelved.addAll(dRuleStructure.getShelvedRuleItems());
         this.shelved = Collections.unmodifiableList(newShelved);
-        List<ViewItemBuilder<?>> newOpenItems = new ArrayList<>(abcRuleStructure.getPrerequisites());
-        newOpenItems.add(abcRuleStructure.getPrimaryPatternBuilder().build());
-        newOpenItems.addAll(abcRuleStructure.getDependents());
-        newOpenItems.addAll(dRuleStructure.getPrerequisites());
-        this.prerequisites = Collections.unmodifiableList(newOpenItems);
+        List<ViewItemBuilder<?>> newPrerequisites = new ArrayList<>(abcRuleStructure.getPrerequisites());
+        newPrerequisites.add(abcRuleStructure.getPrimaryPatternBuilder().build());
+        newPrerequisites.addAll(abcRuleStructure.getDependents());
+        newPrerequisites.addAll(dRuleStructure.getPrerequisites());
+        this.prerequisites = Collections.unmodifiableList(newPrerequisites);
         this.dependents = Collections.unmodifiableList(dRuleStructure.getDependents());
     }
 

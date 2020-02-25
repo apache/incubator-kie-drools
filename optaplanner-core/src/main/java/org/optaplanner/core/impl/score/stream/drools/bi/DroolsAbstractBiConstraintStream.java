@@ -106,7 +106,6 @@ public abstract class DroolsAbstractBiConstraintStream<Solution_, A, B>
     @Override
     public <ResultContainer_, Result_> UniConstraintStream<Result_> groupBy(
             BiConstraintCollector<A, B, ResultContainer_, Result_> collector) {
-        throwWhenGroupByNotAllowed();
         DroolsGroupingUniConstraintStream<Solution_, Result_> stream =
                 new DroolsGroupingUniConstraintStream<>(constraintFactory, this, collector);
         addChildStream(stream);
@@ -115,7 +114,6 @@ public abstract class DroolsAbstractBiConstraintStream<Solution_, A, B>
 
     @Override
     public <GroupKey_> UniConstraintStream<GroupKey_> groupBy(BiFunction<A, B, GroupKey_> groupKeyMapping) {
-        throwWhenGroupByNotAllowed();
         DroolsGroupingUniConstraintStream<Solution_, GroupKey_> stream =
                 new DroolsGroupingUniConstraintStream<>(constraintFactory, this, groupKeyMapping);
         addChildStream(stream);
@@ -126,7 +124,6 @@ public abstract class DroolsAbstractBiConstraintStream<Solution_, A, B>
     public <GroupKey_, __, Result_> BiConstraintStream<GroupKey_, Result_> groupBy(
             BiFunction<A, B, GroupKey_> groupKeyMapping,
             BiConstraintCollector<A, B, __, Result_> collector) {
-        throwWhenGroupByNotAllowed();
         DroolsGroupingBiConstraintStream<Solution_, GroupKey_, Result_> stream =
                 new DroolsGroupingBiConstraintStream<>(constraintFactory, this, groupKeyMapping, collector);
         addChildStream(stream);
@@ -135,7 +132,6 @@ public abstract class DroolsAbstractBiConstraintStream<Solution_, A, B>
 
     @Override
     public <GroupKeyA_, GroupKeyB_> BiConstraintStream<GroupKeyA_, GroupKeyB_> groupBy(BiFunction<A, B, GroupKeyA_> groupKeyAMapping, BiFunction<A, B, GroupKeyB_> groupKeyBMapping) {
-        throwWhenGroupByNotAllowed();
         DroolsGroupingBiConstraintStream<Solution_, GroupKeyA_, GroupKeyB_> stream =
                 new DroolsGroupingBiConstraintStream<>(constraintFactory, this, groupKeyAMapping, groupKeyBMapping);
         addChildStream(stream);
@@ -144,7 +140,6 @@ public abstract class DroolsAbstractBiConstraintStream<Solution_, A, B>
 
     @Override
     public <GroupKeyA_, GroupKeyB_, ResultContainer_, Result_> TriConstraintStream<GroupKeyA_, GroupKeyB_, Result_> groupBy(BiFunction<A, B, GroupKeyA_> groupKeyAMapping, BiFunction<A, B, GroupKeyB_> groupKeyBMapping, BiConstraintCollector<A, B, ResultContainer_, Result_> collector) {
-        throwWhenGroupByNotAllowed();
         DroolsGroupingTriConstraintStream<Solution_, GroupKeyA_, GroupKeyB_, Result_> stream =
                 new DroolsGroupingTriConstraintStream<>(constraintFactory, this, groupKeyAMapping,
                         groupKeyBMapping, collector);
@@ -154,7 +149,6 @@ public abstract class DroolsAbstractBiConstraintStream<Solution_, A, B>
 
     @Override
     public <GroupKeyA_, GroupKeyB_, ResultContainerC_, ResultC_, ResultContainerD_, ResultD_> QuadConstraintStream<GroupKeyA_, GroupKeyB_, ResultC_, ResultD_> groupBy(BiFunction<A, B, GroupKeyA_> groupKeyAMapping, BiFunction<A, B, GroupKeyB_> groupKeyBMapping, BiConstraintCollector<A, B, ResultContainerC_, ResultC_> collectorC, BiConstraintCollector<A, B, ResultContainerD_, ResultD_> collectorD) {
-        throwWhenGroupByNotAllowed();
         DroolsGroupingQuadConstraintStream<Solution_, GroupKeyA_, GroupKeyB_, ResultC_, ResultD_> stream =
                 new DroolsGroupingQuadConstraintStream<>(constraintFactory, this, groupKeyAMapping,
                         groupKeyBMapping, collectorC, collectorD);
@@ -263,8 +257,4 @@ public abstract class DroolsAbstractBiConstraintStream<Solution_, A, B>
 
     public abstract DroolsBiCondition<A, B, ?> getCondition();
 
-    @Override
-    public boolean isGroupByAllowed() {
-        return getParent().isGroupByAllowed();
-    }
 }

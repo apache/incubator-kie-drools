@@ -43,11 +43,6 @@ public final class DroolsExistsUniConstraintStream<Solution_, A> extends DroolsA
         return parent.getFromStreamList();
     }
 
-    @Override
-    public boolean isGroupByAllowed() {
-        return parent.isGroupByAllowed();
-    }
-
     // ************************************************************************
     // Pattern creation
     // ************************************************************************

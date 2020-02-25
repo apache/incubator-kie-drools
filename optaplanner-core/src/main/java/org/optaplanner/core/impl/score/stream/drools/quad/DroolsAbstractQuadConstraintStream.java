@@ -99,7 +99,6 @@ public abstract class DroolsAbstractQuadConstraintStream<Solution_, A, B, C, D>
     @Override
     public <ResultContainer_, Result_> UniConstraintStream<Result_> groupBy(
             QuadConstraintCollector<A, B, C, D, ResultContainer_, Result_> collector) {
-        throwWhenGroupByNotAllowed();
         DroolsGroupingUniConstraintStream<Solution_, Result_> stream =
                 new DroolsGroupingUniConstraintStream<>(constraintFactory, this, collector);
         addChildStream(stream);
@@ -108,7 +107,6 @@ public abstract class DroolsAbstractQuadConstraintStream<Solution_, A, B, C, D>
 
     @Override
     public <GroupKey_> UniConstraintStream<GroupKey_> groupBy(QuadFunction<A, B, C, D, GroupKey_> groupKeyMapping) {
-        throwWhenGroupByNotAllowed();
         DroolsGroupingUniConstraintStream<Solution_, GroupKey_> stream =
                 new DroolsGroupingUniConstraintStream<>(constraintFactory, this, groupKeyMapping);
         addChildStream(stream);
@@ -119,7 +117,6 @@ public abstract class DroolsAbstractQuadConstraintStream<Solution_, A, B, C, D>
     public <GroupKey_, ResultContainer_, Result_> BiConstraintStream<GroupKey_, Result_> groupBy(
             QuadFunction<A, B, C, D, GroupKey_> groupKeyMapping,
             QuadConstraintCollector<A, B, C, D, ResultContainer_, Result_> collector) {
-        throwWhenGroupByNotAllowed();
         DroolsGroupingBiConstraintStream<Solution_, GroupKey_, Result_> stream =
                 new DroolsGroupingBiConstraintStream<>(constraintFactory, this, groupKeyMapping, collector);
         addChildStream(stream);
@@ -130,7 +127,6 @@ public abstract class DroolsAbstractQuadConstraintStream<Solution_, A, B, C, D>
     public <GroupKeyA_, GroupKeyB_> BiConstraintStream<GroupKeyA_, GroupKeyB_> groupBy(
             QuadFunction<A, B, C, D, GroupKeyA_> groupKeyAMapping,
             QuadFunction<A, B, C, D, GroupKeyB_> groupKeyBMapping) {
-        throwWhenGroupByNotAllowed();
         DroolsGroupingBiConstraintStream<Solution_, GroupKeyA_, GroupKeyB_> stream =
                 new DroolsGroupingBiConstraintStream<>(constraintFactory, this, groupKeyAMapping,
                         groupKeyBMapping);
@@ -143,7 +139,6 @@ public abstract class DroolsAbstractQuadConstraintStream<Solution_, A, B, C, D>
             QuadFunction<A, B, C, D, GroupKeyA_> groupKeyAMapping,
             QuadFunction<A, B, C, D, GroupKeyB_> groupKeyBMapping,
             QuadConstraintCollector<A, B, C, D, ResultContainer_, Result_> collector) {
-        throwWhenGroupByNotAllowed();
         DroolsGroupingTriConstraintStream<Solution_, GroupKeyA_, GroupKeyB_, Result_> stream =
                 new DroolsGroupingTriConstraintStream<>(constraintFactory, this, groupKeyAMapping,
                         groupKeyBMapping, collector);
@@ -158,7 +153,6 @@ public abstract class DroolsAbstractQuadConstraintStream<Solution_, A, B, C, D>
             QuadFunction<A, B, C, D, GroupKeyB_> groupKeyBMapping,
             QuadConstraintCollector<A, B, C, D, ResultContainerC_, ResultC_> collectorC,
             QuadConstraintCollector<A, B, C, D, ResultContainerD_, ResultD_> collectorD) {
-        throwWhenGroupByNotAllowed();
         DroolsGroupingQuadConstraintStream<Solution_, GroupKeyA_, GroupKeyB_, ResultC_, ResultD_> stream =
                 new DroolsGroupingQuadConstraintStream<>(constraintFactory, this, groupKeyAMapping,
                         groupKeyBMapping, collectorC, collectorD);
@@ -264,8 +258,4 @@ public abstract class DroolsAbstractQuadConstraintStream<Solution_, A, B, C, D>
 
     public abstract DroolsQuadCondition<A, B, C, D, ?> getCondition();
 
-    @Override
-    public boolean isGroupByAllowed() {
-        return parent.isGroupByAllowed();
-    }
 }

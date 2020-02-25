@@ -155,10 +155,15 @@ public final class DroolsBiCondition<A, B, PatternVar>
         return new DroolsBiCondition<>(ruleStructure.existsOrNot(possiblyFilteredExistencePattern, shouldExist));
     }
 
+    @Override
+    protected <InTuple> PatternDef<PatternVar> bindTupleVariableOnFirstGrouping(PatternDef<PatternVar> pattern,
+            Variable<InTuple> tupleVariable) {
+        return pattern.bind(tupleVariable, ruleStructure.getA(), (b, a) -> (InTuple) new BiTuple<>(a, (B) b));
+    }
+
     public <NewA, __> DroolsUniCondition<NewA, NewA> andCollect(BiConstraintCollector<A, B, __, NewA> collector) {
         DroolsBiAccumulateFunctionBridge<A, B, __, NewA> bridge = new DroolsBiAccumulateFunctionBridge<>(collector);
-        return collect(bridge, (pattern, tuple) -> pattern.bind(tuple, ruleStructure.getA(),
-                (b, a) -> new BiTuple<>(a, (B) b)));
+        return collect(bridge);
     }
 
     public <NewA> DroolsUniCondition<NewA, NewA> andGroup(BiFunction<A, B, NewA> groupKeyMapping) {

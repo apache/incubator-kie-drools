@@ -159,11 +159,16 @@ public final class DroolsTriCondition<A, B, C, PatternVar>
         return new DroolsTriCondition<>(ruleStructure.existsOrNot(possiblyFilteredExistencePattern, shouldExist));
     }
 
+    @Override
+    protected <InTuple> PatternDef<PatternVar> bindTupleVariableOnFirstGrouping(PatternDef<PatternVar> pattern, Variable<InTuple> tupleVariable) {
+        return pattern.bind(tupleVariable, ruleStructure.getA(),
+                ruleStructure.getB(), (c, a, b) -> (InTuple) new TriTuple<>(a, b, (C) c));
+    }
+
     public <NewA, __> DroolsUniCondition<NewA, NewA> andCollect(TriConstraintCollector<A, B, C, __, NewA> collector) {
         DroolsTriAccumulateFunctionBridge<A, B, C, __, NewA> bridge =
                 new DroolsTriAccumulateFunctionBridge<>(collector);
-        return collect(bridge, (pattern, tuple) -> pattern.bind(tuple, ruleStructure.getA(),
-                ruleStructure.getB(), (c, a, b) -> new TriTuple<>(a, b, (C) c)));
+        return collect(bridge);
     }
 
     public <NewA> DroolsUniCondition<NewA, NewA> andGroup(TriFunction<A, B, C, NewA> groupKeyMapping) {
