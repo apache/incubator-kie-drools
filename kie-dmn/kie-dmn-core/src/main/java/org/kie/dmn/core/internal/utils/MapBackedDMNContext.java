@@ -20,34 +20,48 @@ import org.kie.dmn.api.core.DMNContext;
 import org.kie.dmn.api.core.DMNMetadata;
 import org.kie.dmn.core.impl.DMNMetadataImpl;
 
-import java.util.*;
+import java.util.Deque;
+import java.util.HashMap;
+import java.util.LinkedHashMap;
+import java.util.LinkedList;
+import java.util.Map;
+import java.util.Optional;
 
 public class MapBackedDMNContext implements DMNContext {
-    
-    private Map<String, Object> ctx = new HashMap<>();
+
     private Deque<ScopeReference> stack = new LinkedList<>();
-    private DMNMetadata metadata = new DMNMetadataImpl();
+    private Map<String, Object> ctx;
+    private DMNMetadata metadata;
     
     private MapBackedDMNContext() {
         // intentional
+        ctx = new HashMap<>();
+        metadata = new DMNMetadataImpl();
+    }
+
+    private MapBackedDMNContext(Map<String, Object> ctx) {
+        // intentional
+        this.ctx = new HashMap<>(ctx);
+        this.metadata = new DMNMetadataImpl();
+    }
+
+    private MapBackedDMNContext(Map<String, Object> ctx, Map<String, Object> metadata) {
+        // intentional
+        this.ctx = new HashMap<>(ctx);
+        this.metadata = new DMNMetadataImpl(metadata);
     }
 
     public static MapBackedDMNContext of(Map<String, Object> ctx) {
-        MapBackedDMNContext result = new MapBackedDMNContext();
-        result.ctx = ctx;
-        return result;
+        return new MapBackedDMNContext(ctx);
     }
 
-    public static MapBackedDMNContext of(Map<String, Object> ctx, Map<String, Object> metadataAttributes) {
-        MapBackedDMNContext result = new MapBackedDMNContext();
-        result.ctx = ctx;
-        result.metadata = new DMNMetadataImpl(metadataAttributes);
-        return result;
+    public static MapBackedDMNContext of(Map<String, Object> ctx, Map<String, Object> metadata) {
+        return new MapBackedDMNContext(ctx, metadata);
     }
 
     @Override
     public DMNContext clone() {
-        return of(this.ctx, this.metadata.getAttributes());
+        return of(this.ctx, this.metadata.getAll());
     }
 
     @Override

@@ -9,20 +9,29 @@ public interface DMNMetadata {
      *
      * @param name the attribute name
      * @param value the attribute value
+     * @return the previous value associated with the name if present, null otherwise
      */
-    void setAttribute(String name, Object value);
+    Object set(String name, Object value);
 
     /**
      * Returns an attribute associated with this meta data by name.
      *
      * @param name the attribute name
-     * @return the attribute
+     * @return the attribute object
      */
-    Object getAttribute(String name);
+    Object get(String name);
 
     /**
      * @return a read-only list of attributes.
      */
-    Map<String, Object> getAttributes();
+    Map<String, Object> getAll();
+
+    /**
+     * Tells if an attribute with the specified name is defined or not
+     *
+     * @param name the attribute name
+     * @return true if the attribute exists, false otherwise
+     */
+    boolean isDefined(String name);
 
 }

@@ -33,9 +33,9 @@ public class DMNContextFEELCtxWrapper implements DMNContext {
         this.metadata = new DMNMetadataImpl();
     }
 
-    public DMNContextFEELCtxWrapper(EvaluationContext wrapped, Map<String, Object> metadataAttributes) {
+    public DMNContextFEELCtxWrapper(EvaluationContext wrapped, Map<String, Object> metadata) {
         this.wrapped = wrapped;
-        this.metadata = new DMNMetadataImpl(metadataAttributes);
+        this.metadata = new DMNMetadataImpl(metadata);
     }
 
     public void enterFrame() {
@@ -75,7 +75,7 @@ public class DMNContextFEELCtxWrapper implements DMNContext {
 
     @Override
     public DMNContext clone() {
-        return new DMNContextImpl(wrapped.getAllValues(), metadata.getAttributes());
+        return new DMNContextImpl(wrapped.getAllValues(), metadata.getAll());
     }
 
     @Override

@@ -7,27 +7,33 @@ import java.util.HashMap;
 import java.util.Map;
 
 public class DMNMetadataImpl implements DMNMetadata {
-    private Map<String, Object> attributes = new HashMap<>();
+    private Map<String, Object> entries = new HashMap<>();
 
     public DMNMetadataImpl() {
     }
 
-    public DMNMetadataImpl(Map<String, Object> attributes) {
-        this.attributes.putAll(attributes);
+    public DMNMetadataImpl(Map<String, Object> entries) {
+        this.entries.putAll(entries);
     }
 
     @Override
-    public void setAttribute(String name, Object value) {
-        attributes.put(name, value);
+    public Object set(String name, Object value) {
+        return entries.put(name, value);
     }
 
     @Override
-    public Object getAttribute(String name) {
-        return attributes.get(name);
+    public Object get(String name) {
+        return entries.get(name);
     }
 
     @Override
-    public Map<String, Object> getAttributes() {
-        return Collections.unmodifiableMap(attributes);
+    public Map<String, Object> getAll() {
+        return Collections.unmodifiableMap(entries);
     }
+
+    @Override
+    public boolean isDefined(String name) {
+        return entries.containsKey(name);
+    }
+
 }
