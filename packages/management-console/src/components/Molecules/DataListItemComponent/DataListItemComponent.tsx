@@ -2,8 +2,6 @@ import { TimeAgo } from '@n1ru4l/react-time-ago';
 import React, { useCallback, useState, useEffect } from 'react';
 import axios from 'axios';
 import {
-  Alert,
-  AlertActionCloseButton,
   Button,
   DataListAction,
   DataListCell,
@@ -18,12 +16,23 @@ import {
   DropdownPosition,
   Bullseye,
   KebabToggle,
-  Modal
+  Modal,
+  Alert,
+  TextContent,
+  TextVariants,
+  Text,
+  Flex,
+  FlexItem,
+  Title,
+  TitleLevel,
+  BaseSizes
 } from '@patternfly/react-core';
 import { Link } from 'react-router-dom';
 import SpinnerComponent from '../../Atoms/SpinnerComponent/SpinnerComponent';
 import { useGetChildInstancesLazyQuery } from '../../../graphql/types';
 
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { faInfoCircle, faTimesCircle } from '@fortawesome/free-solid-svg-icons';
 /* tslint:disable:no-string-literal */
 
 export interface IProcessInstanceError {
@@ -38,17 +47,19 @@ interface IProcessInstance {
   processName: string;
   start: string;
   state: string;
-  addons: [string];
+  addons: string[];
   endpoint: string;
   error: IProcessInstanceError;
 }
 export interface IOwnProps {
   id: number;
   processInstanceData: IProcessInstance;
+  checkedArray: string[]
 }
 
 const DataListItemComponent: React.FC<IOwnProps> = ({
-  processInstanceData
+  processInstanceData,
+  checkedArray
 }) => {
   const [expanded, setexpanded] = useState([]);
   const [isOpen, setisOpen] = useState(false);
@@ -56,69 +67,21 @@ const DataListItemComponent: React.FC<IOwnProps> = ({
   const [isChecked, setisChecked] = useState(false);
   const [childList, setChildList] = useState({});
   const [openModal, setOpenModal] = useState(false);
-  const [alertVisible, setAlertVisible] = useState(false);
-  const [alertTitle, setAlertTitle] = useState('');
+  const [isModalOpen, setIsModalOpen] = useState(false);
+  const [modalTitle, setModalTitle] = useState('');
+  const [modalContent, setModalContent] = useState('');
   const [alertType, setAlertType] = useState(null);
-  const [alertMessage, setAlertMessage] = useState('');
 
   const [getChildInstances, { loading, data }] = useGetChildInstancesLazyQuery({
     fetchPolicy: 'network-only'
   });
+
+  const handleSmallModalToggle = () => {
+    setIsModalOpen(!isModalOpen);
+  };
   const handleViewError = useCallback(
     async (_processID, _instanceID, _endpoint) => {
       setOpenModal(true);
-    },
-    []
-  );
-
-  const handleSkip = useCallback(async (_processID, _instanceID, _endpoint) => {
-    const processInstanceId = processInstanceData.id;
-    const processId = processInstanceData.processId;
-
-    try {
-      const result = await axios.get(
-        `${processInstanceData.endpoint}/management/processes/${processId}/instances/${processInstanceId}/skip`
-      );
-      setAlertTitle('Skip operation');
-      setAlertType('success');
-      setAlertMessage(
-        'Process execution has successfully skipped node which was in error state.'
-      );
-      setAlertVisible(true);
-    } catch (error) {
-      setAlertTitle('Skip operation');
-      setAlertType('danger');
-      setAlertMessage(
-        'Process execution failed to skip node which in error state. Message: ' +
-          JSON.stringify(error.message)
-      );
-      setAlertVisible(true);
-    }
-  }, []);
-
-  const handleRetry = useCallback(
-    async (_processID, _instanceID, _endpoint) => {
-      const processInstanceId = processInstanceData.id;
-      const processId = processInstanceData.processId;
-      try {
-        const result = await axios.get(
-          `${processInstanceData.endpoint}/management/processes/${processId}/instances/${processInstanceId}/retrigger`
-        );
-        setAlertTitle('Retry operation');
-        setAlertType('success');
-        setAlertMessage(
-          'Process execution has successfully re executed node which was in error state.'
-        );
-        setAlertVisible(true);
-      } catch (error) {
-        setAlertTitle('Retry operation');
-        setAlertType('danger');
-        setAlertMessage(
-          'Process execution failed to re executed node which is error state. Message: ' +
-            JSON.stringify(error.message)
-        );
-        setAlertVisible(true);
-      }
     },
     []
   );
@@ -137,18 +100,97 @@ const DataListItemComponent: React.FC<IOwnProps> = ({
     setOpenModal(!openModal);
   };
 
-  const closeAlert = () => {
-    setAlertVisible(false);
-  };
+  const handleSkip = useCallback(async (_processID, _instanceID, _endpoint) => {
+    const processInstanceId = processInstanceData.id;
+    const processId = processInstanceData.processId;
+
+    try {
+      await axios.post(
+        `${processInstanceData.endpoint}/management/processes/${processId}/instances/${processInstanceId}/skip`
+      );
+      setModalTitle('Skip operation');
+      setModalContent(
+        'Process execution has successfully skipped node which was in error state.'
+      );
+      setAlertType('success');
+      handleSmallModalToggle();
+    } catch (error) {
+      setModalTitle('Skip operation');
+      setModalContent(
+        `Process execution failed to skip node which is in error state. Message: ${JSON.stringify(
+          error.message
+        )}`
+      );
+      setAlertType('danger');
+      handleSmallModalToggle();
+    }
+  }, []);
+
+  const handleRetry = useCallback(
+    async (_processID, _instanceID, _endpoint) => {
+      const processInstanceId = processInstanceData.id;
+      const processId = processInstanceData.processId;
+      try {
+        await axios.post(
+          `${processInstanceData.endpoint}/management/processes/${processId}/instances/${processInstanceId}/retrigger`
+        );
+        setModalTitle('Retry operation');
+        setModalContent(
+          `Process execution has successfully re-executed node which was in error state.`
+        );
+        setAlertType('success');
+        handleSmallModalToggle();
+      } catch (error) {
+        setModalTitle('Retry operation');
+        setModalContent(
+          `Process execution failed to re-execute node which is in error state. Message: ${JSON.stringify(
+            error.message
+          )}`
+        );
+        setAlertType('danger');
+        handleSmallModalToggle();
+      }
+    },
+    []
+  );
+
+  const handleAbortActiveInstances = useCallback(
+    (processInstanceId, processId) => {
+      axios
+        .post(
+          `${processInstanceData.endpoint}/management/processes/${processId}/instances/${processInstanceId}`
+        )
+        .then(() => {
+          setModalTitle('Process aborted');
+          setModalContent(
+            `${processId} - process execution has been aborted.`
+          );
+          setAlertType('success');
+          processInstanceData.state = 'ABORTED';
+          handleSmallModalToggle();
+        })
+        .catch(error => {
+          setModalTitle('Process not aborted');
+          setModalContent(
+            `Aborting process instance failed with error - ${JSON.stringify(
+              error.message
+            )}`
+          );
+          setAlertType('danger');
+          handleSmallModalToggle();
+        });
+    },
+    []
+  );
 
   const toggle = async _id => {
     const index = expanded.indexOf(_id);
     const newExpanded =
       index >= 0
         ? [
-            ...expanded.slice(0, index),
-            ...expanded.slice(index + 1, expanded.length)
-          ]
+          ...expanded.slice(0, index),
+          ...expanded.slice(index + 1, expanded.length)
+        ]
         : [...expanded, _id];
     setexpanded(newExpanded);
 
@@ -168,15 +210,6 @@ const DataListItemComponent: React.FC<IOwnProps> = ({
     }
   }, [data]);
 
-  const handleSkipButton = async () => {
-    setOpenModal(!openModal);
-    await handleSkip(
-      processInstanceData.processId,
-      processInstanceData.id,
-      processInstanceData.endpoint
-    );
-  };
-
   const handleRetryButton = async () => {
     setOpenModal(!openModal);
     await handleRetry(
@@ -186,17 +219,151 @@ const DataListItemComponent: React.FC<IOwnProps> = ({
     );
   };
 
+  const handleSkipButton = async () => {
+    setOpenModal(!openModal);
+    await handleSkip(
+      processInstanceData.processId,
+      processInstanceData.id,
+      processInstanceData.endpoint
+    );
+  };
+
+  const dropDownList = () => {
+    if (processInstanceData.addons.includes('process-management')) {
+      if (processInstanceData.state === 'ERROR') {
+        return [
+          <DropdownItem
+            key={1}
+            onClick={() =>
+              handleRetry(
+                processInstanceData.processId,
+                processInstanceData.id,
+                processInstanceData.endpoint
+              )
+            }
+          >
+            Retry
+          </DropdownItem>,
+          <DropdownItem
+            key={2}
+            onClick={() =>
+              handleSkip(
+                processInstanceData.processId,
+                processInstanceData.id,
+                processInstanceData.endpoint
+              )
+            }
+          >
+            Skip
+          </DropdownItem>,
+          <DropdownItem
+            key={4}
+            onClick={() =>
+              handleAbortActiveInstances(
+                processInstanceData.id,
+                processInstanceData.processId
+              )
+            }
+          >
+            Abort
+          </DropdownItem>,
+          <DropdownItem
+            key={3}
+            onClick={() =>
+              handleViewError(
+                processInstanceData.processId,
+                processInstanceData.id,
+                processInstanceData.endpoint
+              )
+            }
+          >
+            View error
+          </DropdownItem>
+        ];
+      } else {
+        return [
+          <DropdownItem
+            key={4}
+            onClick={() =>
+              handleAbortActiveInstances(
+                processInstanceData.id,
+                processInstanceData.processId
+              )
+            }
+          >
+            Abort
+          </DropdownItem>
+        ];
+      }
+    } else {
+      return [
+        <DropdownItem
+          key={1}
+          onClick={() =>
+            handleViewError(
+              processInstanceData.processId,
+              processInstanceData.id,
+              processInstanceData.endpoint
+            )
+          }
+        >
+          View error
+        </DropdownItem>
+      ];
+    }
+  };
+
   return (
     <React.Fragment>
-      {alertVisible && (
-        <Alert
-          variant={alertType}
-          title={alertTitle}
-          action={<AlertActionCloseButton onClose={() => closeAlert()} />}
-        >
-          {alertMessage}
-        </Alert>
-      )}
+      <Modal
+        isSmall
+        title=""
+        header={
+          <Title headingLevel={TitleLevel.h1} size={BaseSizes['2xl']}>
+            {alertType === 'success' ? (
+              <FontAwesomeIcon
+                icon={faInfoCircle}
+                size="sm"
+                color="var(--pf-global--info-color--100)"
+                className="pf-u-mr-md"
+              />
+            ) : (
+                <FontAwesomeIcon
+                  icon={faTimesCircle}
+                  size="sm"
+                  color="var(--pf-global--danger-color--100)"
+                  className="pf-u-mr-md"
+                />
+              )}
+            {modalTitle}
+          </Title>
+        }
+        isOpen={isModalOpen}
+        onClose={handleSmallModalToggle}
+        actions={[
+          <Button
+            key="confirm"
+            variant="primary"
+            onClick={handleSmallModalToggle}
+          >
+            OK
+          </Button>
+        ]}
+        isFooterLeftAligned={false}
+      >
+        <TextContent>
+          <Text>
+            <strong>
+              {modalContent}
+            </strong>
+          </Text>
+          {!checkedArray.includes('ABORTED') &&
+            <Text>
+              Note: The process status has been updated. The list may appear inconsistent until you refresh any applied filters.
+            </Text>
+          }
+        </TextContent>
+      </Modal>
       <DataListItem
         aria-labelledby="kie-datalist-item"
         isExpanded={expanded.includes('kie-datalist-toggle')}
@@ -230,8 +397,8 @@ const DataListItemComponent: React.FC<IOwnProps> = ({
                     render={({ _error, value }) => <span>{value}</span>}
                   />
                 ) : (
-                  ''
-                )}
+                    ''
+                  )}
               </DataListCell>,
               <DataListCell key={3}>
                 {processInstanceData.lastUpdate ? (
@@ -240,8 +407,8 @@ const DataListItemComponent: React.FC<IOwnProps> = ({
                     render={({ _error, value }) => <span>{value}</span>}
                   />
                 ) : (
-                  ''
-                )}
+                    ''
+                  )}
               </DataListCell>,
               <DataListCell key={4}>{processInstanceData.state}</DataListCell>
             ]}
@@ -261,79 +428,27 @@ const DataListItemComponent: React.FC<IOwnProps> = ({
             id="kie-datalist-action"
             aria-label="Actions"
           >
-            {processInstanceData.state === 'ERROR' ? (
-              <Dropdown
-                isPlain
-                position={DropdownPosition.right}
-                isOpen={isOpen}
-                onSelect={onSelect}
-                toggle={<KebabToggle onToggle={onToggle} />}
-                dropdownItems={
-                  processInstanceData.addons.includes('process-management')
-                    ? [
-                        <DropdownItem
-                          key={1}
-                          onClick={() =>
-                            handleRetry(
-                              processInstanceData.processId,
-                              processInstanceData.id,
-                              processInstanceData.endpoint
-                            )
-                          }
-                        >
-                          Retry
-                        </DropdownItem>,
-                        <DropdownItem
-                          key={2}
-                          onClick={() =>
-                            handleSkip(
-                              processInstanceData.processId,
-                              processInstanceData.id,
-                              processInstanceData.endpoint
-                            )
-                          }
-                        >
-                          Skip
-                        </DropdownItem>,
-                        <DropdownItem
-                          key={3}
-                          onClick={() =>
-                            handleViewError(
-                              processInstanceData.processId,
-                              processInstanceData.id,
-                              processInstanceData.endpoint
-                            )
-                          }
-                        >
-                          View Error
-                        </DropdownItem>
-                      ]
-                    : [
-                        <DropdownItem
-                          key={1}
-                          onClick={() =>
-                            handleViewError(
-                              processInstanceData.processId,
-                              processInstanceData.id,
-                              processInstanceData.endpoint
-                            )
-                          }
-                        >
-                          View Error
-                        </DropdownItem>
-                      ]
-                }
-              />
-            ) : (
-              <Dropdown
-                isPlain
-                position={DropdownPosition.right}
-                isOpen={isOpen}
-                onSelect={onSelect}
-                toggle={<KebabToggle isDisabled onToggle={onToggle} />}
-                dropdownItems={[]}
-              />
-            )}
+            {processInstanceData.state === 'ERROR' ||
+              processInstanceData.state === 'ACTIVE' ||
+              processInstanceData.state === 'SUSPENDED' ? (
+                <Dropdown
+                  isPlain
+                  position={DropdownPosition.right}
+                  isOpen={isOpen}
+                  onSelect={onSelect}
+                  toggle={<KebabToggle onToggle={onToggle} />}
+                  dropdownItems={dropDownList()}
+                />
+              ) : (
+                <Dropdown
+                  isPlain
+                  position={DropdownPosition.right}
+                  isOpen={isOpen}
+                  onSelect={onSelect}
+                  toggle={<KebabToggle isDisabled onToggle={onToggle} />}
+                  dropdownItems={[]}
+                />
+              )}
             <Modal
               isLarge
               title="Error"
@@ -342,37 +457,37 @@ const DataListItemComponent: React.FC<IOwnProps> = ({
               actions={
                 processInstanceData.addons.includes('process-management')
                   ? [
-                      <Button
-                        key="confirm1"
-                        variant="secondary"
-                        onClick={handleSkipButton}
-                      >
-                        Skip
+                    <Button
+                      key="confirm1"
+                      variant="secondary"
+                      onClick={handleSkipButton}
+                    >
+                      Skip
                       </Button>,
-                      <Button
-                        key="confirm2"
-                        variant="secondary"
-                        onClick={handleRetryButton}
-                      >
-                        Retry
+                    <Button
+                      key="confirm2"
+                      variant="secondary"
+                      onClick={handleRetryButton}
+                    >
+                      Retry
                       </Button>,
-                      <Button
-                        key="confirm3"
-                        variant="primary"
-                        onClick={handleModalToggle}
-                      >
-                        Close
+                    <Button
+                      key="confirm3"
+                      variant="primary"
+                      onClick={handleModalToggle}
+                    >
+                      Close
                       </Button>
-                    ]
+                  ]
                   : [
-                      <Button
-                        key="confirm3"
-                        variant="primary"
-                        onClick={handleModalToggle}
-                      >
-                        Close
+                    <Button
+                      key="confirm3"
+                      variant="primary"
+                      onClick={handleModalToggle}
+                    >
+                      Close
                       </Button>
-                    ]
+                  ]
               }
             >
               {processInstanceData.error
@@ -394,6 +509,7 @@ const DataListItemComponent: React.FC<IOwnProps> = ({
                   id={index}
                   key={child.id}
                   processInstanceData={child}
+                  checkedArray={checkedArray}
                 />
               );
             })}

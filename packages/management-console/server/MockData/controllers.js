@@ -58,5 +58,17 @@ module.exports = controller = {
         res.status(500).send(error[0].skip);
         break;
     }
+  },
+  callAbort: (req, res) => {
+    const graphData = require('./graphql');
+    const data = graphData.filter(data => {
+      return data.id === req.params.processInstanceId;
+    });
+    if (data.length === 0) {
+      res.status(500).send('Internal server error');
+    } else {
+      data[0].state = 'ABORTED';
+      res.status(200).send('success');
+    }
   }
 };

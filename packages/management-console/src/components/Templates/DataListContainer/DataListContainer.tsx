@@ -27,7 +27,10 @@ const DataListContainer: React.FC<{}> = () => {
   const [
     getProcessInstances,
     { loading, data }
-  ] = useGetProcessInstancesLazyQuery({ fetchPolicy: 'network-only' });
+  ] = useGetProcessInstancesLazyQuery({
+    fetchPolicy: 'network-only',
+    notifyOnNetworkStatusChange: true
+  });
 
   const onFilterClick = async (arr = checkedArray) => {
     setIsLoading(true);
@@ -73,17 +76,18 @@ const DataListContainer: React.FC<{}> = () => {
                   isLoading={isLoading}
                   setIsLoading={setIsLoading}
                   setIsError={setIsError}
+                  checkedArray={checkedArray}
                 />
               ) : (
-                <EmptyStateComponent
-                  iconType="warningTriangleIcon1"
-                  title="No status is selected"
-                  body="Try selecting at least one status to see results"
-                  filterClick={onFilterClick}
-                  setFilters={setFilters}
-                  setCheckedArray={setCheckedArray}
-                />
-              )}
+                  <EmptyStateComponent
+                    iconType="warningTriangleIcon1"
+                    title="No status is selected"
+                    body="Try selecting at least one status to see results"
+                    filterClick={onFilterClick}
+                    setFilters={setFilters}
+                    setCheckedArray={setCheckedArray}
+                  />
+                )}
             </Card>
           </GridItem>
         </Grid>

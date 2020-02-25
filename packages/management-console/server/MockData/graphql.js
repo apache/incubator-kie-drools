@@ -265,6 +265,7 @@ module.exports = data = [
       }
     ]
   },
+
   {
     id: 'fc1b6535-d557-40df-82c8-b425b9dc531b',
     processId: 'flightBooking',
@@ -285,7 +286,7 @@ module.exports = data = [
       message:
         'Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim idest laborum.'
     },
-    endpoint: 'http://localhost:4000/',
+    endpoint: 'http://localhost:4000',
     variables:
       '{"flight":{"arrival":"2019-10-30T22:00:00Z[UTC]","departure":"2019-10-23T22:00:00Z[UTC]","flightNumber":"MX555"},"trip":{"begin":"2019-10-23T22:00:00Z[UTC]","city":"New York","country":"US","end":"2019-10-30T22:00:00Z[UTC]","visaRequired":false},"traveller":{"address":{"city":"Berlin","country":"Germany","street":"Bakers","zipCode":"100200"},"email":"cristiano@redhat.com","firstName":"Cristiano","lastName":"Nicolai","nationality":"German"}}',
     nodes: [
@@ -335,7 +336,7 @@ module.exports = data = [
       nodeDefinitionId: 'a1e139d5-4e77-48c9-84ae-34578ek1839b',
       message: 'Something went wrong'
     },
-    endpoint: 'http://localhost:4000/',
+    endpoint: 'http://localhost:4000',
     variables:
       '{"trip":{"begin":"2019-10-23T22:00:00Z[UTC]","city":"New York","country":"US","end":"2019-10-30T22:00:00Z[UTC]","visaRequired":false},"hotel":{"address":{"city":"New York","country":"US","street":"street","zipCode":"12345"},"bookingNumber":"XX-012345","name":"Perfect hotel","phone":"09876543"},"traveller":{"address":{"city":"Berlin","country":"Germany","street":"Bakers","zipCode":"100200"},"email":"cristiano@redhat.com","firstName":"Cristiano","lastName":"Nicolai","nationality":"German"}}',
     nodes: [
@@ -381,7 +382,7 @@ module.exports = data = [
       nodeDefinitionId: 'a1e139d5-4e77-48c9-84ae-34578e9817n',
       message: 'Something went wrong'
     },
-    endpoint: 'http://localhost:4000/',
+    endpoint: 'http://localhost:4000',
     variables:
       '{"flight":{"arrival":"2019-10-30T22:00:00Z[UTC]","departure":"2019-10-23T22:00:00Z[UTC]","flightNumber":"MX555"},"trip":{"begin":"2019-10-23T22:00:00Z[UTC]","city":"New York","country":"US","end":"2019-10-30T22:00:00Z[UTC]","visaRequired":false},"hotel":{"address":{"city":"New York","country":"US","street":"street","zipCode":"12345"},"bookingNumber":"XX-012345","name":"Perfect hotel","phone":"09876543"},"traveller":{"address":{"city":"Berlin","country":"Germany","street":"Bakers","zipCode":"100200"},"email":"cristiano@redhat.com","firstName":"Cristiano","lastName":"Nicolai","nationality":"German"}}',
     nodes: [
@@ -478,8 +479,8 @@ module.exports = data = [
     roles: [],
     state: 'ACTIVE',
     rootProcessInstanceId: null,
-    endpoint: 'http://localhost:4000/',
-    addons: [],
+    endpoint: 'http://localhost:4000',
+    addons: ['jobs-management', 'prometheus-monitoring', 'process-management'],
     error: {
       nodeDefinitionId: 'a1e139d5-4e77-48c9-84ae-3459188e90433n',
       message: 'Something went wrong'
@@ -574,6 +575,194 @@ module.exports = data = [
     ]
   },
   {
+    id: '8035b580-6ae4-4aa8-9ec0-e18e19809e0basadadads',
+    processId: 'travels',
+    parentProcessInstanceId: null,
+    processName: 'travels',
+    roles: [],
+    state: 'ACTIVE',
+    rootProcessInstanceId: null,
+    endpoint: 'http://localhost:4000',
+    addons: [],
+    error: {
+      nodeDefinitionId: 'a1e139d5-4e77-48c9-84ae-3459188e90433n',
+      message: 'Something went wrong'
+    },
+    start: '2019-12-22T03:40:44.089Z',
+    end: null,
+    variables:
+      '{"flight":{"arrival":"2019-10-30T22:00:00Z[UTC]","departure":"2019-10-22T22:00:00Z[UTC]","flightNumber":"MX555"},"hotel":{"address":{"city":"Berlin","country":"Germany","street":"street","zipCode":"12345"},"bookingNumber":"XX-012345","name":"Perfect hotel","phone":"09876543"},"trip":{"begin":"2019-10-22T22:00:00Z[UTC]","city":"Berlin","country":"Germany","end":"2019-10-30T22:00:00Z[UTC]","visaRequired":false},"traveller":{"address":{"city":"Karkow","country":"Poland","street":"palna","zipCode":"200300"},"email":"rob@redhat.com","firstName":"Rob","lastName":"Rob","nationality":"Polish"}}',
+    nodes: [
+      {
+        name: 'Book Flight',
+        definitionId: 'CallActivity_2',
+        id: '7cdeba99-cd36-4425-980d-e59d44769a3e',
+        enter: '2019-10-22T04:43:01.143Z',
+        exit: '2019-10-22T04:43:01.146Z',
+        type: 'SubProcessNode'
+      },
+      {
+        name: 'Confirm travel',
+        definitionId: 'UserTask_2',
+        id: '843bd287-fb6e-4ee7-a304-ba9b430e52d8',
+        enter: '2019-10-22T04:43:01.148Z',
+        exit: null,
+        type: 'HumanTaskNode'
+      },
+      {
+        name: 'Join',
+        definitionId: 'ParallelGateway_2',
+        id: 'fd2e12d5-6a4b-4c75-9f31-028d3f032a95',
+        enter: '2019-10-22T04:43:01.148Z',
+        exit: '2019-10-22T04:43:01.148Z',
+        type: 'Join'
+      },
+      {
+        name: 'Book Hotel',
+        definitionId: 'CallActivity_1',
+        id: '7f7d74c1-78f7-49be-b5ad-8d132f46a49c',
+        enter: '2019-10-22T04:43:01.146Z',
+        exit: '2019-10-22T04:43:01.148Z',
+        type: 'SubProcessNode'
+      },
+      {
+        name: 'Book',
+        definitionId: 'ParallelGateway_1',
+        id: 'af0d984c-4abd-4f5c-83a8-426e6b3d102a',
+        enter: '2019-10-22T04:43:01.143Z',
+        exit: '2019-10-22T04:43:01.146Z',
+        type: 'Split'
+      },
+      {
+        name: 'Join',
+        definitionId: 'ExclusiveGateway_2',
+        id: 'b2761011-3043-4f48-82bd-1395bf651a91',
+        enter: '2019-10-22T04:43:01.143Z',
+        exit: '2019-10-22T04:43:01.143Z',
+        type: 'Join'
+      },
+      {
+        name: 'is visa required',
+        definitionId: 'ExclusiveGateway_1',
+        id: 'a91a2600-d0cd-46ff-a6c6-b3081612d1af',
+        enter: '2019-10-22T04:43:01.143Z',
+        exit: '2019-10-22T04:43:01.143Z',
+        type: 'Split'
+      },
+      {
+        name: 'Visa check',
+        definitionId: 'BusinessRuleTask_1',
+        id: '1baa5de4-47cc-45a8-8323-005388191e4f',
+        enter: '2019-10-22T04:43:01.135Z',
+        exit: '2019-10-22T04:43:01.143Z',
+        type: 'RuleSetNode'
+      },
+      {
+        name: 'StartProcess',
+        definitionId: 'StartEvent_1',
+        id: '90e5a337-1c26-4fcc-8ee2-d20e6ba2a1a3',
+        enter: '2019-10-22T04:43:01.135Z',
+        exit: '2019-10-22T04:43:01.135Z',
+        type: 'StartNode'
+      }
+    ],
+    childProcessInstanceId: []
+  },
+  {
+    id: '8035b580-6ae4-4aa8-9ec0-e18e19809e0bccddee',
+    processId: 'travels',
+    parentProcessInstanceId: null,
+    processName: 'travels',
+    roles: [],
+    state: 'SUSPENDED',
+    rootProcessInstanceId: null,
+    endpoint: 'http://localhost:4000',
+    addons: ['jobs-management', 'prometheus-monitoring', 'process-management'],
+    error: {
+      nodeDefinitionId: 'a1e139d5-4e77-48c9-84ae-3459188e90433n',
+      message: 'Something went wrong'
+    },
+    start: '2019-10-22T03:40:44.089Z',
+    end: null,
+    variables:
+      '{"flight":{"arrival":"2019-10-30T22:00:00Z[UTC]","departure":"2019-10-22T22:00:00Z[UTC]","flightNumber":"MX555"},"hotel":{"address":{"city":"Berlin","country":"Germany","street":"street","zipCode":"12345"},"bookingNumber":"XX-012345","name":"Perfect hotel","phone":"09876543"},"trip":{"begin":"2019-10-22T22:00:00Z[UTC]","city":"Berlin","country":"Germany","end":"2019-10-30T22:00:00Z[UTC]","visaRequired":false},"traveller":{"address":{"city":"Karkow","country":"Poland","street":"palna","zipCode":"200300"},"email":"rob@redhat.com","firstName":"Rob","lastName":"Rob","nationality":"Polish"}}',
+    nodes: [
+      {
+        name: 'Book Flight',
+        definitionId: 'CallActivity_2',
+        id: '7cdeba99-cd36-4425-980d-e59d44769a3e',
+        enter: '2019-10-22T04:43:01.143Z',
+        exit: '2019-10-22T04:43:01.146Z',
+        type: 'SubProcessNode'
+      },
+      {
+        name: 'Confirm travel',
+        definitionId: 'UserTask_2',
+        id: '843bd287-fb6e-4ee7-a304-ba9b430e52d8',
+        enter: '2019-10-22T04:43:01.148Z',
+        exit: null,
+        type: 'HumanTaskNode'
+      },
+      {
+        name: 'Join',
+        definitionId: 'ParallelGateway_2',
+        id: 'fd2e12d5-6a4b-4c75-9f31-028d3f032a95',
+        enter: '2019-10-22T04:43:01.148Z',
+        exit: '2019-10-22T04:43:01.148Z',
+        type: 'Join'
+      },
+      {
+        name: 'Book Hotel',
+        definitionId: 'CallActivity_1',
+        id: '7f7d74c1-78f7-49be-b5ad-8d132f46a49c',
+        enter: '2019-10-22T04:43:01.146Z',
+        exit: '2019-10-22T04:43:01.148Z',
+        type: 'SubProcessNode'
+      },
+      {
+        name: 'Book',
+        definitionId: 'ParallelGateway_1',
+        id: 'af0d984c-4abd-4f5c-83a8-426e6b3d102a',
+        enter: '2019-10-22T04:43:01.143Z',
+        exit: '2019-10-22T04:43:01.146Z',
+        type: 'Split'
+      },
+      {
+        name: 'Join',
+        definitionId: 'ExclusiveGateway_2',
+        id: 'b2761011-3043-4f48-82bd-1395bf651a91',
+        enter: '2019-10-22T04:43:01.143Z',
+        exit: '2019-10-22T04:43:01.143Z',
+        type: 'Join'
+      },
+      {
+        name: 'is visa required',
+        definitionId: 'ExclusiveGateway_1',
+        id: 'a91a2600-d0cd-46ff-a6c6-b3081612d1af',
+        enter: '2019-10-22T04:43:01.143Z',
+        exit: '2019-10-22T04:43:01.143Z',
+        type: 'Split'
+      },
+      {
+        name: 'Visa check',
+        definitionId: 'BusinessRuleTask_1',
+        id: '1baa5de4-47cc-45a8-8323-005388191e4f',
+        enter: '2019-10-22T04:43:01.135Z',
+        exit: '2019-10-22T04:43:01.143Z',
+        type: 'RuleSetNode'
+      },
+      {
+        name: 'StartProcess',
+        definitionId: 'StartEvent_1',
+        id: '90e5a337-1c26-4fcc-8ee2-d20e6ba2a1a3',
+        enter: '2019-10-22T04:43:01.135Z',
+        exit: '2019-10-22T04:43:01.135Z',
+        type: 'StartNode'
+      }
+    ],
+    childProcessInstanceId: []
+  },
+  {
     id: 'c54ca5b0-b975-46e2-a9a0-6a86bf7ac21e',
     processId: 'flightBooking',
     parentProcessInstanceId: '8035b580-6ae4-4aa8-9ec0-e18e19809e0b',
@@ -585,7 +774,7 @@ module.exports = data = [
     rootProcessInstanceId: '8035b580-6ae4-4aa8-9ec0-e18e19809e0b',
     roles: [],
     state: 'COMPLETED',
-    endpoint: 'http://localhost:4000/',
+    endpoint: 'http://localhost:4000',
     addons: [],
     error: {
       nodeDefinitionId: 'a1e139d5-81c77-48c9-84ae-34578e90433n',
@@ -640,7 +829,7 @@ module.exports = data = [
     rootProcessInstanceId: '8035b580-6ae4-4aa8-9ec0-e18e19809e0b',
     roles: [],
     state: 'COMPLETED',
-    endpoint: 'http://localhost:4000/',
+    endpoint: 'http://localhost:4000',
     addons: [],
     error: {
       nodeDefinitionId: 'a1e139d5-81c77-48c9-84ae-34578e90433n',
@@ -695,7 +884,7 @@ module.exports = data = [
     processName: 'FlightBooking test 2',
     roles: [],
     state: 'COMPLETED',
-    endpoint: 'http://localhost:4000/',
+    endpoint: 'http://localhost:4000',
     addons: [],
     error: {
       nodeDefinitionId: 'a1e139d5-81c77-48c9-84ae-34578e90433n',
@@ -745,7 +934,7 @@ module.exports = data = [
     processName: 'HotelBooking',
     roles: [],
     state: 'COMPLETED',
-    endpoint: 'http://localhost:4000/',
+    endpoint: 'http://localhost:4000',
     addons: ['jobs-management', 'prometheus-monitoring'],
     error: {
       nodeDefinitionId: 'a1qa139d5-4e77-181x8c9-84ae-34578e90433n',

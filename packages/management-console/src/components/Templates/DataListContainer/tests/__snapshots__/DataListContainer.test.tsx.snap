@@ -1,0 +1,69 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`DataListContainer component tests Snapshot tests 1`] = `
+<Fragment>
+  <PageSection
+    variant="light"
+  >
+    <PageTitleComponent
+      title="Process Instances"
+    />
+    <Component>
+      <BreadcrumbItem>
+        <Link
+          to="/"
+        >
+          Home
+        </Link>
+      </BreadcrumbItem>
+      <BreadcrumbItem
+        isActive={true}
+      >
+        Process instances
+      </BreadcrumbItem>
+    </Component>
+  </PageSection>
+  <PageSection>
+    <Grid
+      gutter="md"
+    >
+      <GridItem
+        span={12}
+      >
+        <Card
+          className="dataList"
+        >
+          <DataToolbarComponent
+            checkedArray={
+              Array [
+                "ACTIVE",
+              ]
+            }
+            filterClick={[Function]}
+            filters={
+              Array [
+                "ACTIVE",
+              ]
+            }
+            setCheckedArray={[Function]}
+            setFilters={[Function]}
+            setIsStatusSelected={[Function]}
+          />
+          <DataListComponent
+            checkedArray={
+              Array [
+                "ACTIVE",
+              ]
+            }
+            initData={Array []}
+            isLoading={false}
+            setInitData={[Function]}
+            setIsError={[Function]}
+            setIsLoading={[Function]}
+          />
+        </Card>
+      </GridItem>
+    </Grid>
+  </PageSection>
+</Fragment>
+`;

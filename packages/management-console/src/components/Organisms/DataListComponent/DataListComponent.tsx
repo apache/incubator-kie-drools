@@ -15,13 +15,15 @@ interface IOwnProps {
   isLoading: boolean;
   setIsError: any;
   setIsLoading: any;
+  checkedArray: string[];
 }
 
 const DataListComponent: React.FC<IOwnProps> = ({
   initData,
   setInitData,
   isLoading,
-  setIsError
+  setIsError,
+  checkedArray
 }) => {
   const {
     loading,
@@ -82,6 +84,7 @@ const DataListComponent: React.FC<IOwnProps> = ({
               id={index}
               key={item.id}
               processInstanceData={item}
+              checkedArray={checkedArray}
             />
           );
         })}

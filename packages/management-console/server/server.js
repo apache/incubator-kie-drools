@@ -37,17 +37,21 @@ app.use(
 
 //Rest Api's
 // http://localhost:4000/management/processes/{processId}/instances/{processInstanceId}/error
-app.get(
+app.post(
   '/management/processes/:processId/instances/:processInstanceId/error',
   controller.showError
 );
-app.get(
+app.post(
   '/management/processes/:processId/instances/:processInstanceId/skip',
   controller.callSkip
 );
-app.get(
+app.post(
   '/management/processes/:processId/instances/:processInstanceId/retrigger',
   controller.callRetrigger
+);
+app.post(
+  '/management/processes/:processId/instances/:processInstanceId',
+  controller.callAbort
 );
 
 function timeout(ms) {
