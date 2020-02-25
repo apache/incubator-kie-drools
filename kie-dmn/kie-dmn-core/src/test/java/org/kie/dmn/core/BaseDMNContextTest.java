@@ -14,7 +14,7 @@ import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
 
-public class BaseDMNContextTest {
+public abstract class BaseDMNContextTest {
 
     protected static final Map<String, Object> DEFAULT_ENTRIES = ImmutableMap.of(
             "s_entr1", "value1",
