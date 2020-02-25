@@ -40,10 +40,10 @@ public class KiePMMLRegressionModel extends KiePMMLModel {
     private REGRESSION_NORMALIZATION_METHOD regressionNormalizationMethod = REGRESSION_NORMALIZATION_METHOD.NONE;
     private OP_TYPE targetOpType;
     private boolean isScorable = true;
-    private Optional<String> algorithmName = Optional.empty();
-    private Optional<MODEL_TYPE> modelType = Optional.empty();
-    private Optional<List<Object>> targetValues = Optional.empty();
-    private Optional<List<KiePMMLOutputField>> outputFields = Optional.empty();
+    private String algorithmName = null;
+    private MODEL_TYPE modelType = null;
+    private List<Object> targetValues = null;
+    private List<KiePMMLOutputField> outputFields = null;
 
     protected KiePMMLRegressionModel() {
     }
@@ -61,11 +61,11 @@ public class KiePMMLRegressionModel extends KiePMMLModel {
     }
 
     public Optional<String> getAlgorithmName() {
-        return algorithmName;
+        return Optional.ofNullable(algorithmName);
     }
 
     public Optional<MODEL_TYPE> getModelType() {
-        return modelType;
+        return Optional.ofNullable(modelType);
     }
 
     public OP_TYPE getTargetOpType() {
@@ -81,11 +81,11 @@ public class KiePMMLRegressionModel extends KiePMMLModel {
     }
 
     public Optional<List<Object>> getTargetValues() {
-        return targetValues;
+        return Optional.ofNullable(targetValues);
     }
 
     public Optional<List<KiePMMLOutputField>> getOutputFields() {
-        return outputFields;
+        return Optional.ofNullable(outputFields);
     }
 
     public boolean isRegression() {
@@ -93,7 +93,7 @@ public class KiePMMLRegressionModel extends KiePMMLModel {
     }
 
     public boolean isBinary() {
-        return Objects.equals(OP_TYPE.CATEGORICAL, targetOpType) && (targetValues.isPresent() && targetValues.get().size() == 2);
+        return Objects.equals(OP_TYPE.CATEGORICAL, targetOpType) && (targetValues != null && targetValues.size() == 2);
     }
 
     @Override
@@ -152,17 +152,17 @@ public class KiePMMLRegressionModel extends KiePMMLModel {
         }
 
         public Builder withAlgorithmName(String algorithmName) {
-            toBuild.algorithmName = Optional.ofNullable(algorithmName);
+            toBuild.algorithmName = algorithmName;
             return this;
         }
 
         public Builder withModelType(MODEL_TYPE modelType) {
-            toBuild.modelType = Optional.ofNullable(modelType);
+            toBuild.modelType = modelType;
             return this;
         }
 
         public Builder withTargetValues(List<Object> targetValues) {
-            toBuild.targetValues = Optional.ofNullable(targetValues);
+            toBuild.targetValues = targetValues;
             return this;
         }
 
@@ -177,7 +177,7 @@ public class KiePMMLRegressionModel extends KiePMMLModel {
         }
 
         public Builder withOutputFields(List<KiePMMLOutputField> outputFields) {
-            toBuild.outputFields = Optional.ofNullable(outputFields);
+            toBuild.outputFields = outputFields;
             return this;
         }
 

@@ -15,11 +15,11 @@
   <description>PMML Regression Evaluator</description>
 
   <dependencies>
+    <!-- PMML -->
     <dependency>
       <groupId>org.kie</groupId>
       <artifactId>kie-pmml-models-regression-model</artifactId>
     </dependency>
-    <!-- PMML -->
     <dependency>
       <groupId>org.kie</groupId>
       <artifactId>kie-pmml-evaluator-core</artifactId>
