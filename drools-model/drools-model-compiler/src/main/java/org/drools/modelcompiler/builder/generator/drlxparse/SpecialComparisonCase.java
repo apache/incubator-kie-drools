@@ -31,7 +31,7 @@ import org.drools.modelcompiler.builder.generator.TypedExpression;
 import static org.drools.modelcompiler.builder.generator.DrlxParseUtil.toClassOrInterfaceType;
 import static org.drools.modelcompiler.builder.generator.drlxparse.ConstraintParser.isNumber;
 import static org.drools.modelcompiler.builder.generator.drlxparse.ConstraintParser.operatorToName;
-import static org.drools.modelcompiler.builder.generator.drlxparse.ConstraintParser.uncastExpr;
+import static org.drools.modelcompiler.builder.generator.DrlxParseUtil.uncastExpr;
 
 // TODO need to add a specific case for map.
 // Also it would be better to move every coercion case here

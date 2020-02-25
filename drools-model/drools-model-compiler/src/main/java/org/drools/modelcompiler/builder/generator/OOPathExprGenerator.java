@@ -116,7 +116,7 @@ public class OOPathExprGenerator {
                 if (context.isPatternDSL()) {
                     ooPathConditionExpressions.put(bindingId, Collections.emptyList());
                 } else {
-                    final DrlxParseSuccess drlxParseResult = new SingleDrlxParseSuccess(fieldType, "", bindingId, new BooleanLiteralExpr(true), fieldType);
+                    final DrlxParseSuccess drlxParseResult = new SingleDrlxParseSuccess(fieldType, bindingId, new BooleanLiteralExpr(true), fieldType);
                     ooPathConditionExpressions.put(bindingId, Collections.singletonList(drlxParseResult));
                 }
             }

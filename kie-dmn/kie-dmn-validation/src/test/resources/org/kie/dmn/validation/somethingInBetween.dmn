@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<semantic:definitions xmlns:semantic="http://www.omg.org/spec/DMN/20180521/MODEL/"  xmlns:triso="http://www.trisotech.com/2015/triso/modeling"  xmlns:dmndi="http://www.omg.org/spec/DMN/20180521/DMNDI/"  xmlns:di="http://www.omg.org/spec/DMN/20180521/DI/"  xmlns:dc="http://www.omg.org/spec/DMN/20180521/DC/"  xmlns:trisodmn="http://www.trisotech.com/2016/triso/dmn"  xmlns:feel="http://www.omg.org/spec/DMN/20180521/FEEL/"  xmlns:tc="http://www.omg.org/spec/DMN/20160719/testcase"  xmlns:drools="http://www.drools.org/kie/dmn/1.1"  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"  xmlns:rss="http://purl.org/rss/2.0/"  xmlns:openapi="https://openapis.org/omg/extension/1.0"  xmlns:xsd="http://www.w3.org/2001/XMLSchema"  xmlns="http://www.trisotech.com/definitions/_58cf4568-6ee0-4d2e-83f6-f68bddd5c355" id="_58cf4568-6ee0-4d2e-83f6-f68bddd5c355" name="Drawing 1" namespace="http://www.trisotech.com/definitions/_58cf4568-6ee0-4d2e-83f6-f68bddd5c355" exporter="Decision Modeler" exporterVersion="6.9.1.202002191312" triso:logoChoice="Default">
+    <semantic:decision id="_1338166e-b5ee-4e99-9c39-39761268fcff" name="Something in between">
+        <semantic:variable name="Something in between" id="_16fbd51d-d948-4c49-b179-0a04eb56c3de" typeRef="Any"/>
+        <semantic:informationRequirement id="inputData__07d69434-16be-4698-b5f3-c78089c0dae2__1338166e-b5ee-4e99-9c39-39761268fcff">
+            <semantic:requiredInput href="#inputData__07d69434-16be-4698-b5f3-c78089c0dae2"/>
+        </semantic:informationRequirement>
+        <semantic:decisionTable id="_e782e526-ed2e-49aa-af8c-e2fdec3d954c" hitPolicy="UNIQUE" outputLabel="Something in between" typeRef="Any" triso:expressionId="_32598f41-2eba-4bcc-865a-dcb156f43288">
+            <semantic:input id="_07d69434-16be-4698-b5f3-c78089c0dae2" triso:allowNull="true" label="New Input">
+                <semantic:inputExpression typeRef="string">
+                    <semantic:text>New Input</semantic:text>
+                </semantic:inputExpression>
+            </semantic:input>
+            <semantic:output id="_921432d0-1f42-4a0d-a6d8-d8d4a7f0ef99" triso:allowNull="true"/>
+            <semantic:annotation name="Description"/>
+            <semantic:rule id="_841ed91c-db69-401e-890b-08a5bf44222d">
+                <semantic:inputEntry id="_f2d5212a-cfcc-4b61-b732-1fa491c8eae4">
+                    <semantic:text>-</semantic:text>
+                </semantic:inputEntry>
+                <semantic:outputEntry id="_0ab7a806-cdcf-4f03-936d-8caed2bb8f56">
+                    <semantic:text>"Something" in between</semantic:text>
+                </semantic:outputEntry>
+                <semantic:annotationEntry>
+                    <semantic:text/>
+                </semantic:annotationEntry>
+            </semantic:rule>
+        </semantic:decisionTable>
+    </semantic:decision>
+    <semantic:inputData id="inputData__07d69434-16be-4698-b5f3-c78089c0dae2" name="New Input">
+        <semantic:variable name="New Input" id="_34fd261d-fe97-42f2-a732-5e4e1637fcc5" typeRef="string"/>
+    </semantic:inputData>
+</semantic:definitions>

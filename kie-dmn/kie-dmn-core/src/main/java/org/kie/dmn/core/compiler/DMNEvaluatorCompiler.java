@@ -637,7 +637,7 @@ public class DMNEvaluatorCompiler {
             }
             String id = oc.getId();
             String outputValuesText = Optional.ofNullable( oc.getOutputValues() ).map( UnaryTests::getText ).orElse( null );
-            String defaultValue = oc.getDefaultOutputEntry() != null ? oc.getDefaultOutputEntry().getText() : null;
+            String defaultValue = Optional.ofNullable(oc.getDefaultOutputEntry()).map(LiteralExpression::getText).filter(t -> !t.isEmpty()).orElse(null);
             BaseDMNTypeImpl typeRef = inferTypeRef( model, dt, oc );
             java.util.List<UnaryTest> outputValues = null;
 

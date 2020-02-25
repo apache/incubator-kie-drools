@@ -16,7 +16,9 @@
 
 package org.drools.modelcompiler;
 
+import java.util.ArrayList;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 
 import org.drools.core.base.ClassObjectType;
@@ -27,6 +29,7 @@ import org.drools.core.reteoo.EntryPointNode;
 import org.drools.core.reteoo.ObjectTypeNode;
 import org.drools.modelcompiler.domain.Person;
 import org.drools.modelcompiler.domain.Result;
+import org.junit.Ignore;
 import org.junit.Test;
 import org.kie.api.runtime.KieSession;
 
@@ -140,4 +143,60 @@ public class NodeSharingTest extends BaseModelTest {
         assertEquals( 1, otn.getSinks().length );
     }
 
+    @Test
+    public void testTrimmedConstraint() {
+
+        String str =
+                "import " + Person.class.getCanonicalName() + ";" +
+                "rule R1 when\n" +
+                "   Person( name == \"Mark\")\n" +
+                "then\n" +
+                "end\n" +
+                "rule R2 when\n" +
+                "   $p: Person( name==\"Mark\" )\n" +
+                "then\n" +
+                "end\n";
+
+        KieSession ksession = getKieSession( str );
+
+        assertEquals( 1, ReteDumper.collectNodes( ksession ).stream().filter( AlphaNode.class::isInstance ).count() );
+    }
+
+    @Test
+    public void testOrWithTrimmedConstraint() {
+        String str =
+                "import " + Person.class.getCanonicalName() + ";" +
+                "global java.util.List list\n" +
+                "\n" +
+                "rule R1 when\n" +
+                "   Person( $name: name == \"Mark\", $age: age ) or\n" +
+                "   Person( $name: name == \"Mario\", $age : age )\n" +
+                "then\n" +
+                "  list.add( $name + \" is \" + $age);\n" +
+                "end\n" +
+                "rule R2 when\n" +
+                "   $p: Person( name==\"Mark\", $age: age ) or\n" +
+                "   $p: Person( name==\"Mario\", $age : age )\n" +
+                "then\n" +
+                "  list.add( $p + \" has \" + $age + \" years\");\n" +
+                "end\n";
+
+        KieSession ksession = getKieSession( str );
+
+        assertEquals( 2, ReteDumper.collectNodes( ksession ).stream().filter( AlphaNode.class::isInstance ).count() );
+
+        List<String> results = new ArrayList<>();
+        ksession.setGlobal("list", results);
+
+        ksession.insert( new Person( "Mark", 37 ) );
+        ksession.insert( new Person( "Edson", 35 ) );
+        ksession.insert( new Person( "Mario", 40 ) );
+        ksession.fireAllRules();
+
+        assertEquals(4, results.size());
+        assertTrue(results.contains("Mark is 37"));
+        assertTrue(results.contains("Mark has 37 years"));
+        assertTrue(results.contains("Mario is 40"));
+        assertTrue(results.contains("Mario has 40 years"));
+    }
 }

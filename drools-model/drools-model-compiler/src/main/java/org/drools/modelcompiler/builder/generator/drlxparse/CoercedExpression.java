@@ -41,6 +41,7 @@ import com.github.javaparser.ast.expr.StringLiteralExpr;
 import com.github.javaparser.ast.type.PrimitiveType;
 import org.drools.modelcompiler.builder.errors.InvalidExpressionErrorResult;
 import org.drools.modelcompiler.builder.generator.TypedExpression;
+import org.drools.modelcompiler.builder.generator.UnificationTypedExpression;
 import org.drools.modelcompiler.util.ClassUtil;
 
 import static org.drools.modelcompiler.builder.PackageModel.STRING_TO_DATE_METHOD;
@@ -77,7 +78,10 @@ public class CoercedExpression {
         final Class<?> leftClass = left.getRawClass();
         final Class<?> rightClass = right.getRawClass();
 
-        if (leftClass == rightClass) {
+        boolean sameClass = leftClass == rightClass;
+        boolean isUnificationExpression = left instanceof UnificationTypedExpression || right instanceof UnificationTypedExpression;
+
+        if (sameClass || isUnificationExpression) {
             return new CoercedExpressionResult(left, right);
         }
 
