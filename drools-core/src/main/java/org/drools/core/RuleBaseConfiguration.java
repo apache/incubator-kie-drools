@@ -46,7 +46,6 @@ import org.kie.api.conf.RemoveIdentitiesOption;
 import org.kie.api.conf.SequentialOption;
 import org.kie.api.conf.SessionsPoolOption;
 import org.kie.api.conf.SingleValueKieBaseOption;
-import org.kie.api.conf.ExternaliseCanonicalModelLambdaOption;
 import org.kie.api.runtime.rule.ConsequenceExceptionHandler;
 import org.kie.internal.builder.conf.ClassLoaderCacheOption;
 import org.kie.internal.conf.AlphaThresholdOption;
@@ -146,8 +145,6 @@ public class RuleBaseConfiguration
     private String          ruleBaseUpdateHandler;
     private boolean         classLoaderCacheEnabled;
     private boolean         phreakEnabled;
-    private boolean         externaliseCanonicalModelLambda;
-
 
     private boolean declarativeAgenda;
 
@@ -214,7 +211,6 @@ public class RuleBaseConfiguration
         out.writeBoolean(declarativeAgenda);
         out.writeObject(componentFactory);
         out.writeInt(sessionPoolSize);
-        out.writeBoolean(externaliseCanonicalModelLambda);
     }
 
     public void readExternal(ObjectInput in) throws IOException,
@@ -247,7 +243,6 @@ public class RuleBaseConfiguration
         declarativeAgenda = in.readBoolean();
         componentFactory = (KieComponentFactory) in.readObject();
         sessionPoolSize = in.readInt();
-        externaliseCanonicalModelLambda = in.readBoolean();
     }
 
     /**
@@ -341,8 +336,6 @@ public class RuleBaseConfiguration
             setMBeansEnabled( MBeansOption.isEnabled(value));
         } else if ( name.equals( ClassLoaderCacheOption.PROPERTY_NAME ) ) {
             setClassLoaderCacheEnabled( StringUtils.isEmpty( value ) ? true : Boolean.valueOf(value));
-        } else if (name.equals(ExternaliseCanonicalModelLambdaOption.PROPERTY_NAME)) {
-            setExternaliseCanonicalModelLambda(Boolean.valueOf(value));
         }
     }
 
@@ -398,8 +391,6 @@ public class RuleBaseConfiguration
             return isMBeansEnabled() ? "enabled" : "disabled";
         } else if ( name.equals( ClassLoaderCacheOption.PROPERTY_NAME ) ) {
             return Boolean.toString( isClassLoaderCacheEnabled() );
-        } else if (name.equals(ExternaliseCanonicalModelLambdaOption.PROPERTY_NAME)) {
-            return String.valueOf(isExternaliseCanonicalModelLambda());
         }
 
         return null;
@@ -492,10 +483,6 @@ public class RuleBaseConfiguration
         
         setDeclarativeAgendaEnabled( Boolean.valueOf( this.chainedProperties.getProperty( DeclarativeAgendaOption.PROPERTY_NAME,
                                                                                           "false" ) ) );
-
-        setProperty(ExternaliseCanonicalModelLambdaOption.PROPERTY_NAME,
-                    this.chainedProperties.getProperty(ExternaliseCanonicalModelLambdaOption.PROPERTY_NAME,"false"));
-
     }
 
     /**
@@ -1175,8 +1162,6 @@ public class RuleBaseConfiguration
             return (T) (this.isClassLoaderCacheEnabled() ? ClassLoaderCacheOption.ENABLED : ClassLoaderCacheOption.DISABLED);
         } else if (DeclarativeAgendaOption.class.equals(option)) {
             return (T) (this.isDeclarativeAgenda() ? DeclarativeAgendaOption.ENABLED : DeclarativeAgendaOption.DISABLED);
-        } else if (ExternaliseCanonicalModelLambdaOption.class.equals(option)) {
-            return (T) (externaliseCanonicalModelLambda ? ExternaliseCanonicalModelLambdaOption.ENABLED : ExternaliseCanonicalModelLambdaOption.DISABLED);
         }
         return null;
 
@@ -1225,9 +1210,8 @@ public class RuleBaseConfiguration
             setClassLoaderCacheEnabled( ( (ClassLoaderCacheOption) option ).isClassLoaderCacheEnabled());
         } else if (option instanceof DeclarativeAgendaOption) {
             setDeclarativeAgendaEnabled(((DeclarativeAgendaOption) option).isDeclarativeAgendaEnabled());
-        } else if (option instanceof ExternaliseCanonicalModelLambdaOption) {
-            this.externaliseCanonicalModelLambda = ((ExternaliseCanonicalModelLambdaOption) option).isCanonicalModelLambdaExternalized();
         }
+
     }
 
     public <T extends MultiValueKieBaseOption> T getOption(Class<T> option,
@@ -1237,13 +1221,5 @@ public class RuleBaseConfiguration
 
     public ChainedProperties getChainedProperties() {
         return chainedProperties;
-    }
-
-    public boolean isExternaliseCanonicalModelLambda() {
-        return externaliseCanonicalModelLambda;
-    }
-
-    public void setExternaliseCanonicalModelLambda(boolean externaliseCanonicalModelLambda) {
-        this.externaliseCanonicalModelLambda = externaliseCanonicalModelLambda;
     }
 }
