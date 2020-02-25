@@ -21,7 +21,7 @@ package org.kie.internal.builder.conf;
  *
  * drools.externaliseCanonicalModelLambda = &lt;true|false&gt;
  *
- * DEFAULT = true
+ * DEFAULT = false
  */
 public enum ExternaliseCanonicalModelLambdaOption implements SingleValueKnowledgeBuilderOption {
 
