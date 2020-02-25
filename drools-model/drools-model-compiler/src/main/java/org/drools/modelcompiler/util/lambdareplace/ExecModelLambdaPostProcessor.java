@@ -38,6 +38,8 @@ import com.github.javaparser.ast.expr.MethodCallExpr;
 import com.github.javaparser.ast.expr.NameExpr;
 import com.github.javaparser.ast.type.ClassOrInterfaceType;
 import com.github.javaparser.ast.type.Type;
+import com.github.javaparser.printer.PrettyPrinter;
+import com.github.javaparser.printer.PrettyPrinterConfiguration;
 import org.drools.model.BitMask;
 import org.drools.modelcompiler.builder.RuleWriter;
 import org.slf4j.Logger;
@@ -59,6 +61,14 @@ public class ExecModelLambdaPostProcessor {
     private final Collection<String> imports;
     private final Collection<String> staticImports;
     private final CompilationUnit clone;
+
+    private static final PrettyPrinterConfiguration configuration = new PrettyPrinterConfiguration();
+
+    static {
+        configuration.setEndOfLineCharacter("\n"); // hashes will be stable also while testing on windows
+    }
+
+    public static final PrettyPrinter MATERIALIZED_LAMBDA_PRETTY_PRINTER = new PrettyPrinter(configuration);
 
     public ExecModelLambdaPostProcessor(Map<String, CreatedClass> lambdaClasses,
                                         String packageName,
