@@ -137,6 +137,20 @@
     <version.xmlunit>2.2.1</version.xmlunit>
   </properties>
 
+  <!-- distributionManagement section -->
+  <distributionManagement>
+    <repository>
+      <id>jboss-releases-repository</id>
+      <name>JBoss Releases Repository</name>
+      <url>https://repository.jboss.org/nexus/service/local/staging/deploy/maven2/</url>
+    </repository>
+    <snapshotRepository>
+      <id>jboss-snapshots-repository</id>
+      <name>JBoss Snapshot Repository</name>
+      <url>https://repository.jboss.org/nexus/content/repositories/snapshots/</url>
+    </snapshotRepository>
+  </distributionManagement>
+
   <repositories>
     <!-- Bootstrap repository to locate the parent pom when the parent pom
       has not been build locally. -->
