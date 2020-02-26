@@ -22,7 +22,6 @@ import org.kie.pmml.commons.model.KiePMMLModel;
 import org.kie.pmml.commons.model.enums.MINING_FUNCTION;
 import org.kie.pmml.commons.model.enums.PMML_MODEL;
 
-
 public class KiePMML${modelName}Model extends KiePMMLModel {
 
     public static final PMML_MODEL PMML_MODEL_TYPE = PMML_MODEL.${modelNameUppercase}_MODEL;
@@ -36,7 +35,7 @@ public class KiePMML${modelName}Model extends KiePMMLModel {
         return PMML_MODEL_TYPE;
     }
 
-    protected KiePMML${modelName}Model() {
+    private KiePMML${modelName}Model() {
     }
 
 

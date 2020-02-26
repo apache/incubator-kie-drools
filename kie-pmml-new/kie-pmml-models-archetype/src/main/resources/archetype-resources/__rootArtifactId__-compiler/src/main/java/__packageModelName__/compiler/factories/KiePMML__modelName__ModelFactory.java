@@ -22,13 +22,12 @@ import org.dmg.pmml.DataDictionary;
 import org.dmg.pmml.${packageModelName}.${modelName}Model;
 import ${package}.${packageModelName}.model.KiePMML${modelName}Model;
 
-
 public class KiePMML${modelName}ModelFactory {
 
 
     public static KiePMML${modelName}Model getKiePMML${modelName}Model(DataDictionary dataDictionary, ${modelName}Model model) {
         // TODO
-        return null;
+        throw new UnsupportedOperationException();
     }
 
     private KiePMML${modelName}ModelFactory(){

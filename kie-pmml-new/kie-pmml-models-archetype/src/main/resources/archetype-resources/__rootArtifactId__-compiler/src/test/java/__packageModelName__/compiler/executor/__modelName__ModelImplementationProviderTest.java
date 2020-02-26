@@ -22,6 +22,7 @@ import org.kie.pmml.commons.model.enums.PMML_MODEL;
 import org.junit.Test;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.fail;
 
 public class ${modelName}ModelImplementationProviderTest {
 

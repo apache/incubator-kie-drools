@@ -27,8 +27,6 @@ import ${package}.${packageModelName}.model.KiePMML${modelName}Model;
 
 import static ${package}.${packageModelName}.model.KiePMML${modelName}Model.PMML_MODEL_TYPE;
 
-
-
 /**
  * Default <code>ModelImplementationProvider</code> for <b>${modelName}</b>
  */

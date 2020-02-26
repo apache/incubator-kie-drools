@@ -18,7 +18,6 @@
  */
 package  ${package}.${packageModelName}.evaluator;
 
-
 import org.kie.api.pmml.PMML4Result;
 import org.kie.pmml.commons.model.KiePMMLModel;
 import org.kie.pmml.commons.model.enums.PMML_MODEL;
@@ -26,8 +25,6 @@ import org.kie.pmml.evaluator.api.exceptions.KiePMMLModelException;
 import org.kie.pmml.evaluator.api.executor.PMMLContext;
 import org.kie.pmml.evaluator.core.executor.PMMLModelExecutor;
 import ${package}.${packageModelName}.model.KiePMML${modelName}Model;
-
-
 
 /**
  * Default <code>PMMLModelExecutor</code> for <b>${modelName}</b>
@@ -45,6 +42,6 @@ public class PMML${modelName}ModelEvaluator implements PMMLModelExecutor {
             throw new KiePMMLModelException("Expected a KiePMML${modelName}Model, received a "+ model.getClass().getName());
         }
         // TODO
-        return null;
+        throw new UnsupportedOperationException();
     }
 }
