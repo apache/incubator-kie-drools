@@ -39,8 +39,9 @@ pipeline {
         stage('Build kogito-apps') {
             steps {
                 script {
+                    sh('yarn run init')
                     wrap([$class: 'Xvnc', takeScreenshot: false, useXauthority: true]) {
-                        sh('yarn run init && yarn build:prod')
+                        sh('yarn build:prod')
                     }
                     maven.runMavenWithSubmarineSettings('clean install -Prun-code-coverage', false)
                 }
@@ -74,13 +75,6 @@ pipeline {
                 }
             }
         }
-//         stage('Analyze kogito-apps') {
-//             steps {
-//                 script {
-//                     maven.runMavenWithSubmarineSettings('-e -nsu generate-resources -Psonarcloud-analysis', false)
-//                 }
-//             }
-//         }
     }
     post {
         unstable {

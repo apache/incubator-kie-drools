@@ -36,20 +36,20 @@ exports[`Dashboard component tests snapshot testing 1`] = `
               <NavItem
                 isActive={true}
               >
-                <ForwardRef
+                <Link
                   to="/ProcessInstances"
                 >
                   Process Instances
-                </ForwardRef>
+                </Link>
               </NavItem>
               <NavItem
                 isActive={false}
               >
-                <ForwardRef
+                <Link
                   to="/DomainExplorer"
                 >
                   Domain Explorer
-                </ForwardRef>
+                </Link>
               </NavItem>
             </NavList>
           </Unknown>
