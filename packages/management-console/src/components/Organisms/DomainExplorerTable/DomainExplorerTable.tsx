@@ -101,7 +101,7 @@ const DomainExplorerTable = ({ columnFilters, tableLoading, displayTable }) => {
                   No domain data to display
                 </Title>
                 <EmptyStateBody>
-                  Select a domain from the dropdown to see content
+                  Select columns from the dropdown to see content
                 </EmptyStateBody>
               </EmptyState>
             </Bullseye>

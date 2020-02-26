@@ -1,93 +1,230 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
 exports[`Dashboard component tests snapshot testing 1`] = `
-<Fragment>
-  <Page
-    breadcrumb={null}
-    className="kogito-management-console--dashboard-page"
-    defaultManagedSidebarIsOpen={true}
-    header={
-      <PageHeader
-        avatar={<AvatarComponent />}
-        isNavOpen={false}
-        logo={<withRouter(BrandComponent) />}
-        onNavToggle={[Function]}
-        showNavToggle={true}
-        toolbar={<PageToolbarComponent />}
-      />
+<ApolloProvider
+  client={
+    ApolloClient {
+      "cache": InMemoryCache {
+        "addTypename": true,
+        "cacheKeyRoot": KeyTrie {
+          "weakness": true,
+        },
+        "config": Object {
+          "addTypename": true,
+          "dataIdFromObject": [Function],
+          "fragmentMatcher": HeuristicFragmentMatcher {},
+          "freezeResults": false,
+          "resultCaching": true,
+        },
+        "data": DepTrackingCache {
+          "data": Object {},
+          "depend": [Function],
+        },
+        "maybeBroadcastWatch": [Function],
+        "optimisticData": DepTrackingCache {
+          "data": Object {},
+          "depend": [Function],
+        },
+        "silenceBroadcast": false,
+        "storeReader": StoreReader {
+          "executeSelectionSet": [Function],
+          "executeStoreQuery": [Function],
+          "executeSubSelectedArray": [Function],
+          "freezeResults": false,
+        },
+        "storeWriter": StoreWriter {},
+        "typenameDocumentCache": Map {},
+        "watches": Set {},
+      },
+      "clearStoreCallbacks": Array [],
+      "defaultOptions": Object {},
+      "disableNetworkFetches": false,
+      "link": MockLink {
+        "addTypename": true,
+        "mockedResponsesByKey": Object {},
+      },
+      "localState": LocalState {
+        "cache": InMemoryCache {
+          "addTypename": true,
+          "cacheKeyRoot": KeyTrie {
+            "weakness": true,
+          },
+          "config": Object {
+            "addTypename": true,
+            "dataIdFromObject": [Function],
+            "fragmentMatcher": HeuristicFragmentMatcher {},
+            "freezeResults": false,
+            "resultCaching": true,
+          },
+          "data": DepTrackingCache {
+            "data": Object {},
+            "depend": [Function],
+          },
+          "maybeBroadcastWatch": [Function],
+          "optimisticData": DepTrackingCache {
+            "data": Object {},
+            "depend": [Function],
+          },
+          "silenceBroadcast": false,
+          "storeReader": StoreReader {
+            "executeSelectionSet": [Function],
+            "executeStoreQuery": [Function],
+            "executeSubSelectedArray": [Function],
+            "freezeResults": false,
+          },
+          "storeWriter": StoreWriter {},
+          "typenameDocumentCache": Map {},
+          "watches": Set {},
+        },
+        "client": [Circular],
+      },
+      "mutate": [Function],
+      "query": [Function],
+      "queryDeduplication": true,
+      "queryManager": QueryManager {
+        "assumeImmutableResults": false,
+        "clientAwareness": Object {
+          "name": undefined,
+          "version": undefined,
+        },
+        "dataStore": DataStore {
+          "cache": InMemoryCache {
+            "addTypename": true,
+            "cacheKeyRoot": KeyTrie {
+              "weakness": true,
+            },
+            "config": Object {
+              "addTypename": true,
+              "dataIdFromObject": [Function],
+              "fragmentMatcher": HeuristicFragmentMatcher {},
+              "freezeResults": false,
+              "resultCaching": true,
+            },
+            "data": DepTrackingCache {
+              "data": Object {},
+              "depend": [Function],
+            },
+            "maybeBroadcastWatch": [Function],
+            "optimisticData": DepTrackingCache {
+              "data": Object {},
+              "depend": [Function],
+            },
+            "silenceBroadcast": false,
+            "storeReader": StoreReader {
+              "executeSelectionSet": [Function],
+              "executeStoreQuery": [Function],
+              "executeSubSelectedArray": [Function],
+              "freezeResults": false,
+            },
+            "storeWriter": StoreWriter {},
+            "typenameDocumentCache": Map {},
+            "watches": Set {},
+          },
+        },
+        "fetchQueryRejectFns": Map {},
+        "idCounter": 1,
+        "inFlightLinkObservables": Map {},
+        "link": MockLink {
+          "addTypename": true,
+          "mockedResponsesByKey": Object {},
+        },
+        "localState": LocalState {
+          "cache": InMemoryCache {
+            "addTypename": true,
+            "cacheKeyRoot": KeyTrie {
+              "weakness": true,
+            },
+            "config": Object {
+              "addTypename": true,
+              "dataIdFromObject": [Function],
+              "fragmentMatcher": HeuristicFragmentMatcher {},
+              "freezeResults": false,
+              "resultCaching": true,
+            },
+            "data": DepTrackingCache {
+              "data": Object {},
+              "depend": [Function],
+            },
+            "maybeBroadcastWatch": [Function],
+            "optimisticData": DepTrackingCache {
+              "data": Object {},
+              "depend": [Function],
+            },
+            "silenceBroadcast": false,
+            "storeReader": StoreReader {
+              "executeSelectionSet": [Function],
+              "executeStoreQuery": [Function],
+              "executeSubSelectedArray": [Function],
+              "freezeResults": false,
+            },
+            "storeWriter": StoreWriter {},
+            "typenameDocumentCache": Map {},
+            "watches": Set {},
+          },
+          "client": [Circular],
+        },
+        "mutationStore": MutationStore {
+          "store": Object {},
+        },
+        "onBroadcast": [Function],
+        "pollingInfoByQueryId": Map {},
+        "queries": Map {},
+        "queryDeduplication": true,
+        "queryStore": QueryStore {
+          "store": Object {},
+        },
+        "ssrMode": false,
+        "transformCache": WeakMap {},
+      },
+      "reFetchObservableQueries": [Function],
+      "resetStore": [Function],
+      "resetStoreCallbacks": Array [],
+      "store": DataStore {
+        "cache": InMemoryCache {
+          "addTypename": true,
+          "cacheKeyRoot": KeyTrie {
+            "weakness": true,
+          },
+          "config": Object {
+            "addTypename": true,
+            "dataIdFromObject": [Function],
+            "fragmentMatcher": HeuristicFragmentMatcher {},
+            "freezeResults": false,
+            "resultCaching": true,
+          },
+          "data": DepTrackingCache {
+            "data": Object {},
+            "depend": [Function],
+          },
+          "maybeBroadcastWatch": [Function],
+          "optimisticData": DepTrackingCache {
+            "data": Object {},
+            "depend": [Function],
+          },
+          "silenceBroadcast": false,
+          "storeReader": StoreReader {
+            "executeSelectionSet": [Function],
+            "executeStoreQuery": [Function],
+            "executeSubSelectedArray": [Function],
+            "freezeResults": false,
+          },
+          "storeWriter": StoreWriter {},
+          "typenameDocumentCache": Map {},
+          "watches": Set {},
+        },
+      },
+      "typeDefs": undefined,
+      "version": "2.6.8",
+      "watchQuery": [Function],
     }
-    isManagedSidebar={false}
-    mainContainerId="main-content-page-layout-default-nav"
-    onPageResize={[Function]}
-    sidebar={
-      <PageSidebar
-        isNavOpen={false}
-        nav={
-          <Unknown
-            aria-label="Nav"
-            theme="dark"
-          >
-            <NavList
-              ariaLeftScroll="Scroll left"
-              ariaRightScroll="Scroll right"
-              className=""
-              variant="default"
-            >
-              <NavItem
-                isActive={true}
-              >
-                <Link
-                  to="/ProcessInstances"
-                >
-                  Process Instances
-                </Link>
-              </NavItem>
-              <NavItem
-                isActive={false}
-              >
-                <Link
-                  to="/DomainExplorer"
-                >
-                  Domain Explorer
-                </Link>
-              </NavItem>
-            </NavList>
-          </Unknown>
-        }
-        theme="dark"
-      />
+  }
+>
+  <Dashboard
+    location={
+      Object {
+        "pathname": "/ProcessInstances",
+      }
     }
-    skipToContent={
-      <SkipToContent
-        className=""
-        component="a"
-        href="#main-content-page-layout-default-nav"
-        show={false}
-      >
-        Skip to Content
-      </SkipToContent>
-    }
-  >
-    <Route
-      exact={true}
-      path="/"
-      render={[Function]}
-    />
-    <Route
-      component={[Function]}
-      exact={true}
-      path="/ProcessInstances"
-    />
-    <Route
-      component={[Function]}
-      exact={true}
-      path="/ProcessInstances/:instanceID"
-    />
-    <Route
-      component={[Function]}
-      exact={true}
-      path="/DomainExplorer"
-    />
-  </Page>
-</Fragment>
+  />
+</ApolloProvider>
 `;

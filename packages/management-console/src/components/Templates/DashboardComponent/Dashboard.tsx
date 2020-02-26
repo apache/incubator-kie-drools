@@ -8,14 +8,18 @@ import {
   NavItem
 } from '@patternfly/react-core';
 import React, { useState } from 'react';
-import { Redirect, Route, Link } from 'react-router-dom';
+import { Redirect, Route, Link, Switch } from 'react-router-dom';
 import DataListContainer from '../DataListContainer/DataListContainer';
 import ProcessDetailsPage from '../ProcessDetailsPage/ProcessDetailsPage';
-import DomainExplorerPage from '../DomainExplorerPage/DomainExplorerPage';
+import DomainExplorerDashboard from '../DomainExplorerDashboard/DomainExplorerDashboard';
+import DomainExplorerLandingPage from '../DomainExplorerLandingPage/DomainExplorerLandingPage';
 import Avatar from '../../Atoms/AvatarComponent/AvatarComponent';
 import PageToolbarComponent from '../../Organisms/PageToolbarComponent/PageToolbarComponent';
 import BrandComponent from '../../Atoms/BrandComponent/BrandComponent';
+import ErrorComponent from '../../Molecules/ErrorComponent/ErrorComponent';
 import './Dashboard.css';
+
+import { useGetQueryFieldsQuery } from '../../../graphql/types';
 
 const Dashboard: React.FC<{}> = (props: any) => {
   const pageId = 'main-content-page-layout-default-nav';
@@ -55,6 +59,12 @@ const Dashboard: React.FC<{}> = (props: any) => {
   const Sidebar = (
     <PageSidebar nav={PageNav} isNavOpen={isNavOpen} theme="dark" />
   );
+
+  const getQuery = useGetQueryFieldsQuery();
+  const availableDomains =
+    !getQuery.loading && getQuery.data.__type.fields.slice(2);
+  const domains = [];
+  availableDomains && availableDomains.map(item => domains.push(item.name));
   return (
     <React.Fragment>
       <Page
@@ -64,18 +74,32 @@ const Dashboard: React.FC<{}> = (props: any) => {
         sidebar={Sidebar}
         className="kogito-management-console--dashboard-page"
       >
-        <Route
-          exact
-          path="/"
-          render={() => <Redirect to="/ProcessInstances" />}
-        />
-        <Route exact path="/ProcessInstances" component={DataListContainer} />
-        <Route
-          exact
-          path="/ProcessInstances/:instanceID"
-          component={ProcessDetailsPage}
-        />
-        <Route exact path="/DomainExplorer" component={DomainExplorerPage} />
+        <Switch>
+          <Route
+            exact
+            path="/"
+            render={() => <Redirect to="/ProcessInstances" />}
+          />
+          <Route exact path="/ProcessInstances" component={DataListContainer} />
+          <Route
+            exact
+            path="/ProcessInstances/:instanceID"
+            component={ProcessDetailsPage}
+          />
+          <Route
+            exact
+            path="/DomainExplorer"
+            component={DomainExplorerLandingPage}
+          />
+          <Route
+            exact
+            path="/DomainExplorer/:domainName"
+            render={_props => (
+              <DomainExplorerDashboard {..._props} domains={domains} />
+            )}
+          />
+          <Route path="*" component={ErrorComponent} />
+        </Switch>
       </Page>
     </React.Fragment>
   );

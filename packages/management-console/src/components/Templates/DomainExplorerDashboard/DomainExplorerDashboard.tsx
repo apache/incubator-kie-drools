@@ -16,7 +16,8 @@ import {
 } from '@patternfly/react-core';
 import { FilterIcon } from '@patternfly/react-icons';
 import { Link } from 'react-router-dom';
-import './DomainExplorerPage.css';
+import { Redirect } from 'react-router';
+import './DomainExplorerDashboard.css';
 import DomainExplorerColumnPicker from '../../Organisms/DomainExplorerColumnPicker/DomainExplorerColumnPicker';
 import DomainExplorerTable from '../../Organisms/DomainExplorerTable/DomainExplorerTable';
 import PageTitleComponent from '../../Molecules/PageTitleComponent/PageTitleComponent';
@@ -27,7 +28,18 @@ import {
   useGetInputFieldsFromQueryQuery
 } from '../../../graphql/types';
 
-const DomainExplorerPage = () => {
+export interface IOwnProps {
+  domains: any;
+}
+
+const DomainExplorerDashboard = props => {
+  const domainName = props.match.params.domainName;
+  let BreadCrumb = props.location.pathname.split('/');
+  BreadCrumb = BreadCrumb.filter(item => {
+    if (item !== '') {
+      return item;
+    }
+  });
   const [initData2, setInitData2] = useState<any>({
     __schema: { queryType: [] }
   });
@@ -59,6 +71,21 @@ const DomainExplorerPage = () => {
   }, [columnPickerType]);
 
   useEffect(() => {
+    setColumnPickerType(domainName);
+    if (getQuery.data) {
+      const _a =
+        !getQuery.loading &&
+        getQuery.data.__type.fields.find(item => {
+          if (item.name === domainName) {
+            return item;
+          }
+        });
+
+      setCurrentQuery(_a.args[0].type.name);
+    }
+  }, []);
+
+  useEffect(() => {
     setDisplayTable(false);
   }, [columnPickerType]);
 
@@ -70,56 +97,6 @@ const DomainExplorerPage = () => {
     setCurrentSchema(temp);
   }, [getSchema.data]);
 
-  const onCategoryToggle = _isOpen => {
-    setIsCategoryDropdownOpen(_isOpen);
-  };
-
-  const onCategorySelect = event => {
-    setCurrentCategory(event.target.innerText);
-    const tempChip = [];
-    tempChip.push(event.target.innerText);
-    const _a =
-      !getQuery.loading &&
-      getQuery.data.__type.fields.find(item => {
-        if (item.name === event.target.innerText) {
-          return item;
-        }
-      });
-    setCurrentQuery(_a.args[0].type.name);
-    setColumnPickerType(_a.type.ofType.name);
-    setIsCategoryDropdownOpen(!isCategoryDropdownOpen);
-    setSchemaDropDown(true);
-  };
-
-  const buildCategoryDropdown = () => {
-    const queryDropDown =
-      !getQuery.loading && getQuery.data.__type.fields.slice(2);
-    const dropdownItems = [];
-    !getQuery.loading &&
-      queryDropDown.map((item, index) =>
-        dropdownItems.push(<DropdownItem key={index}>{item.name}</DropdownItem>)
-      );
-    return (
-      <DataToolbarFilter categoryName="Category">
-        <Dropdown
-          onSelect={onCategorySelect}
-          position="left"
-          toggle={
-            <DropdownToggle
-              onToggle={onCategoryToggle}
-              style={{ width: '100%' }}
-            >
-              <FilterIcon /> {currentCategory}
-            </DropdownToggle>
-          }
-          isOpen={isCategoryDropdownOpen}
-          dropdownItems={dropdownItems}
-          style={{ width: '100%' }}
-        />
-      </DataToolbarFilter>
-    );
-  };
-
   const renderToolbar = () => {
     return (
       <DataToolbar
@@ -129,9 +106,6 @@ const DomainExplorerPage = () => {
       >
         <DataToolbarContent>
           <DataToolbarToggleGroup toggleIcon={<FilterIcon />} breakpoint="xl">
-            <DataToolbarGroup variant="filter-group">
-              {buildCategoryDropdown()}
-            </DataToolbarGroup>
             <DataToolbarGroup>
               {!getSchema.loading && (
                 <DomainExplorerColumnPicker
@@ -155,13 +129,24 @@ const DomainExplorerPage = () => {
 
   return (
     <>
+      {!props.domains.includes(domainName) && <Redirect to="/ErrorComponent" />}
       <PageSection variant="light">
         <PageTitleComponent title="Domain Explorer" />
         <Breadcrumb>
-          <BreadcrumbItem>
+          <BreadcrumbItem to="/">
             <Link to={'/'}>Home</Link>
           </BreadcrumbItem>
-          <BreadcrumbItem isActive>Domain Explorer</BreadcrumbItem>
+          {BreadCrumb.map((item, index) => {
+            if (index === BreadCrumb.length - 1) {
+              return <BreadcrumbItem isActive>{item}</BreadcrumbItem>;
+            } else {
+              return (
+                <BreadcrumbItem>
+                  <Link to="/DomainExplorer">{item}</Link>{' '}
+                </BreadcrumbItem>
+              );
+            }
+          })}
         </Breadcrumb>
       </PageSection>
       <PageSection>
@@ -179,4 +164,4 @@ const DomainExplorerPage = () => {
   );
 };
 
-export default DomainExplorerPage;
+export default DomainExplorerDashboard;
