@@ -44,6 +44,7 @@ pipeline {
                         sh('yarn build:prod')
                     }
                     maven.runMavenWithSubmarineSettings('clean install -Prun-code-coverage', false)
+                    maven.runMavenWithSubmarineSettings('-e -nsu validate -Psonarcloud-analysis', false)
                 }
             }
         }
@@ -89,6 +90,7 @@ pipeline {
         }
         always {
             junit '**/**/junit.xml'
+            junit '**/target/surefire-reports/**/*.xml'
             cleanWs()
         }
     }
