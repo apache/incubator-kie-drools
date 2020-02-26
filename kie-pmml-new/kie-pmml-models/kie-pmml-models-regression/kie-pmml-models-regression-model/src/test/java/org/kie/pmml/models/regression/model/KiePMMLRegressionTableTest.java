@@ -17,6 +17,7 @@
 package org.kie.pmml.models.regression.model;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
@@ -34,6 +35,7 @@ import static org.junit.Assert.assertTrue;
 
 public class KiePMMLRegressionTableTest {
 
+    private static final String MODEL_NAME = "REGRESSION_MODEL";
     private static final Integer INTERCEPT = 23;
     private static final Object TARGET_CATEGORY = "TARGET_CATEGORY";
     private static final List<KiePMMLExtension> EXTENSIONS = new ArrayList<>();
@@ -43,9 +45,8 @@ public class KiePMMLRegressionTableTest {
 
     @Test
     public void buildWithAll() {
-        final KiePMMLRegressionTable retrieved = KiePMMLRegressionTable.builder(INTERCEPT)
+        final KiePMMLRegressionTable retrieved = KiePMMLRegressionTable.builder(MODEL_NAME, Collections.emptyList(), INTERCEPT)
                 .withCategoricalPredictors(CATEGORICAL_PREDICTORS)
-                .withExtensions(EXTENSIONS)
                 .withNumericPredictors(NUMERIC_PREDICTORS)
                 .withPredictorTerms(PREDICTOR_TERMS)
                 .withTargetCategory(TARGET_CATEGORY)
@@ -54,8 +55,7 @@ public class KiePMMLRegressionTableTest {
         assertEquals(INTERCEPT, retrieved.getIntercept());
         assertTrue(retrieved.getCategoricalPredictors().isPresent());
         assertEquals(CATEGORICAL_PREDICTORS, retrieved.getCategoricalPredictors().get());
-        assertTrue(retrieved.getExtensions().isPresent());
-        assertEquals(EXTENSIONS, retrieved.getExtensions().get());
+        assertEquals(EXTENSIONS, retrieved.getExtensions());
         assertTrue(retrieved.getNumericPredictors().isPresent());
         assertEquals(NUMERIC_PREDICTORS, retrieved.getNumericPredictors().get());
         assertTrue(retrieved.getPredictorTerms().isPresent());
@@ -66,30 +66,22 @@ public class KiePMMLRegressionTableTest {
 
     @Test
     public void buildWithIntercept() {
-        final KiePMMLRegressionTable retrieved = KiePMMLRegressionTable.builder(INTERCEPT)
+        final KiePMMLRegressionTable retrieved = KiePMMLRegressionTable.builder(MODEL_NAME, Collections.emptyList(), INTERCEPT)
                 .build();
         commonVerify(INTERCEPT, retrieved);
     }
 
     @Test
     public void buildWithTargetCategory() {
-        final KiePMMLRegressionTable retrieved = KiePMMLRegressionTable.builder(INTERCEPT)
+        final KiePMMLRegressionTable retrieved = KiePMMLRegressionTable.builder(MODEL_NAME, Collections.emptyList(), INTERCEPT)
                 .withTargetCategory(TARGET_CATEGORY)
                 .build();
         commonVerify(TARGET_CATEGORY, retrieved);
     }
 
     @Test
-    public void buildWithExtensions() {
-        final KiePMMLRegressionTable retrieved = KiePMMLRegressionTable.builder(INTERCEPT)
-                .withExtensions(EXTENSIONS)
-                .build();
-        commonVerify(EXTENSIONS, retrieved);
-    }
-
-    @Test
     public void buildWithNumericPredictors() {
-        final KiePMMLRegressionTable retrieved = KiePMMLRegressionTable.builder(INTERCEPT)
+        final KiePMMLRegressionTable retrieved = KiePMMLRegressionTable.builder(MODEL_NAME, Collections.emptyList(), INTERCEPT)
                 .withNumericPredictors(NUMERIC_PREDICTORS)
                 .build();
         commonVerify(NUMERIC_PREDICTORS, retrieved);
@@ -97,7 +89,7 @@ public class KiePMMLRegressionTableTest {
 
     @Test
     public void buildWithCategoricalPredictors() {
-        final KiePMMLRegressionTable retrieved = KiePMMLRegressionTable.builder(INTERCEPT)
+        final KiePMMLRegressionTable retrieved = KiePMMLRegressionTable.builder(MODEL_NAME, Collections.emptyList(), INTERCEPT)
                 .withCategoricalPredictors(CATEGORICAL_PREDICTORS)
                 .build();
         commonVerify(CATEGORICAL_PREDICTORS, retrieved);
@@ -105,7 +97,7 @@ public class KiePMMLRegressionTableTest {
 
     @Test
     public void buildWithPredictorTerms() {
-        final KiePMMLRegressionTable retrieved = KiePMMLRegressionTable.builder(INTERCEPT)
+        final KiePMMLRegressionTable retrieved = KiePMMLRegressionTable.builder(MODEL_NAME, Collections.emptyList(), INTERCEPT)
                 .withPredictorTerms(PREDICTOR_TERMS)
                 .build();
         commonVerify(PREDICTOR_TERMS, retrieved);
@@ -122,10 +114,7 @@ public class KiePMMLRegressionTableTest {
             assertFalse(retrieved.getTargetCategory().isPresent());
         }
         if (EXTENSIONS == notNull) {
-            assertTrue(retrieved.getExtensions().isPresent());
-            assertEquals(notNull, retrieved.getExtensions().get());
-        } else {
-            assertFalse(retrieved.getExtensions().isPresent());
+            assertEquals(notNull, retrieved.getExtensions());
         }
         if (NUMERIC_PREDICTORS == notNull) {
             assertTrue(retrieved.getNumericPredictors().isPresent());

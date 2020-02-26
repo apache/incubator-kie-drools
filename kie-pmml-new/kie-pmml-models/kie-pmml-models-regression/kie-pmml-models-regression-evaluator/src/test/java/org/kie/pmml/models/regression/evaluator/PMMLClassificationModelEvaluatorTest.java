@@ -307,7 +307,7 @@ public class PMMLClassificationModelEvaluatorTest {
     }
 
     private KiePMMLRegressionModel getModel() {
-        return KiePMMLRegressionModel.builder(MODEL_NAME, MINING_FUNCTION.CLASSIFICATION, getTables(), OP_TYPE.CATEGORICAL)
+        return KiePMMLRegressionModel.builder(MODEL_NAME, Collections.emptyList(), MINING_FUNCTION.CLASSIFICATION, getTables(), OP_TYPE.CATEGORICAL)
                 .withTargetField(TARGET_FIELD_NAME)
                 .build();
     }
@@ -318,7 +318,7 @@ public class PMMLClassificationModelEvaluatorTest {
                 new KiePMMLNumericPredictor("work", 1, 7.867E-02, Collections.emptyList())
         ));
 
-        KiePMMLRegressionTable firstTable = KiePMMLRegressionTable.builder(46.418)
+        KiePMMLRegressionTable firstTable = KiePMMLRegressionTable.builder("FIRST_TABLE", Collections.emptyList(), 46.418)
                 .withTargetCategory("clerical")
                 .withNumericPredictors(firstNumericPredictors)
                 .build();
@@ -326,7 +326,7 @@ public class PMMLClassificationModelEvaluatorTest {
                 new KiePMMLNumericPredictor("age", 1, -0.302, Collections.emptyList()),
                 new KiePMMLNumericPredictor("work", 1, 0.155, Collections.emptyList())
         ));
-        KiePMMLRegressionTable secondTable = KiePMMLRegressionTable.builder(51.169)
+        KiePMMLRegressionTable secondTable = KiePMMLRegressionTable.builder("SECOND_TABLE", Collections.emptyList(), 51.169)
                 .withTargetCategory("professional")
                 .withNumericPredictors(secondNumericPredictors)
                 .build();

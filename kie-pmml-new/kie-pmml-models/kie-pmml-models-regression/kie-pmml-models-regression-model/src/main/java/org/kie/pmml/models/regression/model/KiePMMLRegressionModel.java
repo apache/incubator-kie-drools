@@ -15,10 +15,12 @@
  */
 package org.kie.pmml.models.regression.model;
 
+import java.util.Collections;
 import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
 
+import org.kie.pmml.commons.model.KiePMMLExtension;
 import org.kie.pmml.commons.model.KiePMMLModel;
 import org.kie.pmml.commons.model.KiePMMLOutputField;
 import org.kie.pmml.commons.model.enums.MINING_FUNCTION;
@@ -33,9 +35,8 @@ import org.kie.pmml.models.regression.model.enums.REGRESSION_NORMALIZATION_METHO
 public class KiePMMLRegressionModel extends KiePMMLModel {
 
     public static final PMML_MODEL PMML_MODEL_TYPE = PMML_MODEL.REGRESSION_MODEL;
-    private static final long serialVersionUID = 2690863539104500649L;
 
-    private List<KiePMMLRegressionTable> regressionTables;
+    private final List<KiePMMLRegressionTable> regressionTables;
 
     private REGRESSION_NORMALIZATION_METHOD regressionNormalizationMethod = REGRESSION_NORMALIZATION_METHOD.NONE;
     private OP_TYPE targetOpType;
@@ -45,19 +46,24 @@ public class KiePMMLRegressionModel extends KiePMMLModel {
     private List<Object> targetValues = null;
     private List<KiePMMLOutputField> outputFields = null;
 
-    protected KiePMMLRegressionModel() {
+    private KiePMMLRegressionModel(String name, List<KiePMMLExtension> extensions, List<KiePMMLRegressionTable> regressionTables) {
+        super(name, extensions);
+        this.regressionTables = regressionTables;
     }
 
-    public static Builder builder(String name, MINING_FUNCTION miningFunction, List<KiePMMLRegressionTable> regressionTables, OP_TYPE targetOpType) {
-        return new Builder(name, miningFunction, regressionTables, targetOpType);
+    public static Builder builder(String name, List<KiePMMLExtension> extensions, MINING_FUNCTION miningFunction, List<KiePMMLRegressionTable> regressionTables, OP_TYPE targetOpType) {
+        return new Builder(name, extensions, miningFunction, regressionTables, targetOpType);
     }
 
     public static PMML_MODEL getPmmlModelType() {
         return PMML_MODEL_TYPE;
     }
 
+    /**
+     * @return <b>unmodifiable</b> <code>List&lt;KiePMMLRegressionTable&gt;</code>
+     */
     public List<KiePMMLRegressionTable> getRegressionTables() {
-        return regressionTables;
+        return Collections.unmodifiableList(regressionTables);
     }
 
     public Optional<String> getAlgorithmName() {
@@ -80,12 +86,18 @@ public class KiePMMLRegressionModel extends KiePMMLModel {
         return isScorable;
     }
 
+    /**
+     * @return <code>Optional</code> of <b>unmodifiable</b> <code>List&lt;Object&gt;</code>
+     */
     public Optional<List<Object>> getTargetValues() {
-        return Optional.ofNullable(targetValues);
+        return targetValues != null ? Optional.of(Collections.unmodifiableList(targetValues)) : Optional.empty();
     }
 
+    /**
+     * @return <code>Optional</code> of <b>unmodifiable</b> <code>List&lt;KiePMMLOutputField&gt;</code>
+     */
     public Optional<List<KiePMMLOutputField>> getOutputFields() {
-        return Optional.ofNullable(outputFields);
+        return outputFields != null ? Optional.of(Collections.unmodifiableList(outputFields)) : Optional.empty();
     }
 
     public boolean isRegression() {
@@ -145,9 +157,8 @@ public class KiePMMLRegressionModel extends KiePMMLModel {
 
     public static class Builder extends KiePMMLModel.Builder<KiePMMLRegressionModel> {
 
-        private Builder(String name, MINING_FUNCTION miningFunction, List<KiePMMLRegressionTable> regressionTables, OP_TYPE targetOpType) {
-            super(name, "RegressionModel-", PMML_MODEL_TYPE, miningFunction, KiePMMLRegressionModel::new);
-            toBuild.regressionTables = regressionTables;
+        private Builder(String name, List<KiePMMLExtension> extensions, MINING_FUNCTION miningFunction, List<KiePMMLRegressionTable> regressionTables, OP_TYPE targetOpType) {
+            super("RegressionModel-", PMML_MODEL_TYPE, miningFunction, () -> new KiePMMLRegressionModel(name, extensions, regressionTables));
             toBuild.targetOpType = targetOpType;
         }
 

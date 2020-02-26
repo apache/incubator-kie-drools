@@ -25,7 +25,6 @@ import org.slf4j.LoggerFactory;
 
 public class KiePMMLNumericPredictor extends KiePMMLRegressionTablePredictor {
 
-    private static final long serialVersionUID = -1694608925806912507L;
     private static final Logger logger = LoggerFactory.getLogger(KiePMMLNumericPredictor.class.getName());
     private int exponent;
 

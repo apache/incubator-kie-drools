@@ -15,6 +15,7 @@
  */
 package org.kie.pmml.models.regression.model;
 
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -24,30 +25,28 @@ import java.util.Set;
 import java.util.stream.Collectors;
 
 import org.kie.pmml.commons.model.KiePMMLExtension;
-import org.kie.pmml.commons.model.abstracts.KiePMMLIDed;
-import org.kie.pmml.commons.model.abstracts.KiePMMLNamed;
+import org.kie.pmml.commons.model.abstracts.KiePMMLBase;
 import org.kie.pmml.models.regression.model.predictors.KiePMMLCategoricalPredictor;
 import org.kie.pmml.models.regression.model.predictors.KiePMMLNumericPredictor;
 import org.kie.pmml.models.regression.model.predictors.KiePMMLPredictorTerm;
 import org.kie.pmml.models.regression.model.predictors.KiePMMLRegressionTablePredictor;
 
-public class KiePMMLRegressionTable extends KiePMMLIDed {
+public class KiePMMLRegressionTable extends KiePMMLBase {
 
-    private static final long serialVersionUID = 1703573265998162350L;
     private Number intercept;
     private Object targetCategory = null;
-    private List<KiePMMLExtension> extensions = null;
     private Set<KiePMMLNumericPredictor> numericPredictors = null;
     private Set<KiePMMLCategoricalPredictor> categoricalPredictors = null;
     private Set<KiePMMLPredictorTerm> predictorTerms = null;
     private Map<String, KiePMMLNumericPredictor> numericPredictorsMap = new HashMap<>();
     private Map<String, List<KiePMMLCategoricalPredictor>> categoricalPredictorMaps = new HashMap<>();
 
-    private KiePMMLRegressionTable() {
+    private KiePMMLRegressionTable(String name, List<KiePMMLExtension> extensions) {
+        super(name, extensions);
     }
 
-    public static Builder builder(Number intercept) {
-        return new Builder(intercept);
+    public static Builder builder(String name, List<KiePMMLExtension> extensions, Number intercept) {
+        return new Builder(name, extensions, intercept);
     }
 
     public Optional<KiePMMLNumericPredictor> getKiePMMLNumericPredictorByName(String fieldName) {
@@ -69,20 +68,25 @@ public class KiePMMLRegressionTable extends KiePMMLIDed {
         return Optional.ofNullable(targetCategory);
     }
 
-    public Optional<List<KiePMMLExtension>> getExtensions() {
-        return Optional.ofNullable(extensions);
-    }
-
+    /**
+     * @return <code>Optional</code> of <b>unmodifiable</b> <code>Set&lt;KiePMMLNumericPredictor&gt;</code>
+     */
     public Optional<Set<KiePMMLNumericPredictor>> getNumericPredictors() {
-        return Optional.ofNullable(numericPredictors);
+        return numericPredictors != null ? Optional.of(Collections.unmodifiableSet(numericPredictors)) : Optional.empty();
     }
 
+    /**
+     * @return <code>Optional</code> of <b>unmodifiable</b> <code>Set&lt;KiePMMLCategoricalPredictor&gt;</code>
+     */
     public Optional<Set<KiePMMLCategoricalPredictor>> getCategoricalPredictors() {
-        return Optional.ofNullable(categoricalPredictors);
+        return categoricalPredictors != null ? Optional.of(Collections.unmodifiableSet(categoricalPredictors)) : Optional.empty();
     }
 
+    /**
+     * @return <code>Optional</code> of <b>unmodifiable</b> <code>Set&lt;KiePMMLCategoricalPredictor&gt;</code>
+     */
     public Optional<Set<KiePMMLPredictorTerm>> getPredictorTerms() {
-        return Optional.ofNullable(predictorTerms);
+        return predictorTerms != null ? Optional.of(Collections.unmodifiableSet(predictorTerms)) : Optional.empty();
     }
 
     @Override
@@ -128,20 +132,15 @@ public class KiePMMLRegressionTable extends KiePMMLIDed {
         return Objects.hash(super.hashCode(), intercept, targetCategory, extensions, numericPredictors, categoricalPredictors, predictorTerms, numericPredictorsMap, categoricalPredictorMaps);
     }
 
-    public static class Builder extends KiePMMLIDed.Builder<KiePMMLRegressionTable> {
+    public static class Builder extends KiePMMLBase.Builder<KiePMMLRegressionTable> {
 
-        private Builder(Number intercept) {
-            super("RegressionTable-", KiePMMLRegressionTable::new);
+        private Builder(String name, List<KiePMMLExtension> extensions, Number intercept) {
+            super("RegressionTable-", () -> new KiePMMLRegressionTable(name, extensions));
             toBuild.intercept = intercept;
         }
 
         public Builder withTargetCategory(Object targetCategory) {
             toBuild.targetCategory = targetCategory;
-            return this;
-        }
-
-        public Builder withExtensions(List<KiePMMLExtension> extensions) {
-            toBuild.extensions = extensions;
             return this;
         }
 
@@ -156,7 +155,7 @@ public class KiePMMLRegressionTable extends KiePMMLIDed {
         public Builder withCategoricalPredictors(Set<KiePMMLCategoricalPredictor> categoricalPredictors) {
             toBuild.categoricalPredictors = categoricalPredictors;
             toBuild.categoricalPredictorMaps = categoricalPredictors.stream()
-                    .collect(Collectors.groupingBy(KiePMMLNamed::getName));
+                    .collect(Collectors.groupingBy(KiePMMLBase::getName));
             return this;
         }
 

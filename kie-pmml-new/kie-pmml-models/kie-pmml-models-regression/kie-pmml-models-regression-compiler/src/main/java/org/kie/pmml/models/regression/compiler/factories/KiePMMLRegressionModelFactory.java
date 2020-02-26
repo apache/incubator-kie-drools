@@ -37,6 +37,7 @@ import org.kie.pmml.models.regression.model.enums.REGRESSION_NORMALIZATION_METHO
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import static org.kie.pmml.compiler.commons.factories.KiePMMLExtensionFactory.getKiePMMLExtensions;
 import static org.kie.pmml.compiler.commons.utils.ModelUtils.getTargetField;
 import static org.kie.pmml.models.regression.compiler.factories.KiePMMLRegressionTableFactory.getRegressionTables;
 
@@ -61,7 +62,7 @@ public class KiePMMLRegressionModelFactory {
         final OP_TYPE opType = targetDataField
                 .map(field -> OP_TYPE.byName(field.getOpType().value())).orElseThrow(() -> new KiePMMLException("Failed to find OpType for TargetField"));
 
-        return KiePMMLRegressionModel.builder(name, MINING_FUNCTION.byName(model.getMiningFunction().value()), getRegressionTables(model.getRegressionTables()), opType)
+        return KiePMMLRegressionModel.builder(name, getKiePMMLExtensions(model.getExtensions()), MINING_FUNCTION.byName(model.getMiningFunction().value()), getRegressionTables(model.getRegressionTables()), opType)
                 .withAlgorithmName(model.getAlgorithmName())
                 .withModelType(model.getModelType() != null ? MODEL_TYPE.byName(model.getModelType().value()) : null)
                 .withRegressionNormalizationMethod(REGRESSION_NORMALIZATION_METHOD.byName(model.getNormalizationMethod().value()))
@@ -73,7 +74,7 @@ public class KiePMMLRegressionModelFactory {
     }
 
     private static KiePMMLOutputField getKiePMMLOutputField(OutputField outputField) {
-        return KiePMMLOutputField.builder(outputField.getName().getValue())
+        return KiePMMLOutputField.builder(outputField.getName().getValue(), getKiePMMLExtensions(outputField.getExtensions()))
                 .withResultFeature(RESULT_FEATURE.byName(outputField.getResultFeature().value()))
                 .withTargetField(outputField.getTargetField() != null ? outputField.getTargetField().getValue() : null)
                 .withValue(outputField.getValue())

@@ -81,7 +81,7 @@ public class PMMLRegressionModelExecutorTest {
     }
 
     private KiePMMLRegressionModel getRegressionModel() {
-        return KiePMMLRegressionModel.builder(REGRESSION_MODEL_NAME, MINING_FUNCTION.REGRESSION, Collections.singletonList(getRegressionTable()), OP_TYPE.CONTINUOUS)
+        return KiePMMLRegressionModel.builder(REGRESSION_MODEL_NAME, Collections.emptyList(), MINING_FUNCTION.REGRESSION, Collections.singletonList(getRegressionTable()), OP_TYPE.CONTINUOUS)
                 .withRegressionNormalizationMethod(REGRESSION_NORMALIZATION_METHOD.CLOGLOG)
                 .withTargetField(REGRESSION_TARGET_FIELD_NAME)
                 .build();
@@ -99,7 +99,7 @@ public class PMMLRegressionModelExecutorTest {
 
         List<KiePMMLRegressionTablePredictor> predictors = new ArrayList<>(numericPredictors);
         KiePMMLPredictorTerm predictorTerm = new KiePMMLPredictorTerm("predTerm", predictors, 0.4, Collections.emptyList());
-        return KiePMMLRegressionTable.builder(0.5)
+        return KiePMMLRegressionTable.builder("TABLE", Collections.emptyList(), 0.5)
                 .withTargetCategory("clerical")
                 .withNumericPredictors(numericPredictors)
                 .withCategoricalPredictors(categoricalPredictors)
@@ -121,7 +121,7 @@ public class PMMLRegressionModelExecutorTest {
     }
 
     private KiePMMLRegressionModel getClassificationModel() {
-        return KiePMMLRegressionModel.builder(CLASSIFICATION_MODEL_NAME, MINING_FUNCTION.CLASSIFICATION, getClassificationTables(), OP_TYPE.CATEGORICAL)
+        return KiePMMLRegressionModel.builder(CLASSIFICATION_MODEL_NAME, Collections.emptyList(), MINING_FUNCTION.CLASSIFICATION, getClassificationTables(), OP_TYPE.CATEGORICAL)
                 .withTargetField(CLASSIFICATION_TARGET_FIELD_NAME)
                 .build();
     }
@@ -132,7 +132,7 @@ public class PMMLRegressionModelExecutorTest {
                 new KiePMMLNumericPredictor("work", 1, 7.867E-02, Collections.emptyList())
         ));
 
-        KiePMMLRegressionTable firstTable = KiePMMLRegressionTable.builder(46.418)
+        KiePMMLRegressionTable firstTable = KiePMMLRegressionTable.builder("FIRST_TABLE", Collections.emptyList(), 46.418)
                 .withTargetCategory("clerical")
                 .withNumericPredictors(firstNumericPredictors)
                 .build();
@@ -140,7 +140,7 @@ public class PMMLRegressionModelExecutorTest {
                 new KiePMMLNumericPredictor("age", 1, -0.302, Collections.emptyList()),
                 new KiePMMLNumericPredictor("work", 1, 0.155, Collections.emptyList())
         ));
-        KiePMMLRegressionTable secondTable = KiePMMLRegressionTable.builder(51.169)
+        KiePMMLRegressionTable secondTable = KiePMMLRegressionTable.builder("SECOND_TABLE", Collections.emptyList(), 51.169)
                 .withTargetCategory("professional")
                 .withNumericPredictors(secondNumericPredictors)
                 .build();

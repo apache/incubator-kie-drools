@@ -19,13 +19,11 @@ import java.util.List;
 import java.util.Objects;
 
 import org.kie.pmml.commons.model.KiePMMLExtension;
-import org.kie.pmml.commons.model.abstracts.KiePMMLExtensionedNamed;
+import org.kie.pmml.commons.model.abstracts.KiePMMLBase;
 
-public class KiePMMLFieldRef extends KiePMMLExtensionedNamed implements KiePMMLExpression {
+public class KiePMMLFieldRef extends KiePMMLBase implements KiePMMLExpression {
 
-    private static final long serialVersionUID = -8710217937035493376L;
-
-    private String mapMissingTo;
+    private final String mapMissingTo;
 
     public KiePMMLFieldRef(String name, List<KiePMMLExtension> extensions, String mapMissingTo) {
         super(name, extensions);

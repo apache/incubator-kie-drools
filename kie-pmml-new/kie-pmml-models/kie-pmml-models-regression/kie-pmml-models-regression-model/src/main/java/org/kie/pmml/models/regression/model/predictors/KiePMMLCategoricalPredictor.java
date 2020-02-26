@@ -24,7 +24,6 @@ import org.slf4j.LoggerFactory;
 
 public class KiePMMLCategoricalPredictor extends KiePMMLRegressionTablePredictor {
 
-    private static final long serialVersionUID = -3937947927611073965L;
     private static final Logger logger = LoggerFactory.getLogger(KiePMMLCategoricalPredictor.class.getName());
     private Object value;
 

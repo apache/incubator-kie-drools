@@ -53,8 +53,7 @@ public class KiePMMLRegressionTableFactory {
         final Set<KiePMMLRegressionTablePredictor> numericCategoricalPredictors = new HashSet<>();
         numericCategoricalPredictors.addAll(categoricalPredictors);
         numericCategoricalPredictors.addAll(numericPredictors);
-        return KiePMMLRegressionTable.builder(regressionTable.getIntercept())
-                .withExtensions(getKiePMMLExtensions(regressionTable.getExtensions()))
+        return KiePMMLRegressionTable.builder(String.valueOf(regressionTable.hashCode()), getKiePMMLExtensions(regressionTable.getExtensions()), regressionTable.getIntercept())
                 .withCategoricalPredictors(categoricalPredictors)
                 .withNumericPredictors(numericPredictors)
                 .withPredictorTerms(getKiePMMLPredictorTerms(regressionTable.getPredictorTerms(), numericCategoricalPredictors))

@@ -83,7 +83,7 @@ public class PMMLCompilerImplTest {
         assertNotNull(retrieved);
         assertEquals(132.37, retrieved.getIntercept());
         assertFalse(retrieved.getTargetCategory().isPresent());
-        assertTrue(retrieved.getExtensions().isPresent());
+        assertNotNull(retrieved.getExtensions());
         assertTrue(retrieved.getNumericPredictors().isPresent());
         assertEquals(2, retrieved.getNumericPredictors().get().size());
         assertTrue(retrieved.getCategoricalPredictors().isPresent());

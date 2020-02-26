@@ -15,6 +15,8 @@
  */
 package org.kie.pmml.compiler.commons.mocks;
 
+import java.util.Collections;
+
 import org.dmg.pmml.DataDictionary;
 import org.dmg.pmml.regression.RegressionModel;
 import org.kie.pmml.commons.model.enums.PMML_MODEL;
@@ -34,6 +36,6 @@ public class TestingModelImplementationProvider implements ModelImplementationPr
 
     @Override
     public KiePMMLTestingModel getKiePMMLModel(DataDictionary dataDictionary, RegressionModel model, Object kBuilder) {
-        return new KiePMMLTestingModel();
+        return new KiePMMLTestingModel("TEST_MODEL", Collections.emptyList());
     }
 }

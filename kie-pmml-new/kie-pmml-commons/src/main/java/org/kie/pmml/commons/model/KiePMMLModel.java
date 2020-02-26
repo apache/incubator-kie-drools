@@ -15,25 +15,25 @@
  */
 package org.kie.pmml.commons.model;
 
+import java.util.List;
 import java.util.Objects;
 import java.util.function.Supplier;
 
-import org.kie.pmml.commons.model.abstracts.KiePMMLIDedNamed;
+import org.kie.pmml.commons.model.abstracts.KiePMMLBase;
 import org.kie.pmml.commons.model.enums.MINING_FUNCTION;
 import org.kie.pmml.commons.model.enums.PMML_MODEL;
 
 /**
  * KIE representation of PMML model
  */
-public abstract class KiePMMLModel extends KiePMMLIDedNamed {
-
-    private static final long serialVersionUID = -6845971260164057040L;
+public abstract class KiePMMLModel extends KiePMMLBase {
 
     protected PMML_MODEL pmmlMODEL;
     protected MINING_FUNCTION miningFunction;
     protected String targetField;
 
-    protected KiePMMLModel() {
+    protected KiePMMLModel(String name, List<KiePMMLExtension> extensions) {
+        super(name, extensions);
     }
 
     public PMML_MODEL getPmmlMODEL() {
@@ -82,10 +82,10 @@ public abstract class KiePMMLModel extends KiePMMLIDedNamed {
         return Objects.hash(super.hashCode(), pmmlMODEL, miningFunction, targetField);
     }
 
-    public abstract static class Builder<T extends KiePMMLModel> extends KiePMMLIDedNamed.Builder<T> {
+    public abstract static class Builder<T extends KiePMMLModel> extends KiePMMLBase.Builder<T> {
 
-        protected Builder(String name, String prefix, PMML_MODEL pmmlMODEL, MINING_FUNCTION miningFunction, Supplier<T> supplier) {
-            super(name, prefix, supplier);
+        protected Builder(String prefix, PMML_MODEL pmmlMODEL, MINING_FUNCTION miningFunction, Supplier<T> supplier) {
+            super(prefix, supplier);
             toBuild.pmmlMODEL = pmmlMODEL;
             toBuild.miningFunction = miningFunction;
         }

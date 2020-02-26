@@ -16,14 +16,11 @@
 
 package org.kie.pmml.models.regression.evaluator;
 
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.HashMap;
-import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
-import java.util.Set;
 import java.util.stream.Collectors;
 
 import org.junit.Test;
@@ -80,7 +77,7 @@ public class PMMLRegressionModelUtilsTest {
         inputData.put("fld3", -3.0);
         Map<String, Double> expectedData = new HashMap<>();
         expectedData.put("firstPredictorTerm", 0.10800000000000001);
-        expectedData.put("secondPredictorTerm", -0.5399999999999999);
+        expectedData.put("secondPredictorTerm", -1.62);
         Map<String, Double> resultMap = new HashMap<>();
         getParameterInfos(inputData);
         PMMLRegressionModelUtils.evaluatePredictorTerms(regressionTable, getParameterInfos(inputData), resultMap);
@@ -98,13 +95,13 @@ public class PMMLRegressionModelUtilsTest {
         inputData.put("fld3", -3.0);
         Map<String, Double> expectedData = new HashMap<>();
         expectedData.put("firstPredictorTerm", 0.10800000000000001);
-        expectedData.put("secondPredictorTerm", -0.5399999999999999);
+        expectedData.put("secondPredictorTerm", -1.62);
         Map<String, Double> resultMap = new HashMap<>();
-        getPredictorTerms().iterator().forEachRemaining(kiePMMLPredictorTerm -> {
+        for (KiePMMLPredictorTerm kiePMMLPredictorTerm : getPredictorTerms()) {
             PMMLRegressionModelUtils.evaluatePredictorTerm(kiePMMLPredictorTerm, inputData, resultMap);
             assertTrue(resultMap.containsKey(kiePMMLPredictorTerm.getName()));
             assertEquals(expectedData.get(kiePMMLPredictorTerm.getName()), resultMap.get(kiePMMLPredictorTerm.getName()));
-        });
+        }
     }
 
     @SuppressWarnings("rawtypes")
@@ -121,35 +118,35 @@ public class PMMLRegressionModelUtilsTest {
     }
 
     private KiePMMLRegressionTable getTable() {
-        return KiePMMLRegressionTable.builder(0.5)
+        return KiePMMLRegressionTable.builder("TABLE", Collections.emptyList(), 0.5)
                 .withTargetCategory("clerical")
-                .withNumericPredictors(getNumericPredictors())
-                .withCategoricalPredictors(getCategoricalPredictors())
-                .withPredictorTerms(getPredictorTerms())
+                .withNumericPredictors(Arrays.stream(getNumericPredictors()).collect(Collectors.toSet()))
+                .withCategoricalPredictors(Arrays.stream(getCategoricalPredictors()).collect(Collectors.toSet()))
+                .withPredictorTerms(Arrays.stream(getPredictorTerms()).collect(Collectors.toSet()))
                 .build();
     }
 
-    private Set<KiePMMLNumericPredictor> getNumericPredictors() {
-        return new HashSet<>(Arrays.asList(
+    private KiePMMLNumericPredictor[] getNumericPredictors() {
+        return new KiePMMLNumericPredictor[]{
                 new KiePMMLNumericPredictor("fld1", 2, 5, Collections.emptyList()),
-                new KiePMMLNumericPredictor("fld2", 1, 2, Collections.emptyList())
-        ));
+                new KiePMMLNumericPredictor("fld2", 1, 2, Collections.emptyList())};
     }
 
-    private Set<KiePMMLCategoricalPredictor> getCategoricalPredictors() {
-        return new HashSet<>(Arrays.asList(
+    private KiePMMLCategoricalPredictor[] getCategoricalPredictors() {
+        return new KiePMMLCategoricalPredictor[]{
                 new KiePMMLCategoricalPredictor("fld3", "x", -3, Collections.emptyList()),
-                new KiePMMLCategoricalPredictor("fld3", "y", 3, Collections.emptyList())
-        ));
+                new KiePMMLCategoricalPredictor("fld3", "y", 3, Collections.emptyList())};
     }
 
-    private Set<KiePMMLPredictorTerm> getPredictorTerms() {
-        Set<KiePMMLNumericPredictor> numericPredictors = getNumericPredictors();
-        Set<KiePMMLCategoricalPredictor> categoricalPredictors = getCategoricalPredictors();
-        List<KiePMMLRegressionTablePredictor> firstPredictors = new ArrayList<>(numericPredictors);
+    private KiePMMLPredictorTerm[] getPredictorTerms() {
+        KiePMMLNumericPredictor[] numericPredictors = getNumericPredictors();
+        KiePMMLCategoricalPredictor[] categoricalPredictors = getCategoricalPredictors();
+        List<KiePMMLRegressionTablePredictor> firstPredictors = Arrays.stream(numericPredictors).collect(Collectors.toList());
         KiePMMLPredictorTerm firstPredictorTerm = new KiePMMLPredictorTerm("firstPredictorTerm", firstPredictors, 0.4, Collections.emptyList());
-        List<KiePMMLRegressionTablePredictor> secondPredictors = Arrays.asList(numericPredictors.iterator().next(), categoricalPredictors.iterator().next());
+        List<KiePMMLRegressionTablePredictor> secondPredictors = Arrays.asList(numericPredictors[0], categoricalPredictors[0]);
         KiePMMLPredictorTerm secondPredictorTerm = new KiePMMLPredictorTerm("secondPredictorTerm", secondPredictors, 0.6, Collections.emptyList());
-        return new HashSet<>(Arrays.asList(firstPredictorTerm, secondPredictorTerm));
+        return new KiePMMLPredictorTerm[]{
+                firstPredictorTerm,
+                secondPredictorTerm};
     }
 }

@@ -24,7 +24,6 @@ import org.kie.pmml.commons.model.abstracts.KiePMMLExtensionedTerm;
 
 public abstract class KiePMMLRegressionTablePredictor extends KiePMMLExtensionedTerm {
 
-    private static final long serialVersionUID = -3937947927611073965L;
     protected final Number coefficient;
 
     public KiePMMLRegressionTablePredictor(String name, Number coefficient, List<KiePMMLExtension> extensions) {

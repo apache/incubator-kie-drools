@@ -15,23 +15,28 @@
  */
 package org.kie.pmml.commons.model;
 
+import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
 
-import org.kie.pmml.commons.model.abstracts.KiePMMLIDedNamed;
+import org.kie.pmml.commons.model.abstracts.KiePMMLBase;
 import org.kie.pmml.commons.model.enums.RESULT_FEATURE;
 
 /**
  * @see <a href=http://dmg.org/pmml/v4-4/Output.html#xsdElement_OutputField>OutputField</a>
  */
-public class KiePMMLOutputField extends KiePMMLIDedNamed {
+public class KiePMMLOutputField extends KiePMMLBase {
 
     private RESULT_FEATURE resultFeature = RESULT_FEATURE.PREDICTED_VALUE;
     private String targetField = null;
     private Object value;
 
-    public static Builder builder(String name) {
-        return new Builder(name);
+    private KiePMMLOutputField(String name, List<KiePMMLExtension> extensions) {
+        super(name, extensions);
+    }
+
+    public static Builder builder(String name, List<KiePMMLExtension> extensions) {
+        return new Builder(name, extensions);
     }
 
     public RESULT_FEATURE getResultFeature() {
@@ -80,10 +85,10 @@ public class KiePMMLOutputField extends KiePMMLIDedNamed {
         return Objects.hash(super.hashCode(), resultFeature, targetField, value);
     }
 
-    public static class Builder extends KiePMMLIDedNamed.Builder<KiePMMLOutputField> {
+    public static class Builder extends KiePMMLBase.Builder<KiePMMLOutputField> {
 
-        private Builder(String name) {
-            super(name, "OutputField-", KiePMMLOutputField::new);
+        private Builder(String name, List<KiePMMLExtension> extensions) {
+            super("OutputField-", () -> new KiePMMLOutputField(name, extensions));
         }
 
         public Builder withResultFeature(RESULT_FEATURE resultFeature) {

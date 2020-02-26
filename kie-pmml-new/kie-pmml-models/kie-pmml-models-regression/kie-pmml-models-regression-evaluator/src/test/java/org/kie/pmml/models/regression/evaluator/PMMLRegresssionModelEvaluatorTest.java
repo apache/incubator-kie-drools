@@ -195,7 +195,7 @@ public class PMMLRegresssionModelEvaluatorTest {
     }
 
     private KiePMMLRegressionModel getModel() {
-        return KiePMMLRegressionModel.builder(MODEL_NAME, MINING_FUNCTION.REGRESSION, Collections.singletonList(getTable()), OP_TYPE.CONTINUOUS)
+        return KiePMMLRegressionModel.builder(MODEL_NAME, Collections.emptyList(), MINING_FUNCTION.REGRESSION, Collections.singletonList(getTable()), OP_TYPE.CONTINUOUS)
                 .withRegressionNormalizationMethod(REGRESSION_NORMALIZATION_METHOD.CLOGLOG)
                 .withTargetField(TARGET_FIELD_NAME)
                 .build();
@@ -213,7 +213,7 @@ public class PMMLRegresssionModelEvaluatorTest {
 
         List<KiePMMLRegressionTablePredictor> predictors = new ArrayList<>(numericPredictors);
         KiePMMLPredictorTerm predictorTerm = new KiePMMLPredictorTerm("predTerm", predictors, 0.4, Collections.emptyList());
-        return KiePMMLRegressionTable.builder(0.5)
+        return KiePMMLRegressionTable.builder("TABLE", Collections.emptyList(), 0.5)
                 .withTargetCategory("clerical")
                 .withNumericPredictors(numericPredictors)
                 .withCategoricalPredictors(categoricalPredictors)

@@ -15,6 +15,7 @@
  */
 package org.kie.pmml.models.regression.model.predictors;
 
+import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
@@ -27,7 +28,6 @@ import org.slf4j.LoggerFactory;
 
 public class KiePMMLPredictorTerm extends KiePMMLRegressionTablePredictor {
 
-    private static final long serialVersionUID = 4077271967051895553L;
     private static final Logger logger = LoggerFactory.getLogger(KiePMMLPredictorTerm.class.getName());
     private static final String EXPECTING_A_MAP_STRING_DOUBLE_RECEIVED = "Expecting a Map<String, Double>, received %s";
     private static final String NOT_DOUBLE_RECEIVED = "Expecting a Double, but %s";
@@ -36,6 +36,13 @@ public class KiePMMLPredictorTerm extends KiePMMLRegressionTablePredictor {
     public KiePMMLPredictorTerm(String name, List<KiePMMLRegressionTablePredictor> predictors, Number coefficient, List<KiePMMLExtension> extensions) {
         super(name, coefficient, extensions);
         this.predictors = predictors;
+    }
+
+    /**
+     * @return <b>unmodifiable</b> <code>List&lt;KiePMMLRegressionTablePredictor&gt;</code>
+     */
+    public List<KiePMMLRegressionTablePredictor> getPredictors() {
+        return Collections.unmodifiableList(predictors);
     }
 
     @Override
@@ -92,9 +99,5 @@ public class KiePMMLPredictorTerm extends KiePMMLRegressionTablePredictor {
     @Override
     public int hashCode() {
         return Objects.hash(super.hashCode(), predictors);
-    }
-
-    public List<KiePMMLRegressionTablePredictor> getPredictors() {
-        return predictors;
     }
 }

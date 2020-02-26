@@ -56,7 +56,7 @@ public class TestUtils {
     public static final List<KiePMMLRegressionTable> REGRESSION_TABLES = Collections.singletonList(getKiePMMLRegressionTable());
 
     public static KiePMMLRegressionModel getKiePMMLRegressionModel() {
-        return KiePMMLRegressionModel.builder(MODEL_NAME, _MINING_FUNCTION, Collections.singletonList(getKiePMMLRegressionTable()), _OP_TYPE)
+        return KiePMMLRegressionModel.builder(MODEL_NAME, Collections.emptyList(), _MINING_FUNCTION, Collections.singletonList(getKiePMMLRegressionTable()), _OP_TYPE)
                 .withAlgorithmName(ALGORITHM_NAME)
                 .withModelType(_MODEL_TYPE)
                 .withRegressionNormalizationMethod(_REGRESSION_NORMALIZATION_METHOD)
@@ -66,7 +66,7 @@ public class TestUtils {
     }
 
     public static KiePMMLRegressionTable getKiePMMLRegressionTable() {
-        return KiePMMLRegressionTable.builder(INTERCEPT)
+        return KiePMMLRegressionTable.builder("REGRESSION_TABLE", Collections.emptyList(), INTERCEPT)
                 .withCategoricalPredictors(getKiePMMLCategoricalPredictor())
                 .withNumericPredictors(getKiePMMLNumericPredictors())
                 .build();
