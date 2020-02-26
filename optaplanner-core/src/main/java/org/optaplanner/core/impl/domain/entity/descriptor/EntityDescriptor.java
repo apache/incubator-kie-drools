@@ -1,11 +1,11 @@
 /*
- * Copyright 2011 Red Hat, Inc. and/or its affiliates.
+ * Copyright 2020 Red Hat, Inc. and/or its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
  *
- * http://www.apache.org/licenses/LICENSE-2.0
+ *      http://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
@@ -57,14 +57,16 @@ import org.optaplanner.core.impl.heuristic.selector.common.decorator.WeightFacto
 import org.optaplanner.core.impl.heuristic.selector.entity.decorator.PinEntityFilter;
 import org.optaplanner.core.impl.score.director.ScoreDirector;
 
-import static org.optaplanner.core.impl.domain.common.accessor.MemberAccessorFactory.MemberAccessorType.*;
+import static org.optaplanner.core.impl.domain.common.accessor.MemberAccessorFactory.MemberAccessorType.FIELD_OR_GETTER_METHOD;
+import static org.optaplanner.core.impl.domain.common.accessor.MemberAccessorFactory.MemberAccessorType.FIELD_OR_GETTER_METHOD_WITH_SETTER;
+import static org.optaplanner.core.impl.domain.common.accessor.MemberAccessorFactory.MemberAccessorType.FIELD_OR_READ_METHOD;
 
 /**
  * @param <Solution_> the solution type, the class with the {@link PlanningSolution} annotation
  */
 public class EntityDescriptor<Solution_> {
 
-    public static final Class[] VARIABLE_ANNOTATION_CLASSES = {
+    private static final Class[] VARIABLE_ANNOTATION_CLASSES = {
             PlanningVariable.class,
             InverseRelationShadowVariable.class, AnchorShadowVariable.class,
             CustomShadowVariable.class};

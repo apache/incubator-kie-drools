@@ -1,5 +1,5 @@
 /*
- * Copyright 2011 Red Hat, Inc. and/or its affiliates.
+ * Copyright 2020 Red Hat, Inc. and/or its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -25,6 +25,7 @@ import java.util.ArrayList;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
+
 import javax.swing.AbstractAction;
 import javax.swing.BorderFactory;
 import javax.swing.GroupLayout;
@@ -198,7 +199,7 @@ public class MrMachinePanel extends JPanel {
             int colorIndex = 0;
             for (MrProcessAssignment processAssignment : processAssignmentList) {
                 JLabel processAssignmentLabel = new JLabel(processAssignment.getLabel());
-                processAssignmentLabel.setForeground(TangoColorFactory.SEQUENCE_1[colorIndex]);
+                processAssignmentLabel.setForeground(TangoColorFactory.SEQUENCE_1.get(colorIndex));
                 assignmentsPanel.add(processAssignmentLabel);
 
                 for (MrResource resource : resourceList) {
@@ -208,7 +209,7 @@ public class MrMachinePanel extends JPanel {
                     assignmentsPanel.add(resourceField);
                 }
 
-                colorIndex = (colorIndex + 1) % TangoColorFactory.SEQUENCE_1.length;
+                colorIndex = (colorIndex + 1) % TangoColorFactory.SEQUENCE_1.size();
             }
             return assignmentsPanel;
         }

@@ -1,5 +1,5 @@
 /*
- * Copyright 2015 Red Hat, Inc. and/or its affiliates.
+ * Copyright 2020 Red Hat, Inc. and/or its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -24,6 +24,7 @@ import java.awt.event.ComponentAdapter;
 import java.awt.event.ComponentEvent;
 import java.awt.image.BufferedImage;
 import java.util.List;
+
 import javax.swing.JPanel;
 
 import org.apache.commons.lang3.StringUtils;
@@ -92,7 +93,7 @@ public class CoachShuttleGatheringWorldPanel extends JPanel {
         }
         int colorIndex = 0;
         for (Bus bus : busList) {
-            g.setColor(TangoColorFactory.SEQUENCE_2[colorIndex]);
+            g.setColor(TangoColorFactory.SEQUENCE_2.get(colorIndex));
             BusStop lastStop = null;
             for (BusStop stop = bus.getNextStop(); stop != null; stop = stop.getNextStop()) {
                 RoadLocation previousLocation = stop.getPreviousBusOrStop().getLocation();
@@ -112,7 +113,7 @@ public class CoachShuttleGatheringWorldPanel extends JPanel {
                             false, true);
                 }
             }
-            colorIndex = (colorIndex + 1) % TangoColorFactory.SEQUENCE_2.length;
+            colorIndex = (colorIndex + 1) % TangoColorFactory.SEQUENCE_2.size();
         }
         repaint();
     }

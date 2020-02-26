@@ -1,5 +1,5 @@
 /*
- * Copyright 2018 Red Hat, Inc. and/or its affiliates.
+ * Copyright 2020 Red Hat, Inc. and/or its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -41,7 +41,8 @@ import org.optaplanner.examples.rocktour.domain.RockTourConstraintConfiguration;
 import org.optaplanner.examples.rocktour.domain.RockTourSolution;
 import org.optaplanner.persistence.common.api.domain.solution.SolutionFileIO;
 
-import static org.optaplanner.examples.common.persistence.generator.ProbabilisticDataGenerator.*;
+import static org.optaplanner.examples.common.persistence.generator.ProbabilisticDataGenerator.extractRandomElement;
+import static org.optaplanner.examples.common.persistence.generator.ProbabilisticDataGenerator.generateRandomIntFromThresholds;
 
 public class RockTourGenerator extends LoggingMain {
 
@@ -62,14 +63,15 @@ public class RockTourGenerator extends LoggingMain {
         outputDir = new File(CommonApp.determineDataDir(RockTourApp.DATA_DIR_NAME), "unsolved");
     }
 
-    private void writeSolution(LocationDataGenerator.LocationData[] locationDataArray) {
-        String fileName = (locationDataArray.length - 1) + "shows";
+    private void writeSolution(List<LocationDataGenerator.LocationData> locationDataList) {
+        String fileName = (locationDataList.size() - 1) + "shows";
         File outputFile = new File(outputDir, fileName + "." + solutionFileIO.getOutputFileExtension());
-        RockTourSolution solution = createRockTourSolution(fileName, locationDataArray);
+        RockTourSolution solution = createRockTourSolution(fileName, locationDataList);
         solutionFileIO.write(solution, outputFile);
     }
 
-    public RockTourSolution createRockTourSolution(String fileName, LocationDataGenerator.LocationData[] locationDataArray) {
+    public RockTourSolution createRockTourSolution(String fileName,
+            List<LocationDataGenerator.LocationData> locationDataList) {
         random = new Random(37);
         RockTourSolution solution = new RockTourSolution();
         solution.setId(0L);
@@ -78,7 +80,7 @@ public class RockTourGenerator extends LoggingMain {
         constraintConfiguration.setId(0L);
         solution.setConstraintConfiguration(constraintConfiguration);
 
-        createShowList(solution, locationDataArray);
+        createShowList(solution, locationDataList);
 
         BigInteger possibleSolutionSize = AbstractSolutionImporter.factorial(solution.getShowList().size());
         logger.info("Rock tour {} has {} shows with a search space of {}.",
@@ -88,18 +90,19 @@ public class RockTourGenerator extends LoggingMain {
         return solution;
     }
 
-    private void createShowList(RockTourSolution solution, LocationDataGenerator.LocationData[] locationDataArray) {
+    private void createShowList(RockTourSolution solution, List<LocationDataGenerator.LocationData> locationDataList) {
         List<LocalDate> globalAvailableDayList = new ArrayList<>();
         for (LocalDate date = START_DATE; date.compareTo(END_DATE) < 0; date = date.plusDays(1)) {
             if (date.getDayOfWeek() != DayOfWeek.SUNDAY) {
                 globalAvailableDayList.add(date);
             }
         }
-        List<RockShow> showList = new ArrayList<>(locationDataArray.length);
+        int locationDataListSize = locationDataList.size();
+        List<RockShow> showList = new ArrayList<>(locationDataListSize);
         long showId = 0L;
-        List<RockLocation> locationList = new ArrayList<>(locationDataArray.length);
-        for (int i = 0; i < locationDataArray.length; i++) {
-            LocationDataGenerator.LocationData locationData = locationDataArray[i];
+        List<RockLocation> locationList = new ArrayList<>(locationDataListSize);
+        for (int i = 0; i < locationDataListSize; i++) {
+            LocationDataGenerator.LocationData locationData = locationDataList.get(i);
             RockLocation location = new RockLocation(locationData.getName(), locationData.getLatitude(), locationData.getLongitude());
             locationList.add(location);
             if (i == 0) {

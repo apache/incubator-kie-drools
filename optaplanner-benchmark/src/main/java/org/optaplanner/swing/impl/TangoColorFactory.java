@@ -1,5 +1,5 @@
 /*
- * Copyright 2012 Red Hat, Inc. and/or its affiliates.
+ * Copyright 2020 Red Hat, Inc. and/or its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -20,7 +20,11 @@ import java.awt.BasicStroke;
 import java.awt.Color;
 import java.awt.Stroke;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
+
+import static java.util.Arrays.asList;
+import static java.util.Collections.unmodifiableList;
 
 public class TangoColorFactory {
 
@@ -56,18 +60,15 @@ public class TangoColorFactory {
     public static final Color ALUMINIUM_6 = new Color(46, 52, 54);
 
     // Scarlet and orange are reserved for hard and soft constraints
-    public static final Color[] SEQUENCE_1 = {
-            TangoColorFactory.CHAMELEON_1, TangoColorFactory.BUTTER_1, TangoColorFactory.SKY_BLUE_1, TangoColorFactory.CHOCOLATE_1,
-            TangoColorFactory.PLUM_1
-    };
-    public static final Color[] SEQUENCE_2 = {
-            TangoColorFactory.CHAMELEON_2, TangoColorFactory.BUTTER_2, TangoColorFactory.SKY_BLUE_2, TangoColorFactory.CHOCOLATE_2,
-            TangoColorFactory.PLUM_2
-    };
-    public static final Color[] SEQUENCE_3 = {
-            TangoColorFactory.CHAMELEON_3, TangoColorFactory.BUTTER_3, TangoColorFactory.SKY_BLUE_3, TangoColorFactory.CHOCOLATE_3,
-            TangoColorFactory.PLUM_3
-    };
+    public static final List<Color> SEQUENCE_1 = unmodifiableList(asList(TangoColorFactory.CHAMELEON_1,
+            TangoColorFactory.BUTTER_1, TangoColorFactory.SKY_BLUE_1, TangoColorFactory.CHOCOLATE_1,
+            TangoColorFactory.PLUM_1));
+    public static final List<Color> SEQUENCE_2 = unmodifiableList(asList(TangoColorFactory.CHAMELEON_2,
+            TangoColorFactory.BUTTER_2, TangoColorFactory.SKY_BLUE_2, TangoColorFactory.CHOCOLATE_2,
+            TangoColorFactory.PLUM_2));
+    public static final List<Color> SEQUENCE_3 = unmodifiableList(asList(TangoColorFactory.CHAMELEON_3,
+            TangoColorFactory.BUTTER_3, TangoColorFactory.SKY_BLUE_3, TangoColorFactory.CHOCOLATE_3,
+            TangoColorFactory.PLUM_3));
 
     public static final Stroke THICK_STROKE = new BasicStroke(2.0f);
     public static final Stroke NORMAL_STROKE = new BasicStroke();
@@ -102,24 +103,24 @@ public class TangoColorFactory {
 
     private Color nextColor() {
         Color color;
-        int colorIndex = nextColorCount % SEQUENCE_1.length;
-        int shadeIndex = nextColorCount / SEQUENCE_1.length;
+        int colorIndex = nextColorCount % SEQUENCE_1.size();
+        int shadeIndex = nextColorCount / SEQUENCE_1.size();
         if (shadeIndex == 0) {
-            color = SEQUENCE_1[colorIndex];
+            color = SEQUENCE_1.get(colorIndex);
         } else if (shadeIndex == 1) {
-            color = SEQUENCE_2[colorIndex];
+            color = SEQUENCE_2.get(colorIndex);
         } else if (shadeIndex == 2) {
-            color = SEQUENCE_3[colorIndex];
+            color = SEQUENCE_3.get(colorIndex);
         } else {
             shadeIndex -= 3;
             Color floorColor;
             Color ceilColor;
             if (shadeIndex % 2 == 0) {
-                floorColor = SEQUENCE_2[colorIndex];
-                ceilColor = SEQUENCE_1[colorIndex];
+                floorColor = SEQUENCE_2.get(colorIndex);
+                ceilColor = SEQUENCE_1.get(colorIndex);
             } else {
-                floorColor = SEQUENCE_3[colorIndex];
-                ceilColor = SEQUENCE_2[colorIndex];
+                floorColor = SEQUENCE_3.get(colorIndex);
+                ceilColor = SEQUENCE_2.get(colorIndex);
             }
             int base = (shadeIndex / 2) + 1;
             int divisor = 2;

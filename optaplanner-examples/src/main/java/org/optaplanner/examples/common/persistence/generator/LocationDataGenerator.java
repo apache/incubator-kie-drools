@@ -1,5 +1,5 @@
 /*
- * Copyright 2018 Red Hat, Inc. and/or its affiliates.
+ * Copyright 2020 Red Hat, Inc. and/or its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -16,9 +16,14 @@
 
 package org.optaplanner.examples.common.persistence.generator;
 
+import java.util.List;
+
+import static java.util.Arrays.asList;
+import static java.util.Collections.unmodifiableList;
+
 public class LocationDataGenerator {
 
-    public static final LocationData[] EUROPE_BUSIEST_AIRPORTS = {
+    public static final List<LocationData> EUROPE_BUSIEST_AIRPORTS = unmodifiableList(asList(
             new LocationData("BRU", 50.901389, 4.484444),
             new LocationData("LHR", 51.4775, -0.461389),
             new LocationData("CDG", 49.009722, 2.547778),
@@ -68,10 +73,11 @@ public class LocationDataGenerator {
             new LocationData("STR", 48.69, 9.221944),
             new LocationData("OPO", 41.235556, -8.678056),
             new LocationData("KBP", 50.344722, 30.893333),
-            new LocationData("VCE", 45.505278, 12.351944),
-    };
+            new LocationData("VCE", 45.505278, 12.351944)
+    ));
 
-    public static final LocationData[] EUROPE_CAPITALS = {
+    // Unused, but we're keeping it around if we ever need to recreate the europe40 data set.
+    public static final List<LocationData> EUROPE_CAPITALS = unmodifiableList(asList(
             new LocationData("Brussels", 50.797140, 4.361572),
             new LocationData("Dublin", 53.309435, -6.284180),
             new LocationData("London", 51.465872, -0.131836),
@@ -112,9 +118,9 @@ public class LocationDataGenerator {
             new LocationData("Prague", 50.066778, 14.419556),
             new LocationData("Bratislava", 48.098138, 17.105713),
             new LocationData("Budapest", 47.440969, 19.039307)
-    };
+    ));
 
-    public static final LocationData[] US_MAINLAND_STATE_CAPITALS = {
+    public static final List<LocationData> US_MAINLAND_STATE_CAPITALS = unmodifiableList(asList(
             new LocationData("Montgomery, Alabama", 32.377716, -86.300568),
             // new LocationData("Juneau, Alaska", 58.301598, -134.420212),
             new LocationData("Phoenix, Arizona", 33.448143, -112.096962),
@@ -165,12 +171,12 @@ public class LocationDataGenerator {
             new LocationData("Charleston, West Virginia", 38.336246, -81.612328),
             new LocationData("Madison, Wisconsin", 43.074684, -89.384445),
             new LocationData("Cheyenne, Wyoming", 41.140259, -104.820236)
-    };
+    ));
 
     public static class LocationData {
-        private String name;
-        protected double latitude;
-        protected double longitude;
+        private final String name;
+        protected final double latitude;
+        protected final double longitude;
 
         public LocationData(String name, double latitude, double longitude) {
             this.name = name;
