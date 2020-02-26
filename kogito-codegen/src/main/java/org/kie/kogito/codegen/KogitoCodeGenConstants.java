@@ -1,5 +1,5 @@
 /*
- * Copyright 2019 Red Hat, Inc. and/or its affiliates.
+ * Copyright 2020 Red Hat, Inc. and/or its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -13,15 +13,14 @@
  * limitations under the License.
  */
 
-package org.kie.kogito.codegen.context;
+package org.kie.kogito.codegen;
 
-import org.kie.kogito.codegen.KogitoCodeGenConstants;
 
-public interface KogitoBuildContext {    
-
-    boolean hasClassAvailable(String fqcn);
+public class KogitoCodeGenConstants {
     
-    default boolean isValidationSupported() {
-        return hasClassAvailable(KogitoCodeGenConstants.VALIDATION_CLASS);
+    private KogitoCodeGenConstants() {
+        
     }
+
+    public static final String VALIDATION_CLASS = "javax.validation.constraints.NotNull";
 }

@@ -27,6 +27,7 @@ import java.util.Optional;
 import java.util.stream.Collectors;
 
 import org.drools.core.util.StringUtils;
+import org.jbpm.process.core.context.variable.Variable;
 import org.kie.api.definition.process.WorkflowProcess;
 import org.kie.internal.kogito.codegen.Generated;
 import org.kie.internal.kogito.codegen.VariableInfo;
@@ -68,6 +69,8 @@ public class ModelMetaData {
     private String visibility;
     private boolean hidden;
     private String templateName;
+    
+    private boolean supportsValidation;
 
     public ModelMetaData(String processId, String packageName, String modelClassSimpleName, String visibility, VariableDeclarations variableScope, boolean hidden) {
         this(processId, packageName, modelClassSimpleName, visibility, variableScope, hidden, "/class-templates/ModelTemplate.java");
@@ -181,6 +184,8 @@ public class ModelMetaData {
             List<String> tags = variableScope.getTags(vname);
             fd.addAnnotation(new NormalAnnotationExpr(new Name(VariableInfo.class.getCanonicalName()), NodeList.nodeList(new MemberValuePair("tags", new StringLiteralExpr(tags.stream().collect(Collectors.joining(",")))))));
 
+            applyValidation(fd, tags);
+            
             fd.createGetter();
             fd.createSetter();
 
@@ -214,6 +219,18 @@ public class ModelMetaData {
         return compilationUnit;
     }
 
+    private void applyValidation(FieldDeclaration fd, List<String> tags) {
+
+        if (supportsValidation) {
+            fd.addAnnotation("javax.validation.Valid");
+            
+            if (tags != null && tags.contains(Variable.REQUIRED_TAG)) {
+                fd.addAnnotation("javax.validation.constraints.NotNull");
+            }
+        }
+        
+    }
+
     private FieldDeclaration declareField(String name, String type) {
         return new FieldDeclaration().addVariable(
                 new VariableDeclarator()
@@ -233,6 +250,15 @@ public class ModelMetaData {
     public String getGeneratedClassModel() {
         return generate();
     }
+    
+    public boolean isSupportsValidation() {
+        return supportsValidation;
+    }
+    
+    public void setSupportsValidation(boolean supportsValidation) {
+        this.supportsValidation = supportsValidation;
+    }
+
 
     @Override
     public String toString() {

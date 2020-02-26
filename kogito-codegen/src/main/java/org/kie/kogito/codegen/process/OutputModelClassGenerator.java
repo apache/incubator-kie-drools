@@ -21,20 +21,23 @@ import org.jbpm.compiler.canonical.ProcessToExecModelGenerator;
 import org.jbpm.compiler.canonical.VariableDeclarations;
 import org.jbpm.process.core.context.variable.VariableScope;
 import org.kie.api.definition.process.WorkflowProcess;
+import org.kie.kogito.codegen.GeneratorContext;
 
 public class OutputModelClassGenerator {
 
+    private final GeneratorContext context;
     private final WorkflowProcess workFlowProcess;
     private String className;
     private String modelFileName;
     private ModelMetaData modelMetaData;
     private String modelClassName;
 
-    public OutputModelClassGenerator(WorkflowProcess workFlowProcess) {
+    public OutputModelClassGenerator(GeneratorContext context, WorkflowProcess workFlowProcess) {
         String pid = workFlowProcess.getId();
         className = StringUtils.capitalize(ProcessToExecModelGenerator.extractProcessId(pid) + "ModelOutput");
         this.modelClassName = workFlowProcess.getPackageName() + "." + className;
 
+        this.context = context;
         this.workFlowProcess = workFlowProcess;
     }
 
@@ -46,6 +49,7 @@ public class OutputModelClassGenerator {
                                  VariableDeclarations.ofOutput((VariableScope) ((org.jbpm.process.core.Process) workFlowProcess).getDefaultContext(VariableScope.VARIABLE_SCOPE)),
                                  true);       
         modelFileName = modelMetaData.getModelClassName().replace('.', '/') + ".java";
+        modelMetaData.setSupportsValidation(context.getBuildContext().isValidationSupported());
         return modelMetaData;
     }
 

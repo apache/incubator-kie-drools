@@ -15,6 +15,19 @@
 
 package org.kie.kogito.codegen.context;
 
+import java.util.function.Predicate;
+
 public class SpringBootKogitoBuildContext implements KogitoBuildContext {
+    
+    private Predicate<String> classAvailabilityResolver;
+
+    public SpringBootKogitoBuildContext(Predicate<String> classAvailabilityResolver) {
+        this.classAvailabilityResolver = classAvailabilityResolver;
+    }
+
+    @Override
+    public boolean hasClassAvailable(String fqcn) {
+        return classAvailabilityResolver.test(fqcn);
+    }
     
 }

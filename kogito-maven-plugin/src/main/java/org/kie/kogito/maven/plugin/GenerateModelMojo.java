@@ -2,12 +2,8 @@ package org.kie.kogito.maven.plugin;
 
 import java.io.ByteArrayInputStream;
 import java.io.File;
-import java.io.FileNotFoundException;
-import java.io.FileReader;
 import java.io.IOException;
 import java.io.UncheckedIOException;
-import java.net.URL;
-import java.net.URLClassLoader;
 import java.nio.file.FileSystems;
 import java.nio.file.Files;
 import java.nio.file.NoSuchFileException;
@@ -16,15 +12,10 @@ import java.nio.file.PathMatcher;
 import java.nio.file.Paths;
 import java.util.Arrays;
 import java.util.Collection;
-import java.util.Collections;
-import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
-import java.util.Properties;
-import java.util.Set;
 import java.util.stream.Stream;
 
-import org.apache.maven.artifact.Artifact;
 import org.apache.maven.plugin.MojoExecutionException;
 import org.apache.maven.plugin.MojoFailureException;
 import org.apache.maven.plugins.annotations.LifecyclePhase;
@@ -39,13 +30,11 @@ import org.kie.kogito.codegen.GeneratedFile;
 import org.kie.kogito.codegen.GeneratorContext;
 import org.kie.kogito.codegen.decision.DecisionCodegen;
 import org.kie.kogito.codegen.process.ProcessCodegen;
-import org.kie.kogito.codegen.rules.DeclaredTypeCodegen;
 import org.kie.kogito.codegen.rules.IncrementalRuleCodegen;
-import org.kie.kogito.codegen.rules.config.NamedRuleUnitConfig;
 import org.kie.kogito.maven.plugin.util.MojoUtil;
 
 @Mojo(name = "generateModel",
-        requiresDependencyResolution = ResolutionScope.NONE,
+        requiresDependencyResolution = ResolutionScope.COMPILE_PLUS_RUNTIME,
         requiresProject = true,
         defaultPhase = LifecyclePhase.COMPILE)
 public class GenerateModelMojo extends AbstractKieMojo {
@@ -183,8 +172,8 @@ public class GenerateModelMojo extends AbstractKieMojo {
         if (appPackageName.equals(ApplicationGenerator.DEFAULT_GROUP_ID)) {
             appPackageName = ApplicationGenerator.DEFAULT_PACKAGE_NAME;
         }
-        boolean usePersistence = persistence || hasClassOnClasspath("org.kie.kogito.persistence.KogitoProcessInstancesFactory");
-        boolean useMonitoring = hasClassOnClasspath("org.kie.addons.monitoring.rest.MetricsResource");
+        boolean usePersistence = persistence || hasClassOnClasspath(project, "org.kie.kogito.persistence.KogitoProcessInstancesFactory");
+        boolean useMonitoring = hasClassOnClasspath(project, "org.kie.addons.monitoring.rest.MetricsResource");
 
 
 
@@ -268,25 +257,5 @@ public class GenerateModelMojo extends AbstractKieMojo {
     }
 
 
-    protected boolean hasClassOnClasspath(String className) {
-        try {
-            Set<Artifact> elements = project.getDependencyArtifacts();
-            URL[] urls = new URL[elements.size()];
 
-            int i = 0;
-            Iterator<Artifact> it = elements.iterator();
-            while (it.hasNext()) {
-                Artifact artifact = it.next();
-
-                urls[i] = artifact.getFile().toURI().toURL();
-                i++;
-            }
-            try (URLClassLoader cl = new URLClassLoader(urls)) {
-                cl.loadClass(className);
-            }
-            return true;
-        } catch (Exception e) {
-            return false;
-        }
-    }
 }

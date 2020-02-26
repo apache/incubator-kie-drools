@@ -2,6 +2,8 @@ package org.kie.kogito.quarkus.deployment;
 
 import java.io.File;
 import java.io.IOException;
+import java.net.URL;
+import java.net.URLClassLoader;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
@@ -23,7 +25,7 @@ import io.quarkus.dev.JavaCompilationProvider;
 
 public abstract class KogitoCompilationProvider extends JavaCompilationProvider {
 
-    protected static Map<Path, Path> classToSource = new HashMap<>();
+    protected static Map<Path, Path> classToSource = new HashMap<>();    
 
     private String appPackageName = System.getProperty("kogito.codegen.packageName", "org.kie.kogito.app");
 
@@ -39,7 +41,8 @@ public abstract class KogitoCompilationProvider extends JavaCompilationProvider 
         try {
             GeneratorContext generationContext = GeneratorContext
                     .ofResourcePath(context.getProjectDirectory().toPath().resolve("src/main/resources").toFile());
-            generationContext.withBuildContext(new QuarkusKogitoBuildContext());
+            generationContext
+                    .withBuildContext(new QuarkusKogitoBuildContext(className -> hasClassOnClasspath(context, className)));
 
             ApplicationGenerator appGen = new ApplicationGenerator(appPackageName, outputDirectory)
                     .withDependencyInjection(new CDIDependencyInjectionAnnotator())
@@ -77,5 +80,26 @@ public abstract class KogitoCompilationProvider extends JavaCompilationProvider 
         Path p = Paths.get(path, relativePath);
         p.getParent().toFile().mkdirs();
         return p;
+    }
+    
+    protected boolean hasClassOnClasspath(Context context, String className) {
+        try {
+            Set<File> elements = context.getClasspath();
+            URL[] urls = new URL[elements.size()];
+
+            int i = 0;
+
+            for (File artifact : elements) {
+
+                urls[i] = artifact.toURI().toURL();
+                i++;
+            }
+            try (URLClassLoader cl = new URLClassLoader(urls)) {
+                cl.loadClass(className);
+            }
+            return true;
+        } catch (Exception e) {
+            return false;
+        }
     }
 }

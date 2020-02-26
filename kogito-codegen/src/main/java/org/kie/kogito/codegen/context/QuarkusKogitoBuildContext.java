@@ -15,6 +15,18 @@
 
 package org.kie.kogito.codegen.context;
 
+import java.util.function.Predicate;
+
 public class QuarkusKogitoBuildContext implements KogitoBuildContext {
-    
+
+    private Predicate<String> classAvailabilityResolver;
+
+    public QuarkusKogitoBuildContext(Predicate<String> classAvailabilityResolver) {
+        this.classAvailabilityResolver = classAvailabilityResolver;
+    }
+
+    @Override
+    public boolean hasClassAvailable(String fqcn) {
+        return classAvailabilityResolver.test(fqcn);
+    }
 }

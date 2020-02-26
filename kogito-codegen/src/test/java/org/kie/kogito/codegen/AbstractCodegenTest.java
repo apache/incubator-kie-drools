@@ -36,6 +36,7 @@ import org.drools.compiler.commons.jci.compilers.JavaCompilerFactory;
 import org.drools.compiler.compiler.io.memory.MemoryFileSystem;
 import org.drools.compiler.rule.builder.dialect.java.JavaDialectConfiguration;
 import org.kie.kogito.Application;
+import org.kie.kogito.codegen.context.KogitoBuildContext;
 import org.kie.kogito.codegen.decision.DecisionCodegen;
 import org.kie.kogito.codegen.process.ProcessCodegen;
 import org.kie.kogito.codegen.rules.IncrementalRuleCodegen;
@@ -75,6 +76,13 @@ public class AbstractCodegenTest {
             List<String> javaRulesResources,
             boolean hasRuleUnit) throws Exception {
         GeneratorContext context = GeneratorContext.ofResourcePath(new File("src/test/resources"));
+        context.withBuildContext(new KogitoBuildContext() {
+            
+            @Override
+            public boolean hasClassAvailable(String fqcn) {
+                return false;
+            }
+        });
         ApplicationGenerator appGen =
                 new ApplicationGenerator(this.getClass().getPackage().getName(), new File("target/codegen-tests"))
                         .withGeneratorContext(context)

@@ -208,15 +208,15 @@ public class ProcessCodegen extends AbstractGenerator {
 
         // first we generate all the data classes from variable declarations
         for (WorkflowProcess workFlowProcess : processes.values()) {
-            ModelClassGenerator mcg = new ModelClassGenerator(workFlowProcess);
+            ModelClassGenerator mcg = new ModelClassGenerator(context(), workFlowProcess);
             processIdToModelGenerator.put(workFlowProcess.getId(), mcg);
             processIdToModel.put(workFlowProcess.getId(), mcg.generate());
             
-            InputModelClassGenerator imcg = new InputModelClassGenerator(workFlowProcess);
+            InputModelClassGenerator imcg = new InputModelClassGenerator(context(), workFlowProcess);
             processIdToInputModelGenerator.put(workFlowProcess.getId(), imcg);
             
-            OutputModelClassGenerator omcg = new OutputModelClassGenerator(workFlowProcess);
-            processIdToOutputModelGenerator.put(workFlowProcess.getId(), omcg);
+            OutputModelClassGenerator omcg = new OutputModelClassGenerator(context(), workFlowProcess);
+            processIdToOutputModelGenerator.put( workFlowProcess.getId(), omcg);
         }
         
 
@@ -288,7 +288,7 @@ public class ProcessCodegen extends AbstractGenerator {
 
                 LOGGER.debug("Generating Reactive REST Resources.");
                 // create REST resource class for process
-                resourceGenerator = new ReactiveResourceGenerator(
+                resourceGenerator = new ReactiveResourceGenerator(context(),
                                             workFlowProcess,
                                             modelClassGenerator.className(),
                                             execModelGen.className(),
@@ -296,7 +296,7 @@ public class ProcessCodegen extends AbstractGenerator {
             } else {
                 LOGGER.debug("Generating REST Resources.");
                 // create REST resource class for process
-                resourceGenerator = new ResourceGenerator(
+                resourceGenerator = new ResourceGenerator(context(),
                                             workFlowProcess,
                                             modelClassGenerator.className(),
                                             execModelGen.className(),

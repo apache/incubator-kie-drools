@@ -323,7 +323,11 @@ public class KogitoAssetsProcessor {
                 .getClassByName(createDotName(persistenceFactoryClass)) != null;
 
         GeneratorContext context = GeneratorContext.ofResourcePath(projectPath.resolve("src/main/resources").toFile());
-        context.withBuildContext(new QuarkusKogitoBuildContext());
+        context.withBuildContext(new QuarkusKogitoBuildContext(className -> {
+                DotName classDotName = createDotName(className);
+                return !combinedIndexBuildItem.getIndex().getAnnotations(classDotName).isEmpty() || combinedIndexBuildItem.getIndex().getClassByName(classDotName) != null;
+                
+        }));
 
         ApplicationGenerator appGen = new ApplicationGenerator(appPackageName, new File(projectPath.toFile(), "target"))
                 .withDependencyInjection(new CDIDependencyInjectionAnnotator())

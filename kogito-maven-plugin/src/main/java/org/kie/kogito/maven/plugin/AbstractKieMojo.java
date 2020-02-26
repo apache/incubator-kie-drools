@@ -15,8 +15,13 @@
 
 package org.kie.kogito.maven.plugin;
 
+import java.net.URL;
+import java.net.URLClassLoader;
+import java.util.Iterator;
 import java.util.Map;
+import java.util.Set;
 
+import org.apache.maven.artifact.Artifact;
 import org.apache.maven.plugin.AbstractMojo;
 import org.apache.maven.project.MavenProject;
 import org.kie.kogito.codegen.context.KogitoBuildContext;
@@ -27,7 +32,7 @@ import org.kie.kogito.codegen.di.DependencyInjectionAnnotator;
 import org.kie.kogito.codegen.di.SpringDependencyInjectionAnnotator;
 
 public abstract class AbstractKieMojo extends AbstractMojo {
-
+    
     protected void setSystemProperties(Map<String, String> properties) {
 
         if (properties != null) {
@@ -60,13 +65,35 @@ public abstract class AbstractKieMojo extends AbstractMojo {
     protected KogitoBuildContext discoverKogitoRuntimeContext(MavenProject project)  {
         boolean hasSpring = project.getDependencies().stream().anyMatch(d -> d.getArtifactId().contains("spring"));
         if (hasSpring) {
-            return new SpringBootKogitoBuildContext();
+            return new SpringBootKogitoBuildContext(fqcn -> hasClassOnClasspath(project, fqcn));
         }
 
         boolean hasQuarkus = project.getDependencies().stream().anyMatch(d -> d.getArtifactId().contains("quarkus"));
         if (hasQuarkus) {
-            return new QuarkusKogitoBuildContext();
+            return new QuarkusKogitoBuildContext(fqcn -> hasClassOnClasspath(project, fqcn));
         }
         throw new IllegalStateException("Unable to determine Kogito runtime.");
+    }
+    
+    protected boolean hasClassOnClasspath(MavenProject project, String className) {
+        try {
+            Set<Artifact> elements = project.getArtifacts();
+            URL[] urls = new URL[elements.size()];
+
+            int i = 0;
+            Iterator<Artifact> it = elements.iterator();
+            while (it.hasNext()) {
+                Artifact artifact = it.next();
+
+                urls[i] = artifact.getFile().toURI().toURL();
+                i++;
+            }
+            try (URLClassLoader cl = new URLClassLoader(urls)) {
+                cl.loadClass(className);
+            }
+            return true;
+        } catch (Exception e) {
+            return false;
+        }
     }
 }
