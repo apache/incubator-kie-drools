@@ -34,15 +34,15 @@ import com.github.javaparser.ast.expr.Expression;
 import com.github.javaparser.ast.expr.LambdaExpr;
 import com.github.javaparser.ast.expr.MethodCallExpr;
 import com.github.javaparser.ast.expr.NameExpr;
+import com.github.javaparser.ast.expr.StringLiteralExpr;
 import com.github.javaparser.ast.nodeTypes.NodeWithMembers;
 import com.github.javaparser.ast.type.ClassOrInterfaceType;
 import com.github.javaparser.ast.type.Type;
 import com.github.javaparser.ast.type.UnknownType;
-import org.drools.modelcompiler.builder.JavaParserCompiler;
-
-import static org.drools.modelcompiler.util.StringUtil.md5Hash;
 
 import static com.github.javaparser.StaticJavaParser.parseType;
+import static org.drools.modelcompiler.util.StringUtil.md5Hash;
+import static org.drools.modelcompiler.util.lambdareplace.ExecModelLambdaPostProcessor.MATERIALIZED_LAMBDA_PRETTY_PRINTER;
 
 abstract class MaterializedLambda {
 
@@ -78,7 +78,7 @@ abstract class MaterializedLambda {
 
         createMethodDeclaration(classDeclaration);
 
-        String className = className(JavaParserCompiler.getPrettyPrinter().print(compilationUnit));
+        String className = className(MATERIALIZED_LAMBDA_PRETTY_PRINTER.print(compilationUnit));
         classDeclaration.setName(className);
 
         return new CreatedClass(compilationUnit, className, packageName);
@@ -124,7 +124,8 @@ abstract class MaterializedLambda {
         lambdaClass.setImplementedTypes(createImplementedType());
         lambdaClass.addEntry(new EnumConstantDeclaration("INSTANCE"));
 
-        lambdaClass.addFieldWithInitializer(String.class, "EXPRESSION_HASH", StaticJavaParser.parseExpression("\"" + (md5Hash(lambdaExpr.toString())) + "\""),
+        String expressionHash = md5Hash(MATERIALIZED_LAMBDA_PRETTY_PRINTER.print(lambdaExpr));
+        lambdaClass.addFieldWithInitializer(String.class, "EXPRESSION_HASH", new StringLiteralExpr(expressionHash),
                                             Modifier.Keyword.PUBLIC, Modifier.Keyword.STATIC, Modifier.Keyword.FINAL);
         return lambdaClass;
     }
