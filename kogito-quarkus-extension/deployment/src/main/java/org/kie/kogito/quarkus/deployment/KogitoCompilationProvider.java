@@ -49,7 +49,7 @@ public abstract class KogitoCompilationProvider extends JavaCompilationProvider 
 
             Collection<GeneratedFile> generatedFiles = appGen.generate();
 
-            HashSet<File> generatedSourceFiles = new HashSet<>();
+            Set<File> generatedSourceFiles = new HashSet<>();
             for (GeneratedFile file : generatedFiles) {
                 Path path = pathOf(outputDirectory.getPath(), file.relativePath());
                 Files.write(path, file.contents());
@@ -73,7 +73,7 @@ public abstract class KogitoCompilationProvider extends JavaCompilationProvider 
     protected abstract Generator addGenerator(ApplicationGenerator appGen, Set<File> filesToCompile, Context context)
             throws IOException;
 
-    private Path pathOf(String path, String relativePath) {
+    static Path pathOf(String path, String relativePath) {
         Path p = Paths.get(path, relativePath);
         p.getParent().toFile().mkdirs();
         return p;

@@ -22,7 +22,6 @@ import java.util.Optional;
 
 import com.github.javaparser.StaticJavaParser;
 import com.github.javaparser.ast.CompilationUnit;
-import com.github.javaparser.ast.Modifier.Keyword;
 import com.github.javaparser.ast.body.ClassOrInterfaceDeclaration;
 import com.github.javaparser.ast.body.FieldDeclaration;
 import com.github.javaparser.ast.expr.Expression;
@@ -68,7 +67,6 @@ public class DecisionContainerGenerator extends AbstractApplicationSection {
         //        cls.addMember(getDecisionMethod);
         CompilationUnit clazz = StaticJavaParser.parse(this.getClass().getResourceAsStream(TEMPLATE_JAVA));
         ClassOrInterfaceDeclaration typeDeclaration = (ClassOrInterfaceDeclaration) clazz.getTypes().get(0);
-        typeDeclaration.addModifier(Keyword.STATIC);
         ClassOrInterfaceType applicationClass = StaticJavaParser.parseClassOrInterfaceType(applicationCanonicalName);
         ClassOrInterfaceType inputStreamReaderClass = StaticJavaParser.parseClassOrInterfaceType(java.io.InputStreamReader.class.getCanonicalName());
         for (DMNResource model : models) {
@@ -88,4 +86,8 @@ public class DecisionContainerGenerator extends AbstractApplicationSection {
         return typeDeclaration;
     }
 
+    @Override
+    protected boolean useApplication() {
+        return false;
+    }
 }

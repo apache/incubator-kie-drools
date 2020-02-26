@@ -15,8 +15,6 @@
 
 package org.kie.kogito.codegen.process;
 
-import static com.github.javaparser.StaticJavaParser.parse;
-
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
@@ -24,19 +22,15 @@ import java.util.List;
 import java.util.NoSuchElementException;
 import java.util.stream.Collectors;
 
-import org.kie.kogito.Model;
-import org.kie.kogito.codegen.AbstractApplicationSection;
-import org.kie.kogito.codegen.BodyDeclarationComparator;
-import org.kie.kogito.codegen.di.DependencyInjectionAnnotator;
-import org.kie.kogito.process.Processes;
-
 import com.github.javaparser.ast.CompilationUnit;
 import com.github.javaparser.ast.Modifier;
 import com.github.javaparser.ast.NodeList;
 import com.github.javaparser.ast.body.BodyDeclaration;
 import com.github.javaparser.ast.body.ClassOrInterfaceDeclaration;
+import com.github.javaparser.ast.body.ConstructorDeclaration;
 import com.github.javaparser.ast.body.FieldDeclaration;
 import com.github.javaparser.ast.body.MethodDeclaration;
+import com.github.javaparser.ast.body.VariableDeclarator;
 import com.github.javaparser.ast.expr.Expression;
 import com.github.javaparser.ast.expr.MethodCallExpr;
 import com.github.javaparser.ast.expr.NameExpr;
@@ -44,12 +38,18 @@ import com.github.javaparser.ast.expr.NullLiteralExpr;
 import com.github.javaparser.ast.expr.ObjectCreationExpr;
 import com.github.javaparser.ast.expr.SimpleName;
 import com.github.javaparser.ast.expr.StringLiteralExpr;
-import com.github.javaparser.ast.expr.ThisExpr;
 import com.github.javaparser.ast.stmt.BlockStmt;
 import com.github.javaparser.ast.stmt.IfStmt;
 import com.github.javaparser.ast.stmt.ReturnStmt;
 import com.github.javaparser.ast.type.ClassOrInterfaceType;
 import com.github.javaparser.ast.type.WildcardType;
+import org.kie.kogito.Model;
+import org.kie.kogito.codegen.AbstractApplicationSection;
+import org.kie.kogito.codegen.BodyDeclarationComparator;
+import org.kie.kogito.codegen.di.DependencyInjectionAnnotator;
+import org.kie.kogito.process.Processes;
+
+import static com.github.javaparser.StaticJavaParser.parse;
 
 public class ProcessesContainerGenerator extends AbstractApplicationSection {
 
@@ -102,7 +102,7 @@ public class ProcessesContainerGenerator extends AbstractApplicationSection {
     public void addProcessToApplication(ProcessGenerator r) {
         ObjectCreationExpr newProcess = new ObjectCreationExpr()
                 .setType(r.targetCanonicalName())
-                .addArgument(new ThisExpr(new NameExpr("Application")));
+                .addArgument("application");
         IfStmt byProcessId = new IfStmt(new MethodCallExpr(new StringLiteralExpr(r.processId()), "equals", NodeList.nodeList(new NameExpr("processId"))),
                                         new ReturnStmt(new MethodCallExpr(
                                                 newProcess,
@@ -132,6 +132,18 @@ public class ProcessesContainerGenerator extends AbstractApplicationSection {
                 .getBody()
                 .orElseThrow(() -> new NoSuchElementException("A method declaration doesn't contain a body!"))
                 .addStatement(new ReturnStmt(new MethodCallExpr(new NameExpr(Arrays.class.getCanonicalName()), "asList", processIds)));
+
+        FieldDeclaration applicationFieldDeclaration = new FieldDeclaration();
+        applicationFieldDeclaration
+                .addVariable( new VariableDeclarator( new ClassOrInterfaceType(null, "Application"), "application") )
+                .setModifiers( Modifier.Keyword.PRIVATE, Modifier.Keyword.FINAL );
+        applicationDeclarations.add( applicationFieldDeclaration );
+
+        ConstructorDeclaration constructorDeclaration = new ConstructorDeclaration("Processes")
+                .addModifier(Modifier.Keyword.PUBLIC)
+                .addParameter( "Application", "application" )
+                .setBody( new BlockStmt().addStatement( "this.application = application;" ) );
+        applicationDeclarations.add( constructorDeclaration );
 
         ClassOrInterfaceDeclaration cls = super.classDeclaration().setMembers(applicationDeclarations);
         cls.getMembers().sort(new BodyDeclarationComparator());

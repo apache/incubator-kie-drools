@@ -20,7 +20,9 @@ import java.nio.charset.StandardCharsets;
 import java.text.MessageFormat;
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.NoSuchElementException;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -34,12 +36,10 @@ import com.github.javaparser.ast.body.FieldDeclaration;
 import com.github.javaparser.ast.body.MethodDeclaration;
 import com.github.javaparser.ast.body.VariableDeclarator;
 import com.github.javaparser.ast.expr.MethodCallExpr;
-import com.github.javaparser.ast.expr.Name;
 import com.github.javaparser.ast.expr.NameExpr;
 import com.github.javaparser.ast.expr.SimpleName;
 import com.github.javaparser.ast.type.ClassOrInterfaceType;
 import javax.lang.model.SourceVersion;
-
 import org.kie.kogito.Config;
 import org.kie.kogito.codegen.di.DependencyInjectionAnnotator;
 import org.kie.kogito.codegen.metadata.Labeler;
@@ -59,13 +59,10 @@ public class ApplicationGenerator {
 
     public static final String DEFAULT_GROUP_ID = "org.kie.kogito";
     public static final String DEFAULT_PACKAGE_NAME = "org.kie.kogito.app";
+    public static final String APPLICATION_CLASS_NAME = "Application";
 
     private final String packageName;
-    private final String sourceFilePath;
-    private final String targetCanonicalName;
     private final File targetDirectory;
-
-    private String targetTypeName;
 
     private DependencyInjectionAnnotator annotator;
 
@@ -89,26 +86,31 @@ public class ApplicationGenerator {
         }
         this.packageName = packageName;
         this.targetDirectory = targetDirectory;
-        this.targetTypeName = "Application";
-        this.targetCanonicalName = this.packageName + "." + targetTypeName;
-        this.sourceFilePath = targetCanonicalName.replace('.', '/') + ".java";
         this.factoryMethods = new ArrayList<>();
         this.configGenerator = new ConfigGenerator(packageName);
     }
 
     public String targetCanonicalName() {
-        return targetCanonicalName;
+        return this.packageName + "." + APPLICATION_CLASS_NAME;
     }
 
     public String generatedFilePath() {
-        return sourceFilePath;
+        return getFilePath(APPLICATION_CLASS_NAME);
+    }
+
+    private String getFilePath(String className) {
+        return (this.packageName + "." + className).replace('.', '/') + ".java";
     }
 
     public void addFactoryMethods(Collection<MethodDeclaration> decls) {
         factoryMethods.addAll(decls);
     }
 
-    public CompilationUnit compilationUnit() {
+    CompilationUnit compilationUnit() {
+        return compilationUnits().get( APPLICATION_CLASS_NAME );
+    }
+
+    private Map<String, CompilationUnit> compilationUnits() {
         CompilationUnit compilationUnit =
                 parse(this.getClass().getResourceAsStream(RESOURCE))
                         .setPackageDeclaration(packageName);
@@ -163,6 +165,9 @@ public class ApplicationGenerator {
 
         factoryMethods.forEach(cls::addMember);
 
+        Map<String, CompilationUnit> unitsMap = new HashMap<>();
+        unitsMap.put( APPLICATION_CLASS_NAME, compilationUnit );
+
         for (Generator generator : generators) {
             ApplicationSection section = generator.section();
             if (section == null) {
@@ -170,10 +175,14 @@ public class ApplicationGenerator {
             }
             cls.addMember(section.fieldDeclaration());
             cls.addMember(section.factoryMethod());
-            cls.addMember(section.classDeclaration());
+
+            CompilationUnit sectionUnit = new CompilationUnit();
+            sectionUnit.setPackageDeclaration( this.packageName );
+            sectionUnit.addType( section.classDeclaration() );
+            unitsMap.put( section.sectionClassName(), sectionUnit );
         }
         cls.getMembers().sort(new BodyDeclarationComparator());
-        return compilationUnit;
+        return unitsMap;
     }
 
     public ApplicationGenerator withDependencyInjection(DependencyInjectionAnnotator annotator) {
@@ -208,7 +217,7 @@ public class ApplicationGenerator {
         List<GeneratedFile> generatedFiles = generateComponents();
         generators.forEach(gen -> gen.updateConfig(configGenerator));
         generators.forEach(gen -> MetaDataWriter.writeLabelsImageMetadata(targetDirectory, gen.getLabels()));
-        generatedFiles.add(generateApplicationDescriptor());
+        generatedFiles.addAll(generateApplicationDescriptors());
         generatedFiles.add(generateApplicationConfigDescriptor());
         if (useInjection()) {
             generators.stream().filter(gen -> gen.section() != null)
@@ -226,10 +235,10 @@ public class ApplicationGenerator {
     }
 
 
-    public GeneratedFile generateApplicationDescriptor() {
-        return new GeneratedFile(GeneratedFile.Type.APPLICATION,
-                                 generatedFilePath(),
-                                 log( compilationUnit().toString() ).getBytes(StandardCharsets.UTF_8));
+    private List<GeneratedFile> generateApplicationDescriptors() {
+        return compilationUnits().entrySet().stream()
+                .map( e -> new GeneratedFile(GeneratedFile.Type.APPLICATION, getFilePath(e.getKey()), log( e.getValue().toString() ).getBytes(StandardCharsets.UTF_8)) )
+                .collect( Collectors.toList() );
     }
 
     public GeneratedFile generateApplicationConfigDescriptor() {

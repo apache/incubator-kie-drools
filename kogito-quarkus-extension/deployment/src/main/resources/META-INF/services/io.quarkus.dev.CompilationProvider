@@ -1,3 +1,4 @@
 org.kie.kogito.quarkus.deployment.ProcessCompilationProvider
 org.kie.kogito.quarkus.deployment.RulesCompilationProvider
 org.kie.kogito.quarkus.deployment.DecisionTablesCompilationProvider
+org.kie.kogito.quarkus.deployment.DMNCompilationProvider

@@ -142,6 +142,11 @@ public class ApplicationGeneratorTest {
                     new FieldDeclaration().addVariable(new VariableDeclarator().setType(int.class).setName("i"));
 
             @Override
+            public String sectionClassName() {
+                return "Foo";
+            }
+
+            @Override
             public FieldDeclaration fieldDeclaration() {
                 return fieldDeclaration;
             }
@@ -173,12 +178,12 @@ public class ApplicationGeneratorTest {
 
         final Collection<GeneratedFile> generatedFiles = appGenerator.generate();
         final CompilationUnit compilationUnit = appGenerator.compilationUnit();
-        assertGeneratedFiles(generatedFiles, compilationUnit.toString().getBytes(StandardCharsets.UTF_8), 3);
+        assertGeneratedFiles(generatedFiles, compilationUnit.toString().getBytes(StandardCharsets.UTF_8), 4);
 
-        assertCompilationUnit(compilationUnit, false, 7);
+        assertCompilationUnit(compilationUnit, false, 6);
         final TypeDeclaration mainAppClass = compilationUnit.getTypes().get(0);
         assertThat(mainAppClass.getMembers()).filteredOn(member -> member == appSection.factoryMethod()).hasSize(1);
-        assertThat(mainAppClass.getMembers()).filteredOn(member -> member == appSection.classDeclaration()).hasSize(1);
+        assertThat(mainAppClass.getMembers()).filteredOn(member -> member == appSection.classDeclaration()).hasSize(0);
 
         assertImageMetadata(Paths.get("target/classes"), mockLabels);
     }
@@ -227,7 +232,7 @@ public class ApplicationGeneratorTest {
         assertThat(compilationUnit.getPackageDeclaration().get().getName().toString()).isEqualTo(PACKAGE_NAME);
 
         assertThat(compilationUnit.getImports()).isNotNull();
-        assertThat(compilationUnit.getImports()).hasSize(3);
+        assertThat(compilationUnit.getImports()).hasSize(2);
         assertThat(compilationUnit.getImports().get(0).getName().toString()).isEqualTo(Config.class.getCanonicalName());
 
         assertThat(compilationUnit.getTypes()).isNotNull();
@@ -273,8 +278,9 @@ public class ApplicationGeneratorTest {
             assertThat(generatedFile).isNotNull();
             assertThat(generatedFile.getType()).isIn(GeneratedFile.Type.APPLICATION, GeneratedFile.Type.RULE, GeneratedFile.Type.CLASS);
             if (generatedFile.getType() == GeneratedFile.Type.APPLICATION) {
-                assertThat(generatedFile.relativePath()).isEqualTo(EXPECTED_APPLICATION_NAME.replace(".", "/") + ".java");
-                assertThat(generatedFile.contents()).isEqualTo(expectedApplicationContent);
+                if (generatedFile.relativePath() == EXPECTED_APPLICATION_NAME.replace(".", "/") + ".java") {
+                    assertThat( generatedFile.contents() ).isEqualTo( expectedApplicationContent );
+                }
             }
         }
     }

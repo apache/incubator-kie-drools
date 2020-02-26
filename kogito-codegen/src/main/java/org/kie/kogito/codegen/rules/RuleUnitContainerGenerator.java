@@ -18,6 +18,7 @@ package org.kie.kogito.codegen.rules;
 import java.util.ArrayList;
 import java.util.List;
 
+import com.github.javaparser.ast.body.ConstructorDeclaration;
 import org.kie.kogito.codegen.AbstractApplicationSection;
 import org.kie.kogito.codegen.BodyDeclarationComparator;
 import org.kie.kogito.codegen.di.DependencyInjectionAnnotator;
@@ -74,7 +75,7 @@ public class RuleUnitContainerGenerator extends AbstractApplicationSection {
             switchEntry.getLabels().add(new StringLiteralExpr(ruleUnit.getRuleUnitDescription().getCanonicalName()));
             ObjectCreationExpr ruleUnitConstructor = new ObjectCreationExpr()
                     .setType(ruleUnit.targetCanonicalName())
-                    .addArgument("Application.this");
+                    .addArgument("application");
             switchEntry.getStatements().add(new ReturnStmt(ruleUnitConstructor));
             switchStmt.getEntries().add(switchEntry);
         }
@@ -95,15 +96,26 @@ public class RuleUnitContainerGenerator extends AbstractApplicationSection {
     public ClassOrInterfaceDeclaration classDeclaration() {
 
         NodeList<BodyDeclaration<?>> declarations = new NodeList<>();
-        FieldDeclaration kieRuntimeFieldDeclaration = new FieldDeclaration();
+
+        // declare field `application`
+        FieldDeclaration applicationFieldDeclaration = new FieldDeclaration();
+        applicationFieldDeclaration
+                .addVariable( new VariableDeclarator( new ClassOrInterfaceType(null, "Application"), "application") )
+                .setModifiers( Modifier.Keyword.PRIVATE, Modifier.Keyword.FINAL );
+        declarations.add(applicationFieldDeclaration);
+
+        ConstructorDeclaration constructorDeclaration = new ConstructorDeclaration("RuleUnits")
+                .addModifier(Modifier.Keyword.PUBLIC)
+                .addParameter( "Application", "application" )
+                .setBody( new BlockStmt().addStatement( "this.application = application;" ) );
+        declarations.add(constructorDeclaration);
 
         // declare field `ruleRuntimeBuilder`
+        FieldDeclaration kieRuntimeFieldDeclaration = new FieldDeclaration();
         kieRuntimeFieldDeclaration
-                .addVariable(new VariableDeclarator(
-                        new ClassOrInterfaceType(null, KieRuntimeBuilder.class.getCanonicalName()),
-                        "ruleRuntimeBuilder")
-                                     .setInitializer(new ObjectCreationExpr()
-                                                             .setType(ProjectSourceClass.PROJECT_RUNTIME_CLASS)));
+                .addVariable(new VariableDeclarator( new ClassOrInterfaceType(null, KieRuntimeBuilder.class.getCanonicalName()), "ruleRuntimeBuilder")
+                .setInitializer(new ObjectCreationExpr().setType(ProjectSourceClass.PROJECT_RUNTIME_CLASS)))
+                .setModifiers( Modifier.Keyword.PRIVATE, Modifier.Keyword.FINAL );
         declarations.add(kieRuntimeFieldDeclaration);
 
         // declare method ruleRuntimeBuilder()
@@ -112,7 +124,6 @@ public class RuleUnitContainerGenerator extends AbstractApplicationSection {
                 .setName("ruleRuntimeBuilder")
                 .setType(KieRuntimeBuilder.class.getCanonicalName())
                 .setBody(new BlockStmt().addStatement(new ReturnStmt(new FieldAccessExpr(new ThisExpr(), "ruleRuntimeBuilder"))));
-
         declarations.add(methodDeclaration);
 
         declarations.addAll(factoryMethods);

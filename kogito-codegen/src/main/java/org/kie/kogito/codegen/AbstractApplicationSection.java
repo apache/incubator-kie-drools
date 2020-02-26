@@ -34,12 +34,12 @@ import com.github.javaparser.ast.stmt.ReturnStmt;
  */
 public class AbstractApplicationSection implements ApplicationSection {
 
-    private final String innerClassName;
+    private final String sectionClassName;
     private final String methodName;
     private final Class<?> classType;
 
-    public AbstractApplicationSection(String innerClassName, String methodName, Class<?> classType) {
-        this.innerClassName = innerClassName;
+    public AbstractApplicationSection( String sectionClassName, String methodName, Class<?> classType) {
+        this.sectionClassName = sectionClassName;
         this.methodName = methodName;
         this.classType = classType;
     }
@@ -48,7 +48,7 @@ public class AbstractApplicationSection implements ApplicationSection {
     public ClassOrInterfaceDeclaration classDeclaration() {
         ClassOrInterfaceDeclaration classDeclaration = new ClassOrInterfaceDeclaration()
                 .setModifiers(Modifier.Keyword.PUBLIC)
-                .setName(innerClassName);
+                .setName( sectionClassName );
 
         if (classType.isInterface()) {
             classDeclaration.addImplementedType( classType.getCanonicalName() );
@@ -60,19 +60,32 @@ public class AbstractApplicationSection implements ApplicationSection {
     }
 
     @Override
+    public String sectionClassName() {
+        return sectionClassName;
+    }
+
+    @Override
     public FieldDeclaration fieldDeclaration() {
+        ObjectCreationExpr objectCreationExpr = new ObjectCreationExpr().setType( sectionClassName );
+        if (useApplication()) {
+            objectCreationExpr.addArgument( "this" );
+        }
         return new FieldDeclaration()
                 .addVariable(
                         new VariableDeclarator()
-                                .setType(innerClassName)
+                                .setType( sectionClassName )
                                 .setName(methodName)
-                                .setInitializer(new ObjectCreationExpr().setType(innerClassName)));
+                                .setInitializer(objectCreationExpr) );
+    }
+
+    protected boolean useApplication() {
+        return true;
     }
 
     public MethodDeclaration factoryMethod() {
         return new MethodDeclaration()
                 .setModifiers(Modifier.Keyword.PUBLIC)
-                .setType(innerClassName)
+                .setType( sectionClassName )
                 .setName(methodName)
                 .setBody(new BlockStmt().addStatement(new ReturnStmt(new NameExpr(methodName))));
     }

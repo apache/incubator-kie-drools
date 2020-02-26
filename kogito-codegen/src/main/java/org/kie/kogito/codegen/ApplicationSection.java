@@ -33,6 +33,8 @@ import com.github.javaparser.ast.body.MethodDeclaration;
  */
 public interface ApplicationSection {
 
+    String sectionClassName();
+
     FieldDeclaration fieldDeclaration();
 
     MethodDeclaration factoryMethod();
