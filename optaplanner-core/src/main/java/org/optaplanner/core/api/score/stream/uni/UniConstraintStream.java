@@ -32,6 +32,7 @@ import org.optaplanner.core.api.domain.constraintweight.ConstraintWeight;
 import org.optaplanner.core.api.score.Score;
 import org.optaplanner.core.api.score.constraint.ConstraintMatchTotal;
 import org.optaplanner.core.api.score.stream.Constraint;
+import org.optaplanner.core.api.score.stream.ConstraintCollectors;
 import org.optaplanner.core.api.score.stream.ConstraintStream;
 import org.optaplanner.core.api.score.stream.Joiners;
 import org.optaplanner.core.api.score.stream.bi.BiConstraintStream;
@@ -533,6 +534,7 @@ public interface UniConstraintStream<A> extends ConstraintStream {
      * Convert the {@link UniConstraintStream} to a different {@link UniConstraintStream}, containing only a single
      * tuple, the result of applying {@link UniConstraintCollector}.
      * @param collector never null, the collector to perform the grouping operation with
+     * See {@link ConstraintCollectors} for common operations, such as {@code count()}, {@code sum()} and others.
      * @param <ResultContainer_> the mutable accumulation type (often hidden as an implementation detail)
      * @param <Result_> the type of a fact in the destination {@link UniConstraintStream}'s tuple
      * @return never null
@@ -558,6 +560,8 @@ public interface UniConstraintStream<A> extends ConstraintStream {
      * The second fact is the return value of a given {@link UniConstraintCollector} applied on all incoming tuples with
      * the same first fact.
      * @param groupKeyMapping never null, function to convert the fact in the original tuple to a different fact
+     * @param collector never null, the collector to perform the grouping operation with
+     * See {@link ConstraintCollectors} for common operations, such as {@code count()}, {@code sum()} and others.
      * @param <GroupKey_> the type of the first fact in the destination {@link BiConstraintStream}'s tuple
      * @param <ResultContainer_> the mutable accumulation type (often hidden as an implementation detail)
      * @param <Result_> the type of the second fact in the destination {@link BiConstraintStream}'s tuple
@@ -591,6 +595,7 @@ public interface UniConstraintStream<A> extends ConstraintStream {
      * @param groupKeyAMapping never null, function to convert the original tuple into a first fact
      * @param groupKeyBMapping never null, function to convert the original tuple into a second fact
      * @param collector never null, the collector to perform the grouping operation with
+     * See {@link ConstraintCollectors} for common operations, such as {@code count()}, {@code sum()} and others.
      * @param <GroupKeyA_> the type of the first fact in the destination {@link TriConstraintStream}'s tuple
      * @param <GroupKeyB_> the type of the second fact in the destination {@link TriConstraintStream}'s tuple
      * @param <ResultContainer_> the mutable accumulation type (often hidden as an implementation detail)
@@ -611,7 +616,9 @@ public interface UniConstraintStream<A> extends ConstraintStream {
      * @param groupKeyAMapping never null, function to convert the original tuple into a first fact
      * @param groupKeyBMapping never null, function to convert the original tuple into a second fact
      * @param collectorC never null, the collector to perform the first grouping operation with
-     * @param collectorD never null, the collector to perform the first grouping operation with
+     * See {@link ConstraintCollectors} for common operations, such as {@code count()}, {@code sum()} and others.
+     * @param collectorD never null, the collector to perform the second grouping operation with
+     * See {@link ConstraintCollectors} for common operations, such as {@code count()}, {@code sum()} and others.
      * @param <GroupKeyA_> the type of the first fact in the destination {@link QuadConstraintStream}'s tuple
      * @param <GroupKeyB_> the type of the second fact in the destination {@link QuadConstraintStream}'s tuple
      * @param <ResultContainerC_> the mutable accumulation type (often hidden as an implementation detail)

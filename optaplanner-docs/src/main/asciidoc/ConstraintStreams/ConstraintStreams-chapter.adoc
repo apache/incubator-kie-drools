@@ -338,6 +338,13 @@ the prescribed ordering.
 For a full list of all supported `Joiner` implementations and their various overloads, refer to the
 `org.optaplanner.core.api.score.stream.Joiners` class.
 
+[NOTE]
+====
+If the other stream might match multiple times, but it must only impact the score once (for each element of the original
+stream), use <<constraintStreamsConditionalPropagation,ifExists>> instead.
+It does not create cartesian products and therefore generally performs better.
+====
+
 
 [[constraintStreamsGroupingAndCollectors]]
 === Grouping and collectors
