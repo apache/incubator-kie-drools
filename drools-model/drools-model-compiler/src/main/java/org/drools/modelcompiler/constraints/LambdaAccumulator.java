@@ -43,13 +43,12 @@ public abstract class LambdaAccumulator implements Accumulator {
             return false;
         }
         LambdaAccumulator that = (LambdaAccumulator) o;
-        return Objects.equals(accumulateFunction, that.accumulateFunction) &&
-                Objects.equals(reverseSupport, that.reverseSupport);
+        return Objects.equals(accumulateFunction, that.accumulateFunction);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(accumulateFunction, reverseSupport);
+        return Objects.hash(accumulateFunction);
     }
 
     private final AccumulateFunction accumulateFunction;
