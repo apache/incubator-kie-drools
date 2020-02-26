@@ -174,51 +174,11 @@ public abstract class BaseDMNContextTest {
     }
 
     private static EntryContainerFacade containerFor(DMNContext context) {
-        return new EntryContainerFacade() {
-            @Override
-            public Object set(String name, Object value) {
-                return context.set(name, value);
-            }
-
-            @Override
-            public Object get(String name) {
-                return context.get(name);
-            }
-
-            @Override
-            public Map<String, Object> getAll() {
-                return context.getAll();
-            }
-
-            @Override
-            public boolean isDefined(String name) {
-                return context.isDefined(name);
-            }
-        };
+        return new DMNContextFacade(context);
     }
 
     private static EntryContainerFacade containerFor(DMNMetadata metadata) {
-        return new EntryContainerFacade() {
-            @Override
-            public Object set(String name, Object value) {
-                return metadata.set(name, value);
-            }
-
-            @Override
-            public Object get(String name) {
-                return metadata.get(name);
-            }
-
-            @Override
-            public Map<String, Object> getAll() {
-                return metadata.asMap();
-            }
-
-            @Override
-            public boolean isDefined(String name) {
-                return metadata.get(name) != null;
-            }
-        };
+        return new DMNMetadataFacade(metadata);
     }
 
     private interface EntryContainerFacade {
@@ -229,6 +189,62 @@ public abstract class BaseDMNContextTest {
         Map<String, Object> getAll();
 
         boolean isDefined(String name);
+    }
+
+    private static class DMNContextFacade implements EntryContainerFacade {
+        private final DMNContext context;
+
+        private DMNContextFacade(DMNContext context) {
+            this.context = context;
+        }
+
+        @Override
+        public Object set(String name, Object value) {
+            return context.set(name, value);
+        }
+
+        @Override
+        public Object get(String name) {
+            return context.get(name);
+        }
+
+        @Override
+        public Map<String, Object> getAll() {
+            return context.getAll();
+        }
+
+        @Override
+        public boolean isDefined(String name) {
+            return context.isDefined(name);
+        }
+    }
+
+    private static class DMNMetadataFacade implements EntryContainerFacade {
+        private final DMNMetadata metadata;
+
+        private DMNMetadataFacade(DMNMetadata metadata) {
+            this.metadata = metadata;
+        }
+
+        @Override
+        public Object set(String name, Object value) {
+            return metadata.set(name, value);
+        }
+
+        @Override
+        public Object get(String name) {
+            return metadata.get(name);
+        }
+
+        @Override
+        public Map<String, Object> getAll() {
+            return metadata.asMap();
+        }
+
+        @Override
+        public boolean isDefined(String name) {
+            return metadata.get(name) != null;
+        }
     }
 
 }
