@@ -65,7 +65,7 @@ public class PMMLClassificationModelEvaluator {
                                           },
                                           (o1, o2) -> o1,
                                           LinkedHashMap::new));
-        final Map<String, Double> probabilityMap = getProbabilityMap(regressionNormalizationMethod, opType, resultMap);
+        final LinkedHashMap<String, Double> probabilityMap = getProbabilityMap(regressionNormalizationMethod, opType, resultMap);
         final Map.Entry<String, Double> predictedEntry = Collections.max(probabilityMap.entrySet(), Comparator.comparing(Map.Entry::getValue));
 
         PMML4Result toReturn = new PMML4Result();
@@ -86,7 +86,7 @@ public class PMMLClassificationModelEvaluator {
                     }
                     break;
                 default:
-                    // noop
+                    // All other possibilities not analyzed, yet
             }
             if (toPut != null) {
                 toReturn.addResultVariable(outputField.getName(), toPut);

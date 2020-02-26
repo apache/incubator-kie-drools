@@ -88,9 +88,9 @@ public class RoundtripClassificationModelEvaluatorParameterizedTests {
     private static double fld3Coefficient(String fld3) {
         switch (fld3) {
             case "x":
-                return -3.0; // Coefficient for the "x" CategoricalPredictor
+                return -3.0; // Coefficient for the "x" CategoricalPredictor; see source file test_regression_clax.pmml
             case "y":
-                return 3.0; // Coefficient for the "y" CategoricalPredictor
+                return 3.0; // Coefficient for the "y" CategoricalPredictor; see source file test_regression_clax.pmml
             default:
                 return 0;
         }

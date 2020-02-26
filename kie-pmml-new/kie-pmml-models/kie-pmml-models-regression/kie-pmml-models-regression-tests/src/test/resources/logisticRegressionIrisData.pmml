@@ -42,10 +42,10 @@
     </RegressionTable>
 
     <RegressionTable targetCategory="virginica" intercept="-0.695281863325603">
-       <NumericPredictor name="Sepal.Length" exponent="1" coefficient="-0.0458760845506725"/>
-       <NumericPredictor name="Sepal.Width" exponent="1" coefficient="0.202768385559553"/>
-       <NumericPredictor name="Petal.Length" exponent="1" coefficient="0.00398791100639665"/>
-       <NumericPredictor name="Petal.Width" exponent="1" coefficient="0.551779324933787"/>
+      <NumericPredictor name="Sepal.Length" exponent="1" coefficient="-0.0458760845506725"/>
+      <NumericPredictor name="Sepal.Width" exponent="1" coefficient="0.202768385559553"/>
+      <NumericPredictor name="Petal.Length" exponent="1" coefficient="0.00398791100639665"/>
+      <NumericPredictor name="Petal.Width" exponent="1" coefficient="0.551779324933787"/>
     </RegressionTable>
   </RegressionModel>
 </PMML>

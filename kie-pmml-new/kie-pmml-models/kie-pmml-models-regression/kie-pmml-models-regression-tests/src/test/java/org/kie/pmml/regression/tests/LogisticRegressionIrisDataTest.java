@@ -104,6 +104,6 @@ public class LogisticRegressionIrisDataTest extends AbstractPMMLRegressionTest {
 
     private double virginicaProbability() {
         return -0.0458760845506725 * sepalLength + 0.202768385559553 * sepalWidth
-                + 0.00398791100639665 * petalLength + 0.551779324933787 * petalWidth -0.695281863325603;
+                + 0.00398791100639665 * petalLength + 0.551779324933787 * petalWidth - 0.695281863325603;
     }
 }
