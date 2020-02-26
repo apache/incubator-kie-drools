@@ -2101,4 +2101,21 @@ public class CompilerTest extends BaseModelTest {
         KieSession ksession = getKieSession( str );
         assertNotNull( ksession);
     }
+
+    @Test
+    public void testExtraParenthes() throws Exception {
+        String str =
+                "import " + Person.class.getCanonicalName() + ";" +
+                "rule R when\n" +
+                "  $p : Person((age > 30))\n" +
+                "then\n" +
+                "end";
+
+        KieSession ksession = getKieSession(str);
+
+        Person person = new Person( "John", 20 );
+
+        ksession.insert( person );
+        assertEquals(0, ksession.fireAllRules());
+    }
 }
