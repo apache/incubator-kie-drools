@@ -1,10 +1,10 @@
 package org.kie.dmn.core.impl;
 
-import org.kie.dmn.api.core.DMNMetadata;
-
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
+
+import org.kie.dmn.api.core.DMNMetadata;
 
 public class DMNMetadataImpl implements DMNMetadata {
     private Map<String, Object> entries = new HashMap<>();
@@ -27,13 +27,8 @@ public class DMNMetadataImpl implements DMNMetadata {
     }
 
     @Override
-    public Map<String, Object> getAll() {
+    public Map<String, Object> asMap() {
         return Collections.unmodifiableMap(entries);
-    }
-
-    @Override
-    public boolean isDefined(String name) {
-        return entries.containsKey(name);
     }
 
 }

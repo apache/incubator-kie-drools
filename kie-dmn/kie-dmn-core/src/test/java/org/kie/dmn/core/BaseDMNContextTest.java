@@ -1,13 +1,13 @@
 package org.kie.dmn.core;
 
-import com.google.common.collect.ImmutableMap;
-import org.kie.dmn.api.core.DMNContext;
-import org.kie.dmn.api.core.DMNMetadata;
-
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Optional;
 import java.util.function.BiConsumer;
+
+import com.google.common.collect.ImmutableMap;
+import org.kie.dmn.api.core.DMNContext;
+import org.kie.dmn.api.core.DMNMetadata;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
@@ -211,12 +211,12 @@ public abstract class BaseDMNContextTest {
 
             @Override
             public Map<String, Object> getAll() {
-                return metadata.getAll();
+                return metadata.asMap();
             }
 
             @Override
             public boolean isDefined(String name) {
-                return metadata.isDefined(name);
+                return metadata.get(name) != null;
             }
         };
     }

@@ -16,16 +16,16 @@
 
 package org.kie.dmn.core.internal.utils;
 
-import org.kie.dmn.api.core.DMNContext;
-import org.kie.dmn.api.core.DMNMetadata;
-import org.kie.dmn.core.impl.DMNMetadataImpl;
-
 import java.util.Deque;
 import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.LinkedList;
 import java.util.Map;
 import java.util.Optional;
+
+import org.kie.dmn.api.core.DMNContext;
+import org.kie.dmn.api.core.DMNMetadata;
+import org.kie.dmn.core.impl.DMNMetadataImpl;
 
 public class MapBackedDMNContext implements DMNContext {
 
@@ -61,7 +61,7 @@ public class MapBackedDMNContext implements DMNContext {
 
     @Override
     public DMNContext clone() {
-        return of(this.ctx, this.metadata.getAll());
+        return of(this.ctx, this.metadata.asMap());
     }
 
     @Override

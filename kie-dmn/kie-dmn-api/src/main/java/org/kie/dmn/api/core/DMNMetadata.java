@@ -22,16 +22,8 @@ public interface DMNMetadata {
     Object get(String name);
 
     /**
-     * @return a read-only list of attributes.
+     * @return a read-only map of attributes.
      */
-    Map<String, Object> getAll();
-
-    /**
-     * Tells if an attribute with the specified name is defined or not
-     *
-     * @param name the attribute name
-     * @return true if the attribute exists, false otherwise
-     */
-    boolean isDefined(String name);
+    Map<String, Object> asMap();
 
 }

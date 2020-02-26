@@ -16,14 +16,14 @@
 
 package org.kie.dmn.core.impl;
 
-import org.kie.dmn.api.core.DMNContext;
-import org.kie.dmn.api.core.DMNMetadata;
-
 import java.util.Deque;
 import java.util.LinkedHashMap;
 import java.util.LinkedList;
 import java.util.Map;
 import java.util.Optional;
+
+import org.kie.dmn.api.core.DMNContext;
+import org.kie.dmn.api.core.DMNMetadata;
 
 public class DMNContextImpl implements DMNContext {
     private static final String DEFAULT_IDENT = "    ";
@@ -101,7 +101,7 @@ public class DMNContextImpl implements DMNContext {
 
     @Override
     public DMNContext clone() {
-        DMNContextImpl newCtx = new DMNContextImpl(new LinkedHashMap<>(entries), metadata.getAll());
+        DMNContextImpl newCtx = new DMNContextImpl(new LinkedHashMap<>(entries), metadata.asMap());
         for (ScopeReference e : stack) {
             newCtx.pushScope(e.getName(), e.getNamespace());
         }

@@ -16,12 +16,12 @@
 
 package org.kie.dmn.core.impl;
 
+import java.util.Map;
+import java.util.Optional;
+
 import org.kie.dmn.api.core.DMNContext;
 import org.kie.dmn.api.core.DMNMetadata;
 import org.kie.dmn.feel.lang.EvaluationContext;
-
-import java.util.Map;
-import java.util.Optional;
 
 public class DMNContextFEELCtxWrapper implements DMNContext {
 
@@ -75,7 +75,7 @@ public class DMNContextFEELCtxWrapper implements DMNContext {
 
     @Override
     public DMNContext clone() {
-        return new DMNContextImpl(wrapped.getAllValues(), metadata.getAll());
+        return new DMNContextImpl(wrapped.getAllValues(), metadata.asMap());
     }
 
     @Override
