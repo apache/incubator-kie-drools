@@ -14,17 +14,17 @@ public final class SimpleRuleUnitVariable implements RuleUnitVariable {
     private final String getter;
     private final String setter;
 
-    public SimpleRuleUnitVariable(String name, Class<?> type, Class<?> dataSourceParameterType) {
+    public SimpleRuleUnitVariable(String name, Class<?> type, Class<?> dataSourceParameterType, boolean writable) {
         this.name = name;
         this.getter = "get" + capitalize(name);
-        this.setter = "set" + capitalize(name);
+        this.setter = writable? "set" + capitalize(name) : null;
         this.type = type;
         this.dataSourceParameterType = dataSourceParameterType;
         this.boxedVarType = convertFromPrimitiveType(type);
     }
 
     public SimpleRuleUnitVariable(String name, Class<?> type) {
-        this(name, type, null);
+        this(name, type, null, true);
     }
 
     public boolean isDataSource() {

@@ -91,7 +91,7 @@ public class GeneratedRuleUnitDescription extends AbstractRuleUnitDescription {
     }
 
     public void putDatasourceVar(String name, Class<?> datasourceType, Class<?> datasourceParameterType) {
-        putRuleUnitVariable(new SimpleRuleUnitVariable(name, datasourceType, datasourceParameterType));
+        putRuleUnitVariable(new SimpleRuleUnitVariable(name, datasourceType, datasourceParameterType, true));
     }
 
     private static Class<?> uncheckedLoadClass(TypeResolver typeResolver, String fqcn) {

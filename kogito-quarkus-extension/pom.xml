@@ -43,6 +43,7 @@
     <module>deployment</module>
     <module>runtime</module>
     <module>integration-test</module>
+    <module>integration-test-legacy</module>
     <module>bom</module>
   </modules>
 

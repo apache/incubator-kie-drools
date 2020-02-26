@@ -332,6 +332,12 @@ public class KogitoAssetsProcessor {
                         .getClassByName(createDotName(metricsClass)) != null)
                 .withGeneratorContext(context);
 
+        if (generateProcesses) {
+            appGen.withGenerator(ProcessCodegen.ofPath(projectPath))
+                    .withPersistence(usePersistence)
+                    .withClassLoader(Thread.currentThread().getContextClassLoader());
+        }
+
         if (generateRuleUnits) {
             Path moduleXmlPath = projectPath.resolve("src/main/resources").resolve(KieModuleModelImpl.KMODULE_JAR_PATH);
             KieModuleModel kieModuleModel = null;
@@ -346,13 +352,6 @@ public class KogitoAssetsProcessor {
 
             appGen.withGenerator(IncrementalRuleCodegen.ofPath(srcPath))
                     .withKModule(kieModuleModel)
-                    .withClassLoader(Thread.currentThread().getContextClassLoader());
-        }
-
-        if (generateProcesses) {
-
-            appGen.withGenerator(ProcessCodegen.ofPath(projectPath))
-                    .withPersistence(usePersistence)
                     .withClassLoader(Thread.currentThread().getContextClassLoader());
         }
 

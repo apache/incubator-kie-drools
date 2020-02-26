@@ -39,15 +39,11 @@ public class FieldDataStore<T> implements SingletonStore<T>,
     private final List<DataProcessor<T>> subscribers = new ArrayList<>();
 
     public DataHandle set(T t) {
-        if (handle == null) {
+        if (handle == null && t != null) {
             insert(t);
         } else {
-            if (t == null) {
-                DataHandle dh = handle;
-                entryPointSubscribers.forEach(s -> s.delete(dh));
-                subscribers.forEach(s -> s.delete(dh));
-            } else {
-                clear();
+            clear();
+            if (t != null) {
                 insert(t);
             }
         }
@@ -72,6 +68,9 @@ public class FieldDataStore<T> implements SingletonStore<T>,
 
     @Override
     public void clear() {
+        if (handle == null) {
+            return;
+        }
         DataHandle dh = handle;
         handle = null;
         entryPointSubscribers.forEach(s -> s.delete(dh));

@@ -32,6 +32,7 @@ import org.kie.kogito.rules.RuleUnit;
 import org.kie.kogito.rules.RuleUnitConfig;
 import org.kie.kogito.rules.RuleUnitData;
 
+import static org.drools.reflective.util.ClassUtils.getSetter;
 import static org.drools.reflective.util.ClassUtils.getter2property;
 
 public class ReflectiveRuleUnitDescription extends AbstractRuleUnitDescription {
@@ -81,8 +82,9 @@ public class ReflectiveRuleUnitDescription extends AbstractRuleUnitDescription {
                 String id = getter2property(m.getName());
                 if (id != null && !id.equals("class")) {
                     Class<?> parametricType = getUnitVarType(m);
+                    Method setter = getSetter(m.getDeclaringClass(), id, m.getReturnType());
                     putRuleUnitVariable(
-                            new SimpleRuleUnitVariable(id, m.getReturnType(), parametricType));
+                            new SimpleRuleUnitVariable(id, m.getReturnType(), parametricType, setter != null));
                 }
             }
         }

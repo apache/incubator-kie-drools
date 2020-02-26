@@ -1,48 +1,34 @@
 package org.kie.kogito.maven.plugin;
 
-import java.io.ByteArrayInputStream;
 import java.io.File;
 import java.io.IOException;
-import java.io.UncheckedIOException;
-import java.net.URL;
-import java.net.URLClassLoader;
 import java.nio.file.FileSystems;
 import java.nio.file.Files;
-import java.nio.file.NoSuchFileException;
 import java.nio.file.Path;
 import java.nio.file.PathMatcher;
 import java.nio.file.Paths;
 import java.util.Arrays;
 import java.util.Collection;
-import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
-import java.util.Set;
 import java.util.stream.Stream;
 
-import org.apache.maven.artifact.Artifact;
 import org.apache.maven.plugin.MojoExecutionException;
-import org.apache.maven.plugin.MojoFailureException;
 import org.apache.maven.plugins.annotations.LifecyclePhase;
 import org.apache.maven.plugins.annotations.Mojo;
 import org.apache.maven.plugins.annotations.Parameter;
 import org.apache.maven.plugins.annotations.ResolutionScope;
 import org.apache.maven.project.MavenProject;
-import org.drools.compiler.kproject.models.KieModuleModelImpl;
-import org.kie.api.builder.model.KieModuleModel;
 import org.kie.kogito.codegen.ApplicationGenerator;
 import org.kie.kogito.codegen.GeneratedFile;
 import org.kie.kogito.codegen.GeneratorContext;
-import org.kie.kogito.codegen.decision.DecisionCodegen;
-import org.kie.kogito.codegen.process.ProcessCodegen;
 import org.kie.kogito.codegen.rules.DeclaredTypeCodegen;
-import org.kie.kogito.codegen.rules.IncrementalRuleCodegen;
 import org.kie.kogito.maven.plugin.util.MojoUtil;
 
 @Mojo(name = "generateDeclaredTypes",
         requiresDependencyResolution = ResolutionScope.NONE,
         requiresProject = true,
-        defaultPhase = LifecyclePhase.COMPILE)
+        defaultPhase = LifecyclePhase.GENERATE_SOURCES)
 public class GenerateDeclaredTypes extends AbstractKieMojo {
 
 
@@ -85,15 +71,6 @@ public class GenerateDeclaredTypes extends AbstractKieMojo {
     @Parameter(property = "kogito.codegen.decisions", defaultValue = "")
     private String generateDecisions; // defaults to true iff there exist DMN files
 
-    /**
-     * Partial generation can be used when reprocessing a pre-compiled project
-     * for faster code-generation. It only generates code for rules and processes,
-     * and does not generate extra meta-classes (etc. Application).
-     * Use only when doing recompilation and for development purposes
-     */
-    @Parameter(property = "kogito.codegen.partial", defaultValue = "false")
-    private boolean generatePartial;
-
     @Parameter(property = "kogito.sources.keep", defaultValue = "false")
     private boolean keepSources;
 
@@ -126,20 +103,12 @@ public class GenerateDeclaredTypes extends AbstractKieMojo {
 
         ApplicationGenerator appGen = createApplicationGenerator(genRules);
 
-        Collection<GeneratedFile> generatedFiles;
-        if (generatePartial) {
-            generatedFiles = appGen.generateComponents();
-        } else {
-            generatedFiles = appGen.generate();
-        }
+        Collection<GeneratedFile> generatedFiles = appGen.generateComponents();
 
         for (GeneratedFile generatedFile : generatedFiles) {
             writeGeneratedFile(generatedFile);
         }
 
-        if (!keepSources) {
-            deleteDrlFiles();
-        }
     }
 
     private boolean rulesExist() throws IOException {
@@ -195,21 +164,5 @@ public class GenerateDeclaredTypes extends AbstractKieMojo {
         path.getParent().toFile().mkdirs();
         return path;
     }
-
-    private void deleteDrlFiles() throws MojoExecutionException {
-        // Remove drl files
-        try (final Stream<Path> drlFiles = Files.find(outputDirectory.toPath(), Integer.MAX_VALUE, (p, f) -> drlFileMatcher.matches(p))) {
-            drlFiles.forEach(p -> {
-                try {
-                    Files.delete(p);
-                } catch (IOException e) {
-                    throw new UncheckedIOException(e);
-                }
-            });
-        } catch (IOException e) {
-            throw new MojoExecutionException("Unable to find .drl files");
-        }
-    }
-
     
 }
