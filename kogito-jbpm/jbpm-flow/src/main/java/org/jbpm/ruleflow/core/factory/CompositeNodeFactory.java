@@ -41,9 +41,13 @@ public class CompositeNodeFactory extends RuleFlowNodeContainerFactory {
     public CompositeNodeFactory(RuleFlowNodeContainerFactory nodeContainerFactory, NodeContainer nodeContainer, long id) {
     	this.nodeContainerFactory = nodeContainerFactory;
     	this.nodeContainer = nodeContainer;
-    	CompositeContextNode compositeNode = new CompositeContextNode();
+    	CompositeContextNode compositeNode = createNode();
         compositeNode.setId(id);
         setNodeContainer(compositeNode);
+    }
+    
+    protected CompositeContextNode createNode() {
+        return new CompositeContextNode();
     }
     
     protected CompositeContextNode getCompositeNode() {

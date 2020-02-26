@@ -21,7 +21,8 @@ public class TriggerMetaData {
 
     public enum TriggerType {
         ConsumeMessage,
-        ProduceMessage
+        ProduceMessage,
+        Signal
     }
     // name of the trigger derived from message or signal
     private String name;
@@ -84,11 +85,15 @@ public class TriggerMetaData {
     }
     
     public TriggerMetaData validate() {
-        if (StringUtils.isEmpty(name) || 
-            type == null ||
-            StringUtils.isEmpty(dataType) ||
-            StringUtils.isEmpty(modelRef)) {
-            throw new IllegalArgumentException("Trigger information is not complete " + this);
+        if (TriggerType.ConsumeMessage.equals(type) || TriggerType.ProduceMessage.equals(type)) {
+        
+            if (StringUtils.isEmpty(name) || 
+                StringUtils.isEmpty(dataType) ||
+                StringUtils.isEmpty(modelRef)) {
+                throw new IllegalArgumentException("Message Trigger information is not complete " + this);
+            }
+        } else if (TriggerType.Signal.equals(type) && StringUtils.isEmpty(name)) {
+            throw new IllegalArgumentException("Signal Trigger information is not complete " + this);         
         }
         
         return this;

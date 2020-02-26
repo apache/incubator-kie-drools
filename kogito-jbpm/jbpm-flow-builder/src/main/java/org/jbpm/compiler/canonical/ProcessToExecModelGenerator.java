@@ -41,6 +41,7 @@ import org.jbpm.workflow.core.node.BoundaryEventNode;
 import org.jbpm.workflow.core.node.CompositeContextNode;
 import org.jbpm.workflow.core.node.EndNode;
 import org.jbpm.workflow.core.node.EventNode;
+import org.jbpm.workflow.core.node.EventSubProcessNode;
 import org.jbpm.workflow.core.node.FaultNode;
 import org.jbpm.workflow.core.node.ForEachNode;
 import org.jbpm.workflow.core.node.HumanTaskNode;
@@ -98,6 +99,7 @@ public class ProcessToExecModelGenerator extends AbstractVisitor {
         this.nodesVisitors.put(EventNode.class, new EventNodeVisitor());
         this.nodesVisitors.put(ForEachNode.class, new ForEachNodeVisitor(nodesVisitors));
         this.nodesVisitors.put(CompositeContextNode.class, new CompositeContextNodeVisitor(nodesVisitors));
+        this.nodesVisitors.put(EventSubProcessNode.class, new EventSubprocessNodeVisitor(nodesVisitors));
         this.nodesVisitors.put(TimerNode.class, new TimerNodeVisitor());
     }
 

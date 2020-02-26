@@ -315,13 +315,15 @@ public class ProcessCodegen extends AbstractGenerator {
 
                 for (TriggerMetaData trigger : metaData.getTriggers()) {
 
-                    MessageDataEventGenerator msgDataEventGenerator = new MessageDataEventGenerator(workFlowProcess,
-                                                            trigger)
-                                                                  .withDependencyInjection(annotator);
-                    mdegs.add(msgDataEventGenerator);
+                    
                     // generate message consumers for processes with message start events
                     if (trigger.getType().equals(TriggerMetaData.TriggerType.ConsumeMessage)) {
 
+                        MessageDataEventGenerator msgDataEventGenerator = new MessageDataEventGenerator(workFlowProcess,
+                                                                                                        trigger)
+                                                                                                              .withDependencyInjection(annotator);
+                                                                mdegs.add(msgDataEventGenerator);
+                                                                
                         megs.add(new MessageConsumerGenerator(
                                     workFlowProcess,
                                     modelClassGenerator.className(),
@@ -331,6 +333,12 @@ public class ProcessCodegen extends AbstractGenerator {
                                     trigger)
                                         .withDependencyInjection(annotator));
                     } else if (trigger.getType().equals(TriggerMetaData.TriggerType.ProduceMessage)) {
+                        
+                        MessageDataEventGenerator msgDataEventGenerator = new MessageDataEventGenerator(workFlowProcess,
+                                                                                                        trigger)
+                                                                                                              .withDependencyInjection(annotator);
+                                                                mdegs.add(msgDataEventGenerator);
+                                                                
                         mpgs.add(new MessageProducerGenerator(
                                                               workFlowProcess,
                                                               modelClassGenerator.className(),

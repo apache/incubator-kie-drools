@@ -39,7 +39,11 @@ import org.jbpm.workflow.core.DroolsAction;
 import org.jbpm.workflow.core.impl.DroolsConsequenceAction;
 import org.jbpm.workflow.core.node.EndNode;
 import org.jbpm.workflow.core.node.EventNode;
+import org.jbpm.workflow.core.node.EventSubProcessNode;
+import org.jbpm.workflow.core.node.EventTrigger;
+import org.jbpm.workflow.core.node.StartNode;
 import org.jbpm.workflow.core.node.StateBasedNode;
+import org.jbpm.workflow.core.node.Trigger;
 import org.kie.api.definition.process.Node;
 import org.kie.api.definition.process.NodeContainer;
 import org.slf4j.Logger;
@@ -177,7 +181,9 @@ public class RuleFlowProcessFactory extends RuleFlowNodeContainerFactory {
     }
     
     public RuleFlowProcessFactory link() {
-        linkBoundaryEvents(getRuleFlowProcess());
+        RuleFlowProcess process = getRuleFlowProcess();
+        linkBoundaryEvents(process);
+        postProcessNodes(process, process);
         return this;
     }
     
@@ -285,6 +291,44 @@ public class RuleFlowProcessFactory extends RuleFlowNodeContainerFactory {
             throw new IllegalArgumentException(errorMsg);
         }
         return node;
+    }
+    
+    private void postProcessNodes(RuleFlowProcess process, NodeContainer container) {
+        
+        for (Node node: container.getNodes()) {
+            if (node instanceof NodeContainer) {
+                // prepare event sub process
+                if (node instanceof EventSubProcessNode) {
+                    EventSubProcessNode eventSubProcessNode = (EventSubProcessNode) node;
+
+                    Node[] nodes = eventSubProcessNode.getNodes();
+                    for (Node subNode : nodes) {
+                        // avoids cyclomatic complexity
+                        if (subNode instanceof StartNode) {
+                         
+                            processEventSubprocessStartNode(((StartNode) subNode), eventSubProcessNode);
+                        }
+                    }
+                }
+                postProcessNodes(process, (NodeContainer) node);
+            } 
+        }     
+    }
+    
+    private void processEventSubprocessStartNode(StartNode subNode, EventSubProcessNode eventSubProcessNode) {
+        List<Trigger> triggers = subNode.getTriggers();
+        if ( triggers != null ) {
+                                   
+            for ( Trigger trigger : triggers ) {
+                if ( trigger instanceof EventTrigger ) {
+                    final List<EventFilter> filters = ((EventTrigger) trigger).getEventFilters();
+    
+                    for ( EventFilter filter : filters ) {                        
+                        eventSubProcessNode.addEvent((EventTypeFilter) filter);                        
+                    }
+                }
+            }
+        }
     }
 }
 

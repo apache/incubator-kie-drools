@@ -43,7 +43,11 @@ public class StartNodeFactory extends NodeFactory {
     public StartNodeFactory name(String name) {
         getNode().setName(name);
         return this;
-    }    
+    } 
+    public StartNodeFactory interrupting(boolean interrupting) {
+        getStartNode().setInterrupting(interrupting);
+        return this;
+    }
     
     public StartNodeFactory trigger(String triggerEventType, String mapping) {
         EventTrigger trigger = new EventTrigger();

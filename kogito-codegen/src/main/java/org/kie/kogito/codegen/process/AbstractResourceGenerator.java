@@ -126,6 +126,7 @@ public abstract class AbstractResourceGenerator {
                 this.getClass().getResourceAsStream(getResourceTemplate()));
         clazz.setPackageDeclaration(process.getPackageName());
         clazz.addImport(modelfqcn);
+        clazz.addImport(modelfqcn + "Output");
 
         ClassOrInterfaceDeclaration template = clazz
                 .findFirst(ClassOrInterfaceDeclaration.class)
@@ -139,7 +140,7 @@ public abstract class AbstractResourceGenerator {
             for (Entry<String, String> entry : signals.entrySet()) {
                 MethodDeclaration signalMethod = new MethodDeclaration()
                         .setName("signal_" + index++)
-                        .setType(modelfqcn)
+                        .setType(modelfqcn + "Output")
                         .setModifiers(Keyword.PUBLIC)
                         .addAnnotation("POST")
                         .addSingleMemberAnnotation("Path", new StringLiteralExpr("/{id}/" + entry.getKey()))
@@ -173,7 +174,7 @@ public abstract class AbstractResourceGenerator {
                 
                 MethodCallExpr send = new MethodCallExpr(new NameExpr("pi"), "send").addArgument(newSignal);
                 // return current state of variables after the signal
-                MethodCallExpr variables = new MethodCallExpr(new NameExpr("pi"), "variables");
+                MethodCallExpr variables = new MethodCallExpr("getModel").addArgument(new NameExpr("pi"));
                 signalMethod.createBody().addStatement(processInstanceField).addStatement(processInstanceExists).addStatement(send).addStatement(new ReturnStmt(variables));  
                 
                 

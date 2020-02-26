@@ -48,6 +48,10 @@ import org.xml.sax.SAXException;
 import org.xml.sax.SAXParseException;
 
 public class StartEventHandler extends AbstractNodeHandler {
+    
+    private static final String TRIGGER_REF = "TriggerRef";
+    private static final String MESSAGE_TYPE = "MessageType";
+    private static final String TRIGGER_TYPE = "TriggerType";
 
     private DataTransformerRegistry transformerRegistry = DataTransformerRegistry.get();
 
@@ -112,12 +116,14 @@ public class StartEventHandler extends AbstractNodeHandler {
                 if (type != null && type.trim().length() > 0) {
                     addTriggerWithInMappings(startNode, type);
                 }
-                startNode.setMetaData("MessageType", type);
-                startNode.setMetaData("TriggerType", "Signal");
+                startNode.setMetaData(MESSAGE_TYPE, type);
+                startNode.setMetaData(TRIGGER_TYPE, "Signal");
                 Signal signal = findSignalByName(parser, type);
                 if (signal != null) {
                     String eventType = signal.getStructureRef();
-                    startNode.setMetaData("TriggerRef", eventType);
+                    startNode.setMetaData(TRIGGER_REF, eventType);
+                } else {
+                    startNode.setMetaData(TRIGGER_REF, type); 
                 }
             } else if ("messageEventDefinition".equals(nodeName)) {
                 String messageRef = ((Element) xmlNode).getAttribute("messageRef");
@@ -130,9 +136,9 @@ public class StartEventHandler extends AbstractNodeHandler {
                 if (message == null) {
                     throw new IllegalArgumentException("Could not find message " + messageRef);
                 }
-                startNode.setMetaData("MessageType", message.getType());
-                startNode.setMetaData("TriggerType", "ConsumeMessage");
-                startNode.setMetaData("TriggerRef", message.getName());
+                startNode.setMetaData(MESSAGE_TYPE, message.getType());
+                startNode.setMetaData(TRIGGER_TYPE, "ConsumeMessage");
+                startNode.setMetaData(TRIGGER_REF, message.getName());
 
                 addTriggerWithInMappings(startNode, "Message-" + message.getName());
             } else if ("timerEventDefinition".equals(nodeName)) {

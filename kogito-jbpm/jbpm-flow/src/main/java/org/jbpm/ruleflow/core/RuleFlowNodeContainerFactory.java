@@ -22,6 +22,7 @@ import org.jbpm.ruleflow.core.factory.CompositeNodeFactory;
 import org.jbpm.ruleflow.core.factory.DynamicNodeFactory;
 import org.jbpm.ruleflow.core.factory.EndNodeFactory;
 import org.jbpm.ruleflow.core.factory.EventNodeFactory;
+import org.jbpm.ruleflow.core.factory.EventSubProcessNodeFactory;
 import org.jbpm.ruleflow.core.factory.FaultNodeFactory;
 import org.jbpm.ruleflow.core.factory.ForEachNodeFactory;
 import org.jbpm.ruleflow.core.factory.HumanTaskNodeFactory;
@@ -115,6 +116,10 @@ public abstract class RuleFlowNodeContainerFactory {
     
     public WorkItemNodeFactory workItemNode(long id) {
     	return new WorkItemNodeFactory(this, nodeContainer, id);
+    }
+    
+    public EventSubProcessNodeFactory eventSubProcessNode(long id) {
+        return new EventSubProcessNodeFactory(this, nodeContainer, id);
     }
 
     public RuleFlowNodeContainerFactory connection(long fromId, long toId) {        

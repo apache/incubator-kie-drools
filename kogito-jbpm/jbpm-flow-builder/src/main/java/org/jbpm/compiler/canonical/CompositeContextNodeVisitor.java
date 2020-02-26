@@ -34,16 +34,25 @@ import com.github.javaparser.ast.stmt.BlockStmt;
 public class CompositeContextNodeVisitor extends AbstractCompositeNodeVisitor {
     
     protected static final String C_C_NODE_VAR = "compositeContextNode";
+    private static final String FACTORY_METHOD_NAME = "compositeNode";
     
     public CompositeContextNodeVisitor(Map<Class<?>, AbstractVisitor> nodesVisitors) {
         super(nodesVisitors);
+    }
+    
+    protected Class<? extends CompositeNodeFactory> factoryClass() {
+        return CompositeNodeFactory.class;
+    }
+    
+    protected String factoryMethod() {
+        return FACTORY_METHOD_NAME;
     }
 
     @Override
     public void visitNode(String factoryField, Node node, BlockStmt body, VariableScope variableScope, ProcessMetaData metadata) {
         CompositeContextNode compositeContextNode = (CompositeContextNode) node;        
         
-        addFactoryMethodWithArgsWithAssignment(factoryField, body, CompositeNodeFactory.class, C_C_NODE_VAR + node.getId(), "compositeNode", new LongLiteralExpr(compositeContextNode.getId()));
+        addFactoryMethodWithArgsWithAssignment(factoryField, body, factoryClass(), C_C_NODE_VAR + node.getId(), factoryMethod(), new LongLiteralExpr(compositeContextNode.getId()));
         visitMetaData(compositeContextNode.getMetaData(), body, C_C_NODE_VAR + node.getId());
         VariableScope variableScopeNode = (VariableScope) compositeContextNode.getDefaultContext(VariableScope.VARIABLE_SCOPE);
         
@@ -59,7 +68,7 @@ public class CompositeContextNodeVisitor extends AbstractCompositeNodeVisitor {
         
     }
     
-    private void visitConnections(String factoryField, Node[] nodes, BlockStmt body) {
+    protected void visitConnections(String factoryField, Node[] nodes, BlockStmt body) {
 
         List<Connection> connections = new ArrayList<>();
         for (Node node : nodes) {
@@ -72,7 +81,7 @@ public class CompositeContextNodeVisitor extends AbstractCompositeNodeVisitor {
         }
     }
     
-    public void visitConnection(String factoryField, Connection connection, BlockStmt body) {
+    protected void visitConnection(String factoryField, Connection connection, BlockStmt body) {
         // if the connection is a hidden one (compensations), don't dump
         Object hidden = ((ConnectionImpl) connection).getMetaData("hidden");
         if (hidden != null && ((Boolean) hidden)) {
