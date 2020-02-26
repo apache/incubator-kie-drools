@@ -34,6 +34,7 @@ import org.drools.compiler.lang.descr.PatternDescr;
 import org.drools.compiler.lang.descr.PatternSourceDescr;
 import org.drools.core.util.ClassUtils;
 import org.drools.modelcompiler.builder.generator.AggregateKey;
+import org.drools.modelcompiler.builder.generator.ConstraintUtil;
 import org.drools.mvel.parser.ast.expr.OOPathExpr;
 import com.github.javaparser.ast.expr.Expression;
 import com.github.javaparser.ast.expr.MethodCallExpr;
@@ -190,6 +191,7 @@ public abstract class PatternDSL implements DSLNode {
             final List<PatternConstraintParseResult> patternConstraintParseResults = findAllConstraint(pattern, constraintDescrs, patternType);
             final List<String> allBindings = patternConstraintParseResults
                     .stream()
+                    .map(ConstraintUtil::normalizeConstraint)
                     .map(p -> p.getDrlxParseResult().acceptWithReturnValue( DrlxParseSuccess::getExprBinding ))
                     .filter(Objects::nonNull)
                     .collect(Collectors.toList());
