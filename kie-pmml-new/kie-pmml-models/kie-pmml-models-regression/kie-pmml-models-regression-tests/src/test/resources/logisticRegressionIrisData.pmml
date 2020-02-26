@@ -21,6 +21,11 @@
 
       <MiningField name="Species" usageType="target"/>
     </MiningSchema>
+    <Output>
+      <OutputField name="Probability_setosa" optype="continuous" dataType="double" feature="probability" value="setosa"/>
+      <OutputField name="Probability_versicolor" optype="continuous" dataType="double" feature="probability" value="versicolor"/>
+      <OutputField name="Probability_virginica" optype="continuous" dataType="double" feature="probability" value="virginica"/>
+    </Output>
 
     <RegressionTable targetCategory="setosa" intercept="0.11822288946815">
       <NumericPredictor name="Sepal.Length" exponent="1" coefficient="0.0660297693761902"/>
@@ -29,18 +34,18 @@
       <NumericPredictor name="Petal.Width" exponent="1" coefficient="-0.0574727291860025"/>
     </RegressionTable>
 
-    <RegressionTable targetCategory="virginica" intercept="-0.695281863325603">
-       <NumericPredictor name="Sepal.Length" exponent="1" coefficient="-0.0458760845506725"/>
-       <NumericPredictor name="Sepal.Width" exponent="1" coefficient="0.202768385559553"/>
-       <NumericPredictor name="Petal.Length" exponent="1" coefficient="0.00398791100639665"/>
-       <NumericPredictor name="Petal.Width" exponent="1" coefficient="0.551779324933787"/>
-    </RegressionTable>
-
     <RegressionTable targetCategory="versicolor" intercept="1.57705897385745">
       <NumericPredictor name="Sepal.Length" exponent="1" coefficient="-0.0201536848255179"/>
       <NumericPredictor name="Sepal.Width" exponent="1" coefficient="-0.44561625761404"/>
       <NumericPredictor name="Petal.Length" exponent="1" coefficient="0.22066920522933"/>
       <NumericPredictor name="Petal.Width" exponent="1" coefficient="-0.494306595747785"/>
+    </RegressionTable>
+
+    <RegressionTable targetCategory="virginica" intercept="-0.695281863325603">
+       <NumericPredictor name="Sepal.Length" exponent="1" coefficient="-0.0458760845506725"/>
+       <NumericPredictor name="Sepal.Width" exponent="1" coefficient="0.202768385559553"/>
+       <NumericPredictor name="Petal.Length" exponent="1" coefficient="0.00398791100639665"/>
+       <NumericPredictor name="Petal.Width" exponent="1" coefficient="0.551779324933787"/>
     </RegressionTable>
   </RegressionModel>
 </PMML>
