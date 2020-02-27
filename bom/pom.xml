@@ -270,6 +270,13 @@
         <version>${project.version}</version>
       </dependency>
 
+      <!-- Management Console -->
+      <dependency>
+        <groupId>org.kie.kogito</groupId>
+        <artifactId>management-console</artifactId>
+        <version>${project.version}</version>
+      </dependency>
+
       <!-- drools -->
       <dependency>
         <groupId>org.kie.kogito</groupId>
