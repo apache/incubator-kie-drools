@@ -55,8 +55,10 @@ public abstract class KogitoCompilationProvider extends JavaCompilationProvider 
             Set<File> generatedSourceFiles = new HashSet<>();
             for (GeneratedFile file : generatedFiles) {
                 Path path = pathOf(outputDirectory.getPath(), file.relativePath());
-                Files.write(path, file.contents());
-                generatedSourceFiles.add(path.toFile());
+                if (file.getType() != GeneratedFile.Type.APPLICATION && file.getType() != GeneratedFile.Type.APPLICATION_CONFIG) {
+                    Files.write(path, file.contents());
+                    generatedSourceFiles.add(path.toFile());
+                }
             }
             super.compile(generatedSourceFiles, context);
         } catch (IOException e) {

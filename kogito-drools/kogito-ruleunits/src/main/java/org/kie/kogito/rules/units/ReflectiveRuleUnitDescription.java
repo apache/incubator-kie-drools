@@ -23,9 +23,7 @@ import java.util.Optional;
 
 import org.drools.core.definitions.InternalKnowledgePackage;
 import org.kie.kogito.conf.Clock;
-import org.kie.kogito.conf.ClockType;
 import org.kie.kogito.conf.EventProcessing;
-import org.kie.kogito.conf.EventProcessingType;
 import org.kie.kogito.conf.SessionsPool;
 import org.kie.kogito.rules.DataSource;
 import org.kie.kogito.rules.RuleUnit;
@@ -38,9 +36,11 @@ import static org.drools.reflective.util.ClassUtils.getter2property;
 public class ReflectiveRuleUnitDescription extends AbstractRuleUnitDescription {
 
     private final Class<? extends RuleUnitData> ruleUnitClass;
+    private final AssignableChecker assignableChecker;
 
     public ReflectiveRuleUnitDescription(InternalKnowledgePackage pkg, Class<? extends RuleUnitData> ruleUnitClass) {
         this.ruleUnitClass = ruleUnitClass;
+        this.assignableChecker = AssignableChecker.create(ruleUnitClass.getClassLoader());
         indexUnitVars();
         setConfig(loadConfig(ruleUnitClass));
     }
@@ -95,7 +95,7 @@ public class ReflectiveRuleUnitDescription extends AbstractRuleUnitDescription {
         if (returnClass.isArray()) {
             return returnClass.getComponentType();
         }
-        if (DataSource.class.isAssignableFrom(returnClass)) {
+        if ( assignableChecker.isAssignableFrom(DataSource.class, returnClass)) {
             return getParametricType(m);
         }
         if (Iterable.class.isAssignableFrom(returnClass)) {

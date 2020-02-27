@@ -107,10 +107,6 @@ public class ApplicationGenerator {
     }
 
     CompilationUnit compilationUnit() {
-        return compilationUnits().get( APPLICATION_CLASS_NAME );
-    }
-
-    private Map<String, CompilationUnit> compilationUnits() {
         CompilationUnit compilationUnit =
                 parse(this.getClass().getResourceAsStream(RESOURCE))
                         .setPackageDeclaration(packageName);
@@ -165,9 +161,6 @@ public class ApplicationGenerator {
 
         factoryMethods.forEach(cls::addMember);
 
-        Map<String, CompilationUnit> unitsMap = new HashMap<>();
-        unitsMap.put( APPLICATION_CLASS_NAME, compilationUnit );
-
         for (Generator generator : generators) {
             ApplicationSection section = generator.section();
             if (section == null) {
@@ -176,13 +169,9 @@ public class ApplicationGenerator {
             cls.addMember(section.fieldDeclaration());
             cls.addMember(section.factoryMethod());
 
-            CompilationUnit sectionUnit = new CompilationUnit();
-            sectionUnit.setPackageDeclaration( this.packageName );
-            sectionUnit.addType( section.classDeclaration() );
-            unitsMap.put( section.sectionClassName(), sectionUnit );
         }
         cls.getMembers().sort(new BodyDeclarationComparator());
-        return unitsMap;
+        return compilationUnit;
     }
 
     public ApplicationGenerator withDependencyInjection(DependencyInjectionAnnotator annotator) {
@@ -217,14 +206,14 @@ public class ApplicationGenerator {
         List<GeneratedFile> generatedFiles = generateComponents();
         generators.forEach(gen -> gen.updateConfig(configGenerator));
         generators.forEach(gen -> MetaDataWriter.writeLabelsImageMetadata(targetDirectory, gen.getLabels()));
-        generatedFiles.addAll(generateApplicationDescriptors());
+        generatedFiles.add(generateApplicationDescriptor());
+        generatedFiles.addAll(generateApplicationSections());
         generatedFiles.add(generateApplicationConfigDescriptor());
         if (useInjection()) {
             generators.stream().filter(gen -> gen.section() != null)
                     .forEach(gen -> generateSectionClass(gen.section(), generatedFiles));
         }
         this.labelers.forEach(l -> MetaDataWriter.writeLabelsImageMetadata(targetDirectory, l.generateLabels()));
-        
         return generatedFiles;
     }
 
@@ -234,15 +223,33 @@ public class ApplicationGenerator {
                 .collect(Collectors.toList());
     }
 
+    public GeneratedFile generateApplicationDescriptor() {
+        return new GeneratedFile(GeneratedFile.Type.APPLICATION,
+                                 generatedFilePath(),
+                                 log( compilationUnit().toString() ).getBytes(StandardCharsets.UTF_8));
+    }
 
-    private List<GeneratedFile> generateApplicationDescriptors() {
-        return compilationUnits().entrySet().stream()
-                .map( e -> new GeneratedFile(GeneratedFile.Type.APPLICATION, getFilePath(e.getKey()), log( e.getValue().toString() ).getBytes(StandardCharsets.UTF_8)) )
-                .collect( Collectors.toList() );
+    private List<GeneratedFile> generateApplicationSections() {
+        ArrayList<GeneratedFile> generatedFiles = new ArrayList<>();
+
+        for (Generator generator : generators) {
+            ApplicationSection section = generator.section();
+            if (section == null) {
+                continue;
+            }
+            CompilationUnit sectionUnit = new CompilationUnit();
+            sectionUnit.setPackageDeclaration( this.packageName );
+            sectionUnit.addType( section.classDeclaration() );
+            generatedFiles.add(
+                    new GeneratedFile(GeneratedFile.Type.APPLICATION_SECTION,
+                                      getFilePath(section.sectionClassName()),
+                                      sectionUnit.toString()));
+        }
+        return generatedFiles;
     }
 
     public GeneratedFile generateApplicationConfigDescriptor() {
-        return new GeneratedFile(GeneratedFile.Type.CLASS,
+        return new GeneratedFile(GeneratedFile.Type.APPLICATION_CONFIG,
                                  configGenerator.generatedFilePath(),
                                  log( configGenerator.compilationUnit().toString() ).getBytes(StandardCharsets.UTF_8));
     }

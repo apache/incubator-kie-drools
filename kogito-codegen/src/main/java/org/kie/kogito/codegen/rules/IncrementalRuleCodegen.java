@@ -63,6 +63,7 @@ import org.kie.kogito.codegen.rules.config.RuleConfigGenerator;
 import org.kie.kogito.conf.ClockType;
 import org.kie.kogito.conf.EventProcessingType;
 import org.kie.kogito.rules.RuleUnitConfig;
+import org.kie.kogito.rules.units.AssignableChecker;
 
 import static java.util.stream.Collectors.toList;
 
@@ -199,6 +200,8 @@ public class IncrementalRuleCodegen extends AbstractGenerator {
         KnowledgeBuilderConfigurationImpl configuration =
                 new KnowledgeBuilderConfigurationImpl(contextClassLoader);
 
+        AssignableChecker assignableChecker = AssignableChecker.create(contextClassLoader, hotReloadMode);
+
         ModelBuilderImpl<KogitoPackageSources> modelBuilder = new ModelBuilderImpl<>( KogitoPackageSources::dumpSources, configuration, dummyReleaseId, true, hotReloadMode );
 
         CompositeKnowledgeBuilder batch = modelBuilder.batch();
@@ -261,7 +264,7 @@ public class IncrementalRuleCodegen extends AbstractGenerator {
 
                 List<QueryEndpointGenerator> queries = ruleUnit.queries();
                 if (!queries.isEmpty()) {
-                    generatedFiles.add( new RuleUnitDTOSourceClass( ruleUnit.getRuleUnitDescription() ).generateFile(org.kie.kogito.codegen.GeneratedFile.Type.RULE) );
+                    generatedFiles.add( new RuleUnitDTOSourceClass( ruleUnit.getRuleUnitDescription(), assignableChecker ).generateFile(org.kie.kogito.codegen.GeneratedFile.Type.RULE) );
                     for (QueryEndpointGenerator query : queries) {
                         generatedFiles.add( query.generateFile( org.kie.kogito.codegen.GeneratedFile.Type.QUERY ) );
                     }

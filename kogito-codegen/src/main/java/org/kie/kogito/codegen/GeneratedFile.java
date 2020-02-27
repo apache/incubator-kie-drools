@@ -21,6 +21,8 @@ public class GeneratedFile {
 
     public enum Type {
         APPLICATION,
+        APPLICATION_SECTION,
+        APPLICATION_CONFIG,
         PROCESS,
         PROCESS_INSTANCE,
         REST,

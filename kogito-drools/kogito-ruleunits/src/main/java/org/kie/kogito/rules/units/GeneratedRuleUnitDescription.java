@@ -16,13 +16,9 @@
 
 package org.kie.kogito.rules.units;
 
-import java.lang.reflect.Method;
-import java.lang.reflect.ParameterizedType;
-import java.lang.reflect.Type;
 import java.util.function.Function;
 
 import org.drools.core.addon.TypeResolver;
-import org.kie.kogito.rules.DataSource;
 import org.kie.kogito.rules.RuleUnitConfig;
 
 public class GeneratedRuleUnitDescription extends AbstractRuleUnitDescription {
@@ -108,26 +104,5 @@ public class GeneratedRuleUnitDescription extends AbstractRuleUnitDescription {
         } catch (ClassNotFoundException e) {
             throw new IllegalArgumentException(e);
         }
-    }
-
-    private Class<?> getUnitVarType(Method m) {
-        Class<?> returnClass = m.getReturnType();
-        if (returnClass.isArray()) {
-            return returnClass.getComponentType();
-        }
-        if (DataSource.class.isAssignableFrom(returnClass)) {
-            return getParametricType(m);
-        }
-        if (Iterable.class.isAssignableFrom(returnClass)) {
-            return getParametricType(m);
-        }
-        return returnClass;
-    }
-
-    private Class<?> getParametricType(Method m) {
-        Type returnType = m.getGenericReturnType();
-        return returnType instanceof ParameterizedType ?
-                (Class<?>) ((ParameterizedType) returnType).getActualTypeArguments()[0] :
-                Object.class;
     }
 }

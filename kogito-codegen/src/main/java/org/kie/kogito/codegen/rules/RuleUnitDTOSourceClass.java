@@ -31,6 +31,7 @@ import org.kie.kogito.codegen.FileGenerator;
 import org.kie.kogito.rules.DataStore;
 import org.kie.kogito.rules.DataStream;
 import org.kie.kogito.rules.SingletonStore;
+import org.kie.kogito.rules.units.AssignableChecker;
 
 public class RuleUnitDTOSourceClass implements FileGenerator {
 
@@ -39,12 +40,14 @@ public class RuleUnitDTOSourceClass implements FileGenerator {
     private final String targetCanonicalName;
     private final String generatedFilePath;
     private final String packageName;
+    private final AssignableChecker assignableChecker;
 
-    public RuleUnitDTOSourceClass(RuleUnitDescription ruleUnit) {
+    public RuleUnitDTOSourceClass(RuleUnitDescription ruleUnit, AssignableChecker assignableChecker ) {
         this.ruleUnit = ruleUnit;
 
         this.targetCanonicalName = ruleUnit.getSimpleName() + "DTO";
         this.packageName = ruleUnit.getPackageName();
+        this.assignableChecker = assignableChecker;
         this.generatedFilePath = (packageName + "." + targetCanonicalName).replace('.', '/') + ".java";
     }
 
@@ -68,7 +71,7 @@ public class RuleUnitDTOSourceClass implements FileGenerator {
         supplierBlock.addStatement(String.format("%s unit = new %s();", ruleUnit.getSimpleName(), ruleUnit.getSimpleName()));
 
         for (RuleUnitVariable unitVarDeclaration : ruleUnit.getUnitVarDeclarations()) {
-            FieldProcessor fieldProcessor = new FieldProcessor(unitVarDeclaration);
+            FieldProcessor fieldProcessor = new FieldProcessor(unitVarDeclaration, assignableChecker );
             FieldDeclaration field = fieldProcessor.createField();
             supplierBlock.addStatement(fieldProcessor.fieldInitializer());
             dtoClass.addMember(field);
@@ -85,13 +88,15 @@ public class RuleUnitDTOSourceClass implements FileGenerator {
 
         final RuleUnitVariable ruleUnitVariable;
         final boolean isDataSource;
+        final AssignableChecker assignableChecker;
         final boolean isSingletonStore;
         private String genericType;
 
-        public FieldProcessor(RuleUnitVariable ruleUnitVariable) {
+        public FieldProcessor(RuleUnitVariable ruleUnitVariable, AssignableChecker assignableChecker ) {
             this.ruleUnitVariable = ruleUnitVariable;
             this.isDataSource = ruleUnitVariable.isDataSource();
-            this.isSingletonStore = SingletonStore.class.isAssignableFrom(ruleUnitVariable.getType());
+            this.assignableChecker = assignableChecker;
+            this.isSingletonStore = assignableChecker.isAssignableFrom(SingletonStore.class, ruleUnitVariable.getType());
         }
 
         private FieldDeclaration createField() {
@@ -130,19 +135,19 @@ public class RuleUnitDTOSourceClass implements FileGenerator {
                 if (ruleUnitVariable.setter() != null) {
                     supplierBlock.addStatement(String.format("unit.%s(%s);", ruleUnitVariable.setter(), ruleUnitVariable.getName()));
                 }
-            } else if (DataStream.class.isAssignableFrom(ruleUnitVariable.getType())) {
+            } else if ( assignableChecker.isAssignableFrom(DataStream.class, ruleUnitVariable.getType())) {
                 if (ruleUnitVariable.setter() != null) {
                     supplierBlock.addStatement(String.format("org.kie.kogito.rules.DataStream<%s> %s = org.kie.kogito.rules.DataSource.createStream();", genericType, ruleUnitVariable.getName()));
                     supplierBlock.addStatement(String.format("unit.%s(%s);", ruleUnitVariable.setter(), ruleUnitVariable.getName()));
                 }
                 supplierBlock.addStatement(String.format("this.%s.forEach( unit.%s()::append);", ruleUnitVariable.getName(), ruleUnitVariable.getter()));
-            } else if (DataStore.class.isAssignableFrom(ruleUnitVariable.getType())) {
+            } else if ( assignableChecker.isAssignableFrom(DataStore.class, ruleUnitVariable.getType())) {
                 if (ruleUnitVariable.setter() != null) {
                     supplierBlock.addStatement(String.format("org.kie.kogito.rules.DataStore<%s> %s = org.kie.kogito.rules.DataSource.createStore();", genericType, ruleUnitVariable.getName()));
                     supplierBlock.addStatement(String.format("unit.%s(%s);", ruleUnitVariable.setter(), ruleUnitVariable.getName()));
                 }
                 supplierBlock.addStatement(String.format("this.%s.forEach( unit.%s()::add);", ruleUnitVariable.getName(), ruleUnitVariable.getter()));
-            } else if (SingletonStore.class.isAssignableFrom(ruleUnitVariable.getType())) {
+            } else if ( assignableChecker.isAssignableFrom(SingletonStore.class, ruleUnitVariable.getType())) {
                 supplierBlock.addStatement(String.format("unit.%s().set(this.%s );", ruleUnitVariable.getter(), ruleUnitVariable.getName()));
             } else {
                 throw new IllegalArgumentException("Unknown data source type " + ruleUnitVariable.getType());

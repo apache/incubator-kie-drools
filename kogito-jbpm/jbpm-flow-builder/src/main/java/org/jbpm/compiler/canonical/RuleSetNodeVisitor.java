@@ -39,6 +39,7 @@ import org.kie.internal.ruleunit.RuleUnitComponentFactory;
 import org.kie.internal.ruleunit.RuleUnitDescription;
 import org.kie.kogito.rules.RuleUnitData;
 import org.kie.kogito.rules.SingletonStore;
+import org.kie.kogito.rules.units.AssignableChecker;
 import org.kie.kogito.rules.units.GeneratedRuleUnitDescription;
 import org.kie.kogito.rules.units.ReflectiveRuleUnitDescription;
 import org.kie.kogito.rules.units.impl.RuleUnitComponentFactoryImpl;
@@ -51,9 +52,11 @@ public class RuleSetNodeVisitor extends AbstractVisitor {
     public static final Logger logger = LoggerFactory.getLogger(ProcessToExecModelGenerator.class);
 
     private final ClassLoader contextClassLoader;
+    private final AssignableChecker assignableChecker;
 
     public RuleSetNodeVisitor(ClassLoader contextClassLoader) {
         this.contextClassLoader = contextClassLoader;
+        this.assignableChecker = AssignableChecker.create(contextClassLoader);
     }
 
     @Override
@@ -137,7 +140,7 @@ public class RuleSetNodeVisitor extends AbstractVisitor {
             description = d;
         }
 
-        RuleUnitHandler handler = new RuleUnitHandler(description, processContext, ruleSetNode);
+        RuleUnitHandler handler = new RuleUnitHandler(description, processContext, ruleSetNode, assignableChecker );
         Expression ruleUnitFactory = handler.invoke();
 
         return new MethodCallExpr("ruleUnit")

@@ -276,7 +276,7 @@ public class ApplicationGeneratorTest {
 
         for (GeneratedFile generatedFile : generatedFiles) {
             assertThat(generatedFile).isNotNull();
-            assertThat(generatedFile.getType()).isIn(GeneratedFile.Type.APPLICATION, GeneratedFile.Type.RULE, GeneratedFile.Type.CLASS);
+            assertThat(generatedFile.getType()).isIn(GeneratedFile.Type.APPLICATION, GeneratedFile.Type.APPLICATION_CONFIG, GeneratedFile.Type.APPLICATION_SECTION, GeneratedFile.Type.RULE, GeneratedFile.Type.CLASS);
             if (generatedFile.getType() == GeneratedFile.Type.APPLICATION) {
                 if (generatedFile.relativePath() == EXPECTED_APPLICATION_NAME.replace(".", "/") + ".java") {
                     assertThat( generatedFile.contents() ).isEqualTo( expectedApplicationContent );
