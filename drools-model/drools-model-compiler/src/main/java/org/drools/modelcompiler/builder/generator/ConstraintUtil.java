@@ -25,7 +25,9 @@ public class ConstraintUtil {
 
     public static final String DROOLS_NORMALIZE_CONSTRAINT = "drools.normalize.constraint";
 
-    private static boolean ENABLE_NORMALIZE = Boolean.valueOf(System.getProperty(DROOLS_NORMALIZE_CONSTRAINT, "true"));
+    private static final boolean ENABLE_NORMALIZE = Boolean.parseBoolean(System.getProperty(DROOLS_NORMALIZE_CONSTRAINT, "true"));
+
+    private ConstraintUtil() {}
 
     public static PatternConstraintParseResult normalizeConstraint(PatternConstraintParseResult pConstraint) {
         if (!ENABLE_NORMALIZE) {
@@ -52,10 +54,7 @@ public class ConstraintUtil {
     }
 
     private static boolean isPropertyOnRight(TypedExpression left, TypedExpression right) {
-        if (!isProperty(left) && isProperty(right)) {
-            return true;
-        }
-        return false;
+        return !isProperty(left) && isProperty(right);
     }
 
     private static boolean isProperty(TypedExpression tExpr) {

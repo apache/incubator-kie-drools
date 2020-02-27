@@ -275,7 +275,7 @@ public class ConstraintNormalizationTest extends BaseModelTest {
         assertEquals(2, ksession.fireAllRules());
     }
 
-    @Ignore
+    @Ignore("Not yet implemented. Benefit is only NodeSharing")
     @Test
     public void testAnd() throws Exception {
         final String str =
@@ -303,7 +303,7 @@ public class ConstraintNormalizationTest extends BaseModelTest {
         assertEquals(2, ksession.fireAllRules());
     }
 
-    @Ignore
+    @Ignore("Not yet implemented. Benefit is only NodeSharing")
     @Test
     public void testOr() throws Exception {
         final String str =
@@ -331,7 +331,7 @@ public class ConstraintNormalizationTest extends BaseModelTest {
         assertEquals(2, ksession.fireAllRules());
     }
 
-    @Ignore
+    @Ignore("Not yet implemented. Benefit is only NodeSharing")
     @Test
     public void testNegate() throws Exception {
         final String str =
