@@ -41,19 +41,16 @@ public class LogisticRegressionWithNormalizationTest extends AbstractPMMLRegress
 
     private static final String MODEL_NAME = "LogisticRegressionWithNormalization";
     private static final String PMML_SOURCE = "/logisticRegressionWithNormalization.pmml";
-    private static final String TARGET_FIELD = "result";
+    private static final String TARGET_FIELD = "Species";
     private static final String PROBABILITY_SETOSA_FIELD = "Probability_setosa";
     private static final String PROBABILITY_VERSICOLOR_FIELD = "Probability_versicolor";
     private static final String PROBABILITY_VIRGINICA_FIELD = "Probability_virginica";
 
     private static final Percentage TOLERANCE_PERCENTAGE = Percentage.withPercentage(0.001);
 
+    private static final String NONE_NORMALIZATION_METHOD = "none";
     private static final String SOFTMAX_NORMALIZATION_METHOD = "softmax";
-    private static final String LOGIT_NORMALIZATION_METHOD = "logit";
-    private static final String PROBIT_NORMALIZATION_METHOD = "probit";
-    private static final String CLOGLOG_NORMALIZATION_METHOD = "cloglog";
-    private static final String LOGLOG_NORMALIZATION_METHOD = "loglog";
-    private static final String CAUCHIT_NORMALIZATION_METHOD = "cauchit";
+    private static final String SIMPLEMAX_NORMALIZATION_METHOD = "simplemax";
 
     private static final String NORMALIZATION_METHOD_PLACEHOLDER = "NORMALIZATION_METHOD_PLACEHOLDER";
 
@@ -63,43 +60,48 @@ public class LogisticRegressionWithNormalizationTest extends AbstractPMMLRegress
     private double petalWidth;
     private String expectedResult;
     private String normalizationMethod;
+    private double expectedSetosaProbability;
+    private double expectedVersicolorProbability;
+    private double expectedVirginicaProbability;
 
     public LogisticRegressionWithNormalizationTest(double sepalLength, double sepalWidth, double petalLength,
-                                                   double petalWidth, String expectedResult, String normalizationMethod) {
+                                                   double petalWidth, String expectedResult, String normalizationMethod,
+                                                   double expectedSetosaProbability, double expectedVersicolorProbability,
+                                                   double expectedVirginicaProbability) {
         this.sepalLength = sepalLength;
         this.sepalWidth = sepalWidth;
         this.petalLength = petalLength;
         this.petalWidth = petalWidth;
         this.expectedResult = expectedResult;
         this.normalizationMethod = normalizationMethod;
+        this.expectedSetosaProbability = expectedSetosaProbability;
+        this.expectedVersicolorProbability = expectedVersicolorProbability;
+        this.expectedVirginicaProbability = expectedVirginicaProbability;
     }
 
     @Parameterized.Parameters
     public static Collection<Object[]> data() {
         return Arrays.asList(new Object[][]{
-                {6.9, 3.1, 5.1, 2.3, "virginica", SOFTMAX_NORMALIZATION_METHOD},
-                {5.8, 2.6, 4.0, 1.2, "versicolor", SOFTMAX_NORMALIZATION_METHOD},
-                {5.4, 3.9, 1.3, 0.4, "setosa", SOFTMAX_NORMALIZATION_METHOD},
+                {6.9, 3.1, 5.1, 2.3, "virginica", NONE_NORMALIZATION_METHOD,
+                        0.04871813160275851, 0.04509592640753013, 0.9061859419897114},
+                {5.8, 2.6, 4.0, 1.2, "versicolor", NONE_NORMALIZATION_METHOD,
+                        0.16500427922560845, 0.5910742380929204, 0.24392148268147118},
+                {5.4, 3.9, 1.3, 0.4, "setosa", NONE_NORMALIZATION_METHOD,
+                        1.1068470023312305, -0.18052700039608738, 0.07367999806485692},
 
-                {6.9, 3.1, 5.1, 2.3, "virginica", LOGIT_NORMALIZATION_METHOD},
-                {5.8, 2.6, 4.0, 1.2, "versicolor", LOGIT_NORMALIZATION_METHOD},
-                {5.4, 3.9, 1.3, 0.4, "setosa", LOGIT_NORMALIZATION_METHOD},
+                {6.9, 3.1, 5.1, 2.3, "virginica", SOFTMAX_NORMALIZATION_METHOD,
+                        0.22969661966054, 0.228866116406123, 0.541437263933338},
+                {5.8, 2.6, 4.0, 1.2, "versicolor", SOFTMAX_NORMALIZATION_METHOD,
+                        0.276752056446685, 0.423770468651362, 0.299477474901954},
+                {5.4, 3.9, 1.3, 0.4, "setosa", SOFTMAX_NORMALIZATION_METHOD,
+                        0.612792897443624, 0.169127526544678, 0.218079576011698},
 
-                {6.9, 3.1, 5.1, 2.3, "virginica", PROBIT_NORMALIZATION_METHOD},
-                {5.8, 2.6, 4.0, 1.2, "versicolor", PROBIT_NORMALIZATION_METHOD},
-                {5.4, 3.9, 1.3, 0.4, "setosa", PROBIT_NORMALIZATION_METHOD},
-
-                {6.9, 3.1, 5.1, 2.3, "virginica", CLOGLOG_NORMALIZATION_METHOD},
-                {5.8, 2.6, 4.0, 1.2, "versicolor", CLOGLOG_NORMALIZATION_METHOD},
-                {5.4, 3.9, 1.3, 0.4, "setosa", CLOGLOG_NORMALIZATION_METHOD},
-
-                {6.9, 3.1, 5.1, 2.3, "virginica", LOGLOG_NORMALIZATION_METHOD},
-                {5.8, 2.6, 4.0, 1.2, "versicolor", LOGLOG_NORMALIZATION_METHOD},
-                {5.4, 3.9, 1.3, 0.4, "setosa", LOGLOG_NORMALIZATION_METHOD},
-
-                {6.9, 3.1, 5.1, 2.3, "virginica", CAUCHIT_NORMALIZATION_METHOD},
-                {5.8, 2.6, 4.0, 1.2, "versicolor", CAUCHIT_NORMALIZATION_METHOD},
-                {5.4, 3.9, 1.3, 0.4, "setosa", CAUCHIT_NORMALIZATION_METHOD}
+                {6.9, 3.1, 5.1, 2.3, "virginica", SIMPLEMAX_NORMALIZATION_METHOD,
+                        0.0487181316027585, 0.0450959264075301, 0.906185941989711},
+                {5.8, 2.6, 4.0, 1.2, "versicolor", SIMPLEMAX_NORMALIZATION_METHOD,
+                        0.165004279225608, 0.59107423809292, 0.243921482681471},
+                {5.4, 3.9, 1.3, 0.4, "setosa", SIMPLEMAX_NORMALIZATION_METHOD,
+                        1.10684700233123, -0.180527000396087, 0.0736799980648569},
         });
     }
 
@@ -128,96 +130,11 @@ public class LogisticRegressionWithNormalizationTest extends AbstractPMMLRegress
         Assertions.assertThat(pmml4Result.getResultVariables().get(TARGET_FIELD)).isNotNull();
         Assertions.assertThat(pmml4Result.getResultVariables().get(TARGET_FIELD)).isEqualTo(expectedResult);
 
-        List<Double> probabilities = calculateProbabilities();
         Assertions.assertThat((double) pmml4Result.getResultVariables().get(PROBABILITY_SETOSA_FIELD))
-                .isCloseTo(probabilities.get(0), TOLERANCE_PERCENTAGE);
+                .isCloseTo(expectedSetosaProbability, TOLERANCE_PERCENTAGE);
         Assertions.assertThat((double) pmml4Result.getResultVariables().get(PROBABILITY_VERSICOLOR_FIELD))
-                .isCloseTo(probabilities.get(1), TOLERANCE_PERCENTAGE);
+                .isCloseTo(expectedVersicolorProbability, TOLERANCE_PERCENTAGE);
         Assertions.assertThat((double) pmml4Result.getResultVariables().get(PROBABILITY_VIRGINICA_FIELD))
-                .isCloseTo(probabilities.get(2), TOLERANCE_PERCENTAGE);
-    }
-
-    private List<Double> calculateProbabilities() {
-        final double rawSetosaProbability = 0.0660297693761902 * sepalLength + 0.242847872054487 * sepalWidth
-                + -0.224657116235727 * petalLength + -0.0574727291860025 * petalWidth + 0.11822288946815;
-        final double rawVersicolorProbability = -0.0201536848255179 * sepalLength + -0.44561625761404 * sepalWidth
-                + 0.22066920522933 * petalLength + -0.494306595747785 * petalWidth + 1.57705897385745;
-        final double rawVirginicaProbability = -0.0458760845506725 * sepalLength + 0.202768385559553 * sepalWidth
-                + 0.00398791100639665 * petalLength + 0.551779324933787 * petalWidth - 0.695281863325603;
-
-        final List<Double> rawProbabilities = new ArrayList<>();
-        rawProbabilities.add(rawSetosaProbability);
-        rawProbabilities.add(rawVersicolorProbability);
-        rawProbabilities.add(rawVirginicaProbability);
-        final List<Double> probabilities = normalization(rawProbabilities);
-
-        return probabilities;
-    }
-
-    private List<Double> normalization(List<Double> rawProbabilities) {
-        if (normalizationMethod.equals(SOFTMAX_NORMALIZATION_METHOD)) {
-            return softmaxNormalization(rawProbabilities);
-        } else if (normalizationMethod.equals(LOGIT_NORMALIZATION_METHOD)) {
-            return logitNormalization(rawProbabilities);
-        } else if (normalizationMethod.equals(CLOGLOG_NORMALIZATION_METHOD)) {
-            return cloglogNormalization(rawProbabilities);
-        } else if (normalizationMethod.equals(LOGLOG_NORMALIZATION_METHOD)) {
-            return loglogNormalization(rawProbabilities);
-        } else if (normalizationMethod.equals(CAUCHIT_NORMALIZATION_METHOD)) {
-            return cauchitNormalization(rawProbabilities);
-        } else {
-            throw new RuntimeException("Unknown normalization method");
-        }
-    }
-
-    private static List<Double> softmaxNormalization(List<Double> rawProbabilities) {
-        double denominator = 0;
-        for (double rawProbability : rawProbabilities) {
-            denominator += rawProbability;
-        }
-
-        final List<Double> probabilities = new ArrayList<>();
-        for (double rawProbability : rawProbabilities) {
-            probabilities.add(Math.exp(rawProbability) / denominator);
-        }
-
-        return probabilities;
-    }
-
-    private static List<Double> logitNormalization(List<Double> rawProbabilities) {
-        final List<Double> probabilities = new ArrayList<>();
-        for (double rawProbability : rawProbabilities) {
-            probabilities.add(1 / (1 + Math.exp(-rawProbability)));
-        }
-
-        return probabilities;
-    }
-
-
-    private static List<Double> cloglogNormalization(List<Double> rawProbabilities) {
-        final List<Double> probabilities = new ArrayList<>();
-        for (double rawProbability : rawProbabilities) {
-            probabilities.add(1 - Math.exp(-Math.exp(rawProbability)));
-        }
-
-        return probabilities;
-    }
-
-    private static List<Double> loglogNormalization(List<Double> rawProbabilities) {
-        final List<Double> probabilities = new ArrayList<>();
-        for (double rawProbability : rawProbabilities) {
-            probabilities.add(Math.exp(-Math.exp(-rawProbability)));
-        }
-
-        return probabilities;
-    }
-
-    private static List<Double> cauchitNormalization(List<Double> rawProbabilities) {
-        final List<Double> probabilities = new ArrayList<>();
-        for (double rawProbability : rawProbabilities) {
-            probabilities.add(0.5 + (1/Math.PI) * Math.atan(rawProbability));
-        }
-
-        return probabilities;
+                .isCloseTo(expectedVirginicaProbability, TOLERANCE_PERCENTAGE);
     }
 }
