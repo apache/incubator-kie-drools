@@ -1,4 +1,4 @@
-import { TimeAgo } from '@n1ru4l/react-time-ago';
+import Moment from 'react-moment'
 import {
   Button,
   Card,
@@ -50,80 +50,74 @@ const ProcessDetails: React.FC<IOwnProps> = ({ data, loading }) => {
                 {data.ProcessInstances[0].endpoint}
               </Text>
             ) : (
-              ''
-            )}
+                ''
+              )}
           </FormGroup>
           <FormGroup label="Start" fieldId="start">
             {data.ProcessInstances[0].start ? (
               <Text component={TextVariants.p}>
-                <TimeAgo
-                  date={new Date(`${data.ProcessInstances[0].start}`)}
-                  render={({ error, value }) => <span>{value}</span>}
-                />
+                <Moment fromNow>{new Date(`${data.ProcessInstances[0].start}`)}</Moment>
               </Text>
             ) : (
-              ''
-            )}
+                ''
+              )}
           </FormGroup>
           <FormGroup label="End" fieldId="end">
             {data.ProcessInstances[0].end ? (
               <Text component={TextVariants.p}>
-                <TimeAgo
-                  date={new Date(`${data.ProcessInstances[0].end}`)}
-                  render={({ error, value }) => <span>{value}</span>}
-                />
+                <Moment fromNow>{new Date(`${data.ProcessInstances[0].end}`)}</Moment>
               </Text>
             ) : (
-              ''
-            )}
+                ''
+              )}
           </FormGroup>
           {!loading &&
-          data.ProcessInstances[0].parentProcessInstance !== null ? (
-            <FormGroup label="Parent Process" fieldId="parent">
-              <div>
-                <Link
-                  to={
-                    '/ProcessInstances/' +
-                    data.ProcessInstances[0].parentProcessInstance.id
-                  }
-                >
-                  <Tooltip
-                    content={data.ProcessInstances[0].parentProcessInstance.id}
+            data.ProcessInstances[0].parentProcessInstance !== null ? (
+              <FormGroup label="Parent Process" fieldId="parent">
+                <div>
+                  <Link
+                    to={
+                      '/ProcessInstances/' +
+                      data.ProcessInstances[0].parentProcessInstance.id
+                    }
                   >
-                    <Button variant="link" icon={<LevelUpAltIcon />}>
-                      {
-                        data.ProcessInstances[0].parentProcessInstance
-                          .processName
-                      }
-                    </Button>
-                  </Tooltip>
-                </Link>
-              </div>
-            </FormGroup>
-          ) : (
-            <div />
-          )}
+                    <Tooltip
+                      content={data.ProcessInstances[0].parentProcessInstance.id}
+                    >
+                      <Button variant="link" icon={<LevelUpAltIcon />}>
+                        {
+                          data.ProcessInstances[0].parentProcessInstance
+                            .processName
+                        }
+                      </Button>
+                    </Tooltip>
+                  </Link>
+                </div>
+              </FormGroup>
+            ) : (
+              <div />
+            )}
 
           {!loading &&
-          data.ProcessInstances[0].childProcessInstances.length !== 0 ? (
-            <FormGroup label="Sub Processes" fieldId="child">
-              {data.ProcessInstances[0].childProcessInstances.map(
-                (child, index) => (
-                  <div key={child.id}>
-                    <Link to={'/ProcessInstances/' + child.id}>
-                      <Tooltip content={child.id}>
-                        <Button variant="link" icon={<LevelDownAltIcon />}>
-                          {child.processName}
-                        </Button>
-                      </Tooltip>
-                    </Link>
-                  </div>
-                )
-              )}
-            </FormGroup>
-          ) : (
-            <div />
-          )}
+            data.ProcessInstances[0].childProcessInstances.length !== 0 ? (
+              <FormGroup label="Sub Processes" fieldId="child">
+                {data.ProcessInstances[0].childProcessInstances.map(
+                  (child, index) => (
+                    <div key={child.id}>
+                      <Link to={'/ProcessInstances/' + child.id}>
+                        <Tooltip content={child.id}>
+                          <Button variant="link" icon={<LevelDownAltIcon />}>
+                            {child.processName}
+                          </Button>
+                        </Tooltip>
+                      </Link>
+                    </div>
+                  )
+                )}
+              </FormGroup>
+            ) : (
+              <div />
+            )}
         </Form>
       </CardBody>
     </Card>

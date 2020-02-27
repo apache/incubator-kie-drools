@@ -1,4 +1,4 @@
-import { TimeAgo } from '@n1ru4l/react-time-ago';
+import Moment from 'react-moment';
 import React, { useCallback, useState, useEffect } from 'react';
 import axios from 'axios';
 import {
@@ -393,23 +393,13 @@ const DataListItemComponent: React.FC<IOwnProps> = ({
               </DataListCell>,
               <DataListCell key={2}>
                 {processInstanceData.start ? (
-                  <TimeAgo
-                    date={new Date(`${processInstanceData.start}`)}
-                    render={({ _error, value }) => <span>{value}</span>}
-                  />
+                  <Moment fromNow>{new Date(`${processInstanceData.start}`)}</Moment>
                 ) : (
                     ''
                   )}
               </DataListCell>,
               <DataListCell key={3}>
-                {processInstanceData.lastUpdate ? (
-                  <TimeAgo
-                    date={new Date(`${processInstanceData.lastUpdate}`)}
-                    render={({ _error, value }) => <span>{value}</span>}
-                  />
-                ) : (
-                    ''
-                  )}
+                {processInstanceData.lastUpdate ? (<Moment fromNow>{new Date(`${processInstanceData.lastUpdate}`)}</Moment>) : ('')}
               </DataListCell>,
               <DataListCell key={4}>{processInstanceData.state}</DataListCell>
             ]}

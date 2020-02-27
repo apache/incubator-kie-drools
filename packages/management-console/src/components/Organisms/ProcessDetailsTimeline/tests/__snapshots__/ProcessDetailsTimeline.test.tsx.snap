@@ -21,11 +21,25 @@ exports[`Process Details Timeline component Sample test case 1`] = `
         <div
           className="timeline-item-content"
         >
-          <TimeAgo
-            date={2019-10-22T04:43:01.144Z}
-            formatter={[Function]}
-            render={[Function]}
-          />
+          <t
+            ago={false}
+            calendar={false}
+            decimal={false}
+            element={null}
+            filter={[Function]}
+            fromNow={true}
+            interval={60000}
+            local={false}
+            onChange={[Function]}
+            titleFormat=""
+            toNow={false}
+            unit={null}
+            unix={false}
+            utc={false}
+            withTitle={false}
+          >
+            <Component />
+          </t>
           <p>
             Book flight
           </p>
@@ -69,11 +83,25 @@ exports[`Process Details Timeline component test human task 1`] = `
         <div
           className="timeline-item-content"
         >
-          <TimeAgo
-            date={2019-10-22T04:43:01.144Z}
-            formatter={[Function]}
-            render={[Function]}
-          />
+          <t
+            ago={false}
+            calendar={false}
+            decimal={false}
+            element={null}
+            filter={[Function]}
+            fromNow={true}
+            interval={60000}
+            local={false}
+            onChange={[Function]}
+            titleFormat=""
+            toNow={false}
+            unit={null}
+            unix={false}
+            utc={false}
+            withTitle={false}
+          >
+            <Component />
+          </t>
           <p>
             Book flight
           </p>

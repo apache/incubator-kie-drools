@@ -1,4 +1,4 @@
-import { TimeAgo } from '@n1ru4l/react-time-ago';
+import Moment from 'react-moment';
 import { Card, CardBody, CardHeader, Title } from '@patternfly/react-core';
 import { ServicesIcon, UserIcon } from '@patternfly/react-icons';
 import React from 'react';
@@ -24,25 +24,23 @@ const ProcessDetailsTimeline: React.FC<IOwnProps> = ({ loading, data }) => {
               return (
                 <div className="timeline-item" key={content.id}>
                   <div className="timeline-item-content">
-                    <TimeAgo
-                      date={new Date(`${content.exit}`)}
-                      render={({ error, value }) => <span>{value}</span>}
-                    />
+                    <Moment fromNow>{new Date(`${content.exit}`)}</Moment>
+
                     <p>{content.name}</p>
                     <span className="circle">
                       {content.type === 'HumanTaskNode' ? (
                         <UserIcon className="processdetailstimetine-iconstyle" />
                       ) : (
-                        <ServicesIcon className="processdetailstimetine-iconstyle" />
-                      )}{' '}
+                          <ServicesIcon className="processdetailstimetine-iconstyle" />
+                        )}{' '}
                     </span>
                   </div>
                 </div>
               );
             })
           ) : (
-            <p>loading...</p>
-          )}
+              <p>loading...</p>
+            )}
         </div>
       </CardBody>
     </Card>

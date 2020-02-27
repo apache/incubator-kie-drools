@@ -95,11 +95,25 @@ exports[`DataListItem component tests Snapshot tests 1`] = `
               
             </DataListCell>,
             <DataListCell>
-              <TimeAgo
-                date={2019-10-22T03:40:44.089Z}
-                formatter={[Function]}
-                render={[Function]}
-              />
+              <t
+                ago={false}
+                calendar={false}
+                decimal={false}
+                element={null}
+                filter={[Function]}
+                fromNow={true}
+                interval={60000}
+                local={false}
+                onChange={[Function]}
+                titleFormat=""
+                toNow={false}
+                unit={null}
+                unix={false}
+                utc={false}
+                withTitle={false}
+              >
+                2019-10-22T03:40:44.089Z
+              </t>
             </DataListCell>,
             <DataListCell>
               COMPLETED
