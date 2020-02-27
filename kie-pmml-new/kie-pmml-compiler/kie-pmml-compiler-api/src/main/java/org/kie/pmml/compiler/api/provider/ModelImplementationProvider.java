@@ -36,5 +36,5 @@ public interface ModelImplementationProvider<T extends Model, E extends KiePMMLM
      * @return
      * @throws KiePMMLInternalException
      */
-    E getKiePMMLModel(DataDictionary dataDictionary, T model, Object kBuilder) throws KiePMMLException;
+    E getKiePMMLModel(DataDictionary dataDictionary, T model, Object kBuilder);
 }
