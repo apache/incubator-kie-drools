@@ -12,220 +12,83 @@
     <kogito.version>${project.version}</kogito.version>
 
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-    <maven.compiler.source>1.8</maven.compiler.source>
-    <maven.compiler.target>1.8</maven.compiler.target>
+    <maven.compiler.source>1.11</maven.compiler.source>
+    <maven.compiler.target>1.11</maven.compiler.target>
   </properties>
 
   <dependencyManagement>
     <dependencies>
       <dependency>
-        <groupId>io.quarkus</groupId>
-        <artifactId>quarkus-bom</artifactId>
-        <version>${quarkus.version}</version>
-        <type>pom</type>
-        <scope>import</scope>
-      </dependency>
-      <dependency>
         <groupId>org.kie.kogito</groupId>
-        <artifactId>kogito-bom</artifactId>
+        <artifactId>kogito-quarkus-bom</artifactId>
         <version>${kogito.version}</version>
         <type>pom</type>
         <scope>import</scope>
-      </dependency>
-      <!-- make sure that kogito dependencies are taken from current version 
-        instead of quarkus bom -->
-      <dependency>
-        <groupId>org.kie.kogito</groupId>
-        <artifactId>kogito-api</artifactId>
-        <version>${kogito.version}</version>
-      </dependency>
-      <dependency>
-        <groupId>org.kie.kogito</groupId>
-        <artifactId>kogito-internal</artifactId>
-        <version>${kogito.version}</version>
-      </dependency>
-      <dependency>
-        <groupId>org.kie.kogito</groupId>
-        <artifactId>kogito-drools</artifactId>
-        <version>${kogito.version}</version>
-      </dependency>
-      <dependency>
-        <groupId>org.kie.kogito</groupId>
-        <artifactId>drools</artifactId>
-        <version>${kogito.version}</version>
-      </dependency>
-      <dependency>
-        <groupId>org.kie.kogito</groupId>
-        <artifactId>drools-core</artifactId>
-        <version>${kogito.version}</version>
-      </dependency>
-      <dependency>
-        <groupId>org.kie.kogito</groupId>
-        <artifactId>drools-core-reflective</artifactId>
-        <version>${kogito.version}</version>
-      </dependency>
-      <dependency>
-        <groupId>org.kie.kogito</groupId>
-        <artifactId>drools-core-static</artifactId>
-        <version>${kogito.version}</version>
-      </dependency>
-      <dependency>
-        <groupId>org.kie.kogito</groupId>
-        <artifactId>drools-compiler</artifactId>
-        <version>${kogito.version}</version>
-      </dependency>
-      <dependency>
-        <groupId>org.kie.kogito</groupId>
-        <artifactId>drools-canonical-model</artifactId>
-        <version>${kogito.version}</version>
-      </dependency>
-      <dependency>
-        <groupId>org.kie.kogito</groupId>
-        <artifactId>drools-model-compiler</artifactId>
-        <version>${kogito.version}</version>
-      </dependency>
-      <dependency>
-        <groupId>org.kie.kogito</groupId>
-        <artifactId>drools-mvel-compiler</artifactId>
-        <version>${kogito.version}</version>
-      </dependency>
-      <dependency>
-        <groupId>org.kie.kogito</groupId>
-        <artifactId>drools-mvel-parser</artifactId>
-        <version>${kogito.version}</version>
-      </dependency>
-      <dependency>
-        <groupId>org.kie.kogito</groupId>
-        <artifactId>kogito-codegen</artifactId>
-        <version>${kogito.version}</version>
-      </dependency>
-      <dependency>
-        <groupId>org.kie.kogito</groupId>
-        <artifactId>drools-decisiontables</artifactId>
-        <version>${kogito.version}</version>
-      </dependency>
-      <dependency>
-        <groupId>org.kie.kogito</groupId>
-        <artifactId>jbpm-flow</artifactId>
-        <version>${kogito.version}</version>
-      </dependency>
-      <dependency>
-        <groupId>org.kie.kogito</groupId>
-        <artifactId>jbpm-bpmn2</artifactId>
-        <version>${kogito.version}</version>
-      </dependency>
-      <dependency>
-        <groupId>org.kie.kogito</groupId>
-        <artifactId>kogito-dmn</artifactId>
-        <version>${kogito.version}</version>
-      </dependency>
-      <dependency>
-        <groupId>org.kie.kogito</groupId>
-        <artifactId>kogito-services</artifactId>
-        <version>${kogito.version}</version>
       </dependency>
     </dependencies>
   </dependencyManagement>
 
   <dependencies>
     <dependency>
+      <groupId>org.kie.kogito</groupId>
+      <artifactId>kogito-quarkus</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>io.quarkus</groupId>
+      <artifactId>quarkus-resteasy</artifactId>
+    </dependency>
+    <dependency>
       <groupId>io.quarkus</groupId>
       <artifactId>quarkus-resteasy-jackson</artifactId>
     </dependency>
+    <dependency>
+      <groupId>io.quarkus</groupId>
+      <artifactId>quarkus-smallrye-openapi</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>io.quarkus</groupId>
+      <artifactId>quarkus-arc</artifactId>
+    </dependency>
 
     <dependency>
-      <groupId>org.kie.kogito</groupId>
-      <artifactId>kogito-api</artifactId>
+      <groupId>io.quarkus</groupId>
+      <artifactId>quarkus-junit5</artifactId>
+      <scope>test</scope>
     </dependency>
     <dependency>
-      <groupId>org.kie.kogito</groupId>
-      <artifactId>kogito-drools</artifactId>
-    </dependency>
-    <dependency>
-      <groupId>org.kie.kogito</groupId>
-      <artifactId>jbpm-flow</artifactId>
-    </dependency>
-    <dependency>
-      <groupId>org.kie.kogito</groupId>
-      <artifactId>kogito-dmn</artifactId>
+      <groupId>io.rest-assured</groupId>
+      <artifactId>rest-assured</artifactId>
+      <scope>test</scope>
     </dependency>
   </dependencies>
-  <build>
-    <plugins>
-      <plugin>
-        <groupId>io.quarkus</groupId>
-        <artifactId>quarkus-maven-plugin</artifactId>
-        <version>${quarkus.version}</version>
-        <executions>
-          <execution>
-            <goals>
-              <goal>build</goal>
-            </goals>
-          </execution>
-        </executions>
-      </plugin>
-      <plugin>
-        <groupId>org.kie.kogito</groupId>
-        <artifactId>kogito-maven-plugin</artifactId>
-        <version>${kogito.version}</version>
-        <extensions>true</extensions>
-      </plugin>
-      <plugin>
-        <groupId>io.openapitools.swagger</groupId>
-        <artifactId>swagger-maven-plugin</artifactId>
-        <version>${version.swagger.plugin}</version>
-        <configuration>
-          <resourcePackages>
-            <resourcePackage>org.kie.kogito.examples</resourcePackage>
-          </resourcePackages>
-          <outputDirectory>\${basedir}/target/classes/META-INF/resources/docs/</outputDirectory>
-          <outputFilename>swagger</outputFilename>
-          <outputFormats>JSON,YAML</outputFormats>
-          <prettyPrint>true</prettyPrint>
-          <swaggerConfig>
-            <info>
-              <title>${project.description}</title>
-              <version>${project.version}</version>
-            </info>
-          </swaggerConfig>
-        </configuration>
-        <executions>
-          <execution>
-            <goals>
-              <goal>generate</goal>
-            </goals>
-          </execution>
-        </executions>
-      </plugin>
-    </plugins>
-  </build>
+
   <profiles>
     <profile>
       <id>native</id>
-      <activation>
-        <property>
-          <name>native</name>
-        </property>
-      </activation>
       <build>
         <plugins>
           <plugin>
             <groupId>io.quarkus</groupId>
             <artifactId>quarkus-maven-plugin</artifactId>
-            <version>${quarkus.version}</version>
             <executions>
               <execution>
                 <goals>
                   <goal>native-image</goal>
                 </goals>
                 <configuration>
-                  <enableHttpUrlHandler>true</enableHttpUrlHandler>
+                  <additionalBuildArgs>--allow-incomplete-classpath</additionalBuildArgs>
                 </configuration>
               </execution>
             </executions>
+          </plugin>
+          <plugin>
+            <groupId>org.apache.maven.plugins</groupId>
+            <artifactId>maven-failsafe-plugin</artifactId>
+            <version>${version.surefire}</version>
           </plugin>
         </plugins>
       </build>
     </profile>
   </profiles>
+
 </project>
