@@ -35,7 +35,7 @@ import org.kie.pmml.evaluator.core.PMMLContextImpl;
 public class LogisticRegressionIrisDataTest extends AbstractPMMLRegressionTest {
 
     private static final String MODEL_NAME = "LogisticRegressionIrisData";
-    private static final String PMML_SOURCE = "/logisticRegressionIrisData.pmml";
+    private static final String PMML_SOURCE = "logisticRegressionIrisData.pmml";
     private static final String TARGET_FIELD = "Species";
     private static final String PROBABILITY_SETOSA_FIELD = "Probability_setosa";
     private static final String PROBABILITY_VERSICOLOR_FIELD = "Probability_versicolor";

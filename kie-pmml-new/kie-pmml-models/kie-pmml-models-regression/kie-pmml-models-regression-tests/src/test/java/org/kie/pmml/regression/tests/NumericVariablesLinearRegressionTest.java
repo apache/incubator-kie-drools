@@ -34,7 +34,7 @@ import org.kie.pmml.evaluator.core.PMMLContextImpl;
 public class NumericVariablesLinearRegressionTest extends AbstractPMMLRegressionTest {
 
     private static final String MODEL_NAME = "lm_Model";
-    private static final String PMML_SOURCE = "/numericVariablesLinearRegression.pmml";
+    private static final String PMML_SOURCE = "numericVariablesLinearRegression.pmml";
     private static final String TARGET_FIELD = "result";
 
     private double x;

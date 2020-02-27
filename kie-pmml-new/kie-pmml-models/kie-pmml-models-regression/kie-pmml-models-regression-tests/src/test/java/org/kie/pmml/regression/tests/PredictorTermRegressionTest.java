@@ -34,7 +34,7 @@ import org.kie.pmml.evaluator.core.PMMLContextImpl;
 public class PredictorTermRegressionTest extends AbstractPMMLRegressionTest {
 
     private static final String MODEL_NAME = "predictorTerm_Model";
-    private static final String PMML_SOURCE = "/predictorTermRegression.pmml";
+    private static final String PMML_SOURCE = "predictorTermRegression.pmml";
     private static final String TARGET_FIELD = "result";
 
     private double x;
