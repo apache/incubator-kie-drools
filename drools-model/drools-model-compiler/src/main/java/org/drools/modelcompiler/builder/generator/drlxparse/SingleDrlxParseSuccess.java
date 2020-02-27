@@ -29,6 +29,7 @@ import com.github.javaparser.StaticJavaParser;
 import com.github.javaparser.ast.expr.BinaryExpr;
 import com.github.javaparser.ast.expr.EnclosedExpr;
 import com.github.javaparser.ast.expr.Expression;
+import com.github.javaparser.ast.expr.MethodCallExpr;
 import com.github.javaparser.ast.expr.UnaryExpr;
 import org.drools.model.Index;
 import org.drools.modelcompiler.builder.generator.DRLIdGenerator;
@@ -306,6 +307,8 @@ public class SingleDrlxParseSuccess extends AbstractDrlxParseSuccess {
         if (expr instanceof BinaryExpr) {
             BinaryExpr.Operator op = (( BinaryExpr ) expr).getOperator();
             return op == AND || op == OR || op == EQUALS || op == NOT_EQUALS || op == LESS || op == GREATER || op == LESS_EQUALS || op == GREATER_EQUALS;
+        } else if (expr instanceof MethodCallExpr) {
+            return right != null;
         }
         return false;
     }
