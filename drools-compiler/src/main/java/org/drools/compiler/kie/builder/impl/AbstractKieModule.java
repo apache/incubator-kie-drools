@@ -24,6 +24,7 @@ import java.net.URL;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.Properties;
 
@@ -65,6 +66,7 @@ import org.kie.internal.builder.DecisionTableInputType;
 import org.kie.internal.builder.KnowledgeBuilder;
 import org.kie.internal.builder.KnowledgeBuilderConfiguration;
 import org.kie.internal.builder.ResourceChangeSet;
+import org.kie.internal.builder.RuleTemplateConfiguration;
 import org.kie.internal.io.ResourceTypeImpl;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -273,19 +275,8 @@ public abstract class AbstractKieModule
                                         ResourceType.determineResourceType(fileName);
 
             if (resourceType == ResourceType.DTABLE && conf instanceof DecisionTableConfiguration) {
-                for (RuleTemplateModel template : kieBaseModel.getRuleTemplates()) {
-                    if (template.getDtable().equals( fileName )) {
-                        Resource templateResource = getResource( template.getTemplate() );
-                        if ( templateResource != null ) {
-                            ( (DecisionTableConfiguration) conf ).addRuleTemplateConfiguration( templateResource, template.getRow(), template.getCol() );
-                        } else {
-                            throw new RuntimeException( "Cannot find resource: '" + template.getTemplate() + "'" );
-                        }
-                    }
-                }
-            }
-
-            if (conf == null) {
+                addDTableToCompiler( ckbuilder, kieBaseModel, fileName, resource, rcs, ( DecisionTableConfiguration ) conf );
+            } else if (conf == null) {
                 ckbuilder.add(resource, resourceType, rcs);
             } else {
                 ckbuilder.add(resource, resourceType, conf, rcs);
@@ -293,6 +284,89 @@ public abstract class AbstractKieModule
             return true;
         }
         return false;
+    }
+
+    private void addDTableToCompiler( CompositeKnowledgeBuilder ckbuilder, KieBaseModel kieBaseModel, String fileName, Resource resource, ResourceChangeSet rcs, DecisionTableConfiguration dtableConf ) {
+        for (RuleTemplateModel template : kieBaseModel.getRuleTemplates()) {
+            if (template.getDtable().equals( fileName )) {
+                Resource templateResource = getResource( template.getTemplate() );
+                if ( templateResource != null ) {
+                    dtableConf.addRuleTemplateConfiguration( templateResource, template.getRow(), template.getCol() );
+                } else {
+                    throw new RuntimeException( "Cannot find resource: '" + template.getTemplate() + "'" );
+                }
+            }
+        }
+        String sheetNames = dtableConf.getWorksheetName();
+        if (sheetNames == null || sheetNames.indexOf( ',' ) < 0) {
+            ckbuilder.add( resource, ResourceType.DTABLE, dtableConf, rcs );
+        } else {
+            for (String sheetName : sheetNames.split( "\\," ) ) {
+                ckbuilder.add( resource, ResourceType.DTABLE, new DecisionTableConfigurationDelegate(dtableConf, sheetName), rcs );
+            }
+        }
+    }
+
+    static class DecisionTableConfigurationDelegate implements DecisionTableConfiguration {
+
+        private final DecisionTableConfiguration delegate;
+        private final String sheetName;
+
+        DecisionTableConfigurationDelegate( DecisionTableConfiguration delegate, String sheetName ) {
+            this.delegate = delegate;
+            this.sheetName = sheetName;
+        }
+
+        @Override
+        public void setInputType( DecisionTableInputType inputType ) {
+            delegate.setInputType( inputType );
+
+        }
+
+        @Override
+        public DecisionTableInputType getInputType() {
+            return delegate.getInputType();
+        }
+
+        @Override
+        public void setWorksheetName( String name ) {
+            throw new UnsupportedOperationException();
+        }
+
+        @Override
+        public String getWorksheetName() {
+            return sheetName;
+        }
+
+        @Override
+        public void addRuleTemplateConfiguration( Resource template, int row, int col ) {
+            delegate.addRuleTemplateConfiguration( template, row, col );
+        }
+
+        @Override
+        public List<RuleTemplateConfiguration> getRuleTemplateConfigurations() {
+            return delegate.getRuleTemplateConfigurations();
+        }
+
+        @Override
+        public boolean isTrimCell() {
+            return delegate.isTrimCell();
+        }
+
+        @Override
+        public void setTrimCell( boolean trimCell ) {
+            delegate.setTrimCell( trimCell );
+        }
+
+        @Override
+        public Properties toProperties() {
+            return delegate.toProperties();
+        }
+
+        @Override
+        public ResourceConfiguration fromProperties( Properties prop ) {
+            return delegate.fromProperties( prop );
+        }
     }
 
     public boolean hasResource(String fileName) {
@@ -326,6 +400,10 @@ public abstract class AbstractKieModule
             }
         }
         conf = prop.isEmpty() ? null : ResourceTypeImpl.fromProperties(prop);
+        if (conf instanceof DecisionTableConfiguration && (( DecisionTableConfiguration ) conf).getWorksheetName() == null) {
+            (( DecisionTableConfiguration ) conf).setWorksheetName( prop.getProperty( "sheets" ) );
+        }
+
         resourceConfigurationCache.put(fileName, conf);
         return conf;
     }
