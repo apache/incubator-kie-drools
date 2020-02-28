@@ -15,6 +15,13 @@
   <name>Kogito Apps</name>
   <description>Kogito Apps</description>
 
+  <properties>
+    <version.frontend.plugin>1.9.1</version.frontend.plugin>
+    <version.node>v11.10.0</version.node>
+    <version.yarn>v1.13.0</version.yarn>
+  </properties>
+
+
   <dependencyManagement>
     <dependencies>
       <dependency>
