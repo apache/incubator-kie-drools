@@ -62,7 +62,7 @@ public class JavaDialectConfiguration
     }
 
     // This should be in alphabetic order to search with BinarySearch
-    public static final String[]  LANGUAGE_LEVELS = new String[]{"1.5", "1.6", "1.7", "1.8", "10", "11", "12", "9"};
+    protected static final String[]  LANGUAGE_LEVELS = new String[]{"1.5", "1.6", "1.7", "1.8", "10", "11", "12", "9"};
 
     private String                      languageLevel;
 
