@@ -20,14 +20,22 @@ import java.util.Map;
 import java.util.Optional;
 
 import org.kie.dmn.api.core.DMNContext;
+import org.kie.dmn.api.core.DMNMetadata;
 import org.kie.dmn.feel.lang.EvaluationContext;
 
 public class DMNContextFEELCtxWrapper implements DMNContext {
 
     private EvaluationContext wrapped;
+    private DMNMetadata metadata;
 
     public DMNContextFEELCtxWrapper(EvaluationContext wrapped) {
         this.wrapped = wrapped;
+        this.metadata = new DMNMetadataImpl();
+    }
+
+    public DMNContextFEELCtxWrapper(EvaluationContext wrapped, Map<String, Object> metadata) {
+        this.wrapped = wrapped;
+        this.metadata = new DMNMetadataImpl(metadata);
     }
 
     public void enterFrame() {
@@ -61,8 +69,13 @@ public class DMNContextFEELCtxWrapper implements DMNContext {
     }
 
     @Override
+    public DMNMetadata getMetadata() {
+        return metadata;
+    }
+
+    @Override
     public DMNContext clone() {
-        return new DMNContextImpl(wrapped.getAllValues());
+        return new DMNContextImpl(wrapped.getAllValues(), metadata.asMap());
     }
 
     @Override
