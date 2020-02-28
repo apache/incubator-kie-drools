@@ -13,7 +13,7 @@
   <artifactId>kogito-quarkus-bom</artifactId>
   <packaging>pom</packaging>
 
-  <name>Kogito Quarkus Extension BOM</name>
+  <name>Kogito - Quarkus - Extension BOM</name>
 
   <properties>
     <version.io.quarkus>1.3.0.Alpha2</version.io.quarkus>
