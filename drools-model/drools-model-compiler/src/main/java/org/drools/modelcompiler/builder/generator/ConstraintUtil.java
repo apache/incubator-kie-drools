@@ -3,10 +3,12 @@ package org.drools.modelcompiler.builder.generator;
 import java.util.Optional;
 
 import com.github.javaparser.ast.NodeList;
+import com.github.javaparser.ast.expr.BinaryExpr;
 import com.github.javaparser.ast.expr.Expression;
 import com.github.javaparser.ast.expr.MethodCallExpr;
 import com.github.javaparser.ast.expr.NameExpr;
 import com.github.javaparser.ast.expr.SimpleName;
+import com.github.javaparser.ast.expr.UnaryExpr;
 import org.drools.model.Index.ConstraintType;
 import org.drools.modelcompiler.builder.generator.drlxparse.DrlxParseResult;
 import org.drools.modelcompiler.builder.generator.drlxparse.SingleDrlxParseSuccess;
@@ -40,17 +42,41 @@ public class ConstraintUtil {
             SingleDrlxParseSuccess s = (SingleDrlxParseSuccess) drlxParseResult;
 
             // TODO: Add logic based on s.getExpr() class
+            Expression expr = s.getExpr();
+            System.out.println("expr.getClass() : " + expr.getClass());
+            System.out.println("expr : " + expr);
+            if (expr instanceof MethodCallExpr) {
+                normalizeForMethodExprCall(s);
+            } else if (expr instanceof BinaryExpr) {
+                BinaryExpr bExpr = (BinaryExpr) expr;
+                System.out.println("s.getLeft() = " + s.getLeft());
+                System.out.println("s.getRight() = " + s.getRight());
+                System.out.println("bExpr.getLeft().getClass() = " + bExpr.getLeft().getClass());
+                System.out.println("bExpr.getLeft() = " + bExpr.getLeft());
+                System.out.println("bExpr.getRight().getClass() = " + bExpr.getRight().getClass());
+                System.out.println("bExpr.getRight() = " + bExpr.getRight());
+            } else if (expr instanceof UnaryExpr) {
+                UnaryExpr uExpr = (UnaryExpr) expr;
+                System.out.println("s.getLeft() = " + s.getLeft());
+                System.out.println("s.getRight() = " + s.getRight());
+                System.out.println("uExpr.getExpression().getClass() = " + uExpr.getExpression().getClass());
+                System.out.println("uExpr.getExpression() = " + uExpr.getExpression());
 
-            ConstraintType type = s.getDecodeConstraintType();
-            TypedExpression left = s.getLeft();
-            TypedExpression right = s.getRight();
-            if (type != null && (type == ConstraintType.EQUAL || type == ConstraintType.NOT_EQUAL || type == ConstraintType.GREATER_THAN || type == ConstraintType.GREATER_OR_EQUAL || type == ConstraintType.LESS_THAN ||
-                                 type == ConstraintType.LESS_OR_EQUAL) && (isPropertyOnRight(left, right))) {
-                inverseExpression(s);
+                Expression expression = uExpr.getExpression();
             }
         }
 
         return pConstraint;
+    }
+
+    private static void normalizeForMethodExprCall(SingleDrlxParseSuccess s) {
+        ConstraintType type = s.getDecodeConstraintType();
+        TypedExpression left = s.getLeft();
+        TypedExpression right = s.getRight();
+        if (type != null && (type == ConstraintType.EQUAL || type == ConstraintType.NOT_EQUAL || type == ConstraintType.GREATER_THAN || type == ConstraintType.GREATER_OR_EQUAL || type == ConstraintType.LESS_THAN ||
+                             type == ConstraintType.LESS_OR_EQUAL) && (isPropertyOnRight(left, right))) {
+            inverseExpression(s);
+        }
     }
 
     private static boolean isPropertyOnRight(TypedExpression left, TypedExpression right) {
@@ -91,6 +117,9 @@ public class ConstraintUtil {
         }
         MethodCallExpr mExpr = (MethodCallExpr) expr;
         String mExprName = mExpr.getName().asString();
+        if (!mExprName.startsWith(METHOD_PREFIX)) {
+            return;
+        }
         String methodName = mExprName.substring(METHOD_PREFIX.length(), mExprName.length());
         NodeList<Expression> arguments = mExpr.getArguments();
         if (arguments.size() != 2) {
