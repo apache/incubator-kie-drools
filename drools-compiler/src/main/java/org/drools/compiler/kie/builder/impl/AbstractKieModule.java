@@ -400,7 +400,7 @@ public abstract class AbstractKieModule
             }
         }
         conf = prop.isEmpty() ? null : ResourceTypeImpl.fromProperties(prop);
-        if (conf instanceof DecisionTableConfiguration) {
+        if (conf instanceof DecisionTableConfiguration && (( DecisionTableConfiguration ) conf).getWorksheetName() == null) {
             (( DecisionTableConfiguration ) conf).setWorksheetName( prop.getProperty( "sheets" ) );
         }
 
