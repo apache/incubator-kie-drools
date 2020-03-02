@@ -76,7 +76,7 @@ public class FilterExpressionNode
                     } else if ( i < 0 && Math.abs( i ) <= list.size() ) {
                         return list.get( list.size() + i );
                     } else {
-                        ctx.notifyEvt( astEvent( Severity.ERROR, Msg.createMessage( Msg.INDEX_OUT_OF_BOUND ) ) );
+                        ctx.notifyEvt(astEvent(Severity.WARN, Msg.createMessage(Msg.INDEX_OUT_OF_BOUND, list.size(), i)));
                         return null;
                     }
                 } else {

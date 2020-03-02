@@ -161,7 +161,7 @@ public class CompiledFEELSupport {
                 } else if (i < 0 && Math.abs(i) <= list.size()) {
                     return list.get(list.size() + i);
                 } else {
-                    ctx.notifyEvt(() -> new ASTEventBase(Severity.ERROR, Msg.createMessage(Msg.INDEX_OUT_OF_BOUND), null));
+                    ctx.notifyEvt(() -> new ASTEventBase(Severity.WARN, Msg.createMessage(Msg.INDEX_OUT_OF_BOUND, list.size(), i), null));
                     return null;
                 }
             } else if (filterIndex == null) {

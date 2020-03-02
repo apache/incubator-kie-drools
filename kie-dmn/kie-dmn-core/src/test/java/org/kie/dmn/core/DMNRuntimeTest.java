@@ -1288,9 +1288,9 @@ public class DMNRuntimeTest extends BaseInterpretedVsCompiledTest {
         final DMNContext ctx2 = runtime.newContext();
         ctx2.set("CSA Trade Ratings", null);
         final DMNResult dmnResult2 = runtime.evaluateAll(dmnModel, ctx2 );
-        assertThat( DMNRuntimeUtil.formatMessages( dmnResult2.getMessages() ), dmnResult2.hasErrors(), is( false ) );
-        final DMNContext result2 = dmnResult2.getContext();
-        assertThat( result2.get("Trade Ratings"), nullValue() );
+        assertThat(DMNRuntimeUtil.formatMessages(dmnResult2.getMessages()), dmnResult2.hasErrors(), is(true));
+        assertThat(dmnResult2.getMessages().stream().anyMatch(m -> m.getMessageType().equals(DMNMessageType.FEEL_EVALUATION_ERROR)), is(true));
+        assertThat(dmnResult2.getDecisionResultByName("Trade Ratings").getEvaluationStatus(), is(DecisionEvaluationStatus.FAILED));
         
                 
         final DMNResult dmnResult3 = runtime.evaluateAll(dmnModel, runtime.newContext() );
@@ -2870,6 +2870,22 @@ public class DMNRuntimeTest extends BaseInterpretedVsCompiledTest {
         LOG.debug("{}", dmnResult);
         assertThat(DMNRuntimeUtil.formatMessages(dmnResult.getMessages()), dmnResult.hasErrors(), is(false));
         assertThat(dmnResult.getDecisionResultByName("Decision_decisionboolean").getResult(), is(output));
+    }
+
+    @Test
+    public void testErrorWhileLiteral() {
+        final DMNRuntime runtime = DMNRuntimeUtil.createRuntime("errorWhileLiteral.dmn", this.getClass());
+        runtime.addListener(new DMNRuntimeEventListener() {});
+        final DMNModel dmnModel = runtime.getModel("https://kiegroup.org/dmn/_8DF63435-B34B-4C19-A06B-C6A3416194A9", "testBasic");
+        assertThat(dmnModel, notNullValue());
+        assertThat(DMNRuntimeUtil.formatMessages(dmnModel.getMessages()), dmnModel.hasErrors(), is(false));
+
+        final DMNContext context = DMNFactory.newContext();
+
+        final DMNResult dmnResult = runtime.evaluateAll(dmnModel, context);
+        LOG.debug("{}", dmnResult);
+        assertThat(DMNRuntimeUtil.formatMessages(dmnResult.getMessages()), dmnResult.hasErrors(), is(true));
+        assertThat(dmnResult.getDecisionResultByName("Decision-1").getEvaluationStatus(), is(DecisionEvaluationStatus.FAILED));
     }
 }
 

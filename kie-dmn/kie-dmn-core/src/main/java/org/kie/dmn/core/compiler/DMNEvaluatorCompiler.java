@@ -900,7 +900,7 @@ public class DMNEvaluatorCompiler {
                                                                                         exprText,
                                                                                         exprName,
                                                                                         node.getIdentifierString() );
-                    evaluator = new DMNLiteralExpressionEvaluator( compiledExpression );
+                    evaluator = new DMNLiteralExpressionEvaluator(compiledExpression, expression);
                 } catch ( Throwable e ) {
                     MsgUtil.reportMessage( logger,
                                            DMNMessage.Severity.ERROR,
