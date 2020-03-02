@@ -124,11 +124,11 @@ public class DMNLiteralExpressionEvaluator
 
     static class LiteralInvocationListener implements FEELEventListener {
 
-        public final List<FEELEvent> events = new ArrayList<FEELEvent>();
+        public final List<FEELEvent> events = new ArrayList<>();
 
         @Override
         public void onEvent(FEELEvent event) {
             events.add(event);
         }
-    };
+    }
 }
