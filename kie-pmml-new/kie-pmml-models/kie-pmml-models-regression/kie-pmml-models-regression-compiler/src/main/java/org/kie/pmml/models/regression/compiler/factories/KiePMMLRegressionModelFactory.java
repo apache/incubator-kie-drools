@@ -61,16 +61,17 @@ public class KiePMMLRegressionModelFactory {
         }
         final OP_TYPE opType = targetDataField
                 .map(field -> OP_TYPE.byName(field.getOpType().value())).orElseThrow(() -> new KiePMMLException("Failed to find OpType for TargetField"));
+        return null;
 
-        return KiePMMLRegressionModel.builder(name, getKiePMMLExtensions(model.getExtensions()), MINING_FUNCTION.byName(model.getMiningFunction().value()), getRegressionTables(model.getRegressionTables()), opType)
-                .withAlgorithmName(model.getAlgorithmName())
-                .withModelType(model.getModelType() != null ? MODEL_TYPE.byName(model.getModelType().value()) : null)
-                .withRegressionNormalizationMethod(REGRESSION_NORMALIZATION_METHOD.byName(model.getNormalizationMethod().value()))
-                .withScorable(model.isScorable())
-                .withTargetField(targetFieldName.orElse(null))
-                .withTargetValues(targetDataField.map(dataField -> dataField.getValues().stream().map(Value::getValue).collect(Collectors.toList())).orElse(Collections.emptyList()))
-                .withOutputFields(outputFields)
-                .build();
+//        return KiePMMLRegressionModel.builder(name, getKiePMMLExtensions(model.getExtensions()), MINING_FUNCTION.byName(model.getMiningFunction().value()), getRegressionTables(model.getRegressionTables()), opType)
+//                .withAlgorithmName(model.getAlgorithmName())
+//                .withModelType(model.getModelType() != null ? MODEL_TYPE.byName(model.getModelType().value()) : null)
+//                .withRegressionNormalizationMethod(REGRESSION_NORMALIZATION_METHOD.byName(model.getNormalizationMethod().value()))
+//                .withScorable(model.isScorable())
+//                .withTargetField(targetFieldName.orElse(null))
+//                .withTargetValues(targetDataField.map(dataField -> dataField.getValues().stream().map(Value::getValue).collect(Collectors.toList())).orElse(Collections.emptyList()))
+//                .withOutputFields(outputFields)
+//                .build();
     }
 
     private static KiePMMLOutputField getKiePMMLOutputField(OutputField outputField) {

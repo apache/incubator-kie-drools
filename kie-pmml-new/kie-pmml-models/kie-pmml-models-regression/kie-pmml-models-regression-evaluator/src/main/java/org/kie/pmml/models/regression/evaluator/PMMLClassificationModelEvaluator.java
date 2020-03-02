@@ -49,7 +49,8 @@ public class PMMLClassificationModelEvaluator {
     }
 
     public static PMML4Result evaluateClassification(KiePMMLRegressionModel regressionModel, PMMLContext context) {
-        return evaluateClassification(regressionModel.getTargetField(), regressionModel.getRegressionNormalizationMethod(), regressionModel.getTargetOpType(), regressionModel.getRegressionTables(), regressionModel.getOutputFields(), context.getRequestData());
+        return null;
+//        return evaluateClassification(regressionModel.getTargetField(), regressionModel.getRegressionNormalizationMethod(), regressionModel.getTargetOpType(), regressionModel.getRegressionTables(), regressionModel.getOutputFields(), context.getRequestData());
     }
 
     protected static PMML4Result evaluateClassification(String targetFieldName, REGRESSION_NORMALIZATION_METHOD regressionNormalizationMethod, OP_TYPE opType, final List<KiePMMLRegressionTable> regressionTables, final Optional<List<KiePMMLOutputField>> outputFields, PMMLRequestData requestData) {

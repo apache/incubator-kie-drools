@@ -50,11 +50,11 @@ public class PMMLClassificationModelEvaluatorTest {
     private static final String MODEL_NAME = "Sample for logistic regression";
     private static final String TARGET_FIELD_NAME = "jobcat";
 
-    @Test
-    public void evaluateClassification() {
-        final PMML4Result retrieved = PMMLClassificationModelEvaluator.evaluateClassification(getModel(), getContext());
-        commonVerifyPMM4Result(retrieved);
-    }
+//    @Test
+//    public void evaluateClassification() {
+//        final PMML4Result retrieved = PMMLClassificationModelEvaluator.evaluateClassification(getModel(), getContext());
+//        commonVerifyPMM4Result(retrieved);
+//    }
 
     @Test
     public void testEvaluateClassification() {
@@ -306,11 +306,11 @@ public class PMMLClassificationModelEvaluatorTest {
         return TestUtils.getPMMLRequestData(MODEL_NAME, inputMap);
     }
 
-    private KiePMMLRegressionModel getModel() {
-        return KiePMMLRegressionModel.builder(MODEL_NAME, Collections.emptyList(), MINING_FUNCTION.CLASSIFICATION, getTables(), OP_TYPE.CATEGORICAL)
-                .withTargetField(TARGET_FIELD_NAME)
-                .build();
-    }
+//    private KiePMMLRegressionModel getModel() {
+//        return KiePMMLRegressionModel.builder(MODEL_NAME, Collections.emptyList(), MINING_FUNCTION.CLASSIFICATION, getTables(), OP_TYPE.CATEGORICAL)
+//                .withTargetField(TARGET_FIELD_NAME)
+//                .build();
+//    }
 
     private List<KiePMMLRegressionTable> getTables() {
         Set<KiePMMLNumericPredictor> firstNumericPredictors = new HashSet<>(Arrays.asList(

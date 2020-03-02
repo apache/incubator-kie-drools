@@ -26,7 +26,6 @@ import org.kie.api.pmml.PMMLRequestData;
 import org.kie.pmml.commons.model.enums.MINING_FUNCTION;
 import org.kie.pmml.commons.model.enums.OP_TYPE;
 import org.kie.pmml.evaluator.core.utils.PMMLRequestDataBuilder;
-import org.kie.pmml.models.regression.model.KiePMMLRegressionModel;
 import org.kie.pmml.models.regression.model.KiePMMLRegressionTable;
 import org.kie.pmml.models.regression.model.enums.MODEL_TYPE;
 import org.kie.pmml.models.regression.model.enums.REGRESSION_NORMALIZATION_METHOD;
@@ -55,15 +54,15 @@ public class TestUtils {
     public static final double SALARY_COEFF = 0.01;
     public static final List<KiePMMLRegressionTable> REGRESSION_TABLES = Collections.singletonList(getKiePMMLRegressionTable());
 
-    public static KiePMMLRegressionModel getKiePMMLRegressionModel() {
-        return KiePMMLRegressionModel.builder(MODEL_NAME, Collections.emptyList(), _MINING_FUNCTION, Collections.singletonList(getKiePMMLRegressionTable()), _OP_TYPE)
-                .withAlgorithmName(ALGORITHM_NAME)
-                .withModelType(_MODEL_TYPE)
-                .withRegressionNormalizationMethod(_REGRESSION_NORMALIZATION_METHOD)
-                .withScorable(SCORABLE)
-                .withTargetField(TARGETFIELD_NAME)
-                .build();
-    }
+//    public static KiePMMLRegressionModel getKiePMMLRegressionModel() {
+//        return KiePMMLRegressionModel.builder(MODEL_NAME, Collections.emptyList(), _MINING_FUNCTION, Collections.singletonList(getKiePMMLRegressionTable()), _OP_TYPE)
+//                .withAlgorithmName(ALGORITHM_NAME)
+//                .withModelType(_MODEL_TYPE)
+//                .withRegressionNormalizationMethod(_REGRESSION_NORMALIZATION_METHOD)
+//                .withScorable(SCORABLE)
+//                .withTargetField(TARGETFIELD_NAME)
+//                .build();
+//    }
 
     public static KiePMMLRegressionTable getKiePMMLRegressionTable() {
         return KiePMMLRegressionTable.builder("REGRESSION_TABLE", Collections.emptyList(), INTERCEPT)

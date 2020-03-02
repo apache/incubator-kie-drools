@@ -16,7 +16,6 @@
 package org.kie.pmml.models.regression.evaluator;
 
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 import java.util.concurrent.atomic.AtomicReference;
 
@@ -40,9 +39,12 @@ public class PMMLRegresssionModelEvaluator {
         // Avoid instantiation
     }
 
+
+
     public static PMML4Result evaluateRegression(KiePMMLRegressionModel regressionModel, PMMLContext context) {
-        final List<KiePMMLRegressionTable> regressionTables = regressionModel.getRegressionTables();
-        return evaluateRegression(regressionModel.getTargetField(), regressionModel.getRegressionNormalizationMethod(), regressionModel.getTargetOpType(), regressionTables.get(0), context.getRequestData());
+        return null;
+//        final List<KiePMMLRegressionTable> regressionTables = regressionModel.getRegressionTables();
+//        return evaluateRegression(regressionModel.getTargetField(), regressionModel.getRegressionNormalizationMethod(), regressionModel.getTargetOpType(), regressionTables.get(0), context.getRequestData());
     }
 
     public static PMML4Result evaluateRegression(String targetFieldName, REGRESSION_NORMALIZATION_METHOD regressionNormalizationMethod, OP_TYPE opType, KiePMMLRegressionTable regressionTable, PMMLRequestData requestData) {

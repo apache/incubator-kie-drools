@@ -16,6 +16,7 @@
 package org.kie.pmml.compiler.commons.mocks;
 
 import java.util.List;
+import java.util.Map;
 
 import org.kie.pmml.commons.model.KiePMMLExtension;
 import org.kie.pmml.commons.model.KiePMMLModel;
@@ -29,6 +30,11 @@ public class KiePMMLTestingModel extends KiePMMLModel {
     public static final PMML_MODEL PMML_MODEL_TYPE = PMML_MODEL.REGRESSION_MODEL;
 
     protected KiePMMLTestingModel(String name, List<KiePMMLExtension> extensions) {
-        super(name, extensions);
+        super(name);
+    }
+
+    @Override
+    public Object evaluate(Map<String, Object> requestData) {
+        return null;
     }
 }

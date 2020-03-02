@@ -43,6 +43,10 @@
       <artifactId>kie-test-util</artifactId>
       <scope>test</scope>
     </dependency>
+    <dependency>
+      <groupId>com.github.javaparser</groupId>
+      <artifactId>javaparser-core</artifactId>
+    </dependency>
   </dependencies>
 
 </project>
