@@ -129,7 +129,7 @@ public class ConstraintParser {
         }
 
         if ( drlxExpr instanceof UnaryExpr ) {
-            return parseUnaryExpr( (UnaryExpr) drlxExpr, patternType, bindingId, constraint, drlxExpr, hasBind, isPositional, isEnclosed);
+            return parseUnaryExpr( (UnaryExpr) drlxExpr, patternType, bindingId, constraint, drlxExpr, hasBind, isPositional);
         }
 
         if ( drlxExpr instanceof PointFreeExpr ) {
@@ -280,9 +280,14 @@ public class ConstraintParser {
     }
 
     private DrlxParseResult parseUnaryExpr( UnaryExpr unaryExpr, Class<?> patternType, String bindingId, ConstraintExpression constraint, Expression drlxExpr,
-                                            boolean hasBind, boolean isPositional, boolean isEnclosed) {
+                                            boolean hasBind, boolean isPositional) {
         TypedExpressionResult typedExpressionResult = new ExpressionTyper(context, patternType, bindingId, isPositional).toTypedExpression(unaryExpr);
-        TypedExpression typedExpression = typedExpressionResult.getTypedExpression().get();
+        Optional<TypedExpression> opt = typedExpressionResult.getTypedExpression();
+        if (!opt.isPresent()) {
+            return new DrlxParseFail(new ParseExpressionErrorResult(drlxExpr));
+        }
+        TypedExpression typedExpression = opt.get();
+
         SingleDrlxParseSuccess innerResult = (SingleDrlxParseSuccess) getDrlxParseResult(patternType, bindingId, constraint, unaryExpr.getExpression(), hasBind, isPositional);
 
         Expression innerExpression;
