@@ -1,0 +1,39 @@
+<configuration>
+
+  <appender name="STDOUT" class="ch.qos.logback.core.ConsoleAppender">
+    <target>System.out</target>
+    <encoder>
+      <pattern>%d{HH:mm:ss.SSS} [%thread] %-5level %logger{36} %M - %msg%n</pattern>
+    </encoder>
+  </appender>
+  <appender name="STDERR" class="ch.qos.logback.core.ConsoleAppender">
+    <target>System.err</target>
+    <encoder>
+      <pattern>%d{HH:mm:ss.SSS} [%thread] %-5level %logger{36} - %msg%n</pattern>
+    </encoder>
+  </appender>
+
+
+  <logger name="org.hacep" level="info" additivity="false">
+    <appender-ref ref="STDOUT"/>
+  </logger>
+
+  <logger name="org.apache.kafka" level="off" additivity="false">
+    <appender-ref ref="STDOUT"/>
+  </logger>
+  <logger name="org.apache.zookeeper" level="off" additivity="false">
+    <appender-ref ref="STDOUT"/>
+  </logger>
+
+  <logger name="I0Itec.zkclient" level="off" additivity="false">
+    <appender-ref ref="STDOUT"/>
+  </logger>
+
+  <logger name="kafka.controller" level="off" additivity="false">
+    <appender-ref ref="STDOUT"/>
+  </logger>
+
+  <root level="warn">
+    <appender-ref ref="STDOUT" />
+  </root>
+</configuration>
