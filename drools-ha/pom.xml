@@ -12,19 +12,10 @@
 
   <properties>
     <alphanetworkCompilerEnabled>false</alphanetworkCompilerEnabled>
-    <dockerImageName>quickstarter/openshift-kie-springboot</dockerImageName>
-    <failOnMissingWebXml>false</failOnMissingWebXml>
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
     <version.annotations>2.0.1.Final</version.annotations>
-    <version.fabric8.plugin>4.2.0</version.fabric8.plugin>
-    <version.fabric8.docker-plugin>0.30.0</version.fabric8.docker-plugin>
     <surefire.forkCount>1</surefire.forkCount>
-    <version.javax.el>3.0.1-b08</version.javax.el>
-    <version.javax.ws.rs>2.0.0.Final</version.javax.ws.rs>
     <version.org.apache.kafka>2.2.1</version.org.apache.kafka>
-    <version.k8s.client>4.6.0</version.k8s.client>
-    <version.logback.kafka.appender>0.2.0-RC2</version.logback.kafka.appender>
-    <version.servlet>2.0.0.Final</version.servlet>
     <version.slf4j>1.7.26</version.slf4j>
   </properties>
 
