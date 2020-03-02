@@ -220,8 +220,8 @@
     <module>kogito-codegen</module>
     <module>addons</module>
     <module>kogito-maven-plugin</module>
-    <module>archetypes</module>
     <module>kogito-quarkus-extension</module>
+    <module>archetypes</module>
   </modules>
 
   <dependencyManagement>
