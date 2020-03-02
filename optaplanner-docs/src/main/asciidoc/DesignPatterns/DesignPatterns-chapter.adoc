@@ -205,14 +205,36 @@ Between planning entities, there are three ways to create gaps:
 
 In some use case there is an overhead time for certain tasks,
 which can be shared by multiple tasks, of those are consecutively scheduled.
+Basically, the solver receives a _discount_ if it combines those tasks.
+
 For example when delivering pizza to two different customers,
 a food delivery service combines both deliveries into a single trip,
-if both customers ordered from the same restaurant around the same time and live in the same part of the city.
+if those two customers ordered from the same restaurant around the same time and live in the same part of the city.
 
 image::DesignPatterns/chainedThroughTimeAutomaticCollapse.png[align="center"]
 
 Implement the automatic collapse in the <<customVariableListener,customer variable listener>>
 that calculates the start and end times of each task.
+
+
+[[chainedThroughTimeAutomaticDelayUntilLast]]
+
+==== Chained through time: automatic delay until last
+
+Some tasks require more than one person to execute.
+In such cases, both employees need to be there at the same time,
+before the work can start.
+
+For example when assembling furniture, assembling a bed is a two-person job.
+
+image::DesignPatterns/chainedThroughTimeAutomaticDelayUntilLast.png[align="center"]
+
+Implement the automatic delay in the <<customVariableListener,customer variable listener>>
+that calculates the arrival, start and end times of each task.
+*Separate the arrival time from the start time.*
+Additionally, add loop detection to avoid an infinite loop:
+
+image::DesignPatterns/chainedThroughTimeAutomaticDelayUntilLastLoop.png[align="center"]
 
 
 [[timeBucketPattern]]
