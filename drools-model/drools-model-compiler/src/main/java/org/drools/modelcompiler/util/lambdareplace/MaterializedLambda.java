@@ -26,6 +26,7 @@ import com.github.javaparser.StaticJavaParser;
 import com.github.javaparser.ast.CompilationUnit;
 import com.github.javaparser.ast.Modifier;
 import com.github.javaparser.ast.NodeList;
+import com.github.javaparser.ast.PackageDeclaration;
 import com.github.javaparser.ast.body.EnumConstantDeclaration;
 import com.github.javaparser.ast.body.EnumDeclaration;
 import com.github.javaparser.ast.body.MethodDeclaration;
@@ -33,6 +34,7 @@ import com.github.javaparser.ast.body.Parameter;
 import com.github.javaparser.ast.expr.Expression;
 import com.github.javaparser.ast.expr.LambdaExpr;
 import com.github.javaparser.ast.expr.MethodCallExpr;
+import com.github.javaparser.ast.expr.Name;
 import com.github.javaparser.ast.expr.NameExpr;
 import com.github.javaparser.ast.expr.StringLiteralExpr;
 import com.github.javaparser.ast.nodeTypes.NodeWithMembers;
@@ -81,7 +83,13 @@ abstract class MaterializedLambda {
         String className = className(MATERIALIZED_LAMBDA_PRETTY_PRINTER.print(compilationUnit));
         classDeclaration.setName(className);
 
-        return new CreatedClass(compilationUnit, className, packageName);
+        PackageDeclaration packageDeclaration = compilationUnit.getPackageDeclaration().get();
+        String oldPackage = packageDeclaration.getName().getIdentifier();
+
+        String newPackageName = oldPackage + "." + className;
+        compilationUnit.setPackageDeclaration(new PackageDeclaration(new Name(newPackageName)));
+
+        return new CreatedClass(compilationUnit, className, newPackageName);
     }
 
     private void addImports(Collection<String> imports, Collection<String> staticImports, CompilationUnit compilationUnit) {
