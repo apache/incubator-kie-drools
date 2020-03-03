@@ -51,7 +51,7 @@ abstract class MaterializedLambda {
     final List<LambdaParameter> lambdaParameters = new ArrayList<>();
 
     protected final String packageName;
-    protected String temporaryClassName;
+    protected String temporaryClassHash;
 
     LambdaExpr lambdaExpr;
     private String ruleClassName;
@@ -69,7 +69,7 @@ abstract class MaterializedLambda {
         }
 
         lambdaExpr = expression.asLambdaExpr();
-        temporaryClassName = className(expressionString);
+        temporaryClassHash = classHash(expressionString);
 
         parseParameters();
 
@@ -80,9 +80,9 @@ abstract class MaterializedLambda {
 
         createMethodDeclaration(classDeclaration);
 
-        String hashName = className(MATERIALIZED_LAMBDA_PRETTY_PRINTER.print(compilationUnit));
-        String isolatedPackageName = getIsolatedPackageName(hashName);
-        String className = String.format("%s%s", getPrefix(), hashName);
+        String classHash = classHash(MATERIALIZED_LAMBDA_PRETTY_PRINTER.print(compilationUnit));
+        String isolatedPackageName = getIsolatedPackageName(classHash);
+        String className = String.format("%s%s", getPrefix(), classHash);
 
         classDeclaration.setName(className);
         compilationUnit.setPackageDeclaration(new PackageDeclaration(new Name(isolatedPackageName)));
@@ -135,7 +135,7 @@ abstract class MaterializedLambda {
     }
 
     protected EnumDeclaration create(CompilationUnit compilationUnit) {
-        EnumDeclaration lambdaClass = compilationUnit.addEnum(temporaryClassName);
+        EnumDeclaration lambdaClass = compilationUnit.addEnum(temporaryClassHash);
         lambdaClass.addAnnotation(org.drools.compiler.kie.builder.MaterializedLambda.class.getCanonicalName());
         lambdaClass.setImplementedTypes(createImplementedType());
         lambdaClass.addEntry(new EnumConstantDeclaration("INSTANCE"));
@@ -162,7 +162,7 @@ abstract class MaterializedLambda {
                 .collect(Collectors.toList());
     }
 
-    protected String className(String sourceCode) {
+    protected String classHash(String sourceCode) {
         return md5Hash(sourceCode);
     }
 
