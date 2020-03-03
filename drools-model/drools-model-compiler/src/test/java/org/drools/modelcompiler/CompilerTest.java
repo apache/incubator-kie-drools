@@ -52,6 +52,7 @@ import org.kie.api.runtime.KieSession;
 import org.kie.api.runtime.process.ProcessContext;
 import org.kie.api.runtime.rule.FactHandle;
 
+import static org.hamcrest.CoreMatchers.containsString;
 import static org.hamcrest.CoreMatchers.startsWith;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
@@ -2001,7 +2002,7 @@ public class CompilerTest extends BaseModelTest {
             field.setAccessible(true);
             org.drools.model.Consequence internalConsequence = (org.drools.model.Consequence) field.get(consequence);
             Object lambda = ((IntrospectableLambda) internalConsequence.getBlock()).getLambda();
-            assertThat(lambda.getClass().getName(), startsWith("defaultpkg.LambdaConsequence")); // materialized Lambda
+            assertThat(lambda.getClass().getName(), containsString("LambdaConsequence")); // materialized Lambda
         }
 
         Person me = new Person( "Mario", 40 );

@@ -73,23 +73,31 @@ abstract class MaterializedLambda {
 
         parseParameters();
 
-        CompilationUnit compilationUnit = new CompilationUnit(packageName);
+        CompilationUnit compilationUnit = new CompilationUnit();
         addImports(imports, staticImports, compilationUnit);
 
         EnumDeclaration classDeclaration = create(compilationUnit);
 
         createMethodDeclaration(classDeclaration);
 
-        String className = className(MATERIALIZED_LAMBDA_PRETTY_PRINTER.print(compilationUnit));
+        String hashName = className(MATERIALIZED_LAMBDA_PRETTY_PRINTER.print(compilationUnit));
+        String isolatedPackageName = getIsolatedPackageName(hashName);
+        String className = String.format("%s%s", getPrefix(), hashName);
+
         classDeclaration.setName(className);
+        compilationUnit.setPackageDeclaration(new PackageDeclaration(new Name(isolatedPackageName)));
 
-        PackageDeclaration packageDeclaration = compilationUnit.getPackageDeclaration().get();
-        String oldPackage = packageDeclaration.getName().getIdentifier();
+        return new CreatedClass(compilationUnit, className, isolatedPackageName);
+    }
 
-        String newPackageName = oldPackage + "." + className;
-        compilationUnit.setPackageDeclaration(new PackageDeclaration(new Name(newPackageName)));
 
-        return new CreatedClass(compilationUnit, className, newPackageName);
+    /*
+        Externalised Lambda need to be isolated in a separate packages because putting too many classes
+        in the same package as the rule might break Java 8 compiler while importing *
+        We aggregate the Lambda classes based on the first two letters of the hash
+     */
+    private String getIsolatedPackageName(String className) {
+        return String.format("%s.P%s", packageName, className.substring(0, 2));
     }
 
     private void addImports(Collection<String> imports, Collection<String> staticImports, CompilationUnit compilationUnit) {
@@ -154,7 +162,11 @@ abstract class MaterializedLambda {
                 .collect(Collectors.toList());
     }
 
-    abstract String className(String sourceCode);
+    protected String className(String sourceCode) {
+        return md5Hash(sourceCode);
+    }
+
+    abstract String getPrefix();
 
     abstract ClassOrInterfaceType functionType();
 

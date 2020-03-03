@@ -46,17 +46,17 @@ class PatternTestHarness {
         Rule rule = rule("beta")
                 .build(
                         pattern(markV)
-                                .expr("exprA", mypackage.LambdaPredicateB79EF47A20EF5A14907461DD258F6B5B.INSTANCE,
-                                      alphaIndexedBy(String.class, Index.ConstraintType.EQUAL, 1, mypackage.LambdaExtractorC0580DCF55156DB718A1BF6A277561D8.INSTANCE, "Mark"),
+                                .expr("exprA", mypackage.P69.LambdaPredicate692822A3ABA827C58CD70BCCDF6B142C.INSTANCE,
+                                      alphaIndexedBy(String.class, Index.ConstraintType.EQUAL, 1, mypackage.PF1.LambdaExtractorF1957A9B73DCC850FB61E5A94549014A.INSTANCE, "Mark"),
                                       reactOn("name", "age")),
                         pattern(olderV)
-                                .expr("exprB", mypackage.LambdaPredicateF94E637E0793B5BA5EC5501FC8A76BE3.INSTANCE,
-                                      alphaIndexedBy(String.class, Index.ConstraintType.NOT_EQUAL, 1, mypackage.LambdaExtractorC0580DCF55156DB718A1BF6A277561D8.INSTANCE, "Mark"),
+                                .expr("exprB", mypackage.PE3.LambdaPredicateE31E97736774182C8A51C4478B600F6F.INSTANCE,
+                                      alphaIndexedBy(String.class, Index.ConstraintType.NOT_EQUAL, 1, mypackage.PF1.LambdaExtractorF1957A9B73DCC850FB61E5A94549014A.INSTANCE, "Mark"),
                                       reactOn("name"))
-                                .expr("exprC", markV, mypackage.LambdaPredicate990437E290E3F025EA5B68860D6AEBF7.INSTANCE,
-                                      betaIndexedBy(int.class, Index.ConstraintType.GREATER_THAN, 0, mypackage.LambdaExtractorAA53F96629A18E77855D21BD98CF5095.INSTANCE, mypackage.LambdaExtractorAA53F96629A18E77855D21BD98CF5095.INSTANCE),
+                                .expr("exprC", markV,  mypackage.P75.LambdaPredicate750358A2A9F1C9B968C6288BBE7E0F71.INSTANCE,
+                                      betaIndexedBy(int.class, Index.ConstraintType.GREATER_THAN, 0, mypackage.P6F.LambdaExtractor6F66D90C869211C6AEC2E67F99D874D8.INSTANCE, mypackage.P6F.LambdaExtractor6F66D90C869211C6AEC2E67F99D874D8.INSTANCE),
                                       reactOn("age")),
-                        on(olderV, markV).execute(mypackage.LambdaConsequence5B6E6A75E5A49DF713DD9058863AA384.INSTANCE)
+                        on(olderV, markV).execute(mypackage.P73.LambdaConsequence73B957CDB8CD5D5A17BDA94A7D62ED86.INSTANCE)
                 );
     }
 }
