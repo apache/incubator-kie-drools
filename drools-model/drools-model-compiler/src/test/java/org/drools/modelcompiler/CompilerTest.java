@@ -46,8 +46,6 @@ import org.drools.modelcompiler.domain.Toy;
 import org.drools.modelcompiler.domain.Woman;
 import org.junit.Ignore;
 import org.junit.Test;
-import org.kie.api.KieServices;
-import org.kie.api.builder.model.KieModuleModel;
 import org.kie.api.runtime.KieSession;
 import org.kie.api.runtime.process.ProcessContext;
 import org.kie.api.runtime.rule.FactHandle;
@@ -1990,10 +1988,7 @@ public class CompilerTest extends BaseModelTest {
                 "  System.out.println(\"Hello\");\n" +
                 "end";
 
-        KieModuleModel kieModuleModel = KieServices.get().newKieModuleModel();
-        kieModuleModel.setConfigurationProperty("drools.externaliseCanonicalModelLambda", Boolean.TRUE.toString());
-
-        KieSession ksession = getKieSession(kieModuleModel, str );
+        KieSession ksession = getKieSession( str );
 
         if (testRunType == RUN_TYPE.FLOW_DSL || testRunType == RUN_TYPE.PATTERN_DSL) {
             RuleImpl rule = (RuleImpl)ksession.getKieBase().getRule("defaultpkg", "R");
