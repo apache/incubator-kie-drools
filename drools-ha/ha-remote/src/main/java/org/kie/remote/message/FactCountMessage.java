@@ -17,9 +17,6 @@ package org.kie.remote.message;
 
 import java.io.Serializable;
 
-import org.kie.remote.message.AbstractMessage;
-import org.kie.remote.message.ResultMessage;
-
 public class FactCountMessage extends AbstractMessage implements Serializable, ResultMessage<Long> {
 
     private long factCount;
@@ -27,8 +24,7 @@ public class FactCountMessage extends AbstractMessage implements Serializable, R
     /* Empty constructor for serialization */
     public FactCountMessage(){}
 
-    public FactCountMessage(String id,
-                            long factCount) {
+    public FactCountMessage(String id, long factCount) {
         super(id);
         this.factCount = factCount;
     }

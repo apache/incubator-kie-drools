@@ -30,7 +30,7 @@ public class UpdateKJarCommand extends AbstractCommand implements VisitableComma
     public UpdateKJarCommand(String kjarGAV){
         super(UUID.randomUUID().toString());
         this.kJarGAV = kjarGAV;
-        String parts[]= this.kJarGAV.split(":");
+        String[] parts= this.kJarGAV.split(":");
         groupID = parts[0];
         artifactID = parts[1];
         version = parts[2];

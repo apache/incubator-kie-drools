@@ -18,19 +18,15 @@ package org.kie.remote.message;
 import java.io.Serializable;
 import java.util.Queue;
 
-import org.kie.remote.message.AbstractMessage;
-import org.kie.remote.message.Message;
-
 public class ControlMessage extends AbstractMessage implements Serializable, Message {
 
     protected long offset;
-    protected Queue<Object> sideEffects;
+    protected Queue<Serializable> sideEffects;
 
     /* Empty constructor for serialization */
     public ControlMessage() {}
 
-    public ControlMessage( String id,
-                           Queue<Object> sideEffects) {
+    public ControlMessage( String id, Queue<Serializable> sideEffects) {
         super(id);
         this.sideEffects = sideEffects;
     }
@@ -43,7 +39,7 @@ public class ControlMessage extends AbstractMessage implements Serializable, Mes
         this.offset = offset;
     }
 
-    public Queue<Object> getSideEffects() {
+    public Queue<Serializable> getSideEffects() {
         return sideEffects;
     }
 

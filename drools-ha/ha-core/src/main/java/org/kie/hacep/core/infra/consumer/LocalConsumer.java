@@ -30,7 +30,7 @@ public class LocalConsumer implements EventConsumer {
     private final EnvConfig envConfig;
     private ConsumerHandler consumerHandler;
     private State currentState;
-    private Logger logger = LoggerFactory.getLogger(EventConsumer.class);
+    private Logger logger = LoggerFactory.getLogger(LocalConsumer.class);
 
     public LocalConsumer(EnvConfig config) {
         this.envConfig = config;

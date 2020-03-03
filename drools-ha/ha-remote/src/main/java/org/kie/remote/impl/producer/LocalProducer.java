@@ -27,12 +27,10 @@ public class LocalProducer implements Producer {
     private final LocalMessageSystem queue = LocalMessageSystem.get();
 
     @Override
-    public void start(Properties properties) {
-    }
+    public void start(Properties properties) { /*do nothing*/}
 
     @Override
-    public void stop() {
-    }
+    public void stop() { /*do nothing*/}
 
     @Override
     public <T> void produceSync(String topicName, String key, ResultMessage<T> object) {

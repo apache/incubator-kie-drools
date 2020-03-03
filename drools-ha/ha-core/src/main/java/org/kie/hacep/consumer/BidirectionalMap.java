@@ -16,12 +16,17 @@
 
 package org.kie.hacep.consumer;
 
+import java.io.IOException;
+import java.io.ObjectInputStream;
+import java.io.ObjectOutputStream;
 import java.io.Serializable;
 import java.util.HashMap;
+import java.util.Iterator;
 import java.util.Map;
 
 public class BidirectionalMap<K, V> extends HashMap<K, V> implements Serializable {
-    private final Map<V, K> inversedMap = new HashMap<V, K>();
+
+    private Map<V, K> inversedMap = new HashMap<>();
 
     @Override
     public V remove(Object key) {
@@ -44,5 +49,18 @@ public class BidirectionalMap<K, V> extends HashMap<K, V> implements Serializabl
         K key = inversedMap.get(value);
         super.remove( key );
         return key;
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+        return super.equals(obj);
+    }
+
+    private void readObject(ObjectInputStream inputStream) throws ClassNotFoundException, IOException {
+        inversedMap = (Map<V, K>) inputStream.readObject();
+    }
+
+    private void writeObject(ObjectOutputStream outputStream) throws IOException {
+        outputStream.writeObject(inversedMap);
     }
 }

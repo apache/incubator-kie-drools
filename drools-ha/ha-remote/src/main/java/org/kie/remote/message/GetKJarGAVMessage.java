@@ -17,9 +17,6 @@ package org.kie.remote.message;
 
 import java.io.Serializable;
 
-import org.kie.remote.message.AbstractMessage;
-import org.kie.remote.message.ResultMessage;
-
 public class GetKJarGAVMessage extends AbstractMessage implements Serializable, ResultMessage<String> {
 
     private String kJarGAV;

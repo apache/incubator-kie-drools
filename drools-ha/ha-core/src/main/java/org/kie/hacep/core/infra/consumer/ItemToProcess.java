@@ -20,12 +20,12 @@ import java.io.Serializable;
 public class ItemToProcess implements Serializable {
 
     private String key;
-    private Object object;
+    private Serializable object;
     private long offset;
 
     public ItemToProcess(String key,
                          long offset,
-                         Object object) {
+                         Serializable object) {
         this.key = key;
         this.object = object;
         this.offset = offset;

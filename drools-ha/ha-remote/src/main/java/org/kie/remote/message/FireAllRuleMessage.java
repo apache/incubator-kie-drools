@@ -17,9 +17,6 @@ package org.kie.remote.message;
 
 import java.io.Serializable;
 
-import org.kie.remote.message.AbstractMessage;
-import org.kie.remote.message.ResultMessage;
-
 public class FireAllRuleMessage extends AbstractMessage
         implements Serializable, ResultMessage<Long> {
 

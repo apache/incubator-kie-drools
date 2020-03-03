@@ -17,17 +17,12 @@ package org.kie.remote.message;
 
 import java.io.Serializable;
 
-import org.kie.remote.message.Message;
-
-public abstract class AbstractMessage implements Serializable,
-                                                 Message {
+public abstract class AbstractMessage implements Serializable, Message {
 
     protected String id;
     protected long timestamp;
 
-    /* Empty constructor for serialization */
-    public AbstractMessage() {
-    }
+    public AbstractMessage() { /* Serialization */}
 
     public AbstractMessage(String id) {
         this.id = id;
