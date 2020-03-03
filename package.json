@@ -7,10 +7,10 @@
     "packages/*"
   ],
   "scripts": {
-    "init": "npx lerna bootstrap",
-    "build": "npx lerna run build --stream",
-    "build:fast": "npx lerna run build:fast --stream",
-    "build:prod": "npx lerna run build:prod --stream"
+    "init": "lerna bootstrap",
+    "build": "lerna run build --stream",
+    "build:fast": "lerna run build:fast --stream",
+    "build:prod": "lerna run build:prod --stream"
   },
   "husky": {
     "hooks": {
