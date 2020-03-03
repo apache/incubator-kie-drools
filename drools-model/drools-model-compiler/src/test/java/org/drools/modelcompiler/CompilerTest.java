@@ -2118,4 +2118,84 @@ public class CompilerTest extends BaseModelTest {
         ksession.insert( person );
         assertEquals(0, ksession.fireAllRules());
     }
+
+    @Test
+    public void testNegateBigDecimal() throws Exception {
+        String str =
+                "import " + Person.class.getCanonicalName() + ";" +
+                     "global java.util.List list;\n" +
+                     "rule R when\n" +
+                     "  $p : Person(!(money > 20))\n" +
+                     "then\n" +
+                     "  list.add($p.getName());" +
+                     "end";
+
+        KieSession ksession = getKieSession(str);
+        final List<String> list = new ArrayList<>();
+        ksession.setGlobal("list", list);
+
+        Person p1 = new Person("John");
+        p1.setMoney(new BigDecimal("10.0"));
+        Person p2 = new Person("Paul");
+        p2.setMoney(new BigDecimal("30.0"));
+
+        ksession.insert(p1);
+        ksession.insert(p2);
+
+        assertEquals(1, ksession.fireAllRules());
+        Assertions.assertThat(list).containsExactly("John");
+    }
+
+    @Test
+    public void testNegateJoin() throws Exception {
+        String str =
+                "import " + Person.class.getCanonicalName() + ";" +
+                     "import " + Address.class.getCanonicalName() + ";" +
+                     "rule R when\n" +
+                     "  $a : Address()\n" +
+                     "  $p : Person(!(address == $a))\n" +
+                     "then\n" +
+                     "end";
+
+        KieSession ksession = getKieSession(str);
+
+        Address a = new Address("Milan");
+        Person p = new Person("Toshiya");
+        p.setAddress(new Address("Tokyo"));
+
+        ksession.insert(a);
+        ksession.insert(p);
+
+        assertEquals(1, ksession.fireAllRules());
+    }
+
+    @Test
+    public void testNegateComplex() throws Exception {
+        String str =
+                "import " + Person.class.getCanonicalName() + ";" +
+                     "global java.util.List list;\n" +
+                     "rule R when\n" +
+                     "  $p : Person(!(money > 20 && money < 40))\n" +
+                     "then\n" +
+                     "  list.add($p.getName());" +
+                     "end";
+
+        KieSession ksession = getKieSession(str);
+        final List<String> list = new ArrayList<>();
+        ksession.setGlobal("list", list);
+
+        Person p1 = new Person("John");
+        p1.setMoney(new BigDecimal("10.0"));
+        Person p2 = new Person("Paul");
+        p2.setMoney(new BigDecimal("30.0"));
+        Person p3 = new Person("George");
+        p3.setMoney(new BigDecimal("50.0"));
+
+        ksession.insert(p1);
+        ksession.insert(p2);
+        ksession.insert(p3);
+
+        assertEquals(2, ksession.fireAllRules());
+        Assertions.assertThat(list).containsExactlyInAnyOrder("John", "George");
+    }
 }
