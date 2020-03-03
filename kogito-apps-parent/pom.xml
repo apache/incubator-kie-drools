@@ -17,10 +17,21 @@
 
   <properties>
     <version.frontend.plugin>1.9.1</version.frontend.plugin>
-    <version.node>v11.10.0</version.node>
-    <version.yarn>v1.13.0</version.yarn>
+    <version.node>v11.6.0</version.node>
+    <version.yarn>v1.12.3</version.yarn>
   </properties>
 
+  <build>
+    <pluginManagement>
+      <plugins>
+        <plugin>
+          <groupId>com.github.eirslett</groupId>
+          <artifactId>frontend-maven-plugin</artifactId>
+          <version>${version.frontend.plugin}</version>
+        </plugin>
+      </plugins>
+    </pluginManagement>
+  </build>
 
   <dependencyManagement>
     <dependencies>
@@ -40,7 +51,7 @@
       </dependency>
     </dependencies>
   </dependencyManagement>
-  
+
   <modules>
     <module>jobs-service</module>
     <module>data-index</module>

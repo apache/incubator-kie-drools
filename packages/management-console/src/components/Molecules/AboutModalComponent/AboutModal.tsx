@@ -64,11 +64,8 @@ const AboutModalBox: React.FC<IOwnProps> = ({
           </TextListItem>
           <TextListItem component="dt">Data-Index URL: </TextListItem>
           <TextListItem component="dd">
-            <a
-              href={process.env.KOGITO_DATAINDEX_URL + '/graphql'}
-              target="_blank"
-            >
-              {process.env.KOGITO_DATAINDEX_HTTP_URL + '/graphql'}
+            <a href={process.env.KOGITO_DATAINDEX_URL} target="_blank">
+              {process.env.KOGITO_DATAINDEX_HTTP_URL}
             </a>
           </TextListItem>
         </TextList>

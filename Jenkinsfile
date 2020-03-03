@@ -5,7 +5,6 @@ pipeline {
         label 'kie-rhel7&&kie-mem8g'
     }
     tools {
-        nodejs "nodejs-11.0.0"
         maven 'kie-maven-3.5.4'
         jdk 'kie-jdk1.8'
     }
@@ -20,8 +19,6 @@ pipeline {
     stages {
         stage('Prepare') {
             steps {
-                sh "npm install -g yarn --registry=${NPM_REGISTRY_URL}"
-                sh "yarn config set registry ${NPM_REGISTRY_URL}"
                 sh "export XAUTHORITY=$HOME/.Xauthority"
                 sh "chmod 600 $HOME/.vnc/passwd"
             }
@@ -39,10 +36,6 @@ pipeline {
         stage('Build kogito-apps') {
             steps {
                 script {
-                    sh('yarn run init')
-                    wrap([$class: 'Xvnc', takeScreenshot: false, useXauthority: true]) {
-                        sh('yarn build:prod')
-                    }
                     maven.runMavenWithSubmarineSettings('clean install -Prun-code-coverage', false)
                     maven.runMavenWithSubmarineSettings('-e -nsu validate -Psonarcloud-analysis', false)
                 }

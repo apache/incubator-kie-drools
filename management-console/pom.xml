@@ -37,6 +37,10 @@
   <dependencies>
     <dependency>
       <groupId>io.quarkus</groupId>
+      <artifactId>quarkus-vertx-web</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>io.quarkus</groupId>
       <artifactId>quarkus-resteasy</artifactId>
     </dependency>
     <dependency>
@@ -78,7 +82,6 @@
       <plugin>
         <groupId>com.github.eirslett</groupId>
         <artifactId>frontend-maven-plugin</artifactId>
-        <version>${version.frontend.plugin}</version>
         <configuration>
           <workingDirectory>${path.to.frontend.app}</workingDirectory>
         </configuration>
@@ -86,7 +89,6 @@
       <!-- Copy the built webapp to the directory used by Quarkus -->
       <plugin>
         <artifactId>maven-resources-plugin</artifactId>
-        <version>${version.resources.plugin}</version>
         <executions>
           <execution>
             <id>copy-resources</id>
@@ -149,9 +151,7 @@
       -->
       <id>Install node and yarn</id>
       <activation>
-        <property>
-          <name>ui.deps</name>
-        </property>
+        <activeByDefault>true</activeByDefault>
       </activation>
       <build>
         <plugins>
@@ -194,9 +194,7 @@
     <profile>
       <id>Build the UI</id>
       <activation>
-        <property>
-          <name>ui</name>
-        </property>
+        <activeByDefault>true</activeByDefault>
       </activation>
       <build>
         <plugins>
