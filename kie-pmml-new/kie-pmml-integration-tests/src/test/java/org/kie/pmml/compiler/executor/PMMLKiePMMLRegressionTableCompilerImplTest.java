@@ -40,7 +40,7 @@ import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
 import static org.kie.test.util.filesystem.FileUtils.getFileInputStream;
 
-public class PMMLCompilerImplTest {
+public class PMMLKiePMMLRegressionTableCompilerImplTest {
 
     private static final PMMLCompiler EXECUTOR = new PMMLCompilerImpl();
 

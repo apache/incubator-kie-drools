@@ -17,7 +17,7 @@ package org.kie.pmml.models.regression.compiler.factories;
 
 import java.io.IOException;
 import java.util.AbstractMap;
-import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
@@ -47,17 +47,18 @@ import org.dmg.pmml.regression.CategoricalPredictor;
 import org.dmg.pmml.regression.NumericPredictor;
 import org.dmg.pmml.regression.PredictorTerm;
 import org.dmg.pmml.regression.RegressionTable;
+import org.kie.pmml.models.regression.model.tuples.KiePMMLTableSourceCategory;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import static java.util.stream.Collectors.groupingBy;
 
-public class KiePMMLRegressionTableFactory {
+public class KiePMMLRegressionTableRegressionFactory {
 
-    public static final String KIE_PMMLREGRESSION_TABLE_REGRESSION_TEMPLATE_JAVA = "KiePMMLRegressionTableRegressionTemplate.java";
-    private static final Logger logger = LoggerFactory.getLogger(KiePMMLRegressionTableFactory.class.getName());
+    public static final String KIE_PMML_REGRESSION_TABLE_REGRESSION_TEMPLATE_JAVA = "KiePMMLRegressionTableRegressionTemplate.tmpl";
+    private static final Logger logger = LoggerFactory.getLogger(KiePMMLRegressionTableRegressionFactory.class.getName());
     private static final String MAIN_CLASS_NOT_FOUND = "Main class not found";
-    private static final String KIE_PMMLEVALUATE_METHOD_TEMPLATE_JAVA = "KiePMMLEvaluateMethodTemplate.java";
+    private static final String KIE_PMML_EVALUATE_METHOD_TEMPLATE_JAVA = "KiePMMLEvaluateMethodTemplate.tmpl";
     private static final String KIE_PMML_EVALUATE_METHOD_TEMPLATE = "KiePMMLEvaluateMethodTemplate";
     private static final String KIE_PMML_REGRESSION_TABLE_REGRESSION_TEMPLATE = "KiePMMLRegressionTableRegressionTemplate";
     private static final String COEFFICIENT = "coefficient";
@@ -67,26 +68,27 @@ public class KiePMMLRegressionTableFactory {
     private static CompilationUnit templateEvaluate;
     private static CompilationUnit cloneEvaluate;
 
-    private KiePMMLRegressionTableFactory() {
+    private KiePMMLRegressionTableRegressionFactory() {
         // Avoid instantiation
     }
 
-    public static List<String> getRegressionTables(final List<RegressionTable> regressionTables, final String targetField) throws IOException {
+    public static Map<String, KiePMMLTableSourceCategory> getRegressionTables(final List<RegressionTable> regressionTables, final String targetField) throws IOException {
         logger.debug("getRegressionTables {}", regressionTables);
-        CompilationUnit templateCU = StaticJavaParser.parseResource(KIE_PMMLREGRESSION_TABLE_REGRESSION_TEMPLATE_JAVA);
-        List<String> toReturn = new ArrayList<>();
+        CompilationUnit templateCU = StaticJavaParser.parseResource(KIE_PMML_REGRESSION_TABLE_REGRESSION_TEMPLATE_JAVA);
+        Map<String, KiePMMLTableSourceCategory> toReturn = new HashMap<>();
         for (RegressionTable regressionTable : regressionTables) {
-            toReturn.add(getRegressionTable(templateCU, regressionTable, targetField));
+            final Map.Entry<String, String> regressionTableEntry = getRegressionTable(templateCU, regressionTable, targetField);
+            toReturn.put(regressionTableEntry.getKey(), new KiePMMLTableSourceCategory(regressionTableEntry.getValue(), regressionTable.getTargetCategory().toString()));
         }
         return toReturn;
     }
 
-    public static String getRegressionTable(final CompilationUnit templateCU, final RegressionTable regressionTable, final String targetField) {
+    public static AbstractMap.Entry<String, String> getRegressionTable(final CompilationUnit templateCU, final RegressionTable regressionTable, final String targetField) {
         logger.debug("getRegressionTable {}", regressionTable);
         CompilationUnit cloneCU = templateCU.clone();
         ClassOrInterfaceDeclaration tableTemplate = cloneCU.getClassByName(KIE_PMML_REGRESSION_TABLE_REGRESSION_TEMPLATE)
                 .orElseThrow(() -> new RuntimeException(MAIN_CLASS_NOT_FOUND));
-        String className = "KiePMMLRegressionTable" + classArity.addAndGet(1);
+        String className = "KiePMMLRegressionTableRegression" + classArity.addAndGet(1);
         tableTemplate.setName(className);
         setConstructor(regressionTable, tableTemplate, targetField);
         final Map<String, MethodDeclaration> numericPredictorsMap = addNumericPredictors(regressionTable.getNumericPredictors(), tableTemplate);
@@ -98,7 +100,8 @@ public class KiePMMLRegressionTableFactory {
             addMapPopulation(categoricalPredictorsMap, body, "categoricalFunctionMap");
             addMapPopulation(predictorTermsMap, body, "predictorTermsFunctionMap");
         });
-        return cloneCU.toString();
+        populateGetTargetCategory(tableTemplate, regressionTable.getTargetCategory());
+        return new AbstractMap.SimpleEntry<>(className, cloneCU.toString());
     }
 
     /**
@@ -163,7 +166,7 @@ public class KiePMMLRegressionTableFactory {
      */
     private static Optional<MethodDeclaration> addNumericPredictor(final NumericPredictor numericPredictor, final ClassOrInterfaceDeclaration tableTemplate, int predictorArity) {
         try {
-            templateEvaluate = StaticJavaParser.parseResource(KIE_PMMLEVALUATE_METHOD_TEMPLATE_JAVA);
+            templateEvaluate = StaticJavaParser.parseResource(KIE_PMML_EVALUATE_METHOD_TEMPLATE_JAVA);
             cloneEvaluate = templateEvaluate.clone();
             ClassOrInterfaceDeclaration evaluateTemplateClass = cloneEvaluate.getClassByName(KIE_PMML_EVALUATE_METHOD_TEMPLATE)
                     .orElseThrow(() -> new RuntimeException(MAIN_CLASS_NOT_FOUND));
@@ -247,7 +250,7 @@ public class KiePMMLRegressionTableFactory {
      */
     private static Optional<MethodDeclaration> addGroupedCategoricalPredictor(final List<CategoricalPredictor> categoricalPredictors, final ClassOrInterfaceDeclaration tableTemplate, int predictorArity) {
         try {
-            templateEvaluate = StaticJavaParser.parseResource(KIE_PMMLEVALUATE_METHOD_TEMPLATE_JAVA);
+            templateEvaluate = StaticJavaParser.parseResource(KIE_PMML_EVALUATE_METHOD_TEMPLATE_JAVA);
             cloneEvaluate = templateEvaluate.clone();
             ClassOrInterfaceDeclaration evaluateTemplateClass = cloneEvaluate.getClassByName(KIE_PMML_EVALUATE_METHOD_TEMPLATE)
                     .orElseThrow(() -> new RuntimeException(MAIN_CLASS_NOT_FOUND));
@@ -287,7 +290,6 @@ public class KiePMMLRegressionTableFactory {
 
     /**
      * Add <b>PredictorTerm</b>s <code>MethodDeclaration</code> to the class
-     *
      * @param predictorTerms
      * @param tableTemplate
      * @return
@@ -311,7 +313,7 @@ public class KiePMMLRegressionTableFactory {
      */
     private static Optional<MethodDeclaration> addPredictorTerm(final PredictorTerm predictorTerm, final ClassOrInterfaceDeclaration tableTemplate, int predictorArity) {
         try {
-            templateEvaluate = StaticJavaParser.parseResource(KIE_PMMLEVALUATE_METHOD_TEMPLATE_JAVA);
+            templateEvaluate = StaticJavaParser.parseResource(KIE_PMML_EVALUATE_METHOD_TEMPLATE_JAVA);
             cloneEvaluate = templateEvaluate.clone();
             ClassOrInterfaceDeclaration evaluateTemplateClass = cloneEvaluate.getClassByName(KIE_PMML_EVALUATE_METHOD_TEMPLATE)
                     .orElseThrow(() -> new RuntimeException(MAIN_CLASS_NOT_FOUND));
@@ -340,13 +342,12 @@ public class KiePMMLRegressionTableFactory {
 
     /**
      * Add a <code>MethodDeclaration</code> to the class
-     *
      * @param methodTemplate
      * @param tableTemplate
      * @param evaluateMethodName
      * @return
      */
-    private static Optional<MethodDeclaration> addMethod(final MethodDeclaration methodTemplate, final ClassOrInterfaceDeclaration tableTemplate, final String evaluateMethodName) {
+    protected static Optional<MethodDeclaration> addMethod(final MethodDeclaration methodTemplate, final ClassOrInterfaceDeclaration tableTemplate, final String evaluateMethodName) {
         return methodTemplate.getBody().map(body -> {
             final MethodDeclaration toReturn = tableTemplate.addMethod(evaluateMethodName, Modifier.Keyword.PRIVATE).setBody(body);
             methodTemplate.getParameters().forEach(toReturn::addParameter);
@@ -355,27 +356,24 @@ public class KiePMMLRegressionTableFactory {
         });
     }
 
-//    private static String arityName() {
-//        return "KiePMMLRegressionTable" + classArity.addAndGet(1);
-//    }
-
-//    public static List<KiePMMLRegressionTable> getRegressionTables(List<RegressionTable> regressionTables) {
-//        logger.debug("getRegressionTables {}", regressionTables);
-//        return regressionTables.stream().map(KiePMMLRegressionTableFactory::getRegressionTable).collect(Collectors.toList());
-//    }
-//
-//    public static KiePMMLRegressionTable getRegressionTable(RegressionTable regressionTable) {
-//        logger.debug("getRegressionTable {}", regressionTable);
-//        final Set<KiePMMLCategoricalPredictor> categoricalPredictors = getKiePMMLCategoricalPredictors(regressionTable.getCategoricalPredictors());
-//        final Set<KiePMMLNumericPredictor> numericPredictors = getKiePMMLNumericPredictors(regressionTable.getNumericPredictors());
-//        final Set<KiePMMLRegressionTablePredictor> numericCategoricalPredictors = new HashSet<>();
-//        numericCategoricalPredictors.addAll(categoricalPredictors);
-//        numericCategoricalPredictors.addAll(numericPredictors);
-//        return KiePMMLRegressionTable.builder(String.valueOf(regressionTable.hashCode()), getKiePMMLExtensions(regressionTable.getExtensions()), regressionTable.getIntercept())
-//                .withCategoricalPredictors(categoricalPredictors)
-//                .withNumericPredictors(numericPredictors)
-//                .withPredictorTerms(getKiePMMLPredictorTerms(regressionTable.getPredictorTerms(), numericCategoricalPredictors))
-//                .withTargetCategory(regressionTable.getTargetCategory())
-//                .build();
-//    }
+    /**
+     * Populate the <b>getTargetCategory</b> method of the class
+     * @param tableTemplate
+     * @param targetCategory
+     * @return
+     */
+    protected static void populateGetTargetCategory(final ClassOrInterfaceDeclaration tableTemplate, final Object targetCategory) {
+        MethodDeclaration methodDeclaration = tableTemplate.getMethodsByName("getTargetCategory").get(0);
+        methodDeclaration.getBody().ifPresent(body -> {
+            ReturnStmt returnStmt = new ReturnStmt();
+            if (targetCategory == null) {
+                returnStmt.setExpression(new NameExpr("null"));
+            } else if (targetCategory instanceof String) {
+                returnStmt.setExpression(new StringLiteralExpr((String) targetCategory));
+            } else {
+                returnStmt.setExpression(new NameExpr(targetCategory.toString()));
+            }
+            body.addStatement(returnStmt);
+        });
+    }
 }

@@ -15,6 +15,7 @@
  */
 package org.kie.pmml.models.regression.compiler.executor;
 
+import java.io.IOException;
 import java.util.List;
 import java.util.Objects;
 import java.util.stream.Collectors;
@@ -55,7 +56,11 @@ public class RegressionModelImplementationProvider implements ModelImplementatio
     public KiePMMLRegressionModel getKiePMMLModel(DataDictionary dataDictionary, RegressionModel model, Object kBuilder) {
         logger.debug("getKiePMMLModel {} {}", dataDictionary, model);
         validate(dataDictionary, model);
-        return KiePMMLRegressionModelFactory.getKiePMMLRegressionModel(dataDictionary, model);
+        try {
+            return KiePMMLRegressionModelFactory.getKiePMMLRegressionModel(dataDictionary, model);
+        } catch (IOException | IllegalAccessException | InstantiationException e) {
+            throw new RuntimeException(e);
+        }
     }
 
     protected void validate(DataDictionary dataDictionary, RegressionModel toValidate) {

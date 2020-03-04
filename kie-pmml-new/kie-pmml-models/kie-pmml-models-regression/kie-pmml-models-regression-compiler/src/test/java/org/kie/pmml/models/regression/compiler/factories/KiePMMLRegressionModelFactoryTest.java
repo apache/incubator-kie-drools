@@ -16,6 +16,7 @@
 
 package org.kie.pmml.models.regression.compiler.factories;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
@@ -107,12 +108,9 @@ public class KiePMMLRegressionModelFactoryTest {
     }
 
     @Test
-    public void getKiePMMLRegressionModelTest() {
+    public void getKiePMMLRegressionModelTest() throws IOException, IllegalAccessException, InstantiationException {
         KiePMMLRegressionModel retrieved = getKiePMMLRegressionModel(dataDictionary, regressionModel);
         assertNotNull(retrieved);
         assertEquals(regressionModel.getModelName(), retrieved.getName());
-        assertEquals(regressionModel.getMiningFunction().value(), retrieved.getMiningFunction().getName());
-//        assertEquals(regressionModel.getNormalizationMethod().value(), retrieved.getRegressionNormalizationMethod().getName());
-        assertEquals(targetMiningField.getName().getValue(), retrieved.getTargetField());
     }
 }
