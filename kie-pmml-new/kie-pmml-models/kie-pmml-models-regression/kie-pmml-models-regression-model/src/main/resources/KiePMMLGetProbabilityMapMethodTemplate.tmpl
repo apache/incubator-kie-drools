@@ -1,0 +1,93 @@
+/*
+ * Copyright 2020 Red Hat, Inc. and/or its affiliates.
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+package org.kie.pmml.models.regression.evaluator;
+
+import java.util.Arrays;
+import java.util.LinkedHashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.Objects;
+import java.util.concurrent.atomic.AtomicReference;
+import java.util.function.DoubleUnaryOperator;
+import java.util.stream.Collectors;
+import java.util.stream.IntStream;
+
+import org.kie.pmml.commons.model.enums.OP_TYPE;
+import org.kie.pmml.models.regression.model.enums.REGRESSION_NORMALIZATION_METHOD;
+
+public class KiePMMLGetProbabilityMapMethodTemplate {
+
+    protected LinkedHashMap<String, Double> getSOFTMAXProbabilityMap(final LinkedHashMap<String, Double> resultMap) {
+        LinkedHashMap<String, Double> tmp = resultMap.entrySet().stream().collect(Collectors.toMap(Map.Entry::getKey,
+                                                                                                   entry -> Math.exp(entry.getValue()),
+                                                                                                   (o1, o2) -> o1,
+                                                                                                   LinkedHashMap::new));
+        double sum = tmp.values().stream().mapToDouble(value -> value).sum();
+        return tmp.entrySet().stream().collect(Collectors.toMap(Map.Entry::getKey,
+                                                                entry -> entry.getValue() / sum,
+                                                                (o1, o2) -> o1,
+                                                                LinkedHashMap::new));
+    }
+
+    protected LinkedHashMap<String, Double> getSIMPLEMAXProbabilityMap(final LinkedHashMap<String, Double> resultMap) {
+        double sum = resultMap.values().stream().mapToDouble(value -> value).sum();
+        return resultMap.entrySet().stream().collect(Collectors.toMap(Map.Entry::getKey,
+                                                                      entry -> entry.getValue() / sum,
+                                                                      (o1, o2) -> o1,
+                                                                      LinkedHashMap::new));
+    }
+
+    protected LinkedHashMap<String, Double> getNONEProbabilityMap(final LinkedHashMap<String, Double> resultMap) {
+        LinkedHashMap<String, Double> toReturn = new LinkedHashMap<>();
+        String[] resultMapKeys = resultMap.keySet().toArray(new String[0]);
+        AtomicReference<Double> sumCounter = new AtomicReference<>(0.0);
+        IntStream.range(0, resultMap.size()).forEach(index -> {
+            String key = resultMapKeys[index];
+            double value = resultMap.get(key);
+            if (index < resultMapKeys.length - 1) {
+                sumCounter.accumulateAndGet(value, Double::sum);
+                toReturn.put(key, value);
+            } else { // last element
+                toReturn.put(key, 1 - sumCounter.get());
+            }
+        });
+        return toReturn;
+    }
+
+    protected LinkedHashMap<String, Double> getLOGITProbabilityMap(final LinkedHashMap<String, Double> resultMap) {
+        DoubleUnaryOperator firstItemOperator = aDouble -> 1 / (1 + Math.exp(0 - aDouble));
+        DoubleUnaryOperator secondItemOperator = aDouble -> 1 - aDouble;
+        return getProbabilityMap(resultMap, firstItemOperator, secondItemOperator);
+    }
+
+    protected LinkedHashMap<String, Double> getPROBITProbabilityMap(final LinkedHashMap<String, Double> resultMap) {
+        DoubleUnaryOperator firstItemOperator = aDouble -> new NormalDistribution().cumulativeProbability(aDouble);
+        DoubleUnaryOperator secondItemOperator = aDouble -> 1 - aDouble;
+        return getProbabilityMap(resultMap, firstItemOperator, secondItemOperator);
+    }
+
+    protected LinkedHashMap<String, Double> getCLOGLOGProbabilityMap(final LinkedHashMap<String, Double> resultMap) {
+        DoubleUnaryOperator firstItemOperator = aDouble -> 1 - Math.exp(0 - Math.exp(aDouble));
+        DoubleUnaryOperator secondItemOperator = aDouble -> 1 - aDouble;
+        return getProbabilityMap(resultMap, firstItemOperator, secondItemOperator);
+    }
+
+    protected LinkedHashMap<String, Double> getCAUCHITProbabilityMap(final LinkedHashMap<String, Double> resultMap) {
+        DoubleUnaryOperator firstItemOperator = aDouble -> 0.5 + (1 / Math.PI) * Math.atan(aDouble);
+        DoubleUnaryOperator secondItemOperator = aDouble -> 1 - aDouble;
+        return getProbabilityMap(resultMap, firstItemOperator, secondItemOperator);
+    }
+}

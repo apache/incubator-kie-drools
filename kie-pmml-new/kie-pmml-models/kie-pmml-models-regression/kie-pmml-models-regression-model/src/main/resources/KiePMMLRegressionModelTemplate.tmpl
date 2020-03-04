@@ -25,7 +25,10 @@ public class KiePMMLRegressionModelTemplate extends KiePMMLRegressionModel {
 
     public KiePMMLRegressionModelTemplate() {
         super(MODEL_NAME);
-        regressionTable = new KiePMMLRegressionTableSetosa();
+        regressionTable = null;
+        targetField = null;
+        miningFunction = null;
+        pmmlMODEL = null;
     }
 
 }

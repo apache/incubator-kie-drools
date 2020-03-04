@@ -22,11 +22,9 @@ import org.kie.pmml.commons.model.KiePMMLModel;
 import org.kie.pmml.commons.model.enums.PMML_MODEL;
 import org.kie.pmml.evaluator.api.executor.PMMLContext;
 import org.kie.pmml.evaluator.core.executor.PMMLModelExecutor;
-import org.kie.pmml.models.regression.model.KiePMMLRegressionModel;
 
 import static org.kie.pmml.commons.enums.StatusCode.OK;
 import static org.kie.pmml.evaluator.core.utils.Converter.getUnwrappedParametersMap;
-import static org.kie.pmml.models.regression.evaluator.PMMLRegresssionModelEvaluator.evaluateRegression;
 
 public class PMMLRegressionModelExecutor implements PMMLModelExecutor {
 

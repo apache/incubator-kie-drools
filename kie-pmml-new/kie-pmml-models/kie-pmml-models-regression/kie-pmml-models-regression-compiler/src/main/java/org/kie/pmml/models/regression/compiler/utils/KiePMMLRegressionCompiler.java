@@ -24,7 +24,7 @@ import org.drools.compiler.commons.jci.compilers.NativeJavaCompiler;
 import org.drools.compiler.compiler.io.memory.MemoryFileSystem;
 import org.kie.internal.jci.CompilationProblem;
 
-public class KiePMMLRegressionTableCompiler {
+public class KiePMMLRegressionCompiler {
 
     private static final MemoryFileSystem SRC_MFS = new MemoryFileSystem();
     private static final MemoryFileSystem TGT_MFS = new MemoryFileSystem();

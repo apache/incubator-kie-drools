@@ -20,8 +20,6 @@ import java.util.AbstractMap;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.atomic.AtomicInteger;
-import java.util.stream.Collectors;
-import java.util.stream.Stream;
 
 import com.github.javaparser.StaticJavaParser;
 import com.github.javaparser.ast.CompilationUnit;
@@ -37,22 +35,15 @@ import com.github.javaparser.ast.expr.ObjectCreationExpr;
 import com.github.javaparser.ast.expr.SimpleName;
 import com.github.javaparser.ast.expr.StringLiteralExpr;
 import com.github.javaparser.ast.stmt.BlockStmt;
+import org.dmg.pmml.regression.RegressionModel;
 import org.dmg.pmml.regression.RegressionTable;
 import org.kie.pmml.commons.model.KiePMMLOutputField;
-import org.kie.pmml.models.regression.model.enums.REGRESSION_NORMALIZATION_METHOD;
 import org.kie.pmml.models.regression.model.tuples.KiePMMLTableSourceCategory;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import static org.kie.pmml.models.regression.compiler.factories.KiePMMLRegressionTableRegressionFactory.addMethod;
 import static org.kie.pmml.models.regression.compiler.factories.KiePMMLRegressionTableRegressionFactory.populateGetTargetCategory;
-import static org.kie.pmml.models.regression.model.enums.REGRESSION_NORMALIZATION_METHOD.CAUCHIT;
-import static org.kie.pmml.models.regression.model.enums.REGRESSION_NORMALIZATION_METHOD.CLOGLOG;
-import static org.kie.pmml.models.regression.model.enums.REGRESSION_NORMALIZATION_METHOD.LOGIT;
-import static org.kie.pmml.models.regression.model.enums.REGRESSION_NORMALIZATION_METHOD.NONE;
-import static org.kie.pmml.models.regression.model.enums.REGRESSION_NORMALIZATION_METHOD.PROBIT;
-import static org.kie.pmml.models.regression.model.enums.REGRESSION_NORMALIZATION_METHOD.SIMPLEMAX;
-import static org.kie.pmml.models.regression.model.enums.REGRESSION_NORMALIZATION_METHOD.SOFTMAX;
 
 public class KiePMMLRegressionTableClassificationFactory {
 
@@ -62,15 +53,6 @@ public class KiePMMLRegressionTableClassificationFactory {
     private static final String KIE_PMML_GET_PROBABILITY_MAP_METHOD_TEMPLATE_JAVA = "KiePMMLGetProbabilityMapMethodTemplate.tmpl";
     private static final String KIE_PMML_GET_PROBABILITY_MAP_METHOD_TEMPLATE = "KiePMMLGetProbabilityMapMethodTemplate";
     private static final String KIE_PMML_REGRESSION_TABLE_CLASSIFICATION_TEMPLATE = "KiePMMLRegressionTableClassificationTemplate";
-    private static final Map<REGRESSION_NORMALIZATION_METHOD, String> NORM_METHOD_TEMPLATE_MAP = Stream.of(
-            new AbstractMap.SimpleImmutableEntry<>(SOFTMAX, "getSOFTMAXProbabilityMap"),
-            new AbstractMap.SimpleImmutableEntry<>(SIMPLEMAX, "getSIMPLEMAXProbabilityMap"),
-            new AbstractMap.SimpleImmutableEntry<>(NONE, "getNONEProbabilityMap"),
-            new AbstractMap.SimpleImmutableEntry<>(LOGIT, "getLOGITProbabilityMap"),
-            new AbstractMap.SimpleImmutableEntry<>(PROBIT, "getPROBITProbabilityMap"),
-            new AbstractMap.SimpleImmutableEntry<>(CLOGLOG, "getCLOGLOGProbabilityMap"),
-            new AbstractMap.SimpleImmutableEntry<>(CAUCHIT, "getCAUCHITProbabilityMap"))
-            .collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue));
     private static AtomicInteger classArity = new AtomicInteger(0);
     private static CompilationUnit templateEvaluate;
     private static CompilationUnit cloneEvaluate;
@@ -79,23 +61,23 @@ public class KiePMMLRegressionTableClassificationFactory {
         // Avoid instantiation
     }
 
-    public static Map<String, KiePMMLTableSourceCategory> getRegressionTables(final List<RegressionTable> regressionTables, final REGRESSION_NORMALIZATION_METHOD regressionNormalizationMethod, final List<KiePMMLOutputField> outputFields, final String targetField) throws IOException {
+    public static Map<String, KiePMMLTableSourceCategory> getRegressionTables(final List<RegressionTable> regressionTables, final RegressionModel.NormalizationMethod normalizationMethod, final List<KiePMMLOutputField> outputFields, final String targetField) throws IOException {
         logger.debug("getRegressionTables {}", regressionTables);
         CompilationUnit templateCU = StaticJavaParser.parseResource(KIE_PMML_REGRESSION_TABLE_CLASSIFICATION_TEMPLATE_JAVA);
-        Map<String, KiePMMLTableSourceCategory> toReturn = KiePMMLRegressionTableRegressionFactory.getRegressionTables(regressionTables, targetField);
-        AbstractMap.Entry<String, String> regressionTableEntry = getRegressionTable(templateCU, toReturn, regressionNormalizationMethod, outputFields, targetField);
+        Map<String, KiePMMLTableSourceCategory> toReturn = KiePMMLRegressionTableRegressionFactory.getRegressionTables(regressionTables, RegressionModel.NormalizationMethod.NONE, targetField);
+        AbstractMap.Entry<String, String> regressionTableEntry = getRegressionTable(templateCU, toReturn, normalizationMethod, outputFields, targetField);
         toReturn.put(regressionTableEntry.getKey(), new KiePMMLTableSourceCategory(regressionTableEntry.getValue(), ""));
         return toReturn;
     }
 
-    public static AbstractMap.Entry<String, String> getRegressionTable(final CompilationUnit templateCU, final Map<String, KiePMMLTableSourceCategory> regressionTablesMap, final REGRESSION_NORMALIZATION_METHOD regressionNormalizationMethod, final List<KiePMMLOutputField> outputFields, final String targetField) throws IOException {
+    public static AbstractMap.Entry<String, String> getRegressionTable(final CompilationUnit templateCU, final Map<String, KiePMMLTableSourceCategory> regressionTablesMap, final RegressionModel.NormalizationMethod normalizationMethod, final List<KiePMMLOutputField> outputFields, final String targetField) throws IOException {
         logger.debug("getRegressionTable {}", regressionTablesMap);
         CompilationUnit cloneCU = templateCU.clone();
         ClassOrInterfaceDeclaration tableTemplate = cloneCU.getClassByName(KIE_PMML_REGRESSION_TABLE_CLASSIFICATION_TEMPLATE)
                 .orElseThrow(() -> new RuntimeException(MAIN_CLASS_NOT_FOUND));
         String className = "KiePMMLRegressionTableClassification" + classArity.addAndGet(1);
         tableTemplate.setName(className);
-        populateGetProbabilityMapMethod(regressionNormalizationMethod, tableTemplate);
+        populateGetProbabilityMapMethod(normalizationMethod, tableTemplate);
         populateOutputFieldsMap(tableTemplate, outputFields);
         tableTemplate.getDefaultConstructor().ifPresent(constructorDeclaration -> {
             setConstructor(constructorDeclaration, tableTemplate.getName(), targetField);
@@ -120,7 +102,7 @@ public class KiePMMLRegressionTableClassificationFactory {
     }
 
     /**
-     * Add entries <b>category/AbstractKiePMMLRegressionTable</b> inside the constructor
+     * Add entries <b>category/KiePMMLRegressionTable</b> inside the constructor
      * @param body
      * @param regressionTablesMap
      */
@@ -158,7 +140,8 @@ public class KiePMMLRegressionTableClassificationFactory {
                     break;
                 case PROBABILITY:
                     if (!outputField.getTargetField().isPresent()) {
-                        value = new MethodCallExpr(new NameExpr("predictedEntry"), "getValue");
+                        NodeList<Expression> expressions = NodeList.nodeList(new StringLiteralExpr(outputField.getValue().toString()));
+                        value = new MethodCallExpr(new NameExpr("probabilityMap"), "get", expressions);
                     } else {
 
                         NodeList<Expression> expressions = NodeList.nodeList(new StringLiteralExpr(outputField.getTargetField().get()));
@@ -177,13 +160,13 @@ public class KiePMMLRegressionTableClassificationFactory {
 
     /**
      * Add the  <b>getProbabilityMapMethod</b>s <code>MethodDeclaration</code> to the class
-     * @param regressionNormalizationMethod
+     * @param normalizationMethod
      * @param tableTemplate
      * @return
      */
-    private static void populateGetProbabilityMapMethod(final REGRESSION_NORMALIZATION_METHOD regressionNormalizationMethod, final ClassOrInterfaceDeclaration tableTemplate) {
+    private static void populateGetProbabilityMapMethod(final RegressionModel.NormalizationMethod normalizationMethod, final ClassOrInterfaceDeclaration tableTemplate) {
         try {
-            String methodName = NORM_METHOD_TEMPLATE_MAP.get(regressionNormalizationMethod);
+            String methodName = String.format("get%sProbabilityMap", normalizationMethod.name());
             templateEvaluate = StaticJavaParser.parseResource(KIE_PMML_GET_PROBABILITY_MAP_METHOD_TEMPLATE_JAVA);
             cloneEvaluate = templateEvaluate.clone();
             ClassOrInterfaceDeclaration evaluateTemplateClass = cloneEvaluate.getClassByName(KIE_PMML_GET_PROBABILITY_MAP_METHOD_TEMPLATE)
@@ -194,41 +177,4 @@ public class KiePMMLRegressionTableClassificationFactory {
             throw new RuntimeException(e);
         }
     }
-
-//    /**
-//     * Add a <code>MethodDeclaration</code> to the class
-//     * @param methodTemplate
-//     * @param tableTemplate
-//     * @param evaluateMethodName
-//     * @return
-//     */
-//    private static void populateMethod(final MethodDeclaration methodTemplate, final ClassOrInterfaceDeclaration tableTemplate, final String evaluateMethodName) {
-//        methodTemplate.getBody().ifPresent(body -> {
-//            final MethodDeclaration toReturn = tableTemplate.addMethod(evaluateMethodName).setBody(body);
-//            toReturn.setModifiers(methodTemplate.getModifiers());
-//            methodTemplate.getParameters().forEach(toReturn::addParameter);
-//            toReturn.setType(methodTemplate.getType());
-//        });
-//    }
-
-//    /**
-//     * Add a <code>MethodDeclaration</code> to the class
-//     * @param tableTemplate
-//     * @param targetCategory
-//     * @return
-//     */
-//    private static void populateGetTargetCategory(final ClassOrInterfaceDeclaration tableTemplate, final Object targetCategory) {
-//        MethodDeclaration methodDeclaration = tableTemplate.getMethodsByName("getTargetCategory").get(0);
-//        methodDeclaration.getBody().ifPresent(body -> {
-//            ReturnStmt returnStmt = new ReturnStmt();
-//            if (targetCategory == null) {
-//                returnStmt.setExpression(new NameExpr("null"));
-//            } else if (targetCategory instanceof String) {
-//                returnStmt.setExpression(new StringLiteralExpr((String) targetCategory));
-//            } else {
-//                returnStmt.setExpression(new NameExpr(targetCategory.toString()));
-//            }
-//            body.addStatement(returnStmt);
-//        });
-//    }
 }

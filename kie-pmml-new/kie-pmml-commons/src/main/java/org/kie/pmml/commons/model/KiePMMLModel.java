@@ -57,53 +57,5 @@ public abstract class KiePMMLModel {
         return Collections.unmodifiableMap(outputFieldsMap);
     }
 
-    /* @Override
-    public String toString() {
-        return "KiePMMLModel{" +
-                "pmmlMODEL=" + pmmlMODEL +
-                ", miningFunction=" + miningFunction +
-                ", targetField='" + targetField + '\'' +
-                ", name='" + name + '\'' +
-                ", id='" + id + '\'' +
-                ", parentId='" + parentId + '\'' +
-                '}';
-    }
-
-    @Override
-    public boolean equals(Object o) {
-        if (this == o) {
-            return true;
-        }
-        if (o == null || getClass() != o.getClass()) {
-            return false;
-        }
-        if (!super.equals(o)) {
-            return false;
-        }
-        KiePMMLModel that = (KiePMMLModel) o;
-        return pmmlMODEL == that.pmmlMODEL &&
-                miningFunction == that.miningFunction &&
-                Objects.equals(targetField, that.targetField);
-    }
-
-    @Override
-    public int hashCode() {
-        return Objects.hash(super.hashCode(), pmmlMODEL, miningFunction, targetField);
-    }*/
-
     public abstract Object evaluate(Map<String, Object> requestData);
-
-//    public abstract static class Builder<T extends KiePMMLModel> extends KiePMMLBase.Builder<T> {
-//
-//        protected Builder(String prefix, PMML_MODEL pmmlMODEL, MINING_FUNCTION miningFunction, Supplier<T> supplier) {
-//            super(prefix, supplier);
-//            toBuild.pmmlMODEL = pmmlMODEL;
-//            toBuild.miningFunction = miningFunction;
-//        }
-//
-//        public Builder<T> withTargetField(String targetField) {
-//            toBuild.targetField = targetField;
-//            return this;
-//        }
-//    }
 }

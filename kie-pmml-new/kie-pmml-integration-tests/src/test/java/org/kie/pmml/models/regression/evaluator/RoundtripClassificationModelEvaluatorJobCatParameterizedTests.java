@@ -98,7 +98,6 @@ public class RoundtripClassificationModelEvaluatorJobCatParameterizedTests {
         final KiePMMLModel model = pmmlRuntime.getModel(pmmlContext.getRequestData().getModelName()).orElseThrow(() -> new KiePMMLException("Failed to retrieve the model"));
         assertEquals(PMML_MODEL.REGRESSION_MODEL, model.getPmmlMODEL());
         assertTrue(model instanceof KiePMMLRegressionModel);
-        assertEquals(4, ((KiePMMLRegressionModel) model).getRegressionTables().size());
         PMML4Result retrieved = pmmlRuntime.evaluate(model, pmmlContext, releaseId);
         assertNotNull(retrieved);
         assertEquals("OK", retrieved.getResultCode());

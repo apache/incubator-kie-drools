@@ -1,31 +1,8 @@
 package org.kie.pmml.models.regression.evaluator;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
-
 import org.junit.Before;
 import org.junit.Test;
-import org.kie.api.pmml.PMML4Result;
-import org.kie.api.pmml.PMMLRequestData;
-import org.kie.pmml.commons.enums.StatusCode;
-import org.kie.pmml.commons.model.enums.MINING_FUNCTION;
-import org.kie.pmml.commons.model.enums.OP_TYPE;
 import org.kie.pmml.commons.model.enums.PMML_MODEL;
-import org.kie.pmml.evaluator.api.executor.PMMLContext;
-import org.kie.pmml.evaluator.core.PMMLContextImpl;
-import org.kie.pmml.models.regression.model.KiePMMLRegressionModel;
-import org.kie.pmml.models.regression.model.KiePMMLRegressionTable;
-import org.kie.pmml.models.regression.model.enums.REGRESSION_NORMALIZATION_METHOD;
-import org.kie.pmml.models.regression.model.predictors.KiePMMLCategoricalPredictor;
-import org.kie.pmml.models.regression.model.predictors.KiePMMLNumericPredictor;
-import org.kie.pmml.models.regression.model.predictors.KiePMMLPredictorTerm;
-import org.kie.pmml.models.regression.model.predictors.KiePMMLRegressionTablePredictor;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;

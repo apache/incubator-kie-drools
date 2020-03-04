@@ -16,21 +16,10 @@
 
 package org.kie.pmml.models.regression.model;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collections;
-import java.util.List;
-
-import org.junit.Test;
 import org.kie.pmml.commons.model.enums.MINING_FUNCTION;
 import org.kie.pmml.commons.model.enums.OP_TYPE;
 import org.kie.pmml.models.regression.model.enums.MODEL_TYPE;
 import org.kie.pmml.models.regression.model.enums.REGRESSION_NORMALIZATION_METHOD;
-
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertTrue;
 
 public class KiePMMLRegressionModelTest {
 
@@ -39,7 +28,6 @@ public class KiePMMLRegressionModelTest {
     private static final MINING_FUNCTION _MINING_FUNCTION = MINING_FUNCTION.REGRESSION;
     private static final MODEL_TYPE _MODEL_TYPE = MODEL_TYPE.LINEAR_REGRESSION;
     private static final REGRESSION_NORMALIZATION_METHOD _REGRESSION_NORMALIZATION_METHOD = REGRESSION_NORMALIZATION_METHOD.SIMPLEMAX;
-    private static final List<KiePMMLRegressionTable> REGRESSION_TABLES = new ArrayList<>();
     private static final boolean SCORABLE = true;
     private static final String TARGETFIELD_NAME = "TARGETFIELD_NAME";
     private static final OP_TYPE _OP_TYPE = OP_TYPE.CONTINUOUS;

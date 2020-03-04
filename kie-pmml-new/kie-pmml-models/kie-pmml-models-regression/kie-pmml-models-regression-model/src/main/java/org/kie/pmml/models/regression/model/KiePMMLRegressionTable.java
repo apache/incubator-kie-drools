@@ -17,151 +17,39 @@ package org.kie.pmml.models.regression.model;
 
 import java.util.Collections;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
-import java.util.Objects;
-import java.util.Optional;
-import java.util.Set;
+import java.util.concurrent.atomic.AtomicReference;
+import java.util.function.Function;
 import java.util.stream.Collectors;
 
-import org.kie.pmml.commons.model.KiePMMLExtension;
-import org.kie.pmml.commons.model.abstracts.KiePMMLBase;
-import org.kie.pmml.models.regression.model.predictors.KiePMMLCategoricalPredictor;
-import org.kie.pmml.models.regression.model.predictors.KiePMMLNumericPredictor;
-import org.kie.pmml.models.regression.model.predictors.KiePMMLPredictorTerm;
-import org.kie.pmml.models.regression.model.predictors.KiePMMLRegressionTablePredictor;
+public abstract class KiePMMLRegressionTable {
 
-public class KiePMMLRegressionTable extends KiePMMLBase {
+    protected Map<String, Function<Double, Double>> numericFunctionMap = new HashMap<>();
+    protected Map<String, Function<Object, Double>> categoricalFunctionMap = new HashMap<>();
+    protected Map<String, Function<Map<String, Object>, Double>> predictorTermsFunctionMap = new HashMap<>();
+    protected double intercept;
+    protected String targetField;
 
-    private Number intercept;
-    private Object targetCategory = null;
-    private Set<KiePMMLNumericPredictor> numericPredictors = null;
-    private Set<KiePMMLCategoricalPredictor> categoricalPredictors = null;
-    private Set<KiePMMLPredictorTerm> predictorTerms = null;
-    private Map<String, KiePMMLNumericPredictor> numericPredictorsMap = new HashMap<>();
-    private Map<String, List<KiePMMLCategoricalPredictor>> categoricalPredictorMaps = new HashMap<>();
-
-    private KiePMMLRegressionTable(String name, List<KiePMMLExtension> extensions) {
-        super(name, extensions);
+    public Object evaluateRegression(Map<String, Object> input) {
+        final AtomicReference<Double> result = new AtomicReference<>(intercept);
+        final Map<String, Double> resultMap = input.entrySet().stream()
+                .filter(entry -> numericFunctionMap.containsKey(entry.getKey()))
+                .collect(Collectors.toMap(Map.Entry::getKey, e -> numericFunctionMap.get(e.getKey())
+                .apply(((Number) e.getValue()).doubleValue())));
+        resultMap.putAll(input.entrySet().stream().filter(entry -> categoricalFunctionMap.containsKey(entry.getKey())).collect(Collectors.toMap(Map.Entry::getKey, e -> categoricalFunctionMap.get(e.getKey()).apply(e.getValue()))));
+        resultMap.putAll(predictorTermsFunctionMap.entrySet().stream().collect(Collectors.toMap(Map.Entry::getKey, e -> e.getValue().apply(input))));
+        resultMap.values().forEach(value -> result.accumulateAndGet(value, Double::sum));
+        updateResult(result);
+        return result.get();
     }
 
-    public static Builder builder(String name, List<KiePMMLExtension> extensions, Number intercept) {
-        return new Builder(name, extensions, intercept);
+    public Map<String, Object> getOutputFieldsMap() {
+        return Collections.unmodifiableMap(new HashMap<>());
     }
 
-    public Optional<KiePMMLNumericPredictor> getKiePMMLNumericPredictorByName(String fieldName) {
-        return numericPredictorsMap.containsKey(fieldName) ? Optional.of(numericPredictorsMap.get(fieldName)) : Optional.empty();
-    }
+    public abstract Object getTargetCategory();
 
-    public Optional<KiePMMLCategoricalPredictor> getKiePMMLCategoricalPredictorByNameAndValue(String fieldName, Object value) {
-        if (!categoricalPredictorMaps.containsKey(fieldName)) {
-            return Optional.empty();
-        }
-        return categoricalPredictorMaps.get(fieldName).stream().filter(categoricalPredictor -> Objects.equals(fieldName, categoricalPredictor.getName()) && Objects.equals(value, categoricalPredictor.getValue())).findFirst();
-    }
-
-    public Number getIntercept() {
-        return intercept;
-    }
-
-    public Optional<Object> getTargetCategory() {
-        return Optional.ofNullable(targetCategory);
-    }
-
-    /**
-     * @return <code>Optional</code> of <b>unmodifiable</b> <code>Set&lt;KiePMMLNumericPredictor&gt;</code>
-     */
-    public Optional<Set<KiePMMLNumericPredictor>> getNumericPredictors() {
-        return numericPredictors != null ? Optional.of(Collections.unmodifiableSet(numericPredictors)) : Optional.empty();
-    }
-
-    /**
-     * @return <code>Optional</code> of <b>unmodifiable</b> <code>Set&lt;KiePMMLCategoricalPredictor&gt;</code>
-     */
-    public Optional<Set<KiePMMLCategoricalPredictor>> getCategoricalPredictors() {
-        return categoricalPredictors != null ? Optional.of(Collections.unmodifiableSet(categoricalPredictors)) : Optional.empty();
-    }
-
-    /**
-     * @return <code>Optional</code> of <b>unmodifiable</b> <code>Set&lt;KiePMMLCategoricalPredictor&gt;</code>
-     */
-    public Optional<Set<KiePMMLPredictorTerm>> getPredictorTerms() {
-        return predictorTerms != null ? Optional.of(Collections.unmodifiableSet(predictorTerms)) : Optional.empty();
-    }
-
-    @Override
-    public String toString() {
-        return "KiePMMLRegressionTable{" +
-                "intercept=" + intercept +
-                ", targetCategory=" + targetCategory +
-                ", extensions=" + extensions +
-                ", numericPredictors=" + numericPredictors +
-                ", categoricalPredictors=" + categoricalPredictors +
-                ", predictorTerms=" + predictorTerms +
-                ", numericPredictorsMap=" + numericPredictorsMap +
-                ", categoricalPredictorMaps=" + categoricalPredictorMaps +
-                ", id='" + id + '\'' +
-                ", parentId='" + parentId + '\'' +
-                '}';
-    }
-
-    @Override
-    public boolean equals(Object o) {
-        if (this == o) {
-            return true;
-        }
-        if (o == null || getClass() != o.getClass()) {
-            return false;
-        }
-        if (!super.equals(o)) {
-            return false;
-        }
-        KiePMMLRegressionTable that = (KiePMMLRegressionTable) o;
-        return Objects.equals(intercept, that.intercept) &&
-                Objects.equals(targetCategory, that.targetCategory) &&
-                Objects.equals(extensions, that.extensions) &&
-                Objects.equals(numericPredictors, that.numericPredictors) &&
-                Objects.equals(categoricalPredictors, that.categoricalPredictors) &&
-                Objects.equals(predictorTerms, that.predictorTerms) &&
-                Objects.equals(numericPredictorsMap, that.numericPredictorsMap) &&
-                Objects.equals(categoricalPredictorMaps, that.categoricalPredictorMaps);
-    }
-
-    @Override
-    public int hashCode() {
-        return Objects.hash(super.hashCode(), intercept, targetCategory, extensions, numericPredictors, categoricalPredictors, predictorTerms, numericPredictorsMap, categoricalPredictorMaps);
-    }
-
-    public static class Builder extends KiePMMLBase.Builder<KiePMMLRegressionTable> {
-
-        private Builder(String name, List<KiePMMLExtension> extensions, Number intercept) {
-            super("RegressionTable-", () -> new KiePMMLRegressionTable(name, extensions));
-            toBuild.intercept = intercept;
-        }
-
-        public Builder withTargetCategory(Object targetCategory) {
-            toBuild.targetCategory = targetCategory;
-            return this;
-        }
-
-        public Builder withNumericPredictors(Set<KiePMMLNumericPredictor> numericPredictors) {
-            toBuild.numericPredictors = numericPredictors;
-            toBuild.numericPredictorsMap.putAll(numericPredictors.stream().collect(Collectors.toMap(
-                    KiePMMLRegressionTablePredictor::getName,
-                    predictor -> predictor)));
-            return this;
-        }
-
-        public Builder withCategoricalPredictors(Set<KiePMMLCategoricalPredictor> categoricalPredictors) {
-            toBuild.categoricalPredictors = categoricalPredictors;
-            toBuild.categoricalPredictorMaps = categoricalPredictors.stream()
-                    .collect(Collectors.groupingBy(KiePMMLBase::getName));
-            return this;
-        }
-
-        public Builder withPredictorTerms(Set<KiePMMLPredictorTerm> predictorTerms) {
-            toBuild.predictorTerms = predictorTerms;
-            return this;
-        }
+    protected void updateResult(final AtomicReference<Double> toUpdate) {
+        // NONE
     }
 }

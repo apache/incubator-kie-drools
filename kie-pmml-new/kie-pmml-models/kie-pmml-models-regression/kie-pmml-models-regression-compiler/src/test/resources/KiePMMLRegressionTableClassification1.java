@@ -20,22 +20,31 @@ import java.util.Map;
 import java.util.concurrent.atomic.AtomicReference;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
-
 import org.kie.pmml.models.regression.model.KiePMMLRegressionClassificationTable;
 
-public class KiePMMLRegressionTableClassificationTemplate extends KiePMMLRegressionClassificationTable {
+public class KiePMMLRegressionTableClassification1 extends KiePMMLRegressionClassificationTable {
 
-    public KiePMMLRegressionTableClassificationTemplate() {
-        targetField = "fld4";
-   }
+    public KiePMMLRegressionTableClassification1() {
+        targetField = "targetField";
+        categoryTableMap.put("clerical", new KiePMMLRegressionTableRegression2());
+        categoryTableMap.put("professional", new KiePMMLRegressionTableRegression1());
+    }
 
     @Override
     public Object getTargetCategory() {
-
+        return null;
     }
 
     @Override
     protected void populateOutputFieldsMap(final Map.Entry<String, Double> predictedEntry, final LinkedHashMap<String, Double> probabilityMap) {
+        outputFieldsMap.put("CAT-1", probabilityMap.get("CatPred-1"));
+        outputFieldsMap.put("NUM-1", probabilityMap.get("NumPred-0"));
+        outputFieldsMap.put("PREV", predictedEntry.getKey());
+    }
 
+    protected LinkedHashMap<String, Double> getProbabilityMap(final LinkedHashMap<String, Double> resultMap) {
+        LinkedHashMap<String, Double> tmp = resultMap.entrySet().stream().collect(Collectors.toMap(Map.Entry::getKey, entry -> Math.exp(entry.getValue()), (o1, o2) -> o1, LinkedHashMap::new));
+        double sum = tmp.values().stream().mapToDouble(value -> value).sum();
+        return tmp.entrySet().stream().collect(Collectors.toMap(Map.Entry::getKey, entry -> entry.getValue() / sum, (o1, o2) -> o1, LinkedHashMap::new));
     }
 }
