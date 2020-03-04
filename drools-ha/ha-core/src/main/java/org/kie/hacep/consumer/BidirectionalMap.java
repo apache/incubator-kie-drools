@@ -21,32 +21,30 @@ import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.io.Serializable;
 import java.util.HashMap;
-import java.util.Iterator;
-import java.util.Map;
 
 public class BidirectionalMap<K, V> extends HashMap<K, V> implements Serializable {
 
-    private Map<V, K> inversedMap = new HashMap<>();
+    private HashMap<V, K> inverseMap = new HashMap<>();
 
     @Override
     public V remove(Object key) {
         V val = super.remove(key);
-        inversedMap.remove(val);
+        inverseMap.remove(val);
         return val;
     }
 
     @Override
     public V put(K key, V value) {
-        inversedMap.put(value, key);
+        inverseMap.put(value, key);
         return super.put(key, value);
     }
 
     public K getKey(V value) {
-        return inversedMap.get(value);
+        return inverseMap.get(value);
     }
 
     public K removeValue(V value) {
-        K key = inversedMap.get(value);
+        K key = inverseMap.get(value);
         super.remove( key );
         return key;
     }
@@ -56,11 +54,16 @@ public class BidirectionalMap<K, V> extends HashMap<K, V> implements Serializabl
         return super.equals(obj);
     }
 
+    @Override
+    public int hashCode() {
+        return super.hashCode();
+    }
+
     private void readObject(ObjectInputStream inputStream) throws ClassNotFoundException, IOException {
-        inversedMap = (Map<V, K>) inputStream.readObject();
+        inverseMap = (HashMap<V, K>) inputStream.readObject();
     }
 
     private void writeObject(ObjectOutputStream outputStream) throws IOException {
-        outputStream.writeObject(inversedMap);
+        outputStream.writeObject(inverseMap);
     }
 }
