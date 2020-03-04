@@ -142,9 +142,11 @@ public abstract class PatternDSL implements DSLNode {
 
                 String rightExpression = printConstraint(expr.asBinaryExpr().getRight());
                 DrlxParseResult rightExpressionReparsed = constraintParser.drlxParse(patternType, patternIdentifier, rightExpression, isPositional);
-                patternConstraintParseResults.add(new PatternConstraintParseResult(rightExpression, patternIdentifier, rightExpressionReparsed));
+                DrlxParseResult normalizedParseResult = ConstraintUtil.normalizeConstraint(rightExpressionReparsed);
+                patternConstraintParseResults.add(new PatternConstraintParseResult(rightExpression, patternIdentifier, normalizedParseResult));
             } else {
-                patternConstraintParseResults.add(new PatternConstraintParseResult(expression, patternIdentifier, drlxParseResult));
+                DrlxParseResult normalizedParseResult = ConstraintUtil.normalizeConstraint(drlxParseResult);
+                patternConstraintParseResults.add(new PatternConstraintParseResult(expression, patternIdentifier, normalizedParseResult));
             }
         }
 
@@ -191,7 +193,6 @@ public abstract class PatternDSL implements DSLNode {
             final List<PatternConstraintParseResult> patternConstraintParseResults = findAllConstraint(pattern, constraintDescrs, patternType);
             final List<String> allBindings = patternConstraintParseResults
                     .stream()
-                    .map(ConstraintUtil::normalizeConstraint)
                     .map(p -> p.getDrlxParseResult().acceptWithReturnValue( DrlxParseSuccess::getExprBinding ))
                     .filter(Objects::nonNull)
                     .collect(Collectors.toList());

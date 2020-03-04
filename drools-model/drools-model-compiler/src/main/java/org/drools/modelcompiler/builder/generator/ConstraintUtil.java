@@ -4,11 +4,13 @@ import java.util.Optional;
 
 import com.github.javaparser.ast.NodeList;
 import com.github.javaparser.ast.expr.BinaryExpr;
+import com.github.javaparser.ast.expr.EnclosedExpr;
 import com.github.javaparser.ast.expr.Expression;
 import com.github.javaparser.ast.expr.MethodCallExpr;
 import com.github.javaparser.ast.expr.NameExpr;
 import com.github.javaparser.ast.expr.SimpleName;
 import com.github.javaparser.ast.expr.UnaryExpr;
+import org.drools.model.Index;
 import org.drools.model.Index.ConstraintType;
 import org.drools.modelcompiler.builder.generator.drlxparse.DrlxParseResult;
 import org.drools.modelcompiler.builder.generator.drlxparse.SingleDrlxParseSuccess;
@@ -23,7 +25,11 @@ public class ConstraintUtil {
 
     private static final Logger logger = LoggerFactory.getLogger(ConstraintUtil.class);
 
-    private static final String METHOD_PREFIX = EvaluationUtil.class.getCanonicalName() + ".";
+    private static final String CLASS_NAME = EvaluationUtil.class.getCanonicalName() + ".";
+    private static final String GREATER_THAN_PREFIX = "greaterThan";
+    private static final String GREATER_OR_EQUAL_PREFIX = "greaterOrEqual";
+    private static final String LESS_THAN_PREFIX = "lessThan";
+    private static final String LESS_OR_EQUAL_PREFIX = "lessOrEqual";
 
     public static final String DROOLS_NORMALIZE_CONSTRAINT = "drools.normalize.constraint";
 
@@ -31,63 +37,110 @@ public class ConstraintUtil {
 
     private ConstraintUtil() {}
 
-    public static PatternConstraintParseResult normalizeConstraint(PatternConstraintParseResult pConstraint) {
+    public static DrlxParseResult normalizeConstraint(DrlxParseResult drlxParseResult) {
         if (!ENABLE_NORMALIZE) {
-            return pConstraint;
+            return drlxParseResult;
         }
-
-        DrlxParseResult drlxParseResult = pConstraint.getDrlxParseResult();
 
         if (drlxParseResult instanceof SingleDrlxParseSuccess) {
-            SingleDrlxParseSuccess s = (SingleDrlxParseSuccess) drlxParseResult;
+            // Create copy
+            SingleDrlxParseSuccess s = new SingleDrlxParseSuccess((SingleDrlxParseSuccess) drlxParseResult);
 
-            // TODO: Add logic based on s.getExpr() class
             Expression expr = s.getExpr();
-            System.out.println("expr.getClass() : " + expr.getClass());
-            System.out.println("expr : " + expr);
-            if (expr instanceof MethodCallExpr) {
-                normalizeForMethodExprCall(s);
-            } else if (expr instanceof BinaryExpr) {
-                BinaryExpr bExpr = (BinaryExpr) expr;
-                System.out.println("s.getLeft() = " + s.getLeft());
-                System.out.println("s.getRight() = " + s.getRight());
-                System.out.println("bExpr.getLeft().getClass() = " + bExpr.getLeft().getClass());
-                System.out.println("bExpr.getLeft() = " + bExpr.getLeft());
-                System.out.println("bExpr.getRight().getClass() = " + bExpr.getRight().getClass());
-                System.out.println("bExpr.getRight() = " + bExpr.getRight());
-            } else if (expr instanceof UnaryExpr) {
-                UnaryExpr uExpr = (UnaryExpr) expr;
-                System.out.println("s.getLeft() = " + s.getLeft());
-                System.out.println("s.getRight() = " + s.getRight());
-                System.out.println("uExpr.getExpression().getClass() = " + uExpr.getExpression().getClass());
-                System.out.println("uExpr.getExpression() = " + uExpr.getExpression());
-
-                Expression expression = uExpr.getExpression();
+            if (expr == null) {
+                return drlxParseResult;
             }
-        }
 
-        return pConstraint;
+            if (expr instanceof MethodCallExpr) {
+                processTopLevelExpression(s, (MethodCallExpr) expr);
+            } else if (expr instanceof EnclosedExpr) {
+                Expression inner = stripEnclosedExpr((EnclosedExpr) expr);
+                if (inner instanceof MethodCallExpr) {
+                    processTopLevelExpression(s, (MethodCallExpr) inner);
+                } else {
+                    processExpression(expr);
+                }
+            } else {
+                processExpression(expr);
+            }
+
+            return s;
+        }
+        return drlxParseResult;
     }
 
-    private static void normalizeForMethodExprCall(SingleDrlxParseSuccess s) {
+    private static Expression stripEnclosedExpr(EnclosedExpr eExpr) {
+        Expression inner = eExpr.getInner();
+        if (inner instanceof EnclosedExpr) {
+            return stripEnclosedExpr((EnclosedExpr) inner);
+        } else {
+            return inner;
+        }
+    }
+
+    private static void processTopLevelExpression(SingleDrlxParseSuccess s, MethodCallExpr mExpr) {
+        // Modify SingleDrlxParseSuccess when a top level constraint is modified
+        if (canInverse(s) && canInverse(mExpr)) {
+            inverseSingleDrlxParseSuccess(s);
+            inverseMethodCallExpr(mExpr);
+        }
+    }
+
+    private static void processExpression(Expression expr) {
+        if (expr instanceof MethodCallExpr) {
+            MethodCallExpr mExpr = (MethodCallExpr) expr;
+            if (canInverse(mExpr)) {
+                inverseMethodCallExpr(mExpr);
+            }
+        } else if (expr instanceof BinaryExpr) {
+            BinaryExpr bExpr = (BinaryExpr) expr;
+            if (bExpr.getOperator() == BinaryExpr.Operator.AND || bExpr.getOperator() == BinaryExpr.Operator.OR) {
+                Expression left = bExpr.getLeft();
+                processExpression(left);
+                Expression right = bExpr.getRight();
+                processExpression(right);
+            }
+        } else if (expr instanceof UnaryExpr) {
+            Expression expression = ((UnaryExpr) expr).getExpression();
+            processExpression(expression);
+        } else if (expr instanceof EnclosedExpr) {
+            Expression inner = ((EnclosedExpr) expr).getInner();
+            processExpression(inner);
+        }
+    }
+
+    private static boolean canInverse(MethodCallExpr mExpr) {
+        String mExprName = mExpr.getName().asString();
+        if (!mExprName.startsWith(CLASS_NAME)) {
+            return false;
+        }
+        NodeList<Expression> arguments = mExpr.getArguments();
+        if (arguments == null || arguments.size() != 2) {
+            return false;
+        }
+        Expression left = arguments.get(0);
+        Expression right = arguments.get(1);
+
+        return isPropertyOnRight(left, right);
+    }
+
+    private static boolean canInverse(SingleDrlxParseSuccess s) {
         ConstraintType type = s.getDecodeConstraintType();
         TypedExpression left = s.getLeft();
         TypedExpression right = s.getRight();
-        if (type != null && (type == ConstraintType.EQUAL || type == ConstraintType.NOT_EQUAL || type == ConstraintType.GREATER_THAN || type == ConstraintType.GREATER_OR_EQUAL || type == ConstraintType.LESS_THAN ||
-                             type == ConstraintType.LESS_OR_EQUAL) && (isPropertyOnRight(left, right))) {
-            inverseExpression(s);
+        if (type != null && left != null && right != null && (type == ConstraintType.EQUAL || type == ConstraintType.NOT_EQUAL || type == ConstraintType.GREATER_THAN || type == ConstraintType.GREATER_OR_EQUAL ||
+                                                              type == ConstraintType.LESS_THAN || type == ConstraintType.LESS_OR_EQUAL)) {
+            return isPropertyOnRight(left.getExpression(), right.getExpression());
+        } else {
+            return false;
         }
     }
 
-    private static boolean isPropertyOnRight(TypedExpression left, TypedExpression right) {
+    private static boolean isPropertyOnRight(Expression left, Expression right) {
         return !isProperty(left) && isProperty(right);
     }
 
-    private static boolean isProperty(TypedExpression tExpr) {
-        if (tExpr == null) {
-            return false;
-        }
-        Expression expr = tExpr.getExpression();
+    private static boolean isProperty(Expression expr) {
         if (expr instanceof MethodCallExpr) {
             Optional<Expression> thisScope = getRootScope((MethodCallExpr) expr).filter(scope -> scope.equals(new NameExpr(THIS_PLACEHOLDER)));
             if (thisScope.isPresent()) {
@@ -110,68 +163,57 @@ public class ConstraintUtil {
         });
     }
 
-    private static void inverseExpression(SingleDrlxParseSuccess s) {
-        Expression expr = s.getExpr();
-        if (!(expr instanceof MethodCallExpr)) {
-            return;
-        }
-        MethodCallExpr mExpr = (MethodCallExpr) expr;
-        String mExprName = mExpr.getName().asString();
-        if (!mExprName.startsWith(METHOD_PREFIX)) {
-            return;
-        }
-        String methodName = mExprName.substring(METHOD_PREFIX.length(), mExprName.length());
-        NodeList<Expression> arguments = mExpr.getArguments();
-        if (arguments.size() != 2) {
-            return;
-        }
+    private static void inverseSingleDrlxParseSuccess(SingleDrlxParseSuccess s) {
         ConstraintType inversedOperator = null;
-        try {
-            switch (s.getDecodeConstraintType()) {
-                case EQUAL:
-                    inversedOperator = ConstraintType.EQUAL;
-                    break;
-                case NOT_EQUAL:
-                    inversedOperator = ConstraintType.NOT_EQUAL;
-                    break;
-                case GREATER_THAN:
-                    inversedOperator = ConstraintType.LESS_THAN;
-                    methodName = replaceMethodName(methodName, "greaterThan", "lessThan");
-                    break;
-                case GREATER_OR_EQUAL:
-                    inversedOperator = ConstraintType.LESS_OR_EQUAL;
-                    methodName = replaceMethodName(methodName, "greaterOrEqual", "lessOrEqual");
-                    break;
-                case LESS_THAN:
-                    inversedOperator = ConstraintType.GREATER_THAN;
-                    methodName = replaceMethodName(methodName, "lessThan", "greaterThan");
-                    break;
-                case LESS_OR_EQUAL:
-                    inversedOperator = ConstraintType.GREATER_OR_EQUAL;
-                    methodName = replaceMethodName(methodName, "lessOrEqual", "greaterOrEqual");
-                    break;
-                default:
-                    throw new IllegalArgumentException(s.getDecodeConstraintType() + " should not be inversed");
-            }
-        } catch (IllegalArgumentException e) {
-            logger.warn(e.getMessage());
-            return;
+
+        switch (s.getDecodeConstraintType()) {
+            case EQUAL:
+                inversedOperator = ConstraintType.EQUAL;
+                break;
+            case NOT_EQUAL:
+                inversedOperator = ConstraintType.NOT_EQUAL;
+                break;
+            case GREATER_THAN:
+                inversedOperator = ConstraintType.LESS_THAN;
+                break;
+            case GREATER_OR_EQUAL:
+                inversedOperator = ConstraintType.LESS_OR_EQUAL;
+                break;
+            case LESS_THAN:
+                inversedOperator = ConstraintType.GREATER_THAN;
+                break;
+            case LESS_OR_EQUAL:
+                inversedOperator = ConstraintType.GREATER_OR_EQUAL;
+                break;
+            default:
+                throw new IllegalArgumentException(s.getDecodeConstraintType() + " should not be inversed");
         }
+
         TypedExpression left = s.getLeft();
         s.setLeft(s.getRight());
         s.setRight(left);
         s.setDecodeConstraintType(inversedOperator);
+    }
 
-        mExpr.setName(new SimpleName(METHOD_PREFIX + methodName));
+    private static void inverseMethodCallExpr(MethodCallExpr mExpr) {
+        String mExprName = mExpr.getName().asString();
+
+        String methodName = mExprName.substring(CLASS_NAME.length(), mExprName.length());
+        NodeList<Expression> arguments = mExpr.getArguments();
+
+        if (methodName.startsWith(GREATER_THAN_PREFIX)) {
+            methodName = methodName.replaceFirst(GREATER_THAN_PREFIX, LESS_THAN_PREFIX);
+        } else if (methodName.startsWith(GREATER_OR_EQUAL_PREFIX)) {
+            methodName = methodName.replaceFirst(GREATER_OR_EQUAL_PREFIX, LESS_OR_EQUAL_PREFIX);
+        } else if (methodName.startsWith(LESS_THAN_PREFIX)) {
+            methodName = methodName.replaceFirst(LESS_THAN_PREFIX, GREATER_THAN_PREFIX);
+        } else if (methodName.startsWith(LESS_OR_EQUAL_PREFIX)) {
+            methodName = methodName.replaceFirst(LESS_OR_EQUAL_PREFIX, GREATER_OR_EQUAL_PREFIX);
+        }
+
+        mExpr.setName(new SimpleName(CLASS_NAME + methodName));
         Expression firstArg = arguments.get(0);
         mExpr.setArgument(0, arguments.get(1));
         mExpr.setArgument(1, firstArg);
-    }
-
-    private static String replaceMethodName(String methodName, String original, String replacement) {
-        if (!methodName.contains(original)) {
-            throw new IllegalArgumentException("methodName \"" + methodName + "\" should contain \"" + original + "\"");
-        }
-        return methodName.replaceFirst(original, replacement);
     }
 }

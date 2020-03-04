@@ -23,7 +23,7 @@ import java.util.Set;
 
 public abstract class AbstractDrlxParseSuccess implements DrlxParseSuccess {
 
-    private Set<String> watchedProperties = Collections.emptySet();
+    protected Set<String> watchedProperties = Collections.emptySet();
 
     @Override
     public AbstractDrlxParseSuccess addAllWatchedProperties( Collection<String> watchedProperties) {
