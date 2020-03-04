@@ -2,7 +2,7 @@
 
 pipeline {
     agent {
-        label 'kogito-static || kie-rhel7'
+        label 'kie-rhel7 && kie-mem16g'
     }
     tools {
         maven 'kie-maven-3.5.4'

@@ -2,7 +2,7 @@
 
 pipeline {
     agent {
-        label 'kogito-static || kie-rhel7'
+        label 'kie-rhel7 && kie-mem16g'
     }
     triggers {
         cron('H 20 * * 1-5')
