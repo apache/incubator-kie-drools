@@ -183,6 +183,7 @@
                 </goals>
                 <!-- Optional configuration which provides for running any yarn command -->
                 <configuration>
+                  <npmRegistryURL>${env.NPM_REGISTRY_URL}</npmRegistryURL>
                   <arguments>install</arguments>
                 </configuration>
               </execution>
@@ -208,6 +209,7 @@
                   <goal>yarn</goal>
                 </goals>
                 <configuration>
+                  <npmRegistryURL>${env.NPM_REGISTRY_URL}</npmRegistryURL>
                   <arguments>run build:prod</arguments>
                 </configuration>
               </execution>
