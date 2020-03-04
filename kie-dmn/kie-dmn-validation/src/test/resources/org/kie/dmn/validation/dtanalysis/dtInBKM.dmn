@@ -1,0 +1,59 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<dmn:definitions xmlns:dmn="http://www.omg.org/spec/DMN/20180521/MODEL/" xmlns="https://kiegroup.org/dmn/_3283A00D-9B32-4F1F-BB3A-838D800D3924" xmlns:di="http://www.omg.org/spec/DMN/20180521/DI/" xmlns:kie="http://www.drools.org/kie/dmn/1.2" xmlns:feel="http://www.omg.org/spec/DMN/20180521/FEEL/" xmlns:dmndi="http://www.omg.org/spec/DMN/20180521/DMNDI/" xmlns:dc="http://www.omg.org/spec/DMN/20180521/DC/" id="_3638DEE5-66C2-4FAD-93A8-71B41CC33761" name="aaa" expressionLanguage="http://www.omg.org/spec/DMN/20180521/FEEL/" typeLanguage="http://www.omg.org/spec/DMN/20180521/FEEL/" namespace="https://kiegroup.org/dmn/_3283A00D-9B32-4F1F-BB3A-838D800D3924">
+  <dmn:inputData id="_8AD92B44-8342-4E22-935C-1ECF80FE631E" name="Num">
+    <dmn:extensionElements/>
+    <dmn:variable id="_DCC2B306-D638-48AC-B1E9-E03FFA2B4F31" name="Num" typeRef="number"/>
+  </dmn:inputData>
+  <dmn:decision id="_25300AE4-844F-4806-AEE9-8EE9E36C7784" name="Result">
+    <dmn:extensionElements/>
+    <dmn:variable id="_52BA8BE1-A655-4B8D-B3D8-8B42BA3AC555" name="Result" typeRef="number"/>
+    <dmn:informationRequirement id="_5BEC5DB2-36CA-4B65-B8DF-79AF5048CEAB">
+      <dmn:requiredInput href="#_8AD92B44-8342-4E22-935C-1ECF80FE631E"/>
+    </dmn:informationRequirement>
+    <dmn:knowledgeRequirement id="_B2A31822-3CB5-4592-8D83-5408AABF3E4C">
+      <dmn:requiredKnowledge href="#_FC82E0C6-CCFD-45B9-B150-3E672D061E68"/>
+    </dmn:knowledgeRequirement>
+    <dmn:invocation id="_F310E8CA-91AE-41E4-9B0D-093FB09E5A4B">
+      <dmn:literalExpression id="_907F301B-6C0B-40A0-89DF-B6D9E935D8E4">
+        <dmn:text>Multiplier</dmn:text>
+      </dmn:literalExpression>
+      <dmn:binding>
+        <dmn:parameter id="_33C47038-3B1E-4C04-A8B9-1561DDE03EDB" name="input" typeRef="number"/>
+        <dmn:literalExpression id="_8B607CA4-5B3E-418A-9B21-8A7E31E0BF0B">
+          <dmn:text>Num</dmn:text>
+        </dmn:literalExpression>
+      </dmn:binding>
+    </dmn:invocation>
+  </dmn:decision>
+  <dmn:businessKnowledgeModel id="_FC82E0C6-CCFD-45B9-B150-3E672D061E68" name="Multiplier">
+    <dmn:extensionElements/>
+    <dmn:variable id="_364B5730-99E9-4DE0-8179-D760E34FA516" name="Multiplier" typeRef="number"/>
+    <dmn:encapsulatedLogic id="_80ACDAD1-BC42-4D6A-8A45-934FD383DF85" kind="FEEL">
+      <dmn:formalParameter id="_2C9BF510-4C25-43DD-8666-2ADD7CD49B86" name="input" typeRef="number"/>
+      <dmn:decisionTable id="_860A5A56-0C43-4B42-B1DB-7415984E5624" hitPolicy="UNIQUE" preferredOrientation="Rule-as-Row">
+        <dmn:input id="_F62CE4C6-E398-4BC7-9330-E523542095CD">
+          <dmn:inputExpression id="_33E667E5-5A74-4250-BF09-A29F2623FD5D" typeRef="number">
+            <dmn:text>input</dmn:text>
+          </dmn:inputExpression>
+        </dmn:input>
+        <dmn:output id="_ED53CE85-E804-4EFD-8C87-DAAD74ECD90E" typeRef="number"/>
+        <dmn:rule id="_9DE38E63-00B6-402B-A357-2AB6951CD965">
+          <dmn:inputEntry id="_C8111192-7D22-4526-82AD-E5838311AB04">
+            <dmn:text>&gt;= 0</dmn:text>
+          </dmn:inputEntry>
+          <dmn:outputEntry id="_1F2E5265-D3F4-405B-9CEA-711F5E44F466">
+            <dmn:text>input</dmn:text>
+          </dmn:outputEntry>
+        </dmn:rule>
+        <dmn:rule id="_855F0785-A70C-4ECB-B3DE-566648E385C1">
+          <dmn:inputEntry id="_9C919F95-4377-4255-8854-3D4EBD46CDC3">
+            <dmn:text>&lt; 0</dmn:text>
+          </dmn:inputEntry>
+          <dmn:outputEntry id="_CBFCEC36-590B-44D8-8F1A-34DB111C27C2">
+            <dmn:text>-1 * input</dmn:text>
+          </dmn:outputEntry>
+        </dmn:rule>
+      </dmn:decisionTable>
+    </dmn:encapsulatedLogic>
+  </dmn:businessKnowledgeModel>
+</dmn:definitions>
