@@ -16,6 +16,7 @@
 
 package org.kie.pmml.regression.tests;
 
+import java.io.IOException;
 import java.io.InputStream;
 import java.util.Map;
 
@@ -29,6 +30,9 @@ import org.kie.pmml.evaluator.core.executor.PMMLModelExecutor;
 import org.kie.pmml.evaluator.core.utils.PMMLRequestDataBuilder;
 import org.kie.pmml.models.regression.compiler.executor.RegressionModelImplementationProvider;
 import org.kie.pmml.models.regression.evaluator.PMMLRegressionModelExecutor;
+import org.xml.sax.SAXException;
+
+import javax.xml.bind.JAXBException;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
@@ -52,11 +56,13 @@ public abstract class AbstractPMMLRegressionTest {
 
     protected KiePMMLModel loadPMMLModel(final String resourcePath) {
         final PMML pmml;
-        try (final InputStream inputStream = NumericVariablesLinearRegressionTest.class.getResourceAsStream(resourcePath)) {
-            pmml = TestUtils.loadFromInputStream(inputStream);
+
+        try {
+            pmml = TestUtils.loadFromFile(resourcePath);
         } catch (Exception e) {
-            throw new RuntimeException("Error loading PMML from classpath: " + resourcePath, e);
+            throw new RuntimeException("Error loading PMML", e);
         }
+
         Assertions.assertThat(pmml).isNotNull();
         assertEquals(1, pmml.getModels().size());
         assertTrue(pmml.getModels().get(0) instanceof RegressionModel);

@@ -34,7 +34,7 @@ import org.kie.pmml.evaluator.core.PMMLContextImpl;
 public class NumericVariablesDecimalAndNegativeCoefsTest extends AbstractPMMLRegressionTest {
 
     private static final String MODEL_NAME = "decimal_negative_Model";
-    private static final String PMML_SOURCE = "/numericVariablesDecimalAndNegativeCoefs.pmml";
+    private static final String PMML_SOURCE = "numericVariablesDecimalAndNegativeCoefs.pmml";
     private static final String TARGET_FIELD = "result";
 
     private double x;

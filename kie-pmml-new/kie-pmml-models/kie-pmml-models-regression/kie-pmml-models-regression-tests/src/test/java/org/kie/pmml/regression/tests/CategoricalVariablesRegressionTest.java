@@ -34,7 +34,7 @@ import org.kie.pmml.evaluator.core.PMMLContextImpl;
 public class CategoricalVariablesRegressionTest extends AbstractPMMLRegressionTest {
 
     private static final String MODEL_NAME = "categoricalVariables_Model";
-    private static final String PMML_SOURCE = "/categoricalVariablesRegression.pmml";
+    private static final String PMML_SOURCE = "categoricalVariablesRegression.pmml";
     private static final String TARGET_FIELD = "result";
 
     private String x;

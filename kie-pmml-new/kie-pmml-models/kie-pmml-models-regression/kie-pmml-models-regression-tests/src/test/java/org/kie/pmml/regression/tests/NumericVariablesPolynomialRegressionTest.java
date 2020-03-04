@@ -34,7 +34,7 @@ import org.kie.pmml.evaluator.core.PMMLContextImpl;
 public class NumericVariablesPolynomialRegressionTest extends AbstractPMMLRegressionTest {
 
     private static final String MODEL_NAME = "polynomial_Model";
-    private static final String PMML_SOURCE = "/numericVariablesPolynomialRegression.pmml";
+    private static final String PMML_SOURCE = "numericVariablesPolynomialRegression.pmml";
     private static final String TARGET_FIELD = "result";
 
     private double x;
