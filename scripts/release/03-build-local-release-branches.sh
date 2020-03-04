@@ -25,7 +25,7 @@ startDateTime=`date +%s`
 
 mkdir /tmp/kogito-release-repo
 
-$organizationDir/kogito-runtimes/scripts/mvn-all.sh clean install -Dmaven.repo.local=/tmp/kogito-release-repo
+$organizationDir/kogito-runtimes/scripts/mvn-all.sh -B clean install -Dmaven.repo.local=/tmp/kogito-release-repo
 
 endDateTime=`date +%s`
 spentSeconds=`expr $endDateTime - $startDateTime`
