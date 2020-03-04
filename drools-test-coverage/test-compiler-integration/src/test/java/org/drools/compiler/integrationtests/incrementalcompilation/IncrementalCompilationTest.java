@@ -46,6 +46,7 @@ import org.drools.core.reteoo.RuleTerminalNode;
 import org.drools.testcoverage.common.model.Address;
 import org.drools.testcoverage.common.model.Message;
 import org.drools.testcoverage.common.model.Person;
+import org.drools.testcoverage.common.model.Result;
 import org.drools.testcoverage.common.util.KieBaseTestConfiguration;
 import org.drools.testcoverage.common.util.KieSessionTestConfiguration;
 import org.drools.testcoverage.common.util.KieUtil;
@@ -73,6 +74,7 @@ import org.kie.api.definition.KiePackage;
 import org.kie.api.definition.rule.Rule;
 import org.kie.api.definition.type.FactType;
 import org.kie.api.event.rule.AfterMatchFiredEvent;
+import org.kie.api.io.KieResources;
 import org.kie.api.io.Resource;
 import org.kie.api.io.ResourceType;
 import org.kie.api.logger.KieRuntimeLogger;
@@ -4506,5 +4508,66 @@ public class IncrementalCompilationTest {
         session.insert( fact );
         assertEquals( 1, session.fireAllRules() );
         session.dispose();
+    }
+
+    @Test
+    public void testDecisionTable() {
+        KieServices ks = KieServices.get();
+        KieResources kr = ks.getResources();
+
+        ReleaseId releaseId1 = ks.newReleaseId("org.kie", "test-dtable", "1.1.1");
+        buildDTableProject( ks, kr, releaseId1, "CanDrinkAndDrive.xls" );
+
+        KieContainer kc = ks.newKieContainer(releaseId1);
+
+        KieSession sessionDtable = kc.newKieSession( "dtable" );
+        Result result = new Result();
+        FactHandle fhResult = sessionDtable.insert( result );
+        sessionDtable.insert( new Person("Mario", 45) );
+        sessionDtable.fireAllRules();
+
+        sessionDtable.delete( fhResult );
+
+        String[] results = new String[] { "Mario can drink", "Mario can drive" };
+        for (String r : results) {
+            assertTrue( result.toString().contains( r ) );
+        }
+
+        ReleaseId releaseId2 = ks.newReleaseId("org.kie", "test-dtable", "1.1.2");
+        buildDTableProject( ks, kr, releaseId2, "CanDrinkAndDrive2.xls" );
+
+        kc.updateToVersion(releaseId2);
+
+        result = new Result();
+        sessionDtable.insert( result );
+        sessionDtable.fireAllRules();
+
+        String[] results2 = new String[] { "Mario can drink", "Mario can vote" };
+        for (String r : results2) {
+            assertTrue( result.toString().contains( r ) );
+        }
+    }
+
+    private void buildDTableProject( KieServices ks, KieResources kr, ReleaseId releaseId, String dtableFile ) {
+        KieFileSystem kfs = ks.newKieFileSystem()
+                .write( "src/main/resources/org/drools/simple/candrink/CanDrink.xls",
+                        kr.newFileSystemResource( "src/test/resources/data/" + dtableFile ) )
+                .write( "src/main/resources/org/drools/simple/candrink/CanDrink.xls.properties",
+                        "sheets=Sheet1,Sheet2" );
+
+        kfs.generateAndWritePomXML(releaseId);
+
+        KieModuleModel kproj = ks.newKieModuleModel();
+        kproj.newKieBaseModel("dtblaleKB")
+                .addPackage("org.drools.simple.candrink")
+                .newKieSessionModel("dtable");
+
+        kfs.writeKModuleXML( kproj.toXML() );
+
+        if (kieBaseTestConfiguration.getExecutableModelProjectClass().isPresent()) {
+            ks.newKieBuilder( kfs ).buildAll(kieBaseTestConfiguration.getExecutableModelProjectClass().get());
+        } else {
+            ks.newKieBuilder( kfs ).buildAll(DrlProject.class);
+        }
     }
 }

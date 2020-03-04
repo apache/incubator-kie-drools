@@ -38,7 +38,7 @@ public class MedianFunction
             return FEELFnResult.ofError(new InvalidParametersEvent(Severity.ERROR, "list", "cannot be null"));
         }
         if (list.isEmpty()) {
-            return FEELFnResult.ofError(new InvalidParametersEvent(Severity.ERROR, "list", "cannot be empty"));
+            return FEELFnResult.ofResult(null); // DMN spec, Table 69: Semantics of list functions, median( [] ) = null
         }
 
         List<?> sorted = list.stream().sorted().collect(Collectors.toList());

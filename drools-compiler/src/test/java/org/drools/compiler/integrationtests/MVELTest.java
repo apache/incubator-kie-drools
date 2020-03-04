@@ -18,6 +18,7 @@ package org.drools.compiler.integrationtests;
 import java.io.Serializable;
 import java.math.BigDecimal;
 import java.math.BigInteger;
+import java.math.MathContext;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
@@ -30,6 +31,7 @@ import org.drools.compiler.Address;
 import org.drools.compiler.Cheese;
 import org.drools.compiler.Cheesery;
 import org.drools.compiler.CommonTestMethodBase;
+import org.drools.compiler.FactA;
 import org.drools.compiler.Person;
 import org.drools.compiler.TestEnum;
 import org.drools.core.base.ClassFieldReader;
@@ -1125,5 +1127,86 @@ public class MVELTest extends CommonTestMethodBase {
         public void setValue( String value ) {
             this.value = value;
         }
+    }
+
+    @Test
+    public void testTypeCoercionLongDivByInt() {
+        // DROOLS-5051
+        String str = "package com.sample\n" +
+                     "import " + Person.class.getCanonicalName() + ";\n" +
+                     "rule R1\n" +
+                     "no-loop true\n" +
+                     "dialect \"mvel\"\n" +
+                     "when\n" +
+                     "  $p : Person()\n" +
+                     "then\n" +
+                     "  modify ($p) { setBigDecimal(15 * Math.round( new java.math.BigDecimal(\"49.4\") ) / 100 ) }\n" +
+                     "end";
+
+        KieSession ksession = new KieHelper().addContent(str, ResourceType.DRL).build().newKieSession();
+        Person p = new Person("Toshiya");
+        ksession.insert(p);
+        ksession.fireAllRules();
+        assertEquals(new BigDecimal(7.35d, MathContext.DECIMAL32), p.getBigDecimal().round(MathContext.DECIMAL32));
+    }
+
+    @Test
+    public void testTypeCoercionIntCompareToDouble() {
+        // DROOLS-2391
+        String str = "package com.sample\n" +
+                     "import " + IntFact.class.getCanonicalName() + ";\n" +
+                     "rule R1\n" +
+                     "dialect \"mvel\"\n" +
+                     "when\n" +
+                     "  $f : IntFact(a == 1, b == 2, a / b < 0.99)\n" +
+                     "then\n" +
+                     "end";
+
+        KieSession ksession = new KieHelper().addContent(str, ResourceType.DRL).build().newKieSession();
+        IntFact f = new IntFact();
+        f.setA(1);
+        f.setB(2);
+        ksession.insert(f);
+        assertEquals(1, ksession.fireAllRules());
+    }
+
+    public static class IntFact {
+
+        private int a;
+        private int b;
+
+        public int getA() {
+            return a;
+        }
+
+        public void setA(int a) {
+            this.a = a;
+        }
+
+        public int getB() {
+            return b;
+        }
+
+        public void setB(int b) {
+            this.b = b;
+        }
+    }
+
+    @Test
+    public void testTypeCoercionFloatCompareToDouble() {
+        String str = "package com.sample\n" +
+                     "import " + FactA.class.getCanonicalName() + ";\n" +
+                     "rule R1\n" +
+                     "dialect \"mvel\"\n" +
+                     "when\n" +
+                     "  $f : FactA(field3 == 15.1)\n" +
+                     "then\n" +
+                     "end";
+
+        KieSession ksession = new KieHelper().addContent(str, ResourceType.DRL).build().newKieSession();
+        FactA f = new FactA();
+        f.setField3(new Float(15.1f));
+        ksession.insert(f);
+        assertEquals(1, ksession.fireAllRules());
     }
 }

@@ -240,6 +240,9 @@ public class FEELDateTimeDurationTest extends BaseFEELTest {
                 { "time(\"23:00:50z\") = time(\"23:00:50\")", Boolean.TRUE , null},
                 { "time(\"23:00:50z\") = time(\"23:00:50@Etc/UTC\")", Boolean.TRUE , null},
                 { "time(\"23:00:50\")  = time(\"23:00:50@Etc/UTC\")", Boolean.TRUE , null},
+                
+                {"time(\"10:30:00\").time offset", null, null},
+                {"date and time(\"2018-12-10T10:30:00\").time offset", null, null},
         };
         return addAdditionalParameters(cases, false);
     }
