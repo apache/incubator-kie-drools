@@ -48,7 +48,7 @@ pipeline {
         stage('Build kogito-examples') {
             steps {
                 checkout([$class: 'GitSCM', branches: [[name: 'master']], browser: [$class: 'GithubWeb', repoUrl: 'git@github.com:kiegroup/kogito-examples.git'], doGenerateSubmoduleConfigurations: false, extensions: [[$class: 'RelativeTargetDirectory', relativeTargetDir: 'kogito-examples']], submoduleCfg: [], userRemoteConfigs: [[credentialsId: 'kie-ci-user-key', url: 'git@github.com:kiegroup/kogito-examples.git']]])
-                dir("kogito-runtimes") {
+                dir("kogito-examples") {
                     script {
                          maven.runMavenWithSubmarineSettings('clean deploy', false)
                     }
