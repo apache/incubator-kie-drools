@@ -25,6 +25,8 @@ import org.kie.dmn.api.core.DMNContext;
 import org.kie.dmn.api.core.DMNMessage;
 import org.kie.dmn.api.core.DMNResult;
 import org.kie.dmn.api.core.DMNType;
+import org.kie.dmn.api.core.ast.BusinessKnowledgeModelNode;
+import org.kie.dmn.api.core.ast.DMNNode;
 import org.kie.dmn.api.core.event.DMNRuntimeEventManager;
 import org.kie.dmn.core.api.DMNExpressionEvaluator;
 import org.kie.dmn.core.api.EvaluatorResult;
@@ -32,6 +34,7 @@ import org.kie.dmn.core.api.EvaluatorResult.ResultType;
 import org.kie.dmn.core.impl.BaseDMNTypeImpl;
 import org.kie.dmn.core.impl.DMNContextFEELCtxWrapper;
 import org.kie.dmn.core.impl.DMNResultImpl;
+import org.kie.dmn.core.impl.DMNRuntimeEventManagerUtils;
 import org.kie.dmn.core.impl.DMNRuntimeImpl;
 import org.kie.dmn.core.util.Msg;
 import org.kie.dmn.core.util.MsgUtil;
@@ -133,7 +136,11 @@ public class DMNFunctionDefinitionEvaluator
             // context, but for now, cloning the original context
             DMNContextFEELCtxWrapper dmnContext = new DMNContextFEELCtxWrapper(ctx);
             dmnContext.enterFrame();
+            DMNNode originatorNode = ((DMNRuntimeImpl) eventManager.getRuntime()).getOriginatorNode(this);
             try {
+                if (originatorNode instanceof BusinessKnowledgeModelNode) {
+                    DMNRuntimeEventManagerUtils.fireBeforeInvokeBKM(eventManager, (BusinessKnowledgeModelNode) originatorNode, resultContext);
+                }
                 if( evaluator != null ) {
                     previousContext.getAll().forEach(dmnContext::set);
                     for( int i = 0; i < params.length; i++ ) {
@@ -183,6 +190,9 @@ public class DMNFunctionDefinitionEvaluator
                                        getName() );
                 return null;
             } finally {
+                if (originatorNode instanceof BusinessKnowledgeModelNode) {
+                    DMNRuntimeEventManagerUtils.fireAfterInvokeBKM(eventManager, (BusinessKnowledgeModelNode) originatorNode, resultContext);
+                }
                 resultContext.setContext( previousContext );
                 dmnContext.exitFrame();
             }

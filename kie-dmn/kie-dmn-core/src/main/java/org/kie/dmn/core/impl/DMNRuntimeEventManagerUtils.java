@@ -21,6 +21,7 @@ import java.util.function.Consumer;
 
 import org.kie.dmn.api.core.DMNResult;
 import org.kie.dmn.api.core.ast.BusinessKnowledgeModelNode;
+import org.kie.dmn.api.core.ast.DMNNode;
 import org.kie.dmn.api.core.ast.DecisionNode;
 import org.kie.dmn.api.core.ast.DecisionServiceNode;
 import org.kie.dmn.api.core.event.*;
@@ -100,6 +101,34 @@ public final class DMNRuntimeEventManagerUtils {
         if( eventManager.hasListeners() ) {
             AfterEvaluateContextEntryEvent event = new AfterEvaluateContextEntryEventImpl(nodeName, variableName, variableId, expressionId, expressionResult, result);
             notifyListeners(eventManager, l -> l.afterEvaluateContextEntry(event));
+        }
+    }
+
+    public static void fireBeforeInvokeBKM( DMNRuntimeEventManager eventManager, BusinessKnowledgeModelNode bkm, DMNResult result) {
+        if( eventManager.hasListeners() ) {
+            BeforeInvokeBKMEvent event = new BeforeInvokeBKMEventImpl(bkm, result);
+            notifyListeners(eventManager, l -> l.beforeInvokeBKM(event));
+        }
+    }
+
+    public static void fireAfterInvokeBKM( DMNRuntimeEventManager eventManager, BusinessKnowledgeModelNode bkm, DMNResult result) {
+        if( eventManager.hasListeners() ) {
+            AfterInvokeBKMEvent event = new AfterInvokeBKMEventImpl(bkm, result);
+            notifyListeners(eventManager, l -> l.afterInvokeBKM(event));
+        }
+    }
+
+    public static void fireBeforeInvokeDecisionService(DMNRuntimeEventManager eventManager, DecisionServiceNode decision, DMNResult result) {
+        if( eventManager.hasListeners() ) {
+            BeforeInvokeDecisionServiceEvent event = new BeforeInvokeDecisionServiceEventImpl(decision, result);
+            notifyListeners(eventManager, l -> l.beforeInvokeDecisionService(event));
+        }
+    }
+
+    public static void fireAfterInvokeDecisionService(DMNRuntimeEventManager eventManager, DecisionServiceNode decision, DMNResult result) {
+        if( eventManager.hasListeners() ) {
+            AfterInvokeDecisionServiceEvent event = new AfterInvokeDecisionServiceEventImpl(decision, result);
+            notifyListeners(eventManager, l -> l.afterInvokeDecisionService(event));
         }
     }
 
