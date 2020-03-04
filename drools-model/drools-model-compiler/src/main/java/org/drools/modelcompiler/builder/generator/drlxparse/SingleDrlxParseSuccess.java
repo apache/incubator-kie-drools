@@ -87,7 +87,7 @@ public class SingleDrlxParseSuccess extends AbstractDrlxParseSuccess {
     }
 
     public SingleDrlxParseSuccess(SingleDrlxParseSuccess s) {
-        // Copy constructor without deep-clone
+        // Shallow copy constructor
         this(s.getPatternType(), s.getPatternBinding(), s.getExpr(), s.getExprType());
         this.originalDrlConstraint = s.getOriginalDrlConstraint();
         this.accumulateBinding = s.getAccumulateBinding();

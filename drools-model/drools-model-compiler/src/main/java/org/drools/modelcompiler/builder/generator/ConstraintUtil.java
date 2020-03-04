@@ -20,6 +20,8 @@ import static org.drools.modelcompiler.builder.generator.DrlxParseUtil.THIS_PLAC
 public class ConstraintUtil {
 
     private static final String CLASS_NAME = EvaluationUtil.class.getCanonicalName() + ".";
+
+    // This is required to detect BigDecimal property from generated MethodCallExpr
     private static final String TO_BIG_DECIMAL = EvaluationUtil.class.getCanonicalName() + ".toBigDecimal";
 
     private static final String GREATER_THAN_PREFIX = "greaterThan";
@@ -33,6 +35,14 @@ public class ConstraintUtil {
 
     private ConstraintUtil() {}
 
+    /**
+     * Swap left and right operands in a constraint when a fact property is located on the right side.
+     * 
+     * e.g. Person(20 < age) should be normalized to Person(age > 20)
+     * 
+     * @param drlxParseResult
+     * @return Normalized <code>DrlxParseResult</code>
+     */
     public static DrlxParseResult normalizeConstraint(DrlxParseResult drlxParseResult) {
         if (!ENABLE_NORMALIZE) {
             return drlxParseResult;
