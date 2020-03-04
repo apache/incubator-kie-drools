@@ -24,15 +24,21 @@ import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
+import java.util.Enumeration;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
+import java.util.zip.ZipEntry;
+import java.util.zip.ZipFile;
 
 import javax.xml.namespace.QName;
+import org.drools.core.io.impl.ByteArrayResource;
 import org.drools.core.io.impl.FileSystemResource;
+import org.drools.core.io.internal.InternalResource;
 import org.kie.api.io.Resource;
+import org.kie.api.io.ResourceType;
 import org.kie.dmn.backend.marshalling.v1x.DMNMarshallerFactory;
 import org.kie.dmn.core.assembler.DMNResource;
 import org.kie.dmn.model.api.Definitions;
@@ -44,9 +50,31 @@ import org.kie.kogito.codegen.ConfigGenerator;
 import org.kie.kogito.codegen.GeneratedFile;
 import org.kie.kogito.codegen.di.DependencyInjectionAnnotator;
 
+import static org.drools.core.util.IoUtils.readBytesFromInputStream;
+import static org.kie.api.io.ResourceType.determineResourceType;
 import static org.kie.kogito.codegen.ApplicationGenerator.log;
 
 public class DecisionCodegen extends AbstractGenerator {
+
+    public static DecisionCodegen ofJar(Path jarPath) throws IOException {
+        List<DMNResource> resources = new ArrayList<>();
+
+        try (ZipFile zipFile = new ZipFile( jarPath.toFile() )) {
+            Enumeration< ? extends ZipEntry> entries = zipFile.entries();
+            while ( entries.hasMoreElements() ) {
+                ZipEntry entry = entries.nextElement();
+                ResourceType resourceType = determineResourceType(entry.getName());
+                if (entry.getName().endsWith(".dmn")) {
+                    InternalResource resource = new ByteArrayResource( readBytesFromInputStream( zipFile.getInputStream( entry ) ) );
+                    resource.setResourceType( resourceType );
+                    resource.setSourcePath( entry.getName() );
+                    resources.add( toDmnResource( resource ) );
+                }
+            }
+        }
+
+        return ofDecisions(jarPath, resources);
+    }
 
     public static DecisionCodegen ofPath(Path path) throws IOException {
         Path srcPath = Paths.get(path.toString());
@@ -71,11 +99,14 @@ public class DecisionCodegen extends AbstractGenerator {
         List<DMNResource> result = new ArrayList<>();
         for (File dmnFile : files) {
             FileSystemResource r = new FileSystemResource(dmnFile);
-            Definitions defs = parseDecisionFile(r);
-            DMNResource dmnRes = new DMNResource(new QName(defs.getNamespace(), defs.getName()), new ResourceWithConfigurationImpl(r, null, null, null), defs);
-            result.add(dmnRes);
+            result.add(toDmnResource( r ));
         }
         return result;
+    }
+
+    private static DMNResource toDmnResource( Resource r ) throws IOException {
+        Definitions defs = parseDecisionFile(r);
+        return new DMNResource(new QName(defs.getNamespace(), defs.getName()), new ResourceWithConfigurationImpl(r, null, null, null), defs);
     }
 
     private static Definitions parseDecisionFile(Resource r) throws IOException {

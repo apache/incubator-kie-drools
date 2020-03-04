@@ -20,9 +20,7 @@ import java.nio.charset.StandardCharsets;
 import java.text.MessageFormat;
 import java.util.ArrayList;
 import java.util.Collection;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 import java.util.NoSuchElementException;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -205,7 +203,9 @@ public class ApplicationGenerator {
     public Collection<GeneratedFile> generate() {
         List<GeneratedFile> generatedFiles = generateComponents();
         generators.forEach(gen -> gen.updateConfig(configGenerator));
-        generators.forEach(gen -> MetaDataWriter.writeLabelsImageMetadata(targetDirectory, gen.getLabels()));
+        if (targetDirectory.isDirectory()) {
+            generators.forEach( gen -> MetaDataWriter.writeLabelsImageMetadata( targetDirectory, gen.getLabels() ) );
+        }
         generatedFiles.add(generateApplicationDescriptor());
         generatedFiles.addAll(generateApplicationSections());
         generatedFiles.add(generateApplicationConfigDescriptor());

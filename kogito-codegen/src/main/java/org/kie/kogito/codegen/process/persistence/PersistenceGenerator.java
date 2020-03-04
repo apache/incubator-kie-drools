@@ -249,8 +249,10 @@ public class PersistenceGenerator extends AbstractGenerator {
                 persistenceProviderClazz.getMembers().sort(new BodyDeclarationComparator());
             }
         }
-        
-        MetaDataWriter.writeLabelsImageMetadata(targetDirectory, getLabels());
+
+        if (targetDirectory.isDirectory()) {
+            MetaDataWriter.writeLabelsImageMetadata( targetDirectory, getLabels() );
+        }
         return generatedFiles;
     }   
 

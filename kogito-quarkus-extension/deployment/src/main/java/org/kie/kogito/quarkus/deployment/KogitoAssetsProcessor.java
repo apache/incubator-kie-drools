@@ -15,6 +15,27 @@ import java.util.Set;
 import java.util.function.BiFunction;
 import java.util.stream.Collectors;
 
+import io.quarkus.arc.deployment.GeneratedBeanBuildItem;
+import io.quarkus.bootstrap.BootstrapDependencyProcessingException;
+import io.quarkus.bootstrap.model.AppDependency;
+import io.quarkus.bootstrap.model.AppModel;
+import io.quarkus.builder.item.BuildItem;
+import io.quarkus.deployment.Capabilities;
+import io.quarkus.deployment.annotations.BuildProducer;
+import io.quarkus.deployment.annotations.BuildStep;
+import io.quarkus.deployment.builditem.ArchiveRootBuildItem;
+import io.quarkus.deployment.builditem.CapabilityBuildItem;
+import io.quarkus.deployment.builditem.CombinedIndexBuildItem;
+import io.quarkus.deployment.builditem.FeatureBuildItem;
+import io.quarkus.deployment.builditem.LaunchModeBuildItem;
+import io.quarkus.deployment.builditem.LiveReloadBuildItem;
+import io.quarkus.deployment.builditem.nativeimage.NativeImageResourceBuildItem;
+import io.quarkus.deployment.builditem.nativeimage.ReflectiveClassBuildItem;
+import io.quarkus.deployment.builditem.nativeimage.ReflectiveHierarchyIgnoreWarningBuildItem;
+import io.quarkus.deployment.builditem.nativeimage.RuntimeInitializedClassBuildItem;
+import io.quarkus.deployment.index.IndexingUtil;
+import io.quarkus.deployment.pkg.builditem.CurateOutcomeBuildItem;
+import io.quarkus.runtime.LaunchMode;
 import org.drools.compiler.commons.jci.compilers.CompilationResult;
 import org.drools.compiler.commons.jci.compilers.JavaCompiler;
 import org.drools.compiler.commons.jci.compilers.JavaCompilerSettings;
@@ -42,28 +63,6 @@ import org.kie.kogito.codegen.di.CDIDependencyInjectionAnnotator;
 import org.kie.kogito.codegen.process.ProcessCodegen;
 import org.kie.kogito.codegen.process.persistence.PersistenceGenerator;
 import org.kie.kogito.codegen.rules.IncrementalRuleCodegen;
-
-import io.quarkus.arc.deployment.GeneratedBeanBuildItem;
-import io.quarkus.bootstrap.BootstrapDependencyProcessingException;
-import io.quarkus.bootstrap.model.AppDependency;
-import io.quarkus.bootstrap.model.AppModel;
-import io.quarkus.builder.item.BuildItem;
-import io.quarkus.deployment.Capabilities;
-import io.quarkus.deployment.annotations.BuildProducer;
-import io.quarkus.deployment.annotations.BuildStep;
-import io.quarkus.deployment.builditem.ArchiveRootBuildItem;
-import io.quarkus.deployment.builditem.CapabilityBuildItem;
-import io.quarkus.deployment.builditem.CombinedIndexBuildItem;
-import io.quarkus.deployment.builditem.FeatureBuildItem;
-import io.quarkus.deployment.builditem.LaunchModeBuildItem;
-import io.quarkus.deployment.builditem.LiveReloadBuildItem;
-import io.quarkus.deployment.builditem.nativeimage.NativeImageResourceBuildItem;
-import io.quarkus.deployment.builditem.nativeimage.ReflectiveClassBuildItem;
-import io.quarkus.deployment.builditem.nativeimage.ReflectiveHierarchyIgnoreWarningBuildItem;
-import io.quarkus.deployment.builditem.nativeimage.RuntimeInitializedClassBuildItem;
-import io.quarkus.deployment.index.IndexingUtil;
-import io.quarkus.deployment.pkg.builditem.CurateOutcomeBuildItem;
-import io.quarkus.runtime.LaunchMode;
 
 public class KogitoAssetsProcessor {
 
@@ -168,12 +167,7 @@ public class KogitoAssetsProcessor {
         Path targetClassesPath = root.getArchiveLocation();
         Path projectPath = getProjectPath(targetClassesPath);
 
-        boolean generateRuleUnits = true;
-        boolean generateProcesses = true;
-        boolean generateDecisions = true;
-
-        ApplicationGenerator appGen = createApplicationGenerator(projectPath, launchMode.getLaunchMode(), generateRuleUnits,
-                generateProcesses, generateDecisions, combinedIndexBuildItem);
+        ApplicationGenerator appGen = createApplicationGenerator(projectPath, launchMode.getLaunchMode(), combinedIndexBuildItem);
         Collection<GeneratedFile> generatedFiles = appGen.generate();
 
         Collection<GeneratedFile> javaFiles = generatedFiles.stream().filter( f -> f.relativePath().endsWith( ".java" ) ).collect( Collectors.toCollection( ArrayList::new ));
@@ -246,8 +240,10 @@ public class KogitoAssetsProcessor {
         JavaCompiler javaCompiler = JavaParserCompiler.getCompiler();
         JavaCompilerSettings compilerSettings = javaCompiler.createDefaultSettings();
         compilerSettings.addClasspath(root.getArchiveLocation().toString());
-        for (AppDependency i : appModel.getUserDependencies()) {
-            compilerSettings.addClasspath(i.getArtifact().getPath().toAbsolutePath().toString());
+        if (appModel != null) {
+            for (AppDependency i : appModel.getUserDependencies()) {
+                compilerSettings.addClasspath( i.getArtifact().getPath().toAbsolutePath().toString() );
+            }
         }
 
         MemoryFileSystem srcMfs = new MemoryFileSystem();
@@ -311,14 +307,9 @@ public class KogitoAssetsProcessor {
         return path;
     }
 
-    private ApplicationGenerator createApplicationGenerator(Path projectPath, LaunchMode launchMode,
-            boolean generateRuleUnits,
-            boolean generateProcesses,
-            boolean generateDecisions,
-            CombinedIndexBuildItem combinedIndexBuildItem)
+    private ApplicationGenerator createApplicationGenerator(Path projectPath, LaunchMode launchMode, CombinedIndexBuildItem combinedIndexBuildItem)
             throws IOException {
 
-        Path srcPath = projectPath.resolve("src");
         boolean usePersistence = combinedIndexBuildItem.getIndex()
                 .getClassByName(createDotName(persistenceFactoryClass)) != null;
 
@@ -336,34 +327,51 @@ public class KogitoAssetsProcessor {
                         .getClassByName(createDotName(metricsClass)) != null)
                 .withGeneratorContext(context);
 
-        if (generateProcesses) {
-            appGen.withGenerator(ProcessCodegen.ofPath(projectPath))
-                    .withPersistence(usePersistence)
-                    .withClassLoader(Thread.currentThread().getContextClassLoader());
-        }
-
-        if (generateRuleUnits) {
-            Path moduleXmlPath = projectPath.resolve("src/main/resources").resolve(KieModuleModelImpl.KMODULE_JAR_PATH);
-            KieModuleModel kieModuleModel = null;
-            if (Files.exists(moduleXmlPath)) {
-                kieModuleModel = KieModuleModelImpl.fromXML(
-                        new ByteArrayInputStream(
-                                Files.readAllBytes(moduleXmlPath)));
-            } else {
-                kieModuleModel = KieModuleModelImpl.fromXML(
-                        "<kmodule xmlns=\"http://www.drools.org/xsd/kmodule\" xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\"/>");
-            }
-
-            appGen.withGenerator(IncrementalRuleCodegen.ofPath(srcPath))
-                    .withKModule(kieModuleModel)
-                    .withClassLoader(Thread.currentThread().getContextClassLoader());
-        }
-
-        if (generateDecisions) {
-            appGen.withGenerator(DecisionCodegen.ofPath(projectPath.resolve("src/main/resources")));
-        }
+        boolean isDirectory = projectPath.toFile().isDirectory();
+        addProcessGenerator( projectPath, usePersistence, appGen, isDirectory );
+        addRuleGenerator( projectPath, appGen, isDirectory );
+        addDecisionGenerator( projectPath, appGen, isDirectory );
 
         return appGen;
+    }
+
+    private void addRuleGenerator( Path projectPath, ApplicationGenerator appGen, boolean isDirectory ) throws IOException {
+        Path moduleXmlPath = projectPath.resolve("src/main/resources").resolve( KieModuleModelImpl.KMODULE_JAR_PATH);
+        KieModuleModel kieModuleModel = null;
+        if ( Files.exists(moduleXmlPath)) {
+            kieModuleModel = KieModuleModelImpl.fromXML(
+                    new ByteArrayInputStream(
+                            Files.readAllBytes(moduleXmlPath)));
+        } else {
+            kieModuleModel = KieModuleModelImpl.fromXML(
+                    "<kmodule xmlns=\"http://www.drools.org/xsd/kmodule\" xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\"/>");
+        }
+
+        IncrementalRuleCodegen generator = isDirectory ?
+                IncrementalRuleCodegen.ofPath(projectPath.resolve("src")) :
+                IncrementalRuleCodegen.ofJar(projectPath);
+
+        appGen.withGenerator(generator)
+                .withKModule(kieModuleModel)
+                .withClassLoader(Thread.currentThread().getContextClassLoader());
+    }
+
+    private void addProcessGenerator( Path projectPath, boolean usePersistence, ApplicationGenerator appGen, boolean isDirectory ) throws IOException {
+        ProcessCodegen generator = isDirectory ?
+                ProcessCodegen.ofPath(projectPath) :
+                ProcessCodegen.ofJar(projectPath);
+
+        appGen.withGenerator( generator )
+                .withPersistence(usePersistence)
+                .withClassLoader(Thread.currentThread().getContextClassLoader());
+    }
+
+    private void addDecisionGenerator( Path projectPath, ApplicationGenerator appGen, boolean isDirectory ) throws IOException {
+        DecisionCodegen generator = isDirectory ?
+                DecisionCodegen.ofPath(projectPath.resolve("src/main/resources")) :
+                DecisionCodegen.ofJar(projectPath);
+
+        appGen.withGenerator( generator );
     }
 
     private String toRuntimeSource(String className) {
