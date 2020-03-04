@@ -17,7 +17,10 @@
 package org.drools.modelcompiler;
 
 import java.math.BigDecimal;
+import java.util.ArrayList;
+import java.util.List;
 
+import org.assertj.core.api.Assertions;
 import org.drools.core.common.NamedEntryPoint;
 import org.drools.core.reteoo.AlphaNode;
 import org.drools.core.reteoo.CompositeObjectSinkAdapter;
@@ -378,5 +381,74 @@ public class ConstraintNormalizationTest extends BaseModelTest {
 
         ksession.insert(p);
         assertEquals(2, ksession.fireAllRules());
+    }
+
+    @Test
+    public void testBigDecimal() throws Exception {
+        String str =
+                "import " + Person.class.getCanonicalName() + ";" +
+                     "rule R1 when\n" +
+                     "  $p : Person(20 < money)\n" +
+                     "then\n" +
+                     "end\n" +
+
+                     "rule R2 when\n" +
+                     "  $p : Person(money > 20)\n" +
+                     "then\n" +
+                     "end";
+
+        KieSession ksession = getKieSession(str);
+        ReteDumper.dumpRete(ksession);
+
+        // Check NodeSharing to verify if normalization works expectedly
+        assertEquals(1, ReteDumper.collectNodes(ksession).stream().filter(AlphaNode.class::isInstance).count());
+
+        Person p = new Person("John");
+        p.setMoney(new BigDecimal("30.0"));
+
+        ksession.insert(p);
+
+        assertEquals(2, ksession.fireAllRules());
+    }
+
+    @Test
+    public void testNegateComplex() throws Exception {
+        String str =
+                "import " + Person.class.getCanonicalName() + ";" +
+                     "global java.util.List list;\n" +
+                     "rule R1 when\n" +
+                     "  $p : Person(!(20 < money && 40 > money))\n" +
+                     "then\n" +
+                     "  list.add($p.getName());" +
+                     "end\n" +
+
+                     "rule R2 when\n" +
+                     "  $p : Person(!(money > 20 && money < 40))\n" +
+                     "then\n" +
+                     "  list.add($p.getName());" +
+                     "end";
+
+        KieSession ksession = getKieSession(str);
+        ReteDumper.dumpRete(ksession);
+
+        // Check NodeSharing to verify if normalization works expectedly
+        assertEquals(1, ReteDumper.collectNodes(ksession).stream().filter(AlphaNode.class::isInstance).count());
+
+        final List<String> list = new ArrayList<>();
+        ksession.setGlobal("list", list);
+
+        Person p1 = new Person("John");
+        p1.setMoney(new BigDecimal("10.0"));
+        Person p2 = new Person("Paul");
+        p2.setMoney(new BigDecimal("30.0"));
+        Person p3 = new Person("George");
+        p3.setMoney(new BigDecimal("50.0"));
+
+        ksession.insert(p1);
+        ksession.insert(p2);
+        ksession.insert(p3);
+
+        assertEquals(4, ksession.fireAllRules());
+        Assertions.assertThat(list).containsExactlyInAnyOrder("John", "George", "John", "George");
     }
 }

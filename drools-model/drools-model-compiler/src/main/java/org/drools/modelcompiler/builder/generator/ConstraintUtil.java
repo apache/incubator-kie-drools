@@ -10,22 +10,18 @@ import com.github.javaparser.ast.expr.MethodCallExpr;
 import com.github.javaparser.ast.expr.NameExpr;
 import com.github.javaparser.ast.expr.SimpleName;
 import com.github.javaparser.ast.expr.UnaryExpr;
-import org.drools.model.Index;
 import org.drools.model.Index.ConstraintType;
 import org.drools.modelcompiler.builder.generator.drlxparse.DrlxParseResult;
 import org.drools.modelcompiler.builder.generator.drlxparse.SingleDrlxParseSuccess;
-import org.drools.modelcompiler.builder.generator.visitor.pattern.PatternConstraintParseResult;
 import org.drools.modelcompiler.util.EvaluationUtil;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 import static org.drools.modelcompiler.builder.generator.DrlxParseUtil.THIS_PLACEHOLDER;
 
 public class ConstraintUtil {
 
-    private static final Logger logger = LoggerFactory.getLogger(ConstraintUtil.class);
-
     private static final String CLASS_NAME = EvaluationUtil.class.getCanonicalName() + ".";
+    private static final String TO_BIG_DECIMAL = EvaluationUtil.class.getCanonicalName() + ".toBigDecimal";
+
     private static final String GREATER_THAN_PREFIX = "greaterThan";
     private static final String GREATER_OR_EQUAL_PREFIX = "greaterOrEqual";
     private static final String LESS_THAN_PREFIX = "lessThan";
@@ -43,7 +39,7 @@ public class ConstraintUtil {
         }
 
         if (drlxParseResult instanceof SingleDrlxParseSuccess) {
-            // Create copy
+            // Create a copy
             SingleDrlxParseSuccess s = new SingleDrlxParseSuccess((SingleDrlxParseSuccess) drlxParseResult);
 
             Expression expr = s.getExpr();
@@ -78,19 +74,19 @@ public class ConstraintUtil {
         }
     }
 
-    private static void processTopLevelExpression(SingleDrlxParseSuccess s, MethodCallExpr mExpr) {
+    private static void processTopLevelExpression(SingleDrlxParseSuccess s, MethodCallExpr mcExpr) {
         // Modify SingleDrlxParseSuccess when a top level constraint is modified
-        if (canInverse(s) && canInverse(mExpr)) {
+        if (canInverse(s) && canInverse(mcExpr)) {
             inverseSingleDrlxParseSuccess(s);
-            inverseMethodCallExpr(mExpr);
+            inverseMethodCallExpr(mcExpr);
         }
     }
 
     private static void processExpression(Expression expr) {
         if (expr instanceof MethodCallExpr) {
-            MethodCallExpr mExpr = (MethodCallExpr) expr;
-            if (canInverse(mExpr)) {
-                inverseMethodCallExpr(mExpr);
+            MethodCallExpr mcExpr = (MethodCallExpr) expr;
+            if (canInverse(mcExpr)) {
+                inverseMethodCallExpr(mcExpr);
             }
         } else if (expr instanceof BinaryExpr) {
             BinaryExpr bExpr = (BinaryExpr) expr;
@@ -109,12 +105,12 @@ public class ConstraintUtil {
         }
     }
 
-    private static boolean canInverse(MethodCallExpr mExpr) {
-        String mExprName = mExpr.getName().asString();
-        if (!mExprName.startsWith(CLASS_NAME)) {
+    private static boolean canInverse(MethodCallExpr mcExpr) {
+        String mcExprName = mcExpr.getName().asString();
+        if (!mcExprName.startsWith(CLASS_NAME)) {
             return false;
         }
-        NodeList<Expression> arguments = mExpr.getArguments();
+        NodeList<Expression> arguments = mcExpr.getArguments();
         if (arguments == null || arguments.size() != 2) {
             return false;
         }
@@ -142,7 +138,11 @@ public class ConstraintUtil {
 
     private static boolean isProperty(Expression expr) {
         if (expr instanceof MethodCallExpr) {
-            Optional<Expression> thisScope = getRootScope((MethodCallExpr) expr).filter(scope -> scope.equals(new NameExpr(THIS_PLACEHOLDER)));
+            MethodCallExpr mcExpr = (MethodCallExpr) expr;
+            if (mcExpr.getName().asString().equals(TO_BIG_DECIMAL) && mcExpr.getArgument(0) instanceof MethodCallExpr) {
+                mcExpr = (MethodCallExpr) mcExpr.getArgument(0);
+            }
+            Optional<Expression> thisScope = getRootScope(mcExpr).filter(scope -> scope.equals(new NameExpr(THIS_PLACEHOLDER)));
             if (thisScope.isPresent()) {
                 return true;
             }
@@ -195,11 +195,11 @@ public class ConstraintUtil {
         s.setDecodeConstraintType(inversedOperator);
     }
 
-    private static void inverseMethodCallExpr(MethodCallExpr mExpr) {
-        String mExprName = mExpr.getName().asString();
+    private static void inverseMethodCallExpr(MethodCallExpr mcExpr) {
+        String mcExprName = mcExpr.getName().asString();
 
-        String methodName = mExprName.substring(CLASS_NAME.length(), mExprName.length());
-        NodeList<Expression> arguments = mExpr.getArguments();
+        String methodName = mcExprName.substring(CLASS_NAME.length(), mcExprName.length());
+        NodeList<Expression> arguments = mcExpr.getArguments();
 
         if (methodName.startsWith(GREATER_THAN_PREFIX)) {
             methodName = methodName.replaceFirst(GREATER_THAN_PREFIX, LESS_THAN_PREFIX);
@@ -211,9 +211,9 @@ public class ConstraintUtil {
             methodName = methodName.replaceFirst(LESS_OR_EQUAL_PREFIX, GREATER_OR_EQUAL_PREFIX);
         }
 
-        mExpr.setName(new SimpleName(CLASS_NAME + methodName));
+        mcExpr.setName(new SimpleName(CLASS_NAME + methodName));
         Expression firstArg = arguments.get(0);
-        mExpr.setArgument(0, arguments.get(1));
-        mExpr.setArgument(1, firstArg);
+        mcExpr.setArgument(0, arguments.get(1));
+        mcExpr.setArgument(1, firstArg);
     }
 }
