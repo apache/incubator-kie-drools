@@ -16,6 +16,7 @@
 
 package org.kie.remote;
 
+import java.io.Serializable;
 import java.util.ArrayDeque;
 import java.util.Arrays;
 import java.util.Queue;
@@ -50,7 +51,7 @@ public class DroolsExecutorTest {
             master.execute(new DummyRunnable());
         }
 
-        final Queue<Object> results = master.getAndReset();
+        final Queue<Serializable> results = master.getAndReset();
         Assertions.assertThat(results).isNotNull();
         Assertions.assertThat(results.size()).isEqualTo(ITERATIONS);
         Assertions.assertThat(results).containsOnly(DroolsExecutor.EmptyResult.INSTANCE);
@@ -66,7 +67,7 @@ public class DroolsExecutorTest {
         final String resultString = master.execute(() -> testString);
         Assertions.assertThat(resultString).isEqualTo(testString);
 
-        final Queue<Object> results = master.getAndReset();
+        final Queue<Serializable> results = master.getAndReset();
         Assertions.assertThat(results).isNotNull();
         Assertions.assertThat(results).hasSize(1);
         Assertions.assertThat(results.poll()).isEqualTo(testString);
@@ -77,7 +78,7 @@ public class DroolsExecutorTest {
     @Test
     public void testExecuteOnSlave() {
         final DroolsExecutor slave = getSlaveExecutor();
-        final Queue<Object> sideEffects = new ArrayDeque<>(Arrays.asList(TEST_SIDE_EFFECTS));
+        final Queue<Serializable> sideEffects = new ArrayDeque<>(Arrays.asList(TEST_SIDE_EFFECTS));
         slave.appendSideEffects(sideEffects);
 
         slave.execute(new DummyRunnable());

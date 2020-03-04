@@ -15,6 +15,7 @@
  */
 package org.kie.hacep.consumer;
 
+import java.io.Serializable;
 import java.util.Queue;
 
 import org.kie.api.KieServices;
@@ -127,7 +128,7 @@ public class DroolsConsumerHandler implements ConsumerHandler {
         }
         if (state.equals(State.LEADER)) {
             processCommand(command, state);
-            Queue<Object> sideEffectsResults = DroolsExecutor.getInstance().getAndReset();
+            Queue<Serializable> sideEffectsResults = DroolsExecutor.getInstance().getAndReset();
             if (envConfig.isUnderTest()) {
                 loggerForTest.warn("DroolsConsumerHandler.process sideEffects:{}", sideEffectsResults);
             }
@@ -144,7 +145,7 @@ public class DroolsConsumerHandler implements ConsumerHandler {
         }
     }
 
-    public void processSideEffectsOnReplica(Queue<Object> newSideEffects) {
+    public void processSideEffectsOnReplica(Queue<Serializable> newSideEffects) {
         DroolsExecutor.getInstance().appendSideEffects(newSideEffects);
         if (envConfig.isUnderTest()) {
             loggerForTest.warn("sideEffectOnReplica:{}", newSideEffects);

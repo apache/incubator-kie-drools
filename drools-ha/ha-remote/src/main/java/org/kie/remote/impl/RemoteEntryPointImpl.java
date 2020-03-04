@@ -15,6 +15,7 @@
  */
 package org.kie.remote.impl;
 
+import java.io.Serializable;
 import java.util.Map;
 import java.util.concurrent.CompletableFuture;
 
@@ -43,7 +44,7 @@ public class RemoteEntryPointImpl extends AbstractRemoteEntryPoint implements Re
 
     @Override
     public <T> RemoteFactHandle<T> insert(T obj) {
-        RemoteFactHandle factHandle = new RemoteFactHandleImpl( obj );
+        RemoteFactHandle factHandle = new RemoteFactHandleImpl( (Serializable) obj );
         InsertCommand command = new InsertCommand( factHandle, entryPoint );
         sender.sendCommand(command, topicsConfig.getEventsTopicName());
         return factHandle;

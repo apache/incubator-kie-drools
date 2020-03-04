@@ -25,7 +25,7 @@ public abstract class DroolsExecutor {
 
     private static boolean isLeader = false;
 
-    protected Queue<Object> executionResults = new ArrayDeque<>();
+    protected Queue<Serializable> executionResults = new ArrayDeque<>();
 
     public static DroolsExecutor getInstance() {
         return isLeader ? Leader.INSTANCE : Slave.INSTANCE;
@@ -45,11 +45,11 @@ public abstract class DroolsExecutor {
 
     public abstract <R> R execute( Supplier<R> f );
 
-    public Queue<Object> getAndReset() {
+    public Queue<Serializable> getAndReset() {
         throw new UnsupportedOperationException();
     }
 
-    public void appendSideEffects(Queue<Object> sideEffects) {
+    public void appendSideEffects(Queue<Serializable> sideEffects) {
         throw new UnsupportedOperationException();
     }
 
@@ -71,13 +71,13 @@ public abstract class DroolsExecutor {
         @Override
         public <R> R execute( Supplier<R> f ) {
             R result = f.get();
-            executionResults.add( result );
+            executionResults.add( (Serializable) result );
             return result;
         }
 
         @Override
-        public Queue<Object> getAndReset() {
-            Queue<Object> results = executionResults;
+        public Queue<Serializable> getAndReset() {
+            Queue<Serializable> results = executionResults;
             executionResults = new ArrayDeque<>();
             return results;
         }
@@ -103,7 +103,7 @@ public abstract class DroolsExecutor {
         }
 
         @Override
-        public void appendSideEffects(Queue<Object> sideEffects) {
+        public void appendSideEffects(Queue<Serializable> sideEffects) {
             executionResults.addAll(sideEffects);
         }
     }

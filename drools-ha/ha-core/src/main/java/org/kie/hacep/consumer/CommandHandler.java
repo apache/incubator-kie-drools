@@ -15,6 +15,7 @@
  */
 package org.kie.hacep.consumer;
 
+import java.io.Serializable;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.Collection;
@@ -196,7 +197,7 @@ public class CommandHandler implements VisitorCommand {
     public void visit(GetObjectCommand command) {
         FactHandle factHandle = kieSessionContext.getFhManager().mapRemoteFactHandle(command.getRemoteFactHandle());
         Object object = kieSessionContext.getKieSession().getObject(factHandle);
-        GetObjectMessage msg = new GetObjectMessage(command.getId(), object);
+        GetObjectMessage msg = new GetObjectMessage(command.getId(), (Serializable) object);
         producer.produceSync(envConfig.getKieSessionInfosTopicName(), command.getId(), msg);
     }
 
