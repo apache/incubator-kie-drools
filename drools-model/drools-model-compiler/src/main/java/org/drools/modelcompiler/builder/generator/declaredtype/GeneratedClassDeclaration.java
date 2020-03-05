@@ -40,7 +40,6 @@ import com.github.javaparser.ast.stmt.Statement;
 import com.github.javaparser.ast.type.PrimitiveType;
 import com.github.javaparser.ast.type.Type;
 import org.drools.compiler.compiler.DroolsError;
-import org.drools.core.addon.TypeResolver;
 import org.drools.core.factmodel.GeneratedFact;
 import org.kie.api.definition.type.Key;
 import org.kie.api.definition.type.Position;
@@ -112,16 +111,17 @@ class GeneratedClassDeclaration {
     private ClassOrInterfaceDeclaration generateFullClass(String generatedClassName, Collection<TypeFieldDefinition> inheritedFields) {
         boolean hasSuper = typeDefinition.getSuperTypeName() != null;
         if (hasSuper) {
-            try {
-                Class<?> resolvedSuper = typeResolver.resolveType(typeDefinition.getSuperTypeName());
-                if (resolvedSuper.isInterface()) {
-                    generatedClass.addImplementedType(typeDefinition.getSuperTypeName());
-                } else {
-                    generatedClass.addExtendedType(typeDefinition.getSuperTypeName());
-                }
-            } catch (ClassNotFoundException e) {
-                generatedClass.addExtendedType(typeDefinition.getSuperTypeName());
-            }
+            // Convert to new type resolver
+//            try {
+//                Class<?> resolvedSuper = typeResolver.resolveType(typeDefinition.getSuperTypeName());
+//                if (resolvedSuper.isInterface()) {
+//                    generatedClass.addImplementedType(typeDefinition.getSuperTypeName());
+//                } else {
+//                    generatedClass.addExtendedType(typeDefinition.getSuperTypeName());
+//                }
+//            } catch (ClassNotFoundException e) {
+//                generatedClass.addExtendedType(typeDefinition.getSuperTypeName());
+//            }
         }
 
         LinkedHashMap<String, TypeFieldDefinition> sortedTypeFields = typeFieldsSortedByPosition();
@@ -208,22 +208,24 @@ class GeneratedClassDeclaration {
 
     private void processAnnotations(NodeWithAnnotations node, AnnotationDefinition ann, List<AnnotationDefinition> softAnnotations) {
         Class<?> annotationClass = predefinedClassLevelAnnotation.get(ann.getName());
-        if (annotationClass == null) {
-            try {
-                annotationClass = typeResolver.resolveType(ann.getName());
-            } catch (ClassNotFoundException e) {
-                return;
-            }
-        }
 
-        String annFqn = annotationClass.getCanonicalName();
-        if (annFqn != null) {
-            processAnnotation(node, ann, softAnnotations, annotationClass, annFqn);
-        } else {
-            if (softAnnotations != null) {
-                softAnnotations.add(ann);
-            }
-        }
+        // TODO: conver to new type resolver
+//        if (annotationClass == null) {
+//            try {
+//                annotationClass = typeResolver.resolveType(ann.getName());
+//            } catch (ClassNotFoundException e) {
+//                return;
+//            }
+//        }
+//
+//        String annFqn = annotationClass.getCanonicalName();
+//        if (annFqn != null) {
+//            processAnnotation(node, ann, softAnnotations, annotationClass, annFqn);
+//        } else {
+//            if (softAnnotations != null) {
+//                softAnnotations.add(ann);
+//            }
+//        }
     }
 
     class PojoGenerationError extends DroolsError {
