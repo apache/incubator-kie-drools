@@ -19,6 +19,7 @@ package org.drools.modelcompiler.builder.generator.declaredtype;
 
 import java.util.Arrays;
 import java.util.Collection;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -38,6 +39,10 @@ import org.drools.modelcompiler.builder.PackageModel;
 import org.drools.modelcompiler.builder.errors.InvalidExpressionErrorResult;
 import org.drools.modelcompiler.util.MvelUtil;
 import org.drools.core.addon.TypeResolver;
+import org.kie.api.definition.type.Duration;
+import org.kie.api.definition.type.Expires;
+import org.kie.api.definition.type.Role;
+import org.kie.api.definition.type.Timestamp;
 
 import static org.drools.modelcompiler.builder.JavaParserCompiler.compileAll;
 import static org.drools.modelcompiler.builder.generator.DslMethodNames.ADD_ANNOTATION_CALL;
@@ -50,6 +55,15 @@ public class POJOGenerator {
     private InternalKnowledgePackage pkg;
     private PackageDescr packageDescr;
     private PackageModel packageModel;
+
+    private static final Map<String, Class<?>> predefinedClassLevelAnnotation = new HashMap<>();
+
+    static {
+        predefinedClassLevelAnnotation.put("role", Role.class);
+        predefinedClassLevelAnnotation.put("duration", Duration.class);
+        predefinedClassLevelAnnotation.put("expires", Expires.class);
+        predefinedClassLevelAnnotation.put("timestamp", Timestamp.class);
+    }
 
     private static final List<String> exprAnnotations = Arrays.asList("duration", "timestamp");
 
@@ -82,7 +96,10 @@ public class POJOGenerator {
                 processTypeMetadata(type, typeDescr.getAnnotations());
             } catch (ClassNotFoundException e) {
                 ClassOrInterfaceDeclaration generatedClass = new GeneratedClassDeclaration(error -> builder.addBuilderResult(error),
-                                                                                           typeDescr, packageDescr, typeResolver)
+                                                                                           typeDescr,
+                                                                                           packageDescr,
+                                                                                           typeResolver,
+                                                                                           predefinedClassLevelAnnotation)
                         .toClassDeclaration();
                 packageModel.addGeneratedPOJO(generatedClass);
                 addTypeMetadata(typeDescr.getTypeName());

@@ -48,12 +48,9 @@ import org.drools.compiler.lang.descr.TypeDeclarationDescr;
 import org.drools.compiler.lang.descr.TypeFieldDescr;
 import org.drools.core.addon.TypeResolver;
 import org.drools.core.factmodel.GeneratedFact;
-import org.kie.api.definition.type.Duration;
-import org.kie.api.definition.type.Expires;
 import org.kie.api.definition.type.Key;
 import org.kie.api.definition.type.Position;
 import org.kie.api.definition.type.Role;
-import org.kie.api.definition.type.Timestamp;
 
 import static com.github.javaparser.StaticJavaParser.parseExpression;
 import static com.github.javaparser.StaticJavaParser.parseType;
@@ -67,19 +64,12 @@ class GeneratedClassDeclaration {
     private static final String VALUE = "value";
     static final String OVERRIDE = "Override";
 
-    private static final Map<String, Class<?>> predefinedClassLevelAnnotation = new HashMap<>();
+    private Map<String, Class<?>> predefinedClassLevelAnnotation;
 
     @FunctionalInterface
     interface GenerationResult {
 
         void error(DroolsError error);
-    }
-
-    static {
-        predefinedClassLevelAnnotation.put("role", Role.class);
-        predefinedClassLevelAnnotation.put("duration", Duration.class);
-        predefinedClassLevelAnnotation.put("expires", Expires.class);
-        predefinedClassLevelAnnotation.put("timestamp", Timestamp.class);
     }
 
     private GenerationResult generationResult;
@@ -91,11 +81,18 @@ class GeneratedClassDeclaration {
     private GeneratedEqualsMethod generatedEqualsMethod;
     private ClassOrInterfaceDeclaration generatedClass;
 
-    GeneratedClassDeclaration(GenerationResult generationResult, TypeDeclarationDescr typeDeclaration, PackageDescr packageDescr, TypeResolver typeResolver) {
+    GeneratedClassDeclaration(GenerationResult generationResult,
+                              TypeDeclarationDescr typeDeclaration,
+                              PackageDescr packageDescr,
+                              TypeResolver typeResolver,
+                              Map<String, Class<?>> predefinedClassLevelAnnotation) {
+
         this.generationResult = generationResult;
         this.typeDeclaration = typeDeclaration;
         this.packageDescr = packageDescr;
         this.typeResolver = typeResolver;
+        this.predefinedClassLevelAnnotation = predefinedClassLevelAnnotation;
+
     }
 
     ClassOrInterfaceDeclaration toClassDeclaration() {
