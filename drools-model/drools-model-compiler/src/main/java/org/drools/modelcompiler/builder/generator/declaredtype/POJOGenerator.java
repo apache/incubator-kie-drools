@@ -81,7 +81,8 @@ public class POJOGenerator {
                 Class<?> type = typeResolver.resolveType(typeDescr.getFullTypeName());
                 processTypeMetadata(type, typeDescr.getAnnotations());
             } catch (ClassNotFoundException e) {
-                ClassOrInterfaceDeclaration generatedClass = new GeneratedClassDeclaration(builder, typeDescr, packageDescr, typeResolver)
+                ClassOrInterfaceDeclaration generatedClass = new GeneratedClassDeclaration(error -> builder.addBuilderResult(error),
+                                                                                           typeDescr, packageDescr, typeResolver)
                         .toClassDeclaration();
                 packageModel.addGeneratedPOJO(generatedClass);
                 addTypeMetadata(typeDescr.getTypeName());

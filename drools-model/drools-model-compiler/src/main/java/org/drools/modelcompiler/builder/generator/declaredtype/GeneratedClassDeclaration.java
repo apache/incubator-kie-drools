@@ -41,13 +41,13 @@ import com.github.javaparser.ast.stmt.Statement;
 import com.github.javaparser.ast.type.PrimitiveType;
 import com.github.javaparser.ast.type.Type;
 import org.drools.compiler.compiler.AnnotationDeclarationError;
+import org.drools.compiler.compiler.DroolsError;
 import org.drools.compiler.lang.descr.AnnotationDescr;
 import org.drools.compiler.lang.descr.PackageDescr;
 import org.drools.compiler.lang.descr.TypeDeclarationDescr;
 import org.drools.compiler.lang.descr.TypeFieldDescr;
 import org.drools.core.addon.TypeResolver;
 import org.drools.core.factmodel.GeneratedFact;
-import org.drools.modelcompiler.builder.ModelBuilderImpl;
 import org.kie.api.definition.type.Duration;
 import org.kie.api.definition.type.Expires;
 import org.kie.api.definition.type.Key;
@@ -55,12 +55,11 @@ import org.kie.api.definition.type.Position;
 import org.kie.api.definition.type.Role;
 import org.kie.api.definition.type.Timestamp;
 
-import static java.text.MessageFormat.format;
-import static java.util.stream.Collectors.joining;
-
 import static com.github.javaparser.StaticJavaParser.parseExpression;
 import static com.github.javaparser.StaticJavaParser.parseType;
 import static com.github.javaparser.ast.NodeList.nodeList;
+import static java.text.MessageFormat.format;
+import static java.util.stream.Collectors.joining;
 import static org.drools.modelcompiler.builder.generator.declaredtype.POJOGenerator.quote;
 
 class GeneratedClassDeclaration {
@@ -70,6 +69,12 @@ class GeneratedClassDeclaration {
 
     private static final Map<String, Class<?>> predefinedClassLevelAnnotation = new HashMap<>();
 
+    @FunctionalInterface
+    interface GenerationResult {
+
+        void error(DroolsError error);
+    }
+
     static {
         predefinedClassLevelAnnotation.put("role", Role.class);
         predefinedClassLevelAnnotation.put("duration", Duration.class);
@@ -77,7 +82,7 @@ class GeneratedClassDeclaration {
         predefinedClassLevelAnnotation.put("timestamp", Timestamp.class);
     }
 
-    private ModelBuilderImpl builder;
+    private GenerationResult generationResult;
     private final TypeDeclarationDescr typeDeclaration;
     private final PackageDescr packageDescr;
     private TypeResolver typeResolver;
@@ -86,8 +91,8 @@ class GeneratedClassDeclaration {
     private GeneratedEqualsMethod generatedEqualsMethod;
     private ClassOrInterfaceDeclaration generatedClass;
 
-    GeneratedClassDeclaration(ModelBuilderImpl builder, TypeDeclarationDescr typeDeclaration, PackageDescr packageDescr, TypeResolver typeResolver) {
-        this.builder = builder;
+    GeneratedClassDeclaration(GenerationResult generationResult, TypeDeclarationDescr typeDeclaration, PackageDescr packageDescr, TypeResolver typeResolver) {
+        this.generationResult = generationResult;
         this.typeDeclaration = typeDeclaration;
         this.packageDescr = packageDescr;
         this.typeResolver = typeResolver;
@@ -124,7 +129,7 @@ class GeneratedClassDeclaration {
         boolean hasSuper = typeDeclaration.getSuperTypeName() != null;
         if (hasSuper) {
             try {
-                Class<?> resolvedSuper = typeResolver.resolveType( typeDeclaration.getSuperTypeName() );
+                Class<?> resolvedSuper = typeResolver.resolveType(typeDeclaration.getSuperTypeName());
                 if (resolvedSuper.isInterface()) {
                     generatedClass.addImplementedType(typeDeclaration.getSuperTypeName());
                 } else {
@@ -231,7 +236,7 @@ class GeneratedClassDeclaration {
         if (annFqn != null) {
             processAnnotation(node, ann, softAnnotations, annotationClass, annFqn);
         } else {
-            if(softAnnotations != null) {
+            if (softAnnotations != null) {
                 softAnnotations.add(ann);
             }
         }
@@ -244,11 +249,15 @@ class GeneratedClassDeclaration {
                 annotationClass.getMethod(entry.getKey());
                 annExpr.addPair(entry.getKey(), getAnnotationValue(annFqn, entry.getKey(), entry.getValue()));
             } catch (NoSuchMethodException e) {
-                if(softAnnotations == null) {
-                    builder.addBuilderResult(new AnnotationDeclarationError(ann, "Unknown annotation property " + entry.getKey()));
+                if (softAnnotations == null) {
+                    addBuilderResult(new AnnotationDeclarationError(ann, "Unknown annotation property " + entry.getKey()));
                 }
             }
         }
+    }
+
+    private void addBuilderResult(DroolsError error) {
+        generationResult.error(error);
     }
 
     private LinkedHashMap<String, TypeFieldDescr> typeFieldsSortedByPosition() {
@@ -274,9 +283,8 @@ class GeneratedClassDeclaration {
             sortedTypes[counter++] = descr;
         }
 
-
         LinkedHashMap<String, TypeFieldDescr> sortedTypeField = new LinkedHashMap<>();
-        for(TypeFieldDescr t : sortedTypes) {
+        for (TypeFieldDescr t : sortedTypes) {
             sortedTypeField.put(t.getFieldName(), t);
         }
 
