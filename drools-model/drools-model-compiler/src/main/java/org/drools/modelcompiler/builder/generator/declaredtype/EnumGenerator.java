@@ -70,7 +70,7 @@ public class EnumGenerator {
     }
 
     private void createConstructor(EnumDeclarationDescr enumDeclarationDescr) {
-        GeneratedConstructor fullArgumentConstructor = GeneratedConstructor.factoryEnum(enumDeclaration, enumDeclarationDescr.getFields());
+        GeneratedConstructor fullArgumentConstructor = GeneratedConstructor.factoryEnum(enumDeclaration, Collections.emptyMap());
         fullArgumentConstructor.generateConstructor(Collections.emptyList(), Collections.emptyList());
     }
 

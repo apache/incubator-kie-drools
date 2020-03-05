@@ -19,6 +19,7 @@ package org.drools.modelcompiler.builder.generator.declaredtype;
 
 import java.util.Arrays;
 import java.util.Collection;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -96,10 +97,11 @@ public class POJOGenerator {
                 processTypeMetadata(type, typeDescr.getAnnotations());
             } catch (ClassNotFoundException e) {
                 ClassOrInterfaceDeclaration generatedClass = new GeneratedClassDeclaration(error -> builder.addBuilderResult(error),
-                                                                                           typeDescr,
+                                                                                           null,
                                                                                            packageDescr,
                                                                                            typeResolver,
-                                                                                           predefinedClassLevelAnnotation)
+                                                                                           predefinedClassLevelAnnotation,
+                                                                                           Collections.emptyList())
                         .toClassDeclaration();
                 packageModel.addGeneratedPOJO(generatedClass);
                 addTypeMetadata(typeDescr.getTypeName());
