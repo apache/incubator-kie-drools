@@ -20,8 +20,8 @@ import java.util.Queue;
 
 public class ControlMessage extends AbstractMessage implements Serializable, Message {
 
-    protected long offset;
-    protected Queue<Serializable> sideEffects;
+    private long offset;
+    private Queue<Serializable> sideEffects;
 
     /* Empty constructor for serialization */
     public ControlMessage() {}
