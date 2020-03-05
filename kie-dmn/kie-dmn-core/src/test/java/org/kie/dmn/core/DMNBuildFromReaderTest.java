@@ -25,7 +25,7 @@ import org.kie.internal.utils.KieHelper;
 
 import static org.junit.Assert.assertNotNull;
 
-public class DMNBuildFromReader {
+public class DMNBuildFromReaderTest {
 
     @Test
     public void test() {
