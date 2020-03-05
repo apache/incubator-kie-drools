@@ -40,8 +40,6 @@ import com.github.javaparser.ast.stmt.Statement;
 import com.github.javaparser.ast.type.PrimitiveType;
 import com.github.javaparser.ast.type.Type;
 import org.drools.compiler.compiler.DroolsError;
-import org.drools.compiler.lang.descr.AnnotationDescr;
-import org.drools.compiler.lang.descr.PackageDescr;
 import org.drools.core.addon.TypeResolver;
 import org.drools.core.factmodel.GeneratedFact;
 import org.kie.api.definition.type.Key;
@@ -64,7 +62,6 @@ class GeneratedClassDeclaration {
 
     private GenerationResult generationResult;
     private final TypeDefinition typeDefinition;
-    private final PackageDescr packageDescr;
     private TypeResolver typeResolver;
     private GeneratedHashcode generatedHashcode;
     private GeneratedToString generatedToString;
@@ -74,14 +71,12 @@ class GeneratedClassDeclaration {
 
     GeneratedClassDeclaration(GenerationResult generationResult,
                               TypeDefinition typeDefinition,
-                              PackageDescr packageDescr,
                               TypeResolver typeResolver,
                               Map<String, Class<?>> predefinedClassLevelAnnotation,
                               Collection<TypeDefinition> allTypeDefinitions) {
 
         this.generationResult = generationResult;
         this.typeDefinition = typeDefinition;
-        this.packageDescr = packageDescr;
         this.typeResolver = typeResolver;
         this.predefinedClassLevelAnnotation = predefinedClassLevelAnnotation;
         this.allTypeDefinitions = allTypeDefinitions;
@@ -276,11 +271,11 @@ class GeneratedClassDeclaration {
 
         List<TypeFieldDefinition> nonPositionalFields = new ArrayList<>();
         for (TypeFieldDefinition descr : typeFields) {
-            AnnotationDescr ann = descr.getAnnotation("Position");
+            AnnotationDefinition ann = descr.getAnnotation("Position");
             if (ann == null) {
                 nonPositionalFields.add(descr);
             } else {
-                int pos = Integer.parseInt(ann.getValue().toString());
+                int pos = Integer.parseInt(ann.getValue());
                 sortedTypes[pos] = descr;
             }
         }

@@ -11,7 +11,7 @@ interface TypeFieldDefinition {
 
     String getInitExpr();
 
-    AnnotationDescr getAnnotation(String position);
+    AnnotationDefinition getAnnotation(String position);
 
     AnnotationDefinition[] getAnnotations();
 }

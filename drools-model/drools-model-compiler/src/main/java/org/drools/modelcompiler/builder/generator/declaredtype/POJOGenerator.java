@@ -98,7 +98,6 @@ public class POJOGenerator {
             } catch (ClassNotFoundException e) {
                 ClassOrInterfaceDeclaration generatedClass = new GeneratedClassDeclaration(error -> builder.addBuilderResult(error),
                                                                                            null,
-                                                                                           packageDescr,
                                                                                            typeResolver,
                                                                                            predefinedClassLevelAnnotation,
                                                                                            Collections.emptyList())
