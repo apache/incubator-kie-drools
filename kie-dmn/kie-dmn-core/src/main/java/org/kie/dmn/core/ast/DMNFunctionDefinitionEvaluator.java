@@ -51,12 +51,14 @@ public class DMNFunctionDefinitionEvaluator
 
     private final String name;
     private final FunctionDefinition functionDefinition;
+    private final DMNNode originatorNode;
     private List<FormalParameter> parameters = new ArrayList<>(  );
     private DMNExpressionEvaluator evaluator;
 
-    public DMNFunctionDefinitionEvaluator(String name, FunctionDefinition fdef ) {
+    public DMNFunctionDefinitionEvaluator(String name, FunctionDefinition fdef, DMNNode originatorNode) {
         this.name = name;
         this.functionDefinition = fdef;
+        this.originatorNode = originatorNode;
     }
 
     public DMNType getParameterType( String name ) {
@@ -92,7 +94,7 @@ public class DMNFunctionDefinitionEvaluator
     public EvaluatorResult evaluate(DMNRuntimeEventManager eventManager, DMNResult dmnr) {
         DMNResultImpl result = (DMNResultImpl) dmnr;
         // when this evaluator is executed, it should return a "FEEL function" to register in the context
-        DMNFunction function = new DMNFunction( name, parameters, functionDefinition, evaluator, eventManager, result );
+        DMNFunction function = new DMNFunction( name, originatorNode, parameters, functionDefinition, evaluator, eventManager, result );
         return new EvaluatorResultImpl( function, ResultType.SUCCESS );
     }
 
@@ -113,6 +115,8 @@ public class DMNFunctionDefinitionEvaluator
 
     public static class DMNFunction
             extends BaseFEELFunction {
+
+        private final DMNNode originatorNode;
         private final List<FormalParameter> parameters;
         private final DMNExpressionEvaluator evaluator;
         private final DMNRuntimeEventManager eventManager;
@@ -120,8 +124,10 @@ public class DMNFunctionDefinitionEvaluator
         private final FunctionDefinition functionDefinition;
         private final boolean performRuntimeTypeCheck;
 
-        public DMNFunction(String name, List<FormalParameter> parameters, FunctionDefinition functionDefinition, DMNExpressionEvaluator evaluator, DMNRuntimeEventManager eventManager, DMNResultImpl result) {
+        public DMNFunction(String name, DMNNode originatorNode, List<FormalParameter> parameters, FunctionDefinition functionDefinition, DMNExpressionEvaluator evaluator, DMNRuntimeEventManager eventManager,
+                           DMNResultImpl result) {
             super( name );
+            this.originatorNode = originatorNode;
             this.functionDefinition = functionDefinition;
             this.parameters = parameters;
             this.evaluator = evaluator;
@@ -136,7 +142,6 @@ public class DMNFunctionDefinitionEvaluator
             // context, but for now, cloning the original context
             DMNContextFEELCtxWrapper dmnContext = new DMNContextFEELCtxWrapper(ctx);
             dmnContext.enterFrame();
-            DMNNode originatorNode = ((DMNRuntimeImpl) eventManager.getRuntime()).getOriginatorNode(this);
             try {
                 if (originatorNode instanceof BusinessKnowledgeModelNode) {
                     DMNRuntimeEventManagerUtils.fireBeforeInvokeBKM(eventManager, (BusinessKnowledgeModelNode) originatorNode, resultContext);

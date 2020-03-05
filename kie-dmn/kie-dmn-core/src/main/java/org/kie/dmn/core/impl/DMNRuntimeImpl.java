@@ -18,7 +18,6 @@ package org.kie.dmn.core.impl;
 
 import java.util.ArrayList;
 import java.util.Collection;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
@@ -82,8 +81,6 @@ public class DMNRuntimeImpl
 
     private DMNRuntimeEventManagerImpl         eventManager;
     private final InternalKnowledgeBase        knowledgeBase;
-
-    private Map<FEELFunction, DMNNode>         functionNodeMap = new HashMap<>();
 
     private boolean overrideRuntimeTypeCheck = false;
 
@@ -448,7 +445,6 @@ public class DMNRuntimeImpl
             if( er.getResultType() == EvaluatorResult.ResultType.SUCCESS ) {
                 final FEELFunction original_fn = (FEELFunction) er.getResult();
                 FEELFunction resultFn = original_fn;
-                functionNodeMap.put(resultFn, bkm);
                 if (typeCheck) {
                     DMNType resultType = b.getResultType();
                     resultFn = new DMNFunctionWithReturnType(original_fn, resultType, result, b);
@@ -806,9 +802,5 @@ public class DMNRuntimeImpl
 
     public InternalKnowledgeBase getInternalKnowledgeBase() {
         return this.knowledgeBase;
-    }
-
-    public DMNNode getOriginatorNode(FEELFunction func) {
-        return functionNodeMap.get(func);
     }
 }
