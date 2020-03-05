@@ -173,7 +173,7 @@ public class DMNAssemblerService implements KieAssemblerService {
 
     private DMNModel compileResourceToModel(KnowledgeBuilderImpl kbuilderImpl, DMNCompiler dmnCompiler, Resource resource, DMNResource dmnRes, Collection<DMNModel> dmnModels) {
         DMNModel model = dmnRes != null ?
-                dmnCompiler.compile(resource, dmnModels, dmnRes.getDefinitions()) :
+                dmnCompiler.compile(dmnRes.getDefinitions(), resource, dmnModels) :
                 dmnCompiler.compile(resource, dmnModels);
         if( model != null ) {
             String namespace = model.getNamespace();

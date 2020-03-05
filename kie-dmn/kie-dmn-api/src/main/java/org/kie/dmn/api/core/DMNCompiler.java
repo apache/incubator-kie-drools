@@ -37,12 +37,15 @@ public interface DMNCompiler {
 
     DMNModel compile(Reader source, Collection<DMNModel> dmnModels);
 
-    DMNModel compile(Resource resource, Collection<DMNModel> dmnModels, Definitions dmndefs);
-
     default DMNModel compile(Definitions dmndefs) {
         return compile(dmndefs, Collections.emptyList());
     }
 
     DMNModel compile(Definitions dmndefs, Collection<DMNModel> dmnModels);
+
+    /**
+     * As {@link #compile(Definitions, Collection)}, but links {@link Resource} to the manually provided {@link Definitions} while compiling the {@link DMNModel}.
+     */
+    DMNModel compile(Definitions dmndefs, Resource resource, Collection<DMNModel> dmnModels);
 
 }

@@ -153,17 +153,9 @@ public class DMNCompilerImpl implements DMNCompiler {
 
     public DMNModel compile(Reader source, Collection<DMNModel> dmnModels, Resource resource) {
         try {
-            return compile(resource, dmnModels, getMarshaller().unmarshal(source));
-        } catch ( Exception e ) {
-            logger.error( "Error compiling model from source.", e );
-        }
-        return null;
-    }
-
-    @Override
-    public DMNModel compile(Resource resource, Collection<DMNModel> dmnModels, Definitions dmndefs) {
-        try {
-            return compile(dmndefs, dmnModels, resource, null);
+            Definitions dmndefs = getMarshaller().unmarshal(source);
+            DMNModel model = compile(dmndefs, dmnModels, resource, null);
+            return model;
         } catch ( Exception e ) {
             logger.error( "Error compiling model from source.", e );
         }
@@ -180,7 +172,22 @@ public class DMNCompilerImpl implements DMNCompiler {
 
     @Override
     public DMNModel compile(Definitions dmndefs, Collection<DMNModel> dmnModels) {
-        return compile(dmndefs, dmnModels, null, null);
+        try {
+            return compile(dmndefs, dmnModels, null, null);
+        } catch (Exception e) {
+            logger.error("Error compiling model from source.", e);
+        }
+        return null;
+    }
+
+    @Override
+    public DMNModel compile(Definitions dmndefs, Resource resource, Collection<DMNModel> dmnModels) {
+        try {
+            return compile(dmndefs, dmnModels, resource, null);
+        } catch (Exception e) {
+            logger.error("Error compiling model from source.", e);
+        }
+        return null;
     }
 
     public DMNModel compile(Definitions dmndefs, Collection<DMNModel> dmnModels, Resource resource, Function<String, Reader> relativeResolver) {
