@@ -34,6 +34,7 @@ import org.drools.compiler.lang.descr.EnumDeclarationDescr;
 import org.drools.compiler.lang.descr.PackageDescr;
 import org.drools.compiler.lang.descr.TypeDeclarationDescr;
 import org.drools.core.definitions.InternalKnowledgePackage;
+import org.drools.core.factmodel.GeneratedFact;
 import org.drools.modelcompiler.builder.GeneratedClassWithPackage;
 import org.drools.modelcompiler.builder.ModelBuilderImpl;
 import org.drools.modelcompiler.builder.PackageModel;
@@ -100,7 +101,8 @@ public class POJOGenerator {
                                                                                            null,
                                                                                            null, // TODO type resolver
                                                                                            predefinedClassLevelAnnotation,
-                                                                                           Collections.emptyList())
+                                                                                           Collections.emptyList(),
+                                                                                           Collections.singletonList(GeneratedFact.class))
                         .toClassDeclaration();
                 packageModel.addGeneratedPOJO(generatedClass);
                 addTypeMetadata(typeDescr.getTypeName());

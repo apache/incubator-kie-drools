@@ -40,7 +40,6 @@ import com.github.javaparser.ast.stmt.Statement;
 import com.github.javaparser.ast.type.PrimitiveType;
 import com.github.javaparser.ast.type.Type;
 import org.drools.compiler.compiler.DroolsError;
-import org.drools.core.factmodel.GeneratedFact;
 import org.kie.api.definition.type.Key;
 import org.kie.api.definition.type.Position;
 import org.kie.api.definition.type.Role;
@@ -67,18 +66,20 @@ class GeneratedClassDeclaration {
     private GeneratedEqualsMethod generatedEqualsMethod;
     private ClassOrInterfaceDeclaration generatedClass;
     private final Collection<TypeDefinition> allTypeDefinitions;
+    private final Collection<Class<?>> markerInterfaceAnnotations;
 
     GeneratedClassDeclaration(GenerationResult generationResult,
                               TypeDefinition typeDefinition,
                               TypeResolver typeResolver,
                               Map<String, Class<?>> predefinedClassLevelAnnotation,
-                              Collection<TypeDefinition> allTypeDefinitions) {
+                              Collection<TypeDefinition> allTypeDefinitions, Collection<Class<?>> markerInterfaceAnnotations) {
 
         this.generationResult = generationResult;
         this.typeDefinition = typeDefinition;
         this.typeResolver = typeResolver;
         this.predefinedClassLevelAnnotation = predefinedClassLevelAnnotation;
         this.allTypeDefinitions = allTypeDefinitions;
+        this.markerInterfaceAnnotations = markerInterfaceAnnotations;
     }
 
     ClassOrInterfaceDeclaration toClassDeclaration() {
@@ -103,7 +104,7 @@ class GeneratedClassDeclaration {
         basicDeclaredClass.addImplementedType(Serializable.class.getName()); // Ref: {@link org.drools.core.factmodel.DefaultBeanClassBuilder} by default always receive is Serializable.
         processAnnotations(basicDeclaredClass);
 
-        basicDeclaredClass.addImplementedType(GeneratedFact.class.getName());
+        markerInterfaceAnnotations.forEach(basicDeclaredClass::addImplementedType);
         basicDeclaredClass.addConstructor(Modifier.publicModifier().getKeyword()); // No-args ctor
         return basicDeclaredClass;
     }
