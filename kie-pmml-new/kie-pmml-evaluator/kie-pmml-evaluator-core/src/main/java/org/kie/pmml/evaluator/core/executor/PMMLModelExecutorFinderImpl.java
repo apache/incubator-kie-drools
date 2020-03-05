@@ -31,12 +31,12 @@ public class PMMLModelExecutorFinderImpl implements PMMLModelExecutorFinder {
 
     @Override
     public List<PMMLModelExecutor> getImplementations(boolean refresh) {
-        logger.info("getImplementations {}", refresh);
+        logger.debug("getImplementations {}", refresh);
         List<PMMLModelExecutor> toReturn = new ArrayList<>();
         Iterator<PMMLModelExecutor> providers = getProviders(refresh);
         providers.forEachRemaining(toReturn::add);
-        logger.info("toReturn {} {}", toReturn, toReturn.size());
-        toReturn.forEach(provider -> logger.info("{} : {}", provider.getPMMLModelType(), provider));
+        logger.debug("toReturn {} {}", toReturn, toReturn.size());
+        toReturn.forEach(provider -> logger.debug("{} : {}", provider.getPMMLModelType(), provider));
         return toReturn;
     }
 
