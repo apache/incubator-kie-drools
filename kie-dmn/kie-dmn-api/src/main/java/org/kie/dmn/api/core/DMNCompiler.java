@@ -37,6 +37,8 @@ public interface DMNCompiler {
 
     DMNModel compile(Reader source, Collection<DMNModel> dmnModels);
 
+    DMNModel compile(Resource resource, Collection<DMNModel> dmnModels, Definitions dmndefs);
+
     default DMNModel compile(Definitions dmndefs) {
         return compile(dmndefs, Collections.emptyList());
     }
