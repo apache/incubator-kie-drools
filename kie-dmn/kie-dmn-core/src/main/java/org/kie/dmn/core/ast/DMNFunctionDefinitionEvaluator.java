@@ -55,8 +55,8 @@ public class DMNFunctionDefinitionEvaluator
     private List<FormalParameter> parameters = new ArrayList<>(  );
     private DMNExpressionEvaluator evaluator;
 
-    public DMNFunctionDefinitionEvaluator(String name, FunctionDefinition fdef, DMNNode originatorNode) {
-        this.name = name;
+    public DMNFunctionDefinitionEvaluator(DMNNode originatorNode, FunctionDefinition fdef) {
+        this.name = originatorNode.getName();
         this.functionDefinition = fdef;
         this.originatorNode = originatorNode;
     }
