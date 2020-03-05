@@ -157,6 +157,12 @@
         <artifactId>kie-test-util</artifactId>
         <version>${version.org.kie}</version>
       </dependency>
+      <dependency>
+        <groupId>org.kie</groupId>
+        <artifactId>kie-test-util</artifactId>
+        <classifier>tests</classifier>
+        <version>${version.org.kie}</version>
+      </dependency>
     </dependencies>
   </dependencyManagement>
 
