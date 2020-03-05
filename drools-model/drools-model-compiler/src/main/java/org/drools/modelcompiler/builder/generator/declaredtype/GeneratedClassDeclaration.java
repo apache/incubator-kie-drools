@@ -39,7 +39,6 @@ import com.github.javaparser.ast.nodeTypes.NodeWithAnnotations;
 import com.github.javaparser.ast.stmt.Statement;
 import com.github.javaparser.ast.type.PrimitiveType;
 import com.github.javaparser.ast.type.Type;
-import org.drools.compiler.compiler.DroolsError;
 import org.kie.api.definition.type.Key;
 import org.kie.api.definition.type.Position;
 import org.kie.api.definition.type.Role;
@@ -229,27 +228,6 @@ class GeneratedClassDeclaration {
 //        }
     }
 
-    class PojoGenerationError extends DroolsError {
-
-        private final String errorMessage;
-        private final String namespace;
-
-        public PojoGenerationError(String errorMessage, String namespace) {
-            this.errorMessage = errorMessage;
-            this.namespace = namespace;
-        }
-
-        @Override
-        public String getMessage() {
-            return null;
-        }
-
-        @Override
-        public int[] getLines() {
-            return new int[0];
-        }
-    }
-
     private void processAnnotation(NodeWithAnnotations node, AnnotationDefinition ann, List<AnnotationDefinition> softAnnotations, Class<?> annotationClass, String annFqn) {
         NormalAnnotationExpr annExpr = node.addAndGetAnnotation(annFqn);
         for (Map.Entry<String, Object> entry : ann.getValueMap().entrySet()) {
@@ -258,13 +236,13 @@ class GeneratedClassDeclaration {
                 annExpr.addPair(entry.getKey(), getAnnotationValue(annFqn, entry.getKey(), entry.getValue()));
             } catch (NoSuchMethodException e) {
                 if (softAnnotations == null) {
-                    addBuilderResult(new PojoGenerationError("Unknown annotation property " + entry.getKey(), ann.getNamespace()));
+                    addBuilderResult(new PojoGenerationError("Unknown annotation property " + entry.getKey()));
                 }
             }
         }
     }
 
-    private void addBuilderResult(DroolsError error) {
+    private void addBuilderResult(PojoGenerationError error) {
         generationResult.error(error);
     }
 
