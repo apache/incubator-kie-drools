@@ -92,8 +92,11 @@ for repository in `cat kogito-runtimes/scripts/repository-list.txt` ; do
             mvn -B clean install -DskipTests
             returnCode=$?
 
-        else
+        elif [ "$repository" == "kogito-apps" ]; then
             mvnVersionsUpdateParentAndChildModules
+            returnCode=$?
+        else
+            mvnVersionsSet
             returnCode=$?
         fi
         if [ $returnCode != 0 ] ; then
