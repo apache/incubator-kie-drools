@@ -39,14 +39,11 @@ import com.github.javaparser.ast.nodeTypes.NodeWithAnnotations;
 import com.github.javaparser.ast.stmt.Statement;
 import com.github.javaparser.ast.type.PrimitiveType;
 import com.github.javaparser.ast.type.Type;
-import org.drools.compiler.compiler.AnnotationDeclarationError;
 import org.drools.compiler.compiler.DroolsError;
 import org.drools.compiler.lang.descr.AnnotationDescr;
 import org.drools.compiler.lang.descr.PackageDescr;
-import org.drools.compiler.lang.descr.PatternDescr;
 import org.drools.core.addon.TypeResolver;
 import org.drools.core.factmodel.GeneratedFact;
-import org.drools.core.rule.Collect;
 import org.kie.api.definition.type.Key;
 import org.kie.api.definition.type.Position;
 import org.kie.api.definition.type.Role;
@@ -64,51 +61,6 @@ class GeneratedClassDeclaration {
     static final String OVERRIDE = "Override";
 
     private Map<String, Class<?>> predefinedClassLevelAnnotation;
-
-    @FunctionalInterface
-    interface GenerationResult {
-
-        void error(DroolsError error);
-    }
-
-    interface TypeDefinition {
-
-        String getTypeName();
-
-        Map<String, TypeFieldDefinition> getFields();
-
-        String getSuperTypeName();
-
-        AnnotationDefinition[] getAnnotations();
-    }
-
-    interface AnnotationDefinition {
-
-        Object getValue(final String key);
-
-        String getName();
-
-        Map<String, Object> getValueMap();
-
-        String getNamespace();
-
-        String getValuesAsString();
-
-        String getValue();
-    }
-
-    interface TypeFieldDefinition {
-
-        String getFieldName();
-
-        PatternDescr getPattern();
-
-        String getInitExpr();
-
-        AnnotationDescr getAnnotation(String position);
-
-        AnnotationDefinition[] getAnnotations();
-    }
 
     private GenerationResult generationResult;
     private final TypeDefinition typeDefinition;
