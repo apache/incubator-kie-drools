@@ -129,7 +129,7 @@ public class ConstraintParser {
         }
 
         if ( drlxExpr instanceof UnaryExpr ) {
-            return parseUnaryExpr( (UnaryExpr) drlxExpr, patternType, bindingId, isPositional);
+            return parseUnaryExpr( (UnaryExpr) drlxExpr, patternType, bindingId, constraint, drlxExpr, hasBind, isPositional);
         }
 
         if ( drlxExpr instanceof PointFreeExpr ) {
@@ -279,11 +279,28 @@ public class ConstraintParser {
         }).orElseGet( () -> new DrlxParseFail( new ParseExpressionErrorResult(pointFreeExpr) ));
     }
 
-    private DrlxParseResult parseUnaryExpr( UnaryExpr unaryExpr, Class<?> patternType, String bindingId, boolean isPositional ) {
+    private DrlxParseResult parseUnaryExpr( UnaryExpr unaryExpr, Class<?> patternType, String bindingId, ConstraintExpression constraint, Expression drlxExpr,
+                                            boolean hasBind, boolean isPositional) {
         TypedExpressionResult typedExpressionResult = new ExpressionTyper(context, patternType, bindingId, isPositional).toTypedExpression(unaryExpr);
-        return typedExpressionResult.getTypedExpression().<DrlxParseResult>map(left -> new SingleDrlxParseSuccess(patternType, bindingId, left.getExpression(), left.getType())
-                .setUsedDeclarations( typedExpressionResult.getUsedDeclarations() ).setReactOnProperties( typedExpressionResult.getReactOnProperties() )
-                .setLeft( left ) ).orElseGet( () -> new DrlxParseFail( new ParseExpressionErrorResult(unaryExpr) ));
+        Optional<TypedExpression> opt = typedExpressionResult.getTypedExpression();
+        if (!opt.isPresent()) {
+            return new DrlxParseFail(new ParseExpressionErrorResult(drlxExpr));
+        }
+        TypedExpression typedExpression = opt.get();
+
+        SingleDrlxParseSuccess innerResult = (SingleDrlxParseSuccess) getDrlxParseResult(patternType, bindingId, constraint, unaryExpr.getExpression(), hasBind, isPositional);
+
+        Expression innerExpression;
+        if (unaryExpr.getExpression() instanceof EnclosedExpr && !(innerResult.getExpr() instanceof EnclosedExpr)) {
+            innerExpression = new EnclosedExpr(innerResult.getExpr()); // inner EnclosedExpr could be stripped
+        } else {
+            innerExpression = innerResult.getExpr();
+        }
+
+        return new SingleDrlxParseSuccess(patternType, bindingId, new UnaryExpr(innerExpression, unaryExpr.getOperator()), typedExpression.getType())
+                .setDecodeConstraintType(Index.ConstraintType.UNKNOWN).setUsedDeclarations(typedExpressionResult.getUsedDeclarations())
+                .setReactOnProperties(typedExpressionResult.getReactOnProperties())
+                .setLeft(new TypedExpression(innerResult.getExpr(), innerResult.getExprType()));
     }
 
     private DrlxParseResult parseBinaryExpr(BinaryExpr binaryExpr, Class<?> patternType, String bindingId, ConstraintExpression constraint, Expression drlxExpr,

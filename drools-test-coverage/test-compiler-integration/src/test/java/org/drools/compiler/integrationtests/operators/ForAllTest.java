@@ -202,4 +202,23 @@ public class ForAllTest {
         ksession2.insert( "D" );
         assertEquals(0, ksession2.fireAllRules());
     }
+
+    @Test
+    public void testForallWithNotEqualConstraint() throws Exception {
+        // DROOLS-5100
+
+        String drl =
+                "rule \"forall with not equal\"\n" +
+                "when forall(String(this != \"foo\"))\n" +
+                "then\n" +
+                "end\n";
+
+        KieBase kbase = KieBaseUtil.getKieBaseFromKieModuleFromDrl("forall-test", kieBaseTestConfiguration, drl);
+        KieSession ksession = kbase.newKieSession();
+
+        ksession.insert(new String("bar"));
+        ksession.insert(new String("baz"));
+
+        assertEquals(1, ksession.fireAllRules());
+    }
 }

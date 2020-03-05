@@ -354,7 +354,11 @@ public class EvalHelper {
                     result = ((TemporalAccessor) current).get(ChronoField.SECOND_OF_MINUTE);
                     break;
                 case "time offset":
-                    result = Duration.ofSeconds(((TemporalAccessor) current).get(ChronoField.OFFSET_SECONDS));
+                    if (((TemporalAccessor) current).isSupported(ChronoField.OFFSET_SECONDS)) {
+                        result = Duration.ofSeconds(((TemporalAccessor) current).get(ChronoField.OFFSET_SECONDS));
+                    } else {
+                        result = null;
+                    }
                     break;
                 case "timezone":
                     ZoneId zoneId = ((TemporalAccessor) current).query(TemporalQueries.zoneId());

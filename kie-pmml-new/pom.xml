@@ -22,7 +22,7 @@
   <parent>
     <groupId>org.drools</groupId>
     <artifactId>drools</artifactId>
-    <version>7.34.0-SNAPSHOT</version>
+    <version>7.35.0-SNAPSHOT</version>
   </parent>
 
   <groupId>org.kie</groupId>
@@ -36,6 +36,7 @@
     <module>kie-pmml-commons</module>
     <module>kie-pmml-compiler</module>
     <module>kie-pmml-evaluator</module>
+    <module>kie-pmml-models-archetype</module>
     <module>kie-pmml-models</module>
     <module>kie-pmml-integration-tests</module>
   </modules>

@@ -30,6 +30,8 @@ public interface DMNContext
 
     boolean isDefined(String name);
 
+    DMNMetadata getMetadata();
+
     DMNContext clone();
 
     /**
