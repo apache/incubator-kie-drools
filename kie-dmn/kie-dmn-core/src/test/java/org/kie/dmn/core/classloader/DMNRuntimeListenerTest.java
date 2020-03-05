@@ -37,12 +37,10 @@ import org.kie.dmn.api.core.event.AfterEvaluateBKMEvent;
 import org.kie.dmn.api.core.event.AfterEvaluateDecisionEvent;
 import org.kie.dmn.api.core.event.AfterEvaluateDecisionServiceEvent;
 import org.kie.dmn.api.core.event.AfterInvokeBKMEvent;
-import org.kie.dmn.api.core.event.AfterInvokeDecisionServiceEvent;
 import org.kie.dmn.api.core.event.BeforeEvaluateBKMEvent;
 import org.kie.dmn.api.core.event.BeforeEvaluateDecisionEvent;
 import org.kie.dmn.api.core.event.BeforeEvaluateDecisionServiceEvent;
 import org.kie.dmn.api.core.event.BeforeInvokeBKMEvent;
-import org.kie.dmn.api.core.event.BeforeInvokeDecisionServiceEvent;
 import org.kie.dmn.api.core.event.DMNEvent;
 import org.kie.dmn.api.core.event.DMNRuntimeEventListener;
 import org.kie.dmn.core.BaseInterpretedVsCompiledTest;
@@ -209,25 +207,21 @@ public class DMNRuntimeListenerTest extends BaseInterpretedVsCompiledTest {
         assertThat(eventList.get(0), instanceOf(BeforeEvaluateDecisionEvent.class));
         assertThat(((BeforeEvaluateDecisionEvent) eventList.get(0)).getDecision().getName(), is("Invoking Decision"));
 
-        // Invoke DecisionService(= DMNDSFunction) -> Evaluate DecisionService
-        assertThat(eventList.get(1), instanceOf(BeforeInvokeDecisionServiceEvent.class));
-        assertThat(((BeforeInvokeDecisionServiceEvent) eventList.get(1)).getDecisionService().getName(), is("Decision Service ABC"));
-        assertThat(eventList.get(2), instanceOf(BeforeEvaluateDecisionServiceEvent.class));
-        assertThat(((BeforeEvaluateDecisionServiceEvent) eventList.get(2)).getDecisionService().getName(), is("Decision Service ABC"));
+        // Evaluate DecisionService
+        assertThat(eventList.get(1), instanceOf(BeforeEvaluateDecisionServiceEvent.class));
+        assertThat(((BeforeEvaluateDecisionServiceEvent) eventList.get(1)).getDecisionService().getName(), is("Decision Service ABC"));
 
         // Evaluate internal Decision
-        assertThat(eventList.get(3), instanceOf(BeforeEvaluateDecisionEvent.class));
-        assertThat(((BeforeEvaluateDecisionEvent) eventList.get(3)).getDecision().getName(), is("ABC"));
-        assertThat(eventList.get(4), instanceOf(AfterEvaluateDecisionEvent.class));
-        assertThat(((AfterEvaluateDecisionEvent) eventList.get(4)).getDecision().getName(), is("ABC"));
+        assertThat(eventList.get(2), instanceOf(BeforeEvaluateDecisionEvent.class));
+        assertThat(((BeforeEvaluateDecisionEvent) eventList.get(2)).getDecision().getName(), is("ABC"));
+        assertThat(eventList.get(3), instanceOf(AfterEvaluateDecisionEvent.class));
+        assertThat(((AfterEvaluateDecisionEvent) eventList.get(3)).getDecision().getName(), is("ABC"));
 
-        assertThat(eventList.get(5), instanceOf(AfterEvaluateDecisionServiceEvent.class));
-        assertThat(((AfterEvaluateDecisionServiceEvent) eventList.get(5)).getDecisionService().getName(), is("Decision Service ABC"));
-        assertThat(eventList.get(6), instanceOf(AfterInvokeDecisionServiceEvent.class));
-        assertThat(((AfterInvokeDecisionServiceEvent) eventList.get(6)).getDecisionService().getName(), is("Decision Service ABC"));
+        assertThat(eventList.get(4), instanceOf(AfterEvaluateDecisionServiceEvent.class));
+        assertThat(((AfterEvaluateDecisionServiceEvent) eventList.get(4)).getDecisionService().getName(), is("Decision Service ABC"));
 
-        assertThat(eventList.get(7), instanceOf(AfterEvaluateDecisionEvent.class));
-        assertThat(((AfterEvaluateDecisionEvent) eventList.get(7)).getDecision().getName(), is("Invoking Decision"));
+        assertThat(eventList.get(5), instanceOf(AfterEvaluateDecisionEvent.class));
+        assertThat(((AfterEvaluateDecisionEvent) eventList.get(5)).getDecision().getName(), is("Invoking Decision"));
     }
 
     class TestEventListener implements DMNRuntimeEventListener {
@@ -274,16 +268,6 @@ public class DMNRuntimeListenerTest extends BaseInterpretedVsCompiledTest {
 
         @Override
         public void afterInvokeBKM(AfterInvokeBKMEvent event) {
-            eventList.add(event);
-        }
-
-        @Override
-        public void beforeInvokeDecisionService(BeforeInvokeDecisionServiceEvent event) {
-            eventList.add(event);
-        }
-
-        @Override
-        public void afterInvokeDecisionService(AfterInvokeDecisionServiceEvent event) {
             eventList.add(event);
         }
     };

@@ -367,7 +367,6 @@ public class DMNRuntimeImpl
             EvaluatorResult er = ds.getEvaluator().evaluate(this, result);
             if (er.getResultType() == EvaluatorResult.ResultType.SUCCESS) {
                 FEELFunction resultFn = (FEELFunction) er.getResult();
-                functionNodeMap.put(resultFn, ds);
                 result.getContext().set(ds.getName(), resultFn);
             }
         } catch (Throwable t) {

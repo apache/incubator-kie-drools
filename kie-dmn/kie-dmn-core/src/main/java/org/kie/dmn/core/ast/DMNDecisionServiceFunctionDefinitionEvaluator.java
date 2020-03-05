@@ -26,7 +26,6 @@ import org.kie.dmn.api.core.DMNContext;
 import org.kie.dmn.api.core.DMNMessage;
 import org.kie.dmn.api.core.DMNResult;
 import org.kie.dmn.api.core.DMNType;
-import org.kie.dmn.api.core.ast.DMNNode;
 import org.kie.dmn.api.core.ast.DecisionServiceNode;
 import org.kie.dmn.api.core.event.DMNRuntimeEventManager;
 import org.kie.dmn.core.api.DMNExpressionEvaluator;
@@ -34,7 +33,6 @@ import org.kie.dmn.core.api.EvaluatorResult;
 import org.kie.dmn.core.api.EvaluatorResult.ResultType;
 import org.kie.dmn.core.ast.DMNFunctionDefinitionEvaluator.FormalParameter;
 import org.kie.dmn.core.impl.DMNResultImpl;
-import org.kie.dmn.core.impl.DMNRuntimeEventManagerUtils;
 import org.kie.dmn.core.impl.DMNRuntimeImpl;
 import org.kie.dmn.core.util.Msg;
 import org.kie.dmn.core.util.MsgUtil;
@@ -104,11 +102,7 @@ public class DMNDecisionServiceFunctionDefinitionEvaluator implements DMNExpress
             DMNContext previousContext = resultContext.getContext();
 
             DMNContext dmnContext = eventManager.getRuntime().newContext();
-            DMNNode originatorNode = ((DMNRuntimeImpl) eventManager.getRuntime()).getOriginatorNode(this);
             try {
-                if (originatorNode instanceof DecisionServiceNode) {
-                    DMNRuntimeEventManagerUtils.fireBeforeInvokeDecisionService(eventManager, (DecisionServiceNode) originatorNode, resultContext);
-                }
                 if (params.length != parameters.size()) {
                     MsgUtil.reportMessage(LOG,
                                           DMNMessage.Severity.ERROR,
@@ -153,9 +147,6 @@ public class DMNDecisionServiceFunctionDefinitionEvaluator implements DMNExpress
                                       getName());
                 return null;
             } finally {
-                if (originatorNode instanceof DecisionServiceNode) {
-                    DMNRuntimeEventManagerUtils.fireAfterInvokeDecisionService(eventManager, (DecisionServiceNode) originatorNode, resultContext);
-                }
                 resultContext.setContext(previousContext);
             }
         }
