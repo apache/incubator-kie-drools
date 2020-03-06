@@ -28,24 +28,15 @@ import org.drools.core.reteoo.ObjectTypeNode;
 import org.drools.modelcompiler.domain.Address;
 import org.drools.modelcompiler.domain.Person;
 import org.drools.modelcompiler.domain.Toy;
+import org.junit.Ignore;
 import org.junit.Test;
-import org.junit.runners.Parameterized.Parameters;
+import org.kie.api.definition.type.FactType;
 import org.kie.api.runtime.KieSession;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 
 public class ConstraintNormalizationTest extends BaseModelTest {
-
-    // Only supports executable-model at the moment
-    @Parameters(name = "{0}")
-    public static Object[] params() {
-        if (Boolean.valueOf(System.getProperty("alphanetworkCompilerEnabled"))) {
-            return new Object[]{RUN_TYPE.FLOW_DSL, RUN_TYPE.PATTERN_DSL, RUN_TYPE.FLOW_WITH_ALPHA_NETWORK, RUN_TYPE.PATTERN_WITH_ALPHA_NETWORK};
-        } else {
-            return new Object[]{RUN_TYPE.FLOW_DSL, RUN_TYPE.PATTERN_DSL};
-        }
-    }
 
     public ConstraintNormalizationTest(RUN_TYPE testRunType) {
         super(testRunType);
@@ -321,7 +312,12 @@ public class ConstraintNormalizationTest extends BaseModelTest {
         final KieSession ksession = getKieSession(str);
 
         // Check NodeSharing to verify if normalization works expectedly
-        assertEquals(1, ReteDumper.collectNodes(ksession).stream().filter(AlphaNode.class::isInstance).count());
+        if (testRunType == RUN_TYPE.STANDARD_FROM_DRL) {
+            assertEquals(2, ReteDumper.collectNodes(ksession).stream().filter(AlphaNode.class::isInstance).count());
+        } else {
+            // && is not split in case of executable-model
+            assertEquals(1, ReteDumper.collectNodes(ksession).stream().filter(AlphaNode.class::isInstance).count());
+        }
 
         final Person p = new Person("Toshiya", 45);
         p.setLikes("Bird");
@@ -398,7 +394,6 @@ public class ConstraintNormalizationTest extends BaseModelTest {
                      "end";
 
         KieSession ksession = getKieSession(str);
-        ReteDumper.dumpRete(ksession);
 
         // Check NodeSharing to verify if normalization works expectedly
         assertEquals(1, ReteDumper.collectNodes(ksession).stream().filter(AlphaNode.class::isInstance).count());
@@ -429,7 +424,6 @@ public class ConstraintNormalizationTest extends BaseModelTest {
                      "end";
 
         KieSession ksession = getKieSession(str);
-        ReteDumper.dumpRete(ksession);
 
         // Check NodeSharing to verify if normalization works expectedly
         assertEquals(1, ReteDumper.collectNodes(ksession).stream().filter(AlphaNode.class::isInstance).count());
@@ -450,5 +444,104 @@ public class ConstraintNormalizationTest extends BaseModelTest {
 
         assertEquals(4, ksession.fireAllRules());
         Assertions.assertThat(list).containsExactlyInAnyOrder("John", "George", "John", "George");
+    }
+
+    @Test
+    public void testNegateComplex2() throws Exception {
+        String str =
+                "import " + Person.class.getCanonicalName() + ";" +
+                     "global java.util.List list;\n" +
+                     "rule R1 when\n" +
+                     "  $p : Person(!(!(20 >= money) && 40 > money))\n" +
+                     "then\n" +
+                     "  list.add($p.getName());" +
+                     "end\n" +
+
+                     "rule R2 when\n" +
+                     "  $p : Person(!(!(money <= 20) && money < 40))\n" +
+                     "then\n" +
+                     "  list.add($p.getName());" +
+                     "end";
+
+        KieSession ksession = getKieSession(str);
+
+        // Check NodeSharing to verify if normalization works expectedly
+        assertEquals(1, ReteDumper.collectNodes(ksession).stream().filter(AlphaNode.class::isInstance).count());
+
+        final List<String> list = new ArrayList<>();
+        ksession.setGlobal("list", list);
+
+        Person p1 = new Person("John");
+        p1.setMoney(new BigDecimal("10.0"));
+        Person p2 = new Person("Paul");
+        p2.setMoney(new BigDecimal("30.0"));
+        Person p3 = new Person("George");
+        p3.setMoney(new BigDecimal("50.0"));
+
+        ksession.insert(p1);
+        ksession.insert(p2);
+        ksession.insert(p3);
+
+        assertEquals(4, ksession.fireAllRules());
+        Assertions.assertThat(list).containsExactlyInAnyOrder("John", "George", "John", "George");
+    }
+
+    @Test
+    public void testDeclaredType() throws Exception {
+        final String str =
+                "package org.drools.test;\n" +
+                           "declare Person\n" +
+                           "    name : String\n" +
+                           "    age : int\n" +
+                           "end\n" +
+                           "rule R1 when \n" +
+                           " Person(\"Toshiya\" == name, 20 < age)\n" +
+                           "then\n" +
+                           "end\n" +
+
+                           "rule R2 when \n" +
+                           " Person(name == \"Toshiya\", age > 20)\n" +
+                           "then\n" +
+                           "end";
+
+        final KieSession ksession = getKieSession(str);
+
+        // Check NodeSharing to verify if normalization works expectedly
+        assertEquals(2, ReteDumper.collectNodes(ksession).stream().filter(AlphaNode.class::isInstance).count());
+
+        FactType factType = ksession.getKieBase().getFactType("org.drools.test", "Person");
+        Object p = factType.newInstance();
+        factType.set(p, "name", "Toshiya");
+        factType.set(p, "age", 45);
+        ksession.insert(p);
+        assertEquals(2, ksession.fireAllRules());
+    }
+
+    @Ignore
+    @Test
+    public void testMap() throws Exception {
+        final String str =
+                "package org.drools.test;\n" +
+                           "import " + Person.class.getCanonicalName() + ";\n" +
+                           "rule R1 when \n" +
+                           " Person(\"Value\" == itemsString[\"Key\"])\n" +
+                           "then\n" +
+                           "end\n" +
+
+                           "rule R2 when \n" +
+                           " Person(itemsString[\"Key\"] == \"Value\")\n" +
+                           "then\n" +
+                           "end";
+
+        final KieSession ksession = getKieSession(str);
+
+        // Check NodeSharing to verify if normalization works expectedly
+        assertEquals(1, ReteDumper.collectNodes(ksession).stream().filter(AlphaNode.class::isInstance).count());
+
+        final Person p = new Person("Toshiya");
+        p.getItemsString().put("Key", "Value");
+
+        ksession.insert(p);
+        assertEquals(2, ksession.fireAllRules());
     }
 }
