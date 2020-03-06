@@ -1,14 +1,21 @@
 package org.drools.modelcompiler.builder.generator.declaredtype;
 
-import java.util.Collection;
+import java.util.List;
+import java.util.Optional;
 
 interface TypeDefinition {
 
     String getTypeName();
 
-    Collection<TypeFieldDefinition> getFields();
+    List<TypeFieldDefinition> getFields();
+
+    List<TypeFieldDefinition> getKeyFields();
 
     String getSuperTypeName();
 
-    AnnotationDefinition[] getAnnotations();
+    List<AnnotationDefinition> getAnnotations();
+
+    List<AnnotationDefinition> getSoftAnnotations();
+
+    Optional<TypeDefinition> getSuperType();
 }

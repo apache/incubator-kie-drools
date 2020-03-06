@@ -247,7 +247,7 @@ public class ModelBuilderImpl<T extends PackageSources> extends KnowledgeBuilder
             return new PackageModel(releaseId, pkgName, this.getBuilderConfiguration(), isPattern, dialectCompiletimeRegistry, exprIdGenerator);
         });
         model.addImports(pkg.getTypeResolver().getImports());
-        new POJOGenerator(this, pkg, packageDescr, model).generatePOJO();
+        new POJOGenerator(this, pkg, packageDescr, model).findPOJOorGenerate();
     }
 
     @Override

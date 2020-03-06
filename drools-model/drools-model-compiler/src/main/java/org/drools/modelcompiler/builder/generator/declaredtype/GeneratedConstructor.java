@@ -87,7 +87,7 @@ class FullArgumentConstructor implements GeneratedConstructor {
             String fieldName = typeField.getFieldName();
             addConstructorArgument(constructor, typeField.getObjectType(), fieldName);
             superCall.addArgument(fieldName);
-            if (typeField.getAnnotation("key") != null) {
+            if (typeField.isKeyField()) {
                 keyFields.add(typeField);
             }
         }

@@ -1,5 +1,7 @@
 package org.drools.modelcompiler.builder.generator.declaredtype;
 
+import java.util.List;
+
 interface TypeFieldDefinition {
 
     String getFieldName();
@@ -8,7 +10,11 @@ interface TypeFieldDefinition {
 
     String getInitExpr();
 
-    AnnotationDefinition getAnnotation(String position);
+    List<AnnotationDefinition> getAnnotations();
 
-    AnnotationDefinition[] getAnnotations();
+    void addAnnotation(String name);
+
+    void addAnnotation(String name, String value);
+
+    boolean isKeyField();
 }

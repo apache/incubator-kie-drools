@@ -19,9 +19,7 @@ package org.drools.modelcompiler.builder.generator.declaredtype;
 
 import java.io.Serializable;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Collection;
-import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
@@ -40,8 +38,6 @@ import com.github.javaparser.ast.nodeTypes.NodeWithAnnotations;
 import com.github.javaparser.ast.stmt.Statement;
 import com.github.javaparser.ast.type.PrimitiveType;
 import com.github.javaparser.ast.type.Type;
-import org.kie.api.definition.type.Key;
-import org.kie.api.definition.type.Position;
 import org.kie.api.definition.type.Role;
 
 import static com.github.javaparser.StaticJavaParser.parseExpression;
@@ -56,9 +52,6 @@ class GeneratedClassDeclaration {
     private static final String VALUE = "value";
     static final String OVERRIDE = "Override";
 
-    private Map<String, Class<?>> predefinedClassLevelAnnotation;
-
-    private GenerationResult generationResult;
     private final TypeDefinition typeDefinition;
     private TypeResolver typeResolver;
     private GeneratedHashcode generatedHashcode;
@@ -68,16 +61,13 @@ class GeneratedClassDeclaration {
     private final Collection<TypeDefinition> allTypeDefinitions;
     private final Collection<Class<?>> markerInterfaceAnnotations;
 
-    GeneratedClassDeclaration(GenerationResult generationResult,
-                              TypeDefinition typeDefinition,
+    GeneratedClassDeclaration(TypeDefinition typeDefinition,
                               TypeResolver typeResolver,
-                              Map<String, Class<?>> predefinedClassLevelAnnotation,
-                              Collection<TypeDefinition> allTypeDefinitions, Collection<Class<?>> markerInterfaceAnnotations) {
+                              Collection<TypeDefinition> allTypeDefinitions,
+                              Collection<Class<?>> markerInterfaceAnnotations) {
 
-        this.generationResult = generationResult;
         this.typeDefinition = typeDefinition;
         this.typeResolver = typeResolver;
-        this.predefinedClassLevelAnnotation = predefinedClassLevelAnnotation;
         this.allTypeDefinitions = allTypeDefinitions;
         this.markerInterfaceAnnotations = markerInterfaceAnnotations;
     }
@@ -104,7 +94,7 @@ class GeneratedClassDeclaration {
         basicDeclaredClass.addImplementedType(Serializable.class.getName()); // Ref: {@link org.drools.core.factmodel.DefaultBeanClassBuilder} by default always receive is Serializable.
         processAnnotations(basicDeclaredClass);
 
-        markerInterfaceAnnotations.forEach(basicDeclaredClass::addImplementedType);
+        markerInterfaceAnnotations.stream().map(Class::getCanonicalName).forEach(basicDeclaredClass::addImplementedType);
         basicDeclaredClass.addConstructor(Modifier.publicModifier().getKeyword()); // No-args ctor
         return basicDeclaredClass;
     }
@@ -126,18 +116,19 @@ class GeneratedClassDeclaration {
             }
         }
 
+        List<TypeFieldDefinition> typeFields = typeDefinition.getFields();
 
         generatedHashcode = new GeneratedHashcode(hasSuper);
         generatedToString = new GeneratedToString(generatedClassName);
         generatedEqualsMethod = new GeneratedEqualsMethod(generatedClassName, hasSuper);
 
-        List<TypeFieldDefinition> sortedTypeFields = typeFieldsSortedByPosition();
-        GeneratedConstructor fullArgumentConstructor = GeneratedConstructor.factory(generatedClass, sortedTypeFields);
+        GeneratedConstructor fullArgumentConstructor = GeneratedConstructor.factory(generatedClass, typeFields);
 
-        List<TypeFieldDefinition> keyFields = processTypeFields(inheritedFields, sortedTypeFields);
+        processTypeFields(typeFields);
+
+        List<TypeFieldDefinition> keyFields = typeDefinition.getKeyFields();
 
         fullArgumentConstructor.generateConstructor(inheritedFields, keyFields);
-
         if (!keyFields.isEmpty()) {
             generatedClass.addMember(generatedEqualsMethod.method());
             generatedClass.addMember(generatedHashcode.method());
@@ -147,9 +138,7 @@ class GeneratedClassDeclaration {
         return generatedClass;
     }
 
-    private List<TypeFieldDefinition> processTypeFields(Collection<TypeFieldDefinition> inheritedFields, List<TypeFieldDefinition> typeFields) {
-        List<TypeFieldDefinition> keyFields = new ArrayList<>();
-        int position = inheritedFields.size();
+    private void processTypeFields(List<TypeFieldDefinition> typeFields) {
         for (TypeFieldDefinition typeFieldDescr : typeFields) {
             String fieldName = typeFieldDescr.getFieldName();
             Type returnType = parseType(typeFieldDescr.getObjectType());
@@ -160,47 +149,31 @@ class GeneratedClassDeclaration {
             field.createSetter();
             MethodDeclaration getter = field.createGetter();
 
+            if (typeFieldDescr.isKeyField()) {
+                generatedEqualsMethod.add(getter, fieldName);
+                generatedHashcode.addHashCodeForField(fieldName, getter.getType());
+            }
+
+            for(AnnotationDefinition ad : typeFieldDescr.getAnnotations()) {
+                addAnnotation(field, ad);
+            }
+
             generatedToString.add(format("+ {0}+{1}", quote(fieldName + "="), fieldName));
-
-            boolean hasPositionAnnotation = false;
-            for (AnnotationDefinition ann : typeFieldDescr.getAnnotations()) {
-                if (ann.getName().equalsIgnoreCase("key")) {
-                    keyFields.add(typeFieldDescr);
-                    field.addAnnotation(Key.class.getName());
-                    generatedEqualsMethod.add(getter, fieldName);
-                    generatedHashcode.addHashCodeForField(fieldName, getter.getType());
-                } else if (ann.getName().equalsIgnoreCase("position")) {
-                    field.addAndGetAnnotation(Position.class.getName()).addPair(VALUE, "" + ann.getValue());
-                    hasPositionAnnotation = true;
-                    position++;
-                } else if (ann.getName().equalsIgnoreCase("duration") || ann.getName().equalsIgnoreCase("expires") || ann.getName().equalsIgnoreCase("timestamp")) {
-                    Class<?> annotationClass = predefinedClassLevelAnnotation.get(ann.getName().toLowerCase());
-                    String annFqn = annotationClass.getCanonicalName();
-                    NormalAnnotationExpr annExpr = generatedClass.addAndGetAnnotation(annFqn);
-                    annExpr.addPair(VALUE, quote(fieldName));
-                } else {
-                    processAnnotations(field, ann, null);
-                }
-            }
-
-            if (!hasPositionAnnotation) {
-                field.addAndGetAnnotation(Position.class.getName()).addPair(VALUE, "" + position++);
-            }
         }
-        return keyFields;
     }
 
     private void processAnnotations(ClassOrInterfaceDeclaration generatedClass) {
-        List<AnnotationDefinition> softAnnotations = new ArrayList<>();
         for (AnnotationDefinition ann : typeDefinition.getAnnotations()) {
             if (ann.getName().equals("serialVersionUID")) {
                 LongLiteralExpr valueExpr = new LongLiteralExpr(ann.getValue(VALUE).toString());
                 generatedClass.addFieldWithInitializer(PrimitiveType.longType(), "serialVersionUID", valueExpr, Modifier.privateModifier().getKeyword()
                         , Modifier.staticModifier().getKeyword(), Modifier.finalModifier().getKeyword());
             } else {
-                processAnnotations(generatedClass, ann, softAnnotations);
+                addAnnotation(generatedClass, ann);
             }
         }
+
+        List<AnnotationDefinition> softAnnotations = typeDefinition.getSoftAnnotations();
         if (!softAnnotations.isEmpty()) {
             String softAnnDictionary = softAnnotations.stream().map(a -> "<dt>" + a.getName() + "</dt><dd>" + a.getValuesAsString() + "</dd>").collect(joining());
             JavadocComment generatedClassJavadoc = new JavadocComment("<dl>" + softAnnDictionary + "</dl>");
@@ -208,72 +181,15 @@ class GeneratedClassDeclaration {
         }
     }
 
-    private void processAnnotations(NodeWithAnnotations<?> node, AnnotationDefinition ann, List<AnnotationDefinition> softAnnotations) {
-        Class<?> annotationClass = predefinedClassLevelAnnotation.get(ann.getName());
-
-        if (annotationClass == null) {
-            annotationClass = typeResolver.resolveType(ann.getName()).orElse(null);
-            if (annotationClass == null) {
-                return;
-            }
-        }
-
-        String annFqn = annotationClass.getCanonicalName();
-        if (annFqn != null) {
-            processAnnotation(node, ann, softAnnotations, annotationClass, annFqn);
-        } else {
-            if (softAnnotations != null) {
-                softAnnotations.add(ann);
-            }
-        }
-    }
-
-    private void processAnnotation(NodeWithAnnotations<?> node, AnnotationDefinition ann, List<AnnotationDefinition> softAnnotations, Class<?> annotationClass, String annFqn) {
-        NormalAnnotationExpr annExpr = node.addAndGetAnnotation(annFqn);
+    private void addAnnotation(NodeWithAnnotations node, AnnotationDefinition ann) {
+        NormalAnnotationExpr annExpr = node.addAndGetAnnotation(ann.getName());
         for (Map.Entry<String, Object> entry : ann.getValueMap().entrySet()) {
-            try {
-                annotationClass.getMethod(entry.getKey());
-                annExpr.addPair(entry.getKey(), getAnnotationValue(annFqn, entry.getKey(), entry.getValue()));
-            } catch (NoSuchMethodException e) {
-                if (softAnnotations == null) {
-                    addBuilderResult(new PojoGenerationError("Unknown annotation property " + entry.getKey()));
-                }
-            }
+            annExpr.addPair(entry.getKey(), getAnnotationValue(ann.getName(), entry.getKey(), entry.getValue()));
         }
-    }
-
-    private void addBuilderResult(PojoGenerationError error) {
-        generationResult.error(error);
-    }
-
-    private List<TypeFieldDefinition> typeFieldsSortedByPosition() {
-        Collection<TypeFieldDefinition> typeFields = typeDefinition.getFields();
-        TypeFieldDefinition[] sortedTypes = new TypeFieldDefinition[typeFields.size()];
-
-        List<TypeFieldDefinition> nonPositionalFields = new ArrayList<>();
-        for (TypeFieldDefinition descr : typeFields) {
-            AnnotationDefinition ann = descr.getAnnotation("Position");
-            if (ann == null) {
-                nonPositionalFields.add(descr);
-            } else {
-                int pos = Integer.parseInt(ann.getValue());
-                sortedTypes[pos] = descr;
-            }
-        }
-
-        int counter = 0;
-        for (TypeFieldDefinition descr : nonPositionalFields) {
-            for (; sortedTypes[counter] != null; counter++) {
-                ;
-            }
-            sortedTypes[counter++] = descr;
-        }
-
-        return Arrays.asList(sortedTypes);
     }
 
     private List<TypeFieldDefinition> findInheritedDeclaredFields() {
-        return findInheritedDeclaredFields(new ArrayList<>(), getSuperType(typeDefinition));
+        return findInheritedDeclaredFields(new ArrayList<>(), typeDefinition.getSuperType());
     }
 
     private List<TypeFieldDefinition> findInheritedDeclaredFields(List<TypeFieldDefinition> fields, Optional<TypeDefinition> superType) {

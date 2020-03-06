@@ -20,20 +20,20 @@ package org.drools.modelcompiler.builder.generator.declaredtype;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 
 import com.github.javaparser.ast.body.ClassOrInterfaceDeclaration;
 import com.github.javaparser.ast.body.TypeDeclaration;
 import com.github.javaparser.ast.expr.MethodCallExpr;
 import com.github.javaparser.ast.expr.StringLiteralExpr;
 import org.drools.compiler.builder.impl.KnowledgeBuilderImpl;
-import org.drools.compiler.compiler.AnnotationDeclarationError;
 import org.drools.compiler.lang.descr.AnnotationDescr;
 import org.drools.compiler.lang.descr.EnumDeclarationDescr;
 import org.drools.compiler.lang.descr.PackageDescr;
 import org.drools.compiler.lang.descr.TypeDeclarationDescr;
+import org.drools.core.addon.TypeResolver;
 import org.drools.core.definitions.InternalKnowledgePackage;
 import org.drools.core.factmodel.GeneratedFact;
 import org.drools.modelcompiler.builder.GeneratedClassWithPackage;
@@ -41,11 +41,6 @@ import org.drools.modelcompiler.builder.ModelBuilderImpl;
 import org.drools.modelcompiler.builder.PackageModel;
 import org.drools.modelcompiler.builder.errors.InvalidExpressionErrorResult;
 import org.drools.modelcompiler.util.MvelUtil;
-import org.drools.core.addon.TypeResolver;
-import org.kie.api.definition.type.Duration;
-import org.kie.api.definition.type.Expires;
-import org.kie.api.definition.type.Role;
-import org.kie.api.definition.type.Timestamp;
 
 import static org.drools.modelcompiler.builder.JavaParserCompiler.compileAll;
 import static org.drools.modelcompiler.builder.generator.DslMethodNames.ADD_ANNOTATION_CALL;
@@ -58,15 +53,6 @@ public class POJOGenerator {
     private InternalKnowledgePackage pkg;
     private PackageDescr packageDescr;
     private PackageModel packageModel;
-
-    private static final Map<String, Class<?>> predefinedClassLevelAnnotation = new HashMap<>();
-
-    static {
-        predefinedClassLevelAnnotation.put("role", Role.class);
-        predefinedClassLevelAnnotation.put("duration", Duration.class);
-        predefinedClassLevelAnnotation.put("expires", Expires.class);
-        predefinedClassLevelAnnotation.put("timestamp", Timestamp.class);
-    }
 
     private static final List<String> exprAnnotations = Arrays.asList("duration", "timestamp");
 
@@ -90,23 +76,14 @@ public class POJOGenerator {
         }
     }
 
-    public void generatePOJO() {
+    public void findPOJOorGenerate() {
         TypeResolver typeResolver = pkg.getTypeResolver();
-
         for (TypeDeclarationDescr typeDescr : packageDescr.getTypeDeclarations()) {
             try {
                 Class<?> type = typeResolver.resolveType(typeDescr.getFullTypeName());
                 processTypeMetadata(type, typeDescr.getAnnotations());
             } catch (ClassNotFoundException e) {
-                ClassOrInterfaceDeclaration generatedClass = new GeneratedClassDeclaration(error -> builder.addBuilderResult(null), // TODO handle error
-                                                                                           null,
-                                                                                           null, // TODO type resolver
-                                                                                           predefinedClassLevelAnnotation,
-                                                                                           Collections.emptyList(),
-                                                                                           Collections.singletonList(GeneratedFact.class))
-                        .toClassDeclaration();
-                packageModel.addGeneratedPOJO(generatedClass);
-                addTypeMetadata(typeDescr.getTypeName());
+                createPOJO(typeDescr);
             }
         }
 
@@ -121,6 +98,35 @@ public class POJOGenerator {
                 addTypeMetadata(enumDescr.getTypeName());
             }
         }
+    }
+
+    static class SafeTypeResolver implements org.drools.modelcompiler.builder.generator.declaredtype.TypeResolver {
+
+        private final TypeResolver typeResolver;
+
+        public SafeTypeResolver(TypeResolver typeResolver) {
+            this.typeResolver = typeResolver;
+        }
+
+        @Override
+        public Optional<Class<?>> resolveType(String className) {
+            try {
+                return Optional.ofNullable(this.typeResolver.resolveType(className));
+            } catch(ClassNotFoundException e) {
+                return Optional.empty();
+            }
+        }
+    }
+
+    private void createPOJO(TypeDeclarationDescr typeDescr) {
+        DescrDeclaredTypeDefinition descrDeclaredTypeDefinition = new DescrDeclaredTypeDefinition(typeDescr);
+        ClassOrInterfaceDeclaration generatedClass = new GeneratedClassDeclaration(descrDeclaredTypeDefinition,
+                                                                                   new SafeTypeResolver(pkg.getTypeResolver()),
+                                                                                   Collections.emptyList(),
+                                                                                   Collections.singletonList(GeneratedFact.class))
+                .toClassDeclaration();
+        packageModel.addGeneratedPOJO(generatedClass);
+        addTypeMetadata(typeDescr.getTypeName());
     }
 
     private void addTypeMetadata(String typeName) {
