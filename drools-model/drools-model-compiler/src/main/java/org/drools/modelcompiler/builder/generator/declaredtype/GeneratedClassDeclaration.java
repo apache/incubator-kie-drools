@@ -111,17 +111,18 @@ class GeneratedClassDeclaration {
     private ClassOrInterfaceDeclaration generateFullClass(String generatedClassName, Collection<TypeFieldDefinition> inheritedFields) {
         boolean hasSuper = typeDefinition.getSuperTypeName() != null;
         if (hasSuper) {
-            // Convert to new type resolver
-//            try {
-//                Class<?> resolvedSuper = typeResolver.resolveType(typeDefinition.getSuperTypeName());
-//                if (resolvedSuper.isInterface()) {
-//                    generatedClass.addImplementedType(typeDefinition.getSuperTypeName());
-//                } else {
-//                    generatedClass.addExtendedType(typeDefinition.getSuperTypeName());
-//                }
-//            } catch (ClassNotFoundException e) {
-//                generatedClass.addExtendedType(typeDefinition.getSuperTypeName());
-//            }
+            Optional<Class<?>> optResolvedSuper = typeResolver.resolveType(typeDefinition.getSuperTypeName());
+            optResolvedSuper.ifPresent(resolvedSuper -> {
+                if (resolvedSuper.isInterface()) {
+                    generatedClass.addImplementedType(typeDefinition.getSuperTypeName());
+                } else {
+                    generatedClass.addExtendedType(typeDefinition.getSuperTypeName());
+                }
+            });
+
+            if (optResolvedSuper.isEmpty()) {
+                generatedClass.addExtendedType(typeDefinition.getSuperTypeName());
+            }
         }
 
         LinkedHashMap<String, TypeFieldDefinition> sortedTypeFields = typeFieldsSortedByPosition();
@@ -209,23 +210,21 @@ class GeneratedClassDeclaration {
     private void processAnnotations(NodeWithAnnotations node, AnnotationDefinition ann, List<AnnotationDefinition> softAnnotations) {
         Class<?> annotationClass = predefinedClassLevelAnnotation.get(ann.getName());
 
-        // TODO: conver to new type resolver
-//        if (annotationClass == null) {
-//            try {
-//                annotationClass = typeResolver.resolveType(ann.getName());
-//            } catch (ClassNotFoundException e) {
-//                return;
-//            }
-//        }
-//
-//        String annFqn = annotationClass.getCanonicalName();
-//        if (annFqn != null) {
-//            processAnnotation(node, ann, softAnnotations, annotationClass, annFqn);
-//        } else {
-//            if (softAnnotations != null) {
-//                softAnnotations.add(ann);
-//            }
-//        }
+        if (annotationClass == null) {
+            annotationClass = typeResolver.resolveType(ann.getName()).orElse(null);
+            if (annotationClass == null) {
+                return;
+            }
+        }
+
+        String annFqn = annotationClass.getCanonicalName();
+        if (annFqn != null) {
+            processAnnotation(node, ann, softAnnotations, annotationClass, annFqn);
+        } else {
+            if (softAnnotations != null) {
+                softAnnotations.add(ann);
+            }
+        }
     }
 
     private void processAnnotation(NodeWithAnnotations node, AnnotationDefinition ann, List<AnnotationDefinition> softAnnotations, Class<?> annotationClass, String annFqn) {
