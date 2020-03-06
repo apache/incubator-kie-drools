@@ -1,12 +1,12 @@
 package org.drools.modelcompiler.builder.generator.declaredtype;
 
-import java.util.Map;
+import java.util.Collection;
 
 interface TypeDefinition {
 
     String getTypeName();
 
-    Map<String, TypeFieldDefinition> getFields();
+    Collection<TypeFieldDefinition> getFields();
 
     String getSuperTypeName();
 

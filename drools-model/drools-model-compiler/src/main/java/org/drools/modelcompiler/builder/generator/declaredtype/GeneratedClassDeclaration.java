@@ -125,12 +125,12 @@ class GeneratedClassDeclaration {
             }
         }
 
-        LinkedHashMap<String, TypeFieldDefinition> sortedTypeFields = typeFieldsSortedByPosition();
 
         generatedHashcode = new GeneratedHashcode(hasSuper);
         generatedToString = new GeneratedToString(generatedClassName);
         generatedEqualsMethod = new GeneratedEqualsMethod(generatedClassName, hasSuper);
 
+        LinkedHashMap<String, TypeFieldDefinition> sortedTypeFields = typeFieldsSortedByPosition();
         GeneratedConstructor fullArgumentConstructor = GeneratedConstructor.factory(generatedClass, sortedTypeFields);
 
         List<TypeFieldDefinition> keyFields = processTypeFields(inheritedFields, sortedTypeFields);
@@ -246,7 +246,7 @@ class GeneratedClassDeclaration {
     }
 
     private LinkedHashMap<String, TypeFieldDefinition> typeFieldsSortedByPosition() {
-        Collection<TypeFieldDefinition> typeFields = typeDefinition.getFields().values();
+        Collection<TypeFieldDefinition> typeFields = typeDefinition.getFields();
         TypeFieldDefinition[] sortedTypes = new TypeFieldDefinition[typeFields.size()];
 
         List<TypeFieldDefinition> nonPositionalFields = new ArrayList<>();
@@ -283,7 +283,7 @@ class GeneratedClassDeclaration {
     private List<TypeFieldDefinition> findInheritedDeclaredFields(List<TypeFieldDefinition> fields, Optional<TypeDefinition> supertType) {
         supertType.ifPresent(st -> {
             findInheritedDeclaredFields(fields, getSuperType(st));
-            fields.addAll(st.getFields().values());
+            fields.addAll(st.getFields());
         });
         return fields;
     }
