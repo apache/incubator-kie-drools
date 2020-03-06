@@ -367,7 +367,7 @@ public class DMNEvaluatorCompiler {
                                    Msg.FUNC_DEF_INVALID_KIND,
                                   kind,
                                    node.getIdentifierString() );
-            return new DMNFunctionDefinitionEvaluator( node.getName(), funcDef );
+            return new DMNFunctionDefinitionEvaluator(node, funcDef);
         } else if (kind.equals(FunctionKind.FEEL)) {
             return compileFunctionDefinitionFEEL(ctx, model, node, functionName, funcDef);
         } else if (kind.equals(FunctionKind.JAVA)) {
@@ -385,13 +385,13 @@ public class DMNEvaluatorCompiler {
                                   kind,
                                    node.getIdentifierString() );
         }
-        return new DMNFunctionDefinitionEvaluator( node.getName(), funcDef );
+        return new DMNFunctionDefinitionEvaluator(node, funcDef);
     }
 
     private DMNExpressionEvaluator compileFunctionDefinitionFEEL(DMNCompilerContext ctx, DMNModelImpl model, DMNBaseNode node, String functionName, FunctionDefinition funcDef) {
         ctx.enterFrame();
         try {
-            DMNFunctionDefinitionEvaluator func = new DMNFunctionDefinitionEvaluator(node.getName(), funcDef);
+            DMNFunctionDefinitionEvaluator func = new DMNFunctionDefinitionEvaluator(node, funcDef);
             for (InformationItem p : funcDef.getFormalParameter()) {
                 DMNCompilerHelper.checkVariableName(model, p, p.getName());
                 DMNType dmnType = compiler.resolveTypeRef(model, p, p, p.getTypeRef());
@@ -454,7 +454,7 @@ public class DMNEvaluatorCompiler {
                     DMNInvocationEvaluator invoker = new DMNInvocationEvaluator(node.getName(), node.getSource(), functionName, null,
                                                                                 (fctx, fname) -> feelFunction, null); // feel can be null as anyway is hardcoded to `feelFunction`
 
-                    DMNFunctionDefinitionEvaluator func = new DMNFunctionDefinitionEvaluator( node.getName(), funcDef );
+                    DMNFunctionDefinitionEvaluator func = new DMNFunctionDefinitionEvaluator(node, funcDef);
                     for ( InformationItem p : funcDef.getFormalParameter() ) {
                         DMNCompilerHelper.checkVariableName( model, p, p.getName() );
                         DMNType dmnType = compiler.resolveTypeRef(model, p, p, p.getTypeRef());
@@ -497,7 +497,7 @@ public class DMNEvaluatorCompiler {
                                    Msg.FUNC_DEF_BODY_NOT_CONTEXT,
                                    node.getIdentifierString() );
         }
-        return new DMNFunctionDefinitionEvaluator(node.getName(), funcDef);
+        return new DMNFunctionDefinitionEvaluator(node, funcDef);
     }
 
     private DMNExpressionEvaluator compileFunctionDefinitionPMML(DMNCompilerContext ctx, DMNModelImpl model, DMNBaseNode node, String functionName, FunctionDefinition funcDef) {
@@ -551,7 +551,7 @@ public class DMNEvaluatorCompiler {
                                                                                                      pmmlResource,
                                                                                                      pmmlModel,
                                                                                                      pmmlInfo);
-                DMNFunctionDefinitionEvaluator func = new DMNFunctionDefinitionEvaluator(node.getName(), funcDef);
+                DMNFunctionDefinitionEvaluator func = new DMNFunctionDefinitionEvaluator(node, funcDef);
                 for (InformationItem p : funcDef.getFormalParameter()) {
                     DMNCompilerHelper.checkVariableName(model, p, p.getName());
                     DMNType dmnType = compiler.resolveTypeRef(model, p, p, p.getTypeRef());
@@ -582,7 +582,7 @@ public class DMNEvaluatorCompiler {
                                   Msg.FUNC_DEF_BODY_NOT_CONTEXT,
                                   node.getIdentifierString());
         }
-        return new DMNFunctionDefinitionEvaluator(node.getName(), funcDef);
+        return new DMNFunctionDefinitionEvaluator(node, funcDef);
     }
 
     private String stripQuotes(String trim) {
