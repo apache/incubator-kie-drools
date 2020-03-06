@@ -19,7 +19,7 @@ package org.drools.modelcompiler.builder.generator.declaredtype;
 
 import java.util.Collection;
 import java.util.List;
-import java.util.Map;
+import java.util.Optional;
 
 import com.github.javaparser.ast.Modifier;
 import com.github.javaparser.ast.NodeList;
@@ -39,7 +39,7 @@ import static org.drools.modelcompiler.builder.generator.declaredtype.GeneratedC
 interface GeneratedConstructor {
 
     static GeneratedConstructor factory(NodeWithConstructors<?> generatedClass,
-                                        Map<String, TypeFieldDefinition> typeDeclarationFields) {
+                                        List<TypeFieldDefinition> typeDeclarationFields) {
         if (typeDeclarationFields.size() < 65) {
             return new FullArgumentConstructor(generatedClass, typeDeclarationFields, true, true);
         } else {
@@ -48,7 +48,7 @@ interface GeneratedConstructor {
     }
 
     static GeneratedConstructor factoryEnum(NodeWithConstructors<?> generatedClass,
-                                        Map<String, TypeFieldDefinition> typeDeclarationFields) {
+                                            List<TypeFieldDefinition> typeDeclarationFields) {
         if (typeDeclarationFields.size() < 65) {
             return new FullArgumentConstructor(generatedClass, typeDeclarationFields, false, false);
         } else {
@@ -64,10 +64,10 @@ class FullArgumentConstructor implements GeneratedConstructor {
     private final NodeWithConstructors<?> generatedClass;
     private final Modifier.Keyword[] modifiers;
     private final boolean shouldCallSuper;
-    private Map<String, TypeFieldDefinition> typeDeclarationFields;
+    private List<TypeFieldDefinition> typeDeclarationFields;
 
     FullArgumentConstructor(NodeWithConstructors<?> generatedClass,
-                            Map<String, TypeFieldDefinition> typeDeclarationFields,
+                            List<TypeFieldDefinition> typeDeclarationFields,
                             boolean publicConstructor,
                             boolean shouldCallSuper) {
         this.generatedClass = generatedClass;
@@ -96,7 +96,7 @@ class FullArgumentConstructor implements GeneratedConstructor {
             fieldAssignStatement.add(new ExpressionStmt(superCall));
         }
 
-        for (TypeFieldDefinition typeFieldDefinition : typeDeclarationFields.values()) {
+        for (TypeFieldDefinition typeFieldDefinition : typeDeclarationFields) {
             String fieldName = typeFieldDefinition.getFieldName();
             Type returnType = parseType(typeFieldDefinition.getObjectType());
             addConstructorArgument(constructor, returnType, fieldName);
@@ -119,7 +119,8 @@ class FullArgumentConstructor implements GeneratedConstructor {
         for (TypeFieldDefinition typeFieldDefinition : keyFields) {
             String fieldName = typeFieldDefinition.getFieldName();
             addConstructorArgument(constructor, typeFieldDefinition.getObjectType(), fieldName);
-            if (typeDeclarationFields.get(fieldName) != null) {
+            Optional<TypeFieldDefinition> typeDefinition = typeDeclarationFields.stream().filter(td -> td.getFieldName().equals(fieldName)).findAny();
+            if (typeDefinition.isPresent()) {
                 fieldStatements.add(fieldAssignment(fieldName));
             } else {
                 keySuperCall.addArgument(fieldName);
