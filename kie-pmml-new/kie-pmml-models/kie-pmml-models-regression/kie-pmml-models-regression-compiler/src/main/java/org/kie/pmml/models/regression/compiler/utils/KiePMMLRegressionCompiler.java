@@ -15,20 +15,23 @@
  */
 package org.kie.pmml.models.regression.compiler.utils;
 
+import java.util.Arrays;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Locale;
 import java.util.Map;
 import java.util.stream.Collectors;
 
-import org.drools.compiler.commons.jci.compilers.CompilationResult;
-import org.drools.compiler.commons.jci.compilers.JavaCompiler;
-import org.drools.compiler.commons.jci.compilers.NativeJavaCompiler;
-import org.drools.compiler.compiler.io.memory.MemoryFileSystem;
-import org.kie.internal.jci.CompilationProblem;
+import javax.tools.Diagnostic;
+import javax.tools.DiagnosticCollector;
+import javax.tools.JavaCompiler;
+import javax.tools.JavaFileObject;
+import javax.tools.ToolProvider;
 
 public class KiePMMLRegressionCompiler {
 
-    private static final MemoryFileSystem SRC_MFS = new MemoryFileSystem();
-    private static final MemoryFileSystem TGT_MFS = new MemoryFileSystem();
-    private static final JavaCompiler JAVA_COMPILER = new NativeJavaCompiler();
+    private static final JavaCompiler JAVA_COMPILER = ToolProvider.getSystemJavaCompiler();
+    private static final List<String> OPTIONS = Arrays.asList("-source", "1.8", "-target", "1.8", "-encoding", "UTF-8");
 
     /**
      * Compile the given sources and add compiled classes to the given <code>ClassLoader</code>
@@ -38,43 +41,29 @@ public class KiePMMLRegressionCompiler {
      * @return
      */
     public static Map<String, Class<?>> compile(Map<String, String> classNameSourceMap, ClassLoader classLoader) {
-        classNameSourceMap.forEach((className, source) -> {
-            String fileNameBase = className.contains(".") ? className.substring(className.lastIndexOf('.') + 1) : className;
-            SRC_MFS.write(fileNameBase + ".java", source.getBytes());
-        });
-        String[] sourceFiles = classNameSourceMap.keySet().stream().map(className -> {
-            String fileNameBase = className.contains(".") ? className.substring(className.lastIndexOf('.') + 1) : className;
-            return fileNameBase + ".java";
-        }).toArray(String[]::new);
-        InternalClassLoader internalClassLoader = new InternalClassLoader(classLoader);
-        CompilationResult res = JAVA_COMPILER.compile(sourceFiles,
-                                                      SRC_MFS,
-                                                      TGT_MFS,
-                                                      internalClassLoader);
-        if (res.getErrors().length != 0) {
+        Map<String, KiePMMLCode> sourceCodes = classNameSourceMap.entrySet().stream().collect(Collectors.toMap(Map.Entry::getKey,
+                                                                                                               entry -> new KiePMMLCode(entry.getKey(), entry.getValue())));
+        KiePMMLClassLoader kiePMMLClassLoader = new KiePMMLClassLoader(classLoader);
+        DiagnosticCollector<JavaFileObject> collector = new DiagnosticCollector<>();
+        KiePMMLFileManager fileManager = new KiePMMLFileManager(JAVA_COMPILER.getStandardFileManager(null, null, null), kiePMMLClassLoader);
+        JavaCompiler.CompilationTask task = JAVA_COMPILER.getTask(null, fileManager, collector, OPTIONS, null, sourceCodes.values());
+        boolean result = task.call();
+        if (!result || !collector.getDiagnostics().isEmpty()) {
             StringBuilder errorBuilder = new StringBuilder();
-            for (CompilationProblem compilationProblem : res.getErrors()) {
-                errorBuilder.append(compilationProblem.getMessage() + "; ");
+            errorBuilder.append("Compilation failed");
+            for (Diagnostic<? extends JavaFileObject> diagnostic : collector.getDiagnostics()) {
+                errorBuilder.append("\r\n" + diagnostic.getKind() + "; line: " + diagnostic.getLineNumber() + "; " + diagnostic.getMessage(Locale.US));
             }
-            throw new RuntimeException("Compilation failed due to: " + errorBuilder.toString());
+            throw new RuntimeException(errorBuilder.toString());
         }
-        return classNameSourceMap.keySet().stream()
-                .collect(Collectors.toMap(fullClassName -> fullClassName,
-                                          fullClassName -> {
-                                              String classFile = fullClassName.replace(".", "/") + ".class";
-                                              byte[] byteCode = TGT_MFS.getMap().get(classFile);
-                                              return internalClassLoader.addClass(fullClassName, byteCode);
-                                          }));
-    }
-
-    private static class InternalClassLoader extends ClassLoader {
-
-        InternalClassLoader(ClassLoader parent) {
-            super(parent);
+        Map<String, Class<?>> toReturn = new HashMap<>();
+        for (String className : sourceCodes.keySet()) {
+            try {
+                toReturn.put(className, kiePMMLClassLoader.loadClass(className));
+            } catch (ClassNotFoundException e) {
+                throw new RuntimeException(e);
+            }
         }
-
-        private Class<?> addClass(String className, byte[] byteCode) {
-            return defineClass(className, byteCode, 0, byteCode.length);
-        }
+        return toReturn;
     }
 }
