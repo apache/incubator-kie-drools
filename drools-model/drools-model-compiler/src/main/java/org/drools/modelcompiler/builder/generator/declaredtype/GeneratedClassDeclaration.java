@@ -151,7 +151,7 @@ class GeneratedClassDeclaration {
         int position = inheritedFields.size();
         for (TypeFieldDefinition typeFieldDescr : typeFields.values()) {
             String fieldName = typeFieldDescr.getFieldName();
-            Type returnType = parseType(typeFieldDescr.getPattern().getObjectType());
+            Type returnType = parseType(typeFieldDescr.getObjectType());
 
             FieldDeclaration field = typeFieldDescr.getInitExpr() == null ?
                     generatedClass.addField(returnType, fieldName, Modifier.privateModifier().getKeyword()) :
