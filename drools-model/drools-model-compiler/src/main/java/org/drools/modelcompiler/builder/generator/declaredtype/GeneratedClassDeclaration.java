@@ -120,7 +120,7 @@ class GeneratedClassDeclaration {
                 }
             });
 
-            if (optResolvedSuper.isEmpty()) {
+            if (!optResolvedSuper.isPresent()) {
                 generatedClass.addExtendedType(typeDefinition.getSuperTypeName());
             }
         }
