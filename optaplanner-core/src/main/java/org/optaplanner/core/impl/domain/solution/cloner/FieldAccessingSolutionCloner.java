@@ -134,6 +134,9 @@ public class FieldAccessingSolutionCloner<Solution_> implements SolutionCloner<S
     }
 
     private boolean isFieldDeepCloned(Field field, Class<?> fieldInstanceClass) {
+        if (field.getType().isEnum()) {
+            return false;
+        }
         return isFieldAnEntityPropertyOnSolution(field, fieldInstanceClass)
                 || isFieldAnEntityOrSolution(field, fieldInstanceClass)
                 || isFieldADeepCloneProperty(field, fieldInstanceClass);
