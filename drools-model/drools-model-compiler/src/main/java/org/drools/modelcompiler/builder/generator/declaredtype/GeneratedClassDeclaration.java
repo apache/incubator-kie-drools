@@ -207,7 +207,7 @@ class GeneratedClassDeclaration {
         }
     }
 
-    private void processAnnotations(NodeWithAnnotations node, AnnotationDefinition ann, List<AnnotationDefinition> softAnnotations) {
+    private void processAnnotations(NodeWithAnnotations<?> node, AnnotationDefinition ann, List<AnnotationDefinition> softAnnotations) {
         Class<?> annotationClass = predefinedClassLevelAnnotation.get(ann.getName());
 
         if (annotationClass == null) {
@@ -227,7 +227,7 @@ class GeneratedClassDeclaration {
         }
     }
 
-    private void processAnnotation(NodeWithAnnotations node, AnnotationDefinition ann, List<AnnotationDefinition> softAnnotations, Class<?> annotationClass, String annFqn) {
+    private void processAnnotation(NodeWithAnnotations<?> node, AnnotationDefinition ann, List<AnnotationDefinition> softAnnotations, Class<?> annotationClass, String annFqn) {
         NormalAnnotationExpr annExpr = node.addAndGetAnnotation(annFqn);
         for (Map.Entry<String, Object> entry : ann.getValueMap().entrySet()) {
             try {
@@ -307,8 +307,8 @@ class GeneratedClassDeclaration {
     }
 
     private static String getAnnotationValue(String annotationName, String valueName, Object value) {
-        if (value instanceof Class) {
-            return ((Class) value).getName() + ".class";
+        if (value instanceof Class<?>) {
+            return ((Class<?>) value).getName() + ".class";
         }
         if (value.getClass().isArray()) {
             String valueString = Stream.of((Object[]) value).map(Object::toString).collect(joining(",", "{", "}"));
