@@ -1,0 +1,11 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<dmn:definitions xmlns:dmn="http://www.omg.org/spec/DMN/20180521/MODEL/" xmlns="https://kiegroup.org/dmn/_8DF63435-B34B-4C19-A06B-C6A3416194A9" xmlns:di="http://www.omg.org/spec/DMN/20180521/DI/" xmlns:kie="http://www.drools.org/kie/dmn/1.2" xmlns:feel="http://www.omg.org/spec/DMN/20180521/FEEL/" xmlns:dmndi="http://www.omg.org/spec/DMN/20180521/DMNDI/" xmlns:dc="http://www.omg.org/spec/DMN/20180521/DC/" id="_F62E6F31-2831-462F-B584-1DE677B5B1CD" name="testBasic" expressionLanguage="http://www.omg.org/spec/DMN/20180521/FEEL/" typeLanguage="http://www.omg.org/spec/DMN/20180521/FEEL/" namespace="https://kiegroup.org/dmn/_8DF63435-B34B-4C19-A06B-C6A3416194A9">
+  <dmn:extensionElements/>
+  <dmn:decision id="_846A29D4-DA23-4FD2-B075-6743744ECC0D" name="Decision-1">
+    <dmn:extensionElements/>
+    <dmn:variable id="_28679D92-BC9A-499A-BA4A-B527765A8976" name="Decision-1"/>
+    <dmn:literalExpression id="_58E3AA99-3E0C-4376-B3EA-D9EA7EB4B278">
+      <dmn:text>abs(1-null)</dmn:text>
+    </dmn:literalExpression>
+  </dmn:decision>
+</dmn:definitions>

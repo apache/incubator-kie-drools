@@ -32,7 +32,7 @@ public final class Msg {
     public static final Message0 CONDITION_WAS_NOT_A_BOOLEAN = new Message0("Condition was not a Boolean");
     public static final Message1 FUNCTION_NOT_FOUND = new Message1("Function not found: '%s'");
     public static final Message1 ERROR_EXECUTING_LIST_FILTER = new Message1("Error executing list filter: %s");
-    public static final Message0 INDEX_OUT_OF_BOUND = new Message0("Index out of bound");
+    public static final Message2 INDEX_OUT_OF_BOUND = new Message2("Index out of bound: list of %s elements, index %s; will evaluate as FEEL null");
     public static final Message2 X_TYPE_INCOMPATIBLE_WITH_Y_TYPE = new Message2("%s type incompatible with %s type");
     public static final Message1 INCOMPATIBLE_TYPE_FOR_RANGE = new Message1("Type %s can not be used in a range unary test");
     public static final Message1 VALUE_X_NOT_A_VALID_ENDPOINT_FOR_RANGE_BECAUSE_NOT_A_NUMBER = new Message1("Value %s is not a valid endpoint for range, because not a feel:number");
