@@ -25,7 +25,7 @@ import static org.drools.core.util.StreamUtils.optionalToStream;
 public class DescrDeclaredTypeDefinition implements TypeDefinition {
 
     private static final Map<String, Class<?>> predefinedClassLevelAnnotation = new HashMap<>();
-    private final static String SERIAL_VERSION_UID = "serialVersionUID";
+    private static final String SERIAL_VERSION_UID = "serialVersionUID";
 
     private List<AnnotationDefinition> annotations = new ArrayList<>();
 
