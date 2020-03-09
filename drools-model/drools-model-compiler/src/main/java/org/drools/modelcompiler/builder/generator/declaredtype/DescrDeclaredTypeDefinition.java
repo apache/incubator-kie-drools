@@ -104,7 +104,7 @@ public class DescrDeclaredTypeDefinition implements TypeDefinition {
         List<TypeFieldDescr> sortedTypeFields = typeFieldsSortedByPosition();
 
         List<TypeFieldDefinition> allFields = new ArrayList<>();
-        int position = sortedTypeFields.size();
+        int position = 0;
 
         for (TypeFieldDescr typeFieldDescr : sortedTypeFields) {
             DescrDeclearedTypeFieldDefinition f = new DescrDeclearedTypeFieldDefinition(typeFieldDescr.getFieldName(),
