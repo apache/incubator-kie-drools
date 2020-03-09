@@ -21,6 +21,7 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
 
 import com.github.javaparser.ast.Modifier;
 import com.github.javaparser.ast.NodeList;
@@ -70,7 +71,14 @@ public class EnumGenerator {
     }
 
     private void createConstructor(EnumDeclarationDescr enumDeclarationDescr) {
-        GeneratedConstructor fullArgumentConstructor = GeneratedConstructor.factoryEnum(enumDeclaration, Collections.emptyList());
+        List<TypeFieldDefinition> enumFields = enumDeclarationDescr
+                .getFields()
+                .values()
+                .stream()
+                .map(DescrDeclearedTypeFieldDefinition::new)
+                .collect(Collectors.toList());
+
+        GeneratedConstructor fullArgumentConstructor = GeneratedConstructor.factoryEnum(enumDeclaration, enumFields);
         fullArgumentConstructor.generateConstructor(Collections.emptyList(), Collections.emptyList());
     }
 
