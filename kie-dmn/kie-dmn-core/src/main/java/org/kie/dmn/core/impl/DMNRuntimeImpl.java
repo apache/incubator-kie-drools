@@ -202,7 +202,11 @@ public class DMNRuntimeImpl
         boolean performRuntimeTypeCheck = performRuntimeTypeCheck(model);
         Optional<DecisionNode> decision = Optional.ofNullable(model.getDecisionByName(name));
         if (decision.isPresent()) {
+            final boolean walkingIntoScope = walkIntoImportScopeInternalDecisionInvocation(result, model, decision.get());
             evaluateDecision(context, result, decision.get(), performRuntimeTypeCheck);
+            if (walkingIntoScope) {
+                result.getContext().popScope();
+            }
         } else {
             MsgUtil.reportMessage( logger,
                                    DMNMessage.Severity.ERROR,
@@ -234,7 +238,11 @@ public class DMNRuntimeImpl
         boolean performRuntimeTypeCheck = performRuntimeTypeCheck(model);
         Optional<DecisionNode> decision = Optional.ofNullable(model.getDecisionById(id));
         if (decision.isPresent()) {
+            final boolean walkingIntoScope = walkIntoImportScopeInternalDecisionInvocation(result, model, decision.get());
             evaluateDecision(context, result, decision.get(), performRuntimeTypeCheck);
+            if (walkingIntoScope) {
+                result.getContext().popScope();
+            }
         } else {
             MsgUtil.reportMessage( logger,
                                    DMNMessage.Severity.ERROR,
@@ -493,6 +501,30 @@ public class DMNRuntimeImpl
                 }
             }
             return false;
+        }
+    }
+
+    private boolean walkIntoImportScopeInternalDecisionInvocation(DMNResultImpl result, DMNModel dmnModel, DMNNode destinationNode) {
+        if (destinationNode.getModelNamespace().equals(dmnModel.getNamespace())) {
+            return false;
+        } else {
+            DMNModelImpl model = (DMNModelImpl) dmnModel;
+            Optional<String> importAlias = model.getImportAliasFor(destinationNode.getModelNamespace(), destinationNode.getModelName());
+            if (importAlias.isPresent()) {
+                result.getContext().pushScope(importAlias.get(), destinationNode.getModelNamespace());
+                return true;
+            } else {
+                MsgUtil.reportMessage(logger,
+                                      DMNMessage.Severity.ERROR,
+                                      dmnModel.getDefinitions(),
+                                      result,
+                                      null,
+                                      null,
+                                      Msg.IMPORT_NOT_FOUND_FOR_NODE_MISSING_ALIAS,
+                                      new QName(destinationNode.getModelNamespace(), destinationNode.getModelName()),
+                                      dmnModel.getName());
+                return false;
+            }
         }
     }
 
