@@ -50,7 +50,9 @@ public class CategoricalBenchmark extends AbstractRegressionBenchmark {
     public static void main(String[] args) throws RunnerException {
         Options opt = new OptionsBuilder()
                 .include(CategoricalBenchmark.class.getSimpleName())
-                .forks(2)
+                .forks(1)
+                .warmupIterations(3)
+                .measurementIterations(500)
                 .build();
         new Runner(opt).run();
     }
