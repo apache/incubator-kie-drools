@@ -50,9 +50,9 @@ import static org.junit.Assert.assertTrue;
 import static org.kie.test.util.filesystem.FileUtils.getFile;
 
 @RunWith(Parameterized.class)
-public class RoundtripClassificationModelEvaluatorJobCatParameterizedTests {
+public class RoundtripClassificationModelEvaluatorJobCatParameterizedTest {
 
-    private static final Logger logger = LoggerFactory.getLogger(RoundtripClassificationModelEvaluatorJobCatParameterizedTests.class);
+    private static final Logger logger = LoggerFactory.getLogger(RoundtripClassificationModelEvaluatorJobCatParameterizedTest.class);
 
     private static final String SOURCE = "JobCat.pmml";
 
@@ -66,7 +66,7 @@ public class RoundtripClassificationModelEvaluatorJobCatParameterizedTests {
 
     private String releaseId;
 
-    public RoundtripClassificationModelEvaluatorJobCatParameterizedTests(double age, double work, String sex, String minority, String expected) {
+    public RoundtripClassificationModelEvaluatorJobCatParameterizedTest(double age, double work, String sex, String minority, String expected) {
         this.age = age;
         this.work = work;
         this.sex = sex;

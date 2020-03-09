@@ -13,57 +13,57 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.kie.pmml.models.regression.evaluator;
+package org.kie.pmml.models.regression.model;
 
-import java.util.Arrays;
 import java.util.LinkedHashMap;
-import java.util.List;
 import java.util.Map;
-import java.util.Objects;
 import java.util.concurrent.atomic.AtomicReference;
 import java.util.function.DoubleUnaryOperator;
-import java.util.stream.Collectors;
-import java.util.stream.IntStream;
-
-import org.kie.pmml.commons.model.enums.OP_TYPE;
-import org.kie.pmml.models.regression.model.enums.REGRESSION_NORMALIZATION_METHOD;
 
 public class KiePMMLGetProbabilityMapMethodTemplate {
 
     protected LinkedHashMap<String, Double> getSOFTMAXProbabilityMap(final LinkedHashMap<String, Double> resultMap) {
-        LinkedHashMap<String, Double> tmp = resultMap.entrySet().stream().collect(Collectors.toMap(Map.Entry::getKey,
-                                                                                                   entry -> Math.exp(entry.getValue()),
-                                                                                                   (o1, o2) -> o1,
-                                                                                                   LinkedHashMap::new));
-        double sum = tmp.values().stream().mapToDouble(value -> value).sum();
-        return tmp.entrySet().stream().collect(Collectors.toMap(Map.Entry::getKey,
-                                                                entry -> entry.getValue() / sum,
-                                                                (o1, o2) -> o1,
-                                                                LinkedHashMap::new));
+        LinkedHashMap<String, Double> toReturn = new LinkedHashMap<>();
+        AtomicReference<Double> sumCounter = new AtomicReference<>(0.0);
+        for (Map.Entry<String, Double> entry : resultMap.entrySet()) {
+            double toPut = Math.exp(entry.getValue());
+            toReturn.put(entry.getKey(), toPut);
+            sumCounter.accumulateAndGet(toPut, Double::sum);
+        }
+        double sum = sumCounter.get();
+        for (Map.Entry<String, Double> entry : toReturn.entrySet()) {
+            entry.setValue(entry.getValue() / sum);
+        }
+        return toReturn;
     }
 
     protected LinkedHashMap<String, Double> getSIMPLEMAXProbabilityMap(final LinkedHashMap<String, Double> resultMap) {
-        double sum = resultMap.values().stream().mapToDouble(value -> value).sum();
-        return resultMap.entrySet().stream().collect(Collectors.toMap(Map.Entry::getKey,
-                                                                      entry -> entry.getValue() / sum,
-                                                                      (o1, o2) -> o1,
-                                                                      LinkedHashMap::new));
+        AtomicReference<Double> sumCounter = new AtomicReference<>(0.0);
+        for (Double toAdd : resultMap.values()) {
+            sumCounter.accumulateAndGet(toAdd, Double::sum);
+        }
+        double sum = sumCounter.get();
+        LinkedHashMap<String, Double> toReturn = new LinkedHashMap<>();
+        for (Map.Entry<String, Double> entry : resultMap.entrySet()) {
+            toReturn.put(entry.getKey(), entry.getValue() / sum);
+        }
+        return toReturn;
     }
 
     protected LinkedHashMap<String, Double> getNONEProbabilityMap(final LinkedHashMap<String, Double> resultMap) {
         LinkedHashMap<String, Double> toReturn = new LinkedHashMap<>();
         String[] resultMapKeys = resultMap.keySet().toArray(new String[0]);
         AtomicReference<Double> sumCounter = new AtomicReference<>(0.0);
-        IntStream.range(0, resultMap.size()).forEach(index -> {
-            String key = resultMapKeys[index];
+        for (int i = 0; i < resultMap.size(); i++) {
+            String key = resultMapKeys[i];
             double value = resultMap.get(key);
-            if (index < resultMapKeys.length - 1) {
+            if (i < resultMapKeys.length - 1) {
                 sumCounter.accumulateAndGet(value, Double::sum);
                 toReturn.put(key, value);
             } else { // last element
                 toReturn.put(key, 1 - sumCounter.get());
             }
-        });
+        }
         return toReturn;
     }
 

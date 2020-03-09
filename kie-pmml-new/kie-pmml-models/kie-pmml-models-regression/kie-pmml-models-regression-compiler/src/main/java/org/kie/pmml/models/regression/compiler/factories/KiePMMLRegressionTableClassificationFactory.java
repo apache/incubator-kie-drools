@@ -139,11 +139,10 @@ public class KiePMMLRegressionTableClassificationFactory {
                     value = new MethodCallExpr(new NameExpr("predictedEntry"), "getKey");
                     break;
                 case PROBABILITY:
-                    if (!outputField.getTargetField().isPresent()) {
+                    if (outputField.getValue() != null) {
                         NodeList<Expression> expressions = NodeList.nodeList(new StringLiteralExpr(outputField.getValue().toString()));
                         value = new MethodCallExpr(new NameExpr("probabilityMap"), "get", expressions);
-                    } else {
-
+                    } else if (outputField.getTargetField().isPresent()) {
                         NodeList<Expression> expressions = NodeList.nodeList(new StringLiteralExpr(outputField.getTargetField().get()));
                         value = new MethodCallExpr(new NameExpr("probabilityMap"), "get", expressions);
                     }

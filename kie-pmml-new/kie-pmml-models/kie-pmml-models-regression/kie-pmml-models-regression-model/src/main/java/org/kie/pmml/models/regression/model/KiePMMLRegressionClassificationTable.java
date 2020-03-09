@@ -45,15 +45,11 @@ public abstract class KiePMMLRegressionClassificationTable extends KiePMMLRegres
         for (Map.Entry<String, KiePMMLRegressionTable> entry : categoryTableMap.entrySet()) {
             resultMap.put(entry.getKey(), (Double) entry.getValue().evaluateRegression(input));
         }
-//
-//        final LinkedHashMap<String, Double> resultMap = categoryTableMap.entrySet().stream()
-//                .collect(Collectors.toMap(Map.Entry::getKey,
-//                                          entry -> (Double) entry.getValue().evaluateRegression(input),
-//                                          (o1, o2) -> o1,
-//                                          LinkedHashMap::new));
         final LinkedHashMap<String, Double> probabilityMap = getProbabilityMap(resultMap);
         final Map.Entry<String, Double> predictedEntry = Collections.max(probabilityMap.entrySet(), Map.Entry.comparingByValue());
+        probabilityMap.put(targetField, predictedEntry.getValue());
         populateOutputFieldsMap(predictedEntry, probabilityMap);
+        outputFieldsMap.put(targetField, predictedEntry.getKey());
         return predictedEntry.getKey();
     }
 

@@ -50,9 +50,9 @@ import static org.junit.Assert.assertTrue;
 import static org.kie.test.util.filesystem.FileUtils.getFile;
 
 @RunWith(Parameterized.class)
-public class RoundtripRegresssionModelEvaluatorParameterizedTests {
+public class RoundtripRegresssionModelEvaluatorParameterizedTest {
 
-    private static final Logger logger = LoggerFactory.getLogger(RoundtripRegresssionModelEvaluatorParameterizedTests.class);
+    private static final Logger logger = LoggerFactory.getLogger(RoundtripRegresssionModelEvaluatorParameterizedTest.class);
 
     private static final String SOURCE = "test_regression.pmml";
 
@@ -66,7 +66,7 @@ public class RoundtripRegresssionModelEvaluatorParameterizedTests {
 
     private String releaseId;
 
-    public RoundtripRegresssionModelEvaluatorParameterizedTests(double fld1, double fld2, String fld3) {
+    public RoundtripRegresssionModelEvaluatorParameterizedTest(double fld1, double fld2, String fld3) {
         this.fld1 = fld1;
         this.fld2 = fld2;
         this.fld3 = fld3;
