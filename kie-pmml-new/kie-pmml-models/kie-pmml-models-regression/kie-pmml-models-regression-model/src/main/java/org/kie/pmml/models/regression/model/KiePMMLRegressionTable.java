@@ -40,7 +40,7 @@ public abstract class KiePMMLRegressionTable {
         for (Map.Entry<String, Function<Object, Double>> entry : categoricalFunctionMap.entrySet()) {
             String key = entry.getKey();
             if (input.containsKey(key)) {
-                resultMap.put(key, entry.getValue().apply(((Number) input.get(key)).doubleValue()));
+                resultMap.put(key, entry.getValue().apply(input.get(key)));
             }
         }
         for (Map.Entry<String, Function<Map<String, Object>, Double>> entry : predictorTermsFunctionMap.entrySet()) {
