@@ -41,13 +41,18 @@ public abstract class KiePMMLRegressionClassificationTable extends KiePMMLRegres
     protected Map<String, KiePMMLRegressionTable> categoryTableMap = new HashMap<>();
 
     public Object evaluateRegression(Map<String, Object> input) {
-        final LinkedHashMap<String, Double> resultMap = categoryTableMap.entrySet().stream()
-                .collect(Collectors.toMap(Map.Entry::getKey,
-                                          entry -> (Double) entry.getValue().evaluateRegression(input),
-                                          (o1, o2) -> o1,
-                                          LinkedHashMap::new));
+        final LinkedHashMap<String, Double> resultMap = new LinkedHashMap<>();
+        for (Map.Entry<String, KiePMMLRegressionTable> entry : categoryTableMap.entrySet()) {
+            resultMap.put(entry.getKey(), (Double) entry.getValue().evaluateRegression(input));
+        }
+//
+//        final LinkedHashMap<String, Double> resultMap = categoryTableMap.entrySet().stream()
+//                .collect(Collectors.toMap(Map.Entry::getKey,
+//                                          entry -> (Double) entry.getValue().evaluateRegression(input),
+//                                          (o1, o2) -> o1,
+//                                          LinkedHashMap::new));
         final LinkedHashMap<String, Double> probabilityMap = getProbabilityMap(resultMap);
-        final Map.Entry<String, Double> predictedEntry = Collections.max(probabilityMap.entrySet(), Comparator.comparing(Map.Entry::getValue));
+        final Map.Entry<String, Double> predictedEntry = Collections.max(probabilityMap.entrySet(), Map.Entry.comparingByValue());
         populateOutputFieldsMap(predictedEntry, probabilityMap);
         return predictedEntry.getKey();
     }
@@ -62,7 +67,7 @@ public abstract class KiePMMLRegressionClassificationTable extends KiePMMLRegres
 
     @Override
     public Map<String, Object> getOutputFieldsMap() {
-        return Collections.unmodifiableMap(outputFieldsMap);
+        return outputFieldsMap;
     }
 
     protected LinkedHashMap<String, Double> getProbabilityMap(final LinkedHashMap<String, Double> resultMap, DoubleUnaryOperator firstItemOperator, DoubleUnaryOperator secondItemOperator) {

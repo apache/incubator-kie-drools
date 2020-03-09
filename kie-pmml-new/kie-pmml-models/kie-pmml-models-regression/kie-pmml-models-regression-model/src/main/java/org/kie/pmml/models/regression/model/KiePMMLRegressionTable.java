@@ -15,12 +15,10 @@
  */
 package org.kie.pmml.models.regression.model;
 
-import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.concurrent.atomic.AtomicReference;
 import java.util.function.Function;
-import java.util.stream.Collectors;
 
 public abstract class KiePMMLRegressionTable {
 
@@ -32,19 +30,29 @@ public abstract class KiePMMLRegressionTable {
 
     public Object evaluateRegression(Map<String, Object> input) {
         final AtomicReference<Double> result = new AtomicReference<>(intercept);
-        final Map<String, Double> resultMap = input.entrySet().stream()
-                .filter(entry -> numericFunctionMap.containsKey(entry.getKey()))
-                .collect(Collectors.toMap(Map.Entry::getKey, e -> numericFunctionMap.get(e.getKey())
-                .apply(((Number) e.getValue()).doubleValue())));
-        resultMap.putAll(input.entrySet().stream().filter(entry -> categoricalFunctionMap.containsKey(entry.getKey())).collect(Collectors.toMap(Map.Entry::getKey, e -> categoricalFunctionMap.get(e.getKey()).apply(e.getValue()))));
-        resultMap.putAll(predictorTermsFunctionMap.entrySet().stream().collect(Collectors.toMap(Map.Entry::getKey, e -> e.getValue().apply(input))));
+        final Map<String, Double> resultMap = new HashMap<>();
+        for (Map.Entry<String, Function<Double, Double>> entry : numericFunctionMap.entrySet()) {
+            String key = entry.getKey();
+            if (input.containsKey(key)) {
+                resultMap.put(key, entry.getValue().apply(((Number) input.get(key)).doubleValue()));
+            }
+        }
+        for (Map.Entry<String, Function<Object, Double>> entry : categoricalFunctionMap.entrySet()) {
+            String key = entry.getKey();
+            if (input.containsKey(key)) {
+                resultMap.put(key, entry.getValue().apply(((Number) input.get(key)).doubleValue()));
+            }
+        }
+        for (Map.Entry<String, Function<Map<String, Object>, Double>> entry : predictorTermsFunctionMap.entrySet()) {
+            resultMap.put(entry.getKey(), entry.getValue().apply(input));
+        }
         resultMap.values().forEach(value -> result.accumulateAndGet(value, Double::sum));
         updateResult(result);
         return result.get();
     }
 
     public Map<String, Object> getOutputFieldsMap() {
-        return Collections.unmodifiableMap(new HashMap<>());
+        return new HashMap<>();
     }
 
     public abstract Object getTargetCategory();

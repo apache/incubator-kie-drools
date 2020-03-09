@@ -32,8 +32,11 @@ public abstract class KiePMMLRegressionModel extends KiePMMLModel {
 
     @Override
     public Object evaluate(Map<String, Object> requestData) {
-        Object toReturn = regressionTable.evaluateRegression(requestData);
-        outputFieldsMap.putAll(regressionTable.getOutputFieldsMap());
-        return toReturn;
+        return regressionTable.evaluateRegression(requestData);
+    }
+
+    @Override
+    public Map<String, Object> getOutputFieldsMap() {
+        return regressionTable.getOutputFieldsMap();
     }
 }

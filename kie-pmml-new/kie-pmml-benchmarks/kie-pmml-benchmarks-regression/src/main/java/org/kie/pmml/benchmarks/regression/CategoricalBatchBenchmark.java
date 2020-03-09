@@ -42,6 +42,7 @@ import org.kie.pmml.evaluator.api.executor.PMMLRuntime;
 import org.kie.pmml.evaluator.core.PMMLContextImpl;
 import org.openjdk.jmh.annotations.Benchmark;
 import org.openjdk.jmh.annotations.BenchmarkMode;
+import org.openjdk.jmh.annotations.Fork;
 import org.openjdk.jmh.annotations.Measurement;
 import org.openjdk.jmh.annotations.Mode;
 import org.openjdk.jmh.annotations.OutputTimeUnit;
@@ -57,6 +58,7 @@ import static org.kie.test.util.filesystem.FileUtils.getFile;
 @Warmup(iterations = 2)
 @Measurement(iterations = 5)
 @OutputTimeUnit(TimeUnit.SECONDS)
+@Fork(jvmArgs = {"-Xms8172m", "-Xmx8172m"}, value = 5)
 public class CategoricalBatchBenchmark {
 
     private static final String modelName = "Sample for logistic regression";
@@ -101,7 +103,9 @@ public class CategoricalBatchBenchmark {
 
     @Benchmark
     public void evaluate(Blackhole blackhole, MyState myState) {
-        myState.pmmlContexts.forEach(pmmlContext -> blackhole.consume(myState.pmmlRuntime.evaluate(myState.model, pmmlContext, myState.releaseId)));
+        PMMLContext pmmlContext = myState.pmmlContexts.get(0);
+        blackhole.consume(myState.pmmlRuntime.evaluate(myState.model, pmmlContext, myState.releaseId));
+        /*myState.pmmlContexts.forEach(pmmlContext -> blackhole.consume(myState.pmmlRuntime.evaluate(myState.model, pmmlContext, myState.releaseId)));*/
     }
 
     @State(Scope.Benchmark)
