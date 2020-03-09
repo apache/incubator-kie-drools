@@ -20,6 +20,7 @@ import org.kie.api.definition.type.Position;
 import org.kie.api.definition.type.Role;
 import org.kie.api.definition.type.Timestamp;
 
+import static java.util.stream.Collectors.joining;
 import static org.drools.core.util.StreamUtils.optionalToStream;
 
 public class DescrDeclaredTypeDefinition implements TypeDefinition {
@@ -30,6 +31,8 @@ public class DescrDeclaredTypeDefinition implements TypeDefinition {
     private List<AnnotationDefinition> annotations = new ArrayList<>();
 
     private final PackageDescr packageDescr;
+
+    private String javaDocComment = "";
 
     static {
         predefinedClassLevelAnnotation.put("role", Role.class);
@@ -59,6 +62,7 @@ public class DescrDeclaredTypeDefinition implements TypeDefinition {
                 serialVersionField.setStatic(true);
                 typeFieldDefinition.add(serialVersionField);
             }
+            processAnnotations();
         }
     }
 
@@ -80,6 +84,11 @@ public class DescrDeclaredTypeDefinition implements TypeDefinition {
     @Override
     public List<AnnotationDefinition> getSoftAnnotations() {
         return new ArrayList<>();
+    }
+
+    @Override
+    public String getJavaDocComment() {
+        return javaDocComment;
     }
 
     private Optional<TypeDeclarationDescr> getSuperType(TypeDeclarationDescr typeDeclarationDescr) {
@@ -188,4 +197,15 @@ public class DescrDeclaredTypeDefinition implements TypeDefinition {
         return allFields;
     }
 
+    private void processAnnotations() {
+        for (AnnotationDescr ann : typeDeclarationDescr.getAnnotations()) {
+            annotations.add(new DescrDeclaredTypeAnnotationDefinition(ann.getName(), "", String.valueOf(ann.getValues())));
+        }
+
+        List<AnnotationDefinition> softAnnotations = getSoftAnnotations();
+        if (!softAnnotations.isEmpty()) {
+            String softAnnDictionary = softAnnotations.stream().map(a -> "<dt>" + a.getName() + "</dt><dd>" + a.getValuesAsString() + "</dd>").collect(joining());
+            javaDocComment = ("<dl>" + softAnnDictionary + "</dl>");
+        }
+    }
 }

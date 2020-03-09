@@ -8,7 +8,7 @@ interface AnnotationDefinition {
 
     String getName();
 
-    Map<String, Object> getValueMap();
+    Map<String, String> getValueMap();
 
     String getNamespace();
 

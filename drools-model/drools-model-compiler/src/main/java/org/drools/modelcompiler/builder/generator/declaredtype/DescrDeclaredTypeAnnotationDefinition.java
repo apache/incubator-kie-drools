@@ -5,19 +5,19 @@ import java.util.Map;
 
 public class DescrDeclaredTypeAnnotationDefinition implements AnnotationDefinition {
 
-    private static final String VALUE = "value";
+    static final String VALUE = "value";
 
     private final String name;
     private final String namespace;
-    private final Map<String, Object> values;
+    private final Map<String, String> values;
 
-    public DescrDeclaredTypeAnnotationDefinition(String name, String namespace, Map<String, Object> values) {
+    public DescrDeclaredTypeAnnotationDefinition(String name, String namespace, Map<String, String> values) {
         this.name = name;
         this.namespace = namespace;
         this.values = values;
     }
 
-    public DescrDeclaredTypeAnnotationDefinition(String name, String namespace, Object singleValue) {
+    public DescrDeclaredTypeAnnotationDefinition(String name, String namespace, String singleValue) {
         this(name, namespace, Collections.singletonMap(VALUE, singleValue));
     }
 
@@ -36,7 +36,7 @@ public class DescrDeclaredTypeAnnotationDefinition implements AnnotationDefiniti
     }
 
     @Override
-    public Map<String, Object> getValueMap() {
+    public Map<String, String> getValueMap() {
         return values;
     }
 

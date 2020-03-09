@@ -1,7 +1,6 @@
 package org.drools.modelcompiler.builder.generator.declaredtype;
 
 import java.util.List;
-import java.util.Optional;
 
 interface TypeDefinition {
 
@@ -18,4 +17,6 @@ interface TypeDefinition {
     List<AnnotationDefinition> getSoftAnnotations();
 
     List<TypeFieldDefinition> findInheritedDeclaredFields();
+
+    String getJavaDocComment();
 }
