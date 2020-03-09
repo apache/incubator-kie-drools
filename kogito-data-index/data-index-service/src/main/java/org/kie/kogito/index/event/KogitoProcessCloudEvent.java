@@ -79,6 +79,14 @@ public class KogitoProcessCloudEvent extends KogitoCloudEvent<ProcessInstance> {
     }
 
     @Override
+    public void setData(ProcessInstance data) {
+        super.setData(data);
+        setTime(getTime());
+        setKogitoAddons(getKogitoAddons());
+        setSource(getSource());
+    }
+
+    @Override
     public String toString() {
         return "KogitoProcessCloudEvent{" +
                 "state=" + state +

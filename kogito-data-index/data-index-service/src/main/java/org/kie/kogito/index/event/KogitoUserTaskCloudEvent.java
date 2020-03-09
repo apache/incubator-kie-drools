@@ -58,6 +58,12 @@ public class KogitoUserTaskCloudEvent extends KogitoCloudEvent<UserTaskInstance>
     }
 
     @Override
+    public void setData(UserTaskInstance data) {
+        super.setData(data);
+        setTime(getTime());
+    }
+
+    @Override
     public String toString() {
         return "KogitoUserTaskCloudEvent{" +
                 "userTaskInstanceId='" + userTaskInstanceId + '\'' +
