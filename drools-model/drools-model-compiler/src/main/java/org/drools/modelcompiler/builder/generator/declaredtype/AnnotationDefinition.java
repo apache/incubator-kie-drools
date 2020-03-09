@@ -13,6 +13,4 @@ interface AnnotationDefinition {
     String getNamespace();
 
     String getValuesAsString();
-
-    String getValue();
 }

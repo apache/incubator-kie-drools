@@ -43,7 +43,7 @@ public class DescrDeclearedTypeFieldDefinition implements TypeFieldDefinition {
 
     @Override
     public void addAnnotation(String name) {
-        annotations.put(name, new DescrDeclaredTypeAnnotationDefinition(name, "", ""));
+        annotations.put(name, new DescrDeclaredTypeAnnotationDefinition(name, ""));
     }
 
     @Override

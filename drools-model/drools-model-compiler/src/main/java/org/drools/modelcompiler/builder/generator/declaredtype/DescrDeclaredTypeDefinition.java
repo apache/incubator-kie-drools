@@ -110,10 +110,11 @@ public class DescrDeclaredTypeDefinition implements TypeDefinition {
             DescrDeclearedTypeFieldDefinition f = new DescrDeclearedTypeFieldDefinition(typeFieldDescr.getFieldName(),
                                                                                         typeFieldDescr.getPattern().getObjectType(),
                                                                                         typeFieldDescr.getInitExpr());
+
+            allFields.add(f);
             boolean hasPositionAnnotation = false;
             for (AnnotationDescr ann : typeFieldDescr.getAnnotations()) {
 
-                allFields.add(f);
                 if (ann.getName().equalsIgnoreCase("key")) {
                     f.setKeyField(true);
                     f.addAnnotation(Key.class.getName());
@@ -124,7 +125,7 @@ public class DescrDeclaredTypeDefinition implements TypeDefinition {
                 } else if (ann.getName().equalsIgnoreCase("duration") || ann.getName().equalsIgnoreCase("expires") || ann.getName().equalsIgnoreCase("timestamp")) {
                     Class<?> annotationClass = predefinedClassLevelAnnotation.get(ann.getName().toLowerCase());
                     String annFqn = annotationClass.getCanonicalName();
-                    annotations.add(new DescrDeclaredTypeAnnotationDefinition(annFqn, "", ""));
+                    annotations.add(new DescrDeclaredTypeAnnotationDefinition(annFqn, ""));
                 }
             }
 
