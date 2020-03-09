@@ -43,9 +43,9 @@ import static com.github.javaparser.StaticJavaParser.parseExpression;
 import static com.github.javaparser.StaticJavaParser.parseType;
 import static com.github.javaparser.ast.NodeList.nodeList;
 import static java.text.MessageFormat.format;
-import static org.drools.modelcompiler.builder.generator.declaredtype.generator.POJOGenerator.quote;
+import static org.drools.modelcompiler.builder.generator.declaredtype.POJOGenerator.quote;
 
-class GeneratedClassDeclaration {
+public class GeneratedClassDeclaration {
 
     static final String OVERRIDE = "Override";
 
@@ -57,7 +57,7 @@ class GeneratedClassDeclaration {
     private ClassOrInterfaceDeclaration generatedClass;
     private final Collection<Class<?>> markerInterfaceAnnotations;
 
-    GeneratedClassDeclaration(TypeDefinition typeDefinition,
+    public GeneratedClassDeclaration(TypeDefinition typeDefinition,
                               TypeResolver typeResolver,
                               Collection<Class<?>> markerInterfaceAnnotations) {
 
@@ -66,7 +66,7 @@ class GeneratedClassDeclaration {
         this.markerInterfaceAnnotations = markerInterfaceAnnotations;
     }
 
-    ClassOrInterfaceDeclaration toClassDeclaration() {
+    public ClassOrInterfaceDeclaration toClassDeclaration() {
         String generatedClassName = typeDefinition.getTypeName();
         generatedClass = createBasicDeclaredClass(generatedClassName);
         addAnnotations(generatedClass, typeDefinition.getAnnotations());

@@ -32,7 +32,7 @@ import static com.github.javaparser.StaticJavaParser.parseStatement;
 import static com.github.javaparser.StaticJavaParser.parseType;
 import static com.github.javaparser.ast.NodeList.nodeList;
 import static org.drools.modelcompiler.builder.generator.declaredtype.generator.GeneratedClassDeclaration.OVERRIDE;
-import static org.drools.modelcompiler.builder.generator.declaredtype.generator.POJOGenerator.quote;
+import static org.drools.modelcompiler.builder.generator.declaredtype.POJOGenerator.quote;
 
 public class GeneratedToString {
 

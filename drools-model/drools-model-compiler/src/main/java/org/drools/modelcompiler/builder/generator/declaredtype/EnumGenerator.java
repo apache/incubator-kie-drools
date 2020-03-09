@@ -50,7 +50,7 @@ public class EnumGenerator {
 
     private List<FieldDeclaration> fields = new ArrayList<>();
 
-    EnumGenerator() {
+    public EnumGenerator() {
     }
 
     public TypeDeclaration generate(EnumDeclarationDescr enumDeclarationDescr) {

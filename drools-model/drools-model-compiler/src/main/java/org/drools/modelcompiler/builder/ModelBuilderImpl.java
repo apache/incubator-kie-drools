@@ -41,15 +41,15 @@ import org.drools.core.rule.TypeDeclaration;
 import org.drools.core.util.StringUtils;
 import org.drools.modelcompiler.builder.generator.DRLIdGenerator;
 import org.drools.modelcompiler.builder.generator.DrlxParseUtil;
-import org.drools.modelcompiler.builder.generator.declaredtype.generator.POJOGenerator;
+import org.drools.modelcompiler.builder.generator.declaredtype.POJOGenerator;
 import org.kie.api.builder.ReleaseId;
 import org.kie.internal.builder.ResultSeverity;
 
 import static java.util.Collections.emptyList;
 import static org.drools.compiler.builder.impl.ClassDefinitionFactory.createClassDefinition;
 import static org.drools.modelcompiler.builder.generator.ModelGenerator.generateModel;
-import static org.drools.modelcompiler.builder.generator.declaredtype.generator.POJOGenerator.compileType;
-import static org.drools.modelcompiler.builder.generator.declaredtype.generator.POJOGenerator.registerType;
+import static org.drools.modelcompiler.builder.generator.declaredtype.POJOGenerator.compileType;
+import static org.drools.modelcompiler.builder.generator.declaredtype.POJOGenerator.registerType;
 
 public class ModelBuilderImpl<T extends PackageSources> extends KnowledgeBuilderImpl {
 

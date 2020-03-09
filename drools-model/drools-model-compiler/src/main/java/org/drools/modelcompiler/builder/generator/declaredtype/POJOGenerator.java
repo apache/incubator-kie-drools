@@ -15,7 +15,7 @@
  * limitations under the License.
  */
 
-package org.drools.modelcompiler.builder.generator.declaredtype.generator;
+package org.drools.modelcompiler.builder.generator.declaredtype;
 
 import java.util.Arrays;
 import java.util.Collection;
@@ -40,8 +40,7 @@ import org.drools.modelcompiler.builder.GeneratedClassWithPackage;
 import org.drools.modelcompiler.builder.ModelBuilderImpl;
 import org.drools.modelcompiler.builder.PackageModel;
 import org.drools.modelcompiler.builder.errors.InvalidExpressionErrorResult;
-import org.drools.modelcompiler.builder.generator.declaredtype.DescrTypeDefinition;
-import org.drools.modelcompiler.builder.generator.declaredtype.EnumGenerator;
+import org.drools.modelcompiler.builder.generator.declaredtype.generator.GeneratedClassDeclaration;
 import org.drools.modelcompiler.util.MvelUtil;
 
 import static org.drools.modelcompiler.builder.JavaParserCompiler.compileAll;
@@ -161,7 +160,7 @@ public class POJOGenerator {
         return typeMetaDataCall;
     }
 
-    static String quote(String str) {
+    public static String quote(String str) {
         return "\"" + str.replace("\"", "\\\"") + "\"";
     }
 }
