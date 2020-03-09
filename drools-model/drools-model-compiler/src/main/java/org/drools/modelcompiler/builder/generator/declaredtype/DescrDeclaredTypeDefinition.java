@@ -7,6 +7,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 import org.drools.compiler.lang.descr.AnnotationDescr;
 import org.drools.compiler.lang.descr.PackageDescr;
@@ -18,6 +19,8 @@ import org.kie.api.definition.type.Key;
 import org.kie.api.definition.type.Position;
 import org.kie.api.definition.type.Role;
 import org.kie.api.definition.type.Timestamp;
+
+import static org.drools.core.util.StreamUtils.optionalToStream;
 
 public class DescrDeclaredTypeDefinition implements TypeDefinition {
 
@@ -127,7 +130,13 @@ public class DescrDeclaredTypeDefinition implements TypeDefinition {
 
     @Override
     public List<TypeFieldDefinition> getKeyFields() {
-        return typeFieldDefinition.stream().filter(TypeFieldDefinition::isKeyField).collect(Collectors.toList());
+        Stream<TypeFieldDefinition> keyFields = typeFieldDefinition.stream().filter(TypeFieldDefinition::isKeyField);
+
+        Stream<TypeFieldDefinition> superTypeKieFields =
+                optionalToStream(getSuperType(this.typeDeclarationDescr).map(st -> new DescrDeclaredTypeDefinition(packageDescr, st)))
+                        .flatMap(t -> t.getKeyFields().stream());
+
+        return Stream.concat(keyFields, superTypeKieFields).collect(Collectors.toList());
     }
 
     private List<TypeFieldDefinition> processFields() {
