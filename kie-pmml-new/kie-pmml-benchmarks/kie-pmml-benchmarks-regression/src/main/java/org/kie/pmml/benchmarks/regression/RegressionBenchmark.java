@@ -17,12 +17,10 @@ package org.kie.pmml.benchmarks.regression;
 
 import java.util.concurrent.TimeUnit;
 
-import org.kie.api.pmml.PMML4Result;
 import org.kie.api.pmml.PMMLRequestData;
 import org.kie.pmml.evaluator.core.PMMLContextImpl;
 import org.openjdk.jmh.annotations.Benchmark;
 import org.openjdk.jmh.annotations.BenchmarkMode;
-import org.openjdk.jmh.annotations.Level;
 import org.openjdk.jmh.annotations.Measurement;
 import org.openjdk.jmh.annotations.Mode;
 import org.openjdk.jmh.annotations.OutputTimeUnit;
@@ -30,6 +28,9 @@ import org.openjdk.jmh.annotations.Scope;
 import org.openjdk.jmh.annotations.Setup;
 import org.openjdk.jmh.annotations.State;
 import org.openjdk.jmh.annotations.Warmup;
+import org.openjdk.jmh.infra.Blackhole;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 @BenchmarkMode(Mode.SingleShotTime)
 @State(Scope.Thread)
@@ -38,15 +39,15 @@ import org.openjdk.jmh.annotations.Warmup;
 @OutputTimeUnit(TimeUnit.MICROSECONDS)
 public class RegressionBenchmark extends AbstractRegressionBenchmark {
 
+    private static final Logger logger = LoggerFactory.getLogger(RegressionBenchmark.class);
+
     @Setup
     public void setupModel() {
-        modelName = "Sample for linear regression";
-        fileName = "LinearRegressionSample.pmml";
+        logger.info("setup model...");
+        modelName = "Sample for logistic regression";
+        fileName = "CategoricalRegressionSample.pmml";
         super.setupModel();
-    }
-
-    @Setup(Level.Iteration)
-    public void setupInputData() {
+        logger.info("setup pmmlContext...");
         PMMLRequestData pmmlRequestData = new PMMLRequestData("123", modelName);
         pmmlRequestData.addRequestParam("age", 22);
         pmmlRequestData.addRequestParam("work", 3);
@@ -56,7 +57,7 @@ public class RegressionBenchmark extends AbstractRegressionBenchmark {
     }
 
     @Benchmark
-    public PMML4Result evaluate() {
-        return super.evaluate();
+    public void evaluate(Blackhole blackhole) {
+        super.evaluate(blackhole);
     }
 }
