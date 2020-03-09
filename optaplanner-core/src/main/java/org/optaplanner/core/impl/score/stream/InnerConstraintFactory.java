@@ -1,5 +1,5 @@
 /*
- * Copyright 2018 Red Hat, Inc. and/or its affiliates.
+ * Copyright 2020 Red Hat, Inc. and/or its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -16,13 +16,23 @@
 
 package org.optaplanner.core.impl.score.stream;
 
+import java.util.function.BiPredicate;
+import java.util.function.Function;
 import java.util.function.Predicate;
 
+import org.optaplanner.core.api.domain.lookup.PlanningId;
 import org.optaplanner.core.api.score.stream.Constraint;
 import org.optaplanner.core.api.score.stream.ConstraintFactory;
+import org.optaplanner.core.api.score.stream.bi.BiConstraintStream;
+import org.optaplanner.core.api.score.stream.bi.BiJoiner;
 import org.optaplanner.core.api.score.stream.uni.UniConstraintStream;
+import org.optaplanner.core.config.util.ConfigUtils;
+import org.optaplanner.core.impl.domain.common.accessor.MemberAccessor;
 import org.optaplanner.core.impl.domain.entity.descriptor.EntityDescriptor;
 import org.optaplanner.core.impl.domain.solution.descriptor.SolutionDescriptor;
+import org.optaplanner.core.impl.score.stream.bi.FilteringBiJoiner;
+
+import static org.optaplanner.core.api.score.stream.Joiners.lessThan;
 
 public interface InnerConstraintFactory<Solution_> extends ConstraintFactory {
 
@@ -39,6 +49,28 @@ public interface InnerConstraintFactory<Solution_> extends ConstraintFactory {
             stream = stream.filter(predicate);
         }
         return stream;
+    }
+
+    @Override
+    default <A> BiConstraintStream<A, A> fromUniquePair(Class<A> fromClass, BiJoiner<A, A> joiner) {
+        MemberAccessor planningIdMemberAccessor = ConfigUtils.findPlanningIdMemberAccessor(fromClass);
+        if (planningIdMemberAccessor == null) {
+            throw new IllegalArgumentException("The fromClass (" + fromClass + ") has no member with a @"
+                    + PlanningId.class.getSimpleName() + " annotation,"
+                    + " so the pairs can not be made unique ([A,B] vs [B,A]).");
+        }
+        // TODO In Bavet breaks node sharing + involves unneeded indirection
+        Function<A, Comparable> planningIdGetter = fact -> (Comparable<?>) planningIdMemberAccessor.executeGetter(fact);
+        // Joiner.filtering() must come last, yet Bavet requires that Joiner.lessThan() be last. This is a workaround.
+        if (joiner instanceof FilteringBiJoiner) {
+            BiPredicate<A, A> filter = ((FilteringBiJoiner<A, A>)joiner).getFilter();
+            return from(fromClass)
+                    .join(fromClass, lessThan(planningIdGetter))
+                    .filter(filter);
+        } else {
+            return from(fromClass)
+                    .join(fromClass, joiner, lessThan(planningIdGetter));
+        }
     }
 
     // ************************************************************************

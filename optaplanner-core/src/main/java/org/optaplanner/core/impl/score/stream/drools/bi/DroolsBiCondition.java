@@ -58,20 +58,39 @@ import static org.drools.model.DSL.on;
 public final class DroolsBiCondition<A, B, PatternVar>
         extends DroolsCondition<PatternVar, DroolsBiRuleStructure<A, B, PatternVar>> {
 
+    private final ImmediatelyPreviousFilter<BiPredicate<A, B>> previousFilter;
+
     public DroolsBiCondition(DroolsBiRuleStructure<A, B, PatternVar> ruleStructure) {
+        this(ruleStructure, null);
+    }
+
+    private DroolsBiCondition(DroolsBiRuleStructure<A, B, PatternVar> ruleStructure,
+            ImmediatelyPreviousFilter<BiPredicate<A, B>> previousFilter) {
         super(ruleStructure);
+        this.previousFilter = previousFilter;
     }
 
     public DroolsBiCondition<A, B, PatternVar> andFilter(BiPredicate<A, B> predicate) {
-        Predicate3<PatternVar, A, B> filter = (__, a, b) -> predicate.test(a, b);
-        Variable<A> aVariable = ruleStructure.getA();
-        Variable<B> bVariable = ruleStructure.getB();
-        DroolsPatternBuilder<PatternVar> newTargetPattern = ruleStructure.getPrimaryPatternBuilder()
-                .expand(p -> p.expr("Filter using " + predicate, aVariable, bVariable, filter));
+        boolean shouldMergeFilters = (previousFilter != null);
+        BiPredicate<A, B> actualPredicate = shouldMergeFilters ?
+                previousFilter.predicate.and(predicate) :
+                predicate;
+        Predicate3<PatternVar, A, B> filter = (__, a, b) -> actualPredicate.test(a, b);
+        // If we're merging consecutive filters, amend the original rule structure, before the first filter was applied.
+        DroolsBiRuleStructure<A, B, PatternVar> actualStructure = shouldMergeFilters ?
+                previousFilter.ruleStructure :
+                ruleStructure;
+        Variable<A> aVariable = actualStructure.getA();
+        Variable<B> bVariable = actualStructure.getB();
+        DroolsPatternBuilder<PatternVar> newTargetPattern = actualStructure.getPrimaryPatternBuilder()
+                .expand(p -> p.expr("Filter using " + actualPredicate, aVariable, bVariable, filter));
         DroolsBiRuleStructure<A, B, PatternVar> newRuleStructure = new DroolsBiRuleStructure<>(aVariable, bVariable,
-                newTargetPattern, ruleStructure.getShelvedRuleItems(), ruleStructure.getPrerequisites(),
-                ruleStructure.getDependents(), ruleStructure.getVariableIdSupplier());
-        return new DroolsBiCondition<>(newRuleStructure);
+                newTargetPattern, actualStructure.getShelvedRuleItems(), actualStructure.getPrerequisites(),
+                actualStructure.getDependents(), actualStructure.getVariableIdSupplier());
+        ImmediatelyPreviousFilter<BiPredicate<A, B>> newPreviousFilter =
+                new ImmediatelyPreviousFilter<BiPredicate<A, B>>(actualStructure, actualPredicate);
+        // Carry forward the information for filter merging.
+        return new DroolsBiCondition<>(newRuleStructure, newPreviousFilter);
     }
 
     public <C, CPatternVar> DroolsTriCondition<A, B, C, CPatternVar> andJoin(

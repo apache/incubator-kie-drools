@@ -19,7 +19,6 @@ package org.optaplanner.core.api.score.stream.tri;
 import java.math.BigDecimal;
 import java.util.Arrays;
 import java.util.Objects;
-import java.util.function.Function;
 import java.util.stream.Stream;
 
 import org.junit.Ignore;
@@ -45,6 +44,7 @@ import org.optaplanner.core.impl.testdata.domain.score.lavish.TestdataLavishSolu
 import org.optaplanner.core.impl.testdata.domain.score.lavish.TestdataLavishValue;
 import org.optaplanner.core.impl.testdata.domain.score.lavish.TestdataLavishValueGroup;
 
+import static java.util.function.Function.identity;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.junit.Assert.assertEquals;
 import static org.optaplanner.core.api.score.stream.ConstraintCollectors.countTri;
@@ -81,7 +81,7 @@ public class TriConstraintStreamTest extends AbstractConstraintStreamTest {
 
         InnerScoreDirector<TestdataLavishSolution> scoreDirector = buildScoreDirector((factory) -> {
             return factory.from(TestdataLavishEntity.class)
-                    .join(TestdataLavishValue.class, equal(TestdataLavishEntity::getValue, Function.identity()))
+                    .join(TestdataLavishValue.class, equal(TestdataLavishEntity::getValue, identity()))
                     .join(TestdataLavishExtra.class)
                     .filter((entity, value, extra) -> value.getCode().equals("MyValue 1")
                             && extra.getCode().equals("MyExtra 1"))
@@ -108,6 +108,37 @@ public class TriConstraintStreamTest extends AbstractConstraintStreamTest {
         assertScore(scoreDirector,
                 assertMatch(entity1, value1, extra1),
                 assertMatch(entity2, value1, extra1));
+    }
+
+    @Test
+    public void filterConsecutive() {
+        TestdataLavishSolution solution = TestdataLavishSolution.generateSolution(5, 5);
+        TestdataLavishEntity entity1 = solution.getEntityList().get(0);
+        TestdataLavishEntity entity2 = solution.getEntityList().get(1);
+        TestdataLavishEntity entity3 = solution.getEntityList().get(2);
+        TestdataLavishEntity entity4 = solution.getEntityList().get(3);
+        TestdataLavishEntity entity5 = solution.getEntityList().get(4);
+
+        InnerScoreDirector<TestdataLavishSolution> scoreDirector = buildScoreDirector((factory) -> {
+            return factory.fromUniquePair(TestdataLavishEntity.class)
+                    .join(TestdataLavishEntity.class,
+                            equal((a, b) -> a, identity()),
+                            filtering((entityA, entityB, entityC) -> !Objects.equals(entityA, entity1)))
+                    .filter((entityA, entityB, entityC) -> !Objects.equals(entityA, entity1))
+                    .filter((entityA, entityB, entityC) -> !Objects.equals(entityA, entity2))
+                    .filter((entityA, entityB, entityC) -> !Objects.equals(entityA, entity3))
+                    .penalize(TEST_CONSTRAINT_NAME, SimpleScore.ONE);
+        });
+
+        // From scratch
+        scoreDirector.setWorkingSolution(solution);
+        assertScore(scoreDirector, assertMatch(entity4, entity5, entity4));
+
+        // Remove entity
+        scoreDirector.beforeEntityRemoved(entity4);
+        solution.getEntityList().remove(entity4);
+        scoreDirector.afterEntityRemoved(entity4);
+        assertScore(scoreDirector);
     }
 
     // ************************************************************************
@@ -255,7 +286,7 @@ public class TriConstraintStreamTest extends AbstractConstraintStreamTest {
 
         InnerScoreDirector<TestdataLavishSolution> scoreDirector = buildScoreDirector((factory) -> {
             return factory.fromUniquePair(TestdataLavishEntity.class)
-                    .join(TestdataLavishValue.class, equal((e1, e2) -> e1.getValue(), Function.identity()))
+                    .join(TestdataLavishValue.class, equal((e1, e2) -> e1.getValue(), identity()))
                     .join(TestdataLavishExtra.class,
                             equal((e1, e2, value) -> e1.getStringProperty(), TestdataLavishExtra::getStringProperty),
                             equal((e1, e2, value) -> e1.getIntegerProperty(), TestdataLavishExtra::getIntegerProperty))
@@ -360,7 +391,7 @@ public class TriConstraintStreamTest extends AbstractConstraintStreamTest {
                             filtering((entityA, entityB, entityC) -> !Objects.equals(entityC, entityA) &&
                                     !Objects.equals(entityC, entityB)))
                     .ifExists(TestdataLavishEntityGroup.class,
-                            equal((entityA, entityB, entityC) -> entityA.getEntityGroup(), Function.identity()))
+                            equal((entityA, entityB, entityC) -> entityA.getEntityGroup(), identity()))
                     .penalize(TEST_CONSTRAINT_NAME, SimpleScore.ONE);
         });
 
@@ -398,7 +429,7 @@ public class TriConstraintStreamTest extends AbstractConstraintStreamTest {
                             filtering((entityA, entityB, entityC) -> !Objects.equals(entityC, entityA) &&
                                     !Objects.equals(entityC, entityB)))
                     .ifExists(TestdataLavishEntityGroup.class,
-                            equal((entityA, entityB, entityC) -> entityA.getEntityGroup(), Function.identity()),
+                            equal((entityA, entityB, entityC) -> entityA.getEntityGroup(), identity()),
                             filtering((entityA, entityB, entityC, group) -> entityA.getCode().contains("MyEntity") ||
                                     group.getCode().contains("MyEntity")))
                     .penalize(TEST_CONSTRAINT_NAME, SimpleScore.ONE);
@@ -502,7 +533,7 @@ public class TriConstraintStreamTest extends AbstractConstraintStreamTest {
                             filtering((entityA, entityB, entityC) -> !Objects.equals(entityC, entityA) &&
                                     !Objects.equals(entityC, entityB)))
                     .ifNotExists(TestdataLavishEntityGroup.class,
-                            equal((entityA, entityB, entityC) -> entityA.getEntityGroup(), Function.identity()))
+                            equal((entityA, entityB, entityC) -> entityA.getEntityGroup(), identity()))
                     .penalize(TEST_CONSTRAINT_NAME, SimpleScore.ONE);
         });
 
@@ -536,7 +567,7 @@ public class TriConstraintStreamTest extends AbstractConstraintStreamTest {
                             filtering((entityA, entityB, entityC) -> !Objects.equals(entityC, entityA) &&
                                     !Objects.equals(entityC, entityB)))
                     .ifNotExists(TestdataLavishEntityGroup.class,
-                            equal((entityA, entityB, entityC) -> entityA.getEntityGroup(), Function.identity()),
+                            equal((entityA, entityB, entityC) -> entityA.getEntityGroup(), identity()),
                             filtering((entityA, entityB, entityC, group) -> entityA.getCode().contains("MyEntity") ||
                                     group.getCode().contains("MyEntity")))
                     .penalize(TEST_CONSTRAINT_NAME, SimpleScore.ONE);
@@ -569,8 +600,8 @@ public class TriConstraintStreamTest extends AbstractConstraintStreamTest {
 
         InnerScoreDirector<TestdataLavishSolution> scoreDirector = buildScoreDirector((factory) -> {
             return factory.from(TestdataLavishEntity.class)
-                    .join(TestdataLavishEntityGroup.class, equal(TestdataLavishEntity::getEntityGroup, Function.identity()))
-                    .join(TestdataLavishValue.class, equal((entity, group) -> entity.getValue(), Function.identity()))
+                    .join(TestdataLavishEntityGroup.class, equal(TestdataLavishEntity::getEntityGroup, identity()))
+                    .join(TestdataLavishValue.class, equal((entity, group) -> entity.getValue(), identity()))
                     .groupBy(countTri())
                     .penalize(TEST_CONSTRAINT_NAME, SimpleScore.ONE, count -> count);
         });
@@ -596,8 +627,8 @@ public class TriConstraintStreamTest extends AbstractConstraintStreamTest {
 
         InnerScoreDirector<TestdataLavishSolution> scoreDirector = buildScoreDirector((factory) -> {
             return factory.from(TestdataLavishEntity.class)
-                    .join(TestdataLavishEntityGroup.class, equal(TestdataLavishEntity::getEntityGroup, Function.identity()))
-                    .join(TestdataLavishValue.class, equal((entity, group) -> entity.getValue(), Function.identity()))
+                    .join(TestdataLavishEntityGroup.class, equal(TestdataLavishEntity::getEntityGroup, identity()))
+                    .join(TestdataLavishValue.class, equal((entity, group) -> entity.getValue(), identity()))
                     .groupBy((entity, group, value) -> value)
                     .penalize(TEST_CONSTRAINT_NAME, SimpleScore.ONE);
         });
@@ -618,8 +649,8 @@ public class TriConstraintStreamTest extends AbstractConstraintStreamTest {
 
         InnerScoreDirector<TestdataLavishSolution> scoreDirector = buildScoreDirector((factory) -> {
             return factory.from(TestdataLavishEntity.class)
-                    .join(TestdataLavishEntityGroup.class, equal(TestdataLavishEntity::getEntityGroup, Function.identity()))
-                    .join(TestdataLavishValue.class, equal((entity, group) -> entity.getValue(), Function.identity()))
+                    .join(TestdataLavishEntityGroup.class, equal(TestdataLavishEntity::getEntityGroup, identity()))
+                    .join(TestdataLavishValue.class, equal((entity, group) -> entity.getValue(), identity()))
                     .groupBy((entity, group, value) -> value, countTri())
                     .penalize(TEST_CONSTRAINT_NAME, SimpleScore.ONE, (group, count) -> count);
         });
@@ -649,8 +680,8 @@ public class TriConstraintStreamTest extends AbstractConstraintStreamTest {
         TestdataLavishSolution solution = TestdataLavishSolution.generateSolution(1, 2, 2, 3);
         InnerScoreDirector<TestdataLavishSolution> scoreDirector = buildScoreDirector((factory) -> {
             return factory.from(TestdataLavishEntity.class)
-                    .join(TestdataLavishEntityGroup.class, equal(TestdataLavishEntity::getEntityGroup, Function.identity()))
-                    .join(TestdataLavishValue.class, equal((entity, group) -> entity.getValue(), Function.identity()))
+                    .join(TestdataLavishEntityGroup.class, equal(TestdataLavishEntity::getEntityGroup, identity()))
+                    .join(TestdataLavishValue.class, equal((entity, group) -> entity.getValue(), identity()))
                     .groupBy((entity, group, value) -> group, (entity, group, value) -> value)
                     .penalize(TEST_CONSTRAINT_NAME, SimpleScore.ONE);
         });
@@ -683,8 +714,8 @@ public class TriConstraintStreamTest extends AbstractConstraintStreamTest {
 
         InnerScoreDirector<TestdataLavishSolution> scoreDirector = buildScoreDirector((factory) -> {
             return factory.from(TestdataLavishEntity.class)
-                    .join(TestdataLavishEntityGroup.class, equal(TestdataLavishEntity::getEntityGroup, Function.identity()))
-                    .join(TestdataLavishValue.class, equal((entity, group) -> entity.getValue(), Function.identity()))
+                    .join(TestdataLavishEntityGroup.class, equal(TestdataLavishEntity::getEntityGroup, identity()))
+                    .join(TestdataLavishValue.class, equal((entity, group) -> entity.getValue(), identity()))
                     .groupBy((entity, group, value) -> group, (entity, group, value) -> value, countTri())
                     .penalize(TEST_CONSTRAINT_NAME, SimpleScore.ONE, (group, value, count) -> count);
         });
@@ -717,8 +748,8 @@ public class TriConstraintStreamTest extends AbstractConstraintStreamTest {
 
         InnerScoreDirector<TestdataLavishSolution> scoreDirector = buildScoreDirector((factory) -> {
             return factory.from(TestdataLavishEntity.class)
-                    .join(TestdataLavishEntityGroup.class, equal(TestdataLavishEntity::getEntityGroup, Function.identity()))
-                    .join(TestdataLavishValue.class, equal((entity, group) -> entity.getValue(), Function.identity()))
+                    .join(TestdataLavishEntityGroup.class, equal(TestdataLavishEntity::getEntityGroup, identity()))
+                    .join(TestdataLavishValue.class, equal((entity, group) -> entity.getValue(), identity()))
                     .groupBy((entity, group, value) -> group, (entity, group, value) -> value, countTri(), countTri())
                     .penalize(TEST_CONSTRAINT_NAME, SimpleScore.ONE,
                             (group, value, count, sameCount) -> count + sameCount);
@@ -762,11 +793,11 @@ public class TriConstraintStreamTest extends AbstractConstraintStreamTest {
                 = new ConstraintStreamScoreDirectorFactory<>(
                 TestdataSolution.buildSolutionDescriptor(), (factory) -> new Constraint[] {
             factory.from(TestdataEntity.class)
-                    .join(TestdataValue.class, equal(TestdataEntity::getValue, Function.identity()))
+                    .join(TestdataValue.class, equal(TestdataEntity::getValue, identity()))
                     .join(TestdataValue.class)
                     .penalize("myConstraint1", SimpleScore.ONE),
             factory.from(TestdataEntity.class)
-                    .join(TestdataValue.class, equal(TestdataEntity::getValue, Function.identity()))
+                    .join(TestdataValue.class, equal(TestdataEntity::getValue, identity()))
                     .join(TestdataValue.class)
                     .penalize("myConstraint2", SimpleScore.ONE, (entity, value, extra) -> 20)
         }, constraintStreamImplType);
@@ -789,11 +820,11 @@ public class TriConstraintStreamTest extends AbstractConstraintStreamTest {
                 = new ConstraintStreamScoreDirectorFactory<>(
                 TestdataSimpleLongScoreSolution.buildSolutionDescriptor(), (factory) -> new Constraint[] {
             factory.from(TestdataEntity.class)
-                    .join(TestdataValue.class, equal(TestdataEntity::getValue, Function.identity()))
+                    .join(TestdataValue.class, equal(TestdataEntity::getValue, identity()))
                     .join(TestdataValue.class)
                     .penalize("myConstraint1", SimpleLongScore.ONE),
             factory.from(TestdataEntity.class)
-                    .join(TestdataValue.class, equal(TestdataEntity::getValue, Function.identity()))
+                    .join(TestdataValue.class, equal(TestdataEntity::getValue, identity()))
                     .join(TestdataValue.class)
                     .penalizeLong("myConstraint2", SimpleLongScore.ONE, (entity, value, extra) -> 20L)
         }, constraintStreamImplType);
@@ -816,11 +847,11 @@ public class TriConstraintStreamTest extends AbstractConstraintStreamTest {
                 = new ConstraintStreamScoreDirectorFactory<>(
                 TestdataSimpleBigDecimalScoreSolution.buildSolutionDescriptor(), (factory) -> new Constraint[] {
             factory.from(TestdataEntity.class)
-                    .join(TestdataValue.class, equal(TestdataEntity::getValue, Function.identity()))
+                    .join(TestdataValue.class, equal(TestdataEntity::getValue, identity()))
                     .join(TestdataValue.class)
                     .penalize("myConstraint1", SimpleBigDecimalScore.ONE),
             factory.from(TestdataEntity.class)
-                    .join(TestdataValue.class, equal(TestdataEntity::getValue, Function.identity()))
+                    .join(TestdataValue.class, equal(TestdataEntity::getValue, identity()))
                     .join(TestdataValue.class)
                     .penalizeBigDecimal("myConstraint2", SimpleBigDecimalScore.ONE, (entity, value, extra) -> new BigDecimal("0.2"))
         }, constraintStreamImplType);
@@ -863,11 +894,11 @@ public class TriConstraintStreamTest extends AbstractConstraintStreamTest {
                 = new ConstraintStreamScoreDirectorFactory<>(
                 TestdataSolution.buildSolutionDescriptor(), (factory) -> new Constraint[] {
             factory.from(TestdataEntity.class)
-                    .join(TestdataValue.class, equal(TestdataEntity::getValue, Function.identity()))
+                    .join(TestdataValue.class, equal(TestdataEntity::getValue, identity()))
                     .join(TestdataValue.class)
                     .reward("myConstraint1", SimpleScore.ONE),
             factory.from(TestdataEntity.class)
-                    .join(TestdataValue.class, equal(TestdataEntity::getValue, Function.identity()))
+                    .join(TestdataValue.class, equal(TestdataEntity::getValue, identity()))
                     .join(TestdataValue.class)
                     .reward("myConstraint2", SimpleScore.ONE, (entity, value, extra) -> 20)
         }, constraintStreamImplType);
@@ -890,11 +921,11 @@ public class TriConstraintStreamTest extends AbstractConstraintStreamTest {
                 = new ConstraintStreamScoreDirectorFactory<>(
                 TestdataSimpleLongScoreSolution.buildSolutionDescriptor(), (factory) -> new Constraint[] {
             factory.from(TestdataEntity.class)
-                    .join(TestdataValue.class, equal(TestdataEntity::getValue, Function.identity()))
+                    .join(TestdataValue.class, equal(TestdataEntity::getValue, identity()))
                     .join(TestdataValue.class)
                     .reward("myConstraint1", SimpleLongScore.ONE),
             factory.from(TestdataEntity.class)
-                    .join(TestdataValue.class, equal(TestdataEntity::getValue, Function.identity()))
+                    .join(TestdataValue.class, equal(TestdataEntity::getValue, identity()))
                     .join(TestdataValue.class)
                     .rewardLong("myConstraint2", SimpleLongScore.ONE, (entity, value, extra) -> 20L)
         }, constraintStreamImplType);
@@ -917,11 +948,11 @@ public class TriConstraintStreamTest extends AbstractConstraintStreamTest {
                 = new ConstraintStreamScoreDirectorFactory<>(
                 TestdataSimpleBigDecimalScoreSolution.buildSolutionDescriptor(), (factory) -> new Constraint[] {
             factory.from(TestdataEntity.class)
-                    .join(TestdataValue.class, equal(TestdataEntity::getValue, Function.identity()))
+                    .join(TestdataValue.class, equal(TestdataEntity::getValue, identity()))
                     .join(TestdataValue.class)
                     .reward("myConstraint1", SimpleBigDecimalScore.ONE),
             factory.from(TestdataEntity.class)
-                    .join(TestdataValue.class, equal(TestdataEntity::getValue, Function.identity()))
+                    .join(TestdataValue.class, equal(TestdataEntity::getValue, identity()))
                     .join(TestdataValue.class)
                     .rewardBigDecimal("myConstraint2", SimpleBigDecimalScore.ONE, (entity, value, extra) -> new BigDecimal("0.2"))
         }, constraintStreamImplType);

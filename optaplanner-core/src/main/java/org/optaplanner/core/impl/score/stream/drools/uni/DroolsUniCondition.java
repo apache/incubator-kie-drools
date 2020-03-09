@@ -65,12 +65,20 @@ import static org.drools.model.PatternDSL.betaIndexedBy;
 public final class DroolsUniCondition<A, PatternVar>
         extends DroolsCondition<PatternVar, DroolsUniRuleStructure<A, PatternVar>> {
 
+    private final ImmediatelyPreviousFilter<Predicate<A>> previousFilter;
+
     public DroolsUniCondition(Class<A> aVariableType, LongSupplier variableIdSupplier) {
         this(new DroolsUniRuleStructure<>(aVariableType, variableIdSupplier));
     }
 
     public DroolsUniCondition(DroolsUniRuleStructure<A, PatternVar> ruleStructure) {
+        this(ruleStructure, null);
+    }
+
+    private DroolsUniCondition(DroolsUniRuleStructure<A, PatternVar> ruleStructure,
+            ImmediatelyPreviousFilter<Predicate<A>> previousFilter) {
         super(ruleStructure);
+        this.previousFilter = previousFilter;
     }
 
     public static Index.ConstraintType getConstraintType(JoinerType type) {
@@ -91,13 +99,24 @@ public final class DroolsUniCondition<A, PatternVar>
     }
 
     public DroolsUniCondition<A, PatternVar> andFilter(Predicate<A> predicate) {
-        Predicate1<PatternVar> filter = a -> predicate.test((A) a);
+        boolean shouldMergeFilters = (previousFilter != null);
+        Predicate<A> actualPredicate = shouldMergeFilters ?
+                previousFilter.predicate.and(predicate) :
+                predicate;
+        Predicate1<PatternVar> filter = a -> actualPredicate.test((A) a);
         AlphaIndex<PatternVar, Boolean> index = alphaIndexedBy(Boolean.class, Index.ConstraintType.EQUAL, -1,
-                a -> predicate.test((A) a), true);
+                a -> actualPredicate.test((A) a), true);
         UnaryOperator<PatternDef<PatternVar>> patternWithFilter =
-                p -> p.expr("Filter using " + predicate, filter, index);
-        DroolsUniRuleStructure<A, PatternVar> newStructure = ruleStructure.amend(patternWithFilter);
-        return new DroolsUniCondition<>(newStructure);
+                p -> p.expr("Filter using " + actualPredicate, filter, index);
+        // If we're merging consecutive filters, amend the original rule structure, before the first filter was applied.
+        DroolsUniRuleStructure<A, PatternVar> actualStructure = shouldMergeFilters ?
+                previousFilter.ruleStructure :
+                ruleStructure;
+        DroolsUniRuleStructure<A, PatternVar> newStructure = actualStructure.amend(patternWithFilter);
+        ImmediatelyPreviousFilter<Predicate<A>> newPreviousFilter =
+                new ImmediatelyPreviousFilter<Predicate<A>>(actualStructure, actualPredicate);
+        // Carry forward the information for filter merging.
+        return new DroolsUniCondition<>(newStructure, newPreviousFilter);
     }
 
     @Override
@@ -307,4 +326,5 @@ public final class DroolsUniCondition<A, PatternVar>
                 .execute(consequenceImpl);
         return ruleStructure.finish(consequence);
     }
+
 }

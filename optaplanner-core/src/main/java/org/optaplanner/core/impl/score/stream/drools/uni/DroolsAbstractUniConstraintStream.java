@@ -53,7 +53,7 @@ public abstract class DroolsAbstractUniConstraintStream<Solution_, A> extends Dr
     // ************************************************************************
 
     @Override
-    public DroolsAbstractUniConstraintStream<Solution_, A> filter(Predicate<A> predicate) {
+    public UniConstraintStream<A> filter(Predicate<A> predicate) {
         DroolsFilterUniConstraintStream<Solution_, A> stream =
                 new DroolsFilterUniConstraintStream<>(constraintFactory, this, predicate);
         addChildStream(stream);

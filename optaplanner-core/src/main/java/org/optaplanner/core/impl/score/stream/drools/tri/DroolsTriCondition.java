@@ -59,22 +59,41 @@ import static org.drools.model.DSL.on;
 public final class DroolsTriCondition<A, B, C, PatternVar>
         extends DroolsCondition<PatternVar, DroolsTriRuleStructure<A, B, C, PatternVar>> {
 
+    private final ImmediatelyPreviousFilter<TriPredicate<A, B, C>> previousFilter;
+
     public DroolsTriCondition(DroolsTriRuleStructure<A, B, C, PatternVar> ruleStructure) {
+        this(ruleStructure, null);
+    }
+
+    private DroolsTriCondition(DroolsTriRuleStructure<A, B, C, PatternVar> ruleStructure,
+            ImmediatelyPreviousFilter<TriPredicate<A, B, C>> previousFilter) {
         super(ruleStructure);
+        this.previousFilter = previousFilter;
     }
 
     public DroolsTriCondition<A, B, C, PatternVar> andFilter(TriPredicate<A, B, C> predicate) {
-        Predicate4<PatternVar, A, B, C> filter = (__, a, b, c) -> predicate.test(a, b, c);
-        Variable<A> aVariable = ruleStructure.getA();
-        Variable<B> bVariable = ruleStructure.getB();
-        Variable<C> cVariable = ruleStructure.getC();
+        boolean shouldMergeFilters = (previousFilter != null);
+        TriPredicate<A, B, C> actualPredicate = shouldMergeFilters ?
+                previousFilter.predicate.and(predicate) :
+                predicate;
+        Predicate4<PatternVar, A, B, C> filter = (__, a, b, c) -> actualPredicate.test(a, b, c);
+        // If we're merging consecutive filters, amend the original rule structure, before the first filter was applied.
+        DroolsTriRuleStructure<A, B, C, PatternVar> actualStructure = shouldMergeFilters ?
+                previousFilter.ruleStructure :
+                ruleStructure;
+        Variable<A> aVariable = actualStructure.getA();
+        Variable<B> bVariable = actualStructure.getB();
+        Variable<C> cVariable = actualStructure.getC();
         DroolsPatternBuilder<PatternVar> newTargetPattern = ruleStructure.getPrimaryPatternBuilder()
-                .expand(p -> p.expr("Filter using " + predicate, aVariable, bVariable, cVariable, filter));
+                .expand(p -> p.expr("Filter using " + actualPredicate, aVariable, bVariable, cVariable, filter));
         DroolsTriRuleStructure<A, B, C, PatternVar> newRuleStructure =
                 new DroolsTriRuleStructure<>(aVariable, bVariable, cVariable, newTargetPattern,
-                        ruleStructure.getShelvedRuleItems(), ruleStructure.getPrerequisites(),
-                        ruleStructure.getDependents(), ruleStructure.getVariableIdSupplier());
-        return new DroolsTriCondition<>(newRuleStructure);
+                        actualStructure.getShelvedRuleItems(), actualStructure.getPrerequisites(),
+                        actualStructure.getDependents(), actualStructure.getVariableIdSupplier());
+        ImmediatelyPreviousFilter<TriPredicate<A, B, C>> newPreviousFilter =
+                new ImmediatelyPreviousFilter<TriPredicate<A, B, C>>(actualStructure, actualPredicate);
+        // Carry forward the information for filter merging.
+        return new DroolsTriCondition<>(newRuleStructure, newPreviousFilter);
     }
 
     public <D, DPatternVar> DroolsQuadCondition<A, B, C, D, DPatternVar> andJoin(

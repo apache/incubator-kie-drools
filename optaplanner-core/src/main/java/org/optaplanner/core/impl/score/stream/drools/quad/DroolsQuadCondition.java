@@ -56,22 +56,43 @@ import static org.drools.model.DSL.on;
 public final class DroolsQuadCondition<A, B, C, D, PatternVar> extends
         DroolsCondition<PatternVar, DroolsQuadRuleStructure<A, B, C, D, PatternVar>> {
 
+    private final ImmediatelyPreviousFilter<QuadPredicate<A, B, C, D>> previousFilter;
+
     public DroolsQuadCondition(DroolsQuadRuleStructure<A, B, C, D, PatternVar> ruleStructure) {
+        this(ruleStructure, null);
+    }
+
+    public DroolsQuadCondition(DroolsQuadRuleStructure<A, B, C, D, PatternVar> ruleStructure,
+            ImmediatelyPreviousFilter<QuadPredicate<A, B, C, D>> previousFilter) {
         super(ruleStructure);
+        this.previousFilter = previousFilter;
     }
 
     public DroolsQuadCondition<A, B, C, D, PatternVar> andFilter(QuadPredicate<A, B, C, D> predicate) {
-        Predicate5<PatternVar, A, B, C, D> filter = (__, a, b, c, d) -> predicate.test(a, b, c, d);
-        Variable<A> aVariable = ruleStructure.getA();
-        Variable<B> bVariable = ruleStructure.getB();
-        Variable<C> cVariable = ruleStructure.getC();
-        Variable<D> dVariable = ruleStructure.getD();
-        DroolsPatternBuilder<PatternVar> newTargetPattern = ruleStructure.getPrimaryPatternBuilder()
-                .expand(p -> p.expr("Filter using " + predicate, aVariable, bVariable, cVariable, dVariable, filter));
+        boolean shouldMergeFilters = (previousFilter != null);
+        QuadPredicate<A, B, C, D> actualPredicate = shouldMergeFilters ?
+                previousFilter.predicate.and(predicate) :
+                predicate;
+        Predicate5<PatternVar, A, B, C, D> filter = (__, a, b, c, d) -> actualPredicate.test(a, b, c, d);
+        // If we're merging consecutive filters, amend the original rule structure, before the first filter was applied.
+        DroolsQuadRuleStructure<A, B, C, D, PatternVar> actualStructure = shouldMergeFilters ?
+                previousFilter.ruleStructure :
+                ruleStructure;
+        Variable<A> aVariable = actualStructure.getA();
+        Variable<B> bVariable = actualStructure.getB();
+        Variable<C> cVariable = actualStructure.getC();
+        Variable<D> dVariable = actualStructure.getD();
+        DroolsPatternBuilder<PatternVar> newTargetPattern = actualStructure.getPrimaryPatternBuilder()
+                .expand(p -> p.expr("Filter using " + actualPredicate, aVariable, bVariable, cVariable, dVariable,
+                        filter));
         DroolsQuadRuleStructure<A, B, C, D, PatternVar> newRuleStructure = new DroolsQuadRuleStructure<>(aVariable,
-                bVariable, cVariable, dVariable, newTargetPattern, ruleStructure.getShelvedRuleItems(),
-                ruleStructure.getPrerequisites(), ruleStructure.getDependents(), ruleStructure.getVariableIdSupplier());
-        return new DroolsQuadCondition<>(newRuleStructure);
+                bVariable, cVariable, dVariable, newTargetPattern, actualStructure.getShelvedRuleItems(),
+                actualStructure.getPrerequisites(), actualStructure.getDependents(),
+                actualStructure.getVariableIdSupplier());
+        ImmediatelyPreviousFilter<QuadPredicate<A, B, C, D>> newPreviousFilter =
+                new ImmediatelyPreviousFilter<QuadPredicate<A, B, C, D>>(actualStructure, actualPredicate);
+        // Carry forward the information for filter merging.
+        return new DroolsQuadCondition<>(newRuleStructure, newPreviousFilter);
     }
 
     @SafeVarargs

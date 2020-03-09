@@ -103,6 +103,34 @@ public class BiConstraintStreamTest extends AbstractConstraintStreamTest {
                 assertMatch(entity2, value1));
     }
 
+    @Test
+    public void filterConsecutive() {
+        TestdataLavishSolution solution = TestdataLavishSolution.generateSolution(5, 5);
+        TestdataLavishEntity entity1 = solution.getEntityList().get(0);
+        TestdataLavishEntity entity2 = solution.getEntityList().get(1);
+        TestdataLavishEntity entity3 = solution.getEntityList().get(2);
+        TestdataLavishEntity entity4 = solution.getEntityList().get(3);
+        TestdataLavishEntity entity5 = solution.getEntityList().get(4);
+
+        InnerScoreDirector<TestdataLavishSolution> scoreDirector = buildScoreDirector((factory) -> {
+            return factory.fromUniquePair(TestdataLavishEntity.class,
+                    filtering((entityA, entityB) -> !Objects.equals(entityA, entity1)))
+                    .filter((entityA, entityB) -> !Objects.equals(entityA, entity2))
+                    .filter((entityA, entityB) -> !Objects.equals(entityA, entity3))
+                    .penalize(TEST_CONSTRAINT_NAME, SimpleScore.ONE);
+        });
+
+        // From scratch
+        scoreDirector.setWorkingSolution(solution);
+        assertScore(scoreDirector, assertMatch(entity4, entity5));
+
+        // Remove entity
+        scoreDirector.beforeEntityRemoved(entity4);
+        solution.getEntityList().remove(entity4);
+        scoreDirector.afterEntityRemoved(entity4);
+        assertScore(scoreDirector);
+    }
+
     // ************************************************************************
     // Join
     // ************************************************************************
