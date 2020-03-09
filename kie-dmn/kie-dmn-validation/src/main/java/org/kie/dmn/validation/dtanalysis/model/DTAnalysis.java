@@ -32,9 +32,9 @@ import org.kie.dmn.api.core.DMNMessage.Severity;
 import org.kie.dmn.core.util.Msg;
 import org.kie.dmn.core.util.MsgUtil;
 import org.kie.dmn.feel.lang.ast.DashNode;
-import org.kie.dmn.model.api.DMNElement;
 import org.kie.dmn.model.api.DMNModelInstrumentedBase;
 import org.kie.dmn.model.api.DecisionTable;
+import org.kie.dmn.model.api.FunctionDefinition;
 import org.kie.dmn.model.api.HitPolicy;
 import org.kie.dmn.model.api.InputClause;
 import org.kie.dmn.model.api.LiteralExpression;
@@ -735,8 +735,12 @@ public class DTAnalysis {
     }
 
     private String nameOrIDOfTable() {
-        if (sourceDT.getParent() instanceof DMNElement) {
+        if (sourceDT.getOutputLabel() != null && !sourceDT.getOutputLabel().isEmpty()) {
+            return sourceDT.getOutputLabel();
+        } else if (sourceDT.getParent() instanceof NamedElement) { // DT is decision logic of Decision, and similar cases.
             return ((NamedElement) sourceDT.getParent()).getName();
+        } else if (sourceDT.getParent() instanceof FunctionDefinition && sourceDT.getParent().getParent() instanceof NamedElement) { // DT is decision logic of BKM.
+            return ((NamedElement) sourceDT.getParent().getParent()).getName();
         } else {
             return new StringBuilder("[ID: ").append(sourceDT.getId()).append("]").toString();
         }
