@@ -16,8 +16,8 @@
 package org.kie.pmml.evaluator.core.utils;
 
 import java.util.Collection;
+import java.util.HashMap;
 import java.util.Map;
-import java.util.stream.Collectors;
 
 import org.kie.api.pmml.ParameterInfo;
 
@@ -36,10 +36,16 @@ public class Converter {
      * @return
      */
     public static Map<String, Object> getUnwrappedParametersMap(Map<String, ParameterInfo> parameterMap) {
-        return parameterMap.entrySet()
-                .stream()
-                .collect(Collectors.toMap(Map.Entry::getKey,
-                                          e -> e.getValue().getValue()));
+        Map<String, Object> toReturn = new HashMap<>();
+        for (Map.Entry<String, ParameterInfo> entry : parameterMap.entrySet()) {
+            toReturn.put(entry.getKey(), entry.getValue().getValue());
+        }
+        return toReturn;
+//
+//        return parameterMap.entrySet()
+//                .stream()
+//                .collect(Collectors.toMap(Map.Entry::getKey,
+//                                          e -> e.getValue().getValue()));
     }
 
     /**
@@ -48,9 +54,15 @@ public class Converter {
      * @return
      */
     public static Map<String, Object> getUnwrappedParametersMap(Collection<ParameterInfo> parameterInfos) {
-        return parameterInfos
-                .stream()
-                .collect(Collectors.toMap(ParameterInfo::getName,
-                                          ParameterInfo::getValue));
+        Map<String, Object> toReturn = new HashMap<>();
+        for (ParameterInfo parameterInfo : parameterInfos) {
+            toReturn.put(parameterInfo.getName(), parameterInfo.getValue());
+        }
+        return toReturn;
+//
+//        return parameterInfos
+//                .stream()
+//                .collect(Collectors.toMap(ParameterInfo::getName,
+//                                          ParameterInfo::getValue));
     }
 }

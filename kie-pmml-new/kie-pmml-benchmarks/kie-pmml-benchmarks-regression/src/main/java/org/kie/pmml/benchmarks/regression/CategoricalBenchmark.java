@@ -21,7 +21,7 @@ import org.kie.api.pmml.PMMLRequestData;
 import org.kie.pmml.evaluator.core.PMMLContextImpl;
 import org.openjdk.jmh.annotations.Benchmark;
 import org.openjdk.jmh.annotations.BenchmarkMode;
-import org.openjdk.jmh.annotations.Level;
+import org.openjdk.jmh.annotations.Fork;
 import org.openjdk.jmh.annotations.Measurement;
 import org.openjdk.jmh.annotations.Mode;
 import org.openjdk.jmh.annotations.OutputTimeUnit;
@@ -37,11 +37,12 @@ import org.openjdk.jmh.runner.options.OptionsBuilder;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-@BenchmarkMode(Mode.SingleShotTime)
+@BenchmarkMode(Mode.Throughput)
 @State(Scope.Thread)
-@Warmup(iterations = 30000)
-@Measurement(iterations = 5000)
-@OutputTimeUnit(TimeUnit.MICROSECONDS)
+@Warmup(iterations = 2)
+@Measurement(iterations = 5)
+@OutputTimeUnit(TimeUnit.SECONDS)
+@Fork(jvmArgs = {"-Xms8172m", "-Xmx8172m"}, value = 5)
 public class CategoricalBenchmark extends AbstractRegressionBenchmark {
 
     private static final Logger logger = LoggerFactory.getLogger(CategoricalBenchmark.class);
