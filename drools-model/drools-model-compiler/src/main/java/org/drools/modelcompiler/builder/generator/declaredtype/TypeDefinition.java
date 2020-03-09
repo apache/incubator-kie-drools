@@ -17,5 +17,5 @@ interface TypeDefinition {
 
     List<AnnotationDefinition> getSoftAnnotations();
 
-    Optional<TypeDefinition> getSuperType();
+    List<TypeFieldDefinition> findInheritedDeclaredFields();
 }

@@ -9,6 +9,7 @@ import java.util.Optional;
 import java.util.stream.Collectors;
 
 import org.drools.compiler.lang.descr.AnnotationDescr;
+import org.drools.compiler.lang.descr.PackageDescr;
 import org.drools.compiler.lang.descr.TypeDeclarationDescr;
 import org.drools.compiler.lang.descr.TypeFieldDescr;
 import org.kie.api.definition.type.Duration;
@@ -24,6 +25,8 @@ public class DescrDeclaredTypeDefinition implements TypeDefinition {
 
     private List<AnnotationDefinition> annotations = new ArrayList<>();
 
+    private final PackageDescr packageDescr;
+
     static {
         predefinedClassLevelAnnotation.put("role", Role.class);
         predefinedClassLevelAnnotation.put("duration", Duration.class);
@@ -34,7 +37,8 @@ public class DescrDeclaredTypeDefinition implements TypeDefinition {
     private final TypeDeclarationDescr typeDeclarationDescr;
     private final List<TypeFieldDefinition> typeFieldDefinition;
 
-    public DescrDeclaredTypeDefinition(TypeDeclarationDescr typeDeclarationDescr) {
+    public DescrDeclaredTypeDefinition(PackageDescr packageDescr, TypeDeclarationDescr typeDeclarationDescr) {
+        this.packageDescr = packageDescr;
         this.typeDeclarationDescr = typeDeclarationDescr;
         this.typeFieldDefinition = processFields();
     }
@@ -59,9 +63,35 @@ public class DescrDeclaredTypeDefinition implements TypeDefinition {
         return new ArrayList<>();
     }
 
-    @Override
-    public Optional<TypeDefinition> getSuperType() {
+    private Optional<TypeDeclarationDescr> getSuperType(TypeDeclarationDescr typeDeclarationDescr) {
+        if (getSuperTypeName() != null) {
+            return packageDescr
+                    .getTypeDeclarations()
+                    .stream()
+                    .filter(td -> {
+                        String superTypeName = typeDeclarationDescr.getSuperTypeName();
+                        return td.getTypeName().equals(superTypeName);
+                    })
+                    .findFirst();
+        }
         return Optional.empty();
+    }
+
+    @Override
+    public List<TypeFieldDefinition> findInheritedDeclaredFields() {
+        return findInheritedDeclaredFields(new ArrayList<>(), getSuperType(typeDeclarationDescr));
+    }
+
+    private List<TypeFieldDefinition> findInheritedDeclaredFields(List<TypeFieldDefinition> fields, Optional<TypeDeclarationDescr> superType) {
+        superType.ifPresent(st -> {
+            findInheritedDeclaredFields(fields, getSuperType(st));
+            st.getFields()
+                    .values()
+                    .stream()
+                    .map(DescrDeclearedTypeFieldDefinition::new)
+                    .forEach(fields::add);
+        });
+        return fields;
     }
 
     private List<TypeFieldDescr> typeFieldsSortedByPosition() {
@@ -104,17 +134,14 @@ public class DescrDeclaredTypeDefinition implements TypeDefinition {
         List<TypeFieldDescr> sortedTypeFields = typeFieldsSortedByPosition();
 
         List<TypeFieldDefinition> allFields = new ArrayList<>();
-        int position = 0;
+        int position = findInheritedDeclaredFields().size();
 
         for (TypeFieldDescr typeFieldDescr : sortedTypeFields) {
-            DescrDeclearedTypeFieldDefinition f = new DescrDeclearedTypeFieldDefinition(typeFieldDescr.getFieldName(),
-                                                                                        typeFieldDescr.getPattern().getObjectType(),
-                                                                                        typeFieldDescr.getInitExpr());
+            DescrDeclearedTypeFieldDefinition f = new DescrDeclearedTypeFieldDefinition(typeFieldDescr);
 
             allFields.add(f);
             boolean hasPositionAnnotation = false;
             for (AnnotationDescr ann : typeFieldDescr.getAnnotations()) {
-
                 if (ann.getName().equalsIgnoreCase("key")) {
                     f.setKeyField(true);
                     f.addAnnotation(Key.class.getName());

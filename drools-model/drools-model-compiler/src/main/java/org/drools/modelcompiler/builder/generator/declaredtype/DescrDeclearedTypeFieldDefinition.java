@@ -5,6 +5,8 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import org.drools.compiler.lang.descr.TypeFieldDescr;
+
 public class DescrDeclearedTypeFieldDefinition implements TypeFieldDefinition {
 
     private final String fieldName;
@@ -19,6 +21,12 @@ public class DescrDeclearedTypeFieldDefinition implements TypeFieldDefinition {
         this.fieldName = fieldName;
         this.objectType = objectType;
         this.initExpr = initExpr;
+    }
+
+    public DescrDeclearedTypeFieldDefinition(TypeFieldDescr typeFieldDescr) {
+        this(typeFieldDescr.getFieldName(),
+             typeFieldDescr.getPattern().getObjectType(),
+             typeFieldDescr.getInitExpr());
     }
 
     @Override

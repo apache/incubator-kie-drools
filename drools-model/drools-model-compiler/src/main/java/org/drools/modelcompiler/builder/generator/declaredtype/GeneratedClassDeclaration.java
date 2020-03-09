@@ -76,7 +76,7 @@ class GeneratedClassDeclaration {
         String generatedClassName = typeDefinition.getTypeName();
         generatedClass = createBasicDeclaredClass(generatedClassName);
 
-        Collection<TypeFieldDefinition> inheritedFields = findInheritedDeclaredFields();
+        Collection<TypeFieldDefinition> inheritedFields = typeDefinition.findInheritedDeclaredFields();
         if (inheritedFields.isEmpty() && typeDefinition.getFields().isEmpty()) {
             generatedClass.addMember(new GeneratedToString(generatedClassName).method());
             return generatedClass;
@@ -186,18 +186,6 @@ class GeneratedClassDeclaration {
         for (Map.Entry<String, Object> entry : ann.getValueMap().entrySet()) {
             annExpr.addPair(entry.getKey(), getAnnotationValue(ann.getName(), entry.getKey(), entry.getValue()));
         }
-    }
-
-    private List<TypeFieldDefinition> findInheritedDeclaredFields() {
-        return findInheritedDeclaredFields(new ArrayList<>(), typeDefinition.getSuperType());
-    }
-
-    private List<TypeFieldDefinition> findInheritedDeclaredFields(List<TypeFieldDefinition> fields, Optional<TypeDefinition> superType) {
-        superType.ifPresent(st -> {
-            findInheritedDeclaredFields(fields, getSuperType(st));
-            fields.addAll(st.getFields());
-        });
-        return fields;
     }
 
     private Optional<TypeDefinition> getSuperType(TypeDefinition typeDeclaration) {
