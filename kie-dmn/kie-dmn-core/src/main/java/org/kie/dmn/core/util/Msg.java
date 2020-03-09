@@ -104,6 +104,7 @@ public final class Msg {
     public static final Message1 DECISION_SERVICE_NOT_FOUND_FOR_NAME                 = new Message1( DMNMessageType.DECISION_NOT_FOUND, "Decision Service not found for name '%s'");
     public static final Message1 FEEL_ERROR                                          = new Message1( DMNMessageType.FEEL_EVALUATION_ERROR, "%s" );
     public static final Message1 FEEL_WARN                                           = new Message1( DMNMessageType.FEEL_EVALUATION_ERROR, "%s" );
+    public static final Message3 FEEL_EVENT_EVAL_LITERAL_EXPRESSION                  = new Message3( DMNMessageType.FEEL_EVALUATION_ERROR, "FEEL %s while evaluating literal expression '%s': %s");
     public static final Message3 ERR_EVAL_PARAM_FOR_INVOCATION_ON_NODE               = new Message3( DMNMessageType.FEEL_EVALUATION_ERROR, "Error evaluating parameter '%s' for invocation '%s' on node '%s'" );
     public static final Message2 ERR_EVAL_LIST_ELEMENT_ON_POSITION_ON_LIST           = new Message2( DMNMessageType.FEEL_EVALUATION_ERROR, "Error evaluating list element on position '%s' on list '%s'" );
     public static final Message3 ERR_EVAL_ROW_ELEMENT_ON_POSITION_ON_ROW_OF_RELATION = new Message3( DMNMessageType.FEEL_EVALUATION_ERROR, "Error evaluating row element on position '%s' on row '%s' of relation '%s'" );
@@ -124,7 +125,7 @@ public final class Msg {
     public static final Message1 FUNC_DEF_PMML_ERR_LOCATIONURI                       = new Message1( DMNMessageType.IMPORT_NOT_FOUND, "Unable to locate pmml model from locationURI '%s'");
     public static final Message2 ERROR_CHECKING_ALLOWED_VALUES                       = new Message2( DMNMessageType.FEEL_EVALUATION_ERROR, "Error checking allowed values for node '%s': %s" );
     public static final Message1 DTANALYSISRESULT                                    = new Message1( DMNMessageType.DECISION_TABLE_ANALYSIS, "Decision Table Analysis results: %s");
-    public static final Message1 DTANALYSIS_EMPTY                                    = new Message1( DMNMessageType.DECISION_TABLE_ANALYSIS, "Decision Table Analysis of table '%s' finished with no messages to be reported.");
+    public static final Message1 DTANALYSIS_EMPTY                                    = new Message1( DMNMessageType.DECISION_TABLE_ANALYSIS_EMPTY, "Decision Table Analysis of table '%s' finished with no messages to be reported.");
     public static final Message2 DTANALYSIS_ERROR_ANALYSIS_SKIPPED                   = new Message2( DMNMessageType.DECISION_TABLE_ANALYSIS_ERROR, "Skipped Decision Table Analysis of table '%s' because: %s");
     public static final Message3 DTANALYSIS_HITPOLICY_PRIORITY_ANALYSIS_SKIPPED      = new Message3( DMNMessageType.DECISION_TABLE_ANALYSIS_ERROR, "Skipped Decision Table Analysis of table '%s' hit policy Priority mask rules for rules: %s %s as they define multiple inputentries");
     public static final Message4 DTANALYSIS_ERROR_RULE_OUTSIDE_DOMAIN                = new Message4( DMNMessageType.DECISION_TABLE_ANALYSIS_ERROR, "Rule %s defines %s which is outside the domain min/max %s of column %s");

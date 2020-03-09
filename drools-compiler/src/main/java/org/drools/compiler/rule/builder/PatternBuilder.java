@@ -968,7 +968,7 @@ public class PatternBuilder
                 !ClassObjectType.Match_ObjectType.isAssignableFrom(pattern.getObjectType())) {
             String normalizedExpr = normalizeExpression(context, pattern, relDescr, expr);
             if (negated) {
-                normalizedExpr = "!(" + normalizedExpr + ")";
+                normalizedExpr = normalizeNegatedExpr(normalizedExpr, relDescr.getOperator());
                 relDescr.getOperatorDescr().setNegated( !relDescr.getOperatorDescr().isNegated() );
             }
             return buildRelationalExpression(context, pattern, relDescr, normalizedExpr, aliases);
@@ -982,6 +982,13 @@ public class PatternBuilder
             rewrittenExpr = "!(" + rewrittenExpr + ")";
         }
         return createAndBuildPredicate(context, pattern, d, rewrittenExpr, aliases);
+    }
+
+    private String normalizeNegatedExpr(String expr, String operator) {
+        IndexUtil.ConstraintType constraintType = IndexUtil.ConstraintType.decode(operator);
+        return constraintType.getOperator() != null ?
+                expr.replace( constraintType.getOperator(), constraintType.negate().getOperator() ) :
+                "!(" + expr + ")";
     }
 
     private String rewriteOrExpressions(RuleBuildContext context, Pattern pattern, BaseDescr d, String expr) {

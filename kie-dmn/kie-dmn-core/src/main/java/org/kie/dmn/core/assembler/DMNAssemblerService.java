@@ -123,7 +123,7 @@ public class DMNAssemblerService implements KieAssemblerService {
         List<DMNResource> sortedDmnResources = DMNResourceDependenciesSorter.sort(dmnResources);
 
         for (DMNResource dmnRes : sortedDmnResources) {
-            DMNModel dmnModel = internalAddResource(kbuilderImpl, dmnCompiler, dmnRes.getResAndConfig(), dmnModels);
+            DMNModel dmnModel = internalAddResource(kbuilderImpl, dmnCompiler, dmnRes, dmnModels);
             dmnModels.add(dmnModel);
         }
     }
@@ -145,9 +145,10 @@ public class DMNAssemblerService implements KieAssemblerService {
         }
     }
 
-    private DMNModel internalAddResource(KnowledgeBuilderImpl kbuilder, DMNCompiler dmnCompiler, ResourceWithConfiguration r, Collection<DMNModel> dmnModels) throws Exception {
+    private DMNModel internalAddResource(KnowledgeBuilderImpl kbuilder, DMNCompiler dmnCompiler, DMNResource dmnRes, Collection<DMNModel> dmnModels) throws Exception {
+        ResourceWithConfiguration r = dmnRes.getResAndConfig();
         r.getBeforeAdd().accept(kbuilder);
-        DMNModel dmnModel = compileResourceToModel(kbuilder, dmnCompiler, r.getResource(), dmnModels);
+        DMNModel dmnModel = compileResourceToModel(kbuilder, dmnCompiler, r.getResource(), dmnRes, dmnModels);
         r.getAfterAdd().accept(kbuilder);
         return dmnModel;
     }
@@ -167,11 +168,13 @@ public class DMNAssemblerService implements KieAssemblerService {
             }
         }
 
-        compileResourceToModel(kbuilderImpl, dmnCompiler, resource, dmnModels);
+        compileResourceToModel(kbuilderImpl, dmnCompiler, resource, null, dmnModels);
     }
 
-    private DMNModel compileResourceToModel(KnowledgeBuilderImpl kbuilderImpl, DMNCompiler dmnCompiler, Resource resource, Collection<DMNModel> dmnModels) {
-        DMNModel model = dmnCompiler.compile(resource, dmnModels);
+    private DMNModel compileResourceToModel(KnowledgeBuilderImpl kbuilderImpl, DMNCompiler dmnCompiler, Resource resource, DMNResource dmnRes, Collection<DMNModel> dmnModels) {
+        DMNModel model = dmnRes != null ?
+                dmnCompiler.compile(dmnRes.getDefinitions(), resource, dmnModels) :
+                dmnCompiler.compile(resource, dmnModels);
         if( model != null ) {
             String namespace = model.getNamespace();
 

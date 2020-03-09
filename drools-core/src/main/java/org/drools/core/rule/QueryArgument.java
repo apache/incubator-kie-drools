@@ -31,6 +31,7 @@ import org.drools.core.reteoo.LeftTuple;
 import org.drools.core.util.MVELSafeHelper;
 import org.kie.api.runtime.rule.Variable;
 import org.mvel2.MVEL;
+import org.mvel2.ParserConfiguration;
 import org.mvel2.ParserContext;
 
 import static org.drools.core.rule.QueryArgument.Declr.evaluateDeclaration;
@@ -143,6 +144,14 @@ public interface QueryArgument extends Externalizable {
             declarations = (List<Declaration>) in.readObject();
             expression = (String) in.readObject();
             parserContext = (ParserContext) in.readObject();
+
+            ParserConfiguration newConf = new ParserConfiguration();
+            newConf.setImports( parserContext.getParserConfiguration().getImports() );
+            newConf.setPackageImports( parserContext.getParserConfiguration().getPackageImports() );
+            parserContext = new ParserContext( newConf );
+            parserContext.setInputs( parserContext.getInputs() );
+            parserContext.setVariables( parserContext.getVariables() );
+
             init();
         }
     }

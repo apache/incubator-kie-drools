@@ -43,4 +43,9 @@ public interface DMNCompiler {
 
     DMNModel compile(Definitions dmndefs, Collection<DMNModel> dmnModels);
 
+    /**
+     * As {@link #compile(Definitions, Collection)}, but links {@link Resource} to the manually provided {@link Definitions} while compiling the {@link DMNModel}.
+     */
+    DMNModel compile(Definitions dmndefs, Resource resource, Collection<DMNModel> dmnModels);
+
 }

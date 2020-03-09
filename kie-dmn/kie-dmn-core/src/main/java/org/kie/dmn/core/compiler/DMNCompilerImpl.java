@@ -172,7 +172,22 @@ public class DMNCompilerImpl implements DMNCompiler {
 
     @Override
     public DMNModel compile(Definitions dmndefs, Collection<DMNModel> dmnModels) {
-        return compile(dmndefs, dmnModels, null, null);
+        try {
+            return compile(dmndefs, dmnModels, null, null);
+        } catch (Exception e) {
+            logger.error("Error compiling model from source.", e);
+        }
+        return null;
+    }
+
+    @Override
+    public DMNModel compile(Definitions dmndefs, Resource resource, Collection<DMNModel> dmnModels) {
+        try {
+            return compile(dmndefs, dmnModels, resource, null);
+        } catch (Exception e) {
+            logger.error("Error compiling model from source.", e);
+        }
+        return null;
     }
 
     public DMNModel compile(Definitions dmndefs, Collection<DMNModel> dmnModels, Resource resource, Function<String, Reader> relativeResolver) {
