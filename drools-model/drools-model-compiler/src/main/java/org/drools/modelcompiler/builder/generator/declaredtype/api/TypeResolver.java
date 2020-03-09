@@ -1,4 +1,4 @@
-package org.drools.modelcompiler.builder.generator.declaredtype;
+package org.drools.modelcompiler.builder.generator.declaredtype.api;
 
 import java.util.Optional;
 

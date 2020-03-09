@@ -1,8 +1,8 @@
-package org.drools.modelcompiler.builder.generator.declaredtype;
+package org.drools.modelcompiler.builder.generator.declaredtype.api;
 
 import java.util.List;
 
-interface TypeDefinition {
+public interface TypeDefinition {
 
     String getTypeName();
 
@@ -13,8 +13,6 @@ interface TypeDefinition {
     String getSuperTypeName();
 
     List<AnnotationDefinition> getAnnotations();
-
-    List<AnnotationDefinition> getSoftAnnotations();
 
     List<TypeFieldDefinition> findInheritedDeclaredFields();
 

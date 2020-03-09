@@ -3,7 +3,9 @@ package org.drools.modelcompiler.builder.generator.declaredtype;
 import java.util.Collections;
 import java.util.Map;
 
-public class DescrDeclaredTypeAnnotationDefinition implements AnnotationDefinition {
+import org.drools.modelcompiler.builder.generator.declaredtype.api.AnnotationDefinition;
+
+public class DescrAnnotationDefinition implements AnnotationDefinition {
 
     static final String VALUE = "value";
 
@@ -11,23 +13,18 @@ public class DescrDeclaredTypeAnnotationDefinition implements AnnotationDefiniti
     private final String namespace;
     private final Map<String, String> values;
 
-    public DescrDeclaredTypeAnnotationDefinition(String name, String namespace, Map<String, String> values) {
+    public DescrAnnotationDefinition(String name, String namespace, Map<String, String> values) {
         this.name = name;
         this.namespace = namespace;
         this.values = values;
     }
 
-    public DescrDeclaredTypeAnnotationDefinition(String name, String namespace, String singleValue) {
+    public DescrAnnotationDefinition(String name, String namespace, String singleValue) {
         this(name, namespace, Collections.singletonMap(VALUE, singleValue));
     }
 
-    public DescrDeclaredTypeAnnotationDefinition(String name, String namespace) {
+    public DescrAnnotationDefinition(String name, String namespace) {
         this(name, namespace, Collections.emptyMap());
-    }
-
-    @Override
-    public Object getValue(String key) {
-        return null;
     }
 
     @Override
@@ -43,10 +40,5 @@ public class DescrDeclaredTypeAnnotationDefinition implements AnnotationDefiniti
     @Override
     public String getNamespace() {
         return namespace;
-    }
-
-    @Override
-    public String getValuesAsString() {
-        return null;
     }
 }

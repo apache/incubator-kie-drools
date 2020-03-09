@@ -15,7 +15,7 @@
  * limitations under the License.
  */
 
-package org.drools.modelcompiler.builder.generator.declaredtype;
+package org.drools.modelcompiler.builder.generator.declaredtype.generator;
 
 import java.util.Arrays;
 import java.util.Collection;
@@ -40,6 +40,8 @@ import org.drools.modelcompiler.builder.GeneratedClassWithPackage;
 import org.drools.modelcompiler.builder.ModelBuilderImpl;
 import org.drools.modelcompiler.builder.PackageModel;
 import org.drools.modelcompiler.builder.errors.InvalidExpressionErrorResult;
+import org.drools.modelcompiler.builder.generator.declaredtype.DescrTypeDefinition;
+import org.drools.modelcompiler.builder.generator.declaredtype.EnumGenerator;
 import org.drools.modelcompiler.util.MvelUtil;
 
 import static org.drools.modelcompiler.builder.JavaParserCompiler.compileAll;
@@ -100,7 +102,7 @@ public class POJOGenerator {
         }
     }
 
-    static class SafeTypeResolver implements org.drools.modelcompiler.builder.generator.declaredtype.TypeResolver {
+    static class SafeTypeResolver implements org.drools.modelcompiler.builder.generator.declaredtype.api.TypeResolver {
 
         private final TypeResolver typeResolver;
 
@@ -119,7 +121,7 @@ public class POJOGenerator {
     }
 
     private void createPOJO(TypeDeclarationDescr typeDescr) {
-        DescrDeclaredTypeDefinition descrDeclaredTypeDefinition = new DescrDeclaredTypeDefinition(packageDescr, typeDescr);
+        DescrTypeDefinition descrDeclaredTypeDefinition = new DescrTypeDefinition(packageDescr, typeDescr);
         ClassOrInterfaceDeclaration generatedClass = new GeneratedClassDeclaration(descrDeclaredTypeDefinition,
                                                                                    new SafeTypeResolver(pkg.getTypeResolver()),
                                                                                    Collections.singletonList(GeneratedFact.class))

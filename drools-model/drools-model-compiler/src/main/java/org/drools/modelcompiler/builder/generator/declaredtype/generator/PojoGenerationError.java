@@ -1,4 +1,4 @@
-package org.drools.modelcompiler.builder.generator.declaredtype;
+package org.drools.modelcompiler.builder.generator.declaredtype.generator;
 
 class PojoGenerationError {
 

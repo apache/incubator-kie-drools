@@ -13,6 +13,9 @@ import org.drools.compiler.lang.descr.AnnotationDescr;
 import org.drools.compiler.lang.descr.PackageDescr;
 import org.drools.compiler.lang.descr.TypeDeclarationDescr;
 import org.drools.compiler.lang.descr.TypeFieldDescr;
+import org.drools.modelcompiler.builder.generator.declaredtype.api.AnnotationDefinition;
+import org.drools.modelcompiler.builder.generator.declaredtype.api.TypeDefinition;
+import org.drools.modelcompiler.builder.generator.declaredtype.api.TypeFieldDefinition;
 import org.kie.api.definition.type.Duration;
 import org.kie.api.definition.type.Expires;
 import org.kie.api.definition.type.Key;
@@ -23,7 +26,7 @@ import org.kie.api.definition.type.Timestamp;
 import static java.util.stream.Collectors.joining;
 import static org.drools.core.util.StreamUtils.optionalToStream;
 
-public class DescrDeclaredTypeDefinition implements TypeDefinition {
+public class DescrTypeDefinition implements TypeDefinition {
 
     private static final Map<String, Class<?>> predefinedClassLevelAnnotation = new HashMap<>();
     private static final String SERIAL_VERSION_UID = "serialVersionUID";
@@ -44,7 +47,7 @@ public class DescrDeclaredTypeDefinition implements TypeDefinition {
     private final TypeDeclarationDescr typeDeclarationDescr;
     private final List<TypeFieldDefinition> typeFieldDefinition;
 
-    public DescrDeclaredTypeDefinition(PackageDescr packageDescr, TypeDeclarationDescr typeDeclarationDescr) {
+    public DescrTypeDefinition(PackageDescr packageDescr, TypeDeclarationDescr typeDeclarationDescr) {
         this.packageDescr = packageDescr;
         this.typeDeclarationDescr = typeDeclarationDescr;
         this.typeFieldDefinition = processFields();
@@ -55,9 +58,9 @@ public class DescrDeclaredTypeDefinition implements TypeDefinition {
     private void processClassAnnotations() {
         for (AnnotationDescr ann : typeDeclarationDescr.getAnnotations()) {
             if (ann.getName().equals(SERIAL_VERSION_UID)) {
-                DescrDeclearedTypeFieldDefinition serialVersionField = new DescrDeclearedTypeFieldDefinition(SERIAL_VERSION_UID,
-                                                                                                             "long",
-                                                                                                             ann.getValue("value").toString());
+                DescrFieldDefinition serialVersionField = new DescrFieldDefinition(SERIAL_VERSION_UID,
+                                                                                   "long",
+                                                                                   ann.getValue("value").toString());
                 serialVersionField.setFinal(true);
                 serialVersionField.setStatic(true);
                 typeFieldDefinition.add(serialVersionField);
@@ -79,11 +82,6 @@ public class DescrDeclaredTypeDefinition implements TypeDefinition {
     @Override
     public List<AnnotationDefinition> getAnnotations() {
         return annotations;
-    }
-
-    @Override
-    public List<AnnotationDefinition> getSoftAnnotations() {
-        return new ArrayList<>();
     }
 
     @Override
@@ -116,7 +114,7 @@ public class DescrDeclaredTypeDefinition implements TypeDefinition {
             st.getFields()
                     .values()
                     .stream()
-                    .map(DescrDeclearedTypeFieldDefinition::new)
+                    .map(DescrFieldDefinition::new)
                     .forEach(fields::add);
         });
         return fields;
@@ -158,7 +156,7 @@ public class DescrDeclaredTypeDefinition implements TypeDefinition {
         Stream<TypeFieldDefinition> keyFields = typeFieldDefinition.stream().filter(TypeFieldDefinition::isKeyField);
 
         Stream<TypeFieldDefinition> superTypeKieFields =
-                optionalToStream(getSuperType(this.typeDeclarationDescr).map(st -> new DescrDeclaredTypeDefinition(packageDescr, st)))
+                optionalToStream(getSuperType(this.typeDeclarationDescr).map(st -> new DescrTypeDefinition(packageDescr, st)))
                         .flatMap(t -> t.getKeyFields().stream());
 
         return Stream.concat(keyFields, superTypeKieFields).collect(Collectors.toList());
@@ -171,7 +169,7 @@ public class DescrDeclaredTypeDefinition implements TypeDefinition {
         int position = findInheritedDeclaredFields().size();
 
         for (TypeFieldDescr typeFieldDescr : sortedTypeFields) {
-            DescrDeclearedTypeFieldDefinition f = new DescrDeclearedTypeFieldDefinition(typeFieldDescr);
+            DescrFieldDefinition f = new DescrFieldDefinition(typeFieldDescr);
 
             allFields.add(f);
             boolean hasPositionAnnotation = false;
@@ -186,7 +184,7 @@ public class DescrDeclaredTypeDefinition implements TypeDefinition {
                 } else if (ann.getName().equalsIgnoreCase("duration") || ann.getName().equalsIgnoreCase("expires") || ann.getName().equalsIgnoreCase("timestamp")) {
                     Class<?> annotationClass = predefinedClassLevelAnnotation.get(ann.getName().toLowerCase());
                     String annFqn = annotationClass.getCanonicalName();
-                    annotations.add(new DescrDeclaredTypeAnnotationDefinition(annFqn, ""));
+                    annotations.add(new DescrAnnotationDefinition(annFqn, ""));
                 }
             }
 
@@ -197,12 +195,14 @@ public class DescrDeclaredTypeDefinition implements TypeDefinition {
         return allFields;
     }
 
+    // TODO move all annotations processing to AnnotationDefinition
     private void processAnnotations() {
         for (AnnotationDescr ann : typeDeclarationDescr.getAnnotations()) {
-            annotations.add(new DescrDeclaredTypeAnnotationDefinition(ann.getName(), "", String.valueOf(ann.getValues())));
+            annotations.add(new DescrAnnotationDefinition(ann.getName(), "", String.valueOf(ann.getValues())));
         }
 
-        List<AnnotationDefinition> softAnnotations = getSoftAnnotations();
+
+        List<AnnotationDescr> softAnnotations = new ArrayList<>(); // find soft annotations
         if (!softAnnotations.isEmpty()) {
             String softAnnDictionary = softAnnotations.stream().map(a -> "<dt>" + a.getName() + "</dt><dd>" + a.getValuesAsString() + "</dd>").collect(joining());
             javaDocComment = ("<dl>" + softAnnDictionary + "</dl>");

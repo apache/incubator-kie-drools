@@ -37,6 +37,8 @@ import com.github.javaparser.ast.type.Type;
 import org.drools.compiler.lang.descr.EnumDeclarationDescr;
 import org.drools.compiler.lang.descr.EnumLiteralDescr;
 import org.drools.compiler.lang.descr.TypeFieldDescr;
+import org.drools.modelcompiler.builder.generator.declaredtype.api.TypeFieldDefinition;
+import org.drools.modelcompiler.builder.generator.declaredtype.generator.GeneratedConstructor;
 
 import static com.github.javaparser.StaticJavaParser.parseType;
 import static com.github.javaparser.ast.NodeList.nodeList;
@@ -75,7 +77,7 @@ public class EnumGenerator {
                 .getFields()
                 .values()
                 .stream()
-                .map(DescrDeclearedTypeFieldDefinition::new)
+                .map(DescrFieldDefinition::new)
                 .collect(Collectors.toList());
 
         GeneratedConstructor fullArgumentConstructor = GeneratedConstructor.factoryEnum(enumDeclaration, enumFields);

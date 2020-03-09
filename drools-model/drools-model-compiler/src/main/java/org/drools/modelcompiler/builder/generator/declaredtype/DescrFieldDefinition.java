@@ -6,8 +6,10 @@ import java.util.List;
 import java.util.Map;
 
 import org.drools.compiler.lang.descr.TypeFieldDescr;
+import org.drools.modelcompiler.builder.generator.declaredtype.api.AnnotationDefinition;
+import org.drools.modelcompiler.builder.generator.declaredtype.api.TypeFieldDefinition;
 
-public class DescrDeclearedTypeFieldDefinition implements TypeFieldDefinition {
+public class DescrFieldDefinition implements TypeFieldDefinition {
 
     private final String fieldName;
     private final String objectType;
@@ -20,13 +22,13 @@ public class DescrDeclearedTypeFieldDefinition implements TypeFieldDefinition {
 
     private final Map<String, AnnotationDefinition> annotations = new HashMap<>();
 
-    public DescrDeclearedTypeFieldDefinition(String fieldName, String objectType, String initExpr) {
+    public DescrFieldDefinition(String fieldName, String objectType, String initExpr) {
         this.fieldName = fieldName;
         this.objectType = objectType;
         this.initExpr = initExpr;
     }
 
-    public DescrDeclearedTypeFieldDefinition(TypeFieldDescr typeFieldDescr) {
+    public DescrFieldDefinition(TypeFieldDescr typeFieldDescr) {
         this(typeFieldDescr.getFieldName(),
              typeFieldDescr.getPattern().getObjectType(),
              typeFieldDescr.getInitExpr());
@@ -52,14 +54,12 @@ public class DescrDeclearedTypeFieldDefinition implements TypeFieldDefinition {
         return Arrays.asList(annotations.values().toArray(new AnnotationDefinition[0]));
     }
 
-    @Override
     public void addAnnotation(String name) {
-        annotations.put(name, new DescrDeclaredTypeAnnotationDefinition(name, ""));
+        annotations.put(name, new DescrAnnotationDefinition(name, ""));
     }
 
-    @Override
     public void addAnnotation(String name, String value) {
-        annotations.put(name, new DescrDeclaredTypeAnnotationDefinition(name, "", value));
+        annotations.put(name, new DescrAnnotationDefinition(name, "", value));
     }
 
     @Override

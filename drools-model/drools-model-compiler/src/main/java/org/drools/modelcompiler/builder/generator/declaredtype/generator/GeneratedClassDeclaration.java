@@ -15,7 +15,7 @@
  * limitations under the License.
  */
 
-package org.drools.modelcompiler.builder.generator.declaredtype;
+package org.drools.modelcompiler.builder.generator.declaredtype.generator;
 
 import java.io.Serializable;
 import java.util.ArrayList;
@@ -34,12 +34,16 @@ import com.github.javaparser.ast.expr.NormalAnnotationExpr;
 import com.github.javaparser.ast.nodeTypes.NodeWithAnnotations;
 import com.github.javaparser.ast.stmt.Statement;
 import com.github.javaparser.ast.type.Type;
+import org.drools.modelcompiler.builder.generator.declaredtype.api.AnnotationDefinition;
+import org.drools.modelcompiler.builder.generator.declaredtype.api.TypeDefinition;
+import org.drools.modelcompiler.builder.generator.declaredtype.api.TypeFieldDefinition;
+import org.drools.modelcompiler.builder.generator.declaredtype.api.TypeResolver;
 
 import static com.github.javaparser.StaticJavaParser.parseExpression;
 import static com.github.javaparser.StaticJavaParser.parseType;
 import static com.github.javaparser.ast.NodeList.nodeList;
 import static java.text.MessageFormat.format;
-import static org.drools.modelcompiler.builder.generator.declaredtype.POJOGenerator.quote;
+import static org.drools.modelcompiler.builder.generator.declaredtype.generator.POJOGenerator.quote;
 
 class GeneratedClassDeclaration {
 

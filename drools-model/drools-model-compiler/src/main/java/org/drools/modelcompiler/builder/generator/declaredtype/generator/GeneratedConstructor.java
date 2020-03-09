@@ -15,7 +15,7 @@
  * limitations under the License.
  */
 
-package org.drools.modelcompiler.builder.generator.declaredtype;
+package org.drools.modelcompiler.builder.generator.declaredtype.generator;
 
 import java.util.Collection;
 import java.util.List;
@@ -30,13 +30,14 @@ import com.github.javaparser.ast.stmt.BlockStmt;
 import com.github.javaparser.ast.stmt.ExpressionStmt;
 import com.github.javaparser.ast.stmt.Statement;
 import com.github.javaparser.ast.type.Type;
+import org.drools.modelcompiler.builder.generator.declaredtype.api.TypeFieldDefinition;
 
 import static com.github.javaparser.StaticJavaParser.parseStatement;
 import static com.github.javaparser.StaticJavaParser.parseType;
 import static com.github.javaparser.ast.NodeList.nodeList;
-import static org.drools.modelcompiler.builder.generator.declaredtype.GeneratedClassDeclaration.replaceFieldName;
+import static org.drools.modelcompiler.builder.generator.declaredtype.generator.GeneratedClassDeclaration.replaceFieldName;
 
-interface GeneratedConstructor {
+public interface GeneratedConstructor {
 
     static GeneratedConstructor factory(NodeWithConstructors<?> generatedClass,
                                         List<TypeFieldDefinition> typeDeclarationFields) {
