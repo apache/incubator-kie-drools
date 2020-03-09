@@ -29,12 +29,14 @@ import graphql.schema.GraphQLSchema;
 @ApplicationScoped
 public class GraphQLInstrumentation extends SimpleInstrumentation {
 
+    private static final String TYPENAME = "__typename";
+
     @Inject
     GraphQLSchemaManager manager;
 
     @Override
     public DataFetcher<?> instrumentDataFetcher(DataFetcher<?> dataFetcher, InstrumentationFieldFetchParameters parameters) {
-        if (parameters.getEnvironment().getSource() instanceof JsonNode) {
+        if (!TYPENAME.equals(parameters.getEnvironment().getField().getName()) && parameters.getEnvironment().getSource() instanceof JsonNode) {
             return new JsonPropertyDataFetcher(parameters.getEnvironment().getField().getName());
         } else {
             return dataFetcher;
