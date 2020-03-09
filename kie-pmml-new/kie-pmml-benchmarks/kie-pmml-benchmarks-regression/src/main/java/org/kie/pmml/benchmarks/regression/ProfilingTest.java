@@ -27,17 +27,17 @@ import org.kie.api.builder.Results;
 import org.kie.api.io.ResourceType;
 import org.kie.api.pmml.PMMLRequestData;
 import org.kie.api.runtime.KieSession;
-import org.kie.internal.io.ResourceFactory;
 import org.kie.pmml.commons.exceptions.KiePMMLException;
 import org.kie.pmml.commons.model.KiePMMLModel;
 import org.kie.pmml.evaluator.api.executor.PMMLContext;
 import org.kie.pmml.evaluator.api.executor.PMMLRuntime;
 import org.kie.pmml.evaluator.core.PMMLContextImpl;
-
-import static org.kie.test.util.filesystem.FileUtils.getFile;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 public class ProfilingTest {
 
+    private static final Logger logger = LoggerFactory.getLogger(ProfilingTest.class);
     private static final String MODEL_NAME = "Sample for logistic regression";
     private static final String[] EMPLOYMENT = {"Consultant", "PSFederal", "PSLocal", "PSState", "Private", "SelfEmp", "Volunteer"};
     private static final String[] EDUCATION = {"Associate", "Bachelor", "College", "Doctorate", "HSgrad", "Master", "Preschool", "Professional", "Vocational", "Yr10", "Yr11", "Yr12", "Yr1t4", "Yr5t6", "Yr7t8", "Yr9"};
@@ -46,11 +46,12 @@ public class ProfilingTest {
     private static final String[] GENDER = {"Female", "Male"};
 
     public static void main(String[] args) {
+        logger.info("Start up ...");
         String modelName = "Sample for logistic regression";
         String fileName = "CategoricalRegressionSample.pmml";
         KieServices ks = KieServices.Factory.get();
         KieFileSystem kfs = ks.newKieFileSystem();
-        kfs.write(ResourceFactory.newFileResource(getFile(fileName)).setResourceType(ResourceType.PMML));
+        kfs.write(KieServices.get().getResources().newClassPathResource(fileName).setResourceType(ResourceType.PMML));
         final KieBuilder kieBuilder = ks.newKieBuilder(kfs).buildAll();
         final ReleaseId relId = kieBuilder.getKieModule().getReleaseId();
         String releaseId = relId.toExternalForm();
@@ -59,10 +60,11 @@ public class ProfilingTest {
         KieSession session = kbase.newKieSession();
         PMMLRuntime pmmlRuntime = session.getKieRuntime(PMMLRuntime.class);
         KiePMMLModel model = pmmlRuntime.getModel(modelName).orElseThrow(() -> new KiePMMLException("Failed to retrieve the model"));
-//        List<PMMLContext> pmmlContexts = IntStream.range(0, 600000).mapToObj(i -> getPMMLContext()).collect(Collectors.toList());
-//        evaluate(pmmlContexts, releaseId, pmmlRuntime, model);
+        logger.info("Model retrieved: {}", model.toString());
+        PMMLContext pmmlContext = getPMMLContext();
+        logger.info("Begin evaluate loop with context: {}", pmmlContext.toString());
         while (true) {
-            evaluate(getPMMLContext(), releaseId, pmmlRuntime, model);
+            evaluate(pmmlContext, releaseId, pmmlRuntime, model);
         }
     }
 

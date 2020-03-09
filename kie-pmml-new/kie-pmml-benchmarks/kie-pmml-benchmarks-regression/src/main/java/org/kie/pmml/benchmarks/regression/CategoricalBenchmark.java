@@ -17,7 +17,6 @@ package org.kie.pmml.benchmarks.regression;
 
 import java.util.concurrent.TimeUnit;
 
-import org.kie.api.pmml.PMML4Result;
 import org.kie.api.pmml.PMMLRequestData;
 import org.kie.pmml.evaluator.core.PMMLContextImpl;
 import org.openjdk.jmh.annotations.Benchmark;
@@ -31,6 +30,13 @@ import org.openjdk.jmh.annotations.Scope;
 import org.openjdk.jmh.annotations.Setup;
 import org.openjdk.jmh.annotations.State;
 import org.openjdk.jmh.annotations.Warmup;
+import org.openjdk.jmh.infra.Blackhole;
+import org.openjdk.jmh.runner.Runner;
+import org.openjdk.jmh.runner.RunnerException;
+import org.openjdk.jmh.runner.options.Options;
+import org.openjdk.jmh.runner.options.OptionsBuilder;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 @BenchmarkMode(Mode.Throughput)
 @State(Scope.Thread)
@@ -40,15 +46,23 @@ import org.openjdk.jmh.annotations.Warmup;
 @Fork(jvmArgs = {"-Xms8172m", "-Xmx8172m"}, value = 5)
 public class CategoricalBenchmark extends AbstractRegressionBenchmark {
 
+    private static final Logger logger = LoggerFactory.getLogger(CategoricalBenchmark.class);
+
+    public static void main(String[] args) throws RunnerException {
+        Options opt = new OptionsBuilder()
+                .include(CategoricalBenchmark.class.getSimpleName())
+                .forks(2)
+                .build();
+        new Runner(opt).run();
+    }
+
     @Setup
     public void setupModel() {
+        logger.info("setup model...");
         modelName = "Sample for logistic regression";
         fileName = "CategoricalRegressionSample.pmml";
         super.setupModel();
-    }
-
-    @Setup(Level.Iteration)
-    public void setupInputData() {
+        logger.info("setup pmmlContext...");
         PMMLRequestData pmmlRequestData = new PMMLRequestData("123", modelName);
         pmmlRequestData.addRequestParam("age", 22);
         pmmlRequestData.addRequestParam("work", 3);
@@ -58,7 +72,7 @@ public class CategoricalBenchmark extends AbstractRegressionBenchmark {
     }
 
     @Benchmark
-    public PMML4Result evaluate() {
-        return super.evaluate();
+    public void evaluate(Blackhole blackhole) {
+        super.evaluate(blackhole);
     }
 }

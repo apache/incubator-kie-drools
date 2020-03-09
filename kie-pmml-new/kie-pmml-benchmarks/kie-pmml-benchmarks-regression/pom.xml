@@ -54,15 +54,6 @@
       <groupId>org.kie</groupId>
       <artifactId>kie-internal</artifactId>
     </dependency>
-    <dependency>
-      <groupId>org.kie</groupId>
-      <artifactId>kie-test-util</artifactId>
-      <classifier>tests</classifier>
-    </dependency>
-    <dependency>
-      <groupId>org.kie</groupId>
-      <artifactId>kie-test-util</artifactId>
-    </dependency>
     <!-- EXTERNAL -->
     <dependency>
       <groupId>org.openjdk.jmh</groupId>

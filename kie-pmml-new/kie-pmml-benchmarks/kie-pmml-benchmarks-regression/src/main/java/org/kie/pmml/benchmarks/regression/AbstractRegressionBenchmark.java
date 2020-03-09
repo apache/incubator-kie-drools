@@ -24,9 +24,7 @@ import org.kie.api.builder.KieFileSystem;
 import org.kie.api.builder.ReleaseId;
 import org.kie.api.builder.Results;
 import org.kie.api.io.ResourceType;
-import org.kie.api.pmml.PMML4Result;
 import org.kie.api.runtime.KieSession;
-import org.kie.internal.io.ResourceFactory;
 import org.kie.pmml.commons.exceptions.KiePMMLException;
 import org.kie.pmml.commons.model.KiePMMLModel;
 import org.kie.pmml.evaluator.api.executor.PMMLContext;
@@ -38,8 +36,7 @@ import org.openjdk.jmh.annotations.OutputTimeUnit;
 import org.openjdk.jmh.annotations.Scope;
 import org.openjdk.jmh.annotations.State;
 import org.openjdk.jmh.annotations.Warmup;
-
-import static org.kie.test.util.filesystem.FileUtils.getFile;
+import org.openjdk.jmh.infra.Blackhole;
 
 @BenchmarkMode(Mode.SingleShotTime)
 @State(Scope.Thread)
@@ -58,7 +55,7 @@ public abstract class AbstractRegressionBenchmark {
     protected void setupModel() {
         KieServices ks = KieServices.Factory.get();
         KieFileSystem kfs = ks.newKieFileSystem();
-        kfs.write(ResourceFactory.newFileResource(getFile(fileName)).setResourceType(ResourceType.PMML));
+        kfs.write(KieServices.get().getResources().newClassPathResource(fileName).setResourceType(ResourceType.PMML));
         final KieBuilder kieBuilder = ks.newKieBuilder(kfs).buildAll();
         final ReleaseId relId = kieBuilder.getKieModule().getReleaseId();
         releaseId = relId.toExternalForm();
@@ -69,7 +66,8 @@ public abstract class AbstractRegressionBenchmark {
         model = pmmlRuntime.getModel(modelName).orElseThrow(() -> new KiePMMLException("Failed to retrieve the model"));
     }
 
-    protected PMML4Result evaluate() {
-        return pmmlRuntime.evaluate(model, pmmlContext, releaseId);
+    protected void evaluate(Blackhole blackhole) {
+        blackhole.consume(pmmlRuntime.evaluate(model, pmmlContext, releaseId));
+//        return pmmlRuntime.evaluate(model, pmmlContext, releaseId);
     }
 }
