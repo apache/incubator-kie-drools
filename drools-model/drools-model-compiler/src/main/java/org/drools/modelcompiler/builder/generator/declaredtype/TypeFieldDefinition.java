@@ -17,4 +17,10 @@ interface TypeFieldDefinition {
     void addAnnotation(String name, String value);
 
     boolean isKeyField();
+
+    boolean createAccessors();
+
+    boolean isStatic();
+
+    boolean isFinal();
 }

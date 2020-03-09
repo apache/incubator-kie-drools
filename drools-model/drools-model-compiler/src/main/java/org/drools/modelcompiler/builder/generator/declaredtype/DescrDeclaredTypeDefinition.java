@@ -25,6 +25,7 @@ import static org.drools.core.util.StreamUtils.optionalToStream;
 public class DescrDeclaredTypeDefinition implements TypeDefinition {
 
     private static final Map<String, Class<?>> predefinedClassLevelAnnotation = new HashMap<>();
+    private final static String SERIAL_VERSION_UID = "serialVersionUID";
 
     private List<AnnotationDefinition> annotations = new ArrayList<>();
 
@@ -44,6 +45,21 @@ public class DescrDeclaredTypeDefinition implements TypeDefinition {
         this.packageDescr = packageDescr;
         this.typeDeclarationDescr = typeDeclarationDescr;
         this.typeFieldDefinition = processFields();
+
+        processClassAnnotations();
+    }
+
+    private void processClassAnnotations() {
+        for (AnnotationDescr ann : typeDeclarationDescr.getAnnotations()) {
+            if (ann.getName().equals(SERIAL_VERSION_UID)) {
+                DescrDeclearedTypeFieldDefinition serialVersionField = new DescrDeclearedTypeFieldDefinition(SERIAL_VERSION_UID,
+                                                                                                             "long",
+                                                                                                             ann.getValue("value").toString());
+                serialVersionField.setFinal(true);
+                serialVersionField.setStatic(true);
+                typeFieldDefinition.add(serialVersionField);
+            }
+        }
     }
 
     @Override

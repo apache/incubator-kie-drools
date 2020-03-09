@@ -31,12 +31,9 @@ import com.github.javaparser.ast.body.FieldDeclaration;
 import com.github.javaparser.ast.body.MethodDeclaration;
 import com.github.javaparser.ast.comments.JavadocComment;
 import com.github.javaparser.ast.expr.FieldAccessExpr;
-import com.github.javaparser.ast.expr.LongLiteralExpr;
 import com.github.javaparser.ast.expr.NameExpr;
 import com.github.javaparser.ast.expr.NormalAnnotationExpr;
-import com.github.javaparser.ast.nodeTypes.NodeWithAnnotations;
 import com.github.javaparser.ast.stmt.Statement;
-import com.github.javaparser.ast.type.PrimitiveType;
 import com.github.javaparser.ast.type.Type;
 import org.kie.api.definition.type.Role;
 
@@ -58,17 +55,14 @@ class GeneratedClassDeclaration {
     private GeneratedToString generatedToString;
     private GeneratedEqualsMethod generatedEqualsMethod;
     private ClassOrInterfaceDeclaration generatedClass;
-    private final Collection<TypeDefinition> allTypeDefinitions;
     private final Collection<Class<?>> markerInterfaceAnnotations;
 
     GeneratedClassDeclaration(TypeDefinition typeDefinition,
                               TypeResolver typeResolver,
-                              Collection<TypeDefinition> allTypeDefinitions,
                               Collection<Class<?>> markerInterfaceAnnotations) {
 
         this.typeDefinition = typeDefinition;
         this.typeResolver = typeResolver;
-        this.allTypeDefinitions = allTypeDefinitions;
         this.markerInterfaceAnnotations = markerInterfaceAnnotations;
     }
 
@@ -124,7 +118,9 @@ class GeneratedClassDeclaration {
 
         GeneratedConstructor fullArgumentConstructor = GeneratedConstructor.factory(generatedClass, typeFields);
 
-        processTypeFields(typeFields);
+        for (TypeFieldDefinition tf : typeFields) {
+            processTypeField(tf);
+        }
 
         List<TypeFieldDefinition> keyFields = typeDefinition.getKeyFields();
 
@@ -138,14 +134,20 @@ class GeneratedClassDeclaration {
         return generatedClass;
     }
 
-    private void processTypeFields(List<TypeFieldDefinition> typeFields) {
-        for (TypeFieldDefinition typeFieldDescr : typeFields) {
-            String fieldName = typeFieldDescr.getFieldName();
-            Type returnType = parseType(typeFieldDescr.getObjectType());
+    private void processTypeField(TypeFieldDefinition typeFieldDescr) {
+        String fieldName = typeFieldDescr.getFieldName();
+        Type returnType = parseType(typeFieldDescr.getObjectType());
 
-            FieldDeclaration field = typeFieldDescr.getInitExpr() == null ?
-                    generatedClass.addField(returnType, fieldName, Modifier.privateModifier().getKeyword()) :
-                    generatedClass.addFieldWithInitializer(returnType, fieldName, parseExpression(typeFieldDescr.getInitExpr()), Modifier.privateModifier().getKeyword());
+        Modifier.Keyword[] modifiers = modifiers(typeFieldDescr);
+
+        FieldDeclaration field;
+        if (typeFieldDescr.getInitExpr() == null) {
+            field = generatedClass.addField(returnType, fieldName, modifiers);
+        } else {
+            field = generatedClass.addFieldWithInitializer(returnType, fieldName, parseExpression(typeFieldDescr.getInitExpr()), modifiers);
+        }
+
+        if (typeFieldDescr.createAccessors()) {
             field.createSetter();
             MethodDeclaration getter = field.createGetter();
 
@@ -153,23 +155,36 @@ class GeneratedClassDeclaration {
                 generatedEqualsMethod.add(getter, fieldName);
                 generatedHashcode.addHashCodeForField(fieldName, getter.getType());
             }
-
-            for(AnnotationDefinition ad : typeFieldDescr.getAnnotations()) {
-                addAnnotation(field, ad);
-            }
-
-            generatedToString.add(format("+ {0}+{1}", quote(fieldName + "="), fieldName));
         }
+
+        for (AnnotationDefinition ad : typeFieldDescr.getAnnotations()) {
+            NormalAnnotationExpr annExpr = field.addAndGetAnnotation(ad.getName());
+            for (Map.Entry<String, Object> entry : ad.getValueMap().entrySet()) {
+                annExpr.addPair(entry.getKey(), getAnnotationValue(ad.getName(), entry.getKey(), entry.getValue()));
+            }
+        }
+
+        generatedToString.add(format("+ {0}+{1}", quote(fieldName + "="), fieldName));
+    }
+
+    private Modifier.Keyword[] modifiers(TypeFieldDefinition typeFieldDescr) {
+        List<Modifier.Keyword> modifiers = new ArrayList<>();
+        modifiers.add(Modifier.privateModifier().getKeyword());
+
+        if (typeFieldDescr.isStatic()) {
+            modifiers.add(Modifier.staticModifier().getKeyword());
+        } else if (typeFieldDescr.isFinal()) {
+            modifiers.add(Modifier.finalModifier().getKeyword());
+        }
+
+        return modifiers.toArray(new Modifier.Keyword[0]);
     }
 
     private void processAnnotations(ClassOrInterfaceDeclaration generatedClass) {
         for (AnnotationDefinition ann : typeDefinition.getAnnotations()) {
-            if (ann.getName().equals("serialVersionUID")) {
-                LongLiteralExpr valueExpr = new LongLiteralExpr(ann.getValue(VALUE).toString());
-                generatedClass.addFieldWithInitializer(PrimitiveType.longType(), "serialVersionUID", valueExpr, Modifier.privateModifier().getKeyword()
-                        , Modifier.staticModifier().getKeyword(), Modifier.finalModifier().getKeyword());
-            } else {
-                addAnnotation(generatedClass, ann);
+            NormalAnnotationExpr annExpr = generatedClass.addAndGetAnnotation(ann.getName());
+            for (Map.Entry<String, Object> entry : ann.getValueMap().entrySet()) {
+                annExpr.addPair(entry.getKey(), getAnnotationValue(ann.getName(), entry.getKey(), entry.getValue()));
             }
         }
 
@@ -179,19 +194,6 @@ class GeneratedClassDeclaration {
             JavadocComment generatedClassJavadoc = new JavadocComment("<dl>" + softAnnDictionary + "</dl>");
             generatedClass.setJavadocComment(generatedClassJavadoc);
         }
-    }
-
-    private void addAnnotation(NodeWithAnnotations node, AnnotationDefinition ann) {
-        NormalAnnotationExpr annExpr = node.addAndGetAnnotation(ann.getName());
-        for (Map.Entry<String, Object> entry : ann.getValueMap().entrySet()) {
-            annExpr.addPair(entry.getKey(), getAnnotationValue(ann.getName(), entry.getKey(), entry.getValue()));
-        }
-    }
-
-    private Optional<TypeDefinition> getSuperType(TypeDefinition typeDeclaration) {
-        return typeDeclaration.getSuperTypeName() != null ?
-                allTypeDefinitions.stream().filter(td -> td.getTypeName().equals(typeDeclaration.getSuperTypeName())).findFirst() :
-                Optional.empty();
     }
 
     static Statement replaceFieldName(Statement statement, String fieldName) {

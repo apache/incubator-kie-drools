@@ -13,7 +13,10 @@ public class DescrDeclearedTypeFieldDefinition implements TypeFieldDefinition {
     private final String objectType;
     private final String initExpr;
 
-    private Boolean isKeyField = false;
+    private boolean isKeyField = false;
+    private boolean createAccessors = true;
+    private boolean isStatic = false;
+    private boolean isFinal = false;
 
     private final Map<String, AnnotationDefinition> annotations = new HashMap<>();
 
@@ -66,5 +69,32 @@ public class DescrDeclearedTypeFieldDefinition implements TypeFieldDefinition {
 
     public void setKeyField(Boolean keyField) {
         isKeyField = keyField;
+    }
+
+    @Override
+    public boolean createAccessors() {
+        return createAccessors;
+    }
+
+    public void setCreateAccessors(Boolean createAccessors) {
+        this.createAccessors = createAccessors;
+    }
+
+    @Override
+    public boolean isStatic() {
+        return isStatic;
+    }
+
+    public void setStatic(Boolean aStatic) {
+        isStatic = aStatic;
+    }
+
+    @Override
+    public boolean isFinal() {
+        return isFinal;
+    }
+
+    public void setFinal(Boolean aFinal) {
+        isFinal = aFinal;
     }
 }
