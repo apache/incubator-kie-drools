@@ -13,28 +13,26 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.kie.pmml.compiler.commons.mocks;
+package  org.kie.pmml.models.mining.evaluator;
 
-import java.util.List;
-import java.util.Map;
-
-import org.kie.pmml.commons.model.KiePMMLExtension;
-import org.kie.pmml.commons.model.KiePMMLModel;
+import org.junit.Before;
+import org.junit.Test;
 import org.kie.pmml.commons.model.enums.PMML_MODEL;
 
-/**
- * <b>Fake</b> model used for testing. It is mapped to <code>PMML_MODEL.REGRESSION_MODEL</code>
- */
-public class KiePMMLTestingModel extends KiePMMLModel {
+import static org.junit.Assert.assertEquals;
 
-    public static final PMML_MODEL PMML_MODEL_TYPE = PMML_MODEL.REGRESSION_MODEL;
+public class PMMLMiningModelEvaluatorTest {
 
-    protected KiePMMLTestingModel(String name, List<KiePMMLExtension> extensions) {
-        super(name, extensions);
+    private PMMLMiningModelEvaluator evaluator;
+
+    @Before
+    public void setUp(){
+        evaluator = new PMMLMiningModelEvaluator();
     }
 
-    @Override
-    public Object evaluate(Map<String, Object> requestData) {
-        return null;
+    @Test
+    public void getPMMLModelType(){
+        assertEquals(PMML_MODEL.MINING_MODEL, evaluator.getPMMLModelType());
     }
+
 }

@@ -17,15 +17,18 @@ package org.kie.pmml.commons.model;
 
 import java.util.Collections;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
+import java.util.function.Supplier;
 
+import org.kie.pmml.commons.model.abstracts.KiePMMLBase;
 import org.kie.pmml.commons.model.enums.MINING_FUNCTION;
 import org.kie.pmml.commons.model.enums.PMML_MODEL;
 
 /**
  * KIE representation of PMML model
  */
-public abstract class KiePMMLModel {
+public abstract class KiePMMLModel extends KiePMMLBase {
 
     protected String name;
     protected PMML_MODEL pmmlMODEL;
@@ -33,8 +36,8 @@ public abstract class KiePMMLModel {
     protected String targetField;
     protected Map<String, Object> outputFieldsMap = new HashMap<>();
 
-    protected KiePMMLModel(String name) {
-        this.name = name;
+    protected KiePMMLModel(String name, List<KiePMMLExtension> extensions) {
+        super(name, extensions);
     }
 
     public PMML_MODEL getPmmlMODEL() {
@@ -58,4 +61,18 @@ public abstract class KiePMMLModel {
     }
 
     public abstract Object evaluate(Map<String, Object> requestData);
+
+    public abstract static class Builder<T extends KiePMMLModel> extends KiePMMLBase.Builder<T> {
+
+        protected Builder(String prefix, PMML_MODEL pmmlMODEL, MINING_FUNCTION miningFunction, Supplier<T> supplier) {
+            super(prefix, supplier);
+            toBuild.pmmlMODEL = pmmlMODEL;
+            toBuild.miningFunction = miningFunction;
+        }
+
+        public Builder<T> withTargetField(String targetField) {
+            toBuild.targetField = targetField;
+            return this;
+        }
+    }
 }
