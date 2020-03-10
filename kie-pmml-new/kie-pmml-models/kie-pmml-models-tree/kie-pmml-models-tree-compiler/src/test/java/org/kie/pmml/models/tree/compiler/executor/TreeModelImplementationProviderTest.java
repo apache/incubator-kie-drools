@@ -13,28 +13,25 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.kie.pmml.compiler.commons.mocks;
+package org.kie.pmml.models.tree.compiler.executor;
 
-import java.util.List;
-import java.util.Map;
-
-import org.kie.pmml.commons.model.KiePMMLExtension;
-import org.kie.pmml.commons.model.KiePMMLModel;
 import org.kie.pmml.commons.model.enums.PMML_MODEL;
+import org.junit.Test;
 
-/**
- * <b>Fake</b> model used for testing. It is mapped to <code>PMML_MODEL.REGRESSION_MODEL</code>
- */
-public class KiePMMLTestingModel extends KiePMMLModel {
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.fail;
 
-    public static final PMML_MODEL PMML_MODEL_TYPE = PMML_MODEL.REGRESSION_MODEL;
+public class TreeModelImplementationProviderTest {
 
-    protected KiePMMLTestingModel(String name, List<KiePMMLExtension> extensions) {
-        super(name, extensions);
+    private static final TreeModelImplementationProvider PROVIDER= new TreeModelImplementationProvider();
+
+    @Test
+    public void getPMMLModelType(){
+        assertEquals(PMML_MODEL.TREE_MODEL,PROVIDER.getPMMLModelType());
     }
 
-    @Override
-    public Object evaluate(Map<String, Object> requestData) {
-        return null;
+    @Test
+    public void getKiePMMLModel() throws Exception {
+        // TODO
     }
 }

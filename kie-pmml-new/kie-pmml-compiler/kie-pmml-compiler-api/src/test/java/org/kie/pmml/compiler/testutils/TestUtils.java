@@ -51,7 +51,7 @@ public class TestUtils {
     }
 
     /**
-     * oad a <code>PMML</code> from the given <code>InputStream</code>
+     * Load a <code>PMML</code> from the given <code>InputStream</code>
      * @param is
      * @return
      * @throws SAXException
@@ -61,4 +61,6 @@ public class TestUtils {
     public static PMML loadFromInputStream(InputStream is) throws SAXException, JAXBException {
         return org.jpmml.model.PMMLUtil.unmarshal(is);
     }
+
+
 }

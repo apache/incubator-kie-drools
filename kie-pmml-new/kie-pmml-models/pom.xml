@@ -14,7 +14,9 @@
   <description>PMML Models Implementations</description>
 
   <modules>
+    <module>kie-pmml-models-drooled</module>
     <module>kie-pmml-models-regression</module>
+    <module>kie-pmml-models-tree</module>
   </modules>
 
 </project>

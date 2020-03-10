@@ -42,6 +42,10 @@ public abstract class KiePMMLBase {
         return parentId;
     }
 
+    public void setParentId(String parentId) {
+        this.parentId = parentId;
+    }
+
     public String getName() {
         return name;
     }

@@ -104,6 +104,12 @@
         <artifactId>kie-pmml-evaluator-assembler</artifactId>
         <version>${version.org.kie}</version>
       </dependency>
+      <!-- Drooled -->
+      <dependency>
+        <groupId>org.kie</groupId>
+        <artifactId>kie-pmml-models-drooled</artifactId>
+        <version>${version.org.kie}</version>
+      </dependency>
       <!-- Regression -->
       <dependency>
         <groupId>org.kie</groupId>
