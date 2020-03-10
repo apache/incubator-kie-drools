@@ -4,16 +4,29 @@
   <modelVersion>4.0.0</modelVersion>
   <parent>
     <groupId>org.kie.kogito</groupId>
-    <artifactId>kogito-cloud</artifactId>
+    <artifactId>kogito-runtimes</artifactId>
     <version>8.0.0-SNAPSHOT</version>
   </parent>
+
   <artifactId>kogito-cloud-services</artifactId>
   <packaging>pom</packaging>
   <name>Kogito Cloud Services</name>
   <description>Kogito Cloud Services</description>
 
+  <dependencyManagement>
+    <dependencies>
+      <dependency>
+        <groupId>org.kie.kogito</groupId>
+        <artifactId>kogito-bom</artifactId>
+        <version>${project.version}</version>
+        <type>pom</type>
+        <scope>import</scope>
+      </dependency>
+    </dependencies>
+  </dependencyManagement>
+
   <modules>
-    <module>kogito-cloud-workitems</module>
     <module>kogito-cloud-kubernetes-client</module>
+    <module>kogito-cloud-workitems</module>
   </modules>
 </project>

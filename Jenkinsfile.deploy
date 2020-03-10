@@ -35,16 +35,6 @@ pipeline {
                 }
             }
         }
-        stage('Build kogito-cloud') {
-            steps {
-                checkout([$class: 'GitSCM', branches: [[name: 'master']], browser: [$class: 'GithubWeb', repoUrl: 'git@github.com:kiegroup/kogito-cloud.git'], doGenerateSubmoduleConfigurations: false, extensions: [[$class: 'RelativeTargetDirectory', relativeTargetDir: 'kogito-cloud']], submoduleCfg: [], userRemoteConfigs: [[credentialsId: 'kie-ci-user-key', url: 'git@github.com:kiegroup/kogito-cloud.git']]])
-                dir("kogito-cloud") {
-                    script {
-                        maven.runMavenWithSubmarineSettings('clean deploy', false)
-                    }
-                }
-            }
-        }
         stage('Build kogito-examples') {
             steps {
                 checkout([$class: 'GitSCM', branches: [[name: 'master']], browser: [$class: 'GithubWeb', repoUrl: 'git@github.com:kiegroup/kogito-examples.git'], doGenerateSubmoduleConfigurations: false, extensions: [[$class: 'RelativeTargetDirectory', relativeTargetDir: 'kogito-examples']], submoduleCfg: [], userRemoteConfigs: [[credentialsId: 'kie-ci-user-key', url: 'git@github.com:kiegroup/kogito-examples.git']]])
