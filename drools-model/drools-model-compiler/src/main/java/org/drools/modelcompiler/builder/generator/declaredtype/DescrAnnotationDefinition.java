@@ -72,12 +72,10 @@ public class DescrAnnotationDefinition implements AnnotationDefinition {
     }
 
     private void setAnnotationValues(Class<?> annotationClass) {
-        List<String> transformedValues = new ArrayList<>();
-        for (Map.Entry<String, Object> entry : ann.getValueMap().entrySet()) {
-            transformedValues.add(parseValue(annotationClass, entry.getKey(), entry.getValue()));
-        }
-
-        this.values = transformedValues.stream().collect(Collectors.toMap(s -> VALUE, s -> s));
+        this.values = ann.getValueMap().entrySet()
+                .stream()
+                .collect(Collectors.toMap(Map.Entry::getKey,
+                                          e -> parseValue(annotationClass, e.getKey(), e.getValue())));
     }
 
     private String parseValue(Class<?> annotationClass, String valueName, Object valueObject) {

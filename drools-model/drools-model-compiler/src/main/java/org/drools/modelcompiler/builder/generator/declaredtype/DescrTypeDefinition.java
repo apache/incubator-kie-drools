@@ -50,12 +50,6 @@ public class DescrTypeDefinition implements TypeDefinition {
                 serialVersionField.setStatic(true);
                 typeFieldDefinition.add(serialVersionField);
             }
-            processAnnotations();
-        }
-    }
-
-    private void processAnnotations() {
-        for (AnnotationDescr ann : typeDeclarationDescr.getAnnotations()) {
             annotations.add(new DescrAnnotationDefinition(ann));
         }
     }
