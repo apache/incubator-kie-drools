@@ -75,8 +75,7 @@ public class DescrTypeDefinition implements TypeDefinition {
     }
 
     @Override
-    public Optional<String>
-    getSuperTypeName() {
+    public Optional<String> getSuperTypeName() {
         return Optional.ofNullable(typeDeclarationDescr.getSuperTypeName());
     }
 
@@ -90,28 +89,23 @@ public class DescrTypeDefinition implements TypeDefinition {
         return javaDocComment;
     }
 
-    private Optional<TypeDeclarationDescr> getSuperType(TypeDeclarationDescr typeDeclarationDescr) {
-        if (getSuperTypeName() != null) {
-            return packageDescr
-                    .getTypeDeclarations()
-                    .stream()
-                    .filter(td -> {
-                        String superTypeName = typeDeclarationDescr.getSuperTypeName();
-                        return td.getTypeName().equals(superTypeName);
-                    })
-                    .findFirst();
-        }
-        return Optional.empty();
+    private static Optional<TypeDeclarationDescr> getSuperType(TypeDeclarationDescr typeDeclarationDescr, PackageDescr packageDescr) {
+        return Optional.ofNullable(typeDeclarationDescr.getSuperTypeName())
+                .flatMap(superTypeName -> packageDescr
+                        .getTypeDeclarations()
+                        .stream()
+                        .filter(td -> td.getTypeName().equals(superTypeName))
+                        .findFirst());
     }
 
     @Override
     public List<TypeFieldDefinition> findInheritedDeclaredFields() {
-        return findInheritedDeclaredFields(new ArrayList<>(), getSuperType(typeDeclarationDescr));
+        return findInheritedDeclaredFields(new ArrayList<>(), getSuperType(typeDeclarationDescr, packageDescr));
     }
 
     private List<TypeFieldDefinition> findInheritedDeclaredFields(List<TypeFieldDefinition> fields, Optional<TypeDeclarationDescr> superType) {
         superType.ifPresent(st -> {
-            findInheritedDeclaredFields(fields, getSuperType(st));
+            findInheritedDeclaredFields(fields, getSuperType(st, packageDescr));
             st.getFields()
                     .values()
                     .stream()
@@ -157,7 +151,7 @@ public class DescrTypeDefinition implements TypeDefinition {
         Stream<TypeFieldDefinition> keyFields = typeFieldDefinition.stream().filter(TypeFieldDefinition::isKeyField);
 
         Stream<TypeFieldDefinition> superTypeKieFields =
-                optionalToStream(getSuperType(this.typeDeclarationDescr).map(st -> new DescrTypeDefinition(packageDescr, st)))
+                optionalToStream(getSuperType(this.typeDeclarationDescr, packageDescr).map(st -> new DescrTypeDefinition(packageDescr, st)))
                         .flatMap(t -> t.getKeyFields().stream());
 
         return Stream.concat(keyFields, superTypeKieFields).collect(Collectors.toList());
