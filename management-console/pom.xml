@@ -160,28 +160,30 @@
             <artifactId>frontend-maven-plugin</artifactId>
             <executions>
               <execution>
-                <!--
-                  Install node and yarn for the plugin to have a copy.
-                -->
-                <id>install node and yarn</id>
+                <id>install-node-and-npm</id>
+                <goals>
+                  <goal>install-node-and-npm</goal>
+                </goals>
+                <configuration>
+                  <nodeVersion>${version.node}</nodeVersion>
+                  <npmVersion>${version.npm}</npmVersion>
+                </configuration>
+              </execution>
+              <execution>
+                <id>install-node-and-yarn</id>
                 <goals>
                   <goal>install-node-and-yarn</goal>
                 </goals>
                 <configuration>
-                  <!-- Make sure these match the version you installed on your system -->
                   <nodeVersion>${version.node}</nodeVersion>
                   <yarnVersion>${version.yarn}</yarnVersion>
                 </configuration>
               </execution>
               <execution>
-                <!--
-                  Run yarn install when having updated dependencies
-                  -->
                 <id>yarn install</id>
                 <goals>
                   <goal>yarn</goal>
                 </goals>
-                <!-- Optional configuration which provides for running any yarn command -->
                 <configuration>
                   <npmRegistryURL>${env.NPM_REGISTRY_URL}</npmRegistryURL>
                   <arguments>install</arguments>
