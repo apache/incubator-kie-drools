@@ -71,8 +71,8 @@ public class DescrTypeDefinition implements TypeDefinition {
     }
 
     @Override
-    public List<AnnotationDefinition> getAnnotations() {
-        return annotations;
+    public List<AnnotationDefinition> getAnnotationsToBeAdded() {
+        return annotations.stream().filter(AnnotationDefinition::shouldAddAnnotation).collect(toList());
     }
 
     @Override

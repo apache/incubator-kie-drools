@@ -7,4 +7,6 @@ public interface AnnotationDefinition {
     String getName();
 
     Map<String, String> getValueMap();
+
+    boolean shouldAddAnnotation();
 }

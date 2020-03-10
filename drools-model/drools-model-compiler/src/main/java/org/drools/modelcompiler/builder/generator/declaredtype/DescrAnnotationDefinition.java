@@ -3,6 +3,7 @@ package org.drools.modelcompiler.builder.generator.declaredtype;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Optional;
 
 import org.drools.compiler.lang.descr.AnnotationDescr;
 import org.drools.modelcompiler.builder.generator.declaredtype.api.AnnotationDefinition;
@@ -18,6 +19,8 @@ public class DescrAnnotationDefinition implements AnnotationDefinition {
     static final String VALUE = "value";
 
     private static final Map<String, Class<?>> annotationMapping = new HashMap<>();
+
+    private boolean shouldAddAnnotation = true;
 
     static {
         annotationMapping.put("role", Role.class);
@@ -47,7 +50,11 @@ public class DescrAnnotationDefinition implements AnnotationDefinition {
 
     public DescrAnnotationDefinition(AnnotationDescr ann) {
         this.ann = ann;
-        this.name = annotationMapping.get(ann.getName()).getName();
+        Optional<? extends Class<?>> annotationClass = Optional.ofNullable(annotationMapping.get(ann.getName()));
+        if(!annotationClass.isPresent()) {
+            shouldAddAnnotation = false;
+        }
+        this.name = annotationClass.map(Class::getName).orElse(ann.getName());
     }
 
     public static AnnotationDefinition createPositionAnnotation(int position) {
@@ -63,6 +70,11 @@ public class DescrAnnotationDefinition implements AnnotationDefinition {
     @Override
     public Map<String, String> getValueMap() {
         return values;
+    }
+
+    @Override
+    public boolean shouldAddAnnotation() {
+        return shouldAddAnnotation;
     }
 
     public boolean isKey() {

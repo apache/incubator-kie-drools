@@ -69,7 +69,7 @@ public class GeneratedClassDeclaration {
     public ClassOrInterfaceDeclaration toClassDeclaration() {
         String generatedClassName = typeDefinition.getTypeName();
         generatedClass = createBasicDeclaredClass(generatedClassName);
-        addAnnotations(generatedClass, typeDefinition.getAnnotations());
+        addAnnotations(generatedClass, typeDefinition.getAnnotationsToBeAdded());
 
         Collection<TypeFieldDefinition> inheritedFields = typeDefinition.findInheritedDeclaredFields();
         if (inheritedFields.isEmpty() && typeDefinition.getFields().isEmpty()) {

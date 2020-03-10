@@ -13,7 +13,7 @@ public interface TypeDefinition {
 
     Optional<String> getSuperTypeName();
 
-    List<AnnotationDefinition> getAnnotations();
+    List<AnnotationDefinition> getAnnotationsToBeAdded();
 
     List<TypeFieldDefinition> findInheritedDeclaredFields();
 
