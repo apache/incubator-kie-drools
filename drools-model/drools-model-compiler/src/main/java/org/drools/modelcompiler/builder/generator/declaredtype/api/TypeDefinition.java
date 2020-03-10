@@ -1,6 +1,7 @@
 package org.drools.modelcompiler.builder.generator.declaredtype.api;
 
 import java.util.List;
+import java.util.Optional;
 
 public interface TypeDefinition {
 
@@ -10,7 +11,7 @@ public interface TypeDefinition {
 
     List<TypeFieldDefinition> getKeyFields();
 
-    String getSuperTypeName();
+    Optional<String> getSuperTypeName();
 
     List<AnnotationDefinition> getAnnotations();
 

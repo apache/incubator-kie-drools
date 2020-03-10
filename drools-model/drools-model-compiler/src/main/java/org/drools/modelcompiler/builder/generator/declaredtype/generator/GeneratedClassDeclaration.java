@@ -94,7 +94,9 @@ public class GeneratedClassDeclaration {
     }
 
     private ClassOrInterfaceDeclaration generateFullClass(String generatedClassName, Collection<TypeFieldDefinition> inheritedFields) {
-        boolean hasSuper = generateInheritanceDefinition();
+        generateInheritanceDefinition();
+
+        boolean hasSuper = typeDefinition.getSuperTypeName().isPresent();
 
         generatedHashcode = new GeneratedHashcode(hasSuper);
         generatedToString = new GeneratedToString(generatedClassName);
@@ -120,23 +122,21 @@ public class GeneratedClassDeclaration {
         return generatedClass;
     }
 
-    private boolean generateInheritanceDefinition() {
-        boolean hasSuper = typeDefinition.getSuperTypeName() != null;
-        if (hasSuper) {
-            Optional<Class<?>> optResolvedSuper = typeResolver.resolveType(typeDefinition.getSuperTypeName());
+    private void generateInheritanceDefinition() {
+        typeDefinition.getSuperTypeName().ifPresent( superTypeName -> {
+            Optional<Class<?>> optResolvedSuper = typeResolver.resolveType(superTypeName);
             optResolvedSuper.ifPresent(resolvedSuper -> {
                 if (resolvedSuper.isInterface()) {
-                    generatedClass.addImplementedType(typeDefinition.getSuperTypeName());
+                    generatedClass.addImplementedType(superTypeName);
                 } else {
-                    generatedClass.addExtendedType(typeDefinition.getSuperTypeName());
+                    generatedClass.addExtendedType(superTypeName);
                 }
             });
 
             if (!optResolvedSuper.isPresent()) {
-                generatedClass.addExtendedType(typeDefinition.getSuperTypeName());
+                generatedClass.addExtendedType(superTypeName);
             }
-        }
-        return hasSuper;
+        });
     }
 
     private void processTypeField(TypeFieldDefinition typeFieldDescr) {

@@ -75,8 +75,9 @@ public class DescrTypeDefinition implements TypeDefinition {
     }
 
     @Override
-    public String getSuperTypeName() {
-        return typeDeclarationDescr.getSuperTypeName();
+    public Optional<String>
+    getSuperTypeName() {
+        return Optional.ofNullable(typeDeclarationDescr.getSuperTypeName());
     }
 
     @Override
