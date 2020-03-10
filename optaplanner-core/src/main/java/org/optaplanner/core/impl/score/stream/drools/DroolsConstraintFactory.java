@@ -25,8 +25,6 @@ import java.util.function.LongSupplier;
 
 import org.drools.model.Global;
 import org.drools.model.impl.ModelImpl;
-import org.drools.modelcompiler.builder.KieBaseBuilder;
-import org.kie.api.KieBase;
 import org.optaplanner.core.api.score.holder.AbstractScoreHolder;
 import org.optaplanner.core.api.score.stream.Constraint;
 import org.optaplanner.core.api.score.stream.uni.UniConstraintStream;
@@ -95,9 +93,7 @@ public final class DroolsConstraintFactory<Solution_> implements InnerConstraint
             droolsConstraintList.add(droolsConstraint);
             model.addRule(droolsConstraint.createRule(scoreHolderGlobal));
         }
-        // TODO when trace is active, show the Rule (DRL or exectable model) in logging
-        KieBase kieBase = KieBaseBuilder.createKieBaseFromModel(model);
-        return new DroolsConstraintSessionFactory<>(solutionDescriptor, kieBase, droolsConstraintList);
+        return new DroolsConstraintSessionFactory<>(solutionDescriptor, model, droolsConstraintList);
     }
 
     // ************************************************************************

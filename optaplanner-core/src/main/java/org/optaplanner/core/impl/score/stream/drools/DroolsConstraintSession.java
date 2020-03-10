@@ -1,5 +1,5 @@
 /*
- * Copyright 2019 Red Hat, Inc. and/or its affiliates.
+ * Copyright 2020 Red Hat, Inc. and/or its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -28,12 +28,10 @@ import org.optaplanner.core.impl.score.stream.ConstraintSession;
 
 public class DroolsConstraintSession<Solution_> implements ConstraintSession<Solution_> {
 
-    private final boolean constraintMatchEnabled;
     private final KieSession kieSession;
     private final ScoreHolder scoreHolder;
 
-    public DroolsConstraintSession(boolean constraintMatchEnabled, KieSession kieSession, ScoreHolder scoreHolder) {
-        this.constraintMatchEnabled = constraintMatchEnabled;
+    public DroolsConstraintSession(KieSession kieSession, ScoreHolder scoreHolder) {
         this.kieSession = kieSession;
         this.scoreHolder = scoreHolder;
     }
