@@ -178,6 +178,8 @@ public class DescrTypeDefinition implements TypeDefinition {
             } else if (annotationDefinition.isClassLevelAnnotation()) {
                 annotations.add(new DescrAnnotationDefinition(annotationDefinition.getName(),
                                                               quote(typeField.getFieldName())));
+            } else {
+                typeField.addAnnotation(annotationDefinition);
             }
         }
 

@@ -26,8 +26,6 @@ public class DescrAnnotationDefinition implements AnnotationDefinition {
 
     private static final Map<String, Class<?>> annotationMapping = new HashMap<>();
 
-    private boolean shouldAddAnnotation = true;
-
     static {
         annotationMapping.put("role", Role.class);
         annotationMapping.put("duration", Duration.class);
@@ -58,16 +56,23 @@ public class DescrAnnotationDefinition implements AnnotationDefinition {
         this.ann = ann;
         Optional<Class<?>> optAnnotationClass = Optional.ofNullable(annotationMapping.get(ann.getName()));
 
-        optAnnotationClass.ifPresent(this::setAnnotationValues);
 
-        if (!optAnnotationClass.isPresent()) {
-            shouldAddAnnotation = false;
-        }
+        this.values = optAnnotationClass
+                .map(this::transformedAnnotationValues)
+                .orElse(quoteAnnotationValues());
+
         this.name = optAnnotationClass.map(Class::getName).orElse(ann.getName());
     }
 
-    private void setAnnotationValues(Class<?> annotationClass) {
-        this.values = ann.getValueMap().entrySet()
+    private Map<String, String> quoteAnnotationValues() {
+        return ann.getValueMap().entrySet()
+                .stream()
+                .collect(Collectors.toMap(Map.Entry::getKey,
+                                          e -> parseAnnotationValue(e.getValue())));
+    }
+
+    private Map<String, String> transformedAnnotationValues(Class<?> annotationClass) {
+        return ann.getValueMap().entrySet()
                 .stream()
                 .collect(Collectors.toMap(Map.Entry::getKey,
                                           e -> parseValue(annotationClass, e.getKey(), e.getValue())));
@@ -122,7 +127,7 @@ public class DescrAnnotationDefinition implements AnnotationDefinition {
 
     @Override
     public boolean shouldAddAnnotation() {
-        return shouldAddAnnotation;
+        return name.equals("serialVersionUID");
     }
 
     public boolean isKey() {
