@@ -18,6 +18,6 @@ public class RuleUnitComponentFactoryImplTest {
     public void createRuleUnitDescriptionFromString() {
         RuleUnitComponentFactoryImpl r = new RuleUnitComponentFactoryImpl();
         KnowledgePackageImpl fooBar = new KnowledgePackageImpl("org.drools.ruleunit");
-        assertNull(r.createRuleUnitDescription(fooBar, org.drools.ruleunit.TestRuleUnit.class));
+        assertNull(r.createRuleUnitDescription(fooBar, "org.drools.ruleunit.TestRuleUnit.class"));
     }
 }
