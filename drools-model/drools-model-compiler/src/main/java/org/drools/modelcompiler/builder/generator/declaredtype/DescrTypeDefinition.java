@@ -6,7 +6,6 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
-import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 import org.drools.compiler.lang.descr.AnnotationDescr;
@@ -23,7 +22,9 @@ import org.kie.api.definition.type.Position;
 import org.kie.api.definition.type.Role;
 import org.kie.api.definition.type.Timestamp;
 
+import static java.util.Optional.ofNullable;
 import static java.util.stream.Collectors.joining;
+import static java.util.stream.Collectors.toList;
 import static org.drools.core.util.StreamUtils.optionalToStream;
 
 public class DescrTypeDefinition implements TypeDefinition {
@@ -76,7 +77,7 @@ public class DescrTypeDefinition implements TypeDefinition {
 
     @Override
     public Optional<String> getSuperTypeName() {
-        return Optional.ofNullable(typeDeclarationDescr.getSuperTypeName());
+        return ofNullable(typeDeclarationDescr.getSuperTypeName());
     }
 
     @Override
@@ -89,8 +90,9 @@ public class DescrTypeDefinition implements TypeDefinition {
         return javaDocComment;
     }
 
-    private static Optional<TypeDeclarationDescr> getSuperType(TypeDeclarationDescr typeDeclarationDescr, PackageDescr packageDescr) {
-        return Optional.ofNullable(typeDeclarationDescr.getSuperTypeName())
+    private static Optional<TypeDeclarationDescr> getSuperType(TypeDeclarationDescr typeDeclarationDescr,
+                                                               PackageDescr packageDescr) {
+        return ofNullable(typeDeclarationDescr.getSuperTypeName())
                 .flatMap(superTypeName -> packageDescr
                         .getTypeDeclarations()
                         .stream()
@@ -151,43 +153,55 @@ public class DescrTypeDefinition implements TypeDefinition {
         Stream<TypeFieldDefinition> keyFields = typeFieldDefinition.stream().filter(TypeFieldDefinition::isKeyField);
 
         Stream<TypeFieldDefinition> superTypeKieFields =
-                optionalToStream(getSuperType(this.typeDeclarationDescr, packageDescr).map(st -> new DescrTypeDefinition(packageDescr, st)))
+                optionalToStream(getSuperType(this.typeDeclarationDescr, packageDescr)
+                                         .map(superType -> new DescrTypeDefinition(packageDescr, superType)))
                         .flatMap(t -> t.getKeyFields().stream());
 
-        return Stream.concat(keyFields, superTypeKieFields).collect(Collectors.toList());
+        return Stream.concat(keyFields, superTypeKieFields).collect(toList());
     }
 
     private List<TypeFieldDefinition> processFields() {
         List<TypeFieldDescr> sortedTypeFields = typeFieldsSortedByPosition();
 
         List<TypeFieldDefinition> allFields = new ArrayList<>();
-        int position = findInheritedDeclaredFields().size();
-
         for (TypeFieldDescr typeFieldDescr : sortedTypeFields) {
-            DescrFieldDefinition f = new DescrFieldDefinition(typeFieldDescr);
-
-            allFields.add(f);
-            boolean hasPositionAnnotation = false;
-            for (AnnotationDescr ann : typeFieldDescr.getAnnotations()) {
-                if (ann.getName().equalsIgnoreCase("key")) {
-                    f.setKeyField(true);
-                    f.addAnnotation(Key.class.getName());
-                } else if (ann.getName().equalsIgnoreCase("position")) {
-                    f.addAnnotation(Position.class.getName(), String.valueOf(ann.getValue()));
-                    position++;
-                    hasPositionAnnotation = true;
-                } else if (ann.getName().equalsIgnoreCase("duration") || ann.getName().equalsIgnoreCase("expires") || ann.getName().equalsIgnoreCase("timestamp")) {
-                    Class<?> annotationClass = predefinedClassLevelAnnotation.get(ann.getName().toLowerCase());
-                    String annFqn = annotationClass.getCanonicalName();
-                    annotations.add(new DescrAnnotationDefinition(annFqn, ""));
-                }
-            }
-
-            if (!hasPositionAnnotation) {
-                f.addAnnotation(Position.class.getName(), String.valueOf(position++));
-            }
+            allFields.add(processTypeField(findInheritedDeclaredFields().size(), typeFieldDescr));
         }
         return allFields;
+    }
+
+    private DescrFieldDefinition processTypeField(int initialPosition, TypeFieldDescr typeFieldDescr) {
+        DescrFieldDefinition typeField = new DescrFieldDefinition(typeFieldDescr);
+
+        int position = initialPosition;
+        boolean hasPositionAnnotation = false;
+
+        for (AnnotationDescr ann : typeFieldDescr.getAnnotations()) {
+            if (isDroolsAnnotation(ann, "key")) {
+                typeField.setKeyField(true);
+                typeField.addAnnotation(Key.class.getName());
+            } else if (isDroolsAnnotation(ann, "position")) {
+                typeField.addAnnotation(Position.class.getName(), String.valueOf(ann.getValue()));
+                position++;
+                hasPositionAnnotation = true;
+            } else if (isDroolsAnnotation(ann, "duration") ||
+                    isDroolsAnnotation(ann, "expires") ||
+                    isDroolsAnnotation(ann, "timestamp")) {
+                Class<?> annotationClass = predefinedClassLevelAnnotation.get(ann.getName().toLowerCase());
+                String annFqn = annotationClass.getCanonicalName();
+                annotations.add(new DescrAnnotationDefinition(annFqn, ""));
+            }
+        }
+
+        if (!hasPositionAnnotation) {
+            typeField.addAnnotation(Position.class.getName(), String.valueOf(position++));
+        }
+
+        return typeField;
+    }
+
+    private boolean isDroolsAnnotation(AnnotationDescr ann, String key) {
+        return ann.getName().equalsIgnoreCase(key);
     }
 
     // TODO move all annotations processing to AnnotationDefinition
@@ -195,7 +209,6 @@ public class DescrTypeDefinition implements TypeDefinition {
         for (AnnotationDescr ann : typeDeclarationDescr.getAnnotations()) {
             annotations.add(new DescrAnnotationDefinition(ann.getName(), "", String.valueOf(ann.getValues())));
         }
-
 
         List<AnnotationDescr> softAnnotations = new ArrayList<>(); // find soft annotations
         if (!softAnnotations.isEmpty()) {
