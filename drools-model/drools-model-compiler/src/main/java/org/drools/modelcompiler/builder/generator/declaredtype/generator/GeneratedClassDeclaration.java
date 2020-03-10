@@ -139,30 +139,30 @@ public class GeneratedClassDeclaration {
         });
     }
 
-    private void processTypeField(TypeFieldDefinition typeFieldDescr) {
-        String fieldName = typeFieldDescr.getFieldName();
-        Type returnType = parseType(typeFieldDescr.getObjectType());
+    private void processTypeField(TypeFieldDefinition typeFieldDefinition) {
+        String fieldName = typeFieldDefinition.getFieldName();
+        Type returnType = parseType(typeFieldDefinition.getObjectType());
 
-        Modifier.Keyword[] modifiers = modifiers(typeFieldDescr);
+        Modifier.Keyword[] modifiers = modifiers(typeFieldDefinition);
 
         FieldDeclaration field;
-        if (typeFieldDescr.getInitExpr() == null) {
+        if (typeFieldDefinition.getInitExpr() == null) {
             field = generatedClass.addField(returnType, fieldName, modifiers);
         } else {
-            field = generatedClass.addFieldWithInitializer(returnType, fieldName, parseExpression(typeFieldDescr.getInitExpr()), modifiers);
+            field = generatedClass.addFieldWithInitializer(returnType, fieldName, parseExpression(typeFieldDefinition.getInitExpr()), modifiers);
         }
 
-        if (typeFieldDescr.createAccessors()) {
+        if (typeFieldDefinition.createAccessors()) {
             field.createSetter();
             MethodDeclaration getter = field.createGetter();
 
-            if (typeFieldDescr.isKeyField()) {
+            if (typeFieldDefinition.isKeyField()) {
                 generatedEqualsMethod.add(getter, fieldName);
                 generatedHashcode.addHashCodeForField(fieldName, getter.getType());
             }
         }
 
-        addAnnotations(field, typeFieldDescr.getAnnotations());
+        addAnnotations(field, typeFieldDefinition.getAnnotations());
 
         generatedToString.add(format("+ {0}+{1}", quote(fieldName + "="), fieldName));
     }
@@ -176,13 +176,13 @@ public class GeneratedClassDeclaration {
         }
     }
 
-    private Modifier.Keyword[] modifiers(TypeFieldDefinition typeFieldDescr) {
+    private Modifier.Keyword[] modifiers(TypeFieldDefinition typeFieldDefinition) {
         List<Modifier.Keyword> modifiers = new ArrayList<>();
         modifiers.add(Modifier.privateModifier().getKeyword());
 
-        if (typeFieldDescr.isStatic()) {
+        if (typeFieldDefinition.isStatic()) {
             modifiers.add(Modifier.staticModifier().getKeyword());
-        } else if (typeFieldDescr.isFinal()) {
+        } else if (typeFieldDefinition.isFinal()) {
             modifiers.add(Modifier.finalModifier().getKeyword());
         }
 
