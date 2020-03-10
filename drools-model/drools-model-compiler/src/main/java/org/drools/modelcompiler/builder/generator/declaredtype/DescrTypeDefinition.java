@@ -153,17 +153,21 @@ public class DescrTypeDefinition implements TypeDefinition {
     private List<TypeFieldDefinition> processFields() {
         List<TypeFieldDescr> sortedTypeFields = typeFieldsSortedByPosition();
 
+        int position = findInheritedDeclaredFields().size();
         List<TypeFieldDefinition> allFields = new ArrayList<>();
         for (TypeFieldDescr typeFieldDescr : sortedTypeFields) {
-            allFields.add(processTypeField(findInheritedDeclaredFields().size(), typeFieldDescr));
+            ProcessedTypeField processedTypeField = processTypeField(position, typeFieldDescr);
+
+            allFields.add(processedTypeField.fieldDefinition);
+            position = processedTypeField.position;
         }
         return allFields;
     }
 
-    private DescrFieldDefinition processTypeField(int initialPosition, TypeFieldDescr typeFieldDescr) {
+    private ProcessedTypeField processTypeField(int position, TypeFieldDescr typeFieldDescr) {
         DescrFieldDefinition typeField = new DescrFieldDefinition(typeFieldDescr);
 
-        int position = initialPosition;
+        int currentFieldPosition = position;
         boolean hasPositionAnnotation = false;
 
         for (AnnotationDescr ann : typeFieldDescr.getAnnotations()) {
@@ -173,7 +177,7 @@ public class DescrTypeDefinition implements TypeDefinition {
                 typeField.setKeyField(true);
                 typeField.addAnnotation(annotationDefinition);
             } else if(annotationDefinition.isPosition()) {
-                position++;
+                currentFieldPosition++;
                 hasPositionAnnotation = true;
                 typeField.addAnnotation(annotationDefinition);
             } else if (annotationDefinition.isClassLevelAnnotation()) {
@@ -182,10 +186,20 @@ public class DescrTypeDefinition implements TypeDefinition {
         }
 
         if (!hasPositionAnnotation) {
-            typeField.addPositionAnnotation(++position);
+            typeField.addPositionAnnotation(currentFieldPosition++);
         }
 
-        return typeField;
+        return new ProcessedTypeField(typeField, currentFieldPosition);
+    }
+
+    static class ProcessedTypeField {
+        DescrFieldDefinition fieldDefinition;
+        Integer position;
+
+        public ProcessedTypeField(DescrFieldDefinition fieldDefinition, Integer position) {
+            this.fieldDefinition = fieldDefinition;
+            this.position = position;
+        }
     }
 
 }
