@@ -18,6 +18,7 @@ import org.drools.modelcompiler.builder.generator.declaredtype.api.TypeFieldDefi
 import static java.util.Optional.ofNullable;
 import static java.util.stream.Collectors.toList;
 import static org.drools.core.util.StreamUtils.optionalToStream;
+import static org.drools.modelcompiler.builder.generator.declaredtype.POJOGenerator.quote;
 
 public class DescrTypeDefinition implements TypeDefinition {
 
@@ -175,7 +176,8 @@ public class DescrTypeDefinition implements TypeDefinition {
                 hasPositionAnnotation = true;
                 typeField.addAnnotation(annotationDefinition);
             } else if (annotationDefinition.isClassLevelAnnotation()) {
-                annotations.add(annotationDefinition);
+                annotations.add(new DescrAnnotationDefinition(annotationDefinition.getName(),
+                                                              quote(typeField.getFieldName())));
             }
         }
 

@@ -1,16 +1,12 @@
 package org.drools.modelcompiler.builder.generator.declaredtype;
 
-import java.lang.reflect.Array;
-import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
-import org.drools.compiler.compiler.AnnotationDeclarationError;
 import org.drools.compiler.lang.descr.AnnotationDescr;
 import org.drools.modelcompiler.builder.generator.declaredtype.api.AnnotationDefinition;
 import org.kie.api.definition.type.Duration;
@@ -22,7 +18,6 @@ import org.kie.api.definition.type.Timestamp;
 
 import static java.util.Collections.singletonMap;
 import static java.util.stream.Collectors.joining;
-import static java.util.stream.Collectors.toMap;
 import static org.drools.modelcompiler.builder.generator.declaredtype.POJOGenerator.quote;
 
 public class DescrAnnotationDefinition implements AnnotationDefinition {
