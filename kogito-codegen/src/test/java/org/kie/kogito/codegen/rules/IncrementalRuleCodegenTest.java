@@ -29,7 +29,6 @@ import org.kie.api.io.ResourceType;
 import org.kie.kogito.codegen.GeneratedFile;
 
 import static java.util.Arrays.asList;
-
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 
@@ -138,6 +137,17 @@ public class IncrementalRuleCodegenTest {
         incrementalRuleCodegen.setPackageName("com.acme");
         assertThrows(RuleCodegenError.class, incrementalRuleCodegen.withHotReloadMode()::generate);
     }
+
+    @Test
+    public void raiseErrorOnBadOOPath() {
+        IncrementalRuleCodegen incrementalRuleCodegen =
+                IncrementalRuleCodegen.ofFiles(
+                        Collections.singleton(
+                                new File("src/test/resources/org/kie/kogito/codegen/brokenrules/brokenunit/ABrokenUnit.drl")));
+        incrementalRuleCodegen.setPackageName("com.acme");
+        assertThrows(RuleCodegenError.class, incrementalRuleCodegen.withHotReloadMode()::generate);
+    }
+
 
     @Test
     public void throwWhenDtableDependencyMissing() {

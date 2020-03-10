@@ -32,6 +32,15 @@ public class RuleCodegenError extends Error {
         this.errors = errors;
     }
 
+    public RuleCodegenError(Exception ex, DroolsError... errors) {
+        super("Errors were generated during the code-generation process:\n" +
+                      ex.getMessage() + "\n" +
+                      Arrays.stream(errors)
+                              .map(DroolsError::toString)
+                              .collect(Collectors.joining("\n")));
+        this.errors = errors;
+    }
+
     public DroolsError[] getErrors() {
         return errors;
     }

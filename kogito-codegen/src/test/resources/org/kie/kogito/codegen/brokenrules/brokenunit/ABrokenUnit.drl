@@ -1,0 +1,8 @@
+package org.kie.kogito.codegen.brokenrules.brokenunit;
+unit ABrokenUnit;
+
+rule invalidRule when
+    invalidOOPath: /values
+then
+    System.out.println("this cannot work");
+end

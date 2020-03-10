@@ -70,9 +70,8 @@ import org.kie.kogito.conf.EventProcessingType;
 import org.kie.kogito.rules.RuleUnitConfig;
 import org.kie.kogito.rules.units.AssignableChecker;
 
-import static java.util.stream.Collectors.toList;
-
 import static com.github.javaparser.StaticJavaParser.parse;
+import static java.util.stream.Collectors.toList;
 import static org.drools.compiler.kie.builder.impl.KieBuilderImpl.setDefaultsforEmptyKieModule;
 import static org.drools.core.util.IoUtils.readBytesFromInputStream;
 import static org.kie.api.io.ResourceType.determineResourceType;
@@ -233,7 +232,12 @@ public class IncrementalRuleCodegen extends AbstractGenerator {
 
         CompositeKnowledgeBuilder batch = modelBuilder.batch();
         resources.forEach(f -> batch.add(f, f.getResourceType()));
-        batch.build();
+
+        try {
+            batch.build();
+        } catch (RuntimeException e) {
+            throw new RuleCodegenError(e, modelBuilder.getErrors().getErrors());
+        }
 
         if (modelBuilder.hasErrors()) {
             throw new RuleCodegenError(modelBuilder.getErrors().getErrors());
