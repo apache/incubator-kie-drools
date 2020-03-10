@@ -2,7 +2,6 @@ package org.drools.modelcompiler.builder.generator.declaredtype;
 
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
@@ -15,21 +14,13 @@ import org.drools.compiler.lang.descr.TypeFieldDescr;
 import org.drools.modelcompiler.builder.generator.declaredtype.api.AnnotationDefinition;
 import org.drools.modelcompiler.builder.generator.declaredtype.api.TypeDefinition;
 import org.drools.modelcompiler.builder.generator.declaredtype.api.TypeFieldDefinition;
-import org.kie.api.definition.type.Duration;
-import org.kie.api.definition.type.Expires;
-import org.kie.api.definition.type.Key;
-import org.kie.api.definition.type.Position;
-import org.kie.api.definition.type.Role;
-import org.kie.api.definition.type.Timestamp;
 
 import static java.util.Optional.ofNullable;
-import static java.util.stream.Collectors.joining;
 import static java.util.stream.Collectors.toList;
 import static org.drools.core.util.StreamUtils.optionalToStream;
 
 public class DescrTypeDefinition implements TypeDefinition {
 
-    private static final Map<String, Class<?>> predefinedClassLevelAnnotation = new HashMap<>();
     private static final String SERIAL_VERSION_UID = "serialVersionUID";
 
     private List<AnnotationDefinition> annotations = new ArrayList<>();
@@ -37,13 +28,6 @@ public class DescrTypeDefinition implements TypeDefinition {
     private final PackageDescr packageDescr;
 
     private String javaDocComment = "";
-
-    static {
-        predefinedClassLevelAnnotation.put("role", Role.class);
-        predefinedClassLevelAnnotation.put("duration", Duration.class);
-        predefinedClassLevelAnnotation.put("expires", Expires.class);
-        predefinedClassLevelAnnotation.put("timestamp", Timestamp.class);
-    }
 
     private final TypeDeclarationDescr typeDeclarationDescr;
     private final List<TypeFieldDefinition> typeFieldDefinition;
@@ -67,6 +51,12 @@ public class DescrTypeDefinition implements TypeDefinition {
                 typeFieldDefinition.add(serialVersionField);
             }
             processAnnotations();
+        }
+    }
+
+    private void processAnnotations() {
+        for (AnnotationDescr ann : typeDeclarationDescr.getAnnotations()) {
+            annotations.add(new DescrAnnotationDefinition(ann));
         }
     }
 
@@ -177,43 +167,25 @@ public class DescrTypeDefinition implements TypeDefinition {
         boolean hasPositionAnnotation = false;
 
         for (AnnotationDescr ann : typeFieldDescr.getAnnotations()) {
-            if (isDroolsAnnotation(ann, "key")) {
+            DescrAnnotationDefinition annotationDefinition = new DescrAnnotationDefinition(ann);
+
+            if(annotationDefinition.isKey()) {
                 typeField.setKeyField(true);
-                typeField.addAnnotation(Key.class.getName());
-            } else if (isDroolsAnnotation(ann, "position")) {
-                typeField.addAnnotation(Position.class.getName(), String.valueOf(ann.getValue()));
+                typeField.addAnnotation(annotationDefinition);
+            } else if(annotationDefinition.isPosition()) {
                 position++;
                 hasPositionAnnotation = true;
-            } else if (isDroolsAnnotation(ann, "duration") ||
-                    isDroolsAnnotation(ann, "expires") ||
-                    isDroolsAnnotation(ann, "timestamp")) {
-                Class<?> annotationClass = predefinedClassLevelAnnotation.get(ann.getName().toLowerCase());
-                String annFqn = annotationClass.getCanonicalName();
-                annotations.add(new DescrAnnotationDefinition(annFqn, ""));
+                typeField.addAnnotation(annotationDefinition);
+            } else if (annotationDefinition.isClassLevelAnnotation()) {
+                annotations.add(annotationDefinition);
             }
         }
 
         if (!hasPositionAnnotation) {
-            typeField.addAnnotation(Position.class.getName(), String.valueOf(position++));
+            typeField.addPositionAnnotation(++position);
         }
 
         return typeField;
     }
 
-    private boolean isDroolsAnnotation(AnnotationDescr ann, String key) {
-        return ann.getName().equalsIgnoreCase(key);
-    }
-
-    // TODO move all annotations processing to AnnotationDefinition
-    private void processAnnotations() {
-        for (AnnotationDescr ann : typeDeclarationDescr.getAnnotations()) {
-            annotations.add(new DescrAnnotationDefinition(ann.getName(), "", String.valueOf(ann.getValues())));
-        }
-
-        List<AnnotationDescr> softAnnotations = new ArrayList<>(); // find soft annotations
-        if (!softAnnotations.isEmpty()) {
-            String softAnnDictionary = softAnnotations.stream().map(a -> "<dt>" + a.getName() + "</dt><dd>" + a.getValuesAsString() + "</dd>").collect(joining());
-            javaDocComment = ("<dl>" + softAnnDictionary + "</dl>");
-        }
-    }
 }

@@ -54,12 +54,21 @@ public class DescrFieldDefinition implements TypeFieldDefinition {
         return Arrays.asList(annotations.values().toArray(new AnnotationDefinition[0]));
     }
 
+    public void addAnnotation(AnnotationDefinition annotationDefinition) {
+        annotations.put(annotationDefinition.getName(), annotationDefinition);
+    }
+
     public void addAnnotation(String name) {
-        annotations.put(name, new DescrAnnotationDefinition(name, ""));
+        annotations.put(name, new DescrAnnotationDefinition(name));
     }
 
     public void addAnnotation(String name, String value) {
-        annotations.put(name, new DescrAnnotationDefinition(name, "", value));
+        annotations.put(name, new DescrAnnotationDefinition(name, value));
+    }
+
+    public void addPositionAnnotation(int position) {
+        AnnotationDefinition annotationDefinition = DescrAnnotationDefinition.createPositionAnnotation(position);
+        annotations.put(annotationDefinition.getName(), annotationDefinition);
     }
 
     @Override

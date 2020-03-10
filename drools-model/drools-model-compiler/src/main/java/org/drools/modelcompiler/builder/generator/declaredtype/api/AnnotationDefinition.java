@@ -7,6 +7,4 @@ public interface AnnotationDefinition {
     String getName();
 
     Map<String, String> getValueMap();
-
-    String getNamespace();
 }
