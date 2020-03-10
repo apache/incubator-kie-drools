@@ -1,10 +1,16 @@
 package org.drools.modelcompiler.builder.generator.declaredtype;
 
+import java.lang.reflect.Array;
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.Optional;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
+import org.drools.compiler.compiler.AnnotationDeclarationError;
 import org.drools.compiler.lang.descr.AnnotationDescr;
 import org.drools.modelcompiler.builder.generator.declaredtype.api.AnnotationDefinition;
 import org.kie.api.definition.type.Duration;
@@ -13,6 +19,11 @@ import org.kie.api.definition.type.Key;
 import org.kie.api.definition.type.Position;
 import org.kie.api.definition.type.Role;
 import org.kie.api.definition.type.Timestamp;
+
+import static java.util.Collections.singletonMap;
+import static java.util.stream.Collectors.joining;
+import static java.util.stream.Collectors.toMap;
+import static org.drools.modelcompiler.builder.generator.declaredtype.POJOGenerator.quote;
 
 public class DescrAnnotationDefinition implements AnnotationDefinition {
 
@@ -41,7 +52,7 @@ public class DescrAnnotationDefinition implements AnnotationDefinition {
     }
 
     public DescrAnnotationDefinition(String name, String singleValue) {
-        this(name, Collections.singletonMap(VALUE, singleValue));
+        this(name, singletonMap(VALUE, singleValue));
     }
 
     public DescrAnnotationDefinition(String name) {
@@ -50,16 +61,60 @@ public class DescrAnnotationDefinition implements AnnotationDefinition {
 
     public DescrAnnotationDefinition(AnnotationDescr ann) {
         this.ann = ann;
-        Optional<? extends Class<?>> annotationClass = Optional.ofNullable(annotationMapping.get(ann.getName()));
-        if(!annotationClass.isPresent()) {
+        Optional<Class<?>> optAnnotationClass = Optional.ofNullable(annotationMapping.get(ann.getName()));
+
+        optAnnotationClass.ifPresent(this::setAnnotationValues);
+
+        if (!optAnnotationClass.isPresent()) {
             shouldAddAnnotation = false;
         }
-        this.name = annotationClass.map(Class::getName).orElse(ann.getName());
+        this.name = optAnnotationClass.map(Class::getName).orElse(ann.getName());
+    }
+
+    private void setAnnotationValues(Class<?> annotationClass) {
+        List<String> transformedValues = new ArrayList<>();
+        for (Map.Entry<String, Object> entry : ann.getValueMap().entrySet()) {
+            transformedValues.add(parseValue(annotationClass, entry.getKey(), entry.getValue()));
+        }
+
+        this.values = transformedValues.stream().collect(Collectors.toMap(s -> VALUE, s -> s));
+    }
+
+    private String parseValue(Class<?> annotationClass, String valueName, Object valueObject) {
+        final String parsedValue = parseAnnotationValue(valueObject);
+        if (annotationClass.equals(Role.class)) {
+            return Role.Type.class.getCanonicalName() + "." + parsedValue.toUpperCase();
+        } else if (annotationClass.equals(Expires.class)) {
+            if (VALUE.equals(valueName)) {
+                return quote(parsedValue);
+            } else if ("policy".equals(valueName)) {
+                return org.kie.api.definition.type.Expires.Policy.class.getCanonicalName() + "." + parsedValue.toUpperCase();
+            } else {
+                throw new UnsupportedOperationException("Unrecognized annotation value for Expires: " + valueName);
+            }
+        }
+        return parsedValue;
+    }
+
+    private static String parseAnnotationValue(Object value) {
+        if (value instanceof Class<?>) {
+            return ((Class<?>) value).getName() + ".class";
+        }
+        if (value.getClass().isArray()) {
+            String valueString = Stream.of((Object[]) value)
+                    .map(Object::toString)
+                    .collect(joining(",", "{", "}"));
+
+            return valueString
+                    .replace('[', '{')
+                    .replace(']', '}');
+        }
+        return value.toString();
     }
 
     public static AnnotationDefinition createPositionAnnotation(int position) {
         return new DescrAnnotationDefinition(Position.class.getName(),
-                                             Collections.singletonMap(VALUE, String.valueOf(position)));
+                                             singletonMap(VALUE, String.valueOf(position)));
     }
 
     @Override
