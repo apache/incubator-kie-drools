@@ -70,7 +70,6 @@ public class GeneratedClassDeclaration {
         String generatedClassName = typeDefinition.getTypeName();
         generatedClass = createBasicDeclaredClass(generatedClassName);
         addAnnotations(generatedClass, typeDefinition.getAnnotationsToBeAdded());
-        generatedClass.setJavadocComment(typeDefinition.getJavaDocComment());
 
         Collection<FieldDefinition> inheritedFields = typeDefinition.findInheritedDeclaredFields();
         if (inheritedFields.isEmpty() && typeDefinition.getFields().isEmpty()) {

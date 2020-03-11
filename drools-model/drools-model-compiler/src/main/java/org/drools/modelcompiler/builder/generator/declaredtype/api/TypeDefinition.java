@@ -33,6 +33,4 @@ public interface TypeDefinition {
     List<AnnotationDefinition> getAnnotationsToBeAdded();
 
     List<FieldDefinition> findInheritedDeclaredFields();
-
-    String getJavaDocComment();
 }
