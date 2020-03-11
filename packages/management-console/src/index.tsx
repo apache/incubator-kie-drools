@@ -5,7 +5,7 @@ import ApolloClient from 'apollo-boost';
 import { ApolloProvider } from 'react-apollo';
 import Keycloak from 'keycloak-js';
 import axios from 'axios';
-import BaseLayout from './components/Templates/BaseComponent/BaseLayout';
+import BaseComponent from './components/Templates/BaseComponent/BaseComponent';
 
 const client = new ApolloClient({
   // @ts-ignore
@@ -26,7 +26,7 @@ const client = new ApolloClient({
 const appRender = () => {
   ReactDOM.render(
     <ApolloProvider client={client}>
-      <BaseLayout />
+      <BaseComponent />
     </ApolloProvider>,
     document.getElementById('root')
   );

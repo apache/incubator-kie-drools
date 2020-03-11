@@ -9,6 +9,7 @@ import {
 interface IOwnProps {
   spinnerText: string;
 }
+
 const EmptyStateSpinner: React.FC<IOwnProps> = ({ spinnerText }) => {
   return (
     <EmptyState>

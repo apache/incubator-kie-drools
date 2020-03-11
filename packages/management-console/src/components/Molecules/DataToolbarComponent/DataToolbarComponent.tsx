@@ -5,9 +5,7 @@ import {
   DataToolbarContent,
   DataToolbarFilter,
   DataToolbarToggleGroup,
-  DataToolbarGroup
-} from '@patternfly/react-core/dist/esm/experimental';
-import {
+  DataToolbarGroup,
   Button,
   Select,
   SelectOption,

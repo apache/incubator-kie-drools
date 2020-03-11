@@ -1,25 +1,36 @@
 {
-    "defaultSeverity": "error",
-    "extends": [
-      "tslint:recommended",
-      "tslint-config-standard",
-      "tslint-react",
-      "tslint-config-prettier",
-      "tslint-react-hooks"
-    ],
-    "jsRules": {},
-    "rules": {
-      "ordered-imports": false,
-      "object-literal-sort-keys": false,
-      "member-ordering": false,
-      "jsx-no-lambda": false,
-      "jsx-boolean-value": false,
-      "react-hooks-nesting": [
-        true,
-        {
-          "detect-hooks-from-non-react-namespace": true
-        }
-      ]
-    },
-    "rulesDirectory": []
-  }
+  "defaultSeverity": "error",
+  "extends": [
+    "tslint:recommended",
+    "tslint-config-standard",
+    "tslint-react",
+    "tslint-config-prettier",
+    "tslint-react-hooks"
+  ],
+  "jsRules": {},
+  "rules": {
+    "ordered-imports": false,
+    "object-literal-sort-keys": false,
+    "member-ordering": false,
+    "jsx-no-lambda": false,
+    "jsx-boolean-value": false,
+    "react-hooks-nesting": [
+      true,
+      {
+        "detect-hooks-from-non-react-namespace": true
+      }
+    ]
+  },
+  "linterOptions": {
+    "exclude": [
+      "**/node_modules/**/*.ts",
+      "**/node_modules/**/*.js",
+      "**/dist/**/*.js",
+      "**/coverage/**/*.js",
+      "**/webpack.*.js",
+      "**/jest.config.js",
+      "**/server/**/*.js"
+    ]
+  },
+  "rulesDirectory": []
+}

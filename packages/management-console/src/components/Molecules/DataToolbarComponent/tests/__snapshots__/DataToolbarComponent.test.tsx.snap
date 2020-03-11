@@ -132,20 +132,20 @@ exports[`DataToolbar component tests Snapshot tests 1`] = `
             />
           </Component>
         </DataToolbarFilter>
-        <Component>
+        <DataToolbarItem>
           <Component
             onClick={[Function]}
             variant="primary"
           >
             Apply Filter
           </Component>
-        </Component>
+        </DataToolbarItem>
       </ForwardRef>
     </DataToolbarToggleGroup>
     <ForwardRef
       variant="icon-button-group"
     >
-      <Component>
+      <DataToolbarItem>
         <Component
           onClick={[Function]}
           variant="plain"
@@ -157,7 +157,7 @@ exports[`DataToolbar component tests Snapshot tests 1`] = `
             title={null}
           />
         </Component>
-      </Component>
+      </DataToolbarItem>
     </ForwardRef>
   </DataToolbarContent>
 </DataToolbar>

@@ -6,7 +6,6 @@ import {
   GridItem,
   PageSection
 } from '@patternfly/react-core';
-import _ from 'lodash';
 import React, { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import PageTitleComponent from '../../Molecules/PageTitleComponent/PageTitleComponent';

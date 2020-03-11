@@ -1,9 +1,9 @@
 import { BrowserRouter, Route, Switch } from 'react-router-dom';
 import Dashboard from '../DashboardComponent/Dashboard';
-import './BaseLayout.css';
+import './BaseComponent.css';
 import React from 'react';
 
-const BaseLayout: React.FC = () => {
+const BaseComponent: React.FC = () => {
   return (
     <BrowserRouter>
       <Switch>
@@ -13,4 +13,4 @@ const BaseLayout: React.FC = () => {
   );
 };
 
-export default BaseLayout;
+export default BaseComponent;
