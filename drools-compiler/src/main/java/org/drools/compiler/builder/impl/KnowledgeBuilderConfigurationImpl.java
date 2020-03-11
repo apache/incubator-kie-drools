@@ -132,7 +132,7 @@ public class KnowledgeBuilderConfigurationImpl
     private boolean                           classLoaderCache                      = true;
     private boolean                           trimCellsInDTable                     = true;
     private boolean                           groupDRLsInKieBasesByFolder           = false;
-    private boolean                           externaliseCanonicalModelLambda       = true;
+    private boolean                           externaliseCanonicalModelLambda       = false;
 
     private static final PropertySpecificOption DEFAULT_PROP_SPEC_OPT = PropertySpecificOption.ALWAYS;
     private PropertySpecificOption            propertySpecificOption  = DEFAULT_PROP_SPEC_OPT;
@@ -255,7 +255,7 @@ public class KnowledgeBuilderConfigurationImpl
                                                        DEFAULT_PACKAGE));
 
         setProperty(ExternaliseCanonicalModelLambdaOption.PROPERTY_NAME,
-                    this.chainedProperties.getProperty(ExternaliseCanonicalModelLambdaOption.PROPERTY_NAME,"true"));
+                    this.chainedProperties.getProperty(ExternaliseCanonicalModelLambdaOption.PROPERTY_NAME,"false"));
 
         this.componentFactory = new DroolsCompilerComponentFactory();
 
