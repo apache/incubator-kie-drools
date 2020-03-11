@@ -103,10 +103,16 @@ public class DescrAnnotationDefinition implements AnnotationDefinition {
             } else {
                 throw new UnsupportedOperationException("Unrecognized annotation value for Expires: " + valueName);
             }
-        } else if (annotationClass.equals(Duration.class)) {
+        } else if (needsQuoting(annotationClass, valueName)) {
             return quote(parsedValue);
         }
         return parsedValue;
+    }
+
+    private static boolean needsQuoting(Class<?> annotationClass, String valueName) {
+        return annotationClass.equals(Duration.class)
+                || annotationClass.equals(Timestamp.class)
+                && valueName.equals(VALUE);
     }
 
     // This returns an Optional.of if the value doesn't exist.
