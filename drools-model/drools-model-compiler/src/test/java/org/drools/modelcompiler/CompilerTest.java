@@ -55,10 +55,10 @@ import org.kie.api.runtime.rule.FactHandle;
 import static org.hamcrest.CoreMatchers.startsWith;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertThat;
 import static org.junit.Assert.assertTrue;
-import static org.junit.Assert.assertNotNull;
 
 public class CompilerTest extends BaseModelTest {
 
@@ -2197,5 +2197,43 @@ public class CompilerTest extends BaseModelTest {
 
         assertEquals(2, ksession.fireAllRules());
         Assertions.assertThat(list).containsExactlyInAnyOrder("John", "George");
+    }
+
+    @Test
+    public void testMapStringProp() throws Exception {
+        final String str =
+                "package org.drools.test;\n" +
+                           "import " + Person.class.getCanonicalName() + ";\n" +
+                           "rule R1 when \n" +
+                           "  Person(\"XXX\" == itemsString[\"AAA\"])\n" +
+                           "then\n" +
+                           "end";
+
+        final KieSession ksession = getKieSession(str);
+
+        final Person p = new Person("Toshiya");
+        p.getItemsString().put("AAA", "XXX");
+
+        ksession.insert(p);
+        assertEquals(1, ksession.fireAllRules());
+    }
+
+    @Test
+    public void testMapString() throws Exception {
+        final String str =
+                "package org.drools.test;\n" +
+                           "import " + Map.class.getCanonicalName() + ";\n" +
+                           "rule R1 when \n" +
+                           "  Map(\"XXX\" == this[\"AAA\"])\n" +
+                           "then\n" +
+                           "end";
+
+        final KieSession ksession = getKieSession(str);
+
+        Map<String, String> map = new HashMap<>();
+        map.put("AAA", "XXX");
+
+        ksession.insert(map);
+        assertEquals(1, ksession.fireAllRules());
     }
 }
