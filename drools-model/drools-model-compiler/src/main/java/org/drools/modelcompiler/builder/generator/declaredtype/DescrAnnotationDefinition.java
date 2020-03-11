@@ -65,7 +65,7 @@ public class DescrAnnotationDefinition implements AnnotationDefinition {
                 .map(this::transformedAnnotationValues)
                 .orElse(quoteAnnotationValues());
 
-        this.name = optAnnotationClass.map(Class::getName).orElse(ann.getName());
+        this.name = optAnnotationClass.map(Class::getCanonicalName).orElse(ann.getName());
     }
 
     private Map<String, String> quoteAnnotationValues() {
