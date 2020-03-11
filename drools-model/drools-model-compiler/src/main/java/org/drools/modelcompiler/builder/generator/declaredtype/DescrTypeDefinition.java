@@ -7,16 +7,19 @@ import java.util.Map;
 import java.util.Optional;
 import java.util.stream.Stream;
 
+import org.drools.compiler.compiler.AnnotationDeclarationError;
+import org.drools.compiler.compiler.DroolsError;
 import org.drools.compiler.lang.descr.AnnotationDescr;
 import org.drools.compiler.lang.descr.PackageDescr;
 import org.drools.compiler.lang.descr.TypeDeclarationDescr;
 import org.drools.compiler.lang.descr.TypeFieldDescr;
 import org.drools.modelcompiler.builder.generator.declaredtype.api.AnnotationDefinition;
-import org.drools.modelcompiler.builder.generator.declaredtype.api.TypeDefinition;
 import org.drools.modelcompiler.builder.generator.declaredtype.api.FieldDefinition;
+import org.drools.modelcompiler.builder.generator.declaredtype.api.TypeDefinition;
 import org.drools.modelcompiler.builder.generator.declaredtype.api.TypeResolver;
 
 import static java.util.Optional.ofNullable;
+import static java.util.stream.Collectors.joining;
 import static java.util.stream.Collectors.toList;
 import static org.drools.core.util.StreamUtils.optionalToStream;
 import static org.drools.modelcompiler.builder.generator.declaredtype.POJOGenerator.quote;
@@ -26,6 +29,7 @@ public class DescrTypeDefinition implements TypeDefinition {
     private static final String SERIAL_VERSION_UID = "serialVersionUID";
 
     private List<AnnotationDefinition> annotations = new ArrayList<>();
+    private List<AnnotationDescr> softAnnotations = new ArrayList<>();
 
     private final PackageDescr packageDescr;
 
@@ -36,6 +40,8 @@ public class DescrTypeDefinition implements TypeDefinition {
 
     private final TypeResolver typeResolver;
 
+    private List<DroolsError> errors = new ArrayList<>();
+
     public DescrTypeDefinition(PackageDescr packageDescr, TypeDeclarationDescr typeDeclarationDescr, TypeResolver typeResolver) {
         this.packageDescr = packageDescr;
         this.typeDeclarationDescr = typeDeclarationDescr;
@@ -43,6 +49,14 @@ public class DescrTypeDefinition implements TypeDefinition {
         this.fieldDefinition = processFields();
 
         processClassAnnotations();
+
+        if (!softAnnotations.isEmpty()) {
+            String softAnnDictionary = softAnnotations.stream().map(a ->
+                                                                            "<dt>" + a.getName() + "</dt><dd>" + a.getValuesAsString() + "</dd>"
+            )
+                    .collect(joining());
+            javaDocComment = "<dl>" + softAnnDictionary + "</dl>";
+        }
     }
 
     private void processClassAnnotations() {
@@ -55,7 +69,13 @@ public class DescrTypeDefinition implements TypeDefinition {
                 serialVersionField.setStatic(true);
                 fieldDefinition.add(serialVersionField);
             }
-            annotations.add(new DescrAnnotationDefinition(typeResolver, ann));
+            try {
+                annotations.add(DescrAnnotationDefinition.fromDescr(typeResolver, ann));
+            } catch (UnkownAnnotationClassException e) {
+                // not a soft annotation
+            } catch (UnknownKeysInAnnotation e) {
+                // Do not do anything
+            }
         }
     }
 
@@ -170,20 +190,29 @@ public class DescrTypeDefinition implements TypeDefinition {
         boolean hasPositionAnnotation = false;
 
         for (AnnotationDescr ann : typeFieldDescr.getAnnotations()) {
-            DescrAnnotationDefinition annotationDefinition = new DescrAnnotationDefinition(typeResolver, ann);
+            try {
 
-            if(annotationDefinition.isKey()) {
-                typeField.setKeyField(true);
-                typeField.addAnnotation(annotationDefinition);
-            } else if(annotationDefinition.isPosition()) {
-                currentFieldPosition++;
-                hasPositionAnnotation = true;
-                typeField.addAnnotation(annotationDefinition);
-            } else if (annotationDefinition.isClassLevelAnnotation()) {
-                annotations.add(new DescrAnnotationDefinition(annotationDefinition.getName(),
-                                                              quote(typeField.getFieldName())));
-            } else {
-                typeField.addAnnotation(annotationDefinition);
+                DescrAnnotationDefinition annotationDefinition = DescrAnnotationDefinition.fromDescr(typeResolver, ann);
+                if (annotationDefinition.isKey()) {
+                    typeField.setKeyField(true);
+                    typeField.addAnnotation(annotationDefinition);
+                } else if (annotationDefinition.isPosition()) {
+                    currentFieldPosition++;
+                    hasPositionAnnotation = true;
+                    typeField.addAnnotation(annotationDefinition);
+                } else if (annotationDefinition.isClassLevelAnnotation()) {
+                    annotations.add(new DescrAnnotationDefinition(annotationDefinition.getName(),
+                                                                  quote(typeField.getFieldName())));
+                } else {
+                    typeField.addAnnotation(annotationDefinition);
+                }
+            } catch (UnknownKeysInAnnotation e) {
+                e.getValues().stream()
+                        .map(p -> new AnnotationDeclarationError(ann, "Unknown annotation property " + p))
+                        .forEach(errors::add);
+
+            } catch (UnkownAnnotationClassException e) {
+                // Do not add annotation and silently fail
             }
         }
 
@@ -194,7 +223,12 @@ public class DescrTypeDefinition implements TypeDefinition {
         return new ProcessedTypeField(typeField, currentFieldPosition);
     }
 
+    public List<DroolsError> getErrors() {
+        return errors;
+    }
+
     static class ProcessedTypeField {
+
         DescrFieldDefinition fieldDefinition;
         Integer position;
 
@@ -203,5 +237,4 @@ public class DescrTypeDefinition implements TypeDefinition {
             this.position = position;
         }
     }
-
 }

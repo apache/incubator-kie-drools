@@ -2,6 +2,7 @@ package org.drools.modelcompiler.builder.generator.declaredtype;
 
 import java.util.Collections;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -53,19 +54,20 @@ public class DescrAnnotationDefinition implements AnnotationDefinition {
         this(name, Collections.emptyMap());
     }
 
-    public DescrAnnotationDefinition(TypeResolver typeResolver, AnnotationDescr ann) {
-        this.ann = ann;
+    public static DescrAnnotationDefinition fromDescr(TypeResolver typeResolver, AnnotationDescr ann) {
         Optional<Class<?>> optAnnotationClass = Optional.ofNullable(annotationMapping.get(ann.getName()));
 
         optAnnotationClass = optAnnotationClass.isPresent() ?
                 optAnnotationClass :
                 typeResolver.resolveType(ann.getName());
 
-        this.values = optAnnotationClass
-                .map(this::transformedAnnotationValues)
-                .orElse(quoteAnnotationValues());
 
-        this.name = optAnnotationClass.map(Class::getCanonicalName).orElse(ann.getName());
+        return optAnnotationClass.map(annotationClass -> {
+            Map<String, String> values = transformedAnnotationValues(annotationClass, ann.getValueMap());
+            String name = annotationClass.getCanonicalName();
+
+            return new DescrAnnotationDefinition(name, values);
+        }).orElseThrow(() -> new UnkownAnnotationClassException(ann.getName()));
     }
 
     private Map<String, String> quoteAnnotationValues() {
@@ -75,14 +77,30 @@ public class DescrAnnotationDefinition implements AnnotationDefinition {
                                           e -> parseAnnotationValue(e.getValue())));
     }
 
-    private Map<String, String> transformedAnnotationValues(Class<?> annotationClass) {
-        return ann.getValueMap().entrySet()
+    private static Map<String, String> transformedAnnotationValues(Class<?> annotationClass,
+                                                                   Map<String, Object> annotationValues) {
+
+        checkNonExistingKeys(annotationClass, annotationValues);
+
+        return annotationValues.entrySet()
                 .stream()
                 .collect(Collectors.toMap(Map.Entry::getKey,
                                           e -> parseValue(annotationClass, e.getKey(), e.getValue())));
     }
 
-    private String parseValue(Class<?> annotationClass, String valueName, Object valueObject) {
+    private static void checkNonExistingKeys(Class<?> annotationClass, Map<String, Object> annotationValues) {
+        List<String> allNonExistingKeys = annotationValues.keySet().stream()
+                .map(o -> getNonExistingValue(annotationClass, o))
+                .filter(Optional::isPresent)
+                .map(Optional::get)
+                .collect(Collectors.toList());
+
+        if(!allNonExistingKeys.isEmpty()) {
+            throw new UnknownKeysInAnnotation(allNonExistingKeys);
+        }
+    }
+
+    private static String parseValue(Class<?> annotationClass, String valueName, Object valueObject) {
         final String parsedValue = parseAnnotationValue(valueObject);
         if (annotationClass.equals(Role.class)) {
             return Role.Type.class.getCanonicalName() + "." + parsedValue.toUpperCase();
@@ -94,8 +112,20 @@ public class DescrAnnotationDefinition implements AnnotationDefinition {
             } else {
                 throw new UnsupportedOperationException("Unrecognized annotation value for Expires: " + valueName);
             }
+        } else if(annotationClass.equals(Duration.class)) {
+            return quote(parsedValue);
         }
         return parsedValue;
+    }
+
+    // This returns an Optional.of if the value doesn't exist.
+    private static Optional<String> getNonExistingValue(Class<?> annotationClass, String valueName) {
+        try {
+            annotationClass.getMethod(valueName);
+            return Optional.empty();
+        }  catch (NoSuchMethodException e) {
+            return Optional.of(valueName);
+        }
     }
 
     private static String parseAnnotationValue(Object value) {
