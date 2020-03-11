@@ -4,10 +4,6 @@ import {
   DataToolbarContent,
   DataToolbarToggleGroup,
   DataToolbarGroup,
-  DataToolbarFilter,
-  Dropdown,
-  DropdownToggle,
-  DropdownItem,
   PageSection,
   Breadcrumb,
   BreadcrumbItem
@@ -23,7 +19,8 @@ import PageTitleComponent from '../../Molecules/PageTitleComponent/PageTitleComp
 import {
   useGetQueryTypesQuery,
   useGetQueryFieldsQuery,
-  useGetInputFieldsFromQueryQuery
+  useGetInputFieldsFromQueryQuery,
+  useGetColumnPickerAttributesQuery
 } from '../../../graphql/types';
 
 export interface IOwnProps {
@@ -58,15 +55,73 @@ const DomainExplorerDashboard = props => {
   const getQuery = useGetQueryFieldsQuery();
 
   const getQueryTypes = useGetQueryTypesQuery();
+  const getPicker = useGetColumnPickerAttributesQuery({
+    variables: { columnPickerType }
+  });
 
   useEffect(() => {
     setInitData2(getQueryTypes.data);
   }, [getQueryTypes.data]);
 
   useEffect(() => {
-    setParameters([]);
-    setSelected([]);
-  }, [columnPickerType]);
+    setColumnPickerType(domainName);
+    if (getQuery.data) {
+      const _a =
+        !getQuery.loading &&
+        getQuery.data.__type.fields.find(item => {
+          if (item.name === domainName) {
+            return item;
+          }
+        });
+
+      setCurrentQuery(_a.args[0].type.name);
+    }
+  }, []);
+
+  let data = [];
+  const tempArray = [];
+  let selections = [];
+  let defaultParams = [];
+  !getPicker.loading &&
+    getPicker.data.__type &&
+    getPicker.data.__type.fields.filter(i => {
+      if (i.type.kind === 'SCALAR') {
+        tempArray.push(i);
+      } else {
+        data.push(i);
+      }
+    });
+  data = tempArray.concat(data);
+  const fields: any = [];
+  data.filter(field => {
+    if (field.type.fields !== null) {
+      const obj = {};
+      obj[`${field.name}`] = field.type.fields;
+      fields.push(obj);
+    }
+  });
+
+  fields.map(obj => {
+    let value: any = Object.values(obj);
+    const key = Object.keys(obj);
+    value = value.flat();
+    value.filter(item => {
+      if (item.type.kind !== 'OBJECT') {
+        const tempObj = {};
+        selections.push(item.name + key);
+        tempObj[`${key}`] = [item.name];
+        defaultParams.push(tempObj);
+      }
+    });
+  });
+
+  selections = selections.slice(0, 5);
+  defaultParams = defaultParams.slice(0, 5);
+
+  useEffect(() => {
+    setParameters(defaultParams);
+    setSelected(selections);
+  }, [columnPickerType, selections.length > 0]);
 
   useEffect(() => {
     setColumnPickerType(domainName);
@@ -116,6 +171,8 @@ const DomainExplorerDashboard = props => {
                   setParameters={setParameters}
                   selected={selected}
                   setSelected={setSelected}
+                  data={data}
+                  getPicker={getPicker}
                 />
               )}
             </DataToolbarGroup>
@@ -131,16 +188,22 @@ const DomainExplorerDashboard = props => {
       <PageSection variant="light">
         <PageTitleComponent title="Domain Explorer" />
         <Breadcrumb>
-          <BreadcrumbItem to="/">
+          <BreadcrumbItem>
             <Link to={'/'}>Home</Link>
           </BreadcrumbItem>
           {BreadCrumb.map((item, index) => {
             if (index === BreadCrumb.length - 1) {
-              return <BreadcrumbItem isActive>{item}</BreadcrumbItem>;
+              return (
+                <BreadcrumbItem isActive key={index}>
+                  {item}
+                </BreadcrumbItem>
+              );
             } else {
               return (
-                <BreadcrumbItem>
-                  <Link to="/DomainExplorer">{item}</Link>{' '}
+                <BreadcrumbItem key={index}>
+                  <Link to={'/DomainExplorer'}>
+                    {item.replace(/([A-Z])/g, ' $1').trim()}
+                  </Link>
                 </BreadcrumbItem>
               );
             }
@@ -162,4 +225,4 @@ const DomainExplorerDashboard = props => {
   );
 };
 
-export default DomainExplorerDashboard;
+export default React.memo(DomainExplorerDashboard);

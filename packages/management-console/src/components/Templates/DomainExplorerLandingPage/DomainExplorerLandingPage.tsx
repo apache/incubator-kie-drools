@@ -24,8 +24,15 @@ const DomainExplorerLandingPage = () => {
   const getQuery = useGetQueryFieldsQuery();
   const domains = [];
 
-  const availableDomains =
+  let availableDomains =
     !getQuery.loading && getQuery.data.__type.fields.slice(2);
+
+    
+  availableDomains = availableDomains && availableDomains.filter(item => {
+    if(item.name !== 'Jobs' ) {
+      return item;
+    }
+  })
 
   return (
     <>
@@ -53,11 +60,11 @@ const DomainExplorerLandingPage = () => {
               <EmptyStateSecondaryActions>
                 {!getQuery.loading &&
                   availableDomains.map((item, index) => {
-                    return (
-                      <Link to={`/DomainExplorer/${item.name}`} key={index}>
-                        <Button variant="link">{item.name}</Button>
-                      </Link>
-                    );
+                      return (
+                        <Link to={`/DomainExplorer/${item.name}`} key={index}>
+                          <Button variant="link">{item.name}</Button>
+                        </Link>
+                      );
                   })}
               </EmptyStateSecondaryActions>
             </>
