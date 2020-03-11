@@ -17,15 +17,14 @@ package org.kie.pmml.models.regression.model;
 
 import java.util.ArrayList;
 import java.util.Collections;
-import java.util.Comparator;
 import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.atomic.AtomicReference;
 import java.util.function.DoubleUnaryOperator;
-import java.util.stream.Collectors;
 
+import org.kie.pmml.commons.exceptions.KiePMMLException;
 import org.kie.pmml.commons.model.KiePMMLOutputField;
 import org.kie.pmml.commons.model.enums.OP_TYPE;
 import org.kie.pmml.models.regression.model.enums.REGRESSION_NORMALIZATION_METHOD;
@@ -68,7 +67,7 @@ public abstract class KiePMMLRegressionClassificationTable extends KiePMMLRegres
 
     protected LinkedHashMap<String, Double> getProbabilityMap(final LinkedHashMap<String, Double> resultMap, DoubleUnaryOperator firstItemOperator, DoubleUnaryOperator secondItemOperator) {
         if (resultMap.size() != 2) {
-            throw new RuntimeException(String.format(EXPECTED_TWO_ENTRIES_RETRIEVED, resultMap.size()));
+            throw new KiePMMLException(String.format(EXPECTED_TWO_ENTRIES_RETRIEVED, resultMap.size()));
         }
         LinkedHashMap<String, Double> toReturn = new LinkedHashMap<>();
         String[] resultMapKeys = resultMap.keySet().toArray(new String[0]);
