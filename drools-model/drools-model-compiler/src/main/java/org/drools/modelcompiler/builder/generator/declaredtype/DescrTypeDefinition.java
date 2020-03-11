@@ -14,6 +14,7 @@ import org.drools.compiler.lang.descr.TypeFieldDescr;
 import org.drools.modelcompiler.builder.generator.declaredtype.api.AnnotationDefinition;
 import org.drools.modelcompiler.builder.generator.declaredtype.api.TypeDefinition;
 import org.drools.modelcompiler.builder.generator.declaredtype.api.TypeFieldDefinition;
+import org.drools.modelcompiler.builder.generator.declaredtype.api.TypeResolver;
 
 import static java.util.Optional.ofNullable;
 import static java.util.stream.Collectors.toList;
@@ -33,9 +34,12 @@ public class DescrTypeDefinition implements TypeDefinition {
     private final TypeDeclarationDescr typeDeclarationDescr;
     private final List<TypeFieldDefinition> typeFieldDefinition;
 
-    public DescrTypeDefinition(PackageDescr packageDescr, TypeDeclarationDescr typeDeclarationDescr) {
+    private final TypeResolver typeResolver;
+
+    public DescrTypeDefinition(PackageDescr packageDescr, TypeDeclarationDescr typeDeclarationDescr, TypeResolver typeResolver) {
         this.packageDescr = packageDescr;
         this.typeDeclarationDescr = typeDeclarationDescr;
+        this.typeResolver = typeResolver;
         this.typeFieldDefinition = processFields();
 
         processClassAnnotations();
@@ -51,7 +55,7 @@ public class DescrTypeDefinition implements TypeDefinition {
                 serialVersionField.setStatic(true);
                 typeFieldDefinition.add(serialVersionField);
             }
-            annotations.add(new DescrAnnotationDefinition(ann));
+            annotations.add(new DescrAnnotationDefinition(typeResolver, ann));
         }
     }
 
@@ -139,7 +143,7 @@ public class DescrTypeDefinition implements TypeDefinition {
 
         Stream<TypeFieldDefinition> superTypeKieFields =
                 optionalToStream(getSuperType(this.typeDeclarationDescr, packageDescr)
-                                         .map(superType -> new DescrTypeDefinition(packageDescr, superType)))
+                                         .map(superType -> new DescrTypeDefinition(packageDescr, superType, typeResolver)))
                         .flatMap(t -> t.getKeyFields().stream());
 
         return Stream.concat(keyFields, superTypeKieFields).collect(toList());
@@ -166,7 +170,7 @@ public class DescrTypeDefinition implements TypeDefinition {
         boolean hasPositionAnnotation = false;
 
         for (AnnotationDescr ann : typeFieldDescr.getAnnotations()) {
-            DescrAnnotationDefinition annotationDefinition = new DescrAnnotationDefinition(ann);
+            DescrAnnotationDefinition annotationDefinition = new DescrAnnotationDefinition(typeResolver, ann);
 
             if(annotationDefinition.isKey()) {
                 typeField.setKeyField(true);

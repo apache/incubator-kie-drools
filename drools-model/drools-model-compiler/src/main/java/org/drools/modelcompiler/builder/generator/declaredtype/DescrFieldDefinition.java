@@ -106,4 +106,18 @@ public class DescrFieldDefinition implements TypeFieldDefinition {
     public void setFinal(Boolean aFinal) {
         isFinal = aFinal;
     }
+
+    @Override
+    public String toString() {
+        return "DescrFieldDefinition{" +
+                "fieldName='" + fieldName + '\'' +
+                ", objectType='" + objectType + '\'' +
+                ", initExpr='" + initExpr + '\'' +
+                ", isKeyField=" + isKeyField +
+                ", createAccessors=" + createAccessors +
+                ", isStatic=" + isStatic +
+                ", isFinal=" + isFinal +
+                ", annotations=" + annotations +
+                '}';
+    }
 }

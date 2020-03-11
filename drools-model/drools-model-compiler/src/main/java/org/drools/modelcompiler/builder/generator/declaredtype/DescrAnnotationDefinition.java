@@ -9,6 +9,7 @@ import java.util.stream.Stream;
 
 import org.drools.compiler.lang.descr.AnnotationDescr;
 import org.drools.modelcompiler.builder.generator.declaredtype.api.AnnotationDefinition;
+import org.drools.modelcompiler.builder.generator.declaredtype.api.TypeResolver;
 import org.kie.api.definition.type.Duration;
 import org.kie.api.definition.type.Expires;
 import org.kie.api.definition.type.Key;
@@ -32,7 +33,7 @@ public class DescrAnnotationDefinition implements AnnotationDefinition {
         annotationMapping.put("expires", Expires.class);
         annotationMapping.put("timestamp", Timestamp.class);
         annotationMapping.put("key", Key.class);
-        annotationMapping.put("position", Position.class);
+        annotationMapping.put("Position", Position.class);
     }
 
     private String name;
@@ -52,10 +53,13 @@ public class DescrAnnotationDefinition implements AnnotationDefinition {
         this(name, Collections.emptyMap());
     }
 
-    public DescrAnnotationDefinition(AnnotationDescr ann) {
+    public DescrAnnotationDefinition(TypeResolver typeResolver, AnnotationDescr ann) {
         this.ann = ann;
         Optional<Class<?>> optAnnotationClass = Optional.ofNullable(annotationMapping.get(ann.getName()));
 
+        optAnnotationClass = optAnnotationClass.isPresent() ?
+                optAnnotationClass :
+                typeResolver.resolveType(ann.getName());
 
         this.values = optAnnotationClass
                 .map(this::transformedAnnotationValues)

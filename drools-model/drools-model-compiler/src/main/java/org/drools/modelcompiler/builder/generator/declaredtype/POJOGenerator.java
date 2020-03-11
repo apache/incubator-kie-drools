@@ -120,9 +120,10 @@ public class POJOGenerator {
     }
 
     private void createPOJO(TypeDeclarationDescr typeDescr) {
-        DescrTypeDefinition descrDeclaredTypeDefinition = new DescrTypeDefinition(packageDescr, typeDescr);
+        SafeTypeResolver typeResolver = new SafeTypeResolver(pkg.getTypeResolver());
+        DescrTypeDefinition descrDeclaredTypeDefinition = new DescrTypeDefinition(packageDescr, typeDescr, typeResolver);
         ClassOrInterfaceDeclaration generatedClass = new GeneratedClassDeclaration(descrDeclaredTypeDefinition,
-                                                                                   new SafeTypeResolver(pkg.getTypeResolver()),
+                                                                                   typeResolver,
                                                                                    Collections.singletonList(GeneratedFact.class))
                 .toClassDeclaration();
         packageModel.addGeneratedPOJO(generatedClass);
