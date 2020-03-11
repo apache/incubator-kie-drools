@@ -19,7 +19,7 @@ package org.drools.modelcompiler.builder.generator.declaredtype.api;
 
 import java.util.List;
 
-public interface TypeFieldDefinition {
+public interface FieldDefinition {
 
     String getFieldName();
 

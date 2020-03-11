@@ -30,7 +30,7 @@ import com.github.javaparser.ast.stmt.BlockStmt;
 import com.github.javaparser.ast.stmt.ExpressionStmt;
 import com.github.javaparser.ast.stmt.Statement;
 import com.github.javaparser.ast.type.Type;
-import org.drools.modelcompiler.builder.generator.declaredtype.api.TypeFieldDefinition;
+import org.drools.modelcompiler.builder.generator.declaredtype.api.FieldDefinition;
 
 import static com.github.javaparser.StaticJavaParser.parseStatement;
 import static com.github.javaparser.StaticJavaParser.parseType;
@@ -40,7 +40,7 @@ import static org.drools.modelcompiler.builder.generator.declaredtype.generator.
 public interface GeneratedConstructor {
 
     static GeneratedConstructor factory(NodeWithConstructors<?> generatedClass,
-                                        List<TypeFieldDefinition> typeDeclarationFields) {
+                                        List<FieldDefinition> typeDeclarationFields) {
         if (typeDeclarationFields.size() < 65) {
             return new FullArgumentConstructor(generatedClass, typeDeclarationFields, true, true);
         } else {
@@ -49,7 +49,7 @@ public interface GeneratedConstructor {
     }
 
     static GeneratedConstructor factoryEnum(NodeWithConstructors<?> generatedClass,
-                                            List<TypeFieldDefinition> typeDeclarationFields) {
+                                            List<FieldDefinition> typeDeclarationFields) {
         if (typeDeclarationFields.size() < 65) {
             return new FullArgumentConstructor(generatedClass, typeDeclarationFields, false, false);
         } else {
@@ -57,7 +57,7 @@ public interface GeneratedConstructor {
         }
     }
 
-    void generateConstructor(Collection<TypeFieldDefinition> inheritedFields, List<TypeFieldDefinition> keyFields);
+    void generateConstructor(Collection<FieldDefinition> inheritedFields, List<FieldDefinition> keyFields);
 }
 
 class FullArgumentConstructor implements GeneratedConstructor {
@@ -65,10 +65,10 @@ class FullArgumentConstructor implements GeneratedConstructor {
     private final NodeWithConstructors<?> generatedClass;
     private final Modifier.Keyword[] modifiers;
     private final boolean shouldCallSuper;
-    private List<TypeFieldDefinition> typeDeclarationFields;
+    private List<FieldDefinition> typeDeclarationFields;
 
     FullArgumentConstructor(NodeWithConstructors<?> generatedClass,
-                            List<TypeFieldDefinition> typeDeclarationFields,
+                            List<FieldDefinition> typeDeclarationFields,
                             boolean publicConstructor,
                             boolean shouldCallSuper) {
         this.generatedClass = generatedClass;
@@ -78,13 +78,13 @@ class FullArgumentConstructor implements GeneratedConstructor {
     }
 
     @Override
-    public void generateConstructor(Collection<TypeFieldDefinition> inheritedFields, List<TypeFieldDefinition> keyFields) {
+    public void generateConstructor(Collection<FieldDefinition> inheritedFields, List<FieldDefinition> keyFields) {
 
         ConstructorDeclaration constructor = generatedClass.addConstructor(modifiers);
         NodeList<Statement> fieldAssignStatement = nodeList();
 
         MethodCallExpr superCall = new MethodCallExpr(null, "super");
-        for (TypeFieldDefinition typeField : inheritedFields) {
+        for (FieldDefinition typeField : inheritedFields) {
             String fieldName = typeField.getFieldName();
             addConstructorArgument(constructor, typeField.getObjectType(), fieldName);
             superCall.addArgument(fieldName);
@@ -97,9 +97,9 @@ class FullArgumentConstructor implements GeneratedConstructor {
             fieldAssignStatement.add(new ExpressionStmt(superCall));
         }
 
-        for (TypeFieldDefinition typeFieldDefinition : typeDeclarationFields) {
-            String fieldName = typeFieldDefinition.getFieldName();
-            Type returnType = parseType(typeFieldDefinition.getObjectType());
+        for (FieldDefinition fieldDefinition : typeDeclarationFields) {
+            String fieldName = fieldDefinition.getFieldName();
+            Type returnType = parseType(fieldDefinition.getObjectType());
             addConstructorArgument(constructor, returnType, fieldName);
             fieldAssignStatement.add(fieldAssignment(fieldName));
 
@@ -111,16 +111,16 @@ class FullArgumentConstructor implements GeneratedConstructor {
         }
     }
 
-    private void generateKieFieldsConstructor(List<TypeFieldDefinition> keyFields) {
+    private void generateKieFieldsConstructor(List<FieldDefinition> keyFields) {
         ConstructorDeclaration constructor = generatedClass.addConstructor(modifiers);
         NodeList<Statement> fieldStatements = nodeList();
         MethodCallExpr keySuperCall = new MethodCallExpr(null, "super");
         fieldStatements.add(new ExpressionStmt(keySuperCall));
 
-        for (TypeFieldDefinition typeFieldDefinition : keyFields) {
-            String fieldName = typeFieldDefinition.getFieldName();
-            addConstructorArgument(constructor, typeFieldDefinition.getObjectType(), fieldName);
-            Optional<TypeFieldDefinition> typeDefinition = typeDeclarationFields.stream().filter(td -> td.getFieldName().equals(fieldName)).findAny();
+        for (FieldDefinition fieldDefinition : keyFields) {
+            String fieldName = fieldDefinition.getFieldName();
+            addConstructorArgument(constructor, fieldDefinition.getObjectType(), fieldName);
+            Optional<FieldDefinition> typeDefinition = typeDeclarationFields.stream().filter(td -> td.getFieldName().equals(fieldName)).findAny();
             if (typeDefinition.isPresent()) {
                 fieldStatements.add(fieldAssignment(fieldName));
             } else {
@@ -147,7 +147,7 @@ class FullArgumentConstructor implements GeneratedConstructor {
 class NoConstructor implements GeneratedConstructor {
 
     @Override
-    public void generateConstructor(Collection<TypeFieldDefinition> inheritedFields, List<TypeFieldDefinition> keyFields) {
+    public void generateConstructor(Collection<FieldDefinition> inheritedFields, List<FieldDefinition> keyFields) {
         // Do not generate constructor here
         // See DeclareTest.testDeclaredTypeWithHundredsProps
     }

@@ -13,7 +13,7 @@ import org.drools.compiler.lang.descr.TypeDeclarationDescr;
 import org.drools.compiler.lang.descr.TypeFieldDescr;
 import org.drools.modelcompiler.builder.generator.declaredtype.api.AnnotationDefinition;
 import org.drools.modelcompiler.builder.generator.declaredtype.api.TypeDefinition;
-import org.drools.modelcompiler.builder.generator.declaredtype.api.TypeFieldDefinition;
+import org.drools.modelcompiler.builder.generator.declaredtype.api.FieldDefinition;
 import org.drools.modelcompiler.builder.generator.declaredtype.api.TypeResolver;
 
 import static java.util.Optional.ofNullable;
@@ -32,7 +32,7 @@ public class DescrTypeDefinition implements TypeDefinition {
     private String javaDocComment = "";
 
     private final TypeDeclarationDescr typeDeclarationDescr;
-    private final List<TypeFieldDefinition> typeFieldDefinition;
+    private final List<FieldDefinition> fieldDefinition;
 
     private final TypeResolver typeResolver;
 
@@ -40,7 +40,7 @@ public class DescrTypeDefinition implements TypeDefinition {
         this.packageDescr = packageDescr;
         this.typeDeclarationDescr = typeDeclarationDescr;
         this.typeResolver = typeResolver;
-        this.typeFieldDefinition = processFields();
+        this.fieldDefinition = processFields();
 
         processClassAnnotations();
     }
@@ -53,7 +53,7 @@ public class DescrTypeDefinition implements TypeDefinition {
                                                                                    ann.getValue("value").toString());
                 serialVersionField.setFinal(true);
                 serialVersionField.setStatic(true);
-                typeFieldDefinition.add(serialVersionField);
+                fieldDefinition.add(serialVersionField);
             }
             annotations.add(new DescrAnnotationDefinition(typeResolver, ann));
         }
@@ -90,11 +90,11 @@ public class DescrTypeDefinition implements TypeDefinition {
     }
 
     @Override
-    public List<TypeFieldDefinition> findInheritedDeclaredFields() {
+    public List<FieldDefinition> findInheritedDeclaredFields() {
         return findInheritedDeclaredFields(new ArrayList<>(), getSuperType(typeDeclarationDescr, packageDescr));
     }
 
-    private List<TypeFieldDefinition> findInheritedDeclaredFields(List<TypeFieldDefinition> fields, Optional<TypeDeclarationDescr> superType) {
+    private List<FieldDefinition> findInheritedDeclaredFields(List<FieldDefinition> fields, Optional<TypeDeclarationDescr> superType) {
         superType.ifPresent(st -> {
             findInheritedDeclaredFields(fields, getSuperType(st, packageDescr));
             st.getFields()
@@ -133,15 +133,15 @@ public class DescrTypeDefinition implements TypeDefinition {
     }
 
     @Override
-    public List<TypeFieldDefinition> getFields() {
-        return typeFieldDefinition;
+    public List<FieldDefinition> getFields() {
+        return fieldDefinition;
     }
 
     @Override
-    public List<TypeFieldDefinition> getKeyFields() {
-        Stream<TypeFieldDefinition> keyFields = typeFieldDefinition.stream().filter(TypeFieldDefinition::isKeyField);
+    public List<FieldDefinition> getKeyFields() {
+        Stream<FieldDefinition> keyFields = fieldDefinition.stream().filter(FieldDefinition::isKeyField);
 
-        Stream<TypeFieldDefinition> superTypeKieFields =
+        Stream<FieldDefinition> superTypeKieFields =
                 optionalToStream(getSuperType(this.typeDeclarationDescr, packageDescr)
                                          .map(superType -> new DescrTypeDefinition(packageDescr, superType, typeResolver)))
                         .flatMap(t -> t.getKeyFields().stream());
@@ -149,11 +149,11 @@ public class DescrTypeDefinition implements TypeDefinition {
         return Stream.concat(keyFields, superTypeKieFields).collect(toList());
     }
 
-    private List<TypeFieldDefinition> processFields() {
+    private List<FieldDefinition> processFields() {
         List<TypeFieldDescr> sortedTypeFields = typeFieldsSortedByPosition();
 
         int position = findInheritedDeclaredFields().size();
-        List<TypeFieldDefinition> allFields = new ArrayList<>();
+        List<FieldDefinition> allFields = new ArrayList<>();
         for (TypeFieldDescr typeFieldDescr : sortedTypeFields) {
             ProcessedTypeField processedTypeField = processTypeField(position, typeFieldDescr);
 

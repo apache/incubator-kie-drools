@@ -7,9 +7,9 @@ import java.util.Map;
 
 import org.drools.compiler.lang.descr.TypeFieldDescr;
 import org.drools.modelcompiler.builder.generator.declaredtype.api.AnnotationDefinition;
-import org.drools.modelcompiler.builder.generator.declaredtype.api.TypeFieldDefinition;
+import org.drools.modelcompiler.builder.generator.declaredtype.api.FieldDefinition;
 
-public class DescrFieldDefinition implements TypeFieldDefinition {
+public class DescrFieldDefinition implements FieldDefinition {
 
     private final String fieldName;
     private final String objectType;

@@ -24,15 +24,15 @@ public interface TypeDefinition {
 
     String getTypeName();
 
-    List<TypeFieldDefinition> getFields();
+    List<FieldDefinition> getFields();
 
-    List<TypeFieldDefinition> getKeyFields();
+    List<FieldDefinition> getKeyFields();
 
     Optional<String> getSuperTypeName();
 
     List<AnnotationDefinition> getAnnotationsToBeAdded();
 
-    List<TypeFieldDefinition> findInheritedDeclaredFields();
+    List<FieldDefinition> findInheritedDeclaredFields();
 
     String getJavaDocComment();
 }

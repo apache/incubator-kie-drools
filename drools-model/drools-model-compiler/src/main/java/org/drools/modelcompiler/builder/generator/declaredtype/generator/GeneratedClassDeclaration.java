@@ -36,7 +36,7 @@ import com.github.javaparser.ast.stmt.Statement;
 import com.github.javaparser.ast.type.Type;
 import org.drools.modelcompiler.builder.generator.declaredtype.api.AnnotationDefinition;
 import org.drools.modelcompiler.builder.generator.declaredtype.api.TypeDefinition;
-import org.drools.modelcompiler.builder.generator.declaredtype.api.TypeFieldDefinition;
+import org.drools.modelcompiler.builder.generator.declaredtype.api.FieldDefinition;
 import org.drools.modelcompiler.builder.generator.declaredtype.api.TypeResolver;
 
 import static com.github.javaparser.StaticJavaParser.parseExpression;
@@ -71,7 +71,7 @@ public class GeneratedClassDeclaration {
         generatedClass = createBasicDeclaredClass(generatedClassName);
         addAnnotations(generatedClass, typeDefinition.getAnnotationsToBeAdded());
 
-        Collection<TypeFieldDefinition> inheritedFields = typeDefinition.findInheritedDeclaredFields();
+        Collection<FieldDefinition> inheritedFields = typeDefinition.findInheritedDeclaredFields();
         if (inheritedFields.isEmpty() && typeDefinition.getFields().isEmpty()) {
             generatedClass.addMember(new GeneratedToString(generatedClassName).method());
             return generatedClass;
@@ -93,7 +93,7 @@ public class GeneratedClassDeclaration {
         return basicDeclaredClass;
     }
 
-    private ClassOrInterfaceDeclaration generateFullClass(String generatedClassName, Collection<TypeFieldDefinition> inheritedFields) {
+    private ClassOrInterfaceDeclaration generateFullClass(String generatedClassName, Collection<FieldDefinition> inheritedFields) {
         generateInheritanceDefinition();
 
         boolean hasSuper = typeDefinition.getSuperTypeName().isPresent();
@@ -102,15 +102,15 @@ public class GeneratedClassDeclaration {
         generatedToString = new GeneratedToString(generatedClassName);
         generatedEqualsMethod = new GeneratedEqualsMethod(generatedClassName, hasSuper);
 
-        List<TypeFieldDefinition> typeFields = typeDefinition.getFields();
+        List<FieldDefinition> typeFields = typeDefinition.getFields();
 
         GeneratedConstructor fullArgumentConstructor = GeneratedConstructor.factory(generatedClass, typeFields);
 
-        for (TypeFieldDefinition tf : typeFields) {
+        for (FieldDefinition tf : typeFields) {
             processTypeField(tf);
         }
 
-        List<TypeFieldDefinition> keyFields = typeDefinition.getKeyFields();
+        List<FieldDefinition> keyFields = typeDefinition.getKeyFields();
 
         fullArgumentConstructor.generateConstructor(inheritedFields, keyFields);
         if (!keyFields.isEmpty()) {
@@ -139,30 +139,30 @@ public class GeneratedClassDeclaration {
         });
     }
 
-    private void processTypeField(TypeFieldDefinition typeFieldDefinition) {
-        String fieldName = typeFieldDefinition.getFieldName();
-        Type returnType = parseType(typeFieldDefinition.getObjectType());
+    private void processTypeField(FieldDefinition fieldDefinition) {
+        String fieldName = fieldDefinition.getFieldName();
+        Type returnType = parseType(fieldDefinition.getObjectType());
 
-        Modifier.Keyword[] modifiers = modifiers(typeFieldDefinition);
+        Modifier.Keyword[] modifiers = modifiers(fieldDefinition);
 
         FieldDeclaration field;
-        if (typeFieldDefinition.getInitExpr() == null) {
+        if (fieldDefinition.getInitExpr() == null) {
             field = generatedClass.addField(returnType, fieldName, modifiers);
         } else {
-            field = generatedClass.addFieldWithInitializer(returnType, fieldName, parseExpression(typeFieldDefinition.getInitExpr()), modifiers);
+            field = generatedClass.addFieldWithInitializer(returnType, fieldName, parseExpression(fieldDefinition.getInitExpr()), modifiers);
         }
 
-        if (typeFieldDefinition.createAccessors()) {
+        if (fieldDefinition.createAccessors()) {
             field.createSetter();
             MethodDeclaration getter = field.createGetter();
 
-            if (typeFieldDefinition.isKeyField()) {
+            if (fieldDefinition.isKeyField()) {
                 generatedEqualsMethod.add(getter, fieldName);
                 generatedHashcode.addHashCodeForField(fieldName, getter.getType());
             }
         }
 
-        addAnnotations(field, typeFieldDefinition.getAnnotations());
+        addAnnotations(field, fieldDefinition.getAnnotations());
 
         generatedToString.add(format("+ {0}+{1}", quote(fieldName + "="), fieldName));
     }
@@ -176,13 +176,13 @@ public class GeneratedClassDeclaration {
         }
     }
 
-    private Modifier.Keyword[] modifiers(TypeFieldDefinition typeFieldDefinition) {
+    private Modifier.Keyword[] modifiers(FieldDefinition fieldDefinition) {
         List<Modifier.Keyword> modifiers = new ArrayList<>();
         modifiers.add(Modifier.privateModifier().getKeyword());
 
-        if (typeFieldDefinition.isStatic()) {
+        if (fieldDefinition.isStatic()) {
             modifiers.add(Modifier.staticModifier().getKeyword());
-        } else if (typeFieldDefinition.isFinal()) {
+        } else if (fieldDefinition.isFinal()) {
             modifiers.add(Modifier.finalModifier().getKeyword());
         }
 
