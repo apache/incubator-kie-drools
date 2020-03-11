@@ -38,8 +38,7 @@ public class DescrAnnotationDefinition implements AnnotationDefinition {
     }
 
     private String name;
-    private Map<String, String> values = new HashMap<>();
-    private AnnotationDescr ann;
+    private Map<String, String> values;
 
     public DescrAnnotationDefinition(String name, Map<String, String> values) {
         this.name = name;
@@ -61,20 +60,12 @@ public class DescrAnnotationDefinition implements AnnotationDefinition {
                 optAnnotationClass :
                 typeResolver.resolveType(ann.getName());
 
-
         return optAnnotationClass.map(annotationClass -> {
             Map<String, String> values = transformedAnnotationValues(annotationClass, ann.getValueMap());
             String name = annotationClass.getCanonicalName();
 
             return new DescrAnnotationDefinition(name, values);
         }).orElseThrow(() -> new UnkownAnnotationClassException(ann.getName()));
-    }
-
-    private Map<String, String> quoteAnnotationValues() {
-        return ann.getValueMap().entrySet()
-                .stream()
-                .collect(Collectors.toMap(Map.Entry::getKey,
-                                          e -> parseAnnotationValue(e.getValue())));
     }
 
     private static Map<String, String> transformedAnnotationValues(Class<?> annotationClass,
@@ -95,7 +86,7 @@ public class DescrAnnotationDefinition implements AnnotationDefinition {
                 .map(Optional::get)
                 .collect(Collectors.toList());
 
-        if(!allNonExistingKeys.isEmpty()) {
+        if (!allNonExistingKeys.isEmpty()) {
             throw new UnknownKeysInAnnotation(allNonExistingKeys);
         }
     }
@@ -112,7 +103,7 @@ public class DescrAnnotationDefinition implements AnnotationDefinition {
             } else {
                 throw new UnsupportedOperationException("Unrecognized annotation value for Expires: " + valueName);
             }
-        } else if(annotationClass.equals(Duration.class)) {
+        } else if (annotationClass.equals(Duration.class)) {
             return quote(parsedValue);
         }
         return parsedValue;
@@ -123,7 +114,7 @@ public class DescrAnnotationDefinition implements AnnotationDefinition {
         try {
             annotationClass.getMethod(valueName);
             return Optional.empty();
-        }  catch (NoSuchMethodException e) {
+        } catch (NoSuchMethodException e) {
             return Optional.of(valueName);
         }
     }
