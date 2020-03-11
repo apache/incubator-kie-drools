@@ -20,11 +20,14 @@ import java.util.List;
 import java.util.Map;
 
 import org.drools.compiler.kproject.ReleaseIdImpl;
+import org.drools.modelcompiler.ExecutableModelProject;
 import org.kie.api.KieServices;
 import org.kie.api.builder.ReleaseId;
 import org.kie.api.pmml.PMML4Result;
 import org.kie.api.runtime.KieContainer;
+import org.kie.api.runtime.KieSession;
 import org.kie.api.runtime.StatelessKieSession;
+import org.kie.internal.utils.KieHelper;
 import org.kie.pmml.commons.model.KiePMMLModel;
 import org.kie.pmml.commons.model.enums.PMML_MODEL;
 import org.kie.pmml.evaluator.api.exceptions.KiePMMLModelException;
@@ -58,17 +61,25 @@ public class PMMLTreeModelEvaluator implements PMMLModelExecutor {
         if (!(model instanceof KiePMMLTreeModel)) {
             throw new KiePMMLModelException("Expected a KiePMMLTreeModel, received a " + model.getClass().getName());
         }
-        ReleaseId rel = new ReleaseIdImpl(releaseId);
-        // TODO {gcardosi}: here the generate PackageDescr must be compiled by drools and inserted inside the kiebuilder/kiebase something
-        final KieContainer kieContainer = kieServices.newKieContainer(rel);
         final KiePMMLTreeModel treeModel = (KiePMMLTreeModel) model;
+        KieSession kSession = new KieHelper()
+                .addContent(treeModel.getPackageDescr())
+                .build(ExecutableModelProject.class)
+                .newKieSession();
+
+//        ReleaseId rel = new ReleaseIdImpl(releaseId);
+//        // TODO {gcardosi}: here the generate PackageDescr must be compiled by drools and inserted inside the kiebuilder/kiebase something
+//        final KieContainer kieContainer = kieServices.newKieContainer(rel);
         PMML4Result toReturn = new PMML4Result();
-        StatelessKieSession kSession = kContainer.newStatelessKieSession("PMMLTreeModelSession");
+//        StatelessKieSession kSession = kContainer.newStatelessKieSession("PMMLTreeModelSession");
         Map<String, Object> unwrappedInputParams = getUnwrappedParametersMap(pmmlContext.getRequestData().getMappedRequestParams());
         List<Object> executionParams = new ArrayList<>();
         executionParams.add(treeModel);
         executionParams.add(toReturn);
         executionParams.add(unwrappedInputParams);
+
+//        kSession.insert( new Person( "Mario" ) );
+
         /*
         // TODO {gcardosi} Retrieve the converted datadictionary from the treemodel and use it to map input data to expected input values
         FactType nameType = ksession.getKieBase().getFactType("org.test", "ExtendedName");
@@ -78,7 +89,7 @@ public class PMMLTreeModelEvaluator implements PMMLModelExecutor {
         ksession.insert(name);
         ksession.fireAllRules();
          */
-        kSession.execute(executionParams);
+//        kSession.execute(executionParams);
         return toReturn;
     }
 }

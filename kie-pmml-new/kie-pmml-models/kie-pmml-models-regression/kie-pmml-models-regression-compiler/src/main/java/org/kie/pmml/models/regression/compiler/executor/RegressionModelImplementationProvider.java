@@ -36,7 +36,6 @@ import org.slf4j.LoggerFactory;
 
 import static org.kie.pmml.compiler.commons.utils.ModelUtils.getOpType;
 import static org.kie.pmml.compiler.commons.utils.ModelUtils.getTargetFields;
-//import static org.kie.pmml.models.regression.model.KiePMMLRegressionModel.PMML_MODEL_TYPE;
 
 /**
  * Default <code>ModelImplementationProvider</code> for <b>Regression</b>

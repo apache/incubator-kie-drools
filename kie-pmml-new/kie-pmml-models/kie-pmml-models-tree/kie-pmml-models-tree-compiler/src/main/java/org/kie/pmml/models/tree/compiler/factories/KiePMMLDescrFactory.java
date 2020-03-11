@@ -56,6 +56,10 @@ public class KiePMMLDescrFactory {
     private static final String VALUE_PATTERN = "value %s \"%s\"";
     private static final String STATUS_HOLDER = "$statusHolder";
 
+    private KiePMMLDescrFactory() {
+        // Avoid instantiation
+    }
+
     public static PackageDescr getBaseDescr(DataDictionary dataDictionary, TreeModel model, String packageName) {
         logger.info("getBaseDescr {} {}", dataDictionary, model);
         PackageDescrBuilder builder = DescrFactory.newPackage()
@@ -157,7 +161,7 @@ public class KiePMMLDescrFactory {
                     }
                     SimplePredicate predicate = predicates.get(i);
                     OPERATOR operator = OPERATOR.byName(predicate.getOperator().value());
-                    String constraint = String.format("value %s \"%s\"", operator.getOperator(), predicate.getValue() != null ? predicate.getValue() : "");
+                    String constraint = String.format(VALUE_PATTERN, operator.getOperator(), predicate.getValue() != null ? predicate.getValue() : "");
                     constraintBuilder.append(constraint);
                 }
                 pattern.constraint(constraintBuilder.toString());
@@ -168,7 +172,7 @@ public class KiePMMLDescrFactory {
             default:
                 for (SimplePredicate predicate : predicates) {
                     OPERATOR operator = OPERATOR.byName(predicate.getOperator().value());
-                    String constraint = String.format("value %s \"%s\"", operator.getOperator(), predicate.getValue() != null ? predicate.getValue() : "");
+                    String constraint = String.format(VALUE_PATTERN, operator.getOperator(), predicate.getValue() != null ? predicate.getValue() : "");
                     pattern.constraint(constraint);
                 }
         }
@@ -197,8 +201,9 @@ public class KiePMMLDescrFactory {
     private static void declareEnumType(PackageDescrBuilder builder, DataField dataField) {
         final EnumDeclarationDescrBuilder enumBuilder = builder.newDeclare()
                 .enumerative().name(dataField.getName().getValue().toUpperCase());
+        enumBuilder.newField("value").type(String.class.getName());
         for (Value value : dataField.getValues()) {
-            enumBuilder.newEnumLiteral(value.getValue().toString().toUpperCase()).constructorArg(String.format("\"%s\"", value.getValue().toString())).end();
+            enumBuilder.newEnumLiteral(value.getValue().toString().toUpperCase().replace(' ', '_')).constructorArg(String.format("\"%s\"", value.getValue().toString())).end();
         }
     }
 }
