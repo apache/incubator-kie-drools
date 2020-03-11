@@ -131,7 +131,7 @@ public class DescrAnnotationDefinition implements AnnotationDefinition {
 
     @Override
     public boolean shouldAddAnnotation() {
-        return name.equals("serialVersionUID");
+        return !name.equals("serialVersionUID");
     }
 
     public boolean isKey() {
