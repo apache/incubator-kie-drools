@@ -17,10 +17,12 @@ package org.kie.pmml.benchmarks.regression;
 
 import java.util.concurrent.TimeUnit;
 
+import org.kie.api.pmml.PMML4Result;
 import org.kie.api.pmml.PMMLRequestData;
 import org.kie.pmml.evaluator.core.PMMLContextImpl;
 import org.openjdk.jmh.annotations.Benchmark;
 import org.openjdk.jmh.annotations.BenchmarkMode;
+import org.openjdk.jmh.annotations.Fork;
 import org.openjdk.jmh.annotations.Measurement;
 import org.openjdk.jmh.annotations.Mode;
 import org.openjdk.jmh.annotations.OutputTimeUnit;
@@ -28,36 +30,35 @@ import org.openjdk.jmh.annotations.Scope;
 import org.openjdk.jmh.annotations.Setup;
 import org.openjdk.jmh.annotations.State;
 import org.openjdk.jmh.annotations.Warmup;
-import org.openjdk.jmh.infra.Blackhole;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-@BenchmarkMode(Mode.SingleShotTime)
+@BenchmarkMode(Mode.Throughput)
 @State(Scope.Thread)
-@Warmup(iterations = 30000)
-@Measurement(iterations = 5000)
-@OutputTimeUnit(TimeUnit.MICROSECONDS)
+@Warmup(iterations = 2)
+@Measurement(iterations = 5, time = 30)
+@OutputTimeUnit(TimeUnit.SECONDS)
+@Fork(value = 5)
 public class RegressionBenchmark extends AbstractRegressionBenchmark {
 
     private static final Logger logger = LoggerFactory.getLogger(RegressionBenchmark.class);
 
     @Setup
-    public void setupModel() {
+    public void setupModel() throws Exception {
         logger.info("setup model...");
-        modelName = "Sample for logistic regression";
-        fileName = "CategoricalRegressionSample.pmml";
+        modelName = "Sample for linear regression";
+        fileName = "LinearRegressionSample.pmml";
         super.setupModel();
         logger.info("setup pmmlContext...");
         PMMLRequestData pmmlRequestData = new PMMLRequestData("123", modelName);
         pmmlRequestData.addRequestParam("age", 22);
-        pmmlRequestData.addRequestParam("work", 3);
-        pmmlRequestData.addRequestParam("sex", "0");
-        pmmlRequestData.addRequestParam("minority", "1");
+        pmmlRequestData.addRequestParam("salary", 2345.43);
+        pmmlRequestData.addRequestParam("car_location", "carpark");
         pmmlContext = new PMMLContextImpl(pmmlRequestData);
     }
 
     @Benchmark
-    public void evaluate(Blackhole blackhole) {
-        super.evaluate(blackhole);
+    public PMML4Result evaluate() {
+        return super.evaluate();
     }
 }

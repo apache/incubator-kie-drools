@@ -16,17 +16,12 @@
 
 package org.kie.pmml.models.regression.compiler.executor;
 
-import java.util.List;
-import java.util.Optional;
-
 import org.dmg.pmml.PMML;
 import org.dmg.pmml.regression.RegressionModel;
 import org.junit.Test;
 import org.kie.pmml.commons.model.enums.PMML_MODEL;
 import org.kie.pmml.compiler.testutils.TestUtils;
 import org.kie.pmml.models.regression.model.KiePMMLRegressionModel;
-import org.kie.pmml.models.regression.model.predictors.KiePMMLCategoricalPredictor;
-import org.kie.pmml.models.regression.model.predictors.KiePMMLNumericPredictor;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
@@ -108,11 +103,11 @@ public class RegressionModelImplementationProviderTest {
 //        commonVerifyNumericPredictor(optionalPredictor.get(), name, exponent, coefficient);
 //    }
 
-    private void commonVerifyNumericPredictor(KiePMMLNumericPredictor retrieved, String name, int exponent, double coefficient) {
-        assertEquals(name, retrieved.getName());
-        assertEquals(exponent, retrieved.getExponent());
-        assertEquals(coefficient, retrieved.getCoefficient());
-    }
+//    private void commonVerifyNumericPredictor(KiePMMLNumericPredictor retrieved, String name, int exponent, double coefficient) {
+//        assertEquals(name, retrieved.getName());
+//        assertEquals(exponent, retrieved.getExponent());
+//        assertEquals(coefficient, retrieved.getCoefficient());
+//    }
 
 //    private void commonVerifyCategoricalPredictors(KiePMMLRegressionTable retrieved, String name) {
 //        List<KiePMMLCategoricalPredictor> predictors = new ArrayList<>();
@@ -123,15 +118,15 @@ public class RegressionModelImplementationProviderTest {
 //        commonVerifyCategoricalPredictors(predictors, name, "street", 325.03);
 //    }
 
-    private void commonVerifyCategoricalPredictors(List<KiePMMLCategoricalPredictor> predictors, String name, Object value, double coefficient) {
-        final Optional<KiePMMLCategoricalPredictor> retrieved = predictors.stream().filter(predictor -> value.equals(predictor.getValue())).findFirst();
-        assertTrue(retrieved.isPresent());
-        commonVerifyCategoricalPredictor(retrieved.get(), name, value, coefficient);
-    }
-
-    private void commonVerifyCategoricalPredictor(KiePMMLCategoricalPredictor retrieved, String name, Object value, double coefficient) {
-        assertEquals(name, retrieved.getName());
-        assertEquals(value, retrieved.getValue());
-        assertEquals(coefficient, retrieved.getCoefficient());
-    }
+//    private void commonVerifyCategoricalPredictors(List<KiePMMLCategoricalPredictor> predictors, String name, Object value, double coefficient) {
+//        final Optional<KiePMMLCategoricalPredictor> retrieved = predictors.stream().filter(predictor -> value.equals(predictor.getValue())).findFirst();
+//        assertTrue(retrieved.isPresent());
+//        commonVerifyCategoricalPredictor(retrieved.get(), name, value, coefficient);
+//    }
+//
+//    private void commonVerifyCategoricalPredictor(KiePMMLCategoricalPredictor retrieved, String name, Object value, double coefficient) {
+//        assertEquals(name, retrieved.getName());
+//        assertEquals(value, retrieved.getValue());
+//        assertEquals(coefficient, retrieved.getCoefficient());
+//    }
 }

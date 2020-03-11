@@ -17,15 +17,14 @@ package org.kie.pmml.models.regression.model;
 
 import java.util.ArrayList;
 import java.util.Collections;
-import java.util.Comparator;
 import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.atomic.AtomicReference;
 import java.util.function.DoubleUnaryOperator;
-import java.util.stream.Collectors;
 
+import org.kie.pmml.commons.exceptions.KiePMMLException;
 import org.kie.pmml.commons.model.KiePMMLOutputField;
 import org.kie.pmml.commons.model.enums.OP_TYPE;
 import org.kie.pmml.models.regression.model.enums.REGRESSION_NORMALIZATION_METHOD;
@@ -53,6 +52,10 @@ public abstract class KiePMMLRegressionClassificationTable extends KiePMMLRegres
         return predictedEntry.getKey();
     }
 
+    public abstract boolean isBinary();/* {
+        return Objects.equals(OP_TYPE.CATEGORICAL, targetOpType) && (targetValues != null && targetValues.size() == 2);
+    }*/
+
     protected abstract LinkedHashMap<String, Double> getProbabilityMap(final LinkedHashMap<String, Double> resultMap);
 
     protected abstract void populateOutputFieldsMap(final Map.Entry<String, Double> predictedEntry, final LinkedHashMap<String, Double> probabilityMap);
@@ -66,9 +69,21 @@ public abstract class KiePMMLRegressionClassificationTable extends KiePMMLRegres
         return outputFieldsMap;
     }
 
+    public REGRESSION_NORMALIZATION_METHOD getRegressionNormalizationMethod() {
+        return regressionNormalizationMethod;
+    }
+
+    public OP_TYPE getOpType() {
+        return opType;
+    }
+
+    public Map<String, KiePMMLRegressionTable> getCategoryTableMap() {
+        return categoryTableMap;
+    }
+
     protected LinkedHashMap<String, Double> getProbabilityMap(final LinkedHashMap<String, Double> resultMap, DoubleUnaryOperator firstItemOperator, DoubleUnaryOperator secondItemOperator) {
         if (resultMap.size() != 2) {
-            throw new RuntimeException(String.format(EXPECTED_TWO_ENTRIES_RETRIEVED, resultMap.size()));
+            throw new KiePMMLException(String.format(EXPECTED_TWO_ENTRIES_RETRIEVED, resultMap.size()));
         }
         LinkedHashMap<String, Double> toReturn = new LinkedHashMap<>();
         String[] resultMapKeys = resultMap.keySet().toArray(new String[0]);

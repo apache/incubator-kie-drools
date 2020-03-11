@@ -40,4 +40,8 @@ public abstract class KiePMMLRegressionModel extends KiePMMLModel {
     public Map<String, Object> getOutputFieldsMap() {
         return regressionTable.getOutputFieldsMap();
     }
+
+    public KiePMMLRegressionTable getRegressionTable() {
+        return regressionTable;
+    }
 }

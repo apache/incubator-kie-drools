@@ -16,43 +16,23 @@
 
 package org.kie.pmml.models.regression.compiler.factories;
 
-import java.nio.file.Files;
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 import java.util.Map;
-import java.util.stream.IntStream;
 
-import com.github.javaparser.StaticJavaParser;
-import com.github.javaparser.ast.CompilationUnit;
-import com.github.javaparser.ast.validator.Java8Validator;
-import com.github.javaparser.ast.validator.ProblemReporter;
-import org.dmg.pmml.regression.CategoricalPredictor;
-import org.dmg.pmml.regression.NumericPredictor;
-import org.dmg.pmml.regression.PredictorTerm;
+import org.dmg.pmml.OpType;
 import org.dmg.pmml.regression.RegressionModel;
 import org.dmg.pmml.regression.RegressionTable;
 import org.junit.Test;
 import org.kie.pmml.commons.model.KiePMMLOutputField;
 import org.kie.pmml.commons.model.enums.RESULT_FEATURE;
-import org.kie.pmml.compiler.commons.testutils.PMMLModelTestUtils;
 import org.kie.pmml.models.regression.model.tuples.KiePMMLTableSourceCategory;
-import org.kie.test.util.filesystem.FileUtils;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertTrue;
-import static org.junit.Assert.fail;
-import static org.kie.pmml.compiler.commons.testutils.PMMLModelTestUtils.getCategoricalPredictor;
-import static org.kie.pmml.compiler.commons.testutils.PMMLModelTestUtils.getNumericPredictor;
-import static org.kie.pmml.compiler.commons.testutils.PMMLModelTestUtils.getPredictorTerm;
 
-public class KiePMMLRegressionTableClassificationFactoryTest {
-
-    private List<CategoricalPredictor> categoricalPredictors;
-    private List<NumericPredictor> numericPredictors;
-    private List<PredictorTerm> predictorTerms;
+public class KiePMMLRegressionTableClassificationFactoryTest extends AbstractKiePMMLRegressionTableRegressionFactoryTest {
 
     @Test
     public void getRegressionTableTest() throws Exception {
@@ -63,37 +43,10 @@ public class KiePMMLRegressionTableClassificationFactoryTest {
         KiePMMLOutputField outputFieldNum = getOutputField("NUM-1", RESULT_FEATURE.PROBABILITY, "NumPred-0");
         KiePMMLOutputField outputFieldPrev = getOutputField("PREV", RESULT_FEATURE.PREDICTED_VALUE, null);
         List<KiePMMLOutputField> outputFields = Arrays.asList(outputFieldCat, outputFieldNum, outputFieldPrev);
-        Map<String, KiePMMLTableSourceCategory> retrieved = KiePMMLRegressionTableClassificationFactory.getRegressionTables(regressionTables, RegressionModel.NormalizationMethod.SOFTMAX, outputFields, "targetField");
+        Map<String, KiePMMLTableSourceCategory> retrieved = KiePMMLRegressionTableClassificationFactory.getRegressionTables(regressionTables, RegressionModel.NormalizationMethod.SOFTMAX, OpType.CATEGORICAL, outputFields, "targetField");
         assertNotNull(retrieved);
         assertEquals(3, retrieved.size());
-//        assertTrue(retrieved.containsKey("KiePMMLRegressionTableClassification1"));
-//        commonValidateKiePMMLRegressionTable(retrieved.get("KiePMMLRegressionTableClassification1").getSource(), "KiePMMLRegressionTableClassification1.java");
-    }
-
-    private void commonValidateKiePMMLRegressionTable(String retrieved, String reference) {
-        try {
-            final CompilationUnit parsed = StaticJavaParser.parse(retrieved);
-            final Java8Validator validator = new Java8Validator();
-            final ProblemReporter problemReporter = new ProblemReporter(problem -> fail(problem.getMessage()));
-            validator.accept(parsed.findRootNode(), problemReporter);
-        } catch (Exception e) {
-            fail("Failed to match with " + reference + " due to " + e.getMessage());
-        }
-    }
-
-    private RegressionTable getRegressionTable(double intercept, Object targetCategory) {
-        categoricalPredictors = new ArrayList<>();
-        numericPredictors = new ArrayList<>();
-        predictorTerms = new ArrayList<>();
-        numericPredictors.add(getNumericPredictor("NumPred-" + 3, 1, 32.55));
-        IntStream.range(0, 3).forEach(i -> {
-            IntStream.range(0, 2).forEach(j -> categoricalPredictors.add(getCategoricalPredictor("CatPred-" + i, 27.12, 3.46)));
-            numericPredictors.add(getNumericPredictor("NumPred-" + i, 2, 13.11));
-            predictorTerms.add(getPredictorTerm("PredTerm-" + i, 32.29,
-                                                Arrays.asList(categoricalPredictors.get(0).getName().getValue(),
-                                                              numericPredictors.get(0).getName().getValue())));
-        });
-        return PMMLModelTestUtils.getRegressionTable(categoricalPredictors, numericPredictors, predictorTerms, intercept, targetCategory);
+        retrieved.values().forEach(kiePMMLTableSourceCategory -> commonValidateKiePMMLRegressionTable(kiePMMLTableSourceCategory.getSource()));
     }
 
     private KiePMMLOutputField getOutputField(String name, RESULT_FEATURE resultFeature, String targetField) {

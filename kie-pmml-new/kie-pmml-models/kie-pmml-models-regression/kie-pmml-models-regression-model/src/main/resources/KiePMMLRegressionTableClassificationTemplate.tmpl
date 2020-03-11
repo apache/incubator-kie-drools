@@ -22,16 +22,26 @@ import java.util.function.DoubleUnaryOperator;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 
+import org.kie.pmml.commons.model.enums.OP_TYPE;
+import org.kie.pmml.models.regression.model.enums.REGRESSION_NORMALIZATION_METHOD;
+
 import org.kie.pmml.models.regression.model.KiePMMLRegressionClassificationTable;
 
 public class KiePMMLRegressionTableClassificationTemplate extends KiePMMLRegressionClassificationTable {
 
     public KiePMMLRegressionTableClassificationTemplate() {
         targetField = "fld4";
+        regressionNormalizationMethod = null;
+        opType = null;
    }
 
     @Override
     public Object getTargetCategory() {
+
+    }
+
+    @Override
+    public boolean isBinary() {
 
     }
 

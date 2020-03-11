@@ -17,6 +17,7 @@ package org.kie.pmml.benchmarks.regression;
 
 import java.util.concurrent.TimeUnit;
 
+import org.kie.api.pmml.PMML4Result;
 import org.kie.api.pmml.PMMLRequestData;
 import org.kie.pmml.evaluator.core.PMMLContextImpl;
 import org.openjdk.jmh.annotations.Benchmark;
@@ -29,7 +30,6 @@ import org.openjdk.jmh.annotations.Scope;
 import org.openjdk.jmh.annotations.Setup;
 import org.openjdk.jmh.annotations.State;
 import org.openjdk.jmh.annotations.Warmup;
-import org.openjdk.jmh.infra.Blackhole;
 import org.openjdk.jmh.runner.Runner;
 import org.openjdk.jmh.runner.RunnerException;
 import org.openjdk.jmh.runner.options.Options;
@@ -40,9 +40,9 @@ import org.slf4j.LoggerFactory;
 @BenchmarkMode(Mode.Throughput)
 @State(Scope.Thread)
 @Warmup(iterations = 2)
-@Measurement(iterations = 5)
+@Measurement(iterations = 5, time = 30)
 @OutputTimeUnit(TimeUnit.SECONDS)
-@Fork(jvmArgs = {"-Xms8172m", "-Xmx8172m"}, value = 5)
+@Fork(value = 5)
 public class CategoricalBenchmark extends AbstractRegressionBenchmark {
 
     private static final Logger logger = LoggerFactory.getLogger(CategoricalBenchmark.class);
@@ -58,7 +58,7 @@ public class CategoricalBenchmark extends AbstractRegressionBenchmark {
     }
 
     @Setup
-    public void setupModel() {
+    public void setupModel() throws Exception {
         logger.info("setup model...");
         modelName = "Sample for logistic regression";
         fileName = "CategoricalRegressionSample.pmml";
@@ -73,7 +73,7 @@ public class CategoricalBenchmark extends AbstractRegressionBenchmark {
     }
 
     @Benchmark
-    public void evaluate(Blackhole blackhole) {
-        super.evaluate(blackhole);
+    public PMML4Result evaluate() {
+        return super.evaluate();
     }
 }

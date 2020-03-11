@@ -19,6 +19,7 @@ import java.io.IOException;
 import java.util.AbstractMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 import java.util.concurrent.atomic.AtomicInteger;
 
 import com.github.javaparser.StaticJavaParser;
@@ -28,6 +29,7 @@ import com.github.javaparser.ast.body.ClassOrInterfaceDeclaration;
 import com.github.javaparser.ast.body.ConstructorDeclaration;
 import com.github.javaparser.ast.body.MethodDeclaration;
 import com.github.javaparser.ast.expr.AssignExpr;
+import com.github.javaparser.ast.expr.BooleanLiteralExpr;
 import com.github.javaparser.ast.expr.Expression;
 import com.github.javaparser.ast.expr.MethodCallExpr;
 import com.github.javaparser.ast.expr.NameExpr;
@@ -35,9 +37,14 @@ import com.github.javaparser.ast.expr.ObjectCreationExpr;
 import com.github.javaparser.ast.expr.SimpleName;
 import com.github.javaparser.ast.expr.StringLiteralExpr;
 import com.github.javaparser.ast.stmt.BlockStmt;
+import com.github.javaparser.ast.stmt.ReturnStmt;
+import org.dmg.pmml.OpType;
 import org.dmg.pmml.regression.RegressionModel;
 import org.dmg.pmml.regression.RegressionTable;
+import org.kie.pmml.commons.exceptions.KiePMMLInternalException;
 import org.kie.pmml.commons.model.KiePMMLOutputField;
+import org.kie.pmml.commons.model.enums.OP_TYPE;
+import org.kie.pmml.models.regression.model.enums.REGRESSION_NORMALIZATION_METHOD;
 import org.kie.pmml.models.regression.model.tuples.KiePMMLTableSourceCategory;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -61,26 +68,29 @@ public class KiePMMLRegressionTableClassificationFactory {
         // Avoid instantiation
     }
 
-    public static Map<String, KiePMMLTableSourceCategory> getRegressionTables(final List<RegressionTable> regressionTables, final RegressionModel.NormalizationMethod normalizationMethod, final List<KiePMMLOutputField> outputFields, final String targetField) throws IOException {
+    public static Map<String, KiePMMLTableSourceCategory> getRegressionTables(final List<RegressionTable> regressionTables, final RegressionModel.NormalizationMethod normalizationMethod, final OpType opType, final List<KiePMMLOutputField> outputFields, final String targetField) throws IOException {
         logger.debug("getRegressionTables {}", regressionTables);
         CompilationUnit templateCU = StaticJavaParser.parseResource(KIE_PMML_REGRESSION_TABLE_CLASSIFICATION_TEMPLATE_JAVA);
         Map<String, KiePMMLTableSourceCategory> toReturn = KiePMMLRegressionTableRegressionFactory.getRegressionTables(regressionTables, RegressionModel.NormalizationMethod.NONE, targetField);
-        AbstractMap.Entry<String, String> regressionTableEntry = getRegressionTable(templateCU, toReturn, normalizationMethod, outputFields, targetField);
+        Map.Entry<String, String> regressionTableEntry = getRegressionTable(templateCU, toReturn, normalizationMethod, opType, outputFields, targetField);
         toReturn.put(regressionTableEntry.getKey(), new KiePMMLTableSourceCategory(regressionTableEntry.getValue(), ""));
         return toReturn;
     }
 
-    public static AbstractMap.Entry<String, String> getRegressionTable(final CompilationUnit templateCU, final Map<String, KiePMMLTableSourceCategory> regressionTablesMap, final RegressionModel.NormalizationMethod normalizationMethod, final List<KiePMMLOutputField> outputFields, final String targetField) throws IOException {
+    public static Map.Entry<String, String> getRegressionTable(final CompilationUnit templateCU, final Map<String, KiePMMLTableSourceCategory> regressionTablesMap, final RegressionModel.NormalizationMethod normalizationMethod, final OpType opType, final List<KiePMMLOutputField> outputFields, final String targetField) throws IOException {
         logger.debug("getRegressionTable {}", regressionTablesMap);
         CompilationUnit cloneCU = templateCU.clone();
+        final REGRESSION_NORMALIZATION_METHOD regressionNormalizationMethod = REGRESSION_NORMALIZATION_METHOD.byName(normalizationMethod.value());
+        final OP_TYPE op_type = OP_TYPE.byName(opType.value());
         ClassOrInterfaceDeclaration tableTemplate = cloneCU.getClassByName(KIE_PMML_REGRESSION_TABLE_CLASSIFICATION_TEMPLATE)
                 .orElseThrow(() -> new RuntimeException(MAIN_CLASS_NOT_FOUND));
         String className = "KiePMMLRegressionTableClassification" + classArity.addAndGet(1);
         tableTemplate.setName(className);
         populateGetProbabilityMapMethod(normalizationMethod, tableTemplate);
         populateOutputFieldsMap(tableTemplate, outputFields);
+        populateIsBinaryMethod(opType, regressionTablesMap.size(), tableTemplate);
         tableTemplate.getDefaultConstructor().ifPresent(constructorDeclaration -> {
-            setConstructor(constructorDeclaration, tableTemplate.getName(), targetField);
+            setConstructor(constructorDeclaration, tableTemplate.getName(), targetField, regressionNormalizationMethod, op_type);
             addMapPopulation(constructorDeclaration.getBody(), regressionTablesMap);
         });
         populateGetTargetCategory(tableTemplate, null);
@@ -93,12 +103,26 @@ public class KiePMMLRegressionTableClassificationFactory {
      * @param generatedClassName
      * @param targetField
      */
-    private static void setConstructor(final ConstructorDeclaration constructorDeclaration, final SimpleName generatedClassName, final String targetField) {
+    private static void setConstructor(final ConstructorDeclaration constructorDeclaration, final SimpleName generatedClassName, final String targetField, final REGRESSION_NORMALIZATION_METHOD regressionNormalizationMethod, final OP_TYPE opType) {
         constructorDeclaration.setName(generatedClassName);
         final BlockStmt body = constructorDeclaration.getBody();
         final List<AssignExpr> assignExprs = body.findAll(AssignExpr.class);
-        assignExprs.stream().filter(assignExpr -> assignExpr.getTarget().asNameExpr().getNameAsString().equals("targetField"))
-                .forEach(assignExpr -> assignExpr.setValue(new StringLiteralExpr(targetField)));
+        assignExprs.forEach(assignExpr -> {
+            final String propertyName = assignExpr.getTarget().asNameExpr().getNameAsString();
+            switch (propertyName) {
+                case "targetField":
+                    assignExpr.setValue(new StringLiteralExpr(targetField));
+                    break;
+                case "regressionNormalizationMethod":
+                    assignExpr.setValue(new NameExpr(regressionNormalizationMethod.getClass().getSimpleName() + "." + regressionNormalizationMethod.name()));
+                    break;
+                case "opType":
+                    assignExpr.setValue(new NameExpr(opType.getClass().getSimpleName() + "." + opType.name()));
+                    break;
+                default:
+                    // NOOP
+            }
+        });
     }
 
     /**
@@ -173,7 +197,26 @@ public class KiePMMLRegressionTableClassificationFactory {
             final MethodDeclaration toReturn = evaluateTemplateClass.getMethodsByName(methodName).get(0);
             addMethod(toReturn, tableTemplate, "getProbabilityMap");
         } catch (Exception e) {
-            throw new RuntimeException(e);
+            throw new KiePMMLInternalException(e.getMessage());
+        }
+    }
+
+    /**
+     * Populate the <b>isBinary</b> <code>MethodDeclaration</code> of the class
+     * @param opType
+     * @param size
+     * @param tableTemplate
+     * @return
+     */
+    private static void populateIsBinaryMethod(final OpType opType, int size, final ClassOrInterfaceDeclaration tableTemplate) {
+        try {
+            final MethodDeclaration methodDeclaration = tableTemplate.getMethodsByName("isBinary").get(0);
+            boolean toReturn = Objects.equals(OpType.CATEGORICAL, opType) && size == 2;
+            BlockStmt blockStmt = new BlockStmt();
+            blockStmt.addStatement(new ReturnStmt(new BooleanLiteralExpr(toReturn)));
+            methodDeclaration.setBody(blockStmt);
+        } catch (Exception e) {
+            throw new KiePMMLInternalException(e.getMessage());
         }
     }
 }
