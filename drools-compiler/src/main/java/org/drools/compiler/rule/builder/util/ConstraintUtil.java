@@ -9,6 +9,12 @@ import org.mvel2.util.PropertyTools;
 
 public class ConstraintUtil {
 
+    public static final String DROOLS_NORMALIZE_CONSTRAINT = "drools.normalize.constraint";
+
+    private static final boolean ENABLE_NORMALIZE = Boolean.parseBoolean(System.getProperty(DROOLS_NORMALIZE_CONSTRAINT, "true"));
+
+    private ConstraintUtil() {}
+
     /**
      * Swap left and right operands in a constraint when a fact property is located on the right side.
      * 
@@ -21,11 +27,17 @@ public class ConstraintUtil {
      * @return Normalized <code>expression</code>
      */
     public static String inverseExpression(RelationalExprDescr relDescr, String expression, String leftValue, String rightValue, String operator, Pattern pattern) {
-
+        if (!ENABLE_NORMALIZE) {
+            return expression;
+        }
         Class<?> clazz = pattern.getObjectType().getClassType();
 
         String leftProp = getFirstProp(leftValue);
         String rightProp = getFirstProp(rightValue);
+        if (leftProp.isEmpty() || rightProp.isEmpty()) {
+            // do not inverse
+            return expression;
+        }
 
         OperatorDescr operatorDescr = relDescr.getOperatorDescr();
 
@@ -71,8 +83,15 @@ public class ConstraintUtil {
     }
 
     private static String getFirstProp(String str) {
-        int i = str.indexOf(".");
-        return (i != -1) ? str.substring(0, i) : str;
+        int idxDot = str.indexOf('.');
+        int idxBracket = str.indexOf('[');
+        if (idxDot == -1 && idxBracket == -1) {
+            return str;
+        } else if (idxDot != -1 && idxBracket != -1) {
+            return str.substring(0, Math.min(idxDot, idxBracket)); // pick smaller
+        } else {
+            return str.substring(0, Math.max(idxDot, idxBracket)); // pick not -1
+        }
     }
 
     private static boolean isNagatedExpression(String expression, String leftValue, String rightValue, String operator) {

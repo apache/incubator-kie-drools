@@ -4,6 +4,7 @@ import java.util.Optional;
 
 import com.github.javaparser.ast.NodeList;
 import com.github.javaparser.ast.expr.BinaryExpr;
+import com.github.javaparser.ast.expr.CastExpr;
 import com.github.javaparser.ast.expr.EnclosedExpr;
 import com.github.javaparser.ast.expr.Expression;
 import com.github.javaparser.ast.expr.MethodCallExpr;
@@ -29,9 +30,7 @@ public class ConstraintUtil {
     private static final String LESS_THAN_PREFIX = "lessThan";
     private static final String LESS_OR_EQUAL_PREFIX = "lessOrEqual";
 
-    public static final String DROOLS_NORMALIZE_CONSTRAINT = "drools.normalize.constraint";
-
-    private static final boolean ENABLE_NORMALIZE = Boolean.parseBoolean(System.getProperty(DROOLS_NORMALIZE_CONSTRAINT, "true"));
+    private static final boolean ENABLE_NORMALIZE = Boolean.parseBoolean(System.getProperty(org.drools.compiler.rule.builder.util.ConstraintUtil.DROOLS_NORMALIZE_CONSTRAINT, "true"));
 
     private ConstraintUtil() {}
 
@@ -50,19 +49,19 @@ public class ConstraintUtil {
 
         if (drlxParseResult instanceof SingleDrlxParseSuccess) {
             // Create a copy
-            SingleDrlxParseSuccess s = new SingleDrlxParseSuccess((SingleDrlxParseSuccess) drlxParseResult);
+            SingleDrlxParseSuccess drlx = new SingleDrlxParseSuccess((SingleDrlxParseSuccess) drlxParseResult);
 
-            Expression expr = s.getExpr();
+            Expression expr = drlx.getExpr();
             if (expr == null) {
                 return drlxParseResult;
             }
 
             if (expr instanceof MethodCallExpr) {
-                processTopLevelExpression(s, (MethodCallExpr) expr);
+                processTopLevelExpression(drlx, (MethodCallExpr) expr);
             } else if (expr instanceof EnclosedExpr) {
                 Expression inner = stripEnclosedExpr((EnclosedExpr) expr);
                 if (inner instanceof MethodCallExpr) {
-                    processTopLevelExpression(s, (MethodCallExpr) inner);
+                    processTopLevelExpression(drlx, (MethodCallExpr) inner);
                 } else {
                     processExpression(expr);
                 }
@@ -70,7 +69,7 @@ public class ConstraintUtil {
                 processExpression(expr);
             }
 
-            return s;
+            return drlx;
         }
         return drlxParseResult;
     }
@@ -84,10 +83,10 @@ public class ConstraintUtil {
         }
     }
 
-    private static void processTopLevelExpression(SingleDrlxParseSuccess s, MethodCallExpr mcExpr) {
+    private static void processTopLevelExpression(SingleDrlxParseSuccess drlx, MethodCallExpr mcExpr) {
         // Modify SingleDrlxParseSuccess when a top level constraint is modified
-        if (canInverse(s) && canInverse(mcExpr)) {
-            inverseSingleDrlxParseSuccess(s);
+        if (canInverse(drlx) && canInverse(mcExpr)) {
+            inverseSingleDrlxParseSuccess(drlx);
             inverseMethodCallExpr(mcExpr);
         }
     }
@@ -130,10 +129,10 @@ public class ConstraintUtil {
         return isPropertyOnRight(left, right);
     }
 
-    private static boolean canInverse(SingleDrlxParseSuccess s) {
-        ConstraintType type = s.getDecodeConstraintType();
-        TypedExpression left = s.getLeft();
-        TypedExpression right = s.getRight();
+    private static boolean canInverse(SingleDrlxParseSuccess drlx) {
+        ConstraintType type = drlx.getDecodeConstraintType();
+        TypedExpression left = drlx.getLeft();
+        TypedExpression right = drlx.getRight();
         if (type != null && left != null && right != null && (type == ConstraintType.EQUAL || type == ConstraintType.NOT_EQUAL || type == ConstraintType.GREATER_THAN || type == ConstraintType.GREATER_OR_EQUAL ||
                                                               type == ConstraintType.LESS_THAN || type == ConstraintType.LESS_OR_EQUAL)) {
             return isPropertyOnRight(left.getExpression(), right.getExpression());
@@ -147,6 +146,9 @@ public class ConstraintUtil {
     }
 
     private static boolean isProperty(Expression expr) {
+        if (expr instanceof CastExpr) {
+            expr = ((CastExpr)expr).getExpression();
+        }
         if (expr instanceof MethodCallExpr) {
             MethodCallExpr mcExpr = (MethodCallExpr) expr;
             if (mcExpr.getName().asString().equals(TO_BIG_DECIMAL) && mcExpr.getArgument(0) instanceof MethodCallExpr) {
@@ -162,21 +164,21 @@ public class ConstraintUtil {
 
     private static Optional<Expression> getRootScope(MethodCallExpr mcExpr) {
         // to get "_this" from nested property like "_this.getAdress().getCity()"
-        return mcExpr.getScope().flatMap(s -> {
-            if (s instanceof NameExpr) {
-                return Optional.of(s);
-            } else if (s instanceof MethodCallExpr) {
-                return getRootScope((MethodCallExpr) s);
+        return mcExpr.getScope().flatMap(scope -> {
+            if (scope instanceof NameExpr) {
+                return Optional.of(scope);
+            } else if (scope instanceof MethodCallExpr) {
+                return getRootScope((MethodCallExpr) scope);
             } else {
                 return Optional.empty();
             }
         });
     }
 
-    private static void inverseSingleDrlxParseSuccess(SingleDrlxParseSuccess s) {
+    private static void inverseSingleDrlxParseSuccess(SingleDrlxParseSuccess drlx) {
         ConstraintType inversedOperator = null;
 
-        switch (s.getDecodeConstraintType()) {
+        switch (drlx.getDecodeConstraintType()) {
             case EQUAL:
                 inversedOperator = ConstraintType.EQUAL;
                 break;
@@ -196,13 +198,13 @@ public class ConstraintUtil {
                 inversedOperator = ConstraintType.GREATER_OR_EQUAL;
                 break;
             default:
-                throw new IllegalArgumentException(s.getDecodeConstraintType() + " should not be inversed");
+                throw new IllegalArgumentException(drlx.getDecodeConstraintType() + " should not be inversed");
         }
 
-        TypedExpression left = s.getLeft();
-        s.setLeft(s.getRight());
-        s.setRight(left);
-        s.setDecodeConstraintType(inversedOperator);
+        TypedExpression left = drlx.getLeft();
+        drlx.setLeft(drlx.getRight());
+        drlx.setRight(left);
+        drlx.setDecodeConstraintType(inversedOperator);
     }
 
     private static void inverseMethodCallExpr(MethodCallExpr mcExpr) {

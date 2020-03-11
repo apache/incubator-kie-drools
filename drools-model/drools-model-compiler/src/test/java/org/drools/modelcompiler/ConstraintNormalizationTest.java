@@ -18,7 +18,9 @@ package org.drools.modelcompiler;
 
 import java.math.BigDecimal;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import org.assertj.core.api.Assertions;
 import org.drools.core.common.NamedEntryPoint;
@@ -28,7 +30,6 @@ import org.drools.core.reteoo.ObjectTypeNode;
 import org.drools.modelcompiler.domain.Address;
 import org.drools.modelcompiler.domain.Person;
 import org.drools.modelcompiler.domain.Toy;
-import org.junit.Ignore;
 import org.junit.Test;
 import org.kie.api.definition.type.FactType;
 import org.kie.api.runtime.KieSession;
@@ -517,19 +518,18 @@ public class ConstraintNormalizationTest extends BaseModelTest {
         assertEquals(2, ksession.fireAllRules());
     }
 
-    @Ignore
     @Test
-    public void testMap() throws Exception {
+    public void testMapProp() throws Exception {
         final String str =
                 "package org.drools.test;\n" +
                            "import " + Person.class.getCanonicalName() + ";\n" +
                            "rule R1 when \n" +
-                           " Person(\"Value\" == itemsString[\"Key\"])\n" +
+                           " Person(100 == items[5])\n" +
                            "then\n" +
                            "end\n" +
 
                            "rule R2 when \n" +
-                           " Person(itemsString[\"Key\"] == \"Value\")\n" +
+                           " Person(items[5] == 100)\n" +
                            "then\n" +
                            "end";
 
@@ -539,9 +539,63 @@ public class ConstraintNormalizationTest extends BaseModelTest {
         assertEquals(1, ReteDumper.collectNodes(ksession).stream().filter(AlphaNode.class::isInstance).count());
 
         final Person p = new Person("Toshiya");
-        p.getItemsString().put("Key", "Value");
+        p.getItems().put(5, 100);
 
         ksession.insert(p);
+        assertEquals(2, ksession.fireAllRules());
+    }
+
+    @Test
+    public void testMapStringProp() throws Exception {
+        final String str =
+                "package org.drools.test;\n" +
+                           "import " + Person.class.getCanonicalName() + ";\n" +
+                           "rule R1 when \n" +
+                           " Person(\"XXX\" == itemsString[\"AAA\"])\n" +
+                           "then\n" +
+                           "end\n" +
+
+                           "rule R2 when \n" +
+                           " Person(itemsString[\"AAA\"] == \"XXX\")\n" +
+                           "then\n" +
+                           "end";
+
+        final KieSession ksession = getKieSession(str);
+
+        // Check NodeSharing to verify if normalization works expectedly
+        assertEquals(1, ReteDumper.collectNodes(ksession).stream().filter(AlphaNode.class::isInstance).count());
+
+        final Person p = new Person("Toshiya");
+        p.getItemsString().put("AAA", "XXX");
+
+        ksession.insert(p);
+        assertEquals(2, ksession.fireAllRules());
+    }
+
+    @Test
+    public void testMapStringThis() throws Exception {
+        final String str =
+                "package org.drools.test;\n" +
+                           "import " + Map.class.getCanonicalName() + ";\n" +
+                           "rule R1 when \n" +
+                           " Map(\"XXX\" == this[\"AAA\"])\n" +
+                           "then\n" +
+                           "end\n" +
+
+                           "rule R2 when \n" +
+                           " Map(this[\"AAA\"] == \"XXX\")\n" +
+                           "then\n" +
+                           "end";
+
+        final KieSession ksession = getKieSession(str);
+
+        // Check NodeSharing to verify if normalization works expectedly
+        assertEquals(1, ReteDumper.collectNodes(ksession).stream().filter(AlphaNode.class::isInstance).count());
+
+        Map<String, String> map = new HashMap<>();
+        map.put("AAA", "XXX");
+
+        ksession.insert(map);
         assertEquals(2, ksession.fireAllRules());
     }
 }
