@@ -17,11 +17,17 @@ package org.kie.pmml.models.regression.evaluator;
 
 import java.util.Map;
 
+import org.drools.core.util.StringUtils;
 import org.kie.api.pmml.PMML4Result;
+import org.kie.pmml.commons.exceptions.KiePMMLInternalException;
 import org.kie.pmml.commons.model.KiePMMLModel;
 import org.kie.pmml.commons.model.enums.PMML_MODEL;
+import org.kie.pmml.evaluator.api.exceptions.KiePMMLModelException;
 import org.kie.pmml.evaluator.api.executor.PMMLContext;
 import org.kie.pmml.evaluator.core.executor.PMMLModelExecutor;
+import org.kie.pmml.models.regression.model.KiePMMLRegressionClassificationTable;
+import org.kie.pmml.models.regression.model.KiePMMLRegressionModel;
+import org.kie.pmml.models.regression.model.KiePMMLRegressionTable;
 
 import static org.kie.pmml.commons.enums.StatusCode.OK;
 import static org.kie.pmml.evaluator.core.utils.Converter.getUnwrappedParametersMap;
@@ -33,7 +39,6 @@ public class PMMLRegressionModelExecutor implements PMMLModelExecutor {
     private static final String EXPECTED_TWO_REGRESSION_TABLES_RETRIEVED = "Expected two RegressionTables, retrieved %s";
     private static final String EXPECTED_A_KIE_PMMLREGRESSION_MODEL_RECEIVED = "Expected a KiePMMLRegressionModel, received %s ";
     private static final String TARGET_FIELD_REQUIRED_RETRIEVED = "TargetField required, retrieved %s";
-    private static final String EXPECTED_ONE_REGRESSION_TABLE_RETRIEVED = "Expected one RegressionTable, retrieved %s";
     private static final String INVALID_TARGET_TYPE = "Invalid target type %s";
 
     @Override
@@ -53,117 +58,96 @@ public class PMMLRegressionModelExecutor implements PMMLModelExecutor {
         toReturn.setResultCode(OK.getName());
         model.getOutputFieldsMap().forEach(toReturn::addResultVariable);
         return toReturn;
-
-//        final KiePMMLRegressionModel regressionModel = (KiePMMLRegressionModel) model;
-//        return (regressionModel).isRegression() ? evaluateRegression(regressionModel, pmmlContext) : PMMLClassificationModelEvaluator.evaluateClassification(regressionModel, pmmlContext);
     }
 
     private void validate(KiePMMLModel toValidate) {
-        // NO OP - backward compatibility
+        if (!(toValidate instanceof KiePMMLRegressionModel)) {
+            throw new KiePMMLModelException(String.format(EXPECTED_A_KIE_PMMLREGRESSION_MODEL_RECEIVED, toValidate.getClass().getName()));
+        }
+        if (((KiePMMLRegressionModel) toValidate).getRegressionTable() == null) {
+            throw new KiePMMLModelException("At least one RegressionTable required");
+        }
+        final KiePMMLRegressionTable regressionTable = ((KiePMMLRegressionModel) toValidate).getRegressionTable();
+
+        if (regressionTable instanceof KiePMMLRegressionClassificationTable) {
+            validateClassification((KiePMMLRegressionClassificationTable) regressionTable);
+        } else {
+            validateRegression(regressionTable);
+        }
     }
 
-//    private void validate(KiePMMLModel toValidate) {
-//        if (!(toValidate instanceof KiePMMLRegressionModel)) {
-//            throw new KiePMMLModelException(String.format(EXPECTED_A_KIE_PMMLREGRESSION_MODEL_RECEIVED, toValidate.getClass().getName()));
-//        }
-//        if (((KiePMMLRegressionModel) toValidate).getRegressionTables() == null || ((KiePMMLRegressionModel) toValidate).getRegressionTables().isEmpty()) {
-//            throw new KiePMMLModelException("At least one RegressionTable required");
-//        }
-//        if (((KiePMMLRegressionModel) toValidate).isRegression()) {
-//            validateRegression((KiePMMLRegressionModel) toValidate);
-//        } else {
-//            validateClassification((KiePMMLRegressionModel) toValidate);
-//        }
-//    }
-//
-//    private void validateRegression(KiePMMLRegressionModel toValidate) {
-//        if (toValidate.getTargetField() == null || StringUtils.isEmpty(toValidate.getTargetField().trim())) {
-//            throw new KiePMMLInternalException(String.format(TARGET_FIELD_REQUIRED_RETRIEVED, toValidate.getTargetField()));
-//        }
-//        if (toValidate.getRegressionTables().size() != 1) {
-//            throw new KiePMMLModelException(String.format(EXPECTED_ONE_REGRESSION_TABLE_RETRIEVED, toValidate.getRegressionTables().size()));
-//        }
-//        switch (toValidate.getRegressionNormalizationMethod()) {
-//            case NONE:
-//            case SOFTMAX:
-//            case LOGIT:
-//            case EXP:
-//            case PROBIT:
-//            case CLOGLOG:
-//            case LOGLOG:
-//            case CAUCHIT:
-//                return;
-//            default:
-//                throw new KiePMMLModelException(String.format(INVALID_NORMALIZATION_METHOD, toValidate.getRegressionNormalizationMethod()));
-//        }
-//    }
-//
-//    private void validateClassification(KiePMMLRegressionModel toValidate) {
-//        switch (toValidate.getTargetOpType()) {
-//            case CATEGORICAL:
-//                validateClassificationCategorical(toValidate);
-//                break;
-//            case ORDINAL:
-//                validateClassificationOrdinal(toValidate);
-//                break;
-//            default:
-//                throw new KiePMMLModelException(String.format(INVALID_TARGET_TYPE, toValidate.getTargetOpType()));
-//        }
-//    }
-//
-//    private void validateClassificationCategorical(KiePMMLRegressionModel toValidate) {
-//        if (toValidate.isBinary()) {
-//            validateClassificationCategoricalBinary(toValidate);
-//        } else {
-//            validateClassificationCategoricalNotBinary(toValidate);
-//        }
-//    }
-//
-//    private void validateClassificationCategoricalBinary(KiePMMLRegressionModel toValidate) {
-//        switch (toValidate.getRegressionNormalizationMethod()) {
-//            case LOGIT:
-//            case PROBIT:
-//            case CAUCHIT:
-//            case CLOGLOG:
-//            case LOGLOG:
-//            case NONE:
-//                if (toValidate.getRegressionTables().size() != 2) {
-//                    throw new KiePMMLModelException(String.format(EXPECTED_TWO_REGRESSION_TABLES_RETRIEVED, toValidate.getRegressionTables().size()));
-//                }
-//                return;
-//            default:
-//                throw new KiePMMLModelException(String.format(INVALID_NORMALIZATION_METHOD, toValidate.getRegressionNormalizationMethod()));
-//        }
-//    }
-//
-//    private void validateClassificationCategoricalNotBinary(KiePMMLRegressionModel toValidate) {
-//        switch (toValidate.getRegressionNormalizationMethod()) {
-//            case SOFTMAX:
-//            case SIMPLEMAX:
-//            case NONE:
-//                if (toValidate.getRegressionTables().size() < 2) {
-//                    throw new KiePMMLModelException(String.format(EXPECTED_AT_LEAST_TWO_REGRESSION_TABLES_RETRIEVED, toValidate.getRegressionTables().size()));
-//                }
-//                return;
-//            default:
-//                throw new KiePMMLModelException(String.format(INVALID_NORMALIZATION_METHOD, toValidate.getRegressionNormalizationMethod()));
-//        }
-//    }
-//
-//    private void validateClassificationOrdinal(KiePMMLRegressionModel toValidate) {
-//        switch (toValidate.getRegressionNormalizationMethod()) {
-//            case LOGIT:
-//            case PROBIT:
-//            case CAUCHIT:
-//            case CLOGLOG:
-//            case LOGLOG:
-//            case NONE:
-//                if (toValidate.getRegressionTables().size() < 2) {
-//                    throw new KiePMMLModelException(String.format(EXPECTED_AT_LEAST_TWO_REGRESSION_TABLES_RETRIEVED, toValidate.getRegressionTables().size()));
-//                }
-//                return;
-//            default:
-//                throw new KiePMMLModelException(String.format(INVALID_NORMALIZATION_METHOD, toValidate.getRegressionNormalizationMethod()));
-//        }
-//    }
+    private void validateRegression(KiePMMLRegressionTable toValidate) {
+        if (toValidate.getTargetField() == null || StringUtils.isEmpty(toValidate.getTargetField().trim())) {
+            throw new KiePMMLInternalException(String.format(TARGET_FIELD_REQUIRED_RETRIEVED, toValidate.getTargetField()));
+        }
+    }
+
+    private void validateClassification(KiePMMLRegressionClassificationTable toValidate) {
+        switch (toValidate.getOpType()) {
+            case CATEGORICAL:
+                validateClassificationCategorical(toValidate);
+                break;
+            case ORDINAL:
+                validateClassificationOrdinal(toValidate);
+                break;
+            default:
+                throw new KiePMMLModelException(String.format(INVALID_TARGET_TYPE, toValidate.getOpType()));
+        }
+    }
+
+    private void validateClassificationCategorical(KiePMMLRegressionClassificationTable toValidate) {
+        if (toValidate.isBinary()) {
+            validateClassificationCategoricalBinary(toValidate);
+        } else {
+            validateClassificationCategoricalNotBinary(toValidate);
+        }
+    }
+
+    private void validateClassificationCategoricalBinary(KiePMMLRegressionClassificationTable toValidate) {
+        switch (toValidate.getRegressionNormalizationMethod()) {
+            case LOGIT:
+            case PROBIT:
+            case CAUCHIT:
+            case CLOGLOG:
+            case LOGLOG:
+            case NONE:
+                if (toValidate.getCategoryTableMap().size() != 2) {
+                    throw new KiePMMLModelException(String.format(EXPECTED_TWO_REGRESSION_TABLES_RETRIEVED, toValidate.getCategoryTableMap().size()));
+                }
+                return;
+            default:
+                throw new KiePMMLModelException(String.format(INVALID_NORMALIZATION_METHOD, toValidate.getRegressionNormalizationMethod()));
+        }
+    }
+
+    private void validateClassificationCategoricalNotBinary(KiePMMLRegressionClassificationTable toValidate) {
+        switch (toValidate.getRegressionNormalizationMethod()) {
+            case SOFTMAX:
+            case SIMPLEMAX:
+            case NONE:
+                if (toValidate.getCategoryTableMap().size() < 2) {
+                    throw new KiePMMLModelException(String.format(EXPECTED_AT_LEAST_TWO_REGRESSION_TABLES_RETRIEVED, toValidate.getCategoryTableMap().size()));
+                }
+                return;
+            default:
+                throw new KiePMMLModelException(String.format(INVALID_NORMALIZATION_METHOD, toValidate.getRegressionNormalizationMethod()));
+        }
+    }
+
+    private void validateClassificationOrdinal(KiePMMLRegressionClassificationTable toValidate) {
+        switch (toValidate.getRegressionNormalizationMethod()) {
+            case LOGIT:
+            case PROBIT:
+            case CAUCHIT:
+            case CLOGLOG:
+            case LOGLOG:
+            case NONE:
+                if (toValidate.getCategoryTableMap().size() < 2) {
+                    throw new KiePMMLModelException(String.format(EXPECTED_AT_LEAST_TWO_REGRESSION_TABLES_RETRIEVED, toValidate.getCategoryTableMap().size()));
+                }
+                return;
+            default:
+                throw new KiePMMLModelException(String.format(INVALID_NORMALIZATION_METHOD, toValidate.getRegressionNormalizationMethod()));
+        }
+    }
 }

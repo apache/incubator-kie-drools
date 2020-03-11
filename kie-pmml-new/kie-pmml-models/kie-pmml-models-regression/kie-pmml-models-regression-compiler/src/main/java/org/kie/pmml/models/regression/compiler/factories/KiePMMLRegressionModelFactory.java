@@ -105,7 +105,7 @@ public class KiePMMLRegressionModelFactory {
         if (isRegression(model.getMiningFunction(), targetFieldName, opType)) {
             toReturn = KiePMMLRegressionTableRegressionFactory.getRegressionTables(Collections.singletonList(model.getRegressionTables().get(0)), model.getNormalizationMethod(), targetFieldName);
         } else {
-            toReturn = KiePMMLRegressionTableClassificationFactory.getRegressionTables(model.getRegressionTables(), model.getNormalizationMethod(), outputFields, targetFieldName);
+            toReturn = KiePMMLRegressionTableClassificationFactory.getRegressionTables(model.getRegressionTables(), model.getNormalizationMethod(), opType, outputFields, targetFieldName);
         }
         return toReturn;
     }

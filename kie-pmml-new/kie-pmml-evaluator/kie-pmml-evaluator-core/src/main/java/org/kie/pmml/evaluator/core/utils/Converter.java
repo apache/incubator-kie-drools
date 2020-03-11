@@ -41,11 +41,6 @@ public class Converter {
             toReturn.put(entry.getKey(), entry.getValue().getValue());
         }
         return toReturn;
-//
-//        return parameterMap.entrySet()
-//                .stream()
-//                .collect(Collectors.toMap(Map.Entry::getKey,
-//                                          e -> e.getValue().getValue()));
     }
 
     /**
@@ -59,10 +54,5 @@ public class Converter {
             toReturn.put(parameterInfo.getName(), parameterInfo.getValue());
         }
         return toReturn;
-//
-//        return parameterInfos
-//                .stream()
-//                .collect(Collectors.toMap(ParameterInfo::getName,
-//                                          ParameterInfo::getValue));
     }
 }

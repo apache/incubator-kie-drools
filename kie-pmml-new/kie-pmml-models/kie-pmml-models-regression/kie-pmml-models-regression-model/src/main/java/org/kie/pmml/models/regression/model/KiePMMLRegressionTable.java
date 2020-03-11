@@ -28,6 +28,8 @@ public abstract class KiePMMLRegressionTable {
     protected double intercept;
     protected String targetField;
 
+    public abstract Object getTargetCategory();
+
     public Object evaluateRegression(Map<String, Object> input) {
         final AtomicReference<Double> result = new AtomicReference<>(intercept);
         final Map<String, Double> resultMap = new HashMap<>();
@@ -55,7 +57,25 @@ public abstract class KiePMMLRegressionTable {
         return new HashMap<>();
     }
 
-    public abstract Object getTargetCategory();
+    public String getTargetField() {
+        return targetField;
+    }
+
+    public Map<String, Function<Double, Double>> getNumericFunctionMap() {
+        return numericFunctionMap;
+    }
+
+    public Map<String, Function<Object, Double>> getCategoricalFunctionMap() {
+        return categoricalFunctionMap;
+    }
+
+    public Map<String, Function<Map<String, Object>, Double>> getPredictorTermsFunctionMap() {
+        return predictorTermsFunctionMap;
+    }
+
+    public double getIntercept() {
+        return intercept;
+    }
 
     protected void updateResult(final AtomicReference<Double> toUpdate) {
         // NONE

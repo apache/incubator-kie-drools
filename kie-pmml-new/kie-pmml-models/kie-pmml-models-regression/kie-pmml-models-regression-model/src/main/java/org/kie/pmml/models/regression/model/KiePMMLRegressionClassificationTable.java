@@ -52,6 +52,10 @@ public abstract class KiePMMLRegressionClassificationTable extends KiePMMLRegres
         return predictedEntry.getKey();
     }
 
+    public abstract boolean isBinary();/* {
+        return Objects.equals(OP_TYPE.CATEGORICAL, targetOpType) && (targetValues != null && targetValues.size() == 2);
+    }*/
+
     protected abstract LinkedHashMap<String, Double> getProbabilityMap(final LinkedHashMap<String, Double> resultMap);
 
     protected abstract void populateOutputFieldsMap(final Map.Entry<String, Double> predictedEntry, final LinkedHashMap<String, Double> probabilityMap);
@@ -63,6 +67,18 @@ public abstract class KiePMMLRegressionClassificationTable extends KiePMMLRegres
     @Override
     public Map<String, Object> getOutputFieldsMap() {
         return outputFieldsMap;
+    }
+
+    public REGRESSION_NORMALIZATION_METHOD getRegressionNormalizationMethod() {
+        return regressionNormalizationMethod;
+    }
+
+    public OP_TYPE getOpType() {
+        return opType;
+    }
+
+    public Map<String, KiePMMLRegressionTable> getCategoryTableMap() {
+        return categoryTableMap;
     }
 
     protected LinkedHashMap<String, Double> getProbabilityMap(final LinkedHashMap<String, Double> resultMap, DoubleUnaryOperator firstItemOperator, DoubleUnaryOperator secondItemOperator) {

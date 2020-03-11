@@ -22,8 +22,10 @@ import java.util.Arrays;
 import java.util.Collection;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Map;
 import java.util.Random;
 import java.util.Set;
+import java.util.function.Function;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 
@@ -41,10 +43,16 @@ import org.dmg.pmml.regression.RegressionTable;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.Parameterized;
+import org.kie.pmml.commons.model.enums.MINING_FUNCTION;
+import org.kie.pmml.commons.model.enums.OP_TYPE;
+import org.kie.pmml.models.regression.model.KiePMMLRegressionClassificationTable;
 import org.kie.pmml.models.regression.model.KiePMMLRegressionModel;
+import org.kie.pmml.models.regression.model.KiePMMLRegressionTable;
+import org.kie.pmml.models.regression.model.enums.REGRESSION_NORMALIZATION_METHOD;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertTrue;
 import static org.kie.pmml.compiler.commons.testutils.PMMLModelTestUtils.getCategoricalPredictor;
 import static org.kie.pmml.compiler.commons.testutils.PMMLModelTestUtils.getDataDictionary;
 import static org.kie.pmml.compiler.commons.testutils.PMMLModelTestUtils.getDataField;
@@ -112,5 +120,37 @@ public class KiePMMLRegressionModelFactoryTest {
         KiePMMLRegressionModel retrieved = getKiePMMLRegressionModel(dataDictionary, regressionModel);
         assertNotNull(retrieved);
         assertEquals(regressionModel.getModelName(), retrieved.getName());
+        assertEquals(MINING_FUNCTION.byName(regressionModel.getMiningFunction().value()), retrieved.getMiningFunction());
+        assertEquals(miningFields.get(0).getName().getValue(), retrieved.getTargetField());
+        final KiePMMLRegressionTable regressionTable = retrieved.getRegressionTable();
+        assertNotNull(regressionTable);
+        assertTrue(regressionTable instanceof KiePMMLRegressionClassificationTable);
+        evaluateCategoricalRegressionTable((KiePMMLRegressionClassificationTable) regressionTable);
+    }
+
+    private void evaluateCategoricalRegressionTable(KiePMMLRegressionClassificationTable regressionTable) {
+        assertEquals(REGRESSION_NORMALIZATION_METHOD.byName(regressionModel.getNormalizationMethod().value()), regressionTable.getRegressionNormalizationMethod());
+        assertEquals(OP_TYPE.CATEGORICAL, regressionTable.getOpType());
+        final Map<String, KiePMMLRegressionTable> categoryTableMap = regressionTable.getCategoryTableMap();
+        for (RegressionTable originalRegressionTable : regressionTables) {
+            assertTrue(categoryTableMap.containsKey(originalRegressionTable.getTargetCategory().toString()));
+            evaluateRegressionTable(categoryTableMap.get(originalRegressionTable.getTargetCategory().toString()), originalRegressionTable);
+        }
+    }
+
+    private void evaluateRegressionTable(KiePMMLRegressionTable regressionTable, RegressionTable originalRegressionTable) {
+        assertEquals(originalRegressionTable.getIntercept(), regressionTable.getIntercept());
+        final Map<String, Function<Double, Double>> numericFunctionMap = regressionTable.getNumericFunctionMap();
+        for (NumericPredictor numericPredictor : originalRegressionTable.getNumericPredictors()) {
+            assertTrue(numericFunctionMap.containsKey(numericPredictor.getName().getValue()));
+        }
+        final Map<String, Function<Object, Double>> categoricalFunctionMap = regressionTable.getCategoricalFunctionMap();
+        for (CategoricalPredictor categoricalPredictor : originalRegressionTable.getCategoricalPredictors()) {
+            assertTrue(categoricalFunctionMap.containsKey(categoricalPredictor.getName().getValue()));
+        }
+        final  Map<String, Function<Map<String, Object>, Double>>  predictorTermsFunctionMap = regressionTable.getPredictorTermsFunctionMap();
+        for (PredictorTerm predictorTerm : originalRegressionTable.getPredictorTerms()) {
+            assertTrue(predictorTermsFunctionMap.containsKey(predictorTerm.getName().getValue()));
+        }
     }
 }
