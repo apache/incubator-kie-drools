@@ -43,21 +43,4 @@
     </dependency>
   </dependencies>
 
-  <dependencyManagement>
-    <!-- TODO MOVE TO kie-pmml-new/pom.xml -->
-    <dependencies>
-      <dependency>
-        <groupId>org.kie</groupId>
-        <artifactId>kie-pmml-models-tree-model</artifactId>
-        <version>${version.org.kie}</version>
-      </dependency>
-      <dependency>
-        <groupId>org.kie</groupId>
-        <artifactId>kie-pmml-compiler-commons</artifactId>
-        <classifier>tests</classifier>
-        <version>${version.org.kie}</version>
-      </dependency>
-    </dependencies>
-  </dependencyManagement>
-
 </project>

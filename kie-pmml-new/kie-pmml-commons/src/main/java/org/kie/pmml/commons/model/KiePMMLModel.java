@@ -30,7 +30,6 @@ import org.kie.pmml.commons.model.enums.PMML_MODEL;
  */
 public abstract class KiePMMLModel extends KiePMMLBase {
 
-    protected String name;
     protected PMML_MODEL pmmlMODEL;
     protected MINING_FUNCTION miningFunction;
     protected String targetField;
@@ -50,10 +49,6 @@ public abstract class KiePMMLModel extends KiePMMLBase {
 
     public String getTargetField() {
         return targetField;
-    }
-
-    public String getName() {
-        return name;
     }
 
     public Map<String, Object> getOutputFieldsMap() {
