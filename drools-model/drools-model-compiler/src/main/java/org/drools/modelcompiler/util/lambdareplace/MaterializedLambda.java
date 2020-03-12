@@ -26,6 +26,7 @@ import com.github.javaparser.StaticJavaParser;
 import com.github.javaparser.ast.CompilationUnit;
 import com.github.javaparser.ast.Modifier;
 import com.github.javaparser.ast.NodeList;
+import com.github.javaparser.ast.PackageDeclaration;
 import com.github.javaparser.ast.body.EnumConstantDeclaration;
 import com.github.javaparser.ast.body.EnumDeclaration;
 import com.github.javaparser.ast.body.MethodDeclaration;
@@ -33,6 +34,7 @@ import com.github.javaparser.ast.body.Parameter;
 import com.github.javaparser.ast.expr.Expression;
 import com.github.javaparser.ast.expr.LambdaExpr;
 import com.github.javaparser.ast.expr.MethodCallExpr;
+import com.github.javaparser.ast.expr.Name;
 import com.github.javaparser.ast.expr.NameExpr;
 import com.github.javaparser.ast.expr.StringLiteralExpr;
 import com.github.javaparser.ast.nodeTypes.NodeWithMembers;
@@ -49,7 +51,7 @@ abstract class MaterializedLambda {
     final List<LambdaParameter> lambdaParameters = new ArrayList<>();
 
     protected final String packageName;
-    protected String temporaryClassName;
+    protected String temporaryClassHash;
 
     LambdaExpr lambdaExpr;
     private String ruleClassName;
@@ -67,21 +69,35 @@ abstract class MaterializedLambda {
         }
 
         lambdaExpr = expression.asLambdaExpr();
-        temporaryClassName = className(expressionString);
+        temporaryClassHash = classHash(expressionString);
 
         parseParameters();
 
-        CompilationUnit compilationUnit = new CompilationUnit(packageName);
+        CompilationUnit compilationUnit = new CompilationUnit();
         addImports(imports, staticImports, compilationUnit);
 
         EnumDeclaration classDeclaration = create(compilationUnit);
 
         createMethodDeclaration(classDeclaration);
 
-        String className = className(MATERIALIZED_LAMBDA_PRETTY_PRINTER.print(compilationUnit));
-        classDeclaration.setName(className);
+        String classHash = classHash(MATERIALIZED_LAMBDA_PRETTY_PRINTER.print(compilationUnit));
+        String isolatedPackageName = getIsolatedPackageName(classHash);
+        String className = String.format("%s%s", getPrefix(), classHash);
 
-        return new CreatedClass(compilationUnit, className, packageName);
+        classDeclaration.setName(className);
+        compilationUnit.setPackageDeclaration(new PackageDeclaration(new Name(isolatedPackageName)));
+
+        return new CreatedClass(compilationUnit, className, isolatedPackageName);
+    }
+
+
+    /*
+        Externalised Lambda need to be isolated in a separate packages because putting too many classes
+        in the same package as the rule might break Java 8 compiler while importing *
+        We aggregate the Lambda classes based on the first two letters of the hash
+     */
+    private String getIsolatedPackageName(String className) {
+        return String.format("%s.P%s", packageName, className.substring(0, 2));
     }
 
     private void addImports(Collection<String> imports, Collection<String> staticImports, CompilationUnit compilationUnit) {
@@ -119,7 +135,7 @@ abstract class MaterializedLambda {
     }
 
     protected EnumDeclaration create(CompilationUnit compilationUnit) {
-        EnumDeclaration lambdaClass = compilationUnit.addEnum(temporaryClassName);
+        EnumDeclaration lambdaClass = compilationUnit.addEnum(temporaryClassHash);
         lambdaClass.addAnnotation(org.drools.compiler.kie.builder.MaterializedLambda.class.getCanonicalName());
         lambdaClass.setImplementedTypes(createImplementedType());
         lambdaClass.addEntry(new EnumConstantDeclaration("INSTANCE"));
@@ -146,7 +162,11 @@ abstract class MaterializedLambda {
                 .collect(Collectors.toList());
     }
 
-    abstract String className(String sourceCode);
+    protected String classHash(String sourceCode) {
+        return md5Hash(sourceCode);
+    }
+
+    abstract String getPrefix();
 
     abstract ClassOrInterfaceType functionType();
 
