@@ -50,15 +50,23 @@ pipeline {
         }
     }
     post {
-        unstable {
-            script {
-                mailer.sendEmailFailure()
-            }
+        failure{
+            emailext body: 'kogito deploy #${BUILD_NUMBER} was: ' + "${currentBuild.currentResult}" +  '\\n' +
+                    'Please look here: ${BUILD_URL} \\n' +
+                    ' \\n' +
+                    '${BUILD_LOG, maxLines=750}', subject: 'kogito deploy #${BUILD_NUMBER}: ' + "${currentBuild.currentResult}", to: 'cnicolai@redhat.com, mbiarnes@redhat.com'
         }
-        failure {
-            script {
-                mailer.sendEmailFailure()
-            }
+        unstable{
+            emailext body: 'kogito-deploy #${BUILD_NUMBER} was: ' + "${currentBuild.currentResult}" +  '\\n' +
+                    'Please look here: ${BUILD_URL} \\n' +
+                    ' \\n' +
+                    'Failed tests: ${BUILD_URL}/testReport \\n' +
+                    ' \\n' +
+                    '${BUILD_LOG, maxLines=750}', subject: 'kogito deploy #${BUILD_NUMBER}: ' + "${currentBuild.currentResult}", to: 'cnicolai@redhat.com, mbiarnes@redhat.com'
+        }
+        success{
+            emailext body: 'kogito-deploy #${BUILD_NUMBER} was:' + "${currentBuild.currentResult}" +  '\\n' +
+                    'Please look here: ${BUILD_URL}', subject: 'kogito deploy #${BUILD_NUMBER}: ' + "${currentBuild.currentResult}", to: 'cnicolai@redhat.com, mbiarnes@redhat.com'
         }
         always {
             junit '**/target/surefire-reports/**/*.xml'
