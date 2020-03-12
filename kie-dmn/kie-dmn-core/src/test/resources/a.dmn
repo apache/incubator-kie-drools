@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<semantic:definitions xmlns:semantic="http://www.omg.org/spec/DMN/20180521/MODEL/"  xmlns:triso="http://www.trisotech.com/2015/triso/modeling"  xmlns:dmndi="http://www.omg.org/spec/DMN/20180521/DMNDI/"  xmlns:di="http://www.omg.org/spec/DMN/20180521/DI/"  xmlns:dc="http://www.omg.org/spec/DMN/20180521/DC/"  xmlns:trisodmn="http://www.trisotech.com/2016/triso/dmn"  xmlns:feel="http://www.omg.org/spec/DMN/20180521/FEEL/"  xmlns:tc="http://www.omg.org/spec/DMN/20160719/testcase"  xmlns:drools="http://www.drools.org/kie/dmn/1.1"  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"  xmlns:rss="http://purl.org/rss/2.0/"  xmlns:openapi="https://openapis.org/omg/extension/1.0"  xmlns="http://www.trisotech.com/definitions/_2ceee5b6-0f0d-41ef-890e-2cd6fb1adb10" id="_2ceee5b6-0f0d-41ef-890e-2cd6fb1adb10" name="Drawing 1" namespace="http://www.trisotech.com/definitions/_2ceee5b6-0f0d-41ef-890e-2cd6fb1adb10" exporter="DMN Modeler" exporterVersion="6.2.7" triso:logoChoice="Default">
+    <semantic:itemDefinition name="tPerson" label="tPerson">
+        <semantic:itemComponent id="_0d1a64a8-6089-4af3-96c9-c220b8055ce6" name="name">
+            <semantic:typeRef>string</semantic:typeRef>
+        </semantic:itemComponent>
+    </semantic:itemDefinition>
+    <semantic:inputData id="_aa62fffa-9e87-4535-a63a-6f357ec2ffe3" name="p">
+        <semantic:variable name="p" id="_aea02203-99cb-41e4-a86d-25f63b9ee3d1" typeRef="tPerson"/>
+    </semantic:inputData>
+    <semantic:decision id="_ddd2b9da-845d-4672-a636-f4018f38b380" name="d">
+        <semantic:variable name="d" id="_84ad27c3-50b1-4dea-a10a-e69eab6c2bc5" typeRef="Any"/>
+        <semantic:informationRequirement id="_e2af06aa-a3f2-4388-afa9-3d71a344afa5">
+            <semantic:requiredInput href="#_aa62fffa-9e87-4535-a63a-6f357ec2ffe3"/>
+        </semantic:informationRequirement>
+        <semantic:context id="_bf061791-180b-43a6-a3f0-685162d735fe" typeRef="Any" triso:expressionId="_4d10ceff-e062-485b-aa50-20c3a9d7a8db">
+            <semantic:contextEntry id="_9ac91ea7-57a9-4d60-8780-7a4a332003aa">
+                <semantic:variable name="Hello" id="_c6259584-414b-438b-a69b-b536f1f13818" typeRef="Any"/>
+                <semantic:literalExpression id="_b4bd08a1-3ca6-475b-8555-eeed6432bc2f">
+                    <semantic:text>"Hello " + p.name</semantic:text>
+                </semantic:literalExpression>
+            </semantic:contextEntry>
+            <semantic:contextEntry id="_eeef68ab-d3e8-47a5-b086-67b66d172316">
+                <semantic:variable name="the person" id="_9c0c9abd-c141-4d70-b3a9-d1740d1517e3" typeRef="Any"/>
+                <semantic:literalExpression id="_a7655e09-a433-4ab4-ad1f-b946f23417dd" expressionLanguage="http://www.omg.org/spec/DMN/20180521/FEEL/" triso:unparsed="true">
+                    <semantic:text>p</semantic:text>
+                </semantic:literalExpression>
+            </semantic:contextEntry>
+        </semantic:context>
+    </semantic:decision>
+</semantic:definitions>
