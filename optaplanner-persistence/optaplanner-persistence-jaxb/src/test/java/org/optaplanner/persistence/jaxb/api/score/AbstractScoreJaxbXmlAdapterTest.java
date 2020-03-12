@@ -71,7 +71,8 @@ public abstract class AbstractScoreJaxbXmlAdapterTest {
                     + "<([\\w\\-\\.]+)/>"; // Start and end of element
         }
         if (!xmlString.matches(regex)) {
-            fail("Regular expression match failed.\nExpected regular expression: " + regex + "\nActual string: " + xmlString);
+            fail(String.format("Regular expression match failed.%nExpected regular expression: %s%n" +
+                                       "Actual string: %s", regex, xmlString));
         }
     }
 
@@ -105,20 +106,21 @@ public abstract class AbstractScoreJaxbXmlAdapterTest {
         assertEquals(expectedScore, output.getScore());
         String regex;
         if (expectedScore != null) {
-            regex = "\\{\n" // Opening bracket
-                    + "\\s*\"([\\w]+)\"\\s:\\s\\{\n" // Start of element
+            regex = "\\{\\R" // Opening bracket
+                    + "\\s*\"([\\w]+)\"\\s:\\s\\{\\R" // Start of element
                     + "\\s*\"score\"\\s:\\s\"" // Start of element
                     + expectedScore.toString().replaceAll("\\[", "\\\\[").replaceAll("\\]", "\\\\]") // Score
-                    + "\"\\s*\\}\n" // End of element
+                    + "\"\\s*\\}\\R" // End of element
                     + "\\}"; // Closing bracket
         } else {
-            regex = "\\{\n" // Opening bracket
-                    + "\\s*\"([\\w]+)\"\\s:\\s\\{\n" // Start of element
-                    + "\\s*\\}\n" // End of element
+            regex = "\\{\\R" // Opening bracket
+                    + "\\s*\"([\\w]+)\"\\s:\\s\\{\\R" // Start of element
+                    + "\\s*\\}\\R" // End of element
                     + "\\}"; // Closing bracket
         }
         if (!jsonString.matches(regex)) {
-            fail("Regular expression match failed.\nExpected regular expression: " + regex + "\nActual string: " + jsonString);
+            fail(String.format("Regular expression match failed.%nExpected regular expression: %s%n" +
+                                       "Actual string: %s", regex, jsonString));
         }
     }
 
