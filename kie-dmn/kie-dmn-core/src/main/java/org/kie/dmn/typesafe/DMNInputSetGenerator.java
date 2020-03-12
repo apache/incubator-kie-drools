@@ -4,12 +4,14 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Optional;
+import java.util.Set;
 
 import com.github.javaparser.ast.body.ClassOrInterfaceDeclaration;
 import org.drools.modelcompiler.builder.generator.declaredtype.api.TypeDefinition;
 import org.drools.modelcompiler.builder.generator.declaredtype.generator.GeneratedClassDeclaration;
 import org.kie.dmn.api.core.DMNModel;
 import org.kie.dmn.api.core.ast.InputDataNode;
+import org.kie.dmn.api.core.ast.ItemDefNode;
 import org.kie.dmn.core.impl.DMNModelImpl;
 
 public class DMNInputSetGenerator {
@@ -24,6 +26,8 @@ public class DMNInputSetGenerator {
     }
 
     private void processTypes() {
+
+        Set<ItemDefNode> itemDefinitions = dmnModel.getItemDefinitions(); // usa questo
 
         for (InputDataNode n : dmnModel.getInputs()) {
             DMNDeclaredType dmnDeclaredType = new DMNDeclaredType(n.getType());

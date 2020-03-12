@@ -32,6 +32,10 @@ public class DMNTypeSafeTest {
 
         String sourceCode = new DMNInputSetGenerator(dmnModel).getType("TPerson");
 
+
+        // Chiedi a Edo come sta facendo il test così
+        TPerson person = new TPerson();
+
         Map<String, String> sourceCodes = Collections.singletonMap("org.kie.dmn.typesafe.TPerson", sourceCode);
 
         ClassLoader thisDMNClassLoader = this.getClass().getClassLoader();
