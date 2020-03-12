@@ -15,7 +15,30 @@
 
 package org.drools.core.rule.builder.dialect.asm;
 
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.PrintStream;
+import java.lang.reflect.Field;
+import java.lang.reflect.InvocationTargetException;
+import java.lang.reflect.Method;
+import java.lang.reflect.Modifier;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
+
+import org.drools.core.addon.TypeResolver;
+import org.drools.core.util.ClassUtils;
+import org.drools.reflective.util.ByteArrayClassLoader;
+import org.mvel2.asm.ClassWriter;
+import org.mvel2.asm.MethodVisitor;
+import org.mvel2.asm.Type;
+
 import static java.lang.reflect.Modifier.isAbstract;
+
 import static org.drools.reflective.util.ClassUtils.convertFromPrimitiveType;
 import static org.drools.reflective.util.ClassUtils.convertPrimitiveNameToType;
 import static org.drools.reflective.util.ClassUtils.convertToPrimitiveType;
@@ -68,28 +91,6 @@ import static org.mvel2.asm.Opcodes.T_INT;
 import static org.mvel2.asm.Opcodes.T_LONG;
 import static org.mvel2.asm.Opcodes.T_SHORT;
 
-import java.io.FileNotFoundException;
-import java.io.FileOutputStream;
-import java.io.IOException;
-import java.io.PrintStream;
-import java.lang.reflect.Field;
-import java.lang.reflect.InvocationTargetException;
-import java.lang.reflect.Method;
-import java.lang.reflect.Modifier;
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
-
-import org.drools.core.addon.TypeResolver;
-import org.drools.core.util.ClassUtils;
-import org.drools.reflective.util.ByteArrayClassLoader;
-import org.mvel2.asm.ClassWriter;
-import org.mvel2.asm.MethodVisitor;
-import org.mvel2.asm.Type;
-
 public class ClassGenerator {
 
     public static final boolean DUMP_GENERATED_CLASSES = false;
@@ -112,14 +113,27 @@ public class ClassGenerator {
     private byte[] bytecode;
     private Class<?> clazz;
 
-    private static final Method defineClassMethod;
+    private static class DefineMethodInitializer {
+        private static final String PROPERTY_IMAGE_CODE_KEY = "org.graalvm.nativeimage.imagecode";
 
-    static {
-        try {
-            defineClassMethod = ClassLoader.class.getDeclaredMethod("defineClass", String.class, byte[].class, int.class, int.class);
-            defineClassMethod.setAccessible(true);
-        } catch (NoSuchMethodException e) {
-            throw new RuntimeException(e);
+        private static final Method defineClassMethod = createDefineMethod();
+
+        private static Method createDefineMethod() {
+            if (inImageCode()) {
+                return null;
+            }
+
+            try {
+                Method defineClassMethod = ClassLoader.class.getDeclaredMethod("defineClass", String.class, byte[].class, int.class, int.class);
+                defineClassMethod.setAccessible(true);
+                return defineClassMethod;
+            } catch (NoSuchMethodException e) {
+                throw new RuntimeException(e);
+            }
+        }
+
+        private static boolean inImageCode() {
+            return System.getProperty(PROPERTY_IMAGE_CODE_KEY) != null;
         }
     }
 
@@ -166,7 +180,7 @@ public class ClassGenerator {
                 clazz = cl.defineClass(className, bytecode, null);
             } else {
                 try {
-                    clazz = (Class<?>) defineClassMethod.invoke(classLoader, className, bytecode, 0, bytecode.length);
+                    clazz = (Class<?>) DefineMethodInitializer.defineClassMethod.invoke(classLoader, className, bytecode, 0, bytecode.length);
                 } catch (IllegalAccessException | InvocationTargetException e) {
                     throw new RuntimeException( e );
                 }
