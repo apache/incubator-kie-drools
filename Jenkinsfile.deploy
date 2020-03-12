@@ -8,6 +8,9 @@ pipeline {
         maven 'kie-maven-3.5.4'
         jdk 'kie-jdk1.8'
     }
+    triggers {
+        cron ('H 9 * * *')
+    }
     options {
         buildDiscarder logRotator(artifactDaysToKeepStr: '', artifactNumToKeepStr: '', daysToKeepStr: '', numToKeepStr: '5')
         timeout(time: 90, unit: 'MINUTES')
