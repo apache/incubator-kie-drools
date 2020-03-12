@@ -328,7 +328,13 @@ public class DMNDTAnalyser {
         } else if (typeRef.getNamespaceURI().equals(model.getDefinitions().getURIFEEL()) && typeRef.getLocalPart().equals("boolean")) {
             return "false, true";
         }
-        return null;
+
+        List<DMNModel> childModels = ((DMNModelImpl) model).getImportChainDirectChildModels();
+        return childModels.stream()
+                          .map(childModel -> findAllowedValues(childModel, typeRef))
+                          .filter(str -> str != null)
+                          .findFirst()
+                          .orElse(null);
     }
 
     private void findOverlaps(DTAnalysis analysis, DDTATable ddtaTable, int jColIdx, Interval[] currentIntervals, Collection<Integer> activeRules) {

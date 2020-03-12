@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<semantic:definitions xmlns:semantic="http://www.omg.org/spec/DMN/20180521/MODEL/" xmlns:triso="http://www.trisotech.com/2015/triso/modeling" xmlns:dmndi="http://www.omg.org/spec/DMN/20180521/DMNDI/" xmlns:di="http://www.omg.org/spec/DMN/20180521/DI/" xmlns:dc="http://www.omg.org/spec/DMN/20180521/DC/" xmlns:trisodmn="http://www.trisotech.com/2016/triso/dmn" xmlns:feel="http://www.omg.org/spec/DMN/20180521/FEEL/" xmlns:tc="http://www.omg.org/spec/DMN/20160719/testcase" xmlns:drools="http://www.drools.org/kie/dmn/1.1" xmlns:openapi="https://openapis.org/omg/extension/1.0" xmlns:dmn11="http://www.omg.org/spec/DMN/20151101/dmn.xsd" xmlns:rss="http://purl.org/rss/2.0/" xmlns:trisofeed="http://trisotech.com/feed" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"               xmlns:xsd="http://www.w3.org/2001/XMLSchema"  xmlns="http://www.trisotech.com/definitions/_64b45b3b-a345-4fc4-97d8-b695792e8279" id="_64b45b3b-a345-4fc4-97d8-b695792e8279" name="AgeKittenItemDef" namespace="http://www.trisotech.com/definitions/_64b45b3b-a345-4fc4-97d8-b695792e8279" exporter="Decision Modeler" exporterVersion="6.9.1" triso:logoChoice="Default">
+    <semantic:extensionElements/>
+    <semantic:itemDefinition name="tKitten" label="tKitten" isCollection="false">
+        <semantic:typeRef>string</semantic:typeRef>
+        <semantic:allowedValues triso:constraintsType="enumeration">
+            <semantic:text>"Cat","Dog"</semantic:text>
+        </semantic:allowedValues>
+    </semantic:itemDefinition>
+    <semantic:itemDefinition name="tAge" label="tAge" isCollection="false">
+        <semantic:typeRef>number</semantic:typeRef>
+        <semantic:allowedValues triso:constraintsType="expression">
+            <semantic:text>&gt;=0</semantic:text>
+        </semantic:allowedValues>
+    </semantic:itemDefinition>
+    <dmndi:DMNDI>
+        <dmndi:DMNDiagram id="_d0274954-83ee-4032-b17a-2207dcf8b586" triso:modelElementRef="_ebd940f7-64ee-4ec7-9417-a4e22d5392b9" name="Page 1">
+            <di:extension/>
+            <dmndi:Size height="1050" width="1485"/>
+        </dmndi:DMNDiagram>
+    </dmndi:DMNDI>
+</semantic:definitions>
