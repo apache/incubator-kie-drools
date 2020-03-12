@@ -722,7 +722,7 @@ public class DTAnalysis {
                                                               Msg.DTANALYSIS_HITPOLICY_RECOMMENDER_ANY.getType()));
             } else if (!overlapsShareSameOutput && sourceDT.getHitPolicy() != HitPolicy.PRIORITY) {
                 passThruMessages.add(new DMNDTAnalysisMessage(this,
-                                                              Severity.ERROR,
+                                                              sourceDT.getHitPolicy() == HitPolicy.FIRST ? Severity.WARN : Severity.ERROR,
                                                               MsgUtil.createMessage(Msg.DTANALYSIS_HITPOLICY_RECOMMENDER_PRIORITY,
                                                                                     nameOrIDOfTable()),
                                                               Msg.DTANALYSIS_HITPOLICY_RECOMMENDER_PRIORITY.getType()));
