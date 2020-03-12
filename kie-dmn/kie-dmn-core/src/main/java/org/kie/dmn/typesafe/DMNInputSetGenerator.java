@@ -1,104 +1,41 @@
 package org.kie.dmn.typesafe;
 
 import java.util.Collections;
-import java.util.List;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.Optional;
 
 import com.github.javaparser.ast.body.ClassOrInterfaceDeclaration;
-import org.drools.modelcompiler.builder.generator.declaredtype.api.AnnotationDefinition;
-import org.drools.modelcompiler.builder.generator.declaredtype.api.FieldDefinition;
 import org.drools.modelcompiler.builder.generator.declaredtype.api.TypeDefinition;
 import org.drools.modelcompiler.builder.generator.declaredtype.generator.GeneratedClassDeclaration;
 import org.kie.dmn.api.core.DMNModel;
+import org.kie.dmn.api.core.ast.InputDataNode;
+import org.kie.dmn.core.impl.DMNModelImpl;
 
 public class DMNInputSetGenerator {
 
-    private DMNModel dmnModel;
+    private DMNModelImpl dmnModel;
+
+    private Map<String, TypeDefinition> types = new HashMap<>();
 
     public DMNInputSetGenerator(DMNModel dmnModel) {
-        this.dmnModel = dmnModel;
-
+        this.dmnModel = (DMNModelImpl) dmnModel;
+        processTypes();
     }
 
-    public String getType(String tPerson) {
+    private void processTypes() {
 
+        for (InputDataNode n : dmnModel.getInputs()) {
+            DMNDeclaredType dmnDeclaredType = new DMNDeclaredType(n.getType());
+            types.put(dmnDeclaredType.getTypeName(), dmnDeclaredType);
+        }
+    }
 
+    public String getType(String key) {
 
-        TypeDefinition person = new TypeDefinition() {
-            @Override
-            public String getTypeName() {
-                return "TPerson";
-            }
+        TypeDefinition typeDefinition = types.get(key);
 
-            @Override
-            public List<FieldDefinition> getFields() {
-                FieldDefinition field = new FieldDefinition() {
-                    @Override
-                    public String getFieldName() {
-                        return "name";
-                    }
-
-                    @Override
-                    public String getObjectType() {
-                        return "String";
-                    }
-
-                    @Override
-                    public String getInitExpr() {
-                        return null;
-                    }
-
-                    @Override
-                    public List<AnnotationDefinition> getAnnotations() {
-                        return Collections.emptyList();
-                    }
-
-                    @Override
-                    public boolean isKeyField() {
-                        return false;
-                    }
-
-                    @Override
-                    public boolean createAccessors() {
-                        return false;
-                    }
-
-                    @Override
-                    public boolean isStatic() {
-                        return false;
-                    }
-
-                    @Override
-                    public boolean isFinal() {
-                        return false;
-                    }
-                };
-
-                return Collections.singletonList(field);
-            }
-
-            @Override
-            public List<FieldDefinition> getKeyFields() {
-                return Collections.emptyList();
-            }
-
-            @Override
-            public Optional<String> getSuperTypeName() {
-                return Optional.empty();
-            }
-
-            @Override
-            public List<AnnotationDefinition> getAnnotationsToBeAdded() {
-                return Collections.EMPTY_LIST;
-            }
-
-            @Override
-            public List<FieldDefinition> findInheritedDeclaredFields() {
-                return Collections.emptyList();
-            }
-        };
-
-        ClassOrInterfaceDeclaration generatedClass = new GeneratedClassDeclaration(person,
+        ClassOrInterfaceDeclaration generatedClass = new GeneratedClassDeclaration(typeDefinition,
                                                                                    t -> Optional.empty(),
                                                                                    Collections.emptyList()).toClassDeclaration();
 

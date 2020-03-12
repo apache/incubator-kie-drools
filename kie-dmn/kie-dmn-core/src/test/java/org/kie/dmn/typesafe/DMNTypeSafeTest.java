@@ -30,7 +30,7 @@ public class DMNTypeSafeTest {
         assertThat(dmnModel, notNullValue());
         assertThat(DMNRuntimeUtil.formatMessages(dmnModel.getMessages()), dmnModel.hasErrors(), is(false));
 
-        String sourceCode = new DMNInputSetGenerator(dmnModel).getType("tPerson");
+        String sourceCode = new DMNInputSetGenerator(dmnModel).getType("TPerson");
 
         Map<String, String> sourceCodes = Collections.singletonMap("org.kie.dmn.typesafe.TPerson", sourceCode);
 
