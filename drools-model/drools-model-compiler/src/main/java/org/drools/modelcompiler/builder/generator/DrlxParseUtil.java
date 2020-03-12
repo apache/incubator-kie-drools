@@ -1,3 +1,20 @@
+/*
+ * Copyright 2019 Red Hat, Inc. and/or its affiliates.
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *      http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ *
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
 package org.drools.modelcompiler.builder.generator;
 
 import java.lang.reflect.Field;
@@ -26,7 +43,6 @@ import java.util.stream.Stream;
 
 import com.github.javaparser.StaticJavaParser;
 import com.github.javaparser.ast.Node;
-import com.github.javaparser.ast.NodeList;
 import com.github.javaparser.ast.body.Parameter;
 import com.github.javaparser.ast.expr.ArrayAccessExpr;
 import com.github.javaparser.ast.expr.ArrayCreationExpr;
@@ -44,7 +60,6 @@ import com.github.javaparser.ast.expr.FieldAccessExpr;
 import com.github.javaparser.ast.expr.IntegerLiteralExpr;
 import com.github.javaparser.ast.expr.LambdaExpr;
 import com.github.javaparser.ast.expr.LiteralExpr;
-import com.github.javaparser.ast.expr.LiteralStringValueExpr;
 import com.github.javaparser.ast.expr.LongLiteralExpr;
 import com.github.javaparser.ast.expr.MethodCallExpr;
 import com.github.javaparser.ast.expr.NameExpr;
@@ -66,6 +81,7 @@ import com.github.javaparser.ast.type.Type;
 import com.github.javaparser.ast.type.UnknownType;
 import org.drools.compiler.lang.descr.AnnotationDescr;
 import org.drools.compiler.lang.descr.PatternDescr;
+import org.drools.core.addon.TypeResolver;
 import org.drools.core.util.ClassUtils;
 import org.drools.core.util.StringUtils;
 import org.drools.model.Index;
@@ -80,9 +96,7 @@ import org.drools.mvel.parser.ast.expr.HalfBinaryExpr;
 import org.drools.mvel.parser.ast.expr.MapCreationLiteralExpression;
 import org.drools.mvel.parser.ast.expr.NullSafeFieldAccessExpr;
 import org.drools.mvel.parser.printer.PrintUtil;
-import org.drools.core.addon.TypeResolver;
 
-import static com.github.javaparser.StaticJavaParser.parseClassOrInterfaceType;
 import static java.util.Optional.of;
 import static java.util.stream.Collectors.toList;
 
@@ -806,34 +820,20 @@ public class DrlxParseUtil {
         }
     }
 
-    public static MethodCallExpr sanitizeDrlNameExpr(MethodCallExpr me) {
-        NodeList<Expression> arguments = NodeList.nodeList();
-        for(Expression e : me.getArguments()) {
-            arguments.add(sanitizeExpr(e, me));
-        }
-        me.getScope().map((Expression e) -> sanitizeExpr(e, me)).ifPresent(me::setScope);
-
-        me.setArguments(arguments);
-        return me;
-    }
-
-    private static Expression sanitizeExpr(Expression e, Expression parent) {
-        Expression sanitized;
-        if (e instanceof DrlNameExpr) {
-            sanitized = new NameExpr(PrintUtil.printConstraint(e));
-            sanitized.setParentNode(parent);
-        } else {
-            sanitized = e;
-        }
-        return sanitized;
-    }
-
     public static String addCurlyBracesToBlock(String blockString) {
-        return String.format("{%s}", blockString);
+        return String.format("{\n%s\n}", blockString);
     }
 
     public static String addSemicolon(String block) {
         return block.endsWith(";") ? block : block + ";";
+    }
+
+    public static Expression uncastExpr(Expression e) {
+        if(e.isCastExpr()) {
+            return e.asCastExpr().getExpression();
+        } else {
+            return e;
+        }
     }
 
     private DrlxParseUtil() {

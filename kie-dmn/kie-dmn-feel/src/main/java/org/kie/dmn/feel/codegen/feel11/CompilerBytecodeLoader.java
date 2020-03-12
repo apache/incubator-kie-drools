@@ -111,7 +111,7 @@ public class CompilerBytecodeLoader {
         try {
             MemoryResourceReader pReader = new MemoryResourceReader();
             pReader.add(cuPackage.replaceAll("\\.", "/") + "/" + cuClass + ".java", cu.toString().getBytes());
-            JavaCompiler compiler = new JavaCompilerFactory().loadCompiler(CompilerType.ECLIPSE, "1.8");
+            JavaCompiler compiler = JavaCompilerFactory.INSTANCE.loadCompiler(CompilerType.ECLIPSE, "1.8");
             MemoryFileSystem pStore = new MemoryFileSystem();
             CompilationResult compilationResult = compiler.compile(new String[]{cuPackage.replaceAll("\\.", "/") + "/" + cuClass + ".java"},
                                                                    pReader,

@@ -20,6 +20,7 @@ import java.util.List;
 import java.util.UUID;
 import java.util.stream.Collectors;
 
+import org.drools.compiler.kie.builder.impl.DrlProject;
 import org.drools.compiler.kie.builder.impl.InternalKieModule;
 import org.junit.runner.RunWith;
 import org.junit.runners.Parameterized;
@@ -143,7 +144,7 @@ public abstract class BaseModelTest {
         } else if (asList(PATTERN_DSL, PATTERN_WITH_ALPHA_NETWORK).contains(testRunType)) {
             kieBuilder = ks.newKieBuilder(kfs).buildAll(ExecutableModelProject.class);
         } else {
-            kieBuilder = ks.newKieBuilder(kfs).buildAll();
+            kieBuilder = ks.newKieBuilder(kfs).buildAll(DrlProject.class);
         }
 
         if ( failIfBuildError ) {

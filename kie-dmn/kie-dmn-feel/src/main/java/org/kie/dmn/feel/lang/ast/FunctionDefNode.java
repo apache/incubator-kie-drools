@@ -29,7 +29,7 @@ import org.kie.dmn.api.feel.runtime.events.FEELEvent.Severity;
 import org.kie.dmn.feel.lang.EvaluationContext;
 import org.kie.dmn.feel.lang.Type;
 import org.kie.dmn.feel.lang.types.BuiltInType;
-import org.kie.dmn.feel.runtime.functions.BaseFEELFunction.Param;
+import org.kie.dmn.feel.runtime.FEELFunction.Param;
 import org.kie.dmn.feel.runtime.functions.CustomFEELFunction;
 import org.kie.dmn.feel.runtime.functions.JavaFunction;
 import org.kie.dmn.feel.util.Msg;
@@ -110,7 +110,7 @@ public class FunctionDefNode
                                         paramTypes[i] = getType( paramTypeNames[i] );
                                     }
                                     Method method = clazz.getMethod( methodName, paramTypes );
-                                    return new JavaFunction(ANONYMOUS, params.stream().map(Param::getName).collect(Collectors.toList()), clazz, method);
+                                    return new JavaFunction(ANONYMOUS, params, clazz, method);
                                 } else {
                                     ctx.notifyEvt( astEvent(Severity.ERROR, Msg.createMessage(Msg.PARAMETER_COUNT_MISMATCH_ON_FUNCTION_DEFINITION, getText()) ) );
                                     return null;

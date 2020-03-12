@@ -1,3 +1,20 @@
+/*
+ * Copyright 2019 Red Hat, Inc. and/or its affiliates.
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *      http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ *
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
 package org.drools.modelcompiler.builder.generator.visitor.accumulate;
 
 import java.util.ArrayList;
@@ -6,6 +23,7 @@ import java.util.List;
 import java.util.Optional;
 import java.util.SortedSet;
 import java.util.TreeSet;
+import java.util.function.Consumer;
 import java.util.stream.Collectors;
 
 import com.github.javaparser.ast.Node;
@@ -16,6 +34,7 @@ import com.github.javaparser.ast.expr.LambdaExpr;
 import com.github.javaparser.ast.expr.MethodCallExpr;
 import com.github.javaparser.ast.expr.NameExpr;
 import org.drools.modelcompiler.builder.PackageModel;
+import org.drools.modelcompiler.builder.generator.DrlxParseUtil;
 import org.drools.modelcompiler.builder.generator.RuleContext;
 import org.drools.modelcompiler.builder.generator.expression.FlowExpressionBuilder;
 import org.drools.modelcompiler.builder.generator.visitor.ModelGeneratorVisitor;
@@ -24,6 +43,7 @@ import org.drools.modelcompiler.util.LambdaUtil;
 import static org.drools.modelcompiler.builder.generator.DrlxParseUtil.fromVar;
 import static org.drools.modelcompiler.builder.generator.DslMethodNames.BIND_AS_CALL;
 import static org.drools.modelcompiler.builder.generator.DslMethodNames.INPUT_CALL;
+import static org.drools.modelcompiler.builder.generator.expression.FlowExpressionBuilder.BIND_CALL;
 
 public class AccumulateVisitorFlowDSL extends AccumulateVisitor {
 
@@ -36,8 +56,27 @@ public class AccumulateVisitorFlowDSL extends AccumulateVisitor {
     }
 
     @Override
+    protected void pushAccumulateContext( MethodCallExpr accumulateExprs ) {
+        context.pushExprPointer(new FlowExpressionConsumer( accumulateExprs ));
+    }
+
+    public static class FlowExpressionConsumer implements Consumer<Expression> {
+
+        private final MethodCallExpr accumulateExprs;
+
+        public FlowExpressionConsumer( MethodCallExpr accumulateExprs ) {
+            this.accumulateExprs = accumulateExprs;
+        }
+
+        @Override
+        public void accept( Expression expression ) {
+            accumulateExprs.addArgument( expression );
+        }
+    }
+
+    @Override
     protected MethodCallExpr buildBinding(String bindingName, Collection<String> usedDeclaration, Expression expression) {
-        MethodCallExpr bindDSL = new MethodCallExpr(null, FlowExpressionBuilder.BIND_CALL);
+        MethodCallExpr bindDSL = new MethodCallExpr(null, BIND_CALL);
         bindDSL.addArgument(context.getVar(bindingName));
         MethodCallExpr bindAsDSL = new MethodCallExpr(bindDSL, BIND_AS_CALL);
         usedDeclaration.stream().map(context::getVarExpr).forEach(bindAsDSL::addArgument);
@@ -52,39 +91,49 @@ public class AccumulateVisitorFlowDSL extends AccumulateVisitor {
             final MethodCallExpr newBindingExpression = newBinding.bindExpression;
 
             final SortedSet<String> patterBinding = new TreeSet<>(newBinding.patternBinding);
-            if (patterBinding.size() == 2 && findLastBinding(allExpressions) != null) {
-                Optional<MethodCallExpr> lastBinding = Optional.ofNullable(findLastBinding(allExpressions));
+            MethodCallExpr lastBinding = findLastBinding(allExpressions);
+            if (patterBinding.size() == 2 && lastBinding != null) {
                 composeTwoBindingIntoExpression(newBindingExpression, lastBinding, accumulateDSL);
             } else {
-                replaceBindingWithPatternBinding( newBindingExpression, findLastPattern(allExpressions) );
+                MethodCallExpr lastPattern = findLastPattern(allExpressions);
+                if (lastPattern != null) {
+                    replaceBindingWithPatternBinding( newBindingExpression, lastPattern );
+                } else {
+                    ((FlowExpressionConsumer)context.peekExprPointer()).accumulateExprs.getArguments().add( 0, newBindingExpression );
+                }
                 newBindingResults.add( newBinding );
             }
         });
     }
 
     private void composeTwoBindingIntoExpression(MethodCallExpr newBindingExpression,
-                                                 Optional<MethodCallExpr> optLastBinding,
+                                                 MethodCallExpr lastBinding,
                                                  MethodCallExpr accumulateDSL) {
-        optLastBinding.ifPresent(lastBinding ->
-                                         composeTwoBindings(newBindingExpression, lastBinding).map(Node::toString)
-                                                 .ifPresent(inputName -> lastBinding.getParentNode()
-                                                         .ifPresent(n -> replaceBindWithInput(newBindingExpression, accumulateDSL, inputName))));
+        composeTwoBindings(newBindingExpression, lastBinding).map(Node::toString)
+                .ifPresent(inputName -> lastBinding.getParentNode()
+                        .ifPresent(n -> replaceBindWithInput(newBindingExpression, accumulateDSL, inputName)));
     }
 
     private void replaceBindWithInput(MethodCallExpr newBindingExpression, MethodCallExpr accumulateDSL, String inputName) {
         Expression input = new MethodCallExpr(null, INPUT_CALL, NodeList.nodeList(new NameExpr(inputName)));
-        accumulateDSL.setArgument(0, input);
+        findBind(accumulateDSL).forEach(m -> m.replace(input));
         newBindingsConcatenated.add(newBindingExpression);
+    }
+
+    private static List<MethodCallExpr> findBind(Expression dsl) {
+        return dsl.findAll(MethodCallExpr.class,
+                           mc -> DrlxParseUtil.findRootNodeViaScope(mc)
+                                   .filter(l -> l.isMethodCallExpr() && l.asMethodCallExpr().getNameAsString().equals(BIND_CALL)).isPresent());
     }
 
     private Optional<NameExpr> composeTwoBindings(MethodCallExpr newBindingExpression, MethodCallExpr pattern) {
         return pattern.getParentNode().map(oldBindExpression -> {
             MethodCallExpr oldBind = (MethodCallExpr) oldBindExpression;
 
-            LambdaExpr oldBindLambda = (LambdaExpr) oldBind.getArgument(1);
-            LambdaExpr newBindLambda = (LambdaExpr) newBindingExpression.getArgument(1);
+            LambdaExpr oldBindLambda = oldBind.findFirst(LambdaExpr.class).orElseThrow(RuntimeException::new);
+            LambdaExpr newBindLambda = newBindingExpression.findFirst(LambdaExpr.class).orElseThrow(RuntimeException::new);
 
-            Expression newComposedLambda = LambdaUtil.compose(oldBindLambda, newBindLambda);
+            Expression newComposedLambda = LambdaUtil.appendNewLambdaToOld(oldBindLambda, newBindLambda);
 
             newBindingExpression.getArguments().removeLast();
             newBindingExpression.addArgument(newComposedLambda);
@@ -111,10 +160,6 @@ public class AccumulateVisitorFlowDSL extends AccumulateVisitor {
     }
 
     private void replaceBindingWithPatternBinding(MethodCallExpr bindExpression, MethodCallExpr lastPattern) {
-        if (lastPattern == null) {
-            return;
-        }
-
         final Expression bindingId = lastPattern.getArgument(1);
 
         bindExpression.findFirst(NameExpr.class, e -> e.equals(bindingId)).ifPresent( name -> {

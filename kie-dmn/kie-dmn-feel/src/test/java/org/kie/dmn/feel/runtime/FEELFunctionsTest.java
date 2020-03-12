@@ -195,6 +195,9 @@ public class FEELFunctionsTest extends BaseFEELTest {
                 { "week of year( date(2005, 1, 3) )", BigDecimal.valueOf( 1 ), null}, 
                 { "week of year( date(2005, 1, 9) )", BigDecimal.valueOf( 1 ), null}, 
                 { "week of year( date(2005, 1, 1) )", BigDecimal.valueOf( 53 ), null}, 
+                { "median( 8, 2, 5, 3, 4 )", new BigDecimal("4") , null},
+                { "median( [6, 1, 2, 3] )", new BigDecimal("2.5") , null},
+                { "median( [ ] ) ", null, null}, // DMN spec, Table 69: Semantics of list functions
         };
         return addAdditionalParameters(cases, false);
     }

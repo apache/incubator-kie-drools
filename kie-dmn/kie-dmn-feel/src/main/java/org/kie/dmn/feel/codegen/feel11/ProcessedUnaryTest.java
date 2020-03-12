@@ -27,7 +27,7 @@ public class ProcessedUnaryTest extends ProcessedFEELUnit {
                               CompilerContext ctx, List<FEELProfile> profiles) {
         super(expressions, ctx, Collections.emptyList());
         ParseTree tree = getFEELParser(expression, ctx, profiles).unaryTestsRoot();
-        BaseNode initialAst = tree.accept(new ASTBuilderVisitor(ctx.getInputVariableTypes()));
+        BaseNode initialAst = tree.accept(new ASTBuilderVisitor(ctx.getInputVariableTypes(), ctx.getFEELFeelTypeRegistry()));
         ast = initialAst.accept(new ASTUnaryTestTransform()).node();
     }
 

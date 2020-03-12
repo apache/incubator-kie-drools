@@ -27,9 +27,6 @@ import java.util.Map;
 import java.util.function.Function;
 
 import ch.obermuhlner.math.big.BigDecimalMath;
-import com.github.javaparser.StaticJavaParser;
-import org.antlr.v4.runtime.tree.ParseTree;
-import com.github.javaparser.JavaParser;
 import com.github.javaparser.ast.Modifier;
 import com.github.javaparser.ast.NodeList;
 import com.github.javaparser.ast.body.FieldDeclaration;
@@ -39,8 +36,6 @@ import com.github.javaparser.ast.expr.BooleanLiteralExpr;
 import com.github.javaparser.ast.expr.LambdaExpr;
 import com.github.javaparser.ast.expr.MethodCallExpr;
 import com.github.javaparser.ast.expr.NameExpr;
-import com.github.javaparser.ast.expr.NullLiteralExpr;
-import com.github.javaparser.ast.expr.StringLiteralExpr;
 import com.github.javaparser.ast.stmt.BlockStmt;
 import com.github.javaparser.ast.stmt.ExpressionStmt;
 import com.github.javaparser.ast.stmt.ReturnStmt;
@@ -49,22 +44,16 @@ import com.github.javaparser.ast.type.UnknownType;
 import org.kie.dmn.api.feel.runtime.events.FEELEvent;
 import org.kie.dmn.api.feel.runtime.events.FEELEvent.Severity;
 import org.kie.dmn.api.feel.runtime.events.FEELEventListener;
-import org.kie.dmn.feel.lang.CompiledExpression;
-import org.kie.dmn.feel.lang.CompilerContext;
 import org.kie.dmn.feel.lang.EvaluationContext;
-import org.kie.dmn.feel.lang.ast.BaseNode;
 import org.kie.dmn.feel.lang.ast.ForExpressionNode;
 import org.kie.dmn.feel.lang.ast.ForExpressionNode.ForIteration;
 import org.kie.dmn.feel.lang.ast.QuantifiedExpressionNode;
 import org.kie.dmn.feel.lang.ast.QuantifiedExpressionNode.QEIteration;
 import org.kie.dmn.feel.lang.ast.QuantifiedExpressionNode.Quantifier;
-import org.kie.dmn.feel.lang.impl.CompiledExpressionImpl;
 import org.kie.dmn.feel.lang.impl.SilentWrappingEvaluationContextImpl;
 import org.kie.dmn.feel.lang.types.BuiltInType;
-import org.kie.dmn.feel.parser.feel11.ASTBuilderVisitor;
-import org.kie.dmn.feel.parser.feel11.FEELParser;
-import org.kie.dmn.feel.parser.feel11.FEEL_1_1Parser;
 import org.kie.dmn.feel.runtime.FEELFunction;
+import org.kie.dmn.feel.runtime.Range;
 import org.kie.dmn.feel.runtime.UnaryTest;
 import org.kie.dmn.feel.runtime.events.ASTEventBase;
 import org.kie.dmn.feel.runtime.events.InvalidParametersEvent;
@@ -140,7 +129,11 @@ public class CompiledFEELSupport {
                     // using Root object logic to avoid having to eagerly inspect all attributes.
                     ctx.setRootObject(v);
 
-                    Object r = filterExpression.apply(ctx);
+                    // Alignment to FilterExpressionNode: 
+                    // a filter would always return a list with all the elements for which the filter is true.
+                    // In case any element fails in there or the filter expression returns null, it will only exclude the element, but will continue to process the list.
+                    // In case all elements fail, the result will be an empty list.
+                    Object r = filterExpression.apply(new SilentWrappingEvaluationContextImpl(ctx));
                     if (r instanceof Boolean && r == Boolean.TRUE) {
                         results.add(v);
                     }
@@ -168,7 +161,7 @@ public class CompiledFEELSupport {
                 } else if (i < 0 && Math.abs(i) <= list.size()) {
                     return list.get(list.size() + i);
                 } else {
-                    ctx.notifyEvt(() -> new ASTEventBase(Severity.ERROR, Msg.createMessage(Msg.INDEX_OUT_OF_BOUND), null));
+                    ctx.notifyEvt(() -> new ASTEventBase(Severity.WARN, Msg.createMessage(Msg.INDEX_OUT_OF_BOUND, list.size(), i), null));
                     return null;
                 }
             } else if (filterIndex == null) {
@@ -435,6 +428,14 @@ public class CompiledFEELSupport {
             return f.invokeReflectively(feelExprCtx, invocationParams);
         } else if (function instanceof UnaryTest) {
             return ((UnaryTest) function).apply(feelExprCtx, ((List)params).get(0));
+        } else if (function instanceof Range) {
+            // alignment to FunctionInvocationNode
+            List<?> ps = (List<?>) params;
+            if (ps.size() == 1) {
+                return ((Range) function).includes(ps.get(0));
+            } else {
+                feelExprCtx.notifyEvt(() -> new ASTEventBase(Severity.ERROR, Msg.createMessage(Msg.CAN_T_INVOKE_AN_UNARY_TEST_WITH_S_PARAMETERS_UNARY_TESTS_REQUIRE_1_SINGLE_PARAMETER, ps.size()), null));
+            }
         }
         return null;
     }
@@ -509,7 +510,7 @@ public class CompiledFEELSupport {
                 "notifyCompilationError",
                 new NodeList<>(
                         new NameExpr("feelExprCtx"),
-                        new StringLiteralExpr(msg)));
+                        Expressions.stringLiteral(msg)));
     }
 
     // thread-unsafe, but this is single-threaded so it's ok
@@ -529,6 +530,4 @@ public class CompiledFEELSupport {
     public static BigDecimal pow(BigDecimal l, BigDecimal r) {
         return BigDecimalMath.pow( l, r, MathContext.DECIMAL128 );
     }
-
-
 }

@@ -21,6 +21,7 @@ import java.util.Collection;
 import java.util.Collections;
 
 import org.drools.compiler.kie.builder.impl.AbstractKieModule;
+import org.drools.core.io.internal.InternalResource;
 import org.kie.api.builder.ReleaseId;
 import org.kie.api.builder.model.KieModuleModel;
 
@@ -37,6 +38,11 @@ public class CanonicalInternalKieModule extends AbstractKieModule {
 
     @Override
     public byte[] getBytes() {
+        throw new UnsupportedOperationException();
+    }
+
+    @Override
+    public InternalResource getResource( String fileName ) {
         throw new UnsupportedOperationException();
     }
 

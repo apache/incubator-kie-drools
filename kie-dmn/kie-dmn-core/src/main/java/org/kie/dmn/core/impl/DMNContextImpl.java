@@ -23,18 +23,27 @@ import java.util.Map;
 import java.util.Optional;
 
 import org.kie.dmn.api.core.DMNContext;
+import org.kie.dmn.api.core.DMNMetadata;
 
 public class DMNContextImpl implements DMNContext {
     private static final String DEFAULT_IDENT = "    ";
 
     private Map<String, Object> entries    = new LinkedHashMap<String, Object>();
     private Deque<ScopeReference> stack    = new LinkedList<>();
+    private DMNMetadata metadata;
 
     public DMNContextImpl() {
+        this.metadata = new DMNMetadataImpl();
     }
 
     public DMNContextImpl(Map<String, Object> entries) {
         this.entries.putAll(entries);
+        this.metadata = new DMNMetadataImpl();
+    }
+
+    public DMNContextImpl(Map<String, Object> entries, Map<String, Object> metadata) {
+        this.entries.putAll(entries);
+        this.metadata = new DMNMetadataImpl(metadata);
     }
 
     @Override
@@ -86,8 +95,13 @@ public class DMNContextImpl implements DMNContext {
     }
 
     @Override
+    public DMNMetadata getMetadata() {
+        return metadata;
+    }
+
+    @Override
     public DMNContext clone() {
-        DMNContextImpl newCtx = new DMNContextImpl(new LinkedHashMap<>(entries));
+        DMNContextImpl newCtx = new DMNContextImpl(new LinkedHashMap<>(entries), metadata.asMap());
         for (ScopeReference e : stack) {
             newCtx.pushScope(e.getName(), e.getNamespace());
         }

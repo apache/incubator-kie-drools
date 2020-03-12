@@ -18,9 +18,9 @@ package org.drools.model.operators;
 
 import org.drools.model.functions.Operator;
 
-public class StringLengthWithOperator implements Operator.SingleValue<String, Integer> {
+public enum StringLengthWithOperator implements Operator.SingleValue<String, Integer> {
 
-    public static final StringLengthWithOperator INSTANCE = new StringLengthWithOperator();
+    INSTANCE;
 
     @Override
     public boolean eval( String s1, Integer length ) {

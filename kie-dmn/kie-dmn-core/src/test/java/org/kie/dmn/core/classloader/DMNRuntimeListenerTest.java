@@ -16,6 +16,8 @@
 
 package org.kie.dmn.core.classloader;
 
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.UUID;
 
@@ -31,12 +33,23 @@ import org.kie.dmn.api.core.DMNContext;
 import org.kie.dmn.api.core.DMNModel;
 import org.kie.dmn.api.core.DMNResult;
 import org.kie.dmn.api.core.DMNRuntime;
+import org.kie.dmn.api.core.event.AfterEvaluateBKMEvent;
+import org.kie.dmn.api.core.event.AfterEvaluateDecisionEvent;
+import org.kie.dmn.api.core.event.AfterEvaluateDecisionServiceEvent;
+import org.kie.dmn.api.core.event.AfterInvokeBKMEvent;
+import org.kie.dmn.api.core.event.BeforeEvaluateBKMEvent;
+import org.kie.dmn.api.core.event.BeforeEvaluateDecisionEvent;
+import org.kie.dmn.api.core.event.BeforeEvaluateDecisionServiceEvent;
+import org.kie.dmn.api.core.event.BeforeInvokeBKMEvent;
+import org.kie.dmn.api.core.event.DMNEvent;
+import org.kie.dmn.api.core.event.DMNRuntimeEventListener;
 import org.kie.dmn.core.BaseInterpretedVsCompiledTest;
 import org.kie.dmn.core.api.DMNFactory;
 import org.kie.dmn.core.util.DMNRuntimeUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import static org.hamcrest.CoreMatchers.instanceOf;
 import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.CoreMatchers.notNullValue;
 import static org.hamcrest.Matchers.contains;
@@ -121,5 +134,141 @@ public class DMNRuntimeListenerTest extends BaseInterpretedVsCompiledTest {
         assertThat(results, contains("Hello John Doe"));
     }
 
-}
+    @Test
+    public void testListenerWithBKM() throws Exception {
+        final DMNRuntime runtime = DMNRuntimeUtil.createRuntime("org/kie/dmn/core/say_for_hello.dmn", this.getClass());
+        TestEventListener listener = new TestEventListener();
+        runtime.addListener(listener);
+        final DMNModel dmnModel = runtime.getModel("http://www.trisotech.com/dmn/definitions/_b6f2a9ca-a246-4f27-896a-e8ef04ea439c", "say for hello");
+        assertThat(dmnModel, notNullValue());
+        assertThat(DMNRuntimeUtil.formatMessages(dmnModel.getMessages()), dmnModel.hasErrors(), is(false));
 
+        final DMNContext emptyContext = DMNFactory.newContext();
+
+        final DMNResult dmnResult = runtime.evaluateAll(dmnModel, emptyContext);
+        assertThat(DMNRuntimeUtil.formatMessages(dmnResult.getMessages()), dmnResult.hasErrors(), is(false));
+
+        final DMNContext result = dmnResult.getContext();
+        assertThat(result.get("just say"), is(Arrays.asList("Hello", "Hello", "Hello")));
+
+        List<DMNEvent> eventList = listener.getEventList();
+        assertThat(eventList.get(0), instanceOf(BeforeEvaluateDecisionEvent.class));
+        assertThat(((BeforeEvaluateDecisionEvent) eventList.get(0)).getDecision().getName(), is("just say"));
+
+        // Evaluate 2 BKMs
+        assertThat(eventList.get(1), instanceOf(BeforeEvaluateBKMEvent.class));
+        assertThat(((BeforeEvaluateBKMEvent) eventList.get(1)).getBusinessKnowledgeModel().getName(), is("prefix say for hello"));
+        assertThat(eventList.get(2), instanceOf(AfterEvaluateBKMEvent.class));
+        assertThat(((AfterEvaluateBKMEvent) eventList.get(2)).getBusinessKnowledgeModel().getName(), is("prefix say for hello"));
+        assertThat(eventList.get(3), instanceOf(BeforeEvaluateBKMEvent.class));
+        assertThat(((BeforeEvaluateBKMEvent) eventList.get(3)).getBusinessKnowledgeModel().getName(), is("prefix aaa for hello"));
+        assertThat(eventList.get(4), instanceOf(AfterEvaluateBKMEvent.class));
+        assertThat(((AfterEvaluateBKMEvent) eventList.get(4)).getBusinessKnowledgeModel().getName(), is("prefix aaa for hello"));
+
+        // Invoke function 3 times
+        assertThat(eventList.get(5), instanceOf(BeforeInvokeBKMEvent.class));
+        assertThat(((BeforeInvokeBKMEvent) eventList.get(5)).getBusinessKnowledgeModel().getName(), is("prefix say for hello"));
+        assertThat(eventList.get(6), instanceOf(AfterInvokeBKMEvent.class));
+        assertThat(((AfterInvokeBKMEvent) eventList.get(6)).getBusinessKnowledgeModel().getName(), is("prefix say for hello"));
+        assertThat(eventList.get(7), instanceOf(BeforeInvokeBKMEvent.class));
+        assertThat(((BeforeInvokeBKMEvent) eventList.get(7)).getBusinessKnowledgeModel().getName(), is("prefix say for hello"));
+        assertThat(eventList.get(8), instanceOf(AfterInvokeBKMEvent.class));
+        assertThat(((AfterInvokeBKMEvent) eventList.get(8)).getBusinessKnowledgeModel().getName(), is("prefix say for hello"));
+        assertThat(eventList.get(9), instanceOf(BeforeInvokeBKMEvent.class));
+        assertThat(((BeforeInvokeBKMEvent) eventList.get(9)).getBusinessKnowledgeModel().getName(), is("prefix say for hello"));
+        assertThat(eventList.get(10), instanceOf(AfterInvokeBKMEvent.class));
+        assertThat(((AfterInvokeBKMEvent) eventList.get(10)).getBusinessKnowledgeModel().getName(), is("prefix say for hello"));
+
+        assertThat(eventList.get(11), instanceOf(AfterEvaluateDecisionEvent.class));
+        assertThat(((AfterEvaluateDecisionEvent) eventList.get(11)).getDecision().getName(), is("just say"));
+    }
+
+    @Test
+    public void testListenerWithDecisionService() {
+        final DMNRuntime runtime = DMNRuntimeUtil.createRuntime("org/kie/dmn/core/decisionservices/DecisionServiceABC.dmn", this.getClass());
+        TestEventListener listener = new TestEventListener();
+        runtime.addListener(listener);
+        final DMNModel dmnModel = runtime.getModel("http://www.trisotech.com/dmn/definitions/_2443d3f5-f178-47c6-a0c9-b1fd1c933f60", "Drawing 1");
+        assertThat(dmnModel, notNullValue());
+        assertThat(DMNRuntimeUtil.formatMessages(dmnModel.getMessages()), dmnModel.hasErrors(), is(false));
+
+        final DMNContext context = DMNFactory.newContext();
+
+        final DMNResult dmnResult = runtime.evaluateByName(dmnModel, context, "Invoking Decision");
+
+        assertThat(DMNRuntimeUtil.formatMessages(dmnResult.getMessages()), dmnResult.hasErrors(), is(false));
+
+        final DMNContext result = dmnResult.getContext();
+
+        assertThat(result.get("Invoking Decision"), is("abc"));
+
+        List<DMNEvent> eventList = listener.getEventList();
+
+        assertThat(eventList.get(0), instanceOf(BeforeEvaluateDecisionEvent.class));
+        assertThat(((BeforeEvaluateDecisionEvent) eventList.get(0)).getDecision().getName(), is("Invoking Decision"));
+
+        // Evaluate DecisionService
+        assertThat(eventList.get(1), instanceOf(BeforeEvaluateDecisionServiceEvent.class));
+        assertThat(((BeforeEvaluateDecisionServiceEvent) eventList.get(1)).getDecisionService().getName(), is("Decision Service ABC"));
+
+        // Evaluate internal Decision
+        assertThat(eventList.get(2), instanceOf(BeforeEvaluateDecisionEvent.class));
+        assertThat(((BeforeEvaluateDecisionEvent) eventList.get(2)).getDecision().getName(), is("ABC"));
+        assertThat(eventList.get(3), instanceOf(AfterEvaluateDecisionEvent.class));
+        assertThat(((AfterEvaluateDecisionEvent) eventList.get(3)).getDecision().getName(), is("ABC"));
+
+        assertThat(eventList.get(4), instanceOf(AfterEvaluateDecisionServiceEvent.class));
+        assertThat(((AfterEvaluateDecisionServiceEvent) eventList.get(4)).getDecisionService().getName(), is("Decision Service ABC"));
+
+        assertThat(eventList.get(5), instanceOf(AfterEvaluateDecisionEvent.class));
+        assertThat(((AfterEvaluateDecisionEvent) eventList.get(5)).getDecision().getName(), is("Invoking Decision"));
+    }
+
+    class TestEventListener implements DMNRuntimeEventListener {
+        private List<DMNEvent> eventList = new ArrayList<>();
+
+        public List<DMNEvent> getEventList() {
+            return eventList;
+        }
+
+        @Override
+        public void beforeEvaluateDecision(BeforeEvaluateDecisionEvent event) {
+            eventList.add(event);
+        }
+
+        @Override
+        public void afterEvaluateDecision(AfterEvaluateDecisionEvent event) {
+            eventList.add(event);
+        }
+
+        @Override
+        public void beforeEvaluateBKM(BeforeEvaluateBKMEvent event) {
+            eventList.add(event);
+        }
+
+        @Override
+        public void afterEvaluateBKM(AfterEvaluateBKMEvent event) {
+            eventList.add(event);
+        }
+
+        @Override
+        public void beforeEvaluateDecisionService(BeforeEvaluateDecisionServiceEvent event) {
+            eventList.add(event);
+        }
+
+        @Override
+        public void afterEvaluateDecisionService(AfterEvaluateDecisionServiceEvent event) {
+            eventList.add(event);
+        }
+
+        @Override
+        public void beforeInvokeBKM(BeforeInvokeBKMEvent event) {
+            eventList.add(event);
+        }
+
+        @Override
+        public void afterInvokeBKM(AfterInvokeBKMEvent event) {
+            eventList.add(event);
+        }
+    };
+}

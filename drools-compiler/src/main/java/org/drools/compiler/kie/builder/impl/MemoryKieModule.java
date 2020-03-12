@@ -28,10 +28,11 @@ import java.nio.charset.StandardCharsets;
 import java.util.Collection;
 
 import org.drools.compiler.commons.jci.readers.ResourceReader;
+import org.drools.compiler.compiler.io.FileSystemItem;
 import org.drools.compiler.compiler.io.Folder;
-import org.drools.compiler.compiler.io.Resource;
 import org.drools.compiler.compiler.io.memory.MemoryFileSystem;
 import org.drools.compiler.kproject.models.KieModuleModelImpl;
+import org.drools.core.io.internal.InternalResource;
 import org.drools.reflective.ResourceProvider;
 import org.kie.api.builder.ReleaseId;
 import org.kie.api.builder.model.KieBaseModel;
@@ -74,6 +75,11 @@ public class MemoryKieModule extends AbstractKieModule
     }
 
     @Override
+    public InternalResource getResource( String fileName) {
+        return mfs.getResource( fileName );
+    }
+
+    @Override
     public Collection<String> getFileNames() {
         return mfs.getFileNames();
     }
@@ -108,7 +114,8 @@ public class MemoryKieModule extends AbstractKieModule
         return "MemoryKieModule[releaseId=" + getReleaseId() + "]";
     }
 
-    MemoryKieModule cloneForIncrementalCompilation(ReleaseId releaseId, KieModuleModel kModuleModel, MemoryFileSystem newFs) {
+    @Override
+    public MemoryKieModule cloneForIncrementalCompilation(ReleaseId releaseId, KieModuleModel kModuleModel, MemoryFileSystem newFs) {
         MemoryKieModule clone = new MemoryKieModule(releaseId, kModuleModel, newFs);
         for (InternalKieModule dep : getKieDependencies().values()) {
             clone.addKieDependency(dep);
@@ -271,9 +278,9 @@ public class MemoryKieModule extends AbstractKieModule
 
         private InputStream folderMembersToInputStream(Folder folder) {
             StringBuilder sb = new StringBuilder();
-            Collection<? extends Resource> members = folder.getMembers();
+            Collection<? extends FileSystemItem> members = folder.getMembers();
             if (members != null) {
-                for (Resource resource : members) {
+                for (FileSystemItem resource : members) {
                     // take just the name of the member, no the whole path
                     sb.append(resource.getPath().toRelativePortableString(folder.getPath()));
                     // append "\n" to be in sync with the JDK's ClassLoader (returns "\n" even on Windows)

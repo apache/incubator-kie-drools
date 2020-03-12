@@ -25,16 +25,21 @@ import org.kie.dmn.api.core.DMNContext;
 import org.kie.dmn.api.core.DMNMessage;
 import org.kie.dmn.api.core.DMNResult;
 import org.kie.dmn.api.core.DMNType;
+import org.kie.dmn.api.core.ast.BusinessKnowledgeModelNode;
+import org.kie.dmn.api.core.ast.DMNNode;
 import org.kie.dmn.api.core.event.DMNRuntimeEventManager;
 import org.kie.dmn.core.api.DMNExpressionEvaluator;
 import org.kie.dmn.core.api.EvaluatorResult;
 import org.kie.dmn.core.api.EvaluatorResult.ResultType;
+import org.kie.dmn.core.impl.BaseDMNTypeImpl;
 import org.kie.dmn.core.impl.DMNContextFEELCtxWrapper;
 import org.kie.dmn.core.impl.DMNResultImpl;
+import org.kie.dmn.core.impl.DMNRuntimeEventManagerUtils;
 import org.kie.dmn.core.impl.DMNRuntimeImpl;
 import org.kie.dmn.core.util.Msg;
 import org.kie.dmn.core.util.MsgUtil;
 import org.kie.dmn.feel.lang.EvaluationContext;
+import org.kie.dmn.feel.runtime.FEELFunction;
 import org.kie.dmn.feel.runtime.functions.BaseFEELFunction;
 import org.kie.dmn.model.api.FunctionDefinition;
 import org.slf4j.Logger;
@@ -46,12 +51,14 @@ public class DMNFunctionDefinitionEvaluator
 
     private final String name;
     private final FunctionDefinition functionDefinition;
+    private final DMNNode originatorNode;
     private List<FormalParameter> parameters = new ArrayList<>(  );
     private DMNExpressionEvaluator evaluator;
 
-    public DMNFunctionDefinitionEvaluator(String name, FunctionDefinition fdef ) {
-        this.name = name;
+    public DMNFunctionDefinitionEvaluator(DMNNode originatorNode, FunctionDefinition fdef) {
+        this.name = originatorNode.getName();
         this.functionDefinition = fdef;
+        this.originatorNode = originatorNode;
     }
 
     public DMNType getParameterType( String name ) {
@@ -87,7 +94,7 @@ public class DMNFunctionDefinitionEvaluator
     public EvaluatorResult evaluate(DMNRuntimeEventManager eventManager, DMNResult dmnr) {
         DMNResultImpl result = (DMNResultImpl) dmnr;
         // when this evaluator is executed, it should return a "FEEL function" to register in the context
-        DMNFunction function = new DMNFunction( name, parameters, functionDefinition, evaluator, eventManager, result );
+        DMNFunction function = new DMNFunction( name, originatorNode, parameters, functionDefinition, evaluator, eventManager, result );
         return new EvaluatorResultImpl( function, ResultType.SUCCESS );
     }
 
@@ -100,10 +107,16 @@ public class DMNFunctionDefinitionEvaluator
             this.name = name;
             this.type = type;
         }
+
+        public FEELFunction.Param asFEELParam() {
+            return new FEELFunction.Param(name, ((BaseDMNTypeImpl) type).getFeelType());
+        }
     }
 
     public static class DMNFunction
             extends BaseFEELFunction {
+
+        private final DMNNode originatorNode;
         private final List<FormalParameter> parameters;
         private final DMNExpressionEvaluator evaluator;
         private final DMNRuntimeEventManager eventManager;
@@ -111,8 +124,10 @@ public class DMNFunctionDefinitionEvaluator
         private final FunctionDefinition functionDefinition;
         private final boolean performRuntimeTypeCheck;
 
-        public DMNFunction(String name, List<FormalParameter> parameters, FunctionDefinition functionDefinition, DMNExpressionEvaluator evaluator, DMNRuntimeEventManager eventManager, DMNResultImpl result) {
+        public DMNFunction(String name, DMNNode originatorNode, List<FormalParameter> parameters, FunctionDefinition functionDefinition, DMNExpressionEvaluator evaluator, DMNRuntimeEventManager eventManager,
+                           DMNResultImpl result) {
             super( name );
+            this.originatorNode = originatorNode;
             this.functionDefinition = functionDefinition;
             this.parameters = parameters;
             this.evaluator = evaluator;
@@ -128,6 +143,9 @@ public class DMNFunctionDefinitionEvaluator
             DMNContextFEELCtxWrapper dmnContext = new DMNContextFEELCtxWrapper(ctx);
             dmnContext.enterFrame();
             try {
+                if (originatorNode instanceof BusinessKnowledgeModelNode) {
+                    DMNRuntimeEventManagerUtils.fireBeforeInvokeBKM(eventManager, (BusinessKnowledgeModelNode) originatorNode, resultContext);
+                }
                 if( evaluator != null ) {
                     previousContext.getAll().forEach(dmnContext::set);
                     for( int i = 0; i < params.length; i++ ) {
@@ -177,6 +195,9 @@ public class DMNFunctionDefinitionEvaluator
                                        getName() );
                 return null;
             } finally {
+                if (originatorNode instanceof BusinessKnowledgeModelNode) {
+                    DMNRuntimeEventManagerUtils.fireAfterInvokeBKM(eventManager, (BusinessKnowledgeModelNode) originatorNode, resultContext);
+                }
                 resultContext.setContext( previousContext );
                 dmnContext.exitFrame();
             }
@@ -187,8 +208,9 @@ public class DMNFunctionDefinitionEvaluator
             return true;
         }
 
-        public List<List<String>> getParameterNames() {
-            return Collections.singletonList( parameters.stream().map( p -> p.name ).collect( Collectors.toList()) );
+        @Override
+        public List<List<Param>> getParameters() {
+            return Collections.singletonList(parameters.stream().map(FormalParameter::asFEELParam).collect(Collectors.toList()));
         }
 
         public List<List<DMNType>> getParameterTypes() {

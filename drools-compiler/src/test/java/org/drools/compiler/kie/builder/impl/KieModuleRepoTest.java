@@ -3,7 +3,6 @@ package org.drools.compiler.kie.builder.impl;
 import java.io.File;
 import java.io.InputStream;
 import java.lang.reflect.Field;
-import java.lang.reflect.Modifier;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.HashMap;
@@ -19,7 +18,9 @@ import org.appformer.maven.support.PomModel;
 import org.drools.compiler.kie.builder.impl.KieRepositoryImpl.KieModuleRepo;
 import org.drools.compiler.kproject.ReleaseIdImpl;
 import org.drools.compiler.kproject.models.KieBaseModelImpl;
+import org.drools.core.definitions.InternalKnowledgePackage;
 import org.drools.core.impl.InternalKnowledgeBase;
+import org.drools.core.io.internal.InternalResource;
 import org.drools.reflective.ResourceProvider;
 import org.junit.After;
 import org.junit.Before;
@@ -33,7 +34,6 @@ import org.kie.api.builder.Results;
 import org.kie.api.builder.model.KieBaseModel;
 import org.kie.api.builder.model.KieModuleModel;
 import org.kie.api.definition.KiePackage;
-import org.kie.api.io.Resource;
 import org.kie.api.io.ResourceConfiguration;
 import org.kie.internal.builder.CompositeKnowledgeBuilder;
 import org.kie.internal.builder.KnowledgeBuilder;
@@ -78,8 +78,8 @@ public class KieModuleRepoTest {
 
     @After
     public void after() throws Exception {
-        setFinalField(maxSizeGaCacheField, null, maxSizeGaCacheOrig);
-        setFinalField(maxSizeGaVersionsCacheField, null, maxSizeGaVersionsCacheOrig);
+        setCacheSize(maxSizeGaCacheField, null, maxSizeGaCacheOrig);
+        setCacheSize(maxSizeGaVersionsCacheField, null, maxSizeGaVersionsCacheOrig);
     }
 
     /**
@@ -131,17 +131,10 @@ public class KieModuleRepoTest {
        return numKieModules;
     }
 
-    private static void setFinalField(final Field field, final Object fieldObject, final Object newValue) throws Exception {
+    private static void setCacheSize( final Field field, final Object fieldObject, final Object newValue ) throws Exception {
         // make accessible
         field.setAccessible(true);
-
-        // make non-final
-        final Field modifiersField = Field.class.getDeclaredField("modifiers");
-        modifiersField.setAccessible(true);
-        modifiersField.setInt(field, field.getModifiers() & ~Modifier.FINAL );
-
         field.set(null, newValue);
-
         field.set(fieldObject, newValue);
     }
 
@@ -265,87 +258,92 @@ public class KieModuleRepoTest {
     private static class InternalKieModuleStub implements InternalKieModule {
         @Override
         public void cacheKnowledgeBuilderForKieBase( String kieBaseName, KnowledgeBuilder kbuilder ) {
-            throw new UnsupportedOperationException( "org.drools.compiler.kie.builder.impl.KieModuleRepoTest.InternalKieModuleStub.cacheKnowledgeBuilderForKieBase -> TODO" );
+            throw new UnsupportedOperationException();
         }
 
         @Override
         public KnowledgeBuilder getKnowledgeBuilderForKieBase( String kieBaseName ) {
-            throw new UnsupportedOperationException( "org.drools.compiler.kie.builder.impl.KieModuleRepoTest.InternalKieModuleStub.getKnowledgeBuilderForKieBase -> TODO" );
+            throw new UnsupportedOperationException();
+        }
+
+        @Override
+        public InternalKnowledgePackage getPackage( String packageName) {
+            throw new UnsupportedOperationException();
         }
 
         @Override
         public Collection<KiePackage> getKnowledgePackagesForKieBase( String kieBaseName ) {
-            throw new UnsupportedOperationException( "org.drools.compiler.kie.builder.impl.KieModuleRepoTest.InternalKieModuleStub.getKnowledgePackagesForKieBase -> TODO" );
+            throw new UnsupportedOperationException();
         }
 
         @Override
         public void cacheResultsForKieBase( String kieBaseName, Results results ) {
-            throw new UnsupportedOperationException( "org.drools.compiler.kie.builder.impl.KieModuleRepoTest.InternalKieModuleStub.cacheResultsForKieBase -> TODO" );
+            throw new UnsupportedOperationException();
         }
 
         @Override
         public Map<String, Results> getKnowledgeResultsCache() {
-            throw new UnsupportedOperationException( "org.drools.compiler.kie.builder.impl.KieModuleRepoTest.InternalKieModuleStub.getKnowledgeResultsCache -> TODO" );
+            throw new UnsupportedOperationException();
         }
 
         @Override
         public KieModuleModel getKieModuleModel() {
-            throw new UnsupportedOperationException( "org.drools.compiler.kie.builder.impl.KieModuleRepoTest.InternalKieModuleStub.getKieModuleModel -> TODO" );
+            throw new UnsupportedOperationException();
         }
 
         @Override
         public byte[] getBytes() {
-            throw new UnsupportedOperationException( "org.drools.compiler.kie.builder.impl.KieModuleRepoTest.InternalKieModuleStub.getBytes -> TODO" );
+            throw new UnsupportedOperationException();
         }
 
         @Override
         public boolean hasResource( String fileName ) {
-            throw new UnsupportedOperationException( "org.drools.compiler.kie.builder.impl.KieModuleRepoTest.InternalKieModuleStub.hasResource -> TODO" );
+            throw new UnsupportedOperationException();
         }
 
         @Override
-        public Resource getResource( String fileName ) {
-            throw new UnsupportedOperationException( "org.drools.compiler.kie.builder.impl.KieModuleRepoTest.InternalKieModuleStub.getResource -> TODO" );
+        public InternalResource getResource( String fileName ) {
+            throw new UnsupportedOperationException();
         }
 
         @Override
         public ResourceConfiguration getResourceConfiguration( String fileName ) {
-            throw new UnsupportedOperationException( "org.drools.compiler.kie.builder.impl.KieModuleRepoTest.InternalKieModuleStub.getResourceConfiguration -> TODO" );
+            throw new UnsupportedOperationException();
         }
 
         @Override
         public Map<ReleaseId, InternalKieModule> getKieDependencies() {
-            throw new UnsupportedOperationException( "org.drools.compiler.kie.builder.impl.KieModuleRepoTest.InternalKieModuleStub.getKieDependencies -> TODO" );
+            throw new UnsupportedOperationException();
         }
 
         @Override
         public void addKieDependency( InternalKieModule dependency ) {
-            throw new UnsupportedOperationException( "org.drools.compiler.kie.builder.impl.KieModuleRepoTest.InternalKieModuleStub.addKieDependency -> TODO" );
+            throw new UnsupportedOperationException();
         }
 
         @Override
         public Collection<ReleaseId> getJarDependencies( DependencyFilter filter ) {
-            throw new UnsupportedOperationException( "org.drools.compiler.kie.builder.impl.KieModuleRepoTest.InternalKieModuleStub.getJarDependencies -> TODO" );
+            throw new UnsupportedOperationException();
         }
 
         @Override
         public Collection<ReleaseId> getUnresolvedDependencies() {
-            throw new UnsupportedOperationException( "org.drools.compiler.kie.builder.impl.KieModuleRepoTest.InternalKieModuleStub.getUnresolvedDependencies -> TODO" );
+            throw new UnsupportedOperationException();
         }
 
         @Override
         public void setUnresolvedDependencies( Collection<ReleaseId> unresolvedDependencies ) {
-            throw new UnsupportedOperationException( "org.drools.compiler.kie.builder.impl.KieModuleRepoTest.InternalKieModuleStub.setUnresolvedDependencies -> TODO" );
+            throw new UnsupportedOperationException();
         }
 
         @Override
         public boolean isAvailable( String pResourceName ) {
-            throw new UnsupportedOperationException( "org.drools.compiler.kie.builder.impl.KieModuleRepoTest.InternalKieModuleStub.isAvailable -> TODO" );
+            throw new UnsupportedOperationException();
         }
 
         @Override
         public byte[] getBytes( String pResourceName ) {
-            throw new UnsupportedOperationException( "org.drools.compiler.kie.builder.impl.KieModuleRepoTest.InternalKieModuleStub.getBytes -> TODO" );
+            throw new UnsupportedOperationException();
         }
 
         @Override
@@ -355,27 +353,27 @@ public class KieModuleRepoTest {
 
         @Override
         public File getFile() {
-            throw new UnsupportedOperationException( "org.drools.compiler.kie.builder.impl.KieModuleRepoTest.InternalKieModuleStub.getFile -> TODO" );
+            throw new UnsupportedOperationException();
         }
 
         @Override
         public ResourceProvider createResourceProvider() {
-            throw new UnsupportedOperationException( "org.drools.compiler.kie.builder.impl.KieModuleRepoTest.InternalKieModuleStub.createResourceProvider -> TODO" );
+            throw new UnsupportedOperationException();
         }
 
         @Override
         public Map<String, byte[]> getClassesMap() {
-            throw new UnsupportedOperationException( "org.drools.compiler.kie.builder.impl.KieModuleRepoTest.InternalKieModuleStub.getClassesMap -> TODO" );
+            throw new UnsupportedOperationException();
         }
 
         @Override
         public boolean addResourceToCompiler( CompositeKnowledgeBuilder ckbuilder, KieBaseModel kieBaseModel, String fileName ) {
-            throw new UnsupportedOperationException( "org.drools.compiler.kie.builder.impl.KieModuleRepoTest.InternalKieModuleStub.addResourceToCompiler -> TODO" );
+            throw new UnsupportedOperationException();
         }
 
         @Override
         public boolean addResourceToCompiler( CompositeKnowledgeBuilder ckbuilder, KieBaseModel kieBaseModel, String fileName, ResourceChangeSet rcs ) {
-            throw new UnsupportedOperationException( "org.drools.compiler.kie.builder.impl.KieModuleRepoTest.InternalKieModuleStub.addResourceToCompiler -> TODO" );
+            throw new UnsupportedOperationException();
         }
 
         @Override
@@ -385,22 +383,22 @@ public class KieModuleRepoTest {
 
         @Override
         public InputStream getPomAsStream() {
-            throw new UnsupportedOperationException( "org.drools.compiler.kie.builder.impl.KieModuleRepoTest.InternalKieModuleStub.getPomAsStream -> TODO" );
+            throw new UnsupportedOperationException();
         }
 
         @Override
         public PomModel getPomModel() {
-            throw new UnsupportedOperationException( "org.drools.compiler.kie.builder.impl.KieModuleRepoTest.InternalKieModuleStub.getPomModel -> TODO" );
+            throw new UnsupportedOperationException();
         }
 
         @Override
         public KnowledgeBuilderConfiguration getBuilderConfiguration( KieBaseModel kBaseModel, ClassLoader classLoader ) {
-            throw new UnsupportedOperationException( "org.drools.compiler.kie.builder.impl.KieModuleRepoTest.InternalKieModuleStub.getBuilderConfiguration -> TODO" );
+            throw new UnsupportedOperationException();
         }
 
         @Override
         public InternalKnowledgeBase createKieBase( KieBaseModelImpl kBaseModel, KieProject kieProject, ResultsImpl messages, KieBaseConfiguration conf ) {
-            throw new UnsupportedOperationException( "org.drools.compiler.kie.builder.impl.KieModuleRepoTest.InternalKieModuleStub.createKieBase -> TODO" );
+            throw new UnsupportedOperationException();
         }
 
         @Override
@@ -481,8 +479,8 @@ public class KieModuleRepoTest {
     @Test
     public void storingNewProjectsCausesOldProjectEvictionFromKieModuleRepoTest() throws Exception {
         // setup
-        setFinalField(maxSizeGaCacheField, null, 3);
-        setFinalField(maxSizeGaVersionsCacheField, null, 2); // to test oldKieModules caching
+        setCacheSize(maxSizeGaCacheField, null, 3);
+        setCacheSize(maxSizeGaVersionsCacheField, null, 2); // to test oldKieModules caching
 
         final ReleaseIdImpl [] releaseIds = new ReleaseIdImpl[7];
         for( int i = 0; i < releaseIds.length; ++i ) {
@@ -512,8 +510,8 @@ public class KieModuleRepoTest {
     @Test
     public void storingNewProjectVersionsCausesOldVersionEvictionFromKieModuleRepoTest() throws Exception {
         // setup
-        setFinalField(maxSizeGaCacheField, null, 2); // to test oldKieModules caching
-        setFinalField(maxSizeGaVersionsCacheField, null, 3);
+        setCacheSize(maxSizeGaCacheField, null, 2); // to test oldKieModules caching
+        setCacheSize(maxSizeGaVersionsCacheField, null, 3);
 
         final ReleaseIdImpl [] releaseIds = new ReleaseIdImpl[7];
         for( int i = 0; i < releaseIds.length; ++i ) {
@@ -561,8 +559,8 @@ public class KieModuleRepoTest {
     @Test
     public void testOldKieModulesLRUCache() throws Exception {
         // setup
-        setFinalField(maxSizeGaCacheField, null, 2);
-        setFinalField(maxSizeGaVersionsCacheField, null, 4);
+        setCacheSize(maxSizeGaCacheField, null, 2);
+        setCacheSize(maxSizeGaVersionsCacheField, null, 4);
 
         final ReleaseIdImpl [] releaseIds = new ReleaseIdImpl[9];
         for( int i = 0; i < releaseIds.length; ++i ) {

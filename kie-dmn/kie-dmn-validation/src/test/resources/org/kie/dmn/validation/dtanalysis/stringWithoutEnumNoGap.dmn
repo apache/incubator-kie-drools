@@ -1,0 +1,81 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<semantic:definitions xmlns:semantic="http://www.omg.org/spec/DMN/20180521/MODEL/"  xmlns:triso="http://www.trisotech.com/2015/triso/modeling"  xmlns:dmndi="http://www.omg.org/spec/DMN/20180521/DMNDI/"  xmlns:di="http://www.omg.org/spec/DMN/20180521/DI/"  xmlns:dc="http://www.omg.org/spec/DMN/20180521/DC/"  xmlns:trisodmn="http://www.trisotech.com/2016/triso/dmn"  xmlns:feel="http://www.omg.org/spec/DMN/20180521/FEEL/"  xmlns:tc="http://www.omg.org/spec/DMN/20160719/testcase"  xmlns:drools="http://www.drools.org/kie/dmn/1.1"  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"  xmlns:rss="http://purl.org/rss/2.0/"  xmlns:openapi="https://openapis.org/omg/extension/1.0"  xmlns:xsd="http://www.w3.org/2001/XMLSchema"  xmlns="http://www.trisotech.com/definitions/_003f3859-e70c-4061-b6d7-6cdc8d75069a" id="_003f3859-e70c-4061-b6d7-6cdc8d75069a" name="Drawing 1" namespace="http://www.trisotech.com/definitions/_003f3859-e70c-4061-b6d7-6cdc8d75069a" exporter="DMN Modeler" exporterVersion="6.6.1.202001102229" triso:logoChoice="Default">
+    <semantic:inputData id="_df76830c-7c33-45a9-9346-a0068b5cfe0a" name="country">
+        <semantic:variable name="country" id="_45c427f1-20e5-41d6-ad99-1b883dad952b" typeRef="string"/>
+    </semantic:inputData>
+    <semantic:inputData id="_7c812e7f-72dc-4863-9672-7b741447825e" name="age">
+        <semantic:variable name="age" id="_d8a5d601-9e67-4e5d-9d09-73772c33fe55" typeRef="number"/>
+    </semantic:inputData>
+    <semantic:decision id="_9a50b877-9e7f-4c04-8d47-e44c60ab33ad" name="decision">
+        <semantic:variable name="decision" id="_f7423e25-1075-407a-9127-f16d19b5ab57" typeRef="string"/>
+        <semantic:informationRequirement id="_b64db707-940c-4f37-84ec-a09c1360644f">
+            <semantic:requiredInput href="#_7c812e7f-72dc-4863-9672-7b741447825e"/>
+        </semantic:informationRequirement>
+        <semantic:informationRequirement id="_58c741d3-ef23-4cf7-8852-3e0397086eed">
+            <semantic:requiredInput href="#_df76830c-7c33-45a9-9346-a0068b5cfe0a"/>
+        </semantic:informationRequirement>
+        <semantic:decisionTable id="_8b48d1c9-265c-47aa-9378-7f11d55dfe55" hitPolicy="PRIORITY" outputLabel="decision" typeRef="string" triso:expressionId="_3598bec6-5265-4673-8c3a-03684bcd05a2">
+            <semantic:input id="_fe083014-2fe3-447b-9db8-1e94b098b615" label="country">
+                <semantic:inputExpression typeRef="string">
+                    <semantic:text>country</semantic:text>
+                </semantic:inputExpression>
+            </semantic:input>
+            <semantic:input id="_1aa27046-7170-4078-a464-b5c7469d3ea9" label="age">
+                <semantic:inputExpression typeRef="number">
+                    <semantic:text>age</semantic:text>
+                </semantic:inputExpression>
+            </semantic:input>
+            <semantic:output id="_cba51888-b863-4916-8722-c6844af83205" triso:allowNull="false">
+                <semantic:outputValues triso:constraintsType="expression">
+                    <semantic:text>"Verify", "OK", "NO"</semantic:text>
+                </semantic:outputValues>
+                <semantic:defaultOutputEntry>
+                    <semantic:text>"NO"</semantic:text>
+                </semantic:defaultOutputEntry>
+            </semantic:output>
+            <semantic:annotation name="Description"/>
+            <semantic:rule id="_2b164b28-5344-448e-a6b9-3d5b17f652f2">
+                <semantic:inputEntry id="_7103fb6f-ce60-4b09-9bd4-bc36338669ef">
+                    <semantic:text>"EU"</semantic:text>
+                </semantic:inputEntry>
+                <semantic:inputEntry id="_cee1f5c8-b221-4255-9f66-dd8ab596cb47">
+                    <semantic:text>&gt;=18</semantic:text>
+                </semantic:inputEntry>
+                <semantic:outputEntry id="_80aae8fa-0e95-412d-8563-377f9c9da62a">
+                    <semantic:text>"OK"</semantic:text>
+                </semantic:outputEntry>
+                <semantic:annotationEntry>
+                    <semantic:text/>
+                </semantic:annotationEntry>
+            </semantic:rule>
+            <semantic:rule id="_0f9085af-1e5a-4aa9-8811-2947c0982b1d">
+                <semantic:inputEntry id="_4c7bcf33-f727-4fe7-b2b3-39ef6a34451f">
+                    <semantic:text>"US"</semantic:text>
+                </semantic:inputEntry>
+                <semantic:inputEntry id="_3b8ffd83-3621-413b-b228-ff19aa07d588">
+                    <semantic:text>&gt;=21</semantic:text>
+                </semantic:inputEntry>
+                <semantic:outputEntry id="_3e37b21e-ae1b-48b6-92f8-bf16215e02a6">
+                    <semantic:text>"OK"</semantic:text>
+                </semantic:outputEntry>
+                <semantic:annotationEntry>
+                    <semantic:text/>
+                </semantic:annotationEntry>
+            </semantic:rule>
+            <semantic:rule id="_752c8fb0-1ec9-46b1-a898-7cf2a860f418">
+                <semantic:inputEntry id="_e83684aa-676b-49a4-a7c3-0f355486051d">
+                    <semantic:text>-</semantic:text>
+                </semantic:inputEntry>
+                <semantic:inputEntry id="_7c5b9a6b-60c1-4842-8868-e8333758aaf8">
+                    <semantic:text>&gt;=18</semantic:text>
+                </semantic:inputEntry>
+                <semantic:outputEntry id="_34e9538d-7715-4b78-a95a-87821a91010a">
+                    <semantic:text>"Verify"</semantic:text>
+                </semantic:outputEntry>
+                <semantic:annotationEntry>
+                    <semantic:text/>
+                </semantic:annotationEntry>
+            </semantic:rule>
+        </semantic:decisionTable>
+    </semantic:decision>
+</semantic:definitions>

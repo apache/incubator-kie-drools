@@ -23,12 +23,10 @@ import org.junit.Test;
 import org.kie.api.KieServices;
 import org.kie.api.builder.KieModule;
 import org.kie.api.builder.ReleaseId;
-import org.kie.api.builder.model.KieSessionModel;
 import org.kie.api.io.ResourceType;
 import org.kie.api.runtime.ExecutableRunner;
 import org.kie.api.runtime.KieContainer;
 import org.kie.api.runtime.RequestContext;
-import org.kie.api.runtime.conf.ClockTypeOption;
 import org.kie.internal.builder.fluent.ExecutableBuilder;
 import org.kie.internal.builder.fluent.KieSessionFluent;
 import org.kie.internal.builder.fluent.Scope;
@@ -436,11 +434,7 @@ public class BatchRunFluentTest extends CommonTestMethodBase {
 
         f.newApplicationContext("app1")
                 .getKieContainer(releaseId)
-                .newSessionCustomized(null, ((sessionName, kieContainer) -> {
-                    KieSessionModel kieSessionModel = kieContainer.getKieSessionModel(sessionName);
-                    kieSessionModel.setConsoleLogger("newConsoleLoggerName");
-                    return kieContainer;
-                }))
+                .newSessionCustomized(null, ((sessionName, kieContainer) -> kieContainer.getKieSessionConfiguration(sessionName)))
                 .insert("h1")
                 .fireAllRules()
                 .getGlobal("outS").out("outS1")

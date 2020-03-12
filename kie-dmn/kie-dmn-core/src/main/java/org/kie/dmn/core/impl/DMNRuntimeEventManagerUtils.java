@@ -103,6 +103,20 @@ public final class DMNRuntimeEventManagerUtils {
         }
     }
 
+    public static void fireBeforeInvokeBKM( DMNRuntimeEventManager eventManager, BusinessKnowledgeModelNode bkm, DMNResult result) {
+        if( eventManager.hasListeners() ) {
+            BeforeInvokeBKMEvent event = new BeforeInvokeBKMEventImpl(bkm, result);
+            notifyListeners(eventManager, l -> l.beforeInvokeBKM(event));
+        }
+    }
+
+    public static void fireAfterInvokeBKM( DMNRuntimeEventManager eventManager, BusinessKnowledgeModelNode bkm, DMNResult result) {
+        if( eventManager.hasListeners() ) {
+            AfterInvokeBKMEvent event = new AfterInvokeBKMEventImpl(bkm, result);
+            notifyListeners(eventManager, l -> l.afterInvokeBKM(event));
+        }
+    }
+
     private static void notifyListeners(DMNRuntimeEventManager eventManager, Consumer<DMNRuntimeEventListener> consumer) {
         for( DMNRuntimeEventListener listener : eventManager.getListeners() ) {
             try {

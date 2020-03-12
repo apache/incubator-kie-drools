@@ -16,9 +16,9 @@
 
 package org.drools.modelcompiler;
 
+import java.lang.reflect.Field;
 import java.math.BigDecimal;
 import java.math.BigInteger;
-import java.time.Instant;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Date;
@@ -29,23 +29,34 @@ import java.util.concurrent.atomic.AtomicInteger;
 import java.util.stream.Collectors;
 
 import org.assertj.core.api.Assertions;
+import org.drools.core.definitions.rule.impl.RuleImpl;
+import org.drools.core.spi.Consequence;
+import org.drools.model.functions.IntrospectableLambda;
+import org.drools.modelcompiler.consequence.LambdaConsequence;
 import org.drools.modelcompiler.domain.Address;
 import org.drools.modelcompiler.domain.Adult;
 import org.drools.modelcompiler.domain.Child;
 import org.drools.modelcompiler.domain.Man;
 import org.drools.modelcompiler.domain.Overloaded;
 import org.drools.modelcompiler.domain.Person;
+import org.drools.modelcompiler.domain.Pet;
 import org.drools.modelcompiler.domain.Result;
 import org.drools.modelcompiler.domain.StockTick;
 import org.drools.modelcompiler.domain.Toy;
 import org.drools.modelcompiler.domain.Woman;
 import org.junit.Ignore;
 import org.junit.Test;
+import org.kie.api.KieServices;
+import org.kie.api.builder.model.KieModuleModel;
 import org.kie.api.runtime.KieSession;
+import org.kie.api.runtime.process.ProcessContext;
 import org.kie.api.runtime.rule.FactHandle;
 
+import static org.hamcrest.CoreMatchers.containsString;
+import static org.hamcrest.CoreMatchers.startsWith;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertThat;
 import static org.junit.Assert.assertTrue;
@@ -57,7 +68,7 @@ public class CompilerTest extends BaseModelTest {
     }
 
     @Test(timeout = 5000)
-    public void testPropertyReactvity() {
+    public void testPropertyReactivity() {
         String str =
                 "import " + Person.class.getCanonicalName() + ";" +
                 "rule R when\n" +
@@ -1968,42 +1979,262 @@ public class CompilerTest extends BaseModelTest {
     }
 
     @Test
-    public void testMaterializeLambda() {
+    public void testConsequenceNoVariable() throws Exception {
+        // DROOLS-4924
         String str =
+                "package defaultpkg;\n" +
+                "import " + Person.class.getCanonicalName() + ";" +
+                "rule R when\n" +
+                "  $p : Person(name == \"Mario\")\n" +
+                "then\n" +
+                "  System.out.println(\"Hello\");\n" +
+                "end";
 
-                "import " + DataType.class.getCanonicalName() + ";\n" +
-                "import " + Result.class.getCanonicalName() + ";\n" +
-                        "global org.drools.modelcompiler.domain.Result result;\n" +
-                "rule \"rule1\"\n" +
-                "when org.drools.modelcompiler.DataType (\n" +
-                "        field1 == \"FF\"\n" +
-                "        , field2 == \"BBB\"\n" +
-                ")\n" +
+        KieModuleModel kieModuleModel = KieServices.get().newKieModuleModel();
+        kieModuleModel.setConfigurationProperty("drools.externaliseCanonicalModelLambda", Boolean.TRUE.toString());
+
+        KieSession ksession = getKieSession(kieModuleModel, str );
+
+        if (testRunType == RUN_TYPE.FLOW_DSL || testRunType == RUN_TYPE.PATTERN_DSL) {
+            RuleImpl rule = (RuleImpl)ksession.getKieBase().getRule("defaultpkg", "R");
+            Consequence consequence = rule.getConsequence();
+            Field field = LambdaConsequence.class.getDeclaredField("consequence");
+            field.setAccessible(true);
+            org.drools.model.Consequence internalConsequence = (org.drools.model.Consequence) field.get(consequence);
+            Object lambda = ((IntrospectableLambda) internalConsequence.getBlock()).getLambda();
+            assertThat(lambda.getClass().getName(), containsString("LambdaConsequence")); // materialized Lambda
+        }
+
+        Person me = new Person( "Mario", 40 );
+        ksession.insert( me );
+
+        assertEquals( 1, ksession.fireAllRules() );
+    }
+
+    @Test()
+    public void testMultipleModify() {
+        String str =
+                "import " + Person.class.getCanonicalName() + ";" +
+                "rule R when\n" +
+                "  $p1 : Person(name == \"John\")\n" +
+                "  $p2 : Person(name == \"Paul\")\n" +
                 "then\n" +
-                "    result.setValue(0);\n" +
+                "  modify($p1) { setAge($p1.getAge()+1) }\n" +
+                "  modify($p2) { setAge($p2.getAge()+5) }\n" +
+                "end";
+
+        KieSession ksession = getKieSession( str );
+
+        Person p1 = new Person( "John", 40 );
+        Person p2 = new Person( "Paul", 38 );
+
+        ksession.insert( p1 );
+        ksession.insert( p2 );
+        ksession.fireAllRules();
+
+        assertEquals( 41, p1.getAge() );
+        assertEquals( 43, p2.getAge() );
+    }
+
+    @Test()
+    public void testMultipleModifyWithDifferentFacts() {
+        String str =
+                "import " + Person.class.getCanonicalName() + ";" +
+                "import " + Pet.class.getCanonicalName() + ";" +
+                "rule R1 when\n" +
+                "  $person : Person(name == \"John\")\n" +
+                "  $pet : Pet(owner == $person)\n" +
+                "then\n" +
+                "  modify($person) { setName(\"George\") }\n" +
+                "  modify($pet) { setAge($pet.getAge()+1) }\n" +
                 "end\n" +
-                "rule \"rule2\"\n" +
-                "when org.drools.modelcompiler.DataType (\n" +
-                "        field2 == \"BBB\"\n" +
-                "        , fieldDate >= \"27-Oct-2019\"\n" +
-                ")\n" +
+                "rule R2 when\n" +
+                "  $person : Person(name == \"George\")\n" +
+                "  $pet : Pet(owner == $person)\n" +
                 "then\n" +
-                "    result.setValue(0);\n" +
+                "  modify($pet) { setAge($pet.getAge()+1) }\n" +
+                "end";
+
+        KieSession ksession = getKieSession( str );
+
+        Person person = new Person( "John", 40 );
+        Pet pet = new Pet( Pet.PetType.dog, 3 );
+        pet.setOwner(person);
+
+        ksession.insert( person );
+        ksession.insert( pet );
+        ksession.fireAllRules();
+
+        assertEquals( "George", person.getName() );
+        assertEquals( 5, pet.getAge() );
+    }
+
+    @Test
+    public void testIntToShortCast() {
+        String str = "import " + Address.class.getCanonicalName() + ";\n" +
+                "rule \"rule1\"\n" +
+                "when\n" +
+                "    $address : Address( shortNumber == null ||  shortNumber == 0, \n" +
+                "                           $interimVar : number)\n" +
+                "then\n" +
+                "    $address.setShortNumber((short)$interimVar);\n" +
+                "    update($address);\n" +
                 "end\n";
 
         KieSession ksession = getKieSession(str);
 
-        DataType st = new DataType("FF", "BBB");
-        DataType st2 = new DataType("FF", "CCC");
-        ksession.insert(st);
-        ksession.insert(st2);
+        Address address = new Address();
+        address.setNumber(1);
+        ksession.insert( address );
+        assertEquals( 1, ksession.fireAllRules() );
+    }
 
-        DataType st3 = new DataType("AA", "CCC", Date.from(Instant.parse("2018-11-30T18:35:24Z")));
-        ksession.insert(st3);
+    @Test
+    public void testConsequenceGetContext() throws Exception {
+        String str =
+                "import " + ProcessContext.class.getCanonicalName() + ";" +
+                "rule R when\n" +
+                "  $p : Object()\n" +
+                "then\n" +
+                "  ProcessContext clazz = drools.getContext(ProcessContext.class);\n" +
+                "end";
 
-        Result r = new Result();
-        ksession.setGlobal("result", r);
-        Assertions.assertThat(ksession.fireAllRules()).isEqualTo(1);
-        assertEquals(0, r.getValue());
+        KieSession ksession = getKieSession( str );
+        assertNotNull( ksession);
+    }
+
+    @Test
+    public void testExtraParenthes() throws Exception {
+        String str =
+                "import " + Person.class.getCanonicalName() + ";" +
+                "rule R when\n" +
+                "  $p : Person((age > 30))\n" +
+                "then\n" +
+                "end";
+
+        KieSession ksession = getKieSession(str);
+
+        Person person = new Person( "John", 20 );
+
+        ksession.insert( person );
+        assertEquals(0, ksession.fireAllRules());
+    }
+
+    @Test
+    public void testNegateBigDecimal() throws Exception {
+        String str =
+                "import " + Person.class.getCanonicalName() + ";" +
+                     "global java.util.List list;\n" +
+                     "rule R when\n" +
+                     "  $p : Person(!(money > 20))\n" +
+                     "then\n" +
+                     "  list.add($p.getName());" +
+                     "end";
+
+        KieSession ksession = getKieSession(str);
+        final List<String> list = new ArrayList<>();
+        ksession.setGlobal("list", list);
+
+        Person p1 = new Person("John");
+        p1.setMoney(new BigDecimal("10.0"));
+        Person p2 = new Person("Paul");
+        p2.setMoney(new BigDecimal("30.0"));
+
+        ksession.insert(p1);
+        ksession.insert(p2);
+
+        assertEquals(1, ksession.fireAllRules());
+        Assertions.assertThat(list).containsExactly("John");
+    }
+
+    @Test
+    public void testNegateJoin() throws Exception {
+        String str =
+                "import " + Person.class.getCanonicalName() + ";" +
+                     "import " + Address.class.getCanonicalName() + ";" +
+                     "rule R when\n" +
+                     "  $a : Address()\n" +
+                     "  $p : Person(!(address == $a))\n" +
+                     "then\n" +
+                     "end";
+
+        KieSession ksession = getKieSession(str);
+
+        Address a = new Address("Milan");
+        Person p = new Person("Toshiya");
+        p.setAddress(new Address("Tokyo"));
+
+        ksession.insert(a);
+        ksession.insert(p);
+
+        assertEquals(1, ksession.fireAllRules());
+    }
+
+    @Test
+    public void testNegateComplex() throws Exception {
+        String str =
+                "import " + Person.class.getCanonicalName() + ";" +
+                     "global java.util.List list;\n" +
+                     "rule R when\n" +
+                     "  $p : Person(!(money > 20 && money < 40))\n" +
+                     "then\n" +
+                     "  list.add($p.getName());" +
+                     "end";
+
+        KieSession ksession = getKieSession(str);
+        final List<String> list = new ArrayList<>();
+        ksession.setGlobal("list", list);
+
+        Person p1 = new Person("John");
+        p1.setMoney(new BigDecimal("10.0"));
+        Person p2 = new Person("Paul");
+        p2.setMoney(new BigDecimal("30.0"));
+        Person p3 = new Person("George");
+        p3.setMoney(new BigDecimal("50.0"));
+
+        ksession.insert(p1);
+        ksession.insert(p2);
+        ksession.insert(p3);
+
+        assertEquals(2, ksession.fireAllRules());
+        Assertions.assertThat(list).containsExactlyInAnyOrder("John", "George");
+    }
+
+    @Test
+    public void testMapStringProp() throws Exception {
+        final String str =
+                "package org.drools.test;\n" +
+                           "import " + Person.class.getCanonicalName() + ";\n" +
+                           "rule R1 when \n" +
+                           "  Person(\"XXX\" == itemsString[\"AAA\"])\n" +
+                           "then\n" +
+                           "end";
+
+        final KieSession ksession = getKieSession(str);
+
+        final Person p = new Person("Toshiya");
+        p.getItemsString().put("AAA", "XXX");
+
+        ksession.insert(p);
+        assertEquals(1, ksession.fireAllRules());
+    }
+
+    @Test
+    public void testMapString() throws Exception {
+        final String str =
+                "package org.drools.test;\n" +
+                           "import " + Map.class.getCanonicalName() + ";\n" +
+                           "rule R1 when \n" +
+                           "  Map(\"XXX\" == this[\"AAA\"])\n" +
+                           "then\n" +
+                           "end";
+
+        final KieSession ksession = getKieSession(str);
+
+        Map<String, String> map = new HashMap<>();
+        map.put("AAA", "XXX");
+
+        ksession.insert(map);
+        assertEquals(1, ksession.fireAllRules());
     }
 }

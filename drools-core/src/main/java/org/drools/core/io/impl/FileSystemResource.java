@@ -16,6 +16,7 @@
 
 package org.drools.core.io.impl;
 
+import java.io.ByteArrayInputStream;
 import java.io.Externalizable;
 import java.io.File;
 import java.io.FileInputStream;
@@ -30,9 +31,9 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 
+import org.drools.core.io.internal.InternalResource;
 import org.drools.core.util.IoUtils;
 import org.drools.core.util.StringUtils;
-import org.drools.core.io.internal.InternalResource;
 import org.kie.api.io.Resource;
 import org.kie.api.io.ResourceType;
 
@@ -41,7 +42,6 @@ import org.kie.api.io.ResourceType;
  */
 public class FileSystemResource  extends BaseResource implements InternalResource, Externalizable {
     private File file;
-    private long lastRead = -1;
     private String encoding;
 
     public FileSystemResource() {
@@ -123,14 +123,13 @@ public class FileSystemResource  extends BaseResource implements InternalResourc
      * @see java.io.FileInputStream
      */
     public InputStream getInputStream() throws IOException {
-        this.lastRead = getLastModified();
-        return new FileInputStream(this.file);
+        return bytes != null ? new ByteArrayInputStream( this.bytes ) : new FileInputStream(this.file);
     }
-     public Reader getReader() throws IOException {
+
+    public Reader getReader() throws IOException {
          if (this.encoding != null) {
             return new InputStreamReader(getInputStream(), this.encoding);
-        }
-        else {
+        } else {
             return new InputStreamReader(getInputStream(), IoUtils.UTF8_CHARSET);
         }
     }
@@ -164,15 +163,6 @@ public class FileSystemResource  extends BaseResource implements InternalResourc
     
     public boolean hasURL() {
         return true;
-    }
-    
-    public long getLastModified() {
-        long date = this.file.lastModified();
-        return date;
-    }
-    
-    public long getLastRead() {
-        return this.lastRead;
     }
     
     public String toString() {

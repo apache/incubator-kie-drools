@@ -176,6 +176,7 @@ public class MVELConstraintBuilder implements ConstraintBuilder {
                                              String expression,
                                              String leftValue,
                                              String operator,
+                                             boolean negated,
                                              String rightValue,
                                              InternalReadAccessor extractor,
                                              LiteralRestrictionDescr restrictionDescr,
@@ -196,8 +197,8 @@ public class MVELConstraintBuilder implements ConstraintBuilder {
             return new EvaluatorConstraint(field, evaluator, extractor);
         }
 
-        String mvelExpr = normalizeMVELLiteralExpression(vtype, field, expression, leftValue, operator, rightValue, restrictionDescr);
-        IndexUtil.ConstraintType constraintType = IndexUtil.ConstraintType.decode(operator);
+        String mvelExpr = normalizeMVELLiteralExpression(vtype, field, expression, leftValue, operator, rightValue, negated, restrictionDescr);
+        IndexUtil.ConstraintType constraintType = IndexUtil.ConstraintType.decode(operator, negated);
         MVELCompilationUnit compilationUnit = buildCompilationUnit(context, pattern, mvelExpr, aliases);
         EvaluatorWrapper[] operators = getOperators(buildOperators(context, pattern, restrictionDescr, aliases));
         return new MvelConstraint(context.getPkg().getName(), mvelExpr, compilationUnit, constraintType, field, extractor, operators);
@@ -220,9 +221,11 @@ public class MVELConstraintBuilder implements ConstraintBuilder {
                                                            String leftValue,
                                                            String operator,
                                                            String rightValue,
+                                                           boolean negated,
                                                            LiteralRestrictionDescr restrictionDescr) {
         if (vtype.getSimpleType() == SimpleValueType.DATE) {
-            return leftValue + " " + operator + getNormalizeDate( vtype, field );
+            String normalized = leftValue + " " + operator + getNormalizeDate( vtype, field );
+            return negated ? "!(" + normalized + ")" : normalized;
         }
         if (operator.equals("str")) {
             return normalizeStringOperator( leftValue, rightValue, restrictionDescr );

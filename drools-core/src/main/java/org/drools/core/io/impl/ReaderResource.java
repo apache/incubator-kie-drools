@@ -16,10 +16,6 @@
 
 package org.drools.core.io.impl;
 
-import org.drools.core.io.internal.InternalResource;
-import org.kie.api.io.Resource;
-import org.kie.api.io.ResourceType;
-
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
@@ -28,14 +24,16 @@ import java.io.Reader;
 import java.net.URL;
 import java.util.Collection;
 
+import org.drools.core.io.internal.InternalResource;
+import org.kie.api.io.Resource;
+import org.kie.api.io.ResourceType;
+
 public class ReaderResource  extends BaseResource implements InternalResource {
     private static final long serialVersionUID = -2554750160404141191L;
     
     private transient Reader reader;
     private String encoding;
-    private long timestamp;
-    private long lastRead;
-    
+
     public ReaderResource() { }
 
     public ReaderResource(Reader reader) {
@@ -55,19 +53,16 @@ public class ReaderResource  extends BaseResource implements InternalResource {
             throw new IllegalArgumentException( "reader cannot be null" );
         }
         if ( encoding == null && reader instanceof InputStreamReader ) {
-            this.encoding = ((InputStreamReader)reader).getEncoding();
+            this.encoding = (( InputStreamReader ) reader).getEncoding();
         } else {
-        	this.encoding = encoding;
+            this.encoding = encoding;
         }
         this.reader = reader;
 
-        
+
         setResourceType( type );
-        
-        this.timestamp = System.currentTimeMillis();
-        this.lastRead = this.timestamp;
     }
-    
+
     public URL getURL() throws IOException {
         throw new FileNotFoundException( "reader cannot be resolved to URL");
     }
@@ -84,14 +79,6 @@ public class ReaderResource  extends BaseResource implements InternalResource {
         } else {
             return new ReaderInputStream.NonCloseable( this.reader);
         }
-    }
-    
-    public long getLastModified() {
-        return this.timestamp;
-    }
-    
-    public long getLastRead() {
-        return this.lastRead;
     }
     
     public Reader getReader() {

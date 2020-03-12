@@ -20,9 +20,9 @@ import java.util.Collection;
 
 import org.drools.model.functions.Operator;
 
-public class ContainsOperator implements Operator.SingleValue<Object, Object> {
+public enum ContainsOperator implements Operator.SingleValue<Object, Object> {
 
-    public static final ContainsOperator INSTANCE = new ContainsOperator();
+    INSTANCE;
 
     @Override
     public boolean eval( Object a, Object b ) {

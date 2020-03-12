@@ -73,6 +73,7 @@ public class LhsBuilder implements SourceBuilder {
     private static final Pattern patFrm = Pattern.compile( "\\s+from\\s+" );
     private static final Pattern patPar = Pattern.compile( "\\(\\s*\\)\\s*\\Z" );
     private static final Pattern patEval = Pattern.compile( "\\beval\\s*(?:\\(\\s*\\)\\s*)?$" );
+    private static final Pattern patOopath = Pattern.compile( ".*\\:\\s*/.*" );
 
     /**
      * @param colDefinition
@@ -128,6 +129,12 @@ public class LhsBuilder implements SourceBuilder {
         if ( matPar.find() ) {
             colDefPrefix = colDef.substring( 0, matPar.start() ) + '(';
             colDefSuffix = ")" + colDef.substring( matPar.end() );
+            return;
+        }
+
+        if ( patOopath.matcher( colDef ).matches() ) {
+            colDefPrefix = colDef + '[';
+            colDefSuffix = "]";
             return;
         }
 

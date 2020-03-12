@@ -18,7 +18,9 @@ package org.drools.modelcompiler;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import org.drools.modelcompiler.domain.ChildFactComplex;
 import org.drools.modelcompiler.domain.ChildFactWithEnum1;
@@ -671,5 +673,58 @@ public class ComplexRulesTest extends BaseModelTest {
         } finally {
             System.clearProperty("drools.propertySpecific");
         }
+    }
+
+    public static class CaseData {
+
+        private final Object value;
+
+        public CaseData( Object value ) {
+            this.value = value;
+        }
+
+        public Map<String, Object> getData() {
+            Map<String, Object> map = new HashMap<>();
+            map.put( "test", value );
+            return map;
+        }
+
+        public CaseData getMe() {
+            return this;
+        }
+    }
+
+    @Test
+    public void testGetOnMapField() {
+        // DROOLS-4999
+        String str =
+                "import " + CaseData.class.getCanonicalName() + ";\n" +
+                "rule R1 when\n" +
+                "    $d: CaseData( ((Number)data.get(\"test\")).intValue() > 3 )\n" +
+                "then\n" +
+                "end\n";
+
+        KieSession ksession = getKieSession( str );
+
+        ksession.insert( new CaseData( 5 ) );
+
+        assertEquals(1, ksession.fireAllRules());
+    }
+
+    @Test
+    public void testEqualsOnMapField() {
+        // DROOLS-4999
+        String str =
+                "import " + CaseData.class.getCanonicalName() + ";\n" +
+                "rule R1 when\n" +
+                "    $d: CaseData( me.data['test'] == \"OK\" )\n" +
+                "then\n" +
+                "end\n";
+
+        KieSession ksession = getKieSession( str );
+
+        ksession.insert( new CaseData( "OK" ) );
+
+        assertEquals(1, ksession.fireAllRules());
     }
 }

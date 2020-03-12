@@ -99,11 +99,11 @@ public class FEELValuesComparisonTest extends BaseFEELTest {
                 { "null != null", Boolean.FALSE , null},
 
                 // RHDM-1119 
-                { "1 >> 2", null, FEELEvent.Severity.WARN},
-                { "1 >>> 2", null, FEELEvent.Severity.WARN},
-                { "1 == 2", null, FEELEvent.Severity.WARN},
-                { "{ m: <18 }.m(16)", true, null},
-                { "{ m: <<18 }.m(16)", null, FEELEvent.Severity.WARN},
+                { "{ m: <18 }.m(16)", true, null}, // Working expression, for the expr raising compilation Warn test have been moved.
+                { "{list : 1, r: list < 3}.r", Boolean.TRUE , null}, // strange name for a number literal, intended this way.
+                { "{list : 1, r: list< 3}.r", Boolean.TRUE , null}, 
+                { "{context : 1, r: context < 3}.r", Boolean.TRUE , null}, // strange name for a number literal, intended this way.
+                { "{context : 1, r: context< 3}.r", Boolean.TRUE , null}, 
         };
         return addAdditionalParameters(cases, false);
     }

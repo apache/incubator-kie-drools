@@ -39,46 +39,46 @@ public class LHSGeneratorContext {
     LHSGeneratorContext() {
     }
 
-    LHSGeneratorContext( final LHSGeneratorContext parent,
-                         final IPattern pattern,
-                         final int depth,
-                         final int offset ) {
+    LHSGeneratorContext(final LHSGeneratorContext parent,
+                        final IPattern pattern,
+                        final int depth,
+                        final int offset) {
         this.parent = parent;
         this.depth = depth;
         this.offset = offset;
-        setPattern( pattern );
+        setPattern(pattern);
     }
 
-    private void setPattern( final IPattern pattern ) {
+    private void setPattern(final IPattern pattern) {
         this.pattern = pattern;
         this.varsInScope.clear();
         final Set<InterpolationVariable> vars = new HashSet<InterpolationVariable>();
-        final GeneratorContextRuleModelVisitor visitor = new GeneratorContextRuleModelVisitor( vars );
-        visitor.visit( pattern );
-        for ( InterpolationVariable var : vars ) {
-            varsInScope.add( var.getVarName() );
+        final GeneratorContextRuleModelVisitor visitor = new GeneratorContextRuleModelVisitor(vars);
+        visitor.visit(pattern);
+        for (InterpolationVariable var : vars) {
+            varsInScope.add(var.getVarName());
         }
         hasNonTemplateOutput = visitor.hasNonTemplateOutput();
     }
 
-    LHSGeneratorContext( final LHSGeneratorContext parent,
-                         final FieldConstraint fieldConstraint,
-                         final int depth,
-                         final int offset ) {
+    LHSGeneratorContext(final LHSGeneratorContext parent,
+                        final FieldConstraint fieldConstraint,
+                        final int depth,
+                        final int offset) {
         this.parent = parent;
         this.depth = depth;
         this.offset = offset;
-        setFieldConstraint( fieldConstraint );
+        setFieldConstraint(fieldConstraint);
     }
 
-    private void setFieldConstraint( final FieldConstraint fieldConstraint ) {
+    private void setFieldConstraint(final FieldConstraint fieldConstraint) {
         this.fieldConstraint = fieldConstraint;
         this.varsInScope.clear();
         final Set<InterpolationVariable> vars = new HashSet<InterpolationVariable>();
-        final GeneratorContextRuleModelVisitor visitor = new GeneratorContextRuleModelVisitor( vars );
-        visitor.visit( fieldConstraint );
-        for ( InterpolationVariable var : vars ) {
-            varsInScope.add( var.getVarName() );
+        final GeneratorContextRuleModelVisitor visitor = new GeneratorContextRuleModelVisitor(vars);
+        visitor.visit(fieldConstraint);
+        for (InterpolationVariable var : vars) {
+            varsInScope.add(var.getVarName());
         }
         hasNonTemplateOutput = visitor.hasNonTemplateOutput();
     }
@@ -107,10 +107,17 @@ public class LHSGeneratorContext {
         return hasOutput;
     }
 
-    public void setHasOutput( boolean hasOutput ) {
+    public void setHasOutput(boolean hasOutput) {
         this.hasOutput = hasOutput;
-        if ( parent != null ) {
-            parent.setHasOutput( hasOutput );
+        if (parent != null) {
+            parent.setHasOutput(hasOutput);
+        }
+    }
+
+    public void setHasNonTemplateOutput(boolean hasNonTemplateOutput) {
+        this.hasNonTemplateOutput = hasNonTemplateOutput;
+        if (parent != null) {
+            parent.setHasNonTemplateOutput(hasNonTemplateOutput);
         }
     }
 
@@ -121,5 +128,4 @@ public class LHSGeneratorContext {
     public boolean hasNonTemplateOutput() {
         return hasNonTemplateOutput;
     }
-
 }

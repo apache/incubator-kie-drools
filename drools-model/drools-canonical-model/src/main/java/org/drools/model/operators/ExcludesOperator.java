@@ -18,9 +18,9 @@ package org.drools.model.operators;
 
 import org.drools.model.functions.Operator;
 
-public class ExcludesOperator implements Operator.SingleValue<Object, Object> {
+public enum ExcludesOperator implements Operator.SingleValue<Object, Object> {
 
-    public static final ExcludesOperator INSTANCE = new ExcludesOperator();
+    INSTANCE;
 
     @Override
     public boolean eval( Object a, Object b ) {

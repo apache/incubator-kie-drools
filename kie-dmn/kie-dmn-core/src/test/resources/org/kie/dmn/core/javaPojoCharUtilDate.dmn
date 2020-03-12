@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<semantic:definitions xmlns:semantic="http://www.omg.org/spec/DMN/20180521/MODEL/"  xmlns:triso="http://www.trisotech.com/2015/triso/modeling"  xmlns:dmndi="http://www.omg.org/spec/DMN/20180521/DMNDI/"  xmlns:di="http://www.omg.org/spec/DMN/20180521/DI/"  xmlns:dc="http://www.omg.org/spec/DMN/20180521/DC/"  xmlns:trisodmn="http://www.trisotech.com/2016/triso/dmn"  xmlns:feel="http://www.omg.org/spec/DMN/20180521/FEEL/"  xmlns:tc="http://www.omg.org/spec/DMN/20160719/testcase"  xmlns:drools="http://www.drools.org/kie/dmn/1.1"  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"  xmlns:rss="http://purl.org/rss/2.0/"  xmlns:openapi="https://openapis.org/omg/extension/1.0"  xmlns:xsd="http://www.w3.org/2001/XMLSchema"  xmlns="http://www.trisotech.com/definitions/_5eaccc88-cbf0-4c58-945a-952d8bf974ed" id="_5eaccc88-cbf0-4c58-945a-952d8bf974ed" name="Drawing 1" namespace="http://www.trisotech.com/definitions/_5eaccc88-cbf0-4c58-945a-952d8bf974ed" exporter="DMN Modeler" exporterVersion="6.7.1" triso:logoChoice="Default">
+    <semantic:itemDefinition name="tData" label="tData">
+        <semantic:itemComponent id="_d26ed9c9-8f7a-4cee-b885-06811b26754d" name="surname">
+            <semantic:typeRef>string</semantic:typeRef>
+        </semantic:itemComponent>
+        <semantic:itemComponent id="_64d77bf0-23ac-4faa-b479-3119eaa7737e" name="name initial">
+            <semantic:typeRef>string</semantic:typeRef>
+        </semantic:itemComponent>
+        <semantic:itemComponent id="_d5cf9584-c35a-42af-9f26-6d4fb787b61f" name="when">
+            <semantic:typeRef>dateTime</semantic:typeRef>
+        </semantic:itemComponent>
+    </semantic:itemDefinition>
+    <semantic:inputData id="_e6813e34-721e-4421-861a-915a06d1dfd2" name="my data">
+        <semantic:variable name="my data" id="_96a28a98-2688-4b27-8872-4df9feaabfce" typeRef="tData"/>
+    </semantic:inputData>
+    <semantic:decision id="_5198008c-e0ca-4a4f-9e75-93939a7fa8b9" name="my decision">
+        <semantic:variable name="my decision" id="_74fd049f-54e8-416d-8a9e-387799687fe1" typeRef="Any"/>
+        <semantic:informationRequirement id="_4fe16aea-4610-4d6b-b6f8-01237e945ddd">
+            <semantic:requiredInput href="#_e6813e34-721e-4421-861a-915a06d1dfd2"/>
+        </semantic:informationRequirement>
+        <semantic:literalExpression id="_9c077de7-c79b-4ec9-8250-6e10d0348248" typeRef="Any" triso:expressionId="_6c5f708c-7126-4c08-99fd-9c79cf6af5bd">
+            <semantic:text>"The person: "+my data.surname+" "+my data.name initial+"., on the " + string(my data.when.day) + " of the month " + string(my data.when.month) + " at the "+string(my data.when.hour)+ " hour."</semantic:text>
+        </semantic:literalExpression>
+    </semantic:decision>
+</semantic:definitions>

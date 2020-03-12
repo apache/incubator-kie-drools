@@ -32,16 +32,20 @@ import org.drools.compiler.compiler.PackageRegistry;
 import org.drools.compiler.lang.descr.AbstractClassTypeDeclarationDescr;
 import org.drools.compiler.lang.descr.CompositePackageDescr;
 import org.drools.compiler.lang.descr.EnumDeclarationDescr;
+import org.drools.compiler.lang.descr.GlobalDescr;
+import org.drools.compiler.lang.descr.ImportDescr;
 import org.drools.compiler.lang.descr.PackageDescr;
 import org.drools.compiler.lang.descr.TypeDeclarationDescr;
 import org.drools.core.definitions.InternalKnowledgePackage;
 import org.drools.core.rule.TypeDeclaration;
+import org.drools.core.util.StringUtils;
 import org.drools.modelcompiler.builder.generator.DRLIdGenerator;
 import org.drools.modelcompiler.builder.generator.DrlxParseUtil;
 import org.drools.modelcompiler.builder.generator.declaredtype.POJOGenerator;
 import org.kie.api.builder.ReleaseId;
 import org.kie.internal.builder.ResultSeverity;
 
+import static java.util.Collections.emptyList;
 import static org.drools.compiler.builder.impl.ClassDefinitionFactory.createClassDefinition;
 import static org.drools.modelcompiler.builder.generator.ModelGenerator.generateModel;
 import static org.drools.modelcompiler.builder.generator.declaredtype.POJOGenerator.compileType;
@@ -58,6 +62,9 @@ public class ModelBuilderImpl<T extends PackageSources> extends KnowledgeBuilder
     private final boolean oneClassPerRule;
     private final Collection<T> packageSources = new ArrayList<>();
 
+    private Collection<CompositePackageDescr> compositePackages;
+    private Map<String, CompositePackageDescr> compositePackagesMap;
+
     public ModelBuilderImpl(Function<PackageModel, T> sourcesGenerator, KnowledgeBuilderConfigurationImpl configuration, ReleaseId releaseId, boolean isPattern, boolean oneClassPerRule) {
         super(configuration);
         this.sourcesGenerator = sourcesGenerator;
@@ -68,6 +75,49 @@ public class ModelBuilderImpl<T extends PackageSources> extends KnowledgeBuilder
 
     @Override
     public void buildPackages(Collection<CompositePackageDescr> packages) {
+        this.compositePackages = packages;
+    }
+
+    @Override
+    public void addPackage(final PackageDescr packageDescr) {
+        if (compositePackagesMap == null) {
+            compositePackagesMap = new HashMap<>();
+            if(compositePackages != null) {
+                for (CompositePackageDescr pkg : compositePackages) {
+                    compositePackagesMap.put(pkg.getNamespace(), pkg);
+                }
+            } else {
+                compositePackagesMap.put(packageDescr.getNamespace(), new CompositePackageDescr(packageDescr.getResource(), packageDescr));
+            }
+            compositePackages = null;
+        }
+
+        CompositePackageDescr pkgDescr = compositePackagesMap.get(packageDescr.getNamespace());
+        if (pkgDescr == null) {
+            compositePackagesMap.put(packageDescr.getNamespace(), new CompositePackageDescr( packageDescr.getResource(), packageDescr) );
+        } else {
+            pkgDescr.addPackageDescr( packageDescr.getResource(), packageDescr );
+        }
+
+        PackageRegistry pkgRegistry = getOrCreatePackageRegistry(packageDescr);
+        InternalKnowledgePackage pkg = pkgRegistry.getPackage();
+        for (final ImportDescr importDescr : packageDescr.getImports()) {
+            pkgRegistry.addImport(importDescr);
+        }
+        for (GlobalDescr globalDescr : packageDescr.getGlobals()) {
+            try {
+                Class<?> globalType = pkg.getTypeResolver().resolveType( globalDescr.getType() );
+                addGlobal( globalDescr.getIdentifier(), globalType );
+                pkg.addGlobal( globalDescr.getIdentifier(), globalType );
+            } catch (ClassNotFoundException e) {
+                throw new RuntimeException( e );
+            }
+        }
+    }
+
+    @Override
+    public void postBuild() {
+        Collection<CompositePackageDescr> packages = findPackages();
         initPackageRegistries(packages);
         registerTypeDeclarations( packages );
         buildDeclaredTypes( packages );
@@ -75,6 +125,36 @@ public class ModelBuilderImpl<T extends PackageSources> extends KnowledgeBuilder
         deregisterTypeDeclarations( packages );
         buildRules(packages);
         DrlxParseUtil.clearAccessorCache();
+    }
+
+    private Collection<CompositePackageDescr> findPackages() {
+        Collection<CompositePackageDescr> packages;
+        if (compositePackages != null && !compositePackages.isEmpty()) {
+            packages = compositePackages;
+        } else if (compositePackagesMap != null) {
+            packages = compositePackagesMap.values();
+        } else {
+            packages = emptyList();
+        }
+        return packages;
+    }
+
+    @Override
+    protected void initPackageRegistries(Collection<CompositePackageDescr> packages) {
+        for ( CompositePackageDescr packageDescr : packages ) {
+            if ( StringUtils.isEmpty(packageDescr.getName()) ) {
+                packageDescr.setName( getBuilderConfiguration().getDefaultPackageName() );
+            }
+
+            PackageRegistry pkgRegistry = getPackageRegistry( packageDescr.getNamespace() );
+            if (pkgRegistry == null) {
+                getOrCreatePackageRegistry( packageDescr );
+            } else {
+                for (ImportDescr importDescr : packageDescr.getImports()) {
+                    pkgRegistry.registerImport(importDescr.getTarget());
+                }
+            }
+        }
     }
 
     private void registerTypeDeclarations( Collection<CompositePackageDescr> packages ) {

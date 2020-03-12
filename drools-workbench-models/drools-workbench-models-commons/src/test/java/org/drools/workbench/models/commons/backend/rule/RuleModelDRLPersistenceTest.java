@@ -100,8 +100,8 @@ public class RuleModelDRLPersistenceTest extends BaseRuleModelTest {
                          new RuleModel());
     }
 
-    private void checkMarshalling(String expected,
-                                  RuleModel m) {
+    private void checkMarshalling(final String expected,
+                                  final RuleModel m) {
         String drl = ruleModelPersistence.marshal(m);
         assertNotNull(drl);
         if (expected != null) {
@@ -1730,6 +1730,56 @@ public class RuleModelDRLPersistenceTest extends BaseRuleModelTest {
 
         checkMarshalling(expected,
                          m);
+    }
+
+    @Test
+    public void testInsertForFieldsNamesThatStartWithLowerCaseAndContinueWithCapitalLetter() {
+
+        final RuleModel model = new RuleModel();
+        model.name = "test setter where the field starts with a lower letter and continue with capital";
+
+        model.addAttribute(new RuleAttribute("dialect",
+                                             "java"));
+
+        final FactPattern pattern = new FactPattern("Person");
+        final SingleFieldConstraint constraint = new SingleFieldConstraint();
+        constraint.setFieldType(DataType.TYPE_BOOLEAN);
+        constraint.setFieldName("aFIELD");
+        constraint.setOperator("==");
+        constraint.setValue("false");
+        constraint.setConstraintValueType(SingleFieldConstraint.TYPE_LITERAL);
+        final SingleFieldConstraint constraintWithShortName = new SingleFieldConstraint();
+        constraintWithShortName.setFieldType(DataType.TYPE_BOOLEAN);
+        constraintWithShortName.setFieldName("eE");
+        constraintWithShortName.setOperator("==");
+        constraintWithShortName.setValue("true");
+        constraintWithShortName.setConstraintValueType(SingleFieldConstraint.TYPE_LITERAL);
+        pattern.addConstraint(constraint);
+        pattern.addConstraint(constraintWithShortName);
+
+        model.addLhsItem(pattern);
+
+        final ActionInsertFact actionInsertFact = new ActionInsertFact("Person");
+        actionInsertFact.addFieldValue(new ActionFieldValue("aFIELD",
+                                                            "true",
+                                                            DataType.TYPE_BOOLEAN));
+        actionInsertFact.addFieldValue(new ActionFieldValue("eE",
+                                                            "false",
+                                                            DataType.TYPE_BOOLEAN));
+        model.addRhsItem(actionInsertFact);
+
+        final String expected = "rule \"test setter where the field starts with a lower letter and continue with capital\" \n"
+                + "\tdialect \"java\"\n when \n"
+                + "     Person(aFIELD == false, eE == true) \n"
+                + " then \n"
+                + "Person fact0 = new Person(); \n"
+                + "fact0.setaFIELD( true ); \n"
+                + "fact0.seteE( false ); \n"
+                + "insert( fact0 ); \n"
+                + "end";
+
+        checkMarshalling(expected,
+                         model);
     }
 
     @Test
@@ -3553,8 +3603,7 @@ public class RuleModelDRLPersistenceTest extends BaseRuleModelTest {
                 "dialect \"mvel\"\n" +
                 "when\n" +
                 "$d : Data( )\n" +
-                "Person( ) from $d\n" +
-                "\n" +
+                "(Person( ) from $d)\n" +
                 "then\n" +
                 "end\n";
 
@@ -4474,7 +4523,7 @@ public class RuleModelDRLPersistenceTest extends BaseRuleModelTest {
     }
 
     @Test
-    public void testRHSChangeMultipleFieldsModifyBoth() {
+    public void testRHSChangeMultipleFieldsModifyAll() {
         String expected = "" +
                 "rule \"my rule\" \n" +
                 "  dialect \"mvel\"\n" +
@@ -4483,7 +4532,8 @@ public class RuleModelDRLPersistenceTest extends BaseRuleModelTest {
                 "  then\n" +
                 "    modify( $p ) {\n" +
                 "      setName( \"Fred\" ),\n" +
-                "      setAge( 55 )\n" +
+                "      setAge( 55 ),\n" +
+                "      setaField( \"Value\" )\n" +
                 "    }\n" +
                 "end\n";
         final RuleModel m = new RuleModel();
@@ -4505,8 +4555,13 @@ public class RuleModelDRLPersistenceTest extends BaseRuleModelTest {
         afv2.setType(DataType.TYPE_NUMERIC_INTEGER);
         afv2.setNature(FieldNatureType.TYPE_LITERAL);
         afv2.setValue("55");
+        ActionFieldValue afv3 = new ActionFieldValue();
+        afv3.setField("aField");
+        afv3.setType(DataType.TYPE_STRING);
+        afv3.setNature(FieldNatureType.TYPE_LITERAL);
+        afv3.setValue("Value");
 
-        auf.setFieldValues(new ActionFieldValue[]{afv1, afv2});
+        auf.setFieldValues(new ActionFieldValue[]{afv1, afv2, afv3});
         m.rhs = new IAction[]{auf};
 
         m.name = "my rule";
@@ -4706,5 +4761,347 @@ public class RuleModelDRLPersistenceTest extends BaseRuleModelTest {
                 System.setProperty("drools.dateformat", oldValue);
             }
         }
+    }
+
+    @Test
+    public void testFromCompositeFactPatternWithDSLWhenModelHasDSLSentences() {
+        final RuleModel model = new RuleModel() {
+            @Override
+            public boolean hasDSLSentences() {
+                return true;
+            }
+        };
+        model.name = "r1";
+
+        final String dslDefinition = "There is a Person aged 20";
+        final DSLSentence dsl = new DSLSentence();
+        dsl.setDefinition(dslDefinition);
+
+        model.addLhsItem(dsl);
+
+        final FromCompositeFactPattern from = new FromCompositeFactPattern();
+        from.setFactPattern(new FactPattern("Person"));
+        from.setExpression(new ExpressionFormLine(new ExpressionText("$p.siblings")));
+
+        model.addLhsItem(from);
+
+        final String expected = "rule \"r1\"\n" +
+                "dialect \"mvel\"\n" +
+                "when\n" +
+                dslDefinition + "\n" +
+                ">(Person( ) from $p.siblings)\n" +
+                "then\n" +
+                "end\n";
+
+        checkMarshalling(expected, model);
+    }
+
+    @Test
+    public void testFromCollectCompositeFactPatternWithDSLWhenModelHasDSLSentences() {
+        final RuleModel model = new RuleModel() {
+            @Override
+            public boolean hasDSLSentences() {
+                return true;
+            }
+        };
+        model.name = "r1";
+
+        final String dslDefinition = "There is a Person aged 20";
+        final DSLSentence dsl = new DSLSentence();
+        dsl.setDefinition(dslDefinition);
+
+        model.addLhsItem(dsl);
+
+        final FromCollectCompositeFactPattern collect = new FromCollectCompositeFactPattern();
+        collect.setFactPattern(new FactPattern("Person"));
+        final FreeFormLine ffl = new FreeFormLine();
+        ffl.setText("$p.siblings");
+        collect.setRightPattern(ffl);
+
+        model.addLhsItem(collect);
+
+        final String expected = "rule \"r1\"\n" +
+                "dialect \"mvel\"\n" +
+                "when\n" +
+                dslDefinition + "\n" +
+                ">Person( ) from collect ( $p.siblings\n" +
+                ">) \n" +
+                "then\n" +
+                "end\n";
+
+        checkMarshalling(expected, model);
+    }
+
+    @Test
+    public void testFromAccumulateWithDSLWhenModelHasDSLSentences() {
+        final RuleModel model = new RuleModel() {
+            @Override
+            public boolean hasDSLSentences() {
+                return true;
+            }
+        };
+        model.name = "r1";
+
+        final String dslDefinition = "There is a Person aged 20";
+        final DSLSentence dsl = new DSLSentence();
+        dsl.setDefinition(dslDefinition);
+
+        model.addLhsItem(dsl);
+
+        final FromAccumulateCompositeFactPattern accumulate = new FromAccumulateCompositeFactPattern();
+        final FactPattern accumulatePerson = new FactPattern("Person");
+        accumulatePerson.setBoundName("$p");
+        accumulate.setSourcePattern(accumulatePerson);
+        accumulate.setFactPattern(new FactPattern("java.util.Number"));
+        accumulate.setFunction("count($p)");
+
+        model.addLhsItem(accumulate);
+
+        final String expected = "rule \"r1\"\n" +
+                "dialect \"mvel\"\n" +
+                "when\n" +
+                dslDefinition + "\n" +
+                ">java.util.Number( ) from accumulate ( $p : Person( ),\n" +
+                ">count($p)) \n" +
+                "then\n" +
+                "end\n";
+
+        checkMarshalling(expected, model);
+    }
+
+    @Test
+    public void testFromEntryPointFactPatternWithDSLWhenModelHasDSLSentences() {
+        final RuleModel model = new RuleModel() {
+            @Override
+            public boolean hasDSLSentences() {
+                return true;
+            }
+        };
+        model.name = "r1";
+
+        final String dslDefinition = "There is a Person aged 20";
+        final DSLSentence dsl = new DSLSentence();
+        dsl.setDefinition(dslDefinition);
+
+        model.addLhsItem(dsl);
+
+        final FromEntryPointFactPattern from = new FromEntryPointFactPattern();
+        from.setFactPattern(new FactPattern("Person"));
+        from.setEntryPointName("entry-point");
+
+        model.addLhsItem(from);
+
+        final String expected = "rule \"r1\"\n" +
+                "dialect \"mvel\"\n" +
+                "when\n" +
+                dslDefinition + "\n" +
+                ">Person( ) from entry-point \"entry-point\"\n" +
+                "then\n" +
+                "end\n";
+
+        checkMarshalling(expected, model);
+    }
+
+    @Test
+    public void testFromCompositeFactPatternWithDSLAlthoughModelHasNoDSLSentences() {
+        final RuleModel model = new RuleModel() {
+            @Override
+            public boolean hasDSLSentences() {
+                return true;
+            }
+        };
+        model.name = "r1";
+
+        final SingleFieldConstraint personAge = new SingleFieldConstraint("age");
+        personAge.setFactType(DataType.TYPE_NUMERIC_INTEGER);
+        personAge.setOperator("==");
+        personAge.setValue("20");
+
+        final FactPattern person = new FactPattern("Person");
+        person.addConstraint(personAge);
+
+        model.addLhsItem(person);
+
+        final FromCompositeFactPattern from = new FromCompositeFactPattern();
+        from.setFactPattern(new FactPattern("Person"));
+        from.setExpression(new ExpressionFormLine(new ExpressionText("$p.siblings")));
+
+        model.addLhsItem(from);
+
+        final String expected = "rule \"r1\"\n" +
+                "dialect \"mvel\"\n" +
+                "when\n" +
+                ">Person( age == 20 )\n" +
+                ">(Person( ) from $p.siblings)\n" +
+                "then\n" +
+                "end\n";
+
+        checkMarshalling(expected, model);
+    }
+
+    @Test
+    public void testFromCollectCompositeFactPatternWithDSLAlthoughModelHasNoDSLSentences() {
+        final RuleModel model = new RuleModel() {
+            @Override
+            public boolean hasDSLSentences() {
+                return true;
+            }
+        };
+        model.name = "r1";
+
+        final SingleFieldConstraint personAge = new SingleFieldConstraint("age");
+        personAge.setFactType(DataType.TYPE_NUMERIC_INTEGER);
+        personAge.setOperator("==");
+        personAge.setValue("20");
+
+        final FactPattern person = new FactPattern("Person");
+        person.setBoundName("$p");
+        person.addConstraint(personAge);
+
+        model.addLhsItem(person);
+
+        final FromCollectCompositeFactPattern collect = new FromCollectCompositeFactPattern();
+        collect.setFactPattern(new FactPattern("Person"));
+        final FreeFormLine ffl = new FreeFormLine();
+        ffl.setText("$p.siblings");
+        collect.setRightPattern(ffl);
+
+        model.addLhsItem(collect);
+
+        final String expected = "rule \"r1\"\n" +
+                "dialect \"mvel\"\n" +
+                "when\n" +
+                ">$p : Person( age == 20 )\n" +
+                ">Person( ) from collect ( $p.siblings\n" +
+                ">) \n" +
+                "then\n" +
+                "end\n";
+
+        checkMarshalling(expected, model);
+    }
+
+    @Test
+    public void testFromAccumulateWithDSLAlthoughModelHasNoDSLSentences() {
+        final RuleModel model = new RuleModel() {
+            @Override
+            public boolean hasDSLSentences() {
+                return true;
+            }
+        };
+        model.name = "r1";
+
+        final SingleFieldConstraint personAge = new SingleFieldConstraint("age");
+        personAge.setFactType(DataType.TYPE_NUMERIC_INTEGER);
+        personAge.setOperator("==");
+        personAge.setValue("20");
+
+        final FactPattern person = new FactPattern("Person");
+        person.addConstraint(personAge);
+
+        model.addLhsItem(person);
+
+        final FromAccumulateCompositeFactPattern accumulate = new FromAccumulateCompositeFactPattern();
+        final FactPattern accumulatePerson = new FactPattern("Person");
+        accumulatePerson.setBoundName("$p");
+        accumulate.setSourcePattern(accumulatePerson);
+        accumulate.setFactPattern(new FactPattern("java.util.Number"));
+        accumulate.setFunction("count($p)");
+
+        model.addLhsItem(accumulate);
+
+        final String expected = "rule \"r1\"\n" +
+                "dialect \"mvel\"\n" +
+                "when\n" +
+                ">Person( age == 20 )\n" +
+                ">java.util.Number( ) from accumulate ( $p : Person( ),\n" +
+                ">count($p)) \n" +
+                "then\n" +
+                "end\n";
+
+        checkMarshalling(expected, model);
+    }
+
+    @Test
+    public void testFromEntryPointFactPatternWithDSLAlthoughModelHasNoDSLSentences() {
+        final RuleModel model = new RuleModel() {
+            @Override
+            public boolean hasDSLSentences() {
+                return true;
+            }
+        };
+        model.name = "r1";
+
+        final SingleFieldConstraint personAge = new SingleFieldConstraint("age");
+        personAge.setFactType(DataType.TYPE_NUMERIC_INTEGER);
+        personAge.setOperator("==");
+        personAge.setValue("20");
+
+        final FactPattern person = new FactPattern("Person");
+        person.addConstraint(personAge);
+
+        model.addLhsItem(person);
+
+        final FromEntryPointFactPattern from = new FromEntryPointFactPattern();
+        from.setFactPattern(new FactPattern("Person"));
+        from.setEntryPointName("entry-point");
+
+        model.addLhsItem(from);
+
+        final String expected = "rule \"r1\"\n" +
+                "dialect \"mvel\"\n" +
+                "when\n" +
+                ">Person( age == 20 )\n" +
+                ">Person( ) from entry-point \"entry-point\"\n" +
+                "then\n" +
+                "end\n";
+
+        checkMarshalling(expected, model);
+    }
+
+    @Test
+    public void testMatchesLegacyToNewVersion() {
+
+        final String factMvel = "Fact";
+        final String symbol = "symbol";
+
+        final String drl = "rule \"r0\"\n" +
+                "dialect \"mvel\"\n" +
+                "when\n" +
+                factMvel + "(" + symbol + " != null && matches \"P.*\")\n" +
+                "then\n" +
+                "end\n";
+
+        final PackageDataModelOracle dmo = mock(PackageDataModelOracle.class);
+        final RuleModel m = ruleModelPersistence.unmarshal(drl,
+                                                           Collections.EMPTY_LIST,
+                                                           dmo);
+
+        assertEquals(1, m.lhs.length);
+        assertTrue(m.lhs[0].getClass().isAssignableFrom(FactPattern.class));
+
+        final FactPattern fact = (FactPattern) m.lhs[0];
+
+        assertEquals(1, fact.getNumberOfConstraints());
+        assertTrue(fact.getConstraint(0).getClass().isAssignableFrom(CompositeFieldConstraint.class));
+
+        final CompositeFieldConstraint composite = (CompositeFieldConstraint) fact.getConstraint(0);
+
+        assertEquals(CompositeFieldConstraint.COMPOSITE_TYPE_AND, composite.getCompositeJunctionType());
+
+        assertTrue(composite.getConstraint(0).getClass().isAssignableFrom(SingleFieldConstraint.class));
+
+        final SingleFieldConstraint left = (SingleFieldConstraint) composite.getConstraint(0);
+        final SingleFieldConstraint right = (SingleFieldConstraint) composite.getConstraint(1);
+
+
+        assertEquals(factMvel, left.getFactType());
+        assertEquals(symbol, left.getFieldName());
+        assertEquals("!= null", left.getOperator());
+        assertEquals(null, left.getValue());
+
+        assertEquals(factMvel, right.getFactType());
+        assertEquals(symbol, right.getFieldName());
+        assertEquals("matches", right.getOperator());
+        assertEquals("P.*", right.getValue());
     }
 }

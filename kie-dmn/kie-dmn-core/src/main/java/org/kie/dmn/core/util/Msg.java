@@ -21,6 +21,7 @@ import org.kie.dmn.api.core.DMNMessageType;
 public final class Msg {
     // consolidated
     public static final Message1 PARAM_CANNOT_BE_NULL                                = new Message1( DMNMessageType.KIE_API, "Kie DMN API parameter '%s' cannot be null." );
+    public static final Message1 PARAM_CANNOT_BE_EMPTY                               = new Message1( DMNMessageType.KIE_API, "Kie DMN API parameter '%s' cannot be empty." );
     public static final Message2 UNSUPPORTED_ELEMENT                                 = new Message2( DMNMessageType.UNSUPPORTED_ELEMENT, "Element %s with type='%s' is not supported." );
     public static final Message1 IMPORT_TYPE_UNKNOWN                                 = new Message1( DMNMessageType.INVALID_SYNTAX, "Import type unknown: '%s'." );
     public static final Message2 IMPORT_NOT_FOUND_FOR_NODE                           = new Message2( DMNMessageType.IMPORT_NOT_FOUND, "Required import not found: %s for node '%s' " );
@@ -91,8 +92,8 @@ public final class Msg {
     public static final Message3 ERROR_EVAL_NODE_RESULT_WRONG_TYPE                   = new Message3( DMNMessageType.ERROR_EVAL_NODE, "Error while evaluating node '%s': the declared result type is '%s' but the actual value '%s' is not an instance of that type" );
     public static final Message2 EXPR_TYPE_NOT_SUPPORTED_IN_NODE                     = new Message2( DMNMessageType.EXPR_TYPE_NOT_SUPPORTED_IN_NODE, "Expression type '%s' not supported in node '%s'" );
     public static final Message4 ERR_COMPILING_FEEL_EXPR_ON_DT_INPUT_CLAUSE_IDX      = new Message4( DMNMessageType.ERR_COMPILING_FEEL, "Error compiling FEEL expression '%s' on decision table '%s', input clause #%s: %s" );
-    public static final Message3 ERR_COMPILING_FEEL_EXPR_ON_DT_OUTPUT_CLAUSE_IDX     = new Message3( DMNMessageType.ERR_COMPILING_FEEL, "Error compiling FEEL expression '%s' on decision table '%s', output clause #%s" );
-    public static final Message3 ERR_COMPILING_FEEL_EXPR_ON_DT_RULE_IDX              = new Message3( DMNMessageType.ERR_COMPILING_FEEL, "Error compiling FEEL expression '%s' on decision table '%s', rule #%s" );
+    public static final Message4 ERR_COMPILING_FEEL_EXPR_ON_DT_OUTPUT_CLAUSE_IDX     = new Message4( DMNMessageType.ERR_COMPILING_FEEL, "Error compiling FEEL expression '%s' on decision table '%s', output clause #%s: %s" );
+    public static final Message4 ERR_COMPILING_FEEL_EXPR_ON_DT_RULE_IDX              = new Message4( DMNMessageType.ERR_COMPILING_FEEL, "Error compiling FEEL expression '%s' on decision table '%s', rule #%s: %s" );
     public static final Message2 ERR_COMPILING_FEEL_EXPR_ON_DT_PARAM                 = new Message2( DMNMessageType.ERR_COMPILING_FEEL, "Error compiling FEEL expression '%s' parameter of invocation of decision table '%s'");
     public static final Message2 ERR_COMPILING_FEEL_EXPR_ON_DT                       = new Message2( DMNMessageType.ERR_COMPILING_FEEL, "Error compiling FEEL expression '%s' on decision table '%s'" );
     public static final Message2 ERR_COMPILING_ALLOWED_VALUES_LIST_ON_ITEM_DEF       = new Message2( DMNMessageType.ERR_COMPILING_FEEL, "Error compiling allowed values list '%s' on item definition '%s'" );
@@ -103,6 +104,7 @@ public final class Msg {
     public static final Message1 DECISION_SERVICE_NOT_FOUND_FOR_NAME                 = new Message1( DMNMessageType.DECISION_NOT_FOUND, "Decision Service not found for name '%s'");
     public static final Message1 FEEL_ERROR                                          = new Message1( DMNMessageType.FEEL_EVALUATION_ERROR, "%s" );
     public static final Message1 FEEL_WARN                                           = new Message1( DMNMessageType.FEEL_EVALUATION_ERROR, "%s" );
+    public static final Message3 FEEL_EVENT_EVAL_LITERAL_EXPRESSION                  = new Message3( DMNMessageType.FEEL_EVALUATION_ERROR, "FEEL %s while evaluating literal expression '%s': %s");
     public static final Message3 ERR_EVAL_PARAM_FOR_INVOCATION_ON_NODE               = new Message3( DMNMessageType.FEEL_EVALUATION_ERROR, "Error evaluating parameter '%s' for invocation '%s' on node '%s'" );
     public static final Message2 ERR_EVAL_LIST_ELEMENT_ON_POSITION_ON_LIST           = new Message2( DMNMessageType.FEEL_EVALUATION_ERROR, "Error evaluating list element on position '%s' on list '%s'" );
     public static final Message3 ERR_EVAL_ROW_ELEMENT_ON_POSITION_ON_ROW_OF_RELATION = new Message3( DMNMessageType.FEEL_EVALUATION_ERROR, "Error evaluating row element on position '%s' on row '%s' of relation '%s'" );
@@ -123,15 +125,16 @@ public final class Msg {
     public static final Message1 FUNC_DEF_PMML_ERR_LOCATIONURI                       = new Message1( DMNMessageType.IMPORT_NOT_FOUND, "Unable to locate pmml model from locationURI '%s'");
     public static final Message2 ERROR_CHECKING_ALLOWED_VALUES                       = new Message2( DMNMessageType.FEEL_EVALUATION_ERROR, "Error checking allowed values for node '%s': %s" );
     public static final Message1 DTANALYSISRESULT                                    = new Message1( DMNMessageType.DECISION_TABLE_ANALYSIS, "Decision Table Analysis results: %s");
-    public static final Message1 DTANALYSIS_EMPTY                                    = new Message1( DMNMessageType.DECISION_TABLE_ANALYSIS, "Decision Table Analysis of table '%s' finished with no messages to be reported.");
+    public static final Message1 DTANALYSIS_EMPTY                                    = new Message1( DMNMessageType.DECISION_TABLE_ANALYSIS_EMPTY, "Decision Table Analysis of table '%s' finished with no messages to be reported.");
     public static final Message2 DTANALYSIS_ERROR_ANALYSIS_SKIPPED                   = new Message2( DMNMessageType.DECISION_TABLE_ANALYSIS_ERROR, "Skipped Decision Table Analysis of table '%s' because: %s");
     public static final Message3 DTANALYSIS_HITPOLICY_PRIORITY_ANALYSIS_SKIPPED      = new Message3( DMNMessageType.DECISION_TABLE_ANALYSIS_ERROR, "Skipped Decision Table Analysis of table '%s' hit policy Priority mask rules for rules: %s %s as they define multiple inputentries");
     public static final Message4 DTANALYSIS_ERROR_RULE_OUTSIDE_DOMAIN                = new Message4( DMNMessageType.DECISION_TABLE_ANALYSIS_ERROR, "Rule %s defines %s which is outside the domain min/max %s of column %s");
     public static final Message1 DTANALYSIS_GAP                                      = new Message1( DMNMessageType.DECISION_TABLE_GAP, "Gap detected: %s");
-    public static final Message1 DTANALYSIS_OVERLAP                                  = new Message1( DMNMessageType.DECISION_TABLE_OVERLAP, "Overlap detected: %s");
-    public static final Message1 DTANALYSIS_OVERLAP_HITPOLICY_UNIQUE                 = new Message1( DMNMessageType.DECISION_TABLE_OVERLAP_HITPOLICY_UNIQUE, "Overlap detected: %s. Unique hit policy decision tables can only have one matching rule.");
-    public static final Message1 DTANALYSIS_OVERLAP_HITPOLICY_ANY                    = new Message1( DMNMessageType.DECISION_TABLE_OVERLAP_HITPOLICY_ANY   , "Overlap detected: %s. Any hit policy decision tables allows multiple rules to match, but they [must] all have the same output");
-    public static final Message1 DTANALYSIS_HITPOLICY_FIRST                          = new Message1( DMNMessageType.DECISION_TABLE_HITPOLICY_FIRST, "Decision Table '%s' uses First hit policy. First hit policy decision tables are not considered good practice because they do not offer a clear overview of the decision logic (quoted from: Decision Model and Notation specification)");
+    public static final Message1 DTANALYSIS_GAP_SKIPPED_BECAUSE_FREE_STRING          = new Message1( DMNMessageType.DECISION_TABLE_GAP, "Columns: %s relate to FEEL string values which can be enumerated for the inputs; Gap analysis skipped.");
+    public static final Message1 DTANALYSIS_OVERLAP                                  = new Message1( DMNMessageType.DECISION_TABLE_OVERLAP, "Overlap observed: %s");
+    public static final Message1 DTANALYSIS_OVERLAP_HITPOLICY_UNIQUE                 = new Message1( DMNMessageType.DECISION_TABLE_OVERLAP_HITPOLICY_UNIQUE, "Overlap detected: %s. UNIQUE hit policy decision tables can only have one matching rule.");
+    public static final Message1 DTANALYSIS_OVERLAP_HITPOLICY_ANY                    = new Message1( DMNMessageType.DECISION_TABLE_OVERLAP_HITPOLICY_ANY   , "Overlap detected: %s. ANY hit policy decision tables allows multiple rules to match, but they [must] all have the same output");
+    public static final Message1 DTANALYSIS_HITPOLICY_FIRST                          = new Message1( DMNMessageType.DECISION_TABLE_HITPOLICY_FIRST, "Decision Table '%s' uses FIRST hit policy. FIRST hit policy decision tables are not considered good practice because they do not offer a clear overview of the decision logic (quoted from: Decision Model and Notation specification)");
     public static final Message2 DTANALYSIS_HITPOLICY_PRIORITY_MASKED_RULE           = new Message2( DMNMessageType.DECISION_TABLE_MASKED_RULE, "Rule %s is masked by rule: %s");
     public static final Message2 DTANALYSIS_HITPOLICY_PRIORITY_MISLEADING_RULE       = new Message2( DMNMessageType.DECISION_TABLE_MISLEADING_RULE, "Rule %s is a misleading rule. It could be misleading over other rules, such as rule: %s");
     public static final Message4 DTANALYSIS_SUBSUMPTION_RULE                         = new Message4( DMNMessageType.DECISION_TABLE_SUBSUMPTION_RULE, "Subsumption: Rule %s contains rule: %s; rules can be contracted, by keeping rule %s and erasing rule %s");
@@ -140,7 +143,11 @@ public final class Msg {
     public static final Message0 DTANALYSIS_1STNFVIOLATION_RULE_ORDER                = new Message0( DMNMessageType.DECISION_TABLE_1STNFVIOLATION, "First Normal Form Violation: hit policy Rule Order is a violation of First Normal Form; consider changing for example to Output Order or Collect");
     public static final Message1 DTANALYSIS_1STNFVIOLATION_DUPLICATE_RULES           = new Message1( DMNMessageType.DECISION_TABLE_1STNFVIOLATION, "First Normal Form Violation: Rules %s are duplicates");
     public static final Message2 DTANALYSIS_2NDNFVIOLATION                           = new Message2( DMNMessageType.DECISION_TABLE_2NDNFVIOLATION, "Second Normal Form Violation: Input %s is irrelevant for rules %s. Consider combining these rules over the irrelevant input");
+    public static final Message1 DTANALYSIS_HITPOLICY_RECOMMENDER_UNIQUE             = new Message1( DMNMessageType.DECISION_TABLE_HITPOLICY_RECOMMENDER, "The HitPolicy for decision table '%s' should be UNIQUE");
+    public static final Message1 DTANALYSIS_HITPOLICY_RECOMMENDER_ANY                = new Message1( DMNMessageType.DECISION_TABLE_HITPOLICY_RECOMMENDER, "Overlapping rules have the same output value, so the HitPolicy for decision table '%s' should be ANY");
+    public static final Message1 DTANALYSIS_HITPOLICY_RECOMMENDER_PRIORITY           = new Message1( DMNMessageType.DECISION_TABLE_HITPOLICY_RECOMMENDER, "Overlapping rules have different output value, so the HitPolicy for decision table '%s' should be PRIORITY");
 
+    
     public static interface Message {
         String getMask();
 

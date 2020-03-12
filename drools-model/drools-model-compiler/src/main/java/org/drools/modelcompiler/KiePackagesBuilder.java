@@ -21,10 +21,12 @@ import java.util.Arrays;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Optional;
+import java.util.Set;
 import java.util.function.Consumer;
 import java.util.stream.Stream;
 
@@ -76,6 +78,7 @@ import org.drools.model.Binding;
 import org.drools.model.Condition;
 import org.drools.model.Consequence;
 import org.drools.model.Constraint;
+import org.drools.model.DomainClassMetadata;
 import org.drools.model.DynamicValueSupplier;
 import org.drools.model.EntryPoint;
 import org.drools.model.From;
@@ -142,9 +145,11 @@ import static org.drools.core.rule.GroupElement.AND;
 import static org.drools.core.rule.Pattern.getReadAcessor;
 import static org.drools.model.FlowDSL.declarationOf;
 import static org.drools.model.FlowDSL.entryPoint;
+import static org.drools.model.bitmask.BitMaskUtil.calculatePatternMask;
 import static org.drools.model.functions.FunctionUtils.toFunctionN;
 import static org.drools.model.impl.NamesGenerator.generateName;
 import static org.drools.modelcompiler.facttemplate.FactFactory.prototypeToFactTemplate;
+import static org.drools.modelcompiler.util.EvaluationUtil.adaptBitMask;
 import static org.drools.modelcompiler.util.MvelUtil.createMvelObjectExpression;
 import static org.drools.modelcompiler.util.TypeDeclarationUtil.createTypeDeclaration;
 import static org.kie.internal.ruleunit.RuleUnitUtil.isLegacyRuleUnit;
@@ -438,8 +443,8 @@ public class KiePackagesBuilder {
                     pattern = new Pattern( 0, JAVA_CLASS_OBJECT_TYPE );
                 }
 
-                PatternImpl sourcePattern = (PatternImpl) accumulatePattern.getPattern();
-                List<String> usedVariableName = new ArrayList<>();
+                PatternImpl<?> sourcePattern = (PatternImpl<?>) accumulatePattern.getPattern();
+                Set<String> usedVariableName = new LinkedHashSet<>();
                 Binding binding = null;
 
                 if (sourcePattern != null) {
@@ -448,8 +453,10 @@ public class KiePackagesBuilder {
                     }
 
                     if ( !sourcePattern.getBindings().isEmpty() ) {
-                        binding = ( Binding ) sourcePattern.getBindings().iterator().next();
-                        usedVariableName.add( binding.getBoundVariable().getName() );
+                        binding = sourcePattern.getBindings().iterator().next();
+                        for (Variable var: binding.getInputVariables()) {
+                            usedVariableName.add(var.getName());
+                        }
                     }
                 }
 
@@ -465,7 +472,7 @@ public class KiePackagesBuilder {
                     source = buildPattern(ctx, group, condition );
                 }
 
-                pattern.setSource(buildAccumulate(ctx, accumulatePattern, source, pattern, usedVariableName, binding) );
+                pattern.setSource(buildAccumulate(ctx, accumulatePattern, source, pattern, new ArrayList<>(usedVariableName), binding) );
 
                 for(Variable v : accumulatePattern.getBoundVariables()) {
                     if(source instanceof Pattern) {
@@ -644,7 +651,21 @@ public class KiePackagesBuilder {
 
         addConstraintsToPattern( ctx, pattern, modelPattern.getConstraint() );
         addFieldsToPatternWatchlist( pattern, modelPattern.getWatchedProps() );
+        addReactiveMasksToPattern( pattern, modelPattern );
+
         return pattern;
+    }
+
+    private void addReactiveMasksToPattern( Pattern pattern, org.drools.model.Pattern<?> modelPattern ) {
+        if (pattern.getListenedProperties() != null) {
+            DomainClassMetadata patternMetadata = modelPattern.getPatternClassMetadata();
+            if (patternMetadata != null) {
+                String[] listenedProperties = pattern.getListenedProperties().toArray( new String[pattern.getListenedProperties().size()] );
+                pattern.setPositiveWatchMask( adaptBitMask( calculatePatternMask( patternMetadata, true, listenedProperties ) ) );
+                pattern.setNegativeWatchMask( adaptBitMask( calculatePatternMask( patternMetadata, false, listenedProperties ) ) );
+
+            }
+        }
     }
 
     private void buildExistentialPatternImpl( RuleContext ctx, GroupElement group, GroupElement allSubConditions, Condition condition ) {
@@ -770,7 +791,7 @@ public class KiePackagesBuilder {
 
     private Accumulator createLambdaAccumulator(List<String> usedVariableName, BindingEvaluator binding, org.kie.api.runtime.rule.AccumulateFunction function) {
         if (binding == null) {
-            return new LambdaAccumulator.NotBindingAcc(function, usedVariableName);
+            return new LambdaAccumulator.NotBindingAcc(function);
         } else {
             return new LambdaAccumulator.BindingAcc(function, usedVariableName, binding);
         }

@@ -1,3 +1,20 @@
+/*
+ * Copyright 2019 Red Hat, Inc. and/or its affiliates.
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *      http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ *
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
 package org.drools.modelcompiler.builder.generator;
 
 import java.util.ArrayList;
@@ -18,6 +35,7 @@ import com.github.javaparser.ast.Modifier;
 import com.github.javaparser.ast.NodeList;
 import com.github.javaparser.ast.body.Parameter;
 import com.github.javaparser.ast.body.VariableDeclarator;
+import com.github.javaparser.ast.expr.ArrayAccessExpr;
 import com.github.javaparser.ast.expr.AssignExpr;
 import com.github.javaparser.ast.expr.CastExpr;
 import com.github.javaparser.ast.expr.Expression;
@@ -60,6 +78,7 @@ import static org.drools.modelcompiler.builder.generator.DrlxParseUtil.parseBloc
 import static org.drools.modelcompiler.builder.generator.DrlxParseUtil.toClassOrInterfaceType;
 import static org.drools.modelcompiler.builder.generator.DslMethodNames.BREAKING_CALL;
 import static org.drools.modelcompiler.builder.generator.DslMethodNames.EXECUTE_CALL;
+import static org.drools.modelcompiler.builder.generator.DslMethodNames.GET_CHANNEL_CALL;
 import static org.drools.modelcompiler.builder.generator.DslMethodNames.ON_CALL;
 import static org.drools.modelcompiler.util.ClassUtil.asJavaSourceName;
 import static org.drools.mvel.parser.printer.PrintUtil.printConstraint;
@@ -109,6 +128,7 @@ public class Consequence {
                         .stream()
                         .filter( s -> isNameExprWithName( s, "kcontext" ) )
                         .forEach( n -> n.replace( new CastExpr( toClassOrInterfaceType( org.kie.api.runtime.rule.RuleContext.class ), new NameExpr( "drools" ) ) ) );
+                rewriteChannels(ruleConsequence);
             } else {
                 return null;
             }
@@ -119,7 +139,7 @@ public class Consequence {
         Set<String> usedUnusableDeclarations = new HashSet<>(context.getUnusableOrBinding());
         usedUnusableDeclarations.retainAll(usedDeclarationInRHS);
 
-        for(String s : usedUnusableDeclarations) {
+        for (String s : usedUnusableDeclarations) {
             context.addCompilationError( new InvalidExpressionErrorResult(String.format("%s cannot be resolved to a variable", s)) );
         }
 
@@ -127,14 +147,34 @@ public class Consequence {
         if (isBreaking) {
             onCall = new MethodCallExpr(onCall, BREAKING_CALL);
         }
-        MethodCallExpr executeCall = null;
-        if (context.getRuleDialect() == RuleContext.RuleDialect.JAVA) {
-            executeCall = executeCall(ruleVariablesBlock, ruleConsequence, usedDeclarationInRHS, onCall, Collections.emptySet());
-        } else if (context.getRuleDialect() == RuleContext.RuleDialect.MVEL) {
-            executeCall = createExecuteCallMvel(ruleDescr, ruleVariablesBlock, usedDeclarationInRHS, onCall);
+
+        switch (context.getRuleDialect()) {
+            case JAVA:
+                rewriteReassignedDeclrations( ruleConsequence, usedDeclarationInRHS );
+                return executeCall(ruleVariablesBlock, ruleConsequence, usedDeclarationInRHS, onCall, Collections.emptySet());
+            case MVEL:
+                return createExecuteCallMvel(ruleDescr, ruleVariablesBlock, usedDeclarationInRHS, onCall);
         }
 
-        return executeCall;
+        throw new IllegalArgumentException("Unknown rule dialect " + context.getRuleDialect() + "!");
+    }
+
+    private void rewriteReassignedDeclrations( BlockStmt ruleConsequence, Set<String> usedDeclarationInRHS ) {
+        for (AssignExpr assignExpr : ruleConsequence.findAll(AssignExpr.class)) {
+            String assignedVariable = assignExpr.getTarget().toString();
+            if ( usedDeclarationInRHS.contains( assignedVariable ) ) {
+                ruleConsequence.findAll( MethodCallExpr.class).stream()
+                        .filter( m -> m.getNameAsString().equals( "update" ) )
+                        .filter( m -> m.getScope().map( s -> s.toString().equals( "drools" ) ).orElse( true ) )
+                        .filter( m -> m.getArguments().size() == 1 )
+                        .filter( m -> m.getArgument(0).toString().equals( assignedVariable ) )
+                        .findFirst()
+                        .ifPresent( m -> {
+                            m.setName( "insert" );
+                            ruleConsequence.addStatement(0, new MethodCallExpr( "delete", new NameExpr( assignedVariable ) ));
+                        } );
+            }
+        }
     }
 
     private MethodCallExpr createExecuteCallMvel(RuleDescr ruleDescr, BlockStmt ruleVariablesBlock, Set<String> usedDeclarationInRHS, MethodCallExpr onCall) {
@@ -162,12 +202,34 @@ public class Consequence {
     }
     private BlockStmt rewriteConsequence(String consequence) {
         String ruleConsequenceAsBlock = rewriteModifyBlock(consequence.trim());
+
+        String ruleConsequenceRewrittenForPrimitives =
+                new PrimitiveTypeConsequenceRewrite(context)
+                        .rewrite(addCurlyBracesToBlock(ruleConsequenceAsBlock));
+
         try {
-            return parseBlock( ruleConsequenceAsBlock );
+            return parseBlock( ruleConsequenceRewrittenForPrimitives );
         } catch (ParseProblemException e) {
             context.addCompilationError( new InvalidExpressionErrorResult( "Unable to parse consequence caused by: " + e.getMessage() ) );
         }
         return null;
+    }
+
+    private void rewriteChannels(BlockStmt consequence) {
+        consequence.findAll(MethodCallExpr.class)
+                   .stream()
+                   .map(MethodCallExpr::getScope)
+                   .filter(Optional::isPresent)
+                   .map(Optional::get)
+                   .filter(sc -> sc instanceof ArrayAccessExpr)
+                   .map(aae -> (ArrayAccessExpr)aae)
+                   .filter(aae -> aae.getName().asNameExpr().getNameAsString().equals("channels"))
+                   .forEach(aae -> {
+                       String channelName = aae.getIndex().asStringLiteralExpr().asString();
+                       MethodCallExpr mce = new MethodCallExpr(new NameExpr("drools"), GET_CHANNEL_CALL);
+                       mce.addArgument("\"" + channelName + "\"");
+                       aae.replace(mce);
+                   });
     }
 
     private Set<String> extractUsedDeclarations(BlockStmt ruleConsequence, String consequenceString) {
@@ -183,9 +245,9 @@ public class Consequence {
         } else if (context.getRuleDialect() == RuleContext.RuleDialect.JAVA) {
             Set<String> declUsedInRHS = ruleConsequence.findAll(NameExpr.class).stream().map(NameExpr::getNameAsString).collect(toSet());
             return existingDecls.stream().filter(declUsedInRHS::contains).collect(toSet());
-        } else {
-            throw new IllegalArgumentException("Unknown rule dialect " + context.getRuleDialect() + "!");
         }
+
+        throw new IllegalArgumentException("Unknown rule dialect " + context.getRuleDialect() + "!");
     }
 
     public static boolean containsWord(String word, String body) {
@@ -210,7 +272,7 @@ public class Consequence {
 
 
         boolean requireDrools = rewriteRHS(ruleVariablesBlock, ruleConsequence);
-        MethodCallExpr executeCall = new MethodCallExpr(onCall, onCall == null ? "D." + EXECUTE_CALL : EXECUTE_CALL);
+        MethodCallExpr executeCall = new MethodCallExpr(onCall != null ? onCall : new NameExpr("D"), EXECUTE_CALL);
         LambdaExpr executeLambda = new LambdaExpr();
         executeCall.addArgument(executeLambda);
         executeLambda.setEnclosingParameters(true);
@@ -289,7 +351,7 @@ public class Consequence {
 
                     if ( !initializedBitmaskFields.contains( updatedVar ) ) {
                         Set<String> modifiedProps = findModifiedProperties( methodCallExprs, updateExpr, updatedVar );
-                        MethodCallExpr bitMaskCreation = createBitMaskInitialization( newDeclarations, updatedClass, modifiedProps );
+                        MethodCallExpr bitMaskCreation = createBitMaskInitialization( updatedClass, modifiedProps );
                         ruleBlock.addStatement( createBitMaskField( updatedVar, bitMaskCreation ) );
                     }
 
@@ -307,7 +369,7 @@ public class Consequence {
         return context.getDeclarationById(declarationVar).map( DeclarationSpec::getDeclarationClass).orElseThrow(RuntimeException::new);
     }
 
-    private MethodCallExpr createBitMaskInitialization(Map<String, String> newDeclarations, Class<?> updatedClass, Set<String> modifiedProps) {
+    private MethodCallExpr createBitMaskInitialization(Class<?> updatedClass, Set<String> modifiedProps) {
         MethodCallExpr bitMaskCreation;
         if (modifiedProps != null && !modifiedProps.isEmpty()) {
             String domainClassSourceName = asJavaSourceName( updatedClass );

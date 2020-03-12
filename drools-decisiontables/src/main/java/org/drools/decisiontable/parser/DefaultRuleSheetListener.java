@@ -74,6 +74,7 @@ implements RuleSheetListener {
     public static final String            QUERIES_TAG            = "Queries";
     public static final String            FUNCTIONS_TAG          = "Functions";
     public static final String            DECLARES_TAG           = "Declare";
+    public static final String            UNIT_TAG               = "Unit";
     public static final String            IMPORT_TAG             = "Import";
     public static final String            SEQUENTIAL_FLAG        = "Sequential";
     public static final String            ESCAPE_QUOTES_FLAG     = "EscapeQuotes";
@@ -168,6 +169,11 @@ implements RuleSheetListener {
         final Package ruleset = new Package( (showPackage) ? rulesetName : null );
         for ( Rule rule : this._ruleList ) {
             ruleset.addRule( rule );
+        }
+
+        List<String> units = getProperties().getProperty( UNIT_TAG );
+        if (units != null && !units.isEmpty()) {
+            ruleset.setRuleUnit( units.get( 0 ) );
         }
 
         final List<Import> importList = RuleSheetParserUtil.getImportList( getProperties().getProperty( IMPORT_TAG ) );

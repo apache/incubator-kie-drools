@@ -1861,7 +1861,8 @@ public class KnowledgeBuilderImpl implements KnowledgeBuilder,
     }
 
     public InternalKnowledgePackage getPackage(String name) {
-        return this.pkgRegistryMap.get(name).getPackage();
+        PackageRegistry registry = this.pkgRegistryMap.get(name);
+        return registry == null ? null : registry.getPackage();
     }
 
     public Map<String, PackageRegistry> getPackageRegistry() {
@@ -2426,6 +2427,8 @@ public class KnowledgeBuilderImpl implements KnowledgeBuilder,
         buildPackagesWithoutRules(packages);
         buildRules(packages);
     }
+
+    public void postBuild() { }
 
     public void buildPackagesWithoutRules(Collection<CompositePackageDescr> packages ) {
         initPackageRegistries(packages);

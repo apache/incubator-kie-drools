@@ -22,13 +22,12 @@ import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
 
-import org.antlr.v4.runtime.tree.ParseTree;
 import com.github.javaparser.ast.expr.Expression;
+import org.antlr.v4.runtime.tree.ParseTree;
 import org.junit.Test;
 import org.kie.dmn.feel.lang.EvaluationContext;
 import org.kie.dmn.feel.lang.Type;
 import org.kie.dmn.feel.lang.ast.BaseNode;
-import org.kie.dmn.feel.lang.ast.UnaryTestListNode;
 import org.kie.dmn.feel.lang.impl.FEELEventListenersManager;
 import org.kie.dmn.feel.parser.feel11.ASTBuilderVisitor;
 import org.kie.dmn.feel.parser.feel11.FEELParser;
@@ -110,14 +109,14 @@ public class DirectCompilerUnaryTestsTest {
     }
 
     private CompiledFEELUnaryTests parse(String input, Map<String, Type> inputTypes, FEELEventListenersManager mgr, CompiledFEELSupport.SyntaxErrorListener listener) {
-        FEEL_1_1Parser parser = FEELParser.parse(mgr, input, inputTypes, Collections.emptyMap(), Collections.emptyList(), Collections.emptyList());
+        FEEL_1_1Parser parser = FEELParser.parse(mgr, input, inputTypes, Collections.emptyMap(), Collections.emptyList(), Collections.emptyList(), null);
 
         ParseTree tree = parser.unaryTestsRoot();
         DirectCompilerResult directResult;
         if (listener.isError()) {
             directResult = CompiledFEELSupport.compiledErrorUnaryTest(listener.event().getMessage());
         } else {
-            ASTBuilderVisitor v = new ASTBuilderVisitor(inputTypes);
+            ASTBuilderVisitor v = new ASTBuilderVisitor(inputTypes, null);
             BaseNode node = v.visit(tree);
             BaseNode transformed = node.accept(new ASTUnaryTestTransform()).node();
             directResult = transformed.accept(new ASTCompilerVisitor());

@@ -34,7 +34,11 @@ import org.kie.dmn.core.util.MsgUtil;
 import org.kie.dmn.feel.lang.ast.DashNode;
 import org.kie.dmn.model.api.DMNModelInstrumentedBase;
 import org.kie.dmn.model.api.DecisionTable;
+import org.kie.dmn.model.api.FunctionDefinition;
 import org.kie.dmn.model.api.HitPolicy;
+import org.kie.dmn.model.api.InputClause;
+import org.kie.dmn.model.api.LiteralExpression;
+import org.kie.dmn.model.api.NamedElement;
 import org.kie.dmn.validation.dtanalysis.DMNDTAnalysisMessage;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -56,7 +60,7 @@ public class DTAnalysis {
     private final DecisionTable sourceDT;
     private final Throwable error;
     private final DDTATable ddtaTable;
-    private final Collection passThruMessages = new ArrayList<>();
+    private final Collection<DMNMessage> passThruMessages = new ArrayList<>();
 
 
 
@@ -153,7 +157,7 @@ public class DTAnalysis {
             DMNMessage m = new DMNDTAnalysisMessage(this,
                                                     Severity.WARN,
                                                     MsgUtil.createMessage(Msg.DTANALYSIS_ERROR_ANALYSIS_SKIPPED,
-                                                                          sourceDT.getOutputLabel(),
+                                                                          nameOrIDOfTable(),
                                                                           error.getMessage()),
                                                     Msg.DTANALYSIS_ERROR_ANALYSIS_SKIPPED.getType());
             results.add(m);
@@ -174,7 +178,7 @@ public class DTAnalysis {
             DMNMessage m = new DMNDTAnalysisMessage(this,
                                                     Severity.INFO,
                                                     MsgUtil.createMessage(Msg.DTANALYSIS_EMPTY,
-                                                                          sourceDT.getOutputLabel()),
+                                                                          nameOrIDOfTable()),
                                                     Msg.DTANALYSIS_EMPTY.getType());
             results.add(m);
             return results;
@@ -329,7 +333,7 @@ public class DTAnalysis {
 
     private DMNDTAnalysisMessage overlapToStandardDMNMessage(Overlap overlap) {
         return new DMNDTAnalysisMessage(this,
-                                        Severity.WARN,
+                                        Severity.INFO,
                                         MsgUtil.createMessage(Msg.DTANALYSIS_OVERLAP,
                                                               overlap.asHumanFriendly(ddtaTable)),
                                         Msg.DTANALYSIS_OVERLAP.getType(), overlap.getRules());
@@ -337,6 +341,20 @@ public class DTAnalysis {
 
     private Collection gapsAsMessages() {
         List<DMNDTAnalysisMessage> results = new ArrayList<>();
+        if (!ddtaTable.getColIDsStringWithoutEnum().isEmpty()) {
+            List<String> names = ddtaTable.getColIDsStringWithoutEnum()
+                                          .stream()
+                                          .map(id -> sourceDT.getInput().get(id - 1))
+                                          .map(InputClause::getInputExpression)
+                                          .map(LiteralExpression::getText)
+                                          .collect(Collectors.toList());
+            results.add(new DMNDTAnalysisMessage(this,
+                                                 Severity.WARN,
+                                                 MsgUtil.createMessage(Msg.DTANALYSIS_GAP_SKIPPED_BECAUSE_FREE_STRING,
+                                                                       names),
+                                                 Msg.DTANALYSIS_GAP_SKIPPED_BECAUSE_FREE_STRING.getType()));
+            return results;
+        }
         for (Hyperrectangle gap : gaps) {
             results.add(new DMNDTAnalysisMessage(this,
                                                  Severity.WARN,
@@ -676,4 +694,55 @@ public class DTAnalysis {
         return Collections.unmodifiableCollection(contractionsViolating2ndNF);
     }
 
+    public void computeHitPolicyRecommender() {
+        if (!gaps.isEmpty() || !isHitPolicySingle(sourceDT.getHitPolicy())) {
+            return;
+        }
+        if (overlaps.isEmpty() && sourceDT.getHitPolicy() != HitPolicy.UNIQUE) {
+            passThruMessages.add(new DMNDTAnalysisMessage(this,
+                                                          Severity.WARN,
+                                                          MsgUtil.createMessage(Msg.DTANALYSIS_HITPOLICY_RECOMMENDER_UNIQUE,
+                                                                                nameOrIDOfTable()),
+                                                          Msg.DTANALYSIS_HITPOLICY_RECOMMENDER_UNIQUE.getType()));
+        } else if (!overlaps.isEmpty()) {
+            boolean overlapsShareSameOutput = true;
+            for (Overlap ol : overlaps) {
+                List<Integer> rules = ol.getRules();
+                Set<List<Comparable<?>>> outputsForOverlap = new HashSet<>();
+                for (Integer ruleID : rules) {
+                    outputsForOverlap.add(ddtaTable.getRule().get(ruleID - 1).getOutputEntry());
+                }
+                overlapsShareSameOutput &= outputsForOverlap.size() == 1;
+            }
+            if (overlapsShareSameOutput && sourceDT.getHitPolicy() != HitPolicy.ANY) {
+                passThruMessages.add(new DMNDTAnalysisMessage(this,
+                                                              sourceDT.getHitPolicy() == HitPolicy.UNIQUE ? Severity.ERROR : Severity.WARN,
+                                                              MsgUtil.createMessage(Msg.DTANALYSIS_HITPOLICY_RECOMMENDER_ANY,
+                                                                                    nameOrIDOfTable()),
+                                                              Msg.DTANALYSIS_HITPOLICY_RECOMMENDER_ANY.getType()));
+            } else if (!overlapsShareSameOutput && sourceDT.getHitPolicy() != HitPolicy.PRIORITY) {
+                passThruMessages.add(new DMNDTAnalysisMessage(this,
+                                                              Severity.ERROR,
+                                                              MsgUtil.createMessage(Msg.DTANALYSIS_HITPOLICY_RECOMMENDER_PRIORITY,
+                                                                                    nameOrIDOfTable()),
+                                                              Msg.DTANALYSIS_HITPOLICY_RECOMMENDER_PRIORITY.getType()));
+            }
+        }
+    }
+
+    public boolean isHitPolicySingle(HitPolicy hp) {
+        return hp == HitPolicy.UNIQUE || hp == HitPolicy.ANY || hp == HitPolicy.PRIORITY || hp == HitPolicy.FIRST;
+    }
+
+    private String nameOrIDOfTable() {
+        if (sourceDT.getOutputLabel() != null && !sourceDT.getOutputLabel().isEmpty()) {
+            return sourceDT.getOutputLabel();
+        } else if (sourceDT.getParent() instanceof NamedElement) { // DT is decision logic of Decision, and similar cases.
+            return ((NamedElement) sourceDT.getParent()).getName();
+        } else if (sourceDT.getParent() instanceof FunctionDefinition && sourceDT.getParent().getParent() instanceof NamedElement) { // DT is decision logic of BKM.
+            return ((NamedElement) sourceDT.getParent().getParent()).getName();
+        } else {
+            return new StringBuilder("[ID: ").append(sourceDT.getId()).append("]").toString();
+        }
+    }
 }

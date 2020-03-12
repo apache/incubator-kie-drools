@@ -85,6 +85,8 @@ public class BuiltInFunctions {
             DayOfYearFunction.INSTANCE,
             MonthOfYearFunction.INSTANCE,
             WeekOfYearFunction.INSTANCE,
+            
+            IsFunction.INSTANCE,
             };
 
     public static FEELFunction[] getFunctions() {

@@ -34,12 +34,14 @@ import java.util.stream.Stream;
 import org.appformer.maven.support.DependencyFilter;
 import org.appformer.maven.support.PomModel;
 import org.drools.compiler.builder.impl.KnowledgeBuilderImpl;
+import org.drools.compiler.compiler.io.memory.MemoryFileSystem;
 import org.drools.compiler.kie.builder.impl.AbstractKieModule;
 import org.drools.compiler.kie.builder.impl.FileKieModule;
 import org.drools.compiler.kie.builder.impl.InternalKieModule;
 import org.drools.compiler.kie.builder.impl.KieBaseUpdateContext;
 import org.drools.compiler.kie.builder.impl.KieProject;
 import org.drools.compiler.kie.builder.impl.KnowledgePackagesBuildResult;
+import org.drools.compiler.kie.builder.impl.MemoryKieModule;
 import org.drools.compiler.kie.builder.impl.ResultsImpl;
 import org.drools.compiler.kie.builder.impl.ZipKieModule;
 import org.drools.compiler.kie.util.KieJarChangeSet;
@@ -49,6 +51,7 @@ import org.drools.core.RuleBaseConfiguration;
 import org.drools.core.definitions.InternalKnowledgePackage;
 import org.drools.core.definitions.impl.KnowledgePackageImpl;
 import org.drools.core.impl.InternalKnowledgeBase;
+import org.drools.core.io.internal.InternalResource;
 import org.drools.core.util.Drools;
 import org.drools.core.util.IoUtils;
 import org.drools.core.util.StringUtils;
@@ -626,6 +629,12 @@ public class CanonicalKieModule implements InternalKieModule {
         return internalKieModule;
     }
 
+    @Override
+    public CanonicalKieModule cloneForIncrementalCompilation( ReleaseId releaseId, KieModuleModel kModuleModel, MemoryFileSystem newFs) {
+        MemoryKieModule clonedInternal = (( MemoryKieModule ) internalKieModule).cloneForIncrementalCompilation( releaseId, kModuleModel, newFs );
+        return new CanonicalKieModule(clonedInternal);
+    }
+
     // Delegate methods
 
     @Override
@@ -636,6 +645,11 @@ public class CanonicalKieModule implements InternalKieModule {
     @Override
     public KnowledgeBuilder getKnowledgeBuilderForKieBase( String kieBaseName ) {
         return internalKieModule.getKnowledgeBuilderForKieBase( kieBaseName );
+    }
+
+    @Override
+    public InternalKnowledgePackage getPackage(String packageName) {
+        return internalKieModule.getPackage( packageName );
     }
 
     @Override
@@ -669,7 +683,7 @@ public class CanonicalKieModule implements InternalKieModule {
     }
 
     @Override
-    public Resource getResource( String fileName ) {
+    public InternalResource getResource( String fileName ) {
         return internalKieModule.getResource( fileName );
     }
 

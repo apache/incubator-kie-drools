@@ -7,14 +7,14 @@
   <parent>
     <groupId>org.drools</groupId>
     <artifactId>drools-model</artifactId>
-    <version>7.31.0-SNAPSHOT</version>
+    <version>7.35.0-SNAPSHOT</version>
   </parent>
 
   <artifactId>drools-mvel-compiler</artifactId>
   <packaging>bundle</packaging><!-- bundle = jar + OSGi metadata -->
 
   <properties>
-    <java.module.name>org.drools.mvel-compiler</java.module.name>
+    <java.module.name>org.drools.mvelcompiler</java.module.name>
   </properties>
 
   <dependencies>

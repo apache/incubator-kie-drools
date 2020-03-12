@@ -32,6 +32,7 @@ import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.atomic.AtomicInteger;
 
+import org.drools.compiler.kie.builder.impl.DrlProject;
 import org.drools.core.ClassObjectFilter;
 import org.drools.core.command.runtime.rule.FireAllRulesCommand;
 import org.drools.core.definitions.rule.impl.RuleImpl;
@@ -45,6 +46,7 @@ import org.drools.core.reteoo.RuleTerminalNode;
 import org.drools.testcoverage.common.model.Address;
 import org.drools.testcoverage.common.model.Message;
 import org.drools.testcoverage.common.model.Person;
+import org.drools.testcoverage.common.model.Result;
 import org.drools.testcoverage.common.util.KieBaseTestConfiguration;
 import org.drools.testcoverage.common.util.KieSessionTestConfiguration;
 import org.drools.testcoverage.common.util.KieUtil;
@@ -72,6 +74,7 @@ import org.kie.api.definition.KiePackage;
 import org.kie.api.definition.rule.Rule;
 import org.kie.api.definition.type.FactType;
 import org.kie.api.event.rule.AfterMatchFiredEvent;
+import org.kie.api.io.KieResources;
 import org.kie.api.io.Resource;
 import org.kie.api.io.ResourceType;
 import org.kie.api.logger.KieRuntimeLogger;
@@ -349,7 +352,7 @@ public class IncrementalCompilationTest {
                 .write("src/main/resources/r1.drl", drl1)
                 .write("src/main/resources/r2.drl", drl2_1);
 
-        final KieBuilder kieBuilder = ks.newKieBuilder(kfs).buildAll();
+        final KieBuilder kieBuilder = ks.newKieBuilder(kfs).buildAll(DrlProject.class);
         final KieContainer kieContainer = ks.newKieContainer(ks.getRepository().getDefaultReleaseId());
 
         KieSession ksession = kieContainer.newKieSession();
@@ -397,7 +400,7 @@ public class IncrementalCompilationTest {
                 .write("src/main/resources/r1.drl", drl1)
                 .write("src/main/resources/r2.drl", drl2_1);
 
-        final KieBuilder kieBuilder = ks.newKieBuilder(kfs).buildAll();
+        final KieBuilder kieBuilder = ks.newKieBuilder(kfs).buildAll(DrlProject.class);
         assertEquals(1, kieBuilder.getResults().getMessages(org.kie.api.builder.Message.Level.ERROR).size());
 
         kfs.write("src/main/resources/r2.drl", drl2_2);
@@ -443,7 +446,7 @@ public class IncrementalCompilationTest {
         final KieFileSystem kfs = ks.newKieFileSystem()
                 .write("src/main/resources/r1.drl", drl1);
 
-        final KieBuilder kieBuilder = ks.newKieBuilder(kfs).buildAll();
+        final KieBuilder kieBuilder = ks.newKieBuilder(kfs).buildAll(DrlProject.class);
         assertEquals(0, kieBuilder.getResults().getMessages(org.kie.api.builder.Message.Level.ERROR).size());
 
         //Add file with error - expect 1 "added" error message
@@ -493,7 +496,7 @@ public class IncrementalCompilationTest {
                 .write("src/main/resources/r1.drl", drl1);
 
         //Initial file contains errors
-        final KieBuilder kieBuilder = ks.newKieBuilder(kfs).buildAll();
+        final KieBuilder kieBuilder = ks.newKieBuilder(kfs).buildAll(DrlProject.class);
         assertEquals(1, kieBuilder.getResults().getMessages(org.kie.api.builder.Message.Level.ERROR).size());
 
         //Add file with error - expect 1 "added" error message
@@ -532,7 +535,7 @@ public class IncrementalCompilationTest {
         final KieFileSystem kfs = ks.newKieFileSystem()
                 .write("src/main/resources/r1.drl", drl1);
 
-        final KieBuilder kieBuilder = ks.newKieBuilder(kfs).buildAll();
+        final KieBuilder kieBuilder = ks.newKieBuilder(kfs).buildAll(DrlProject.class);
         assertEquals(0, kieBuilder.getResults().getMessages(org.kie.api.builder.Message.Level.ERROR).size());
 
         kfs.write("src/main/resources/r2_1.drl", drl2);
@@ -567,7 +570,7 @@ public class IncrementalCompilationTest {
         final KieFileSystem kfs = ks.newKieFileSystem()
                 .write("src/main/resources/r1.drl", drl1);
 
-        final KieBuilder kieBuilder = ks.newKieBuilder(kfs).buildAll();
+        final KieBuilder kieBuilder = ks.newKieBuilder(kfs).buildAll(DrlProject.class);
         assertFalse(kieBuilder.getResults().getMessages(org.kie.api.builder.Message.Level.ERROR).isEmpty());
     }
 
@@ -594,7 +597,7 @@ public class IncrementalCompilationTest {
         final KieFileSystem kfs = ks.newKieFileSystem()
                 .write("src/main/resources/r1.drl", drl1);
 
-        final KieBuilder kieBuilder = ks.newKieBuilder(kfs).buildAll();
+        final KieBuilder kieBuilder = ks.newKieBuilder(kfs).buildAll(DrlProject.class);
         assertEquals(0, kieBuilder.getResults().getMessages(org.kie.api.builder.Message.Level.ERROR).size());
 
         //Add file with error - expect 1 "added" error message
@@ -629,7 +632,7 @@ public class IncrementalCompilationTest {
         final KieFileSystem kfs = ks.newKieFileSystem()
                 .write("src/main/resources/r1.drl", drl1);
 
-        final KieBuilder kieBuilder = ks.newKieBuilder(kfs).buildAll();
+        final KieBuilder kieBuilder = ks.newKieBuilder(kfs).buildAll(DrlProject.class);
         assertEquals(2, kieBuilder.getResults().getMessages(org.kie.api.builder.Message.Level.ERROR).size());
 
         //Add empty file - expect no "added" messages and no "removed" messages
@@ -884,7 +887,7 @@ public class IncrementalCompilationTest {
                           .setResourceType(ResourceType.DRL)
                           .setSourcePath("drl1.drl"));
 
-        kieBuilder.buildAll();
+        kieBuilder.buildAll(DrlProject.class);
 
         final KieContainer kc = ks.newKieContainer(id);
         final KieSession ksession = kc.newKieSession();
@@ -934,7 +937,7 @@ public class IncrementalCompilationTest {
                           .setResourceType(ResourceType.DRL)
                           .setSourcePath("drl1.drl"));
 
-        kieBuilder.buildAll();
+        kieBuilder.buildAll(DrlProject.class);
 
         final KieContainer kc = ks.newKieContainer(id);
         final KieSession ksession = kc.newKieSession();
@@ -953,7 +956,7 @@ public class IncrementalCompilationTest {
                            .setResourceType(ResourceType.DRL)
                            .setSourcePath("drla.drl"));
 
-        kieBuilder2.buildAll();
+        kieBuilder2.buildAll(DrlProject.class);
 
         final KieContainer kc2 = ks.newKieContainer(id);
         final KieSession ksession2 = kc2.newKieSession();
@@ -1015,7 +1018,7 @@ public class IncrementalCompilationTest {
                 .write("src/main/resources/META-INF/kmodule.xml", kmodule)
                 .write("src/main/resources/r2.drl", drl2_1);
 
-        final KieBuilder kieBuilder = ks.newKieBuilder(kfs).buildAll();
+        final KieBuilder kieBuilder = ks.newKieBuilder(kfs).buildAll(DrlProject.class);
 
         kfs.write("src/main/resources/r2.drl", drl2_2);
         final IncrementalResults results = ((InternalKieBuilder) kieBuilder).createFileSet("src/main/resources/r2.drl").build();
@@ -1062,7 +1065,7 @@ public class IncrementalCompilationTest {
 
         final KieBuilder kieBuilder = ks.newKieBuilder(kfs);
 
-        kieBuilder.buildAll();
+        kieBuilder.buildAll(DrlProject.class);
         assertEquals(0, kieBuilder.getResults().getMessages().size());
 
         final KieContainer kc = ks.newKieContainer(releaseId);
@@ -1118,7 +1121,7 @@ public class IncrementalCompilationTest {
         //First file contains errors
         kfs.write("src/main/resources/r1.drl", drl1);
 
-        final KieBuilder kieBuilder = ks.newKieBuilder(kfs).buildAll();
+        final KieBuilder kieBuilder = ks.newKieBuilder(kfs).buildAll(DrlProject.class);
         final Results results1 = kieBuilder.getResults();
         assertEquals(2,
                      results1.getMessages().size());
@@ -2271,7 +2274,7 @@ public class IncrementalCompilationTest {
                           .setResourceType(ResourceType.DRL)
                           .setSourcePath("drl1.drl"));
 
-        kieBuilder.buildAll();
+        kieBuilder.buildAll(DrlProject.class);
 
         final KieContainer kc = ks.newKieContainer(id);
         final KieSession ksession = kc.newKieSession();
@@ -2310,7 +2313,7 @@ public class IncrementalCompilationTest {
                 .write("src/main/resources/r1.drl", drl1)
                 .write("src/main/resources/r2.drl", drl2);
 
-        final KieBuilder kieBuilder = ks.newKieBuilder(kfs).buildAll();
+        final KieBuilder kieBuilder = ks.newKieBuilder(kfs).buildAll(DrlProject.class);
         final KieContainer kieContainer = ks.newKieContainer(ks.getRepository().getDefaultReleaseId());
 
         KieSession ksession = kieContainer.newKieSession();
@@ -2810,7 +2813,7 @@ public class IncrementalCompilationTest {
                           .setResourceType(ResourceType.DRL)
                           .setSourcePath("INIT_DRL.drl"));
 
-        kieBuilder.buildAll();
+        kieBuilder.buildAll(DrlProject.class);
 
         final KieContainer kc = ks.newKieContainer(id);
         final KieSession ksession = kc.newKieSession();
@@ -2838,7 +2841,7 @@ public class IncrementalCompilationTest {
                            .setResourceType(ResourceType.DRL)
                            .setSourcePath("INIT_DRL.drl"));
 
-        kieBuilder2.buildAll();
+        kieBuilder2.buildAll(DrlProject.class);
 
         final Results updateResults = kc.updateToVersion(id2);
         assertFalse(updateResults.hasMessages(Level.ERROR));
@@ -2919,7 +2922,7 @@ public class IncrementalCompilationTest {
                           .setResourceType(ResourceType.DRL)
                           .setSourcePath("INIT_DRL.drl"));
 
-        kieBuilder.buildAll();
+        kieBuilder.buildAll(DrlProject.class);
 
         final KieContainer kc = ks.newKieContainer(id);
         final KieSession ksession = kc.newKieSession();
@@ -2948,7 +2951,7 @@ public class IncrementalCompilationTest {
                            .setResourceType(ResourceType.DRL)
                            .setSourcePath("INIT_DRL.drl"));
 
-        kieBuilder2.buildAll();
+        kieBuilder2.buildAll(DrlProject.class);
 
         final Results updateResults = kc.updateToVersion(id2);
         assertFalse(updateResults.hasMessages(Level.ERROR));
@@ -3041,7 +3044,7 @@ public class IncrementalCompilationTest {
         final KieFileSystem kfs = ks.newKieFileSystem()
                 .write("src/main/resources/r1.drl", drl1);
 
-        final KieBuilder kieBuilder = ks.newKieBuilder(kfs).buildAll();
+        final KieBuilder kieBuilder = ks.newKieBuilder(kfs).buildAll(DrlProject.class);
         assertEquals(0, kieBuilder.getResults().getMessages(org.kie.api.builder.Message.Level.ERROR).size());
 
         kfs.write("src/main/resources/r2.drl", drl2);
@@ -3087,7 +3090,7 @@ public class IncrementalCompilationTest {
                           .setSourcePath("drlDeclare.drl"));
 
         final KieBuilder kieBuilder = ks.newKieBuilder(kfs);
-        kieBuilder.buildAll();
+        kieBuilder.buildAll(DrlProject.class);
 
         final KieContainer kc = ks.newKieContainer(releaseId1);
 
@@ -3114,7 +3117,7 @@ public class IncrementalCompilationTest {
                            .setSourcePath("drlRule.drl"));
 
         final KieBuilder kieBuilder2 = ks.newKieBuilder(kfs2);
-        kieBuilder2.buildAll();
+        kieBuilder2.buildAll(DrlProject.class);
 
         final Results updateResults = kc.updateToVersion(releaseId2);
 
@@ -3298,7 +3301,7 @@ public class IncrementalCompilationTest {
         kfs.write("src/main/resources/kiedeclare/declares.drl", DECLARES_DRL);
         kfs.write("src/main/resources/kiemodulemodel/rules.drl", rules);
 
-        final KieBuilder kb = ks.newKieBuilder(kfs).buildAll();
+        final KieBuilder kb = ks.newKieBuilder(kfs).buildAll(DrlProject.class);
         return kb.getKieModule();
     }
 
@@ -3345,7 +3348,7 @@ public class IncrementalCompilationTest {
         KieModuleModel kModuleModel = ks.newKieModuleModel();
         kfs.writeKModuleXML(kModuleModel.toXML());
         kfs.write("src/main/java/org/drools/test/Person.java", javaSource);
-        ks.newKieBuilder(kfs).buildAll();
+        ks.newKieBuilder(kfs).buildAll(DrlProject.class);
 
         final KieContainer kContainer = ks.newKieContainer(releaseId1);
         try {
@@ -3359,7 +3362,7 @@ public class IncrementalCompilationTest {
         kfs.generateAndWritePomXML(releaseId2);
         kModuleModel = ks.newKieModuleModel();
         kfs.writeKModuleXML(kModuleModel.toXML());
-        ks.newKieBuilder(kfs).buildAll();
+        ks.newKieBuilder(kfs).buildAll(DrlProject.class);
 
         kContainer.updateToVersion(releaseId2);
         kContainer.getKieBase();
@@ -3369,7 +3372,7 @@ public class IncrementalCompilationTest {
         kModuleModel = ks.newKieModuleModel();
         kfs.writeKModuleXML(kModuleModel.toXML());
         kfs.write("src/main/java/org/drools/test/Person.java", javaSource);
-        ks.newKieBuilder(kfs).buildAll();
+        ks.newKieBuilder(kfs).buildAll(DrlProject.class);
 
         kContainer.updateToVersion(releaseId3);
     }
@@ -3541,7 +3544,7 @@ public class IncrementalCompilationTest {
                           .setResourceType(ResourceType.DRL)
                           .setSourcePath("rules.drl"));
 
-        kieBuilder.buildAll();
+        kieBuilder.buildAll(DrlProject.class);
 
         final KieContainer kc = ks.newKieContainer(id);
         final KieSession ksession = kc.newKieSession();
@@ -3704,19 +3707,19 @@ public class IncrementalCompilationTest {
         kfs1.write("src/main/resources/rules/Sample1.drl", drl1);
         final ReleaseId releaseId1 = ks.newReleaseId("com.sample", "my-sample-a", "1.0.0");
         kfs1.generateAndWritePomXML(releaseId1);
-        ks.newKieBuilder(kfs1).buildAll();
+        ks.newKieBuilder(kfs1).buildAll(DrlProject.class);
 
         final KieFileSystem kfs2 = ks.newKieFileSystem();
         kfs2.write("src/main/resources/rules/Sample2.drl", drl2);
         final ReleaseId releaseId2 = ks.newReleaseId("com.sample", "my-sample-a", "2.0.0");
         kfs2.generateAndWritePomXML(releaseId2);
-        ks.newKieBuilder(kfs2).buildAll();
+        ks.newKieBuilder(kfs2).buildAll(DrlProject.class);
 
         final KieFileSystem kfs3 = ks.newKieFileSystem();
         kfs3.write("src/main/resources/rules/Sample3.drl", drl3);
         final ReleaseId releaseId3 = ks.newReleaseId("com.sample", "my-sample-a", "3.0.0");
         kfs3.generateAndWritePomXML(releaseId3);
-        ks.newKieBuilder(kfs3).buildAll();
+        ks.newKieBuilder(kfs3).buildAll(DrlProject.class);
 
         // Create a session and fire rules
         final KieContainer kc = ks.newKieContainer(releaseId1);
@@ -3967,7 +3970,7 @@ public class IncrementalCompilationTest {
                 .setResourceType(ResourceType.DRL)
                 .setSourcePath("rules.drl"));
 
-         kieBuilder.buildAll();
+         kieBuilder.buildAll(DrlProject.class);
 
         final KieContainer kc = ks.newKieContainer(id);
         final KieSession ksession = kc.newKieSession();
@@ -3990,7 +3993,7 @@ public class IncrementalCompilationTest {
                 .setResourceType(ResourceType.DRL)
                 .setSourcePath("rules.drl"));
 
-        kieBuilder2.buildAll();
+        kieBuilder2.buildAll(DrlProject.class);
 
         final Results updateResults = kc.updateToVersion(id2);
         assertFalse(updateResults.hasMessages(Level.ERROR));
@@ -4037,7 +4040,7 @@ public class IncrementalCompilationTest {
                 .setSourcePath("rules.drl"));
 
         KieBuilder kieBuilder = ks.newKieBuilder(kfs);
-        kieBuilder.buildAll();
+        kieBuilder.buildAll(DrlProject.class);
         KieModule kieModule = kieBuilder.getKieModule();
         KieContainer kieContainer = ks.newKieContainer(kieModule.getReleaseId());
         KieSession kieSession = kieContainer.newKieSession();
@@ -4058,7 +4061,7 @@ public class IncrementalCompilationTest {
         kfs2.generateAndWritePomXML(id2);
 
         kieBuilder = ks.newKieBuilder(kfs2);
-        kieBuilder.buildAll();
+        kieBuilder.buildAll(DrlProject.class);
         kieModule = kieBuilder.getKieModule();
         kieContainer.updateToVersion(id2);
 
@@ -4087,7 +4090,7 @@ public class IncrementalCompilationTest {
                 .setSourcePath("rules.drl"));
 
         KieBuilder kieBuilder = ks.newKieBuilder(kfs);
-        kieBuilder.buildAll();
+        kieBuilder.buildAll(DrlProject.class);
         KieModule kieModule = kieBuilder.getKieModule();
         KieContainer kieContainer = ks.newKieContainer(kieModule.getReleaseId());
         KieSession kieSession = kieContainer.newKieSession();
@@ -4108,7 +4111,7 @@ public class IncrementalCompilationTest {
         kfs2.generateAndWritePomXML(id2);
 
         kieBuilder = ks.newKieBuilder(kfs2);
-        kieBuilder.buildAll();
+        kieBuilder.buildAll(DrlProject.class);
         kieModule = kieBuilder.getKieModule();
         kieContainer.updateToVersion(id2);
 
@@ -4426,5 +4429,145 @@ public class IncrementalCompilationTest {
         // continue working with the session
         ksession2.insert(new Message("Hello World"));
         assertEquals(3, ksession2.fireAllRules());
+    }
+
+    @Test
+    public void testGetFactTypeOnIncrementalUpdateWithNestedFactsRulesFired() throws Exception {
+        // DROOLS-4886
+        final String drl1 =
+                "package org.drools.example.api.kiemodulemodel\n" +
+                        "declare MyNestedFact\n" +
+                        "   x : String\n" +
+                        "end\n" +
+                        "declare Message\n" +
+                        "   text : String\n" +
+                        "   nested : MyNestedFact\n" +
+                        "end\n" +
+                        "\n" +
+                        "rule R when Message(text == \"What's the problem?\") then end\n";
+
+        final String drl2 =
+                "package org.drools.example.api.kiemodulemodel\n" +
+                        "declare MyNestedFact\n" +
+                        "   x : String\n" +
+                        "   y : int\n" +
+                        "end\n" +
+                        "declare Message\n" +
+                        "   text : String\n" +
+                        "   nested : MyNestedFact\n" +
+                        "end\n" +
+                        "\n" +
+                        "rule R when Message(text == \"What's the problem?\", nested.y == 42) then end\n";
+
+        final KieServices ks = KieServices.Factory.get();
+
+        final ReleaseId releaseId1 = ks.newReleaseId("org.kie", "test-upgrade", "1.1.1");
+        KieUtil.getKieModuleFromDrls(releaseId1, kieBaseTestConfiguration, drl1);
+
+        final KieContainer kc = ks.newKieContainer(releaseId1);
+        KieBase kbase = kc.getKieBase();
+
+        FactType ftype = kbase.getFactType("org.drools.example.api.kiemodulemodel", "Message");
+        assertNotNull(ftype.getField("text"));
+
+        Object fact = ftype.newInstance();
+        ftype.set(fact, "text", "What's the problem?");
+
+        FactType nestedftype = kbase.getFactType("org.drools.example.api.kiemodulemodel", "MyNestedFact");
+        assertNotNull(nestedftype.getField("x"));
+
+        Object nestedfact = nestedftype.newInstance();
+        ftype.set(fact, "nested", nestedfact);
+
+        KieSession session = kbase.newKieSession();
+        session.insert( fact );
+        assertEquals( 1, session.fireAllRules() );
+        session.dispose();
+
+        final ReleaseId releaseId2 = ks.newReleaseId("org.kie", "test-upgrade", "1.1.2");
+        KieUtil.getKieModuleFromDrls(releaseId2, kieBaseTestConfiguration, drl2);
+        kc.updateToVersion(releaseId2);
+
+        kbase = kc.getKieBase();
+        ftype = kbase.getFactType("org.drools.example.api.kiemodulemodel", "Message");
+        assertNotNull(ftype.getField("text"));
+
+        fact = ftype.newInstance();
+        ftype.set(fact, "text", "What's the problem?");
+
+        nestedftype = kbase.getFactType("org.drools.example.api.kiemodulemodel", "MyNestedFact");
+        assertNotNull(nestedftype.getField("x"));
+        assertNotNull(nestedftype.getField("y"));
+
+        nestedfact = nestedftype.newInstance();
+        nestedftype.set(nestedfact, "y", 42);
+
+        ftype.set(fact, "nested", nestedfact);
+
+        session = kbase.newKieSession();
+        session.insert( fact );
+        assertEquals( 1, session.fireAllRules() );
+        session.dispose();
+    }
+
+    @Test
+    public void testDecisionTable() {
+        KieServices ks = KieServices.get();
+        KieResources kr = ks.getResources();
+
+        ReleaseId releaseId1 = ks.newReleaseId("org.kie", "test-dtable", "1.1.1");
+        buildDTableProject( ks, kr, releaseId1, "CanDrinkAndDrive.xls" );
+
+        KieContainer kc = ks.newKieContainer(releaseId1);
+
+        KieSession sessionDtable = kc.newKieSession( "dtable" );
+        Result result = new Result();
+        FactHandle fhResult = sessionDtable.insert( result );
+        sessionDtable.insert( new Person("Mario", 45) );
+        sessionDtable.fireAllRules();
+
+        sessionDtable.delete( fhResult );
+
+        String[] results = new String[] { "Mario can drink", "Mario can drive" };
+        for (String r : results) {
+            assertTrue( result.toString().contains( r ) );
+        }
+
+        ReleaseId releaseId2 = ks.newReleaseId("org.kie", "test-dtable", "1.1.2");
+        buildDTableProject( ks, kr, releaseId2, "CanDrinkAndDrive2.xls" );
+
+        kc.updateToVersion(releaseId2);
+
+        result = new Result();
+        sessionDtable.insert( result );
+        sessionDtable.fireAllRules();
+
+        String[] results2 = new String[] { "Mario can drink", "Mario can vote" };
+        for (String r : results2) {
+            assertTrue( result.toString().contains( r ) );
+        }
+    }
+
+    private void buildDTableProject( KieServices ks, KieResources kr, ReleaseId releaseId, String dtableFile ) {
+        KieFileSystem kfs = ks.newKieFileSystem()
+                .write( "src/main/resources/org/drools/simple/candrink/CanDrink.xls",
+                        kr.newFileSystemResource( "src/test/resources/data/" + dtableFile ) )
+                .write( "src/main/resources/org/drools/simple/candrink/CanDrink.xls.properties",
+                        "sheets=Sheet1,Sheet2" );
+
+        kfs.generateAndWritePomXML(releaseId);
+
+        KieModuleModel kproj = ks.newKieModuleModel();
+        kproj.newKieBaseModel("dtblaleKB")
+                .addPackage("org.drools.simple.candrink")
+                .newKieSessionModel("dtable");
+
+        kfs.writeKModuleXML( kproj.toXML() );
+
+        if (kieBaseTestConfiguration.getExecutableModelProjectClass().isPresent()) {
+            ks.newKieBuilder( kfs ).buildAll(kieBaseTestConfiguration.getExecutableModelProjectClass().get());
+        } else {
+            ks.newKieBuilder( kfs ).buildAll(DrlProject.class);
+        }
     }
 }

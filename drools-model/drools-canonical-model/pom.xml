@@ -7,14 +7,14 @@
   <parent>
     <groupId>org.drools</groupId>
     <artifactId>drools-model</artifactId>
-    <version>7.31.0-SNAPSHOT</version>
+    <version>7.35.0-SNAPSHOT</version>
   </parent>
 
   <artifactId>drools-canonical-model</artifactId>
   <packaging>bundle</packaging><!-- bundle = jar + OSGi metadata -->
 
   <properties>
-    <java.module.name>org.drools.canonical-model</java.module.name>
+    <java.module.name>org.drools.canonicalmodel</java.module.name>
   </properties>
 
   <dependencies>

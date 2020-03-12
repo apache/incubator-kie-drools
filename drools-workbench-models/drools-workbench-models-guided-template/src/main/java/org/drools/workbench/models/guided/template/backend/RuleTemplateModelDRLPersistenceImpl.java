@@ -127,6 +127,9 @@ public class RuleTemplateModelDRLPersistenceImpl
 
         @Override
         protected void preGeneratePattern(final LHSGeneratorContext gctx) {
+            if (gctx.getDepth() > 0) {
+                gctx.setHasNonTemplateOutput(true);
+            }
             buf.append("@if{(");
             if (gctx.getVarsInScope().size() == 0) {
                 buf.append("true)}");
@@ -368,7 +371,7 @@ public class RuleTemplateModelDRLPersistenceImpl
 
         @Override
         public void visitFromCollectCompositeFactPattern(final FromCollectCompositeFactPattern pattern,
-                                                         final boolean isSubPattern) {
+                                                         final LHSGeneratorContext parentContext) {
 
             if (pattern.getRightPattern() instanceof FreeFormLine) {
                 // this allows MVEL to skip the collect, if any vars are empty
@@ -394,17 +397,17 @@ public class RuleTemplateModelDRLPersistenceImpl
                     }
                     buf.append("}");
                     super.visitFromCollectCompositeFactPattern(pattern,
-                                                               isSubPattern);
+                                                               parentContext);
                     buf.append("@end{}");
                     found = matcherTemplateKey.find();
                 } else {
                     // no variables found
                     super.visitFromCollectCompositeFactPattern(pattern,
-                                                               isSubPattern);
+                                                               parentContext);
                 }
             } else {
                 super.visitFromCollectCompositeFactPattern(pattern,
-                                                           isSubPattern);
+                                                           parentContext);
             }
         }
     }
@@ -624,7 +627,7 @@ public class RuleTemplateModelDRLPersistenceImpl
                               "}}");
         header.append("@code{\n" +
                               " def makeValueList(value, isNumeric) {\n" +
-                              "    if(value.startsWith('\"') && value.endsWith('\"')) {\n" +
+                              "    if( !value.contains(',') && value.startsWith('\"') && value.endsWith('\"')) {\n" +
                               "      value = value.substring(1, value.length() - 1);\n" +
                               "    }\n" +
                               "	workingValue = value.trim();\n" +
@@ -632,7 +635,7 @@ public class RuleTemplateModelDRLPersistenceImpl
                               "		workingValue = workingValue.substring( 1 );\n" +
                               "	  	workingValue = workingValue.substring( 0, workingValue.length() - 1 );\n" +
                               "	}\n" +
-                              "	values = workingValue.split( ',' );\n" +
+                              "	values = org.kie.soup.commons.util.ListSplitter.splitPreserveQuotes( \"\\\"\", true, workingValue );\n" +
                               "	output = ' (';\n" +
                               "	for (v : values ) {\n" +
                               "		v = v.trim();\n" +

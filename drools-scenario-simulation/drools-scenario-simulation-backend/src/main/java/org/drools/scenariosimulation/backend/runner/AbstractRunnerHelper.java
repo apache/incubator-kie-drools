@@ -239,9 +239,9 @@ public abstract class AbstractRunnerHelper {
             ExpressionEvaluator expressionEvaluator = expressionEvaluatorFactory.getOrCreate(factMappingValue);
 
             try {
-                Object value = expressionEvaluator.evaluateLiteralExpression(factMapping.getClassName(),
-                                                                             factMapping.getGenericTypes(),
-                                                                             factMappingValue.getRawValue());
+                Object value = expressionEvaluator.evaluateLiteralExpression((String) factMappingValue.getRawValue(), factMapping.getClassName(),
+                                                                             factMapping.getGenericTypes()
+                );
                 paramsForBean.put(pathToField, value);
             } catch (RuntimeException e) {
                 factMappingValue.setExceptionMessage(e.getMessage());
@@ -301,7 +301,7 @@ public abstract class AbstractRunnerHelper {
                                              Object resultRaw,
                                              Class<?> resultClass) {
         try {
-            boolean evaluationSucceed = expressionEvaluator.evaluateUnaryExpression(expectedResultRaw, resultRaw, resultClass);
+            boolean evaluationSucceed = expressionEvaluator.evaluateUnaryExpression((String) expectedResultRaw, resultRaw, resultClass);
             if (evaluationSucceed) {
                 return createResult(resultRaw);
             } else if (isCollection(className)) {

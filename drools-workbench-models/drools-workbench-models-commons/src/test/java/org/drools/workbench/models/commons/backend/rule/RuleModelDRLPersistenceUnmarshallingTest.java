@@ -32,6 +32,7 @@ import org.drools.compiler.lang.Expander;
 import org.drools.compiler.lang.dsl.DSLMappingFile;
 import org.drools.compiler.lang.dsl.DSLTokenizedMappingFile;
 import org.drools.compiler.lang.dsl.DefaultExpander;
+import org.drools.core.base.evaluators.Operator;
 import org.drools.workbench.models.datamodel.rule.ActionCallMethod;
 import org.drools.workbench.models.datamodel.rule.ActionFieldValue;
 import org.drools.workbench.models.datamodel.rule.ActionGlobalCollectionAdd;
@@ -69,7 +70,6 @@ import org.drools.workbench.models.datamodel.rule.RuleAttribute;
 import org.drools.workbench.models.datamodel.rule.RuleModel;
 import org.drools.workbench.models.datamodel.rule.SingleFieldConstraint;
 import org.drools.workbench.models.datamodel.rule.SingleFieldConstraintEBLeftSide;
-import org.junit.Ignore;
 import org.junit.Test;
 import org.kie.soup.project.datamodel.oracle.DataType;
 import org.kie.soup.project.datamodel.oracle.MethodInfo;
@@ -7693,8 +7693,8 @@ public class RuleModelDRLPersistenceUnmarshallingTest extends BaseRuleModelTest 
                 "dialect \"java\"\n" +
                 "when\n" +
                 "  $father: Father()\n" +
-                "  $kid: Kid() from $father.kids\n" +
-                "  $toy: Toy(name == null) from $kid.toys\n" +
+                "  ($kid: Kid() from $father.kids)\n" +
+                "  ($toy: Toy(name == null) from $kid.toys)\n" +
                 "then\n" +
                 "  System.out.println(\"blabla\");\n" +
                 "end";
@@ -8216,7 +8216,7 @@ public class RuleModelDRLPersistenceUnmarshallingTest extends BaseRuleModelTest 
                 "when\n" +
                 "  var : NotImported( )\n" +
                 "  OtherType( field != var.field )\n" +
-                "  MyType( ) from var.collectionField\n" +
+                "  (MyType( ) from var.collectionField)\n" +
                 "then\n" +
                 "end";
 
@@ -8397,6 +8397,41 @@ public class RuleModelDRLPersistenceUnmarshallingTest extends BaseRuleModelTest 
     private void assertEqualsIgnoreWhitespace(final String expected,
                                               final String actual) {
         Assertions.assertThat(expected).isEqualToIgnoringWhitespace(actual);
+    }
+
+    @Test
+    public void testExpressionWhenMethodNameIsExsistingOperator() {
+        String drl = "rule \"rule1\"\n"
+                + "when\n"
+                + "Applicant( name.contains(\"test\") ) \n"
+                + "then\n"
+                + "end\n";
+
+        final RuleModel m = RuleModelDRLPersistenceImpl.getInstance().unmarshal(drl,
+                                                                                Collections.emptyList(),
+                                                                                dmo);
+
+        assertNotNull(m);
+
+        assertTrue(m.lhs[0] instanceof FactPattern);
+        FactPattern pattern = (FactPattern) m.lhs[0];
+        assertEquals("Applicant",
+                     pattern.getFactType());
+        assertEquals(1,
+                     pattern.getNumberOfConstraints());
+        assertEquals("contains(\"test\")",
+                     ((SingleFieldConstraint) pattern.getConstraint(0)).getFieldName());
+        assertNull(((SingleFieldConstraint) pattern.getConstraint(0)).getOperator());
+        assertNull(((SingleFieldConstraint) pattern.getConstraint(0)).getValue());
+        SingleFieldConstraintEBLeftSide constraint = (SingleFieldConstraintEBLeftSide) pattern.getConstraint(0);
+        List<ExpressionPart> expressionParts = constraint.getExpressionLeftSide().getParts();
+        assertEquals(3, expressionParts.size());
+        assertTrue(expressionParts.get(0) instanceof ExpressionUnboundFact);
+        assertEquals("Applicant", ((ExpressionUnboundFact) expressionParts.get(0)).getFactType());
+        assertTrue(expressionParts.get(1) instanceof ExpressionText);
+        assertEquals("name", expressionParts.get(1).getName());
+        assertTrue(expressionParts.get(2) instanceof ExpressionText);
+        assertEquals("contains(\"test\")", expressionParts.get(2).getName());
     }
 
     @Test
@@ -9589,7 +9624,6 @@ public class RuleModelDRLPersistenceUnmarshallingTest extends BaseRuleModelTest 
     }
 
     @Test
-    @Ignore("https://issues.jboss.org/browse/RHPAM-2457")
     public void unmarshalStringListsCorrectly_ComplexValues() {
         final String drl = "package org.mortgages;\n" +
                 "rule \"aaa\"\n" +
@@ -9609,6 +9643,167 @@ public class RuleModelDRLPersistenceUnmarshallingTest extends BaseRuleModelTest 
 
         assertEquals("a, \"b, something\", c()", fieldConstraint.getValue());
         assertEqualsIgnoreWhitespace(drl,
+                                     RuleModelDRLPersistenceImpl.getInstance().marshal(model));
+    }
+
+    @Test
+    public void testSingleFieldConstraintOperatorWithoutSpace() {
+        assertSingleFieldConstraintOperatorNoSpace(Operator.EQUAL.getOperatorString());
+        assertSingleFieldConstraintOperatorNoSpace(Operator.NOT_EQUAL.getOperatorString());
+        assertSingleFieldConstraintOperatorNoSpace(Operator.LESS.getOperatorString());
+        assertSingleFieldConstraintOperatorNoSpace(Operator.LESS_OR_EQUAL.getOperatorString());
+        assertSingleFieldConstraintOperatorNoSpace(Operator.GREATER.getOperatorString());
+        assertSingleFieldConstraintOperatorNoSpace(Operator.GREATER_OR_EQUAL.getOperatorString());
+    }
+
+    private void assertSingleFieldConstraintOperatorNoSpace(final String operator) {
+        String drl = "rule \"rule1\"\n"
+                + "when\n"
+                + "Applicant( age" + operator + "55 )\n"
+                + "then\n"
+                + "end";
+
+        RuleModel m = RuleModelDRLPersistenceImpl.getInstance().unmarshal(drl,
+                                                                          Collections.emptyList(),
+                                                                          dmo);
+
+        assertNotNull(m);
+        assertEquals("rule1",
+                     m.name);
+
+        assertEquals(1,
+                     m.lhs.length);
+        IPattern p = m.lhs[0];
+        assertTrue(p instanceof FactPattern);
+
+        FactPattern fp = (FactPattern) p;
+        assertEquals("Applicant",
+                     fp.getFactType());
+
+        assertEquals(1,
+                     fp.getConstraintList().getConstraints().length);
+        assertTrue(fp.getConstraint(0) instanceof SingleFieldConstraint);
+
+        SingleFieldConstraint sfp = (SingleFieldConstraint) fp.getConstraint(0);
+        assertEquals("Applicant",
+                     sfp.getFactType());
+        assertEquals("age",
+                     sfp.getFieldName());
+        assertEquals(operator,
+                     sfp.getOperator());
+        assertEquals("55",
+                     sfp.getValue());
+        assertEquals(BaseSingleFieldConstraint.TYPE_LITERAL,
+                     sfp.getConstraintValueType());
+    }
+
+    @Test
+    public void testNestedOr() {
+        final String drl = "rule \"my rule\"\n" +
+                "dialect \"mvel\"\n" +
+                "when \n" +
+                "(\n" +
+                "   (\n" +
+                "      Term(effectiveDate < \"30-Sep-2018\") and \n" +
+                "      Policy($state : state == \"KS\" || == \"MN\" || == \"NM\" || == \"UT\")\n" +
+                "   )\n" +
+                "   or\n" +
+                "   (\n" +
+                "      Term(effectiveDate < \"23-Jun-2019\") and\n" +
+                "      ( \n" +
+                "         Policy(state == \"AZ\" || == \"IA\" || == \"NE\" || == \"SD\" )\n" +
+                "      ) \n" +
+                "   )\n" +
+                ") \n" +
+                "then \n" +
+                "end\n";
+
+        final RuleModel model = RuleModelDRLPersistenceImpl.getInstance().unmarshal(drl,
+                                                                                    Collections.emptyList(),
+                                                                                    dmo);
+
+        assertEqualsIgnoreWhitespace(drl,
+                                     RuleModelDRLPersistenceImpl.getInstance().marshal(model));
+    }
+
+    @Test
+    public void normalDRLWithTemplateKeys() {
+        final String drl = "rule \"temp\" \n" +
+                "when \n" +
+                "$person : Person(gender == \"@{param1}\")\n" +
+                "\n" +
+                "then \n" +
+                "$person.setHelloMsg(@{param2});\n" +
+                "end";
+        final String expectedDRL = "rule \"temp\" \n" +
+                "dialect \"mvel\" \n" +
+                "when \n" +
+                "$person : Person(gender == \"@{removeDelimitingQuotes(param1)}\")\n" +
+                "\n" +
+                "then \n" +
+                "$person.setHelloMsg(@{removeDelimitingQuotes(param2)});\n" +
+                "end";
+
+        final RuleModel model = RuleModelDRLPersistenceImpl.getInstance().unmarshal(drl,
+                                                                                    Collections.emptyList(),
+                                                                                    dmo);
+        assertTrue(model.rhs[0] instanceof ActionSetField);
+
+        assertEqualsIgnoreWhitespace(expectedDRL,
+                                     RuleModelDRLPersistenceImpl.getInstance().marshal(model));
+    }
+
+    @Test
+    public void oneSetterTwoTemplateKeys() {
+        final String drl = "rule \"temp\" \n" +
+                "when \n" +
+                "$person : Person(gender == \"@{param1}\", married == \"@{param2}\")\n" +
+                "\n" +
+                "then \n" +
+                "$person.setHelloMsg(hello($person.getName(), @{param3}, @{param4}));\n" +
+                "System.out.println(hello($person.getName(), @{param5}, @{param6}));\n" +
+                "end";
+        final String expectedDRL = "rule \"temp\" \n" +
+                "dialect \"mvel\" \n" +
+                "when \n" +
+                "$person : Person(gender == \"@{removeDelimitingQuotes(param1)}\", married == \"@{removeDelimitingQuotes(param2)}\")\n" +
+                "\n" +
+                "then \n" +
+                "$person.setHelloMsg(hello($person.getName(), @{param3}, @{param4}));\n" +
+                "System.out.println(hello($person.getName(), @{param5}, @{param6}));\n" +
+                "end";
+
+        final RuleModel model = RuleModelDRLPersistenceImpl.getInstance().unmarshal(drl,
+                                                                                    Collections.emptyList(),
+                                                                                    dmo);
+
+        assertEqualsIgnoreWhitespace(expectedDRL,
+                                     RuleModelDRLPersistenceImpl.getInstance().marshal(model));
+    }
+
+    @Test
+    public void methodInSetter() {
+        final String drl = "rule \"temp\" \n" +
+                "when \n" +
+                "$person : Person(gender == \"@{param1}\", married == \"@{param2}\")\n" +
+                "\n" +
+                "then \n" +
+                "$person.setHelloMsg(hello(@{param3}));\n" +
+                "end";
+        final String expectedDRL = "rule \"temp\" \n" +
+                "dialect \"mvel\" \n" +
+                "when \n" +
+                "$person : Person(gender == \"@{removeDelimitingQuotes(param1)}\", married == \"@{removeDelimitingQuotes(param2)}\")\n" +
+                "\n" +
+                "then \n" +
+                "$person.setHelloMsg(hello(@{param3}));\n" +
+                "end";
+
+        final RuleModel model = RuleModelDRLPersistenceImpl.getInstance().unmarshal(drl,
+                                                                                    Collections.emptyList(),
+                                                                                    dmo);
+
+        assertEqualsIgnoreWhitespace(expectedDRL,
                                      RuleModelDRLPersistenceImpl.getInstance().marshal(model));
     }
 }

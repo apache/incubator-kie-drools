@@ -1,0 +1,395 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<semantic:definitions xmlns:semantic="http://www.omg.org/spec/DMN/20180521/MODEL/" xmlns:include1="http://www.trisotech.com/definitions/_6ecff8d8-42d6-4e77-9759-83c2f3fae418"   xmlns:triso="http://www.trisotech.com/2015/triso/modeling"  xmlns:dmndi="http://www.omg.org/spec/DMN/20180521/DMNDI/"  xmlns:di="http://www.omg.org/spec/DMN/20180521/DI/"  xmlns:dc="http://www.omg.org/spec/DMN/20180521/DC/"  xmlns:trisodmn="http://www.trisotech.com/2016/triso/dmn"  xmlns:feel="http://www.omg.org/spec/DMN/20180521/FEEL/"  xmlns:tc="http://www.omg.org/spec/DMN/20160719/testcase"  xmlns:drools="http://www.drools.org/kie/dmn/1.1"  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"  xmlns:rss="http://purl.org/rss/2.0/"  xmlns:openapi="https://openapis.org/omg/extension/1.0"  xmlns:xsd="http://www.w3.org/2001/XMLSchema"  xmlns="http://www.trisotech.com/definitions/_153cb253-2904-468e-b6dc-42bc016c0ddd" id="_153cb253-2904-468e-b6dc-42bc016c0ddd" name="checks" namespace="http://www.trisotech.com/definitions/_153cb253-2904-468e-b6dc-42bc016c0ddd" exporter="DMN Modeler" exporterVersion="6.8.0" triso:logoChoice="Default">
+    <semantic:extensionElements/>
+    <semantic:import namespace="http://www.trisotech.com/definitions/_6ecff8d8-42d6-4e77-9759-83c2f3fae418" name="base model" triso:fileId="eyJmIjp7InNrdSI6ImFhNTlhYzBjLTRjMGMtNDg4NS1iNWNjLWY5OWU4MzRiZjg2YyIsIm5hbWUiOiJiYXNlIG1vZGVsIiwicGF0aCI6Ii8iLCJtaW1ldHlwZSI6ImFwcGxpY2F0aW9uL3ZuZC50cmlzby1kbW4ranNvbiJ9LCJyIjp7Im5hbWUiOiIyMDIwMDEzMS1pbnN0YW5jZU9mSXRlbURlZiIsImFwaWtleSI6IjI5MjAwM2Y2OTg0MGU3MTIiLCJ1cmwiOiJodHRwczovL3JlZGhhdC50cmlzb3RlY2guY29tL3B1YmxpY2FwaSIsInJlcG9zaXRvcnlJZCI6ImZhODRmNDRjLTI5OGMtNDI3Yy1hMmNlLTc4NzA1YmVlN2ZkOCJ9LCJ0IjoicHVibGljYXBpIn0=" triso:fileName="20200131-instanceOfItemDef/base model" importType="http://www.omg.org/spec/DMN/20180521/MODEL/" drools:modelName="base model"/>
+    <semantic:itemDefinition name="this model person" label="this model person">
+        <semantic:itemComponent id="_fbfbeceb-eda9-4260-8109-396b2a15f7dc" name="full name">
+            <semantic:typeRef>string</semantic:typeRef>
+        </semantic:itemComponent>
+        <semantic:itemComponent id="_bfadcfe2-c8af-4c25-92c0-d0657329e618" name="age">
+            <semantic:typeRef>number</semantic:typeRef>
+        </semantic:itemComponent>
+    </semantic:itemDefinition>
+    <semantic:itemDefinition name="tGrades" label="tGrades" isCollection="true">
+        <semantic:typeRef>number</semantic:typeRef>
+    </semantic:itemDefinition>
+    <semantic:itemDefinition name="persons" label="persons" isCollection="true">
+        <semantic:itemComponent id="_7e195c8b-d3a1-4277-87ec-e7407f6e96cf" name="full name">
+            <semantic:typeRef>string</semantic:typeRef>
+        </semantic:itemComponent>
+        <semantic:itemComponent id="_8128d064-91fe-4133-af88-8c1fddd98a7b" name="age">
+            <semantic:typeRef>number</semantic:typeRef>
+        </semantic:itemComponent>
+    </semantic:itemDefinition>
+    <semantic:itemDefinition name="collection of this model person" label="collection of this model person" isCollection="true">
+        <semantic:typeRef>this model person</semantic:typeRef>
+    </semantic:itemDefinition>
+    <semantic:decisionService id="_153cb253-2904-468e-b6dc-42bc016c0ddd_DS" name="Whole Model Decision Service" triso:dynamicDecisionService="true" triso:wholeModelService="true">
+        <semantic:variable name="Whole Model Decision Service" id="_153cb253-2904-468e-b6dc-42bc016c0ddd_DS_VAR" typeRef="Any"/>
+        <semantic:outputDecision href="#_81162f44-1adc-4840-ae62-c62a3d09c109"/>
+        <semantic:outputDecision href="#_72990b7d-f156-4165-9668-dfd95ce3e6ef"/>
+        <semantic:outputDecision href="#_1fdfe151-fb3a-4ef5-b2de-0b433da49263"/>
+        <semantic:outputDecision href="#_d6ffb3d5-eef4-45d5-9a8a-184ac1aeada1"/>
+        <semantic:outputDecision href="#_467ab082-d96a-436e-b129-66d1136eeb65"/>
+        <semantic:outputDecision href="#_0b0ace91-6718-4a40-87a4-0c8cf2334fc9"/>
+        <semantic:outputDecision href="#_06f1a6e2-8b91-4fea-82a4-534f0df080d3"/>
+        <semantic:outputDecision href="#_987a3c94-b3c0-4747-a9a5-0aec8ebac705"/>
+        <semantic:outputDecision href="#_67cdde25-8a68-48a5-9688-a577520c9b78"/>
+        <semantic:outputDecision href="#_b562a3f5-92e7-44c2-8b27-9783c6a1e3cf"/>
+        <semantic:encapsulatedDecision href="#_12ee61f6-9e04-42cc-b0c0-79963906916d"/>
+        <semantic:encapsulatedDecision href="#_930a5a6e-b134-4657-9300-b3ffe11dfa49"/>
+        <semantic:encapsulatedDecision href="#_82c661ce-ad88-47f4-8d92-e46c4e795501"/>
+        <semantic:encapsulatedDecision href="#_10180170-19e8-4b87-b7f8-75dcaf8eefe1"/>
+        <semantic:encapsulatedDecision href="#_7b974428-6505-4497-9196-d745bc78e57c"/>
+        <semantic:encapsulatedDecision href="#_188dcaf0-9b24-485f-af4f-9c1fde1a4cc3"/>
+    </semantic:decisionService>
+    <semantic:decisionService id="_18d3ccc7-ec3c-4219-bbf0-1a4c441c7733_DS" name="Diagram Page 1" triso:dynamicDecisionService="true">
+        <semantic:variable name="Diagram Page 1" id="_18d3ccc7-ec3c-4219-bbf0-1a4c441c7733_DS_VAR" typeRef="Any"/>
+        <semantic:outputDecision href="#_81162f44-1adc-4840-ae62-c62a3d09c109"/>
+        <semantic:outputDecision href="#_72990b7d-f156-4165-9668-dfd95ce3e6ef"/>
+        <semantic:outputDecision href="#_1fdfe151-fb3a-4ef5-b2de-0b433da49263"/>
+        <semantic:outputDecision href="#_d6ffb3d5-eef4-45d5-9a8a-184ac1aeada1"/>
+        <semantic:outputDecision href="#_467ab082-d96a-436e-b129-66d1136eeb65"/>
+        <semantic:outputDecision href="#_0b0ace91-6718-4a40-87a4-0c8cf2334fc9"/>
+        <semantic:outputDecision href="#_06f1a6e2-8b91-4fea-82a4-534f0df080d3"/>
+        <semantic:outputDecision href="#_987a3c94-b3c0-4747-a9a5-0aec8ebac705"/>
+        <semantic:outputDecision href="#_67cdde25-8a68-48a5-9688-a577520c9b78"/>
+        <semantic:outputDecision href="#_b562a3f5-92e7-44c2-8b27-9783c6a1e3cf"/>
+        <semantic:encapsulatedDecision href="#_12ee61f6-9e04-42cc-b0c0-79963906916d"/>
+        <semantic:encapsulatedDecision href="#_930a5a6e-b134-4657-9300-b3ffe11dfa49"/>
+        <semantic:encapsulatedDecision href="#_82c661ce-ad88-47f4-8d92-e46c4e795501"/>
+        <semantic:encapsulatedDecision href="#_10180170-19e8-4b87-b7f8-75dcaf8eefe1"/>
+        <semantic:encapsulatedDecision href="#_7b974428-6505-4497-9196-d745bc78e57c"/>
+        <semantic:encapsulatedDecision href="#_188dcaf0-9b24-485f-af4f-9c1fde1a4cc3"/>
+    </semantic:decisionService>
+    <semantic:decision id="_12ee61f6-9e04-42cc-b0c0-79963906916d" name="a list of numbers">
+        <semantic:variable name="a list of numbers" id="_36fb29fd-58a6-4283-8137-81160685f8e3" typeRef="Any"/>
+        <semantic:list id="_e6256be8-fb49-4781-903f-2f8915beb33b" typeRef="Any" triso:expressionId="_5da6f476-97f3-4ddc-917a-5c048cc1f72f">
+            <semantic:literalExpression id="_a3d753bf-3d4b-45d8-8191-84cbf12ecccb">
+                <semantic:text>1</semantic:text>
+            </semantic:literalExpression>
+            <semantic:literalExpression id="_9e9330b0-5735-4cd1-a5c8-28dfbff89fec">
+                <semantic:text>2</semantic:text>
+            </semantic:literalExpression>
+            <semantic:literalExpression id="_ef9e5ac0-ee78-4fa2-8f10-0b45102755f1">
+                <semantic:text>3</semantic:text>
+            </semantic:literalExpression>
+        </semantic:list>
+    </semantic:decision>
+    <semantic:decision id="_930a5a6e-b134-4657-9300-b3ffe11dfa49" name="real person">
+        <semantic:variable name="real person" id="_73c23dc0-e35c-42d6-ad53-03888fbc2116" typeRef="Any"/>
+        <semantic:context id="_9c8580e9-9c2a-4ffa-ac53-1f89476b702b" typeRef="Any" triso:expressionId="_906f2291-5d9f-491f-b05d-6bcf6d4f6137">
+            <semantic:contextEntry id="_6545463d-e7c5-4dd7-bac4-e71ae4ca0eb1">
+                <semantic:variable name="full name" id="_f13396c3-74bc-478a-bbbb-fc565941cd88" typeRef="Any"/>
+                <semantic:literalExpression id="_4bb24d51-6758-4667-ac2f-81ef909dc7af">
+                    <semantic:text>"John Doe"</semantic:text>
+                </semantic:literalExpression>
+            </semantic:contextEntry>
+            <semantic:contextEntry id="_cb5ff559-9a63-4ebc-ab68-94dc06d0a3d3">
+                <semantic:variable name="age" id="_77afdaff-42ba-49fe-ae80-2ee65be857d0" typeRef="Any"/>
+                <semantic:literalExpression id="_586b9772-d4a2-4c0e-a43e-0aaf7d8423ad">
+                    <semantic:text>47</semantic:text>
+                </semantic:literalExpression>
+            </semantic:contextEntry>
+        </semantic:context>
+    </semantic:decision>
+    <semantic:decision id="_82c661ce-ad88-47f4-8d92-e46c4e795501" name="no age person">
+        <semantic:variable name="no age person" id="_24eeb38f-273f-40f8-be71-219def5de1ed" typeRef="Any"/>
+        <semantic:context id="_6030fea5-08e9-45f1-aaa0-e210c3955787" typeRef="Any" triso:expressionId="_05649895-4bce-4d6c-b7ef-2062f0945720">
+            <semantic:contextEntry id="_7d3b8b21-5ed7-48e3-99a9-732c9db79c71">
+                <semantic:variable name="full name" id="_d3e9a80a-d60e-4dfc-9adc-0be571c4d501" typeRef="Any"/>
+                <semantic:literalExpression id="_e0f8e39e-b41d-46d4-8112-b7e1ac8ec4dd">
+                    <semantic:text>"John Doe"</semantic:text>
+                </semantic:literalExpression>
+            </semantic:contextEntry>
+        </semantic:context>
+    </semantic:decision>
+    <semantic:decision id="_10180170-19e8-4b87-b7f8-75dcaf8eefe1" name="person with address">
+        <semantic:variable name="person with address" id="_7141beef-f336-4772-8697-733265be3a12" typeRef="Any"/>
+        <semantic:context id="_47483d8c-7117-4537-ba1e-f5c04588c43e" typeRef="Any" triso:expressionId="_dcecfd07-2780-4ec2-965f-e7e100f3e5c1">
+            <semantic:contextEntry id="_b649ba34-75ae-4f07-8e31-55c1fbe96d5c">
+                <semantic:variable name="full name" id="_2cdca234-0618-432c-baab-ae0196ff10f2" typeRef="Any"/>
+                <semantic:literalExpression id="_579861b9-ea65-43d0-8c83-50fefe4abbf0">
+                    <semantic:text>"John Doe"</semantic:text>
+                </semantic:literalExpression>
+            </semantic:contextEntry>
+            <semantic:contextEntry id="_13df272f-09f8-4a99-85bb-432e01278b09">
+                <semantic:variable name="age" id="_c0311aab-a7d7-4445-b327-46cabb2a4eaa" typeRef="Any"/>
+                <semantic:literalExpression id="_2de2af19-a0de-4f84-b831-52f58058c3ef">
+                    <semantic:text>47</semantic:text>
+                </semantic:literalExpression>
+            </semantic:contextEntry>
+            <semantic:contextEntry id="_bbd3ad64-a1c2-45c9-9bff-f152ac1cf3d8">
+                <semantic:variable name="address" id="_5dbfb2b7-1fb5-4591-857f-4a2279bd5da1" typeRef="Any"/>
+                <semantic:literalExpression id="_0f403abf-d6f6-4800-a460-cdc5275bcc06">
+                    <semantic:text>"Milano, ITALY"</semantic:text>
+                </semantic:literalExpression>
+            </semantic:contextEntry>
+        </semantic:context>
+    </semantic:decision>
+    <semantic:decision id="_81162f44-1adc-4840-ae62-c62a3d09c109" name="is a list?">
+        <semantic:variable name="is a list?" id="_1309e620-0df7-4739-b2d8-7e420f781635" typeRef="Any"/>
+        <semantic:informationRequirement id="_bf520832-343f-4fa9-b368-cbb5d7f35955">
+            <semantic:requiredDecision href="#_12ee61f6-9e04-42cc-b0c0-79963906916d"/>
+        </semantic:informationRequirement>
+        <semantic:literalExpression id="_8916e216-dfad-4d1f-9185-53ceb26a6be1" typeRef="Any" triso:expressionId="_4baf8dde-cc45-40ac-ab5b-3b15327709b7">
+            <semantic:text>a list of numbers instance of tGrades</semantic:text>
+        </semantic:literalExpression>
+    </semantic:decision>
+    <semantic:decision id="_72990b7d-f156-4165-9668-dfd95ce3e6ef" name="is a base person?">
+        <semantic:variable name="is a base person?" id="_cdc7cd1b-8ef5-4c98-920d-774986c146e8" typeRef="Any"/>
+        <semantic:informationRequirement id="_2ffc8fc8-0943-4283-97dd-9dab605f1531">
+            <semantic:requiredDecision href="#_930a5a6e-b134-4657-9300-b3ffe11dfa49"/>
+        </semantic:informationRequirement>
+        <semantic:literalExpression id="_5a8062f7-4106-4e44-a56d-6484970822b0" typeRef="Any" triso:expressionId="_7f7d235f-34cf-4c24-a757-9ef2116a3aac">
+            <semantic:text>real person instance of base model.base person</semantic:text>
+        </semantic:literalExpression>
+    </semantic:decision>
+    <semantic:decision id="_1fdfe151-fb3a-4ef5-b2de-0b433da49263" name="is a this model person?">
+        <semantic:variable name="is a this model person?" id="_f909d45b-35db-4afc-9c09-5242b092fd13" typeRef="Any"/>
+        <semantic:informationRequirement id="_801c851f-7860-4118-9b81-66c616f39bca">
+            <semantic:requiredDecision href="#_930a5a6e-b134-4657-9300-b3ffe11dfa49"/>
+        </semantic:informationRequirement>
+        <semantic:literalExpression id="_fa4393c9-0834-4a05-82f0-54d983b4cd47" typeRef="Any" triso:expressionId="_d4f492c6-27d2-4e6a-982d-d7a129bf04b9">
+            <semantic:text>real person instance of this model person</semantic:text>
+        </semantic:literalExpression>
+    </semantic:decision>
+    <semantic:decision id="_d6ffb3d5-eef4-45d5-9a8a-184ac1aeada1" name="with missing age is a base person?">
+        <semantic:variable name="with missing age is a base person?" id="_23d3d6fa-206b-40f9-9599-0d45b050640f" typeRef="Any"/>
+        <semantic:informationRequirement id="_9909beed-ad4f-434e-9ce7-8a01ab16d34c">
+            <semantic:requiredDecision href="#_82c661ce-ad88-47f4-8d92-e46c4e795501"/>
+        </semantic:informationRequirement>
+        <semantic:literalExpression id="_a2d66cd5-32c4-42a7-a70e-df43643e4683" typeRef="Any" triso:expressionId="_bba71c50-8857-4fb0-8744-b54799300241">
+            <semantic:text>no age person instance of base model.base person</semantic:text>
+        </semantic:literalExpression>
+    </semantic:decision>
+    <semantic:decision id="_467ab082-d96a-436e-b129-66d1136eeb65" name="with missing age is a this model person?">
+        <semantic:variable name="with missing age is a this model person?" id="_a9b966c3-140e-4d32-b931-3913116482b7" typeRef="Any"/>
+        <semantic:informationRequirement id="_5e201bd0-893d-4f6f-817d-9f85c544268a">
+            <semantic:requiredDecision href="#_82c661ce-ad88-47f4-8d92-e46c4e795501"/>
+        </semantic:informationRequirement>
+        <semantic:literalExpression id="_9e06ebb9-9cc1-4568-927a-5aed25c8af17" typeRef="Any" triso:expressionId="_bca59fe3-2055-42ed-9f59-4eb003bde737">
+            <semantic:text>no age person instance of this model person</semantic:text>
+        </semantic:literalExpression>
+    </semantic:decision>
+    <semantic:decision id="_0b0ace91-6718-4a40-87a4-0c8cf2334fc9" name="with address is a this model person?">
+        <semantic:variable name="with address is a this model person?" id="_1453098f-123f-402d-af25-bbf7e0f5547c" typeRef="Any"/>
+        <semantic:informationRequirement id="_1d62f43a-0fd6-4101-8e76-01502f9f6f71">
+            <semantic:requiredDecision href="#_10180170-19e8-4b87-b7f8-75dcaf8eefe1"/>
+        </semantic:informationRequirement>
+        <semantic:literalExpression id="_9adedb36-010d-44ec-a910-0354c3580fc8" typeRef="Any" triso:expressionId="_0cecb4b3-bc9f-48a5-93a5-03bfe8c289fb">
+            <semantic:text>person with address instance of this model person</semantic:text>
+        </semantic:literalExpression>
+    </semantic:decision>
+    <semantic:decision id="_7b974428-6505-4497-9196-d745bc78e57c" name="yes no">
+        <semantic:variable name="yes no" id="_6998efe7-1ff5-45eb-b520-6a39f160dd9d" typeRef="Any"/>
+        <semantic:informationRequirement id="_0332e6b5-5c47-4de6-b872-10729ffdee7a">
+            <semantic:requiredDecision href="#_930a5a6e-b134-4657-9300-b3ffe11dfa49"/>
+        </semantic:informationRequirement>
+        <semantic:informationRequirement id="_5b5d9ee0-9979-4ba8-a233-6c2b68d69e95">
+            <semantic:requiredDecision href="#_82c661ce-ad88-47f4-8d92-e46c4e795501"/>
+        </semantic:informationRequirement>
+        <semantic:list id="_b9316ddb-30a3-44ba-b9f3-e3a3c92b4f1c" typeRef="Any" triso:expressionId="_5342d169-549c-4d93-8820-c8dc87a97623">
+            <semantic:literalExpression id="_3722a188-2445-4eca-baa0-f1e52702b9c1">
+                <semantic:text>real person</semantic:text>
+            </semantic:literalExpression>
+            <semantic:literalExpression id="_545cda07-f267-4c9d-90bd-b5d506350b40">
+                <semantic:text>no age person</semantic:text>
+            </semantic:literalExpression>
+        </semantic:list>
+    </semantic:decision>
+    <semantic:decision id="_188dcaf0-9b24-485f-af4f-9c1fde1a4cc3" name="yes yes">
+        <semantic:variable name="yes yes" id="_017ab2bd-9de7-41b1-b094-43bb16844f5a" typeRef="Any"/>
+        <semantic:informationRequirement id="_43a85018-7245-4fd0-ab30-11a531238c4d">
+            <semantic:requiredDecision href="#_930a5a6e-b134-4657-9300-b3ffe11dfa49"/>
+        </semantic:informationRequirement>
+        <semantic:informationRequirement id="_0590970b-a337-4a2e-b61f-dfe054926901">
+            <semantic:requiredDecision href="#_10180170-19e8-4b87-b7f8-75dcaf8eefe1"/>
+        </semantic:informationRequirement>
+        <semantic:list id="_5a3fb45d-4cba-4668-9860-46f5d31b4c09" typeRef="Any" triso:expressionId="_33a511e5-1a0b-476d-bf19-d4b7a3a3ee32">
+            <semantic:literalExpression id="_3d63a359-3b38-4a51-a8bf-b2eac14fb307">
+                <semantic:text>real person</semantic:text>
+            </semantic:literalExpression>
+            <semantic:literalExpression id="_8095a3e6-5d00-4427-a591-3570d60ff0cb">
+                <semantic:text>person with address</semantic:text>
+            </semantic:literalExpression>
+        </semantic:list>
+    </semantic:decision>
+    <semantic:decision id="_06f1a6e2-8b91-4fea-82a4-534f0df080d3" name="is yes no persons?">
+        <semantic:variable name="is yes no persons?" id="_5350ceb6-4f8e-4c4a-88e6-48d10c1a589f" typeRef="Any"/>
+        <semantic:informationRequirement id="_943d99a7-5c5e-49f2-bf35-c6952a5d8716">
+            <semantic:requiredDecision href="#_7b974428-6505-4497-9196-d745bc78e57c"/>
+        </semantic:informationRequirement>
+        <semantic:literalExpression id="_5a9f9d57-5586-4255-a760-fb3141c1f605" typeRef="Any" triso:expressionId="_e754a636-65dc-4531-bf90-5e53c944e28c">
+            <semantic:text>yes no instance of persons</semantic:text>
+        </semantic:literalExpression>
+    </semantic:decision>
+    <semantic:decision id="_987a3c94-b3c0-4747-a9a5-0aec8ebac705" name="is yes yes persons?">
+        <semantic:variable name="is yes yes persons?" id="_077a682b-4f06-4129-bcdc-a494eb56ce3d" typeRef="Any"/>
+        <semantic:informationRequirement id="_ff4d267b-78fd-45cf-a9ad-a90bd1968ea0">
+            <semantic:requiredDecision href="#_188dcaf0-9b24-485f-af4f-9c1fde1a4cc3"/>
+        </semantic:informationRequirement>
+        <semantic:literalExpression id="_31dd54c0-ee00-42fb-a052-404f26671ead" typeRef="Any" triso:expressionId="_03d22ba2-8e9f-4980-972d-00da54f0c58a">
+            <semantic:text>yes yes instance of persons</semantic:text>
+        </semantic:literalExpression>
+    </semantic:decision>
+    <semantic:decision id="_67cdde25-8a68-48a5-9688-a577520c9b78" name="is yes no collection of ps?">
+        <semantic:variable name="is yes no collection of ps?" id="_48a8b96d-f37a-4a90-be79-6821087b4184" typeRef="Any"/>
+        <semantic:informationRequirement id="_414775c4-faab-4773-8ef0-daa8985e76bc">
+            <semantic:requiredDecision href="#_7b974428-6505-4497-9196-d745bc78e57c"/>
+        </semantic:informationRequirement>
+        <semantic:literalExpression id="_4ace2b3b-06cd-4393-8bd8-4cd7fc0790be" typeRef="Any" triso:expressionId="_1bb398a7-4dd0-4734-87fe-47b7ab62e7fb">
+            <semantic:text>yes no instance of collection of this model person</semantic:text>
+        </semantic:literalExpression>
+    </semantic:decision>
+    <semantic:decision id="_b562a3f5-92e7-44c2-8b27-9783c6a1e3cf" name="is yes yes collection of ps?">
+        <semantic:variable name="is yes yes collection of ps?" id="_fbc1d42e-0953-4ef0-a2aa-2606be9d5fa7" typeRef="Any"/>
+        <semantic:informationRequirement id="_b9378673-b8b8-40cd-a5f4-09a4279af6aa">
+            <semantic:requiredDecision href="#_188dcaf0-9b24-485f-af4f-9c1fde1a4cc3"/>
+        </semantic:informationRequirement>
+        <semantic:literalExpression id="_ed0e7260-7c99-4de2-87b3-ae1decb50b22" typeRef="Any" triso:expressionId="_334085d7-60e8-4be8-920e-a687ae75a9e2">
+            <semantic:text>yes yes instance of collection of this model person</semantic:text>
+        </semantic:literalExpression>
+    </semantic:decision>
+    <dmndi:DMNDI>
+        <dmndi:DMNDiagram id="_18d3ccc7-ec3c-4219-bbf0-1a4c441c7733" triso:modelElementRef="_83c2b6ad-afab-44fe-9aec-7f8f5d92b427" name="Page 1">
+            <di:extension/>
+            <dmndi:Size height="1050" width="2156.5"/>
+            <dmndi:DMNShape id="_c86e3680-c614-4773-b151-04700ae895e5" dmnElementRef="_12ee61f6-9e04-42cc-b0c0-79963906916d">
+                <dc:Bounds x="729.5" y="152" width="153" height="60"/>
+                <dmndi:DMNLabel sharedStyle="LS_153cb253-2904-468e-b6dc-42bc016c0ddd_0" trisodmn:defaultBounds="true"/>
+            </dmndi:DMNShape>
+            <dmndi:DMNShape id="_901e4bc4-7439-43c4-99c6-6c545e9f912b" dmnElementRef="_930a5a6e-b134-4657-9300-b3ffe11dfa49">
+                <dc:Bounds x="729.5" y="272" width="153" height="60"/>
+                <dmndi:DMNLabel sharedStyle="LS_153cb253-2904-468e-b6dc-42bc016c0ddd_0" trisodmn:defaultBounds="true"/>
+            </dmndi:DMNShape>
+            <dmndi:DMNShape id="_900664d7-37a3-4d25-9d2b-80d2f91e204d" dmnElementRef="_82c661ce-ad88-47f4-8d92-e46c4e795501">
+                <dc:Bounds x="729.5" y="428" width="153" height="60"/>
+                <dmndi:DMNLabel sharedStyle="LS_153cb253-2904-468e-b6dc-42bc016c0ddd_0" trisodmn:defaultBounds="true"/>
+            </dmndi:DMNShape>
+            <dmndi:DMNShape id="_edf8ca40-a76d-45fe-9f04-5db6189b7cbd" dmnElementRef="_10180170-19e8-4b87-b7f8-75dcaf8eefe1">
+                <dc:Bounds x="729.5" y="571" width="153" height="60"/>
+                <dmndi:DMNLabel sharedStyle="LS_153cb253-2904-468e-b6dc-42bc016c0ddd_0" trisodmn:defaultBounds="true"/>
+            </dmndi:DMNShape>
+            <dmndi:DMNShape id="_f0553137-bffd-49be-bc93-93f2a7b53c18" dmnElementRef="_81162f44-1adc-4840-ae62-c62a3d09c109">
+                <dc:Bounds x="954.5" y="81" width="153" height="60"/>
+                <dmndi:DMNLabel sharedStyle="LS_153cb253-2904-468e-b6dc-42bc016c0ddd_0" trisodmn:defaultBounds="true"/>
+            </dmndi:DMNShape>
+            <dmndi:DMNShape id="_1c557a7a-8467-4d3b-8a90-df522a5fa829" dmnElementRef="_72990b7d-f156-4165-9668-dfd95ce3e6ef">
+                <dc:Bounds x="954.5" y="205" width="153" height="60"/>
+                <dmndi:DMNLabel sharedStyle="LS_153cb253-2904-468e-b6dc-42bc016c0ddd_0" trisodmn:defaultBounds="true"/>
+            </dmndi:DMNShape>
+            <dmndi:DMNShape id="_6f9172d9-9cf0-4792-9181-77c0a97d0249" dmnElementRef="_1fdfe151-fb3a-4ef5-b2de-0b433da49263">
+                <dc:Bounds x="954.5" y="302" width="153" height="60"/>
+                <dmndi:DMNLabel sharedStyle="LS_153cb253-2904-468e-b6dc-42bc016c0ddd_0" trisodmn:defaultBounds="true"/>
+            </dmndi:DMNShape>
+            <dmndi:DMNShape id="_848cdb49-c32c-46d2-8e21-92a1d3bed96d" dmnElementRef="_d6ffb3d5-eef4-45d5-9a8a-184ac1aeada1">
+                <dc:Bounds x="954.5" y="391" width="153" height="60"/>
+                <dmndi:DMNLabel sharedStyle="LS_153cb253-2904-468e-b6dc-42bc016c0ddd_0" trisodmn:defaultBounds="true"/>
+            </dmndi:DMNShape>
+            <dmndi:DMNShape id="_d1a8d790-78cb-48c7-82f7-1ab439fae32b" dmnElementRef="_467ab082-d96a-436e-b129-66d1136eeb65">
+                <dc:Bounds x="954.5" y="479" width="153" height="60"/>
+                <dmndi:DMNLabel sharedStyle="LS_153cb253-2904-468e-b6dc-42bc016c0ddd_0" trisodmn:defaultBounds="true"/>
+            </dmndi:DMNShape>
+            <dmndi:DMNShape id="_5d384b8a-b046-4d22-b161-7b07ed6b5f1a" dmnElementRef="_0b0ace91-6718-4a40-87a4-0c8cf2334fc9">
+                <dc:Bounds x="954.5" y="571" width="153" height="60"/>
+                <dmndi:DMNLabel sharedStyle="LS_153cb253-2904-468e-b6dc-42bc016c0ddd_0" trisodmn:defaultBounds="true"/>
+            </dmndi:DMNShape>
+            <dmndi:DMNShape id="_31b84cef-fb0e-47cf-9871-77897c7ef1c0" dmnElementRef="_7b974428-6505-4497-9196-d745bc78e57c">
+                <dc:Bounds x="512" y="338" width="153" height="60"/>
+                <dmndi:DMNLabel sharedStyle="LS_153cb253-2904-468e-b6dc-42bc016c0ddd_0" trisodmn:defaultBounds="true"/>
+            </dmndi:DMNShape>
+            <dmndi:DMNShape id="_4743e0bf-14c6-4a3f-9828-7f924765978c" dmnElementRef="_188dcaf0-9b24-485f-af4f-9c1fde1a4cc3">
+                <dc:Bounds x="512" y="479" width="153" height="60"/>
+                <dmndi:DMNLabel sharedStyle="LS_153cb253-2904-468e-b6dc-42bc016c0ddd_0" trisodmn:defaultBounds="true"/>
+            </dmndi:DMNShape>
+            <dmndi:DMNShape id="_298adc45-53ac-4a3a-83fc-50ea5401111a" dmnElementRef="_06f1a6e2-8b91-4fea-82a4-534f0df080d3">
+                <dc:Bounds x="273.5" y="255" width="153" height="60"/>
+                <dmndi:DMNLabel sharedStyle="LS_153cb253-2904-468e-b6dc-42bc016c0ddd_0" trisodmn:defaultBounds="true"/>
+            </dmndi:DMNShape>
+            <dmndi:DMNShape id="_9578352b-4f37-4e0f-b3f8-b67f1e740bdf" dmnElementRef="_987a3c94-b3c0-4747-a9a5-0aec8ebac705">
+                <dc:Bounds x="273.5" y="428" width="153" height="60"/>
+                <dmndi:DMNLabel sharedStyle="LS_153cb253-2904-468e-b6dc-42bc016c0ddd_0" trisodmn:defaultBounds="true"/>
+            </dmndi:DMNShape>
+            <dmndi:DMNShape id="_0ef7331e-c78d-4305-9cd8-7c780c00aa2e" dmnElementRef="_67cdde25-8a68-48a5-9688-a577520c9b78">
+                <dc:Bounds x="273.5" y="338" width="153" height="60"/>
+                <dmndi:DMNLabel sharedStyle="LS_153cb253-2904-468e-b6dc-42bc016c0ddd_0" trisodmn:defaultBounds="true"/>
+            </dmndi:DMNShape>
+            <dmndi:DMNShape id="_214236f8-a602-452e-84b5-bb74476e8c46" dmnElementRef="_b562a3f5-92e7-44c2-8b27-9783c6a1e3cf">
+                <dc:Bounds x="273.5" y="523" width="153" height="60"/>
+                <dmndi:DMNLabel sharedStyle="LS_153cb253-2904-468e-b6dc-42bc016c0ddd_0" trisodmn:defaultBounds="true"/>
+            </dmndi:DMNShape>
+            <dmndi:DMNEdge id="_904e4cfe-f556-4e61-98ad-f1ee96786746" dmnElementRef="_bf520832-343f-4fa9-b368-cbb5d7f35955">
+                <di:waypoint x="882.5" y="202"/>
+                <di:waypoint x="1011" y="81"/>
+                <dmndi:DMNLabel sharedStyle="LS_153cb253-2904-468e-b6dc-42bc016c0ddd_0"/>
+            </dmndi:DMNEdge>
+            <dmndi:DMNEdge id="_7ced283e-6980-4cb0-8897-feb839769923" dmnElementRef="_2ffc8fc8-0943-4283-97dd-9dab605f1531">
+                <di:waypoint x="882.5" y="302"/>
+                <di:waypoint x="954.5" y="255"/>
+                <dmndi:DMNLabel sharedStyle="LS_153cb253-2904-468e-b6dc-42bc016c0ddd_0"/>
+            </dmndi:DMNEdge>
+            <dmndi:DMNEdge id="_f42fb787-51d6-4207-a670-1dfe533d1435" dmnElementRef="_801c851f-7860-4118-9b81-66c616f39bca">
+                <di:waypoint x="882.5" y="302"/>
+                <di:waypoint x="954.5" y="352"/>
+                <dmndi:DMNLabel sharedStyle="LS_153cb253-2904-468e-b6dc-42bc016c0ddd_0"/>
+            </dmndi:DMNEdge>
+            <dmndi:DMNEdge id="_6d9f51fa-80be-412b-b681-52d24b768d0c" dmnElementRef="_9909beed-ad4f-434e-9ce7-8a01ab16d34c">
+                <di:waypoint x="882.5" y="468"/>
+                <di:waypoint x="954.5" y="441"/>
+                <dmndi:DMNLabel sharedStyle="LS_153cb253-2904-468e-b6dc-42bc016c0ddd_0"/>
+            </dmndi:DMNEdge>
+            <dmndi:DMNEdge id="_bdf3af5e-dc07-496c-9c6b-0eed544a8ba9" dmnElementRef="_5e201bd0-893d-4f6f-817d-9f85c544268a">
+                <di:waypoint x="882.5" y="468"/>
+                <di:waypoint x="954.5" y="529"/>
+                <dmndi:DMNLabel sharedStyle="LS_153cb253-2904-468e-b6dc-42bc016c0ddd_0"/>
+            </dmndi:DMNEdge>
+            <dmndi:DMNEdge id="_97877f9d-110b-4a8f-a6d4-301802430da3" dmnElementRef="_1d62f43a-0fd6-4101-8e76-01502f9f6f71">
+                <di:waypoint x="882.5" y="601"/>
+                <di:waypoint x="954.5" y="621"/>
+                <dmndi:DMNLabel sharedStyle="LS_153cb253-2904-468e-b6dc-42bc016c0ddd_0"/>
+            </dmndi:DMNEdge>
+            <dmndi:DMNEdge id="_b45191ce-d1a2-4ba5-8b10-476d9cc83c65" dmnElementRef="_0332e6b5-5c47-4de6-b872-10729ffdee7a">
+                <di:waypoint x="729.5" y="292"/>
+                <di:waypoint x="665" y="388"/>
+                <dmndi:DMNLabel sharedStyle="LS_153cb253-2904-468e-b6dc-42bc016c0ddd_0"/>
+            </dmndi:DMNEdge>
+            <dmndi:DMNEdge id="_c28df1b3-d8a5-45cc-b93e-0a6bdc25fa2a" dmnElementRef="_5b5d9ee0-9979-4ba8-a233-6c2b68d69e95">
+                <di:waypoint x="729.5" y="448"/>
+                <di:waypoint x="665" y="388"/>
+                <dmndi:DMNLabel sharedStyle="LS_153cb253-2904-468e-b6dc-42bc016c0ddd_0"/>
+            </dmndi:DMNEdge>
+            <dmndi:DMNEdge id="_8e05d16f-4031-4abe-b90d-bf6591b3a615" dmnElementRef="_43a85018-7245-4fd0-ab30-11a531238c4d">
+                <di:waypoint x="729.5" y="292"/>
+                <di:waypoint x="665" y="509"/>
+                <dmndi:DMNLabel sharedStyle="LS_153cb253-2904-468e-b6dc-42bc016c0ddd_0"/>
+            </dmndi:DMNEdge>
+            <dmndi:DMNEdge id="_4b01bcd2-108a-4cc0-ab42-b1fcdf597aa0" dmnElementRef="_0590970b-a337-4a2e-b61f-dfe054926901">
+                <di:waypoint x="729.5" y="621"/>
+                <di:waypoint x="665" y="509"/>
+                <dmndi:DMNLabel sharedStyle="LS_153cb253-2904-468e-b6dc-42bc016c0ddd_0"/>
+            </dmndi:DMNEdge>
+            <dmndi:DMNEdge id="_71c9a295-b54c-481d-8859-70b60b73cf60" dmnElementRef="_943d99a7-5c5e-49f2-bf35-c6952a5d8716">
+                <di:waypoint x="512" y="358"/>
+                <di:waypoint x="426.5" y="305"/>
+                <dmndi:DMNLabel sharedStyle="LS_153cb253-2904-468e-b6dc-42bc016c0ddd_0"/>
+            </dmndi:DMNEdge>
+            <dmndi:DMNEdge id="_3795539a-bddf-45c9-a405-6386e4d64ae5" dmnElementRef="_ff4d267b-78fd-45cf-a9ad-a90bd1968ea0">
+                <di:waypoint x="512" y="499"/>
+                <di:waypoint x="426.5" y="478"/>
+                <dmndi:DMNLabel sharedStyle="LS_153cb253-2904-468e-b6dc-42bc016c0ddd_0"/>
+            </dmndi:DMNEdge>
+            <dmndi:DMNEdge id="_59ba3541-fa21-41cc-a8bc-a449c73e1b14" dmnElementRef="_414775c4-faab-4773-8ef0-daa8985e76bc">
+                <di:waypoint x="512" y="368"/>
+                <di:waypoint x="426.5" y="368"/>
+                <dmndi:DMNLabel sharedStyle="LS_153cb253-2904-468e-b6dc-42bc016c0ddd_0"/>
+            </dmndi:DMNEdge>
+            <dmndi:DMNEdge id="_aa61ec4e-85a7-41af-b00c-a5a116ea8c13" dmnElementRef="_b9378673-b8b8-40cd-a5f4-09a4279af6aa">
+                <di:waypoint x="512" y="509"/>
+                <di:waypoint x="426.5" y="553"/>
+                <dmndi:DMNLabel sharedStyle="LS_153cb253-2904-468e-b6dc-42bc016c0ddd_0"/>
+            </dmndi:DMNEdge>
+        </dmndi:DMNDiagram>
+        <dmndi:DMNStyle id="LS_153cb253-2904-468e-b6dc-42bc016c0ddd_0" fontFamily="arial,helvetica,sans-serif" fontSize="11" fontBold="false" fontItalic="false" fontUnderline="false" fontStrikeThrough="false"/>
+    </dmndi:DMNDI>
+</semantic:definitions>

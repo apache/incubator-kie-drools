@@ -19,6 +19,7 @@ package org.drools.modelcompiler.util;
 import java.io.InputStream;
 import java.io.Serializable;
 import java.lang.invoke.SerializedLambda;
+import java.lang.reflect.Field;
 import java.lang.reflect.Method;
 import java.util.HashMap;
 import java.util.LinkedHashMap;
@@ -46,7 +47,7 @@ public class LambdaIntrospector implements LambdaPrinter {
     @Override
     public String getLambdaFingerprint(Object lambda) {
         if(lambda.toString().equals("INSTANCE")) { // Materialized lambda
-            return lambda.getClass().getCanonicalName();
+            return getExpressionHash(lambda);
         }
 
         if (lambda instanceof IntrospectableLambda ) {
@@ -63,6 +64,16 @@ public class LambdaIntrospector implements LambdaPrinter {
             }
         }
         return result;
+    }
+
+    private String getExpressionHash(Object lambda) {
+        Field expressionHash;
+        try {
+            expressionHash = lambda.getClass().getDeclaredField("EXPRESSION_HASH");
+            return (String) expressionHash.get(lambda);
+        } catch (NoSuchFieldException | SecurityException | IllegalArgumentException | IllegalAccessException e) {
+            throw new RuntimeException( e );
+        }
     }
 
     private static SerializedLambda extractLambda( Serializable lambda ) {

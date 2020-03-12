@@ -23,6 +23,7 @@ import com.thoughtworks.xstream.converters.MarshallingContext;
 import com.thoughtworks.xstream.io.HierarchicalStreamReader;
 import com.thoughtworks.xstream.io.HierarchicalStreamWriter;
 import org.kie.dmn.model.api.DMNModelInstrumentedBase;
+import org.kie.dmn.model.api.FunctionItem;
 import org.kie.dmn.model.api.ItemDefinition;
 import org.kie.dmn.model.api.UnaryTests;
 import org.kie.dmn.model.v1_3.TItemDefinition;
@@ -33,6 +34,7 @@ public class ItemDefinitionConverter extends NamedElementConverter {
     public static final String TYPE_REF = "typeRef";
     public static final String TYPE_LANGUAGE = "typeLanguage";
     public static final String IS_COLLECTION = "isCollection";
+    public static final String FUNCTION_ITEM = "functionItem";
     
     @Override
     protected void assignChildElement(Object parent, String nodeName, Object child) {
@@ -44,6 +46,8 @@ public class ItemDefinitionConverter extends NamedElementConverter {
             id.setAllowedValues((UnaryTests) child);
         } else if (ITEM_COMPONENT.equals(nodeName)) {
             id.getItemComponent().add((ItemDefinition) child);
+        } else if (FUNCTION_ITEM.equals(nodeName)) {
+            id.setFunctionItem((FunctionItem) child);
         } else {
             super.assignChildElement(parent, nodeName, child);
         }
@@ -70,6 +74,9 @@ public class ItemDefinitionConverter extends NamedElementConverter {
         if (id.getAllowedValues() != null) writeChildrenNode(writer, context, id.getAllowedValues(), ALLOWED_VALUES);
         for ( ItemDefinition ic : id.getItemComponent() ) {
             writeChildrenNode(writer, context, ic, ITEM_COMPONENT);
+        }
+        if (id.getFunctionItem() != null) {
+            writeChildrenNode(writer, context, id.getFunctionItem(), FUNCTION_ITEM);
         }
     }
 

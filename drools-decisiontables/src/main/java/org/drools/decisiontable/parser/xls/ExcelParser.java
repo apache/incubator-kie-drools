@@ -25,7 +25,6 @@ import java.util.List;
 import java.util.Locale;
 import java.util.Map;
 
-import org.apache.poi.openxml4j.exceptions.InvalidFormatException;
 import org.apache.poi.ss.usermodel.Cell;
 import org.apache.poi.ss.usermodel.CellType;
 import org.apache.poi.ss.usermodel.CellValue;
@@ -83,9 +82,6 @@ public class ExcelParser
     public void parseFile( InputStream inStream ) {
         try {
             parseWorkbook( WorkbookFactory.create( inStream ) );
-        } catch ( InvalidFormatException e ) {
-            throw new DecisionTableParseException( "An error occurred opening the workbook. It is possible that the encoding of the document did not match the encoding of the reader.",
-                                                   e );
         } catch ( IOException e ) {
             throw new DecisionTableParseException( "Failed to open Excel stream, " + "please check that the content is xls97 format.",
                                                    e );
@@ -95,9 +91,6 @@ public class ExcelParser
     public void parseFile( File file ) {
         try {
             parseWorkbook( WorkbookFactory.create( file, (String)null, true ) );
-        } catch ( InvalidFormatException e ) {
-            throw new DecisionTableParseException( "An error occurred opening the workbook. It is possible that the encoding of the document did not match the encoding of the reader.",
-                                                   e );
         } catch ( IOException e ) {
             throw new DecisionTableParseException( "Failed to open Excel stream, " + "please check that the content is xls97 format.",
                                                    e );

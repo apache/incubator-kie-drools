@@ -66,7 +66,7 @@ public class MisleadingRulesTest extends AbstractDTAnalysisTest {
         // Assert OVERLAPs same values
         assertThat(analysis.getOverlaps(), contains(overlaps.toArray()));
 
-        // MaskedRules count.
+        // MisleadingRules count.
         assertThat(analysis.getMisleadingRules(), hasSize(1));
         List<MisleadingRule> misleadingRules = Arrays.asList(new MisleadingRule(4, 2));
         assertThat(misleadingRules, hasSize(1));

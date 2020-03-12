@@ -25,8 +25,6 @@ import java.util.function.Function;
 import org.kie.dmn.api.core.DMNType;
 import org.kie.dmn.core.impl.BaseDMNTypeImpl;
 import org.kie.dmn.feel.lang.CompilerContext;
-import org.kie.dmn.feel.lang.Type;
-import org.kie.dmn.feel.lang.types.BuiltInType;
 
 public class DMNCompilerContext {
 
@@ -67,17 +65,10 @@ public class DMNCompilerContext {
         CompilerContext compilerContext = feelHelper.newCompilerContext();
         compilerContext.getListeners().clear();
         for ( Map.Entry<String, DMNType> entry : this.getVariables().entrySet() ) {
-            compilerContext.addInputVariableType(
-                    entry.getKey(),
-                    dmnToFeelType((BaseDMNTypeImpl) entry.getValue())
-            );
+            compilerContext.addInputVariableType(entry.getKey(),
+                                                 ((BaseDMNTypeImpl) entry.getValue()).getFeelType());
         }
         return compilerContext;
-    }
-
-    private static Type dmnToFeelType(BaseDMNTypeImpl v) {
-        if (v.isCollection()) return BuiltInType.LIST;
-        else return v.getFeelType();
     }
 
     public DMNFEELHelper getFeelHelper() {

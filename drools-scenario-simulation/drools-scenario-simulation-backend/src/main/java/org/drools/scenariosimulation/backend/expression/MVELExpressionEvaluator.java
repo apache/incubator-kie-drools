@@ -16,19 +16,23 @@
 
 package org.drools.scenariosimulation.backend.expression;
 
-import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 
+import com.fasterxml.jackson.databind.JsonNode;
 import org.drools.core.util.MVELSafeHelper;
+import org.drools.scenariosimulation.backend.util.JsonUtils;
 import org.kie.soup.project.datamodel.commons.util.MVELEvaluator;
 import org.mvel2.MVEL;
 import org.mvel2.ParserConfiguration;
 import org.mvel2.ParserContext;
 
 import static org.drools.scenariosimulation.api.utils.ConstantsHolder.ACTUAL_VALUE_IDENTIFIER;
+import static org.drools.scenariosimulation.api.utils.ConstantsHolder.MALFORMED_MVEL_EXPRESSION;
 import static org.drools.scenariosimulation.api.utils.ConstantsHolder.MVEL_ESCAPE_SYMBOL;
+import static org.drools.scenariosimulation.backend.expression.BaseExpressionOperator.compareValues;
 import static org.drools.scenariosimulation.backend.util.ScenarioBeanUtil.loadClass;
 
 public class MVELExpressionEvaluator implements ExpressionEvaluator {
@@ -44,33 +48,25 @@ public class MVELExpressionEvaluator implements ExpressionEvaluator {
     }
 
     @Override
-    public boolean evaluateUnaryExpression(Object rawExpression, Object resultValue, Class<?> resultClass) {
-        if (!(rawExpression instanceof String)) {
-            String rawClass = rawExpression == null ? null : rawExpression.getClass().getCanonicalName();
-            throw new IllegalArgumentException("Raw expression should be a String and not a '" + rawClass + "'");
-        }
-
+    public boolean evaluateUnaryExpression(String rawExpression, Object resultValue, Class<?> resultClass) {
         Map<String, Object> params = new HashMap<>();
         params.put(ACTUAL_VALUE_IDENTIFIER, resultValue);
 
-        Object expressionResult = compileAndExecute((String) rawExpression, params);
+        Object expressionResult = compileAndExecute(rawExpression, params);
         if (!(expressionResult instanceof Boolean)) {
             // try to compare via compare/equals operators
-            return BaseExpressionOperator.EQUALS.eval(expressionResult, resultValue, resultClass, classLoader);
+            return compareValues(expressionResult, resultValue);
         }
         return (boolean) expressionResult;
     }
 
     @Override
-    public Object evaluateLiteralExpression(String className, List<String> genericClasses, Object rawExpression) {
-        if (!(rawExpression instanceof String)) {
-            throw new IllegalArgumentException("Raw expression should be a String and not a '" + rawExpression.getClass().getCanonicalName() + "'");
-        }
-        Object expressionResult = compileAndExecute((String) rawExpression, Collections.emptyMap());
+    public Object evaluateLiteralExpression(String rawExpression, String className, List<String> genericClasses) {
+        Object expressionResult = compileAndExecute(rawExpression, new HashMap<>());
         Class<Object> requiredClass = loadClass(className, classLoader);
         if (expressionResult != null && !requiredClass.isAssignableFrom(expressionResult.getClass())) {
             throw new IllegalArgumentException("Cannot assign a '" + expressionResult.getClass().getCanonicalName() +
-                                                       "' to '" + requiredClass.getCanonicalName());
+                                                       "' to '" + requiredClass.getCanonicalName() + "'");
         }
         return expressionResult;
     }
@@ -83,7 +79,8 @@ public class MVELExpressionEvaluator implements ExpressionEvaluator {
     protected Object compileAndExecute(String rawExpression, Map<String, Object> params) {
         ParserContext ctx = new ParserContext(this.config);
         for (Map.Entry<String, Object> entry : params.entrySet()) {
-            ctx.addVariable(entry.getKey(), entry.getValue().getClass());
+            Class type = entry.getValue() != null ? entry.getValue().getClass() : null;
+            ctx.addVariable(entry.getKey(), type);
         }
 
         String expression = cleanExpression(rawExpression);
@@ -91,10 +88,28 @@ public class MVELExpressionEvaluator implements ExpressionEvaluator {
         return evaluator.executeExpression(compiledExpression, params);
     }
 
+    /**
+     * The clean works in the following ways:
+     * - NOT COLLECTIONS CASE: The given rawExpression without MVEL_ESCAPE_SYMBOL ('#');
+     * - COLLECTION CASE: Retrieving the value from rawExpression, which is a JSON String node in this case, removing
+     *                    the MVEL_ESCAPE_SYMBOL ('#');
+     * In both cases, the given String must start with MVEL_ESCAPE_SYMBOL.
+     * All other cases are wrong: a <code>IllegalArgumentException</code> is thrown.
+     * @param rawExpression
+     * @return
+     */
     protected String cleanExpression(String rawExpression) {
-        if (!rawExpression.trim().startsWith(MVEL_ESCAPE_SYMBOL)) {
-            throw new IllegalArgumentException("Malformed MVEL expression '" + rawExpression + "'");
+        if (rawExpression != null && rawExpression.trim().startsWith(MVEL_ESCAPE_SYMBOL)) {
+            return rawExpression.replaceFirst(MVEL_ESCAPE_SYMBOL, "");
         }
-        return rawExpression.replaceFirst(MVEL_ESCAPE_SYMBOL, "");
+        Optional<JsonNode> optionalJSONNode = JsonUtils.convertFromStringToJSONNode(rawExpression);
+        if (optionalJSONNode.isPresent()) {
+            JsonNode jsonNode = optionalJSONNode.get();
+            if (jsonNode.isTextual() && jsonNode.asText() != null && jsonNode.asText().trim().startsWith(MVEL_ESCAPE_SYMBOL)) {
+                String expression = jsonNode.asText();
+                return expression.replaceFirst(MVEL_ESCAPE_SYMBOL, "");
+            }
+        }
+        throw new IllegalArgumentException(MALFORMED_MVEL_EXPRESSION + "'" + rawExpression + "'");
     }
 }

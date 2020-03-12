@@ -24,7 +24,6 @@
 package org.drools.mvel.parser.ast.expr;
 
 import java.math.BigInteger;
-import javax.annotation.Generated;
 
 import com.github.javaparser.TokenRange;
 import com.github.javaparser.ast.AllFieldsConstructor;
@@ -52,7 +51,6 @@ public final class BigIntegerLiteralExpr extends LiteralStringValueExpr {
     /**
      * This constructor is used by the parser and is considered private.
      */
-    @Generated("com.github.javaparser.generator.core.node.MainConstructorGenerator")
     public BigIntegerLiteralExpr(TokenRange tokenRange, String value) {
         super(tokenRange, value);
         customInitialization();
@@ -62,7 +60,7 @@ public final class BigIntegerLiteralExpr extends LiteralStringValueExpr {
         this(null, value.toString());
     }
 
-@Override
+    @Override
     public <R, A> R accept(GenericVisitor<R, A> v, A arg) {
         return ((DrlGenericVisitor<R, A>)v).visit(this, arg);
     }
@@ -73,7 +71,6 @@ public final class BigIntegerLiteralExpr extends LiteralStringValueExpr {
     }
 
     @Override
-    @Generated("com.github.javaparser.generator.core.node.RemoveMethodGenerator")
     public boolean remove(Node node) {
         if (node == null)
             return false;
@@ -98,13 +95,11 @@ public final class BigIntegerLiteralExpr extends LiteralStringValueExpr {
     }
 
     @Override
-    @Generated("com.github.javaparser.generator.core.node.CloneGenerator")
     public BigIntegerLiteralExpr clone() {
         return (BigIntegerLiteralExpr) accept(new CloneVisitor(), null);
     }
 
     @Override
-    @Generated("com.github.javaparser.generator.core.node.GetMetaModelGenerator")
     public LongLiteralExprMetaModel getMetaModel() {
         return JavaParserMetaModel.longLiteralExprMetaModel;
     }

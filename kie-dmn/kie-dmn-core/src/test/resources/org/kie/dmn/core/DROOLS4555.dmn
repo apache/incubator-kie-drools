@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<semantic:definitions xmlns:semantic="http://www.omg.org/spec/DMN/20180521/MODEL/"  xmlns:triso="http://www.trisotech.com/2015/triso/modeling"  xmlns:dmndi="http://www.omg.org/spec/DMN/20180521/DMNDI/"  xmlns:di="http://www.omg.org/spec/DMN/20180521/DI/"  xmlns:dc="http://www.omg.org/spec/DMN/20180521/DC/"  xmlns:trisodmn="http://www.trisotech.com/2016/triso/dmn"  xmlns:feel="http://www.omg.org/spec/DMN/20180521/FEEL/"  xmlns:tc="http://www.omg.org/spec/DMN/20160719/testcase"  xmlns:drools="http://www.drools.org/kie/dmn/1.1"  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"  xmlns:rss="http://purl.org/rss/2.0/"  xmlns:openapi="https://openapis.org/omg/extension/1.0"  xmlns:xsd="http://www.w3.org/2001/XMLSchema"  xmlns="http://www.trisotech.com/definitions/_e1645e17-7e28-4226-ad60-95e6f81cb50b" id="_e1645e17-7e28-4226-ad60-95e6f81cb50b" name="Drawing 1" namespace="http://www.trisotech.com/definitions/_e1645e17-7e28-4226-ad60-95e6f81cb50b" exporter="DMN Modeler" exporterVersion="6.6.0" triso:logoChoice="Default">
+    <semantic:businessKnowledgeModel id="_3c0224ed-560b-486c-9bb2-509fc6d38fd0" name="my function">
+        <semantic:variable name="my function" id="_d3e25015-f43b-4613-bc23-e41e92744e42" typeRef="Any"/>
+        <semantic:encapsulatedLogic id="_b7d2e153-af74-4c6c-bcbc-4cdb805e7997" kind="FEEL" typeRef="Any" triso:expressionId="_761fe70a-ca12-40ad-8ebe-b49fb8623cfe">
+            <semantic:formalParameter name="p " typeRef="string" id="_780b0bcc-0495-496b-8c81-4a465ccaf8d3"/>
+            <semantic:literalExpression id="_f0a39dca-1069-4d88-942a-f90a5ffb9cdf" typeRef="Any">
+                <semantic:text>"Hello, " + p</semantic:text>
+            </semantic:literalExpression>
+        </semantic:encapsulatedLogic>
+    </semantic:businessKnowledgeModel>
+    <semantic:decision id="_ecd52857-574a-4f43-a1c7-c0fb5d037bd0" name="hardcoded">
+        <semantic:variable name="hardcoded" id="_54fc235e-c3f3-4dca-848a-cbab1b0d8896" typeRef="Any"/>
+        <semantic:knowledgeRequirement id="_9c86e4a5-9926-43d0-b055-a24cfc44f25a">
+            <semantic:requiredKnowledge href="#_3c0224ed-560b-486c-9bb2-509fc6d38fd0"/>
+        </semantic:knowledgeRequirement>
+        <semantic:literalExpression id="_83277326-c224-4af6-8aba-bf50cff20fe3" typeRef="Any" triso:expressionId="_027dc858-f9cc-4653-8dd2-93f8c77afa1c">
+            <semantic:text>my function("x")</semantic:text>
+        </semantic:literalExpression>
+    </semantic:decision>
+</semantic:definitions>

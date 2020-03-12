@@ -21,8 +21,8 @@ import org.kie.dmn.feel.lang.EvaluationContext;
 import org.kie.dmn.feel.lang.SimpleType;
 import org.kie.dmn.feel.lang.Type;
 import org.kie.dmn.feel.lang.types.BuiltInType;
+import org.kie.dmn.feel.runtime.FEELFunction.Param;
 import org.kie.dmn.feel.runtime.functions.BaseFEELFunction;
-import org.kie.dmn.feel.runtime.functions.BaseFEELFunction.Param;
 
 public class FormalParameterNode extends BaseNode {
 
@@ -35,7 +35,7 @@ public class FormalParameterNode extends BaseNode {
         if (type != null) {
             this.type = type;
         } else {
-            TypeNode synthetic = new TypeNode();
+            TypeNode synthetic = new CTypeNode(BuiltInType.UNKNOWN);
             synthetic.copyLocationAttributesFrom(name);
             synthetic.setText(SimpleType.ANY);
             this.type = synthetic;

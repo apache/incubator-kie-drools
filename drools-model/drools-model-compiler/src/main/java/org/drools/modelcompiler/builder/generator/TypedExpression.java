@@ -30,13 +30,12 @@ import static org.drools.modelcompiler.util.ClassUtil.toRawClass;
 public class TypedExpression {
 
     private Expression expression;
-    private Type type;
-    private String fieldName;
-    private Optional<String> unificationVariable = Optional.empty();
-    private Optional<String> unificationName = Optional.empty();
-    private Boolean staticExpr;
-    private TypedExpression left;
-    private TypedExpression right;
+    protected Type type;
+    protected String fieldName;
+
+    protected Boolean staticExpr;
+    protected TypedExpression left;
+    protected TypedExpression right;
 
     public TypedExpression( Expression expression ) {
         this(expression, null);
@@ -50,12 +49,6 @@ public class TypedExpression {
         this.expression = expression;
         this.type = type;
         this.fieldName = fieldName;
-    }
-
-    public TypedExpression( String unificationVariable, Type type, String name) {
-        this.unificationVariable = Optional.of(unificationVariable);
-        this.type = type;
-        this.unificationName = Optional.of(name);
     }
 
     public boolean isThisExpression() {
@@ -103,14 +96,6 @@ public class TypedExpression {
         return type != null && toRawClass(type).isArray();
     }
 
-    public Optional<String> getUnificationVariable() {
-        return unificationVariable;
-    }
-
-    public Optional<String> getUnificationName() {
-        return unificationName;
-    }
-
     public TypedExpression setStatic(Boolean aStatic) {
         staticExpr = aStatic;
         return this;
@@ -148,8 +133,6 @@ public class TypedExpression {
 
     public TypedExpression cloneWithNewExpression( Expression newExpression) {
         final TypedExpression cloned = new TypedExpression(newExpression, type, fieldName);
-        cloned.unificationName = unificationName;
-        cloned.unificationVariable = unificationVariable;
         cloned.staticExpr = staticExpr;
         cloned.left = left;
         return cloned;
@@ -163,8 +146,6 @@ public class TypedExpression {
                 ", jpType=" + (expression == null ? "" : expression.getClass().getSimpleName()) +
                 ", type=" + type +
                 ", fieldName='" + fieldName + '\'' +
-                ", unificationVariable=" + unificationVariable +
-                ", unificationName=" + unificationName +
                 '}';
     }
 
@@ -179,14 +160,16 @@ public class TypedExpression {
         TypedExpression that = (TypedExpression) o;
         return Objects.equals(PrintUtil.printConstraint(expression), PrintUtil.printConstraint(that.expression)) &&
                 Objects.equals(type, that.type) &&
-                Objects.equals(fieldName, that.fieldName) &&
-                Objects.equals(unificationVariable, that.unificationVariable) &&
-                Objects.equals(unificationName, that.unificationName);
+                Objects.equals(fieldName, that.fieldName);
     }
 
     @Override
     public int hashCode() {
 
-        return Objects.hash(expression, type, fieldName, unificationVariable, unificationName);
+        return Objects.hash(expression, type, fieldName);
+    }
+
+    public Expression uncastExpression() {
+        return DrlxParseUtil.uncastExpr(expression);
     }
 }

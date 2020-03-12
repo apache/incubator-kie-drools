@@ -15,6 +15,11 @@
  */
 package org.drools.scorecards.parser.xls;
 
+import java.io.IOException;
+import java.io.InputStream;
+import java.util.ArrayList;
+import java.util.List;
+
 import org.apache.poi.hssf.usermodel.HSSFRow;
 import org.apache.poi.hssf.usermodel.HSSFSheet;
 import org.apache.poi.hssf.usermodel.HSSFWorkbook;
@@ -28,11 +33,6 @@ import org.drools.scorecards.ScorecardError;
 import org.drools.scorecards.parser.AbstractScorecardParser;
 import org.drools.scorecards.parser.ScorecardParseException;
 import org.drools.scorecards.pmml.ScorecardPMMLGenerator;
-
-import java.io.IOException;
-import java.io.InputStream;
-import java.util.ArrayList;
-import java.util.List;
 
 public class XLSScorecardParser extends AbstractScorecardParser {
 
@@ -81,22 +81,22 @@ public class XLSScorecardParser extends AbstractScorecardParser {
             for (Cell cell : row) {
                 int currentColCtr = cell.getColumnIndex();
                 switch (cell.getCellType()) {
-                    case Cell.CELL_TYPE_STRING:
+                    case STRING:
                         excelDataCollector.newCell(currentRowCtr, currentColCtr, cell.getStringCellValue());
                         break;
-                    case Cell.CELL_TYPE_NUMERIC:
+                    case NUMERIC:
                         if (DateUtil.isCellDateFormatted(cell)) {
                             excelDataCollector.newCell(currentRowCtr, currentColCtr, cell.getDateCellValue());
                         } else {
                             excelDataCollector.newCell(currentRowCtr, currentColCtr, Double.valueOf(cell.getNumericCellValue()));
                         }
                         break;
-                    case Cell.CELL_TYPE_BOOLEAN:
+                    case BOOLEAN:
                         excelDataCollector.newCell(currentRowCtr, currentColCtr, Boolean.valueOf(cell.getBooleanCellValue()).toString());
                         break;
-                    case Cell.CELL_TYPE_FORMULA:
+                    case FORMULA:
                         break;
-                    case Cell.CELL_TYPE_BLANK:
+                    case BLANK:
                         excelDataCollector.newCell(currentRowCtr, currentColCtr, "");
                         break;
                 }

@@ -66,6 +66,7 @@ import org.kie.dmn.core.compiler.ImportDMNResolverUtil.ImportType;
 import org.kie.dmn.core.impl.BaseDMNTypeImpl;
 import org.kie.dmn.core.impl.CompositeTypeImpl;
 import org.kie.dmn.core.impl.DMNModelImpl;
+import org.kie.dmn.core.impl.SimpleTypeImpl;
 import org.kie.dmn.core.pmml.DMNImportPMMLInfo;
 import org.kie.dmn.core.util.Msg;
 import org.kie.dmn.core.util.MsgUtil;
@@ -73,6 +74,7 @@ import org.kie.dmn.feel.lang.FEELProfile;
 import org.kie.dmn.feel.lang.Type;
 import org.kie.dmn.feel.lang.types.AliasFEELType;
 import org.kie.dmn.feel.lang.types.BuiltInType;
+import org.kie.dmn.feel.lang.types.GenListType;
 import org.kie.dmn.feel.runtime.UnaryTest;
 import org.kie.dmn.feel.util.Either;
 import org.kie.dmn.model.api.DMNElementReference;
@@ -170,7 +172,22 @@ public class DMNCompilerImpl implements DMNCompiler {
 
     @Override
     public DMNModel compile(Definitions dmndefs, Collection<DMNModel> dmnModels) {
-        return compile(dmndefs, dmnModels, null, null);
+        try {
+            return compile(dmndefs, dmnModels, null, null);
+        } catch (Exception e) {
+            logger.error("Error compiling model from source.", e);
+        }
+        return null;
+    }
+
+    @Override
+    public DMNModel compile(Definitions dmndefs, Resource resource, Collection<DMNModel> dmnModels) {
+        try {
+            return compile(dmndefs, dmnModels, resource, null);
+        } catch (Exception e) {
+            logger.error("Error compiling model from source.", e);
+        }
+        return null;
     }
 
     public DMNModel compile(Definitions dmndefs, Collection<DMNModel> dmnModels, Resource resource, Function<String, Reader> relativeResolver) {
@@ -542,21 +559,19 @@ public class DMNCompilerImpl implements DMNCompiler {
                 if( topLevel || allowedValuesStr != null || itemDef.isIsCollection() != type.isCollection() ) {
 
                     // we have to clone this type definition into a new one
+                    String name = itemDef.getName();
+                    String namespace = dmnModel.getNamespace();
+                    String id = itemDef.getId();
                     BaseDMNTypeImpl baseType = type;
-                    type = type.clone();
-
-                    type.setBaseType( baseType );
-                    type.setNamespace( dmnModel.getNamespace() );
-                    type.setName( itemDef.getName() );
 
                     Type baseFEELType = type.getFeelType();
                     if (baseFEELType instanceof BuiltInType) { // Then it is an ItemDefinition in place for "aliasing" a base FEEL type, for having type(itemDefname) I need to define its SimpleType.
-                        type.setFeelType(new AliasFEELType(itemDef.getName(), (BuiltInType) baseFEELType));
+                        baseFEELType = new AliasFEELType(itemDef.getName(), (BuiltInType) baseFEELType);
                     }
 
-                    type.setAllowedValues(null);
+                    List<UnaryTest> av = null;
                     if ( allowedValuesStr != null ) {
-                        List<UnaryTest> av = ctx.getFeelHelper().evaluateUnaryTests(
+                        av = ctx.getFeelHelper().evaluateUnaryTests(
                                 ctx,
                                 allowedValuesStr.getText(),
                                 dmnModel,
@@ -565,10 +580,18 @@ public class DMNCompilerImpl implements DMNCompiler {
                                 allowedValuesStr.getText(),
                                 node.getName()
                         );
-                        type.setAllowedValues( av );
                     }
-                    if ( itemDef.isIsCollection() ) {
-                        type.setCollection( itemDef.isIsCollection() );
+
+                    boolean isCollection = itemDef.isIsCollection();
+                    if (isCollection) {
+                        baseFEELType = new GenListType(baseFEELType);
+                    }
+
+                    if (type instanceof CompositeTypeImpl) {
+                        CompositeTypeImpl compositeTypeImpl = (CompositeTypeImpl) type;
+                        type = new CompositeTypeImpl(namespace, name, id, isCollection, compositeTypeImpl.getFields(), baseType, baseFEELType);
+                    } else if (type instanceof SimpleTypeImpl) {
+                        type = new SimpleTypeImpl(namespace, name, id, isCollection, av, baseType, baseFEELType);
                     }
                 }
                 if( topLevel ) {

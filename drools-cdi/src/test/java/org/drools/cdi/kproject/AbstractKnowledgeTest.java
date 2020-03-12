@@ -26,7 +26,7 @@ import org.drools.compiler.commons.jci.compilers.EclipseJavaCompiler;
 import org.drools.compiler.commons.jci.compilers.EclipseJavaCompilerSettings;
 import org.drools.compiler.compiler.io.File;
 import org.drools.compiler.compiler.io.Folder;
-import org.drools.compiler.compiler.io.Resource;
+import org.drools.compiler.compiler.io.FileSystemItem;
 import org.drools.compiler.compiler.io.memory.MemoryFile;
 import org.drools.compiler.compiler.io.memory.MemoryFileSystem;
 import org.drools.compiler.kie.builder.impl.KieFileSystemImpl;
@@ -329,12 +329,12 @@ public class AbstractKnowledgeTest {
             trgMfs.getFolder( trgFolder.getPath() ).create();
         }
 
-        Collection<Resource> col = (Collection<Resource>) srcFolder.getMembers();
+        Collection<FileSystemItem> col = (Collection<FileSystemItem>) srcFolder.getMembers();
         if (col == null) {
             return;
         }
 
-        for ( Resource rs : col ) {
+        for ( FileSystemItem rs : col ) {
             if ( rs instanceof Folder ) {
                 copyFolder( srcMfs, (Folder) rs, trgMfs, trgFolder.getFolder( ((Folder) rs).getName() ), kproj );
             } else {
@@ -358,7 +358,7 @@ public class AbstractKnowledgeTest {
     public void writeFs(MemoryFileSystem mfs,
                         Folder f,
                         java.io.File file1) {
-        for ( Resource rs : f.getMembers() ) {
+        for ( FileSystemItem rs : f.getMembers() ) {
             if ( rs instanceof Folder ) {
                 java.io.File file2 = new java.io.File( file1, ((Folder) rs).getName());
                 file2.mkdir();

@@ -5,7 +5,7 @@
     <parent>
         <artifactId>drools</artifactId>
         <groupId>org.drools</groupId>
-        <version>7.31.0-SNAPSHOT</version>
+        <version>7.35.0-SNAPSHOT</version>
     </parent>
     <modelVersion>4.0.0</modelVersion>
 
@@ -15,7 +15,7 @@
     <packaging>bundle</packaging>
 
     <properties>
-        <java.module.name>org.drools.drools-ruleunit</java.module.name>
+        <java.module.name>org.drools.droolsruleunit</java.module.name>
     </properties>
 
     <dependencies>

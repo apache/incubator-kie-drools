@@ -188,6 +188,9 @@ public class DMNRuntimeImpl
         Objects.requireNonNull(model, () -> MsgUtil.createMessage(Msg.PARAM_CANNOT_BE_NULL, "model"));
         Objects.requireNonNull(context, () -> MsgUtil.createMessage(Msg.PARAM_CANNOT_BE_NULL, "context"));
         Objects.requireNonNull(decisionNames, () -> MsgUtil.createMessage(Msg.PARAM_CANNOT_BE_NULL, "decisionNames"));
+        if (decisionNames.length == 0) {
+            throw new IllegalArgumentException(MsgUtil.createMessage(Msg.PARAM_CANNOT_BE_EMPTY, "decisionNames"));
+        }
         final DMNResultImpl result = createResult( model, context );
         for (String name : decisionNames) {
             evaluateByNameInternal( model, context, result, name );
@@ -199,7 +202,11 @@ public class DMNRuntimeImpl
         boolean performRuntimeTypeCheck = performRuntimeTypeCheck(model);
         Optional<DecisionNode> decision = Optional.ofNullable(model.getDecisionByName(name));
         if (decision.isPresent()) {
+            final boolean walkingIntoScope = walkIntoImportScopeInternalDecisionInvocation(result, model, decision.get());
             evaluateDecision(context, result, decision.get(), performRuntimeTypeCheck);
+            if (walkingIntoScope) {
+                result.getContext().popScope();
+            }
         } else {
             MsgUtil.reportMessage( logger,
                                    DMNMessage.Severity.ERROR,
@@ -217,6 +224,9 @@ public class DMNRuntimeImpl
         Objects.requireNonNull(model, () -> MsgUtil.createMessage(Msg.PARAM_CANNOT_BE_NULL, "model"));
         Objects.requireNonNull(context, () -> MsgUtil.createMessage(Msg.PARAM_CANNOT_BE_NULL, "context"));
         Objects.requireNonNull(decisionIds, () -> MsgUtil.createMessage(Msg.PARAM_CANNOT_BE_NULL, "decisionIds"));
+        if (decisionIds.length == 0) {
+            throw new IllegalArgumentException(MsgUtil.createMessage(Msg.PARAM_CANNOT_BE_EMPTY, "decisionIds"));
+        }
         final DMNResultImpl result = createResult( model, context );
         for ( String id : decisionIds ) {
             evaluateByIdInternal( model, context, result, id );
@@ -228,7 +238,11 @@ public class DMNRuntimeImpl
         boolean performRuntimeTypeCheck = performRuntimeTypeCheck(model);
         Optional<DecisionNode> decision = Optional.ofNullable(model.getDecisionById(id));
         if (decision.isPresent()) {
+            final boolean walkingIntoScope = walkIntoImportScopeInternalDecisionInvocation(result, model, decision.get());
             evaluateDecision(context, result, decision.get(), performRuntimeTypeCheck);
+            if (walkingIntoScope) {
+                result.getContext().popScope();
+            }
         } else {
             MsgUtil.reportMessage( logger,
                                    DMNMessage.Severity.ERROR,
@@ -487,6 +501,30 @@ public class DMNRuntimeImpl
                 }
             }
             return false;
+        }
+    }
+
+    private boolean walkIntoImportScopeInternalDecisionInvocation(DMNResultImpl result, DMNModel dmnModel, DMNNode destinationNode) {
+        if (destinationNode.getModelNamespace().equals(dmnModel.getNamespace())) {
+            return false;
+        } else {
+            DMNModelImpl model = (DMNModelImpl) dmnModel;
+            Optional<String> importAlias = model.getImportAliasFor(destinationNode.getModelNamespace(), destinationNode.getModelName());
+            if (importAlias.isPresent()) {
+                result.getContext().pushScope(importAlias.get(), destinationNode.getModelNamespace());
+                return true;
+            } else {
+                MsgUtil.reportMessage(logger,
+                                      DMNMessage.Severity.ERROR,
+                                      dmnModel.getDefinitions(),
+                                      result,
+                                      null,
+                                      null,
+                                      Msg.IMPORT_NOT_FOUND_FOR_NODE_MISSING_ALIAS,
+                                      new QName(destinationNode.getModelNamespace(), destinationNode.getModelName()),
+                                      dmnModel.getName());
+                return false;
+            }
         }
     }
 
@@ -792,5 +830,9 @@ public class DMNRuntimeImpl
     @Override
     public ClassLoader getRootClassLoader() {
         return knowledgeBase.getRootClassLoader();
+    }
+
+    public InternalKnowledgeBase getInternalKnowledgeBase() {
+        return this.knowledgeBase;
     }
 }

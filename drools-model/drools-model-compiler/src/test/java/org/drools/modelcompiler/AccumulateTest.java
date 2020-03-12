@@ -21,6 +21,8 @@ import java.io.ObjectInput;
 import java.io.ObjectOutput;
 import java.io.Serializable;
 import java.math.BigDecimal;
+import java.time.Duration;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Calendar;
@@ -50,7 +52,8 @@ import org.kie.api.runtime.rule.AccumulateFunction;
 import org.kie.api.runtime.rule.FactHandle;
 
 import static org.hamcrest.CoreMatchers.hasItem;
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertThat;
 
 public class AccumulateTest extends BaseModelTest {
 
@@ -430,6 +433,63 @@ public class AccumulateTest extends BaseModelTest {
     }
 
     @Test
+    public void testAccumulateWithAnd3Binds() {
+        String str =
+                "import " + Adult.class.getCanonicalName() + ";\n" +
+                        "import " + Child.class.getCanonicalName() + ";\n" +
+                        "import " + Result.class.getCanonicalName() + ";\n" +
+                        "rule R when\n" +
+                        "  accumulate( $c : Child( age < 10 ) and $a : Adult( name == $c.parent ) and $s : String( this == $a.name ), " +
+                        "$parentAge : sum($a.getAge() + $c.getAge() + $s.length()) )\n" +
+                        "then\n" +
+                        "  insert(new Result($parentAge));\n" +
+                        "end";
+
+        KieSession ksession = getKieSession( str );
+
+        Adult a = new Adult( "Mario", 43 );
+        Child c = new Child( "Sofia", 6, "Mario" );
+
+        ksession.insert( a );
+        ksession.insert( c );
+        ksession.insert( "Mario" );
+        ksession.fireAllRules();
+
+        Collection<Result> results = getObjectsIntoList(ksession, Result.class);
+        // The original DSL test returns a double while the exec model returns an integer
+        assertEquals(54, ((Number)results.iterator().next().getValue()).intValue());
+    }
+
+    @Test
+    public void testAccumulateWithAnd4Binds() {
+        String str =
+                "import " + Adult.class.getCanonicalName() + ";\n" +
+                        "import " + Child.class.getCanonicalName() + ";\n" +
+                        "import " + Result.class.getCanonicalName() + ";\n" +
+                        "rule R when\n" +
+                        "  accumulate( $c : Child( age < 10 ) and $a : Adult( name == $c.parent ) and $s1 : String( this == $a.name ) and $s2 : String( this == $c.name ), " +
+                        "$parentAge : sum($a.getAge() + $c.getAge() + $s1.length() + $s2.length()) )\n" +
+                        "then\n" +
+                        "  insert(new Result($parentAge));\n" +
+                        "end";
+
+        KieSession ksession = getKieSession( str );
+
+        Adult a = new Adult( "Mario", 43 );
+        Child c = new Child( "Sofia", 6, "Mario" );
+
+        ksession.insert( a );
+        ksession.insert( c );
+        ksession.insert( "Mario" );
+        ksession.insert( "Sofia" );
+        ksession.fireAllRules();
+
+        Collection<Result> results = getObjectsIntoList(ksession, Result.class);
+        // The original DSL test returns a double while the exec model returns an integer
+        assertEquals(59, ((Number)results.iterator().next().getValue()).intValue());
+    }
+
+    @Test
     public void testAccumulateWithCustomImport() {
         String str =
                 "import accumulate " + TestFunction.class.getCanonicalName() + " f;\n" +
@@ -559,7 +619,7 @@ public class AccumulateTest extends BaseModelTest {
         checkCollect( str );
     }
 
-    @Test 
+    @Test
     public void testFromCollectWithExpandedAccumulate() {
         String str =
                 "import " + Customer.class.getCanonicalName() + ";\n" +
@@ -1721,5 +1781,105 @@ public class AccumulateTest extends BaseModelTest {
         ksession.fireAllRules();
 
         assertEquals(3, result.iterator().next().longValue());
+    }
+
+    public static class Interval {
+
+        private LocalDateTime start;
+        private LocalDateTime end;
+
+        public Interval(LocalDateTime start, LocalDateTime end) {
+            this.start = start;
+            this.end = end;
+        }
+
+        public LocalDateTime getStart() {
+            return start;
+        }
+
+        public void setStart(LocalDateTime start) {
+            this.start = start;
+        }
+
+        public LocalDateTime getEnd() {
+            return end;
+        }
+
+        public void setEnd(LocalDateTime end) {
+            this.end = end;
+        }
+
+        public long between(LocalDateTime start, LocalDateTime end) {
+            return Duration.between(start, end).toMinutes();
+        }
+    }
+
+    @Test
+    public void testAccumulateOnStaticMethod() {
+        // DROOLS-4979
+        final String drl =
+                "import java.time.Duration\n" +
+                "import " + Interval.class.getCanonicalName() + ";\n" +
+                "global java.util.List result; \n" +
+                "\n" +
+                "rule \"Rule1\"\n" +
+                "when\n" +
+                "    $count : Number() from accumulate(\n" +
+                "       Interval($start : start, $end : end), " +
+                "       sum(Duration.between($start, $end).toMinutes())  " +
+                "    ) " +
+                "then\n" +
+                "       result.add($count);\n" +
+                "end\n";
+
+        List<Long> result = new ArrayList<>();
+
+        KieSession ksession = getKieSession(drl);
+        ReteDumper.dumpRete( ksession );
+        ksession.setGlobal("result", result);
+
+        ksession.insert(new Interval(
+                LocalDateTime.of(2020, 1, 22, 11, 43),
+                LocalDateTime.of(2020, 1, 22, 12, 43)
+        ));
+
+        ksession.fireAllRules();
+
+        assertEquals(60, result.iterator().next().longValue());
+
+    }
+
+    @Test
+    public void testAccumulateOfDurationBetweenDateTime() {
+        // DROOLS-4979
+        final String drl =
+                "import java.time.Duration\n" +
+                "import " + Interval.class.getCanonicalName() + ";\n" +
+                "global java.util.List result; \n" +
+                "\n" +
+                "rule \"Rule1\"\n" +
+                "when\n" +
+                "    $count : Number() from accumulate(\n" +
+                "       $i : Interval($start : start, $end : end), " +
+                "       sum($i.between($start, $end))  " +
+                "    ) " +
+                "then\n" +
+                "       result.add($count);\n" +
+                "end\n";
+
+        List<Long> result = new ArrayList<>();
+
+        KieSession ksession = getKieSession(drl);
+        ksession.setGlobal("result", result);
+
+        ksession.insert(new Interval(
+                LocalDateTime.of(2020, 1, 22, 11, 43),
+                LocalDateTime.of(2020, 1, 22, 12, 43)
+        ));
+
+        ksession.fireAllRules();
+
+        assertEquals(60, result.iterator().next().longValue());
+
     }
 }

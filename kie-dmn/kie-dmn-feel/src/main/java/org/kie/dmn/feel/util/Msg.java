@@ -32,7 +32,7 @@ public final class Msg {
     public static final Message0 CONDITION_WAS_NOT_A_BOOLEAN = new Message0("Condition was not a Boolean");
     public static final Message1 FUNCTION_NOT_FOUND = new Message1("Function not found: '%s'");
     public static final Message1 ERROR_EXECUTING_LIST_FILTER = new Message1("Error executing list filter: %s");
-    public static final Message0 INDEX_OUT_OF_BOUND = new Message0("Index out of bound");
+    public static final Message2 INDEX_OUT_OF_BOUND = new Message2("Index out of bound: list of %s elements, index %s; will evaluate as FEEL null");
     public static final Message2 X_TYPE_INCOMPATIBLE_WITH_Y_TYPE = new Message2("%s type incompatible with %s type");
     public static final Message1 INCOMPATIBLE_TYPE_FOR_RANGE = new Message1("Type %s can not be used in a range unary test");
     public static final Message1 VALUE_X_NOT_A_VALID_ENDPOINT_FOR_RANGE_BECAUSE_NOT_A_NUMBER = new Message1("Value %s is not a valid endpoint for range, because not a feel:number");
@@ -53,6 +53,7 @@ public final class Msg {
     public static final Message2 IF_MISSING_THEN = new Message2("Detected 'if' expression without 'then' part (near: %s) [%s]");
     public static final Message1 COMPARING_TO_UT = new Message1("Comparing to a unary test is not semantically defined: %s");
     public static final Message1 UT_OF_UT = new Message1("An unary test of a unary test is not semantically defined: %s");
+    public static final Message1 MALFORMED_AT_LITERAL = new Message1("Malformed at-literal: %s");
 
     public static String createMessage( Message0 message) {
         return Msg.buildMessage(message);

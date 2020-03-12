@@ -1,3 +1,20 @@
+/*
+ * Copyright 2019 Red Hat, Inc. and/or its affiliates.
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *      http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ *
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
 package org.drools.modelcompiler.builder.generator.expressiontyper;
 
 import java.lang.reflect.Field;
@@ -39,6 +56,7 @@ import com.github.javaparser.ast.stmt.BlockStmt;
 import com.github.javaparser.ast.type.ClassOrInterfaceType;
 import com.github.javaparser.ast.type.ReferenceType;
 import com.github.javaparser.ast.type.Type;
+import org.drools.core.addon.TypeResolver;
 import org.drools.modelcompiler.builder.PackageModel;
 import org.drools.modelcompiler.builder.errors.InvalidExpressionErrorResult;
 import org.drools.modelcompiler.builder.errors.ParseExpressionErrorResult;
@@ -47,6 +65,7 @@ import org.drools.modelcompiler.builder.generator.DrlxParseUtil;
 import org.drools.modelcompiler.builder.generator.ModelGenerator;
 import org.drools.modelcompiler.builder.generator.RuleContext;
 import org.drools.modelcompiler.builder.generator.TypedExpression;
+import org.drools.modelcompiler.builder.generator.UnificationTypedExpression;
 import org.drools.modelcompiler.builder.generator.operatorspec.CustomOperatorSpec;
 import org.drools.modelcompiler.builder.generator.operatorspec.NativeOperatorSpec;
 import org.drools.modelcompiler.builder.generator.operatorspec.OperatorSpec;
@@ -62,13 +81,13 @@ import org.drools.mvel.parser.ast.expr.NullSafeFieldAccessExpr;
 import org.drools.mvel.parser.ast.expr.NullSafeMethodCallExpr;
 import org.drools.mvel.parser.ast.expr.PointFreeExpr;
 import org.drools.mvel.parser.printer.PrintUtil;
-import org.drools.core.addon.TypeResolver;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import static com.github.javaparser.ast.NodeList.nodeList;
 import static java.util.Optional.empty;
 import static java.util.Optional.of;
+
+import static com.github.javaparser.ast.NodeList.nodeList;
 import static org.drools.core.util.ClassUtils.getter2property;
 import static org.drools.modelcompiler.builder.generator.DrlxParseUtil.THIS_PLACEHOLDER;
 import static org.drools.modelcompiler.builder.generator.DrlxParseUtil.findRootNodeViaParent;
@@ -319,7 +338,7 @@ public class ExpressionTyper {
 
         } else if (isPositional || ruleContext.isQuery()) {
             String unificationVariable = ruleContext.getOrCreateUnificationId(name);
-            expression = new TypedExpression(unificationVariable, typeCursor, name);
+            expression = new UnificationTypedExpression(unificationVariable, typeCursor, name);
             return of(expression);
         }
 
@@ -390,14 +409,12 @@ public class ExpressionTyper {
             addReactOnProperty(me.getNameAsString(), me.getArguments());
         }
 
-        Expression previous;
-        java.lang.reflect.Type typeCursor;
         if(!teCursor.isPresent()) {
             return new TypedExpressionResult(empty(), context);
-        } else {
-            previous = teCursor.get().expressionCursor;
-            typeCursor = teCursor.get().typeCursor;
         }
+
+        Expression previous = teCursor.get().expressionCursor;
+        java.lang.reflect.Type typeCursor = teCursor.get().typeCursor;
 
         List<Node> childrenWithoutFirst = childrenNodes.subList(1, childrenNodes.size());
         for (Node part : childrenWithoutFirst) {
@@ -509,8 +526,8 @@ public class ExpressionTyper {
             result = of(fieldAccessExpr(originalTypeCursor, ((NullSafeFieldAccessExpr) firstNode).getName()));
 
         } else if (firstNode instanceof MethodCallExpr) {
-            Optional<DeclarationSpec> scopeDecl = ((MethodCallExpr) firstNode).getScope()
-                    .flatMap( scope -> ruleContext.getDeclarationById(PrintUtil.printConstraint(scope) ) );
+            Optional<Expression> scopeExpr = ((MethodCallExpr) firstNode).getScope();
+            Optional<DeclarationSpec> scopeDecl = scopeExpr.flatMap( scope -> ruleContext.getDeclarationById(PrintUtil.printConstraint(scope) ) );
 
             Expression scope;
             java.lang.reflect.Type type;
@@ -518,6 +535,10 @@ public class ExpressionTyper {
                 type = scopeDecl.get().getDeclarationClass();
                 scope = new NameExpr( scopeDecl.get().getBindingId() );
                 context.addUsedDeclarations( scopeDecl.get().getBindingId() );
+            } else if (scopeExpr.isPresent()) {
+                TypedExpressionCursor parsedScope = processFirstNode(drlxExpr, childNodes, scopeExpr.get(), isInLineCast, originalTypeCursor).get();
+                type = parsedScope.typeCursor;
+                scope = parsedScope.expressionCursor;
             } else {
                 type = originalTypeCursor;
                 scope = new NameExpr( THIS_PLACEHOLDER );
@@ -670,10 +691,25 @@ public class ExpressionTyper {
 
         java.lang.reflect.Type genericReturnType = m.getGenericReturnType();
         if (genericReturnType instanceof TypeVariable) {
-            return new TypedExpressionCursor(methodCallExpr, originalTypeCursor);
+            if (originalTypeCursor instanceof ParameterizedType) {
+                return new TypedExpressionCursor( methodCallExpr, getActualType( rawClassCursor, ( ParameterizedType ) originalTypeCursor, ( TypeVariable ) genericReturnType ) );
+            } else {
+                return new TypedExpressionCursor(methodCallExpr, Object.class);
+            }
         } else {
             return new TypedExpressionCursor(methodCallExpr, genericReturnType);
         }
+    }
+
+    private java.lang.reflect.Type getActualType(Class<?> rawClassCursor, ParameterizedType originalTypeCursor, TypeVariable genericReturnType) {
+        int genericPos = 0;
+        for (TypeVariable typeVar : rawClassCursor.getTypeParameters()) {
+            if (typeVar.equals( genericReturnType )) {
+                return (( ParameterizedType ) originalTypeCursor).getActualTypeArguments()[genericPos];
+            }
+            genericPos++;
+        }
+        throw new RuntimeException( "Unknonw generic type " + genericReturnType + " for type " + originalTypeCursor );
     }
 
     private TypedExpressionCursor objectCreationExpr(ObjectCreationExpr objectCreationExpr) {
@@ -745,7 +781,7 @@ public class ExpressionTyper {
         } else if (List.class.isAssignableFrom( rawClass ) || Map.class.isAssignableFrom( rawClass )) {
             MethodCallExpr result = new MethodCallExpr( nameExpr.expressionCursor, "get" );
             result.addArgument( indexExpr.getExpression() );
-            java.lang.reflect.Type resultType = arrayType instanceof ParameterizedType ? (( ParameterizedType ) arrayType).getActualTypeArguments()[0] : Object.class;
+            java.lang.reflect.Type resultType = arrayType instanceof ParameterizedType ? (( ParameterizedType ) arrayType).getActualTypeArguments()[List.class.isAssignableFrom( rawClass ) ? 0 : 1] : Object.class;
             return of(new TypedExpressionCursor( result, resultType ));
         }
 
@@ -909,6 +945,14 @@ public class ExpressionTyper {
         public TypedExpressionCursor(Expression expressionCursor, java.lang.reflect.Type typeCursor) {
             this.expressionCursor = expressionCursor;
             this.typeCursor = typeCursor;
+        }
+
+        @Override
+        public String toString() {
+            return "TypedExpressionCursor{" +
+                    "expressionCursor=" + expressionCursor +
+                    ", typeCursor=" + typeCursor +
+                    '}';
         }
     }
 }
