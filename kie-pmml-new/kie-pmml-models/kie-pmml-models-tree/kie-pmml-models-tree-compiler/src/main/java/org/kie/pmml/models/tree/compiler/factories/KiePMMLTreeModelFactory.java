@@ -20,6 +20,7 @@ import java.util.Optional;
 
 import org.dmg.pmml.DataDictionary;
 import org.dmg.pmml.tree.TreeModel;
+import org.drools.compiler.lang.DrlDumper;
 import org.drools.compiler.lang.descr.PackageDescr;
 import org.kie.pmml.commons.model.enums.MINING_FUNCTION;
 import org.kie.pmml.models.tree.model.KiePMMLTreeModel;
@@ -41,11 +42,13 @@ public class KiePMMLTreeModelFactory {
         String name = model.getModelName();
         // TODO {gcardosi} convert DataDictionary "enum" values to a map of field-name/valid-values
         Optional<String> targetFieldName = getTargetField(dataDictionary, model);
-        String packageName = "to.be.fixed"; // TODO {gcardosi} - how to retrieve/generate package name?
-//        final Map<String, Class<?>> compiledClasses = KiePMMLRegressionCompiler.compile(sourcesMap, Thread.currentThread().getContextClassLoader());
-
-        final PackageDescr baseDescr = getBaseDescr(dataDictionary, model, packageName);
-
+        final PackageDescr baseDescr = getBaseDescr(dataDictionary, model, name.toLowerCase());
+        try {
+            String string = new DrlDumper().dump(baseDescr);
+            logger.debug(string);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
         return KiePMMLTreeModel.builder(name, Collections.emptyList(), MINING_FUNCTION.byName(model.getMiningFunction().value()), model.getAlgorithmName())
                 .withPackageDescr(baseDescr)
                 .withTargetField(targetFieldName.orElse(null))

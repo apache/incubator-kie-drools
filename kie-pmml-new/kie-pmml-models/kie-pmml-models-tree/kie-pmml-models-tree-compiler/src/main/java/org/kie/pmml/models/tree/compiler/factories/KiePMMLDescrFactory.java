@@ -52,9 +52,9 @@ import static java.util.stream.Collectors.groupingBy;
  */
 public class KiePMMLDescrFactory {
 
-    private static final Logger logger = LoggerFactory.getLogger(KiePMMLDescrFactory.class.getName());
-    private static final String VALUE_PATTERN = "value %s \"%s\"";
-    private static final String STATUS_HOLDER = "$statusHolder";
+    static final Logger logger = LoggerFactory.getLogger(KiePMMLDescrFactory.class.getName());
+    static final String VALUE_PATTERN = "value %s \"%s\"";
+    static final String STATUS_HOLDER = "$statusHolder";
 
     private KiePMMLDescrFactory() {
         // Avoid instantiation
@@ -70,7 +70,7 @@ public class KiePMMLDescrFactory {
         return builder.getDescr();
     }
 
-    private static void declareRules(PackageDescrBuilder builder, Node node, String parentPath) {
+    static void declareRules(PackageDescrBuilder builder, Node node, String parentPath) {
         logger.info("declareRules {} {}", node, parentPath);
         String currentRule = String.format("%s_%s", parentPath, node.getScore().toString());
         final Predicate predicate = node.getPredicate();
@@ -100,64 +100,71 @@ public class KiePMMLDescrFactory {
         }
     }
 
-    private static void declarePredicate(final CEDescrBuilder<?, ?> lhsBuilder, final Predicate predicate) {
-        String constraint;
-        if /*(predicate instanceof True) {
+    static void declarePredicate(final CEDescrBuilder<?, ?> lhsBuilder, final Predicate predicate) {
+        /*if (predicate instanceof True) {
             // TODO {gcardosi} remove this eval, since it is redundant and inefficient
             lhsBuilder.eval().constraint("true");
         } else if (predicate instanceof False) {
             // TODO {gcardosi} in this situation, the semantic would lead to just skip rule creation
             lhsBuilder.eval().constraint("false");
-        } else if*/ (predicate instanceof SimplePredicate) {
-            OPERATOR operator = OPERATOR.byName(((SimplePredicate) predicate).getOperator().value());
-            constraint = String.format(VALUE_PATTERN, operator.getOperator(), ((SimplePredicate) predicate).getValue() != null ? ((SimplePredicate) predicate).getValue() : "");
-            lhsBuilder.pattern(((SimplePredicate) predicate).getField().getValue().toUpperCase()).constraint(constraint).end();
+        } else */
+        if (predicate instanceof SimplePredicate) {
+            declareSimplePredicate(lhsBuilder, (SimplePredicate) predicate);
         } else if (predicate instanceof CompoundPredicate) {
-            final CEDescrBuilder<? extends CEDescrBuilder<?, ?>, ?> andBuilder;
-            final CompoundPredicate.BooleanOperator booleanOperator = ((CompoundPredicate) predicate).getBooleanOperator();
-            switch (booleanOperator) {
-                case OR:
-                    andBuilder = lhsBuilder.or();
-                    break;
-                case AND:
-                case XOR: // TODO {gcardosi} (A() not B()) or (not(A()) B()) - A^B => (A & !B) | (!A & B)
-                case SURROGATE:
-                default:
-                    andBuilder = lhsBuilder.and();
-            }
-            // First I need to group predicates by type
-            final Map<? extends Class<? extends Predicate>, List<Predicate>> predicatesByClass = ((CompoundPredicate) predicate).getPredicates().stream().collect(groupingBy(child -> child.getClass()));
-
-            for (Map.Entry<? extends Class<? extends Predicate>, List<Predicate>> entry : predicatesByClass.entrySet()) {
-                Class<?> aClass = entry.getKey();
-                List<Predicate> predicates = entry.getValue();
-                if (SimplePredicate.class.equals(aClass)) {
-                    // Here I need to group simplepredicates by field
-                    final Map<String, List<SimplePredicate>> predicatesByField = predicates.stream()
-                            .map(child -> (SimplePredicate) child)
-                            .collect(groupingBy(child -> child.getField().getValue().toUpperCase()));
-                    // .. and add them as a whole
-                    for (Map.Entry<String, List<SimplePredicate>> childEntry : predicatesByField.entrySet()) {
-                        declarePredicate(andBuilder, childEntry.getKey(), childEntry.getValue(), booleanOperator);
-                    }
-                } else {
-                    for (Predicate childPredicate : predicates) {
-                        declarePredicate(andBuilder, childPredicate);
-                    }
-                }
-            }
-            andBuilder.end();
+            declareCompoundPredicate(lhsBuilder, (CompoundPredicate) predicate);
         }
     }
 
-    private static void declarePredicate(final CEDescrBuilder<?, ?> lhsBuilder, final String fieldName, final List<SimplePredicate> predicates, final CompoundPredicate.BooleanOperator booleanOperator) {
+    static void declareSimplePredicate(final CEDescrBuilder<?, ?> lhsBuilder, final SimplePredicate predicate) {
+        OPERATOR operator = OPERATOR.byName(predicate.getOperator().value());
+        String constraint = String.format(VALUE_PATTERN, operator.getOperator(), predicate.getValue() != null ? predicate.getValue() : "");
+        lhsBuilder.pattern(predicate.getField().getValue().toUpperCase()).constraint(constraint).end();
+    }
+
+    static void declareCompoundPredicate(final CEDescrBuilder<?, ?> lhsBuilder, final CompoundPredicate predicate) {
+        final CEDescrBuilder<? extends CEDescrBuilder<?, ?>, ?> andBuilder;
+        final CompoundPredicate.BooleanOperator booleanOperator = (predicate).getBooleanOperator();
+        switch (booleanOperator) {
+            case OR:
+                andBuilder = lhsBuilder.or();
+                break;
+            case AND:
+            case XOR: // TODO {gcardosi} (A() not B()) or (not(A()) B()) - A^B => (A & !B) | (!A & B)
+            case SURROGATE:
+            default:
+                andBuilder = lhsBuilder.and();
+        }
+        // First I need to group predicates by type
+        final Map<? extends Class<? extends Predicate>, List<Predicate>> predicatesByClass = (predicate).getPredicates().stream().collect(groupingBy(Predicate::getClass));
+        for (Map.Entry<? extends Class<? extends Predicate>, List<Predicate>> entry : predicatesByClass.entrySet()) {
+            Class<?> aClass = entry.getKey();
+            List<Predicate> predicates = entry.getValue();
+            if (SimplePredicate.class.equals(aClass)) {
+                // Here I need to group simplepredicates by field
+                final Map<String, List<SimplePredicate>> predicatesByField = predicates.stream()
+                        .map(child -> (SimplePredicate) child)
+                        .collect(groupingBy(child -> child.getField().getValue().toUpperCase()));
+                // .. and add them as a whole
+                for (Map.Entry<String, List<SimplePredicate>> childEntry : predicatesByField.entrySet()) {
+                    declareSimplePredicates(andBuilder, childEntry.getKey(), childEntry.getValue(), booleanOperator);
+                }
+            } else {
+                for (Predicate childPredicate : predicates) {
+                    declarePredicate(andBuilder, childPredicate);
+                }
+            }
+        }
+        andBuilder.end();
+    }
+
+    static void declareSimplePredicates(final CEDescrBuilder<?, ?> lhsBuilder, final String fieldName, final List<SimplePredicate> predicates, final CompoundPredicate.BooleanOperator booleanOperator) {
         final PatternDescrBuilder<? extends CEDescrBuilder<?, ?>> pattern = lhsBuilder.pattern(fieldName);
         switch (booleanOperator) {
             case OR:
                 StringBuilder constraintBuilder = new StringBuilder();
                 for (int i = 0; i < predicates.size(); i++) {
                     if (i > 0) {
-                        constraintBuilder.append(" OR ");
+                        constraintBuilder.append(" || ");
                     }
                     SimplePredicate predicate = predicates.get(i);
                     OPERATOR operator = OPERATOR.byName(predicate.getOperator().value());
@@ -179,13 +186,13 @@ public class KiePMMLDescrFactory {
         pattern.end();
     }
 
-    private static void declareTypes(PackageDescrBuilder builder, DataDictionary dataDictionary) {
+    static void declareTypes(PackageDescrBuilder builder, DataDictionary dataDictionary) {
         for (DataField dataField : dataDictionary.getDataFields()) {
             declareType(builder, dataField);
         }
     }
 
-    private static void declareType(PackageDescrBuilder builder, DataField dataField) {
+    static void declareType(PackageDescrBuilder builder, DataField dataField) {
         if (OpType.CATEGORICAL.equals(dataField.getOpType()) && DataType.STRING.equals(dataField.getDataType()) && dataField.hasValues()) {
             declareEnumType(builder, dataField);
         } else {
@@ -198,7 +205,7 @@ public class KiePMMLDescrFactory {
         }
     }
 
-    private static void declareEnumType(PackageDescrBuilder builder, DataField dataField) {
+    static void declareEnumType(PackageDescrBuilder builder, DataField dataField) {
         final EnumDeclarationDescrBuilder enumBuilder = builder.newDeclare()
                 .enumerative().name(dataField.getName().getValue().toUpperCase());
         enumBuilder.newField("value").type(String.class.getName());
