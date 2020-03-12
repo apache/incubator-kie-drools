@@ -16,6 +16,7 @@
 
 package org.kie.kogito.jobs.service.executor;
 
+import java.net.URI;
 import java.net.URL;
 import java.util.Optional;
 import java.util.concurrent.CompletionStage;
@@ -31,6 +32,7 @@ import io.vertx.axle.ext.web.client.HttpResponse;
 import io.vertx.axle.ext.web.client.WebClient;
 import org.eclipse.microprofile.reactive.streams.operators.PublisherBuilder;
 import org.eclipse.microprofile.reactive.streams.operators.ReactiveStreams;
+import org.kie.kogito.jobs.api.URIBuilder;
 import org.kie.kogito.jobs.service.converters.HttpConverters;
 import org.kie.kogito.jobs.service.model.HTTPRequestCallback;
 import org.kie.kogito.jobs.service.model.JobExecutionResponse;
@@ -62,11 +64,11 @@ public class HttpJobExecutor implements JobExecutor {
 
     private CompletionStage<HttpResponse<Buffer>> executeCallback(HTTPRequestCallback request) {
         LOGGER.debug("Executing callback {}", request);
-        final URL url = httpConverters.convertURL(request.getUrl());
+        final URI uri = URIBuilder.toURI(request.getUrl());
         final HttpRequest<Buffer> clientRequest = client.request(httpConverters.convertHttpMethod(request.getMethod()),
-                                                                 url.getPort(),
-                                                                 url.getHost(),
-                                                                 url.getPath());
+                                                                 uri.getPort(),
+                                                                 uri.getHost(),
+                                                                 uri.getPath());
         Optional.ofNullable(request.getQueryParams())
                 .ifPresent(params -> clientRequest.queryParams().addAll(params));
 

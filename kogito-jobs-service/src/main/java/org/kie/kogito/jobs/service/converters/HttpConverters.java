@@ -16,9 +16,6 @@
 
 package org.kie.kogito.jobs.service.converters;
 
-import java.net.MalformedURLException;
-import java.net.URL;
-
 import javax.enterprise.context.ApplicationScoped;
 
 import io.vertx.core.http.HttpMethod;
@@ -29,14 +26,5 @@ public class HttpConverters {
 
     public HttpMethod convertHttpMethod(HTTPRequestCallback.HTTPMethod method) {
         return HttpMethod.valueOf(method.name());
-    }
-
-    @SuppressWarnings("squid:S00112")
-    public URL convertURL(String url){
-        try {
-            return new URL(url);
-        } catch (MalformedURLException e) {
-            throw new RuntimeException(e);
-        }
     }
 }
