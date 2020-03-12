@@ -979,7 +979,7 @@ public class PatternBuilder
         // Or it's a Map and we have to treat it as a special case
 
         String rewrittenExpr = rewriteOrExpressions(context, pattern, d, expr);
-        if (simple) {
+        if (simple) { // simple means also relDescr is != null
             rewrittenExpr = ConstraintUtil.inverseExpression(relDescr, expr, findLeftExpressionValue(relDescr), findRightExpressionValue(relDescr), relDescr.getOperator(), pattern);
         }
         if (negated) {

@@ -34,24 +34,10 @@ public class ConstraintUtil {
 
         String leftProp = getFirstProp(leftValue);
         String rightProp = getFirstProp(rightValue);
-        if (leftProp.isEmpty() || rightProp.isEmpty()) {
-            // do not inverse
-            return expression;
-        }
 
         OperatorDescr operatorDescr = relDescr.getOperatorDescr();
 
-        if (!(pattern.getObjectType() instanceof ClassObjectType)) {
-            // do not inverse
-            return expression;
-        }
-
-        if (!operator.equals(operatorDescr.getOperator())) {
-            // do not inverse
-            return expression;
-        }
-        if (canInverse(operator) && (PropertyTools.getFieldOrAccessor(clazz, leftProp) == null) && ((PropertyTools.getFieldOrAccessor(clazz, rightProp) != null) || (rightProp.equals("this")))) {
-
+        if (canInverse(pattern, operator, operatorDescr, leftProp, rightProp) && isPropertyOnRight(clazz, leftProp, rightProp)) {
             boolean negate = false;
             if (isNagatedExpression(expression, leftValue, rightValue, operator)) {
                 if (relDescr.getOperatorDescr().isNegated()) {
@@ -79,7 +65,29 @@ public class ConstraintUtil {
             return inversedExpression;
         }
 
+        // do not inverse
         return expression;
+    }
+
+    private static boolean isPropertyOnRight(Class<?> clazz, String leftProp, String rightProp) {
+        return (PropertyTools.getFieldOrAccessor(clazz, leftProp) == null) && ((PropertyTools.getFieldOrAccessor(clazz, rightProp) != null) || (rightProp.equals("this")));
+    }
+
+    private static boolean canInverse(Pattern pattern, String operator, OperatorDescr operatorDescr, String leftProp, String rightProp) {
+        if (!(pattern.getObjectType() instanceof ClassObjectType)) {
+            return false;
+        }
+        if (!operator.equals(operatorDescr.getOperator())) {
+            return false;
+        }
+        if (leftProp.isEmpty() || rightProp.isEmpty()) {
+            return false;
+        }
+        return canInverse(operator);
+    }
+
+    private static boolean canInverse(String operator) {
+        return (operator.equals("==") || operator.equals("!=") || operator.equals(">") || operator.equals("<") || operator.equals(">=") || operator.equals("<="));
     }
 
     private static String getFirstProp(String str) {
@@ -96,10 +104,6 @@ public class ConstraintUtil {
 
     private static boolean isNagatedExpression(String expression, String leftValue, String rightValue, String operator) {
         return expression.matches("^!\\s*\\(\\s*" + leftValue + "\\s*" + operator + "\\s*" + rightValue + "\\s*\\)$");
-    }
-
-    private static boolean canInverse(String operator) {
-        return (operator.equals("==") || operator.equals("!=") || operator.equals(">") || operator.equals("<") || operator.equals(">=") || operator.equals("<="));
     }
 
     private static String inverseOperator(String operator) {
