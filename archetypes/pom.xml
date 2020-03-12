@@ -10,10 +10,6 @@
   <name>Kogito Maven Archetypes</name>
   <description>Various Kogito Maven archetypes for project generation</description>
 
-  <properties>
-    <version.io.quarkus>1.3.0.Alpha2</version.io.quarkus>
-  </properties>
-
   <dependencyManagement>
     <dependencies>
       <dependency>

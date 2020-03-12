@@ -13,11 +13,6 @@
   <artifactId>kogito-quarkus-parent</artifactId>
   <name>Kogito - Quarkus Extension</name>
 
-  <properties>
-    <version.io.quarkus>1.3.0.Alpha2</version.io.quarkus>
-    <version.com.fasterxml.jackson>2.10.2</version.com.fasterxml.jackson>
-  </properties>
-
   <packaging>pom</packaging>
 
   <dependencyManagement>
