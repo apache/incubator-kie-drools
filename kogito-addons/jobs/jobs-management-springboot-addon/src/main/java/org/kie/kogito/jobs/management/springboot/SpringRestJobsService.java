@@ -16,14 +16,13 @@
 
 package org.kie.kogito.jobs.management.springboot;
 
-
 import javax.annotation.PostConstruct;
 
-import org.kie.kogito.jobs.JobsService;
 import org.kie.kogito.jobs.ProcessInstanceJobDescription;
 import org.kie.kogito.jobs.ProcessJobDescription;
 import org.kie.kogito.jobs.api.Job;
 import org.kie.kogito.jobs.api.JobBuilder;
+import org.kie.kogito.jobs.management.RestJobsService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -34,19 +33,24 @@ import org.springframework.web.client.RestClientException;
 import org.springframework.web.client.RestTemplate;
 
 @Component
-public class SpringRestJobsService implements JobsService {
+public class SpringRestJobsService extends RestJobsService {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(SpringRestJobsService.class);
-    public static final String JOBS_PATH = "/jobs";
 
-    @Value("${kogito.jobs-service.url}")
-    String jobServiceUrl;
-    
-    @Value("${kogito.service.url}")
-    String callbackEndpoint;
-    
-    @Autowired(required=false)
     private RestTemplate restTemplate;
+
+    @Autowired
+    public SpringRestJobsService(
+            @Value("${kogito.jobs-service.url}") String jobServiceUrl,
+            @Value("${kogito.service.url}") String callbackEndpoint,
+            @Autowired(required=false) RestTemplate restTemplate) {
+        super(jobServiceUrl, callbackEndpoint);
+        this.restTemplate = restTemplate;
+    }
+
+    SpringRestJobsService() {
+        this(null, null, null);
+    }
 
     @PostConstruct
     public void initialize() {
@@ -64,7 +68,7 @@ public class SpringRestJobsService implements JobsService {
 
     @Override
     public String scheduleProcessInstanceJob(ProcessInstanceJobDescription description) {
-        String callback = callbackEndpoint + "/management/jobs/" + description.processId() +"/instances/" + description.processInstanceId() +"/timers/" + description.id();
+        String callback = getCallbackEndpoint(description);
         LOGGER.debug("Job to be scheduled {} with callback URL {}", description, callback);
         Job job = JobBuilder.builder()
                 .id(description.id())
@@ -78,8 +82,10 @@ public class SpringRestJobsService implements JobsService {
                 .rootProcessId(description.rootProcessId())
                 .rootProcessInstanceId(description.rootProcessInstanceId())
                 .build();
-        
-        ResponseEntity<String> result = restTemplate.postForEntity(jobServiceUrl + JOBS_PATH, job, String.class);
+
+        ResponseEntity<String> result = restTemplate.postForEntity(getJobsServiceUri(),
+                                                                   job,
+                                                                   String.class);
         if (result.getStatusCode().ordinal() == 200) {
             LOGGER.debug("Creating of the job {} done with status code {} ", job, result.getStatusCode());
         }
@@ -88,9 +94,9 @@ public class SpringRestJobsService implements JobsService {
 
     @Override
     public boolean cancelJob(String id) {
-        
+
         try {
-            restTemplate.delete(jobServiceUrl + JOBS_PATH+ "/{id}", id);
+            restTemplate.delete(getJobsServiceUri() + "/{id}", id);
             
             return true;
         } catch (RestClientException e) {
@@ -98,5 +104,4 @@ public class SpringRestJobsService implements JobsService {
             return false;
         }
     }
-
 }

@@ -16,51 +16,53 @@
 
 package org.kie.kogito.jobs.management.quarkus;
 
-
-import java.net.MalformedURLException;
-import java.net.URL;
+import java.net.URI;
 
 import javax.annotation.PostConstruct;
 import javax.enterprise.context.ApplicationScoped;
 import javax.enterprise.inject.Instance;
 import javax.inject.Inject;
 
-import org.eclipse.microprofile.config.inject.ConfigProperty;
-import org.kie.kogito.jobs.JobsService;
-import org.kie.kogito.jobs.ProcessInstanceJobDescription;
-import org.kie.kogito.jobs.ProcessJobDescription;
-import org.kie.kogito.jobs.api.Job;
-import org.kie.kogito.jobs.api.JobBuilder;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
 import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
-
 import io.vertx.core.Vertx;
 import io.vertx.core.json.jackson.DatabindCodec;
 import io.vertx.ext.web.client.WebClient;
 import io.vertx.ext.web.client.WebClientOptions;
+import org.eclipse.microprofile.config.inject.ConfigProperty;
+import org.kie.kogito.jobs.ProcessInstanceJobDescription;
+import org.kie.kogito.jobs.ProcessJobDescription;
+import org.kie.kogito.jobs.api.Job;
+import org.kie.kogito.jobs.api.JobBuilder;
+import org.kie.kogito.jobs.management.RestJobsService;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 @ApplicationScoped
-public class VertxJobsService implements JobsService {
+public class VertxJobsService extends RestJobsService {
     
     private static final Logger LOGGER = LoggerFactory.getLogger(VertxJobsService.class);
-    public static final String JOBS_PATH = "/jobs";
+
+    private Vertx vertx;
+
+    private Instance<WebClient> providedWebClient;
+
+    private WebClient client;
+
 
     @Inject
-    Vertx vertx;
-    
-    @ConfigProperty(name = "kogito.jobs-service.url")
-    String jobServiceUrl;
-    
-    @ConfigProperty(name = "kogito.service.url")
-    String callbackEndpoint;
-    
-    @Inject
-    Instance<WebClient> providedWebClient;
-    
-    private WebClient client;
+    public VertxJobsService(@ConfigProperty(name = "kogito.jobs-service.url") String jobServiceUrl,
+                            @ConfigProperty(name = "kogito.service.url") String callbackEndpoint,
+                            Vertx vertx,
+                            Instance<WebClient> providedWebClient) {
+        super(jobServiceUrl, callbackEndpoint);
+        this.vertx = vertx;
+        this.providedWebClient = providedWebClient;
+    }
+
+    VertxJobsService() {
+        this(null, null, null, null);
+    }
 
     @PostConstruct
     void initialize() {
@@ -71,22 +73,17 @@ public class VertxJobsService implements JobsService {
         DatabindCodec.prettyMapper().registerModule(new JavaTimeModule());
         DatabindCodec.prettyMapper().findAndRegisterModules();
         DatabindCodec.prettyMapper().disable(DeserializationFeature.ADJUST_DATES_TO_CONTEXT_TIME_ZONE);
-        
-        
+
         if (providedWebClient.isResolvable()) {
             this.client = providedWebClient.get();
             LOGGER.debug("Using provided web client instance");
-        } else {        
-            try {
-                URL jobServiceURL = new URL(jobServiceUrl);
-                this.client = WebClient.create(vertx,
-                    new WebClientOptions()
-                    .setDefaultHost(jobServiceURL.getHost())
-                    .setDefaultPort(jobServiceURL.getPort()));
-                LOGGER.debug("Creating new instance of web client for host {} and port {}", jobServiceURL.getHost(), jobServiceURL.getPort());
-            } catch (MalformedURLException e) {
-                throw new RuntimeException("Job service url (kogito.jobs-service.url) is not valid URL", e);
-            }
+        } else {
+            final URI jobServiceURL = getJobsServiceUri();
+            this.client = WebClient.create(vertx,
+                                           new WebClientOptions()
+                                                   .setDefaultHost(jobServiceURL.getHost())
+                                                   .setDefaultPort(jobServiceURL.getPort()));
+            LOGGER.debug("Creating new instance of web client for host {} and port {}", jobServiceURL.getHost(), jobServiceURL.getPort());
         }
     }
 
@@ -98,7 +95,7 @@ public class VertxJobsService implements JobsService {
 
     @Override
     public String scheduleProcessInstanceJob(ProcessInstanceJobDescription description) {
-        String callback = callbackEndpoint + "/management/jobs/" + description.processId() +"/instances/" + description.processInstanceId() +"/timers/" + description.id();
+        String callback = getCallbackEndpoint(description);
         LOGGER.debug("Job to be scheduled {} with callback URL {}", description, callback);
         final Job job = JobBuilder.builder()
                 .id(description.id())
@@ -137,5 +134,4 @@ public class VertxJobsService implements JobsService {
         
         return true;
     }
-
 }

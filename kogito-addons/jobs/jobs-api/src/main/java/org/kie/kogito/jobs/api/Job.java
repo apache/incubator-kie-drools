@@ -57,6 +57,7 @@ public class Job {
     public Job() {
     }
 
+    @SuppressWarnings("squid:S00107")
     public Job(String id, ZonedDateTime expirationTime, Integer priority, String callbackEndpoint,
                String processInstanceId, String rootProcessInstanceId, String processId, String rootProcessId,
                Long repeatInterval, Integer repeatLimit) {

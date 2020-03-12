@@ -11,6 +11,7 @@
   <description>Jobs (timers and async jobs)</description>
   <modules>
     <module>jobs-api</module>
+    <module>jobs-management-common</module>
     <module>jobs-management-quarkus-addon</module>
     <module>jobs-management-springboot-addon</module>
   </modules>
