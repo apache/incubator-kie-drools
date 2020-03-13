@@ -15,28 +15,26 @@
  */
 package org.kie.pmml.commons.model;
 
-import java.util.Objects;
-import java.util.function.Supplier;
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.Map;
 
-import org.kie.pmml.commons.model.abstracts.KiePMMLIDedNamed;
 import org.kie.pmml.commons.model.enums.MINING_FUNCTION;
 import org.kie.pmml.commons.model.enums.PMML_MODEL;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 /**
  * KIE representation of PMML model
  */
-public abstract class KiePMMLModel extends KiePMMLIDedNamed {
+public abstract class KiePMMLModel {
 
-    private static final long serialVersionUID = -6845971260164057040L;
-    private static final Logger logger = LoggerFactory.getLogger(KiePMMLModel.class.getName());
-
+    protected String name;
     protected PMML_MODEL pmmlMODEL;
     protected MINING_FUNCTION miningFunction;
     protected String targetField;
+    protected Map<String, Object> outputFieldsMap = new HashMap<>();
 
-    protected KiePMMLModel() {
+    protected KiePMMLModel(String name) {
+        this.name = name;
     }
 
     public PMML_MODEL getPmmlMODEL() {
@@ -51,51 +49,13 @@ public abstract class KiePMMLModel extends KiePMMLIDedNamed {
         return targetField;
     }
 
-    @Override
-    public String toString() {
-        return "KiePMMLModel{" +
-                "pmmlMODEL=" + pmmlMODEL +
-                ", miningFunction=" + miningFunction +
-                ", targetField='" + targetField + '\'' +
-                ", name='" + name + '\'' +
-                ", id='" + id + '\'' +
-                ", parentId='" + parentId + '\'' +
-                '}';
+    public String getName() {
+        return name;
     }
 
-    @Override
-    public boolean equals(Object o) {
-        if (this == o) {
-            return true;
-        }
-        if (o == null || getClass() != o.getClass()) {
-            return false;
-        }
-        if (!super.equals(o)) {
-            return false;
-        }
-        KiePMMLModel that = (KiePMMLModel) o;
-        return pmmlMODEL == that.pmmlMODEL &&
-                miningFunction == that.miningFunction &&
-                Objects.equals(targetField, that.targetField);
+    public Map<String, Object> getOutputFieldsMap() {
+        return Collections.unmodifiableMap(outputFieldsMap);
     }
 
-    @Override
-    public int hashCode() {
-        return Objects.hash(super.hashCode(), pmmlMODEL, miningFunction, targetField);
-    }
-
-    public abstract static class Builder<T extends KiePMMLModel> extends KiePMMLIDedNamed.Builder<T> {
-
-        protected Builder(String name, String prefix, PMML_MODEL pmmlMODEL, MINING_FUNCTION miningFunction, Supplier<T> supplier) {
-            super(name, prefix, supplier);
-            toBuild.pmmlMODEL = pmmlMODEL;
-            toBuild.miningFunction = miningFunction;
-        }
-
-        public Builder<T> withTargetField(String targetField) {
-            toBuild.targetField = targetField;
-            return this;
-        }
-    }
+    public abstract Object evaluate(Map<String, Object> requestData);
 }

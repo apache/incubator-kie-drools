@@ -39,6 +39,7 @@
     <module>kie-pmml-models-archetype</module>
     <module>kie-pmml-models</module>
     <module>kie-pmml-integration-tests</module>
+    <module>kie-pmml-benchmarks</module>
   </modules>
 
   <properties>
@@ -95,20 +96,71 @@
       </dependency>
       <dependency>
         <groupId>org.kie</groupId>
+        <artifactId>kie-pmml-evaluator-core</artifactId>
+        <version>${version.org.kie}</version>
+      </dependency>
+      <dependency>
+        <groupId>org.kie</groupId>
         <artifactId>kie-pmml-evaluator-assembler</artifactId>
+        <version>${version.org.kie}</version>
+      </dependency>
+      <!-- Regression -->
+      <dependency>
+        <groupId>org.kie</groupId>
+        <artifactId>kie-pmml-models-regression-model</artifactId>
+        <version>${version.org.kie}</version>
+      </dependency>
+      <dependency>
+        <groupId>org.kie</groupId>
+        <artifactId>kie-pmml-models-regression-compiler</artifactId>
+        <version>${version.org.kie}</version>
+      </dependency>
+      <dependency>
+        <groupId>org.kie</groupId>
+        <artifactId>kie-pmml-models-regression-evaluator</artifactId>
         <version>${version.org.kie}</version>
       </dependency>
       <!-- EXTERNAL -->
       <!-- TEST -->
       <dependency>
         <groupId>org.kie</groupId>
-        <artifactId>kie-pmml-compiler-api</artifactId>
-        <version>${version.org.kie}</version>
+        <artifactId>kie-pmml-commons</artifactId>
         <classifier>tests</classifier>
+        <version>${version.org.kie}</version>
+      </dependency>
+      <dependency>
+        <groupId>org.kie</groupId>
+        <artifactId>kie-pmml-compiler-api</artifactId>
+        <classifier>tests</classifier>
+        <version>${version.org.kie}</version>
+      </dependency>
+      <dependency>
+        <groupId>org.kie</groupId>
+        <artifactId>kie-pmml-compiler-commons</artifactId>
+        <classifier>tests</classifier>
+        <version>${version.org.kie}</version>
+      </dependency>
+      <dependency>
+        <groupId>org.kie</groupId>
+        <artifactId>kie-pmml-models-regression-compiler</artifactId>
+        <classifier>tests</classifier>
+        <version>${version.org.kie}</version>
+      </dependency>
+      <dependency>
+        <groupId>org.kie</groupId>
+        <artifactId>kie-pmml-models-regression-evaluator</artifactId>
+        <classifier>tests</classifier>
+        <version>${version.org.kie}</version>
       </dependency>
       <dependency>
         <groupId>org.kie</groupId>
         <artifactId>kie-test-util</artifactId>
+        <version>${version.org.kie}</version>
+      </dependency>
+      <dependency>
+        <groupId>org.kie</groupId>
+        <artifactId>kie-test-util</artifactId>
+        <classifier>tests</classifier>
         <version>${version.org.kie}</version>
       </dependency>
     </dependencies>

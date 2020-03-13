@@ -37,5 +37,5 @@ public interface PMMLModelExecutor {
      * @return the result of the evaluation
      * @throws KiePMMLInternalException
      */
-    PMML4Result evaluate(KiePMMLModel model, PMMLContext context, String releaseId) throws KiePMMLInternalException;
+    PMML4Result evaluate(KiePMMLModel model, PMMLContext context, String releaseId);
 }

@@ -40,6 +40,8 @@ import org.kie.pmml.evaluator.assembler.container.PMMLPackageImpl;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import static org.kie.pmml.commons.Constants.RELEASE_ID;
+
 public class PMMLAssemblerService implements KieAssemblerService {
 
     public static final String PMML_COMPILER_CACHE_KEY = "PMML_COMPILER_CACHE_KEY";
@@ -95,10 +97,10 @@ public class PMMLAssemblerService implements KieAssemblerService {
      */
     protected List<KiePMMLModel> getKiePMMLModelsFromResource(KnowledgeBuilderImpl kbuilderImpl, Resource resource) {
         PMMLCompiler pmmlCompiler = kbuilderImpl.getCachedOrCreate(PMML_COMPILER_CACHE_KEY, () -> getCompiler(kbuilderImpl));
-        final String releaseId = kbuilderImpl.getKnowledgeBase().getResolvedReleaseId().toExternalForm();
-        logger.debug("getKiePMMLModelsFromResource releaseId {}", releaseId);
+        // TODO {gcardosi} replace with dynamically generated one
+        logger.debug("getKiePMMLModelsFromResource releaseId {}", RELEASE_ID);
         try {
-            return pmmlCompiler.getModels(resource.getInputStream(), releaseId);
+            return pmmlCompiler.getModels(resource.getInputStream(), RELEASE_ID);
         } catch (IOException e) {
             throw new ExternalException("ExternalException", e);
         }

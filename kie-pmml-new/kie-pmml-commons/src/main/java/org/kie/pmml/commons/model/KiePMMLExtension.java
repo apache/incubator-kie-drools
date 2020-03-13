@@ -15,23 +15,17 @@
  */
 package org.kie.pmml.commons.model;
 
-import java.io.Serializable;
 import java.util.List;
 
 /**
  * @see <a href=http://dmg.org/pmml/v4-4/GeneralStructure.html#xsdElement_Extension>Extension</a>
  */
-public class KiePMMLExtension implements Serializable {
+public class KiePMMLExtension {
 
-    private static final long serialVersionUID = -5895956619311871049L;
     private String extender;
     private String name;
     private String value;
     private List<Object> content;
-
-    public KiePMMLExtension() {
-        // Serialization
-    }
 
     public KiePMMLExtension(String extender, String name, String value, List<Object> content) {
         this.extender = extender;

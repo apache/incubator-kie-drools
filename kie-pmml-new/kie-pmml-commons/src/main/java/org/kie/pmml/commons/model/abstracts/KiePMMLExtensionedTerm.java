@@ -19,9 +19,7 @@ import java.util.List;
 
 import org.kie.pmml.commons.model.KiePMMLExtension;
 
-public abstract class KiePMMLExtensionedTerm extends KiePMMLExtensionedNamed {
-
-    private static final long serialVersionUID = 1452775408881599004L;
+public abstract class KiePMMLExtensionedTerm extends AbstractKiePMMLBase {
 
     public KiePMMLExtensionedTerm(String name, List<KiePMMLExtension> extensions) {
         super(name, extensions);

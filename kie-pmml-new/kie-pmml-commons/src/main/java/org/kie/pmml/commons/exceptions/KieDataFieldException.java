@@ -17,8 +17,6 @@ package org.kie.pmml.commons.exceptions;
 
 public class KieDataFieldException extends KiePMMLInternalException {
 
-    private static final long serialVersionUID = -2024081845051149460L;
-
     public KieDataFieldException(String message, Throwable cause) {
         super(message, cause);
     }

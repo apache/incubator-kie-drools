@@ -16,15 +16,14 @@
 package org.kie.pmml.commons.model.expressions;
 
 import java.util.List;
+import java.util.Objects;
 
 import org.kie.pmml.commons.model.KiePMMLExtension;
-import org.kie.pmml.commons.model.abstracts.KiePMMLExtensionedNamed;
+import org.kie.pmml.commons.model.abstracts.AbstractKiePMMLBase;
 
-public class KiePMMLFieldRef extends KiePMMLExtensionedNamed implements KiePMMLExpression {
+public class KiePMMLFieldRef extends AbstractKiePMMLBase implements KiePMMLExpression {
 
-    private static final long serialVersionUID = -8710217937035493376L;
-
-    private String mapMissingTo;
+    private final String mapMissingTo;
 
     public KiePMMLFieldRef(String name, List<KiePMMLExtension> extensions, String mapMissingTo) {
         super(name, extensions);
@@ -33,5 +32,34 @@ public class KiePMMLFieldRef extends KiePMMLExtensionedNamed implements KiePMMLE
 
     public String getMapMissingTo() {
         return mapMissingTo;
+    }
+
+    @Override
+    public String toString() {
+        return "KiePMMLFieldRef{" +
+                "mapMissingTo='" + mapMissingTo + '\'' +
+                ", extensions=" + extensions +
+                ", name='" + name + '\'' +
+                '}';
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) {
+            return true;
+        }
+        if (o == null || getClass() != o.getClass()) {
+            return false;
+        }
+        if (!super.equals(o)) {
+            return false;
+        }
+        KiePMMLFieldRef that = (KiePMMLFieldRef) o;
+        return Objects.equals(mapMissingTo, that.mapMissingTo);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(super.hashCode(), mapMissingTo);
     }
 }

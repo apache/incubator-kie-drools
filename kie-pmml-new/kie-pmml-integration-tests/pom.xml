@@ -22,6 +22,7 @@
       <artifactId>kie-pmml-commons</artifactId>
       <scope>test</scope>
     </dependency>
+    <!-- Compiler -->
     <dependency>
       <groupId>org.kie</groupId>
       <artifactId>kie-pmml-compiler-api</artifactId>
@@ -43,8 +44,7 @@
       <artifactId>kie-pmml-compiler-core</artifactId>
       <scope>test</scope>
     </dependency>
-    <!-- Library :: Models -->
-    <!-- Runtime -->
+    <!-- Evaluator -->
     <dependency>
       <groupId>org.kie</groupId>
       <artifactId>kie-pmml-evaluator-api</artifactId>
@@ -52,10 +52,43 @@
     </dependency>
     <dependency>
       <groupId>org.kie</groupId>
+      <artifactId>kie-pmml-evaluator-core</artifactId>
+      <scope>test</scope>
+    </dependency>
+    <dependency>
+      <groupId>org.kie</groupId>
       <artifactId>kie-pmml-evaluator-assembler</artifactId>
       <scope>test</scope>
     </dependency>
-    <!-- Runtime :: Implementations -->
+    <!-- Implementations -->
+    <!-- Regression -->
+    <dependency>
+      <groupId>org.kie</groupId>
+      <artifactId>kie-pmml-models-regression-model</artifactId>
+      <scope>test</scope>
+    </dependency>
+    <dependency>
+      <groupId>org.kie</groupId>
+      <artifactId>kie-pmml-models-regression-compiler</artifactId>
+      <scope>test</scope>
+    </dependency>
+    <dependency>
+      <groupId>org.kie</groupId>
+      <artifactId>kie-pmml-models-regression-compiler</artifactId>
+      <classifier>tests</classifier>
+      <scope>test</scope>
+    </dependency>
+    <dependency>
+      <groupId>org.kie</groupId>
+      <artifactId>kie-pmml-models-regression-evaluator</artifactId>
+      <scope>test</scope>
+    </dependency>
+    <dependency>
+      <groupId>org.kie</groupId>
+      <artifactId>kie-pmml-models-regression-evaluator</artifactId>
+      <classifier>tests</classifier>
+      <scope>test</scope>
+    </dependency>
     <!-- DROOLS/KIE -->
     <dependency>
       <groupId>org.kie</groupId>
@@ -67,11 +100,11 @@
       <artifactId>kie-internal</artifactId>
       <scope>test</scope>
     </dependency>
-    <dependency>
-      <groupId>org.drools</groupId>
-      <artifactId>drools-compiler</artifactId>
-      <scope>test</scope>
-    </dependency>
+<!--    <dependency>-->
+<!--      <groupId>org.drools</groupId>-->
+<!--      <artifactId>drools-compiler</artifactId>-->
+<!--      <scope>test</scope>-->
+<!--    </dependency>-->
     <dependency>
       <groupId>org.drools</groupId>
       <artifactId>drools-core</artifactId>

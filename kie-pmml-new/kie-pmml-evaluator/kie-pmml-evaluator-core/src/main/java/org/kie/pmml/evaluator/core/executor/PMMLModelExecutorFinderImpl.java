@@ -25,18 +25,18 @@ import org.slf4j.LoggerFactory;
 
 public class PMMLModelExecutorFinderImpl implements PMMLModelExecutorFinder {
 
-    private static final Logger log = LoggerFactory.getLogger(PMMLModelExecutorFinderImpl.class.getName());
+    private static final Logger logger = LoggerFactory.getLogger(PMMLModelExecutorFinderImpl.class.getName());
 
     private ServiceLoader<PMMLModelExecutor> loader = ServiceLoader.load(PMMLModelExecutor.class);
 
     @Override
     public List<PMMLModelExecutor> getImplementations(boolean refresh) {
-        log.info("getImplementations {}", refresh);
+        logger.debug("getImplementations {}", refresh);
         List<PMMLModelExecutor> toReturn = new ArrayList<>();
         Iterator<PMMLModelExecutor> providers = getProviders(refresh);
         providers.forEachRemaining(toReturn::add);
-        log.info("toReturn {} {}", toReturn, toReturn.size());
-        toReturn.forEach(provider -> log.info("{} : {}", provider.getPMMLModelType(), provider));
+        logger.debug("toReturn {} {}", toReturn, toReturn.size());
+        toReturn.forEach(provider -> logger.debug("{} : {}", provider.getPMMLModelType(), provider));
         return toReturn;
     }
 

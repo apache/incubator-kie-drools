@@ -29,6 +29,10 @@ import org.xml.sax.SAXException;
  */
 public class KiePMMLUtil {
 
+    private KiePMMLUtil() {
+        // Avoid instantiation
+    }
+
     /**
      * @param source
      * @return

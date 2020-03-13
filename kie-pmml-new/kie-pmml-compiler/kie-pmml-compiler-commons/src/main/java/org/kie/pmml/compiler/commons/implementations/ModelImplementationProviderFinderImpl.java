@@ -38,7 +38,7 @@ public class ModelImplementationProviderFinderImpl implements ModelImplementatio
 
     @Override
     @SuppressWarnings("rawtypes")
-    public <T extends Model, E extends KiePMMLModel> List<ModelImplementationProvider<T, E>>  getImplementations(boolean refresh) {
+    public <T extends Model, E extends KiePMMLModel> List<ModelImplementationProvider<T, E>> getImplementations(boolean refresh) {
         logger.debug("getImplementations {}", refresh);
         List<ModelImplementationProvider<T, E>> toReturn = new ArrayList<>();
         Iterator<ModelImplementationProvider> providers = getProviders(refresh);

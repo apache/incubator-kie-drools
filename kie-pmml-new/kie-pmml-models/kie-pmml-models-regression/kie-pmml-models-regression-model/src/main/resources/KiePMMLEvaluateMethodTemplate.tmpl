@@ -1,0 +1,61 @@
+/*
+ * Copyright 2020 Red Hat, Inc. and/or its affiliates.
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+package org.kie.pmml.models.regression.model;
+
+import java.util.Arrays;
+import java.util.List;
+import java.util.Map;
+import java.util.Objects;
+import java.util.concurrent.atomic.AtomicReference;
+
+
+public class KiePMMLEvaluateMethodTemplate {
+
+    private double evaluateNumericWithExponent(double input) {
+        double coefficient = 5;
+        double exponent = 2;
+        // Considering exponent because it is != 1
+        return Math.pow(input, exponent) * coefficient;
+    }
+
+    private double evaluateNumericWithoutExponent(double input) {
+        double coefficient = 1;
+        // Ignoring exponent because it is 1
+        return input * coefficient;
+    }
+
+    private double evaluateCategorical(Object input) {
+//        if (Objects.equals("x", input)) {
+//            return -3;
+//        } else if (Objects.equals("y", input)) {
+//            return 3;
+//        } else {
+//            return 0.0;
+//        }
+    }
+
+    private double evaluatePredictor(Map<String, Object> resultMap) {
+        final AtomicReference<Double> result = new AtomicReference<>(1.0);
+        List<String> fieldRefs = Arrays.asList("fld1", "fld2");
+        for (String key : resultMap.keySet()) {
+            if (fieldRefs.contains(key)) {
+                result.set(result.get() * (Double)resultMap.get(key));
+            }
+        }
+        double coefficient = 0.4;
+        return result.get() * coefficient;
+    }
+}
