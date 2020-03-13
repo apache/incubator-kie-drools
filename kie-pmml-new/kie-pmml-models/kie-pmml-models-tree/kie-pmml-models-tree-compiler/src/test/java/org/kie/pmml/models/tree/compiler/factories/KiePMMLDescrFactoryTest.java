@@ -256,7 +256,7 @@ public class KiePMMLDescrFactoryTest {
             case XOR:
             case AND:
             default:
-                operatorString = " AND ";
+                operatorString = " && ";
                 break;
         }
         if (operator.equals(CompoundPredicate.BooleanOperator.XOR)) {

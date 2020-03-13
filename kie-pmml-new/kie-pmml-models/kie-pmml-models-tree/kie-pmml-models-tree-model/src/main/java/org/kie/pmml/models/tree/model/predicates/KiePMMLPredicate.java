@@ -19,12 +19,12 @@ import java.util.List;
 import java.util.Map;
 
 import org.kie.pmml.commons.model.KiePMMLExtension;
-import org.kie.pmml.commons.model.abstracts.KiePMMLBase;
+import org.kie.pmml.commons.model.abstracts.AbstractKiePMMLBase;
 
 /**
  * @see <a href=http://dmg.org/pmml/v4-4/TreeModel.html#xsdGroup_PREDICATE>PREDICATE</a>
  */
-public abstract class KiePMMLPredicate extends KiePMMLBase {
+public abstract class KiePMMLPredicate extends AbstractKiePMMLBase {
 
     protected KiePMMLPredicate(String name, List<KiePMMLExtension> extensions) {
         super(name, extensions);

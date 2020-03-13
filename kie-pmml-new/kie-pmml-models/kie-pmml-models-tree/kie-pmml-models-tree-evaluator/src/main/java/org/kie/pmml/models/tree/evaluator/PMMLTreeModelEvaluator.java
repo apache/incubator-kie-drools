@@ -19,14 +19,12 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
-import org.drools.compiler.kproject.ReleaseIdImpl;
+import org.drools.compiler.lang.DrlDumper;
 import org.drools.modelcompiler.ExecutableModelProject;
 import org.kie.api.KieServices;
-import org.kie.api.builder.ReleaseId;
 import org.kie.api.pmml.PMML4Result;
 import org.kie.api.runtime.KieContainer;
 import org.kie.api.runtime.KieSession;
-import org.kie.api.runtime.StatelessKieSession;
 import org.kie.internal.utils.KieHelper;
 import org.kie.pmml.commons.model.KiePMMLModel;
 import org.kie.pmml.commons.model.enums.PMML_MODEL;
@@ -34,6 +32,8 @@ import org.kie.pmml.evaluator.api.exceptions.KiePMMLModelException;
 import org.kie.pmml.evaluator.api.executor.PMMLContext;
 import org.kie.pmml.evaluator.core.executor.PMMLModelExecutor;
 import org.kie.pmml.models.tree.model.KiePMMLTreeModel;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import static org.kie.pmml.evaluator.core.utils.Converter.getUnwrappedParametersMap;
 
@@ -42,6 +42,7 @@ import static org.kie.pmml.evaluator.core.utils.Converter.getUnwrappedParameters
  */
 public class PMMLTreeModelEvaluator implements PMMLModelExecutor {
 
+    private static final Logger logger = LoggerFactory.getLogger(PMMLTreeModelEvaluator.class.getName());
     private final KieServices kieServices;
     private final KieContainer kContainer;
 
@@ -62,6 +63,13 @@ public class PMMLTreeModelEvaluator implements PMMLModelExecutor {
             throw new KiePMMLModelException("Expected a KiePMMLTreeModel, received a " + model.getClass().getName());
         }
         final KiePMMLTreeModel treeModel = (KiePMMLTreeModel) model;
+        try {
+            String string = new DrlDumper().dump(treeModel.getPackageDescr());
+            logger.info(string);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
         KieSession kSession = new KieHelper()
                 .addContent(treeModel.getPackageDescr())
                 .build(ExecutableModelProject.class)

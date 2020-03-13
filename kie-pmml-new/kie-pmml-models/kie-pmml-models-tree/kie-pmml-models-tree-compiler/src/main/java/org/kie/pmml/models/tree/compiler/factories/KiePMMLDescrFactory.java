@@ -196,7 +196,7 @@ public class KiePMMLDescrFactory {
                 constraintBuilder = new StringBuilder();
                 for (int i = 0; i < predicates.size(); i++) {
                     if (i > 0) {
-                        constraintBuilder.append(" AND ");
+                        constraintBuilder.append(" && ");
                     }
                     SimplePredicate predicate = predicates.get(i);
                     OPERATOR operator = OPERATOR.byName(predicate.getOperator().value());

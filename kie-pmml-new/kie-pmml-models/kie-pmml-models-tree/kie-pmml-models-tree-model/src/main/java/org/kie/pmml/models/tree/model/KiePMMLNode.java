@@ -20,12 +20,12 @@ import java.util.Map;
 import java.util.Objects;
 
 import org.kie.pmml.commons.model.KiePMMLExtension;
-import org.kie.pmml.commons.model.abstracts.KiePMMLBase;
+import org.kie.pmml.commons.model.abstracts.AbstractKiePMMLBase;
 import org.kie.pmml.models.tree.model.predicates.KiePMMLPredicate;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-public class KiePMMLNode extends KiePMMLBase {
+public class KiePMMLNode extends AbstractKiePMMLBase {
 
     private static final Logger logger = LoggerFactory.getLogger(KiePMMLNode.class);
 
@@ -126,7 +126,7 @@ public class KiePMMLNode extends KiePMMLBase {
                 '}';
     }
 
-    public static class Builder extends KiePMMLBase.Builder<KiePMMLNode> {
+    public static class Builder extends AbstractKiePMMLBase.Builder<KiePMMLNode> {
 
         private Builder(String name, List<KiePMMLExtension> extensions) {
             super("Node-", () -> new KiePMMLNode(name, extensions));
