@@ -20,19 +20,19 @@ import java.util.Map;
 
 public class KiePMMLClassLoader extends ClassLoader {
 
-    private Map<String, KiePMMLCode> customCompiledCode = new HashMap<>();
+    private Map<String, KiePMMLByteCode> customCompiledCode = new HashMap<>();
 
     public KiePMMLClassLoader(ClassLoader parent) {
         super(parent);
     }
 
-    public void addCode(KiePMMLCode cc) {
+    public void addCode(KiePMMLByteCode cc) {
         customCompiledCode.put(cc.getName(), cc);
     }
 
     @Override
     protected Class<?> findClass(String name) throws ClassNotFoundException {
-        KiePMMLCode cc = customCompiledCode.get(name);
+        KiePMMLByteCode cc = customCompiledCode.get(name);
         if (cc == null) {
             return super.findClass(name);
         }

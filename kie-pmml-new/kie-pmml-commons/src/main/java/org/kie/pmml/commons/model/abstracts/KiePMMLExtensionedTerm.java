@@ -19,7 +19,7 @@ import java.util.List;
 
 import org.kie.pmml.commons.model.KiePMMLExtension;
 
-public abstract class KiePMMLExtensionedTerm extends KiePMMLBase {
+public abstract class KiePMMLExtensionedTerm extends AbstractKiePMMLBase {
 
     public KiePMMLExtensionedTerm(String name, List<KiePMMLExtension> extensions) {
         super(name, extensions);

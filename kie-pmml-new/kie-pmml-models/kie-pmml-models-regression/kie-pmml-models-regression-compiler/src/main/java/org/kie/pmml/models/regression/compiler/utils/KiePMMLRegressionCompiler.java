@@ -28,6 +28,8 @@ import javax.tools.JavaCompiler;
 import javax.tools.JavaFileObject;
 import javax.tools.ToolProvider;
 
+import org.kie.pmml.commons.exceptions.KiePMMLInternalException;
+
 public class KiePMMLRegressionCompiler {
 
     private static final JavaCompiler JAVA_COMPILER = ToolProvider.getSystemJavaCompiler();
@@ -41,8 +43,8 @@ public class KiePMMLRegressionCompiler {
      * @return
      */
     public static Map<String, Class<?>> compile(Map<String, String> classNameSourceMap, ClassLoader classLoader) {
-        Map<String, KiePMMLCode> sourceCodes = classNameSourceMap.entrySet().stream().collect(Collectors.toMap(Map.Entry::getKey,
-                                                                                                               entry -> new KiePMMLCode(entry.getKey(), entry.getValue())));
+        Map<String, KiePMMLSourceCode> sourceCodes = classNameSourceMap.entrySet().stream().collect(Collectors.toMap(Map.Entry::getKey,
+                                                                                                                     entry -> new KiePMMLSourceCode(entry.getKey(), entry.getValue())));
         KiePMMLClassLoader kiePMMLClassLoader = new KiePMMLClassLoader(classLoader);
         DiagnosticCollector<JavaFileObject> collector = new DiagnosticCollector<>();
         KiePMMLFileManager fileManager = new KiePMMLFileManager(JAVA_COMPILER.getStandardFileManager(null, null, null), kiePMMLClassLoader);
@@ -52,16 +54,21 @@ public class KiePMMLRegressionCompiler {
             StringBuilder errorBuilder = new StringBuilder();
             errorBuilder.append("Compilation failed");
             for (Diagnostic<? extends JavaFileObject> diagnostic : collector.getDiagnostics()) {
-                errorBuilder.append("\r\n" + diagnostic.getKind() + "; line: " + diagnostic.getLineNumber() + "; " + diagnostic.getMessage(Locale.US));
+                errorBuilder.append("\r\n");
+                errorBuilder.append(diagnostic.getKind());
+                errorBuilder.append("; line: ");
+                errorBuilder.append(diagnostic.getLineNumber());
+                errorBuilder.append("; ");
+                errorBuilder.append(diagnostic.getMessage(Locale.US));
             }
-            throw new RuntimeException(errorBuilder.toString());
+            throw new KiePMMLInternalException(errorBuilder.toString());
         }
         Map<String, Class<?>> toReturn = new HashMap<>();
         for (String className : sourceCodes.keySet()) {
             try {
                 toReturn.put(className, kiePMMLClassLoader.loadClass(className));
             } catch (ClassNotFoundException e) {
-                throw new RuntimeException(e);
+                throw new KiePMMLInternalException(e.getMessage(), e);
             }
         }
         return toReturn;

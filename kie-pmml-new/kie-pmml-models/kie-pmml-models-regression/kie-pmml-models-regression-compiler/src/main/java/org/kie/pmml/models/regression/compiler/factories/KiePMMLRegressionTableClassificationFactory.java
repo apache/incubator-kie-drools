@@ -120,7 +120,7 @@ public class KiePMMLRegressionTableClassificationFactory {
                     assignExpr.setValue(new NameExpr(opType.getClass().getSimpleName() + "." + opType.name()));
                     break;
                 default:
-                    // NOOP
+                    logger.warn("Unexpected property inside the constructor: {}", propertyName);
             }
         });
     }
@@ -172,7 +172,8 @@ public class KiePMMLRegressionTableClassificationFactory {
                     }
                     break;
                 default:
-                    // All other possibilities not analyzed, yet
+                    // All other possibilities not managed, yet
+                    throw new KiePMMLInternalException(String.format("%s not managed, yet!", outputField.getResultFeature()));
             }
             if (value != null) {
                 NodeList<Expression> expressions = NodeList.nodeList(key, value);

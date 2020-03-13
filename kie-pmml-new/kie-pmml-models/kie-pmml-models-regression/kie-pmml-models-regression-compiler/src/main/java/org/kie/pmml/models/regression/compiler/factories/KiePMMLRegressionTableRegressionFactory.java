@@ -21,7 +21,6 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
-import java.util.Optional;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.stream.Collectors;
 
@@ -47,6 +46,7 @@ import org.dmg.pmml.regression.NumericPredictor;
 import org.dmg.pmml.regression.PredictorTerm;
 import org.dmg.pmml.regression.RegressionModel;
 import org.dmg.pmml.regression.RegressionTable;
+import org.kie.pmml.commons.exceptions.KiePMMLInternalException;
 import org.kie.pmml.models.regression.model.tuples.KiePMMLTableSourceCategory;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -86,7 +86,7 @@ public class KiePMMLRegressionTableRegressionFactory {
         return toReturn;
     }
 
-    public static AbstractMap.Entry<String, String> getRegressionTable(final CompilationUnit templateCU, final RegressionTable regressionTable, final RegressionModel.NormalizationMethod normalizationMethod, final String targetField) {
+    public static Map.Entry<String, String> getRegressionTable(final CompilationUnit templateCU, final RegressionTable regressionTable, final RegressionModel.NormalizationMethod normalizationMethod, final String targetField) {
         logger.debug("getRegressionTable {}", regressionTable);
         CompilationUnit cloneCU = templateCU.clone();
         ClassOrInterfaceDeclaration tableTemplate = cloneCU.getClassByName(KIE_PMML_REGRESSION_TABLE_REGRESSION_TEMPLATE)
@@ -156,9 +156,8 @@ public class KiePMMLRegressionTableRegressionFactory {
         return numericPredictors.stream()
                 .map(numericPredictor -> new AbstractMap.SimpleEntry<>(numericPredictor.getName().getValue(),
                                                                        addNumericPredictor(numericPredictor, tableTemplate, predictorsArity.addAndGet(1))))
-                .filter(entry -> entry.getValue().isPresent())
                 .collect(Collectors.toMap(AbstractMap.SimpleEntry::getKey,
-                                          entry -> entry.getValue().get()));
+                                          AbstractMap.SimpleEntry::getValue));
     }
 
     /**
@@ -168,7 +167,7 @@ public class KiePMMLRegressionTableRegressionFactory {
      * @param predictorArity
      * @return
      */
-    private static Optional<MethodDeclaration> addNumericPredictor(final NumericPredictor numericPredictor, final ClassOrInterfaceDeclaration tableTemplate, int predictorArity) {
+    private static MethodDeclaration addNumericPredictor(final NumericPredictor numericPredictor, final ClassOrInterfaceDeclaration tableTemplate, int predictorArity) {
         try {
             templateEvaluate = StaticJavaParser.parseResource(KIE_PMML_EVALUATE_METHOD_TEMPLATE_JAVA);
             cloneEvaluate = templateEvaluate.clone();
@@ -182,7 +181,7 @@ public class KiePMMLRegressionTableRegressionFactory {
             }
             return addMethod(methodTemplate, tableTemplate, "evaluateNumericPredictor" + predictorArity);
         } catch (Exception e) {
-            return Optional.empty();
+            throw new KiePMMLInternalException(String.format("Failed to add NumericPredictor %s", numericPredictor.getName()), e);
         }
     }
 
@@ -240,9 +239,8 @@ public class KiePMMLRegressionTableRegressionFactory {
         return groupedCollectors.entrySet().stream()
                 .map(entry -> new AbstractMap.SimpleEntry<>(entry.getKey(),
                                                             addGroupedCategoricalPredictor(entry.getValue(), tableTemplate, predictorsArity.addAndGet(1))))
-                .filter(entry -> entry.getValue().isPresent())
                 .collect(Collectors.toMap(AbstractMap.SimpleEntry::getKey,
-                                          entry -> entry.getValue().get()));
+                                          AbstractMap.SimpleEntry::getValue));
     }
 
     /**
@@ -252,43 +250,41 @@ public class KiePMMLRegressionTableRegressionFactory {
      * @param predictorArity
      * @return
      */
-    private static Optional<MethodDeclaration> addGroupedCategoricalPredictor(final List<CategoricalPredictor> categoricalPredictors, final ClassOrInterfaceDeclaration tableTemplate, int predictorArity) {
+    private static MethodDeclaration addGroupedCategoricalPredictor(final List<CategoricalPredictor> categoricalPredictors, final ClassOrInterfaceDeclaration tableTemplate, int predictorArity) {
         try {
             templateEvaluate = StaticJavaParser.parseResource(KIE_PMML_EVALUATE_METHOD_TEMPLATE_JAVA);
             cloneEvaluate = templateEvaluate.clone();
             ClassOrInterfaceDeclaration evaluateTemplateClass = cloneEvaluate.getClassByName(KIE_PMML_EVALUATE_METHOD_TEMPLATE)
                     .orElseThrow(() -> new RuntimeException(MAIN_CLASS_NOT_FOUND));
             MethodDeclaration methodTemplate = evaluateTemplateClass.getMethodsByName("evaluateCategorical").get(0);
-            methodTemplate.getBody().ifPresent(body -> {
-                IfStmt ifStmt = new IfStmt();
-                for (int i = 0; i < categoricalPredictors.size(); i++) {
-                    CategoricalPredictor categoricalPredictor = categoricalPredictors.get(i);
-                    Expression lhe;
-                    if (categoricalPredictor.getValue() instanceof String) {
-                        lhe = new StringLiteralExpr((String) categoricalPredictor.getValue());
-                    } else {
-                        lhe = new NameExpr(categoricalPredictor.getValue().toString());
-                    }
-                    NodeList<Expression> expressions = NodeList.nodeList(lhe, new NameExpr("input"));
-                    MethodCallExpr conditionExpr = new MethodCallExpr(new NameExpr("Objects"), "equals", expressions);
-                    if (i == 0) {
-                        ifStmt.setCondition(conditionExpr);
-                        ifStmt.setThenStmt(new ReturnStmt(new DoubleLiteralExpr(String.valueOf(categoricalPredictor.getCoefficient()))));
-                        body.addStatement(ifStmt);
-                    } else {
-                        IfStmt elseIf = new IfStmt();
-                        elseIf.setCondition(conditionExpr);
-                        elseIf.setThenStmt(new ReturnStmt(new DoubleLiteralExpr(String.valueOf(categoricalPredictor.getCoefficient()))));
-                        ifStmt.setElseStmt(elseIf);
-                        ifStmt = elseIf;
-                    }
+            final BlockStmt body = methodTemplate.getBody().orElseThrow(() -> new KiePMMLInternalException(String.format("Missing body in MethodTemplate %s ", methodTemplate.getName())));
+            IfStmt ifStmt = new IfStmt();
+            for (int i = 0; i < categoricalPredictors.size(); i++) {
+                CategoricalPredictor categoricalPredictor = categoricalPredictors.get(i);
+                Expression lhe;
+                if (categoricalPredictor.getValue() instanceof String) {
+                    lhe = new StringLiteralExpr((String) categoricalPredictor.getValue());
+                } else {
+                    lhe = new NameExpr(categoricalPredictor.getValue().toString());
                 }
-                ifStmt.setElseStmt(new ReturnStmt(new DoubleLiteralExpr("0.0")));
-            });
+                NodeList<Expression> expressions = NodeList.nodeList(lhe, new NameExpr("input"));
+                MethodCallExpr conditionExpr = new MethodCallExpr(new NameExpr("Objects"), "equals", expressions);
+                if (i == 0) {
+                    ifStmt.setCondition(conditionExpr);
+                    ifStmt.setThenStmt(new ReturnStmt(new DoubleLiteralExpr(String.valueOf(categoricalPredictor.getCoefficient()))));
+                    body.addStatement(ifStmt);
+                } else {
+                    IfStmt elseIf = new IfStmt();
+                    elseIf.setCondition(conditionExpr);
+                    elseIf.setThenStmt(new ReturnStmt(new DoubleLiteralExpr(String.valueOf(categoricalPredictor.getCoefficient()))));
+                    ifStmt.setElseStmt(elseIf);
+                    ifStmt = elseIf;
+                }
+            }
+            ifStmt.setElseStmt(new ReturnStmt(new DoubleLiteralExpr("0.0")));
             return addMethod(methodTemplate, tableTemplate, "evaluateCategoricalPredictor" + predictorArity);
         } catch (Exception e) {
-            //
-            return Optional.empty();
+            throw new KiePMMLInternalException("Failed to add CategoricalPredictors", e);
         }
     }
 
@@ -306,9 +302,8 @@ public class KiePMMLRegressionTableRegressionFactory {
                     return new AbstractMap.SimpleEntry<>(predictorTerm.getName() != null ? predictorTerm.getName().getValue() : "predictorTerm" + arity,
                                                          addPredictorTerm(predictorTerm, tableTemplate, arity));
                 })
-                .filter(entry -> entry.getValue().isPresent())
                 .collect(Collectors.toMap(AbstractMap.SimpleEntry::getKey,
-                                          entry -> entry.getValue().get()));
+                                          AbstractMap.SimpleEntry::getValue));
     }
 
     /**
@@ -318,32 +313,30 @@ public class KiePMMLRegressionTableRegressionFactory {
      * @param predictorArity
      * @return
      */
-    private static Optional<MethodDeclaration> addPredictorTerm(final PredictorTerm predictorTerm, final ClassOrInterfaceDeclaration tableTemplate, int predictorArity) {
+    private static MethodDeclaration addPredictorTerm(final PredictorTerm predictorTerm, final ClassOrInterfaceDeclaration tableTemplate, int predictorArity) {
         try {
             templateEvaluate = StaticJavaParser.parseResource(KIE_PMML_EVALUATE_METHOD_TEMPLATE_JAVA);
             cloneEvaluate = templateEvaluate.clone();
             ClassOrInterfaceDeclaration evaluateTemplateClass = cloneEvaluate.getClassByName(KIE_PMML_EVALUATE_METHOD_TEMPLATE)
                     .orElseThrow(() -> new RuntimeException(MAIN_CLASS_NOT_FOUND));
             MethodDeclaration methodTemplate = evaluateTemplateClass.getMethodsByName("evaluatePredictor").get(0);
-            methodTemplate.getBody().ifPresent(body -> {
-                final List<VariableDeclarator> variableDeclarators = body.findAll(VariableDeclarator.class);
-                variableDeclarators.forEach(variableDeclarator -> {
-                    if (variableDeclarator.getName().asString().equals("fieldRefs")) {
-                        final List<Expression> nodeList = predictorTerm.getFieldRefs().stream()
-                                .map(fieldRef -> new StringLiteralExpr(fieldRef.getField().getValue()))
-                                .collect(Collectors.toList());
-                        NodeList<Expression> expressions = NodeList.nodeList(nodeList);
-                        MethodCallExpr methodCallExpr = new MethodCallExpr(new NameExpr("Arrays"), "asList", expressions);
-                        variableDeclarator.setInitializer(methodCallExpr);
-                    } else if (variableDeclarator.getName().asString().equals(COEFFICIENT)) {
-                        variableDeclarator.setInitializer(String.valueOf(predictorTerm.getCoefficient().doubleValue()));
-                    }
-                });
+            final BlockStmt body = methodTemplate.getBody().orElseThrow(() -> new KiePMMLInternalException(String.format("Missing body in MethodTemplate %s ", methodTemplate.getName())));
+            final List<VariableDeclarator> variableDeclarators = body.findAll(VariableDeclarator.class);
+            variableDeclarators.forEach(variableDeclarator -> {
+                if (variableDeclarator.getName().asString().equals("fieldRefs")) {
+                    final List<Expression> nodeList = predictorTerm.getFieldRefs().stream()
+                            .map(fieldRef -> new StringLiteralExpr(fieldRef.getField().getValue()))
+                            .collect(Collectors.toList());
+                    NodeList<Expression> expressions = NodeList.nodeList(nodeList);
+                    MethodCallExpr methodCallExpr = new MethodCallExpr(new NameExpr("Arrays"), "asList", expressions);
+                    variableDeclarator.setInitializer(methodCallExpr);
+                } else if (variableDeclarator.getName().asString().equals(COEFFICIENT)) {
+                    variableDeclarator.setInitializer(String.valueOf(predictorTerm.getCoefficient().doubleValue()));
+                }
             });
             return addMethod(methodTemplate, tableTemplate, "evaluatePredictorTerm" + predictorArity);
         } catch (Exception e) {
-            //
-            return Optional.empty();
+            throw new KiePMMLInternalException(String.format("Failed to add PredictorTerm %s", predictorTerm), e);
         }
     }
 
@@ -354,14 +347,13 @@ public class KiePMMLRegressionTableRegressionFactory {
      * @param evaluateMethodName
      * @return
      */
-    protected static Optional<MethodDeclaration> addMethod(final MethodDeclaration methodTemplate, final ClassOrInterfaceDeclaration tableTemplate, final String evaluateMethodName) {
-        return methodTemplate.getBody().map(body -> {
-            final MethodDeclaration toReturn = tableTemplate.addMethod(evaluateMethodName).setBody(body);
-            toReturn.setModifiers(methodTemplate.getModifiers());
-            methodTemplate.getParameters().forEach(toReturn::addParameter);
-            toReturn.setType(methodTemplate.getType());
-            return toReturn;
-        });
+    protected static MethodDeclaration addMethod(final MethodDeclaration methodTemplate, final ClassOrInterfaceDeclaration tableTemplate, final String evaluateMethodName) {
+        final BlockStmt body = methodTemplate.getBody().orElseThrow(() -> new KiePMMLInternalException(String.format("Missing body in MethodTemplate %s ", methodTemplate.getName())));
+        final MethodDeclaration toReturn = tableTemplate.addMethod(evaluateMethodName).setBody(body);
+        toReturn.setModifiers(methodTemplate.getModifiers());
+        methodTemplate.getParameters().forEach(toReturn::addParameter);
+        toReturn.setType(methodTemplate.getType());
+        return toReturn;
     }
 
     /**

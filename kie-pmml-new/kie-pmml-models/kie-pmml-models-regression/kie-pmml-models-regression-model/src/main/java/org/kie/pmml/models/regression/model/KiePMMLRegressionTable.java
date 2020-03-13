@@ -77,7 +77,5 @@ public abstract class KiePMMLRegressionTable {
         return intercept;
     }
 
-    protected void updateResult(final AtomicReference<Double> toUpdate) {
-        // NONE
-    }
+    protected abstract void updateResult(final AtomicReference<Double> toUpdate);
 }
