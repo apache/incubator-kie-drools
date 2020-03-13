@@ -17,6 +17,15 @@
       <groupId>org.kie.kogito</groupId>
       <artifactId>jobs-api</artifactId>
     </dependency>
+
+    <dependency>
+      <groupId>io.quarkus</groupId>
+      <artifactId>quarkus-resteasy</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>org.jboss.resteasy</groupId>
+      <artifactId>resteasy-context-propagation</artifactId>
+    </dependency>
     <dependency>
       <groupId>io.quarkus</groupId>
       <artifactId>quarkus-vertx-web</artifactId>
@@ -87,6 +96,11 @@
     <dependency>
       <groupId>org.kie.kogito</groupId>
       <artifactId>infinispan-quarkus-health-addon</artifactId>
+    </dependency>
+
+    <dependency>
+      <groupId>org.apache.commons</groupId>
+      <artifactId>commons-lang3</artifactId>
     </dependency>
 
     <!-- Testing -->

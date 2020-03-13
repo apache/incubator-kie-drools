@@ -16,9 +16,9 @@
 
 package org.kie.kogito.index.service;
 
-import io.quarkus.test.junit.SubstrateTest;
+import io.quarkus.test.junit.NativeImageTest;
 
-@SubstrateTest
+@NativeImageTest
 public class NativeIndexingServiceIT extends IndexingServiceTest {
 
     // Execute the same tests but in native mode.

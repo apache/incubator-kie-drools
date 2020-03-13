@@ -19,8 +19,11 @@ package org.kie.kogito.jobs.service.repository.impl;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.kie.kogito.jobs.service.repository.ReactiveJobRepository;
+import org.kie.kogito.jobs.service.stream.JobStreams;
 import org.mockito.InjectMocks;
 import org.mockito.junit.jupiter.MockitoExtension;
+
+import static org.mockito.Mockito.mock;
 
 @ExtendWith(MockitoExtension.class)
 class InMemoryJobRepositoryTest extends BaseJobRepositoryTest {
@@ -30,6 +33,7 @@ class InMemoryJobRepositoryTest extends BaseJobRepositoryTest {
 
     @BeforeEach
     public void setUp() {
+        tested = new InMemoryJobRepository(mockVertx(), mock(JobStreams.class));
         super.setUp();
     }
 

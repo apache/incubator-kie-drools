@@ -37,13 +37,6 @@ public class KeycloakIntegrationIndexingServiceTest {
     private static final String KEYCLOAK_REALM = "kogito";
     private static final String KEYCLOAK_CLIENT_ID = "kogito-data-index-service";
 
-    @BeforeAll
-    public static void setup() {
-        System.setProperty("quarkus.http.auth.policy.role-policy1.roles-allowed", "confidential");
-        System.setProperty("quarkus.http.auth.permission.roles1.paths", "/graphql");
-        System.setProperty("quarkus.http.auth.permission.roles1.policy", "role-policy1");
-    }
-
     @Test
     public void testUnauthorizedUserAccess() {
         //alice only have role User, resource is forbidden

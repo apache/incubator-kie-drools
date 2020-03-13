@@ -29,34 +29,32 @@ import org.kie.kogito.jobs.api.JobBuilder;
 import org.kie.kogito.jobs.service.model.JobStatus;
 import org.kie.kogito.jobs.service.model.ScheduledJob;
 import org.kie.kogito.jobs.service.repository.ReactiveJobRepository;
-import org.kie.kogito.jobs.service.stream.JobStreams;
 import org.kie.kogito.jobs.service.utils.DateUtil;
-import org.mockito.Mock;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.anyLong;
 import static org.mockito.Mockito.lenient;
+import static org.mockito.Mockito.mock;
 
 public abstract class BaseJobRepositoryTest {
 
     public static final String ID = UUID.randomUUID().toString();
 
-    @Mock
-    public Vertx vertx;
-
-    @Mock
-    public JobStreams jobStreams;
-
     private ScheduledJob job;
 
     public void setUp() {
+        createAndSaveJob(ID);
+    }
+
+    public Vertx mockVertx() {
+        Vertx vertx = mock(Vertx.class);
         lenient().doAnswer(a -> {
                                a.getArgument(0, Handler.class).handle(null);
                                return null;
                            }
-        ).when(vertx).runOnContext(any());
-
-        createAndSaveJob(ID);
+        ).when(vertx).executeBlocking(any(), any());
+        return vertx;
     }
 
     public abstract ReactiveJobRepository tested();

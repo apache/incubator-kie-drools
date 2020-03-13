@@ -27,7 +27,10 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.kie.kogito.jobs.service.repository.ReactiveJobRepository;
 import org.kie.kogito.jobs.service.repository.impl.BaseJobRepositoryTest;
 import org.kie.kogito.jobs.service.resource.InfinispanServerTestResource;
+import org.kie.kogito.jobs.service.stream.JobStreams;
 import org.mockito.junit.jupiter.MockitoExtension;
+
+import static org.mockito.Mockito.mock;
 
 @QuarkusTest
 @QuarkusTestResource(InfinispanServerTestResource.class)
@@ -46,7 +49,7 @@ class InfinispanJobRepositoryTest extends BaseJobRepositoryTest {
                 .administration()
                 .getOrCreateCache(InfinispanConfiguration.Caches.SCHEDULED_JOBS, (String) null)
                 .clear();
-        tested = new InfinispanJobRepository(vertx, jobStreams, remoteCacheManager);
+        tested = new InfinispanJobRepository(mockVertx(), mock(JobStreams.class), remoteCacheManager);
         super.setUp();
     }
 

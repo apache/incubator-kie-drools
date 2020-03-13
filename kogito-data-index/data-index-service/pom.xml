@@ -124,26 +124,17 @@
         <artifactId>maven-surefire-plugin</artifactId>
         <executions>
           <execution>
-            <id>testWithoutKeycloak</id>
-            <goals>
-              <goal>test</goal>
-            </goals>
-          </execution>
-          <execution>
             <id>testWithKeycloak</id>
             <goals>
               <goal>test</goal>
             </goals>
             <configuration>
-              <includes>
-                <include>KeycloakIntegrationIndexingServiceTest.java</include>
-              </includes>
-              <excludes>
-                <exclude>none</exclude>
-              </excludes>
-              <systemPropertyVariables>
-                <quarkus.profile>test</quarkus.profile>
-              </systemPropertyVariables>
+              <argLine>
+                -Dquarkus.http.auth.policy.role-policy1.roles-allowed=confidential
+                -Dquarkus.http.auth.permission.roles1.paths=/graphql
+                -Dquarkus.http.auth.permission.roles1.policy=role-policy1
+              </argLine>
+              <test>org.kie.kogito.index.service.KeycloakIntegrationIndexingServiceTest.java</test>
             </configuration>
           </execution>
         </executions>
