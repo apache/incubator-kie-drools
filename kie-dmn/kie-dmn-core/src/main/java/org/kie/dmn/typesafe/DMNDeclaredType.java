@@ -14,6 +14,7 @@ import org.drools.modelcompiler.builder.generator.declaredtype.api.MethodWithStr
 import org.drools.modelcompiler.builder.generator.declaredtype.api.TypeDefinition;
 import org.kie.dmn.api.core.DMNType;
 import org.kie.dmn.core.impl.FEELPropertyAccessible;
+import org.kie.dmn.feel.util.EvalHelper;
 
 class DMNDeclaredType implements TypeDefinition {
 
@@ -58,17 +59,36 @@ class DMNDeclaredType implements TypeDefinition {
     public List<MethodDefinition> getMethods() {
         List<MethodDefinition> allMethods = new ArrayList<>();
 
-
-        String allFeelPropertiesBody = " { return java.util.Collections.emptyMap(); } ";
-
-        MethodWithStringBody  allFEELProperties = new MethodWithStringBody(
-                "allFEELProperties", "java.util.Map<String, Object>", allFeelPropertiesBody
-        );
-
-
-        allMethods.add(allFEELProperties);
+        allFeelProperties(allMethods);
+        getFeelProperties(allMethods);
 
         return allMethods;
+    }
+
+    private void getFeelProperties(List<MethodDefinition> allMethods) {
+        String getFeelPropertyBody = " { return null; } ";
+
+        MethodWithStringBody getFeelProperty = new MethodWithStringBody(
+                "getFEELProperty",
+                EvalHelper.PropertyValueResult.class.getCanonicalName(),
+                getFeelPropertyBody
+        );
+
+        getFeelProperty.addParameter(String.class.getCanonicalName(), "p");
+
+        allMethods.add(getFeelProperty);
+    }
+
+    private void allFeelProperties(List<MethodDefinition> allMethods) {
+        String allFeelPropertiesBody = " { return java.util.Collections.emptyMap(); } ";
+
+        MethodWithStringBody allFEELProperties = new MethodWithStringBody(
+                "allFEELProperties",
+                "java.util.Map<String, Object>",
+                allFeelPropertiesBody
+        );
+
+        allMethods.add(allFEELProperties);
     }
 
     @Override
