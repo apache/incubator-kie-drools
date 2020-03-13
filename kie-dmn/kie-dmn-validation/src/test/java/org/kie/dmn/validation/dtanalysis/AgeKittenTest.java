@@ -16,6 +16,8 @@
 
 package org.kie.dmn.validation.dtanalysis;
 
+import java.io.IOException;
+import java.io.Reader;
 import java.math.BigDecimal;
 import java.util.Arrays;
 import java.util.List;
@@ -46,6 +48,16 @@ public class AgeKittenTest extends AbstractDTAnalysisTest {
     public void test_AgeKitten() {
         List<DMNMessage> validate = validator.validate(getReader("AgeKitten.dmn"), VALIDATE_COMPILATION, ANALYZE_DECISION_TABLE);
         checkAnalysis(validate);
+    }
+
+    @Test
+    public void test_AgeKittenImport() throws IOException {
+        try (final Reader reader0 = getReader("AgeKittenItemDef.dmn");
+                final Reader reader1 = getReader("AgeKittenImporting.dmn");) {
+            final List<DMNMessage> validate = validator.validateUsing(VALIDATE_COMPILATION, ANALYZE_DECISION_TABLE)
+                                                       .theseModels(reader0, reader1);
+            checkAnalysis(validate);
+        }
     }
 
     private void checkAnalysis(List<DMNMessage> validate) {
