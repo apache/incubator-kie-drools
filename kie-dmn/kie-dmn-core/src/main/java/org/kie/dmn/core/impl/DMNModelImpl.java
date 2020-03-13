@@ -488,6 +488,10 @@ public class DMNModelImpl
         return this.importChain.getImportChainAliases();
     }
 
+    public List<DMNModel> getImportChainDirectChildModels() {
+        return this.importChain.getImportChainDirectChildModels();
+    }
+
     private static class ImportChain {
         private final String alias;
         private final DMNModel node;
@@ -533,6 +537,13 @@ public class DMNModelImpl
                 allPrefixesUnderMyNamespace.add(Arrays.asList(alias));
             }
             return result;
+        }
+
+        /**
+         * return the list of child models not including transitive ones.
+         */
+        public List<DMNModel> getImportChainDirectChildModels() {
+            return children.stream().map(chain -> chain.node).collect(Collectors.toList());
         }
     }
 

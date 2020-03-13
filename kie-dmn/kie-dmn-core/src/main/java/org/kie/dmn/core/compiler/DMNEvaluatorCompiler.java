@@ -867,14 +867,14 @@ public class DMNEvaluatorCompiler {
      * Utility method to have a error message is reported if a DMN Variable is missing typeRef.
      * @param model used for reporting errors
      * @param variable the variable to extract typeRef
-     * @return the `variable.typeRef` or null in case of errors. Errors are reported with standard notification mechanism via MsgUtil.reportMessage
+     * @return the `variable.typeRef` or null if missing. When missing a WARN is reported with standard notification mechanism via MsgUtil.reportMessage
      */
     private static QName variableTypeRefOrErrIfNull(DMNModelImpl model, InformationItem variable) {
         if ( variable.getTypeRef() != null ) {
             return variable.getTypeRef();
         } else {
             MsgUtil.reportMessage( logger,
-                    DMNMessage.Severity.ERROR,
+                    DMNMessage.Severity.WARN,
                     variable,
                     model,
                     null,

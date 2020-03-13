@@ -41,4 +41,8 @@ public interface DMNRuntimeEventListener {
     default void beforeInvokeBKM(BeforeInvokeBKMEvent event) {}
 
     default void afterInvokeBKM(AfterInvokeBKMEvent event) {}
+
+    default void beforeEvaluateAll(BeforeEvaluateAllEvent event) {}
+
+    default void afterEvaluateAll(AfterEvaluateAllEvent event) {}
 }
