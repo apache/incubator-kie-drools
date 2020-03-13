@@ -8,6 +8,7 @@ import org.junit.Test;
 import org.kie.dmn.api.core.DMNModel;
 import org.kie.dmn.api.core.DMNRuntime;
 import org.kie.dmn.core.util.DMNRuntimeUtil;
+import org.kie.dmn.core.impl.FEELPropertyAccessible;
 import org.kie.dmn.typesafe.compilation.RegressionCompiler;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -43,6 +44,10 @@ public class DMNTypeSafeTest {
 
         Class<?> aClass = thisDMNClassLoader.loadClass("org.kie.dmn.typesafe.TPerson");
         assertThat(aClass, notNullValue());
+
+        Object instance = aClass.getDeclaredConstructor().newInstance();
+
+        FEELPropertyAccessible feelPropertyAccessible = (FEELPropertyAccessible)instance;
 
         Method getName = aClass.getMethod("getName");
         assertThat(getName, notNullValue());
