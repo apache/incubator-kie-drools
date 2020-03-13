@@ -22,6 +22,7 @@ import java.util.BitSet;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
+import java.util.Objects;
 import java.util.Optional;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
@@ -94,7 +95,7 @@ public class DMNDTAnalyser {
                 DTAnalysis result = dmnDTAnalysis(model, dt);
                 results.add(result);
             } catch (Throwable t) {
-                LOG.debug("Skipped dmnDTAnalysis for table: " + dt.getId(), t);
+                LOG.debug("Skipped dmnDTAnalysis for table: {}", dt.getId(), t);
                 DTAnalysis result = DTAnalysis.ofError(dt, t);
                 results.add(result);
             }
@@ -332,7 +333,7 @@ public class DMNDTAnalyser {
         List<DMNModel> childModels = ((DMNModelImpl) model).getImportChainDirectChildModels();
         return childModels.stream()
                           .map(childModel -> findAllowedValues(childModel, typeRef))
-                          .filter(str -> str != null)
+                          .filter(Objects::nonNull)
                           .findFirst()
                           .orElse(null);
     }
