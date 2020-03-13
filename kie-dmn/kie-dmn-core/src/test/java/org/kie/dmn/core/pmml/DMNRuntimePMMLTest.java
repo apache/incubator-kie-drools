@@ -167,6 +167,9 @@ public class DMNRuntimePMMLTest {
         assertEquals(0.8279559384018024, ((BigDecimal)result.get("RegProb")).doubleValue(), COMPARISON_DELTA);
         assertEquals(0.0022681396056233208, ((BigDecimal)result.get("RegProbA")).doubleValue(), COMPARISON_DELTA);
 
+        DMNType dmnFEELNumber = ((DMNModelImpl) dmnModel).getTypeRegistry().resolveType(dmnModel.getDefinitions().getURIFEEL(), BuiltInType.NUMBER.getName());
+        DMNType dmnFEELString = ((DMNModelImpl) dmnModel).getTypeRegistry().resolveType(dmnModel.getDefinitions().getURIFEEL(), BuiltInType.STRING.getName());
+
         // additional import info.
         Map<String, DMNImportPMMLInfo> pmmlImportInfo = ((DMNModelImpl) dmnModel).getPmmlImportInfo();
         assertThat(pmmlImportInfo.keySet(), hasSize(1));
@@ -180,14 +183,17 @@ public class DMNRuntimePMMLTest {
         SimpleTypeImpl fld1 = (SimpleTypeImpl)inputFields.get("fld1");
         assertEquals("test_regression_clax", fld1.getNamespace());
         assertEquals(BuiltInType.NUMBER, fld1.getFeelType());
+        assertEquals(dmnFEELNumber, fld1.getBaseType());
 
         SimpleTypeImpl fld2 = (SimpleTypeImpl)inputFields.get("fld2");
         assertEquals("test_regression_clax", fld2.getNamespace());
-        assertEquals(BuiltInType.NUMBER, fld1.getFeelType());
+        assertEquals(BuiltInType.NUMBER, fld2.getFeelType());
+        assertEquals(dmnFEELNumber, fld2.getBaseType());
 
         SimpleTypeImpl fld3 = (SimpleTypeImpl)inputFields.get("fld3");
         assertEquals("test_regression_clax", fld3.getNamespace());
         assertEquals(BuiltInType.STRING, fld3.getFeelType());
+        assertEquals(dmnFEELString, fld3.getBaseType());
 
         Map<String, DMNType> outputFields = m0.getOutputFields();
         CompositeTypeImpl output = (CompositeTypeImpl)outputFields.get("LinReg");
@@ -198,13 +204,16 @@ public class DMNRuntimePMMLTest {
 
         assertEquals("test_regression_clax", regOut.getNamespace());
         assertEquals(BuiltInType.STRING, regOut.getFeelType());
+        assertEquals(dmnFEELString, regOut.getBaseType());
 
         SimpleTypeImpl regProb = (SimpleTypeImpl)fields.get("RegProb");
         assertEquals("test_regression_clax", regProb.getNamespace());
         assertEquals(BuiltInType.NUMBER, regProb.getFeelType());
+        assertEquals(dmnFEELNumber, regProb.getBaseType());
 
         SimpleTypeImpl regProbA = (SimpleTypeImpl)fields.get("RegProbA");
         assertEquals("test_regression_clax", regProbA.getNamespace());
         assertEquals(BuiltInType.NUMBER, regProbA.getFeelType());
+        assertEquals(dmnFEELNumber, regProbA.getBaseType());
     }
 }
