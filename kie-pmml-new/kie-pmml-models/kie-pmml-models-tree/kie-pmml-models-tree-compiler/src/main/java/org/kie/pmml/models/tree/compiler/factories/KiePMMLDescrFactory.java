@@ -17,6 +17,7 @@ package org.kie.pmml.models.tree.compiler.factories;
 
 import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
 
 import org.dmg.pmml.CompoundPredicate;
 import org.dmg.pmml.DataDictionary;
@@ -39,6 +40,7 @@ import org.drools.compiler.lang.api.RuleDescrBuilder;
 import org.drools.compiler.lang.descr.AndDescr;
 import org.drools.compiler.lang.descr.PackageDescr;
 import org.drools.core.util.StringUtils;
+import org.kie.pmml.commons.exceptions.KiePMMLInternalException;
 import org.kie.pmml.commons.model.enums.DATA_TYPE;
 import org.kie.pmml.models.drooled.executor.KiePMMLStatusHolder;
 import org.kie.pmml.models.tree.model.enums.OPERATOR;
@@ -54,6 +56,7 @@ public class KiePMMLDescrFactory {
 
     static final Logger logger = LoggerFactory.getLogger(KiePMMLDescrFactory.class.getName());
     static final String VALUE_PATTERN = "value %s \"%s\"";
+    static final String XOR_PATTERN = "((%1$s) & !(%2$s)) | (!(%1$s) & (%2$s)))"; // (A() not B()) or (not(A()) B()) - A^B => (A & !B) | (!A & B)
     static final String STATUS_HOLDER = "$statusHolder";
 
     private KiePMMLDescrFactory() {
@@ -122,17 +125,17 @@ public class KiePMMLDescrFactory {
     }
 
     static void declareCompoundPredicate(final CEDescrBuilder<?, ?> lhsBuilder, final CompoundPredicate predicate) {
-        final CEDescrBuilder<? extends CEDescrBuilder<?, ?>, ?> andBuilder;
+        final CEDescrBuilder<? extends CEDescrBuilder<?, ?>, ?> nestedBuilder;
         final CompoundPredicate.BooleanOperator booleanOperator = (predicate).getBooleanOperator();
         switch (booleanOperator) {
             case OR:
-                andBuilder = lhsBuilder.or();
+                nestedBuilder = lhsBuilder.or();
                 break;
             case AND:
             case XOR: // TODO {gcardosi} (A() not B()) or (not(A()) B()) - A^B => (A & !B) | (!A & B)
             case SURROGATE:
             default:
-                andBuilder = lhsBuilder.and();
+                nestedBuilder = lhsBuilder.and();
         }
         // First I need to group predicates by type
         final Map<? extends Class<? extends Predicate>, List<Predicate>> predicatesByClass = (predicate).getPredicates().stream().collect(groupingBy(Predicate::getClass));
@@ -146,42 +149,61 @@ public class KiePMMLDescrFactory {
                         .collect(groupingBy(child -> child.getField().getValue().toUpperCase()));
                 // .. and add them as a whole
                 for (Map.Entry<String, List<SimplePredicate>> childEntry : predicatesByField.entrySet()) {
-                    declareSimplePredicates(andBuilder, childEntry.getKey(), childEntry.getValue(), booleanOperator);
+                    declareSimplePredicates(nestedBuilder, childEntry.getKey(), childEntry.getValue(), booleanOperator);
                 }
             } else {
                 for (Predicate childPredicate : predicates) {
-                    declarePredicate(andBuilder, childPredicate);
+                    declarePredicate(nestedBuilder, childPredicate);
                 }
             }
         }
-        andBuilder.end();
+        lhsBuilder.end();
     }
 
     static void declareSimplePredicates(final CEDescrBuilder<?, ?> lhsBuilder, final String fieldName, final List<SimplePredicate> predicates, final CompoundPredicate.BooleanOperator booleanOperator) {
         final PatternDescrBuilder<? extends CEDescrBuilder<?, ?>> pattern = lhsBuilder.pattern(fieldName);
+        String constraint;
+        StringBuilder constraintBuilder;
         switch (booleanOperator) {
             case OR:
-                StringBuilder constraintBuilder = new StringBuilder();
+                constraintBuilder = new StringBuilder();
                 for (int i = 0; i < predicates.size(); i++) {
                     if (i > 0) {
                         constraintBuilder.append(" || ");
                     }
                     SimplePredicate predicate = predicates.get(i);
                     OPERATOR operator = OPERATOR.byName(predicate.getOperator().value());
-                    String constraint = String.format(VALUE_PATTERN, operator.getOperator(), predicate.getValue() != null ? predicate.getValue() : "");
+                    constraint = String.format(VALUE_PATTERN, operator.getOperator(), predicate.getValue() != null ? predicate.getValue() : "");
                     constraintBuilder.append(constraint);
                 }
                 pattern.constraint(constraintBuilder.toString());
                 break;
-            case AND:
-            case XOR: // TODO {gcardosi} (A() not B()) or (not(A()) B()) - A^B => (A & !B) | (!A & B)
-            case SURROGATE:
-            default:
-                for (SimplePredicate predicate : predicates) {
-                    OPERATOR operator = OPERATOR.byName(predicate.getOperator().value());
-                    String constraint = String.format(VALUE_PATTERN, operator.getOperator(), predicate.getValue() != null ? predicate.getValue() : "");
-                    pattern.constraint(constraint);
+            case XOR:
+                if (predicates.size() != 2) {
+                    throw new KiePMMLInternalException("Expected 2 Predicates for XOR condition, retrieved " + predicates.size());
                 }
+                List<String> constraints = predicates.stream().map(predicate -> {
+                    OPERATOR operator = OPERATOR.byName(predicate.getOperator().value());
+                    return String.format(VALUE_PATTERN, operator.getOperator(), predicate.getValue() != null ? predicate.getValue() : "");
+                }).collect(Collectors.toList());
+                constraint = String.format(XOR_PATTERN, constraints.get(0), constraints.get(1));
+                pattern.constraint(constraint);
+                break;
+            case SURROGATE: // TODO {gcardosi} ?
+                break;
+            case AND:
+            default:
+                constraintBuilder = new StringBuilder();
+                for (int i = 0; i < predicates.size(); i++) {
+                    if (i > 0) {
+                        constraintBuilder.append(" AND ");
+                    }
+                    SimplePredicate predicate = predicates.get(i);
+                    OPERATOR operator = OPERATOR.byName(predicate.getOperator().value());
+                    constraint = String.format(VALUE_PATTERN, operator.getOperator(), predicate.getValue() != null ? predicate.getValue() : "");
+                    constraintBuilder.append(constraint);
+                }
+                pattern.constraint(constraintBuilder.toString());
         }
         pattern.end();
     }

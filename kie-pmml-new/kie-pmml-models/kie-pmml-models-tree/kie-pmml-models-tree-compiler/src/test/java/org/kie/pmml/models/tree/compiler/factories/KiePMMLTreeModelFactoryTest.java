@@ -20,20 +20,24 @@ import org.dmg.pmml.PMML;
 import org.dmg.pmml.tree.TreeModel;
 import org.junit.Before;
 import org.junit.Test;
+import org.kie.pmml.commons.model.enums.MINING_FUNCTION;
 import org.kie.pmml.compiler.testutils.TestUtils;
 import org.kie.pmml.models.tree.model.KiePMMLTreeModel;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertTrue;
 
 public class KiePMMLTreeModelFactoryTest {
 
     private static final String SOURCE_1 = "TreeSample.pmml";
     private static final Logger logger = LoggerFactory.getLogger(KiePMMLTreeModelFactoryTest.class);
-    private static final String modelName = "golfing";
+    private static final String TARGET_FIELD = "whatIdo";
+    private static final MINING_FUNCTION _MINING_FUNCTION = MINING_FUNCTION.CLASSIFICATION;
     private PMML pmml;
-
+    private TreeModel treeModel;
 
     @Before
     public void setUp() throws Exception {
@@ -41,11 +45,15 @@ public class KiePMMLTreeModelFactoryTest {
         assertNotNull(pmml);
         assertEquals(1, pmml.getModels().size());
         assertTrue(pmml.getModels().get(0) instanceof TreeModel);
-     }
+        treeModel = (TreeModel) pmml.getModels().get(0);
+    }
 
     @Test
     public void getKiePMMLTreeModel() {
-        KiePMMLTreeModel retrieved = KiePMMLTreeModelFactory.getKiePMMLTreeModel(pmml.getDataDictionary(), (TreeModel) pmml.getModels().get(0));
-
+        KiePMMLTreeModel retrieved = KiePMMLTreeModelFactory.getKiePMMLTreeModel(pmml.getDataDictionary(), treeModel);
+        assertNotNull(retrieved);
+        assertEquals(treeModel.getModelName(), retrieved.getName());
+        assertNotNull(retrieved.getPackageDescr());
+        assertEquals(TARGET_FIELD, retrieved.getTargetField());
     }
 }
