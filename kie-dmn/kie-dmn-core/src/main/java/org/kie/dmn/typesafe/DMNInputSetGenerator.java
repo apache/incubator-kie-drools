@@ -3,7 +3,6 @@ package org.kie.dmn.typesafe;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
-import java.util.Optional;
 import java.util.Set;
 
 import com.github.javaparser.ast.body.ClassOrInterfaceDeclaration;
@@ -38,7 +37,6 @@ public class DMNInputSetGenerator {
         TypeDefinition typeDefinition = types.get(key);
 
         ClassOrInterfaceDeclaration generatedClass = new GeneratedClassDeclaration(typeDefinition,
-                                                                                   t -> Optional.empty(),
                                                                                    Collections.emptyList()).toClassDeclaration();
 
         return generatedClass.toString();

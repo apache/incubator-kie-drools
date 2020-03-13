@@ -10,6 +10,7 @@ import org.drools.core.util.StringUtils;
 import org.drools.modelcompiler.builder.generator.declaredtype.api.AnnotationDefinition;
 import org.drools.modelcompiler.builder.generator.declaredtype.api.FieldDefinition;
 import org.drools.modelcompiler.builder.generator.declaredtype.api.MethodDefinition;
+import org.drools.modelcompiler.builder.generator.declaredtype.api.MethodWithStringBody;
 import org.drools.modelcompiler.builder.generator.declaredtype.api.TypeDefinition;
 import org.kie.dmn.api.core.DMNType;
 import org.kie.dmn.core.impl.FEELPropertyAccessible;
@@ -58,6 +59,14 @@ class DMNDeclaredType implements TypeDefinition {
         List<MethodDefinition> allMethods = new ArrayList<>();
 
 
+        String allFeelPropertiesBody = " { return java.util.Collections.emptyMap(); } ";
+
+        MethodWithStringBody  allFEELProperties = new MethodWithStringBody(
+                "allFEELProperties", "java.util.Map<String, Object>", allFeelPropertiesBody
+        );
+
+
+        allMethods.add(allFEELProperties);
 
         return allMethods;
     }
