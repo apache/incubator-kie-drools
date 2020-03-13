@@ -30,7 +30,6 @@ import com.thoughtworks.xstream.annotations.XStreamConverter;
 import com.thoughtworks.xstream.annotations.XStreamImplicit;
 import com.thoughtworks.xstream.annotations.XStreamOmitField;
 import org.apache.commons.lang3.BooleanUtils;
-import org.drools.compiler.kie.builder.impl.DrlProject;
 import org.kie.api.KieBase;
 import org.kie.api.KieBaseConfiguration;
 import org.kie.api.KieServices;
@@ -680,7 +679,7 @@ public class ScoreDirectorFactoryConfig extends AbstractConfig<ScoreDirectorFact
             kieFileSystem.writeKModuleXML(kmodel.toXML());
 
             KieBuilder kieBuilder = kieServices.newKieBuilder(kieFileSystem);
-            kieBuilder.buildAll(DrlProject.class);
+            kieBuilder.buildAll();
             Results results = kieBuilder.getResults();
             if (results.hasMessages(Message.Level.ERROR)) {
                 throw new IllegalStateException("There are errors in a score DRL:\n"

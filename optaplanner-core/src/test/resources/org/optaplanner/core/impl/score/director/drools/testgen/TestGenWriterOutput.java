@@ -1,7 +1,6 @@
 package org.optaplanner.testgen;
 
 import java.io.File;
-import org.drools.compiler.kie.builder.impl.DrlProject;
 import org.junit.Assert;
 import org.junit.Test;
 import org.kie.api.KieServices;
@@ -25,7 +24,7 @@ public class TestGenWriterOutput {
                 .newClassPathResource("x"));
         kfs.write(kieServices.getResources()
                 .newClassPathResource("y"));
-        kieServices.newKieBuilder(kfs).buildAll(DrlProject.class);
+        kieServices.newKieBuilder(kfs).buildAll();
         KieContainer kieContainer = kieServices.newKieContainer(kieServices.getRepository().getDefaultReleaseId());
         KieSession kieSession = kieContainer.newKieSession();
 
