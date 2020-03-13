@@ -56,22 +56,21 @@ import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
 
-
 public class UnmarshalMarshalTest {
 
     protected static final Logger logger = LoggerFactory.getLogger(UnmarshalMarshalTest.class);
 
-    @Test 
+    @Test
     public void test0001() throws Exception {
         testRoundTrip("org/kie/dmn/backend/marshalling/v1_1/", "0001-input-data-string.dmn");
     }
 
-    @Test 
+    @Test
     public void test0002() throws Exception {
         testRoundTrip("org/kie/dmn/backend/marshalling/v1_1/", "0002-input-data-number.dmn");
     }
-    
-    @Test 
+
+    @Test
     public void test0003() throws Exception {
         testRoundTrip("org/kie/dmn/backend/marshalling/v1_1/", "0003-input-data-string-allowed-values.dmn");
     }
@@ -81,11 +80,16 @@ public class UnmarshalMarshalTest {
         DMNMarshaller marshaller = DMNMarshallerFactory.newMarshallerWithExtensions(Arrays.asList(new DecisionServicesExtensionRegister()));
         testRoundTrip("org/kie/dmn/backend/marshalling/v1_1/", "0004-decision-services.dmn", marshaller);
     }
-    
+
     @Test
     public void test0004_ns_other_location() throws Exception {
         DMNMarshaller marshaller = DMNMarshallerFactory.newMarshallerWithExtensions(Arrays.asList(new DecisionServicesExtensionRegister()));
         testRoundTrip("org/kie/dmn/backend/marshalling/v1_1/", "0004-decision-services_ns_other_location.dmn", marshaller);
+    }
+
+    @Test
+    public void test0005_decision_list() throws Exception {
+        testRoundTrip("org/kie/dmn/backend/marshalling/v1_1/", "0005-decision-list.dmn");
     }
 
     @Test
@@ -97,31 +101,31 @@ public class UnmarshalMarshalTest {
     public void testDish() throws Exception {
         testRoundTrip("", "dish-decision.xml");
     }
-    
+
     @Ignore("failing to compare over a xsi:type=\"tImport\" attribute, but why content generated 'control' need to explicit it ?")
     @Test
     public void testDummyDefinitions() throws Exception {
         testRoundTrip("", "dummy-definitions.xml");
     }
-    
+
     @Test
     public void testDummyRelation() throws Exception {
         testRoundTrip("", "dummy-relation.xml");
     }
-    
+
     @Test
     public void testCh11() throws Exception {
         testRoundTrip("", "ch11example.xml");
     }
-    
+
     @Test
     public void testHello_World_semantic_namespace() throws Exception {
         testRoundTrip("", "Hello_World_semantic_namespace.dmn");
     }
-    
+
     @Test
     public void testHello_World_semantic_namespace_with_extensions() throws Exception {
-        DMNMarshaller marshaller = DMNMarshallerFactory.newMarshallerWithExtensions(Arrays.asList( new MyTestRegister() ));
+        DMNMarshaller marshaller = DMNMarshallerFactory.newMarshallerWithExtensions(Arrays.asList(new MyTestRegister()));
         testRoundTrip("", "Hello_World_semantic_namespace_with_extensions.dmn", marshaller);
     }
 
@@ -141,7 +145,7 @@ public class UnmarshalMarshalTest {
     public void test20161014() throws Exception {
         testRoundTrip("", "test20161014.xml");
     }
-    
+
     @Test
     public void testQNameSerialization() throws Exception {
         testRoundTrip("", "hardcoded_function_definition.dmn");
@@ -159,22 +163,21 @@ public class UnmarshalMarshalTest {
     }
 
     public void testRoundTrip(String subdir, String xmlfile, DMNMarshaller marshaller) throws Exception {
-        
+
         File baseOutputDir = new File("target/test-xmlunit/");
         File testClassesBaseDir = new File("target/test-classes/");
-        
-    
+
         File inputXMLFile = new File(testClassesBaseDir, subdir + xmlfile);
-        
-        FileInputStream fis = new FileInputStream( inputXMLFile );
-                
-        Definitions unmarshal = marshaller.unmarshal( new InputStreamReader( fis ) );
-        
+
+        FileInputStream fis = new FileInputStream(inputXMLFile);
+
+        Definitions unmarshal = marshaller.unmarshal(new InputStreamReader(fis));
+
         Validator v = Validator.forLanguage(Languages.W3C_XML_SCHEMA_NS_URI);
-        v.setSchemaSource(new StreamSource( this.getClass().getResource("/dmn.xsd").getFile() ));
-        ValidationResult validateInputResult = v.validateInstance(new StreamSource( inputXMLFile ));
+        v.setSchemaSource(new StreamSource(this.getClass().getResource("/dmn.xsd").getFile()));
+        ValidationResult validateInputResult = v.validateInstance(new StreamSource(inputXMLFile));
         if (!validateInputResult.isValid()) {
-            for ( ValidationProblem p : validateInputResult.getProblems()) {
+            for (ValidationProblem p : validateInputResult.getProblems()) {
                 System.err.println(p);
             }
         }
@@ -184,35 +187,35 @@ public class UnmarshalMarshalTest {
         if (!subdirFile.mkdirs()) {
             logger.warn("mkdirs() failed for File: " + subdirFile.getAbsolutePath() + "!");
         }
-        FileOutputStream sourceFos = new FileOutputStream( new File(baseOutputDir, subdir + "a." + xmlfile) );
+        FileOutputStream sourceFos = new FileOutputStream(new File(baseOutputDir, subdir + "a." + xmlfile));
         Files.copy(
                 new File(testClassesBaseDir, subdir + xmlfile).toPath(),
                 sourceFos
-                );
+        );
         sourceFos.flush();
         sourceFos.close();
-                
-        System.out.println( marshaller.marshal(unmarshal) );
+
+        System.out.println(marshaller.marshal(unmarshal));
         File outputXMLFile = new File(baseOutputDir, subdir + "b." + xmlfile);
-        try (FileWriter targetFos = new FileWriter( outputXMLFile )) {
+        try (FileWriter targetFos = new FileWriter(outputXMLFile)) {
             marshaller.marshal(unmarshal, targetFos);
         }
-        
+
         // Should also validate output XML:
-        ValidationResult validateOutputResult = v.validateInstance(new StreamSource( outputXMLFile ));
+        ValidationResult validateOutputResult = v.validateInstance(new StreamSource(outputXMLFile));
         if (!validateOutputResult.isValid()) {
-            for ( ValidationProblem p : validateOutputResult.getProblems()) {
+            for (ValidationProblem p : validateOutputResult.getProblems()) {
                 System.err.println(p);
             }
         }
         assertTrue(validateOutputResult.isValid());
-        
+
         System.out.println("\n---\nDefault XMLUnit comparison:");
-        Source control = Input.fromFile( inputXMLFile ).build();
-        Source test = Input.fromFile( outputXMLFile ).build();
+        Source control = Input.fromFile(inputXMLFile).build();
+        Source test = Input.fromFile(outputXMLFile).build();
         Diff allDiffsSimilarAndDifferent = DiffBuilder
-                .compare( control )
-                .withTest( test )
+                .compare(control)
+                .withTest(test)
                 .build();
         allDiffsSimilarAndDifferent.getDifferences().forEach(System.out::println);
 
@@ -229,49 +232,49 @@ public class UnmarshalMarshalTest {
 
          */
         Set<QName> attrWhichCanDefault = new HashSet<QName>();
-        attrWhichCanDefault.addAll(Arrays.asList(new QName[] {
-                new QName("expressionLanguage"), 
-                new QName("typeLanguage"), 
-                new QName("isCollection"), 
-                new QName("hitPolicy"), 
+        attrWhichCanDefault.addAll(Arrays.asList(new QName[]{
+                new QName("expressionLanguage"),
+                new QName("typeLanguage"),
+                new QName("isCollection"),
+                new QName("hitPolicy"),
                 new QName("preferredOrientation")
-                }));
+        }));
         Set<String> nodeHavingDefaultableAttr = new HashSet<>();
         nodeHavingDefaultableAttr.addAll(Arrays.asList(new String[]{"definitions", "decisionTable", "itemDefinition", "itemComponent"}));
         Diff checkSimilar = DiffBuilder
-                .compare( control )
-                .withTest( test )
+                .compare(control)
+                .withTest(test)
                 .withDifferenceEvaluator(
                         DifferenceEvaluators.chain(DifferenceEvaluators.Default,
-                        ((comparison, outcome) -> {
-                            if (outcome == ComparisonResult.DIFFERENT && comparison.getType() == ComparisonType.ELEMENT_NUM_ATTRIBUTES) {
-                                if (comparison.getControlDetails().getTarget().getNodeName().equals( comparison.getTestDetails().getTarget().getNodeName() )
-                                        && nodeHavingDefaultableAttr.contains( safeStripDMNPRefix( comparison.getControlDetails().getTarget() ) )) {
-                                    return ComparisonResult.SIMILAR;
-                                }
-                            }
-                            if (outcome == ComparisonResult.DIFFERENT && comparison.getType() == ComparisonType.ATTR_NAME_LOOKUP) {
-                                boolean testIsDefaulableAttribute = false;
-                                QName whichDefaultableAttr = null;
-                                if (comparison.getControlDetails().getValue() == null && attrWhichCanDefault.contains(comparison.getTestDetails().getValue())) {
-                                    for (QName a : attrWhichCanDefault) {
-                                        boolean check = comparison.getTestDetails().getXPath().endsWith("@"+a);
-                                        if (check) {
-                                            testIsDefaulableAttribute = true;
-                                            whichDefaultableAttr = a;
-                                            continue;
-                                        }
-                                    }
-                                }
-                                if ( testIsDefaulableAttribute ) {
-                                    if (comparison.getTestDetails().getXPath().equals(comparison.getControlDetails().getXPath() + "/@" + whichDefaultableAttr )) {
-                                        // TODO missing to check the explicited option attribute has value set to the actual default value.
-                                        return ComparisonResult.SIMILAR;
-                                    }
-                                }
-                            }
-                        return outcome;
-                    })))
+                                                   ((comparison, outcome) -> {
+                                                       if (outcome == ComparisonResult.DIFFERENT && comparison.getType() == ComparisonType.ELEMENT_NUM_ATTRIBUTES) {
+                                                           if (comparison.getControlDetails().getTarget().getNodeName().equals(comparison.getTestDetails().getTarget().getNodeName())
+                                                                   && nodeHavingDefaultableAttr.contains(safeStripDMNPRefix(comparison.getControlDetails().getTarget()))) {
+                                                               return ComparisonResult.SIMILAR;
+                                                           }
+                                                       }
+                                                       if (outcome == ComparisonResult.DIFFERENT && comparison.getType() == ComparisonType.ATTR_NAME_LOOKUP) {
+                                                           boolean testIsDefaulableAttribute = false;
+                                                           QName whichDefaultableAttr = null;
+                                                           if (comparison.getControlDetails().getValue() == null && attrWhichCanDefault.contains(comparison.getTestDetails().getValue())) {
+                                                               for (QName a : attrWhichCanDefault) {
+                                                                   boolean check = comparison.getTestDetails().getXPath().endsWith("@" + a);
+                                                                   if (check) {
+                                                                       testIsDefaulableAttribute = true;
+                                                                       whichDefaultableAttr = a;
+                                                                       continue;
+                                                                   }
+                                                               }
+                                                           }
+                                                           if (testIsDefaulableAttribute) {
+                                                               if (comparison.getTestDetails().getXPath().equals(comparison.getControlDetails().getXPath() + "/@" + whichDefaultableAttr)) {
+                                                                   // TODO missing to check the explicited option attribute has value set to the actual default value.
+                                                                   return ComparisonResult.SIMILAR;
+                                                               }
+                                                           }
+                                                       }
+                                                       return outcome;
+                                                   })))
                 .ignoreWhitespace()
                 .checkForSimilar()
                 .build();
@@ -285,7 +288,7 @@ public class UnmarshalMarshalTest {
     private String safeStripDMNPRefix(Node target) {
         if (KieDMNModelInstrumentedBase.URI_DMN.equals(target.getNamespaceURI())) {
             return target.getLocalName();
-        } 
+        }
         return null;
     }
 }

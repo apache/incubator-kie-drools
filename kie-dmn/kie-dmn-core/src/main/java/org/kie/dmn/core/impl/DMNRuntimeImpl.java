@@ -26,7 +26,6 @@ import java.util.Optional;
 import java.util.Set;
 import java.util.function.BiConsumer;
 import java.util.stream.Collectors;
-
 import javax.xml.namespace.QName;
 
 import org.drools.compiler.kie.builder.impl.KieContainerImpl;
@@ -157,11 +156,13 @@ public class DMNRuntimeImpl
         Objects.requireNonNull(context, () -> MsgUtil.createMessage(Msg.PARAM_CANNOT_BE_NULL, "context"));
         boolean performRuntimeTypeCheck = performRuntimeTypeCheck(model);
         DMNResultImpl result = createResult( model, context );
+        DMNRuntimeEventManagerUtils.fireBeforeEvaluateAll( eventManager, model, result );
         // the engine should evaluate all Decisions belonging to the "local" model namespace, not imported decision explicitly.
         Set<DecisionNode> decisions = model.getDecisions().stream().filter(d -> d.getModelNamespace().equals(model.getNamespace())).collect(Collectors.toSet());
         for( DecisionNode decision : decisions ) {
             evaluateDecision(context, result, decision, performRuntimeTypeCheck);
         }
+        DMNRuntimeEventManagerUtils.fireAfterEvaluateAll( eventManager, model, result );
         return result;
     }
 

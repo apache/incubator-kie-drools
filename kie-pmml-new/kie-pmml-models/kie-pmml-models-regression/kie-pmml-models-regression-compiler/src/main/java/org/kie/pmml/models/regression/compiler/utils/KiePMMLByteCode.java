@@ -22,31 +22,18 @@ import java.net.URI;
 
 import javax.tools.SimpleJavaFileObject;
 
-public class KiePMMLCode extends SimpleJavaFileObject {
+public class KiePMMLByteCode extends SimpleJavaFileObject {
 
-    private String contents = null;
-    private ByteArrayOutputStream baos = new ByteArrayOutputStream();
-    private String className;
+    private final ByteArrayOutputStream baos = new ByteArrayOutputStream();
+    private final String className;
 
     /**
      * Constructor for <code>Kind.CLASS</code> <code>KiePMMLCode</code>
      * @param className
      * @throws Exception
      */
-    public KiePMMLCode(String className) throws Exception {
+    public KiePMMLByteCode(String className) throws Exception {
         super(new URI(className), Kind.CLASS);
-        this.className = className;
-    }
-
-    /**
-     * Constructor for <code>Kind.SOURCE</code> <code>KiePMMLCode</code>
-     * @param className
-     * @param contents
-     */
-    public KiePMMLCode(String className, String contents) {
-        super(URI.create("string:///" + className.replace('.', '/')
-                                 + Kind.SOURCE.extension), Kind.SOURCE);
-        this.contents = contents;
         this.className = className;
     }
 
@@ -63,8 +50,4 @@ public class KiePMMLCode extends SimpleJavaFileObject {
         return baos.toByteArray();
     }
 
-    public CharSequence getCharContent(boolean ignoreEncodingErrors)
-            throws IOException {
-        return contents;
-    }
 }

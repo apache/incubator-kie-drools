@@ -33,10 +33,12 @@ import org.kie.dmn.api.core.DMNContext;
 import org.kie.dmn.api.core.DMNModel;
 import org.kie.dmn.api.core.DMNResult;
 import org.kie.dmn.api.core.DMNRuntime;
+import org.kie.dmn.api.core.event.AfterEvaluateAllEvent;
 import org.kie.dmn.api.core.event.AfterEvaluateBKMEvent;
 import org.kie.dmn.api.core.event.AfterEvaluateDecisionEvent;
 import org.kie.dmn.api.core.event.AfterEvaluateDecisionServiceEvent;
 import org.kie.dmn.api.core.event.AfterInvokeBKMEvent;
+import org.kie.dmn.api.core.event.BeforeEvaluateAllEvent;
 import org.kie.dmn.api.core.event.BeforeEvaluateBKMEvent;
 import org.kie.dmn.api.core.event.BeforeEvaluateDecisionEvent;
 import org.kie.dmn.api.core.event.BeforeEvaluateDecisionServiceEvent;
@@ -53,6 +55,8 @@ import static org.hamcrest.CoreMatchers.instanceOf;
 import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.CoreMatchers.notNullValue;
 import static org.hamcrest.Matchers.contains;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertThat;
 import static org.junit.Assert.assertTrue;
 
@@ -224,7 +228,33 @@ public class DMNRuntimeListenerTest extends BaseInterpretedVsCompiledTest {
         assertThat(((AfterEvaluateDecisionEvent) eventList.get(5)).getDecision().getName(), is("Invoking Decision"));
     }
 
-    class TestEventListener implements DMNRuntimeEventListener {
+    @Test
+    public void testBeforeAndAfterEvaluateAllEvents() {
+        final String modelResource = "org/kie/dmn/core/say_for_hello.dmn";
+        final String modelNamespace = "http://www.trisotech.com/dmn/definitions/_b6f2a9ca-a246-4f27-896a-e8ef04ea439c";
+        final String modelName = "say for hello";
+
+        final DMNRuntime runtime = DMNRuntimeUtil.createRuntime(modelResource, this.getClass());
+
+        TestBeforeAndAfterEvaluateAllEventListener listener = new TestBeforeAndAfterEvaluateAllEventListener();
+        runtime.addListener(listener);
+
+        final DMNModel dmnModel = runtime.getModel(modelNamespace, modelName);
+        final DMNContext emptyContext = DMNFactory.newContext();
+        runtime.evaluateAll(dmnModel, emptyContext);
+
+        assertNotNull(listener.beforeEvent);
+        assertEquals(listener.beforeEvent.getModelNamespace(), modelNamespace);
+        assertEquals(listener.beforeEvent.getModelName(), modelName);
+        assertNotNull(listener.beforeEvent.getResult());
+
+        assertNotNull(listener.afterEvent);
+        assertEquals(listener.afterEvent.getModelNamespace(), modelNamespace);
+        assertEquals(listener.afterEvent.getModelName(), modelName);
+        assertNotNull(listener.afterEvent.getResult());
+    }
+
+    static class TestEventListener implements DMNRuntimeEventListener {
         private List<DMNEvent> eventList = new ArrayList<>();
 
         public List<DMNEvent> getEventList() {
@@ -270,5 +300,27 @@ public class DMNRuntimeListenerTest extends BaseInterpretedVsCompiledTest {
         public void afterInvokeBKM(AfterInvokeBKMEvent event) {
             eventList.add(event);
         }
-    };
+    }
+
+    static class TestBeforeAndAfterEvaluateAllEventListener implements DMNRuntimeEventListener {
+        BeforeEvaluateAllEvent beforeEvent = null;
+        AfterEvaluateAllEvent afterEvent = null;
+
+        @Override
+        public void beforeEvaluateAll(BeforeEvaluateAllEvent event) {
+            if (beforeEvent != null) {
+                throw new IllegalStateException("BeforeEvaluateAllEvent already fired");
+            }
+            beforeEvent = event;
+        }
+
+        @Override
+        public void afterEvaluateAll(AfterEvaluateAllEvent event) {
+            if (afterEvent != null) {
+                throw new IllegalStateException("AfterEvaluateAllEvent already fired");
+            }
+            afterEvent = event;
+        }
+
+    }
 }

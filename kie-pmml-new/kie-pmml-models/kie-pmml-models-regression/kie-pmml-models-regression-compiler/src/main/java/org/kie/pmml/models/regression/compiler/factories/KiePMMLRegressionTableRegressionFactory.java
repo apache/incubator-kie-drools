@@ -21,7 +21,6 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
-import java.util.Optional;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.stream.Collectors;
 
@@ -29,6 +28,7 @@ import com.github.javaparser.StaticJavaParser;
 import com.github.javaparser.ast.CompilationUnit;
 import com.github.javaparser.ast.NodeList;
 import com.github.javaparser.ast.body.ClassOrInterfaceDeclaration;
+import com.github.javaparser.ast.body.ConstructorDeclaration;
 import com.github.javaparser.ast.body.MethodDeclaration;
 import com.github.javaparser.ast.body.VariableDeclarator;
 import com.github.javaparser.ast.expr.AssignExpr;
@@ -37,6 +37,7 @@ import com.github.javaparser.ast.expr.Expression;
 import com.github.javaparser.ast.expr.MethodCallExpr;
 import com.github.javaparser.ast.expr.MethodReferenceExpr;
 import com.github.javaparser.ast.expr.NameExpr;
+import com.github.javaparser.ast.expr.SimpleName;
 import com.github.javaparser.ast.expr.StringLiteralExpr;
 import com.github.javaparser.ast.expr.ThisExpr;
 import com.github.javaparser.ast.stmt.BlockStmt;
@@ -47,6 +48,7 @@ import org.dmg.pmml.regression.NumericPredictor;
 import org.dmg.pmml.regression.PredictorTerm;
 import org.dmg.pmml.regression.RegressionModel;
 import org.dmg.pmml.regression.RegressionTable;
+import org.kie.pmml.commons.exceptions.KiePMMLInternalException;
 import org.kie.pmml.models.regression.model.tuples.KiePMMLTableSourceCategory;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -56,6 +58,7 @@ import static java.util.stream.Collectors.groupingBy;
 public class KiePMMLRegressionTableRegressionFactory {
 
     public static final String KIE_PMML_REGRESSION_TABLE_REGRESSION_TEMPLATE_JAVA = "KiePMMLRegressionTableRegressionTemplate.tmpl";
+    public static final String MISSING_BODY_TEMPLATE = "Missing body in %s";
     private static final Logger logger = LoggerFactory.getLogger(KiePMMLRegressionTableRegressionFactory.class.getName());
     private static final String MAIN_CLASS_NOT_FOUND = "Main class not found";
     private static final String KIE_PMML_EVALUATE_METHOD_TEMPLATE_JAVA = "KiePMMLEvaluateMethodTemplate.tmpl";
@@ -86,23 +89,22 @@ public class KiePMMLRegressionTableRegressionFactory {
         return toReturn;
     }
 
-    public static AbstractMap.Entry<String, String> getRegressionTable(final CompilationUnit templateCU, final RegressionTable regressionTable, final RegressionModel.NormalizationMethod normalizationMethod, final String targetField) {
+    public static Map.Entry<String, String> getRegressionTable(final CompilationUnit templateCU, final RegressionTable regressionTable, final RegressionModel.NormalizationMethod normalizationMethod, final String targetField) {
         logger.debug("getRegressionTable {}", regressionTable);
         CompilationUnit cloneCU = templateCU.clone();
         ClassOrInterfaceDeclaration tableTemplate = cloneCU.getClassByName(KIE_PMML_REGRESSION_TABLE_REGRESSION_TEMPLATE)
                 .orElseThrow(() -> new RuntimeException(MAIN_CLASS_NOT_FOUND));
         String className = "KiePMMLRegressionTableRegression" + classArity.addAndGet(1);
         tableTemplate.setName(className);
-        setConstructor(regressionTable, tableTemplate, targetField);
+        final ConstructorDeclaration constructorDeclaration = tableTemplate.getDefaultConstructor().orElseThrow(() -> new KiePMMLInternalException(String.format("Missing default constructor in ClassOrInterfaceDeclaration %s ", tableTemplate.getName())));
+        setConstructor(regressionTable, constructorDeclaration, tableTemplate.getName(), targetField);
         final Map<String, MethodDeclaration> numericPredictorsMap = addNumericPredictors(regressionTable.getNumericPredictors(), tableTemplate);
         final Map<String, MethodDeclaration> categoricalPredictorsMap = addCategoricalPredictors(regressionTable.getCategoricalPredictors(), tableTemplate);
         final Map<String, MethodDeclaration> predictorTermsMap = addPredictorTerms(regressionTable.getPredictorTerms(), tableTemplate);
-        tableTemplate.getDefaultConstructor().ifPresent(constructorDeclaration -> {
-            final BlockStmt body = constructorDeclaration.getBody();
-            addMapPopulation(numericPredictorsMap, body, "numericFunctionMap");
-            addMapPopulation(categoricalPredictorsMap, body, "categoricalFunctionMap");
-            addMapPopulation(predictorTermsMap, body, "predictorTermsFunctionMap");
-        });
+        final BlockStmt body = constructorDeclaration.getBody();
+        addMapPopulation(numericPredictorsMap, body, "numericFunctionMap");
+        addMapPopulation(categoricalPredictorsMap, body, "categoricalFunctionMap");
+        addMapPopulation(predictorTermsMap, body, "predictorTermsFunctionMap");
         populateGetTargetCategory(tableTemplate, regressionTable.getTargetCategory());
         populateUpdateResult(tableTemplate, normalizationMethod);
         return new AbstractMap.SimpleEntry<>(className, cloneCU.toString());
@@ -127,21 +129,20 @@ public class KiePMMLRegressionTableRegressionFactory {
     /**
      * Set the <b>intercept</b> and <b>targetField</b> values inside the constructor
      * @param regressionTable
-     * @param tableTemplate
+     * @param constructorDeclaration
+     * @param tableName
      * @param targetField
      */
-    private static void setConstructor(final RegressionTable regressionTable, final ClassOrInterfaceDeclaration tableTemplate, final String targetField) {
-        tableTemplate.getDefaultConstructor().ifPresent(constructorDeclaration -> {
-            constructorDeclaration.setName(tableTemplate.getName());
-            final BlockStmt body = constructorDeclaration.getBody();
-            final List<AssignExpr> assignExprs = body.findAll(AssignExpr.class);
-            assignExprs.forEach(assignExpr -> {
-                if (assignExpr.getTarget().asNameExpr().getNameAsString().equals("intercept")) {
-                    assignExpr.setValue(new DoubleLiteralExpr(String.valueOf(regressionTable.getIntercept().doubleValue())));
-                } else if (assignExpr.getTarget().asNameExpr().getNameAsString().equals("targetField")) {
-                    assignExpr.setValue(new StringLiteralExpr(targetField));
-                }
-            });
+    private static void setConstructor(final RegressionTable regressionTable, final ConstructorDeclaration constructorDeclaration, final SimpleName tableName, final String targetField) {
+        constructorDeclaration.setName(tableName);
+        final BlockStmt body = constructorDeclaration.getBody();
+        final List<AssignExpr> assignExprs = body.findAll(AssignExpr.class);
+        assignExprs.forEach(assignExpr -> {
+            if (assignExpr.getTarget().asNameExpr().getNameAsString().equals("intercept")) {
+                assignExpr.setValue(new DoubleLiteralExpr(String.valueOf(regressionTable.getIntercept().doubleValue())));
+            } else if (assignExpr.getTarget().asNameExpr().getNameAsString().equals("targetField")) {
+                assignExpr.setValue(new StringLiteralExpr(targetField));
+            }
         });
     }
 
@@ -156,9 +157,8 @@ public class KiePMMLRegressionTableRegressionFactory {
         return numericPredictors.stream()
                 .map(numericPredictor -> new AbstractMap.SimpleEntry<>(numericPredictor.getName().getValue(),
                                                                        addNumericPredictor(numericPredictor, tableTemplate, predictorsArity.addAndGet(1))))
-                .filter(entry -> entry.getValue().isPresent())
                 .collect(Collectors.toMap(AbstractMap.SimpleEntry::getKey,
-                                          entry -> entry.getValue().get()));
+                                          AbstractMap.SimpleEntry::getValue));
     }
 
     /**
@@ -168,7 +168,7 @@ public class KiePMMLRegressionTableRegressionFactory {
      * @param predictorArity
      * @return
      */
-    private static Optional<MethodDeclaration> addNumericPredictor(final NumericPredictor numericPredictor, final ClassOrInterfaceDeclaration tableTemplate, int predictorArity) {
+    private static MethodDeclaration addNumericPredictor(final NumericPredictor numericPredictor, final ClassOrInterfaceDeclaration tableTemplate, int predictorArity) {
         try {
             templateEvaluate = StaticJavaParser.parseResource(KIE_PMML_EVALUATE_METHOD_TEMPLATE_JAVA);
             cloneEvaluate = templateEvaluate.clone();
@@ -182,7 +182,7 @@ public class KiePMMLRegressionTableRegressionFactory {
             }
             return addMethod(methodTemplate, tableTemplate, "evaluateNumericPredictor" + predictorArity);
         } catch (Exception e) {
-            return Optional.empty();
+            throw new KiePMMLInternalException(String.format("Failed to add NumericPredictor %s", numericPredictor.getName()), e);
         }
     }
 
@@ -194,19 +194,18 @@ public class KiePMMLRegressionTableRegressionFactory {
      */
     private static MethodDeclaration getNumericPredictorWithExponentTemplate(final NumericPredictor numericPredictor, final ClassOrInterfaceDeclaration evaluateTemplateClass) {
         final MethodDeclaration toReturn = evaluateTemplateClass.getMethodsByName("evaluateNumericWithExponent").get(0);
-        toReturn.getBody().ifPresent(body -> {
-            final List<VariableDeclarator> variableDeclarators = body.findAll(VariableDeclarator.class);
-            variableDeclarators.forEach(variableDeclarator -> {
-                String initializer = null;
-                if (variableDeclarator.getName().asString().equals(COEFFICIENT)) {
-                    initializer = String.valueOf(numericPredictor.getCoefficient().doubleValue());
-                } else if (variableDeclarator.getName().asString().equals(EXPONENT)) {
-                    initializer = String.valueOf(numericPredictor.getExponent().doubleValue());
-                }
-                if (initializer != null) {
-                    variableDeclarator.setInitializer(initializer);
-                }
-            });
+        final BlockStmt body = toReturn.getBody().orElseThrow(() -> new KiePMMLInternalException(String.format(MISSING_BODY_TEMPLATE, toReturn.getName())));
+        final List<VariableDeclarator> variableDeclarators = body.findAll(VariableDeclarator.class);
+        variableDeclarators.forEach(variableDeclarator -> {
+            String initializer = null;
+            if (variableDeclarator.getName().asString().equals(COEFFICIENT)) {
+                initializer = String.valueOf(numericPredictor.getCoefficient().doubleValue());
+            } else if (variableDeclarator.getName().asString().equals(EXPONENT)) {
+                initializer = String.valueOf(numericPredictor.getExponent().doubleValue());
+            }
+            if (initializer != null) {
+                variableDeclarator.setInitializer(initializer);
+            }
         });
         return toReturn;
     }
@@ -219,11 +218,10 @@ public class KiePMMLRegressionTableRegressionFactory {
      */
     private static MethodDeclaration getNumericPredictorWithoutExponentTemplate(final NumericPredictor numericPredictor, final ClassOrInterfaceDeclaration evaluateTemplateClass) {
         final MethodDeclaration toReturn = evaluateTemplateClass.getMethodsByName("evaluateNumericWithoutExponent").get(0);
-        toReturn.getBody().ifPresent(body -> {
-            final List<VariableDeclarator> variableDeclarators = body.findAll(VariableDeclarator.class);
-            variableDeclarators.stream().filter(variableDeclarator -> variableDeclarator.getName().asString().equals(COEFFICIENT))
-                    .forEach(variableDeclarator -> variableDeclarator.setInitializer(String.valueOf(numericPredictor.getCoefficient().doubleValue())));
-        });
+        final BlockStmt body = toReturn.getBody().orElseThrow(() -> new KiePMMLInternalException(String.format(MISSING_BODY_TEMPLATE, toReturn.getName())));
+        final List<VariableDeclarator> variableDeclarators = body.findAll(VariableDeclarator.class);
+        variableDeclarators.stream().filter(variableDeclarator -> variableDeclarator.getName().asString().equals(COEFFICIENT))
+                .forEach(variableDeclarator -> variableDeclarator.setInitializer(String.valueOf(numericPredictor.getCoefficient().doubleValue())));
         return toReturn;
     }
 
@@ -240,9 +238,8 @@ public class KiePMMLRegressionTableRegressionFactory {
         return groupedCollectors.entrySet().stream()
                 .map(entry -> new AbstractMap.SimpleEntry<>(entry.getKey(),
                                                             addGroupedCategoricalPredictor(entry.getValue(), tableTemplate, predictorsArity.addAndGet(1))))
-                .filter(entry -> entry.getValue().isPresent())
                 .collect(Collectors.toMap(AbstractMap.SimpleEntry::getKey,
-                                          entry -> entry.getValue().get()));
+                                          AbstractMap.SimpleEntry::getValue));
     }
 
     /**
@@ -252,43 +249,41 @@ public class KiePMMLRegressionTableRegressionFactory {
      * @param predictorArity
      * @return
      */
-    private static Optional<MethodDeclaration> addGroupedCategoricalPredictor(final List<CategoricalPredictor> categoricalPredictors, final ClassOrInterfaceDeclaration tableTemplate, int predictorArity) {
+    private static MethodDeclaration addGroupedCategoricalPredictor(final List<CategoricalPredictor> categoricalPredictors, final ClassOrInterfaceDeclaration tableTemplate, int predictorArity) {
         try {
             templateEvaluate = StaticJavaParser.parseResource(KIE_PMML_EVALUATE_METHOD_TEMPLATE_JAVA);
             cloneEvaluate = templateEvaluate.clone();
             ClassOrInterfaceDeclaration evaluateTemplateClass = cloneEvaluate.getClassByName(KIE_PMML_EVALUATE_METHOD_TEMPLATE)
                     .orElseThrow(() -> new RuntimeException(MAIN_CLASS_NOT_FOUND));
             MethodDeclaration methodTemplate = evaluateTemplateClass.getMethodsByName("evaluateCategorical").get(0);
-            methodTemplate.getBody().ifPresent(body -> {
-                IfStmt ifStmt = new IfStmt();
-                for (int i = 0; i < categoricalPredictors.size(); i++) {
-                    CategoricalPredictor categoricalPredictor = categoricalPredictors.get(i);
-                    Expression lhe;
-                    if (categoricalPredictor.getValue() instanceof String) {
-                        lhe = new StringLiteralExpr((String) categoricalPredictor.getValue());
-                    } else {
-                        lhe = new NameExpr(categoricalPredictor.getValue().toString());
-                    }
-                    NodeList<Expression> expressions = NodeList.nodeList(lhe, new NameExpr("input"));
-                    MethodCallExpr conditionExpr = new MethodCallExpr(new NameExpr("Objects"), "equals", expressions);
-                    if (i == 0) {
-                        ifStmt.setCondition(conditionExpr);
-                        ifStmt.setThenStmt(new ReturnStmt(new DoubleLiteralExpr(String.valueOf(categoricalPredictor.getCoefficient()))));
-                        body.addStatement(ifStmt);
-                    } else {
-                        IfStmt elseIf = new IfStmt();
-                        elseIf.setCondition(conditionExpr);
-                        elseIf.setThenStmt(new ReturnStmt(new DoubleLiteralExpr(String.valueOf(categoricalPredictor.getCoefficient()))));
-                        ifStmt.setElseStmt(elseIf);
-                        ifStmt = elseIf;
-                    }
+            final BlockStmt body = methodTemplate.getBody().orElseThrow(() -> new KiePMMLInternalException(String.format(MISSING_BODY_TEMPLATE, methodTemplate.getName())));
+            IfStmt ifStmt = new IfStmt();
+            for (int i = 0; i < categoricalPredictors.size(); i++) {
+                CategoricalPredictor categoricalPredictor = categoricalPredictors.get(i);
+                Expression lhe;
+                if (categoricalPredictor.getValue() instanceof String) {
+                    lhe = new StringLiteralExpr((String) categoricalPredictor.getValue());
+                } else {
+                    lhe = new NameExpr(categoricalPredictor.getValue().toString());
                 }
-                ifStmt.setElseStmt(new ReturnStmt(new DoubleLiteralExpr("0.0")));
-            });
+                NodeList<Expression> expressions = NodeList.nodeList(lhe, new NameExpr("input"));
+                MethodCallExpr conditionExpr = new MethodCallExpr(new NameExpr("Objects"), "equals", expressions);
+                if (i == 0) {
+                    ifStmt.setCondition(conditionExpr);
+                    ifStmt.setThenStmt(new ReturnStmt(new DoubleLiteralExpr(String.valueOf(categoricalPredictor.getCoefficient()))));
+                    body.addStatement(ifStmt);
+                } else {
+                    IfStmt elseIf = new IfStmt();
+                    elseIf.setCondition(conditionExpr);
+                    elseIf.setThenStmt(new ReturnStmt(new DoubleLiteralExpr(String.valueOf(categoricalPredictor.getCoefficient()))));
+                    ifStmt.setElseStmt(elseIf);
+                    ifStmt = elseIf;
+                }
+            }
+            ifStmt.setElseStmt(new ReturnStmt(new DoubleLiteralExpr("0.0")));
             return addMethod(methodTemplate, tableTemplate, "evaluateCategoricalPredictor" + predictorArity);
         } catch (Exception e) {
-            //
-            return Optional.empty();
+            throw new KiePMMLInternalException("Failed to add CategoricalPredictors", e);
         }
     }
 
@@ -306,9 +301,8 @@ public class KiePMMLRegressionTableRegressionFactory {
                     return new AbstractMap.SimpleEntry<>(predictorTerm.getName() != null ? predictorTerm.getName().getValue() : "predictorTerm" + arity,
                                                          addPredictorTerm(predictorTerm, tableTemplate, arity));
                 })
-                .filter(entry -> entry.getValue().isPresent())
                 .collect(Collectors.toMap(AbstractMap.SimpleEntry::getKey,
-                                          entry -> entry.getValue().get()));
+                                          AbstractMap.SimpleEntry::getValue));
     }
 
     /**
@@ -318,32 +312,30 @@ public class KiePMMLRegressionTableRegressionFactory {
      * @param predictorArity
      * @return
      */
-    private static Optional<MethodDeclaration> addPredictorTerm(final PredictorTerm predictorTerm, final ClassOrInterfaceDeclaration tableTemplate, int predictorArity) {
+    private static MethodDeclaration addPredictorTerm(final PredictorTerm predictorTerm, final ClassOrInterfaceDeclaration tableTemplate, int predictorArity) {
         try {
             templateEvaluate = StaticJavaParser.parseResource(KIE_PMML_EVALUATE_METHOD_TEMPLATE_JAVA);
             cloneEvaluate = templateEvaluate.clone();
             ClassOrInterfaceDeclaration evaluateTemplateClass = cloneEvaluate.getClassByName(KIE_PMML_EVALUATE_METHOD_TEMPLATE)
                     .orElseThrow(() -> new RuntimeException(MAIN_CLASS_NOT_FOUND));
             MethodDeclaration methodTemplate = evaluateTemplateClass.getMethodsByName("evaluatePredictor").get(0);
-            methodTemplate.getBody().ifPresent(body -> {
-                final List<VariableDeclarator> variableDeclarators = body.findAll(VariableDeclarator.class);
-                variableDeclarators.forEach(variableDeclarator -> {
-                    if (variableDeclarator.getName().asString().equals("fieldRefs")) {
-                        final List<Expression> nodeList = predictorTerm.getFieldRefs().stream()
-                                .map(fieldRef -> new StringLiteralExpr(fieldRef.getField().getValue()))
-                                .collect(Collectors.toList());
-                        NodeList<Expression> expressions = NodeList.nodeList(nodeList);
-                        MethodCallExpr methodCallExpr = new MethodCallExpr(new NameExpr("Arrays"), "asList", expressions);
-                        variableDeclarator.setInitializer(methodCallExpr);
-                    } else if (variableDeclarator.getName().asString().equals(COEFFICIENT)) {
-                        variableDeclarator.setInitializer(String.valueOf(predictorTerm.getCoefficient().doubleValue()));
-                    }
-                });
+            final BlockStmt body = methodTemplate.getBody().orElseThrow(() -> new KiePMMLInternalException(String.format(MISSING_BODY_TEMPLATE, methodTemplate.getName())));
+            final List<VariableDeclarator> variableDeclarators = body.findAll(VariableDeclarator.class);
+            variableDeclarators.forEach(variableDeclarator -> {
+                if (variableDeclarator.getName().asString().equals("fieldRefs")) {
+                    final List<Expression> nodeList = predictorTerm.getFieldRefs().stream()
+                            .map(fieldRef -> new StringLiteralExpr(fieldRef.getField().getValue()))
+                            .collect(Collectors.toList());
+                    NodeList<Expression> expressions = NodeList.nodeList(nodeList);
+                    MethodCallExpr methodCallExpr = new MethodCallExpr(new NameExpr("Arrays"), "asList", expressions);
+                    variableDeclarator.setInitializer(methodCallExpr);
+                } else if (variableDeclarator.getName().asString().equals(COEFFICIENT)) {
+                    variableDeclarator.setInitializer(String.valueOf(predictorTerm.getCoefficient().doubleValue()));
+                }
             });
             return addMethod(methodTemplate, tableTemplate, "evaluatePredictorTerm" + predictorArity);
         } catch (Exception e) {
-            //
-            return Optional.empty();
+            throw new KiePMMLInternalException(String.format("Failed to add PredictorTerm %s", predictorTerm), e);
         }
     }
 
@@ -354,14 +346,13 @@ public class KiePMMLRegressionTableRegressionFactory {
      * @param evaluateMethodName
      * @return
      */
-    protected static Optional<MethodDeclaration> addMethod(final MethodDeclaration methodTemplate, final ClassOrInterfaceDeclaration tableTemplate, final String evaluateMethodName) {
-        return methodTemplate.getBody().map(body -> {
-            final MethodDeclaration toReturn = tableTemplate.addMethod(evaluateMethodName).setBody(body);
-            toReturn.setModifiers(methodTemplate.getModifiers());
-            methodTemplate.getParameters().forEach(toReturn::addParameter);
-            toReturn.setType(methodTemplate.getType());
-            return toReturn;
-        });
+    protected static MethodDeclaration addMethod(final MethodDeclaration methodTemplate, final ClassOrInterfaceDeclaration tableTemplate, final String evaluateMethodName) {
+        final BlockStmt body = methodTemplate.getBody().orElseThrow(() -> new KiePMMLInternalException(String.format(MISSING_BODY_TEMPLATE, methodTemplate.getName())));
+        final MethodDeclaration toReturn = tableTemplate.addMethod(evaluateMethodName).setBody(body);
+        toReturn.setModifiers(methodTemplate.getModifiers());
+        methodTemplate.getParameters().forEach(toReturn::addParameter);
+        toReturn.setType(methodTemplate.getType());
+        return toReturn;
     }
 
     /**
@@ -372,17 +363,16 @@ public class KiePMMLRegressionTableRegressionFactory {
      */
     protected static void populateGetTargetCategory(final ClassOrInterfaceDeclaration tableTemplate, final Object targetCategory) {
         MethodDeclaration methodDeclaration = tableTemplate.getMethodsByName("getTargetCategory").get(0);
-        methodDeclaration.getBody().ifPresent(body -> {
-            ReturnStmt returnStmt = new ReturnStmt();
-            if (targetCategory == null) {
-                returnStmt.setExpression(new NameExpr("null"));
-            } else if (targetCategory instanceof String) {
-                returnStmt.setExpression(new StringLiteralExpr((String) targetCategory));
-            } else {
-                returnStmt.setExpression(new NameExpr(targetCategory.toString()));
-            }
-            body.addStatement(returnStmt);
-        });
+        final BlockStmt body = methodDeclaration.getBody().orElseThrow(() -> new KiePMMLInternalException(String.format(MISSING_BODY_TEMPLATE, methodDeclaration.getName())));
+        ReturnStmt returnStmt = new ReturnStmt();
+        if (targetCategory == null) {
+            returnStmt.setExpression(new NameExpr("null"));
+        } else if (targetCategory instanceof String) {
+            returnStmt.setExpression(new StringLiteralExpr((String) targetCategory));
+        } else {
+            returnStmt.setExpression(new NameExpr(targetCategory.toString()));
+        }
+        body.addStatement(returnStmt);
     }
 
     /**
@@ -398,13 +388,12 @@ public class KiePMMLRegressionTableRegressionFactory {
             ClassOrInterfaceDeclaration evaluateTemplateClass = cloneEvaluate.getClassByName(KIE_PMML_UPDATE_RESULT_METHOD_TEMPLATE)
                     .orElseThrow(() -> new RuntimeException(MAIN_CLASS_NOT_FOUND));
             String methodName = String.format("update%sResult", normalizationMethod.name());
-            MethodDeclaration methodTemplate = evaluateTemplateClass.getMethodsByName(methodName).get(0);
-            methodTemplate.getBody().ifPresent(body -> {
-                MethodDeclaration targetMethod = tableTemplate.getMethodsByName("updateResult").get(0);
-                targetMethod.setBody(body);
-            });
+            MethodDeclaration methodDeclaration = evaluateTemplateClass.getMethodsByName(methodName).get(0);
+            final BlockStmt body = methodDeclaration.getBody().orElseThrow(() -> new KiePMMLInternalException(String.format(MISSING_BODY_TEMPLATE, methodDeclaration.getName())));
+            MethodDeclaration targetMethod = tableTemplate.getMethodsByName("updateResult").get(0);
+            targetMethod.setBody(body);
         } catch (Exception e) {
-            //
+            throw new KiePMMLInternalException("Failed to populate UpdateResult", e);
         }
     }
 }

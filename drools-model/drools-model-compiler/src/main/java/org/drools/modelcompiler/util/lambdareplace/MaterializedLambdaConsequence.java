@@ -42,10 +42,6 @@ public class MaterializedLambdaConsequence extends MaterializedLambda {
         this.bitMaskVariables = bitMaskVariables;
     }
 
-    protected String className(String sourceCode) {
-        return CLASS_NAME_PREFIX + md5Hash(sourceCode);
-    }
-
     @Override
     void createMethodDeclaration(EnumDeclaration classDeclaration) {
         MethodDeclaration methodDeclaration = classDeclaration.addMethod("execute", Modifier.Keyword.PUBLIC);
@@ -63,6 +59,11 @@ public class MaterializedLambdaConsequence extends MaterializedLambda {
             BlockStmt clone = (BlockStmt) body.clone();
             methodDeclaration.setBody(clone);
         }
+    }
+
+    @Override
+    String getPrefix() {
+        return CLASS_NAME_PREFIX;
     }
 
     @Override

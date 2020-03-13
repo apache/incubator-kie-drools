@@ -52,7 +52,7 @@ public class EnumGenerator {
 
     public TypeDeclaration generate(EnumDeclarationDescr enumDeclarationDescr) {
 
-        NodeList<Modifier> modifiers = nodeList();
+        NodeList<Modifier> modifiers = nodeList(Modifier.publicModifier());
 
         enumDeclaration = new EnumDeclaration(modifiers, enumDeclarationDescr.getFullTypeName());
 

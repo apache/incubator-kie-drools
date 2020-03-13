@@ -52,9 +52,11 @@ public abstract class KiePMMLRegressionClassificationTable extends KiePMMLRegres
         return predictedEntry.getKey();
     }
 
-    public abstract boolean isBinary();/* {
-        return Objects.equals(OP_TYPE.CATEGORICAL, targetOpType) && (targetValues != null && targetValues.size() == 2);
-    }*/
+    /**
+     * A <b>Classification</b> is considered <b>binary</b> if it is of <b>CATEGORICAL</b> type and contains <b>exactly</b> two Regression tables
+     * @return
+     */
+    public abstract boolean isBinary();
 
     protected abstract LinkedHashMap<String, Double> getProbabilityMap(final LinkedHashMap<String, Double> resultMap);
 

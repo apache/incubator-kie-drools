@@ -49,6 +49,7 @@ import org.kie.pmml.models.regression.model.tuples.KiePMMLTableSourceCategory;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import static org.kie.pmml.models.regression.compiler.factories.KiePMMLRegressionTableRegressionFactory.MISSING_BODY_TEMPLATE;
 import static org.kie.pmml.models.regression.compiler.factories.KiePMMLRegressionTableRegressionFactory.addMethod;
 import static org.kie.pmml.models.regression.compiler.factories.KiePMMLRegressionTableRegressionFactory.populateGetTargetCategory;
 
@@ -89,10 +90,9 @@ public class KiePMMLRegressionTableClassificationFactory {
         populateGetProbabilityMapMethod(normalizationMethod, tableTemplate);
         populateOutputFieldsMap(tableTemplate, outputFields);
         populateIsBinaryMethod(opType, regressionTablesMap.size(), tableTemplate);
-        tableTemplate.getDefaultConstructor().ifPresent(constructorDeclaration -> {
-            setConstructor(constructorDeclaration, tableTemplate.getName(), targetField, regressionNormalizationMethod, op_type);
-            addMapPopulation(constructorDeclaration.getBody(), regressionTablesMap);
-        });
+        final ConstructorDeclaration constructorDeclaration = tableTemplate.getDefaultConstructor().orElseThrow(() -> new KiePMMLInternalException(String.format("Missing default constructor in ClassOrInterfaceDeclaration %s ", tableTemplate.getName())));
+        setConstructor(constructorDeclaration, tableTemplate.getName(), targetField, regressionNormalizationMethod, op_type);
+        addMapPopulation(constructorDeclaration.getBody(), regressionTablesMap);
         populateGetTargetCategory(tableTemplate, null);
         return new AbstractMap.SimpleEntry<>(className, cloneCU.toString());
     }
@@ -120,7 +120,7 @@ public class KiePMMLRegressionTableClassificationFactory {
                     assignExpr.setValue(new NameExpr(opType.getClass().getSimpleName() + "." + opType.name()));
                     break;
                 default:
-                    // NOOP
+                    logger.warn("Unexpected property inside the constructor: {}", propertyName);
             }
         });
     }
@@ -146,7 +146,8 @@ public class KiePMMLRegressionTableClassificationFactory {
      */
     private static void populateOutputFieldsMap(final ClassOrInterfaceDeclaration tableTemplate, final List<KiePMMLOutputField> outputFields) {
         final MethodDeclaration methodDeclaration = tableTemplate.getMethodsByName("populateOutputFieldsMap").get(0);
-        methodDeclaration.getBody().ifPresent(body -> populateOutputFieldsMap(body, outputFields));
+        final BlockStmt body = methodDeclaration.getBody().orElseThrow(() -> new KiePMMLInternalException(String.format(MISSING_BODY_TEMPLATE, methodDeclaration.getName())));
+        populateOutputFieldsMap(body, outputFields);
     }
 
     /**
@@ -172,7 +173,8 @@ public class KiePMMLRegressionTableClassificationFactory {
                     }
                     break;
                 default:
-                    // All other possibilities not analyzed, yet
+                    // All other possibilities not managed, yet
+                    throw new KiePMMLInternalException(String.format("%s not managed, yet!", outputField.getResultFeature()));
             }
             if (value != null) {
                 NodeList<Expression> expressions = NodeList.nodeList(key, value);

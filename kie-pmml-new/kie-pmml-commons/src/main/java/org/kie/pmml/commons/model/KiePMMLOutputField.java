@@ -19,13 +19,13 @@ import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
 
-import org.kie.pmml.commons.model.abstracts.KiePMMLBase;
+import org.kie.pmml.commons.model.abstracts.AbstractKiePMMLBase;
 import org.kie.pmml.commons.model.enums.RESULT_FEATURE;
 
 /**
  * @see <a href=http://dmg.org/pmml/v4-4/Output.html#xsdElement_OutputField>OutputField</a>
  */
-public class KiePMMLOutputField extends KiePMMLBase {
+public class KiePMMLOutputField extends AbstractKiePMMLBase {
 
     private RESULT_FEATURE resultFeature = RESULT_FEATURE.PREDICTED_VALUE;
     private String targetField = null;
@@ -85,7 +85,7 @@ public class KiePMMLOutputField extends KiePMMLBase {
         return Objects.hash(super.hashCode(), resultFeature, targetField, value);
     }
 
-    public static class Builder extends KiePMMLBase.Builder<KiePMMLOutputField> {
+    public static class Builder extends AbstractKiePMMLBase.Builder<KiePMMLOutputField> {
 
         private Builder(String name, List<KiePMMLExtension> extensions) {
             super("OutputField-", () -> new KiePMMLOutputField(name, extensions));

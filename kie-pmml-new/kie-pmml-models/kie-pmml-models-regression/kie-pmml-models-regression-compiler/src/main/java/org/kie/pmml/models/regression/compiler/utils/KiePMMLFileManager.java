@@ -25,7 +25,7 @@ import javax.tools.JavaFileObject;
 
 public class KiePMMLFileManager extends ForwardingJavaFileManager<JavaFileManager> {
 
-    private List<KiePMMLCode> compiledCode = new ArrayList<>();
+    private List<KiePMMLByteCode> compiledCode = new ArrayList<>();
     private KiePMMLClassLoader classLoader;
 
     public KiePMMLFileManager(JavaFileManager fileManager, KiePMMLClassLoader classLoader) {
@@ -39,7 +39,7 @@ public class KiePMMLFileManager extends ForwardingJavaFileManager<JavaFileManage
             JavaFileObject.Kind kind, FileObject sibling) {
 
         try {
-            KiePMMLCode innerClass = new KiePMMLCode(className);
+            KiePMMLByteCode innerClass = new KiePMMLByteCode(className);
             compiledCode.add(innerClass);
             classLoader.addCode(innerClass);
             return innerClass;
