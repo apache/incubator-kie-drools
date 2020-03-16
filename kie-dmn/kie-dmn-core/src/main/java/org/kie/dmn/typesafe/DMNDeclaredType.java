@@ -1,11 +1,14 @@
 package org.kie.dmn.typesafe;
 
+import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 
+import com.github.javaparser.StaticJavaParser;
+import com.github.javaparser.ast.CompilationUnit;
 import org.drools.core.util.StringUtils;
 import org.drools.modelcompiler.builder.generator.declaredtype.api.AnnotationDefinition;
 import org.drools.modelcompiler.builder.generator.declaredtype.api.FieldDefinition;
@@ -55,31 +58,61 @@ class DMNDeclaredType implements TypeDefinition {
         return Collections.singletonList(FEELPropertyAccessible.class.getCanonicalName());
     }
 
+    CompilationUnit methodTemplate;
+
     @Override
     public List<MethodDefinition> getMethods() {
         List<MethodDefinition> allMethods = new ArrayList<>();
 
-        allFeelProperties(allMethods);
-        getFeelProperties(allMethods);
+        methodTemplate = getMethodTemplate();
+
+        allMethods.add(getFeelPropertyDefinition());
+        allMethods.add(setFeelPropertyDefinition());
+        allMethods.add(setAllDefinition());
+        allMethods.add(allFeelProperties());
 
         return allMethods;
     }
 
-    private void getFeelProperties(List<MethodDefinition> allMethods) {
-        String getFeelPropertyBody = " { return null; } ";
+    private MethodDefinition getFeelPropertyDefinition() {
 
-        MethodWithStringBody getFeelProperty = new MethodWithStringBody(
-                "getFEELProperty",
-                EvalHelper.PropertyValueResult.class.getCanonicalName(),
-                getFeelPropertyBody
-        );
-
+        String body = " { return null; } ";
+        MethodWithStringBody getFeelProperty = new MethodWithStringBody("getFEELProperty", EvalHelper.PropertyValueResult.class.getCanonicalName(), body);
         getFeelProperty.addParameter(String.class.getCanonicalName(), "p");
 
-        allMethods.add(getFeelProperty);
+        return getFeelProperty;
+
     }
 
-    private void allFeelProperties(List<MethodDefinition> allMethods) {
+    private MethodDefinition setFeelPropertyDefinition() {
+
+        String body = " {  } ";
+        MethodWithStringBody setFeelProperty = new MethodWithStringBody("setFEELProperty", "void", body);
+        setFeelProperty.addParameter(String.class.getCanonicalName(), "key");
+        setFeelProperty.addParameter(Object.class.getCanonicalName(), "value");
+
+        return setFeelProperty;
+
+    }
+
+    private MethodDefinition setAllDefinition() {
+
+        String body = " {  } ";
+        MethodWithStringBody setFeelProperty = new MethodWithStringBody("setAll", "void", body);
+        setFeelProperty.addParameter("java.util.Map<String, Object>", "values");
+
+        return setFeelProperty;
+
+    }
+
+    private CompilationUnit getMethodTemplate() {
+        InputStream resourceAsStream = this.getClass().getResourceAsStream("/org/kie/dmn/core/impl/FEELPropertyAccessible.java");
+        CompilationUnit parse = StaticJavaParser.parse(resourceAsStream);
+        return parse;
+    }
+
+
+    private MethodWithStringBody allFeelProperties() {
         String allFeelPropertiesBody = " { return java.util.Collections.emptyMap(); } ";
 
         MethodWithStringBody allFEELProperties = new MethodWithStringBody(
@@ -88,7 +121,7 @@ class DMNDeclaredType implements TypeDefinition {
                 allFeelPropertiesBody
         );
 
-        allMethods.add(allFEELProperties);
+        return allFEELProperties;
     }
 
     @Override
