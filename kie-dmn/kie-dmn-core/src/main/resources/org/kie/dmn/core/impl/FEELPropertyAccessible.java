@@ -2,17 +2,15 @@ package org.kie.dmn.core.impl;
 
 import java.util.Map;
 
-import org.kie.dmn.feel.util.EvalHelper;
-
 public interface FEELPropertyAccessible {
 
-    default EvalHelper.PropertyValueResult getFEELProperty(String property) {
+    default org.kie.dmn.feel.util.EvalHelper.PropertyValueResult getFEELProperty(String property) {
         // This implementation is used only for templating purposes and should never be called
         switch (property) {
             case "<PROPERTY_NAME>":
-                return EvalHelper.PropertyValueResult.ofValue(this.getProperty());
+                return org.kie.dmn.feel.util.EvalHelper.PropertyValueResult.ofValue("propertyName");
             default:
-                return EvalHelper.PropertyValueResult.notDefined();
+                return org.kie.dmn.feel.util.EvalHelper.PropertyValueResult.notDefined();
         }
     }
 

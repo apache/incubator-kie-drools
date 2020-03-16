@@ -48,7 +48,7 @@ public class RegressionCompiler {
         FileManager fileManager = new FileManager(JAVA_COMPILER.getStandardFileManager(null, null, null), kiePMMLDMNClassLoader);
         JavaCompiler.CompilationTask task = JAVA_COMPILER.getTask(null, fileManager, collector, OPTIONS, null, sourceCodes.values());
         boolean result = task.call();
-        if (!result || !collector.getDiagnostics().isEmpty()) {
+        if (!result || collector.getDiagnostics().stream().anyMatch(d -> d.getKind().equals(Diagnostic.Kind.ERROR))) {
             StringBuilder errorBuilder = new StringBuilder();
             errorBuilder.append("Compilation failed");
             for (Diagnostic<? extends JavaFileObject> diagnostic : collector.getDiagnostics()) {
