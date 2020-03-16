@@ -59,7 +59,8 @@ public class RegressionCompiler {
         Map<String, Class<?>> toReturn = new HashMap<>();
         for (String className : sourceCodes.keySet()) {
             try {
-                toReturn.put(className, kiePMMLDMNClassLoader.loadClass(className));
+                Class<?> clazz = kiePMMLDMNClassLoader.loadClass(className);
+                toReturn.put(className, clazz);
             } catch (ClassNotFoundException e) {
                 throw new RuntimeException(e);
             }

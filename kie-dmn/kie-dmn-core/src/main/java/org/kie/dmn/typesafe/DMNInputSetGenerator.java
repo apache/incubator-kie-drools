@@ -5,6 +5,7 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Set;
 
+import com.github.javaparser.ast.CompilationUnit;
 import com.github.javaparser.ast.body.ClassOrInterfaceDeclaration;
 import org.drools.modelcompiler.builder.generator.declaredtype.api.TypeDefinition;
 import org.drools.modelcompiler.builder.generator.declaredtype.generator.GeneratedClassDeclaration;
@@ -39,6 +40,9 @@ public class DMNInputSetGenerator {
         ClassOrInterfaceDeclaration generatedClass = new GeneratedClassDeclaration(typeDefinition,
                                                                                    Collections.emptyList()).toClassDeclaration();
 
-        return generatedClass.toString();
+        CompilationUnit cu = new CompilationUnit("org.kie.dmn.typesafe");
+        cu.addType(generatedClass);
+
+        return cu.toString();
     }
 }

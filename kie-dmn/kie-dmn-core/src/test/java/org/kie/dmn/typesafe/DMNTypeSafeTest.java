@@ -33,15 +33,12 @@ public class DMNTypeSafeTest {
 
         String sourceCode = new DMNInputSetGenerator(dmnModel).getType("TPerson");
 
-        // Chiedi a Edo come sta facendo il test così
-        TPerson person = new TPerson();
-
         Map<String, String> sourceCodes = Collections.singletonMap("org.kie.dmn.typesafe.TPerson", sourceCode);
 
         ClassLoader thisDMNClassLoader = this.getClass().getClassLoader();
-        RegressionCompiler.compile(sourceCodes, thisDMNClassLoader);
+        Map<String, Class<?>> compile = RegressionCompiler.compile(sourceCodes, thisDMNClassLoader);
 
-        Class<?> aClass = thisDMNClassLoader.loadClass("org.kie.dmn.typesafe.TPerson");
+        Class<?> aClass = compile.get("org.kie.dmn.typesafe.TPerson");
         assertThat(aClass, notNullValue());
 
         Object instance = aClass.getDeclaredConstructor().newInstance();
