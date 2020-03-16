@@ -69,9 +69,6 @@ exports[`DataListItem component tests Snapshot tests 1`] = `
       <Text>
         <strong />
       </Text>
-      <Text>
-        Note: The process status has been updated. The list may appear inconsistent until you refresh any applied filters.
-      </Text>
     </TextContent>
   </Modal>
   <DataListItem
@@ -89,54 +86,67 @@ exports[`DataListItem component tests Snapshot tests 1`] = `
         dataListCells={
           Array [
             <DataListCell>
-              FlightBooking
+              <Link
+                to="/ProcessInstances/c54ca5b0-b975-46e2-a9a0-6a86bf7ac21e"
+              >
+                <div>
+                  <strong>
+                    FlightBooking
+                  </strong>
+                </div>
+              </Link>
+            </DataListCell>,
+            <DataListCell>
+              <React.Fragment>
+                <CheckCircleIcon
+                  className="pf-u-mr-sm"
+                  color="var(--pf-global--success-color--100)"
+                  noVerticalAlign={false}
+                  size="sm"
+                  title={null}
+                />
+                Completed
+              </React.Fragment>
             </DataListCell>,
             <DataListCell>
               
             </DataListCell>,
             <DataListCell>
-              <t
-                ago={false}
-                calendar={false}
-                decimal={false}
-                element={null}
-                filter={[Function]}
-                fromNow={true}
-                interval={60000}
-                local={false}
-                onChange={[Function]}
-                titleFormat=""
-                toNow={false}
-                unit={null}
-                unix={false}
-                utc={false}
-                withTitle={false}
-              >
-                2019-10-22T03:40:44.089Z
-              </t>
-            </DataListCell>,
-            <DataListCell>
-              COMPLETED
+              <span>
+                 
+                <HistoryIcon
+                  className="pf-u-mr-sm"
+                  color="currentColor"
+                  noVerticalAlign={false}
+                  size="sm"
+                  title={null}
+                />
+                 Updated
+                 
+                <t
+                  ago={false}
+                  calendar={false}
+                  decimal={false}
+                  element={null}
+                  filter={[Function]}
+                  fromNow={true}
+                  interval={60000}
+                  local={false}
+                  onChange={[Function]}
+                  titleFormat=""
+                  toNow={false}
+                  unit={null}
+                  unix={false}
+                  utc={false}
+                  withTitle={false}
+                >
+                  2019-10-22T03:40:44.089Z
+                </t>
+              </span>
             </DataListCell>,
           ]
         }
       />
-      <DataListAction
-        aria-label="Actions"
-        aria-labelledby="kie-datalist-item kie-datalist-action"
-        className=""
-        id="kie-datalist-action"
-      >
-        <Link
-          to="/ProcessInstances/c54ca5b0-b975-46e2-a9a0-6a86bf7ac21e"
-        >
-          <Component
-            variant="secondary"
-          >
-            Details
-          </Component>
-        </Link>
-      </DataListAction>
       <DataListAction
         aria-label="Actions"
         aria-labelledby="kie-datalist-item kie-datalist-action"
@@ -156,43 +166,24 @@ exports[`DataListItem component tests Snapshot tests 1`] = `
             />
           }
         />
-        <Modal
-          actions={
-            Array [
-              <Unknown
-                onClick={[Function]}
-                variant="primary"
-              >
-                Close
-              </Unknown>,
-            ]
-          }
-          appendTo={<body />}
-          ariaDescribedById=""
-          className=""
-          hideTitle={false}
-          isFooterLeftAligned={false}
-          isLarge={true}
-          isOpen={false}
-          isSmall={false}
-          onClose={[Function]}
-          showClose={true}
-          title="Error"
-        >
-          Something went wrong
-        </Modal>
       </DataListAction>
     </DataListItemRow>
     <DataListContent
       aria-label="Primary Content Details"
+      className="kogito-management-console__embedded-list pf-m-compact"
       id="kie-datalist-expand1"
       isHidden={true}
     >
-      <Bullseye>
-        <EmptyStateSpinner
-          spinnerText="Loading process instances..."
-        />
-      </Bullseye>
+      <DataList
+        aria-label="Child process instance list"
+        className="pf-m-compact"
+      >
+        <Bullseye>
+          <EmptyStateSpinner
+            spinnerText="Loading process instances..."
+          />
+        </Bullseye>
+      </DataList>
     </DataListContent>
   </DataListItem>
 </Fragment>

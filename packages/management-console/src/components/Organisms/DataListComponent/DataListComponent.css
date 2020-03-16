@@ -1,0 +1,15 @@
+/* Adjustments for nested list */
+.kogito-management-console__embedded-list .pf-c-data-list__item-row::before {
+  --pf-c-data-list__item--before--BackgroundColor: transparent;
+}
+
+.kogito-management-console__embedded-list .pf-c-data-list {
+  --pf-c-data-list--BorderTopColor: transparent;
+}
+
+.kogito-management-console__embedded-list
+  .pf-c-data-list__expandable-content-body {
+  --pf-c-data-list__expandable-content-body--PaddingLeft: calc(
+    var(--pf-global--spacer--3xl) + var(--pf-global--spacer--sm)
+  );
+}

@@ -1,4 +1,4 @@
-import Moment from 'react-moment'
+import Moment from 'react-moment';
 import {
   Button,
   Card,
@@ -12,14 +12,69 @@ import {
   Tooltip
 } from '@patternfly/react-core';
 import React from 'react';
-import { LevelDownAltIcon, LevelUpAltIcon } from '@patternfly/react-icons';
+import {
+  LevelDownAltIcon,
+  LevelUpAltIcon,
+  OnRunningIcon,
+  CheckCircleIcon,
+  BanIcon,
+  PausedIcon,
+  ErrorCircleOIcon
+} from '@patternfly/react-icons';
 import { Link } from 'react-router-dom';
+import { ProcessInstanceState } from '../../../graphql/types';
 
 interface IOwnProps {
   loading: boolean;
   data: any;
 }
 const ProcessDetails: React.FC<IOwnProps> = ({ data, loading }) => {
+  const stateIconCreator = state => {
+    switch (state) {
+      case ProcessInstanceState.Active:
+        return (
+          <>
+            <OnRunningIcon className="pf-u-mr-sm" />
+            Active
+          </>
+        );
+      case ProcessInstanceState.Completed:
+        return (
+          <>
+            <CheckCircleIcon
+              className="pf-u-mr-sm"
+              color="var(--pf-global--success-color--100)"
+            />
+            Completed
+          </>
+        );
+      case ProcessInstanceState.Aborted:
+        return (
+          <>
+            <BanIcon className="pf-u-mr-sm" />
+            Aborted
+          </>
+        );
+      case ProcessInstanceState.Suspended:
+        return (
+          <>
+            <PausedIcon className="pf-u-mr-sm" />
+            Suspended
+          </>
+        );
+      case ProcessInstanceState.Error:
+        return (
+          <>
+            <ErrorCircleOIcon
+              className="pf-u-mr-sm"
+              color="var(--pf-global--danger-color--100)"
+            />
+            Error
+          </>
+        );
+    }
+  };
+
   return (
     <Card>
       <CardHeader>
@@ -36,7 +91,7 @@ const ProcessDetails: React.FC<IOwnProps> = ({ data, loading }) => {
           </FormGroup>
           <FormGroup label="State" fieldId="state">
             <Text component={TextVariants.p}>
-              {data.ProcessInstances[0].state}
+              {stateIconCreator(data.ProcessInstances[0].state)}
             </Text>
           </FormGroup>
           <FormGroup label="Id" fieldId="id">
@@ -56,7 +111,9 @@ const ProcessDetails: React.FC<IOwnProps> = ({ data, loading }) => {
           <FormGroup label="Start" fieldId="start">
             {data.ProcessInstances[0].start ? (
               <Text component={TextVariants.p}>
-                <Moment fromNow>{new Date(`${data.ProcessInstances[0].start}`)}</Moment>
+                <Moment fromNow>
+                  {new Date(`${data.ProcessInstances[0].start}`)}
+                </Moment>
               </Text>
             ) : (
                 ''
@@ -65,7 +122,9 @@ const ProcessDetails: React.FC<IOwnProps> = ({ data, loading }) => {
           <FormGroup label="End" fieldId="end">
             {data.ProcessInstances[0].end ? (
               <Text component={TextVariants.p}>
-                <Moment fromNow>{new Date(`${data.ProcessInstances[0].end}`)}</Moment>
+                <Moment fromNow>
+                  {new Date(`${data.ProcessInstances[0].end}`)}
+                </Moment>
               </Text>
             ) : (
                 ''

@@ -1,0 +1,14 @@
+.pf-c-chip__text::first-letter {
+  text-transform: uppercase;
+}
+.pf-c-chip__text {
+  text-transform: lowercase;
+}
+
+.pf-c-check__label::first-letter {
+  text-transform: uppercase;
+}
+
+.pf-c-check__label {
+  text-transform: lowercase;
+}

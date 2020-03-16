@@ -13,6 +13,7 @@ import {
 } from '@patternfly/react-core';
 import { FilterIcon, SyncIcon } from '@patternfly/react-icons';
 import _ from 'lodash';
+import './Datatoolbar.css';
 
 interface IOwnProps {
   checkedArray: any;
@@ -46,13 +47,13 @@ const DataToolbarComponent: React.FC<IOwnProps> = ({
       setIsFilterClicked(true);
       setIsStatusSelected(true);
     }
-    setShouldRefresh(true)
+    setShouldRefresh(true);
   };
 
   const onSelect = (event, selection) => {
     setIsFilterClicked(false);
     setIsClearAllClicked(false);
-    setShouldRefresh(false)
+    setShouldRefresh(false);
     if (selection) {
       const index = checkedArray.indexOf(selection);
       if (index === -1) {
@@ -93,7 +94,7 @@ const DataToolbarComponent: React.FC<IOwnProps> = ({
       checkedArray.splice(index, 1);
       filterClick();
     }
-    setShouldRefresh(true)
+    setShouldRefresh(true);
   };
 
   useEffect(() => {
@@ -107,14 +108,13 @@ const DataToolbarComponent: React.FC<IOwnProps> = ({
     setCheckedArray(['ACTIVE']);
     setFilters(['ACTIVE']);
     filterClick(['ACTIVE']);
-    setShouldRefresh(true)
+    setShouldRefresh(true);
   };
 
   const onRefreshClick = () => {
     if (shouldRefresh) {
-      filterClick(checkedArray)
+      filterClick(checkedArray);
     }
-
   };
   const onStatusToggle = isExpandedItem => {
     setIsExpanded(isExpandedItem);
@@ -129,7 +129,7 @@ const DataToolbarComponent: React.FC<IOwnProps> = ({
 
   const toggleGroupItems = (
     <React.Fragment>
-      <DataToolbarGroup variant="filter-group">
+      <DataToolbarGroup>
         <DataToolbarFilter
           chips={filters}
           deleteChip={onDelete}

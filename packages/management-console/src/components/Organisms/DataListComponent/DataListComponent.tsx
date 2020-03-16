@@ -4,6 +4,7 @@ import DataListItemComponent from '../../Molecules/DataListItemComponent/DataLis
 import SpinnerComponent from '../../Atoms/SpinnerComponent/SpinnerComponent';
 import EmptyStateComponent from '../../Atoms/EmptyStateComponent/EmptyStateComponent';
 import '@patternfly/patternfly/patternfly-addons.css';
+import './DataListComponent.css';
 import {
   useGetProcessInstancesQuery,
   ProcessInstanceState

@@ -78,15 +78,15 @@ const DataListContainer: React.FC<{}> = () => {
                   checkedArray={checkedArray}
                 />
               ) : (
-                  <EmptyStateComponent
-                    iconType="warningTriangleIcon1"
-                    title="No status is selected"
-                    body="Try selecting at least one status to see results"
-                    filterClick={onFilterClick}
-                    setFilters={setFilters}
-                    setCheckedArray={setCheckedArray}
-                  />
-                )}
+                <EmptyStateComponent
+                  iconType="warningTriangleIcon1"
+                  title="No status is selected"
+                  body="Try selecting at least one status to see results"
+                  filterClick={onFilterClick}
+                  setFilters={setFilters}
+                  setCheckedArray={setCheckedArray}
+                />
+              )}
             </Card>
           </GridItem>
         </Grid>

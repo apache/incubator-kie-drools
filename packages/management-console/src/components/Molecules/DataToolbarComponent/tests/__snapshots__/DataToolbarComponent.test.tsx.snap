@@ -25,9 +25,7 @@ exports[`DataToolbar component tests Snapshot tests 1`] = `
         />
       }
     >
-      <ForwardRef
-        variant="filter-group"
-      >
+      <ForwardRef>
         <DataToolbarFilter
           categoryName="Status"
           chips={
