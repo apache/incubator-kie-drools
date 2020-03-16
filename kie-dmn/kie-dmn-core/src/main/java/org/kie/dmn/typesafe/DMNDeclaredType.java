@@ -1,6 +1,7 @@
 package org.kie.dmn.typesafe;
 
 import java.io.InputStream;
+import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
@@ -11,9 +12,12 @@ import java.util.stream.Collectors;
 import com.github.javaparser.StaticJavaParser;
 import com.github.javaparser.ast.CompilationUnit;
 import com.github.javaparser.ast.body.MethodDeclaration;
+import com.github.javaparser.ast.expr.CastExpr;
 import com.github.javaparser.ast.expr.MethodCallExpr;
+import com.github.javaparser.ast.expr.NameExpr;
 import com.github.javaparser.ast.expr.StringLiteralExpr;
 import com.github.javaparser.ast.expr.ThisExpr;
+import com.github.javaparser.ast.stmt.ExpressionStmt;
 import com.github.javaparser.ast.stmt.ReturnStmt;
 import com.github.javaparser.ast.stmt.SwitchEntry;
 import com.github.javaparser.ast.stmt.SwitchStmt;
@@ -100,7 +104,7 @@ class DMNDeclaredType implements TypeDefinition {
 
         firstSwitch.setComment(null);
 
-        List<SwitchEntry> collect = fields.stream().map(this::toSwitchEntry).collect(Collectors.toList());
+        List<SwitchEntry> collect = fields.stream().map(this::toGetPropertySwitchEntry).collect(Collectors.toList());
 
         SwitchEntry defaultSwitchStmt = firstSwitch.findFirst(SwitchEntry.class, sw -> sw.getLabels().isEmpty()).orElseThrow(RuntimeException::new); // default
         collect.add(defaultSwitchStmt);
@@ -114,8 +118,7 @@ class DMNDeclaredType implements TypeDefinition {
         return getFeelProperty;
     }
 
-    private SwitchEntry toSwitchEntry(FieldDefinition fieldDefinition) {
-
+    private SwitchEntry toGetPropertySwitchEntry(FieldDefinition fieldDefinition) {
         ReturnStmt returnStmt = new ReturnStmt();
         MethodCallExpr mc = StaticJavaParser.parseExpression(EvalHelper.PropertyValueResult.class.getCanonicalName() + ".ofValue()");
         String accessorName = "get" + ucFirst(fieldDefinition.getFieldName());
@@ -126,13 +129,35 @@ class DMNDeclaredType implements TypeDefinition {
 
     private MethodDefinition setFeelPropertyDefinition() {
 
-        String body = " {  } ";
-        MethodWithStringBody setFeelProperty = new MethodWithStringBody("setFEELProperty", "void", body);
-        setFeelProperty.addParameter(String.class.getCanonicalName(), "key");
-        setFeelProperty.addParameter(Object.class.getCanonicalName(), "value");
+        MethodDeclaration setFEELProperty = methodTemplate.findFirst(MethodDeclaration.class, mc -> mc.getNameAsString().equals("setFEELProperty"))
+                .orElseThrow(RuntimeException::new)
+                .clone();
 
-        return setFeelProperty;
+        SwitchStmt firstSwitch = setFEELProperty.findFirst(SwitchStmt.class).orElseThrow(RuntimeException::new);
+
+        firstSwitch.setComment(null);
+
+        List<SwitchEntry> collect = fields.stream().map(this::toSetPropertySwitchEntry).collect(Collectors.toList());
+
+        firstSwitch.setEntries(nodeList(collect));
+
+        String body = setFEELProperty.getBody().orElseThrow(RuntimeException::new).toString();
+        MethodWithStringBody getFeelProperty = new MethodWithStringBody("setFEELProperty", "void", body);
+        getFeelProperty.addParameter(String.class.getCanonicalName(), "property");
+        getFeelProperty.addParameter(Object.class.getCanonicalName(), "value");
+
+        return getFeelProperty;
     }
+
+    private SwitchEntry toSetPropertySwitchEntry(FieldDefinition fieldDefinition) {
+        ExpressionStmt expressionStmt = new ExpressionStmt();
+        String accessorName = "set" + ucFirst(fieldDefinition.getFieldName());
+        MethodCallExpr mc = new MethodCallExpr(new ThisExpr(), accessorName);
+        mc.addArgument(new CastExpr(StaticJavaParser.parseType(fieldDefinition.getObjectType()), new NameExpr("value")));
+        expressionStmt.setExpression(mc);
+        return new SwitchEntry(nodeList(new StringLiteralExpr(fieldDefinition.getFieldName())), SwitchEntry.Type.STATEMENT_GROUP, nodeList(expressionStmt));
+    }
+
 
     private MethodDefinition setAllDefinition() {
 
@@ -144,7 +169,7 @@ class DMNDeclaredType implements TypeDefinition {
     }
 
     private CompilationUnit getMethodTemplate() {
-        InputStream resourceAsStream = this.getClass().getResourceAsStream("/org/kie/dmn/core/impl/FEELPropertyAccessible.java");
+        InputStream resourceAsStream = this.getClass().getResourceAsStream("/org/kie/dmn/core/impl/DMNTypeSafeTypeTemplate.java");
         CompilationUnit parse = StaticJavaParser.parse(resourceAsStream);
         return parse;
     }
