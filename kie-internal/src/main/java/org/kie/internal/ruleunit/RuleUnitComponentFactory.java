@@ -30,6 +30,13 @@ public interface RuleUnitComponentFactory {
 
     RuleUnitDescription createRuleUnitDescription( KiePackage pkg, Class<?> ruleUnitClass );
 
+    /**
+     * Creates a rule unit description from the given qualified name.
+     * Optional operation (may be provided by alternative implementations)
+     * @return null if not supported or missing.
+     */
+    RuleUnitDescription createRuleUnitDescription( KiePackage pkg, String ruleUnitSimpleName );
+
     ApplyPmmlModelCommandExecutor newApplyPmmlModelCommandExecutor();
 
     boolean isRuleUnitClass( Class<?> ruleUnitClass );
