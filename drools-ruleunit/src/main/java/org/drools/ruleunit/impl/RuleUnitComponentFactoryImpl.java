@@ -31,6 +31,16 @@ public class RuleUnitComponentFactoryImpl implements RuleUnitComponentFactory {
         return new RuleUnitDescriptionImpl( pkg, ruleUnitClass );
     }
 
+    /**
+     * Creates a rule unit description from the given qualified name.
+     * Optional operation (may be provided by alternative implementations)
+     * @return null: this is not a supported operation
+     */
+    @Override
+    public RuleUnitDescription createRuleUnitDescription( KiePackage pkg, String ruleUnitSimpleName ) {
+        return null;
+    }
+
     @Override
     public ApplyPmmlModelCommandExecutor newApplyPmmlModelCommandExecutor() {
         return new ApplyPmmlModelCommandExecutorImpl();
