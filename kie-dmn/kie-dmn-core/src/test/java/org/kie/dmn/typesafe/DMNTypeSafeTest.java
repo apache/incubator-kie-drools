@@ -6,7 +6,9 @@ import java.util.Map;
 
 import org.junit.Test;
 import org.kie.dmn.api.core.DMNModel;
+import org.kie.dmn.api.core.DMNResult;
 import org.kie.dmn.api.core.DMNRuntime;
+import org.kie.dmn.core.impl.DMNContextFPAImpl;
 import org.kie.dmn.core.util.DMNRuntimeUtil;
 import org.kie.dmn.core.impl.FEELPropertyAccessible;
 import org.kie.dmn.typesafe.compilation.RegressionCompiler;
@@ -49,13 +51,13 @@ public class DMNTypeSafeTest {
         assertThat(getName, notNullValue());
 
 
+        InputSet context = new InputSet();
 
-//        InputSet context = new InputSet();
-//        Person pojo = new Person();
-//        pojo.setName("Mr. x");
-//        context.setP(pojo);
-//
-//        DMNResult evaluateAll = dmnRuntime.evaluateAll(dmnModel, new DMNContextFPAImpl(context));
-//        LOG.info("{}", evaluateAll);
+        feelPropertyAccessible.setFEELProperty("name", "Mr. x");
+
+        context.setP(feelPropertyAccessible);
+
+        DMNResult evaluateAll = runtime.evaluateAll(dmnModel, new DMNContextFPAImpl(context));
+        LOG.info("{}", evaluateAll);
     }
 }
