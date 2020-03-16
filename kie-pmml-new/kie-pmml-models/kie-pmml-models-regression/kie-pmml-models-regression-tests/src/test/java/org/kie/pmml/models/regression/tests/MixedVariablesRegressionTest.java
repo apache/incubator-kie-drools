@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package org.kie.pmml.regression.tests;
+package org.kie.pmml.models.regression.tests;
 
 import java.util.Arrays;
 import java.util.Collection;
@@ -31,16 +31,16 @@ import org.kie.pmml.commons.model.KiePMMLModel;
 import org.kie.pmml.evaluator.core.PMMLContextImpl;
 
 @RunWith(Parameterized.class)
-public class NumericVariablesLinearRegressionTest extends AbstractPMMLRegressionTest {
+public class MixedVariablesRegressionTest extends AbstractPMMLRegressionTest {
 
-    private static final String MODEL_NAME = "lm_Model";
-    private static final String PMML_SOURCE = "numericVariablesLinearRegression.pmml";
+    private static final String MODEL_NAME = "mixedVariables_Model";
+    private static final String PMML_SOURCE = "mixedVariablesRegression.pmml";
     private static final String TARGET_FIELD = "result";
 
     private double x;
-    private double y;
+    private String y;
 
-    public NumericVariablesLinearRegressionTest(double x, double y) {
+    public MixedVariablesRegressionTest(double x, String y) {
         this.x = x;
         this.y = y;
     }
@@ -48,17 +48,22 @@ public class NumericVariablesLinearRegressionTest extends AbstractPMMLRegression
     @Parameterized.Parameters
     public static Collection<Object[]> data() {
         return Arrays.asList(new Object[][]{
-                {0, 0}, {-1, 2}, {0.5, -2.5}, {3, 1}, {25, 50},
-                {-100, 250}, {-100.1, 800}, {-8, 12.5}, {-1001.1, -500.2}, {-1701, 508}
+                {0, "classA"}, {-1, "classA"}, {0.5, "classA"}, {3, "classA"}, {25, "classB"},
+                {-100, "classB"}, {-100.1, "classB"}, {-8, "classC"}, {-1001.1, "classC"}, {-1701, "classC"}
         });
     }
 
-    private static double regressionFunction(double x, double y) {
-        return 2 * x + y + 5;
+    private static double regressionFunction(double x, String y) {
+        final Map<String, Double> categoriesMap = new HashMap<>();
+        categoriesMap.put("classA", 0.0);
+        categoriesMap.put("classB", 20.0);
+        categoriesMap.put("classC", 40.0);
+
+        return 2 * x + categoriesMap.get(y) + 22;
     }
 
     @Test
-    public void testNumericVariableLinearRegression() throws Exception {
+    public void testMixedVariablesRegression() throws Exception {
         final KiePMMLModel pmmlModel = loadPMMLModel(PMML_SOURCE);
 
         final Map<String, Object> inputData = new HashMap<>();

@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package org.kie.pmml.regression.tests;
+package org.kie.pmml.models.regression.tests;
 
 import java.io.IOException;
 import java.io.InputStream;

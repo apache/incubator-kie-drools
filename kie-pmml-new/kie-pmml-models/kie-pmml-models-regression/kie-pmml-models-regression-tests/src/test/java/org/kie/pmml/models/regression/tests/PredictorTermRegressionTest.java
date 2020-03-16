@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package org.kie.pmml.regression.tests;
+package org.kie.pmml.models.regression.tests;
 
 import java.util.Arrays;
 import java.util.Collection;
@@ -31,39 +31,42 @@ import org.kie.pmml.commons.model.KiePMMLModel;
 import org.kie.pmml.evaluator.core.PMMLContextImpl;
 
 @RunWith(Parameterized.class)
-public class NumericVariablesPolynomialRegressionTest extends AbstractPMMLRegressionTest {
+public class PredictorTermRegressionTest extends AbstractPMMLRegressionTest {
 
-    private static final String MODEL_NAME = "polynomial_Model";
-    private static final String PMML_SOURCE = "numericVariablesPolynomialRegression.pmml";
+    private static final String MODEL_NAME = "predictorTerm_Model";
+    private static final String PMML_SOURCE = "predictorTermRegression.pmml";
     private static final String TARGET_FIELD = "result";
 
     private double x;
     private double y;
+    private double z;
 
-    public NumericVariablesPolynomialRegressionTest(double x, double y) {
+    public PredictorTermRegressionTest(double x, double y, double z) {
         this.x = x;
         this.y = y;
+        this.z = z;
     }
 
     @Parameterized.Parameters
     public static Collection<Object[]> data() {
         return Arrays.asList(new Object[][]{
-                {0, 0}, {-1, 2}, {0.5, -2.5}, {3, 1}, {25, 50},
-                {-100, 250}, {-100.1, 800}, {-8, 12.5}, {-1001.1, -500.2}, {-1701, 508}
+                {0, 0, 0}, {-1, 2, 3}, {0.5, -2.5, 4}, {3, 1, 2}, {25, 50, 15},
+                {-100, 250, -10}, {-100.1, 800, 105}, {-8, 12.5, 230}, {-1001, -500, 8}, {-1701, 508, 9}
         });
     }
 
-    private static double regressionFunction(double x, double y) {
-        return 3 * Math.pow(x, 5) + 2 * Math.pow(y, 2) + 5;
+    private static double regressionFunction(double x, double y, double z) {
+        return 2 * x + y + 5 * z * z + 4 * y * z - 2.5 * x * y * z + 5;
     }
 
     @Test
-    public void testNumericVariablePolynomialRegression() throws Exception {
+    public void testPredictorTermRegression() {
         final KiePMMLModel pmmlModel = loadPMMLModel(PMML_SOURCE);
 
         final Map<String, Object> inputData = new HashMap<>();
         inputData.put("x", x);
         inputData.put("y", y);
+        inputData.put("z", z);
 
         final PMMLRequestData pmmlRequestData = getPMMLRequestData(MODEL_NAME, inputData);
         PMML4Result pmml4Result = EXECUTOR.evaluate(pmmlModel, new PMMLContextImpl(pmmlRequestData), RELEASE_ID);
@@ -71,6 +74,6 @@ public class NumericVariablesPolynomialRegressionTest extends AbstractPMMLRegres
         Assertions.assertThat(pmml4Result).isNotNull();
         Assertions.assertThat(pmml4Result.getResultVariables()).containsKey(TARGET_FIELD);
         Assertions.assertThat((Double) pmml4Result.getResultVariables().get(TARGET_FIELD))
-                .isEqualTo(regressionFunction(x, y));
+                .isEqualTo(regressionFunction(x, y, z));
     }
 }

@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package org.kie.pmml.regression.tests;
+package org.kie.pmml.models.regression.tests;
 
 import java.util.Arrays;
 import java.util.Collection;
@@ -31,42 +31,52 @@ import org.kie.pmml.commons.model.KiePMMLModel;
 import org.kie.pmml.evaluator.core.PMMLContextImpl;
 
 @RunWith(Parameterized.class)
-public class PredictorTermRegressionTest extends AbstractPMMLRegressionTest {
+public class CategoricalVariablesRegressionTest extends AbstractPMMLRegressionTest {
 
-    private static final String MODEL_NAME = "predictorTerm_Model";
-    private static final String PMML_SOURCE = "predictorTermRegression.pmml";
+    private static final String MODEL_NAME = "categoricalVariables_Model";
+    private static final String PMML_SOURCE = "categoricalVariablesRegression.pmml";
     private static final String TARGET_FIELD = "result";
 
-    private double x;
-    private double y;
-    private double z;
+    private String x;
+    private String y;
 
-    public PredictorTermRegressionTest(double x, double y, double z) {
+    public CategoricalVariablesRegressionTest(String x, String y) {
         this.x = x;
         this.y = y;
-        this.z = z;
     }
 
     @Parameterized.Parameters
     public static Collection<Object[]> data() {
         return Arrays.asList(new Object[][]{
-                {0, 0, 0}, {-1, 2, 3}, {0.5, -2.5, 4}, {3, 1, 2}, {25, 50, 15},
-                {-100, 250, -10}, {-100.1, 800, 105}, {-8, 12.5, 230}, {-1001, -500, 8}, {-1701, 508, 9}
+                {"red", "classA"}, {"green", "classA"}, {"blue", "classA"}, {"orange", "classA"}, {"yellow", "classA"},
+                {"red", "classB"}, {"green", "classB"}, {"blue", "classB"}, {"orange", "classB"}, {"yellow", "classB"},
+                {"red", "classC"}, {"green", "classC"}, {"blue", "classC"}, {"orange", "classC"}, {"yellow", "classC"}
         });
     }
 
-    private static double regressionFunction(double x, double y, double z) {
-        return 2 * x + y + 5 * z * z + 4 * y * z - 2.5 * x * y * z + 5;
+    private static double regressionFunction(String x, String y) {
+        final Map<String, Double> categoriesMapX = new HashMap<>();
+        categoriesMapX.put("red", 5.5);
+        categoriesMapX.put("green", 15.0);
+        categoriesMapX.put("blue", 12.0);
+        categoriesMapX.put("orange", 5.5);
+        categoriesMapX.put("yellow", -100.25);
+
+        final Map<String, Double> categoriesMapY = new HashMap<>();
+        categoriesMapY.put("classA", 0.0);
+        categoriesMapY.put("classB", 20.0);
+        categoriesMapY.put("classC", 40.0);
+
+        return categoriesMapX.get(x) + categoriesMapY.get(y) - 22.1;
     }
 
     @Test
-    public void testPredictorTermRegression() {
+    public void testCategoricalVariablesRegression() throws Exception {
         final KiePMMLModel pmmlModel = loadPMMLModel(PMML_SOURCE);
 
         final Map<String, Object> inputData = new HashMap<>();
         inputData.put("x", x);
         inputData.put("y", y);
-        inputData.put("z", z);
 
         final PMMLRequestData pmmlRequestData = getPMMLRequestData(MODEL_NAME, inputData);
         PMML4Result pmml4Result = EXECUTOR.evaluate(pmmlModel, new PMMLContextImpl(pmmlRequestData), RELEASE_ID);
@@ -74,6 +84,6 @@ public class PredictorTermRegressionTest extends AbstractPMMLRegressionTest {
         Assertions.assertThat(pmml4Result).isNotNull();
         Assertions.assertThat(pmml4Result.getResultVariables()).containsKey(TARGET_FIELD);
         Assertions.assertThat((Double) pmml4Result.getResultVariables().get(TARGET_FIELD))
-                .isEqualTo(regressionFunction(x, y, z));
+                .isEqualTo(regressionFunction(x, y));
     }
 }

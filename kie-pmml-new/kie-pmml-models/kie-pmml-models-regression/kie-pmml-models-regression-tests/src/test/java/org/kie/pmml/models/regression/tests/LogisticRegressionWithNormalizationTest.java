@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package org.kie.pmml.regression.tests;
+package org.kie.pmml.models.regression.tests;
 
 import org.apache.commons.io.IOUtils;
 import org.assertj.core.api.Assertions;
