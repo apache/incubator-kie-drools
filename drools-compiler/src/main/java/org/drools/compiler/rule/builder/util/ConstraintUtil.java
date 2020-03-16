@@ -5,6 +5,7 @@ import org.drools.compiler.lang.descr.OperatorDescr;
 import org.drools.compiler.lang.descr.RelationalExprDescr;
 import org.drools.core.base.ClassObjectType;
 import org.drools.core.rule.Pattern;
+import org.drools.core.util.index.IndexUtil;
 import org.mvel2.util.PropertyTools;
 
 public class ConstraintUtil {
@@ -52,7 +53,7 @@ public class ConstraintUtil {
             relDescr.setLeft(relDescr.getRight());
             relDescr.setRight(left);
 
-            String inversedOperator = inverseOperator(operator);
+            String inversedOperator = IndexUtil.ConstraintType.decode(operator).inverse().getOperator();
 
             operatorDescr.setOperator(inversedOperator);
 
@@ -83,11 +84,7 @@ public class ConstraintUtil {
         if (leftProp.isEmpty() || rightProp.isEmpty()) {
             return false;
         }
-        return canInverse(operator);
-    }
-
-    private static boolean canInverse(String operator) {
-        return (operator.equals("==") || operator.equals("!=") || operator.equals(">") || operator.equals("<") || operator.equals(">=") || operator.equals("<="));
+        return IndexUtil.ConstraintType.decode(operator).canInverse();
     }
 
     private static String getFirstProp(String str) {
@@ -104,20 +101,5 @@ public class ConstraintUtil {
 
     private static boolean isNagatedExpression(String expression, String leftValue, String rightValue, String operator) {
         return expression.matches("^!\\s*\\(\\s*" + leftValue + "\\s*" + operator + "\\s*" + rightValue + "\\s*\\)$");
-    }
-
-    private static String inverseOperator(String operator) {
-        switch (operator) {
-            case ">":
-                return "<";
-            case "<":
-                return ">";
-            case ">=":
-                return "<=";
-            case "<=":
-                return ">=";
-            default:
-                return operator;
-        }
     }
 }

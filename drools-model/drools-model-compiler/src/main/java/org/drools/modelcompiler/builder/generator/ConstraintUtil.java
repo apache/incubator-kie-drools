@@ -133,8 +133,7 @@ public class ConstraintUtil {
         ConstraintType type = drlx.getDecodeConstraintType();
         TypedExpression left = drlx.getLeft();
         TypedExpression right = drlx.getRight();
-        if (type != null && left != null && right != null && (type == ConstraintType.EQUAL || type == ConstraintType.NOT_EQUAL || type == ConstraintType.GREATER_THAN || type == ConstraintType.GREATER_OR_EQUAL ||
-                                                              type == ConstraintType.LESS_THAN || type == ConstraintType.LESS_OR_EQUAL)) {
+        if (type != null && left != null && right != null && type.canInverse()) {
             return isPropertyOnRight(left.getExpression(), right.getExpression());
         } else {
             return false;
@@ -147,7 +146,7 @@ public class ConstraintUtil {
 
     private static boolean isProperty(Expression expr) {
         if (expr instanceof CastExpr) {
-            expr = ((CastExpr)expr).getExpression();
+            expr = ((CastExpr) expr).getExpression();
         }
         if (expr instanceof MethodCallExpr) {
             MethodCallExpr mcExpr = (MethodCallExpr) expr;
@@ -176,30 +175,7 @@ public class ConstraintUtil {
     }
 
     private static void inverseSingleDrlxParseSuccess(SingleDrlxParseSuccess drlx) {
-        ConstraintType inversedOperator = null;
-
-        switch (drlx.getDecodeConstraintType()) {
-            case EQUAL:
-                inversedOperator = ConstraintType.EQUAL;
-                break;
-            case NOT_EQUAL:
-                inversedOperator = ConstraintType.NOT_EQUAL;
-                break;
-            case GREATER_THAN:
-                inversedOperator = ConstraintType.LESS_THAN;
-                break;
-            case GREATER_OR_EQUAL:
-                inversedOperator = ConstraintType.LESS_OR_EQUAL;
-                break;
-            case LESS_THAN:
-                inversedOperator = ConstraintType.GREATER_THAN;
-                break;
-            case LESS_OR_EQUAL:
-                inversedOperator = ConstraintType.GREATER_OR_EQUAL;
-                break;
-            default:
-                throw new IllegalArgumentException(drlx.getDecodeConstraintType() + " should not be inversed");
-        }
+        ConstraintType inversedOperator = drlx.getDecodeConstraintType().inverse();
 
         TypedExpression left = drlx.getLeft();
         drlx.setLeft(drlx.getRight());
