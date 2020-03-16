@@ -37,6 +37,11 @@ public interface NodeInstanceLog {
     public static final int TYPE_EXIT = 1;
 
     /**
+     * Inidcates that the node instace was left because an abort operation (it is not active anymore)
+     */
+    public static final int TYPE_ABORTED = 2;
+
+    /**
      * @return process instance identifier
      */
     Long getProcessInstanceId();
