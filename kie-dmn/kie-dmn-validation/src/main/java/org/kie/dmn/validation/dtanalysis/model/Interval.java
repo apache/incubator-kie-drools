@@ -26,6 +26,7 @@ import java.util.stream.Stream;
 
 import org.kie.dmn.feel.runtime.Range;
 import org.kie.dmn.feel.runtime.Range.RangeBoundary;
+import org.kie.dmn.feel.runtime.impl.RangeImpl;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -63,12 +64,14 @@ public class Interval {
     private final Bound<?> upperBound;
     private final int rule;
     private final int col;
+    private final Range asRange;
 
     public Interval(RangeBoundary lowBoundary, Comparable<?> start, Comparable<?> end, RangeBoundary highBoundary, int rule, int col) {
         this.lowerBound = new Bound(start, lowBoundary, this);
         this.upperBound = new Bound(end, highBoundary, this);
         this.rule = rule;
         this.col = col;
+        this.asRange = new RangeImpl(lowBoundary, nullIfInfinity(start), nullIfInfinity(end), highBoundary);
     }
 
     private Interval(Bound<?> lowerBound, Bound<?> upperBound) {
@@ -76,10 +79,19 @@ public class Interval {
         this.upperBound = new Bound(upperBound.getValue(), upperBound.getBoundaryType(), this);
         this.rule = 0;
         this.col = 0;
+        this.asRange = new RangeImpl(lowerBound.getBoundaryType(), nullIfInfinity(lowerBound.getValue()), nullIfInfinity(upperBound.getValue()), upperBound.getBoundaryType());
     }
 
     public static Interval newFromBounds(Bound<?> lowerBound, Bound<?> upperBound) {
         return new Interval(lowerBound, upperBound);
+    }
+
+    private static Comparable<?> nullIfInfinity(Comparable<?> input) {
+        if (input != POS_INF && input != NEG_INF) {
+            return input;
+        } else {
+            return null;
+        }
     }
 
     @Override
@@ -142,6 +154,20 @@ public class Interval {
             return false;
         }
         return true;
+    }
+
+    public boolean asRangeIncludes(Object param) {
+        Boolean result = this.asRange.includes(param);
+        if (result != null) {
+            return result;
+        } else if (this.lowerBound.getValue() == NEG_INF &&
+                   this.lowerBound.getBoundaryType() == RangeBoundary.CLOSED &&
+                   this.upperBound.getValue() == POS_INF &&
+                   this.upperBound.getBoundaryType() == RangeBoundary.CLOSED) {
+            return true;
+        } else {
+            return false;
+        }
     }
 
     public boolean includes(Interval o) {

@@ -42,6 +42,22 @@ public class MCDCAnalyser {
 
         calculateElseRuleIdx();
         calculateAllEnumValues();
+        for (int i = 0; i < allEnumValues.size(); i++) {
+            matchingRulesForInput(i, allEnumValues.get(i).get(0));
+        }
+    }
+
+    private List<Integer> matchingRulesForInput(int colIdx, Object value) {
+        List<Integer> results = new ArrayList<>();
+        List<DDTARule> rules = ddtaTable.getRule();
+        for (int i = 0; i < rules.size(); i++) {
+            List<Interval> intervals = rules.get(i).getInputEntry().get(colIdx).getIntervals();
+            if (intervals.stream().anyMatch(interval -> interval.asRangeIncludes(value))) {
+                results.add(i);
+            }
+        }
+        LOG.debug("matchingRulesForInput column index {} value {} matching rules: {}", colIdx, value, results);
+        return results;
     }
 
     private void calculateAllEnumValues() {
@@ -140,8 +156,9 @@ public class MCDCAnalyser {
         if (a.getValue() instanceof BigDecimal || b.getValue() instanceof BigDecimal) {
             BigDecimal aValue = a.getValue() == Interval.NEG_INF ? ((BigDecimal) b.getValue()).add(new BigDecimal(-2)) : (BigDecimal) a.getValue();
             BigDecimal bValue = b.getValue() == Interval.POS_INF ? ((BigDecimal) a.getValue()).add(new BigDecimal(+2)) : (BigDecimal) b.getValue();
-            if (bValue.compareTo(new BigDecimal(aValue.intValue() + 1)) > 0) {
-                return aValue.intValue() + 1;
+            BigDecimal guessWork = new BigDecimal(aValue.intValue() + 1);
+            if (bValue.compareTo(guessWork) > 0) {
+                return guessWork;
             } else {
                 throw new UnsupportedOperationException();
             }
