@@ -56,7 +56,7 @@ public class MCDCAnalyser {
                 results.add(i);
             }
         }
-        LOG.debug("matchingRulesForInput column index {} value {} matching rules: {}", colIdx, value, results);
+        LOG.trace("matchingRulesForInput column index {} value {} matching rules: {}", colIdx, value, results);
         return results;
     }
 
@@ -69,7 +69,7 @@ public class MCDCAnalyser {
             List<Interval> colIntervals = ddtaTable.projectOnColumnIdx(idx);
             List<Bound> bounds = colIntervals.stream().flatMap(i -> Stream.of(i.getLowerBound(), i.getUpperBound())).collect(Collectors.toList());
             Collections.sort(bounds);
-            LOG.debug("bounds (sorted) {}", bounds);
+            LOG.trace("bounds (sorted) {}", bounds);
 
             List<Object> enumValues = new ArrayList<>();
 
@@ -83,21 +83,21 @@ public class MCDCAnalyser {
                     curBound = bounds.remove(0); //look-ahead.
                 }
                 
-                LOG.debug("prev {} {}, cur {} {}", prevBound, null, curBound, null);
+                LOG.trace("prev {} {}, cur {} {}", prevBound, null, curBound, null);
                 if (prevBound.isUpperBound() && curBound.isLowerBound()) {
                     // do nothing.
                 } else if (prevBound.isUpperBound() && curBound.isUpperBound()) {
                     if (curBound.getBoundaryType() == RangeBoundary.CLOSED && !isBoundInfinity(curBound)) {
                         enumValues.add(curBound.getValue());
                     } else {
-                        LOG.debug("looking for value in-between {} {} ", prevBound, curBound);
+                        LOG.trace("looking for value in-between {} {} ", prevBound, curBound);
                         enumValues.add(inBetween(prevBound, curBound));
                     }
                 } else if (prevBound.isLowerBound() && curBound.isLowerBound()) {
                     if (prevBound.getBoundaryType() == RangeBoundary.CLOSED && !isBoundInfinity(prevBound)) {
                         enumValues.add(prevBound.getValue());
                     } else {
-                        LOG.debug("looking for value in-between {} {} ", prevBound, curBound);
+                        LOG.trace("looking for value in-between {} {} ", prevBound, curBound);
                         enumValues.add(inBetween(prevBound, curBound));
                     }
                 } else {
@@ -106,7 +106,7 @@ public class MCDCAnalyser {
                     } else if (curBound.getBoundaryType() == RangeBoundary.CLOSED && !isBoundInfinity(curBound)) {
                         enumValues.add(curBound.getValue());
                     } else {
-                        LOG.debug("looking for value in-between {} {} ", prevBound, curBound);
+                        LOG.trace("looking for value in-between {} {} ", prevBound, curBound);
                         enumValues.add(inBetween(prevBound, curBound));
                     }
                 }
@@ -117,9 +117,26 @@ public class MCDCAnalyser {
                 }
             }
 
-            LOG.debug("enumValues: {}", enumValues);
+            LOG.trace("enumValues: {}", enumValues);
             allEnumValues.add(enumValues);
         }
+
+        if (elseRuleIdx.isPresent()) {
+            for (int idx = 0; idx < allEnumValues.size(); idx++) {
+                List<Integer> rulesMatchingLast = matchingRulesForInput(idx, allEnumValues.get(idx).get(allEnumValues.get(idx).size() - 1));
+                List<Integer> rulesMatchingFirst = matchingRulesForInput(idx, allEnumValues.get(idx).get(0));
+                if (rulesMatchingLast.size() == 1 && elseRuleIdx.get().equals(rulesMatchingLast.get(0)) && !rulesMatchingFirst.stream().allMatch(elseRuleIdx.get()::equals)) {
+                    // do nothing, already ordered with else rule last.
+                } else if (rulesMatchingFirst.size() == 1 && elseRuleIdx.get().equals(rulesMatchingFirst.get(0)) && !rulesMatchingLast.stream().allMatch(elseRuleIdx.get()::equals)) {
+                    List<?> reversing = new ArrayList<>(allEnumValues.get(idx));
+                    Collections.reverse(reversing);
+                    allEnumValues.set(idx, reversing);
+                } else {
+                    throw new UnsupportedOperationException("TODO");
+                }
+            }
+        }
+
         LOG.debug("allEnumValues:");
         for (int idx = 0; idx < allEnumValues.size(); idx++) {
             LOG.debug("allEnumValues {}: {}", idx, allEnumValues.get(idx));
