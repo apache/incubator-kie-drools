@@ -12,7 +12,7 @@
                     <compile>org.apache.maven.plugins:maven-compiler-plugin:compile,org.kie.kogito:kogito-maven-plugin:generateModel,org.apache.maven.plugins:maven-compiler-plugin:compile</compile>
                     <!-- proces-classes does not have a default plug-in binding for JAR/KJAR, accordingly to https://maven.apache.org/ref/3-LATEST/maven-core/default-bindings.html#Plugin_bindings_for_jar_packaging
                          so can directly declare the inject reactive bytecode goal -->
-                    <process-classes>org.kie.kogito:kogito-maven-plugin:injectreactive,org.kie.kogito:kogito-maven-plugin:process-model-classes</process-classes>
+                    <process-classes>org.kie.kogito:kogito-maven-plugin:process-model-classes</process-classes>
                     <process-test-resources>org.apache.maven.plugins:maven-resources-plugin:testResources</process-test-resources>
                     <test-compile>org.apache.maven.plugins:maven-compiler-plugin:testCompile</test-compile>
                     <test>org.apache.maven.plugins:maven-surefire-plugin:test</test>
