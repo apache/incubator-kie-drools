@@ -45,6 +45,7 @@ import org.drools.modelcompiler.builder.generator.declaredtype.POJOGenerator;
 import org.kie.api.builder.ReleaseId;
 import org.kie.internal.builder.ResultSeverity;
 
+import static java.util.Collections.emptyList;
 import static org.drools.compiler.builder.impl.ClassDefinitionFactory.createClassDefinition;
 import static org.drools.modelcompiler.builder.generator.ModelGenerator.generateModel;
 import static org.drools.modelcompiler.builder.generator.declaredtype.POJOGenerator.compileType;
@@ -81,8 +82,12 @@ public class ModelBuilderImpl<T extends PackageSources> extends KnowledgeBuilder
     public void addPackage(final PackageDescr packageDescr) {
         if (compositePackagesMap == null) {
             compositePackagesMap = new HashMap<>();
-            for (CompositePackageDescr pkg : compositePackages) {
-                compositePackagesMap.put( pkg.getNamespace(), pkg );
+            if(compositePackages != null) {
+                for (CompositePackageDescr pkg : compositePackages) {
+                    compositePackagesMap.put(pkg.getNamespace(), pkg);
+                }
+            } else {
+                compositePackagesMap.put(packageDescr.getNamespace(), new CompositePackageDescr(packageDescr.getResource(), packageDescr));
             }
             compositePackages = null;
         }
@@ -112,7 +117,7 @@ public class ModelBuilderImpl<T extends PackageSources> extends KnowledgeBuilder
 
     @Override
     public void postBuild() {
-        Collection<CompositePackageDescr> packages = compositePackages == null ? compositePackagesMap.values() : compositePackages;
+        Collection<CompositePackageDescr> packages = findPackages();
         initPackageRegistries(packages);
         registerTypeDeclarations( packages );
         buildDeclaredTypes( packages );
@@ -120,6 +125,18 @@ public class ModelBuilderImpl<T extends PackageSources> extends KnowledgeBuilder
         deregisterTypeDeclarations( packages );
         buildRules(packages);
         DrlxParseUtil.clearAccessorCache();
+    }
+
+    private Collection<CompositePackageDescr> findPackages() {
+        Collection<CompositePackageDescr> packages;
+        if (compositePackages != null && !compositePackages.isEmpty()) {
+            packages = compositePackages;
+        } else if (compositePackagesMap != null) {
+            packages = compositePackagesMap.values();
+        } else {
+            packages = emptyList();
+        }
+        return packages;
     }
 
     @Override
