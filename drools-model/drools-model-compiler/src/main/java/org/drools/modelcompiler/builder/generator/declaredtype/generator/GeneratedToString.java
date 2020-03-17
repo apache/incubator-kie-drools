@@ -15,7 +15,7 @@
  * limitations under the License.
  */
 
-package org.drools.modelcompiler.builder.generator.declaredtype;
+package org.drools.modelcompiler.builder.generator.declaredtype.generator;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -31,7 +31,7 @@ import static java.text.MessageFormat.format;
 import static com.github.javaparser.StaticJavaParser.parseStatement;
 import static com.github.javaparser.StaticJavaParser.parseType;
 import static com.github.javaparser.ast.NodeList.nodeList;
-import static org.drools.modelcompiler.builder.generator.declaredtype.GeneratedClassDeclaration.OVERRIDE;
+import static org.drools.modelcompiler.builder.generator.declaredtype.generator.GeneratedClassDeclaration.OVERRIDE;
 import static org.drools.modelcompiler.builder.generator.declaredtype.POJOGenerator.quote;
 
 public class GeneratedToString {

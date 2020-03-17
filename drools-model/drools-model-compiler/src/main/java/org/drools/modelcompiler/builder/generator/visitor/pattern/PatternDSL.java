@@ -34,6 +34,7 @@ import org.drools.compiler.lang.descr.PatternDescr;
 import org.drools.compiler.lang.descr.PatternSourceDescr;
 import org.drools.core.util.ClassUtils;
 import org.drools.modelcompiler.builder.generator.AggregateKey;
+import org.drools.modelcompiler.builder.generator.ConstraintUtil;
 import org.drools.mvel.parser.ast.expr.OOPathExpr;
 import com.github.javaparser.ast.expr.Expression;
 import com.github.javaparser.ast.expr.MethodCallExpr;
@@ -141,9 +142,11 @@ public abstract class PatternDSL implements DSLNode {
 
                 String rightExpression = printConstraint(expr.asBinaryExpr().getRight());
                 DrlxParseResult rightExpressionReparsed = constraintParser.drlxParse(patternType, patternIdentifier, rightExpression, isPositional);
-                patternConstraintParseResults.add(new PatternConstraintParseResult(rightExpression, patternIdentifier, rightExpressionReparsed));
+                DrlxParseResult normalizedParseResult = ConstraintUtil.normalizeConstraint(rightExpressionReparsed);
+                patternConstraintParseResults.add(new PatternConstraintParseResult(rightExpression, patternIdentifier, normalizedParseResult));
             } else {
-                patternConstraintParseResults.add(new PatternConstraintParseResult(expression, patternIdentifier, drlxParseResult));
+                DrlxParseResult normalizedParseResult = ConstraintUtil.normalizeConstraint(drlxParseResult);
+                patternConstraintParseResults.add(new PatternConstraintParseResult(expression, patternIdentifier, normalizedParseResult));
             }
         }
 

@@ -86,6 +86,31 @@ public class SingleDrlxParseSuccess extends AbstractDrlxParseSuccess {
         this.exprType = exprType;
     }
 
+    public SingleDrlxParseSuccess(SingleDrlxParseSuccess drlx) {
+        // Shallow copy constructor
+        this(drlx.getPatternType(), drlx.getPatternBinding(), drlx.getExpr(), drlx.getExprType());
+        this.originalDrlConstraint = drlx.getOriginalDrlConstraint();
+        this.accumulateBinding = drlx.getAccumulateBinding();
+        this.isPatternBindingUnification = drlx.isPatternBindingUnification();
+        this.exprBinding = drlx.getExprBinding();
+        this.decodeConstraintType = drlx.getDecodeConstraintType();
+        this.usedDeclarations = drlx.getUsedDeclarations();
+        this.usedDeclarationsOnLeft = drlx.getUsedDeclarationsOnLeft();
+        this.reactOnProperties = drlx.getReactOnProperties();
+        this.left = drlx.getLeft();
+        this.right = drlx.getRight();
+        this.rightLiteral = drlx.getRightLiteral();
+        this.isStatic = drlx.isStatic();
+        this.isValidExpression = drlx.isValidExpression();
+        this.skipThisAsParam = drlx.isSkipThisAsParam();
+        this.isBetaNode = drlx.isBetaNode();
+        this.requiresSplit = drlx.isRequiresSplit();
+        this.unification = drlx.isUnification();
+        this.temporal = drlx.isTemporal();
+
+        this.watchedProperties = drlx.getWatchedProperties();
+    }
+
     public SingleDrlxParseSuccess setDecodeConstraintType( Index.ConstraintType decodeConstraintType ) {
         this.decodeConstraintType = decodeConstraintType;
         return this;
@@ -383,6 +408,10 @@ public class SingleDrlxParseSuccess extends AbstractDrlxParseSuccess {
     public DrlxParseResult setOriginalDrlConstraint(String originalDrlConstraint) {
         this.originalDrlConstraint = originalDrlConstraint;
         return this;
+    }
+
+    public String getOriginalDrlConstraint() {
+        return originalDrlConstraint;
     }
 }
 

@@ -61,6 +61,7 @@ import org.drools.compiler.rule.builder.dialect.DialectUtil;
 import org.drools.compiler.rule.builder.dialect.java.JavaDialect;
 import org.drools.compiler.rule.builder.dialect.mvel.MVELAnalysisResult;
 import org.drools.compiler.rule.builder.dialect.mvel.MVELDialect;
+import org.drools.compiler.rule.builder.util.ConstraintUtil;
 import org.drools.compiler.builder.DroolsAssemblerContext;
 import org.drools.core.base.ClassFieldReader;
 import org.drools.core.base.ClassObjectType;
@@ -978,6 +979,9 @@ public class PatternBuilder
         // Or it's a Map and we have to treat it as a special case
 
         String rewrittenExpr = rewriteOrExpressions(context, pattern, d, expr);
+        if (simple) { // simple means also relDescr is != null
+            rewrittenExpr = ConstraintUtil.inverseExpression(relDescr, expr, findLeftExpressionValue(relDescr), findRightExpressionValue(relDescr), relDescr.getOperator(), pattern);
+        }
         if (negated) {
             rewrittenExpr = "!(" + rewrittenExpr + ")";
         }
@@ -1040,11 +1044,13 @@ public class PatternBuilder
 
     private String normalizeExpression(RuleBuildContext context, Pattern pattern, RelationalExprDescr subDescr, String subExpr) {
         String leftValue = findLeftExpressionValue(subDescr);
+        String rightValue = findRightExpressionValue(subDescr);
         String operator = subDescr.getOperator();
+
+        subExpr = ConstraintUtil.inverseExpression(subDescr, subExpr, leftValue, rightValue, operator, pattern);
 
         ValueType valueType = getValueType(context, pattern, leftValue);
         if (valueType != null && valueType.getSimpleType() == SimpleValueType.DATE) {
-            String rightValue = findRightExpressionValue(subDescr);
             FieldValue fieldValue = getFieldValue(context, valueType, rightValue);
             if (fieldValue != null) {
                 subExpr = subExpr.replace(rightValue, getNormalizeDate(valueType, fieldValue));
@@ -1053,7 +1059,6 @@ public class PatternBuilder
         }
 
         if (operator.equals("str")) {
-            String rightValue = findRightExpressionValue(subDescr);
             return normalizeStringOperator(leftValue, rightValue, new LiteralRestrictionDescr(operator,
                                                                                               subDescr.isNegated(),
                                                                                               subDescr.getParameters(),

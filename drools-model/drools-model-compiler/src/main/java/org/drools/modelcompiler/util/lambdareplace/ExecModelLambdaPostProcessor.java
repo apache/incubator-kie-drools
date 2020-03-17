@@ -45,6 +45,7 @@ import org.drools.modelcompiler.builder.RuleWriter;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import static org.drools.core.util.StreamUtils.optionalToStream;
 import static org.drools.modelcompiler.builder.generator.DslMethodNames.ALPHA_INDEXED_BY_CALL;
 import static org.drools.modelcompiler.builder.generator.DslMethodNames.BETA_INDEXED_BY_CALL;
 import static org.drools.modelcompiler.builder.generator.DslMethodNames.EXECUTE_CALL;
@@ -162,10 +163,6 @@ public class ExecModelLambdaPostProcessor {
 
     private Stream<? extends AssignExpr> findAssignExpr(VariableDeclarator vd) {
         return optionalToStream(vd.findAncestor(AssignExpr.class));
-    }
-
-    private <T> Stream<T> optionalToStream(Optional<T> opt) {
-        return opt.map(Stream::of).orElse(Stream.empty());
     }
 
     private void extractLambdaFromMethodCall(MethodCallExpr methodCallExpr, Supplier<MaterializedLambda> lambdaExtractor) {

@@ -53,6 +53,35 @@ public interface Index<A, V> {
             }
             return UNKNOWN;
         }
+
+        public boolean canInverse() {
+            switch (this) {
+                case EQUAL:
+                case NOT_EQUAL:
+                case GREATER_THAN:
+                case GREATER_OR_EQUAL:
+                case LESS_THAN:
+                case LESS_OR_EQUAL:
+                    return true;
+                default:
+                    return false;
+            }
+        }
+
+        public ConstraintType inverse() {
+            switch (this) {
+                case GREATER_THAN:
+                    return LESS_THAN;
+                case GREATER_OR_EQUAL:
+                    return LESS_OR_EQUAL;
+                case LESS_THAN:
+                    return GREATER_THAN;
+                case LESS_OR_EQUAL:
+                    return GREATER_OR_EQUAL;
+                default:
+                    return this;
+            }
+        }
     }
 
     IndexType getIndexType();

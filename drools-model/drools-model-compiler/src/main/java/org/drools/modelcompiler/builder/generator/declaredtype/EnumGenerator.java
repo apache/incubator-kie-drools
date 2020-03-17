@@ -21,6 +21,7 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
 
 import com.github.javaparser.ast.Modifier;
 import com.github.javaparser.ast.NodeList;
@@ -36,6 +37,8 @@ import com.github.javaparser.ast.type.Type;
 import org.drools.compiler.lang.descr.EnumDeclarationDescr;
 import org.drools.compiler.lang.descr.EnumLiteralDescr;
 import org.drools.compiler.lang.descr.TypeFieldDescr;
+import org.drools.modelcompiler.builder.generator.declaredtype.api.FieldDefinition;
+import org.drools.modelcompiler.builder.generator.declaredtype.generator.GeneratedConstructor;
 
 import static com.github.javaparser.StaticJavaParser.parseType;
 import static com.github.javaparser.ast.NodeList.nodeList;
@@ -47,7 +50,7 @@ public class EnumGenerator {
 
     private List<FieldDeclaration> fields = new ArrayList<>();
 
-    EnumGenerator() {
+    public EnumGenerator() {
     }
 
     public TypeDeclaration generate(EnumDeclarationDescr enumDeclarationDescr) {
@@ -70,7 +73,14 @@ public class EnumGenerator {
     }
 
     private void createConstructor(EnumDeclarationDescr enumDeclarationDescr) {
-        GeneratedConstructor fullArgumentConstructor = GeneratedConstructor.factoryEnum(enumDeclaration, enumDeclarationDescr.getFields());
+        List<FieldDefinition> enumFields = enumDeclarationDescr
+                .getFields()
+                .values()
+                .stream()
+                .map(DescrFieldDefinition::new)
+                .collect(Collectors.toList());
+
+        GeneratedConstructor fullArgumentConstructor = GeneratedConstructor.factoryEnum(enumDeclaration, enumFields);
         fullArgumentConstructor.generateConstructor(Collections.emptyList(), Collections.emptyList());
     }
 
