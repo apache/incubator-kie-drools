@@ -47,8 +47,9 @@ public final class DefaultSolverJob<Solution_, ProblemId_> implements SolverJob<
     private final Consumer<? super Solution_> finalBestSolutionConsumer;
     private final BiConsumer<? super ProblemId_, ? super Throwable> exceptionHandler;
 
-    private volatile SolverStatus solverStatus;
+    private SolverStatus solverStatus; // Access synchronized
     private CountDownLatch terminatedLatch;
+
     private Future<Solution_> future;
 
     public DefaultSolverJob(
@@ -77,13 +78,19 @@ public final class DefaultSolverJob<Solution_, ProblemId_> implements SolverJob<
     }
 
     @Override
-    public SolverStatus getSolverStatus() {
+    public synchronized SolverStatus getSolverStatus() {
         return solverStatus;
     }
 
     @Override
     public Solution_ call() {
-        solverStatus = SolverStatus.SOLVING_ACTIVE;
+        synchronized (this) {
+            if (solverStatus != SolverStatus.SOLVING_SCHEDULED) {
+                // This job has been canceled before it started
+                return problemFinder.apply(problemId);
+            }
+            solverStatus = SolverStatus.SOLVING_ACTIVE;
+        }
         try {
             Solution_ problem = problemFinder.apply(problemId);
             final Solution_ finalBestSolution = solver.solve(problem);
@@ -96,9 +103,11 @@ public final class DefaultSolverJob<Solution_, ProblemId_> implements SolverJob<
             exceptionHandler.accept(problemId, e);
             throw new IllegalStateException("Solving failed for problemId (" + problemId + ").", e);
         } finally {
-            solverManager.getProblemIdToSolverJobMap().remove(problemId);
-            solverStatus = SolverStatus.NOT_SOLVING;
-            terminatedLatch.countDown();
+            synchronized (this) {
+                solverManager.getProblemIdToSolverJobMap().remove(problemId);
+                solverStatus = SolverStatus.NOT_SOLVING;
+                terminatedLatch.countDown();
+            }
         }
     }
 
@@ -116,19 +125,25 @@ public final class DefaultSolverJob<Solution_, ProblemId_> implements SolverJob<
 
     @Override
     public void terminateEarly() {
-        boolean cancelled = future.cancel(false);
-        if (cancelled) {
-            solverStatus = SolverStatus.NOT_SOLVING;
-        } else {
-            // The solver is either actively solving or has already terminated
-            solver.terminateEarly();
-            try {
-                // Don't return until bestSolutionConsumer won't be called any more
-                terminatedLatch.await();
-            } catch (InterruptedException e) {
-                Thread.currentThread().interrupt();
-                logger.warn("The terminateEarly() call is interrupted.", e);
+        future.cancel(false);
+        synchronized (this) {
+            if (solverStatus == SolverStatus.SOLVING_SCHEDULED) {
+                solverStatus = SolverStatus.NOT_SOLVING;
+                terminatedLatch.countDown();
+            } else if (solverStatus == SolverStatus.SOLVING_ACTIVE) {
+                solver.terminateEarly();
+            } else if (solverStatus == SolverStatus.NOT_SOLVING) {
+                // Do nothing
+            } else {
+                throw new IllegalStateException("Unsupported solverStatus (" + solverStatus + ").");
             }
+        }
+        try {
+            // Don't return until bestSolutionConsumer won't be called any more
+            terminatedLatch.await();
+        } catch (InterruptedException e) {
+            Thread.currentThread().interrupt();
+            logger.warn("The terminateEarly() call is interrupted.", e);
         }
     }
 
