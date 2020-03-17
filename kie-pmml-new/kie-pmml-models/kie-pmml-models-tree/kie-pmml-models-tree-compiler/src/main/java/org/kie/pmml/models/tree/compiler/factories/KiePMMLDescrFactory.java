@@ -15,9 +15,11 @@
  */
 package org.kie.pmml.models.tree.compiler.factories;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
+import java.util.function.Function;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 import org.dmg.pmml.CompoundPredicate;
 import org.dmg.pmml.DataDictionary;
@@ -39,6 +41,7 @@ import org.drools.compiler.lang.descr.NotDescr;
 import org.drools.compiler.lang.descr.OrDescr;
 import org.drools.compiler.lang.descr.PackageDescr;
 import org.drools.core.util.StringUtils;
+import org.kie.pmml.commons.exceptions.KiePMMLException;
 import org.kie.pmml.commons.model.enums.DATA_TYPE;
 import org.kie.pmml.models.drooled.executor.KiePMMLStatusHolder;
 import org.kie.pmml.models.tree.model.enums.OPERATOR;
@@ -172,36 +175,37 @@ public class KiePMMLDescrFactory {
         String rightPatternType;
         CEDescrBuilder<? extends CEDescrBuilder<?, ?>, ExistsDescr> exists = null;
         CEDescrBuilder<? extends CEDescrBuilder<? extends CEDescrBuilder<?, ?>, ExistsDescr>, OrDescr> orExists;
-        CEDescrBuilder<? extends CEDescrBuilder<?, ?>, NotDescr> not;
-
-        List<Map.Entry<String, List<SimplePredicate>>> predicatesEntries = new ArrayList(predicatesMap.entrySet());
-        for (int i = 0; i < predicatesMap.size(); i++) {
-            List<SimplePredicate> predicates = predicatesEntries.get(i).getValue();
-            for (int j = 0; j < predicates.size(); j++) {
-                SimplePredicate predicate = predicates.get(j);
-                OPERATOR operator = OPERATOR.byName(predicate.getOperator().value());
-                if (i == 0 && j == 0) {
-                    leftHand = String.format(VALUE_PATTERN, operator.getOperator(), predicate.getValue() != null ? predicate.getValue() : "");
-                    leftPatternType = predicate.getField().getValue().toUpperCase();
-                    continue;
-                }
-                rightHand = String.format(VALUE_PATTERN, operator.getOperator(), predicate.getValue() != null ? predicate.getValue() : "");
-                rightPatternType = predicate.getField().getValue().toUpperCase();
-                if (exists == null) {
-                    not = lhsBuilder.not();
-                    exists = lhsBuilder.exists();
-                    orExists = exists.or();
-                    orExists.pattern(leftPatternType).constraint(leftHand);
-                    orExists.pattern(rightPatternType).constraint(rightHand);
-                    not.pattern(leftPatternType).constraint(leftHand);
-                    not.pattern(rightPatternType).constraint(rightHand);
-                } else {
-                    not = exists.not();
-                    exists = exists.exists();
-                    orExists = exists.or();
-                    orExists.pattern(rightPatternType).constraint(rightHand);
-                    not.pattern(rightPatternType).constraint(rightHand);
-                }
+        final CEDescrBuilder<? extends CEDescrBuilder<?, ?>, AndDescr> xorRoot = lhsBuilder.and();
+        final CEDescrBuilder<? extends CEDescrBuilder<?, ?>, NotDescr> not = xorRoot.not();
+        List<SimplePredicate> allPredicates = predicatesMap.entrySet()
+                .stream()
+                .flatMap((Function<Map.Entry<String, List<SimplePredicate>>, Stream<SimplePredicate>>) stringListEntry -> stringListEntry.getValue().stream())
+                .collect(Collectors.toList());
+        if (allPredicates.size() < 2) {
+            throw new KiePMMLException("At least two elements expected for XOR operations");
+        }
+        if (allPredicates.size() > 2) {
+            // Not managed yet
+            throw new KiePMMLException("More then two elements not managed, yet, for XOR operations");
+        }
+        for (SimplePredicate predicate : allPredicates) {
+            OPERATOR operator = OPERATOR.byName(predicate.getOperator().value());
+            if (leftHand == null) { // First element
+                leftHand = String.format(VALUE_PATTERN, operator.getOperator(), predicate.getValue() != null ? predicate.getValue() : "");
+                leftPatternType = predicate.getField().getValue().toUpperCase();
+                continue;
+            }
+            rightHand = String.format(VALUE_PATTERN, operator.getOperator(), predicate.getValue() != null ? predicate.getValue() : "");
+            rightPatternType = predicate.getField().getValue().toUpperCase();
+            if (exists == null) { // Second element
+                exists = xorRoot.exists();
+                orExists = exists.or();
+                orExists.pattern(leftPatternType).constraint(leftHand);
+                orExists.pattern(rightPatternType).constraint(rightHand);
+                not.pattern(leftPatternType).constraint(leftHand);
+                not.pattern(rightPatternType).constraint(rightHand);
+            } else { // Following elements
+                // Not managed yet
             }
         }
     }

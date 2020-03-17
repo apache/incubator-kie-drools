@@ -45,6 +45,7 @@ import org.drools.compiler.lang.descr.RuleDescr;
 import org.drools.compiler.lang.descr.TypeDeclarationDescr;
 import org.junit.Before;
 import org.junit.Test;
+import org.kie.pmml.commons.exceptions.KiePMMLException;
 import org.kie.pmml.compiler.testutils.TestUtils;
 import org.kie.pmml.models.drooled.executor.KiePMMLStatusHolder;
 import org.kie.pmml.models.tree.model.enums.OPERATOR;
@@ -85,7 +86,7 @@ public class KiePMMLDescrFactoryTest {
     public void getBaseDescr() {
         PackageDescr retrieved = KiePMMLDescrFactory.getBaseDescr(pmml.getDataDictionary(), treeModel, "org.test.package");
         assertNotNull(retrieved);
-        assertEquals(1, retrieved.getImports().size());
+        assertEquals(2, retrieved.getImports().size());
         assertEquals(KiePMMLStatusHolder.class.getName(), retrieved.getImports().get(0).getTarget());
         assertEquals(9, retrieved.getRules().size());
         assertEquals(5, retrieved.getTypeDeclarations().size());
@@ -130,7 +131,7 @@ public class KiePMMLDescrFactoryTest {
         commonVerifySimplePredicate(descr, (SimplePredicate) predicate);
         List<SimplePredicate> predicates = IntStream.range(0, 2).mapToObj(index -> getSimplePredicate("VALUE-" + index)).collect(Collectors.toList());
         for (CompoundPredicate.BooleanOperator operator : CompoundPredicate.BooleanOperator.values()) {
-            if (operator.equals(CompoundPredicate.BooleanOperator.SURROGATE)) {
+            if (operator.equals(CompoundPredicate.BooleanOperator.SURROGATE) || operator.equals(CompoundPredicate.BooleanOperator.XOR) ) {
                 // TODO {gcardosi} Not implemented, yet
                 continue;
             }
@@ -152,7 +153,6 @@ public class KiePMMLDescrFactoryTest {
         assertTrue(andBuilder.getDescr().getDescrs().isEmpty());
         KiePMMLDescrFactory.declareSimplePredicate(andBuilder, predicate);
         final AndDescr descr = andBuilder.getDescr();
-        assertEquals(1, descr.getDescrs().size());
         commonVerifySimplePredicate(descr, predicate);
     }
 
@@ -161,7 +161,7 @@ public class KiePMMLDescrFactoryTest {
         List<SimplePredicate> predicates = IntStream.range(0, 2).mapToObj(index -> getSimplePredicate("VALUE-" + index)).collect(Collectors.toList());
         final AndDescr descr = lhsBuilder.getDescr();
         for (CompoundPredicate.BooleanOperator operator : CompoundPredicate.BooleanOperator.values()) {
-            if (operator.equals(CompoundPredicate.BooleanOperator.SURROGATE)) {
+            if (operator.equals(CompoundPredicate.BooleanOperator.SURROGATE) || operator.equals(CompoundPredicate.BooleanOperator.XOR) ) {
                 // TODO {gcardosi} Not implemented, yet
                 continue;
             }
@@ -171,8 +171,35 @@ public class KiePMMLDescrFactoryTest {
             descr.getDescrs().clear();
             assertTrue(descr.getDescrs().isEmpty());
             KiePMMLDescrFactory.declareCompoundPredicate(lhsBuilder, predicate);
-            assertEquals(1, descr.getDescrs().size());
             commonVerifySimplePredicates((ConditionalElementDescr) descr.getDescrs().get(0), predicates, operator);
+        }
+    }
+
+    @Test(expected = KiePMMLException.class)
+    public void declareCompoundPredicateXORExceptionFewElements() throws Exception {
+        CompoundPredicate predicate = new CompoundPredicate();
+        predicate.setBooleanOperator(CompoundPredicate.BooleanOperator.XOR);
+        predicate.addPredicates(new SimplePredicate(FieldName.create("SIMPLE"), SimplePredicate.Operator.LESS_THAN));
+        try {
+            KiePMMLDescrFactory.declareCompoundPredicate(lhsBuilder, predicate);
+        } catch (Exception e) {
+            assertTrue(e instanceof KiePMMLException);
+            assertEquals("At least two elements expected for XOR operations", e.getMessage());
+            throw e;
+        }
+    }
+
+    @Test(expected = KiePMMLException.class)
+    public void declareCompoundPredicateXORExceptionTooMuchElements() throws Exception {
+        CompoundPredicate predicate = new CompoundPredicate();
+        predicate.setBooleanOperator(CompoundPredicate.BooleanOperator.XOR);
+        IntStream.range(0, 3).forEach(i -> predicate.addPredicates(new SimplePredicate(FieldName.create("SIMPLE-" + i), SimplePredicate.Operator.LESS_THAN)));
+        try {
+            KiePMMLDescrFactory.declareCompoundPredicate(lhsBuilder, predicate);
+        } catch (Exception e) {
+            assertTrue(e instanceof KiePMMLException);
+            assertEquals("More then two elements not managed, yet, for XOR operations", e.getMessage());
+            throw e;
         }
     }
 
@@ -183,7 +210,7 @@ public class KiePMMLDescrFactoryTest {
         assertTrue(andBuilder.getDescr().getDescrs().isEmpty());
         final AndDescr descr = andBuilder.getDescr();
         for (CompoundPredicate.BooleanOperator operator : CompoundPredicate.BooleanOperator.values()) {
-            if (operator.equals(CompoundPredicate.BooleanOperator.SURROGATE)) {
+            if (operator.equals(CompoundPredicate.BooleanOperator.SURROGATE) || operator.equals(CompoundPredicate.BooleanOperator.XOR) ) {
                 // TODO {gcardosi} Not implemented, yet
                 continue;
             }
@@ -231,7 +258,6 @@ public class KiePMMLDescrFactoryTest {
             case OR:
                 operatorString = " || ";
                 break;
-            case XOR:
             case AND:
             default:
                 operatorString = " && ";
@@ -262,8 +288,6 @@ public class KiePMMLDescrFactoryTest {
     }
 
     private void commonVerifySimplePredicatesXOR(PatternDescr baseDescr, List<SimplePredicate> predicates) {
-        int expectedDescrs = 1;
-        assertEquals(expectedDescrs, baseDescr.getDescrs().size());
         ExprConstraintDescr exprConstraintDescr = (ExprConstraintDescr) baseDescr.getDescrs().get(0);
         assertEquals(NAMED, exprConstraintDescr.getType());
         StringBuilder builder = new StringBuilder();
