@@ -103,12 +103,14 @@ public final class DefaultSolverJob<Solution_, ProblemId_> implements SolverJob<
             exceptionHandler.accept(problemId, e);
             throw new IllegalStateException("Solving failed for problemId (" + problemId + ").", e);
         } finally {
-            synchronized (this) {
-                solverManager.getProblemIdToSolverJobMap().remove(problemId);
-                solverStatus = SolverStatus.NOT_SOLVING;
-                terminatedLatch.countDown();
-            }
+            solvingTerminated();
         }
+    }
+
+    private synchronized void solvingTerminated() {
+        solverManager.getProblemIdToSolverJobMap().remove(problemId);
+        solverStatus = SolverStatus.NOT_SOLVING;
+        terminatedLatch.countDown();
     }
 
     // TODO Future features
@@ -128,12 +130,12 @@ public final class DefaultSolverJob<Solution_, ProblemId_> implements SolverJob<
         future.cancel(false);
         synchronized (this) {
             if (solverStatus == SolverStatus.SOLVING_SCHEDULED) {
-                solverStatus = SolverStatus.NOT_SOLVING;
-                terminatedLatch.countDown();
+                solvingTerminated();
             } else if (solverStatus == SolverStatus.SOLVING_ACTIVE) {
+                // Indirectly triggers solvingTerminated()
                 solver.terminateEarly();
             } else if (solverStatus == SolverStatus.NOT_SOLVING) {
-                // Do nothing
+                // Do nothing, solvingTerminated() already called
             } else {
                 throw new IllegalStateException("Unsupported solverStatus (" + solverStatus + ").");
             }
