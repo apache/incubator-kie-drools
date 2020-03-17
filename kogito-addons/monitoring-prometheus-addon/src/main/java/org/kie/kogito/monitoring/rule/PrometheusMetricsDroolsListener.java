@@ -13,9 +13,9 @@
  * limitations under the License.
  */
 
-package org.kie.addons.monitoring.rule;
+package org.kie.kogito.monitoring.rule;
 
-import static org.kie.addons.monitoring.rule.PrometheusMetrics.getDroolsEvaluationTimeHistogram;
+import static org.kie.kogito.monitoring.rule.PrometheusMetrics.getDroolsEvaluationTimeHistogram;
 
 import org.drools.core.event.rule.impl.AfterActivationFiredEventImpl;
 import org.drools.core.event.rule.impl.BeforeActivationFiredEventImpl;
@@ -30,10 +30,9 @@ public class PrometheusMetricsDroolsListener extends DefaultAgendaEventListener 
     private static final Logger logger = LoggerFactory.getLogger(PrometheusMetricsDroolsListener.class);
     private final String identifier;
 
-    public PrometheusMetricsDroolsListener(String identifier) {        
+    public PrometheusMetricsDroolsListener(String identifier) {
         this.identifier = identifier;
     }
-
 
     @Override
     public void beforeMatchFired(BeforeMatchFiredEvent event) {
@@ -57,7 +56,6 @@ public class PrometheusMetricsDroolsListener extends DefaultAgendaEventListener 
             logger.debug("Elapsed time: " + elapsed);
         }
     }
-
 
     public BeforeActivationFiredEventImpl getBeforeImpl(BeforeMatchFiredEvent e) {
         return (BeforeActivationFiredEventImpl)e;

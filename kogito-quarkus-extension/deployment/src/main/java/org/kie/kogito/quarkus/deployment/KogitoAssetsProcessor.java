@@ -69,7 +69,7 @@ public class KogitoAssetsProcessor {
     private final transient String generatedClassesDir = System.getProperty("quarkus.debug.generated-classes-dir");
     private final transient String appPackageName = "org.kie.kogito.app";
     private final transient String persistenceFactoryClass = "org.kie.kogito.persistence.KogitoProcessInstancesFactory";
-    private final transient String metricsClass = "org.kie.addons.monitoring.rest.MetricsResource";
+    private final transient String metricsClass = "org.kie.kogito.monitoring.rest.MetricsResource";
 
     @BuildStep
     CapabilityBuildItem capability() {

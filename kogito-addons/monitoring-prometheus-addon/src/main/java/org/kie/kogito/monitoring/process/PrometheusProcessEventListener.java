@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.kie.addons.monitoring.process;
+package org.kie.kogito.monitoring.process;
 
 
 import io.prometheus.client.Counter;
@@ -76,10 +76,9 @@ public class PrometheusProcessEventListener extends DefaultProcessEventListener 
     protected static void recordRunningProcessInstance(String containerId, String processId) {
         runningProcessInstances.labels(containerId, processId).inc();
     }
-    
-    
+
     private String identifier;
-    
+
     public PrometheusProcessEventListener(String identifier) {
         this.identifier = identifier;
     }
@@ -130,7 +129,7 @@ public class PrometheusProcessEventListener extends DefaultProcessEventListener 
             numberOfSLAsViolated.labels(identifier, processInstance.getProcessId(), event.getNodeInstance().getNodeName()).inc();
         }
     }
-    
+
     protected static double millisToSeconds(long millis) {
         return millis / 1000.0;
     }

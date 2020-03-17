@@ -173,7 +173,7 @@ public class GenerateModelMojo extends AbstractKieMojo {
             appPackageName = ApplicationGenerator.DEFAULT_PACKAGE_NAME;
         }
         boolean usePersistence = persistence || hasClassOnClasspath(project, "org.kie.kogito.persistence.KogitoProcessInstancesFactory");
-        boolean useMonitoring = hasClassOnClasspath(project, "org.kie.addons.monitoring.rest.MetricsResource");
+        boolean useMonitoring = hasClassOnClasspath(project, "org.kie.kogito.monitoring.rest.MetricsResource");
 
 
 

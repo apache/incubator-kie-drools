@@ -13,7 +13,7 @@
  * limitations under the License.
  */
 
-package org.kie.addons.monitoring.rule;
+package org.kie.kogito.monitoring.rule;
 
 import java.util.stream.IntStream;
 
@@ -35,7 +35,7 @@ public class PrometheusMetrics {
     protected static double millisToSeconds(long millis) {
         return millis / 1000.0;
     }
- 
+
     private static final double[] RULE_TIME_BUCKETS;
 
     static {
@@ -52,7 +52,4 @@ public class PrometheusMetrics {
     public static Histogram getDroolsEvaluationTimeHistogram() {
         return droolsEvaluationTimeHistogram;
     }
-
-
-
 }
