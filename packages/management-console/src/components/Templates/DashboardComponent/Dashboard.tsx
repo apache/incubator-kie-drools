@@ -26,7 +26,7 @@ const Dashboard: React.FC<{}> = (props: any) => {
   const PageSkipToContent = (
     <SkipToContent href={`#${pageId}`}>Skip to Content</SkipToContent>
   );
-  const [isNavOpen, setIsNavOpen] = useState(false);
+  const [isNavOpen, setIsNavOpen] = useState(true);
   const { pathname } = props.location;
 
   const onNavToggle = () => {
@@ -72,6 +72,7 @@ const Dashboard: React.FC<{}> = (props: any) => {
         skipToContent={PageSkipToContent}
         mainContainerId={pageId}
         sidebar={Sidebar}
+        isManagedSidebar
         className="kogito-management-console--dashboard-page"
       >
         <Switch>
