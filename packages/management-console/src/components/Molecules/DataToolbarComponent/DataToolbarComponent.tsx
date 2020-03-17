@@ -13,7 +13,7 @@ import {
 } from '@patternfly/react-core';
 import { FilterIcon, SyncIcon } from '@patternfly/react-icons';
 import _ from 'lodash';
-import './Datatoolbar.css';
+import './DatatoolbarComponent.css';
 
 interface IOwnProps {
   checkedArray: any;
@@ -133,6 +133,7 @@ const DataToolbarComponent: React.FC<IOwnProps> = ({
         <DataToolbarFilter
           chips={filters}
           deleteChip={onDelete}
+          className="kogito-management-console__state-dropdown-list"
           categoryName="Status"
         >
           <Select

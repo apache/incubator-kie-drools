@@ -1,0 +1,14 @@
+.kogito-management-console__state-dropdown-list .pf-c-chip__text::first-letter {
+  text-transform: uppercase;
+}
+.kogito-management-console__state-dropdown-list .pf-c-chip__text {
+  text-transform: lowercase;
+}
+
+.kogito-management-console__state-dropdown-list .pf-c-check__label::first-letter {
+  text-transform: uppercase;
+}
+
+.kogito-management-console__state-dropdown-list .pf-c-check__label {
+  text-transform: lowercase;
+}

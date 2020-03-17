@@ -24,7 +24,8 @@ const ProcessDetailsTimeline: React.FC<IOwnProps> = ({ loading, data }) => {
               return (
                 <div className="timeline-item" key={content.id}>
                   <div className="timeline-item-content">
-                    <Moment fromNow>{new Date(`${content.exit}`)}</Moment>
+                    {content.exit === null ? <small>Active</small> : <Moment fromNow>{new Date(`${content.exit}`)}</Moment>}
+
 
                     <p>{content.name}</p>
                     <span className="circle">

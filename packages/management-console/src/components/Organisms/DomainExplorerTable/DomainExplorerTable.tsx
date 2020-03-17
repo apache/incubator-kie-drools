@@ -19,7 +19,12 @@ const DomainExplorerTable = ({ columnFilters, tableLoading, displayTable }) => {
       // tslint:disable-next-line: forin
       for (const i in data) {
         const rest = k.length ? ' / ' + i : i;
-
+        if(data[i] === null) {
+          !tempKeys.includes(k + rest) && tempKeys.push(k + rest);
+            if (rest.hasOwnProperty) {
+              tempValue.push(data[i]);
+            }
+        }
         if (typeof data[i] === 'object') {
           if (!Array.isArray(data[i])) {
             iter(data[i], k + rest);
