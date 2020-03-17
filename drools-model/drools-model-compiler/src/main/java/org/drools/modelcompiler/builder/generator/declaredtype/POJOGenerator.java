@@ -19,8 +19,10 @@ package org.drools.modelcompiler.builder.generator.declaredtype;
 
 import java.util.Arrays;
 import java.util.Collection;
+import java.util.Collections;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 
 import com.github.javaparser.ast.body.ClassOrInterfaceDeclaration;
 import com.github.javaparser.ast.body.TypeDeclaration;
@@ -31,13 +33,15 @@ import org.drools.compiler.lang.descr.AnnotationDescr;
 import org.drools.compiler.lang.descr.EnumDeclarationDescr;
 import org.drools.compiler.lang.descr.PackageDescr;
 import org.drools.compiler.lang.descr.TypeDeclarationDescr;
+import org.drools.core.addon.TypeResolver;
 import org.drools.core.definitions.InternalKnowledgePackage;
+import org.drools.core.factmodel.GeneratedFact;
 import org.drools.modelcompiler.builder.GeneratedClassWithPackage;
 import org.drools.modelcompiler.builder.ModelBuilderImpl;
 import org.drools.modelcompiler.builder.PackageModel;
 import org.drools.modelcompiler.builder.errors.InvalidExpressionErrorResult;
+import org.drools.modelcompiler.builder.generator.declaredtype.generator.GeneratedClassDeclaration;
 import org.drools.modelcompiler.util.MvelUtil;
-import org.drools.core.addon.TypeResolver;
 
 import static org.drools.modelcompiler.builder.JavaParserCompiler.compileAll;
 import static org.drools.modelcompiler.builder.generator.DslMethodNames.ADD_ANNOTATION_CALL;
@@ -73,18 +77,14 @@ public class POJOGenerator {
         }
     }
 
-    public void generatePOJO() {
+    public void findPOJOorGenerate() {
         TypeResolver typeResolver = pkg.getTypeResolver();
-
         for (TypeDeclarationDescr typeDescr : packageDescr.getTypeDeclarations()) {
             try {
                 Class<?> type = typeResolver.resolveType(typeDescr.getFullTypeName());
                 processTypeMetadata(type, typeDescr.getAnnotations());
             } catch (ClassNotFoundException e) {
-                ClassOrInterfaceDeclaration generatedClass = new GeneratedClassDeclaration(builder, typeDescr, packageDescr, typeResolver)
-                        .toClassDeclaration();
-                packageModel.addGeneratedPOJO(generatedClass);
-                addTypeMetadata(typeDescr.getTypeName());
+                createPOJO(typeDescr);
             }
         }
 
@@ -99,6 +99,37 @@ public class POJOGenerator {
                 addTypeMetadata(enumDescr.getTypeName());
             }
         }
+    }
+
+    static class SafeTypeResolver implements org.drools.modelcompiler.builder.generator.declaredtype.api.TypeResolver {
+
+        private final TypeResolver typeResolver;
+
+        public SafeTypeResolver(TypeResolver typeResolver) {
+            this.typeResolver = typeResolver;
+        }
+
+        @Override
+        public Optional<Class<?>> resolveType(String className) {
+            try {
+                return Optional.ofNullable(this.typeResolver.resolveType(className));
+            } catch(ClassNotFoundException e) {
+                return Optional.empty();
+            }
+        }
+    }
+
+    private void createPOJO(TypeDeclarationDescr typeDescr) {
+        SafeTypeResolver typeResolver = new SafeTypeResolver(pkg.getTypeResolver());
+        DescrTypeDefinition descrDeclaredTypeDefinition = new DescrTypeDefinition(packageDescr, typeDescr, typeResolver);
+        descrDeclaredTypeDefinition.getErrors().forEach(builder::addBuilderResult);
+
+        ClassOrInterfaceDeclaration generatedClass = new GeneratedClassDeclaration(descrDeclaredTypeDefinition,
+                                                                                   typeResolver,
+                                                                                   Collections.singletonList(GeneratedFact.class))
+                .toClassDeclaration();
+        packageModel.addGeneratedPOJO(generatedClass);
+        addTypeMetadata(typeDescr.getTypeName());
     }
 
     private void addTypeMetadata(String typeName) {
@@ -132,7 +163,7 @@ public class POJOGenerator {
         return typeMetaDataCall;
     }
 
-    static String quote(String str) {
+    public static String quote(String str) {
         return "\"" + str.replace("\"", "\\\"") + "\"";
     }
 }
