@@ -42,9 +42,24 @@ public class MCDCAnalyser {
 
         calculateElseRuleIdx();
         calculateAllEnumValues();
-        for (int i = 0; i < allEnumValues.size(); i++) {
-            matchingRulesForInput(i, allEnumValues.get(i).get(0));
+        List<Integer> indexesWithMoreElements = indexesWithMoreElements(allEnumValues);
+        for (Integer idx : indexesWithMoreElements) {
+            System.out.println(idx);
+            Object value = allEnumValues.get(idx).get(0);
+            System.out.println(value);
+            System.out.println(matchingRulesForInput(idx, value));
         }
+    }
+
+    private List<Integer> indexesWithMoreElements(List<List<?>> cc) {
+        Integer max = cc.stream().map(List::size).max(Integer::compareTo).orElseGet(() -> 0);
+        List<Integer> indexes = new ArrayList<>();
+        for (int i = 0; i < cc.size(); i++) {
+            if (cc.get(i).size() == max) {
+                indexes.add(i);
+            }
+        }
+        return indexes;
     }
 
     private List<Integer> matchingRulesForInput(int colIdx, Object value) {
