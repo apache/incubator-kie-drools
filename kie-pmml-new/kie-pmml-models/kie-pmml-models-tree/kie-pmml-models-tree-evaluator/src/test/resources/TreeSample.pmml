@@ -70,6 +70,13 @@
           </CompoundPredicate>
         </Node>
       </Node>
+      <Node score="who play">
+        <CompoundPredicate booleanOperator="xor">
+          <SimplePredicate field="windy" operator="equal" value="true"/>
+          <SimplePredicate field="temperature" operator="lessThan" value="70"/>
+          <SimplePredicate field="humidity" operator="lessThan" value="70"/>
+        </CompoundPredicate>
+      </Node>
     </Node>
   </TreeModel>
 </PMML>

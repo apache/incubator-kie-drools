@@ -30,7 +30,6 @@ import org.dmg.pmml.OpType;
 import org.dmg.pmml.PMML;
 import org.dmg.pmml.Predicate;
 import org.dmg.pmml.SimplePredicate;
-import org.dmg.pmml.Value;
 import org.dmg.pmml.tree.Node;
 import org.dmg.pmml.tree.TreeModel;
 import org.drools.compiler.lang.api.CEDescrBuilder;
@@ -39,8 +38,6 @@ import org.drools.compiler.lang.api.PackageDescrBuilder;
 import org.drools.compiler.lang.api.RuleDescrBuilder;
 import org.drools.compiler.lang.descr.AndDescr;
 import org.drools.compiler.lang.descr.ConditionalElementDescr;
-import org.drools.compiler.lang.descr.EnumDeclarationDescr;
-import org.drools.compiler.lang.descr.EnumLiteralDescr;
 import org.drools.compiler.lang.descr.ExprConstraintDescr;
 import org.drools.compiler.lang.descr.PackageDescr;
 import org.drools.compiler.lang.descr.PatternDescr;
@@ -91,21 +88,16 @@ public class KiePMMLDescrFactoryTest {
         assertEquals(1, retrieved.getImports().size());
         assertEquals(KiePMMLStatusHolder.class.getName(), retrieved.getImports().get(0).getTarget());
         assertEquals(9, retrieved.getRules().size());
-        assertEquals(2, retrieved.getTypeDeclarations().size());
-        assertEquals(3, retrieved.getEnumDeclarations().size());
+        assertEquals(5, retrieved.getTypeDeclarations().size());
         for (DataField dataField : pmml.getDataDictionary().getDataFields()) {
             String expectedType = dataField.getName().getValue().toUpperCase();
-            if (OpType.CATEGORICAL.equals(dataField.getOpType()) && DataType.STRING.equals(dataField.getDataType()) && dataField.hasValues()) {
-                assertNotNull(retrieved.getEnumDeclarations().stream().filter(enumDeclarationDescr -> expectedType.equals(enumDeclarationDescr.getTypeName())).findFirst().orElse(null));
-            } else {
-                assertNotNull(retrieved.getTypeDeclarations().stream().filter(typeDeclarationDescr -> expectedType.equals(typeDeclarationDescr.getTypeName())).findFirst().orElse(null));
-            }
+            assertNotNull(retrieved.getTypeDeclarations().stream().filter(typeDeclarationDescr -> expectedType.equals(typeDeclarationDescr.getTypeName())).findFirst().orElse(null));
         }
     }
 
     @Test
     public void declareRules() {
-        PackageDescr packageDescr =  builder.getDescr();
+        PackageDescr packageDescr = builder.getDescr();
         assertEquals(1, packageDescr.getRules().size());
         KiePMMLDescrFactory.declareRules(builder, treeModel.getNode(), PARENT_PATH);
         assertEquals(10, packageDescr.getRules().size());
@@ -114,13 +106,13 @@ public class KiePMMLDescrFactoryTest {
             if (ruleName.equals("currentRule")) {
                 continue;
             }
-            String nodePath = ruleName.replace(PARENT_PATH+"_", "");
+            String nodePath = ruleName.replace(PARENT_PATH + "_", "");
             String[] nodeSteps = nodePath.split("_");
             if (nodeSteps.length == 1) { // the root node
                 assertEquals(nodeSteps[0], treeModel.getNode().getScore());
             } else {
-                Node currentNode= treeModel.getNode();
-                for (int i = 1; i < nodeSteps.length; i ++) {
+                Node currentNode = treeModel.getNode();
+                for (int i = 1; i < nodeSteps.length; i++) {
                     String nodeStep = nodeSteps[i];
                     currentNode = currentNode.getNodes().stream().filter(node -> nodeStep.equals(node.getScore())).findFirst().orElse(null);
                     assertNotNull(currentNode);
@@ -205,34 +197,20 @@ public class KiePMMLDescrFactoryTest {
 
     @Test
     public void declareTypes() {
-        List<DataField> dataFields = Arrays.asList(getTypeDataField(), getEnumDataField());
+        List<DataField> dataFields = Arrays.asList(getTypeDataField(), getTypeDataField());
         DataDictionary dataDictionary = new DataDictionary(dataFields);
         assertTrue(builder.getDescr().getEnumDeclarations().isEmpty());
         assertTrue(builder.getDescr().getTypeDeclarations().isEmpty());
         KiePMMLDescrFactory.declareTypes(builder, dataDictionary);
-        commonVerifyTypeDeclarationDescr(dataFields.get(0));
-        commonVerifyEnumDeclarationDescr(dataFields.get(1));
+        assertEquals(2, builder.getDescr().getTypeDeclarations().size());
     }
 
     @Test
     public void declareType() {
-        DataField dataField = getEnumDataField();
-        assertTrue(builder.getDescr().getEnumDeclarations().isEmpty());
-        assertTrue(builder.getDescr().getTypeDeclarations().isEmpty());
+        DataField dataField = getTypeDataField();
         KiePMMLDescrFactory.declareType(builder, dataField);
-        assertTrue(builder.getDescr().getTypeDeclarations().isEmpty());
-        commonVerifyEnumDeclarationDescr(dataField);
-        dataField = getTypeDataField();
-        KiePMMLDescrFactory.declareType(builder, dataField);
-        commonVerifyTypeDeclarationDescr(dataField);
-    }
-
-    @Test
-    public void declareEnumType() {
-        DataField dataField = getEnumDataField();
-        assertTrue(builder.getDescr().getEnumDeclarations().isEmpty());
-        KiePMMLDescrFactory.declareEnumType(builder, dataField);
-        commonVerifyEnumDeclarationDescr(dataField);
+        assertEquals(1, builder.getDescr().getTypeDeclarations().size());
+        commonVerifyTypeDeclarationDescr();
     }
 
     private void commonVerifySimplePredicate(AndDescr descr, SimplePredicate predicate) {
@@ -310,25 +288,7 @@ public class KiePMMLDescrFactoryTest {
         assertEquals(expected, exprConstraintDescr.getExpression());
     }
 
-    private void commonVerifyEnumDeclarationDescr(DataField dataField) {
-        assertEquals(1, builder.getDescr().getEnumDeclarations().size());
-        final EnumDeclarationDescr enumDeclarationDescr = builder.getDescr().getEnumDeclarations().get(0);
-        assertEquals("DATAFIELD", enumDeclarationDescr.getTypeName());
-        assertEquals(1, enumDeclarationDescr.getFields().size());
-        assertTrue(enumDeclarationDescr.getFields().containsKey("value"));
-        assertEquals(String.class.getName(), enumDeclarationDescr.getFields().get("value").getPattern().getObjectType());
-        final List<EnumLiteralDescr> literals = enumDeclarationDescr.getLiterals();
-        assertEquals(dataField.getValues().size(), literals.size());
-        dataField.getValues().forEach(value -> {
-            EnumLiteralDescr enumLiteralDescr = literals.stream().filter(enumLiteralDescr1 -> value.getValue().equals(enumLiteralDescr1.getName())).findFirst().orElse(null);
-            assertNotNull(enumLiteralDescr);
-            assertEquals(1, enumLiteralDescr.getConstructorArgs().size());
-            assertEquals("\"" + value.getValue() + "\"", enumLiteralDescr.getConstructorArgs().get(0));
-        });
-    }
-
-    private void commonVerifyTypeDeclarationDescr(DataField dataField) {
-        assertEquals(1, builder.getDescr().getTypeDeclarations().size());
+    private void commonVerifyTypeDeclarationDescr() {
         final TypeDeclarationDescr typeDeclarationDescr = builder.getDescr().getTypeDeclarations().get(0);
         assertEquals("DATAFIELD", typeDeclarationDescr.getTypeName());
         assertEquals(1, typeDeclarationDescr.getFields().size());
@@ -341,15 +301,6 @@ public class KiePMMLDescrFactoryTest {
         toReturn.setField(FieldName.create("SimplePredicate"));
         toReturn.setOperator(SimplePredicate.Operator.LESS_THAN);
         toReturn.setValue(value);
-        return toReturn;
-    }
-
-    private DataField getEnumDataField() {
-        DataField toReturn = new DataField();
-        toReturn.setOpType(OpType.CATEGORICAL);
-        toReturn.setDataType(DataType.STRING);
-        toReturn.setName(FieldName.create("dataField"));
-        toReturn.addValues(new Value("VALUE_1"), new Value("VALUE_2"));
         return toReturn;
     }
 

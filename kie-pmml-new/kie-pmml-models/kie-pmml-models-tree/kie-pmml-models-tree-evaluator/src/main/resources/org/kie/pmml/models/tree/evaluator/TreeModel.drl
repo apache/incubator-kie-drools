@@ -1,24 +1,21 @@
-package org.kie.pmml.runtime.tree.executor
+package org.kie.pmml.models.tree.evaluator;
 
-import org.kie.pmml.models.tree.model.KiePMMLNode
-import org.kie.pmml.models.tree.model.KiePMMLTreeModel
-import org.kie.pmml.models.tree.model.enums.OPERATOR
-import org.kie.pmml.models.tree.model.predicates.KiePMMLCompoundPredicate
-import org.kie.pmml.models.tree.model.predicates.KiePMMLFalsePredicate
-import org.kie.pmml.models.tree.model.predicates.KiePMMLTruePredicate
-import org.kie.pmml.models.tree.model.predicates.KiePMMLPredicate
-import org.kie.pmml.models.tree.model.predicates.KiePMMLSimplePredicate
-import org.kie.api.pmml.ParameterInfo
-import org.kie.api.pmml.PMML4Result
-import org.kie.api.pmml.PMMLRequestData
+import java.lang.Boolean;
+import java.util.List;
 
-import java.util.Map
-import java.util.HashMap
+import org.dmg.pmml.SimplePredicate;
 
-/*function boolean evaluatePredicate(KiePMMLPredicate toEvaluate) {
 
+function boolean evaluateXORPredicates(List<Boolean> toEvaluate) {
+   int counter = 0;
+           for (Boolean bln : toEvaluate) {
+               if (bln) {
+                   counter ++;
+               }
+           }
+           return counter %2 != 0;
 }
-
+/*
 function boolean evaluateCompoundPredicate(KiePMMLCompoundPredicate toEvaluate) {
 
 }
@@ -85,29 +82,29 @@ function boolean evaluateObject(Object value, OPERATOR operator, Object inputVal
         return toReturn;
 }*/
 
-rule "Get Tree"
-when
-  $m : KiePMMLTreeModel($nm:name, name != null);
-  $res : PMML4Result();
-then
-   System.out.println("\r\n*****************");
-   System.out.println("Fired Get Tree for KiePMMLTreeModel " + $m);
-   System.out.println($nm);
-   $res.updateResultVariable("name", $nm);
-end
-
-rule "Get Tree With Node" extends "Get Tree"
-when
-   $inputValues: Map()
-   KiePMMLTreeModel(node != null, node.evaluate($inputValues) != null, $node : node);
-then
-   System.out.println("\r\n*****************");
-   System.out.println("Fired Get Tree With Node for KiePMMLTreeModel " + $m);
-   System.out.println("vvvvvvvvvvvvv");
-   System.out.println("\tFound " + $node);
-   System.out.println("Update result");
-   $res.updateResultVariable("score", $node.getResult());
-end
+//rule "Get Tree"
+//when
+//  $m : KiePMMLTreeModel($nm:name, name != null);
+//  $res : PMML4Result();
+//then
+//   System.out.println("\r\n*****************");
+//   System.out.println("Fired Get Tree for KiePMMLTreeModel " + $m);
+//   System.out.println($nm);
+//   $res.updateResultVariable("name", $nm);
+//end
+//
+//rule "Get Tree With Node" extends "Get Tree"
+//when
+//   $inputValues: Map()
+//   KiePMMLTreeModel(node != null, node.evaluate($inputValues) != null, $node : node);
+//then
+//   System.out.println("\r\n*****************");
+//   System.out.println("Fired Get Tree With Node for KiePMMLTreeModel " + $m);
+//   System.out.println("vvvvvvvvvvvvv");
+//   System.out.println("\tFound " + $node);
+//   System.out.println("Update result");
+//   $res.updateResultVariable("score", $node.getResult());
+//end
 //
 //rule "Evaluate Node' nodes"
 //when

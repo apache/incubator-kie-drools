@@ -15,32 +15,30 @@
  */
 package org.kie.pmml.models.tree.compiler.factories;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
-import java.util.stream.Collectors;
 
 import org.dmg.pmml.CompoundPredicate;
 import org.dmg.pmml.DataDictionary;
 import org.dmg.pmml.DataField;
-import org.dmg.pmml.DataType;
 import org.dmg.pmml.False;
-import org.dmg.pmml.OpType;
 import org.dmg.pmml.Predicate;
 import org.dmg.pmml.SimplePredicate;
-import org.dmg.pmml.Value;
 import org.dmg.pmml.tree.LeafNode;
 import org.dmg.pmml.tree.Node;
 import org.dmg.pmml.tree.TreeModel;
 import org.drools.compiler.lang.api.CEDescrBuilder;
 import org.drools.compiler.lang.api.DescrFactory;
-import org.drools.compiler.lang.api.EnumDeclarationDescrBuilder;
 import org.drools.compiler.lang.api.PackageDescrBuilder;
 import org.drools.compiler.lang.api.PatternDescrBuilder;
 import org.drools.compiler.lang.api.RuleDescrBuilder;
 import org.drools.compiler.lang.descr.AndDescr;
+import org.drools.compiler.lang.descr.ExistsDescr;
+import org.drools.compiler.lang.descr.NotDescr;
+import org.drools.compiler.lang.descr.OrDescr;
 import org.drools.compiler.lang.descr.PackageDescr;
 import org.drools.core.util.StringUtils;
-import org.kie.pmml.commons.exceptions.KiePMMLInternalException;
 import org.kie.pmml.commons.model.enums.DATA_TYPE;
 import org.kie.pmml.models.drooled.executor.KiePMMLStatusHolder;
 import org.kie.pmml.models.tree.model.enums.OPERATOR;
@@ -56,8 +54,10 @@ public class KiePMMLDescrFactory {
 
     static final Logger logger = LoggerFactory.getLogger(KiePMMLDescrFactory.class.getName());
     static final String VALUE_PATTERN = "value %s \"%s\"";
-    static final String XOR_PATTERN = "((%1$s) & !(%2$s)) | (!(%1$s) & (%2$s)))"; // (A() not B()) or (not(A()) B()) - A^B => (A & !B) | (!A & B)
+    //    static final String PREDICATE_PATTERN = "%s(value %s \"%s\")";
+//    static final String XOR_PATTERN = "((%1$s && !(%2$s)) || (!(%1$s) && %2$s))"; // (A() not B()) or (not(A()) B()) - A^B => (A & !B) | (!A & B)
     static final String STATUS_HOLDER = "$statusHolder";
+//    static final String PREDICATES_LIST = "$predicates";
 
     private KiePMMLDescrFactory() {
         // Avoid instantiation
@@ -68,6 +68,7 @@ public class KiePMMLDescrFactory {
         PackageDescrBuilder builder = DescrFactory.newPackage()
                 .name(packageName);
         builder.newImport().target(KiePMMLStatusHolder.class.getName());
+        builder.newImport().target(SimplePredicate.class.getName());
         declareTypes(builder, dataDictionary);
         declareRules(builder, model.getNode(), "");
         return builder.getDescr();
@@ -125,14 +126,14 @@ public class KiePMMLDescrFactory {
     }
 
     static void declareCompoundPredicate(final CEDescrBuilder<?, ?> lhsBuilder, final CompoundPredicate predicate) {
-        final CEDescrBuilder<? extends CEDescrBuilder<?, ?>, ?> nestedBuilder;
+        CEDescrBuilder<? extends CEDescrBuilder<?, ?>, ?> nestedBuilder;
         final CompoundPredicate.BooleanOperator booleanOperator = (predicate).getBooleanOperator();
         switch (booleanOperator) {
             case OR:
                 nestedBuilder = lhsBuilder.or();
                 break;
+            case XOR:
             case AND:
-            case XOR: // TODO {gcardosi} (A() not B()) or (not(A()) B()) - A^B => (A & !B) | (!A & B)
             case SURROGATE:
             default:
                 nestedBuilder = lhsBuilder.and();
@@ -148,8 +149,12 @@ public class KiePMMLDescrFactory {
                         .map(child -> (SimplePredicate) child)
                         .collect(groupingBy(child -> child.getField().getValue().toUpperCase()));
                 // .. and add them as a whole
-                for (Map.Entry<String, List<SimplePredicate>> childEntry : predicatesByField.entrySet()) {
-                    declareSimplePredicates(nestedBuilder, childEntry.getKey(), childEntry.getValue(), booleanOperator);
+                if (CompoundPredicate.BooleanOperator.XOR.equals(booleanOperator)) {
+                    declareXORSimplePredicates(nestedBuilder, predicatesByField);
+                } else {
+                    for (Map.Entry<String, List<SimplePredicate>> childEntry : predicatesByField.entrySet()) {
+                        declareSimplePredicates(nestedBuilder, childEntry.getKey(), childEntry.getValue(), booleanOperator);
+                    }
                 }
             } else {
                 for (Predicate childPredicate : predicates) {
@@ -158,6 +163,47 @@ public class KiePMMLDescrFactory {
             }
         }
         lhsBuilder.end();
+    }
+
+    static void declareXORSimplePredicates(final CEDescrBuilder<?, ?> lhsBuilder, final Map<String, List<SimplePredicate>> predicatesMap) {
+        String leftHand = null;
+        String leftPatternType = null;
+        String rightHand;
+        String rightPatternType;
+        CEDescrBuilder<? extends CEDescrBuilder<?, ?>, ExistsDescr> exists = null;
+        CEDescrBuilder<? extends CEDescrBuilder<? extends CEDescrBuilder<?, ?>, ExistsDescr>, OrDescr> orExists;
+        CEDescrBuilder<? extends CEDescrBuilder<?, ?>, NotDescr> not;
+
+        List<Map.Entry<String, List<SimplePredicate>>> predicatesEntries = new ArrayList(predicatesMap.entrySet());
+        for (int i = 0; i < predicatesMap.size(); i++) {
+            List<SimplePredicate> predicates = predicatesEntries.get(i).getValue();
+            for (int j = 0; j < predicates.size(); j++) {
+                SimplePredicate predicate = predicates.get(j);
+                OPERATOR operator = OPERATOR.byName(predicate.getOperator().value());
+                if (i == 0 && j == 0) {
+                    leftHand = String.format(VALUE_PATTERN, operator.getOperator(), predicate.getValue() != null ? predicate.getValue() : "");
+                    leftPatternType = predicate.getField().getValue().toUpperCase();
+                    continue;
+                }
+                rightHand = String.format(VALUE_PATTERN, operator.getOperator(), predicate.getValue() != null ? predicate.getValue() : "");
+                rightPatternType = predicate.getField().getValue().toUpperCase();
+                if (exists == null) {
+                    not = lhsBuilder.not();
+                    exists = lhsBuilder.exists();
+                    orExists = exists.or();
+                    orExists.pattern(leftPatternType).constraint(leftHand);
+                    orExists.pattern(rightPatternType).constraint(rightHand);
+                    not.pattern(leftPatternType).constraint(leftHand);
+                    not.pattern(rightPatternType).constraint(rightHand);
+                } else {
+                    not = exists.not();
+                    exists = exists.exists();
+                    orExists = exists.or();
+                    orExists.pattern(rightPatternType).constraint(rightHand);
+                    not.pattern(rightPatternType).constraint(rightHand);
+                }
+            }
+        }
     }
 
     static void declareSimplePredicates(final CEDescrBuilder<?, ?> lhsBuilder, final String fieldName, final List<SimplePredicate> predicates, final CompoundPredicate.BooleanOperator booleanOperator) {
@@ -179,15 +225,6 @@ public class KiePMMLDescrFactory {
                 pattern.constraint(constraintBuilder.toString());
                 break;
             case XOR:
-                if (predicates.size() != 2) {
-                    throw new KiePMMLInternalException("Expected 2 Predicates for XOR condition, retrieved " + predicates.size());
-                }
-                List<String> constraints = predicates.stream().map(predicate -> {
-                    OPERATOR operator = OPERATOR.byName(predicate.getOperator().value());
-                    return String.format(VALUE_PATTERN, operator.getOperator(), predicate.getValue() != null ? predicate.getValue() : "");
-                }).collect(Collectors.toList());
-                constraint = String.format(XOR_PATTERN, constraints.get(0), constraints.get(1));
-                pattern.constraint(constraint);
                 break;
             case SURROGATE: // TODO {gcardosi} ?
                 break;
@@ -215,24 +252,11 @@ public class KiePMMLDescrFactory {
     }
 
     static void declareType(PackageDescrBuilder builder, DataField dataField) {
-        if (OpType.CATEGORICAL.equals(dataField.getOpType()) && DataType.STRING.equals(dataField.getDataType()) && dataField.hasValues()) {
-            declareEnumType(builder, dataField);
-        } else {
-            builder.newDeclare()
-                    .type()
-                    .name(dataField.getName().getValue().toUpperCase())
-                    .newField("value").type(DATA_TYPE.byName(dataField.getDataType().value()).getMappedClass().getSimpleName())
-                    .end()
-                    .end();
-        }
-    }
-
-    static void declareEnumType(PackageDescrBuilder builder, DataField dataField) {
-        final EnumDeclarationDescrBuilder enumBuilder = builder.newDeclare()
-                .enumerative().name(dataField.getName().getValue().toUpperCase());
-        enumBuilder.newField("value").type(String.class.getName());
-        for (Value value : dataField.getValues()) {
-            enumBuilder.newEnumLiteral(value.getValue().toString().toUpperCase().replace(' ', '_')).constructorArg(String.format("\"%s\"", value.getValue().toString())).end();
-        }
+        builder.newDeclare()
+                .type()
+                .name(dataField.getName().getValue().toUpperCase())
+                .newField("value").type(DATA_TYPE.byName(dataField.getDataType().value()).getMappedClass().getSimpleName())
+                .end()
+                .end();
     }
 }

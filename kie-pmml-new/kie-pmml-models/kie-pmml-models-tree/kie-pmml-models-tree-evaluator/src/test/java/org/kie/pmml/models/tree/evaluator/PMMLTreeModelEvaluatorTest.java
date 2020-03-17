@@ -24,6 +24,7 @@ import org.junit.Before;
 import org.junit.Test;
 import org.kie.api.pmml.PMML4Result;
 import org.kie.api.pmml.PMMLRequestData;
+import org.kie.pmml.commons.enums.StatusCode;
 import org.kie.pmml.commons.model.enums.PMML_MODEL;
 import org.kie.pmml.compiler.testutils.TestUtils;
 import org.kie.pmml.evaluator.api.executor.PMMLContext;
@@ -35,6 +36,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
 
@@ -47,13 +49,15 @@ public class PMMLTreeModelEvaluatorTest {
     private final String WILL_PLAY = "will play";
     private final String NO_PLAY = "no play";
     private final String MAY_PLAY = "may play";
+    private final String WHO_PLAY = "who play";
     private final String HUMIDITY = "humidity";
     private final String TEMPERATURE = "temperature";
     private final String OUTLOOK = "outlook";
     private final String SUNNY = "sunny";
-    private final String WINDY = "windy";
+    private final String WINDY = "WINDY";
     private final String OVERCAST = "overcast";
     private final String RAIN = "rain";
+    private final String TARGET_FIELD = "whatIdo";
 
     private KiePMMLTreeModel kiePMMLModel;
     private PMMLTreeModelEvaluator evaluator;
@@ -73,31 +77,29 @@ public class PMMLTreeModelEvaluatorTest {
         assertEquals(PMML_MODEL.TREE_MODEL, evaluator.getPMMLModelType());
     }
 
-//    @Test
-//    public void evaluateTree() {
-//        final Optional<KiePMMLModel> model = pmmlRuntime.getModel(modelName);
-//        assertTrue(model.isPresent());
-//        assertEquals(PMML_MODEL.TREE_MODEL, model.get().getPmmlMODEL());
-//        assertTrue(model.get() instanceof KiePMMLTreeModel);
-//    }
-
     @Test
-    public void evaluateWillPlay_1() throws Exception {
+    public void evaluateNull() throws Exception {
         Map<String, Object> inputData = new HashMap<>();
         inputData.put(OUTLOOK, SUNNY);
-        commonEvaluate(modelName, inputData, WILL_PLAY);
-    }
-
-    @Test
-    public void evaluateWillPlay_2() throws Exception {
-        Map<String, Object> inputData = new HashMap<>();
+        commonEvaluate(modelName, inputData, null);
+        inputData.clear();
         inputData.put(OUTLOOK, SUNNY);
         inputData.put(TEMPERATURE, 65);
-        commonEvaluate(modelName, inputData, WILL_PLAY);
+        commonEvaluate(modelName, inputData, null);
+        inputData.clear();
+        inputData.put(OUTLOOK, OVERCAST);
+        commonEvaluate(modelName, inputData, null);
+        inputData.clear();
+        inputData.put(OUTLOOK, RAIN);
+        commonEvaluate(modelName, inputData, null);
+        inputData.clear();
+        inputData.put(OUTLOOK, OVERCAST);
+        inputData.put(TEMPERATURE, 80);
+        commonEvaluate(modelName, inputData, null);
     }
 
     @Test
-    public void evaluateWillPlay_3() throws Exception {
+    public void evaluateWillPlay() throws Exception {
         Map<String, Object> inputData = new HashMap<>();
         inputData.put(OUTLOOK, SUNNY);
         inputData.put(TEMPERATURE, 65);
@@ -106,55 +108,53 @@ public class PMMLTreeModelEvaluatorTest {
     }
 
     @Test
-    public void evaluateWillPlay_4() throws Exception {
+    public void evaluateNoPlay() throws Exception {
         Map<String, Object> inputData = new HashMap<>();
         inputData.put(OUTLOOK, SUNNY);
         inputData.put(TEMPERATURE, 65);
         inputData.put(HUMIDITY, 95);
         commonEvaluate(modelName, inputData, NO_PLAY);
-    }
-
-    @Test
-    public void evaluateWillPlay_5() throws Exception {
-        Map<String, Object> inputData = new HashMap<>();
+        inputData.clear();
         inputData.put(OUTLOOK, SUNNY);
         inputData.put(HUMIDITY, 95);
         inputData.put(TEMPERATURE, 95);
         commonEvaluate(modelName, inputData, NO_PLAY);
-    }
-
-    @Test
-    public void evaluateWillPlay_6() throws Exception {
-        Map<String, Object> inputData = new HashMap<>();
+        inputData.clear();
         inputData.put(OUTLOOK, SUNNY);
-        inputData.put(HUMIDITY, 95);
-        inputData.put(TEMPERATURE, 40);
+        inputData.put(TEMPERATURE, 95);
+        commonEvaluate(modelName, inputData, NO_PLAY);
+        inputData.clear();
+        inputData.put(OUTLOOK, SUNNY);
+        inputData.put(TEMPERATURE, 45);
+        commonEvaluate(modelName, inputData, NO_PLAY);
+        inputData.clear();
+        inputData.put(OUTLOOK, RAIN);
+        inputData.put(HUMIDITY, 45);
         commonEvaluate(modelName, inputData, NO_PLAY);
     }
 
     @Test
-    public void evaluateMayPlay_1() throws Exception {
+    public void evaluateMayPlay() throws Exception {
         Map<String, Object> inputData = new HashMap<>();
         inputData.put(OUTLOOK, OVERCAST);
-        commonEvaluate(modelName, inputData, MAY_PLAY);
-        inputData.put(OUTLOOK, RAIN);
+        inputData.put(TEMPERATURE, 70);
+        inputData.put(HUMIDITY, 60);
+        inputData.put(WINDY, "false");
         commonEvaluate(modelName, inputData, MAY_PLAY);
     }
 
     @Test
-    public void evaluateMayPlay_2() throws Exception {
+    public void evaluateWhoPlay() throws Exception {
         Map<String, Object> inputData = new HashMap<>();
-        inputData.put(OUTLOOK, OVERCAST);
-        inputData.put(TEMPERATURE, 80);
-        commonEvaluate(modelName, inputData, MAY_PLAY);
-    }
-
-    @Test
-    public void evaluateMayPlay_3() throws Exception {
-        Map<String, Object> inputData = new HashMap<>();
-        inputData.put(OUTLOOK, RAIN);
-        inputData.put(HUMIDITY, 40);
-        commonEvaluate(modelName, inputData, NO_PLAY);
+        inputData.put(TEMPERATURE, 75);
+        inputData.put(WINDY, "true");
+        inputData.put(HUMIDITY, 75);
+        commonEvaluate(modelName, inputData, WHO_PLAY);
+        inputData.clear();
+        inputData.put(WINDY, "false");
+        inputData.put(TEMPERATURE, 65);
+        inputData.put(HUMIDITY, 75);
+        commonEvaluate(modelName, inputData, WHO_PLAY);
     }
 
     private void commonEvaluate(String modelName, Map<String, Object> inputData, String expectedScore) {
@@ -167,11 +167,18 @@ public class PMMLTreeModelEvaluatorTest {
         PMML4Result retrieved = evaluator.evaluate(kiePMMLModel, pmmlContext, "org:test:releaseid");
         assertNotNull(retrieved);
         logger.info(retrieved.toString());
+        assertEquals(TARGET_FIELD, retrieved.getResultObjectName());
         final Map<String, Object> resultVariables = retrieved.getResultVariables();
         assertNotNull(resultVariables);
-        // TODO {gcardosi} restore when code is fixed
-//        assertTrue(resultVariables.containsKey("score"));
-//        assertEquals(expectedScore, resultVariables.get("score"));
+        if (expectedScore != null) {
+            assertEquals(StatusCode.OK.getName(), retrieved.getResultCode());
+            assertFalse(resultVariables.isEmpty());
+            assertTrue(resultVariables.containsKey(TARGET_FIELD));
+            assertEquals(expectedScore, resultVariables.get(TARGET_FIELD));
+        } else {
+            assertEquals(StatusCode.FAIL.getName(), retrieved.getResultCode());
+            assertFalse(resultVariables.containsKey(TARGET_FIELD));
+        }
     }
 
     private PMMLRequestData getPMMLRequestData(String modelName, Map<String, Object> parameters) {

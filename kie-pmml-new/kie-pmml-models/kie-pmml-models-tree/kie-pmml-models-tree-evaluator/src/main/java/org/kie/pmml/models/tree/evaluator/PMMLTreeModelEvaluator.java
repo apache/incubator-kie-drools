@@ -22,15 +22,27 @@ import java.util.Map;
 import org.drools.compiler.lang.DrlDumper;
 import org.drools.modelcompiler.ExecutableModelProject;
 import org.kie.api.KieServices;
+import org.kie.api.definition.type.FactType;
+import org.kie.api.event.rule.AfterMatchFiredEvent;
+import org.kie.api.event.rule.AgendaEventListener;
+import org.kie.api.event.rule.AgendaGroupPoppedEvent;
+import org.kie.api.event.rule.AgendaGroupPushedEvent;
+import org.kie.api.event.rule.BeforeMatchFiredEvent;
+import org.kie.api.event.rule.MatchCancelledEvent;
+import org.kie.api.event.rule.MatchCreatedEvent;
+import org.kie.api.event.rule.RuleFlowGroupActivatedEvent;
+import org.kie.api.event.rule.RuleFlowGroupDeactivatedEvent;
 import org.kie.api.pmml.PMML4Result;
 import org.kie.api.runtime.KieContainer;
 import org.kie.api.runtime.KieSession;
 import org.kie.internal.utils.KieHelper;
+import org.kie.pmml.commons.enums.StatusCode;
 import org.kie.pmml.commons.model.KiePMMLModel;
 import org.kie.pmml.commons.model.enums.PMML_MODEL;
 import org.kie.pmml.evaluator.api.exceptions.KiePMMLModelException;
 import org.kie.pmml.evaluator.api.executor.PMMLContext;
 import org.kie.pmml.evaluator.core.executor.PMMLModelExecutor;
+import org.kie.pmml.models.drooled.executor.KiePMMLStatusHolder;
 import org.kie.pmml.models.tree.model.KiePMMLTreeModel;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -63,41 +75,91 @@ public class PMMLTreeModelEvaluator implements PMMLModelExecutor {
             throw new KiePMMLModelException("Expected a KiePMMLTreeModel, received a " + model.getClass().getName());
         }
         final KiePMMLTreeModel treeModel = (KiePMMLTreeModel) model;
+        printGeneratedRules(treeModel);
+        KieSession kSession = new KieHelper()
+                .addContent(treeModel.getPackageDescr())
+                .build(ExecutableModelProject.class)
+                .newKieSession();
+        final Map<String, Object> unwrappedInputParams = getUnwrappedParametersMap(pmmlContext.getRequestData().getMappedRequestParams());
+        List<Object> executionParams = new ArrayList<>();
+        KiePMMLStatusHolder statusHolder = new KiePMMLStatusHolder();
+        executionParams.add(statusHolder);
+        for (Map.Entry<String, Object> entry : unwrappedInputParams.entrySet()) {
+            try {
+                FactType factType = kSession.getKieBase().getFactType(treeModel.getPackageDescr().getName(), entry.getKey().toUpperCase());
+                Object toAdd = factType.newInstance();
+                factType.set(toAdd, "value", entry.getValue());
+                executionParams.add(toAdd);
+            } catch (InstantiationException | IllegalAccessException e) {
+                e.printStackTrace();
+            }
+        }
+        executionParams.forEach(kSession::insert);
+        setupExecutionListener(kSession);
+        kSession.fireAllRules();
+        PMML4Result toReturn = new PMML4Result();
+        toReturn.setResultObjectName(treeModel.getTargetField());
+        if (statusHolder.getResult() != null) {
+            toReturn.setResultCode(StatusCode.OK.getName());
+            toReturn.addResultVariable(treeModel.getTargetField(), statusHolder.getResult());
+        } else {
+            toReturn.setResultCode(StatusCode.FAIL.getName());
+        }
+        return toReturn;
+    }
+
+    private void printGeneratedRules(KiePMMLTreeModel treeModel) {
         try {
             String string = new DrlDumper().dump(treeModel.getPackageDescr());
             logger.info(string);
         } catch (Exception e) {
             e.printStackTrace();
         }
+    }
 
-        KieSession kSession = new KieHelper()
-                .addContent(treeModel.getPackageDescr())
-                .build(ExecutableModelProject.class)
-                .newKieSession();
+    private void setupExecutionListener(final KieSession kSession) {
+        final AgendaEventListener agendaEventListener = new AgendaEventListener() {
 
-//        ReleaseId rel = new ReleaseIdImpl(releaseId);
-//        // TODO {gcardosi}: here the generate PackageDescr must be compiled by drools and inserted inside the kiebuilder/kiebase something
-//        final KieContainer kieContainer = kieServices.newKieContainer(rel);
-        PMML4Result toReturn = new PMML4Result();
-//        StatelessKieSession kSession = kContainer.newStatelessKieSession("PMMLTreeModelSession");
-        Map<String, Object> unwrappedInputParams = getUnwrappedParametersMap(pmmlContext.getRequestData().getMappedRequestParams());
-        List<Object> executionParams = new ArrayList<>();
-        executionParams.add(treeModel);
-        executionParams.add(toReturn);
-        executionParams.add(unwrappedInputParams);
+            public void matchCancelled(MatchCancelledEvent event) {
+                logger.info(event.toString());
+            }
 
-//        kSession.insert( new Person( "Mario" ) );
+            public void matchCreated(MatchCreatedEvent event) {
+                logger.info(event.toString());
+            }
 
-        /*
-        // TODO {gcardosi} Retrieve the converted datadictionary from the treemodel and use it to map input data to expected input values
-        FactType nameType = ksession.getKieBase().getFactType("org.test", "ExtendedName");
-        Object name = nameType.newInstance();
-        nameType.set(name, "value", "Mario");
+            public void afterMatchFired(AfterMatchFiredEvent event) {
+                logger.info(event.toString());
+            }
 
-        ksession.insert(name);
-        ksession.fireAllRules();
-         */
-//        kSession.execute(executionParams);
-        return toReturn;
+            public void agendaGroupPopped(AgendaGroupPoppedEvent event) {
+                logger.info(event.toString());
+            }
+
+            public void agendaGroupPushed(AgendaGroupPushedEvent event) {
+                logger.info(event.toString());
+            }
+
+            public void beforeMatchFired(BeforeMatchFiredEvent event) {
+                logger.info(event.toString());
+            }
+
+            public void beforeRuleFlowGroupActivated(RuleFlowGroupActivatedEvent event) {
+                logger.info(event.toString());
+            }
+
+            public void afterRuleFlowGroupActivated(RuleFlowGroupActivatedEvent event) {
+                logger.info(event.toString());
+            }
+
+            public void beforeRuleFlowGroupDeactivated(RuleFlowGroupDeactivatedEvent event) {
+                logger.info(event.toString());
+            }
+
+            public void afterRuleFlowGroupDeactivated(RuleFlowGroupDeactivatedEvent event) {
+                logger.info(event.toString());
+            }
+        };
+        kSession.addEventListener(agendaEventListener);
     }
 }

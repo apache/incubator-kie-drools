@@ -15,6 +15,8 @@
  */
 package org.kie.pmml.models.drooled.executor;
 
+import java.util.Objects;
+
 /**
  * Class used inside drools. Rules are fired based on the value of status
  */
@@ -40,5 +42,31 @@ public class KiePMMLStatusHolder {
 
     public void setResult(String result) {
         this.result = result;
+    }
+
+    @Override
+    public String toString() {
+        return "KiePMMLStatusHolder{" +
+                "status='" + status + '\'' +
+                ", result='" + result + '\'' +
+                '}';
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) {
+            return true;
+        }
+        if (o == null || getClass() != o.getClass()) {
+            return false;
+        }
+        KiePMMLStatusHolder that = (KiePMMLStatusHolder) o;
+        return Objects.equals(status, that.status) &&
+                Objects.equals(result, that.result);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(status, result);
     }
 }

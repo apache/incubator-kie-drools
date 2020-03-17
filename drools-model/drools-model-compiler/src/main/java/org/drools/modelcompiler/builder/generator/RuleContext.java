@@ -48,7 +48,7 @@ import org.drools.core.addon.TypeResolver;
 import org.drools.core.ruleunit.RuleUnitDescriptionLoader;
 import org.drools.core.util.Bag;
 import org.drools.modelcompiler.builder.PackageModel;
-import org.drools.modelcompiler.builder.errors.UnknownRuleUnitError;
+import org.drools.modelcompiler.builder.errors.UnknownRuleUnitException;
 import org.kie.api.definition.type.ClassReactive;
 import org.kie.api.definition.type.PropertyReactive;
 import org.kie.internal.builder.KnowledgeBuilderResult;
@@ -147,7 +147,7 @@ public class RuleContext {
         if (ruDescr.isPresent()) {
             ruleUnitDescr = ruDescr.get();
         } else if (!useNamingConvention) {
-            addCompilationError( new UnknownRuleUnitError( unitName ) );
+            throw new UnknownRuleUnitException( unitName );
         }
     }
 

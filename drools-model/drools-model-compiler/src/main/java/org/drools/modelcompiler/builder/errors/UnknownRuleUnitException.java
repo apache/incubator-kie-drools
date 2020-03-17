@@ -16,30 +16,17 @@
 
 package org.drools.modelcompiler.builder.errors;
 
-import org.drools.compiler.compiler.DroolsError;
-import org.kie.internal.builder.ResultSeverity;
-
-public class UnknownRuleUnitError extends DroolsError {
+public class UnknownRuleUnitException extends RuntimeException {
 
     private String ruleUnitName;
 
-    public UnknownRuleUnitError( String ruleUnitName) {
+    public UnknownRuleUnitException(String ruleUnitName) {
         super();
         this.ruleUnitName = ruleUnitName;
     }
 
     @Override
-    public ResultSeverity getSeverity() {
-        return ResultSeverity.ERROR;
-    }
-
-    @Override
     public String getMessage() {
         return "Unknown rule unit: " + ruleUnitName;
-    }
-
-    @Override
-    public int[] getLines() {
-        return new int[0];
     }
 }
