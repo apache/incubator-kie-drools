@@ -48,7 +48,7 @@ public final class DefaultSolverJob<Solution_, ProblemId_> implements SolverJob<
     private final Consumer<? super Solution_> finalBestSolutionConsumer;
     private final BiConsumer<? super ProblemId_, ? super Throwable> exceptionHandler;
 
-    private AtomicReference<SolverStatus> solverStatusReference;
+    private final AtomicReference<SolverStatus> solverStatusReference;
     private CountDownLatch terminatedLatch;
 
     private Future<Solution_> future;
