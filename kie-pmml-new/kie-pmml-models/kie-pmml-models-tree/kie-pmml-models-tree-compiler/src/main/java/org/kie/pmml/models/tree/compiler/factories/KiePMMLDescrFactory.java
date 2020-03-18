@@ -41,6 +41,7 @@ import org.drools.compiler.lang.descr.NotDescr;
 import org.drools.compiler.lang.descr.OrDescr;
 import org.drools.compiler.lang.descr.PackageDescr;
 import org.drools.core.util.StringUtils;
+import org.kie.api.pmml.PMML4Result;
 import org.kie.pmml.commons.exceptions.KiePMMLException;
 import org.kie.pmml.commons.model.enums.DATA_TYPE;
 import org.kie.pmml.models.drooled.executor.KiePMMLStatusHolder;
@@ -57,10 +58,12 @@ public class KiePMMLDescrFactory {
 
     static final Logger logger = LoggerFactory.getLogger(KiePMMLDescrFactory.class.getName());
     static final String VALUE_PATTERN = "value %s \"%s\"";
-    //    static final String PREDICATE_PATTERN = "%s(value %s \"%s\")";
-//    static final String XOR_PATTERN = "((%1$s && !(%2$s)) || (!(%1$s) && %2$s))"; // (A() not B()) or (not(A()) B()) - A^B => (A & !B) | (!A & B)
     static final String STATUS_HOLDER = "$statusHolder";
-//    static final String PREDICATES_LIST = "$predicates";
+    static final String PMML4_RESULT = "$pmml4Result";
+    static final String MODIFY_STATUS_HOLDER = "\r\nmodify(" + STATUS_HOLDER + ") {\r\n\tsetStatus(\"%s\")\r\n}";
+    static final String UPDATE_PMML4_RESULT = "\r\n" + PMML4_RESULT + ".setResultCode(\"%s\");" +
+            "\r\n" + PMML4_RESULT + ".addResultVariable(" + PMML4_RESULT + ".getResultObjectName()" + ", \"%s\");" +
+            "\r\nupdate(" + PMML4_RESULT + ");";
 
     private KiePMMLDescrFactory() {
         // Avoid instantiation
@@ -72,6 +75,7 @@ public class KiePMMLDescrFactory {
                 .name(packageName);
         builder.newImport().target(KiePMMLStatusHolder.class.getName());
         builder.newImport().target(SimplePredicate.class.getName());
+        builder.newImport().target(PMML4Result.class.getName());
         declareTypes(builder, dataDictionary);
         declareRules(builder, model.getNode(), "");
         return builder.getDescr();
@@ -91,15 +95,14 @@ public class KiePMMLDescrFactory {
         declarePredicate(lhsBuilder, predicate);
         String rhs;
         if (node instanceof LeafNode) {
-            rhs = String.format("modify(" + STATUS_HOLDER + ") {" +
-                                        "\r\n\tsetStatus(\"****DONE****\")\r\n" +
-                                        "\r\n\tsetResult(\"%s\")\r\n" +
-                                        "}", node.getScore().toString());
+            lhsBuilder.pattern(PMML4Result.class.getSimpleName()).id(PMML4_RESULT, false);
+            StringBuilder stringBuilder = new StringBuilder();
+            stringBuilder.append(String.format(MODIFY_STATUS_HOLDER, "****DONE****"));
+            stringBuilder.append(String.format(UPDATE_PMML4_RESULT, "OK", node.getScore().toString()));
+            rhs = stringBuilder.toString();
             ruleBuilder.rhs(rhs);
         } else {
-            rhs = String.format("modify(" + STATUS_HOLDER + ") {" +
-                                        "\r\n\tsetStatus(\"%s\")\r\n" +
-                                        "}", currentRule);
+            rhs = String.format(MODIFY_STATUS_HOLDER, currentRule);
             ruleBuilder.rhs(rhs);
             for (Node child : node.getNodes()) {
                 declareRules(builder, child, currentRule);

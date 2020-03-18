@@ -84,6 +84,10 @@ public class PMMLTreeModelEvaluator implements PMMLModelExecutor {
         List<Object> executionParams = new ArrayList<>();
         KiePMMLStatusHolder statusHolder = new KiePMMLStatusHolder();
         executionParams.add(statusHolder);
+        PMML4Result toReturn = new PMML4Result();
+        toReturn.setResultCode(StatusCode.FAIL.getName());
+        toReturn.setResultObjectName(treeModel.getTargetField());
+        executionParams.add(toReturn);
         for (Map.Entry<String, Object> entry : unwrappedInputParams.entrySet()) {
             try {
                 FactType factType = kSession.getKieBase().getFactType(treeModel.getPackageDescr().getName(), entry.getKey().toUpperCase());
@@ -97,14 +101,6 @@ public class PMMLTreeModelEvaluator implements PMMLModelExecutor {
         executionParams.forEach(kSession::insert);
         setupExecutionListener(kSession);
         kSession.fireAllRules();
-        PMML4Result toReturn = new PMML4Result();
-        toReturn.setResultObjectName(treeModel.getTargetField());
-        if (statusHolder.getResult() != null) {
-            toReturn.setResultCode(StatusCode.OK.getName());
-            toReturn.addResultVariable(treeModel.getTargetField(), statusHolder.getResult());
-        } else {
-            toReturn.setResultCode(StatusCode.FAIL.getName());
-        }
         return toReturn;
     }
 

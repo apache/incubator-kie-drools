@@ -86,7 +86,7 @@ public class KiePMMLDescrFactoryTest {
     public void getBaseDescr() {
         PackageDescr retrieved = KiePMMLDescrFactory.getBaseDescr(pmml.getDataDictionary(), treeModel, "org.test.package");
         assertNotNull(retrieved);
-        assertEquals(2, retrieved.getImports().size());
+        assertEquals(3, retrieved.getImports().size());
         assertEquals(KiePMMLStatusHolder.class.getName(), retrieved.getImports().get(0).getTarget());
         assertEquals(9, retrieved.getRules().size());
         assertEquals(5, retrieved.getTypeDeclarations().size());

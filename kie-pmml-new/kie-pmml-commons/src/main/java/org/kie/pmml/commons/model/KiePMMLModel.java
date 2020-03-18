@@ -34,6 +34,7 @@ public abstract class KiePMMLModel extends AbstractKiePMMLBase {
     protected MINING_FUNCTION miningFunction;
     protected String targetField;
     protected Map<String, Object> outputFieldsMap = new HashMap<>();
+    protected Map<String, Object> missingValueReplacementMap = new HashMap<>();
 
     protected KiePMMLModel(String name, List<KiePMMLExtension> extensions) {
         super(name, extensions);
@@ -55,6 +56,10 @@ public abstract class KiePMMLModel extends AbstractKiePMMLBase {
         return Collections.unmodifiableMap(outputFieldsMap);
     }
 
+    public Map<String, Object> getMissingValueReplacementMap() {
+        return Collections.unmodifiableMap(missingValueReplacementMap);
+    }
+
     public abstract Object evaluate(Map<String, Object> requestData);
 
     public abstract static class Builder<T extends KiePMMLModel> extends AbstractKiePMMLBase.Builder<T> {
@@ -67,6 +72,16 @@ public abstract class KiePMMLModel extends AbstractKiePMMLBase {
 
         public Builder<T> withTargetField(String targetField) {
             toBuild.targetField = targetField;
+            return this;
+        }
+
+        public Builder<T> withOutputFieldsMap(Map<String, Object> outputFieldsMap) {
+            toBuild.outputFieldsMap.putAll(outputFieldsMap);
+            return this;
+        }
+
+        public Builder<T> withMissingValueReplacementMap(Map<String, Object> missingValueReplacementMap) {
+            toBuild.missingValueReplacementMap.putAll(missingValueReplacementMap);
             return this;
         }
     }
