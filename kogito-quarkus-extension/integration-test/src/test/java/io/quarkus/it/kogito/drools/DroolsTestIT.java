@@ -1,4 +1,4 @@
-package com.acme;
+package io.quarkus.it.kogito.drools;
 
 import io.quarkus.test.junit.NativeImageTest;
 

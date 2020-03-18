@@ -1,4 +1,4 @@
-package com.acme;
+package io.quarkus.it.kogito.drools;
 unit AlertingService;
 
 import org.kie.kogito.rules.DataStream;
