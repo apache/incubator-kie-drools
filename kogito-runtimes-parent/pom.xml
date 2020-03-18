@@ -64,6 +64,7 @@
     <version.javancss.plugin>2.0</version.javancss.plugin>
     <version.jdocbook.plugin>2.3.9</version.jdocbook.plugin>
     <version.license.plugin>1.8.0</version.license.plugin>
+    <version.archetype.plugin>3.0.1</version.archetype.plugin>
     <version.maven>3.5.4</version.maven>
     <version.maven.plugin>3.4</version.maven.plugin>
     <version.native2ascii.plugin>1.0-beta-1</version.native2ascii.plugin>
@@ -860,6 +861,10 @@
   <build>
     <pluginManagement>
       <plugins>
+        <plugin>
+          <artifactId>maven-archetype-plugin</artifactId>
+          <version>${version.archetype.plugin}</version>
+        </plugin>
         <plugin>
           <artifactId>maven-clean-plugin</artifactId>
           <version>${version.clean.plugin}</version>
