@@ -28,6 +28,12 @@ public class SolverProperties {
      */
     private EnvironmentMode environmentMode;
     /**
+     * Enable daemon mode. In daemon mode, non-early termination pauses the solver instead of stopping it,
+     * until the next problem fact change arrives. This is often useful for real-time planning.
+     * Defaults to {@code false}.
+     */
+    private Boolean daemon;
+    /**
      * Enable multithreaded solving for a single problem, which increases CPU consumption.
      * Defaults to {@value SolverConfig#MOVE_THREAD_COUNT_NONE}.
      * Other options include {@value SolverConfig#MOVE_THREAD_COUNT_AUTO}, a number
@@ -48,6 +54,14 @@ public class SolverProperties {
 
     public void setEnvironmentMode(EnvironmentMode environmentMode) {
         this.environmentMode = environmentMode;
+    }
+
+    public Boolean getDaemon() {
+        return daemon;
+    }
+
+    public void setDaemon(Boolean daemon) {
+        this.daemon = daemon;
     }
 
     public String getMoveThreadCount() {

@@ -450,6 +450,11 @@ Defaults to `solverConfig.xml`.
 If this property isn't specified, that file is optional.
 optaplanner.solver.environment-mode::
 Enable runtime assertions to detect common bugs in your implementation during development.
+optaplanner.solver.daemon::
+Enable <<daemon,daemon mode>>.
+In daemon mode, non-early termination pauses the solver instead of stopping it, until the next problem fact change arrives.
+This is often useful for <<realTimePlanning,real-time planning>>.
+Defaults to `false`.
 optaplanner.solver.move-thread-count::
 Enable multithreaded solving for a single problem, which increases CPU consumption.
 Defaults to `NONE`.
