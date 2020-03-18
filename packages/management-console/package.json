@@ -28,7 +28,11 @@
     "build:bundle-profile": "webpack --config webpack.prod.js --profile --json > stats.json",
     "bundle-profile:analyze": "yarn build:bundle-profile && webpack-bundle-analyzer ./stats.json",
     "clean": "rimraf dist",
-    "codegen": "graphql-codegen"
+    "codegen": "graphql-codegen",
+    "cypress:run": "cypress run",
+    "cypress:run-with-dev-server": "start-server-and-test 'yarn dev' 9000 'yarn cypress:run'",
+    "cypress:open": "cypress open",
+    "cypress:open-with-dev-server": "start-server-and-test 'yarn dev' 9000 'yarn cypress:open'"
   },
   "dependencies": {
     "@apollo/react-hooks": "^3.1.3",

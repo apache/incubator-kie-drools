@@ -22,3 +22,10 @@ package-lock.json
 .classpath
 .project
 .settings
+
+# Cypress - runtime artifacts and undesired dirs
+**/cypress/screenshots
+**/cypress/videos
+/packages/cypress*
+/cypress*
+

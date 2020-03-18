@@ -1,7 +1,14 @@
 {
-  "extends": "../../tsconfig.json",
-  "exclude": [
-    "src/graphql/queries.tsx",
-    "node_modules"
-  ]
+    "extends": "../../tsconfig.json",
+    "include": [
+        "src/**/*.ts",
+        "src/**/*.tsx",
+        "src/**/*.jsx",
+        "src/**/*.js",
+        "../../config/declare.d.ts"
+    ],
+    "exclude": [
+        "src/graphql/queries.tsx",
+        "node_modules"
+    ]
 }

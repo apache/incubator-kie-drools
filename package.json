@@ -10,7 +10,10 @@
     "init": "lerna bootstrap",
     "build": "lerna run build --stream",
     "build:fast": "lerna run build:fast --stream",
-    "build:prod": "lerna run build:prod --stream"
+    "build:prod": "lerna run build:prod --stream",
+    "cypress:run": "lerna run cypress:run",
+    "cypress:run-management-console": "cypress run --project ./packages/management-console",
+    "cypress:run-task-console": "cypress run --project ./packages/task-console"
   },
   "husky": {
     "hooks": {
@@ -47,6 +50,7 @@
     "babel-jest": "^25.1.0",
     "concurrently": "^5.1.0",
     "css-loader": "^3.2.0",
+    "cypress": "^4.1.0",
     "enzyme": "^3.11.0",
     "enzyme-adapter-react-16": "^1.15.2",
     "enzyme-to-json": "^3.4.4",
@@ -69,6 +73,7 @@
     "react": "^16.9.0",
     "react-dom": "^16.9.0",
     "react-test-renderer": "^16.10.2",
+    "start-server-and-test": "^1.10.8",
     "strip-ansi": "6.0.0",
     "style-loader": "^1.0.0",
     "svg-url-loader": "^4.0.0",
