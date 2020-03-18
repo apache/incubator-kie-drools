@@ -32,6 +32,11 @@
       <artifactId>pmml-model</artifactId>
     </dependency>
     <!-- TEST -->
+    <dependency>
+      <groupId>org.kie</groupId>
+      <artifactId>kie-test-util</artifactId>
+      <scope>test</scope>
+    </dependency>
     <!-- PMML -->
     <dependency>
       <groupId>org.kie</groupId>
