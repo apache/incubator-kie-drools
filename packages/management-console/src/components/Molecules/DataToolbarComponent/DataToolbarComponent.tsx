@@ -141,7 +141,6 @@ const DataToolbarComponent: React.FC<IOwnProps> = ({
         <DataToolbarFilter
           chips={filters}
           deleteChip={onDelete}
-          className="kogito-management-console__state-dropdown-list"
           categoryName="Status"
         >
           <Select
@@ -204,7 +203,7 @@ const DataToolbarComponent: React.FC<IOwnProps> = ({
   return (
     <DataToolbar
       id="data-toolbar-with-filter"
-      className="pf-m-toggle-group-container"
+      className="pf-m-toggle-group-container kogito-management-console__state-dropdown-list"
       collapseListedFiltersBreakpoint="xl"
       clearAllFilters={() => clearAll()}
       clearFiltersButtonText="Reset to default"

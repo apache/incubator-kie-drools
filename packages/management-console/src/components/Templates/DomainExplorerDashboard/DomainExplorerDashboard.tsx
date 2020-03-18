@@ -138,10 +138,6 @@ const DomainExplorerDashboard = props => {
     }
   }, []);
 
-  useEffect(() => {
-    setDisplayTable(false);
-  }, [columnPickerType]);
-
   const getSchema: any = useGetInputFieldsFromQueryQuery({
     variables: { currentQuery }
   });

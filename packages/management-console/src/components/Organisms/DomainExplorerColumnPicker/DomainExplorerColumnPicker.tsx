@@ -95,8 +95,8 @@ const DomainExplorerColumnPicker: React.FC<IOwnProps> = ({
 
   useEffect(() => {
     // tslint:disable-next-line: no-floating-promises
-    parameters && generateQuery();
-  }, [tempDomain, parameters.length > -1]);
+    parameters.length !== 0 && generateQuery();
+  }, [tempDomain, parameters.length > 0]);
 
   async function generateQuery() {
     if (columnPickerType && parameters.length > 0) {

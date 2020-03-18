@@ -2,7 +2,7 @@
 
 exports[`DataToolbar component tests Snapshot tests 1`] = `
 <DataToolbar
-  className="pf-m-toggle-group-container"
+  className="pf-m-toggle-group-container kogito-management-console__state-dropdown-list"
   clearAllFilters={[Function]}
   clearFiltersButtonText="Reset to default"
   collapseListedFiltersBreakpoint="xl"
@@ -33,7 +33,6 @@ exports[`DataToolbar component tests Snapshot tests 1`] = `
               "ACTIVE,COMPLETED",
             ]
           }
-          className="kogito-management-console__state-dropdown-list"
           deleteChip={[Function]}
           showToolbarItem={true}
         >
