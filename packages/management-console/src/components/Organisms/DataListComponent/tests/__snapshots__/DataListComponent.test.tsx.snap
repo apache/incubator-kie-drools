@@ -1018,6 +1018,11 @@ exports[`DataList component tests Snapshot tests 1 1`] = `
   }
 >
   <DataListComponent
+    abortedObj={
+      Object {
+        "8035b580-6ae4-4aa8-9ec0-e18e19809e0b": "travels",
+      }
+    }
     checkedArray={
       Array [
         "ACTIVE",
@@ -1137,6 +1142,7 @@ exports[`DataList component tests Snapshot tests 1 1`] = `
       }
     }
     isLoading={false}
+    setAbortedObj={[MockFunction]}
     setInitData={[MockFunction]}
     setIsError={[MockFunction]}
     setIsLoading={[MockFunction]}

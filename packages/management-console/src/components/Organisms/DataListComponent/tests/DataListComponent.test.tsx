@@ -265,7 +265,9 @@ const props1 = {
     setIsError: jest.fn(),
     setIsLoading: jest.fn(),
     initData,
-    checkedArray: ['ACTIVE']
+    checkedArray: ['ACTIVE'],
+    abortedObj: { "8035b580-6ae4-4aa8-9ec0-e18e19809e0b": "travels" },
+    setAbortedObj: jest.fn()
 
 }
 

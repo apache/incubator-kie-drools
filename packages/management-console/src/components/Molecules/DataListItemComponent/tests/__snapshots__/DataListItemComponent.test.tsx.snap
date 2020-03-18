@@ -2,86 +2,132 @@
 
 exports[`DataListItem component tests Snapshot tests 1`] = `
 <Fragment>
-  <Modal
-    actions={
+  <Modalbox
+    abortedMessageObj={
+      Object {
+        "c54ca5b0-b975-46e2-a9a0-6a86bf7ac21e": Object {
+          "addons": Array [],
+          "childProcessInstances": Array [
+            Object {
+              "id": "c54ca5b0-b975-46e2-a9a0-6a86bf7ac21eaccd",
+              "processName": "FlightBooking test 1",
+            },
+          ],
+          "end": "2019-10-22T05:40:44.089Z",
+          "endpoint": "http://localhost:4000",
+          "error": Object {
+            "message": "Something went wrong",
+            "nodeDefinitionId": "a1e139d5-81c77-48c9-84ae-34578e90433n",
+          },
+          "id": "c54ca5b0-b975-46e2-a9a0-6a86bf7ac21e",
+          "isChecked": false,
+          "lastUpdate": "2019-10-22T03:40:44.089Z",
+          "nodes": Array [
+            Object {
+              "definitionId": "EndEvent_1",
+              "enter": "2019-10-22T04:43:01.144Z",
+              "exit": "2019-10-22T04:43:01.144Z",
+              "id": "7244ba1b-75ec-4789-8c65-499a0c5b1a6f",
+              "name": "End Event 1",
+              "type": "EndNode",
+            },
+            Object {
+              "definitionId": "ServiceTask_1",
+              "enter": "2019-10-22T04:43:01.144Z",
+              "exit": "2019-10-22T04:43:01.144Z",
+              "id": "2f588da5-a323-4111-9017-3093ef9319d1",
+              "name": "Book flight",
+              "type": "WorkItemNode",
+            },
+            Object {
+              "definitionId": "StartEvent_1",
+              "enter": "2019-10-22T04:43:01.144Z",
+              "exit": "2019-10-22T04:43:01.144Z",
+              "id": "6ed7aa17-4bb1-48e3-b34a-5a4c5773dff2",
+              "name": "StartProcess",
+              "type": "StartNode",
+            },
+          ],
+          "parentProcessInstance": Object {
+            "id": "8035b580-6ae4-4aa8-9ec0-e18e19809e0b",
+            "processName": "travels",
+          },
+          "parentProcessInstanceId": "8035b580-6ae4-4aa8-9ec0-e18e19809e0b",
+          "processId": "flightBooking",
+          "processName": "FlightBooking",
+          "roles": Array [],
+          "rootProcessInstanceId": "8035b580-6ae4-4aa8-9ec0-e18e19809e0b",
+          "start": "2019-10-22T03:40:44.089Z",
+          "state": "COMPLETED",
+          "variables": "{\\"flight\\":{\\"arrival\\":\\"2019-10-30T22:00:00Z[UTC]\\",\\"departure\\":\\"2019-10-22T22:00:00Z[UTC]\\",\\"flightNumber\\":\\"MX555\\"},\\"trip\\":{\\"begin\\":\\"2019-10-22T22:00:00Z[UTC]\\",\\"city\\":\\"Berlin\\",\\"country\\":\\"Germany\\",\\"end\\":\\"2019-10-30T22:00:00Z[UTC]\\",\\"visaRequired\\":false},\\"traveller\\":{\\"address\\":{\\"city\\":\\"Karkow\\",\\"country\\":\\"Poland\\",\\"street\\":\\"palna\\",\\"zipCode\\":\\"200300\\"},\\"email\\":\\"rob@redhat.com\\",\\"firstName\\":\\"Rob\\",\\"lastName\\":\\"Rob\\",\\"nationality\\":\\"Polish\\"}}",
+        },
+      }
+    }
+    checkedArray={
       Array [
-        <Unknown
-          onClick={[Function]}
-          variant="primary"
-        >
-          OK
-        </Unknown>,
+        "ACTIVE",
       ]
     }
-    appendTo={<body />}
-    ariaDescribedById=""
-    className=""
-    header={
-      <Title
-        headingLevel="h1"
-        size="2xl"
-      >
-        <FontAwesomeIcon
-          border={false}
-          className="pf-u-mr-md"
-          color="var(--pf-global--danger-color--100)"
-          fixedWidth={false}
-          flip={null}
-          icon={
-            Object {
-              "icon": Array [
-                512,
-                512,
-                Array [],
-                "f057",
-                "M256 8C119 8 8 119 8 256s111 248 248 248 248-111 248-248S393 8 256 8zm121.6 313.1c4.7 4.7 4.7 12.3 0 17L338 377.6c-4.7 4.7-12.3 4.7-17 0L256 312l-65.1 65.6c-4.7 4.7-12.3 4.7-17 0L134.4 338c-4.7-4.7-4.7-12.3 0-17l65.6-65-65.6-65.1c-4.7-4.7-4.7-12.3 0-17l39.6-39.6c4.7-4.7 12.3-4.7 17 0l65 65.7 65.1-65.6c4.7-4.7 12.3-4.7 17 0l39.6 39.6c4.7 4.7 4.7 12.3 0 17L312 256l65.6 65.1z",
-              ],
-              "iconName": "times-circle",
-              "prefix": "fas",
-            }
-          }
-          inverse={false}
-          listItem={false}
-          mask={null}
-          pull={null}
-          pulse={false}
-          rotation={null}
-          size="sm"
-          spin={false}
-          swapOpacity={false}
-          symbol={false}
-          title=""
-          transform={null}
-        />
-        
-      </Title>
+    completedMessageObj={Object {}}
+    handleModalToggle={[Function]}
+    isAbortModalOpen={false}
+    isModalLarge={false}
+    isModalOpen={false}
+    isSingleAbort={true}
+  />
+  <Modalbox
+    checkedArray={
+      Array [
+        "ACTIVE",
+      ]
     }
-    hideTitle={false}
-    isFooterLeftAligned={false}
-    isLarge={false}
-    isOpen={false}
-    isSmall={true}
-    onClose={[Function]}
-    showClose={true}
-    title=""
-  >
-    <TextContent>
-      <Text>
-        <strong />
-      </Text>
-    </TextContent>
-  </Modal>
+    handleModalToggle={null}
+    isModalLarge={false}
+    isModalOpen={false}
+    modalContent=""
+  />
   <DataListItem
     aria-labelledby="kie-datalist-item"
     isExpanded={false}
   >
     <DataListItemRow>
-      <DataListCheck
-        aria-labelledby="width-kie-datalist-item"
-        checked={false}
-        name="width-kie-datalist-item"
-        onChange={[Function]}
-      />
+      <Tooltip
+        appendTo={[Function]}
+        aria="describedby"
+        boundary="window"
+        className=""
+        content="Management add-on capability not enabled. Contact your administrator to set up."
+        distance={-15}
+        enableFlip={true}
+        entryDelay={500}
+        exitDelay={500}
+        flipBehavior={
+          Array [
+            "top",
+            "right",
+            "bottom",
+            "left",
+            "top",
+            "right",
+            "bottom",
+          ]
+        }
+        id=""
+        isAppLauncher={false}
+        isContentLeftAligned={false}
+        isVisible={false}
+        maxWidth="18.75rem"
+        position="top"
+        tippyProps={Object {}}
+        trigger="mouseenter focus"
+        zIndex={9999}
+      >
+        <DataListCheck
+          aria-labelledby="width-kie-datalist-item"
+          isDisabled={true}
+          name="width-kie-datalist-item"
+        />
+      </Tooltip>
       <DataListItemCells
         dataListCells={
           Array [
@@ -109,7 +155,29 @@ exports[`DataListItem component tests Snapshot tests 1`] = `
               </React.Fragment>
             </DataListCell>,
             <DataListCell>
-              
+              <React.Fragment>
+                Created
+                 
+                <t
+                  ago={false}
+                  calendar={false}
+                  decimal={false}
+                  element={null}
+                  filter={[Function]}
+                  fromNow={true}
+                  interval={60000}
+                  local={false}
+                  onChange={[Function]}
+                  titleFormat=""
+                  toNow={false}
+                  unit={null}
+                  unix={false}
+                  utc={false}
+                  withTitle={false}
+                >
+                  2019-10-22T03:40:44.089Z
+                </t>
+              </React.Fragment>
             </DataListCell>,
             <DataListCell>
               <span>
@@ -166,6 +234,22 @@ exports[`DataListItem component tests Snapshot tests 1`] = `
             />
           }
         />
+        <Modalbox
+          checkedArray={
+            Array [
+              "ACTIVE",
+            ]
+          }
+          handleModalToggle={[Function]}
+          handleRetry={[Function]}
+          handleRetryModalToggle={[Function]}
+          handleSkip={[Function]}
+          handleSkipModalToggle={[Function]}
+          isAddonPresent={false}
+          isModalLarge={true}
+          isModalOpen={false}
+          modalContent=""
+        />
       </DataListAction>
     </DataListItemRow>
     <DataListContent
@@ -174,16 +258,11 @@ exports[`DataListItem component tests Snapshot tests 1`] = `
       id="kie-datalist-expand1"
       isHidden={true}
     >
-      <DataList
-        aria-label="Child process instance list"
-        className="pf-m-compact"
-      >
-        <Bullseye>
-          <EmptyStateSpinner
-            spinnerText="Loading process instances..."
-          />
-        </Bullseye>
-      </DataList>
+      <Bullseye>
+        <EmptyStateSpinner
+          spinnerText="Loading process instances..."
+        />
+      </Bullseye>
     </DataListContent>
   </DataListItem>
 </Fragment>

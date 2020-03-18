@@ -49,7 +49,7 @@ app.post(
   '/management/processes/:processId/instances/:processInstanceId/retrigger',
   controller.callRetrigger
 );
-app.post(
+app.delete(
   '/management/processes/:processId/instances/:processInstanceId',
   controller.callAbort
 );

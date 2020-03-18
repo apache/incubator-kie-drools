@@ -2,6 +2,20 @@
 
 exports[`DataListContainer component tests Snapshot tests 1`] = `
 <Fragment>
+  <Modalbox
+    abortedMessageObj={Object {}}
+    checkedArray={
+      Array [
+        "ACTIVE",
+      ]
+    }
+    completedMessageObj={Object {}}
+    handleModalToggle={[Function]}
+    isAbortModalOpen={false}
+    isModalLarge={false}
+    isModalOpen={false}
+    isSingleAbort={false}
+  />
   <PageSection
     variant="light"
   >
@@ -34,6 +48,7 @@ exports[`DataListContainer component tests Snapshot tests 1`] = `
           className="dataList"
         >
           <DataToolbarComponent
+            abortedObj={Object {}}
             checkedArray={
               Array [
                 "ACTIVE",
@@ -45,11 +60,16 @@ exports[`DataListContainer component tests Snapshot tests 1`] = `
                 "ACTIVE",
               ]
             }
+            handleAbortAll={[Function]}
+            initData={Array []}
+            setAbortedObj={[Function]}
             setCheckedArray={[Function]}
             setFilters={[Function]}
+            setInitData={[Function]}
             setIsStatusSelected={[Function]}
           />
           <DataListComponent
+            abortedObj={Object {}}
             checkedArray={
               Array [
                 "ACTIVE",
@@ -57,6 +77,7 @@ exports[`DataListContainer component tests Snapshot tests 1`] = `
             }
             initData={Array []}
             isLoading={false}
+            setAbortedObj={[Function]}
             setInitData={[Function]}
             setIsError={[Function]}
             setIsLoading={[Function]}

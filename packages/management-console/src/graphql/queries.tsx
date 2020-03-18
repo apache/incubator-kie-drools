@@ -12,6 +12,7 @@ const GET_PROCESS_INSTANCES = gql`
       processId
       processName
       parentProcessInstanceId
+      rootProcessInstanceId
       roles
       state
       start

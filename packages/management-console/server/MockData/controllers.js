@@ -59,6 +59,7 @@ module.exports = controller = {
         break;
     }
   },
+
   callAbort: (req, res) => {
     const graphData = require('./graphql');
     const data = graphData.filter(data => {

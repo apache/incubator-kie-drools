@@ -9,7 +9,7 @@ import {
   Button,
   Select,
   SelectOption,
-  SelectVariant
+  SelectVariant,
 } from '@patternfly/react-core';
 import { FilterIcon, SyncIcon } from '@patternfly/react-icons';
 import _ from 'lodash';
@@ -22,6 +22,11 @@ interface IOwnProps {
   setIsStatusSelected: any;
   filters: any;
   setFilters: any;
+  initData: any;
+  setInitData: any;
+  abortedObj: any;
+  setAbortedObj: any;
+  handleAbortAll: any;
 }
 const DataToolbarComponent: React.FC<IOwnProps> = ({
   checkedArray,
@@ -29,7 +34,9 @@ const DataToolbarComponent: React.FC<IOwnProps> = ({
   setCheckedArray,
   filters,
   setFilters,
-  setIsStatusSelected
+  setIsStatusSelected,
+  abortedObj,
+  handleAbortAll
 }) => {
   const [isExpanded, setIsExpanded] = useState<boolean>(false);
   const [isFilterClicked, setIsFilterClicked] = useState<boolean>(false);
@@ -119,6 +126,7 @@ const DataToolbarComponent: React.FC<IOwnProps> = ({
   const onStatusToggle = isExpandedItem => {
     setIsExpanded(isExpandedItem);
   };
+
   const statusMenuItems = [
     <SelectOption key="ACTIVE" value="ACTIVE" />,
     <SelectOption key="COMPLETED" value="COMPLETED" />,
@@ -157,6 +165,22 @@ const DataToolbarComponent: React.FC<IOwnProps> = ({
     </React.Fragment>
   );
 
+  const buttonItems = (
+    <React.Fragment>
+      <DataToolbarItem>
+        {Object.keys(abortedObj).length !== 0 ? (
+          <Button variant="secondary" onClick={handleAbortAll}>
+            Abort selected
+          </Button>
+        ) : (
+            <Button variant="secondary" isDisabled>
+              Abort selected
+          </Button>
+          )}
+      </DataToolbarItem>
+    </React.Fragment>
+  );
+
   const toolbarItems = (
     <React.Fragment>
       <DataToolbarToggleGroup toggleIcon={<FilterIcon />} breakpoint="xl">
@@ -168,6 +192,11 @@ const DataToolbarComponent: React.FC<IOwnProps> = ({
             <SyncIcon />
           </Button>
         </DataToolbarItem>
+      </DataToolbarGroup>
+      <DataToolbarGroup
+        className="pf-u-ml-auto"
+      >
+        {buttonItems}
       </DataToolbarGroup>
     </React.Fragment>
   );

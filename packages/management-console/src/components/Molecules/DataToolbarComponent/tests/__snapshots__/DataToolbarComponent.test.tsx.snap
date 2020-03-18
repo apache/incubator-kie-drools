@@ -163,6 +163,18 @@ exports[`DataToolbar component tests Snapshot tests 1`] = `
         </Component>
       </DataToolbarItem>
     </ForwardRef>
+    <ForwardRef
+      className="pf-u-ml-auto"
+    >
+      <DataToolbarItem>
+        <Component
+          onClick={[MockFunction]}
+          variant="secondary"
+        >
+          Abort selected
+        </Component>
+      </DataToolbarItem>
+    </ForwardRef>
   </DataToolbarContent>
 </DataToolbar>
 `;
