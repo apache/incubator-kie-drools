@@ -21,6 +21,7 @@ import java.util.concurrent.Callable;
 import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.Future;
+import java.util.concurrent.atomic.AtomicReference;
 import java.util.function.BiConsumer;
 import java.util.function.Consumer;
 import java.util.function.Function;
@@ -47,7 +48,7 @@ public final class DefaultSolverJob<Solution_, ProblemId_> implements SolverJob<
     private final Consumer<? super Solution_> finalBestSolutionConsumer;
     private final BiConsumer<? super ProblemId_, ? super Throwable> exceptionHandler;
 
-    private SolverStatus solverStatus; // Access synchronized
+    private AtomicReference<SolverStatus> solverStatusReference;
     private CountDownLatch terminatedLatch;
 
     private Future<Solution_> future;
@@ -64,7 +65,7 @@ public final class DefaultSolverJob<Solution_, ProblemId_> implements SolverJob<
         this.problemFinder = problemFinder;
         this.finalBestSolutionConsumer = finalBestSolutionConsumer;
         this.exceptionHandler = exceptionHandler;
-        solverStatus = SolverStatus.SOLVING_SCHEDULED;
+        solverStatusReference = new AtomicReference<>(SolverStatus.SOLVING_SCHEDULED);
         terminatedLatch = new CountDownLatch(1);
     }
 
@@ -78,18 +79,16 @@ public final class DefaultSolverJob<Solution_, ProblemId_> implements SolverJob<
     }
 
     @Override
-    public synchronized SolverStatus getSolverStatus() {
-        return solverStatus;
+    public SolverStatus getSolverStatus() {
+        return solverStatusReference.get();
     }
 
     @Override
     public Solution_ call() {
-        synchronized (this) {
-            if (solverStatus != SolverStatus.SOLVING_SCHEDULED) {
-                // This job has been canceled before it started
-                return problemFinder.apply(problemId);
-            }
-            solverStatus = SolverStatus.SOLVING_ACTIVE;
+        SolverStatus solverStatus = solverStatusReference.getAndSet(SolverStatus.SOLVING_ACTIVE);
+        if (solverStatus != SolverStatus.SOLVING_SCHEDULED) {
+            // This job has been canceled before it started
+            return problemFinder.apply(problemId);
         }
         try {
             Solution_ problem = problemFinder.apply(problemId);
@@ -107,9 +106,9 @@ public final class DefaultSolverJob<Solution_, ProblemId_> implements SolverJob<
         }
     }
 
-    private synchronized void solvingTerminated() {
+    private void solvingTerminated() {
+        solverStatusReference.set(SolverStatus.NOT_SOLVING);
         solverManager.getProblemIdToSolverJobMap().remove(problemId);
-        solverStatus = SolverStatus.NOT_SOLVING;
         terminatedLatch.countDown();
     }
 
@@ -128,17 +127,20 @@ public final class DefaultSolverJob<Solution_, ProblemId_> implements SolverJob<
     @Override
     public void terminateEarly() {
         future.cancel(false);
-        synchronized (this) {
-            if (solverStatus == SolverStatus.SOLVING_SCHEDULED) {
+        SolverStatus solverStatus = solverStatusReference.get();
+        switch (solverStatus) {
+            case SOLVING_SCHEDULED:
                 solvingTerminated();
-            } else if (solverStatus == SolverStatus.SOLVING_ACTIVE) {
+                break;
+            case SOLVING_ACTIVE:
                 // Indirectly triggers solvingTerminated()
                 solver.terminateEarly();
-            } else if (solverStatus == SolverStatus.NOT_SOLVING) {
+                break;
+            case NOT_SOLVING:
                 // Do nothing, solvingTerminated() already called
-            } else {
+                break;
+            default:
                 throw new IllegalStateException("Unsupported solverStatus (" + solverStatus + ").");
-            }
         }
         try {
             // Don't return until bestSolutionConsumer won't be called any more
