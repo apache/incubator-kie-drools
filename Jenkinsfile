@@ -9,7 +9,7 @@ pipeline {
         jdk 'kie-jdk1.8'
     }
     options {
-        buildDiscarder logRotator(artifactDaysToKeepStr: '', artifactNumToKeepStr: '', daysToKeepStr: '', numToKeepStr: '10')
+        buildDiscarder logRotator(artifactDaysToKeepStr: '', artifactNumToKeepStr: '10', daysToKeepStr: '', numToKeepStr: '10')
         timeout(time: 90, unit: 'MINUTES')
     }
     environment {
@@ -72,6 +72,7 @@ pipeline {
             }
         }
         always {
+            archiveArtifacts artifacts: 'management-console/target/*-runner.jar, data-index/data-index-service/target/*-runner.jar, jobs-service/target/*-runner.jar', fingerprint: true
             junit '**/**/junit.xml'
             junit '**/target/surefire-reports/**/*.xml'
             cleanWs()
