@@ -23,13 +23,13 @@ public class TerminationProperties {
     /**
      * How long the solver can run.
      * For example: "30s" is 30 seconds. "5m" is 5 minutes. "2h" is 2 hours. "1d" is 1 day.
-     * Also supports ISO-8601 format, see {@link Duration}.
+     * Also supports ISO-8601 format, see java.time.Duration.
      */
     private Duration spentLimit;
     /**
      * How long the solver can run without finding a new best solution after finding a new best solution.
      * For example: "30s" is 30 seconds. "5m" is 5 minutes. "2h" is 2 hours. "1d" is 1 day.
-     * Also supports ISO-8601 format, see {@link Duration}.
+     * Also supports ISO-8601 format, see java.time.Duration.
      */
     private Duration unimprovedSpentLimit;
     /**

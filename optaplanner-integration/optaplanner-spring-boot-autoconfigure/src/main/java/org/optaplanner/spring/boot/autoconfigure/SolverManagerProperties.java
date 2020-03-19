@@ -16,13 +16,11 @@
 
 package org.optaplanner.spring.boot.autoconfigure;
 
-import org.optaplanner.core.config.solver.SolverManagerConfig;
-
 public class SolverManagerProperties {
 
     /**
      * The number of solvers that run in parallel. This directly influences CPU consumption.
-     * Defaults to {@value SolverManagerConfig#PARALLEL_SOLVER_COUNT_AUTO}.
+     * Defaults to "AUTO".
      * Other options include a number or formula based on the available processor count.
      */
     private String parallelSolverCount;

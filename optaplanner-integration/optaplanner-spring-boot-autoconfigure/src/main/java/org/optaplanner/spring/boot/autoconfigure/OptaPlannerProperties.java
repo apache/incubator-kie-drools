@@ -29,7 +29,7 @@ public class OptaPlannerProperties {
 
     /**
      * A classpath resource to read the solver configuration XML.
-     * Defaults to {@value DEFAULT_SOLVER_CONFIG_URL}.
+     * Defaults to "solverConfig.xml".
      * If this property isn't specified, that solverConfig.xml is optional.
      */
     private String solverConfigXml;

@@ -17,27 +17,25 @@
 package org.optaplanner.spring.boot.autoconfigure;
 
 import org.optaplanner.core.config.solver.EnvironmentMode;
-import org.optaplanner.core.config.solver.SolverConfig;
 import org.springframework.boot.context.properties.NestedConfigurationProperty;
 
 public class SolverProperties {
 
     /**
      * Enable runtime assertions to detect common bugs in your implementation during development.
-     * Defaults to {@link EnvironmentMode#REPRODUCIBLE}.
+     * Defaults to "REPRODUCIBLE".
      */
     private EnvironmentMode environmentMode;
     /**
      * Enable daemon mode. In daemon mode, non-early termination pauses the solver instead of stopping it,
      * until the next problem fact change arrives. This is often useful for real-time planning.
-     * Defaults to {@code false}.
+     * Defaults to "false".
      */
     private Boolean daemon;
     /**
      * Enable multithreaded solving for a single problem, which increases CPU consumption.
-     * Defaults to {@value SolverConfig#MOVE_THREAD_COUNT_NONE}.
-     * Other options include {@value SolverConfig#MOVE_THREAD_COUNT_AUTO}, a number
-     * or formula based on the available processor count.
+     * Defaults to "NONE".
+     * Other options include "AUTO", a number or formula based on the available processor count.
      */
     private String moveThreadCount;
 
