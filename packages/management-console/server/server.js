@@ -58,6 +58,16 @@ function timeout(ms) {
   return new Promise(resolve => setTimeout(resolve, ms));
 }
 
+function paginatedResult(arr, offset, limit) {
+  let paginatedArray = arr.slice(offset, offset + limit);
+  console.log('offset : ', offset);
+  console.log('limit : ', limit);
+  if (offset > arr.length && paginatedArray.length === 0) {
+    let prevData = arr.slice(offset - limit, limit);
+    return prevData;
+  }
+  return paginatedArray;
+}
 // Provide resolver functions for your schema fields
 const resolvers = {
   Query: {
@@ -89,6 +99,13 @@ const resolvers = {
         }
       });
       await timeout(2000);
+      if (args['pagination']) {
+        return paginatedResult(
+          result,
+          args['pagination'].offset,
+          args['pagination'].limit
+        );
+      }
       console.log('result length: ' + result.length);
       return result;
     }

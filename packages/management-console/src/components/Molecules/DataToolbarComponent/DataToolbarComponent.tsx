@@ -9,11 +9,12 @@ import {
   Button,
   Select,
   SelectOption,
-  SelectVariant,
+  SelectVariant
 } from '@patternfly/react-core';
 import { FilterIcon, SyncIcon } from '@patternfly/react-icons';
 import _ from 'lodash';
 import './DatatoolbarComponent.css';
+import { ProcessInstanceState } from '../../../graphql/types';
 
 interface IOwnProps {
   checkedArray: any;
@@ -27,6 +28,10 @@ interface IOwnProps {
   abortedObj: any;
   setAbortedObj: any;
   handleAbortAll: any;
+  setOffset: (offset:number)=>void;
+  getProcessInstances: (options: any)=>void;
+  setLimit: (limit:number)=>void;
+  pageSize:number;
 }
 const DataToolbarComponent: React.FC<IOwnProps> = ({
   checkedArray,
@@ -36,7 +41,11 @@ const DataToolbarComponent: React.FC<IOwnProps> = ({
   setFilters,
   setIsStatusSelected,
   abortedObj,
-  handleAbortAll
+  handleAbortAll,
+  setOffset,
+  getProcessInstances,
+  setLimit,
+  pageSize
 }) => {
   const [isExpanded, setIsExpanded] = useState<boolean>(false);
   const [isFilterClicked, setIsFilterClicked] = useState<boolean>(false);
@@ -111,10 +120,15 @@ const DataToolbarComponent: React.FC<IOwnProps> = ({
   }, [checkedArray]);
 
   const clearAll = () => {
+    setOffset(0);
+    setLimit(pageSize);
     setIsClearAllClicked(true);
     setCheckedArray(['ACTIVE']);
     setFilters(['ACTIVE']);
     filterClick(['ACTIVE']);
+    getProcessInstances({
+      variables: { state: ProcessInstanceState.Active, offset: 0, limit: pageSize }
+    });
     setShouldRefresh(true);
   };
 

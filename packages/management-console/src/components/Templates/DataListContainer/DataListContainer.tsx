@@ -2,6 +2,9 @@ import {
   Breadcrumb,
   BreadcrumbItem,
   Card,
+  DataList,
+  DataListItem,
+  DataListCell,
   Grid,
   GridItem,
   PageSection
@@ -13,12 +16,14 @@ import DataToolbarComponent from '../../Molecules/DataToolbarComponent/DataToolb
 import './DataList.css';
 import DataListComponent from '../../Organisms/DataListComponent/DataListComponent';
 import EmptyStateComponent from '../../Atoms/EmptyStateComponent/EmptyStateComponent';
+import LoadMoreComponent from '../../Atoms/LoadMoreComponent/LoadMoreComponent';
 import ProcessBulkModalComponent from '../../Atoms/ProcessBulkModalComponent/ProcessBulkModalComponent';
 import { useGetProcessInstancesLazyQuery } from '../../../graphql/types';
 import axios from 'axios';
 import { InfoCircleIcon } from '@patternfly/react-icons';
 
 const DataListContainer: React.FC<{}> = () => {
+  const pSize = 10;
   const [initData, setInitData] = useState<any>([]);
   const [checkedArray, setCheckedArray] = useState<any>(['ACTIVE']);
   const [isLoading, setIsLoading] = useState(false);
@@ -31,6 +36,11 @@ const DataListContainer: React.FC<{}> = () => {
   const [completedMessageObj, setCompletedMessageObj] = useState({});
   const [titleType, setTitleType] = useState('');
   const [modalTitle, setModalTitle] = useState('');
+  const [limit, setLimit] = useState(pSize);
+  const [offset, setOffset] = useState(10);
+  const [pageSize, setPageSize] = useState(pSize);
+  const [isLoadingMore, setIsLoadingMore] = useState(false);
+  const [isDefiningFilter, setIsDefiningFilter] = useState(true);
   const [
     getProcessInstances,
     { loading, data }
@@ -45,27 +55,54 @@ const DataListContainer: React.FC<{}> = () => {
 
   const onFilterClick = async (arr = checkedArray) => {
     setIsLoading(true);
+    setIsLoadingMore(false);
     setIsError(false);
     setAbortedObj({});
     setAbortedMessageObj({});
     setCompletedMessageObj({});
     setIsStatusSelected(true);
-    getProcessInstances({ variables: { state: arr } });
+    setLimit(pSize);
+    setPageSize(pSize);
+    setOffset(0);
+    getProcessInstances({ variables: { state: arr, offset:0, limit:pSize } });
   };
+
+  const onGetMoreInstances = (initVal, _pageSize)=> {
+    setIsLoadingMore(true);
+    setPageSize(_pageSize)
+    getProcessInstances({
+      variables: { state: checkedArray, offset: initVal, limit:_pageSize }
+    });
+  }
 
   useEffect(() => {
     setAbortedObj({});
     setAbortedMessageObj({});
     setCompletedMessageObj({});
-    setIsLoading(loading);
+    setIsDefiningFilter(false);
+    if (isLoadingMore === undefined || !isLoadingMore) {
+      setIsLoading(loading);
+    }
     if (!loading && data !== undefined) {
       data.ProcessInstances.map((instance: any) => {
         instance.isChecked = false;
         instance.isOpen = false;
       });
+      setLimit(data.ProcessInstances.length);
+      if( offset > 0 && initData.ProcessInstances.length > 0){
+        setIsLoadingMore(false);
+        initData.ProcessInstances = initData.ProcessInstances.concat(data.ProcessInstances);
+      } else {
+        setInitData(data);
+      }
     }
-    setInitData(data);
   }, [data]);
+
+  useEffect(() => {
+    setOffset(0);
+    setLimit(pSize);
+    setIsDefiningFilter(true);
+  }, [checkedArray]);
 
   const setTitle = (titleStatus, titleText) => {
     switch (titleStatus) {
@@ -170,28 +207,37 @@ const DataListContainer: React.FC<{}> = () => {
           <GridItem span={12}>
             <Card className="dataList">
               {!isError && (
-                <DataToolbarComponent
-                  checkedArray={checkedArray}
-                  filterClick={onFilterClick}
-                  setCheckedArray={setCheckedArray}
-                  setIsStatusSelected={setIsStatusSelected}
-                  filters={filters}
-                  setFilters={setFilters}
-                  initData={initData}
-                  setInitData={setInitData}
-                  abortedObj={abortedObj}
-                  setAbortedObj={setAbortedObj}
-                  handleAbortAll={handleAbortAll}
-                />
+                <>
+                  {' '}
+                  <DataToolbarComponent
+                    checkedArray={checkedArray}
+                    filterClick={onFilterClick}
+                    setCheckedArray={setCheckedArray}
+                    setIsStatusSelected={setIsStatusSelected}
+                    filters={filters}
+                    setFilters={setFilters}
+                    initData={initData}
+                    setInitData={setInitData}
+                    abortedObj={abortedObj}
+                    setAbortedObj={setAbortedObj}
+                    handleAbortAll={handleAbortAll}
+                    setOffset={setOffset}
+                    getProcessInstances={getProcessInstances}
+                    setLimit={setLimit}
+                    pageSize={pSize}
+                  />
+                </>
               )}
               {isStatusSelected ? (
                 <DataListComponent
                   initData={initData}
                   setInitData={setInitData}
                   isLoading={isLoading}
-                  setIsLoading={setIsLoading}
+                  setIsLoading={setIsDefiningFilter}
                   setIsError={setIsError}
                   checkedArray={checkedArray}
+                  pageSize={pSize}
+                  isLoadingMore={isLoadingMore}
                   abortedObj={abortedObj}
                   setAbortedObj={setAbortedObj}
                 />
@@ -204,6 +250,20 @@ const DataListContainer: React.FC<{}> = () => {
                   setFilters={setFilters}
                   setCheckedArray={setCheckedArray}
                 />
+              )}
+              {(!loading && !isLoading && !isDefiningFilter && initData !== undefined && limit === pageSize) && (
+                <DataList aria-label="Simple data list example">
+                  <DataListItem aria-labelledby="kie-datalist-item">
+                    <DataListCell className="kogito-management-console-load-more">
+                        <LoadMoreComponent
+                          offset={offset}
+                          setOffset={setOffset}
+                          getProcessInstances={onGetMoreInstances}
+                          pageSize={pageSize}
+                        />
+                    </DataListCell>
+                  </DataListItem>
+                </DataList>
               )}
             </Card>
           </GridItem>

@@ -267,8 +267,9 @@ const props1 = {
     initData,
     checkedArray: ['ACTIVE'],
     abortedObj: { "8035b580-6ae4-4aa8-9ec0-e18e19809e0b": "travels" },
-    setAbortedObj: jest.fn()
-
+    setAbortedObj: jest.fn(),
+    pageSize:10,
+    isLoadingMore: false
 }
 
 describe('DataList component tests', () => {

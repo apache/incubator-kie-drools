@@ -1,5 +1,6 @@
 import React, { useEffect } from 'react';
-import { DataList, Bullseye } from '@patternfly/react-core';
+import { DataList,  DataListCell, Bullseye, Button, Spinner } from '@patternfly/react-core';
+import '../../Templates/DataListContainer/DataList.css';
 import DataListItemComponent from '../../Molecules/DataListItemComponent/DataListItemComponent';
 import SpinnerComponent from '../../Atoms/SpinnerComponent/SpinnerComponent';
 import EmptyStateComponent from '../../Atoms/EmptyStateComponent/EmptyStateComponent';
@@ -19,6 +20,8 @@ interface IOwnProps {
   checkedArray: string[];
   abortedObj: any;
   setAbortedObj: any;
+  pageSize:number;
+  isLoadingMore: boolean;
 }
 
 const DataListComponent: React.FC<IOwnProps> = ({
@@ -26,9 +29,12 @@ const DataListComponent: React.FC<IOwnProps> = ({
   setInitData,
   isLoading,
   setIsError,
+  setIsLoading,
   checkedArray,
   abortedObj,
-  setAbortedObj
+  setAbortedObj,
+  pageSize,
+  isLoadingMore
 }) => {
   const {
     loading,
@@ -38,7 +44,9 @@ const DataListComponent: React.FC<IOwnProps> = ({
     networkStatus
   } = useGetProcessInstancesQuery({
     variables: {
-      state: [ProcessInstanceState.Active]
+      state: [ProcessInstanceState.Active],
+      offset: 0,
+      limit: pageSize
     },
     fetchPolicy: 'network-only',
     notifyOnNetworkStatusChange: true
@@ -47,6 +55,7 @@ const DataListComponent: React.FC<IOwnProps> = ({
   useEffect(() => {
     setIsError(false);
     setAbortedObj({});
+    setIsLoading(loading);
     if (!loading && data !== undefined) {
       data.ProcessInstances.map((instance: any) => {
         instance.isChecked = false;
@@ -114,6 +123,13 @@ const DataListComponent: React.FC<IOwnProps> = ({
             body="Try using different filters"
           />
         )}
+      {(isLoadingMore) && (
+         <DataListCell className="kogito-management-console-load-more">
+          <Button  variant="secondary">
+              Loading... <Spinner size="md"/>
+          </Button>
+         </DataListCell>
+      )}
     </DataList>
   );
 };

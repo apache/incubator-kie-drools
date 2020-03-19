@@ -1142,6 +1142,8 @@ exports[`DataList component tests Snapshot tests 1 1`] = `
       }
     }
     isLoading={false}
+    isLoadingMore={false}
+    pageSize={10}
     setAbortedObj={[MockFunction]}
     setInitData={[MockFunction]}
     setIsError={[MockFunction]}

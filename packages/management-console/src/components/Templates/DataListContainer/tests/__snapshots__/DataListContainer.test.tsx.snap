@@ -47,6 +47,7 @@ exports[`DataListContainer component tests Snapshot tests 1`] = `
         <Card
           className="dataList"
         >
+           
           <DataToolbarComponent
             abortedObj={Object {}}
             checkedArray={
@@ -60,13 +61,17 @@ exports[`DataListContainer component tests Snapshot tests 1`] = `
                 "ACTIVE",
               ]
             }
+            getProcessInstances={[Function]}
             handleAbortAll={[Function]}
             initData={Array []}
+            pageSize={10}
             setAbortedObj={[Function]}
             setCheckedArray={[Function]}
             setFilters={[Function]}
             setInitData={[Function]}
             setIsStatusSelected={[Function]}
+            setLimit={[Function]}
+            setOffset={[Function]}
           />
           <DataListComponent
             abortedObj={Object {}}
@@ -77,6 +82,8 @@ exports[`DataListContainer component tests Snapshot tests 1`] = `
             }
             initData={Array []}
             isLoading={false}
+            isLoadingMore={false}
+            pageSize={10}
             setAbortedObj={[Function]}
             setInitData={[Function]}
             setIsError={[Function]}
