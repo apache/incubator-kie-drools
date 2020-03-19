@@ -60,7 +60,7 @@ public class PMMLTreeModelEvaluatorTest {
     private final String TEMPERATURE = "temperature";
     private final String OUTLOOK = "outlook";
     private final String SUNNY = "sunny";
-    private final String WINDY = "WINDY";
+    private final String WINDY = "windy";
     private final String OVERCAST = "overcast";
     private final String RAIN = "rain";
     private final String TARGET_FIELD = "whatIdo";

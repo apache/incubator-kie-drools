@@ -16,6 +16,7 @@
 package org.kie.pmml.commons.model;
 
 import java.util.List;
+import java.util.Map;
 import java.util.Objects;
 import java.util.function.Supplier;
 
@@ -29,6 +30,10 @@ import org.kie.pmml.commons.model.enums.PMML_MODEL;
 public abstract class KiePMMLDrooledModel extends KiePMMLModel {
 
     protected PackageDescr packageDescr;
+    /**
+     * Map between the original field name and the generated type.
+     */
+    protected Map<String, String> fieldTypeMap;
 
     protected KiePMMLDrooledModel(String name, List<KiePMMLExtension> extensions) {
         super(name, extensions);
@@ -36,6 +41,10 @@ public abstract class KiePMMLDrooledModel extends KiePMMLModel {
 
     public PackageDescr getPackageDescr() {
         return packageDescr;
+    }
+
+    public Map<String, String> getFieldTypeMap() {
+        return fieldTypeMap;
     }
 
     @Override
@@ -79,6 +88,11 @@ public abstract class KiePMMLDrooledModel extends KiePMMLModel {
 
         public Builder<T> withPackageDescr(PackageDescr packageDescr) {
             toBuild.packageDescr = packageDescr;
+            return this;
+        }
+
+        public Builder<T> withFieldTypeMap(Map<String, String> fieldTypeMap) {
+            toBuild.fieldTypeMap = fieldTypeMap;
             return this;
         }
     }

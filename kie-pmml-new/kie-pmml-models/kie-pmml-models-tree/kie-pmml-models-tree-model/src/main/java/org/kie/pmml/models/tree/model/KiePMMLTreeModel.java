@@ -28,7 +28,6 @@ public class KiePMMLTreeModel extends KiePMMLDrooledModel {
     public static final PMML_MODEL PMML_MODEL_TYPE = PMML_MODEL.TREE_MODEL;
 
     private final String algorithmName;
-//    private KiePMMLNode node;
 
     private KiePMMLTreeModel(String name, List<KiePMMLExtension> extensions, String algorithmName) {
         super(name, extensions);
@@ -58,9 +57,5 @@ public class KiePMMLTreeModel extends KiePMMLDrooledModel {
             super("Tree-", PMML_MODEL_TYPE, miningFunction, () -> new KiePMMLTreeModel(name, extensions, algorithmName));
         }
 
-//        public Builder withNode(KiePMMLNode node) {
-//            toBuild.node = node;
-//            return this;
-//        }
     }
 }

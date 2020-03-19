@@ -16,6 +16,11 @@
 
 package org.kie.pmml.models.tree.compiler.factories;
 
+import java.util.List;
+import java.util.Map;
+
+import org.dmg.pmml.DataDictionary;
+import org.dmg.pmml.DataField;
 import org.dmg.pmml.PMML;
 import org.dmg.pmml.tree.TreeModel;
 import org.junit.Before;
@@ -50,10 +55,15 @@ public class KiePMMLTreeModelFactoryTest {
 
     @Test
     public void getKiePMMLTreeModel() {
-        KiePMMLTreeModel retrieved = KiePMMLTreeModelFactory.getKiePMMLTreeModel(pmml.getDataDictionary(), treeModel);
+        final DataDictionary dataDictionary = pmml.getDataDictionary();
+        KiePMMLTreeModel retrieved = KiePMMLTreeModelFactory.getKiePMMLTreeModel(dataDictionary, treeModel);
         assertNotNull(retrieved);
         assertEquals(treeModel.getModelName(), retrieved.getName());
         assertNotNull(retrieved.getPackageDescr());
         assertEquals(TARGET_FIELD, retrieved.getTargetField());
+        final Map<String, String> fieldTypeMap = retrieved.getFieldTypeMap();
+        List<DataField> dataFields = dataDictionary.getDataFields();
+        assertEquals(dataFields.size(), fieldTypeMap.size());
+        dataFields.forEach(dataField -> assertTrue(fieldTypeMap.containsKey(dataField.getName().getValue())));
     }
 }

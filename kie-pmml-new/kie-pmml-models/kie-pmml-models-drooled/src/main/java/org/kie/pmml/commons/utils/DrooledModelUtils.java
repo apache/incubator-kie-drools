@@ -13,22 +13,23 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.kie.pmml.models.tree.evaluator;
-
-import org.kie.pmml.commons.model.enums.PMML_MODEL;
-import org.kie.pmml.models.drooled.executor.DrooledModelExecutor;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+package org.kie.pmml.commons.utils;
 
 /**
- * Default <code>PMMLModelExecutor</code> for <b>Tree</b>
+ * Static utility methods for <code>KiePMMLDrooledModel</code>s
  */
-public class PMMLTreeModelEvaluator extends DrooledModelExecutor {
+public class DrooledModelUtils {
 
-    private static final Logger logger = LoggerFactory.getLogger(PMMLTreeModelEvaluator.class.getName());
+    /**
+     * Convert the given <code>String</code> in a valid class name
+     * @param input
+     * @return
+     */
+    public static String getSanitizedClassName(String input) {
+        return input.replace(".", "_");
+    }
 
-    @Override
-    public PMML_MODEL getPMMLModelType() {
-        return PMML_MODEL.TREE_MODEL;
+    private DrooledModelUtils() {
+        // Avoid instantiation
     }
 }

@@ -17,7 +17,9 @@
 package org.kie.pmml.models.tree.compiler.factories;
 
 import java.util.Arrays;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 
@@ -46,6 +48,7 @@ import org.drools.compiler.lang.descr.TypeDeclarationDescr;
 import org.junit.Before;
 import org.junit.Test;
 import org.kie.pmml.commons.exceptions.KiePMMLException;
+import org.kie.pmml.commons.model.enums.DATA_TYPE;
 import org.kie.pmml.compiler.testutils.TestUtils;
 import org.kie.pmml.models.drooled.executor.KiePMMLStatusHolder;
 import org.kie.pmml.models.tree.model.enums.OPERATOR;
@@ -56,6 +59,7 @@ import static org.drools.compiler.lang.descr.ExprConstraintDescr.Type.NAMED;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
+import static org.kie.pmml.commons.utils.DrooledModelUtils.getSanitizedClassName;
 
 public class KiePMMLDescrFactoryTest {
 
@@ -84,15 +88,18 @@ public class KiePMMLDescrFactoryTest {
 
     @Test
     public void getBaseDescr() {
-        PackageDescr retrieved = KiePMMLDescrFactory.getBaseDescr(pmml.getDataDictionary(), treeModel, "org.test.package");
+        Map<String, String> fieldTypeMap = new HashMap<>();
+        PackageDescr retrieved = KiePMMLDescrFactory.getBaseDescr(pmml.getDataDictionary(), treeModel, "org.test.package", fieldTypeMap);
         assertNotNull(retrieved);
         assertEquals(3, retrieved.getImports().size());
         assertEquals(KiePMMLStatusHolder.class.getName(), retrieved.getImports().get(0).getTarget());
         assertEquals(9, retrieved.getRules().size());
         assertEquals(5, retrieved.getTypeDeclarations().size());
         for (DataField dataField : pmml.getDataDictionary().getDataFields()) {
-            String expectedType = dataField.getName().getValue().toUpperCase();
+            String expectedType = getSanitizedClassName(dataField.getName().getValue().toUpperCase());
             assertNotNull(retrieved.getTypeDeclarations().stream().filter(typeDeclarationDescr -> expectedType.equals(typeDeclarationDescr.getTypeName())).findFirst().orElse(null));
+            assertTrue(fieldTypeMap.containsKey(dataField.getName().getValue()));
+            assertEquals(expectedType, fieldTypeMap.get(dataField.getName().getValue()));
         }
     }
 
@@ -100,7 +107,9 @@ public class KiePMMLDescrFactoryTest {
     public void declareRules() {
         PackageDescr packageDescr = builder.getDescr();
         assertEquals(1, packageDescr.getRules().size());
-        KiePMMLDescrFactory.declareRules(builder, treeModel.getNode(), PARENT_PATH);
+        Map<String, String> fieldTypeMap = pmml.getDataDictionary().getDataFields().stream().collect(Collectors.toMap(dataField -> dataField.getName().getValue(),
+                                                                                                                      dataField -> getSanitizedClassName(dataField.getName().getValue().toUpperCase())));
+        KiePMMLDescrFactory.declareRules(builder, treeModel.getNode(), PARENT_PATH, fieldTypeMap);
         assertEquals(10, packageDescr.getRules().size());
         for (RuleDescr ruleDescr : packageDescr.getRules()) {
             String ruleName = ruleDescr.getName();
@@ -124,14 +133,15 @@ public class KiePMMLDescrFactoryTest {
 
     @Test
     public void declarePredicate() {
-        Predicate predicate = getSimplePredicate("VALUE");
-        KiePMMLDescrFactory.declarePredicate(lhsBuilder, predicate);
+        final Map<String, String> fieldTypeMap = new HashMap<>();
+        Predicate predicate = getSimplePredicate("VALUE", fieldTypeMap);
+        KiePMMLDescrFactory.declarePredicate(lhsBuilder, predicate, fieldTypeMap);
         assertEquals(1, lhsBuilder.getDescr().getDescrs().size());
         final AndDescr descr = lhsBuilder.getDescr();
         commonVerifySimplePredicate(descr, (SimplePredicate) predicate);
-        List<SimplePredicate> predicates = IntStream.range(0, 2).mapToObj(index -> getSimplePredicate("VALUE-" + index)).collect(Collectors.toList());
+        List<SimplePredicate> predicates = IntStream.range(0, 2).mapToObj(index -> getSimplePredicate("VALUE-" + index, fieldTypeMap)).collect(Collectors.toList());
         for (CompoundPredicate.BooleanOperator operator : CompoundPredicate.BooleanOperator.values()) {
-            if (operator.equals(CompoundPredicate.BooleanOperator.SURROGATE) || operator.equals(CompoundPredicate.BooleanOperator.XOR) ) {
+            if (operator.equals(CompoundPredicate.BooleanOperator.SURROGATE) || operator.equals(CompoundPredicate.BooleanOperator.XOR)) {
                 // TODO {gcardosi} Not implemented, yet
                 continue;
             }
@@ -140,7 +150,7 @@ public class KiePMMLDescrFactoryTest {
             predicates.forEach(((CompoundPredicate) predicate)::addPredicates);
             descr.getDescrs().clear();
             assertTrue(descr.getDescrs().isEmpty());
-            KiePMMLDescrFactory.declarePredicate(lhsBuilder, predicate);
+            KiePMMLDescrFactory.declarePredicate(lhsBuilder, predicate, fieldTypeMap);
             assertEquals(1, descr.getDescrs().size());
             commonVerifySimplePredicates((ConditionalElementDescr) descr.getDescrs().get(0), predicates, operator);
         }
@@ -148,7 +158,8 @@ public class KiePMMLDescrFactoryTest {
 
     @Test
     public void declareSimplePredicate() {
-        SimplePredicate predicate = getSimplePredicate("VALUE");
+        final Map<String, String> fieldTypeMap = new HashMap<>();
+        SimplePredicate predicate = getSimplePredicate("VALUE", fieldTypeMap);
         final CEDescrBuilder<CEDescrBuilder<RuleDescrBuilder, AndDescr>, AndDescr> andBuilder = lhsBuilder.and();
         assertTrue(andBuilder.getDescr().getDescrs().isEmpty());
         KiePMMLDescrFactory.declareSimplePredicate(andBuilder, predicate);
@@ -158,10 +169,11 @@ public class KiePMMLDescrFactoryTest {
 
     @Test
     public void declareCompoundPredicate() {
-        List<SimplePredicate> predicates = IntStream.range(0, 2).mapToObj(index -> getSimplePredicate("VALUE-" + index)).collect(Collectors.toList());
+        final Map<String, String> fieldTypeMap = new HashMap<>();
+        List<SimplePredicate> predicates = IntStream.range(0, 2).mapToObj(index -> getSimplePredicate("VALUE-" + index, fieldTypeMap)).collect(Collectors.toList());
         final AndDescr descr = lhsBuilder.getDescr();
         for (CompoundPredicate.BooleanOperator operator : CompoundPredicate.BooleanOperator.values()) {
-            if (operator.equals(CompoundPredicate.BooleanOperator.SURROGATE) || operator.equals(CompoundPredicate.BooleanOperator.XOR) ) {
+            if (operator.equals(CompoundPredicate.BooleanOperator.SURROGATE) || operator.equals(CompoundPredicate.BooleanOperator.XOR)) {
                 // TODO {gcardosi} Not implemented, yet
                 continue;
             }
@@ -170,7 +182,7 @@ public class KiePMMLDescrFactoryTest {
             predicates.forEach(predicate::addPredicates);
             descr.getDescrs().clear();
             assertTrue(descr.getDescrs().isEmpty());
-            KiePMMLDescrFactory.declareCompoundPredicate(lhsBuilder, predicate);
+            KiePMMLDescrFactory.declareCompoundPredicate(lhsBuilder, predicate, fieldTypeMap);
             commonVerifySimplePredicates((ConditionalElementDescr) descr.getDescrs().get(0), predicates, operator);
         }
     }
@@ -179,9 +191,12 @@ public class KiePMMLDescrFactoryTest {
     public void declareCompoundPredicateXORExceptionFewElements() throws Exception {
         CompoundPredicate predicate = new CompoundPredicate();
         predicate.setBooleanOperator(CompoundPredicate.BooleanOperator.XOR);
-        predicate.addPredicates(new SimplePredicate(FieldName.create("SIMPLE"), SimplePredicate.Operator.LESS_THAN));
+        final Map<String, String> fieldTypeMap = new HashMap<>();
+        FieldName fieldName = FieldName.create("SIMPLE");
+        fieldTypeMap.put(fieldName.getValue(), getSanitizedClassName(fieldName.getValue().toUpperCase()));
+        predicate.addPredicates(new SimplePredicate(fieldName, SimplePredicate.Operator.LESS_THAN));
         try {
-            KiePMMLDescrFactory.declareCompoundPredicate(lhsBuilder, predicate);
+            KiePMMLDescrFactory.declareCompoundPredicate(lhsBuilder, predicate, fieldTypeMap);
         } catch (Exception e) {
             assertTrue(e instanceof KiePMMLException);
             assertEquals("At least two elements expected for XOR operations", e.getMessage());
@@ -193,9 +208,14 @@ public class KiePMMLDescrFactoryTest {
     public void declareCompoundPredicateXORExceptionTooMuchElements() throws Exception {
         CompoundPredicate predicate = new CompoundPredicate();
         predicate.setBooleanOperator(CompoundPredicate.BooleanOperator.XOR);
-        IntStream.range(0, 3).forEach(i -> predicate.addPredicates(new SimplePredicate(FieldName.create("SIMPLE-" + i), SimplePredicate.Operator.LESS_THAN)));
+        final Map<String, String> fieldTypeMap = new HashMap<>();
+        IntStream.range(0, 3).forEach(i -> {
+            FieldName fieldName = FieldName.create("SIMPLE-" + i);
+            fieldTypeMap.put(fieldName.getValue(), getSanitizedClassName(fieldName.getValue().toUpperCase()));
+            predicate.addPredicates(new SimplePredicate(fieldName, SimplePredicate.Operator.LESS_THAN));
+        });
         try {
-            KiePMMLDescrFactory.declareCompoundPredicate(lhsBuilder, predicate);
+            KiePMMLDescrFactory.declareCompoundPredicate(lhsBuilder, predicate, fieldTypeMap);
         } catch (Exception e) {
             assertTrue(e instanceof KiePMMLException);
             assertEquals("More then two elements not managed, yet, for XOR operations", e.getMessage());
@@ -205,12 +225,13 @@ public class KiePMMLDescrFactoryTest {
 
     @Test
     public void declareSimplePredicates() {
-        List<SimplePredicate> predicates = IntStream.range(0, 2).mapToObj(index -> getSimplePredicate("VALUE-" + index)).collect(Collectors.toList());
+        final Map<String, String> fieldTypeMap = new HashMap<>();
+        List<SimplePredicate> predicates = IntStream.range(0, 2).mapToObj(index -> getSimplePredicate("VALUE-" + index, fieldTypeMap)).collect(Collectors.toList());
         final CEDescrBuilder<CEDescrBuilder<RuleDescrBuilder, AndDescr>, AndDescr> andBuilder = lhsBuilder.and();
         assertTrue(andBuilder.getDescr().getDescrs().isEmpty());
         final AndDescr descr = andBuilder.getDescr();
         for (CompoundPredicate.BooleanOperator operator : CompoundPredicate.BooleanOperator.values()) {
-            if (operator.equals(CompoundPredicate.BooleanOperator.SURROGATE) || operator.equals(CompoundPredicate.BooleanOperator.XOR) ) {
+            if (operator.equals(CompoundPredicate.BooleanOperator.SURROGATE) || operator.equals(CompoundPredicate.BooleanOperator.XOR)) {
                 // TODO {gcardosi} Not implemented, yet
                 continue;
             }
@@ -224,20 +245,22 @@ public class KiePMMLDescrFactoryTest {
 
     @Test
     public void declareTypes() {
-        List<DataField> dataFields = Arrays.asList(getTypeDataField(), getTypeDataField());
+        List<DataField> dataFields = Arrays.asList(getTypeDataField(), getDottedTypeDataField());
         DataDictionary dataDictionary = new DataDictionary(dataFields);
-        assertTrue(builder.getDescr().getEnumDeclarations().isEmpty());
         assertTrue(builder.getDescr().getTypeDeclarations().isEmpty());
-        KiePMMLDescrFactory.declareTypes(builder, dataDictionary);
+        final Map<String, String> fieldTypeMap = new HashMap<>();
+        KiePMMLDescrFactory.declareTypes(builder, dataDictionary, fieldTypeMap);
         assertEquals(2, builder.getDescr().getTypeDeclarations().size());
+        IntStream.range(0, dataFields.size()).forEach(i -> commonVerifyTypeDeclarationDescr(dataFields.get(i), fieldTypeMap, builder.getDescr().getTypeDeclarations().get(i)));
     }
 
     @Test
     public void declareType() {
         DataField dataField = getTypeDataField();
-        KiePMMLDescrFactory.declareType(builder, dataField);
+        final Map<String, String> fieldTypeMap = new HashMap<>();
+        KiePMMLDescrFactory.declareType(builder, dataField, fieldTypeMap);
         assertEquals(1, builder.getDescr().getTypeDeclarations().size());
-        commonVerifyTypeDeclarationDescr();
+        commonVerifyTypeDeclarationDescr(dataField, fieldTypeMap, builder.getDescr().getTypeDeclarations().get(0));
     }
 
     private void commonVerifySimplePredicate(AndDescr descr, SimplePredicate predicate) {
@@ -312,17 +335,22 @@ public class KiePMMLDescrFactoryTest {
         assertEquals(expected, exprConstraintDescr.getExpression());
     }
 
-    private void commonVerifyTypeDeclarationDescr() {
-        final TypeDeclarationDescr typeDeclarationDescr = builder.getDescr().getTypeDeclarations().get(0);
-        assertEquals("DATAFIELD", typeDeclarationDescr.getTypeName());
+    private void commonVerifyTypeDeclarationDescr(DataField dataField, Map<String, String> fieldTypeMap, final TypeDeclarationDescr typeDeclarationDescr) {
+        String expectedTypeName = getSanitizedClassName(dataField.getName().getValue().toUpperCase());
+        String expectedTypeType = DATA_TYPE.byName(dataField.getDataType().value()).getMappedClass().getSimpleName();
+        assertEquals(expectedTypeName, typeDeclarationDescr.getTypeName());
         assertEquals(1, typeDeclarationDescr.getFields().size());
         assertTrue(typeDeclarationDescr.getFields().containsKey("value"));
-        assertEquals("Date", typeDeclarationDescr.getFields().get("value").getPattern().getObjectType());
+        assertEquals(expectedTypeType, typeDeclarationDescr.getFields().get("value").getPattern().getObjectType());
+        assertTrue(fieldTypeMap.containsKey(dataField.getName().getValue()));
+        assertEquals(expectedTypeName, fieldTypeMap.get(dataField.getName().getValue()));
     }
 
-    private SimplePredicate getSimplePredicate(String value) {
+    private SimplePredicate getSimplePredicate(String value, final Map<String, String> fieldTypeMap) {
+        FieldName fieldName = FieldName.create("SimplePredicate");
+        fieldTypeMap.put(fieldName.getValue(), getSanitizedClassName(fieldName.getValue().toUpperCase()));
         SimplePredicate toReturn = new SimplePredicate();
-        toReturn.setField(FieldName.create("SimplePredicate"));
+        toReturn.setField(fieldName);
         toReturn.setOperator(SimplePredicate.Operator.LESS_THAN);
         toReturn.setValue(value);
         return toReturn;
@@ -333,6 +361,14 @@ public class KiePMMLDescrFactoryTest {
         toReturn.setOpType(OpType.CONTINUOUS);
         toReturn.setDataType(DataType.DATE);
         toReturn.setName(FieldName.create("dataField"));
+        return toReturn;
+    }
+
+    private DataField getDottedTypeDataField() {
+        DataField toReturn = new DataField();
+        toReturn.setOpType(OpType.CONTINUOUS);
+        toReturn.setDataType(DataType.BOOLEAN);
+        toReturn.setName(FieldName.create("dotted.field"));
         return toReturn;
     }
 }

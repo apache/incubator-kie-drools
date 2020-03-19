@@ -43,11 +43,6 @@
       <artifactId>kie-pmml-models-tree-compiler</artifactId>
       <scope>test</scope>
     </dependency>
-    <dependency>
-      <groupId>org.drools</groupId>
-      <artifactId>drools-model-compiler</artifactId>
-      <scope>compile</scope>
-    </dependency>
   </dependencies>
 
 </project>

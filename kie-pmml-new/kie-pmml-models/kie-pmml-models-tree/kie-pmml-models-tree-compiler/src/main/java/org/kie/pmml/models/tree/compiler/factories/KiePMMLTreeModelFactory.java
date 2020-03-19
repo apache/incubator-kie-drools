@@ -16,6 +16,8 @@
 package org.kie.pmml.models.tree.compiler.factories;
 
 import java.util.Collections;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.Optional;
 
 import org.dmg.pmml.DataDictionary;
@@ -40,9 +42,10 @@ public class KiePMMLTreeModelFactory {
     public static KiePMMLTreeModel getKiePMMLTreeModel(DataDictionary dataDictionary, TreeModel model) {
         logger.info("getKiePMMLTreeModel {}", model);
         String name = model.getModelName();
-        // TODO {gcardosi} convert DataDictionary "enum" values to a map of field-name/valid-values
         Optional<String> targetFieldName = getTargetField(dataDictionary, model);
-        final PackageDescr baseDescr = getBaseDescr(dataDictionary, model, name.toLowerCase());
+        final Map<String, String> fieldTypeMap = new HashMap<>();
+        final PackageDescr baseDescr = getBaseDescr(dataDictionary, model, name.toLowerCase(), fieldTypeMap);
+        // TODO {gcardosi} Dev debug only - to be removed
         try {
             String string = new DrlDumper().dump(baseDescr);
             logger.debug(string);
@@ -51,6 +54,7 @@ public class KiePMMLTreeModelFactory {
         }
         return KiePMMLTreeModel.builder(name, Collections.emptyList(), MINING_FUNCTION.byName(model.getMiningFunction().value()), model.getAlgorithmName())
                 .withPackageDescr(baseDescr)
+                .withFieldTypeMap(fieldTypeMap)
                 .withTargetField(targetFieldName.orElse(null))
                 .build();
     }
