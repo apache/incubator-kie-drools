@@ -39,7 +39,7 @@ import static java.util.Optional.empty;
 import static java.util.Optional.of;
 import static java.util.Optional.ofNullable;
 import static java.util.stream.Collectors.toList;
-import static org.drools.core.util.StreamUtils.optionalToStream;
+import static org.drools.modelcompiler.util.StreamUtils.optionalToStream;
 import static org.drools.modelcompiler.builder.generator.declaredtype.POJOGenerator.quote;
 
 public class DescrTypeDefinition implements TypeDefinition {

@@ -822,26 +822,12 @@ public class ExpressionTyper {
 
     private Optional<TypedExpressionCursor> drlNameExpr(Expression drlxExpr, DrlNameExpr firstNode, boolean isInLineCast, java.lang.reflect.Type originalTypeCursor) {
         String firstName = firstNode.getName().getIdentifier();
-        Optional<DeclarationSpec> declarationById = ruleContext.getDeclarationById(firstName);
-        if (declarationById.isPresent()) {
-            // do NOT append any reactOnProperties.
-            // because reactOnProperties is referring only to the properties of the type of the pattern, not other declarations properites.
-            context.addUsedDeclarations(firstName);
-            java.lang.reflect.Type typeCursor = isInLineCast ? originalTypeCursor : declarationById.get().getDeclarationClass();
-            return of(new TypedExpressionCursor(new NameExpr(firstName), typeCursor));
-        }
-
-        if(packageModel.getGlobals().containsKey(firstName)) {
-            context.addUsedDeclarations(firstName);
-            return of(new TypedExpressionCursor(new NameExpr(firstName), packageModel.getGlobals().get(firstName)));
-        }
-
-        final java.lang.reflect.Type typeCursor;
+        java.lang.reflect.Type typeCursor;
 
         // In OOPath a declaration is based on a position rather than a name.
         // Only an OOPath chunk can have a backreference expression
         Optional<DeclarationSpec> backReference = empty();
-        if( firstNode.getBackReferencesCount() > 0) {
+        if ( firstNode.getBackReferencesCount() > 0) {
             List<DeclarationSpec> ooPathDeclarations = ruleContext.getOOPathDeclarations();
             DeclarationSpec backReferenceDeclaration = ooPathDeclarations.get(ooPathDeclarations.size() - 1 - firstNode.getBackReferencesCount());
             typeCursor = backReferenceDeclaration.getDeclarationClass();
@@ -859,22 +845,38 @@ public class ExpressionTyper {
         }
 
         Class<?> classCursor = toRawClass(typeCursor);
-        Method firstAccessor = DrlxParseUtil.getAccessor(!isInLineCast ? classCursor : patternType, firstName);
-        if (firstAccessor != null) {
-            if (!"".equals(firstName)) {
-                context.addReactOnProperties(firstName);
+        if ( classCursor != null ) {
+            Method firstAccessor = DrlxParseUtil.getAccessor( !isInLineCast ? classCursor : patternType, firstName );
+            if ( firstAccessor != null ) {
+                if ( !"".equals( firstName ) ) {
+                    context.addReactOnProperties( firstName );
+                }
+
+                java.lang.reflect.Type typeOfFirstAccessor = isInLineCast ? typeCursor : firstAccessor.getGenericReturnType();
+                NameExpr thisAccessor = new NameExpr( THIS_PLACEHOLDER );
+                NameExpr scope = backReference.map( d -> new NameExpr( d.getBindingId() ) ).orElse( thisAccessor );
+                return of( new TypedExpressionCursor( new MethodCallExpr( scope, firstAccessor.getName() ), typeOfFirstAccessor ) );
             }
 
-            java.lang.reflect.Type typeOfFirstAccessor = isInLineCast ? typeCursor : firstAccessor.getGenericReturnType();
-            NameExpr thisAccessor = new NameExpr(THIS_PLACEHOLDER);
-            NameExpr scope = backReference.map(d -> new NameExpr(d.getBindingId())).orElse(thisAccessor);
-            return of(new TypedExpressionCursor(new MethodCallExpr(scope, firstAccessor.getName()), typeOfFirstAccessor));
+            Field field = DrlxParseUtil.getField( classCursor, firstName );
+            if ( field != null ) {
+                NameExpr scope = new NameExpr( Modifier.isStatic( field.getModifiers() ) ? classCursor.getCanonicalName() : THIS_PLACEHOLDER );
+                return of( new TypedExpressionCursor( new FieldAccessExpr( scope, field.getName() ), field.getType() ) );
+            }
         }
 
-        Field field = DrlxParseUtil.getField( classCursor, firstName );
-        if ( field != null ) {
-            NameExpr scope = new NameExpr( Modifier.isStatic( field.getModifiers() ) ? classCursor.getCanonicalName() : THIS_PLACEHOLDER );
-            return of( new TypedExpressionCursor( new FieldAccessExpr( scope, field.getName() ), field.getType() ) );
+        Optional<DeclarationSpec> declarationById = ruleContext.getDeclarationById(firstName);
+        if (declarationById.isPresent()) {
+            // do NOT append any reactOnProperties.
+            // because reactOnProperties is referring only to the properties of the type of the pattern, not other declarations properites.
+            context.addUsedDeclarations(firstName);
+            typeCursor = isInLineCast ? originalTypeCursor : declarationById.get().getDeclarationClass();
+            return of(new TypedExpressionCursor(new NameExpr(firstName), typeCursor));
+        }
+
+        if (packageModel.getGlobals().containsKey(firstName)) {
+            context.addUsedDeclarations(firstName);
+            return of(new TypedExpressionCursor(new NameExpr(firstName), packageModel.getGlobals().get(firstName)));
         }
 
         final Optional<Node> rootNode = findRootNodeViaParent(drlxExpr);
