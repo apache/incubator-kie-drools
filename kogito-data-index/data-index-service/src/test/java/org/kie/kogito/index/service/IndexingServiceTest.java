@@ -16,6 +16,7 @@
 
 package org.kie.kogito.index.service;
 
+import java.net.URI;
 import java.time.ZoneOffset;
 import java.time.ZonedDateTime;
 import java.time.format.DateTimeFormatter;
@@ -46,7 +47,6 @@ import static io.restassured.RestAssured.given;
 import static io.restassured.config.EncoderConfig.encoderConfig;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.fail;
-import static org.hamcrest.CoreMatchers.equalTo;
 import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.CoreMatchers.isA;
 import static org.hamcrest.CoreMatchers.nullValue;
@@ -201,6 +201,7 @@ public class IndexingServiceTest {
 
         KogitoProcessCloudEvent subProcessStartEvent = getProcessCloudEvent(subProcessId, subProcessInstanceId, ACTIVE, processInstanceId, processId, processInstanceId);
         subProcessStartEvent.getData().setVariables(getObjectMapper().readTree("{ \"traveller\":{\"firstName\":\"Maciej\", \"email\":\"mail@mail.com\", \"nationality\":\"Polish\"} }"));
+        subProcessStartEvent.setSource(URI.create("/" + subProcessId));
         indexProcessCloudEvent(subProcessStartEvent);
 
         validateProcessInstance(getProcessInstanceByIdAndState(subProcessInstanceId, ACTIVE), subProcessStartEvent);
@@ -357,6 +358,7 @@ public class IndexingServiceTest {
                 .body("data.ProcessInstances[0].childProcessInstances[0].id", childProcessInstanceId == null ? is(nullValue()) : is(childProcessInstanceId))
                 .body("data.ProcessInstances[0].childProcessInstances[0].processName", childProcessInstanceId == null ? is(nullValue()) : is(event.getData().getProcessName()))
                 .body("data.ProcessInstances[0].endpoint", is(event.getSource().toString()))
+                .body("data.ProcessInstances[0].serviceUrl", event.getSource().toString().equals("/" + event.getProcessId()) ? is(nullValue()) : is("http://localhost:8080"))
                 .body("data.ProcessInstances[0].addons", hasItems(event.getData().getAddons().toArray()))
                 .body("data.ProcessInstances[0].error.message", event.getData().getError() == null ? is(nullValue()) : is(event.getData().getError().getMessage()))
                 .body("data.ProcessInstances[0].error.nodeDefinitionId", event.getData().getError() == null ? is(nullValue()) : is(event.getData().getError().getNodeDefinitionId()))

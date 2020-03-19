@@ -11,7 +11,6 @@ export type Scalars = {
   Boolean: boolean;
   Int: number;
   Float: number;
-  /** An ISO-8601 compliant DateTime Scalar */
   DateTime: any;
 };
 
@@ -174,6 +173,7 @@ export type ProcessInstance = {
   roles?: Maybe<Array<Scalars['String']>>;
   state: ProcessInstanceState;
   endpoint: Scalars['String'];
+  serviceUrl?: Maybe<Scalars['String']>;
   nodes: Array<NodeInstance>;
   variables?: Maybe<Scalars['String']>;
   start: Scalars['DateTime'];
@@ -183,6 +183,7 @@ export type ProcessInstance = {
   error?: Maybe<ProcessInstanceError>;
   addons?: Maybe<Array<Scalars['String']>>;
   lastUpdate: Scalars['DateTime'];
+  businessKey?: Maybe<Scalars['String']>;
 };
 
 export type ProcessInstanceArgument = {
@@ -203,6 +204,7 @@ export type ProcessInstanceArgument = {
   end?: Maybe<DateArgument>;
   addons?: Maybe<StringArrayArgument>;
   lastUpdate?: Maybe<DateArgument>;
+  businessKey?: Maybe<StringArgument>;
 };
 
 export type ProcessInstanceError = {
@@ -235,6 +237,7 @@ export type ProcessInstanceMeta = {
   start: Scalars['DateTime'];
   end?: Maybe<Scalars['DateTime']>;
   lastUpdate: Scalars['DateTime'];
+  businessKey?: Maybe<Scalars['String']>;
 };
 
 export type ProcessInstanceMetaArgument = {
@@ -249,6 +252,7 @@ export type ProcessInstanceMetaArgument = {
   roles?: Maybe<StringArrayArgument>;
   start?: Maybe<DateArgument>;
   end?: Maybe<DateArgument>;
+  businessKey?: Maybe<StringArgument>;
 };
 
 export type ProcessInstanceOrderBy = {
@@ -260,6 +264,7 @@ export type ProcessInstanceOrderBy = {
   end?: Maybe<OrderBy>;
   error?: Maybe<ProcessInstanceErrorOrderBy>;
   lastUpdate?: Maybe<OrderBy>;
+  businessKey?: Maybe<OrderBy>;
 };
 
 export enum ProcessInstanceState {

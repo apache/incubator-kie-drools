@@ -21,6 +21,7 @@ type ProcessInstance {
     roles: [String!]
     state: ProcessInstanceState!
     endpoint: String!
+    serviceUrl: String
     nodes: [NodeInstance!]!
     variables: String
     start: DateTime!

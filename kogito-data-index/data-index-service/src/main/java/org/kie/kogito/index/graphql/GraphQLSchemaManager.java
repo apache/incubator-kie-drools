@@ -117,6 +117,7 @@ public class GraphQLSchemaManager {
                 .type("ProcessInstance", builder -> {
                     builder.dataFetcher("parentProcessInstance", this::getParentProcessInstanceValue);
                     builder.dataFetcher("childProcessInstances", this::getChildProcessInstancesValues);
+                    builder.dataFetcher("serviceUrl", this::getProcessInstanceServiceUrl);
                     return builder;
                 })
                 .type("ProcessInstanceState", builder -> {
@@ -137,6 +138,13 @@ public class GraphQLSchemaManager {
 
         SchemaGenerator schemaGenerator = new SchemaGenerator();
         return schemaGenerator.makeExecutableSchema(typeDefinitionRegistry, runtimeWiring);
+    }
+
+    private String getProcessInstanceServiceUrl(DataFetchingEnvironment env) {
+        ProcessInstance source = env.getSource();
+        String endpoint = source.getEndpoint();
+        String context = "/" + source.getProcessId();
+        return context.equals(endpoint) ? null : endpoint.substring(0, endpoint.indexOf(context));
     }
 
     private Collection<ProcessInstance> getChildProcessInstancesValues(DataFetchingEnvironment env) {
