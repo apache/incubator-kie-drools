@@ -32,6 +32,7 @@ import org.dmg.pmml.OpType;
 import org.dmg.pmml.PMML;
 import org.dmg.pmml.Predicate;
 import org.dmg.pmml.SimplePredicate;
+import org.dmg.pmml.tree.LeafNode;
 import org.dmg.pmml.tree.Node;
 import org.dmg.pmml.tree.TreeModel;
 import org.drools.compiler.lang.api.CEDescrBuilder;
@@ -39,6 +40,7 @@ import org.drools.compiler.lang.api.DescrFactory;
 import org.drools.compiler.lang.api.PackageDescrBuilder;
 import org.drools.compiler.lang.api.RuleDescrBuilder;
 import org.drools.compiler.lang.descr.AndDescr;
+import org.drools.compiler.lang.descr.BaseDescr;
 import org.drools.compiler.lang.descr.ConditionalElementDescr;
 import org.drools.compiler.lang.descr.ExprConstraintDescr;
 import org.drools.compiler.lang.descr.PackageDescr;
@@ -47,6 +49,7 @@ import org.drools.compiler.lang.descr.RuleDescr;
 import org.drools.compiler.lang.descr.TypeDeclarationDescr;
 import org.junit.Before;
 import org.junit.Test;
+import org.kie.pmml.commons.enums.StatusCode;
 import org.kie.pmml.commons.exceptions.KiePMMLException;
 import org.kie.pmml.commons.model.enums.DATA_TYPE;
 import org.kie.pmml.compiler.testutils.TestUtils;
@@ -57,9 +60,14 @@ import org.slf4j.LoggerFactory;
 
 import static org.drools.compiler.lang.descr.ExprConstraintDescr.Type.NAMED;
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
 import static org.kie.pmml.commons.utils.DrooledModelUtils.getSanitizedClassName;
+import static org.kie.pmml.models.tree.compiler.factories.KiePMMLDescrFactory.MODIFY_STATUS_HOLDER;
+import static org.kie.pmml.models.tree.compiler.factories.KiePMMLDescrFactory.PMML4_RESULT;
+import static org.kie.pmml.models.tree.compiler.factories.KiePMMLDescrFactory.PMML4_RESULT_IDENTIFIER;
+import static org.kie.pmml.models.tree.compiler.factories.KiePMMLDescrFactory.UPDATE_PMML4_RESULT;
 
 public class KiePMMLDescrFactoryTest {
 
@@ -129,6 +137,45 @@ public class KiePMMLDescrFactoryTest {
                 }
             }
         }
+    }
+
+    @Test
+    public void declareFinalLeafWhen() {
+        String currentRule = "CURRENT_RULE";
+        final RuleDescrBuilder ruleBuilder = builder.newRule().name(currentRule);
+        final CEDescrBuilder<RuleDescrBuilder, AndDescr> lhsBuilder = ruleBuilder.lhs();
+        Node finalLeafNode = treeModel.getNode().getNodes().get(0).getNodes().get(1);
+        assertTrue(finalLeafNode instanceof LeafNode || finalLeafNode.getNodes() == null || finalLeafNode.getNodes().isEmpty());
+        KiePMMLDescrFactory.declareFinalLeafWhen(ruleBuilder, lhsBuilder, finalLeafNode);
+        List<BaseDescr> lhsDescrs = lhsBuilder.getDescr().getDescrs();
+        assertEquals(1, lhsDescrs.size());
+        assertTrue(lhsBuilder.getDescr().getDescrs().get(0) instanceof PatternDescr);
+        PatternDescr lhsPatternDescr = ((PatternDescr) lhsBuilder.getDescr().getDescrs().get(0));
+        assertEquals(PMML4_RESULT, lhsPatternDescr.getObjectType());
+        assertEquals(PMML4_RESULT_IDENTIFIER, lhsPatternDescr.getIdentifier());
+        RuleDescr ruleDescr = ruleBuilder.getDescr();
+        assertEquals(currentRule, ruleDescr.getName());
+        String expectedModifyStatusHolder = String.format(MODIFY_STATUS_HOLDER, StatusCode.DONE.name());
+        String expectedUpdatePmml4Result = String.format(UPDATE_PMML4_RESULT, StatusCode.OK.name(), finalLeafNode.getScore().toString());
+        String consequence = ruleDescr.getConsequence().toString();
+        assertNotNull(consequence);
+        assertTrue(consequence.contains(expectedModifyStatusHolder));
+        assertTrue(consequence.contains(expectedUpdatePmml4Result));
+        assertTrue(consequence.replace(expectedModifyStatusHolder, "").replace(expectedUpdatePmml4Result, "").isEmpty());
+    }
+
+    @Test
+    public void declareBranchWhen() {
+        String currentRule = "CURRENT_RULE";
+        String parentPath = "parent_path";
+        Map<String, String> fieldTypeMap = pmml.getDataDictionary().getDataFields().stream().collect(Collectors.toMap(dataField -> dataField.getName().getValue(),
+                                                                                                                      dataField -> getSanitizedClassName(dataField.getName().getValue().toUpperCase())));
+
+        final RuleDescrBuilder ruleBuilder = builder.newRule().name(currentRule);
+        Node branchNode = treeModel.getNode();
+        assertFalse(branchNode instanceof LeafNode || branchNode.getNodes() == null || branchNode.getNodes().isEmpty());
+        KiePMMLDescrFactory.declareBranchWhen(builder, ruleBuilder, parentPath, branchNode, fieldTypeMap);
+        System.out.println(builder);
     }
 
     @Test

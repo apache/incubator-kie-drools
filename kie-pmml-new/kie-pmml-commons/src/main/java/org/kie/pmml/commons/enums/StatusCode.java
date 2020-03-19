@@ -21,6 +21,7 @@ import java.util.Objects;
 import org.kie.pmml.commons.exceptions.KieEnumException;
 
 public enum StatusCode {
+    DONE("****DONE****"),
     OK("OK"),
     FAIL("FAIL");
 

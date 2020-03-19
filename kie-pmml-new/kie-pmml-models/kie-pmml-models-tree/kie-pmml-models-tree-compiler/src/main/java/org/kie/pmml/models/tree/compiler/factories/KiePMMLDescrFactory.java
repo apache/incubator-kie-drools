@@ -42,6 +42,7 @@ import org.drools.compiler.lang.descr.OrDescr;
 import org.drools.compiler.lang.descr.PackageDescr;
 import org.drools.core.util.StringUtils;
 import org.kie.api.pmml.PMML4Result;
+import org.kie.pmml.commons.enums.StatusCode;
 import org.kie.pmml.commons.exceptions.KiePMMLException;
 import org.kie.pmml.commons.model.enums.DATA_TYPE;
 import org.kie.pmml.models.drooled.executor.KiePMMLStatusHolder;
@@ -57,14 +58,15 @@ import static org.kie.pmml.commons.utils.DrooledModelUtils.getSanitizedClassName
  */
 public class KiePMMLDescrFactory {
 
+    public static final String PMML4_RESULT = "PMML4Result";
+    public static final String PMML4_RESULT_IDENTIFIER = "$pmml4Result";
+    static final String STATUS_HOLDER = "$statusHolder";
+    public static final String MODIFY_STATUS_HOLDER = "\r\nmodify(" + STATUS_HOLDER + ") {\r\n\tsetStatus(\"%s\")\r\n}";
     static final Logger logger = LoggerFactory.getLogger(KiePMMLDescrFactory.class.getName());
     static final String VALUE_PATTERN = "value %s \"%s\"";
-    static final String STATUS_HOLDER = "$statusHolder";
-    static final String PMML4_RESULT = "$pmml4Result";
-    static final String MODIFY_STATUS_HOLDER = "\r\nmodify(" + STATUS_HOLDER + ") {\r\n\tsetStatus(\"%s\")\r\n}";
-    static final String UPDATE_PMML4_RESULT = "\r\n" + PMML4_RESULT + ".setResultCode(\"%s\");" +
-            "\r\n" + PMML4_RESULT + ".addResultVariable(" + PMML4_RESULT + ".getResultObjectName()" + ", \"%s\");" +
-            "\r\nupdate(" + PMML4_RESULT + ");";
+    public static final String UPDATE_PMML4_RESULT = "\r\n" + PMML4_RESULT_IDENTIFIER + ".setResultCode(\"%s\");" +
+            "\r\n" + PMML4_RESULT_IDENTIFIER + ".addResultVariable(" + PMML4_RESULT_IDENTIFIER + ".getResultObjectName()" + ", \"%s\");" +
+            "\r\nupdate(" + PMML4_RESULT_IDENTIFIER + ");";
 
     private KiePMMLDescrFactory() {
         // Avoid instantiation
@@ -111,15 +113,17 @@ public class KiePMMLDescrFactory {
     }
 
     static void declareFinalLeafWhen(final RuleDescrBuilder ruleBuilder, final CEDescrBuilder<RuleDescrBuilder, AndDescr> lhsBuilder, final Node node) {
-        lhsBuilder.pattern(PMML4Result.class.getSimpleName()).id(PMML4_RESULT, false);
+        logger.info("declareFinalLeafWhen {} {} {}", ruleBuilder, lhsBuilder, node);
+        lhsBuilder.pattern(PMML4Result.class.getSimpleName()).id(PMML4_RESULT_IDENTIFIER, false);
         StringBuilder stringBuilder = new StringBuilder();
-        stringBuilder.append(String.format(MODIFY_STATUS_HOLDER, "****DONE****"));
-        stringBuilder.append(String.format(UPDATE_PMML4_RESULT, "OK", node.getScore().toString()));
+        stringBuilder.append(String.format(MODIFY_STATUS_HOLDER, StatusCode.DONE.name()));
+        stringBuilder.append(String.format(UPDATE_PMML4_RESULT, StatusCode.OK.name(), node.getScore().toString()));
         String rhs = stringBuilder.toString();
         ruleBuilder.rhs(rhs);
     }
 
     static void declareBranchWhen(final PackageDescrBuilder builder, final RuleDescrBuilder ruleBuilder, String parentPath, final Node node, final Map<String, String> fieldTypeMap) {
+        logger.info("declareBranchWhen {} {} {} {} {}", builder, ruleBuilder, parentPath, node, fieldTypeMap);
         String currentRule = String.format("%s_%s", parentPath, node.getScore().toString());
         String rhs = String.format(MODIFY_STATUS_HOLDER, currentRule);
         ruleBuilder.rhs(rhs);
