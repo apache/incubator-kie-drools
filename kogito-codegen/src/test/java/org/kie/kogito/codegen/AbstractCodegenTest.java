@@ -21,6 +21,7 @@ import java.net.URLClassLoader;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
@@ -123,11 +124,13 @@ public class AbstractCodegenTest {
         MemoryFileSystem srcMfs = new MemoryFileSystem();
         MemoryFileSystem trgMfs = new MemoryFileSystem();
 
-        String[] sources = new String[generatedFiles.size()];
-        int index = 0;
+        List<String> sources = new ArrayList<>();
         for (GeneratedFile entry : generatedFiles) {
             String fileName = entry.relativePath();
-            sources[index++] = fileName;
+            if (!fileName.endsWith( ".java" )) {
+                continue;
+            }
+            sources.add( fileName );
             srcMfs.write(fileName, entry.contents());
             log(new String(entry.contents()));
         }
@@ -142,7 +145,7 @@ public class AbstractCodegenTest {
             }
         }
 
-        CompilationResult result = JAVA_COMPILER.compile(sources, srcMfs, trgMfs, this.getClass().getClassLoader());
+        CompilationResult result = JAVA_COMPILER.compile(sources.toArray( new String[sources.size()] ), srcMfs, trgMfs, this.getClass().getClassLoader());
         assertThat(result).isNotNull();
         assertThat(result.getErrors()).as(Arrays.toString(result.getErrors())).hasSize(0);
 
