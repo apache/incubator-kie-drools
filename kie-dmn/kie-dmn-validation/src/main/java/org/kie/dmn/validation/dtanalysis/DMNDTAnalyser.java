@@ -112,6 +112,7 @@ public class DMNDTAnalyser {
         compileTableComputeColStringMissingEnum(model, dt, ddtaTable);
         printDebugTableInfo(ddtaTable);
         DTAnalysis analysis = new DTAnalysis(dt, ddtaTable);
+        analysis.computeOutputInLOV();
         if (!dt.getHitPolicy().equals(HitPolicy.COLLECT)) {
             if (ddtaTable.getColIDsStringWithoutEnum().isEmpty()) {
                 LOG.debug("findGaps");
