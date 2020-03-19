@@ -21,11 +21,11 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.drools.modelcompiler.domain.Person;
-import org.junit.Test;
-import org.kie.api.runtime.KieContainer;
 import org.drools.ruleunit.DataSource;
 import org.drools.ruleunit.RuleUnit;
 import org.drools.ruleunit.RuleUnitExecutor;
+import org.junit.Test;
+import org.kie.api.runtime.KieContainer;
 
 import static java.util.Arrays.asList;
 
@@ -109,6 +109,35 @@ public class RuleUnitCompilerTest extends BaseModelTest {
         assertEquals(2, executor.run( unit ) );
 
         assertTrue( unit.getResults().containsAll( asList("Mario", "Marilena") ) );
+    }
+
+    @Test
+    public void testAccumulateWithOOPath() {
+        // DROOLS-5179
+
+        String str =
+                "import " + Person.class.getCanonicalName() + ";" +
+                "import " + AdultUnit.class.getCanonicalName() + "\n" +
+                "rule Adult @Unit( AdultUnit.class ) when\n" +
+                "  accumulate ( $p: /persons[age >= adultAge]; \n" +
+                "                $sum : sum($p.getAge())  \n" +
+                "              )                          \n" +
+                "then\n" +
+                "  results.add(\"\" + $sum);\n" +
+                "end";
+
+        KieContainer kieContainer = getKieContainer( null, str );
+        RuleUnitExecutor executor = RuleUnitExecutor.newRuleUnitExecutor( kieContainer );
+
+        DataSource<Person> persons = DataSource.create( new Person( "Mario", 42 ),
+                                                        new Person( "Marilena", 44 ),
+                                                        new Person( "Sofia", 4 ) );
+
+        AdultUnit unit = new AdultUnit(persons);
+        assertEquals(1, executor.run( unit ) );
+
+        assertEquals( 1, unit.getResults().size() );
+        assertEquals( "86", unit.getResults().get(0) );
     }
 
     public static class PositiveNegativeDTUnit implements RuleUnit {
