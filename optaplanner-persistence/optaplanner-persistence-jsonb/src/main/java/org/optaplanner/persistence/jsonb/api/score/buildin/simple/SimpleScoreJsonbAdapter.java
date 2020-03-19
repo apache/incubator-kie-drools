@@ -1,5 +1,5 @@
 /*
- * Copyright 2016 Red Hat, Inc. and/or its affiliates.
+ * Copyright 2020 Red Hat, Inc. and/or its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -14,7 +14,19 @@
  * limitations under the License.
  */
 
+package org.optaplanner.persistence.jsonb.api.score.buildin.simple;
+
+import org.optaplanner.core.api.score.buildin.simple.SimpleScore;
+import org.optaplanner.persistence.jsonb.api.score.AbstractScoreJsonbAdapter;
+
+@SuppressWarnings("checkstyle:javadocstyle")
 /**
- * XStream bindings for {@link org.optaplanner.core.api.score.Score}.
+ * {@inheritDoc}
  */
-package org.optaplanner.persistence.xstream.api.score;
+public class SimpleScoreJsonbAdapter extends AbstractScoreJsonbAdapter<SimpleScore> {
+
+    @Override
+    public SimpleScore adaptFromJson(String scoreString) {
+        return SimpleScore.parseScore(scoreString);
+    }
+}

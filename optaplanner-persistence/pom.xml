@@ -28,6 +28,7 @@
     <module>optaplanner-persistence-jaxb</module>
     <module>optaplanner-persistence-jackson</module>
     <module>optaplanner-persistence-jpa</module>
+    <module>optaplanner-persistence-jsonb</module>
   </modules>
 
 </project>

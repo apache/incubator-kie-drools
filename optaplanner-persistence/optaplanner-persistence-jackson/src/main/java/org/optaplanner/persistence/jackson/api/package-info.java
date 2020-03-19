@@ -15,6 +15,6 @@
  */
 
 /**
- * Jackson binders.
+ * Jackson bindings.
  */
 package org.optaplanner.persistence.jackson.api;

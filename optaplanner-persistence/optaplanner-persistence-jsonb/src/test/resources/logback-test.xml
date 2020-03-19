@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<configuration>
+
+  <appender name="consoleAppender" class="ch.qos.logback.core.ConsoleAppender">
+    <encoder>
+      <!-- %L lowers performance, %C and %c break indentation and therefore reduce readability, normal %t is verbose -->
+      <pattern>%d{HH:mm:ss.SSS} [%-12.12t] %-5p %m%n</pattern>
+    </encoder>
+  </appender>
+
+  <!-- To override the info log level from the command line, use the VM option "-Dlogback.level.org.optaplanner=trace" -->
+  <logger name="org.optaplanner" level="${logback.level.org.optaplanner:-info}"/>
+
+  <root level="warn">
+    <appender-ref ref="consoleAppender" />
+  </root>
+
+</configuration>

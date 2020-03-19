@@ -15,6 +15,6 @@
  */
 
 /**
- * JAXB binders for {@link org.optaplanner.core.api.score.Score}.
+ * JAXB bindings for {@link org.optaplanner.core.api.score.Score}.
  */
 package org.optaplanner.persistence.jaxb.api.score;
