@@ -2,6 +2,7 @@ module.exports = data = [
   {
     id: 'a1e139d5-4e77-48c9-84ae-34578e904e5a',
     processId: 'hotelBooking',
+    businessKey: 'T1234HotelBooking01',
     parentProcessInstanceId: 'e4448857-fa0c-403b-ad69-f0a353458b9d',
     parentProcessInstance: {
       id: 'e4448857-fa0c-403b-ad69-f0a353458b9d',
@@ -52,6 +53,7 @@ module.exports = data = [
   {
     id: 'a23e6c20-02c2-4c2b-8c5c-e988a0adf863',
     processId: 'flightBooking',
+    businessKey: 'T1234FlightBooking01',
     parentProcessInstanceId: 'e4448857-fa0c-403b-ad69-f0a353458b9d',
     parentProcessInstance: {
       id: 'e4448857-fa0c-403b-ad69-f0a353458b9d',
@@ -102,6 +104,7 @@ module.exports = data = [
   {
     id: 'a23e6c20-02c2-4c2b-8c5c-e988a0adf862',
     processId: 'flightBooking',
+    businessKey: 'T1234FlightBooking02',
     parentProcessInstanceId: 'e4448857-fa0c-403b-ad69-f0a353458b9d',
     parentProcessInstance: {
       id: 'e4448857-fa0c-403b-ad69-f0a353458b9d',
@@ -152,6 +155,7 @@ module.exports = data = [
   {
     id: 'e4448857-fa0c-403b-ad69-f0a353458b9d',
     processId: 'travels',
+    businessKey: 'T1234',
     parentProcessInstanceId: null,
     parentProcessInstance: null,
     processName: 'travels',
@@ -269,6 +273,7 @@ module.exports = data = [
   {
     id: 'fc1b6535-d557-40df-82c8-b425b9dc531b',
     processId: 'flightBooking',
+    businessKey: 'Tra234FlightBooking01',
     parentProcessInstanceId: '538f9feb-5a14-4096-b791-2055b38da7c6',
     parentProcessInstance: {
       id: '538f9feb-5a14-4096-b791-2055b38da7c6',
@@ -320,6 +325,7 @@ module.exports = data = [
   {
     id: 'ff65b793-bb88-4567-b7e3-73eee35772a4',
     processId: 'hotelBooking',
+    businessKey: 'Tra234HotelBooking01',
     parentProcessInstanceId: '538f9feb-5a14-4096-b791-2055b38da7c6',
     parentProcessInstance: {
       id: '538f9feb-5a14-4096-b791-2055b38da7c6',
@@ -370,6 +376,7 @@ module.exports = data = [
   {
     id: '538f9feb-5a14-4096-b791-2055b38da7c6',
     processId: 'travels',
+    businessKey: 'Tra234',
     parentProcessInstanceId: null,
     parentProcessInstance: null,
     processName: 'travels',
@@ -473,6 +480,7 @@ module.exports = data = [
   {
     id: '8035b580-6ae4-4aa8-9ec0-e18e19809e0b',
     processId: 'travels',
+    businessKey: null,
     parentProcessInstanceId: null,
     parentProcessInstance: null,
     processName: 'travels',
@@ -577,6 +585,7 @@ module.exports = data = [
   {
     id: '8035b580-6ae4-4aa8-9ec0-e18e19809e0blmnop',
     processId: 'travels',
+    businessKey: 'Tr1122',
     parentProcessInstanceId: null,
     parentProcessInstance: null,
     processName: 'travels',
@@ -676,6 +685,7 @@ module.exports = data = [
     parentProcessInstance: null,
     processName: 'travels',
     roles: [],
+    businessKey: null,
     state: 'COMPLETED',
     rootProcessInstanceId: null,
     endpoint: 'http://localhost:4000',
@@ -767,6 +777,7 @@ module.exports = data = [
   {
     id: '8035b580-6ae4-4aa8-9ec0-e18e19809e0bccddee',
     processId: 'travels',
+    businessKey: null,
     parentProcessInstanceId: null,
     processName: 'travels',
     roles: [],
@@ -861,6 +872,7 @@ module.exports = data = [
   {
     id: 'c54ca5b0-b975-46e2-a9a0-6a86bf7ac21e',
     processId: 'flightBooking',
+    businessKey: null,
     parentProcessInstanceId: '8035b580-6ae4-4aa8-9ec0-e18e19809e0b',
     parentProcessInstance: {
       id: '8035b580-6ae4-4aa8-9ec0-e18e19809e0b',
@@ -921,6 +933,7 @@ module.exports = data = [
       id: 'c54ca5b0-b975-46e2-a9a0-6a86bf7ac21e',
       processName: 'FlightBooking'
     },
+    businessKey: null,
     processName: 'FlightBooking test 1',
     rootProcessInstanceId: '8035b580-6ae4-4aa8-9ec0-e18e19809e0b',
     roles: [],
@@ -971,6 +984,7 @@ module.exports = data = [
   {
     id: 'c54ca5b0-b975-46e2-a9a0-6a86bf7ac21eajabbcc',
     processId: 'flightBooking test2',
+    businessKey: null,
     parentProcessInstanceId: 'c54ca5b0-b975-46e2-a9a0-6a86bf7ac21eaccd',
     parentProcessInstance: {
       id: 'c54ca5b0-b975-46e2-a9a0-6a86bf7ac21eaccd',
@@ -1021,6 +1035,7 @@ module.exports = data = [
   {
     id: '2d962eef-45b8-48a9-ad4e-9cde0ad6af88',
     processId: 'hotelBooking',
+    businessKey: null,
     parentProcessInstanceId: '8035b580-6ae4-4aa8-9ec0-e18e19809e0b',
     parentProcessInstance: {
       id: '8035b580-6ae4-4aa8-9ec0-e18e19809e0b',
@@ -1075,6 +1090,7 @@ module.exports = data = [
     processName: 'travels',
     roles: [],
     state: 'ABORTED',
+    businessKey: null,
     rootProcessInstanceId: null,
     endpoint: 'http://localhost:4000',
     addons: [],
@@ -1173,6 +1189,7 @@ module.exports = data = [
     parentProcessInstanceId: '8035b580-6ae4-4aa8-9ec0-e18e19809e0basadadads',
     rootProcessInstanceId: '8035b580-6ae4-4aa8-9ec0-e18e19809e0basadadads',
     processName: 'HotelBooking',
+    businessKey: 'Hotel11',
     roles: [],
     state: 'COMPLETED',
     endpoint: 'http://localhost:4000',
@@ -1217,6 +1234,7 @@ module.exports = data = [
   {
     id: '8035b580-6ae4-4aa8-9ec0-e18e19809e0b1',
     processId: 'travels',
+    businessKey: 'travels001',
     parentProcessInstanceId: null,
     processName: 'travels1',
     roles: [],
@@ -1321,6 +1339,7 @@ module.exports = data = [
   {
     id: '8035b580-6ae4-4aa8-9ec0-e18e19809e0b2',
     processId: 'travels',
+    businessKey: null,
     parentProcessInstanceId: null,
     processName: 'travels2',
     roles: [],
@@ -1425,6 +1444,7 @@ module.exports = data = [
   {
     id: '8035b580-6ae4-4aa8-9ec0-e18e19809e0b3',
     processId: 'travels',
+    businessKey: 'Travels@123',
     parentProcessInstanceId: null,
     processName: 'travels3',
     roles: [],
@@ -1529,6 +1549,7 @@ module.exports = data = [
   {
     id: '8035b580-6ae4-4aa8-9ec0-e18e19809e0b4',
     processId: 'travels',
+    businessKey: null,
     parentProcessInstanceId: null,
     processName: 'travels4',
     roles: [],
@@ -1633,6 +1654,7 @@ module.exports = data = [
   {
     id: '8035b580-6ae4-4aa8-9ec0-e18e19809e0b5',
     processId: 'travels',
+    businessKey: null,
     parentProcessInstanceId: null,
     processName: 'travels5',
     roles: [],
@@ -1737,6 +1759,7 @@ module.exports = data = [
   {
     id: '8035b580-6ae4-4aa8-9ec0-e18e19809e0b6',
     processId: 'travels',
+    businessKey: 'Trav99',
     parentProcessInstanceId: null,
     processName: 'travels6',
     roles: [],
@@ -1841,6 +1864,7 @@ module.exports = data = [
   {
     id: '8035b580-6ae4-4aa8-9ec0-e18e19809e0b7',
     processId: 'travels',
+    businessKey: 'T001002',
     parentProcessInstanceId: null,
     processName: 'travels7',
     roles: [],
@@ -1945,6 +1969,7 @@ module.exports = data = [
   {
     id: '8035b580-6ae4-4aa8-9ec0-e18e19809e0b8',
     processId: 'travels',
+    businessKey: null,
     parentProcessInstanceId: null,
     processName: 'travels8',
     roles: [],
@@ -2049,6 +2074,7 @@ module.exports = data = [
   {
     id: '8035b580-6ae4-4aa8-9ec0-e18e19809e0b9',
     processId: 'travels',
+    businessKey: null,
     parentProcessInstanceId: null,
     processName: 'travels9',
     roles: [],
@@ -2153,6 +2179,7 @@ module.exports = data = [
   {
     id: '8035b580-6ae4-4aa8-9ec0-e18e19809e0b10',
     processId: 'travels',
+    businessKey: 'newTravels',
     parentProcessInstanceId: null,
     processName: 'travels10',
     roles: [],
@@ -2257,6 +2284,7 @@ module.exports = data = [
   {
     id: '8035b580-6ae4-4aa8-9ec0-e18e19809e0b11',
     processId: 'travels',
+    businessKey: 'Trav11test',
     parentProcessInstanceId: null,
     processName: 'travels11',
     roles: [],
@@ -2361,6 +2389,7 @@ module.exports = data = [
   {
     id: '8035b580-6ae4-4aa8-9ec0-e18e19809e0b12',
     processId: 'travels',
+    businessKey: null,
     parentProcessInstanceId: null,
     processName: 'travels12',
     roles: [],
@@ -2465,6 +2494,7 @@ module.exports = data = [
   {
     id: '8035b580-6ae4-4aa8-9ec0-e18e19809e0b13abbccccc',
     processId: 'travels',
+    businessKey: null,
     parentProcessInstanceId: null,
     processName: 'travels13',
     roles: [],

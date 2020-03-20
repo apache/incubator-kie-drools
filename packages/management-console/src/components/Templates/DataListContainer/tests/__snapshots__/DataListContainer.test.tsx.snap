@@ -33,7 +33,7 @@ exports[`DataListContainer component tests Snapshot tests 1`] = `
       <BreadcrumbItem
         isActive={true}
       >
-        Process instances
+        Process instances
       </BreadcrumbItem>
     </Component>
   </PageSection>
@@ -57,14 +57,18 @@ exports[`DataListContainer component tests Snapshot tests 1`] = `
             }
             filterClick={[Function]}
             filters={
-              Array [
-                "ACTIVE",
-              ]
+              Object {
+                "businessKey": Array [],
+                "status": Array [
+                  "ACTIVE",
+                ],
+              }
             }
             getProcessInstances={[Function]}
             handleAbortAll={[Function]}
-            initData={Array []}
+            initData={Object {}}
             pageSize={10}
+            searchWord=""
             setAbortedObj={[Function]}
             setCheckedArray={[Function]}
             setFilters={[Function]}
@@ -72,6 +76,7 @@ exports[`DataListContainer component tests Snapshot tests 1`] = `
             setIsStatusSelected={[Function]}
             setLimit={[Function]}
             setOffset={[Function]}
+            setSearchWord={[Function]}
           />
           <DataListComponent
             abortedObj={Object {}}
@@ -80,7 +85,16 @@ exports[`DataListContainer component tests Snapshot tests 1`] = `
                 "ACTIVE",
               ]
             }
-            initData={Array []}
+            filters={
+              Object {
+                "businessKey": Array [],
+                "status": Array [
+                  "ACTIVE",
+                ],
+              }
+            }
+            initData={Object {}}
+            isFilterClicked={false}
             isLoading={false}
             isLoadingMore={false}
             pageSize={10}

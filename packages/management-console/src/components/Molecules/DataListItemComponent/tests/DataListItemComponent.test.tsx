@@ -1,6 +1,7 @@
 import React from 'react';
 import { shallow } from 'enzyme';
 import DataListItemComponent from '../DataListItemComponent';
+import { ProcessInstanceState } from '../../../../graphql/types';
 
 const initData = {
     ProcessInstances: [
@@ -114,23 +115,17 @@ const initData = {
 
 const props = {
     id: 0,
-    checkedArray: ['ACTIVE'],
+    checkedArray: [ProcessInstanceState.Active],
     processInstanceData: {
+        lastUpdate: '2019-10-22T03:40:44.089Z',
         id: 'c54ca5b0-b975-46e2-a9a0-6a86bf7ac21e',
         processId: 'flightBooking',
         parentProcessInstanceId: '8035b580-6ae4-4aa8-9ec0-e18e19809e0b',
-        parentProcessInstance: {
-            id: '8035b580-6ae4-4aa8-9ec0-e18e19809e0b',
-            processName: 'travels'
-        },
-        isChecked: false,
-        lastUpdate: '2019-10-22T03:40:44.089Z',
         processName: 'FlightBooking',
-        rootProcessInstanceId: '8035b580-6ae4-4aa8-9ec0-e18e19809e0b',
-        roles: [],
-        state: 'COMPLETED',
         endpoint: 'http://localhost:4000',
+        state: ProcessInstanceState.Completed,
         addons: [],
+        businessKey: 'Tra1122',
         error: {
             nodeDefinitionId: 'a1e139d5-81c77-48c9-84ae-34578e90433n',
             message: 'Something went wrong'
@@ -144,6 +139,7 @@ const props = {
                 name: 'End Event 1',
                 definitionId: 'EndEvent_1',
                 id: '7244ba1b-75ec-4789-8c65-499a0c5b1a6f',
+                nodeId: '123-456-789',
                 enter: '2019-10-22T04:43:01.144Z',
                 exit: '2019-10-22T04:43:01.144Z',
                 type: 'EndNode'
@@ -152,6 +148,7 @@ const props = {
                 name: 'Book flight',
                 definitionId: 'ServiceTask_1',
                 id: '2f588da5-a323-4111-9017-3093ef9319d1',
+                nodeId: '123-456-789',
                 enter: '2019-10-22T04:43:01.144Z',
                 exit: '2019-10-22T04:43:01.144Z',
                 type: 'WorkItemNode'
@@ -160,16 +157,14 @@ const props = {
                 name: 'StartProcess',
                 definitionId: 'StartEvent_1',
                 id: '6ed7aa17-4bb1-48e3-b34a-5a4c5773dff2',
+                nodeId: '123-456-789',
                 enter: '2019-10-22T04:43:01.144Z',
                 exit: '2019-10-22T04:43:01.144Z',
                 type: 'StartNode'
             }
         ],
         childProcessInstances: [
-            {
-                id: 'c54ca5b0-b975-46e2-a9a0-6a86bf7ac21eaccd',
-                processName: 'FlightBooking test 1'
-            }
+
         ]
     },
     initData,
@@ -178,6 +173,7 @@ const props = {
     abortedObj: { "8035b580-6ae4-4aa8-9ec0-e18e19809e0b": "travels" },
     loadingInitData: false
 }
+
 
 describe('DataListItem component tests', () => {
     it('Snapshot tests', () => {

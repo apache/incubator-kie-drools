@@ -24,12 +24,11 @@ import { InfoCircleIcon } from '@patternfly/react-icons';
 
 const DataListContainer: React.FC<{}> = () => {
   const pSize = 10;
-  const [initData, setInitData] = useState<any>([]);
+  const [initData, setInitData] = useState<any>({});
   const [checkedArray, setCheckedArray] = useState<any>(['ACTIVE']);
   const [isLoading, setIsLoading] = useState(false);
   const [isError, setIsError] = useState(false);
   const [isStatusSelected, setIsStatusSelected] = useState(true);
-  const [filters, setFilters] = useState(checkedArray);
   const [abortedObj, setAbortedObj] = useState({});
   const [isAbortModalOpen, setIsAbortModalOpen] = useState(false);
   const [abortedMessageObj, setAbortedMessageObj] = useState({});
@@ -41,6 +40,13 @@ const DataListContainer: React.FC<{}> = () => {
   const [pageSize, setPageSize] = useState(pSize);
   const [isLoadingMore, setIsLoadingMore] = useState(false);
   const [isDefiningFilter, setIsDefiningFilter] = useState(true);
+  const [filters, setFilters] = useState({
+    status: ['ACTIVE'],
+    businessKey: []
+  });
+  const [searchWord, setSearchWord] = useState<string>('');
+  const [isFilterClicked, setIsFilterClicked] = useState<boolean>(false);
+
   const [
     getProcessInstances,
     { loading, data }
@@ -54,6 +60,23 @@ const DataListContainer: React.FC<{}> = () => {
   };
 
   const onFilterClick = async (arr = checkedArray) => {
+    const searchWordsArray = [];
+    const copyOfBusinessKeysArray = [...filters.businessKey];
+    if (searchWord.length !== 0) {
+      if (!copyOfBusinessKeysArray.includes(searchWord)) {
+        copyOfBusinessKeysArray.push(searchWord);
+        setFilters({
+          ...filters,
+          status: checkedArray,
+          businessKey: [...filters.businessKey, searchWord]
+        });
+      }
+    }
+    copyOfBusinessKeysArray.map(word => {
+      const tempBusinessKeys = { businessKey: { like: word } };
+      searchWordsArray.push(tempBusinessKeys);
+    });
+    setIsFilterClicked(true);
     setIsLoading(true);
     setIsLoadingMore(false);
     setIsError(false);
@@ -64,14 +87,14 @@ const DataListContainer: React.FC<{}> = () => {
     setLimit(pSize);
     setPageSize(pSize);
     setOffset(0);
-    getProcessInstances({ variables: { state: arr, offset:0, limit:pSize } });
+    getProcessInstances({ variables: { state: arr, offset: 0, businessKeys: searchWordsArray, limit: pSize } });
   };
 
-  const onGetMoreInstances = (initVal, _pageSize)=> {
+  const onGetMoreInstances = (initVal, _pageSize) => {
     setIsLoadingMore(true);
     setPageSize(_pageSize)
     getProcessInstances({
-      variables: { state: checkedArray, offset: initVal, limit:_pageSize }
+      variables: { state: checkedArray, offset: initVal, limit: _pageSize }
     });
   }
 
@@ -83,13 +106,14 @@ const DataListContainer: React.FC<{}> = () => {
     if (isLoadingMore === undefined || !isLoadingMore) {
       setIsLoading(loading);
     }
+    setSearchWord('');
     if (!loading && data !== undefined) {
       data.ProcessInstances.map((instance: any) => {
         instance.isChecked = false;
         instance.isOpen = false;
       });
       setLimit(data.ProcessInstances.length);
-      if( offset > 0 && initData.ProcessInstances.length > 0){
+      if (offset > 0 && initData.ProcessInstances.length > 0) {
         setIsLoadingMore(false);
         initData.ProcessInstances = initData.ProcessInstances.concat(data.ProcessInstances);
       } else {
@@ -199,7 +223,7 @@ const DataListContainer: React.FC<{}> = () => {
           <BreadcrumbItem>
             <Link to={'/'}>Home</Link>
           </BreadcrumbItem>
-          <BreadcrumbItem isActive>Process instances</BreadcrumbItem>
+          <BreadcrumbItem isActive>Process instances</BreadcrumbItem>
         </Breadcrumb>
       </PageSection>
       <PageSection>
@@ -225,6 +249,8 @@ const DataListContainer: React.FC<{}> = () => {
                     getProcessInstances={getProcessInstances}
                     setLimit={setLimit}
                     pageSize={pSize}
+                    setSearchWord={setSearchWord}
+                    searchWord={searchWord}
                   />
                 </>
               )}
@@ -240,27 +266,31 @@ const DataListContainer: React.FC<{}> = () => {
                   isLoadingMore={isLoadingMore}
                   abortedObj={abortedObj}
                   setAbortedObj={setAbortedObj}
+                  isFilterClicked={isFilterClicked}
+                  filters={filters}
                 />
               ) : (
-                <EmptyStateComponent
-                  iconType="warningTriangleIcon1"
-                  title="No status is selected"
-                  body="Try selecting at least one status to see results"
-                  filterClick={onFilterClick}
-                  setFilters={setFilters}
-                  setCheckedArray={setCheckedArray}
-                />
-              )}
+                  <EmptyStateComponent
+                    iconType="warningTriangleIcon1"
+                    title="No status is selected"
+                    body="Try selecting at least one status to see results"
+                    filterClick={onFilterClick}
+                    setFilters={setFilters}
+                    setCheckedArray={setCheckedArray}
+                    setSearchWord={setSearchWord}
+                    filters={filters}
+                  />
+                )}
               {(!loading && !isLoading && !isDefiningFilter && initData !== undefined && limit === pageSize) && (
                 <DataList aria-label="Simple data list example">
                   <DataListItem aria-labelledby="kie-datalist-item">
                     <DataListCell className="kogito-management-console-load-more">
-                        <LoadMoreComponent
-                          offset={offset}
-                          setOffset={setOffset}
-                          getProcessInstances={onGetMoreInstances}
-                          pageSize={pageSize}
-                        />
+                      <LoadMoreComponent
+                        offset={offset}
+                        setOffset={setOffset}
+                        getProcessInstances={onGetMoreInstances}
+                        pageSize={pageSize}
+                      />
                     </DataListCell>
                   </DataListItem>
                 </DataList>

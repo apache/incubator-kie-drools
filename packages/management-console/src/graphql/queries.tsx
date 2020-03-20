@@ -5,11 +5,13 @@ const GET_PROCESS_INSTANCES = gql`
     $state: [ProcessInstanceState!]
     $offset: Int
     $limit: Int
+    $businessKeys: [ProcessInstanceArgument!]
   ) {
     ProcessInstances(
       where: {
         parentProcessInstanceId: { isNull: true }
         state: { in: $state }
+        or: $businessKeys
       }
       pagination: { offset: $offset, limit: $limit }
     ) {
@@ -24,6 +26,7 @@ const GET_PROCESS_INSTANCES = gql`
       lastUpdate
       addons
       endpoint
+      businessKey
       error {
         nodeDefinitionId
         message
@@ -48,6 +51,7 @@ const GET_CHILD_INSTANCES = gql`
       lastUpdate
       endpoint
       addons
+      businessKey
       error {
         nodeDefinitionId
         message

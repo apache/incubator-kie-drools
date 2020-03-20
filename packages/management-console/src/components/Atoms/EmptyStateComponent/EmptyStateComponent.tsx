@@ -23,6 +23,8 @@ interface IOwnProps {
   setFilters?: any;
   setCheckedArray?: any;
   refetch?: any;
+  setSearchWord?: any;
+  filters?: any;
 }
 const EmptyStateComponent: React.FC<IOwnProps> = ({
   iconType,
@@ -31,12 +33,15 @@ const EmptyStateComponent: React.FC<IOwnProps> = ({
   filterClick,
   setFilters,
   setCheckedArray,
-  refetch
+  refetch,
+  setSearchWord,
+  filters
 }) => {
   const resetClick = () => {
+    setSearchWord('');
     filterClick(['ACTIVE']);
-    setFilters(['ACTIVE']);
     setCheckedArray(['ACTIVE']);
+    setFilters({ ...filters, status: ['ACTIVE'] });
   };
   return (
     <Bullseye>

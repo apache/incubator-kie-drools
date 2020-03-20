@@ -9,9 +9,12 @@ import {
   Button,
   Select,
   SelectOption,
-  SelectVariant
+  SelectVariant,
+  InputGroup,
+  TextInput,
+  ButtonVariant
 } from '@patternfly/react-core';
-import { FilterIcon, SyncIcon } from '@patternfly/react-icons';
+import { FilterIcon, SyncIcon, SearchIcon } from '@patternfly/react-icons';
 import _ from 'lodash';
 import './DatatoolbarComponent.css';
 import { ProcessInstanceState } from '../../../graphql/types';
@@ -28,10 +31,12 @@ interface IOwnProps {
   abortedObj: any;
   setAbortedObj: any;
   handleAbortAll: any;
-  setOffset: (offset:number)=>void;
-  getProcessInstances: (options: any)=>void;
-  setLimit: (limit:number)=>void;
-  pageSize:number;
+  setOffset: (offset: number) => void;
+  getProcessInstances: (options: any) => void;
+  setLimit: (limit: number) => void;
+  pageSize: number;
+  setSearchWord: (searchWord: string) => void;
+  searchWord: string;
 }
 const DataToolbarComponent: React.FC<IOwnProps> = ({
   checkedArray,
@@ -45,7 +50,9 @@ const DataToolbarComponent: React.FC<IOwnProps> = ({
   setOffset,
   getProcessInstances,
   setLimit,
-  pageSize
+  pageSize,
+  setSearchWord,
+  searchWord
 }) => {
   const [isExpanded, setIsExpanded] = useState<boolean>(false);
   const [isFilterClicked, setIsFilterClicked] = useState<boolean>(false);
@@ -54,11 +61,11 @@ const DataToolbarComponent: React.FC<IOwnProps> = ({
 
   const onFilterClick = () => {
     if (checkedArray.length === 0) {
-      setFilters(checkedArray);
+      setFilters({ ...filters, status: checkedArray });
       setIsFilterClicked(true);
       setIsStatusSelected(false);
     } else {
-      setFilters(checkedArray);
+      setFilters({ ...filters, status: checkedArray });
       filterClick();
       setIsFilterClicked(true);
       setIsStatusSelected(true);
@@ -85,37 +92,51 @@ const DataToolbarComponent: React.FC<IOwnProps> = ({
   };
 
   const onDelete = (type = '', id = '') => {
-    if (checkedArray.length === 1 && filters.length === 1) {
-      const index = checkedArray.indexOf(id);
-      checkedArray.splice(index, 1);
-      setCheckedArray([]);
-      setFilters([]);
-      setIsStatusSelected(false);
-    } else if (!isFilterClicked) {
-      if (filters.length === 1) {
+    if (type === 'Status') {
+      if (checkedArray.length === 1 && filters.status.length === 1) {
+        const index = checkedArray.indexOf(id);
+        checkedArray.splice(index, 1);
         setCheckedArray([]);
-        setFilters([]);
+        setFilters({ ...filters, status: [], businessKey: [] });
         setIsStatusSelected(false);
-        setIsFilterClicked(false);
+        setShouldRefresh(false);
+      } else if (!isFilterClicked) {
+        if (filters.status.length === 1) {
+          setCheckedArray([]);
+          setFilters({ ...filters, status: [], businessKey: [] });
+          setIsStatusSelected(false);
+          setIsFilterClicked(false);
+        } else {
+          const index = filters.status.indexOf(id);
+          checkedArray.splice(index, 1);
+          checkedArray = [...filters.status];
+          setCheckedArray(checkedArray);
+          filterClick(checkedArray);
+          setIsFilterClicked(true);
+          setShouldRefresh(true);
+        }
       } else {
-        const index = filters.indexOf(id);
-        filters.splice(index, 1);
-        checkedArray = [...filters];
-        setCheckedArray(checkedArray);
-        filterClick(filters);
-        setIsFilterClicked(true);
+        const index = checkedArray.indexOf(id);
+        checkedArray.splice(index, 1);
+        filterClick();
+        setShouldRefresh(true);
       }
-    } else {
-      const index = checkedArray.indexOf(id);
-      checkedArray.splice(index, 1);
+    }
+    if (type === 'Business key') {
+      filters.businessKey.splice(filters.businessKey.indexOf(id), 1);
       filterClick();
     }
-    setShouldRefresh(true);
   };
 
   useEffect(() => {
     if (!checkedArray.length && isFilterClicked) {
-      setFilters(checkedArray);
+      setSearchWord('');
+      setCheckedArray(checkedArray);
+      setFilters({
+        ...filters,
+        status: checkedArray,
+        businessKey: [...filters.businessKey]
+      });
     }
   }, [checkedArray]);
 
@@ -123,17 +144,23 @@ const DataToolbarComponent: React.FC<IOwnProps> = ({
     setOffset(0);
     setLimit(pageSize);
     setIsClearAllClicked(true);
+    setSearchWord('');
     setCheckedArray(['ACTIVE']);
-    setFilters(['ACTIVE']);
+    setFilters({ ...filters, status: ['ACTIVE'], businessKey: [] });
+    filters.businessKey = [];
     filterClick(['ACTIVE']);
     getProcessInstances({
-      variables: { state: ProcessInstanceState.Active, offset: 0, limit: pageSize }
+      variables: {
+        state: ProcessInstanceState.Active,
+        offset: 0,
+        limit: pageSize
+      }
     });
     setShouldRefresh(true);
   };
 
   const onRefreshClick = () => {
-    if (shouldRefresh) {
+    if (shouldRefresh && checkedArray.length !== 0) {
       filterClick(checkedArray);
     }
   };
@@ -141,6 +168,20 @@ const DataToolbarComponent: React.FC<IOwnProps> = ({
     setIsExpanded(isExpandedItem);
   };
 
+  const handleTextBoxChange = event => {
+    const word = event;
+    setSearchWord(word);
+    if (word === '') {
+      setSearchWord('');
+      return;
+    }
+  };
+  const handleEnterClick = e => {
+    if (e.key === 'Enter') {
+      setShouldRefresh(true);
+      filterClick(checkedArray);
+    }
+  };
   const statusMenuItems = [
     <SelectOption key="ACTIVE" value="ACTIVE" />,
     <SelectOption key="COMPLETED" value="COMPLETED" />,
@@ -153,9 +194,10 @@ const DataToolbarComponent: React.FC<IOwnProps> = ({
     <React.Fragment>
       <DataToolbarGroup>
         <DataToolbarFilter
-          chips={filters}
+          chips={filters.status}
           deleteChip={onDelete}
           categoryName="Status"
+          className=""
         >
           <Select
             variant={SelectVariant.checkbox}
@@ -169,9 +211,28 @@ const DataToolbarComponent: React.FC<IOwnProps> = ({
             {statusMenuItems}
           </Select>
         </DataToolbarFilter>
+        <DataToolbarFilter
+          chips={filters.businessKey}
+          deleteChip={onDelete}
+          categoryName="Business key"
+        >
+          <InputGroup>
+            <TextInput
+              name="businessKey"
+              id="businessKey"
+              type="search"
+              aria-label="business key"
+              onChange={handleTextBoxChange}
+              onKeyPress={handleEnterClick}
+              placeholder="Filter by business key"
+              value={searchWord}
+              isDisabled={checkedArray.length === 0}
+            />
+          </InputGroup>
+        </DataToolbarFilter>
         <DataToolbarItem>
           <Button variant="primary" onClick={onFilterClick}>
-            Apply Filter
+            Apply filter
           </Button>
         </DataToolbarItem>
       </DataToolbarGroup>
@@ -186,10 +247,10 @@ const DataToolbarComponent: React.FC<IOwnProps> = ({
             Abort selected
           </Button>
         ) : (
-            <Button variant="secondary" isDisabled>
-              Abort selected
+          <Button variant="secondary" isDisabled>
+            Abort selected
           </Button>
-          )}
+        )}
       </DataToolbarItem>
     </React.Fragment>
   );
@@ -206,9 +267,7 @@ const DataToolbarComponent: React.FC<IOwnProps> = ({
           </Button>
         </DataToolbarItem>
       </DataToolbarGroup>
-      <DataToolbarGroup
-        className="pf-u-ml-auto"
-      >
+      <DataToolbarGroup className="pf-u-ml-auto">
         {buttonItems}
       </DataToolbarGroup>
     </React.Fragment>

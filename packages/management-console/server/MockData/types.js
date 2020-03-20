@@ -45,6 +45,7 @@ module.exports = typeDefs = gql`
     variables: String
     start: DateTime!
     end: DateTime
+    businessKey: String
     childProcessInstances: [ProcessInstance!]
     error: ProcessInstanceError
     addons: [String!]
@@ -140,6 +141,7 @@ module.exports = typeDefs = gql`
     end: DateArgument
     addons: StringArrayArgument
     lastUpdate: DateArgument
+    businessKey: StringArgument
   }
 
   input ProcessInstanceErrorArgument {

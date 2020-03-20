@@ -90,14 +90,40 @@ const resolvers = {
             args['where'].parentProcessInstanceId.equal
           );
         } else if (args['where'].parentProcessInstanceId.isNull) {
-          return (
-            datum.parentProcessInstanceId == null &&
-            args['where'].state.in.includes(datum.state)
-          );
+          if (
+            args['where'].or === undefined ||
+            (args['where'].or && args['where'].or.length === 0)
+          ) {
+            return (
+              datum.parentProcessInstanceId == null &&
+              args['where'].state.in.includes(datum.state)
+            );
+          } else {
+            if (
+              datum.parentProcessInstanceId === null &&
+              args['where'].state.in.includes(datum.state) &&
+              datum.businessKey !== null
+            ) {
+              for (let i = 0; i < args['where'].or.length; i++) {
+                if (
+                  datum.businessKey &&
+                  datum.businessKey
+                    .toLowerCase()
+                    .indexOf(
+                      args['where'].or[i].businessKey.like.toLowerCase()
+                    ) > -1
+                ) {
+                  return true;
+                }
+              }
+              return false;
+            }
+          }
         } else {
           return false;
         }
       });
+
       await timeout(2000);
       if (args['pagination']) {
         return paginatedResult(
@@ -110,6 +136,7 @@ const resolvers = {
       return result;
     }
   },
+
   DateTime: new GraphQLScalarType({
     name: 'DateTime',
     description: 'DateTime custom scalar type',

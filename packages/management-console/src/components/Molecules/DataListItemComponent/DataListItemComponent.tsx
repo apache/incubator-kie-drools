@@ -1,5 +1,5 @@
 import Moment from 'react-moment';
-import React, { useCallback, useState, useEffect, useRef } from 'react';
+import React, { useCallback, useState, useEffect } from 'react';
 import axios from 'axios';
 import {
   Button,
@@ -22,6 +22,7 @@ import { Link } from 'react-router-dom';
 import SpinnerComponent from '../../Atoms/SpinnerComponent/SpinnerComponent';
 import {
   useGetChildInstancesLazyQuery,
+  ProcessInstance,
   ProcessInstanceState
 } from '../../../graphql/types';
 import EmptyStateComponent from '../../Atoms/EmptyStateComponent/EmptyStateComponent';
@@ -37,30 +38,10 @@ import {
 } from '@patternfly/react-icons';
 import ErrorPopover from '../../Atoms/ErrorPopoverComponent/ErrorPopoverComponent';
 import ProcessBulkModalComponent from '../../Atoms/ProcessBulkModalComponent/ProcessBulkModalComponent';
-
-/* tslint:disable:no-string-literal */
-export interface IProcessInstanceError {
-  nodeDefinitionId: string;
-  message: string;
-}
-interface IProcessInstance {
-  lastUpdate: string;
-  id: string;
-  processId: string;
-  parentProcessInstanceId: string | null;
-  rootProcessInstanceId: string | null;
-  processName: string;
-  start: string;
-  state: string;
-  addons: string[];
-  endpoint: string;
-  error: IProcessInstanceError;
-  isChecked: boolean;
-}
-export interface IOwnProps {
+interface IOwnProps {
   id: number;
-  processInstanceData: IProcessInstance;
-  checkedArray: string[];
+  processInstanceData: ProcessInstance;
+  checkedArray: any;
   initData: any;
   setInitData: any;
   loadingInitData: boolean;
@@ -88,7 +69,7 @@ const DataListItemComponent: React.FC<IOwnProps> = ({
   const [isRetryModalOpen, setIsRetryModalOpen] = useState(false);
   const [isAbortModalOpen, setIsAbortModalOpen] = useState(false);
   const [titleType, setTitleType] = useState('');
-
+  const isChecked = 'isChecked';
   const [getChildInstances, { loading, data }] = useGetChildInstancesLazyQuery({
     fetchPolicy: 'network-only'
   });
@@ -162,7 +143,7 @@ const DataListItemComponent: React.FC<IOwnProps> = ({
           </>
         );
     }
-  }
+  };
 
   const handleSkipModalToggle = () => {
     setIsSkipModalOpen(!isSkipModalOpen);
@@ -177,7 +158,6 @@ const DataListItemComponent: React.FC<IOwnProps> = ({
   const handleAbortModalToggle = () => {
     setIsAbortModalOpen(!isAbortModalOpen);
   };
-
 
   const handleErrorModalToggle = () => {
     setModalTitle('Error');
@@ -250,9 +230,9 @@ const DataListItemComponent: React.FC<IOwnProps> = ({
         )
         .then(() => {
           setModalTitle('Process aborted');
+          processInstanceData.state = ProcessInstanceState.Aborted;
           setModalContent(`${processId} - process execution has been aborted.`);
           setTitleType('success');
-          processInstanceData.state = 'ABORTED';
           handleAbortModalToggle();
         })
         .catch(() => {
@@ -285,9 +265,9 @@ const DataListItemComponent: React.FC<IOwnProps> = ({
     const newExpanded =
       index >= 0
         ? [
-          ...expanded.slice(0, index),
-          ...expanded.slice(index + 1, expanded.length)
-        ]
+            ...expanded.slice(0, index),
+            ...expanded.slice(index + 1, expanded.length)
+          ]
         : [...expanded, _id];
     setexpanded(newExpanded);
 
@@ -341,17 +321,17 @@ const DataListItemComponent: React.FC<IOwnProps> = ({
 
   useEffect(() => {
     if (data !== undefined && !loading && !loadingInitData) {
-      data.ProcessInstances.map(instance => {
-        if (processInstanceData['isChecked']) {
-          instance['isChecked'] = true;
+      data.ProcessInstances.map((instance: any) => {
+        if (processInstanceData[isChecked]) {
+          instance.isChecked = true;
         } else {
-          instance['isChecked'] = false;
+          instance.isChecked = false;
         }
       });
       const copyOfInitData = { ...initData };
       copyOfInitData.ProcessInstances.map(instanceData => {
         if (instanceData.id === processInstanceData.id) {
-          instanceData['childDataList'] = data.ProcessInstances;
+          instanceData.childDataList = data.ProcessInstances;
         }
       });
       setInitData(copyOfInitData);
@@ -397,9 +377,6 @@ const DataListItemComponent: React.FC<IOwnProps> = ({
             }
           >
             Abort
-          </DropdownItem>,
-          <DropdownItem key={3} onClick={handleErrorModalToggle}>
-            View error
           </DropdownItem>
         ];
       } else {
@@ -418,11 +395,7 @@ const DataListItemComponent: React.FC<IOwnProps> = ({
         ];
       }
     } else {
-      return [
-        <DropdownItem key={1} onClick={handleErrorModalToggle}>
-          View error
-        </DropdownItem>
-      ];
+      return [];
     }
   };
 
@@ -456,8 +429,8 @@ const DataListItemComponent: React.FC<IOwnProps> = ({
           modalTitle === 'Skip operation'
             ? handleSkipModalToggle
             : modalTitle === 'Retry operation'
-              ? handleRetryModalToggle
-              : null
+            ? handleRetryModalToggle
+            : null
         }
         checkedArray={checkedArray}
         modalTitle={
@@ -484,31 +457,36 @@ const DataListItemComponent: React.FC<IOwnProps> = ({
             <DataListCheck
               aria-labelledby="width-kie-datalist-item"
               name="width-kie-datalist-item"
-              checked={processInstanceData['isChecked']}
+              checked={processInstanceData[isChecked]}
               onChange={() => {
                 onCheckBoxClick();
               }}
             />
           ) : (
-              <Tooltip
-                content={
-                  'Management add-on capability not enabled. Contact your administrator to set up.'
-                }
-                distance={-15}
-              >
-                <DataListCheck
-                  aria-labelledby="width-kie-datalist-item"
-                  name="width-kie-datalist-item"
-                  isDisabled={true}
-                />
-              </Tooltip>
-            )}
+            <Tooltip
+              content={
+                'Management add-on capability not enabled. Contact your administrator to set up.'
+              }
+              distance={-15}
+            >
+              <DataListCheck
+                aria-labelledby="width-kie-datalist-item"
+                name="width-kie-datalist-item"
+                isDisabled={true}
+              />
+            </Tooltip>
+          )}
           <DataListItemCells
             dataListCells={[
               <DataListCell key={1}>
                 <Link to={'/ProcessInstances/' + processInstanceData.id}>
                   <div>
-                    <strong>{processInstanceData.processName}</strong>
+                    <strong>
+                      {' '}
+                      {processInstanceData.processName}{' '}
+                      {processInstanceData.businessKey !== null &&
+                        ' - ' + processInstanceData.businessKey}
+                    </strong>
                   </div>
                 </Link>
                 {!processInstanceData.rootProcessInstanceId && (
@@ -534,20 +512,17 @@ const DataListItemComponent: React.FC<IOwnProps> = ({
                     stateIconCreator={stateIconCreator}
                   />
                 ) : (
-                    stateIconCreator(processInstanceData.state)
-                  )}
+                  stateIconCreator(processInstanceData.state)
+                )}
               </DataListCell>,
               <DataListCell key={2}>
                 {processInstanceData.start ? (
-                  <>
-                    Created{' '}
-                    <Moment fromNow>
-                      {new Date(`${processInstanceData.start}`)}
-                    </Moment>
-                  </>
+                  <Moment fromNow>
+                    {new Date(`${processInstanceData.start}`)}
+                  </Moment>
                 ) : (
-                    ''
-                  )}
+                  ''
+                )}
               </DataListCell>,
               <DataListCell key={3}>
                 {processInstanceData.lastUpdate ? (
@@ -559,8 +534,8 @@ const DataListItemComponent: React.FC<IOwnProps> = ({
                     </Moment>
                   </span>
                 ) : (
-                    ''
-                  )}
+                  ''
+                )}
               </DataListCell>
             ]}
           />
@@ -570,42 +545,31 @@ const DataListItemComponent: React.FC<IOwnProps> = ({
             aria-label="Actions"
           >
             {processInstanceData.state === 'ERROR' ||
-              processInstanceData.state === 'ACTIVE' ||
-              processInstanceData.state === 'SUSPENDED' ? (
-                <Dropdown
-                  isPlain
-                  position={DropdownPosition.right}
-                  isOpen={isOpen}
-                  onSelect={onSelect}
-                  toggle={<KebabToggle onToggle={onToggle} />}
-                  dropdownItems={dropDownList()}
-                />
-              ) : (
-                <Dropdown
-                  isPlain
-                  position={DropdownPosition.right}
-                  isOpen={isOpen}
-                  onSelect={onSelect}
-                  toggle={<KebabToggle isDisabled onToggle={onToggle} />}
-                  dropdownItems={[]}
-                />
-              )}
-            <ProcessBulkModalComponent
-              modalTitle={setTitle(titleType, modalTitle)}
-              isModalLarge={true}
-              isModalOpen={isErrorModalOpen}
-              handleModalToggle={handleErrorModalToggle}
-              modalContent={modalContent}
-              handleSkip={handleSkip}
-              handleRetry={handleRetry}
-              isAddonPresent={
-                processInstanceData &&
-                processInstanceData.addons.includes('process-management')
-              }
-              checkedArray={checkedArray}
-              handleSkipModalToggle={handleSkipModalToggle}
-              handleRetryModalToggle={handleRetryModalToggle}
-            />
+            processInstanceData.state === 'ACTIVE' ||
+            processInstanceData.state === 'SUSPENDED' ? (
+              <Dropdown
+                isPlain
+                position={DropdownPosition.right}
+                isOpen={isOpen}
+                onSelect={onSelect}
+                toggle={
+                  <KebabToggle
+                    isDisabled={dropDownList().length === 0}
+                    onToggle={onToggle}
+                  />
+                }
+                dropdownItems={dropDownList()}
+              />
+            ) : (
+              <Dropdown
+                isPlain
+                position={DropdownPosition.right}
+                isOpen={isOpen}
+                onSelect={onSelect}
+                toggle={<KebabToggle isDisabled onToggle={onToggle} />}
+                dropdownItems={[]}
+              />
+            )}
           </DataListAction>
         </DataListItemRow>
         <DataListContent

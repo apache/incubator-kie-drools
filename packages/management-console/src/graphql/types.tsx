@@ -628,6 +628,7 @@ export type GetProcessInstancesQueryVariables = {
   state?: Maybe<Array<ProcessInstanceState>>;
   offset?: Maybe<Scalars['Int']>;
   limit?: Maybe<Scalars['Int']>;
+  businessKeys?: Maybe<Array<ProcessInstanceArgument>>;
 };
 
 
@@ -635,7 +636,7 @@ export type GetProcessInstancesQuery = (
   { __typename?: 'Query' }
   & { ProcessInstances: Maybe<Array<Maybe<(
     { __typename?: 'ProcessInstance' }
-    & Pick<ProcessInstance, 'id' | 'processId' | 'processName' | 'parentProcessInstanceId' | 'rootProcessInstanceId' | 'roles' | 'state' | 'start' | 'lastUpdate' | 'addons' | 'endpoint'>
+    & Pick<ProcessInstance, 'id' | 'processId' | 'processName' | 'parentProcessInstanceId' | 'rootProcessInstanceId' | 'roles' | 'state' | 'start' | 'lastUpdate' | 'addons' | 'endpoint' | 'businessKey'>
     & { error: Maybe<(
       { __typename?: 'ProcessInstanceError' }
       & Pick<ProcessInstanceError, 'nodeDefinitionId' | 'message'>
@@ -652,7 +653,7 @@ export type GetChildInstancesQuery = (
   { __typename?: 'Query' }
   & { ProcessInstances: Maybe<Array<Maybe<(
     { __typename?: 'ProcessInstance' }
-    & Pick<ProcessInstance, 'id' | 'processId' | 'processName' | 'parentProcessInstanceId' | 'rootProcessInstanceId' | 'roles' | 'state' | 'start' | 'lastUpdate' | 'endpoint' | 'addons'>
+    & Pick<ProcessInstance, 'id' | 'processId' | 'processName' | 'parentProcessInstanceId' | 'rootProcessInstanceId' | 'roles' | 'state' | 'start' | 'lastUpdate' | 'endpoint' | 'addons' | 'businessKey'>
     & { error: Maybe<(
       { __typename?: 'ProcessInstanceError' }
       & Pick<ProcessInstanceError, 'nodeDefinitionId' | 'message'>
@@ -822,8 +823,8 @@ export type GetInputFieldsFromTypeQuery = (
 
 
 export const GetProcessInstancesDocument = gql`
-    query getProcessInstances($state: [ProcessInstanceState!], $offset: Int, $limit: Int) {
-  ProcessInstances(where: {parentProcessInstanceId: {isNull: true}, state: {in: $state}}, pagination: {offset: $offset, limit: $limit}) {
+    query getProcessInstances($state: [ProcessInstanceState!], $offset: Int, $limit: Int, $businessKeys: [ProcessInstanceArgument!]) {
+  ProcessInstances(where: {parentProcessInstanceId: {isNull: true}, state: {in: $state}, or: $businessKeys}, pagination: {offset: $offset, limit: $limit}) {
     id
     processId
     processName
@@ -835,6 +836,7 @@ export const GetProcessInstancesDocument = gql`
     lastUpdate
     addons
     endpoint
+    businessKey
     error {
       nodeDefinitionId
       message
@@ -858,6 +860,7 @@ export const GetProcessInstancesDocument = gql`
  *      state: // value for 'state'
  *      offset: // value for 'offset'
  *      limit: // value for 'limit'
+ *      businessKeys: // value for 'businessKeys'
  *   },
  * });
  */
@@ -884,6 +887,7 @@ export const GetChildInstancesDocument = gql`
     lastUpdate
     endpoint
     addons
+    businessKey
     error {
       nodeDefinitionId
       message

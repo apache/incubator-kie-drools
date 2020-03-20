@@ -28,11 +28,8 @@ exports[`DataToolbar component tests Snapshot tests 1`] = `
       <ForwardRef>
         <DataToolbarFilter
           categoryName="Status"
-          chips={
-            Array [
-              "ACTIVE,COMPLETED",
-            ]
-          }
+          chips={Array []}
+          className=""
           deleteChip={[Function]}
           showToolbarItem={true}
         >
@@ -135,12 +132,32 @@ exports[`DataToolbar component tests Snapshot tests 1`] = `
             />
           </Component>
         </DataToolbarFilter>
+        <DataToolbarFilter
+          categoryName="Business key"
+          chips={Array []}
+          deleteChip={[Function]}
+          showToolbarItem={true}
+        >
+          <InputGroup>
+            <ForwardRef
+              aria-label="business key"
+              id="businessKey"
+              isDisabled={false}
+              name="businessKey"
+              onChange={[Function]}
+              onKeyPress={[Function]}
+              placeholder="Filter by business key"
+              type="search"
+              value=""
+            />
+          </InputGroup>
+        </DataToolbarFilter>
         <DataToolbarItem>
           <Component
             onClick={[Function]}
             variant="primary"
           >
-            Apply Filter
+            Apply filter
           </Component>
         </DataToolbarItem>
       </ForwardRef>
