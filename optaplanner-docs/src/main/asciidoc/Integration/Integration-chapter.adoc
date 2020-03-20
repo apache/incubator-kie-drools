@@ -308,7 +308,7 @@ public class Schedule {
 }
 ----
 
-For example, with a `hardLevelsSize` of `2` and a `softLevelsSize` of ``3``, that will generate:
+For example, with a `hardLevelsSize` of `2` and a `softLevelsSize` of `3`, that will generate:
 
 [source,xml,options="nowrap"]
 ----
@@ -417,6 +417,67 @@ For example, this will generate this JSON:
    "score":{"HardSoftScore":"0hard/-200soft"}
    ...
 }
+----
+
+
+[[integrationWithJsonb]]
+=== JSON: JSON-B
+
+Enrich domain POJOs (solution, entities and problem facts) with JSON-B annotations to serialize them to/from JSON.
+
+Add a dependency to the `optaplanner-persistence-jsonb` jar and use `OptaPlannerJsonbConfig` to create a `Jsonb` instance:
+
+[source,java,options="nowrap"]
+----
+JsonbConfig config = OptaPlannerJsonbConfig.createConfig();
+Jsonb jsonb = JsonbBuilder.create(config);
+----
+
+
+[[jsonbMarshallingAScore]]
+==== JSON-B: marshalling a `Score`
+
+When a `Score` is marshalled to/from JSON by the default JSON-B configuration, it fails.
+The `OptaPlannerJsonbConfig` fixes that, by using adapters including `BendableScoreJsonbAdapter`, `HardSoftScoreJsonbAdapter`, etc.
+
+[source,java,options="nowrap"]
+----
+@PlanningSolution
+public class CloudBalance {
+
+    @PlanningScore
+    private HardSoftScore score;
+
+    ...
+}
+----
+
+For example, this will generate this JSON:
+
+[source,json]
+----
+{"hardSoftScore":"0hard/-200soft"}
+----
+
+The same applies for a bendable score:
+
+[source,java,options="nowrap"]
+----
+@PlanningSolution
+public class CloudBalance {
+
+    @PlanningScore
+    private BendableScore score;
+
+    ...
+}
+----
+
+This will generate:
+
+[source,json]
+----
+{"bendableScore":"[0/0]hard/[-200/-20/0]soft"}
 ----
 
 
