@@ -1,7 +1,5 @@
 package org.kie.dmn.typesafe;
 
-import java.lang.reflect.Method;
-import java.util.Collections;
 import java.util.Map;
 
 import org.junit.Test;
@@ -9,8 +7,8 @@ import org.kie.dmn.api.core.DMNModel;
 import org.kie.dmn.api.core.DMNResult;
 import org.kie.dmn.api.core.DMNRuntime;
 import org.kie.dmn.core.impl.DMNContextFPAImpl;
-import org.kie.dmn.core.util.DMNRuntimeUtil;
 import org.kie.dmn.core.impl.FEELPropertyAccessible;
+import org.kie.dmn.core.util.DMNRuntimeUtil;
 import org.kie.dmn.typesafe.compilation.RegressionCompiler;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -33,31 +31,38 @@ public class DMNTypeSafeTest {
         assertThat(dmnModel, notNullValue());
         assertThat(DMNRuntimeUtil.formatMessages(dmnModel.getMessages()), dmnModel.hasErrors(), is(false));
 
-        String sourceCode = new DMNInputSetGenerator(dmnModel).getType("TPerson");
+        DMNInputSetGenerator sourceCode = new DMNInputSetGenerator(dmnModel, "org.kie.dmn.typesafe");
 
-        Map<String, String> sourceCodes = Collections.singletonMap("org.kie.dmn.typesafe.TPerson", sourceCode);
+        Map<String, String> allTypesSourceCode = sourceCode.generateSourceCodeOfAllTypes();
 
         ClassLoader thisDMNClassLoader = this.getClass().getClassLoader();
-        Map<String, Class<?>> compile = RegressionCompiler.compile(sourceCodes, thisDMNClassLoader);
+        Map<String, Class<?>> compiledClasses = RegressionCompiler.compile(allTypesSourceCode, thisDMNClassLoader);
 
-        Class<?> aClass = compile.get("org.kie.dmn.typesafe.TPerson");
-        assertThat(aClass, notNullValue());
-
-        Object instance = aClass.getDeclaredConstructor().newInstance();
-
-        FEELPropertyAccessible feelPropertyAccessible = (FEELPropertyAccessible)instance;
-
-        Method getName = aClass.getMethod("getName");
-        assertThat(getName, notNullValue());
-
-
-        InputSet context = new InputSet();
-
-        feelPropertyAccessible.setFEELProperty("name", "Mr. x");
-
-        context.setP(feelPropertyAccessible);
+        FEELPropertyAccessible tPersonInstance = createTPerson(compiledClasses);
+        FEELPropertyAccessible context = createInputSet(compiledClasses, tPersonInstance);
 
         DMNResult evaluateAll = runtime.evaluateAll(dmnModel, new DMNContextFPAImpl(context));
         LOG.info("{}", evaluateAll);
+    }
+
+    private FEELPropertyAccessible createTPerson(Map<String, Class<?>> compile) throws Exception {
+        Class<?> tPersonClass = compile.get("org.kie.dmn.typesafe.TPerson");
+        assertThat(tPersonClass, notNullValue());
+        Object tPersonInstance = tPersonClass.getDeclaredConstructor().newInstance();
+        FEELPropertyAccessible feelPropertyAccessible = (FEELPropertyAccessible) tPersonInstance;
+        feelPropertyAccessible.setFEELProperty("name", "Mr. x");
+
+        return feelPropertyAccessible;
+    }
+
+    private FEELPropertyAccessible createInputSet(Map<String, Class<?>> compile, FEELPropertyAccessible tPersonInstance) throws Exception {
+        Class<?> inputSetClass = compile.get("org.kie.dmn.typesafe.InputSet");
+        assertThat(inputSetClass, notNullValue());
+        Object inputSetInstance = inputSetClass.getDeclaredConstructor().newInstance();
+        FEELPropertyAccessible feelPropertyAccessible = (FEELPropertyAccessible) inputSetInstance;
+
+        feelPropertyAccessible.setFEELProperty("p", tPersonInstance);
+
+        return feelPropertyAccessible;
     }
 }
