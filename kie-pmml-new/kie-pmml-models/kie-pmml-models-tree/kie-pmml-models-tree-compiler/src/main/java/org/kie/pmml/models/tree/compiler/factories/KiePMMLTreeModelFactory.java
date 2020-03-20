@@ -25,6 +25,7 @@ import org.dmg.pmml.tree.TreeModel;
 import org.drools.compiler.lang.DrlDumper;
 import org.drools.compiler.lang.descr.PackageDescr;
 import org.kie.pmml.commons.model.enums.MINING_FUNCTION;
+import org.kie.pmml.models.drooled.tuples.KiePMMLOriginalTypeGeneratedType;
 import org.kie.pmml.models.tree.model.KiePMMLTreeModel;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -43,7 +44,7 @@ public class KiePMMLTreeModelFactory {
         logger.info("getKiePMMLTreeModel {}", model);
         String name = model.getModelName();
         Optional<String> targetFieldName = getTargetField(dataDictionary, model);
-        final Map<String, String> fieldTypeMap = new HashMap<>();
+        final Map<String, KiePMMLOriginalTypeGeneratedType> fieldTypeMap = new HashMap<>();
         final PackageDescr baseDescr = getBaseDescr(dataDictionary, model, name.toLowerCase(), fieldTypeMap);
         // TODO {gcardosi} Dev debug only - to be removed
         try {

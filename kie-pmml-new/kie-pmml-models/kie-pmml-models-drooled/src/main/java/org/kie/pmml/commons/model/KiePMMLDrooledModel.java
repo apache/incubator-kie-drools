@@ -23,6 +23,7 @@ import java.util.function.Supplier;
 import org.drools.compiler.lang.descr.PackageDescr;
 import org.kie.pmml.commons.model.enums.MINING_FUNCTION;
 import org.kie.pmml.commons.model.enums.PMML_MODEL;
+import org.kie.pmml.models.drooled.tuples.KiePMMLOriginalTypeGeneratedType;
 
 /**
  * KIE representation of PMML model that use <b>drool</b> for implementation
@@ -33,7 +34,7 @@ public abstract class KiePMMLDrooledModel extends KiePMMLModel {
     /**
      * Map between the original field name and the generated type.
      */
-    protected Map<String, String> fieldTypeMap;
+    protected Map<String, KiePMMLOriginalTypeGeneratedType> fieldTypeMap;
 
     protected KiePMMLDrooledModel(String name, List<KiePMMLExtension> extensions) {
         super(name, extensions);
@@ -43,7 +44,7 @@ public abstract class KiePMMLDrooledModel extends KiePMMLModel {
         return packageDescr;
     }
 
-    public Map<String, String> getFieldTypeMap() {
+    public Map<String, KiePMMLOriginalTypeGeneratedType> getFieldTypeMap() {
         return fieldTypeMap;
     }
 
@@ -91,7 +92,7 @@ public abstract class KiePMMLDrooledModel extends KiePMMLModel {
             return this;
         }
 
-        public Builder<T> withFieldTypeMap(Map<String, String> fieldTypeMap) {
+        public Builder<T> withFieldTypeMap(Map<String, KiePMMLOriginalTypeGeneratedType> fieldTypeMap) {
             toBuild.fieldTypeMap = fieldTypeMap;
             return this;
         }

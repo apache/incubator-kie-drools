@@ -15,6 +15,7 @@
  */
 package org.kie.pmml.models.tree.compiler.factories;
 
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.function.Function;
@@ -24,6 +25,7 @@ import java.util.stream.Stream;
 import org.dmg.pmml.CompoundPredicate;
 import org.dmg.pmml.DataDictionary;
 import org.dmg.pmml.DataField;
+import org.dmg.pmml.DataType;
 import org.dmg.pmml.False;
 import org.dmg.pmml.Predicate;
 import org.dmg.pmml.SimplePredicate;
@@ -46,6 +48,7 @@ import org.kie.pmml.commons.enums.StatusCode;
 import org.kie.pmml.commons.exceptions.KiePMMLException;
 import org.kie.pmml.commons.model.enums.DATA_TYPE;
 import org.kie.pmml.models.drooled.executor.KiePMMLStatusHolder;
+import org.kie.pmml.models.drooled.tuples.KiePMMLOriginalTypeGeneratedType;
 import org.kie.pmml.models.tree.model.enums.OPERATOR;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -60,13 +63,18 @@ public class KiePMMLDescrFactory {
 
     public static final String PMML4_RESULT = "PMML4Result";
     public static final String PMML4_RESULT_IDENTIFIER = "$pmml4Result";
-    static final String STATUS_HOLDER = "$statusHolder";
-    public static final String MODIFY_STATUS_HOLDER = "\r\nmodify(" + STATUS_HOLDER + ") {\r\n\tsetStatus(\"%s\")\r\n}";
-    static final Logger logger = LoggerFactory.getLogger(KiePMMLDescrFactory.class.getName());
-    static final String VALUE_PATTERN = "value %s \"%s\"";
+    //    static final String SURROGATE_PATTERN = "(%1$s() and %1$s(value %2$s \"%3$s\"))";
     public static final String UPDATE_PMML4_RESULT = "\r\n" + PMML4_RESULT_IDENTIFIER + ".setResultCode(\"%s\");" +
             "\r\n" + PMML4_RESULT_IDENTIFIER + ".addResultVariable(" + PMML4_RESULT_IDENTIFIER + ".getResultObjectName()" + ", \"%s\");" +
             "\r\nupdate(" + PMML4_RESULT_IDENTIFIER + ");";
+    static final String STATUS_HOLDER = "$statusHolder";
+    public static final String MODIFY_STATUS_HOLDER = "\r\nmodify(" + STATUS_HOLDER + ") {\r\n\tsetStatus(\"%s\")\r\n}";
+    static final String STATUS_NULL = "status == null";
+    static final String STATUS_PATTERN = "status == \"%s\"";
+    static final String PATH_PATTERN = "%s_%s";
+    static final String STRING_VALUE_PATTERN = "\"%s\"";
+    static final String VALUE_PATTERN = "value %s %s";
+    private static final Logger logger = LoggerFactory.getLogger(KiePMMLDescrFactory.class.getName());
 
     private KiePMMLDescrFactory() {
         // Avoid instantiation
@@ -74,14 +82,14 @@ public class KiePMMLDescrFactory {
 
     /**
      * Returns the <code>PackageDescr</code> built out of the given parameters.
-     * It also <b>populate</b> the <b>fieldTypeMap</b> with mapping between original field' name and generated type' name
+     * It also <b>populate</b> the <b>fieldNameTypeNameMap</b> with mapping between original field' name and <b>original type/generated type</b> tupla
      * @param dataDictionary
      * @param model
      * @param packageName
      * @param fieldTypeMap
      * @return
      */
-    public static PackageDescr getBaseDescr(DataDictionary dataDictionary, TreeModel model, String packageName, Map<String, String> fieldTypeMap) {
+    public static PackageDescr getBaseDescr(DataDictionary dataDictionary, TreeModel model, String packageName, final Map<String, KiePMMLOriginalTypeGeneratedType> fieldTypeMap) {
         logger.info("getBaseDescr {} {}", dataDictionary, model);
         PackageDescrBuilder builder = DescrFactory.newPackage()
                 .name(packageName);
@@ -93,16 +101,17 @@ public class KiePMMLDescrFactory {
         return builder.getDescr();
     }
 
-    static void declareRules(PackageDescrBuilder builder, Node node, String parentPath, final Map<String, String> fieldTypeMap) {
+    static void declareRules(final PackageDescrBuilder builder, Node node, String parentPath,
+                             final Map<String, KiePMMLOriginalTypeGeneratedType> fieldTypeMap) {
         logger.info("declareRules {} {}", node, parentPath);
-        String currentRule = String.format("%s_%s", parentPath, node.getScore().toString());
+        String currentRule = String.format(PATH_PATTERN, parentPath, node.getScore().toString());
         final Predicate predicate = node.getPredicate();
         if (predicate instanceof False) {
             return;
         }
         final RuleDescrBuilder ruleBuilder = builder.newRule().name(currentRule);
         final CEDescrBuilder<RuleDescrBuilder, AndDescr> lhsBuilder = ruleBuilder.lhs();
-        String constraint = StringUtils.isEmpty(parentPath) ? "status == null" : String.format("status == \"%s\"", parentPath);
+        String constraint = StringUtils.isEmpty(parentPath) ? STATUS_NULL : String.format(STATUS_PATTERN, parentPath);
         lhsBuilder.pattern(KiePMMLStatusHolder.class.getSimpleName()).id(STATUS_HOLDER, false).constraint(constraint);
         declarePredicate(lhsBuilder, predicate, fieldTypeMap);
         if (node instanceof LeafNode || node.getNodes() == null || node.getNodes().isEmpty()) {
@@ -122,9 +131,12 @@ public class KiePMMLDescrFactory {
         ruleBuilder.rhs(rhs);
     }
 
-    static void declareBranchWhen(final PackageDescrBuilder builder, final RuleDescrBuilder ruleBuilder, String parentPath, final Node node, final Map<String, String> fieldTypeMap) {
+    static void declareBranchWhen(final PackageDescrBuilder builder,
+                                  final RuleDescrBuilder ruleBuilder, String parentPath,
+                                  final Node node,
+                                  final Map<String, KiePMMLOriginalTypeGeneratedType> fieldTypeMap) {
         logger.info("declareBranchWhen {} {} {} {} {}", builder, ruleBuilder, parentPath, node, fieldTypeMap);
-        String currentRule = String.format("%s_%s", parentPath, node.getScore().toString());
+        String currentRule = String.format(PATH_PATTERN, parentPath, node.getScore().toString());
         String rhs = String.format(MODIFY_STATUS_HOLDER, currentRule);
         ruleBuilder.rhs(rhs);
         for (Node child : node.getNodes()) {
@@ -132,7 +144,9 @@ public class KiePMMLDescrFactory {
         }
     }
 
-    static void declarePredicate(final CEDescrBuilder<?, ?> lhsBuilder, final Predicate predicate, final Map<String, String> fieldTypeMap) {
+    static void declarePredicate(final CEDescrBuilder<?, ?> lhsBuilder,
+                                 final Predicate predicate,
+                                 final Map<String, KiePMMLOriginalTypeGeneratedType> fieldTypeMap) {
         /*if (predicate instanceof True) {
             // TODO {gcardosi} remove this eval, since it is redundant and inefficient
             lhsBuilder.eval().constraint("true");
@@ -141,28 +155,32 @@ public class KiePMMLDescrFactory {
             lhsBuilder.eval().constraint("false");
         } else */
         if (predicate instanceof SimplePredicate) {
-            declareSimplePredicate(lhsBuilder, (SimplePredicate) predicate);
+            declareSimplePredicate(lhsBuilder, (SimplePredicate) predicate, fieldTypeMap);
         } else if (predicate instanceof CompoundPredicate) {
             declareCompoundPredicate(lhsBuilder, (CompoundPredicate) predicate, fieldTypeMap);
         }
     }
 
-    static void declareSimplePredicate(final CEDescrBuilder<?, ?> lhsBuilder, final SimplePredicate predicate) {
+    static void declareSimplePredicate(final CEDescrBuilder<?, ?> lhsBuilder,
+                                       final SimplePredicate predicate,
+                                       final Map<String, KiePMMLOriginalTypeGeneratedType> fieldTypeMap) {
         OPERATOR operator = OPERATOR.byName(predicate.getOperator().value());
-        String constraint = String.format(VALUE_PATTERN, operator.getOperator(), predicate.getValue() != null ? predicate.getValue() : "");
+        String constraint = getConstraintPattern(predicate, operator, fieldTypeMap);
         lhsBuilder.pattern(predicate.getField().getValue().toUpperCase()).constraint(constraint).end();
     }
 
-    static void declareCompoundPredicate(final CEDescrBuilder<?, ?> lhsBuilder, final CompoundPredicate predicate, final Map<String, String> fieldTypeMap) {
+    static void declareCompoundPredicate(final CEDescrBuilder<?, ?> lhsBuilder,
+                                         final CompoundPredicate predicate,
+                                         final Map<String, KiePMMLOriginalTypeGeneratedType> fieldTypeMap) {
         CEDescrBuilder<? extends CEDescrBuilder<?, ?>, ?> nestedBuilder;
         final CompoundPredicate.BooleanOperator booleanOperator = (predicate).getBooleanOperator();
         switch (booleanOperator) {
             case OR:
+            case SURROGATE:
                 nestedBuilder = lhsBuilder.or();
                 break;
             case XOR:
             case AND:
-            case SURROGATE:
             default:
                 nestedBuilder = lhsBuilder.and();
         }
@@ -170,31 +188,42 @@ public class KiePMMLDescrFactory {
         final Map<? extends Class<? extends Predicate>, List<Predicate>> predicatesByClass =
                 (predicate).getPredicates().stream().collect(groupingBy(Predicate::getClass));
         for (Map.Entry<? extends Class<? extends Predicate>, List<Predicate>> entry : predicatesByClass.entrySet()) {
-            Class<?> aClass = entry.getKey();
-            List<Predicate> predicates = entry.getValue();
-            if (SimplePredicate.class.equals(aClass)) {
-                // Here I need to group simplepredicates by field
-                final Map<String, List<SimplePredicate>> predicatesByField = predicates.stream()
-                        .map(child -> (SimplePredicate) child)
-                        .collect(groupingBy(child -> fieldTypeMap.get(child.getField().getValue())));
-                // .. and add them as a whole
-                if (CompoundPredicate.BooleanOperator.XOR.equals(booleanOperator)) {
-                    declareXORSimplePredicates(nestedBuilder, predicatesByField);
-                } else {
-                    for (Map.Entry<String, List<SimplePredicate>> childEntry : predicatesByField.entrySet()) {
-                        declareSimplePredicates(nestedBuilder, childEntry.getKey(), childEntry.getValue(), booleanOperator);
-                    }
-                }
-            } else {
-                for (Predicate childPredicate : predicates) {
-                    declarePredicate(nestedBuilder, childPredicate, fieldTypeMap);
-                }
-            }
+            declarePredicate(entry, nestedBuilder, booleanOperator, fieldTypeMap);
         }
         lhsBuilder.end();
     }
 
-    static void declareXORSimplePredicates(final CEDescrBuilder<?, ?> lhsBuilder, final Map<String, List<SimplePredicate>> predicatesMap) {
+    static void declarePredicate(final Map.Entry<? extends Class<? extends Predicate>, List<Predicate>> entry,
+                                 final CEDescrBuilder<? extends CEDescrBuilder<?, ?>, ?> nestedBuilder,
+                                 final CompoundPredicate.BooleanOperator booleanOperator,
+                                 final Map<String, KiePMMLOriginalTypeGeneratedType> fieldTypeMap) {
+        Class<?> aClass = entry.getKey();
+        List<Predicate> predicates = entry.getValue();
+        if (SimplePredicate.class.equals(aClass)) {
+            // Here I need to group simplepredicates by field
+            final Map<String, List<SimplePredicate>> predicatesByField = predicates.stream()
+                    .map(child -> (SimplePredicate) child)
+                    .collect(groupingBy(child -> fieldTypeMap.get(child.getField().getValue()).getGeneratedType()));
+            // .. and add them as a whole
+            if (CompoundPredicate.BooleanOperator.XOR.equals(booleanOperator)) {
+                declareXORSimplePredicates(nestedBuilder, predicatesByField, fieldTypeMap);
+            } else if (CompoundPredicate.BooleanOperator.SURROGATE.equals(booleanOperator)) {
+                declareSurrogateSimplePredicates(nestedBuilder, predicatesByField, fieldTypeMap);
+            } else {
+                for (Map.Entry<String, List<SimplePredicate>> childEntry : predicatesByField.entrySet()) {
+                    declareSimplePredicates(nestedBuilder, childEntry.getKey(), childEntry.getValue(), booleanOperator, fieldTypeMap);
+                }
+            }
+        } else {
+            for (Predicate childPredicate : predicates) {
+                declarePredicate(nestedBuilder, childPredicate, fieldTypeMap);
+            }
+        }
+    }
+
+    static void declareXORSimplePredicates(final CEDescrBuilder<?, ?> lhsBuilder,
+                                           final Map<String, List<SimplePredicate>> predicatesMap,
+                                           final Map<String, KiePMMLOriginalTypeGeneratedType> fieldTypeMap) {
         String leftHand = null;
         String leftPatternType = null;
         String rightHand;
@@ -217,11 +246,11 @@ public class KiePMMLDescrFactory {
         for (SimplePredicate predicate : allPredicates) {
             OPERATOR operator = OPERATOR.byName(predicate.getOperator().value());
             if (leftHand == null) { // First element
-                leftHand = String.format(VALUE_PATTERN, operator.getOperator(), predicate.getValue() != null ? predicate.getValue() : "");
+                leftHand = getConstraintPattern(predicate, operator, fieldTypeMap);
                 leftPatternType = predicate.getField().getValue().toUpperCase();
                 continue;
             }
-            rightHand = String.format(VALUE_PATTERN, operator.getOperator(), predicate.getValue() != null ? predicate.getValue() : "");
+            rightHand = getConstraintPattern(predicate, operator, fieldTypeMap);
             rightPatternType = predicate.getField().getValue().toUpperCase();
             if (exists == null) { // Second element
                 exists = xorRoot.exists();
@@ -236,8 +265,33 @@ public class KiePMMLDescrFactory {
         }
     }
 
-    static void declareSimplePredicates(final CEDescrBuilder<?, ?> lhsBuilder, final String fieldName, final List<SimplePredicate> predicates, final CompoundPredicate.BooleanOperator booleanOperator) {
-        final PatternDescrBuilder<? extends CEDescrBuilder<?, ?>> pattern = lhsBuilder.pattern(fieldName);
+    static void declareSurrogateSimplePredicates(final CEDescrBuilder<?, ?> lhsBuilder,
+                                                 final Map<String, List<SimplePredicate>> predicatesMap,
+                                                 final Map<String, KiePMMLOriginalTypeGeneratedType> fieldTypeMap) {
+        /*
+        https://docs.jboss.org/drools/release/7.33.0.Final/drools-docs/html_single/#_activation_groups_for_rules
+         */
+        List<SimplePredicate> allPredicates = predicatesMap.entrySet()
+                .stream()
+                .flatMap((Function<Map.Entry<String, List<SimplePredicate>>, Stream<SimplePredicate>>) stringListEntry -> stringListEntry.getValue().stream())
+                .collect(Collectors.toList());
+        for (SimplePredicate predicate : allPredicates) {
+            String fieldName = fieldTypeMap.get(predicate.getField().getValue()).getGeneratedType();
+            final CEDescrBuilder<? extends CEDescrBuilder<?, ?>, AndDescr> nestedAnd = lhsBuilder.and();
+            nestedAnd.pattern(fieldName).end();
+            OPERATOR operator = OPERATOR.byName(predicate.getOperator().value());
+            String constraint = getConstraintPattern(predicate, operator, fieldTypeMap);
+            nestedAnd.pattern(fieldName).constraint(constraint).end();
+            nestedAnd.end();
+        }
+    }
+
+    static void declareSimplePredicates(final CEDescrBuilder<?, ?> lhsBuilder,
+                                        final String fieldName,
+                                        final List<SimplePredicate> predicates,
+                                        final CompoundPredicate.BooleanOperator booleanOperator,
+                                        final Map<String, KiePMMLOriginalTypeGeneratedType> fieldTypeMap) {
+        PatternDescrBuilder<? extends CEDescrBuilder<?, ?>> pattern = lhsBuilder.pattern(fieldName);
         String constraint;
         StringBuilder constraintBuilder;
         switch (booleanOperator) {
@@ -249,7 +303,7 @@ public class KiePMMLDescrFactory {
                     }
                     SimplePredicate predicate = predicates.get(i);
                     OPERATOR operator = OPERATOR.byName(predicate.getOperator().value());
-                    constraint = String.format(VALUE_PATTERN, operator.getOperator(), predicate.getValue() != null ? predicate.getValue() : "");
+                    constraint = getConstraintPattern(predicate, operator, fieldTypeMap);
                     constraintBuilder.append(constraint);
                 }
                 pattern.constraint(constraintBuilder.toString());
@@ -257,6 +311,19 @@ public class KiePMMLDescrFactory {
             case XOR:
                 break;
             case SURROGATE: // TODO {gcardosi} ?
+                pattern = pattern.end().and().pattern(fieldName);
+                constraintBuilder = new StringBuilder();
+                for (int i = 0; i < predicates.size(); i++) {
+                    if (i > 0) {
+                        constraintBuilder.append(" || ");
+                    }
+                    SimplePredicate predicate = predicates.get(i);
+                    OPERATOR operator = OPERATOR.byName(predicate.getOperator().value());
+                    constraint = getConstraintPattern(predicate, operator, fieldTypeMap);
+                    constraintBuilder.append(constraint);
+                }
+                pattern.constraint(constraintBuilder.toString());
+                break;
             case AND:
             default:
                 constraintBuilder = new StringBuilder();
@@ -266,7 +333,7 @@ public class KiePMMLDescrFactory {
                     }
                     SimplePredicate predicate = predicates.get(i);
                     OPERATOR operator = OPERATOR.byName(predicate.getOperator().value());
-                    constraint = String.format(VALUE_PATTERN, operator.getOperator(), predicate.getValue() != null ? predicate.getValue() : "");
+                    constraint = getConstraintPattern(predicate, operator, fieldTypeMap);
                     constraintBuilder.append(constraint);
                 }
                 pattern.constraint(constraintBuilder.toString());
@@ -275,31 +342,51 @@ public class KiePMMLDescrFactory {
     }
 
     /**
-     * Create types out of original <code>DataField</code>s and <b>populate</b> the <b>fieldTypeMap</b> with mapping between original field' name and generated type' name
+     * Create types out of original <code>DataField</code>s,
+     * <b>populate</b> the <b>fieldNameTypeNameMap</b> with mapping between original field' name and <b>original type/generated type</b> tupla
      * @param builder
      * @param dataDictionary
      * @param fieldTypeMap
      */
-    static void declareTypes(PackageDescrBuilder builder, DataDictionary dataDictionary, Map<String, String> fieldTypeMap) {
+    static void declareTypes(PackageDescrBuilder builder, DataDictionary dataDictionary, final Map<String, KiePMMLOriginalTypeGeneratedType> fieldTypeMap) {
         for (DataField dataField : dataDictionary.getDataFields()) {
             declareType(builder, dataField, fieldTypeMap);
         }
     }
 
     /**
-     * Create type out of original <code>DataField</code> and <b>populate</b> the <b>fieldTypeMap</b> with mapping between original field' name and generated type' name
+     * Create type out of original <code>DataField</code>;
+     * <b>populate</b> the <b>fieldNameTypeNameMap</b> with mapping between original field' name and <b>original type/generated type</b> tupla
      * @param builder
      * @param dataField
      * @param fieldTypeMap
      */
-    static void declareType(PackageDescrBuilder builder, DataField dataField, Map<String, String> fieldTypeMap) {
-        String generatedTypeName = getSanitizedClassName(dataField.getName().getValue().toUpperCase());
-        fieldTypeMap.put(dataField.getName().getValue(), generatedTypeName);
+    static void declareType(PackageDescrBuilder builder, DataField dataField, final Map<String, KiePMMLOriginalTypeGeneratedType> fieldTypeMap) {
+        String generatedType = getSanitizedClassName(dataField.getName().getValue().toUpperCase());
+        String fieldName = dataField.getName().getValue();
+        String fieldType = dataField.getDataType().value();
+        fieldTypeMap.put(fieldName, new KiePMMLOriginalTypeGeneratedType(fieldType, generatedType));
         builder.newDeclare()
                 .type()
-                .name(generatedTypeName)
-                .newField("value").type(DATA_TYPE.byName(dataField.getDataType().value()).getMappedClass().getSimpleName())
+                .name(generatedType)
+                .newField("value").type(DATA_TYPE.byName(fieldType).getMappedClass().getSimpleName())
                 .end()
                 .end();
+    }
+
+    static String getConstraintPattern(final SimplePredicate predicate, final OPERATOR operator, final Map<String, KiePMMLOriginalTypeGeneratedType> fieldTypeMap) {
+        Object value = predicate.getValue();
+        String valueString = null;
+        if (value != null) {
+            String fieldName = predicate.getField().getValue();
+            if (fieldTypeMap.containsKey(fieldName) &&
+                    fieldTypeMap.get(fieldName).getOriginalType().equals(DataType.STRING.value())) {
+                valueString = String.format(STRING_VALUE_PATTERN, value);
+            } else {
+                valueString = value.toString();
+            }
+        }
+
+        return String.format(VALUE_PATTERN, operator.getOperator(), valueString != null ? valueString : "");
     }
 }

@@ -26,6 +26,7 @@ import org.kie.pmml.commons.model.KiePMMLModel;
 import org.kie.pmml.evaluator.api.exceptions.KiePMMLModelException;
 import org.kie.pmml.evaluator.api.executor.PMMLContext;
 import org.kie.pmml.evaluator.core.executor.PMMLModelExecutor;
+import org.kie.pmml.models.drooled.tuples.KiePMMLOriginalTypeGeneratedType;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -60,13 +61,13 @@ public abstract class DrooledModelExecutor implements PMMLModelExecutor {
         toReturn.setResultCode(StatusCode.FAIL.getName());
         toReturn.setResultObjectName(drooledModel.getTargetField());
         executionParams.add(toReturn);
-        final Map<String, String> fieldTypeMap = drooledModel.getFieldTypeMap();
+        final Map<String, KiePMMLOriginalTypeGeneratedType> fieldTypeMap = drooledModel.getFieldTypeMap();
         for (Map.Entry<String, Object> entry : unwrappedInputParams.entrySet()) {
             if (!fieldTypeMap.containsKey(entry.getKey())) {
                 throw new KiePMMLModelException(String.format("Field %s not mapped to generated type", entry.getKey()));
             }
             try {
-                String generatedTypeName = fieldTypeMap.get(entry.getKey());
+                String generatedTypeName = fieldTypeMap.get(entry.getKey()).getGeneratedType();
                 FactType factType = kSession.getKieBase().getFactType(drooledModel.getPackageDescr().getName(), generatedTypeName);
                 Object toAdd = factType.newInstance();
                 factType.set(toAdd, "value", entry.getValue());

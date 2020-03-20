@@ -27,6 +27,7 @@ import org.junit.Before;
 import org.junit.Test;
 import org.kie.pmml.commons.model.enums.MINING_FUNCTION;
 import org.kie.pmml.compiler.testutils.TestUtils;
+import org.kie.pmml.models.drooled.tuples.KiePMMLOriginalTypeGeneratedType;
 import org.kie.pmml.models.tree.model.KiePMMLTreeModel;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -61,7 +62,7 @@ public class KiePMMLTreeModelFactoryTest {
         assertEquals(treeModel.getModelName(), retrieved.getName());
         assertNotNull(retrieved.getPackageDescr());
         assertEquals(TARGET_FIELD, retrieved.getTargetField());
-        final Map<String, String> fieldTypeMap = retrieved.getFieldTypeMap();
+        final Map<String, KiePMMLOriginalTypeGeneratedType> fieldTypeMap = retrieved.getFieldTypeMap();
         List<DataField> dataFields = dataDictionary.getDataFields();
         assertEquals(dataFields.size(), fieldTypeMap.size());
         dataFields.forEach(dataField -> assertTrue(fieldTypeMap.containsKey(dataField.getName().getValue())));
