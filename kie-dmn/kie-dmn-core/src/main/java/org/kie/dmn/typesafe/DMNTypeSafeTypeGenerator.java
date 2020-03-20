@@ -14,14 +14,14 @@ import org.kie.dmn.api.core.ast.InputDataNode;
 import org.kie.dmn.api.core.ast.ItemDefNode;
 import org.kie.dmn.core.impl.DMNModelImpl;
 
-public class DMNInputSetGenerator {
+public class DMNTypeSafeTypeGenerator {
 
     private final String packageName;
     private DMNModelImpl dmnModel;
 
     private Map<String, TypeDefinition> types = new HashMap<>();
 
-    public DMNInputSetGenerator(DMNModel dmnModel, String packageName) {
+    public DMNTypeSafeTypeGenerator(DMNModel dmnModel, String packageName) {
         this.dmnModel = (DMNModelImpl) dmnModel;
         this.packageName = packageName;
         processTypes();
