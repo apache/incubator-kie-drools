@@ -214,7 +214,7 @@ public class CloudBalance {
 }
 ----
 
-For example, this will generate pretty XML:
+For example, this generates pretty XML:
 
 [source,xml,options="nowrap"]
 ----
@@ -240,7 +240,7 @@ public class Schedule {
 }
 ----
 
-For example, this will generate:
+For example, this generates:
 
 [source,xml,options="nowrap"]
 ----
@@ -282,7 +282,7 @@ public class CloudBalance {
 }
 ----
 
-For example, this will generate pretty XML:
+For example, this generates pretty XML:
 
 [source,xml,options="nowrap"]
 ----
@@ -354,7 +354,7 @@ public class CloudBalance {
 }
 ----
 
-For example, this will generate this JSON:
+For example, this generates:
 
 [source,json]
 ----
@@ -409,7 +409,7 @@ public class CloudBalance {
 }
 ----
 
-For example, this will generate this JSON:
+For example, this generates:
 
 [source,json]
 ----
@@ -452,7 +452,7 @@ public class CloudBalance {
 }
 ----
 
-For example, this will generate this JSON:
+For example, this generates:
 
 [source,json]
 ----
@@ -473,7 +473,7 @@ public class CloudBalance {
 }
 ----
 
-This will generate:
+This generates:
 
 [source,json]
 ----
