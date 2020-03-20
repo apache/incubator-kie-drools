@@ -2,6 +2,7 @@ package org.kie.dmn.validation.dtanalysis;
 
 import java.math.BigDecimal;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
@@ -47,8 +48,117 @@ public class MCDCAnalyser {
             System.out.println(idx);
             Object value = allEnumValues.get(idx).get(0);
             System.out.println(value);
-            System.out.println(matchingRulesForInput(idx, value));
+            List<Integer> matchingRulesForInput = matchingRulesForInput(idx, value);
+            System.out.println(matchingRulesForInput);
+            for (int ruleIdx : matchingRulesForInput) {
+                Object[] knownValues = new Object[ddtaTable.getInputs().size()];
+                knownValues[idx] = value;
+                Object[] posCandidate = findValuesForRule(ruleIdx, knownValues, Collections.unmodifiableList(allEnumValues));
+                Record posCandidateRecord = new Record(ruleIdx, posCandidate, ddtaTable.getRule().get(ruleIdx).getOutputEntry());
+                calculatePosNegBlock(idx, value, posCandidateRecord, Collections.unmodifiableList(allEnumValues));
+            }
         }
+    }
+
+    private void calculatePosNegBlock(Integer idx, Object value, Record posCandidate, List<List<?>> allEnumValues) {
+        List<Comparable<?>> posOutput = posCandidate.output;
+        List<?> enumValues = allEnumValues.get(idx);
+        List<?> allOtherEnumValues = new ArrayList<>(enumValues);
+        allOtherEnumValues.remove(value);
+        List<Record> negativeRecords = new ArrayList<>();
+        for (Object otherEnumValue : allOtherEnumValues) {
+            Object[] negCandidate = Arrays.copyOf(posCandidate.enums, posCandidate.enums.length);
+            negCandidate[idx] = otherEnumValue;
+            for (int i = 0; i < ddtaTable.getRule().size(); i++) {
+                DDTARule rule = ddtaTable.getRule().get(i);
+                boolean ruleMatches = true;
+                for (int c = 0; ruleMatches && c < rule.getInputEntry().size(); c++) {
+                    Object cValue = negCandidate[c];
+                    ruleMatches &= rule.getInputEntry().get(c).getIntervals().stream().anyMatch(interval -> interval.asRangeIncludes(cValue));
+                }
+                if (ruleMatches) {
+                    Record record = new Record(i, negCandidate, rule.getOutputEntry());
+                    negativeRecords.add(record);
+                }
+            }
+        }
+        boolean allNegValuesDiffer = true;
+        for (Record record : negativeRecords) {
+            allNegValuesDiffer &= !record.output.equals(posOutput);
+        }
+        if (allNegValuesDiffer) {
+            PosNegBlock posNegBlock = new PosNegBlock(idx, posCandidate, negativeRecords);
+            System.out.println(posNegBlock);
+        }
+    }
+
+    public static class PosNegBlock {
+
+        public final int cMarker;
+        public final Record posRecord;
+        public final List<Record> negRecords;
+
+        public PosNegBlock(int cMarker, Record posRecord, List<Record> negRecords) {
+            this.cMarker = cMarker;
+            this.posRecord = posRecord;
+            this.negRecords = negRecords;
+        }
+
+        @Override
+        public String toString() {
+            StringBuilder sb = new StringBuilder("PosNeg block column index: ").append(cMarker).append("\n");
+            sb.append(" + ").append(posRecord).append("\n");
+            for (Record negRecord : negRecords) {
+                sb.append(" - ").append(negRecord).append("\n");
+            }
+            return sb.toString();
+        }
+    }
+
+    public static class Record {
+
+        public final int ruleIdx;
+        public final Object[] enums;
+        public final List<Comparable<?>> output;
+
+        public Record(int ruleIdx, Object[] enums, List<Comparable<?>> output) {
+            this.ruleIdx = ruleIdx;
+            this.enums = enums;
+            this.output = output;
+        }
+
+        @Override
+        public String toString() {
+            return String.format("%2s", ruleIdx) + " [" + Arrays.stream(enums).map(Object::toString).collect(Collectors.joining("; ")) + "] -> " + output;
+        }
+
+    }
+
+    private Object[] findValuesForRule(int ruleIdx, Object[] knownValues, List<List<?>> allEnumValues) {
+        Object[] result = Arrays.copyOf(knownValues, knownValues.length);
+        List<DDTAInputEntry> inputEntry = ddtaTable.getRule().get(ruleIdx).getInputEntry();
+        for (int i = 0; i < inputEntry.size(); i++) {
+            if (result[i] == null) {
+                DDTAInputEntry ddtaInputEntry = inputEntry.get(i);
+                List<?> enumValues = allEnumValues.get(i);
+                Interval interval0 = ddtaInputEntry.getIntervals().get(0);
+                if (interval0.isSingularity()) {
+                    result[i] = interval0.getLowerBound().getValue();
+                } else if (interval0.getLowerBound().getBoundaryType() == RangeBoundary.CLOSED && interval0.getLowerBound().getValue() != Interval.NEG_INF) {
+                    result[i] = interval0.getLowerBound().getValue();
+                } else if (interval0.getUpperBound().getBoundaryType() == RangeBoundary.CLOSED && interval0.getUpperBound().getValue() != Interval.POS_INF) {
+                    result[i] = interval0.getUpperBound().getValue();
+                } else {
+                    for (Object object : enumValues) {
+                        if (ddtaInputEntry.getIntervals().stream().anyMatch(interval -> interval.asRangeIncludes(object))) {
+                            result[i]= object;
+                            break;
+                        }
+                    }
+                }
+            }
+        }
+        return result;
     }
 
     private List<Integer> indexesWithMoreElements(List<List<?>> cc) {
