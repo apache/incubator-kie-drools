@@ -23,6 +23,7 @@ import org.drools.verifier.core.index.keys.Values;
 import org.drools.verifier.core.index.matchers.FieldMatchers;
 import org.drools.verifier.core.maps.KeyDefinition;
 import org.drools.verifier.core.util.PortablePreconditions;
+import org.kie.soup.project.datamodel.oracle.DataType;
 
 public class FieldAction
         extends Action {
