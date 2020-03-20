@@ -13,8 +13,10 @@ import com.github.javaparser.ast.expr.MethodCallExpr;
 import com.github.javaparser.ast.expr.NameExpr;
 import com.github.javaparser.ast.expr.StringLiteralExpr;
 import com.github.javaparser.ast.expr.ThisExpr;
+import com.github.javaparser.ast.stmt.BlockStmt;
 import com.github.javaparser.ast.stmt.ExpressionStmt;
 import com.github.javaparser.ast.stmt.ReturnStmt;
+import com.github.javaparser.ast.stmt.Statement;
 import com.github.javaparser.ast.stmt.SwitchEntry;
 import com.github.javaparser.ast.stmt.SwitchStmt;
 import org.drools.modelcompiler.builder.generator.declaredtype.api.FieldDefinition;
@@ -76,7 +78,7 @@ public class FeelPropertyTemplate {
     private SwitchEntry toGetPropertySwitchEntry(FieldDefinition fieldDefinition) {
         ReturnStmt returnStmt = new ReturnStmt();
         MethodCallExpr mc = StaticJavaParser.parseExpression(EvalHelper.PropertyValueResult.class.getCanonicalName() + ".ofValue()");
-        String accessorName = "get" + ucFirst(fieldDefinition.getFieldName());
+        String accessorName = getAccessorName(fieldDefinition, "get");
         mc.addArgument(new MethodCallExpr(new ThisExpr(), accessorName));
         returnStmt.setExpression(mc);
         return new SwitchEntry(nodeList(new StringLiteralExpr(fieldDefinition.getFieldName())), SwitchEntry.Type.STATEMENT_GROUP, nodeList(returnStmt));
@@ -106,7 +108,7 @@ public class FeelPropertyTemplate {
 
     private SwitchEntry toSetPropertySwitchEntry(FieldDefinition fieldDefinition) {
         ExpressionStmt expressionStmt = new ExpressionStmt();
-        String accessorName = "set" + ucFirst(fieldDefinition.getFieldName());
+        String accessorName = getAccessorName(fieldDefinition, "set");
         MethodCallExpr mc = new MethodCallExpr(new ThisExpr(), accessorName);
         mc.addArgument(new CastExpr(StaticJavaParser.parseType(fieldDefinition.getObjectType()), new NameExpr("value")));
         expressionStmt.setExpression(mc);
@@ -129,15 +131,42 @@ public class FeelPropertyTemplate {
     }
 
     private MethodWithStringBody allFeelProperties() {
-        String allFeelPropertiesBody = " { return java.util.Collections.emptyMap(); } ";
+
+        MethodDeclaration allFeelProperties = methodTemplate.findFirst(MethodDeclaration.class, mc -> mc.getNameAsString().equals("allFEELProperties"))
+                .orElseThrow(RuntimeException::new)
+                .clone();
+
+        List<Statement> collect = fields.stream().map(this::toGetAllProperty).collect(Collectors.toList());
+        BlockStmt newBlockStatement = new BlockStmt(nodeList(collect));
+
+        allFeelProperties.findAll(ExpressionStmt.class,
+                                  mc -> mc.getExpression().isMethodCallExpr() &&
+                                          mc.getExpression().asMethodCallExpr().getNameAsString().equals("put"))
+                .forEach(n -> n.replace(newBlockStatement));
+
+        String body = allFeelProperties.getBody().orElseThrow(RuntimeException::new).toString();
 
         MethodWithStringBody allFEELProperties = new MethodWithStringBody(
                 "allFEELProperties",
                 "java.util.Map<String, Object>",
-                allFeelPropertiesBody
+                body
         );
 
         return allFEELProperties;
     }
 
+    private ExpressionStmt toGetAllProperty(FieldDefinition fieldDefinition) {
+        String accessorName = getAccessorName(fieldDefinition, "get");
+
+        MethodCallExpr mc = new MethodCallExpr(new NameExpr("result"), "put");
+
+        mc.addArgument(new StringLiteralExpr(fieldDefinition.getFieldName()));
+        mc.addArgument(new MethodCallExpr(new ThisExpr(), accessorName));
+
+        return new ExpressionStmt(mc);
+    }
+
+    private String getAccessorName(FieldDefinition fieldDefinition, String get) {
+        return get + ucFirst(fieldDefinition.getFieldName());
+    }
 }
