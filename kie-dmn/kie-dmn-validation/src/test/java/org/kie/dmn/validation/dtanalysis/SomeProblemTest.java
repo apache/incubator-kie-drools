@@ -19,12 +19,16 @@ package org.kie.dmn.validation.dtanalysis;
 import java.util.List;
 
 import org.junit.Test;
+import org.kie.api.builder.Message.Level;
 import org.kie.dmn.api.core.DMNMessage;
+import org.kie.dmn.api.core.DMNMessageType;
+import org.kie.dmn.validation.ValidatorUtil;
 import org.kie.dmn.validation.dtanalysis.model.DTAnalysis;
 
 import static org.hamcrest.Matchers.hasSize;
 import static org.hamcrest.Matchers.is;
 import static org.junit.Assert.assertThat;
+import static org.junit.Assert.assertTrue;
 import static org.kie.dmn.validation.DMNValidator.Validation.ANALYZE_DECISION_TABLE;
 
 public class SomeProblemTest extends AbstractDTAnalysisTest {
@@ -40,5 +44,17 @@ public class SomeProblemTest extends AbstractDTAnalysisTest {
         
         DTAnalysis analysis2 = getAnalysis(validate, "_2aea80b4-19fa-4831-8829-4db925a128aa");
         assertThat(analysis2.isError(), is(true));
+    }
+
+    @Test
+    public void testDTwithNull() {
+        List<DMNMessage> validate = validator.validate(getReader("DTwithNull.dmn"), ANALYZE_DECISION_TABLE);
+        assertTrue(ValidatorUtil.formatMessages(validate),
+                   validate.stream().allMatch(p -> p.getMessageType() == DMNMessageType.DECISION_TABLE_ANALYSIS_ERROR &&
+                                                   p.getLevel() == Level.WARNING &&
+                                                   p.getSourceId().equals("_393969A1-0DDE-41C9-81CC-47EE24BA2D8A")));
+
+        DTAnalysis analysis = getAnalysis(validate, "_393969A1-0DDE-41C9-81CC-47EE24BA2D8A");
+        assertThat(analysis.isError(), is(true));
     }
 }
