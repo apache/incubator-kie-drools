@@ -52,9 +52,7 @@ public class FeelPropertyTemplate {
 
     private MethodDefinition getFeelPropertyDefinition() {
 
-        MethodDeclaration getFEELProperty = methodTemplate.findFirst(MethodDeclaration.class, mc -> mc.getNameAsString().equals("getFEELProperty"))
-                .orElseThrow(RuntimeException::new)
-                .clone();
+        MethodDeclaration getFEELProperty = cloneMethodTemplate("getFEELProperty");
 
         SwitchStmt firstSwitch = getFEELProperty.findFirst(SwitchStmt.class).orElseThrow(RuntimeException::new);
 
@@ -68,12 +66,23 @@ public class FeelPropertyTemplate {
         firstSwitch.setEntries(nodeList(collect));
 
         String body = getFEELProperty.getBody().orElseThrow(RuntimeException::new).toString();
-        MethodWithStringBody getFeelProperty = new MethodWithStringBody("getFEELProperty", EvalHelper.PropertyValueResult.class.getCanonicalName(), body);
-        getFeelProperty.addParameter(String.class.getCanonicalName(), "property");
+        MethodWithStringBody getFeelPropertyDefinition = new MethodWithStringBody("getFEELProperty", EvalHelper.PropertyValueResult.class.getCanonicalName(), body);
+        getFeelPropertyDefinition.addParameter(String.class.getCanonicalName(), "property");
 
-        return getFeelProperty;
+        addOverrideAnnotation(getFeelPropertyDefinition);
+
+        return getFeelPropertyDefinition;
     }
 
+    private void addOverrideAnnotation(MethodWithStringBody md) {
+        md.addAnnotation("Override");
+    }
+
+    private MethodDeclaration cloneMethodTemplate(String getFEELProperty) {
+        return methodTemplate.findFirst(MethodDeclaration.class, mc -> mc.getNameAsString().equals(getFEELProperty))
+                .orElseThrow(RuntimeException::new)
+                .clone();
+    }
 
     private SwitchEntry toGetPropertySwitchEntry(FieldDefinition fieldDefinition) {
         ReturnStmt returnStmt = new ReturnStmt();
@@ -86,9 +95,7 @@ public class FeelPropertyTemplate {
 
     private MethodDefinition setFeelPropertyDefinition() {
 
-        MethodDeclaration setFEELProperty = methodTemplate.findFirst(MethodDeclaration.class, mc -> mc.getNameAsString().equals("setFEELProperty"))
-                .orElseThrow(RuntimeException::new)
-                .clone();
+        MethodDeclaration setFEELProperty = cloneMethodTemplate("setFEELProperty");
 
         SwitchStmt firstSwitch = setFEELProperty.findFirst(SwitchStmt.class).orElseThrow(RuntimeException::new);
 
@@ -99,11 +106,13 @@ public class FeelPropertyTemplate {
         firstSwitch.setEntries(nodeList(collect));
 
         String body = setFEELProperty.getBody().orElseThrow(RuntimeException::new).toString();
-        MethodWithStringBody getFeelProperty = new MethodWithStringBody("setFEELProperty", "void", body);
-        getFeelProperty.addParameter(String.class.getCanonicalName(), "property");
-        getFeelProperty.addParameter(Object.class.getCanonicalName(), "value");
+        MethodWithStringBody setFeelPropertyDefinition = new MethodWithStringBody("setFEELProperty", "void", body);
+        setFeelPropertyDefinition.addParameter(String.class.getCanonicalName(), "property");
+        setFeelPropertyDefinition.addParameter(Object.class.getCanonicalName(), "value");
+        addOverrideAnnotation(setFeelPropertyDefinition);
 
-        return getFeelProperty;
+
+        return setFeelPropertyDefinition;
     }
 
     private SwitchEntry toSetPropertySwitchEntry(FieldDefinition fieldDefinition) {
@@ -132,9 +141,7 @@ public class FeelPropertyTemplate {
 
     private MethodWithStringBody allFeelProperties() {
 
-        MethodDeclaration allFeelProperties = methodTemplate.findFirst(MethodDeclaration.class, mc -> mc.getNameAsString().equals("allFEELProperties"))
-                .orElseThrow(RuntimeException::new)
-                .clone();
+        MethodDeclaration allFeelProperties = cloneMethodTemplate("allFEELProperties");
 
         List<Statement> collect = fields.stream().map(this::toGetAllProperty).collect(Collectors.toList());
         BlockStmt newBlockStatement = new BlockStmt(nodeList(collect));
@@ -152,6 +159,7 @@ public class FeelPropertyTemplate {
                 body
         );
 
+        addOverrideAnnotation(allFEELProperties);
         return allFEELProperties;
     }
 
