@@ -745,4 +745,24 @@ public class DTAnalysis {
             return new StringBuilder("[ID: ").append(sourceDT.getId()).append("]").toString();
         }
     }
+
+    public void computeOutputInLOV() {
+        for (int ruleIdx = 0; ruleIdx < ddtaTable.getRule().size(); ruleIdx++) {
+            DDTARule rule = ddtaTable.getRule().get(ruleIdx);
+            for (int outputIdx = 0; outputIdx < ddtaTable.getOutputs().size(); outputIdx++) {
+                Comparable<?> value = rule.getOutputEntry().get(outputIdx);
+                DDTAOutputClause outputClause = ddtaTable.getOutputs().get(outputIdx);
+                if (outputClause.isDiscreteDomain() && !outputClause.getDiscreteValues().contains(value)) {
+                    passThruMessages.add(new DMNDTAnalysisMessage(this,
+                                                                  Severity.ERROR,
+                                                                  MsgUtil.createMessage(Msg.DTANALYSIS_ERROR_RULE_OUTPUT_OUTSIDE_LOV,
+                                                                                        ruleIdx + 1,
+                                                                                        value,
+                                                                                        outputIdx + 1,
+                                                                                        outputClause.getDiscreteValues()),
+                                                                  Msg.DTANALYSIS_ERROR_RULE_OUTPUT_OUTSIDE_LOV.getType()));
+                }
+            }
+        }
+    }
 }
