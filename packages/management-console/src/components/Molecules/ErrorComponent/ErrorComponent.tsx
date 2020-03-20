@@ -1,48 +1,52 @@
 import React, { useState } from 'react';
 import {
   PageSection,
-  TextContent,
-  Text,
-  TextVariants,
   Bullseye,
+  EmptyState,
+  EmptyStateIcon,
+  EmptyStateVariant,
   Button,
-  Flex,
-  FlexItem,
-  FlexModifiers
+  EmptyStateBody,
+  Title
 } from '@patternfly/react-core';
+import {
+  ExclamationCircleIcon
+} from '@patternfly/react-icons';
 import { Redirect } from 'react-router';
 
-const ErrorComponent = () => {
+const ErrorComponent = (props) => {
+  let prevPath;
+  if (props.location.state !== undefined) {
+    prevPath = props.location.state.prev;
+  } else {
+    prevPath = '/ProcessInstances'
+  }
+
+  const tempPath = prevPath.split('/');
+  prevPath = tempPath.filter(item => item)
+
   const [isRedirect, setIsredirect] = useState(false);
   const redirectHandler = () => {
     setIsredirect(true);
   };
   return (
     <>
-      {isRedirect && <Redirect to="/DomainExplorer" />}
+      {isRedirect && <Redirect to={`/${prevPath[0]}`} />}
       <PageSection variant="light">
         <Bullseye>
-          <Flex breakpointMods={[{ modifier: FlexModifiers.column }]}>
-            <FlexItem>
-              <TextContent>
-                <Text component={TextVariants.h1}>404 - PAGE NOT FOUND</Text>
-                <br />
-                <Text component={TextVariants.p}>
-                  Oops! This page could not be found
-                </Text>
-                <Text component={TextVariants.small}>
-                  Sorry you cannot view this page, as the URL you have enter is
-                  incorrect
-                </Text>
-              </TextContent>
-            </FlexItem>
-            <br />
-            <FlexItem>
-              <Button variant="primary" onClick={redirectHandler}>
-                Go Back
-              </Button>
-            </FlexItem>
-          </Flex>
+          <EmptyState variant={EmptyStateVariant.full}>
+            <EmptyStateIcon
+              icon={ExclamationCircleIcon}
+              size="md"
+              color="var(--pf-global--danger-color--100)" />
+            <Title headingLevel="h1" size="4xl">404 Error: page not found</Title>
+            <EmptyStateBody>
+              This page could not be found.
+            </EmptyStateBody>
+            <Button variant="primary" onClick={redirectHandler}>
+              Go to process instances
+              </Button>
+          </EmptyState>
         </Bullseye>
       </PageSection>
     </>

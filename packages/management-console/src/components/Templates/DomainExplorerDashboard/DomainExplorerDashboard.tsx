@@ -35,6 +35,7 @@ const DomainExplorerDashboard = props => {
       return item;
     }
   });
+  const [pathName] = BreadCrumb.slice(-1);
   const [initData2, setInitData2] = useState<any>({
     __schema: { queryType: [] }
   });
@@ -180,7 +181,13 @@ const DomainExplorerDashboard = props => {
 
   return (
     <>
-      {!props.domains.includes(domainName) && <Redirect to="/ErrorComponent" />}
+      {!getQuery.loading && !props.domains.includes(domainName) && !props.domain.includes(pathName) && <Redirect to={{
+        pathname: '/NoData', state: {
+          prev: location.pathname,
+          title: 'Domain not found', description: `Domain with the name ${domainName} not found`,
+          buttonText: 'Go to domain explorer'
+        }
+      }} />}
       <PageSection variant="light">
         <PageTitleComponent title="Domain Explorer" />
         <Breadcrumb>

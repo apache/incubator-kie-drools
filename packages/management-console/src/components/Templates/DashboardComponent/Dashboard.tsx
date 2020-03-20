@@ -17,6 +17,7 @@ import Avatar from '../../Atoms/AvatarComponent/AvatarComponent';
 import PageToolbarComponent from '../../Organisms/PageToolbarComponent/PageToolbarComponent';
 import BrandComponent from '../../Atoms/BrandComponent/BrandComponent';
 import ErrorComponent from '../../Molecules/ErrorComponent/ErrorComponent';
+import NoDataComponent from '../../Molecules/NoDataComponent/NoDataComponent';
 import './Dashboard.css';
 
 import { useGetQueryFieldsQuery } from '../../../graphql/types';
@@ -99,6 +100,7 @@ const Dashboard: React.FC<{}> = (props: any) => {
               <DomainExplorerDashboard {..._props} domains={domains} />
             )}
           />
+          <Route path="/NoData" component={NoDataComponent} />
           <Route path="*" component={ErrorComponent} />
         </Switch>
       </Page>

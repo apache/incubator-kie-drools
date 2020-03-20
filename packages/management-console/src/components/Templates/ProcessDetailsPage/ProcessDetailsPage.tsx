@@ -8,7 +8,7 @@ import {
   Title
 } from '@patternfly/react-core';
 import React from 'react';
-import { Link } from 'react-router-dom';
+import { Link, Redirect } from 'react-router-dom';
 import ProcessDetails from '../../Organisms/ProcessDetails/ProcessDetails';
 import ProcessDetailsProcessDiagram from '../../Organisms/ProcessDetailsProcessDiagram/ProcessDetailsProcessDiagram';
 import ProcessDetailsProcessVariables from '../../Organisms/ProcessDetailsProcessVariables/ProcessDetailsProcessVariables';
@@ -22,6 +22,19 @@ const ProcessDetailsPage = ({ match }) => {
   const { loading, error, data } = useGetProcessInstanceByIdQuery({
     variables: { id }
   });
+
+  if (data) {
+    const result = data.ProcessInstances;
+    if (result.length === 0) {
+      return <Redirect to={{
+        pathname: '/NoData', state: {
+          prev: location.pathname,
+          title: 'Process not found', description: `Process instance with the id ${id} not found`,
+          buttonText: 'Go to process instances'
+        }
+      }} />
+    }
+  }
 
   if (loading) {
     return <p>Loading...</p>;
