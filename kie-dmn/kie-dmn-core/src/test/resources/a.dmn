@@ -10,7 +10,7 @@
     </dmn:itemComponent>
   </dmn:itemDefinition>
   <dmn:itemDefinition id="_01490F31-DAA8-405B-956D-0967BE121484" name="tPerson" isCollection="false">
-    <dmn:itemComponent id="_89481519-056A-400B-A130-9ED80F2B78E4" name="address" isCollection="false">
+    <dmn:itemComponent id="_7437AC5F-0521-4E81-A656-49D1762DF395" name="addresses" isCollection="true">
       <dmn:typeRef>tAddress</dmn:typeRef>
     </dmn:itemComponent>
     <dmn:itemComponent id="_0d1a64a8-6089-4af3-96c9-c220b8055ce6" name="name" isCollection="false">
@@ -46,9 +46,17 @@
     <dmndi:DMNDiagram>
       <di:extension xmlns:di="http://www.omg.org/spec/DMN/20180521/DI/">
         <kie:ComponentsWidthsExtension xmlns:kie="http://www.drools.org/kie/dmn/1.2">
-          <kie:ComponentWidths dmnElementRef="_bf061791-180b-43a6-a3f0-685162d735fe"/>
-          <kie:ComponentWidths dmnElementRef="_b4bd08a1-3ca6-475b-8555-eeed6432bc2f"/>
-          <kie:ComponentWidths dmnElementRef="_a7655e09-a433-4ab4-ad1f-b946f23417dd"/>
+          <kie:ComponentWidths dmnElementRef="_bf061791-180b-43a6-a3f0-685162d735fe">
+            <kie:width>50</kie:width>
+            <kie:width>100</kie:width>
+            <kie:width>150</kie:width>
+          </kie:ComponentWidths>
+          <kie:ComponentWidths dmnElementRef="_b4bd08a1-3ca6-475b-8555-eeed6432bc2f">
+            <kie:width>150</kie:width>
+          </kie:ComponentWidths>
+          <kie:ComponentWidths dmnElementRef="_a7655e09-a433-4ab4-ad1f-b946f23417dd">
+            <kie:width>150</kie:width>
+          </kie:ComponentWidths>
         </kie:ComponentsWidthsExtension>
       </di:extension>
       <dmndi:DMNShape id="dmnshape-_aa62fffa-9e87-4535-a63a-6f357ec2ffe3" dmnElementRef="_aa62fffa-9e87-4535-a63a-6f357ec2ffe3" isCollapsed="false">

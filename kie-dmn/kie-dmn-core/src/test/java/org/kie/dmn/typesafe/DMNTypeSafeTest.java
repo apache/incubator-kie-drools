@@ -1,5 +1,7 @@
 package org.kie.dmn.typesafe;
 
+import java.util.Arrays;
+import java.util.List;
 import java.util.Map;
 
 import org.junit.Test;
@@ -38,32 +40,34 @@ public class DMNTypeSafeTest {
         ClassLoader thisDMNClassLoader = this.getClass().getClassLoader();
         Map<String, Class<?>> compiledClasses = RegressionCompiler.compile(allTypesSourceCode, thisDMNClassLoader);
 
-        FEELPropertyAccessible tAddressInstance = createTAddress(compiledClasses);
-        FEELPropertyAccessible tPersonInstance = createTPerson(compiledClasses, tAddressInstance);
+        FEELPropertyAccessible viaVigorelli = createTAddress(compiledClasses, "Via Vigorelli", 1);
+        FEELPropertyAccessible viaVerdi = createTAddress(compiledClasses, "Via Verdi", 2);
+
+        FEELPropertyAccessible tPersonInstance = createTPerson(compiledClasses, Arrays.asList(viaVigorelli, viaVerdi));
         FEELPropertyAccessible context = createInputSet(compiledClasses, tPersonInstance);
 
         DMNResult evaluateAll = runtime.evaluateAll(dmnModel, new DMNContextFPAImpl(context));
         LOG.info("{}", evaluateAll);
     }
 
-    private FEELPropertyAccessible createTAddress(Map<String, Class<?>> compile) throws Exception {
+    private FEELPropertyAccessible createTAddress(Map<String, Class<?>> compile, String streetName, int streetNumber) throws Exception {
         Class<?> clazz = compile.get("org.kie.dmn.typesafe.TAddress");
         assertThat(clazz, notNullValue());
         Object tPersonInstance = clazz.getDeclaredConstructor().newInstance();
         FEELPropertyAccessible feelPropertyAccessible = (FEELPropertyAccessible) tPersonInstance;
-        feelPropertyAccessible.setFEELProperty("streetName", "Via Vigorelli");
-        feelPropertyAccessible.setFEELProperty("streetNumber", 1);
+        feelPropertyAccessible.setFEELProperty("streetName", streetName);
+        feelPropertyAccessible.setFEELProperty("streetNumber", streetNumber);
 
         return feelPropertyAccessible;
     }
 
-    private FEELPropertyAccessible createTPerson(Map<String, Class<?>> compile, FEELPropertyAccessible tAddressInstance) throws Exception {
+    private FEELPropertyAccessible createTPerson(Map<String, Class<?>> compile, List<FEELPropertyAccessible> addresses) throws Exception {
         Class<?> tPersonClass = compile.get("org.kie.dmn.typesafe.TPerson");
         assertThat(tPersonClass, notNullValue());
         Object tPersonInstance = tPersonClass.getDeclaredConstructor().newInstance();
         FEELPropertyAccessible feelPropertyAccessible = (FEELPropertyAccessible) tPersonInstance;
         feelPropertyAccessible.setFEELProperty("name", "Mr. x");
-        feelPropertyAccessible.setFEELProperty("address", tAddressInstance);
+        feelPropertyAccessible.setFEELProperty("addresses", addresses);
 
         return feelPropertyAccessible;
     }

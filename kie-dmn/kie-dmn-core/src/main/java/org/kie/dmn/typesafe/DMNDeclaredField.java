@@ -11,21 +11,26 @@ import org.kie.dmn.api.core.DMNType;
 
 public class DMNDeclaredField implements FieldDefinition {
 
-    private final Map.Entry<String, DMNType> dmnType;
+    private String fieldName;
+    private DMNType fieldType;
 
     DMNDeclaredField(Map.Entry<String, DMNType> dmnType) {
-        this.dmnType = dmnType;
+        this.fieldName = dmnType.getKey();
+        this.fieldType = dmnType.getValue();
     }
 
     @Override
     public String getFieldName() {
-        return dmnType.getKey();
+        return fieldName;
     }
 
     @Override
     public String getObjectType() {
-
-        return StringUtils.ucFirst(dmnType.getValue().getName());
+        if (fieldType.isCollection()) {
+            String typeName = fieldType.getBaseType().getName();
+            return String.format("java.util.Collection<%s>", StringUtils.ucFirst(typeName));
+        }
+        return StringUtils.ucFirst(fieldType.getName());
     }
 
     @Override
