@@ -1,6 +1,6 @@
 package org.drools.compiler.rule.builder.dialect.java;
 
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 public class JavaDialectConfigurationTest {
 
@@ -14,10 +14,4 @@ public class JavaDialectConfigurationTest {
         new JavaDialectConfiguration().setJavaLanguageLevel("11");
         new JavaDialectConfiguration().setJavaLanguageLevel("12");
     }
-
-    @Test(expected = RuntimeException.class)
-    public void java13NotSupported() {
-        new JavaDialectConfiguration().setJavaLanguageLevel("13");
-    }
-
 }

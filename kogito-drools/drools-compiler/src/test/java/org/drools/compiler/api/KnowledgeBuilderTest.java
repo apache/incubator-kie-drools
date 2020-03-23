@@ -31,7 +31,6 @@ import org.kie.internal.io.ResourceFactory;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
-import static org.junit.jupiter.api.Assertions.fail;
 
 
 public class KnowledgeBuilderTest {
@@ -106,17 +105,6 @@ public class KnowledgeBuilderTest {
             }
         }
         return null;
-    }
-    
-    @Test
-    public void testEmptyByteResource() throws Exception {
-        KnowledgeBuilder builder = KnowledgeBuilderFactory.newKnowledgeBuilder();
-        try {
-            builder.add(ResourceFactory.newByteArrayResource(new byte[0]), ResourceType.DRL);
-            fail();
-        } catch ( IllegalArgumentException e ) {
-            
-        }
     }
 
     @Test

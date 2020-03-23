@@ -16,6 +16,12 @@
 
 package org.drools.core.io.impl;
 
+import org.drools.core.builder.conf.impl.ResourceConfigurationImpl;
+import org.drools.core.io.internal.InternalResource;
+import org.kie.api.io.Resource;
+import org.kie.api.io.ResourceConfiguration;
+import org.kie.api.io.ResourceType;
+
 import static org.drools.core.util.IoUtils.readBytesFromInputStream;
 
 import java.io.Externalizable;
@@ -45,6 +51,8 @@ public abstract class BaseResource
 
     private List<String>          categories;
 
+    protected byte[] bytes;
+
     public void readExternal(ObjectInput in) throws IOException,
                                             ClassNotFoundException {
         resourceType = (ResourceType) in.readObject();
@@ -53,6 +61,7 @@ public abstract class BaseResource
         targetPath = (String) in.readObject();
         description = (String) in.readObject();
         categories = (List<String>) in.readObject();
+        bytes = (byte[]) in.readObject();
     }
 
     public void writeExternal(ObjectOutput out) throws IOException {
@@ -62,6 +71,7 @@ public abstract class BaseResource
         out.writeObject( targetPath );
         out.writeObject( description );
         out.writeObject( categories );
+        out.writeObject( bytes );
     }
 
     public ResourceConfiguration getConfiguration() {
@@ -139,11 +149,14 @@ public abstract class BaseResource
     }
 
     public byte[] getBytes() {
-        try {
-            return readBytesFromInputStream(getInputStream());
-        } catch (IOException e) {
-            throw new RuntimeException(e);
+        if (bytes == null) {
+            try {
+                bytes = readBytesFromInputStream( getInputStream() );
+            } catch (IOException e) {
+                throw new RuntimeException( e );
+            }
         }
+        return bytes;
     }
 
     @Override

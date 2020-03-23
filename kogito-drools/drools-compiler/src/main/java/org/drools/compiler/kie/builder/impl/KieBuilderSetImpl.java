@@ -228,16 +228,6 @@ public class KieBuilderSetImpl implements KieBuilderSet {
         }
 
         @Override
-        public long getLastModified() {
-            throw new UnsupportedOperationException();
-        }
-
-        @Override
-        public long getLastRead() {
-            throw new UnsupportedOperationException();
-        }
-
-        @Override
         public String getEncoding() {
             throw new UnsupportedOperationException();
         }

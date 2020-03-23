@@ -38,7 +38,6 @@ public class ByteArrayResource extends BaseResource
     InternalResource,
     Externalizable {
 
-    private byte[] bytes;
     private String encoding;
 
     public ByteArrayResource() { }
@@ -46,8 +45,6 @@ public class ByteArrayResource extends BaseResource
     public ByteArrayResource(byte[] bytes) {
         if ( bytes == null ) {
             throw new IllegalArgumentException( "Provided byte array can not be null" );
-        } else if ( bytes.length == 0 ) {
-            throw new IllegalArgumentException( "Provided byte array can not be empty" );
         }
         this.bytes = bytes;
     }
@@ -99,14 +96,6 @@ public class ByteArrayResource extends BaseResource
 
     public URL getURL() throws IOException {
         throw new FileNotFoundException( "byte[] cannot be resolved to URL" );
-    }
-    
-    public long getLastModified() {
-        throw new IllegalStateException( "reader does have a modified date" );
-    }
-    
-    public long getLastRead() {
-        throw new IllegalStateException( "reader does have a modified date" );
     }
     
     public boolean isDirectory() {

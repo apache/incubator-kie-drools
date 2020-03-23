@@ -17,7 +17,7 @@ package org.drools.compiler.compiler.io;
 
 import java.util.Collection;
 
-public interface Folder extends Resource {
+public interface Folder extends FileSystemItem {
     String getName();
     
     File getFile(String name);
@@ -32,5 +32,5 @@ public interface Folder extends Resource {
     
     Folder getParent();
     
-    Collection<? extends Resource> getMembers();
+    Collection<? extends FileSystemItem> getMembers();
 }

@@ -16,12 +16,15 @@
 
 package org.drools.core.io.impl;
 
+import java.io.ByteArrayInputStream;
+import java.io.ByteArrayOutputStream;
 import java.io.Externalizable;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.ObjectInput;
 import java.io.ObjectOutput;
+import java.io.ObjectOutputStream;
 import java.io.Reader;
 import java.net.URL;
 import java.util.Collection;
@@ -68,21 +71,18 @@ public class DescrResource extends BaseResource implements InternalResource, Ext
     }
 
     public InputStream getInputStream() throws IOException {
-        throw new IOException( "descr does not support input streams");
+        ByteArrayOutputStream baos = new ByteArrayOutputStream();
+        ObjectOutputStream oos = new ObjectOutputStream(baos);
+        oos.writeObject(this);
+        oos.flush();
+        oos.close();
+        return new ByteArrayInputStream(baos.toByteArray());
     }
     
     public Reader getReader() throws IOException {
         throw new IOException( "descr does not support readers");
     }
 
-    public long getLastModified() {
-        throw new IllegalStateException( "descr does not have a modified date" );
-    }
-    
-    public long getLastRead() {
-        throw new IllegalStateException( "descr does not have a modified date" );
-    }
-    
     public KieDescr getDescr() {
         return this.descr;
     }

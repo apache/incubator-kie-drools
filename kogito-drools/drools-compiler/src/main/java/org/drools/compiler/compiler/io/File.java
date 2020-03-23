@@ -19,7 +19,7 @@ import java.io.IOException;
 import java.io.InputStream;
 
 
-public interface File extends Resource {      
+public interface File extends FileSystemItem {
     String getName();
     
     boolean exists();    
