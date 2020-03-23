@@ -3,10 +3,16 @@ package org.kie.dmn.validation.dtanalysis;
 import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collection;
 import java.util.Collections;
+import java.util.HashMap;
+import java.util.Iterator;
 import java.util.List;
+import java.util.Map;
+import java.util.Map.Entry;
 import java.util.Optional;
 import java.util.stream.Collectors;
+import java.util.stream.IntStream;
 import java.util.stream.Stream;
 
 import org.kie.dmn.feel.runtime.Range.RangeBoundary;
@@ -29,6 +35,7 @@ public class MCDCAnalyser {
 
     private Optional<Integer> elseRuleIdx = Optional.empty();
     private List<List<?>> allEnumValues = new ArrayList<>();
+    private List<Integer> visitedColumnIndex = new ArrayList<>();
 
     public MCDCAnalyser(DDTATable ddtaTable, DecisionTable dt) {
         this.ddtaTable = ddtaTable;
@@ -41,26 +48,102 @@ public class MCDCAnalyser {
         }
         // TODO if not enumerated output values, cannot analyse.
 
+        // Step1
         calculateElseRuleIdx();
         calculateAllEnumValues();
-        List<Integer> indexesWithMoreElements = indexesWithMoreElements(allEnumValues);
+
+        // Step2
+        List<List<?>> workingEnumValues = new ArrayList<>(allEnumValues.size());
+        for (List<?> colum : allEnumValues) {
+            workingEnumValues.add(new ArrayList<>(colum));
+        }
+        List<Integer> allIndexes = IntStream.range(0, ddtaTable.getInputs().size()).boxed().collect(Collectors.toList());
+        List<Integer> whichIndexHasMoreElements = whichIndexHasMoreElements(allIndexes);
+        LOG.debug("Which Input with greatest number of enum between {} ? it's: {}",
+                  debugListPlusOne(allIndexes),
+                  debugListPlusOne(whichIndexHasMoreElements));
+        List<Entry<Integer, List<PosNegBlock>>> whichIndexHasFewestNumberOfRulesMatchingTheFirstInputValue = whichIndexHasFewestNumberOfRulesMatchingTheFirstInputValue(whichIndexHasMoreElements);
+        LOG.debug("Which Input has fewest number of rules matching the first input value between {} ? it's: {}",
+                  debugListPlusOne(whichIndexHasMoreElements),
+                  debugListPlusOne(whichIndexHasFewestNumberOfRulesMatchingTheFirstInputValue.stream().map(Entry::getKey).collect(Collectors.toList())));
+        if (whichIndexHasFewestNumberOfRulesMatchingTheFirstInputValue.size() == 1) {
+            Entry<Integer, List<PosNegBlock>> idx0block = whichIndexHasFewestNumberOfRulesMatchingTheFirstInputValue.get(0);
+            Integer index = idx0block.getKey();
+            StringBuilder sb = new StringBuilder("\n");
+            for (PosNegBlock b : idx0block.getValue()) {
+                sb.append(b);
+            }
+            LOG.debug("Only 1 Input has fewest In{}, and with these blocks {}", index, sb.toString());
+            visitedColumnIndex.add(index);
+            allEnumValues.get(index).removeAll(Arrays.asList(idx0block.getValue().get(0).posRecord.enums[index]));
+        } else {
+            throw new UnsupportedOperationException("TODO");
+        }
+        allIndexes.removeAll(visitedColumnIndex);
+        LOG.debug(" --- ITERATING AGAIN --- ");
+        debugAllEnumValues();
+        whichIndexHasMoreElements = whichIndexHasMoreElements(allIndexes);
+        LOG.debug("Which Input with greatest number of enum between {} ? it's: {}",
+                  debugListPlusOne(allIndexes),
+                  debugListPlusOne(whichIndexHasMoreElements));
+        whichIndexHasFewestNumberOfRulesMatchingTheFirstInputValue = whichIndexHasFewestNumberOfRulesMatchingTheFirstInputValue(whichIndexHasMoreElements);
+        LOG.debug("Which Input has fewest number of rules matching the first input value between {} ? it's: {}",
+                  debugListPlusOne(whichIndexHasMoreElements),
+                  debugListPlusOne(whichIndexHasFewestNumberOfRulesMatchingTheFirstInputValue.stream().map(Entry::getKey).collect(Collectors.toList())));
+        if (whichIndexHasFewestNumberOfRulesMatchingTheFirstInputValue.size() == 1) {
+            Entry<Integer, List<PosNegBlock>> idx0block = whichIndexHasFewestNumberOfRulesMatchingTheFirstInputValue.get(0);
+            Integer index = idx0block.getKey();
+            StringBuilder sb = new StringBuilder("\n");
+            for (PosNegBlock b : idx0block.getValue()) {
+                sb.append(b);
+            }
+            LOG.debug("Only 1 Input has fewest In{}, and with these blocks {}", index + 1, sb.toString());
+            visitedColumnIndex.add(index);
+        } else {
+            throw new UnsupportedOperationException("TODO");
+        }
+    }
+
+    private List<Integer> debugListPlusOne(List<Integer> input) {
+        return input.stream().map(x -> x + 1).collect(Collectors.toList());
+    }
+
+    private List<Integer> whichIndexHasMoreElements(List<Integer> allIndexes) {
+        Map<Integer, List<?>> byIndex = new HashMap<>();
+        for (Integer idx : allIndexes) {
+            byIndex.put(idx, allEnumValues.get(idx));
+        }
+        Integer max = byIndex.values().stream().map(List::size).max(Integer::compareTo).orElse(0);
+        List<Integer> collect = byIndex.entrySet().stream().filter(kv -> kv.getValue().size() == max).map(Entry::getKey).collect(Collectors.toList());
+        return collect;
+    }
+
+    private List<Entry<Integer, List<PosNegBlock>>> whichIndexHasFewestNumberOfRulesMatchingTheFirstInputValue(List<Integer> indexesWithMoreElements) {
+        Map<Integer, List<PosNegBlock>> results = new HashMap<>();
+        indexesWithMoreElements.forEach(i -> results.put(i, new ArrayList<>()));
         for (Integer idx : indexesWithMoreElements) {
-            System.out.println(idx);
             Object value = allEnumValues.get(idx).get(0);
-            System.out.println(value);
             List<Integer> matchingRulesForInput = matchingRulesForInput(idx, value);
-            System.out.println(matchingRulesForInput);
             for (int ruleIdx : matchingRulesForInput) {
                 Object[] knownValues = new Object[ddtaTable.getInputs().size()];
                 knownValues[idx] = value;
                 Object[] posCandidate = findValuesForRule(ruleIdx, knownValues, Collections.unmodifiableList(allEnumValues));
+                if (Stream.of(posCandidate).anyMatch(x -> x == null)) {
+                    continue;
+                }
                 Record posCandidateRecord = new Record(ruleIdx, posCandidate, ddtaTable.getRule().get(ruleIdx).getOutputEntry());
-                calculatePosNegBlock(idx, value, posCandidateRecord, Collections.unmodifiableList(allEnumValues));
+                Optional<PosNegBlock> calculatePosNegBlock = calculatePosNegBlock(idx, value, posCandidateRecord, Collections.unmodifiableList(allEnumValues));
+                if (calculatePosNegBlock.isPresent()) {
+                    results.get(idx).add(calculatePosNegBlock.get());
+                }
             }
         }
+        Integer min = results.values().stream().map(List::size).min(Integer::compareTo).orElse(0);
+        List<Entry<Integer, List<PosNegBlock>>> collect = results.entrySet().stream().filter(kv -> kv.getValue().size() == min).collect(Collectors.toList());
+        return collect;
     }
 
-    private void calculatePosNegBlock(Integer idx, Object value, Record posCandidate, List<List<?>> allEnumValues) {
+    private Optional<PosNegBlock> calculatePosNegBlock(Integer idx, Object value, Record posCandidate, List<List<?>> allEnumValues) {
         List<Comparable<?>> posOutput = posCandidate.output;
         List<?> enumValues = allEnumValues.get(idx);
         List<?> allOtherEnumValues = new ArrayList<>(enumValues);
@@ -87,8 +170,9 @@ public class MCDCAnalyser {
         }
         if (allNegValuesDiffer) {
             PosNegBlock posNegBlock = new PosNegBlock(idx, posCandidate, negativeRecords);
-            System.out.println(posNegBlock);
+            return Optional.of(posNegBlock);
         }
+        return Optional.empty();
     }
 
     private static boolean ruleMatches(DDTARule rule, Object[] values) {
@@ -114,7 +198,7 @@ public class MCDCAnalyser {
 
         @Override
         public String toString() {
-            StringBuilder sb = new StringBuilder("PosNeg block column index: ").append(cMarker).append("\n");
+            StringBuilder sb = new StringBuilder("PosNeg block In ").append(cMarker + 1).append("=").append(posRecord.enums[cMarker]).append("\n");
             sb.append(" + ").append(posRecord).append("\n");
             for (Record negRecord : negRecords) {
                 sb.append(" - ").append(negRecord).append("\n");
@@ -137,7 +221,7 @@ public class MCDCAnalyser {
 
         @Override
         public String toString() {
-            return String.format("%2s", ruleIdx) + " [" + Arrays.stream(enums).map(Object::toString).collect(Collectors.joining("; ")) + "] -> " + output;
+            return String.format("%2s", ruleIdx + 1) + " [" + Arrays.stream(enums).map(Object::toString).collect(Collectors.joining("; ")) + "] -> " + output;
         }
 
     }
@@ -156,7 +240,13 @@ public class MCDCAnalyser {
                     result[i] = interval0.getLowerBound().getValue();
                 } else if (interval0.getUpperBound().getBoundaryType() == RangeBoundary.CLOSED && interval0.getUpperBound().getValue() != Interval.POS_INF) {
                     result[i] = interval0.getUpperBound().getValue();
-                } else {
+                }
+
+                if (!enumValues.contains(result[i])) {
+                    result[i] = null; // invalidating if the chosen enum is not part of the plausible ones
+                }
+
+                if (result[i] == null) {
                     for (Object object : enumValues) {
                         if (ddtaInputEntry.getIntervals().stream().anyMatch(interval -> interval.asRangeIncludes(object))) {
                             result[i]= object;
@@ -256,23 +346,50 @@ public class MCDCAnalyser {
 
         if (elseRuleIdx.isPresent()) {
             for (int idx = 0; idx < allEnumValues.size(); idx++) {
-                List<Integer> rulesMatchingLast = matchingRulesForInput(idx, allEnumValues.get(idx).get(allEnumValues.get(idx).size() - 1));
-                List<Integer> rulesMatchingFirst = matchingRulesForInput(idx, allEnumValues.get(idx).get(0));
-                if (rulesMatchingLast.size() == 1 && elseRuleIdx.get().equals(rulesMatchingLast.get(0)) && !rulesMatchingFirst.stream().allMatch(elseRuleIdx.get()::equals)) {
-                    // do nothing, already ordered with else rule last.
-                } else if (rulesMatchingFirst.size() == 1 && elseRuleIdx.get().equals(rulesMatchingFirst.get(0)) && !rulesMatchingLast.stream().allMatch(elseRuleIdx.get()::equals)) {
-                    List<?> reversing = new ArrayList<>(allEnumValues.get(idx));
-                    Collections.reverse(reversing);
-                    allEnumValues.set(idx, reversing);
+                List<Interval> idxIntervals = new ArrayList<>();
+                for (DDTARule rule : ddtaTable.getRule()) {
+                    for (Interval interval : rule.getInputEntry().get(idx).getIntervals()) {
+                        boolean isAllDomain = ddtaTable.getInputs().get(idx).getDomainMinMax().equals(interval);
+                        if (!isAllDomain) {
+                            idxIntervals.add(interval);
+                        }
+                    }
+                }
+                List<Interval> flatten = Interval.flatten(idxIntervals);
+                List<?> redCandidates = new ArrayList<>();
+                redCandidates.addAll((Collection) allEnumValues.get(idx));
+                for (Iterator iterator = redCandidates.iterator(); iterator.hasNext();) {
+                    Object object = (Object) iterator.next();
+                    if (flatten.stream().anyMatch(interval -> interval.asRangeIncludes(object))) {
+                        iterator.remove();
+                    }
+                }
+                if (redCandidates.size() == 1) {
+                    Object object = redCandidates.get(0);
+                    if (allEnumValues.get(idx).indexOf(object) == allEnumValues.get(idx).size() - 1) {
+                        // last, do nothing.
+                    } else if (allEnumValues.get(idx).indexOf(object) == 0) {
+                        List<?> enumIdx = new ArrayList<>(allEnumValues.get(idx));
+                        Collections.reverse(enumIdx);
+                        allEnumValues.set(idx, enumIdx);
+                    } else {
+                        throw new UnsupportedOperationException("TODO"); 
+                    }
+                } else if (redCandidates.size() == 0) {
+                    // do nothing.
                 } else {
                     throw new UnsupportedOperationException("TODO");
                 }
             }
         }
 
+        debugAllEnumValues();
+    }
+
+    private void debugAllEnumValues() {
         LOG.debug("allEnumValues:");
         for (int idx = 0; idx < allEnumValues.size(); idx++) {
-            LOG.debug("allEnumValues {}: {}", idx, allEnumValues.get(idx));
+            LOG.debug("allEnumValues In{}= {}", idx + 1, allEnumValues.get(idx));
         }
     }
 
@@ -308,6 +425,8 @@ public class MCDCAnalyser {
             BigDecimal bValue = b.getValue() == Interval.POS_INF ? ((BigDecimal) a.getValue()).add(new BigDecimal(+2)) : (BigDecimal) b.getValue();
             BigDecimal guessWork = new BigDecimal(aValue.intValue() + 1);
             if (bValue.compareTo(guessWork) > 0) {
+                return guessWork;
+            } else if (bValue.compareTo(guessWork) == 0 && b.isLowerBound() && b.getBoundaryType() == RangeBoundary.OPEN) {
                 return guessWork;
             } else {
                 throw new UnsupportedOperationException();
