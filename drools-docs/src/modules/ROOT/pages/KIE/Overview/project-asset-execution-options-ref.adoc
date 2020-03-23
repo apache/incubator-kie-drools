@@ -22,10 +22,10 @@ ifdef::DM,PAM[]
 {URL_KIE_APIS}[_{KIE_APIS}_]
 endif::[]
 ifdef::DROOLS,JBPM,OP[]
-xref:_ch.kie.server[]
+xref:#_ch.kie.server[]
 
 ifdef::JBPM[]
-xref:_process_management[]
+xref:#_process_management[]
 endif::[]
 endif::[]
 

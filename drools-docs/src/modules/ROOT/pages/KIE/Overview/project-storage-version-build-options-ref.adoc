@@ -43,7 +43,7 @@ ifdef::DM,PAM[]
 NA
 endif::[]
 ifdef::DROOLS,JBPM,OP[]
-xref:_wb.artifactrepository[]
+xref:#_wb.artifactrepository[]
 endif::[]
 
 |External Maven repository
@@ -55,7 +55,7 @@ ifdef::DM,PAM[]
 {URL_PACKAGING_DEPLOYING_PROJECT}#maven-external-configure-proc_packaging-deploying[_{PACKAGING_DEPLOYING_PROJECT}_]
 endif::[]
 ifdef::DROOLS,JBPM,OP[]
-xref:_settings_xml_and_remote_repository_setup[]
+xref:#_settings_xml_and_remote_repository_setup[]
 endif::[]
 |===
 
@@ -73,7 +73,7 @@ ifdef::DM,PAM[]
 {URL_PACKAGING_DEPLOYING_PROJECT}[_{PACKAGING_DEPLOYING_PROJECT}_]
 endif::[]
 ifdef::DROOLS,JBPM,OP[]
-xref:_wb.quickstartbuildanddeloy[]
+xref:#_wb.quickstartbuildanddeloy[]
 endif::[]
 
 |Standalone Maven project (KJAR)
@@ -83,7 +83,7 @@ ifdef::DM,PAM[]
 {URL_PACKAGING_DEPLOYING_PROJECT}#project-build-deploy-maven-proc_packaging-deploying[_{PACKAGING_DEPLOYING_PROJECT}_]
 endif::[]
 ifdef::DROOLS,JBPM,OP[]
-xref:_buildingwithmaven[]
+xref:#_buildingwithmaven[]
 endif::[]
 
 |Embedded Java application (KJAR)
@@ -93,7 +93,7 @@ ifdef::DM,PAM[]
 {URL_PACKAGING_DEPLOYING_PROJECT}#project-build-deploy-java-proc_packaging-deploying[_{PACKAGING_DEPLOYING_PROJECT}_]
 endif::[]
 ifdef::DROOLS,JBPM,OP[]
-xref:_definingakiemoduleprogrammatically[]
+xref:#_definingakiemoduleprogrammatically[]
 endif::[]
 
 |CI/CD tool (KJAR)
