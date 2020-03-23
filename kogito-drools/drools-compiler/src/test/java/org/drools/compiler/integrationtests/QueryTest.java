@@ -1215,7 +1215,8 @@ public class QueryTest extends CommonTestMethodBase {
 
         KieHelper helper = new KieHelper();
         helper.addContent( str, ResourceType.DRL );
-        KieSession ksession = helper.build().newKieSession();
+        KieBase kbase = SerializationHelper.serializeObject(helper.build());
+        KieSession ksession = kbase.newKieSession();
 
         List<Person> list = new ArrayList<Person>();
         ksession.setGlobal("persons", list);

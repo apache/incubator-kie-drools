@@ -679,7 +679,7 @@ public class MVELCompilationUnit
         }
     }
 
-    private static class InterceptorMap implements Map<String, Interceptor> {
+    private static class InterceptorMap implements Map<String, Interceptor>, Serializable {
         public int size() {
             return 1;
         }
