@@ -69,17 +69,16 @@ public class MCDCAnalyser {
         for (Object otherEnumValue : allOtherEnumValues) {
             Object[] negCandidate = Arrays.copyOf(posCandidate.enums, posCandidate.enums.length);
             negCandidate[idx] = otherEnumValue;
-            for (int i = 0; i < ddtaTable.getRule().size(); i++) {
+            Record negRecordForNegCandidate = null;
+            for (int i = 0; negRecordForNegCandidate == null && i < ddtaTable.getRule().size(); i++) {
                 DDTARule rule = ddtaTable.getRule().get(i);
-                boolean ruleMatches = true;
-                for (int c = 0; ruleMatches && c < rule.getInputEntry().size(); c++) {
-                    Object cValue = negCandidate[c];
-                    ruleMatches &= rule.getInputEntry().get(c).getIntervals().stream().anyMatch(interval -> interval.asRangeIncludes(cValue));
-                }
+                boolean ruleMatches = ruleMatches(rule, negCandidate);
                 if (ruleMatches) {
-                    Record record = new Record(i, negCandidate, rule.getOutputEntry());
-                    negativeRecords.add(record);
+                    negRecordForNegCandidate = new Record(i, negCandidate, rule.getOutputEntry());
                 }
+            }
+            if (negRecordForNegCandidate != null) {
+                negativeRecords.add(negRecordForNegCandidate);
             }
         }
         boolean allNegValuesDiffer = true;
@@ -90,6 +89,15 @@ public class MCDCAnalyser {
             PosNegBlock posNegBlock = new PosNegBlock(idx, posCandidate, negativeRecords);
             System.out.println(posNegBlock);
         }
+    }
+
+    private static boolean ruleMatches(DDTARule rule, Object[] values) {
+        boolean ruleMatches = true;
+        for (int c = 0; ruleMatches && c < rule.getInputEntry().size(); c++) {
+            Object cValue = values[c];
+            ruleMatches &= rule.getInputEntry().get(c).getIntervals().stream().anyMatch(interval -> interval.asRangeIncludes(cValue));
+        }
+        return ruleMatches;
     }
 
     public static class PosNegBlock {
