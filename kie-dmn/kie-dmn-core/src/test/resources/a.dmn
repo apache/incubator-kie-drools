@@ -6,6 +6,14 @@
       <dmn:typeRef>string</dmn:typeRef>
     </dmn:itemComponent>
   </dmn:itemDefinition>
+  <dmn:itemDefinition id="_3655528E-DD1E-44A0-ABA2-9FBB940387AC" name="tAddress" isCollection="false">
+    <dmn:itemComponent id="_8AA4C9B6-0742-4843-BF28-84037EBBFC00" name="streetName" isCollection="false">
+      <dmn:typeRef>string</dmn:typeRef>
+    </dmn:itemComponent>
+    <dmn:itemComponent id="_D962C894-C96A-4485-BE7B-2AB6722186F5" name="streetNumber" isCollection="false">
+      <dmn:typeRef>number</dmn:typeRef>
+    </dmn:itemComponent>
+  </dmn:itemDefinition>
   <dmn:inputData id="_aa62fffa-9e87-4535-a63a-6f357ec2ffe3" name="p">
     <dmn:extensionElements/>
     <dmn:variable id="_aea02203-99cb-41e4-a86d-25f63b9ee3d1" name="p" typeRef="tPerson"/>
