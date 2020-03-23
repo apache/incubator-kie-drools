@@ -15,9 +15,9 @@
  */
 package org.kie.pmml.models.tree.compiler.factories;
 
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.concurrent.atomic.AtomicReference;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
@@ -63,10 +63,9 @@ public class KiePMMLDescrFactory {
 
     public static final String PMML4_RESULT = "PMML4Result";
     public static final String PMML4_RESULT_IDENTIFIER = "$pmml4Result";
-    //    static final String SURROGATE_PATTERN = "(%1$s() and %1$s(value %2$s \"%3$s\"))";
     public static final String UPDATE_PMML4_RESULT = "\r\n" + PMML4_RESULT_IDENTIFIER + ".setResultCode(\"%s\");" +
-            "\r\n" + PMML4_RESULT_IDENTIFIER + ".addResultVariable(" + PMML4_RESULT_IDENTIFIER + ".getResultObjectName()" + ", \"%s\");" +
-            "\r\nupdate(" + PMML4_RESULT_IDENTIFIER + ");";
+            "\r\n" + PMML4_RESULT_IDENTIFIER + ".addResultVariable(" + PMML4_RESULT_IDENTIFIER + ".getResultObjectName()" + ", \"%s\");";/* +
+            "\r\nupdate(" + PMML4_RESULT_IDENTIFIER + ");";*/
     static final String STATUS_HOLDER = "$statusHolder";
     public static final String MODIFY_STATUS_HOLDER = "\r\nmodify(" + STATUS_HOLDER + ") {\r\n\tsetStatus(\"%s\")\r\n}";
     static final String STATUS_NULL = "status == null";
@@ -96,6 +95,7 @@ public class KiePMMLDescrFactory {
         builder.newImport().target(KiePMMLStatusHolder.class.getName());
         builder.newImport().target(SimplePredicate.class.getName());
         builder.newImport().target(PMML4Result.class.getName());
+        builder.newGlobal().identifier(PMML4_RESULT_IDENTIFIER).type(PMML4_RESULT);
         declareTypes(builder, dataDictionary, fieldTypeMap);
         declareRules(builder, model.getNode(), "", fieldTypeMap);
         return builder.getDescr();
@@ -123,7 +123,7 @@ public class KiePMMLDescrFactory {
 
     static void declareFinalLeafWhen(final RuleDescrBuilder ruleBuilder, final CEDescrBuilder<RuleDescrBuilder, AndDescr> lhsBuilder, final Node node) {
         logger.info("declareFinalLeafWhen {} {} {}", ruleBuilder, lhsBuilder, node);
-        lhsBuilder.pattern(PMML4Result.class.getSimpleName()).id(PMML4_RESULT_IDENTIFIER, false);
+//        lhsBuilder.pattern(PMML4Result.class.getSimpleName()).id(PMML4_RESULT_IDENTIFIER, false);
         StringBuilder stringBuilder = new StringBuilder();
         stringBuilder.append(String.format(MODIFY_STATUS_HOLDER, StatusCode.DONE.name()));
         stringBuilder.append(String.format(UPDATE_PMML4_RESULT, StatusCode.OK.name(), node.getScore().toString()));
@@ -264,6 +264,34 @@ public class KiePMMLDescrFactory {
             }
         }
     }
+
+//    static void declareXORSimplePredicate(final AtomicReference<String> leftHand,
+//                                          final AtomicReference<String> leftPatternType,
+//                                          final AtomicReference<String> rightHand,
+//                                          final AtomicReference<String> rightPatternType,
+//                                          CEDescrBuilder<? extends CEDescrBuilder<?, ?>, ExistsDescr> exists,
+//                                          CEDescrBuilder<? extends CEDescrBuilder<? extends CEDescrBuilder<?, ?>, ExistsDescr>, OrDescr> orExists,
+//                                          final SimplePredicate predicate,
+//                                          final Map<String, KiePMMLOriginalTypeGeneratedType> fieldTypeMap) {
+//        OPERATOR operator = OPERATOR.byName(predicate.getOperator().value());
+//        if (leftHand.get() == null) { // First element
+//            leftHand.set(getConstraintPattern(predicate, operator, fieldTypeMap));
+//            leftPatternType.set(predicate.getField().getValue().toUpperCase());
+//            return;
+//        }
+//        rightHand.set(getConstraintPattern(predicate, operator, fieldTypeMap));
+//        rightPatternType.set(predicate.getField().getValue().toUpperCase());
+//        if (exists == null) { // Second element
+//            exists = xorRoot.exists();
+//            orExists = exists.or();
+//            orExists.pattern(leftPatternType).constraint(leftHand);
+//            orExists.pattern(rightPatternType).constraint(rightHand);
+//            not.pattern(leftPatternType).constraint(leftHand);
+//            not.pattern(rightPatternType).constraint(rightHand);
+//        } else { // Following elements
+//            // Not managed yet
+//        }
+//    }
 
     static void declareSurrogateSimplePredicates(final CEDescrBuilder<?, ?> lhsBuilder,
                                                  final Map<String, List<SimplePredicate>> predicatesMap,

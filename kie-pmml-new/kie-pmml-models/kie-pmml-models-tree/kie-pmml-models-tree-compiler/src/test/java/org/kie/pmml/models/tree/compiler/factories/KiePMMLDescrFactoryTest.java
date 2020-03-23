@@ -164,7 +164,7 @@ public class KiePMMLDescrFactoryTest {
         assertNotNull(consequence);
         assertTrue(consequence.contains(expectedModifyStatusHolder));
         assertTrue(consequence.contains(expectedUpdatePmml4Result));
-        assertTrue(consequence.replace(expectedModifyStatusHolder, "").replace(expectedUpdatePmml4Result, "").isEmpty());
+        assertTrue(consequence.replace(expectedModifyStatusHolder, "").isEmpty());
     }
 
     @Test
