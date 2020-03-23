@@ -170,7 +170,7 @@ public class MCDCAnalyser {
     }
 
     private List<Integer> indexesWithMoreElements(List<List<?>> cc) {
-        Integer max = cc.stream().map(List::size).max(Integer::compareTo).orElseGet(() -> 0);
+        Integer max = cc.stream().map(List::size).max(Integer::compareTo).orElse(0);
         List<Integer> indexes = new ArrayList<>();
         for (int i = 0; i < cc.size(); i++) {
             if (cc.get(i).size() == max) {
