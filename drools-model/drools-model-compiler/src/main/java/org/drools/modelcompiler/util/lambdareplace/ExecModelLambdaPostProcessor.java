@@ -45,7 +45,7 @@ import org.drools.modelcompiler.builder.RuleWriter;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import static org.drools.core.util.StreamUtils.optionalToStream;
+import static org.drools.modelcompiler.util.StreamUtils.optionalToStream;
 import static org.drools.modelcompiler.builder.generator.DslMethodNames.ALPHA_INDEXED_BY_CALL;
 import static org.drools.modelcompiler.builder.generator.DslMethodNames.BETA_INDEXED_BY_CALL;
 import static org.drools.modelcompiler.builder.generator.DslMethodNames.EXECUTE_CALL;

@@ -1,0 +1,35 @@
+<dmn:definitions xmlns:dmn="http://www.omg.org/spec/DMN/20180521/MODEL/" xmlns="https://kiegroup.org/dmn/_47957E82-6124-4355-BB64-93064225BFE3" xmlns:di="http://www.omg.org/spec/DMN/20180521/DI/" xmlns:kie="http://www.drools.org/kie/dmn/1.2" xmlns:dmndi="http://www.omg.org/spec/DMN/20180521/DMNDI/" xmlns:dc="http://www.omg.org/spec/DMN/20180521/DC/" xmlns:feel="http://www.omg.org/spec/DMN/20180521/FEEL/" id="_FC0DFB33-1B99-49CA-99D7-90CE1DD0162F" name="new-file" typeLanguage="http://www.omg.org/spec/DMN/20180521/FEEL/" namespace="https://kiegroup.org/dmn/_47957E82-6124-4355-BB64-93064225BFE3">
+  <dmn:inputData id="_1DE9CF55-3B82-4060-9D3D-7341D7B5EF08" name="InputData-1">
+    <dmn:variable id="_7EF868A8-62C9-4C5B-AC77-B240F49CACC1" name="InputData-1" typeRef="number"/>
+  </dmn:inputData>
+  <dmn:decision id="_D7F39EC2-E402-4DAB-83F6-452D6A7D5EA2" name="Decision-1">
+    <dmn:variable id="_67F6902F-D111-4533-BC1B-5CA692D198C8" name="Decision-1"/>
+    <dmn:informationRequirement id="_CE578B28-FCB7-4394-88EE-01047AABAD0E">
+      <dmn:requiredInput href="#_1DE9CF55-3B82-4060-9D3D-7341D7B5EF08"/>
+    </dmn:informationRequirement>
+    <dmn:decisionTable id="_393969A1-0DDE-41C9-81CC-47EE24BA2D8A" hitPolicy="UNIQUE" preferredOrientation="Rule-as-Row">
+      <dmn:input id="_B6122B00-7774-4D2B-B14F-36D6022D3A68">
+        <dmn:inputExpression id="_5E0BB59D-C643-43E1-884F-813EB772C3CA" typeRef="number">
+          <dmn:text>InputData-1</dmn:text>
+        </dmn:inputExpression>
+      </dmn:input>
+      <dmn:output id="_C531EC1E-3605-4448-B3F5-CD1EF0AC2B50"/>
+      <dmn:rule id="_0D77F93B-E4B4-45F9-B116-476B0158CE9E">
+        <dmn:inputEntry id="_4241B1D9-6005-4973-9FBF-987D9D7D98E9">
+          <dmn:text>&lt;0</dmn:text>
+        </dmn:inputEntry>
+        <dmn:outputEntry id="_B4845875-01ED-410A-A87F-67DF9E19AD20">
+          <dmn:text>"neg"</dmn:text>
+        </dmn:outputEntry>
+      </dmn:rule>
+      <dmn:rule id="_57B7416A-62B7-4976-BA14-B179FDBAD8E6">
+        <dmn:inputEntry id="_F632F36D-BF0B-4D2D-ACD3-228E1AA63ECC">
+          <dmn:text>null</dmn:text>
+        </dmn:inputEntry>
+        <dmn:outputEntry id="_0B7F4004-E441-4783-B006-AE3457331EE9">
+          <dmn:text>"wrong"</dmn:text>
+        </dmn:outputEntry>
+      </dmn:rule>
+    </dmn:decisionTable>
+  </dmn:decision>
+</dmn:definitions>

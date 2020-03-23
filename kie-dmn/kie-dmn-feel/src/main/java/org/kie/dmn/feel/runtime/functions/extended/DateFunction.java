@@ -4,6 +4,7 @@ import java.time.DateTimeException;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.time.format.DateTimeFormatterBuilder;
+import java.time.format.ResolverStyle;
 import java.time.format.SignStyle;
 import java.time.temporal.TemporalAccessor;
 import java.util.regex.Pattern;
@@ -33,7 +34,8 @@ public class DateFunction extends BaseFEELFunction {
                 .appendValue(MONTH_OF_YEAR, 2)
                 .appendLiteral('-')
                 .appendValue(DAY_OF_MONTH, 2)
-                .toFormatter();
+                .toFormatter()
+                .withResolverStyle(ResolverStyle.STRICT);
     }
 
     DateFunction() {

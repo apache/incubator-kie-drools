@@ -23,13 +23,13 @@ import org.drools.verifier.core.configuration.AnalyzerConfiguration;
 import org.drools.verifier.core.index.keys.Values;
 import org.drools.verifier.core.index.model.Action;
 import org.drools.verifier.core.index.model.Column;
-import org.drools.verifier.core.index.model.DataType;
 import org.drools.verifier.core.index.model.Field;
 import org.drools.verifier.core.index.model.FieldAction;
 import org.drools.verifier.core.index.model.ObjectField;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
+import org.kie.soup.project.datamodel.oracle.DataType;
 import org.mockito.runners.MockitoJUnitRunner;
 
 import static org.junit.Assert.assertFalse;
