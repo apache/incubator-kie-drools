@@ -44,9 +44,9 @@ ifdef::DM,PAM[]
 {URL_MANAGING_KIE_SERVER}[_{MANAGING_KIE_SERVER}_]
 endif::[]
 ifdef::DROOLS,JBPM,OP[]
-xref:_kiedeployingsection[]
+xref:#_kiedeployingsection[]
 
-xref:_ch.kie.server[]
+xref:#_ch.kie.server[]
 endif::[]
 
 |Deployment to an embedded Java application
