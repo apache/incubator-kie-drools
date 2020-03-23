@@ -32,11 +32,11 @@ import org.drools.compiler.compiler.io.FileSystemItem;
 import org.drools.compiler.compiler.io.Folder;
 import org.drools.compiler.compiler.io.memory.MemoryFileSystem;
 import org.drools.compiler.kproject.models.KieModuleModelImpl;
+import org.drools.core.io.internal.InternalResource;
 import org.drools.reflective.ResourceProvider;
 import org.kie.api.builder.ReleaseId;
 import org.kie.api.builder.model.KieBaseModel;
 import org.kie.api.builder.model.KieModuleModel;
-import org.kie.api.io.Resource;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -75,7 +75,7 @@ public class MemoryKieModule extends AbstractKieModule
     }
 
     @Override
-    public Resource getResource( String fileName) {
+    public InternalResource getResource( String fileName) {
         return mfs.getResource( fileName );
     }
 

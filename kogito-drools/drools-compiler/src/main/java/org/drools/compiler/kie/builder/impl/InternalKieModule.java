@@ -34,6 +34,7 @@ import org.drools.compiler.kie.util.KieJarChangeSet;
 import org.drools.compiler.kproject.models.KieBaseModelImpl;
 import org.drools.compiler.kproject.models.KieModuleModelImpl;
 import org.drools.core.impl.InternalKnowledgeBase;
+import org.drools.core.io.internal.InternalResource;
 import org.drools.reflective.ResourceProvider;
 import org.drools.reflective.classloader.ProjectClassLoader;
 import org.kie.api.KieBaseConfiguration;
@@ -44,7 +45,6 @@ import org.kie.api.builder.model.KieBaseModel;
 import org.kie.api.builder.model.KieModuleModel;
 import org.kie.api.definition.KiePackage;
 import org.kie.api.internal.utils.ServiceRegistry;
-import org.kie.api.io.Resource;
 import org.kie.api.io.ResourceConfiguration;
 import org.kie.internal.builder.CompositeKnowledgeBuilder;
 import org.kie.internal.builder.KnowledgeBuilder;
@@ -78,7 +78,7 @@ public interface InternalKieModule extends KieModule, Serializable {
     byte[] getBytes( );  
     
     boolean hasResource( String fileName );
-    Resource getResource( String fileName );
+    InternalResource getResource( String fileName );
 
     ResourceConfiguration getResourceConfiguration( String fileName );
     
@@ -129,7 +129,7 @@ public interface InternalKieModule extends KieModule, Serializable {
     }
 
     default boolean isFileInKBase(KieBaseModel kieBase, String fileName) {
-        return filterFileInKBase(this, kieBase, fileName, () -> getBytes( fileName ), false);
+        return filterFileInKBase(this, kieBase, fileName, () -> getResource( fileName ), false);
     }
 
     default Runnable createKieBaseUpdater(KieBaseUpdateContext context) {

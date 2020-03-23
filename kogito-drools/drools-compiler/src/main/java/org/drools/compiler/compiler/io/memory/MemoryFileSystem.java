@@ -68,7 +68,7 @@ public class MemoryFileSystem
 
     private final Map<String, Folder>        folderMap = new HashMap<>();
 
-    private final Map<String, Resource>      fileContents = new HashMap<>();
+    private final Map<String, InternalResource> fileContents = new HashMap<>();
 
     private Set<String>                      modifiedFilesSinceLastMark;
 
@@ -91,7 +91,7 @@ public class MemoryFileSystem
 
     public Map<String, byte[]> getMap() {
         Map<String, byte[]> bytesMap = new HashMap<>();
-        for (Entry<String, Resource> kv : fileContents.entrySet() ) {
+        for (Entry<String, InternalResource> kv : fileContents.entrySet() ) {
             bytesMap.put( kv.getKey(), resourceToBytes( kv.getValue() ) );
         }
         return bytesMap;
@@ -141,7 +141,7 @@ public class MemoryFileSystem
         return resourceToBytes( getResource(file) );
     }
 
-    public Resource getResource(MemoryFile file) {
+    public InternalResource getResource(MemoryFile file) {
         return fileContents.get( file.getPath().toPortableString() );
     }
 
@@ -162,7 +162,7 @@ public class MemoryFileSystem
                 modifiedFilesSinceLastMark.add(fileName);
             }
         }
-        fileContents.put( fileName, resource );
+        fileContents.put( fileName, (InternalResource) resource );
         resource.setSourcePath( file.getPath().toPortableString() );
         folders.get( file.getFolder().getPath().toPortableString() ).add( file );
     }
@@ -366,7 +366,7 @@ public class MemoryFileSystem
     }
 
     @Override
-    public Resource getResource(String pResourceName) {
+    public InternalResource getResource(String pResourceName) {
         return getResource((MemoryFile) getFile(pResourceName));
     }
 
@@ -572,7 +572,7 @@ public class MemoryFileSystem
     }
 
     public String findPomProperties() {
-        for( Entry<String, Resource> content : fileContents.entrySet() ) {
+        for( Entry<String, InternalResource> content : fileContents.entrySet() ) {
             if ( content.getKey().endsWith( "pom.properties" ) && content.getKey().startsWith( "META-INF/maven/" ) ) {
                 try (InputStream resourceStream = content.getValue().getInputStream()) {
                     return StringUtils.readFileAsString( new InputStreamReader( resourceStream, IoUtils.UTF8_CHARSET ) );
@@ -586,7 +586,7 @@ public class MemoryFileSystem
 
     public MemoryFileSystem clone() {
         MemoryFileSystem clone = new MemoryFileSystem();
-        for (Map.Entry<String, Resource> entry : fileContents.entrySet()) {
+        for (Map.Entry<String, InternalResource> entry : fileContents.entrySet()) {
             clone.write(entry.getKey(), entry.getValue());
         }
         return clone;

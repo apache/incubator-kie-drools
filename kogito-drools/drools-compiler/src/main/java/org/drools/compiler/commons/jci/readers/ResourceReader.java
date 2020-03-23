@@ -20,7 +20,7 @@ package org.drools.compiler.commons.jci.readers;
 import java.util.Collection;
 
 import org.drools.core.io.impl.ByteArrayResource;
-import org.kie.api.io.Resource;
+import org.drools.core.io.internal.InternalResource;
 
 /**
  * A ResourceReader provide access to resource like e.g. source code
@@ -31,7 +31,7 @@ public interface ResourceReader {
     byte[] getBytes( final String pResourceName );
     Collection<String> getFileNames();
 
-    default Resource getResource( final String pResourceName ) {
+    default InternalResource getResource( final String pResourceName ) {
         byte[] bytes = getBytes( pResourceName );
         return bytes != null ? new ByteArrayResource( bytes ) : null;
     }

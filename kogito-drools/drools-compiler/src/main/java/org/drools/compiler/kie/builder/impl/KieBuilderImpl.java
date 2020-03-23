@@ -37,11 +37,14 @@ import org.drools.compiler.commons.jci.compilers.JavaCompiler;
 import org.drools.compiler.commons.jci.compilers.JavaCompilerFactory;
 import org.drools.compiler.commons.jci.readers.DiskResourceReader;
 import org.drools.compiler.commons.jci.readers.ResourceReader;
+import org.drools.compiler.compiler.DecisionTableFactory;
 import org.drools.compiler.compiler.io.memory.MemoryFileSystem;
 import org.drools.compiler.kproject.ReleaseIdImpl;
 import org.drools.compiler.kproject.models.KieModuleModelImpl;
 import org.drools.compiler.rule.builder.dialect.java.JavaDialectConfiguration;
+import org.drools.core.builder.conf.impl.DecisionTableConfigurationImpl;
 import org.drools.core.builder.conf.impl.ResourceConfigurationImpl;
+import org.drools.core.io.internal.InternalResource;
 import org.drools.core.util.IoUtils;
 import org.drools.core.util.StringUtils;
 import org.kie.api.KieServices;
@@ -61,7 +64,6 @@ import org.kie.api.io.ResourceType;
 import org.kie.internal.builder.IncrementalResults;
 import org.kie.internal.builder.InternalKieBuilder;
 import org.kie.internal.builder.KieBuilderSet;
-import org.kie.internal.builder.conf.GroupDRLsInKieBasesByFolderOption;
 import org.kie.internal.jci.CompilationProblem;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -297,17 +299,9 @@ public class KieBuilderImpl
     }
 
     private void addKBasesFilesToTrg() {
-        for ( KieBaseModel kieBaseModel : kModuleModel.getKieBaseModels().values() ) {
-            addKBaseFilesToTrg( kieBaseModel );
-        }
-    }
-
-    private void addKBaseFilesToTrg( KieBaseModel kieBase ) {
-        boolean useFolders = Boolean.valueOf( kModuleModel.getConfigurationProperty( GroupDRLsInKieBasesByFolderOption.PROPERTY_NAME ) );
-
         for ( String fileName : srcMfs.getFileNames() ) {
             String normalizedName = fileName.replace( File.separatorChar, '/' );
-            if ( isFileInKieBase( kieBase, normalizedName, () -> srcMfs.getBytes( normalizedName ), useFolders ) ) {
+            if ( normalizedName.startsWith( RESOURCES_ROOT ) ) {
                 copySourceToTarget( normalizedName );
             }
         }
@@ -369,7 +363,7 @@ public class KieBuilderImpl
         return conf instanceof ResourceConfigurationImpl ? ( (ResourceConfigurationImpl) conf ).getResourceType() : null;
     }
 
-    public static boolean filterFileInKBase( InternalKieModule kieModule, KieBaseModel kieBase, String fileName, Supplier<byte[]> file, boolean useFolders ) {
+    public static boolean filterFileInKBase( InternalKieModule kieModule, KieBaseModel kieBase, String fileName, Supplier<InternalResource> file, boolean useFolders ) {
         return ( isKieExtension( fileName ) || getResourceType( kieModule, fileName ) != null ) &&
                 isFileInKieBase( kieBase, fileName, file, useFolders );
     }
@@ -378,7 +372,7 @@ public class KieBuilderImpl
         return !isJavaSourceFile( fileName ) && ResourceType.determineResourceType(fileName) != null;
     }
 
-    private static boolean isFileInKieBase( KieBaseModel kieBase, String fileName, Supplier<byte[]> file, boolean useFolders ) {
+    private static boolean isFileInKieBase( KieBaseModel kieBase, String fileName, Supplier<InternalResource> file, boolean useFolders ) {
         int lastSep = fileName.lastIndexOf( "/" );
         if ( lastSep + 1 < fileName.length() && fileName.charAt( lastSep + 1 ) == '.' ) {
             // skip dot files
@@ -397,11 +391,11 @@ public class KieBuilderImpl
         }
     }
 
-    private static String packageNameForFile( String fileName, String folderNameForFile, boolean discoverPackage, Supplier<byte[]> file ) {
+    private static String packageNameForFile( String fileName, String folderNameForFile, boolean discoverPackage, Supplier<InternalResource> file ) {
         String packageNameFromFolder = folderNameForFile.replace( '/', '.' );
 
         if (discoverPackage) {
-            String packageNameForFile = packageNameFromAsset(fileName, file);
+            String packageNameForFile = packageNameFromAsset(fileName, file.get());
             if (packageNameForFile != null) {
                 if ( !packageNameFromFolder.endsWith( packageNameForFile ) ) {
                     log.warn( "File '" + fileName + "' is in folder '" + folderNameForFile + "' but declares package '" + packageNameForFile +
@@ -414,18 +408,23 @@ public class KieBuilderImpl
         return packageNameFromFolder;
     }
 
-    private static String packageNameFromAsset(String fileName, Supplier<byte[]> file) {
-        if (fileName.endsWith( ".drl" )) {
-            return packageNameFromDrl( file.get() );
+    private static String packageNameFromAsset(String fileName, InternalResource file) {
+        if (file == null) {
+            return null;
         }
-        if (fileName.endsWith( ".xls" ) || fileName.endsWith( ".xlsx" ) || fileName.endsWith( ".csv" )) {
-            return packageNameFromDtable( file.get() );
+        if (fileName.endsWith( ".drl" )) {
+            return packageNameFromDrl( new String(file.getBytes()) );
+        }
+        if (fileName.endsWith( ".xls" ) || fileName.endsWith( ".xlsx" )) {
+            return packageNameFromDtable( file );
+        }
+        if (fileName.endsWith( ".csv" )) {
+            return packageNameFromCsv( file );
         }
         return null;
     }
 
-    private static String packageNameFromDrl(byte[] bytes) {
-        String content = bytes != null ? new String(bytes) : "";
+    private static String packageNameFromDrl(String content) {
         int pkgPos = codeAwareIndexOf( content, "package " );
         if (pkgPos >= 0) {
             pkgPos += "package ".length();
@@ -439,8 +438,17 @@ public class KieBuilderImpl
         return null;
     }
 
-    private static String packageNameFromDtable(byte[] bytes) {
-        String content = bytes != null ? new String(bytes) : "";
+    private static String packageNameFromDtable(InternalResource resource) {
+        try {
+            String generatedDrl = DecisionTableFactory.loadFromResource( resource, new DecisionTableConfigurationImpl() );
+            return packageNameFromDrl( generatedDrl );
+        } catch (Exception e) {
+            return packageNameFromCsv( resource );
+        }
+    }
+
+    private static String packageNameFromCsv(InternalResource resource) {
+        String content = new String(resource.getBytes());
         int pkgPos = content.indexOf( "RuleSet" );
         if (pkgPos >= 0) {
             pkgPos += "RuleSet ".length();
