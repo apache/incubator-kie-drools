@@ -18,7 +18,7 @@ public interface DMNTypeSafeTypeTemplate {
     default void setFEELProperty(String property, Object value) {
         switch (property) {
             case "<PROPERTY_NAME>":
-                this.setPropertyName((PropertyType)value);
+                this.setPropertyName((PropertyType)value); return;
         }
     }
 

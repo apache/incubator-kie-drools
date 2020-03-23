@@ -7,8 +7,10 @@ import java.util.stream.Collectors;
 
 import com.github.javaparser.StaticJavaParser;
 import com.github.javaparser.ast.CompilationUnit;
+import com.github.javaparser.ast.NodeList;
 import com.github.javaparser.ast.body.MethodDeclaration;
 import com.github.javaparser.ast.expr.CastExpr;
+import com.github.javaparser.ast.expr.Expression;
 import com.github.javaparser.ast.expr.MethodCallExpr;
 import com.github.javaparser.ast.expr.NameExpr;
 import com.github.javaparser.ast.expr.StringLiteralExpr;
@@ -111,17 +113,21 @@ public class FeelPropertyTemplate {
         setFeelPropertyDefinition.addParameter(Object.class.getCanonicalName(), "value");
         addOverrideAnnotation(setFeelPropertyDefinition);
 
-
         return setFeelPropertyDefinition;
     }
 
     private SwitchEntry toSetPropertySwitchEntry(FieldDefinition fieldDefinition) {
-        ExpressionStmt expressionStmt = new ExpressionStmt();
+
         String accessorName = getAccessorName(fieldDefinition, "set");
-        MethodCallExpr mc = new MethodCallExpr(new ThisExpr(), accessorName);
-        mc.addArgument(new CastExpr(StaticJavaParser.parseType(fieldDefinition.getObjectType()), new NameExpr("value")));
-        expressionStmt.setExpression(mc);
-        return new SwitchEntry(nodeList(new StringLiteralExpr(fieldDefinition.getFieldName())), SwitchEntry.Type.STATEMENT_GROUP, nodeList(expressionStmt));
+        MethodCallExpr setMethod = new MethodCallExpr(new ThisExpr(), accessorName);
+        setMethod.addArgument(new CastExpr(StaticJavaParser.parseType(fieldDefinition.getObjectType()), new NameExpr("value")));
+
+        ExpressionStmt setStatement = new ExpressionStmt();
+        setStatement.setExpression(setMethod);
+
+        NodeList<Expression> labels = nodeList(new StringLiteralExpr(fieldDefinition.getFieldName()));
+        NodeList<Statement> statements = nodeList(setStatement, new ReturnStmt());
+        return new SwitchEntry(labels, SwitchEntry.Type.STATEMENT_GROUP, statements);
     }
 
     private MethodDefinition setAllDefinition() {
@@ -134,9 +140,9 @@ public class FeelPropertyTemplate {
     }
 
     private CompilationUnit getMethodTemplate() {
-        InputStream resourceAsStream = this.getClass().getResourceAsStream("/org/kie/dmn/core/impl/DMNTypeSafeTypeTemplate.java");
-        CompilationUnit parse = StaticJavaParser.parse(resourceAsStream);
-        return parse;
+        InputStream resourceAsStream = this.getClass()
+                .getResourceAsStream("/org/kie/dmn/core/impl/DMNTypeSafeTypeTemplate.java");
+        return StaticJavaParser.parse(resourceAsStream);
     }
 
     private MethodWithStringBody allFeelProperties() {

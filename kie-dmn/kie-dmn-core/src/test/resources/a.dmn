@@ -1,17 +1,20 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <dmn:definitions xmlns:dmn="http://www.omg.org/spec/DMN/20180521/MODEL/" id="_2ceee5b6-0f0d-41ef-890e-2cd6fb1adb10" name="Drawing 1" typeLanguage="http://www.omg.org/spec/DMN/20180521/FEEL/" namespace="http://www.trisotech.com/definitions/_2ceee5b6-0f0d-41ef-890e-2cd6fb1adb10">
   <dmn:extensionElements/>
-  <dmn:itemDefinition id="_01490F31-DAA8-405B-956D-0967BE121484" name="tPerson" isCollection="false">
-    <dmn:itemComponent id="_0d1a64a8-6089-4af3-96c9-c220b8055ce6" name="name" isCollection="false">
-      <dmn:typeRef>string</dmn:typeRef>
-    </dmn:itemComponent>
-  </dmn:itemDefinition>
   <dmn:itemDefinition id="_3655528E-DD1E-44A0-ABA2-9FBB940387AC" name="tAddress" isCollection="false">
     <dmn:itemComponent id="_8AA4C9B6-0742-4843-BF28-84037EBBFC00" name="streetName" isCollection="false">
       <dmn:typeRef>string</dmn:typeRef>
     </dmn:itemComponent>
     <dmn:itemComponent id="_D962C894-C96A-4485-BE7B-2AB6722186F5" name="streetNumber" isCollection="false">
       <dmn:typeRef>number</dmn:typeRef>
+    </dmn:itemComponent>
+  </dmn:itemDefinition>
+  <dmn:itemDefinition id="_01490F31-DAA8-405B-956D-0967BE121484" name="tPerson" isCollection="false">
+    <dmn:itemComponent id="_89481519-056A-400B-A130-9ED80F2B78E4" name="address" isCollection="false">
+      <dmn:typeRef>tAddress</dmn:typeRef>
+    </dmn:itemComponent>
+    <dmn:itemComponent id="_0d1a64a8-6089-4af3-96c9-c220b8055ce6" name="name" isCollection="false">
+      <dmn:typeRef>string</dmn:typeRef>
     </dmn:itemComponent>
   </dmn:itemDefinition>
   <dmn:inputData id="_aa62fffa-9e87-4535-a63a-6f357ec2ffe3" name="p">

@@ -38,19 +38,32 @@ public class DMNTypeSafeTest {
         ClassLoader thisDMNClassLoader = this.getClass().getClassLoader();
         Map<String, Class<?>> compiledClasses = RegressionCompiler.compile(allTypesSourceCode, thisDMNClassLoader);
 
-        FEELPropertyAccessible tPersonInstance = createTPerson(compiledClasses);
+        FEELPropertyAccessible tAddressInstance = createTAddress(compiledClasses);
+        FEELPropertyAccessible tPersonInstance = createTPerson(compiledClasses, tAddressInstance);
         FEELPropertyAccessible context = createInputSet(compiledClasses, tPersonInstance);
 
         DMNResult evaluateAll = runtime.evaluateAll(dmnModel, new DMNContextFPAImpl(context));
         LOG.info("{}", evaluateAll);
     }
 
-    private FEELPropertyAccessible createTPerson(Map<String, Class<?>> compile) throws Exception {
+    private FEELPropertyAccessible createTAddress(Map<String, Class<?>> compile) throws Exception {
+        Class<?> clazz = compile.get("org.kie.dmn.typesafe.TAddress");
+        assertThat(clazz, notNullValue());
+        Object tPersonInstance = clazz.getDeclaredConstructor().newInstance();
+        FEELPropertyAccessible feelPropertyAccessible = (FEELPropertyAccessible) tPersonInstance;
+        feelPropertyAccessible.setFEELProperty("streetName", "Via Vigorelli");
+        feelPropertyAccessible.setFEELProperty("streetNumber", 1);
+
+        return feelPropertyAccessible;
+    }
+
+    private FEELPropertyAccessible createTPerson(Map<String, Class<?>> compile, FEELPropertyAccessible tAddressInstance) throws Exception {
         Class<?> tPersonClass = compile.get("org.kie.dmn.typesafe.TPerson");
         assertThat(tPersonClass, notNullValue());
         Object tPersonInstance = tPersonClass.getDeclaredConstructor().newInstance();
         FEELPropertyAccessible feelPropertyAccessible = (FEELPropertyAccessible) tPersonInstance;
         feelPropertyAccessible.setFEELProperty("name", "Mr. x");
+        feelPropertyAccessible.setFEELProperty("address", tAddressInstance);
 
         return feelPropertyAccessible;
     }
