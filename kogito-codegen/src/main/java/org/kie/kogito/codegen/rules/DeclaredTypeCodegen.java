@@ -29,6 +29,7 @@ import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 import org.drools.compiler.builder.impl.KnowledgeBuilderConfigurationImpl;
+import org.drools.compiler.compiler.DroolsError;
 import org.drools.compiler.compiler.PackageRegistry;
 import org.drools.compiler.kproject.ReleaseIdImpl;
 import org.drools.compiler.lang.descr.CompositePackageDescr;
@@ -47,6 +48,7 @@ import org.kie.kogito.codegen.di.DependencyInjectionAnnotator;
 import org.kie.kogito.codegen.rules.config.RuleConfigGenerator;
 
 import static java.util.stream.Collectors.toList;
+import static org.kie.kogito.codegen.ApplicationGenerator.logger;
 
 public class DeclaredTypeCodegen extends AbstractGenerator {
 
@@ -132,9 +134,21 @@ public class DeclaredTypeCodegen extends AbstractGenerator {
 
         CompositeKnowledgeBuilder batch = modelBuilder.batch();
         resources.forEach(f -> batch.add(f, f.getResourceType()));
-        batch.build();
+
+        try {
+            batch.build();
+        } catch (RuntimeException e) {
+            for (DroolsError error : modelBuilder.getErrors().getErrors()) {
+                logger.error(error.toString());
+            }
+            logger.error(e.getMessage());
+            throw new RuleCodegenError(e, modelBuilder.getErrors().getErrors());
+        }
 
         if (modelBuilder.hasErrors()) {
+            for (DroolsError error : modelBuilder.getErrors().getErrors()) {
+                logger.error(error.toString());
+            }
             throw new RuleCodegenError(modelBuilder.getErrors().getErrors());
         }
 

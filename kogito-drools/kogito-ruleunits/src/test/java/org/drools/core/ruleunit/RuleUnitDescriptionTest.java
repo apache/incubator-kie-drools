@@ -27,8 +27,8 @@ import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 import org.kie.internal.ruleunit.RuleUnitVariable;
 import org.kie.kogito.rules.units.ReflectiveRuleUnitDescription;
+import org.kie.kogito.rules.units.UndefinedRuleUnitVariable;
 
-@Disabled
 public class RuleUnitDescriptionTest {
 
     private ReflectiveRuleUnitDescription ruleUnitDescr;
@@ -49,6 +49,13 @@ public class RuleUnitDescriptionTest {
     }
 
     @Test
+    public void getRuleUnitVariable() {
+        Assertions.assertThat(ruleUnitDescr.getVar("number")).isNotNull();
+        Assertions.assertThatThrownBy(() -> ruleUnitDescr.getVar("undefinedField")).isInstanceOf(UndefinedRuleUnitVariable.class);
+    }
+
+
+    @Test
     public void getEntryPointId() {
         final String entryPointId = ruleUnitDescr.getEntryPointName("nonexisting");
         Assertions.assertThat(entryPointId).isNotNull();
@@ -64,10 +71,7 @@ public class RuleUnitDescriptionTest {
         final Optional<Class<?>> dataSourceType = ruleUnitDescr.getDatasourceType("nonexisting");
         Assertions.assertThat(dataSourceType).isNotPresent();
 
-        assertDataSourceType("number", BigDecimal.class);
-        assertDataSourceType("numbersArray", Integer.class);
-        assertDataSourceType("stringList", String.class);
-        assertDataSourceType("simpleFactList", SimpleFact.class);
+        assertDataSourceType("strings", String.class);
     }
 
     @Test
@@ -95,28 +99,25 @@ public class RuleUnitDescriptionTest {
     public void getUnitVars() {
         final Collection<String> unitVars = ruleUnitDescr.getUnitVars();
         Assertions.assertThat(unitVars).isNotEmpty();
-        Assertions.assertThat(unitVars).hasSize(5);
-        Assertions.assertThat(unitVars).containsExactlyInAnyOrder("bound", "number", "numbersArray", "stringList", "simpleFactList");
+        Assertions.assertThat(unitVars).hasSize(6);
+        Assertions.assertThat(unitVars).containsExactlyInAnyOrder("strings", "bound", "number", "numbersArray", "stringList", "simpleFactList");
     }
 
     @Test
     public void getUnitVarAccessors() {
         final Collection<? extends RuleUnitVariable> unitVarAccessors = ruleUnitDescr.getUnitVarDeclarations();
         Assertions.assertThat(unitVarAccessors).isNotEmpty();
-        Assertions.assertThat(unitVarAccessors).hasSize(5);
+        Assertions.assertThat(unitVarAccessors).hasSize(6);
         Assertions.assertThat(unitVarAccessors)
                 .extracting("name", String.class)
-                .containsExactlyInAnyOrder("bound", "number", "numbersArray", "stringList", "simpleFactList");
+                .containsExactlyInAnyOrder("strings", "bound", "number", "numbersArray", "stringList", "simpleFactList");
     }
 
     @Test
     public void hasDataSource() {
         Assertions.assertThat(ruleUnitDescr.hasDataSource("nonexisting")).isFalse();
         Assertions.assertThat(ruleUnitDescr.hasDataSource("numbers")).isFalse();
-        Assertions.assertThat(ruleUnitDescr.hasDataSource("number")).isTrue();
-        Assertions.assertThat(ruleUnitDescr.hasDataSource("numbersArray")).isTrue();
-        Assertions.assertThat(ruleUnitDescr.hasDataSource("stringList")).isTrue();
-        Assertions.assertThat(ruleUnitDescr.hasDataSource("simpleFactList")).isTrue();
+        Assertions.assertThat(ruleUnitDescr.hasDataSource("strings")).isTrue();
     }
 
     private void assertEntryPointIdExists(final String entryPointIdName) {

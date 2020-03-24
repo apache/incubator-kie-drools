@@ -40,6 +40,7 @@ import com.github.javaparser.ast.body.FieldDeclaration;
 import com.github.javaparser.ast.expr.StringLiteralExpr;
 import org.drools.compiler.builder.impl.KnowledgeBuilderConfigurationImpl;
 import org.drools.compiler.compiler.DecisionTableFactory;
+import org.drools.compiler.compiler.DroolsError;
 import org.drools.compiler.kproject.ReleaseIdImpl;
 import org.drools.compiler.kproject.models.KieModuleModelImpl;
 import org.drools.core.io.impl.ByteArrayResource;
@@ -76,6 +77,7 @@ import static org.drools.compiler.kie.builder.impl.KieBuilderImpl.setDefaultsfor
 import static org.drools.core.util.IoUtils.readBytesFromInputStream;
 import static org.kie.api.io.ResourceType.determineResourceType;
 import static org.kie.kogito.codegen.ApplicationGenerator.log;
+import static org.kie.kogito.codegen.ApplicationGenerator.logger;
 
 public class IncrementalRuleCodegen extends AbstractGenerator {
 
@@ -236,10 +238,17 @@ public class IncrementalRuleCodegen extends AbstractGenerator {
         try {
             batch.build();
         } catch (RuntimeException e) {
+            for (DroolsError error : modelBuilder.getErrors().getErrors()) {
+                logger.error(error.toString());
+            }
+            logger.error(e.getMessage());
             throw new RuleCodegenError(e, modelBuilder.getErrors().getErrors());
         }
 
         if (modelBuilder.hasErrors()) {
+            for (DroolsError error : modelBuilder.getErrors().getErrors()) {
+                logger.error(error.toString());
+            }
             throw new RuleCodegenError(modelBuilder.getErrors().getErrors());
         }
 

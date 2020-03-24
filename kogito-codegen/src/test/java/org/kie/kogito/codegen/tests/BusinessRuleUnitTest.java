@@ -41,10 +41,12 @@ import org.kie.kogito.codegen.process.ProcessCodegenException;
 import org.kie.kogito.process.Process;
 import org.kie.kogito.process.ProcessInstance;
 import org.kie.kogito.process.impl.DefaultProcessEventListenerConfig;
+import org.kie.kogito.rules.units.UndefinedGeneratedRuleUnitVariable;
 import org.kie.kogito.uow.UnitOfWork;
 
 import static java.util.Arrays.asList;
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNull;
 import static org.junit.jupiter.api.Assertions.assertThrows;
@@ -279,6 +281,15 @@ public class BusinessRuleUnitTest extends AbstractCodegenTest {
         assertEquals(john, result.get("singlePerson"));
         assertNull(result.get("singleString"));
 
+    }
+
+
+    @Test
+    public void wrongVariableNameInGeneratedRuleUnit() {
+        assertThatExceptionOfType(ProcessCodegenException.class).isThrownBy(() -> {
+            Application app = generateCode(Collections.singletonList("ruletask/ExampleGeneratedWrong.bpmn"),
+                                           Collections.singletonList("ruletask/Generated.drl"));
+        }).withCauseInstanceOf(UndefinedGeneratedRuleUnitVariable.class);
     }
 
     @Test

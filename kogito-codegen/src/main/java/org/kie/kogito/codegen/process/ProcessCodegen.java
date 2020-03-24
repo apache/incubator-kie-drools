@@ -63,6 +63,7 @@ import org.kie.kogito.codegen.GeneratorConfig;
 import org.kie.kogito.codegen.context.QuarkusKogitoBuildContext;
 import org.kie.kogito.codegen.di.DependencyInjectionAnnotator;
 import org.kie.kogito.codegen.process.config.ProcessConfigGenerator;
+import org.kie.kogito.rules.units.UndefinedGeneratedRuleUnitVariable;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.xml.sax.SAXException;
@@ -70,6 +71,7 @@ import org.xml.sax.SAXException;
 import static org.drools.core.util.IoUtils.readBytesFromInputStream;
 import static org.kie.api.io.ResourceType.determineResourceType;
 import static org.kie.kogito.codegen.ApplicationGenerator.log;
+import static org.kie.kogito.codegen.ApplicationGenerator.logger;
 
 /**
  * Entry point to process code generation
@@ -271,7 +273,11 @@ public class ProcessCodegen extends AbstractGenerator {
                 ProcessMetaData generate = execModelGen.generate();
                 processIdToMetadata.put(id, generate);
                 processExecutableModelGenerators.add(execModelGen);
+            } catch (UndefinedGeneratedRuleUnitVariable e) {
+                LOGGER.error(e.getMessage() + "\nRemember: in this case rule unit variables are usually named after process variables.");
+                throw new ProcessCodegenException(id, packageName, e);
             } catch (RuntimeException e) {
+                LOGGER.error(e.getMessage());
                 throw new ProcessCodegenException(id, packageName, e);
             }
         }

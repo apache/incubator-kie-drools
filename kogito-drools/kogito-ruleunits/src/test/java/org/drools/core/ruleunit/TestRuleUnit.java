@@ -20,15 +20,17 @@ import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.kie.api.definition.rule.UnitVar;
+import org.kie.kogito.rules.DataSource;
+import org.kie.kogito.rules.DataStream;
 import org.kie.kogito.rules.RuleUnitData;
 
 public class TestRuleUnit implements RuleUnitData {
 
     private final Integer[] numbersArray;
 
-    @UnitVar("numberVariable")
     private BigDecimal number;
+
+    private final DataStream<String> strings = DataSource.createStream();
 
     private final List<String> stringList;
     private final List<SimpleFact> simpleFactList;
@@ -47,6 +49,10 @@ public class TestRuleUnit implements RuleUnitData {
         this.number = number;
         this.stringList = new ArrayList<>();
         this.simpleFactList = new ArrayList<>();
+    }
+
+    public DataStream<String> getStrings() {
+        return strings;
     }
 
     public Integer[] getNumbersArray() {

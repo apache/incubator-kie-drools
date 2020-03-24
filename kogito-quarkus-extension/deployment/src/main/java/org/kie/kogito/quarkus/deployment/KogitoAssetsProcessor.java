@@ -13,6 +13,7 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 import java.util.function.BiFunction;
+import java.util.logging.Logger;
 import java.util.stream.Collectors;
 
 import io.quarkus.arc.deployment.GeneratedBeanBuildItem;
@@ -50,7 +51,9 @@ import org.jboss.jandex.Index;
 import org.jboss.jandex.IndexView;
 import org.jboss.jandex.Indexer;
 import org.jboss.jandex.MethodInfo;
+import org.jboss.logmanager.Level;
 import org.kie.api.builder.model.KieModuleModel;
+import org.kie.internal.jci.CompilationProblem;
 import org.kie.internal.kogito.codegen.Generated;
 import org.kie.internal.kogito.codegen.VariableInfo;
 import org.kie.kogito.Model;
@@ -66,6 +69,7 @@ import org.kie.kogito.codegen.rules.IncrementalRuleCodegen;
 
 public class KogitoAssetsProcessor {
 
+    private static final Logger log = Logger.getLogger("KogitoAssetsProcessor");
     private final transient String generatedClassesDir = System.getProperty("quarkus.debug.generated-classes-dir");
     private final transient String appPackageName = "org.kie.kogito.app";
     private final transient String persistenceFactoryClass = "org.kie.kogito.persistence.KogitoProcessInstancesFactory";
@@ -275,6 +279,11 @@ public class KogitoAssetsProcessor {
             CompilationResult result, Path projectPath) throws IOException {
         if (result.getErrors().length > 0) {
             StringBuilder errorInfo = new StringBuilder();
+            for (CompilationProblem compilationProblem : result.getErrors()) {
+                errorInfo.append(compilationProblem.toString());
+                errorInfo.append("\n");
+                log.log(Level.ERROR, compilationProblem.toString());
+            }
             Arrays.stream(result.getErrors()).forEach(cp -> errorInfo.append(cp.toString()));
             throw new IllegalStateException(errorInfo.toString());
         }
