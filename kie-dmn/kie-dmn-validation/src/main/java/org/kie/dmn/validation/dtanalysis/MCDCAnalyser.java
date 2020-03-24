@@ -11,6 +11,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Optional;
+import java.util.Set;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 import java.util.stream.Stream;
@@ -35,7 +36,7 @@ public class MCDCAnalyser {
 
     private Optional<Integer> elseRuleIdx = Optional.empty();
     private List<List<?>> allEnumValues = new ArrayList<>();
-    private List<Integer> visitedColumnIndex = new ArrayList<>();
+    private List<PosNegBlock> selectedBlocks = new ArrayList<>();
 
     public MCDCAnalyser(DDTATable ddtaTable, DecisionTable dt) {
         this.ddtaTable = ddtaTable;
@@ -53,62 +54,122 @@ public class MCDCAnalyser {
         calculateAllEnumValues();
 
         // Step2
-        List<List<?>> workingEnumValues = new ArrayList<>(allEnumValues.size());
-        for (List<?> colum : allEnumValues) {
-            workingEnumValues.add(new ArrayList<>(colum));
-        }
-        List<Integer> allIndexes = IntStream.range(0, ddtaTable.getInputs().size()).boxed().collect(Collectors.toList());
-        List<Integer> whichIndexHasMoreElements = whichIndexHasMoreElements(allIndexes);
+        step2();
+    }
+
+    private void step2() {
+        List<Integer> visitedIndexes = getAllColumnVisited();
+        LOG.debug("Visited Inputs: {}", debugListPlusOne(visitedIndexes));
+        List<List<Comparable<?>>> visitedPositiveOutput = getVisitedPositiveOutput();
+        LOG.debug("Visited positive Outputs: {}", visitedPositiveOutput);
+
+        List<Integer> allIndexes = getAllColumnIndexes();
+        allIndexes.removeAll(visitedIndexes);
+        LOG.debug("Inputs yet to be analysed: {}", debugListPlusOne(allIndexes));
+
+        List<Integer> idxMoreEnums = whichIndexHasMoreEnums(allIndexes);
         LOG.debug("Which Input with greatest number of enum between {} ? it's: {}",
                   debugListPlusOne(allIndexes),
-                  debugListPlusOne(whichIndexHasMoreElements));
-        List<Entry<Integer, List<PosNegBlock>>> whichIndexHasFewestNumberOfRulesMatchingTheFirstInputValue = whichIndexHasFewestNumberOfRulesMatchingTheFirstInputValue(whichIndexHasMoreElements);
-        LOG.debug("Which Input has fewest number of rules matching the first input value between {} ? it's: {}",
-                  debugListPlusOne(whichIndexHasMoreElements),
-                  debugListPlusOne(whichIndexHasFewestNumberOfRulesMatchingTheFirstInputValue.stream().map(Entry::getKey).collect(Collectors.toList())));
-        if (whichIndexHasFewestNumberOfRulesMatchingTheFirstInputValue.size() == 1) {
-            Entry<Integer, List<PosNegBlock>> idx0block = whichIndexHasFewestNumberOfRulesMatchingTheFirstInputValue.get(0);
-            Integer index = idx0block.getKey();
+                  debugListPlusOne(idxMoreEnums));
+
+        List<Entry<Integer, List<PosNegBlock>>> idxFewestRulesMatching = whichIndexHasFewestNumberOfRulesMatchingTheFirstInputValue(idxMoreEnums);
+        LOG.debug("Which Input has fewest number of rules matching the first input enum value, between Inputs {} ? it's: {}",
+                  debugListPlusOne(idxMoreEnums),
+                  debugListPlusOne(idxFewestRulesMatching.stream().map(Entry::getKey).collect(Collectors.toList())));
+        if (idxFewestRulesMatching.size() == 1) {
+            Entry<Integer, List<PosNegBlock>> idx0blocks = idxFewestRulesMatching.get(0);
+            Integer index = idx0blocks.getKey();
             StringBuilder sb = new StringBuilder("\n");
-            for (PosNegBlock b : idx0block.getValue()) {
+            for (PosNegBlock b : idx0blocks.getValue()) {
                 sb.append(b);
             }
-            LOG.debug("Only 1 Input has fewest In{}, and with these blocks {}", index, sb.toString());
-            visitedColumnIndex.add(index);
-            allEnumValues.get(index).removeAll(Arrays.asList(idx0block.getValue().get(0).posRecord.enums[index]));
+            LOG.debug("Only 1 Input has fewest rule matching: In{}, and with these blocks {}", index, sb.toString());
+
+            Optional<PosNegBlock> check2bi = check2bi(idx0blocks.getValue());
+            if (check2bi.isPresent()) {
+                // TODO When 2bi is satisfied and all the negative cases has output values different from the prior positive cases, ...
+                throw new UnsupportedOperationException("TODO");
+            }
+
+            Optional<PosNegBlock> check2bii = check2bii(idx0blocks.getValue());
+            if (check2bii.isPresent()) {
+                throw new UnsupportedOperationException("TODO");
+            }
+
+            check2biii_iv(idx0blocks.getValue());
+
+            allEnumValues.get(index).removeAll(Arrays.asList(idx0blocks.getValue().get(0).posRecord.enums[index]));
         } else {
             throw new UnsupportedOperationException("TODO");
         }
-        allIndexes.removeAll(visitedColumnIndex);
-        LOG.debug(" --- ITERATING AGAIN --- ");
-        debugAllEnumValues();
-        whichIndexHasMoreElements = whichIndexHasMoreElements(allIndexes);
-        LOG.debug("Which Input with greatest number of enum between {} ? it's: {}",
-                  debugListPlusOne(allIndexes),
-                  debugListPlusOne(whichIndexHasMoreElements));
-        whichIndexHasFewestNumberOfRulesMatchingTheFirstInputValue = whichIndexHasFewestNumberOfRulesMatchingTheFirstInputValue(whichIndexHasMoreElements);
-        LOG.debug("Which Input has fewest number of rules matching the first input value between {} ? it's: {}",
-                  debugListPlusOne(whichIndexHasMoreElements),
-                  debugListPlusOne(whichIndexHasFewestNumberOfRulesMatchingTheFirstInputValue.stream().map(Entry::getKey).collect(Collectors.toList())));
-        if (whichIndexHasFewestNumberOfRulesMatchingTheFirstInputValue.size() == 1) {
-            Entry<Integer, List<PosNegBlock>> idx0block = whichIndexHasFewestNumberOfRulesMatchingTheFirstInputValue.get(0);
-            Integer index = idx0block.getKey();
-            StringBuilder sb = new StringBuilder("\n");
-            for (PosNegBlock b : idx0block.getValue()) {
-                sb.append(b);
-            }
-            LOG.debug("Only 1 Input has fewest In{}, and with these blocks {}", index + 1, sb.toString());
-            visitedColumnIndex.add(index);
-        } else {
-            throw new UnsupportedOperationException("TODO");
+    }
+
+    public static class Check2biii_iv {
+
+        public final int numOfDifferent;
+        public final PosNegBlock block;
+
+        public Check2biii_iv(int numOfDifferent, PosNegBlock block) {
+            this.numOfDifferent = numOfDifferent;
+            this.block = block;
         }
+
+    }
+
+    private void check2biii_iv(List<PosNegBlock> value) {
+        Check2biii_iv candidate = new Check2biii_iv(0, null);
+        for (PosNegBlock b : value) {
+            Set<List<Comparable<?>>> bNegOutput = b.negRecords.stream().map(nr -> nr.output).collect(Collectors.toSet());
+            bNegOutput.removeAll(getVisitedPositiveOutput());
+            if (bNegOutput.size() > candidate.numOfDifferent) {
+                candidate = new Check2biii_iv(bNegOutput.size(), b);
+            }
+        }
+        LOG.debug("check2biii_iv candidate: {}", candidate.block);
+    }
+
+    private Optional<PosNegBlock> check2bii(List<PosNegBlock> value) {
+        for (PosNegBlock b : value) {
+            List<Record> negRecords = b.negRecords;
+            boolean anyMatch = negRecords.stream().anyMatch(nr -> selectedBlocks.stream().map(sb -> sb.posRecord).anyMatch(pr -> pr.enums.equals(nr.enums)));
+            if (anyMatch) {
+                LOG.debug("check2bii identified; one negative case is a duplicate of a prior (positive) case in the block. {}", b);
+                return Optional.of(b);
+            }
+        }
+        LOG.debug("None check2bii.");
+        return Optional.empty();
+    }
+
+    private Optional<PosNegBlock> check2bi(List<PosNegBlock> value) {
+        for (PosNegBlock b : value) {
+            Set<List<Comparable<?>>> negOutputSet = b.negRecords.stream().map(neg -> neg.output).collect(Collectors.toSet());
+            if (negOutputSet.size() > 1 && negOutputSet.size() == b.negRecords.size()) {
+                LOG.debug("check2bi identified; outputs {} of the block are all different and they are more than one. {}", negOutputSet, b);
+                return Optional.of(b);
+            }
+        }
+        LOG.debug("None check2bi.");
+        return Optional.empty();
+    }
+
+    private List<List<Comparable<?>>> getVisitedPositiveOutput() {
+        return selectedBlocks.stream().map(b -> b.posRecord.output).collect(Collectors.toList());
+    }
+
+    private List<Integer> getAllColumnVisited() {
+        return selectedBlocks.stream().map(b -> b.cMarker).collect(Collectors.toList());
+    }
+
+    private List<Integer> getAllColumnIndexes() {
+        return IntStream.range(0, ddtaTable.getInputs().size()).boxed().collect(Collectors.toList());
     }
 
     private List<Integer> debugListPlusOne(List<Integer> input) {
         return input.stream().map(x -> x + 1).collect(Collectors.toList());
     }
 
-    private List<Integer> whichIndexHasMoreElements(List<Integer> allIndexes) {
+    private List<Integer> whichIndexHasMoreEnums(List<Integer> allIndexes) {
         Map<Integer, List<?>> byIndex = new HashMap<>();
         for (Integer idx : allIndexes) {
             byIndex.put(idx, allEnumValues.get(idx));
@@ -140,6 +201,9 @@ public class MCDCAnalyser {
         }
         Integer min = results.values().stream().map(List::size).min(Integer::compareTo).orElse(0);
         List<Entry<Integer, List<PosNegBlock>>> collect = results.entrySet().stream().filter(kv -> kv.getValue().size() == min).collect(Collectors.toList());
+        for (Entry<Integer, List<PosNegBlock>> e : collect) {
+            LOG.trace("{}", e);
+        }
         return collect;
     }
 
