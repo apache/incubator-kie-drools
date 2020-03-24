@@ -7,6 +7,7 @@ import java.util.Collection;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.Iterator;
+import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
@@ -57,6 +58,29 @@ public class MCDCAnalyser {
         while (areInputsYetToBeVisited()) {
             step2();
         }
+
+        Set<Record> mcdcRecords = new LinkedHashSet<>();
+        // cycle positive side first
+        for (PosNegBlock b : selectedBlocks) {
+            boolean add = mcdcRecords.add(b.posRecord);
+            if (add) {
+                LOG.info("+ {}", b.posRecord);
+            } else {
+                throw new UnsupportedOperationException("A positive record was not added to the mcdc");
+            }
+        }
+        // cycle negative side
+        for (PosNegBlock b : selectedBlocks) {
+            for (Record negRecord : b.negRecords) {
+                boolean add = mcdcRecords.add(negRecord);
+                if (add) {
+                    LOG.info("- {}", negRecord);
+                } else {
+                    LOG.info("R {}", negRecord);
+                }
+            }
+            LOG.info("");
+        }
     }
 
     private boolean areInputsYetToBeVisited() {
@@ -93,7 +117,7 @@ public class MCDCAnalyser {
             for (PosNegBlock b : idx0blocks.getValue()) {
                 sb.append(b);
             }
-            LOG.debug("Only 1 Input has fewest rule matching: In{}, and with these blocks {}", index, sb.toString());
+            LOG.debug("Only 1 Input has fewest rule matching: In{}, and with these blocks {}", index + 1, sb.toString());
 
             Optional<PosNegBlock> check2bi = check2bi(idx0blocks.getValue());
             if (check2bi.isPresent()) {
@@ -136,7 +160,10 @@ public class MCDCAnalyser {
                 return;
             }
 
-            throw new UnsupportedOperationException("I have reached the end of step2 without having selected a block.");
+            PosNegBlock arbitrarySelectFirst = idx0blocks.getValue().get(0);
+            LOG.warn("I have reached the end of step2 without having selected a block, will select the first one \n{}", arbitrarySelectFirst);
+            selectBlock(arbitrarySelectFirst);
+            return;
         } else {
             throw new UnsupportedOperationException("TODO");
         }
@@ -337,6 +364,28 @@ public class MCDCAnalyser {
             return String.format("%2s", ruleIdx + 1) + " [" + Arrays.stream(enums).map(Object::toString).collect(Collectors.joining("; ")) + "] -> " + output;
         }
 
+        @Override
+        public int hashCode() {
+            final int prime = 31;
+            int result = 1;
+            result = prime * result + Arrays.deepHashCode(enums);
+            return result;
+        }
+
+        @Override
+        public boolean equals(Object obj) {
+            if (this == obj)
+                return true;
+            if (obj == null)
+                return false;
+            if (getClass() != obj.getClass())
+                return false;
+            Record other = (Record) obj;
+            if (!Arrays.deepEquals(enums, other.enums))
+                return false;
+            return true;
+        }
+
     }
 
     private Object[] findValuesForRule(int ruleIdx, Object[] knownValues, List<List<?>> allEnumValues) {
@@ -399,7 +448,8 @@ public class MCDCAnalyser {
     private void calculateAllEnumValues() {
         for (int idx = 0; idx < ddtaTable.inputCols(); idx++) {
             if (ddtaTable.getInputs().get(idx).isDiscreteDomain()) {
-                allEnumValues.add(ddtaTable.getInputs().get(idx).getDiscreteValues()); // add _the collection_
+                List<?> discreteValues = new ArrayList<>(ddtaTable.getInputs().get(idx).getDiscreteValues());
+                allEnumValues.add(discreteValues); // add _the collection_
                 continue;
             }
             List<Interval> colIntervals = ddtaTable.projectOnColumnIdx(idx);
