@@ -27,9 +27,11 @@ import java.time.temporal.ChronoUnit;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Random;
 import java.util.UUID;
 
 import com.fasterxml.jackson.databind.JsonNode;
+import org.apache.commons.lang3.RandomStringUtils;
 import org.eclipse.microprofile.config.ConfigProvider;
 import org.kie.kogito.index.event.KogitoJobCloudEvent;
 import org.kie.kogito.index.event.KogitoProcessCloudEvent;
@@ -91,7 +93,7 @@ public final class TestUtils {
         ProcessInstance pi = new ProcessInstance();
         pi.setId(processInstanceId);
         pi.setProcessId(processId);
-        pi.setProcessName("kogito");
+        pi.setProcessName(RandomStringUtils.randomAlphabetic(10));
         pi.setRootProcessInstanceId(rootProcessInstanceId);
         pi.setParentProcessInstanceId(rootProcessInstanceId);
         pi.setRootProcessId(rootProcessId);

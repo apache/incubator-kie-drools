@@ -25,6 +25,7 @@ public final class Constants {
     public static final String KOGITO_DOMAIN_ATTRIBUTE = "metadata";
     public static final String LAST_UPDATE = "lastUpdate";
     public static final String PROCESS_ID = "processId";
+    public static final String PROCESS_NAME = "processName";
     public static final String ID = "id";
 
 

@@ -27,6 +27,7 @@ import static org.kie.kogito.index.Constants.KOGITO_DOMAIN_ATTRIBUTE;
 import static org.kie.kogito.index.Constants.LAST_UPDATE;
 import static org.kie.kogito.index.Constants.PROCESS_ID;
 import static org.kie.kogito.index.Constants.PROCESS_INSTANCES_DOMAIN_ATTRIBUTE;
+import static org.kie.kogito.index.Constants.PROCESS_NAME;
 import static org.kie.kogito.index.json.JsonUtils.getObjectMapper;
 
 public class ProcessInstanceMetaMapper implements Function<KogitoProcessCloudEvent, ObjectNode> {
@@ -54,6 +55,7 @@ public class ProcessInstanceMetaMapper implements Function<KogitoProcessCloudEve
         ObjectNode json = getObjectMapper().createObjectNode();
         json.put(ID, pi.getId());
         json.put(PROCESS_ID, pi.getProcessId());
+        json.put(PROCESS_NAME, pi.getProcessName());
         if (pi.getRootProcessInstanceId() != null) {
             json.put("rootProcessInstanceId", pi.getRootProcessInstanceId());
         }
