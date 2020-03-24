@@ -20,6 +20,7 @@ import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.drools.modelcompiler.domain.Address;
 import org.drools.modelcompiler.domain.Person;
 import org.drools.ruleunit.DataSource;
 import org.drools.ruleunit.RuleUnit;
@@ -210,5 +211,83 @@ public class RuleUnitCompilerTest extends BaseModelTest {
         ruleUnit = new PositiveNegativeDTUnit(-999);
         executor.run(ruleUnit);
         assertEquals("negative", ruleUnit.getPositive_or_negative());
+    }
+
+    @Test
+    public void testOOPath2Chunks() {
+        String str =
+                "import " + Person.class.getCanonicalName() + ";" +
+                "import " + AdultUnit.class.getCanonicalName() + "\n" +
+                "rule Adult @Unit( AdultUnit.class ) when\n" +
+                "    $a : /persons/addresses[city == \"Milano\"]\n" +
+                "then\n" +
+                "    results.add($a.getCity());\n" +
+                "end\n";
+
+        KieContainer kieContainer = getKieContainer( null, str );
+        RuleUnitExecutor executor = RuleUnitExecutor.newRuleUnitExecutor( kieContainer );
+
+        Person mario = new Person( "Mario", 42 );
+        mario.addAddress( new Address( "Milano" ) );
+
+        DataSource<Person> persons = DataSource.create( mario );
+
+        AdultUnit unit = new AdultUnit(persons);
+        assertEquals(1, executor.run( unit ) );
+
+        assertEquals( 1, unit.getResults().size() );
+        assertEquals( "Milano", unit.getResults().get(0) );
+    }
+
+    @Test
+    public void testOOPath1Binding() {
+        String str =
+                "import " + Person.class.getCanonicalName() + ";" +
+                "import " + AdultUnit.class.getCanonicalName() + "\n" +
+                "rule Adult @Unit( AdultUnit.class ) when\n" +
+                "    $p : /persons;\n" +
+                "    /$p/addresses[city == \"Milano\"]\n" +
+                "then\n" +
+                "    results.add($p.getName());\n" +
+                "end\n";
+
+        checkDRLoopath( str );
+    }
+
+    @Test
+    public void testOOPath2Bindings() {
+        String str =
+                "import " + Person.class.getCanonicalName() + ";" +
+                "import " + AdultUnit.class.getCanonicalName() + "\n" +
+                "rule Adult @Unit( AdultUnit.class ) when\n" +
+                "    $p : /persons\n" +
+                "    $a : /$p/addresses[city == \"Milano\"]\n" +
+                "then\n" +
+                "    results.add($p.getName());\n" +
+                "end\n";
+
+        checkDRLoopath( str );
+    }
+
+    private void checkDRLoopath( String str ) {
+        KieContainer kieContainer = getKieContainer( null, str );
+        RuleUnitExecutor executor = RuleUnitExecutor.newRuleUnitExecutor( kieContainer );
+
+        Person mario = new Person( "Mario", 42 );
+        mario.addAddress( new Address( "Milano" ) );
+        mario.addAddress( new Address( "Milano" ) );
+        Person mark = new Person( "Mark", 40 );
+        mark.addAddress( new Address( "London" ) );
+        mark.addAddress( new Address( "Milano" ) );
+        Person edson = new Person( "Edson", 37 );
+        edson.addAddress( new Address( "Toronto" ) );
+
+        DataSource<Person> persons = DataSource.create( mario, mark, edson );
+
+        AdultUnit unit = new AdultUnit(persons);
+        assertEquals( 3, executor.run( unit ) );
+
+        assertEquals( 3, unit.getResults().size() );
+        assertTrue( unit.getResults().containsAll( asList("Mario", "Mark") ) );
     }
 }

@@ -241,7 +241,12 @@ public class RuleContext {
     }
 
     public Class<?> getRuleUnitVarType(String name) {
-        return ruleUnitVars.get( name );
+        Class<?> varType = ruleUnitVars.get( name );
+        if (varType != null) {
+            return varType;
+        }
+        DeclarationSpec decl = scopedDeclarations.get( "$p" );
+        return decl != null ? decl.getDeclarationClass() : null;
     }
 
     public DeclarationSpec addDeclaration(String bindingId, Class<?> declarationClass) {
