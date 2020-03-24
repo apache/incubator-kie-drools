@@ -26,6 +26,10 @@ public class Address {
 
     }
 
+    public Address(String city) {
+        this(null, city, null, null);
+    }
+
     public Address(String street, String city, String zipCode, String country) {
         super();
         this.street = street;

@@ -15,6 +15,8 @@
 
 package org.kie.kogito.codegen.data;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Objects;
 
 public class Person {
@@ -26,6 +28,8 @@ public class Person {
     private transient String ignoreMe;
 
     private static String staticallyIgnoreMe;
+
+    private List<Address> addresses = new ArrayList<>();
 
     public Person(String name, int age) {
         this.name = name;
@@ -70,6 +74,18 @@ public class Person {
 
     public static void setStaticallyIgnoreMe(String staticallyIgnoreMe) {
         Person.staticallyIgnoreMe = staticallyIgnoreMe;
+    }
+
+    public void addAddress(final Address address) {
+        addresses.add(address);
+    }
+
+    public List<Address> getAddresses() {
+        return addresses;
+    }
+
+    public void setAddresses(final List<Address> addresses) {
+        this.addresses = addresses;
     }
 
     @Override

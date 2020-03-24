@@ -1,0 +1,15 @@
+package org.kie.kogito.codegen.unit;
+unit AdultUnit;
+
+import org.kie.kogito.codegen.data.Person
+
+rule Adult when
+    $p: /persons
+then
+end
+
+query FindPeopleInMilano
+    $p : /persons;
+    /$p/addresses[city == "Milano"]
+end
+

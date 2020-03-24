@@ -20,9 +20,11 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.atomic.AtomicReference;
 
+import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 import org.kie.api.time.SessionPseudoClock;
 import org.kie.kogito.Application;
+import org.kie.kogito.codegen.data.Address;
 import org.kie.kogito.codegen.data.Person;
 import org.kie.kogito.codegen.rules.multiunit.MultiUnit;
 import org.kie.kogito.codegen.rules.singleton.Datum;
@@ -38,6 +40,7 @@ import org.kie.kogito.rules.RuleUnitInstance;
 
 import static java.util.Arrays.asList;
 import static java.util.stream.Collectors.toList;
+
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
@@ -225,5 +228,36 @@ public class RuleUnitCompilerTest extends AbstractCodegenTest {
 
         assertEquals(asList("continue", "updated", null, "done", "updated", null, "done"), data);
 
+    }
+
+    @Test
+    @Disabled( "Requires drools 7.36" )
+    public void test2PatternsOopath() throws Exception {
+        Application application = generateCodeRulesOnly("org/kie/kogito/codegen/unit/TwoPatternsQuery.drl");
+
+        AdultUnit adults = new AdultUnit();
+
+        Person mario = new Person( "Mario", 42 );
+        mario.addAddress( new Address( "Milano" ) );
+        Person mark = new Person( "Mark", 40 );
+        mark.addAddress( new Address( "London" ) );
+        Person edson = new Person( "Edson", 37 );
+        edson.addAddress( new Address( "Toronto" ) );
+
+        adults.getPersons().add(mario);
+        adults.getPersons().add(mark);
+        adults.getPersons().add(edson);
+
+        RuleUnit<AdultUnit> unit = application.ruleUnits().create(AdultUnit.class);
+        RuleUnitInstance<AdultUnit> instance = unit.createInstance(adults);
+
+        List<Person> results = instance.executeQuery( "FindPeopleInMilano" )
+                .stream()
+                .map( m -> m.get("$p") )
+                .map( Person.class::cast )
+                .collect( toList() );
+
+        assertEquals( 1, results.size() );
+        assertEquals( "Mario", results.get( 0 ).getName() );
     }
 }
