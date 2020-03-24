@@ -54,14 +54,24 @@ public class MCDCAnalyser {
         calculateAllEnumValues();
 
         // Step2
-        step2();
+        while (areInputsYetToBeVisited()) {
+            step2();
+        }
+    }
+
+    private boolean areInputsYetToBeVisited() {
+        List<Integer> idx = getAllColumnIndexes();
+        idx.removeAll(getAllColumnVisited());
+        return idx.size() > 0;
     }
 
     private void step2() {
+        LOG.debug("---Step2");
         List<Integer> visitedIndexes = getAllColumnVisited();
         LOG.debug("Visited Inputs: {}", debugListPlusOne(visitedIndexes));
         List<List<Comparable<?>>> visitedPositiveOutput = getVisitedPositiveOutput();
         LOG.debug("Visited positive Outputs: {}", visitedPositiveOutput);
+        debugAllEnumValues();
 
         List<Integer> allIndexes = getAllColumnIndexes();
         allIndexes.removeAll(visitedIndexes);
@@ -87,21 +97,55 @@ public class MCDCAnalyser {
 
             Optional<PosNegBlock> check2bi = check2bi(idx0blocks.getValue());
             if (check2bi.isPresent()) {
-                // TODO When 2bi is satisfied and all the negative cases has output values different from the prior positive cases, ...
-                throw new UnsupportedOperationException("TODO");
+                PosNegBlock b = check2bi.get();
+                // When 2bi is satisfied and all the negative cases has output values different from the prior positive cases, ...
+                boolean allNegOutputDiff = !b.negRecords.stream()
+                                                        .map(nr -> nr.output)
+                                                        .anyMatch(nro -> selectedBlocks.stream()
+                                                                                       .map(pr -> pr.posRecord.output)
+                                                                                       .anyMatch(pro -> pro.equals(nro)));
+                List<PosNegBlock> appended = new ArrayList<>();
+                if (allNegOutputDiff) {
+                    LOG.debug("Acting on 2bi is satisfied and all the negative cases has output values different from the prior positive cases, ...");
+                    for (Record negRecord : b.negRecords) {
+                        Optional<PosNegBlock> negIntoPositive = calculatePosNegBlock(b.cMarker, negRecord.enums[b.cMarker], negRecord, allEnumValues);
+                        if (negIntoPositive.isPresent()) {
+                            LOG.debug("negative into positive block: \n{}", negIntoPositive.get());
+                            appended.add(negIntoPositive.get());
+                        } else {
+                            throw new UnsupportedOperationException("I was unable to transform a negative into a positive");
+                        }
+                    }
+                }
+                selectBlock(b);
+                selectedBlocks.addAll(appended); // appended last to avoid cutting the enumValue.
+                return;
             }
 
             Optional<PosNegBlock> check2bii = check2bii(idx0blocks.getValue());
             if (check2bii.isPresent()) {
-                throw new UnsupportedOperationException("TODO");
+                PosNegBlock b = check2bii.get();
+                selectBlock(b);
+                return;
             }
 
-            check2biii_iv(idx0blocks.getValue());
+            Optional<Check2biii_iv> check2biii_iv = check2biii_iv(idx0blocks.getValue());
+            if (check2biii_iv.isPresent()) {
+                PosNegBlock selected = check2biii_iv.get().block;
+                selectBlock(selected);
+                return;
+            }
 
-            allEnumValues.get(index).removeAll(Arrays.asList(idx0blocks.getValue().get(0).posRecord.enums[index]));
+            throw new UnsupportedOperationException("I have reached the end of step2 without having selected a block.");
         } else {
             throw new UnsupportedOperationException("TODO");
         }
+    }
+
+    private void selectBlock(PosNegBlock selected) {
+        selectedBlocks.add(selected);
+        int index = selected.cMarker;
+        allEnumValues.get(index).removeAll(Arrays.asList(selected.posRecord.enums[index]));
     }
 
     public static class Check2biii_iv {
@@ -116,7 +160,7 @@ public class MCDCAnalyser {
 
     }
 
-    private void check2biii_iv(List<PosNegBlock> value) {
+    private Optional<Check2biii_iv> check2biii_iv(List<PosNegBlock> value) {
         Check2biii_iv candidate = new Check2biii_iv(0, null);
         for (PosNegBlock b : value) {
             Set<List<Comparable<?>>> bNegOutput = b.negRecords.stream().map(nr -> nr.output).collect(Collectors.toSet());
@@ -125,7 +169,12 @@ public class MCDCAnalyser {
                 candidate = new Check2biii_iv(bNegOutput.size(), b);
             }
         }
-        LOG.debug("check2biii_iv candidate: {}", candidate.block);
+        LOG.debug("check2biii_iv candidate: \n{}", candidate.block);
+        if (candidate.block != null) {
+            return Optional.of(candidate);
+        } else {
+            return Optional.empty();
+        }
     }
 
     private Optional<PosNegBlock> check2bii(List<PosNegBlock> value) {
@@ -133,7 +182,7 @@ public class MCDCAnalyser {
             List<Record> negRecords = b.negRecords;
             boolean anyMatch = negRecords.stream().anyMatch(nr -> selectedBlocks.stream().map(sb -> sb.posRecord).anyMatch(pr -> pr.enums.equals(nr.enums)));
             if (anyMatch) {
-                LOG.debug("check2bii identified; one negative case is a duplicate of a prior (positive) case in the block. {}", b);
+                LOG.debug("check2bii identified; one negative case is a duplicate of a prior (positive) case in the block. \n{}", b);
                 return Optional.of(b);
             }
         }
@@ -145,7 +194,7 @@ public class MCDCAnalyser {
         for (PosNegBlock b : value) {
             Set<List<Comparable<?>>> negOutputSet = b.negRecords.stream().map(neg -> neg.output).collect(Collectors.toSet());
             if (negOutputSet.size() > 1 && negOutputSet.size() == b.negRecords.size()) {
-                LOG.debug("check2bi identified; outputs {} of the block are all different and they are more than one. {}", negOutputSet, b);
+                LOG.debug("check2bi identified; outputs {} of the block are all different and they are more than one. \n{}", negOutputSet, b);
                 return Optional.of(b);
             }
         }
