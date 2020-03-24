@@ -33,6 +33,7 @@ import org.drools.core.common.InternalWorkingMemory;
 import org.drools.core.definitions.InternalKnowledgePackage;
 import org.drools.core.definitions.impl.KnowledgePackageImpl;
 import org.drools.core.definitions.rule.impl.RuleImpl;
+import org.drools.core.rule.Function;
 import org.drools.core.rule.TypeDeclaration;
 import org.drools.modelcompiler.CanonicalKieModule;
 import org.drools.modelcompiler.CanonicalKiePackages;
@@ -144,6 +145,9 @@ public class CanonicalKieBaseUpdater extends KieBaseUpdater {
                             case DECLARATION:
                                 oldKpkg.removeTypeDeclaration( changedItemName );
                                 break;
+                            case FUNCTION:
+                                oldKpkg.removeFunction(changedItemName);
+                                break;
                             default:
                                 throw new IllegalArgumentException("Unsupported change type: " + change.getType() + "!");
                         }
@@ -164,6 +168,10 @@ public class CanonicalKieBaseUpdater extends KieBaseUpdater {
                             case DECLARATION:
                                 TypeDeclaration addedType = kpkg.getTypeDeclaration( changedItemName );
                                 oldKpkg.addTypeDeclaration( addedType );
+                                break;
+                            case FUNCTION:
+                                Function addedFunction = kpkg.getFunctions().get(changedItemName);
+                                oldKpkg.addFunction(addedFunction);
                                 break;
                             default:
                                 throw new IllegalArgumentException("Unsupported change type: " + change.getType() + "!");
