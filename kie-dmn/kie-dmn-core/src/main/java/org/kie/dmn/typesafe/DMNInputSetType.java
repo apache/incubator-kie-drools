@@ -13,7 +13,7 @@ import org.drools.modelcompiler.builder.generator.declaredtype.api.MethodDefinit
 import org.drools.modelcompiler.builder.generator.declaredtype.api.SimpleAnnotationDefinition;
 import org.drools.modelcompiler.builder.generator.declaredtype.api.TypeDefinition;
 import org.kie.dmn.api.core.DMNType;
-import org.kie.dmn.core.impl.FEELPropertyAccessible;
+import org.kie.dmn.api.core.FEELPropertyAccessible;
 
 class DMNInputSetType implements TypeDefinition {
 

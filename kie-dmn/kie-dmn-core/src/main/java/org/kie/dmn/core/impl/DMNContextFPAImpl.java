@@ -24,6 +24,7 @@ import java.util.Optional;
 
 import org.kie.dmn.api.core.DMNContext;
 import org.kie.dmn.api.core.DMNMetadata;
+import org.kie.dmn.api.core.FEELPropertyAccessible;
 import org.kie.dmn.core.impl.DMNContextImpl.ScopeReference;
 
 public class DMNContextFPAImpl implements DMNContext {
@@ -42,7 +43,7 @@ public class DMNContextFPAImpl implements DMNContext {
 
     @Override
     public Object get(String name) {
-        return fpa.getFEELProperty(name).getValueResult().getOrElse(null);
+        return fpa.getFEELProperty(name).getValueResultOptional().orElse(null);
     }
 
     private Map<String, Object> getCurrentEntries() {

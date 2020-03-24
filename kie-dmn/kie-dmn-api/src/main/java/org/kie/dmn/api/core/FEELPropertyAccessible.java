@@ -1,12 +1,10 @@
-package org.kie.dmn.core.impl;
+package org.kie.dmn.api.core;
 
 import java.util.Map;
 
-import org.kie.dmn.feel.util.EvalHelper;
-
 public interface FEELPropertyAccessible {
 
-    EvalHelper.PropertyValueResult getFEELProperty(String property);
+    AbstractPropertyValueResult getFEELProperty(String property);
 
     void setFEELProperty(String key, Object value);
 

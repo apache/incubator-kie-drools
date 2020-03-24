@@ -9,7 +9,7 @@ import org.kie.dmn.api.core.DMNModel;
 import org.kie.dmn.api.core.DMNResult;
 import org.kie.dmn.api.core.DMNRuntime;
 import org.kie.dmn.core.impl.DMNContextFPAImpl;
-import org.kie.dmn.core.impl.FEELPropertyAccessible;
+import org.kie.dmn.api.core.FEELPropertyAccessible;
 import org.kie.dmn.core.util.DMNRuntimeUtil;
 import org.kie.dmn.typesafe.compilation.RegressionCompiler;
 import org.slf4j.Logger;
