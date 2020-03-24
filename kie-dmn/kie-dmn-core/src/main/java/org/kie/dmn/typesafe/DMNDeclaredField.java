@@ -1,22 +1,25 @@
 package org.kie.dmn.typesafe;
 
-import java.util.Collections;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
 import org.drools.core.util.StringUtils;
 import org.drools.modelcompiler.builder.generator.declaredtype.api.AnnotationDefinition;
 import org.drools.modelcompiler.builder.generator.declaredtype.api.FieldDefinition;
+import org.drools.modelcompiler.builder.generator.declaredtype.api.SimpleAnnotationDefinition;
 import org.kie.dmn.api.core.DMNType;
 
 public class DMNDeclaredField implements FieldDefinition {
 
     private String fieldName;
     private DMNType fieldType;
+    private List<AnnotationDefinition> annotations = new ArrayList<>();
 
     DMNDeclaredField(Map.Entry<String, DMNType> dmnType) {
         this.fieldName = dmnType.getKey();
         this.fieldType = dmnType.getValue();
+        annotations.add(new SimpleAnnotationDefinition("javax.xml.bind.annotation.XmlElement"));
     }
 
     @Override
@@ -40,7 +43,7 @@ public class DMNDeclaredField implements FieldDefinition {
 
     @Override
     public List<AnnotationDefinition> getAnnotations() {
-        return Collections.emptyList();
+        return annotations;
     }
 
     @Override

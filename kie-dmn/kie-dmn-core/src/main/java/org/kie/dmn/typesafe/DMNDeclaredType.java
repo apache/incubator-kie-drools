@@ -18,6 +18,7 @@ class DMNDeclaredType implements TypeDefinition {
 
     private final DMNType dmnType;
     List<FieldDefinition> fields = new ArrayList<>();
+    List<AnnotationDefinition> annnotations = new ArrayList<>();
 
     DMNDeclaredType(DMNType dmnType) {
         this.dmnType = dmnType;
@@ -64,7 +65,7 @@ class DMNDeclaredType implements TypeDefinition {
 
     @Override
     public List<AnnotationDefinition> getAnnotationsToBeAdded() {
-        return Collections.emptyList();
+        return annnotations;
     }
 
     @Override

@@ -10,6 +10,7 @@ import java.util.Optional;
 import org.drools.modelcompiler.builder.generator.declaredtype.api.AnnotationDefinition;
 import org.drools.modelcompiler.builder.generator.declaredtype.api.FieldDefinition;
 import org.drools.modelcompiler.builder.generator.declaredtype.api.MethodDefinition;
+import org.drools.modelcompiler.builder.generator.declaredtype.api.SimpleAnnotationDefinition;
 import org.drools.modelcompiler.builder.generator.declaredtype.api.TypeDefinition;
 import org.kie.dmn.api.core.DMNType;
 import org.kie.dmn.core.impl.FEELPropertyAccessible;
@@ -20,7 +21,10 @@ class DMNInputSetType implements TypeDefinition {
 
     Map<String, DMNType> fieldsKey = new HashMap<>();
 
+    List<AnnotationDefinition> annnotations = new ArrayList<>();
+
     DMNInputSetType() {
+        annnotations.add(new SimpleAnnotationDefinition("javax.xml.bind.annotation.XmlRootElement"));
     }
 
     public void addField(String key, DMNType type) {
@@ -66,7 +70,7 @@ class DMNInputSetType implements TypeDefinition {
 
     @Override
     public List<AnnotationDefinition> getAnnotationsToBeAdded() {
-        return Collections.emptyList();
+        return annnotations;
     }
 
     @Override
