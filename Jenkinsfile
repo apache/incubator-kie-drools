@@ -6,7 +6,7 @@ pipeline {
     }
     tools {
         maven 'kie-maven-3.6.2'
-        jdk 'kie-jdk1.8'
+        jdk 'kie-jdk11'
     }
     options {
         buildDiscarder logRotator(artifactDaysToKeepStr: '', artifactNumToKeepStr: '', daysToKeepStr: '', numToKeepStr: '10')

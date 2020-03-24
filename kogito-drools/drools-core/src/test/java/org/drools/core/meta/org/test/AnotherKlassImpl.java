@@ -66,10 +66,10 @@ public class AnotherKlassImpl implements AnotherKlass, MetadataHolder {
         this.theKlass = klass;
     }
 
-    private final AnotherKlass_ _ = new AnotherKlass_( this );
+    private final AnotherKlass_ k = new AnotherKlass_( this );
 
     public AnotherKlass_ get_() {
-        return _;
+        return k;
     }
 
     public List<Klass> getManyKlasses() {

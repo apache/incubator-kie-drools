@@ -8028,16 +8028,16 @@ public class Misc2Test extends CommonTestMethodBase {
 
     @Test
     public void testLambdaInRHS() {
-        checkJava8InRhs("i -> list.add(i)");
+        checkJava11InRhs("i -> list.add(i)");
     }
 
     @Test
     public void testMethodReferenceInRHS() {
-        checkJava8InRhs("list::add");
+        checkJava11InRhs("list::add");
     }
 
-    private void checkJava8InRhs(String expr) {
-        assumeTrue(System.getProperty("java.version").startsWith( "1.8" ));
+    private void checkJava11InRhs(String expr) {
+        assumeTrue(System.getProperty("java.version").startsWith( "11" ));
 
         // BZ-1199965
         String drl =

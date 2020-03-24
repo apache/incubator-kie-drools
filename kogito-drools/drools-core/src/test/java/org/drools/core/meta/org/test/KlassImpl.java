@@ -49,10 +49,10 @@ public class KlassImpl implements Klass, MetadataHolder {
         this.prop = value;
     }
 
-    private final Klass_ _ = new Klass_( this );
+    private final Klass_ k = new Klass_( this );
 
     public Klass_ get_() {
-        return _;
+        return k;
     }
 
     public AnotherKlass getAnother() {

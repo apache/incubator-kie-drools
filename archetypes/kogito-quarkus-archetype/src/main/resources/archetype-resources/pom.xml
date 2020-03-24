@@ -10,11 +10,11 @@
   <properties>
     <quarkus.version>${version.io.quarkus}</quarkus.version>
     <kogito.version>${project.version}</kogito.version>
-    <surefire.version>${version.surefire}</surefire.version>
+    <surefire.version>${version.surefire.plugin}</surefire.version>
+    <compiler.version>${version.compiler.plugin}</compiler.version>
 
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-    <maven.compiler.source>11</maven.compiler.source>
-    <maven.compiler.target>11</maven.compiler.target>
+    <maven.compiler.release>${maven.compiler.release}</maven.compiler.release>
   </properties>
 
   <dependencyManagement>
@@ -63,9 +63,16 @@
     </dependency>
   </dependencies>
 
-
   <build>
     <plugins>
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-compiler-plugin</artifactId>
+        <version>${compiler.version}</version>
+        <configuration>
+          <release>${maven.compiler.release}</release>
+        </configuration>
+      </plugin>
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-surefire-plugin</artifactId>
@@ -105,7 +112,7 @@
           <plugin>
             <groupId>org.apache.maven.plugins</groupId>
             <artifactId>maven-failsafe-plugin</artifactId>
-            <version>${version.surefire}</version>
+            <version>${surefire.version}</version>
           </plugin>
         </plugins>
       </build>
