@@ -441,4 +441,149 @@ public class IncrementalCompilationTest extends BaseModelTest {
         assertEquals(1, ksession2.fireAllRules());
         Assertions.assertThat(list2).containsExactlyInAnyOrder("Good bye George");
     }
+
+    @Test
+    public void testKJarUpgradeWithChangedJavaFunctionForConsequenceWithoutExternalizeLambda() throws Exception {
+
+        String java1 = "package org.drools.test;\n" +
+                       "public class MyFunction {\n" +
+                       "    public static String hello(String name) {\n" +
+                       "        return \"Hello \" + name;\n" +
+                       "    }\n" +
+                       "}";
+
+        String java2 = "package org.drools.test;\n" +
+                       "public class MyFunction {\n" +
+                       "    public static String hello(String name) {\n" +
+                       "        return \"Good bye \" + name;\n" +
+                       "    }\n" +
+                       "}";
+
+        String drl = "package org.drools.incremental\n" +
+                     "import " + Person.class.getCanonicalName() + "\n" +
+                     "import static org.drools.test.MyFunction.hello\n" +
+                     "global java.util.List list;\n" +
+                     "rule R1 when\n" +
+                     "   $p : Person()\n" +
+                     "then\n" +
+                     "   list.add(hello($p.getName()));" +
+                     "end\n";
+
+        KieServices ks = KieServices.Factory.get();
+
+        // Create an in-memory jar for version 1.0.0
+        ReleaseId releaseId1 = ks.newReleaseId("org.kie", "test-upgrade", "1.0.0");
+        KieModuleModel model1 = ks.newKieModuleModel();
+        model1.setConfigurationProperty("drools.externaliseCanonicalModelLambda", Boolean.FALSE.toString());
+        createAndDeployJar(ks, model1, releaseId1,
+                           new KieFile("src/main/java/org/drools/test/MyFunction.java", java1),
+                           new KieFile("src/main/resources/org/drools/incremental/r1.drl", drl));
+
+        // Create a session and fire rules
+        KieContainer kc = ks.newKieContainer(releaseId1);
+        KieSession ksession = kc.newKieSession();
+        ArrayList<String> list = new ArrayList<>();
+        ksession.setGlobal("list", list);
+        ksession.insert(new Person("John"));
+
+        assertEquals(1, ksession.fireAllRules());
+        Assertions.assertThat(list).containsExactlyInAnyOrder("Hello John");
+
+        // Create a new jar for version 1.1.0
+        ReleaseId releaseId2 = ks.newReleaseId("org.kie", "test-upgrade", "1.1.0");
+        KieModuleModel model2 = ks.newKieModuleModel();
+        model2.setConfigurationProperty("drools.externaliseCanonicalModelLambda", Boolean.FALSE.toString());
+        createAndDeployJar(ks, model2, releaseId2,
+                           new KieFile("src/main/java/org/drools/test/MyFunction.java", java2),
+                           new KieFile("src/main/resources/org/drools/incremental/r1.drl", drl));
+        // try to update the container to version 1.1.0
+        kc.updateToVersion(releaseId2);
+
+        ksession.insert(new Person("Paul"));
+
+        assertEquals(2, ksession.fireAllRules());
+        Assertions.assertThat(list).containsExactlyInAnyOrder("Hello John", "Good bye Paul", "Good bye John");
+
+        // try with a new session
+        KieSession ksession2 = kc.newKieSession();
+        ArrayList<String> list2 = new ArrayList<>();
+        ksession2.setGlobal("list", list2);
+        ksession2.insert(new Person("George"));
+
+        assertEquals(1, ksession2.fireAllRules());
+        Assertions.assertThat(list2).containsExactlyInAnyOrder("Good bye George");
+    }
+
+    @Test
+    public void testKJarUpgradeWithChangedJavaFunctionForConsequenceWithExternalizeLambda() throws Exception {
+
+        String java1 = "package org.drools.test;\n" +
+                       "public class MyFunction {\n" +
+                       "    public static String hello(String name) {\n" +
+                       "        return \"Hello \" + name;\n" +
+                       "    }\n" +
+                       "}";
+
+        String java2 = "package org.drools.test;\n" +
+                       "public class MyFunction {\n" +
+                       "    public static String hello(String name) {\n" +
+                       "        return \"Good bye \" + name;\n" +
+                       "    }\n" +
+                       "}";
+
+        String drl = "package org.drools.incremental\n" +
+                     "import " + Person.class.getCanonicalName() + "\n" +
+                     "import static org.drools.test.MyFunction.hello\n" +
+                     "global java.util.List list;\n" +
+                     "rule R1 when\n" +
+                     "   $p : Person()\n" +
+                     "then\n" +
+                     "   list.add(hello($p.getName()));" +
+                     "end\n";
+
+        KieServices ks = KieServices.Factory.get();
+
+        // Create an in-memory jar for version 1.0.0
+        ReleaseId releaseId1 = ks.newReleaseId("org.kie", "test-upgrade", "1.0.0");
+        KieModuleModel model1 = ks.newKieModuleModel();
+        model1.setConfigurationProperty("drools.externaliseCanonicalModelLambda", Boolean.TRUE.toString());
+        createAndDeployJar(ks, model1, releaseId1,
+                           new KieFile("src/main/java/org/drools/test/MyFunction.java", java1),
+                           new KieFile("src/main/resources/org/drools/incremental/r1.drl", drl));
+
+        // Create a session and fire rules
+        KieContainer kc = ks.newKieContainer(releaseId1);
+        KieSession ksession = kc.newKieSession();
+        ArrayList<String> list = new ArrayList<>();
+        ksession.setGlobal("list", list);
+        ksession.insert(new Person("John"));
+
+        assertEquals(1, ksession.fireAllRules());
+        Assertions.assertThat(list).containsExactlyInAnyOrder("Hello John");
+
+        // Create a new jar for version 1.1.0
+        ReleaseId releaseId2 = ks.newReleaseId("org.kie", "test-upgrade", "1.1.0");
+        KieModuleModel model2 = ks.newKieModuleModel();
+        model2.setConfigurationProperty("drools.externaliseCanonicalModelLambda", Boolean.TRUE.toString());
+        createAndDeployJar(ks, model2, releaseId2,
+                           new KieFile("src/main/java/org/drools/test/MyFunction.java", java2),
+                           new KieFile("src/main/resources/org/drools/incremental/r1.drl", drl));
+
+        // try to update the container to version 1.1.0
+        kc.updateToVersion(releaseId2);
+
+        ksession.insert(new Person("Paul"));
+
+        assertEquals(2, ksession.fireAllRules());
+        Assertions.assertThat(list).containsExactlyInAnyOrder("Hello John", "Good bye Paul", "Good bye John");
+
+        // try with a new session
+        KieSession ksession2 = kc.newKieSession();
+        ArrayList<String> list2 = new ArrayList<>();
+        ksession2.setGlobal("list", list2);
+        ksession2.insert(new Person("George"));
+
+        assertEquals(1, ksession2.fireAllRules());
+        Assertions.assertThat(list2).containsExactlyInAnyOrder("Good bye George");
+    }
 }
