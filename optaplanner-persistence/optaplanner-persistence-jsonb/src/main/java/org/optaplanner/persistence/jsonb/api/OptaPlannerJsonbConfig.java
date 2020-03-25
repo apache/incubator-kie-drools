@@ -19,6 +19,7 @@ package org.optaplanner.persistence.jsonb.api;
 import javax.json.bind.Jsonb;
 import javax.json.bind.JsonbBuilder;
 import javax.json.bind.JsonbConfig;
+import javax.json.bind.adapter.JsonbAdapter;
 
 import org.optaplanner.persistence.jsonb.api.score.buildin.bendable.BendableScoreJsonbAdapter;
 import org.optaplanner.persistence.jsonb.api.score.buildin.bendablebigdecimal.BendableBigDecimalScoreJsonbAdapter;
@@ -37,7 +38,6 @@ import org.optaplanner.persistence.jsonb.api.score.buildin.simplelong.SimpleLong
 
 /**
  * This class adds all JSON-B adapters.
- *
  */
 public class OptaPlannerJsonbConfig {
 
@@ -62,5 +62,26 @@ public class OptaPlannerJsonbConfig {
                               new SimpleLongScoreJsonbAdapter());
 
         return config;
+    }
+
+    /**
+     * @return never null, use it to customize a {@link JsonbConfig} instance with {@link JsonbConfig#withAdapters(JsonbAdapter[])}.
+     */
+    public static JsonbAdapter[] getScoreJsonbAdapters() {
+        return new JsonbAdapter[]{
+                new BendableScoreJsonbAdapter(),
+                new BendableBigDecimalScoreJsonbAdapter(),
+                new BendableLongScoreJsonbAdapter(),
+                new HardMediumSoftScoreJsonbAdapter(),
+                new HardMediumSoftBigDecimalScoreJsonbAdapter(),
+                new HardMediumSoftLongScoreJsonbAdapter(),
+                new HardSoftScoreJsonbAdapter(),
+                new HardSoftBigDecimalScoreJsonbAdapter(),
+                new HardSoftDoubleScoreJsonbAdapter(),
+                new HardSoftLongScoreJsonbAdapter(),
+                new SimpleScoreJsonbAdapter(),
+                new SimpleBigDecimalScoreJsonbAdapter(),
+                new SimpleDoubleScoreJsonbAdapter(),
+                new SimpleLongScoreJsonbAdapter()};
     }
 }
