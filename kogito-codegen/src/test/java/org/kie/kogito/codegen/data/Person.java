@@ -29,7 +29,7 @@ public class Person {
 
     private static String staticallyIgnoreMe;
 
-    private List<Address> addresses = new ArrayList<>();
+    private transient List<Address> addresses = new ArrayList<>();
 
     public Person(String name, int age) {
         this.name = name;
