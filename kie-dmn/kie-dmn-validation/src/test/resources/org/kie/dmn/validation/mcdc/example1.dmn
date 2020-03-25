@@ -7,7 +7,7 @@
     <semantic:itemDefinition name="tPropertyUsage" label="tPropertyUsage" isCollection="false">
         <semantic:typeRef>string</semantic:typeRef>
         <semantic:allowedValues triso:constraintsType="enumeration">
-            <semantic:text>"Investment","PrimaryResidence","SecondHome","FHASecondaryResidence"</semantic:text>
+            <semantic:text>"PrimaryResidence","SecondHome","Investment"</semantic:text>
         </semantic:allowedValues>
     </semantic:itemDefinition>
     <semantic:itemDefinition name="tMincreditscore" label="tMincreditscore" isCollection="false">
@@ -36,7 +36,7 @@
                     <semantic:text>Usage</semantic:text>
                 </semantic:inputExpression>
                 <semantic:inputValues triso:constraintsType="enumeration">
-                    <semantic:text>"Investment","PrimaryResidence","SecondHome","FHASecondaryResidence"</semantic:text>
+                    <semantic:text>"PrimaryResidence","SecondHome","Investment"</semantic:text>
                 </semantic:inputValues>
             </semantic:input>
             <semantic:input id="_b31a5b53-e078-422a-9cbb-973e66710b1d" label="LTV">

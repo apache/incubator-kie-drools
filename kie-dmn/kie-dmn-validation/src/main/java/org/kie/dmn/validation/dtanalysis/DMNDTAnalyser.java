@@ -247,7 +247,7 @@ public class DMNDTAnalyser {
                     List<Comparable<?>> discreteValues = getDiscreteValues(utln);
                     Collections.sort((List) discreteValues);
                     Interval discreteDomainMinMax = new Interval(RangeBoundary.CLOSED, discreteValues.get(0), discreteValues.get(discreteValues.size() - 1), RangeBoundary.CLOSED, 0, jColIdx + 1);
-                    DDTAInputClause ic = new DDTAInputClause(discreteDomainMinMax, discreteValues);
+                    DDTAInputClause ic = new DDTAInputClause(discreteDomainMinMax, discreteValues, getDiscreteValues(utln));
                     ddtaTable.getInputs().add(ic);
                 } else if (utln.getElements().size() == 1) {
                     UnaryTestNode utn0 = (UnaryTestNode) utln.getElements().get(0);

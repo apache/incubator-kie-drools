@@ -23,15 +23,18 @@ public class DDTAInputClause implements Domain {
 
     private final Interval domainMinMax;
     private final List discreteValues;
+    private final List<Comparable<?>> discreteDMNOrder;
 
     public DDTAInputClause(Interval domainMinMax) {
         this.domainMinMax = domainMinMax;
         this.discreteValues = Collections.emptyList();
+        this.discreteDMNOrder = Collections.emptyList();
     }
 
-    public DDTAInputClause(Interval domainMinMax, List discreteValues) {
+    public DDTAInputClause(Interval domainMinMax, List discreteValues, List<Comparable<?>> discreteDMNOrder) {
         this.domainMinMax = domainMinMax;
         this.discreteValues = discreteValues;
+        this.discreteDMNOrder = discreteDMNOrder;
     }
 
     @Override
@@ -57,6 +60,14 @@ public class DDTAInputClause implements Domain {
     @Override
     public boolean isDiscreteDomain() {
         return discreteValues != null && !discreteValues.isEmpty();
+    }
+
+    /**
+     * Used by MC/DC
+     * NOT to be used by Gap analysis, as domain ordering is not necessarily respected while modeling.
+     */
+    public List<Comparable<?>> getDiscreteDMNOrder() {
+        return discreteDMNOrder;
     }
 
 }

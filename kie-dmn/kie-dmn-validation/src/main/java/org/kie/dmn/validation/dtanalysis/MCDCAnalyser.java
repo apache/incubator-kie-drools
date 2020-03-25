@@ -55,10 +55,14 @@ public class MCDCAnalyser {
         calculateAllEnumValues();
 
         // Step2
+        int i = 1;
         while (areInputsYetToBeVisited()) {
+            LOG.debug("=== Step2, iteration {}", i);
             step2();
+            i++;
         }
 
+        LOG.info("the final results are as follows.\nLeft Hand Side for Positive:");
         Set<Record> mcdcRecords = new LinkedHashSet<>();
         // cycle positive side first
         for (PosNegBlock b : selectedBlocks) {
@@ -70,6 +74,7 @@ public class MCDCAnalyser {
             }
         }
         // cycle negative side
+        LOG.info("Right Hand Side for Negative: (marked with R the 'red color' records which are duplicates)");
         for (PosNegBlock b : selectedBlocks) {
             for (Record negRecord : b.negRecords) {
                 boolean add = mcdcRecords.add(negRecord);
@@ -90,7 +95,6 @@ public class MCDCAnalyser {
     }
 
     private void step2() {
-        LOG.debug("---Step2");
         List<Integer> visitedIndexes = getAllColumnVisited();
         LOG.debug("Visited Inputs: {}", debugListPlusOne(visitedIndexes));
         List<List<Comparable<?>>> visitedPositiveOutput = getVisitedPositiveOutput();
@@ -117,9 +121,14 @@ public class MCDCAnalyser {
             for (PosNegBlock b : idx0blocks.getValue()) {
                 sb.append(b);
             }
-            LOG.debug("Only 1 Input has fewest rule matching: In{}, and with these blocks {}", index + 1, sb.toString());
+            LOG.debug("Only a single Input has fewest rule matching: In{}, and with these blocks {}", index + 1, sb.toString());
 
-            Optional<PosNegBlock> check2bi = check2bi(idx0blocks.getValue());
+            List<PosNegBlock> filtered = new ArrayList<>(idx0blocks.getValue());
+            filtered.removeIf(block -> selectedBlocks.stream().anyMatch(sbb -> sbb.posRecord.output.equals(block.posRecord.output)));
+            LOG.debug("For step2 I am considering only {} of those {} blocks, as others are matching for positive case output which is already visited.", filtered.size(), idx0blocks.getValue().size());
+            LOG.trace("{}", filtered);
+
+            Optional<PosNegBlock> check2bi = check2bi(filtered);
             if (check2bi.isPresent()) {
                 PosNegBlock b = check2bi.get();
                 // When 2bi is satisfied and all the negative cases has output values different from the prior positive cases, ...
@@ -146,21 +155,21 @@ public class MCDCAnalyser {
                 return;
             }
 
-            Optional<PosNegBlock> check2bii = check2bii(idx0blocks.getValue());
+            Optional<PosNegBlock> check2bii = check2bii(filtered);
             if (check2bii.isPresent()) {
                 PosNegBlock b = check2bii.get();
                 selectBlock(b);
                 return;
             }
 
-            Optional<Check2biii_iv> check2biii_iv = check2biii_iv(idx0blocks.getValue());
+            Optional<Check2biii_iv> check2biii_iv = check2biii_iv(filtered);
             if (check2biii_iv.isPresent()) {
                 PosNegBlock selected = check2biii_iv.get().block;
                 selectBlock(selected);
                 return;
             }
 
-            PosNegBlock arbitrarySelectFirst = idx0blocks.getValue().get(0);
+            PosNegBlock arbitrarySelectFirst = filtered.get(0);
             LOG.warn("I have reached the end of step2 without having selected a block, will select the first one \n{}", arbitrarySelectFirst);
             selectBlock(arbitrarySelectFirst);
             return;
@@ -171,8 +180,8 @@ public class MCDCAnalyser {
 
     private void selectBlock(PosNegBlock selected) {
         selectedBlocks.add(selected);
-        int index = selected.cMarker;
-        allEnumValues.get(index).removeAll(Arrays.asList(selected.posRecord.enums[index]));
+        //        int index = selected.cMarker;
+        //        allEnumValues.get(index).removeAll(Arrays.asList(selected.posRecord.enums[index]));
     }
 
     public static class Check2biii_iv {
@@ -209,7 +218,7 @@ public class MCDCAnalyser {
             List<Record> negRecords = b.negRecords;
             boolean anyMatch = negRecords.stream().anyMatch(nr -> selectedBlocks.stream().map(sb -> sb.posRecord).anyMatch(pr -> pr.enums.equals(nr.enums)));
             if (anyMatch) {
-                LOG.debug("check2bii identified; one negative case is a duplicate of a prior (positive) case in the block. \n{}", b);
+                LOG.debug("check2bii identified; one negative case is a duplicate of a prior (positive) case; this happens for in the block. \n{}", b);
                 return Optional.of(b);
             }
         }
@@ -275,11 +284,13 @@ public class MCDCAnalyser {
                 }
             }
         }
+
+        for (Entry<Integer, List<PosNegBlock>> e : results.entrySet()) {
+            LOG.trace("Input {}, has the following number of rules matching the first input value \n{}", e.getKey() + 1, e.getValue());
+        }
+
         Integer min = results.values().stream().map(List::size).min(Integer::compareTo).orElse(0);
         List<Entry<Integer, List<PosNegBlock>>> collect = results.entrySet().stream().filter(kv -> kv.getValue().size() == min).collect(Collectors.toList());
-        for (Entry<Integer, List<PosNegBlock>> e : collect) {
-            LOG.trace("{}", e);
-        }
         return collect;
     }
 
@@ -312,6 +323,7 @@ public class MCDCAnalyser {
             PosNegBlock posNegBlock = new PosNegBlock(idx, posCandidate, negativeRecords);
             return Optional.of(posNegBlock);
         }
+        LOG.trace("For In{}={} and candidate positive of {}, it cannot be a matching rule because some negative case had SAME output {}", idx + 1, value, posCandidate, negativeRecords);
         return Optional.empty();
     }
 
@@ -441,14 +453,14 @@ public class MCDCAnalyser {
                 results.add(i);
             }
         }
-        LOG.trace("matchingRulesForInput column index {} value {} matching rules: {}", colIdx, value, results);
+        LOG.trace("Considering just In{}={} in the original decision tables matches rules: {} total of {} rules.", colIdx + 1, value, debugListPlusOne(results), results.size());
         return results;
     }
 
     private void calculateAllEnumValues() {
         for (int idx = 0; idx < ddtaTable.inputCols(); idx++) {
             if (ddtaTable.getInputs().get(idx).isDiscreteDomain()) {
-                List<?> discreteValues = new ArrayList<>(ddtaTable.getInputs().get(idx).getDiscreteValues());
+                List<?> discreteValues = new ArrayList<>(ddtaTable.getInputs().get(idx).getDiscreteDMNOrder());
                 allEnumValues.add(discreteValues); // add _the collection_
                 continue;
             }
@@ -571,7 +583,7 @@ public class MCDCAnalyser {
                     checkAll &= idIDXsize1 && equals;
                 }
                 if (checkAll) {
-                    LOG.debug("I believe P table with else rule: {}", ruleIdx);
+                    LOG.debug("I believe P table with else rule: {}", ruleIdx + 1);
                     elseRuleIdx = Optional.of(ruleIdx);
                 }
             }
