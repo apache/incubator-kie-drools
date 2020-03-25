@@ -22,8 +22,10 @@ import static org.junit.Assert.assertThat;
 public class DMNTypeSafeTest {
 
     public static final Logger LOG = LoggerFactory.getLogger(DMNTypeSafeTest.class);
+    private String PACKAGE_NAME = "http_58_47_47www_46trisotech_46com_47definitions_47_2ceee5b6_450f0d_4541ef_45890e_452cd6fb1adb10";
 
-    @Test
+
+        @Test
     public void test() throws Exception {
         final DMNRuntime runtime = DMNRuntimeUtil.createRuntime("a.dmn", this.getClass());
         String namespace = "http://www.trisotech.com/definitions/_2ceee5b6-0f0d-41ef-890e-2cd6fb1adb10";
@@ -33,7 +35,7 @@ public class DMNTypeSafeTest {
         assertThat(dmnModel, notNullValue());
         assertThat(DMNRuntimeUtil.formatMessages(dmnModel.getMessages()), dmnModel.hasErrors(), is(false));
 
-        DMNTypeSafeTypeGenerator sourceCode = new DMNTypeSafeTypeGenerator(dmnModel, "org.kie.dmn.typesafe");
+        DMNTypeSafeTypeGenerator sourceCode = new DMNTypeSafeTypeGenerator(dmnModel, PACKAGE_NAME);
 
         Map<String, String> allTypesSourceCode = sourceCode.generateSourceCodeOfAllTypes();
 
@@ -51,7 +53,7 @@ public class DMNTypeSafeTest {
     }
 
     private FEELPropertyAccessible createTAddress(Map<String, Class<?>> compile, String streetName, int streetNumber) throws Exception {
-        Class<?> clazz = compile.get("org.kie.dmn.typesafe.TAddress");
+        Class<?> clazz = compile.get(classWithPackage("TAddress"));
         assertThat(clazz, notNullValue());
         Object tPersonInstance = clazz.getDeclaredConstructor().newInstance();
         FEELPropertyAccessible feelPropertyAccessible = (FEELPropertyAccessible) tPersonInstance;
@@ -61,8 +63,12 @@ public class DMNTypeSafeTest {
         return feelPropertyAccessible;
     }
 
+    private String classWithPackage(String className) {
+        return PACKAGE_NAME + "." + className;
+    }
+
     private FEELPropertyAccessible createTPerson(Map<String, Class<?>> compile, List<FEELPropertyAccessible> addresses) throws Exception {
-        Class<?> tPersonClass = compile.get("org.kie.dmn.typesafe.TPerson");
+        Class<?> tPersonClass = compile.get(classWithPackage("TPerson"));
         assertThat(tPersonClass, notNullValue());
         Object tPersonInstance = tPersonClass.getDeclaredConstructor().newInstance();
         FEELPropertyAccessible feelPropertyAccessible = (FEELPropertyAccessible) tPersonInstance;
@@ -73,7 +79,7 @@ public class DMNTypeSafeTest {
     }
 
     private FEELPropertyAccessible createInputSet(Map<String, Class<?>> compile, FEELPropertyAccessible tPersonInstance) throws Exception {
-        Class<?> inputSetClass = compile.get("org.kie.dmn.typesafe.InputSet");
+        Class<?> inputSetClass = compile.get(classWithPackage("InputSet"));
         assertThat(inputSetClass, notNullValue());
         Object inputSetInstance = inputSetClass.getDeclaredConstructor().newInstance();
         FEELPropertyAccessible feelPropertyAccessible = (FEELPropertyAccessible) inputSetInstance;
