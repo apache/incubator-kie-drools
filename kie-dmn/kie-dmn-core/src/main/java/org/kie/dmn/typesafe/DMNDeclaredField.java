@@ -7,7 +7,6 @@ import java.util.Map;
 import org.drools.core.util.StringUtils;
 import org.drools.modelcompiler.builder.generator.declaredtype.api.AnnotationDefinition;
 import org.drools.modelcompiler.builder.generator.declaredtype.api.FieldDefinition;
-import org.drools.modelcompiler.builder.generator.declaredtype.api.SimpleAnnotationDefinition;
 import org.kie.dmn.api.core.DMNType;
 
 public class DMNDeclaredField implements FieldDefinition {
@@ -19,7 +18,6 @@ public class DMNDeclaredField implements FieldDefinition {
     DMNDeclaredField(Map.Entry<String, DMNType> dmnType) {
         this.fieldName = dmnType.getKey();
         this.fieldType = dmnType.getValue();
-        annotations.add(new SimpleAnnotationDefinition("javax.xml.bind.annotation.XmlElement"));
     }
 
     @Override
