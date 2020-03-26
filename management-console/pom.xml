@@ -186,7 +186,7 @@
                 </goals>
                 <configuration>
                   <npmRegistryURL>${env.NPM_REGISTRY_URL}</npmRegistryURL>
-                  <arguments>install</arguments>
+                  <arguments>install --fetch-retry-mintimeout=100000 --fetch-retries=10</arguments>
                 </configuration>
               </execution>
             </executions>
