@@ -1,3 +1,19 @@
+/*
+ * Copyright 2020 Red Hat, Inc. and/or its affiliates.
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *       http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
 package org.kie.dmn.core.assembler;
 
 import java.util.ArrayList;
@@ -15,6 +31,16 @@ public class DMNResource {
     private final Definitions definitions;
     private final List<QName> dependencies = new ArrayList<>();
 
+    public DMNResource(Definitions definitions, ResourceWithConfiguration resAndConfig) {
+        this.modelID = new QName(definitions.getNamespace(), definitions.getName());
+        this.resAndConfig = resAndConfig;
+        this.definitions = definitions;
+    }
+
+    /**
+     * @deprecated Use {@link #DMNResource(Definitions, ResourceWithConfiguration)} instead.
+     */
+    @Deprecated
     public DMNResource(QName modelID, ResourceWithConfiguration resAndConfig, Definitions definitions) {
         this.modelID = modelID;
         this.resAndConfig = resAndConfig;
