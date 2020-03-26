@@ -13,29 +13,14 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.kie.pmml.commons.enums;
+package org.kie.pmml.models.tree.compiler.parser;
 
-import java.util.Arrays;
-import java.util.Objects;
+/**
+ * Class responsible to translate <code>TreeModel</code> to intermediate <b>AST</b>
+ */
+public class KiePMMLTreeModelParser {
 
-import org.kie.pmml.commons.exceptions.KieEnumException;
-
-public enum StatusCode {
-    DONE("DONE"),
-    OK("OK"),
-    FAIL("FAIL");
-
-    private final String name;
-
-    StatusCode(String name) {
-        this.name = name;
-    }
-
-    public static StatusCode byName(String name) {
-        return Arrays.stream(StatusCode.values()).filter(value -> Objects.equals(name, value.name)).findFirst().orElseThrow(() -> new KieEnumException("Failed to find StatusCode with name: " + name));
-    }
-
-    public String getName() {
-        return name;
+    private KiePMMLTreeModelParser() {
+        // avoid instantiation
     }
 }

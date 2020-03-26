@@ -13,29 +13,23 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.kie.pmml.commons.enums;
+package org.kie.pmml.models.drooled.ast;
 
-import java.util.Arrays;
-import java.util.Objects;
+/**
+ * Class representing data needed to declare type.
+ * For the moment being, only one field is managed, whose name - by default -is <b>"value"</b>
+ */
+public class AbstractKiePMMLDrooledConstraint {
 
-import org.kie.pmml.commons.exceptions.KieEnumException;
+    private final String identifier;
+    private final Object left;
+    private final String operator;
+    private final Object right;
 
-public enum StatusCode {
-    DONE("DONE"),
-    OK("OK"),
-    FAIL("FAIL");
-
-    private final String name;
-
-    StatusCode(String name) {
-        this.name = name;
-    }
-
-    public static StatusCode byName(String name) {
-        return Arrays.stream(StatusCode.values()).filter(value -> Objects.equals(name, value.name)).findFirst().orElseThrow(() -> new KieEnumException("Failed to find StatusCode with name: " + name));
-    }
-
-    public String getName() {
-        return name;
+    public AbstractKiePMMLDrooledConstraint(String identifier, Object left, String operator, Object right) {
+        this.identifier = identifier;
+        this.left = left;
+        this.operator = operator;
+        this.right = right;
     }
 }

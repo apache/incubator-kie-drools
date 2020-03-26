@@ -2,15 +2,15 @@
 <project xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://maven.apache.org/POM/4.0.0" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
   <parent>
     <groupId>org.kie</groupId>
-    <artifactId>kie-pmml-models-tree</artifactId>
-    <version>7.36.0-SNAPSHOT</version>
+    <artifactId>kie-pmml-models-naivebayes</artifactId>
+    <version>${version.org.kie}</version>
   </parent>
   <modelVersion>4.0.0</modelVersion>
 
-  <artifactId>kie-pmml-models-tree-compiler</artifactId>
+  <artifactId>kie-pmml-models-naivebayes-compiler</artifactId>
 
-  <name>KIE :: PMML :: Models :: Tree :: Compiler</name>
-  <description>PMML Tree Compiler</description>
+  <name>KIE :: PMML :: Models :: NaiveBayes :: Compiler</name>
+  <description>PMML NaiveBayes Compiler</description>
 
   <dependencies>
     <!-- PMML -->
@@ -20,7 +20,7 @@
     </dependency>
     <dependency>
       <groupId>org.kie</groupId>
-      <artifactId>kie-pmml-models-tree-model</artifactId>
+      <artifactId>kie-pmml-models-naivebayes-model</artifactId>
     </dependency>
     <!-- EXTERNAL -->
     <!-- TEST -->
@@ -48,7 +48,7 @@
     <dependencies>
       <dependency>
         <groupId>org.kie</groupId>
-        <artifactId>kie-pmml-models-tree-model</artifactId>
+        <artifactId>kie-pmml-models-naivebayes-model</artifactId>
         <version>${version.org.kie}</version>
       </dependency>
       <dependency>

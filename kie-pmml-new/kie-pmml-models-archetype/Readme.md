@@ -29,11 +29,11 @@ During "archetype:integration-test" goal, what happen is
 
 1. a project is generated based on the given specifications
 2. the generated project is compared (file by file) with the reference one
-3. if the comparison is successfull, the generated project goes thoru the phase describe inside "goal.txt"
+3. if the comparison is successful, the generated project goes through the phase describe inside "goal.txt"
 4. Being the above "verify", the project is compiled and tested.
 
-If reference and generated prjocet differs for number or content of files, a specific error is printed out in console
-If the generated project does not compile (due to some modification in the underlyin models) a usual "compilation error" is printed out in console.
+If reference and generated project differs for number or content of files, a specific error is printed out in console
+If the generated project does not compile (due to some modification in the underlying models) a usual "compilation error" is printed out in console.
 
 See https://maven.apache.org/archetype/maven-archetype-plugin/integration-test-mojo.html for more details.
 

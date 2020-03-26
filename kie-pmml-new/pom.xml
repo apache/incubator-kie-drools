@@ -180,8 +180,8 @@
       <dependency>
         <groupId>org.kie</groupId>
         <artifactId>kie-pmml-models-tree-compiler</artifactId>
+        <classifier>tests</classifier>
         <version>${version.org.kie}</version>
-        <scope>test</scope>
       </dependency>
       <dependency>
         <groupId>org.kie</groupId>

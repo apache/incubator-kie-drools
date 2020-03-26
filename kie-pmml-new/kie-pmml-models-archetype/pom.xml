@@ -27,6 +27,11 @@
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-archetype-plugin</artifactId>
+        <configuration>
+          <ignoreEOLStyle>true</ignoreEOLStyle>
+          <debug>true</debug>
+          <noLog>false</noLog>
+        </configuration>
         <executions>
           <execution>
             <goals>
@@ -54,6 +59,23 @@
               <resources>
                 <resource>
                   <directory>src/resources-filtered</directory>
+                  <filtering>true</filtering>
+                </resource>
+              </resources>
+            </configuration>
+          </execution>
+          <execution>
+            <id>copy-test-resources</id>
+            <!-- here the phase you need -->
+            <phase>validate</phase>
+            <goals>
+              <goal>copy-resources</goal>
+            </goals>
+            <configuration>
+              <outputDirectory>${basedir}/target/test-classes</outputDirectory>
+              <resources>
+                <resource>
+                  <directory>src/test/resources-filtered</directory>
                   <filtering>true</filtering>
                 </resource>
               </resources>

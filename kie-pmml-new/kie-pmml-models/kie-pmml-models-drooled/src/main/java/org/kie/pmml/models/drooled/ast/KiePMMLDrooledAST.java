@@ -13,29 +13,25 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.kie.pmml.commons.enums;
+package org.kie.pmml.models.drooled.ast;
 
-import java.util.Arrays;
-import java.util.Objects;
+import java.util.Queue;
 
-import org.kie.pmml.commons.exceptions.KieEnumException;
+public class KiePMMLDrooledAST {
 
-public enum StatusCode {
-    DONE("DONE"),
-    OK("OK"),
-    FAIL("FAIL");
+    private final Queue<KiePMMLDrooledType> types;
+    private final Queue<KiePMMLDrooledRule> rules;
 
-    private final String name;
-
-    StatusCode(String name) {
-        this.name = name;
+    public KiePMMLDrooledAST(Queue<KiePMMLDrooledType> types, Queue<KiePMMLDrooledRule> rules) {
+        this.types = types;
+        this.rules = rules;
     }
 
-    public static StatusCode byName(String name) {
-        return Arrays.stream(StatusCode.values()).filter(value -> Objects.equals(name, value.name)).findFirst().orElseThrow(() -> new KieEnumException("Failed to find StatusCode with name: " + name));
+    public Queue<KiePMMLDrooledType> getTypes() {
+        return types;
     }
 
-    public String getName() {
-        return name;
+    public Queue<KiePMMLDrooledRule> getRules() {
+        return rules;
     }
 }
