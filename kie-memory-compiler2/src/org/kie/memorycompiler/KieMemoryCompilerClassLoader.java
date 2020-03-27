@@ -13,26 +13,26 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.kie.pmml.models.regression.compiler.utils;
+package org.kie.memorycompiler;
 
 import java.util.HashMap;
 import java.util.Map;
 
-public class KiePMMLClassLoader extends ClassLoader {
+public class KieMemoryCompilerClassLoader extends ClassLoader {
 
-    private Map<String, KiePMMLByteCode> customCompiledCode = new HashMap<>();
+    private Map<String, KieMemoryCompilerByteCode> customCompiledCode = new HashMap<>();
 
-    public KiePMMLClassLoader(ClassLoader parent) {
+    public KieMemoryCompilerClassLoader(ClassLoader parent) {
         super(parent);
     }
 
-    public void addCode(KiePMMLByteCode cc) {
+    public void addCode(KieMemoryCompilerByteCode cc) {
         customCompiledCode.put(cc.getName(), cc);
     }
 
     @Override
     protected Class<?> findClass(String name) throws ClassNotFoundException {
-        KiePMMLByteCode cc = customCompiledCode.get(name);
+        KieMemoryCompilerByteCode cc = customCompiledCode.get(name);
         if (cc == null) {
             return super.findClass(name);
         }
