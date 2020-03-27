@@ -15,6 +15,7 @@ module.exports = data = [
     state: 'COMPLETED',
     start: '2019-10-22T03:40:44.089Z',
     end: '2019-10-22T05:40:44.089Z',
+    serviceUrl: null,
     endpoint: 'http://localhost:4000',
     error: {
       nodeDefinitionId: 'a1e139d5-4e77-48c9-84ae-34578e904e6b',
@@ -69,6 +70,7 @@ module.exports = data = [
     roles: [],
     state: 'ERROR',
     addons: ['jobs-management', 'prometheus-monitoring'],
+    serviceUrl: 'http://localhost:4000',
     endpoint: 'http://localhost:4000',
     error: {
       nodeDefinitionId: 'a23e6c20-02c2-4c2b-8c5c-e988a0adf87c',
@@ -123,6 +125,7 @@ module.exports = data = [
     rootProcessInstanceId: 'e4448857-fa0c-403b-ad69-f0a353458b9d',
     roles: [],
     state: 'COMPLETED',
+    serviceUrl: null,
     start: '2019-10-22T03:40:44.089Z',
     end: '2019-10-22T05:40:44.089Z',
     endpoint: 'http://localhost:4000',
@@ -181,6 +184,7 @@ module.exports = data = [
       nodeDefinitionId: 'e4448857-fa0c-403b-ad69-f0a353458c9e',
       message: 'Something went wrong'
     },
+    serviceUrl: null,
     endpoint: 'http://localhost:4000',
     variables:
       '{"flight":{"arrival":"2019-10-30T22:00:00Z[UTC]","departure":"2019-10-22T22:00:00Z[UTC]","flightNumber":"MX555"},"trip":{"begin":"2019-10-22T22:00:00Z[UTC]","city":"Bangalore","country":"India","end":"2019-10-30T22:00:00Z[UTC]","visaRequired":false},"hotel":{"address":{"city":"Bangalore","country":"India","street":"street","zipCode":"12345"},"bookingNumber":"XX-012345","name":"Perfect hotel","phone":"09876543"},"traveller":{"address":{"city":"Bangalore","country":"US","street":"Bangalore","zipCode":"560093"},"email":"ajaganat@redhat.com","firstName":"Ajay","lastName":"Jaganathan","nationality":"US"}}',
@@ -310,6 +314,8 @@ module.exports = data = [
     roles: [],
     state: 'ERROR',
     addons: ['prometheus-monitoring'],
+    serviceUrl: 'http://localhost:4000',
+    endpoint: 'http://localhost:4000',
     start: '2019-10-22T03:40:44.089Z',
     end: '2019-10-22T05:40:44.089Z',
     error: {
@@ -317,7 +323,6 @@ module.exports = data = [
       message:
         'Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim idest laborum.'
     },
-    endpoint: 'http://localhost:4000',
     variables:
       '{"flight":{"arrival":"2019-10-30T22:00:00Z[UTC]","departure":"2019-10-23T22:00:00Z[UTC]","flightNumber":"MX555"},"trip":{"begin":"2019-10-23T22:00:00Z[UTC]","city":"New York","country":"US","end":"2019-10-30T22:00:00Z[UTC]","visaRequired":false},"traveller":{"address":{"city":"Berlin","country":"Germany","street":"Bakers","zipCode":"100200"},"email":"cristiano@redhat.com","firstName":"Cristiano","lastName":"Nicolai","nationality":"German"}}',
     nodes: [
@@ -372,6 +377,7 @@ module.exports = data = [
       nodeDefinitionId: 'a1e139d5-4e77-48c9-84ae-34578ek1839b',
       message: 'Something went wrong'
     },
+    serviceUrl: 'http://localhost:4000',
     endpoint: 'http://localhost:4000',
     variables:
       '{"trip":{"begin":"2019-10-23T22:00:00Z[UTC]","city":"New York","country":"US","end":"2019-10-30T22:00:00Z[UTC]","visaRequired":false},"hotel":{"address":{"city":"New York","country":"US","street":"street","zipCode":"12345"},"bookingNumber":"XX-012345","name":"Perfect hotel","phone":"09876543"},"traveller":{"address":{"city":"Berlin","country":"Germany","street":"Bakers","zipCode":"100200"},"email":"cristiano@redhat.com","firstName":"Cristiano","lastName":"Nicolai","nationality":"German"}}',
@@ -422,6 +428,7 @@ module.exports = data = [
       nodeDefinitionId: 'a1e139d5-4e77-48c9-84ae-34578e9817n',
       message: 'Something went wrong'
     },
+    serviceUrl: 'http://localhost:4000',
     endpoint: 'http://localhost:4000',
     variables:
       '{"flight":{"arrival":"2019-10-30T22:00:00Z[UTC]","departure":"2019-10-23T22:00:00Z[UTC]","flightNumber":"MX555"},"trip":{"begin":"2019-10-23T22:00:00Z[UTC]","city":"New York","country":"US","end":"2019-10-30T22:00:00Z[UTC]","visaRequired":false},"hotel":{"address":{"city":"New York","country":"US","street":"street","zipCode":"12345"},"bookingNumber":"XX-012345","name":"Perfect hotel","phone":"09876543"},"traveller":{"address":{"city":"Berlin","country":"Germany","street":"Bakers","zipCode":"100200"},"email":"cristiano@redhat.com","firstName":"Cristiano","lastName":"Nicolai","nationality":"German"}}',
@@ -531,6 +538,7 @@ module.exports = data = [
     roles: [],
     state: 'ACTIVE',
     rootProcessInstanceId: null,
+    serviceUrl: 'http://localhost:4000',
     endpoint: 'http://localhost:4000',
     addons: ['jobs-management', 'prometheus-monitoring', 'process-management'],
     error: {
@@ -647,6 +655,7 @@ module.exports = data = [
     roles: [],
     state: 'ACTIVE',
     rootProcessInstanceId: null,
+    serviceUrl: null,
     endpoint: 'http://localhost:4000',
     addons: [],
     error: {
@@ -752,8 +761,9 @@ module.exports = data = [
     businessKey: null,
     state: 'COMPLETED',
     rootProcessInstanceId: null,
+    serviceUrl: null,
     endpoint: 'http://localhost:4000',
-    addons: [],
+    addons: ['process-management'],
     error: {
       nodeDefinitionId: 'a1e139d5-4e77-48c9-84ae-3459188e90433n',
       message: 'Something went wrong'
@@ -856,6 +866,7 @@ module.exports = data = [
     roles: [],
     state: 'SUSPENDED',
     rootProcessInstanceId: null,
+    serviceUrl: 'http://localhost:4000',
     endpoint: 'http://localhost:4000',
     addons: ['jobs-management', 'prometheus-monitoring', 'process-management'],
     error: {
@@ -965,6 +976,7 @@ module.exports = data = [
     rootProcessInstanceId: '8035b580-6ae4-4aa8-9ec0-e18e19809e0b',
     roles: [],
     state: 'COMPLETED',
+    serviceUrl: null,
     endpoint: 'http://localhost:4000',
     addons: [],
     error: {
@@ -1026,6 +1038,7 @@ module.exports = data = [
     rootProcessInstanceId: '8035b580-6ae4-4aa8-9ec0-e18e19809e0b',
     roles: [],
     state: 'SUSPENDED',
+    serviceUrl: 'http://localhost:4000',
     endpoint: 'http://localhost:4000',
     addons: [],
     error: {
@@ -1087,6 +1100,7 @@ module.exports = data = [
     processName: 'FlightBooking test 2',
     roles: [],
     state: 'COMPLETED',
+    serviceUrl: null,
     endpoint: 'http://localhost:4000',
     addons: [],
     error: {
@@ -1142,6 +1156,7 @@ module.exports = data = [
     processName: 'HotelBooking',
     roles: [],
     state: 'COMPLETED',
+    serviceUrl: null,
     endpoint: 'http://localhost:4000',
     addons: ['jobs-management', 'prometheus-monitoring'],
     error: {
@@ -1193,6 +1208,7 @@ module.exports = data = [
     state: 'ABORTED',
     businessKey: null,
     rootProcessInstanceId: null,
+    serviceUrl: 'http://localhost:4000',
     endpoint: 'http://localhost:4000',
     addons: [],
     error: {
@@ -1308,6 +1324,7 @@ module.exports = data = [
     businessKey: 'Hotel11',
     roles: [],
     state: 'COMPLETED',
+    serviceUrl: null,
     endpoint: 'http://localhost:4000',
     addons: ['jobs-management', 'prometheus-monitoring'],
     error: {

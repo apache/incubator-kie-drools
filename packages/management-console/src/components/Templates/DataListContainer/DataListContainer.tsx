@@ -18,7 +18,10 @@ import DataListComponent from '../../Organisms/DataListComponent/DataListCompone
 import EmptyStateComponent from '../../Atoms/EmptyStateComponent/EmptyStateComponent';
 import LoadMoreComponent from '../../Atoms/LoadMoreComponent/LoadMoreComponent';
 import ProcessBulkModalComponent from '../../Atoms/ProcessBulkModalComponent/ProcessBulkModalComponent';
-import { useGetProcessInstancesLazyQuery } from '../../../graphql/types';
+import {
+  useGetProcessInstancesLazyQuery,
+  ProcessInstanceState
+} from '../../../graphql/types';
 import axios from 'axios';
 import { InfoCircleIcon } from '@patternfly/react-icons';
 
@@ -92,11 +95,11 @@ const DataListContainer: React.FC<{}> = () => {
 
   const onGetMoreInstances = (initVal, _pageSize) => {
     setIsLoadingMore(true);
-    setPageSize(_pageSize)
+    setPageSize(_pageSize);
     getProcessInstances({
       variables: { state: checkedArray, offset: initVal, limit: _pageSize }
     });
-  }
+  };
 
   useEffect(() => {
     setAbortedObj({});
@@ -115,7 +118,9 @@ const DataListContainer: React.FC<{}> = () => {
       setLimit(data.ProcessInstances.length);
       if (offset > 0 && initData.ProcessInstances.length > 0) {
         setIsLoadingMore(false);
-        initData.ProcessInstances = initData.ProcessInstances.concat(data.ProcessInstances);
+        initData.ProcessInstances = initData.ProcessInstances.concat(
+          data.ProcessInstances
+        );
       } else {
         setInitData(data);
       }
@@ -159,46 +164,55 @@ const DataListContainer: React.FC<{}> = () => {
     for (const [id, processInstance] of Object.entries(tempAbortedObj)) {
       initData.ProcessInstances.map(instance => {
         if (instance.id === id) {
-          if (instance.state === 'COMPLETED' || instance.state === 'ABORTED') {
+          if (
+            instance.state === ProcessInstanceState.Completed ||
+            instance.state === ProcessInstanceState.Aborted
+          ) {
             completedAndAborted[id] = processInstance;
             delete tempAbortedObj[id];
           } else {
-            instance.state = 'ABORTED';
+            instance.state = ProcessInstanceState.Aborted;
           }
         }
         if (instance.childDataList !== undefined) {
           instance.childDataList.map(child => {
             if (child.id === id) {
-              if (child.state === 'COMPLETED' || child.state === 'ABORTED') {
+              if (
+                child.state === ProcessInstanceState.Completed ||
+                child.state === ProcessInstanceState.Aborted
+              ) {
                 completedAndAborted[id] = processInstance;
                 delete tempAbortedObj[id];
               } else {
-                child.state = 'ABORTED';
+                child.state = ProcessInstanceState.Aborted;
               }
             }
           });
         }
       });
     }
-    const endpoint = initData.ProcessInstances[0].endpoint;
-    const promiseArray = []
+    const promiseArray = [];
     Object.keys(tempAbortedObj).forEach((id: string) => {
       promiseArray.push(
-        axios.delete(`${endpoint}/management/processes/${tempAbortedObj[id].processId}/instances/${tempAbortedObj[id].id}`)
-      )
-    })
+        axios.delete(
+          `${tempAbortedObj[id].serviceUrl}/management/processes/${tempAbortedObj[id].processId}/instances/${tempAbortedObj[id].id}`
+        )
+      );
+    });
     setModalTitle('Abort operation');
-    Promise.all(promiseArray).then(() => {
-      setTitleType('success');
-      setAbortedMessageObj(tempAbortedObj);
-      setCompletedMessageObj(completedAndAborted);
-      handleAbortModalToggle();
-    }).catch(() => {
-      setTitleType('failure');
-      setAbortedMessageObj(tempAbortedObj);
-      setCompletedMessageObj(completedAndAborted);
-      handleAbortModalToggle();
-    })
+    Promise.all(promiseArray)
+      .then(() => {
+        setTitleType('success');
+        setAbortedMessageObj(tempAbortedObj);
+        setCompletedMessageObj(completedAndAborted);
+        handleAbortModalToggle();
+      })
+      .catch(() => {
+        setTitleType('failure');
+        setAbortedMessageObj(tempAbortedObj);
+        setCompletedMessageObj(completedAndAborted);
+        handleAbortModalToggle();
+      });
   };
   return (
     <React.Fragment>

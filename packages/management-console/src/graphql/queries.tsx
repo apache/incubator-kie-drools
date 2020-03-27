@@ -25,8 +25,8 @@ const GET_PROCESS_INSTANCES = gql`
       start
       lastUpdate
       addons
-      endpoint
       businessKey
+      serviceUrl
       error {
         nodeDefinitionId
         message
@@ -49,7 +49,7 @@ const GET_CHILD_INSTANCES = gql`
       state
       start
       lastUpdate
-      endpoint
+      serviceUrl
       addons
       businessKey
       error {

@@ -7,7 +7,6 @@ exports[`DataListItem component tests Snapshot tests 1`] = `
       Object {
         "c54ca5b0-b975-46e2-a9a0-6a86bf7ac21e": Object {
           "addons": Array [],
-          "businessKey": "Tra1122",
           "childProcessInstances": Array [],
           "end": "2019-10-22T05:40:44.089Z",
           "endpoint": "http://localhost:4000",
@@ -16,6 +15,7 @@ exports[`DataListItem component tests Snapshot tests 1`] = `
             "nodeDefinitionId": "a1e139d5-81c77-48c9-84ae-34578e90433n",
           },
           "id": "c54ca5b0-b975-46e2-a9a0-6a86bf7ac21e",
+          "isChecked": false,
           "lastUpdate": "2019-10-22T03:40:44.089Z",
           "nodes": Array [
             Object {
@@ -24,7 +24,7 @@ exports[`DataListItem component tests Snapshot tests 1`] = `
               "exit": "2019-10-22T04:43:01.144Z",
               "id": "7244ba1b-75ec-4789-8c65-499a0c5b1a6f",
               "name": "End Event 1",
-              "nodeId": "123-456-789",
+              "nodeId": "1",
               "type": "EndNode",
             },
             Object {
@@ -33,7 +33,7 @@ exports[`DataListItem component tests Snapshot tests 1`] = `
               "exit": "2019-10-22T04:43:01.144Z",
               "id": "2f588da5-a323-4111-9017-3093ef9319d1",
               "name": "Book flight",
-              "nodeId": "123-456-789",
+              "nodeId": "2",
               "type": "WorkItemNode",
             },
             Object {
@@ -42,13 +42,17 @@ exports[`DataListItem component tests Snapshot tests 1`] = `
               "exit": "2019-10-22T04:43:01.144Z",
               "id": "6ed7aa17-4bb1-48e3-b34a-5a4c5773dff2",
               "name": "StartProcess",
-              "nodeId": "123-456-789",
+              "nodeId": "3",
               "type": "StartNode",
             },
           ],
+          "parentProcessInstance": null,
           "parentProcessInstanceId": "8035b580-6ae4-4aa8-9ec0-e18e19809e0b",
           "processId": "flightBooking",
           "processName": "FlightBooking",
+          "roles": Array [],
+          "rootProcessInstanceId": "8035b580-6ae4-4aa8-9ec0-e18e19809e0b",
+          "serviceUrl": null,
           "start": "2019-10-22T03:40:44.089Z",
           "state": "COMPLETED",
           "variables": "{\\"flight\\":{\\"arrival\\":\\"2019-10-30T22:00:00Z[UTC]\\",\\"departure\\":\\"2019-10-22T22:00:00Z[UTC]\\",\\"flightNumber\\":\\"MX555\\"},\\"trip\\":{\\"begin\\":\\"2019-10-22T22:00:00Z[UTC]\\",\\"city\\":\\"Berlin\\",\\"country\\":\\"Germany\\",\\"end\\":\\"2019-10-30T22:00:00Z[UTC]\\",\\"visaRequired\\":false},\\"traveller\\":{\\"address\\":{\\"city\\":\\"Karkow\\",\\"country\\":\\"Poland\\",\\"street\\":\\"palna\\",\\"zipCode\\":\\"200300\\"},\\"email\\":\\"rob@redhat.com\\",\\"firstName\\":\\"Rob\\",\\"lastName\\":\\"Rob\\",\\"nationality\\":\\"Polish\\"}}",
@@ -83,43 +87,69 @@ exports[`DataListItem component tests Snapshot tests 1`] = `
     isExpanded={false}
   >
     <DataListItemRow>
-      <Tooltip
-        appendTo={[Function]}
-        aria="describedby"
-        boundary="window"
-        className=""
-        content="Management add-on capability not enabled. Contact your administrator to set up."
-        distance={-15}
-        enableFlip={true}
-        entryDelay={500}
-        exitDelay={500}
-        flipBehavior={
-          Array [
-            "top",
-            "right",
-            "bottom",
-            "left",
-            "top",
-            "right",
-            "bottom",
-          ]
+      <DisablePopup
+        component={
+          <DataListCheck
+            aria-labelledby="width-kie-datalist-item"
+            isDisabled={true}
+            name="width-kie-datalist-item"
+          />
         }
-        id=""
-        isAppLauncher={false}
-        isContentLeftAligned={false}
-        isVisible={false}
-        maxWidth="18.75rem"
-        position="top"
-        tippyProps={Object {}}
-        trigger="mouseenter focus"
-        zIndex={9999}
-      >
-        <DataListCheck
-          aria-labelledby="width-kie-datalist-item"
-          isDisabled={true}
-          name="width-kie-datalist-item"
-        />
-      </Tooltip>
+        processInstanceData={
+          Object {
+            "addons": Array [],
+            "childProcessInstances": Array [],
+            "end": "2019-10-22T05:40:44.089Z",
+            "endpoint": "http://localhost:4000",
+            "error": Object {
+              "message": "Something went wrong",
+              "nodeDefinitionId": "a1e139d5-81c77-48c9-84ae-34578e90433n",
+            },
+            "id": "c54ca5b0-b975-46e2-a9a0-6a86bf7ac21e",
+            "isChecked": false,
+            "lastUpdate": "2019-10-22T03:40:44.089Z",
+            "nodes": Array [
+              Object {
+                "definitionId": "EndEvent_1",
+                "enter": "2019-10-22T04:43:01.144Z",
+                "exit": "2019-10-22T04:43:01.144Z",
+                "id": "7244ba1b-75ec-4789-8c65-499a0c5b1a6f",
+                "name": "End Event 1",
+                "nodeId": "1",
+                "type": "EndNode",
+              },
+              Object {
+                "definitionId": "ServiceTask_1",
+                "enter": "2019-10-22T04:43:01.144Z",
+                "exit": "2019-10-22T04:43:01.144Z",
+                "id": "2f588da5-a323-4111-9017-3093ef9319d1",
+                "name": "Book flight",
+                "nodeId": "2",
+                "type": "WorkItemNode",
+              },
+              Object {
+                "definitionId": "StartEvent_1",
+                "enter": "2019-10-22T04:43:01.144Z",
+                "exit": "2019-10-22T04:43:01.144Z",
+                "id": "6ed7aa17-4bb1-48e3-b34a-5a4c5773dff2",
+                "name": "StartProcess",
+                "nodeId": "3",
+                "type": "StartNode",
+              },
+            ],
+            "parentProcessInstance": null,
+            "parentProcessInstanceId": "8035b580-6ae4-4aa8-9ec0-e18e19809e0b",
+            "processId": "flightBooking",
+            "processName": "FlightBooking",
+            "roles": Array [],
+            "rootProcessInstanceId": "8035b580-6ae4-4aa8-9ec0-e18e19809e0b",
+            "serviceUrl": null,
+            "start": "2019-10-22T03:40:44.089Z",
+            "state": "COMPLETED",
+            "variables": "{\\"flight\\":{\\"arrival\\":\\"2019-10-30T22:00:00Z[UTC]\\",\\"departure\\":\\"2019-10-22T22:00:00Z[UTC]\\",\\"flightNumber\\":\\"MX555\\"},\\"trip\\":{\\"begin\\":\\"2019-10-22T22:00:00Z[UTC]\\",\\"city\\":\\"Berlin\\",\\"country\\":\\"Germany\\",\\"end\\":\\"2019-10-30T22:00:00Z[UTC]\\",\\"visaRequired\\":false},\\"traveller\\":{\\"address\\":{\\"city\\":\\"Karkow\\",\\"country\\":\\"Poland\\",\\"street\\":\\"palna\\",\\"zipCode\\":\\"200300\\"},\\"email\\":\\"rob@redhat.com\\",\\"firstName\\":\\"Rob\\",\\"lastName\\":\\"Rob\\",\\"nationality\\":\\"Polish\\"}}",
+          }
+        }
+      />
       <DataListItemCells
         dataListCells={
           Array [
@@ -133,7 +163,6 @@ exports[`DataListItem component tests Snapshot tests 1`] = `
                       processInstanceData={
                         Object {
                           "addons": Array [],
-                          "businessKey": "Tra1122",
                           "childProcessInstances": Array [],
                           "end": "2019-10-22T05:40:44.089Z",
                           "endpoint": "http://localhost:4000",
@@ -142,6 +171,7 @@ exports[`DataListItem component tests Snapshot tests 1`] = `
                             "nodeDefinitionId": "a1e139d5-81c77-48c9-84ae-34578e90433n",
                           },
                           "id": "c54ca5b0-b975-46e2-a9a0-6a86bf7ac21e",
+                          "isChecked": false,
                           "lastUpdate": "2019-10-22T03:40:44.089Z",
                           "nodes": Array [
                             Object {
@@ -150,7 +180,7 @@ exports[`DataListItem component tests Snapshot tests 1`] = `
                               "exit": "2019-10-22T04:43:01.144Z",
                               "id": "7244ba1b-75ec-4789-8c65-499a0c5b1a6f",
                               "name": "End Event 1",
-                              "nodeId": "123-456-789",
+                              "nodeId": "1",
                               "type": "EndNode",
                             },
                             Object {
@@ -159,7 +189,7 @@ exports[`DataListItem component tests Snapshot tests 1`] = `
                               "exit": "2019-10-22T04:43:01.144Z",
                               "id": "2f588da5-a323-4111-9017-3093ef9319d1",
                               "name": "Book flight",
-                              "nodeId": "123-456-789",
+                              "nodeId": "2",
                               "type": "WorkItemNode",
                             },
                             Object {
@@ -168,13 +198,17 @@ exports[`DataListItem component tests Snapshot tests 1`] = `
                               "exit": "2019-10-22T04:43:01.144Z",
                               "id": "6ed7aa17-4bb1-48e3-b34a-5a4c5773dff2",
                               "name": "StartProcess",
-                              "nodeId": "123-456-789",
+                              "nodeId": "3",
                               "type": "StartNode",
                             },
                           ],
+                          "parentProcessInstance": null,
                           "parentProcessInstanceId": "8035b580-6ae4-4aa8-9ec0-e18e19809e0b",
                           "processId": "flightBooking",
                           "processName": "FlightBooking",
+                          "roles": Array [],
+                          "rootProcessInstanceId": "8035b580-6ae4-4aa8-9ec0-e18e19809e0b",
+                          "serviceUrl": null,
                           "start": "2019-10-22T03:40:44.089Z",
                           "state": "COMPLETED",
                           "variables": "{\\"flight\\":{\\"arrival\\":\\"2019-10-30T22:00:00Z[UTC]\\",\\"departure\\":\\"2019-10-22T22:00:00Z[UTC]\\",\\"flightNumber\\":\\"MX555\\"},\\"trip\\":{\\"begin\\":\\"2019-10-22T22:00:00Z[UTC]\\",\\"city\\":\\"Berlin\\",\\"country\\":\\"Germany\\",\\"end\\":\\"2019-10-30T22:00:00Z[UTC]\\",\\"visaRequired\\":false},\\"traveller\\":{\\"address\\":{\\"city\\":\\"Karkow\\",\\"country\\":\\"Poland\\",\\"street\\":\\"palna\\",\\"zipCode\\":\\"200300\\"},\\"email\\":\\"rob@redhat.com\\",\\"firstName\\":\\"Rob\\",\\"lastName\\":\\"Rob\\",\\"nationality\\":\\"Polish\\"}}",
@@ -184,22 +218,57 @@ exports[`DataListItem component tests Snapshot tests 1`] = `
                   </strong>
                 </div>
               </Link>
-              <Unknown
-                component="a"
-                href="http://localhost:4000/management/processes/flightBooking/instances/c54ca5b0-b975-46e2-a9a0-6a86bf7ac21e"
-                isInline={true}
-                target="_blank"
-                variant="link"
+              <Tooltip
+                appendTo={[Function]}
+                aria="describedby"
+                boundary="window"
+                className=""
+                content="This Kogito runtime is missing the kogito.service.url property. Contact your administrator to set up."
+                distance={15}
+                enableFlip={true}
+                entryDelay={500}
+                exitDelay={500}
+                flipBehavior={
+                  Array [
+                    "top",
+                    "right",
+                    "bottom",
+                    "left",
+                    "top",
+                    "right",
+                    "bottom",
+                  ]
+                }
+                id=""
+                isAppLauncher={false}
+                isContentLeftAligned={false}
+                isVisible={false}
+                maxWidth="18.75rem"
+                position="top"
+                tippyProps={Object {}}
+                trigger="mouseenter focus"
+                zIndex={9999}
               >
-                Endpoint
-                <ExternalLinkAltIcon
-                  className="pf-u-ml-xs"
-                  color="currentColor"
-                  noVerticalAlign={false}
-                  size="sm"
-                  title={null}
-                />
-              </Unknown>
+                <React.Fragment>
+                  <span
+                    style={
+                      Object {
+                        "color": "var(--pf-global--disabled-color--100)",
+                      }
+                    }
+                  >
+                     
+                    Endpoint
+                  </span>
+                  <ExternalLinkAltIcon
+                    className="pf-u-ml-xs"
+                    color="var(--pf-global--disabled-color--100)"
+                    noVerticalAlign={false}
+                    size="sm"
+                    title={null}
+                  />
+                </React.Fragment>
+              </Tooltip>
             </DataListCell>,
             <DataListCell>
               <React.Fragment>
@@ -288,6 +357,22 @@ exports[`DataListItem component tests Snapshot tests 1`] = `
               onToggle={[Function]}
             />
           }
+        />
+        <Modalbox
+          checkedArray={
+            Array [
+              "ACTIVE",
+            ]
+          }
+          handleModalToggle={[Function]}
+          handleRetry={[Function]}
+          handleRetryModalToggle={[Function]}
+          handleSkip={[Function]}
+          handleSkipModalToggle={[Function]}
+          isAddonPresent={false}
+          isModalLarge={true}
+          isModalOpen={false}
+          modalContent=""
         />
       </DataListAction>
     </DataListItemRow>

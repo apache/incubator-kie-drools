@@ -40,6 +40,7 @@ module.exports = typeDefs = gql`
     rootProcessId: String
     roles: [String!]
     state: ProcessInstanceState!
+    serviceUrl: String
     endpoint: String!
     nodes: [NodeInstance!]!
     variables: String

@@ -16,7 +16,10 @@ import {
   DropdownPosition,
   Bullseye,
   KebabToggle,
-  Tooltip
+  Tooltip,
+  TextContent,
+  Text,
+  TextVariants
 } from '@patternfly/react-core';
 import { Link } from 'react-router-dom';
 import SpinnerComponent from '../../Atoms/SpinnerComponent/SpinnerComponent';
@@ -39,10 +42,11 @@ import {
 import ErrorPopover from '../../Atoms/ErrorPopoverComponent/ErrorPopoverComponent';
 import ProcessBulkModalComponent from '../../Atoms/ProcessBulkModalComponent/ProcessBulkModalComponent';
 import ProcessDescriptor from '../ProcessDescriptor/ProcessDescriptor';
+import DisablePopup from '../DiablePopup/DisablePopup';
 interface IOwnProps {
   id: number;
   processInstanceData: ProcessInstance;
-  checkedArray: any;
+  checkedArray: string[];
   initData: any;
   setInitData: any;
   loadingInitData: boolean;
@@ -177,7 +181,7 @@ const DataListItemComponent: React.FC<IOwnProps> = ({
     try {
       setModalTitle('Skip operation');
       await axios.post(
-        `${processInstanceData.endpoint}/management/processes/${processId}/instances/${processInstanceId}/skip`
+        `${processInstanceData.serviceUrl}/management/processes/${processId}/instances/${processInstanceId}/skip`
       );
       setTitleType('success');
       setModalContent(
@@ -202,7 +206,7 @@ const DataListItemComponent: React.FC<IOwnProps> = ({
       try {
         setModalTitle('Retry operation');
         await axios.post(
-          `${processInstanceData.endpoint}/management/processes/${processId}/instances/${processInstanceId}/retrigger`
+          `${processInstanceData.serviceUrl}/management/processes/${processId}/instances/${processInstanceId}/retrigger`
         );
         setTitleType('success');
         setModalContent(
@@ -227,13 +231,13 @@ const DataListItemComponent: React.FC<IOwnProps> = ({
       setModalTitle('Abort operation');
       axios
         .delete(
-          `${processInstanceData.endpoint}/management/processes/${processId}/instances/${processInstanceId}`
+          `${processInstanceData.serviceUrl}/management/processes/${processId}/instances/${processInstanceId}`
         )
         .then(() => {
           setModalTitle('Process aborted');
-          processInstanceData.state = ProcessInstanceState.Aborted;
           setModalContent(`${processId} - process execution has been aborted.`);
           setTitleType('success');
+          processInstanceData.state = ProcessInstanceState.Aborted;
           handleAbortModalToggle();
         })
         .catch(() => {
@@ -341,7 +345,10 @@ const DataListItemComponent: React.FC<IOwnProps> = ({
   }, [data]);
 
   const dropDownList = () => {
-    if (processInstanceData.addons.includes('process-management')) {
+    if (
+      processInstanceData.addons.includes('process-management') &&
+      processInstanceData.serviceUrl !== null
+    ) {
       if (processInstanceData.state === 'ERROR') {
         return [
           <DropdownItem
@@ -454,7 +461,8 @@ const DataListItemComponent: React.FC<IOwnProps> = ({
               aria-controls="kie-datalist-expand"
             />
           )}
-          {processInstanceData.addons.includes('process-management') ? (
+          {processInstanceData.addons.includes('process-management') &&
+          processInstanceData.serviceUrl !== null ? (
             <DataListCheck
               aria-labelledby="width-kie-datalist-item"
               name="width-kie-datalist-item"
@@ -464,18 +472,16 @@ const DataListItemComponent: React.FC<IOwnProps> = ({
               }}
             />
           ) : (
-            <Tooltip
-              content={
-                'Management add-on capability not enabled. Contact your administrator to set up.'
+            <DisablePopup
+              processInstanceData={processInstanceData}
+              component={
+                <DataListCheck
+                  aria-labelledby="width-kie-datalist-item"
+                  name="width-kie-datalist-item"
+                  isDisabled={true}
+                />
               }
-              distance={-15}
-            >
-              <DataListCheck
-                aria-labelledby="width-kie-datalist-item"
-                name="width-kie-datalist-item"
-                isDisabled={true}
-              />
-            </Tooltip>
+            />
           )}
           <DataListItemCells
             dataListCells={[
@@ -489,16 +495,36 @@ const DataListItemComponent: React.FC<IOwnProps> = ({
                     </strong>
                   </div>
                 </Link>
-                {!processInstanceData.rootProcessInstanceId && (
+                {!processInstanceData.rootProcessInstanceId &&
+                processInstanceData.serviceUrl !== null ? (
                   <Button
                     component={'a'}
                     variant={'link'}
                     target={'_blank'}
-                    href={`${processInstanceData.endpoint}/management/processes/${processInstanceData.processId}/instances/${processInstanceData.id}`}
+                    href={`${processInstanceData.serviceUrl}`}
                     isInline={true}
                   >
                     Endpoint{<ExternalLinkAltIcon className="pf-u-ml-xs" />}
                   </Button>
+                ) : (
+                  <Tooltip content="This Kogito runtime is missing the kogito.service.url property. Contact your administrator to set up.">
+                    <>
+                      <span
+                        style={{
+                          color: 'var(--pf-global--disabled-color--100)'
+                        }}
+                      >
+                        {' '}
+                        Endpoint
+                      </span>
+                      {
+                        <ExternalLinkAltIcon
+                          className="pf-u-ml-xs"
+                          color="var(--pf-global--disabled-color--100)"
+                        />
+                      }
+                    </>
+                  </Tooltip>
                 )}
               </DataListCell>,
               <DataListCell key={4}>
@@ -570,6 +596,22 @@ const DataListItemComponent: React.FC<IOwnProps> = ({
                 dropdownItems={[]}
               />
             )}
+            <ProcessBulkModalComponent
+              modalTitle={setTitle(titleType, modalTitle)}
+              isModalLarge={true}
+              isModalOpen={isErrorModalOpen}
+              handleModalToggle={handleErrorModalToggle}
+              modalContent={modalContent}
+              handleSkip={handleSkip}
+              handleRetry={handleRetry}
+              isAddonPresent={
+                processInstanceData &&
+                processInstanceData.addons.includes('process-management')
+              }
+              checkedArray={checkedArray}
+              handleSkipModalToggle={handleSkipModalToggle}
+              handleRetryModalToggle={handleRetryModalToggle}
+            />
           </DataListAction>
         </DataListItemRow>
         <DataListContent
@@ -581,11 +623,12 @@ const DataListItemComponent: React.FC<IOwnProps> = ({
           {isLoaded &&
             !loading &&
             !loadingInitData &&
-            initData.ProcessInstances.map(instance => {
+            initData.ProcessInstances.map((instance, idx) => {
               if (instance.id === processInstanceData.id) {
                 if (instance.childDataList.length === 0) {
                   return (
                     <EmptyStateComponent
+                      key={idx}
                       iconType="infoCircleIcon"
                       title="No child process instances"
                       body="This process has no related sub processes"
