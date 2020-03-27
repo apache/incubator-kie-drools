@@ -7,6 +7,7 @@ import {
   TextList,
   TextListItem
 } from '@patternfly/react-core';
+import ProcessDescriptor from '../../Molecules/ProcessDescriptor/ProcessDescriptor';
 
 interface IOwnProps {
   abortedMessageObj: any;
@@ -22,9 +23,6 @@ const ProcessBulkListComponent: React.FC<IOwnProps> = ({
   checkedArray,
   isAbortModalOpen
 }) => {
-  const stringModifier = (strId: string) => {
-    return strId.substring(0, 5);
-  };
   return (
     <>
       {' '}
@@ -42,13 +40,7 @@ const ProcessBulkListComponent: React.FC<IOwnProps> = ({
                 {Object.entries(abortedMessageObj).map((process: any) => {
                   return (
                     <TextListItem key={process[0]}>
-                      {process[1].processName}{' '}
-                      <Text
-                        component={TextVariants.small}
-                        className="pf-u-display-inline"
-                      >
-                        {stringModifier(process[0])}
-                      </Text>
+                      <ProcessDescriptor processInstanceData={process[1]} />
                     </TextListItem>
                   );
                 })}
@@ -57,7 +49,7 @@ const ProcessBulkListComponent: React.FC<IOwnProps> = ({
             {!checkedArray.includes('ABORTED') &&
               isAbortModalOpen &&
               abortedMessageObj !== undefined &&
-                Object.keys(abortedMessageObj).length !== 0 && (
+              Object.keys(abortedMessageObj).length !== 0 && (
                 <TextContent className="pf-u-mt-sm">
                   <Text>
                     Note: The process status has been updated. The list may
@@ -76,13 +68,7 @@ const ProcessBulkListComponent: React.FC<IOwnProps> = ({
                 {Object.entries(completedMessageObj).map((process: any) => {
                   return (
                     <TextListItem key={process[0]}>
-                      {process[1].processName}{' '}
-                      <Text
-                        component={TextVariants.small}
-                        className="pf-u-display-inline"
-                      >
-                        {stringModifier(process[0])}
-                      </Text>
+                      <ProcessDescriptor processInstanceData={process[1]} />
                     </TextListItem>
                   );
                 })}
@@ -111,13 +97,7 @@ const ProcessBulkListComponent: React.FC<IOwnProps> = ({
                 {Object.entries(completedMessageObj).map((process: any) => {
                   return (
                     <TextListItem key={process[0]}>
-                      {process[1].processName}{' '}
-                      <Text
-                        component={TextVariants.small}
-                        className="pf-u-display-inline"
-                      >
-                        {stringModifier(process[0])}
-                      </Text>
+                      <ProcessDescriptor processInstanceData={process[1]} />
                     </TextListItem>
                   );
                 })}
@@ -138,13 +118,7 @@ const ProcessBulkListComponent: React.FC<IOwnProps> = ({
                 {Object.entries(abortedMessageObj).map((process: any) => {
                   return (
                     <TextListItem key={process[0]}>
-                      {process[1].processName}{' '}
-                      <Text
-                        component={TextVariants.small}
-                        className="pf-u-display-inline"
-                      >
-                        {stringModifier(process[0])}
-                      </Text>
+                      <ProcessDescriptor processInstanceData={process[1]} />
                     </TextListItem>
                   );
                 })}
@@ -153,7 +127,7 @@ const ProcessBulkListComponent: React.FC<IOwnProps> = ({
             {!checkedArray.includes('ABORTED') &&
               isAbortModalOpen &&
               abortedMessageObj !== undefined &&
-                Object.keys(abortedMessageObj).length !== 0 && (
+              Object.keys(abortedMessageObj).length !== 0 && (
                 <TextContent className="pf-u-mt-sm">
                   <Text>
                     Note: The process status has been updated. The list may
@@ -180,13 +154,7 @@ const ProcessBulkListComponent: React.FC<IOwnProps> = ({
                 {Object.entries(abortedMessageObj).map((process: any) => {
                   return (
                     <TextListItem key={process[0]}>
-                      {process[1].processName}{' '}
-                      <Text
-                        component={TextVariants.small}
-                        className="pf-u-display-inline"
-                      >
-                        {stringModifier(process[0])}
-                      </Text>
+                      <ProcessDescriptor processInstanceData={process[1]} />
                     </TextListItem>
                   );
                 })}
@@ -195,7 +163,7 @@ const ProcessBulkListComponent: React.FC<IOwnProps> = ({
             {!checkedArray.includes('ABORTED') &&
               isAbortModalOpen &&
               abortedMessageObj !== undefined &&
-                Object.keys(abortedMessageObj).length !== 0 && (
+              Object.keys(abortedMessageObj).length !== 0 && (
                 <TextContent className="pf-u-mt-sm">
                   <Text>
                     Note: The process status has been updated. The list may

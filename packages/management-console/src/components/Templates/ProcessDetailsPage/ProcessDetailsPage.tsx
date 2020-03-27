@@ -15,6 +15,7 @@ import ProcessDetailsProcessVariables from '../../Organisms/ProcessDetailsProces
 import ProcessDetailsTimeline from '../../Organisms/ProcessDetailsTimeline/ProcessDetailsTimeline';
 import './ProcessDetailsPage.css';
 import { useGetProcessInstanceByIdQuery } from '../../../graphql/types';
+import ProcessDescriptor from '../../Molecules/ProcessDescriptor/ProcessDescriptor';
 
 const ProcessDetailsPage = ({ match }) => {
   const id = match.params.instanceID;
@@ -26,13 +27,19 @@ const ProcessDetailsPage = ({ match }) => {
   if (data) {
     const result = data.ProcessInstances;
     if (result.length === 0) {
-      return <Redirect to={{
-        pathname: '/NoData', state: {
-          prev: location.pathname,
-          title: 'Process not found', description: `Process instance with the id ${id} not found`,
-          buttonText: 'Go to process instances'
-        }
-      }} />
+      return (
+        <Redirect
+          to={{
+            pathname: '/NoData',
+            state: {
+              prev: location.pathname,
+              title: 'Process not found',
+              description: `Process instance with the id ${id} not found`,
+              buttonText: 'Go to process instances'
+            }
+          }}
+        />
+      );
     }
   }
 
@@ -60,7 +67,9 @@ const ProcessDetailsPage = ({ match }) => {
             </GridItem>
             <GridItem span={12}>
               <Title headingLevel="h1" size="4xl">
-                {data.ProcessInstances[0].processName}
+                <ProcessDescriptor
+                  processInstanceData={data.ProcessInstances[0]}
+                />
               </Title>
             </GridItem>
             <GridItem>

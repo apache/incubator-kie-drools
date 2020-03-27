@@ -38,6 +38,7 @@ import {
 } from '@patternfly/react-icons';
 import ErrorPopover from '../../Atoms/ErrorPopoverComponent/ErrorPopoverComponent';
 import ProcessBulkModalComponent from '../../Atoms/ProcessBulkModalComponent/ProcessBulkModalComponent';
+import ProcessDescriptor from '../ProcessDescriptor/ProcessDescriptor';
 interface IOwnProps {
   id: number;
   processInstanceData: ProcessInstance;
@@ -482,10 +483,9 @@ const DataListItemComponent: React.FC<IOwnProps> = ({
                 <Link to={'/ProcessInstances/' + processInstanceData.id}>
                   <div>
                     <strong>
-                      {' '}
-                      {processInstanceData.processName}{' '}
-                      {processInstanceData.businessKey !== null &&
-                        ' - ' + processInstanceData.businessKey}
+                      <ProcessDescriptor
+                        processInstanceData={processInstanceData}
+                      />
                     </strong>
                   </div>
                 </Link>

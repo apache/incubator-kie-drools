@@ -66,10 +66,12 @@ const GET_PROCESS_INSTANCE = gql`
       id
       processId
       processName
+      businessKey
       parentProcessInstanceId
       parentProcessInstance {
         id
         processName
+        businessKey
       }
       roles
       variables
@@ -81,13 +83,14 @@ const GET_PROCESS_INSTANCE = gql`
       childProcessInstances {
         id
         processName
+        businessKey
       }
       nodes {
         id
         name
-        type
         enter
         exit
+        type
       }
     }
   }
