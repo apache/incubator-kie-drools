@@ -34,4 +34,8 @@ public interface Process<T> {
     ProcessInstance<? extends Model> createInstance(String businessKey, Model m);
     
     String id();
+
+    void activate();
+
+    void deactivate();
 }

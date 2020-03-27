@@ -18,6 +18,7 @@ package org.kie.kogito.codegen.tests;
 import static org.assertj.core.api.Assertions.assertThat;
 
 import java.time.OffsetDateTime;
+import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -207,5 +208,77 @@ public class TimerEventTest extends AbstractCodegenTest {
         assertThat(completed).isTrue();
      
         assertThat(processInstance.status()).isEqualTo(ProcessInstance.STATE_COMPLETED);
+    }
+
+    @Test
+    public void testStartTimerEvent() throws Exception {
+
+        Application app = generateCodeProcessesOnly("timer/StartTimerDuration.bpmn2");
+        assertThat(app).isNotNull();
+
+        NodeLeftCountDownProcessEventListener listener = new NodeLeftCountDownProcessEventListener("timer fired", 1);
+        ((DefaultProcessEventListenerConfig) app.config().process().processEventListeners()).register(listener);
+
+        Process<? extends Model> p = app.processes().processById("defaultPackage.TimerProcess");
+        // activate to schedule timers
+        p.activate();
+
+        boolean completed = listener.waitTillCompleted(5000);
+        assertThat(completed).isTrue();
+
+        Collection<?> instances = p.instances().values();
+        assertThat(instances).hasSize(1);
+
+        ProcessInstance<?> processInstance = (ProcessInstance<?>) instances.iterator().next();
+        assertThat(processInstance).isNotNull();
+
+        assertThat(processInstance.status()).isEqualTo(ProcessInstance.STATE_ACTIVE);
+
+        processInstance.abort();
+        assertThat(processInstance.status()).isEqualTo(ProcessInstance.STATE_ABORTED);
+
+        instances = p.instances().values();
+        assertThat(instances).hasSize(0);
+
+    }
+
+    @Test
+    public void testStartTimerEventTimeCycle() throws Exception {
+
+        Application app = generateCodeProcessesOnly("timer/StartTimerCycle.bpmn2");
+        assertThat(app).isNotNull();
+
+        NodeLeftCountDownProcessEventListener listener = new NodeLeftCountDownProcessEventListener("timer fired", 2);
+        ((DefaultProcessEventListenerConfig) app.config().process().processEventListeners()).register(listener);
+
+        Process<? extends Model> p = app.processes().processById("defaultPackage.TimerProcess");
+        // activate to schedule timers
+        p.activate();
+
+        boolean completed = listener.waitTillCompleted(5000);
+        assertThat(completed).isTrue();
+
+        Collection<?> instances = p.instances().values();
+        assertThat(instances).hasSize(2);
+
+        ProcessInstance<?> processInstance = (ProcessInstance<?>) instances.iterator().next();
+        assertThat(processInstance).isNotNull();
+
+        assertThat(processInstance.status()).isEqualTo(ProcessInstance.STATE_ACTIVE);
+        // deactivate to cancel timer, so there should be no more timers fired
+        p.deactivate();
+
+        // reset the listener to make sure nothing more is triggered
+        listener.reset(1);
+        completed = listener.waitTillCompleted(3000);
+        assertThat(completed).isFalse();
+        // same amount of instances should be active as before deactivation
+        instances = p.instances().values();
+        assertThat(instances).hasSize(2);
+        // clean up by aborting all instances
+        instances.forEach(i -> ((ProcessInstance<?>) i).abort());
+        instances = p.instances().values();
+        assertThat(instances).hasSize(0);
+
     }
 }

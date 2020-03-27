@@ -76,6 +76,7 @@ public class PropertyHandler extends BaseAbstractHandler implements Handler {
                 contextContainer.getDefaultContext(VariableScope.VARIABLE_SCOPE);
 			List variables = variableScope.getVariables();
 			Variable variable = new Variable();
+			variable.setId(id);
 			// if name is given use it as variable name instead of id
 			if (name != null && name.length() > 0) {
 			    variable.setName(name);

@@ -17,6 +17,11 @@
 package org.jbpm.workflow.core.node;
 
 import org.kie.api.definition.process.Connection;
+
+import java.util.Collections;
+import java.util.LinkedList;
+import java.util.List;
+
 import org.jbpm.workflow.core.DroolsAction;
 import org.jbpm.workflow.core.impl.ExtendedNodeImpl;
 
@@ -29,7 +34,9 @@ public class ActionNode extends ExtendedNodeImpl {
 
 	private static final long serialVersionUID = 510l;
 	
-	private DroolsAction action;
+    private DroolsAction action;
+    private List<DataAssociation> inMapping = new LinkedList<DataAssociation>();
+    private List<DataAssociation> outMapping = new LinkedList<DataAssociation>();
 
 	public DroolsAction getAction() {
 		return action;
@@ -66,5 +73,21 @@ public class ActionNode extends ExtendedNodeImpl {
                 + "] cannot have more than one outgoing connection!");
         }
     }
-    
+
+    public void addInAssociation(DataAssociation dataAssociation) {
+        inMapping.add(dataAssociation);
+    }
+
+    public List<DataAssociation> getInAssociations() {
+        return Collections.unmodifiableList(inMapping);
+    }
+
+    public void addOutAssociation(DataAssociation dataAssociation) {
+        outMapping.add(dataAssociation);
+    }
+
+    public List<DataAssociation> getOutAssociations() {
+        return Collections.unmodifiableList(outMapping);
+    }
+
 }

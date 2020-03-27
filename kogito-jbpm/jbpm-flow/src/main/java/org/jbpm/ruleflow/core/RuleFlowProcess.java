@@ -145,21 +145,7 @@ public class RuleFlowProcess extends WorkflowProcessImpl {
         return null;
     }
 
-    public List<StartNode> getTimerStart() {
-        Node[] nodes = getNodes();
 
-        List<StartNode> timerStartNodes = new ArrayList<StartNode>();
-        for (int i = 0; i < nodes.length; i++) {
-            if (nodes[i] instanceof StartNode) {
-                // return start node that is not event based node
-                if (((StartNode) nodes[i]).getTimer() != null) {
-                    timerStartNodes.add((StartNode) nodes[i]);
-                }
-            }
-        }
-
-        return timerStartNodes;
-    }
 
     public List<Node> getAutoStartNodes() {
         if (!isDynamic()) {

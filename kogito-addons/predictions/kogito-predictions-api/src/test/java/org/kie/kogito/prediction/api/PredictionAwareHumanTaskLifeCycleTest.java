@@ -78,7 +78,7 @@ public class PredictionAwareHumanTaskLifeCycleTest {
     public void testUserTaskWithPredictionService() {
         predictNow.set(true);
         
-        BpmnProcess process = (BpmnProcess) BpmnProcess.from(new ClassPathResource("BPMN2-UserTask.bpmn2"), config).get(0);        
+        BpmnProcess process = (BpmnProcess) BpmnProcess.from(config, new ClassPathResource("BPMN2-UserTask.bpmn2")).get(0);        
         process.configure();
                                      
         ProcessInstance<BpmnVariables> processInstance = process.createInstance(BpmnVariables.create(Collections.singletonMap("test", "test")));
@@ -97,7 +97,7 @@ public class PredictionAwareHumanTaskLifeCycleTest {
     @Test
     public void testUserTaskWithoutPredictionService() {
 
-        BpmnProcess process = (BpmnProcess) BpmnProcess.from(new ClassPathResource("BPMN2-UserTask.bpmn2"), config).get(0);        
+        BpmnProcess process = (BpmnProcess) BpmnProcess.from(config, new ClassPathResource("BPMN2-UserTask.bpmn2")).get(0);        
         process.configure();
                                      
         ProcessInstance<BpmnVariables> processInstance = process.createInstance(BpmnVariables.create(Collections.singletonMap("test", "test")));

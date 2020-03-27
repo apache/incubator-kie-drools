@@ -44,6 +44,7 @@ import org.kie.api.runtime.process.ProcessInstance;
 import org.kie.api.runtime.process.WorkItem;
 import org.kie.api.runtime.process.WorkItemHandler;
 import org.kie.api.runtime.process.WorkItemManager;
+import org.kie.kogito.process.workitem.WorkItemExecutionError;
 
 public class ErrorEventTest extends JbpmBpmn2TestCase {
 
@@ -405,6 +406,17 @@ public class ErrorEventTest extends JbpmBpmn2TestCase {
     }
 
     @Test
+    public void testBoundaryErrorEventDefaultHandlerWithWorkItemExecutionError() throws Exception {
+        KieBase kbase = createKnowledgeBase("BPMN2-BoundaryErrorEventDefaultHandlerByErrorCode.bpmn2");
+        ksession = createKnowledgeSession(kbase);
+        WorkItemExecutionErrorWorkItemHandler handler = new WorkItemExecutionErrorWorkItemHandler();
+        ksession.getWorkItemManager().registerWorkItemHandler("Human Task", handler);
+
+        ProcessInstance processInstance = ksession.startProcess("com.sample.bpmn.hello");
+        assertEquals(ProcessInstance.STATE_COMPLETED, processInstance.getState());
+    }
+
+    @Test
     public void testBoundaryErrorEventDefaultHandlerWithErrorCodeWithoutStructureRef() throws Exception {
         KieBase kbase = createKnowledgeBase("BPMN2-BoundaryErrorEventDefaultHandlerWithErrorCodeWithoutStructureRef.bpmn2");
         ksession = createKnowledgeSession(kbase);
@@ -478,6 +490,18 @@ public class ErrorEventTest extends JbpmBpmn2TestCase {
 		@Override
 		public void abortWorkItem(WorkItem workItem, WorkItemManager manager) {
 		}
+
+    }
+
+    class WorkItemExecutionErrorWorkItemHandler implements WorkItemHandler {
+
+        @Override
+        public void executeWorkItem(WorkItem workItem, WorkItemManager manager) {
+            throw new WorkItemExecutionError("500");
+        }
+
+        @Override
+        public void abortWorkItem(WorkItem workItem, WorkItemManager manager) {}
 
     }
 }

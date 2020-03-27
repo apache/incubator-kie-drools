@@ -21,11 +21,13 @@ import java.util.Map.Entry;
 
 import org.jbpm.process.core.context.variable.Variable;
 import org.jbpm.process.core.context.variable.VariableScope;
+import org.jbpm.process.core.timer.Timer;
 import org.jbpm.ruleflow.core.factory.StartNodeFactory;
 import org.jbpm.workflow.core.node.StartNode;
 import org.kie.api.definition.process.Node;
 
 import com.github.javaparser.ast.expr.BooleanLiteralExpr;
+import com.github.javaparser.ast.expr.IntegerLiteralExpr;
 import com.github.javaparser.ast.expr.LongLiteralExpr;
 import com.github.javaparser.ast.expr.StringLiteralExpr;
 import com.github.javaparser.ast.stmt.BlockStmt;
@@ -50,7 +52,14 @@ public class StartNodeVisitor extends AbstractVisitor {
         
         addFactoryMethodWithArgs(body, "startNode" + node.getId(), "done");
         
-        if (startNode.getTriggers() != null && !startNode.getTriggers().isEmpty()) {
+        if (startNode.getTimer() != null) {
+            Timer timer = startNode.getTimer();
+            addFactoryMethodWithArgs(body, "startNode" + node.getId(), "timer", getOrNullExpr(timer.getDelay()),
+                                     getOrNullExpr(timer.getPeriod()),
+                                     getOrNullExpr(timer.getDate()),
+                                     new IntegerLiteralExpr(startNode.getTimer().getTimeType()));
+
+        } else if (startNode.getTriggers() != null && !startNode.getTriggers().isEmpty()) {
             Map<String, Object> nodeMetaData = startNode.getMetaData();
             metadata.getTriggers().add(new TriggerMetaData((String)nodeMetaData.get(TRIGGER_REF), 
                                                            (String)nodeMetaData.get(TRIGGER_TYPE), 

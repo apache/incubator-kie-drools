@@ -16,12 +16,14 @@
 
 package org.jbpm.bpmn2.xml;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
+import java.util.stream.Collectors;
 
 import org.jbpm.process.core.ParameterDefinition;
 import org.jbpm.process.core.Work;
@@ -168,14 +170,22 @@ public class TaskHandler extends AbstractNodeHandler {
     protected void readDataInputAssociation(org.w3c.dom.Node xmlNode, WorkItemNode workItemNode, Map<String, String> dataInputs) {
 		// sourceRef
 		org.w3c.dom.Node subNode = xmlNode.getFirstChild();
-		if ("sourceRef".equals(subNode.getNodeName())) {
-    		String source = subNode.getTextContent();    		
-    		// targetRef
-    		subNode = subNode.getNextSibling();
-    		String target = subNode.getTextContent();
-    		// transformation
-    		Transformation transformation = null;
-    		subNode = subNode.getNextSibling();
+		if ("sourceRef".equals(subNode.getNodeName())) {			    		
+            List<String> sources = new ArrayList<>();
+            sources.add(subNode.getTextContent());
+
+            subNode = subNode.getNextSibling();
+
+            while ("sourceRef".equals(subNode.getNodeName())) {
+                sources.add(subNode.getTextContent());
+                subNode = subNode.getNextSibling();
+            }
+
+            // targetRef    		
+            String target = subNode.getTextContent();
+            // transformation
+            Transformation transformation = null;
+            subNode = subNode.getNextSibling();
     		if (subNode != null && "transformation".equals(subNode.getNodeName())) {
     			String lang = subNode.getAttributes().getNamedItem("language").getNodeValue();
     			String expression = subNode.getTextContent();
@@ -192,15 +202,19 @@ public class TaskHandler extends AbstractNodeHandler {
     		// assignments    	
     		List<Assignment> assignments = new LinkedList<Assignment>();
     		while(subNode != null){
+                String expressionLang = ((Element) subNode).getAttribute("expressionLanguage");
+                if (expressionLang == null || expressionLang.trim().isEmpty()) {
+                    expressionLang = "XPath";
+                }
     			org.w3c.dom.Node ssubNode = subNode.getFirstChild();
     			String from = ssubNode.getTextContent();
     			String to = ssubNode.getNextSibling().getTextContent();
-    			assignments.add(new Assignment("XPath", from, to));
+    			assignments.add(new Assignment(expressionLang, from, to));
         		subNode = subNode.getNextSibling();
     		}
     		    		
     		workItemNode.addInAssociation(new DataAssociation(
-    				source,
+    				sources,
     				dataInputs.get(target), assignments, transformation));
 		} else {
 			// targetRef
@@ -235,14 +249,21 @@ public class TaskHandler extends AbstractNodeHandler {
     }
     
     protected void readDataOutputAssociation(org.w3c.dom.Node xmlNode, WorkItemNode workItemNode, Map<String, String> dataOutputs) {
-		// sourceRef
-		org.w3c.dom.Node subNode = xmlNode.getFirstChild();
-		String source = subNode.getTextContent();
-		// targetRef
-		subNode = subNode.getNextSibling();
-		String target = subNode.getTextContent();
-		// transformation
-		Transformation transformation = null;
+        // sourceRef
+        org.w3c.dom.Node subNode = xmlNode.getFirstChild();
+        List<String> sources = new ArrayList<>();
+        sources.add(subNode.getTextContent());
+
+        subNode = subNode.getNextSibling();
+
+        while ("sourceRef".equals(subNode.getNodeName())) {
+            sources.add(subNode.getTextContent());
+            subNode = subNode.getNextSibling();
+        }
+        // targetRef
+        String target = subNode.getTextContent();
+        // transformation
+        Transformation transformation = null;
 		subNode = subNode.getNextSibling();
 		if (subNode != null && "transformation".equals(subNode.getNodeName())) {
 			String lang = subNode.getAttributes().getNamedItem("language").getNodeValue();
@@ -251,20 +272,24 @@ public class TaskHandler extends AbstractNodeHandler {
 			if (transformer == null) {
 				throw new IllegalArgumentException("No transformer registered for language " + lang);
 			}    			
-			transformation = new Transformation(lang, expression, source);
+			transformation = new Transformation(lang, expression);
 //			transformation.setCompiledExpression(transformer.compile(expression));
 			subNode = subNode.getNextSibling();
 		}
 		// assignments  
 		List<Assignment> assignments = new LinkedList<Assignment>();
 		while(subNode != null){
+            String expressionLang = ((Element) subNode).getAttribute("expressionLanguage");
+            if (expressionLang == null || expressionLang.trim().isEmpty()) {
+                expressionLang = "XPath";
+            }
 			org.w3c.dom.Node ssubNode = subNode.getFirstChild();
 			String from = ssubNode.getTextContent();
 			String to = ssubNode.getNextSibling().getTextContent();
-			assignments.add(new Assignment("XPath", from, to));
+			assignments.add(new Assignment(expressionLang, from, to));
     		subNode = subNode.getNextSibling();
 		}
-		workItemNode.addOutAssociation(new DataAssociation(dataOutputs.get(source), target, assignments, transformation));
+		workItemNode.addOutAssociation(new DataAssociation(sources.stream().map(source -> dataOutputs.get(source)).collect(Collectors.toList()), target, assignments, transformation));
     }
 
     @Override

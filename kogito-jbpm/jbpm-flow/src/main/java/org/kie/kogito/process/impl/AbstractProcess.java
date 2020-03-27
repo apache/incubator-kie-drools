@@ -15,15 +15,26 @@
 
 package org.kie.kogito.process.impl;
 
+import java.util.ArrayList;
 import java.util.Collections;
+import java.util.List;
 
+import org.drools.core.time.TimeUtils;
+import org.jbpm.process.core.timer.DateTimeUtils;
+import org.jbpm.process.core.timer.Timer;
 import org.jbpm.process.instance.LightProcessRuntime;
 import org.jbpm.process.instance.LightProcessRuntimeContext;
 import org.jbpm.process.instance.LightProcessRuntimeServiceProvider;
 import org.jbpm.process.instance.ProcessRuntimeServiceProvider;
+import org.jbpm.workflow.core.impl.WorkflowProcessImpl;
+import org.jbpm.workflow.core.node.StartNode;
 import org.kie.api.runtime.process.EventListener;
 import org.kie.api.runtime.process.ProcessRuntime;
 import org.kie.kogito.Model;
+import org.kie.kogito.jobs.DurationExpirationTime;
+import org.kie.kogito.jobs.ExactExpirationTime;
+import org.kie.kogito.jobs.ExpirationTime;
+import org.kie.kogito.jobs.ProcessJobDescription;
 import org.kie.kogito.process.MutableProcessInstances;
 import org.kie.kogito.process.Process;
 import org.kie.kogito.process.ProcessConfig;
@@ -41,6 +52,10 @@ public abstract class AbstractProcess<T extends Model> implements Process<T> {
     protected final ProcessRuntimeServiceProvider services;
 
     protected CompletionEventListener completionEventListener = new CompletionEventListener();
+    
+    protected boolean activated;
+    protected List<String> startTimerInstances = new ArrayList<>();
+    protected ProcessRuntime processRuntime;
 
     protected AbstractProcess() {
         this(new LightProcessRuntimeServiceProvider());
@@ -86,7 +101,6 @@ public abstract class AbstractProcess<T extends Model> implements Process<T> {
         instances().values().forEach(pi -> pi.send(signal));
     }
     
-    @SuppressWarnings("unchecked")
     public Process<T> configure() {
 
         registerListeners();
@@ -102,6 +116,75 @@ public abstract class AbstractProcess<T extends Model> implements Process<T> {
 
     protected void registerListeners() {
         
+    }
+
+    @Override
+    public void activate() {
+
+        configure();
+        WorkflowProcessImpl p = (WorkflowProcessImpl) legacyProcess();
+        List<StartNode> startNodes = p.getTimerStart();
+        if (startNodes != null && !startNodes.isEmpty()) {
+            this.processRuntime = createLegacyProcessRuntime();
+            for (StartNode startNode : startNodes) {
+                if (startNode != null && startNode.getTimer() != null) {
+
+                    String timerId = processRuntime.getJobsService().scheduleProcessJob(ProcessJobDescription.of(configureTimerInstance(startNode.getTimer()), this));
+
+                    startTimerInstances.add(timerId);
+                }
+            }
+        }
+        this.activated = true;
+    }
+
+    @Override
+    public void deactivate() {
+
+        for (String startTimerId : startTimerInstances) {
+            this.processRuntime.getJobsService().cancelJob(startTimerId);
+        }
+        this.activated = false;
+    }
+
+    protected ExpirationTime configureTimerInstance(Timer timer) {
+        long duration = -1;
+        switch (timer.getTimeType()) {
+            case Timer.TIME_CYCLE:
+                // when using ISO date/time period is not set
+                long[] repeatValues = DateTimeUtils.parseRepeatableDateTime(timer.getDelay());
+                if (repeatValues.length == 3) {
+                    int parsedReapedCount = (int) repeatValues[0];
+                    if (parsedReapedCount > -1) {
+                        parsedReapedCount = Integer.MAX_VALUE;
+                    }
+                    return DurationExpirationTime.repeat(repeatValues[1], repeatValues[2]);
+                } else {
+                    long delay = repeatValues[0];
+                    long period = -1;
+                    try {
+                        period = TimeUtils.parseTimeString(timer.getPeriod());
+
+                    } catch (RuntimeException e) {
+                        period = repeatValues[0];
+                    }
+
+                    return DurationExpirationTime.repeat(delay, period);
+                }
+
+            case Timer.TIME_DURATION:
+
+                duration = DateTimeUtils.parseDuration(timer.getDelay());
+                return DurationExpirationTime.repeat(duration);
+
+            case Timer.TIME_DATE:
+
+                return ExactExpirationTime.of(timer.getDate());
+
+            default:
+                throw new UnsupportedOperationException("Not supported timer definition");
+        }
+
     }
 
     public abstract org.kie.api.definition.process.Process legacyProcess();

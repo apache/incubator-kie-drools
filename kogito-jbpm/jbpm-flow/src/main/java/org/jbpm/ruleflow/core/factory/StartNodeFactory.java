@@ -17,6 +17,7 @@
 package org.jbpm.ruleflow.core.factory;
 
 import org.jbpm.process.core.event.EventTypeFilter;
+import org.jbpm.process.core.timer.Timer;
 import org.jbpm.ruleflow.core.RuleFlowNodeContainerFactory;
 import org.jbpm.workflow.core.Node;
 import org.jbpm.workflow.core.NodeContainer;
@@ -44,6 +45,7 @@ public class StartNodeFactory extends NodeFactory {
         getNode().setName(name);
         return this;
     } 
+    
     public StartNodeFactory interrupting(boolean interrupting) {
         getStartNode().setInterrupting(interrupting);
         return this;
@@ -61,6 +63,17 @@ public class StartNodeFactory extends NodeFactory {
 
         getStartNode().addTrigger(trigger);
         
+        return this;
+    }
+
+    public StartNodeFactory timer(String delay, String period, String date, int timeType) {
+        Timer timer = new Timer();
+        timer.setDate(date);
+        timer.setDelay(delay);
+        timer.setPeriod(period);
+        timer.setTimeType(timeType);
+
+        getStartNode().setTimer(timer);
         return this;
     }
 }

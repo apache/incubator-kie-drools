@@ -16,9 +16,13 @@
 
 package org.jbpm.bpmn2.xml;
 
+import static org.jbpm.workflow.core.node.RuleSetNode.DMN_LANG;
+
+import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
 
 import org.drools.compiler.compiler.xml.XmlDumper;
 import org.drools.core.xml.ExtensibleXmlParser;
@@ -34,8 +38,6 @@ import org.w3c.dom.NodeList;
 import org.w3c.dom.Text;
 import org.xml.sax.Attributes;
 import org.xml.sax.SAXException;
-
-import static org.jbpm.workflow.core.node.RuleSetNode.DMN_LANG;
 
 public class BusinessRuleTaskHandler extends AbstractNodeHandler {
 	
@@ -114,12 +116,19 @@ public class BusinessRuleTaskHandler extends AbstractNodeHandler {
         // sourceRef
         org.w3c.dom.Node subNode = xmlNode.getFirstChild();
         if ("sourceRef".equals(subNode.getNodeName())) {
-            String source = subNode.getTextContent();
-            // targetRef
+            List<String> sources = new ArrayList<>();
+            sources.add(subNode.getTextContent());
+
             subNode = subNode.getNextSibling();
+
+            while ("sourceRef".equals(subNode.getNodeName())) {
+                sources.add(subNode.getTextContent());
+                subNode = subNode.getNextSibling();
+            }
+            // targetRef
             String target = subNode.getTextContent();
             // transformation
-    		Transformation transformation = null;
+            Transformation transformation = null;
     		subNode = subNode.getNextSibling();
     		if (subNode != null && "transformation".equals(subNode.getNodeName())) {
     			String lang = subNode.getAttributes().getNamedItem("language").getNodeValue();
@@ -136,14 +145,18 @@ public class BusinessRuleTaskHandler extends AbstractNodeHandler {
     		// assignments  
             List<Assignment> assignments = new LinkedList<Assignment>();
             while(subNode != null){
+            	String expressionLang = ((Element)subNode).getAttribute("expressionLanguage");
+            	if (expressionLang == null || expressionLang.trim().isEmpty()) {
+            		expressionLang = "XPath";
+            	}
                 org.w3c.dom.Node ssubNode = subNode.getFirstChild();
                 String from = ssubNode.getTextContent();
                 String to = ssubNode.getNextSibling().getTextContent();
-                assignments.add(new Assignment("XPath", from, to));
+                assignments.add(new Assignment(expressionLang, from, to));
                 subNode = subNode.getNextSibling();
             }
             ruleSetNode.addInAssociation(new DataAssociation(
-                    source,
+                    sources,
                     dataInputs.get(target), assignments, transformation));
         } else {
             // targetRef
@@ -180,12 +193,19 @@ public class BusinessRuleTaskHandler extends AbstractNodeHandler {
     protected void readDataOutputAssociation(org.w3c.dom.Node xmlNode, RuleSetNode ruleSetNode, Map<String, String> dataOutputs) {
         // sourceRef
         org.w3c.dom.Node subNode = xmlNode.getFirstChild();
-        String source = subNode.getTextContent();
-        // targetRef
+        List<String> sources = new ArrayList<>();
+        sources.add(subNode.getTextContent());
+
         subNode = subNode.getNextSibling();
+
+        while ("sourceRef".equals(subNode.getNodeName())) {
+            sources.add(subNode.getTextContent());
+            subNode = subNode.getNextSibling();
+        }
+        // targetRef
         String target = subNode.getTextContent();
         // transformation
- 		Transformation transformation = null;
+        Transformation transformation = null;
  		subNode = subNode.getNextSibling();
  		if (subNode != null && "transformation".equals(subNode.getNodeName())) {
  			String lang = subNode.getAttributes().getNamedItem("language").getNodeValue();
@@ -194,19 +214,23 @@ public class BusinessRuleTaskHandler extends AbstractNodeHandler {
  			if (transformer == null) {
  				throw new IllegalArgumentException("No transformer registered for language " + lang);
  			}    			
- 			transformation = new Transformation(lang, expression, source); 		
+ 			transformation = new Transformation(lang, expression); 		
  			subNode = subNode.getNextSibling();
  		}
  		// assignments 
         List<Assignment> assignments = new LinkedList<Assignment>();
         while(subNode != null){
+        	String expressionLang = ((Element)subNode).getAttribute("expressionLanguage");
+        	if (expressionLang == null || expressionLang.trim().isEmpty()) {
+        		expressionLang = "XPath";
+        	}
             org.w3c.dom.Node ssubNode = subNode.getFirstChild();
             String from = ssubNode.getTextContent();
             String to = ssubNode.getNextSibling().getTextContent();
-            assignments.add(new Assignment("XPath", from, to));
+            assignments.add(new Assignment(expressionLang, from, to));
             subNode = subNode.getNextSibling();
         }
-        ruleSetNode.addOutAssociation(new DataAssociation(dataOutputs.get(source), target, assignments, transformation));
+        ruleSetNode.addOutAssociation(new DataAssociation(sources.stream().map(source -> dataOutputs.get(source)).collect(Collectors.toList()), target, assignments, transformation));
     }
     
     protected void writeIO(RuleSetNode ruleSetNode, StringBuilder xmlDump) {

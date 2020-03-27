@@ -438,7 +438,7 @@ public class RuleSetNodeInstance extends StateBasedNodeInstance implements Event
                 }
             }
             if (parameterValue != null) {
-                parameters.put(association.getTarget(), parameterValue);
+                parameters.put(sourceParam, parameterValue);
             }
         }
 

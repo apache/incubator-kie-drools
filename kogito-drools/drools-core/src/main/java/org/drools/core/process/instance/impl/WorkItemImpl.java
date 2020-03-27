@@ -23,6 +23,8 @@ import java.util.Iterator;
 import java.util.Map;
 
 import org.drools.core.process.instance.WorkItem;
+import org.kie.api.runtime.process.NodeInstance;
+import org.kie.api.runtime.process.ProcessInstance;
 
 public class WorkItemImpl implements WorkItem, Serializable {
 
@@ -43,6 +45,9 @@ public class WorkItemImpl implements WorkItem, Serializable {
 
     private Date startDate;
     private Date completeDate;
+
+    private transient ProcessInstance processInstance;
+    private transient NodeInstance nodeInstance;
 
     public void setId(String id) {
         this.id = id;
@@ -191,5 +196,25 @@ public class WorkItemImpl implements WorkItem, Serializable {
         }
         b.append("}]");
         return b.toString();
+    }
+
+    @Override
+    public NodeInstance getNodeInstance() {
+        return this.nodeInstance;
+    }
+
+    @Override
+    public ProcessInstance getProcessInstance() {
+        return this.processInstance;
+    }
+
+    @Override
+    public void setNodeInsstance(NodeInstance nodeInstance) {
+        this.nodeInstance = nodeInstance;
+    }
+
+    @Override
+    public void setProcessInstance(ProcessInstance processInstance) {
+        this.processInstance = processInstance;
     }
 }

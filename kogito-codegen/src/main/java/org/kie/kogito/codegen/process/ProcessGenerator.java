@@ -440,7 +440,7 @@ public class ProcessGenerator {
         
         if (useInjection()) {
                         
-            MethodDeclaration initMethod = annotator.withInitMethod(new MethodCallExpr(new ThisExpr(), "configure"));
+            MethodDeclaration initMethod = annotator.withInitMethod(new MethodCallExpr(new ThisExpr(), "activate"));
             
             cls.addMember(initMethod);
         }

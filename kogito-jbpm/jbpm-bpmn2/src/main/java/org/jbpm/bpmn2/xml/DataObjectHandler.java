@@ -77,6 +77,7 @@ public class DataObjectHandler extends BaseAbstractHandler implements Handler {
 			List variables = variableScope.getVariables();
 			Variable variable = new Variable();
 			variable.setMetaData("DataObject", "true");
+			variable.setId(id);
 			variable.setName(id);
             variable.setMetaData(id, variable.getName());
 			// retrieve type from item definition

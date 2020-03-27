@@ -194,6 +194,7 @@ public class ForEachNode extends CompositeContextNode {
         	variableScope.setVariables(variables);
         }
         Variable variable = new Variable();
+        variable.setId(variableName);
         variable.setName(variableName);
         variable.setType(type);
         variables.add(variable);
@@ -208,11 +209,13 @@ public class ForEachNode extends CompositeContextNode {
             variableScope.setVariables(variables);
         }
         Variable variable = new Variable();
+        variable.setId(variableName);
         variable.setName(variableName);
         variable.setType(type);
         variables.add(variable);
         
         Variable tmpvariable = new Variable();
+        variable.setId("foreach_output");
         tmpvariable.setName("foreach_output");
         tmpvariable.setType(type);
         variables.add(tmpvariable);

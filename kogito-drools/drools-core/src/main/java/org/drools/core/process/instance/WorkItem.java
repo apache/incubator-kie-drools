@@ -19,6 +19,9 @@ package org.drools.core.process.instance;
 import java.util.Date;
 import java.util.Map;
 
+import org.kie.api.runtime.process.NodeInstance;
+import org.kie.api.runtime.process.ProcessInstance;
+
 public interface WorkItem extends org.kie.api.runtime.process.WorkItem {
 
     void setName(String name);
@@ -52,4 +55,8 @@ public interface WorkItem extends org.kie.api.runtime.process.WorkItem {
     void setStartDate(Date date);
     
     void setCompleteDate(Date date);
+
+    void setNodeInsstance(NodeInstance nodeInstance);
+
+    void setProcessInstance(ProcessInstance processInstance);
 }

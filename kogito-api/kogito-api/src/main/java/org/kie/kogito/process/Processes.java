@@ -24,4 +24,12 @@ public interface Processes {
     Process<? extends Model> processById(String processId);
     
     Collection<String> processIds();
+
+    default void activate() {
+
+    }
+
+    default void deactivate() {
+
+    }
 }

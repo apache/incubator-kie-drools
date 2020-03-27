@@ -26,7 +26,6 @@ import org.jbpm.process.core.Work;
 import org.jbpm.process.core.context.variable.Mappable;
 import org.jbpm.process.core.context.variable.Variable;
 import org.jbpm.process.core.context.variable.VariableScope;
-import org.jbpm.workflow.core.node.WorkItemNode;
 import org.kie.api.definition.process.Node;
 
 import com.github.javaparser.ast.expr.AssignExpr;
@@ -37,6 +36,7 @@ import com.github.javaparser.ast.expr.IntegerLiteralExpr;
 import com.github.javaparser.ast.expr.LongLiteralExpr;
 import com.github.javaparser.ast.expr.MethodCallExpr;
 import com.github.javaparser.ast.expr.NameExpr;
+import com.github.javaparser.ast.expr.NullLiteralExpr;
 import com.github.javaparser.ast.expr.StringLiteralExpr;
 import com.github.javaparser.ast.expr.VariableDeclarationExpr;
 import com.github.javaparser.ast.stmt.BlockStmt;
@@ -142,7 +142,13 @@ public abstract class AbstractVisitor {
         return value;
     }
 
+    protected Expression getOrNullExpr(String value) {
+        if (value == null) {
+            return new NullLiteralExpr();
+        }
 
+        return new StringLiteralExpr(value);
+    }
 
     protected void addWorkItemParameters(Work work, BlockStmt body, String variableName) {
 

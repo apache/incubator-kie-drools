@@ -80,6 +80,8 @@ public class XmlBPMNProcessDumper implements XmlProcessDumper {
     public static final String XPATH_LANGUAGE = "http://www.w3.org/1999/XPath";
     public static final String JAVASCRIPT_LANGUAGE = "http://www.javascript.com/javascript";
     public static final String FEEL_LANGUAGE = "http://www.omg.org/spec/FEEL/20140401";
+    public static final String DMN_FEEL_LANGUAGE = "http://www.omg.org/spec/DMN/20180521/FEEL/";
+    public static final String FEEL_LANGUAGE_SHORT = "application/feel";
 
     public static final int NO_META_DATA = 0;
     public static final int META_DATA_AS_NODE_PROPERTY = 1;

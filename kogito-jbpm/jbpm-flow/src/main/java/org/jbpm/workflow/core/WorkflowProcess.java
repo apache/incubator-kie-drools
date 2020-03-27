@@ -21,6 +21,7 @@ import java.util.Map;
 import java.util.Set;
 
 import org.jbpm.process.core.Process;
+import org.kie.api.definition.process.Node;
 
 /**
  * Represents a RuleFlow process. 
@@ -93,6 +94,8 @@ public interface WorkflowProcess extends org.kie.api.definition.process.Workflow
     
     boolean isDynamic();
 
-    Integer getProcessType();       
+    Integer getProcessType();
+    
+    List<Node> getNodesRecursively();
     
 }

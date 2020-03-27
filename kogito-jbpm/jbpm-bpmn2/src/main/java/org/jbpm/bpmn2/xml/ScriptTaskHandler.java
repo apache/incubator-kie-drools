@@ -16,16 +16,30 @@
 
 package org.jbpm.bpmn2.xml;
 
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.LinkedList;
+import java.util.List;
+import java.util.Map;
+import java.util.stream.Collectors;
+
 import org.drools.compiler.rule.builder.dialect.java.JavaDialect;
 import org.drools.core.xml.ExtensibleXmlParser;
+import org.jbpm.process.core.impl.DataTransformerRegistry;
 import org.jbpm.workflow.core.Node;
 import org.jbpm.workflow.core.impl.DroolsConsequenceAction;
 import org.jbpm.workflow.core.node.ActionNode;
+import org.jbpm.workflow.core.node.Assignment;
+import org.jbpm.workflow.core.node.DataAssociation;
+import org.jbpm.workflow.core.node.Transformation;
+import org.kie.api.runtime.process.DataTransformer;
 import org.w3c.dom.Element;
 import org.xml.sax.Attributes;
 import org.xml.sax.SAXException;
 
 public class ScriptTaskHandler extends AbstractNodeHandler {
+	
+	private DataTransformerRegistry transformerRegistry = DataTransformerRegistry.get();
     
     protected Node createNode(Attributes attrs) {
         ActionNode result = new ActionNode();
@@ -53,15 +67,33 @@ public class ScriptTaskHandler extends AbstractNodeHandler {
 			action.setDialect(JavaDialect.ID);
 		} else if (XmlBPMNProcessDumper.JAVASCRIPT_LANGUAGE.equals(language)) {
 		    action.setDialect("JavaScript");
+		} else if (XmlBPMNProcessDumper.FEEL_LANGUAGE.equals(language) || XmlBPMNProcessDumper.FEEL_LANGUAGE_SHORT.equals(language)) {
+		    action.setDialect("FEEL");
 		}
 		action.setConsequence("");
+	    
+        dataInputs.clear();
+        dataOutputs.clear();
+        
         org.w3c.dom.Node xmlNode = element.getFirstChild();
         while (xmlNode != null) {
-        	if (xmlNode instanceof Element && "script".equals(xmlNode.getNodeName())) {
+        	
+        	String nodeName = xmlNode.getNodeName();
+        	if (xmlNode instanceof Element && "script".equals(nodeName)) {
         		action.setConsequence(xmlNode.getTextContent());
-        	}
-        	xmlNode = xmlNode.getNextSibling();
+        	} else if ("ioSpecification".equals(nodeName)) {
+                readIoSpecification(xmlNode, dataInputs, dataOutputs, dataInputTypes, dataOutputTypes);
+            } else if ("dataInputAssociation".equals(nodeName)) {
+                readDataInputAssociation(xmlNode, actionNode, dataInputs);
+            } else if ("dataOutputAssociation".equals(nodeName)) {
+                readDataOutputAssociation(xmlNode, actionNode, dataOutputs);
+            }
+            xmlNode = xmlNode.getNextSibling();
         }
+    
+
+        actionNode.setMetaData("DataInputs", new HashMap<String, String>(dataInputs));
+        actionNode.setMetaData("DataOutputs", new HashMap<String, String>(dataOutputs));
         
         String compensation = element.getAttribute("isForCompensation");
         if( compensation != null ) {
@@ -75,5 +107,97 @@ public class ScriptTaskHandler extends AbstractNodeHandler {
 	public void writeNode(Node node, StringBuilder xmlDump, int metaDataType) {
 	    throw new IllegalArgumentException("Writing out should be handled by action node handler");
 	}
+
+    protected void readDataInputAssociation(org.w3c.dom.Node xmlNode, ActionNode actionNode, Map<String, String> dataInputs) {
+        // sourceRef
+        org.w3c.dom.Node subNode = xmlNode.getFirstChild();
+        if ("sourceRef".equals(subNode.getNodeName())) {
+            List<String> sources = new ArrayList<>();
+            sources.add(subNode.getTextContent());
+
+            subNode = subNode.getNextSibling();
+
+            while ("sourceRef".equals(subNode.getNodeName())) {
+                sources.add(subNode.getTextContent());
+                subNode = subNode.getNextSibling();
+            }
+            // targetRef
+            String target = subNode.getTextContent();
+            // transformation
+            Transformation transformation = null;
+            subNode = subNode.getNextSibling();
+            if (subNode != null && "transformation".equals(subNode.getNodeName())) {
+                String lang = subNode.getAttributes().getNamedItem("language").getNodeValue();
+                String expression = subNode.getTextContent();
+
+                DataTransformer transformer = transformerRegistry.find(lang);
+                if (transformer == null) {
+                    throw new IllegalArgumentException("No transformer registered for language " + lang);
+                }
+                transformation = new Transformation(lang, expression);
+
+                subNode = subNode.getNextSibling();
+            }
+            // assignments  
+            List<Assignment> assignments = new LinkedList<Assignment>();
+            while (subNode != null) {
+                String expressionLang = ((Element) subNode).getAttribute("expressionLanguage");
+                if (expressionLang == null || expressionLang.trim().isEmpty()) {
+                    expressionLang = "XPath";
+                }
+                org.w3c.dom.Node ssubNode = subNode.getFirstChild();
+                String from = ssubNode.getTextContent();
+                String to = ssubNode.getNextSibling().getTextContent();
+                assignments.add(new Assignment(expressionLang, from, to));
+                subNode = subNode.getNextSibling();
+            }
+            actionNode.addInAssociation(new DataAssociation(
+                                                            sources,
+                                                            dataInputs.get(target), assignments, transformation));
+        }
+    }
+
+    protected void readDataOutputAssociation(org.w3c.dom.Node xmlNode, ActionNode actionNode, Map<String, String> dataOutputs) {
+        // sourceRef
+        org.w3c.dom.Node subNode = xmlNode.getFirstChild();
+        List<String> sources = new ArrayList<>();
+        sources.add(subNode.getTextContent());
+
+        subNode = subNode.getNextSibling();
+
+        while ("sourceRef".equals(subNode.getNodeName())) {
+            sources.add(subNode.getTextContent());
+            subNode = subNode.getNextSibling();
+        }
+        // targetRef
+        String target = subNode.getTextContent();
+        // transformation
+        Transformation transformation = null;
+        subNode = subNode.getNextSibling();
+        if (subNode != null && "transformation".equals(subNode.getNodeName())) {
+            String lang = subNode.getAttributes().getNamedItem("language").getNodeValue();
+            String expression = subNode.getTextContent();
+            DataTransformer transformer = transformerRegistry.find(lang);
+            if (transformer == null) {
+                throw new IllegalArgumentException("No transformer registered for language " + lang);
+            }
+            transformation = new Transformation(lang, expression);
+            subNode = subNode.getNextSibling();
+        }
+        // assignments 
+        List<Assignment> assignments = new LinkedList<Assignment>();
+        while (subNode != null) {
+            String expressionLang = ((Element) subNode).getAttribute("expressionLanguage");
+            if (expressionLang == null || expressionLang.trim().isEmpty()) {
+                expressionLang = "XPath";
+            }
+            org.w3c.dom.Node ssubNode = subNode.getFirstChild();
+            String from = ssubNode.getTextContent();
+            String to = ssubNode.getNextSibling().getTextContent();
+            assignments.add(new Assignment(expressionLang, from, to));
+            subNode = subNode.getNextSibling();
+        }
+        actionNode.addOutAssociation(new DataAssociation(sources.stream().map(source -> dataOutputs.get(source)).collect(Collectors.toList()), target, assignments, transformation));
+    }
 
 }

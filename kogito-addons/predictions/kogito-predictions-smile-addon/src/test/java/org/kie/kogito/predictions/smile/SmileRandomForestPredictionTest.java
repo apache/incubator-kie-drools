@@ -61,7 +61,7 @@ public class SmileRandomForestPredictionTest {
     public void testUserTaskWithPredictionService() {
         
         
-        BpmnProcess process = (BpmnProcess) BpmnProcess.from(new ClassPathResource("BPMN2-UserTask.bpmn2"), config).get(0);        
+        BpmnProcess process = (BpmnProcess) BpmnProcess.from(config, new ClassPathResource("BPMN2-UserTask.bpmn2")).get(0);        
         process.configure();
                                      
         ProcessInstance<BpmnVariables> processInstance = process.createInstance(BpmnVariables.create(Collections.singletonMap("test", "test")));

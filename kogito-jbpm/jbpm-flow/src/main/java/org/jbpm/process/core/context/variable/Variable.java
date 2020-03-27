@@ -46,6 +46,7 @@ public class Variable implements TypeObject, ValueObject, Serializable {
     public static final String BUSINESS_RELEVANT = "business-relevant";
     public static final String TRACKED = "tracked";
 
+    private String id;
     private String name;
     private DataType type;
     private Object value;
@@ -65,7 +66,15 @@ public class Variable implements TypeObject, ValueObject, Serializable {
         this.name = name;
     }
 
-    public DataType getType() {
+    public String getId() {
+        return id;
+    }
+
+    public void setId(String id) {
+        this.id = id;
+    }
+
+	public DataType getType() {
         return this.type;
     }
 

@@ -141,6 +141,22 @@ public interface WorkItem {
     Date getCompleteDate(); 
     
     /**
+     * The node instance that is associated with this
+     * work item
+     *
+     * @return the related node instance
+     */
+    NodeInstance getNodeInstance();
+    
+    /**
+     * The process instance that requested the execution of this
+     * work item
+     *
+     * @return the related process instance
+     */
+    ProcessInstance getProcessInstance();
+    
+    /**
      * Enforces given policies on this work item. It must false in case of any policy 
      * violations. 
      * @param policies optional policies to be enforced

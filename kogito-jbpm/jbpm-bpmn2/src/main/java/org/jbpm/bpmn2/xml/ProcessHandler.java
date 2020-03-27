@@ -48,6 +48,7 @@ import org.jbpm.process.core.context.swimlane.Swimlane;
 import org.jbpm.process.core.event.EventFilter;
 import org.jbpm.process.core.event.EventTypeFilter;
 import org.jbpm.process.core.timer.Timer;
+import org.jbpm.process.instance.impl.Action;
 import org.jbpm.process.instance.impl.CancelNodeInstanceAction;
 import org.jbpm.ruleflow.core.RuleFlowProcess;
 import org.jbpm.ruleflow.core.validation.RuleFlowProcessValidator;
@@ -82,6 +83,7 @@ import org.jbpm.workflow.core.node.WorkItemNode;
 import org.kie.api.definition.process.Node;
 import org.kie.api.definition.process.NodeContainer;
 import org.kie.api.definition.process.WorkflowProcess;
+import org.kie.api.runtime.process.ProcessContext;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.xml.sax.Attributes;
@@ -441,6 +443,14 @@ public class ProcessHandler extends BaseAbstractHandler implements Handler {
 
         DroolsConsequenceAction action = new DroolsConsequenceAction("java",                   
                     PROCESS_INSTANCE_SIGNAL_EVENT + "Error-" + attachedTo + "-" + errorCode + "\", kcontext.getVariable(\"" + variable +"\"));");
+        // register directly the action as metadata to do not require compilation
+        action.setMetaData("Action", new Action() {
+            
+            @Override
+            public void execute(ProcessContext kcontext) throws Exception {        
+                kcontext.getProcessInstance().signalEvent("Error-" + attachedTo + "-" + errorCode, kcontext.getVariable(" + variable +"));
+            }
+        });
         
         exceptionHandler.setAction(action);
         exceptionHandler.setFaultVariable(variable);
@@ -469,8 +479,18 @@ public class ProcessHandler extends BaseAbstractHandler implements Handler {
         if (timeDuration != null) {
             timer.setDelay(timeDuration);
             timer.setTimeType(Timer.TIME_DURATION);
-            compositeNode.addTimer(timer, new DroolsConsequenceAction("java",
-                PROCESS_INSTANCE_SIGNAL_EVENT + "Timer-" + attachedTo + "-" + timeDuration + "-" + node.getId() +"\", kcontext.getNodeInstance().getId());"));
+            DroolsConsequenceAction consequenceAction = new DroolsConsequenceAction("java",
+                    PROCESS_INSTANCE_SIGNAL_EVENT + "Timer-" + attachedTo + "-" + timeDuration + "-" + node.getId() +"\", kcontext.getNodeInstance().getId());");
+            compositeNode.addTimer(timer, consequenceAction);
+            
+            // register directly the action as metadata to do not require compilation
+            consequenceAction.setMetaData("Action", new Action() {
+                
+                @Override
+                public void execute(ProcessContext kcontext) throws Exception {        
+                    kcontext.getProcessInstance().signalEvent("Timer-" + attachedTo + "-" + timeDuration + "-" + node.getId(), kcontext.getNodeInstance().getId());
+                }
+            });
         } else if (timeCycle != null) {
             int index = timeCycle.indexOf("###");
             if (index != -1) {
@@ -480,13 +500,36 @@ public class ProcessHandler extends BaseAbstractHandler implements Handler {
             }
             timer.setDelay(timeCycle);
             timer.setTimeType(Timer.TIME_CYCLE);
-            compositeNode.addTimer(timer, new DroolsConsequenceAction("java",
-                PROCESS_INSTANCE_SIGNAL_EVENT + "Timer-" + attachedTo + "-" + timeCycle + (timer.getPeriod() == null ? "" : "###" + timer.getPeriod()) + "-" + node.getId() + "\", kcontext.getNodeInstance().getId());"));
+            
+            String finalTimeCycle = timeCycle;
+            
+            DroolsConsequenceAction consequenceAction = new DroolsConsequenceAction("java",
+            		PROCESS_INSTANCE_SIGNAL_EVENT + "Timer-" + attachedTo + "-" + finalTimeCycle + (timer.getPeriod() == null ? "" : "###" + timer.getPeriod()) + "-" + node.getId() + "\", kcontext.getNodeInstance().getId());");
+            compositeNode.addTimer(timer, consequenceAction);
+            
+            // register directly the action as metadata to do not require compilation
+            consequenceAction.setMetaData("Action", new Action() {
+                
+                @Override
+                public void execute(ProcessContext kcontext) throws Exception {        
+                    kcontext.getProcessInstance().signalEvent("Timer-" + attachedTo + "-" + finalTimeCycle + (timer.getPeriod() == null ? "" : "###" + timer.getPeriod()) + "-" + node.getId(), kcontext.getNodeInstance().getId());
+                }
+            });
         } else if (timeDate != null) {
             timer.setDate(timeDate);
-            timer.setTimeType(Timer.TIME_DATE);
-            compositeNode.addTimer(timer, new DroolsConsequenceAction("java", 
-                PROCESS_INSTANCE_SIGNAL_EVENT + "Timer-" + attachedTo + "-" + timeDate + "-" + node.getId() + "\", kcontext.getNodeInstance().getId());"));
+            timer.setTimeType(Timer.TIME_DATE);                        
+            DroolsConsequenceAction consequenceAction = new DroolsConsequenceAction("java",
+                    PROCESS_INSTANCE_SIGNAL_EVENT + "Timer-" + attachedTo + "-" + timeDate + "-" + node.getId() +"\", kcontext.getNodeInstance().getId());");
+            compositeNode.addTimer(timer, consequenceAction);
+            
+            // register directly the action as metadata to do not require compilation
+            consequenceAction.setMetaData("Action", new Action() {
+                
+                @Override
+                public void execute(ProcessContext kcontext) throws Exception {        
+                    kcontext.getProcessInstance().signalEvent("Timer-" + attachedTo + "-" + timeDate + "-" + node.getId(), kcontext.getNodeInstance().getId());
+                }
+            });
         }
         
         if (cancelActivity) {
