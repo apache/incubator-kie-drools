@@ -26,6 +26,11 @@ Quick Links
 
 **Drools:** https://www.drools.org/
 
+Requirements
+------------
+
+- [Maven](https://maven.apache.org/) 3.6.2 or later
+- [Java](https://openjdk.java.net/install/) 11 or later (devel package)
 
 Getting Started
 ---------------
