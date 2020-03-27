@@ -622,7 +622,6 @@ export type GetProcessInstancesQueryVariables = {
   state?: Maybe<Array<ProcessInstanceState>>;
   offset?: Maybe<Scalars['Int']>;
   limit?: Maybe<Scalars['Int']>;
-  businessKeys?: Maybe<Array<ProcessInstanceArgument>>;
 };
 
 export type GetProcessInstancesQuery = { __typename?: 'Query' } & {
@@ -644,13 +643,53 @@ export type GetProcessInstancesQuery = { __typename?: 'Query' } & {
           | 'businessKey'
           | 'serviceUrl'
         > & {
-          error: Maybe<
-            { __typename?: 'ProcessInstanceError' } & Pick<
-              ProcessInstanceError,
-              'nodeDefinitionId' | 'message'
-            >
-          >;
-        }
+            error: Maybe<
+              { __typename?: 'ProcessInstanceError' } & Pick<
+                ProcessInstanceError,
+                'nodeDefinitionId' | 'message'
+              >
+            >;
+          }
+      >
+    >
+  >;
+};
+
+export type GetProcessInstancesWithBusinessKeyQueryVariables = {
+  state?: Maybe<Array<ProcessInstanceState>>;
+  offset?: Maybe<Scalars['Int']>;
+  limit?: Maybe<Scalars['Int']>;
+  businessKeys?: Maybe<Array<ProcessInstanceArgument>>;
+};
+
+export type GetProcessInstancesWithBusinessKeyQuery = {
+  __typename?: 'Query';
+} & {
+  ProcessInstances: Maybe<
+    Array<
+      Maybe<
+        { __typename?: 'ProcessInstance' } & Pick<
+          ProcessInstance,
+          | 'id'
+          | 'processId'
+          | 'processName'
+          | 'parentProcessInstanceId'
+          | 'rootProcessInstanceId'
+          | 'roles'
+          | 'state'
+          | 'start'
+          | 'lastUpdate'
+          | 'addons'
+          | 'businessKey'
+          | 'serviceUrl'
+        > & {
+            error: Maybe<
+              { __typename?: 'ProcessInstanceError' } & Pick<
+                ProcessInstanceError,
+                'nodeDefinitionId' | 'message'
+              >
+            >;
+          }
       >
     >
   >;
@@ -679,13 +718,13 @@ export type GetChildInstancesQuery = { __typename?: 'Query' } & {
           | 'addons'
           | 'businessKey'
         > & {
-          error: Maybe<
-            { __typename?: 'ProcessInstanceError' } & Pick<
-              ProcessInstanceError,
-              'nodeDefinitionId' | 'message'
-            >
-          >;
-        }
+            error: Maybe<
+              { __typename?: 'ProcessInstanceError' } & Pick<
+                ProcessInstanceError,
+                'nodeDefinitionId' | 'message'
+              >
+            >;
+          }
       >
     >
   >;
@@ -714,27 +753,27 @@ export type GetProcessInstanceByIdQuery = { __typename?: 'Query' } & {
           | 'end'
           | 'endpoint'
         > & {
-          parentProcessInstance: Maybe<
-            { __typename?: 'ProcessInstance' } & Pick<
-              ProcessInstance,
-              'id' | 'processName' | 'businessKey'
-            >
-          >;
-          childProcessInstances: Maybe<
-            Array<
+            parentProcessInstance: Maybe<
               { __typename?: 'ProcessInstance' } & Pick<
                 ProcessInstance,
                 'id' | 'processName' | 'businessKey'
               >
-            >
-          >;
-          nodes: Array<
-            { __typename?: 'NodeInstance' } & Pick<
-              NodeInstance,
-              'id' | 'name' | 'enter' | 'exit' | 'type'
-            >
-          >;
-        }
+            >;
+            childProcessInstances: Maybe<
+              Array<
+                { __typename?: 'ProcessInstance' } & Pick<
+                  ProcessInstance,
+                  'id' | 'processName' | 'businessKey'
+                >
+              >
+            >;
+            nodes: Array<
+              { __typename?: 'NodeInstance' } & Pick<
+                NodeInstance,
+                'id' | 'name' | 'enter' | 'exit' | 'type'
+              >
+            >;
+          }
       >
     >
   >;
@@ -747,28 +786,28 @@ export type GetColumnPickerAttributesQueryVariables = {
 export type GetColumnPickerAttributesQuery = { __typename?: 'Query' } & {
   __type: Maybe<
     { __typename?: '__Type' } & Pick<__Type, 'name'> & {
-      fields: Maybe<
-        Array<
-          { __typename?: '__Field' } & Pick<__Field, 'name'> & {
-            type: { __typename?: '__Type' } & Pick<
-              __Type,
-              'name' | 'kind'
-            > & {
-              fields: Maybe<
-                Array<
-                  { __typename?: '__Field' } & Pick<__Field, 'name'> & {
-                    type: { __typename?: '__Type' } & Pick<
-                      __Type,
-                      'name' | 'kind'
+        fields: Maybe<
+          Array<
+            { __typename?: '__Field' } & Pick<__Field, 'name'> & {
+                type: { __typename?: '__Type' } & Pick<
+                  __Type,
+                  'name' | 'kind'
+                > & {
+                    fields: Maybe<
+                      Array<
+                        { __typename?: '__Field' } & Pick<__Field, 'name'> & {
+                            type: { __typename?: '__Type' } & Pick<
+                              __Type,
+                              'name' | 'kind'
+                            >;
+                          }
+                      >
                     >;
-                  }
-                >
-              >;
-            };
-          }
-        >
-      >;
-    }
+                  };
+              }
+          >
+        >;
+      }
   >;
 };
 
@@ -778,27 +817,27 @@ export type GetQueryTypesQuery = { __typename?: 'Query' } & {
   __schema: { __typename?: '__Schema' } & {
     queryType: Array<
       { __typename?: '__Type' } & Pick<__Type, 'name' | 'kind'> & {
-        fields: Maybe<
-          Array<
-            { __typename?: '__Field' } & Pick<__Field, 'name'> & {
-              type: { __typename?: '__Type' } & Pick<
-                __Type,
-                'name' | 'kind'
-              >;
-            }
-          >
-        >;
-        inputFields: Maybe<
-          Array<
-            { __typename?: '__InputValue' } & Pick<__InputValue, 'name'> & {
-              type: { __typename?: '__Type' } & Pick<
-                __Type,
-                'name' | 'kind'
-              >;
-            }
-          >
-        >;
-      }
+          fields: Maybe<
+            Array<
+              { __typename?: '__Field' } & Pick<__Field, 'name'> & {
+                  type: { __typename?: '__Type' } & Pick<
+                    __Type,
+                    'name' | 'kind'
+                  >;
+                }
+            >
+          >;
+          inputFields: Maybe<
+            Array<
+              { __typename?: '__InputValue' } & Pick<__InputValue, 'name'> & {
+                  type: { __typename?: '__Type' } & Pick<
+                    __Type,
+                    'name' | 'kind'
+                  >;
+                }
+            >
+          >;
+        }
     >;
   };
 };
@@ -808,29 +847,29 @@ export type GetQueryFieldsQueryVariables = {};
 export type GetQueryFieldsQuery = { __typename?: 'Query' } & {
   __type: Maybe<
     { __typename?: '__Type' } & Pick<__Type, 'name'> & {
-      fields: Maybe<
-        Array<
-          { __typename?: '__Field' } & Pick<__Field, 'name'> & {
-            args: Array<
-              { __typename?: '__InputValue' } & Pick<
-                __InputValue,
-                'name'
-              > & {
-                type: { __typename?: '__Type' } & Pick<
-                  __Type,
-                  'kind' | 'name'
+        fields: Maybe<
+          Array<
+            { __typename?: '__Field' } & Pick<__Field, 'name'> & {
+                args: Array<
+                  { __typename?: '__InputValue' } & Pick<
+                    __InputValue,
+                    'name'
+                  > & {
+                      type: { __typename?: '__Type' } & Pick<
+                        __Type,
+                        'kind' | 'name'
+                      >;
+                    }
                 >;
+                type: { __typename?: '__Type' } & {
+                  ofType: Maybe<
+                    { __typename?: '__Type' } & Pick<__Type, 'name'>
+                  >;
+                };
               }
-            >;
-            type: { __typename?: '__Type' } & {
-              ofType: Maybe<
-                { __typename?: '__Type' } & Pick<__Type, 'name'>
-              >;
-            };
-          }
-        >
-      >;
-    }
+          >
+        >;
+      }
   >;
 };
 
@@ -841,31 +880,31 @@ export type GetInputFieldsFromQueryQueryVariables = {
 export type GetInputFieldsFromQueryQuery = { __typename?: 'Query' } & {
   __type: Maybe<
     { __typename?: '__Type' } & Pick<__Type, 'name'> & {
-      inputFields: Maybe<
-        Array<
-          { __typename?: '__InputValue' } & Pick<__InputValue, 'name'> & {
-            type: { __typename?: '__Type' } & Pick<
-              __Type,
-              'name' | 'kind'
-            > & {
-              inputFields: Maybe<
-                Array<
-                  { __typename?: '__InputValue' } & Pick<
-                    __InputValue,
-                    'name'
-                  > & {
-                    type: { __typename?: '__Type' } & Pick<
-                      __Type,
-                      'name'
+        inputFields: Maybe<
+          Array<
+            { __typename?: '__InputValue' } & Pick<__InputValue, 'name'> & {
+                type: { __typename?: '__Type' } & Pick<
+                  __Type,
+                  'name' | 'kind'
+                > & {
+                    inputFields: Maybe<
+                      Array<
+                        { __typename?: '__InputValue' } & Pick<
+                          __InputValue,
+                          'name'
+                        > & {
+                            type: { __typename?: '__Type' } & Pick<
+                              __Type,
+                              'name'
+                            >;
+                          }
+                      >
                     >;
-                  }
-                >
-              >;
-            };
-          }
-        >
-      >;
-    }
+                  };
+              }
+          >
+        >;
+      }
   >;
 };
 
@@ -876,14 +915,14 @@ export type GetInputFieldsFromTypeQueryVariables = {
 export type GetInputFieldsFromTypeQuery = { __typename?: 'Query' } & {
   __type: Maybe<
     { __typename?: '__Type' } & Pick<__Type, 'name'> & {
-      inputFields: Maybe<
-        Array<
-          { __typename?: '__InputValue' } & Pick<__InputValue, 'name'> & {
-            type: { __typename?: '__Type' } & Pick<__Type, 'name' | 'kind'>;
-          }
-        >
-      >;
-    }
+        inputFields: Maybe<
+          Array<
+            { __typename?: '__InputValue' } & Pick<__InputValue, 'name'> & {
+                type: { __typename?: '__Type' } & Pick<__Type, 'name' | 'kind'>;
+              }
+          >
+        >;
+      }
   >;
 };
 
@@ -892,13 +931,11 @@ export const GetProcessInstancesDocument = gql`
     $state: [ProcessInstanceState!]
     $offset: Int
     $limit: Int
-    $businessKeys: [ProcessInstanceArgument!]
   ) {
     ProcessInstances(
       where: {
         parentProcessInstanceId: { isNull: true }
         state: { in: $state }
-        or: $businessKeys
       }
       pagination: { offset: $offset, limit: $limit }
     ) {
@@ -937,7 +974,6 @@ export const GetProcessInstancesDocument = gql`
  *      state: // value for 'state'
  *      offset: // value for 'offset'
  *      limit: // value for 'limit'
- *      businessKeys: // value for 'businessKeys'
  *   },
  * });
  */
@@ -972,6 +1008,92 @@ export type GetProcessInstancesLazyQueryHookResult = ReturnType<
 export type GetProcessInstancesQueryResult = ApolloReactCommon.QueryResult<
   GetProcessInstancesQuery,
   GetProcessInstancesQueryVariables
+>;
+export const GetProcessInstancesWithBusinessKeyDocument = gql`
+  query getProcessInstancesWithBusinessKey(
+    $state: [ProcessInstanceState!]
+    $offset: Int
+    $limit: Int
+    $businessKeys: [ProcessInstanceArgument!]
+  ) {
+    ProcessInstances(
+      where: {
+        parentProcessInstanceId: { isNull: true }
+        state: { in: $state }
+        or: $businessKeys
+      }
+      pagination: { offset: $offset, limit: $limit }
+    ) {
+      id
+      processId
+      processName
+      parentProcessInstanceId
+      rootProcessInstanceId
+      roles
+      state
+      start
+      lastUpdate
+      addons
+      businessKey
+      serviceUrl
+      error {
+        nodeDefinitionId
+        message
+      }
+    }
+  }
+`;
+
+/**
+ * __useGetProcessInstancesWithBusinessKeyQuery__
+ *
+ * To run a query within a React component, call `useGetProcessInstancesWithBusinessKeyQuery` and pass it any options that fit your needs.
+ * When your component renders, `useGetProcessInstancesWithBusinessKeyQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useGetProcessInstancesWithBusinessKeyQuery({
+ *   variables: {
+ *      state: // value for 'state'
+ *      offset: // value for 'offset'
+ *      limit: // value for 'limit'
+ *      businessKeys: // value for 'businessKeys'
+ *   },
+ * });
+ */
+export function useGetProcessInstancesWithBusinessKeyQuery(
+  baseOptions?: ApolloReactHooks.QueryHookOptions<
+    GetProcessInstancesWithBusinessKeyQuery,
+    GetProcessInstancesWithBusinessKeyQueryVariables
+  >
+) {
+  return ApolloReactHooks.useQuery<
+    GetProcessInstancesWithBusinessKeyQuery,
+    GetProcessInstancesWithBusinessKeyQueryVariables
+  >(GetProcessInstancesWithBusinessKeyDocument, baseOptions);
+}
+export function useGetProcessInstancesWithBusinessKeyLazyQuery(
+  baseOptions?: ApolloReactHooks.LazyQueryHookOptions<
+    GetProcessInstancesWithBusinessKeyQuery,
+    GetProcessInstancesWithBusinessKeyQueryVariables
+  >
+) {
+  return ApolloReactHooks.useLazyQuery<
+    GetProcessInstancesWithBusinessKeyQuery,
+    GetProcessInstancesWithBusinessKeyQueryVariables
+  >(GetProcessInstancesWithBusinessKeyDocument, baseOptions);
+}
+export type GetProcessInstancesWithBusinessKeyQueryHookResult = ReturnType<
+  typeof useGetProcessInstancesWithBusinessKeyQuery
+>;
+export type GetProcessInstancesWithBusinessKeyLazyQueryHookResult = ReturnType<
+  typeof useGetProcessInstancesWithBusinessKeyLazyQuery
+>;
+export type GetProcessInstancesWithBusinessKeyQueryResult = ApolloReactCommon.QueryResult<
+  GetProcessInstancesWithBusinessKeyQuery,
+  GetProcessInstancesWithBusinessKeyQueryVariables
 >;
 export const GetChildInstancesDocument = gql`
   query getChildInstances($rootProcessInstanceId: String) {

@@ -5,6 +5,39 @@ const GET_PROCESS_INSTANCES = gql`
     $state: [ProcessInstanceState!]
     $offset: Int
     $limit: Int
+  ) {
+    ProcessInstances(
+      where: {
+        parentProcessInstanceId: { isNull: true }
+        state: { in: $state }
+      }
+      pagination: { offset: $offset, limit: $limit }
+    ) {
+      id
+      processId
+      processName
+      parentProcessInstanceId
+      rootProcessInstanceId
+      roles
+      state
+      start
+      lastUpdate
+      addons
+      businessKey
+      serviceUrl
+      error {
+        nodeDefinitionId
+        message
+      }
+    }
+  }
+`;
+
+const GET_PROCESS_INSTANCES_WITH_BUSINESSKEY = gql`
+  query getProcessInstancesWithBusinessKey(
+    $state: [ProcessInstanceState!]
+    $offset: Int
+    $limit: Int
     $businessKeys: [ProcessInstanceArgument!]
   ) {
     ProcessInstances(

@@ -20,7 +20,8 @@ import LoadMoreComponent from '../../Atoms/LoadMoreComponent/LoadMoreComponent';
 import ProcessBulkModalComponent from '../../Atoms/ProcessBulkModalComponent/ProcessBulkModalComponent';
 import {
   useGetProcessInstancesLazyQuery,
-  ProcessInstanceState
+  ProcessInstanceState,
+  useGetProcessInstancesWithBusinessKeyLazyQuery
 } from '../../../graphql/types';
 import axios from 'axios';
 import { InfoCircleIcon } from '@patternfly/react-icons';
@@ -58,6 +59,14 @@ const DataListContainer: React.FC<{}> = () => {
     notifyOnNetworkStatusChange: true
   });
 
+  const [
+    getProcessInstancesWithBusinessKey,
+    getProcessInstancesWithBK
+  ] = useGetProcessInstancesWithBusinessKeyLazyQuery({
+    fetchPolicy: 'network-only',
+    notifyOnNetworkStatusChange: true
+  });
+
   const handleAbortModalToggle = () => {
     setIsAbortModalOpen(!isAbortModalOpen);
   };
@@ -90,7 +99,21 @@ const DataListContainer: React.FC<{}> = () => {
     setLimit(pSize);
     setPageSize(pSize);
     setOffset(0);
-    getProcessInstances({ variables: { state: arr, offset: 0, businessKeys: searchWordsArray, limit: pSize } });
+    setInitData({});
+    if (searchWordsArray.length === 0) {
+      getProcessInstances({
+        variables: { state: arr, offset: 0, limit: pSize }
+      });
+    } else {
+      getProcessInstancesWithBusinessKey({
+        variables: {
+          state: arr,
+          offset: 0,
+          limit: pSize,
+          businessKeys: searchWordsArray
+        }
+      });
+    }
   };
 
   const onGetMoreInstances = (initVal, _pageSize) => {
@@ -126,6 +149,35 @@ const DataListContainer: React.FC<{}> = () => {
       }
     }
   }, [data]);
+
+  useEffect(() => {
+    setAbortedObj({});
+    setAbortedMessageObj({});
+    setCompletedMessageObj({});
+    setIsDefiningFilter(false);
+    if (isLoadingMore === undefined || !isLoadingMore) {
+      setIsLoading(getProcessInstancesWithBK.loading);
+    }
+    setSearchWord('');
+    if (
+      !getProcessInstancesWithBK.loading &&
+      getProcessInstancesWithBK.data !== undefined
+    ) {
+      getProcessInstancesWithBK.data.ProcessInstances.map((instance: any) => {
+        instance.isChecked = false;
+        instance.isOpen = false;
+      });
+      setLimit(getProcessInstancesWithBK.data.ProcessInstances.length);
+      if (offset > 0 && initData.ProcessInstances.length > 0) {
+        setIsLoadingMore(false);
+        initData.ProcessInstances = initData.ProcessInstances.concat(
+          getProcessInstancesWithBK.data.ProcessInstances
+        );
+      } else {
+        setInitData(getProcessInstancesWithBK.data);
+      }
+    }
+  }, [getProcessInstancesWithBK.data]);
 
   useEffect(() => {
     setOffset(0);
@@ -284,31 +336,35 @@ const DataListContainer: React.FC<{}> = () => {
                   filters={filters}
                 />
               ) : (
-                  <EmptyStateComponent
-                    iconType="warningTriangleIcon1"
-                    title="No status is selected"
-                    body="Try selecting at least one status to see results"
-                    filterClick={onFilterClick}
-                    setFilters={setFilters}
-                    setCheckedArray={setCheckedArray}
-                    setSearchWord={setSearchWord}
-                    filters={filters}
-                  />
-                )}
-              {(!loading && !isLoading && !isDefiningFilter && initData !== undefined && limit === pageSize) && (
-                <DataList aria-label="Simple data list example">
-                  <DataListItem aria-labelledby="kie-datalist-item">
-                    <DataListCell className="kogito-management-console-load-more">
-                      <LoadMoreComponent
-                        offset={offset}
-                        setOffset={setOffset}
-                        getProcessInstances={onGetMoreInstances}
-                        pageSize={pageSize}
-                      />
-                    </DataListCell>
-                  </DataListItem>
-                </DataList>
+                <EmptyStateComponent
+                  iconType="warningTriangleIcon1"
+                  title="No status is selected"
+                  body="Try selecting at least one status to see results"
+                  filterClick={onFilterClick}
+                  setFilters={setFilters}
+                  setCheckedArray={setCheckedArray}
+                  setSearchWord={setSearchWord}
+                  filters={filters}
+                />
               )}
+              {!loading &&
+                !isLoading &&
+                !isDefiningFilter &&
+                initData !== undefined &&
+                limit === pageSize && (
+                  <DataList aria-label="Simple data list example">
+                    <DataListItem aria-labelledby="kie-datalist-item">
+                      <DataListCell className="kogito-management-console-load-more">
+                        <LoadMoreComponent
+                          offset={offset}
+                          setOffset={setOffset}
+                          getProcessInstances={onGetMoreInstances}
+                          pageSize={pageSize}
+                        />
+                      </DataListCell>
+                    </DataListItem>
+                  </DataList>
+                )}
             </Card>
           </GridItem>
         </Grid>
