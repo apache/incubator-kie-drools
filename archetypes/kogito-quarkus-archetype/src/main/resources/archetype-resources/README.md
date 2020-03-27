@@ -5,7 +5,7 @@
 - Compile and Run
 
     ```
-     mvn clean package quarkus:dev    
+     mvn clean package quarkus:dev
     ```
 
 - Native Image (requires JAVA_HOME to point to a valid GraalVM)
@@ -21,7 +21,7 @@
 Generated application comes with sample test process that allows you to verify if the application is working as expected. Simply execute following command to try it out
 
 ```sh
-curl -d '{}' -H "Content-Type: application/json" -X POST http://localhost:8080/tests                                                                                                    
+curl -d '{}' -H "Content-Type: application/json" -X POST http://localhost:8080/greetings
 ```
 
 Once successfully invoked you should see "Hello World" in the console of the running application.
@@ -37,8 +37,9 @@ Then just build the project and run.
 
 # Swagger documentation
 
-Point to [swagger docs](http://localhost:8080/docs/swagger.json) to retrieve swagger definition of the exposed service
+The exposed service [OpenAPI specification](https://swagger.io/docs/specification) is generated at 
+[/docs/openapi.json](http://localhost:8080/docs/openapi.json).
 
-You can visualize that JSON file at [swagger editor](https://editor.swagger.io)
+You can visualize and interact with the generated specification using the embbeded [Swagger UI](http://localhost:8080/swagger-ui) or importing the generated specification file on [Swagger Editor](https://editor.swagger.io).
 
 In addition client application can be easily generated from the swagger definition to interact with this service.

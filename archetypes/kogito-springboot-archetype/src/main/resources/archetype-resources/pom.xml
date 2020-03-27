@@ -16,7 +16,7 @@
   <description>Generated project \${artifactId}</description>
 
   <properties>
-    <java.version>${maven.compiler.release}</java.version>    
+    <java.version>${maven.compiler.release}</java.version>
     <kogito.version>${project.version}</kogito.version>
   </properties>
 
@@ -60,7 +60,7 @@
             <resourcePackage>\${groupId}</resourcePackage>
           </resourcePackages>
           <outputDirectory>\${basedir}/target/classes/static/</outputDirectory>
-          <outputFilename>swagger</outputFilename>
+          <outputFilename>openapi</outputFilename>
           <outputFormats>JSON,YAML</outputFormats>
           <prettyPrint>true</prettyPrint>
           <swaggerConfig>
@@ -72,6 +72,7 @@
         </configuration>
         <executions>
           <execution>
+            <phase>compile</phase>
             <goals>
               <goal>generate</goal>
             </goals>

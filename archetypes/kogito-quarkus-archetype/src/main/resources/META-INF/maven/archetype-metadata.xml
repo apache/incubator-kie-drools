@@ -37,6 +37,7 @@ under the License.
       <directory>src/main/resources</directory>
       <includes>
         <include>**/*.bpmn2</include>
+        <include>**/*.properties</include>
         <include>**/*.md</include>
         <include>**/*.xml</include>
       </includes>
