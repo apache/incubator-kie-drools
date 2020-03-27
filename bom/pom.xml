@@ -464,6 +464,26 @@
         <scope>test</scope>
       </dependency>
 
+      <!-- Scenario Simulation Runner -->
+      <dependency>
+        <groupId>org.kie.kogito</groupId>
+        <artifactId>kogito-scenario-simulation</artifactId>
+        <version>${project.version}</version>
+      </dependency>
+      <dependency>
+        <groupId>org.kie.kogito</groupId>
+        <artifactId>kogito-scenario-simulation</artifactId>
+        <version>${project.version}</version>
+        <classifier>sources</classifier>
+      </dependency>
+      <dependency>
+        <groupId>org.kie.kogito</groupId>
+        <artifactId>kogito-scenario-simulation</artifactId>
+        <version>${project.version}</version>
+        <type>test-jar</type>
+        <scope>test</scope>
+      </dependency>
+
       <!-- Optaplanner -->
       <dependency>
         <groupId>org.kie.kogito</groupId>

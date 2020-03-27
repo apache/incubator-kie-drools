@@ -249,6 +249,17 @@
       </dependency>
 
       <dependency>
+        <groupId>org.drools</groupId>
+        <artifactId>drools-scenario-simulation-api</artifactId>
+        <version>${version.org.kie7}</version>
+      </dependency>
+      <dependency>
+        <groupId>org.drools</groupId>
+        <artifactId>drools-scenario-simulation-backend</artifactId>
+        <version>${version.org.kie7}</version>
+      </dependency>
+
+      <dependency>
         <groupId>org.optaplanner</groupId>
         <artifactId>optaplanner-core</artifactId>
         <version>${version.org.kie7}</version>

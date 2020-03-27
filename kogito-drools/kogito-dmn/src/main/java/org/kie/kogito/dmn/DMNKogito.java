@@ -16,22 +16,12 @@
 
 package org.kie.kogito.dmn;
 
-import java.io.FileReader;
-import java.io.IOException;
-import java.io.Reader;
-import java.nio.file.Files;
-import java.nio.file.Path;
-import java.nio.file.Paths;
-import java.util.List;
-import java.util.Map;
-import java.util.stream.Collectors;
-import java.util.stream.Stream;
-
 import org.drools.core.RuleBaseConfiguration;
 import org.drools.core.definitions.InternalKnowledgePackage;
 import org.drools.core.definitions.ResourceTypePackageRegistry;
 import org.drools.core.definitions.impl.KnowledgePackageImpl;
 import org.drools.core.impl.KnowledgeBaseImpl;
+import org.drools.core.io.impl.FileSystemResource;
 import org.kie.api.io.ResourceType;
 import org.kie.dmn.api.core.DMNModel;
 import org.kie.dmn.api.core.DMNRuntime;
@@ -43,6 +33,16 @@ import org.kie.dmn.core.internal.utils.DMNEvaluationUtils.DMNEvaluationResult;
 import org.kie.kogito.dmn.rest.DMNResult;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+import java.io.IOException;
+import java.io.Reader;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
+import java.util.List;
+import java.util.Map;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 public class DMNKogito {
 
@@ -80,7 +80,7 @@ public class DMNKogito {
                                                        .peek(x -> LOG.debug("Adding DMN model {} to runtime", x))
                                                        .collect(Collectors.toList());
             for (java.nio.file.Path file : files) {
-                DMNModel m = compilerImpl.compile(new FileReader(file.toFile()));
+                DMNModel m = compilerImpl.compile(new FileSystemResource(file.toFile()));
                 InternalKnowledgePackage pkg = pkgs.computeIfAbsent(m.getNamespace(), KnowledgePackageImpl::new);
                 ResourceTypePackageRegistry rpkg = pkg.getResourceTypePackages();
                 DMNPackageImpl dmnpkg = rpkg.computeIfAbsent(ResourceType.DMN, rtp -> new DMNPackageImpl(m.getNamespace()));
