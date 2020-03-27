@@ -1,5 +1,5 @@
 /*
- * Copyright 2018 Red Hat, Inc. and/or its affiliates.
+ * Copyright 2020 Red Hat, Inc. and/or its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -38,6 +38,7 @@ import org.optaplanner.core.impl.score.stream.drools.DroolsConstraintFactory;
 public class ConstraintStreamScoreDirectorFactory<Solution_> extends AbstractScoreDirectorFactory<Solution_> {
 
     private final ConstraintSessionFactory<Solution_> constraintSessionFactory;
+    private final Constraint[] constraints;
 
     public ConstraintStreamScoreDirectorFactory(SolutionDescriptor<Solution_> solutionDescriptor,
             ConstraintProvider constraintProvider, ConstraintStreamImplType constraintStreamImplType) {
@@ -53,7 +54,7 @@ public class ConstraintStreamScoreDirectorFactory<Solution_> extends AbstractSco
             default:
                 throw new IllegalStateException("The constraintStreamImplType (" + constraintStreamImplType + ") is not implemented.");
         }
-        Constraint[] constraints = constraintProvider.defineConstraints(constraintFactory);
+        this.constraints = constraintProvider.defineConstraints(constraintFactory);
         constraintSessionFactory = constraintFactory.buildSessionFactory(constraints);
     }
 
@@ -62,13 +63,21 @@ public class ConstraintStreamScoreDirectorFactory<Solution_> extends AbstractSco
     // ************************************************************************
 
     @Override
-    public ConstraintStreamScoreDirector<Solution_> buildScoreDirector(
-            boolean lookUpEnabled, boolean constraintMatchEnabledPreference) {
+    public ConstraintStreamScoreDirector<Solution_> buildScoreDirector(boolean lookUpEnabled,
+            boolean constraintMatchEnabledPreference) {
         return new ConstraintStreamScoreDirector<>(this, lookUpEnabled, constraintMatchEnabledPreference);
     }
 
     public ConstraintSession<Solution_> newConstraintStreamingSession(boolean constraintMatchEnabled, Solution_ workingSolution) {
         return constraintSessionFactory.buildSession(constraintMatchEnabled, workingSolution);
+    }
+
+    // ************************************************************************
+    // Getters/setters
+    // ************************************************************************
+
+    public Constraint[] getConstraints() {
+        return constraints;
     }
 
 }

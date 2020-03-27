@@ -1,5 +1,5 @@
 /*
- * Copyright 2011 Red Hat, Inc. and/or its affiliates.
+ * Copyright 2020 Red Hat, Inc. and/or its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -48,6 +48,11 @@ public class SimpleDoubleScoreDefinition extends AbstractScoreDefinition<SimpleD
     @Override
     public SimpleDoubleScore getZeroScore() {
         return SimpleDoubleScore.ZERO;
+    }
+
+    @Override
+    public SimpleDoubleScore getOneSoftestScore() {
+        return SimpleDoubleScore.ONE;
     }
 
     @Override

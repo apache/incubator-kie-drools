@@ -1,5 +1,5 @@
 /*
- * Copyright 2011 Red Hat, Inc. and/or its affiliates.
+ * Copyright 2020 Red Hat, Inc. and/or its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -24,6 +24,14 @@ import org.optaplanner.examples.common.swingui.components.Labeled;
 public class Row extends AbstractPersistable implements Labeled {
 
     private int index;
+
+    public Row() {
+    }
+
+    public Row(int index) {
+        super(index);
+        this.index = index;
+    }
 
     public int getIndex() {
         return index;

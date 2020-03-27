@@ -1,5 +1,5 @@
 /*
- * Copyright 2013 Red Hat, Inc. and/or its affiliates.
+ * Copyright 2020 Red Hat, Inc. and/or its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -21,9 +21,23 @@ import org.optaplanner.core.api.score.buildin.bendable.BendableScore;
 import org.optaplanner.core.config.score.trend.InitializingScoreTrendLevel;
 import org.optaplanner.core.impl.score.trend.InitializingScoreTrend;
 
-import static org.junit.Assert.*;
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.junit.Assert.assertArrayEquals;
+import static org.junit.Assert.assertEquals;
 
 public class BendableScoreDefinitionTest {
+
+    @Test
+    public void getZeroScore() {
+        BendableScore score = new BendableScoreDefinition(1, 2).getZeroScore();
+        assertThat(score).isEqualTo(BendableScore.zero(1, 2));
+    }
+
+    @Test
+    public void getSoftestOneScore() {
+        BendableScore score = new BendableScoreDefinition(1, 2).getOneSoftestScore();
+        assertThat(score).isEqualTo(BendableScore.of(new int[1], new int[] {0, 1}));
+    }
 
     @Test
     public void getLevelsSize() {

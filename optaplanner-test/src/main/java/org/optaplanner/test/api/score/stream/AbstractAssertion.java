@@ -14,18 +14,19 @@
  * limitations under the License.
  */
 
-package org.optaplanner.core.impl.score.stream;
+package org.optaplanner.test.api.score.stream;
 
-import org.optaplanner.core.impl.score.director.ScoreDirector;
+public abstract class AbstractAssertion<Solution_, Assertion extends AbstractAssertion<Solution_, Assertion, Verifier>,
+        Verifier extends AbstractConstraintVerifier<Solution_, Assertion, Verifier>> {
 
-public interface ConstraintSessionFactory<Solution_>  {
+    private final Verifier parentConstraintVerifier;
 
-    /**
-     * This method is thread-safe.
-     * @param constraintMatchEnabled  true if {@link ScoreDirector#isConstraintMatchEnabled()} should be true
-     * @param workingSolution if null, uniform synthetic constraint weights will be applied
-     * @return never null
-     */
-    ConstraintSession<Solution_> buildSession(boolean constraintMatchEnabled, Solution_ workingSolution);
+    protected AbstractAssertion(Verifier constraintVerifier) {
+        this.parentConstraintVerifier = constraintVerifier;
+    }
+
+    protected final Verifier getParentConstraintVerifier() {
+        return parentConstraintVerifier;
+    }
 
 }

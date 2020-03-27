@@ -1,5 +1,5 @@
 /*
- * Copyright 2013 Red Hat, Inc. and/or its affiliates.
+ * Copyright 2020 Red Hat, Inc. and/or its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -42,6 +42,11 @@ public class BendableBigDecimalScoreDefinition extends AbstractBendableScoreDefi
     @Override
     public BendableBigDecimalScore getZeroScore() {
         return BendableBigDecimalScore.zero(hardLevelsSize, softLevelsSize);
+    }
+
+    @Override
+    public final BendableBigDecimalScore getOneSoftestScore() {
+        return BendableBigDecimalScore.ofSoft(hardLevelsSize, softLevelsSize, softLevelsSize - 1, BigDecimal.ONE);
     }
 
     @Override

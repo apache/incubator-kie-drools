@@ -162,7 +162,7 @@ public abstract class AbstractScoreDirector<Solution_, Factory_ extends Abstract
 
     @Override
     public void setWorkingSolution(Solution_ workingSolution) {
-        this.workingSolution = workingSolution;
+        this.workingSolution = Objects.requireNonNull(workingSolution);
         SolutionDescriptor<Solution_> solutionDescriptor = getSolutionDescriptor();
         workingInitScore = - solutionDescriptor.countUninitializedVariables(workingSolution);
         if (lookUpEnabled) {

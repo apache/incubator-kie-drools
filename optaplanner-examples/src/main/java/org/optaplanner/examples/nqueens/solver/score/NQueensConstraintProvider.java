@@ -1,5 +1,5 @@
 /*
- * Copyright 2019 Red Hat, Inc. and/or its affiliates.
+ * Copyright 2020 Red Hat, Inc. and/or its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -22,7 +22,7 @@ import org.optaplanner.core.api.score.stream.ConstraintFactory;
 import org.optaplanner.core.api.score.stream.ConstraintProvider;
 import org.optaplanner.examples.nqueens.domain.Queen;
 
-import static org.optaplanner.core.api.score.stream.Joiners.*;
+import static org.optaplanner.core.api.score.stream.Joiners.equal;
 
 public class NQueensConstraintProvider implements ConstraintProvider {
 
@@ -39,7 +39,7 @@ public class NQueensConstraintProvider implements ConstraintProvider {
     // Hard constraints
     // ************************************************************************
 
-    private Constraint horizontalConflict(ConstraintFactory factory) {
+    Constraint horizontalConflict(ConstraintFactory factory) {
         return factory
                 .fromUniquePair(Queen.class, equal(Queen::getRowIndex))
                 .penalize("Horizontal conflict", SimpleScore.ONE);
@@ -51,13 +51,12 @@ public class NQueensConstraintProvider implements ConstraintProvider {
 //                .penalize("Horizontal conflict", SimpleScore.ONE);
     }
 
-    private Constraint ascendingDiagonalConflict(ConstraintFactory factory) {
-        return factory
-                .fromUniquePair(Queen.class, equal(Queen::getAscendingDiagonalIndex))
+    Constraint ascendingDiagonalConflict(ConstraintFactory factory) {
+        return factory.fromUniquePair(Queen.class, equal(Queen::getAscendingDiagonalIndex))
                 .penalize("Ascending diagonal conflict", SimpleScore.ONE);
     }
 
-    private Constraint descendingDiagonalConflict(ConstraintFactory factory) {
+    Constraint descendingDiagonalConflict(ConstraintFactory factory) {
         return factory.fromUniquePair(Queen.class, equal(Queen::getDescendingDiagonalIndex))
                 .penalize("Descending diagonal conflict", SimpleScore.ONE);
     }

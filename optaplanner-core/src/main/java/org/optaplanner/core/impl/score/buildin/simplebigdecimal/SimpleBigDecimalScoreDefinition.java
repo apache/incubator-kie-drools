@@ -1,5 +1,5 @@
 /*
- * Copyright 2013 Red Hat, Inc. and/or its affiliates.
+ * Copyright 2020 Red Hat, Inc. and/or its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -47,6 +47,11 @@ public class SimpleBigDecimalScoreDefinition extends AbstractScoreDefinition<Sim
     @Override
     public SimpleBigDecimalScore getZeroScore() {
         return SimpleBigDecimalScore.ZERO;
+    }
+
+    @Override
+    public SimpleBigDecimalScore getOneSoftestScore() {
+        return SimpleBigDecimalScore.ONE;
     }
 
     @Override

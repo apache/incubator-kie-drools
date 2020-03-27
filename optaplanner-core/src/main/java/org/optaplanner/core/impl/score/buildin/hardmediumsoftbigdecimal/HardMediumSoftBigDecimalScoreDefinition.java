@@ -1,5 +1,5 @@
 /*
- * Copyright 2017 Red Hat, Inc. and/or its affiliates.
+ * Copyright 2020 Red Hat, Inc. and/or its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -52,6 +52,11 @@ public class HardMediumSoftBigDecimalScoreDefinition extends AbstractFeasibility
     @Override
     public HardMediumSoftBigDecimalScore getZeroScore() {
         return HardMediumSoftBigDecimalScore.ZERO;
+    }
+
+    @Override
+    public HardMediumSoftBigDecimalScore getOneSoftestScore() {
+        return HardMediumSoftBigDecimalScore.ONE_SOFT;
     }
 
     @Override

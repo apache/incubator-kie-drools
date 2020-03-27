@@ -1,5 +1,5 @@
 /*
- * Copyright 2015 Red Hat, Inc. and/or its affiliates.
+ * Copyright 2020 Red Hat, Inc. and/or its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -21,9 +21,23 @@ import org.optaplanner.core.api.score.buildin.hardsoftdouble.HardSoftDoubleScore
 import org.optaplanner.core.config.score.trend.InitializingScoreTrendLevel;
 import org.optaplanner.core.impl.score.trend.InitializingScoreTrend;
 
-import static org.junit.Assert.*;
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.junit.Assert.assertArrayEquals;
+import static org.junit.Assert.assertEquals;
 
 public class HardSoftDoubleScoreDefinitionTest {
+
+    @Test
+    public void getZeroScore() {
+        HardSoftDoubleScore score = new HardSoftDoubleScoreDefinition().getZeroScore();
+        assertThat(score).isEqualTo(HardSoftDoubleScore.ZERO);
+    }
+
+    @Test
+    public void getSoftestOneScore() {
+        HardSoftDoubleScore score = new HardSoftDoubleScoreDefinition().getOneSoftestScore();
+        assertThat(score).isEqualTo(HardSoftDoubleScore.ONE_SOFT);
+    }
 
     @Test
     public void getLevelSize() {

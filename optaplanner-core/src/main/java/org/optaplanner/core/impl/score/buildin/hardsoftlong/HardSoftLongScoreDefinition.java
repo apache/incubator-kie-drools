@@ -1,5 +1,5 @@
 /*
- * Copyright 2011 Red Hat, Inc. and/or its affiliates.
+ * Copyright 2020 Red Hat, Inc. and/or its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -52,6 +52,11 @@ public class HardSoftLongScoreDefinition extends AbstractFeasibilityScoreDefinit
     @Override
     public HardSoftLongScore getZeroScore() {
         return HardSoftLongScore.ZERO;
+    }
+
+    @Override
+    public HardSoftLongScore getOneSoftestScore() {
+        return HardSoftLongScore.ONE_SOFT;
     }
 
     @Override

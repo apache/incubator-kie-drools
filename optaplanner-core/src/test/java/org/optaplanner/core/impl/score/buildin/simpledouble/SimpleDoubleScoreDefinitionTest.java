@@ -1,5 +1,5 @@
 /*
- * Copyright 2015 Red Hat, Inc. and/or its affiliates.
+ * Copyright 2020 Red Hat, Inc. and/or its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -21,9 +21,23 @@ import org.optaplanner.core.api.score.buildin.simpledouble.SimpleDoubleScore;
 import org.optaplanner.core.config.score.trend.InitializingScoreTrendLevel;
 import org.optaplanner.core.impl.score.trend.InitializingScoreTrend;
 
-import static org.junit.Assert.*;
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.junit.Assert.assertArrayEquals;
+import static org.junit.Assert.assertEquals;
 
 public class SimpleDoubleScoreDefinitionTest {
+
+    @Test
+    public void getZeroScore() {
+        SimpleDoubleScore score = new SimpleDoubleScoreDefinition().getZeroScore();
+        assertThat(score).isEqualTo(SimpleDoubleScore.ZERO);
+    }
+
+    @Test
+    public void getSoftestOneScore() {
+        SimpleDoubleScore score = new SimpleDoubleScoreDefinition().getOneSoftestScore();
+        assertThat(score).isEqualTo(SimpleDoubleScore.ONE);
+    }
 
     @Test
     public void getLevelSize() {

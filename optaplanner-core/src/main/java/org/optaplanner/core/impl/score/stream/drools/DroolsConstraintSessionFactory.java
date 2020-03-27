@@ -36,21 +36,19 @@ import org.optaplanner.core.api.score.Score;
 import org.optaplanner.core.api.score.holder.AbstractScoreHolder;
 import org.optaplanner.core.api.score.stream.Constraint;
 import org.optaplanner.core.impl.domain.solution.descriptor.SolutionDescriptor;
-import org.optaplanner.core.impl.score.definition.ScoreDefinition;
 import org.optaplanner.core.impl.score.director.drools.DroolsScoreDirector;
 import org.optaplanner.core.impl.score.director.drools.OptaPlannerRuleEventListener;
 import org.optaplanner.core.impl.score.stream.ConstraintSession;
-import org.optaplanner.core.impl.score.stream.ConstraintSessionFactory;
+import org.optaplanner.core.impl.score.stream.common.AbstractConstraintSessionFactory;
 import org.optaplanner.core.impl.score.stream.drools.common.DroolsRuleStructure;
 import org.optaplanner.core.impl.score.stream.drools.common.FactTuple;
 
 import static java.util.stream.Collectors.toMap;
 
-public class DroolsConstraintSessionFactory<Solution_> implements ConstraintSessionFactory<Solution_> {
+public class DroolsConstraintSessionFactory<Solution_> extends AbstractConstraintSessionFactory<Solution_> {
 
-    private final SolutionDescriptor<Solution_> solutionDescriptor;
     private final Model originalModel;
-    private KieBase originalKieBase;
+    private final KieBase originalKieBase;
     private KieBase currentKieBase;
     private Set<String> currentlyDisabledConstraintIdSet = null;
     private final Map<Rule, DroolsConstraint<Solution_>> compiledRuleToConstraintMap;
@@ -58,7 +56,7 @@ public class DroolsConstraintSessionFactory<Solution_> implements ConstraintSess
 
     public DroolsConstraintSessionFactory(SolutionDescriptor<Solution_> solutionDescriptor, Model model,
             List<DroolsConstraint<Solution_>> constraintList) {
-        this.solutionDescriptor = solutionDescriptor;
+        super(solutionDescriptor);
         this.originalModel = model;
         this.originalKieBase = KieBaseBuilder.createKieBaseFromModel(model);
         this.currentKieBase = originalKieBase;
@@ -76,18 +74,24 @@ public class DroolsConstraintSessionFactory<Solution_> implements ConstraintSess
 
     @Override
     public ConstraintSession<Solution_> buildSession(boolean constraintMatchEnabled, Solution_ workingSolution) {
-        ScoreDefinition scoreDefinition = solutionDescriptor.getScoreDefinition();
-        AbstractScoreHolder scoreHolder = (AbstractScoreHolder) scoreDefinition.buildScoreHolder(constraintMatchEnabled);
+        // Make sure the constraint justifications match what comes out of Bavet.
+        AbstractScoreHolder scoreHolder =
+                (AbstractScoreHolder) getScoreDefinition().buildScoreHolder(constraintMatchEnabled);
         scoreHolder.setJustificationListConverter((justificationList, rule) ->
                 matchJustificationsToOutput((List<Object>) justificationList,
                         compiledRuleToConstraintMap.get(rule).getExpectedJustificationTypes()));
         // Determine which rules to enable based on the fact that their constraints carry weight.
-        Score<?> zero = scoreDefinition.getZeroScore();
+        Score<?> zeroScore = getScoreDefinition().getZeroScore();
+        Score<?> oneSoftestScore = getScoreDefinition().getOneSoftestScore();
         Set<String> disabledConstraintIdSet = new LinkedHashSet<>(0);
         compiledRuleToConstraintMap.forEach((compiledRule, constraint) -> {
-            Score<?> constraintWeight = constraint.extractConstraintWeight(workingSolution);
+            // In constraint verifier API, we disregard constraint weights.
+            // Yet we need to have them, otherwise the constraint would be ignored, so we add a synthetic weight.
+            Score<?> constraintWeight = workingSolution == null ?
+                    oneSoftestScore :
+                    constraint.extractConstraintWeight(workingSolution);
             scoreHolder.configureConstraintWeight(compiledRule, constraintWeight);
-            if (constraintWeight.equals(zero)) {
+            if (constraintWeight.equals(zeroScore)) {
                 disabledConstraintIdSet.add(constraint.getConstraintId());
             }
         });

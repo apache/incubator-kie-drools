@@ -1,5 +1,5 @@
 /*
- * Copyright 2011 Red Hat, Inc. and/or its affiliates.
+ * Copyright 2020 Red Hat, Inc. and/or its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -17,13 +17,15 @@
 package org.optaplanner.persistence.xstream.impl.domain.solution;
 
 import java.io.File;
-import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.OutputStreamWriter;
 import java.io.Reader;
 import java.io.Writer;
+import java.nio.charset.StandardCharsets;
+import java.nio.file.Files;
 
 import com.thoughtworks.xstream.XStream;
 import com.thoughtworks.xstream.XStreamException;
@@ -61,17 +63,25 @@ public class XStreamSolutionFileIO<Solution_> implements SolutionFileIO<Solution
 
     @Override
     public Solution_ read(File inputSolutionFile) {
+        try (InputStream inputSolutionStream = Files.newInputStream(inputSolutionFile.toPath())) {
+            return read(inputSolutionStream);
+        } catch (Exception e) {
+            throw new IllegalArgumentException("Failed reading inputSolutionFile (" + inputSolutionFile + ").", e);
+        }
+    }
+
+    public Solution_ read(InputStream inputSolutionStream) {
         // xStream.fromXml(InputStream) does not use UTF-8
-        try (Reader reader = new InputStreamReader(new FileInputStream(inputSolutionFile), "UTF-8")) {
+        try (Reader reader = new InputStreamReader(inputSolutionStream, StandardCharsets.UTF_8)) {
             return (Solution_) xStream.fromXML(reader);
         } catch (XStreamException | IOException e) {
-            throw new IllegalArgumentException("Failed reading inputSolutionFile (" + inputSolutionFile + ").", e);
+            throw new IllegalArgumentException("Failed reading inputSolutionStream.", e);
         }
     }
 
     @Override
     public void write(Solution_ solution, File outputSolutionFile) {
-        try (Writer writer = new OutputStreamWriter(new FileOutputStream(outputSolutionFile), "UTF-8")) {
+        try (Writer writer = new OutputStreamWriter(new FileOutputStream(outputSolutionFile), StandardCharsets.UTF_8)) {
             xStream.toXML(solution, writer);
         } catch (IOException e) {
             throw new IllegalArgumentException("Failed writing outputSolutionFile (" + outputSolutionFile + ").", e);

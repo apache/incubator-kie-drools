@@ -1,5 +1,5 @@
 /*
- * Copyright 2014 Red Hat, Inc. and/or its affiliates.
+ * Copyright 2020 Red Hat, Inc. and/or its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -17,10 +17,25 @@
 package org.optaplanner.core.impl.score.buildin.hardsoftbigdecimal;
 
 import org.junit.Test;
+import org.optaplanner.core.api.score.buildin.hardsoftbigdecimal.HardSoftBigDecimalScore;
 
-import static org.junit.Assert.*;
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.junit.Assert.assertArrayEquals;
+import static org.junit.Assert.assertEquals;
 
 public class HardSoftBigDecimalScoreDefinitionTest {
+
+    @Test
+    public void getZeroScore() {
+        HardSoftBigDecimalScore score = new HardSoftBigDecimalScoreDefinition().getZeroScore();
+        assertThat(score).isEqualTo(HardSoftBigDecimalScore.ZERO);
+    }
+
+    @Test
+    public void getSoftestOneScore() {
+        HardSoftBigDecimalScore score = new HardSoftBigDecimalScoreDefinition().getOneSoftestScore();
+        assertThat(score).isEqualTo(HardSoftBigDecimalScore.ONE_SOFT);
+    }
 
     @Test
     public void getLevelsSize() {

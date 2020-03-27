@@ -63,7 +63,7 @@ public abstract class AbstractConstraintStream<Solution_> implements ConstraintS
 
     protected Function<Solution_, Score<?>> buildConstraintWeightExtractor(String constraintPackage, String constraintName, Score<?> constraintWeight) {
         validateConstraintId(constraintPackage, constraintName);
-        // Duplicates validation when the session is build, but this fail-faster when weights are hard coded
+        // Duplicates validation when the session is built, but this fails fast when weights are hard coded
         getConstraintFactory().getSolutionDescriptor().validateConstraintWeight(constraintPackage, constraintName, constraintWeight);
         return solution -> constraintWeight;
     }

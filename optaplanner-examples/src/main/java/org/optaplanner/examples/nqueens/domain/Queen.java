@@ -1,5 +1,5 @@
 /*
- * Copyright 2010 Red Hat, Inc. and/or its affiliates.
+ * Copyright 2020 Red Hat, Inc. and/or its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -31,6 +31,15 @@ public class Queen extends AbstractPersistable {
 
     // Planning variables: changes during planning, between score calculations.
     private Row row;
+
+    public Queen() {
+    }
+
+    public Queen(long id, Row row, Column column) {
+        super(id);
+        this.row = row;
+        this.column = column;
+    }
 
     public Column getColumn() {
         return column;
