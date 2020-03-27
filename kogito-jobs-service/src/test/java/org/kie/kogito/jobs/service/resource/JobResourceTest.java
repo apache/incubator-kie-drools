@@ -62,8 +62,7 @@ public class JobResourceTest {
                 .when()
                 .post(JobResource.JOBS_PATH)
                 .then()
-                .statusCode(200)
-                .contentType(ContentType.JSON);
+                .statusCode(200);
     }
 
     private String jobToJson(Job job) throws JsonProcessingException {

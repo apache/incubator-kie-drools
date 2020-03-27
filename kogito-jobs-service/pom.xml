@@ -103,6 +103,12 @@
       <artifactId>commons-lang3</artifactId>
     </dependency>
 
+    <!-- Security -->
+    <dependency>
+      <groupId>io.quarkus</groupId>
+      <artifactId>quarkus-oidc</artifactId>
+    </dependency>
+
     <!-- Testing -->
     <dependency>
       <groupId>io.quarkus</groupId>
@@ -112,6 +118,11 @@
     <dependency>
       <groupId>io.rest-assured</groupId>
       <artifactId>rest-assured</artifactId>
+      <scope>test</scope>
+    </dependency>
+    <dependency>
+      <groupId>org.keycloak</groupId>
+      <artifactId>keycloak-core</artifactId>
       <scope>test</scope>
     </dependency>
     <dependency>
@@ -156,10 +167,42 @@
       </plugin>
       <plugin>
         <artifactId>maven-surefire-plugin</artifactId>
+        <executions>
+          <execution>
+            <id>testWithoutKeycloak</id>
+            <goals>
+              <goal>test</goal>
+            </goals>
+          </execution>
+          <execution>
+            <id>testWithKeycloak</id>
+            <goals>
+              <goal>test</goal>
+            </goals>
+            <configuration>
+              <includes>
+                <include>KeycloakJobServiceTest.java</include>
+              </includes>
+              <excludes>
+                <exclude>none</exclude>
+              </excludes>
+              <systemPropertyVariables>
+                <quarkus.profile>test</quarkus.profile>
+                <quarkus.http.auth.policy.role-policy1.roles-allowed>confidential</quarkus.http.auth.policy.role-policy1.roles-allowed>
+                <quarkus.http.auth.permission.roles1.paths>/*</quarkus.http.auth.permission.roles1.paths>
+                <quarkus.http.auth.permission.roles1.policy>role-policy1</quarkus.http.auth.permission.roles1.policy>
+              </systemPropertyVariables>
+            </configuration>
+          </execution>
+        </executions>
         <configuration>
+          <excludes>
+            <exclude>**/KeycloakJobServiceTest.java</exclude>
+          </excludes>
           <systemPropertyVariables>
             <java.util.logging.manager>org.jboss.logmanager.LogManager</java.util.logging.manager>
             <infinispan.version>${version.org.infinispan.image}</infinispan.version>
+            <keycloak.version>${version.org.keycloak.image}</keycloak.version>
           </systemPropertyVariables>
         </configuration>
       </plugin>
