@@ -76,7 +76,7 @@ public class DMNRuntimeImpl
     public DMNRuntimeImpl(DMNRuntimeKB runtimeKB) {
         this.runtimeKB = runtimeKB != null ? runtimeKB : new VoidDMNRuntimeKB();
         this.eventManager = new DMNRuntimeEventManagerImpl();
-        for (DMNRuntimeEventListener listener : runtimeKB.getListeners()) {
+        for (DMNRuntimeEventListener listener : this.runtimeKB.getListeners()) {
             this.addListener(listener);
         }
     }
