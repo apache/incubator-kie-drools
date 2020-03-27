@@ -28,7 +28,7 @@ import javax.tools.JavaCompiler;
 import javax.tools.JavaFileObject;
 import javax.tools.ToolProvider;
 
-public class KieMemoryCompilerRegressionCompiler {
+public class KieMemoryCompiler {
 
     private static final JavaCompiler JAVA_COMPILER = ToolProvider.getSystemJavaCompiler();
     private static final List<String> OPTIONS = Arrays.asList("-source", "1.8", "-target", "1.8", "-encoding", "UTF-8");

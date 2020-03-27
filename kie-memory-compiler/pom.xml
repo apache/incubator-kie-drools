@@ -9,6 +9,7 @@
   </parent>
   <modelVersion>4.0.0</modelVersion>
 
+  <groupId>org.kie</groupId>
   <artifactId>kie-memory-compiler</artifactId>
 
   <packaging>bundle</packaging><!-- bundle = jar + OSGi metadata -->
