@@ -74,6 +74,7 @@
     <module>drools-workbench-models</module>
     <module>drools-test-coverage</module>
     <module>drools-scenario-simulation</module>
+    <module>kie-memory-compiler</module>
   </modules>
 
   <dependencyManagement>
