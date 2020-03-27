@@ -89,6 +89,13 @@ const ProcessDetails: React.FC<IOwnProps> = ({ data }) => {
               {data.ProcessInstances[0].processName}
             </Text>
           </FormGroup>
+          {data.ProcessInstances[0].businessKey && (
+            <FormGroup label="Business key" fieldId="businessKey">
+              <Text component={TextVariants.p}>
+                {data.ProcessInstances[0].businessKey}
+              </Text>
+            </FormGroup>
+          )}
           <FormGroup label="State" fieldId="state">
             <Text component={TextVariants.p}>
               {stateIconCreator(data.ProcessInstances[0].state)}
@@ -105,8 +112,8 @@ const ProcessDetails: React.FC<IOwnProps> = ({ data }) => {
                 {data.ProcessInstances[0].endpoint}
               </Text>
             ) : (
-              ''
-            )}
+                ''
+              )}
           </FormGroup>
           <FormGroup label="Start" fieldId="start">
             {data.ProcessInstances[0].start ? (
@@ -116,22 +123,19 @@ const ProcessDetails: React.FC<IOwnProps> = ({ data }) => {
                 </Moment>
               </Text>
             ) : (
-              ''
-            )}
+                ''
+              )}
           </FormGroup>
-          <FormGroup label="End" fieldId="end">
-            {data.ProcessInstances[0].end ? (
+          {data.ProcessInstances[0].end && (
+            <FormGroup label="End" fieldId="end">
               <Text component={TextVariants.p}>
                 <Moment fromNow>
                   {new Date(`${data.ProcessInstances[0].end}`)}
                 </Moment>
               </Text>
-            ) : (
-              ''
-            )}
-          </FormGroup>
-          {
-          data.ProcessInstances[0].parentProcessInstance !== null ? (
+            </FormGroup>
+          )}
+          {data.ProcessInstances[0].parentProcessInstance !== null && (
             <FormGroup label="Parent Process" fieldId="parent">
               <div>
                 <Link
@@ -154,12 +158,9 @@ const ProcessDetails: React.FC<IOwnProps> = ({ data }) => {
                 </Link>
               </div>
             </FormGroup>
-          ) : (
-            <div />
           )}
 
-          {
-          data.ProcessInstances[0].childProcessInstances.length !== 0 ? (
+          {data.ProcessInstances[0].childProcessInstances.length !== 0 && (
             <FormGroup label="Sub Processes" fieldId="child">
               {data.ProcessInstances[0].childProcessInstances.map(
                 (child, index) => (
@@ -175,8 +176,6 @@ const ProcessDetails: React.FC<IOwnProps> = ({ data }) => {
                 )
               )}
             </FormGroup>
-          ) : (
-            <div />
           )}
         </Form>
       </CardBody>
