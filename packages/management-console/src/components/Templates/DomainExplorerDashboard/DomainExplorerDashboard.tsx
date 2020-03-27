@@ -49,7 +49,9 @@ const DomainExplorerDashboard = props => {
   const [tableLoading, setTableLoading] = useState(true);
   const [displayTable, setDisplayTable] = useState(false);
   const [selected, setSelected] = useState([]);
-  const [parameters, setParameters] = useState([]);
+  const [parameters, setParameters] = useState([
+    { metadata: [{ processInstances: ['id','processName', 'state', 'start', 'lastUpdate','businessKey'] }] }
+  ]);
 
   const temp = [];
 
@@ -120,7 +122,7 @@ const DomainExplorerDashboard = props => {
   defaultParams = defaultParams.slice(0, 5);
 
   useEffect(() => {
-    setParameters(defaultParams);
+    setParameters(prev => [...defaultParams, ...prev]);
     setSelected(selections);
   }, [columnPickerType, selections.length > 0]);
 

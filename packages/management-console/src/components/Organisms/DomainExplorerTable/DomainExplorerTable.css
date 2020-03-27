@@ -1,3 +1,9 @@
-.kogito-management-console--domain-explorer__table td {
+.kogito-management-console--domain-explorer__table td:not(:first-of-type) {
     min-width: 10em;
   }
+
+  .kogito-management-console__embedded-table  {
+    --pf-c-table--nested--first-last-child--PaddingLeft: 0;
+    margin-bottom: var(--pf-global--spacer--lg);
+    max-width: 80vw;
+}
