@@ -10,7 +10,7 @@ import {
 import React from 'react';
 import ReactJson from 'react-json-view';
 
-const ProcessDetailsProcessVariables = ({ loading, data }) => {
+const ProcessDetailsProcessVariables = ({ data }) => {
   return (
     <Card>
       <CardHeader>
@@ -20,7 +20,7 @@ const ProcessDetailsProcessVariables = ({ loading, data }) => {
       </CardHeader>
       <CardBody>
         <TextContent>
-          {!loading ? (
+          {
             data.ProcessInstances.map((item, index) => {
               return (
                 <div key={index}>
@@ -28,9 +28,7 @@ const ProcessDetailsProcessVariables = ({ loading, data }) => {
                 </div>
               );
             })
-          ) : (
-            <Text component={TextVariants.h4}>Loading...</Text>
-          )}
+          }
         </TextContent>
       </CardBody>
     </Card>

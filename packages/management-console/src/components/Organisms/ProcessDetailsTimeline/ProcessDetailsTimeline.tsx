@@ -5,11 +5,10 @@ import React from 'react';
 import './ProcessDetailsTimeline.css';
 
 export interface IOwnProps {
-  loading: boolean;
   data: any;
 }
 
-const ProcessDetailsTimeline: React.FC<IOwnProps> = ({ loading, data }) => {
+const ProcessDetailsTimeline: React.FC<IOwnProps> = ({ data }) => {
   return (
     <Card>
       <CardHeader>
@@ -19,7 +18,7 @@ const ProcessDetailsTimeline: React.FC<IOwnProps> = ({ loading, data }) => {
       </CardHeader>
       <CardBody>
         <div className="timeline-container">
-          {!loading ? (
+          {
             data[0].nodes.map(content => {
               return (
                 <div className="timeline-item" key={content.id}>
@@ -39,9 +38,7 @@ const ProcessDetailsTimeline: React.FC<IOwnProps> = ({ loading, data }) => {
                 </div>
               );
             })
-          ) : (
-              <p>loading...</p>
-            )}
+           }
         </div>
       </CardBody>
     </Card>

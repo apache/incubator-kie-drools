@@ -87,13 +87,7 @@ exports[`Process Variables component Sample test case 1`] = `
     </Title>
   </CardHeader>
   <CardBody>
-    <TextContent>
-      <Text
-        component="h4"
-      >
-        Loading...
-      </Text>
-    </TextContent>
+    <TextContent />
   </CardBody>
 </Card>
 `;

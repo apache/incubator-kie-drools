@@ -10,7 +10,6 @@ import { query } from 'gql-query-builder';
 import _ from 'lodash';
 import gql from 'graphql-tag';
 import { useApolloClient } from 'react-apollo';
-import { Redirect } from 'react-router';
 
 export interface IOwnProps {
   columnPickerType: any;
@@ -37,7 +36,7 @@ const DomainExplorerColumnPicker: React.FC<IOwnProps> = ({
   selected,
   setSelected,
   data,
-  getPicker
+  getPicker,
 }) => {
   const [isExpanded, setIsExpanded] = useState(false);
   const [tempDomain, setTempDomain] = useState('');
@@ -248,6 +247,7 @@ const DomainExplorerColumnPicker: React.FC<IOwnProps> = ({
 
     return unique;
   }
+  
   return (
     <React.Fragment>
       {!getPicker.loading && columnPickerType && (
@@ -259,7 +259,7 @@ const DomainExplorerColumnPicker: React.FC<IOwnProps> = ({
             onSelect={onSelect}
             selections={selected}
             isExpanded={isExpanded}
-            placeholderText="Pick columns"
+            placeholderText="Select Columns"
             ariaLabelledBy="Column Picker dropdown"
             isGrouped
             maxHeight="60vh"

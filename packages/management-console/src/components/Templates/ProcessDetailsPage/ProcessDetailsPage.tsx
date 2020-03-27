@@ -5,7 +5,9 @@ import {
   GridItem,
   Page,
   PageSection,
-  Title
+  Title,
+  Card,
+  Bullseye
 } from '@patternfly/react-core';
 import React from 'react';
 import { Link, Redirect } from 'react-router-dom';
@@ -16,6 +18,8 @@ import ProcessDetailsTimeline from '../../Organisms/ProcessDetailsTimeline/Proce
 import './ProcessDetailsPage.css';
 import { useGetProcessInstanceByIdQuery } from '../../../graphql/types';
 import ProcessDescriptor from '../../Molecules/ProcessDescriptor/ProcessDescriptor';
+import SpinnerComponent from '../../Atoms/SpinnerComponent/SpinnerComponent';
+import PageTitleComponent from '../../Molecules/PageTitleComponent/PageTitleComponent';
 
 const ProcessDetailsPage = ({ match }) => {
   const id = match.params.instanceID;
@@ -43,15 +47,12 @@ const ProcessDetailsPage = ({ match }) => {
     }
   }
 
-  if (loading) {
-    return <p>Loading...</p>;
-  }
-
   return (
     <>
-      <Page>
-        <PageSection isFilled={true}>
-          <Grid gutter="md" span={12} lg={6} xl={4}>
+      <PageSection variant="light">
+        <PageTitleComponent title="Process Details" />
+          {!loading ?
+          (<Grid gutter="md" span={12} lg={6} xl={4}>
             <GridItem span={12}>
               <Breadcrumb>
                 <BreadcrumbItem>
@@ -65,7 +66,14 @@ const ProcessDetailsPage = ({ match }) => {
                 </BreadcrumbItem>
               </Breadcrumb>
             </GridItem>
-            <GridItem span={12}>
+          </Grid>
+        ) : ''}
+        </PageSection>
+        <PageSection>
+        {!loading ?
+        (
+          <Grid gutter="md" span={12} lg={6} xl={4}>
+          <GridItem span={12}>
               <Title headingLevel="h1" size="4xl">
                 <ProcessDescriptor
                   processInstanceData={data.ProcessInstances[0]}
@@ -73,20 +81,24 @@ const ProcessDetailsPage = ({ match }) => {
               </Title>
             </GridItem>
             <GridItem>
-              <ProcessDetails loading={loading} data={data} />
+              <ProcessDetails data={data} />
             </GridItem>
             <GridItem>
-              <ProcessDetailsProcessVariables loading={loading} data={data} />
+              <ProcessDetailsProcessVariables data={data} />
             </GridItem>
             <GridItem>
               <ProcessDetailsTimeline
-                loading={loading}
                 data={data.ProcessInstances}
               />
             </GridItem>
-          </Grid>
+          </Grid>): (
+            <Card>
+              <Bullseye>
+            <SpinnerComponent spinnerText="Loading process details..." />
+            </Bullseye>
+            </Card>
+          )}
         </PageSection>
-      </Page>
     </>
   );
 };

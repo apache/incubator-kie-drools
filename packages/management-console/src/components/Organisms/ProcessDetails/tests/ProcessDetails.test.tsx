@@ -12,7 +12,13 @@ const props = {
         parentProcessInstanceId: 'e4448857-fa0c-403b-ad69-f0a353458b9d',
         endpoint: 'test',
         start: '2019-10-22T03:40:44.089Z',
-        end: '2019-10-22T03:40:44.089Z'
+        end: '2019-10-22T03:40:44.089Z',
+        parentProcessInstance:{
+          id:''
+        },
+        childProcessInstances: [{
+          id: ''
+        }]
       }
     ]
   },
@@ -44,7 +50,13 @@ const props2 = {
         parentProcessInstanceId: 'e4448857-fa0c-403b-ad69-f0a353458b9d',
         endpoint: 'test',
         start: '2019-10-22T03:40:44.089Z',
-        end: '2019-10-22T03:40:44.089Z'
+        end: '2019-10-22T03:40:44.089Z',
+        parentProcessInstance:{
+          id:''
+        },
+        childProcessInstances: [{
+          id: ''
+        }]
       }
     ]
   },
@@ -55,6 +67,7 @@ const props2 = {
     id: '8035b580-6ae4-4aa8-9ec0-e18e19809e0b',
     processName: 'travels'
   },
+
   childResult: []
 };
 

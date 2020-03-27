@@ -26,7 +26,8 @@ import {
   SearchIcon,
   ErrorCircleOIcon,
   PausedIcon,
-  HistoryIcon
+  HistoryIcon,
+  FilterIcon
 } from "@patternfly/react-icons";
 import Moment from 'react-moment';
 import {Link} from 'react-router-dom';
@@ -308,9 +309,9 @@ const DomainExplorerTable = ({ columnFilters, tableLoading, displayTable }) => {
           <CardBody>
             <Bullseye>
               <EmptyState>
-                <EmptyStateIcon icon={SearchIcon} />
+                <EmptyStateIcon icon={FilterIcon} />
                 <Title headingLevel="h5" size="lg">
-                  No domain data to display
+                  No columns selected
                 </Title>
                 <EmptyStateBody>
                   Select columns from the dropdown to see content

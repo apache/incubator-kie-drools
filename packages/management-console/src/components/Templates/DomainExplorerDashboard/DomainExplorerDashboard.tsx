@@ -154,10 +154,10 @@ const DomainExplorerDashboard = props => {
       <DataToolbar
         id="data-toolbar-with-chip-groups"
         className="pf-m-toggle-group-container"
-        collapseListedFiltersBreakpoint="xl"
+        collapseListedFiltersBreakpoint="md"
       >
         <DataToolbarContent>
-          <DataToolbarToggleGroup toggleIcon={<FilterIcon />} breakpoint="xl">
+          <DataToolbarToggleGroup toggleIcon={<FilterIcon />} breakpoint="md">
             <DataToolbarGroup>
               {!getSchema.loading && (
                 <DomainExplorerColumnPicker
@@ -183,7 +183,7 @@ const DomainExplorerDashboard = props => {
 
   return (
     <>
-      {!getQuery.loading && !props.domains.includes(domainName) && !props.domain.includes(pathName) && <Redirect to={{
+      {!getQuery.loading && !props.domains.includes(domainName) && !props.domains.includes(pathName) && <Redirect to={{
         pathname: '/NoData', state: {
           prev: location.pathname,
           title: 'Domain not found', description: `Domain with the name ${domainName} not found`,

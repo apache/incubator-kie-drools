@@ -102,8 +102,132 @@ exports[`Process Details component Snapshot tests 1`] = `
           </t>
         </Text>
       </FormGroup>
-      <div />
-      <div />
+      <FormGroup
+        fieldId="parent"
+        label="Parent Process"
+      >
+        <div>
+          <Link
+            to="/ProcessInstances/"
+          >
+            <Tooltip
+              appendTo={[Function]}
+              aria="describedby"
+              boundary="window"
+              className=""
+              content=""
+              distance={15}
+              enableFlip={true}
+              entryDelay={500}
+              exitDelay={500}
+              flipBehavior={
+                Array [
+                  "top",
+                  "right",
+                  "bottom",
+                  "left",
+                  "top",
+                  "right",
+                  "bottom",
+                ]
+              }
+              id=""
+              isAppLauncher={false}
+              isContentLeftAligned={false}
+              isVisible={false}
+              maxWidth="18.75rem"
+              position="top"
+              tippyProps={Object {}}
+              trigger="mouseenter focus"
+              zIndex={9999}
+            >
+              <Component
+                icon={
+                  <LevelUpAltIcon
+                    color="currentColor"
+                    noVerticalAlign={false}
+                    size="sm"
+                    title={null}
+                  />
+                }
+                variant="link"
+              >
+                <ProcessDescriptor
+                  processInstanceData={
+                    Object {
+                      "id": "",
+                    }
+                  }
+                />
+              </Component>
+            </Tooltip>
+          </Link>
+        </div>
+      </FormGroup>
+      <FormGroup
+        fieldId="child"
+        label="Sub Processes"
+      >
+        <div
+          key=""
+        >
+          <Link
+            to="/ProcessInstances/"
+          >
+            <Tooltip
+              appendTo={[Function]}
+              aria="describedby"
+              boundary="window"
+              className=""
+              content=""
+              distance={15}
+              enableFlip={true}
+              entryDelay={500}
+              exitDelay={500}
+              flipBehavior={
+                Array [
+                  "top",
+                  "right",
+                  "bottom",
+                  "left",
+                  "top",
+                  "right",
+                  "bottom",
+                ]
+              }
+              id=""
+              isAppLauncher={false}
+              isContentLeftAligned={false}
+              isVisible={false}
+              maxWidth="18.75rem"
+              position="top"
+              tippyProps={Object {}}
+              trigger="mouseenter focus"
+              zIndex={9999}
+            >
+              <Component
+                icon={
+                  <LevelDownAltIcon
+                    color="currentColor"
+                    noVerticalAlign={false}
+                    size="sm"
+                    title={null}
+                  />
+                }
+                variant="link"
+              >
+                <ProcessDescriptor
+                  processInstanceData={
+                    Object {
+                      "id": "",
+                    }
+                  }
+                />
+              </Component>
+            </Tooltip>
+          </Link>
+        </div>
+      </FormGroup>
     </Form>
   </CardBody>
 </Card>
