@@ -50,11 +50,21 @@ import org.kie.internal.io.ResourceWithConfigurationImpl;
  */
 public class DMNRuntimeBuilder {
 
-    private final DMNCompilerConfigurationImpl cc;
-    private final List<DMNProfile> dmnProfiles = new ArrayList<>();
+    private final DMNRuntimeBuilderCtx ctx;
 
     private DMNRuntimeBuilder() {
-        this.cc = new DMNCompilerConfigurationImpl();
+        this.ctx = new DMNRuntimeBuilderCtx();
+    }
+
+    private static class DMNRuntimeBuilderCtx {
+
+        public final DMNCompilerConfigurationImpl cc;
+        public final List<DMNProfile> dmnProfiles = new ArrayList<>();
+
+        public DMNRuntimeBuilderCtx() {
+            this.cc = new DMNCompilerConfigurationImpl();
+        }
+
     }
 
     public static DMNRuntimeBuilder fromDefaults() {
@@ -64,15 +74,20 @@ public class DMNRuntimeBuilder {
     }
 
     public DMNRuntimeBuilder addProfile(DMNProfile dmnProfile) {
-        dmnProfiles.add(dmnProfile);
-        cc.addExtensions(dmnProfile.getExtensionRegisters());
-        cc.addDRGElementCompilers(dmnProfile.getDRGElementCompilers());
-        cc.addFEELProfile(dmnProfile);
+        ctx.dmnProfiles.add(dmnProfile);
+        ctx.cc.addExtensions(dmnProfile.getExtensionRegisters());
+        ctx.cc.addDRGElementCompilers(dmnProfile.getDRGElementCompilers());
+        ctx.cc.addFEELProfile(dmnProfile);
         return this;
     }
 
     public DMNRuntimeBuilder setOption(RuntimeTypeCheckOption option) {
-        cc.setProperty(option.getPropertyName(), "" + option.isRuntimeTypeCheck());
+        ctx.cc.setProperty(option.getPropertyName(), "" + option.isRuntimeTypeCheck());
+        return this;
+    }
+
+    public DMNRuntimeBuilder setRootClassLoader(ClassLoader classLoader) {
+        ctx.cc.setRootClassLoader(classLoader);
         return this;
     }
 
@@ -83,21 +98,18 @@ public class DMNRuntimeBuilder {
         return dmnRuntimeBuilder.buildConfiguration();
     }
 
-    public DMNRuntimeBuilder setRootClassLoader(ClassLoader classLoader) {
-        cc.setRootClassLoader(classLoader);
-        return this;
-    }
-
     public DMNRuntimeBuilderConfigured buildConfiguration() {
-        DMNCompilerImpl dmnCompiler = new DMNCompilerImpl(cc);
-        return new DMNRuntimeBuilderConfigured(dmnCompiler);
+        DMNCompilerImpl dmnCompiler = new DMNCompilerImpl(ctx.cc);
+        return new DMNRuntimeBuilderConfigured(ctx, dmnCompiler);
     }
 
     public static class DMNRuntimeBuilderConfigured {
 
+        private final DMNRuntimeBuilderCtx ctx;
         private final DMNCompilerImpl dmnCompiler;
 
-        private DMNRuntimeBuilderConfigured(DMNCompilerImpl dmnCompiler) {
+        private DMNRuntimeBuilderConfigured(DMNRuntimeBuilderCtx ctx, DMNCompilerImpl dmnCompiler) {
+            this.ctx = ctx;
             this.dmnCompiler = dmnCompiler;
         }
 
@@ -138,17 +150,19 @@ public class DMNRuntimeBuilder {
                 DMNModel dmnModel = dmnCompiler.compile(dmnRes.getDefinitions(), dmnRes.getResAndConfig().getResource(), dmnModels);
                 dmnModels.add(dmnModel);
             }
-            return Either.ofRight(new DMNRuntimeImpl(new DMNRuntimeKBStatic(dmnModels)));
+            return Either.ofRight(new DMNRuntimeImpl(new DMNRuntimeKBStatic(dmnModels, ctx.dmnProfiles)));
         }
     }
 
 
     private static class DMNRuntimeKBStatic implements DMNRuntimeKB {
 
+        private final List<DMNProfile> dmnProfiles;
         private final List<DMNModel> models;
 
-        public DMNRuntimeKBStatic(Collection<? extends DMNModel> models) {
+        private DMNRuntimeKBStatic(Collection<DMNModel> models, Collection<DMNProfile> dmnProfiles) {
             this.models = Collections.unmodifiableList(new ArrayList<>(models));
+            this.dmnProfiles = Collections.unmodifiableList(new ArrayList<>(dmnProfiles));
         }
 
         @Override
@@ -168,7 +182,7 @@ public class DMNRuntimeBuilder {
 
         @Override
         public List<DMNProfile> getProfiles() {
-            return Collections.emptyList();
+            return dmnProfiles;
         }
 
         @Override
