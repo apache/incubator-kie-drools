@@ -67,6 +67,9 @@ public class DMNRuntimeBuilder {
 
     }
 
+    /**
+     * Internal Utility class.
+     */
     public static DMNRuntimeBuilder fromDefaults() {
         DMNRuntimeBuilder dmnRuntimeBuilder = new DMNRuntimeBuilder();
         dmnRuntimeBuilder.addProfile(new ExtendedDMNProfile());
@@ -91,6 +94,9 @@ public class DMNRuntimeBuilder {
         return this;
     }
 
+    /**
+     * Internal Utility class.
+     */
     public static DMNRuntimeBuilderConfigured usingStrict() {
         DMNRuntimeBuilder dmnRuntimeBuilder = new DMNRuntimeBuilder();
         dmnRuntimeBuilder.setRootClassLoader(null);
@@ -126,7 +132,7 @@ public class DMNRuntimeBuilder {
             return fromResources(resources);
         }
 
-        public Either<Exception, DMNRuntime> fromResources(Collection<? extends Resource> resources) {
+        public Either<Exception, DMNRuntime> fromResources(Collection<Resource> resources) {
             List<DMNResource> dmnResources = new ArrayList<>();
             for (Resource r : resources) {
                 Definitions definitions;
