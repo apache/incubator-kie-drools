@@ -2,17 +2,18 @@ package org.kie.kogito.mgmt;
 
 import javax.annotation.PostConstruct;
 import javax.enterprise.context.ApplicationScoped;
+import javax.enterprise.event.Observes;
 import javax.inject.Inject;
 
-import io.quarkus.vertx.web.Route;
 import io.vertx.core.Vertx;
 import io.vertx.core.http.HttpHeaders;
+import io.vertx.ext.web.Router;
 import io.vertx.ext.web.RoutingContext;
+import io.vertx.ext.web.handler.StaticHandler;
 import org.eclipse.microprofile.config.inject.ConfigProperty;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import static io.vertx.core.http.HttpMethod.GET;
 import static java.nio.charset.StandardCharsets.UTF_8;
 
 @ApplicationScoped
@@ -37,7 +38,13 @@ public class VertxRouter {
                 .replace("__DATA_INDEX_ENDPOINT__", "\"" + dataIndexHttpURL + "/graphql\"");
     }
 
-    @Route(path = "/", methods = GET)
+    void setupRouter(@Observes Router router) {
+        router.route("/").handler(ctx -> ctx.response().putHeader("location", "/ProcessInstances/").setStatusCode(302).end());
+        router.route("/ProcessInstances*").handler(ctx -> handle(ctx));
+        router.route("/DomainExplorer*").handler(ctx -> handle(ctx));
+        router.route().handler(StaticHandler.create());
+    }
+
     public void handle(RoutingContext context) {
         try {
             context.response()
@@ -49,4 +56,6 @@ public class VertxRouter {
             context.fail(500, ex);
         }
     }
+
+
 }
