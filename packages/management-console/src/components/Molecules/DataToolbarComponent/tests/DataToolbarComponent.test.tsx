@@ -126,7 +126,7 @@ const props = {
   setInitData: jest.fn(),
   handleAbortAll: jest.fn(),
   setAbortedObj: jest.fn(),
-  abortedObj: { "8035b580-6ae4-4aa8-9ec0-e18e19809e0b": "travels" },
+  abortedObj: { '8035b580-6ae4-4aa8-9ec0-e18e19809e0b': 'travels' },
   initData,
   setOffset: jest.fn(),
   getProcessInstances: jest.fn(),
@@ -135,9 +135,13 @@ const props = {
   setFilteredData: jest.fn(),
   setSearchWord: jest.fn(),
   searchWord: '',
-  setIsClearAllClicked: jest.fn()
+  setIsClearAllClicked: jest.fn(),
+  handleCheckAll: jest.fn(),
+  isAllChecked: false,
+  setIsAllChecked: jest.fn(),
+  setSelectedNumber: jest.fn(),
+  selectedNumber: 0
 };
-
 
 describe('DataToolbar component tests', () => {
   it('Snapshot tests', () => {

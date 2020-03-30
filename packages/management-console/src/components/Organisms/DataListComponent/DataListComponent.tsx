@@ -1,5 +1,11 @@
 import React, { useEffect } from 'react';
-import { DataList, DataListCell, Bullseye, Button, Spinner } from '@patternfly/react-core';
+import {
+  DataList,
+  DataListCell,
+  Bullseye,
+  Button,
+  Spinner
+} from '@patternfly/react-core';
 import '../../Templates/DataListContainer/DataList.css';
 import DataListItemComponent from '../../Molecules/DataListItemComponent/DataListItemComponent';
 import SpinnerComponent from '../../Atoms/SpinnerComponent/SpinnerComponent';
@@ -24,6 +30,9 @@ interface IOwnProps {
   isLoadingMore: boolean;
   isFilterClicked: boolean;
   filters: any;
+  setIsAllChecked: any;
+  selectedNumber: number;
+  setSelectedNumber: (selectedNumber: number) => void;
 }
 
 const DataListComponent: React.FC<IOwnProps> = ({
@@ -38,7 +47,10 @@ const DataListComponent: React.FC<IOwnProps> = ({
   pageSize,
   isLoadingMore,
   isFilterClicked,
-  filters
+  filters,
+  setIsAllChecked,
+  selectedNumber,
+  setSelectedNumber
 }) => {
   const {
     loading,
@@ -59,7 +71,13 @@ const DataListComponent: React.FC<IOwnProps> = ({
   useEffect(() => {
     setIsError(false);
     setAbortedObj({});
-    if (!loading && data !== undefined && filters.status.length === 1 && filters.status.includes('ACTIVE') && !isFilterClicked) {
+    if (
+      !loading &&
+      data !== undefined &&
+      filters.status.length === 1 &&
+      filters.status.includes('ACTIVE') &&
+      !isFilterClicked
+    ) {
       data.ProcessInstances.map((instance: any) => {
         instance.isChecked = false;
         instance.isOpen = false;
@@ -114,6 +132,9 @@ const DataListComponent: React.FC<IOwnProps> = ({
               loadingInitData={loading}
               abortedObj={abortedObj}
               setAbortedObj={setAbortedObj}
+              setIsAllChecked={setIsAllChecked}
+              selectedNumber={selectedNumber}
+              setSelectedNumber={setSelectedNumber}
             />
           );
         })}
@@ -126,7 +147,7 @@ const DataListComponent: React.FC<IOwnProps> = ({
             body="Try using different filters"
           />
         )}
-      {(isLoadingMore) && (
+      {isLoadingMore && (
         <DataListCell className="kogito-management-console-load-more">
           <Button variant="secondary">
             Loading... <Spinner size="md" />

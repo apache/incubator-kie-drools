@@ -25,11 +25,60 @@ exports[`DataToolbar component tests Snapshot tests 1`] = `
         />
       }
     >
-      <ForwardRef>
+      <ForwardRef
+        variant="filter-group"
+      >
+        <DataToolbarItem
+          variant="bulk-select"
+        >
+          <Dropdown
+            dropdownItems={
+              Array [
+                <DropdownItem
+                  onClick={[Function]}
+                >
+                  Select none
+                </DropdownItem>,
+                <DropdownItem
+                  onClick={[Function]}
+                >
+                  Select all parent processes
+                </DropdownItem>,
+                <DropdownItem
+                  onClick={[Function]}
+                >
+                  Select all processes
+                </DropdownItem>,
+              ]
+            }
+            isOpen={false}
+            position="left"
+            toggle={
+              <DropdownToggle
+                onToggle={[Function]}
+                splitButtonItems={
+                  Array [
+                    <DropdownToggleCheckbox
+                      aria-label="Select all"
+                      className=""
+                      id="select-all-checkbox"
+                      isChecked={false}
+                      isDisabled={false}
+                      isValid={true}
+                      onChange={[Function]}
+                    />,
+                  ]
+                }
+              >
+                
+              </DropdownToggle>
+            }
+          />
+        </DataToolbarItem>
         <DataToolbarFilter
           categoryName="Status"
           chips={Array []}
-          className=""
+          className="kogito-management-console__state-dropdown-list pf-u-mr-sm"
           deleteChip={[Function]}
           showToolbarItem={true}
         >

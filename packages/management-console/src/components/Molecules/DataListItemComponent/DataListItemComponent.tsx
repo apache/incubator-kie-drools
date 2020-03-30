@@ -52,6 +52,9 @@ interface IOwnProps {
   loadingInitData: boolean;
   abortedObj: any;
   setAbortedObj: any;
+  setIsAllChecked: any;
+  setSelectedNumber: (selectedNumber: number) => void;
+  selectedNumber: number;
 }
 
 const DataListItemComponent: React.FC<IOwnProps> = ({
@@ -61,7 +64,10 @@ const DataListItemComponent: React.FC<IOwnProps> = ({
   setInitData,
   loadingInitData,
   abortedObj,
-  setAbortedObj
+  setAbortedObj,
+  setIsAllChecked,
+  selectedNumber,
+  setSelectedNumber
 }) => {
   const [expanded, setexpanded] = useState([]);
   const [isOpen, setisOpen] = useState(false);
@@ -293,6 +299,7 @@ const DataListItemComponent: React.FC<IOwnProps> = ({
         if (instanceData.isChecked) {
           if (abortedObj[instanceData.id] !== undefined) {
             delete copyOfAbortedObject[instanceData.id];
+            setSelectedNumber(selectedNumber > 0 && selectedNumber - 1);
           }
           instanceData.isChecked = false;
         } else {
@@ -300,6 +307,7 @@ const DataListItemComponent: React.FC<IOwnProps> = ({
           tempObj[instanceData.id] = instanceData;
           copyOfAbortedObject = { ...copyOfAbortedObject, ...tempObj };
           instanceData.isChecked = true;
+          setSelectedNumber(selectedNumber + 1);
         }
       }
       if (instanceData.childDataList !== undefined) {
@@ -308,30 +316,62 @@ const DataListItemComponent: React.FC<IOwnProps> = ({
             if (child.isChecked) {
               if (copyOfAbortedObject[child.id] !== undefined) {
                 delete copyOfAbortedObject[child.id];
+                setSelectedNumber(selectedNumber > 0 && selectedNumber - 1);
               }
               child.isChecked = false;
             } else {
               const tempObj = {};
               tempObj[child.id] = child;
               copyOfAbortedObject = { ...copyOfAbortedObject, ...tempObj };
+              setSelectedNumber(selectedNumber + 1);
               child.isChecked = true;
             }
           }
         });
       }
     });
+    lengthChecker(copyOfInitData);
     setInitData(copyOfInitData);
     setAbortedObj(copyOfAbortedObject);
   };
+  const lengthChecker = copyOfData => {
+    let totalLength = 0;
+    let isCheckedLength = 0;
+    copyOfData.ProcessInstances.map(instance => {
+      if (
+        instance.addons.includes('process-management') &&
+        instance.serviceUrl !== null
+      ) {
+        totalLength += 1;
+        if (instance.isChecked) {
+          isCheckedLength += 1;
+        }
+      }
 
+      if (instance.childDataList !== undefined) {
+        instance.childDataList.map(child => {
+          if (
+            child.addons.includes('process-management') &&
+            instance.serviceUrl !== null
+          ) {
+            totalLength += 1;
+            if (child.isChecked) {
+              isCheckedLength += 1;
+            }
+          }
+        });
+      }
+    });
+    if (isCheckedLength === totalLength) {
+      setIsAllChecked(true);
+    } else {
+      setIsAllChecked(false);
+    }
+  };
   useEffect(() => {
     if (data !== undefined && !loading && !loadingInitData) {
       data.ProcessInstances.map((instance: any) => {
-        if (processInstanceData[isChecked]) {
-          instance.isChecked = true;
-        } else {
-          instance.isChecked = false;
-        }
+        instance.isChecked = false;
       });
       const copyOfInitData = { ...initData };
       copyOfInitData.ProcessInstances.map(instanceData => {
@@ -647,6 +687,9 @@ const DataListItemComponent: React.FC<IOwnProps> = ({
                         loadingInitData={loading}
                         abortedObj={abortedObj}
                         setAbortedObj={setAbortedObj}
+                        setIsAllChecked={setIsAllChecked}
+                        selectedNumber={selectedNumber}
+                        setSelectedNumber={setSelectedNumber}
                       />
                     );
                   });

@@ -50,7 +50,8 @@ const DataListContainer: React.FC<{}> = () => {
   });
   const [searchWord, setSearchWord] = useState<string>('');
   const [isFilterClicked, setIsFilterClicked] = useState<boolean>(false);
-
+  const [selectedNumber, setSelectedNumber] = useState<number>(0);
+  const [isAllChecked, setIsAllChecked] = useState(false);
   const [
     getProcessInstances,
     { loading, data }
@@ -96,6 +97,8 @@ const DataListContainer: React.FC<{}> = () => {
     setAbortedMessageObj({});
     setCompletedMessageObj({});
     setIsStatusSelected(true);
+    setIsAllChecked(false);
+    setSelectedNumber(0);
     setLimit(pSize);
     setPageSize(pSize);
     setOffset(0);
@@ -216,27 +219,31 @@ const DataListContainer: React.FC<{}> = () => {
     for (const [id, processInstance] of Object.entries(tempAbortedObj)) {
       initData.ProcessInstances.map(instance => {
         if (instance.id === id) {
-          if (
-            instance.state === ProcessInstanceState.Completed ||
-            instance.state === ProcessInstanceState.Aborted
-          ) {
-            completedAndAborted[id] = processInstance;
-            delete tempAbortedObj[id];
-          } else {
-            instance.state = ProcessInstanceState.Aborted;
+          if (instance.addons.includes('process-management') && instance.serviceUrl !== null) {
+            if (
+              instance.state === ProcessInstanceState.Completed ||
+              instance.state === ProcessInstanceState.Aborted
+            ) {
+              completedAndAborted[id] = processInstance;
+              delete tempAbortedObj[id];
+            } else {
+              instance.state = ProcessInstanceState.Aborted;
+            }
           }
         }
         if (instance.childDataList !== undefined) {
           instance.childDataList.map(child => {
             if (child.id === id) {
-              if (
-                child.state === ProcessInstanceState.Completed ||
-                child.state === ProcessInstanceState.Aborted
-              ) {
-                completedAndAborted[id] = processInstance;
-                delete tempAbortedObj[id];
-              } else {
-                child.state = ProcessInstanceState.Aborted;
+              if (instance.addons.includes('process-management') && instance.serviceUrl !== null) {
+                if (
+                  child.state === ProcessInstanceState.Completed ||
+                  child.state === ProcessInstanceState.Aborted
+                ) {
+                  completedAndAborted[id] = processInstance;
+                  delete tempAbortedObj[id];
+                } else {
+                  child.state = ProcessInstanceState.Aborted;
+                }
               }
             }
           });
@@ -266,6 +273,7 @@ const DataListContainer: React.FC<{}> = () => {
         handleAbortModalToggle();
       });
   };
+
   return (
     <React.Fragment>
       <ProcessBulkModalComponent
@@ -317,6 +325,10 @@ const DataListContainer: React.FC<{}> = () => {
                     pageSize={pSize}
                     setSearchWord={setSearchWord}
                     searchWord={searchWord}
+                    isAllChecked={isAllChecked}
+                    setIsAllChecked={setIsAllChecked}
+                    selectedNumber={selectedNumber}
+                    setSelectedNumber={setSelectedNumber}
                   />
                 </>
               )}
@@ -334,19 +346,22 @@ const DataListContainer: React.FC<{}> = () => {
                   setAbortedObj={setAbortedObj}
                   isFilterClicked={isFilterClicked}
                   filters={filters}
+                  setIsAllChecked={setIsAllChecked}
+                  setSelectedNumber={setSelectedNumber}
+                  selectedNumber={selectedNumber}
                 />
               ) : (
-                <EmptyStateComponent
-                  iconType="warningTriangleIcon1"
-                  title="No status is selected"
-                  body="Try selecting at least one status to see results"
-                  filterClick={onFilterClick}
-                  setFilters={setFilters}
-                  setCheckedArray={setCheckedArray}
-                  setSearchWord={setSearchWord}
-                  filters={filters}
-                />
-              )}
+                  <EmptyStateComponent
+                    iconType="warningTriangleIcon1"
+                    title="No status is selected"
+                    body="Try selecting at least one status to see results"
+                    filterClick={onFilterClick}
+                    setFilters={setFilters}
+                    setCheckedArray={setCheckedArray}
+                    setSearchWord={setSearchWord}
+                    filters={filters}
+                  />
+                )}
               {!loading &&
                 !isLoading &&
                 !isDefiningFilter &&

@@ -273,7 +273,7 @@ const props1 = {
   setIsLoading: jest.fn(),
   initData,
   checkedArray: ['ACTIVE'],
-  abortedObj: { "8035b580-6ae4-4aa8-9ec0-e18e19809e0b": "travels" },
+  abortedObj: { '8035b580-6ae4-4aa8-9ec0-e18e19809e0b': 'travels' },
   setAbortedObj: jest.fn(),
   pageSize: 10,
   isLoadingMore: false,
@@ -283,9 +283,11 @@ const props1 = {
   filters: {
     status: [ProcessInstanceState.Active],
     businessKey: []
-  }
-
-}
+  },
+  setIsAllChecked: jest.fn(),
+  selectedNumber: 0,
+  setSelectedNumber: jest.fn()
+};
 
 describe('DataList component tests', () => {
   it('Snapshot tests 1', () => {

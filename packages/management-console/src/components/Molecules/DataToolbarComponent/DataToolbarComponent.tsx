@@ -12,7 +12,13 @@ import {
   SelectVariant,
   InputGroup,
   TextInput,
-  ButtonVariant
+  ButtonVariant,
+  Dropdown,
+  DropdownToggle,
+  DropdownToggleCheckbox,
+  DropdownItem,
+  DropdownPosition,
+  Badge
 } from '@patternfly/react-core';
 import { FilterIcon, SyncIcon, SearchIcon } from '@patternfly/react-icons';
 import _ from 'lodash';
@@ -37,6 +43,10 @@ interface IOwnProps {
   pageSize: number;
   setSearchWord: (searchWord: string) => void;
   searchWord: string;
+  isAllChecked: boolean;
+  setIsAllChecked: (isAllChecked: boolean) => void;
+  setSelectedNumber: (selectedNumber: number) => void;
+  selectedNumber: number;
 }
 const DataToolbarComponent: React.FC<IOwnProps> = ({
   checkedArray,
@@ -52,13 +62,20 @@ const DataToolbarComponent: React.FC<IOwnProps> = ({
   setLimit,
   pageSize,
   setSearchWord,
-  searchWord
+  searchWord,
+  isAllChecked,
+  initData,
+  setInitData,
+  setIsAllChecked,
+  setAbortedObj,
+  selectedNumber,
+  setSelectedNumber
 }) => {
   const [isExpanded, setIsExpanded] = useState<boolean>(false);
   const [isFilterClicked, setIsFilterClicked] = useState<boolean>(false);
   const [isClearAllClicked, setIsClearAllClicked] = useState<boolean>(false);
   const [shouldRefresh, setShouldRefresh] = useState<boolean>(true);
-
+  const [isCheckboxDropdownOpen, setisCheckboxDropdownOpen] = useState(false);
   const onFilterClick = () => {
     if (checkedArray.length === 0) {
       setFilters({ ...filters, status: checkedArray });
@@ -182,6 +199,164 @@ const DataToolbarComponent: React.FC<IOwnProps> = ({
       filterClick(checkedArray);
     }
   };
+  const checkboxDropdownToggle = () => {
+    setisCheckboxDropdownOpen(!isCheckboxDropdownOpen);
+  };
+
+  const handleCheckboxSelectClick = (selection, isCheckboxClicked) => {
+    if (selection === 'none') {
+      setIsAllChecked(false);
+      setSelectedNumber(0);
+      const copyOfInitData = { ...initData };
+      const copyOfAbortedObj = { ...abortedObj };
+      copyOfInitData.ProcessInstances.map(instance => {
+        delete copyOfAbortedObj[instance.id];
+        instance.isChecked = false;
+        if (instance.childDataList !== undefined && instance.isOpen) {
+          instance.childDataList.map(child => {
+            delete copyOfAbortedObj[child.id];
+            child.isChecked = false;
+          });
+        }
+      });
+      setAbortedObj(copyOfAbortedObj);
+      setInitData(copyOfInitData);
+    } else if (selection === 'parent') {
+      let parentSelectedNumber = 0;
+      setIsAllChecked(true);
+      const copyOfInitData = { ...initData };
+      let copyOfAbortedObj = { ...abortedObj };
+      copyOfInitData.ProcessInstances.map(instance => {
+        const tempObj = {};
+        if (
+          instance.addons.includes('process-management') &&
+          instance.serviceUrl !== null
+        ) {
+          instance.isChecked = true;
+          tempObj[instance.id] = instance;
+          parentSelectedNumber += 1;
+        }
+        if (instance.childDataList !== undefined && instance.isOpen) {
+          instance.childDataList.map(child => {
+            delete copyOfAbortedObj[child.id];
+            child.isChecked = false;
+          });
+        }
+        copyOfAbortedObj = { ...copyOfAbortedObj, ...tempObj };
+      });
+      setSelectedNumber(parentSelectedNumber);
+      setAbortedObj(copyOfAbortedObj);
+      setInitData(copyOfInitData);
+    } else if (selection === 'parent&child') {
+      let allSelected = 0;
+      setIsAllChecked(true);
+      const copyOfInitData = { ...initData };
+      let copyOfAbortedObj = { ...abortedObj };
+      copyOfInitData.ProcessInstances.map(instance => {
+        const tempObj = {};
+        if (
+          instance.addons.includes('process-management') &&
+          instance.serviceUrl !== null
+        ) {
+          instance.isChecked = true;
+          tempObj[instance.id] = instance;
+          allSelected += 1;
+        }
+        if (instance.childDataList !== undefined && instance.isOpen) {
+          instance.childDataList.map(child => {
+            if (
+              child.addons.includes('process-management') &&
+              instance.serviceUrl !== null
+            ) {
+              tempObj[child.id] = child;
+              child.isChecked = true;
+              allSelected += 1;
+            }
+          });
+        }
+        copyOfAbortedObj = { ...copyOfAbortedObj, ...tempObj };
+      });
+      setSelectedNumber(allSelected);
+      setAbortedObj(copyOfAbortedObj);
+      setInitData(copyOfInitData);
+    }
+    if (!isCheckboxClicked) {
+      setisCheckboxDropdownOpen(!isCheckboxDropdownOpen);
+    } else {
+      if (isAllChecked) {
+        setIsAllChecked(false);
+        const copyOfInitData = { ...initData };
+        const copyOfAbortedObj = { ...abortedObj };
+        copyOfInitData.ProcessInstances.map(instance => {
+          delete copyOfAbortedObj[instance.id];
+          instance.isChecked = false;
+          if (instance.childDataList !== undefined && instance.isOpen) {
+            instance.childDataList.map(child => {
+              delete copyOfAbortedObj[child.id];
+              child.isChecked = false;
+            });
+          }
+        });
+        setSelectedNumber(0);
+        setAbortedObj(copyOfAbortedObj);
+        setInitData(copyOfInitData);
+      } else {
+        let allSelected = 0;
+        setIsAllChecked(true);
+        const copyOfInitData = { ...initData };
+        let copyOfAbortedObj = { ...abortedObj };
+        copyOfInitData.ProcessInstances.map(instance => {
+          const tempObj = {};
+          if (
+            instance.addons.includes('process-management') &&
+            instance.serviceUrl !== null
+          ) {
+            instance.isChecked = true;
+            tempObj[instance.id] = instance;
+            allSelected += 1;
+          }
+          if (instance.childDataList !== undefined && instance.isOpen) {
+            instance.childDataList.map(child => {
+              if (
+                child.addons.includes('process-management') &&
+                instance.serviceUrl !== null
+              ) {
+                tempObj[child.id] = child;
+                child.isChecked = true;
+                allSelected += 1;
+              }
+            });
+          }
+          copyOfAbortedObj = { ...copyOfAbortedObj, ...tempObj };
+        });
+        setSelectedNumber(allSelected);
+        setAbortedObj(copyOfAbortedObj);
+        setInitData(copyOfInitData);
+      }
+    }
+  };
+
+  const checkboxItems = [
+    <DropdownItem
+      key="none"
+      onClick={() => handleCheckboxSelectClick('none', false)}
+    >
+      Select none
+    </DropdownItem>,
+    <DropdownItem
+      key="all-parent"
+      onClick={() => handleCheckboxSelectClick('parent', false)}
+    >
+      Select all parent processes
+    </DropdownItem>,
+    <DropdownItem
+      key="all-parent-child"
+      onClick={() => handleCheckboxSelectClick('parent&child', false)}
+    >
+      Select all processes
+    </DropdownItem>
+  ];
+
   const statusMenuItems = [
     <SelectOption key="ACTIVE" value="ACTIVE" />,
     <SelectOption key="COMPLETED" value="COMPLETED" />,
@@ -192,12 +367,38 @@ const DataToolbarComponent: React.FC<IOwnProps> = ({
 
   const toggleGroupItems = (
     <React.Fragment>
-      <DataToolbarGroup>
+      <DataToolbarGroup variant="filter-group">
+        <DataToolbarItem variant="bulk-select">
+          <Dropdown
+            position={DropdownPosition.left}
+            toggle={
+              <DropdownToggle
+                onToggle={checkboxDropdownToggle}
+                splitButtonItems={[
+                  <DropdownToggleCheckbox
+                    id="select-all-checkbox"
+                    key="split-checkbox"
+                    aria-label="Select all"
+                    isChecked={isAllChecked}
+                    onChange={() =>
+                      handleCheckboxSelectClick('parent&child', true)
+                    }
+                  />
+                ]}
+              >
+                {selectedNumber === 0 ? '' : selectedNumber + ' selected'}
+              </DropdownToggle>
+            }
+            dropdownItems={checkboxItems}
+            isOpen={isCheckboxDropdownOpen}
+          />
+        </DataToolbarItem>
+
         <DataToolbarFilter
           chips={filters.status}
           deleteChip={onDelete}
+          className="kogito-management-console__state-dropdown-list pf-u-mr-sm"
           categoryName="Status"
-          className=""
         >
           <Select
             variant={SelectVariant.checkbox}

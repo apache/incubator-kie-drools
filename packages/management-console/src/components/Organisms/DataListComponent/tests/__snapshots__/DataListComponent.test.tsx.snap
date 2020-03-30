@@ -1266,11 +1266,14 @@ exports[`DataList component tests Snapshot tests 1 1`] = `
     isLoading={false}
     isLoadingMore={false}
     pageSize={10}
+    selectedNumber={0}
     setAbortedObj={[MockFunction]}
     setFilteredData={[MockFunction]}
     setInitData={[MockFunction]}
+    setIsAllChecked={[MockFunction]}
     setIsError={[MockFunction]}
     setIsLoading={[MockFunction]}
+    setSelectedNumber={[MockFunction]}
   />
 </ApolloProvider>
 `;

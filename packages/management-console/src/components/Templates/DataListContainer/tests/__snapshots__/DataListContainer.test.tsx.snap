@@ -67,16 +67,20 @@ exports[`DataListContainer component tests Snapshot tests 1`] = `
             getProcessInstances={[Function]}
             handleAbortAll={[Function]}
             initData={Object {}}
+            isAllChecked={false}
             pageSize={10}
             searchWord=""
+            selectedNumber={0}
             setAbortedObj={[Function]}
             setCheckedArray={[Function]}
             setFilters={[Function]}
             setInitData={[Function]}
+            setIsAllChecked={[Function]}
             setIsStatusSelected={[Function]}
             setLimit={[Function]}
             setOffset={[Function]}
             setSearchWord={[Function]}
+            setSelectedNumber={[Function]}
           />
           <DataListComponent
             abortedObj={Object {}}
@@ -98,10 +102,13 @@ exports[`DataListContainer component tests Snapshot tests 1`] = `
             isLoading={false}
             isLoadingMore={false}
             pageSize={10}
+            selectedNumber={0}
             setAbortedObj={[Function]}
             setInitData={[Function]}
+            setIsAllChecked={[Function]}
             setIsError={[Function]}
             setIsLoading={[Function]}
+            setSelectedNumber={[Function]}
           />
         </Card>
       </GridItem>
