@@ -17,9 +17,13 @@
 package org.kie.dmn.core.impl;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.Map.Entry;
 import java.util.Objects;
+import java.util.Optional;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 import org.drools.compiler.kie.builder.impl.KieContainerImpl;
 import org.drools.compiler.kproject.models.KieBaseModelImpl;
@@ -50,32 +54,33 @@ public class DMNRuntimeKBWrappingIKB implements DMNRuntimeKB {
 
     @Override
     public List<DMNRuntimeEventListener> getListeners() {
-        List<DMNRuntimeEventListener> results = new ArrayList<>();
-        if (knowledgeBase != null && knowledgeBase instanceof KnowledgeBaseImpl) {
-            KnowledgeBaseImpl knowledgeBaseImpl = (KnowledgeBaseImpl) knowledgeBase;
-            KieContainerImpl kieContainer = (KieContainerImpl) knowledgeBaseImpl.getKieContainer();
-            if (kieContainer != null) {
-                KieBaseModelImpl kieBaseModel = (KieBaseModelImpl) kieContainer.getKieProject().getKieBaseModel(knowledgeBase.getId());
-                for (Entry<String, String> kv : kieBaseModel.getKModule().getConfigurationProperties().entrySet()) {
-                    String k = kv.getKey();
-                    if (k != null && k.startsWith(DMNAssemblerService.DMN_RUNTIME_LISTENER_PREFIX)) {
-                        if (ClassLoaderUtil.CAN_PLATFORM_CLASSLOAD) {
-                            try {
-                                DMNRuntimeEventListener runtimeListenerInstance = (DMNRuntimeEventListener) knowledgeBase.getRootClassLoader().loadClass(kv.getValue()).newInstance();
-                                results.add(runtimeListenerInstance);
-                            } catch (Exception e) {
-                                logger.error("Cannot perform classloading of runtime listener: {}", kv, e);
-                            }
-                        } else {
-                            logger.error("This platform does not support classloading of runtime listener: {}", kv);
-                        }
-                    }
-                }
-            }
+        if (knowledgeBase != null && knowledgeBase instanceof KnowledgeBaseImpl && ((KnowledgeBaseImpl) knowledgeBase).getKieContainer() instanceof KieContainerImpl) {
+            KieBaseModelImpl kieBaseModel = (KieBaseModelImpl) ((KieContainerImpl) ((KnowledgeBaseImpl) knowledgeBase).getKieContainer()).getKieProject().getKieBaseModel(knowledgeBase.getId());
+            return kieBaseModel.getKModule().getConfigurationProperties().entrySet().stream()
+                               .filter(kv -> kv.getKey() != null && kv.getKey().startsWith(DMNAssemblerService.DMN_RUNTIME_LISTENER_PREFIX))
+                               .map(Entry::getValue)
+                               .map(this::loadEventListener)
+                               .flatMap(o -> o.map(Stream::of).orElseGet(Stream::empty))
+                               .collect(Collectors.toList());
         } else {
             logger.warn("No DMNRuntime Listener can be provided, as created without a reference to KnowledgeBase");
         }
-        return results;
+        return Collections.emptyList();
+    }
+
+    private Optional<DMNRuntimeEventListener> loadEventListener(String classString) {
+        if (ClassLoaderUtil.CAN_PLATFORM_CLASSLOAD) {
+            try {
+                DMNRuntimeEventListener runtimeListenerInstance = (DMNRuntimeEventListener) knowledgeBase.getRootClassLoader().loadClass(classString).newInstance();
+                return Optional.of(runtimeListenerInstance);
+            } catch (Exception e) {
+                logger.error("Cannot perform classloading of runtime listener: {}", classString, e);
+                return Optional.empty();
+            }
+        } else {
+            logger.error("This platform does not support classloading of runtime listener: {}", classString);
+            return Optional.empty();
+        }
     }
 
     @Override
