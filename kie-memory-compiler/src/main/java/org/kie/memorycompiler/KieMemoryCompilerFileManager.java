@@ -44,7 +44,7 @@ public class KieMemoryCompilerFileManager extends ForwardingJavaFileManager<Java
             classLoader.addCode(innerClass);
             return innerClass;
         } catch (Exception e) {
-            throw new RuntimeException(
+            throw new KieMemoryCompilerException(
                     "Error while creating in-memory output file for "
                             + className, e);
         }

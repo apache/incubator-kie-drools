@@ -33,6 +33,9 @@ public class KieMemoryCompiler {
     private static final JavaCompiler JAVA_COMPILER = ToolProvider.getSystemJavaCompiler();
     private static final List<String> OPTIONS = Arrays.asList("-source", "1.8", "-target", "1.8", "-encoding", "UTF-8");
 
+    private KieMemoryCompiler() {
+    }
+
     /**
      * Compile the given sources and add compiled classes to the given <code>ClassLoader</code>
      * <b>classNameSourceMap</b>' key must be the <b>FQDN</b> of the class to compile
@@ -43,9 +46,9 @@ public class KieMemoryCompiler {
     public static Map<String, Class<?>> compile(Map<String, String> classNameSourceMap, ClassLoader classLoader) {
         Map<String, KieMemoryCompilerSourceCode> sourceCodes = classNameSourceMap.entrySet().stream().collect(Collectors.toMap(Map.Entry::getKey,
                                                                                                                      entry -> new KieMemoryCompilerSourceCode(entry.getKey(), entry.getValue())));
-        KieMemoryCompilerClassLoader KieMemoryCompilerClassLoader = new KieMemoryCompilerClassLoader(classLoader);
+        KieMemoryCompilerClassLoader kieMemoryCompilerClassLoader = new KieMemoryCompilerClassLoader(classLoader);
         DiagnosticCollector<JavaFileObject> collector = new DiagnosticCollector<>();
-        KieMemoryCompilerFileManager fileManager = new KieMemoryCompilerFileManager(JAVA_COMPILER.getStandardFileManager(null, null, null), KieMemoryCompilerClassLoader);
+        KieMemoryCompilerFileManager fileManager = new KieMemoryCompilerFileManager(JAVA_COMPILER.getStandardFileManager(null, null, null), kieMemoryCompilerClassLoader);
         JavaCompiler.CompilationTask task = JAVA_COMPILER.getTask(null, fileManager, collector, OPTIONS, null, sourceCodes.values());
         boolean result = task.call();
         if (!result || !collector.getDiagnostics().isEmpty()) {
@@ -64,7 +67,7 @@ public class KieMemoryCompiler {
         Map<String, Class<?>> toReturn = new HashMap<>();
         for (String className : sourceCodes.keySet()) {
             try {
-                toReturn.put(className, KieMemoryCompilerClassLoader.loadClass(className));
+                toReturn.put(className, kieMemoryCompilerClassLoader.loadClass(className));
             } catch (ClassNotFoundException e) {
                 throw new KieMemoryCompilerException(e.getMessage(), e);
             }

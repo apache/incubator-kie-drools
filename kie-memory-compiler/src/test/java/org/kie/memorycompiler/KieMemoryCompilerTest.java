@@ -1,7 +1,6 @@
 package org.kie.memorycompiler;
 
 import java.lang.reflect.Method;
-import java.util.Collections;
 import java.util.Map;
 
 import org.junit.Test;
