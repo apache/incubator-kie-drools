@@ -1,0 +1,19 @@
+{
+  "id": "singlesubflow",
+  "name": "singlesubflow",
+  "version": "1.0",
+  "states":[
+    {
+      "name":"SimpleSubFlow",
+      "type":"SUBFLOW",
+      "start": {
+        "kind": "DEFAULT"
+      },
+      "workflowId": "calledsubflow",
+      "waitForCompletion":true,
+      "end": {
+        "kind": "TERMINATE"
+      }
+    }
+  ]
+}

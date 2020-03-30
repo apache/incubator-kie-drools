@@ -1,0 +1,42 @@
+{
+  "type": "object",
+  "javaType": "org.jbpm.serverless.workflow.api.states.SwitchState",
+  "javaInterfaces": [
+    "org.jbpm.serverless.workflow.api.interfaces.State"
+  ],
+  "description": "Permits transitions to other states based on criteria matching",
+  "extends": {
+    "$ref": "defaultstate.json"
+  },
+  "properties": {
+    "choices": {
+      "type": "array",
+      "description": "Defines an ordered set of Match Rules against the input data to this state",
+      "items": {
+        "type": "object",
+        "existingJavaType": "org.jbpm.serverless.workflow.api.interfaces.Choice",
+        "anyOf": [
+          {
+            "$ref": "../choices/singlechoice.json"
+          },
+          {
+            "$ref": "../choices/andchoice.json"
+          },
+          {
+            "$ref": "../choices/notchoice.json"
+          },
+          {
+            "$ref": "../choices/orchoice.json"
+          }
+        ]
+      }
+    },
+    "default": {
+      "$ref": "../transitions/transition.json"
+    }
+  },
+  "required": [
+    "choices",
+    "default"
+  ]
+}

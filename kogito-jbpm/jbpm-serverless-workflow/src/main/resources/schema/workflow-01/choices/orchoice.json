@@ -1,0 +1,25 @@
+{
+  "type": "object",
+  "javaType": "org.jbpm.serverless.workflow.api.choices.OrChoice",
+  "javaInterfaces": [
+    "org.jbpm.serverless.workflow.api.interfaces.Choice"
+  ],
+  "description": "Or Choice",
+  "properties": {
+    "or": {
+      "type": "array",
+      "description": "List of choices",
+      "items": {
+        "type": "object",
+        "$ref": "defaultchoice.json"
+      }
+    },
+    "transition": {
+      "$ref": "../transitions/transition.json"
+    }
+  },
+  "required": [
+    "or",
+    "transition"
+  ]
+}

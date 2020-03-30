@@ -1,0 +1,35 @@
+{
+  "type": "object",
+  "javaType": "org.jbpm.serverless.workflow.api.choices.DefaultChoice",
+  "javaInterfaces": ["org.jbpm.serverless.workflow.api.interfaces.Choice"],
+  "description": "Default Choice",
+  "properties": {
+    "path": {
+      "type": "string",
+      "description": "JSON Path that selects the value of the input data to be matched"
+    },
+    "value": {
+      "type": "string",
+      "description": "Matching value"
+    },
+    "operator": {
+      "type": "string",
+      "enum": [
+        "Equals",
+        "LessThan",
+        "LessThanEquals",
+        "GreaterThan",
+        "GreaterThanEquals"
+      ],
+      "description": "Specifies how the input data is compared with the values"
+    },
+    "transition": {
+      "$ref": "../transitions/transition.json"
+    }
+  },
+  "required": [
+    "path",
+    "value",
+    "operator"
+  ]
+}

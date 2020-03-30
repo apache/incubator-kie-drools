@@ -1,0 +1,21 @@
+{
+  "type": "object",
+  "javaType": "org.jbpm.serverless.workflow.api.states.RelayState",
+  "javaInterfaces": [
+    "org.jbpm.serverless.workflow.api.interfaces.State"
+  ],
+  "description": "Set up and relay the state's data input to data output. Does not perform any actions",
+  "extends": {
+    "$ref": "defaultstate.json"
+  },
+  "properties": {
+    "inject": {
+      "type": "object",
+      "description": "JSON object which can be set as states data input and can be manipulated via filters",
+      "existingJavaType": "java.util.Map<String, String>"
+    }
+  },
+  "required": [
+    "inject"
+  ]
+}

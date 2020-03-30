@@ -1,0 +1,25 @@
+---
+id: function
+name: test-wf
+functions:
+  - name: helloWorld
+    type: script
+  - name: goodbyeWorld
+    type: script
+states:
+  - name: HelloWorld
+    type: OPERATION
+    start:
+      kind: DEFAULT
+    actionMode: SEQUENTIAL
+    actions:
+      - functionRef:
+          refName: helloWorld
+          parameters:
+            script: System.out.println("Hello Serverless Workflow World");
+      - functionRef:
+          refName: goodbyeWorld
+          parameters:
+            script: System.out.println("GoodBye Serverless Workflow World");
+    end:
+      kind: TERMINATE

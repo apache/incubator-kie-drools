@@ -1,0 +1,15 @@
+{
+  "type": "object",
+  "javaType": "org.jbpm.serverless.workflow.api.filters.ActionDataFilter",
+  "properties": {
+    "dataInputPath": {
+      "type": "string",
+      "description": "JSONPath definition that selects parts of the states data input to be the action data"
+    },
+    "dataResultsPath": {
+      "type": "string",
+      "description": "JSONPath definition that selects parts of the actions data result, to be merged with the states data"
+    }
+  },
+  "required": []
+}

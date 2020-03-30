@@ -35,6 +35,7 @@
     <module>jbpm-flow</module>
     <module>jbpm-flow-builder</module>
     <module>jbpm-bpmn2</module>
+    <module>jbpm-serverless-workflow</module>
   </modules>
 
 </project>

@@ -16,11 +16,25 @@
 
 package org.kie.kogito.codegen.data;
 
+import com.fasterxml.jackson.databind.JsonNode;
+import com.fasterxml.jackson.databind.ObjectMapper;
+
 public class HelloService {
 	
     public String hello(String name) {
         System.out.println("Service invoked with " + name + " on service " + this.toString());
         return "Hello " + name.toString() + "!";
+    }
+    public JsonNode jsonHello(JsonNode person) {
+        System.out.println("Service invoked with " + person + " on service " + this.toString());
+
+        String retJsonStr = "{\"result\":\"Hello " + person.get("name").textValue() + "\"}";
+        ObjectMapper mapper = new ObjectMapper();
+        try {
+            return mapper.readTree(retJsonStr);
+        } catch(Exception e) {
+            return null;
+        }
     }
     
     public String goodbye(String name) {

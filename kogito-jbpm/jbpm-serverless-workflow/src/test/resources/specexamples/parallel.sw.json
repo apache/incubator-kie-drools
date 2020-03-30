@@ -1,0 +1,54 @@
+{
+  "id": "parallelexec",
+  "version": "1.0",
+  "name": "Parallel Execution Workflow",
+  "description": "Executes two branches in parallel",
+  "states":[
+    {
+      "name":"ParallelExec",
+      "type":"PARALLEL",
+      "start": {
+        "kind": "DEFAULT"
+      },
+      "branches": [
+        {
+          "name": "Branch1",
+          "states": [
+            {
+              "name":"ShortDelay",
+              "type":"DELAY",
+              "start": {
+                "kind": "DEFAULT"
+              },
+              "timeDelay": "PT15S",
+              "end": {
+                "kind": "DEFAULT"
+              }
+            }
+          ],
+          "waitForCompletion": false
+        },
+        {
+          "name": "Branch2",
+          "states": [
+            {
+              "name":"LongDelay",
+              "type":"DELAY",
+              "start": {
+                "kind": "DEFAULT"
+              },
+              "timeDelay": "PT2M",
+              "end": {
+                "kind": "DEFAULT"
+              }
+            }
+          ],
+          "waitForCompletion": false
+        }
+      ],
+      "end": {
+        "kind": "DEFAULT"
+      }
+    }
+  ]
+}

@@ -1,0 +1,18 @@
+{
+  "type": "object",
+  "javaType": "org.jbpm.serverless.workflow.api.produce.ProduceEvent",
+  "properties": {
+    "nameRef": {
+      "type": "string",
+      "description": "References a name of a defined event",
+      "minLength": 1
+    },
+    "data": {
+      "type": "string",
+      "description": "JSONPath expression which selects parts of the states data output to become the data of the produced event"
+    }
+  },
+  "required": [
+    "nameRef"
+  ]
+}

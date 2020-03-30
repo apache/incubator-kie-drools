@@ -1,0 +1,99 @@
+{
+  "id": "provisionorders",
+  "version": "1.0",
+  "name": "Provision Orders",
+  "description": "Provision Orders and handle errors thrown",
+  "functions": [
+    {
+      "name": "provisionOrderFunction",
+      "resource": "functionResourse"
+    }
+  ],
+  "states":[
+    {
+      "name":"ProvisionOrder",
+      "type":"OPERATION",
+      "start": {
+        "kind": "DEFAULT"
+      },
+      "actionMode":"SEQUENTIAL",
+      "actions":[
+        {
+          "functionRef": {
+            "refName": "provisionOrderFunction",
+            "parameters": {
+              "order": "$.order"
+            }
+          }
+        }
+      ],
+      "onError": [
+        {
+          "expression": {
+            "language": "spel",
+            "body": "name eq 'MissingOrderIdException'"
+          },
+          "transition": {
+            "nextState": "MissingId"
+          }
+        },
+        {
+          "expression": {
+            "language": "spel",
+            "body": "name eq 'MissingOrderItemException'"
+          },
+          "transition": {
+            "nextState": "MissingItem"
+          }
+        },
+        {
+          "expression": {
+            "language": "spel",
+            "body": "name eq 'MissingOrderQuantityException'"
+          },
+          "transition": {
+            "nextState": "MissingQuantity"
+          }
+        }
+      ],
+      "stateDataFilter": {
+        "dataOutputPath": "$.exception"
+      },
+      "transition": {
+        "nextState":"ApplyOrder"
+      }
+    },
+    {
+      "name": "MissingId",
+      "type": "SUBFLOW",
+      "workflowId": "handleMissingIdExceptionWorkflow",
+      "end": {
+        "kind": "DEFAULT"
+      }
+    },
+    {
+      "name": "MissingItem",
+      "type": "SUBFLOW",
+      "workflowId": "handleMissingItemExceptionWorkflow",
+      "end": {
+        "kind": "DEFAULT"
+      }
+    },
+    {
+      "name": "MissingQuantity",
+      "type": "SUBFLOW",
+      "workflowId": "handleMissingQuantityExceptionWorkflow",
+      "end": {
+        "kind": "DEFAULT"
+      }
+    },
+    {
+      "name": "ApplyOrder",
+      "type": "SUBFLOW",
+      "workflowId": "applyOrderWorkflowId",
+      "end": {
+        "kind": "DEFAULT"
+      }
+    }
+  ]
+}

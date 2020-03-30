@@ -1,0 +1,39 @@
+---
+id: sendcloudeventonprovision
+version: '1.0'
+name: Send CloudEvent on provision completion
+events:
+  - name: provisioningCompleteEvent
+    type: provisionCompleteType
+    source: provisionCompleteSource
+functions:
+  - name: provisionOrderFunction
+    resource: functionResourse
+states:
+  - name: ProvisionOrdersState
+    type: FOREACH
+    start:
+      kind: DEFAULT
+    inputCollection: "$.orders"
+    inputParameter: "$.singleorder"
+    outputCollection: "$.results"
+    states:
+      - name: DoProvision
+        type: OPERATION
+        start:
+          kind: DEFAULT
+        actionMode: SEQUENTIAL
+        actions:
+          - functionRef:
+              refName: provisionOrderFunction
+              parameters:
+                order: "$.order"
+        end:
+          kind: DEFAULT
+    stateDataFilter:
+      dataOutputPath: "$.provisionedOrders"
+    end:
+      kind: EVENT
+      produceEvent:
+        nameRef: provisioningCompleteEvent
+        data: "$.provisionedOrders"

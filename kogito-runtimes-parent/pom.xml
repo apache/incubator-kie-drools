@@ -137,6 +137,7 @@
     <version.springboot>2.2.5.RELEASE</version.springboot>
     <version.spring.framework>5.2.4.RELEASE</version.spring.framework>
     <version.xmlunit>2.2.1</version.xmlunit>
+    <version.jsonschema2pojo-maven-plugin>1.0.1</version.jsonschema2pojo-maven-plugin>
   </properties>
 
   <!-- distributionManagement section -->
@@ -1280,6 +1281,11 @@
           <groupId>io.quarkus</groupId>
           <artifactId>quarkus-bootstrap-maven-plugin</artifactId>
           <version>${version.io.quarkus}</version>
+        </plugin>
+        <plugin>
+          <groupId>org.jsonschema2pojo</groupId>
+          <artifactId>jsonschema2pojo-maven-plugin</artifactId>
+          <version>${version.jsonschema2pojo-maven-plugin}</version>
         </plugin>
       </plugins>
     </pluginManagement>

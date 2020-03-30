@@ -1,0 +1,19 @@
+{
+  "id": "function",
+  "name": "test-wf",
+  "version": "1.0",
+  "states":[
+    {
+      "name":"SimpleSubFlow",
+      "type":"SUBFLOW",
+      "start": {
+        "kind": "DEFAULT"
+      },
+      "workflowId": "abc",
+      "waitForCompletion":true,
+      "end": {
+        "kind": "TERMINATE"
+      }
+    }
+  ]
+}

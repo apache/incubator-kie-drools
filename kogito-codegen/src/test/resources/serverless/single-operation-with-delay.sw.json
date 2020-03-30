@@ -1,0 +1,42 @@
+{
+  "id": "function",
+  "name": "test-wf",
+  "version": "1.0",
+  "functions": [
+    {
+      "name": "helloWorld",
+      "type": "script"
+    }
+  ],
+  "states":[
+    {
+      "name":"HelloWorld",
+      "type":"OPERATION",
+      "start": {
+        "kind": "DEFAULT"
+      },
+      "actionMode":"SEQUENTIAL",
+      "actions":[
+        {
+          "functionRef": {
+            "refName": "helloWorld",
+            "parameters" : {
+              "script" : "System.out.println(\"Hello Serverless Workflow World\");"
+            }
+          }
+        }
+      ],
+      "transition": {
+        "nextState": "SmallDelay"
+      }
+    },
+    {
+      "name": "SmallDelay",
+      "type":"DELAY",
+      "timeDelay": "PT1S",
+      "end": {
+        "kind": "TERMINATE"
+      }
+    }
+  ]
+}

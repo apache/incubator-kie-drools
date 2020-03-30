@@ -1,0 +1,31 @@
+{
+  "type": "object",
+  "javaType": "org.jbpm.serverless.workflow.api.states.CallbackState",
+  "javaInterfaces": [
+    "org.jbpm.serverless.workflow.api.interfaces.State"
+  ],
+  "description": "This state is used to wait for events from event sources and then transitioning to a next state",
+  "extends": {
+    "$ref": "defaultstate.json"
+  },
+  "properties": {
+    "action": {
+      "description": "Defines the action to be executed",
+      "$ref": "../actions/action.json"
+    },
+    "eventRef": {
+      "type" : "string",
+      "description": "References an unique callback event name in the defined workflow events"
+    },
+    "timeout": {
+      "type": "string",
+      "description": "Time period to wait for incoming events (ISO 8601 format)"
+    },
+    "eventDataFilter": {
+      "description": "Callback event data filter definition",
+      "$ref": "../filters/eventdatafilter.json"
+    }
+  },
+  "required": [
+  ]
+}

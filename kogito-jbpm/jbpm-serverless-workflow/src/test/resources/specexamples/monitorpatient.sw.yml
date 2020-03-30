@@ -1,0 +1,57 @@
+---
+id: patientVitalsWorkflow
+name: Monitor Patient Vitals
+version: '1.0'
+events:
+  - name: HighBodyTemperature
+    type: org.monitor.highBodyTemp
+    source: monitoringSource
+    correlationToken: patientId
+  - name: HighBloodPressure
+    type: org.monitor.highBloodPressure
+    source: monitoringSource
+    correlationToken: patientId
+  - name: HighRespirationRate
+    type: org.monitor.highRespirationRate
+    source: monitoringSource
+    correlationToken: patientId
+functions:
+  - name: callPulmonologist
+    type: function
+    resource: callPulmonologistResource
+  - name: sendTylenolOrder
+    type: function
+    resource: sendTylenolOrderFunction
+  - name: callNurse
+    type: function
+    resource: callNurseResource
+states:
+  - name: MonitorVitals
+    type: EVENT
+    start:
+      kind: DEFAULT
+    exclusive: true
+    eventsActions:
+      - eventRefs:
+          - HighBodyTemperature
+        actions:
+          - functionRef:
+              refName: sendTylenolOrder
+              parameters:
+                patientid: "$.patientId"
+      - eventRefs:
+          - HighBloodPressure
+        actions:
+          - functionRef:
+              refName: callNurse
+              parameters:
+                patientid: "$.patientId"
+      - eventRefs:
+          - HighRespirationRate
+        actions:
+          - functionRef:
+              refName: callPulmonologist
+              parameters:
+                patientid: "$.patientId"
+    end:
+      kind: TERMINATE

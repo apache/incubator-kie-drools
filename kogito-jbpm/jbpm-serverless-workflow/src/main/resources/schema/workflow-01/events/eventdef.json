@@ -1,0 +1,31 @@
+{
+  "type": "object",
+  "javaType": "org.jbpm.serverless.workflow.api.events.EventDefinition",
+  "properties": {
+    "name": {
+      "type": "string",
+      "description": "Event Definition unique name",
+      "minLength": 1
+    },
+    "source": {
+      "type": "string",
+      "description": "CloudEvent source UUID"
+    },
+    "type": {
+      "type": "string",
+      "description": "CloudEvent type"
+    },
+    "correlationToken": {
+      "type": "string",
+      "description": "Context attribute name of the CloudEvent which value is to be used for event correlation"
+    },
+    "metadata": {
+      "$ref": "../metadata/metadata.json"
+    }
+  },
+  "required": [
+    "name",
+    "source",
+    "type"
+  ]
+}

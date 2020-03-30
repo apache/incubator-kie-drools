@@ -1,0 +1,168 @@
+{
+  "id": "jobmonitoring",
+  "version": "1.0",
+  "name": "Job Monitoring",
+  "description": "Monitor finished execution of a submitted job",
+  "functions": [
+    {
+      "name": "submitJob",
+      "resource": "submitJobResource"
+    },
+    {
+      "name": "checkJobStatus",
+      "resource": "checkJobStatusResource"
+    },
+    {
+      "name": "reportJobSuceeded",
+      "resource": "reportJobSuceededResource"
+    },
+    {
+      "name": "reportJobFailed",
+      "resource": "reportJobFailedResource"
+    }
+  ],
+  "states":[
+    {
+      "name":"SubmitJob",
+      "type":"OPERATION",
+      "start": {
+        "kind": "DEFAULT"
+      },
+      "actionMode":"SEQUENTIAL",
+      "actions":[
+        {
+          "functionRef": {
+            "refName": "submitJob",
+            "parameters": {
+              "name": "$.job.name"
+            }
+          },
+          "actionDataFilter": {
+            "dataResultsPath": "$.jobuid"
+          }
+        }
+      ],
+      "onError": [
+        {
+          "expression": {
+            "language": "spel",
+            "body": "$.exception != null"
+          },
+          "errorDataFilter": {
+            "dataOutputPath": "$.exception"
+          },
+          "transition": {
+            "nextState": "SubmitError"
+          }
+        }
+      ],
+      "stateDataFilter": {
+        "dataOutputPath": "$.jobuid"
+      },
+      "transition": {
+        "nextState":"WaitForCompletion"
+      }
+    },
+    {
+      "name": "SubmitError",
+      "type": "SUBFLOW",
+      "workflowId": "handleJobSubmissionErrorWorkflow",
+      "end": {
+        "kind": "DEFAULT"
+      }
+    },
+    {
+      "name": "WaitForCompletion",
+      "type": "DELAY",
+      "timeDelay": "PT5S",
+      "transition": {
+        "nextState":"GetJobStatus"
+      }
+    },
+    {
+      "name":"GetJobStatus",
+      "type":"OPERATION",
+      "actionMode":"SEQUENTIAL",
+      "actions":[
+        {
+          "functionRef": {
+            "refName": "checkJobStatus",
+            "parameters": {
+              "name": "$.jobuid"
+            }
+          },
+          "actionDataFilter": {
+            "dataResultsPath": "$.jobstatus"
+          }
+        }
+      ],
+      "stateDataFilter": {
+        "dataOutputPath": "$.jobstatus"
+      },
+      "transition": {
+        "nextState":"DetermineCompletion"
+      }
+    },
+    {
+      "name":"DetermineCompletion",
+      "type":"SWITCH",
+      "choices": [
+        {
+          "path": "$.jobstatus",
+          "value": "SUCCEEDED",
+          "operator": "Equals",
+          "transition": {
+            "nextState": "JobSucceeded"
+          }
+        },
+        {
+          "path": "$.jobstatus",
+          "value": "FAILED",
+          "operator": "Equals",
+          "transition": {
+            "nextState": "JobFailed"
+          }
+        }
+      ],
+      "default": {
+        "nextState": "WaitForCompletion"
+      }
+    },
+    {
+      "name":"JobSucceeded",
+      "type":"OPERATION",
+      "actionMode":"SEQUENTIAL",
+      "actions":[
+        {
+          "functionRef": {
+            "refName": "reportJobSuceeded",
+            "parameters": {
+              "name": "$.jobuid"
+            }
+          }
+        }
+      ],
+      "end": {
+        "kind": "DEFAULT"
+      }
+    },
+    {
+      "name":"JobFailed",
+      "type":"OPERATION",
+      "actionMode":"SEQUENTIAL",
+      "actions":[
+        {
+          "functionRef": {
+            "refName": "reportJobFailed",
+            "parameters": {
+              "name": "$.jobuid"
+            }
+          }
+        }
+      ],
+      "end": {
+        "kind": "DEFAULT"
+      }
+    }
+  ]
+}

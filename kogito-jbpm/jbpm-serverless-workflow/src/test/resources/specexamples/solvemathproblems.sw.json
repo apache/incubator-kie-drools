@@ -1,0 +1,53 @@
+{
+  "id": "solvemathproblems",
+  "version": "1.0",
+  "name": "Solve Math Problems Workflow",
+  "description": "Solve math problems",
+  "functions": [
+    {
+      "name": "solveMathExpressionFunction",
+      "resource": "functionResourse"
+    }
+  ],
+  "states":[
+    {
+      "name":"Solve",
+      "type":"FOREACH",
+      "start": {
+        "kind": "DEFAULT"
+      },
+      "inputCollection": "$.expressions",
+      "inputParameter": "$.singleexpression",
+      "outputCollection": "$.results",
+      "states": [
+        {
+          "name":"GetResults",
+          "type":"OPERATION",
+          "start": {
+            "kind": "DEFAULT"
+          },
+          "actionMode":"SEQUENTIAL",
+          "actions":[
+            {
+              "functionRef": {
+                "refName": "solveMathExpressionFunction",
+                "parameters": {
+                  "expression": "$.singleexpression"
+                }
+              }
+            }
+          ],
+          "end": {
+            "kind": "DEFAULT"
+          }
+        }
+      ],
+      "stateDataFilter": {
+        "dataOutputPath": "$.results"
+      },
+      "end": {
+        "kind": "DEFAULT"
+      }
+    }
+  ]
+}

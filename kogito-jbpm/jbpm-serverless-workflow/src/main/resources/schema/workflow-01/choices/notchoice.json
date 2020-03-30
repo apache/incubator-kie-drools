@@ -1,0 +1,22 @@
+{
+  "type": "object",
+  "javaType": "org.jbpm.serverless.workflow.api.choices.NotChoice",
+  "javaInterfaces": [
+    "org.jbpm.serverless.workflow.api.interfaces.Choice"
+  ],
+  "description": "Not Choice",
+  "properties": {
+    "not": {
+      "type": "object",
+      "$ref": "defaultchoice.json",
+      "description": "Single Choice"
+    },
+    "transition": {
+      "$ref": "../transitions/transition.json"
+    }
+  },
+  "required": [
+    "not",
+    "transition"
+  ]
+}

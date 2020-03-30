@@ -1,0 +1,24 @@
+{
+  "type": "object",
+  "javaType": "org.jbpm.serverless.workflow.api.states.ParallelState",
+  "javaInterfaces": [
+    "org.jbpm.serverless.workflow.api.interfaces.State"
+  ],
+  "description": "Consists of a number of states that are executed in parallel",
+  "extends": {
+    "$ref": "defaultstate.json"
+  },
+  "properties": {
+    "branches": {
+      "type": "array",
+      "description": "Branch Definitions",
+      "items": {
+        "type": "object",
+        "$ref": "../branches/branch.json"
+      }
+    }
+  },
+  "required": [
+    "branches"
+  ]
+}

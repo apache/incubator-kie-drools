@@ -1,0 +1,22 @@
+---
+id: helloworld
+version: '1.0'
+name: Hello World Workflow
+description: Static Hello World
+states:
+  - name: Hello
+    type: RELAY
+    inject:
+      result: Hello
+    transition:
+      nextState: World
+  - name: World
+    type: RELAY
+    start:
+      kind: DEFAULT
+    inject:
+      result: " World!"
+    stateDataFilter:
+      dataOutputPath: "$.result"
+    end:
+      kind: DEFAULT

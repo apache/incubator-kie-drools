@@ -1,0 +1,19 @@
+{
+  "type": "object",
+  "javaType": "org.jbpm.serverless.workflow.api.error.Error",
+  "properties": {
+    "expression": {
+      "$ref": "../expression/expression.json"
+    },
+    "errorDataFilter": {
+      "$ref": "../filters/errordatafilter.json"
+    },
+    "transition": {
+      "$ref": "../transitions/transition.json"
+    }
+  },
+  "required": [
+    "expression",
+    "transition"
+  ]
+}

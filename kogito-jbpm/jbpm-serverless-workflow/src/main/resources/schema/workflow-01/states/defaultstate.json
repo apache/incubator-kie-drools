@@ -1,0 +1,81 @@
+{
+  "type": "object",
+  "javaType": "org.jbpm.serverless.workflow.api.states.DefaultState",
+  "javaInterfaces": [
+    "org.jbpm.serverless.workflow.api.interfaces.State"
+  ],
+  "description": "Default State",
+  "properties": {
+    "id": {
+      "type": "string",
+      "description": "State unique identifier",
+      "minLength": 1
+    },
+    "name": {
+      "type": "string",
+      "description": "Unique name of the state",
+      "minLength": 1
+    },
+    "type": {
+      "type": "string",
+      "enum": [
+        "EVENT",
+        "OPERATION",
+        "SWITCH",
+        "DELAY",
+        "PARALLEL",
+        "SUBFLOW",
+        "RELAY",
+        "FOREACH",
+        "CALLBACK"
+      ],
+      "description": "State type"
+    },
+    "start": {
+      "$ref": "../start/start.json",
+      "description": "Defines this states start"
+    },
+    "end": {
+      "$ref": "../end/end.json",
+      "description": "Defines this states end"
+    },
+    "stateDataFilter": {
+      "$ref": "../filters/statedatafilter.json",
+      "description": "State data filter definition"
+    },
+    "metadata": {
+      "$ref": "../metadata/metadata.json"
+    },
+    "transition": {
+      "$ref": "../transitions/transition.json"
+    },
+    "dataInputSchema": {
+      "type": "string",
+      "description": "URI to JSON Schema that state data input adheres to"
+    },
+    "dataOutputSchema": {
+      "type": "string",
+      "description": "URI to JSON Schema that state data output adheres to"
+    },
+    "onError": {
+      "type": "array",
+      "description": "State onError definition",
+      "items": {
+        "type": "object",
+        "$ref": "../error/error.json"
+      }
+    },
+    "retry": {
+      "type": "array",
+      "description": "State retry definition",
+      "items": {
+        "type": "object",
+        "$ref": "../retry/retry.json"
+      }
+    }
+  },
+  "required": [
+    "name",
+    "type"
+  ]
+}

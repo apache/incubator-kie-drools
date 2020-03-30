@@ -1,0 +1,18 @@
+{
+  "type": "object",
+  "javaType": "org.jbpm.serverless.workflow.api.transitions.Transition",
+  "properties": {
+    "expression": {
+      "description": "Boolean expression evaluated against state's data output. Must evaluate to true for the transition to be valid.",
+      "$ref": "../expression/expression.json"
+    },
+    "nextState": {
+      "type": "string",
+      "description": "State to transition to next",
+      "minLength": 1
+    }
+  },
+  "required": [
+    "nextState"
+  ]
+}

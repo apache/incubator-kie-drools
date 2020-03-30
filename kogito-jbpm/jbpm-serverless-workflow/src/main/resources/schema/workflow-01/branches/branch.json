@@ -1,0 +1,29 @@
+{
+  "type": "object",
+  "javaType": "org.jbpm.serverless.workflow.api.branches.Branch",
+  "description": "Branch Definition",
+  "properties": {
+    "name": {
+      "type": "string",
+      "description": "Branch name"
+    },
+    "states": {
+      "type": "array",
+      "description": "State Definitions",
+      "items": {
+        "type": "object",
+        "existingJavaType": "org.jbpm.serverless.workflow.api.interfaces.State"
+      }
+    },
+    "waitForCompletion": {
+      "type": "boolean",
+      "default": false,
+      "description": "Flow must wait for this branch to finish before continuing"
+    }
+  },
+  "required": [
+    "name",
+    "states",
+    "waitForCompletion"
+  ]
+}

@@ -1,0 +1,19 @@
+{
+  "type": "object",
+  "javaType": "org.jbpm.serverless.workflow.api.functions.FunctionRef",
+  "properties": {
+    "refName": {
+      "type": "string",
+      "description": "Name of the referenced function",
+      "minLength": 1
+    },
+    "parameters": {
+      "type": "object",
+      "description": "Function parameters",
+      "existingJavaType": "java.util.Map<String, String>"
+    }
+  },
+  "required": [
+    "refName"
+  ]
+}

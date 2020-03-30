@@ -1,0 +1,25 @@
+{
+  "type": "object",
+  "javaType": "org.jbpm.serverless.workflow.api.states.SubflowState",
+  "javaInterfaces": [
+    "org.jbpm.serverless.workflow.api.interfaces.State"
+  ],
+  "description": "Defines a sub-workflow to be executed",
+  "extends": {
+    "$ref": "defaultstate.json"
+  },
+  "properties": {
+    "waitForCompletion": {
+      "type": "boolean",
+      "default": false,
+      "description": "Workflow execution must wait for local workflow to finish before continuing."
+    },
+    "workflowId": {
+      "type": "string",
+      "description": "Sub-workflow unique id."
+    }
+  },
+  "required": [
+    "workflowId"
+  ]
+}

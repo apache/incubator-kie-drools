@@ -1,0 +1,25 @@
+---
+id: greeting
+version: '1.0'
+name: Greeting Workflow
+description: Greet Someone
+functions:
+  - name: greetingFunction
+    resource: functionResourse
+states:
+  - name: Greet
+    type: OPERATION
+    start:
+      kind: DEFAULT
+    actionMode: SEQUENTIAL
+    actions:
+      - functionRef:
+          refName: greetingFunction
+          parameters:
+            name: "$.greet.name"
+        actionDataFilter:
+          dataResultsPath: "$.payload.greeting"
+    stateDataFilter:
+      dataOutputPath: "$.greeting"
+    end:
+      kind: DEFAULT

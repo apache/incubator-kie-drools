@@ -1,0 +1,35 @@
+{
+  "id": "singleservice",
+  "name": "test-wf",
+  "version": "1.0",
+  "functions": [
+    {
+      "name": "helloWorld",
+      "type": "service",
+      "metadata": {
+        "interface": "org.kie.kogito.codegen.data.HelloService",
+        "operation": "jsonHello"
+      }
+    }
+  ],
+  "states":[
+    {
+      "name":"HelloWorld",
+      "type":"OPERATION",
+      "start": {
+        "kind": "DEFAULT"
+      },
+      "actionMode":"SEQUENTIAL",
+      "actions":[
+        {
+          "functionRef": {
+            "refName": "helloWorld"
+          }
+        }
+      ],
+      "end": {
+        "kind": "TERMINATE"
+      }
+    }
+  ]
+}

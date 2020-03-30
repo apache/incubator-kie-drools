@@ -1,0 +1,21 @@
+---
+id: function
+name: test-wf
+version: '1.0'
+functions:
+  - name: helloWorld
+    type: service
+    metadata:
+      interface: org.something.other.TestService
+      operation: get
+states:
+  - name: HelloWorld
+    type: OPERATION
+    start:
+      kind: DEFAULT
+    actionMode: SEQUENTIAL
+    actions:
+      - functionRef:
+          refName: helloWorld
+    end:
+      kind: TERMINATE

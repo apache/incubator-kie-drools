@@ -67,12 +67,14 @@ public class VariableDeclarations {
     
     public static VariableDeclarations ofRawInfo(Map<String, String> vscope) {
         HashMap<String, Variable> vs = new HashMap<>();
-        
-        for (Entry<String, String> entry : vscope.entrySet()) {
-            Variable variable = new Variable();
-            variable.setName(entry.getKey());
-            variable.setType(new ObjectDataType(entry.getValue()));
-            vs.put(entry.getKey(), variable);
+
+        if(vscope != null) {
+            for (Entry<String, String> entry : vscope.entrySet()) {
+                Variable variable = new Variable();
+                variable.setName(entry.getKey());
+                variable.setType(new ObjectDataType(entry.getValue()));
+                vs.put(entry.getKey(), variable);
+            }
         }
         
         return new VariableDeclarations(vs);

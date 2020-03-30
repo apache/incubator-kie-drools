@@ -1,0 +1,34 @@
+{
+  "type": "object",
+  "javaType": "org.jbpm.serverless.workflow.api.states.OperationState",
+  "javaInterfaces": [
+    "org.jbpm.serverless.workflow.api.interfaces.State"
+  ],
+  "description": "This state allows one or more functions to run in sequence or in parallel without waiting for any event.",
+  "extends": {
+    "$ref": "defaultstate.json"
+  },
+  "properties": {
+    "actionMode": {
+      "type": "string",
+      "enum": [
+        "SEQUENTIAL",
+        "PARALLEL"
+      ],
+      "description": "Specifies whether functions are executed in sequence or in parallel."
+    },
+    "actions": {
+      "type": "array",
+      "description": "Actions Definitions",
+      "items": {
+        "type": "object",
+        "$ref": "../actions/action.json"
+      }
+    }
+  },
+  "required": [
+    "name",
+    "actionMode",
+    "actions"
+  ]
+}
