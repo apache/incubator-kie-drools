@@ -94,8 +94,7 @@ public class DMNAssemblerService implements KieAssemblerService {
         List<DMNResource> dmnResources = new ArrayList<>();
         for (ResourceWithConfiguration r : resources) {
             Definitions definitions = dmnMarshaller.unmarshal(r.getResource().getReader());
-            QName modelID = new QName(definitions.getNamespace(), definitions.getName());
-            DMNResource dmnResource = new DMNResource(modelID, r, definitions);
+            DMNResource dmnResource = new DMNResource(definitions, r);
             dmnResources.add(dmnResource);
         }
 

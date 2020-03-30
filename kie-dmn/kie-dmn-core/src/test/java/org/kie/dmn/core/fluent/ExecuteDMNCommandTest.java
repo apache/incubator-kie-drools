@@ -25,6 +25,7 @@ import org.kie.dmn.api.core.DMNRuntime;
 import org.kie.dmn.core.api.DMNFactory;
 import org.kie.dmn.core.impl.DMNModelImpl;
 import org.kie.dmn.core.impl.DMNRuntimeImpl;
+import org.kie.dmn.core.impl.VoidDMNRuntimeKB;
 import org.kie.internal.command.RegistryContext;
 
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
@@ -51,7 +52,7 @@ public class ExecuteDMNCommandTest {
         DMNContext dmnContext = DMNFactory.newContext();
         dmnContext.set("example", 10);
 
-        registryContext.register(DMNRuntime.class, new DMNRuntimeImpl(null));
+        registryContext.register(DMNRuntime.class, new DMNRuntimeImpl(new VoidDMNRuntimeKB()));
         registryContext.register(DMNContext.class, dmnContext);
 
         DMNResult result = executeDMNCommand.execute(registryContext);
