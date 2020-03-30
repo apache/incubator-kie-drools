@@ -213,6 +213,9 @@
                 <configuration>
                   <npmRegistryURL>${env.NPM_REGISTRY_URL}</npmRegistryURL>
                   <arguments>run build:prod</arguments>
+                  <environmentVariables>
+                    <KOGITO_MANAGEMENTCONSOLE_VERSION>${version}</KOGITO_MANAGEMENTCONSOLE_VERSION>
+                </environmentVariables>
                 </configuration>
               </execution>
             </executions>

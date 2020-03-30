@@ -9,7 +9,6 @@ import {
 import './AboutModal.css';
 import aboutPageLogo from '../../../static/managementConsoleLogo.svg';
 import aboutPageBackground from '../../../static/KogitoAbout.png';
-import { version } from '../../../../package.json';
 export interface IOwnProps {
   isOpenProp: boolean;
   handleModalToggleProp: any;
@@ -18,6 +17,8 @@ const AboutModalBox: React.FC<IOwnProps> = ({
   isOpenProp,
   handleModalToggleProp
 }) => {
+  // @ts-ignore
+  const dataIndexURL = window.DATA_INDEX_ENDPOINT || process.env.KOGITO_DATAINDEX_HTTP_URL;
   return (
     <AboutModal
       isOpen={isOpenProp}
@@ -31,7 +32,7 @@ const AboutModalBox: React.FC<IOwnProps> = ({
         <Text component="h5" />
         <TextList component="dl">
           <TextListItem component="dt">Version: </TextListItem>
-          <TextListItem component="dd">{version}</TextListItem>
+          <TextListItem component="dd">{process.env.KOGITO_MANAGEMENTCONSOLE_VERSION}</TextListItem>
           <TextListItem component="dt">License information: </TextListItem>
           <TextListItem component="dd">
             <a
@@ -63,11 +64,7 @@ const AboutModalBox: React.FC<IOwnProps> = ({
             </a>
           </TextListItem>
           <TextListItem component="dt">Data-Index URL: </TextListItem>
-          <TextListItem component="dd">
-            <a href={process.env.KOGITO_DATAINDEX_URL} target="_blank">
-              {process.env.KOGITO_DATAINDEX_HTTP_URL}
-            </a>
-          </TextListItem>
+          <TextListItem component="dd">{dataIndexURL} </TextListItem>
         </TextList>
       </TextContent>
     </AboutModal>
