@@ -15,6 +15,9 @@
 
 package org.kie.kogito.codegen.process;
 
+import java.util.Arrays;
+import java.util.List;
+
 import org.kie.api.definition.process.WorkflowProcess;
 import org.kie.kogito.codegen.GeneratorContext;
 
@@ -34,5 +37,20 @@ public class ResourceGenerator extends AbstractResourceGenerator {
     @Override
     protected String getResourceTemplate() {
         return RESOURCE_TEMPLATE;
+    }
+
+    @Override
+    public String getUserTaskResourceTemplate() {
+        return "/class-templates/RestResourceUserTaskTemplate.java";
+    }
+
+    @Override
+    protected String getSignalResourceTemplate() {
+        return "/class-templates/RestResourceSignalTemplate.java";
+    }
+
+    @Override
+    public List<String> getRestAnnotations() {
+        return Arrays.asList("POST", "GET", "PUT", "DELETE");
     }
 }

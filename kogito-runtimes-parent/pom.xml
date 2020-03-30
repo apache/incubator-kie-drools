@@ -101,6 +101,7 @@
     <version.javax.json>1.1.4</version.javax.json>
     <version.javax.json.bind>1.0</version.javax.json.bind>
     <version.javax.xml.bind>2.3.0</version.javax.xml.bind>
+    <version.javax.validation>2.0.1.Final</version.javax.validation>
     <version.json-unit-assertj>2.9.0</version.json-unit-assertj>
 
     <version.net.java.dev.glazedlists>1.8.0</version.net.java.dev.glazedlists>
@@ -131,9 +132,10 @@
     <version.org.kie7>7.34.0.Final</version.org.kie7>
     <version.org.reflections>0.9.11</version.org.reflections>
     <version.org.slf4j>1.7.25</version.org.slf4j>
-    <version.org.springframework.kafka>2.2.2.RELEASE</version.org.springframework.kafka>
-
     <version.testcontainers>1.12.4</version.testcontainers>
+    <version.resteasy.springboot>4.5.0.Final</version.resteasy.springboot>
+    <version.springboot>2.2.5.RELEASE</version.springboot>
+    <version.spring.framework>5.2.4.RELEASE</version.spring.framework>
     <version.xmlunit>2.2.1</version.xmlunit>
   </properties>
 
@@ -219,6 +221,7 @@
     <module>kogito-cloud-services</module>
     <module>optaplanner</module>
     <module>kogito-codegen</module>
+    <module>kogito-springboot</module>
     <module>addons</module>
     <module>kogito-maven-plugin</module>
     <module>kogito-quarkus-extension</module>
@@ -600,6 +603,11 @@
         <artifactId>javax.activation</artifactId>
         <version>${version.javax.activation}</version>
       </dependency>
+      <dependency>
+        <groupId>javax.validation</groupId>
+        <artifactId>validation-api</artifactId>
+        <version>${version.javax.validation}</version>
+      </dependency>
 
       <dependency>
         <groupId>com.oracle.substratevm</groupId>
@@ -674,7 +682,17 @@
       <dependency>
         <groupId>org.springframework.kafka</groupId>
         <artifactId>spring-kafka</artifactId>
-        <version>${version.org.springframework.kafka}</version>
+        <version>${version.springboot}</version>
+      </dependency>
+      <dependency>
+        <groupId>org.jboss.resteasy</groupId>
+        <artifactId>resteasy-spring-boot-starter</artifactId>
+        <version>${version.resteasy.springboot}</version>
+      </dependency>
+      <dependency>
+        <groupId>org.springframework</groupId>
+        <artifactId>spring-web</artifactId>
+        <version>${version.spring.framework}</version>
       </dependency>
 
       <!-- predictions/machine learning related -->

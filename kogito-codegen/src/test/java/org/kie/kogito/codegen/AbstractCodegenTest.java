@@ -29,6 +29,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 import org.drools.compiler.commons.jci.compilers.CompilationResult;
@@ -38,6 +39,8 @@ import org.drools.compiler.compiler.io.memory.MemoryFileSystem;
 import org.drools.compiler.rule.builder.dialect.java.JavaDialectConfiguration;
 import org.kie.kogito.Application;
 import org.kie.kogito.codegen.context.KogitoBuildContext;
+import org.kie.kogito.codegen.context.QuarkusKogitoBuildContext;
+import org.kie.kogito.codegen.context.SpringBootKogitoBuildContext;
 import org.kie.kogito.codegen.decision.DecisionCodegen;
 import org.kie.kogito.codegen.process.ProcessCodegen;
 import org.kie.kogito.codegen.rules.IncrementalRuleCodegen;
@@ -53,6 +56,12 @@ public class AbstractCodegenTest {
     private TestClassLoader classloader;
 
     private static final JavaCompiler JAVA_COMPILER = JavaCompilerFactory.INSTANCE.loadCompiler(JavaDialectConfiguration.CompilerType.NATIVE, "11");
+
+    private boolean withSpringContext;
+
+    public void withSpringContext(boolean withSpringContext){
+        this.withSpringContext = withSpringContext;
+    }
 
     protected Application generateCodeProcessesOnly(String... processes) throws Exception {
         return generateCode(Arrays.asList(processes), Collections.emptyList());
@@ -77,13 +86,13 @@ public class AbstractCodegenTest {
             List<String> javaRulesResources,
             boolean hasRuleUnit) throws Exception {
         GeneratorContext context = GeneratorContext.ofResourcePath(new File("src/test/resources"));
-        context.withBuildContext(new KogitoBuildContext() {
-            
-            @Override
-            public boolean hasClassAvailable(String fqcn) {
-                return false;
-            }
-        });
+
+        //Testing based on Quarkus as Default
+        context.withBuildContext(Optional.ofNullable(withSpringContext)
+                                         .filter(Boolean.TRUE::equals)
+                                         .<KogitoBuildContext>map(t -> new SpringBootKogitoBuildContext((className -> true)))
+                                         .orElse(new QuarkusKogitoBuildContext((className -> true))));
+
         ApplicationGenerator appGen =
                 new ApplicationGenerator(this.getClass().getPackage().getName(), new File("target/codegen-tests"))
                         .withGeneratorContext(context)

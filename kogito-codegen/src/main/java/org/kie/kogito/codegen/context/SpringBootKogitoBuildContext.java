@@ -29,5 +29,5 @@ public class SpringBootKogitoBuildContext implements KogitoBuildContext {
     public boolean hasClassAvailable(String fqcn) {
         return classAvailabilityResolver.test(fqcn);
     }
-    
+
 }

@@ -23,7 +23,6 @@
   </dependencyManagement>
 
   <modules>
-    <module>kogito-springboot-starter</module>    
     <module>kogito-springboot-archetype</module>
     <module>kogito-quarkus-archetype</module>    
   </modules>

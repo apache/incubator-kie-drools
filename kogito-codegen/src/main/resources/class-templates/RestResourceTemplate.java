@@ -27,6 +27,7 @@ import org.kie.kogito.process.ProcessInstance;
 import org.kie.kogito.process.ProcessInstanceExecutionException;
 import org.kie.kogito.process.WorkItem;
 import org.kie.kogito.process.workitem.Policy;
+import org.kie.kogito.process.impl.Sig;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
