@@ -21,7 +21,6 @@ initializeScriptDir
 
 organizationDir="$scriptDir/../../.."
 
-
 if [ $# != 1 ] && [ $# != 2 ] ; then  # && [ $# != 3 ] ; then
     echo
     echo "Usage:"
@@ -49,12 +48,16 @@ for repository in `cat $organizationDir/kogito-runtimes/scripts/repository-list.
         echo "==============================================================================="
         cd $repository
 
-		releaseTagName=$1
-		git tag -a $releaseTagName -m "Tagging $releaseTagName"
-		git push origin $releaseTagName
-        
-        returnCode=$?
+        releaseTagName=$1
+        git tag -a $releaseTagName -m "Tagging $releaseTagName"
+        git push origin $releaseTagName
+
+        if [ $# == 2 ] && [ $2 != "" ]; then
+          targetBranchName=$2
+          git push origin $targetBranchName:$targetBranchName
+        fi
         cd ..
+        returnCode=$?
         if [ $returnCode != 0 ] ; then
             exit $returnCode
         fi

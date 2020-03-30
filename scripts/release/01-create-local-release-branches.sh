@@ -21,18 +21,17 @@ initializeScriptDir
 
 organizationDir="$scriptDir/../../.."
 
-
-if [ $# != 1 ] && [ $# != 2 ] ; then  # && [ $# != 3 ] ; then
+if [ $# != 1 ] && [ $# != 2 ] && [ $# != 3 ] ; then
     echo
     echo "Usage:"
-    echo "  $0 ReleaseBranchName"
+    echo "  $0 ReleaseBranchName BaseBranchName"
     echo "For example:"
-    echo "  $0 0.1.x"
+    echo "  $0 0.1.x master"
     echo
     exit 1
 fi
 
-echo "Kogito release branch name is $1"
+echo "Kogito release version name is $1"
 
 echo -n "Is this ok? (Hit control-c if is not): "
 read ok
@@ -54,8 +53,15 @@ for repository in `cat $organizationDir/kogito-runtimes/scripts/repository-list.
         cd $repository
 
         releaseBranchName=r$1
-        git checkout -b $releaseBranchName
-
+        baseBranchName=$2
+        
+        if [ $# == 3 ] && [ $3 != "" ]; then
+          targetBranchName=$3
+          git checkout -b $targetBranchName $baseBranchName
+        fi
+        
+        git checkout -b $releaseBranchName $baseBranchName
+        
         returnCode=$?
         cd ..
         if [ $returnCode != 0 ] ; then
