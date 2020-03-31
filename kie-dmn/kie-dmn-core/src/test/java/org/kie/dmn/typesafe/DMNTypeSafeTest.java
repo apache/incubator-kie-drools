@@ -8,10 +8,10 @@ import org.junit.Test;
 import org.kie.dmn.api.core.DMNModel;
 import org.kie.dmn.api.core.DMNResult;
 import org.kie.dmn.api.core.DMNRuntime;
-import org.kie.dmn.core.impl.DMNContextFPAImpl;
 import org.kie.dmn.api.core.FEELPropertyAccessible;
+import org.kie.dmn.core.impl.DMNContextFPAImpl;
 import org.kie.dmn.core.util.DMNRuntimeUtil;
-import org.kie.dmn.typesafe.compilation.RegressionCompiler;
+import org.kie.memorycompiler.KieMemoryCompiler;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -24,8 +24,7 @@ public class DMNTypeSafeTest {
     public static final Logger LOG = LoggerFactory.getLogger(DMNTypeSafeTest.class);
     private String PACKAGE_NAME = "http_58_47_47www_46trisotech_46com_47definitions_47_2ceee5b6_450f0d_4541ef_45890e_452cd6fb1adb10";
 
-
-        @Test
+    @Test
     public void test() throws Exception {
         final DMNRuntime runtime = DMNRuntimeUtil.createRuntime("a.dmn", this.getClass());
         String namespace = "http://www.trisotech.com/definitions/_2ceee5b6-0f0d-41ef-890e-2cd6fb1adb10";
@@ -40,7 +39,7 @@ public class DMNTypeSafeTest {
         Map<String, String> allTypesSourceCode = sourceCode.generateSourceCodeOfAllTypes();
 
         ClassLoader thisDMNClassLoader = this.getClass().getClassLoader();
-        Map<String, Class<?>> compiledClasses = RegressionCompiler.compile(allTypesSourceCode, thisDMNClassLoader);
+        Map<String, Class<?>> compiledClasses = KieMemoryCompiler.compile(allTypesSourceCode, thisDMNClassLoader);
 
         FEELPropertyAccessible viaVigorelli = createTAddress(compiledClasses, "Via Vigorelli", 1);
         FEELPropertyAccessible viaVerdi = createTAddress(compiledClasses, "Via Verdi", 2);
