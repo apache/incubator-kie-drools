@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.kie.pmml.models.regression.compiler.utils;
+package org.kie.memorycompiler;
 
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
@@ -22,17 +22,17 @@ import java.net.URI;
 
 import javax.tools.SimpleJavaFileObject;
 
-public class KiePMMLByteCode extends SimpleJavaFileObject {
+public class KieMemoryCompilerByteCode extends SimpleJavaFileObject {
 
     private final ByteArrayOutputStream baos = new ByteArrayOutputStream();
     private final String className;
 
     /**
-     * Constructor for <code>Kind.CLASS</code> <code>KiePMMLCode</code>
+     * Constructor for <code>Kind.CLASS</code> <code>KieMemoryCompilerCode</code>
      * @param className
      * @throws Exception
      */
-    public KiePMMLByteCode(String className) throws Exception {
+    public KieMemoryCompilerByteCode(String className) throws Exception {
         super(new URI(className), Kind.CLASS);
         this.className = className;
     }

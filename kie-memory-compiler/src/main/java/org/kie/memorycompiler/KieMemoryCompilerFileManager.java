@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.kie.pmml.models.regression.compiler.utils;
+package org.kie.memorycompiler;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -23,12 +23,12 @@ import javax.tools.ForwardingJavaFileManager;
 import javax.tools.JavaFileManager;
 import javax.tools.JavaFileObject;
 
-public class KiePMMLFileManager extends ForwardingJavaFileManager<JavaFileManager> {
+public class KieMemoryCompilerFileManager extends ForwardingJavaFileManager<JavaFileManager> {
 
-    private List<KiePMMLByteCode> compiledCode = new ArrayList<>();
-    private KiePMMLClassLoader classLoader;
+    private List<KieMemoryCompilerByteCode> compiledCode = new ArrayList<>();
+    private KieMemoryCompilerClassLoader classLoader;
 
-    public KiePMMLFileManager(JavaFileManager fileManager, KiePMMLClassLoader classLoader) {
+    public KieMemoryCompilerFileManager(JavaFileManager fileManager, KieMemoryCompilerClassLoader classLoader) {
         super(fileManager);
         this.classLoader = classLoader;
     }
@@ -39,12 +39,12 @@ public class KiePMMLFileManager extends ForwardingJavaFileManager<JavaFileManage
             JavaFileObject.Kind kind, FileObject sibling) {
 
         try {
-            KiePMMLByteCode innerClass = new KiePMMLByteCode(className);
+            KieMemoryCompilerByteCode innerClass = new KieMemoryCompilerByteCode(className);
             compiledCode.add(innerClass);
             classLoader.addCode(innerClass);
             return innerClass;
         } catch (Exception e) {
-            throw new RuntimeException(
+            throw new KieMemoryCompilerException(
                     "Error while creating in-memory output file for "
                             + className, e);
         }
