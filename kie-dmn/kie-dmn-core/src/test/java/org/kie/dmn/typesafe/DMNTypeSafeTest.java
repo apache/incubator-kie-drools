@@ -4,6 +4,7 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
 
+import org.junit.Before;
 import org.junit.Test;
 import org.kie.dmn.api.core.DMNModel;
 import org.kie.dmn.api.core.DMNResult;
@@ -11,6 +12,7 @@ import org.kie.dmn.api.core.DMNRuntime;
 import org.kie.dmn.api.core.FEELPropertyAccessible;
 import org.kie.dmn.core.impl.DMNContextFPAImpl;
 import org.kie.dmn.core.util.DMNRuntimeUtil;
+import org.kie.dmn.feel.codegen.feel11.CodegenStringUtil;
 import org.kie.memorycompiler.KieMemoryCompiler;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -22,19 +24,28 @@ import static org.junit.Assert.assertThat;
 public class DMNTypeSafeTest {
 
     public static final Logger LOG = LoggerFactory.getLogger(DMNTypeSafeTest.class);
-    private String PACKAGE_NAME = "http_58_47_47www_46trisotech_46com_47definitions_47_2ceee5b6_450f0d_4541ef_45890e_452cd6fb1adb10";
 
-    @Test
-    public void test() throws Exception {
-        final DMNRuntime runtime = DMNRuntimeUtil.createRuntime("a.dmn", this.getClass());
+    private String packageName;
+    private DMNModel dmnModel;
+    private DMNRuntime runtime;
+
+    @Before
+    public void setUp() throws Exception {
+        runtime = DMNRuntimeUtil.createRuntime("a.dmn", this.getClass());
         String namespace = "http://www.trisotech.com/definitions/_2ceee5b6-0f0d-41ef-890e-2cd6fb1adb10";
         String modelName = "Drawing 1";
 
-        final DMNModel dmnModel = runtime.getModel(namespace, modelName);
+        dmnModel = runtime.getModel(namespace, modelName);
+        packageName = CodegenStringUtil.escapeIdentifier(dmnModel.getNamespace());
+    }
+
+    @Test
+    public void test() throws Exception {
+
         assertThat(dmnModel, notNullValue());
         assertThat(DMNRuntimeUtil.formatMessages(dmnModel.getMessages()), dmnModel.hasErrors(), is(false));
 
-        DMNTypeSafeTypeGenerator sourceCode = new DMNTypeSafeTypeGenerator(dmnModel, PACKAGE_NAME);
+        DMNTypeSafeTypeGenerator sourceCode = new DMNTypeSafeTypeGenerator(dmnModel, packageName);
 
         Map<String, String> allTypesSourceCode = sourceCode.generateSourceCodeOfAllTypes();
 
@@ -63,7 +74,7 @@ public class DMNTypeSafeTest {
     }
 
     private String classWithPackage(String className) {
-        return PACKAGE_NAME + "." + className;
+        return packageName + "." + className;
     }
 
     private FEELPropertyAccessible createTPerson(Map<String, Class<?>> compile, List<FEELPropertyAccessible> addresses) throws Exception {
