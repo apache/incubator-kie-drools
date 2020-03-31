@@ -28,5 +28,5 @@ public interface DMNTypeSafeTypeTemplate {
         return result;
     }
 
-    void setAll(Map<String, Object> values);
+    void fromMap(Map<String, Object> values);
 }

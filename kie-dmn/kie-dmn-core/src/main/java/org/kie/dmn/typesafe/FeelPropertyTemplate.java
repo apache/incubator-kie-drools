@@ -33,7 +33,7 @@ public class FeelPropertyTemplate {
 
     CompilationUnit methodTemplate;
 
-    List<FieldDefinition> fields = new ArrayList<>();
+    List<FieldDefinition> fields;
 
     public FeelPropertyTemplate(List<FieldDefinition> fields) {
         this.fields = fields;
@@ -133,7 +133,7 @@ public class FeelPropertyTemplate {
     private MethodDefinition setAllDefinition() {
 
         String body = " {  } ";
-        MethodWithStringBody setFeelProperty = new MethodWithStringBody("setAll", "void", body);
+        MethodWithStringBody setFeelProperty = new MethodWithStringBody("fromMap", "void", body);
         setFeelProperty.addParameter("java.util.Map<String, Object>", "values");
 
         return setFeelProperty;
