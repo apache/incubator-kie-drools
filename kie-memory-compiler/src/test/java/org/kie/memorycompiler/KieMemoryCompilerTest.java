@@ -51,9 +51,35 @@ public class KieMemoryCompilerTest {
     }
 
     @Test(expected = KieMemoryCompilerException.class)
-    public void invalidClass()  {
+    public void invalidClass() {
         Map<String, String> source = singletonMap("org.kie.memorycompiler.InvalidJavaClass", "Invalid Java Code");
         KieMemoryCompiler.compile(source, this.getClass().getClassLoader());
     }
 
+    private final static String WARNING_CLASS = "package org.kie.memorycompiler;\n" +
+            "\n" +
+            "public class WarningClass {\n" +
+            "\n" +
+            "    @Deprecated" +
+            "    public int minusDeprecated(Integer a, Integer b){\n" +
+            "        return a - b;\n" +
+            "    }\n" +
+            "    public int triggerWarning() {\n" +
+            "        return minusDeprecated(8, 4);\n" +
+            "    }\n" +
+            "}";
+
+    @Test
+    public void doNotFailOnWarning() throws Exception {
+        Map<String, String> source = singletonMap("org.kie.memorycompiler.WarningClass", WARNING_CLASS);
+        Map<String, Class<?>> compiled = KieMemoryCompiler.compile(source, this.getClass().getClassLoader());
+
+        Class<?> exampleClazz = compiled.get("org.kie.memorycompiler.WarningClass");
+        assertThat(exampleClazz, is(notNullValue()));
+
+        Object instance = exampleClazz.getDeclaredConstructors()[0].newInstance();
+        Method sumMethod = exampleClazz.getMethod("triggerWarning");
+        Object result = sumMethod.invoke(instance);
+        assertThat(result, is(4));
+    }
 }
