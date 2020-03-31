@@ -42,7 +42,7 @@ public abstract class AbstractDTAnalysisTest extends AbstractValidatorTest {
 
     public static final Logger LOG = LoggerFactory.getLogger(AbstractDTAnalysisTest.class);
 
-    protected DTAnalysis getAnalysis(List<DMNMessage> dmnMessages, String id) {
+    protected static DTAnalysis getAnalysis(List<DMNMessage> dmnMessages, String id) {
         assertThat("Expected to find DTAnalysis but messages are empty.", dmnMessages, not(empty()));
 
         if (LOG.isDebugEnabled() ) {
@@ -69,7 +69,7 @@ public abstract class AbstractDTAnalysisTest extends AbstractValidatorTest {
         return analysis;
     }
 
-    protected void debugValidatorMsg(List<DMNMessage> dmnMessages) {
+    protected static void debugValidatorMsg(List<DMNMessage> dmnMessages) {
         if (!LOG.isDebugEnabled()) {
             return;
         }
@@ -81,7 +81,7 @@ public abstract class AbstractDTAnalysisTest extends AbstractValidatorTest {
         LOG.debug(sbGaps.toString());
     }
 
-    protected void debugAnalysis(DTAnalysis analysis) {
+    protected static void debugAnalysis(DTAnalysis analysis) {
         if (!LOG.isDebugEnabled()) {
             return;
         }

@@ -484,6 +484,9 @@ public class DMNDTAnalyser {
 
     private List<Interval> toIntervals(List<BaseNode> elements, boolean isNegated, Interval minMax, List discreteValues, int rule, int col) {
         List<Interval> results = new ArrayList<>();
+        if (elements.size() == 1 && elements.get(0) instanceof UnaryTestNode && ((UnaryTestNode) elements.get(0)).getValue() instanceof NullNode) {
+            return Collections.emptyList();
+        }
         if (discreteValues != null && !discreteValues.isEmpty() && areAllEQUnaryTest(elements) && elements.size() > 1) {
             int bitsetLogicalSize = discreteValues.size(); // JDK BitSet size will always be larger.
             BitSet hitValues = new BitSet(bitsetLogicalSize);

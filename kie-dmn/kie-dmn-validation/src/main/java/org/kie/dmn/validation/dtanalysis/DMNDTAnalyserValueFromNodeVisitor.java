@@ -27,7 +27,6 @@ import org.kie.dmn.feel.lang.ast.BaseNode;
 import org.kie.dmn.feel.lang.ast.BooleanNode;
 import org.kie.dmn.feel.lang.ast.FunctionInvocationNode;
 import org.kie.dmn.feel.lang.ast.NameRefNode;
-import org.kie.dmn.feel.lang.ast.NullNode;
 import org.kie.dmn.feel.lang.ast.NumberNode;
 import org.kie.dmn.feel.lang.ast.SignedUnaryNode;
 import org.kie.dmn.feel.lang.ast.SignedUnaryNode.Sign;
@@ -53,12 +52,7 @@ public class DMNDTAnalyserValueFromNodeVisitor extends DefaultedVisitor<Comparab
 
     @Override
     public Comparable<?> defaultVisit(ASTNode n) {
-        throw new UnsupportedOperationException("valueFromNode: " + n);
-    }
-
-    @Override
-    public Comparable<?> visit(NullNode n) {
-        throw new UnsupportedOperationException("Gaps/Overlaps analysis cannot be performed for InputEntry with 'null' unary test values.");
+        throw new UnsupportedOperationException("Gaps/Overlaps analysis cannot be performed for InputEntry with unary test: {}" + n.getText());
     }
 
     @Override
