@@ -52,10 +52,10 @@ public class DMNTypeSafeTest {
         ClassLoader thisDMNClassLoader = this.getClass().getClassLoader();
         Map<String, Class<?>> compiledClasses = KieMemoryCompiler.compile(allTypesSourceCode, thisDMNClassLoader);
 
-        FEELPropertyAccessible viaVigorelli = createTAddress(compiledClasses, "Via Vigorelli", 1);
-        FEELPropertyAccessible viaVerdi = createTAddress(compiledClasses, "Via Verdi", 2);
+        FEELPropertyAccessible street1 = createTAddress(compiledClasses, "Street1", 1);
+        FEELPropertyAccessible street2 = createTAddress(compiledClasses, "Street2", 2);
 
-        FEELPropertyAccessible tPersonInstance = createTPerson(compiledClasses, Arrays.asList(viaVigorelli, viaVerdi));
+        FEELPropertyAccessible tPersonInstance = createTPerson(compiledClasses, Arrays.asList(street1, street2));
         FEELPropertyAccessible context = createInputSet(compiledClasses, tPersonInstance);
 
         DMNResult evaluateAll = runtime.evaluateAll(dmnModel, new DMNContextFPAImpl(context));
