@@ -24,7 +24,7 @@ import org.kie.dmn.api.core.DMNContext;
 import org.kie.dmn.api.core.DMNModel;
 import org.kie.dmn.api.core.DMNResult;
 import org.kie.dmn.api.core.DMNRuntime;
-import org.kie.dmn.core.BaseInterpretedVsCompiledTest;
+import org.kie.dmn.core.BaseVariantTest;
 import org.kie.dmn.core.api.DMNFactory;
 import org.kie.dmn.core.util.DMNRuntimeUtil;
 import org.slf4j.Logger;
@@ -36,17 +36,17 @@ import static org.junit.Assert.assertThat;
 import static org.kie.dmn.core.util.DynamicTypeUtils.entry;
 import static org.kie.dmn.core.util.DynamicTypeUtils.mapOf;
 
-public class DMN13specificTest extends BaseInterpretedVsCompiledTest {
+public class DMN13specificTest extends BaseVariantTest {
 
     public static final Logger LOG = LoggerFactory.getLogger(DMN13specificTest.class);
 
-    public DMN13specificTest(final boolean useExecModelCompiler) {
-        super(useExecModelCompiler);
+    public DMN13specificTest(final BaseVariantTest.VariantTestConf conf) {
+        super(conf);
     }
 
     @Test
     public void testDMNv1_3_simple() {
-        final DMNRuntime runtime = DMNRuntimeUtil.createRuntime("simple.dmn", this.getClass());
+        final DMNRuntime runtime = createRuntime("simple.dmn", this.getClass());
         final DMNModel dmnModel = runtime.getModel("http://www.trisotech.com/definitions/_9d01a0c4-f529-4ad8-ad8e-ec5fb5d96ad4", "Chapter 11 Example");
         assertThat(dmnModel, notNullValue());
         assertThat(DMNRuntimeUtil.formatMessages(dmnModel.getMessages()), dmnModel.hasErrors(), is(false));
@@ -64,7 +64,7 @@ public class DMN13specificTest extends BaseInterpretedVsCompiledTest {
 
     @Test
     public void testDMNv1_3_ch11() {
-        final DMNRuntime runtime = DMNRuntimeUtil.createRuntimeWithAdditionalResources("Chapter 11 Example.dmn", this.getClass(), "Financial.dmn");
+        final DMNRuntime runtime = createRuntimeWithAdditionalResources("Chapter 11 Example.dmn", this.getClass(), "Financial.dmn");
         final DMNModel dmnModel = runtime.getModel("http://www.trisotech.com/definitions/_9d01a0c4-f529-4ad8-ad8e-ec5fb5d96ad4", "Chapter 11 Example");
         assertThat(dmnModel, notNullValue());
         assertThat(DMNRuntimeUtil.formatMessages(dmnModel.getMessages()), dmnModel.hasErrors(), is(false));
@@ -95,7 +95,7 @@ public class DMN13specificTest extends BaseInterpretedVsCompiledTest {
 
     @Test
     public void testDMNv1_3_ch11_asSpecInputDataValues() {
-        final DMNRuntime runtime = DMNRuntimeUtil.createRuntimeWithAdditionalResources("Chapter 11 Example.dmn", this.getClass(), "Financial.dmn");
+        final DMNRuntime runtime = createRuntimeWithAdditionalResources("Chapter 11 Example.dmn", this.getClass(), "Financial.dmn");
         final DMNModel dmnModel = runtime.getModel("http://www.trisotech.com/definitions/_9d01a0c4-f529-4ad8-ad8e-ec5fb5d96ad4", "Chapter 11 Example");
         assertThat(dmnModel, notNullValue());
         assertThat(DMNRuntimeUtil.formatMessages(dmnModel.getMessages()), dmnModel.hasErrors(), is(false));
@@ -126,7 +126,7 @@ public class DMN13specificTest extends BaseInterpretedVsCompiledTest {
 
     @Test
     public void testDMNv1_3_ch11_Example2() {
-        final DMNRuntime runtime = DMNRuntimeUtil.createRuntimeWithAdditionalResources("Recommended Loan Products.dmn", this.getClass(), "Loan info.dmn");
+        final DMNRuntime runtime = createRuntimeWithAdditionalResources("Recommended Loan Products.dmn", this.getClass(), "Loan info.dmn");
         final DMNModel dmnModel = runtime.getModel("http://www.trisotech.com/definitions/_736fa164-03d8-429f-8318-4913a548c3a6", "Recommended Loan Products");
         assertThat(dmnModel, notNullValue());
         assertThat(DMNRuntimeUtil.formatMessages(dmnModel.getMessages()), dmnModel.hasErrors(), is(false));
