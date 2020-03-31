@@ -13,14 +13,15 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.kie.pmml.models.tree.compiler.parser;
 
-/**
- * Class responsible to translate <code>TreeModel</code> to intermediate <b>AST</b>
- */
-public class KiePMMLTreeModelParser {
+package org.kie.pmml.models.tree.compiler.factories;
 
-    private KiePMMLTreeModelParser() {
-        // avoid instantiation
+import org.junit.Test;
+
+public class KiePMMLTreeModelPredicateASTFactoryTest {
+
+    @Test
+    public void declareRuleFromPredicate() {
+
     }
 }

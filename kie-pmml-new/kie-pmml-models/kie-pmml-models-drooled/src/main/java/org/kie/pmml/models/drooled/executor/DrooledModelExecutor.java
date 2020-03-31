@@ -78,6 +78,7 @@ public abstract class DrooledModelExecutor implements PMMLModelExecutor {
         }
         executionParams.forEach(kSession::insert);
         setupExecutionListener(kSession);
+        kSession.setGlobal("$pmml4Result", toReturn);
         kSession.fireAllRules();
         return toReturn;
     }
