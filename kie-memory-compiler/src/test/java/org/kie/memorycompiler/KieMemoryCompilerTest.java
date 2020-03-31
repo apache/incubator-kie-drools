@@ -49,4 +49,11 @@ public class KieMemoryCompilerTest {
         Object result = sumMethod.invoke(instance, 2, 3);
         assertThat(result, is(5));
     }
+
+    @Test(expected = KieMemoryCompilerException.class)
+    public void invalidClass()  {
+        Map<String, String> source = singletonMap("org.kie.memorycompiler.InvalidJavaClass", "Invalid Java Code");
+        KieMemoryCompiler.compile(source, this.getClass().getClassLoader());
+    }
+
 }
