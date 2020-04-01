@@ -18,15 +18,20 @@ package org.kie.dmn.core.v1_3;
 
 import java.math.BigDecimal;
 import java.util.Arrays;
+import java.util.Map;
 
 import org.junit.Test;
 import org.kie.dmn.api.core.DMNContext;
 import org.kie.dmn.api.core.DMNModel;
 import org.kie.dmn.api.core.DMNResult;
 import org.kie.dmn.api.core.DMNRuntime;
+import org.kie.dmn.api.core.FEELPropertyAccessible;
 import org.kie.dmn.core.BaseVariantTest;
 import org.kie.dmn.core.api.DMNFactory;
+import org.kie.dmn.core.impl.DMNContextFPAImpl;
 import org.kie.dmn.core.util.DMNRuntimeUtil;
+import org.kie.dmn.feel.codegen.feel11.CodegenStringUtil;
+import org.kie.dmn.typesafe.DMNTypeSafeTest;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -54,7 +59,7 @@ public class DMN13specificTest extends BaseVariantTest {
         final DMNContext context = DMNFactory.newContext();
         context.set("name", "John");
 
-        final DMNResult dmnResult = runtime.evaluateAll(dmnModel, context);
+        final DMNResult dmnResult = evaluateModel(runtime, dmnModel, context);
         LOG.debug("{}", dmnResult);
         assertThat(DMNRuntimeUtil.formatMessages(dmnResult.getMessages()), dmnResult.hasErrors(), is(false));
 
@@ -84,7 +89,7 @@ public class DMN13specificTest extends BaseVariantTest {
                                                entry("Term", new BigDecimal(36)),
                                                entry("Amount", new BigDecimal(100_000))));
         context.set("Supporting documents", null);
-        final DMNResult dmnResult = runtime.evaluateAll(dmnModel, context);
+        final DMNResult dmnResult = evaluateModel(runtime, dmnModel, context);
         LOG.debug("{}", dmnResult);
         assertThat(DMNRuntimeUtil.formatMessages(dmnResult.getMessages()), dmnResult.hasErrors(), is(false));
 
@@ -115,7 +120,7 @@ public class DMN13specificTest extends BaseVariantTest {
                                                entry("Term", new BigDecimal(36)),
                                                entry("Amount", new BigDecimal(100_000))));
         context.set("Supporting documents", null);
-        final DMNResult dmnResult = runtime.evaluateAll(dmnModel, context);
+        final DMNResult dmnResult = evaluateModel(runtime, dmnModel, context);
         LOG.debug("{}", dmnResult);
         assertThat(DMNRuntimeUtil.formatMessages(dmnResult.getMessages()), dmnResult.hasErrors(), is(false));
 
@@ -140,7 +145,7 @@ public class DMN13specificTest extends BaseVariantTest {
                                                              entry("ZIP", "93933"))),
                                       entry("Purchase Price", new BigDecimal(340_000)),
                                       entry("Monthly Tax Payment", new BigDecimal(350)),
-                                      entry("Monthly Insurance Payment",new BigDecimal( 100)),
+                                      entry("Monthly Insurance Payment", new BigDecimal(100)),
                                       entry("Monthly HOA Condo Fee", new BigDecimal(0))));
         context.set("Down Payment", new BigDecimal(70_000));
         context.set("Borrower", mapOf(entry("Full Name", "Ken Customer"),
@@ -185,9 +190,9 @@ public class DMN13specificTest extends BaseVariantTest {
                                                           entry("Customer Rating", new BigDecimal(4.9))),
                                                     mapOf(entry("Lender Name", "Lender D"),
                                                           entry("Customer Rating", new BigDecimal(4.05)))
-                                        ));
+        ));
 
-        final DMNResult dmnResult = runtime.evaluateAll(dmnModel, context);
+        final DMNResult dmnResult = evaluateModel(runtime, dmnModel, context);
         LOG.debug("{}", dmnResult);
         assertThat(DMNRuntimeUtil.formatMessages(dmnResult.getMessages()), dmnResult.hasErrors(), is(false));
 
@@ -235,5 +240,17 @@ public class DMN13specificTest extends BaseVariantTest {
                                                                                    entry("Required Credit Score", new BigDecimal(720)),
                                                                                    entry("Recommendation", "Best")))));
     }
-       
+
+    private DMNResult evaluateModel(DMNRuntime runtime, DMNModel dmnModel, DMNContext context) {
+        String packageName = CodegenStringUtil.escapeIdentifier(dmnModel.getNamespace());
+        Map<String, Object> inputMap = context.getAll();
+        FEELPropertyAccessible inputSet;
+        try {
+            inputSet = DMNTypeSafeTest.createInputSet(dmnModel, packageName, this.getClass().getClassLoader());
+            inputSet.fromMap(inputMap);
+            return runtime.evaluateAll(dmnModel, new DMNContextFPAImpl(inputSet));
+        } catch (Exception e) {
+            throw new RuntimeException(e);
+        }
+    }
 }

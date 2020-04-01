@@ -63,7 +63,7 @@ public class DMNTypeSafeTest {
         FEELPropertyAccessible tPersonInstance = tPerson(compiledClasses, asList(street1, street2));
         FEELPropertyAccessible context = inputSet(compiledClasses, tPersonInstance);
 
-        DMNResult evaluateAll = runtime.evaluateAll(dmnModel, new DMNContextFPAImpl(context));
+        DMNResult evaluateAll = evaluateTyped(context, runtime, dmnModel);
 
         DMNContext result = evaluateAll.getContext();
         Map<String, Object> d = (Map<String, Object>) result.get("d");
@@ -72,19 +72,15 @@ public class DMNTypeSafeTest {
     }
 
     private FEELPropertyAccessible tAddress(Map<String, Class<?>> compile, String streetName, int streetNumber) throws Exception {
-        FEELPropertyAccessible feelPropertyAccessible = createInstanceFromCompiledClasses(compile, "TAddress");
+        FEELPropertyAccessible feelPropertyAccessible = createInstanceFromCompiledClasses(compile, packageName, "TAddress");
         feelPropertyAccessible.setFEELProperty("streetName", streetName);
         feelPropertyAccessible.setFEELProperty("streetNumber", streetNumber);
 
         return feelPropertyAccessible;
     }
 
-    private String classWithPackage(String className) {
-        return packageName + "." + className;
-    }
-
     private FEELPropertyAccessible tPerson(Map<String, Class<?>> compile, List<FEELPropertyAccessible> addresses) throws Exception {
-        FEELPropertyAccessible feelPropertyAccessible = createInstanceFromCompiledClasses(compile, "TPerson");
+        FEELPropertyAccessible feelPropertyAccessible = createInstanceFromCompiledClasses(compile, packageName, "TPerson");
         feelPropertyAccessible.setFEELProperty("name", "Mr. x");
         feelPropertyAccessible.setFEELProperty("addresses", addresses);
 
@@ -92,7 +88,7 @@ public class DMNTypeSafeTest {
     }
 
     private FEELPropertyAccessible inputSet(Map<String, Class<?>> compile, FEELPropertyAccessible tPersonInstance) throws Exception {
-        FEELPropertyAccessible feelPropertyAccessible = createInstanceFromCompiledClasses(compile, "InputSet");
+        FEELPropertyAccessible feelPropertyAccessible = createInstanceFromCompiledClasses(compile, packageName, "InputSet");
         feelPropertyAccessible.setFEELProperty("p", tPersonInstance);
         return feelPropertyAccessible;
     }
@@ -103,14 +99,7 @@ public class DMNTypeSafeTest {
         assertThat(dmnModel, notNullValue());
         assertThat(DMNRuntimeUtil.formatMessages(dmnModel.getMessages()), dmnModel.hasErrors(), is(false));
 
-        DMNTypeSafeTypeGenerator sourceCode = new DMNTypeSafeTypeGenerator(dmnModel, packageName);
-
-        Map<String, String> allTypesSourceCode = sourceCode.generateSourceCodeOfAllTypes();
-
-        ClassLoader thisDMNClassLoader = this.getClass().getClassLoader();
-        Map<String, Class<?>> compiledClasses = KieMemoryCompiler.compile(allTypesSourceCode, thisDMNClassLoader);
-
-        FEELPropertyAccessible context = createInstanceFromCompiledClasses(compiledClasses, "InputSet");
+        FEELPropertyAccessible context = createInputSet(dmnModel, packageName, this.getClass().getClassLoader());
 
         Map<String, Object> inputSetMap = new HashMap<>();
 
@@ -126,7 +115,7 @@ public class DMNTypeSafeTest {
 
         context.fromMap(inputSetMap);
 
-        DMNResult evaluateAll = runtime.evaluateAll(dmnModel, new DMNContextFPAImpl(context));
+        DMNResult evaluateAll = evaluateTyped(context, runtime, dmnModel);
 
         DMNContext result = evaluateAll.getContext();
         Map<String, Object> d = (Map<String, Object>) result.get("d");
@@ -134,8 +123,26 @@ public class DMNTypeSafeTest {
         LOG.info("{}", evaluateAll);
     }
 
-    private FEELPropertyAccessible createInstanceFromCompiledClasses(Map<String, Class<?>> compile, String className) throws Exception {
-        Class<?> inputSetClass = compile.get(classWithPackage(className));
+    private static DMNResult evaluateTyped(FEELPropertyAccessible context, DMNRuntime runtime, DMNModel dmnModel) {
+        return runtime.evaluateAll(dmnModel, new DMNContextFPAImpl(context));
+    }
+
+    public static FEELPropertyAccessible createInputSet(DMNModel dmnModel, String packageName, ClassLoader classLoader) throws Exception {
+        DMNTypeSafeTypeGenerator sourceCode = new DMNTypeSafeTypeGenerator(dmnModel, packageName);
+
+        Map<String, String> allTypesSourceCode = sourceCode.generateSourceCodeOfAllTypes();
+
+        Map<String, Class<?>> compiledClasses = KieMemoryCompiler.compile(allTypesSourceCode, classLoader);
+
+        return createInstanceFromCompiledClasses(compiledClasses, packageName, "InputSet");
+    }
+
+    private static String classWithPackage(String packageName, String className) {
+        return packageName + "." + className;
+    }
+
+    private static FEELPropertyAccessible createInstanceFromCompiledClasses(Map<String, Class<?>> compile, String packageName, String className) throws Exception {
+        Class<?> inputSetClass = compile.get(classWithPackage(packageName, className));
         assertThat(inputSetClass, notNullValue());
         Object inputSetInstance = inputSetClass.getDeclaredConstructor().newInstance();
         return (FEELPropertyAccessible) inputSetInstance;

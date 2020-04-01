@@ -3,6 +3,7 @@ package org.kie.dmn.typesafe;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 
 import com.github.javaparser.ast.expr.NameExpr;
 import com.github.javaparser.ast.expr.StringLiteralExpr;
@@ -12,6 +13,7 @@ import org.drools.core.util.StringUtils;
 import org.drools.modelcompiler.builder.generator.declaredtype.api.AnnotationDefinition;
 import org.drools.modelcompiler.builder.generator.declaredtype.api.FieldDefinition;
 import org.kie.dmn.api.core.DMNType;
+import org.kie.dmn.feel.codegen.feel11.CodegenStringUtil;
 
 import static com.github.javaparser.StaticJavaParser.parseClassOrInterfaceType;
 
@@ -22,7 +24,7 @@ public class DMNDeclaredField implements FieldDefinition {
     private List<AnnotationDefinition> annotations = new ArrayList<>();
 
     DMNDeclaredField(Map.Entry<String, DMNType> dmnType) {
-        this.fieldName = dmnType.getKey();
+        this.fieldName = CodegenStringUtil.escapeIdentifier(dmnType.getKey());
         this.fieldType = dmnType.getValue();
     }
 
@@ -34,10 +36,15 @@ public class DMNDeclaredField implements FieldDefinition {
     @Override
     public String getObjectType() {
         if (fieldType.isCollection()) {
-            String typeName = fieldType.getBaseType().getName();
+            String typeName = getBaseType();
             return String.format("java.util.Collection<%s>", StringUtils.ucFirst(typeName));
         }
         return StringUtils.ucFirst(fieldType.getName());
+    }
+
+    private String getBaseType() {
+        Optional<DMNType> baseType = Optional.ofNullable(fieldType.getBaseType());
+        return baseType.map(DMNType::getName).orElse("Object");
     }
 
     @Override
@@ -74,7 +81,7 @@ public class DMNDeclaredField implements FieldDefinition {
                                         BlockStmt pojoPropertyBlock,
                                         BlockStmt collectionsPropertyBlock) {
         if (fieldType.isCollection()) {
-            return replaceTemplate(collectionsPropertyBlock, fieldType.getBaseType().getName());
+            return replaceTemplate(collectionsPropertyBlock, getBaseType());
         } else if (fieldType.isComposite()) {
             return replaceTemplate(pojoPropertyBlock, fieldType.getName());
         } else {
