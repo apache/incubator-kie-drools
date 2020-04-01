@@ -36,6 +36,10 @@ public class KiePMMLDrooledRule {
     private Map<String, List<KiePMMLOperatorValue>> orConstraints;
     // Constraints put in xor
     private Map<String, List<KiePMMLOperatorValue>> xorConstraints;
+    // Constraints put in "in"
+    private Map<String, List<Object>> inConstraints;
+    // Constraints put in "notIn""
+    private Map<String, List<Object>> notInConstraints;
     // Used to manage compound predicates
     private String ifBreakField;
     private String ifBreakOperator;
@@ -49,7 +53,6 @@ public class KiePMMLDrooledRule {
     }
 
     /**
-     *
      * @param name The rule name
      * @param statusToSet The status to set in the rhs' <b>default</b> <code>then</code>; e.g.:
      * <p><code>then</code></p>
@@ -62,7 +65,7 @@ public class KiePMMLDrooledRule {
      * while in the default <code>then[match]</code> it will be set as <b>"DONE"</b></p>; e.g.:
      * <p><code>then</code></p>
      * <p><code>$statusHolder.setStatus(<i>statusToSet</i>);</code></p>
-     *  <p><code>update($statusHolder);</code></p>
+     * <p><code>update($statusHolder);</code></p>
      *
      * <p><code>then[match]</code></p>
      * <p><code>$statusHolder.setStatus("DONE");</code></p>
@@ -73,13 +76,11 @@ public class KiePMMLDrooledRule {
      * while in the default <code>then</code> it will be set as <b>"DONE"</b></p>; e.g.:
      * <p><code>then</code></p>
      * <p><code>$statusHolder.setStatus("DONE");</code></p>
-     *  <p><code>update($statusHolder);</code></p>
+     * <p><code>update($statusHolder);</code></p>
      *
      * <p><code>then[match]</code></p>
      * <p><code>$statusHolder.setStatus(<i>statusToSet</i>);</code></p>
      * <p><code>update($statusHolder);</code></p>
-     *
-     *
      * @return
      */
     public static Builder builder(String name, String statusToSet) {
@@ -116,6 +117,14 @@ public class KiePMMLDrooledRule {
         return xorConstraints != null ? Collections.unmodifiableMap(xorConstraints) : null;
     }
 
+    public Map<String, List<Object>> getInConstraints() {
+        return inConstraints != null ? Collections.unmodifiableMap(inConstraints) : null;
+    }
+
+    public Map<String, List<Object>> getNotInConstraints() {
+        return notInConstraints != null ? Collections.unmodifiableMap(notInConstraints) : null;
+    }
+
     public String getIfBreakField() {
         return ifBreakField;
     }
@@ -150,7 +159,7 @@ public class KiePMMLDrooledRule {
         }
 
         /**
-         * @param constraints The <b>key</b> of the map is the name of the generated type, while the <b>value</b> is the <code>KiePMMLOperatorValue</code>>
+         * @param constraints The <b>key</b> of the map is the name of the generated type, while the <b>value</b> is the <code>List&lt;KiePMMLOperatorValue&gt;</code>
          * to use for evaluation. Implicitly, the latter is evaluated with the <b>value</b> field of the former
          * (e.g entry <b>"OUTLOOK"/List(KiePMMLOperatorValue("==", "sunny"))</b> generates OUTLOOK(value == "sunny")
          * (e.g entry <b>"TEMPERATURE"/List(KiePMMLOperatorValue("<", 90), KiePMMLOperatorValue(">", 50))</b> generates TEMPERATURE( value < 90 && value > 50 )
@@ -162,7 +171,7 @@ public class KiePMMLDrooledRule {
         }
 
         /**
-         * @param constraints The <b>key</b> of the map is the name of the generated type, while the <b>value</b> is the <code>KiePMMLOperatorValue</code>>
+         * @param constraints The <b>key</b> of the map is the name of the generated type, while the <b>value</b> is the <code>List&lt;KiePMMLOperatorValue&gt;</code>
          * to use for evaluation. Implicitly, the latter is evaluated with the <b>value</b> field of the former
          * (e.g entry <b>"OUTLOOK"/List(KiePMMLOperatorValue("==", "sunny"))</b> generates OUTLOOK(value == "sunny")
          * (e.g entry <b>"TEMPERATURE"/List(KiePMMLOperatorValue("<", 90), KiePMMLOperatorValue(">", 50))</b> generates TEMPERATURE( value < 90 && value > 50 )
@@ -174,7 +183,7 @@ public class KiePMMLDrooledRule {
         }
 
         /**
-         * @param constraints The <b>key</b> of the map is the name of the generated type, while the <b>value</b> is the <code>KiePMMLOperatorValue</code>>
+         * @param constraints The <b>key</b> of the map is the name of the generated type, while the <b>value</b> is the <code>List&lt;KiePMMLOperatorValue&gt;</code>
          * to use for evaluation. Implicitly, the latter is evaluated with the <b>value</b> field of the former
          * (e.g entry <b>"OUTLOOK"/List(KiePMMLOperatorValue("==", "sunny"))</b> generates OUTLOOK(value == "sunny")
          * (e.g entry <b>"TEMPERATURE"/List(KiePMMLOperatorValue("<", 90), KiePMMLOperatorValue(">", 50))</b> generates TEMPERATURE( value < 90 && value > 50 )
@@ -182,6 +191,28 @@ public class KiePMMLDrooledRule {
          */
         public Builder withXorConstraints(Map<String, List<KiePMMLOperatorValue>> constraints) {
             this.toBuild.xorConstraints = constraints;
+            return this;
+        }
+
+        /**
+         * @param constraints The <b>key</b> of the map is the name of the generated type, while the <b>value</b> is the <code>List&lt;Object&gt;</code>
+         * to use for evaluation. Implicitly, the latter is evaluated with the <b>value</b> field of the former
+         * (e.g entry <b>"INPUT1"/List(-5,  0.5, 1, 10)</b> generates INPUT1(value in (-5,  0.5, 1, 10))
+         * @return
+         */
+        public Builder withInConstraints(Map<String, List<Object>> constraints) {
+            this.toBuild.inConstraints = constraints;
+            return this;
+        }
+
+        /**
+         * @param constraints The <b>key</b> of the map is the name of the generated type, while the <b>value</b> is the <code>List&lt;Object&gt;</code>
+         * to use for evaluation. Implicitly, the latter is evaluated with the <b>value</b> field of the former
+         * (e.g entry <b>"INPUT2"/List(3, 8.5)</b> generates not(INPUT2(value in(3, 8.5)))
+         * @return
+         */
+        public Builder withNotInConstraints(Map<String, List<Object>> constraints) {
+            this.toBuild.notInConstraints = constraints;
             return this;
         }
 

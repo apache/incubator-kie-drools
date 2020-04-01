@@ -16,6 +16,11 @@
 
 package org.kie.pmml.models.tree.tests;
 
+import java.util.Arrays;
+import java.util.Collection;
+import java.util.HashMap;
+import java.util.Map;
+
 import org.assertj.core.api.Assertions;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -25,17 +30,12 @@ import org.kie.api.pmml.PMMLRequestData;
 import org.kie.pmml.commons.model.KiePMMLModel;
 import org.kie.pmml.evaluator.core.PMMLContextImpl;
 
-import java.util.Arrays;
-import java.util.Collection;
-import java.util.HashMap;
-import java.util.Map;
-
 @RunWith(Parameterized.class)
 public class SimpleSetPredicateTreeTest extends AbstractPMMLTreeTest {
 
     private static final String MODEL_NAME = "SimpleSetPredicateTreeModel";
     private static final String PMML_SOURCE = "SimpleSetPredicateTree.pmml";
-    private static final String TARGET_FIELD = "Predicted_result";
+    private static final String TARGET_FIELD = "result";
 
     private double input1;
     private double input2;

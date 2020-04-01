@@ -256,6 +256,55 @@ public class KiePMMLDescrLhsFactoryTest {
     }
 
     @Test
+    public void declareConstraintIn() {
+        List<Object> values = Arrays.asList("-5", "0.5", "1", "10");
+        String patternType = "INPUT1";
+        KiePMMLDescrLhsFactory.factory(lhsBuilder).declareConstraintIn(patternType, values);
+        final List<BaseDescr> descrs = lhsBuilder.getDescr().getDescrs();
+        assertNotNull(descrs);
+        assertEquals(1, descrs.size());
+        assertTrue(descrs.get(0) instanceof PatternDescr);
+        PatternDescr patternDescr = (PatternDescr) descrs.get(0);
+        assertEquals(patternType, patternDescr.getObjectType());
+        assertNull(patternDescr.getIdentifier());
+        assertTrue(patternDescr.getConstraint() instanceof AndDescr);
+        AndDescr andDescr = (AndDescr) patternDescr.getConstraint();
+        assertEquals(1, andDescr.getDescrs().size());
+        assertTrue(andDescr.getDescrs().get(0) instanceof ExprConstraintDescr);
+        ExprConstraintDescr exprConstraintDescr = (ExprConstraintDescr) andDescr.getDescrs().get(0);
+        assertFalse(exprConstraintDescr.isNegated());
+        assertEquals(ExprConstraintDescr.Type.NAMED, exprConstraintDescr.getType());
+        String expected = "value in (-5, 0.5, 1, 10)";
+        assertEquals(expected, exprConstraintDescr.getExpression());
+    }
+
+    @Test
+    public void declareConstraintNotIn() {
+        List<Object> values = Arrays.asList("3", "8.5");
+        String patternType = "INPUT2";
+        KiePMMLDescrLhsFactory.factory(lhsBuilder).declareConstraintNotIn(patternType, values);
+        final List<BaseDescr> descrs = lhsBuilder.getDescr().getDescrs();
+        assertNotNull(descrs);
+        assertEquals(1, descrs.size());
+        assertTrue(descrs.get(0) instanceof NotDescr);
+        NotDescr notDescr = (NotDescr) descrs.get(0);
+        assertEquals(1, notDescr.getDescrs().size());
+        assertTrue(notDescr.getDescrs().get(0) instanceof PatternDescr);
+        PatternDescr patternDescr = (PatternDescr) notDescr.getDescrs().get(0);
+        assertEquals(patternType, patternDescr.getObjectType());
+        assertNull(patternDescr.getIdentifier());
+        assertTrue(patternDescr.getConstraint() instanceof AndDescr);
+        AndDescr andDescr = (AndDescr) patternDescr.getConstraint();
+        assertEquals(1, andDescr.getDescrs().size());
+        assertTrue(andDescr.getDescrs().get(0) instanceof ExprConstraintDescr);
+        ExprConstraintDescr exprConstraintDescr = (ExprConstraintDescr) andDescr.getDescrs().get(0);
+        assertFalse(exprConstraintDescr.isNegated());
+        assertEquals(ExprConstraintDescr.Type.NAMED, exprConstraintDescr.getType());
+        String expected = "value in (3, 8.5)";
+        assertEquals(expected, exprConstraintDescr.getExpression());
+    }
+
+    @Test
     public void declareIfBreak() {
         String ifBreakField = "TEMPERATURE";
         String ifBreakOperator = "<";
@@ -276,5 +325,13 @@ public class KiePMMLDescrLhsFactoryTest {
         assertEquals(expectedCondition, conditionalBranchDescr.getCondition().getContent());
         assertTrue(conditionalBranchDescr.getConsequence().isBreaking());
         assertEquals(BREAK_LABEL, conditionalBranchDescr.getConsequence().getText());
+    }
+
+    @Test
+    public void getInNotInConstraint() {
+        List<Object> values = Arrays.asList("-5", "0.5", "1", "10");
+        String retrieved =  KiePMMLDescrLhsFactory.factory(lhsBuilder).getInNotInConstraint(values);
+        String expected = "value in (-5, 0.5, 1, 10)";
+        assertEquals(expected, retrieved);
     }
 }

@@ -24,6 +24,7 @@ import org.dmg.pmml.Predicate;
 import org.dmg.pmml.True;
 import org.dmg.pmml.tree.LeafNode;
 import org.dmg.pmml.tree.Node;
+import org.dmg.pmml.tree.TreeModel;
 import org.kie.pmml.models.drooled.ast.KiePMMLDrooledRule;
 import org.kie.pmml.models.drooled.tuples.KiePMMLOriginalTypeGeneratedType;
 import org.slf4j.Logger;
@@ -32,20 +33,22 @@ import org.slf4j.LoggerFactory;
 import static org.kie.pmml.models.tree.compiler.factories.KiePMMLTreeModelASTFactory.PATH_PATTERN;
 
 /**
- * Class used to generate a <code>KiePMMLDrooledAST</code> out of a<b>TreeModel</b>
+ * Class used to generate <code>KiePMMLDrooledRule</code>s out of a <code>Node</code>
  */
 public class KiePMMLTreeModelNodeASTFactory {
 
     private static final Logger logger = LoggerFactory.getLogger(KiePMMLTreeModelNodeASTFactory.class.getName());
 
     private final Map<String, KiePMMLOriginalTypeGeneratedType> fieldTypeMap;
+    private final TreeModel.NoTrueChildStrategy noTrueChildStrategy;
 
-    private KiePMMLTreeModelNodeASTFactory(final Map<String, KiePMMLOriginalTypeGeneratedType> fieldTypeMap) {
+    private KiePMMLTreeModelNodeASTFactory(final Map<String, KiePMMLOriginalTypeGeneratedType> fieldTypeMap, final TreeModel.NoTrueChildStrategy noTrueChildStrategy) {
         this.fieldTypeMap = fieldTypeMap;
+        this.noTrueChildStrategy = noTrueChildStrategy;
     }
 
-    public static KiePMMLTreeModelNodeASTFactory factory(final Map<String, KiePMMLOriginalTypeGeneratedType> fieldTypeMap) {
-        return new KiePMMLTreeModelNodeASTFactory(fieldTypeMap);
+    public static KiePMMLTreeModelNodeASTFactory factory(final Map<String, KiePMMLOriginalTypeGeneratedType> fieldTypeMap, final TreeModel.NoTrueChildStrategy noTrueChildStrategy) {
+        return new KiePMMLTreeModelNodeASTFactory(fieldTypeMap, noTrueChildStrategy);
     }
 
     public Queue<KiePMMLDrooledRule> declareRulesFromRootNode(final Node node, final String parentPath) {
@@ -56,12 +59,15 @@ public class KiePMMLTreeModelNodeASTFactory {
     }
 
     protected void declareRuleFromNode(final Node node, final String parentPath,
-                                    final Queue<KiePMMLDrooledRule> rules) {
+                                       final Queue<KiePMMLDrooledRule> rules) {
         logger.info("declareRuleFromNode {} {}", node, parentPath);
         if (isFinalLeaf(node)) {
             declareFinalRuleFromNode(node, parentPath, rules);
         } else {
             declareIntermediateRuleFromNode(node, parentPath, rules);
+            if (TreeModel.NoTrueChildStrategy.RETURN_LAST_PREDICTION.equals(noTrueChildStrategy) && node.getScore() != null) {
+                declareDefaultRuleFromNode(node, parentPath, rules);
+            }
         }
     }
 
@@ -72,8 +78,8 @@ public class KiePMMLTreeModelNodeASTFactory {
      * @param rules
      */
     protected void declareFinalRuleFromNode(final Node node,
-                                         final String parentPath,
-                                         final Queue<KiePMMLDrooledRule> rules) {
+                                            final String parentPath,
+                                            final Queue<KiePMMLDrooledRule> rules) {
         logger.info("declareFinalRuleFromNode {} {}", node, parentPath);
         final Predicate predicate = node.getPredicate();
         // This means the rule should not be created at all.
@@ -95,8 +101,8 @@ public class KiePMMLTreeModelNodeASTFactory {
      * @param rules
      */
     protected void declareIntermediateRuleFromNode(final Node node,
-                                                final String parentPath,
-                                                final Queue<KiePMMLDrooledRule> rules) {
+                                                   final String parentPath,
+                                                   final Queue<KiePMMLDrooledRule> rules) {
         logger.info("declareIntermediateRuleFromNode {} {}", node, parentPath);
         final Predicate predicate = node.getPredicate();
         // This means the rule should not be created at all.
@@ -106,12 +112,28 @@ public class KiePMMLTreeModelNodeASTFactory {
             return;
         }
         String currentRule = String.format(PATH_PATTERN, parentPath, node.getScore().toString());
-        if (predicate instanceof True) {
-            KiePMMLTreeModelPredicateASTFactory.factory(fieldTypeMap, rules).declareRuleFromPredicate(predicate, parentPath, currentRule, node.getScore(), false);
-        } else {
-            KiePMMLTreeModelPredicateASTFactory.factory(fieldTypeMap, rules).declareRuleFromPredicate(predicate, parentPath, currentRule, node.getScore(), false);
-        }
+//        if (predicate instanceof True) {
+//            KiePMMLTreeModelPredicateASTFactory.factory(fieldTypeMap, rules).declareRuleFromPredicate(predicate, parentPath, currentRule, node.getScore(), false);
+//        } else {
+        KiePMMLTreeModelPredicateASTFactory.factory(fieldTypeMap, rules).declareRuleFromPredicate(predicate, parentPath, currentRule, node.getScore(), false);
+//        }
         node.getNodes().forEach(child -> declareRuleFromNode(child, currentRule, rules));
+    }
+
+    /**
+     * This method is meant to be executed when <b>noTrueChildStrategy</b> is <code>TreeModel.NoTrueChildStrategy.RETURN_LAST_PREDICTION</code>, <b>node</b>
+     * is not a <i>final leaf</i>, and <b>node</b>'s score is not null
+     * @param node
+     * @param parentPath
+     * @param rules
+     */
+    protected void declareDefaultRuleFromNode(final Node node,
+                                              final String parentPath,
+                                              final Queue<KiePMMLDrooledRule> rules) {
+        logger.info("declareDefaultRuleFromNode {} {}", node, parentPath);
+        String originalRule = String.format(PATH_PATTERN, parentPath, node.getScore().toString());
+        String currentRule = String.format(PATH_PATTERN, "default", originalRule);
+        KiePMMLTreeModelPredicateASTFactory.factory(fieldTypeMap, rules).declareRuleFromPredicate(new True(), originalRule, currentRule, node.getScore(), true);
     }
 
     protected boolean isFinalLeaf(final Node node) {

@@ -28,7 +28,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 /**
- * Class used to generate a <code>KiePMMLDrooledAST</code> out of a<b>TreeModel</b>
+ * Class used to generate a <code>KiePMMLDrooledAST</code> out of a <code>DataDictionary</code> and a <code>TreeModel</code>
  */
 public class KiePMMLTreeModelASTFactory {
 
@@ -53,7 +53,7 @@ public class KiePMMLTreeModelASTFactory {
     public static KiePMMLDrooledAST getKiePMMLDrooledAST(DataDictionary dataDictionary, TreeModel model, final Map<String, KiePMMLOriginalTypeGeneratedType> fieldTypeMap) {
         logger.info("getKiePMMLDrooledAST {} {}", dataDictionary, model);
         Queue<KiePMMLDrooledType> types = KiePMMLTreeModelDataDictionaryASTFactory.factory(fieldTypeMap).declareTypes(dataDictionary);
-        Queue<KiePMMLDrooledRule> rules = KiePMMLTreeModelNodeASTFactory.factory(fieldTypeMap).declareRulesFromRootNode(model.getNode(), "");
+        Queue<KiePMMLDrooledRule> rules = KiePMMLTreeModelNodeASTFactory.factory(fieldTypeMap, model.getNoTrueChildStrategy()).declareRulesFromRootNode(model.getNode(), "");
         return new KiePMMLDrooledAST(types, rules);
     }
 }

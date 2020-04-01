@@ -15,13 +15,16 @@
  */
 package org.kie.pmml.models.tree.compiler.factories;
 
+import java.util.List;
 import java.util.Map;
 
+import org.dmg.pmml.Array;
 import org.dmg.pmml.DataField;
 import org.dmg.pmml.DataType;
 import org.dmg.pmml.FieldName;
 import org.dmg.pmml.OpType;
 import org.dmg.pmml.SimplePredicate;
+import org.dmg.pmml.SimpleSetPredicate;
 import org.kie.pmml.models.drooled.tuples.KiePMMLOriginalTypeGeneratedType;
 
 import static org.kie.pmml.commons.utils.DrooledModelUtils.getSanitizedClassName;
@@ -46,11 +49,31 @@ public class KiePMMLTreeModelASTTestUtils {
 
     public static SimplePredicate getSimplePredicate(String predicateName, DataType dataType, String value, final Map<String, KiePMMLOriginalTypeGeneratedType> fieldTypeMap) {
         FieldName fieldName = FieldName.create(predicateName);
-        fieldTypeMap.put(fieldName.getValue(), new KiePMMLOriginalTypeGeneratedType(dataType.value()/*DataType.STRING.value()*/, getSanitizedClassName(fieldName.getValue().toUpperCase())));
+        fieldTypeMap.put(fieldName.getValue(), new KiePMMLOriginalTypeGeneratedType(dataType.value(), getSanitizedClassName(fieldName.getValue().toUpperCase())));
         SimplePredicate toReturn = new SimplePredicate();
         toReturn.setField(fieldName);
         toReturn.setOperator(SimplePredicate.Operator.LESS_THAN);
         toReturn.setValue(value);
+        return toReturn;
+    }
+
+    public static SimpleSetPredicate getSimpleSetPredicate(String predicateName, Array.Type arrayType, List<String> values, SimpleSetPredicate.BooleanOperator booleanOperator, final Map<String, KiePMMLOriginalTypeGeneratedType> fieldTypeMap) {
+        FieldName fieldName = FieldName.create(predicateName);
+        fieldTypeMap.put(fieldName.getValue(), new KiePMMLOriginalTypeGeneratedType(arrayType.value(), getSanitizedClassName(fieldName.getValue().toUpperCase())));
+        SimpleSetPredicate toReturn = new SimpleSetPredicate();
+        toReturn.setField(fieldName);
+        toReturn.setBooleanOperator(booleanOperator);
+        StringBuilder builder = new StringBuilder();
+        for (int i = 0; i < values.size(); i++) {
+            String value = values.get(i);
+            if (i > 0) {
+                builder.append(" ");
+            }
+            builder.append(value);
+        }
+        Array array = new Array(arrayType, builder.toString());
+        array.setN(values.size());
+        toReturn.setArray(array);
         return toReturn;
     }
 }

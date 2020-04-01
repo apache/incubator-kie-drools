@@ -68,6 +68,12 @@ public class KiePMMLDescrLhsFactory {
         if (rule.getXorConstraints() != null) {
             declareConstraintsXor(rule.getXorConstraints());
         }
+        if (rule.getInConstraints() != null) {
+            rule.getInConstraints().forEach(this::declareConstraintIn);
+        }
+        if (rule.getNotInConstraints() != null) {
+            rule.getNotInConstraints().forEach(this::declareConstraintNotIn);
+        }
         if (rule.getIfBreakField() != null) {
             declareIfBreak(rule.getIfBreakField(), rule.getIfBreakOperator(), rule.getIfBreakValue());
         }
@@ -130,10 +136,34 @@ public class KiePMMLDescrLhsFactory {
         existsBuilder.pattern(patternType).constraint(constraintBuilder.toString());
     }
 
+    protected void declareConstraintIn(final String patternType, final List<Object> values) {
+        String constraints = getInNotInConstraint(values);
+        builder.pattern(patternType).constraint(constraints);
+    }
+
+    protected void declareConstraintNotIn(final String patternType, final List<Object> values) {
+        String constraints = getInNotInConstraint(values);
+        builder.not().pattern(patternType).constraint(constraints);
+    }
+
     protected void declareIfBreak(String ifBreakField, String ifBreakOperator, Object ifBreakValue) {
         builder.pattern(ifBreakField).id(INPUT_FIELD, false);
         final ConditionalBranchDescrBuilder<CEDescrBuilder<RuleDescrBuilder, AndDescr>> condBranchBuilder = builder.conditionalBranch();
         condBranchBuilder.condition().constraint(String.format(INPUT_FIELD_CONDITIONAL, ifBreakOperator, ifBreakValue));
         condBranchBuilder.consequence().breaking(true).name(BREAK_LABEL);
+    }
+
+    protected String getInNotInConstraint(final List<Object> values) {
+        StringBuilder constraintBuilder = new StringBuilder();
+        constraintBuilder.append("(");
+        for (int i = 0; i < values.size(); i++) {
+            Object value = values.get(i);
+            if (i > 0) {
+                constraintBuilder.append(", ");
+            }
+            constraintBuilder.append(value);
+        }
+        constraintBuilder.append(")");
+        return String.format(VALUE_PATTERN, "in", constraintBuilder.toString());
     }
 }

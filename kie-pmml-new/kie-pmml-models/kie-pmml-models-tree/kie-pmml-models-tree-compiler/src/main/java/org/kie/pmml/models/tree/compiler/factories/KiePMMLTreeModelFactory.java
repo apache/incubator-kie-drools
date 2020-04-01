@@ -35,6 +35,9 @@ import static org.kie.pmml.compiler.commons.utils.ModelUtils.getTargetField;
 import static org.kie.pmml.commons.factories.KiePMMLDescrFactory.getBaseDescr;
 import static org.kie.pmml.models.tree.compiler.factories.KiePMMLTreeModelASTFactory.getKiePMMLDrooledAST;
 
+/**
+ * Class used to generate <code>KiePMMLTreeModel</code> out of a <code>DataDictionary</code> and a <code>TreeModel</code>
+ */
 public class KiePMMLTreeModelFactory {
 
     private static final Logger logger = LoggerFactory.getLogger(KiePMMLTreeModelFactory.class.getName());

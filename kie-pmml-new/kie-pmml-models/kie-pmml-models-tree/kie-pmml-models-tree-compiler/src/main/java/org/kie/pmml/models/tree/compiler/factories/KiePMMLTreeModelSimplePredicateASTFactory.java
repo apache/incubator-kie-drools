@@ -35,7 +35,7 @@ import static org.kie.pmml.models.tree.compiler.factories.KiePMMLTreeModelASTFac
 import static org.kie.pmml.models.tree.compiler.factories.KiePMMLTreeModelASTFactory.SURROGATE_PATTERN;
 
 /**
- * Class used to generate a <code>KiePMMLDrooledAST</code> out of a<b>TreeModel</b>
+ * Class used to generate <code>KiePMMLDrooledRule</code> out of a <code>SimplePredicate</code>
  */
 public class KiePMMLTreeModelSimplePredicateASTFactory {
 

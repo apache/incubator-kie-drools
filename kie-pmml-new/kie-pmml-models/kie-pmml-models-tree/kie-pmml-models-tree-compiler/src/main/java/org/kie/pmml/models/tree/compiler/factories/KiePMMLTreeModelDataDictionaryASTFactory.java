@@ -29,7 +29,7 @@ import org.kie.pmml.models.drooled.tuples.KiePMMLOriginalTypeGeneratedType;
 import static org.kie.pmml.commons.utils.DrooledModelUtils.getSanitizedClassName;
 
 /**
- * Class used to generate a <code>KiePMMLDrooledType</code>s out of a<b>DataDictionary</b>
+ * Class used to generate <code>KiePMMLDrooledType</code>s out of a <code>DataDictionary</code>
  */
 public class KiePMMLTreeModelDataDictionaryASTFactory {
 

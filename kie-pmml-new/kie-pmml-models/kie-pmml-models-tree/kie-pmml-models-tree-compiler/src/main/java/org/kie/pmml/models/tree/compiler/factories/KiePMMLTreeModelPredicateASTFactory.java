@@ -21,6 +21,7 @@ import java.util.Queue;
 import org.dmg.pmml.CompoundPredicate;
 import org.dmg.pmml.Predicate;
 import org.dmg.pmml.SimplePredicate;
+import org.dmg.pmml.SimpleSetPredicate;
 import org.dmg.pmml.True;
 import org.kie.pmml.models.drooled.ast.KiePMMLDrooledRule;
 import org.kie.pmml.models.drooled.tuples.KiePMMLOriginalTypeGeneratedType;
@@ -28,7 +29,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 /**
- * Class used to generate a <code>KiePMMLDrooledAST</code> out of a<b>TreeModel</b>
+ * Class used to generate <code>KiePMMLDrooledRule</code>s out of a <code>Predicate</code>
  */
 public class KiePMMLTreeModelPredicateASTFactory {
 
@@ -47,11 +48,16 @@ public class KiePMMLTreeModelPredicateASTFactory {
 
     /**
      * Manage the given <code>Predicate</code>. At this point of the execution, <b>predicate</b> could be:
-     * <p>1) @see <a href="http://dmg.org/pmml/v4-4/TreeModel.html#xsdElement_SimplePredicate">SimplePredicate</a><p>
-     * <p>2) @see <a href="http://dmg.org/pmml/v4-4/TreeModel.html#xsdElement_CompoundPredicate">CompoundPredicate</a><p>
-     * <p>3) @see <a href="http://dmg.org/pmml/v4-4/TreeModel.html#xsdElement_SimpleSetPredicate">SimpleSetPredicate</a><p>
+     *
+     * <p>1) @see <a href="http://dmg.org/pmml/v4-4/TreeModel.html#xsdElement_True">True</a><p>
+     * <p>2) @see <a href="http://dmg.org/pmml/v4-4/TreeModel.html#xsdElement_SimplePredicate">SimplePredicate</a><p>
+     * <p>3) @see <a href="http://dmg.org/pmml/v4-4/TreeModel.html#xsdElement_CompoundPredicate">CompoundPredicate</a><p>
+     * <p>4) @see <a href="http://dmg.org/pmml/v4-4/TreeModel.html#xsdElement_SimpleSetPredicate">SimpleSetPredicate</a><p>
      * @param predicate
      * @param parentPath
+     * @param currentRule
+     * @param result
+     * @param isFinalLeaf
      */
     public void declareRuleFromPredicate(final Predicate predicate,
                                          final String parentPath,
@@ -63,6 +69,8 @@ public class KiePMMLTreeModelPredicateASTFactory {
             KiePMMLTreeModelTruePredicateASTFactory.factory((True) predicate, rules).declareRuleFromTruePredicate(parentPath, currentRule, result, isFinalLeaf);
         } else if (predicate instanceof SimplePredicate) {
             KiePMMLTreeModelSimplePredicateASTFactory.factory((SimplePredicate) predicate, fieldTypeMap, rules).declareRuleFromSimplePredicate(parentPath, currentRule, result, isFinalLeaf);
+        } else if (predicate instanceof SimpleSetPredicate) {
+            KiePMMLTreeModelSimpleSetPredicateASTFactory.factory((SimpleSetPredicate) predicate, fieldTypeMap, rules).declareRuleFromSimpleSetPredicate(parentPath, currentRule, result, isFinalLeaf);
         } else if (predicate instanceof CompoundPredicate) {
             KiePMMLTreeModelCompoundPredicateASTFactory.factory((CompoundPredicate) predicate, fieldTypeMap, rules).declareRuleFromCompoundPredicate(parentPath, currentRule, result, isFinalLeaf);
         }

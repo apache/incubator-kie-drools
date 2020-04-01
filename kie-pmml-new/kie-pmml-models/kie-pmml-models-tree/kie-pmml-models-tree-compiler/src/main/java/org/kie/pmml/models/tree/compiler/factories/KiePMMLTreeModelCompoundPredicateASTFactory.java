@@ -41,7 +41,7 @@ import static org.kie.pmml.models.tree.compiler.factories.KiePMMLTreeModelASTFac
 import static org.kie.pmml.models.tree.compiler.factories.KiePMMLTreeModelASTFactory.STATUS_PATTERN;
 
 /**
- * Class used to generate a <code>KiePMMLDrooledAST</code> out of a<b>TreeModel</b>
+ * Class used to generate <code>KiePMMLDrooledRule</code>s out of a <code>CompoundPredicate</code>
  */
 public class KiePMMLTreeModelCompoundPredicateASTFactory {
 
