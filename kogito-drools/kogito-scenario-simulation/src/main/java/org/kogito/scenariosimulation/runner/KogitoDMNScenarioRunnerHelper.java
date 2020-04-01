@@ -15,6 +15,17 @@
  */
 package org.kogito.scenariosimulation.runner;
 
+import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
+
+import org.drools.core.io.impl.FileSystemResource;
 import org.drools.scenariosimulation.api.model.ScenarioSimulationModel;
 import org.drools.scenariosimulation.api.model.ScesimModelDescriptor;
 import org.drools.scenariosimulation.api.model.Settings;
@@ -24,23 +35,40 @@ import org.drools.scenariosimulation.backend.runner.ScenarioException;
 import org.drools.scenariosimulation.backend.runner.model.InstanceGiven;
 import org.drools.scenariosimulation.backend.runner.model.ScenarioRunnerData;
 import org.drools.scenariosimulation.backend.util.DMNSimulationUtils;
+import org.kie.api.io.Resource;
 import org.kie.api.runtime.KieContainer;
 import org.kie.dmn.api.core.DMNContext;
 import org.kie.dmn.api.core.DMNModel;
 import org.kie.dmn.api.core.DMNResult;
 import org.kie.dmn.api.core.DMNRuntime;
-import org.kie.kogito.dmn.DMNKogito;
-
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import org.kie.dmn.core.internal.utils.DMNRuntimeBuilder;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import static org.drools.scenariosimulation.backend.fluent.DMNScenarioExecutableBuilder.DMN_MODEL;
 import static org.drools.scenariosimulation.backend.fluent.DMNScenarioExecutableBuilder.DMN_RESULT;
 
 public class KogitoDMNScenarioRunnerHelper extends DMNScenarioRunnerHelper {
 
-    private DMNRuntime dmnRuntime = DMNKogito.createGenericDMNRuntime();
+    private static final Logger LOG = LoggerFactory.getLogger(KogitoDMNScenarioRunnerHelper.class);
+
+    private DMNRuntime dmnRuntime = null;
+    {
+        try (Stream<Path> fileStream = Files.walk(Paths.get("."))) {
+            List<Resource> resources = fileStream.filter(path -> Files.isRegularFile(path) && path.toString().endsWith(".dmn"))
+                                                 .peek(x -> System.out.println(x))
+                                                 .map(Path::toFile)
+                                                 .map(FileSystemResource::new)
+                                                 .collect(Collectors.toList());
+            dmnRuntime = DMNRuntimeBuilder.fromDefaults()
+                                          .setRootClassLoader(null)
+                                          .buildConfiguration()
+                                          .fromResources(resources)
+                                          .getOrElseThrow(e -> new RuntimeException("Error initalizing DMNRuntime", e));
+        } catch (IOException e) {
+            throw new RuntimeException("Error initalizing KogitoDMNScenarioRunnerHelper", e);
+        }
+    }
 
     @Override
     protected Map<String, Object> executeScenario(KieContainer kieContainer,

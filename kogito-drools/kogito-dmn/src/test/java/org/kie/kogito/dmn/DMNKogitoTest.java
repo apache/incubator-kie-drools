@@ -15,26 +15,18 @@
 
 package org.kie.kogito.dmn;
 
+import java.io.InputStreamReader;
+
 import org.junit.jupiter.api.Test;
 import org.kie.dmn.api.core.DMNRuntime;
 
-import java.io.InputStreamReader;
-
 import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertNotNull;
 
 public class DMNKogitoTest {
 
     @Test
     public void testBasic() {
         DMNRuntime dmnRuntime = DMNKogito.createGenericDMNRuntime(new InputStreamReader(DMNKogitoTest.class.getResourceAsStream("TrafficViolation.dmn")));
-        assertEquals(1, dmnRuntime.getModels().size());
-    }
-
-    @Test
-    public void testCreateGenericDMNRuntime() {
-        DMNRuntime dmnRuntime = DMNKogito.createGenericDMNRuntime();
-        assertEquals(1, dmnRuntime.getModels().size());
-        assertNotNull(dmnRuntime.getModels().get(0).getResource());
+        assertEquals(dmnRuntime.getModels().size(), 1);
     }
 }

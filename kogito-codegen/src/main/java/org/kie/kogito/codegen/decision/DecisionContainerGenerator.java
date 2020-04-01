@@ -30,7 +30,7 @@ import com.github.javaparser.ast.expr.MethodCallExpr;
 import com.github.javaparser.ast.expr.ObjectCreationExpr;
 import com.github.javaparser.ast.expr.StringLiteralExpr;
 import com.github.javaparser.ast.type.ClassOrInterfaceType;
-import org.kie.dmn.core.assembler.DMNResource;
+import org.kie.dmn.api.core.DMNModel;
 import org.kie.kogito.codegen.AbstractApplicationSection;
 import org.kie.kogito.decision.DecisionModels;
 
@@ -40,9 +40,9 @@ public class DecisionContainerGenerator extends AbstractApplicationSection {
 
     private String applicationCanonicalName;
     private final Path basePath;
-    private final Collection<? extends DMNResource> models;
+    private final Collection<DMNModel> models;
 
-    public DecisionContainerGenerator(String applicationCanonicalName, Path basePath, Collection<? extends DMNResource> models) {
+    public DecisionContainerGenerator(String applicationCanonicalName, Path basePath, Collection<DMNModel> models) {
         super("DecisionModels", "decisionModels", DecisionModels.class);
         this.applicationCanonicalName = applicationCanonicalName;
         this.basePath = basePath;
@@ -69,8 +69,8 @@ public class DecisionContainerGenerator extends AbstractApplicationSection {
         ClassOrInterfaceDeclaration typeDeclaration = (ClassOrInterfaceDeclaration) clazz.getTypes().get(0);
         ClassOrInterfaceType applicationClass = StaticJavaParser.parseClassOrInterfaceType(applicationCanonicalName);
         ClassOrInterfaceType inputStreamReaderClass = StaticJavaParser.parseClassOrInterfaceType(java.io.InputStreamReader.class.getCanonicalName());
-        for (DMNResource model : models) {
-            Path sourcePath = Paths.get(model.getResAndConfig().getResource().getSourcePath());
+        for (DMNModel model : models) {
+            Path sourcePath = Paths.get(model.getResource().getSourcePath());
             Path relativizedPath = basePath.relativize(sourcePath);
             String resourcePath = "/" + relativizedPath;
             MethodCallExpr getResAsStream = new MethodCallExpr(new FieldAccessExpr(applicationClass.getNameAsExpression(), "class"), "getResourceAsStream").addArgument(new StringLiteralExpr(resourcePath));
