@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.kie.pmml.models.regression.compiler.utils;
+package org.kie.memorycompiler;
 
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
@@ -22,7 +22,7 @@ import java.net.URI;
 
 import javax.tools.SimpleJavaFileObject;
 
-public class KiePMMLSourceCode extends SimpleJavaFileObject {
+public class KieMemoryCompilerSourceCode extends SimpleJavaFileObject {
 
     private final String contents;
     private final String className;
@@ -30,11 +30,11 @@ public class KiePMMLSourceCode extends SimpleJavaFileObject {
 
 
     /**
-     * Constructor for <code>Kind.SOURCE</code> <code>KiePMMLCode</code>
+     * Constructor for <code>Kind.SOURCE</code> <code>KieMemoryCompilerCode</code>
      * @param className
      * @param contents
      */
-    public KiePMMLSourceCode(String className, String contents) {
+    public KieMemoryCompilerSourceCode(String className, String contents) {
         super(URI.create("string:///" + className.replace('.', '/')
                                  + Kind.SOURCE.extension), Kind.SOURCE);
         this.contents = contents;
@@ -50,6 +50,7 @@ public class KiePMMLSourceCode extends SimpleJavaFileObject {
         return className;
     }
 
+    @Override
     public CharSequence getCharContent(boolean ignoreEncodingErrors)
             throws IOException {
         return contents;

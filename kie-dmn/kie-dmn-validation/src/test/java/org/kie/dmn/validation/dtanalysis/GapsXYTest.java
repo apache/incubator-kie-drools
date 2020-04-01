@@ -48,7 +48,7 @@ public class GapsXYTest extends AbstractDTAnalysisTest {
         checkAnalysis(validate);
     }
 
-    private void checkAnalysis(List<DMNMessage> validate) {
+    public static void checkAnalysis(List<DMNMessage> validate) {
         DTAnalysis analysis = getAnalysis(validate, "_ce297a95-b16c-4631-8da5-e739dac9e3c4");
 
         assertThat(analysis.getGaps(), hasSize(3));

@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.kie.pmml.models.regression.compiler.utils;
+package org.kie.memorycompiler;
 
 import java.util.Arrays;
 import java.util.HashMap;
@@ -28,12 +28,13 @@ import javax.tools.JavaCompiler;
 import javax.tools.JavaFileObject;
 import javax.tools.ToolProvider;
 
-import org.kie.pmml.commons.exceptions.KiePMMLInternalException;
-
-public class KiePMMLRegressionCompiler {
+public class KieMemoryCompiler {
 
     private static final JavaCompiler JAVA_COMPILER = ToolProvider.getSystemJavaCompiler();
     private static final List<String> OPTIONS = Arrays.asList("-source", "1.8", "-target", "1.8", "-encoding", "UTF-8");
+
+    private KieMemoryCompiler() {
+    }
 
     /**
      * Compile the given sources and add compiled classes to the given <code>ClassLoader</code>
@@ -43,11 +44,11 @@ public class KiePMMLRegressionCompiler {
      * @return
      */
     public static Map<String, Class<?>> compile(Map<String, String> classNameSourceMap, ClassLoader classLoader) {
-        Map<String, KiePMMLSourceCode> sourceCodes = classNameSourceMap.entrySet().stream().collect(Collectors.toMap(Map.Entry::getKey,
-                                                                                                                     entry -> new KiePMMLSourceCode(entry.getKey(), entry.getValue())));
-        KiePMMLClassLoader kiePMMLClassLoader = new KiePMMLClassLoader(classLoader);
+        Map<String, KieMemoryCompilerSourceCode> sourceCodes = classNameSourceMap.entrySet().stream().collect(Collectors.toMap(Map.Entry::getKey,
+                                                                                                                     entry -> new KieMemoryCompilerSourceCode(entry.getKey(), entry.getValue())));
+        KieMemoryCompilerClassLoader kieMemoryCompilerClassLoader = new KieMemoryCompilerClassLoader(classLoader);
         DiagnosticCollector<JavaFileObject> collector = new DiagnosticCollector<>();
-        KiePMMLFileManager fileManager = new KiePMMLFileManager(JAVA_COMPILER.getStandardFileManager(null, null, null), kiePMMLClassLoader);
+        KieMemoryCompilerFileManager fileManager = new KieMemoryCompilerFileManager(JAVA_COMPILER.getStandardFileManager(null, null, null), kieMemoryCompilerClassLoader);
         JavaCompiler.CompilationTask task = JAVA_COMPILER.getTask(null, fileManager, collector, OPTIONS, null, sourceCodes.values());
         boolean result = task.call();
         if (!result || !collector.getDiagnostics().isEmpty()) {
@@ -61,14 +62,14 @@ public class KiePMMLRegressionCompiler {
                 errorBuilder.append("; ");
                 errorBuilder.append(diagnostic.getMessage(Locale.US));
             }
-            throw new KiePMMLInternalException(errorBuilder.toString());
+            throw new KieMemoryCompilerException(errorBuilder.toString());
         }
         Map<String, Class<?>> toReturn = new HashMap<>();
         for (String className : sourceCodes.keySet()) {
             try {
-                toReturn.put(className, kiePMMLClassLoader.loadClass(className));
+                toReturn.put(className, kieMemoryCompilerClassLoader.loadClass(className));
             } catch (ClassNotFoundException e) {
-                throw new KiePMMLInternalException(e.getMessage(), e);
+                throw new KieMemoryCompilerException(e.getMessage(), e);
             }
         }
         return toReturn;

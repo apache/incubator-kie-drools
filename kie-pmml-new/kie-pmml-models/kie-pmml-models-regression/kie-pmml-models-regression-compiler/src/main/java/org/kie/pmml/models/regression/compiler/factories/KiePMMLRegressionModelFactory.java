@@ -38,11 +38,11 @@ import org.dmg.pmml.MiningFunction;
 import org.dmg.pmml.OpType;
 import org.dmg.pmml.OutputField;
 import org.dmg.pmml.regression.RegressionModel;
+import org.kie.memorycompiler.KieMemoryCompiler;
 import org.kie.pmml.commons.model.KiePMMLOutputField;
 import org.kie.pmml.commons.model.enums.MINING_FUNCTION;
 import org.kie.pmml.commons.model.enums.PMML_MODEL;
 import org.kie.pmml.commons.model.enums.RESULT_FEATURE;
-import org.kie.pmml.models.regression.compiler.utils.KiePMMLRegressionCompiler;
 import org.kie.pmml.models.regression.model.KiePMMLRegressionModel;
 import org.kie.pmml.models.regression.model.tuples.KiePMMLTableSourceCategory;
 import org.slf4j.Logger;
@@ -84,7 +84,7 @@ public class KiePMMLRegressionModelFactory {
         Map<String, String> sourcesMap = tablesSourceMap.entrySet().stream().collect(Collectors.toMap(entry -> BASE_PACKAGE + entry.getKey(), entry -> entry.getValue().getSource()));
         String fullClassName = BASE_PACKAGE + className;
         sourcesMap.put(fullClassName, cloneCU.toString());
-        final Map<String, Class<?>> compiledClasses = KiePMMLRegressionCompiler.compile(sourcesMap, Thread.currentThread().getContextClassLoader());
+        final Map<String, Class<?>> compiledClasses = KieMemoryCompiler.compile(sourcesMap, Thread.currentThread().getContextClassLoader());
         return (KiePMMLRegressionModel) compiledClasses.get(fullClassName).newInstance();
     }
 
