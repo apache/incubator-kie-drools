@@ -267,6 +267,11 @@ KieContainer kieContainer = kieServices.newKieContainer( releaseId );
 ----
 ====
 
+[WARNING]
+====
+KieBase and KiePackage don't support serialization since Drools 6. You need to build KieBase through KieContainer. On the other hand, KieSession can be marshalled/unmarshalled by KieMashaller. See xref:#_marshalling[].
+====
+
 [[_buildingwithmaven]]
 == Building with Maven
 
