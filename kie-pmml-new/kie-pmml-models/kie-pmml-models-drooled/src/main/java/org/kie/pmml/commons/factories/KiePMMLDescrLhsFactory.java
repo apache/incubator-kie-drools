@@ -20,6 +20,7 @@ import java.util.Map;
 
 import org.drools.compiler.lang.api.CEDescrBuilder;
 import org.drools.compiler.lang.api.ConditionalBranchDescrBuilder;
+import org.drools.compiler.lang.api.PatternDescrBuilder;
 import org.drools.compiler.lang.api.RuleDescrBuilder;
 import org.drools.compiler.lang.descr.AndDescr;
 import org.drools.compiler.lang.descr.ExistsDescr;
@@ -58,7 +59,10 @@ public class KiePMMLDescrLhsFactory {
 
     public void declareLhs(final KiePMMLDrooledRule rule) {
         logger.info("declareLhs {}", rule);
-        builder.pattern(KiePMMLStatusHolder.class.getSimpleName()).id(STATUS_HOLDER, false).constraint(rule.getStatusConstraint());
+        final PatternDescrBuilder<CEDescrBuilder<RuleDescrBuilder, AndDescr>> patternDescrBuilder = builder.pattern(KiePMMLStatusHolder.class.getSimpleName()).id(STATUS_HOLDER, false);
+        if (rule.getStatusConstraint() != null) {
+            patternDescrBuilder.constraint(rule.getStatusConstraint());
+        }
         if (rule.getAndConstraints() != null) {
             rule.getAndConstraints().forEach((type, kiePMMLOperatorValues) -> declareConstraintAndOr("&&", type, kiePMMLOperatorValues));
         }

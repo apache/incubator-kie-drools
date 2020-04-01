@@ -29,6 +29,8 @@ public class KiePMMLDrooledRule {
     // RHS
     private final String statusToSet;
     // LHS
+    private String agendaGroup;
+    private String activationGroup;
     private String statusConstraint;
     // Constraints put in and
     private Map<String, List<KiePMMLOperatorValue>> andConstraints;
@@ -44,6 +46,8 @@ public class KiePMMLDrooledRule {
     private String ifBreakField;
     private String ifBreakOperator;
     private Object ifBreakValue;
+    // RHS
+    private String focusedAgendaGroup;
     private StatusCode resultCode;
     private Object result;
 
@@ -99,6 +103,18 @@ public class KiePMMLDrooledRule {
      */
     public String getStatusToSet() {
         return statusToSet;
+    }
+
+    public String getAgendaGroup() {
+        return agendaGroup;
+    }
+
+    public String getActivationGroup() {
+        return activationGroup;
+    }
+
+    public String getFocusedAgendaGroup() {
+        return focusedAgendaGroup;
     }
 
     public String getStatusConstraint() {
@@ -240,6 +256,21 @@ public class KiePMMLDrooledRule {
 
         public Builder withResult(Object result) {
             this.toBuild.result = result;
+            return this;
+        }
+
+        public Builder withAgendaGroup(String agendaGroup) {
+            this.toBuild.agendaGroup = agendaGroup;
+            return this;
+        }
+
+        public Builder withActivationGroup(String activationGroup) {
+            this.toBuild.activationGroup = activationGroup;
+            return this;
+        }
+
+        public Builder withFocusedAgendaGroup(String focusedAgendaGroup) {
+            this.toBuild.focusedAgendaGroup = focusedAgendaGroup;
             return this;
         }
 

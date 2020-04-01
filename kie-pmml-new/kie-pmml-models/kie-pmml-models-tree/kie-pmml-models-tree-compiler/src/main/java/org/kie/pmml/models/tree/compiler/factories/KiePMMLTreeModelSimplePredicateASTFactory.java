@@ -16,6 +16,7 @@
 package org.kie.pmml.models.tree.compiler.factories;
 
 import java.util.Collections;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Queue;
@@ -30,9 +31,10 @@ import org.kie.pmml.models.tree.model.enums.OPERATOR;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import static org.kie.pmml.models.tree.compiler.factories.KiePMMLASTFactoryUtils.getConstraintEntryFromSimplePredicates;
 import static org.kie.pmml.models.tree.compiler.factories.KiePMMLTreeModelASTFactory.STATUS_NULL;
 import static org.kie.pmml.models.tree.compiler.factories.KiePMMLTreeModelASTFactory.STATUS_PATTERN;
-import static org.kie.pmml.models.tree.compiler.factories.KiePMMLTreeModelASTFactory.SURROGATE_PATTERN;
+import static org.kie.pmml.models.tree.compiler.factories.KiePMMLTreeModelASTFactory.SURROGATE_RULENAME_PATTERN;
 
 /**
  * Class used to generate <code>KiePMMLDrooledRule</code> out of a <code>SimplePredicate</code>
@@ -55,21 +57,24 @@ public class KiePMMLTreeModelSimplePredicateASTFactory {
         return new KiePMMLTreeModelSimplePredicateASTFactory(simplePredicate, fieldTypeMap, rules);
     }
 
-    public void declareRuleFromSimplePredicateSurrogate(final String parentPath,
-                                                        final String currentRule,
-                                                        final String statusToSet,
-                                                        final Object result) {
-        logger.info("declareRuleFromSimplePredicateSurrogate {} {} {} {} {}", simplePredicate, parentPath, currentRule, statusToSet, result);
-        String statusConstraint = StringUtils.isEmpty(parentPath) ? STATUS_NULL : String.format(STATUS_PATTERN, parentPath);
-        String ifBreakField = fieldTypeMap.get(simplePredicate.getField().getValue()).getGeneratedType();
-        String ifBreakOperator = OPERATOR.byName(simplePredicate.getOperator().value()).getOperator();
-        Object ifBreakValue = simplePredicate.getValue();
-        String surrogateCurrentRule = String.format(SURROGATE_PATTERN, currentRule, ifBreakField);
+    public void declareRuleFromSimplePredicateSurrogate(
+            final String currentRule,
+            final String agendaActivationGroup,
+            final Object result,
+            boolean isFinalLeaf) {
+        logger.info("declareRuleFromSimplePredicateSurrogate {} {} {} {}", simplePredicate, currentRule, agendaActivationGroup, result);
+        String fieldName = fieldTypeMap.get(simplePredicate.getField().getValue()).getGeneratedType();
+        String surrogateCurrentRule = String.format(SURROGATE_RULENAME_PATTERN, currentRule, fieldName);
+        final Map<String, List<KiePMMLOperatorValue>> constraints = new HashMap<>(getConstraintEntryFromSimplePredicates(fieldName, Collections.singletonList(simplePredicate), fieldTypeMap));
+        String statusToSet = isFinalLeaf ? StatusCode.DONE.getName() : currentRule;
         KiePMMLDrooledRule.Builder builder = KiePMMLDrooledRule.builder(surrogateCurrentRule, statusToSet)
-                .withStatusConstraint(statusConstraint)
-                .withIfBreak(ifBreakField, ifBreakOperator, ifBreakValue)
-                .withResult(result)
-                .withResultCode(StatusCode.OK);
+                .withAgendaGroup(agendaActivationGroup)
+                .withActivationGroup(agendaActivationGroup)
+                .withAndConstraints(constraints);
+        if (isFinalLeaf) {
+            builder = builder.withResult(result)
+                    .withResultCode(StatusCode.OK);
+        }
         rules.add(builder.build());
     }
 

@@ -36,35 +36,73 @@ import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
 import static org.kie.pmml.models.tree.compiler.factories.KiePMMLTreeModelASTFactory.STATUS_PATTERN;
-import static org.kie.pmml.models.tree.compiler.factories.KiePMMLTreeModelASTFactory.SURROGATE_PATTERN;
+import static org.kie.pmml.models.tree.compiler.factories.KiePMMLTreeModelASTFactory.SURROGATE_RULENAME_PATTERN;
 import static org.kie.pmml.models.tree.compiler.factories.KiePMMLTreeModelASTTestUtils.getSimplePredicate;
 
 public class KiePMMLTreeModelSimplePredicateASTFactoryTest {
 
     @Test
-    public void declareRuleFromSimplePredicateSurrogate() {
+    public void declareRuleFromSimplePredicateSurrogateFinalLeaf() {
         final Map<String, KiePMMLOriginalTypeGeneratedType> fieldTypeMap = new HashMap<>();
         SimplePredicate simplePredicate = getSimplePredicate("outlook", DataType.STRING, "VALUE", fieldTypeMap);
-        String parentPath = "_will play";
         String currentRule = "_will play_will play";
+        String agendaActivationGroup = "_will play_will play Group";
         String result = "RESULT";
-        String declaredType = fieldTypeMap.get("outlook").getGeneratedType();
         final Queue<KiePMMLDrooledRule> rules = new LinkedList<>();
-        String statusToSet = StatusCode.DONE.getName();
-        KiePMMLTreeModelSimplePredicateASTFactory.factory(simplePredicate, fieldTypeMap, rules).declareRuleFromSimplePredicateSurrogate(parentPath, currentRule, statusToSet, result);
+        KiePMMLTreeModelSimplePredicateASTFactory.factory(simplePredicate, fieldTypeMap, rules).declareRuleFromSimplePredicateSurrogate(currentRule, agendaActivationGroup, result, true);
         assertEquals(1, rules.size());
         final KiePMMLDrooledRule retrieved = rules.poll();
         assertNotNull(retrieved);
-        String expectedRule = String.format(SURROGATE_PATTERN, currentRule, fieldTypeMap.get(simplePredicate.getField().getValue()).getGeneratedType());
+        String expectedRule = String.format(SURROGATE_RULENAME_PATTERN, currentRule, fieldTypeMap.get(simplePredicate.getField().getValue()).getGeneratedType());
         assertEquals(expectedRule, retrieved.getName());
-        assertEquals(statusToSet, retrieved.getStatusToSet());
-        assertEquals(String.format(STATUS_PATTERN, parentPath), retrieved.getStatusConstraint());
-        assertEquals(declaredType, retrieved.getIfBreakField());
-        assertEquals(OPERATOR.byName(simplePredicate.getOperator().value()).getOperator(), retrieved.getIfBreakOperator());
-        assertEquals(simplePredicate.getValue(), retrieved.getIfBreakValue());
-        assertNull(retrieved.getAndConstraints());
+        assertEquals(StatusCode.DONE.getName(), retrieved.getStatusToSet());
+        assertNull(retrieved.getStatusConstraint());
+        assertEquals(agendaActivationGroup, retrieved.getAgendaGroup());
+        assertEquals(agendaActivationGroup, retrieved.getActivationGroup());
+        assertNull(retrieved.getIfBreakField());
+        assertNull(retrieved.getIfBreakOperator());
+        assertNull(retrieved.getIfBreakValue());
+        assertNotNull(retrieved.getAndConstraints());
+        assertEquals(1, retrieved.getAndConstraints().size());
+        assertTrue(retrieved.getAndConstraints().containsKey("OUTLOOK"));
+        final List<KiePMMLOperatorValue> kiePMMLOperatorValues = retrieved.getAndConstraints().get("OUTLOOK");
+        assertEquals(1, kiePMMLOperatorValues.size());
+        assertEquals("<", kiePMMLOperatorValues.get(0).getOperator());
+        assertEquals("\"VALUE\"", kiePMMLOperatorValues.get(0).getValue());
         assertEquals(result, retrieved.getResult());
         assertEquals(StatusCode.OK, retrieved.getResultCode());
+    }
+
+    @Test
+    public void declareRuleFromSimplePredicateSurrogateNotFinalLeaf() {
+        final Map<String, KiePMMLOriginalTypeGeneratedType> fieldTypeMap = new HashMap<>();
+        SimplePredicate simplePredicate = getSimplePredicate("outlook", DataType.STRING, "VALUE", fieldTypeMap);
+        String currentRule = "_will play_will play";
+        String agendaActivationGroup = "_will play_will play Group";
+        String result = "RESULT";
+        final Queue<KiePMMLDrooledRule> rules = new LinkedList<>();
+        KiePMMLTreeModelSimplePredicateASTFactory.factory(simplePredicate, fieldTypeMap, rules).declareRuleFromSimplePredicateSurrogate(currentRule, agendaActivationGroup, result, false);
+        assertEquals(1, rules.size());
+        final KiePMMLDrooledRule retrieved = rules.poll();
+        assertNotNull(retrieved);
+        String expectedRule = String.format(SURROGATE_RULENAME_PATTERN, currentRule, fieldTypeMap.get(simplePredicate.getField().getValue()).getGeneratedType());
+        assertEquals(expectedRule, retrieved.getName());
+        assertEquals(currentRule, retrieved.getStatusToSet());
+        assertNull(retrieved.getStatusConstraint());
+        assertEquals(agendaActivationGroup, retrieved.getAgendaGroup());
+        assertEquals(agendaActivationGroup, retrieved.getActivationGroup());
+        assertNull(retrieved.getIfBreakField());
+        assertNull(retrieved.getIfBreakOperator());
+        assertNull(retrieved.getIfBreakValue());
+        assertNotNull(retrieved.getAndConstraints());
+        assertEquals(1, retrieved.getAndConstraints().size());
+        assertTrue(retrieved.getAndConstraints().containsKey("OUTLOOK"));
+        final List<KiePMMLOperatorValue> kiePMMLOperatorValues = retrieved.getAndConstraints().get("OUTLOOK");
+        assertEquals(1, kiePMMLOperatorValues.size());
+        assertEquals("<", kiePMMLOperatorValues.get(0).getOperator());
+        assertEquals("\"VALUE\"", kiePMMLOperatorValues.get(0).getValue());
+        assertNull(retrieved.getResult());
+        assertNull(retrieved.getResultCode());
     }
 
     @Test

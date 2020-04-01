@@ -32,7 +32,8 @@ import org.slf4j.LoggerFactory;
  */
 public class KiePMMLTreeModelASTFactory {
 
-    public static final String SURROGATE_PATTERN = "%s_surrogate_%s";
+    public static final String SURROGATE_RULENAME_PATTERN = "%s_surrogate_%s";
+    public static final String SURROGATE_GROUP_PATTERN = "%s_surrogate";
     public static final String STATUS_NULL = "status == null";
     public static final String STATUS_PATTERN = "status == \"%s\"";
     public static final String PATH_PATTERN = "%s_%s";

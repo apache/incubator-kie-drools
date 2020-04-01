@@ -79,12 +79,7 @@ public class KiePMMLDescrLhsFactoryTest {
         assertEquals(STATUS_HOLDER, patternDescr.getIdentifier());
         assertTrue(patternDescr.getConstraint() instanceof AndDescr);
         AndDescr andDescr = (AndDescr) patternDescr.getConstraint();
-        assertEquals(1, andDescr.getDescrs().size());
-        assertTrue(andDescr.getDescrs().get(0) instanceof ExprConstraintDescr);
-        ExprConstraintDescr exprConstraintDescr = (ExprConstraintDescr) andDescr.getDescrs().get(0);
-        assertFalse(exprConstraintDescr.isNegated());
-        assertEquals(ExprConstraintDescr.Type.NAMED, exprConstraintDescr.getType());
-        assertNull(exprConstraintDescr.getExpression());
+        assertTrue(andDescr.getDescrs().isEmpty());
     }
 
     @Test

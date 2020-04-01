@@ -20,6 +20,7 @@ import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 import java.util.Queue;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
@@ -35,9 +36,9 @@ import org.kie.pmml.models.drooled.tuples.KiePMMLOriginalTypeGeneratedType;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.assertNull;
 import static org.kie.pmml.models.tree.compiler.factories.KiePMMLTreeModelASTFactory.STATUS_PATTERN;
-import static org.kie.pmml.models.tree.compiler.factories.KiePMMLTreeModelASTFactory.SURROGATE_PATTERN;
+import static org.kie.pmml.models.tree.compiler.factories.KiePMMLTreeModelASTFactory.SURROGATE_GROUP_PATTERN;
 import static org.kie.pmml.models.tree.compiler.factories.KiePMMLTreeModelASTTestUtils.getSimplePredicate;
 
 public class KiePMMLTreeModelCompoundPredicateASTFactoryTest {
@@ -136,21 +137,40 @@ public class KiePMMLTreeModelCompoundPredicateASTFactoryTest {
         predicates.forEach(compoundPredicate::addPredicates);
         final Queue<KiePMMLDrooledRule> rules = new LinkedList<>();
         KiePMMLTreeModelCompoundPredicateASTFactory.factory(compoundPredicate, fieldTypeMap, rules).declareRuleFromCompoundPredicateSurrogate(parentPath, currentRule, result, true);
-        assertEquals(predicates.size(), rules.size());
-        for (int i = 0; i < predicates.size(); i++) {
-            SimplePredicate simplePredicate = predicates.get(i);
-            KiePMMLDrooledRule retrieved = rules.poll();
-            assertNotNull(retrieved);
-            String expectedRule = String.format(SURROGATE_PATTERN, currentRule, fieldTypeMap.get(simplePredicate.getField().getValue()).getGeneratedType());
-            assertEquals(expectedRule, retrieved.getName());
-            if (i < predicates.size() - 1) {
-                assertEquals(currentRule, retrieved.getStatusToSet());
+        int expectedRules = predicates.size() + 1; // One rule is generated for the Compound predicate itself
+        assertEquals(expectedRules, rules.size());
+        KiePMMLDrooledRule retrieved;
+        String agendaActivationGroup = String.format(SURROGATE_GROUP_PATTERN, currentRule);;
+        while ((retrieved = rules.poll()) != null) {
+            String ruleName = retrieved.getName();
+            if (ruleName.contains("_surrogate_")) {
+                String[] ruleNameParts = ruleName.split("_surrogate_");
+                String generatedType = ruleNameParts[1];
+                final Optional<String> fieldName = fieldTypeMap
+                        .entrySet()
+                        .stream()
+                        .filter(entry -> generatedType.equals(entry.getValue().getGeneratedType()))
+                        .map(Map.Entry::getKey)
+                        .findFirst();
+                if (fieldName.isPresent()) {
+                    SimplePredicate mappedPredicate = predicates.stream().filter(pred -> fieldName.get().equals(pred.getField().getValue())).findFirst().orElse(null);
+                    assertNotNull(mappedPredicate);
+                    assertNull(retrieved.getStatusConstraint());
+                    assertEquals(agendaActivationGroup, retrieved.getActivationGroup());
+                    assertEquals(agendaActivationGroup, retrieved.getAgendaGroup());
+                    // Those are in a final leaf node
+                    assertEquals(StatusCode.DONE.getName(), retrieved.getStatusToSet());
+                    assertEquals(result, retrieved.getResult());
+                    assertEquals(StatusCode.OK, retrieved.getResultCode());
+                }
             } else {
-                assertEquals(StatusCode.DONE.getName(), retrieved.getStatusToSet());
+                assertNotNull(retrieved.getStatusConstraint());
+                assertEquals(String.format(STATUS_PATTERN, parentPath), retrieved.getStatusConstraint());
+                assertEquals(agendaActivationGroup, retrieved.getFocusedAgendaGroup());
+                assertNull(retrieved.getStatusToSet());
+                assertNull(retrieved.getResult());
+                assertNull(retrieved.getResultCode());
             }
-            assertEquals(String.format(STATUS_PATTERN, parentPath), retrieved.getStatusConstraint());
-            assertEquals(result, retrieved.getResult());
-            assertEquals(StatusCode.OK, retrieved.getResultCode());
         }
     }
 
@@ -166,36 +186,40 @@ public class KiePMMLTreeModelCompoundPredicateASTFactoryTest {
         predicates.forEach(compoundPredicate::addPredicates);
         final Queue<KiePMMLDrooledRule> rules = new LinkedList<>();
         KiePMMLTreeModelCompoundPredicateASTFactory.factory(compoundPredicate, fieldTypeMap, rules).declareRuleFromCompoundPredicateSurrogate(parentPath, currentRule, result, false);
-        assertEquals(predicates.size(), rules.size());
-        for (int i = 0; i < predicates.size(); i++) {
-            SimplePredicate simplePredicate = predicates.get(i);
-            KiePMMLDrooledRule retrieved = rules.poll();
-            assertNotNull(retrieved);
-            String expectedRule = String.format(SURROGATE_PATTERN, currentRule, fieldTypeMap.get(simplePredicate.getField().getValue()).getGeneratedType());
-            assertEquals(expectedRule, retrieved.getName());
-            if (i < predicates.size() - 1) {
-                assertEquals(currentRule, retrieved.getStatusToSet());
+        int expectedRules = predicates.size() + 1; // One rule is generated for the Compound predicate itself
+        assertEquals(expectedRules, rules.size());
+        KiePMMLDrooledRule retrieved;
+        String agendaActivationGroup = String.format(SURROGATE_GROUP_PATTERN, currentRule);;
+        while ((retrieved = rules.poll()) != null) {
+            String ruleName = retrieved.getName();
+            if (ruleName.contains("_surrogate_")) {
+                String[] ruleNameParts = ruleName.split("_surrogate_");
+                String generatedType = ruleNameParts[1];
+                final Optional<String> fieldName = fieldTypeMap
+                        .entrySet()
+                        .stream()
+                        .filter(entry -> generatedType.equals(entry.getValue().getGeneratedType()))
+                        .map(Map.Entry::getKey)
+                        .findFirst();
+                if (fieldName.isPresent()) {
+                    SimplePredicate mappedPredicate = predicates.stream().filter(pred -> fieldName.get().equals(pred.getField().getValue())).findFirst().orElse(null);
+                    assertNotNull(mappedPredicate);
+                    assertNull(retrieved.getStatusConstraint());
+                    assertEquals(agendaActivationGroup, retrieved.getActivationGroup());
+                    assertEquals(agendaActivationGroup, retrieved.getAgendaGroup());
+                    // Those are not in a final leaf node
+                    assertEquals(currentRule, retrieved.getStatusToSet());
+                    assertNull(retrieved.getResult());
+                    assertNull(retrieved.getResultCode());
+                }
             } else {
-                assertEquals(parentPath, retrieved.getStatusToSet());
+                assertNotNull(retrieved.getStatusConstraint());
+                assertEquals(String.format(STATUS_PATTERN, parentPath), retrieved.getStatusConstraint());
+                assertEquals(agendaActivationGroup, retrieved.getFocusedAgendaGroup());
+                assertNull(retrieved.getStatusToSet());
+                assertNull(retrieved.getResult());
+                assertNull(retrieved.getResultCode());
             }
-            assertEquals(String.format(STATUS_PATTERN, parentPath), retrieved.getStatusConstraint());
-            assertEquals(result, retrieved.getResult());
-            assertEquals(StatusCode.OK, retrieved.getResultCode());
         }
-    }
-
-    @Test
-    public void getConstraintEntryFromSimplePredicates() {
-        final Map<String, KiePMMLOriginalTypeGeneratedType> fieldTypeMap = new HashMap<>();
-        String fieldName = "FIELD_NAME";
-        List<SimplePredicate> simplePredicates = IntStream.range(0, 2).mapToObj(index -> getSimplePredicate(fieldName, DataType.STRING, "VALUE-" + index, fieldTypeMap)).collect(Collectors.toList());
-        CompoundPredicate compoundPredicate = new CompoundPredicate();
-        compoundPredicate.setBooleanOperator(CompoundPredicate.BooleanOperator.SURROGATE);
-        simplePredicates.forEach(compoundPredicate::addPredicates);
-        final Queue<KiePMMLDrooledRule> rules = new LinkedList<>();
-        final Map<String, List<KiePMMLOperatorValue>> retrieved = KiePMMLTreeModelCompoundPredicateASTFactory.factory(compoundPredicate, fieldTypeMap, rules).getConstraintEntryFromSimplePredicates(fieldName, simplePredicates);
-        assertTrue(retrieved.containsKey(fieldName));
-        List<KiePMMLOperatorValue> kiePMMLOperatorValues = retrieved.get(fieldName);
-        assertNotNull(kiePMMLOperatorValues);
     }
 }

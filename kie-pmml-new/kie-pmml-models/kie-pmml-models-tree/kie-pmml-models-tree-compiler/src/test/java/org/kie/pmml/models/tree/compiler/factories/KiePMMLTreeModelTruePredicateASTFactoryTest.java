@@ -16,121 +16,55 @@
 
 package org.kie.pmml.models.tree.compiler.factories;
 
-import java.util.HashMap;
 import java.util.LinkedList;
-import java.util.List;
-import java.util.Map;
 import java.util.Queue;
 
-import org.dmg.pmml.DataType;
-import org.dmg.pmml.SimplePredicate;
+import org.dmg.pmml.True;
 import org.junit.Test;
 import org.kie.pmml.commons.enums.StatusCode;
 import org.kie.pmml.models.drooled.ast.KiePMMLDrooledRule;
-import org.kie.pmml.models.drooled.tuples.KiePMMLOperatorValue;
-import org.kie.pmml.models.drooled.tuples.KiePMMLOriginalTypeGeneratedType;
-import org.kie.pmml.models.tree.model.enums.OPERATOR;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNull;
-import static org.junit.Assert.assertTrue;
 import static org.kie.pmml.models.tree.compiler.factories.KiePMMLTreeModelASTFactory.STATUS_PATTERN;
-import static org.kie.pmml.models.tree.compiler.factories.KiePMMLTreeModelASTFactory.SURROGATE_PATTERN;
-import static org.kie.pmml.models.tree.compiler.factories.KiePMMLTreeModelASTTestUtils.getSimplePredicate;
 
 public class KiePMMLTreeModelTruePredicateASTFactoryTest {
 
     @Test
-    public void declareRuleFromSimplePredicateSurrogate() {
-        final Map<String, KiePMMLOriginalTypeGeneratedType> fieldTypeMap = new HashMap<>();
-        SimplePredicate simplePredicate = getSimplePredicate("outlook", DataType.STRING, "VALUE", fieldTypeMap);
+    public void declareRuleFromTruePredicateNotFinalLeaf() {
         String parentPath = "_will play";
         String currentRule = "_will play_will play";
-        String result = "RESULT";
-        String declaredType = fieldTypeMap.get("outlook").getGeneratedType();
         final Queue<KiePMMLDrooledRule> rules = new LinkedList<>();
         String statusToSet = StatusCode.DONE.getName();
-        KiePMMLTreeModelSimplePredicateASTFactory.factory(simplePredicate, fieldTypeMap, rules).declareRuleFromSimplePredicateSurrogate(parentPath, currentRule, statusToSet, result);
+        True truePredicate = new True();
+        KiePMMLTreeModelTruePredicateASTFactory.factory(truePredicate, rules).declareRuleFromTruePredicate(parentPath, currentRule, statusToSet, false);
         assertEquals(1, rules.size());
         final KiePMMLDrooledRule retrieved = rules.poll();
         assertNotNull(retrieved);
-        String expectedRule = String.format(SURROGATE_PATTERN, currentRule, fieldTypeMap.get(simplePredicate.getField().getValue()).getGeneratedType());
-        assertEquals(expectedRule, retrieved.getName());
+        assertEquals(currentRule, retrieved.getName());
+        assertEquals(currentRule, retrieved.getStatusToSet());
+        assertEquals(String.format(STATUS_PATTERN, parentPath), retrieved.getStatusConstraint());
+        assertNull(retrieved.getAndConstraints());
+        assertNull(retrieved.getResultCode());
+    }
+
+    @Test
+    public void declareRuleFromTruePredicateFinalLeaf() {
+        String parentPath = "_will play";
+        String currentRule = "_will play_will play";
+        final Queue<KiePMMLDrooledRule> rules = new LinkedList<>();
+        String statusToSet = StatusCode.DONE.getName();
+        True truePredicate = new True();
+        KiePMMLTreeModelTruePredicateASTFactory.factory(truePredicate, rules).declareRuleFromTruePredicate(parentPath, currentRule, statusToSet, true);
+        assertEquals(1, rules.size());
+        final KiePMMLDrooledRule retrieved = rules.poll();
+        assertNotNull(retrieved);
+        assertEquals(currentRule, retrieved.getName());
         assertEquals(statusToSet, retrieved.getStatusToSet());
         assertEquals(String.format(STATUS_PATTERN, parentPath), retrieved.getStatusConstraint());
-        assertEquals(declaredType, retrieved.getIfBreakField());
-        assertEquals(OPERATOR.byName(simplePredicate.getOperator().value()).getOperator(), retrieved.getIfBreakOperator());
-        assertEquals(simplePredicate.getValue(), retrieved.getIfBreakValue());
         assertNull(retrieved.getAndConstraints());
-        assertEquals(result, retrieved.getResult());
+        assertEquals(StatusCode.DONE.getName(), retrieved.getResult());
         assertEquals(StatusCode.OK, retrieved.getResultCode());
-    }
-
-    @Test
-    public void declareRuleFromSimplePredicateFinalLeaf() {
-        final Map<String, KiePMMLOriginalTypeGeneratedType> fieldTypeMap = new HashMap<>();
-        SimplePredicate simplePredicate = getSimplePredicate("outlook", DataType.STRING, "VALUE", fieldTypeMap);
-        String parentPath = "_will play";
-        String currentRule = "_will play_will play";
-        String declaredType = fieldTypeMap.get("outlook").getGeneratedType();
-        String result = "RESULT";
-        final Queue<KiePMMLDrooledRule> rules = new LinkedList<>();
-        KiePMMLTreeModelSimplePredicateASTFactory.factory(simplePredicate, fieldTypeMap, rules).declareRuleFromSimplePredicate(parentPath, currentRule, result, true);
-        assertEquals(1, rules.size());
-        final KiePMMLDrooledRule retrieved = rules.poll();
-        assertNotNull(retrieved);
-        assertEquals(currentRule, retrieved.getName());
-        assertEquals(StatusCode.DONE.getName(), retrieved.getStatusToSet());
-        assertEquals(String.format(STATUS_PATTERN, parentPath), retrieved.getStatusConstraint());
-        assertEquals(StatusCode.OK, retrieved.getResultCode());
-        assertEquals(result, retrieved.getResult());
-        final Map<String, List<KiePMMLOperatorValue>> andConstraints = retrieved.getAndConstraints();
-        assertNotNull(andConstraints);
-        assertEquals(1, andConstraints.size());
-        assertTrue(andConstraints.containsKey(declaredType));
-        List<KiePMMLOperatorValue> operatorValues = andConstraints.get(declaredType);
-        assertNotNull(operatorValues);
-        assertEquals(1, operatorValues.size());
-        KiePMMLOperatorValue operatorValue = operatorValues.get(0);
-        assertEquals(OPERATOR.byName(simplePredicate.getOperator().value()).getOperator(), operatorValue.getOperator());
-        Object expectedValue = simplePredicate.getValue();
-        if (fieldTypeMap.get("outlook").getOriginalType().equals("string")) {
-            expectedValue = "\"" + expectedValue + "\"";
-        }
-        assertEquals(expectedValue, operatorValue.getValue());
-    }
-
-    @Test
-    public void declareIntermediateRuleFromSimplePredicateNotFinalLeaf() {
-        final Map<String, KiePMMLOriginalTypeGeneratedType> fieldTypeMap = new HashMap<>();
-        SimplePredicate simplePredicate = getSimplePredicate("outlook", DataType.STRING, "VALUE", fieldTypeMap);
-        String parentPath = "_will play";
-        String currentRule = "_will play_will play";
-        String declaredType = fieldTypeMap.get("outlook").getGeneratedType();
-        String result = "RESULT";
-        final Queue<KiePMMLDrooledRule> rules = new LinkedList<>();
-        KiePMMLTreeModelSimplePredicateASTFactory.factory(simplePredicate, fieldTypeMap, rules).declareRuleFromSimplePredicate(parentPath, currentRule, result, false);
-        assertEquals(1, rules.size());
-        final KiePMMLDrooledRule retrieved = rules.poll();
-        assertNotNull(retrieved);
-        assertEquals(currentRule, retrieved.getName());
-        assertEquals(currentRule, retrieved.getStatusToSet());
-        assertEquals(String.format(STATUS_PATTERN, parentPath), retrieved.getStatusConstraint());
-        assertEquals(currentRule, retrieved.getStatusToSet());
-        final Map<String, List<KiePMMLOperatorValue>> andConstraints = retrieved.getAndConstraints();
-        assertNotNull(andConstraints);
-        assertEquals(1, andConstraints.size());
-        assertTrue(andConstraints.containsKey(declaredType));
-        List<KiePMMLOperatorValue> operatorValues = andConstraints.get(declaredType);
-        assertNotNull(operatorValues);
-        assertEquals(1, operatorValues.size());
-        KiePMMLOperatorValue operatorValue = operatorValues.get(0);
-        assertEquals(OPERATOR.byName(simplePredicate.getOperator().value()).getOperator(), operatorValue.getOperator());
-        Object expectedValue = simplePredicate.getValue();
-        if (fieldTypeMap.get("outlook").getOriginalType().equals("string")) {
-            expectedValue = "\"" + expectedValue + "\"";
-        }
-        assertEquals(expectedValue, operatorValue.getValue());
     }
 }
