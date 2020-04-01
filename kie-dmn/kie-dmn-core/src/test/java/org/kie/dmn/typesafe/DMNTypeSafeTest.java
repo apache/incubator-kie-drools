@@ -1,11 +1,13 @@
 package org.kie.dmn.typesafe;
 
-import java.util.Arrays;
+import java.math.BigDecimal;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
 import org.junit.Before;
 import org.junit.Test;
+import org.kie.dmn.api.core.DMNContext;
 import org.kie.dmn.api.core.DMNModel;
 import org.kie.dmn.api.core.DMNResult;
 import org.kie.dmn.api.core.DMNRuntime;
@@ -17,9 +19,12 @@ import org.kie.memorycompiler.KieMemoryCompiler;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import static java.util.Arrays.asList;
 import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.CoreMatchers.notNullValue;
 import static org.junit.Assert.assertThat;
+import static org.kie.dmn.core.util.DynamicTypeUtils.entry;
+import static org.kie.dmn.core.util.DynamicTypeUtils.mapOf;
 
 public class DMNTypeSafeTest {
 
@@ -52,21 +57,22 @@ public class DMNTypeSafeTest {
         ClassLoader thisDMNClassLoader = this.getClass().getClassLoader();
         Map<String, Class<?>> compiledClasses = KieMemoryCompiler.compile(allTypesSourceCode, thisDMNClassLoader);
 
-        FEELPropertyAccessible street1 = createTAddress(compiledClasses, "Street1", 1);
-        FEELPropertyAccessible street2 = createTAddress(compiledClasses, "Street2", 2);
+        FEELPropertyAccessible street1 = tAddress(compiledClasses, "Street1", 1);
+        FEELPropertyAccessible street2 = tAddress(compiledClasses, "Street2", 2);
 
-        FEELPropertyAccessible tPersonInstance = createTPerson(compiledClasses, Arrays.asList(street1, street2));
-        FEELPropertyAccessible context = createInputSet(compiledClasses, tPersonInstance);
+        FEELPropertyAccessible tPersonInstance = tPerson(compiledClasses, asList(street1, street2));
+        FEELPropertyAccessible context = inputSet(compiledClasses, tPersonInstance);
 
         DMNResult evaluateAll = runtime.evaluateAll(dmnModel, new DMNContextFPAImpl(context));
+
+        DMNContext result = evaluateAll.getContext();
+        Map<String, Object> d = (Map<String, Object>) result.get("d");
+        assertThat(d.get("Hello"), is("Hello Mr. x"));
         LOG.info("{}", evaluateAll);
     }
 
-    private FEELPropertyAccessible createTAddress(Map<String, Class<?>> compile, String streetName, int streetNumber) throws Exception {
-        Class<?> clazz = compile.get(classWithPackage("TAddress"));
-        assertThat(clazz, notNullValue());
-        Object tPersonInstance = clazz.getDeclaredConstructor().newInstance();
-        FEELPropertyAccessible feelPropertyAccessible = (FEELPropertyAccessible) tPersonInstance;
+    private FEELPropertyAccessible tAddress(Map<String, Class<?>> compile, String streetName, int streetNumber) throws Exception {
+        FEELPropertyAccessible feelPropertyAccessible = createInstanceFromCompiledClasses(compile, "TAddress");
         feelPropertyAccessible.setFEELProperty("streetName", streetName);
         feelPropertyAccessible.setFEELProperty("streetNumber", streetNumber);
 
@@ -77,25 +83,59 @@ public class DMNTypeSafeTest {
         return packageName + "." + className;
     }
 
-    private FEELPropertyAccessible createTPerson(Map<String, Class<?>> compile, List<FEELPropertyAccessible> addresses) throws Exception {
-        Class<?> tPersonClass = compile.get(classWithPackage("TPerson"));
-        assertThat(tPersonClass, notNullValue());
-        Object tPersonInstance = tPersonClass.getDeclaredConstructor().newInstance();
-        FEELPropertyAccessible feelPropertyAccessible = (FEELPropertyAccessible) tPersonInstance;
+    private FEELPropertyAccessible tPerson(Map<String, Class<?>> compile, List<FEELPropertyAccessible> addresses) throws Exception {
+        FEELPropertyAccessible feelPropertyAccessible = createInstanceFromCompiledClasses(compile, "TPerson");
         feelPropertyAccessible.setFEELProperty("name", "Mr. x");
         feelPropertyAccessible.setFEELProperty("addresses", addresses);
 
         return feelPropertyAccessible;
     }
 
-    private FEELPropertyAccessible createInputSet(Map<String, Class<?>> compile, FEELPropertyAccessible tPersonInstance) throws Exception {
-        Class<?> inputSetClass = compile.get(classWithPackage("InputSet"));
+    private FEELPropertyAccessible inputSet(Map<String, Class<?>> compile, FEELPropertyAccessible tPersonInstance) throws Exception {
+        FEELPropertyAccessible feelPropertyAccessible = createInstanceFromCompiledClasses(compile, "InputSet");
+        feelPropertyAccessible.setFEELProperty("p", tPersonInstance);
+        return feelPropertyAccessible;
+    }
+
+    @Test
+    public void testDynamic() throws Exception {
+
+        assertThat(dmnModel, notNullValue());
+        assertThat(DMNRuntimeUtil.formatMessages(dmnModel.getMessages()), dmnModel.hasErrors(), is(false));
+
+        DMNTypeSafeTypeGenerator sourceCode = new DMNTypeSafeTypeGenerator(dmnModel, packageName);
+
+        Map<String, String> allTypesSourceCode = sourceCode.generateSourceCodeOfAllTypes();
+
+        ClassLoader thisDMNClassLoader = this.getClass().getClassLoader();
+        Map<String, Class<?>> compiledClasses = KieMemoryCompiler.compile(allTypesSourceCode, thisDMNClassLoader);
+
+        FEELPropertyAccessible context = createInstanceFromCompiledClasses(compiledClasses, "InputSet");
+
+        Map<String, Object> inputSetMap = new HashMap<>();
+
+        inputSetMap.put("p", mapOf(entry("age", new BigDecimal(35)),
+                                   entry("addresses", asList(mapOf(entry("streetName", "Street1"),
+                                                                   entry("streetNumber", 1)),
+                                                             mapOf(entry("streetName", "Street2"),
+                                                                   entry("streetNumber", 2))
+
+                                   ))));
+
+        context.fromMap(inputSetMap);
+
+        DMNResult evaluateAll = runtime.evaluateAll(dmnModel, new DMNContextFPAImpl(context));
+
+        DMNContext result = evaluateAll.getContext();
+        Map<String, Object> d = (Map<String, Object>) result.get("d");
+        assertThat(d.get("Hello"), is("Hello Mr. x"));
+        LOG.info("{}", evaluateAll);
+    }
+
+    private FEELPropertyAccessible createInstanceFromCompiledClasses(Map<String, Class<?>> compile, String className) throws Exception {
+        Class<?> inputSetClass = compile.get(classWithPackage(className));
         assertThat(inputSetClass, notNullValue());
         Object inputSetInstance = inputSetClass.getDeclaredConstructor().newInstance();
-        FEELPropertyAccessible feelPropertyAccessible = (FEELPropertyAccessible) inputSetInstance;
-
-        feelPropertyAccessible.setFEELProperty("p", tPersonInstance);
-
-        return feelPropertyAccessible;
+        return (FEELPropertyAccessible) inputSetInstance;
     }
 }
