@@ -6,7 +6,7 @@ target/
 out/
 .idea
 **/.DS_Store
-*.log
+*.log*
 **/yarn.lock
 **/stats.json
 **/junit.xml
