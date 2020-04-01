@@ -16,7 +16,7 @@ import org.kie.dmn.api.core.FEELPropertyAccessible;
 
 class DMNInputSetType implements TypeDefinition {
 
-    List<FieldDefinition> fields = new ArrayList<>();
+    List<DMNDeclaredField> fields = new ArrayList<>();
 
     Map<String, DMNType> fieldsKey = new HashMap<>();
 
@@ -36,7 +36,7 @@ class DMNInputSetType implements TypeDefinition {
     }
 
     @Override
-    public List<FieldDefinition> getFields() {
+    public List<? extends FieldDefinition> getFields() {
         return fields;
     }
 

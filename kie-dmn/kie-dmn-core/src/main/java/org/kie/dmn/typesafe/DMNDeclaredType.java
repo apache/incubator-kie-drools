@@ -17,7 +17,7 @@ import org.kie.dmn.api.core.FEELPropertyAccessible;
 class DMNDeclaredType implements TypeDefinition {
 
     private final DMNType dmnType;
-    List<FieldDefinition> fields = new ArrayList<>();
+    List<DMNDeclaredField> fields = new ArrayList<>();
     List<AnnotationDefinition> annnotations = new ArrayList<>();
 
     DMNDeclaredType(DMNType dmnType) {
@@ -31,7 +31,7 @@ class DMNDeclaredType implements TypeDefinition {
     }
 
     @Override
-    public List<FieldDefinition> getFields() {
+    public List<? extends FieldDefinition> getFields() {
         return fields;
     }
 

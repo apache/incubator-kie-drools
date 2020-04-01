@@ -1,5 +1,7 @@
 package org.kie.dmn.core.impl;
 
+import java.util.ArrayList;
+import java.util.Collection;
 import java.util.LinkedHashMap;
 import java.util.Map;
 
@@ -28,5 +30,26 @@ public interface DMNTypeSafeTypeTemplate {
         return result;
     }
 
-    void fromMap(Map<String, Object> values);
+    void fromMap(Map<String, Object> values) {
+        // Simple fields
+        {
+            $property$ = (PropertyType) values.get("$property$");
+        }
+
+        // Composite fields
+        {
+            $property$ = new PropertyType();
+            $property$.fromMap((java.util.Map<String, Object>) values.get("$property$"));
+        }
+
+        // Collections fields
+        {
+            $property$ = new java.util.ArrayList<>();
+            for(java.util.Map<String, Object> v : (java.util.Collection<java.util.Map<String, Object>>)values.get("$property$")) {
+                PropertyType item = new PropertyType();
+                item.fromMap(v);
+                $property$.add(item);
+            }
+        }
+    }
 }

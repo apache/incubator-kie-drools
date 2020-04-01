@@ -114,13 +114,15 @@ public class DMNTypeSafeTest {
 
         Map<String, Object> inputSetMap = new HashMap<>();
 
-        inputSetMap.put("p", mapOf(entry("age", new BigDecimal(35)),
-                                   entry("addresses", asList(mapOf(entry("streetName", "Street1"),
-                                                                   entry("streetNumber", 1)),
-                                                             mapOf(entry("streetName", "Street2"),
-                                                                   entry("streetNumber", 2))
+        inputSetMap.put("p", mapOf(
+                entry("age", new BigDecimal(35)),
+                entry("name", "Mr. x"),
+                entry("addresses", asList(mapOf(entry("streetName", "Street1"),
+                                                entry("streetNumber", 1)),
+                                          mapOf(entry("streetName", "Street2"),
+                                                entry("streetNumber", 2))
 
-                                   ))));
+                ))));
 
         context.fromMap(inputSetMap);
 

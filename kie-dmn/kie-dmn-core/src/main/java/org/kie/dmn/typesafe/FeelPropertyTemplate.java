@@ -33,9 +33,9 @@ public class FeelPropertyTemplate {
 
     CompilationUnit methodTemplate;
 
-    List<FieldDefinition> fields;
+    List<DMNDeclaredField> fields;
 
-    public FeelPropertyTemplate(List<FieldDefinition> fields) {
+    public FeelPropertyTemplate(List<DMNDeclaredField> fields) {
         this.fields = fields;
     }
 
@@ -46,7 +46,7 @@ public class FeelPropertyTemplate {
 
         allMethods.add(getFeelPropertyDefinition());
         allMethods.add(setFeelPropertyDefinition());
-        allMethods.add(setAllDefinition());
+        allMethods.add(fromMap());
         allMethods.add(allFeelProperties());
 
         return allMethods;
@@ -130,11 +130,26 @@ public class FeelPropertyTemplate {
         return new SwitchEntry(labels, SwitchEntry.Type.STATEMENT_GROUP, statements);
     }
 
-    private MethodDefinition setAllDefinition() {
+    private MethodDefinition fromMap() {
 
-        String body = " {  } ";
-        MethodWithStringBody setFeelProperty = new MethodWithStringBody("fromMap", "void", body);
+
+        MethodDeclaration allFeelProperties = cloneMethodTemplate("fromMap");
+
+        BlockStmt originalStatements = allFeelProperties.getBody().orElseThrow(RuntimeException::new);
+        BlockStmt simplePropertyBLock = (BlockStmt) originalStatements.getStatement(0);
+        BlockStmt pojoPropertyBlock = (BlockStmt) originalStatements.getStatement(1);
+        BlockStmt collectionsPropertyBlock = (BlockStmt) originalStatements.getStatement(2);
+
+        List<Statement> allStmts = fields.stream().map(f -> f.createFromMapEntry(simplePropertyBLock,
+                                                                                 pojoPropertyBlock,
+                                                                                 collectionsPropertyBlock))
+                .collect(Collectors.toList());
+
+        BlockStmt body = new BlockStmt(nodeList(allStmts));
+
+        MethodWithStringBody setFeelProperty = new MethodWithStringBody("fromMap", "void", body.toString());
         setFeelProperty.addParameter("java.util.Map<String, Object>", "values");
+
 
         return setFeelProperty;
     }
