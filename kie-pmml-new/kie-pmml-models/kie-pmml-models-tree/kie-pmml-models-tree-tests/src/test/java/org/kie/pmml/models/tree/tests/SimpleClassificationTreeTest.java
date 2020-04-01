@@ -17,6 +17,7 @@
 package org.kie.pmml.models.tree.tests;
 
 import org.assertj.core.api.Assertions;
+import org.junit.BeforeClass;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.Parameterized;
@@ -42,6 +43,13 @@ public class SimpleClassificationTreeTest extends AbstractPMMLTreeTest {
     private double input3;
     private String expectedResult;
 
+    private static KiePMMLModel pmmlModel;
+
+    @BeforeClass
+    public static void setupClass() {
+        pmmlModel = loadPMMLModel(PMML_SOURCE);
+    }
+
     public SimpleClassificationTreeTest(double input1, double input2, double input3, String expectedResult) {
         this.input1 = input1;
         this.input2 = input2;
@@ -62,8 +70,6 @@ public class SimpleClassificationTreeTest extends AbstractPMMLTreeTest {
 
     @Test
     public void testSimpleClassificationTree() {
-        final KiePMMLModel pmmlModel = loadPMMLModel(PMML_SOURCE);
-
         final Map<String, Object> inputData = new HashMap<>();
         inputData.put("input1", input1);
         inputData.put("input2", input2);

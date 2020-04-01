@@ -22,6 +22,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 import org.assertj.core.api.Assertions;
+import org.junit.BeforeClass;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.Parameterized;
@@ -36,7 +37,7 @@ public class SimpleSetPredicateTreeTest extends AbstractPMMLTreeTest {
     private static final String MODEL_NAME = "SimpleSetPredicateTreeModel";
     private static final String PMML_SOURCE = "SimpleSetPredicateTree.pmml";
     private static final String TARGET_FIELD = "result";
-
+    private static KiePMMLModel pmmlModel;
     private double input1;
     private double input2;
     private double input3;
@@ -47,6 +48,11 @@ public class SimpleSetPredicateTreeTest extends AbstractPMMLTreeTest {
         this.input2 = input2;
         this.input3 = input3;
         this.expectedResult = expectedResult;
+    }
+
+    @BeforeClass
+    public static void setupClass() {
+        pmmlModel = loadPMMLModel(PMML_SOURCE);
     }
 
     @Parameterized.Parameters
@@ -64,8 +70,6 @@ public class SimpleSetPredicateTreeTest extends AbstractPMMLTreeTest {
 
     @Test
     public void testSetPredicateTree() {
-        final KiePMMLModel pmmlModel = loadPMMLModel(PMML_SOURCE);
-
         final Map<String, Object> inputData = new HashMap<>();
         inputData.put("input1", input1);
         inputData.put("input2", input2);

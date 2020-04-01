@@ -1,6 +1,7 @@
 package org.kie.pmml.models.tree.tests;
 
 import org.assertj.core.api.Assertions;
+import org.junit.BeforeClass;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.Parameterized;
@@ -27,6 +28,14 @@ public class IrisDataTreeTest extends AbstractPMMLTreeTest {
     private double petalWidth;
     private String expectedResult;
 
+    private static KiePMMLModel pmmlModel;
+
+    @BeforeClass
+    public static void setupClass() {
+        pmmlModel = loadPMMLModel(PMML_SOURCE);
+    }
+
+
     public IrisDataTreeTest(double sepalLength, double sepalWidth, double petalLength,
                             double petalWidth, String expectedResult) {
         this.sepalLength = sepalLength;
@@ -49,8 +58,6 @@ public class IrisDataTreeTest extends AbstractPMMLTreeTest {
 
     @Test
     public void testIrisTree() {
-        final KiePMMLModel pmmlModel = loadPMMLModel(PMML_SOURCE);
-
         final Map<String, Object> inputData = new HashMap<>();
         inputData.put("Sepal.Length", sepalLength);
         inputData.put("Sepal.Width", sepalWidth);

@@ -49,7 +49,7 @@ public class AbstractPMMLTreeTest {
         return pmmlRequestDataBuilder.build();
     }
 
-    protected KiePMMLModel loadPMMLModel(final String resourcePath) {
+    protected static KiePMMLModel loadPMMLModel(final String resourcePath) {
         final PMML pmml;
 
         try {

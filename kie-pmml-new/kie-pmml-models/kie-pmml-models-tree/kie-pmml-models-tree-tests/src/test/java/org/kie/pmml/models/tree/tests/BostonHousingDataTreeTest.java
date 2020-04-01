@@ -17,6 +17,7 @@
 package org.kie.pmml.models.tree.tests;
 
 import org.assertj.core.api.Assertions;
+import org.junit.BeforeClass;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.Parameterized;
@@ -50,6 +51,13 @@ public class BostonHousingDataTreeTest extends AbstractPMMLTreeTest {
     private double b;
     private double lstat;
     private double expectedResult;
+
+    private static KiePMMLModel pmmlModel;
+
+    @BeforeClass
+    public static void setupClass() {
+        pmmlModel = loadPMMLModel(PMML_SOURCE);
+    }
 
     public BostonHousingDataTreeTest(double crim, double zn, double indus, String chas, double nox, double rm,
                                      double age, double dis, double rad, double tax, double ptratio, double b,
@@ -88,8 +96,6 @@ public class BostonHousingDataTreeTest extends AbstractPMMLTreeTest {
 
     @Test
     public void testBostonHousesTree() {
-        final KiePMMLModel pmmlModel = loadPMMLModel(PMML_SOURCE);
-
         final Map<String, Object> inputData = new HashMap<>();
         inputData.put("crim", crim);
         inputData.put("zn", zn);
