@@ -92,7 +92,7 @@ public abstract class AbstractVisitor {
     }
 
     public static Statement makeAssignment(Variable v) {
-        String name = v.getName();
+        String name = v.getSanitizedName();
         return makeAssignment(name, v);
     }
 
@@ -114,7 +114,7 @@ public abstract class AbstractVisitor {
 
     protected Statement makeAssignmentFromModel(Variable v) {
 
-        return makeAssignmentFromModel(v, v.getName());
+        return makeAssignmentFromModel(v, v.getSanitizedName());
     }
 
     protected Statement makeAssignmentFromModel(Variable v, String name) {
