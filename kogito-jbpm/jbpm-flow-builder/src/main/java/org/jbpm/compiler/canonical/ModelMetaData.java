@@ -155,7 +155,7 @@ public class ModelMetaData {
         ClassOrInterfaceDeclaration modelClass = processMethod.get();
 
         if (!WorkflowProcess.PRIVATE_VISIBILITY.equals(visibility)) {
-            modelClass.addAnnotation(new NormalAnnotationExpr(new Name(Generated.class.getCanonicalName()), NodeList.nodeList(new MemberValuePair("value", new StringLiteralExpr("kogit-codegen")),
+            modelClass.addAnnotation(new NormalAnnotationExpr(new Name(Generated.class.getCanonicalName()), NodeList.nodeList(new MemberValuePair("value", new StringLiteralExpr("kogito-codegen")),
                                                                                                                               new MemberValuePair("reference", new StringLiteralExpr(processId)),
                                                                                                                               new MemberValuePair("name", new StringLiteralExpr(StringUtils.capitalize(ProcessToExecModelGenerator.extractProcessId(processId)))),
                                                                                                                               new MemberValuePair("hidden", new BooleanLiteralExpr(hidden)))));
