@@ -6,7 +6,9 @@ import {
   DataToolbarGroup,
   PageSection,
   Breadcrumb,
-  BreadcrumbItem
+  BreadcrumbItem,
+  Card,
+  Bullseye
 } from '@patternfly/react-core';
 import { FilterIcon } from '@patternfly/react-icons';
 import { Link } from 'react-router-dom';
@@ -15,6 +17,7 @@ import './DomainExplorerDashboard.css';
 import DomainExplorerColumnPicker from '../../Organisms/DomainExplorerColumnPicker/DomainExplorerColumnPicker';
 import DomainExplorerTable from '../../Organisms/DomainExplorerTable/DomainExplorerTable';
 import PageTitleComponent from '../../Molecules/PageTitleComponent/PageTitleComponent';
+import SpinnerComponent from '../../Atoms/SpinnerComponent/SpinnerComponent';
 
 import {
   useGetQueryTypesQuery,
@@ -218,13 +221,19 @@ const DomainExplorerDashboard = props => {
       <PageSection>
         {renderToolbar()}
 
-        <div className="kogito-management-console--domain-explorer__table-OverFlow">
+        {!tableLoading ? (<div className="kogito-management-console--domain-explorer__table-OverFlow">
           <DomainExplorerTable
             columnFilters={columnFilters}
             tableLoading={tableLoading}
             displayTable={displayTable}
           />
-        </div>
+        </div>) : (
+            <Card>
+              <Bullseye>
+                <SpinnerComponent spinnerText="Loading domain data..." />
+              </Bullseye>
+            </Card>
+          )}
       </PageSection>
     </>
   );
