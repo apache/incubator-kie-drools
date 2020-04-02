@@ -242,7 +242,7 @@ public class DMN13specificTest extends BaseVariantTest {
     }
 
     private DMNResult evaluateModel(DMNRuntime runtime, DMNModel dmnModel, DMNContext context) {
-        String packageName = CodegenStringUtil.escapeIdentifier(dmnModel.getNamespace());
+        String packageName = CodegenStringUtil.escapeIdentifier(dmnModel.getNamespace() + dmnModel.getName());
         Map<String, Object> inputMap = context.getAll();
         FEELPropertyAccessible inputSet;
         try {
