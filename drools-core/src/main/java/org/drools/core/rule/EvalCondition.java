@@ -164,7 +164,7 @@ public class EvalCondition extends ConditionalElement
         }
 
         for ( int i = 0, length = this.requiredDeclarations.length; i < length; i++ ) {
-            if ( this.requiredDeclarations[i].getPattern().getOffset() != other.requiredDeclarations[i].getPattern().getOffset() ) {
+            if ( this.requiredDeclarations[i].getOffset() != other.requiredDeclarations[i].getOffset() ) {
                 return false;
             }
 

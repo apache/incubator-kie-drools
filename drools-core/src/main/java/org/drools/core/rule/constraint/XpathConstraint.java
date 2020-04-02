@@ -515,7 +515,7 @@ public class XpathConstraint extends MutableTypeConstraint {
             Object obj = fh.getObject();
 
             if (obj instanceof DroolsQuery) {
-                obj = ((DroolsQuery)obj).getElements()[declaration.getPattern().getOffset()];
+                obj = ((DroolsQuery)obj).getElements()[declaration.getOffset()];
             }
 
             return xpathEvaluator.evaluate(wm, leftTuple, obj).iterator();

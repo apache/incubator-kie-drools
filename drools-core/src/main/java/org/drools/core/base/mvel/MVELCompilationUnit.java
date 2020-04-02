@@ -390,7 +390,7 @@ public class MVELCompilationUnit
                 }
 
                 for (Declaration decl : prevDecl) {
-                    int offset = decl.getPattern().getOffset();
+                    int offset = decl.getOffset();
                     Object o = decl.getValue(workingMemory, objs != null ? objs[offset] : handles[offset].getObject());
                     factory.getIndexedVariableResolver(i++).setValue(o);
                 }
@@ -401,7 +401,7 @@ public class MVELCompilationUnit
             for ( Declaration decl : this.localDeclarations ) {
                 Object value;
                 if( readLocalsFromTuple && tuple != null ) {
-                    int offset = decl.getPattern().getOffset();
+                    int offset = decl.getOffset();
                     value = decl.getValue( workingMemory,
                                            objs != null ? objs[offset] : handles[offset].getObject() );
                 } else {
@@ -439,7 +439,7 @@ public class MVELCompilationUnit
 
     public static InternalFactHandle getFactHandle( Declaration declaration,
                                                     InternalFactHandle[] handles ) {
-        return handles != null && handles.length > declaration.getPattern().getOffset() ? handles[declaration.getPattern().getOffset()] : null;
+        return handles != null && handles.length > declaration.getOffset() ? handles[declaration.getOffset()] : null;
     }
 
     private static Serializable compile( final String text,

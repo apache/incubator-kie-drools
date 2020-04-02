@@ -224,7 +224,83 @@ public class RuleUnitCompilerTest extends BaseModelTest {
                 "    results.add($a.getCity());\n" +
                 "end\n";
 
-        KieContainer kieContainer = getKieContainer( null, str );
+        checkOopathBinding( str, "Milano" );
+    }
+
+    @Test
+    public void testOOPath1ChunksBindOnThis() {
+        String str =
+                "import " + Person.class.getCanonicalName() + ";" +
+                "import " + AdultUnit.class.getCanonicalName() + "\n" +
+                "rule Adult @Unit( AdultUnit.class ) when\n" +
+                "    /persons[$p : this, name == \"Mario\"]\n" +
+                "then\n" +
+                "    results.add($p.getName());\n" +
+                "end\n";
+
+        checkOopathBinding( str, "Mario" );
+    }
+
+    @Test
+    public void testOOPath1ChunksBindOnField() {
+        String str =
+                "import " + Person.class.getCanonicalName() + ";" +
+                "import " + AdultUnit.class.getCanonicalName() + "\n" +
+                "rule Adult @Unit( AdultUnit.class ) when\n" +
+                "    /persons[$name : name == \"Mario\"]\n" +
+                "then\n" +
+                "    results.add($name);\n" +
+                "end\n";
+
+        checkOopathBinding( str, "Mario" );
+    }
+
+    @Test
+    public void testOOPath2ChunksBindOnThis() {
+        // DROOLS-5207
+        String str =
+                "import " + Person.class.getCanonicalName() + ";" +
+                "import " + AdultUnit.class.getCanonicalName() + "\n" +
+                "rule Adult @Unit( AdultUnit.class ) when\n" +
+                "    /persons/addresses[$a : this, city == \"Milano\"]\n" +
+                "then\n" +
+                "    results.add($a.getCity());\n" +
+                "end\n";
+
+        checkOopathBinding( str, "Milano" );
+    }
+
+    @Test
+    public void testOOPath2ChunksBindOnPattern() {
+        String str =
+                "import " + Person.class.getCanonicalName() + ";" +
+                "import " + AdultUnit.class.getCanonicalName() + "\n" +
+                "rule Adult @Unit( AdultUnit.class ) when\n" +
+                "    $a : /persons/addresses[city == \"Milano\"]\n" +
+                "then\n" +
+                "    results.add($a.getCity());\n" +
+                "end\n";
+
+        checkOopathBinding( str, "Milano" );
+    }
+
+    @Test
+    public void testOOPath2ChunksBindOnField() {
+        // DROOLS-5207
+        String str =
+                "import " + Person.class.getCanonicalName() + ";" +
+                "import " + AdultUnit.class.getCanonicalName() + "\n" +
+                "rule Adult @Unit( AdultUnit.class ) when\n" +
+                "    /persons/addresses[$city : city == \"Milano\"]\n" +
+                "then\n" +
+                "    results.add($city);\n" +
+                "end\n";
+
+        checkOopathBinding( str, "Milano" );
+    }
+
+    private void checkOopathBinding( String drl, String expected ) {
+        KieContainer kieContainer = getKieContainer( null, drl );
         RuleUnitExecutor executor = RuleUnitExecutor.newRuleUnitExecutor( kieContainer );
 
         Person mario = new Person( "Mario", 42 );
@@ -232,11 +308,11 @@ public class RuleUnitCompilerTest extends BaseModelTest {
 
         DataSource<Person> persons = DataSource.create( mario );
 
-        AdultUnit unit = new AdultUnit(persons);
-        assertEquals(1, executor.run( unit ) );
+        AdultUnit unit = new AdultUnit( persons );
+        assertEquals( 1, executor.run( unit ) );
 
         assertEquals( 1, unit.getResults().size() );
-        assertEquals( "Milano", unit.getResults().get(0) );
+        assertEquals( expected, unit.getResults().get( 0 ) );
     }
 
     @Test

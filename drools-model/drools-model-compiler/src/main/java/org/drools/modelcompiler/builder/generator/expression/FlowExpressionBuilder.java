@@ -68,13 +68,28 @@ public class FlowExpressionBuilder extends AbstractExpressionBuilder {
             context.addExpression(dslExpr);
         }
 
-        if(DrlxParseUtil.isThisExpression(drlxParseResult.getExpr())) {
-            Expression inputExpr = createInputExpression(drlxParseResult.getExprBinding());
-            context.addExpression(inputExpr);
+        if (DrlxParseUtil.isThisExpression(drlxParseResult.getExpr())) {
+            if (drlxParseResult.hasGeneratedPatternBinding()) {
+                MethodCallExpr bindExpr = createBindExpression( drlxParseResult );
+                context.addExpression( bindExpr );
+            } else {
+                Expression inputExpr = createInputExpression( drlxParseResult.getExprBinding() );
+                context.addExpression( inputExpr );
+            }
         } else if (drlxParseResult.getExprBinding() != null) {
             Expression dslExpr = buildBinding(drlxParseResult);
             context.addExpression(dslExpr);
         }
+    }
+
+    private MethodCallExpr createBindExpression( SingleDrlxParseSuccess drlxParseResult ) {
+        MethodCallExpr bindDSL = new MethodCallExpr(null, BIND_CALL);
+        bindDSL.addArgument(context.getVarExpr(drlxParseResult.getExprBinding()));
+
+        MethodCallExpr bindAsDSL = new MethodCallExpr(bindDSL, BIND_AS_CALL);
+        bindAsDSL.addArgument(context.getVarExpr(drlxParseResult.getPatternBinding() != null ? drlxParseResult.getPatternBinding() : drlxParseResult.getAccumulateBinding()));
+        bindAsDSL.addArgument("x -> x");
+        return bindAsDSL;
     }
 
     @Override

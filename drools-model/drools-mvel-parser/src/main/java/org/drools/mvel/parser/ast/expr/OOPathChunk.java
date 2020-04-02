@@ -32,9 +32,9 @@ public class OOPathChunk extends Expression {
 
     private final SimpleName field;
     private final SimpleName inlineCast;
-    private final List<Expression> condition;
+    private final List<DrlxExpression> condition;
 
-    public OOPathChunk(TokenRange range, SimpleName field, SimpleName inlineCast, List<Expression> condition ) {
+    public OOPathChunk(TokenRange range, SimpleName field, SimpleName inlineCast, List<DrlxExpression> condition ) {
         super( range );
         this.field = field;
         this.inlineCast = inlineCast;
@@ -49,7 +49,7 @@ public class OOPathChunk extends Expression {
         return inlineCast;
     }
 
-    public List<Expression> getConditions() {
+    public List<DrlxExpression> getConditions() {
         return condition;
     }
 
