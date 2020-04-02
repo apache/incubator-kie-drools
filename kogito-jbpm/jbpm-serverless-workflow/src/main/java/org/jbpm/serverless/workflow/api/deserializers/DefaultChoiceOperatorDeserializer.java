@@ -31,8 +31,10 @@ import org.slf4j.LoggerFactory;
 
 public class DefaultChoiceOperatorDeserializer extends StdDeserializer<DefaultChoice.Operator> {
 
-    private WorkflowPropertySource context;
+    private static final long serialVersionUID = 510l;
     private static Logger logger = LoggerFactory.getLogger(DefaultChoiceOperatorDeserializer.class);
+
+    private WorkflowPropertySource context;
 
     public DefaultChoiceOperatorDeserializer() {
         this(DefaultChoice.Operator.class);

@@ -30,8 +30,10 @@ import org.slf4j.LoggerFactory;
 
 public class StringValueDeserializer extends StdDeserializer<String> {
 
-    private WorkflowPropertySource context;
+    private static final long serialVersionUID = 510l;
     private static Logger logger = LoggerFactory.getLogger(StringValueDeserializer.class);
+
+    private WorkflowPropertySource context;
 
     public StringValueDeserializer() {
         this(String.class);

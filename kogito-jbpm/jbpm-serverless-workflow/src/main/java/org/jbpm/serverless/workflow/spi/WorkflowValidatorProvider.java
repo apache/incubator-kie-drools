@@ -36,7 +36,7 @@ public class WorkflowValidatorProvider {
         Iterator<WorkflowValidator> it = foundWorkflowValidators.iterator();
         if (it.hasNext()) {
             workflowValidator = it.next();
-            logger.info("Found workflow validator: {}", workflowValidator.toString());
+            logger.info("Found workflow validator: {}", workflowValidator);
         }
     }
 

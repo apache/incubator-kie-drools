@@ -36,13 +36,11 @@ import org.jbpm.serverless.workflow.api.interfaces.State;
 import org.jbpm.serverless.workflow.api.serializers.*;
 import org.jbpm.serverless.workflow.api.choices.DefaultChoice;
 import org.jbpm.serverless.workflow.api.states.DefaultState;
-import org.jbpm.serverless.workflow.api.states.DelayState;
-import org.jbpm.serverless.workflow.api.states.EventState;
 import org.jbpm.serverless.workflow.api.states.OperationState;
-import org.jbpm.serverless.workflow.api.states.ParallelState;
-import org.jbpm.serverless.workflow.api.states.SwitchState;
 
 public class WorkflowModule extends SimpleModule {
+
+    private static final long serialVersionUID = 510l;
 
     private WorkflowPropertySource workflowPropertySource;
     private ExtensionSerializer extensionSerializer;
@@ -87,16 +85,6 @@ public class WorkflowModule extends SimpleModule {
         addDeserializer(OperationState.ActionMode.class,
                         new OperationStateActionModeDeserializer(workflowPropertySource));
         addDeserializer(DefaultState.Type.class,
-                        new DefaultStateTypeDeserializer(workflowPropertySource));
-        addDeserializer(DelayState.Type.class,
-                        new DefaultStateTypeDeserializer(workflowPropertySource));
-        addDeserializer(EventState.Type.class,
-                        new DefaultStateTypeDeserializer(workflowPropertySource));
-        addDeserializer(OperationState.Type.class,
-                        new DefaultStateTypeDeserializer(workflowPropertySource));
-        addDeserializer(ParallelState.Type.class,
-                        new DefaultStateTypeDeserializer(workflowPropertySource));
-        addDeserializer(SwitchState.Type.class,
                         new DefaultStateTypeDeserializer(workflowPropertySource));
         addDeserializer(DefaultChoice.Operator.class,
                         new DefaultChoiceOperatorDeserializer(workflowPropertySource));

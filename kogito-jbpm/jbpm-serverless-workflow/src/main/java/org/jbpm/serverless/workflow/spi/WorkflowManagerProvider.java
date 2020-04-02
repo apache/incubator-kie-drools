@@ -36,7 +36,7 @@ public class WorkflowManagerProvider {
         Iterator<WorkflowManager> it = foundWorkflowManagers.iterator();
         if (it.hasNext()) {
             workflowManager = it.next();
-            logger.info("Found workflow manager: {}", workflowManager.toString());
+            logger.info("Found workflow manager: {}", workflowManager);
         }
     }
 

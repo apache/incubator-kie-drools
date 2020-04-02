@@ -31,8 +31,10 @@ import org.slf4j.LoggerFactory;
 
 public class OperationStateActionModeDeserializer extends StdDeserializer<OperationState.ActionMode> {
 
-    private WorkflowPropertySource context;
+    private static final long serialVersionUID = 510l;
     private static Logger logger = LoggerFactory.getLogger(OperationStateActionModeDeserializer.class);
+
+    private WorkflowPropertySource context;
 
     public OperationStateActionModeDeserializer() {
         this(OperationState.ActionMode.class);
