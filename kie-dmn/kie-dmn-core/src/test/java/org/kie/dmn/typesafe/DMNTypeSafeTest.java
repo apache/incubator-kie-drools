@@ -42,7 +42,7 @@ public class DMNTypeSafeTest {
         String modelName = "Drawing 1";
 
         dmnModel = runtime.getModel(namespace, modelName);
-        packageName = CodegenStringUtil.escapeIdentifier(dmnModel.getNamespace());
+        packageName = DMNClassNamespaceTypeIndex.namespace(dmnModel);
     }
 
     @Test

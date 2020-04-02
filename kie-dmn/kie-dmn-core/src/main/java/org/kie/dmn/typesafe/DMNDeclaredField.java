@@ -12,6 +12,7 @@ import com.github.javaparser.ast.type.ClassOrInterfaceType;
 import org.drools.core.util.StringUtils;
 import org.drools.modelcompiler.builder.generator.declaredtype.api.AnnotationDefinition;
 import org.drools.modelcompiler.builder.generator.declaredtype.api.FieldDefinition;
+import org.drools.modelcompiler.util.StringUtil;
 import org.kie.dmn.api.core.DMNType;
 import org.kie.dmn.feel.codegen.feel11.CodegenStringUtil;
 
@@ -26,7 +27,7 @@ public class DMNDeclaredField implements FieldDefinition {
 
     DMNDeclaredField(Map<String, String> allNamespaces, Map.Entry<String, DMNType> dmnType) {
         this.allNamespaces = allNamespaces;
-        this.fieldName = CodegenStringUtil.escapeIdentifier(dmnType.getKey());
+        this.fieldName = StringUtils.lcFirst(CodegenStringUtil.escapeIdentifier(dmnType.getKey()));
         this.fieldType = dmnType.getValue();
     }
 
@@ -42,7 +43,20 @@ public class DMNDeclaredField implements FieldDefinition {
             String typeNameWithPackage = withPackage(typeName);
             return String.format("java.util.Collection<%s>", typeNameWithPackage);
         }
+        return fieldTypeWithPackage();
+    }
+
+    private String fieldTypeWithPackage() {
         return withPackage(fieldType.getName());
+    }
+
+    // This returns the generic type i.e. if Collection<String> then String
+    private String fieldTypeUnwrapped() {
+        if (fieldType.isCollection()) {
+            String typeName = getBaseType(fieldType);
+            return withPackage(typeName);
+        }
+        return fieldTypeWithPackage();
     }
 
     private String withPackage(String typeName) {
@@ -91,11 +105,11 @@ public class DMNDeclaredField implements FieldDefinition {
                                         BlockStmt pojoPropertyBlock,
                                         BlockStmt collectionsPropertyBlock) {
         if (fieldType.isCollection()) {
-            return replaceTemplate(collectionsPropertyBlock, getBaseType(fieldType));
+            return replaceTemplate(collectionsPropertyBlock, fieldTypeUnwrapped());
         } else if (fieldType.isComposite()) {
-            return replaceTemplate(pojoPropertyBlock, fieldType.getName());
+            return replaceTemplate(pojoPropertyBlock, fieldTypeWithPackage());
         } else {
-            return replaceTemplate(simplePropertyBlock, fieldType.getName());
+            return replaceTemplate(simplePropertyBlock, fieldTypeWithPackage());
         }
     }
 
@@ -110,7 +124,7 @@ public class DMNDeclaredField implements FieldDefinition {
                 .forEach(n -> n.replace(new StringLiteralExpr(fieldName)));
 
         clone.findAll(ClassOrInterfaceType.class, this::propertyTypePlaceHolder)
-                .forEach(n -> n.replace(parseClassOrInterfaceType(StringUtils.ucFirst(objectType))));
+                .forEach(n -> n.replace(parseClassOrInterfaceType(objectType)));
 
         return clone;
     }
