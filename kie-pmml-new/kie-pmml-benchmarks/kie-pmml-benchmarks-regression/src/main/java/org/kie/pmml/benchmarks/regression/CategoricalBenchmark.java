@@ -59,11 +59,11 @@ public class CategoricalBenchmark extends AbstractRegressionBenchmark {
 
     @Setup
     public void setupModel() throws Exception {
-        logger.info("setup model...");
+        logger.debug("setup model...");
         modelName = "Sample for logistic regression";
         fileName = "CategoricalRegressionSample.pmml";
         super.setupModel();
-        logger.info("setup pmmlContext...");
+        logger.debug("setup pmmlContext...");
         PMMLRequestData pmmlRequestData = new PMMLRequestData("123", modelName);
         pmmlRequestData.addRequestParam("age", 22);
         pmmlRequestData.addRequestParam("work", 3);

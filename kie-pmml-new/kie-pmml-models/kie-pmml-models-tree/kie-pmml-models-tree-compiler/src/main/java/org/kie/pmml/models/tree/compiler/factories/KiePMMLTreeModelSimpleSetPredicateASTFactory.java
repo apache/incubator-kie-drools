@@ -58,7 +58,7 @@ public class KiePMMLTreeModelSimpleSetPredicateASTFactory {
                                                   final String currentRule,
                                                   final Object result,
                                                   boolean isFinalLeaf) {
-        logger.info("declareRuleFromSimpleSetPredicate {} {} {}", simpleSetPredicate, parentPath, currentRule);
+        logger.debug("declareRuleFromSimpleSetPredicate {} {} {}", simpleSetPredicate, parentPath, currentRule);
         String statusConstraint = StringUtils.isEmpty(parentPath) ? STATUS_NULL : String.format(STATUS_PATTERN, parentPath);
         String key = fieldTypeMap.get(simpleSetPredicate.getField().getValue()).getGeneratedType();
         String stringValue = (String) simpleSetPredicate.getArray().getValue();

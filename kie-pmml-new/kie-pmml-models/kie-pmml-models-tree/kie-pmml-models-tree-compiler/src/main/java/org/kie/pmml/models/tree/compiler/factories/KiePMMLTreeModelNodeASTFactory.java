@@ -52,7 +52,7 @@ public class KiePMMLTreeModelNodeASTFactory {
     }
 
     public Queue<KiePMMLDrooledRule> declareRulesFromRootNode(final Node node, final String parentPath) {
-        logger.info("declareRulesFromRootNode {} {}", node, parentPath);
+        logger.debug("declareRulesFromRootNode {} {}", node, parentPath);
         Queue<KiePMMLDrooledRule> toReturn = new LinkedList<>();
         declareRuleFromNode(node, parentPath, toReturn);
         return toReturn;
@@ -60,7 +60,7 @@ public class KiePMMLTreeModelNodeASTFactory {
 
     protected void declareRuleFromNode(final Node node, final String parentPath,
                                        final Queue<KiePMMLDrooledRule> rules) {
-        logger.info("declareRuleFromNode {} {}", node, parentPath);
+        logger.debug("declareRuleFromNode {} {}", node, parentPath);
         if (isFinalLeaf(node)) {
             declareFinalRuleFromNode(node, parentPath, rules);
         } else {
@@ -80,7 +80,7 @@ public class KiePMMLTreeModelNodeASTFactory {
     protected void declareFinalRuleFromNode(final Node node,
                                             final String parentPath,
                                             final Queue<KiePMMLDrooledRule> rules) {
-        logger.info("declareFinalRuleFromNode {} {}", node, parentPath);
+        logger.debug("declareFinalRuleFromNode {} {}", node, parentPath);
         final Predicate predicate = node.getPredicate();
         // This means the rule should not be created at all.
         // Different semantics has to be implemented if the "False"/"True" predicates are declared inside
@@ -103,7 +103,7 @@ public class KiePMMLTreeModelNodeASTFactory {
     protected void declareIntermediateRuleFromNode(final Node node,
                                                    final String parentPath,
                                                    final Queue<KiePMMLDrooledRule> rules) {
-        logger.info("declareIntermediateRuleFromNode {} {}", node, parentPath);
+        logger.debug("declareIntermediateRuleFromNode {} {}", node, parentPath);
         final Predicate predicate = node.getPredicate();
         // This means the rule should not be created at all.
         // Different semantics has to be implemented if the "False"/"True" predicates are declared inside
@@ -130,7 +130,7 @@ public class KiePMMLTreeModelNodeASTFactory {
     protected void declareDefaultRuleFromNode(final Node node,
                                               final String parentPath,
                                               final Queue<KiePMMLDrooledRule> rules) {
-        logger.info("declareDefaultRuleFromNode {} {}", node, parentPath);
+        logger.debug("declareDefaultRuleFromNode {} {}", node, parentPath);
         String originalRule = String.format(PATH_PATTERN, parentPath, node.getScore().toString());
         String currentRule = String.format(PATH_PATTERN, "default", originalRule);
         KiePMMLTreeModelPredicateASTFactory.factory(fieldTypeMap, rules).declareRuleFromPredicate(new True(), originalRule, currentRule, node.getScore(), true);

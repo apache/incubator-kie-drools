@@ -42,7 +42,10 @@ public enum OPERATOR {
     }
 
     public static OPERATOR byName(String name) {
-        return Arrays.stream(OPERATOR.values()).filter(value -> name.equals(value.name)).findFirst().orElseThrow(() -> new KieEnumException("Failed to find MODEL_TYPE with name: " + name));
+        return Arrays.stream(OPERATOR.values())
+                .filter(value -> name.equals(value.name))
+                .findFirst()
+                .orElseThrow(() -> new KieEnumException("Failed to find MODEL_TYPE with name: " + name));
     }
 
     public String getName() {

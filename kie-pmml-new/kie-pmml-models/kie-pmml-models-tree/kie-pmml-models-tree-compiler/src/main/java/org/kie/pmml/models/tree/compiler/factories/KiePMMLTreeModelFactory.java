@@ -46,7 +46,7 @@ public class KiePMMLTreeModelFactory {
     }
 
     public static KiePMMLTreeModel getKiePMMLTreeModel(DataDictionary dataDictionary, TreeModel model) {
-        logger.info("getKiePMMLTreeModel {}", model);
+        logger.debug("getKiePMMLTreeModel {}", model);
         String name = model.getModelName();
         Optional<String> targetFieldName = getTargetField(dataDictionary, model);
         final Map<String, KiePMMLOriginalTypeGeneratedType> fieldTypeMap = new HashMap<>();
@@ -55,7 +55,7 @@ public class KiePMMLTreeModelFactory {
         // TODO {gcardosi} Dev debug only - to be removed
         try {
             String string = new DrlDumper().dump(baseDescr);
-            logger.info(string);
+            logger.debug(string);
         } catch (Exception e) {
             e.printStackTrace();
         }

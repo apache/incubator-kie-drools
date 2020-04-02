@@ -64,7 +64,7 @@ public class KiePMMLTreeModelPredicateASTFactory {
                                          final String currentRule,
                                          final Object result,
                                          final boolean isFinalLeaf) {
-        logger.info("declareRuleFromPredicate {} {} {} {}", predicate, parentPath, currentRule, result);
+        logger.debug("declareRuleFromPredicate {} {} {} {}", predicate, parentPath, currentRule, result);
         if (predicate instanceof True) {
             KiePMMLTreeModelTruePredicateASTFactory.factory((True) predicate, rules).declareRuleFromTruePredicate(parentPath, currentRule, result, isFinalLeaf);
         } else if (predicate instanceof SimplePredicate) {

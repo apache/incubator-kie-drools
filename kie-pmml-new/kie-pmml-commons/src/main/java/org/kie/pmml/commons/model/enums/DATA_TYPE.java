@@ -15,10 +15,14 @@
  */
 package org.kie.pmml.commons.model.enums;
 
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.time.LocalTime;
 import java.util.Arrays;
 import java.util.Date;
 import java.util.Objects;
 
+import org.kie.pmml.commons.exceptions.KieDataFieldException;
 import org.kie.pmml.commons.exceptions.KieEnumException;
 
 /**
@@ -53,7 +57,10 @@ public enum DATA_TYPE {
     }
 
     public static DATA_TYPE byName(String name) {
-        return Arrays.stream(DATA_TYPE.values()).filter(value -> Objects.equals(name, value.name)).findFirst().orElseThrow(() -> new KieEnumException("Failed to find DATA_TYPE with name: " + name));
+        return Arrays.stream(DATA_TYPE.values())
+                .filter(value -> Objects.equals(name, value.name))
+                .findFirst()
+                .orElseThrow(() -> new KieEnumException("Failed to find DATA_TYPE with name: " + name));
     }
 
     public String getName() {
@@ -62,5 +69,48 @@ public enum DATA_TYPE {
 
     public Class<?> getMappedClass() {
         return mappedClass;
+    }
+
+    public Object getActualValue(Object rawValue) {
+        if (mappedClass.isAssignableFrom(rawValue.getClass())) {
+            // No cast/transformation needed
+            return rawValue;
+        }
+        if (rawValue instanceof String) {
+            String stringValue = (String) rawValue;
+            try {
+                switch (this) {
+                    case STRING:
+                        return stringValue;
+                    case INTEGER:
+                        return Integer.parseInt(stringValue);
+                    case FLOAT:
+                        return Float.parseFloat(stringValue);
+                    case DOUBLE:
+                        return Double.parseDouble(stringValue);
+                    case BOOLEAN:
+                        return Boolean.parseBoolean(stringValue);
+                    case DATE:
+                        return LocalDate.parse(stringValue);
+                    case TIME:
+                        return LocalTime.parse(stringValue);
+                    case DATE_TIME:
+                        return LocalDateTime.parse(stringValue);
+                    case DATE_DAYS_SINCE_0:
+                    case DATE_DAYS_SINCE_1960:
+                    case DATE_DAYS_SINCE_1970:
+                    case DATE_DAYS_SINCE_1980:
+                    case TIME_SECONDS:
+                    case DATE_TIME_SECONDS_SINCE_0:
+                    case DATE_TIME_SECONDS_SINCE_1960:
+                    case DATE_TIME_SECONDS_SINCE_1970:
+                    case DATE_TIME_SECONDS_SINCE_1980:
+                        return Long.parseLong(stringValue);
+                }
+            } catch (Exception e) {
+                throw new KieDataFieldException("Fail to convert " + rawValue + "[" + rawValue.getClass().getName() + "] to expected class " + mappedClass.getName(), e);
+            }
+        }
+        throw new KieDataFieldException("Unexpected " + rawValue + "[" + rawValue.getClass().getName() + "] to convert");
     }
 }

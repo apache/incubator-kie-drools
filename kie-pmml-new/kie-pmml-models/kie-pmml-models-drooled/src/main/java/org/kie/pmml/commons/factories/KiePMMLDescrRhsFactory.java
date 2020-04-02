@@ -35,6 +35,11 @@ public class KiePMMLDescrRhsFactory {
 
     public static final String UPDATE_STATUS_HOLDER = "\r\n" + STATUS_HOLDER + ".setStatus(\"%s\");\r\nupdate(" + STATUS_HOLDER + ");";
     public static final String FOCUS_AGENDA_GROUP = "\r\nkcontext.getKieRuntime().getAgenda().getAgendaGroup( \"%s\" ).setFocus();";
+    public static final String PRINT_MATCHED_RULE = "\r\nSystem.out.println(\"%s matched\");";
+    public static final String PRINT_SET_STATUS = "\r\nSystem.out.println(\"set status to %s\");";
+    public static final String PRINT_SET_RESULT_CODE = "\r\nSystem.out.println(\"set result code to %s\");";
+    public static final String PRINT_SET_RESULT = "\r\nSystem.out.println(\"set result to %s\");";
+    public static final String PRINT_SET_AGENDA_FOCUS = "\r\nkcontext.getKieRuntime().getAgenda().getAgendaGroup( \"%s\" ).setFocus();";
 
     private static final Logger logger = LoggerFactory.getLogger(KiePMMLDescrRhsFactory.class.getName());
 
@@ -49,7 +54,7 @@ public class KiePMMLDescrRhsFactory {
     }
 
     public void declareRhs(final KiePMMLDrooledRule rule) {
-        logger.info("declareRhs {}", rule);
+        logger.debug("declareRhs {}", rule);
         if (rule.getIfBreakField() != null) {
             declareIfThen(rule);
         } else {
@@ -59,16 +64,21 @@ public class KiePMMLDescrRhsFactory {
 
     protected void declareDefaultThen(final KiePMMLDrooledRule rule) {
         StringBuilder rhsBuilder = new StringBuilder();
+        rhsBuilder.append(String.format(PRINT_MATCHED_RULE, rule.getName()));
         if (rule.getStatusToSet() != null) {
+            rhsBuilder.append(String.format(PRINT_SET_STATUS, rule.getStatusToSet()));
             rhsBuilder.append(String.format(UPDATE_STATUS_HOLDER, rule.getStatusToSet()));
         }
         if (rule.getResultCode() != null) {
+            rhsBuilder.append(String.format(PRINT_SET_RESULT_CODE, rule.getResultCode()));
             rhsBuilder.append(String.format(SET_PMML4_RESULT_CODE, rule.getResultCode()));
         }
         if (rule.getResult() != null) {
+            rhsBuilder.append(String.format(PRINT_SET_RESULT, rule.getResult()));
             rhsBuilder.append(String.format(ADD_PMML4_RESULT_VARIABLE, rule.getResult()));
         }
         if (rule.getFocusedAgendaGroup() != null) {
+            rhsBuilder.append(String.format(PRINT_SET_AGENDA_FOCUS, rule.getFocusedAgendaGroup()));
             rhsBuilder.append(String.format(FOCUS_AGENDA_GROUP, rule.getFocusedAgendaGroup()));
         }
         builder.rhs(rhsBuilder.toString());
@@ -77,17 +87,20 @@ public class KiePMMLDescrRhsFactory {
     protected void declareIfThen(final KiePMMLDrooledRule rule) {
         builder.rhs(String.format(UPDATE_STATUS_HOLDER, rule.getStatusToSet()));
         StringBuilder rhsBuilder = new StringBuilder();
+        rhsBuilder.append(String.format(PRINT_MATCHED_RULE, rule.getName()));
         rhsBuilder.append(String.format(UPDATE_STATUS_HOLDER, StatusCode.DONE.getName()));
         if (rule.getResultCode() != null) {
+            rhsBuilder.append(String.format(PRINT_SET_RESULT_CODE, rule.getResultCode()));
             rhsBuilder.append(String.format(SET_PMML4_RESULT_CODE, rule.getResultCode()));
         }
         if (rule.getResult() != null) {
+            rhsBuilder.append(String.format(PRINT_SET_RESULT, rule.getResult()));
             rhsBuilder.append(String.format(ADD_PMML4_RESULT_VARIABLE, rule.getResult()));
         }
         if (rule.getFocusedAgendaGroup() != null) {
+            rhsBuilder.append(String.format(PRINT_SET_AGENDA_FOCUS, rule.getFocusedAgendaGroup()));
             rhsBuilder.append(String.format(FOCUS_AGENDA_GROUP, rule.getFocusedAgendaGroup()));
         }
         builder.namedRhs(BREAK_LABEL, rhsBuilder.toString());
     }
-
 }

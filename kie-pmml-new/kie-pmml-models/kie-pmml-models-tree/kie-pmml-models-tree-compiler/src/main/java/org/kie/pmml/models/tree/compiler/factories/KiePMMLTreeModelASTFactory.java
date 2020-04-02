@@ -52,7 +52,7 @@ public class KiePMMLTreeModelASTFactory {
      * @return
      */
     public static KiePMMLDrooledAST getKiePMMLDrooledAST(DataDictionary dataDictionary, TreeModel model, final Map<String, KiePMMLOriginalTypeGeneratedType> fieldTypeMap) {
-        logger.info("getKiePMMLDrooledAST {} {}", dataDictionary, model);
+        logger.debug("getKiePMMLDrooledAST {} {}", dataDictionary, model);
         Queue<KiePMMLDrooledType> types = KiePMMLTreeModelDataDictionaryASTFactory.factory(fieldTypeMap).declareTypes(dataDictionary);
         Queue<KiePMMLDrooledRule> rules = KiePMMLTreeModelNodeASTFactory.factory(fieldTypeMap, model.getNoTrueChildStrategy()).declareRulesFromRootNode(model.getNode(), "");
         return new KiePMMLDrooledAST(types, rules);

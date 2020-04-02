@@ -58,7 +58,7 @@ public class KiePMMLDescrLhsFactory {
     }
 
     public void declareLhs(final KiePMMLDrooledRule rule) {
-        logger.info("declareLhs {}", rule);
+        logger.debug("declareLhs {}", rule);
         final PatternDescrBuilder<CEDescrBuilder<RuleDescrBuilder, AndDescr>> patternDescrBuilder = builder.pattern(KiePMMLStatusHolder.class.getSimpleName()).id(STATUS_HOLDER, false);
         if (rule.getStatusConstraint() != null) {
             patternDescrBuilder.constraint(rule.getStatusConstraint());

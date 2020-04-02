@@ -63,7 +63,7 @@ public class KiePMMLTreeModelCompoundPredicateASTFactory {
                                                  final String currentRule,
                                                  final Object result,
                                                  boolean isFinalLeaf) {
-        logger.info("declareIntermediateRuleFromCompoundPredicate {} {} {} {}", compoundPredicate, parentPath, currentRule, result);
+        logger.debug("declareIntermediateRuleFromCompoundPredicate {} {} {} {}", compoundPredicate, parentPath, currentRule, result);
         switch (compoundPredicate.getBooleanOperator()) {
             case SURROGATE:
                 declareRuleFromCompoundPredicateSurrogate(parentPath, currentRule, result, isFinalLeaf);
@@ -79,7 +79,7 @@ public class KiePMMLTreeModelCompoundPredicateASTFactory {
                                                          final String currentRule,
                                                          final Object result,
                                                          boolean isFinalLeaf) {
-        logger.info("declareIntermediateRuleFromCompoundPredicateAndOrXor {} {} {}", compoundPredicate, parentPath, currentRule);
+        logger.debug("declareIntermediateRuleFromCompoundPredicateAndOrXor {} {} {}", compoundPredicate, parentPath, currentRule);
         String statusConstraint = StringUtils.isEmpty(parentPath) ? STATUS_NULL : String.format(STATUS_PATTERN, parentPath);
         // Managing only SimplePredicates for the moment being
         final List<Predicate> simplePredicates = compoundPredicate.getPredicates().stream().filter(predicate -> predicate instanceof SimplePredicate).collect(Collectors.toList());
@@ -124,7 +124,7 @@ public class KiePMMLTreeModelCompoundPredicateASTFactory {
                                                           final String currentRule,
                                                           final Object result,
                                                           boolean isFinalLeaf) {
-        logger.info("declareRuleFromCompoundPredicateSurrogate {} {} {} {}", compoundPredicate, parentPath, currentRule, result);
+        logger.debug("declareRuleFromCompoundPredicateSurrogate {} {} {} {}", compoundPredicate, parentPath, currentRule, result);
         final String agendaActivationGroup = String.format(SURROGATE_GROUP_PATTERN, currentRule);
         KiePMMLDrooledRule.Builder builder = KiePMMLDrooledRule.builder(currentRule, null)
                 .withStatusConstraint(String.format(STATUS_PATTERN, parentPath))

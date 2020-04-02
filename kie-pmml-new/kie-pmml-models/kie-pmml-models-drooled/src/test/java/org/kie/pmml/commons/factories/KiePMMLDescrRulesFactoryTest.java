@@ -80,7 +80,7 @@ public class KiePMMLDescrRulesFactoryTest {
     private void printGeneratedRules() {
         try {
             String string = new DrlDumper().dump(builder.getDescr());
-            logger.info(string);
+            logger.debug(string);
         } catch (Exception e) {
             e.printStackTrace();
         }

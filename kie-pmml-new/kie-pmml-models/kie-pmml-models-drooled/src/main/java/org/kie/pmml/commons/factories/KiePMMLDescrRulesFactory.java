@@ -45,12 +45,12 @@ public class KiePMMLDescrRulesFactory {
     }
 
     public void declareRules(final Queue<KiePMMLDrooledRule> rules) {
-        logger.info("declareRules {}", rules);
+        logger.debug("declareRules {}", rules);
         rules.forEach(this::declareRule);
     }
 
     protected void declareRule(final KiePMMLDrooledRule rule) {
-        logger.info("declareRule {}", rule);
+        logger.debug("declareRule {}", rule);
         final RuleDescrBuilder ruleBuilder = builder.newRule().name(rule.getName());
         if (rule.getAgendaGroup() != null) {
             declareAgendaGroup(ruleBuilder, rule.getAgendaGroup());

@@ -45,11 +45,11 @@ public class RegressionBenchmark extends AbstractRegressionBenchmark {
 
     @Setup
     public void setupModel() throws Exception {
-        logger.info("setup model...");
+        logger.debug("setup model...");
         modelName = "Sample for linear regression";
         fileName = "LinearRegressionSample.pmml";
         super.setupModel();
-        logger.info("setup pmmlContext...");
+        logger.debug("setup pmmlContext...");
         PMMLRequestData pmmlRequestData = new PMMLRequestData("123", modelName);
         pmmlRequestData.addRequestParam("age", 22);
         pmmlRequestData.addRequestParam("salary", 2345.43);

@@ -35,7 +35,6 @@ public class TreeModelCompilationTest {
         try {
             drlParser.parse(false, content);
         } catch (Exception e) {
-            e.printStackTrace();
             fail(e.getMessage());
         }
     }

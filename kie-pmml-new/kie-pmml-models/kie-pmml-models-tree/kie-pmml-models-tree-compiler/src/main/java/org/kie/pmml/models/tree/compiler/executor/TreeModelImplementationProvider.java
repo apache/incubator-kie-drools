@@ -35,13 +35,13 @@ public class TreeModelImplementationProvider extends DrooledModelProvider<TreeMo
 
     @Override
     public PMML_MODEL getPMMLModelType() {
-        logger.info("getPMMLModelType");
+        logger.debug("getPMMLModelType");
         return PMML_MODEL_TYPE;
     }
 
     @Override
     public KiePMMLTreeModel getKiePMMLDrooledModel(DataDictionary dataDictionary, TreeModel model) {
-        logger.info("getKiePMMLDrooledModel {} {}", dataDictionary, model);
+        logger.debug("getKiePMMLDrooledModel {} {}", dataDictionary, model);
         return getKiePMMLTreeModel(dataDictionary, model);
     }
 }
