@@ -17,10 +17,12 @@ package org.kie.kogito.codegen.decision;
 
 import java.nio.file.Paths;
 import java.util.List;
+import java.util.stream.Collectors;
 
 import com.github.javaparser.ast.body.ClassOrInterfaceDeclaration;
 import org.junit.jupiter.api.Test;
 import org.kie.kogito.codegen.GeneratedFile;
+import org.kie.kogito.grafana.JGrafana;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
@@ -29,12 +31,27 @@ public class DecisionCodegenTest {
 
     @Test
     public void generateSingleFile() throws Exception {
-        DecisionCodegen codegenerator = DecisionCodegen.ofPath(Paths.get("src/test/resources/decision").toAbsolutePath());
+        DecisionCodegen codeGenerator = DecisionCodegen.ofPath(Paths.get("src/test/resources/decision").toAbsolutePath());
 
-        List<GeneratedFile> generatedFiles = codegenerator.generate();
+        List<GeneratedFile> generatedFiles = codeGenerator.generate();
         assertEquals(2, generatedFiles.size());
 
-        ClassOrInterfaceDeclaration classDeclaration = codegenerator.moduleGenerator().classDeclaration();
+        ClassOrInterfaceDeclaration classDeclaration = codeGenerator.moduleGenerator().classDeclaration();
         assertNotNull(classDeclaration);
+    }
+
+    @Test
+    public void GivenADMNModel_WhenMonitoringIsActive_ThenGrafanaDashboardsAreGenerated() throws Exception {
+        DecisionCodegen codeGenerator = DecisionCodegen.ofPath(Paths.get("src/test/resources/decision").toAbsolutePath()).withMonitoring(true);
+
+        List<GeneratedFile> generatedFiles = codeGenerator.generate();
+
+        List<GeneratedFile> dashboards =  generatedFiles.stream().filter(x -> x.getType() == GeneratedFile.Type.RESOURCE).collect(Collectors.toList());
+
+        assertEquals(2,dashboards.size());
+
+        JGrafana vacationDashboard = JGrafana.parse(new String(dashboards.stream().filter(x -> x.relativePath().contains("Vacations.json")).findFirst().get().contents()));
+
+        assertEquals(7, vacationDashboard.getDashboard().panels.size());
     }
 }

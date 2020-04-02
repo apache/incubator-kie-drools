@@ -67,7 +67,6 @@
       <groupId>org.kie.kogito</groupId>
       <artifactId>kogito-dmn</artifactId> <!-- depend on the utility wrapper module to avoid repeating dependency exclusions -->
     </dependency>
-
     <!-- image metadata handling -->
     <dependency>
       <groupId>com.fasterxml.jackson.core</groupId>
@@ -77,7 +76,12 @@
       <groupId>com.fasterxml.jackson.core</groupId>
       <artifactId>jackson-databind</artifactId>
     </dependency>
-    
+
+    <dependency>
+      <groupId>org.kie.kogito</groupId>
+      <artifactId>grafana-api</artifactId>
+    </dependency>
+
     <!-- marshallers -->
     <dependency>
       <groupId>org.infinispan.protostream</groupId>

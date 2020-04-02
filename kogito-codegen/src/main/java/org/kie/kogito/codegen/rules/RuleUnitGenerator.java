@@ -56,6 +56,7 @@ public class RuleUnitGenerator implements FileGenerator {
     private DependencyInjectionAnnotator annotator;
     private Collection<QueryModel> queries;
     private String applicationPackageName;
+    private boolean useMonitoring;
 
     public RuleUnitGenerator(RuleUnitDescription ruleUnit, String generatedSourceFile) {
         this.ruleUnit = ruleUnit;
@@ -75,7 +76,7 @@ public class RuleUnitGenerator implements FileGenerator {
     public List<QueryEndpointGenerator> queries() {
         return queries.stream()
                 .filter(query -> !query.hasParameters())
-                .map(query -> new QueryEndpointGenerator(ruleUnit, query, annotator))
+                .map(query -> new QueryEndpointGenerator(ruleUnit, query, annotator, useMonitoring))
                 .collect(toList());
     }
 
@@ -177,6 +178,11 @@ public class RuleUnitGenerator implements FileGenerator {
 
     public RuleUnitGenerator withQueries(Collection<QueryModel> queries) {
         this.queries = queries;
+        return this;
+    }
+
+    public RuleUnitGenerator withMonitoring(boolean useMonitoring) {
+        this.useMonitoring = useMonitoring;
         return this;
     }
 

@@ -18,12 +18,6 @@ package org.kie.kogito.codegen.rules.config;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.drools.core.config.DefaultRuleEventListenerConfig;
-import org.drools.core.config.StaticRuleConfig;
-import org.kie.kogito.codegen.di.DependencyInjectionAnnotator;
-import org.kie.kogito.codegen.process.CodegenUtils;
-import org.kie.kogito.rules.RuleEventListenerConfig;
-
 import com.github.javaparser.ast.Modifier.Keyword;
 import com.github.javaparser.ast.NodeList;
 import com.github.javaparser.ast.body.BodyDeclaration;
@@ -34,6 +28,11 @@ import com.github.javaparser.ast.expr.NameExpr;
 import com.github.javaparser.ast.expr.ObjectCreationExpr;
 import com.github.javaparser.ast.expr.SimpleName;
 import com.github.javaparser.ast.type.ClassOrInterfaceType;
+import org.drools.core.config.DefaultRuleEventListenerConfig;
+import org.drools.core.config.StaticRuleConfig;
+import org.kie.kogito.codegen.di.DependencyInjectionAnnotator;
+import org.kie.kogito.codegen.process.CodegenUtils;
+import org.kie.kogito.rules.RuleEventListenerConfig;
 
 public class RuleConfigGenerator {
 

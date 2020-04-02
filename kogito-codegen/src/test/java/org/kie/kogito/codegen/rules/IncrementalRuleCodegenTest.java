@@ -77,7 +77,6 @@ public class IncrementalRuleCodegenTest {
         assertRules(2, 1, 1, generatedFiles.size());
     }
 
-
     @Test
     public void generateDirectoryRecursively() {
         IncrementalRuleCodegen incrementalRuleCodegen =
@@ -160,6 +159,18 @@ public class IncrementalRuleCodegenTest {
         assertThrows(MissingDecisionTableDependencyError.class, incrementalRuleCodegen.withHotReloadMode()::generate);
     }
 
+    @Test
+    public void generateGrafanaDashboards() {
+        IncrementalRuleCodegen incrementalRuleCodegen =
+                IncrementalRuleCodegen.ofFiles(
+                        Collections.singleton(
+                                new File("src/test/resources/org/kie/kogito/codegen/unit/RuleUnitQuery.drl")))
+                        .withMonitoring(true);
+        incrementalRuleCodegen.setPackageName("com.acme");
+        List<GeneratedFile> generatedFiles = incrementalRuleCodegen.withHotReloadMode().generate();
+
+        assertEquals(2, generatedFiles.stream().filter(x -> x.getType() == GeneratedFile.Type.RESOURCE).count());
+    }
 
     private static void assertRules(int expectedRules, int expectedPackages, int expectedUnits, int actualGeneratedFiles) {
         assertEquals(expectedRules +

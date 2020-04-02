@@ -227,6 +227,7 @@
     <module>kogito-maven-plugin</module>
     <module>kogito-quarkus-extension</module>
     <module>archetypes</module>
+    <module>grafana-api</module>
   </modules>
 
   <dependencyManagement>

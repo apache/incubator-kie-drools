@@ -41,12 +41,15 @@ import org.kie.api.io.ResourceType;
 import org.kie.dmn.api.core.DMNModel;
 import org.kie.dmn.api.core.DMNRuntime;
 import org.kie.dmn.core.internal.utils.DMNRuntimeBuilder;
+import org.kie.dmn.model.api.Decision;
+import org.kie.dmn.model.api.Definitions;
 import org.kie.kogito.codegen.AbstractGenerator;
 import org.kie.kogito.codegen.ApplicationGenerator;
 import org.kie.kogito.codegen.ApplicationSection;
 import org.kie.kogito.codegen.ConfigGenerator;
 import org.kie.kogito.codegen.GeneratedFile;
 import org.kie.kogito.codegen.di.DependencyInjectionAnnotator;
+import org.kie.kogito.grafana.GrafanaConfigurationWriter;
 
 import static org.drools.core.util.IoUtils.readBytesFromInputStream;
 import static org.kie.api.io.ResourceType.determineResourceType;
@@ -78,8 +81,8 @@ public class DecisionCodegen extends AbstractGenerator {
         Path srcPath = Paths.get(path.toString());
         try (Stream<Path> filesStream = Files.walk(srcPath)) {
             List<File> files = filesStream.filter(p -> p.toString().endsWith(".dmn"))
-                                          .map(Path::toFile)
-                                          .collect(Collectors.toList());
+                    .map(Path::toFile)
+                    .collect(Collectors.toList());
             return ofFiles(srcPath, files);
         }
     }
@@ -102,15 +105,17 @@ public class DecisionCodegen extends AbstractGenerator {
         return dmnRuntime.getModels();
     }
 
+    private static final String grafanaTemplatePath = "/grafana-dashboard-template/dashboard-template.json";
     private String packageName;
-    private String applicationCanonicalName; 
+    private String applicationCanonicalName;
     private DependencyInjectionAnnotator annotator;
-    
+
     private DecisionContainerGenerator moduleGenerator;
 
     private Path basePath;
     private final Map<String, DMNModel> models;
     private final List<GeneratedFile> generatedFiles = new ArrayList<>();
+    private boolean useMonitoring = false;
 
     public DecisionCodegen(Path basePath, Collection<DMNModel> models) {
         this.basePath = basePath;
@@ -147,17 +152,33 @@ public class DecisionCodegen extends AbstractGenerator {
         }
 
         List<DMNRestResourceGenerator> rgs = new ArrayList<>(); // REST resources
-        
+
         for (DMNModel model : models.values()) {
-            DMNRestResourceGenerator resourceGenerator = new DMNRestResourceGenerator(model, applicationCanonicalName).withDependencyInjection(annotator);
+            DMNRestResourceGenerator resourceGenerator = new DMNRestResourceGenerator(model, applicationCanonicalName).withDependencyInjection(annotator).withMonitoring(useMonitoring);
             rgs.add(resourceGenerator);
         }
-        
+
         for (DMNRestResourceGenerator resourceGenerator : rgs) {
-            storeFile( GeneratedFile.Type.REST, resourceGenerator.generatedFilePath(), resourceGenerator.generate());
+            if (useMonitoring) {
+                generateAndStoreGrafanaDashboard(resourceGenerator);
+            }
+
+            storeFile(GeneratedFile.Type.REST, resourceGenerator.generatedFilePath(), resourceGenerator.generate());
         }
 
         return generatedFiles;
+    }
+
+    private void generateAndStoreGrafanaDashboard(DMNRestResourceGenerator resourceGenerator) {
+        Definitions definitions = resourceGenerator.getDmnModel().getDefinitions();
+        List<Decision> decisions = definitions.getDrgElement().stream().filter(x -> x.getParentDRDElement() instanceof Decision).map(x -> (Decision) x).collect(Collectors.toList());
+
+        String dashboard = GrafanaConfigurationWriter.generateDashboardForDMNEndpoint(grafanaTemplatePath, resourceGenerator.getNameURL(), decisions);
+        generatedFiles.add(
+                new org.kie.kogito.codegen.GeneratedFile(
+                        org.kie.kogito.codegen.GeneratedFile.Type.RESOURCE,
+                        "dashboards/dashboard-endpoint-" + resourceGenerator.getNameURL() + ".json",
+                        dashboard));
     }
 
     @Override
@@ -176,6 +197,11 @@ public class DecisionCodegen extends AbstractGenerator {
     @Override
     public ApplicationSection section() {
         return moduleGenerator;
+    }
+
+    public DecisionCodegen withMonitoring(boolean useMonitoring) {
+        this.useMonitoring = useMonitoring;
+        return this;
     }
 
 }

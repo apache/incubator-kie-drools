@@ -119,7 +119,6 @@ public class ApplicationGenerator {
                                                                                 .setType(new ClassOrInterfaceType(null, new SimpleName(Optional.class.getCanonicalName()), NodeList.nodeList(new ClassOrInterfaceType(null, String.class.getCanonicalName()))))
                                                                                 .setName("kogitoService"));
 
-
         cls.addMember(eventPublishersFieldDeclaration);
         cls.addMember(kogitoServiceField);
         if (useInjection()) {
@@ -253,6 +252,7 @@ public class ApplicationGenerator {
                                  configGenerator.generatedFilePath(),
                                  log( configGenerator.compilationUnit().toString() ).getBytes(StandardCharsets.UTF_8));
     }
+
     public void generateSectionClass(ApplicationSection section, List<GeneratedFile> generatedFiles) {
         CompilationUnit cp = section.injectableClass();
 
