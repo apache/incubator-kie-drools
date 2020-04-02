@@ -10,11 +10,11 @@ import com.github.javaparser.ast.body.ClassOrInterfaceDeclaration;
 import org.drools.modelcompiler.builder.generator.declaredtype.api.TypeDefinition;
 import org.drools.modelcompiler.builder.generator.declaredtype.generator.GeneratedClassDeclaration;
 import org.kie.dmn.api.core.DMNModel;
-import org.kie.dmn.api.core.DMNType;
 import org.kie.dmn.api.core.ast.InputDataNode;
 import org.kie.dmn.api.core.ast.ItemDefNode;
 import org.kie.dmn.core.impl.DMNModelImpl;
-import org.kie.dmn.feel.codegen.feel11.CodegenStringUtil;
+
+import static org.kie.dmn.typesafe.DMNClassNamespaceTypeIndex.namespace;
 
 public class DMNTypeSafeTypeGenerator {
 
@@ -29,26 +29,6 @@ public class DMNTypeSafeTypeGenerator {
         this.packageName = namespace(dmnModel);
         this.allNamespaces = allNamespaces;
         processTypes();
-    }
-
-    public static Map<String, String> classNameSpaceIndex(DMNModel dmnModel) {
-        Map<String, String> classesNamespaceIndex = new HashMap<>();
-        Set<ItemDefNode> itemDefinitions = dmnModel.getItemDefinitions();
-        String namespace = namespace(dmnModel);
-        for (ItemDefNode i : itemDefinitions) {
-            DMNType type = i.getType();
-            classesNamespaceIndex.put(type.getName(), namespace);
-            if (type.isComposite()) {
-                for (DMNType innerType : type.getFields().values()) {
-                    classesNamespaceIndex.put(innerType.getName(), namespace);
-                }
-            }
-        }
-        return classesNamespaceIndex;
-    }
-
-    private static String namespace(DMNModel dmnModel) {
-        return CodegenStringUtil.escapeIdentifier(dmnModel.getNamespace() + dmnModel.getName());
     }
 
     private void processTypes() {
