@@ -26,10 +26,6 @@ public class CompiledCustomFEELFunction extends AbstractCustomFEELFunction<Funct
 
     private final EvaluationContext ctx;
 
-    public CompiledCustomFEELFunction(String name, List<Param> parameters, Function<EvaluationContext, Object> body) {
-        this(name, parameters, body, null);
-    }
-
     public CompiledCustomFEELFunction(String name, List<Param> parameters, Function<EvaluationContext, Object> body, EvaluationContext ctx) {
         super(name, parameters, body);
         this.ctx = ctx;

@@ -73,6 +73,8 @@ public class FunctionInvocationNode
         } else if (name instanceof PathExpressionNode) {
             PathExpressionNode pathExpressionNode = (PathExpressionNode) name;
             value = pathExpressionNode.evaluate(ctx);
+        } else {
+            value = name.evaluate(ctx);
         }
         if ( value instanceof FEELFunction ) {
             function = (FEELFunction) value;
@@ -108,7 +110,7 @@ public class FunctionInvocationNode
     }
 
     private Object invokeTheFunction(List<String> names, FEELFunction fn, EvaluationContext ctx, Object[] params) {
-        if (names.size() == 1) {
+        if (names.size() == 1 || names.isEmpty()) {
             Object result = fn.invokeReflectively(ctx, params);
             return result;
         } else {
