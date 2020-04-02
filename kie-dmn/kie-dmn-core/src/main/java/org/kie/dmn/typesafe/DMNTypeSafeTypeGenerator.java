@@ -4,12 +4,14 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Set;
+import java.util.stream.Collectors;
 
 import com.github.javaparser.ast.CompilationUnit;
 import com.github.javaparser.ast.body.ClassOrInterfaceDeclaration;
 import org.drools.modelcompiler.builder.generator.declaredtype.api.TypeDefinition;
 import org.drools.modelcompiler.builder.generator.declaredtype.generator.GeneratedClassDeclaration;
 import org.kie.dmn.api.core.DMNModel;
+import org.kie.dmn.api.core.DMNType;
 import org.kie.dmn.api.core.ast.InputDataNode;
 import org.kie.dmn.api.core.ast.ItemDefNode;
 import org.kie.dmn.core.impl.DMNModelImpl;
@@ -32,8 +34,6 @@ public class DMNTypeSafeTypeGenerator {
     }
 
     private void processTypes() {
-
-        //  gli InputDataNode sono n (ognuno un campo) ha un tipo
         Set<InputDataNode> inputs = dmnModel.getInputs();
         DMNInputSetType inputSetType = new DMNInputSetType(allNamespaces);
         for (InputDataNode i : inputs) {
@@ -43,10 +43,21 @@ public class DMNTypeSafeTypeGenerator {
 
         types.put(inputSetType.getTypeName(), inputSetType);
 
-        Set<ItemDefNode> itemDefinitions = dmnModel.getItemDefinitions();
-        for (ItemDefNode i : itemDefinitions) {
-            DMNDeclaredType dmnDeclaredType = new DMNDeclaredType(allNamespaces, i.getType());
+        Set<DMNType> itemDefinitions = dmnModel.getItemDefinitions()
+                .stream()
+                .map(ItemDefNode::getType)
+                .collect(Collectors.toSet());
+
+        for (DMNType type : itemDefinitions) {
+            DMNDeclaredType dmnDeclaredType = new DMNDeclaredType(allNamespaces, type);
             types.put(dmnDeclaredType.getTypeName(), dmnDeclaredType);
+            if (type.isComposite()) {
+                // need a way here to discriminate whether we should generate this or not
+//                for (DMNType innerType : type.getFields().values()) {
+//                    DMNDeclaredType dmnDeclaredInnerType = new DMNDeclaredType(allNamespaces, innerType);
+//                    types.put(dmnDeclaredInnerType.getTypeName(), dmnDeclaredInnerType);
+//                }
+            }
         }
     }
 
