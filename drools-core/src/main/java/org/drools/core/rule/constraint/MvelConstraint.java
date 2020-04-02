@@ -370,7 +370,7 @@ public class MvelConstraint extends MutableTypeConstraint implements IndexableCo
 
     public FieldIndex getFieldIndex() {
         // declaration's offset can be modified by the reteoo's PatternBuilder so modify the indexingDeclaration accordingly
-        indexingDeclaration.getPattern().setOffset(declarations[0].getPattern().getOffset());
+        indexingDeclaration.getPattern().setOffset(declarations[0].getOffset());
         return new FieldIndex(extractor, indexingDeclaration, INDEX_EVALUATOR);
     }
 

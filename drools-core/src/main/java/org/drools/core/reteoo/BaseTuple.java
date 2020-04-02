@@ -45,7 +45,7 @@ public abstract class BaseTuple implements Tuple {
     private boolean expired;
 
     public Object getObject(Declaration declaration) {
-        return getObject(declaration.getPattern().getOffset());
+        return getObject(declaration.getOffset());
     }
 
     public Object getContextObject() {
@@ -128,7 +128,7 @@ public abstract class BaseTuple implements Tuple {
 
     @Override
     public InternalFactHandle get( Declaration declaration ) {
-        return get(declaration.getPattern().getOffset());
+        return get(declaration.getOffset());
     }
 
     @Override
