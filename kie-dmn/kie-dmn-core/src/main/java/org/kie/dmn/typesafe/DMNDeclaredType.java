@@ -16,11 +16,13 @@ import org.kie.dmn.api.core.FEELPropertyAccessible;
 
 class DMNDeclaredType implements TypeDefinition {
 
+    private Map<String, String> allNamespaces;
     private final DMNType dmnType;
     List<DMNDeclaredField> fields = new ArrayList<>();
     List<AnnotationDefinition> annnotations = new ArrayList<>();
 
-    DMNDeclaredType(DMNType dmnType) {
+    DMNDeclaredType(Map<String, String> allNamespaces, DMNType dmnType) {
+        this.allNamespaces = allNamespaces;
         this.dmnType = dmnType;
         initFields();
     }
@@ -38,7 +40,7 @@ class DMNDeclaredType implements TypeDefinition {
     private void initFields() {
         Map<String, DMNType> dmnFields = dmnType.getFields();
         for (Map.Entry<String, DMNType> f : dmnFields.entrySet()) {
-            DMNDeclaredField dmnDeclaredField = new DMNDeclaredField(f);
+            DMNDeclaredField dmnDeclaredField = new DMNDeclaredField(allNamespaces, f);
             fields.add(dmnDeclaredField);
         }
     }

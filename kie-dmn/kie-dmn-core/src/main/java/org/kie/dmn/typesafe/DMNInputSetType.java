@@ -20,10 +20,11 @@ class DMNInputSetType implements TypeDefinition {
 
     Map<String, DMNType> fieldsKey = new HashMap<>();
 
-    List<AnnotationDefinition> annnotations = new ArrayList<>();
+    List<AnnotationDefinition> annotations = new ArrayList<>();
+    private Map<String, String> allNamespaces;
 
-    DMNInputSetType() {
-
+    DMNInputSetType(Map<String, String> allNamespaces) {
+        this.allNamespaces = allNamespaces;
     }
 
     public void addField(String key, DMNType type) {
@@ -42,7 +43,7 @@ class DMNInputSetType implements TypeDefinition {
 
     public void initFields() {
         for (Map.Entry<String, DMNType> f : fieldsKey.entrySet()) {
-            DMNDeclaredField dmnDeclaredField = new DMNDeclaredField(f);
+            DMNDeclaredField dmnDeclaredField = new DMNDeclaredField(allNamespaces, f);
             fields.add(dmnDeclaredField);
         }
     }
@@ -69,7 +70,7 @@ class DMNInputSetType implements TypeDefinition {
 
     @Override
     public List<AnnotationDefinition> getAnnotationsToBeAdded() {
-        return annnotations;
+        return annotations;
     }
 
     @Override

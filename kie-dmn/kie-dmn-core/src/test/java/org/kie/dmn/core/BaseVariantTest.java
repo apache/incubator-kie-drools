@@ -16,13 +16,20 @@
 
 package org.kie.dmn.core;
 
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
 import org.junit.runner.RunWith;
 import org.junit.runners.Parameterized;
+import org.kie.dmn.api.core.DMNModel;
 import org.kie.dmn.api.core.DMNRuntime;
 import org.kie.dmn.core.compiler.RuntimeTypeCheckOption;
 import org.kie.dmn.core.internal.utils.DMNRuntimeBuilder;
 import org.kie.dmn.core.internal.utils.DMNRuntimeBuilder.DMNRuntimeBuilderConfigured;
 import org.kie.dmn.core.util.DMNRuntimeUtil;
+import org.kie.dmn.typesafe.DMNTypeSafeTypeGenerator;
+import org.kie.memorycompiler.KieMemoryCompiler;
 
 @RunWith(Parameterized.class)
 public abstract class BaseVariantTest implements VariantTest {
@@ -88,12 +95,34 @@ public abstract class BaseVariantTest implements VariantTest {
 
     @Override
     public DMNRuntime createRuntime(String string, Class<?> class1) {
-        return testConfig.createRuntime(string, class1);
+        DMNRuntime runtime = testConfig.createRuntime(string, class1);
+        createTypeSafeInput(runtime);
+
+        return runtime;
+    }
+
+    private void createTypeSafeInput(DMNRuntime runtime) {
+        List<DMNModel> allModels = runtime.getModels();
+
+        Map<String, String> mapNamespaceIndex = new HashMap<>();
+        for(DMNModel m : allModels) {
+            mapNamespaceIndex.putAll(DMNTypeSafeTypeGenerator.classNameSpaceIndex(m));
+        }
+
+        Map<String, String> allSources = new HashMap<>();
+        for(DMNModel m : allModels) {
+            Map<String, String> allTypesSourceCode = new DMNTypeSafeTypeGenerator(m, mapNamespaceIndex).generateSourceCodeOfAllTypes();
+            allSources.putAll(allTypesSourceCode);
+        }
+
+        KieMemoryCompiler.compile(allSources, this.getClass().getClassLoader());
     }
 
     @Override
     public DMNRuntime createRuntimeWithAdditionalResources(String string, Class<?> class1, String... string2) {
-        return testConfig.createRuntimeWithAdditionalResources(string, class1, string2);
+        DMNRuntime runtimeWithAdditionalResources = testConfig.createRuntimeWithAdditionalResources(string, class1, string2);
+        createTypeSafeInput(runtimeWithAdditionalResources);
+        return runtimeWithAdditionalResources;
     }
 }
 

@@ -1,6 +1,7 @@
 package org.kie.dmn.typesafe;
 
 import java.math.BigDecimal;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -50,9 +51,7 @@ public class DMNTypeSafeTest {
         assertThat(dmnModel, notNullValue());
         assertThat(DMNRuntimeUtil.formatMessages(dmnModel.getMessages()), dmnModel.hasErrors(), is(false));
 
-        DMNTypeSafeTypeGenerator sourceCode = new DMNTypeSafeTypeGenerator(dmnModel, packageName);
-
-        Map<String, String> allTypesSourceCode = sourceCode.generateSourceCodeOfAllTypes();
+        Map<String, String> allTypesSourceCode = new DMNTypeSafeTypeGenerator(dmnModel, Collections.emptyMap()).generateSourceCodeOfAllTypes();
 
         ClassLoader thisDMNClassLoader = this.getClass().getClassLoader();
         Map<String, Class<?>> compiledClasses = KieMemoryCompiler.compile(allTypesSourceCode, thisDMNClassLoader);
@@ -128,9 +127,7 @@ public class DMNTypeSafeTest {
     }
 
     public static FEELPropertyAccessible createInputSet(DMNModel dmnModel, String packageName, ClassLoader classLoader) throws Exception {
-        DMNTypeSafeTypeGenerator sourceCode = new DMNTypeSafeTypeGenerator(dmnModel, packageName);
-
-        Map<String, String> allTypesSourceCode = sourceCode.generateSourceCodeOfAllTypes();
+        Map<String, String> allTypesSourceCode = new DMNTypeSafeTypeGenerator(dmnModel, Collections.emptyMap()).generateSourceCodeOfAllTypes();
 
         Map<String, Class<?>> compiledClasses = KieMemoryCompiler.compile(allTypesSourceCode, classLoader);
 

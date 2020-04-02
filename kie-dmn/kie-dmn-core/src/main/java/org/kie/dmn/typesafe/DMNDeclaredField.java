@@ -19,11 +19,13 @@ import static com.github.javaparser.StaticJavaParser.parseClassOrInterfaceType;
 
 public class DMNDeclaredField implements FieldDefinition {
 
+    private Map<String, String> allNamespaces;
     private String fieldName;
     private DMNType fieldType;
     private List<AnnotationDefinition> annotations = new ArrayList<>();
 
-    DMNDeclaredField(Map.Entry<String, DMNType> dmnType) {
+    DMNDeclaredField(Map<String, String> allNamespaces, Map.Entry<String, DMNType> dmnType) {
+        this.allNamespaces = allNamespaces;
         this.fieldName = CodegenStringUtil.escapeIdentifier(dmnType.getKey());
         this.fieldType = dmnType.getValue();
     }
@@ -36,15 +38,23 @@ public class DMNDeclaredField implements FieldDefinition {
     @Override
     public String getObjectType() {
         if (fieldType.isCollection()) {
-            String typeName = getBaseType();
-            return String.format("java.util.Collection<%s>", StringUtils.ucFirst(typeName));
+            String typeName = getBaseType(fieldType);
+            String typeNameWithPackage = withPackage(typeName);
+            return String.format("java.util.Collection<%s>", typeNameWithPackage);
         }
-        return StringUtils.ucFirst(fieldType.getName());
+        return withPackage(fieldType.getName());
     }
 
-    private String getBaseType() {
+    private String withPackage(String typeName) {
+        String typeNameUpperCase = StringUtils.ucFirst(typeName);
+        Optional<String> packageName = Optional.ofNullable(allNamespaces.get(typeName));
+        return packageName.map(p -> p + "." + typeNameUpperCase).orElse(typeNameUpperCase);
+    }
+
+    public static String getBaseType(DMNType fieldType) {
         Optional<DMNType> baseType = Optional.ofNullable(fieldType.getBaseType());
-        return baseType.map(DMNType::getName).orElse("Object");
+        return baseType.map(DMNType::getName)
+                .orElse("Object");
     }
 
     @Override
@@ -81,14 +91,13 @@ public class DMNDeclaredField implements FieldDefinition {
                                         BlockStmt pojoPropertyBlock,
                                         BlockStmt collectionsPropertyBlock) {
         if (fieldType.isCollection()) {
-            return replaceTemplate(collectionsPropertyBlock, getBaseType());
+            return replaceTemplate(collectionsPropertyBlock, getBaseType(fieldType));
         } else if (fieldType.isComposite()) {
             return replaceTemplate(pojoPropertyBlock, fieldType.getName());
         } else {
             return replaceTemplate(simplePropertyBlock, fieldType.getName());
         }
     }
-
 
     private BlockStmt replaceTemplate(BlockStmt pojoPropertyBlock, String objectType) {
         BlockStmt clone = pojoPropertyBlock.clone();
