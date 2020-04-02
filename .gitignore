@@ -8,3 +8,7 @@ target/
 /*.ipr
 /*.iws
 *.iml
+.settings/
+.project
+.classpath
+.factorypath
