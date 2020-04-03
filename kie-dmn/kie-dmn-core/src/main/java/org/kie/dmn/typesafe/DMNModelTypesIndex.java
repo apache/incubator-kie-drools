@@ -63,6 +63,10 @@ class DMNModelTypesIndex {
         if (dmnType.isCollection()) {
             return false;
         }
+        if(!dmnType.getAllowedValues().isEmpty()) {
+            // assume it's an enumeration
+            return false;
+        }
         String internalFEELUri = model.getDefinitions().getURIFEEL();
         return !dmnType.getNamespace().equals(internalFEELUri);
     }

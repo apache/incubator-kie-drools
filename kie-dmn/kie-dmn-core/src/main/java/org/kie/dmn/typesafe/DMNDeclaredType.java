@@ -39,8 +39,8 @@ class DMNDeclaredType implements TypeDefinition {
 
     private void initFields() {
         Map<String, DMNType> dmnFields = dmnType.getFields();
-        for (Map.Entry<String, DMNType> f : dmnFields.entrySet()) {
-            DMNDeclaredField dmnDeclaredField = new DMNDeclaredField(index, f);
+        for (Map.Entry<String, DMNType> field : dmnFields.entrySet()) {
+            DMNDeclaredField dmnDeclaredField = new DMNDeclaredField(index, field);
             fields.add(dmnDeclaredField);
         }
     }

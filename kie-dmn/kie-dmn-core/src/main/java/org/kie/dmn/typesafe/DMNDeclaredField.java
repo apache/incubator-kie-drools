@@ -19,19 +19,19 @@ import static com.github.javaparser.StaticJavaParser.parseClassOrInterfaceType;
 
 public class DMNDeclaredField implements FieldDefinition {
 
-    private final static  String OBJECT_TYPE = "Object";
+    private final static String OBJECT_TYPE = "Object";
 
     private DMNAllTypesIndex index;
     private String fieldName;
     private String originalMapKey;
-    private DMNType fieldType;
+    private DMNType fieldDMNType;
     private List<AnnotationDefinition> annotations = new ArrayList<>();
 
-    DMNDeclaredField(DMNAllTypesIndex index, Map.Entry<String, DMNType> dmnType) {
+    DMNDeclaredField(DMNAllTypesIndex index, Map.Entry<String, DMNType> dmnField) {
         this.index = index;
-        this.fieldName = CodegenStringUtil.escapeIdentifier(dmnType.getKey());
-        this.originalMapKey = dmnType.getKey();
-        this.fieldType = dmnType.getValue();
+        this.fieldName = CodegenStringUtil.escapeIdentifier(dmnField.getKey());
+        this.originalMapKey = dmnField.getKey();
+        this.fieldDMNType = dmnField.getValue();
     }
 
     @Override
@@ -41,12 +41,16 @@ public class DMNDeclaredField implements FieldDefinition {
 
     @Override
     public String getObjectType() {
-        if (fieldType.isCollection()) {
-            String typeName = getBaseType(fieldType);
+        if (fieldDMNType.isCollection()) {
+            String typeName = getBaseType(fieldDMNType);
             String typeNameWithPackage = withPackage(typeName);
             return String.format("java.util.Collection<%s>", typeNameWithPackage);
+        } else if (!fieldDMNType.getAllowedValues().isEmpty()) {
+            // assume it's an enumeration
+            return "String";
+        } else {
+            return fieldTypeWithPackage();
         }
-        return fieldTypeWithPackage();
     }
 
     private String fieldTypeWithPackage() {
@@ -54,9 +58,12 @@ public class DMNDeclaredField implements FieldDefinition {
     }
 
     private String getFieldNameWithAnyCheck() {
-        String name = fieldType.getName();
-        if("Any".equals(name)) {
+        String name = fieldDMNType.getName();
+        if ("Any".equals(name)) {
             return OBJECT_TYPE;
+        } else if (!fieldDMNType.getAllowedValues().isEmpty()) {
+            // assume it's an enumeration
+            return "Object";
         } else {
             return name;
         }
@@ -64,8 +71,8 @@ public class DMNDeclaredField implements FieldDefinition {
 
     // This returns the generic type i.e. if Collection<String> then String
     private String fieldTypeUnwrapped() {
-        if (fieldType.isCollection()) {
-            String typeName = getBaseType(fieldType);
+        if (fieldDMNType.isCollection()) {
+            String typeName = getBaseType(fieldDMNType);
             return withPackage(typeName);
         }
         return fieldTypeWithPackage();
@@ -116,13 +123,13 @@ public class DMNDeclaredField implements FieldDefinition {
     public BlockStmt createFromMapEntry(BlockStmt simplePropertyBlock,
                                         BlockStmt pojoPropertyBlock,
                                         BlockStmt collectionsPropertyBlock) {
-        if (fieldType.isCollection() && !fieldIsObject()) {
+        if (fieldDMNType.isCollection() && !fieldIsObject()) {
             return replaceTemplate(collectionsPropertyBlock, fieldTypeUnwrapped());
-        } else if (fieldType.isComposite()) {
+        } else if (fieldDMNType.isComposite()) {
             return replaceTemplate(pojoPropertyBlock, fieldTypeWithPackage());
-        } else if(!fieldIsObject()){
+        } else if (!fieldIsObject()) {
             return replaceTemplate(simplePropertyBlock, fieldTypeWithPackage());
-        }  else {
+        } else {
             return new BlockStmt();
         }
     }
