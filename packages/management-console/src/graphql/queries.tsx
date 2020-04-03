@@ -112,7 +112,9 @@ const GET_PROCESS_INSTANCE = gql`
       start
       lastUpdate
       end
+      addons
       endpoint
+      serviceUrl
       childProcessInstances {
         id
         processName

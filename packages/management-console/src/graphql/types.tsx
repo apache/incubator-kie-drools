@@ -751,7 +751,9 @@ export type GetProcessInstanceByIdQuery = { __typename?: 'Query' } & {
           | 'start'
           | 'lastUpdate'
           | 'end'
+          | 'addons'
           | 'endpoint'
+          | 'serviceUrl'
         > & {
             parentProcessInstance: Maybe<
               { __typename?: 'ProcessInstance' } & Pick<
@@ -1187,7 +1189,9 @@ export const GetProcessInstanceByIdDocument = gql`
       start
       lastUpdate
       end
+      addons
       endpoint
+      serviceUrl
       childProcessInstances {
         id
         processName
