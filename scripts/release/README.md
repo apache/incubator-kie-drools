@@ -31,6 +31,11 @@ NOTE: Make sure you always run the scripts from this (release) directory
 * deploy to remote maven repository - this is pushing artifacts to remote repository with built version
 `./06-deploy-release.sh`
 
+## Custom Maven settings
+
+To customize the Maven settings, you can follow this [guide](https://maven.apache.org/configure.html).
+Adding a `.mvn/maven.config` file at the root folder of each repository.
+
 ## New development version
 
 Once the release is done, upgrade version for next development version

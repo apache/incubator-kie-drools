@@ -21,16 +21,6 @@ initializeScriptDir
 
 organizationDir="$scriptDir/../../.."
 
-if [ $# != 1 ]; then
-    echo
-    echo "Usage:"
-    echo "  $0 path to settings.xml"
-    echo "For example:"
-    echo "  $0 /path/settings.xml"
-    echo
-    exit 1
-fi
-
 echo "Kogito release about to be deployed..."
 
 echo -n "Is this ok? (Hit control-c if is not): "
@@ -38,7 +28,7 @@ read ok
 
 startDateTime=`date +%s`
 
-$organizationDir/kogito-runtimes/scripts/mvn-all.sh -B -e -U clean deploy -DskipTests -Dmaven.repo.local=/tmp/kogito-release-repo -s $1
+$organizationDir/kogito-runtimes/scripts/mvn-all.sh -B -e -U clean deploy -DskipTests -Dmaven.repo.local=/tmp/kogito-release-repo
 
 rm -rf /tmp/kogito-release-repo
 
