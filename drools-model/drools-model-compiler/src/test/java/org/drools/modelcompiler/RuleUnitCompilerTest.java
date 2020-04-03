@@ -366,4 +366,39 @@ public class RuleUnitCompilerTest extends BaseModelTest {
         assertEquals( 3, unit.getResults().size() );
         assertTrue( unit.getResults().containsAll( asList("Mario", "Mark") ) );
     }
+
+    @Test
+    public void testOOPathBooleanFunction() {
+        String str =
+                "import " + RuleUnitCompilerTest.class.getCanonicalName() + ";" +
+                "import " + Person.class.getCanonicalName() + ";" +
+                "import " + AdultUnit.class.getCanonicalName() + "\n" +
+                "rule Adult @Unit( AdultUnit.class ) when\n" +
+                "    $p: /persons[RuleUnitCompilerTest.hasName(name, \"Mario\")]\n" +
+                "then\n" +
+                "    results.add($p.getName());\n" +
+                "end\n";
+
+        checkOopathBinding( str, "Mario" );
+    }
+
+    @Test
+    public void testOOPathNegatedBooleanFunction() {
+        // DROOLS-5213
+        String str =
+                "import " + RuleUnitCompilerTest.class.getCanonicalName() + ";" +
+                "import " + Person.class.getCanonicalName() + ";" +
+                "import " + AdultUnit.class.getCanonicalName() + "\n" +
+                "rule Adult @Unit( AdultUnit.class ) when\n" +
+                "    $p: /persons[!RuleUnitCompilerTest.hasName(name, \"Pippo\")]\n" +
+                "then\n" +
+                "    results.add($p.getName());\n" +
+                "end\n";
+
+        checkOopathBinding( str, "Mario" );
+    }
+
+    public static boolean hasName(String actual, String expected) {
+        return expected.equals( actual );
+    }
 }

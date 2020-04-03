@@ -519,6 +519,9 @@ public class ExpressionTyper {
         } else if (firstNode instanceof DrlNameExpr) {
             result = drlNameExpr(drlxExpr, (DrlNameExpr) firstNode, isInLineCast, originalTypeCursor);
 
+        } else if (firstNode instanceof NameExpr) {
+            result = drlNameExpr(drlxExpr, new DrlNameExpr( (( NameExpr ) firstNode).getName() ), isInLineCast, originalTypeCursor);
+
         } else if (firstNode instanceof FieldAccessExpr && ((FieldAccessExpr) firstNode).getScope() instanceof ThisExpr) {
             result = of(fieldAccessExpr(originalTypeCursor, ((FieldAccessExpr) firstNode).getName()));
 
