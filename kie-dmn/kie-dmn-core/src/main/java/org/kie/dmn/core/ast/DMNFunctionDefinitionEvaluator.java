@@ -23,14 +23,12 @@ import java.util.stream.Collectors;
 
 import org.kie.dmn.api.core.DMNContext;
 import org.kie.dmn.api.core.DMNMessage;
-import org.kie.dmn.api.core.DMNModel;
 import org.kie.dmn.api.core.DMNResult;
 import org.kie.dmn.api.core.DMNType;
 import org.kie.dmn.api.core.ast.BusinessKnowledgeModelNode;
 import org.kie.dmn.api.core.ast.DMNNode;
 import org.kie.dmn.api.core.event.DMNRuntimeEventManager;
 import org.kie.dmn.core.api.DMNExpressionEvaluator;
-import org.kie.dmn.core.api.DMNMessageManager;
 import org.kie.dmn.core.api.EvaluatorResult;
 import org.kie.dmn.core.api.EvaluatorResult.ResultType;
 import org.kie.dmn.core.impl.BaseDMNTypeImpl;
@@ -122,9 +120,8 @@ public class DMNFunctionDefinitionEvaluator
         private final List<FormalParameter> parameters;
         private final DMNExpressionEvaluator evaluator;
         private final DMNRuntimeEventManager eventManager;
-        private final DMNContext resultContext;
-        private final DMNModel resultModel;
-        private final DMNMessageManager resultMsgMgr;
+        private final DMNResultImpl resultContext;
+        private final DMNContext closureContext;
         private final FunctionDefinition functionDefinition;
         private final boolean performRuntimeTypeCheck;
 
@@ -136,38 +133,34 @@ public class DMNFunctionDefinitionEvaluator
             this.parameters = parameters;
             this.evaluator = evaluator;
             this.eventManager = eventManager;
-            this.resultContext = result.getContext().clone(); // closure.
-            this.resultContext.set(name, this); // allow recursion in the closure.
-            this.resultModel = result.getModel();
-            this.resultMsgMgr = result.getDMNMessageManager();
+            this.resultContext = result;
+            this.closureContext = result.getContext().clone();
+            this.closureContext.set(name, this); // allow recursion in closure.
             performRuntimeTypeCheck = ((DMNRuntimeImpl) eventManager.getRuntime()).performRuntimeTypeCheck(result.getModel());
         }
 
         public Object invoke(EvaluationContext ctx, Object[] params) {
+            DMNContext previousContext = resultContext.getContext();
             // we could be more strict and only set the parameters and the dependencies as values in the new
             // context, but for now, cloning the original context
-            DMNResultImpl dmnResult = new DMNResultImpl(resultModel);
-            dmnResult.setDMNMessageManager(resultMsgMgr);
-            EvaluationContext ctx2 = ctx.current();
-            ctx2.enterFrame(); // exitFrame not needed, as this will represent the closure for any nested functionDefinition
-            DMNContextFEELCtxWrapper dmnContext = new DMNContextFEELCtxWrapper(ctx2);
-            dmnResult.setContext(dmnContext);
+            DMNContextFEELCtxWrapper dmnContext = new DMNContextFEELCtxWrapper(ctx);
+            dmnContext.enterFrame();
             try {
                 if (originatorNode instanceof BusinessKnowledgeModelNode) {
-                    DMNRuntimeEventManagerUtils.fireBeforeInvokeBKM(eventManager, (BusinessKnowledgeModelNode) originatorNode, dmnResult);
+                    DMNRuntimeEventManagerUtils.fireBeforeInvokeBKM(eventManager, (BusinessKnowledgeModelNode) originatorNode, resultContext);
                 }
                 if( evaluator != null ) {
-                    resultContext.getAll().forEach(dmnContext::set);
+                    closureContext.getAll().forEach(dmnContext::set);
                     for( int i = 0; i < params.length; i++ ) {
                         final String paramName = parameters.get(i).name;
                         if ((!performRuntimeTypeCheck) || parameters.get(i).type.isAssignableValue(params[i])) {
-                            ctx2.setValue(paramName, params[i]);
+                            ctx.setValue(paramName, params[i]);
                         } else {
-                            ctx2.setValue(paramName, null);
+                            ctx.setValue(paramName, null);
                             MsgUtil.reportMessage(logger,
                                                   DMNMessage.Severity.WARN,
                                                   functionDefinition,
-                                                  dmnResult,
+                                                  resultContext,
                                                   null,
                                                   null,
                                                   Msg.PARAMETER_TYPE_MISMATCH,
@@ -176,7 +169,8 @@ public class DMNFunctionDefinitionEvaluator
                                                   params[i]);
                         }
                     }
-                    EvaluatorResult result = evaluator.evaluate(eventManager, dmnResult);
+                    resultContext.setContext( dmnContext );
+                    EvaluatorResult result = evaluator.evaluate( eventManager, resultContext );
                     if( result.getResultType() == ResultType.SUCCESS ) {
                         return result.getResult();
                     }
@@ -185,7 +179,7 @@ public class DMNFunctionDefinitionEvaluator
                     MsgUtil.reportMessage( logger,
                                            DMNMessage.Severity.ERROR,
                                            functionDefinition,
-                                          dmnResult,
+                                           resultContext,
                                            null,
                                            null,
                                            Msg.MISSING_EXPRESSION_FOR_FUNCTION,
@@ -196,7 +190,7 @@ public class DMNFunctionDefinitionEvaluator
                 MsgUtil.reportMessage( logger,
                                        DMNMessage.Severity.ERROR,
                                        functionDefinition,
-                                      dmnResult,
+                                       resultContext,
                                        e,
                                        null,
                                        Msg.ERR_INVOKING_FUNCTION_ON_NODE,
@@ -205,8 +199,10 @@ public class DMNFunctionDefinitionEvaluator
                 return null;
             } finally {
                 if (originatorNode instanceof BusinessKnowledgeModelNode) {
-                    DMNRuntimeEventManagerUtils.fireAfterInvokeBKM(eventManager, (BusinessKnowledgeModelNode) originatorNode, dmnResult);
+                    DMNRuntimeEventManagerUtils.fireAfterInvokeBKM(eventManager, (BusinessKnowledgeModelNode) originatorNode, resultContext);
                 }
+                resultContext.setContext( previousContext );
+                dmnContext.exitFrame();
             }
         }
 

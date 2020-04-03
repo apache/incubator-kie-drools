@@ -127,13 +127,4 @@ public class DMNResultImpl implements DMNResult, DMNMessageManager {
     public void addAllUnfiltered(List<? extends DMNMessage> messages) {
         this.messages.addAllUnfiltered(messages);
     }
-
-    public void setDMNMessageManager(DMNMessageManager messages) {
-        this.messages = messages;
-    }
-
-    public DMNMessageManager getDMNMessageManager() {
-        return messages;
-    }
-
 }
