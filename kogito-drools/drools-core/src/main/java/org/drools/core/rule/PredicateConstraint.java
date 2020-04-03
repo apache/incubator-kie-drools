@@ -210,7 +210,7 @@ public class PredicateConstraint extends MutableTypeConstraint
         }
 
         for ( int i = 0, length = this.previousDeclarations.length; i < length; i++ ) {
-            if ( this.previousDeclarations[i].getPattern().getOffset() != other.previousDeclarations[i].getPattern().getOffset() ) {
+            if ( this.previousDeclarations[i].getOffset() != other.previousDeclarations[i].getOffset() ) {
                 return false;
             }
 
@@ -220,7 +220,7 @@ public class PredicateConstraint extends MutableTypeConstraint
         }
 
         for ( int i = 0, length = this.localDeclarations.length; i < length; i++ ) {
-            if ( this.localDeclarations[i].getPattern().getOffset() != other.localDeclarations[i].getPattern().getOffset() ) {
+            if ( this.localDeclarations[i].getOffset() != other.localDeclarations[i].getOffset() ) {
                 return false;
             }
 

@@ -231,7 +231,8 @@ public class PatternBuilder
             firstXpathChunk.getConstraints()
                     .forEach(s -> patternDescr.addConstraint(new ExprConstraintDescr(s)));
             if (!xpathAnalysis.isSinglePart()) {
-                patternDescr.addConstraint(new ExprConstraintDescr(patternDescr.getIdentifier() + " : " + expr.substring(xpathAnalysis.getPart(1).getStart())));
+                String xpathExpr = (patternDescr.getIdentifier() == null ? "" : patternDescr.getIdentifier() + " : ") + expr.substring(xpathAnalysis.getPart(1).getStart());
+                patternDescr.addConstraint(new ExprConstraintDescr(xpathExpr));
                 patternDescr.setIdentifier("$void$");
             }
         } else {
@@ -885,6 +886,7 @@ public class PatternBuilder
                     currentObjectType = getObjectType(context, patternDescr, patternClass.getName());
                 }
 
+                context.increaseXpathChuckNr();
                 pattern.setObjectType(currentObjectType);
                 backReferenceClasses.add(0, patternClass);
                 backRef.reset();
@@ -904,6 +906,7 @@ public class PatternBuilder
             mvelCtx.setInXpath(false);
             pattern.setBackRefDeclarations(null);
             pattern.setObjectType(originalType);
+            context.resetXpathChuckNr();
         }
 
         xpathConstraint.setXpathStartDeclaration(patternDescr.getXpathStartDeclaration());
@@ -1455,6 +1458,9 @@ public class PatternBuilder
         }
 
         Declaration declr = pattern.addDeclaration(fieldBindingDescr.getVariable());
+        if (context.isInXpath()) {
+            declr.setxPathOffset( context.getXpathChuckNr() );
+        }
 
         final InternalReadAccessor extractor = getFieldReadAccessor(context,
                                                                     fieldBindingDescr,
@@ -1471,7 +1477,7 @@ public class PatternBuilder
 
         declr.setReadAccessor(extractor);
 
-        if (typeDeclaration != null && extractor instanceof ClassFieldReader) {
+        if (!declr.isFromXpathChunk() && typeDeclaration != null && extractor instanceof ClassFieldReader) {
             addFieldToPatternWatchlist(pattern, typeDeclaration, ((ClassFieldReader) extractor).getFieldName());
         }
     }

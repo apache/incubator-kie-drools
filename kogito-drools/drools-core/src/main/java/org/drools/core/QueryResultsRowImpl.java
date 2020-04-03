@@ -97,7 +97,7 @@ public class QueryResultsRowImpl implements QueryResultsRow {
     }
 
     public FactHandle getFactHandle(Declaration declr) {
-        return this.row.getHandles()[  declr.getPattern().getOffset() ];
+        return this.row.getHandles()[  declr.getOffset() ];
     }
 
     public FactHandle getFactHandle(int i) {

@@ -80,7 +80,7 @@ public final class GeneratorHelper {
         public DeclarationMatcher(int originalIndex, Declaration declaration) {
             this.declaration = declaration;
             this.originalIndex = originalIndex;
-            this.rootDistance = declaration.getPattern().getOffset();
+            this.rootDistance = declaration.getOffset();
         }
 
         public int getOriginalIndex() {
