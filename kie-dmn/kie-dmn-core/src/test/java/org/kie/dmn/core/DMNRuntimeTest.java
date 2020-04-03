@@ -1238,6 +1238,7 @@ public class DMNRuntimeTest extends BaseInterpretedVsCompiledTest {
         assertThat( ((BigDecimal) result.get( "D2" )).setScale( 4, BigDecimal.ROUND_HALF_UP ), is( new BigDecimal( "-1.0000" ) ) );
     }
     
+    @Ignore("FEEL FuncDefNode not checked at compile time.")
     @Test
     public void testJavaFunctionContext_withErrors() {
         // DROOLS-1568

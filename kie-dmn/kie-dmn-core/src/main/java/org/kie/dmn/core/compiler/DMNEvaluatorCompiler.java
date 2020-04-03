@@ -400,23 +400,8 @@ public class DMNEvaluatorCompiler {
             }
 
             DMNExpressionEvaluator eval = compileExpression(ctx, model, node, functionName, funcDef.getExpression());
-            if (eval instanceof DMNLiteralExpressionEvaluator && ((DMNLiteralExpressionEvaluator) eval).isFunctionDefinition()) {
-                // we need to resolve the function and eliminate the indirection
-                CompiledExpression fexpr = ((DMNLiteralExpressionEvaluator) eval).getExpression();
-                FEELFunction feelFunction = ctx.getFeelHelper().evaluateFunctionDef(ctx, fexpr, model, funcDef,
-                                                                                    Msg.FUNC_DEF_COMPILATION_ERR,
-                                                                                    functionName,
-                                                                                    node.getIdentifierString());
-                DMNInvocationEvaluator invoker = new DMNInvocationEvaluator(node.getName(), node.getSource(), functionName, null,
-                                                                            (fctx, fname) -> feelFunction, null); // feel can be null as anyway is hardcoded to `feelFunction`
-
-                for (InformationItem p : funcDef.getFormalParameter()) {
-                    invoker.addParameter(p.getName(), func.getParameterType(p.getName()), (em, dr) -> new EvaluatorResultImpl(dr.getContext().get(p.getName()), EvaluatorResult.ResultType.SUCCESS));
-                }
-                eval = invoker;
-            }
-
             func.setEvaluator(eval);
+
             return func;
         } finally {
             ctx.exitFrame();
