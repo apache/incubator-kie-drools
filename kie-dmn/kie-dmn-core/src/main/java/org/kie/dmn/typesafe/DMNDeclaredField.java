@@ -60,7 +60,7 @@ public class DMNDeclaredField implements FieldDefinition {
 
     private String withPackage(String typeName) {
         String typeNameUpperCase = StringUtils.ucFirst(typeName);
-        Optional<String> packageName = index.get(typeName);
+        Optional<String> packageName = index.namespaceOfClass(typeName);
         return packageName.map(p -> p + "." + typeNameUpperCase).orElse(typeNameUpperCase);
     }
 

@@ -16,7 +16,8 @@
 
 package org.kie.dmn.typesafe;
 
-import java.util.Collections;
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -32,29 +33,36 @@ public class DMNClassNamespaceTypeIndex {
 
     private final List<DMNModel> allModels;
 
+    private final List<DMNType> typesToGenerate = new ArrayList<>();
+
     Map<String, String> mapNamespaceIndex = new HashMap<>();
 
-    public DMNClassNamespaceTypeIndex(List<DMNModel> allModels) {
-        this.allModels = allModels;
+    public DMNClassNamespaceTypeIndex(DMNModel... allModels) {
+        this.allModels = Arrays.asList(allModels);
         for (DMNModel m : allModels) {
             mapNamespaceIndex.putAll(indexFromModel(m));
         }
     }
 
-    public static DMNClassNamespaceTypeIndex emptyIndex() {
-        return new DMNClassNamespaceTypeIndex(Collections.emptyList());
+    public DMNClassNamespaceTypeIndex(List<DMNModel> allModels) {
+        this(allModels.toArray(new DMNModel[0]));
     }
 
     public Map<String, String> indexFromModel(DMNModel dmnModel) {
         Map<String, String> classesNamespaceIndex = new HashMap<>();
+
         Set<ItemDefNode> itemDefinitions = dmnModel.getItemDefinitions();
+
         String namespace = namespace(dmnModel);
+
         for (ItemDefNode i : itemDefinitions) {
             DMNType type = i.getType();
             classesNamespaceIndex.put(type.getName(), namespace);
+            typesToGenerate.add(type);
             if (type.isComposite()) {
                 for (DMNType innerType : type.getFields().values()) {
-                    classesNamespaceIndex.put(innerType.getName(), namespace);
+//                    classesNamespaceIndex.put(innerType.getName(), namespace);
+//                    typesToGenerate.add(innerType);
                 }
             }
         }
@@ -65,7 +73,11 @@ public class DMNClassNamespaceTypeIndex {
         return CodegenStringUtil.escapeIdentifier(dmnModel.getNamespace() + dmnModel.getName());
     }
 
-    public Optional<String> get(String typeName) {
+    public List<DMNType> allTypesToGenerate() {
+        return typesToGenerate;
+    }
+
+    public Optional<String> namespaceOfClass(String typeName) {
         return Optional.ofNullable(mapNamespaceIndex.get(typeName));
     }
 }
