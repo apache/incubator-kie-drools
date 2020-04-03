@@ -60,11 +60,11 @@ class DMNModelTypesIndex {
     }
 
     private boolean shouldIndex(DMNType dmnType) {
-        if (dmnType.isCollection() || !dmnType.isComposite()) {
+        if (dmnType.isCollection()) {
             return false;
         }
         String internalFEELUri = model.getDefinitions().getURIFEEL();
-        return dmnType.getNamespace().equals(internalFEELUri);
+        return !dmnType.getNamespace().equals(internalFEELUri);
     }
 
     private void index(DMNType innerType) {

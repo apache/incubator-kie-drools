@@ -19,6 +19,8 @@ import static com.github.javaparser.StaticJavaParser.parseClassOrInterfaceType;
 
 public class DMNDeclaredField implements FieldDefinition {
 
+    private final static  String OBJECT_TYPE = "Object";
+
     private DMNAllTypesIndex index;
     private String fieldName;
     private DMNType fieldType;
@@ -46,7 +48,16 @@ public class DMNDeclaredField implements FieldDefinition {
     }
 
     private String fieldTypeWithPackage() {
-        return withPackage(fieldType.getName());
+        return withPackage(getFieldNameWithAnyCheck());
+    }
+
+    private String getFieldNameWithAnyCheck() {
+        String name = fieldType.getName();
+        if("Any".equals(name)) {
+            return OBJECT_TYPE;
+        } else {
+            return name;
+        }
     }
 
     // This returns the generic type i.e. if Collection<String> then String
@@ -67,7 +78,7 @@ public class DMNDeclaredField implements FieldDefinition {
     public static String getBaseType(DMNType fieldType) {
         Optional<DMNType> baseType = Optional.ofNullable(fieldType.getBaseType());
         return baseType.map(DMNType::getName)
-                .orElse("Object");
+                .orElse(OBJECT_TYPE);
     }
 
     @Override
@@ -103,7 +114,7 @@ public class DMNDeclaredField implements FieldDefinition {
     public BlockStmt createFromMapEntry(BlockStmt simplePropertyBlock,
                                         BlockStmt pojoPropertyBlock,
                                         BlockStmt collectionsPropertyBlock) {
-        if (fieldType.isCollection()) {
+        if (fieldType.isCollection() && !fieldTypeUnwrapped().equals(OBJECT_TYPE)) {
             return replaceTemplate(collectionsPropertyBlock, fieldTypeUnwrapped());
         } else if (fieldType.isComposite()) {
             return replaceTemplate(pojoPropertyBlock, fieldTypeWithPackage());

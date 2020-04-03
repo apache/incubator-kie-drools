@@ -73,6 +73,8 @@ public class KieMemoryCompiler {
         StringBuilder errorBuilder = new StringBuilder();
         errorBuilder.append("Compilation failed");
         for (Diagnostic<? extends JavaFileObject> diagnostic : collector.getDiagnostics()) {
+            errorBuilder.append(" file: ");
+            errorBuilder.append(diagnostic.getSource());
             errorBuilder.append("\r\n");
             errorBuilder.append(diagnostic.getKind());
             errorBuilder.append("; line: ");
