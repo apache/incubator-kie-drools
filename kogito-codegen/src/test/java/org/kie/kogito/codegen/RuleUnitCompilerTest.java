@@ -26,6 +26,7 @@ import org.kie.api.time.SessionPseudoClock;
 import org.kie.kogito.Application;
 import org.kie.kogito.codegen.data.Address;
 import org.kie.kogito.codegen.data.Person;
+import org.kie.kogito.codegen.rules.RuleCodegenError;
 import org.kie.kogito.codegen.rules.multiunit.MultiUnit;
 import org.kie.kogito.codegen.rules.singleton.Datum;
 import org.kie.kogito.codegen.rules.singleton.Singleton;
@@ -43,6 +44,7 @@ import static java.util.stream.Collectors.toList;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.junit.jupiter.api.Assertions.fail;
 
 public class RuleUnitCompilerTest extends AbstractCodegenTest {
 
@@ -259,5 +261,15 @@ public class RuleUnitCompilerTest extends AbstractCodegenTest {
 
         assertEquals( 1, results.size() );
         assertEquals( "Mario", results.get( 0 ).getName() );
+    }
+
+    @Test
+    public void testRuleUnitWithNoBindQueryShouldntCompile() throws Exception {
+        try {
+            Application application = generateCodeRulesOnly( "org/kie/kogito/codegen/unit/RuleUnitNoBindQuery.drl" );
+            fail("A query without binding shouldn't compile");
+        } catch(RuleCodegenError e) {
+            // ignore
+        }
     }
 }

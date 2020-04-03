@@ -16,6 +16,8 @@
 
 package org.kie.kogito.codegen;
 
+import org.drools.compiler.compiler.DroolsError;
+
 import static org.kie.kogito.codegen.ApplicationGenerator.log;
 
 public interface FileGenerator {
@@ -28,4 +30,8 @@ public interface FileGenerator {
                                  generatedFilePath(),
                                  log( generate() ));
     }
+
+    default boolean validate() { return true; }
+
+    default DroolsError getError() { return null; }
 }

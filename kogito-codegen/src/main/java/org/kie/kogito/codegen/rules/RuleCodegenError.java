@@ -16,6 +16,7 @@
 package org.kie.kogito.codegen.rules;
 
 import java.util.Arrays;
+import java.util.Collection;
 import java.util.stream.Collectors;
 
 import org.drools.compiler.compiler.DroolsError;
@@ -23,6 +24,10 @@ import org.drools.compiler.compiler.DroolsError;
 public class RuleCodegenError extends Error {
 
     private final DroolsError[] errors;
+
+    public RuleCodegenError(Collection<DroolsError> errors) {
+        this( errors.toArray( new DroolsError[errors.size()] ));
+    }
 
     public RuleCodegenError(DroolsError... errors) {
         super("Errors were generated during the code-generation process:\n" +

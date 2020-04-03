@@ -1,0 +1,20 @@
+package org.kie.kogito.codegen.unit;
+unit AdultUnit;
+
+import org.kie.kogito.codegen.data.Person
+
+rule CheckAdult when
+    $p: /persons[ age >= 18 ]
+then
+    modify($p) { $p.setAdult(true) };
+end
+
+rule CheckNotAdult when
+    $p: /persons[ age < 18 ]
+then
+    modify($p) { $p.setAdult(false) };
+end
+
+query FindAdults
+    /persons[ adult, name ]
+end

@@ -45,6 +45,7 @@ import com.github.javaparser.ast.stmt.Statement;
 import com.github.javaparser.ast.stmt.ThrowStmt;
 import com.github.javaparser.ast.stmt.TryStmt;
 import com.github.javaparser.ast.type.Type;
+import org.drools.compiler.compiler.DroolsError;
 import org.drools.modelcompiler.builder.QueryModel;
 import org.kie.internal.ruleunit.RuleUnitDescription;
 import org.kie.kogito.codegen.BodyDeclarationComparator;
@@ -85,6 +86,39 @@ public class QueryEndpointGenerator implements FileGenerator {
     @Override
     public String generatedFilePath() {
         return generatedFilePath;
+    }
+
+    @Override
+    public boolean validate() {
+        return !query.getBindings().isEmpty();
+    }
+
+    @Override
+    public DroolsError getError() {
+        if (query.getBindings().isEmpty()) {
+            return new NoBindingQuery( query );
+        }
+        return null;
+    }
+
+    public static class NoBindingQuery extends DroolsError {
+        private static final int[] ERROR_LINES = new int[0];
+
+        private final QueryModel query;
+
+        public NoBindingQuery( QueryModel query ) {
+            this.query = query;
+        }
+
+        @Override
+        public String getMessage() {
+            return "Query " + query.getName() + " has no bound variable. At least one binding is required to determine the value returned by this query";
+        }
+
+        @Override
+        public int[] getLines() {
+            return ERROR_LINES;
+        }
     }
 
     @Override
