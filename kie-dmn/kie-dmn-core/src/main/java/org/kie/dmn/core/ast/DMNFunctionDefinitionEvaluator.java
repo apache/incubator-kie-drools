@@ -30,6 +30,7 @@ import org.kie.dmn.api.core.ast.BusinessKnowledgeModelNode;
 import org.kie.dmn.api.core.ast.DMNNode;
 import org.kie.dmn.api.core.event.DMNRuntimeEventManager;
 import org.kie.dmn.core.api.DMNExpressionEvaluator;
+import org.kie.dmn.core.api.DMNMessageManager;
 import org.kie.dmn.core.api.EvaluatorResult;
 import org.kie.dmn.core.api.EvaluatorResult.ResultType;
 import org.kie.dmn.core.impl.BaseDMNTypeImpl;
@@ -123,6 +124,7 @@ public class DMNFunctionDefinitionEvaluator
         private final DMNRuntimeEventManager eventManager;
         private final DMNContext resultContext;
         private final DMNModel resultModel;
+        private final DMNMessageManager resultMsgMgr;
         private final FunctionDefinition functionDefinition;
         private final boolean performRuntimeTypeCheck;
 
@@ -137,6 +139,7 @@ public class DMNFunctionDefinitionEvaluator
             this.resultContext = result.getContext().clone(); // closure.
             this.resultContext.set(name, this); // allow recursion in the closure.
             this.resultModel = result.getModel();
+            this.resultMsgMgr = result.getDMNMessageManager();
             performRuntimeTypeCheck = ((DMNRuntimeImpl) eventManager.getRuntime()).performRuntimeTypeCheck(result.getModel());
         }
 
@@ -144,6 +147,7 @@ public class DMNFunctionDefinitionEvaluator
             // we could be more strict and only set the parameters and the dependencies as values in the new
             // context, but for now, cloning the original context
             DMNResultImpl dmnResult = new DMNResultImpl(resultModel);
+            dmnResult.setDMNMessageManager(resultMsgMgr);
             EvaluationContext ctx2 = ctx.current();
             ctx2.enterFrame(); // exitFrame not needed, as this will represent the closure for any nested functionDefinition
             DMNContextFEELCtxWrapper dmnContext = new DMNContextFEELCtxWrapper(ctx2);
