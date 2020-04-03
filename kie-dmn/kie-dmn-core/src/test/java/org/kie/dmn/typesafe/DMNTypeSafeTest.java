@@ -51,7 +51,7 @@ public class DMNTypeSafeTest {
         assertThat(dmnModel, notNullValue());
         assertThat(DMNRuntimeUtil.formatMessages(dmnModel.getMessages()), dmnModel.hasErrors(), is(false));
 
-        Map<String, String> allTypesSourceCode = new DMNTypeSafeTypeGenerator(dmnModel, Collections.emptyMap()).generateSourceCodeOfAllTypes();
+        Map<String, String> allTypesSourceCode = new DMNTypeSafeTypeGenerator(dmnModel, DMNClassNamespaceTypeIndex.emptyIndex()).generateSourceCodeOfAllTypes();
 
         ClassLoader thisDMNClassLoader = this.getClass().getClassLoader();
         Map<String, Class<?>> compiledClasses = KieMemoryCompiler.compile(allTypesSourceCode, thisDMNClassLoader);
@@ -127,7 +127,10 @@ public class DMNTypeSafeTest {
     }
 
     public static FEELPropertyAccessible createInputSet(DMNModel dmnModel, String packageName, ClassLoader classLoader) throws Exception {
-        Map<String, String> allTypesSourceCode = new DMNTypeSafeTypeGenerator(dmnModel, Collections.emptyMap()).generateSourceCodeOfAllTypes();
+        Map<String, String> allTypesSourceCode = new DMNTypeSafeTypeGenerator(
+                dmnModel,
+                DMNClassNamespaceTypeIndex.emptyIndex())
+                .generateSourceCodeOfAllTypes();
 
         Map<String, Class<?>> compiledClasses = KieMemoryCompiler.compile(allTypesSourceCode, classLoader);
 

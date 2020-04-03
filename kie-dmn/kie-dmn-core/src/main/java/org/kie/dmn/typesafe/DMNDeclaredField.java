@@ -12,7 +12,6 @@ import com.github.javaparser.ast.type.ClassOrInterfaceType;
 import org.drools.core.util.StringUtils;
 import org.drools.modelcompiler.builder.generator.declaredtype.api.AnnotationDefinition;
 import org.drools.modelcompiler.builder.generator.declaredtype.api.FieldDefinition;
-import org.drools.modelcompiler.util.StringUtil;
 import org.kie.dmn.api.core.DMNType;
 import org.kie.dmn.feel.codegen.feel11.CodegenStringUtil;
 
@@ -20,13 +19,13 @@ import static com.github.javaparser.StaticJavaParser.parseClassOrInterfaceType;
 
 public class DMNDeclaredField implements FieldDefinition {
 
-    private Map<String, String> allNamespaces;
+    private DMNClassNamespaceTypeIndex index;
     private String fieldName;
     private DMNType fieldType;
     private List<AnnotationDefinition> annotations = new ArrayList<>();
 
-    DMNDeclaredField(Map<String, String> allNamespaces, Map.Entry<String, DMNType> dmnType) {
-        this.allNamespaces = allNamespaces;
+    DMNDeclaredField(DMNClassNamespaceTypeIndex index, Map.Entry<String, DMNType> dmnType) {
+        this.index = index;
         this.fieldName = StringUtils.lcFirst(CodegenStringUtil.escapeIdentifier(dmnType.getKey()));
         this.fieldType = dmnType.getValue();
     }
@@ -61,7 +60,7 @@ public class DMNDeclaredField implements FieldDefinition {
 
     private String withPackage(String typeName) {
         String typeNameUpperCase = StringUtils.ucFirst(typeName);
-        Optional<String> packageName = Optional.ofNullable(allNamespaces.get(typeName));
+        Optional<String> packageName = index.get(typeName);
         return packageName.map(p -> p + "." + typeNameUpperCase).orElse(typeNameUpperCase);
     }
 

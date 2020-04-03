@@ -107,7 +107,7 @@ public abstract class BaseVariantTest implements VariantTest {
 
         Map<String, String> allSources = new HashMap<>();
         for(DMNModel m : runtime.getModels()) {
-            Map<String, String> allTypesSourceCode = new DMNTypeSafeTypeGenerator(m, index.completeIndex()).generateSourceCodeOfAllTypes();
+            Map<String, String> allTypesSourceCode = new DMNTypeSafeTypeGenerator(m, index).generateSourceCodeOfAllTypes();
             allSources.putAll(allTypesSourceCode);
         }
 

@@ -16,9 +16,11 @@
 
 package org.kie.dmn.typesafe;
 
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 import java.util.Set;
 
 import org.kie.dmn.api.core.DMNModel;
@@ -27,18 +29,20 @@ import org.kie.dmn.api.core.ast.ItemDefNode;
 import org.kie.dmn.feel.codegen.feel11.CodegenStringUtil;
 
 public class DMNClassNamespaceTypeIndex {
+
     private final List<DMNModel> allModels;
+
+    Map<String, String> mapNamespaceIndex = new HashMap<>();
 
     public DMNClassNamespaceTypeIndex(List<DMNModel> allModels) {
         this.allModels = allModels;
-    }
-
-    public Map<String, String> completeIndex() {
-        Map<String, String> mapNamespaceIndex = new HashMap<>();
-        for(DMNModel m : allModels) {
+        for (DMNModel m : allModels) {
             mapNamespaceIndex.putAll(indexFromModel(m));
         }
-        return mapNamespaceIndex;
+    }
+
+    public static DMNClassNamespaceTypeIndex emptyIndex() {
+        return new DMNClassNamespaceTypeIndex(Collections.emptyList());
     }
 
     public Map<String, String> indexFromModel(DMNModel dmnModel) {
@@ -61,4 +65,7 @@ public class DMNClassNamespaceTypeIndex {
         return CodegenStringUtil.escapeIdentifier(dmnModel.getNamespace() + dmnModel.getName());
     }
 
+    public Optional<String> get(String typeName) {
+        return Optional.ofNullable(mapNamespaceIndex.get(typeName));
+    }
 }

@@ -21,15 +21,15 @@ import static org.kie.dmn.typesafe.DMNClassNamespaceTypeIndex.namespace;
 public class DMNTypeSafeTypeGenerator {
 
     private final String packageName;
-    private Map<String, String> allNamespaces;
+    private DMNClassNamespaceTypeIndex allNamespaces;
     private DMNModelImpl dmnModel;
 
     private Map<String, TypeDefinition> types = new HashMap<>();
 
-    public DMNTypeSafeTypeGenerator(DMNModel dmnModel, Map<String, String> allNamespaces) {
+    public DMNTypeSafeTypeGenerator(DMNModel dmnModel, DMNClassNamespaceTypeIndex index) {
         this.dmnModel = (DMNModelImpl) dmnModel;
         this.packageName = namespace(dmnModel);
-        this.allNamespaces = allNamespaces;
+        this.allNamespaces = index;
         processTypes();
     }
 
