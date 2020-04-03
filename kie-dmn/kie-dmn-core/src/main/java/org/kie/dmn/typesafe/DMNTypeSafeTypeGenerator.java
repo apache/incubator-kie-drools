@@ -14,7 +14,7 @@ import org.kie.dmn.api.core.DMNType;
 import org.kie.dmn.api.core.ast.InputDataNode;
 import org.kie.dmn.core.impl.DMNModelImpl;
 
-import static org.kie.dmn.typesafe.DMNAllTypesIndex.namespace;
+import static org.kie.dmn.typesafe.DMNAllTypesIndex.packageName;
 
 public class DMNTypeSafeTypeGenerator {
 
@@ -26,7 +26,7 @@ public class DMNTypeSafeTypeGenerator {
 
     public DMNTypeSafeTypeGenerator(DMNModel dmnModel, DMNAllTypesIndex index) {
         this.dmnModel = (DMNModelImpl) dmnModel;
-        this.packageName = namespace(dmnModel);
+        this.packageName = packageName(dmnModel);
         this.index = index;
         processTypes();
     }

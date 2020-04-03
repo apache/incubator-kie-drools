@@ -48,7 +48,7 @@ public class DMNAllTypesIndex {
         this(allModels.toArray(new DMNModel[0]));
     }
 
-    public static String namespace(DMNModel dmnModel) {
+    public static String packageName(DMNModel dmnModel) {
         return CodegenStringUtil.escapeIdentifier(dmnModel.getNamespace() + dmnModel.getName());
     }
 

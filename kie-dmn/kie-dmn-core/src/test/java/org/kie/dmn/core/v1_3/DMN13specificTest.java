@@ -30,7 +30,6 @@ import org.kie.dmn.core.BaseVariantTest;
 import org.kie.dmn.core.api.DMNFactory;
 import org.kie.dmn.core.impl.DMNContextFPAImpl;
 import org.kie.dmn.core.util.DMNRuntimeUtil;
-import org.kie.dmn.feel.codegen.feel11.CodegenStringUtil;
 import org.kie.dmn.typesafe.DMNTypeSafeTest;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -40,6 +39,7 @@ import static org.hamcrest.CoreMatchers.notNullValue;
 import static org.junit.Assert.assertThat;
 import static org.kie.dmn.core.util.DynamicTypeUtils.entry;
 import static org.kie.dmn.core.util.DynamicTypeUtils.mapOf;
+import static org.kie.dmn.typesafe.DMNAllTypesIndex.packageName;
 
 public class DMN13specificTest extends BaseVariantTest {
 
@@ -245,7 +245,7 @@ public class DMN13specificTest extends BaseVariantTest {
         Map<String, Object> inputMap = context.getAll();
         FEELPropertyAccessible inputSet;
         try {
-            inputSet = null;
+            inputSet = DMNTypeSafeTest.createInstanceFromCompiledClasses(allCompiledClasses, packageName(dmnModel), "InputSet");
             inputSet.fromMap(inputMap);
             return runtime.evaluateAll(dmnModel, new DMNContextFPAImpl(inputSet));
         } catch (Exception e) {

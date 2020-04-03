@@ -101,16 +101,19 @@ public abstract class BaseVariantTest implements VariantTest {
         return runtime;
     }
 
+    protected Map<String, String> allSources;
+    protected Map<String, Class<?>> allCompiledClasses;
+
     private void createTypeSafeInput(DMNRuntime runtime) {
         DMNAllTypesIndex index = new DMNAllTypesIndex(runtime.getModels());
+        allSources = new HashMap<>();
 
-        Map<String, String> allSources = new HashMap<>();
         for(DMNModel m : runtime.getModels()) {
             Map<String, String> allTypesSourceCode = new DMNTypeSafeTypeGenerator(m, index).generateSourceCodeOfAllTypes();
             allSources.putAll(allTypesSourceCode);
         }
 
-        KieMemoryCompiler.compile(allSources, this.getClass().getClassLoader());
+        allCompiledClasses = KieMemoryCompiler.compile(allSources, this.getClass().getClassLoader());
     }
 
     @Override

@@ -40,7 +40,7 @@ public class DMNTypeSafeTest {
         String modelName = "Drawing 1";
 
         dmnModel = runtime.getModel(namespace, modelName);
-        packageName = DMNAllTypesIndex.namespace(dmnModel);
+        packageName = DMNAllTypesIndex.packageName(dmnModel);
     }
 
     @Test
@@ -96,7 +96,7 @@ public class DMNTypeSafeTest {
         assertThat(dmnModel, notNullValue());
         assertThat(DMNRuntimeUtil.formatMessages(dmnModel.getMessages()), dmnModel.hasErrors(), is(false));
 
-        FEELPropertyAccessible context = createInputSet(dmnModel, packageName, this.getClass().getClassLoader());
+        FEELPropertyAccessible context = generateSourceCodeAndCreateInput(dmnModel, packageName, this.getClass().getClassLoader());
 
         Map<String, Object> inputSetMap = new HashMap<>();
 
@@ -124,7 +124,7 @@ public class DMNTypeSafeTest {
         return runtime.evaluateAll(dmnModel, new DMNContextFPAImpl(context));
     }
 
-    public static FEELPropertyAccessible createInputSet(DMNModel dmnModel, String packageName, ClassLoader classLoader) throws Exception {
+    public static FEELPropertyAccessible generateSourceCodeAndCreateInput(DMNModel dmnModel, String packageName, ClassLoader classLoader) throws Exception {
         Map<String, String> allTypesSourceCode = new DMNTypeSafeTypeGenerator(
                 dmnModel,
                 new DMNAllTypesIndex(dmnModel))
@@ -139,7 +139,7 @@ public class DMNTypeSafeTest {
         return packageName + "." + className;
     }
 
-    private static FEELPropertyAccessible createInstanceFromCompiledClasses(Map<String, Class<?>> compile, String packageName, String className) throws Exception {
+    public static FEELPropertyAccessible createInstanceFromCompiledClasses(Map<String, Class<?>> compile, String packageName, String className) throws Exception {
         Class<?> inputSetClass = compile.get(classWithPackage(packageName, className));
         assertThat(inputSetClass, notNullValue());
         Object inputSetInstance = inputSetClass.getDeclaredConstructor().newInstance();

@@ -27,7 +27,7 @@ import org.kie.dmn.api.core.DMNModel;
 import org.kie.dmn.api.core.DMNType;
 import org.kie.dmn.api.core.ast.ItemDefNode;
 
-import static org.kie.dmn.typesafe.DMNAllTypesIndex.namespace;
+import static org.kie.dmn.typesafe.DMNAllTypesIndex.packageName;
 
 class DMNModelTypesIndex {
 
@@ -38,7 +38,7 @@ class DMNModelTypesIndex {
 
     public DMNModelTypesIndex(DMNModel model) {
         this.model = model;
-        this.namespace = namespace(model);
+        this.namespace = packageName(model);
 
         createIndex();
     }
