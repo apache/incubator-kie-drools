@@ -23,8 +23,10 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Date;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.stream.Collectors;
 
@@ -48,12 +50,12 @@ import org.junit.Ignore;
 import org.junit.Test;
 import org.kie.api.KieServices;
 import org.kie.api.builder.model.KieModuleModel;
+import org.kie.api.definition.type.FactType;
 import org.kie.api.runtime.KieSession;
 import org.kie.api.runtime.process.ProcessContext;
 import org.kie.api.runtime.rule.FactHandle;
 
 import static org.hamcrest.CoreMatchers.containsString;
-import static org.hamcrest.CoreMatchers.startsWith;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
@@ -2236,5 +2238,38 @@ public class CompilerTest extends BaseModelTest {
 
         ksession.insert(map);
         assertEquals(1, ksession.fireAllRules());
+    }
+
+    @Test
+    public void testHashSet() throws Exception {
+        final String str =
+                "package org.drools.test;\n" +
+                           "import " + HashSet.class.getCanonicalName() + ";\n" +
+                           "import " + Set.class.getCanonicalName() + ";\n" +
+                           "declare Application\n" +
+                           "    categories : Set = new HashSet()" +
+                           "end\n" +
+                           "rule R1\n" +
+                           "no-loop true\n" +
+                           "when \n" +
+                           "  $a : Application()\n" +
+                           "then\n" +
+                           "  modify ($a) { getCategories().add(\"hello\") };\n" +
+                           "end\n" +
+                           "rule R2\n" +
+                           "when \n" +
+                           "  $a : Application(categories contains \"hello\")\n" +
+                           "then\n" +
+                           "end";
+
+        final KieSession ksession = getKieSession(str);
+
+        FactType appType = ksession.getKieBase().getFactType("org.drools.test", "Application");
+        Object appObj = appType.newInstance();
+        Set<String> categories = new HashSet<>();
+        appType.set(appObj, "categories", categories);
+
+        ksession.insert(appObj);
+        assertEquals(2, ksession.fireAllRules());
     }
 }

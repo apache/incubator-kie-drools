@@ -36,6 +36,8 @@ import org.drools.modelcompiler.builder.generator.DRLIdGenerator;
 import org.drools.modelcompiler.builder.generator.TypedExpression;
 import org.drools.modelcompiler.builder.generator.UnificationTypedExpression;
 
+import static java.util.Optional.ofNullable;
+
 import static com.github.javaparser.ast.expr.BinaryExpr.Operator.AND;
 import static com.github.javaparser.ast.expr.BinaryExpr.Operator.EQUALS;
 import static com.github.javaparser.ast.expr.BinaryExpr.Operator.GREATER;
@@ -44,7 +46,7 @@ import static com.github.javaparser.ast.expr.BinaryExpr.Operator.LESS;
 import static com.github.javaparser.ast.expr.BinaryExpr.Operator.LESS_EQUALS;
 import static com.github.javaparser.ast.expr.BinaryExpr.Operator.NOT_EQUALS;
 import static com.github.javaparser.ast.expr.BinaryExpr.Operator.OR;
-import static java.util.Optional.ofNullable;
+import static org.drools.modelcompiler.builder.generator.visitor.pattern.PatternDSL.GENERATED_PATTERN_PREFIX;
 import static org.drools.modelcompiler.util.ClassUtil.getAccessibleProperties;
 import static org.drools.modelcompiler.util.ClassUtil.toNonPrimitiveType;
 import static org.drools.modelcompiler.util.ClassUtil.toRawClass;
@@ -56,7 +58,7 @@ public class SingleDrlxParseSuccess extends AbstractDrlxParseSuccess {
     private final Type exprType;
 
     private String originalDrlConstraint;
-    private String patternBinding;
+    private final String patternBinding;
     private String accumulateBinding;
     private boolean isPatternBindingUnification = false;
 
@@ -205,6 +207,10 @@ public class SingleDrlxParseSuccess extends AbstractDrlxParseSuccess {
 
     public String getPatternBinding() {
         return patternBinding;
+    }
+
+    public boolean hasGeneratedPatternBinding() {
+        return patternBinding != null && patternBinding.startsWith( GENERATED_PATTERN_PREFIX );
     }
 
     public void setExpr(Expression expr) {
@@ -411,6 +417,11 @@ public class SingleDrlxParseSuccess extends AbstractDrlxParseSuccess {
     }
 
     public String getOriginalDrlConstraint() {
+        return originalDrlConstraint;
+    }
+
+    @Override
+    public String toString() {
         return originalDrlConstraint;
     }
 }

@@ -302,7 +302,7 @@ public class DroolsMvelParserTest {
         assertTrue(expression instanceof OOPathExpr);
 
         final OOPathChunk secondChunk = ((OOPathExpr) expression).getChunks().get(2);
-        final BinaryExpr secondChunkFirstCondition = (BinaryExpr) secondChunk.getConditions().get(0);
+        final BinaryExpr secondChunkFirstCondition = (BinaryExpr) secondChunk.getConditions().get(0).getExpr();
         final DrlNameExpr rightName = (DrlNameExpr) ((FieldAccessExpr)secondChunkFirstCondition.getRight()).getScope();
         assertEquals(2, rightName.getBackReferencesCount());
         assertEquals(expr, printConstraint(drlx));

@@ -55,6 +55,8 @@ public class Declaration
 
     private transient Class<?>   declarationClass;
 
+    private int xPathOffset = 0;
+
     // ------------------------------------------------------------
     // Constructors
     // ------------------------------------------------------------
@@ -186,6 +188,18 @@ public class Declaration
 
     public void setPattern(final Pattern pattern) {
         this.pattern = pattern;
+    }
+
+    public int getOffset() {
+        return pattern.getOffset() + xPathOffset;
+    }
+
+    public void setxPathOffset( int xPathOffset ) {
+        this.xPathOffset = xPathOffset;
+    }
+
+    public boolean isFromXpathChunk() {
+        return xPathOffset >= 1;
     }
 
     /**
