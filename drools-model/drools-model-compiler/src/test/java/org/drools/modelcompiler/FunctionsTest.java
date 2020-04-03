@@ -150,4 +150,25 @@ public class FunctionsTest extends BaseModelTest {
             return intList;
         }
     }
+
+    @Test
+    public void testInvokeFunctionWithDroolsKeyword() {
+        // DROOLS-5215
+        String str =
+                "package com.sample\n" +
+                "    function printRuleName(String ruleName) {\n" +
+                "      System.out.println(ruleName);\n" +
+                "    }\n" +
+                "    \n" +
+                "    rule \"drools keyword in method call\"\n" +
+                "    when\n" +
+                "    then\n" +
+                "        printRuleName(drools.getRule().getName());\n" +
+                "    end";
+
+        KieSession ksession = getKieSession( str );
+
+        int rulesFired = ksession.fireAllRules();
+        assertEquals( 1, rulesFired );
+    }
 }
