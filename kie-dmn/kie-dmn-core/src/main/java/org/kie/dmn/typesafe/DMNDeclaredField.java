@@ -114,13 +114,19 @@ public class DMNDeclaredField implements FieldDefinition {
     public BlockStmt createFromMapEntry(BlockStmt simplePropertyBlock,
                                         BlockStmt pojoPropertyBlock,
                                         BlockStmt collectionsPropertyBlock) {
-        if (fieldType.isCollection() && !fieldTypeUnwrapped().equals(OBJECT_TYPE)) {
+        if (fieldType.isCollection() && !fieldIsObject()) {
             return replaceTemplate(collectionsPropertyBlock, fieldTypeUnwrapped());
         } else if (fieldType.isComposite()) {
             return replaceTemplate(pojoPropertyBlock, fieldTypeWithPackage());
-        } else {
+        } else if(!fieldIsObject()){
             return replaceTemplate(simplePropertyBlock, fieldTypeWithPackage());
+        }  else {
+            return new BlockStmt();
         }
+    }
+
+    private boolean fieldIsObject() {
+        return fieldTypeUnwrapped().equals(OBJECT_TYPE);
     }
 
     private BlockStmt replaceTemplate(BlockStmt pojoPropertyBlock, String objectType) {
