@@ -11,4 +11,6 @@ public interface FEELPropertyAccessible {
     Map<String, Object> allFEELProperties();
 
     void fromMap(Map<String, Object> values);
+
+    String getTypeName();
 }
