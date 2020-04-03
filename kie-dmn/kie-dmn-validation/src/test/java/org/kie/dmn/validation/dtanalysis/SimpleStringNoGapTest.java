@@ -23,6 +23,7 @@ import org.kie.dmn.api.core.DMNMessage;
 import org.kie.dmn.api.core.DMNMessageType;
 import org.kie.dmn.validation.dtanalysis.model.DTAnalysis;
 
+import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.Matchers.hasSize;
 import static org.junit.Assert.assertThat;
 import static org.junit.Assert.assertTrue;
@@ -35,7 +36,11 @@ public class SimpleStringNoGapTest extends AbstractDTAnalysisTest {
     @Test
     public void test() {
         List<DMNMessage> validate = validator.validate(getReader("simpleStringNoGap.dmn"), VALIDATE_COMPILATION, VALIDATE_MODEL, ANALYZE_DECISION_TABLE);
-        assertThat(validate, hasSize(1)); // Gap Analysis skipped because of free string.
+        assertThat(validate, hasSize(4)); // Gap Analysis skipped because of free string.
+
+        // This dmn doesn't have DMNDI
+        assertThat(validate.stream().filter(p -> p.getMessageType().equals(DMNMessageType.DMNDI_MISSING_DIAGRAM)).count(), is(3L));
+
         assertTrue("It should contain DMNMessage for the skipped gap analysis",
                    validate.stream().anyMatch(p -> p.getMessageType().equals(DMNMessageType.DECISION_TABLE_GAP)));
         debugValidatorMsg(validate);

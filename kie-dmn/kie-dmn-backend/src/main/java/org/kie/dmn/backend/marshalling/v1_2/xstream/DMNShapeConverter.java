@@ -16,8 +16,6 @@
 
 package org.kie.dmn.backend.marshalling.v1_2.xstream;
 
-import javax.xml.namespace.QName;
-
 import com.thoughtworks.xstream.XStream;
 import com.thoughtworks.xstream.converters.MarshallingContext;
 import com.thoughtworks.xstream.io.HierarchicalStreamReader;
@@ -61,7 +59,7 @@ public class DMNShapeConverter extends ShapeConverter {
         super.assignAttributes(reader, parent);
         DMNShape style = (DMNShape) parent;
 
-        style.setDmnElementRef(new QName(reader.getAttribute("dmnElementRef")));
+        style.setDmnElementRef(MarshallingUtils.parseQNameString(reader.getAttribute("dmnElementRef")));
         
         String isListedInputData = reader.getAttribute("isListedInputData");
         String isCollapsed = reader.getAttribute("isCollapsed");
@@ -92,7 +90,7 @@ public class DMNShapeConverter extends ShapeConverter {
         super.writeAttributes(writer, parent);
         DMNShape style = (DMNShape) parent;
 
-        writer.addAttribute("dmnElementRef", style.getDmnElementRef().toString());
+        writer.addAttribute("dmnElementRef", MarshallingUtils.formatQName(style.getDmnElementRef(), style));
 
         if (style.isIsListedInputData() != null) {
             writer.addAttribute("isListedInputData", style.isIsListedInputData().toString());

@@ -200,8 +200,9 @@ public class ValidatorImportTest extends AbstractValidatorTest {
         // DROOLS-4187 kie-dmn-validation: Incorrect import detection
         final List<DMNMessage> messages = validator.validateUsing(Validation.VALIDATE_MODEL)
                                                    .theseModels(getFile("import/Invoke_Iris.dmn"));
-        assertThat(ValidatorUtil.formatMessages(messages), messages.size(), is(0));
-
+        // trisotech pages
+        assertThat(ValidatorUtil.formatMessages(messages), messages.size(), is(2));
+        assertThat(messages.stream().filter(p -> p.getMessageType().equals(DMNMessageType.DMNDI_MISSING_DIAGRAM)).count(), is(2L));
     }
 
     @Test
@@ -222,7 +223,9 @@ public class ValidatorImportTest extends AbstractValidatorTest {
                                                                       Validation.VALIDATE_COMPILATION)
                                                        .usingImports(resolver)
                                                        .theseModels(defs);
-            assertThat(ValidatorUtil.formatMessages(messages), messages.size(), is(0));
+            // This dmn doesn't have DMNDI
+            assertThat(ValidatorUtil.formatMessages(messages), messages.size(), is(3));
+            assertThat(messages.stream().filter(p -> p.getMessageType().equals(DMNMessageType.DMNDI_MISSING_DIAGRAM)).count(), is(3L));
         }
     }
 }

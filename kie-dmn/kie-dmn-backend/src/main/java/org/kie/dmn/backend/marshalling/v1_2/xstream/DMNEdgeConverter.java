@@ -16,8 +16,6 @@
 
 package org.kie.dmn.backend.marshalling.v1_2.xstream;
 
-import javax.xml.namespace.QName;
-
 import com.thoughtworks.xstream.XStream;
 import com.thoughtworks.xstream.converters.MarshallingContext;
 import com.thoughtworks.xstream.io.HierarchicalStreamReader;
@@ -54,7 +52,7 @@ public class DMNEdgeConverter extends EdgeConverter {
         String dmnElementRef = reader.getAttribute(DMN_ELEMENT_REF);
 
         if (dmnElementRef != null) {
-            concrete.setDmnElementRef(new QName(dmnElementRef));
+            concrete.setDmnElementRef(MarshallingUtils.parseQNameString(dmnElementRef));
         }
     }
 
@@ -74,7 +72,7 @@ public class DMNEdgeConverter extends EdgeConverter {
 
         DMNEdge concrete = (DMNEdge) parent;
         if (concrete.getDmnElementRef() != null) {
-            writer.addAttribute(DMN_ELEMENT_REF, concrete.getDmnElementRef().toString());
+            writer.addAttribute(DMN_ELEMENT_REF, MarshallingUtils.formatQName(concrete.getDmnElementRef(), concrete));
         }
     }
 

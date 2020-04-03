@@ -16,12 +16,11 @@
 
 package org.kie.dmn.backend.marshalling.v1_3.xstream;
 
-import javax.xml.namespace.QName;
-
 import com.thoughtworks.xstream.XStream;
 import com.thoughtworks.xstream.converters.MarshallingContext;
 import com.thoughtworks.xstream.io.HierarchicalStreamReader;
 import com.thoughtworks.xstream.io.HierarchicalStreamWriter;
+import org.kie.dmn.backend.marshalling.v1_2.xstream.MarshallingUtils;
 import org.kie.dmn.model.api.DMNModelInstrumentedBase;
 import org.kie.dmn.model.api.dmndi.DMNEdge;
 import org.kie.dmn.model.api.dmndi.DMNLabel;
@@ -58,13 +57,13 @@ public class DMNEdgeConverter extends EdgeConverter {
         String targetElement = reader.getAttribute(TARGET_ELEMENT);
 
         if (dmnElementRef != null) {
-            concrete.setDmnElementRef(new QName(dmnElementRef));
+            concrete.setDmnElementRef(MarshallingUtils.parseQNameString(dmnElementRef));
         }
         if (sourceElement != null) {
-            concrete.setSourceElement(new QName(sourceElement));
+            concrete.setSourceElement(MarshallingUtils.parseQNameString(sourceElement));
         }
         if (targetElement != null) {
-            concrete.setTargetElement(new QName(targetElement));
+            concrete.setTargetElement(MarshallingUtils.parseQNameString(targetElement));
         }
     }
 
@@ -84,13 +83,13 @@ public class DMNEdgeConverter extends EdgeConverter {
 
         DMNEdge concrete = (DMNEdge) parent;
         if (concrete.getDmnElementRef() != null) {
-            writer.addAttribute(DMN_ELEMENT_REF, concrete.getDmnElementRef().toString());
+            writer.addAttribute(DMN_ELEMENT_REF, MarshallingUtils.formatQName(concrete.getDmnElementRef(), concrete));
         }
         if (concrete.getSourceElement() != null) {
-            writer.addAttribute(SOURCE_ELEMENT, concrete.getSourceElement().toString());
+            writer.addAttribute(SOURCE_ELEMENT, MarshallingUtils.formatQName(concrete.getSourceElement(), concrete));
         }
         if (concrete.getTargetElement() != null) {
-            writer.addAttribute(TARGET_ELEMENT, concrete.getTargetElement().toString());
+            writer.addAttribute(TARGET_ELEMENT, MarshallingUtils.formatQName(concrete.getTargetElement(), concrete));
         }
     }
 

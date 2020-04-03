@@ -147,8 +147,10 @@ public final class Msg {
     public static final Message1 DTANALYSIS_HITPOLICY_RECOMMENDER_UNIQUE             = new Message1( DMNMessageType.DECISION_TABLE_HITPOLICY_RECOMMENDER, "The HitPolicy for decision table '%s' should be UNIQUE");
     public static final Message1 DTANALYSIS_HITPOLICY_RECOMMENDER_ANY                = new Message1( DMNMessageType.DECISION_TABLE_HITPOLICY_RECOMMENDER, "Overlapping rules have the same output value, so the HitPolicy for decision table '%s' should be ANY");
     public static final Message1 DTANALYSIS_HITPOLICY_RECOMMENDER_PRIORITY           = new Message1( DMNMessageType.DECISION_TABLE_HITPOLICY_RECOMMENDER, "Overlapping rules have different output value, so the HitPolicy for decision table '%s' should be PRIORITY");
+    public static final Message1 DMNDI_MISSING_SHAPE                                 = new Message1( DMNMessageType.DMNDI_MISSING_DIAGRAM, "Missing DMNShape for '%s'" );
+    public static final Message1 DMNDI_MISSING_EDGE                                  = new Message1( DMNMessageType.DMNDI_MISSING_DIAGRAM, "Missing DMNEdge for '%s'" );
+    public static final Message2 DMNDI_UNKNOWN_REF                                   = new Message2( DMNMessageType.DMNDI_UNKNOWN_REF, "Unable to resolve dmnElementRef '%s' on '%s'" );
 
-    
     public static interface Message {
         String getMask();
 
