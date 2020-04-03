@@ -23,12 +23,14 @@ public class DMNDeclaredField implements FieldDefinition {
 
     private DMNAllTypesIndex index;
     private String fieldName;
+    private String originalMapKey;
     private DMNType fieldType;
     private List<AnnotationDefinition> annotations = new ArrayList<>();
 
     DMNDeclaredField(DMNAllTypesIndex index, Map.Entry<String, DMNType> dmnType) {
         this.index = index;
-        this.fieldName = StringUtils.lcFirst(CodegenStringUtil.escapeIdentifier(dmnType.getKey()));
+        this.fieldName = CodegenStringUtil.escapeIdentifier(dmnType.getKey());
+        this.originalMapKey = dmnType.getKey();
         this.fieldType = dmnType.getValue();
     }
 
@@ -137,7 +139,7 @@ public class DMNDeclaredField implements FieldDefinition {
                 .forEach(n -> n.replace(new NameExpr(fieldName)));
 
         clone.findAll(StringLiteralExpr.class, this::propertyPlaceHolder)
-                .forEach(n -> n.replace(new StringLiteralExpr(fieldName)));
+                .forEach(n -> n.replace(new StringLiteralExpr(originalMapKey)));
 
         clone.findAll(ClassOrInterfaceType.class, this::propertyTypePlaceHolder)
                 .forEach(n -> n.replace(parseClassOrInterfaceType(objectType)));
