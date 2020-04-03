@@ -39,6 +39,10 @@ public class DMNDeclaredField implements FieldDefinition {
         return fieldName;
     }
 
+    public String getOriginalMapKey() {
+        return originalMapKey;
+    }
+
     @Override
     public String getObjectType() {
         if (fieldDMNType.isCollection()) {

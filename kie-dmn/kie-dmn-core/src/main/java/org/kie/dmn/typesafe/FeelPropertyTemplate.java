@@ -189,7 +189,10 @@ public class FeelPropertyTemplate {
 
         MethodCallExpr mc = new MethodCallExpr(new NameExpr("result"), "put");
 
-        mc.addArgument(new StringLiteralExpr(fieldDefinition.getFieldName()));
+        // TODO: avoid downcast
+        DMNDeclaredField dmnDeclaredField = (DMNDeclaredField) fieldDefinition;
+        String fieldName = dmnDeclaredField.getOriginalMapKey();
+        mc.addArgument(new StringLiteralExpr(fieldName));
         mc.addArgument(new MethodCallExpr(new ThisExpr(), accessorName));
 
         return new ExpressionStmt(mc);
