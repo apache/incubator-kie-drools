@@ -377,7 +377,7 @@ public class ExpressionTyper {
             }
         }
 
-        final List<Node> childrenNodes = flattenScope(drlxExpr);
+        final List<Node> childrenNodes = flattenScope(ruleContext.getTypeResolver(), drlxExpr);
         final Node firstChild = childrenNodes.get(0);
 
         boolean isInLineCast = firstChild instanceof InlineCastExpr;
@@ -512,7 +512,7 @@ public class ExpressionTyper {
     }
 
     private Optional<TypedExpressionCursor> processFirstNode(Expression drlxExpr, List<Node> childNodes, Node firstNode, boolean isInLineCast, java.lang.reflect.Type originalTypeCursor) {
-        final Optional<TypedExpressionCursor> result;
+        Optional<TypedExpressionCursor> result;
         if (isThisExpression(firstNode) || (firstNode instanceof DrlNameExpr && printConstraint(firstNode).equals(bindingId))) {
             result = of(thisExpr(drlxExpr, childNodes, isInLineCast, originalTypeCursor));
 
@@ -522,8 +522,17 @@ public class ExpressionTyper {
         } else if (firstNode instanceof NameExpr) {
             result = drlNameExpr(drlxExpr, new DrlNameExpr( (( NameExpr ) firstNode).getName() ), isInLineCast, originalTypeCursor);
 
-        } else if (firstNode instanceof FieldAccessExpr && ((FieldAccessExpr) firstNode).getScope() instanceof ThisExpr) {
-            result = of(fieldAccessExpr(originalTypeCursor, ((FieldAccessExpr) firstNode).getName()));
+        } else if (firstNode instanceof FieldAccessExpr) {
+            if (((FieldAccessExpr) firstNode).getScope() instanceof ThisExpr) {
+                result = of( fieldAccessExpr( originalTypeCursor, (( FieldAccessExpr ) firstNode).getName() ) );
+            } else {
+                try {
+                    Class<?> resolvedType = ruleContext.getTypeResolver().resolveType( firstNode.toString() );
+                    result = of( new TypedExpressionCursor( new NameExpr( firstNode.toString() ), resolvedType ) );
+                } catch (ClassNotFoundException e) {
+                    result = empty();
+                }
+            }
 
         } else if (firstNode instanceof NullSafeFieldAccessExpr && ((NullSafeFieldAccessExpr) firstNode).getScope() instanceof ThisExpr) {
             result = of(fieldAccessExpr(originalTypeCursor, ((NullSafeFieldAccessExpr) firstNode).getName()));

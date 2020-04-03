@@ -2,6 +2,7 @@ package org.drools.modelcompiler.builder.generator.expressiontyper;
 
 import java.util.Collections;
 import java.util.List;
+import java.util.Set;
 import java.util.stream.Collectors;
 
 import com.github.javaparser.ast.Node;
@@ -13,26 +14,28 @@ import com.github.javaparser.ast.expr.MethodCallExpr;
 import com.github.javaparser.ast.expr.NameExpr;
 import com.github.javaparser.ast.expr.SimpleName;
 import com.github.javaparser.ast.expr.StringLiteralExpr;
+import org.drools.core.addon.TypeResolver;
 import org.drools.modelcompiler.builder.generator.DrlxParseUtil;
 import org.junit.Test;
 
 import static java.util.Arrays.asList;
+
 import static com.github.javaparser.ast.NodeList.nodeList;
 import static org.drools.modelcompiler.builder.generator.expressiontyper.FlattenScope.flattenScope;
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertArrayEquals;
 
 public class FlattenScopeTest {
 
     @Test
     public void flattenUnaryExpression() {
-        List<Node> actual = flattenScope(expr("getMessageId"));
+        List<Node> actual = flattenScope(MockTypeResolver.INSTANCE, expr("getMessageId"));
         List<Node> expected = Collections.singletonList(new NameExpr("getMessageId"));
         compareArrays(actual, expected);
     }
 
     @Test
     public void flattenFields() {
-        List<Node> actual = flattenScope(expr("Field.INT"));
+        List<Node> actual = flattenScope(MockTypeResolver.INSTANCE, expr("Field.INT"));
         List<Node> expected = asList(new NameExpr("Field"), new SimpleName("INT"));
 
         compareArrays(actual, expected);
@@ -40,7 +43,7 @@ public class FlattenScopeTest {
 
     @Test
     public void flattenMethodCall() {
-        List<Node> actual = flattenScope(expr("name.startsWith(\"M\")"));
+        List<Node> actual = flattenScope(MockTypeResolver.INSTANCE, expr("name.startsWith(\"M\")"));
         MethodCallExpr methodCallExpr = new MethodCallExpr(new NameExpr("name"), "startsWith",
                                                            nodeList(new StringLiteralExpr("M")));
         methodCallExpr.setTypeArguments(NodeList.nodeList());
@@ -50,7 +53,7 @@ public class FlattenScopeTest {
 
     @Test
     public void flattenArrayAccess() {
-        List<Node> actual = flattenScope(expr("$p.getChildrenA()[0]"));
+        List<Node> actual = flattenScope(MockTypeResolver.INSTANCE, expr("$p.getChildrenA()[0]"));
 
         NameExpr name = new NameExpr("$p");
         final MethodCallExpr mc = new MethodCallExpr(name, "getChildrenA", nodeList());
@@ -75,5 +78,46 @@ public class FlattenScopeTest {
         actual = actual.stream().map(DrlxParseUtil::transformDrlNameExprToNameExpr).collect(Collectors.toList());
         expected = expected.stream().map(DrlxParseUtil::transformDrlNameExprToNameExpr).collect(Collectors.toList());
         assertArrayEquals(expected.toArray(), actual.toArray());
+    }
+
+    public static class MockTypeResolver implements TypeResolver {
+        public static final MockTypeResolver INSTANCE = new MockTypeResolver();
+
+        @Override
+        public Set<String> getImports() {
+            return Collections.emptySet();
+        }
+
+        @Override
+        public void addImport( String importEntry ) {
+        }
+
+        @Override
+        public void addImplicitImport( String importEntry ) {
+        }
+
+        @Override
+        public Class<?> resolveType( String className ) throws ClassNotFoundException {
+            return getClassLoader().loadClass( className );
+        }
+
+        @Override
+        public Class<?> resolveType( String className, ClassFilter classFilter ) throws ClassNotFoundException {
+            return resolveType( className );
+        }
+
+        @Override
+        public void registerClass( String className, Class<?> clazz ) {
+        }
+
+        @Override
+        public String getFullTypeName( String shortName ) throws ClassNotFoundException {
+            return resolveType( shortName ).getCanonicalName();
+        }
+
+        @Override
+        public ClassLoader getClassLoader() {
+            return MockTypeResolver.class.getClassLoader();
+        }
     }
 }

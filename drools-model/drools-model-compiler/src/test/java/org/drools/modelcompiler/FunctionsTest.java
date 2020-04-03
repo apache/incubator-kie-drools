@@ -16,6 +16,9 @@
 
 package org.drools.modelcompiler;
 
+import java.util.Arrays;
+import java.util.List;
+
 import org.drools.modelcompiler.domain.Person;
 import org.junit.Test;
 import org.kie.api.runtime.KieSession;
@@ -56,5 +59,95 @@ public class FunctionsTest extends BaseModelTest {
         ksession.insert(new Person("John", 10));
         int rulesFired = ksession.fireAllRules();
         assertEquals( 1, rulesFired ); // only R1 should fire
+    }
+
+    @Test
+    public void testStaticMethodCall1() {
+        // DROOLS-5214
+        String str =
+                "package com.sample\n" +
+                "import " + Arrays.class.getCanonicalName() + ";\n" +
+                "import " + Pojo.class.getCanonicalName() + ";\n" +
+                "\n" +
+                "rule R when\n" +
+                "    Pojo(Arrays.asList(1,2,3).containsAll(intList))\n" +
+                "then\n" +
+                "end";
+
+        KieSession ksession = getKieSession( str );
+
+        ksession.insert( new Pojo( Arrays.asList(1,3) ) );
+        int rulesFired = ksession.fireAllRules();
+        assertEquals( 1, rulesFired );
+    }
+
+    @Test
+    public void testStaticMethodCall2() {
+        // DROOLS-5214
+        String str =
+                "package com.sample\n" +
+                "import " + Pojo.class.getCanonicalName() + ";\n" +
+                "import " + Arrays.class.getCanonicalName() + ";\n" +
+                "\n" +
+                "rule R when\n" +
+                "    Pojo(intList.containsAll(Arrays.asList(1,3)))\n" +
+                "then\n" +
+                "end";
+
+        KieSession ksession = getKieSession( str );
+
+        ksession.insert( new Pojo( Arrays.asList(1,2,3) ) );
+        int rulesFired = ksession.fireAllRules();
+        assertEquals( 1, rulesFired );
+    }
+
+    @Test
+    public void testFQNStaticMethodCall1() {
+        // DROOLS-5214
+        String str =
+                "package com.sample\n" +
+                "import " + Pojo.class.getCanonicalName() + ";\n" +
+                "\n" +
+                "rule R when\n" +
+                "    Pojo(java.util.Arrays.asList(1,2,3).containsAll(intList))\n" +
+                "then\n" +
+                "end";
+
+        KieSession ksession = getKieSession( str );
+
+        ksession.insert( new Pojo( Arrays.asList(1,3) ) );
+        int rulesFired = ksession.fireAllRules();
+        assertEquals( 1, rulesFired );
+    }
+
+    @Test
+    public void testFQNStaticMethodCall2() {
+        // DROOLS-5214
+        String str =
+                "package com.sample\n" +
+                "import " + Pojo.class.getCanonicalName() + ";\n" +
+                "\n" +
+                "rule R when\n" +
+                "    Pojo(intList.containsAll(java.util.Arrays.asList(1,3)))\n" +
+                "then\n" +
+                "end";
+
+        KieSession ksession = getKieSession( str );
+
+        ksession.insert( new Pojo( Arrays.asList(1,2,3) ) );
+        int rulesFired = ksession.fireAllRules();
+        assertEquals( 1, rulesFired );
+    }
+
+    public static class Pojo {
+        private final List<Integer> intList;
+
+        public Pojo( List<Integer> intList ) {
+            this.intList = intList;
+        }
+
+        public List<Integer> getIntList() {
+            return intList;
+        }
     }
 }
