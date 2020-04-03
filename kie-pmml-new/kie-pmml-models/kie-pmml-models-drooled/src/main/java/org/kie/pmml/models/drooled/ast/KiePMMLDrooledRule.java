@@ -20,6 +20,7 @@ import java.util.List;
 import java.util.Map;
 
 import org.kie.pmml.commons.enums.StatusCode;
+import org.kie.pmml.models.drooled.tuples.KiePMMLFieldOperatorValue;
 import org.kie.pmml.models.drooled.tuples.KiePMMLOperatorValue;
 
 public class KiePMMLDrooledRule {
@@ -37,7 +38,9 @@ public class KiePMMLDrooledRule {
     // Constraints put in or
     private Map<String, List<KiePMMLOperatorValue>> orConstraints;
     // Constraints put in xor
-    private Map<String, List<KiePMMLOperatorValue>> xorConstraints;
+    private List<KiePMMLFieldOperatorValue> xorConstraints;
+    // Constraints put in not
+    private Map<String, List<KiePMMLOperatorValue>> notConstraints;
     // Constraints put in "in"
     private Map<String, List<Object>> inConstraints;
     // Constraints put in "notIn""
@@ -129,8 +132,12 @@ public class KiePMMLDrooledRule {
         return orConstraints != null ? Collections.unmodifiableMap(orConstraints) : null;
     }
 
-    public Map<String, List<KiePMMLOperatorValue>> getXorConstraints() {
-        return xorConstraints != null ? Collections.unmodifiableMap(xorConstraints) : null;
+    public List<KiePMMLFieldOperatorValue> getXorConstraints() {
+        return xorConstraints != null ? Collections.unmodifiableList(xorConstraints) : null;
+    }
+
+    public Map<String, List<KiePMMLOperatorValue>> getNotConstraints() {
+        return notConstraints != null ? Collections.unmodifiableMap(notConstraints) : null;
     }
 
     public Map<String, List<Object>> getInConstraints() {
@@ -199,14 +206,26 @@ public class KiePMMLDrooledRule {
         }
 
         /**
-         * @param constraints The <b>key</b> of the map is the name of the generated type, while the <b>value</b> is the <code>List&lt;KiePMMLOperatorValue&gt;</code>
-         * to use for evaluation. Implicitly, the latter is evaluated with the <b>value</b> field of the former
-         * (e.g entry <b>"OUTLOOK"/List(KiePMMLOperatorValue("==", "sunny"))</b> generates OUTLOOK(value == "sunny")
-         * (e.g entry <b>"TEMPERATURE"/List(KiePMMLOperatorValue("<", 90), KiePMMLOperatorValue(">", 50))</b> generates TEMPERATURE( value < 90 && value > 50 )
+         * @param constraints The <code>List&lt;KiePMMLOperatorValue&gt;</code>
+         * to use for evaluation. Implicitly, the "operator" and the "value" fields are evaluated with the <b>value</b> field of the former
+         * (e.g entry <b>KiePMMLOperatorValue("OUTLOOK", "==", "sunny"))</b> generates OUTLOOK(value == "sunny")
+         * (e.g entry <b>KiePMMLOperatorValue("TEMPERATURE", "<", 90), KiePMMLOperatorValue("TEMPERATURE",">", 50))</b> generates TEMPERATURE( value < 90) TEMPERATURE( value > 50 )
          * @return
          */
-        public Builder withXorConstraints(Map<String, List<KiePMMLOperatorValue>> constraints) {
+        public Builder withXorConstraints(List<KiePMMLFieldOperatorValue> constraints) {
             this.toBuild.xorConstraints = constraints;
+            return this;
+        }
+
+        /**
+         * @param constraints The <b>key</b> of the map is the name of the generated type, while the <b>value</b> is the <code>List&lt;KiePMMLOperatorValue&gt;</code>
+         * to use for evaluation. Implicitly, the latter is evaluated with the <b>value</b> field of the former
+         * (e.g entry <b>"OUTLOOK"/List(KiePMMLOperatorValue("==", "sunny"))</b> generates not(OUTLOOK(value == "sunny"))
+         * (e.g entry <b>"TEMPERATURE"/List(KiePMMLOperatorValue("<", 90), KiePMMLOperatorValue(">", 50))</b> generates not(TEMPERATURE( value < 90 && value > 50 ))
+         * @return
+         */
+        public Builder withNotConstraints(Map<String, List<KiePMMLOperatorValue>> constraints) {
+            this.toBuild.notConstraints = constraints;
             return this;
         }
 

@@ -16,6 +16,7 @@
 package org.kie.pmml.models.tree.compiler.factories;
 
 import java.util.LinkedList;
+import java.util.List;
 import java.util.Map;
 import java.util.Queue;
 
@@ -25,11 +26,14 @@ import org.dmg.pmml.True;
 import org.dmg.pmml.tree.LeafNode;
 import org.dmg.pmml.tree.Node;
 import org.dmg.pmml.tree.TreeModel;
+import org.kie.pmml.commons.model.KiePMMLOutputField;
+import org.kie.pmml.commons.model.enums.DATA_TYPE;
 import org.kie.pmml.models.drooled.ast.KiePMMLDrooledRule;
 import org.kie.pmml.models.drooled.tuples.KiePMMLOriginalTypeGeneratedType;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import static org.kie.pmml.models.tree.compiler.factories.KiePMMLASTFactoryUtils.getCorrectlyFormattedResult;
 import static org.kie.pmml.models.tree.compiler.factories.KiePMMLTreeModelASTFactory.PATH_PATTERN;
 
 /**
@@ -40,15 +44,19 @@ public class KiePMMLTreeModelNodeASTFactory {
     private static final Logger logger = LoggerFactory.getLogger(KiePMMLTreeModelNodeASTFactory.class.getName());
 
     private final Map<String, KiePMMLOriginalTypeGeneratedType> fieldTypeMap;
+    private final List<KiePMMLOutputField> outputFields;
     private final TreeModel.NoTrueChildStrategy noTrueChildStrategy;
+    private final DATA_TYPE targetType;
 
-    private KiePMMLTreeModelNodeASTFactory(final Map<String, KiePMMLOriginalTypeGeneratedType> fieldTypeMap, final TreeModel.NoTrueChildStrategy noTrueChildStrategy) {
+    private KiePMMLTreeModelNodeASTFactory(final Map<String, KiePMMLOriginalTypeGeneratedType> fieldTypeMap, final List<KiePMMLOutputField> outputFields, final TreeModel.NoTrueChildStrategy noTrueChildStrategy, final DATA_TYPE targetType) {
         this.fieldTypeMap = fieldTypeMap;
+        this.outputFields = outputFields;
         this.noTrueChildStrategy = noTrueChildStrategy;
+        this.targetType = targetType;
     }
 
-    public static KiePMMLTreeModelNodeASTFactory factory(final Map<String, KiePMMLOriginalTypeGeneratedType> fieldTypeMap, final TreeModel.NoTrueChildStrategy noTrueChildStrategy) {
-        return new KiePMMLTreeModelNodeASTFactory(fieldTypeMap, noTrueChildStrategy);
+    public static KiePMMLTreeModelNodeASTFactory factory(final Map<String, KiePMMLOriginalTypeGeneratedType> fieldTypeMap, final List<KiePMMLOutputField> outputFields, final TreeModel.NoTrueChildStrategy noTrueChildStrategy, final DATA_TYPE targetType) {
+        return new KiePMMLTreeModelNodeASTFactory(fieldTypeMap, outputFields, noTrueChildStrategy, targetType);
     }
 
     public Queue<KiePMMLDrooledRule> declareRulesFromRootNode(final Node node, final String parentPath) {
@@ -88,9 +96,9 @@ public class KiePMMLTreeModelNodeASTFactory {
         if (predicate instanceof False) {
             return;
         }
-        String currentRule = String.format(PATH_PATTERN, parentPath, node.getScore().toString());
+        String currentRule = String.format(PATH_PATTERN, parentPath, node.getScore());
         if (!(predicate instanceof True)) {
-            KiePMMLTreeModelPredicateASTFactory.factory(fieldTypeMap, rules).declareRuleFromPredicate(predicate, parentPath, currentRule, node.getScore(), true);
+            KiePMMLTreeModelPredicateASTFactory.factory(fieldTypeMap, rules).declareRuleFromPredicate(predicate, parentPath, currentRule, getCorrectlyFormattedResult(node.getScore(), targetType), true);
         }
     }
 
@@ -111,12 +119,8 @@ public class KiePMMLTreeModelNodeASTFactory {
         if (predicate instanceof False) {
             return;
         }
-        String currentRule = String.format(PATH_PATTERN, parentPath, node.getScore().toString());
-//        if (predicate instanceof True) {
-//            KiePMMLTreeModelPredicateASTFactory.factory(fieldTypeMap, rules).declareRuleFromPredicate(predicate, parentPath, currentRule, node.getScore(), false);
-//        } else {
+        String currentRule = String.format(PATH_PATTERN, parentPath, node.getScore());
         KiePMMLTreeModelPredicateASTFactory.factory(fieldTypeMap, rules).declareRuleFromPredicate(predicate, parentPath, currentRule, node.getScore(), false);
-//        }
         node.getNodes().forEach(child -> declareRuleFromNode(child, currentRule, rules));
     }
 
@@ -131,9 +135,9 @@ public class KiePMMLTreeModelNodeASTFactory {
                                               final String parentPath,
                                               final Queue<KiePMMLDrooledRule> rules) {
         logger.debug("declareDefaultRuleFromNode {} {}", node, parentPath);
-        String originalRule = String.format(PATH_PATTERN, parentPath, node.getScore().toString());
+        String originalRule = String.format(PATH_PATTERN, parentPath, node.getScore());
         String currentRule = String.format(PATH_PATTERN, "default", originalRule);
-        KiePMMLTreeModelPredicateASTFactory.factory(fieldTypeMap, rules).declareRuleFromPredicate(new True(), originalRule, currentRule, node.getScore(), true);
+        KiePMMLTreeModelPredicateASTFactory.factory(fieldTypeMap, rules).declareRuleFromPredicate(new True(), originalRule, currentRule, getCorrectlyFormattedResult(node.getScore(), targetType), true);
     }
 
     protected boolean isFinalLeaf(final Node node) {

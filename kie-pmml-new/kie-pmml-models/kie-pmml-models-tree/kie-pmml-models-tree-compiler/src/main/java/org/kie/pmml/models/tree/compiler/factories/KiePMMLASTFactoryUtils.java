@@ -20,7 +20,10 @@ import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
 
+import org.dmg.pmml.Predicate;
 import org.dmg.pmml.SimplePredicate;
+import org.kie.pmml.commons.model.enums.DATA_TYPE;
+import org.kie.pmml.models.drooled.tuples.KiePMMLFieldOperatorValue;
 import org.kie.pmml.models.drooled.tuples.KiePMMLOperatorValue;
 import org.kie.pmml.models.drooled.tuples.KiePMMLOriginalTypeGeneratedType;
 import org.kie.pmml.models.tree.model.enums.OPERATOR;
@@ -34,13 +37,34 @@ public class KiePMMLASTFactoryUtils {
     public static Map<String, List<KiePMMLOperatorValue>> getConstraintEntryFromSimplePredicates(final String fieldName, final List<SimplePredicate> simplePredicates, final Map<String, KiePMMLOriginalTypeGeneratedType> fieldTypeMap) {
         List<KiePMMLOperatorValue> operatorValues = simplePredicates.stream().map(simplePredicate -> {
             String operator = OPERATOR.byName(simplePredicate.getOperator().value()).getOperator();
-            Object value = simplePredicate.getValue();
-            if (fieldTypeMap.get(simplePredicate.getField().getValue()).getOriginalType().equals("string")) {
-                value = "\"" + value + "\"";
-            }
+            Object value = getCorrectlyFormattedObject(simplePredicate, fieldTypeMap);
             return new KiePMMLOperatorValue(operator, value);
         }).collect(Collectors.toList());
         return Collections.singletonMap(fieldName, operatorValues);
     }
 
+    public static List<KiePMMLFieldOperatorValue> getXORConstraintEntryFromSimplePredicates(final List<Predicate> predicates, final Map<String, KiePMMLOriginalTypeGeneratedType> fieldTypeMap) {
+        return predicates.stream()
+                .filter(predicate -> predicate instanceof SimplePredicate)
+                .map(predicate -> {
+                    SimplePredicate simplePredicate = (SimplePredicate) predicate;
+                    String fieldName = fieldTypeMap.get(simplePredicate.getField().getValue()).getGeneratedType();
+                    String operator = OPERATOR.byName(simplePredicate.getOperator().value()).getOperator();
+                    Object value = getCorrectlyFormattedObject(simplePredicate, fieldTypeMap);
+                    return new KiePMMLFieldOperatorValue(fieldName, operator, value);
+                }).collect(Collectors.toList());
+    }
+
+    public static Object getCorrectlyFormattedObject(final SimplePredicate simplePredicate, final Map<String, KiePMMLOriginalTypeGeneratedType> fieldTypeMap) {
+        DATA_TYPE dataType = DATA_TYPE.byName(fieldTypeMap.get(simplePredicate.getField().getValue()).getOriginalType());
+        return getCorrectlyFormattedResult(simplePredicate.getValue(), dataType);
+    }
+
+    public static Object getCorrectlyFormattedResult(Object rawValue, DATA_TYPE targetType) {
+        Object toReturn = targetType.getActualValue(rawValue);
+        if (DATA_TYPE.STRING.equals(targetType)) {
+            toReturn = "\"" + toReturn + "\"";
+        }
+        return toReturn;
+    }
 }

@@ -78,7 +78,7 @@ public abstract class DrooledModelExecutor implements PMMLModelExecutor {
             }
         }
         executionParams.forEach(kSession::insert);
-//        setupExecutionListener(kSession);
+        setupExecutionListener(kSession);
         kSession.setGlobal("$pmml4Result", toReturn);
         kSession.fireAllRules();
         return toReturn;
@@ -98,11 +98,9 @@ public abstract class DrooledModelExecutor implements PMMLModelExecutor {
         final AgendaEventListener agendaEventListener = new AgendaEventListener() {
 
             public void matchCancelled(MatchCancelledEvent event) {
-                logger.debug(event.toString());
             }
 
             public void matchCreated(MatchCreatedEvent event) {
-                logger.debug(event.toString());
             }
 
             public void afterMatchFired(AfterMatchFiredEvent event) {
@@ -110,7 +108,6 @@ public abstract class DrooledModelExecutor implements PMMLModelExecutor {
             }
 
             public void agendaGroupPopped(AgendaGroupPoppedEvent event) {
-                logger.debug(event.toString());
             }
 
             public void agendaGroupPushed(AgendaGroupPushedEvent event) {
@@ -118,23 +115,18 @@ public abstract class DrooledModelExecutor implements PMMLModelExecutor {
             }
 
             public void beforeMatchFired(BeforeMatchFiredEvent event) {
-                logger.debug(event.toString());
             }
 
             public void beforeRuleFlowGroupActivated(RuleFlowGroupActivatedEvent event) {
-                logger.debug(event.toString());
             }
 
             public void afterRuleFlowGroupActivated(RuleFlowGroupActivatedEvent event) {
-                logger.debug(event.toString());
-            }
+         }
 
             public void beforeRuleFlowGroupDeactivated(RuleFlowGroupDeactivatedEvent event) {
-                logger.debug(event.toString());
             }
 
             public void afterRuleFlowGroupDeactivated(RuleFlowGroupDeactivatedEvent event) {
-                logger.debug(event.toString());
             }
         };
         kSession.addEventListener(agendaEventListener);

@@ -15,8 +15,10 @@
  */
 package org.kie.pmml.commons.factories;
 
+import java.util.Collections;
 import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
 
 import org.drools.compiler.lang.api.CEDescrBuilder;
 import org.drools.compiler.lang.api.ConditionalBranchDescrBuilder;
@@ -29,6 +31,7 @@ import org.drools.compiler.lang.descr.OrDescr;
 import org.kie.pmml.commons.exceptions.KiePMMLException;
 import org.kie.pmml.models.drooled.ast.KiePMMLDrooledRule;
 import org.kie.pmml.models.drooled.executor.KiePMMLStatusHolder;
+import org.kie.pmml.models.drooled.tuples.KiePMMLFieldOperatorValue;
 import org.kie.pmml.models.drooled.tuples.KiePMMLOperatorValue;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -72,6 +75,10 @@ public class KiePMMLDescrLhsFactory {
         if (rule.getXorConstraints() != null) {
             declareConstraintsXor(rule.getXorConstraints());
         }
+        if (rule.getNotConstraints() != null) {
+            declareNotConstraints(rule.getNotConstraints());
+        }
+
         if (rule.getInConstraints() != null) {
             rule.getInConstraints().forEach(this::declareConstraintIn);
         }
@@ -84,27 +91,21 @@ public class KiePMMLDescrLhsFactory {
     }
 
     protected void declareConstraintAndOr(final String operator, final String patternType, final List<KiePMMLOperatorValue> kiePMMLOperatorValues) {
-        StringBuilder constraintBuilder = new StringBuilder();
-        for (int i = 0; i < kiePMMLOperatorValues.size(); i++) {
-            KiePMMLOperatorValue kiePMMLOperatorValue = kiePMMLOperatorValues.get(i);
-            if (i > 0) {
-                constraintBuilder.append(" ");
-                constraintBuilder.append(operator);
-                constraintBuilder.append(" ");
-            }
-            constraintBuilder.append(String.format(VALUE_PATTERN, kiePMMLOperatorValue.getOperator(), kiePMMLOperatorValue.getValue()));
-        }
-        builder.pattern(patternType).constraint(constraintBuilder.toString());
+        String constraintString = kiePMMLOperatorValues.stream()
+                .map(kiePMMLOperatorValue -> String.format(VALUE_PATTERN, kiePMMLOperatorValue.getOperator(), kiePMMLOperatorValue.getValue()))
+                .collect(Collectors.joining(" " + operator + " "));
+        builder.pattern(patternType).constraint(constraintString);
     }
 
-    protected void declareConstraintsXor(final Map<String, List<KiePMMLOperatorValue>> xorConstraints) {
+    protected void declareConstraintsXor(final List<KiePMMLFieldOperatorValue> xorConstraints) {
         if (xorConstraints.size() != 2) {
             throw new KiePMMLException("Expecting two fields for XOR constraints, retrieved " + xorConstraints.size());
         }
-        final String[] keys = xorConstraints.keySet().toArray(new String[0]);
+        final String[] keys = new String[xorConstraints.size()];
         final List<KiePMMLOperatorValue>[] values = new List[xorConstraints.size()];
         for (int i = 0; i < keys.length; i++) {
-            values[i] = xorConstraints.get(keys[i]);
+            keys[i] = xorConstraints.get(i).getName();
+            values[i] = Collections.singletonList(xorConstraints.get(i).getKiePMMLOperatorValue());
         }
         // The builder to put in "and" the not and the exists constraints
         final CEDescrBuilder<CEDescrBuilder<RuleDescrBuilder, AndDescr>, AndDescr> andBuilder = builder.and();
@@ -116,28 +117,25 @@ public class KiePMMLDescrLhsFactory {
         declareExistsConstraint(existsBuilder.or(), keys[1], values[1]);
     }
 
+    protected void declareNotConstraints(final Map<String, List<KiePMMLOperatorValue>> notConstraints) {
+        // The builder to put in "and" the not constraints
+        final CEDescrBuilder<CEDescrBuilder<RuleDescrBuilder, AndDescr>, AndDescr> andBuilder = builder.and();
+        final CEDescrBuilder<CEDescrBuilder<CEDescrBuilder<CEDescrBuilder<RuleDescrBuilder, AndDescr>, AndDescr>, NotDescr>, AndDescr> notBuilder = andBuilder.not().and();
+        notConstraints.forEach((fieldName, kiePMMLOperatorValues) -> declareNotConstraint(notBuilder, fieldName, kiePMMLOperatorValues));
+    }
+
     protected void declareNotConstraint(final CEDescrBuilder<CEDescrBuilder<CEDescrBuilder<CEDescrBuilder<RuleDescrBuilder, AndDescr>, AndDescr>, NotDescr>, AndDescr> notBuilder, final String patternType, final List<KiePMMLOperatorValue> kiePMMLOperatorValues) {
-        StringBuilder constraintBuilder = new StringBuilder();
-        for (int i = 0; i < kiePMMLOperatorValues.size(); i++) {
-            KiePMMLOperatorValue kiePMMLOperatorValue = kiePMMLOperatorValues.get(i);
-            if (i > 0) {
-                constraintBuilder.append(" && ");
-            }
-            constraintBuilder.append(String.format(VALUE_PATTERN, kiePMMLOperatorValue.getOperator(), kiePMMLOperatorValue.getValue()));
-        }
-        notBuilder.pattern(patternType).constraint(constraintBuilder.toString());
+        String constraintString = kiePMMLOperatorValues.stream()
+                .map(kiePMMLOperatorValue -> String.format(VALUE_PATTERN, kiePMMLOperatorValue.getOperator(), kiePMMLOperatorValue.getValue()))
+                .collect(Collectors.joining(" && "));
+        notBuilder.pattern(patternType).constraint(constraintString);
     }
 
     protected void declareExistsConstraint(final CEDescrBuilder<?, ?> existsBuilder, final String patternType, final List<KiePMMLOperatorValue> kiePMMLOperatorValues) {
-        StringBuilder constraintBuilder = new StringBuilder();
-        for (int i = 0; i < kiePMMLOperatorValues.size(); i++) {
-            KiePMMLOperatorValue kiePMMLOperatorValue = kiePMMLOperatorValues.get(i);
-            if (i > 0) {
-                constraintBuilder.append(" || ");
-            }
-            constraintBuilder.append(String.format(VALUE_PATTERN, kiePMMLOperatorValue.getOperator(), kiePMMLOperatorValue.getValue()));
-        }
-        existsBuilder.pattern(patternType).constraint(constraintBuilder.toString());
+        String constraintString = kiePMMLOperatorValues.stream()
+                .map(kiePMMLOperatorValue -> String.format(VALUE_PATTERN, kiePMMLOperatorValue.getOperator(), kiePMMLOperatorValue.getValue()))
+                .collect(Collectors.joining(" || "));
+        existsBuilder.pattern(patternType).constraint(constraintString);
     }
 
     protected void declareConstraintIn(final String patternType, final List<Object> values) {
@@ -158,16 +156,9 @@ public class KiePMMLDescrLhsFactory {
     }
 
     protected String getInNotInConstraint(final List<Object> values) {
-        StringBuilder constraintBuilder = new StringBuilder();
-        constraintBuilder.append("(");
-        for (int i = 0; i < values.size(); i++) {
-            Object value = values.get(i);
-            if (i > 0) {
-                constraintBuilder.append(", ");
-            }
-            constraintBuilder.append(value);
-        }
-        constraintBuilder.append(")");
-        return String.format(VALUE_PATTERN, "in", constraintBuilder.toString());
+        String expressionString = values.stream()
+                .map(Object::toString)
+                .collect(Collectors.joining(", ", "(", ")"));
+        return String.format(VALUE_PATTERN, "in", expressionString);
     }
 }

@@ -15,17 +15,23 @@
  */
 package org.kie.pmml.models.tree.compiler.factories;
 
+import java.util.List;
 import java.util.Map;
 import java.util.Queue;
 
 import org.dmg.pmml.DataDictionary;
 import org.dmg.pmml.tree.TreeModel;
+import org.kie.pmml.commons.model.KiePMMLOutputField;
+import org.kie.pmml.commons.model.enums.DATA_TYPE;
 import org.kie.pmml.models.drooled.ast.KiePMMLDrooledAST;
 import org.kie.pmml.models.drooled.ast.KiePMMLDrooledRule;
 import org.kie.pmml.models.drooled.ast.KiePMMLDrooledType;
 import org.kie.pmml.models.drooled.tuples.KiePMMLOriginalTypeGeneratedType;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+import static org.kie.pmml.compiler.commons.factories.KiePMMLOutputFieldFactory.getOutputFields;
+import static org.kie.pmml.compiler.commons.utils.ModelUtils.getTargetFieldType;
 
 /**
  * Class used to generate a <code>KiePMMLDrooledAST</code> out of a <code>DataDictionary</code> and a <code>TreeModel</code>
@@ -53,8 +59,10 @@ public class KiePMMLTreeModelASTFactory {
      */
     public static KiePMMLDrooledAST getKiePMMLDrooledAST(DataDictionary dataDictionary, TreeModel model, final Map<String, KiePMMLOriginalTypeGeneratedType> fieldTypeMap) {
         logger.debug("getKiePMMLDrooledAST {} {}", dataDictionary, model);
+        List<KiePMMLOutputField> outputFields = getOutputFields(model);
+        DATA_TYPE targetType = getTargetFieldType(dataDictionary, model);
         Queue<KiePMMLDrooledType> types = KiePMMLTreeModelDataDictionaryASTFactory.factory(fieldTypeMap).declareTypes(dataDictionary);
-        Queue<KiePMMLDrooledRule> rules = KiePMMLTreeModelNodeASTFactory.factory(fieldTypeMap, model.getNoTrueChildStrategy()).declareRulesFromRootNode(model.getNode(), "");
+        Queue<KiePMMLDrooledRule> rules = KiePMMLTreeModelNodeASTFactory.factory(fieldTypeMap, outputFields, model.getNoTrueChildStrategy(), targetType).declareRulesFromRootNode(model.getNode(), "");
         return new KiePMMLDrooledAST(types, rules);
     }
 }

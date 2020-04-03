@@ -15,7 +15,9 @@
  */
 package org.kie.pmml.compiler.commons.utils;
 
+import java.util.LinkedHashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Objects;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -24,6 +26,7 @@ import org.dmg.pmml.DataDictionary;
 import org.dmg.pmml.MiningField;
 import org.dmg.pmml.Model;
 import org.kie.pmml.commons.exceptions.KiePMMLInternalException;
+import org.kie.pmml.commons.model.enums.DATA_TYPE;
 import org.kie.pmml.commons.model.enums.OP_TYPE;
 import org.kie.pmml.commons.model.tuples.KiePMMLNameOpType;
 
@@ -44,8 +47,12 @@ public class ModelUtils {
      * @param model
      * @return
      */
-    public static Optional<String> getTargetField(DataDictionary dataDictionary, Model model) {
+    public static Optional<String> getTargetFieldName(DataDictionary dataDictionary, Model model) {
         return getTargetFields(dataDictionary, model).stream().map(KiePMMLNameOpType::getName).findFirst();
+    }
+
+    public static DATA_TYPE getTargetFieldType(DataDictionary dataDictionary, Model model) {
+        return getTargetFieldsTypeMap(dataDictionary, model).entrySet().iterator().next().getValue();
     }
 
     public static List<KiePMMLNameOpType> getTargetFields(DataDictionary dataDictionary, Model model) {
@@ -63,6 +70,23 @@ public class ModelUtils {
                         return new KiePMMLNameOpType(miningField.getName().getValue(), opType);
                     })
                     .collect(Collectors.toList());
+        }
+    }
+
+    public static Map<String, DATA_TYPE> getTargetFieldsTypeMap(DataDictionary dataDictionary, Model model) {
+        if (model.getTargets() != null && model.getTargets().getTargets() != null) {
+            return model.getTargets().getTargets().stream()
+                    .collect(Collectors.toMap(target -> target.getField().getValue(),
+                                              target -> getDataType(dataDictionary, target.getField().getValue()),
+                                              (o1, o2) -> o1,
+                                              LinkedHashMap::new));
+        } else {
+            return model.getMiningSchema().getMiningFields().stream()
+                    .filter(miningField -> MiningField.UsageType.TARGET.equals(miningField.getUsageType()) || MiningField.UsageType.PREDICTED.equals(miningField.getUsageType()))
+                    .collect(Collectors.toMap(miningField -> miningField.getName().getValue(),
+                                              miningField -> getDataType(dataDictionary, miningField.getName().getValue()),
+                                              (o1, o2) -> o1,
+                                              LinkedHashMap::new));
         }
     }
 
@@ -87,5 +111,19 @@ public class ModelUtils {
                     .map(dataField -> OP_TYPE.byName(dataField.getOpType().value()));
         }
         return toReturn.orElseThrow(() -> new KiePMMLInternalException(String.format("Failed to find OpType for field %s", targetFieldName)));
+    }
+
+    /**
+     * <code>DATA_TYPE</code> of the given <b>field</b>
+     * @param dataDictionary
+     * @param targetFieldName
+     * @return
+     */
+    public static DATA_TYPE getDataType(DataDictionary dataDictionary, String targetFieldName) {
+        Optional<DATA_TYPE> toReturn = dataDictionary.getDataFields().stream()
+                .filter(dataField -> Objects.equals(targetFieldName, dataField.getName().getValue()))
+                .findFirst()
+                .map(dataField -> DATA_TYPE.byName(dataField.getDataType().value()));
+        return toReturn.orElseThrow(() -> new KiePMMLInternalException(String.format("Failed to find DataType for field %s", targetFieldName)));
     }
 }

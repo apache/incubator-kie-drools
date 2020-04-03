@@ -17,10 +17,7 @@
 package org.kie.pmml.commons.factories;
 
 import java.util.Arrays;
-import java.util.Collections;
-import java.util.LinkedHashMap;
 import java.util.List;
-import java.util.Map;
 
 import org.drools.compiler.lang.api.CEDescrBuilder;
 import org.drools.compiler.lang.api.DescrFactory;
@@ -39,6 +36,7 @@ import org.junit.Test;
 import org.kie.pmml.commons.exceptions.KiePMMLException;
 import org.kie.pmml.models.drooled.ast.KiePMMLDrooledRule;
 import org.kie.pmml.models.drooled.executor.KiePMMLStatusHolder;
+import org.kie.pmml.models.drooled.tuples.KiePMMLFieldOperatorValue;
 import org.kie.pmml.models.drooled.tuples.KiePMMLOperatorValue;
 
 import static org.junit.Assert.assertEquals;
@@ -109,21 +107,22 @@ public class KiePMMLDescrLhsFactoryTest {
 
     @Test(expected = KiePMMLException.class)
     public void declareConstraintsXorWrongInput() {
-        List<KiePMMLOperatorValue> kiePMMLOperatorValues = Arrays.asList(new KiePMMLOperatorValue("<", 35), new KiePMMLOperatorValue(">", 85));
-        String patternType = "TEMPERATURE";
-        final Map<String, List<KiePMMLOperatorValue>> xorConstraints = Collections.singletonMap(patternType, kiePMMLOperatorValues);
+        String temperatureField = "TEMPERATURE";
+        String humidityField = "HUMIDITY";
+        final List<KiePMMLFieldOperatorValue> xorConstraints = Arrays
+                .asList(new KiePMMLFieldOperatorValue(temperatureField, "<", 35),
+                        new KiePMMLFieldOperatorValue(temperatureField, ">", 85),
+                        new KiePMMLFieldOperatorValue(humidityField, "<", 56),
+                        new KiePMMLFieldOperatorValue(humidityField, ">", 91));
         KiePMMLDescrLhsFactory.factory(lhsBuilder).declareConstraintsXor(xorConstraints);
     }
 
     @Test
     public void declareConstraintsXor() {
         String temperatureField = "TEMPERATURE";
-        String humidityField = "HUMIDITY";
-        List<KiePMMLOperatorValue> temperatureValues = Arrays.asList(new KiePMMLOperatorValue("<", 35), new KiePMMLOperatorValue(">", 85));
-        List<KiePMMLOperatorValue> humidityValues = Arrays.asList(new KiePMMLOperatorValue("<", 56), new KiePMMLOperatorValue(">", 91));
-        final Map<String, List<KiePMMLOperatorValue>> xorConstraints = new LinkedHashMap<>();
-        xorConstraints.put(temperatureField, temperatureValues);
-        xorConstraints.put(humidityField, humidityValues);
+        final List<KiePMMLFieldOperatorValue> xorConstraints = Arrays
+                .asList(new KiePMMLFieldOperatorValue(temperatureField, "<", 35),
+                        new KiePMMLFieldOperatorValue(temperatureField, ">", 85));
         KiePMMLDescrLhsFactory.factory(lhsBuilder).declareConstraintsXor(xorConstraints);
         assertNotNull(lhsBuilder.getDescr());
         assertNotNull(lhsBuilder.getDescr().getDescrs());
@@ -134,7 +133,7 @@ public class KiePMMLDescrLhsFactoryTest {
         assertTrue(rootAndDescr.getDescrs().get(0) instanceof NotDescr);
         assertTrue(rootAndDescr.getDescrs().get(1) instanceof ExistsDescr);
         // "Not" construct
-        NotDescr notDescr = (NotDescr)rootAndDescr.getDescrs().get(0);
+        NotDescr notDescr = (NotDescr) rootAndDescr.getDescrs().get(0);
         assertEquals(1, notDescr.getDescrs().size());
         assertTrue(notDescr.getDescrs().get(0) instanceof AndDescr);
         AndDescr notAndDescr = (AndDescr) notDescr.getDescrs().get(0);
@@ -150,10 +149,10 @@ public class KiePMMLDescrLhsFactoryTest {
         ExprConstraintDescr exprConstraintDescr = (ExprConstraintDescr) andDescr.getDescrs().get(0);
         assertFalse(exprConstraintDescr.isNegated());
         assertEquals(ExprConstraintDescr.Type.NAMED, exprConstraintDescr.getType());
-        String expected = "value < 35 && value > 85";
+        String expected = "value < 35";
         assertEquals(expected, exprConstraintDescr.getExpression());
         patternDescr = (PatternDescr) notAndDescr.getDescrs().get(1);
-        assertEquals(humidityField, patternDescr.getObjectType());
+        assertEquals(temperatureField, patternDescr.getObjectType());
         assertNull(patternDescr.getIdentifier());
         assertTrue(patternDescr.getConstraint() instanceof AndDescr);
         andDescr = (AndDescr) patternDescr.getConstraint();
@@ -162,13 +161,13 @@ public class KiePMMLDescrLhsFactoryTest {
         exprConstraintDescr = (ExprConstraintDescr) andDescr.getDescrs().get(0);
         assertFalse(exprConstraintDescr.isNegated());
         assertEquals(ExprConstraintDescr.Type.NAMED, exprConstraintDescr.getType());
-        expected = "value < 56 && value > 91";
+        expected = "value > 85";
         assertEquals(expected, exprConstraintDescr.getExpression());
         // "Exists" construct
         ExistsDescr existsDescr = (ExistsDescr) rootAndDescr.getDescrs().get(1);
         assertEquals(1, existsDescr.getDescrs().size());
         assertTrue(existsDescr.getDescrs().get(0) instanceof OrDescr);
-        OrDescr existsOrDescr = (OrDescr)existsDescr.getDescrs().get(0);
+        OrDescr existsOrDescr = (OrDescr) existsDescr.getDescrs().get(0);
         assertEquals(2, existsOrDescr.getDescrs().size());
         assertTrue(existsOrDescr.getDescrs().get(0) instanceof PatternDescr);
         assertTrue(existsOrDescr.getDescrs().get(1) instanceof OrDescr);
@@ -182,13 +181,13 @@ public class KiePMMLDescrLhsFactoryTest {
         exprConstraintDescr = (ExprConstraintDescr) andDescr.getDescrs().get(0);
         assertFalse(exprConstraintDescr.isNegated());
         assertEquals(ExprConstraintDescr.Type.NAMED, exprConstraintDescr.getType());
-        expected = "value < 35 || value > 85";
+        expected = "value < 35";
         assertEquals(expected, exprConstraintDescr.getExpression());
         OrDescr nestedOrDescr = (OrDescr) existsOrDescr.getDescrs().get(1);
         assertEquals(1, nestedOrDescr.getDescrs().size());
         assertTrue(nestedOrDescr.getDescrs().get(0) instanceof PatternDescr);
         patternDescr = (PatternDescr) nestedOrDescr.getDescrs().get(0);
-        assertEquals(humidityField, patternDescr.getObjectType());
+        assertEquals(temperatureField, patternDescr.getObjectType());
         assertNull(patternDescr.getIdentifier());
         assertTrue(patternDescr.getConstraint() instanceof AndDescr);
         andDescr = (AndDescr) patternDescr.getConstraint();
@@ -197,7 +196,7 @@ public class KiePMMLDescrLhsFactoryTest {
         exprConstraintDescr = (ExprConstraintDescr) andDescr.getDescrs().get(0);
         assertFalse(exprConstraintDescr.isNegated());
         assertEquals(ExprConstraintDescr.Type.NAMED, exprConstraintDescr.getType());
-        expected = "value < 56 || value > 91";
+        expected = "value > 85";
         assertEquals(expected, exprConstraintDescr.getExpression());
     }
 
@@ -325,7 +324,7 @@ public class KiePMMLDescrLhsFactoryTest {
     @Test
     public void getInNotInConstraint() {
         List<Object> values = Arrays.asList("-5", "0.5", "1", "10");
-        String retrieved =  KiePMMLDescrLhsFactory.factory(lhsBuilder).getInNotInConstraint(values);
+        String retrieved = KiePMMLDescrLhsFactory.factory(lhsBuilder).getInNotInConstraint(values);
         String expected = "value in (-5, 0.5, 1, 10)";
         assertEquals(expected, retrieved);
     }

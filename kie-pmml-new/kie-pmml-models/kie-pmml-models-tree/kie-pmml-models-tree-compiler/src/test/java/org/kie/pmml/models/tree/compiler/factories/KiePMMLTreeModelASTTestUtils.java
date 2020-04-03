@@ -17,6 +17,7 @@ package org.kie.pmml.models.tree.compiler.factories;
 
 import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
 
 import org.dmg.pmml.Array;
 import org.dmg.pmml.DataField;
@@ -63,15 +64,8 @@ public class KiePMMLTreeModelASTTestUtils {
         SimpleSetPredicate toReturn = new SimpleSetPredicate();
         toReturn.setField(fieldName);
         toReturn.setBooleanOperator(booleanOperator);
-        StringBuilder builder = new StringBuilder();
-        for (int i = 0; i < values.size(); i++) {
-            String value = values.get(i);
-            if (i > 0) {
-                builder.append(" ");
-            }
-            builder.append(value);
-        }
-        Array array = new Array(arrayType, builder.toString());
+        String arrayString = String.join(" ", values);
+        Array array = new Array(arrayType, arrayString);
         array.setN(values.size());
         toReturn.setArray(array);
         return toReturn;

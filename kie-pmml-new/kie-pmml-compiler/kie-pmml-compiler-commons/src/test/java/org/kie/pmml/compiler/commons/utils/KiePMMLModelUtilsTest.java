@@ -32,7 +32,7 @@ import static org.junit.Assert.assertTrue;
 import static org.kie.pmml.commons.model.enums.OP_TYPE.CATEGORICAL;
 import static org.kie.pmml.commons.model.enums.OP_TYPE.CONTINUOUS;
 import static org.kie.pmml.compiler.commons.utils.ModelUtils.getOpType;
-import static org.kie.pmml.compiler.commons.utils.ModelUtils.getTargetField;
+import static org.kie.pmml.compiler.commons.utils.ModelUtils.getTargetFieldName;
 import static org.kie.pmml.compiler.commons.utils.ModelUtils.getTargetFields;
 import static org.kie.test.util.filesystem.FileUtils.getFileInputStream;
 
@@ -52,14 +52,14 @@ public class KiePMMLModelUtilsTest {
     @Test
     public void getTargetFieldNoTarget() throws Exception {
         pmmlModel = KiePMMLUtil.load(getFileInputStream(NO_TARGET_SOURCE));
-        assertFalse(getTargetField(pmmlModel.getDataDictionary(), pmmlModel.getModels().get(0)).isPresent());
+        assertFalse(getTargetFieldName(pmmlModel.getDataDictionary(), pmmlModel.getModels().get(0)).isPresent());
         assertTrue(getTargetFields(pmmlModel.getDataDictionary(), pmmlModel.getModels().get(0)).isEmpty());
     }
 
     @Test
     public void getTargetFieldOneMiningTarget() throws Exception {
         pmmlModel = KiePMMLUtil.load(getFileInputStream(ONE_MINING_TARGET_SOURCE));
-        final Optional<String> retrieved = getTargetField(pmmlModel.getDataDictionary(), pmmlModel.getModels().get(0));
+        final Optional<String> retrieved = getTargetFieldName(pmmlModel.getDataDictionary(), pmmlModel.getModels().get(0));
         assertTrue(retrieved.isPresent());
         assertEquals(WHAT_I_DO_TARGET_FIELD, retrieved.get());
         final List<KiePMMLNameOpType> retrieveds = getTargetFields(pmmlModel.getDataDictionary(), pmmlModel.getModels().get(0));
@@ -70,7 +70,7 @@ public class KiePMMLModelUtilsTest {
     @Test
     public void getTargetFieldMultipleTargets() throws Exception {
         pmmlModel = KiePMMLUtil.load(getFileInputStream(MULTIPLE_TARGETS_SOURCE));
-        final Optional<String> retrieved = getTargetField(pmmlModel.getDataDictionary(), pmmlModel.getModels().get(0));
+        final Optional<String> retrieved = getTargetFieldName(pmmlModel.getDataDictionary(), pmmlModel.getModels().get(0));
         assertTrue(retrieved.isPresent());
         assertEquals(NUMBER_OF_CLAIMS_FIELD, retrieved.get());
         final List<KiePMMLNameOpType> retrieveds = getTargetFields(pmmlModel.getDataDictionary(), pmmlModel.getModels().get(0));

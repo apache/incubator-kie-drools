@@ -49,9 +49,9 @@
         <CompoundPredicate booleanOperator="xor">
           <SimplePredicate field="input1" operator="equal" value="6"/>
           <SimplePredicate field="input1" operator="equal" value="7"/>
-          <SimplePredicate field="input2" operator="equal" value="6.5"/>
-          <SimplePredicate field="input2" operator="equal" value="7.5"/>
-          <SimplePredicate field="input3" operator="equal" value="7.7"/>
+<!--          <SimplePredicate field="input2" operator="equal" value="6.5"/>-->
+<!--          <SimplePredicate field="input2" operator="equal" value="7.5"/>-->
+<!--          <SimplePredicate field="input3" operator="equal" value="7.7"/>-->
         </CompoundPredicate>
       </Node>
     </Node>

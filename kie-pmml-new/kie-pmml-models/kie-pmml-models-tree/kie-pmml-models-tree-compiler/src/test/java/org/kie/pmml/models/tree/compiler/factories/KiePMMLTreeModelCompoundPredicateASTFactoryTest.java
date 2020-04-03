@@ -31,7 +31,6 @@ import org.dmg.pmml.SimplePredicate;
 import org.junit.Test;
 import org.kie.pmml.commons.enums.StatusCode;
 import org.kie.pmml.models.drooled.ast.KiePMMLDrooledRule;
-import org.kie.pmml.models.drooled.tuples.KiePMMLOperatorValue;
 import org.kie.pmml.models.drooled.tuples.KiePMMLOriginalTypeGeneratedType;
 
 import static org.junit.Assert.assertEquals;
@@ -67,21 +66,19 @@ public class KiePMMLTreeModelCompoundPredicateASTFactoryTest {
             assertEquals(String.format(STATUS_PATTERN, parentPath), retrieved.getStatusConstraint());
             assertEquals(result, retrieved.getResult());
             assertEquals(StatusCode.OK, retrieved.getResultCode());
-            Map<String, List<KiePMMLOperatorValue>> constraints = null;
             switch (compoundPredicate.getBooleanOperator()) {
                 case AND:
-                    constraints = retrieved.getAndConstraints();
+                    assertNotNull(retrieved.getAndConstraints());
                     break;
                 case OR:
-                    constraints = retrieved.getOrConstraints();
+                    assertNotNull(retrieved.getOrConstraints());
                     break;
                 case XOR:
-                    constraints = retrieved.getXorConstraints();
+                    assertNotNull(retrieved.getXorConstraints());
                     break;
                 default:
-                    continue;
+                    // no op
             }
-            assertNotNull(constraints);
         }
     }
 
@@ -107,21 +104,19 @@ public class KiePMMLTreeModelCompoundPredicateASTFactoryTest {
             assertEquals(currentRule, retrieved.getName());
             assertEquals(currentRule, retrieved.getStatusToSet());
             assertEquals(String.format(STATUS_PATTERN, parentPath), retrieved.getStatusConstraint());
-            Map<String, List<KiePMMLOperatorValue>> constraints = null;
             switch (compoundPredicate.getBooleanOperator()) {
                 case AND:
-                    constraints = retrieved.getAndConstraints();
+                    assertNotNull(retrieved.getAndConstraints());
                     break;
                 case OR:
-                    constraints = retrieved.getOrConstraints();
+                    assertNotNull(retrieved.getOrConstraints());
                     break;
                 case XOR:
-                    constraints = retrieved.getXorConstraints();
+                    assertNotNull(retrieved.getXorConstraints());
                     break;
                 default:
-                    continue;
+                    // no op
             }
-            assertNotNull(constraints);
         }
     }
 
@@ -137,15 +132,17 @@ public class KiePMMLTreeModelCompoundPredicateASTFactoryTest {
         predicates.forEach(compoundPredicate::addPredicates);
         final Queue<KiePMMLDrooledRule> rules = new LinkedList<>();
         KiePMMLTreeModelCompoundPredicateASTFactory.factory(compoundPredicate, fieldTypeMap, rules).declareRuleFromCompoundPredicateSurrogate(parentPath, currentRule, result, true);
-        int expectedRules = predicates.size() + 1; // One rule is generated for the Compound predicate itself
+        int expectedRules = (predicates.size() * 2) + 1; // For each "surrogate" predicate two rules -"TRUE" and "FALSE" - are generated; one more rule is generated for the Compound predicate itself
         assertEquals(expectedRules, rules.size());
         KiePMMLDrooledRule retrieved;
-        String agendaActivationGroup = String.format(SURROGATE_GROUP_PATTERN, currentRule);;
+        String agendaActivationGroup = String.format(SURROGATE_GROUP_PATTERN, currentRule);
         while ((retrieved = rules.poll()) != null) {
             String ruleName = retrieved.getName();
             if (ruleName.contains("_surrogate_")) {
                 String[] ruleNameParts = ruleName.split("_surrogate_");
-                String generatedType = ruleNameParts[1];
+                String generatedTypePart = ruleNameParts[1];
+                boolean isTrueRule = generatedTypePart.endsWith("_TRUE");
+                final String generatedType = generatedTypePart.replace("_TRUE", "").replace("_FALSE", "");
                 final Optional<String> fieldName = fieldTypeMap
                         .entrySet()
                         .stream()
@@ -159,9 +156,15 @@ public class KiePMMLTreeModelCompoundPredicateASTFactoryTest {
                     assertEquals(agendaActivationGroup, retrieved.getActivationGroup());
                     assertEquals(agendaActivationGroup, retrieved.getAgendaGroup());
                     // Those are in a final leaf node
-                    assertEquals(StatusCode.DONE.getName(), retrieved.getStatusToSet());
-                    assertEquals(result, retrieved.getResult());
-                    assertEquals(StatusCode.OK, retrieved.getResultCode());
+                    if (isTrueRule) {
+                        assertEquals(StatusCode.DONE.getName(), retrieved.getStatusToSet());
+                        assertEquals(result, retrieved.getResult());
+                        assertEquals(StatusCode.OK, retrieved.getResultCode());
+                    } else {
+                        assertEquals(parentPath, retrieved.getStatusToSet());
+                        assertNull(retrieved.getResult());
+                        assertNull(retrieved.getResultCode());
+                    }
                 }
             } else {
                 assertNotNull(retrieved.getStatusConstraint());
@@ -186,15 +189,17 @@ public class KiePMMLTreeModelCompoundPredicateASTFactoryTest {
         predicates.forEach(compoundPredicate::addPredicates);
         final Queue<KiePMMLDrooledRule> rules = new LinkedList<>();
         KiePMMLTreeModelCompoundPredicateASTFactory.factory(compoundPredicate, fieldTypeMap, rules).declareRuleFromCompoundPredicateSurrogate(parentPath, currentRule, result, false);
-        int expectedRules = predicates.size() + 1; // One rule is generated for the Compound predicate itself
+        int expectedRules = (predicates.size() * 2) + 1; // For each "surrogate" predicate two rules -"TRUE" and "FALSE" - are generated; one more rule is generated for the Compound predicate itself
         assertEquals(expectedRules, rules.size());
         KiePMMLDrooledRule retrieved;
-        String agendaActivationGroup = String.format(SURROGATE_GROUP_PATTERN, currentRule);;
+        String agendaActivationGroup = String.format(SURROGATE_GROUP_PATTERN, currentRule);
         while ((retrieved = rules.poll()) != null) {
             String ruleName = retrieved.getName();
             if (ruleName.contains("_surrogate_")) {
                 String[] ruleNameParts = ruleName.split("_surrogate_");
-                String generatedType = ruleNameParts[1];
+                String generatedTypePart = ruleNameParts[1];
+                boolean isTrueRule = generatedTypePart.endsWith("_TRUE");
+                final String generatedType = generatedTypePart.replace("_TRUE", "").replace("_FALSE", "");
                 final Optional<String> fieldName = fieldTypeMap
                         .entrySet()
                         .stream()
@@ -208,9 +213,15 @@ public class KiePMMLTreeModelCompoundPredicateASTFactoryTest {
                     assertEquals(agendaActivationGroup, retrieved.getActivationGroup());
                     assertEquals(agendaActivationGroup, retrieved.getAgendaGroup());
                     // Those are not in a final leaf node
-                    assertEquals(currentRule, retrieved.getStatusToSet());
-                    assertNull(retrieved.getResult());
-                    assertNull(retrieved.getResultCode());
+                    if (isTrueRule) {
+                        assertEquals(currentRule, retrieved.getStatusToSet());
+                        assertNull(retrieved.getResult());
+                        assertNull(retrieved.getResultCode());
+                    } else {
+                        assertEquals(parentPath, retrieved.getStatusToSet());
+                        assertNull(retrieved.getResult());
+                        assertNull(retrieved.getResultCode());
+                    }
                 }
             } else {
                 assertNotNull(retrieved.getStatusConstraint());

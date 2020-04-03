@@ -16,6 +16,7 @@
 
 package org.kie.pmml.models.tree.compiler.factories;
 
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.Map;
@@ -28,6 +29,7 @@ import org.dmg.pmml.tree.Node;
 import org.dmg.pmml.tree.TreeModel;
 import org.junit.Before;
 import org.junit.Test;
+import org.kie.pmml.commons.model.enums.DATA_TYPE;
 import org.kie.pmml.compiler.testutils.TestUtils;
 import org.kie.pmml.models.drooled.ast.KiePMMLDrooledRule;
 import org.kie.pmml.models.drooled.tuples.KiePMMLOriginalTypeGeneratedType;
@@ -36,6 +38,7 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
+import static org.kie.pmml.compiler.commons.utils.ModelUtils.getTargetFieldType;
 
 public class KiePMMLTreeModelNodeASTFactoryTest {
 
@@ -65,8 +68,9 @@ public class KiePMMLTreeModelNodeASTFactoryTest {
         Node rootNode = golfingModel.getNode();
         assertEquals("will play", rootNode.getScore());
         final Map<String, KiePMMLOriginalTypeGeneratedType> fieldTypeMap = new HashMap<>();
+        DATA_TYPE targetType = getTargetFieldType(golfingPmml.getDataDictionary(), golfingModel);
         KiePMMLTreeModelDataDictionaryASTFactory.factory(fieldTypeMap).declareTypes(golfingPmml.getDataDictionary());
-        KiePMMLTreeModelNodeASTFactory.factory(fieldTypeMap, TreeModel.NoTrueChildStrategy.RETURN_NULL_PREDICTION).declareRulesFromRootNode(rootNode, "_will");
+        KiePMMLTreeModelNodeASTFactory.factory(fieldTypeMap, Collections.emptyList(), TreeModel.NoTrueChildStrategy.RETURN_NULL_PREDICTION, targetType).declareRulesFromRootNode(rootNode, "_will");
         assertFalse(fieldTypeMap.isEmpty());
     }
 
@@ -75,8 +79,9 @@ public class KiePMMLTreeModelNodeASTFactoryTest {
         Node rootNode = irisModel.getNode();
         assertEquals("setosa", rootNode.getScore());
         final Map<String, KiePMMLOriginalTypeGeneratedType> fieldTypeMap = new HashMap<>();
+        DATA_TYPE targetType = getTargetFieldType(irisPmml.getDataDictionary(), irisModel);
         KiePMMLTreeModelDataDictionaryASTFactory.factory(fieldTypeMap).declareTypes(irisPmml.getDataDictionary());
-        KiePMMLTreeModelNodeASTFactory.factory(fieldTypeMap, TreeModel.NoTrueChildStrategy.RETURN_NULL_PREDICTION).declareRulesFromRootNode(rootNode, "_setosa");
+        KiePMMLTreeModelNodeASTFactory.factory(fieldTypeMap, Collections.emptyList(), TreeModel.NoTrueChildStrategy.RETURN_NULL_PREDICTION, targetType).declareRulesFromRootNode(rootNode, "_setosa");
         assertFalse(fieldTypeMap.isEmpty());
     }
 
@@ -86,9 +91,10 @@ public class KiePMMLTreeModelNodeASTFactoryTest {
                 .getNodes().get(0);
         assertEquals("will play", finalNode.getScore());
         final Map<String, KiePMMLOriginalTypeGeneratedType> fieldTypeMap = new HashMap<>();
+        DATA_TYPE targetType = getTargetFieldType(golfingPmml.getDataDictionary(), golfingModel);
         KiePMMLTreeModelDataDictionaryASTFactory.factory(fieldTypeMap).declareTypes(golfingPmml.getDataDictionary());
         final Queue<KiePMMLDrooledRule> rules = new LinkedList<>();
-        KiePMMLTreeModelNodeASTFactory.factory(fieldTypeMap, TreeModel.NoTrueChildStrategy.RETURN_NULL_PREDICTION).declareIntermediateRuleFromNode(finalNode, "_will play", rules);
+        KiePMMLTreeModelNodeASTFactory.factory(fieldTypeMap, Collections.emptyList(), TreeModel.NoTrueChildStrategy.RETURN_NULL_PREDICTION, targetType).declareIntermediateRuleFromNode(finalNode, "_will play", rules);
         assertFalse(rules.isEmpty());
     }
 
@@ -98,20 +104,22 @@ public class KiePMMLTreeModelNodeASTFactoryTest {
                 .getNodes().get(1);
         assertEquals("versicolor", finalNode.getScore());
         final Map<String, KiePMMLOriginalTypeGeneratedType> fieldTypeMap = new HashMap<>();
+        DATA_TYPE targetType = getTargetFieldType(irisPmml.getDataDictionary(), irisModel);
         KiePMMLTreeModelDataDictionaryASTFactory.factory(fieldTypeMap).declareTypes(irisPmml.getDataDictionary());
         final Queue<KiePMMLDrooledRule> rules = new LinkedList<>();
-        KiePMMLTreeModelNodeASTFactory.factory(fieldTypeMap, TreeModel.NoTrueChildStrategy.RETURN_NULL_PREDICTION).declareIntermediateRuleFromNode(finalNode, "_setosa", rules);
+        KiePMMLTreeModelNodeASTFactory.factory(fieldTypeMap, Collections.emptyList(), TreeModel.NoTrueChildStrategy.RETURN_NULL_PREDICTION, targetType).declareIntermediateRuleFromNode(finalNode, "_setosa", rules);
         assertFalse(rules.isEmpty());
     }
 
     @Test
     public void isFinalLeaf() {
         Node node = new LeafNode();
-        KiePMMLTreeModelNodeASTFactory.factory(new HashMap<>(), TreeModel.NoTrueChildStrategy.RETURN_NULL_PREDICTION).isFinalLeaf(node);
-        assertTrue(KiePMMLTreeModelNodeASTFactory.factory(new HashMap<>(), TreeModel.NoTrueChildStrategy.RETURN_NULL_PREDICTION).isFinalLeaf(node));
+        DATA_TYPE targetType = DATA_TYPE.STRING;
+        KiePMMLTreeModelNodeASTFactory.factory(new HashMap<>(), Collections.emptyList(), TreeModel.NoTrueChildStrategy.RETURN_NULL_PREDICTION, targetType).isFinalLeaf(node);
+        assertTrue(KiePMMLTreeModelNodeASTFactory.factory(new HashMap<>(), Collections.emptyList(), TreeModel.NoTrueChildStrategy.RETURN_NULL_PREDICTION, targetType).isFinalLeaf(node));
         node = new ClassifierNode();
-        assertTrue(KiePMMLTreeModelNodeASTFactory.factory(new HashMap<>(), TreeModel.NoTrueChildStrategy.RETURN_NULL_PREDICTION).isFinalLeaf(node));
+        assertTrue(KiePMMLTreeModelNodeASTFactory.factory(new HashMap<>(), Collections.emptyList(), TreeModel.NoTrueChildStrategy.RETURN_NULL_PREDICTION, targetType).isFinalLeaf(node));
         node.addNodes(new LeafNode());
-        assertFalse(KiePMMLTreeModelNodeASTFactory.factory(new HashMap<>(), TreeModel.NoTrueChildStrategy.RETURN_NULL_PREDICTION).isFinalLeaf(node));
+        assertFalse(KiePMMLTreeModelNodeASTFactory.factory(new HashMap<>(), Collections.emptyList(), TreeModel.NoTrueChildStrategy.RETURN_NULL_PREDICTION, targetType).isFinalLeaf(node));
     }
 }

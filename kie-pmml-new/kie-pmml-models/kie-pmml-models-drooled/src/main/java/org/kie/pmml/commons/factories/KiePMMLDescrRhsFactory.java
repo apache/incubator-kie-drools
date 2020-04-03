@@ -15,6 +15,8 @@
  */
 package org.kie.pmml.commons.factories;
 
+import java.util.StringJoiner;
+
 import org.drools.compiler.lang.api.RuleDescrBuilder;
 import org.kie.pmml.commons.enums.StatusCode;
 import org.kie.pmml.models.drooled.ast.KiePMMLDrooledRule;
@@ -31,7 +33,7 @@ import static org.kie.pmml.commons.factories.KiePMMLDescrRulesFactory.STATUS_HOL
 public class KiePMMLDescrRhsFactory {
 
     public static final String SET_PMML4_RESULT_CODE = "\r\n" + PMML4_RESULT_IDENTIFIER + ".setResultCode(\"%s\");";
-    public static final String ADD_PMML4_RESULT_VARIABLE = "\r\n" + PMML4_RESULT_IDENTIFIER + ".addResultVariable(" + PMML4_RESULT_IDENTIFIER + ".getResultObjectName()" + ", \"%s\");";
+    public static final String ADD_PMML4_RESULT_VARIABLE = "\r\n" + PMML4_RESULT_IDENTIFIER + ".addResultVariable(" + PMML4_RESULT_IDENTIFIER + ".getResultObjectName()" + ", %s);";
 
     public static final String UPDATE_STATUS_HOLDER = "\r\n" + STATUS_HOLDER + ".setStatus(\"%s\");\r\nupdate(" + STATUS_HOLDER + ");";
     public static final String FOCUS_AGENDA_GROUP = "\r\nkcontext.getKieRuntime().getAgenda().getAgendaGroup( \"%s\" ).setFocus();";
@@ -63,44 +65,35 @@ public class KiePMMLDescrRhsFactory {
     }
 
     protected void declareDefaultThen(final KiePMMLDrooledRule rule) {
-        StringBuilder rhsBuilder = new StringBuilder();
-        rhsBuilder.append(String.format(PRINT_MATCHED_RULE, rule.getName()));
+        StringJoiner joiner = new StringJoiner("");
         if (rule.getStatusToSet() != null) {
-            rhsBuilder.append(String.format(PRINT_SET_STATUS, rule.getStatusToSet()));
-            rhsBuilder.append(String.format(UPDATE_STATUS_HOLDER, rule.getStatusToSet()));
+            joiner.add(String.format(UPDATE_STATUS_HOLDER, rule.getStatusToSet()));
         }
         if (rule.getResultCode() != null) {
-            rhsBuilder.append(String.format(PRINT_SET_RESULT_CODE, rule.getResultCode()));
-            rhsBuilder.append(String.format(SET_PMML4_RESULT_CODE, rule.getResultCode()));
+            joiner.add(String.format(SET_PMML4_RESULT_CODE, rule.getResultCode()));
         }
         if (rule.getResult() != null) {
-            rhsBuilder.append(String.format(PRINT_SET_RESULT, rule.getResult()));
-            rhsBuilder.append(String.format(ADD_PMML4_RESULT_VARIABLE, rule.getResult()));
+            joiner.add(String.format(ADD_PMML4_RESULT_VARIABLE, rule.getResult()));
         }
         if (rule.getFocusedAgendaGroup() != null) {
-            rhsBuilder.append(String.format(PRINT_SET_AGENDA_FOCUS, rule.getFocusedAgendaGroup()));
-            rhsBuilder.append(String.format(FOCUS_AGENDA_GROUP, rule.getFocusedAgendaGroup()));
+            joiner.add(String.format(FOCUS_AGENDA_GROUP, rule.getFocusedAgendaGroup()));
         }
-        builder.rhs(rhsBuilder.toString());
+        builder.rhs(joiner.toString());
     }
 
     protected void declareIfThen(final KiePMMLDrooledRule rule) {
         builder.rhs(String.format(UPDATE_STATUS_HOLDER, rule.getStatusToSet()));
-        StringBuilder rhsBuilder = new StringBuilder();
-        rhsBuilder.append(String.format(PRINT_MATCHED_RULE, rule.getName()));
-        rhsBuilder.append(String.format(UPDATE_STATUS_HOLDER, StatusCode.DONE.getName()));
+        StringJoiner joiner = new StringJoiner("");
+        joiner.add(String.format(UPDATE_STATUS_HOLDER, StatusCode.DONE.getName()));
         if (rule.getResultCode() != null) {
-            rhsBuilder.append(String.format(PRINT_SET_RESULT_CODE, rule.getResultCode()));
-            rhsBuilder.append(String.format(SET_PMML4_RESULT_CODE, rule.getResultCode()));
+            joiner.add(String.format(SET_PMML4_RESULT_CODE, rule.getResultCode()));
         }
         if (rule.getResult() != null) {
-            rhsBuilder.append(String.format(PRINT_SET_RESULT, rule.getResult()));
-            rhsBuilder.append(String.format(ADD_PMML4_RESULT_VARIABLE, rule.getResult()));
+            joiner.add(String.format(ADD_PMML4_RESULT_VARIABLE, rule.getResult()));
         }
         if (rule.getFocusedAgendaGroup() != null) {
-            rhsBuilder.append(String.format(PRINT_SET_AGENDA_FOCUS, rule.getFocusedAgendaGroup()));
-            rhsBuilder.append(String.format(FOCUS_AGENDA_GROUP, rule.getFocusedAgendaGroup()));
+            joiner.add(String.format(FOCUS_AGENDA_GROUP, rule.getFocusedAgendaGroup()));
         }
-        builder.namedRhs(BREAK_LABEL, rhsBuilder.toString());
+        builder.namedRhs(BREAK_LABEL, joiner.toString());
     }
 }

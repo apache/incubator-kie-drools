@@ -48,12 +48,15 @@ public class KiePMMLTreeModelSimplePredicateASTFactoryTest {
         String currentRule = "_will play_will play";
         String agendaActivationGroup = "_will play_will play Group";
         String result = "RESULT";
+        String parentPath = "parentPath";
         final Queue<KiePMMLDrooledRule> rules = new LinkedList<>();
-        KiePMMLTreeModelSimplePredicateASTFactory.factory(simplePredicate, fieldTypeMap, rules).declareRuleFromSimplePredicateSurrogate(currentRule, agendaActivationGroup, result, true);
-        assertEquals(1, rules.size());
-        final KiePMMLDrooledRule retrieved = rules.poll();
+        KiePMMLTreeModelSimplePredicateASTFactory.factory(simplePredicate, fieldTypeMap, rules).declareRuleFromSimplePredicateSurrogate(parentPath, currentRule, agendaActivationGroup, result, true);
+        assertEquals(2, rules.size());
+        // This is the "TRUE" matching rule
+        KiePMMLDrooledRule retrieved = rules.poll();
         assertNotNull(retrieved);
-        String expectedRule = String.format(SURROGATE_RULENAME_PATTERN, currentRule, fieldTypeMap.get(simplePredicate.getField().getValue()).getGeneratedType());
+        String baseExpectedRule = String.format(SURROGATE_RULENAME_PATTERN, currentRule, fieldTypeMap.get(simplePredicate.getField().getValue()).getGeneratedType());
+        String expectedRule = baseExpectedRule + "_TRUE";
         assertEquals(expectedRule, retrieved.getName());
         assertEquals(StatusCode.DONE.getName(), retrieved.getStatusToSet());
         assertNull(retrieved.getStatusConstraint());
@@ -62,15 +65,38 @@ public class KiePMMLTreeModelSimplePredicateASTFactoryTest {
         assertNull(retrieved.getIfBreakField());
         assertNull(retrieved.getIfBreakOperator());
         assertNull(retrieved.getIfBreakValue());
+        assertNull(retrieved.getNotConstraints());
         assertNotNull(retrieved.getAndConstraints());
         assertEquals(1, retrieved.getAndConstraints().size());
         assertTrue(retrieved.getAndConstraints().containsKey("OUTLOOK"));
-        final List<KiePMMLOperatorValue> kiePMMLOperatorValues = retrieved.getAndConstraints().get("OUTLOOK");
+        List<KiePMMLOperatorValue> kiePMMLOperatorValues = retrieved.getAndConstraints().get("OUTLOOK");
         assertEquals(1, kiePMMLOperatorValues.size());
         assertEquals("<", kiePMMLOperatorValues.get(0).getOperator());
         assertEquals("\"VALUE\"", kiePMMLOperatorValues.get(0).getValue());
         assertEquals(result, retrieved.getResult());
         assertEquals(StatusCode.OK, retrieved.getResultCode());
+        // This is the "FALSE" matching rule
+        retrieved = rules.poll();
+        assertNotNull(retrieved);
+        expectedRule = baseExpectedRule + "_FALSE";
+        assertEquals(expectedRule, retrieved.getName());
+        assertEquals(parentPath, retrieved.getStatusToSet());
+        assertNull(retrieved.getStatusConstraint());
+        assertEquals(agendaActivationGroup, retrieved.getAgendaGroup());
+        assertEquals(agendaActivationGroup, retrieved.getActivationGroup());
+        assertNull(retrieved.getIfBreakField());
+        assertNull(retrieved.getIfBreakOperator());
+        assertNull(retrieved.getIfBreakValue());
+        assertNull(retrieved.getAndConstraints());
+        assertNotNull(retrieved.getNotConstraints());
+        assertEquals(1, retrieved.getNotConstraints().size());
+        assertTrue(retrieved.getNotConstraints().containsKey("OUTLOOK"));
+        kiePMMLOperatorValues = retrieved.getNotConstraints().get("OUTLOOK");
+        assertEquals(1, kiePMMLOperatorValues.size());
+        assertEquals("<", kiePMMLOperatorValues.get(0).getOperator());
+        assertEquals("\"VALUE\"", kiePMMLOperatorValues.get(0).getValue());
+        assertNull(retrieved.getResult());
+        assertNull(retrieved.getResultCode());
     }
 
     @Test
@@ -80,12 +106,15 @@ public class KiePMMLTreeModelSimplePredicateASTFactoryTest {
         String currentRule = "_will play_will play";
         String agendaActivationGroup = "_will play_will play Group";
         String result = "RESULT";
+        String parentPath = "parentPath";
         final Queue<KiePMMLDrooledRule> rules = new LinkedList<>();
-        KiePMMLTreeModelSimplePredicateASTFactory.factory(simplePredicate, fieldTypeMap, rules).declareRuleFromSimplePredicateSurrogate(currentRule, agendaActivationGroup, result, false);
-        assertEquals(1, rules.size());
-        final KiePMMLDrooledRule retrieved = rules.poll();
+        KiePMMLTreeModelSimplePredicateASTFactory.factory(simplePredicate, fieldTypeMap, rules).declareRuleFromSimplePredicateSurrogate(parentPath, currentRule, agendaActivationGroup, result, false);
+        assertEquals(2, rules.size());
+        // This is the "TRUE" matching rule
+        KiePMMLDrooledRule retrieved = rules.poll();
         assertNotNull(retrieved);
-        String expectedRule = String.format(SURROGATE_RULENAME_PATTERN, currentRule, fieldTypeMap.get(simplePredicate.getField().getValue()).getGeneratedType());
+        String baseExpectedRule = String.format(SURROGATE_RULENAME_PATTERN, currentRule, fieldTypeMap.get(simplePredicate.getField().getValue()).getGeneratedType());
+        String expectedRule = baseExpectedRule + "_TRUE";
         assertEquals(expectedRule, retrieved.getName());
         assertEquals(currentRule, retrieved.getStatusToSet());
         assertNull(retrieved.getStatusConstraint());
@@ -97,7 +126,29 @@ public class KiePMMLTreeModelSimplePredicateASTFactoryTest {
         assertNotNull(retrieved.getAndConstraints());
         assertEquals(1, retrieved.getAndConstraints().size());
         assertTrue(retrieved.getAndConstraints().containsKey("OUTLOOK"));
-        final List<KiePMMLOperatorValue> kiePMMLOperatorValues = retrieved.getAndConstraints().get("OUTLOOK");
+        List<KiePMMLOperatorValue> kiePMMLOperatorValues = retrieved.getAndConstraints().get("OUTLOOK");
+        assertEquals(1, kiePMMLOperatorValues.size());
+        assertEquals("<", kiePMMLOperatorValues.get(0).getOperator());
+        assertEquals("\"VALUE\"", kiePMMLOperatorValues.get(0).getValue());
+        assertNull(retrieved.getResult());
+        assertNull(retrieved.getResultCode());
+        // This is the "FALSE" matching rule
+        retrieved = rules.poll();
+        assertNotNull(retrieved);
+        expectedRule = baseExpectedRule + "_FALSE";
+        assertEquals(expectedRule, retrieved.getName());
+        assertEquals(parentPath, retrieved.getStatusToSet());
+        assertNull(retrieved.getStatusConstraint());
+        assertEquals(agendaActivationGroup, retrieved.getAgendaGroup());
+        assertEquals(agendaActivationGroup, retrieved.getActivationGroup());
+        assertNull(retrieved.getIfBreakField());
+        assertNull(retrieved.getIfBreakOperator());
+        assertNull(retrieved.getIfBreakValue());
+        assertNull(retrieved.getAndConstraints());
+        assertNotNull(retrieved.getNotConstraints());
+        assertEquals(1, retrieved.getNotConstraints().size());
+        assertTrue(retrieved.getNotConstraints().containsKey("OUTLOOK"));
+        kiePMMLOperatorValues = retrieved.getNotConstraints().get("OUTLOOK");
         assertEquals(1, kiePMMLOperatorValues.size());
         assertEquals("<", kiePMMLOperatorValues.get(0).getOperator());
         assertEquals("\"VALUE\"", kiePMMLOperatorValues.get(0).getValue());

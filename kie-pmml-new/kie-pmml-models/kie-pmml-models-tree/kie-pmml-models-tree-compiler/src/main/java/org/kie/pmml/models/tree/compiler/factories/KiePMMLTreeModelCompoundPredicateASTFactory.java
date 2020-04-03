@@ -28,6 +28,7 @@ import org.drools.core.util.StringUtils;
 import org.kie.pmml.commons.enums.StatusCode;
 import org.kie.pmml.commons.exceptions.KiePMMLException;
 import org.kie.pmml.models.drooled.ast.KiePMMLDrooledRule;
+import org.kie.pmml.models.drooled.tuples.KiePMMLFieldOperatorValue;
 import org.kie.pmml.models.drooled.tuples.KiePMMLOperatorValue;
 import org.kie.pmml.models.drooled.tuples.KiePMMLOriginalTypeGeneratedType;
 import org.slf4j.Logger;
@@ -35,6 +36,7 @@ import org.slf4j.LoggerFactory;
 
 import static java.util.stream.Collectors.groupingBy;
 import static org.kie.pmml.models.tree.compiler.factories.KiePMMLASTFactoryUtils.getConstraintEntryFromSimplePredicates;
+import static org.kie.pmml.models.tree.compiler.factories.KiePMMLASTFactoryUtils.getXORConstraintEntryFromSimplePredicates;
 import static org.kie.pmml.models.tree.compiler.factories.KiePMMLTreeModelASTFactory.STATUS_NULL;
 import static org.kie.pmml.models.tree.compiler.factories.KiePMMLTreeModelASTFactory.STATUS_PATTERN;
 import static org.kie.pmml.models.tree.compiler.factories.KiePMMLTreeModelASTFactory.SURROGATE_GROUP_PATTERN;
@@ -69,9 +71,14 @@ public class KiePMMLTreeModelCompoundPredicateASTFactory {
                 declareRuleFromCompoundPredicateSurrogate(parentPath, currentRule, result, isFinalLeaf);
                 break;
             case AND:
+                declareRuleFromCompoundPredicateAndOrXor(parentPath, currentRule, result, isFinalLeaf);
+                break;
             case OR:
+                declareRuleFromCompoundPredicateAndOrXor(parentPath, currentRule, result, isFinalLeaf);
+                break;
             case XOR:
                 declareRuleFromCompoundPredicateAndOrXor(parentPath, currentRule, result, isFinalLeaf);
+                break;
         }
     }
 
@@ -96,19 +103,21 @@ public class KiePMMLTreeModelCompoundPredicateASTFactory {
                 .map(child -> (SimplePredicate) child)
                 .collect(groupingBy(child -> fieldTypeMap.get(child.getField().getValue()).getGeneratedType()));
         final Map<String, List<KiePMMLOperatorValue>> constraints = new HashMap<>();
-        predicatesByField.forEach((fieldName, predicates) -> constraints.putAll(getConstraintEntryFromSimplePredicates(fieldName, predicates, fieldTypeMap)));
         String statusToSet = isFinalLeaf ? StatusCode.DONE.getName() : currentRule;
         KiePMMLDrooledRule.Builder builder = KiePMMLDrooledRule.builder(currentRule, statusToSet)
                 .withStatusConstraint(statusConstraint);
         switch (compoundPredicate.getBooleanOperator()) {
             case AND:
+                predicatesByField.forEach((fieldName, predicates) -> constraints.putAll(getConstraintEntryFromSimplePredicates(fieldName, predicates, fieldTypeMap)));
                 builder = builder.withAndConstraints(constraints);
                 break;
             case OR:
+                predicatesByField.forEach((fieldName, predicates) -> constraints.putAll(getConstraintEntryFromSimplePredicates(fieldName, predicates, fieldTypeMap)));
                 builder = builder.withOrConstraints(constraints);
                 break;
             case XOR:
-                builder = builder.withXorConstraints(constraints);
+                List<KiePMMLFieldOperatorValue> xorConstraints = getXORConstraintEntryFromSimplePredicates(simplePredicates, fieldTypeMap);
+                builder = builder.withXorConstraints(xorConstraints);
                 break;
             default:
                 break;
@@ -134,7 +143,7 @@ public class KiePMMLTreeModelCompoundPredicateASTFactory {
         final List<Predicate> simplePredicates = compoundPredicate.getPredicates().stream().filter(predicate -> predicate instanceof SimplePredicate).collect(Collectors.toList());
         simplePredicates.forEach(predicate -> {
             SimplePredicate simplePredicate = (SimplePredicate) predicate;
-            KiePMMLTreeModelSimplePredicateASTFactory.factory(simplePredicate, fieldTypeMap, rules).declareRuleFromSimplePredicateSurrogate(currentRule, agendaActivationGroup, result, isFinalLeaf);
+            KiePMMLTreeModelSimplePredicateASTFactory.factory(simplePredicate, fieldTypeMap, rules).declareRuleFromSimplePredicateSurrogate(parentPath, currentRule, agendaActivationGroup, result, isFinalLeaf);
         });
     }
 }

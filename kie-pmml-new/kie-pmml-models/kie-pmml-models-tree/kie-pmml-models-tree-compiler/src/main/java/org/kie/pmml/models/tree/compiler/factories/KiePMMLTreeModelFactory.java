@@ -31,7 +31,7 @@ import org.kie.pmml.models.tree.model.KiePMMLTreeModel;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import static org.kie.pmml.compiler.commons.utils.ModelUtils.getTargetField;
+import static org.kie.pmml.compiler.commons.utils.ModelUtils.getTargetFieldName;
 import static org.kie.pmml.commons.factories.KiePMMLDescrFactory.getBaseDescr;
 import static org.kie.pmml.models.tree.compiler.factories.KiePMMLTreeModelASTFactory.getKiePMMLDrooledAST;
 
@@ -48,7 +48,7 @@ public class KiePMMLTreeModelFactory {
     public static KiePMMLTreeModel getKiePMMLTreeModel(DataDictionary dataDictionary, TreeModel model) {
         logger.debug("getKiePMMLTreeModel {}", model);
         String name = model.getModelName();
-        Optional<String> targetFieldName = getTargetField(dataDictionary, model);
+        Optional<String> targetFieldName = getTargetFieldName(dataDictionary, model);
         final Map<String, KiePMMLOriginalTypeGeneratedType> fieldTypeMap = new HashMap<>();
         final KiePMMLDrooledAST kiePMMLDrooledAST = getKiePMMLDrooledAST(dataDictionary, model, fieldTypeMap);
         final PackageDescr baseDescr = getBaseDescr(kiePMMLDrooledAST, name.toLowerCase());

@@ -30,7 +30,7 @@ public class TreeModelCompilationTest {
     @Test
     public void testTreeModelFile() throws Exception {
         DrlParser drlParser = new DrlParser();
-        File file = FileUtils.getFile("TreeModel.drl");
+        File file = FileUtils.getFile("TreeSample.drl");
         String content = new String(Files.readAllBytes(file.toPath()));
         try {
             drlParser.parse(false, content);

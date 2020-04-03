@@ -24,6 +24,7 @@ import java.util.Queue;
 import org.dmg.pmml.SimplePredicate;
 import org.drools.core.util.StringUtils;
 import org.kie.pmml.commons.enums.StatusCode;
+import org.kie.pmml.commons.model.enums.DATA_TYPE;
 import org.kie.pmml.models.drooled.ast.KiePMMLDrooledRule;
 import org.kie.pmml.models.drooled.tuples.KiePMMLOperatorValue;
 import org.kie.pmml.models.drooled.tuples.KiePMMLOriginalTypeGeneratedType;
@@ -32,6 +33,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import static org.kie.pmml.models.tree.compiler.factories.KiePMMLASTFactoryUtils.getConstraintEntryFromSimplePredicates;
+import static org.kie.pmml.models.tree.compiler.factories.KiePMMLASTFactoryUtils.getCorrectlyFormattedObject;
 import static org.kie.pmml.models.tree.compiler.factories.KiePMMLTreeModelASTFactory.STATUS_NULL;
 import static org.kie.pmml.models.tree.compiler.factories.KiePMMLTreeModelASTFactory.STATUS_PATTERN;
 import static org.kie.pmml.models.tree.compiler.factories.KiePMMLTreeModelASTFactory.SURROGATE_RULENAME_PATTERN;
@@ -58,6 +60,7 @@ public class KiePMMLTreeModelSimplePredicateASTFactory {
     }
 
     public void declareRuleFromSimplePredicateSurrogate(
+            final String parentPath,
             final String currentRule,
             final String agendaActivationGroup,
             final Object result,
@@ -67,7 +70,8 @@ public class KiePMMLTreeModelSimplePredicateASTFactory {
         String surrogateCurrentRule = String.format(SURROGATE_RULENAME_PATTERN, currentRule, fieldName);
         final Map<String, List<KiePMMLOperatorValue>> constraints = new HashMap<>(getConstraintEntryFromSimplePredicates(fieldName, Collections.singletonList(simplePredicate), fieldTypeMap));
         String statusToSet = isFinalLeaf ? StatusCode.DONE.getName() : currentRule;
-        KiePMMLDrooledRule.Builder builder = KiePMMLDrooledRule.builder(surrogateCurrentRule, statusToSet)
+        // Create "TRUE" matcher
+        KiePMMLDrooledRule.Builder builder = KiePMMLDrooledRule.builder(surrogateCurrentRule + "_TRUE", statusToSet)
                 .withAgendaGroup(agendaActivationGroup)
                 .withActivationGroup(agendaActivationGroup)
                 .withAndConstraints(constraints);
@@ -76,9 +80,15 @@ public class KiePMMLTreeModelSimplePredicateASTFactory {
                     .withResultCode(StatusCode.OK);
         }
         rules.add(builder.build());
+        // Create "FALSE" matcher
+        builder = KiePMMLDrooledRule.builder(surrogateCurrentRule + "_FALSE", parentPath)
+                .withAgendaGroup(agendaActivationGroup)
+                .withActivationGroup(agendaActivationGroup)
+                .withNotConstraints(constraints);
+        rules.add(builder.build());
     }
 
-    public void declareRuleFromSimplePredicate(final String parentPath,
+        public void declareRuleFromSimplePredicate(final String parentPath,
                                                final String currentRule,
                                                final Object result,
                                                boolean isFinalLeaf) {
@@ -86,10 +96,7 @@ public class KiePMMLTreeModelSimplePredicateASTFactory {
         String statusConstraint = StringUtils.isEmpty(parentPath) ? STATUS_NULL : String.format(STATUS_PATTERN, parentPath);
         String key = fieldTypeMap.get(simplePredicate.getField().getValue()).getGeneratedType();
         String operator = OPERATOR.byName(simplePredicate.getOperator().value()).getOperator();
-        Object value = simplePredicate.getValue();
-        if (fieldTypeMap.get(simplePredicate.getField().getValue()).getOriginalType().equals("string")) {
-            value = "\"" + value + "\"";
-        }
+        Object value = getCorrectlyFormattedObject(simplePredicate, fieldTypeMap);
         String statusToSet = isFinalLeaf ? StatusCode.DONE.getName() : currentRule;
         Map<String, List<KiePMMLOperatorValue>> andConstraints = Collections.singletonMap(key, Collections.singletonList(new KiePMMLOperatorValue(operator, value)));
         KiePMMLDrooledRule.Builder builder = KiePMMLDrooledRule.builder(currentRule, statusToSet)
