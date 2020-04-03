@@ -171,4 +171,24 @@ public class FunctionsTest extends BaseModelTest {
         int rulesFired = ksession.fireAllRules();
         assertEquals( 1, rulesFired );
     }
+
+    @Test
+    public void testBindingFieldsIndexedWithSquareBrackets() {
+        // DROOLS-5216
+        String str =
+                "package com.sample\n" +
+                "import " + Pojo.class.getCanonicalName() + ";\n" +
+                "\n" +
+                "rule \"binding field indexed with square brackets\" when " +
+                "    Pojo($firstItem : intList[0])\n" +
+                "    Pojo(intList[this.intList.size()-2] == $firstItem)\n" +
+                "then\n" +
+                "end";
+
+        KieSession ksession = getKieSession( str );
+
+        ksession.insert( new Pojo( Arrays.asList(1,3) ) );
+        int rulesFired = ksession.fireAllRules();
+        assertEquals( 1, rulesFired );
+    }
 }
