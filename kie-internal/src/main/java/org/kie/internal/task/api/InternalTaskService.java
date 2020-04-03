@@ -210,4 +210,6 @@ public interface InternalTaskService extends TaskService {
 
     void executeReminderForTask(long taskId,String fromUser);
 
+    long addContentFromUser(long taskId, String userId, Map<String, Object> params);
+
 }
