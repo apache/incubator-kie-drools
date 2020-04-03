@@ -16,12 +16,12 @@ import org.kie.dmn.api.core.FEELPropertyAccessible;
 
 class DMNDeclaredType implements TypeDefinition {
 
-    private DMNClassNamespaceTypeIndex index;
+    private DMNAllTypesIndex index;
     private final DMNType dmnType;
     List<DMNDeclaredField> fields = new ArrayList<>();
     List<AnnotationDefinition> annnotations = new ArrayList<>();
 
-    DMNDeclaredType(DMNClassNamespaceTypeIndex index, DMNType dmnType) {
+    DMNDeclaredType(DMNAllTypesIndex index, DMNType dmnType) {
         this.index = index;
         this.dmnType = dmnType;
         initFields();

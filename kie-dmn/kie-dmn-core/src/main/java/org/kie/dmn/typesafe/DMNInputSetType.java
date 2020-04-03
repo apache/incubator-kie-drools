@@ -21,9 +21,9 @@ class DMNInputSetType implements TypeDefinition {
     Map<String, DMNType> fieldsKey = new HashMap<>();
 
     List<AnnotationDefinition> annotations = new ArrayList<>();
-    private DMNClassNamespaceTypeIndex index;
+    private DMNAllTypesIndex index;
 
-    DMNInputSetType(DMNClassNamespaceTypeIndex index) {
+    DMNInputSetType(DMNAllTypesIndex index) {
         this.index = index;
     }
 

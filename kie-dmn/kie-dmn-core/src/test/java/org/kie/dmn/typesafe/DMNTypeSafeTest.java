@@ -40,7 +40,7 @@ public class DMNTypeSafeTest {
         String modelName = "Drawing 1";
 
         dmnModel = runtime.getModel(namespace, modelName);
-        packageName = DMNClassNamespaceTypeIndex.namespace(dmnModel);
+        packageName = DMNAllTypesIndex.namespace(dmnModel);
     }
 
     @Test
@@ -49,7 +49,7 @@ public class DMNTypeSafeTest {
         assertThat(dmnModel, notNullValue());
         assertThat(DMNRuntimeUtil.formatMessages(dmnModel.getMessages()), dmnModel.hasErrors(), is(false));
 
-        Map<String, String> allTypesSourceCode = new DMNTypeSafeTypeGenerator(dmnModel, new DMNClassNamespaceTypeIndex(dmnModel)).generateSourceCodeOfAllTypes();
+        Map<String, String> allTypesSourceCode = new DMNTypeSafeTypeGenerator(dmnModel, new DMNAllTypesIndex(dmnModel)).generateSourceCodeOfAllTypes();
 
         ClassLoader thisDMNClassLoader = this.getClass().getClassLoader();
         Map<String, Class<?>> compiledClasses = KieMemoryCompiler.compile(allTypesSourceCode, thisDMNClassLoader);
@@ -127,7 +127,7 @@ public class DMNTypeSafeTest {
     public static FEELPropertyAccessible createInputSet(DMNModel dmnModel, String packageName, ClassLoader classLoader) throws Exception {
         Map<String, String> allTypesSourceCode = new DMNTypeSafeTypeGenerator(
                 dmnModel,
-                new DMNClassNamespaceTypeIndex(dmnModel))
+                new DMNAllTypesIndex(dmnModel))
                 .generateSourceCodeOfAllTypes();
 
         Map<String, Class<?>> compiledClasses = KieMemoryCompiler.compile(allTypesSourceCode, classLoader);

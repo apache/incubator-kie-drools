@@ -14,17 +14,17 @@ import org.kie.dmn.api.core.DMNType;
 import org.kie.dmn.api.core.ast.InputDataNode;
 import org.kie.dmn.core.impl.DMNModelImpl;
 
-import static org.kie.dmn.typesafe.DMNClassNamespaceTypeIndex.namespace;
+import static org.kie.dmn.typesafe.DMNAllTypesIndex.namespace;
 
 public class DMNTypeSafeTypeGenerator {
 
     private final String packageName;
-    private DMNClassNamespaceTypeIndex index;
+    private DMNAllTypesIndex index;
     private DMNModelImpl dmnModel;
 
     private Map<String, TypeDefinition> types = new HashMap<>();
 
-    public DMNTypeSafeTypeGenerator(DMNModel dmnModel, DMNClassNamespaceTypeIndex index) {
+    public DMNTypeSafeTypeGenerator(DMNModel dmnModel, DMNAllTypesIndex index) {
         this.dmnModel = (DMNModelImpl) dmnModel;
         this.packageName = namespace(dmnModel);
         this.index = index;

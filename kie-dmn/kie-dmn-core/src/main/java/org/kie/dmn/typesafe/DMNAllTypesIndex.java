@@ -22,14 +22,12 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
-import java.util.Set;
 
 import org.kie.dmn.api.core.DMNModel;
 import org.kie.dmn.api.core.DMNType;
-import org.kie.dmn.api.core.ast.ItemDefNode;
 import org.kie.dmn.feel.codegen.feel11.CodegenStringUtil;
 
-public class DMNClassNamespaceTypeIndex {
+public class DMNAllTypesIndex {
 
     private final List<DMNModel> allModels;
 
@@ -37,36 +35,17 @@ public class DMNClassNamespaceTypeIndex {
 
     Map<String, String> mapNamespaceIndex = new HashMap<>();
 
-    public DMNClassNamespaceTypeIndex(DMNModel... allModels) {
+    public DMNAllTypesIndex(DMNModel... allModels) {
         this.allModels = Arrays.asList(allModels);
         for (DMNModel m : allModels) {
-            mapNamespaceIndex.putAll(indexFromModel(m));
+            DMNModelTypesIndex indexFromModel = new DMNModelTypesIndex(m);
+            mapNamespaceIndex.putAll(indexFromModel.getClassesNamespaceIndex());
+            allTypesToGenerate().addAll(indexFromModel.getTypesToGenerate());
         }
     }
 
-    public DMNClassNamespaceTypeIndex(List<DMNModel> allModels) {
+    public DMNAllTypesIndex(List<DMNModel> allModels) {
         this(allModels.toArray(new DMNModel[0]));
-    }
-
-    public Map<String, String> indexFromModel(DMNModel dmnModel) {
-        Map<String, String> classesNamespaceIndex = new HashMap<>();
-
-        Set<ItemDefNode> itemDefinitions = dmnModel.getItemDefinitions();
-
-        String namespace = namespace(dmnModel);
-
-        for (ItemDefNode i : itemDefinitions) {
-            DMNType type = i.getType();
-            classesNamespaceIndex.put(type.getName(), namespace);
-            typesToGenerate.add(type);
-            if (type.isComposite()) {
-                for (DMNType innerType : type.getFields().values()) {
-//                    classesNamespaceIndex.put(innerType.getName(), namespace);
-//                    typesToGenerate.add(innerType);
-                }
-            }
-        }
-        return classesNamespaceIndex;
     }
 
     public static String namespace(DMNModel dmnModel) {

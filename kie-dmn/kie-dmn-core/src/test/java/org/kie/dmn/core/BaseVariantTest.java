@@ -17,7 +17,6 @@
 package org.kie.dmn.core;
 
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 
 import org.junit.runner.RunWith;
@@ -28,7 +27,7 @@ import org.kie.dmn.core.compiler.RuntimeTypeCheckOption;
 import org.kie.dmn.core.internal.utils.DMNRuntimeBuilder;
 import org.kie.dmn.core.internal.utils.DMNRuntimeBuilder.DMNRuntimeBuilderConfigured;
 import org.kie.dmn.core.util.DMNRuntimeUtil;
-import org.kie.dmn.typesafe.DMNClassNamespaceTypeIndex;
+import org.kie.dmn.typesafe.DMNAllTypesIndex;
 import org.kie.dmn.typesafe.DMNTypeSafeTypeGenerator;
 import org.kie.memorycompiler.KieMemoryCompiler;
 
@@ -103,7 +102,7 @@ public abstract class BaseVariantTest implements VariantTest {
     }
 
     private void createTypeSafeInput(DMNRuntime runtime) {
-        DMNClassNamespaceTypeIndex index = new DMNClassNamespaceTypeIndex(runtime.getModels());
+        DMNAllTypesIndex index = new DMNAllTypesIndex(runtime.getModels());
 
         Map<String, String> allSources = new HashMap<>();
         for(DMNModel m : runtime.getModels()) {

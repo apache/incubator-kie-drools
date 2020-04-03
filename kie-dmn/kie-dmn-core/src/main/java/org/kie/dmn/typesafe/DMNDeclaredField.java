@@ -19,12 +19,12 @@ import static com.github.javaparser.StaticJavaParser.parseClassOrInterfaceType;
 
 public class DMNDeclaredField implements FieldDefinition {
 
-    private DMNClassNamespaceTypeIndex index;
+    private DMNAllTypesIndex index;
     private String fieldName;
     private DMNType fieldType;
     private List<AnnotationDefinition> annotations = new ArrayList<>();
 
-    DMNDeclaredField(DMNClassNamespaceTypeIndex index, Map.Entry<String, DMNType> dmnType) {
+    DMNDeclaredField(DMNAllTypesIndex index, Map.Entry<String, DMNType> dmnType) {
         this.index = index;
         this.fieldName = StringUtils.lcFirst(CodegenStringUtil.escapeIdentifier(dmnType.getKey()));
         this.fieldType = dmnType.getValue();
