@@ -23,6 +23,7 @@ import java.util.stream.Collectors;
 
 import org.kie.dmn.api.core.DMNContext;
 import org.kie.dmn.api.core.DMNMessage;
+import org.kie.dmn.api.core.DMNModel;
 import org.kie.dmn.api.core.DMNResult;
 import org.kie.dmn.api.core.DMNType;
 import org.kie.dmn.api.core.ast.BusinessKnowledgeModelNode;
@@ -120,7 +121,8 @@ public class DMNFunctionDefinitionEvaluator
         private final List<FormalParameter> parameters;
         private final DMNExpressionEvaluator evaluator;
         private final DMNRuntimeEventManager eventManager;
-        private final DMNResultImpl resultContext;
+        private final DMNContext resultContext;
+        private final DMNModel resultModel;
         private final FunctionDefinition functionDefinition;
         private final boolean performRuntimeTypeCheck;
 
@@ -132,32 +134,36 @@ public class DMNFunctionDefinitionEvaluator
             this.parameters = parameters;
             this.evaluator = evaluator;
             this.eventManager = eventManager;
-            this.resultContext = result;
+            this.resultContext = result.getContext().clone(); // closure.
+            this.resultContext.set(name, this); // allow recursion in the closure.
+            this.resultModel = result.getModel();
             performRuntimeTypeCheck = ((DMNRuntimeImpl) eventManager.getRuntime()).performRuntimeTypeCheck(result.getModel());
         }
 
         public Object invoke(EvaluationContext ctx, Object[] params) {
-            DMNContext previousContext = resultContext.getContext();
             // we could be more strict and only set the parameters and the dependencies as values in the new
             // context, but for now, cloning the original context
-            DMNContextFEELCtxWrapper dmnContext = new DMNContextFEELCtxWrapper(ctx);
-            dmnContext.enterFrame();
+            DMNResultImpl dmnResult = new DMNResultImpl(resultModel);
+            EvaluationContext ctx2 = ctx.current();
+            ctx2.enterFrame(); // exitFrame not needed, as this will represent the closure for any nested functionDefinition
+            DMNContextFEELCtxWrapper dmnContext = new DMNContextFEELCtxWrapper(ctx2);
+            dmnResult.setContext(dmnContext);
             try {
                 if (originatorNode instanceof BusinessKnowledgeModelNode) {
-                    DMNRuntimeEventManagerUtils.fireBeforeInvokeBKM(eventManager, (BusinessKnowledgeModelNode) originatorNode, resultContext);
+                    DMNRuntimeEventManagerUtils.fireBeforeInvokeBKM(eventManager, (BusinessKnowledgeModelNode) originatorNode, dmnResult);
                 }
                 if( evaluator != null ) {
-                    previousContext.getAll().forEach(dmnContext::set);
+                    resultContext.getAll().forEach(dmnContext::set);
                     for( int i = 0; i < params.length; i++ ) {
                         final String paramName = parameters.get(i).name;
                         if ((!performRuntimeTypeCheck) || parameters.get(i).type.isAssignableValue(params[i])) {
-                            ctx.setValue(paramName, params[i]);
+                            ctx2.setValue(paramName, params[i]);
                         } else {
-                            ctx.setValue(paramName, null);
+                            ctx2.setValue(paramName, null);
                             MsgUtil.reportMessage(logger,
                                                   DMNMessage.Severity.WARN,
                                                   functionDefinition,
-                                                  resultContext,
+                                                  dmnResult,
                                                   null,
                                                   null,
                                                   Msg.PARAMETER_TYPE_MISMATCH,
@@ -166,8 +172,7 @@ public class DMNFunctionDefinitionEvaluator
                                                   params[i]);
                         }
                     }
-                    resultContext.setContext( dmnContext );
-                    EvaluatorResult result = evaluator.evaluate( eventManager, resultContext );
+                    EvaluatorResult result = evaluator.evaluate(eventManager, dmnResult);
                     if( result.getResultType() == ResultType.SUCCESS ) {
                         return result.getResult();
                     }
@@ -176,7 +181,7 @@ public class DMNFunctionDefinitionEvaluator
                     MsgUtil.reportMessage( logger,
                                            DMNMessage.Severity.ERROR,
                                            functionDefinition,
-                                           resultContext,
+                                          dmnResult,
                                            null,
                                            null,
                                            Msg.MISSING_EXPRESSION_FOR_FUNCTION,
@@ -187,7 +192,7 @@ public class DMNFunctionDefinitionEvaluator
                 MsgUtil.reportMessage( logger,
                                        DMNMessage.Severity.ERROR,
                                        functionDefinition,
-                                       resultContext,
+                                      dmnResult,
                                        e,
                                        null,
                                        Msg.ERR_INVOKING_FUNCTION_ON_NODE,
@@ -196,10 +201,8 @@ public class DMNFunctionDefinitionEvaluator
                 return null;
             } finally {
                 if (originatorNode instanceof BusinessKnowledgeModelNode) {
-                    DMNRuntimeEventManagerUtils.fireAfterInvokeBKM(eventManager, (BusinessKnowledgeModelNode) originatorNode, resultContext);
+                    DMNRuntimeEventManagerUtils.fireAfterInvokeBKM(eventManager, (BusinessKnowledgeModelNode) originatorNode, dmnResult);
                 }
-                resultContext.setContext( previousContext );
-                dmnContext.exitFrame();
             }
         }
 
