@@ -40,7 +40,7 @@ public class VertxRouter {
 
     void setupRouter(@Observes Router router) {
         router.route("/").handler(ctx -> ctx.response().putHeader("location", "/ProcessInstances/").setStatusCode(302).end());
-        router.route("/ProcessInstances*").handler(ctx -> handle(ctx));
+        router.route("/Process*").handler(ctx -> handle(ctx));
         router.route("/DomainExplorer*").handler(ctx -> handle(ctx));
         router.route().handler(StaticHandler.create());
     }

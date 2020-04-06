@@ -23,6 +23,7 @@ export interface IOwnProps {
   setSelected: any;
   data: any;
   getPicker: any;
+  setError: any
 }
 
 const DomainExplorerColumnPicker: React.FC<IOwnProps> = ({
@@ -37,6 +38,7 @@ const DomainExplorerColumnPicker: React.FC<IOwnProps> = ({
   setSelected,
   data,
   getPicker,
+  setError
 }) => {
   const [isExpanded, setIsExpanded] = useState(false);
   const [tempDomain, setTempDomain] = useState('');
@@ -122,7 +124,7 @@ const DomainExplorerColumnPicker: React.FC<IOwnProps> = ({
             }
           });
       } catch (error) {
-        return error;
+        setError(error)
       }
     } else {
       setDisplayTable(false);

@@ -108,7 +108,14 @@ exports[`Process Details component Snapshot tests 1`] = `
       >
         <div>
           <Link
-            to="/ProcessInstances/"
+            to={
+              Object {
+                "pathname": "/Process/",
+                "state": Object {
+                  "prev": "",
+                },
+              }
+            }
           >
             <Tooltip
               appendTo={[Function]}
@@ -172,7 +179,14 @@ exports[`Process Details component Snapshot tests 1`] = `
           key=""
         >
           <Link
-            to="/ProcessInstances/"
+            to={
+              Object {
+                "pathname": "/Process/",
+                "state": Object {
+                  "prev": "",
+                },
+              }
+            }
           >
             <Tooltip
               appendTo={[Function]}

@@ -27,8 +27,9 @@ import ProcessDescriptor from '../../Molecules/ProcessDescriptor/ProcessDescript
 
 interface IOwnProps {
   data: any;
+  from: any;
 }
-const ProcessDetails: React.FC<IOwnProps> = ({ data }) => {
+const ProcessDetails: React.FC<IOwnProps> = ({ data, from }) => {
   const stateIconCreator = state => {
     switch (state) {
       case ProcessInstanceState.Active:
@@ -139,10 +140,11 @@ const ProcessDetails: React.FC<IOwnProps> = ({ data }) => {
             <FormGroup label="Parent Process" fieldId="parent">
               <div>
                 <Link
-                  to={
-                    '/ProcessInstances/' +
-                    data.ProcessInstances[0].parentProcessInstance.id
-                  }
+                  to={{
+                   pathname: '/Process/' +
+                    data.ProcessInstances[0].parentProcessInstance.id,
+                   state: from
+                  }}
                 >
                   <Tooltip
                     content={data.ProcessInstances[0].parentProcessInstance.id}
@@ -165,7 +167,7 @@ const ProcessDetails: React.FC<IOwnProps> = ({ data }) => {
               {data.ProcessInstances[0].childProcessInstances.map(
                 (child, index) => (
                   <div key={child.id}>
-                    <Link to={'/ProcessInstances/' + child.id}>
+                    <Link to={{pathname:'/Process/' + child.id,state: from}}>
                       <Tooltip content={child.id}>
                         <Button variant="link" icon={<LevelDownAltIcon />}>
                           <ProcessDescriptor processInstanceData={child} />

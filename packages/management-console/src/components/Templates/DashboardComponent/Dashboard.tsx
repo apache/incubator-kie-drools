@@ -79,7 +79,7 @@ const Dashboard: React.FC<{}> = (props: any) => {
           <Route exact path="/ProcessInstances" component={DataListContainer} />
           <Route
             exact
-            path="/ProcessInstances/:instanceID"
+            path="/Process/:instanceID"
             component={ProcessDetailsPage}
           />
           <Route

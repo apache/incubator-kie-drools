@@ -18,6 +18,7 @@ import DomainExplorerColumnPicker from '../../Organisms/DomainExplorerColumnPick
 import DomainExplorerTable from '../../Organisms/DomainExplorerTable/DomainExplorerTable';
 import PageTitleComponent from '../../Molecules/PageTitleComponent/PageTitleComponent';
 import SpinnerComponent from '../../Atoms/SpinnerComponent/SpinnerComponent';
+import ServerErrorsComponent from '../../Molecules/ServerErrorsComponent/ServerErrorsComponent';
 
 import {
   useGetQueryTypesQuery,
@@ -52,6 +53,7 @@ const DomainExplorerDashboard = props => {
   const [tableLoading, setTableLoading] = useState(true);
   const [displayTable, setDisplayTable] = useState(false);
   const [selected, setSelected] = useState([]);
+  const [error, setError] = useState()
   const [parameters, setParameters] = useState([
     { metadata: [{ processInstances: ['id','processName', 'state', 'start', 'lastUpdate','businessKey'] }] }
   ]);
@@ -175,6 +177,7 @@ const DomainExplorerDashboard = props => {
                   setSelected={setSelected}
                   data={data}
                   getPicker={getPicker}
+                  setError={setError}
                 />
               )}
             </DataToolbarGroup>
@@ -218,6 +221,7 @@ const DomainExplorerDashboard = props => {
           })}
         </Breadcrumb>
       </PageSection>
+      {!error ? (
       <PageSection>
         {renderToolbar()}
 
@@ -234,7 +238,7 @@ const DomainExplorerDashboard = props => {
               </Bullseye>
             </Card>
           )}
-      </PageSection>
+      </PageSection>): (<ServerErrorsComponent message={error} />) }
     </>
   );
 };

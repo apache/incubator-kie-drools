@@ -155,7 +155,7 @@ exports[`DataListItem component tests Snapshot tests 1`] = `
           Array [
             <DataListCell>
               <Link
-                to="/ProcessInstances/c54ca5b0-b975-46e2-a9a0-6a86bf7ac21e"
+                to="/Process/c54ca5b0-b975-46e2-a9a0-6a86bf7ac21e"
               >
                 <div>
                   <strong>

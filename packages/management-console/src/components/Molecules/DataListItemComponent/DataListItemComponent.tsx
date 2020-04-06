@@ -85,6 +85,8 @@ const DataListItemComponent: React.FC<IOwnProps> = ({
     fetchPolicy: 'network-only'
   });
 
+  const currentPage = { prev: location.pathname}
+  window.localStorage.setItem('state', JSON.stringify(currentPage))
   const setTitle = (titleStatus, titleText) => {
     switch (titleStatus) {
       case 'success':
@@ -526,7 +528,7 @@ const DataListItemComponent: React.FC<IOwnProps> = ({
           <DataListItemCells
             dataListCells={[
               <DataListCell key={1}>
-                <Link to={'/ProcessInstances/' + processInstanceData.id}>
+                <Link to={'/Process/' + processInstanceData.id}>
                   <div>
                     <strong>
                       <ProcessDescriptor

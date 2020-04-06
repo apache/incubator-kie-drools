@@ -14,7 +14,7 @@ public class VertxRouterTest {
                 .then()
                 .statusCode(200);
 
-        given().when().get("/ProcessInstances/a1e139d5-4e77-48c9-84ae-34578e904e5a")
+        given().when().get("/Process/a1e139d5-4e77-48c9-84ae-34578e904e5a")
                 .then()
                 .statusCode(200);
 

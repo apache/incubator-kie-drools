@@ -22,6 +22,7 @@ const props = {
       }
     ]
   },
+  from: {prev: ''},
   loading: true,
   childLoading: true,
   parentLoading: true,
@@ -60,6 +61,7 @@ const props2 = {
       }
     ]
   },
+  from: {},
   childLoading: true,
   parentLoading: true,
   parentResult: {

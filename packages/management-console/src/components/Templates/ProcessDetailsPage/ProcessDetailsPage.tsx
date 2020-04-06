@@ -28,15 +28,17 @@ import {
 } from '../../../graphql/types';
 import ProcessDescriptor from '../../Molecules/ProcessDescriptor/ProcessDescriptor';
 import SpinnerComponent from '../../Atoms/SpinnerComponent/SpinnerComponent';
+import ServerErrorsComponent from '../../Molecules/ServerErrorsComponent/ServerErrorsComponent';
 import PageTitleComponent from '../../Molecules/PageTitleComponent/PageTitleComponent';
 import ProcessBulkModalComponent from '../../Atoms/ProcessBulkModalComponent/ProcessBulkModalComponent';
 import { InfoCircleIcon } from '@patternfly/react-icons';
 import axios from 'axios';
 
-const ProcessDetailsPage = ({ match }) => {
-  const id = match.params.instanceID;
+const ProcessDetailsPage = (props) => {
+  const id = props.match.params.instanceID;
   const [isAbortModalOpen, setIsAbortModalOpen] = useState(false);
   const [titleType, setTitleType] = useState('');
+  const currentPage = JSON.parse(window.localStorage.getItem('state'))
 
   const { loading, error, data } = useGetProcessInstanceByIdQuery({
     variables: { id }
@@ -107,18 +109,28 @@ const ProcessDetailsPage = ({ match }) => {
       );
     }
   };
+  let prevPath;
+  const BreadCrumb = []
+  let BreadCrumbRoute = []
   if (data) {
     const result = data.ProcessInstances;
+    if (currentPage) {
+      const tempPath = currentPage.prev.split('/')
+      prevPath = tempPath.filter(item => item)
+      BreadCrumb.push(...prevPath)
+      let sum = '';
+      BreadCrumbRoute = BreadCrumb.map(elem => sum = (sum) + `/${elem}`);
+    }
     if (result.length === 0) {
       return (
         <Redirect
           to={{
             pathname: '/NoData',
             state: {
-              prev: location.pathname,
+              prev: currentPage ? currentPage.prev : '/ProcessInstances',
               title: 'Process not found',
               description: `Process instance with the id ${id} not found`,
-              buttonText: 'Go to process instances'
+              buttonText: currentPage ? `Go to ${prevPath[0].replace(/([A-Z])/g, ' $1').trim().toLowerCase()}` : 'Go to process instances'
             }
           }}
         />
@@ -128,94 +140,101 @@ const ProcessDetailsPage = ({ match }) => {
 
   return (
     <>
-      <PageSection variant="light">
-        <ProcessBulkModalComponent
-          isModalLarge={false}
-          isModalOpen={isAbortModalOpen}
-          handleModalToggle={handleAbortModalToggle}
-          checkedArray={data && [data.ProcessInstances[0].state]}
-          modalTitle={
-            titleType === 'success'
-              ? setTitle('success', 'Abort operation')
-              : setTitle('failure', 'Abort operation')
-          }
-          isSingleAbort={true}
-          abortedMessageObj={
-            data && {
-              [data.ProcessInstances[0].id]: data.ProcessInstances[0]
-            }
-          }
-          completedMessageObj={{}}
-          isAbortModalOpen={isAbortModalOpen}
-        />
-        <PageTitleComponent title="Process Details" />
-        {!loading ? (
-          <Grid gutter="md" span={12} lg={6} xl={4}>
-            <GridItem span={12}>
-              <Breadcrumb>
-                <BreadcrumbItem>
-                  <Link to={'/'}>Home</Link>
-                </BreadcrumbItem>
-                <BreadcrumbItem>
-                  <Link to={'/ProcessInstances/'}>Process Instances</Link>
-                </BreadcrumbItem>
-                <BreadcrumbItem isActive>
-                  {data.ProcessInstances[0].processName}
-                </BreadcrumbItem>
-              </Breadcrumb>
-            </GridItem>
-          </Grid>
-        ) : (
-          ''
-        )}
-      </PageSection>
-      <PageSection>
-        {!loading ? (
-          <Grid gutter="md" span={12} lg={6} xl={4}>
-            <GridItem span={12}>
-              <Split
-                gutter={'md'}
-                component={'div'}
-                className="pf-u-align-items-center"
-              >
-                <SplitItem isFilled={true}>
-                  <Title headingLevel="h1" size="4xl">
-                    <ProcessDescriptor
-                      processInstanceData={data.ProcessInstances[0]}
-                    />
-                  </Title>
-                </SplitItem>
-                <SplitItem>
-                  <OverflowMenu breakpoint="lg">
-                    <OverflowMenuContent isPersistent>
-                      <OverflowMenuGroup groupType="button" isPersistent>
-                        {abortButton()}
-                      </OverflowMenuGroup>
-                    </OverflowMenuContent>
-                  </OverflowMenu>
-                </SplitItem>
-              </Split>
-            </GridItem>
-            <GridItem>
-              <ProcessDetails data={data} />
-            </GridItem>
-            <GridItem>
-              <ProcessDetailsProcessVariables data={data} />
-            </GridItem>
-            <GridItem>
-              <ProcessDetailsTimeline data={data.ProcessInstances} />
-            </GridItem>
-          </Grid>
-        ) : (
-          <Card>
-            <Bullseye>
-              <SpinnerComponent spinnerText="Loading process details..." />
-            </Bullseye>
-          </Card>
-        )}
-      </PageSection>
-    </>
-  );
-};
-
+      {!error ?
+        (<>
+          <PageSection variant="light">
+            <ProcessBulkModalComponent
+              isModalLarge={false}
+              isModalOpen={isAbortModalOpen}
+              handleModalToggle={handleAbortModalToggle}
+              checkedArray={data && [data.ProcessInstances[0].state]}
+              modalTitle={
+                titleType === 'success'
+                  ? setTitle('success', 'Abort operation')
+                  : setTitle('failure', 'Abort operation')
+              }
+              isSingleAbort={true}
+              abortedMessageObj={
+                data && {
+                  [data.ProcessInstances[0].id]: data.ProcessInstances[0]
+                }
+              }
+              completedMessageObj={{}}
+              isAbortModalOpen={isAbortModalOpen}
+            />
+            <PageTitleComponent title="Process Details" />
+            {!loading ?
+              (<Grid gutter="md" span={12} lg={6} xl={4}>
+                <GridItem span={12}>
+                  <Breadcrumb>
+                    <BreadcrumbItem>
+                      <Link to={'/'}>Home</Link>
+                    </BreadcrumbItem>
+                    {BreadCrumb.map((item, index) => {
+                      return (
+                        <BreadcrumbItem key={index}>
+                          <Link to={BreadCrumbRoute[index]}>
+                            {item.replace(/([A-Z])/g, ' $1').trim()}
+                          </Link>
+                        </BreadcrumbItem>
+                      );
+                      // }
+                    })}
+                    <BreadcrumbItem isActive>
+                      {data.ProcessInstances[0].processName}
+                    </BreadcrumbItem>
+                  </Breadcrumb>
+                </GridItem>
+              </Grid>
+              ) : ''}
+          </PageSection>
+          <PageSection>
+            {!loading ? (
+              <Grid gutter="md" span={12} lg={6} xl={4}>
+                <GridItem span={12}>
+                  <Split
+                    gutter={'md'}
+                    component={'div'}
+                    className="pf-u-align-items-center"
+                  >
+                    <SplitItem isFilled={true}>
+                      <Title headingLevel="h1" size="4xl">
+                        <ProcessDescriptor
+                          processInstanceData={data.ProcessInstances[0]}
+                        />
+                      </Title>
+                    </SplitItem>
+                    <SplitItem>
+                      <OverflowMenu breakpoint="lg">
+                        <OverflowMenuContent isPersistent>
+                          <OverflowMenuGroup groupType="button" isPersistent>
+                            {abortButton()}
+                          </OverflowMenuGroup>
+                        </OverflowMenuContent>
+                      </OverflowMenu>
+                    </SplitItem>
+                  </Split>
+                </GridItem>
+                {currentPage && <GridItem>
+                  <ProcessDetails data={data} from={currentPage} />
+                </GridItem>}
+                <GridItem>
+                  <ProcessDetailsProcessVariables data={data} />
+                </GridItem>
+                <GridItem>
+                  <ProcessDetailsTimeline data={data.ProcessInstances} />
+                </GridItem>
+              </Grid>
+            ) : (
+                <Card>
+                  <Bullseye>
+                    <SpinnerComponent spinnerText="Loading process details..." />
+                  </Bullseye>
+                </Card>
+              )}
+          </PageSection>
+          </>):(<ServerErrorsComponent message={error.message} />)}
+      </>);
+  };
+          
 export default ProcessDetailsPage;

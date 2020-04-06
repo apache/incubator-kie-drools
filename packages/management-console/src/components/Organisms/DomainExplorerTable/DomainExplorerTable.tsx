@@ -39,6 +39,8 @@ import ProcessDescriptor from '../../Molecules/ProcessDescriptor/ProcessDescript
 const DomainExplorerTable = ({ columnFilters, tableLoading, displayTable }) => {
   const [columns, setColumns] = useState([]);
   const [rows, setRows] = useState([]);
+  const currentPage = { prev: location.pathname}
+  window.localStorage.setItem('state', JSON.stringify(currentPage))
 
   const stateIcon = (state) => {
     switch (state) {
@@ -155,7 +157,7 @@ const DomainExplorerTable = ({ columnFilters, tableLoading, displayTable }) => {
                 const ele = {
                   title: (
                     <>
-                     <Link to={'/ProcessInstances/' + tempObj.id}>
+                     <Link to={'/Process/' + tempObj.id}>
                     <strong>
                       <ProcessDescriptor processInstanceData={tempObj}/>
                       </strong>
