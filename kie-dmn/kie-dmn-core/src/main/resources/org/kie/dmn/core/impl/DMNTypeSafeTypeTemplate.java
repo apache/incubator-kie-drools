@@ -7,9 +7,6 @@ import java.util.Map;
 
 // All implementations are used only for templating purposes and should never be called
 public interface DMNTypeSafeTypeTemplate {
-    default String getTypeName() {
-        return "$typename";
-    }
 
     default org.kie.dmn.feel.util.EvalHelper.PropertyValueResult getFEELProperty(String property) {
         switch (property) {
