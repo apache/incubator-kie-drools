@@ -49,9 +49,6 @@ public class DMNDeclaredField implements FieldDefinition {
             String typeName = getBaseType(fieldDMNType);
             String typeNameWithPackage = withPackage(typeName);
             return String.format("java.util.Collection<%s>", typeNameWithPackage);
-        } else if (!fieldDMNType.getAllowedValues().isEmpty()) {
-            // assume it's an enumeration
-            return "String";
         } else {
             return fieldTypeWithPackage();
         }
@@ -66,8 +63,7 @@ public class DMNDeclaredField implements FieldDefinition {
         if ("Any".equals(name)) {
             return OBJECT_TYPE;
         } else if (!fieldDMNType.getAllowedValues().isEmpty()) {
-            // assume it's an enumeration
-            return "Object";
+            return getBaseType(fieldDMNType);
         } else {
             return name;
         }
