@@ -35,7 +35,6 @@ import org.kie.dmn.api.core.DMNModel;
 import org.kie.dmn.api.core.DMNResult;
 import org.kie.dmn.api.core.DMNRuntime;
 import org.kie.dmn.api.core.DMNType;
-import org.kie.dmn.api.core.FEELPropertyAccessible;
 import org.kie.dmn.api.core.ast.BusinessKnowledgeModelNode;
 import org.kie.dmn.api.core.ast.DMNNode;
 import org.kie.dmn.api.core.ast.DecisionNode;
@@ -713,15 +712,7 @@ public class DMNRuntimeImpl
         if (dep instanceof InputDataNode) {
             InputDataNodeImpl inputDataNode = (InputDataNodeImpl) dep;
             BaseDMNTypeImpl dmnType = (BaseDMNTypeImpl) inputDataNode.getType();
-            Object value = result.getContext().get(dep.getName());
-
-            // TODO verify this
-            if(value instanceof FEELPropertyAccessible) {
-                FEELPropertyAccessible a = (FEELPropertyAccessible) value;
-                return dmnType.getName().equals(a.getTypeName());
-            }
-
-            return dmnType.isAssignableValue(value);
+            return dmnType.isAssignableValue( result.getContext().get( dep.getName() ) );
         }
         // if the dependency is NOT an InputData, the type coherence was checked at evaluation result assignment.
         return true;

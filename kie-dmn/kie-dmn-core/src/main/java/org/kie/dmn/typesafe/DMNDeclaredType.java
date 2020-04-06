@@ -18,14 +18,12 @@ class DMNDeclaredType implements TypeDefinition {
 
     private DMNAllTypesIndex index;
     private final DMNType dmnType;
-    private final String originalTypeName;
     List<DMNDeclaredField> fields = new ArrayList<>();
     List<AnnotationDefinition> annnotations = new ArrayList<>();
 
     DMNDeclaredType(DMNAllTypesIndex index, DMNType dmnType) {
         this.index = index;
         this.dmnType = dmnType;
-        this.originalTypeName = dmnType.getName();
         initFields();
     }
 
@@ -64,7 +62,7 @@ class DMNDeclaredType implements TypeDefinition {
 
     @Override
     public List<MethodDefinition> getMethods() {
-        return new FeelPropertyTemplate(fields, originalTypeName).getMethods();
+        return new FeelPropertyTemplate(fields).getMethods();
     }
 
     @Override

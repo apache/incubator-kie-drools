@@ -34,11 +34,9 @@ public class FeelPropertyTemplate {
     CompilationUnit methodTemplate;
 
     List<DMNDeclaredField> fields;
-    private String dmnOriginalType;
 
-    public FeelPropertyTemplate(List<DMNDeclaredField> fields, String originalName) {
+    public FeelPropertyTemplate(List<DMNDeclaredField> fields) {
         this.fields = fields;
-        this.dmnOriginalType = originalName;
     }
 
     public List<MethodDefinition> getMethods() {
@@ -50,26 +48,8 @@ public class FeelPropertyTemplate {
         allMethods.add(setFeelPropertyDefinition());
         allMethods.add(fromMap());
         allMethods.add(allFeelProperties());
-        allMethods.add(getTypeName());
 
         return allMethods;
-    }
-
-    private MethodDefinition getTypeName() {
-        MethodDeclaration typeNameCloned = cloneMethodTemplate("getTypeName");
-
-        typeNameCloned.findAll(StringLiteralExpr.class, s -> s.asString().equals("$typename"))
-                .forEach( s-> {
-                    s.replace(new StringLiteralExpr(dmnOriginalType));
-                });
-
-
-        String body = typeNameCloned.getBody().orElseThrow(RuntimeException::new).toString();
-        MethodWithStringBody getFeelPropertyDefinition = new MethodWithStringBody("getTypeName", String.class.getCanonicalName(), body);
-
-        addOverrideAnnotation(getFeelPropertyDefinition);
-
-        return getFeelPropertyDefinition;
     }
 
     private MethodDefinition getFeelPropertyDefinition() {
