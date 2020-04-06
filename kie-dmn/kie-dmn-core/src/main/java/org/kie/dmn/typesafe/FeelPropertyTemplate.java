@@ -62,14 +62,15 @@ public class FeelPropertyTemplate {
 
         List<SwitchEntry> collect = fields.stream().map(this::toGetPropertySwitchEntry).collect(Collectors.toList());
 
-        SwitchEntry defaultSwitchStmt = firstSwitch.findFirst(SwitchEntry.class, sw -> sw.getLabels().isEmpty()).orElseThrow(RuntimeException::new); // default
+        SwitchEntry defaultSwitchStmt = firstSwitch.findFirst(SwitchEntry.class, sw -> sw.getLabels().isEmpty()).orElseThrow(RuntimeException::new);
         collect.add(defaultSwitchStmt);
 
         firstSwitch.setEntries(nodeList(collect));
 
         String body = getFEELProperty.getBody().orElseThrow(RuntimeException::new).toString();
-        MethodWithStringBody getFeelPropertyDefinition = new MethodWithStringBody("getFEELProperty", EvalHelper.PropertyValueResult.class.getCanonicalName(), body);
-        getFeelPropertyDefinition.addParameter(String.class.getCanonicalName(), "property");
+        MethodWithStringBody getFeelPropertyDefinition =
+                new MethodWithStringBody("getFEELProperty", EvalHelper.PropertyValueResult.class.getCanonicalName(), body)
+                        .addParameter(String.class.getCanonicalName(), "property");
 
         addOverrideAnnotation(getFeelPropertyDefinition);
 
@@ -108,9 +109,11 @@ public class FeelPropertyTemplate {
         firstSwitch.setEntries(nodeList(collect));
 
         String body = setFEELProperty.getBody().orElseThrow(RuntimeException::new).toString();
-        MethodWithStringBody setFeelPropertyDefinition = new MethodWithStringBody("setFEELProperty", "void", body);
-        setFeelPropertyDefinition.addParameter(String.class.getCanonicalName(), "property");
-        setFeelPropertyDefinition.addParameter(Object.class.getCanonicalName(), "value");
+
+        MethodWithStringBody setFeelPropertyDefinition = new MethodWithStringBody("setFEELProperty", "void", body)
+                .addParameter(String.class.getCanonicalName(), "property")
+                .addParameter(Object.class.getCanonicalName(), "value");
+
         addOverrideAnnotation(setFeelPropertyDefinition);
 
         return setFeelPropertyDefinition;
@@ -132,7 +135,6 @@ public class FeelPropertyTemplate {
 
     private MethodDefinition fromMap() {
 
-
         MethodDeclaration allFeelProperties = cloneMethodTemplate("fromMap");
 
         BlockStmt originalStatements = allFeelProperties.getBody().orElseThrow(RuntimeException::new);
@@ -150,7 +152,6 @@ public class FeelPropertyTemplate {
         MethodWithStringBody setFeelProperty = new MethodWithStringBody("fromMap", "void", body.toString());
         setFeelProperty.addParameter("java.util.Map<String, Object>", "values");
 
-
         return setFeelProperty;
     }
 
@@ -164,13 +165,16 @@ public class FeelPropertyTemplate {
 
         MethodDeclaration allFeelProperties = cloneMethodTemplate("allFEELProperties");
 
-        List<Statement> collect = fields.stream().map(this::toGetAllProperty).collect(Collectors.toList());
+
+        ExpressionStmt putExpression = allFeelProperties.findFirst(ExpressionStmt.class,
+                                                             mc -> mc.getExpression().isMethodCallExpr() &&
+                                                                     mc.getExpression().asMethodCallExpr().getNameAsString().equals("put"))
+                .orElseThrow(RuntimeException::new);
+
+        List<Statement> collect = fields.stream().map(fieldDefinition -> toResultPut(putExpression, fieldDefinition)).collect(Collectors.toList());
         BlockStmt newBlockStatement = new BlockStmt(nodeList(collect));
 
-        allFeelProperties.findAll(ExpressionStmt.class,
-                                  mc -> mc.getExpression().isMethodCallExpr() &&
-                                          mc.getExpression().asMethodCallExpr().getNameAsString().equals("put"))
-                .forEach(n -> n.replace(newBlockStatement));
+        putExpression.replace(newBlockStatement);
 
         String body = allFeelProperties.getBody().orElseThrow(RuntimeException::new).toString();
 
@@ -184,18 +188,22 @@ public class FeelPropertyTemplate {
         return allFEELProperties;
     }
 
-    private ExpressionStmt toGetAllProperty(FieldDefinition fieldDefinition) {
-        String accessorName = getAccessorName(fieldDefinition, "get");
-
-        MethodCallExpr mc = new MethodCallExpr(new NameExpr("result"), "put");
+    private ExpressionStmt toResultPut(ExpressionStmt putExpression, FieldDefinition fieldDefinition) {
+        MethodCallExpr clone = (MethodCallExpr) putExpression.getExpression().clone();
 
         // TODO: avoid downcast
         DMNDeclaredField dmnDeclaredField = (DMNDeclaredField) fieldDefinition;
         String fieldName = dmnDeclaredField.getOriginalMapKey();
-        mc.addArgument(new StringLiteralExpr(fieldName));
-        mc.addArgument(new MethodCallExpr(new ThisExpr(), accessorName));
 
-        return new ExpressionStmt(mc);
+        String accessorName = getAccessorName(fieldDefinition, "get");
+
+        clone.findAll(StringLiteralExpr.class, se -> se.asString().equals("<PROPERTY_NAME>"))
+                .forEach(s -> s.replace(new StringLiteralExpr(fieldName)));
+
+        clone.findAll(MethodCallExpr.class, se -> se.getNameAsString().equals("getPropertyName"))
+                .forEach(s -> s.setName(accessorName));
+
+        return new ExpressionStmt(clone);
     }
 
     private String getAccessorName(FieldDefinition fieldDefinition, String get) {
