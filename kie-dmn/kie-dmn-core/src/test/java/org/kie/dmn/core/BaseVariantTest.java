@@ -108,12 +108,18 @@ public abstract class BaseVariantTest implements VariantTest {
         return runtime;
     }
 
-    protected Map<String, String> allSources;
+    @Override
+    public DMNRuntime createRuntimeWithAdditionalResources(String string, Class<?> class1, String... string2) {
+        DMNRuntime runtimeWithAdditionalResources = testConfig.createRuntimeWithAdditionalResources(string, class1, string2);
+        createTypeSafeInput(runtimeWithAdditionalResources);
+        return runtimeWithAdditionalResources;
+    }
+
     protected Map<String, Class<?>> allCompiledClasses;
 
     private void createTypeSafeInput(DMNRuntime runtime) {
         DMNAllTypesIndex index = new DMNAllTypesIndex(runtime.getModels(), testConfig.name());
-        allSources = new HashMap<>();
+        Map<String, String> allSources = new HashMap<>();
 
         for (DMNModel m : runtime.getModels()) {
             String packageName = new DMNTypeSafePackageName(m, testConfig.name()).packageName();
@@ -123,13 +129,6 @@ public abstract class BaseVariantTest implements VariantTest {
         }
 
         allCompiledClasses = KieMemoryCompiler.compile(allSources, this.getClass().getClassLoader());
-    }
-
-    @Override
-    public DMNRuntime createRuntimeWithAdditionalResources(String string, Class<?> class1, String... string2) {
-        DMNRuntime runtimeWithAdditionalResources = testConfig.createRuntimeWithAdditionalResources(string, class1, string2);
-        createTypeSafeInput(runtimeWithAdditionalResources);
-        return runtimeWithAdditionalResources;
     }
 
     protected DMNResult evaluateModel(DMNRuntime runtime, DMNModel dmnModel, DMNContext context) {
