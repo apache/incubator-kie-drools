@@ -21,15 +21,22 @@ import java.util.Map;
 
 import org.junit.runner.RunWith;
 import org.junit.runners.Parameterized;
+import org.kie.dmn.api.core.DMNContext;
 import org.kie.dmn.api.core.DMNModel;
+import org.kie.dmn.api.core.DMNResult;
 import org.kie.dmn.api.core.DMNRuntime;
+import org.kie.dmn.api.core.FEELPropertyAccessible;
 import org.kie.dmn.core.compiler.RuntimeTypeCheckOption;
+import org.kie.dmn.core.impl.DMNContextFPAImpl;
 import org.kie.dmn.core.internal.utils.DMNRuntimeBuilder;
 import org.kie.dmn.core.internal.utils.DMNRuntimeBuilder.DMNRuntimeBuilderConfigured;
 import org.kie.dmn.core.util.DMNRuntimeUtil;
 import org.kie.dmn.typesafe.DMNAllTypesIndex;
+import org.kie.dmn.typesafe.DMNTypeSafeTest;
 import org.kie.dmn.typesafe.DMNTypeSafeTypeGenerator;
 import org.kie.memorycompiler.KieMemoryCompiler;
+
+import static org.kie.dmn.typesafe.DMNAllTypesIndex.packageName;
 
 @RunWith(Parameterized.class)
 public abstract class BaseVariantTest implements VariantTest {
@@ -121,6 +128,18 @@ public abstract class BaseVariantTest implements VariantTest {
         DMNRuntime runtimeWithAdditionalResources = testConfig.createRuntimeWithAdditionalResources(string, class1, string2);
         createTypeSafeInput(runtimeWithAdditionalResources);
         return runtimeWithAdditionalResources;
+    }
+
+    protected DMNResult evaluateModel(DMNRuntime runtime, DMNModel dmnModel, DMNContext context) {
+        Map<String, Object> inputMap = context.getAll();
+        FEELPropertyAccessible inputSet;
+        try {
+            inputSet = DMNTypeSafeTest.createInstanceFromCompiledClasses(allCompiledClasses, packageName(dmnModel), "InputSet");
+            inputSet.fromMap(inputMap);
+            return runtime.evaluateAll(dmnModel, new DMNContextFPAImpl(inputSet));
+        } catch (Exception e) {
+            throw new RuntimeException(e);
+        }
     }
 }
 

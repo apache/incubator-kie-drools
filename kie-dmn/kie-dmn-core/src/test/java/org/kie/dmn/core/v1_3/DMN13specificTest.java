@@ -240,16 +240,4 @@ public class DMN13specificTest extends BaseVariantTest {
                                                                                    entry("Required Credit Score", new BigDecimal(720)),
                                                                                    entry("Recommendation", "Best")))));
     }
-
-    private DMNResult evaluateModel(DMNRuntime runtime, DMNModel dmnModel, DMNContext context) {
-        Map<String, Object> inputMap = context.getAll();
-        FEELPropertyAccessible inputSet;
-        try {
-            inputSet = DMNTypeSafeTest.createInstanceFromCompiledClasses(allCompiledClasses, packageName(dmnModel), "InputSet");
-            inputSet.fromMap(inputMap);
-            return runtime.evaluateAll(dmnModel, new DMNContextFPAImpl(inputSet));
-        } catch (Exception e) {
-            throw new RuntimeException(e);
-        }
-    }
 }
