@@ -31,7 +31,7 @@ public class AbsFunction
         super( "abs" );
     }
 
-    public FEELFnResult<BigDecimal> invoke(@ParameterName( "number" ) BigDecimal number) {
+    public FEELFnResult<BigDecimal> invoke(@ParameterName( "n" ) BigDecimal number) {
         if ( number == null ) {
             return FEELFnResult.ofError(new InvalidParametersEvent(Severity.ERROR, "number", "cannot be null"));
         }
