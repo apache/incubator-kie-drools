@@ -1,6 +1,5 @@
 import {
   Page,
-  SkipToContent,
   PageSidebar,
   PageHeader,
   Nav,
@@ -24,9 +23,6 @@ import { useGetQueryFieldsQuery } from '../../../graphql/types';
 
 const Dashboard: React.FC<{}> = (props: any) => {
   const pageId = 'main-content-page-layout-default-nav';
-  const PageSkipToContent = (
-    <SkipToContent href={`#${pageId}`}>Skip to Content</SkipToContent>
-  );
   const [isNavOpen, setIsNavOpen] = useState(true);
   const { pathname } = props.location;
 
@@ -70,10 +66,8 @@ const Dashboard: React.FC<{}> = (props: any) => {
     <React.Fragment>
       <Page
         header={Header}
-        skipToContent={PageSkipToContent}
         mainContainerId={pageId}
         sidebar={Sidebar}
-        isManagedSidebar
         className="kogito-management-console--dashboard-page"
       >
         <Switch>
