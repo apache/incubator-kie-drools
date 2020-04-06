@@ -69,7 +69,7 @@ public abstract class BaseInterpretedVsCompiledTest {
         allSources = new HashMap<>();
 
         for(DMNModel m : runtime.getModels()) {
-            Map<String, String> allTypesSourceCode = new DMNTypeSafeTypeGenerator(m, index).generateSourceCodeOfAllTypes();
+            Map<String, String> allTypesSourceCode = new DMNTypeSafeTypeGenerator(m, index, packageName(m)).generateSourceCodeOfAllTypes();
             allSources.putAll(allTypesSourceCode);
         }
 

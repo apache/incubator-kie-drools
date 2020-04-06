@@ -14,8 +14,6 @@ import org.kie.dmn.api.core.DMNType;
 import org.kie.dmn.api.core.ast.InputDataNode;
 import org.kie.dmn.core.impl.DMNModelImpl;
 
-import static org.kie.dmn.typesafe.DMNAllTypesIndex.packageName;
-
 public class DMNTypeSafeTypeGenerator {
 
     private final String packageName;
@@ -24,9 +22,9 @@ public class DMNTypeSafeTypeGenerator {
 
     private Map<String, TypeDefinition> types = new HashMap<>();
 
-    public DMNTypeSafeTypeGenerator(DMNModel dmnModel, DMNAllTypesIndex index) {
+    public DMNTypeSafeTypeGenerator(DMNModel dmnModel, DMNAllTypesIndex index, String packageName) {
         this.dmnModel = (DMNModelImpl) dmnModel;
-        this.packageName = packageName(dmnModel);
+        this.packageName = packageName;
         this.index = index;
         processTypes();
     }

@@ -115,8 +115,9 @@ public abstract class BaseVariantTest implements VariantTest {
         DMNAllTypesIndex index = new DMNAllTypesIndex(runtime.getModels());
         allSources = new HashMap<>();
 
-        for(DMNModel m : runtime.getModels()) {
-            Map<String, String> allTypesSourceCode = new DMNTypeSafeTypeGenerator(m, index).generateSourceCodeOfAllTypes();
+        for (DMNModel m : runtime.getModels()) {
+            Map<String, String> allTypesSourceCode = new DMNTypeSafeTypeGenerator(m, index, packageName(m))
+                    .generateSourceCodeOfAllTypes();
             allSources.putAll(allTypesSourceCode);
         }
 
@@ -148,5 +149,4 @@ interface VariantTest {
     DMNRuntime createRuntime(String string, Class<?> class1);
 
     DMNRuntime createRuntimeWithAdditionalResources(String string, Class<?> class1, String... string2);
-
 }

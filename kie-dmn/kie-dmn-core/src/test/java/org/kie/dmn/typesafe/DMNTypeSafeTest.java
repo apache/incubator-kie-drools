@@ -24,6 +24,7 @@ import static org.hamcrest.CoreMatchers.notNullValue;
 import static org.junit.Assert.assertThat;
 import static org.kie.dmn.core.util.DynamicTypeUtils.entry;
 import static org.kie.dmn.core.util.DynamicTypeUtils.mapOf;
+import static org.kie.dmn.typesafe.DMNAllTypesIndex.packageName;
 
 public class DMNTypeSafeTest {
 
@@ -49,7 +50,7 @@ public class DMNTypeSafeTest {
         assertThat(dmnModel, notNullValue());
         assertThat(DMNRuntimeUtil.formatMessages(dmnModel.getMessages()), dmnModel.hasErrors(), is(false));
 
-        Map<String, String> allTypesSourceCode = new DMNTypeSafeTypeGenerator(dmnModel, new DMNAllTypesIndex(dmnModel)).generateSourceCodeOfAllTypes();
+        Map<String, String> allTypesSourceCode = new DMNTypeSafeTypeGenerator(dmnModel, new DMNAllTypesIndex(dmnModel), packageName(dmnModel)).generateSourceCodeOfAllTypes();
 
         ClassLoader thisDMNClassLoader = this.getClass().getClassLoader();
         Map<String, Class<?>> compiledClasses = KieMemoryCompiler.compile(allTypesSourceCode, thisDMNClassLoader);
@@ -127,7 +128,7 @@ public class DMNTypeSafeTest {
     public static FEELPropertyAccessible generateSourceCodeAndCreateInput(DMNModel dmnModel, String packageName, ClassLoader classLoader) throws Exception {
         Map<String, String> allTypesSourceCode = new DMNTypeSafeTypeGenerator(
                 dmnModel,
-                new DMNAllTypesIndex(dmnModel))
+                new DMNAllTypesIndex(dmnModel), packageName(dmnModel))
                 .generateSourceCodeOfAllTypes();
 
         Map<String, Class<?>> compiledClasses = KieMemoryCompiler.compile(allTypesSourceCode, classLoader);
