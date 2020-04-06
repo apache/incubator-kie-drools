@@ -249,7 +249,6 @@ public class EvalHelper {
                                 if ( text.length() >= i + 7 ) {
                                     // escape unicode
                                     String hex = text.substring( i + 1, i + 7 );
-                                    Integer.parseInt(hex, 16);
                                     char[] chars = Character.toChars( Integer.parseInt( hex, 16 ) );
                                     r.append( chars );
                                     i += 6;
