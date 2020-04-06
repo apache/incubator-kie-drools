@@ -25,7 +25,6 @@ import java.util.Optional;
 
 import org.kie.dmn.api.core.DMNModel;
 import org.kie.dmn.api.core.DMNType;
-import org.kie.dmn.feel.codegen.feel11.CodegenStringUtil;
 
 public class DMNAllTypesIndex {
 
@@ -35,21 +34,17 @@ public class DMNAllTypesIndex {
 
     Map<String, String> mapNamespaceIndex = new HashMap<>();
 
-    public DMNAllTypesIndex(DMNModel... allModels) {
+    public DMNAllTypesIndex(String prefix, DMNModel... allModels) {
         this.allModels = Arrays.asList(allModels);
         for (DMNModel m : allModels) {
-            DMNModelTypesIndex indexFromModel = new DMNModelTypesIndex(m);
+            DMNModelTypesIndex indexFromModel = new DMNModelTypesIndex(m, new DMNTypeSafePackageName(m, prefix));
             mapNamespaceIndex.putAll(indexFromModel.getClassesNamespaceIndex());
             allTypesToGenerate().addAll(indexFromModel.getTypesToGenerate());
         }
     }
 
-    public DMNAllTypesIndex(List<DMNModel> allModels) {
-        this(allModels.toArray(new DMNModel[0]));
-    }
-
-    public static String packageName(DMNModel dmnModel) {
-        return CodegenStringUtil.escapeIdentifier(dmnModel.getNamespace() + dmnModel.getName());
+    public DMNAllTypesIndex(List<DMNModel> allModels, String prefix) {
+        this(prefix, allModels.toArray(new DMNModel[0]));
     }
 
     public List<DMNType> allTypesToGenerate() {

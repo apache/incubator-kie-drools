@@ -24,7 +24,6 @@ import static org.hamcrest.CoreMatchers.notNullValue;
 import static org.junit.Assert.assertThat;
 import static org.kie.dmn.core.util.DynamicTypeUtils.entry;
 import static org.kie.dmn.core.util.DynamicTypeUtils.mapOf;
-import static org.kie.dmn.typesafe.DMNAllTypesIndex.packageName;
 
 public class DMNTypeSafeTest {
 
@@ -41,7 +40,7 @@ public class DMNTypeSafeTest {
         String modelName = "Drawing 1";
 
         dmnModel = runtime.getModel(namespace, modelName);
-        packageName = DMNAllTypesIndex.packageName(dmnModel);
+        packageName = new DMNTypeSafePackageName(dmnModel).packageName();
     }
 
     @Test
@@ -50,7 +49,9 @@ public class DMNTypeSafeTest {
         assertThat(dmnModel, notNullValue());
         assertThat(DMNRuntimeUtil.formatMessages(dmnModel.getMessages()), dmnModel.hasErrors(), is(false));
 
-        Map<String, String> allTypesSourceCode = new DMNTypeSafeTypeGenerator(dmnModel, new DMNAllTypesIndex(dmnModel), packageName(dmnModel)).generateSourceCodeOfAllTypes();
+        DMNAllTypesIndex index = new DMNAllTypesIndex("", dmnModel);
+        String packageName = new DMNTypeSafePackageName(dmnModel).packageName();
+        Map<String, String> allTypesSourceCode = new DMNTypeSafeTypeGenerator(dmnModel, index, packageName).generateSourceCodeOfAllTypes();
 
         ClassLoader thisDMNClassLoader = this.getClass().getClassLoader();
         Map<String, Class<?>> compiledClasses = KieMemoryCompiler.compile(allTypesSourceCode, thisDMNClassLoader);
@@ -126,9 +127,10 @@ public class DMNTypeSafeTest {
     }
 
     public static FEELPropertyAccessible generateSourceCodeAndCreateInput(DMNModel dmnModel, String packageName, ClassLoader classLoader) throws Exception {
+        DMNAllTypesIndex index = new DMNAllTypesIndex("", dmnModel);
         Map<String, String> allTypesSourceCode = new DMNTypeSafeTypeGenerator(
                 dmnModel,
-                new DMNAllTypesIndex(dmnModel), packageName(dmnModel))
+                index, packageName )
                 .generateSourceCodeOfAllTypes();
 
         Map<String, Class<?>> compiledClasses = KieMemoryCompiler.compile(allTypesSourceCode, classLoader);

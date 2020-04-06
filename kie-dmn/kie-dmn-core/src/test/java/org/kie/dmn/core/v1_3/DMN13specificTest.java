@@ -18,19 +18,15 @@ package org.kie.dmn.core.v1_3;
 
 import java.math.BigDecimal;
 import java.util.Arrays;
-import java.util.Map;
 
 import org.junit.Test;
 import org.kie.dmn.api.core.DMNContext;
 import org.kie.dmn.api.core.DMNModel;
 import org.kie.dmn.api.core.DMNResult;
 import org.kie.dmn.api.core.DMNRuntime;
-import org.kie.dmn.api.core.FEELPropertyAccessible;
 import org.kie.dmn.core.BaseVariantTest;
 import org.kie.dmn.core.api.DMNFactory;
-import org.kie.dmn.core.impl.DMNContextFPAImpl;
 import org.kie.dmn.core.util.DMNRuntimeUtil;
-import org.kie.dmn.typesafe.DMNTypeSafeTest;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -39,7 +35,6 @@ import static org.hamcrest.CoreMatchers.notNullValue;
 import static org.junit.Assert.assertThat;
 import static org.kie.dmn.core.util.DynamicTypeUtils.entry;
 import static org.kie.dmn.core.util.DynamicTypeUtils.mapOf;
-import static org.kie.dmn.typesafe.DMNAllTypesIndex.packageName;
 
 public class DMN13specificTest extends BaseVariantTest {
 

@@ -31,11 +31,12 @@ import org.kie.dmn.api.core.FEELPropertyAccessible;
 import org.kie.dmn.core.compiler.ExecModelCompilerOption;
 import org.kie.dmn.core.impl.DMNContextFPAImpl;
 import org.kie.dmn.typesafe.DMNAllTypesIndex;
+import org.kie.dmn.typesafe.DMNTypeSafePackageName;
 import org.kie.dmn.typesafe.DMNTypeSafeTest;
 import org.kie.dmn.typesafe.DMNTypeSafeTypeGenerator;
 import org.kie.memorycompiler.KieMemoryCompiler;
 
-import static org.kie.dmn.typesafe.DMNAllTypesIndex.packageName;
+
 
 @RunWith(Parameterized.class)
 public abstract class BaseInterpretedVsCompiledTest {
@@ -65,11 +66,12 @@ public abstract class BaseInterpretedVsCompiledTest {
     protected Map<String, Class<?>> allCompiledClasses;
 
     protected void createTypeSafeInput(DMNRuntime runtime) {
-        DMNAllTypesIndex index = new DMNAllTypesIndex(runtime.getModels());
+        DMNAllTypesIndex index = new DMNAllTypesIndex(runtime.getModels(), "");
         allSources = new HashMap<>();
 
         for(DMNModel m : runtime.getModels()) {
-            Map<String, String> allTypesSourceCode = new DMNTypeSafeTypeGenerator(m, index, packageName(m)).generateSourceCodeOfAllTypes();
+            String packageName = new DMNTypeSafePackageName(m, "").packageName();
+            Map<String, String> allTypesSourceCode = new DMNTypeSafeTypeGenerator(m, index, packageName).generateSourceCodeOfAllTypes();
             allSources.putAll(allTypesSourceCode);
         }
 
@@ -80,7 +82,8 @@ public abstract class BaseInterpretedVsCompiledTest {
         Map<String, Object> inputMap = context.getAll();
         FEELPropertyAccessible inputSet;
         try {
-            inputSet = DMNTypeSafeTest.createInstanceFromCompiledClasses(allCompiledClasses, packageName(dmnModel), "InputSet");
+            String packageName = new DMNTypeSafePackageName(dmnModel, "").packageName();
+            inputSet = DMNTypeSafeTest.createInstanceFromCompiledClasses(allCompiledClasses, packageName, "InputSet");
             inputSet.fromMap(inputMap);
             return runtime.evaluateAll(dmnModel, new DMNContextFPAImpl(inputSet));
         } catch (Exception e) {
