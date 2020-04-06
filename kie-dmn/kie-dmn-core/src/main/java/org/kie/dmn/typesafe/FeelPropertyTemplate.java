@@ -165,16 +165,14 @@ public class FeelPropertyTemplate {
 
         MethodDeclaration allFeelProperties = cloneMethodTemplate("allFEELProperties");
 
-
-        ExpressionStmt putExpression = allFeelProperties.findFirst(ExpressionStmt.class,
-                                                             mc -> mc.getExpression().isMethodCallExpr() &&
-                                                                     mc.getExpression().asMethodCallExpr().getNameAsString().equals("put"))
+        MethodCallExpr putExpression = allFeelProperties.findFirst(MethodCallExpr.class,
+                                                                   mc -> mc.getNameAsString().equals("put"))
                 .orElseThrow(RuntimeException::new);
 
         List<Statement> collect = fields.stream().map(fieldDefinition -> toResultPut(putExpression, fieldDefinition)).collect(Collectors.toList());
         BlockStmt newBlockStatement = new BlockStmt(nodeList(collect));
 
-        putExpression.replace(newBlockStatement);
+        putExpression.getParentNode().ifPresent(p -> p.replace(newBlockStatement));
 
         String body = allFeelProperties.getBody().orElseThrow(RuntimeException::new).toString();
 
@@ -188,12 +186,10 @@ public class FeelPropertyTemplate {
         return allFEELProperties;
     }
 
-    private ExpressionStmt toResultPut(ExpressionStmt putExpression, FieldDefinition fieldDefinition) {
-        MethodCallExpr clone = (MethodCallExpr) putExpression.getExpression().clone();
+    private ExpressionStmt toResultPut(MethodCallExpr putExpression, DMNDeclaredField fieldDefinition) {
+        MethodCallExpr clone = putExpression.clone();
 
-        // TODO: avoid downcast
-        DMNDeclaredField dmnDeclaredField = (DMNDeclaredField) fieldDefinition;
-        String fieldName = dmnDeclaredField.getOriginalMapKey();
+        String fieldName = fieldDefinition.getOriginalMapKey();
 
         String accessorName = getAccessorName(fieldDefinition, "get");
 
