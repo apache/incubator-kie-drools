@@ -20,15 +20,8 @@ import javax.xml.XMLConstants;
 import org.kie.dmn.model.api.*;
 import org.kie.dmn.model.api.dmndi.*;
 import org.kie.dmn.api.core.DMNMessage;
-import org.kie.dmn.core.impl.DMNMessageImpl;
-import org.kie.dmn.core.util.MsgUtil;
-import org.kie.dmn.feel.lang.types.BuiltInType;
-import org.kie.dmn.feel.parser.feel11.FEELParser;
-import org.kie.dmn.feel.runtime.events.SyntaxErrorEvent;
-import org.kie.dmn.api.feel.runtime.events.FEELEvent;
 import org.kie.dmn.core.util.Msg;
 
-import function org.kie.dmn.validation.ValidatorUtil.rightOfHash;
 import function org.kie.dmn.validation.ValidatorUtil.doesDefinitionsContainIdForDMNEdge;
 
 global org.kie.dmn.validation.MessageReporter reporter;
@@ -81,7 +74,7 @@ then
     reporter.report(DMNMessage.Severity.WARN, $asso, Msg.DMNDI_MISSING_EDGE, $asso.getIdentifierString());
 end
 
-rule DMNSHAPE_INVALID_REF_WITHOUT_IMPORT
+rule DMNSHAPE_UNKNOWN_REF_WITHOUT_IMPORT
 when
     $shape : DMNShape(dmnElementRef.prefix == XMLConstants.DEFAULT_NS_PREFIX)
     not DRGElement(id == $shape.dmnElementRef)
@@ -102,7 +95,7 @@ then
     reporter.report(DMNMessage.Severity.ERROR, $shape, Msg.DMNDI_UNKNOWN_REF, $shape.getDmnElementRef(), $shape.getIdentifierString());
 end
 
-rule DMNEGDE_INVALID_REF_WITHOUT_IMPORT
+rule DMNEGDE_UNKNOWN_REF_WITHOUT_IMPORT
 when
     $edge : DMNEdge(dmnElementRef.prefix == XMLConstants.DEFAULT_NS_PREFIX)
     not InformationRequirement(id == $edge.dmnElementRef)

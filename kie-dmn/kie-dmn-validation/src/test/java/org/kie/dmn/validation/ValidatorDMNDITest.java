@@ -21,6 +21,7 @@ import java.io.Reader;
 import java.util.List;
 
 import org.junit.Test;
+import org.kie.api.builder.Message.Level;
 import org.kie.dmn.api.core.DMNMessage;
 import org.kie.dmn.api.core.DMNMessageType;
 
@@ -47,18 +48,21 @@ public class ValidatorDMNDITest extends AbstractValidatorTest {
             final List<DMNMessage> validate = validator.validate(reader, VALIDATE_SCHEMA, VALIDATE_MODEL, VALIDATE_COMPILATION);
 
             assertThat(ValidatorUtil.formatMessages(validate), validate.size(), is(12));
-            assertThat(validate.stream().filter(p -> p.getMessageType().equals(DMNMessageType.DMNDI_MISSING_DIAGRAM)).count(), is(12L));
+            assertThat(validate.stream().filter(p -> p.getLevel() == Level.WARNING &&
+                                                     p.getMessageType().equals(DMNMessageType.DMNDI_MISSING_DIAGRAM)).count(), is(12L));
         }
     }
 
     @Test
-    public void testINVALID_REF() throws IOException {
+    public void testUNKNOWN_REF() throws IOException {
         try (final Reader reader = getReader("dmndi/all-elements-invalid-ref.dmn")) {
             final List<DMNMessage> validate = validator.validate(reader, VALIDATE_SCHEMA, VALIDATE_MODEL, VALIDATE_COMPILATION);
 
             assertThat(ValidatorUtil.formatMessages(validate), validate.size(), is(24));
-            assertThat(validate.stream().filter(p -> p.getMessageType().equals(DMNMessageType.DMNDI_MISSING_DIAGRAM)).count(), is(12L));
-            assertThat(validate.stream().filter(p -> p.getMessageType().equals(DMNMessageType.DMNDI_UNKNOWN_REF)).count(), is(12L));
+            assertThat(validate.stream().filter(p -> p.getLevel() == Level.WARNING &&
+                                                     p.getMessageType().equals(DMNMessageType.DMNDI_MISSING_DIAGRAM)).count(), is(12L));
+            assertThat(validate.stream().filter(p -> p.getLevel() == Level.ERROR &&
+                                                     p.getMessageType().equals(DMNMessageType.DMNDI_UNKNOWN_REF)).count(), is(12L));
         }
     }
 }
