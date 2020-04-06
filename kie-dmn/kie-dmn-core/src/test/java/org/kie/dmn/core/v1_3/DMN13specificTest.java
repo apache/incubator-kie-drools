@@ -64,6 +64,8 @@ public class DMN13specificTest extends BaseVariantTest {
 
     @Test
     public void testDMNv1_3_ch11() {
+        testName = "testDMNv1_3_ch11";
+
         final DMNRuntime runtime = createRuntimeWithAdditionalResources("Chapter 11 Example.dmn", this.getClass(), "Financial.dmn");
         final DMNModel dmnModel = runtime.getModel("http://www.trisotech.com/definitions/_9d01a0c4-f529-4ad8-ad8e-ec5fb5d96ad4", "Chapter 11 Example");
         assertThat(dmnModel, notNullValue());
@@ -95,6 +97,7 @@ public class DMN13specificTest extends BaseVariantTest {
 
     @Test
     public void testDMNv1_3_ch11_asSpecInputDataValues() {
+        testName = "testDMNv1_3_ch11_asSpecInputDataValues";
         final DMNRuntime runtime = createRuntimeWithAdditionalResources("Chapter 11 Example.dmn", this.getClass(), "Financial.dmn");
         final DMNModel dmnModel = runtime.getModel("http://www.trisotech.com/definitions/_9d01a0c4-f529-4ad8-ad8e-ec5fb5d96ad4", "Chapter 11 Example");
         assertThat(dmnModel, notNullValue());
@@ -126,6 +129,8 @@ public class DMN13specificTest extends BaseVariantTest {
 
     @Test
     public void testDMNv1_3_ch11_Example2() {
+        testName = "testDMNv1_3_ch11_Example2";
+
         final DMNRuntime runtime = createRuntimeWithAdditionalResources("Recommended Loan Products.dmn", this.getClass(), "Loan info.dmn");
         final DMNModel dmnModel = runtime.getModel("http://www.trisotech.com/definitions/_736fa164-03d8-429f-8318-4913a548c3a6", "Recommended Loan Products");
         assertThat(dmnModel, notNullValue());

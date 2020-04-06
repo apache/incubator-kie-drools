@@ -41,6 +41,8 @@ import org.kie.memorycompiler.KieMemoryCompiler;
 @RunWith(Parameterized.class)
 public abstract class BaseVariantTest implements VariantTest {
 
+    private String prefix;
+
     public static enum VariantTestConf implements VariantTest {
         KIE_API_TYPECHECK {
 
@@ -117,12 +119,15 @@ public abstract class BaseVariantTest implements VariantTest {
 
     protected Map<String, Class<?>> allCompiledClasses;
 
+    protected String testName = "";
+
     private void createTypeSafeInput(DMNRuntime runtime) {
-        DMNAllTypesIndex index = new DMNAllTypesIndex(runtime.getModels(), testConfig.name());
+        prefix = String.format("%s%s", testName, testConfig.name());
+        DMNAllTypesIndex index = new DMNAllTypesIndex(runtime.getModels(), prefix);
         Map<String, String> allSources = new HashMap<>();
 
         for (DMNModel m : runtime.getModels()) {
-            String packageName = new DMNTypeSafePackageName(m, testConfig.name()).packageName();
+            String packageName = new DMNTypeSafePackageName(m, prefix).packageName();
             Map<String, String> allTypesSourceCode = new DMNTypeSafeTypeGenerator(m, index, packageName)
                     .generateSourceCodeOfAllTypes();
             allSources.putAll(allTypesSourceCode);
@@ -135,7 +140,7 @@ public abstract class BaseVariantTest implements VariantTest {
         Map<String, Object> inputMap = context.getAll();
         FEELPropertyAccessible inputSet;
         try {
-            String packageName = new DMNTypeSafePackageName(dmnModel, testConfig.name()).packageName();
+            String packageName = new DMNTypeSafePackageName(dmnModel, prefix).packageName();
             inputSet = DMNTypeSafeTest.createInstanceFromCompiledClasses(allCompiledClasses, packageName, "InputSet");
             inputSet.fromMap(inputMap);
             return runtime.evaluateAll(dmnModel, new DMNContextFPAImpl(inputSet));
