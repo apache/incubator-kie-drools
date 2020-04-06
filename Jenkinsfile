@@ -2,7 +2,7 @@
 
 pipeline {
     agent {
-        label 'kie-rhel7'
+        label 'kie-rhel7 && kie-mem24g && !master'
     }
     tools {
         maven 'kie-maven-3.5.4'
@@ -10,7 +10,7 @@ pipeline {
     }
     options {
         buildDiscarder logRotator(artifactDaysToKeepStr: '', artifactNumToKeepStr: '', daysToKeepStr: '', numToKeepStr: '10')
-        timeout(time: 300, unit: 'MINUTES')
+        timeout(time: 600, unit: 'MINUTES')
     }
     stages {
         stage('Initialize') {
@@ -23,7 +23,11 @@ pipeline {
             steps {
                 dir("droolsjbpm-build-bootstrap") {
                     script {
-                        githubscm.checkoutIfExists('droolsjbpm-build-bootstrap', "$CHANGE_AUTHOR", "$CHANGE_BRANCH", 'kiegroup', "$CHANGE_TARGET")
+                        def changeAuthor = env.CHANGE_AUTHOR ?: env.ghprbPullAuthorLogin
+                        def changeBranch = env.CHANGE_BRANCH ?: env.ghprbSourceBranch
+                        def changeTarget = env.CHANGE_TARGET ?: env.ghprbTargetBranch
+
+                        githubscm.checkoutIfExists('droolsjbpm-build-bootstrap', "${changeAuthor}", "${changeBranch}", 'kiegroup', "${changeTarget}")
                         
                         def file =  (JOB_NAME =~ /\/[a-z,A-Z\-]*\.downstream\.production/).find() ? 'downstream.production.stages' :
                                     (JOB_NAME =~ /\/[a-z,A-Z\-]*\.downstream/).find() ? 'downstream.stages' :
