@@ -41,16 +41,7 @@ public class AtLiteralNode
     @Override
     public Object evaluate(EvaluationContext ctx) {
         String value = (String) stringLiteral.evaluate(ctx);
-        String functionName = null;
-        if (value.startsWith("P")) {
-            functionName = "duration";
-        } else if (value.contains("T")) {
-            functionName = "date and time";
-        } else if (value.contains(":")) {
-            functionName = "time";
-        } else if (value.contains("-")) {
-            functionName = "date";
-        }
+        String functionName = fromAtValue(value).fnName;
         if (functionName == null) {
             ctx.notifyEvt(astEvent(Severity.ERROR, Msg.createMessage(Msg.MALFORMED_AT_LITERAL, getText())));
             return null;
@@ -69,16 +60,7 @@ public class AtLiteralNode
     public Type getResultType() {
         try {
             String value = (String) stringLiteral.evaluate(null);
-            if (value.startsWith("P")) {
-                return BuiltInType.DURATION;
-            } else if (value.contains("T")) {
-                return BuiltInType.DATE_TIME;
-            } else if (value.contains(":")) {
-                return BuiltInType.TIME;
-            } else if (value.contains("-")) {
-                return BuiltInType.DATE;
-            }
-            return BuiltInType.UNKNOWN;
+            return fromAtValue(value).type;
         } catch (Exception e) {
             return BuiltInType.UNKNOWN;
         }
@@ -89,4 +71,34 @@ public class AtLiteralNode
         return v.visit(this);
     }
 
+    private static final TypeAndFn AT_UNKNOWN = new TypeAndFn(BuiltInType.UNKNOWN, null);
+    private static final TypeAndFn AT_DATE = new TypeAndFn(BuiltInType.DATE, "date");
+    private static final TypeAndFn AT_TIME = new TypeAndFn(BuiltInType.TIME, "time");
+    private static final TypeAndFn AT_DATEANDTIME = new TypeAndFn(BuiltInType.DATE_TIME, "date and time");
+    private static final TypeAndFn AT_DURATION = new TypeAndFn(BuiltInType.DURATION, "duration");
+
+    public static TypeAndFn fromAtValue(String value) {
+        if (value.startsWith("P") || value.startsWith("-P")) {
+            return AT_DURATION;
+        } else if (value.contains("T")) {
+            return AT_DATEANDTIME;
+        } else if (value.contains(":")) {
+            return AT_TIME;
+        } else if (value.contains("-")) {
+            return AT_DATE;
+        }
+        return AT_UNKNOWN;
+    }
+
+    public static class TypeAndFn {
+
+        public final Type type;
+        public final String fnName;
+
+        public TypeAndFn(Type type, String fnName) {
+            this.type = type;
+            this.fnName = fnName;
+        }
+
+    }
 }

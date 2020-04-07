@@ -49,6 +49,7 @@ import org.kie.dmn.feel.lang.SimpleType;
 import org.kie.dmn.feel.lang.Type;
 import org.kie.dmn.feel.lang.ast.ASTNode;
 import org.kie.dmn.feel.lang.ast.AtLiteralNode;
+import org.kie.dmn.feel.lang.ast.AtLiteralNode.TypeAndFn;
 import org.kie.dmn.feel.lang.ast.BaseNode;
 import org.kie.dmn.feel.lang.ast.BetweenNode;
 import org.kie.dmn.feel.lang.ast.BooleanNode;
@@ -162,21 +163,10 @@ public class ASTCompilerVisitor implements Visitor<DirectCompilerResult> {
     public DirectCompilerResult visit(AtLiteralNode n) {
         DirectCompilerResult stringLiteral = n.getStringLiteral().accept(this);
         String value = ((StringLiteralExpr) stringLiteral.getExpression()).asString();
-        String functionName = null;
-        BuiltInType resultType = null;
-        if (value.startsWith("P")) {
-            functionName = "duration";
-            resultType = BuiltInType.DURATION;
-        } else if (value.contains("T")) {
-            functionName = "date and time";
-            resultType = BuiltInType.DATE_TIME;
-        } else if (value.contains(":")) {
-            functionName = "time";
-            resultType = BuiltInType.TIME;
-        } else if (value.contains("-")) {
-            functionName = "date";
-            resultType = BuiltInType.DATE;
-        } else {
+        TypeAndFn typeAndFn = AtLiteralNode.fromAtValue(value);
+        String functionName = typeAndFn.fnName;
+        Type resultType = typeAndFn.type;
+        if (resultType == BuiltInType.UNKNOWN) {
             return DirectCompilerResult.of(CompiledFEELSupport.compiledErrorExpression(Msg.createMessage(Msg.MALFORMED_AT_LITERAL, n.getText())),
                                            BuiltInType.UNKNOWN);
         }

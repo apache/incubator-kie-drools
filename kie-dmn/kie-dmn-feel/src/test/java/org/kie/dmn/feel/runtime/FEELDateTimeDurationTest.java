@@ -245,6 +245,8 @@ public class FEELDateTimeDurationTest extends BaseFEELTest {
                 {"date and time(\"2018-12-10T10:30:00\").time offset", null, null},
                 {"date( 2020, 2, 31 )", null, FEELEvent.Severity.ERROR},
                 {"date( \"2020-02-31\" )", null, FEELEvent.Severity.ERROR},
+                {"duration(\"-PT10H\")", Duration.parse("-PT10H"), null},
+                {"@\"-PT10H\"", Duration.parse("-PT10H"), null},
         };
         return addAdditionalParameters(cases, false);
     }
