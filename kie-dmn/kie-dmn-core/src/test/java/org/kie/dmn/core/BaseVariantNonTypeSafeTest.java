@@ -22,7 +22,7 @@ import static org.kie.dmn.core.BaseVariantTest.VariantTestConf.BUILDER_DEFAULT_N
 import static org.kie.dmn.core.BaseVariantTest.VariantTestConf.BUILDER_STRICT;
 import static org.kie.dmn.core.BaseVariantTest.VariantTestConf.KIE_API_TYPECHECK;
 
-public class BaseVariantNonTypeSafeTest extends BaseVariantTest {
+public abstract class BaseVariantNonTypeSafeTest extends BaseVariantTest {
 
     public BaseVariantNonTypeSafeTest(VariantTestConf testConfig) {
         super(testConfig);
