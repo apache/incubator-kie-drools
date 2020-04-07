@@ -36,7 +36,7 @@ public class SimpleSetPredicateTreeTest extends AbstractPMMLTreeTest {
 
     private static final String MODEL_NAME = "SimpleSetPredicateTreeModel";
     private static final String PMML_SOURCE = "SimpleSetPredicateTree.pmml";
-    private static final String TARGET_FIELD = "result";
+    private static final String TARGET_FIELD = "Predicted_result";
     private static KiePMMLModel pmmlModel;
     private double input1;
     private double input2;

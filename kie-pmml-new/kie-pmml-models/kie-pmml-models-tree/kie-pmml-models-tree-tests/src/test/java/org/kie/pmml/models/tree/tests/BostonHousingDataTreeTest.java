@@ -35,7 +35,7 @@ import java.util.Map;
 public class BostonHousingDataTreeTest extends AbstractPMMLTreeTest {
     private static final String MODEL_NAME = "BostonHousingTreeModel";
     private static final String PMML_SOURCE = "BostonHousingTree.pmml";
-    private static final String TARGET_FIELD = "medv";
+    private static final String TARGET_FIELD = "Predicted_medv";
 
     private double crim;
     private double zn;

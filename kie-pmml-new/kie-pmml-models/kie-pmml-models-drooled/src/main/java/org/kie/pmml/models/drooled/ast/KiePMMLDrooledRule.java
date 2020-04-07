@@ -111,6 +111,10 @@ public class KiePMMLDrooledRule {
         return statusToSet;
     }
 
+    public List<KiePMMLOutputField> getOutputFields() {
+        return outputFields;
+    }
+
     public String getAgendaGroup() {
         return agendaGroup;
     }

@@ -36,7 +36,7 @@ public class CompoundPredicateTreeTest extends AbstractPMMLTreeTest {
 
     private static final String MODEL_NAME = "CompoundPredicatesTreeModel";
     private static final String PMML_SOURCE = "CompoundPredicatesTree.pmml";
-    private static final String TARGET_FIELD = "result"/* ""Predicted_result"*/;
+    private static final String TARGET_FIELD = "Predicted_result";
     private static KiePMMLModel pmmlModel;
     private double input1;
     private double input2;

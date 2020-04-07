@@ -33,7 +33,7 @@ import org.kie.pmml.models.drooled.tuples.KiePMMLOriginalTypeGeneratedType;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import static org.kie.pmml.models.tree.compiler.factories.KiePMMLASTFactoryUtils.getCorrectlyFormattedResult;
+import static org.kie.pmml.commons.utils.DrooledModelUtils.getCorrectlyFormattedResult;
 import static org.kie.pmml.models.tree.compiler.factories.KiePMMLTreeModelASTFactory.PATH_PATTERN;
 
 /**

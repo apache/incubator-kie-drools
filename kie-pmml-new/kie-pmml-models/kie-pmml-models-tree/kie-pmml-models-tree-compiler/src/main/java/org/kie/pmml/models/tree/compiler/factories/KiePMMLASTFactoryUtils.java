@@ -33,6 +33,7 @@ import org.kie.pmml.models.tree.model.enums.BOOLEAN_OPERATOR;
 import org.kie.pmml.models.tree.model.enums.OPERATOR;
 
 import static java.util.stream.Collectors.groupingBy;
+import static org.kie.pmml.commons.utils.DrooledModelUtils.getCorrectlyFormattedResult;
 
 public class KiePMMLASTFactoryUtils {
 
@@ -124,11 +125,4 @@ public class KiePMMLASTFactoryUtils {
         return getCorrectlyFormattedResult(simplePredicate.getValue(), dataType);
     }
 
-    public static Object getCorrectlyFormattedResult(Object rawValue, DATA_TYPE targetType) {
-        Object toReturn = targetType.getActualValue(rawValue);
-        if (DATA_TYPE.STRING.equals(targetType)) {
-            toReturn = "\"" + toReturn + "\"";
-        }
-        return toReturn;
-    }
 }

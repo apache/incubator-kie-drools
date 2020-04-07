@@ -15,10 +15,16 @@
  */
 package org.kie.pmml.commons.utils;
 
+import org.kie.pmml.commons.model.enums.DATA_TYPE;
+
 /**
  * Static utility methods for <code>KiePMMLDrooledModel</code>s
  */
 public class DrooledModelUtils {
+
+    private DrooledModelUtils() {
+        // Avoid instantiation
+    }
 
     /**
      * Convert the given <code>String</code> in a valid class name
@@ -29,7 +35,18 @@ public class DrooledModelUtils {
         return input.replace(".", "_");
     }
 
-    private DrooledModelUtils() {
-        // Avoid instantiation
+    /**
+     * Return an <code>Object</code> correctly formatted to be put in drl (e.g. if the <b>targetType</b>
+     * is <code>DATA_TYPE.STRING</code> returns the <b>quoted</b> rawValue
+     * @param rawValue
+     * @param targetType
+     * @return
+     */
+    public static Object getCorrectlyFormattedResult(Object rawValue, DATA_TYPE targetType) {
+        Object toReturn = targetType.getActualValue(rawValue);
+        if (DATA_TYPE.STRING.equals(targetType)) {
+            toReturn = "\"" + toReturn + "\"";
+        }
+        return toReturn;
     }
 }
