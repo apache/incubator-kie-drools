@@ -58,15 +58,15 @@ public class CompoundPredicateTreeTest extends AbstractPMMLTreeTest {
     @Parameterized.Parameters
     public static Collection<Object[]> data() {
         return Arrays.asList(new Object[][]{
-//                {7.1, 7.1, 7.1, "classRootNode"},
-//                {-5.01, 0, 0, "classOrAndNestedNode"},
+                {7.1, 7.1, 7.1, "classRootNode"},
+                {-5.01, 0, 0, "classOrAndNestedNode"},
                 {105, -5.5, 0, "classOrAndNestedNode"},
-//                {2, 2, 2, "classOrNode"},
-//                {2.1, 3.5, 2.1, "classOrNode"},
-//                {0.1, 10, 10, "classAndNode"},
-//                {6, 7.1, 7.1, "classXorNode"},
-//                {6, 6.5, 7.1, "classRootNode"},
-//                {6, 6.5, 7.7, "classXorNode"},
+                {2, 2, 2, "classOrNode"},
+                {2.1, 3.5, 2.1, "classOrNode"},
+                {0.1, 10, 10, "classAndNode"},
+                {6, 7.1, 7.1, "classXorNode"},
+                {6, 6.5, 7.1, "classRootNode"},
+                {3, 6.5, 7.7, "classXorNode"},
         });
     }
 

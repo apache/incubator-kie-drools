@@ -37,11 +37,11 @@ public class KiePMMLDescrRhsFactory {
 
     public static final String UPDATE_STATUS_HOLDER = "\r\n" + STATUS_HOLDER + ".setStatus(\"%s\");\r\nupdate(" + STATUS_HOLDER + ");";
     public static final String FOCUS_AGENDA_GROUP = "\r\nkcontext.getKieRuntime().getAgenda().getAgendaGroup( \"%s\" ).setFocus();";
-    public static final String PRINT_MATCHED_RULE = "\r\nSystem.out.println(\"%s matched\");";
-    public static final String PRINT_SET_STATUS = "\r\nSystem.out.println(\"set status to %s\");";
-    public static final String PRINT_SET_RESULT_CODE = "\r\nSystem.out.println(\"set result code to %s\");";
-    public static final String PRINT_SET_RESULT = "\r\nSystem.out.println(\"set result to %s\");";
-    public static final String PRINT_SET_AGENDA_FOCUS = "\r\nkcontext.getKieRuntime().getAgenda().getAgendaGroup( \"%s\" ).setFocus();";
+//    public static final String PRINT_MATCHED_RULE = "\r\nSystem.out.println(\"%s matched\");";
+//    public static final String PRINT_SET_STATUS = "\r\nSystem.out.println(\"set status to %s\");";
+//    public static final String PRINT_SET_RESULT_CODE = "\r\nSystem.out.println(\"set result code to %s\");";
+//    public static final String PRINT_SET_RESULT = "\r\nSystem.out.println(\"set result to %s\");";
+//    public static final String PRINT_SET_AGENDA_FOCUS = "\r\nkcontext.getKieRuntime().getAgenda().getAgendaGroup( \"%s\" ).setFocus();";
 
     private static final Logger logger = LoggerFactory.getLogger(KiePMMLDescrRhsFactory.class.getName());
 
@@ -69,15 +69,7 @@ public class KiePMMLDescrRhsFactory {
         if (rule.getStatusToSet() != null) {
             joiner.add(String.format(UPDATE_STATUS_HOLDER, rule.getStatusToSet()));
         }
-        if (rule.getResultCode() != null) {
-            joiner.add(String.format(SET_PMML4_RESULT_CODE, rule.getResultCode()));
-        }
-        if (rule.getResult() != null) {
-            joiner.add(String.format(ADD_PMML4_RESULT_VARIABLE, rule.getResult()));
-        }
-        if (rule.getFocusedAgendaGroup() != null) {
-            joiner.add(String.format(FOCUS_AGENDA_GROUP, rule.getFocusedAgendaGroup()));
-        }
+        commonDeclareThen(rule, joiner);
         builder.rhs(joiner.toString());
     }
 
@@ -85,6 +77,11 @@ public class KiePMMLDescrRhsFactory {
         builder.rhs(String.format(UPDATE_STATUS_HOLDER, rule.getStatusToSet()));
         StringJoiner joiner = new StringJoiner("");
         joiner.add(String.format(UPDATE_STATUS_HOLDER, StatusCode.DONE.getName()));
+        commonDeclareThen(rule, joiner);
+        builder.namedRhs(BREAK_LABEL, joiner.toString());
+    }
+
+    protected void commonDeclareThen(final KiePMMLDrooledRule rule, final StringJoiner joiner) {
         if (rule.getResultCode() != null) {
             joiner.add(String.format(SET_PMML4_RESULT_CODE, rule.getResultCode()));
         }
@@ -94,6 +91,5 @@ public class KiePMMLDescrRhsFactory {
         if (rule.getFocusedAgendaGroup() != null) {
             joiner.add(String.format(FOCUS_AGENDA_GROUP, rule.getFocusedAgendaGroup()));
         }
-        builder.namedRhs(BREAK_LABEL, joiner.toString());
     }
 }

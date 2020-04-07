@@ -17,6 +17,7 @@
 package org.kie.pmml.models.tree.compiler.factories;
 
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
@@ -50,7 +51,7 @@ public class KiePMMLTreeModelSimpleSetPredicateASTFactoryTest {
         String declaredType = fieldTypeMap.get("input1").getGeneratedType();
         final Queue<KiePMMLDrooledRule> rules = new LinkedList<>();
         String statusToSet = StatusCode.DONE.getName();
-        KiePMMLTreeModelSimpleSetPredicateASTFactory.factory(simpleSetPredicate, fieldTypeMap, rules).declareRuleFromSimpleSetPredicate(parentPath, currentRule, result, true);
+        KiePMMLTreeModelSimpleSetPredicateASTFactory.factory(simpleSetPredicate, fieldTypeMap, Collections.emptyList(), rules).declareRuleFromSimpleSetPredicate(parentPath, currentRule, result, true);
         assertEquals(1, rules.size());
         final KiePMMLDrooledRule retrieved = rules.poll();
         assertNotNull(retrieved);
@@ -81,7 +82,7 @@ public class KiePMMLTreeModelSimpleSetPredicateASTFactoryTest {
         String result = "classB";
         String declaredType = fieldTypeMap.get("input1").getGeneratedType();
         final Queue<KiePMMLDrooledRule> rules = new LinkedList<>();
-        KiePMMLTreeModelSimpleSetPredicateASTFactory.factory(simpleSetPredicate, fieldTypeMap, rules).declareRuleFromSimpleSetPredicate(parentPath, currentRule, result, false);
+        KiePMMLTreeModelSimpleSetPredicateASTFactory.factory(simpleSetPredicate, fieldTypeMap, Collections.emptyList(), rules).declareRuleFromSimpleSetPredicate(parentPath, currentRule, result, false);
         assertEquals(1, rules.size());
         final KiePMMLDrooledRule retrieved = rules.poll();
         assertNotNull(retrieved);
@@ -113,7 +114,7 @@ public class KiePMMLTreeModelSimpleSetPredicateASTFactoryTest {
         String declaredType = fieldTypeMap.get("input2").getGeneratedType();
         final Queue<KiePMMLDrooledRule> rules = new LinkedList<>();
         String statusToSet = StatusCode.DONE.getName();
-        KiePMMLTreeModelSimpleSetPredicateASTFactory.factory(simpleSetPredicate, fieldTypeMap, rules).declareRuleFromSimpleSetPredicate(parentPath, currentRule, result, true);
+        KiePMMLTreeModelSimpleSetPredicateASTFactory.factory(simpleSetPredicate, fieldTypeMap, Collections.emptyList(), rules).declareRuleFromSimpleSetPredicate(parentPath, currentRule, result, true);
         assertEquals(1, rules.size());
         final KiePMMLDrooledRule retrieved = rules.poll();
         assertNotNull(retrieved);
@@ -145,7 +146,7 @@ public class KiePMMLTreeModelSimpleSetPredicateASTFactoryTest {
         String declaredType = fieldTypeMap.get("input2").getGeneratedType();
         final Queue<KiePMMLDrooledRule> rules = new LinkedList<>();
         String statusToSet = StatusCode.DONE.getName();
-        KiePMMLTreeModelSimpleSetPredicateASTFactory.factory(simpleSetPredicate, fieldTypeMap, rules).declareRuleFromSimpleSetPredicate(parentPath, currentRule, result, false);
+        KiePMMLTreeModelSimpleSetPredicateASTFactory.factory(simpleSetPredicate, fieldTypeMap, Collections.emptyList(), rules).declareRuleFromSimpleSetPredicate(parentPath, currentRule, result, false);
         assertEquals(1, rules.size());
         final KiePMMLDrooledRule retrieved = rules.poll();
         assertNotNull(retrieved);

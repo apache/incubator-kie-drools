@@ -19,7 +19,6 @@ package org.kie.pmml.commons.factories;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
-import java.util.Map;
 
 import org.drools.compiler.lang.DrlDumper;
 import org.drools.compiler.lang.api.DescrFactory;
@@ -27,9 +26,8 @@ import org.drools.compiler.lang.api.PackageDescrBuilder;
 import org.drools.compiler.lang.descr.RuleDescr;
 import org.junit.Before;
 import org.junit.Test;
-import org.kie.pmml.commons.model.KiePMMLDrooledModel;
 import org.kie.pmml.models.drooled.ast.KiePMMLDrooledRule;
-import org.kie.pmml.models.drooled.tuples.KiePMMLOperatorValue;
+import org.kie.pmml.models.drooled.tuples.KiePMMLFieldOperatorValue;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -57,9 +55,9 @@ public class KiePMMLDescrRulesFactoryTest {
         String patternType = "TEMPERATURE";
         String agendaGroup = "agendaGroup";
         String activationGroup = "activationGroup";
-        List<KiePMMLOperatorValue> kiePMMLOperatorValues = Arrays.asList(new KiePMMLOperatorValue("<", 35), new KiePMMLOperatorValue(">", 85));
-        final Map<String, List<KiePMMLOperatorValue>> orConstraints = Collections.singletonMap(patternType, kiePMMLOperatorValues);
-        KiePMMLDrooledRule rule = KiePMMLDrooledRule.builder(name, statusToSet)
+        List<KiePMMLFieldOperatorValue> orConstraints = Arrays.asList(new KiePMMLFieldOperatorValue(patternType, "or", Collections.singletonMap("<", 35), null),
+                                                                      new KiePMMLFieldOperatorValue(patternType, "and", Collections.singletonMap(">", 85), null));
+        KiePMMLDrooledRule rule = KiePMMLDrooledRule.builder(name, statusToSet, Collections.emptyList())
                 .withAgendaGroup(agendaGroup)
                 .withActivationGroup(activationGroup)
                 .withOrConstraints(orConstraints)

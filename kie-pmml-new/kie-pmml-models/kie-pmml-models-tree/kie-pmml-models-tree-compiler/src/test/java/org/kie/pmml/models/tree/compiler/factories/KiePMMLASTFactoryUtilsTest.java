@@ -16,6 +16,7 @@
 
 package org.kie.pmml.models.tree.compiler.factories;
 
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -25,11 +26,11 @@ import java.util.stream.IntStream;
 import org.dmg.pmml.DataType;
 import org.dmg.pmml.SimplePredicate;
 import org.junit.Test;
-import org.kie.pmml.models.drooled.tuples.KiePMMLOperatorValue;
+import org.kie.pmml.models.drooled.tuples.KiePMMLFieldOperatorValue;
 import org.kie.pmml.models.drooled.tuples.KiePMMLOriginalTypeGeneratedType;
 
+import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertTrue;
 import static org.kie.pmml.models.tree.compiler.factories.KiePMMLTreeModelASTTestUtils.getSimplePredicate;
 
 public class KiePMMLASTFactoryUtilsTest {
@@ -39,9 +40,13 @@ public class KiePMMLASTFactoryUtilsTest {
         final Map<String, KiePMMLOriginalTypeGeneratedType> fieldTypeMap = new HashMap<>();
         String fieldName = "FIELD_NAME";
         List<SimplePredicate> simplePredicates = IntStream.range(0, 2).mapToObj(index -> getSimplePredicate(fieldName, DataType.STRING, "VALUE-" + index, fieldTypeMap)).collect(Collectors.toList());
-        final Map<String, List<KiePMMLOperatorValue>> retrieved = KiePMMLASTFactoryUtils.getConstraintEntryFromSimplePredicates(fieldName, simplePredicates, fieldTypeMap);
-        assertTrue(retrieved.containsKey(fieldName));
-        List<KiePMMLOperatorValue> kiePMMLOperatorValues = retrieved.get(fieldName);
-        assertNotNull(kiePMMLOperatorValues);
+        final List<KiePMMLFieldOperatorValue> retrieved = Collections.singletonList(KiePMMLASTFactoryUtils.getConstraintEntryFromSimplePredicates(fieldName, "or", simplePredicates, fieldTypeMap));
+        assertEquals(simplePredicates.size(), retrieved.size());
+        IntStream.range(0, simplePredicates.size()).forEach(i -> {
+            SimplePredicate simplePredicate = simplePredicates.get(i);
+            KiePMMLFieldOperatorValue kiePMMLFieldOperatorValue = retrieved.get(i);
+            assertEquals(fieldName, kiePMMLFieldOperatorValue.getName());
+            assertNotNull(kiePMMLFieldOperatorValue.getConstraintsAsString());
+        });
     }
 }

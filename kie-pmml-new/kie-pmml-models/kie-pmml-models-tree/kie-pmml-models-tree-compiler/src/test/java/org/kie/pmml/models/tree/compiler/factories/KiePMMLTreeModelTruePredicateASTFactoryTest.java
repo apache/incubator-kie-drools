@@ -16,6 +16,7 @@
 
 package org.kie.pmml.models.tree.compiler.factories;
 
+import java.util.Collections;
 import java.util.LinkedList;
 import java.util.Queue;
 
@@ -38,7 +39,7 @@ public class KiePMMLTreeModelTruePredicateASTFactoryTest {
         final Queue<KiePMMLDrooledRule> rules = new LinkedList<>();
         String statusToSet = StatusCode.DONE.getName();
         True truePredicate = new True();
-        KiePMMLTreeModelTruePredicateASTFactory.factory(truePredicate, rules).declareRuleFromTruePredicate(parentPath, currentRule, statusToSet, false);
+        KiePMMLTreeModelTruePredicateASTFactory.factory(truePredicate, Collections.emptyList(), rules).declareRuleFromTruePredicate(parentPath, currentRule, statusToSet, false);
         assertEquals(1, rules.size());
         final KiePMMLDrooledRule retrieved = rules.poll();
         assertNotNull(retrieved);
@@ -56,7 +57,7 @@ public class KiePMMLTreeModelTruePredicateASTFactoryTest {
         final Queue<KiePMMLDrooledRule> rules = new LinkedList<>();
         String statusToSet = StatusCode.DONE.getName();
         True truePredicate = new True();
-        KiePMMLTreeModelTruePredicateASTFactory.factory(truePredicate, rules).declareRuleFromTruePredicate(parentPath, currentRule, statusToSet, true);
+        KiePMMLTreeModelTruePredicateASTFactory.factory(truePredicate, Collections.emptyList(), rules).declareRuleFromTruePredicate(parentPath, currentRule, statusToSet, true);
         assertEquals(1, rules.size());
         final KiePMMLDrooledRule retrieved = rules.poll();
         assertNotNull(retrieved);

@@ -16,6 +16,7 @@
 
 package org.kie.pmml.models.tree.compiler.factories;
 
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
@@ -57,7 +58,7 @@ public class KiePMMLTreeModelCompoundPredicateASTFactoryTest {
             compoundPredicate.setBooleanOperator(operator);
             predicates.forEach(compoundPredicate::addPredicates);
             final Queue<KiePMMLDrooledRule> rules = new LinkedList<>();
-            KiePMMLTreeModelCompoundPredicateASTFactory.factory(compoundPredicate, fieldTypeMap, rules).declareRuleFromCompoundPredicateAndOrXor(parentPath, currentRule, result, true);
+            KiePMMLTreeModelCompoundPredicateASTFactory.factory(compoundPredicate, fieldTypeMap, Collections.emptyList(), rules).declareRuleFromCompoundPredicateAndOrXor(parentPath, currentRule, result, true);
             assertEquals(1, rules.size());
             final KiePMMLDrooledRule retrieved = rules.poll();
             assertNotNull(retrieved);
@@ -97,7 +98,7 @@ public class KiePMMLTreeModelCompoundPredicateASTFactoryTest {
             compoundPredicate.setBooleanOperator(operator);
             predicates.forEach(compoundPredicate::addPredicates);
             final Queue<KiePMMLDrooledRule> rules = new LinkedList<>();
-            KiePMMLTreeModelCompoundPredicateASTFactory.factory(compoundPredicate, fieldTypeMap, rules).declareRuleFromCompoundPredicateAndOrXor(parentPath, currentRule, result, false);
+            KiePMMLTreeModelCompoundPredicateASTFactory.factory(compoundPredicate, fieldTypeMap, Collections.emptyList(), rules).declareRuleFromCompoundPredicateAndOrXor(parentPath, currentRule, result, false);
             assertEquals(1, rules.size());
             final KiePMMLDrooledRule retrieved = rules.poll();
             assertNotNull(retrieved);
@@ -131,7 +132,7 @@ public class KiePMMLTreeModelCompoundPredicateASTFactoryTest {
         compoundPredicate.setBooleanOperator(CompoundPredicate.BooleanOperator.SURROGATE);
         predicates.forEach(compoundPredicate::addPredicates);
         final Queue<KiePMMLDrooledRule> rules = new LinkedList<>();
-        KiePMMLTreeModelCompoundPredicateASTFactory.factory(compoundPredicate, fieldTypeMap, rules).declareRuleFromCompoundPredicateSurrogate(parentPath, currentRule, result, true);
+        KiePMMLTreeModelCompoundPredicateASTFactory.factory(compoundPredicate, fieldTypeMap, Collections.emptyList(), rules).declareRuleFromCompoundPredicateSurrogate(parentPath, currentRule, result, true);
         int expectedRules = (predicates.size() * 2) + 1; // For each "surrogate" predicate two rules -"TRUE" and "FALSE" - are generated; one more rule is generated for the Compound predicate itself
         assertEquals(expectedRules, rules.size());
         KiePMMLDrooledRule retrieved;
@@ -188,7 +189,7 @@ public class KiePMMLTreeModelCompoundPredicateASTFactoryTest {
         compoundPredicate.setBooleanOperator(CompoundPredicate.BooleanOperator.SURROGATE);
         predicates.forEach(compoundPredicate::addPredicates);
         final Queue<KiePMMLDrooledRule> rules = new LinkedList<>();
-        KiePMMLTreeModelCompoundPredicateASTFactory.factory(compoundPredicate, fieldTypeMap, rules).declareRuleFromCompoundPredicateSurrogate(parentPath, currentRule, result, false);
+        KiePMMLTreeModelCompoundPredicateASTFactory.factory(compoundPredicate, fieldTypeMap, Collections.emptyList(), rules).declareRuleFromCompoundPredicateSurrogate(parentPath, currentRule, result, false);
         int expectedRules = (predicates.size() * 2) + 1; // For each "surrogate" predicate two rules -"TRUE" and "FALSE" - are generated; one more rule is generated for the Compound predicate itself
         assertEquals(expectedRules, rules.size());
         KiePMMLDrooledRule retrieved;

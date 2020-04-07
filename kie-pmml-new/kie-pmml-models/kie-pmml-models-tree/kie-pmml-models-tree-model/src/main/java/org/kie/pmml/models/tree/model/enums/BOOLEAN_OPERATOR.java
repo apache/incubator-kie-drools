@@ -24,15 +24,17 @@ import org.kie.pmml.commons.exceptions.KieEnumException;
  */
 public enum BOOLEAN_OPERATOR {
 
-    OR("or"),
-    AND("and"),
-    XOR("xor"),
-    SURROGATE("surrogate");
+    OR("or", "||"),
+    AND("and", "&&"),
+    XOR("xor", "^"),
+    SURROGATE("surrogate", "surrogate");
 
     private String name;
+    private String customOperator;
 
-    BOOLEAN_OPERATOR(String name) {
+    BOOLEAN_OPERATOR(String name, String customOperator) {
         this.name = name;
+        this.customOperator = customOperator;
     }
 
     public static BOOLEAN_OPERATOR byName(String name) {
@@ -44,5 +46,9 @@ public enum BOOLEAN_OPERATOR {
 
     public String getName() {
         return name;
+    }
+
+    public String getCustomOperator() {
+        return customOperator;
     }
 }

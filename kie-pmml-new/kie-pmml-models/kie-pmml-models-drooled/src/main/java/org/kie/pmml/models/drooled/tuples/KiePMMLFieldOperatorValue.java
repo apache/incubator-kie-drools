@@ -15,35 +15,59 @@
  */
 package org.kie.pmml.models.drooled.tuples;
 
+import java.util.Collections;
+import java.util.List;
+import java.util.Map;
 import java.util.Objects;
+import java.util.stream.Collectors;
 
 /**
  * Tupla representing the name of a field and its <code>KiePMMLOperatorValue</code>
  */
 public class KiePMMLFieldOperatorValue {
 
+    public static final String NO_FIELD_CONSTRAINT_PATTERN = "(%s)";
+    public static final String FIELD_CONSTRAINT_PATTERN = " %s " + NO_FIELD_CONSTRAINT_PATTERN;
     private final String name;
-    private final KiePMMLOperatorValue kiePMMLOperatorValue;
+    private final String operator;
+    private final List<KiePMMLOperatorValue> kiePMMLOperatorValues;
+    private final List<KiePMMLFieldOperatorValue> nestedKiePMMLFieldOperatorValues;
+    private final String constraintsString;
+    private final String toString;
 
-    public KiePMMLFieldOperatorValue(final String name, String operator, Object value) {
+    /**
+     * @param name The name of the type
+     * @param operator the operator to use to join multiple <code>KiePMMLOperatorValue</code>s (if provided)
+     * @param operatorValues the <code>LinkedHashMap&lt;String, Object&gt;</code> used to build the inner <code>List&lt;KiePMMLOperatorValue&lt;</code>
+     */
+    public KiePMMLFieldOperatorValue(final String name, final String operator, final Map<String, Object> operatorValues, final List<KiePMMLFieldOperatorValue> nestedKiePMMLFieldOperatorValues) {
         this.name = name;
-        this.kiePMMLOperatorValue = new KiePMMLOperatorValue(operator, value);
+        this.operator = operator != null ? operator : "";
+        kiePMMLOperatorValues = operatorValues.entrySet().stream().map(entry -> new KiePMMLOperatorValue(entry.getKey(), entry.getValue())).collect(Collectors.toList());
+        this.nestedKiePMMLFieldOperatorValues = nestedKiePMMLFieldOperatorValues;
+        constraintsString = buildConstraintsString();
+        toString = buildToString();
     }
 
     public String getName() {
         return name;
     }
 
-    public KiePMMLOperatorValue getKiePMMLOperatorValue() {
-        return kiePMMLOperatorValue;
+    public String getOperator() {
+        return operator;
+    }
+
+    public String getConstraintsAsString() {
+        return constraintsString;
+    }
+
+    public List<KiePMMLFieldOperatorValue> getNestedKiePMMLFieldOperatorValues() {
+        return nestedKiePMMLFieldOperatorValues != null ? Collections.unmodifiableList(nestedKiePMMLFieldOperatorValues) : null;
     }
 
     @Override
     public String toString() {
-        return "KiePMMLFieldOperatorValue{" +
-                "name='" + name + '\'' +
-                ", kiePMMLOperatorValue=" + kiePMMLOperatorValue +
-                '}';
+        return toString;
     }
 
     @Override
@@ -56,11 +80,24 @@ public class KiePMMLFieldOperatorValue {
         }
         KiePMMLFieldOperatorValue that = (KiePMMLFieldOperatorValue) o;
         return Objects.equals(name, that.name) &&
-                Objects.equals(kiePMMLOperatorValue, that.kiePMMLOperatorValue);
+                Objects.equals(operator, that.operator) &&
+                Objects.equals(kiePMMLOperatorValues, that.kiePMMLOperatorValues);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(name, kiePMMLOperatorValue);
+        return Objects.hash(name, operator, kiePMMLOperatorValues);
+    }
+
+    protected String buildConstraintsString() {
+        return kiePMMLOperatorValues.stream().map(KiePMMLOperatorValue::toString).collect(Collectors.joining(" " + operator + " "));
+    }
+
+    protected String buildToString() {
+        if (name != null) {
+            return String.format(FIELD_CONSTRAINT_PATTERN, name, constraintsString);
+        } else {
+            return String.format(NO_FIELD_CONSTRAINT_PATTERN, constraintsString);
+        }
     }
 }

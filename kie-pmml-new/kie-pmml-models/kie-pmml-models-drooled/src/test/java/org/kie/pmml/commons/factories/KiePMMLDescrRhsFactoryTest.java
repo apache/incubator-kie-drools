@@ -16,6 +16,8 @@
 
 package org.kie.pmml.commons.factories;
 
+import java.util.Collections;
+
 import org.drools.compiler.lang.api.DescrFactory;
 import org.drools.compiler.lang.api.PackageDescrBuilder;
 import org.drools.compiler.lang.api.RuleDescrBuilder;
@@ -49,7 +51,7 @@ public class KiePMMLDescrRhsFactoryTest {
     public void declareRhsWithoutIfBreak() {
         String name = "NAME";
         String statusToSet = "STATUS_TO_SET";
-        KiePMMLDrooledRule rule = KiePMMLDrooledRule.builder(name, statusToSet).build();
+        KiePMMLDrooledRule rule = KiePMMLDrooledRule.builder(name, statusToSet, Collections.emptyList()).build();
         KiePMMLDescrRhsFactory.factory(ruleBuilder).declareRhs(rule);
         assertNotNull(ruleBuilder.getDescr().getConsequence());
         String expectedConsequence = String.format(UPDATE_STATUS_HOLDER, statusToSet);
@@ -65,7 +67,7 @@ public class KiePMMLDescrRhsFactoryTest {
         String ifBreakField = "ifBreakField";
         String ifBreakOperator = "ifBreakOperator";
         Object ifBreakValue = "ifBreakValue";
-        KiePMMLDrooledRule rule = KiePMMLDrooledRule.builder(name, statusToSet)
+        KiePMMLDrooledRule rule = KiePMMLDrooledRule.builder(name, statusToSet, Collections.emptyList())
                 .withIfBreak(ifBreakField, ifBreakOperator, ifBreakValue)
                 .build();
         KiePMMLDescrRhsFactory.factory(ruleBuilder).declareRhs(rule);
@@ -81,7 +83,7 @@ public class KiePMMLDescrRhsFactoryTest {
     public void declareDefaultThenWithoutResult() {
         String name = "NAME";
         String statusToSet = "STATUS_TO_SET";
-        KiePMMLDrooledRule rule = KiePMMLDrooledRule.builder(name, statusToSet).build();
+        KiePMMLDrooledRule rule = KiePMMLDrooledRule.builder(name, statusToSet, Collections.emptyList()).build();
         KiePMMLDescrRhsFactory.factory(ruleBuilder).declareDefaultThen(rule);
         assertNotNull(ruleBuilder.getDescr().getConsequence());
         String expectedConsequence = String.format(UPDATE_STATUS_HOLDER, statusToSet);
@@ -96,7 +98,7 @@ public class KiePMMLDescrRhsFactoryTest {
         String statusToSet = "STATUS_TO_SET";
         String result = "RESULT";
         StatusCode resultCode = StatusCode.OK;
-        KiePMMLDrooledRule rule = KiePMMLDrooledRule.builder(name, statusToSet)
+        KiePMMLDrooledRule rule = KiePMMLDrooledRule.builder(name, statusToSet, Collections.emptyList())
                 .withResultCode(resultCode)
                 .withResult(result)
                 .build();
@@ -114,7 +116,7 @@ public class KiePMMLDescrRhsFactoryTest {
     public void declareIfThenWithoutResult() {
         String name = "NAME";
         String statusToSet = "STATUS_TO_SET";
-        KiePMMLDrooledRule rule = KiePMMLDrooledRule.builder(name, statusToSet).build();
+        KiePMMLDrooledRule rule = KiePMMLDrooledRule.builder(name, statusToSet, Collections.emptyList()).build();
         KiePMMLDescrRhsFactory.factory(ruleBuilder).declareIfThen(rule);
         assertNotNull(ruleBuilder.getDescr().getConsequence());
         String expectedConsequence = String.format(UPDATE_STATUS_HOLDER, statusToSet);
@@ -132,7 +134,7 @@ public class KiePMMLDescrRhsFactoryTest {
         String statusToSet = "STATUS_TO_SET";
         String result = "RESULT";
         StatusCode resultCode = StatusCode.OK;
-        KiePMMLDrooledRule rule = KiePMMLDrooledRule.builder(name, statusToSet)
+        KiePMMLDrooledRule rule = KiePMMLDrooledRule.builder(name, statusToSet, Collections.emptyList())
                 .withResultCode(resultCode)
                 .withResult(result)
                 .build();

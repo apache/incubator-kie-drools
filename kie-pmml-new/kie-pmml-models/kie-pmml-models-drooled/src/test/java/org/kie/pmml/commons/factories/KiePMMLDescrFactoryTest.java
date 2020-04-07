@@ -20,7 +20,6 @@ import java.util.Arrays;
 import java.util.Collections;
 import java.util.LinkedList;
 import java.util.List;
-import java.util.Map;
 import java.util.Queue;
 
 import org.dmg.pmml.SimplePredicate;
@@ -34,7 +33,7 @@ import org.kie.pmml.models.drooled.ast.KiePMMLDrooledAST;
 import org.kie.pmml.models.drooled.ast.KiePMMLDrooledRule;
 import org.kie.pmml.models.drooled.ast.KiePMMLDrooledType;
 import org.kie.pmml.models.drooled.executor.KiePMMLStatusHolder;
-import org.kie.pmml.models.drooled.tuples.KiePMMLOperatorValue;
+import org.kie.pmml.models.drooled.tuples.KiePMMLFieldOperatorValue;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
@@ -55,9 +54,10 @@ public class KiePMMLDescrFactoryTest {
         Queue<KiePMMLDrooledType> types = new LinkedList<>();
         types.add(getDrooledType());
         types.add(getDottedDrooledType());
-        List<KiePMMLOperatorValue> kiePMMLOperatorValues = Arrays.asList(new KiePMMLOperatorValue("<", 35), new KiePMMLOperatorValue(">", 85));
-        final Map<String, List<KiePMMLOperatorValue>> orConstraints = Collections.singletonMap(PATTERN_TYPE, kiePMMLOperatorValues);
-        KiePMMLDrooledRule rule = KiePMMLDrooledRule.builder(RULE_NAME, STATUS_TO_SET)
+        List<KiePMMLFieldOperatorValue> orConstraints = Arrays.asList(new KiePMMLFieldOperatorValue(PATTERN_TYPE, "or", Collections.singletonMap("<", 35), null),
+                                                                      new KiePMMLFieldOperatorValue(PATTERN_TYPE, "and", Collections.singletonMap(">", 85), null));
+        // TODO {gcardosi} test outputfields
+        KiePMMLDrooledRule rule = KiePMMLDrooledRule.builder(RULE_NAME, STATUS_TO_SET, Collections.emptyList())
                 .withOrConstraints(orConstraints)
                 .build();
         Queue<KiePMMLDrooledRule> rules = new LinkedList<>();

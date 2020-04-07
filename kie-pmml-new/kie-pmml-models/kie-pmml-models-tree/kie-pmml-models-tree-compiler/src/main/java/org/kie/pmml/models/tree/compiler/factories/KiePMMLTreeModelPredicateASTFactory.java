@@ -15,6 +15,7 @@
  */
 package org.kie.pmml.models.tree.compiler.factories;
 
+import java.util.List;
 import java.util.Map;
 import java.util.Queue;
 
@@ -23,6 +24,7 @@ import org.dmg.pmml.Predicate;
 import org.dmg.pmml.SimplePredicate;
 import org.dmg.pmml.SimpleSetPredicate;
 import org.dmg.pmml.True;
+import org.kie.pmml.commons.model.KiePMMLOutputField;
 import org.kie.pmml.models.drooled.ast.KiePMMLDrooledRule;
 import org.kie.pmml.models.drooled.tuples.KiePMMLOriginalTypeGeneratedType;
 import org.slf4j.Logger;
@@ -31,19 +33,16 @@ import org.slf4j.LoggerFactory;
 /**
  * Class used to generate <code>KiePMMLDrooledRule</code>s out of a <code>Predicate</code>
  */
-public class KiePMMLTreeModelPredicateASTFactory {
+public class KiePMMLTreeModelPredicateASTFactory extends KiePMMLTreeModeAbstractPredicateASTFactory {
 
     private static final Logger logger = LoggerFactory.getLogger(KiePMMLTreeModelPredicateASTFactory.class.getName());
-    private final Map<String, KiePMMLOriginalTypeGeneratedType> fieldTypeMap;
-    private final Queue<KiePMMLDrooledRule> rules;
 
-    private KiePMMLTreeModelPredicateASTFactory(final Map<String, KiePMMLOriginalTypeGeneratedType> fieldTypeMap, final Queue<KiePMMLDrooledRule> rules) {
-        this.fieldTypeMap = fieldTypeMap;
-        this.rules = rules;
+    private KiePMMLTreeModelPredicateASTFactory(final Map<String, KiePMMLOriginalTypeGeneratedType> fieldTypeMap, final List<KiePMMLOutputField> outputFields, final Queue<KiePMMLDrooledRule> rules) {
+        super(fieldTypeMap, outputFields, rules);
     }
 
-    public static KiePMMLTreeModelPredicateASTFactory factory(final Map<String, KiePMMLOriginalTypeGeneratedType> fieldTypeMap, final Queue<KiePMMLDrooledRule> rules) {
-        return new KiePMMLTreeModelPredicateASTFactory(fieldTypeMap, rules);
+    public static KiePMMLTreeModelPredicateASTFactory factory(final Map<String, KiePMMLOriginalTypeGeneratedType> fieldTypeMap, final List<KiePMMLOutputField> outputFields, final Queue<KiePMMLDrooledRule> rules) {
+        return new KiePMMLTreeModelPredicateASTFactory(fieldTypeMap, outputFields, rules);
     }
 
     /**
@@ -66,13 +65,13 @@ public class KiePMMLTreeModelPredicateASTFactory {
                                          final boolean isFinalLeaf) {
         logger.debug("declareRuleFromPredicate {} {} {} {}", predicate, parentPath, currentRule, result);
         if (predicate instanceof True) {
-            KiePMMLTreeModelTruePredicateASTFactory.factory((True) predicate, rules).declareRuleFromTruePredicate(parentPath, currentRule, result, isFinalLeaf);
+            KiePMMLTreeModelTruePredicateASTFactory.factory((True) predicate, outputFields, rules).declareRuleFromTruePredicate(parentPath, currentRule, result, isFinalLeaf);
         } else if (predicate instanceof SimplePredicate) {
-            KiePMMLTreeModelSimplePredicateASTFactory.factory((SimplePredicate) predicate, fieldTypeMap, rules).declareRuleFromSimplePredicate(parentPath, currentRule, result, isFinalLeaf);
+            KiePMMLTreeModelSimplePredicateASTFactory.factory((SimplePredicate) predicate, fieldTypeMap, outputFields, rules).declareRuleFromSimplePredicate(parentPath, currentRule, result, isFinalLeaf);
         } else if (predicate instanceof SimpleSetPredicate) {
-            KiePMMLTreeModelSimpleSetPredicateASTFactory.factory((SimpleSetPredicate) predicate, fieldTypeMap, rules).declareRuleFromSimpleSetPredicate(parentPath, currentRule, result, isFinalLeaf);
+            KiePMMLTreeModelSimpleSetPredicateASTFactory.factory((SimpleSetPredicate) predicate, fieldTypeMap, outputFields, rules).declareRuleFromSimpleSetPredicate(parentPath, currentRule, result, isFinalLeaf);
         } else if (predicate instanceof CompoundPredicate) {
-            KiePMMLTreeModelCompoundPredicateASTFactory.factory((CompoundPredicate) predicate, fieldTypeMap, rules).declareRuleFromCompoundPredicate(parentPath, currentRule, result, isFinalLeaf);
+            KiePMMLTreeModelCompoundPredicateASTFactory.factory((CompoundPredicate) predicate, fieldTypeMap, outputFields, rules).declareRuleFromCompoundPredicate(parentPath, currentRule, result, isFinalLeaf);
         }
     }
 }

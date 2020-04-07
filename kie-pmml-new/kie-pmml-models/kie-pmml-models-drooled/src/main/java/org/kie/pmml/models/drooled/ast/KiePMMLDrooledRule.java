@@ -20,8 +20,8 @@ import java.util.List;
 import java.util.Map;
 
 import org.kie.pmml.commons.enums.StatusCode;
+import org.kie.pmml.commons.model.KiePMMLOutputField;
 import org.kie.pmml.models.drooled.tuples.KiePMMLFieldOperatorValue;
-import org.kie.pmml.models.drooled.tuples.KiePMMLOperatorValue;
 
 public class KiePMMLDrooledRule {
 
@@ -29,18 +29,19 @@ public class KiePMMLDrooledRule {
     private final String name;
     // RHS
     private final String statusToSet;
+    private final List<KiePMMLOutputField> outputFields;
     // LHS
     private String agendaGroup;
     private String activationGroup;
     private String statusConstraint;
     // Constraints put in and
-    private Map<String, List<KiePMMLOperatorValue>> andConstraints;
+    private List<KiePMMLFieldOperatorValue> andConstraints;
     // Constraints put in or
-    private Map<String, List<KiePMMLOperatorValue>> orConstraints;
+    private List<KiePMMLFieldOperatorValue> orConstraints;
     // Constraints put in xor
     private List<KiePMMLFieldOperatorValue> xorConstraints;
     // Constraints put in not
-    private Map<String, List<KiePMMLOperatorValue>> notConstraints;
+    private List<KiePMMLFieldOperatorValue> notConstraints;
     // Constraints put in "in"
     private Map<String, List<Object>> inConstraints;
     // Constraints put in "notIn""
@@ -54,9 +55,11 @@ public class KiePMMLDrooledRule {
     private StatusCode resultCode;
     private Object result;
 
-    private KiePMMLDrooledRule(String name, String statusToSet) {
+
+    private KiePMMLDrooledRule(String name, String statusToSet, List<KiePMMLOutputField> outputFields) {
         this.name = name;
         this.statusToSet = statusToSet;
+        this.outputFields = outputFields;
     }
 
     /**
@@ -90,8 +93,8 @@ public class KiePMMLDrooledRule {
      * <p><code>update($statusHolder);</code></p>
      * @return
      */
-    public static Builder builder(String name, String statusToSet) {
-        return new Builder(name, statusToSet);
+    public static Builder builder(String name, String statusToSet, List<KiePMMLOutputField> outputFields) {
+        return new Builder(name, statusToSet, outputFields);
     }
 
     public String getName() {
@@ -124,20 +127,20 @@ public class KiePMMLDrooledRule {
         return statusConstraint;
     }
 
-    public Map<String, List<KiePMMLOperatorValue>> getAndConstraints() {
-        return andConstraints != null ? Collections.unmodifiableMap(andConstraints) : null;
+    public List<KiePMMLFieldOperatorValue> getAndConstraints() {
+        return andConstraints != null ? Collections.unmodifiableList(andConstraints) : null;
     }
 
-    public Map<String, List<KiePMMLOperatorValue>> getOrConstraints() {
-        return orConstraints != null ? Collections.unmodifiableMap(orConstraints) : null;
+    public List<KiePMMLFieldOperatorValue> getOrConstraints() {
+        return orConstraints != null ? Collections.unmodifiableList(orConstraints) : null;
     }
 
     public List<KiePMMLFieldOperatorValue> getXorConstraints() {
         return xorConstraints != null ? Collections.unmodifiableList(xorConstraints) : null;
     }
 
-    public Map<String, List<KiePMMLOperatorValue>> getNotConstraints() {
-        return notConstraints != null ? Collections.unmodifiableMap(notConstraints) : null;
+    public List<KiePMMLFieldOperatorValue> getNotConstraints() {
+        return notConstraints != null ? Collections.unmodifiableList(notConstraints) : null;
     }
 
     public Map<String, List<Object>> getInConstraints() {
@@ -172,8 +175,8 @@ public class KiePMMLDrooledRule {
 
         protected KiePMMLDrooledRule toBuild;
 
-        public Builder(String name, String statusToSet) {
-            this.toBuild = new KiePMMLDrooledRule(name, statusToSet);
+        public Builder(String name, String statusToSet, List<KiePMMLOutputField> outputFields) {
+            this.toBuild = new KiePMMLDrooledRule(name, statusToSet, outputFields);
         }
 
         public Builder withStatusConstraint(String constraint) {
@@ -188,7 +191,7 @@ public class KiePMMLDrooledRule {
          * (e.g entry <b>"TEMPERATURE"/List(KiePMMLOperatorValue("<", 90), KiePMMLOperatorValue(">", 50))</b> generates TEMPERATURE( value < 90 && value > 50 )
          * @return
          */
-        public Builder withAndConstraints(Map<String, List<KiePMMLOperatorValue>> constraints) {
+        public Builder withAndConstraints(List<KiePMMLFieldOperatorValue> constraints) {
             this.toBuild.andConstraints = constraints;
             return this;
         }
@@ -200,7 +203,7 @@ public class KiePMMLDrooledRule {
          * (e.g entry <b>"TEMPERATURE"/List(KiePMMLOperatorValue("<", 90), KiePMMLOperatorValue(">", 50))</b> generates TEMPERATURE( value < 90 && value > 50 )
          * @return
          */
-        public Builder withOrConstraints(Map<String, List<KiePMMLOperatorValue>> constraints) {
+        public Builder withOrConstraints(List<KiePMMLFieldOperatorValue> constraints) {
             this.toBuild.orConstraints = constraints;
             return this;
         }
@@ -224,7 +227,7 @@ public class KiePMMLDrooledRule {
          * (e.g entry <b>"TEMPERATURE"/List(KiePMMLOperatorValue("<", 90), KiePMMLOperatorValue(">", 50))</b> generates not(TEMPERATURE( value < 90 && value > 50 ))
          * @return
          */
-        public Builder withNotConstraints(Map<String, List<KiePMMLOperatorValue>> constraints) {
+        public Builder withNotConstraints(List<KiePMMLFieldOperatorValue> constraints) {
             this.toBuild.notConstraints = constraints;
             return this;
         }

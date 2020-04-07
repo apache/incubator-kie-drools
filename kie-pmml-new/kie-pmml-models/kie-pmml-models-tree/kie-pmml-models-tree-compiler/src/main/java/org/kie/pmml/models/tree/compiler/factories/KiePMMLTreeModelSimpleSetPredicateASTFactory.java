@@ -25,6 +25,7 @@ import java.util.stream.Collectors;
 import org.dmg.pmml.SimpleSetPredicate;
 import org.drools.core.util.StringUtils;
 import org.kie.pmml.commons.enums.StatusCode;
+import org.kie.pmml.commons.model.KiePMMLOutputField;
 import org.kie.pmml.models.drooled.ast.KiePMMLDrooledRule;
 import org.kie.pmml.models.drooled.tuples.KiePMMLOriginalTypeGeneratedType;
 import org.slf4j.Logger;
@@ -36,22 +37,19 @@ import static org.kie.pmml.models.tree.compiler.factories.KiePMMLTreeModelASTFac
 /**
  * Class used to generate <code>KiePMMLDrooledRule</code> out of a <code>SimpleSetPredicate</code>
  */
-public class KiePMMLTreeModelSimpleSetPredicateASTFactory {
+public class KiePMMLTreeModelSimpleSetPredicateASTFactory extends KiePMMLTreeModeAbstractPredicateASTFactory {
 
     private static final Logger logger = LoggerFactory.getLogger(KiePMMLTreeModelSimpleSetPredicateASTFactory.class.getName());
 
     private final SimpleSetPredicate simpleSetPredicate;
-    private final Map<String, KiePMMLOriginalTypeGeneratedType> fieldTypeMap;
-    private final Queue<KiePMMLDrooledRule> rules;
 
-    private KiePMMLTreeModelSimpleSetPredicateASTFactory(final SimpleSetPredicate simpleSetPredicate, final Map<String, KiePMMLOriginalTypeGeneratedType> fieldTypeMap, final Queue<KiePMMLDrooledRule> rules) {
+    private KiePMMLTreeModelSimpleSetPredicateASTFactory(final SimpleSetPredicate simpleSetPredicate, final Map<String, KiePMMLOriginalTypeGeneratedType> fieldTypeMap, final List<KiePMMLOutputField> outputFields, final Queue<KiePMMLDrooledRule> rules) {
+        super(fieldTypeMap, outputFields, rules);
         this.simpleSetPredicate = simpleSetPredicate;
-        this.fieldTypeMap = fieldTypeMap;
-        this.rules = rules;
     }
 
-    public static KiePMMLTreeModelSimpleSetPredicateASTFactory factory(final SimpleSetPredicate simpleSetPredicate, final Map<String, KiePMMLOriginalTypeGeneratedType> fieldTypeMap, final Queue<KiePMMLDrooledRule> rules) {
-        return new KiePMMLTreeModelSimpleSetPredicateASTFactory(simpleSetPredicate, fieldTypeMap, rules);
+    public static KiePMMLTreeModelSimpleSetPredicateASTFactory factory(final SimpleSetPredicate simpleSetPredicate, final Map<String, KiePMMLOriginalTypeGeneratedType> fieldTypeMap, final List<KiePMMLOutputField> outputFields, final Queue<KiePMMLDrooledRule> rules) {
+        return new KiePMMLTreeModelSimpleSetPredicateASTFactory(simpleSetPredicate, fieldTypeMap, outputFields, rules);
     }
 
     public void declareRuleFromSimpleSetPredicate(final String parentPath,
@@ -76,7 +74,7 @@ public class KiePMMLTreeModelSimpleSetPredicateASTFactory {
         }).collect(Collectors.toList());
         Map<String, List<Object>> constraints = Collections.singletonMap(key, value);
         String statusToSet = isFinalLeaf ? StatusCode.DONE.getName() : currentRule;
-        KiePMMLDrooledRule.Builder builder = KiePMMLDrooledRule.builder(currentRule, statusToSet)
+        KiePMMLDrooledRule.Builder builder = KiePMMLDrooledRule.builder(currentRule, statusToSet, outputFields)
                 .withStatusConstraint(statusConstraint);
         if (SimpleSetPredicate.BooleanOperator.IS_IN.equals(simpleSetPredicate.getBooleanOperator())) {
             builder = builder.withInConstraints(constraints);
