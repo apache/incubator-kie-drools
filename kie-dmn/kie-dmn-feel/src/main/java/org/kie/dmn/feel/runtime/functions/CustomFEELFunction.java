@@ -23,8 +23,8 @@ import org.kie.dmn.feel.lang.ast.BaseNode;
 
 public class CustomFEELFunction extends AbstractCustomFEELFunction<BaseNode> {
 
-    public CustomFEELFunction(String name, List<Param> parameters, BaseNode body) {
-        super(name, parameters, body);
+    public CustomFEELFunction(String name, List<Param> parameters, BaseNode body, EvaluationContext evaluationContext) {
+        super(name, parameters, body, evaluationContext);
     }
 
     @Override

@@ -1242,11 +1242,44 @@ public class DMNRuntimeTest extends BaseInterpretedVsCompiledTest {
     public void testJavaFunctionContext_withErrors() {
         // DROOLS-1568
         final List<DMNMessage> messages = DMNRuntimeUtil.createExpectingDMNMessages("java_function_context_with_errors.dmn", this.getClass());
-        assertThat(messages.size(), is(2));
+        assertThat(messages.size(), is(1));
 
         final List<String> sourceIDs = messages.stream().map(DMNMessage::getSourceId).collect(Collectors.toList());
-        assertTrue( sourceIDs.contains( "_a72a7aff-48c3-4806-83ca-fc1f1fe34320") );
+        // FEEL FuncDefNode not checked at compile time: assertTrue( sourceIDs.contains( "_a72a7aff-48c3-4806-83ca-fc1f1fe34320") );
         assertTrue( sourceIDs.contains( "_a72a7aff-48c3-4806-83ca-fc1f1fe34321" ) );
+    }
+
+    @Test
+    public void testNestingFnDef() {
+        final DMNRuntime runtime = DMNRuntimeUtil.createRuntime("nestingFnDef.dmn", this.getClass());
+        final DMNModel dmnModel = runtime.getModel("https://kiegroup.org/dmn/_FC72DC4B-DC64-4E43-9685-945FC3B7E4BC",
+                                                   "new-file");
+        assertThat(dmnModel, notNullValue());
+        assertThat(DMNRuntimeUtil.formatMessages(dmnModel.getMessages()), dmnModel.hasErrors(), is(false));
+
+        final DMNContext ctx = runtime.newContext();
+
+        final DMNResult dmnResult = runtime.evaluateAll(dmnModel, ctx);
+        LOG.debug("{}", dmnResult);
+        assertThat(DMNRuntimeUtil.formatMessages(dmnResult.getMessages()), dmnResult.hasErrors(), is(false));
+        assertThat(dmnResult.getDecisionResultByName("Decision-1").getResult(), is(new BigDecimal(3)));
+    }
+
+    @Test
+    public void testBkmCurried() {
+        final DMNRuntime runtime = DMNRuntimeUtil.createRuntime("bkmCurried.dmn", this.getClass());
+        final DMNModel dmnModel = runtime.getModel("https://kiegroup.org/dmn/_A7F17D7B-F0AB-4C0B-B521-02EA26C2FB7D",
+                                                   "new-file");
+        assertThat(dmnModel, notNullValue());
+        assertThat(DMNRuntimeUtil.formatMessages(dmnModel.getMessages()), dmnModel.hasErrors(), is(false));
+
+        final DMNContext ctx = runtime.newContext();
+
+        final DMNResult dmnResult = runtime.evaluateAll(dmnModel, ctx);
+        LOG.debug("{}", dmnResult);
+        assertThat(DMNRuntimeUtil.formatMessages(dmnResult.getMessages()), dmnResult.hasErrors(), is(false));
+        assertThat(dmnResult.getDecisionResultByName("usingNormal").getResult(), is(new BigDecimal(3)));
+        assertThat(dmnResult.getDecisionResultByName("usingCurried").getResult(), is(new BigDecimal(3)));
     }
 
     @Ignore("the purpose of this work is to enable PMML execution.")

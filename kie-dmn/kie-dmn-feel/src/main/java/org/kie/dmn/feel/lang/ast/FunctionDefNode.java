@@ -125,7 +125,7 @@ public class FunctionDefNode
             }
             return null;
         } else {
-            return new CustomFEELFunction( ANONYMOUS, params, body );
+            return new CustomFEELFunction( ANONYMOUS, params, body, ctx.current() ); // DMN spec, 10.3.2.13.2 User-defined functions: FEEL functions are lexical closures
         }
     }
 

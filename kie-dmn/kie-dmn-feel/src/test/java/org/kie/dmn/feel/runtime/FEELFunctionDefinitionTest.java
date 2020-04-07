@@ -87,7 +87,9 @@ public class FEELFunctionDefinitionTest extends BaseFEELTest {
                 {"{ myimport : { f1 : function() \"Hi\", f2 : function() f1() + \" \" , x1 : function(name) f2() + name }, r1 : myimport.x1(\"John\") }.r1", "Hi John", null },
                 {"{ m : { n : { o : { f1 : function() \"Hi\", f2 : function() f1() + \" \" , x1 : function(name) f2() + name }}}, r1 : m.n.o.x1(\"John\") }.r1", "Hi John", null },
                 {"{ m : { n : { f1 : function() \"Hi\", f2 : function() f1() + \" \" , o : { x1 : function(name) f2() + name }}}, r1 : m.n.o.x1(\"John\") }.r1", "Hi John", null },
-                {"{ m : { n : { f1 : function() \"Hi\", f2 : function() f1() + \" \" , o : { x1 : function(name) f2() + name }}}, r2 : m.n.f1() }.r2", "Hi", null }
+                {"{ m : { n : { f1 : function() \"Hi\", f2 : function() f1() + \" \" , o : { x1 : function(name) f2() + name }}}, r2 : m.n.f1() }.r2", "Hi", null },
+                {"{ f : function(a) function(b) a + b, r : f(1)(2) }.r", BigDecimal.valueOf(3), null },
+                {"{ a: 9, b: 9, f : function(a) function(b) a + b, r : f(1)(2) }.r", BigDecimal.valueOf(3), null }
         };
         return addAdditionalParameters(cases, false);
     }
