@@ -18,6 +18,7 @@ package org.drools.compiler.integrationtests.operators;
 
 import java.text.SimpleDateFormat;
 import java.util.Collection;
+import java.util.Date;
 
 import org.drools.testcoverage.common.model.Person;
 import org.drools.testcoverage.common.util.KieBaseTestConfiguration;
@@ -218,6 +219,24 @@ public class ForAllTest {
 
         ksession.insert(new String("bar"));
         ksession.insert(new String("baz"));
+
+        assertEquals(1, ksession.fireAllRules());
+    }
+
+    @Test
+    public void testForallWithNotEqualConstraintOnDate() throws Exception {
+        // DROOLS-5224
+
+        String drl =
+                "rule \"forall with not equal\"\n" +
+                "when forall(java.util.Date(this != \"29-Dec-2019\"))\n" +
+                "then\n" +
+                "end\n";
+
+        KieBase kbase = KieBaseUtil.getKieBaseFromKieModuleFromDrl("forall-test", kieBaseTestConfiguration, drl);
+        KieSession ksession = kbase.newKieSession();
+
+        ksession.insert(new Date(0));
 
         assertEquals(1, ksession.fireAllRules());
     }

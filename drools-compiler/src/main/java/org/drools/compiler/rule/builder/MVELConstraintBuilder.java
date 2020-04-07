@@ -225,7 +225,13 @@ public class MVELConstraintBuilder implements ConstraintBuilder {
                                                            LiteralRestrictionDescr restrictionDescr) {
         if (vtype.getSimpleType() == SimpleValueType.DATE) {
             String normalized = leftValue + " " + operator + getNormalizeDate( vtype, field );
-            return negated ? "!(" + normalized + ")" : normalized;
+            if (!negated) {
+                return normalized;
+            }
+            IndexUtil.ConstraintType constraintType = IndexUtil.ConstraintType.decode(operator);
+            return constraintType.getOperator() != null ?
+                    leftValue + " " + constraintType.negate().getOperator() + getNormalizeDate( vtype, field ) :
+                    "!(" + normalized + ")";
         }
         if (operator.equals("str")) {
             return normalizeStringOperator( leftValue, rightValue, restrictionDescr );
