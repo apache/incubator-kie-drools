@@ -1,5 +1,5 @@
 /*
- * Copyright 2018 Red Hat, Inc. and/or its affiliates.
+ * Copyright 2020 Red Hat, Inc. and/or its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -16,6 +16,7 @@
 
 package org.optaplanner.core.impl.domain.constraintweight.descriptor;
 
+import java.util.Objects;
 import java.util.function.Function;
 
 import org.optaplanner.core.api.domain.constraintweight.ConstraintConfiguration;
@@ -23,6 +24,7 @@ import org.optaplanner.core.api.domain.constraintweight.ConstraintWeight;
 import org.optaplanner.core.api.domain.solution.PlanningSolution;
 import org.optaplanner.core.api.score.Score;
 import org.optaplanner.core.impl.domain.common.accessor.MemberAccessor;
+import org.optaplanner.core.impl.domain.solution.descriptor.SolutionDescriptor;
 
 /**
  * @param <Solution_> the solution type, the class with the {@link PlanningSolution} annotation
@@ -75,10 +77,14 @@ public class ConstraintWeightDescriptor<Solution_> {
     }
 
     public Function<Solution_, Score<?>> createExtractor() {
-        MemberAccessor constraintConfigurationMemberAccessor = constraintConfigurationDescriptor.getSolutionDescriptor()
-                .getConstraintConfigurationMemberAccessor();
+        SolutionDescriptor<Solution_> solutionDescriptor = constraintConfigurationDescriptor.getSolutionDescriptor();
+        MemberAccessor constraintConfigurationMemberAccessor =
+                solutionDescriptor.getConstraintConfigurationMemberAccessor();
         return (Solution_ solution) -> {
-            Object constraintConfiguration = constraintConfigurationMemberAccessor.executeGetter(solution);
+            Object constraintConfiguration =
+                    Objects.requireNonNull(constraintConfigurationMemberAccessor.executeGetter(solution),
+                            "Constraint configuration provider (" + constraintConfigurationMemberAccessor +
+                                    ") returns null.");
             return (Score<?>) memberAccessor.executeGetter(constraintConfiguration);
         };
     }
