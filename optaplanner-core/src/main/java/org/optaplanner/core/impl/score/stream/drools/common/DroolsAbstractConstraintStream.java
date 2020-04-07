@@ -53,7 +53,7 @@ public abstract class DroolsAbstractConstraintStream<Solution_> extends Abstract
                 constraintPackage, constraintName, constraintWeight);
         List<DroolsFromUniConstraintStream<Solution_, Object>> fromStreamList = getFromStreamList();
         return new DroolsConstraint<>(constraintFactory, constraintPackage, constraintName, constraintWeightExtractor,
-                impactType, fromStreamList, scoringStream);
+                impactType, false, fromStreamList, scoringStream);
     }
 
     protected DroolsConstraint<Solution_> buildConstraintConfigurable(String constraintPackage, String constraintName,
@@ -62,7 +62,7 @@ public abstract class DroolsAbstractConstraintStream<Solution_> extends Abstract
                 constraintPackage, constraintName);
         List<DroolsFromUniConstraintStream<Solution_, Object>> fromStreamList = getFromStreamList();
         return new DroolsConstraint<>(constraintFactory, constraintPackage, constraintName, constraintWeightExtractor,
-                impactType, fromStreamList, scoringStream);
+                impactType, true, fromStreamList, scoringStream);
     }
 
     // ************************************************************************

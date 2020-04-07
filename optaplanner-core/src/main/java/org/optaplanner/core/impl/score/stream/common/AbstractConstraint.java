@@ -32,17 +32,31 @@ public abstract class AbstractConstraint<Solution_, ConstraintFactory extends In
     protected final String constraintName;
     private final Function<Solution_, Score<?>> constraintWeightExtractor;
     protected final ScoreImpactType scoreImpactType;
+    private final boolean isConstraintWeightConfigurable;
 
     protected AbstractConstraint(ConstraintFactory constraintFactory, String constraintPackage, String constraintName,
-            Function<Solution_, Score<?>> constraintWeightExtractor, ScoreImpactType scoreImpactType) {
+            Function<Solution_, Score<?>> constraintWeightExtractor, ScoreImpactType scoreImpactType,
+            boolean isConstraintWeightConfigurable) {
         this.constraintFactory = constraintFactory;
         this.constraintPackage = constraintPackage;
         this.constraintName = constraintName;
         this.constraintWeightExtractor = constraintWeightExtractor;
         this.scoreImpactType = scoreImpactType;
+        this.isConstraintWeightConfigurable = isConstraintWeightConfigurable;
     }
 
-    public Score<?> extractConstraintWeight(Solution_ workingSolution) {
+    public final Score<?> extractConstraintWeight(Solution_ workingSolution) {
+        if (isConstraintWeightConfigurable && workingSolution == null) {
+            /*
+             * In constraint verifier API, we allow for testing constraint providers without having a planning solution.
+             * However, constraint weights may be configurable and in that case the solution is required to read the
+             * weights from.
+             * For these cases, we set the constraint weight to the softest possible value, just to make sure that the
+             * constraint is not ignored.
+             * The actual value is not used in any way.
+             */
+            return constraintFactory.getSolutionDescriptor().getScoreDefinition().getOneSoftestScore();
+        }
         Score<?> constraintWeight = constraintWeightExtractor.apply(workingSolution);
         constraintFactory.getSolutionDescriptor().validateConstraintWeight(constraintPackage, constraintName, constraintWeight);
         switch (scoreImpactType) {

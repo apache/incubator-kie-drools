@@ -129,9 +129,20 @@ public class NQueensConstraintProviderTest {
     }
 
     @Test
-    public void constraintProviderIntegrationTest() throws IOException {
+    public void givenSolutionMultipleConstraints() throws IOException {
         constraintVerifier.verifyThat(constraintProvider)
                 .given(readSolution("256queensScore-30.xml"))
                 .scores(SimpleScore.of(-30));
     }
+
+    @Test
+    public void givenFactsMultipleConstraints() {
+        Queen queen1 = new Queen(0, row1, column1);
+        Queen queen2 = new Queen(1, row2, column2);
+        Queen queen3 = new Queen(2, row3, column3);
+        constraintVerifier.verifyThat(constraintProvider)
+                .given(queen1, queen2, queen3)
+                .scores(SimpleScore.of(-3));
+    }
+
 }

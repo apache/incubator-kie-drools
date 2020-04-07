@@ -41,18 +41,11 @@ public final class BavetConstraintSessionFactory<Solution_> extends AbstractCons
     @Override
     public ConstraintSession<Solution_> buildSession(boolean constraintMatchEnabled, Solution_ workingSolution) {
         Score<?> zeroScore = getScoreDefinition().getZeroScore();
-        Score<?> oneSoftestScore = getScoreDefinition().getOneSoftestScore();
         Map<BavetConstraint<Solution_>, Score<?>> constraintToWeightMap = new LinkedHashMap<>(constraintList.size());
         for (BavetConstraint<Solution_> constraint : constraintList) {
-            if (workingSolution == null) {
-                // In constraint verifier API, we disregard constraint weights.
-                // Yet we need to have them, otherwise the constraint would be ignored.
-                constraintToWeightMap.put(constraint, oneSoftestScore);
-            } else {
-                Score<?> constraintWeight = constraint.extractConstraintWeight(workingSolution);
-                if (!constraintWeight.equals(zeroScore)) {
-                    constraintToWeightMap.put(constraint, constraintWeight);
-                }
+            Score<?> constraintWeight = constraint.extractConstraintWeight(workingSolution);
+            if (!constraintWeight.equals(zeroScore)) {
+                constraintToWeightMap.put(constraint, constraintWeight);
             }
         }
         return new BavetConstraintSession<>(constraintMatchEnabled, getScoreDefinition(), constraintToWeightMap);

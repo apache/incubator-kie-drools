@@ -33,8 +33,10 @@ public final class BavetConstraint<Solution_> extends AbstractConstraint<Solutio
 
     public BavetConstraint(BavetConstraintFactory<Solution_> constraintFactory, String constraintPackage,
             String constraintName, Function<Solution_, Score<?>> constraintWeightExtractor,
-            ScoreImpactType scoreImpactType, List<BavetFromUniConstraintStream<Solution_, Object>> fromStreamList) {
-        super(constraintFactory, constraintPackage, constraintName, constraintWeightExtractor, scoreImpactType);
+            ScoreImpactType scoreImpactType, boolean isConstraintWeightConfigurable,
+            List<BavetFromUniConstraintStream<Solution_, Object>> fromStreamList) {
+        super(constraintFactory, constraintPackage, constraintName, constraintWeightExtractor, scoreImpactType,
+                isConstraintWeightConfigurable);
         this.fromStreamList = fromStreamList;
     }
 

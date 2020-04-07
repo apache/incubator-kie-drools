@@ -41,9 +41,11 @@ public class DroolsConstraint<Solution_> extends AbstractConstraint<Solution_, D
 
     public DroolsConstraint(DroolsConstraintFactory<Solution_> constraintFactory, String constraintPackage,
             String constraintName, Function<Solution_, Score<?>> constraintWeightExtractor,
-            ScoreImpactType scoreImpactType, List<DroolsFromUniConstraintStream<Solution_, Object>> fromStreamList,
+            ScoreImpactType scoreImpactType, boolean isConstraintWeightConfigurable,
+            List<DroolsFromUniConstraintStream<Solution_, Object>> fromStreamList,
             DroolsAbstractConstraintStream<Solution_> scoringStream) {
-        super(constraintFactory, constraintPackage, constraintName, constraintWeightExtractor, scoreImpactType);
+        super(constraintFactory, constraintPackage, constraintName, constraintWeightExtractor, scoreImpactType,
+                isConstraintWeightConfigurable);
         this.fromStreamList = fromStreamList;
         this.scoringStream = scoringStream;
     }
