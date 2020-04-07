@@ -21,6 +21,7 @@ import org.kie.api.pmml.PMML4Result;
 import org.kie.api.runtime.KieSession;
 import org.kie.internal.utils.KieHelper;
 import org.kie.pmml.commons.enums.StatusCode;
+import org.kie.pmml.commons.exceptions.KieEnumException;
 import org.kie.pmml.commons.model.KiePMMLDrooledModel;
 import org.kie.pmml.commons.model.KiePMMLModel;
 import org.kie.pmml.evaluator.api.exceptions.KiePMMLModelException;
@@ -48,7 +49,6 @@ public abstract class DrooledModelExecutor implements PMMLModelExecutor {
             throw new KiePMMLModelException("Expected a KiePMMLDrooledModel, received a " + model.getClass().getName());
         }
         final KiePMMLDrooledModel drooledModel = (KiePMMLDrooledModel) model;
-        // TODO {gcardosi} Dev debug only - to be removed
         printGeneratedRules(drooledModel);
         KieSession kSession = new KieHelper()
                 .addContent(drooledModel.getPackageDescr())
@@ -84,13 +84,12 @@ public abstract class DrooledModelExecutor implements PMMLModelExecutor {
         return toReturn;
     }
 
-    private void printGeneratedRules(KiePMMLDrooledModel treeModel) {
-        // TODO {gcardosi} Dev debug only - to be removed
+    private void printGeneratedRules(KiePMMLDrooledModel drooledModel) {
         try {
-            String string = new DrlDumper().dump(treeModel.getPackageDescr());
+            String string = new DrlDumper().dump(drooledModel.getPackageDescr());
             logger.debug(string);
         } catch (Exception e) {
-            e.printStackTrace();
+            throw new KieEnumException("Failed to dump " + drooledModel, e);
         }
     }
 
@@ -121,7 +120,7 @@ public abstract class DrooledModelExecutor implements PMMLModelExecutor {
             }
 
             public void afterRuleFlowGroupActivated(RuleFlowGroupActivatedEvent event) {
-         }
+            }
 
             public void beforeRuleFlowGroupDeactivated(RuleFlowGroupDeactivatedEvent event) {
             }

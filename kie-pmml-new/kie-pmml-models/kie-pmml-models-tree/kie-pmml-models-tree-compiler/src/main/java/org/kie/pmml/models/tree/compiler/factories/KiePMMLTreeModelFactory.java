@@ -22,7 +22,6 @@ import java.util.Optional;
 
 import org.dmg.pmml.DataDictionary;
 import org.dmg.pmml.tree.TreeModel;
-import org.drools.compiler.lang.DrlDumper;
 import org.drools.compiler.lang.descr.PackageDescr;
 import org.kie.pmml.commons.model.enums.MINING_FUNCTION;
 import org.kie.pmml.models.drooled.ast.KiePMMLDrooledAST;
@@ -31,8 +30,8 @@ import org.kie.pmml.models.tree.model.KiePMMLTreeModel;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import static org.kie.pmml.compiler.commons.utils.ModelUtils.getTargetFieldName;
 import static org.kie.pmml.commons.factories.KiePMMLDescrFactory.getBaseDescr;
+import static org.kie.pmml.compiler.commons.utils.ModelUtils.getTargetFieldName;
 import static org.kie.pmml.models.tree.compiler.factories.KiePMMLTreeModelASTFactory.getKiePMMLDrooledAST;
 
 /**
@@ -52,13 +51,6 @@ public class KiePMMLTreeModelFactory {
         final Map<String, KiePMMLOriginalTypeGeneratedType> fieldTypeMap = new HashMap<>();
         final KiePMMLDrooledAST kiePMMLDrooledAST = getKiePMMLDrooledAST(dataDictionary, model, fieldTypeMap);
         final PackageDescr baseDescr = getBaseDescr(kiePMMLDrooledAST, name.toLowerCase());
-        // TODO {gcardosi} Dev debug only - to be removed
-        try {
-            String string = new DrlDumper().dump(baseDescr);
-            logger.debug(string);
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
         return KiePMMLTreeModel.builder(name, Collections.emptyList(), MINING_FUNCTION.byName(model.getMiningFunction().value()), model.getAlgorithmName())
                 .withPackageDescr(baseDescr)
                 .withFieldTypeMap(fieldTypeMap)
