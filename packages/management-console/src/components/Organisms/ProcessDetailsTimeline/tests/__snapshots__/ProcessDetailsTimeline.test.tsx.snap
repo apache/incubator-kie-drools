@@ -11,115 +11,293 @@ exports[`Process Details Timeline component Sample test case 1`] = `
     </Title>
   </CardHeader>
   <CardBody>
-    <div
-      className="timeline-container"
+    <Stack
+      className="kogito-management-console--timeline"
+      gutter="md"
     >
-      <div
-        className="timeline-item"
-        key="2f588da5-a323-4111-9017-3093ef9319d1"
+      <Split
+        className="kogito-management-console--timeline-item"
+        gutter="sm"
+        key="7244ba1b-75ec-4789-8c65-499a0c5b1a6f"
       >
-        <div
-          className="timeline-item-content"
-        >
-          <t
-            ago={false}
-            calendar={false}
-            decimal={false}
-            element={null}
-            filter={[Function]}
-            fromNow={true}
-            interval={60000}
-            local={false}
-            onChange={[Function]}
-            titleFormat=""
-            toNow={false}
-            unit={null}
-            unix={false}
-            utc={false}
-            withTitle={false}
+        <SplitItem>
+          <Tooltip
+            appendTo={[Function]}
+            aria="describedby"
+            boundary="window"
+            className=""
+            content="Completed"
+            distance={15}
+            enableFlip={true}
+            entryDelay={500}
+            exitDelay={500}
+            flipBehavior={
+              Array [
+                "top",
+                "right",
+                "bottom",
+                "left",
+                "top",
+                "right",
+                "bottom",
+              ]
+            }
+            id=""
+            isAppLauncher={false}
+            isContentLeftAligned={false}
+            isVisible={false}
+            maxWidth="18.75rem"
+            position="top"
+            tippyProps={Object {}}
+            trigger="mouseenter focus"
+            zIndex={9999}
           >
-            <Component />
-          </t>
-          <p>
-            Book flight
-          </p>
-          <span
-            className="circle"
-          >
-            <ServicesIcon
-              className="processdetailstimetine-iconstyle"
-              color="currentColor"
+            <CheckCircleIcon
+              className="kogito-management-console--timeline-status"
+              color="var(--pf-global--success-color--100)"
               noVerticalAlign={false}
               size="sm"
               title={null}
             />
-             
-          </span>
-        </div>
-      </div>
-    </div>
-  </CardBody>
-</Card>
-`;
-
-exports[`Process Details Timeline component test human task 1`] = `
-<Card>
-  <CardHeader>
-    <Title
-      headingLevel="h3"
-      size="xl"
-    >
-      Timeline
-    </Title>
-  </CardHeader>
-  <CardBody>
-    <div
-      className="timeline-container"
-    >
-      <div
-        className="timeline-item"
+          </Tooltip>
+        </SplitItem>
+        <SplitItem
+          isFilled={true}
+        >
+          <TextContent>
+            <Text
+              component="p"
+            >
+              End Event 1
+              <span />
+              <Text
+                component="small"
+              >
+                <t
+                  ago={false}
+                  calendar={false}
+                  decimal={false}
+                  element={null}
+                  filter={[Function]}
+                  fromNow={true}
+                  interval={60000}
+                  local={false}
+                  onChange={[Function]}
+                  titleFormat=""
+                  toNow={false}
+                  unit={null}
+                  unix={false}
+                  utc={false}
+                  withTitle={false}
+                >
+                  <Component />
+                </t>
+              </Text>
+            </Text>
+          </TextContent>
+        </SplitItem>
+        <SplitItem>
+          <Dropdown
+            isPlain={true}
+            toggle={
+              <KebabToggle
+                id="timeline-kebab-toggle-disabled-0"
+                isDisabled={true}
+              />
+            }
+          />
+        </SplitItem>
+         
+      </Split>
+      <Split
+        className="kogito-management-console--timeline-item"
+        gutter="sm"
         key="2f588da5-a323-4111-9017-3093ef9319d1"
       >
-        <div
-          className="timeline-item-content"
-        >
-          <t
-            ago={false}
-            calendar={false}
-            decimal={false}
-            element={null}
-            filter={[Function]}
-            fromNow={true}
-            interval={60000}
-            local={false}
-            onChange={[Function]}
-            titleFormat=""
-            toNow={false}
-            unit={null}
-            unix={false}
-            utc={false}
-            withTitle={false}
+        <SplitItem>
+          <Tooltip
+            appendTo={[Function]}
+            aria="describedby"
+            boundary="window"
+            className=""
+            content="Completed"
+            distance={15}
+            enableFlip={true}
+            entryDelay={500}
+            exitDelay={500}
+            flipBehavior={
+              Array [
+                "top",
+                "right",
+                "bottom",
+                "left",
+                "top",
+                "right",
+                "bottom",
+              ]
+            }
+            id=""
+            isAppLauncher={false}
+            isContentLeftAligned={false}
+            isVisible={false}
+            maxWidth="18.75rem"
+            position="top"
+            tippyProps={Object {}}
+            trigger="mouseenter focus"
+            zIndex={9999}
           >
-            <Component />
-          </t>
-          <p>
-            Book flight
-          </p>
-          <span
-            className="circle"
-          >
-            <UserIcon
-              className="processdetailstimetine-iconstyle"
-              color="currentColor"
+            <CheckCircleIcon
+              className="kogito-management-console--timeline-status"
+              color="var(--pf-global--success-color--100)"
               noVerticalAlign={false}
               size="sm"
               title={null}
             />
-             
-          </span>
-        </div>
-      </div>
-    </div>
+          </Tooltip>
+        </SplitItem>
+        <SplitItem
+          isFilled={true}
+        >
+          <TextContent>
+            <Text
+              component="p"
+            >
+              Book flight
+              <span />
+              <Text
+                component="small"
+              >
+                <t
+                  ago={false}
+                  calendar={false}
+                  decimal={false}
+                  element={null}
+                  filter={[Function]}
+                  fromNow={true}
+                  interval={60000}
+                  local={false}
+                  onChange={[Function]}
+                  titleFormat=""
+                  toNow={false}
+                  unit={null}
+                  unix={false}
+                  utc={false}
+                  withTitle={false}
+                >
+                  <Component />
+                </t>
+              </Text>
+            </Text>
+          </TextContent>
+        </SplitItem>
+        <SplitItem>
+          <Dropdown
+            isPlain={true}
+            toggle={
+              <KebabToggle
+                id="timeline-kebab-toggle-disabled-1"
+                isDisabled={true}
+              />
+            }
+          />
+        </SplitItem>
+         
+      </Split>
+      <Split
+        className="kogito-management-console--timeline-item"
+        gutter="sm"
+        key="6ed7aa17-4bb1-48e3-b34a-5a4c5773dff2"
+      >
+        <SplitItem>
+          <Tooltip
+            appendTo={[Function]}
+            aria="describedby"
+            boundary="window"
+            className=""
+            content="Completed"
+            distance={15}
+            enableFlip={true}
+            entryDelay={500}
+            exitDelay={500}
+            flipBehavior={
+              Array [
+                "top",
+                "right",
+                "bottom",
+                "left",
+                "top",
+                "right",
+                "bottom",
+              ]
+            }
+            id=""
+            isAppLauncher={false}
+            isContentLeftAligned={false}
+            isVisible={false}
+            maxWidth="18.75rem"
+            position="top"
+            tippyProps={Object {}}
+            trigger="mouseenter focus"
+            zIndex={9999}
+          >
+            <CheckCircleIcon
+              className="kogito-management-console--timeline-status"
+              color="var(--pf-global--success-color--100)"
+              noVerticalAlign={false}
+              size="sm"
+              title={null}
+            />
+          </Tooltip>
+        </SplitItem>
+        <SplitItem
+          isFilled={true}
+        >
+          <TextContent>
+            <Text
+              component="p"
+            >
+              StartProcess
+              <span />
+              <Text
+                component="small"
+              >
+                <t
+                  ago={false}
+                  calendar={false}
+                  decimal={false}
+                  element={null}
+                  filter={[Function]}
+                  fromNow={true}
+                  interval={60000}
+                  local={false}
+                  onChange={[Function]}
+                  titleFormat=""
+                  toNow={false}
+                  unit={null}
+                  unix={false}
+                  utc={false}
+                  withTitle={false}
+                >
+                  <Component />
+                </t>
+              </Text>
+            </Text>
+          </TextContent>
+        </SplitItem>
+        <SplitItem>
+          <Dropdown
+            isPlain={true}
+            toggle={
+              <KebabToggle
+                id="timeline-kebab-toggle-disabled-2"
+                isDisabled={true}
+              />
+            }
+          />
+        </SplitItem>
+         
+      </Split>
+    </Stack>
   </CardBody>
 </Card>
 `;

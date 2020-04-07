@@ -73,7 +73,7 @@ module.exports = data = [
     serviceUrl: 'http://localhost:4000',
     endpoint: 'http://localhost:4000',
     error: {
-      nodeDefinitionId: 'a23e6c20-02c2-4c2b-8c5c-e988a0adf87c',
+      nodeDefinitionId: '_a23e6c20-02c2-4c2b-8c5c-e988a0adf87c',
       message:
         'Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim idest laborum.'
     },
@@ -84,7 +84,7 @@ module.exports = data = [
       {
         nodeId: '1',
         name: 'End Event 1',
-        definitionId: 'EndEvent_1',
+        definitionId: 'e6c20-02c2-4c2b-8c5c-e988a0adf87c',
         id: '8ac1fc9d-6de2-4b23-864e-ba79315db317',
         enter: '2019-10-22T03:37:30.804Z',
         exit: '2019-10-22T03:37:30.804Z',
@@ -93,7 +93,7 @@ module.exports = data = [
       {
         nodeId: '2',
         name: 'Book flight',
-        definitionId: 'ServiceTask_1',
+        definitionId: '_a23e6c20-02c2-4c2b-8c5c-e988a0adf87c',
         id: '2efa0617-d155-44dc-9b1e-38efc0dcec02',
         enter: '2019-10-22T03:37:30.804Z',
         exit: '2019-10-22T03:37:30.804Z',
@@ -181,7 +181,7 @@ module.exports = data = [
     start: '2019-10-22T03:40:44.089Z',
     end: '2019-10-22T05:40:44.089Z',
     error: {
-      nodeDefinitionId: 'e4448857-fa0c-403b-ad69-f0a353458c9e',
+      nodeDefinitionId: '_2140F05A-364F-40B3-BB7B-B12927065DF8',
       message: 'Something went wrong'
     },
     serviceUrl: null,
@@ -219,7 +219,7 @@ module.exports = data = [
       {
         nodeId: '4',
         name: 'Join',
-        definitionId: 'ParallelGateway_2',
+        definitionId: '_2140F05A-364F-40B3-BB7B-B12927065DF8',
         id: '08c153e8-2766-4675-81f7-29943efdf411',
         enter: '2019-10-22T03:37:30.806Z',
         exit: '2019-10-22T03:37:30.807Z',
@@ -319,7 +319,7 @@ module.exports = data = [
     start: '2019-10-22T03:40:44.089Z',
     end: '2019-10-22T05:40:44.089Z',
     error: {
-      nodeDefinitionId: 'cq125e139d5-4e77-48c9-84ae-34578e90433n',
+      nodeDefinitionId: '_cq125e139d5-4e77-48c9-84ae-34578e90433n',
       message:
         'Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim idest laborum.'
     },
@@ -338,7 +338,7 @@ module.exports = data = [
       {
         nodeId: '2',
         name: 'Book flight',
-        definitionId: 'ServiceTask_1',
+        definitionId: '_cq125e139d5-4e77-48c9-84ae-34578e90433n',
         id: '8a533611-9766-428f-b7ff-78156fc4851d',
         enter: '2019-10-22T03:40:44.086Z',
         exit: '2019-10-22T03:40:44.086Z',
@@ -425,7 +425,7 @@ module.exports = data = [
     addons: ['jobs-management', 'prometheus-monitoring', 'process-management'],
     start: '2019-10-22T03:40:44.089Z',
     error: {
-      nodeDefinitionId: 'a1e139d5-4e77-48c9-84ae-34578e9817n',
+      nodeDefinitionId: '__a1e139d5-4e77-48c9-84ae-34578e9817n',
       message: 'Something went wrong'
     },
     serviceUrl: 'http://localhost:4000',
@@ -436,7 +436,7 @@ module.exports = data = [
       {
         nodeId: '1',
         name: 'Confirm travel',
-        definitionId: 'UserTask_2',
+        definitionId: '__a1e139d5-4e77-48c9-84ae-34578e9817n',
         id: '69e0a0f5-2360-4174-a8f8-a892a31fc2f9',
         enter: '2019-10-22T03:40:44.089Z',
         exit: '2019-10-22T04:42:07.246Z',

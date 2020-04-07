@@ -31,20 +31,33 @@ import SpinnerComponent from '../../Atoms/SpinnerComponent/SpinnerComponent';
 import ServerErrorsComponent from '../../Molecules/ServerErrorsComponent/ServerErrorsComponent';
 import PageTitleComponent from '../../Molecules/PageTitleComponent/PageTitleComponent';
 import ProcessBulkModalComponent from '../../Atoms/ProcessBulkModalComponent/ProcessBulkModalComponent';
-import { InfoCircleIcon } from '@patternfly/react-icons';
 import axios from 'axios';
+import { InfoCircleIcon } from '@patternfly/react-icons';
 
-const ProcessDetailsPage = (props) => {
-  const id = props.match.params.instanceID;
-  const [isAbortModalOpen, setIsAbortModalOpen] = useState(false);
-  const [titleType, setTitleType] = useState('');
+const ProcessDetailsPage = ({ match }) => {
+  const [isSkipModalOpen, setIsSkipModalOpen] = useState<boolean>(false);
+  const [isRetryModalOpen, setIsRetryModalOpen] = useState<boolean>(false);
+  const [modalTitle, setModalTitle] = useState<string>('');
+  const [titleType, setTitleType] = useState<string>('');
+  const [modalContent, setModalContent] = useState<string>('');
+  const id = match.params.instanceID;
+  const [isAbortModalOpen, setIsAbortModalOpen] = useState<boolean>(false);
   const currentPage = JSON.parse(window.localStorage.getItem('state'))
 
   const { loading, error, data } = useGetProcessInstanceByIdQuery({
     variables: { id }
   });
+
   const handleAbortModalToggle = () => {
     setIsAbortModalOpen(!isAbortModalOpen);
+  };
+
+  const handleSkipModalToggle = () => {
+    setIsSkipModalOpen(!isSkipModalOpen);
+  };
+
+  const handleRetryModalToggle = () => {
+    setIsRetryModalOpen(!isRetryModalOpen);
   };
 
   const handleAbortInstance = () => {
@@ -63,6 +76,55 @@ const ProcessDetailsPage = (props) => {
       });
   };
 
+  const handleSkip = () => {
+    setModalTitle('Skip operation');
+    axios
+      .post(
+        `${data.ProcessInstances[0].serviceUrl}/management/processes/${data.ProcessInstances[0].processId}/instances/${data.ProcessInstances[0].id}/skip`
+      )
+      .then(() => {
+        setTitleType('success');
+        setModalContent(
+          'Process execution has successfully skipped node which was in error state.'
+        );
+        handleSkipModalToggle();
+      })
+      .catch(axiosError => {
+        setTitleType('failure');
+        setModalContent(
+          `Process execution failed to skip node which is in error state. Message: ${JSON.stringify(
+            axiosError.message
+          )}`
+        );
+
+        handleSkipModalToggle();
+      });
+  };
+
+  const handleRetry = () => {
+    setModalTitle('Retry operation');
+    axios
+      .post(
+        `${data.ProcessInstances[0].serviceUrl}/management/processes/${data.ProcessInstances[0].processId}/instances/${data.ProcessInstances[0].id}/retrigger`
+      )
+      .then(() => {
+        setTitleType('success');
+        setModalContent(
+          `Process execution has successfully re-executed node which was in error state.`
+        );
+        handleRetryModalToggle();
+      })
+      .catch(axiosError => {
+        setTitleType('failure');
+        setModalContent(
+          `Process execution failed to re-execute node which is in error state. Message: ${JSON.stringify(
+            axiosError.message
+          )}`
+        );
+        handleRetryModalToggle();
+      });
+  };
+
   const setTitle = (titleStatus, titleText) => {
     switch (titleStatus) {
       case 'success':
@@ -72,7 +134,7 @@ const ProcessDetailsPage = (props) => {
               className="pf-u-mr-sm"
               color="var(--pf-global--info-color--100)"
             />{' '}
-            {titleText}
+            {titleText}{' '}
           </>
         );
       case 'failure':
@@ -81,8 +143,8 @@ const ProcessDetailsPage = (props) => {
             <InfoCircleIcon
               className="pf-u-mr-sm"
               color="var(--pf-global--danger-color--100)"
-            />
-            {titleText}
+            />{' '}
+            {titleText}{' '}
           </>
         );
     }
@@ -109,6 +171,7 @@ const ProcessDetailsPage = (props) => {
       );
     }
   };
+
   let prevPath;
   const BreadCrumb = []
   let BreadCrumbRoute = []
@@ -148,11 +211,7 @@ const ProcessDetailsPage = (props) => {
               isModalOpen={isAbortModalOpen}
               handleModalToggle={handleAbortModalToggle}
               checkedArray={data && [data.ProcessInstances[0].state]}
-              modalTitle={
-                titleType === 'success'
-                  ? setTitle('success', 'Abort operation')
-                  : setTitle('failure', 'Abort operation')
-              }
+              modalTitle={setTitle('success', 'Abort operation')}
               isSingleAbort={true}
               abortedMessageObj={
                 data && {
@@ -161,6 +220,24 @@ const ProcessDetailsPage = (props) => {
               }
               completedMessageObj={{}}
               isAbortModalOpen={isAbortModalOpen}
+            />
+            <ProcessBulkModalComponent
+              isModalLarge={false}
+              isModalOpen={
+                modalTitle === 'Skip operation'
+                  ? isSkipModalOpen
+                  : modalTitle === 'Retry operation' && isRetryModalOpen
+              }
+              handleModalToggle={
+                modalTitle === 'Skip operation'
+                  ? handleSkipModalToggle
+                  : modalTitle === 'Retry operation'
+                    ? handleRetryModalToggle
+                    : null
+              }
+              checkedArray={data && [data.ProcessInstances[0].state]}
+              modalTitle={setTitle(titleType, modalTitle)}
+              modalContent={modalContent}
             />
             <PageTitleComponent title="Process Details" />
             {!loading ?
@@ -222,7 +299,11 @@ const ProcessDetailsPage = (props) => {
                   <ProcessDetailsProcessVariables data={data} />
                 </GridItem>
                 <GridItem>
-                  <ProcessDetailsTimeline data={data.ProcessInstances} />
+                  <ProcessDetailsTimeline
+                    data={data.ProcessInstances[0]}
+                    handleSkip={handleSkip}
+                    handleRetry={handleRetry}
+                  />
                 </GridItem>
               </Grid>
             ) : (
@@ -233,8 +314,8 @@ const ProcessDetailsPage = (props) => {
                 </Card>
               )}
           </PageSection>
-          </>):(<ServerErrorsComponent message={error.message} />)}
-      </>);
-  };
-          
+        </>) : (<ServerErrorsComponent message={error.message} />)}
+    </>);
+};
+
 export default ProcessDetailsPage;

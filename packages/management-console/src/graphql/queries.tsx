@@ -114,7 +114,12 @@ const GET_PROCESS_INSTANCE = gql`
       end
       addons
       endpoint
+      addons
       serviceUrl
+      error {
+        nodeDefinitionId
+        message
+      }
       childProcessInstances {
         id
         processName
@@ -122,10 +127,12 @@ const GET_PROCESS_INSTANCE = gql`
       }
       nodes {
         id
+        nodeId
         name
         enter
         exit
         type
+        definitionId
       }
     }
   }
