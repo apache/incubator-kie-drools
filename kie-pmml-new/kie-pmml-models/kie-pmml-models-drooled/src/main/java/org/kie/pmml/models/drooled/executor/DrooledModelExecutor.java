@@ -6,7 +6,6 @@ import java.util.Map;
 
 import org.drools.compiler.lang.DrlDumper;
 import org.drools.modelcompiler.ExecutableModelProject;
-import org.kie.api.KieServices;
 import org.kie.api.definition.type.FactType;
 import org.kie.api.event.rule.AfterMatchFiredEvent;
 import org.kie.api.event.rule.AgendaEventListener;
@@ -36,12 +35,6 @@ import static org.kie.pmml.evaluator.core.utils.Converter.getUnwrappedParameters
 public abstract class DrooledModelExecutor implements PMMLModelExecutor {
 
     private static final Logger logger = LoggerFactory.getLogger(DrooledModelExecutor.class.getName());
-
-    private final KieServices kieServices;
-
-    public DrooledModelExecutor() {
-        this.kieServices = KieServices.Factory.get();
-    }
 
     @Override
     public PMML4Result evaluate(KiePMMLModel model, PMMLContext pmmlContext, String releaseId) {
@@ -85,11 +78,13 @@ public abstract class DrooledModelExecutor implements PMMLModelExecutor {
     }
 
     private void printGeneratedRules(KiePMMLDrooledModel drooledModel) {
-        try {
-            String string = new DrlDumper().dump(drooledModel.getPackageDescr());
-            logger.debug(string);
-        } catch (Exception e) {
-            throw new KieEnumException("Failed to dump " + drooledModel, e);
+        if (logger.isDebugEnabled()) {
+            try {
+                String string = new DrlDumper().dump(drooledModel.getPackageDescr());
+                logger.debug(string);
+            } catch (Exception e) {
+                throw new KieEnumException("Failed to dump " + drooledModel, e);
+            }
         }
     }
 
@@ -97,35 +92,47 @@ public abstract class DrooledModelExecutor implements PMMLModelExecutor {
         final AgendaEventListener agendaEventListener = new AgendaEventListener() {
 
             public void matchCancelled(MatchCancelledEvent event) {
+                // Not used
             }
 
             public void matchCreated(MatchCreatedEvent event) {
+                // Not used
             }
 
             public void afterMatchFired(AfterMatchFiredEvent event) {
-                logger.debug(event.toString());
+                if (logger.isDebugEnabled()) {
+                    logger.debug(event.toString());
+                }
             }
 
             public void agendaGroupPopped(AgendaGroupPoppedEvent event) {
+                // Not used
             }
 
             public void agendaGroupPushed(AgendaGroupPushedEvent event) {
-                logger.debug(event.toString());
+                if (logger.isDebugEnabled()) {
+                    logger.debug(event.toString());
+                }
             }
 
             public void beforeMatchFired(BeforeMatchFiredEvent event) {
+                // Not used
             }
 
             public void beforeRuleFlowGroupActivated(RuleFlowGroupActivatedEvent event) {
+                // Not used
             }
 
             public void afterRuleFlowGroupActivated(RuleFlowGroupActivatedEvent event) {
+                // Not used
             }
 
             public void beforeRuleFlowGroupDeactivated(RuleFlowGroupDeactivatedEvent event) {
+                // Not used
             }
 
             public void afterRuleFlowGroupDeactivated(RuleFlowGroupDeactivatedEvent event) {
+                // Not used
             }
         };
         kSession.addEventListener(agendaEventListener);
