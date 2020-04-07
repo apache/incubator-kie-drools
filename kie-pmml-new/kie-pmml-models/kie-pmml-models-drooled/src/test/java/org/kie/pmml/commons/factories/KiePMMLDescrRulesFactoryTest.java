@@ -27,7 +27,8 @@ import org.drools.compiler.lang.descr.RuleDescr;
 import org.junit.Before;
 import org.junit.Test;
 import org.kie.pmml.models.drooled.ast.KiePMMLDrooledRule;
-import org.kie.pmml.models.drooled.tuples.KiePMMLFieldOperatorValue;
+import org.kie.pmml.models.drooled.ast.KiePMMLFieldOperatorValue;
+import org.kie.pmml.models.drooled.tuples.KiePMMLOperatorValue;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -55,8 +56,8 @@ public class KiePMMLDescrRulesFactoryTest {
         String patternType = "TEMPERATURE";
         String agendaGroup = "agendaGroup";
         String activationGroup = "activationGroup";
-        List<KiePMMLFieldOperatorValue> orConstraints = Arrays.asList(new KiePMMLFieldOperatorValue(patternType, "or", Collections.singletonMap("<", 35), null),
-                                                                      new KiePMMLFieldOperatorValue(patternType, "and", Collections.singletonMap(">", 85), null));
+        List<KiePMMLFieldOperatorValue> orConstraints = Arrays.asList(new KiePMMLFieldOperatorValue(patternType, "or", Collections.singletonList(new KiePMMLOperatorValue("<", 35)), null),
+                                                                      new KiePMMLFieldOperatorValue(patternType, "and", Collections.singletonList(new KiePMMLOperatorValue(">", 85)), null));
         KiePMMLDrooledRule rule = KiePMMLDrooledRule.builder(name, statusToSet, Collections.emptyList())
                 .withAgendaGroup(agendaGroup)
                 .withActivationGroup(activationGroup)

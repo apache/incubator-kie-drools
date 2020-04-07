@@ -15,9 +15,7 @@
  */
 package org.kie.pmml.models.drooled.tuples;
 
-import java.util.List;
 import java.util.Objects;
-import java.util.stream.Collectors;
 
 /**
  * Tupla representing the operator and the value to be applied to a given field
@@ -43,13 +41,7 @@ public class KiePMMLOperatorValue {
 
     @Override
     public String toString() {
-        if (value instanceof List) {
-            return (String) ((List) value).stream()
-                    .map(Object::toString)
-                    .collect(Collectors.joining(" " + operator + "\r\n"));
-        } else {
-            return String.format(VALUE_CONSTRAINT_PATTERN, operator, value);
-        }
+        return String.format(VALUE_CONSTRAINT_PATTERN, operator, value);
     }
 
     @Override

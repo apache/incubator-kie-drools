@@ -27,7 +27,7 @@ import org.drools.core.util.StringUtils;
 import org.kie.pmml.commons.enums.StatusCode;
 import org.kie.pmml.commons.model.KiePMMLOutputField;
 import org.kie.pmml.models.drooled.ast.KiePMMLDrooledRule;
-import org.kie.pmml.models.drooled.tuples.KiePMMLFieldOperatorValue;
+import org.kie.pmml.models.drooled.ast.KiePMMLFieldOperatorValue;
 import org.kie.pmml.models.drooled.tuples.KiePMMLOriginalTypeGeneratedType;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;

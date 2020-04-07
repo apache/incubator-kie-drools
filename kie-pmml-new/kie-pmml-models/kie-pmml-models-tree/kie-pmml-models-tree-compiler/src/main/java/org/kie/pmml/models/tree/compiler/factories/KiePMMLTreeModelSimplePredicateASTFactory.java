@@ -25,7 +25,8 @@ import org.drools.core.util.StringUtils;
 import org.kie.pmml.commons.enums.StatusCode;
 import org.kie.pmml.commons.model.KiePMMLOutputField;
 import org.kie.pmml.models.drooled.ast.KiePMMLDrooledRule;
-import org.kie.pmml.models.drooled.tuples.KiePMMLFieldOperatorValue;
+import org.kie.pmml.models.drooled.ast.KiePMMLFieldOperatorValue;
+import org.kie.pmml.models.drooled.tuples.KiePMMLOperatorValue;
 import org.kie.pmml.models.drooled.tuples.KiePMMLOriginalTypeGeneratedType;
 import org.kie.pmml.models.tree.model.enums.OPERATOR;
 import org.slf4j.Logger;
@@ -94,7 +95,7 @@ public class KiePMMLTreeModelSimplePredicateASTFactory extends KiePMMLTreeModeAb
         String operator = OPERATOR.byName(simplePredicate.getOperator().value()).getOperator();
         Object value = getCorrectlyFormattedObject(simplePredicate, fieldTypeMap);
         String statusToSet = isFinalLeaf ? StatusCode.DONE.getName() : currentRule;
-        List<KiePMMLFieldOperatorValue> andConstraints = Collections.singletonList(new KiePMMLFieldOperatorValue(key, "and", Collections.singletonMap(operator, value), null));
+        List<KiePMMLFieldOperatorValue> andConstraints = Collections.singletonList(new KiePMMLFieldOperatorValue(key, "and", Collections.singletonList(new KiePMMLOperatorValue(operator, value)), null));
         KiePMMLDrooledRule.Builder builder = KiePMMLDrooledRule.builder(currentRule, statusToSet, outputFields)
                 .withStatusConstraint(statusConstraint)
                 .withAndConstraints(andConstraints);

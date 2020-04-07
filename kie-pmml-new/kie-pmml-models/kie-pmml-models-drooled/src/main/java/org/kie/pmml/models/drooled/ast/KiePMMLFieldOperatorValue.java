@@ -13,16 +13,17 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.kie.pmml.models.drooled.tuples;
+package org.kie.pmml.models.drooled.ast;
 
 import java.util.Collections;
 import java.util.List;
-import java.util.Map;
 import java.util.Objects;
 import java.util.stream.Collectors;
 
+import org.kie.pmml.models.drooled.tuples.KiePMMLOperatorValue;
+
 /**
- * Tupla representing the name of a field and its <code>KiePMMLOperatorValue</code>
+ * Class representing a <code>Pattern</code> with the referred field, its possible <code>KiePMMLOperatorValue</code>s and, eventually, nested <code>Pattern</code>s
  */
 public class KiePMMLFieldOperatorValue {
 
@@ -38,12 +39,13 @@ public class KiePMMLFieldOperatorValue {
     /**
      * @param name The name of the type
      * @param operator the operator to use to join multiple <code>KiePMMLOperatorValue</code>s (if provided)
-     * @param operatorValues the <code>LinkedHashMap&lt;String, Object&gt;</code> used to build the inner <code>List&lt;KiePMMLOperatorValue&lt;</code>
+     * @param kiePMMLOperatorValues the inner <code>List&lt;KiePMMLOperatorValue&gt;</code>
+     * @param nestedKiePMMLFieldOperatorValues the nested <code>List&lt;KiePMMLFieldOperatorValue&gt;</code>s
      */
-    public KiePMMLFieldOperatorValue(final String name, final String operator, final Map<String, Object> operatorValues, final List<KiePMMLFieldOperatorValue> nestedKiePMMLFieldOperatorValues) {
+    public KiePMMLFieldOperatorValue(final String name, final String operator, final List<KiePMMLOperatorValue> kiePMMLOperatorValues, final List<KiePMMLFieldOperatorValue> nestedKiePMMLFieldOperatorValues) {
         this.name = name;
         this.operator = operator != null ? operator : "";
-        kiePMMLOperatorValues = operatorValues.entrySet().stream().map(entry -> new KiePMMLOperatorValue(entry.getKey(), entry.getValue())).collect(Collectors.toList());
+        this.kiePMMLOperatorValues = kiePMMLOperatorValues;
         this.nestedKiePMMLFieldOperatorValues = nestedKiePMMLFieldOperatorValues;
         constraintsString = buildConstraintsString();
         toString = buildToString();

@@ -16,7 +16,6 @@
 package org.kie.pmml.models.tree.compiler.factories;
 
 import java.util.Collections;
-import java.util.LinkedHashMap;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
@@ -27,7 +26,8 @@ import org.dmg.pmml.Predicate;
 import org.dmg.pmml.SimplePredicate;
 import org.kie.pmml.commons.exceptions.KiePMMLException;
 import org.kie.pmml.commons.model.enums.DATA_TYPE;
-import org.kie.pmml.models.drooled.tuples.KiePMMLFieldOperatorValue;
+import org.kie.pmml.models.drooled.ast.KiePMMLFieldOperatorValue;
+import org.kie.pmml.models.drooled.tuples.KiePMMLOperatorValue;
 import org.kie.pmml.models.drooled.tuples.KiePMMLOriginalTypeGeneratedType;
 import org.kie.pmml.models.tree.model.enums.BOOLEAN_OPERATOR;
 import org.kie.pmml.models.tree.model.enums.OPERATOR;
@@ -78,8 +78,7 @@ public class KiePMMLASTFactoryUtils {
             }
         });
         if (!nestedPredicates.isEmpty()) {
-            toReturn.add(new KiePMMLFieldOperatorValue(null, BOOLEAN_OPERATOR.byName(compoundPredicate.getBooleanOperator().value()).getCustomOperator(), Collections.EMPTY_MAP,  nestedPredicates));
-
+            toReturn.add(new KiePMMLFieldOperatorValue(null, BOOLEAN_OPERATOR.byName(compoundPredicate.getBooleanOperator().value()).getCustomOperator(), Collections.emptyList(), nestedPredicates));
         }
         return toReturn;
     }
@@ -100,12 +99,21 @@ public class KiePMMLASTFactoryUtils {
         return getXORConstraintEntryFromSimplePredicates(simplePredicates, fieldTypeMap);
     }
 
+    /**
+     * This method should be invoked with a <code>List&lt;SimplePredicate&gt;</code> where each <code>SimplePredicate</code> is referring to the same field
+     * @param fieldName
+     * @param containerOperator
+     * @param simplePredicates
+     * @param fieldTypeMap
+     * @return
+     */
     public static KiePMMLFieldOperatorValue getConstraintEntryFromSimplePredicates(final String fieldName, final String containerOperator, final List<SimplePredicate> simplePredicates, final Map<String, KiePMMLOriginalTypeGeneratedType> fieldTypeMap) {
-        LinkedHashMap<String, Object> operatorValues = simplePredicates.stream().collect(Collectors.toMap(simplePredicate -> OPERATOR.byName(simplePredicate.getOperator().value()).getOperator(),
-                                                                                                          simplePredicate -> getCorrectlyFormattedObject(simplePredicate, fieldTypeMap),
-                                                                                                          (o1, o2) -> o1,
-                                                                                                          LinkedHashMap::new));
-        return new KiePMMLFieldOperatorValue(fieldName, containerOperator, operatorValues, null);
+        List<KiePMMLOperatorValue> kiePMMLOperatorValues = simplePredicates
+                .stream()
+                .map(simplePredicate -> new KiePMMLOperatorValue(OPERATOR.byName(simplePredicate.getOperator().value()).getOperator(),
+                                                                 getCorrectlyFormattedObject(simplePredicate, fieldTypeMap)))
+                .collect(Collectors.toList());
+        return new KiePMMLFieldOperatorValue(fieldName, containerOperator, kiePMMLOperatorValues, null);
     }
 
     public static List<KiePMMLFieldOperatorValue> getXORConstraintEntryFromSimplePredicates(final List<Predicate> predicates, final Map<String, KiePMMLOriginalTypeGeneratedType> fieldTypeMap) {
@@ -116,7 +124,7 @@ public class KiePMMLASTFactoryUtils {
                     String fieldName = fieldTypeMap.get(simplePredicate.getField().getValue()).getGeneratedType();
                     String operator = OPERATOR.byName(simplePredicate.getOperator().value()).getOperator();
                     Object value = getCorrectlyFormattedObject(simplePredicate, fieldTypeMap);
-                    return new KiePMMLFieldOperatorValue(fieldName, null, Collections.singletonMap(operator, value), null);
+                    return new KiePMMLFieldOperatorValue(fieldName, null, Collections.singletonList(new KiePMMLOperatorValue(operator, value)), null);
                 }).collect(Collectors.toList());
     }
 
@@ -124,5 +132,4 @@ public class KiePMMLASTFactoryUtils {
         DATA_TYPE dataType = DATA_TYPE.byName(fieldTypeMap.get(simplePredicate.getField().getValue()).getOriginalType());
         return getCorrectlyFormattedResult(simplePredicate.getValue(), dataType);
     }
-
 }

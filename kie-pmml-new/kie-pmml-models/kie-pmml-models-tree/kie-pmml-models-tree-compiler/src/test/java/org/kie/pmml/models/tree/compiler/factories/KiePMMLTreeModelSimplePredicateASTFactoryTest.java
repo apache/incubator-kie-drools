@@ -28,9 +28,8 @@ import org.dmg.pmml.SimplePredicate;
 import org.junit.Test;
 import org.kie.pmml.commons.enums.StatusCode;
 import org.kie.pmml.models.drooled.ast.KiePMMLDrooledRule;
-import org.kie.pmml.models.drooled.tuples.KiePMMLFieldOperatorValue;
+import org.kie.pmml.models.drooled.ast.KiePMMLFieldOperatorValue;
 import org.kie.pmml.models.drooled.tuples.KiePMMLOriginalTypeGeneratedType;
-import org.kie.pmml.models.tree.model.enums.OPERATOR;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
@@ -70,8 +69,8 @@ public class KiePMMLTreeModelSimplePredicateASTFactoryTest {
         assertEquals(1, retrieved.getAndConstraints().size());
         KiePMMLFieldOperatorValue kiePMMLFieldOperatorValue = retrieved.getAndConstraints().get(0);
         assertEquals("OUTLOOK", kiePMMLFieldOperatorValue.getName());
-        assertEquals("<", kiePMMLFieldOperatorValue.getOperator());
-        assertEquals("\"VALUE\"", kiePMMLFieldOperatorValue.getConstraintsAsString());
+        assertEquals("surrogate", kiePMMLFieldOperatorValue.getOperator());
+        assertEquals("value < \"VALUE\"", kiePMMLFieldOperatorValue.getConstraintsAsString());
         assertEquals(result, retrieved.getResult());
         assertEquals(StatusCode.OK, retrieved.getResultCode());
         // This is the "FALSE" matching rule
@@ -89,10 +88,10 @@ public class KiePMMLTreeModelSimplePredicateASTFactoryTest {
         assertNull(retrieved.getAndConstraints());
         assertNotNull(retrieved.getNotConstraints());
         assertEquals(1, retrieved.getNotConstraints().size());
-        kiePMMLFieldOperatorValue = retrieved.getAndConstraints().get(0);
+        kiePMMLFieldOperatorValue = retrieved.getNotConstraints().get(0);
         assertEquals("OUTLOOK", kiePMMLFieldOperatorValue.getName());
-        assertEquals("<", kiePMMLFieldOperatorValue.getOperator());
-        assertEquals("\"VALUE\"", kiePMMLFieldOperatorValue.getConstraintsAsString());
+        assertEquals("surrogate", kiePMMLFieldOperatorValue.getOperator());
+        assertEquals("value < \"VALUE\"", kiePMMLFieldOperatorValue.getConstraintsAsString());
         assertNull(retrieved.getResult());
         assertNull(retrieved.getResultCode());
     }
@@ -125,8 +124,8 @@ public class KiePMMLTreeModelSimplePredicateASTFactoryTest {
         assertEquals(1, retrieved.getAndConstraints().size());
         KiePMMLFieldOperatorValue kiePMMLFieldOperatorValue = retrieved.getAndConstraints().get(0);
         assertEquals("OUTLOOK", kiePMMLFieldOperatorValue.getName());
-        assertEquals("<", kiePMMLFieldOperatorValue.getOperator());
-        assertEquals("\"VALUE\"", kiePMMLFieldOperatorValue.getConstraintsAsString());
+        assertEquals("surrogate", kiePMMLFieldOperatorValue.getOperator());
+        assertEquals("value < \"VALUE\"", kiePMMLFieldOperatorValue.getConstraintsAsString());
         assertNull(retrieved.getResult());
         assertNull(retrieved.getResultCode());
         // This is the "FALSE" matching rule
@@ -144,10 +143,10 @@ public class KiePMMLTreeModelSimplePredicateASTFactoryTest {
         assertNull(retrieved.getAndConstraints());
         assertNotNull(retrieved.getNotConstraints());
         assertEquals(1, retrieved.getNotConstraints().size());
-        kiePMMLFieldOperatorValue = retrieved.getAndConstraints().get(0);
+        kiePMMLFieldOperatorValue = retrieved.getNotConstraints().get(0);
         assertEquals("OUTLOOK", kiePMMLFieldOperatorValue.getName());
-        assertEquals("<", kiePMMLFieldOperatorValue.getOperator());
-        assertEquals("\"VALUE\"", kiePMMLFieldOperatorValue.getConstraintsAsString());
+        assertEquals("surrogate", kiePMMLFieldOperatorValue.getOperator());
+        assertEquals("value < \"VALUE\"", kiePMMLFieldOperatorValue.getConstraintsAsString());
         assertNull(retrieved.getResult());
         assertNull(retrieved.getResultCode());
     }
@@ -175,11 +174,8 @@ public class KiePMMLTreeModelSimplePredicateASTFactoryTest {
         assertEquals(1, andConstraints.size());
         KiePMMLFieldOperatorValue kiePMMLFieldOperatorValue = retrieved.getAndConstraints().get(0);
         assertEquals(declaredType, kiePMMLFieldOperatorValue.getName());
-        assertEquals(OPERATOR.byName(simplePredicate.getOperator().value()).getOperator(), kiePMMLFieldOperatorValue.getOperator());
-        Object expectedValue = simplePredicate.getValue();
-        if (fieldTypeMap.get("outlook").getOriginalType().equals("string")) {
-            expectedValue = "\"" + expectedValue + "\"";
-        }
+        assertEquals("and", kiePMMLFieldOperatorValue.getOperator());
+        String expectedValue = "value < \"" + simplePredicate.getValue() + "\"";
         assertEquals(expectedValue, kiePMMLFieldOperatorValue.getConstraintsAsString());
     }
 
@@ -205,11 +201,8 @@ public class KiePMMLTreeModelSimplePredicateASTFactoryTest {
         assertEquals(1, andConstraints.size());
         KiePMMLFieldOperatorValue kiePMMLFieldOperatorValue = retrieved.getAndConstraints().get(0);
         assertEquals(declaredType, kiePMMLFieldOperatorValue.getName());
-        assertEquals(OPERATOR.byName(simplePredicate.getOperator().value()).getOperator(), kiePMMLFieldOperatorValue.getOperator());
-        Object expectedValue = simplePredicate.getValue();
-        if (fieldTypeMap.get("outlook").getOriginalType().equals("string")) {
-            expectedValue = "\"" + expectedValue + "\"";
-        }
+        assertEquals("and", kiePMMLFieldOperatorValue.getOperator());
+        String expectedValue = "value < \"" + simplePredicate.getValue() + "\"";
         assertEquals(expectedValue, kiePMMLFieldOperatorValue.getConstraintsAsString());
     }
 }

@@ -21,7 +21,6 @@ import java.util.Map;
 
 import org.kie.pmml.commons.enums.StatusCode;
 import org.kie.pmml.commons.model.KiePMMLOutputField;
-import org.kie.pmml.models.drooled.tuples.KiePMMLFieldOperatorValue;
 
 public class KiePMMLDrooledRule {
 

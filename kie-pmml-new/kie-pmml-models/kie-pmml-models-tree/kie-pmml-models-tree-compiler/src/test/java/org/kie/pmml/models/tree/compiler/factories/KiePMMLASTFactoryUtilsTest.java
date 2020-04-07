@@ -16,7 +16,6 @@
 
 package org.kie.pmml.models.tree.compiler.factories;
 
-import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -26,7 +25,7 @@ import java.util.stream.IntStream;
 import org.dmg.pmml.DataType;
 import org.dmg.pmml.SimplePredicate;
 import org.junit.Test;
-import org.kie.pmml.models.drooled.tuples.KiePMMLFieldOperatorValue;
+import org.kie.pmml.models.drooled.ast.KiePMMLFieldOperatorValue;
 import org.kie.pmml.models.drooled.tuples.KiePMMLOriginalTypeGeneratedType;
 
 import static org.junit.Assert.assertEquals;
@@ -39,14 +38,12 @@ public class KiePMMLASTFactoryUtilsTest {
     public void getConstraintEntryFromSimplePredicates() {
         final Map<String, KiePMMLOriginalTypeGeneratedType> fieldTypeMap = new HashMap<>();
         String fieldName = "FIELD_NAME";
-        List<SimplePredicate> simplePredicates = IntStream.range(0, 2).mapToObj(index -> getSimplePredicate(fieldName, DataType.STRING, "VALUE-" + index, fieldTypeMap)).collect(Collectors.toList());
-        final List<KiePMMLFieldOperatorValue> retrieved = Collections.singletonList(KiePMMLASTFactoryUtils.getConstraintEntryFromSimplePredicates(fieldName, "or", simplePredicates, fieldTypeMap));
-        assertEquals(simplePredicates.size(), retrieved.size());
-        IntStream.range(0, simplePredicates.size()).forEach(i -> {
-            SimplePredicate simplePredicate = simplePredicates.get(i);
-            KiePMMLFieldOperatorValue kiePMMLFieldOperatorValue = retrieved.get(i);
-            assertEquals(fieldName, kiePMMLFieldOperatorValue.getName());
-            assertNotNull(kiePMMLFieldOperatorValue.getConstraintsAsString());
-        });
+        List<SimplePredicate> simplePredicates = IntStream.range(0, 2)
+                .mapToObj(index -> getSimplePredicate(fieldName, DataType.STRING, "VALUE-" + index, fieldTypeMap)).collect(Collectors.toList());
+        final KiePMMLFieldOperatorValue retrieved = KiePMMLASTFactoryUtils.getConstraintEntryFromSimplePredicates(fieldName, "or", simplePredicates, fieldTypeMap);
+        assertEquals(fieldName, retrieved.getName());
+        assertNotNull(retrieved.getConstraintsAsString());
+        String expected = "value < \"VALUE-0\" or value < \"VALUE-1\"";
+        assertEquals(expected, retrieved.getConstraintsAsString());
     }
 }
