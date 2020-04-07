@@ -233,7 +233,7 @@ public class EvalHelper {
                             case '\\':
                                 r.append( '\\' );
                                 break;
-                            case 'u': {
+                            case 'u':
                                 if ( text.length() >= i + 5 ) {
                                     // escape unicode
                                     String hex = text.substring( i + 1, i + 5 );
@@ -245,7 +245,18 @@ public class EvalHelper {
                                     r.append( "\\" ).append( cn );
                                 }
                                 break;
-                            }
+                            case 'U':
+                                if ( text.length() >= i + 7 ) {
+                                    // escape unicode
+                                    String hex = text.substring( i + 1, i + 7 );
+                                    char[] chars = Character.toChars( Integer.parseInt( hex, 16 ) );
+                                    r.append( chars );
+                                    i += 6;
+                                } else {
+                                    // not really unicode
+                                    r.append( "\\" ).append( cn );
+                                }
+                                break;
                             default:
                                 r.append( "\\" ).append( cn );
                         }
