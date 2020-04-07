@@ -53,6 +53,7 @@ import static java.util.Optional.of;
 
 import static com.github.javaparser.StaticJavaParser.parseExpression;
 import static org.drools.core.rule.Pattern.isCompatibleWithFromReturnType;
+import static org.drools.core.util.StringUtils.splitArgumentsList;
 import static org.drools.modelcompiler.builder.generator.DrlxParseUtil.findViaScopeWithPredicate;
 import static org.drools.modelcompiler.builder.generator.DrlxParseUtil.generateLambdaWithoutParameters;
 import static org.drools.modelcompiler.builder.generator.DslMethodNames.ENTRY_POINT_CALL;
@@ -75,13 +76,16 @@ public class FromVisitor {
         if (sourceDescr instanceof FromDescr) {
             String expression = ((FromDescr) sourceDescr).getDataSource().toString();
 
-            boolean isEnumeratedList = expression.startsWith( "[" ) && expression.endsWith( "]" );
-            return isEnumeratedList ?
+            return isEnumeratedList( expression ) ?
                     createEnumeratedFrom( expression.substring( 1, expression.length()-1 ) ) :
                     createSingleFrom( expression );
         } else {
             return Optional.empty();
         }
+    }
+
+    private boolean isEnumeratedList( String expression ) {
+        return expression.startsWith( "[" ) && expression.endsWith( "]" );
     }
 
     private Optional<Expression> createSingleFrom( String expression ) {
@@ -110,21 +114,28 @@ public class FromVisitor {
 
     private Optional<Expression> createEnumeratedFrom( String expressions ) {
         MethodCallExpr fromCall = new MethodCallExpr(null, FROM_CALL);
-        MethodCallExpr asListCall = new MethodCallExpr(null, "java.util.Arrays.asList");
         Collection<String> usedDeclarations = new ArrayList<>();
-
-        for (String expr : expressions.split( "," )) {
-            Optional<DeclarationSpec> optContainsBinding = context.getDeclarationById( expr );
-            if (optContainsBinding.isPresent()) {
-                String bindingId = optContainsBinding.get().getBindingId();
-                fromCall.addArgument( context.getVarExpr(bindingId));
-                usedDeclarations.add( expr );
-            }
-            asListCall.addArgument(expr);
-        }
-
+        MethodCallExpr asListCall = createListForLiteralFrom( expressions, fromCall, usedDeclarations );
         fromCall.addArgument( generateLambdaWithoutParameters( usedDeclarations, asListCall, true , Optional.empty()) );
         return of(fromCall);
+    }
+
+    private MethodCallExpr createListForLiteralFrom( String expressions, MethodCallExpr fromCall, Collection<String> usedDeclarations ) {
+        MethodCallExpr asListCall = new MethodCallExpr(null, "java.util.Arrays.asList");
+        for (String expr : splitArgumentsList(expressions)) {
+            if (isEnumeratedList( expr )) {
+                asListCall.addArgument( createListForLiteralFrom( expr.substring( 1, expr.length()-1 ), fromCall, usedDeclarations ) );
+            } else {
+                Optional<DeclarationSpec> optContainsBinding = context.getDeclarationById( expr );
+                if ( optContainsBinding.isPresent() ) {
+                    String bindingId = optContainsBinding.get().getBindingId();
+                    fromCall.addArgument( context.getVarExpr( bindingId ) );
+                    usedDeclarations.add( expr );
+                }
+                asListCall.addArgument( expr );
+            }
+        }
+        return asListCall;
     }
 
     private Optional<Expression> fromMethodExpr(String expression, MethodCallExpr parsedExpression) {

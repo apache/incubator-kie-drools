@@ -62,10 +62,11 @@ import org.drools.mvelcompiler.MvelCompilerException;
 import org.drools.mvelcompiler.ParsingResult;
 import org.drools.mvelcompiler.context.MvelCompilerContext;
 
+import static java.util.stream.Collectors.toSet;
+
 import static com.github.javaparser.StaticJavaParser.parseClassOrInterfaceType;
 import static com.github.javaparser.StaticJavaParser.parseExpression;
 import static com.github.javaparser.ast.NodeList.nodeList;
-import static java.util.stream.Collectors.toSet;
 import static org.drools.core.util.ClassUtils.getter2property;
 import static org.drools.core.util.ClassUtils.setter2property;
 import static org.drools.modelcompiler.builder.PackageModel.DOMAIN_CLASSESS_METADATA_FILE_NAME;
@@ -321,10 +322,10 @@ public class Consequence {
         }
 
         for (MethodCallExpr methodCallExpr : methodCallExprs) {
-            if (isDroolsMethod(methodCallExpr)) {
-                if (!methodCallExpr.getScope().isPresent()) {
-                    methodCallExpr.setScope(new NameExpr("drools"));
-                }
+            if (!methodCallExpr.getScope().isPresent() && isImplicitDroolsMethod( methodCallExpr )) {
+                methodCallExpr.setScope(new NameExpr("drools"));
+            }
+            if (hasDroolsScope( methodCallExpr ) || hasDroolsAsParameter( methodCallExpr )) {
                 if (knowledgeHelperMethods.contains(methodCallExpr.getNameAsString())) {
                     methodCallExpr.setScope(createAsKnowledgeHelperExpression());
                 } else if (methodCallExpr.getNameAsString().equals("update")) {
@@ -418,12 +419,17 @@ public class Consequence {
         return propertyName;
     }
 
-    private static boolean isDroolsMethod(MethodCallExpr mce) {
-        final boolean hasDroolsScope = DrlxParseUtil.findRootNodeViaScope(mce)
+    private static boolean hasDroolsAsParameter( MethodCallExpr mce ) {
+        return findAllChildrenRecursive(mce).stream().anyMatch(a -> isNameExprWithName(a, "drools"));
+    }
+
+    private static boolean hasDroolsScope( MethodCallExpr mce ) {
+        return DrlxParseUtil.findRootNodeViaScope(mce)
                 .filter(s -> isNameExprWithName(s, "drools"))
                 .isPresent();
-        final boolean isImplicitDroolsMethod = !mce.getScope().isPresent() && implicitDroolsMethods.contains(mce.getNameAsString());
-        final boolean hasDroolsAsParameter = findAllChildrenRecursive(mce).stream().anyMatch(a -> isNameExprWithName(a, "drools"));
-        return hasDroolsScope || isImplicitDroolsMethod || hasDroolsAsParameter;
+    }
+
+    private static boolean isImplicitDroolsMethod( MethodCallExpr mce ) {
+        return !mce.getScope().isPresent() && implicitDroolsMethods.contains(mce.getNameAsString());
     }
 }

@@ -375,4 +375,8 @@ public class ClassUtil {
         }
         throw new UnsupportedOperationException( "Unknown type " + type );
     }
+
+    public static Type getTypeArgument(Type genericType, int index) {
+        return genericType instanceof ParameterizedType ? (( ParameterizedType ) genericType).getActualTypeArguments()[index] : Object.class;
+    }
 }

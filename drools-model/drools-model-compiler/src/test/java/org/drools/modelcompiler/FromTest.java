@@ -29,6 +29,7 @@ import org.drools.modelcompiler.domain.Person;
 import org.drools.modelcompiler.domain.Pet;
 import org.drools.modelcompiler.domain.PetPerson;
 import org.drools.modelcompiler.domain.Woman;
+import org.drools.modelcompiler.FunctionsTest.Pojo;
 import org.junit.Test;
 import org.kie.api.runtime.KieSession;
 
@@ -291,4 +292,43 @@ public class FromTest extends BaseModelTest {
         assertEquals( 1, ksession.fireAllRules() );
     }
 
+    @Test
+    public void testLiteralFrom() {
+        // DROOLS-5217
+        String str =
+                "package com.sample\n" +
+                "import " + Pojo.class.getCanonicalName() + ";\n" +
+                "\n" +
+                "rule R when\n" +
+                "    $i: Integer() from [1,3]\n" +
+                "    Pojo(intList.contains($i))\n" +
+                "then\n" +
+                "end";
+
+        KieSession ksession = getKieSession( str );
+
+        ksession.insert( new Pojo( Arrays.asList(1,2,3) ) );
+        int rulesFired = ksession.fireAllRules();
+        assertEquals( 2, rulesFired );
+    }
+
+    @Test
+    public void testLiteralFrom2() {
+        // DROOLS-5217
+        String str =
+                "package com.sample\n" +
+                "import " + Pojo.class.getCanonicalName() + ";\n" +
+                "\n" +
+                "rule R when\n" +
+                "    $boundList: java.util.List() from [[1,3]]\n" +
+                "    Pojo(intList.containsAll($boundList))\n" +
+                "then\n" +
+                "end";
+
+        KieSession ksession = getKieSession( str );
+
+        ksession.insert( new Pojo( Arrays.asList(1,2,3) ) );
+        int rulesFired = ksession.fireAllRules();
+        assertEquals( 1, rulesFired );
+    }
 }
