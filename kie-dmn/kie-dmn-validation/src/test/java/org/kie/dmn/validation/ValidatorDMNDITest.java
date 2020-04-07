@@ -44,7 +44,7 @@ public class ValidatorDMNDITest extends AbstractValidatorTest {
 
     @Test
     public void testMISSING_DMNSHAPE_MISSING_DMNEDGE() throws IOException {
-        try (final Reader reader = getReader("dmndi/all-elements-no-dmndi.dmn")) {
+        try (final Reader reader = getReader("dmndi/all-elements-with-dmndi-no-dmnshape.dmn")) {
             final List<DMNMessage> validate = validator.validate(reader, VALIDATE_SCHEMA, VALIDATE_MODEL, VALIDATE_COMPILATION);
 
             assertThat(ValidatorUtil.formatMessages(validate), validate.size(), is(12));

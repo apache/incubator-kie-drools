@@ -68,6 +68,7 @@ import org.kie.dmn.core.util.Msg;
 import org.kie.dmn.core.util.MsgUtil;
 import org.kie.dmn.feel.util.ClassLoaderUtil;
 import org.kie.dmn.model.api.DMNModelInstrumentedBase;
+import org.kie.dmn.model.api.DecisionService;
 import org.kie.dmn.model.api.Definitions;
 import org.kie.dmn.model.v1_1.KieDMNModelInstrumentedBase;
 import org.kie.dmn.validation.dtanalysis.DMNDTAnalyser;
@@ -564,8 +565,12 @@ public class DMNValidatorImpl implements DMNValidator {
         StatelessKieSession kieSession = kieContainer.get().newStatelessKieSession(kieSessionName);
         MessageReporter reporter = new MessageReporter();
         kieSession.setGlobal( "reporter", reporter );
-        
-        List<DMNModelInstrumentedBase> dmnModelElements = allChildren(dmnModel).collect(toList());
+
+        // exclude dynamicDecisionService for validation
+        List<DMNModelInstrumentedBase> dmnModelElements = allChildren(dmnModel)
+                       .filter(d -> !(d instanceof DecisionService &&
+                               Boolean.parseBoolean(d.getAdditionalAttributes().get(new QName("http://www.trisotech.com/2015/triso/modeling", "dynamicDecisionService")))))
+                       .collect(toList());
         BatchExecutionCommand batch = CommandFactory.newBatchExecution(Arrays.asList(CommandFactory.newInsertElements(dmnModelElements, "DEFAULT", false, "DEFAULT"),
                                                                                      CommandFactory.newInsertElements(otherModel_Definitions, "DMNImports", false, "DMNImports")));
         kieSession.execute(batch);

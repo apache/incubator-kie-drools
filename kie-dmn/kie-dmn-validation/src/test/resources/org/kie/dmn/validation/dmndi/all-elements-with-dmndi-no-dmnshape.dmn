@@ -57,4 +57,8 @@
   <dmn:textAnnotation id="_FB4C7936-D74C-4210-ADCF-0394033F0E05" textFormat="text/plain">
     <dmn:text>TextAnnotation-1</dmn:text>
   </dmn:textAnnotation>
+  <dmndi:DMNDI>
+    <dmndi:DMNDiagram>
+    </dmndi:DMNDiagram>
+  </dmndi:DMNDI>
 </dmn:definitions>

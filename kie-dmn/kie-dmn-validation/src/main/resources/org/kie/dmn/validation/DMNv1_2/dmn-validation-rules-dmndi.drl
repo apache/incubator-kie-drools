@@ -28,6 +28,7 @@ global org.kie.dmn.validation.MessageReporter reporter;
 
 rule DRGELEMENT_MISSING_DMNSHAPE
 when
+    DMNDI()
     $element : DRGElement()
     not DMNShape(dmnElementRef == $element.id)
 then
@@ -36,6 +37,7 @@ end
 
 rule TEXTANNOTATION_MISSING_DMNSHAPE
 when
+    DMNDI()
     $textAnn : TextAnnotation()
     not DMNShape(dmnElementRef == $textAnn.id)
 then
@@ -44,6 +46,7 @@ end
 
 rule INFORMATIONREQUIREMENT_MISSING_DMNEDGE
 when
+    DMNDI()
     $req : InformationRequirement()
     not DMNEdge(dmnElementRef == $req.id)
 then
@@ -52,6 +55,7 @@ end
 
 rule KNOWLEDGEREQUIREMENT_MISSING_DMNEDGE
 when
+    DMNDI()
     $req : KnowledgeRequirement()
     not DMNEdge(dmnElementRef == $req.id)
 then
@@ -60,6 +64,7 @@ end
 
 rule AUTHORITYREQUIREMENT_MISSING_DMNEDGE
 when
+    DMNDI()
     $req : AuthorityRequirement()
     not DMNEdge(dmnElementRef == $req.id)
 then
@@ -68,6 +73,7 @@ end
 
 rule ASSOCIATION_MISSING_DMNEDGE
 when
+    DMNDI()
     $asso : Association()
     not DMNEdge(dmnElementRef == $asso.id)
 then
@@ -76,6 +82,7 @@ end
 
 rule DMNSHAPE_UNKNOWN_REF_WITHOUT_IMPORT
 when
+    DMNDI()
     $shape : DMNShape(dmnElementRef.prefix == XMLConstants.DEFAULT_NS_PREFIX)
     not DRGElement(id == $shape.dmnElementRef)
     not TextAnnotation(id == $shape.dmnElementRef)
@@ -85,6 +92,7 @@ end
 
 rule DMNSHAPE_UNKNOWN_REF_WITH_IMPORT
 when
+    DMNDI()
     $shape : DMNShape($prefix : dmnElementRef.prefix != XMLConstants.DEFAULT_NS_PREFIX)
     Definitions($nsContext : nsContext)
     $import : Import(ImportDMNResolverUtil.whichImportType(this) == ImportDMNResolverUtil.ImportType.DMN, namespace == $nsContext[$prefix])
@@ -97,6 +105,7 @@ end
 
 rule DMNEGDE_UNKNOWN_REF_WITHOUT_IMPORT
 when
+    DMNDI()
     $edge : DMNEdge(dmnElementRef.prefix == XMLConstants.DEFAULT_NS_PREFIX)
     not InformationRequirement(id == $edge.dmnElementRef)
     not KnowledgeRequirement(id == $edge.dmnElementRef)
@@ -108,6 +117,7 @@ end
 
 rule DMNEGDE_UNKNOWN_REF_WITH_IMPORT
 when
+    DMNDI()
     $edge : DMNEdge($prefix : dmnElementRef.prefix != XMLConstants.DEFAULT_NS_PREFIX, $localPart : dmnElementRef.localPart)
     Definitions($nsContext : nsContext)
     $import : Import(ImportDMNResolverUtil.whichImportType(this) == ImportDMNResolverUtil.ImportType.DMN, namespace == $nsContext[$prefix])

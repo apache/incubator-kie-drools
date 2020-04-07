@@ -32,7 +32,6 @@ import org.kie.dmn.validation.dtanalysis.model.MaskedRule;
 import org.kie.dmn.validation.dtanalysis.model.MisleadingRule;
 import org.kie.dmn.validation.dtanalysis.model.Overlap;
 
-import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.Matchers.contains;
 import static org.hamcrest.Matchers.hasSize;
 import static org.junit.Assert.assertThat;
@@ -46,11 +45,8 @@ public class StringWithoutEnumNoGapTest extends AbstractDTAnalysisTest {
     @Test
     public void test() {
         List<DMNMessage> validate = validator.validate(getReader("stringWithoutEnumNoGap.dmn"), VALIDATE_COMPILATION, VALIDATE_MODEL, ANALYZE_DECISION_TABLE);
-        assertThat(validate, hasSize(12)); // no gap, 2 overlaps, 2 masked, 2 misleading, 5 DMNDI.
+        assertThat(validate, hasSize(7)); // no gap, 2 overlaps, 2 masked, 2 misleading.
         debugValidatorMsg(validate);
-
-        // This dmn doesn't have DMNDI
-        assertThat(validate.stream().filter(p -> p.getMessageType().equals(DMNMessageType.DMNDI_MISSING_DIAGRAM)).count(), is(5L));
         
         DTAnalysis analysis = getAnalysis(validate, "_8b48d1c9-265c-47aa-9378-7f11d55dfe55");
 

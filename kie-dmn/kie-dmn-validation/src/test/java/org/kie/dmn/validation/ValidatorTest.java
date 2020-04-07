@@ -399,13 +399,11 @@ public class ValidatorTest extends AbstractValidatorTest {
         // DROOLS-4765 DMN validation rule alignment for missing expression
         List<DMNMessage> validate = validator.validate(getReader("noExpr.dmn", DMNRuntimeTest.class),
                                                        VALIDATE_MODEL); // this test ensures the WARN for missing expr on the Decision node also applies when using static model validation rules (before compilation)
-        assertThat(ValidatorUtil.formatMessages(validate), validate.size(), is(4));
+        assertThat(ValidatorUtil.formatMessages(validate), validate.size(), is(1));
         assertThat(validate.stream().filter(p -> p.getLevel() == Level.WARNING &&
                                                  p.getMessageType().equals(DMNMessageType.MISSING_EXPRESSION) &&
                                                  p.getSourceId().equals("_cdd03786-d1ab-47b5-ba05-df830458dc62")).count(),
                    is(1L));
-        // This dmn doesn't have DMNDI
-        assertThat(validate.stream().filter(p -> p.getMessageType().equals(DMNMessageType.DMNDI_MISSING_DIAGRAM)).count(), is(3L));
     }
 
     @Test
@@ -415,9 +413,7 @@ public class ValidatorTest extends AbstractValidatorTest {
                                                             VALIDATE_MODEL)
                                              .theseModels(getReader("base join.dmn", ImportsTest.class),
                                                           getReader("use join.dmn", ImportsTest.class));
-        assertThat(ValidatorUtil.formatMessages(validate), validate.size(), is(5));
-        // trisotech pages
-        assertThat(validate.stream().filter(p -> p.getMessageType().equals(DMNMessageType.DMNDI_MISSING_DIAGRAM)).count(), is(5L));
+        assertThat(ValidatorUtil.formatMessages(validate), validate.size(), is(0));
     }
 
     @Test
@@ -426,9 +422,7 @@ public class ValidatorTest extends AbstractValidatorTest {
                                                        VALIDATE_SCHEMA,
                                                        VALIDATE_MODEL,
                                                        VALIDATE_COMPILATION);
-        assertThat(ValidatorUtil.formatMessages(validate), validate.size(), is(2));
-        // trisotech pages
-        assertThat(validate.stream().filter(p -> p.getMessageType().equals(DMNMessageType.DMNDI_MISSING_DIAGRAM)).count(), is(2L));
+        assertThat(ValidatorUtil.formatMessages(validate), validate.size(), is(0));
     }
 
     @Test
@@ -438,7 +432,7 @@ public class ValidatorTest extends AbstractValidatorTest {
                                                             VALIDATE_COMPILATION)
                                              .theseModels(getReader("Financial.dmn", DMN13specificTest.class),
                                                           getReader("Chapter 11 Example.dmn", DMN13specificTest.class));
-        assertThat(ValidatorUtil.formatMessages(validate), validate.size(), is(12));
+        assertThat(ValidatorUtil.formatMessages(validate), validate.size(), is(2));
         assertTrue(ValidatorUtil.formatMessages(validate),
                    validate.stream().anyMatch(p -> p.getLevel() == Level.WARNING &&
                                                    p.getMessageType().equals(DMNMessageType.MISSING_EXPRESSION) &&
@@ -447,8 +441,6 @@ public class ValidatorTest extends AbstractValidatorTest {
                    validate.stream().anyMatch(p -> p.getLevel() == Level.ERROR &&
                                                    p.getMessageType().equals(DMNMessageType.INVALID_NAME) &&
                                                    p.getSourceId().equals("_96b30012-a6e7-4545-89d3-068ec722469c")));
-        // trisotech pages
-        assertThat(validate.stream().filter(p -> p.getMessageType().equals(DMNMessageType.DMNDI_MISSING_DIAGRAM)).count(), is(10L));
     }
 
     @Test
@@ -457,13 +449,11 @@ public class ValidatorTest extends AbstractValidatorTest {
                                                             VALIDATE_MODEL,
                                                             VALIDATE_COMPILATION)
                                              .theseModels(getReader("somethingInBetween.dmn"));
-        assertThat(ValidatorUtil.formatMessages(validate), validate.size(), is(4));
+        assertThat(ValidatorUtil.formatMessages(validate), validate.size(), is(1));
         assertTrue(ValidatorUtil.formatMessages(validate),
                    validate.stream().anyMatch(p -> p.getLevel() == Level.ERROR &&
                                                    p.getMessageType().equals(DMNMessageType.ERR_COMPILING_FEEL) &&
                                                    p.getSourceId().equals("_841ed91c-db69-401e-890b-08a5bf44222d")));
-        // This dmn doesn't have DMNDI
-        assertThat(validate.stream().filter(p -> p.getMessageType().equals(DMNMessageType.DMNDI_MISSING_DIAGRAM)).count(), is(3L));
     }
 
     @Test
@@ -485,7 +475,7 @@ public class ValidatorTest extends AbstractValidatorTest {
                                                        VALIDATE_COMPILATION);
         assertTrue(ValidatorUtil.formatMessages(validate),
                    validate.stream().allMatch(p -> p.getLevel() == Level.WARNING));
-        assertThat(ValidatorUtil.formatMessages(validate), validate.size(), is(5));
+        assertThat(ValidatorUtil.formatMessages(validate), validate.size(), is(2));
         assertTrue(ValidatorUtil.formatMessages(validate),
                    validate.stream().anyMatch(p -> p.getLevel() == Level.WARNING &&
                                                    p.getSourceId() != null &&
@@ -493,8 +483,6 @@ public class ValidatorTest extends AbstractValidatorTest {
         assertTrue(ValidatorUtil.formatMessages(validate),
                    validate.stream().anyMatch(p -> p.getLevel() == Level.WARNING &&
                                                    ((DMNElement) ((DMNModelInstrumentedBase) p.getSourceReference()).getParent()).getId().equals("_d8b0c243-3fb6-40ec-a29c-28f8bdb92e13")));
-        // This dmn doesn't have DMNDI
-        assertThat(validate.stream().filter(p -> p.getMessageType().equals(DMNMessageType.DMNDI_MISSING_DIAGRAM)).count(), is(3L));
     }
 
     @Test

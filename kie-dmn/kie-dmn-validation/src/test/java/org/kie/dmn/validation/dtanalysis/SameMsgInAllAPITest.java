@@ -31,7 +31,6 @@ import org.kie.dmn.validation.dtanalysis.model.Interval;
 import org.kie.dmn.validation.dtanalysis.model.MaskedRule;
 import org.kie.dmn.validation.dtanalysis.model.Overlap;
 
-import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.Matchers.contains;
 import static org.hamcrest.Matchers.hasSize;
 import static org.junit.Assert.assertThat;
@@ -55,11 +54,7 @@ public class SameMsgInAllAPITest extends AbstractDTAnalysisTest {
     }
 
     private void verify(List<DMNMessage> validate) {
-        assertThat(validate, hasSize(10));
-
-        // This dmn doesn't have DMNDI
-        assertThat(validate.stream().filter(p -> p.getMessageType().equals(DMNMessageType.DMNDI_MISSING_DIAGRAM)).count(), is(3L));
-
+        assertThat(validate, hasSize(7));
         DTAnalysis analysis = getAnalysis(validate, "_4771db14-e088-4d5a-8942-211c57ad0b42");
 
         assertThat(analysis.getGaps(), hasSize(3));
