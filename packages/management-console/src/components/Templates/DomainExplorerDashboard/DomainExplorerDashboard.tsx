@@ -52,6 +52,7 @@ const DomainExplorerDashboard = props => {
   const [columnFilters, setColumnFilters] = useState({});
   const [tableLoading, setTableLoading] = useState(true);
   const [displayTable, setDisplayTable] = useState(false);
+  const [displayEmptyState, setDisplayEmptyState] = useState(false);
   const [selected, setSelected] = useState([]);
   const [error, setError] = useState()
   const [parameters, setParameters] = useState([
@@ -178,6 +179,7 @@ const DomainExplorerDashboard = props => {
                   data={data}
                   getPicker={getPicker}
                   setError={setError}
+                  setDisplayEmptyState={setDisplayEmptyState}
                 />
               )}
             </DataToolbarGroup>
@@ -230,6 +232,7 @@ const DomainExplorerDashboard = props => {
             columnFilters={columnFilters}
             tableLoading={tableLoading}
             displayTable={displayTable}
+            displayEmptyState={displayEmptyState}
           />
         </div>) : (
             <Card>

@@ -24,6 +24,7 @@ export interface IOwnProps {
   data: any;
   getPicker: any;
   setError: any
+  setDisplayEmptyState: any;
 }
 
 const DomainExplorerColumnPicker: React.FC<IOwnProps> = ({
@@ -38,8 +39,11 @@ const DomainExplorerColumnPicker: React.FC<IOwnProps> = ({
   setSelected,
   data,
   getPicker,
-  setError
+  setError,
+  setDisplayEmptyState
 }) => {
+  // tslint:disable: forin
+  // tslint:disable: no-floating-promises
   const [isExpanded, setIsExpanded] = useState(false);
   const [tempDomain, setTempDomain] = useState('');
 
@@ -95,9 +99,87 @@ const DomainExplorerColumnPicker: React.FC<IOwnProps> = ({
   };
 
   useEffect(() => {
-    // tslint:disable-next-line: no-floating-promises
     parameters.length !== 1 && generateQuery();
   }, [parameters.length > 1]);
+
+  const nestedCheck = (ele, valueObj) => {
+    for(const key in ele) {
+      const temp = ele[key]
+     if(typeof temp[0] === 'object'){
+       for(const nestedProp  in temp[0]){
+       const nestedObj = {}
+       const result = nestedCheck(temp[0], valueObj)
+       if(valueObj.hasOwnProperty(nestedProp)){
+         valueObj[nestedProp] = result
+       } else {
+         nestedObj[nestedProp] = result
+         valueObj = {...valueObj, ...nestedObj}
+       }
+       return valueObj;
+       }   
+     } else {
+       const val = ele[key]
+        const tempObj={};
+        tempObj[val[0]] = null;
+        const firstKey = Object.keys(valueObj)[0]
+        valueObj = {...valueObj[firstKey], ...tempObj}
+        return valueObj;  
+     }
+   }
+  }
+
+  const checkFunc = (ele, valueObj) => {
+     for(const key in ele) {
+       const temp = ele[key]
+      if(typeof temp[0] === 'object'){
+        for(const nestedProp  in temp[0]){
+        const nestedObj = {}
+        if(valueObj.hasOwnProperty(nestedProp)){
+          const result = nestedCheck(temp[0], valueObj)
+          valueObj[nestedProp] = result
+        } else {
+          const result = checkFunc(temp[0], valueObj)
+          nestedObj[nestedProp] = result
+          valueObj = {...valueObj, ...nestedObj}
+        }
+        return valueObj;
+        }   
+      } else {
+        const val = ele[key]
+         const tempObj={};
+         tempObj[val[0]] = null;
+         valueObj = {...valueObj , ...tempObj}
+         return valueObj;  
+      }
+    }
+  }
+
+  const validateResponse = (obj) => {
+    let contentObj= {}
+    for(const prop in obj){
+    const arr = [];
+      if(obj[prop] === null){
+        const parentObj = {}
+        parameters.map(params => {
+         if(params.hasOwnProperty(prop)){
+          arr.push(params)
+         }
+        })
+        let valueObj = {}
+        arr.filter(ele => {
+         valueObj = checkFunc(ele, valueObj)
+        })
+        parentObj[prop] = valueObj
+        contentObj = {...contentObj, ...parentObj}
+      } else {
+        const elseObj= {}
+        elseObj[prop] = obj[prop]
+        contentObj = {...contentObj, ...elseObj}
+      }
+      
+    }
+    return contentObj;
+  }
 
   async function generateQuery() {
     if (columnPickerType && parameters.length > 1) {
@@ -111,22 +193,32 @@ const DomainExplorerColumnPicker: React.FC<IOwnProps> = ({
           .query({
             query: gql`
               ${Query.query}
-            `
+            `,
+            fetchPolicy: 'no-cache'
           })
           .then(response => {
             setTableLoading(false);
             const firstKey = Object.keys(response.data)[0];
             if (response.data[firstKey].length > 0) {
-              setColumnFilters(response.data);
+              const resp = response.data;
+              const respKeys = Object.keys(resp)[0];
+              const tableContent = resp[respKeys];
+              const finalResp = []
+              tableContent.map(content => {
+                const finalObject = validateResponse(content);
+                finalResp.push(finalObject)
+              })
+              setColumnFilters(finalResp);
               setDisplayTable(true);
             } else {
-              setDisplayTable(false);
+              setDisplayEmptyState(true);
             }
           });
       } catch (error) {
         setError(error)
       }
     } else {
+      setDisplayEmptyState(false)
       setDisplayTable(false);
     }
   }

@@ -36,7 +36,8 @@ import './DomainExplorerTable.css';
 import SpinnerComponent from '../../Atoms/SpinnerComponent/SpinnerComponent';
 import ProcessDescriptor from '../../Molecules/ProcessDescriptor/ProcessDescriptor';
 
-const DomainExplorerTable = ({ columnFilters, tableLoading, displayTable }) => {
+const DomainExplorerTable = ({ columnFilters, tableLoading, displayTable, displayEmptyState }) => {
+  // tslint:disable: forin
   const [columns, setColumns] = useState([]);
   const [rows, setRows] = useState([]);
   const currentPage = { prev: location.pathname}
@@ -97,7 +98,6 @@ const DomainExplorerTable = ({ columnFilters, tableLoading, displayTable }) => {
 
   const getKeys = object => {
     const iter = (data, k = '') => {
-      // tslint:disable-next-line: forin
       for (const i in data) {
         const rest = k.length ? ' / ' + i : i;
         if (data[i] === null) {
@@ -121,9 +121,8 @@ const DomainExplorerTable = ({ columnFilters, tableLoading, displayTable }) => {
       }
     };
     const tempKeys = [];
-    let tempValue = [];
+    const tempValue = [];
     iter(object);
-    tempValue = tempValue.filter(value => value !== null)
     return { tempKeys, tempValue };
   };
 
@@ -131,7 +130,6 @@ const DomainExplorerTable = ({ columnFilters, tableLoading, displayTable }) => {
 
   const getChildKeys = object => {
     const iter = (data, k = '') => {
-      // tslint:disable-next-line: forin
       for (const i in data) {
         const rest = k.length ? ' / ' + i : i;
         if (data[i] === null) {
@@ -203,15 +201,15 @@ const DomainExplorerTable = ({ columnFilters, tableLoading, displayTable }) => {
     return { tempKeys, tempValue };
   };
   const firstKey = Object.keys(columnFilters)[0];
-  const tableContent = columnFilters[firstKey];
+  const tableContent = columnFilters;
 
   const parentkeys = [];
   let values = [];
   let parentIndex = 0;
 
   const initLoad = () => {
-    if (tableContent) {
-      tableContent.map(item => {
+    if (columnFilters.length> 0) {
+      columnFilters.map(item => {
         let metaArray = [];
         const metaKeys = [];
         const metaValues = [];
@@ -294,7 +292,7 @@ const DomainExplorerTable = ({ columnFilters, tableLoading, displayTable }) => {
 
   return (
     <React.Fragment>
-      {displayTable && (
+      {displayTable && !displayEmptyState &&(
         <Table
           cells={columns}
           rows={rows}
@@ -306,12 +304,12 @@ const DomainExplorerTable = ({ columnFilters, tableLoading, displayTable }) => {
           <TableBody rowKey="rowKey" />
         </Table>
       )}
-      {!displayTable  && (
+      {!displayEmptyState && !displayTable  && (
         <Card component={'div'}>
           <CardBody>
             <Bullseye>
               <EmptyState>
-                <EmptyStateIcon icon={FilterIcon} />
+                <EmptyStateIcon icon={SearchIcon} />
                 <Title headingLevel="h5" size="lg">
                   No columns selected
                 </Title>
@@ -323,6 +321,24 @@ const DomainExplorerTable = ({ columnFilters, tableLoading, displayTable }) => {
           </CardBody>
         </Card>
       )}
+      {displayEmptyState && (
+        <Card component={'div'}>
+          <CardBody>
+            <Bullseye>
+              <EmptyState>
+                <EmptyStateIcon icon={SearchIcon} />
+                <Title headingLevel="h5" size="lg">
+                  No data available
+                </Title>
+                <EmptyStateBody>
+                  Selected domain has no data to display. Check other domains.
+                </EmptyStateBody>
+              </EmptyState>
+            </Bullseye>
+          </CardBody>
+        </Card>
+      )
+      }
     </React.Fragment>
   );
 };
