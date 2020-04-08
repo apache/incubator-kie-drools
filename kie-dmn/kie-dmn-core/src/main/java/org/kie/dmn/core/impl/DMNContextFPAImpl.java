@@ -43,7 +43,7 @@ public class DMNContextFPAImpl implements DMNContext {
 
     @Override
     public Object get(String name) {
-        return fpa.getFEELProperty(name).getValueResultOptional().orElse(null);
+        return fpa.getFEELProperty(name).toOptional().orElse(null);
     }
 
     private Map<String, Object> getCurrentEntries() {

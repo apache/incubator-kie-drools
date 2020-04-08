@@ -304,7 +304,7 @@ public class EvalHelper {
         }
 
         @Override
-        public Optional<Object> getValueResultOptional() {
+        public Optional<Object> toOptional() {
             return valueResult.cata(l -> Optional.empty(), Optional::of);
         }
 

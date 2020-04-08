@@ -4,5 +4,5 @@ import java.util.Optional;
 
 public interface AbstractPropertyValueResult {
 
-    Optional<Object> getValueResultOptional();
+    Optional<Object> toOptional();
 }
