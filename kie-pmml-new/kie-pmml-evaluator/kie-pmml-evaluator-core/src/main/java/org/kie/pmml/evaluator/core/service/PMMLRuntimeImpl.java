@@ -97,6 +97,7 @@ public class PMMLRuntimeImpl implements PMMLRuntime {
             if (!mappedRequestParams.containsKey(fieldName)) {
                 logger.debug("missingValueReplacement {} {}", fieldName, missingValueReplacement);
                 requestData.addRequestParam(fieldName, missingValueReplacement);
+                context.addMissingValueReplaced(fieldName, missingValueReplacement);
             }
         });
     }

@@ -56,7 +56,10 @@ public class PMMLRuntimeImplTest {
         pmmlRequestData.addRequestParam("age", 123);
         pmmlRequestData.addRequestParam("work", "work");
         PMMLContext pmmlContext = new PMMLContextImpl(pmmlRequestData);
-        missingValueReplacementMap.keySet().forEach(key -> assertFalse(pmmlContext.getRequestData().getMappedRequestParams().containsKey(key)));
+        missingValueReplacementMap.keySet().forEach(key -> {
+            assertFalse(pmmlContext.getRequestData().getMappedRequestParams().containsKey(key));
+            assertFalse(pmmlContext.getMissingValueReplacedMap().containsKey(key));
+        });
         pmmlRuntime.addMissingValuesReplacements(model, pmmlContext);
         missingValueReplacementMap.forEach((key, value) -> {
             assertTrue(pmmlContext.getRequestData().getMappedRequestParams().containsKey(key));
@@ -64,6 +67,8 @@ public class PMMLRuntimeImplTest {
             assertEquals(key, parameterInfo.getName());
             assertEquals(value.getClass(), parameterInfo.getType());
             assertEquals(value, parameterInfo.getValue());
+            assertTrue(pmmlContext.getMissingValueReplacedMap().containsKey(key));
+            assertEquals(value, pmmlContext.getMissingValueReplacedMap().get(key));
         });
     }
 

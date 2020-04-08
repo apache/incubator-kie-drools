@@ -15,10 +15,16 @@
  */
 package org.kie.pmml.evaluator.api.executor;
 
+import java.util.Map;
+
 import org.kie.api.pmml.PMMLRequestData;
 import org.kie.api.runtime.Context;
 
 public interface PMMLContext extends Context {
 
     PMMLRequestData getRequestData();
+
+    void addMissingValueReplaced(String fieldName, Object missingValueReplaced);
+
+    Map<String, Object> getMissingValueReplacedMap();
 }
