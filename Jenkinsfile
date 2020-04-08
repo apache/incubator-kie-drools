@@ -22,6 +22,13 @@ pipeline {
                 sh 'printenv'
             }
         }
+        stage('build sh script') {
+            steps {
+                script {
+                    mailer.buildLogScriptPR()
+                }
+            }
+        }
         stage('Build kogito-runtimes') {
             steps {
                 script {
@@ -64,18 +71,29 @@ pipeline {
         }
     }
     post {
-        unstable {
-            script {
-                mailer.sendEmailFailure()
-            }
+        always {
+            sh '$WORKSPACE/trace.sh'
+            junit '**/target/surefire-reports/**/*.xml'
         }
         failure {
             script {
-                mailer.sendEmailFailure()
+                mailer.sendEmail_failedPR()
             }
+            cleanWs()
         }
-        always {
-            junit '**/target/surefire-reports/**/*.xml'
+        unstable {
+            script {
+                mailer.sendEmail_unstablePR()
+            }
+            cleanWs()
+        }
+        fixed {
+            script {
+                mailer.sendEmail_fixedPR()
+            }
+            cleanWs()
+        }
+        success {
             cleanWs()
         }
     }
