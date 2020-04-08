@@ -38,14 +38,14 @@ public class AbsFunction
         return FEELFnResult.ofResult( number.abs() );
     }
 
-    public FEELFnResult<Period> invoke(@ParameterName( "duration" ) Period duration) {
+    public FEELFnResult<Period> invoke(@ParameterName( "n" ) Period duration) {
         if ( duration == null ) {
             return FEELFnResult.ofError(new InvalidParametersEvent(Severity.ERROR, "duration", "cannot be null"));
         }
         return FEELFnResult.ofResult( duration.toTotalMonths() < 0 ? duration.negated() : duration );
     }
 
-    public FEELFnResult<Duration> invoke(@ParameterName( "duration" ) Duration duration) {
+    public FEELFnResult<Duration> invoke(@ParameterName( "n" ) Duration duration) {
         if ( duration == null ) {
             return FEELFnResult.ofError(new InvalidParametersEvent(Severity.ERROR, "duration", "cannot be null"));
         }
