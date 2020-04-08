@@ -25,6 +25,7 @@ import org.dmg.pmml.Predicate;
 import org.dmg.pmml.SimplePredicate;
 import org.drools.core.util.StringUtils;
 import org.kie.pmml.commons.enums.ResultCode;
+import org.kie.pmml.commons.exceptions.KiePMMLException;
 import org.kie.pmml.commons.model.KiePMMLOutputField;
 import org.kie.pmml.models.drooled.ast.KiePMMLDrooledRule;
 import org.kie.pmml.models.drooled.ast.KiePMMLFieldOperatorValue;
@@ -74,14 +75,29 @@ public class KiePMMLTreeModelCompoundPredicateASTFactory extends KiePMMLTreeMode
             case XOR:
                 declareRuleFromCompoundPredicateAndOrXor(parentPath, currentRule, result, isFinalLeaf);
                 break;
+            default:
+                throw new IllegalStateException(String.format("Unknown CompoundPredicate.booleanOperator %st", compoundPredicate.getBooleanOperator()));
         }
     }
 
+    /**
+     * Method to be invoked when <b>compoundPredicate.getBooleanOperator()</b> is <code>AND</code>, <code>OR</code> or
+     * <XOR>XOR</XOR>. Throws exception otherwise
+     * @param parentPath
+     * @param currentRule
+     * @param result
+     * @param isFinalLeaf
+     */
     public void declareRuleFromCompoundPredicateAndOrXor(final String parentPath,
                                                          final String currentRule,
                                                          final Object result,
                                                          boolean isFinalLeaf) {
-        logger.debug("declareIntermediateRuleFromCompoundPredicateAndOrXor {} {} {}", compoundPredicate, parentPath, currentRule);
+        logger.debug("declareRuleFromCompoundPredicateAndOrXor {} {} {}", compoundPredicate, parentPath, currentRule);
+        if (!CompoundPredicate.BooleanOperator.AND.equals(compoundPredicate.getBooleanOperator()) &&
+                !CompoundPredicate.BooleanOperator.OR.equals((compoundPredicate.getBooleanOperator())) &&
+                !CompoundPredicate.BooleanOperator.XOR.equals((compoundPredicate.getBooleanOperator()))) {
+            throw new KiePMMLException(String.format("getConstraintEntriesFromAndOrCompoundPredicate invoked with %s CompoundPredicate", compoundPredicate.getBooleanOperator()));
+        }
         String statusConstraint = StringUtils.isEmpty(parentPath) ? STATUS_NULL : String.format(STATUS_PATTERN, parentPath);
         List<KiePMMLFieldOperatorValue> constraints;
         String statusToSet = isFinalLeaf ? DONE : currentRule;
@@ -101,7 +117,7 @@ public class KiePMMLTreeModelCompoundPredicateASTFactory extends KiePMMLTreeMode
                 builder = builder.withXorConstraints(constraints);
                 break;
             default:
-                break;
+                throw new IllegalStateException(String.format("CompoundPredicate.booleanOperator should never be %s at this point", compoundPredicate.getBooleanOperator()));
         }
         if (isFinalLeaf) {
             builder = builder.withResult(result)
@@ -110,11 +126,23 @@ public class KiePMMLTreeModelCompoundPredicateASTFactory extends KiePMMLTreeMode
         rules.add(builder.build());
     }
 
+    /**
+     * Method to be invoked when <b>compoundPredicate.getBooleanOperator()</b> is <code>SURROGATE</code>.
+     * Throws exception otherwise
+     * @param parentPath
+     * @param currentRule
+     * @param result
+     * @param isFinalLeaf
+     */
     public void declareRuleFromCompoundPredicateSurrogate(final String parentPath,
                                                           final String currentRule,
                                                           final Object result,
                                                           boolean isFinalLeaf) {
         logger.debug("declareRuleFromCompoundPredicateSurrogate {} {} {} {}", compoundPredicate, parentPath, currentRule, result);
+
+        if (!CompoundPredicate.BooleanOperator.SURROGATE.equals(compoundPredicate.getBooleanOperator())) {
+            throw new KiePMMLException(String.format("declareRuleFromCompoundPredicateSurrogate invoked with %s CompoundPredicate", compoundPredicate.getBooleanOperator()));
+        }
         final String agendaActivationGroup = String.format(SURROGATE_GROUP_PATTERN, currentRule);
         KiePMMLDrooledRule.Builder builder = KiePMMLDrooledRule.builder(currentRule, null, outputFields)
                 .withStatusConstraint(String.format(STATUS_PATTERN, parentPath))

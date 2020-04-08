@@ -41,8 +41,13 @@ public class KiePMMLASTFactoryUtils {
         // not instatiate
     }
 
+    /**
+     * Method to be invoked when <b>compoundPredicate.getBooleanOperator()</b> is <code>AND</code> or <code>OR</code>. Throws exception otherwise
+     * @param compoundPredicate
+     * @param fieldTypeMap
+     * @return
+     */
     public static List<KiePMMLFieldOperatorValue> getConstraintEntriesFromAndOrCompoundPredicate(final CompoundPredicate compoundPredicate, final Map<String, KiePMMLOriginalTypeGeneratedType> fieldTypeMap) {
-        // Managing only SimplePredicates for the moment being
         final List<Predicate> simplePredicates = compoundPredicate.getPredicates().stream().filter(predicate -> predicate instanceof SimplePredicate).collect(Collectors.toList());
         if (!CompoundPredicate.BooleanOperator.AND.equals(compoundPredicate.getBooleanOperator()) &&
                 !CompoundPredicate.BooleanOperator.OR.equals((compoundPredicate.getBooleanOperator()))) {
@@ -80,11 +85,17 @@ public class KiePMMLASTFactoryUtils {
         return toReturn;
     }
 
+    /**
+     * Method to be invoked when <b>compoundPredicate.getBooleanOperator()</b> is <code>XOR</code>. Throws exception otherwise
+     * @param compoundPredicate
+     * @param fieldTypeMap
+     * @return
+     */
     public static List<KiePMMLFieldOperatorValue> getConstraintEntriesFromXOrCompoundPredicate(final CompoundPredicate compoundPredicate, final Map<String, KiePMMLOriginalTypeGeneratedType> fieldTypeMap) {
-        // Managing only SimplePredicates for the moment being
         if (!CompoundPredicate.BooleanOperator.XOR.equals(compoundPredicate.getBooleanOperator())) {
             throw new KiePMMLException(String.format("getConstraintEntriesFromXOrCompoundPredicate invoked with %s CompoundPredicate", compoundPredicate.getBooleanOperator()));
         }
+        // Managing only SimplePredicates for the moment being
         final List<Predicate> simplePredicates = compoundPredicate.getPredicates().stream().filter(predicate -> predicate instanceof SimplePredicate).collect(Collectors.toList());
         if (simplePredicates.size() < 2) {
             throw new KiePMMLException("At least two elements expected for XOR operations");
