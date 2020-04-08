@@ -70,7 +70,7 @@ class DMNModelTypesIndex {
     }
 
     private void index(DMNType innerType) {
-        classesNamespaceIndex.put(innerType.getName(),packageName.withDMNModelNamespace(model.getNamespace(), model.getName()));
+        classesNamespaceIndex.put(innerType.getName(),packageName.ofDMNModel(model));
         typesToGenerate.add(innerType);
     }
 

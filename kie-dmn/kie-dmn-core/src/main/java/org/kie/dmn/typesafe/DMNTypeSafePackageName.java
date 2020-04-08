@@ -16,6 +16,7 @@
 
 package org.kie.dmn.typesafe;
 
+import org.kie.dmn.api.core.DMNModel;
 import org.kie.dmn.feel.codegen.feel11.CodegenStringUtil;
 
 public class DMNTypeSafePackageName {
@@ -38,6 +39,10 @@ public class DMNTypeSafePackageName {
         dmnTypeSafePackageName.dmnModelNamespace = dmnModelNamespace;
         dmnTypeSafePackageName.dmnModelName = dmnModelName;
         return dmnTypeSafePackageName;
+    }
+
+    public DMNTypeSafePackageName ofDMNModel(DMNModel model) {
+        return withDMNModelNamespace(model.getNamespace(), model.getName());
     }
 
     public String packageName() {

@@ -41,7 +41,7 @@ public class DMNTypeSafeTest {
 
         dmnModel = runtime.getModel(namespace, modelName);
         packageName = new DMNTypeSafePackageName()
-                .withDMNModelNamespace(dmnModel.getNamespace(), dmnModel.getName());
+                .ofDMNModel(dmnModel);
     }
 
     @Test
@@ -52,7 +52,7 @@ public class DMNTypeSafeTest {
 
         DMNAllTypesIndex index = new DMNAllTypesIndex(new DMNTypeSafePackageName(""), dmnModel);
         DMNTypeSafePackageName packageName = new DMNTypeSafePackageName()
-                .withDMNModelNamespace(dmnModel.getNamespace(), dmnModel.getName());
+                .ofDMNModel(dmnModel);
 
         Map<String, String> allTypesSourceCode = new DMNTypeSafeTypeGenerator(dmnModel, index, packageName).generateSourceCodeOfAllTypes();
 
