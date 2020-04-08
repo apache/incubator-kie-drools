@@ -16,7 +16,6 @@
 package io.quarkus.it.kogito.jbpm;
 
 import java.util.Map;
-import java.util.function.Supplier;
 
 import io.quarkus.test.QuarkusDevModeTest;
 import io.restassured.http.ContentType;
@@ -33,31 +32,46 @@ public class HotReloadTest {
     private static final String PACKAGE = "io.quarkus.it.kogito.jbpm";
     private static final String RESOURCE_FILE = PACKAGE.replace('.', '/') + "/text-process.bpmn";
     private static final String RESOURCE_HELPER_CLASS = PACKAGE.replace('.', '/') + "/JbpmHotReloadTestHelper.java";
+    private static final String HTTP_TEST_PORT = "65535";
 
     @RegisterExtension
-    final static QuarkusDevModeTest test = new QuarkusDevModeTest().setArchiveProducer(new Supplier<JavaArchive>() {
-        @Override
-        public JavaArchive get() {
-            return ShrinkWrap.create(JavaArchive.class).addAsResource("text-process.txt", RESOURCE_FILE)
-                    .addAsResource("JbpmHotReloadTestHelper.txt", RESOURCE_HELPER_CLASS);
-        }
-    });
+    final static QuarkusDevModeTest test = new QuarkusDevModeTest().setArchiveProducer(
+            () -> ShrinkWrap.create(JavaArchive.class)
+                    .addAsResource("text-process.txt", RESOURCE_FILE)
+                    .addAsResource("JbpmHotReloadTestHelper.txt", RESOURCE_HELPER_CLASS));
 
     @Test
-    public void testServletChange() throws InterruptedException {
+    public void testServletChange() {
 
         String payload = "{\"mytext\": \"HeLlO\"}";
-        
-        Map<String, String> result = given().contentType(ContentType.JSON).accept(ContentType.JSON).body(payload).when()
-                .post("/text_process").then().statusCode(200).extract().as(Map.class);
+
+        Map<String, String> result = given()
+                .baseUri("http://localhost:" + HTTP_TEST_PORT)
+                .contentType(ContentType.JSON)
+                .accept(ContentType.JSON)
+                .body(payload)
+                .when()
+                .post("/text_process")
+                .then()
+                .statusCode(200)
+                .extract()
+                .as(Map.class);
 
         assertEquals(2, result.size());
         assertEquals("HELLO", result.get("mytext"));
         
         test.modifyResourceFile( RESOURCE_FILE, s -> s.replaceAll("toUpper", "toLower") );
 
-        result = given().contentType(ContentType.JSON).accept(ContentType.JSON).body(payload).when()
-                .post("/text_process").then().statusCode(200).extract().as(Map.class);
+        result = given()
+                .baseUri("http://localhost:" + HTTP_TEST_PORT)
+                .contentType(ContentType.JSON)
+                .accept(ContentType.JSON)
+                .body(payload)
+                .when()
+                .post("/text_process")
+                .then().statusCode(200)
+                .extract()
+                .as(Map.class);
 
         assertEquals(2, result.size());
         assertEquals("hello", result.get("mytext"));
