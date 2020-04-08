@@ -6,14 +6,14 @@ description: Static Hello World
 states:
   - name: Hello
     type: RELAY
+    start:
+      kind: DEFAULT
     inject:
       result: Hello
     transition:
       nextState: World
   - name: World
     type: RELAY
-    start:
-      kind: DEFAULT
     inject:
       result: " World!"
     stateDataFilter:

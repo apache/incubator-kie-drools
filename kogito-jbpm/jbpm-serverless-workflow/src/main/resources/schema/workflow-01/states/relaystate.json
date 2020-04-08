@@ -12,7 +12,7 @@
     "inject": {
       "type": "object",
       "description": "JSON object which can be set as states data input and can be manipulated via filters",
-      "existingJavaType": "java.util.Map<String, String>"
+      "existingJavaType": "com.fasterxml.jackson.databind.JsonNode"
     }
   },
   "required": [

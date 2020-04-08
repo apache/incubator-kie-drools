@@ -7,12 +7,7 @@
   ],
   "description": "Single Choice",
   "properties": {
-    "transition": {
-      "$ref": "../transitions/transition.json"
-    }
   },
   "required": [
-    "single",
-    "transition"
   ]
 }

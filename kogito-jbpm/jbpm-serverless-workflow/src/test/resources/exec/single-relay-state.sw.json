@@ -1,0 +1,20 @@
+{
+  "id": "function",
+  "name": "test-wf",
+  "version": "1.0",
+  "states":[
+    {
+      "name":"SimpleRelay",
+      "type":"RELAY",
+      "start": {
+        "kind": "DEFAULT"
+      },
+      "inject": {
+        "name": "john"
+      },
+      "end": {
+        "kind": "TERMINATE"
+      }
+    }
+  ]
+}

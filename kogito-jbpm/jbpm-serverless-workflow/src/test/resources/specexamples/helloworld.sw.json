@@ -7,6 +7,9 @@
     {
       "name":"Hello",
       "type":"RELAY",
+      "start": {
+        "kind": "DEFAULT"
+      },
       "inject": {
         "result": "Hello"
       },
@@ -17,9 +20,6 @@
     {
       "name":"World",
       "type":"RELAY",
-      "start": {
-        "kind": "DEFAULT"
-      },
       "inject": {
         "result": " World!"
       },

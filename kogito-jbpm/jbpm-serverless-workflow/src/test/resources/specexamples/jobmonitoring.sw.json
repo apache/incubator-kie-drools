@@ -42,33 +42,11 @@
           }
         }
       ],
-      "onError": [
-        {
-          "expression": {
-            "language": "spel",
-            "body": "$.exception != null"
-          },
-          "errorDataFilter": {
-            "dataOutputPath": "$.exception"
-          },
-          "transition": {
-            "nextState": "SubmitError"
-          }
-        }
-      ],
       "stateDataFilter": {
         "dataOutputPath": "$.jobuid"
       },
       "transition": {
         "nextState":"WaitForCompletion"
-      }
-    },
-    {
-      "name": "SubmitError",
-      "type": "SUBFLOW",
-      "workflowId": "handleJobSubmissionErrorWorkflow",
-      "end": {
-        "kind": "DEFAULT"
       }
     },
     {

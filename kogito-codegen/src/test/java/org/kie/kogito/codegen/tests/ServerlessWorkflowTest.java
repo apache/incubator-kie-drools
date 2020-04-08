@@ -155,6 +155,111 @@ public class ServerlessWorkflowTest extends AbstractCodegenTest {
         assertThat(dataOut.get("result").textValue()).isEqualTo("Hello john");
     }
 
+    @ParameterizedTest
+    @ValueSource(strings = {"serverless/single-relay-state.sw.json", "serverless/single-relay-state.sw.yml"})
+    public void testSingleRelayWorkflow(String processLocation) throws Exception {
+
+        Application app = generateCodeProcessesOnly(processLocation);
+        assertThat(app).isNotNull();
+
+        Process<? extends Model> p = app.processes().processById("singlerelay");
+
+        Model m = p.createModel();
+        Map<String, Object> parameters = new HashMap<>();
+
+        String jsonParamStr = "{}";
+
+        ObjectMapper mapper = new ObjectMapper();
+        JsonNode jsonParamObj =  mapper.readTree(jsonParamStr);
+
+
+        parameters.put("workflowdata", jsonParamObj);
+        m.fromMap(parameters);
+
+        ProcessInstance<?> processInstance = p.createInstance(m);
+        processInstance.start();
+
+        assertThat(processInstance.status()).isEqualTo(ProcessInstance.STATE_COMPLETED);
+        Model result = (Model)processInstance.variables();
+        assertThat(result.toMap()).hasSize(1).containsKeys("workflowdata");
+
+        assertThat(result.toMap().get("workflowdata")).isInstanceOf(JsonNode.class);
+
+        JsonNode dataOut = (JsonNode) result.toMap().get("workflowdata");
+
+        assertThat(dataOut.get("name").textValue()).isEqualTo("john");
+    }
+
+    @ParameterizedTest
+    @ValueSource(strings = {"serverless/switch-state.sw.json", "serverless/switch-state.sw.yml"})
+    public void testApproveSwitchStateWorkflow(String processLocation) throws Exception {
+
+        Application app = generateCodeProcessesOnly(processLocation);
+        assertThat(app).isNotNull();
+
+        Process<? extends Model> p = app.processes().processById("switchworkflow");
+
+        Model m = p.createModel();
+        Map<String, Object> parameters = new HashMap<>();
+
+        String jsonParamStr = "{}";
+
+        ObjectMapper mapper = new ObjectMapper();
+        JsonNode jsonParamObj =  mapper.readTree(jsonParamStr);
+
+
+        parameters.put("workflowdata", jsonParamObj);
+        m.fromMap(parameters);
+
+        ProcessInstance<?> processInstance = p.createInstance(m);
+        processInstance.start();
+
+        assertThat(processInstance.status()).isEqualTo(ProcessInstance.STATE_COMPLETED);
+        Model result = (Model)processInstance.variables();
+        assertThat(result.toMap()).hasSize(1).containsKeys("workflowdata");
+
+        assertThat(result.toMap().get("workflowdata")).isInstanceOf(JsonNode.class);
+
+        JsonNode dataOut = (JsonNode) result.toMap().get("workflowdata");
+
+        assertThat(dataOut.get("decision").textValue()).isEqualTo("Approved");
+    }
+
+    @ParameterizedTest
+    @ValueSource(strings = {"serverless/switch-state-deny.sw.json", "serverless/switch-state-deny.sw.yml"})
+    public void testDenySwitchStateWorkflow(String processLocation) throws Exception {
+
+        Application app = generateCodeProcessesOnly(processLocation);
+        assertThat(app).isNotNull();
+
+        Process<? extends Model> p = app.processes().processById("switchworkflow");
+
+        Model m = p.createModel();
+        Map<String, Object> parameters = new HashMap<>();
+
+        String jsonParamStr = "{}";
+
+        ObjectMapper mapper = new ObjectMapper();
+        JsonNode jsonParamObj =  mapper.readTree(jsonParamStr);
+
+
+        parameters.put("workflowdata", jsonParamObj);
+        m.fromMap(parameters);
+
+        ProcessInstance<?> processInstance = p.createInstance(m);
+        processInstance.start();
+
+        assertThat(processInstance.status()).isEqualTo(ProcessInstance.STATE_COMPLETED);
+        Model result = (Model)processInstance.variables();
+        assertThat(result.toMap()).hasSize(1).containsKeys("workflowdata");
+
+        assertThat(result.toMap().get("workflowdata")).isInstanceOf(JsonNode.class);
+
+        JsonNode dataOut = (JsonNode) result.toMap().get("workflowdata");
+
+        assertThat(dataOut.get("decision").textValue()).isEqualTo("Denied");
+    }
+
     @Test
     public void testSubFlowWorkflow() throws Exception {
 

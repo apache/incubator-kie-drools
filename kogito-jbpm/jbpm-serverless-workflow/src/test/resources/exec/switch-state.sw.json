@@ -1,0 +1,66 @@
+{
+  "id": "switchworkflow",
+  "name": "switch-wf",
+  "version": "1.0",
+  "states":[
+    {
+      "name":"AddInfo",
+      "type":"RELAY",
+      "start": {
+        "kind": "DEFAULT"
+      },
+      "inject": {
+        "name": "john",
+        "age": "20"
+      },
+      "transition": {
+        "nextState": "ChooseOnAge"
+      }
+    },
+    {
+      "name": "ChooseOnAge",
+      "type": "SWITCH",
+      "choices": [
+        {
+          "path": "$.age",
+          "value": "18",
+          "operator": "GreaterThanEquals",
+          "transition": {
+            "nextState": "Approve"
+          }
+        },
+        {
+          "path": "$.age",
+          "value": "18",
+          "operator": "LessThan",
+          "transition": {
+            "nextState": "Deny"
+          }
+        }
+      ],
+      "default": {
+        "nextState": "Approve"
+      }
+    },
+    {
+      "name":"Approve",
+      "type":"RELAY",
+      "inject": {
+        "decision": "Approve"
+      },
+      "end": {
+        "kind": "DEFAULT"
+      }
+    },
+    {
+      "name":"Deny",
+      "type":"RELAY",
+      "inject": {
+        "decision": "Denied"
+      },
+      "end": {
+        "kind": "DEFAULT"
+      }
+    }
+  ]
+}

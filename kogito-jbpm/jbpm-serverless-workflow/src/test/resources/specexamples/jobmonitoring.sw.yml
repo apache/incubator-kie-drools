@@ -25,23 +25,10 @@ states:
             name: "$.job.name"
         actionDataFilter:
           dataResultsPath: "$.jobuid"
-    onError:
-      - expression:
-          language: spel
-          body: "$.exception != null"
-        errorDataFilter:
-          dataOutputPath: "$.exception"
-        transition:
-          nextState: SubmitError
     stateDataFilter:
       dataOutputPath: "$.jobuid"
     transition:
       nextState: WaitForCompletion
-  - name: SubmitError
-    type: SUBFLOW
-    workflowId: handleJobSubmissionErrorWorkflow
-    end:
-      kind: DEFAULT
   - name: WaitForCompletion
     type: DELAY
     timeDelay: PT5S
