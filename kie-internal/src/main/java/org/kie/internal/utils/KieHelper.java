@@ -24,6 +24,7 @@ import org.kie.api.KieServices;
 import org.kie.api.builder.KieBuilder;
 import org.kie.api.builder.KieFileSystem;
 import org.kie.api.builder.Message;
+import org.kie.api.builder.ReleaseId;
 import org.kie.api.builder.Results;
 import org.kie.api.builder.model.KieModuleModel;
 import org.kie.api.conf.KieBaseOption;
@@ -42,6 +43,8 @@ public class KieHelper {
     public final KieServices ks = KieServices.Factory.get();
 
     public final KieFileSystem kfs = ks.newKieFileSystem();
+
+    private ReleaseId releaseId;
 
     private ClassLoader classLoader;
 
@@ -95,13 +98,24 @@ public class KieHelper {
         if (results.hasMessages(Message.Level.ERROR)) {
             throw new RuntimeException(results.getMessages().toString());
         }
-        KieContainer kieContainer = ks.newKieContainer( ks.getRepository().getDefaultReleaseId(), classLoader );
-        return kieContainer;
+        ReleaseId kieContainerReleaseId;
+        if (this.releaseId != null) {
+            kieContainerReleaseId = this.releaseId;
+        } else {
+            kieContainerReleaseId = ks.getRepository().getDefaultReleaseId();
+        }
+        return ks.newKieContainer(kieContainerReleaseId, classLoader);
     }
 
     public Results verify() {
         KieBuilder kieBuilder = ks.newKieBuilder( kfs, classLoader ).buildAll();
         return kieBuilder.getResults();
+    }
+
+    public KieHelper setReleaseId(ReleaseId releaseId) {
+        this.releaseId = releaseId;
+        kfs.generateAndWritePomXML(releaseId);
+        return this;
     }
 
     public KieHelper setClassLoader(ClassLoader classLoader) {
