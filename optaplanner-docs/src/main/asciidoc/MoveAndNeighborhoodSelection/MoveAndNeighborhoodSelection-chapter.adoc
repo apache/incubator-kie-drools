@@ -344,7 +344,7 @@ A sub pillar is a subset of entities that share the same value(s) for their vari
 
 There are several ways how sub pillars can be selected by the `subPillarType` property:
 
-- `ANY` (default) selects all possible sub pillars.
+- `ALL` (default) selects all possible sub pillars.
 - `SEQUENCE` limits selection of sub pillars to <<sequentialSubPillars,Sequential sub pillars>>.
 - `NONE` never selects any sub pillars.
 
