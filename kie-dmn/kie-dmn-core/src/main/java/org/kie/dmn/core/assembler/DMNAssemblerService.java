@@ -42,7 +42,6 @@ import org.kie.dmn.api.core.DMNMessage;
 import org.kie.dmn.api.core.DMNModel;
 import org.kie.dmn.api.marshalling.DMNMarshaller;
 import org.kie.dmn.core.api.DMNFactory;
-import org.kie.dmn.core.compiler.CoerceDecisionServiceSingletonOutputOption;
 import org.kie.dmn.core.compiler.DMNCompilerConfigurationImpl;
 import org.kie.dmn.core.compiler.DMNCompilerImpl;
 import org.kie.dmn.core.compiler.DMNProfile;
@@ -252,7 +251,6 @@ public class DMNAssemblerService implements KieAssemblerService {
 
         if (isStrictMode(kbuilderImpl.getBuilderConfiguration().getChainedProperties())) {
             compilerConfiguration.setProperty(RuntimeTypeCheckOption.PROPERTY_NAME, "true");
-            compilerConfiguration.setProperty(CoerceDecisionServiceSingletonOutputOption.PROPERTY_NAME, "false");
         }
 
         return DMNFactory.newCompiler(compilerConfiguration);
