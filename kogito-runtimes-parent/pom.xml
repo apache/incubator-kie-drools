@@ -64,6 +64,7 @@
     <version.jdocbook.plugin>2.3.9</version.jdocbook.plugin>
     <version.license.plugin>1.8.0</version.license.plugin>
     <version.archetype.plugin>3.0.1</version.archetype.plugin>
+    <version.enforcer.plugin>3.0.0-M2</version.enforcer.plugin>
     <version.maven>3.6.2</version.maven>
     <version.maven.plugin>3.4</version.maven.plugin>
     <version.native2ascii.plugin>1.0-beta-1</version.native2ascii.plugin>
@@ -896,6 +897,29 @@
           <version>${version.archetype.plugin}</version>
         </plugin>
         <plugin>
+          <groupId>org.apache.maven.plugins</groupId>
+          <artifactId>maven-enforcer-plugin</artifactId>
+          <version>${version.enforcer.plugin}</version>
+          <executions>
+            <execution>
+              <id>enforce-versions</id>
+              <goals>
+                <goal>enforce</goal>
+              </goals>
+              <configuration>
+                <rules>
+                  <requireMavenVersion>
+                    <version>${version.maven}</version>
+                  </requireMavenVersion>
+                  <requireJavaVersion>
+                    <version>${maven.compiler.release}</version>
+                  </requireJavaVersion>
+                </rules>
+              </configuration>
+            </execution>
+          </executions>
+        </plugin>
+        <plugin>
           <artifactId>maven-clean-plugin</artifactId>
           <version>${version.clean.plugin}</version>
           <executions>
@@ -1324,6 +1348,10 @@
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-failsafe-plugin</artifactId>
+      </plugin>
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-enforcer-plugin</artifactId>
       </plugin>
     </plugins>
   </build>
