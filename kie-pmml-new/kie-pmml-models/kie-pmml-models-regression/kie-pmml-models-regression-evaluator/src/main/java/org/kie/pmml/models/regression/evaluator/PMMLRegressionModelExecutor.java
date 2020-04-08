@@ -29,7 +29,7 @@ import org.kie.pmml.models.regression.model.KiePMMLRegressionClassificationTable
 import org.kie.pmml.models.regression.model.KiePMMLRegressionModel;
 import org.kie.pmml.models.regression.model.KiePMMLRegressionTable;
 
-import static org.kie.pmml.commons.enums.StatusCode.OK;
+import static org.kie.pmml.commons.enums.ResultCode.OK;
 import static org.kie.pmml.evaluator.core.utils.Converter.getUnwrappedParametersMap;
 
 public class PMMLRegressionModelExecutor implements PMMLModelExecutor {

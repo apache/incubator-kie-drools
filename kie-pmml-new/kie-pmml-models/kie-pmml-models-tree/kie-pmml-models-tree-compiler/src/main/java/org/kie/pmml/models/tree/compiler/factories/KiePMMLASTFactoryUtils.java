@@ -46,7 +46,7 @@ public class KiePMMLASTFactoryUtils {
         final List<Predicate> simplePredicates = compoundPredicate.getPredicates().stream().filter(predicate -> predicate instanceof SimplePredicate).collect(Collectors.toList());
         if (!CompoundPredicate.BooleanOperator.AND.equals(compoundPredicate.getBooleanOperator()) &&
                 !CompoundPredicate.BooleanOperator.OR.equals((compoundPredicate.getBooleanOperator()))) {
-            throw new KiePMMLException("getConstraintEntriesFromAndOrCompoundPredicate invoked with a " + compoundPredicate.getBooleanOperator() + " CompoundPredicate");
+            throw new KiePMMLException(String.format("getConstraintEntriesFromAndOrCompoundPredicate invoked with %s CompoundPredicate", compoundPredicate.getBooleanOperator()));
         }
         final Map<String, List<SimplePredicate>> predicatesByField = simplePredicates.stream()
                 .map(child -> (SimplePredicate) child)
@@ -60,7 +60,7 @@ public class KiePMMLASTFactoryUtils {
                 predicatesByField.forEach((fieldName, predicates) -> toReturn.add(getConstraintEntryFromSimplePredicates(fieldName, "||", predicates, fieldTypeMap)));
                 break;
             default:
-                break;
+                throw new IllegalStateException(String.format("CompoundPredicate.booleanOperator should never be %s at this point", compoundPredicate.getBooleanOperator()));
         }
         final List<KiePMMLFieldOperatorValue> nestedPredicates = new LinkedList<>();
         final List<Predicate> compoundPredicates = compoundPredicate.getPredicates().stream().filter(predicate -> predicate instanceof CompoundPredicate).collect(Collectors.toList());
@@ -70,11 +70,8 @@ public class KiePMMLASTFactoryUtils {
                 case AND:
                     nestedPredicates.addAll(getConstraintEntriesFromAndOrCompoundPredicate((CompoundPredicate) nestedCompoundPredicate, fieldTypeMap));
                     break;
-                case XOR:
-                    nestedPredicates.addAll(getConstraintEntriesFromXOrCompoundPredicate((CompoundPredicate) nestedCompoundPredicate, fieldTypeMap));
-                    break;
                 default:
-                    // noop
+                    throw new IllegalStateException(String.format("CompoundPredicate.booleanOperator should never be %s at this point", compoundPredicate.getBooleanOperator()));
             }
         });
         if (!nestedPredicates.isEmpty()) {
@@ -86,7 +83,7 @@ public class KiePMMLASTFactoryUtils {
     public static List<KiePMMLFieldOperatorValue> getConstraintEntriesFromXOrCompoundPredicate(final CompoundPredicate compoundPredicate, final Map<String, KiePMMLOriginalTypeGeneratedType> fieldTypeMap) {
         // Managing only SimplePredicates for the moment being
         if (!CompoundPredicate.BooleanOperator.XOR.equals(compoundPredicate.getBooleanOperator())) {
-            throw new KiePMMLException("getConstraintEntriesFromXOrCompoundPredicate invoked with a " + compoundPredicate.getBooleanOperator() + " CompoundPredicate");
+            throw new KiePMMLException(String.format("getConstraintEntriesFromXOrCompoundPredicate invoked with %s CompoundPredicate", compoundPredicate.getBooleanOperator()));
         }
         final List<Predicate> simplePredicates = compoundPredicate.getPredicates().stream().filter(predicate -> predicate instanceof SimplePredicate).collect(Collectors.toList());
         if (simplePredicates.size() < 2) {

@@ -19,12 +19,12 @@ import java.util.List;
 import java.util.StringJoiner;
 
 import org.drools.compiler.lang.api.RuleDescrBuilder;
-import org.kie.pmml.commons.enums.StatusCode;
 import org.kie.pmml.commons.model.KiePMMLOutputField;
 import org.kie.pmml.models.drooled.ast.KiePMMLDrooledRule;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import static org.kie.pmml.commons.Constants.DONE;
 import static org.kie.pmml.commons.factories.KiePMMLDescrFactory.PMML4_RESULT_IDENTIFIER;
 import static org.kie.pmml.commons.factories.KiePMMLDescrRulesFactory.BREAK_LABEL;
 import static org.kie.pmml.commons.factories.KiePMMLDescrRulesFactory.STATUS_HOLDER;
@@ -74,7 +74,7 @@ public class KiePMMLDescrRhsFactory {
     protected void declareIfThen(final KiePMMLDrooledRule rule) {
         builder.rhs(String.format(UPDATE_STATUS_HOLDER, rule.getStatusToSet()));
         StringJoiner joiner = new StringJoiner("");
-        joiner.add(String.format(UPDATE_STATUS_HOLDER, StatusCode.DONE.getName()));
+        joiner.add(String.format(UPDATE_STATUS_HOLDER, DONE));
         commonDeclareThen(rule, joiner);
         builder.namedRhs(BREAK_LABEL, joiner.toString());
     }

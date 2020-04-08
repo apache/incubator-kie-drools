@@ -30,13 +30,14 @@ import org.dmg.pmml.CompoundPredicate;
 import org.dmg.pmml.DataType;
 import org.dmg.pmml.SimplePredicate;
 import org.junit.Test;
-import org.kie.pmml.commons.enums.StatusCode;
+import org.kie.pmml.commons.enums.ResultCode;
 import org.kie.pmml.models.drooled.ast.KiePMMLDrooledRule;
 import org.kie.pmml.models.drooled.tuples.KiePMMLOriginalTypeGeneratedType;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNull;
+import static org.kie.pmml.commons.Constants.DONE;
 import static org.kie.pmml.models.tree.compiler.factories.KiePMMLTreeModelASTFactory.STATUS_PATTERN;
 import static org.kie.pmml.models.tree.compiler.factories.KiePMMLTreeModelASTFactory.SURROGATE_GROUP_PATTERN;
 import static org.kie.pmml.models.tree.compiler.factories.KiePMMLTreeModelASTTestUtils.getSimplePredicate;
@@ -63,10 +64,10 @@ public class KiePMMLTreeModelCompoundPredicateASTFactoryTest {
             final KiePMMLDrooledRule retrieved = rules.poll();
             assertNotNull(retrieved);
             assertEquals(currentRule, retrieved.getName());
-            assertEquals(StatusCode.DONE.getName(), retrieved.getStatusToSet());
+            assertEquals(DONE, retrieved.getStatusToSet());
             assertEquals(String.format(STATUS_PATTERN, parentPath), retrieved.getStatusConstraint());
             assertEquals(result, retrieved.getResult());
-            assertEquals(StatusCode.OK, retrieved.getResultCode());
+            assertEquals(ResultCode.OK, retrieved.getResultCode());
             switch (compoundPredicate.getBooleanOperator()) {
                 case AND:
                     assertNotNull(retrieved.getAndConstraints());
@@ -158,9 +159,9 @@ public class KiePMMLTreeModelCompoundPredicateASTFactoryTest {
                     assertEquals(agendaActivationGroup, retrieved.getAgendaGroup());
                     // Those are in a final leaf node
                     if (isTrueRule) {
-                        assertEquals(StatusCode.DONE.getName(), retrieved.getStatusToSet());
+                        assertEquals(DONE, retrieved.getStatusToSet());
                         assertEquals(result, retrieved.getResult());
-                        assertEquals(StatusCode.OK, retrieved.getResultCode());
+                        assertEquals(ResultCode.OK, retrieved.getResultCode());
                     } else {
                         assertEquals(parentPath, retrieved.getStatusToSet());
                         assertNull(retrieved.getResult());

@@ -28,8 +28,8 @@ import org.drools.compiler.lang.descr.NotDescr;
 import org.drools.compiler.lang.descr.OrDescr;
 import org.kie.pmml.commons.exceptions.KiePMMLException;
 import org.kie.pmml.models.drooled.ast.KiePMMLDrooledRule;
-import org.kie.pmml.models.drooled.executor.KiePMMLStatusHolder;
 import org.kie.pmml.models.drooled.ast.KiePMMLFieldOperatorValue;
+import org.kie.pmml.models.drooled.executor.KiePMMLStatusHolder;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 

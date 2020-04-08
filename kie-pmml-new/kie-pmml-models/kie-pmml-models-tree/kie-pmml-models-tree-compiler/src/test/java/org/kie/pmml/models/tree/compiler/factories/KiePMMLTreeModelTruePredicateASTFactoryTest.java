@@ -22,12 +22,13 @@ import java.util.Queue;
 
 import org.dmg.pmml.True;
 import org.junit.Test;
-import org.kie.pmml.commons.enums.StatusCode;
+import org.kie.pmml.commons.enums.ResultCode;
 import org.kie.pmml.models.drooled.ast.KiePMMLDrooledRule;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNull;
+import static org.kie.pmml.commons.Constants.DONE;
 import static org.kie.pmml.models.tree.compiler.factories.KiePMMLTreeModelASTFactory.STATUS_PATTERN;
 
 public class KiePMMLTreeModelTruePredicateASTFactoryTest {
@@ -37,7 +38,7 @@ public class KiePMMLTreeModelTruePredicateASTFactoryTest {
         String parentPath = "_will play";
         String currentRule = "_will play_will play";
         final Queue<KiePMMLDrooledRule> rules = new LinkedList<>();
-        String statusToSet = StatusCode.DONE.getName();
+        String statusToSet = DONE;
         True truePredicate = new True();
         KiePMMLTreeModelTruePredicateASTFactory.factory(truePredicate, Collections.emptyList(), rules).declareRuleFromTruePredicate(parentPath, currentRule, statusToSet, false);
         assertEquals(1, rules.size());
@@ -55,7 +56,7 @@ public class KiePMMLTreeModelTruePredicateASTFactoryTest {
         String parentPath = "_will play";
         String currentRule = "_will play_will play";
         final Queue<KiePMMLDrooledRule> rules = new LinkedList<>();
-        String statusToSet = StatusCode.DONE.getName();
+        String statusToSet = DONE;
         True truePredicate = new True();
         KiePMMLTreeModelTruePredicateASTFactory.factory(truePredicate, Collections.emptyList(), rules).declareRuleFromTruePredicate(parentPath, currentRule, statusToSet, true);
         assertEquals(1, rules.size());
@@ -65,7 +66,7 @@ public class KiePMMLTreeModelTruePredicateASTFactoryTest {
         assertEquals(statusToSet, retrieved.getStatusToSet());
         assertEquals(String.format(STATUS_PATTERN, parentPath), retrieved.getStatusConstraint());
         assertNull(retrieved.getAndConstraints());
-        assertEquals(StatusCode.DONE.getName(), retrieved.getResult());
-        assertEquals(StatusCode.OK, retrieved.getResultCode());
+        assertEquals(DONE, retrieved.getResult());
+        assertEquals(ResultCode.OK, retrieved.getResultCode());
     }
 }

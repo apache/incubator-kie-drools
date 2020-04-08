@@ -69,5 +69,4 @@ public class KiePMMLTreeModelDataDictionaryASTFactoryTest {
         assertEquals(dataField.getDataType().value(), kiePMMLOriginalTypeGeneratedType.getOriginalType());
         assertEquals(expectedGeneratedType, kiePMMLOriginalTypeGeneratedType.getGeneratedType());
     }
-
 }

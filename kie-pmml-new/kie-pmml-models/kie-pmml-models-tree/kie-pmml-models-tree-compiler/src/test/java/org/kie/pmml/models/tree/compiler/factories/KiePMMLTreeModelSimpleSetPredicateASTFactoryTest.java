@@ -27,7 +27,7 @@ import java.util.Queue;
 import org.dmg.pmml.Array;
 import org.dmg.pmml.SimpleSetPredicate;
 import org.junit.Test;
-import org.kie.pmml.commons.enums.StatusCode;
+import org.kie.pmml.commons.enums.ResultCode;
 import org.kie.pmml.models.drooled.ast.KiePMMLDrooledRule;
 import org.kie.pmml.models.drooled.tuples.KiePMMLOriginalTypeGeneratedType;
 
@@ -35,6 +35,7 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
+import static org.kie.pmml.commons.Constants.DONE;
 import static org.kie.pmml.models.tree.compiler.factories.KiePMMLTreeModelASTFactory.STATUS_PATTERN;
 import static org.kie.pmml.models.tree.compiler.factories.KiePMMLTreeModelASTTestUtils.getSimpleSetPredicate;
 
@@ -50,7 +51,7 @@ public class KiePMMLTreeModelSimpleSetPredicateASTFactoryTest {
         String result = "classB";
         String declaredType = fieldTypeMap.get("input1").getGeneratedType();
         final Queue<KiePMMLDrooledRule> rules = new LinkedList<>();
-        String statusToSet = StatusCode.DONE.getName();
+        String statusToSet = DONE;
         KiePMMLTreeModelSimpleSetPredicateASTFactory.factory(simpleSetPredicate, fieldTypeMap, Collections.emptyList(), rules).declareRuleFromSimpleSetPredicate(parentPath, currentRule, result, true);
         assertEquals(1, rules.size());
         final KiePMMLDrooledRule retrieved = rules.poll();
@@ -58,7 +59,7 @@ public class KiePMMLTreeModelSimpleSetPredicateASTFactoryTest {
         assertEquals(currentRule, retrieved.getName());
         assertEquals(statusToSet, retrieved.getStatusToSet());
         assertEquals(String.format(STATUS_PATTERN, parentPath), retrieved.getStatusConstraint());
-        assertEquals(StatusCode.OK, retrieved.getResultCode());
+        assertEquals(ResultCode.OK, retrieved.getResultCode());
         assertEquals(result, retrieved.getResult());
         assertNotNull(retrieved.getInConstraints());
         final Map<String, List<Object>> inConstraints = retrieved.getInConstraints();
@@ -113,7 +114,7 @@ public class KiePMMLTreeModelSimpleSetPredicateASTFactoryTest {
         String result = "classC";
         String declaredType = fieldTypeMap.get("input2").getGeneratedType();
         final Queue<KiePMMLDrooledRule> rules = new LinkedList<>();
-        String statusToSet = StatusCode.DONE.getName();
+        String statusToSet = DONE;
         KiePMMLTreeModelSimpleSetPredicateASTFactory.factory(simpleSetPredicate, fieldTypeMap, Collections.emptyList(), rules).declareRuleFromSimpleSetPredicate(parentPath, currentRule, result, true);
         assertEquals(1, rules.size());
         final KiePMMLDrooledRule retrieved = rules.poll();
@@ -121,7 +122,7 @@ public class KiePMMLTreeModelSimpleSetPredicateASTFactoryTest {
         assertEquals(currentRule, retrieved.getName());
         assertEquals(statusToSet, retrieved.getStatusToSet());
         assertEquals(String.format(STATUS_PATTERN, parentPath), retrieved.getStatusConstraint());
-        assertEquals(StatusCode.OK, retrieved.getResultCode());
+        assertEquals(ResultCode.OK, retrieved.getResultCode());
         assertEquals(result, retrieved.getResult());
         assertNotNull(retrieved.getNotInConstraints());
         final Map<String, List<Object>> notInConstraints = retrieved.getNotInConstraints();
@@ -145,7 +146,7 @@ public class KiePMMLTreeModelSimpleSetPredicateASTFactoryTest {
         String result = "classC";
         String declaredType = fieldTypeMap.get("input2").getGeneratedType();
         final Queue<KiePMMLDrooledRule> rules = new LinkedList<>();
-        String statusToSet = StatusCode.DONE.getName();
+        String statusToSet = DONE;
         KiePMMLTreeModelSimpleSetPredicateASTFactory.factory(simpleSetPredicate, fieldTypeMap, Collections.emptyList(), rules).declareRuleFromSimpleSetPredicate(parentPath, currentRule, result, false);
         assertEquals(1, rules.size());
         final KiePMMLDrooledRule retrieved = rules.poll();

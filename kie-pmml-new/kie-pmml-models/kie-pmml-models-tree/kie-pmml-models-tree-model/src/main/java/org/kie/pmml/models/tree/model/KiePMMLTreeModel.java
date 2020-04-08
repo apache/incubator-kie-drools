@@ -17,6 +17,7 @@ package org.kie.pmml.models.tree.model;
 
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 
 import org.kie.pmml.commons.model.KiePMMLDrooledModel;
 import org.kie.pmml.commons.model.KiePMMLExtension;
@@ -51,11 +52,30 @@ public class KiePMMLTreeModel extends KiePMMLDrooledModel {
         return null;
     }
 
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) {
+            return true;
+        }
+        if (o == null || getClass() != o.getClass()) {
+            return false;
+        }
+        if (!super.equals(o)) {
+            return false;
+        }
+        KiePMMLTreeModel that = (KiePMMLTreeModel) o;
+        return Objects.equals(algorithmName, that.algorithmName);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(super.hashCode(), algorithmName);
+    }
+
     public static class Builder extends KiePMMLDrooledModel.Builder<KiePMMLTreeModel> {
 
         private Builder(String name, List<KiePMMLExtension> extensions, MINING_FUNCTION miningFunction, String algorithmName) {
             super("Tree-", PMML_MODEL_TYPE, miningFunction, () -> new KiePMMLTreeModel(name, extensions, algorithmName));
         }
-
     }
 }

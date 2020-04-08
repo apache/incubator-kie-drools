@@ -31,12 +31,12 @@ public class KiePMMLDescrTypesFactory {
 
     private final PackageDescrBuilder builder;
 
-    public static KiePMMLDescrTypesFactory factory(final PackageDescrBuilder builder) {
-        return new KiePMMLDescrTypesFactory(builder);
-    }
-
     private KiePMMLDescrTypesFactory(final PackageDescrBuilder builder) {
         this.builder = builder;
+    }
+
+    public static KiePMMLDescrTypesFactory factory(final PackageDescrBuilder builder) {
+        return new KiePMMLDescrTypesFactory(builder);
     }
 
     /**

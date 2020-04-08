@@ -19,7 +19,7 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 
-import org.kie.pmml.commons.enums.StatusCode;
+import org.kie.pmml.commons.enums.ResultCode;
 import org.kie.pmml.commons.model.KiePMMLOutputField;
 
 public class KiePMMLDrooledRule {
@@ -51,9 +51,8 @@ public class KiePMMLDrooledRule {
     private Object ifBreakValue;
     // RHS
     private String focusedAgendaGroup;
-    private StatusCode resultCode;
+    private ResultCode resultCode;
     private Object result;
-
 
     private KiePMMLDrooledRule(String name, String statusToSet, List<KiePMMLOutputField> outputFields) {
         this.name = name;
@@ -166,7 +165,7 @@ public class KiePMMLDrooledRule {
         return ifBreakValue;
     }
 
-    public StatusCode getResultCode() {
+    public ResultCode getResultCode() {
         return resultCode;
     }
 
@@ -274,7 +273,7 @@ public class KiePMMLDrooledRule {
             return this;
         }
 
-        public Builder withResultCode(StatusCode resultCode) {
+        public Builder withResultCode(ResultCode resultCode) {
             this.toBuild.resultCode = resultCode;
             return this;
         }

@@ -26,7 +26,7 @@ import java.util.Queue;
 import org.dmg.pmml.DataType;
 import org.dmg.pmml.SimplePredicate;
 import org.junit.Test;
-import org.kie.pmml.commons.enums.StatusCode;
+import org.kie.pmml.commons.enums.ResultCode;
 import org.kie.pmml.models.drooled.ast.KiePMMLDrooledRule;
 import org.kie.pmml.models.drooled.ast.KiePMMLFieldOperatorValue;
 import org.kie.pmml.models.drooled.tuples.KiePMMLOriginalTypeGeneratedType;
@@ -34,6 +34,7 @@ import org.kie.pmml.models.drooled.tuples.KiePMMLOriginalTypeGeneratedType;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNull;
+import static org.kie.pmml.commons.Constants.DONE;
 import static org.kie.pmml.models.tree.compiler.factories.KiePMMLTreeModelASTFactory.STATUS_PATTERN;
 import static org.kie.pmml.models.tree.compiler.factories.KiePMMLTreeModelASTFactory.SURROGATE_RULENAME_PATTERN;
 import static org.kie.pmml.models.tree.compiler.factories.KiePMMLTreeModelASTTestUtils.getSimplePredicate;
@@ -57,7 +58,7 @@ public class KiePMMLTreeModelSimplePredicateASTFactoryTest {
         String baseExpectedRule = String.format(SURROGATE_RULENAME_PATTERN, currentRule, fieldTypeMap.get(simplePredicate.getField().getValue()).getGeneratedType());
         String expectedRule = baseExpectedRule + "_TRUE";
         assertEquals(expectedRule, retrieved.getName());
-        assertEquals(StatusCode.DONE.getName(), retrieved.getStatusToSet());
+        assertEquals(DONE, retrieved.getStatusToSet());
         assertNull(retrieved.getStatusConstraint());
         assertEquals(agendaActivationGroup, retrieved.getAgendaGroup());
         assertEquals(agendaActivationGroup, retrieved.getActivationGroup());
@@ -72,7 +73,7 @@ public class KiePMMLTreeModelSimplePredicateASTFactoryTest {
         assertEquals("surrogate", kiePMMLFieldOperatorValue.getOperator());
         assertEquals("value < \"VALUE\"", kiePMMLFieldOperatorValue.getConstraintsAsString());
         assertEquals(result, retrieved.getResult());
-        assertEquals(StatusCode.OK, retrieved.getResultCode());
+        assertEquals(ResultCode.OK, retrieved.getResultCode());
         // This is the "FALSE" matching rule
         retrieved = rules.poll();
         assertNotNull(retrieved);
@@ -165,9 +166,9 @@ public class KiePMMLTreeModelSimplePredicateASTFactoryTest {
         final KiePMMLDrooledRule retrieved = rules.poll();
         assertNotNull(retrieved);
         assertEquals(currentRule, retrieved.getName());
-        assertEquals(StatusCode.DONE.getName(), retrieved.getStatusToSet());
+        assertEquals(DONE, retrieved.getStatusToSet());
         assertEquals(String.format(STATUS_PATTERN, parentPath), retrieved.getStatusConstraint());
-        assertEquals(StatusCode.OK, retrieved.getResultCode());
+        assertEquals(ResultCode.OK, retrieved.getResultCode());
         assertEquals(result, retrieved.getResult());
         final List<KiePMMLFieldOperatorValue> andConstraints = retrieved.getAndConstraints();
         assertNotNull(andConstraints);

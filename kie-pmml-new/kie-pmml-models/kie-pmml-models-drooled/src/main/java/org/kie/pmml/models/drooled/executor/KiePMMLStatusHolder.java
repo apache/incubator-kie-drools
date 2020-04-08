@@ -23,10 +23,6 @@ import java.util.Objects;
 public class KiePMMLStatusHolder {
 
     private String status;
-    private String result;
-
-    public KiePMMLStatusHolder() {
-    }
 
     public String getStatus() {
         return status;
@@ -36,19 +32,10 @@ public class KiePMMLStatusHolder {
         this.status = status;
     }
 
-    public String getResult() {
-        return result;
-    }
-
-    public void setResult(String result) {
-        this.result = result;
-    }
-
     @Override
     public String toString() {
         return "KiePMMLStatusHolder{" +
                 "status='" + status + '\'' +
-                ", result='" + result + '\'' +
                 '}';
     }
 
@@ -61,12 +48,11 @@ public class KiePMMLStatusHolder {
             return false;
         }
         KiePMMLStatusHolder that = (KiePMMLStatusHolder) o;
-        return Objects.equals(status, that.status) &&
-                Objects.equals(result, that.result);
+        return Objects.equals(status, that.status);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(status, result);
+        return Objects.hash(status);
     }
 }

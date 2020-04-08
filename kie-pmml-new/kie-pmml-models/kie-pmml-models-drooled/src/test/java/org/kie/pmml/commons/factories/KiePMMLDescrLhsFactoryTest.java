@@ -36,8 +36,8 @@ import org.junit.Before;
 import org.junit.Test;
 import org.kie.pmml.commons.exceptions.KiePMMLException;
 import org.kie.pmml.models.drooled.ast.KiePMMLDrooledRule;
-import org.kie.pmml.models.drooled.executor.KiePMMLStatusHolder;
 import org.kie.pmml.models.drooled.ast.KiePMMLFieldOperatorValue;
+import org.kie.pmml.models.drooled.executor.KiePMMLStatusHolder;
 import org.kie.pmml.models.drooled.tuples.KiePMMLOperatorValue;
 
 import static org.junit.Assert.assertEquals;

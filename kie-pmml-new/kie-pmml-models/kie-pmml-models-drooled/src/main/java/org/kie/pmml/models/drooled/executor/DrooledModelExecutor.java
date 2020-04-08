@@ -19,7 +19,7 @@ import org.kie.api.event.rule.RuleFlowGroupDeactivatedEvent;
 import org.kie.api.pmml.PMML4Result;
 import org.kie.api.runtime.KieSession;
 import org.kie.internal.utils.KieHelper;
-import org.kie.pmml.commons.enums.StatusCode;
+import org.kie.pmml.commons.enums.ResultCode;
 import org.kie.pmml.commons.exceptions.KieEnumException;
 import org.kie.pmml.commons.model.KiePMMLDrooledModel;
 import org.kie.pmml.commons.model.KiePMMLModel;
@@ -52,7 +52,7 @@ public abstract class DrooledModelExecutor implements PMMLModelExecutor {
         KiePMMLStatusHolder statusHolder = new KiePMMLStatusHolder();
         executionParams.add(statusHolder);
         PMML4Result toReturn = new PMML4Result();
-        toReturn.setResultCode(StatusCode.FAIL.getName());
+        toReturn.setResultCode(ResultCode.FAIL.getName());
         toReturn.setResultObjectName(drooledModel.getTargetField());
         executionParams.add(toReturn);
         final Map<String, KiePMMLOriginalTypeGeneratedType> fieldTypeMap = drooledModel.getFieldTypeMap();

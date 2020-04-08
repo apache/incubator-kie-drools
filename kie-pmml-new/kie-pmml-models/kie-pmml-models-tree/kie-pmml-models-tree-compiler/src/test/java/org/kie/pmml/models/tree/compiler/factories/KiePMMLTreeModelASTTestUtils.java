@@ -17,7 +17,6 @@ package org.kie.pmml.models.tree.compiler.factories;
 
 import java.util.List;
 import java.util.Map;
-import java.util.stream.Collectors;
 
 import org.dmg.pmml.Array;
 import org.dmg.pmml.DataField;

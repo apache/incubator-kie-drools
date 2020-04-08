@@ -26,6 +26,7 @@ import org.kie.pmml.models.drooled.tuples.KiePMMLOperatorValue;
 import static org.junit.Assert.assertEquals;
 
 public class KiePMMLFieldOperatorValueTest {
+
     private static final String NAME = "NAME";
     private static final String OPERATOR = "OPERATOR";
 

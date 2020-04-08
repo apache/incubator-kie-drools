@@ -24,7 +24,7 @@ import org.dmg.pmml.CompoundPredicate;
 import org.dmg.pmml.Predicate;
 import org.dmg.pmml.SimplePredicate;
 import org.drools.core.util.StringUtils;
-import org.kie.pmml.commons.enums.StatusCode;
+import org.kie.pmml.commons.enums.ResultCode;
 import org.kie.pmml.commons.model.KiePMMLOutputField;
 import org.kie.pmml.models.drooled.ast.KiePMMLDrooledRule;
 import org.kie.pmml.models.drooled.ast.KiePMMLFieldOperatorValue;
@@ -32,6 +32,7 @@ import org.kie.pmml.models.drooled.tuples.KiePMMLOriginalTypeGeneratedType;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import static org.kie.pmml.commons.Constants.DONE;
 import static org.kie.pmml.models.tree.compiler.factories.KiePMMLASTFactoryUtils.getConstraintEntriesFromAndOrCompoundPredicate;
 import static org.kie.pmml.models.tree.compiler.factories.KiePMMLASTFactoryUtils.getConstraintEntriesFromXOrCompoundPredicate;
 import static org.kie.pmml.models.tree.compiler.factories.KiePMMLTreeModelASTFactory.STATUS_NULL;
@@ -83,7 +84,7 @@ public class KiePMMLTreeModelCompoundPredicateASTFactory extends KiePMMLTreeMode
         logger.debug("declareIntermediateRuleFromCompoundPredicateAndOrXor {} {} {}", compoundPredicate, parentPath, currentRule);
         String statusConstraint = StringUtils.isEmpty(parentPath) ? STATUS_NULL : String.format(STATUS_PATTERN, parentPath);
         List<KiePMMLFieldOperatorValue> constraints;
-        String statusToSet = isFinalLeaf ? StatusCode.DONE.getName() : currentRule;
+        String statusToSet = isFinalLeaf ? DONE : currentRule;
         KiePMMLDrooledRule.Builder builder = KiePMMLDrooledRule.builder(currentRule, statusToSet, outputFields)
                 .withStatusConstraint(statusConstraint);
         switch (compoundPredicate.getBooleanOperator()) {
@@ -104,7 +105,7 @@ public class KiePMMLTreeModelCompoundPredicateASTFactory extends KiePMMLTreeMode
         }
         if (isFinalLeaf) {
             builder = builder.withResult(result)
-                    .withResultCode(StatusCode.OK);
+                    .withResultCode(ResultCode.OK);
         }
         rules.add(builder.build());
     }

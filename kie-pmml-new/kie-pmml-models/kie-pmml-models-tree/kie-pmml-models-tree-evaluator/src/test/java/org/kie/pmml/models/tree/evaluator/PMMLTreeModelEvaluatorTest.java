@@ -16,21 +16,15 @@
 package org.kie.pmml.models.tree.evaluator;
 
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 
-import org.dmg.pmml.CompoundPredicate;
-import org.dmg.pmml.FieldName;
 import org.dmg.pmml.PMML;
-import org.dmg.pmml.SimplePredicate;
-import org.dmg.pmml.tree.Node;
 import org.dmg.pmml.tree.TreeModel;
 import org.junit.Before;
 import org.junit.Test;
 import org.kie.api.pmml.PMML4Result;
 import org.kie.api.pmml.PMMLRequestData;
-import org.kie.pmml.commons.enums.StatusCode;
-import org.kie.pmml.commons.exceptions.KiePMMLException;
+import org.kie.pmml.commons.enums.ResultCode;
 import org.kie.pmml.commons.model.enums.PMML_MODEL;
 import org.kie.pmml.compiler.testutils.TestUtils;
 import org.kie.pmml.evaluator.api.executor.PMMLContext;
@@ -177,12 +171,12 @@ public class PMMLTreeModelEvaluatorTest {
         final Map<String, Object> resultVariables = retrieved.getResultVariables();
         assertNotNull(resultVariables);
         if (expectedScore != null) {
-            assertEquals(StatusCode.OK.getName(), retrieved.getResultCode());
+            assertEquals(ResultCode.OK.getName(), retrieved.getResultCode());
             assertFalse(resultVariables.isEmpty());
             assertTrue(resultVariables.containsKey(TARGET_FIELD));
             assertEquals(expectedScore, resultVariables.get(TARGET_FIELD));
         } else {
-            assertEquals(StatusCode.FAIL.getName(), retrieved.getResultCode());
+            assertEquals(ResultCode.FAIL.getName(), retrieved.getResultCode());
             assertFalse(resultVariables.containsKey(TARGET_FIELD));
         }
     }

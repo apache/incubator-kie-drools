@@ -32,7 +32,7 @@ import java.util.Map;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 
-public class AbstractPMMLTreeTest {
+public abstract class AbstractPMMLTreeTest {
 
     protected static final TreeModelImplementationProvider PROVIDER = new TreeModelImplementationProvider();
     protected static final PMMLModelExecutor EXECUTOR = new PMMLTreeModelEvaluator();

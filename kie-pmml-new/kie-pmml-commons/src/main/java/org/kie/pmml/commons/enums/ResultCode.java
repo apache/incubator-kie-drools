@@ -20,19 +20,21 @@ import java.util.Objects;
 
 import org.kie.pmml.commons.exceptions.KieEnumException;
 
-public enum StatusCode {
-    DONE("DONE"),
+/**
+ * Indicates the possible end-result of a model evaluation
+ */
+public enum ResultCode {
     OK("OK"),
     FAIL("FAIL");
 
     private final String name;
 
-    StatusCode(String name) {
+    ResultCode(String name) {
         this.name = name;
     }
 
-    public static StatusCode byName(String name) {
-        return Arrays.stream(StatusCode.values()).filter(value -> Objects.equals(name, value.name)).findFirst().orElseThrow(() -> new KieEnumException("Failed to find StatusCode with name: " + name));
+    public static ResultCode byName(String name) {
+        return Arrays.stream(ResultCode.values()).filter(value -> Objects.equals(name, value.name)).findFirst().orElseThrow(() -> new KieEnumException("Failed to find StatusCode with name: " + name));
     }
 
     public String getName() {

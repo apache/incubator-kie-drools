@@ -19,13 +19,11 @@ import org.kie.pmml.models.drooled.ast.KiePMMLDrooledType;
 
 public class KiePMMLDescrTestUtils {
 
-
     public static KiePMMLDrooledType getDrooledType() {
         return new KiePMMLDrooledType("FIELD", "date");
     }
 
-    public static  KiePMMLDrooledType getDottedDrooledType() {
+    public static KiePMMLDrooledType getDottedDrooledType() {
         return new KiePMMLDrooledType("DOTTED_FIELD", "date");
     }
-
 }

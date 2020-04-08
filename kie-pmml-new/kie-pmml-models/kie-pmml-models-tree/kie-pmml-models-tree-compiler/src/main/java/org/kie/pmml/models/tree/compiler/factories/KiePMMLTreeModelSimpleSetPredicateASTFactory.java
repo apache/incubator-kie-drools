@@ -24,13 +24,14 @@ import java.util.stream.Collectors;
 
 import org.dmg.pmml.SimpleSetPredicate;
 import org.drools.core.util.StringUtils;
-import org.kie.pmml.commons.enums.StatusCode;
+import org.kie.pmml.commons.enums.ResultCode;
 import org.kie.pmml.commons.model.KiePMMLOutputField;
 import org.kie.pmml.models.drooled.ast.KiePMMLDrooledRule;
 import org.kie.pmml.models.drooled.tuples.KiePMMLOriginalTypeGeneratedType;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import static org.kie.pmml.commons.Constants.DONE;
 import static org.kie.pmml.models.tree.compiler.factories.KiePMMLTreeModelASTFactory.STATUS_NULL;
 import static org.kie.pmml.models.tree.compiler.factories.KiePMMLTreeModelASTFactory.STATUS_PATTERN;
 
@@ -73,7 +74,7 @@ public class KiePMMLTreeModelSimpleSetPredicateASTFactory extends KiePMMLTreeMod
             }
         }).collect(Collectors.toList());
         Map<String, List<Object>> constraints = Collections.singletonMap(key, value);
-        String statusToSet = isFinalLeaf ? StatusCode.DONE.getName() : currentRule;
+        String statusToSet = isFinalLeaf ? DONE : currentRule;
         KiePMMLDrooledRule.Builder builder = KiePMMLDrooledRule.builder(currentRule, statusToSet, outputFields)
                 .withStatusConstraint(statusConstraint);
         if (SimpleSetPredicate.BooleanOperator.IS_IN.equals(simpleSetPredicate.getBooleanOperator())) {
@@ -83,7 +84,7 @@ public class KiePMMLTreeModelSimpleSetPredicateASTFactory extends KiePMMLTreeMod
         }
         if (isFinalLeaf) {
             builder = builder.withResult(result)
-                    .withResultCode(StatusCode.OK);
+                    .withResultCode(ResultCode.OK);
         }
         rules.add(builder.build());
     }

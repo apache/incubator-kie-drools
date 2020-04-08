@@ -17,15 +17,11 @@ package org.kie.pmml.models.tree.evaluator;
 
 import org.kie.pmml.commons.model.enums.PMML_MODEL;
 import org.kie.pmml.models.drooled.executor.DrooledModelExecutor;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 /**
  * Default <code>PMMLModelExecutor</code> for <b>Tree</b>
  */
 public class PMMLTreeModelEvaluator extends DrooledModelExecutor {
-
-    private static final Logger logger = LoggerFactory.getLogger(PMMLTreeModelEvaluator.class.getName());
 
     @Override
     public PMML_MODEL getPMMLModelType() {

@@ -22,7 +22,7 @@ public class KiePMMLDrooledAST {
     private final Queue<KiePMMLDrooledType> types;
     private final Queue<KiePMMLDrooledRule> rules;
 
-    public KiePMMLDrooledAST(Queue<KiePMMLDrooledType> types,Queue<KiePMMLDrooledRule> rules) {
+    public KiePMMLDrooledAST(Queue<KiePMMLDrooledType> types, Queue<KiePMMLDrooledRule> rules) {
         this.types = types;
         this.rules = rules;
     }

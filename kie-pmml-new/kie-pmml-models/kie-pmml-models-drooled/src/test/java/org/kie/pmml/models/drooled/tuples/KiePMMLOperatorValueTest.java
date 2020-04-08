@@ -18,14 +18,14 @@ package org.kie.pmml.models.drooled.tuples;
 
 import org.junit.Test;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
 import static org.kie.pmml.models.drooled.tuples.KiePMMLOperatorValue.VALUE_CONSTRAINT_PATTERN;
 
 public class KiePMMLOperatorValueTest {
 
     @Test
     public void testToString() {
-        String  operator = "operator";
+        String operator = "operator";
         Object value = 234;
         KiePMMLOperatorValue kiePMMLOperatorValue = new KiePMMLOperatorValue(operator, value);
         String retrieved = kiePMMLOperatorValue.toString();

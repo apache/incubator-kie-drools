@@ -22,7 +22,7 @@ import java.util.Queue;
 
 import org.dmg.pmml.SimplePredicate;
 import org.drools.core.util.StringUtils;
-import org.kie.pmml.commons.enums.StatusCode;
+import org.kie.pmml.commons.enums.ResultCode;
 import org.kie.pmml.commons.model.KiePMMLOutputField;
 import org.kie.pmml.models.drooled.ast.KiePMMLDrooledRule;
 import org.kie.pmml.models.drooled.ast.KiePMMLFieldOperatorValue;
@@ -32,6 +32,7 @@ import org.kie.pmml.models.tree.model.enums.OPERATOR;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import static org.kie.pmml.commons.Constants.DONE;
 import static org.kie.pmml.models.tree.compiler.factories.KiePMMLASTFactoryUtils.getConstraintEntryFromSimplePredicates;
 import static org.kie.pmml.models.tree.compiler.factories.KiePMMLASTFactoryUtils.getCorrectlyFormattedObject;
 import static org.kie.pmml.models.tree.compiler.factories.KiePMMLTreeModelASTFactory.STATUS_NULL;
@@ -66,7 +67,7 @@ public class KiePMMLTreeModelSimplePredicateASTFactory extends KiePMMLTreeModeAb
         String fieldName = fieldTypeMap.get(simplePredicate.getField().getValue()).getGeneratedType();
         String surrogateCurrentRule = String.format(SURROGATE_RULENAME_PATTERN, currentRule, fieldName);
         final List<KiePMMLFieldOperatorValue> constraints = Collections.singletonList(getConstraintEntryFromSimplePredicates(fieldName, "surrogate", Collections.singletonList(simplePredicate), fieldTypeMap));
-        String statusToSet = isFinalLeaf ? StatusCode.DONE.getName() : currentRule;
+        String statusToSet = isFinalLeaf ? DONE : currentRule;
         // Create "TRUE" matcher
         KiePMMLDrooledRule.Builder builder = KiePMMLDrooledRule.builder(surrogateCurrentRule + "_TRUE", statusToSet, outputFields)
                 .withAgendaGroup(agendaActivationGroup)
@@ -74,7 +75,7 @@ public class KiePMMLTreeModelSimplePredicateASTFactory extends KiePMMLTreeModeAb
                 .withAndConstraints(constraints);
         if (isFinalLeaf) {
             builder = builder.withResult(result)
-                    .withResultCode(StatusCode.OK);
+                    .withResultCode(ResultCode.OK);
         }
         rules.add(builder.build());
         // Create "FALSE" matcher
@@ -94,14 +95,14 @@ public class KiePMMLTreeModelSimplePredicateASTFactory extends KiePMMLTreeModeAb
         String key = fieldTypeMap.get(simplePredicate.getField().getValue()).getGeneratedType();
         String operator = OPERATOR.byName(simplePredicate.getOperator().value()).getOperator();
         Object value = getCorrectlyFormattedObject(simplePredicate, fieldTypeMap);
-        String statusToSet = isFinalLeaf ? StatusCode.DONE.getName() : currentRule;
+        String statusToSet = isFinalLeaf ? DONE : currentRule;
         List<KiePMMLFieldOperatorValue> andConstraints = Collections.singletonList(new KiePMMLFieldOperatorValue(key, "and", Collections.singletonList(new KiePMMLOperatorValue(operator, value)), null));
         KiePMMLDrooledRule.Builder builder = KiePMMLDrooledRule.builder(currentRule, statusToSet, outputFields)
                 .withStatusConstraint(statusConstraint)
                 .withAndConstraints(andConstraints);
         if (isFinalLeaf) {
             builder = builder.withResult(result)
-                    .withResultCode(StatusCode.OK);
+                    .withResultCode(ResultCode.OK);
         }
         rules.add(builder.build());
     }
