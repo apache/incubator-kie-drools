@@ -1,0 +1,3 @@
+.kogito-management-console--details__title small {
+    --pf-c-content--small--Color: var(--pf-global--Color--100);
+}

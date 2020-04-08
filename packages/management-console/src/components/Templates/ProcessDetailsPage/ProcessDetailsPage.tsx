@@ -275,7 +275,11 @@ const ProcessDetailsPage = ({ match }) => {
                     className="pf-u-align-items-center"
                   >
                     <SplitItem isFilled={true}>
-                      <Title headingLevel="h1" size="4xl">
+                    <Title
+                        headingLevel="h2"
+                        size="4xl"
+                        className="kogito-management-console--details__title"
+                      >
                         <ProcessDescriptor
                           processInstanceData={data.ProcessInstances[0]}
                         />
