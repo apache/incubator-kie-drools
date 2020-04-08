@@ -32,13 +32,13 @@ import org.kie.dmn.core.impl.DMNModelImpl;
 
 public class DMNTypeSafeTypeGenerator {
 
-    private final String packageName;
+    private final DMNTypeSafePackageName packageName;
     private DMNAllTypesIndex index;
     private DMNModelImpl dmnModel;
 
     private Map<String, TypeDefinition> types = new HashMap<>();
 
-    public DMNTypeSafeTypeGenerator(DMNModel dmnModel, DMNAllTypesIndex index, String packageName) {
+    public DMNTypeSafeTypeGenerator(DMNModel dmnModel, DMNAllTypesIndex index, DMNTypeSafePackageName packageName) {
         this.dmnModel = (DMNModelImpl) dmnModel;
         this.packageName = packageName;
         this.index = index;
@@ -63,15 +63,15 @@ public class DMNTypeSafeTypeGenerator {
 
     public Map<String, String> generateSourceCodeOfAllTypes() {
         Map<String, String> allSources = new HashMap<>();
-        String packageDeclaration = this.packageName;
+        DMNTypeSafePackageName packageDeclaration = this.packageName;
         for (Map.Entry<String, TypeDefinition> kv : types.entrySet()) {
             ClassOrInterfaceDeclaration generatedClass = new GeneratedClassDeclaration(kv.getValue(),
                                                                                        Collections.emptyList()).toClassDeclaration();
 
-            CompilationUnit cu = new CompilationUnit(packageDeclaration);
+            CompilationUnit cu = new CompilationUnit(packageDeclaration.packageName());
             cu.addType(generatedClass);
 
-            allSources.put(packageDeclaration + "." + kv.getKey(), cu.toString());
+            allSources.put(packageDeclaration.appendPackage(kv.getKey()), cu.toString());
         }
         return allSources;
     }

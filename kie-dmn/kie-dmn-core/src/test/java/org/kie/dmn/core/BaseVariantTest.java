@@ -176,12 +176,14 @@ public abstract class BaseVariantTest {
 
     private void createTypeSafeInput(DMNRuntime runtime) {
         prefix = String.format("%s%s", testName, testConfig.name());
-        DMNAllTypesIndex index = new DMNAllTypesIndex(runtime.getModels(), prefix);
+        DMNTypeSafePackageName packageName = new DMNTypeSafePackageName(prefix);
+        DMNAllTypesIndex index = new DMNAllTypesIndex(runtime.getModels(), packageName);
         Map<String, String> allSources = new HashMap<>();
 
         for (DMNModel m : runtime.getModels()) {
-            String packageName = new DMNTypeSafePackageName(m, prefix).packageName();
-            Map<String, String> allTypesSourceCode = new DMNTypeSafeTypeGenerator(m, index, packageName)
+            DMNTypeSafePackageName withModel = new DMNTypeSafePackageName(prefix)
+                    .withDMNModelNamespace(m.getNamespace(), m.getName());
+            Map<String, String> allTypesSourceCode = new DMNTypeSafeTypeGenerator(m, index, withModel)
                     .generateSourceCodeOfAllTypes();
             allSources.putAll(allTypesSourceCode);
         }
@@ -201,7 +203,8 @@ public abstract class BaseVariantTest {
         Map<String, Object> inputMap = context.getAll();
         FEELPropertyAccessible inputSet;
         try {
-            String packageName = new DMNTypeSafePackageName(dmnModel, prefix).packageName();
+            DMNTypeSafePackageName packageName = new DMNTypeSafePackageName(prefix)
+                    .withDMNModelNamespace(dmnModel.getNamespace(), dmnModel.getName());
             inputSet = DMNTypeSafeTest.createInstanceFromCompiledClasses(allCompiledClasses, packageName, "InputSet");
             inputSet.fromMap(inputMap);
             return runtime.evaluateAll(dmnModel, new DMNContextFPAImpl(inputSet));

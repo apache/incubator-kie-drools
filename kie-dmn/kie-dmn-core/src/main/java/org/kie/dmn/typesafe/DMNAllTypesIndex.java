@@ -17,7 +17,6 @@
 package org.kie.dmn.typesafe;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -28,30 +27,27 @@ import org.kie.dmn.api.core.DMNType;
 
 public class DMNAllTypesIndex {
 
-    private final List<DMNModel> allModels;
-
     private final List<DMNType> typesToGenerate = new ArrayList<>();
 
-    Map<String, String> mapNamespaceIndex = new HashMap<>();
+    Map<String, DMNTypeSafePackageName> mapNamespaceIndex = new HashMap<>();
 
-    public DMNAllTypesIndex(String prefix, DMNModel... allModels) {
-        this.allModels = Arrays.asList(allModels);
+    public DMNAllTypesIndex(DMNTypeSafePackageName packageName, DMNModel... allModels) {
         for (DMNModel m : allModels) {
-            DMNModelTypesIndex indexFromModel = new DMNModelTypesIndex(m, new DMNTypeSafePackageName(m, prefix));
+            DMNModelTypesIndex indexFromModel = new DMNModelTypesIndex(m, packageName);
             mapNamespaceIndex.putAll(indexFromModel.getClassesNamespaceIndex());
             allTypesToGenerate().addAll(indexFromModel.getTypesToGenerate());
         }
     }
 
-    public DMNAllTypesIndex(List<DMNModel> allModels, String prefix) {
-        this(prefix, allModels.toArray(new DMNModel[0]));
+    public DMNAllTypesIndex(List<DMNModel> allModels, DMNTypeSafePackageName packageName) {
+        this(packageName, allModels.toArray(new DMNModel[0]));
     }
 
     public List<DMNType> allTypesToGenerate() {
         return typesToGenerate;
     }
 
-    public Optional<String> namespaceOfClass(String typeName) {
+    public Optional<DMNTypeSafePackageName> namespaceOfClass(String typeName) {
         return Optional.ofNullable(mapNamespaceIndex.get(typeName));
     }
 }

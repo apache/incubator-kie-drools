@@ -29,14 +29,14 @@ import org.kie.dmn.api.core.ast.ItemDefNode;
 
 class DMNModelTypesIndex {
 
-    Map<String, String> classesNamespaceIndex = new HashMap<>();
+    Map<String, DMNTypeSafePackageName> classesNamespaceIndex = new HashMap<>();
     private final List<DMNType> typesToGenerate = new ArrayList<>();
     private DMNModel model;
-    private final String namespace;
+    private final DMNTypeSafePackageName packageName;
 
     public DMNModelTypesIndex(DMNModel model, DMNTypeSafePackageName dmnTypeSafePackageName) {
         this.model = model;
-        this.namespace = dmnTypeSafePackageName.packageName();
+        this.packageName = dmnTypeSafePackageName;
 
         createIndex();
     }
@@ -70,11 +70,11 @@ class DMNModelTypesIndex {
     }
 
     private void index(DMNType innerType) {
-        classesNamespaceIndex.put(innerType.getName(), namespace);
+        classesNamespaceIndex.put(innerType.getName(),packageName.withDMNModelNamespace(model.getNamespace(), model.getName()));
         typesToGenerate.add(innerType);
     }
 
-    public Map<String, String> getClassesNamespaceIndex() {
+    public Map<String, DMNTypeSafePackageName> getClassesNamespaceIndex() {
         return classesNamespaceIndex;
     }
 

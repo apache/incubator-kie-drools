@@ -29,7 +29,7 @@ public class DMNTypeSafeTest {
 
     public static final Logger LOG = LoggerFactory.getLogger(DMNTypeSafeTest.class);
 
-    private String packageName;
+    private DMNTypeSafePackageName packageName;
     private DMNModel dmnModel;
     private DMNRuntime runtime;
 
@@ -40,7 +40,8 @@ public class DMNTypeSafeTest {
         String modelName = "Drawing 1";
 
         dmnModel = runtime.getModel(namespace, modelName);
-        packageName = new DMNTypeSafePackageName(dmnModel).packageName();
+        packageName = new DMNTypeSafePackageName()
+                .withDMNModelNamespace(dmnModel.getNamespace(), dmnModel.getName());
     }
 
     @Test
@@ -49,8 +50,10 @@ public class DMNTypeSafeTest {
         assertThat(dmnModel, notNullValue());
         assertThat(DMNRuntimeUtil.formatMessages(dmnModel.getMessages()), dmnModel.hasErrors(), is(false));
 
-        DMNAllTypesIndex index = new DMNAllTypesIndex("", dmnModel);
-        String packageName = new DMNTypeSafePackageName(dmnModel).packageName();
+        DMNAllTypesIndex index = new DMNAllTypesIndex(new DMNTypeSafePackageName(""), dmnModel);
+        DMNTypeSafePackageName packageName = new DMNTypeSafePackageName()
+                .withDMNModelNamespace(dmnModel.getNamespace(), dmnModel.getName());
+
         Map<String, String> allTypesSourceCode = new DMNTypeSafeTypeGenerator(dmnModel, index, packageName).generateSourceCodeOfAllTypes();
 
         ClassLoader thisDMNClassLoader = this.getClass().getClassLoader();
@@ -126,8 +129,8 @@ public class DMNTypeSafeTest {
         return runtime.evaluateAll(dmnModel, new DMNContextFPAImpl(context));
     }
 
-    public static FEELPropertyAccessible generateSourceCodeAndCreateInput(DMNModel dmnModel, String packageName, ClassLoader classLoader) throws Exception {
-        DMNAllTypesIndex index = new DMNAllTypesIndex("", dmnModel);
+    public static FEELPropertyAccessible generateSourceCodeAndCreateInput(DMNModel dmnModel, DMNTypeSafePackageName packageName, ClassLoader classLoader) throws Exception {
+        DMNAllTypesIndex index = new DMNAllTypesIndex(new DMNTypeSafePackageName(""), dmnModel);
         Map<String, String> allTypesSourceCode = new DMNTypeSafeTypeGenerator(
                 dmnModel,
                 index, packageName )
@@ -138,12 +141,8 @@ public class DMNTypeSafeTest {
         return createInstanceFromCompiledClasses(compiledClasses, packageName, "InputSet");
     }
 
-    private static String classWithPackage(String packageName, String className) {
-        return packageName + "." + className;
-    }
-
-    public static FEELPropertyAccessible createInstanceFromCompiledClasses(Map<String, Class<?>> compile, String packageName, String className) throws Exception {
-        Class<?> inputSetClass = compile.get(classWithPackage(packageName, className));
+    public static FEELPropertyAccessible createInstanceFromCompiledClasses(Map<String, Class<?>> compile, DMNTypeSafePackageName packageName, String className) throws Exception {
+        Class<?> inputSetClass = compile.get(packageName.appendPackage(className));
         assertThat(inputSetClass, notNullValue());
         Object inputSetInstance = inputSetClass.getDeclaredConstructor().newInstance();
         return (FEELPropertyAccessible) inputSetInstance;

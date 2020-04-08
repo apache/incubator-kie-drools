@@ -96,8 +96,8 @@ public class DMNDeclaredField implements FieldDefinition {
 
     private String withPackage(String typeName) {
         String typeNameUpperCase = StringUtils.ucFirst(typeName);
-        Optional<String> packageName = index.namespaceOfClass(typeName);
-        return packageName.map(p -> p + "." + typeNameUpperCase).orElse(typeNameUpperCase);
+        Optional<DMNTypeSafePackageName> dmnTypeSafePackageName = index.namespaceOfClass(typeName);
+        return dmnTypeSafePackageName.map(p -> p.appendPackage(typeNameUpperCase)).orElse(typeNameUpperCase);
     }
 
     public static String getBaseType(DMNType fieldType) {

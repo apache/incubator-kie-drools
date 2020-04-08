@@ -16,24 +16,50 @@
 
 package org.kie.dmn.typesafe;
 
-import org.kie.dmn.api.core.DMNModel;
 import org.kie.dmn.feel.codegen.feel11.CodegenStringUtil;
 
 public class DMNTypeSafePackageName {
 
-    private final DMNModel dmnModel;
     private final String prefix;
 
-    public DMNTypeSafePackageName(DMNModel dmnModel, String prefix) {
-        this.dmnModel = dmnModel;
+    private String dmnModelNamespace;
+    private String dmnModelName;
+
+    public DMNTypeSafePackageName(String prefix) {
         this.prefix = prefix;
     }
 
-    public DMNTypeSafePackageName(DMNModel dmnModel) {
-        this(dmnModel, "");
+    public DMNTypeSafePackageName() {
+        this("");
+    }
+
+    public DMNTypeSafePackageName withDMNModelNamespace(String dmnModelNamespace, String dmnModelName) {
+        DMNTypeSafePackageName dmnTypeSafePackageName = new DMNTypeSafePackageName(this.prefix);
+        dmnTypeSafePackageName.dmnModelNamespace = dmnModelNamespace;
+        dmnTypeSafePackageName.dmnModelName = dmnModelName;
+        return dmnTypeSafePackageName;
     }
 
     public String packageName() {
-        return CodegenStringUtil.escapeIdentifier(prefix + dmnModel.getNamespace() + dmnModel.getName());
+        if (dmnModelNamespace == null) {
+            throw new RuntimeException("Need a DMN Model Namespace");
+        }
+        if (dmnModelName == null) {
+            throw new RuntimeException("Need a DMN Model Name");
+        }
+        return CodegenStringUtil.escapeIdentifier(prefix + dmnModelNamespace + dmnModelName);
+    }
+
+    public String appendPackage(String typeName) {
+        return packageName() + "." + typeName;
+    }
+
+    @Override
+    public String toString() {
+        return "DMNTypeSafePackageName{" +
+                "prefix='" + prefix + '\'' +
+                ", dmnModelNamespace='" + dmnModelNamespace + '\'' +
+                ", dmnModelName='" + dmnModelName + '\'' +
+                '}';
     }
 }
