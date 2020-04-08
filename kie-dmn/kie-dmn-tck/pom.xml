@@ -32,7 +32,7 @@
   <properties>
     <java.module.name>org.kie.dmn.tck</java.module.name>
     <tck.repository.url>https://github.com/tarilabs/dmn-tck</tck.repository.url>
-    <tck.repository.branch>tarilabs-20200303-runner</tck.repository.branch> <!-- as TCK is currently not holding meetings, using fork with updated Drools runner. -->
+    <tck.repository.branch>tarilabs-2020cumulative</tck.repository.branch> <!-- as TCK is currently not holding meetings, using fork with updated Drools runner. -->
     <org.kie.dmn.compiler.execmodel>false</org.kie.dmn.compiler.execmodel>
   </properties>
 
