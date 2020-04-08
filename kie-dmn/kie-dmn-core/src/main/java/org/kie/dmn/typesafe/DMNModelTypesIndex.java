@@ -32,9 +32,9 @@ class DMNModelTypesIndex {
     Map<String, DMNTypeSafePackageName> classesNamespaceIndex = new HashMap<>();
     private final List<DMNType> typesToGenerate = new ArrayList<>();
     private DMNModel model;
-    private final DMNTypeSafePackageName packageName;
+    private final DMNTypeSafePackageName.DMNTypeSafePackageNameFactory packageName;
 
-    public DMNModelTypesIndex(DMNModel model, DMNTypeSafePackageName dmnTypeSafePackageName) {
+    public DMNModelTypesIndex(DMNModel model, DMNTypeSafePackageName.DMNTypeSafePackageNameFactory dmnTypeSafePackageName) {
         this.model = model;
         this.packageName = dmnTypeSafePackageName;
 
@@ -70,7 +70,7 @@ class DMNModelTypesIndex {
     }
 
     private void index(DMNType innerType) {
-        classesNamespaceIndex.put(innerType.getName(),packageName.ofDMNModel(model));
+        classesNamespaceIndex.put(innerType.getName(),packageName.create(model));
         typesToGenerate.add(innerType);
     }
 

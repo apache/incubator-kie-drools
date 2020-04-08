@@ -21,28 +21,37 @@ import org.kie.dmn.feel.codegen.feel11.CodegenStringUtil;
 
 public class DMNTypeSafePackageName {
 
+    public interface DMNTypeSafePackageNameFactory {
+
+        DMNTypeSafePackageName create(DMNModel m);
+    }
+
+    public static class DMNModelFactory implements DMNTypeSafePackageNameFactory {
+
+        private final String prefix;
+
+        public DMNModelFactory(String prefix) {
+            this.prefix = prefix;
+        }
+
+        public DMNModelFactory() {
+            this.prefix = "";
+        }
+
+        @Override
+        public DMNTypeSafePackageName create(DMNModel model) {
+            return new DMNTypeSafePackageName(prefix, model.getNamespace(), model.getName());
+        }
+    }
+
     private final String prefix;
+    private final String dmnModelNamespace;
+    private final String dmnModelName;
 
-    private String dmnModelNamespace;
-    private String dmnModelName;
-
-    public DMNTypeSafePackageName(String prefix) {
+    public DMNTypeSafePackageName(String prefix, String dmnModelNamespace, String dmnModelName) {
         this.prefix = prefix;
-    }
-
-    public DMNTypeSafePackageName() {
-        this("");
-    }
-
-    public DMNTypeSafePackageName withDMNModelNamespace(String dmnModelNamespace, String dmnModelName) {
-        DMNTypeSafePackageName dmnTypeSafePackageName = new DMNTypeSafePackageName(this.prefix);
-        dmnTypeSafePackageName.dmnModelNamespace = dmnModelNamespace;
-        dmnTypeSafePackageName.dmnModelName = dmnModelName;
-        return dmnTypeSafePackageName;
-    }
-
-    public DMNTypeSafePackageName ofDMNModel(DMNModel model) {
-        return withDMNModelNamespace(model.getNamespace(), model.getName());
+        this.dmnModelNamespace = dmnModelNamespace;
+        this.dmnModelName = dmnModelName;
     }
 
     public String packageName() {

@@ -47,6 +47,7 @@ import static org.kie.dmn.core.BaseVariantTest.VariantTestConf.KIE_API_TYPECHECK
 public abstract class BaseVariantTest {
 
     private String prefix;
+    private DMNTypeSafePackageName.DMNTypeSafePackageNameFactory factory;
 
     public enum VariantTestConf implements VariantTest {
         KIE_API_TYPECHECK {
@@ -176,13 +177,12 @@ public abstract class BaseVariantTest {
 
     private void createTypeSafeInput(DMNRuntime runtime) {
         prefix = String.format("%s%s", testName, testConfig.name());
-        DMNTypeSafePackageName packageName = new DMNTypeSafePackageName(prefix);
-        DMNAllTypesIndex index = new DMNAllTypesIndex(runtime.getModels(), packageName);
+        factory = new DMNTypeSafePackageName.DMNModelFactory(prefix);
+        DMNAllTypesIndex index = new DMNAllTypesIndex(runtime.getModels(), factory);
         Map<String, String> allSources = new HashMap<>();
 
         for (DMNModel m : runtime.getModels()) {
-            DMNTypeSafePackageName withModel = new DMNTypeSafePackageName(prefix).ofDMNModel(m);
-            Map<String, String> allTypesSourceCode = new DMNTypeSafeTypeGenerator(m, index, withModel)
+            Map<String, String> allTypesSourceCode = new DMNTypeSafeTypeGenerator(m, index, factory)
                     .generateSourceCodeOfAllTypes();
             allSources.putAll(allTypesSourceCode);
         }
@@ -202,8 +202,7 @@ public abstract class BaseVariantTest {
         Map<String, Object> inputMap = context.getAll();
         FEELPropertyAccessible inputSet;
         try {
-            DMNTypeSafePackageName packageName = new DMNTypeSafePackageName(prefix).ofDMNModel(dmnModel);
-            inputSet = DMNTypeSafeTest.createInstanceFromCompiledClasses(allCompiledClasses, packageName, "InputSet");
+            inputSet = DMNTypeSafeTest.createInstanceFromCompiledClasses(allCompiledClasses, factory.create(dmnModel), "InputSet");
             inputSet.fromMap(inputMap);
             return runtime.evaluateAll(dmnModel, new DMNContextFPAImpl(inputSet));
         } catch (Exception e) {

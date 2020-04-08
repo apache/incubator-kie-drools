@@ -31,15 +31,15 @@ public class DMNAllTypesIndex {
 
     Map<String, DMNTypeSafePackageName> mapNamespaceIndex = new HashMap<>();
 
-    public DMNAllTypesIndex(DMNTypeSafePackageName packageName, DMNModel... allModels) {
+    public DMNAllTypesIndex(DMNTypeSafePackageName.DMNTypeSafePackageNameFactory packageFactory, DMNModel... allModels) {
         for (DMNModel m : allModels) {
-            DMNModelTypesIndex indexFromModel = new DMNModelTypesIndex(m, packageName);
+            DMNModelTypesIndex indexFromModel = new DMNModelTypesIndex(m, packageFactory);
             mapNamespaceIndex.putAll(indexFromModel.getClassesNamespaceIndex());
             allTypesToGenerate().addAll(indexFromModel.getTypesToGenerate());
         }
     }
 
-    public DMNAllTypesIndex(List<DMNModel> allModels, DMNTypeSafePackageName packageName) {
+    public DMNAllTypesIndex(List<DMNModel> allModels, DMNTypeSafePackageName.DMNTypeSafePackageNameFactory packageName) {
         this(packageName, allModels.toArray(new DMNModel[0]));
     }
 
