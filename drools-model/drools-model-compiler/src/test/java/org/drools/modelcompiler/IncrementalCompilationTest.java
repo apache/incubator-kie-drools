@@ -364,8 +364,8 @@ public class IncrementalCompilationTest extends BaseModelTest {
 
         ksession.insert(new Person("Paul"));
 
-        assertEquals(1, ksession.fireAllRules());
-        Assertions.assertThat(list).containsExactlyInAnyOrder("Hello John", "Good bye Paul");
+        assertEquals(2, ksession.fireAllRules());
+        Assertions.assertThat(list).containsExactlyInAnyOrder("Hello John", "Good bye Paul", "Good bye John");
 
         // try with a new session
         KieSession ksession2 = kc.newKieSession();
@@ -429,8 +429,8 @@ public class IncrementalCompilationTest extends BaseModelTest {
 
         ksession.insert(new Person("Paul"));
 
-        assertEquals(1, ksession.fireAllRules());
-        Assertions.assertThat(list).containsExactlyInAnyOrder("Hello John", "Good bye Paul");
+        assertEquals(2, ksession.fireAllRules());
+        Assertions.assertThat(list).containsExactlyInAnyOrder("Hello John", "Good bye Paul", "Good bye John");
 
         // try with a new session
         KieSession ksession2 = kc.newKieSession();
@@ -501,12 +501,8 @@ public class IncrementalCompilationTest extends BaseModelTest {
 
         ksession.insert(new Person("Paul"));
 
-//        assertEquals(2, ksession.fireAllRules());
-//        Assertions.assertThat(list).containsExactlyInAnyOrder("Hello John", "Good bye Paul", "Good bye John");
-
-        // Don't re-fire
-        assertEquals(1, ksession.fireAllRules());
-        Assertions.assertThat(list).containsExactlyInAnyOrder("Hello John", "Good bye Paul");
+        assertEquals(2, ksession.fireAllRules());
+        Assertions.assertThat(list).containsExactlyInAnyOrder("Hello John", "Good bye Paul", "Good bye John");
 
         // try with a new session
         KieSession ksession2 = kc.newKieSession();
@@ -578,12 +574,8 @@ public class IncrementalCompilationTest extends BaseModelTest {
 
         ksession.insert(new Person("Paul"));
 
-//        assertEquals(2, ksession.fireAllRules());
-//        Assertions.assertThat(list).containsExactlyInAnyOrder("Hello John", "Good bye Paul", "Good bye John");
-
-        // Don't re-fire
-        assertEquals(1, ksession.fireAllRules());
-        Assertions.assertThat(list).containsExactlyInAnyOrder("Hello John", "Good bye Paul");
+        assertEquals(2, ksession.fireAllRules());
+        Assertions.assertThat(list).containsExactlyInAnyOrder("Hello John", "Good bye Paul", "Good bye John");
 
         // try with a new session
         KieSession ksession2 = kc.newKieSession();
@@ -649,7 +641,7 @@ public class IncrementalCompilationTest extends BaseModelTest {
 
         ksession.insert(new Person("Paul"));
 
-        // re-fire (or not re-fire. Need to be consistent with java method use cases)
+        // re-fire
         assertEquals(1, ksession.fireAllRules());
         Assertions.assertThat(list).containsExactlyInAnyOrder("John", "John");
 
@@ -717,7 +709,7 @@ public class IncrementalCompilationTest extends BaseModelTest {
 
         ksession.insert(new Person("Paul"));
 
-        // re-fire (or not re-fire. Need to be consistent with java method use cases)
+        // re-fire
         assertEquals(1, ksession.fireAllRules());
         Assertions.assertThat(list).containsExactlyInAnyOrder("John", "John");
 
@@ -795,7 +787,7 @@ public class IncrementalCompilationTest extends BaseModelTest {
 
         ksession.insert(new Person("Paul"));
 
-        // re-fire (or not re-fire. Need to be consistent with java method use cases)
+        // re-fire
         assertEquals(1, ksession.fireAllRules());
         Assertions.assertThat(list).containsExactlyInAnyOrder("John", "John");
 
@@ -873,7 +865,7 @@ public class IncrementalCompilationTest extends BaseModelTest {
 
         ksession.insert(new Person("Paul"));
 
-        // re-fire (or not re-fire. Need to be consistent with java method use cases)
+        // re-fire
         assertEquals(1, ksession.fireAllRules());
         Assertions.assertThat(list).containsExactlyInAnyOrder("John", "John");
 
