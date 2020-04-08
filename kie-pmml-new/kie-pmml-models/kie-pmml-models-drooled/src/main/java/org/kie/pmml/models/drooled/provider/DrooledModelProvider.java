@@ -18,7 +18,6 @@ package org.kie.pmml.models.drooled.provider;
 import org.dmg.pmml.DataDictionary;
 import org.dmg.pmml.Model;
 import org.drools.compiler.builder.impl.KnowledgeBuilderImpl;
-import org.kie.api.KieServices;
 import org.kie.internal.builder.KnowledgeBuilder;
 import org.kie.pmml.commons.exceptions.KiePMMLException;
 import org.kie.pmml.commons.model.KiePMMLDrooledModel;
@@ -32,12 +31,6 @@ import org.slf4j.LoggerFactory;
 public abstract class DrooledModelProvider<T extends Model, E extends KiePMMLDrooledModel> implements ModelImplementationProvider<T, E> {
 
     private static final Logger logger = LoggerFactory.getLogger(DrooledModelProvider.class.getName());
-
-    protected final KieServices kieServices;
-
-    protected DrooledModelProvider() {
-        this.kieServices = KieServices.Factory.get();
-    }
 
     @Override
     public E getKiePMMLModel(DataDictionary dataDictionary, T model, Object kBuilder) {

@@ -4,7 +4,6 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
-import org.drools.compiler.lang.DrlDumper;
 import org.drools.modelcompiler.ExecutableModelProject;
 import org.kie.api.definition.type.FactType;
 import org.kie.api.event.rule.AfterMatchFiredEvent;
@@ -20,7 +19,6 @@ import org.kie.api.pmml.PMML4Result;
 import org.kie.api.runtime.KieSession;
 import org.kie.internal.utils.KieHelper;
 import org.kie.pmml.commons.enums.ResultCode;
-import org.kie.pmml.commons.exceptions.KieEnumException;
 import org.kie.pmml.commons.model.KiePMMLDrooledModel;
 import org.kie.pmml.commons.model.KiePMMLModel;
 import org.kie.pmml.evaluator.api.exceptions.KiePMMLModelException;
@@ -42,7 +40,6 @@ public abstract class DrooledModelExecutor implements PMMLModelExecutor {
             throw new KiePMMLModelException("Expected a KiePMMLDrooledModel, received a " + model.getClass().getName());
         }
         final KiePMMLDrooledModel drooledModel = (KiePMMLDrooledModel) model;
-        printGeneratedRules(drooledModel);
         KieSession kSession = new KieHelper()
                 .addContent(drooledModel.getPackageDescr())
                 .build(ExecutableModelProject.class)
@@ -75,17 +72,6 @@ public abstract class DrooledModelExecutor implements PMMLModelExecutor {
         kSession.setGlobal("$pmml4Result", toReturn);
         kSession.fireAllRules();
         return toReturn;
-    }
-
-    private void printGeneratedRules(KiePMMLDrooledModel drooledModel) {
-        if (logger.isDebugEnabled()) {
-            try {
-                String string = new DrlDumper().dump(drooledModel.getPackageDescr());
-                logger.debug(string);
-            } catch (Exception e) {
-                throw new KieEnumException("Failed to dump " + drooledModel, e);
-            }
-        }
     }
 
     private void setupExecutionListener(final KieSession kSession) {
