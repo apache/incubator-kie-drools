@@ -205,9 +205,13 @@ public class KogitoAssetsProcessor {
                     launchMode, resource, curateOutcomeBuildItem);
 
             reflectiveClass.produce(
+                    new ReflectiveClassBuildItem(true, true, "org.kie.kogito.event.AbstractDataEvent"));
+            reflectiveClass.produce(
                     new ReflectiveClassBuildItem(true, true, "org.kie.kogito.services.event.AbstractProcessDataEvent"));
             reflectiveClass.produce(
                     new ReflectiveClassBuildItem(true, true, "org.kie.kogito.services.event.ProcessInstanceDataEvent"));
+            reflectiveClass.produce(
+                    new ReflectiveClassBuildItem(true, true, "org.kie.kogito.services.event.VariableInstanceDataEvent"));
             reflectiveClass.produce(
                     new ReflectiveClassBuildItem(true, true, "org.kie.kogito.services.event.impl.ProcessInstanceEventBody"));
             reflectiveClass.produce(
@@ -215,12 +219,14 @@ public class KogitoAssetsProcessor {
             reflectiveClass.produce(
                     new ReflectiveClassBuildItem(true, true, "org.kie.kogito.services.event.impl.ProcessErrorEventBody"));
             reflectiveClass.produce(
+                    new ReflectiveClassBuildItem(true, true, "org.kie.kogito.services.event.impl.VariableInstanceEventBody"));
+            reflectiveClass.produce(
                     new ReflectiveClassBuildItem(true, true, "org.kie.kogito.services.event.UserTaskInstanceDataEvent"));
             reflectiveClass.produce(
                     new ReflectiveClassBuildItem(true, true, "org.kie.kogito.services.event.impl.UserTaskInstanceEventBody"));
 
             Collection<ClassInfo> dataEvents = index
-                    .getAllKnownSubclasses(createDotName("org.kie.kogito.services.event.AbstractProcessDataEvent"));
+                    .getAllKnownSubclasses(createDotName("org.kie.kogito.event.AbstractDataEvent"));
 
             dataEvents.forEach(c -> reflectiveClass.produce(
                     new ReflectiveClassBuildItem(true, true, c.name().toString())));
