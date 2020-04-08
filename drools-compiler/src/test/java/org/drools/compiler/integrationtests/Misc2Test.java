@@ -9195,4 +9195,25 @@ public class Misc2Test extends CommonTestMethodBase {
 
         assertEquals( 1, martin.getAddresses().size() );
     }
+
+    @Test
+    public void testKieHelperReleaseId() throws Exception {
+        String drl =
+                "rule R when\n" +
+                     "    $s: String()" +
+                     "then\n" +
+                     "end";
+
+        ReleaseId releaseId = KieServices.get().newReleaseId("org.sample", "test", "1.0.0");
+        KieContainer kieContainer = new KieHelper().addContent(drl, ResourceType.DRL)
+                                                   .setReleaseId(releaseId)
+                                                   .getKieContainer(null);
+
+        assertEquals(releaseId, kieContainer.getReleaseId());
+
+        KieSession ksession = kieContainer.newKieSession();
+
+        ksession.insert("Hello");
+        assertEquals(1, ksession.fireAllRules());
+    }
 }
