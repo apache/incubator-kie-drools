@@ -1,8 +1,14 @@
 package org.kie.dmn.api.core;
 
 import java.util.Map;
+import java.util.Optional;
 
 public interface FEELPropertyAccessible {
+
+    interface AbstractPropertyValueResult {
+
+        Optional<Object> toOptional();
+    }
 
     AbstractPropertyValueResult getFEELProperty(String property);
 
