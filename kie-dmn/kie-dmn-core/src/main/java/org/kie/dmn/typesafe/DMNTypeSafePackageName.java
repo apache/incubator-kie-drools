@@ -55,12 +55,6 @@ public class DMNTypeSafePackageName {
     }
 
     public String packageName() {
-        if (dmnModelNamespace == null) {
-            throw new RuntimeException("Need a DMN Model Namespace");
-        }
-        if (dmnModelName == null) {
-            throw new RuntimeException("Need a DMN Model Name");
-        }
         return CodegenStringUtil.escapeIdentifier(prefix + dmnModelNamespace + dmnModelName);
     }
 

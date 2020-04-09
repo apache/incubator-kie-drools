@@ -35,7 +35,7 @@ import static com.github.javaparser.StaticJavaParser.parseClassOrInterfaceType;
 
 public class DMNDeclaredField implements FieldDefinition {
 
-    private final static String OBJECT_TYPE = "Object";
+    private static final String OBJECT_TYPE = "Object";
 
     private DMNAllTypesIndex index;
     private String fieldName;
