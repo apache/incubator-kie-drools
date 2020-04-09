@@ -18,7 +18,6 @@ package org.kie.pmml.models.tree.compiler.factories;
 import java.util.Collections;
 import java.util.List;
 import java.util.Map;
-import java.util.Queue;
 
 import org.dmg.pmml.SimplePredicate;
 import org.drools.core.util.StringUtils;
@@ -42,18 +41,18 @@ import static org.kie.pmml.models.tree.compiler.factories.KiePMMLTreeModelASTFac
 /**
  * Class used to generate <code>KiePMMLDrooledRule</code> out of a <code>SimplePredicate</code>
  */
-public class KiePMMLTreeModelSimplePredicateASTFactory extends KiePMMLTreeModeAbstractPredicateASTFactory {
+public class KiePMMLTreeModelSimplePredicateASTFactory extends KiePMMLTreeModelAbstractPredicateASTFactory {
 
     private static final Logger logger = LoggerFactory.getLogger(KiePMMLTreeModelSimplePredicateASTFactory.class.getName());
 
     private final SimplePredicate simplePredicate;
 
-    private KiePMMLTreeModelSimplePredicateASTFactory(final SimplePredicate simplePredicate, final Map<String, KiePMMLOriginalTypeGeneratedType> fieldTypeMap, final List<KiePMMLOutputField> outputFields, final Queue<KiePMMLDrooledRule> rules) {
+    private KiePMMLTreeModelSimplePredicateASTFactory(final SimplePredicate simplePredicate, final Map<String, KiePMMLOriginalTypeGeneratedType> fieldTypeMap, final List<KiePMMLOutputField> outputFields, final List<KiePMMLDrooledRule> rules) {
         super(fieldTypeMap, outputFields, rules);
         this.simplePredicate = simplePredicate;
     }
 
-    public static KiePMMLTreeModelSimplePredicateASTFactory factory(final SimplePredicate simplePredicate, final Map<String, KiePMMLOriginalTypeGeneratedType> fieldTypeMap, final List<KiePMMLOutputField> outputFields, final Queue<KiePMMLDrooledRule> rules) {
+    public static KiePMMLTreeModelSimplePredicateASTFactory factory(final SimplePredicate simplePredicate, final Map<String, KiePMMLOriginalTypeGeneratedType> fieldTypeMap, final List<KiePMMLOutputField> outputFields, final List<KiePMMLDrooledRule> rules) {
         return new KiePMMLTreeModelSimplePredicateASTFactory(simplePredicate, fieldTypeMap, outputFields, rules);
     }
 

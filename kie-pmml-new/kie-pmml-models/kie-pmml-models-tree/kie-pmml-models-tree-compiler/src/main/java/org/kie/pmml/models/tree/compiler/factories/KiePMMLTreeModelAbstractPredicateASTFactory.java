@@ -17,7 +17,6 @@ package org.kie.pmml.models.tree.compiler.factories;
 
 import java.util.List;
 import java.util.Map;
-import java.util.Queue;
 
 import org.kie.pmml.commons.model.KiePMMLOutputField;
 import org.kie.pmml.models.drooled.ast.KiePMMLDrooledRule;
@@ -26,13 +25,13 @@ import org.kie.pmml.models.drooled.tuples.KiePMMLOriginalTypeGeneratedType;
 /**
  * Abstract class to be extended to generate <code>KiePMMLDrooledRule</code>s out of a <code>Predicate</code>s
  */
-public class KiePMMLTreeModeAbstractPredicateASTFactory {
+public class KiePMMLTreeModelAbstractPredicateASTFactory {
 
     protected final Map<String, KiePMMLOriginalTypeGeneratedType> fieldTypeMap;
     protected final List<KiePMMLOutputField> outputFields;
-    protected final Queue<KiePMMLDrooledRule> rules;
+    protected final List<KiePMMLDrooledRule> rules;
 
-    protected KiePMMLTreeModeAbstractPredicateASTFactory(final Map<String, KiePMMLOriginalTypeGeneratedType> fieldTypeMap, final List<KiePMMLOutputField> outputFields, final Queue<KiePMMLDrooledRule> rules) {
+    protected KiePMMLTreeModelAbstractPredicateASTFactory(final Map<String, KiePMMLOriginalTypeGeneratedType> fieldTypeMap, final List<KiePMMLOutputField> outputFields, final List<KiePMMLDrooledRule> rules) {
         this.fieldTypeMap = fieldTypeMap;
         this.outputFields = outputFields;
         this.rules = rules;

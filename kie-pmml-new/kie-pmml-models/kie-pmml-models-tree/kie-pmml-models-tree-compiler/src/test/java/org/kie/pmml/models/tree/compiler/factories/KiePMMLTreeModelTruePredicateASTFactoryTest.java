@@ -17,8 +17,8 @@
 package org.kie.pmml.models.tree.compiler.factories;
 
 import java.util.Collections;
-import java.util.LinkedList;
-import java.util.Queue;
+import java.util.ArrayList;
+import java.util.List;
 
 import org.dmg.pmml.True;
 import org.junit.Test;
@@ -37,12 +37,11 @@ public class KiePMMLTreeModelTruePredicateASTFactoryTest {
     public void declareRuleFromTruePredicateNotFinalLeaf() {
         String parentPath = "_will play";
         String currentRule = "_will play_will play";
-        final Queue<KiePMMLDrooledRule> rules = new LinkedList<>();
-        String statusToSet = DONE;
+        final List<KiePMMLDrooledRule> rules = new ArrayList<>();
         True truePredicate = new True();
-        KiePMMLTreeModelTruePredicateASTFactory.factory(truePredicate, Collections.emptyList(), rules).declareRuleFromTruePredicate(parentPath, currentRule, statusToSet, false);
+        KiePMMLTreeModelTruePredicateASTFactory.factory(truePredicate, Collections.emptyList(), rules).declareRuleFromTruePredicate(parentPath, currentRule, DONE, false);
         assertEquals(1, rules.size());
-        final KiePMMLDrooledRule retrieved = rules.poll();
+        final KiePMMLDrooledRule retrieved = rules.get(0);
         assertNotNull(retrieved);
         assertEquals(currentRule, retrieved.getName());
         assertEquals(currentRule, retrieved.getStatusToSet());
@@ -55,12 +54,12 @@ public class KiePMMLTreeModelTruePredicateASTFactoryTest {
     public void declareRuleFromTruePredicateFinalLeaf() {
         String parentPath = "_will play";
         String currentRule = "_will play_will play";
-        final Queue<KiePMMLDrooledRule> rules = new LinkedList<>();
+        final List<KiePMMLDrooledRule> rules = new ArrayList<>();
         String statusToSet = DONE;
         True truePredicate = new True();
         KiePMMLTreeModelTruePredicateASTFactory.factory(truePredicate, Collections.emptyList(), rules).declareRuleFromTruePredicate(parentPath, currentRule, statusToSet, true);
         assertEquals(1, rules.size());
-        final KiePMMLDrooledRule retrieved = rules.poll();
+        final KiePMMLDrooledRule retrieved = rules.get(0);
         assertNotNull(retrieved);
         assertEquals(currentRule, retrieved.getName());
         assertEquals(statusToSet, retrieved.getStatusToSet());

@@ -17,7 +17,6 @@ package org.kie.pmml.models.tree.compiler.factories;
 
 import java.util.List;
 import java.util.Map;
-import java.util.Queue;
 
 import org.dmg.pmml.CompoundPredicate;
 import org.dmg.pmml.Predicate;
@@ -33,15 +32,15 @@ import org.slf4j.LoggerFactory;
 /**
  * Class used to generate <code>KiePMMLDrooledRule</code>s out of a <code>Predicate</code>
  */
-public class KiePMMLTreeModelPredicateASTFactory extends KiePMMLTreeModeAbstractPredicateASTFactory {
+public class KiePMMLTreeModelPredicateASTFactory extends KiePMMLTreeModelAbstractPredicateASTFactory {
 
     private static final Logger logger = LoggerFactory.getLogger(KiePMMLTreeModelPredicateASTFactory.class.getName());
 
-    private KiePMMLTreeModelPredicateASTFactory(final Map<String, KiePMMLOriginalTypeGeneratedType> fieldTypeMap, final List<KiePMMLOutputField> outputFields, final Queue<KiePMMLDrooledRule> rules) {
+    private KiePMMLTreeModelPredicateASTFactory(final Map<String, KiePMMLOriginalTypeGeneratedType> fieldTypeMap, final List<KiePMMLOutputField> outputFields, final List<KiePMMLDrooledRule> rules) {
         super(fieldTypeMap, outputFields, rules);
     }
 
-    public static KiePMMLTreeModelPredicateASTFactory factory(final Map<String, KiePMMLOriginalTypeGeneratedType> fieldTypeMap, final List<KiePMMLOutputField> outputFields, final Queue<KiePMMLDrooledRule> rules) {
+    public static KiePMMLTreeModelPredicateASTFactory factory(final Map<String, KiePMMLOriginalTypeGeneratedType> fieldTypeMap, final List<KiePMMLOutputField> outputFields, final List<KiePMMLDrooledRule> rules) {
         return new KiePMMLTreeModelPredicateASTFactory(fieldTypeMap, outputFields, rules);
     }
 

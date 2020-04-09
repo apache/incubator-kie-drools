@@ -16,9 +16,10 @@
 
 package org.kie.pmml.commons.factories;
 
+import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.Objects;
-import java.util.Queue;
+import java.util.List;
 import java.util.stream.IntStream;
 
 import org.drools.compiler.lang.api.DescrFactory;
@@ -45,13 +46,14 @@ public class KiePMMLDescrTypesFactoryTest {
 
     @Test
     public void declareTypes() {
-        Queue<KiePMMLDrooledType> types = new LinkedList<>();
+        List<KiePMMLDrooledType> types = new ArrayList<>();
         types.add(getDrooledType());
         types.add(getDottedDrooledType());
         assertTrue(builder.getDescr().getTypeDeclarations().isEmpty());
         KiePMMLDescrTypesFactory.factory(builder).declareTypes(types);
         assertEquals(2, builder.getDescr().getTypeDeclarations().size());
-        IntStream.range(0, types.size()).forEach(i -> commonVerifyTypeDeclarationDescr(Objects.requireNonNull(types.poll()), builder.getDescr().getTypeDeclarations().get(i)));
+        IntStream.range(0, types.size())
+                .forEach(i -> commonVerifyTypeDeclarationDescr(Objects.requireNonNull(types.get(i)), builder.getDescr().getTypeDeclarations().get(i)));
     }
 
     @Test

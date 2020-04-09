@@ -15,7 +15,7 @@
  */
 package org.kie.pmml.commons.factories;
 
-import java.util.Queue;
+import java.util.List;
 
 import org.drools.compiler.lang.api.PackageDescrBuilder;
 import org.kie.pmml.models.drooled.ast.KiePMMLDrooledType;
@@ -23,7 +23,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 /**
- * Class used to generate <b>Types</b> (descr) out of a <b>Queue&lt;KiePMMLDrooledType&gt;</b>
+ * Class used to generate <b>Types</b> (descr) out of a <b>List&lt;KiePMMLDrooledType&gt;</b>
  */
 public class KiePMMLDescrTypesFactory {
 
@@ -40,10 +40,10 @@ public class KiePMMLDescrTypesFactory {
     }
 
     /**
-     * Create types out of original <code>Queue&lt;KiePMMLDrooledType&gt;</code>s,
+     * Create types out of original <code>List&lt;KiePMMLDrooledType&gt;</code>s,
      * @param types
      */
-    public void declareTypes(final Queue<KiePMMLDrooledType> types) {
+    public void declareTypes(final List<KiePMMLDrooledType> types) {
         logger.debug("declareTypes {} ", types);
         types.forEach(this::declareType);
     }

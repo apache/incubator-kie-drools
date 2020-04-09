@@ -19,7 +19,6 @@ import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 import java.util.Map;
-import java.util.Queue;
 import java.util.stream.Collectors;
 
 import org.dmg.pmml.SimpleSetPredicate;
@@ -38,18 +37,18 @@ import static org.kie.pmml.models.tree.compiler.factories.KiePMMLTreeModelASTFac
 /**
  * Class used to generate <code>KiePMMLDrooledRule</code> out of a <code>SimpleSetPredicate</code>
  */
-public class KiePMMLTreeModelSimpleSetPredicateASTFactory extends KiePMMLTreeModeAbstractPredicateASTFactory {
+public class KiePMMLTreeModelSimpleSetPredicateASTFactory extends KiePMMLTreeModelAbstractPredicateASTFactory {
 
     private static final Logger logger = LoggerFactory.getLogger(KiePMMLTreeModelSimpleSetPredicateASTFactory.class.getName());
 
     private final SimpleSetPredicate simpleSetPredicate;
 
-    private KiePMMLTreeModelSimpleSetPredicateASTFactory(final SimpleSetPredicate simpleSetPredicate, final Map<String, KiePMMLOriginalTypeGeneratedType> fieldTypeMap, final List<KiePMMLOutputField> outputFields, final Queue<KiePMMLDrooledRule> rules) {
+    private KiePMMLTreeModelSimpleSetPredicateASTFactory(final SimpleSetPredicate simpleSetPredicate, final Map<String, KiePMMLOriginalTypeGeneratedType> fieldTypeMap, final List<KiePMMLOutputField> outputFields, final List<KiePMMLDrooledRule> rules) {
         super(fieldTypeMap, outputFields, rules);
         this.simpleSetPredicate = simpleSetPredicate;
     }
 
-    public static KiePMMLTreeModelSimpleSetPredicateASTFactory factory(final SimpleSetPredicate simpleSetPredicate, final Map<String, KiePMMLOriginalTypeGeneratedType> fieldTypeMap, final List<KiePMMLOutputField> outputFields, final Queue<KiePMMLDrooledRule> rules) {
+    public static KiePMMLTreeModelSimpleSetPredicateASTFactory factory(final SimpleSetPredicate simpleSetPredicate, final Map<String, KiePMMLOriginalTypeGeneratedType> fieldTypeMap, final List<KiePMMLOutputField> outputFields, final List<KiePMMLDrooledRule> rules) {
         return new KiePMMLTreeModelSimpleSetPredicateASTFactory(simpleSetPredicate, fieldTypeMap, outputFields, rules);
     }
 
@@ -62,7 +61,7 @@ public class KiePMMLTreeModelSimpleSetPredicateASTFactory extends KiePMMLTreeMod
         String key = fieldTypeMap.get(simpleSetPredicate.getField().getValue()).getGeneratedType();
         String stringValue = (String) simpleSetPredicate.getArray().getValue();
         String[] valuesArray = stringValue.split(" ");
-        List<Object> value = Arrays.asList(valuesArray).stream().map(rawValue -> {
+        List<Object> value = Arrays.stream(valuesArray).map(rawValue -> {
             String originalType = fieldTypeMap.get(simpleSetPredicate.getField().getValue()).getOriginalType();
             switch (originalType) {
                 case "string":

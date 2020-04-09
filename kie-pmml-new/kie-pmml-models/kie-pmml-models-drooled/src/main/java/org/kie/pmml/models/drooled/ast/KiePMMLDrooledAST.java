@@ -15,23 +15,23 @@
  */
 package org.kie.pmml.models.drooled.ast;
 
-import java.util.Queue;
+import java.util.List;
 
 public class KiePMMLDrooledAST {
 
-    private final Queue<KiePMMLDrooledType> types;
-    private final Queue<KiePMMLDrooledRule> rules;
+    private final List<KiePMMLDrooledType> types;
+    private final List<KiePMMLDrooledRule> rules;
 
-    public KiePMMLDrooledAST(Queue<KiePMMLDrooledType> types, Queue<KiePMMLDrooledRule> rules) {
+    public KiePMMLDrooledAST(List<KiePMMLDrooledType> types, List<KiePMMLDrooledRule> rules) {
         this.types = types;
         this.rules = rules;
     }
 
-    public Queue<KiePMMLDrooledType> getTypes() {
+    public List<KiePMMLDrooledType> getTypes() {
         return types;
     }
 
-    public Queue<KiePMMLDrooledRule> getRules() {
+    public List<KiePMMLDrooledRule> getRules() {
         return rules;
     }
 }

@@ -16,11 +16,11 @@
 
 package org.kie.pmml.models.tree.compiler.factories;
 
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
-import java.util.LinkedList;
+import java.util.List;
 import java.util.Map;
-import java.util.Queue;
 
 import org.dmg.pmml.PMML;
 import org.dmg.pmml.tree.ClassifierNode;
@@ -93,7 +93,7 @@ public class KiePMMLTreeModelNodeASTFactoryTest {
         final Map<String, KiePMMLOriginalTypeGeneratedType> fieldTypeMap = new HashMap<>();
         DATA_TYPE targetType = getTargetFieldType(golfingPmml.getDataDictionary(), golfingModel);
         KiePMMLTreeModelDataDictionaryASTFactory.factory(fieldTypeMap).declareTypes(golfingPmml.getDataDictionary());
-        final Queue<KiePMMLDrooledRule> rules = new LinkedList<>();
+        final List<KiePMMLDrooledRule> rules = new ArrayList<>();
         KiePMMLTreeModelNodeASTFactory.factory(fieldTypeMap, Collections.emptyList(), TreeModel.NoTrueChildStrategy.RETURN_NULL_PREDICTION, targetType).declareIntermediateRuleFromNode(finalNode, "_will play", rules);
         assertFalse(rules.isEmpty());
     }
@@ -106,7 +106,7 @@ public class KiePMMLTreeModelNodeASTFactoryTest {
         final Map<String, KiePMMLOriginalTypeGeneratedType> fieldTypeMap = new HashMap<>();
         DATA_TYPE targetType = getTargetFieldType(irisPmml.getDataDictionary(), irisModel);
         KiePMMLTreeModelDataDictionaryASTFactory.factory(fieldTypeMap).declareTypes(irisPmml.getDataDictionary());
-        final Queue<KiePMMLDrooledRule> rules = new LinkedList<>();
+        final List<KiePMMLDrooledRule> rules = new ArrayList<>();
         KiePMMLTreeModelNodeASTFactory.factory(fieldTypeMap, Collections.emptyList(), TreeModel.NoTrueChildStrategy.RETURN_NULL_PREDICTION, targetType).declareIntermediateRuleFromNode(finalNode, "_setosa", rules);
         assertFalse(rules.isEmpty());
     }

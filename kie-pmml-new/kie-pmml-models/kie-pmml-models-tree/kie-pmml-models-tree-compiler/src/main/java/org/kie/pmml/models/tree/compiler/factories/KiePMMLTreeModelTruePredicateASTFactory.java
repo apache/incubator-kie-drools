@@ -17,7 +17,6 @@ package org.kie.pmml.models.tree.compiler.factories;
 
 import java.util.Collections;
 import java.util.List;
-import java.util.Queue;
 
 import org.dmg.pmml.True;
 import org.drools.core.util.StringUtils;
@@ -34,18 +33,18 @@ import static org.kie.pmml.models.tree.compiler.factories.KiePMMLTreeModelASTFac
 /**
  * Class used to generate a <code>KiePMMLDrooledRule</code> out of a <code>True</code> predicate
  */
-public class KiePMMLTreeModelTruePredicateASTFactory extends KiePMMLTreeModeAbstractPredicateASTFactory {
+public class KiePMMLTreeModelTruePredicateASTFactory extends KiePMMLTreeModelAbstractPredicateASTFactory {
 
     private static final Logger logger = LoggerFactory.getLogger(KiePMMLTreeModelTruePredicateASTFactory.class.getName());
 
     private final True truePredicate;
 
-    private KiePMMLTreeModelTruePredicateASTFactory(final True truePredicate, final List<KiePMMLOutputField> outputFields, final Queue<KiePMMLDrooledRule> rules) {
+    private KiePMMLTreeModelTruePredicateASTFactory(final True truePredicate, final List<KiePMMLOutputField> outputFields, final List<KiePMMLDrooledRule> rules) {
         super(Collections.emptyMap(), outputFields, rules);
         this.truePredicate = truePredicate;
     }
 
-    public static KiePMMLTreeModelTruePredicateASTFactory factory(final True truePredicate, final List<KiePMMLOutputField> outputFields, final Queue<KiePMMLDrooledRule> rules) {
+    public static KiePMMLTreeModelTruePredicateASTFactory factory(final True truePredicate, final List<KiePMMLOutputField> outputFields, final List<KiePMMLDrooledRule> rules) {
         return new KiePMMLTreeModelTruePredicateASTFactory(truePredicate, outputFields, rules);
     }
 

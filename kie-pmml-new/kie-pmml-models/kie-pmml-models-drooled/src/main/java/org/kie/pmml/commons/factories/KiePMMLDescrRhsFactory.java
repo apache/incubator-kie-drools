@@ -30,7 +30,7 @@ import static org.kie.pmml.commons.factories.KiePMMLDescrRulesFactory.BREAK_LABE
 import static org.kie.pmml.commons.factories.KiePMMLDescrRulesFactory.STATUS_HOLDER;
 
 /**
- * Class used to generate <b>Rules</b> (descr) out of a <b>Queue&lt;KiePMMLDrooledRule&gt;</b>
+ * Class used to generate the <b>rhs</b> of a rule (descr) out of a <b>KiePMMLDrooledRule</b>
  */
 public class KiePMMLDescrRhsFactory {
 

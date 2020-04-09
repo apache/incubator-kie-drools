@@ -16,11 +16,10 @@
 
 package org.kie.pmml.commons.factories;
 
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
-import java.util.LinkedList;
 import java.util.List;
-import java.util.Queue;
 
 import org.dmg.pmml.SimplePredicate;
 import org.drools.compiler.lang.descr.GlobalDescr;
@@ -52,7 +51,7 @@ public class KiePMMLDescrFactoryTest {
 
     @Test
     public void getBaseDescr() {
-        Queue<KiePMMLDrooledType> types = new LinkedList<>();
+        List<KiePMMLDrooledType> types = new ArrayList<>();
         types.add(getDrooledType());
         types.add(getDottedDrooledType());
         List<KiePMMLFieldOperatorValue> orConstraints = Arrays.asList(new KiePMMLFieldOperatorValue(PATTERN_TYPE, "or", Collections.singletonList(new KiePMMLOperatorValue("<", 35)), null),
@@ -60,7 +59,7 @@ public class KiePMMLDescrFactoryTest {
         KiePMMLDrooledRule rule = KiePMMLDrooledRule.builder(RULE_NAME, STATUS_TO_SET, Collections.emptyList())
                 .withOrConstraints(orConstraints)
                 .build();
-        Queue<KiePMMLDrooledRule> rules = new LinkedList<>();
+        List<KiePMMLDrooledRule> rules = new ArrayList<>();
         rules.add(rule);
         KiePMMLDrooledAST drooledAST = new KiePMMLDrooledAST(types, rules);
         PackageDescr packageDescr = KiePMMLDescrFactory.getBaseDescr(drooledAST, PACKAGE_NAME);

@@ -15,9 +15,8 @@
  */
 package org.kie.pmml.models.tree.compiler.factories;
 
-import java.util.LinkedList;
+import java.util.List;
 import java.util.Map;
-import java.util.Queue;
 import java.util.stream.Collectors;
 
 import org.dmg.pmml.DataDictionary;
@@ -52,8 +51,8 @@ public class KiePMMLTreeModelDataDictionaryASTFactory {
      * and <b>populate</b> the <b>fieldNameTypeNameMap</b> with mapping between original field' name and <b>original type/generated type</b> tupla
      * @param dataDictionary
      */
-    public Queue<KiePMMLDrooledType> declareTypes(final DataDictionary dataDictionary) {
-        return dataDictionary.getDataFields().stream().map(this::declareType).collect(Collectors.toCollection(LinkedList::new));
+    public List<KiePMMLDrooledType> declareTypes(final DataDictionary dataDictionary) {
+        return dataDictionary.getDataFields().stream().map(this::declareType).collect(Collectors.toList());
     }
 
     /**

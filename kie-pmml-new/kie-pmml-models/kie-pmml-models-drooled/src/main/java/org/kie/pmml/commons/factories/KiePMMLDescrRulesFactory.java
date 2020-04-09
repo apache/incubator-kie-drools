@@ -15,7 +15,7 @@
  */
 package org.kie.pmml.commons.factories;
 
-import java.util.Queue;
+import java.util.List;
 
 import org.drools.compiler.lang.api.PackageDescrBuilder;
 import org.drools.compiler.lang.api.RuleDescrBuilder;
@@ -25,7 +25,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 /**
- * Class used to generate <b>Rules</b> (descr) out of a <b>Queue&lt;KiePMMLDrooledRule&gt;</b>
+ * Class used to generate <b>Rules</b> (descr) out of a <b>List&lt;KiePMMLDrooledRule&gt;</b>
  */
 public class KiePMMLDescrRulesFactory {
 
@@ -44,7 +44,7 @@ public class KiePMMLDescrRulesFactory {
         return new KiePMMLDescrRulesFactory(builder);
     }
 
-    public void declareRules(final Queue<KiePMMLDrooledRule> rules) {
+    public void declareRules(final List<KiePMMLDrooledRule> rules) {
         logger.debug("declareRules {}", rules);
         rules.forEach(this::declareRule);
     }
