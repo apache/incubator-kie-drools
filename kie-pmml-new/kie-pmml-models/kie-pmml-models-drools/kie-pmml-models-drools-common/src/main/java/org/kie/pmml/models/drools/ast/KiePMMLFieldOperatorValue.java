@@ -34,7 +34,6 @@ public class KiePMMLFieldOperatorValue {
     private final List<KiePMMLOperatorValue> kiePMMLOperatorValues;
     private final List<KiePMMLFieldOperatorValue> nestedKiePMMLFieldOperatorValues;
     private final String constraintsString;
-    private final String toString;
 
     /**
      * @param name The name of the type
@@ -48,7 +47,6 @@ public class KiePMMLFieldOperatorValue {
         this.kiePMMLOperatorValues = kiePMMLOperatorValues;
         this.nestedKiePMMLFieldOperatorValues = nestedKiePMMLFieldOperatorValues;
         constraintsString = buildConstraintsString();
-        toString = buildToString();
     }
 
     public String getName() {
@@ -69,7 +67,13 @@ public class KiePMMLFieldOperatorValue {
 
     @Override
     public String toString() {
-        return toString;
+        return "KiePMMLFieldOperatorValue{" +
+                "name='" + name + '\'' +
+                ", operator='" + operator + '\'' +
+                ", kiePMMLOperatorValues=" + kiePMMLOperatorValues +
+                ", nestedKiePMMLFieldOperatorValues=" + nestedKiePMMLFieldOperatorValues +
+                ", constraintsString='" + constraintsString + '\'' +
+                '}';
     }
 
     @Override
@@ -92,14 +96,6 @@ public class KiePMMLFieldOperatorValue {
     }
 
     protected String buildConstraintsString() {
-        return kiePMMLOperatorValues.stream().map(KiePMMLOperatorValue::toString).collect(Collectors.joining(" " + operator + " "));
-    }
-
-    protected String buildToString() {
-        if (name != null) {
-            return String.format(FIELD_CONSTRAINT_PATTERN, name, constraintsString);
-        } else {
-            return String.format(NO_FIELD_CONSTRAINT_PATTERN, constraintsString);
-        }
+        return kiePMMLOperatorValues.stream().map(KiePMMLOperatorValue::getConstraintsAsString).collect(Collectors.joining(" " + operator + " "));
     }
 }

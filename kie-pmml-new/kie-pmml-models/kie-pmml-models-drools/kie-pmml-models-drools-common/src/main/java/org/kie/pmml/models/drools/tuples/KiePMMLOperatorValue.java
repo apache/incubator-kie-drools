@@ -25,10 +25,12 @@ public class KiePMMLOperatorValue {
     public static final String VALUE_CONSTRAINT_PATTERN = "value %s %s";
     private final String operator;
     private final Object value;
+    private final String constraintsString;
 
     public KiePMMLOperatorValue(String operator, Object value) {
         this.operator = operator;
         this.value = value;
+        constraintsString = buildConstraintsString();
     }
 
     public String getOperator() {
@@ -39,9 +41,16 @@ public class KiePMMLOperatorValue {
         return value;
     }
 
+    public String getConstraintsAsString() {
+        return constraintsString;
+    }
+
     @Override
     public String toString() {
-        return String.format(VALUE_CONSTRAINT_PATTERN, operator, value);
+        return "KiePMMLOperatorValue{" +
+                "operator='" + operator + '\'' +
+                ", value=" + value +
+                '}';
     }
 
     @Override
@@ -60,5 +69,9 @@ public class KiePMMLOperatorValue {
     @Override
     public int hashCode() {
         return Objects.hash(operator, value);
+    }
+
+    protected String buildConstraintsString() {
+        return String.format(VALUE_CONSTRAINT_PATTERN, operator, value);
     }
 }

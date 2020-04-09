@@ -32,10 +32,10 @@ public class KiePMMLFieldOperatorValueTest {
     private static final String OPERATOR = "OPERATOR";
 
     @Test
-    public void buildConstraintsString() {
+    public void getConstraintsAsString() {
         KiePMMLFieldOperatorValue kiePMMLFieldOperatorValue = getKiePMMLFieldOperatorValueWithName();
         String expected = "value < 35 OPERATOR value > 85";
-        String retrieved = kiePMMLFieldOperatorValue.buildConstraintsString();
+        String retrieved = kiePMMLFieldOperatorValue.getConstraintsAsString();
         assertEquals(expected, retrieved);
         kiePMMLFieldOperatorValue = getKiePMMLFieldOperatorValueWithoutName();
         expected = "value < 35 OPERATOR value > 85";
@@ -44,14 +44,14 @@ public class KiePMMLFieldOperatorValueTest {
     }
 
     @Test
-    public void buildToString() {
+    public void buildConstraintsString() {
         KiePMMLFieldOperatorValue kiePMMLFieldOperatorValue = getKiePMMLFieldOperatorValueWithName();
-        String expected = " NAME (value < 35 OPERATOR value > 85)";
-        String retrieved = kiePMMLFieldOperatorValue.buildToString();
+        String expected = "value < 35 OPERATOR value > 85";
+        String retrieved = kiePMMLFieldOperatorValue.buildConstraintsString();
         assertEquals(expected, retrieved);
         kiePMMLFieldOperatorValue = getKiePMMLFieldOperatorValueWithoutName();
-        expected = "(value < 35 OPERATOR value > 85)";
-        retrieved = kiePMMLFieldOperatorValue.buildToString();
+        expected = "value < 35 OPERATOR value > 85";
+        retrieved = kiePMMLFieldOperatorValue.buildConstraintsString();
         assertEquals(expected, retrieved);
     }
 
