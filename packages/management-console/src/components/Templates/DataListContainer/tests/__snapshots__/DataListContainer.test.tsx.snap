@@ -12,7 +12,6 @@ exports[`DataListContainer component tests Snapshot tests 1`] = `
     completedMessageObj={Object {}}
     handleModalToggle={[Function]}
     isAbortModalOpen={false}
-    isModalLarge={false}
     isModalOpen={false}
     isSingleAbort={false}
   />

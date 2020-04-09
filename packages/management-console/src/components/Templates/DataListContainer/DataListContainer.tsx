@@ -25,6 +25,7 @@ import {
 } from '../../../graphql/types';
 import axios from 'axios';
 import { InfoCircleIcon } from '@patternfly/react-icons';
+import ServerErrorsComponent from '../../Molecules/ServerErrorsComponent/ServerErrorsComponent';
 
 const DataListContainer: React.FC<{}> = () => {
   const pSize = 10;
@@ -54,7 +55,7 @@ const DataListContainer: React.FC<{}> = () => {
   const [isAllChecked, setIsAllChecked] = useState(false);
   const [
     getProcessInstances,
-    { loading, data }
+    { loading, data, error }
   ] = useGetProcessInstancesLazyQuery({
     fetchPolicy: 'network-only',
     notifyOnNetworkStatusChange: true
@@ -219,7 +220,10 @@ const DataListContainer: React.FC<{}> = () => {
     for (const [id, processInstance] of Object.entries(tempAbortedObj)) {
       initData.ProcessInstances.map(instance => {
         if (instance.id === id) {
-          if (instance.addons.includes('process-management') && instance.serviceUrl !== null) {
+          if (
+            instance.addons.includes('process-management') &&
+            instance.serviceUrl !== null
+          ) {
             if (
               instance.state === ProcessInstanceState.Completed ||
               instance.state === ProcessInstanceState.Aborted
@@ -234,7 +238,10 @@ const DataListContainer: React.FC<{}> = () => {
         if (instance.childDataList !== undefined) {
           instance.childDataList.map(child => {
             if (child.id === id) {
-              if (instance.addons.includes('process-management') && instance.serviceUrl !== null) {
+              if (
+                instance.addons.includes('process-management') &&
+                instance.serviceUrl !== null
+              ) {
                 if (
                   child.state === ProcessInstanceState.Completed ||
                   child.state === ProcessInstanceState.Aborted
@@ -274,10 +281,16 @@ const DataListContainer: React.FC<{}> = () => {
       });
   };
 
+  if (error || getProcessInstancesWithBK.error) {
+    return (
+      <ServerErrorsComponent
+        message={error ? error : getProcessInstancesWithBK.error}
+      />
+    );
+  }
   return (
     <React.Fragment>
       <ProcessBulkModalComponent
-        isModalLarge={false}
         modalTitle={
           titleType === 'success'
             ? setTitle(titleType, modalTitle)
@@ -351,17 +364,17 @@ const DataListContainer: React.FC<{}> = () => {
                   selectedNumber={selectedNumber}
                 />
               ) : (
-                  <EmptyStateComponent
-                    iconType="warningTriangleIcon1"
-                    title="No status is selected"
-                    body="Try selecting at least one status to see results"
-                    filterClick={onFilterClick}
-                    setFilters={setFilters}
-                    setCheckedArray={setCheckedArray}
-                    setSearchWord={setSearchWord}
-                    filters={filters}
-                  />
-                )}
+                <EmptyStateComponent
+                  iconType="warningTriangleIcon1"
+                  title="No status is selected"
+                  body="Try selecting at least one status to see results"
+                  filterClick={onFilterClick}
+                  setFilters={setFilters}
+                  setCheckedArray={setCheckedArray}
+                  setSearchWord={setSearchWord}
+                  filters={filters}
+                />
+              )}
               {!loading &&
                 !isLoading &&
                 !isDefiningFilter &&

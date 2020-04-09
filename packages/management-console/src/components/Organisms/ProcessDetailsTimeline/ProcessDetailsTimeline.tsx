@@ -26,27 +26,34 @@ import {
 import React, { useState } from 'react';
 import './ProcessDetailsTimeline.css';
 import { ProcessInstance } from '../../../graphql/types';
+import { handleRetry, handleSkip } from '../../../utils/Utils';
 
 export interface IOwnProps {
   data: Pick<
     ProcessInstance,
-    'id' | 'nodes' | 'addons' | 'error' | 'serviceUrl'
+    'id' | 'nodes' | 'addons' | 'error' | 'serviceUrl' | 'processId' | 'state'
   >;
-  handleSkip: () => void;
-  handleRetry: () => void;
+  setModalTitle: (modalTitle: string) => void,
+  setTitleType: (titleType: string) => void,
+  setModalContent: (modalContent: string) => void,
+  handleSkipModalToggle: () => void
+  handleRetryModalToggle: () => void
 }
 
 const ProcessDetailsTimeline: React.FC<IOwnProps> = ({
   data,
-  handleRetry,
-  handleSkip
+  setModalTitle,
+  setModalContent,
+  setTitleType,
+  handleRetryModalToggle,
+  handleSkipModalToggle
 }) => {
   const [isKebabOpen, setIsKebabOpen] = useState(false);
   const dropdownItems = [
-    <DropdownItem key="retry" component="button" onClick={handleRetry}>
+    <DropdownItem key="retry" component="button" onClick={() => handleRetry(data, setModalTitle, setTitleType, setModalContent, handleRetryModalToggle)}>
       Retry
     </DropdownItem>,
-    <DropdownItem key="skip" component="button" onClick={handleSkip}>
+    <DropdownItem key="skip" component="button" onClick={() => handleSkip(data, setModalTitle, setTitleType, setModalContent, handleSkipModalToggle)}>
       Skip
     </DropdownItem>
   ];
@@ -79,25 +86,25 @@ const ProcessDetailsTimeline: React.FC<IOwnProps> = ({
                     {
                       <>
                         {data.error &&
-                        content.definitionId === data.error.nodeDefinitionId ? (
-                          <Tooltip content={data.error.message}>
-                            <ErrorCircleOIcon
-                              color="var(--pf-global--danger-color--100)"
-                              className="kogito-management-console--timeline-status"
-                            />
-                          </Tooltip>
-                        ) : content.exit === null ? (
-                          <Tooltip content={'Active'}>
-                            <OnRunningIcon className="kogito-management-console--timeline-status" />
-                          </Tooltip>
-                        ) : (
-                          <Tooltip content={'Completed'}>
-                            <CheckCircleIcon
-                              color="var(--pf-global--success-color--100)"
-                              className="kogito-management-console--timeline-status"
-                            />
-                          </Tooltip>
-                        )}
+                          content.definitionId === data.error.nodeDefinitionId ? (
+                            <Tooltip content={data.error.message}>
+                              <ErrorCircleOIcon
+                                color="var(--pf-global--danger-color--100)"
+                                className="kogito-management-console--timeline-status"
+                              />
+                            </Tooltip>
+                          ) : content.exit === null ? (
+                            <Tooltip content={'Active'}>
+                              <OnRunningIcon className="kogito-management-console--timeline-status" />
+                            </Tooltip>
+                          ) : (
+                              <Tooltip content={'Completed'}>
+                                <CheckCircleIcon
+                                  color="var(--pf-global--success-color--100)"
+                                  className="kogito-management-console--timeline-status"
+                                />
+                              </Tooltip>
+                            )}
                       </>
                     }
                   </SplitItem>
@@ -119,10 +126,10 @@ const ProcessDetailsTimeline: React.FC<IOwnProps> = ({
                           {content.exit === null ? (
                             'Active'
                           ) : (
-                            <Moment fromNow>
-                              {new Date(`${content.exit}`)}
-                            </Moment>
-                          )}
+                              <Moment fromNow>
+                                {new Date(`${content.exit}`)}
+                              </Moment>
+                            )}
                         </Text>
                       </Text>
                     </TextContent>
@@ -131,32 +138,32 @@ const ProcessDetailsTimeline: React.FC<IOwnProps> = ({
                     {
                       <>
                         {data.addons.includes('process-management') &&
-                        data.serviceUrl !== null &&
-                        data.error &&
-                        content.definitionId === data.error.nodeDefinitionId ? (
-                          <Dropdown
-                            onSelect={onDropdownSelect}
-                            toggle={
-                              <KebabToggle
-                                onToggle={onKebabToggle}
-                                id={'timeline-kebab-toggle-' + idx}
-                              />
-                            }
-                            isOpen={isKebabOpen}
-                            isPlain
-                            dropdownItems={dropdownItems}
-                          />
-                        ) : (
-                          <Dropdown
-                            toggle={
-                              <KebabToggle
-                                isDisabled
-                                id={'timeline-kebab-toggle-disabled-' + idx}
-                              />
-                            }
-                            isPlain
-                          />
-                        )}
+                          data.serviceUrl !== null &&
+                          data.error &&
+                          content.definitionId === data.error.nodeDefinitionId ? (
+                            <Dropdown
+                              onSelect={onDropdownSelect}
+                              toggle={
+                                <KebabToggle
+                                  onToggle={onKebabToggle}
+                                  id={'timeline-kebab-toggle-' + idx}
+                                />
+                              }
+                              isOpen={isKebabOpen}
+                              isPlain
+                              dropdownItems={dropdownItems}
+                            />
+                          ) : (
+                            <Dropdown
+                              toggle={
+                                <KebabToggle
+                                  isDisabled
+                                  id={'timeline-kebab-toggle-disabled-' + idx}
+                                />
+                              }
+                              isPlain
+                            />
+                          )}
                       </>
                     }
                   </SplitItem>{' '}

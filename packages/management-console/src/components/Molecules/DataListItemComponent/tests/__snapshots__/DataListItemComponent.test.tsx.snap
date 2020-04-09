@@ -67,7 +67,6 @@ exports[`DataListItem component tests Snapshot tests 1`] = `
     completedMessageObj={Object {}}
     handleModalToggle={[Function]}
     isAbortModalOpen={false}
-    isModalLarge={false}
     isModalOpen={false}
     isSingleAbort={true}
   />
@@ -77,9 +76,6 @@ exports[`DataListItem component tests Snapshot tests 1`] = `
         "ACTIVE",
       ]
     }
-    handleModalToggle={null}
-    isModalLarge={false}
-    isModalOpen={false}
     modalContent=""
   />
   <DataListItem
@@ -357,22 +353,6 @@ exports[`DataListItem component tests Snapshot tests 1`] = `
               onToggle={[Function]}
             />
           }
-        />
-        <Modalbox
-          checkedArray={
-            Array [
-              "ACTIVE",
-            ]
-          }
-          handleModalToggle={[Function]}
-          handleRetry={[Function]}
-          handleRetryModalToggle={[Function]}
-          handleSkip={[Function]}
-          handleSkipModalToggle={[Function]}
-          isAddonPresent={false}
-          isModalLarge={true}
-          isModalOpen={false}
-          modalContent=""
         />
       </DataListAction>
     </DataListItemRow>

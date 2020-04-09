@@ -11,20 +11,14 @@ import {
 import ProcessBulkListComponent from '../ProcessBulkListComponent/ProcessBulkListComponent';
 
 interface IOwnProps {
-  isModalLarge: any;
-  modalTitle: any;
+  modalTitle: JSX.Element;
   modalContent?: string;
-  handleModalToggle: any;
+  handleModalToggle: () => void;
   abortedMessageObj?: any;
   completedMessageObj?: any;
   isModalOpen: boolean;
   checkedArray: string[];
-  handleSkip?: any;
-  handleRetry?: any;
-  isAddonPresent?: boolean;
   isAbortModalOpen?: boolean;
-  handleSkipModalToggle?: any;
-  handleRetryModalToggle?: any;
   isSingleAbort?: any;
 }
 const Modalbox: React.FC<IOwnProps> = ({
@@ -32,22 +26,15 @@ const Modalbox: React.FC<IOwnProps> = ({
   modalTitle,
   abortedMessageObj,
   completedMessageObj,
-  isModalLarge,
   isModalOpen,
   checkedArray,
   handleModalToggle,
-  handleSkip,
-  handleRetry,
-  isAddonPresent,
   isAbortModalOpen,
-  handleSkipModalToggle,
-  handleRetryModalToggle,
   isSingleAbort
 }) => {
   return (
     <Modal
-      isLarge={isModalLarge}
-      isSmall={!isModalLarge}
+      isSmall={true}
       title=""
       header={
         <Title headingLevel={TitleLevel.h1} size={BaseSizes['2xl']}>
@@ -56,47 +43,15 @@ const Modalbox: React.FC<IOwnProps> = ({
       }
       isOpen={isModalOpen}
       onClose={handleModalToggle}
-      actions={
-        isModalLarge && isAddonPresent
-          ? [
-              <Button
-                key="confirm1"
-                variant="secondary"
-                onClick={() => {
-                  handleSkip();
-                  handleSkipModalToggle();
-                }}
-              >
-                Skip
-              </Button>,
-              <Button
-                key="confirm2"
-                variant="secondary"
-                onClick={() => {
-                  handleRetry();
-                  handleSkipModalToggle();
-                }}
-              >
-                Retry
-              </Button>,
-              <Button
-                key="confirm3"
-                variant="primary"
-                onClick={handleModalToggle}
-              >
-                Close
-              </Button>
-            ]
-          : [
-              <Button
-                key="confirm3"
-                variant="primary"
-                onClick={handleModalToggle}
-              >
-                OK
-              </Button>
-            ]
-      }
+      actions={[
+        <Button
+          key="confirm-selection"
+          variant="primary"
+          onClick={handleModalToggle}
+        >
+          OK
+        </Button>
+      ]}
       isFooterLeftAligned={false}
     >
       {abortedMessageObj !== undefined &&

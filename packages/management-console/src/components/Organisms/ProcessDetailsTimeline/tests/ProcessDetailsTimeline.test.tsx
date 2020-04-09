@@ -54,8 +54,11 @@ const props = {
     ],
     childProcessInstances: []
   },
-  handleSkip: jest.fn(),
-  handleRetry: jest.fn()
+  setModalTitle: jest.fn(),
+  setTitleType: jest.fn(),
+  setModalContent: jest.fn(),
+  handleSkipModalToggle: jest.fn(),
+  handleRetryModalToggle: jest.fn()
 };
 
 describe('Process Details Timeline component', () => {

@@ -31,8 +31,7 @@ import SpinnerComponent from '../../Atoms/SpinnerComponent/SpinnerComponent';
 import ServerErrorsComponent from '../../Molecules/ServerErrorsComponent/ServerErrorsComponent';
 import PageTitleComponent from '../../Molecules/PageTitleComponent/PageTitleComponent';
 import ProcessBulkModalComponent from '../../Atoms/ProcessBulkModalComponent/ProcessBulkModalComponent';
-import axios from 'axios';
-import { InfoCircleIcon } from '@patternfly/react-icons';
+import { handleAbort, setTitle, isModalOpen, modalToggle } from '../../../utils/Utils';
 
 const ProcessDetailsPage = ({ match }) => {
   const [isSkipModalOpen, setIsSkipModalOpen] = useState<boolean>(false);
@@ -42,7 +41,7 @@ const ProcessDetailsPage = ({ match }) => {
   const [modalContent, setModalContent] = useState<string>('');
   const id = match.params.instanceID;
   const [isAbortModalOpen, setIsAbortModalOpen] = useState<boolean>(false);
-  const currentPage = JSON.parse(window.localStorage.getItem('state'))
+  const currentPage = JSON.parse(window.localStorage.getItem('state'));
 
   const { loading, error, data } = useGetProcessInstanceByIdQuery({
     variables: { id }
@@ -60,96 +59,6 @@ const ProcessDetailsPage = ({ match }) => {
     setIsRetryModalOpen(!isRetryModalOpen);
   };
 
-  const handleAbortInstance = () => {
-    axios
-      .delete(
-        `${data.ProcessInstances[0].serviceUrl}/management/processes/${data.ProcessInstances[0].processId}/instances/${data.ProcessInstances[0].id}`
-      )
-      .then(() => {
-        setTitleType('success');
-        data.ProcessInstances[0].state = ProcessInstanceState.Aborted;
-        handleAbortModalToggle();
-      })
-      .catch(() => {
-        setTitleType('failure');
-        handleAbortModalToggle();
-      });
-  };
-
-  const handleSkip = () => {
-    setModalTitle('Skip operation');
-    axios
-      .post(
-        `${data.ProcessInstances[0].serviceUrl}/management/processes/${data.ProcessInstances[0].processId}/instances/${data.ProcessInstances[0].id}/skip`
-      )
-      .then(() => {
-        setTitleType('success');
-        setModalContent(
-          'Process execution has successfully skipped node which was in error state.'
-        );
-        handleSkipModalToggle();
-      })
-      .catch(axiosError => {
-        setTitleType('failure');
-        setModalContent(
-          `Process execution failed to skip node which is in error state. Message: ${JSON.stringify(
-            axiosError.message
-          )}`
-        );
-
-        handleSkipModalToggle();
-      });
-  };
-
-  const handleRetry = () => {
-    setModalTitle('Retry operation');
-    axios
-      .post(
-        `${data.ProcessInstances[0].serviceUrl}/management/processes/${data.ProcessInstances[0].processId}/instances/${data.ProcessInstances[0].id}/retrigger`
-      )
-      .then(() => {
-        setTitleType('success');
-        setModalContent(
-          `Process execution has successfully re-executed node which was in error state.`
-        );
-        handleRetryModalToggle();
-      })
-      .catch(axiosError => {
-        setTitleType('failure');
-        setModalContent(
-          `Process execution failed to re-execute node which is in error state. Message: ${JSON.stringify(
-            axiosError.message
-          )}`
-        );
-        handleRetryModalToggle();
-      });
-  };
-
-  const setTitle = (titleStatus, titleText) => {
-    switch (titleStatus) {
-      case 'success':
-        return (
-          <>
-            <InfoCircleIcon
-              className="pf-u-mr-sm"
-              color="var(--pf-global--info-color--100)"
-            />{' '}
-            {titleText}{' '}
-          </>
-        );
-      case 'failure':
-        return (
-          <>
-            <InfoCircleIcon
-              className="pf-u-mr-sm"
-              color="var(--pf-global--danger-color--100)"
-            />{' '}
-            {titleText}{' '}
-          </>
-        );
-    }
-  };
-
   const abortButton = () => {
     if (
       (data.ProcessInstances[0].state === ProcessInstanceState.Active ||
@@ -159,7 +68,18 @@ const ProcessDetailsPage = ({ match }) => {
       data.ProcessInstances[0].serviceUrl !== null
     ) {
       return (
-        <Button variant="secondary" onClick={handleAbortInstance}>
+        <Button
+          variant="secondary"
+          onClick={() =>
+            handleAbort(
+              data.ProcessInstances[0],
+              setModalTitle,
+              setTitleType,
+              setModalContent,
+              handleAbortModalToggle
+            )
+          }
+        >
           Abort
         </Button>
       );
@@ -207,7 +127,6 @@ const ProcessDetailsPage = ({ match }) => {
         (<>
           <PageSection variant="light">
             <ProcessBulkModalComponent
-              isModalLarge={false}
               isModalOpen={isAbortModalOpen}
               handleModalToggle={handleAbortModalToggle}
               checkedArray={data && [data.ProcessInstances[0].state]}
@@ -222,19 +141,8 @@ const ProcessDetailsPage = ({ match }) => {
               isAbortModalOpen={isAbortModalOpen}
             />
             <ProcessBulkModalComponent
-              isModalLarge={false}
-              isModalOpen={
-                modalTitle === 'Skip operation'
-                  ? isSkipModalOpen
-                  : modalTitle === 'Retry operation' && isRetryModalOpen
-              }
-              handleModalToggle={
-                modalTitle === 'Skip operation'
-                  ? handleSkipModalToggle
-                  : modalTitle === 'Retry operation'
-                    ? handleRetryModalToggle
-                    : null
-              }
+              isModalOpen={isModalOpen(modalTitle, isSkipModalOpen, isRetryModalOpen)}
+              handleModalToggle={modalToggle(modalTitle, handleSkipModalToggle, handleRetryModalToggle)}
               checkedArray={data && [data.ProcessInstances[0].state]}
               modalTitle={setTitle(titleType, modalTitle)}
               modalContent={modalContent}
@@ -305,8 +213,11 @@ const ProcessDetailsPage = ({ match }) => {
                 <GridItem>
                   <ProcessDetailsTimeline
                     data={data.ProcessInstances[0]}
-                    handleSkip={handleSkip}
-                    handleRetry={handleRetry}
+                    setModalContent={setModalContent}
+                    setModalTitle={setModalTitle}
+                    setTitleType={setTitleType}
+                    handleSkipModalToggle={handleSkipModalToggle}
+                    handleRetryModalToggle={handleRetryModalToggle}
                   />
                 </GridItem>
               </Grid>
