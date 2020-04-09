@@ -49,16 +49,12 @@ public class DMNResult implements Serializable, org.kie.dmn.api.core.DMNResult {
         // Intentionally blank.
     }
 
-    public DMNResult(org.kie.dmn.api.core.DMNResult dmnResult) {
+    public DMNResult(String namespace, String modelName, org.kie.dmn.api.core.DMNResult dmnResult) {
+        this.namespace = namespace;
+        this.modelName = modelName;
         this.setDmnContext(dmnResult.getContext().getAll());
         this.setMessages(dmnResult.getMessages());
         this.setDecisionResults(dmnResult.getDecisionResults());
-    }
-
-    public DMNResult(String namespace, String modelName, DMNResult dmnResult) {
-        this(dmnResult);
-        this.namespace = namespace;
-        this.modelName = modelName;
     }
 
     public String getNamespace() {
