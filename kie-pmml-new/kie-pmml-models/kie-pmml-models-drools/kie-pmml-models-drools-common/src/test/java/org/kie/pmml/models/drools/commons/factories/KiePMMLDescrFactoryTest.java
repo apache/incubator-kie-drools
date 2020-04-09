@@ -28,9 +28,9 @@ import org.drools.compiler.lang.descr.PackageDescr;
 import org.drools.compiler.lang.descr.RuleDescr;
 import org.junit.Test;
 import org.kie.api.pmml.PMML4Result;
-import org.kie.pmml.models.drools.ast.KiePMMLDrooledAST;
-import org.kie.pmml.models.drools.ast.KiePMMLDrooledRule;
-import org.kie.pmml.models.drools.ast.KiePMMLDrooledType;
+import org.kie.pmml.models.drools.ast.KiePMMLDroolsAST;
+import org.kie.pmml.models.drools.ast.KiePMMLDroolsRule;
+import org.kie.pmml.models.drools.ast.KiePMMLDroolsType;
 import org.kie.pmml.models.drools.ast.KiePMMLFieldOperatorValue;
 import org.kie.pmml.models.drools.executor.KiePMMLStatusHolder;
 import org.kie.pmml.models.drools.tuples.KiePMMLOperatorValue;
@@ -49,17 +49,17 @@ public class KiePMMLDescrFactoryTest {
 
     @Test
     public void getBaseDescr() {
-        List<KiePMMLDrooledType> types = new ArrayList<>();
-        types.add(KiePMMLDescrTestUtils.getDrooledType());
-        types.add(KiePMMLDescrTestUtils.getDottedDrooledType());
+        List<KiePMMLDroolsType> types = new ArrayList<>();
+        types.add(KiePMMLDescrTestUtils.getDroolsType());
+        types.add(KiePMMLDescrTestUtils.getDottedDroolsType());
         List<KiePMMLFieldOperatorValue> orConstraints = Arrays.asList(new KiePMMLFieldOperatorValue(PATTERN_TYPE, "or", Collections.singletonList(new KiePMMLOperatorValue("<", 35)), null),
                                                                       new KiePMMLFieldOperatorValue(PATTERN_TYPE, "and", Collections.singletonList(new KiePMMLOperatorValue(">", 85)), null));
-        KiePMMLDrooledRule rule = KiePMMLDrooledRule.builder(RULE_NAME, STATUS_TO_SET, Collections.emptyList())
+        KiePMMLDroolsRule rule = KiePMMLDroolsRule.builder(RULE_NAME, STATUS_TO_SET, Collections.emptyList())
                 .withOrConstraints(orConstraints)
                 .build();
-        List<KiePMMLDrooledRule> rules = new ArrayList<>();
+        List<KiePMMLDroolsRule> rules = new ArrayList<>();
         rules.add(rule);
-        KiePMMLDrooledAST drooledAST = new KiePMMLDrooledAST(types, rules);
+        KiePMMLDroolsAST drooledAST = new KiePMMLDroolsAST(types, rules);
         PackageDescr packageDescr = KiePMMLDescrFactory.getBaseDescr(drooledAST, PACKAGE_NAME);
         assertEquals(PACKAGE_NAME, packageDescr.getName());
         checkImports(packageDescr.getImports());

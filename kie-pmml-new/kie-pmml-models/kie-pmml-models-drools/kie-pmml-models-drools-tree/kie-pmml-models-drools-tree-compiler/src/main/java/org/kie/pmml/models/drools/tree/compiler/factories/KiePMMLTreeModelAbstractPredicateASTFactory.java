@@ -19,19 +19,19 @@ import java.util.List;
 import java.util.Map;
 
 import org.kie.pmml.commons.model.KiePMMLOutputField;
-import org.kie.pmml.models.drools.ast.KiePMMLDrooledRule;
+import org.kie.pmml.models.drools.ast.KiePMMLDroolsRule;
 import org.kie.pmml.models.drools.tuples.KiePMMLOriginalTypeGeneratedType;
 
 /**
- * Abstract class to be extended to generate <code>KiePMMLDrooledRule</code>s out of a <code>Predicate</code>s
+ * Abstract class to be extended to generate <code>KiePMMLDroolsRule</code>s out of a <code>Predicate</code>s
  */
 public class KiePMMLTreeModelAbstractPredicateASTFactory {
 
     protected final Map<String, KiePMMLOriginalTypeGeneratedType> fieldTypeMap;
     protected final List<KiePMMLOutputField> outputFields;
-    protected final List<KiePMMLDrooledRule> rules;
+    protected final List<KiePMMLDroolsRule> rules;
 
-    protected KiePMMLTreeModelAbstractPredicateASTFactory(final Map<String, KiePMMLOriginalTypeGeneratedType> fieldTypeMap, final List<KiePMMLOutputField> outputFields, final List<KiePMMLDrooledRule> rules) {
+    protected KiePMMLTreeModelAbstractPredicateASTFactory(final Map<String, KiePMMLOriginalTypeGeneratedType> fieldTypeMap, final List<KiePMMLOutputField> outputFields, final List<KiePMMLDroolsRule> rules) {
         this.fieldTypeMap = fieldTypeMap;
         this.outputFields = outputFields;
         this.rules = rules;

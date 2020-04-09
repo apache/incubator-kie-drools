@@ -22,7 +22,10 @@ import java.util.Map;
 import org.kie.pmml.commons.enums.ResultCode;
 import org.kie.pmml.commons.model.KiePMMLOutputField;
 
-public class KiePMMLDrooledRule {
+/**
+ * Data-class used to store information needed to generate a <b>Drools rule</b>
+ */
+public class KiePMMLDroolsRule {
 
     // Rule name
     private final String name;
@@ -54,7 +57,7 @@ public class KiePMMLDrooledRule {
     private ResultCode resultCode;
     private Object result;
 
-    private KiePMMLDrooledRule(String name, String statusToSet, List<KiePMMLOutputField> outputFields) {
+    private KiePMMLDroolsRule(String name, String statusToSet, List<KiePMMLOutputField> outputFields) {
         this.name = name;
         this.statusToSet = statusToSet;
         this.outputFields = outputFields;
@@ -175,10 +178,10 @@ public class KiePMMLDrooledRule {
 
     public static class Builder {
 
-        protected KiePMMLDrooledRule toBuild;
+        protected KiePMMLDroolsRule toBuild;
 
         public Builder(String name, String statusToSet, List<KiePMMLOutputField> outputFields) {
-            this.toBuild = new KiePMMLDrooledRule(name, statusToSet, outputFields);
+            this.toBuild = new KiePMMLDroolsRule(name, statusToSet, outputFields);
         }
 
         public Builder withStatusConstraint(String constraint) {
@@ -298,7 +301,7 @@ public class KiePMMLDrooledRule {
             return this;
         }
 
-        public KiePMMLDrooledRule build() {
+        public KiePMMLDroolsRule build() {
             return toBuild;
         }
     }

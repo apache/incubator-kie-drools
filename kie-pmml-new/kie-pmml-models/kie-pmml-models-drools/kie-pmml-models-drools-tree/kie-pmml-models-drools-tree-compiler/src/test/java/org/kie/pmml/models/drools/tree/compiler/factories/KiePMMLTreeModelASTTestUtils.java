@@ -27,7 +27,7 @@ import org.dmg.pmml.SimplePredicate;
 import org.dmg.pmml.SimpleSetPredicate;
 import org.kie.pmml.models.drools.tuples.KiePMMLOriginalTypeGeneratedType;
 
-import static org.kie.pmml.models.drools.commons.utils.DrooledModelUtils.getSanitizedClassName;
+import static org.kie.pmml.models.drools.commons.utils.KiePMMLDroolsModelUtils.getSanitizedClassName;
 
 public class KiePMMLTreeModelASTTestUtils {
 

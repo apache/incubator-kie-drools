@@ -27,7 +27,7 @@ import org.drools.compiler.lang.descr.ExistsDescr;
 import org.drools.compiler.lang.descr.NotDescr;
 import org.drools.compiler.lang.descr.OrDescr;
 import org.kie.pmml.commons.exceptions.KiePMMLException;
-import org.kie.pmml.models.drools.ast.KiePMMLDrooledRule;
+import org.kie.pmml.models.drools.ast.KiePMMLDroolsRule;
 import org.kie.pmml.models.drools.ast.KiePMMLFieldOperatorValue;
 import org.kie.pmml.models.drools.executor.KiePMMLStatusHolder;
 import org.slf4j.Logger;
@@ -37,7 +37,7 @@ import static org.kie.pmml.models.drools.commons.factories.KiePMMLDescrRulesFact
 import static org.kie.pmml.models.drools.commons.factories.KiePMMLDescrRulesFactory.STATUS_HOLDER;
 
 /**
- * Class used to generate the <b>lhs</b> of a rule (descr) out of a <b>KiePMMLDrooledRule</b>
+ * Class used to generate the <b>lhs</b> of a rule (descr) out of a <b>KiePMMLDroolsRule</b>
  */
 public class KiePMMLDescrLhsFactory {
 
@@ -57,7 +57,7 @@ public class KiePMMLDescrLhsFactory {
         return new KiePMMLDescrLhsFactory(builder);
     }
 
-    public void declareLhs(final KiePMMLDrooledRule rule) {
+    public void declareLhs(final KiePMMLDroolsRule rule) {
         logger.debug("declareLhs {}", rule);
         final PatternDescrBuilder<CEDescrBuilder<RuleDescrBuilder, AndDescr>> patternDescrBuilder = builder.pattern(KiePMMLStatusHolder.class.getSimpleName()).id(STATUS_HOLDER, false);
         if (rule.getStatusConstraint() != null) {

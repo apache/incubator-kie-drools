@@ -19,12 +19,12 @@ import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 
-import org.kie.pmml.models.drools.commons.model.KiePMMLDrooledModel;
 import org.kie.pmml.commons.model.KiePMMLExtension;
 import org.kie.pmml.commons.model.enums.MINING_FUNCTION;
 import org.kie.pmml.commons.model.enums.PMML_MODEL;
+import org.kie.pmml.models.drools.commons.model.KiePMMLDroolsModel;
 
-public class KiePMMLTreeModel extends KiePMMLDrooledModel {
+public class KiePMMLTreeModel extends KiePMMLDroolsModel {
 
     public static final PMML_MODEL PMML_MODEL_TYPE = PMML_MODEL.TREE_MODEL;
 
@@ -72,7 +72,7 @@ public class KiePMMLTreeModel extends KiePMMLDrooledModel {
         return Objects.hash(super.hashCode(), algorithmName);
     }
 
-    public static class Builder extends KiePMMLDrooledModel.Builder<KiePMMLTreeModel> {
+    public static class Builder extends KiePMMLDroolsModel.Builder<KiePMMLTreeModel> {
 
         private Builder(String name, List<KiePMMLExtension> extensions, MINING_FUNCTION miningFunction, String algorithmName) {
             super("Tree-", PMML_MODEL_TYPE, miningFunction, () -> new KiePMMLTreeModel(name, extensions, algorithmName));

@@ -33,7 +33,7 @@ import org.kie.pmml.models.drools.tree.model.enums.BOOLEAN_OPERATOR;
 import org.kie.pmml.models.drools.tree.model.enums.OPERATOR;
 
 import static java.util.stream.Collectors.groupingBy;
-import static org.kie.pmml.models.drools.commons.utils.DrooledModelUtils.getCorrectlyFormattedResult;
+import static org.kie.pmml.models.drools.commons.utils.KiePMMLDroolsModelUtils.getCorrectlyFormattedResult;
 
 public class KiePMMLASTFactoryUtils {
 

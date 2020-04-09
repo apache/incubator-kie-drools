@@ -18,7 +18,7 @@ package org.kie.pmml.models.drools.tree.compiler.executor;
 import org.dmg.pmml.DataDictionary;
 import org.dmg.pmml.tree.TreeModel;
 import org.kie.pmml.commons.model.enums.PMML_MODEL;
-import org.kie.pmml.models.drools.provider.DrooledModelProvider;
+import org.kie.pmml.models.drools.provider.DroolsModelProvider;
 import org.kie.pmml.models.drools.tree.compiler.factories.KiePMMLTreeModelFactory;
 import org.kie.pmml.models.drools.tree.model.KiePMMLTreeModel;
 import org.slf4j.Logger;
@@ -29,7 +29,7 @@ import static org.kie.pmml.models.drools.tree.model.KiePMMLTreeModel.PMML_MODEL_
 /**
  * Default <code>ModelImplementationProvider</code> for <b>Tree</b>
  */
-public class TreeModelImplementationProvider extends DrooledModelProvider<TreeModel, KiePMMLTreeModel> {
+public class TreeModelImplementationProvider extends DroolsModelProvider<TreeModel, KiePMMLTreeModel> {
 
     private static final Logger logger = LoggerFactory.getLogger(TreeModelImplementationProvider.class.getName());
 
@@ -40,8 +40,8 @@ public class TreeModelImplementationProvider extends DrooledModelProvider<TreeMo
     }
 
     @Override
-    public KiePMMLTreeModel getKiePMMLDrooledModel(DataDictionary dataDictionary, TreeModel model) {
-        logger.debug("getKiePMMLDrooledModel {} {}", dataDictionary, model);
+    public KiePMMLTreeModel getKiePMMLDroolsModel(DataDictionary dataDictionary, TreeModel model) {
+        logger.debug("getKiePMMLDroolsModel {} {}", dataDictionary, model);
         return KiePMMLTreeModelFactory.getKiePMMLTreeModel(dataDictionary, model);
     }
 }

@@ -20,7 +20,7 @@ import org.drools.compiler.lang.api.DescrFactory;
 import org.drools.compiler.lang.api.PackageDescrBuilder;
 import org.drools.compiler.lang.descr.PackageDescr;
 import org.kie.api.pmml.PMML4Result;
-import org.kie.pmml.models.drools.ast.KiePMMLDrooledAST;
+import org.kie.pmml.models.drools.ast.KiePMMLDroolsAST;
 import org.kie.pmml.models.drools.executor.KiePMMLStatusHolder;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -40,21 +40,21 @@ public class KiePMMLDescrFactory {
     }
 
     /**
-     * Returns the <code>PackageDescr</code> built out of the given <code>KiePMMLDrooledAST</code>.
-     * @param kiePMMLDrooledAST
+     * Returns the <code>PackageDescr</code> built out of the given <code>KiePMMLDroolsAST</code>.
+     * @param kiePMMLDroolsAST
      * @param packageName
      * @return
      */
-    public static PackageDescr getBaseDescr(final KiePMMLDrooledAST kiePMMLDrooledAST, String packageName) {
-        logger.debug("getBaseDescr {} {}", kiePMMLDrooledAST, packageName);
+    public static PackageDescr getBaseDescr(final KiePMMLDroolsAST kiePMMLDroolsAST, String packageName) {
+        logger.debug("getBaseDescr {} {}", kiePMMLDroolsAST, packageName);
         PackageDescrBuilder builder = DescrFactory.newPackage()
                 .name(packageName);
         builder.newImport().target(KiePMMLStatusHolder.class.getName());
         builder.newImport().target(SimplePredicate.class.getName());
         builder.newImport().target(PMML4Result.class.getName());
         builder.newGlobal().identifier(PMML4_RESULT_IDENTIFIER).type(PMML4_RESULT);
-        KiePMMLDescrTypesFactory.factory(builder).declareTypes(kiePMMLDrooledAST.getTypes());
-        KiePMMLDescrRulesFactory.factory(builder).declareRules(kiePMMLDrooledAST.getRules());
+        KiePMMLDescrTypesFactory.factory(builder).declareTypes(kiePMMLDroolsAST.getTypes());
+        KiePMMLDescrRulesFactory.factory(builder).declareRules(kiePMMLDroolsAST.getRules());
         return builder.getDescr();
     }
 }

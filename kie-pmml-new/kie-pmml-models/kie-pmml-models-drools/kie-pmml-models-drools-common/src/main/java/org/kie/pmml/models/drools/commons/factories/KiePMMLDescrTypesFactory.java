@@ -18,12 +18,12 @@ package org.kie.pmml.models.drools.commons.factories;
 import java.util.List;
 
 import org.drools.compiler.lang.api.PackageDescrBuilder;
-import org.kie.pmml.models.drools.ast.KiePMMLDrooledType;
+import org.kie.pmml.models.drools.ast.KiePMMLDroolsType;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 /**
- * Class used to generate <b>Types</b> (descr) out of a <b>List&lt;KiePMMLDrooledType&gt;</b>
+ * Class used to generate <b>Types</b> (descr) out of a <b>List&lt;KiePMMLDroolsType&gt;</b>
  */
 public class KiePMMLDescrTypesFactory {
 
@@ -40,10 +40,10 @@ public class KiePMMLDescrTypesFactory {
     }
 
     /**
-     * Create types out of original <code>List&lt;KiePMMLDrooledType&gt;</code>s,
+     * Create types out of original <code>List&lt;KiePMMLDroolsType&gt;</code>s,
      * @param types
      */
-    public void declareTypes(final List<KiePMMLDrooledType> types) {
+    public void declareTypes(final List<KiePMMLDroolsType> types) {
         logger.debug("declareTypes {} ", types);
         types.forEach(this::declareType);
     }
@@ -53,7 +53,7 @@ public class KiePMMLDescrTypesFactory {
      * <b>populate</b> the <b>fieldNameTypeNameMap</b> with mapping between original field' name and <b>original type/generated type</b> tupla
      * @param type
      */
-    protected void declareType(final KiePMMLDrooledType type) {
+    protected void declareType(final KiePMMLDroolsType type) {
         logger.debug("declareType {} ", type);
         String generatedType = type.getName();
         String fieldType = type.getType();

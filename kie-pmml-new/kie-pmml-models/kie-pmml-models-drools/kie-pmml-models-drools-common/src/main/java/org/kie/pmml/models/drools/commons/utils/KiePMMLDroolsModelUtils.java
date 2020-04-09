@@ -18,11 +18,11 @@ package org.kie.pmml.models.drools.commons.utils;
 import org.kie.pmml.commons.model.enums.DATA_TYPE;
 
 /**
- * Static utility methods for <code>KiePMMLDrooledModel</code>s
+ * Static utility methods for <code>KiePMMLDroolsModel</code>s
  */
-public class DrooledModelUtils {
+public class KiePMMLDroolsModelUtils {
 
-    private DrooledModelUtils() {
+    private KiePMMLDroolsModelUtils() {
         // Avoid instantiation
     }
 

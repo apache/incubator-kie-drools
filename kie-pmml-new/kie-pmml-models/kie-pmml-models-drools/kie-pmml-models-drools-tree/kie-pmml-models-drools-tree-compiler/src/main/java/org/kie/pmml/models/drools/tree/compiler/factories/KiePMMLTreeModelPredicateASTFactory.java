@@ -24,23 +24,23 @@ import org.dmg.pmml.SimplePredicate;
 import org.dmg.pmml.SimpleSetPredicate;
 import org.dmg.pmml.True;
 import org.kie.pmml.commons.model.KiePMMLOutputField;
-import org.kie.pmml.models.drools.ast.KiePMMLDrooledRule;
+import org.kie.pmml.models.drools.ast.KiePMMLDroolsRule;
 import org.kie.pmml.models.drools.tuples.KiePMMLOriginalTypeGeneratedType;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 /**
- * Class used to generate <code>KiePMMLDrooledRule</code>s out of a <code>Predicate</code>
+ * Class used to generate <code>KiePMMLDroolsRule</code>s out of a <code>Predicate</code>
  */
 public class KiePMMLTreeModelPredicateASTFactory extends KiePMMLTreeModelAbstractPredicateASTFactory {
 
     private static final Logger logger = LoggerFactory.getLogger(KiePMMLTreeModelPredicateASTFactory.class.getName());
 
-    private KiePMMLTreeModelPredicateASTFactory(final Map<String, KiePMMLOriginalTypeGeneratedType> fieldTypeMap, final List<KiePMMLOutputField> outputFields, final List<KiePMMLDrooledRule> rules) {
+    private KiePMMLTreeModelPredicateASTFactory(final Map<String, KiePMMLOriginalTypeGeneratedType> fieldTypeMap, final List<KiePMMLOutputField> outputFields, final List<KiePMMLDroolsRule> rules) {
         super(fieldTypeMap, outputFields, rules);
     }
 
-    public static KiePMMLTreeModelPredicateASTFactory factory(final Map<String, KiePMMLOriginalTypeGeneratedType> fieldTypeMap, final List<KiePMMLOutputField> outputFields, final List<KiePMMLDrooledRule> rules) {
+    public static KiePMMLTreeModelPredicateASTFactory factory(final Map<String, KiePMMLOriginalTypeGeneratedType> fieldTypeMap, final List<KiePMMLOutputField> outputFields, final List<KiePMMLDroolsRule> rules) {
         return new KiePMMLTreeModelPredicateASTFactory(fieldTypeMap, outputFields, rules);
     }
 

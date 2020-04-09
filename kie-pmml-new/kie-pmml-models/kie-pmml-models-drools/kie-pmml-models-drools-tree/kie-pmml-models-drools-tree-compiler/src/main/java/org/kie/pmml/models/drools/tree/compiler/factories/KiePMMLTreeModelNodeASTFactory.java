@@ -27,16 +27,16 @@ import org.dmg.pmml.tree.Node;
 import org.dmg.pmml.tree.TreeModel;
 import org.kie.pmml.commons.model.KiePMMLOutputField;
 import org.kie.pmml.commons.model.enums.DATA_TYPE;
-import org.kie.pmml.models.drools.ast.KiePMMLDrooledRule;
+import org.kie.pmml.models.drools.ast.KiePMMLDroolsRule;
 import org.kie.pmml.models.drools.tuples.KiePMMLOriginalTypeGeneratedType;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import static org.kie.pmml.models.drools.commons.utils.DrooledModelUtils.getCorrectlyFormattedResult;
+import static org.kie.pmml.models.drools.commons.utils.KiePMMLDroolsModelUtils.getCorrectlyFormattedResult;
 import static org.kie.pmml.models.drools.tree.compiler.factories.KiePMMLTreeModelASTFactory.PATH_PATTERN;
 
 /**
- * Class used to generate <code>KiePMMLDrooledRule</code>s out of a <code>Node</code>
+ * Class used to generate <code>KiePMMLDroolsRule</code>s out of a <code>Node</code>
  */
 public class KiePMMLTreeModelNodeASTFactory {
 
@@ -58,15 +58,15 @@ public class KiePMMLTreeModelNodeASTFactory {
         return new KiePMMLTreeModelNodeASTFactory(fieldTypeMap, outputFields, noTrueChildStrategy, targetType);
     }
 
-    public List<KiePMMLDrooledRule> declareRulesFromRootNode(final Node node, final String parentPath) {
+    public List<KiePMMLDroolsRule> declareRulesFromRootNode(final Node node, final String parentPath) {
         logger.debug("declareRulesFromRootNode {} {}", node, parentPath);
-        List<KiePMMLDrooledRule> toReturn = new ArrayList<>();
+        List<KiePMMLDroolsRule> toReturn = new ArrayList<>();
         declareRuleFromNode(node, parentPath, toReturn);
         return toReturn;
     }
 
     protected void declareRuleFromNode(final Node node, final String parentPath,
-                                       final List<KiePMMLDrooledRule> rules) {
+                                       final List<KiePMMLDroolsRule> rules) {
         logger.debug("declareRuleFromNode {} {}", node, parentPath);
         if (isFinalLeaf(node)) {
             declareFinalRuleFromNode(node, parentPath, rules);
@@ -86,7 +86,7 @@ public class KiePMMLTreeModelNodeASTFactory {
      */
     protected void declareFinalRuleFromNode(final Node node,
                                             final String parentPath,
-                                            final List<KiePMMLDrooledRule> rules) {
+                                            final List<KiePMMLDroolsRule> rules) {
         logger.debug("declareFinalRuleFromNode {} {}", node, parentPath);
         final Predicate predicate = node.getPredicate();
         // This means the rule should not be created at all.
@@ -109,7 +109,7 @@ public class KiePMMLTreeModelNodeASTFactory {
      */
     protected void declareIntermediateRuleFromNode(final Node node,
                                                    final String parentPath,
-                                                   final List<KiePMMLDrooledRule> rules) {
+                                                   final List<KiePMMLDroolsRule> rules) {
         logger.debug("declareIntermediateRuleFromNode {} {}", node, parentPath);
         final Predicate predicate = node.getPredicate();
         // This means the rule should not be created at all.
@@ -132,7 +132,7 @@ public class KiePMMLTreeModelNodeASTFactory {
      */
     protected void declareDefaultRuleFromNode(final Node node,
                                               final String parentPath,
-                                              final List<KiePMMLDrooledRule> rules) {
+                                              final List<KiePMMLDroolsRule> rules) {
         logger.debug("declareDefaultRuleFromNode {} {}", node, parentPath);
         String originalRule = String.format(PATH_PATTERN, parentPath, node.getScore());
         String currentRule = String.format(PATH_PATTERN, "default", originalRule);

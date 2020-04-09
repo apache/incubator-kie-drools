@@ -15,15 +15,15 @@
  */
 package org.kie.pmml.models.drools.commons.factories;
 
-import org.kie.pmml.models.drools.ast.KiePMMLDrooledType;
+import org.kie.pmml.models.drools.ast.KiePMMLDroolsType;
 
 public class KiePMMLDescrTestUtils {
 
-    public static KiePMMLDrooledType getDrooledType() {
-        return new KiePMMLDrooledType("FIELD", "date");
+    public static KiePMMLDroolsType getDroolsType() {
+        return new KiePMMLDroolsType("FIELD", "date");
     }
 
-    public static KiePMMLDrooledType getDottedDrooledType() {
-        return new KiePMMLDrooledType("DOTTED_FIELD", "date");
+    public static KiePMMLDroolsType getDottedDroolsType() {
+        return new KiePMMLDroolsType("DOTTED_FIELD", "date");
     }
 }

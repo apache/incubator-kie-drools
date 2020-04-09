@@ -26,7 +26,7 @@ import org.drools.compiler.lang.api.PackageDescrBuilder;
 import org.drools.compiler.lang.descr.TypeDeclarationDescr;
 import org.junit.Before;
 import org.junit.Test;
-import org.kie.pmml.models.drools.ast.KiePMMLDrooledType;
+import org.kie.pmml.models.drools.ast.KiePMMLDroolsType;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
@@ -43,9 +43,9 @@ public class KiePMMLDescrTypesFactoryTest {
 
     @Test
     public void declareTypes() {
-        List<KiePMMLDrooledType> types = new ArrayList<>();
-        types.add(KiePMMLDescrTestUtils.getDrooledType());
-        types.add(KiePMMLDescrTestUtils.getDottedDrooledType());
+        List<KiePMMLDroolsType> types = new ArrayList<>();
+        types.add(KiePMMLDescrTestUtils.getDroolsType());
+        types.add(KiePMMLDescrTestUtils.getDottedDroolsType());
         assertTrue(builder.getDescr().getTypeDeclarations().isEmpty());
         KiePMMLDescrTypesFactory.factory(builder).declareTypes(types);
         assertEquals(2, builder.getDescr().getTypeDeclarations().size());
@@ -55,13 +55,13 @@ public class KiePMMLDescrTypesFactoryTest {
 
     @Test
     public void declareType() {
-        KiePMMLDrooledType type = KiePMMLDescrTestUtils.getDrooledType();
+        KiePMMLDroolsType type = KiePMMLDescrTestUtils.getDroolsType();
         KiePMMLDescrTypesFactory.factory(builder).declareType(type);
         assertEquals(1, builder.getDescr().getTypeDeclarations().size());
         commonVerifyTypeDeclarationDescr(type, builder.getDescr().getTypeDeclarations().get(0));
     }
 
-    private void commonVerifyTypeDeclarationDescr(KiePMMLDrooledType type, final TypeDeclarationDescr typeDeclarationDescr) {
+    private void commonVerifyTypeDeclarationDescr(KiePMMLDroolsType type, final TypeDeclarationDescr typeDeclarationDescr) {
         String expectedGeneratedType = type.getName();
         String expectedMappedOriginalType = type.getType();
         assertEquals(expectedGeneratedType, typeDeclarationDescr.getTypeName());

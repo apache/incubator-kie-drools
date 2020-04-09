@@ -26,7 +26,7 @@ import org.dmg.pmml.DataType;
 import org.dmg.pmml.SimplePredicate;
 import org.junit.Test;
 import org.kie.pmml.commons.enums.ResultCode;
-import org.kie.pmml.models.drools.ast.KiePMMLDrooledRule;
+import org.kie.pmml.models.drools.ast.KiePMMLDroolsRule;
 import org.kie.pmml.models.drools.ast.KiePMMLFieldOperatorValue;
 import org.kie.pmml.models.drools.tuples.KiePMMLOriginalTypeGeneratedType;
 
@@ -48,11 +48,11 @@ public class KiePMMLTreeModelSimplePredicateASTFactoryTest {
         String agendaActivationGroup = "_will play_will play Group";
         String result = "RESULT";
         String parentPath = "parentPath";
-        final List<KiePMMLDrooledRule> rules = new ArrayList<>();
+        final List<KiePMMLDroolsRule> rules = new ArrayList<>();
         KiePMMLTreeModelSimplePredicateASTFactory.factory(simplePredicate, fieldTypeMap, Collections.emptyList(), rules).declareRuleFromSimplePredicateSurrogate(parentPath, currentRule, agendaActivationGroup, result, true);
         assertEquals(2, rules.size());
         // This is the "TRUE" matching rule
-        KiePMMLDrooledRule retrieved = rules.get(0);
+        KiePMMLDroolsRule retrieved = rules.get(0);
         assertNotNull(retrieved);
         String baseExpectedRule = String.format(SURROGATE_RULENAME_PATTERN, currentRule, fieldTypeMap.get(simplePredicate.getField().getValue()).getGeneratedType());
         String expectedRule = baseExpectedRule + "_TRUE";
@@ -104,11 +104,11 @@ public class KiePMMLTreeModelSimplePredicateASTFactoryTest {
         String agendaActivationGroup = "_will play_will play Group";
         String result = "RESULT";
         String parentPath = "parentPath";
-        final List<KiePMMLDrooledRule> rules = new ArrayList<>();
+        final List<KiePMMLDroolsRule> rules = new ArrayList<>();
         KiePMMLTreeModelSimplePredicateASTFactory.factory(simplePredicate, fieldTypeMap, Collections.emptyList(), rules).declareRuleFromSimplePredicateSurrogate(parentPath, currentRule, agendaActivationGroup, result, false);
         assertEquals(2, rules.size());
         // This is the "TRUE" matching rule
-        KiePMMLDrooledRule retrieved = rules.get(0);
+        KiePMMLDroolsRule retrieved = rules.get(0);
         assertNotNull(retrieved);
         String baseExpectedRule = String.format(SURROGATE_RULENAME_PATTERN, currentRule, fieldTypeMap.get(simplePredicate.getField().getValue()).getGeneratedType());
         String expectedRule = baseExpectedRule + "_TRUE";
@@ -159,10 +159,10 @@ public class KiePMMLTreeModelSimplePredicateASTFactoryTest {
         String currentRule = "_will play_will play";
         String declaredType = fieldTypeMap.get("outlook").getGeneratedType();
         String result = "RESULT";
-        final List<KiePMMLDrooledRule> rules = new ArrayList<>();
+        final List<KiePMMLDroolsRule> rules = new ArrayList<>();
         KiePMMLTreeModelSimplePredicateASTFactory.factory(simplePredicate, fieldTypeMap, Collections.emptyList(), rules).declareRuleFromSimplePredicate(parentPath, currentRule, result, true);
         assertEquals(1, rules.size());
-        final KiePMMLDrooledRule retrieved = rules.get(0);
+        final KiePMMLDroolsRule retrieved = rules.get(0);
         assertNotNull(retrieved);
         assertEquals(currentRule, retrieved.getName());
         assertEquals(DONE, retrieved.getStatusToSet());
@@ -187,10 +187,10 @@ public class KiePMMLTreeModelSimplePredicateASTFactoryTest {
         String currentRule = "_will play_will play";
         String declaredType = fieldTypeMap.get("outlook").getGeneratedType();
         String result = "RESULT";
-        final List<KiePMMLDrooledRule> rules = new ArrayList<>();
+        final List<KiePMMLDroolsRule> rules = new ArrayList<>();
         KiePMMLTreeModelSimplePredicateASTFactory.factory(simplePredicate, fieldTypeMap, Collections.emptyList(), rules).declareRuleFromSimplePredicate(parentPath, currentRule, result, false);
         assertEquals(1, rules.size());
-        final KiePMMLDrooledRule retrieved = rules.get(0);
+        final KiePMMLDroolsRule retrieved = rules.get(0);
         assertNotNull(retrieved);
         assertEquals(currentRule, retrieved.getName());
         assertEquals(currentRule, retrieved.getStatusToSet());

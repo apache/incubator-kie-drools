@@ -22,9 +22,9 @@ import org.dmg.pmml.DataDictionary;
 import org.dmg.pmml.tree.TreeModel;
 import org.kie.pmml.commons.model.KiePMMLOutputField;
 import org.kie.pmml.commons.model.enums.DATA_TYPE;
-import org.kie.pmml.models.drools.ast.KiePMMLDrooledAST;
-import org.kie.pmml.models.drools.ast.KiePMMLDrooledRule;
-import org.kie.pmml.models.drools.ast.KiePMMLDrooledType;
+import org.kie.pmml.models.drools.ast.KiePMMLDroolsAST;
+import org.kie.pmml.models.drools.ast.KiePMMLDroolsRule;
+import org.kie.pmml.models.drools.ast.KiePMMLDroolsType;
 import org.kie.pmml.models.drools.tuples.KiePMMLOriginalTypeGeneratedType;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -33,7 +33,7 @@ import static org.kie.pmml.compiler.commons.factories.KiePMMLOutputFieldFactory.
 import static org.kie.pmml.compiler.commons.utils.ModelUtils.getTargetFieldType;
 
 /**
- * Class used to generate a <code>KiePMMLDrooledAST</code> out of a <code>DataDictionary</code> and a <code>TreeModel</code>
+ * Class used to generate a <code>KiePMMLDroolsAST</code> out of a <code>DataDictionary</code> and a <code>TreeModel</code>
  */
 public class KiePMMLTreeModelASTFactory {
 
@@ -49,19 +49,19 @@ public class KiePMMLTreeModelASTFactory {
     }
 
     /**
-     * Returns the <code>KiePMMLDrooledAST</code> built out of the given parameters.
+     * Returns the <code>KiePMMLDroolsAST</code> built out of the given parameters.
      * It also <b>populate</b> the <b>fieldNameTypeNameMap</b> with mapping between original field' name and <b>original type/generated type</b> tupla
      * @param dataDictionary
      * @param model
      * @param fieldTypeMap
      * @return
      */
-    public static KiePMMLDrooledAST getKiePMMLDrooledAST(DataDictionary dataDictionary, TreeModel model, final Map<String, KiePMMLOriginalTypeGeneratedType> fieldTypeMap) {
-        logger.debug("getKiePMMLDrooledAST {} {}", dataDictionary, model);
+    public static KiePMMLDroolsAST getKiePMMLDroolsAST(DataDictionary dataDictionary, TreeModel model, final Map<String, KiePMMLOriginalTypeGeneratedType> fieldTypeMap) {
+        logger.debug("getKiePMMLDroolsAST {} {}", dataDictionary, model);
         DATA_TYPE targetType = getTargetFieldType(dataDictionary, model);
-        List<KiePMMLDrooledType> types = KiePMMLTreeModelDataDictionaryASTFactory.factory(fieldTypeMap).declareTypes(dataDictionary);
+        List<KiePMMLDroolsType> types = KiePMMLTreeModelDataDictionaryASTFactory.factory(fieldTypeMap).declareTypes(dataDictionary);
         final List<KiePMMLOutputField> outputFields = getOutputFields(model);
-        List<KiePMMLDrooledRule> rules = KiePMMLTreeModelNodeASTFactory.factory(fieldTypeMap, outputFields, model.getNoTrueChildStrategy(), targetType).declareRulesFromRootNode(model.getNode(), "");
-        return new KiePMMLDrooledAST(types, rules);
+        List<KiePMMLDroolsRule> rules = KiePMMLTreeModelNodeASTFactory.factory(fieldTypeMap, outputFields, model.getNoTrueChildStrategy(), targetType).declareRulesFromRootNode(model.getNode(), "");
+        return new KiePMMLDroolsAST(types, rules);
     }
 }

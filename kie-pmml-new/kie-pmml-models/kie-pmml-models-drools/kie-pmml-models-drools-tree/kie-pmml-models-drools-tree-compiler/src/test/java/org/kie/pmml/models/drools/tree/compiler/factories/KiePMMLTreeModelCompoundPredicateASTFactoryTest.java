@@ -30,7 +30,7 @@ import org.dmg.pmml.DataType;
 import org.dmg.pmml.SimplePredicate;
 import org.junit.Test;
 import org.kie.pmml.commons.enums.ResultCode;
-import org.kie.pmml.models.drools.ast.KiePMMLDrooledRule;
+import org.kie.pmml.models.drools.ast.KiePMMLDroolsRule;
 import org.kie.pmml.models.drools.tuples.KiePMMLOriginalTypeGeneratedType;
 
 import static org.junit.Assert.assertEquals;
@@ -55,10 +55,10 @@ public class KiePMMLTreeModelCompoundPredicateASTFactoryTest {
             CompoundPredicate compoundPredicate = new CompoundPredicate();
             compoundPredicate.setBooleanOperator(operator);
             predicates.forEach(compoundPredicate::addPredicates);
-            final List<KiePMMLDrooledRule> rules = new ArrayList<>();
+            final List<KiePMMLDroolsRule> rules = new ArrayList<>();
             KiePMMLTreeModelCompoundPredicateASTFactory.factory(compoundPredicate, fieldTypeMap, Collections.emptyList(), rules).declareRuleFromCompoundPredicateAndOrXor(parentPath, currentRule, result, true);
             assertEquals(1, rules.size());
-            final KiePMMLDrooledRule retrieved = rules.get(0);
+            final KiePMMLDroolsRule retrieved = rules.get(0);
             assertNotNull(retrieved);
             assertEquals(currentRule, retrieved.getName());
             assertEquals(DONE, retrieved.getStatusToSet());
@@ -95,10 +95,10 @@ public class KiePMMLTreeModelCompoundPredicateASTFactoryTest {
             CompoundPredicate compoundPredicate = new CompoundPredicate();
             compoundPredicate.setBooleanOperator(operator);
             predicates.forEach(compoundPredicate::addPredicates);
-            final List<KiePMMLDrooledRule> rules = new ArrayList<>();
+            final List<KiePMMLDroolsRule> rules = new ArrayList<>();
             KiePMMLTreeModelCompoundPredicateASTFactory.factory(compoundPredicate, fieldTypeMap, Collections.emptyList(), rules).declareRuleFromCompoundPredicateAndOrXor(parentPath, currentRule, result, false);
             assertEquals(1, rules.size());
-            final KiePMMLDrooledRule retrieved = rules.get(0);
+            final KiePMMLDroolsRule retrieved = rules.get(0);
             assertNotNull(retrieved);
             assertEquals(currentRule, retrieved.getName());
             assertEquals(currentRule, retrieved.getStatusToSet());
@@ -129,12 +129,12 @@ public class KiePMMLTreeModelCompoundPredicateASTFactoryTest {
         CompoundPredicate compoundPredicate = new CompoundPredicate();
         compoundPredicate.setBooleanOperator(CompoundPredicate.BooleanOperator.SURROGATE);
         predicates.forEach(compoundPredicate::addPredicates);
-        final List<KiePMMLDrooledRule> rules = new ArrayList<>();
+        final List<KiePMMLDroolsRule> rules = new ArrayList<>();
         KiePMMLTreeModelCompoundPredicateASTFactory.factory(compoundPredicate, fieldTypeMap, Collections.emptyList(), rules).declareRuleFromCompoundPredicateSurrogate(parentPath, currentRule, result, true);
         int expectedRules = (predicates.size() * 2) + 1; // For each "surrogate" predicate two rules -"TRUE" and "FALSE" - are generated; one more rule is generated for the Compound predicate itself
         assertEquals(expectedRules, rules.size());
         String agendaActivationGroup = String.format(KiePMMLTreeModelASTFactory.SURROGATE_GROUP_PATTERN, currentRule);
-        for (KiePMMLDrooledRule retrieved : rules) {
+        for (KiePMMLDroolsRule retrieved : rules) {
             String ruleName = retrieved.getName();
             if (ruleName.contains("_surrogate_")) {
                 String[] ruleNameParts = ruleName.split("_surrogate_");
@@ -185,12 +185,12 @@ public class KiePMMLTreeModelCompoundPredicateASTFactoryTest {
         CompoundPredicate compoundPredicate = new CompoundPredicate();
         compoundPredicate.setBooleanOperator(CompoundPredicate.BooleanOperator.SURROGATE);
         predicates.forEach(compoundPredicate::addPredicates);
-        final List<KiePMMLDrooledRule> rules = new ArrayList<>();
+        final List<KiePMMLDroolsRule> rules = new ArrayList<>();
         KiePMMLTreeModelCompoundPredicateASTFactory.factory(compoundPredicate, fieldTypeMap, Collections.emptyList(), rules).declareRuleFromCompoundPredicateSurrogate(parentPath, currentRule, result, false);
         int expectedRules = (predicates.size() * 2) + 1; // For each "surrogate" predicate two rules -"TRUE" and "FALSE" - are generated; one more rule is generated for the Compound predicate itself
         assertEquals(expectedRules, rules.size());
         String agendaActivationGroup = String.format(KiePMMLTreeModelASTFactory.SURROGATE_GROUP_PATTERN, currentRule);
-        for (KiePMMLDrooledRule retrieved : rules) {
+        for (KiePMMLDroolsRule retrieved : rules) {
             String ruleName = retrieved.getName();
             if (ruleName.contains("_surrogate_")) {
                 String[] ruleNameParts = ruleName.split("_surrogate_");

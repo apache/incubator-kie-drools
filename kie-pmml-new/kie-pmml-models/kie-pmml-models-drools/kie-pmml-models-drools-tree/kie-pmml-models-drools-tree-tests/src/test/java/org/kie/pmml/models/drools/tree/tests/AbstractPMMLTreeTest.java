@@ -62,8 +62,8 @@ public abstract class AbstractPMMLTreeTest {
         assertEquals(1, pmml.getModels().size());
         assertTrue(pmml.getModels().get(0) instanceof TreeModel);
 
-        final KiePMMLModel pmmlModel = PROVIDER.getKiePMMLDrooledModel(pmml.getDataDictionary(),
-                                                                       (TreeModel) pmml.getModels().get(0));
+        final KiePMMLModel pmmlModel = PROVIDER.getKiePMMLDroolsModel(pmml.getDataDictionary(),
+                                                                      (TreeModel) pmml.getModels().get(0));
         Assertions.assertThat(pmmlModel).isNotNull();
 
         return pmmlModel;

@@ -20,14 +20,14 @@ import java.util.StringJoiner;
 
 import org.drools.compiler.lang.api.RuleDescrBuilder;
 import org.kie.pmml.commons.model.KiePMMLOutputField;
-import org.kie.pmml.models.drools.ast.KiePMMLDrooledRule;
+import org.kie.pmml.models.drools.ast.KiePMMLDroolsRule;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import static org.kie.pmml.commons.Constants.DONE;
 
 /**
- * Class used to generate the <b>rhs</b> of a rule (descr) out of a <b>KiePMMLDrooledRule</b>
+ * Class used to generate the <b>rhs</b> of a rule (descr) out of a <b>KiePMMLDroolsRule</b>
  */
 public class KiePMMLDescrRhsFactory {
 
@@ -50,7 +50,7 @@ public class KiePMMLDescrRhsFactory {
         return new KiePMMLDescrRhsFactory(builder);
     }
 
-    public void declareRhs(final KiePMMLDrooledRule rule) {
+    public void declareRhs(final KiePMMLDroolsRule rule) {
         logger.debug("declareRhs {}", rule);
         if (rule.getIfBreakField() != null) {
             declareIfThen(rule);
@@ -59,7 +59,7 @@ public class KiePMMLDescrRhsFactory {
         }
     }
 
-    protected void declareDefaultThen(final KiePMMLDrooledRule rule) {
+    protected void declareDefaultThen(final KiePMMLDroolsRule rule) {
         StringJoiner joiner = new StringJoiner("");
         if (rule.getStatusToSet() != null) {
             joiner.add(String.format(UPDATE_STATUS_HOLDER, rule.getStatusToSet()));
@@ -68,7 +68,7 @@ public class KiePMMLDescrRhsFactory {
         builder.rhs(joiner.toString());
     }
 
-    protected void declareIfThen(final KiePMMLDrooledRule rule) {
+    protected void declareIfThen(final KiePMMLDroolsRule rule) {
         builder.rhs(String.format(UPDATE_STATUS_HOLDER, rule.getStatusToSet()));
         StringJoiner joiner = new StringJoiner("");
         joiner.add(String.format(UPDATE_STATUS_HOLDER, DONE));
@@ -76,7 +76,7 @@ public class KiePMMLDescrRhsFactory {
         builder.namedRhs(KiePMMLDescrRulesFactory.BREAK_LABEL, joiner.toString());
     }
 
-    protected void commonDeclareThen(final KiePMMLDrooledRule rule, final StringJoiner joiner) {
+    protected void commonDeclareThen(final KiePMMLDroolsRule rule, final StringJoiner joiner) {
         if (rule.getResultCode() != null) {
             joiner.add(String.format(SET_PMML4_RESULT_CODE, rule.getResultCode()));
         }

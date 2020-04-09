@@ -22,7 +22,7 @@ import org.dmg.pmml.True;
 import org.drools.core.util.StringUtils;
 import org.kie.pmml.commons.enums.ResultCode;
 import org.kie.pmml.commons.model.KiePMMLOutputField;
-import org.kie.pmml.models.drools.ast.KiePMMLDrooledRule;
+import org.kie.pmml.models.drools.ast.KiePMMLDroolsRule;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -31,7 +31,7 @@ import static org.kie.pmml.models.drools.tree.compiler.factories.KiePMMLTreeMode
 import static org.kie.pmml.models.drools.tree.compiler.factories.KiePMMLTreeModelASTFactory.STATUS_PATTERN;
 
 /**
- * Class used to generate a <code>KiePMMLDrooledRule</code> out of a <code>True</code> predicate
+ * Class used to generate a <code>KiePMMLDroolsRule</code> out of a <code>True</code> predicate
  */
 public class KiePMMLTreeModelTruePredicateASTFactory extends KiePMMLTreeModelAbstractPredicateASTFactory {
 
@@ -39,12 +39,12 @@ public class KiePMMLTreeModelTruePredicateASTFactory extends KiePMMLTreeModelAbs
 
     private final True truePredicate;
 
-    private KiePMMLTreeModelTruePredicateASTFactory(final True truePredicate, final List<KiePMMLOutputField> outputFields, final List<KiePMMLDrooledRule> rules) {
+    private KiePMMLTreeModelTruePredicateASTFactory(final True truePredicate, final List<KiePMMLOutputField> outputFields, final List<KiePMMLDroolsRule> rules) {
         super(Collections.emptyMap(), outputFields, rules);
         this.truePredicate = truePredicate;
     }
 
-    public static KiePMMLTreeModelTruePredicateASTFactory factory(final True truePredicate, final List<KiePMMLOutputField> outputFields, final List<KiePMMLDrooledRule> rules) {
+    public static KiePMMLTreeModelTruePredicateASTFactory factory(final True truePredicate, final List<KiePMMLOutputField> outputFields, final List<KiePMMLDroolsRule> rules) {
         return new KiePMMLTreeModelTruePredicateASTFactory(truePredicate, outputFields, rules);
     }
 
@@ -55,7 +55,7 @@ public class KiePMMLTreeModelTruePredicateASTFactory extends KiePMMLTreeModelAbs
         logger.debug("declareRuleFromTruePredicate {} {} {}", truePredicate, parentPath, currentRule);
         String statusConstraint = StringUtils.isEmpty(parentPath) ? STATUS_NULL : String.format(STATUS_PATTERN, parentPath);
         String statusToSet = isFinalLeaf ? DONE : currentRule;
-        KiePMMLDrooledRule.Builder builder = KiePMMLDrooledRule.builder(currentRule, statusToSet, outputFields)
+        KiePMMLDroolsRule.Builder builder = KiePMMLDroolsRule.builder(currentRule, statusToSet, outputFields)
                 .withStatusConstraint(statusConstraint);
         if (isFinalLeaf) {
             builder = builder.withResult(result)

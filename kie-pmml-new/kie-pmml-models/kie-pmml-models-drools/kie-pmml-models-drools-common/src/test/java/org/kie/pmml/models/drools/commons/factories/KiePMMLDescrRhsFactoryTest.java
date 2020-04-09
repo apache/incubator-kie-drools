@@ -27,7 +27,7 @@ import org.junit.Before;
 import org.junit.Test;
 import org.kie.pmml.commons.enums.ResultCode;
 import org.kie.pmml.commons.model.KiePMMLOutputField;
-import org.kie.pmml.models.drools.ast.KiePMMLDrooledRule;
+import org.kie.pmml.models.drools.ast.KiePMMLDroolsRule;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
@@ -58,7 +58,7 @@ public class KiePMMLDescrRhsFactoryTest {
     public void declareRhsWithoutIfBreak() {
         String name = "NAME";
         String statusToSet = "STATUS_TO_SET";
-        KiePMMLDrooledRule rule = KiePMMLDrooledRule.builder(name, statusToSet, Collections.emptyList()).build();
+        KiePMMLDroolsRule rule = KiePMMLDroolsRule.builder(name, statusToSet, Collections.emptyList()).build();
         KiePMMLDescrRhsFactory.factory(ruleBuilder).declareRhs(rule);
         assertNotNull(ruleBuilder.getDescr().getConsequence());
         String expectedConsequence = String.format(UPDATE_STATUS_HOLDER, statusToSet);
@@ -74,7 +74,7 @@ public class KiePMMLDescrRhsFactoryTest {
         String ifBreakField = "ifBreakField";
         String ifBreakOperator = "ifBreakOperator";
         Object ifBreakValue = "ifBreakValue";
-        KiePMMLDrooledRule rule = KiePMMLDrooledRule.builder(name, statusToSet, Collections.emptyList())
+        KiePMMLDroolsRule rule = KiePMMLDroolsRule.builder(name, statusToSet, Collections.emptyList())
                 .withIfBreak(ifBreakField, ifBreakOperator, ifBreakValue)
                 .build();
         KiePMMLDescrRhsFactory.factory(ruleBuilder).declareRhs(rule);
@@ -90,7 +90,7 @@ public class KiePMMLDescrRhsFactoryTest {
     public void declareDefaultThenWithoutResult() {
         String name = "NAME";
         String statusToSet = "STATUS_TO_SET";
-        KiePMMLDrooledRule rule = KiePMMLDrooledRule.builder(name, statusToSet, Collections.emptyList()).build();
+        KiePMMLDroolsRule rule = KiePMMLDroolsRule.builder(name, statusToSet, Collections.emptyList()).build();
         KiePMMLDescrRhsFactory.factory(ruleBuilder).declareDefaultThen(rule);
         assertNotNull(ruleBuilder.getDescr().getConsequence());
         String expectedConsequence = String.format(UPDATE_STATUS_HOLDER, statusToSet);
@@ -105,7 +105,7 @@ public class KiePMMLDescrRhsFactoryTest {
         String statusToSet = "STATUS_TO_SET";
         String result = "RESULT";
         ResultCode resultCode = ResultCode.OK;
-        KiePMMLDrooledRule rule = KiePMMLDrooledRule.builder(name, statusToSet, Collections.emptyList())
+        KiePMMLDroolsRule rule = KiePMMLDroolsRule.builder(name, statusToSet, Collections.emptyList())
                 .withResultCode(resultCode)
                 .withResult(result)
                 .build();
@@ -123,7 +123,7 @@ public class KiePMMLDescrRhsFactoryTest {
     public void declareIfThenWithoutResult() {
         String name = "NAME";
         String statusToSet = "STATUS_TO_SET";
-        KiePMMLDrooledRule rule = KiePMMLDrooledRule.builder(name, statusToSet, Collections.emptyList()).build();
+        KiePMMLDroolsRule rule = KiePMMLDroolsRule.builder(name, statusToSet, Collections.emptyList()).build();
         KiePMMLDescrRhsFactory.factory(ruleBuilder).declareIfThen(rule);
         assertNotNull(ruleBuilder.getDescr().getConsequence());
         String expectedConsequence = String.format(UPDATE_STATUS_HOLDER, statusToSet);
@@ -141,7 +141,7 @@ public class KiePMMLDescrRhsFactoryTest {
         String statusToSet = "STATUS_TO_SET";
         String result = "RESULT";
         ResultCode resultCode = ResultCode.OK;
-        KiePMMLDrooledRule rule = KiePMMLDrooledRule.builder(name, statusToSet, Collections.emptyList())
+        KiePMMLDroolsRule rule = KiePMMLDroolsRule.builder(name, statusToSet, Collections.emptyList())
                 .withResultCode(resultCode)
                 .withResult(result)
                 .build();
@@ -165,8 +165,8 @@ public class KiePMMLDescrRhsFactoryTest {
         String outputFieldName = "OUTPUTFIELDNAME";
         Object result = "RESULT";
         List<KiePMMLOutputField> outputFields = Collections.singletonList(KiePMMLOutputField.builder(outputFieldName, null).withResultFeature(PREDICTED_VALUE).build());
-        KiePMMLDrooledRule.Builder builder = KiePMMLDrooledRule.builder(ruleName, statusToSet, outputFields);
-        KiePMMLDrooledRule rule = builder.build();
+        KiePMMLDroolsRule.Builder builder = KiePMMLDroolsRule.builder(ruleName, statusToSet, outputFields);
+        KiePMMLDroolsRule rule = builder.build();
         StringJoiner joiner = new StringJoiner("");
         KiePMMLDescrRhsFactory.factory(ruleBuilder).commonDeclareThen(rule, joiner);
         String retrieved = joiner.toString();

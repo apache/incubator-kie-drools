@@ -19,7 +19,7 @@ import org.kie.api.pmml.PMML4Result;
 import org.kie.api.runtime.KieSession;
 import org.kie.internal.utils.KieHelper;
 import org.kie.pmml.commons.enums.ResultCode;
-import org.kie.pmml.models.drools.commons.model.KiePMMLDrooledModel;
+import org.kie.pmml.models.drools.commons.model.KiePMMLDroolsModel;
 import org.kie.pmml.commons.model.KiePMMLModel;
 import org.kie.pmml.evaluator.api.exceptions.KiePMMLModelException;
 import org.kie.pmml.evaluator.api.executor.PMMLContext;
@@ -30,16 +30,16 @@ import org.slf4j.LoggerFactory;
 
 import static org.kie.pmml.evaluator.core.utils.Converter.getUnwrappedParametersMap;
 
-public abstract class DrooledModelExecutor implements PMMLModelExecutor {
+public abstract class DroolsModelExecutor implements PMMLModelExecutor {
 
-    private static final Logger logger = LoggerFactory.getLogger(DrooledModelExecutor.class.getName());
+    private static final Logger logger = LoggerFactory.getLogger(DroolsModelExecutor.class.getName());
 
     @Override
     public PMML4Result evaluate(KiePMMLModel model, PMMLContext pmmlContext, String releaseId) {
-        if (!(model instanceof KiePMMLDrooledModel)) {
-            throw new KiePMMLModelException("Expected a KiePMMLDrooledModel, received a " + model.getClass().getName());
+        if (!(model instanceof KiePMMLDroolsModel)) {
+            throw new KiePMMLModelException("Expected a KiePMMLDroolsModel, received a " + model.getClass().getName());
         }
-        final KiePMMLDrooledModel drooledModel = (KiePMMLDrooledModel) model;
+        final KiePMMLDroolsModel drooledModel = (KiePMMLDroolsModel) model;
         KieSession kSession = new KieHelper()
                 .addContent(drooledModel.getPackageDescr())
                 .build(ExecutableModelProject.class)

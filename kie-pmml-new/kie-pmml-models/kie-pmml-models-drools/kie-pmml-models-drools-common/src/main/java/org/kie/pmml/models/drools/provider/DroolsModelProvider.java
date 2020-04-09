@@ -20,22 +20,22 @@ import org.dmg.pmml.Model;
 import org.drools.compiler.builder.impl.KnowledgeBuilderImpl;
 import org.kie.internal.builder.KnowledgeBuilder;
 import org.kie.pmml.commons.exceptions.KiePMMLException;
-import org.kie.pmml.models.drools.commons.model.KiePMMLDrooledModel;
+import org.kie.pmml.models.drools.commons.model.KiePMMLDroolsModel;
 import org.kie.pmml.compiler.api.provider.ModelImplementationProvider;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 /**
- * Abstract <code>ModelImplementationProvider</code> for <b>KiePMMLDrooledModel</b>s
+ * Abstract <code>ModelImplementationProvider</code> for <b>KiePMMLDroolsModel</b>s
  */
-public abstract class DrooledModelProvider<T extends Model, E extends KiePMMLDrooledModel> implements ModelImplementationProvider<T, E> {
+public abstract class DroolsModelProvider<T extends Model, E extends KiePMMLDroolsModel> implements ModelImplementationProvider<T, E> {
 
-    private static final Logger logger = LoggerFactory.getLogger(DrooledModelProvider.class.getName());
+    private static final Logger logger = LoggerFactory.getLogger(DroolsModelProvider.class.getName());
 
     @Override
     public E getKiePMMLModel(DataDictionary dataDictionary, T model, Object kBuilder) {
         logger.debug("getKiePMMLModel {} {}", dataDictionary, model);
-        E toReturn = getKiePMMLDrooledModel(dataDictionary, model);
+        E toReturn = getKiePMMLDroolsModel(dataDictionary, model);
         if (!(kBuilder instanceof KnowledgeBuilder)) {
             throw new KiePMMLException(String.format("Expecting KnowledgeBuilder, received %s", kBuilder.getClass().getName()));
         }
@@ -43,5 +43,5 @@ public abstract class DrooledModelProvider<T extends Model, E extends KiePMMLDro
         return toReturn;
     }
 
-    public abstract E getKiePMMLDrooledModel(DataDictionary dataDictionary, T model);
+    public abstract E getKiePMMLDroolsModel(DataDictionary dataDictionary, T model);
 }

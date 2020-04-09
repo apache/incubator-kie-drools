@@ -23,7 +23,7 @@ import java.util.List;
 import org.dmg.pmml.True;
 import org.junit.Test;
 import org.kie.pmml.commons.enums.ResultCode;
-import org.kie.pmml.models.drools.ast.KiePMMLDrooledRule;
+import org.kie.pmml.models.drools.ast.KiePMMLDroolsRule;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
@@ -36,11 +36,11 @@ public class KiePMMLTreeModelTruePredicateASTFactoryTest {
     public void declareRuleFromTruePredicateNotFinalLeaf() {
         String parentPath = "_will play";
         String currentRule = "_will play_will play";
-        final List<KiePMMLDrooledRule> rules = new ArrayList<>();
+        final List<KiePMMLDroolsRule> rules = new ArrayList<>();
         True truePredicate = new True();
         KiePMMLTreeModelTruePredicateASTFactory.factory(truePredicate, Collections.emptyList(), rules).declareRuleFromTruePredicate(parentPath, currentRule, DONE, false);
         assertEquals(1, rules.size());
-        final KiePMMLDrooledRule retrieved = rules.get(0);
+        final KiePMMLDroolsRule retrieved = rules.get(0);
         assertNotNull(retrieved);
         assertEquals(currentRule, retrieved.getName());
         assertEquals(currentRule, retrieved.getStatusToSet());
@@ -53,12 +53,12 @@ public class KiePMMLTreeModelTruePredicateASTFactoryTest {
     public void declareRuleFromTruePredicateFinalLeaf() {
         String parentPath = "_will play";
         String currentRule = "_will play_will play";
-        final List<KiePMMLDrooledRule> rules = new ArrayList<>();
+        final List<KiePMMLDroolsRule> rules = new ArrayList<>();
         String statusToSet = DONE;
         True truePredicate = new True();
         KiePMMLTreeModelTruePredicateASTFactory.factory(truePredicate, Collections.emptyList(), rules).declareRuleFromTruePredicate(parentPath, currentRule, statusToSet, true);
         assertEquals(1, rules.size());
-        final KiePMMLDrooledRule retrieved = rules.get(0);
+        final KiePMMLDroolsRule retrieved = rules.get(0);
         assertNotNull(retrieved);
         assertEquals(currentRule, retrieved.getName());
         assertEquals(statusToSet, retrieved.getStatusToSet());

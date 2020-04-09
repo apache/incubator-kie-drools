@@ -23,7 +23,7 @@ import org.dmg.pmml.SimplePredicate;
 import org.drools.core.util.StringUtils;
 import org.kie.pmml.commons.enums.ResultCode;
 import org.kie.pmml.commons.model.KiePMMLOutputField;
-import org.kie.pmml.models.drools.ast.KiePMMLDrooledRule;
+import org.kie.pmml.models.drools.ast.KiePMMLDroolsRule;
 import org.kie.pmml.models.drools.ast.KiePMMLFieldOperatorValue;
 import org.kie.pmml.models.drools.tuples.KiePMMLOperatorValue;
 import org.kie.pmml.models.drools.tuples.KiePMMLOriginalTypeGeneratedType;
@@ -37,7 +37,7 @@ import static org.kie.pmml.models.drools.tree.compiler.factories.KiePMMLTreeMode
 import static org.kie.pmml.models.drools.tree.compiler.factories.KiePMMLTreeModelASTFactory.SURROGATE_RULENAME_PATTERN;
 
 /**
- * Class used to generate <code>KiePMMLDrooledRule</code> out of a <code>SimplePredicate</code>
+ * Class used to generate <code>KiePMMLDroolsRule</code> out of a <code>SimplePredicate</code>
  */
 public class KiePMMLTreeModelSimplePredicateASTFactory extends KiePMMLTreeModelAbstractPredicateASTFactory {
 
@@ -45,12 +45,12 @@ public class KiePMMLTreeModelSimplePredicateASTFactory extends KiePMMLTreeModelA
 
     private final SimplePredicate simplePredicate;
 
-    private KiePMMLTreeModelSimplePredicateASTFactory(final SimplePredicate simplePredicate, final Map<String, KiePMMLOriginalTypeGeneratedType> fieldTypeMap, final List<KiePMMLOutputField> outputFields, final List<KiePMMLDrooledRule> rules) {
+    private KiePMMLTreeModelSimplePredicateASTFactory(final SimplePredicate simplePredicate, final Map<String, KiePMMLOriginalTypeGeneratedType> fieldTypeMap, final List<KiePMMLOutputField> outputFields, final List<KiePMMLDroolsRule> rules) {
         super(fieldTypeMap, outputFields, rules);
         this.simplePredicate = simplePredicate;
     }
 
-    public static KiePMMLTreeModelSimplePredicateASTFactory factory(final SimplePredicate simplePredicate, final Map<String, KiePMMLOriginalTypeGeneratedType> fieldTypeMap, final List<KiePMMLOutputField> outputFields, final List<KiePMMLDrooledRule> rules) {
+    public static KiePMMLTreeModelSimplePredicateASTFactory factory(final SimplePredicate simplePredicate, final Map<String, KiePMMLOriginalTypeGeneratedType> fieldTypeMap, final List<KiePMMLOutputField> outputFields, final List<KiePMMLDroolsRule> rules) {
         return new KiePMMLTreeModelSimplePredicateASTFactory(simplePredicate, fieldTypeMap, outputFields, rules);
     }
 
@@ -66,7 +66,7 @@ public class KiePMMLTreeModelSimplePredicateASTFactory extends KiePMMLTreeModelA
         final List<KiePMMLFieldOperatorValue> constraints = Collections.singletonList(KiePMMLASTFactoryUtils.getConstraintEntryFromSimplePredicates(fieldName, "surrogate", Collections.singletonList(simplePredicate), fieldTypeMap));
         String statusToSet = isFinalLeaf ? DONE : currentRule;
         // Create "TRUE" matcher
-        KiePMMLDrooledRule.Builder builder = KiePMMLDrooledRule.builder(surrogateCurrentRule + "_TRUE", statusToSet, outputFields)
+        KiePMMLDroolsRule.Builder builder = KiePMMLDroolsRule.builder(surrogateCurrentRule + "_TRUE", statusToSet, outputFields)
                 .withAgendaGroup(agendaActivationGroup)
                 .withActivationGroup(agendaActivationGroup)
                 .withAndConstraints(constraints);
@@ -76,7 +76,7 @@ public class KiePMMLTreeModelSimplePredicateASTFactory extends KiePMMLTreeModelA
         }
         rules.add(builder.build());
         // Create "FALSE" matcher
-        builder = KiePMMLDrooledRule.builder(surrogateCurrentRule + "_FALSE", parentPath, outputFields)
+        builder = KiePMMLDroolsRule.builder(surrogateCurrentRule + "_FALSE", parentPath, outputFields)
                 .withAgendaGroup(agendaActivationGroup)
                 .withActivationGroup(agendaActivationGroup)
                 .withNotConstraints(constraints);
@@ -94,7 +94,7 @@ public class KiePMMLTreeModelSimplePredicateASTFactory extends KiePMMLTreeModelA
         Object value = KiePMMLASTFactoryUtils.getCorrectlyFormattedObject(simplePredicate, fieldTypeMap);
         String statusToSet = isFinalLeaf ? DONE : currentRule;
         List<KiePMMLFieldOperatorValue> andConstraints = Collections.singletonList(new KiePMMLFieldOperatorValue(key, "and", Collections.singletonList(new KiePMMLOperatorValue(operator, value)), null));
-        KiePMMLDrooledRule.Builder builder = KiePMMLDrooledRule.builder(currentRule, statusToSet, outputFields)
+        KiePMMLDroolsRule.Builder builder = KiePMMLDroolsRule.builder(currentRule, statusToSet, outputFields)
                 .withStatusConstraint(statusConstraint)
                 .withAndConstraints(andConstraints);
         if (isFinalLeaf) {

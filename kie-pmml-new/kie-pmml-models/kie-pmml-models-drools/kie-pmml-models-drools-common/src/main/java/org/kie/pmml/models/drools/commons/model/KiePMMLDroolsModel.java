@@ -30,7 +30,7 @@ import org.kie.pmml.models.drools.tuples.KiePMMLOriginalTypeGeneratedType;
 /**
  * KIE representation of PMML model that use <b>drool</b> for implementation
  */
-public abstract class KiePMMLDrooledModel extends KiePMMLModel {
+public abstract class KiePMMLDroolsModel extends KiePMMLModel {
 
     protected PackageDescr packageDescr;
     /**
@@ -38,7 +38,7 @@ public abstract class KiePMMLDrooledModel extends KiePMMLModel {
      */
     protected Map<String, KiePMMLOriginalTypeGeneratedType> fieldTypeMap;
 
-    protected KiePMMLDrooledModel(String name, List<KiePMMLExtension> extensions) {
+    protected KiePMMLDroolsModel(String name, List<KiePMMLExtension> extensions) {
         super(name, extensions);
     }
 
@@ -52,7 +52,7 @@ public abstract class KiePMMLDrooledModel extends KiePMMLModel {
 
     @Override
     public String toString() {
-        return "KiePMMLDrooledModel{" +
+        return "KiePMMLDroolsModel {" +
                 "packageDescr=" + packageDescr +
                 ", pmmlMODEL=" + pmmlMODEL +
                 ", miningFunction=" + miningFunction +
@@ -74,7 +74,7 @@ public abstract class KiePMMLDrooledModel extends KiePMMLModel {
         if (!super.equals(o)) {
             return false;
         }
-        KiePMMLDrooledModel that = (KiePMMLDrooledModel) o;
+        KiePMMLDroolsModel that = (KiePMMLDroolsModel) o;
         return Objects.equals(packageDescr, that.packageDescr);
     }
 
@@ -83,7 +83,7 @@ public abstract class KiePMMLDrooledModel extends KiePMMLModel {
         return Objects.hash(super.hashCode(), packageDescr);
     }
 
-    public abstract static class Builder<T extends KiePMMLDrooledModel> extends KiePMMLModel.Builder<T> {
+    public abstract static class Builder<T extends KiePMMLDroolsModel> extends KiePMMLModel.Builder<T> {
 
         protected Builder(String prefix, PMML_MODEL pmmlMODEL, MINING_FUNCTION miningFunction, Supplier<T> supplier) {
             super(prefix, pmmlMODEL, miningFunction, supplier);

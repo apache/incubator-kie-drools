@@ -26,7 +26,7 @@ import org.drools.core.util.StringUtils;
 import org.kie.pmml.commons.enums.ResultCode;
 import org.kie.pmml.commons.exceptions.KiePMMLException;
 import org.kie.pmml.commons.model.KiePMMLOutputField;
-import org.kie.pmml.models.drools.ast.KiePMMLDrooledRule;
+import org.kie.pmml.models.drools.ast.KiePMMLDroolsRule;
 import org.kie.pmml.models.drools.ast.KiePMMLFieldOperatorValue;
 import org.kie.pmml.models.drools.tuples.KiePMMLOriginalTypeGeneratedType;
 import org.slf4j.Logger;
@@ -40,19 +40,19 @@ import static org.kie.pmml.models.drools.tree.compiler.factories.KiePMMLTreeMode
 import static org.kie.pmml.models.drools.tree.compiler.factories.KiePMMLTreeModelASTFactory.SURROGATE_GROUP_PATTERN;
 
 /**
- * Class used to generate <code>KiePMMLDrooledRule</code>s out of a <code>CompoundPredicate</code>
+ * Class used to generate <code>KiePMMLDroolsRule</code>s out of a <code>CompoundPredicate</code>
  */
 public class KiePMMLTreeModelCompoundPredicateASTFactory extends KiePMMLTreeModelAbstractPredicateASTFactory {
 
     private static final Logger logger = LoggerFactory.getLogger(KiePMMLTreeModelCompoundPredicateASTFactory.class.getName());
     private final CompoundPredicate compoundPredicate;
 
-    private KiePMMLTreeModelCompoundPredicateASTFactory(final CompoundPredicate compoundPredicate, final Map<String, KiePMMLOriginalTypeGeneratedType> fieldTypeMap, final List<KiePMMLOutputField> outputFields, final List<KiePMMLDrooledRule> rules) {
+    private KiePMMLTreeModelCompoundPredicateASTFactory(final CompoundPredicate compoundPredicate, final Map<String, KiePMMLOriginalTypeGeneratedType> fieldTypeMap, final List<KiePMMLOutputField> outputFields, final List<KiePMMLDroolsRule> rules) {
         super(fieldTypeMap, outputFields, rules);
         this.compoundPredicate = compoundPredicate;
     }
 
-    public static KiePMMLTreeModelCompoundPredicateASTFactory factory(final CompoundPredicate compoundPredicate, final Map<String, KiePMMLOriginalTypeGeneratedType> fieldTypeMap, final List<KiePMMLOutputField> outputFields, final List<KiePMMLDrooledRule> rules) {
+    public static KiePMMLTreeModelCompoundPredicateASTFactory factory(final CompoundPredicate compoundPredicate, final Map<String, KiePMMLOriginalTypeGeneratedType> fieldTypeMap, final List<KiePMMLOutputField> outputFields, final List<KiePMMLDroolsRule> rules) {
         return new KiePMMLTreeModelCompoundPredicateASTFactory(compoundPredicate, fieldTypeMap, outputFields, rules);
     }
 
@@ -100,7 +100,7 @@ public class KiePMMLTreeModelCompoundPredicateASTFactory extends KiePMMLTreeMode
         String statusConstraint = StringUtils.isEmpty(parentPath) ? STATUS_NULL : String.format(STATUS_PATTERN, parentPath);
         List<KiePMMLFieldOperatorValue> constraints;
         String statusToSet = isFinalLeaf ? DONE : currentRule;
-        KiePMMLDrooledRule.Builder builder = KiePMMLDrooledRule.builder(currentRule, statusToSet, outputFields)
+        KiePMMLDroolsRule.Builder builder = KiePMMLDroolsRule.builder(currentRule, statusToSet, outputFields)
                 .withStatusConstraint(statusConstraint);
         switch (compoundPredicate.getBooleanOperator()) {
             case AND:
@@ -143,7 +143,7 @@ public class KiePMMLTreeModelCompoundPredicateASTFactory extends KiePMMLTreeMode
             throw new KiePMMLException(String.format("declareRuleFromCompoundPredicateSurrogate invoked with %s CompoundPredicate", compoundPredicate.getBooleanOperator()));
         }
         final String agendaActivationGroup = String.format(SURROGATE_GROUP_PATTERN, currentRule);
-        KiePMMLDrooledRule.Builder builder = KiePMMLDrooledRule.builder(currentRule, null, outputFields)
+        KiePMMLDroolsRule.Builder builder = KiePMMLDroolsRule.builder(currentRule, null, outputFields)
                 .withStatusConstraint(String.format(STATUS_PATTERN, parentPath))
                 .withFocusedAgendaGroup(agendaActivationGroup);
         rules.add(builder.build());

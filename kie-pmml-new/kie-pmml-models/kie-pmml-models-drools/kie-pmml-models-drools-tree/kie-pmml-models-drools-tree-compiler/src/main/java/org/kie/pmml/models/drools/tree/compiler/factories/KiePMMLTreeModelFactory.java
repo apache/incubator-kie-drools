@@ -24,7 +24,7 @@ import org.dmg.pmml.DataDictionary;
 import org.dmg.pmml.tree.TreeModel;
 import org.drools.compiler.lang.descr.PackageDescr;
 import org.kie.pmml.commons.model.enums.MINING_FUNCTION;
-import org.kie.pmml.models.drools.ast.KiePMMLDrooledAST;
+import org.kie.pmml.models.drools.ast.KiePMMLDroolsAST;
 import org.kie.pmml.models.drools.tuples.KiePMMLOriginalTypeGeneratedType;
 import org.kie.pmml.models.drools.tree.model.KiePMMLTreeModel;
 import org.slf4j.Logger;
@@ -32,7 +32,7 @@ import org.slf4j.LoggerFactory;
 
 import static org.kie.pmml.models.drools.commons.factories.KiePMMLDescrFactory.getBaseDescr;
 import static org.kie.pmml.compiler.commons.utils.ModelUtils.getTargetFieldName;
-import static org.kie.pmml.models.drools.tree.compiler.factories.KiePMMLTreeModelASTFactory.getKiePMMLDrooledAST;
+import static org.kie.pmml.models.drools.tree.compiler.factories.KiePMMLTreeModelASTFactory.getKiePMMLDroolsAST;
 
 /**
  * Class used to generate <code>KiePMMLTreeModel</code> out of a <code>DataDictionary</code> and a <code>TreeModel</code>
@@ -49,8 +49,8 @@ public class KiePMMLTreeModelFactory {
         String name = model.getModelName();
         Optional<String> targetFieldName = getTargetFieldName(dataDictionary, model);
         final Map<String, KiePMMLOriginalTypeGeneratedType> fieldTypeMap = new HashMap<>();
-        final KiePMMLDrooledAST kiePMMLDrooledAST = getKiePMMLDrooledAST(dataDictionary, model, fieldTypeMap);
-        final PackageDescr baseDescr = getBaseDescr(kiePMMLDrooledAST, name.toLowerCase());
+        final KiePMMLDroolsAST kiePMMLDroolsAST = getKiePMMLDroolsAST(dataDictionary, model, fieldTypeMap);
+        final PackageDescr baseDescr = getBaseDescr(kiePMMLDroolsAST, name.toLowerCase());
         return KiePMMLTreeModel.builder(name, Collections.emptyList(), MINING_FUNCTION.byName(model.getMiningFunction().value()), model.getAlgorithmName())
                 .withPackageDescr(baseDescr)
                 .withFieldTypeMap(fieldTypeMap)

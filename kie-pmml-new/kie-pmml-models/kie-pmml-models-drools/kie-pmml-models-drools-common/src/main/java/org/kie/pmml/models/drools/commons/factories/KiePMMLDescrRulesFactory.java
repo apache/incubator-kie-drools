@@ -20,12 +20,12 @@ import java.util.List;
 import org.drools.compiler.lang.api.PackageDescrBuilder;
 import org.drools.compiler.lang.api.RuleDescrBuilder;
 import org.drools.compiler.lang.descr.AttributeDescr;
-import org.kie.pmml.models.drools.ast.KiePMMLDrooledRule;
+import org.kie.pmml.models.drools.ast.KiePMMLDroolsRule;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 /**
- * Class used to generate <b>Rules</b> (descr) out of a <b>List&lt;KiePMMLDrooledRule&gt;</b>
+ * Class used to generate <b>Rules</b> (descr) out of a <b>List&lt;KiePMMLDroolsRule&gt;</b>
  */
 public class KiePMMLDescrRulesFactory {
 
@@ -44,12 +44,12 @@ public class KiePMMLDescrRulesFactory {
         return new KiePMMLDescrRulesFactory(builder);
     }
 
-    public void declareRules(final List<KiePMMLDrooledRule> rules) {
+    public void declareRules(final List<KiePMMLDroolsRule> rules) {
         logger.debug("declareRules {}", rules);
         rules.forEach(this::declareRule);
     }
 
-    protected void declareRule(final KiePMMLDrooledRule rule) {
+    protected void declareRule(final KiePMMLDroolsRule rule) {
         logger.debug("declareRule {}", rule);
         final RuleDescrBuilder ruleBuilder = builder.newRule().name(rule.getName());
         if (rule.getAgendaGroup() != null) {

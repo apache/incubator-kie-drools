@@ -35,7 +35,7 @@ import org.drools.compiler.lang.descr.PatternDescr;
 import org.junit.Before;
 import org.junit.Test;
 import org.kie.pmml.commons.exceptions.KiePMMLException;
-import org.kie.pmml.models.drools.ast.KiePMMLDrooledRule;
+import org.kie.pmml.models.drools.ast.KiePMMLDroolsRule;
 import org.kie.pmml.models.drools.ast.KiePMMLFieldOperatorValue;
 import org.kie.pmml.models.drools.executor.KiePMMLStatusHolder;
 import org.kie.pmml.models.drools.tuples.KiePMMLOperatorValue;
@@ -67,7 +67,7 @@ public class KiePMMLDescrLhsFactoryTest {
     public void declareLhs() {
         String name = "NAME";
         String statusToSet = "STATUS_TO_SET";
-        KiePMMLDrooledRule rule = KiePMMLDrooledRule.builder(name, statusToSet, Collections.emptyList()).build();
+        KiePMMLDroolsRule rule = KiePMMLDroolsRule.builder(name, statusToSet, Collections.emptyList()).build();
         KiePMMLDescrLhsFactory.factory(lhsBuilder).declareLhs(rule);
         assertNotNull(lhsBuilder.getDescr());
         assertNotNull(lhsBuilder.getDescr().getDescrs());
