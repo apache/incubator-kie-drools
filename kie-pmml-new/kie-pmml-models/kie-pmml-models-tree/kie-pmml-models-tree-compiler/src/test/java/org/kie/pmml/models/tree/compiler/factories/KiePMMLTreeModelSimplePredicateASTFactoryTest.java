@@ -16,9 +16,9 @@
 
 package org.kie.pmml.models.tree.compiler.factories;
 
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 

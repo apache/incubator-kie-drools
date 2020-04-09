@@ -17,9 +17,8 @@
 package org.kie.pmml.commons.factories;
 
 import java.util.ArrayList;
-import java.util.LinkedList;
-import java.util.Objects;
 import java.util.List;
+import java.util.Objects;
 import java.util.stream.IntStream;
 
 import org.drools.compiler.lang.api.DescrFactory;

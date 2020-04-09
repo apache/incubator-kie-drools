@@ -16,8 +16,8 @@
 
 package org.kie.pmml.models.tree.compiler.factories;
 
-import java.util.Collections;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 import org.dmg.pmml.True;

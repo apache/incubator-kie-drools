@@ -16,6 +16,11 @@
 
 package org.kie.pmml.models.tree.tests;
 
+import java.util.Arrays;
+import java.util.Collection;
+import java.util.HashMap;
+import java.util.Map;
+
 import org.assertj.core.api.Assertions;
 import org.junit.BeforeClass;
 import org.junit.Test;
@@ -26,17 +31,13 @@ import org.kie.api.pmml.PMMLRequestData;
 import org.kie.pmml.commons.model.KiePMMLModel;
 import org.kie.pmml.evaluator.core.PMMLContextImpl;
 
-import java.util.Arrays;
-import java.util.Collection;
-import java.util.HashMap;
-import java.util.Map;
-
 @RunWith(Parameterized.class)
 public class BostonHousingDataTreeTest extends AbstractPMMLTreeTest {
+
     private static final String MODEL_NAME = "BostonHousingTreeModel";
     private static final String PMML_SOURCE = "BostonHousingTree.pmml";
     private static final String TARGET_FIELD = "Predicted_medv";
-
+    private static KiePMMLModel pmmlModel;
     private double crim;
     private double zn;
     private double indus;
@@ -51,13 +52,6 @@ public class BostonHousingDataTreeTest extends AbstractPMMLTreeTest {
     private double b;
     private double lstat;
     private double expectedResult;
-
-    private static KiePMMLModel pmmlModel;
-
-    @BeforeClass
-    public static void setupClass() {
-        pmmlModel = loadPMMLModel(PMML_SOURCE);
-    }
 
     public BostonHousingDataTreeTest(double crim, double zn, double indus, String chas, double nox, double rm,
                                      double age, double dis, double rad, double tax, double ptratio, double b,
@@ -76,6 +70,11 @@ public class BostonHousingDataTreeTest extends AbstractPMMLTreeTest {
         this.b = b;
         this.lstat = lstat;
         this.expectedResult = expectedResult;
+    }
+
+    @BeforeClass
+    public static void setupClass() {
+        pmmlModel = loadPMMLModel(PMML_SOURCE);
     }
 
     @Parameterized.Parameters

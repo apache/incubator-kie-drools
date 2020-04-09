@@ -1,5 +1,10 @@
 package org.kie.pmml.models.tree.tests;
 
+import java.util.Arrays;
+import java.util.Collection;
+import java.util.HashMap;
+import java.util.Map;
+
 import org.assertj.core.api.Assertions;
 import org.junit.BeforeClass;
 import org.junit.Test;
@@ -10,31 +15,18 @@ import org.kie.api.pmml.PMMLRequestData;
 import org.kie.pmml.commons.model.KiePMMLModel;
 import org.kie.pmml.evaluator.core.PMMLContextImpl;
 
-import java.util.Arrays;
-import java.util.Collection;
-import java.util.HashMap;
-import java.util.Map;
-
 @RunWith(Parameterized.class)
 public class IrisDataTreeTest extends AbstractPMMLTreeTest {
 
     private static final String MODEL_NAME = "IrisTreeModel";
     private static final String PMML_SOURCE = "irisTree.pmml";
     private static final String TARGET_FIELD = "Predicted_Species";
-
+    private static KiePMMLModel pmmlModel;
     private double sepalLength;
     private double sepalWidth;
     private double petalLength;
     private double petalWidth;
     private String expectedResult;
-
-    private static KiePMMLModel pmmlModel;
-
-    @BeforeClass
-    public static void setupClass() {
-        pmmlModel = loadPMMLModel(PMML_SOURCE);
-    }
-
 
     public IrisDataTreeTest(double sepalLength, double sepalWidth, double petalLength,
                             double petalWidth, String expectedResult) {
@@ -43,6 +35,11 @@ public class IrisDataTreeTest extends AbstractPMMLTreeTest {
         this.petalLength = petalLength;
         this.petalWidth = petalWidth;
         this.expectedResult = expectedResult;
+    }
+
+    @BeforeClass
+    public static void setupClass() {
+        pmmlModel = loadPMMLModel(PMML_SOURCE);
     }
 
     @Parameterized.Parameters

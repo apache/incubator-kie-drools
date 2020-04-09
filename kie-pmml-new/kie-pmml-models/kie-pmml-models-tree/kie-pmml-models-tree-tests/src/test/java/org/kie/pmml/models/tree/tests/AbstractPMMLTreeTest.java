@@ -16,6 +16,8 @@
 
 package org.kie.pmml.models.tree.tests;
 
+import java.util.Map;
+
 import org.assertj.core.api.Assertions;
 import org.dmg.pmml.PMML;
 import org.dmg.pmml.tree.TreeModel;
@@ -26,8 +28,6 @@ import org.kie.pmml.evaluator.core.executor.PMMLModelExecutor;
 import org.kie.pmml.evaluator.core.utils.PMMLRequestDataBuilder;
 import org.kie.pmml.models.tree.compiler.executor.TreeModelImplementationProvider;
 import org.kie.pmml.models.tree.evaluator.PMMLTreeModelEvaluator;
-
-import java.util.Map;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
@@ -63,7 +63,7 @@ public abstract class AbstractPMMLTreeTest {
         assertTrue(pmml.getModels().get(0) instanceof TreeModel);
 
         final KiePMMLModel pmmlModel = PROVIDER.getKiePMMLDrooledModel(pmml.getDataDictionary(),
-                (TreeModel) pmml.getModels().get(0));
+                                                                       (TreeModel) pmml.getModels().get(0));
         Assertions.assertThat(pmmlModel).isNotNull();
 
         return pmmlModel;

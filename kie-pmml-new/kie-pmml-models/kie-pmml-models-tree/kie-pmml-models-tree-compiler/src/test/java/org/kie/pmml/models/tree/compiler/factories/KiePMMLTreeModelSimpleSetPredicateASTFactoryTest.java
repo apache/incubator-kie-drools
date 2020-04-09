@@ -16,13 +16,12 @@
 
 package org.kie.pmml.models.tree.compiler.factories;
 
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.HashMap;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
-import java.util.List;
 
 import org.dmg.pmml.Array;
 import org.dmg.pmml.SimpleSetPredicate;
