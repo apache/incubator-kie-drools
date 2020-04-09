@@ -1,2 +1,2 @@
 # SPI implementation
-org.kie.pmml.models.tree.evaluator.PMMLTreeModelEvaluator
+org.kie.pmml.models.drools.tree.evaluator.PMMLTreeModelEvaluator

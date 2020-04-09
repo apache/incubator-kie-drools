@@ -1,6 +1,6 @@
 package golfing;
 
-import org.kie.pmml.models.drooled.executor.KiePMMLStatusHolder;
+import org.kie.pmml.models.drools.executor.KiePMMLStatusHolder;
 import org.dmg.pmml.SimplePredicate;
 import org.kie.api.pmml.PMML4Result;
 
