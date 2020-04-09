@@ -28,6 +28,7 @@ import org.kie.dmn.api.core.DMNModel;
 import org.kie.dmn.api.core.DMNResult;
 import org.kie.dmn.api.core.DMNRuntime;
 import org.kie.dmn.api.core.FEELPropertyAccessible;
+import org.kie.dmn.core.BaseVariantTest;
 import org.kie.dmn.core.impl.DMNContextFPAImpl;
 import org.kie.dmn.core.util.DMNRuntimeUtil;
 import org.kie.memorycompiler.KieMemoryCompiler;
@@ -41,7 +42,7 @@ import static org.junit.Assert.assertThat;
 import static org.kie.dmn.core.util.DynamicTypeUtils.entry;
 import static org.kie.dmn.core.util.DynamicTypeUtils.mapOf;
 
-public class DMNTypeSafeTest {
+public class DMNTypeSafeTest extends BaseVariantTest {
 
     public static final Logger LOG = LoggerFactory.getLogger(DMNTypeSafeTest.class);
 
@@ -49,7 +50,11 @@ public class DMNTypeSafeTest {
     private DMNModel dmnModel;
     private DMNRuntime runtime;
 
-    private DMNTypeSafePackageName.DMNModelFactory dmnModelFactory;
+    private DMNTypeSafePackageName.ModelFactory modelFactory;
+
+    public DMNTypeSafeTest(VariantTestConf testConfig) {
+        super(testConfig);
+    }
 
     @Before
     public void setUp() {
@@ -58,8 +63,8 @@ public class DMNTypeSafeTest {
         String modelName = "Drawing 1";
 
         dmnModel = runtime.getModel(namespace, modelName);
-        dmnModelFactory = new DMNTypeSafePackageName.DMNModelFactory();
-        packageName = dmnModelFactory.create(dmnModel);
+        modelFactory = new DMNTypeSafePackageName.ModelFactory();
+        packageName = modelFactory.create(dmnModel);
     }
 
     @Test
@@ -68,9 +73,9 @@ public class DMNTypeSafeTest {
         assertThat(dmnModel, notNullValue());
         assertThat(DMNRuntimeUtil.formatMessages(dmnModel.getMessages()), dmnModel.hasErrors(), is(false));
 
-        DMNAllTypesIndex index = new DMNAllTypesIndex(new DMNTypeSafePackageName.DMNModelFactory(), dmnModel);
+        DMNAllTypesIndex index = new DMNAllTypesIndex(new DMNTypeSafePackageName.ModelFactory(), dmnModel);
 
-        Map<String, String> allTypesSourceCode = new DMNTypeSafeTypeGenerator(dmnModel, index, dmnModelFactory).generateSourceCodeOfAllTypes();
+        Map<String, String> allTypesSourceCode = new DMNTypeSafeTypeGenerator(dmnModel, index, modelFactory).generateSourceCodeOfAllTypes();
 
         ClassLoader thisDMNClassLoader = this.getClass().getClassLoader();
         Map<String, Class<?>> compiledClasses = KieMemoryCompiler.compile(allTypesSourceCode, thisDMNClassLoader);
@@ -86,7 +91,6 @@ public class DMNTypeSafeTest {
         DMNContext result = evaluateAll.getContext();
         Map<String, Object> d = (Map<String, Object>) result.get("d");
         assertThat(d.get("Hello"), is("Hello Mr. x"));
-        LOG.info("{}", evaluateAll);
     }
 
     private FEELPropertyAccessible tAddress(Map<String, Class<?>> compile, String streetName, int streetNumber) throws Exception {
@@ -117,7 +121,7 @@ public class DMNTypeSafeTest {
         assertThat(dmnModel, notNullValue());
         assertThat(DMNRuntimeUtil.formatMessages(dmnModel.getMessages()), dmnModel.hasErrors(), is(false));
 
-        Map<String, Class<?>> classes = generateSourceCodeAndCreateInput(dmnModel, dmnModelFactory, this.getClass().getClassLoader());
+        Map<String, Class<?>> classes = generateSourceCodeAndCreateInput(dmnModel, modelFactory, this.getClass().getClassLoader());
 
         FEELPropertyAccessible context = createInstanceFromCompiledClasses(classes, packageName, "InputSet");
 
@@ -140,27 +144,19 @@ public class DMNTypeSafeTest {
         DMNContext result = evaluateAll.getContext();
         Map<String, Object> d = (Map<String, Object>) result.get("d");
         assertThat(d.get("Hello"), is("Hello Mr. x"));
-        LOG.info("{}", evaluateAll);
     }
 
     private static DMNResult evaluateTyped(FEELPropertyAccessible context, DMNRuntime runtime, DMNModel dmnModel) {
         return runtime.evaluateAll(dmnModel, new DMNContextFPAImpl(context));
     }
 
-    public static Map<String, Class<?>> generateSourceCodeAndCreateInput(DMNModel dmnModel, DMNTypeSafePackageName.DMNModelFactory packageNameFactory, ClassLoader classLoader) {
-        DMNAllTypesIndex index = new DMNAllTypesIndex(packageNameFactory, dmnModel);
+    public static Map<String, Class<?>> generateSourceCodeAndCreateInput(DMNModel dmnModel, DMNTypeSafePackageName.ModelFactory packageName, ClassLoader classLoader) {
+        DMNAllTypesIndex index = new DMNAllTypesIndex(packageName, dmnModel);
         Map<String, String> allTypesSourceCode = new DMNTypeSafeTypeGenerator(
                 dmnModel,
-                index, packageNameFactory )
+                index, packageName)
                 .generateSourceCodeOfAllTypes();
 
         return KieMemoryCompiler.compile(allTypesSourceCode, classLoader);
-    }
-
-    public static FEELPropertyAccessible createInstanceFromCompiledClasses(Map<String, Class<?>> compile, DMNTypeSafePackageName packageName, String className) throws Exception {
-        Class<?> inputSetClass = compile.get(packageName.appendPackage(className));
-        assertThat(inputSetClass, notNullValue());
-        Object inputSetInstance = inputSetClass.getDeclaredConstructor().newInstance();
-        return (FEELPropertyAccessible) inputSetInstance;
     }
 }

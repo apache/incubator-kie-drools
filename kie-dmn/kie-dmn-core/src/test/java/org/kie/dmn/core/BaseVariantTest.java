@@ -33,10 +33,11 @@ import org.kie.dmn.core.internal.utils.DMNRuntimeBuilder.DMNRuntimeBuilderConfig
 import org.kie.dmn.core.util.DMNRuntimeUtil;
 import org.kie.dmn.typesafe.DMNAllTypesIndex;
 import org.kie.dmn.typesafe.DMNTypeSafePackageName;
-import org.kie.dmn.typesafe.DMNTypeSafeTest;
 import org.kie.dmn.typesafe.DMNTypeSafeTypeGenerator;
 import org.kie.memorycompiler.KieMemoryCompiler;
 
+import static org.hamcrest.CoreMatchers.notNullValue;
+import static org.junit.Assert.assertThat;
 import static org.kie.dmn.core.BaseVariantTest.VariantTestConf.BUILDER_DEFAULT_NOCL_TYPECHECK;
 import static org.kie.dmn.core.BaseVariantTest.VariantTestConf.BUILDER_DEFAULT_NOCL_TYPECHECK_TYPESAFE;
 import static org.kie.dmn.core.BaseVariantTest.VariantTestConf.BUILDER_STRICT;
@@ -46,7 +47,6 @@ import static org.kie.dmn.core.BaseVariantTest.VariantTestConf.KIE_API_TYPECHECK
 @RunWith(Parameterized.class)
 public abstract class BaseVariantTest {
 
-    private String prefix;
     private DMNTypeSafePackageName.Factory factory;
 
     public enum VariantTestConf implements VariantTest {
@@ -141,7 +141,7 @@ public abstract class BaseVariantTest {
             public boolean isTypeSafe() {
                 return true;
             }
-        };
+        }
     }
 
     @Parameterized.Parameters(name = "{0}")
@@ -176,8 +176,8 @@ public abstract class BaseVariantTest {
     protected String testName = "";
 
     private void createTypeSafeInput(DMNRuntime runtime) {
-        prefix = String.format("%s%s", testName, testConfig.name());
-        factory = new DMNTypeSafePackageName.DMNModelFactory(prefix);
+        String prefix = String.format("%s%s", testName, testConfig.name());
+        factory = new DMNTypeSafePackageName.ModelFactory(prefix);
         DMNAllTypesIndex index = new DMNAllTypesIndex(runtime.getModels(), factory);
         Map<String, String> allSources = new HashMap<>();
 
@@ -202,12 +202,19 @@ public abstract class BaseVariantTest {
         Map<String, Object> inputMap = context.getAll();
         FEELPropertyAccessible inputSet;
         try {
-            inputSet = DMNTypeSafeTest.createInstanceFromCompiledClasses(allCompiledClasses, factory.create(dmnModel), "InputSet");
+            inputSet = createInstanceFromCompiledClasses(allCompiledClasses, factory.create(dmnModel), "InputSet");
             inputSet.fromMap(inputMap);
             return runtime.evaluateAll(dmnModel, new DMNContextFPAImpl(inputSet));
         } catch (Exception e) {
             throw new RuntimeException(e);
         }
+    }
+
+    protected FEELPropertyAccessible createInstanceFromCompiledClasses(Map<String, Class<?>> compile, DMNTypeSafePackageName packageName, String className) throws Exception {
+        Class<?> inputSetClass = compile.get(packageName.appendPackage(className));
+        assertThat(inputSetClass, notNullValue());
+        Object inputSetInstance = inputSetClass.getDeclaredConstructor().newInstance();
+        return (FEELPropertyAccessible) inputSetInstance;
     }
 }
 

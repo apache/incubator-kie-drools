@@ -26,15 +26,15 @@ public class DMNTypeSafePackageName {
         DMNTypeSafePackageName create(DMNModel m);
     }
 
-    public static class DMNModelFactory implements Factory {
+    public static class ModelFactory implements Factory {
 
         private final String prefix;
 
-        public DMNModelFactory(String prefix) {
+        public ModelFactory(String prefix) {
             this.prefix = prefix;
         }
 
-        public DMNModelFactory() {
+        public ModelFactory() {
             this.prefix = "";
         }
 
