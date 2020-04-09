@@ -41,6 +41,7 @@ import {
 } from '@patternfly/react-icons';
 import ErrorPopover from '../../Atoms/ErrorPopoverComponent/ErrorPopoverComponent';
 import ProcessBulkModalComponent from '../../Atoms/ProcessBulkModalComponent/ProcessBulkModalComponent';
+import ServerErrorsComponents from '../../Molecules/ServerErrorsComponent/ServerErrorsComponent';
 import ProcessDescriptor from '../ProcessDescriptor/ProcessDescriptor';
 import DisablePopup from '../DiablePopup/DisablePopup';
 interface IOwnProps {
@@ -81,9 +82,10 @@ const DataListItemComponent: React.FC<IOwnProps> = ({
   const [isAbortModalOpen, setIsAbortModalOpen] = useState(false);
   const [titleType, setTitleType] = useState('');
   const isChecked = 'isChecked';
-  const [getChildInstances, { loading, data }] = useGetChildInstancesLazyQuery({
+  const [getChildInstances, { loading, data, error }] = useGetChildInstancesLazyQuery({
     fetchPolicy: 'network-only'
   });
+  
 
   const currentPage = { prev: location.pathname}
   window.localStorage.setItem('state', JSON.stringify(currentPage))
@@ -664,7 +666,7 @@ const DataListItemComponent: React.FC<IOwnProps> = ({
         >
           {isLoaded &&
             !loading &&
-            !loadingInitData &&
+            !loadingInitData && !error &&
             initData.ProcessInstances.map((instance, idx) => {
               if (instance.id === processInstanceData.id) {
                 if (instance.childDataList.length === 0) {
@@ -698,11 +700,12 @@ const DataListItemComponent: React.FC<IOwnProps> = ({
                 }
               }
             })}
-          {!isLoaded && (
+          {!isLoaded && !error && (
             <Bullseye>
               <SpinnerComponent spinnerText="Loading process instances..." />
             </Bullseye>
           )}
+          {error && <ServerErrorsComponents message={error}/>}
         </DataListContent>
       </DataListItem>
     </React.Fragment>

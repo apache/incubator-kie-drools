@@ -7,3 +7,7 @@
     margin-bottom: var(--pf-global--spacer--lg);
     max-width: 80vw;
 }
+
+.kogito-management-console--domain-explorer__table .pf-c-table__toggle{
+  padding: 24px;
+}

@@ -189,6 +189,17 @@ const DomainExplorerDashboard = props => {
     );
   };
 
+  if(!getQuery.loading && getQuery.error) {
+    return (<ServerErrorsComponent message={getQuery.error}/>)
+  }
+
+  if(!getQueryTypes.loading && getQueryTypes.error) {
+    return (<ServerErrorsComponent message={getQueryTypes.error}/>)
+  }
+
+  if(!getPicker.loading && getPicker.error) {
+    return (<ServerErrorsComponent message={getPicker.error}/>)
+  }
   return (
     <>
       {!getQuery.loading && !props.domains.includes(domainName) && !props.domains.includes(pathName) && <Redirect to={{

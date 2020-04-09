@@ -318,7 +318,7 @@ const ProcessDetailsPage = ({ match }) => {
                 </Card>
               )}
           </PageSection>
-        </>) : (<ServerErrorsComponent message={error.message} />)}
+        </>) : (<ServerErrorsComponent message={error} />)}
     </>);
 };
 

@@ -8,6 +8,7 @@ import {
 } from '@patternfly/react-core';
 import '../../Templates/DataListContainer/DataList.css';
 import DataListItemComponent from '../../Molecules/DataListItemComponent/DataListItemComponent';
+import ServerErrorsComponent from '../../Molecules/ServerErrorsComponent/ServerErrorsComponent';
 import SpinnerComponent from '../../Atoms/SpinnerComponent/SpinnerComponent';
 import EmptyStateComponent from '../../Atoms/EmptyStateComponent/EmptyStateComponent';
 import '@patternfly/patternfly/patternfly-addons.css';
@@ -105,14 +106,7 @@ const DataListComponent: React.FC<IOwnProps> = ({
   if (error) {
     setIsError(true);
     return (
-      <div className=".pf-u-my-xl">
-        <EmptyStateComponent
-          iconType="warningTriangleIcon"
-          title="Oops... error while loading"
-          body="Try using the refresh action to reload process instances"
-          refetch={refetch}
-        />
-      </div>
+      <ServerErrorsComponent message={error}/>
     );
   }
 

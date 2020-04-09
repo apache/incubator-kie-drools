@@ -6,6 +6,7 @@ import {
   SelectGroup,
   Button
 } from '@patternfly/react-core';
+import {SyncIcon} from '@patternfly/react-icons';
 import { query } from 'gql-query-builder';
 import _ from 'lodash';
 import gql from 'graphql-tag';
@@ -45,16 +46,14 @@ const DomainExplorerColumnPicker: React.FC<IOwnProps> = ({
   // tslint:disable: forin
   // tslint:disable: no-floating-promises
   const [isExpanded, setIsExpanded] = useState(false);
-  const [tempDomain, setTempDomain] = useState('');
+  const [enableRefresh, setEnableRefresh] = useState(true);
 
-  useEffect(() => {
-    setTempDomain(columnPickerType);
-  });
 
   const nullTypes = [null, 'String', 'Boolean', 'Int', 'DateTime'];
   const client = useApolloClient();
 
   const onSelect = (event, selection) => {
+    setEnableRefresh(false);
     if (selected.includes(selection)) {
       setSelected(prevState => prevState.filter(item => item !== selection));
       const innerText = event.nativeEvent.target.nextSibling.innerText;
@@ -182,6 +181,8 @@ const DomainExplorerColumnPicker: React.FC<IOwnProps> = ({
   }
 
   async function generateQuery() {
+    setTableLoading(true);
+    setEnableRefresh(true);
     if (columnPickerType && parameters.length > 1) {
       const Query = query({
         operation: columnPickerType,
@@ -341,6 +342,12 @@ const DomainExplorerColumnPicker: React.FC<IOwnProps> = ({
 
     return unique;
   }
+
+  const onRefresh = () => {
+    if(enableRefresh && parameters.length > 1) {
+    generateQuery()
+    }
+  }
   
   return (
     <React.Fragment>
@@ -362,6 +369,9 @@ const DomainExplorerColumnPicker: React.FC<IOwnProps> = ({
           </Select>
           <Button variant="primary" onClick={generateQuery}>
             Apply columns
+          </Button>
+          <Button variant="plain" onClick={onRefresh} className="pf-u-m-md" aria-label={"Refresh list"}>
+            <SyncIcon />
           </Button>
         </>
       )}
