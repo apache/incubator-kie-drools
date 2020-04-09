@@ -104,10 +104,10 @@
         <artifactId>kie-pmml-evaluator-assembler</artifactId>
         <version>${version.org.kie}</version>
       </dependency>
-      <!-- Drooled -->
+      <!-- Drools -->
       <dependency>
         <groupId>org.kie</groupId>
-        <artifactId>kie-pmml-models-drooled</artifactId>
+        <artifactId>kie-pmml-models-drools-common</artifactId>
         <version>${version.org.kie}</version>
       </dependency>
       <!-- Regression -->
@@ -129,17 +129,17 @@
       <!-- Tree -->
       <dependency>
         <groupId>org.kie</groupId>
-        <artifactId>kie-pmml-models-tree-model</artifactId>
+        <artifactId>kie-pmml-models-drools-tree-model</artifactId>
         <version>${version.org.kie}</version>
       </dependency>
       <dependency>
         <groupId>org.kie</groupId>
-        <artifactId>kie-pmml-models-tree-compiler</artifactId>
+        <artifactId>kie-pmml-models-drools-tree-compiler</artifactId>
         <version>${version.org.kie}</version>
       </dependency>
       <dependency>
         <groupId>org.kie</groupId>
-        <artifactId>kie-pmml-models-tree-evaluator</artifactId>
+        <artifactId>kie-pmml-models-drools-tree-evaluator</artifactId>
         <version>${version.org.kie}</version>
       </dependency>
       <!-- EXTERNAL -->
@@ -179,7 +179,7 @@
       <!-- Tree -->
       <dependency>
         <groupId>org.kie</groupId>
-        <artifactId>kie-pmml-models-tree-compiler</artifactId>
+        <artifactId>kie-pmml-models-drools-tree-compiler</artifactId>
         <classifier>tests</classifier>
         <version>${version.org.kie}</version>
       </dependency>

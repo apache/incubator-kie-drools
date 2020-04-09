@@ -8,16 +8,16 @@
   <modelVersion>4.0.0</modelVersion>
   <packaging>pom</packaging>
 
-  <artifactId>kie-pmml-models-tree</artifactId>
+  <artifactId>kie-pmml-models-drools-tree</artifactId>
 
   <name>KIE :: PMML :: Models :: Tree</name>
   <description>PMML Tree implementation</description>
 
   <modules>
-    <module>kie-pmml-models-tree-model</module>
-    <module>kie-pmml-models-tree-compiler</module>
-    <module>kie-pmml-models-tree-evaluator</module>
-    <module>kie-pmml-models-tree-tests</module>
+    <module>kie-pmml-models-drools-tree-model</module>
+    <module>kie-pmml-models-drools-tree-compiler</module>
+    <module>kie-pmml-models-drools-tree-evaluator</module>
+    <module>kie-pmml-models-drools-tree-tests</module>
   </modules>
 
 

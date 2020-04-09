@@ -2,63 +2,45 @@
 <project xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://maven.apache.org/POM/4.0.0" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
   <parent>
     <groupId>org.kie</groupId>
-    <artifactId>kie-pmml-models-tree</artifactId>
+    <artifactId>kie-pmml-models-drools-tree</artifactId>
     <version>7.36.0-SNAPSHOT</version>
   </parent>
   <modelVersion>4.0.0</modelVersion>
 
-  <artifactId>kie-pmml-models-tree-tests</artifactId>
-
-  <name>KIE :: PMML :: Models :: Tree :: Tests</name>
-  <description>PMML Tree Tests</description>
+  <artifactId>kie-pmml-models-drools-tree-evaluator</artifactId>
+  <name>KIE :: PMML :: Models :: Drools :: Tree :: Evaluator</name>
+  <description>PMML Tree Evaluator</description>
 
   <dependencies>
     <!-- PMML -->
     <dependency>
       <groupId>org.kie</groupId>
-      <artifactId>kie-pmml-models-tree-model</artifactId>
+      <artifactId>kie-pmml-models-drools-tree-model</artifactId>
     </dependency>
     <dependency>
       <groupId>org.kie</groupId>
-      <artifactId>kie-pmml-models-tree-compiler</artifactId>
+      <artifactId>kie-pmml-evaluator-core</artifactId>
     </dependency>
-    <dependency>
-      <groupId>org.kie</groupId>
-      <artifactId>kie-pmml-models-tree-evaluator</artifactId>
-    </dependency>
-    <!-- EXTERNAL -->
-    <dependency>
-      <groupId>org.jpmml</groupId>
-      <artifactId>pmml-model</artifactId>
-    </dependency>
-    <!-- TEST -->
     <dependency>
       <groupId>org.kie</groupId>
       <artifactId>kie-test-util</artifactId>
       <scope>test</scope>
     </dependency>
-    <!-- PMML -->
+    <!-- EXTERNAL -->
+    <!-- TEST -->
     <dependency>
       <groupId>org.kie</groupId>
-      <artifactId>kie-pmml-commons</artifactId>
-      <classifier>tests</classifier>
+      <artifactId>kie-pmml-compiler-api</artifactId>
       <scope>test</scope>
     </dependency>
     <dependency>
       <groupId>org.kie</groupId>
       <artifactId>kie-pmml-compiler-api</artifactId>
       <classifier>tests</classifier>
-      <scope>test</scope>
-    </dependency>
-    <!-- EXTERNAL -->
-    <dependency>
-      <groupId>junit</groupId>
-      <artifactId>junit</artifactId>
-      <scope>test</scope>
     </dependency>
     <dependency>
-      <groupId>org.assertj</groupId>
-      <artifactId>assertj-core</artifactId>
+      <groupId>org.kie</groupId>
+      <artifactId>kie-pmml-models-drools-tree-compiler</artifactId>
       <scope>test</scope>
     </dependency>
   </dependencies>

@@ -2,12 +2,12 @@
 <project xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://maven.apache.org/POM/4.0.0" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
   <parent>
     <groupId>org.kie</groupId>
-    <artifactId>kie-pmml-models-tree</artifactId>
+    <artifactId>kie-pmml-models-drools-tree</artifactId>
     <version>${version.org.kie}</version>
   </parent>
   <modelVersion>4.0.0</modelVersion>
 
-  <artifactId>kie-pmml-models-tree-evaluator</artifactId>
+  <artifactId>kie-pmml-models-drools-tree-evaluator</artifactId>
   <name>KIE :: PMML :: Models :: Tree :: Evaluator</name>
   <description>PMML Tree Evaluator</description>
 
@@ -15,7 +15,7 @@
     <!-- PMML -->
     <dependency>
       <groupId>org.kie</groupId>
-      <artifactId>kie-pmml-models-tree-model</artifactId>
+      <artifactId>kie-pmml-models-drools-tree-model</artifactId>
     </dependency>
     <dependency>
       <groupId>org.kie</groupId>
@@ -35,7 +35,7 @@
       </dependency>
       <dependency>
         <groupId>org.kie</groupId>
-        <artifactId>kie-pmml-models-tree-model</artifactId>
+        <artifactId>kie-pmml-models-drools-tree-model</artifactId>
         <version>${version.org.kie}</version>
       </dependency>
     </dependencies>
