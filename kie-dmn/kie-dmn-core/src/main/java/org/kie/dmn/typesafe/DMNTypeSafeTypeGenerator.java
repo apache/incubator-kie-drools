@@ -32,13 +32,13 @@ import org.kie.dmn.core.impl.DMNModelImpl;
 
 public class DMNTypeSafeTypeGenerator {
 
-    private final DMNTypeSafePackageName.DMNTypeSafePackageNameFactory packageName;
+    private final DMNTypeSafePackageName.Factory packageName;
     private DMNAllTypesIndex index;
     private DMNModelImpl dmnModel;
 
     private Map<String, TypeDefinition> types = new HashMap<>();
 
-    public DMNTypeSafeTypeGenerator(DMNModel dmnModel, DMNAllTypesIndex index, DMNTypeSafePackageName.DMNTypeSafePackageNameFactory packageName) {
+    public DMNTypeSafeTypeGenerator(DMNModel dmnModel, DMNAllTypesIndex index, DMNTypeSafePackageName.Factory packageName) {
         this.dmnModel = (DMNModelImpl) dmnModel;
         this.packageName = packageName;
         this.index = index;

@@ -47,7 +47,7 @@ import static org.kie.dmn.core.BaseVariantTest.VariantTestConf.KIE_API_TYPECHECK
 public abstract class BaseVariantTest {
 
     private String prefix;
-    private DMNTypeSafePackageName.DMNTypeSafePackageNameFactory factory;
+    private DMNTypeSafePackageName.Factory factory;
 
     public enum VariantTestConf implements VariantTest {
         KIE_API_TYPECHECK {

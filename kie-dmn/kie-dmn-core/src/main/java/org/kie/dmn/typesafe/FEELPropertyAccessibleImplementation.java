@@ -45,13 +45,20 @@ import org.kie.dmn.feel.util.EvalHelper;
 import static com.github.javaparser.ast.NodeList.nodeList;
 import static org.drools.core.util.StringUtils.ucFirst;
 
-public class FeelPropertyTemplate {
+public class FEELPropertyAccessibleImplementation {
+
+    static class InvalidTemplateException extends DMNTypeSafeException {
+
+        public InvalidTemplateException(String message) {
+            super(message);
+        }
+    }
 
     CompilationUnit methodTemplate;
 
     List<DMNDeclaredField> fields;
 
-    public FeelPropertyTemplate(List<DMNDeclaredField> fields) {
+    public FEELPropertyAccessibleImplementation(List<DMNDeclaredField> fields) {
         this.fields = fields;
     }
 
@@ -72,18 +79,24 @@ public class FeelPropertyTemplate {
 
         MethodDeclaration getFEELProperty = cloneMethodTemplate("getFEELProperty");
 
-        SwitchStmt firstSwitch = getFEELProperty.findFirst(SwitchStmt.class).orElseThrow(RuntimeException::new);
+        SwitchStmt firstSwitch = getFEELProperty.findFirst(SwitchStmt.class)
+                .orElseThrow(() -> new InvalidTemplateException("Missing Switch Statement in getFEELProperty template"));
 
         firstSwitch.setComment(null);
 
         List<SwitchEntry> collect = fields.stream().map(this::toGetPropertySwitchEntry).collect(Collectors.toList());
 
-        SwitchEntry defaultSwitchStmt = firstSwitch.findFirst(SwitchEntry.class, sw -> sw.getLabels().isEmpty()).orElseThrow(RuntimeException::new);
+        SwitchEntry defaultSwitchStmt = firstSwitch
+                .findFirst(SwitchEntry.class, sw -> sw.getLabels().isEmpty())
+                .orElseThrow(() -> new InvalidTemplateException("Missing Default Switch Statement in getFEELProperty template"));
+
         collect.add(defaultSwitchStmt);
 
         firstSwitch.setEntries(nodeList(collect));
 
-        String body = getFEELProperty.getBody().orElseThrow(RuntimeException::new).toString();
+        String body = getFEELProperty.getBody().orElseThrow(() -> new InvalidTemplateException("Empty body in getFeelProperty clone"))
+                .toString();
+
         MethodWithStringBody getFeelPropertyDefinition =
                 new MethodWithStringBody("getFEELProperty", EvalHelper.PropertyValueResult.class.getCanonicalName(), body)
                         .addParameter(String.class.getCanonicalName(), "property");
@@ -97,9 +110,9 @@ public class FeelPropertyTemplate {
         md.addAnnotation("Override");
     }
 
-    private MethodDeclaration cloneMethodTemplate(String getFEELProperty) {
-        return methodTemplate.findFirst(MethodDeclaration.class, mc -> mc.getNameAsString().equals(getFEELProperty))
-                .orElseThrow(RuntimeException::new)
+    private MethodDeclaration cloneMethodTemplate(String methodName) {
+        return methodTemplate.findFirst(MethodDeclaration.class, mc -> mc.getNameAsString().equals(methodName))
+                .orElseThrow(() -> new InvalidTemplateException(String.format("Missing method in template: %s", methodName)))
                 .clone();
     }
 
@@ -116,7 +129,8 @@ public class FeelPropertyTemplate {
 
         MethodDeclaration setFEELProperty = cloneMethodTemplate("setFEELProperty");
 
-        SwitchStmt firstSwitch = setFEELProperty.findFirst(SwitchStmt.class).orElseThrow(RuntimeException::new);
+        SwitchStmt firstSwitch = setFEELProperty.findFirst(SwitchStmt.class)
+                .orElseThrow(() -> new InvalidTemplateException("Missing switch statement in setFEELProperty"));
 
         firstSwitch.setComment(null);
 
@@ -124,7 +138,7 @@ public class FeelPropertyTemplate {
 
         firstSwitch.setEntries(nodeList(collect));
 
-        String body = setFEELProperty.getBody().orElseThrow(RuntimeException::new).toString();
+        String body = setFEELProperty.getBody().orElseThrow(() -> new InvalidTemplateException("Empty body in setFEELProperty")).toString();
 
         MethodWithStringBody setFeelPropertyDefinition = new MethodWithStringBody("setFEELProperty", "void", body)
                 .addParameter(String.class.getCanonicalName(), "property")
@@ -153,17 +167,19 @@ public class FeelPropertyTemplate {
 
         MethodDeclaration allFeelProperties = cloneMethodTemplate("fromMap");
 
-        BlockStmt originalStatements = allFeelProperties.getBody().orElseThrow(RuntimeException::new);
+        BlockStmt originalStatements = allFeelProperties.getBody()
+                .orElseThrow(() -> new InvalidTemplateException("Missing body in allFeelProperties"));
+
         BlockStmt simplePropertyBLock = (BlockStmt) originalStatements.getStatement(0);
         BlockStmt pojoPropertyBlock = (BlockStmt) originalStatements.getStatement(1);
         BlockStmt collectionsPropertyBlock = (BlockStmt) originalStatements.getStatement(2);
 
-        List<Statement> allStmts = fields.stream().map(f -> f.createFromMapEntry(simplePropertyBLock,
+        List<Statement> allStatements = fields.stream().map(f -> f.createFromMapEntry(simplePropertyBLock,
                                                                                  pojoPropertyBlock,
                                                                                  collectionsPropertyBlock))
                 .collect(Collectors.toList());
 
-        BlockStmt body = new BlockStmt(nodeList(allStmts));
+        BlockStmt body = new BlockStmt(nodeList(allStatements));
 
         MethodWithStringBody setFeelProperty = new MethodWithStringBody("fromMap", "void", body.toString());
         setFeelProperty.addParameter("java.util.Map<String, Object>", "values");
@@ -183,14 +199,15 @@ public class FeelPropertyTemplate {
 
         MethodCallExpr putExpression = allFeelProperties.findFirst(MethodCallExpr.class,
                                                                    mc -> mc.getNameAsString().equals("put"))
-                .orElseThrow(RuntimeException::new);
+                .orElseThrow(() -> new InvalidTemplateException("Missing put method in allFEELProperties"));
 
         List<Statement> collect = fields.stream().map(fieldDefinition -> toResultPut(putExpression, fieldDefinition)).collect(Collectors.toList());
         BlockStmt newBlockStatement = new BlockStmt(nodeList(collect));
 
         putExpression.getParentNode().ifPresent(p -> p.replace(newBlockStatement));
 
-        String body = allFeelProperties.getBody().orElseThrow(RuntimeException::new).toString();
+        String body = allFeelProperties.getBody().orElseThrow(() -> new InvalidTemplateException("Missing body in generated method"))
+                .toString();
 
         MethodWithStringBody allFEELProperties = new MethodWithStringBody(
                 "allFEELProperties",

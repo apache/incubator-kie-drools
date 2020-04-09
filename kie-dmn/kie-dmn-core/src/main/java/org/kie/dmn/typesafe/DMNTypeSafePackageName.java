@@ -21,12 +21,12 @@ import org.kie.dmn.feel.codegen.feel11.CodegenStringUtil;
 
 public class DMNTypeSafePackageName {
 
-    public interface DMNTypeSafePackageNameFactory {
+    public interface Factory {
 
         DMNTypeSafePackageName create(DMNModel m);
     }
 
-    public static class DMNModelFactory implements DMNTypeSafePackageNameFactory {
+    public static class DMNModelFactory implements Factory {
 
         private final String prefix;
 

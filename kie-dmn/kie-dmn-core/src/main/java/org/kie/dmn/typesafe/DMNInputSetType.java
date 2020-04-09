@@ -81,7 +81,7 @@ class DMNInputSetType implements TypeDefinition {
 
     @Override
     public List<MethodDefinition> getMethods() {
-        return new FeelPropertyTemplate(fields).getMethods();
+        return new FEELPropertyAccessibleImplementation(fields).getMethods();
     }
 
     @Override

@@ -16,6 +16,8 @@
 
 package org.kie.dmn.typesafe;
 
-public class DMNTypesafeException extends RuntimeException {
-
+public class DMNTypeSafeException extends RuntimeException {
+    public DMNTypeSafeException(String message) {
+        super(message);
+    }
 }

@@ -85,7 +85,7 @@ public class DMNDeclaredField implements FieldDefinition {
         }
     }
 
-    // This returns the generic type i.e. if Collection<String> then String
+    // This returns the generic type i.e. when Collection<String> then String
     private String fieldTypeUnwrapped() {
         if (fieldDMNType.isCollection()) {
             String typeName = getBaseType(fieldDMNType);
@@ -100,7 +100,7 @@ public class DMNDeclaredField implements FieldDefinition {
         return dmnTypeSafePackageName.map(p -> p.appendPackage(typeNameUpperCase)).orElse(typeNameUpperCase);
     }
 
-    public static String getBaseType(DMNType fieldType) {
+    public String getBaseType(DMNType fieldType) {
         Optional<DMNType> baseType = Optional.ofNullable(fieldType.getBaseType());
         return baseType.map(DMNType::getName)
                 .orElse(OBJECT_TYPE);
@@ -139,19 +139,19 @@ public class DMNDeclaredField implements FieldDefinition {
     public BlockStmt createFromMapEntry(BlockStmt simplePropertyBlock,
                                         BlockStmt pojoPropertyBlock,
                                         BlockStmt collectionsPropertyBlock) {
-        if (fieldDMNType.isCollection() && !fieldIsObject()) {
+        if (fieldDMNType.isCollection() && fieldIsDifferentThanObject()) {
             return replaceTemplate(collectionsPropertyBlock, fieldTypeUnwrapped());
         } else if (fieldDMNType.isComposite()) {
             return replaceTemplate(pojoPropertyBlock, fieldTypeWithPackage());
-        } else if (!fieldIsObject()) {
+        } else if (fieldIsDifferentThanObject()) {
             return replaceTemplate(simplePropertyBlock, fieldTypeWithPackage());
         } else {
             return new BlockStmt();
         }
     }
 
-    private boolean fieldIsObject() {
-        return fieldTypeUnwrapped().equals(OBJECT_TYPE);
+    private boolean fieldIsDifferentThanObject() {
+        return !fieldTypeUnwrapped().equals(OBJECT_TYPE);
     }
 
     private BlockStmt replaceTemplate(BlockStmt pojoPropertyBlock, String objectType) {

@@ -35,7 +35,7 @@ class DMNDeclaredType implements TypeDefinition {
     private DMNAllTypesIndex index;
     private final DMNType dmnType;
     List<DMNDeclaredField> fields = new ArrayList<>();
-    List<AnnotationDefinition> annnotations = new ArrayList<>();
+    List<AnnotationDefinition> annotations = new ArrayList<>();
 
     DMNDeclaredType(DMNAllTypesIndex index, DMNType dmnType) {
         this.index = index;
@@ -78,12 +78,12 @@ class DMNDeclaredType implements TypeDefinition {
 
     @Override
     public List<MethodDefinition> getMethods() {
-        return new FeelPropertyTemplate(fields).getMethods();
+        return new FEELPropertyAccessibleImplementation(fields).getMethods();
     }
 
     @Override
     public List<AnnotationDefinition> getAnnotationsToBeAdded() {
-        return annnotations;
+        return annotations;
     }
 
     @Override

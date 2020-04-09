@@ -27,24 +27,24 @@ import org.kie.dmn.api.core.DMNType;
 
 public class DMNAllTypesIndex {
 
-    private final List<DMNType> typesToGenerate = new ArrayList<>();
+    private final List<DMNType> indexedTypes = new ArrayList<>();
 
     Map<String, DMNTypeSafePackageName> mapNamespaceIndex = new HashMap<>();
 
-    public DMNAllTypesIndex(DMNTypeSafePackageName.DMNTypeSafePackageNameFactory packageFactory, DMNModel... allModels) {
+    public DMNAllTypesIndex(DMNTypeSafePackageName.Factory packageName, DMNModel... allModels) {
         for (DMNModel m : allModels) {
-            DMNModelTypesIndex indexFromModel = new DMNModelTypesIndex(m, packageFactory);
-            mapNamespaceIndex.putAll(indexFromModel.getClassesNamespaceIndex());
+            DMNModelTypesIndex indexFromModel = new DMNModelTypesIndex(m, packageName);
+            mapNamespaceIndex.putAll(indexFromModel.getIndex());
             allTypesToGenerate().addAll(indexFromModel.getTypesToGenerate());
         }
     }
 
-    public DMNAllTypesIndex(List<DMNModel> allModels, DMNTypeSafePackageName.DMNTypeSafePackageNameFactory packageName) {
+    public DMNAllTypesIndex(List<DMNModel> allModels, DMNTypeSafePackageName.Factory packageName) {
         this(packageName, allModels.toArray(new DMNModel[0]));
     }
 
     public List<DMNType> allTypesToGenerate() {
-        return typesToGenerate;
+        return indexedTypes;
     }
 
     public Optional<DMNTypeSafePackageName> namespaceOfClass(String typeName) {

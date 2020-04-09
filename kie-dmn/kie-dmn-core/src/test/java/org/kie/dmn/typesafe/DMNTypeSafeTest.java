@@ -52,7 +52,7 @@ public class DMNTypeSafeTest {
     private DMNTypeSafePackageName.DMNModelFactory dmnModelFactory;
 
     @Before
-    public void setUp() throws Exception {
+    public void setUp() {
         runtime = DMNRuntimeUtil.createRuntime("a.dmn", this.getClass());
         String namespace = "http://www.trisotech.com/definitions/_2ceee5b6-0f0d-41ef-890e-2cd6fb1adb10";
         String modelName = "Drawing 1";
@@ -147,16 +147,14 @@ public class DMNTypeSafeTest {
         return runtime.evaluateAll(dmnModel, new DMNContextFPAImpl(context));
     }
 
-    public static Map<String, Class<?>> generateSourceCodeAndCreateInput(DMNModel dmnModel, DMNTypeSafePackageName.DMNModelFactory packageNameFactory, ClassLoader classLoader) throws Exception {
+    public static Map<String, Class<?>> generateSourceCodeAndCreateInput(DMNModel dmnModel, DMNTypeSafePackageName.DMNModelFactory packageNameFactory, ClassLoader classLoader) {
         DMNAllTypesIndex index = new DMNAllTypesIndex(packageNameFactory, dmnModel);
         Map<String, String> allTypesSourceCode = new DMNTypeSafeTypeGenerator(
                 dmnModel,
                 index, packageNameFactory )
                 .generateSourceCodeOfAllTypes();
 
-        Map<String, Class<?>> compiledClasses = KieMemoryCompiler.compile(allTypesSourceCode, classLoader);
-
-        return compiledClasses;
+        return KieMemoryCompiler.compile(allTypesSourceCode, classLoader);
     }
 
     public static FEELPropertyAccessible createInstanceFromCompiledClasses(Map<String, Class<?>> compile, DMNTypeSafePackageName packageName, String className) throws Exception {
