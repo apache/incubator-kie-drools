@@ -38,8 +38,8 @@ import org.kie.dmn.typesafe.DMNTypeSafeTypeGenerator;
 import org.kie.memorycompiler.KieMemoryCompiler;
 
 import static org.kie.dmn.core.BaseVariantTest.VariantTestConf.BUILDER_DEFAULT_NOCL_TYPECHECK;
+import static org.kie.dmn.core.BaseVariantTest.VariantTestConf.BUILDER_DEFAULT_NOCL_TYPECHECK_TYPESAFE;
 import static org.kie.dmn.core.BaseVariantTest.VariantTestConf.BUILDER_STRICT;
-import static org.kie.dmn.core.BaseVariantTest.VariantTestConf.BUILDER_STRICT_TYPESAFE;
 import static org.kie.dmn.core.BaseVariantTest.VariantTestConf.KIE_API_TYPECHECK;
 import static org.kie.dmn.core.BaseVariantTest.VariantTestConf.KIE_API_TYPECHECK_TYPESAFE;
 
@@ -122,9 +122,9 @@ public abstract class BaseVariantTest {
                 return true;
             }
         },
-        BUILDER_STRICT_TYPESAFE {
+        BUILDER_DEFAULT_NOCL_TYPECHECK_TYPESAFE {
             private DMNRuntimeBuilderConfigured builder() {
-                return DMNRuntimeBuilder.usingStrict();
+                return DMNRuntimeBuilder.fromDefaults().setRootClassLoader(null).setOption(new RuntimeTypeCheckOption(true)).buildConfiguration();
             }
 
             @Override
@@ -146,7 +146,7 @@ public abstract class BaseVariantTest {
 
     @Parameterized.Parameters(name = "{0}")
     public static Object[] params() {
-        return new Object[]{KIE_API_TYPECHECK, BUILDER_STRICT, BUILDER_DEFAULT_NOCL_TYPECHECK, BUILDER_STRICT_TYPESAFE, KIE_API_TYPECHECK_TYPESAFE};
+        return new Object[]{KIE_API_TYPECHECK, BUILDER_STRICT, BUILDER_DEFAULT_NOCL_TYPECHECK, BUILDER_DEFAULT_NOCL_TYPECHECK_TYPESAFE, KIE_API_TYPECHECK_TYPESAFE};
     }
 
     private final VariantTestConf testConfig;
