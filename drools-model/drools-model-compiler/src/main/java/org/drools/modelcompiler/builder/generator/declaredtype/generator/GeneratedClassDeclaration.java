@@ -51,7 +51,7 @@ import static org.drools.modelcompiler.builder.generator.declaredtype.POJOGenera
 
 public class GeneratedClassDeclaration {
 
-    static final String OVERRIDE = "Override";
+    public static final String OVERRIDE = "Override";
 
     private final TypeDefinition typeDefinition;
     private GeneratedHashcode generatedHashcode;
