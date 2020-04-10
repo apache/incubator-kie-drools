@@ -40,12 +40,13 @@ import org.drools.core.util.StringUtils;
 import org.jbpm.compiler.canonical.UserTaskModelMetaData;
 import org.kie.api.definition.process.WorkflowProcess;
 import org.kie.kogito.codegen.BodyDeclarationComparator;
+import org.kie.kogito.codegen.CodegenUtils;
 import org.kie.kogito.codegen.GeneratorContext;
 import org.kie.kogito.codegen.context.KogitoBuildContext;
 import org.kie.kogito.codegen.di.DependencyInjectionAnnotator;
 
 import static com.github.javaparser.StaticJavaParser.parse;
-import static org.kie.kogito.codegen.process.CodegenUtils.interpolateTypes;
+import static org.kie.kogito.codegen.CodegenUtils.interpolateTypes;
 
 /**
  * AbstractResourceGenerator

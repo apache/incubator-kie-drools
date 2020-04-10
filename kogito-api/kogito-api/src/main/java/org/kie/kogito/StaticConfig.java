@@ -15,17 +15,29 @@
 
 package org.kie.kogito;
 
+import org.kie.kogito.decision.DecisionConfig;
 import org.kie.kogito.process.ProcessConfig;
 import org.kie.kogito.rules.RuleConfig;
 
 public class StaticConfig implements Config {
 
+    private final Addons addons;
     private final ProcessConfig processConfig;
     private final RuleConfig ruleConfig;
+    private final DecisionConfig decisionConfig;
 
-    public StaticConfig(ProcessConfig processConfig, RuleConfig ruleConfig) {
+    public StaticConfig(Addons addons, ProcessConfig processConfig, RuleConfig ruleConfig, DecisionConfig decisionConfig) {
+        this.addons = addons;
         this.processConfig = processConfig;
         this.ruleConfig = ruleConfig;
+        this.decisionConfig = decisionConfig;
+    }
+
+    public StaticConfig(ProcessConfig processConfig, RuleConfig ruleConfig, DecisionConfig decisionConfig) {
+        this.addons = Addons.EMTPY;
+        this.processConfig = processConfig;
+        this.ruleConfig = ruleConfig;
+        this.decisionConfig = decisionConfig;
     }
 
     @Override
@@ -39,7 +51,13 @@ public class StaticConfig implements Config {
     }
 
     @Override
-    public Addons addons() {
-        return Addons.EMTPY;
+    public DecisionConfig decision() {
+        return decisionConfig;
     }
+
+    @Override
+    public Addons addons() {
+        return addons;
+    }
+
 }

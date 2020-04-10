@@ -23,10 +23,14 @@ import org.kie.kogito.process.ProcessEventListenerConfig;
 
 public class CachedProcessEventListenerConfig implements ProcessEventListenerConfig {
 
-    private final List<ProcessEventListener> processEventListeners = new ArrayList<>();
+    private final List<ProcessEventListener> processEventListeners;
 
     public CachedProcessEventListenerConfig() {
-        
+        this.processEventListeners = new ArrayList<>();
+    }
+
+    public CachedProcessEventListenerConfig(List<ProcessEventListener> processEventListeners) {
+        this.processEventListeners = processEventListeners;
     }
 
     public CachedProcessEventListenerConfig register(ProcessEventListener listener) {
@@ -35,7 +39,7 @@ public class CachedProcessEventListenerConfig implements ProcessEventListenerCon
     }
 
     @Override
-    public List<ProcessEventListener> listeners() {        
+    public List<ProcessEventListener> listeners() {
         return processEventListeners;
     }
 

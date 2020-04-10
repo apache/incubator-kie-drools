@@ -16,97 +16,128 @@
 
 package org.kie.kogito.codegen.di;
 
-import java.util.List;
+import java.util.Collection;
+import java.util.Collections;
 import java.util.Optional;
 
 import com.github.javaparser.ast.Modifier.Keyword;
 import com.github.javaparser.ast.NodeList;
 import com.github.javaparser.ast.body.MethodDeclaration;
+import com.github.javaparser.ast.expr.BinaryExpr;
 import com.github.javaparser.ast.expr.BooleanLiteralExpr;
+import com.github.javaparser.ast.expr.ConditionalExpr;
 import com.github.javaparser.ast.expr.Expression;
 import com.github.javaparser.ast.expr.MemberValuePair;
 import com.github.javaparser.ast.expr.MethodCallExpr;
 import com.github.javaparser.ast.expr.Name;
 import com.github.javaparser.ast.expr.NameExpr;
 import com.github.javaparser.ast.expr.NormalAnnotationExpr;
+import com.github.javaparser.ast.expr.NullLiteralExpr;
 import com.github.javaparser.ast.expr.SingleMemberAnnotationExpr;
 import com.github.javaparser.ast.expr.StringLiteralExpr;
+import com.github.javaparser.ast.expr.TypeExpr;
 import com.github.javaparser.ast.nodeTypes.NodeWithAnnotations;
 import com.github.javaparser.ast.stmt.BlockStmt;
+import com.github.javaparser.ast.type.ClassOrInterfaceType;
 
 
 public class SpringDependencyInjectionAnnotator implements DependencyInjectionAnnotator {
 
     @Override
-    public void withApplicationComponent(NodeWithAnnotations<?> node) {
-        node.addAnnotation("org.springframework.stereotype.Component");
-    }
-    
-    @Override
-    public void withNamedApplicationComponent(NodeWithAnnotations<?> node, String name) {        
-        node.addAnnotation(new SingleMemberAnnotationExpr(new Name("org.springframework.stereotype.Component"), new StringLiteralExpr(name)));
-    }
-
-    @Override
-    public void withSingletonComponent(NodeWithAnnotations<?> node) {
-        node.addAnnotation("org.springframework.stereotype.Component");
-    }
-    
-    @Override
-    public void withNamedSingletonComponent(NodeWithAnnotations<?> node, String name) {
-        node.addAnnotation(new SingleMemberAnnotationExpr(new Name("org.springframework.stereotype.Component"), new StringLiteralExpr(name)));
-    }
-
-    @Override
-    public void withInjection(NodeWithAnnotations<?> node) {
-        node.addAnnotation("org.springframework.beans.factory.annotation.Autowired");
-    }
-
-    @Override
-    public void withNamedInjection(NodeWithAnnotations<?> node, String name) {
-        node.addAnnotation("org.springframework.beans.factory.annotation.Autowired");
+    public <T extends NodeWithAnnotations<?>> T withNamed(T node, String name) {
         node.addAnnotation(new SingleMemberAnnotationExpr(new Name("org.springframework.beans.factory.annotation.Qualifier"), new StringLiteralExpr(name)));
+        return node;
     }
-    
+
     @Override
-    public void withOptionalInjection(NodeWithAnnotations<?> node) {
+    public <T extends NodeWithAnnotations<?>> T withApplicationComponent(T node) {
+        node.addAnnotation("org.springframework.stereotype.Component");
+        return node;
+    }
+
+    @Override
+    public <T extends NodeWithAnnotations<?>> T withNamedApplicationComponent(T node, String name) {
+        node.addAnnotation(new SingleMemberAnnotationExpr(new Name("org.springframework.stereotype.Component"), new StringLiteralExpr(name)));
+        return node;
+    }
+
+    @Override
+    public <T extends NodeWithAnnotations<?>> T withSingletonComponent(T node) {
+        return withApplicationComponent(node);
+    }
+
+    @Override
+    public <T extends NodeWithAnnotations<?>> T withNamedSingletonComponent(T node, String name) {
+        return withNamedApplicationComponent(node, name);
+    }
+
+    @Override
+    public <T extends NodeWithAnnotations<?>> T withInjection(T node) {
+        node.addAnnotation("org.springframework.beans.factory.annotation.Autowired");
+        return node;
+    }
+
+    @Override
+    public <T extends NodeWithAnnotations<?>> T withNamedInjection(T node, String name) {
+        return withNamed(withInjection(node), name);
+    }
+
+    @Override
+    public <T extends NodeWithAnnotations<?>> T withOptionalInjection(T node) {
         node.addAnnotation(new NormalAnnotationExpr(new Name("org.springframework.beans.factory.annotation.Autowired"), NodeList.nodeList(new MemberValuePair("required", new BooleanLiteralExpr(false)))));
+        return node;
     }
-    
+
     @Override
-    public void withIncomingMessage(NodeWithAnnotations<?> node, String channel) {
+    public <T extends NodeWithAnnotations<?>> T withIncomingMessage(T node, String channel) {
         node.addAnnotation(new NormalAnnotationExpr(new Name("org.springframework.kafka.annotation.KafkaListener"), NodeList.nodeList(new MemberValuePair("topics", new StringLiteralExpr(channel)))));
+        return node;
     }
 
     @Override
-    public void withOutgoingMessage(NodeWithAnnotations<?> node, String channel) {
+    public <T extends NodeWithAnnotations<?>> T withOutgoingMessage(T node, String channel) {
         // currently no-op
-        
-    }
-    
-    @Override
-    public void withMessageProducer(MethodCallExpr produceMethod, String channel, Expression event) {
-        produceMethod.addArgument(new StringLiteralExpr(channel)).addArgument(event);
+        return node;
     }
 
     @Override
-    public String multiInstanceInjectionType() {
-        return List.class.getCanonicalName();
+    public MethodCallExpr withMessageProducer(MethodCallExpr produceMethod, String channel, Expression event) {
+        produceMethod.addArgument(new StringLiteralExpr(channel)).addArgument(event);
+        return produceMethod;
     }
-    
+
     @Override
     public String optionalInstanceInjectionType() {
         return Optional.class.getCanonicalName();
     }
 
     @Override
+    public Expression optionalInstanceExists(String fieldName) {
+        return new MethodCallExpr(new NameExpr(fieldName), "isPresent");
+    }
+
+    @Override
+    public String multiInstanceInjectionType() {
+        return Collection.class.getCanonicalName();
+    }
+
+    @Override
+    public Expression getMultiInstance(String fieldName) {
+        return new ConditionalExpr(
+                new BinaryExpr(new NameExpr(fieldName), new NullLiteralExpr(), BinaryExpr.Operator.NOT_EQUALS),
+                new NameExpr(fieldName),
+                new MethodCallExpr(new TypeExpr(new ClassOrInterfaceType(null, Collections.class.getCanonicalName())), "emptyList")
+        );
+    }
+
+    @Override
     public String applicationComponentType() {
         return "org.springframework.stereotype.Component";
     }
-    
+
     @Override
     public String emitterType(String dataType) {
-        return "org.springframework.kafka.core.KafkaTemplate<String, "+ dataType + ">";
+        return "org.springframework.kafka.core.KafkaTemplate<String, " + dataType + ">";
     }
 
     @Override
@@ -122,23 +153,18 @@ public class SpringDependencyInjectionAnnotator implements DependencyInjectionAn
                 .addAnnotation("javax.annotation.PostConstruct")
                 .setBody(body);
     }
-    
+
 
     @Override
-    public Expression optionalInstanceExists(String fieldName) {
-        return new MethodCallExpr(new NameExpr(fieldName), "isPresent");
+    public <T extends NodeWithAnnotations<?>> T withConfigInjection(T node, String configKey) {
+        node.addAnnotation(new SingleMemberAnnotationExpr(new Name("org.springframework.beans.factory.annotation.Value"), new StringLiteralExpr("${" + configKey + ":#{null}}")));
+        return node;
     }
 
     @Override
-    public void withConfigInjection(String configKey, NodeWithAnnotations<?> node) {
-        node.addAnnotation(new SingleMemberAnnotationExpr(new Name("org.springframework.beans.factory.annotation.Value"), new StringLiteralExpr("${" + configKey + ":#{null}}")));
-        
-    }
-
-    @Override
-    public void withConfigInjection(String configKey, String defaultValue, NodeWithAnnotations<?> node) {
-        node.addAnnotation(new SingleMemberAnnotationExpr(new Name("org.springframework.beans.factory.annotation.Value"), new StringLiteralExpr("${" + configKey + ":#{null}}")));
-        
+    public <T extends NodeWithAnnotations<?>> T withConfigInjection(T node, String configKey, String defaultValue) {
+        node.addAnnotation(new SingleMemberAnnotationExpr(new Name("org.springframework.beans.factory.annotation.Value"), new StringLiteralExpr("${" + configKey + ":" + defaultValue + "}")));
+        return node;
     }
     
 }

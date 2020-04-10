@@ -15,15 +15,6 @@
 
 package org.kie.kogito.codegen.process;
 
-import static com.github.javaparser.StaticJavaParser.parse;
-import static org.kie.kogito.codegen.process.CodegenUtils.interpolateTypes;
-
-import org.drools.core.util.StringUtils;
-import org.kie.kogito.codegen.BodyDeclarationComparator;
-import org.jbpm.compiler.canonical.TriggerMetaData;
-import org.kie.api.definition.process.WorkflowProcess;
-import org.kie.kogito.codegen.di.DependencyInjectionAnnotator;
-
 import com.github.javaparser.ast.CompilationUnit;
 import com.github.javaparser.ast.body.ClassOrInterfaceDeclaration;
 import com.github.javaparser.ast.body.FieldDeclaration;
@@ -33,6 +24,14 @@ import com.github.javaparser.ast.expr.NameExpr;
 import com.github.javaparser.ast.expr.ThisExpr;
 import com.github.javaparser.ast.stmt.BlockStmt;
 import com.github.javaparser.ast.type.ClassOrInterfaceType;
+import org.drools.core.util.StringUtils;
+import org.jbpm.compiler.canonical.TriggerMetaData;
+import org.kie.api.definition.process.WorkflowProcess;
+import org.kie.kogito.codegen.BodyDeclarationComparator;
+import org.kie.kogito.codegen.di.DependencyInjectionAnnotator;
+
+import static com.github.javaparser.StaticJavaParser.parse;
+import static org.kie.kogito.codegen.CodegenUtils.interpolateTypes;
 
 public class MessageProducerGenerator {
     
@@ -114,9 +113,9 @@ public class MessageProducerGenerator {
             annotator.withMessageProducer(sendMethodCall, trigger.getName(), new MethodCallExpr(new ThisExpr(), "marshall").addArgument(new NameExpr("pi")).addArgument(new NameExpr(EVENT_DATA_VAR)));
             body.addStatement(sendMethodCall);
             produceMethod.setBody(body);
-            
+
             template.findAll(FieldDeclaration.class,
-                             fd -> fd.getVariable(0).getNameAsString().equals("useCloudEvents")).forEach(fd -> annotator.withConfigInjection("kogito.messaging.as-cloudevents", fd));
+                    fd -> fd.getVariable(0).getNameAsString().equals("useCloudEvents")).forEach(fd -> annotator.withConfigInjection(fd, "kogito.messaging.as-cloudevents"));
             
         } 
         template.getMembers().sort(new BodyDeclarationComparator());

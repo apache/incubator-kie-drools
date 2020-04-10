@@ -164,7 +164,7 @@ public class PersistenceGenerator extends AbstractGenerator {
                 FieldDeclaration templateNameField = new FieldDeclaration().addVariable(new VariableDeclarator()
                                                                                          .setType(new ClassOrInterfaceType(null, new SimpleName(Optional.class.getCanonicalName()), NodeList.nodeList(new ClassOrInterfaceType(null, String.class.getCanonicalName()))))
                                                                                          .setName(TEMPLATE_NAME));
-                annotator.withConfigInjection("kogito.persistence.infinispan.template", templateNameField);
+                annotator.withConfigInjection(templateNameField, "kogito.persistence.infinispan.template");
                 // allow to inject template name for the cache
                 BlockStmt templateMethodBody = new BlockStmt();                
                 templateMethodBody.addStatement(new ReturnStmt(new MethodCallExpr(new NameExpr(TEMPLATE_NAME), "orElse").addArgument(new StringLiteralExpr(""))));

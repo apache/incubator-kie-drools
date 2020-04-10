@@ -24,14 +24,24 @@ import org.kie.kogito.rules.RuleEventListenerConfig;
 
 public class CachedRuleEventListenerConfig implements RuleEventListenerConfig {
 
-    private final List<AgendaEventListener> agendaEventListeners = new ArrayList<>();
-    private final List<RuleRuntimeEventListener> ruleRuntimeListeners = new ArrayList<>();
+    private final List<AgendaEventListener> agendaListeners;
+    private final List<RuleRuntimeEventListener> ruleRuntimeListeners;
+
+    public CachedRuleEventListenerConfig() {
+        agendaListeners = new ArrayList<>();
+        ruleRuntimeListeners = new ArrayList<>();
+    }
+
+    public CachedRuleEventListenerConfig(List<AgendaEventListener> agendaListeners, List<RuleRuntimeEventListener> ruleRuntimeListeners) {
+        this.agendaListeners = agendaListeners;
+        this.ruleRuntimeListeners = ruleRuntimeListeners;
+    }
 
     public CachedRuleEventListenerConfig register(AgendaEventListener listener) {
-        agendaEventListeners.add(listener);
+        agendaListeners.add(listener);
         return this;
     }
-    
+
     public CachedRuleEventListenerConfig register(RuleRuntimeEventListener listener) {
         ruleRuntimeListeners.add(listener);
         return this;
@@ -39,7 +49,7 @@ public class CachedRuleEventListenerConfig implements RuleEventListenerConfig {
     
     @Override
     public List<AgendaEventListener> agendaListeners() {
-        return agendaEventListeners;
+        return agendaListeners;
     }
 
     @Override

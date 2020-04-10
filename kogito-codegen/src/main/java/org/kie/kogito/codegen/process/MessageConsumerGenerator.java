@@ -15,18 +15,6 @@
 
 package org.kie.kogito.codegen.process;
 
-import static com.github.javaparser.StaticJavaParser.parse;
-import static org.kie.kogito.codegen.process.CodegenUtils.interpolateArguments;
-import static org.kie.kogito.codegen.process.CodegenUtils.interpolateTypes;
-import static org.kie.kogito.codegen.process.CodegenUtils.isApplicationField;
-import static org.kie.kogito.codegen.process.CodegenUtils.isProcessField;
-
-import org.drools.core.util.StringUtils;
-import org.jbpm.compiler.canonical.TriggerMetaData;
-import org.kie.api.definition.process.WorkflowProcess;
-import org.kie.kogito.codegen.BodyDeclarationComparator;
-import org.kie.kogito.codegen.di.DependencyInjectionAnnotator;
-
 import com.github.javaparser.ast.CompilationUnit;
 import com.github.javaparser.ast.body.ClassOrInterfaceDeclaration;
 import com.github.javaparser.ast.body.FieldDeclaration;
@@ -35,6 +23,17 @@ import com.github.javaparser.ast.expr.MethodCallExpr;
 import com.github.javaparser.ast.expr.ObjectCreationExpr;
 import com.github.javaparser.ast.expr.StringLiteralExpr;
 import com.github.javaparser.ast.type.ClassOrInterfaceType;
+import org.drools.core.util.StringUtils;
+import org.jbpm.compiler.canonical.TriggerMetaData;
+import org.kie.api.definition.process.WorkflowProcess;
+import org.kie.kogito.codegen.BodyDeclarationComparator;
+import org.kie.kogito.codegen.di.DependencyInjectionAnnotator;
+
+import static com.github.javaparser.StaticJavaParser.parse;
+import static org.kie.kogito.codegen.CodegenUtils.interpolateArguments;
+import static org.kie.kogito.codegen.CodegenUtils.interpolateTypes;
+import static org.kie.kogito.codegen.CodegenUtils.isApplicationField;
+import static org.kie.kogito.codegen.CodegenUtils.isProcessField;
 
 public class MessageConsumerGenerator {
     private final String relativePath;
@@ -118,9 +117,9 @@ public class MessageConsumerGenerator {
                              fd -> isProcessField(fd)).forEach(fd -> annotator.withNamedInjection(fd, processId));
             template.findAll(FieldDeclaration.class,
                              fd -> isApplicationField(fd)).forEach(fd -> annotator.withInjection(fd));
-            
+
             template.findAll(FieldDeclaration.class,
-                             fd -> fd.getVariable(0).getNameAsString().equals("useCloudEvents")).forEach(fd -> annotator.withConfigInjection("kogito.messaging.as-cloudevents", fd));
+                    fd -> fd.getVariable(0).getNameAsString().equals("useCloudEvents")).forEach(fd -> annotator.withConfigInjection(fd, "kogito.messaging.as-cloudevents"));
             
             template.findAll(MethodDeclaration.class).stream().filter(md -> md.getNameAsString().equals("consume")).forEach(md -> annotator.withIncomingMessage(md, trigger.getName()));
         } else {

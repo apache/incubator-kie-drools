@@ -48,6 +48,7 @@ import org.kie.kogito.codegen.ApplicationGenerator;
 import org.kie.kogito.codegen.ApplicationSection;
 import org.kie.kogito.codegen.ConfigGenerator;
 import org.kie.kogito.codegen.GeneratedFile;
+import org.kie.kogito.codegen.decision.config.DecisionConfigGenerator;
 import org.kie.kogito.codegen.di.DependencyInjectionAnnotator;
 import org.kie.kogito.grafana.GrafanaConfigurationWriter;
 
@@ -183,7 +184,9 @@ public class DecisionCodegen extends AbstractGenerator {
 
     @Override
     public void updateConfig(ConfigGenerator cfg) {
-        // nothing.
+        if (!models.isEmpty()) {
+            cfg.withDecisionConfig(new DecisionConfigGenerator());
+        }
     }
 
     private void storeFile(GeneratedFile.Type type, String path, String source) {
