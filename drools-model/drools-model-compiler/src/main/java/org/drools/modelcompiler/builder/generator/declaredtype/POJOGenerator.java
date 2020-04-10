@@ -125,7 +125,6 @@ public class POJOGenerator {
         descrDeclaredTypeDefinition.getErrors().forEach(builder::addBuilderResult);
 
         ClassOrInterfaceDeclaration generatedClass = new GeneratedClassDeclaration(descrDeclaredTypeDefinition,
-                                                                                   typeResolver,
                                                                                    Collections.singletonList(GeneratedFact.class))
                 .toClassDeclaration();
         packageModel.addGeneratedPOJO(generatedClass);

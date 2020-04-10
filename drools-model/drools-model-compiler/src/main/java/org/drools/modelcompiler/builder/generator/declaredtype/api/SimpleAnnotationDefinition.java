@@ -16,10 +16,30 @@
 
 package org.drools.modelcompiler.builder.generator.declaredtype.api;
 
-import java.util.Optional;
+import java.util.HashMap;
+import java.util.Map;
 
-@FunctionalInterface
-public interface TypeResolver {
+public class SimpleAnnotationDefinition implements AnnotationDefinition {
 
-    Optional<Class<?>> resolveType(String className);
+    private final String name;
+    private Map<String, String> values = new HashMap<>();
+
+    public SimpleAnnotationDefinition(String name) {
+        this.name = name;
+    }
+
+    @Override
+    public String getName() {
+        return name;
+    }
+
+    @Override
+    public Map<String, String> getValueMap() {
+        return values;
+    }
+
+    @Override
+    public boolean shouldAddAnnotation() {
+        return true;
+    }
 }

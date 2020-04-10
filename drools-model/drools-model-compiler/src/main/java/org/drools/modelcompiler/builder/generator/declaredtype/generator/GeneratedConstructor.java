@@ -40,7 +40,7 @@ import static org.drools.modelcompiler.builder.generator.declaredtype.generator.
 public interface GeneratedConstructor {
 
     static GeneratedConstructor factory(NodeWithConstructors<?> generatedClass,
-                                        List<FieldDefinition> typeDeclarationFields) {
+                                        List<? extends FieldDefinition> typeDeclarationFields) {
         if (typeDeclarationFields.size() < 65) {
             return new FullArgumentConstructor(generatedClass, typeDeclarationFields, true, true);
         } else {
@@ -65,10 +65,10 @@ class FullArgumentConstructor implements GeneratedConstructor {
     private final NodeWithConstructors<?> generatedClass;
     private final Modifier.Keyword[] modifiers;
     private final boolean shouldCallSuper;
-    private List<FieldDefinition> typeDeclarationFields;
+    private List<? extends FieldDefinition> typeDeclarationFields;
 
     FullArgumentConstructor(NodeWithConstructors<?> generatedClass,
-                            List<FieldDefinition> typeDeclarationFields,
+                            List<? extends FieldDefinition> typeDeclarationFields,
                             boolean publicConstructor,
                             boolean shouldCallSuper) {
         this.generatedClass = generatedClass;
@@ -120,7 +120,7 @@ class FullArgumentConstructor implements GeneratedConstructor {
         for (FieldDefinition fieldDefinition : keyFields) {
             String fieldName = fieldDefinition.getFieldName();
             addConstructorArgument(constructor, fieldDefinition.getObjectType(), fieldName);
-            Optional<FieldDefinition> typeDefinition = typeDeclarationFields.stream().filter(td -> td.getFieldName().equals(fieldName)).findAny();
+            Optional<? extends FieldDefinition> typeDefinition = typeDeclarationFields.stream().filter(td -> td.getFieldName().equals(fieldName)).findAny();
             if (typeDefinition.isPresent()) {
                 fieldStatements.add(fieldAssignment(fieldName));
             } else {

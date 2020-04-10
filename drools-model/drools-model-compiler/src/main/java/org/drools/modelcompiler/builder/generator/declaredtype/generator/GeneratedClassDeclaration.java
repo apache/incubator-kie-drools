@@ -22,8 +22,8 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 import java.util.Map;
-import java.util.Optional;
 
+import com.github.javaparser.StaticJavaParser;
 import com.github.javaparser.ast.Modifier;
 import com.github.javaparser.ast.body.ClassOrInterfaceDeclaration;
 import com.github.javaparser.ast.body.FieldDeclaration;
@@ -34,10 +34,14 @@ import com.github.javaparser.ast.expr.NormalAnnotationExpr;
 import com.github.javaparser.ast.nodeTypes.NodeWithAnnotations;
 import com.github.javaparser.ast.stmt.Statement;
 import com.github.javaparser.ast.type.Type;
+import org.drools.modelcompiler.builder.JavaParserCompiler;
 import org.drools.modelcompiler.builder.generator.declaredtype.api.AnnotationDefinition;
-import org.drools.modelcompiler.builder.generator.declaredtype.api.TypeDefinition;
 import org.drools.modelcompiler.builder.generator.declaredtype.api.FieldDefinition;
-import org.drools.modelcompiler.builder.generator.declaredtype.api.TypeResolver;
+import org.drools.modelcompiler.builder.generator.declaredtype.api.MethodDefinition;
+import org.drools.modelcompiler.builder.generator.declaredtype.api.MethodParameter;
+import org.drools.modelcompiler.builder.generator.declaredtype.api.TypeDefinition;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import static com.github.javaparser.StaticJavaParser.parseExpression;
 import static com.github.javaparser.StaticJavaParser.parseType;
@@ -50,19 +54,18 @@ public class GeneratedClassDeclaration {
     static final String OVERRIDE = "Override";
 
     private final TypeDefinition typeDefinition;
-    private TypeResolver typeResolver;
     private GeneratedHashcode generatedHashcode;
     private GeneratedToString generatedToString;
     private GeneratedEqualsMethod generatedEqualsMethod;
     private ClassOrInterfaceDeclaration generatedClass;
     private final Collection<Class<?>> markerInterfaceAnnotations;
 
+    public static final Logger LOG = LoggerFactory.getLogger(GeneratedClassDeclaration.class);
+
     public GeneratedClassDeclaration(TypeDefinition typeDefinition,
-                              TypeResolver typeResolver,
-                              Collection<Class<?>> markerInterfaceAnnotations) {
+                                     Collection<Class<?>> markerInterfaceAnnotations) {
 
         this.typeDefinition = typeDefinition;
-        this.typeResolver = typeResolver;
         this.markerInterfaceAnnotations = markerInterfaceAnnotations;
     }
 
@@ -74,10 +77,15 @@ public class GeneratedClassDeclaration {
         Collection<FieldDefinition> inheritedFields = typeDefinition.findInheritedDeclaredFields();
         if (inheritedFields.isEmpty() && typeDefinition.getFields().isEmpty()) {
             generatedClass.addMember(new GeneratedToString(generatedClassName).method());
-            return generatedClass;
         } else {
-            return generateFullClass(generatedClassName, inheritedFields);
+            generatedClass = generateFullClass(generatedClassName, inheritedFields);
         }
+
+        if (LOG.isDebugEnabled()) {
+            LOG.info(String.format("Generated class:%n%s", JavaParserCompiler.getPrettyPrinter().print(generatedClass)));
+        }
+
+        return generatedClass;
     }
 
     private ClassOrInterfaceDeclaration createBasicDeclaredClass(String generatedClassName) {
@@ -102,9 +110,11 @@ public class GeneratedClassDeclaration {
         generatedToString = new GeneratedToString(generatedClassName);
         generatedEqualsMethod = new GeneratedEqualsMethod(generatedClassName, hasSuper);
 
-        List<FieldDefinition> typeFields = typeDefinition.getFields();
+        List<? extends FieldDefinition> typeFields = typeDefinition.getFields();
 
         GeneratedConstructor fullArgumentConstructor = GeneratedConstructor.factory(generatedClass, typeFields);
+
+        typeDefinition.getMethods().forEach(this::addMethod);
 
         for (FieldDefinition tf : typeFields) {
             processTypeField(tf);
@@ -122,21 +132,33 @@ public class GeneratedClassDeclaration {
         return generatedClass;
     }
 
-    private void generateInheritanceDefinition() {
-        typeDefinition.getSuperTypeName().ifPresent( superTypeName -> {
-            Optional<Class<?>> optResolvedSuper = typeResolver.resolveType(superTypeName);
-            optResolvedSuper.ifPresent(resolvedSuper -> {
-                if (resolvedSuper.isInterface()) {
-                    generatedClass.addImplementedType(superTypeName);
-                } else {
-                    generatedClass.addExtendedType(superTypeName);
-                }
-            });
+    private void addMethod(MethodDefinition methodDefinition) {
 
-            if (!optResolvedSuper.isPresent()) {
-                generatedClass.addExtendedType(superTypeName);
-            }
-        });
+        List<Modifier.Keyword> modifiers = new ArrayList<>();
+        if (methodDefinition.isStatic()) {
+            modifiers.add(Modifier.Keyword.STATIC);
+        }
+        if (methodDefinition.isPublic()) {
+            modifiers.add(Modifier.Keyword.PUBLIC);
+        }
+        MethodDeclaration methodDeclaration = generatedClass.addMethod(methodDefinition.getMethodName(),
+                                                                       modifiers.toArray(new Modifier.Keyword[0]));
+        methodDeclaration.setType(methodDefinition.getReturnType());
+
+        for(MethodParameter mp : methodDefinition.parameters()) {
+            methodDeclaration.addParameter(mp.getType(), mp.getName());
+        }
+
+        for(AnnotationDefinition a : methodDefinition.getAnnotations()) {
+            methodDeclaration.addAnnotation(a.getName());
+        }
+
+        methodDeclaration.setBody(StaticJavaParser.parseBlock(methodDefinition.getBody()));
+    }
+
+    private void generateInheritanceDefinition() {
+        typeDefinition.getSuperTypeName().ifPresent(generatedClass::addExtendedType);
+        typeDefinition.getInterfacesNames().forEach(generatedClass::addImplementedType);
     }
 
     private void processTypeField(FieldDefinition fieldDefinition) {

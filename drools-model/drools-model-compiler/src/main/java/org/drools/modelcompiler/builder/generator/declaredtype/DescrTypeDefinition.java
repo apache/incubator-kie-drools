@@ -28,6 +28,7 @@ import org.drools.compiler.compiler.AnnotationDeclarationError;
 import org.drools.compiler.compiler.DroolsError;
 import org.drools.compiler.lang.descr.AnnotationDescr;
 import org.drools.compiler.lang.descr.PackageDescr;
+import org.drools.compiler.lang.descr.QualifiedName;
 import org.drools.compiler.lang.descr.TypeDeclarationDescr;
 import org.drools.compiler.lang.descr.TypeFieldDescr;
 import org.drools.modelcompiler.builder.generator.declaredtype.api.AnnotationDefinition;
@@ -56,13 +57,35 @@ public class DescrTypeDefinition implements TypeDefinition {
 
     private List<DroolsError> errors = new ArrayList<>();
 
+    private Optional<String> superTypeName = Optional.empty();
+    private List<String> interfaceNames = new ArrayList<>();
+
     public DescrTypeDefinition(PackageDescr packageDescr, TypeDeclarationDescr typeDeclarationDescr, TypeResolver typeResolver) {
         this.packageDescr = packageDescr;
         this.typeDeclarationDescr = typeDeclarationDescr;
         this.typeResolver = typeResolver;
         this.fieldDefinition = processFields();
 
+        processSuperTypes();
+
         processClassAnnotations();
+    }
+
+    private void processSuperTypes() {
+        for (QualifiedName superType : typeDeclarationDescr.getSuperTypes()) {
+            Optional<Class<?>> optResolvedSuper = typeResolver.resolveType(superType.getName());
+            optResolvedSuper.ifPresent(resolvedSuper -> {
+                if (resolvedSuper.isInterface()) {
+                    interfaceNames.add(superType.getName());
+                } else {
+                    superTypeName = of(superType.getName());
+                }
+            });
+
+            if (!optResolvedSuper.isPresent()) {
+                superTypeName = of(superType.getName());
+            }
+        }
     }
 
     private void processClassAnnotations() {
@@ -90,7 +113,12 @@ public class DescrTypeDefinition implements TypeDefinition {
 
     @Override
     public Optional<String> getSuperTypeName() {
-        return ofNullable(typeDeclarationDescr.getSuperTypeName());
+        return superTypeName;
+    }
+
+    @Override
+    public List<String> getInterfacesNames() {
+        return interfaceNames;
     }
 
     @Override
