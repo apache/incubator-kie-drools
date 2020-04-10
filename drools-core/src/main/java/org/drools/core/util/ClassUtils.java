@@ -655,6 +655,14 @@ public final class ClassUtils {
         return Character.toLowerCase(methodName.charAt(3)) + methodName.substring(4);
     }
 
+    public static boolean isGetter(String methodName) {
+        return (methodName.startsWith("get") && methodName.length() > 3) || (methodName.startsWith("is") && methodName.length() > 2);
+    }
+
+    public static boolean isSetter(String methodName) {
+        return (methodName.startsWith("set") && methodName.length() > 3);
+    }
+
     public static <T extends Externalizable> T deepClone(T origin) {
         return origin == null ? null : deepClone(origin, origin.getClass().getClassLoader());
     }

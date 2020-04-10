@@ -23,6 +23,7 @@ import java.util.concurrent.atomic.AtomicInteger;
 
 import org.drools.modelcompiler.domain.Address;
 import org.drools.modelcompiler.domain.Person;
+import org.drools.modelcompiler.domain.Pet;
 import org.drools.modelcompiler.domain.Result;
 import org.junit.Test;
 import org.kie.api.runtime.KieSession;
@@ -575,5 +576,87 @@ public class PropertyReactivityTest extends BaseModelTest {
         ksession.fireAllRules();
 
         assertEquals(42, p.getAge());
+    }
+
+    @Test
+    public void testComplexSetterArgument() {
+        String str =
+                "import " + Person.class.getCanonicalName() + ";" +
+                "rule R \n" +
+                "when\n" +
+                "    $p: Person(address.street == \"street1\")\n" +
+                "then\n" +
+                "    modify($p) { setLikes( String.valueOf(($p.getAddress().getStreet() + $p.getAddress().getCity()))) };\n" +
+                "end";
+
+        KieSession ksession = getKieSession( str );
+
+        Person me = new Person( "Mario", 40 );
+        me.setAddress(new Address("street1", 2, "city1"));
+        ksession.insert( me );
+
+        assertEquals(1, ksession.fireAllRules(10));
+
+        assertEquals( "street1city1", me.getLikes() );
+    }
+
+    @Test
+    public void testNestedPropInRHS() throws Exception {
+        // Property Reactivity for "owner"
+        final String str =
+                "package org.drools.test;\n" +
+                           "import " + Pet.class.getCanonicalName() + ";\n" +
+                           "rule R1\n" +
+                           "when \n" +
+                           "  $pet : Pet(age == 3)\n" +
+                           "then\n" +
+                           "  modify ($pet) { getOwner().setLikes(\"Cookie\") };\n" +
+                           "end\n" +
+                           "rule R2\n" +
+                           "when \n" +
+                           "  Pet(owner.likes == \"Cookie\")\n" +
+                           "then\n" +
+                           "end";
+
+        final KieSession ksession = getKieSession(str);
+
+        Pet pet = new Pet(Pet.PetType.cat);
+        Person person = new Person("John");
+        person.setLikes("Meat");
+        pet.setOwner(person);
+        pet.setAge(3);
+
+        ksession.insert(pet);
+        assertEquals(2, ksession.fireAllRules());
+    }
+
+    @Test
+    public void testDeeplyNestedPropInRHS() throws Exception {
+        // Property Reactivity for "owner"
+        final String str =
+                "package org.drools.test;\n" +
+                           "import " + Pet.class.getCanonicalName() + ";\n" +
+                           "rule R1\n" +
+                           "when \n" +
+                           "  $pet : Pet(age == 3)\n" +
+                           "then\n" +
+                           "  modify ($pet) { getOwner().getAddress().setStreet(\"XYZ street\") };\n" +
+                           "end\n" +
+                           "rule R2\n" +
+                           "when \n" +
+                           "  Pet(owner.address.street == \"XYZ street\")\n" +
+                           "then\n" +
+                           "end";
+
+        final KieSession ksession = getKieSession(str);
+
+        Pet pet = new Pet(Pet.PetType.cat);
+        Person person = new Person("John");
+        person.setAddress(new Address("ABC street"));
+        pet.setOwner(person);
+        pet.setAge(3);
+
+        ksession.insert(pet);
+        assertEquals(2, ksession.fireAllRules());
     }
 }
