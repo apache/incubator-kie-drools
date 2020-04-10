@@ -89,7 +89,7 @@ public class AccessibleMethod {
         Optional<Class<?>> abstractResolvedClass = descrTypeDefinition.getAbstractResolvedClass();
 
         if (abstractResolvedClass.isPresent()) {
-            switchEntries.addAll(resolvedSuperTypeProperties(abstractResolvedClass.get()));
+            switchEntries.addAll(resolvedSuperTypeProperties(abstractResolvedClass.get()).collect(Collectors.toList()));
         } else if (descrTypeDefinition.getDeclaredAbstractClass().isPresent()) {
             switchEntries.add(switchEntry(SUPER_GET_VALUE));
         } else {
@@ -99,12 +99,12 @@ public class AccessibleMethod {
         return new BlockStmt(nodeList(switchStmt));
     }
 
-    private Collection<SwitchEntry> resolvedSuperTypeProperties(Class<?> superClass) {
+    private Stream<SwitchEntry> resolvedSuperTypeProperties(Class<?> superClass) {
         if (AccessibleFact.class.isAssignableFrom(superClass)) {
-            return singleton(switchEntry(SUPER_GET_VALUE));
+            return of(switchEntry(SUPER_GET_VALUE));
         } else {
             return concat(stream(superClass.getDeclaredMethods()).flatMap(this::switchEntryWithGetter),
-                          of(switchEntry(RETURN_NULL))).collect(Collectors.toList());
+                          of(switchEntry(RETURN_NULL)));
         }
     }
 
