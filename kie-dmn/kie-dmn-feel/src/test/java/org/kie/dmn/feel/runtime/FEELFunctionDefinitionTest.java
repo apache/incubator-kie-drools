@@ -89,7 +89,8 @@ public class FEELFunctionDefinitionTest extends BaseFEELTest {
                 {"{ m : { n : { f1 : function() \"Hi\", f2 : function() f1() + \" \" , o : { x1 : function(name) f2() + name }}}, r1 : m.n.o.x1(\"John\") }.r1", "Hi John", null },
                 {"{ m : { n : { f1 : function() \"Hi\", f2 : function() f1() + \" \" , o : { x1 : function(name) f2() + name }}}, r2 : m.n.f1() }.r2", "Hi", null },
                 {"{ f : function(a) function(b) a + b, r : f(1)(2) }.r", BigDecimal.valueOf(3), null },
-                {"{ a: 9, b: 9, f : function(a) function(b) a + b, r : f(1)(2) }.r", BigDecimal.valueOf(3), null }
+                {"{ a: 9, b: 9, f : function(a) function(b) a + b, r : f(1)(2) }.r", BigDecimal.valueOf(3), null },
+                {"{ Y: function(f) (function(x) x(x))(function(y) f(function(x) y(y)(x))), fac: Y(function(f) function(n) if n > 1 then n * f(n-1) else 1), fac4: fac(4) }.fac4", BigDecimal.valueOf(24), null }
         };
         return addAdditionalParameters(cases, false);
     }
