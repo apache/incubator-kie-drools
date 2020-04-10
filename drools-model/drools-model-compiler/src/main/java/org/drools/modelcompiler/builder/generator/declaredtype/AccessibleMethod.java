@@ -118,7 +118,7 @@ public class AccessibleMethod {
     }
 
     private Stream<SwitchEntry> superClassGetterEntries(Class<?> superClass) {
-        if (AccessibleFact.class.isAssignableFrom(superClass)) {
+        if (superClassIsAccessibleFact(superClass)) {
             return of(switchEntry(SUPER_GET_VALUE));
         } else {
             return concat(stream(superClass.getDeclaredMethods()).flatMap(this::switchEntryWithGetter),
@@ -127,7 +127,7 @@ public class AccessibleMethod {
     }
 
     private Stream<SwitchEntry> superClassSetterEntries(Class<?> superClass) {
-        if (AccessibleFact.class.isAssignableFrom(superClass)) {
+        if (superClassIsAccessibleFact(superClass)) {
             return of(switchEntry(SUPER_SET_VALUE));
         } else {
             return stream(superClass.getDeclaredMethods()).flatMap(this::switchEntryWithSetter);
@@ -190,5 +190,9 @@ public class AccessibleMethod {
             switchStatements.add(parseStatement(statement));
         }
         return new SwitchEntry(nodeList(new StringLiteralExpr(caseLabel)), SwitchEntry.Type.EXPRESSION, switchStatements);
+    }
+
+    private boolean superClassIsAccessibleFact(Class<?> superClass) {
+        return AccessibleFact.class.isAssignableFrom(superClass);
     }
 }
