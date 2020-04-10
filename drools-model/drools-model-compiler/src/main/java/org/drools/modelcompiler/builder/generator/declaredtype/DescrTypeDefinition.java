@@ -292,7 +292,7 @@ public class DescrTypeDefinition implements TypeDefinition {
         }
     }
 
-    public Optional<Class<?>> getAbstractClass() {
+    public Optional<Class<?>> getAbstractResolvedClass() {
         return abstractClass;
     }
 
