@@ -17,10 +17,11 @@
 package org.drools.modelcompiler.builder.generator.declaredtype;
 
 import java.lang.reflect.Method;
-import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 import com.github.javaparser.ast.NodeList;
 import com.github.javaparser.ast.expr.NameExpr;
@@ -36,9 +37,11 @@ import org.drools.modelcompiler.builder.generator.declaredtype.api.MethodWithStr
 import static com.github.javaparser.StaticJavaParser.parseStatement;
 import static com.github.javaparser.ast.NodeList.nodeList;
 import static java.lang.String.format;
-import static java.util.Collections.emptyList;
+import static java.util.Arrays.stream;
 import static java.util.Collections.singleton;
-import static java.util.Collections.singletonList;
+import static java.util.stream.Stream.concat;
+import static java.util.stream.Stream.empty;
+import static java.util.stream.Stream.of;
 import static org.drools.core.util.ClassUtils.getter2property;
 import static org.drools.core.util.ClassUtils.setter2property;
 import static org.drools.modelcompiler.builder.generator.declaredtype.generator.GeneratedClassDeclaration.OVERRIDE;
@@ -51,7 +54,7 @@ public class AccessibleMethod {
     private static final String SET_VALUE = "setValue";
     private static final String BREAK_STATEMENT = "break;";
     private static final String FIELD_NAME = "fieldName";
-    private final String RETURN_NULL = "return null;";
+    private static final String RETURN_NULL = "return null;";
 
     private DescrTypeDefinition descrTypeDefinition;
     List<DescrFieldDefinition> fields;
@@ -100,23 +103,19 @@ public class AccessibleMethod {
         if (AccessibleFact.class.isAssignableFrom(superClass)) {
             return singleton(switchEntry(SUPER_GET_VALUE));
         } else {
-            List<SwitchEntry> entries = new ArrayList<>();
-            for (Method m : superClass.getDeclaredMethods()) {
-                entries.addAll(switchEntryWithGetter(m));
-            }
-            entries.add(switchEntry(RETURN_NULL));
-            return entries;
+            return concat(stream(superClass.getDeclaredMethods()).flatMap(this::switchEntryWithGetter),
+                          of(switchEntry(RETURN_NULL))).collect(Collectors.toList());
         }
     }
 
-    private List<SwitchEntry> switchEntryWithGetter(Method m) {
+    private Stream<SwitchEntry> switchEntryWithGetter(Method m) {
         if (m.getParameterCount() == 0) {
             String fieldName = getter2property(m.getName());
             if (fieldName != null) {
-                return singletonList(stringSwitchExpression(fieldName, format("return this.%s();", m.getName())));
+                return of(stringSwitchExpression(fieldName, format("return this.%s();", m.getName())));
             }
         }
-        return emptyList();
+        return empty();
     }
 
     private SwitchEntry stringSwitchExpression(String caseLabel, String... statements) {
