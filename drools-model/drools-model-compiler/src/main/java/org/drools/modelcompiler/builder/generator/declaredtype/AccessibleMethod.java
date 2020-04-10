@@ -17,7 +17,6 @@
 package org.drools.modelcompiler.builder.generator.declaredtype;
 
 import java.lang.reflect.Method;
-import java.util.Collection;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -38,7 +37,6 @@ import static com.github.javaparser.StaticJavaParser.parseStatement;
 import static com.github.javaparser.ast.NodeList.nodeList;
 import static java.lang.String.format;
 import static java.util.Arrays.stream;
-import static java.util.Collections.singleton;
 import static java.util.stream.Stream.concat;
 import static java.util.stream.Stream.empty;
 import static java.util.stream.Stream.of;
@@ -99,6 +97,39 @@ public class AccessibleMethod {
         return new BlockStmt(nodeList(switchStmt));
     }
 
+    private Statement setterSwitchStatement() {
+        NodeList<SwitchEntry> entries = nodeList();
+        for (DescrFieldDefinition field : fields) {
+            entries.add(stringSwitchExpression(field.getFieldName(), format("this.%s = (%s)value;", field.getFieldName(), field.getObjectType()), BREAK_STATEMENT));
+        }
+
+        Optional<Class<?>> abstractResolvedClass = descrTypeDefinition.getAbstractResolvedClass();
+
+        if (abstractResolvedClass.isPresent()) {
+            addSuperClassSetterProperties(entries, abstractResolvedClass.get());
+        } else if (descrTypeDefinition.getDeclaredAbstractClass().isPresent()) {
+            entries.add(switchEntry(format("super.%s(fieldName, value);", SET_VALUE)));
+        }
+
+        return new BlockStmt(nodeList(new SwitchStmt(new NameExpr(FIELD_NAME), entries)));
+    }
+
+    private void addSuperClassSetterProperties(NodeList<SwitchEntry> entries, Class<?> superClass) {
+        if (AccessibleFact.class.isAssignableFrom(superClass)) {
+            entries.add(switchEntry(format("super.%s(fieldName, value);", SET_VALUE)));
+        } else {
+            for (Method m : superClass.getDeclaredMethods()) {
+                if (m.getParameterCount() == 1) { // simple setter
+                    String fieldName = setter2property(m.getName());
+                    if (fieldName != null) {
+                        String type = m.getGenericParameterTypes()[0].getTypeName();
+                        entries.add(stringSwitchExpression(fieldName, format("this.%s((%s) value);", m.getName(), type), BREAK_STATEMENT));
+                    }
+                }
+            }
+        }
+    }
+
     private Stream<SwitchEntry> resolvedSuperTypeProperties(Class<?> superClass) {
         if (AccessibleFact.class.isAssignableFrom(superClass)) {
             return of(switchEntry(SUPER_GET_VALUE));
@@ -128,37 +159,5 @@ public class AccessibleMethod {
 
     private SwitchEntry switchEntry(String statement) {
         return new SwitchEntry(nodeList(), SwitchEntry.Type.EXPRESSION, nodeList(parseStatement(statement)));
-    }
-
-    private Statement setterSwitchStatement() {
-        NodeList<SwitchEntry> entries = nodeList();
-        for (DescrFieldDefinition field : fields) {
-            entries.add(stringSwitchExpression(field.getFieldName(), format("this.%s = (%s)value;", field.getFieldName(), field.getObjectType()), BREAK_STATEMENT));
-        }
-
-        Optional<Class<?>> abstractClass = descrTypeDefinition.getAbstractResolvedClass();
-        abstractClass.ifPresent(superClass -> addSuperClassSetterProperties(entries, superClass));
-
-        if (descrTypeDefinition.getDeclaredAbstractClass().isPresent() && !abstractClass.isPresent()) {
-            entries.add(switchEntry(format("super.%s(fieldName, value);", SET_VALUE)));
-        }
-
-        return new BlockStmt(nodeList(new SwitchStmt(new NameExpr(FIELD_NAME), entries)));
-    }
-
-    private void addSuperClassSetterProperties(NodeList<SwitchEntry> entries, Class<?> superClass) {
-        if (AccessibleFact.class.isAssignableFrom(superClass)) {
-            entries.add(switchEntry(format("super.%s(fieldName, value);", SET_VALUE)));
-        } else {
-            for (Method m : superClass.getDeclaredMethods()) {
-                if (m.getParameterCount() == 1) { // simple setter
-                    String fieldName = setter2property(m.getName());
-                    if (fieldName != null) {
-                        String type = m.getGenericParameterTypes()[0].getTypeName();
-                        entries.add(stringSwitchExpression(fieldName, format("this.%s((%s) value);", m.getName(), type), BREAK_STATEMENT));
-                    }
-                }
-            }
-        }
     }
 }
