@@ -77,6 +77,7 @@ public class GeneratedClassDeclaration {
         Collection<FieldDefinition> inheritedFields = typeDefinition.findInheritedDeclaredFields();
         if (inheritedFields.isEmpty() && typeDefinition.getFields().isEmpty()) {
             generatedClass.addMember(new GeneratedToString(generatedClassName).method());
+            typeDefinition.getMethods().forEach(this::addMethod);
         } else {
             generatedClass = generateFullClass(generatedClassName, inheritedFields);
         }

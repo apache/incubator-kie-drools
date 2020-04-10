@@ -93,8 +93,6 @@ public class DescrTypeDefinition implements TypeDefinition {
                 declaredAbstractClass = of(superType.getName());
             }
         }
-
-        interfaceNames.add(org.drools.core.factmodel.AccessibleFact.class.getCanonicalName());
     }
 
     private void processClassAnnotations() {

@@ -35,6 +35,7 @@ import org.drools.compiler.lang.descr.PackageDescr;
 import org.drools.compiler.lang.descr.TypeDeclarationDescr;
 import org.drools.core.addon.TypeResolver;
 import org.drools.core.definitions.InternalKnowledgePackage;
+import org.drools.core.factmodel.AccessibleFact;
 import org.drools.core.factmodel.GeneratedFact;
 import org.drools.modelcompiler.builder.GeneratedClassWithPackage;
 import org.drools.modelcompiler.builder.ModelBuilderImpl;
@@ -124,8 +125,9 @@ public class POJOGenerator {
         DescrTypeDefinition descrDeclaredTypeDefinition = new DescrTypeDefinition(packageDescr, typeDescr, typeResolver);
         descrDeclaredTypeDefinition.getErrors().forEach(builder::addBuilderResult);
 
+        // Implemented types should be probably in
         ClassOrInterfaceDeclaration generatedClass = new GeneratedClassDeclaration(descrDeclaredTypeDefinition,
-                                                                                   Collections.singletonList(GeneratedFact.class))
+                                                                                   Arrays.asList(GeneratedFact.class, AccessibleFact.class))
                 .toClassDeclaration();
         packageModel.addGeneratedPOJO(generatedClass);
         addTypeMetadata(typeDescr.getTypeName());
