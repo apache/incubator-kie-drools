@@ -17,6 +17,8 @@
 package org.drools.modelcompiler.builder.generator.declaredtype;
 
 import java.lang.reflect.Method;
+import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
 import java.util.Optional;
 
@@ -34,6 +36,9 @@ import org.drools.modelcompiler.builder.generator.declaredtype.api.MethodWithStr
 import static com.github.javaparser.StaticJavaParser.parseStatement;
 import static com.github.javaparser.ast.NodeList.nodeList;
 import static java.lang.String.format;
+import static java.util.Collections.emptyList;
+import static java.util.Collections.singleton;
+import static java.util.Collections.singletonList;
 import static org.drools.core.util.ClassUtils.getter2property;
 import static org.drools.core.util.ClassUtils.setter2property;
 import static org.drools.modelcompiler.builder.generator.declaredtype.generator.GeneratedClassDeclaration.OVERRIDE;
@@ -41,9 +46,12 @@ import static org.drools.modelcompiler.builder.generator.declaredtype.generator.
 public class AccessibleMethod {
 
     private static final String GET_VALUE = "getValue";
+    private static final String SUPER_GET_VALUE = "return super.getValue(fieldName);";
+
     private static final String SET_VALUE = "setValue";
     private static final String BREAK_STATEMENT = "break;";
     private static final String FIELD_NAME = "fieldName";
+    private final String RETURN_NULL = "return null;";
 
     private DescrTypeDefinition descrTypeDefinition;
     List<DescrFieldDefinition> fields;
@@ -67,68 +75,73 @@ public class AccessibleMethod {
     }
 
     private Statement getterSwitchStatement() {
-        NodeList<SwitchEntry> entries = nodeList();
+        SwitchStmt switchStmt = new SwitchStmt();
+        switchStmt.setSelector(new NameExpr(FIELD_NAME));
+
+        NodeList<SwitchEntry> switchEntries = switchStmt.getEntries();
         for (DescrFieldDefinition field : fields) {
-            entries.add(switchEntry(field.getFieldName(), format("return this.%s;", field.getFieldName())));
+            switchEntries.add(stringSwitchExpression(field.getFieldName(), format("return this.%s;", field.getFieldName())));
         }
 
         Optional<Class<?>> abstractResolvedClass = descrTypeDefinition.getAbstractResolvedClass();
-        Optional<String> declaredSuperType = descrTypeDefinition.getDeclaredAbstractClass();
 
-
-        abstractResolvedClass.ifPresent(superClass -> addSuperClassGetterProperties(entries, superClass));
-
-        if (declaredSuperType.isPresent() && !abstractResolvedClass.isPresent()) {
-            entries.add(defaultCase(format("return super.%s(fieldName);", GET_VALUE)));
-        }
-
-        if (!abstractResolvedClass.isPresent() && !declaredSuperType.isPresent()) {
-            entries.add(defaultCase("return null;"));
-        }
-
-        return new BlockStmt(nodeList(new SwitchStmt(new NameExpr(FIELD_NAME), entries)));
-    }
-
-    private void addSuperClassGetterProperties(NodeList<SwitchEntry> entries, Class<?> superClass) {
-        if (AccessibleFact.class.isAssignableFrom(superClass)) {
-            entries.add(defaultCase(format("return super.%s(fieldName);", GET_VALUE)));
+        if (abstractResolvedClass.isPresent()) {
+            switchEntries.addAll(resolvedSuperTypeProperties(abstractResolvedClass.get()));
+        } else if (descrTypeDefinition.getDeclaredAbstractClass().isPresent()) {
+            switchEntries.add(switchEntry(SUPER_GET_VALUE));
         } else {
+            switchEntries.add(switchEntry(RETURN_NULL));
+        }
+
+        return new BlockStmt(nodeList(switchStmt));
+    }
+
+    private Collection<SwitchEntry> resolvedSuperTypeProperties(Class<?> superClass) {
+        if (AccessibleFact.class.isAssignableFrom(superClass)) {
+            return singleton(switchEntry(SUPER_GET_VALUE));
+        } else {
+            List<SwitchEntry> entries = new ArrayList<>();
             for (Method m : superClass.getDeclaredMethods()) {
-                if (m.getParameterCount() == 0) {
-                    String fieldName = getter2property(m.getName());
-                    if (fieldName != null) {
-                        entries.add(switchEntry(fieldName, format("return this.%s();", m.getName())));
-                    }
-                }
+                entries.addAll(switchEntryWithGetter(m));
             }
-            entries.add(defaultCase("return null;"));
+            entries.add(switchEntry(RETURN_NULL));
+            return entries;
         }
     }
 
-    private SwitchEntry switchEntry(String fieldName, String... statements) {
+    private List<SwitchEntry> switchEntryWithGetter(Method m) {
+        if (m.getParameterCount() == 0) {
+            String fieldName = getter2property(m.getName());
+            if (fieldName != null) {
+                return singletonList(stringSwitchExpression(fieldName, format("return this.%s();", m.getName())));
+            }
+        }
+        return emptyList();
+    }
+
+    private SwitchEntry stringSwitchExpression(String caseLabel, String... statements) {
         NodeList<Statement> switchStatements = nodeList();
-        for(String statement : statements) {
+        for (String statement : statements) {
             switchStatements.add(parseStatement(statement));
         }
-        return new SwitchEntry(nodeList(new StringLiteralExpr(fieldName)), SwitchEntry.Type.EXPRESSION, switchStatements);
+        return new SwitchEntry(nodeList(new StringLiteralExpr(caseLabel)), SwitchEntry.Type.EXPRESSION, switchStatements);
     }
 
-    private SwitchEntry defaultCase(String statement) {
-        return new SwitchEntry(nodeList(), SwitchEntry.Type.EXPRESSION,
-                               nodeList(parseStatement(statement)));
+    private SwitchEntry switchEntry(String statement) {
+        return new SwitchEntry(nodeList(), SwitchEntry.Type.EXPRESSION, nodeList(parseStatement(statement)));
     }
 
     private Statement setterSwitchStatement() {
         NodeList<SwitchEntry> entries = nodeList();
         for (DescrFieldDefinition field : fields) {
-            entries.add(switchEntry(field.getFieldName(), format("this.%s = (%s)value;", field.getFieldName(), field.getObjectType()), BREAK_STATEMENT));
+            entries.add(stringSwitchExpression(field.getFieldName(), format("this.%s = (%s)value;", field.getFieldName(), field.getObjectType()), BREAK_STATEMENT));
         }
 
         Optional<Class<?>> abstractClass = descrTypeDefinition.getAbstractResolvedClass();
         abstractClass.ifPresent(superClass -> addSuperClassSetterProperties(entries, superClass));
 
         if (descrTypeDefinition.getDeclaredAbstractClass().isPresent() && !abstractClass.isPresent()) {
-            entries.add(defaultCase("super." + SET_VALUE + "(fieldName, value);"));
+            entries.add(switchEntry(format("super.%s(fieldName, value);", SET_VALUE)));
         }
 
         return new BlockStmt(nodeList(new SwitchStmt(new NameExpr(FIELD_NAME), entries)));
@@ -136,14 +149,14 @@ public class AccessibleMethod {
 
     private void addSuperClassSetterProperties(NodeList<SwitchEntry> entries, Class<?> superClass) {
         if (AccessibleFact.class.isAssignableFrom(superClass)) {
-            entries.add(defaultCase(format("super.%s(fieldName, value);", SET_VALUE)));
+            entries.add(switchEntry(format("super.%s(fieldName, value);", SET_VALUE)));
         } else {
             for (Method m : superClass.getDeclaredMethods()) {
                 if (m.getParameterCount() == 1) { // simple setter
                     String fieldName = setter2property(m.getName());
                     if (fieldName != null) {
                         String type = m.getGenericParameterTypes()[0].getTypeName();
-                        entries.add(switchEntry(fieldName, format("this.%s((%s) value);", m.getName(), type), BREAK_STATEMENT));
+                        entries.add(stringSwitchExpression(fieldName, format("this.%s((%s) value);", m.getName(), type), BREAK_STATEMENT));
                     }
                 }
             }
