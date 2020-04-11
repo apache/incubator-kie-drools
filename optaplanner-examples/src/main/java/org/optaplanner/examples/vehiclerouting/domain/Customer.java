@@ -44,6 +44,15 @@ public class Customer extends AbstractPersistable implements Standstill {
     protected Customer nextCustomer;
     protected Vehicle vehicle;
 
+    public Customer() {
+    }
+
+    public Customer(long id, Location location, int demand) {
+        super(id);
+        this.location = location;
+        this.demand = demand;
+    }
+
     @Override
     public Location getLocation() {
         return location;

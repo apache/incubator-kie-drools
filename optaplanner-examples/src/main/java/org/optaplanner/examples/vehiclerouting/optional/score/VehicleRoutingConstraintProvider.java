@@ -23,7 +23,7 @@ import org.optaplanner.core.api.score.stream.ConstraintProvider;
 import org.optaplanner.examples.vehiclerouting.domain.Customer;
 import org.optaplanner.examples.vehiclerouting.domain.timewindowed.TimeWindowedCustomer;
 
-import static org.optaplanner.core.api.score.stream.ConstraintCollectors.*;
+import static org.optaplanner.core.api.score.stream.ConstraintCollectors.sum;
 
 public class VehicleRoutingConstraintProvider implements ConstraintProvider {
 
@@ -41,7 +41,7 @@ public class VehicleRoutingConstraintProvider implements ConstraintProvider {
     // Hard constraints
     // ************************************************************************
 
-    private Constraint vehicleCapacity(ConstraintFactory factory) {
+    public Constraint vehicleCapacity(ConstraintFactory factory) {
         return factory.from(Customer.class)
                 .groupBy(Customer::getVehicle, sum(Customer::getDemand))
                 .filter((vehicle, demand) -> demand > vehicle.getCapacity())
@@ -54,14 +54,14 @@ public class VehicleRoutingConstraintProvider implements ConstraintProvider {
     // Soft constraints
     // ************************************************************************
 
-    private Constraint distanceToPreviousStandstill(ConstraintFactory factory) {
+    protected Constraint distanceToPreviousStandstill(ConstraintFactory factory) {
         return factory.from(Customer.class)
                 .penalizeLong("distanceToPreviousStandstill",
                         HardSoftLongScore.ONE_SOFT,
                         Customer::getDistanceFromPreviousStandstill);
     }
 
-    private Constraint distanceFromLastCustomerToDepot(ConstraintFactory factory) {
+    protected Constraint distanceFromLastCustomerToDepot(ConstraintFactory factory) {
         return factory.from(Customer.class)
                 .filter(customer -> customer.getNextCustomer() == null)
                 .penalizeLong("distanceFromLastCustomerToDepot",
@@ -73,7 +73,7 @@ public class VehicleRoutingConstraintProvider implements ConstraintProvider {
     // TimeWindowed: additional hard constraints
     // ************************************************************************
 
-    private Constraint arrivalAfterDueTime(ConstraintFactory factory) {
+    protected Constraint arrivalAfterDueTime(ConstraintFactory factory) {
         return factory.from(TimeWindowedCustomer.class)
                 .filter(customer -> customer.getArrivalTime() > customer.getDueTime())
                 .penalizeLong("arrivalAfterDueTime",

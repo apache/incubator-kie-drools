@@ -30,8 +30,8 @@ import org.optaplanner.test.api.score.stream.ConstraintVerifier;
 
 public class NQueensConstraintProviderTest {
 
-    private final NQueensConstraintProvider constraintProvider = new NQueensConstraintProvider();
-    private final ConstraintVerifier<NQueens> constraintVerifier = ConstraintVerifier.build(NQueens.class, Queen.class);
+    private final ConstraintVerifier<NQueensConstraintProvider, NQueens> constraintVerifier
+            = ConstraintVerifier.build(new NQueensConstraintProvider(), NQueens.class, Queen.class);
 
     private final Row row1 = new Row(0);
     private final Row row2 = new Row(1);
@@ -43,7 +43,7 @@ public class NQueensConstraintProviderTest {
     @Test
     public void noHorizontalConflictWithOneQueen() {
         Queen queen1 = new Queen(0, row1, column1);
-        constraintVerifier.verifyThat(constraintProvider::horizontalConflict)
+        constraintVerifier.verifyThat(NQueensConstraintProvider::horizontalConflict)
                 .given(queen1)
                 .hasNoImpact();
     }
@@ -52,7 +52,7 @@ public class NQueensConstraintProviderTest {
     public void horizontalConflictWithTwoQueens() {
         Queen queen1 = new Queen(0, row1, column1);
         Queen queen2 = new Queen(1, row1, column2);
-        constraintVerifier.verifyThat(constraintProvider::horizontalConflict)
+        constraintVerifier.verifyThat(NQueensConstraintProvider::horizontalConflict)
                 .given(queen1, queen2)
                 .penalizesBy(1);
     }
@@ -62,7 +62,7 @@ public class NQueensConstraintProviderTest {
         Queen queen1 = new Queen(0, row1, column1);
         Queen queen2 = new Queen(1, row1, column2);
         Queen queen3 = new Queen(2, row1, column3);
-        constraintVerifier.verifyThat(constraintProvider::horizontalConflict)
+        constraintVerifier.verifyThat(NQueensConstraintProvider::horizontalConflict)
                 .given(queen1, queen2, queen3)
                 .penalizesBy(3);
     }
@@ -70,7 +70,7 @@ public class NQueensConstraintProviderTest {
     @Test
     public void noAscendingDiagonalConflictWithOneQueen() {
         Queen queen1 = new Queen(0, row1, column1);
-        constraintVerifier.verifyThat(constraintProvider::ascendingDiagonalConflict)
+        constraintVerifier.verifyThat(NQueensConstraintProvider::ascendingDiagonalConflict)
                 .given(queen1)
                 .hasNoImpact();
     }
@@ -79,7 +79,7 @@ public class NQueensConstraintProviderTest {
     public void ascendingDiagonalConflictWithTwoQueens() {
         Queen queen1 = new Queen(0, row1, column2);
         Queen queen2 = new Queen(1, row2, column1);
-        constraintVerifier.verifyThat(constraintProvider::ascendingDiagonalConflict)
+        constraintVerifier.verifyThat(NQueensConstraintProvider::ascendingDiagonalConflict)
                 .given(queen1, queen2)
                 .penalizesBy(1);
     }
@@ -89,7 +89,7 @@ public class NQueensConstraintProviderTest {
         Queen queen1 = new Queen(0, row1, column3);
         Queen queen2 = new Queen(1, row2, column2);
         Queen queen3 = new Queen(2, row3, column1);
-        constraintVerifier.verifyThat(constraintProvider::ascendingDiagonalConflict)
+        constraintVerifier.verifyThat(NQueensConstraintProvider::ascendingDiagonalConflict)
                 .given(queen1, queen2, queen3)
                 .penalizesBy(3);
     }
@@ -97,7 +97,7 @@ public class NQueensConstraintProviderTest {
     @Test
     public void noDescendingDiagonalConflictWithOneQueen() {
         Queen queen1 = new Queen(0, row1, column1);
-        constraintVerifier.verifyThat(constraintProvider::descendingDiagonalConflict)
+        constraintVerifier.verifyThat(NQueensConstraintProvider::descendingDiagonalConflict)
                 .given(queen1)
                 .hasNoImpact();
     }
@@ -106,7 +106,7 @@ public class NQueensConstraintProviderTest {
     public void descendingDiagonalConflictWithTwoQueens() {
         Queen queen1 = new Queen(0, row1, column1);
         Queen queen2 = new Queen(1, row2, column2);
-        constraintVerifier.verifyThat(constraintProvider::descendingDiagonalConflict)
+        constraintVerifier.verifyThat(NQueensConstraintProvider::descendingDiagonalConflict)
                 .given(queen1, queen2)
                 .penalizesBy(1);
     }
@@ -116,21 +116,21 @@ public class NQueensConstraintProviderTest {
         Queen queen1 = new Queen(0, row1, column1);
         Queen queen2 = new Queen(1, row2, column2);
         Queen queen3 = new Queen(2, row3, column3);
-        constraintVerifier.verifyThat(constraintProvider::descendingDiagonalConflict)
+        constraintVerifier.verifyThat(NQueensConstraintProvider::descendingDiagonalConflict)
                 .given(queen1, queen2, queen3)
                 .penalizesBy(3);
     }
 
     private static NQueens readSolution(String resource) throws IOException {
+        XStreamSolutionFileIO<NQueens> solutionFileIO = new XStreamSolutionFileIO<>(NQueens.class);
         try (InputStream inputStream = NQueensConstraintProviderTest.class.getResourceAsStream(resource)) {
-            final XStreamSolutionFileIO<NQueens> solutionFileIO = new XStreamSolutionFileIO<>(NQueens.class);
             return solutionFileIO.read(inputStream);
         }
     }
 
     @Test
     public void givenSolutionMultipleConstraints() throws IOException {
-        constraintVerifier.verifyThat(constraintProvider)
+        constraintVerifier.verifyThat()
                 .given(readSolution("256queensScore-30.xml"))
                 .scores(SimpleScore.of(-30));
     }
@@ -140,7 +140,7 @@ public class NQueensConstraintProviderTest {
         Queen queen1 = new Queen(0, row1, column1);
         Queen queen2 = new Queen(1, row2, column2);
         Queen queen3 = new Queen(2, row3, column3);
-        constraintVerifier.verifyThat(constraintProvider)
+        constraintVerifier.verifyThat()
                 .given(queen1, queen2, queen3)
                 .scores(SimpleScore.of(-3));
     }

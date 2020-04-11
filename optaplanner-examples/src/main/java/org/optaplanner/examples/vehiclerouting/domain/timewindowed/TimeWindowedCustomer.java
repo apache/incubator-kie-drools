@@ -21,6 +21,7 @@ import org.optaplanner.core.api.domain.entity.PlanningEntity;
 import org.optaplanner.core.api.domain.variable.CustomShadowVariable;
 import org.optaplanner.core.api.domain.variable.PlanningVariableReference;
 import org.optaplanner.examples.vehiclerouting.domain.Customer;
+import org.optaplanner.examples.vehiclerouting.domain.location.Location;
 import org.optaplanner.examples.vehiclerouting.domain.timewindowed.solver.ArrivalTimeUpdatingVariableListener;
 
 @PlanningEntity
@@ -34,6 +35,16 @@ public class TimeWindowedCustomer extends Customer {
 
     // Shadow variable
     private Long arrivalTime;
+
+    public TimeWindowedCustomer() {
+    }
+
+    public TimeWindowedCustomer(long id, Location location, int demand, long readyTime, long dueTime, long serviceDuration) {
+        super(id, location, demand);
+        this.readyTime = readyTime;
+        this.dueTime = dueTime;
+        this.serviceDuration = serviceDuration;
+    }
 
     /**
      * @return a positive number, the time multiplied by 1000 to avoid floating point arithmetic rounding errors

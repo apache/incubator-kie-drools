@@ -39,7 +39,7 @@ public class NQueensConstraintProvider implements ConstraintProvider {
     // Hard constraints
     // ************************************************************************
 
-    Constraint horizontalConflict(ConstraintFactory factory) {
+    protected Constraint horizontalConflict(ConstraintFactory factory) {
         return factory
                 .fromUniquePair(Queen.class, equal(Queen::getRowIndex))
                 .penalize("Horizontal conflict", SimpleScore.ONE);
@@ -51,12 +51,12 @@ public class NQueensConstraintProvider implements ConstraintProvider {
 //                .penalize("Horizontal conflict", SimpleScore.ONE);
     }
 
-    Constraint ascendingDiagonalConflict(ConstraintFactory factory) {
+    protected Constraint ascendingDiagonalConflict(ConstraintFactory factory) {
         return factory.fromUniquePair(Queen.class, equal(Queen::getAscendingDiagonalIndex))
                 .penalize("Ascending diagonal conflict", SimpleScore.ONE);
     }
 
-    Constraint descendingDiagonalConflict(ConstraintFactory factory) {
+    protected Constraint descendingDiagonalConflict(ConstraintFactory factory) {
         return factory.fromUniquePair(Queen.class, equal(Queen::getDescendingDiagonalIndex))
                 .penalize("Descending diagonal conflict", SimpleScore.ONE);
     }

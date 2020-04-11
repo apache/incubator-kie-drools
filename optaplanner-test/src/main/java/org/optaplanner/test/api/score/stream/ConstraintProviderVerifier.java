@@ -30,7 +30,7 @@ public final class ConstraintProviderVerifier<Solution_>
 
     private final ConstraintProvider constraintProvider;
 
-    protected ConstraintProviderVerifier(ConstraintVerifier<Solution_> constraintVerifier,
+    protected ConstraintProviderVerifier(ConstraintVerifier<?, Solution_> constraintVerifier,
             ConstraintProvider constraintProvider, ConstraintStreamImplType constraintStreamImplType) {
         super(new ConstraintStreamScoreDirectorFactory<>(constraintVerifier.getSolutionDescriptor(), constraintProvider,
                 constraintStreamImplType));

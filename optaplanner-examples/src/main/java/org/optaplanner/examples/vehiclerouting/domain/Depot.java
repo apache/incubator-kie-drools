@@ -30,6 +30,14 @@ public class Depot extends AbstractPersistable {
 
     protected Location location;
 
+    public Depot() {
+    }
+
+    public Depot(long id, Location location) {
+        super(id);
+        this.location = location;
+    }
+
     public Location getLocation() {
         return location;
     }

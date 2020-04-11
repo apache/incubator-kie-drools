@@ -29,6 +29,15 @@ public class Vehicle extends AbstractPersistable implements Standstill {
     // Shadow variables
     protected Customer nextCustomer;
 
+    public Vehicle() {
+    }
+
+    public Vehicle(long id, int capacity, Depot depot) {
+        super(id);
+        this.capacity = capacity;
+        this.depot = depot;
+    }
+
     public int getCapacity() {
         return capacity;
     }

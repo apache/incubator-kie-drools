@@ -18,6 +18,7 @@ package org.optaplanner.examples.vehiclerouting.domain.timewindowed;
 
 import com.thoughtworks.xstream.annotations.XStreamAlias;
 import org.optaplanner.examples.vehiclerouting.domain.Depot;
+import org.optaplanner.examples.vehiclerouting.domain.location.Location;
 
 @XStreamAlias("VrpTimeWindowedDepot")
 public class TimeWindowedDepot extends Depot {
@@ -25,6 +26,15 @@ public class TimeWindowedDepot extends Depot {
     // Times are multiplied by 1000 to avoid floating point arithmetic rounding errors
     private long readyTime;
     private long dueTime;
+
+    public TimeWindowedDepot() {
+    }
+
+    public TimeWindowedDepot(long id, Location location, long readyTime, long dueTime) {
+        super(id, location);
+        this.readyTime = readyTime;
+        this.dueTime = dueTime;
+    }
 
     /**
      * @return a positive number, the time multiplied by 1000 to avoid floating point arithmetic rounding errors

@@ -16,8 +16,7 @@
 
 package org.optaplanner.test.api.score.stream;
 
-import java.util.function.Function;
-import java.util.stream.Stream;
+import java.util.function.BiFunction;
 
 import org.optaplanner.core.api.domain.entity.PlanningEntity;
 import org.optaplanner.core.api.domain.solution.PlanningSolution;
@@ -29,31 +28,33 @@ import org.optaplanner.core.impl.domain.solution.descriptor.SolutionDescriptor;
 
 import static java.util.Objects.requireNonNull;
 
-public final class ConstraintVerifier<Solution_> {
+public final class ConstraintVerifier<ConstraintProvider_ extends ConstraintProvider, Solution_> {
 
+    private final ConstraintProvider_ constraintProvider;
     private final SolutionDescriptor<Solution_> solutionDescriptor;
     private ConstraintStreamImplType constraintStreamImplType = ConstraintStreamImplType.DROOLS;
 
-    private ConstraintVerifier(SolutionDescriptor<Solution_> solutionDescriptor) {
+    private ConstraintVerifier(ConstraintProvider_ constraintProvider, SolutionDescriptor<Solution_> solutionDescriptor) {
+        this.constraintProvider = constraintProvider;
         this.solutionDescriptor = solutionDescriptor;
     }
 
     /**
      * Entry point to the API.
+     * @param constraintProvider never null, {@link PlanningEntity} used by the {@link PlanningSolution}
      * @param planningSolutionClass never null, {@link PlanningSolution}-annotated class associated with the constraints
-     * @param firstPlanningEntityClass never null, {@link PlanningEntity} used by the {@link PlanningSolution}
-     * @param otherPlanningEntityClasses optional, extra entity classes if {@link PlanningSolution} uses more than one
+     * @param entityClasses never null, at least one, {@link PlanningEntity} types used by the {@link PlanningSolution}
+     * @param <ConstraintProvider_> type of the {@link ConstraintProvider}
      * @param <Solution_> type of the {@link PlanningSolution}-annotated class
      * @return never null
      */
-    public static <Solution_> ConstraintVerifier<Solution_> build(Class<Solution_> planningSolutionClass,
-            Class<?> firstPlanningEntityClass, Class<?>... otherPlanningEntityClasses) {
-        Class[] entityClasses = Stream.concat(Stream.of(requireNonNull(firstPlanningEntityClass)),
-                Stream.of(otherPlanningEntityClasses))
-                .toArray(Class[]::new);
+    public static <ConstraintProvider_ extends ConstraintProvider, Solution_> ConstraintVerifier<ConstraintProvider_, Solution_> build(
+            ConstraintProvider_ constraintProvider,
+            Class<Solution_> planningSolutionClass, Class<?>... entityClasses) {
+        requireNonNull(constraintProvider);
         SolutionDescriptor<Solution_> solutionDescriptor =
                 SolutionDescriptor.buildSolutionDescriptor(requireNonNull(planningSolutionClass), entityClasses);
-        return new ConstraintVerifier<>(solutionDescriptor);
+        return new ConstraintVerifier<>(constraintProvider, solutionDescriptor);
     }
 
     protected SolutionDescriptor<Solution_> getSolutionDescriptor() {
@@ -61,32 +62,36 @@ public final class ConstraintVerifier<Solution_> {
     }
 
     /**
-     * All subsequent calls to {@link #verifyThat(Function)} and {@link #verifyThat(ConstraintProvider)}
+     * All subsequent calls to {@link #verifyThat(BiFunction)} and {@link #verifyThat()}
      * will use the given {@link ConstraintStreamImplType}.
      * @param constraintStreamImplType never null
      * @return this
      */
-    public ConstraintVerifier<Solution_> withConstraintStreamImplType(
+    public ConstraintVerifier<ConstraintProvider_, Solution_> withConstraintStreamImplType(
             ConstraintStreamImplType constraintStreamImplType) {
         this.constraintStreamImplType = constraintStreamImplType;
         return this;
     }
 
     /**
-     * Creates a constraint verifier for a given {@link Constraint}.
+     * Creates a constraint verifier for a given {@link Constraint} of the {@link ConstraintProvider}.
      * @param constraintFunction never null
      * @return never null
      */
-    public SingleConstraintVerifier<Solution_> verifyThat(Function<ConstraintFactory, Constraint> constraintFunction) {
-        return new SingleConstraintVerifier<>(this, requireNonNull(constraintFunction), constraintStreamImplType);
+    public SingleConstraintVerifier<Solution_> verifyThat(
+            BiFunction<ConstraintProvider_, ConstraintFactory, Constraint> constraintFunction) {
+        requireNonNull(constraintFunction);
+        return new SingleConstraintVerifier<>(this,
+                (constraintFactory) -> constraintFunction.apply(constraintProvider, constraintFactory),
+                constraintStreamImplType);
     }
 
     /**
-     * Creates a constraint verifier for a given {@link ConstraintProvider}.
-     * @param constraintProvider never null
+     * Creates a constraint verifier for all constraints of the {@link ConstraintProvider}.
      * @return never null
      */
-    public ConstraintProviderVerifier<Solution_> verifyThat(ConstraintProvider constraintProvider) {
-        return new ConstraintProviderVerifier<>(this, requireNonNull(constraintProvider), constraintStreamImplType);
+    public ConstraintProviderVerifier<Solution_> verifyThat() {
+        return new ConstraintProviderVerifier<>(this, constraintProvider, constraintStreamImplType);
     }
+
 }
