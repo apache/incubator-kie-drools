@@ -87,4 +87,16 @@ public class SimpleLongScoreDefinition extends AbstractScoreDefinition<SimpleLon
                 trendLevels[0] == InitializingScoreTrendLevel.ONLY_UP ? score.getScore() : Long.MIN_VALUE);
     }
 
+    @Override
+    public SimpleLongScore divideBySanitizedDivisor(SimpleLongScore dividend, SimpleLongScore divisor) {
+        int dividendInitScore = dividend.getInitScore();
+        int divisorInitScore = sanitize(divisor.getInitScore());
+        long dividendScore = dividend.getScore();
+        long divisorScore = sanitize(divisor.getScore());
+        return fromLevelNumbers(
+                divide(dividendInitScore, divisorInitScore),
+                new Number[] {
+                        divide(dividendScore, divisorScore)
+                });
+    }
 }

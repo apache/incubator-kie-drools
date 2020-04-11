@@ -22,14 +22,13 @@ import java.util.Objects;
 
 import org.optaplanner.core.api.score.Score;
 import org.optaplanner.core.api.score.constraint.ConstraintMatchTotal;
-import org.optaplanner.core.api.score.stream.Constraint;
 import org.optaplanner.core.impl.score.director.ScoreDirector;
 import org.optaplanner.core.impl.score.director.stream.ConstraintStreamScoreDirectorFactory;
 import org.optaplanner.core.impl.score.stream.ConstraintSession;
 
 public abstract class AbstractConstraintVerifier<Solution_,
-        Assertion extends AbstractAssertion<Solution_, Assertion, Verifier>,
-        Verifier extends AbstractConstraintVerifier<Solution_, Assertion, Verifier>> {
+        Assertion_ extends AbstractAssertion<Solution_, Assertion_, Verifier_>,
+        Verifier_ extends AbstractConstraintVerifier<Solution_, Assertion_, Verifier_>> {
 
     private final ConstraintStreamScoreDirectorFactory<Solution_> constraintStreamScoreDirectorFactory;
 
@@ -38,13 +37,14 @@ public abstract class AbstractConstraintVerifier<Solution_,
         this.constraintStreamScoreDirectorFactory = constraintStreamScoreDirectorFactory;
     }
 
-    protected Constraint getConstraint() {
-        return constraintStreamScoreDirectorFactory.getConstraints()[0];
+    public ConstraintStreamScoreDirectorFactory<Solution_> getConstraintStreamScoreDirectorFactory() {
+        return constraintStreamScoreDirectorFactory;
     }
 
-    protected abstract Assertion createAssertion(Score<?> score, Map<String, ConstraintMatchTotal> constraintMatchTotalMap);
+    protected abstract Assertion_ createAssertion(Score<?> score,
+            Map<String, ConstraintMatchTotal> constraintMatchTotalMap);
 
-    public final Assertion given(Object... facts) {
+    public final Assertion_ given(Object... facts) {
         try (ConstraintSession<Solution_> constraintSession =
                 constraintStreamScoreDirectorFactory.newConstraintStreamingSession(true, null)) {
             Arrays.stream(facts).distinct().forEach(constraintSession::insert);
@@ -53,7 +53,7 @@ public abstract class AbstractConstraintVerifier<Solution_,
         }
     }
 
-    public final Assertion given(Solution_ solution) {
+    public final Assertion_ given(Solution_ solution) {
         try (ScoreDirector<Solution_> scoreDirector =
                 constraintStreamScoreDirectorFactory.buildScoreDirector(true, true)) {
             scoreDirector.setWorkingSolution(Objects.requireNonNull(solution));

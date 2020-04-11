@@ -150,4 +150,19 @@ public class BendableScoreDefinitionTest {
         assertEquals(Integer.MIN_VALUE, pessimisticBound.getSoftScore(2));
     }
 
+    @Test
+    public void divideBySanitizedDivisor() {
+        BendableScoreDefinition scoreDefinition = new BendableScoreDefinition(1, 1);
+        BendableScore dividend = scoreDefinition.createScoreUninitialized(2, 0, 10);
+        BendableScore zeroDivisor = scoreDefinition.getZeroScore();
+        assertThat(scoreDefinition.divideBySanitizedDivisor(dividend, zeroDivisor))
+                .isEqualTo(dividend);
+        BendableScore oneDivisor = scoreDefinition.getOneSoftestScore();
+        assertThat(scoreDefinition.divideBySanitizedDivisor(dividend, oneDivisor))
+                .isEqualTo(dividend);
+        BendableScore tenDivisor = scoreDefinition.createScoreUninitialized(10, 10, 10);
+        assertThat(scoreDefinition.divideBySanitizedDivisor(dividend, tenDivisor))
+                .isEqualTo(scoreDefinition.createScoreUninitialized(0, 0, 1));
+    }
+
 }

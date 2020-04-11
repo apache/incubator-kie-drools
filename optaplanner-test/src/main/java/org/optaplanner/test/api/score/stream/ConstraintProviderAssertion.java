@@ -24,7 +24,7 @@ public final class ConstraintProviderAssertion<Solution_> extends AbstractAssert
 
     private final Score<?> actualScore;
 
-    ConstraintProviderAssertion(ConstraintProviderVerifier<Solution_> constraintProviderVerifier,
+    protected ConstraintProviderAssertion(ConstraintProviderVerifier<Solution_> constraintProviderVerifier,
             Score<?> actualScore) {
         super(constraintProviderVerifier);
         this.actualScore = actualScore;

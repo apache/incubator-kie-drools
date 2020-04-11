@@ -19,11 +19,17 @@ package org.optaplanner.test.api.score.stream;
 import java.io.ByteArrayOutputStream;
 import java.io.PrintStream;
 import java.math.BigDecimal;
+import java.util.Arrays;
 import java.util.Collections;
+import java.util.List;
 import java.util.Map;
+import java.util.Objects;
+import java.util.stream.Collectors;
 
+import org.optaplanner.core.api.score.Score;
 import org.optaplanner.core.api.score.constraint.ConstraintMatchTotal;
 import org.optaplanner.core.api.score.stream.Constraint;
+import org.optaplanner.core.impl.score.definition.ScoreDefinition;
 import org.optaplanner.core.impl.score.stream.common.AbstractConstraint;
 import org.optaplanner.core.impl.score.stream.common.ScoreImpactType;
 
@@ -32,16 +38,40 @@ public final class SingleConstraintAssertion<Solution_> extends AbstractAssertio
 
     private final Map<String, ConstraintMatchTotal> constraintMatchTotalMap;
 
-    SingleConstraintAssertion(SingleConstraintVerifier<Solution_> singleConstraintVerifier,
+    protected SingleConstraintAssertion(SingleConstraintVerifier<Solution_> singleConstraintVerifier,
             Map<String, ConstraintMatchTotal> constraintMatchTotalMap) {
         super(singleConstraintVerifier);
         this.constraintMatchTotalMap = Collections.unmodifiableMap(constraintMatchTotalMap);
     }
 
     private Number getImpact() {
-        return constraintMatchTotalMap.values().stream()
-                .mapToInt(ConstraintMatchTotal::getConstraintMatchCount)
-                .sum();
+        ScoreDefinition scoreDefinition = getParentConstraintVerifier().getConstraintStreamScoreDirectorFactory()
+                .getScoreDefinition();
+        Score zeroScore = scoreDefinition.getZeroScore();
+        Number zero = zeroScore.toLevelNumbers()[0]; // Zero in the exact numeric type expected by the caller.
+        if (constraintMatchTotalMap.isEmpty()) {
+            return zero;
+        }
+        // We do not know the matchWeight, so we need to deduce it.
+        // Constraint matches give us a score, whose levels are in the form of (matchWeight * constraintWeight).
+        // Here, we strip the constraintWeight.
+        Score totalMatchWeightedScore = constraintMatchTotalMap.values().stream()
+                .map(matchScore -> scoreDefinition.divideBySanitizedDivisor(matchScore.getScore(),
+                        matchScore.getConstraintWeight()))
+                .reduce(zeroScore, Score::add);
+        // Each level of the resulting score now has to be the same number, the matchWeight.
+        // Except for where the number is zero.
+        List<Number> matchWeightsFound = Arrays.stream(totalMatchWeightedScore.toLevelNumbers())
+                .distinct()
+                .filter(matchWeight -> !Objects.equals(matchWeight, zero))
+                .collect(Collectors.toList());
+        if (matchWeightsFound.isEmpty()) {
+            return 0;
+        } else if (matchWeightsFound.size() != 1) {
+            throw new IllegalStateException("Impossible state: expecting at most one match weight," +
+                    " but got matchWeightsFound (" + matchWeightsFound + ") instead.");
+        }
+        return matchWeightsFound.get(0);
     }
 
     private static void assertCorrectMatchWeight(Number matchWeightTotal) {
@@ -50,21 +80,23 @@ public final class SingleConstraintAssertion<Solution_> extends AbstractAssertio
         }
     }
 
-    private void assertImpact(ScoreImpactType scoreImpactType, Number weight, String message) {
+    private void assertImpact(ScoreImpactType scoreImpactType, Number matchWeightTotal, String message) {
         Number impact = getImpact();
-        AbstractConstraint<?, ?> constraint = (AbstractConstraint<?, ?>) getParentConstraintVerifier().getConstraint();
+        AbstractConstraint<?, ?> constraint = (AbstractConstraint<?, ?>) getParentConstraintVerifier()
+                .getConstraintStreamScoreDirectorFactory()
+                .getConstraints()[0];
         // Null means we're just looking for any kind of penalty or an impact.
         boolean isCorrectImpactType = scoreImpactType == null || scoreImpactType == constraint.getScoreImpactType();
-        if (isCorrectImpactType && weight.equals(impact)) {
+        if (isCorrectImpactType && matchWeightTotal.equals(impact)) {
             return;
         }
         String constraintId = constraint.getConstraintId();
-        String assertionMessage = getAssertionErrorMessage(scoreImpactType, weight, constraint.getScoreImpactType(),
-                impact, constraintId, message);
+        String assertionMessage = buildAssertionErrorMessage(scoreImpactType, matchWeightTotal,
+                constraint.getScoreImpactType(), impact, constraintId, message);
         throw new AssertionError(assertionMessage);
     }
 
-    private static String getAssertionErrorMessage(ScoreImpactType expectedImpactType, Number expectedImpact,
+    private static String buildAssertionErrorMessage(ScoreImpactType expectedImpactType, Number expectedImpact,
             ScoreImpactType actualImpactType, Number actualImpact, String constraintId, String message) {
         boolean hasMessage = message != null;
         try (ByteArrayOutputStream baos = new ByteArrayOutputStream(); PrintStream printStream = new PrintStream(baos)) {

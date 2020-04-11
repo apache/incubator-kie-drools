@@ -98,4 +98,19 @@ public class HardSoftDoubleScoreDefinitionTest {
         assertEquals(Double.NEGATIVE_INFINITY, pessimisticBound.getSoftScore(), 0.0);
     }
 
+    @Test
+    public void divideBySanitizedDivisor() {
+        HardSoftDoubleScoreDefinition scoreDefinition = new HardSoftDoubleScoreDefinition();
+        HardSoftDoubleScore dividend = scoreDefinition.fromLevelNumbers(2, new Number[] {0d, 10d});
+        HardSoftDoubleScore zeroDivisor = scoreDefinition.getZeroScore();
+        assertThat(scoreDefinition.divideBySanitizedDivisor(dividend, zeroDivisor))
+                .isEqualTo(dividend);
+        HardSoftDoubleScore oneDivisor = scoreDefinition.getOneSoftestScore();
+        assertThat(scoreDefinition.divideBySanitizedDivisor(dividend, oneDivisor))
+                .isEqualTo(dividend);
+        HardSoftDoubleScore tenDivisor = scoreDefinition.fromLevelNumbers(10, new Number[] {10d, 10d});
+        assertThat(scoreDefinition.divideBySanitizedDivisor(dividend, tenDivisor))
+                .isEqualTo(scoreDefinition.fromLevelNumbers(0, new Number[] {0d, 1d}));
+    }
+
 }

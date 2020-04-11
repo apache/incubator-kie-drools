@@ -260,6 +260,15 @@
           "methodName": "getOneSoftestScore",
           "elementKind": "method",
           "justification": "Introduced a method to get the softest score of one."
+        },
+        {
+          "code": "java.method.addedToInterface",
+          "new": "method S org.optaplanner.core.impl.score.definition.ScoreDefinition<S extends org.optaplanner.core.api.score.Score<S extends org.optaplanner.core.api.score.Score<S>>>::divideBySanitizedDivisor(S, S) @ org.optaplanner.core.api.domain.solution.PlanningScore.NullScoreDefinition",
+          "package": "org.optaplanner.core.api.domain.solution",
+          "classSimpleName": "NullScoreDefinition",
+          "methodName": "divideBySanitizedDivisor",
+          "elementKind": "method",
+          "justification": "Introduced a method for score division."
         }
       ]
     }

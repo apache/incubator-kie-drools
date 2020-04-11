@@ -84,17 +84,38 @@ public class HardMediumSoftBigDecimalScoreDefinition extends AbstractFeasibility
     }
 
     @Override
-    public HardMediumSoftBigDecimalScore buildOptimisticBound(InitializingScoreTrend initializingScoreTrend, HardMediumSoftBigDecimalScore score) {
+    public HardMediumSoftBigDecimalScore buildOptimisticBound(InitializingScoreTrend initializingScoreTrend,
+            HardMediumSoftBigDecimalScore score) {
         // TODO https://issues.redhat.com/browse/PLANNER-232
         throw new UnsupportedOperationException("PLANNER-232: BigDecimalScore does not support bounds" +
                 " because a BigDecimal cannot represent infinity.");
     }
 
     @Override
-    public HardMediumSoftBigDecimalScore buildPessimisticBound(InitializingScoreTrend initializingScoreTrend, HardMediumSoftBigDecimalScore score) {
+    public HardMediumSoftBigDecimalScore buildPessimisticBound(InitializingScoreTrend initializingScoreTrend,
+            HardMediumSoftBigDecimalScore score) {
         // TODO https://issues.redhat.com/browse/PLANNER-232
         throw new UnsupportedOperationException("PLANNER-232: BigDecimalScore does not support bounds" +
                 " because a BigDecimal cannot represent infinity.");
     }
 
+    @Override
+    public HardMediumSoftBigDecimalScore divideBySanitizedDivisor(HardMediumSoftBigDecimalScore dividend,
+            HardMediumSoftBigDecimalScore divisor) {
+        int dividendInitScore = dividend.getInitScore();
+        int divisorInitScore = sanitize(divisor.getInitScore());
+        BigDecimal dividendHardScore = dividend.getHardScore();
+        BigDecimal divisorHardScore = sanitize(divisor.getHardScore());
+        BigDecimal dividendMediumScore = dividend.getMediumScore();
+        BigDecimal divisorMediumScore = sanitize(divisor.getMediumScore());
+        BigDecimal dividendSoftScore = dividend.getSoftScore();
+        BigDecimal divisorSoftScore = sanitize(divisor.getSoftScore());
+        return fromLevelNumbers(
+                divide(dividendInitScore, divisorInitScore),
+                new Number[] {
+                        divide(dividendHardScore, divisorHardScore),
+                        divide(dividendMediumScore, divisorMediumScore),
+                        divide(dividendSoftScore, divisorSoftScore)
+                });
+    }
 }

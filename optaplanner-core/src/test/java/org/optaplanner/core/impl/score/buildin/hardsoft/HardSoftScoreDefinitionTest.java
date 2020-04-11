@@ -99,4 +99,19 @@ public class HardSoftScoreDefinitionTest extends AbstractScoreDefinitionTest {
         assertEquals(Integer.MIN_VALUE, pessimisticBound.getSoftScore());
     }
 
+    @Test
+    public void divideBySanitizedDivisor() {
+        HardSoftScoreDefinition scoreDefinition = new HardSoftScoreDefinition();
+        HardSoftScore dividend = scoreDefinition.fromLevelNumbers(2, new Number[] {0, 10});
+        HardSoftScore zeroDivisor = scoreDefinition.getZeroScore();
+        assertThat(scoreDefinition.divideBySanitizedDivisor(dividend, zeroDivisor))
+                .isEqualTo(dividend);
+        HardSoftScore oneDivisor = scoreDefinition.getOneSoftestScore();
+        assertThat(scoreDefinition.divideBySanitizedDivisor(dividend, oneDivisor))
+                .isEqualTo(dividend);
+        HardSoftScore tenDivisor = scoreDefinition.fromLevelNumbers(10, new Number[] {10, 10});
+        assertThat(scoreDefinition.divideBySanitizedDivisor(dividend, tenDivisor))
+                .isEqualTo(scoreDefinition.fromLevelNumbers(0, new Number[] {0, 1}));
+    }
+
 }

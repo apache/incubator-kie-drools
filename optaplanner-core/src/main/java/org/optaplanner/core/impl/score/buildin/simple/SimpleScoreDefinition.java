@@ -92,4 +92,16 @@ public class SimpleScoreDefinition extends AbstractScoreDefinition<SimpleScore> 
                 trendLevels[0] == InitializingScoreTrendLevel.ONLY_UP ? score.getScore() : Integer.MIN_VALUE);
     }
 
+    @Override
+    public SimpleScore divideBySanitizedDivisor(SimpleScore dividend, SimpleScore divisor) {
+        int dividendInitScore = dividend.getInitScore();
+        int divisorInitScore = sanitize(divisor.getInitScore());
+        int dividendScore = dividend.getScore();
+        int divisorScore = sanitize(divisor.getScore());
+        return fromLevelNumbers(
+                divide(dividendInitScore, divisorInitScore),
+                new Number[] {
+                        divide(dividendScore, divisorScore)
+                });
+    }
 }

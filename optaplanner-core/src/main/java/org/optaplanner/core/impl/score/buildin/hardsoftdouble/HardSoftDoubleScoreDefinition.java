@@ -86,7 +86,8 @@ public class HardSoftDoubleScoreDefinition extends AbstractFeasibilityScoreDefin
     }
 
     @Override
-    public HardSoftDoubleScore buildOptimisticBound(InitializingScoreTrend initializingScoreTrend, HardSoftDoubleScore score) {
+    public HardSoftDoubleScore buildOptimisticBound(InitializingScoreTrend initializingScoreTrend,
+            HardSoftDoubleScore score) {
         InitializingScoreTrendLevel[] trendLevels = initializingScoreTrend.getTrendLevels();
         return HardSoftDoubleScore.ofUninitialized(0,
                 trendLevels[0] == InitializingScoreTrendLevel.ONLY_DOWN ? score.getHardScore() : Double.POSITIVE_INFINITY,
@@ -94,11 +95,27 @@ public class HardSoftDoubleScoreDefinition extends AbstractFeasibilityScoreDefin
     }
 
     @Override
-    public HardSoftDoubleScore buildPessimisticBound(InitializingScoreTrend initializingScoreTrend, HardSoftDoubleScore score) {
+    public HardSoftDoubleScore buildPessimisticBound(InitializingScoreTrend initializingScoreTrend,
+            HardSoftDoubleScore score) {
         InitializingScoreTrendLevel[] trendLevels = initializingScoreTrend.getTrendLevels();
         return HardSoftDoubleScore.ofUninitialized(0,
                 trendLevels[0] == InitializingScoreTrendLevel.ONLY_UP ? score.getHardScore() : Double.NEGATIVE_INFINITY,
                 trendLevels[1] == InitializingScoreTrendLevel.ONLY_UP ? score.getSoftScore() : Double.NEGATIVE_INFINITY);
     }
 
+    @Override
+    public HardSoftDoubleScore divideBySanitizedDivisor(HardSoftDoubleScore dividend, HardSoftDoubleScore divisor) {
+        int dividendInitScore = dividend.getInitScore();
+        int divisorInitScore = sanitize(divisor.getInitScore());
+        double dividendHardScore = dividend.getHardScore();
+        double divisorHardScore = sanitize(divisor.getHardScore());
+        double dividendSoftScore = dividend.getSoftScore();
+        double divisorSoftScore = sanitize(divisor.getSoftScore());
+        return fromLevelNumbers(
+                divide(dividendInitScore, divisorInitScore),
+                new Number[] {
+                        divide(dividendHardScore, divisorHardScore),
+                        divide(dividendSoftScore, divisorSoftScore)
+                });
+    }
 }

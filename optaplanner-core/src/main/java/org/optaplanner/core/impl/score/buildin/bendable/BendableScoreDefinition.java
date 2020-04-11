@@ -17,6 +17,7 @@
 package org.optaplanner.core.impl.score.buildin.bendable;
 
 import java.util.Arrays;
+import java.util.stream.IntStream;
 
 import org.optaplanner.core.api.score.buildin.bendable.BendableScore;
 import org.optaplanner.core.api.score.buildin.bendable.BendableScoreHolder;
@@ -144,4 +145,19 @@ public class BendableScoreDefinition extends AbstractBendableScoreDefinition<Ben
         return BendableScore.ofUninitialized(0, hardScores, softScores);
     }
 
+    @Override
+    public BendableScore divideBySanitizedDivisor(BendableScore dividend, BendableScore divisor) {
+        int dividendInitScore = dividend.getInitScore();
+        int divisorInitScore = sanitize(divisor.getInitScore());
+        int[] hardScores = new int[hardLevelsSize];
+        for (int i = 0; i < hardLevelsSize; i++) {
+            hardScores[i] = divide(dividend.getHardScore(i), sanitize(divisor.getHardScore(i)));
+        }
+        int[] softScores = new int[softLevelsSize];
+        for (int i = 0; i < softLevelsSize; i++) {
+            softScores[i] = divide(dividend.getSoftScore(i), sanitize(divisor.getSoftScore(i)));
+        }
+        int[] levels = IntStream.concat(Arrays.stream(hardScores), Arrays.stream(softScores)).toArray();
+        return createScoreUninitialized(divide(dividendInitScore, divisorInitScore), levels);
+    }
 }

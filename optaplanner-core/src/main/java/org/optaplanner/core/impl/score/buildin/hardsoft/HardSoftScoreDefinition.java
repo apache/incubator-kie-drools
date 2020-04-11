@@ -94,4 +94,19 @@ public class HardSoftScoreDefinition extends AbstractFeasibilityScoreDefinition<
                 trendLevels[1] == InitializingScoreTrendLevel.ONLY_UP ? score.getSoftScore() : Integer.MIN_VALUE);
     }
 
+    @Override
+    public HardSoftScore divideBySanitizedDivisor(HardSoftScore dividend, HardSoftScore divisor) {
+        int dividendInitScore = dividend.getInitScore();
+        int divisorInitScore = sanitize(divisor.getInitScore());
+        int dividendHardScore = dividend.getHardScore();
+        int divisorHardScore = sanitize(divisor.getHardScore());
+        int dividendSoftScore = dividend.getSoftScore();
+        int divisorSoftScore = sanitize(divisor.getSoftScore());
+        return fromLevelNumbers(
+                divide(dividendInitScore, divisorInitScore),
+                new Number[] {
+                        divide(dividendHardScore, divisorHardScore),
+                        divide(dividendSoftScore, divisorSoftScore)
+                });
+    }
 }

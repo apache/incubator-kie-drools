@@ -16,6 +16,8 @@
 
 package org.optaplanner.core.impl.score.buildin.hardmediumsoftbigdecimal;
 
+import java.math.BigDecimal;
+
 import org.junit.Test;
 import org.optaplanner.core.api.score.buildin.hardmediumsoftbigdecimal.HardMediumSoftBigDecimalScore;
 
@@ -53,5 +55,23 @@ public class HardMediumSoftBigDecimalScoreDefinitionTest {
     }
 
     // Optimistic and pessimistic bounds are currently not supported for this score definition
+
+    @Test
+    public void divideBySanitizedDivisor() {
+        HardMediumSoftBigDecimalScoreDefinition scoreDefinition = new HardMediumSoftBigDecimalScoreDefinition();
+        HardMediumSoftBigDecimalScore dividend = scoreDefinition.fromLevelNumbers(2,
+                new Number[] {BigDecimal.ZERO, BigDecimal.ONE, BigDecimal.TEN});
+        HardMediumSoftBigDecimalScore zeroDivisor = scoreDefinition.getZeroScore();
+        assertThat(scoreDefinition.divideBySanitizedDivisor(dividend, zeroDivisor))
+                .isEqualTo(dividend);
+        HardMediumSoftBigDecimalScore oneDivisor = scoreDefinition.getOneSoftestScore();
+        assertThat(scoreDefinition.divideBySanitizedDivisor(dividend, oneDivisor))
+                .isEqualTo(dividend);
+        HardMediumSoftBigDecimalScore tenDivisor = scoreDefinition.fromLevelNumbers(10,
+                new Number[] {BigDecimal.TEN, BigDecimal.TEN, BigDecimal.TEN});
+        assertThat(scoreDefinition.divideBySanitizedDivisor(dividend, tenDivisor))
+                .isEqualTo(scoreDefinition.fromLevelNumbers(0,
+                        new Number[] {BigDecimal.ZERO, BigDecimal.ZERO, BigDecimal.ONE}));
+    }
 
 }

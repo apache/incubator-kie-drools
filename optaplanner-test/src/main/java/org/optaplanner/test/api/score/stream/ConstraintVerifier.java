@@ -56,7 +56,7 @@ public final class ConstraintVerifier<Solution_> {
         return new ConstraintVerifier<>(solutionDescriptor);
     }
 
-    SolutionDescriptor<Solution_> getSolutionDescriptor() {
+    protected SolutionDescriptor<Solution_> getSolutionDescriptor() {
         return solutionDescriptor;
     }
 

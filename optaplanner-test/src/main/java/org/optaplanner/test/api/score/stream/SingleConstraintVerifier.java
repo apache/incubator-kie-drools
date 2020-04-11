@@ -29,7 +29,7 @@ import org.optaplanner.core.impl.score.director.stream.ConstraintStreamScoreDire
 public final class SingleConstraintVerifier<Solution_> extends AbstractConstraintVerifier<Solution_,
         SingleConstraintAssertion<Solution_>, SingleConstraintVerifier<Solution_>> {
 
-    SingleConstraintVerifier(ConstraintVerifier<Solution_> constraintVerifier,
+    protected SingleConstraintVerifier(ConstraintVerifier<Solution_> constraintVerifier,
             Function<ConstraintFactory, Constraint> constraintFunction,
             ConstraintStreamImplType constraintStreamImplType) {
         super(new ConstraintStreamScoreDirectorFactory<>(constraintVerifier.getSolutionDescriptor(),

@@ -99,4 +99,19 @@ public class BendableBigDecimalScoreDefinitionTest {
 
     // Optimistic and pessimistic bounds are currently not supported for this score definition
 
+    @Test
+    public void divideBySanitizedDivisor() {
+        BendableBigDecimalScoreDefinition scoreDefinition = new BendableBigDecimalScoreDefinition(1, 1);
+        BendableBigDecimalScore dividend = scoreDefinition.createScoreUninitialized(2, BigDecimal.ZERO, BigDecimal.TEN);
+        BendableBigDecimalScore zeroDivisor = scoreDefinition.getZeroScore();
+        assertThat(scoreDefinition.divideBySanitizedDivisor(dividend, zeroDivisor))
+                .isEqualTo(dividend);
+        BendableBigDecimalScore oneDivisor = scoreDefinition.getOneSoftestScore();
+        assertThat(scoreDefinition.divideBySanitizedDivisor(dividend, oneDivisor))
+                .isEqualTo(dividend);
+        BendableBigDecimalScore tenDivisor = scoreDefinition.createScoreUninitialized(10, BigDecimal.TEN, BigDecimal.TEN);
+        assertThat(scoreDefinition.divideBySanitizedDivisor(dividend, tenDivisor))
+                .isEqualTo(scoreDefinition.createScoreUninitialized(0, BigDecimal.ZERO, BigDecimal.ONE));
+    }
+
 }

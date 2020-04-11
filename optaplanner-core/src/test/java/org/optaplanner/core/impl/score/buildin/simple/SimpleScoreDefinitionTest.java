@@ -89,4 +89,19 @@ public class SimpleScoreDefinitionTest {
         assertEquals(Integer.MIN_VALUE, pessimisticBound.getScore());
     }
 
+    @Test
+    public void divideBySanitizedDivisor() {
+        SimpleScoreDefinition scoreDefinition = new SimpleScoreDefinition();
+        SimpleScore dividend = scoreDefinition.fromLevelNumbers(2, new Number[] {10});
+        SimpleScore zeroDivisor = scoreDefinition.getZeroScore();
+        assertThat(scoreDefinition.divideBySanitizedDivisor(dividend, zeroDivisor))
+                .isEqualTo(dividend);
+        SimpleScore oneDivisor = scoreDefinition.getOneSoftestScore();
+        assertThat(scoreDefinition.divideBySanitizedDivisor(dividend, oneDivisor))
+                .isEqualTo(dividend);
+        SimpleScore tenDivisor = scoreDefinition.fromLevelNumbers(10, new Number[] {10});
+        assertThat(scoreDefinition.divideBySanitizedDivisor(dividend, tenDivisor))
+                .isEqualTo(scoreDefinition.fromLevelNumbers(0, new Number[] {1}));
+    }
+
 }

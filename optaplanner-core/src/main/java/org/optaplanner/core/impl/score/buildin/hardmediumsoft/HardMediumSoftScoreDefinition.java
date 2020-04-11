@@ -85,7 +85,8 @@ public class HardMediumSoftScoreDefinition extends AbstractFeasibilityScoreDefin
     }
 
     @Override
-    public HardMediumSoftScore buildOptimisticBound(InitializingScoreTrend initializingScoreTrend, HardMediumSoftScore score) {
+    public HardMediumSoftScore buildOptimisticBound(InitializingScoreTrend initializingScoreTrend,
+            HardMediumSoftScore score) {
         InitializingScoreTrendLevel[] trendLevels = initializingScoreTrend.getTrendLevels();
         return HardMediumSoftScore.ofUninitialized(0,
                 trendLevels[0] == InitializingScoreTrendLevel.ONLY_DOWN ? score.getHardScore() : Integer.MAX_VALUE,
@@ -94,7 +95,8 @@ public class HardMediumSoftScoreDefinition extends AbstractFeasibilityScoreDefin
     }
 
     @Override
-    public HardMediumSoftScore buildPessimisticBound(InitializingScoreTrend initializingScoreTrend, HardMediumSoftScore score) {
+    public HardMediumSoftScore buildPessimisticBound(InitializingScoreTrend initializingScoreTrend,
+            HardMediumSoftScore score) {
         InitializingScoreTrendLevel[] trendLevels = initializingScoreTrend.getTrendLevels();
         return HardMediumSoftScore.ofUninitialized(0,
                 trendLevels[0] == InitializingScoreTrendLevel.ONLY_UP ? score.getHardScore() : Integer.MIN_VALUE,
@@ -102,4 +104,22 @@ public class HardMediumSoftScoreDefinition extends AbstractFeasibilityScoreDefin
                 trendLevels[2] == InitializingScoreTrendLevel.ONLY_UP ? score.getSoftScore() : Integer.MIN_VALUE);
     }
 
+    @Override
+    public HardMediumSoftScore divideBySanitizedDivisor(HardMediumSoftScore dividend, HardMediumSoftScore divisor) {
+        int dividendInitScore = dividend.getInitScore();
+        int divisorInitScore = sanitize(divisor.getInitScore());
+        int dividendHardScore = dividend.getHardScore();
+        int divisorHardScore = sanitize(divisor.getHardScore());
+        int dividendMediumScore = dividend.getMediumScore();
+        int divisorMediumScore = sanitize(divisor.getMediumScore());
+        int dividendSoftScore = dividend.getSoftScore();
+        int divisorSoftScore = sanitize(divisor.getSoftScore());
+        return fromLevelNumbers(
+                divide(dividendInitScore, divisorInitScore),
+                new Number[] {
+                        divide(dividendHardScore, divisorHardScore),
+                        divide(dividendMediumScore, divisorMediumScore),
+                        divide(dividendSoftScore, divisorSoftScore)
+                });
+    }
 }

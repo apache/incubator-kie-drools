@@ -17,6 +17,7 @@
 package org.optaplanner.core.impl.score.buildin.bendablelong;
 
 import java.util.Arrays;
+import java.util.stream.LongStream;
 
 import org.optaplanner.core.api.score.buildin.bendablelong.BendableLongScore;
 import org.optaplanner.core.api.score.buildin.bendablelong.BendableLongScoreHolder;
@@ -113,7 +114,8 @@ public class BendableLongScoreDefinition extends AbstractBendableScoreDefinition
     }
 
     @Override
-    public BendableLongScore buildOptimisticBound(InitializingScoreTrend initializingScoreTrend, BendableLongScore score) {
+    public BendableLongScore buildOptimisticBound(InitializingScoreTrend initializingScoreTrend,
+            BendableLongScore score) {
         InitializingScoreTrendLevel[] trendLevels = initializingScoreTrend.getTrendLevels();
         long[] hardScores = new long[hardLevelsSize];
         for (int i = 0; i < hardLevelsSize; i++) {
@@ -129,7 +131,8 @@ public class BendableLongScoreDefinition extends AbstractBendableScoreDefinition
     }
 
     @Override
-    public BendableLongScore buildPessimisticBound(InitializingScoreTrend initializingScoreTrend, BendableLongScore score) {
+    public BendableLongScore buildPessimisticBound(InitializingScoreTrend initializingScoreTrend,
+            BendableLongScore score) {
         InitializingScoreTrendLevel[] trendLevels = initializingScoreTrend.getTrendLevels();
         long[] hardScores = new long[hardLevelsSize];
         for (int i = 0; i < hardLevelsSize; i++) {
@@ -144,4 +147,19 @@ public class BendableLongScoreDefinition extends AbstractBendableScoreDefinition
         return BendableLongScore.ofUninitialized(0, hardScores, softScores);
     }
 
+    @Override
+    public BendableLongScore divideBySanitizedDivisor(BendableLongScore dividend, BendableLongScore divisor) {
+        int dividendInitScore = dividend.getInitScore();
+        int divisorInitScore = sanitize(divisor.getInitScore());
+        long[] hardScores = new long[hardLevelsSize];
+        for (int i = 0; i < hardLevelsSize; i++) {
+            hardScores[i] = divide(dividend.getHardScore(i), sanitize(divisor.getHardScore(i)));
+        }
+        long[] softScores = new long[softLevelsSize];
+        for (int i = 0; i < softLevelsSize; i++) {
+            softScores[i] = divide(dividend.getSoftScore(i), sanitize(divisor.getSoftScore(i)));
+        }
+        long[] levels = LongStream.concat(Arrays.stream(hardScores), Arrays.stream(softScores)).toArray();
+        return createScoreUninitialized(divide(dividendInitScore, divisorInitScore), levels);
+    }
 }

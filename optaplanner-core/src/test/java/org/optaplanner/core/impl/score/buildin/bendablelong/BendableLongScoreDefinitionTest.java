@@ -150,4 +150,20 @@ public class BendableLongScoreDefinitionTest {
         assertEquals(Long.MIN_VALUE, pessimisticBound.getSoftScore(2));
     }
 
+    @Test
+    public void divideBySanitizedDivisor() {
+        BendableLongScoreDefinition scoreDefinition = new BendableLongScoreDefinition(1, 1);
+        BendableLongScore dividend = scoreDefinition.createScoreUninitialized(2, 0, 10);
+        BendableLongScore zeroDivisor = scoreDefinition.getZeroScore();
+        assertThat(scoreDefinition.divideBySanitizedDivisor(dividend, zeroDivisor))
+                .isEqualTo(dividend);
+        BendableLongScore oneDivisor = scoreDefinition.getOneSoftestScore();
+        assertThat(scoreDefinition.divideBySanitizedDivisor(dividend, oneDivisor))
+                .isEqualTo(dividend);
+        BendableLongScore tenDivisor = scoreDefinition.getOneSoftestScore();
+        assertThat(scoreDefinition.divideBySanitizedDivisor(dividend, tenDivisor))
+                .isEqualTo(scoreDefinition.createScoreUninitialized(2, 0, 10));
+    }
+
+
 }

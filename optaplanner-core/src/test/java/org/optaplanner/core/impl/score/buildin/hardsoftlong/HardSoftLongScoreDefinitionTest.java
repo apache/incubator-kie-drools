@@ -98,4 +98,19 @@ public class HardSoftLongScoreDefinitionTest {
         assertEquals(Long.MIN_VALUE, pessimisticBound.getSoftScore());
     }
 
+    @Test
+    public void divideBySanitizedDivisor() {
+        HardSoftLongScoreDefinition scoreDefinition = new HardSoftLongScoreDefinition();
+        HardSoftLongScore dividend = scoreDefinition.fromLevelNumbers(2, new Number[] {0L, 10L});
+        HardSoftLongScore zeroDivisor = scoreDefinition.getZeroScore();
+        assertThat(scoreDefinition.divideBySanitizedDivisor(dividend, zeroDivisor))
+                .isEqualTo(dividend);
+        HardSoftLongScore oneDivisor = scoreDefinition.getOneSoftestScore();
+        assertThat(scoreDefinition.divideBySanitizedDivisor(dividend, oneDivisor))
+                .isEqualTo(dividend);
+        HardSoftLongScore tenDivisor = scoreDefinition.fromLevelNumbers(10, new Number[] {10L, 10L});
+        assertThat(scoreDefinition.divideBySanitizedDivisor(dividend, tenDivisor))
+                .isEqualTo(scoreDefinition.fromLevelNumbers(0, new Number[] {0L, 1L}));
+    }
+
 }

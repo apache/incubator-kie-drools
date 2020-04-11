@@ -16,6 +16,8 @@
 
 package org.optaplanner.core.impl.score.buildin.simplebigdecimal;
 
+import java.math.BigDecimal;
+
 import org.junit.Test;
 import org.optaplanner.core.api.score.buildin.simplebigdecimal.SimpleBigDecimalScore;
 
@@ -48,5 +50,20 @@ public class SimpleBigDecimalScoreDefinitionTest {
     }
 
     // Optimistic and pessimistic bounds are currently not supported for this score definition
+
+    @Test
+    public void divideBySanitizedDivisor() {
+        SimpleBigDecimalScoreDefinition scoreDefinition = new SimpleBigDecimalScoreDefinition();
+        SimpleBigDecimalScore dividend = scoreDefinition.fromLevelNumbers(2, new Number[] {BigDecimal.TEN});
+        SimpleBigDecimalScore zeroDivisor = scoreDefinition.getZeroScore();
+        assertThat(scoreDefinition.divideBySanitizedDivisor(dividend, zeroDivisor))
+                .isEqualTo(dividend);
+        SimpleBigDecimalScore oneDivisor = scoreDefinition.getOneSoftestScore();
+        assertThat(scoreDefinition.divideBySanitizedDivisor(dividend, oneDivisor))
+                .isEqualTo(dividend);
+        SimpleBigDecimalScore tenDivisor = scoreDefinition.fromLevelNumbers(10, new Number[] {BigDecimal.TEN});
+        assertThat(scoreDefinition.divideBySanitizedDivisor(dividend, tenDivisor))
+                .isEqualTo(scoreDefinition.fromLevelNumbers(0, new Number[] {BigDecimal.ONE}));
+    }
 
 }
