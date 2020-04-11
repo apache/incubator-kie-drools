@@ -41,7 +41,7 @@ public class VehicleRoutingConstraintProvider implements ConstraintProvider {
     // Hard constraints
     // ************************************************************************
 
-    public Constraint vehicleCapacity(ConstraintFactory factory) {
+    protected Constraint vehicleCapacity(ConstraintFactory factory) {
         return factory.from(Customer.class)
                 .groupBy(Customer::getVehicle, sum(Customer::getDemand))
                 .filter((vehicle, demand) -> demand > vehicle.getCapacity())
