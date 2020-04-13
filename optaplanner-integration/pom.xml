@@ -22,6 +22,10 @@
   </description>
   <url>https://www.optaplanner.org</url>
 
+  <properties>
+    <format.directory>${project.basedir}/../../ide-configuration</format.directory>
+  </properties>
+
   <modules>
     <module>optaplanner-spring-boot-autoconfigure</module>
     <module>optaplanner-spring-boot-starter</module>

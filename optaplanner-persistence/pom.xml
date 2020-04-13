@@ -22,6 +22,10 @@
   </description>
   <url>https://www.optaplanner.org</url>
 
+  <properties>
+    <format.directory>${project.basedir}/../../ide-configuration</format.directory>
+  </properties>
+
   <modules>
     <module>optaplanner-persistence-common</module>
     <module>optaplanner-persistence-xstream</module>
