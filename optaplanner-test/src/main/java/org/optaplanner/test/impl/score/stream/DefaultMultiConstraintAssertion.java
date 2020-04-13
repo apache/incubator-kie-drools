@@ -14,46 +14,35 @@
  * limitations under the License.
  */
 
-package org.optaplanner.test.api.score.stream;
+package org.optaplanner.test.impl.score.stream;
 
 import org.optaplanner.core.api.score.Score;
 import org.optaplanner.core.api.score.stream.ConstraintProvider;
+import org.optaplanner.test.api.score.stream.MultiConstraintAssertion;
 
-public final class ConstraintProviderAssertion<Solution_> extends AbstractAssertion<Solution_,
-        ConstraintProviderAssertion<Solution_>, ConstraintProviderVerifier<Solution_>> {
+public final class DefaultMultiConstraintAssertion<Solution_>
+        implements MultiConstraintAssertion {
 
+    private final ConstraintProvider constraintProvider;
     private final Score<?> actualScore;
 
-    protected ConstraintProviderAssertion(ConstraintProviderVerifier<Solution_> constraintProviderVerifier,
+    protected DefaultMultiConstraintAssertion(ConstraintProvider constraintProvider,
             Score<?> actualScore) {
-        super(constraintProviderVerifier);
+        this.constraintProvider = constraintProvider;
         this.actualScore = actualScore;
     }
 
-    /**
-     * Asserts that the {@link ConstraintProvider} under test, given a set of facts, results in a specific {@link Score}.
-     *
-     * @param score total score calculated for the given set of facts
-     * @param message optional description of the scenario being asserted
-     * @throws AssertionError when the expected score does not match the calculated score
-     */
+    @Override
     public final void scores(Score<?> score, String message) {
         if (actualScore.equals(score)) {
             return;
         }
-        Class<?> constraintProviderClass = getParentConstraintVerifier().getConstraintProvider().getClass();
+        Class<?> constraintProviderClass = constraintProvider.getClass();
         String expectation = message == null ? "Broken expectation." : message;
         throw new AssertionError(expectation + System.lineSeparator() +
                 "    Constraint provider: " + constraintProviderClass + System.lineSeparator() +
                 "         Expected score: " + score + " (" + score.getClass() + ")" + System.lineSeparator() +
                 "           Actual score: " + actualScore + " (" + actualScore.getClass() + ")");
-    }
-
-    /**
-     * As defined by {@link #scores(Score, String)} with a null message.
-     */
-    public final void scores(Score<?> score) {
-        scores(score, null);
     }
 
 }

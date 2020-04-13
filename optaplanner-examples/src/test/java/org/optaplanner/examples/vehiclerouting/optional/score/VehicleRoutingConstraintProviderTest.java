@@ -47,7 +47,7 @@ public class VehicleRoutingConstraintProviderTest {
 
         constraintVerifier.verifyThat(VehicleRoutingConstraintProvider::vehicleCapacity)
                 .given(vehicleA, customer1)
-                .hasNoImpact();
+                .penalizesBy(0);
     }
 
     @Test
@@ -64,7 +64,7 @@ public class VehicleRoutingConstraintProviderTest {
 
         constraintVerifier.verifyThat(VehicleRoutingConstraintProvider::vehicleCapacity)
                 .given(vehicleA, customer1, customer2)
-                .penalizesBy(20L);
+                .penalizesBy(20);
     }
 
     @Test

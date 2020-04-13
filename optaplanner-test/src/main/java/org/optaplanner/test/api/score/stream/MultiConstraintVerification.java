@@ -16,18 +16,20 @@
 
 package org.optaplanner.test.api.score.stream;
 
-public abstract class AbstractAssertion<Solution_,
-        Assertion_ extends AbstractAssertion<Solution_, Assertion_, Verifier_>,
-        Verifier_ extends AbstractConstraintVerifier<Solution_, Assertion_, Verifier_>> {
+public interface MultiConstraintVerification<Solution_> {
 
-    private final Verifier_ parentConstraintVerifier;
+    /**
+     * As defined by {@link SingleConstraintVerification#given(Object...)}.
+     * @param facts never null, at least one
+     * @return never null
+     */
+    MultiConstraintAssertion given(Object... facts);
 
-    protected AbstractAssertion(Verifier_ constraintVerifier) {
-        this.parentConstraintVerifier = constraintVerifier;
-    }
-
-    protected final Verifier_ getParentConstraintVerifier() {
-        return parentConstraintVerifier;
-    }
+    /**
+     * As defined by {@link SingleConstraintVerification#givenSolution(Object)}.
+     * @param solution never null
+     * @return never null
+     */
+    MultiConstraintAssertion givenSolution(Solution_ solution);
 
 }

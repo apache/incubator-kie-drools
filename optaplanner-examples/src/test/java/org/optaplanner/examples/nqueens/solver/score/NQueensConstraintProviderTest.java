@@ -45,7 +45,7 @@ public class NQueensConstraintProviderTest {
         Queen queen1 = new Queen(0, row1, column1);
         constraintVerifier.verifyThat(NQueensConstraintProvider::horizontalConflict)
                 .given(queen1)
-                .hasNoImpact();
+                .penalizesBy(0);
     }
 
     @Test
@@ -72,7 +72,7 @@ public class NQueensConstraintProviderTest {
         Queen queen1 = new Queen(0, row1, column1);
         constraintVerifier.verifyThat(NQueensConstraintProvider::ascendingDiagonalConflict)
                 .given(queen1)
-                .hasNoImpact();
+                .penalizesBy(0);
     }
 
     @Test
@@ -99,7 +99,7 @@ public class NQueensConstraintProviderTest {
         Queen queen1 = new Queen(0, row1, column1);
         constraintVerifier.verifyThat(NQueensConstraintProvider::descendingDiagonalConflict)
                 .given(queen1)
-                .hasNoImpact();
+                .penalizesBy(0);
     }
 
     @Test
@@ -131,7 +131,7 @@ public class NQueensConstraintProviderTest {
     @Test
     public void givenSolutionMultipleConstraints() throws IOException {
         constraintVerifier.verifyThat()
-                .given(readSolution("256queensScore-30.xml"))
+                .givenSolution(readSolution("256queensScore-30.xml"))
                 .scores(SimpleScore.of(-30));
     }
 
