@@ -56,6 +56,7 @@ public class ServerlessWorkflowFactory {
     private static final String DEFAULT_VAR = "Var";
     private static final String JSON_NODE = "com.fasterxml.jackson.databind.JsonNode";
     private static final String DEFAULT_WORKFLOW_VAR = "workflowdata";
+    private static final String UNIQUE_ID_PARAM = "UniqueId";
 
     public RuleFlowProcess createProcess(Workflow workflow) {
         RuleFlowProcess process = new RuleFlowProcess();
@@ -174,6 +175,20 @@ public class ServerlessWorkflowFactory {
         subProcessNode.setName(name);
         subProcessNode.setProcessId(calledId);
         subProcessNode.setWaitForCompletion(waitForCompletion);
+        subProcessNode.setIndependent(true);
+
+        VariableScope variableScope = new VariableScope();
+        subProcessNode.addContext(variableScope);
+        subProcessNode.setDefaultContext(variableScope);
+
+        Map<String, String> inputOtuputTypes = new HashMap<>();
+        inputOtuputTypes.put(DEFAULT_WORKFLOW_VAR, JSON_NODE);
+        subProcessNode.setMetaData("BPMN.InputTypes", inputOtuputTypes);
+        subProcessNode.setMetaData("BPMN.OutputTypes", inputOtuputTypes);
+
+        // parent and sub processes have process var "workflowdata"
+        subProcessNode.addInMapping(DEFAULT_WORKFLOW_VAR, DEFAULT_WORKFLOW_VAR);
+        subProcessNode.addOutMapping(DEFAULT_WORKFLOW_VAR, DEFAULT_WORKFLOW_VAR);
 
         nodeContainer.addNode(subProcessNode);
 
@@ -269,21 +284,43 @@ public class ServerlessWorkflowFactory {
         subProcessNode.addContext(variableScope);
         subProcessNode.setDefaultContext(variableScope);
         subProcessNode.setAutoComplete(true);
-
         nodeContainer.addNode(subProcessNode);
 
         return subProcessNode;
     }
 
-    public Split xorSplitNode(long id, String name, NodeContainer nodeContainer) {
+
+    public Split splitNode(long id, String name, int type, NodeContainer nodeContainer) {
+        // 0 = TYPE_UNDEFINED
+        // 1 = TYPE_AND
+        // 2 = TYPE_XOR
+        // 3 = TYPE_OR
+        // 4 = TYPE_XAND
         Split split = new Split();
         split.setId(id);
         split.setName(name);
-        split.setType(2);
-        split.setMetaData("UniqueId", Long.toString(id));
+        split.setType(type);
+        split.setMetaData(UNIQUE_ID_PARAM, Long.toString(id));
 
         nodeContainer.addNode(split);
         return split;
+    }
+
+    public Join joinNode(long id, String name, int type, NodeContainer nodeContainer) {
+        // 0 = TYPE_UNDEFINED
+        // 1 = TYPE_AND
+        // 2 = TYPE_XOR
+        // 3 = TYPE_DISCRIMINATOR
+        // 4 = TYPE_N_OF_M
+        // 5 = TYPE_OR
+        Join join = new Join();
+        join.setId(id);
+        join.setName(name);
+        join.setType(type);
+        join.setMetaData(UNIQUE_ID_PARAM, Long.toString(id));
+
+        nodeContainer.addNode(join);
+        return join;
     }
 
     public ConstraintImpl splitConstraint(String name, String type, String dialect, String constraint, int priority, boolean isDefault) {
@@ -304,7 +341,7 @@ public class ServerlessWorkflowFactory {
         ConnectionImpl connection = new ConnectionImpl(
                 from, org.jbpm.workflow.core.Node.CONNECTION_DEFAULT_TYPE,
                 to, org.jbpm.workflow.core.Node.CONNECTION_DEFAULT_TYPE);
-        connection.setMetaData("UniqueId", uniqueId);
+        connection.setMetaData(UNIQUE_ID_PARAM, uniqueId);
     }
 
     public void validate(RuleFlowProcess process) {

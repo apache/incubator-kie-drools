@@ -1,0 +1,22 @@
+---
+id: parallelworkflow
+name: parallel-wf
+version: '1.0'
+states:
+  - name: ExecInParallel
+    type: PARALLEL
+    start:
+      kind: DEFAULT
+    branches:
+      - name: branch1
+        states:
+          - name: Branch1SubFlow
+            type: SUBFLOW
+            workflowId: branch1abc
+      - name: branch2
+        states:
+          - name: Branch2SubFlow
+            type: SUBFLOW
+            workflowId: branch2abc
+    end:
+      kind: DEFAULT

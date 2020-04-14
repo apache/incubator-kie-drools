@@ -1,16 +1,16 @@
 {
-  "id": "calledsubflow",
-  "name": "calledsubflow",
+  "id": "branch1subflow",
+  "name": "branch1subflow",
   "version": "1.0",
   "states":[
     {
-      "name":"InjectTestData",
+      "name":"InjectTestData1",
       "type":"RELAY",
       "start": {
         "kind": "DEFAULT"
       },
       "inject": {
-        "childData" : "childTestData"
+        "branch1data" : "testBranch1Data"
       },
       "end": {
         "kind": "TERMINATE"

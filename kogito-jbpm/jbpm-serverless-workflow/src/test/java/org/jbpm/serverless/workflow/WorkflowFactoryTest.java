@@ -123,6 +123,12 @@ public class WorkflowFactoryTest extends BaseServerlessTest {
         assertThat(subProcessNode).isNotNull();
         assertThat(subProcessNode.getName()).isEqualTo("subprocess");
         assertThat(subProcessNode.getProcessId()).isEqualTo("calledId");
+        assertThat(subProcessNode.getInMappings()).isNotNull();
+        assertThat(subProcessNode.getInMappings()).hasSize(1);
+        assertThat(subProcessNode.getOutMappings()).isNotNull();
+        assertThat(subProcessNode.getOutMappings()).hasSize(1);
+        assertThat(subProcessNode.getMetaData("BPMN.InputTypes")).isNotNull();
+        assertThat(subProcessNode.getMetaData("BPMN.OutputTypes")).isNotNull();
     }
 
     @Test
@@ -216,5 +222,31 @@ public class WorkflowFactoryTest extends BaseServerlessTest {
         assertThat(constraint.getConstraint()).isEqualTo("testConstraint");
         assertThat(constraint.getPriority()).isEqualTo(0);
         assertThat(constraint.isDefault()).isTrue();
+    }
+
+    @Test
+    public void testSplitNode() {
+        TestNodeContainer nodeContainer = new TestNodeContainer();
+        ServerlessWorkflowFactory factory = new ServerlessWorkflowFactory();
+
+        Split split = factory.splitNode(1L, "testSplit", Split.TYPE_XOR, nodeContainer);
+        assertThat(split).isNotNull();
+        assertThat(split.getId()).isEqualTo(1L);
+        assertThat(split.getName()).isEqualTo("testSplit");
+        assertThat(split.getType()).isEqualTo(Split.TYPE_XOR);
+        assertThat(split.getMetaData().get("UniqueId")).isEqualTo("1");
+    }
+
+    @Test
+    public void testJoinNode() {
+        TestNodeContainer nodeContainer = new TestNodeContainer();
+        ServerlessWorkflowFactory factory = new ServerlessWorkflowFactory();
+
+        Join join = factory.joinNode(1L, "testJoin", Join.TYPE_XOR, nodeContainer);
+        assertThat(join).isNotNull();
+        assertThat(join.getId()).isEqualTo(1L);
+        assertThat(join.getName()).isEqualTo("testJoin");
+        assertThat(join.getType()).isEqualTo(Join.TYPE_XOR);
+        assertThat(join.getMetaData().get("UniqueId")).isEqualTo("1");
     }
 }

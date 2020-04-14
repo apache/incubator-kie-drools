@@ -4,11 +4,21 @@
   "version": "1.0",
   "states":[
     {
-      "name":"SimpleSubFlow",
-      "type":"SUBFLOW",
+      "name":"InjectTestData",
+      "type":"RELAY",
       "start": {
         "kind": "DEFAULT"
       },
+      "inject": {
+        "parentData" : "parentTestData"
+      },
+      "transition": {
+        "nextState": "SimpleSubFlow"
+      }
+    },
+    {
+      "name":"SimpleSubFlow",
+      "type":"SUBFLOW",
       "workflowId": "calledsubflow",
       "waitForCompletion":true,
       "end": {

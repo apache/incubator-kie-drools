@@ -19,6 +19,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.JsonNode;
 import org.drools.core.util.StringUtils;
 import org.jbpm.serverless.workflow.api.Workflow;
+import org.jbpm.serverless.workflow.api.branches.Branch;
 import org.jbpm.serverless.workflow.api.choices.DefaultChoice;
 import org.jbpm.serverless.workflow.api.events.EventDefinition;
 import org.jbpm.serverless.workflow.api.interfaces.State;
@@ -26,6 +27,8 @@ import org.jbpm.serverless.workflow.api.mapper.BaseObjectMapper;
 import org.jbpm.serverless.workflow.api.mapper.JsonObjectMapper;
 import org.jbpm.serverless.workflow.api.mapper.YamlObjectMapper;
 import org.jbpm.serverless.workflow.api.states.DefaultState;
+import org.jbpm.serverless.workflow.api.states.ParallelState;
+import org.jbpm.serverless.workflow.api.states.SubflowState;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -89,12 +92,37 @@ public class ServerlessWorkflowUtils {
                     && !state.getType().equals(DefaultState.Type.DELAY)
                     && !state.getType().equals(DefaultState.Type.SUBFLOW)
                     && !state.getType().equals(DefaultState.Type.RELAY)
-                    && !state.getType().equals(DefaultState.Type.SWITCH)) {
+                    && !state.getType().equals(DefaultState.Type.SWITCH)
+                    && !state.getType().equals(DefaultState.Type.PARALLEL)) {
                 return false;
             }
+
+            if(state.getType().equals(DefaultState.Type.PARALLEL)) {
+                if(!supportedParallelState((ParallelState) state)) {
+                    LOGGER.warn("unsupported parallel state");
+                    return false;
+                }
+            }
+
         }
 
         return true;
+    }
+
+    public static boolean supportedParallelState(ParallelState parallelState) {
+        // currently branches must exist and states included can
+        // be single subflow states only
+        // this will be improved in future
+        if(parallelState.getBranches() != null && parallelState.getBranches().size() > 0) {
+            for(Branch branch : parallelState.getBranches()) {
+                if(branch.getStates() == null || branch.getStates().size() != 1 || !(branch.getStates().get(0) instanceof SubflowState)) {
+                    return false;
+                }
+            }
+            return true;
+        } else {
+            return false;
+        }
     }
 
     public static EventDefinition getWorkflowEventFor(Workflow workflow, String eventName) {

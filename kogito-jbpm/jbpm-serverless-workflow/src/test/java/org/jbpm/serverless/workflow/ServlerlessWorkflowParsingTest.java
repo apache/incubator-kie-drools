@@ -308,7 +308,7 @@ public class ServlerlessWorkflowParsingTest extends BaseServerlessTest {
     }
 
     @ParameterizedTest
-    @ValueSource(strings = {"/exec/switch-state.sw.json", "/exec//switch-state.sw.yml"})
+    @ValueSource(strings = {"/exec/switch-state.sw.json", "/exec/switch-state.sw.yml"})
     public void testSwitchWorkflow(String workflowLocation) throws Exception {
         RuleFlowProcess process = (RuleFlowProcess) getWorkflowParser(workflowLocation).parseWorkFlow(classpathResourceReader(workflowLocation));
         assertEquals("switchworkflow", process.getId());
@@ -345,6 +345,32 @@ public class ServlerlessWorkflowParsingTest extends BaseServerlessTest {
         }
 
         assertTrue(haveDefaultConstraint);
+    }
+
+    @ParameterizedTest
+    @ValueSource(strings = {"/exec/parallel-state.sw.json", "/exec/parallel-state.sw.yml"})
+    public void testParallelWorkflow(String workflowLocation) throws Exception {
+        RuleFlowProcess process = (RuleFlowProcess) getWorkflowParser(workflowLocation).parseWorkFlow(classpathResourceReader(workflowLocation));
+        assertEquals("parallelworkflow", process.getId());
+        assertEquals("parallel-wf", process.getName());
+        assertEquals("1.0", process.getVersion());
+        assertEquals("org.kie.kogito.serverless", process.getPackageName());
+        assertEquals(RuleFlowProcess.PUBLIC_VISIBILITY, process.getVisibility());
+
+        assertEquals(6, process.getNodes().length);
+
+        Node node = process.getNodes()[0];
+        assertTrue(node instanceof StartNode);
+        node = process.getNodes()[1];
+        assertTrue(node instanceof EndNode);
+        node = process.getNodes()[2];
+        assertTrue(node instanceof Split);
+        node = process.getNodes()[3];
+        assertTrue(node instanceof Join);
+        node = process.getNodes()[4];
+        assertTrue(node instanceof SubProcessNode);
+        node = process.getNodes()[5];
+        assertTrue(node instanceof SubProcessNode);
     }
 
     @ParameterizedTest
