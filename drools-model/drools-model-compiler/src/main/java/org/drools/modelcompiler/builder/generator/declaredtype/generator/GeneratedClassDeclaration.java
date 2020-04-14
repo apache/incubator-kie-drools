@@ -74,6 +74,8 @@ public class GeneratedClassDeclaration {
         generatedClass = createBasicDeclaredClass(generatedClassName);
         addAnnotations(generatedClass, typeDefinition.getAnnotationsToBeAdded());
 
+        generateInheritanceDefinition();
+
         Collection<FieldDefinition> inheritedFields = typeDefinition.findInheritedDeclaredFields();
         if (inheritedFields.isEmpty() && typeDefinition.getFields().isEmpty()) {
             generatedClass.addMember(new GeneratedToString(generatedClassName).method());
@@ -103,7 +105,6 @@ public class GeneratedClassDeclaration {
     }
 
     private ClassOrInterfaceDeclaration generateFullClass(String generatedClassName, Collection<FieldDefinition> inheritedFields) {
-        generateInheritanceDefinition();
 
         boolean hasSuper = typeDefinition.getSuperTypeName().isPresent();
 
