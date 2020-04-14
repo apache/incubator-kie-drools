@@ -25,6 +25,7 @@ import org.optaplanner.examples.vehiclerouting.domain.VehicleRoutingSolution;
 import org.optaplanner.examples.vehiclerouting.domain.location.AirLocation;
 import org.optaplanner.examples.vehiclerouting.domain.location.Location;
 import org.optaplanner.examples.vehiclerouting.domain.timewindowed.TimeWindowedCustomer;
+import org.optaplanner.examples.vehiclerouting.domain.timewindowed.TimeWindowedDepot;
 import org.optaplanner.test.api.score.stream.ConstraintVerifier;
 
 public class VehicleRoutingConstraintProviderTest {
@@ -101,6 +102,23 @@ public class VehicleRoutingConstraintProviderTest {
                 .penalizesBy(3000L);
     }
 
-    // TODO arrivalAfterDueTime test
+    @Test
+    public void arrivalAfterDueTime() {
+        Vehicle vehicleA = new Vehicle(1L, 100, new TimeWindowedDepot(1L, location1, 8_00_00L, 18_00_00L));
+        TimeWindowedCustomer customer1 = new TimeWindowedCustomer(2L, location2, 1, 8_00_00L, 18_00_00L, 1_00_00L);
+        customer1.setPreviousStandstill(vehicleA);
+        customer1.setVehicle(vehicleA);
+        vehicleA.setNextCustomer(customer1);
+        customer1.setArrivalTime(8_00_00L + 4000L);
+        TimeWindowedCustomer customer2 = new TimeWindowedCustomer(3L, location3, 40, 8_00_00L, 9_00_00L, 1_00_00L);
+        customer2.setPreviousStandstill(customer1);
+        customer2.setVehicle(vehicleA);
+        customer1.setNextCustomer(customer2);
+        customer2.setArrivalTime(8_00_00L + 4000L + 1_00_00L + 5000L);
+
+        constraintVerifier.verifyThat(VehicleRoutingConstraintProvider::arrivalAfterDueTime)
+                .given(vehicleA, customer1, customer2)
+                .penalizesBy(90_00L);
+    }
 
 }
