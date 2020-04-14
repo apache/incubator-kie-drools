@@ -41,7 +41,7 @@ public class LeftBuilder {
     public LeftBuilder insert(Object... objects) {
         for ( Object object : objects ) {
             InternalFactHandle fh = (InternalFactHandle) wm.insert( object );
-            LeftTuple leftTuple = sink.createLeftTuple( fh, sink, true );
+            LeftTuple leftTuple = sink.createLeftTuple( fh, true );
             leftTuple.setPropagationContext( new PhreakPropagationContext() );
             leftTuples.addInsert( leftTuple );
         }

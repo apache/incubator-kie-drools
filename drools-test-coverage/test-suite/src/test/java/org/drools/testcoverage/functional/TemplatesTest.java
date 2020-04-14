@@ -90,9 +90,9 @@ public class TemplatesTest {
         final String rule0_then = "\tthen\n\t\tlist.add( $name );\nend\n\n";
 
         EXPECTED_RULES.append(head);
-        EXPECTED_RULES.append(rule2_when).append(rule2_then);
-        EXPECTED_RULES.append(rule1_when).append(rule1_then);
         EXPECTED_RULES.append(rule0_when).append(rule0_then);
+        EXPECTED_RULES.append(rule1_when).append(rule1_then);
+        EXPECTED_RULES.append(rule2_when).append(rule2_then);
     }
 
     @Test

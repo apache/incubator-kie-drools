@@ -103,25 +103,27 @@ public class RuleNetworkEvaluator {
 
     public void evaluateNetwork(PathMemory pmem, RuleExecutor executor, InternalAgenda agenda) {
         SegmentMemory[] smems = pmem.getSegmentMemories();
+        SegmentMemory smem = smems[0];
+        if (smem == null) {
+            // if there's no first smem it's a pure alpha firing and then doesn't require any furthe evaluation
+            return;
+        }
 
-        int smemIndex = 0;
-        SegmentMemory smem = smems[smemIndex]; // 0
         LeftInputAdapterNode liaNode = (LeftInputAdapterNode) smem.getRootNode();
 
         LinkedList<StackEntry> stack = new LinkedList<StackEntry>();
 
         NetworkNode node;
         Memory nodeMem;
-        long bit = 1;
-        if (liaNode == smem.getTipNode()) {
+        boolean firstSegmentIsOnlyLia = liaNode == smem.getTipNode();
+        if (firstSegmentIsOnlyLia) {
             // segment only has liaNode in it
             // nothing is staged in the liaNode, so skip to next segment
-            smem = smems[++smemIndex]; // 1
+            smem = smems[1];
             node = smem.getRootNode();
             nodeMem = smem.getNodeMemories().getFirst();
         } else {
             // lia is in shared segment, so point to next node
-            bit = 2;
             node = liaNode.getSinkPropagator().getFirstLeftTupleSink();
             nodeMem = smem.getNodeMemories().getFirst().getNext(); // skip the liaNode memory
         }
@@ -130,7 +132,7 @@ public class RuleNetworkEvaluator {
         if (log.isTraceEnabled()) {
             log.trace("Rule[name={}] segments={} {}", ((TerminalNode)pmem.getPathEndNode()).getRule().getName(), smems.length, srcTuples.toStringSizes());
         }
-        outerEval(pmem, node, bit, nodeMem, smems, smemIndex, srcTuples, agenda, stack, true, executor);
+        outerEval(pmem, node, firstSegmentIsOnlyLia ? 1L : 2L, nodeMem, smems, firstSegmentIsOnlyLia ? 1 : 0, srcTuples, agenda, stack, true, executor);
     }
 
     public static String indent(int size) {

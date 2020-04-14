@@ -22,7 +22,6 @@ import java.io.ObjectOutput;
 import java.lang.reflect.Method;
 import java.math.BigDecimal;
 import java.math.BigInteger;
-import java.util.Collection;
 
 import org.drools.core.RuleBaseConfiguration;
 import org.drools.core.base.ClassFieldAccessorCache;
@@ -719,9 +718,8 @@ public class CompositeObjectSinkAdapterTest {
         }
 
         public LeftTuple createLeftTuple(InternalFactHandle factHandle,
-                                         Sink sink,
                                          boolean leftTupleMemoryEnabled) {
-            return new LeftTupleImpl(factHandle, sink, leftTupleMemoryEnabled );
+            return new LeftTupleImpl(factHandle, this, leftTupleMemoryEnabled );
         }    
         
         public LeftTuple createLeftTuple(LeftTuple leftTuple,

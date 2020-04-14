@@ -249,9 +249,8 @@ public class RightInputAdapterNode extends ObjectSource
     }
     
     public LeftTuple createLeftTuple(InternalFactHandle factHandle,
-                                     Sink sink,
                                      boolean leftTupleMemoryEnabled) {
-        return new SubnetworkTuple(factHandle, sink, leftTupleMemoryEnabled );
+        return new SubnetworkTuple(factHandle, this, leftTupleMemoryEnabled );
     }
 
     public LeftTuple createLeftTuple(final InternalFactHandle factHandle,
