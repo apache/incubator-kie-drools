@@ -20,6 +20,7 @@
     <version.node>v11.6.0</version.node>
     <version.npm>6.10.3</version.npm>
     <version.yarn>v1.19.1</version.yarn>
+    <maven.compiler.release>11</maven.compiler.release> 
   </properties>
 
   <build>
