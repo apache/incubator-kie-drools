@@ -50,4 +50,8 @@ public class DMNAllTypesIndex {
     public Optional<DMNTypeSafePackageName> namespaceOfClass(String typeName) {
         return Optional.ofNullable(mapNamespaceIndex.get(typeName));
     }
+
+    public boolean isIndexedClass(String typeName) {
+        return namespaceOfClass(typeName).isPresent();
+    }
 }

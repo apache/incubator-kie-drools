@@ -68,7 +68,9 @@ class DMNDeclaredType implements TypeDefinition {
 
     @Override
     public Optional<String> getSuperTypeName() {
-        return Optional.ofNullable(dmnType.getBaseType()).map(DMNType::getName);
+        return Optional.ofNullable(dmnType.getBaseType())
+                .map(DMNType::getName)
+                .filter(index::isIndexedClass);
     }
 
     @Override
