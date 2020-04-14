@@ -16,10 +16,25 @@
 
 package org.drools.modelcompiler.builder.generator.declaredtype.api;
 
-import java.util.Optional;
+import java.util.Collections;
+import java.util.List;
 
-@FunctionalInterface
-public interface TypeResolver {
+public interface MethodDefinition {
+    String getMethodName();
 
-    Optional<Class<?>> resolveType(String className);
+    String getReturnType();
+
+    String getBody();
+
+    default List<AnnotationDefinition> getAnnotations() {
+        return Collections.emptyList();
+    }
+
+    boolean isStatic();
+
+    boolean isPublic();
+
+    default List<MethodParameter> parameters() {
+        return Collections.emptyList();
+    }
 }

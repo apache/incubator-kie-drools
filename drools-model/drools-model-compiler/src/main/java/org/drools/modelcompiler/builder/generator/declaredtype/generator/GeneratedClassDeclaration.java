@@ -20,11 +20,10 @@ package org.drools.modelcompiler.builder.generator.declaredtype.generator;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Collection;
-import java.util.Collections;
 import java.util.List;
 import java.util.Map;
-import java.util.Optional;
 
+import com.github.javaparser.StaticJavaParser;
 import com.github.javaparser.ast.Modifier;
 import com.github.javaparser.ast.body.ClassOrInterfaceDeclaration;
 import com.github.javaparser.ast.body.FieldDeclaration;
@@ -35,31 +34,38 @@ import com.github.javaparser.ast.expr.NormalAnnotationExpr;
 import com.github.javaparser.ast.nodeTypes.NodeWithAnnotations;
 import com.github.javaparser.ast.stmt.Statement;
 import com.github.javaparser.ast.type.Type;
+import org.drools.modelcompiler.builder.JavaParserCompiler;
 import org.drools.modelcompiler.builder.generator.declaredtype.api.AnnotationDefinition;
-import org.drools.modelcompiler.builder.generator.declaredtype.api.TypeDefinition;
 import org.drools.modelcompiler.builder.generator.declaredtype.api.FieldDefinition;
-import org.drools.modelcompiler.builder.generator.declaredtype.api.TypeResolver;
+import org.drools.modelcompiler.builder.generator.declaredtype.api.MethodDefinition;
+import org.drools.modelcompiler.builder.generator.declaredtype.api.MethodParameter;
+import org.drools.modelcompiler.builder.generator.declaredtype.api.TypeDefinition;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import static com.github.javaparser.StaticJavaParser.parseExpression;
 import static com.github.javaparser.StaticJavaParser.parseType;
 import static com.github.javaparser.ast.NodeList.nodeList;
+import static java.text.MessageFormat.format;
+import static org.drools.modelcompiler.builder.generator.declaredtype.POJOGenerator.quote;
 
 public class GeneratedClassDeclaration {
 
-    static final String OVERRIDE = "Override";
+    public static final String OVERRIDE = "Override";
 
     private final TypeDefinition typeDefinition;
-    private TypeResolver typeResolver;
+    private GeneratedHashcode generatedHashcode;
+    private GeneratedToString generatedToString;
+    private GeneratedEqualsMethod generatedEqualsMethod;
+    private ClassOrInterfaceDeclaration generatedClass;
     private final Collection<Class<?>> markerInterfaceAnnotations;
 
-    private ClassOrInterfaceDeclaration generatedClass;
+    public static final Logger LOG = LoggerFactory.getLogger(GeneratedClassDeclaration.class);
 
     public GeneratedClassDeclaration(TypeDefinition typeDefinition,
-                              TypeResolver typeResolver,
-                              Collection<Class<?>> markerInterfaceAnnotations) {
+                                     Collection<Class<?>> markerInterfaceAnnotations) {
 
         this.typeDefinition = typeDefinition;
-        this.typeResolver = typeResolver;
         this.markerInterfaceAnnotations = markerInterfaceAnnotations;
     }
 
@@ -68,18 +74,21 @@ public class GeneratedClassDeclaration {
         generatedClass = createBasicDeclaredClass(generatedClassName);
         addAnnotations(generatedClass, typeDefinition.getAnnotationsToBeAdded());
 
-        Class<?> superClass = findSuperClass();
-        boolean hasSuper = generatedClass.getExtendedTypes().isNonEmpty();
+        generateInheritanceDefinition();
 
         Collection<FieldDefinition> inheritedFields = typeDefinition.findInheritedDeclaredFields();
         if (inheritedFields.isEmpty() && typeDefinition.getFields().isEmpty()) {
-            generatedClass.addMember(GeneratedToString.method( Collections.emptyList(), generatedClassName ));
-            generatedClass.addMember(GeneratedAccessibleMethods.getterMethod( Collections.emptyList(), superClass, hasSuper ));
-            generatedClass.addMember(GeneratedAccessibleMethods.setterMethod( Collections.emptyList(), superClass, hasSuper ));
-            return generatedClass;
+            generatedClass.addMember(new GeneratedToString(generatedClassName).method());
+            typeDefinition.getMethods().forEach(this::addMethod);
         } else {
-            return generateFullClass(new GeneratedMethods(generatedClassName, superClass, hasSuper), inheritedFields);
+            generatedClass = generateFullClass(generatedClassName, inheritedFields);
         }
+
+        if (LOG.isDebugEnabled()) {
+            LOG.info(String.format("Generated class:%n%s", JavaParserCompiler.getPrettyPrinter().print(generatedClass)));
+        }
+
+        return generatedClass;
     }
 
     private ClassOrInterfaceDeclaration createBasicDeclaredClass(String generatedClassName) {
@@ -95,44 +104,66 @@ public class GeneratedClassDeclaration {
         return basicDeclaredClass;
     }
 
-    private ClassOrInterfaceDeclaration generateFullClass(GeneratedMethods generatedMethods, Collection<FieldDefinition> inheritedFields) {
-        List<FieldDefinition> typeFields = typeDefinition.getFields();
+    private ClassOrInterfaceDeclaration generateFullClass(String generatedClassName, Collection<FieldDefinition> inheritedFields) {
+
+        boolean hasSuper = typeDefinition.getSuperTypeName().isPresent();
+
+        generatedHashcode = new GeneratedHashcode(hasSuper);
+        generatedToString = new GeneratedToString(generatedClassName);
+        generatedEqualsMethod = new GeneratedEqualsMethod(generatedClassName, hasSuper);
+
+        List<? extends FieldDefinition> typeFields = typeDefinition.getFields();
+
+        GeneratedConstructor fullArgumentConstructor = GeneratedConstructor.factory(generatedClass, typeFields);
+
+        typeDefinition.getMethods().forEach(this::addMethod);
+
         for (FieldDefinition tf : typeFields) {
-            processTypeField(generatedMethods, tf);
+            processTypeField(tf);
         }
 
         List<FieldDefinition> keyFields = typeDefinition.getKeyFields();
-        GeneratedConstructor.factory(generatedClass, typeFields).generateConstructor(inheritedFields, keyFields);
+
+        fullArgumentConstructor.generateConstructor(inheritedFields, keyFields);
         if (!keyFields.isEmpty()) {
-            generatedClass.addMember(generatedMethods.equalsMethod());
-            generatedClass.addMember(generatedMethods.hashcodeMethod());
+            generatedClass.addMember(generatedEqualsMethod.method());
+            generatedClass.addMember(generatedHashcode.method());
         }
 
-        generatedClass.addMember(generatedMethods.toStringMethod());
-        generatedClass.addMember(generatedMethods.getterMethod());
-        generatedClass.addMember(generatedMethods.setterMethod());
+        generatedClass.addMember(generatedToString.method());
         return generatedClass;
     }
 
-    private Class<?> findSuperClass() {
-        return typeDefinition.getSuperTypeName().map( superTypeName -> {
-            Optional<Class<?>> optResolvedSuper = typeResolver.resolveType(superTypeName);
-            return optResolvedSuper.map(resolvedSuper -> {
-                if (resolvedSuper.isInterface()) {
-                    generatedClass.addImplementedType(superTypeName);
-                    return resolvedSuper;
-                } else {
-                    generatedClass.addExtendedType(superTypeName);
-                    return resolvedSuper;
-                }
-            }).orElseGet( () -> {
-                generatedClass.addExtendedType(superTypeName);
-                return (Class<?>) null;
-            } );
-        }).orElse( null );
+    private void addMethod(MethodDefinition methodDefinition) {
+
+        List<Modifier.Keyword> modifiers = new ArrayList<>();
+        if (methodDefinition.isStatic()) {
+            modifiers.add(Modifier.Keyword.STATIC);
+        }
+        if (methodDefinition.isPublic()) {
+            modifiers.add(Modifier.Keyword.PUBLIC);
+        }
+        MethodDeclaration methodDeclaration = generatedClass.addMethod(methodDefinition.getMethodName(),
+                                                                       modifiers.toArray(new Modifier.Keyword[0]));
+        methodDeclaration.setType(methodDefinition.getReturnType());
+
+        for(MethodParameter mp : methodDefinition.parameters()) {
+            methodDeclaration.addParameter(mp.getType(), mp.getName());
+        }
+
+        for(AnnotationDefinition a : methodDefinition.getAnnotations()) {
+            methodDeclaration.addAnnotation(a.getName());
+        }
+
+        methodDeclaration.setBody(StaticJavaParser.parseBlock(methodDefinition.getBody()));
     }
 
-    private void processTypeField(GeneratedMethods generatedMethods, FieldDefinition fieldDefinition) {
+    private void generateInheritanceDefinition() {
+        typeDefinition.getSuperTypeName().ifPresent(generatedClass::addExtendedType);
+        typeDefinition.getInterfacesNames().forEach(generatedClass::addImplementedType);
+    }
+
+    private void processTypeField(FieldDefinition fieldDefinition) {
         String fieldName = fieldDefinition.getFieldName();
         Type returnType = parseType(fieldDefinition.getObjectType());
 
@@ -149,10 +180,15 @@ public class GeneratedClassDeclaration {
             field.createSetter();
             MethodDeclaration getter = field.createGetter();
 
-            generatedMethods.addField(getter.getType(), fieldName, fieldDefinition.isKeyField());
+            if (fieldDefinition.isKeyField()) {
+                generatedEqualsMethod.add(getter, fieldName);
+                generatedHashcode.addHashCodeForField(fieldName, getter.getType());
+            }
         }
 
         addAnnotations(field, fieldDefinition.getAnnotations());
+
+        generatedToString.add(format("+ {0}+{1}", quote(fieldName + "="), fieldName));
     }
 
     private void addAnnotations(NodeWithAnnotations<?> fieldAnnotated, List<AnnotationDefinition> annotations) {

@@ -28,10 +28,13 @@ import org.drools.compiler.compiler.AnnotationDeclarationError;
 import org.drools.compiler.compiler.DroolsError;
 import org.drools.compiler.lang.descr.AnnotationDescr;
 import org.drools.compiler.lang.descr.PackageDescr;
+import org.drools.compiler.lang.descr.QualifiedName;
 import org.drools.compiler.lang.descr.TypeDeclarationDescr;
 import org.drools.compiler.lang.descr.TypeFieldDescr;
+import org.drools.core.factmodel.AccessibleFact;
 import org.drools.modelcompiler.builder.generator.declaredtype.api.AnnotationDefinition;
 import org.drools.modelcompiler.builder.generator.declaredtype.api.FieldDefinition;
+import org.drools.modelcompiler.builder.generator.declaredtype.api.MethodDefinition;
 import org.drools.modelcompiler.builder.generator.declaredtype.api.TypeDefinition;
 import org.drools.modelcompiler.builder.generator.declaredtype.api.TypeResolver;
 
@@ -50,11 +53,16 @@ public class DescrTypeDefinition implements TypeDefinition {
     private final PackageDescr packageDescr;
 
     private final TypeDeclarationDescr typeDeclarationDescr;
-    private final List<FieldDefinition> fieldDefinition;
+    private final List<DescrFieldDefinition> fieldDefinition;
 
     private final TypeResolver typeResolver;
 
     private List<DroolsError> errors = new ArrayList<>();
+
+    private Optional<String> superTypeName = Optional.empty();
+    private Optional<Class<?>> abstractClass = Optional.empty();
+    private Optional<String> declaredAbstractClass = Optional.empty();
+    private List<String> interfaceNames = new ArrayList<>();
 
     public DescrTypeDefinition(PackageDescr packageDescr, TypeDeclarationDescr typeDeclarationDescr, TypeResolver typeResolver) {
         this.packageDescr = packageDescr;
@@ -62,7 +70,29 @@ public class DescrTypeDefinition implements TypeDefinition {
         this.typeResolver = typeResolver;
         this.fieldDefinition = processFields();
 
+        processSuperTypes();
+
         processClassAnnotations();
+    }
+
+    private void processSuperTypes() {
+        for (QualifiedName superType : typeDeclarationDescr.getSuperTypes()) {
+            Optional<Class<?>> optResolvedSuper = typeResolver.resolveType(superType.getName());
+            optResolvedSuper.ifPresent(resolvedSuper -> {
+                if (resolvedSuper.isInterface()) {
+                    interfaceNames.add(superType.getName());
+                } else {
+                    superTypeName = of(superType.getName());
+                    abstractClass = of(resolvedSuper);
+                }
+            });
+
+            // We're extending a class using the Declared Type mechanism, so the super class doesn't exist in the classloader
+            if (!optResolvedSuper.isPresent()) {
+                superTypeName = of(superType.getName());
+                declaredAbstractClass = of(superType.getName());
+            }
+        }
     }
 
     private void processClassAnnotations() {
@@ -90,7 +120,12 @@ public class DescrTypeDefinition implements TypeDefinition {
 
     @Override
     public Optional<String> getSuperTypeName() {
-        return ofNullable(typeDeclarationDescr.getSuperTypeName());
+        return superTypeName;
+    }
+
+    @Override
+    public List<String> getInterfacesNames() {
+        return interfaceNames;
     }
 
     @Override
@@ -152,13 +187,13 @@ public class DescrTypeDefinition implements TypeDefinition {
     }
 
     @Override
-    public List<FieldDefinition> getFields() {
+    public List<DescrFieldDefinition> getFields() {
         return fieldDefinition;
     }
 
     @Override
     public List<FieldDefinition> getKeyFields() {
-        Stream<FieldDefinition> keyFields = fieldDefinition.stream().filter(FieldDefinition::isKeyField);
+        Stream<DescrFieldDefinition> keyFields = fieldDefinition.stream().filter(FieldDefinition::isKeyField);
 
         Stream<FieldDefinition> superTypeKieFields =
                 optionalToStream(getSuperType(this.typeDeclarationDescr, packageDescr)
@@ -168,11 +203,11 @@ public class DescrTypeDefinition implements TypeDefinition {
         return Stream.concat(keyFields, superTypeKieFields).collect(toList());
     }
 
-    private List<FieldDefinition> processFields() {
+    private List<DescrFieldDefinition> processFields() {
         List<TypeFieldDescr> sortedTypeFields = typeFieldsSortedByPosition();
 
         int position = findInheritedDeclaredFields().size();
-        List<FieldDefinition> allFields = new ArrayList<>();
+        List<DescrFieldDefinition> allFields = new ArrayList<>();
         for (TypeFieldDescr typeFieldDescr : sortedTypeFields) {
             ProcessedTypeField processedTypeField = processTypeField(position, typeFieldDescr);
 
@@ -254,4 +289,25 @@ public class DescrTypeDefinition implements TypeDefinition {
             this.position = position;
         }
     }
+
+    public Optional<Class<?>> getAbstractResolvedClass() {
+        return abstractClass;
+    }
+
+    public Optional<String> getDeclaredAbstractClass() {
+        return declaredAbstractClass;
+    }
+
+    @Override
+    public List<MethodDefinition> getMethods() {
+        final List<MethodDefinition> methods = new ArrayList<>();
+        AccessibleMethod accessibleMethod = new AccessibleMethod(this, fieldDefinition);
+
+        methods.add(accessibleMethod.getterMethod());
+        methods.add(accessibleMethod.setterMethod());
+
+        return methods;
+    }
+
+
 }
