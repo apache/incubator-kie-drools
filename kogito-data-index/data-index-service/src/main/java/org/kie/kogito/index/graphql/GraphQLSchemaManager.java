@@ -140,11 +140,28 @@ public class GraphQLSchemaManager {
         return schemaGenerator.makeExecutableSchema(typeDefinitionRegistry, runtimeWiring);
     }
 
-    private String getProcessInstanceServiceUrl(DataFetchingEnvironment env) {
+    protected String getProcessInstanceServiceUrl(DataFetchingEnvironment env) {
         ProcessInstance source = env.getSource();
+        if (source == null || source.getEndpoint() == null || source.getProcessId() == null) {
+            return null;
+        }
         String endpoint = source.getEndpoint();
-        String context = "/" + source.getProcessId();
-        return context.equals(endpoint) ? null : endpoint.substring(0, endpoint.indexOf(context));
+        LOGGER.debug("Process endpoint {}", endpoint);
+        if (endpoint.startsWith("/")) {
+            LOGGER.warn("Process '{}' endpoint '{}', does not contain full URL, please review the kogito.service.url system property to point the public URL for this runtime.",
+                        source.getProcessId(), endpoint);
+        }
+        String context = getContext(source);
+        LOGGER.debug("Process context {}", context);
+        if(context.equals(endpoint) || endpoint.equals("/" + context)){
+            return null;
+        } else {
+            return endpoint.contains("/" + context) ? endpoint.substring(0, endpoint.indexOf("/" + context)) : null;
+        }
+    }
+
+    private String getContext(ProcessInstance source) {
+        return source.getProcessId().contains(".") ? source.getProcessId().substring(source.getProcessId().lastIndexOf('.') + 1) : source.getProcessId();
     }
 
     private Collection<ProcessInstance> getChildProcessInstancesValues(DataFetchingEnvironment env) {
