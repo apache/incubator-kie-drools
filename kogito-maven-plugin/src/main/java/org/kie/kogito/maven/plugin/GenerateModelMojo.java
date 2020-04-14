@@ -147,7 +147,7 @@ public class GenerateModelMojo extends AbstractKieMojo {
     private boolean processesExist() throws IOException {
         try (final Stream<Path> paths = Files.walk(projectDir.toPath())) {
             return paths.map(p -> p.toString().toLowerCase())
-                    .anyMatch(p -> p.endsWith(".bpmn") || p.endsWith(".bpmn2"));
+                    .anyMatch(p -> p.endsWith(".bpmn") || p.endsWith(".bpmn2") || p.endsWith(".sw.json") || p.endsWith(".sw.yml"));
         }
     }
 

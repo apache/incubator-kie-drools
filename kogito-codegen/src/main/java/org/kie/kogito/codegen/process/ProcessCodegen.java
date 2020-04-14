@@ -99,7 +99,7 @@ public class ProcessCodegen extends AbstractGenerator {
             while (entries.hasMoreElements()) {
                 ZipEntry entry = entries.nextElement();
                 ResourceType resourceType = determineResourceType(entry.getName());
-                if (entry.getName().endsWith(".bpmn") || entry.getName().endsWith(".bpmn2")) {
+                if (entry.getName().endsWith(".bpmn") || entry.getName().endsWith(".bpmn2") || entry.getName().endsWith(".sw.json") || entry.getName().endsWith(".sw.yml")) {
                     InternalResource resource = new ByteArrayResource(readBytesFromInputStream(zipFile.getInputStream(entry)));
                     resource.setResourceType(resourceType);
                     resource.setSourcePath(entry.getName());
