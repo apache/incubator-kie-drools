@@ -574,6 +574,122 @@ the stream.
 ====
 
 
+[[constraintStreamsTesting]]
+== Testing a constraint stream
+
+Constraint streams include the Constraint Verifier unit testing harness.
+Consider the following constraint stream:
+
+[source,java,options="nowrap"]
+----
+    protected Constraint horizontalConflict(ConstraintFactory factory) {
+        return factory
+                .fromUniquePair(Queen.class, equal(Queen::getRowIndex))
+                .penalize("Horizontal conflict", SimpleScore.ONE);
+    }
+----
+
+The following example uses the Constraint Verifier API to create a simple unit test for the preceding constraint stream:
+
+[source,java,options="nowrap"]
+----
+    private ConstraintVerifier<NQueensConstraintProvider, NQueens> constraintVerifier
+            = ConstraintVerifier.build(new NQueensConstraintProvider(), NQueens.class, Queen.class);
+
+    @Test
+    public void horizontalConflictWithTwoQueens() {
+        Row row1 = new Row(0);
+        Column column1 = new Column(0);
+        Column column2 = new Column(1);
+        Queen queen1 = new Queen(0, row1, column1);
+        Queen queen2 = new Queen(1, row1, column2);
+        constraintVerifier.verifyThat(NQueensConstraintProvider::horizontalConflict)
+                .given(queen1, queen2)
+                .penalizesBy(1);
+    }
+----
+
+This test ensures that the horizontal conflict constraint assigns a penalty of `1` when there are two queens on the same
+row.
+The following line creates a shared `ConstraintVerifier` instance and initializes the instance with the
+`NQueensConstraintProvider`:
+
+
+[source,java,options="nowrap"]
+----
+    private ConstraintVerifier<NQueensConstraintProvider, NQueens> constraintVerifier
+            = ConstraintVerifier.build(new NQueensConstraintProvider(), NQueens.class, Queen.class);
+----
+
+The `@Test` annotation indicates that the method is a unit test in a testing framework of your choice.
+Constraint Verifier works with many testing frameworks including JUnit and AssertJ.
+
+The first part of the test prepares the test data.
+In this case, the test data includes two instances of the `Queen` planning entity and their dependencies
+(`Row`, `Column`):
+
+[source,java,options="nowrap"]
+----
+        Row row1 = new Row(0);
+        Column column1 = new Column(0);
+        Column column2 = new Column(1);
+        Queen queen1 = new Queen(0, row1, column1);
+        Queen queen2 = new Queen(1, row1, column2);
+----
+
+Further down, the following code test the constraint:
+
+[source,java,options="nowrap"]
+----
+    constraintVerifier.verifyThat(NQueensConstraintProvider::horizontalConflict)
+            .given(queen1, queen2)
+            .penalizesBy(1);
+----
+
+The `verifyThat(...)` call is used to specify a method on the `NQueensConstraintProvider` class which is under test.
+This method must be visible to the test class, which the Java compiler will enforce.
+
+The `given(...)` call is used to enumerate all the facts that the constraint stream will operate on.
+In this case, the `given(...)` call takes the `queen1` and `queen2` instances previously created.
+Alternatively, you can use a `givenSolution(...)` method here and provide a planning solution instead.
+
+Finally, the `penalizesBy(...)` call completes the test, making sure that the horizontal conflict constraint, given
+one `Queen`, results in a penalty of `1`.
+This number is a product of multiplying the match weight, as defined in the constraint stream, by the number of matches.
+
+Alternatively, you can use a `rewardsWith(...)` call to check for rewards instead of penalties.
+The method to use here depends on whether the constraint stream in question is terminated with a `penalize` or a
+`reward` building block.
+
+[[constraintStreamsIntegrationTesting]]
+=== Integration testing
+
+In addition to testing individual constraints, you can test the entire `ConstraintProvider` instance.
+Consider the following test:
+
+[source,java,options="nowrap"]
+----
+    @Test
+    public void givenFactsMultipleConstraints() {
+        Queen queen1 = new Queen(0, row1, column1);
+        Queen queen2 = new Queen(1, row2, column2);
+        Queen queen3 = new Queen(2, row3, column3);
+        constraintVerifier.verifyThat()
+                .given(queen1, queen2, queen3)
+                .scores(SimpleScore.of(-3));
+    }
+----
+
+There are only two notable differences to the previous example.
+First, the `verifyThat()` call takes no argument here, signifying that the entire `ConstraintProvider` instance is
+being tested.
+Second, instead of either a `penalizesBy()` or `rewardsWith()` call, the `scores(...)` method is used.
+This runs the `ConstraintProvider` on the given facts and returns a sum of `Score`s of all constraint matches resulting
+from the given facts.
+
+Using this method, you ensure that the constraint provider does not miss any constraints and that the scoring function
+remains consistent as your code base evolves.
+
 [[constraintStreamsImplementations]]
 == Variant implementation types
 
