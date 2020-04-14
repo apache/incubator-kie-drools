@@ -51,7 +51,7 @@ public class PMMLRuntimeImpl implements PMMLRuntime {
 
     @Override
     public List<KiePMMLModel> getModels() {
-        logger.debug("getModels");
+        logger.trace("getModels");
         List<KiePMMLModel> models = new ArrayList<>();
         knowledgeBase.getKiePackages().forEach(kpkg -> {
             PMMLPackage pmmlPackage = (PMMLPackage) ((InternalKnowledgePackage) kpkg).getResourceTypePackages().get(ResourceType.PMML);
@@ -64,7 +64,7 @@ public class PMMLRuntimeImpl implements PMMLRuntime {
 
     @Override
     public Optional<KiePMMLModel> getModel(String modelName) {
-        logger.debug("getModels {}", modelName);
+        logger.trace("getModels {}", modelName);
         return getModels()
                 .stream()
                 .filter(model -> Objects.equals(modelName, model.getName()))
@@ -109,7 +109,7 @@ public class PMMLRuntimeImpl implements PMMLRuntime {
      * @return
      */
     private Optional<PMMLModelExecutor> getFromPMMLModelType(PMML_MODEL pmmlMODEL) {
-        logger.debug("getFromPMMLModelType {}", pmmlMODEL);
+        logger.trace("getFromPMMLModelType {}", pmmlMODEL);
         return pmmlModelExecutorFinder.getImplementations(false)
                 .stream()
                 .filter(implementation -> pmmlMODEL.equals(implementation.getPMMLModelType()))

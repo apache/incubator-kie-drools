@@ -62,7 +62,7 @@ public class KiePMMLRegressionModelFactory {
     }
 
     public static KiePMMLRegressionModel getKiePMMLRegressionModel(DataDictionary dataDictionary, RegressionModel model) throws IOException, IllegalAccessException, InstantiationException {
-        logger.debug("getKiePMMLRegressionModel {}", model);
+        logger.trace("getKiePMMLRegressionModel {}", model);
         String name = model.getModelName();
         String targetFieldName = getTargetFieldName(dataDictionary, model).orElse(null);
         List<KiePMMLOutputField> outputFields = getOutputFields(model);

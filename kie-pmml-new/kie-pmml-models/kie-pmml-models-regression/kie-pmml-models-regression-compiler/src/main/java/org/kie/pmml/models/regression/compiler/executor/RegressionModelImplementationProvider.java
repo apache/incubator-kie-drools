@@ -47,13 +47,13 @@ public class RegressionModelImplementationProvider implements ModelImplementatio
 
     @Override
     public PMML_MODEL getPMMLModelType() {
-        logger.debug("getPMMLModelType");
+        logger.trace("getPMMLModelType");
         return PMML_MODEL.REGRESSION_MODEL;
     }
 
     @Override
     public KiePMMLRegressionModel getKiePMMLModel(DataDictionary dataDictionary, RegressionModel model, Object kBuilder) {
-        logger.debug("getKiePMMLModel {} {}", dataDictionary, model);
+        logger.trace("getKiePMMLModel {} {}", dataDictionary, model);
         validate(dataDictionary, model);
         try {
             return KiePMMLRegressionModelFactory.getKiePMMLRegressionModel(dataDictionary, model);

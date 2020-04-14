@@ -34,7 +34,7 @@ public abstract class DroolsModelProvider<T extends Model, E extends KiePMMLDroo
 
     @Override
     public E getKiePMMLModel(DataDictionary dataDictionary, T model, Object kBuilder) {
-        logger.debug("getKiePMMLModel {} {}", dataDictionary, model);
+        logger.trace("getKiePMMLModel {} {}", dataDictionary, model);
         E toReturn = getKiePMMLDroolsModel(dataDictionary, model);
         if (!(kBuilder instanceof KnowledgeBuilder)) {
             throw new KiePMMLException(String.format("Expecting KnowledgeBuilder, received %s", kBuilder.getClass().getName()));

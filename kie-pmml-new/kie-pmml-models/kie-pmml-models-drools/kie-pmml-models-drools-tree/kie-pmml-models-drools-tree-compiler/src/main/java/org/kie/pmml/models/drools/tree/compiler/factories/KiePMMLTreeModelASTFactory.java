@@ -57,7 +57,7 @@ public class KiePMMLTreeModelASTFactory {
      * @return
      */
     public static KiePMMLDroolsAST getKiePMMLDroolsAST(DataDictionary dataDictionary, TreeModel model, final Map<String, KiePMMLOriginalTypeGeneratedType> fieldTypeMap) {
-        logger.debug("getKiePMMLDroolsAST {} {}", dataDictionary, model);
+        logger.trace("getKiePMMLDroolsAST {} {}", dataDictionary, model);
         DATA_TYPE targetType = getTargetFieldType(dataDictionary, model);
         List<KiePMMLDroolsType> types = KiePMMLTreeModelDataDictionaryASTFactory.factory(fieldTypeMap).declareTypes(dataDictionary);
         final List<KiePMMLOutputField> outputFields = getOutputFields(model);

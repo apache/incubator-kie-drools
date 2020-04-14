@@ -52,7 +52,7 @@ public class KiePMMLTreeModelTruePredicateASTFactory extends KiePMMLTreeModelAbs
                                              final String currentRule,
                                              final Object result,
                                              boolean isFinalLeaf) {
-        logger.debug("declareRuleFromTruePredicate {} {} {}", truePredicate, parentPath, currentRule);
+        logger.trace("declareRuleFromTruePredicate {} {} {}", truePredicate, parentPath, currentRule);
         String statusConstraint = StringUtils.isEmpty(parentPath) ? STATUS_NULL : String.format(STATUS_PATTERN, parentPath);
         String statusToSet = isFinalLeaf ? DONE : currentRule;
         KiePMMLDroolsRule.Builder builder = KiePMMLDroolsRule.builder(currentRule, statusToSet, outputFields)

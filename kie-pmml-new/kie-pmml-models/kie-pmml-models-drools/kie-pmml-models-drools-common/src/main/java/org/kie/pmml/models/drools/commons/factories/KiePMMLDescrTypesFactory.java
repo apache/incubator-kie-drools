@@ -44,7 +44,7 @@ public class KiePMMLDescrTypesFactory {
      * @param types
      */
     public void declareTypes(final List<KiePMMLDroolsType> types) {
-        logger.debug("declareTypes {} ", types);
+        logger.trace("declareTypes {} ", types);
         types.forEach(this::declareType);
     }
 
@@ -54,7 +54,7 @@ public class KiePMMLDescrTypesFactory {
      * @param type
      */
     protected void declareType(final KiePMMLDroolsType type) {
-        logger.debug("declareType {} ", type);
+        logger.trace("declareType {} ", type);
         String generatedType = type.getName();
         String fieldType = type.getType();
         builder.newDeclare()

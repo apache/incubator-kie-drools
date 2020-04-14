@@ -198,46 +198,20 @@ public class DrlBostonHousingTreeTest {
     private void setupExecutionListener(final KieSession kSession) {
         final AgendaEventListener agendaEventListener = new AgendaEventListener() {
 
-            public void matchCancelled(MatchCancelledEvent event) {
-//                logger.debug(event.toString());
-            }
-
-            public void matchCreated(MatchCreatedEvent event) {
-//                logger.debug(event.toString());
-            }
-
+            public void matchCancelled(MatchCancelledEvent event) { }
+            public void matchCreated(MatchCreatedEvent event) { }
             public void afterMatchFired(AfterMatchFiredEvent event) {
-
                 logger.debug(event.toString());
             }
-
-            public void agendaGroupPopped(AgendaGroupPoppedEvent event) {
-//                logger.debug(event.toString());
-            }
-
+            public void agendaGroupPopped(AgendaGroupPoppedEvent event) { }
             public void agendaGroupPushed(AgendaGroupPushedEvent event) {
                 logger.debug(event.toString());
             }
-
-            public void beforeMatchFired(BeforeMatchFiredEvent event) {
-//                logger.debug(event.toString());
-            }
-
-            public void beforeRuleFlowGroupActivated(RuleFlowGroupActivatedEvent event) {
-//                logger.debug(event.toString());
-            }
-
-            public void afterRuleFlowGroupActivated(RuleFlowGroupActivatedEvent event) {
-//                logger.debug(event.toString());
-            }
-
-            public void beforeRuleFlowGroupDeactivated(RuleFlowGroupDeactivatedEvent event) {
-//                logger.debug(event.toString());
-            }
-
-            public void afterRuleFlowGroupDeactivated(RuleFlowGroupDeactivatedEvent event) {
-//                logger.debug(event.toString());
-            }
+            public void beforeMatchFired(BeforeMatchFiredEvent event) {  }
+            public void beforeRuleFlowGroupActivated(RuleFlowGroupActivatedEvent event) {  }
+            public void afterRuleFlowGroupActivated(RuleFlowGroupActivatedEvent event) { }
+            public void beforeRuleFlowGroupDeactivated(RuleFlowGroupDeactivatedEvent event) { }
+            public void afterRuleFlowGroupDeactivated(RuleFlowGroupDeactivatedEvent event) { }
         };
         kSession.addEventListener(agendaEventListener);
     }

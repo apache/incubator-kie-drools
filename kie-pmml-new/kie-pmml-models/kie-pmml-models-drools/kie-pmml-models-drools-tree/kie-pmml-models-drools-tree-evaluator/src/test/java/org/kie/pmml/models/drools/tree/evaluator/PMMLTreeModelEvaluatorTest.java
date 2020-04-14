@@ -166,7 +166,7 @@ public class PMMLTreeModelEvaluatorTest {
     private void commonEvaluate(PMMLContext pmmlContext, String expectedScore) {
         PMML4Result retrieved = evaluator.evaluate(kiePMMLModel, pmmlContext, "org:test:releaseid");
         assertNotNull(retrieved);
-        logger.debug(retrieved.toString());
+        logger.trace(retrieved.toString());
         assertEquals(TARGET_FIELD, retrieved.getResultObjectName());
         final Map<String, Object> resultVariables = retrieved.getResultVariables();
         assertNotNull(resultVariables);

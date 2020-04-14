@@ -60,7 +60,7 @@ public class KiePMMLTreeModelCompoundPredicateASTFactory extends KiePMMLTreeMode
                                                  final String currentRule,
                                                  final Object result,
                                                  boolean isFinalLeaf) {
-        logger.debug("declareIntermediateRuleFromCompoundPredicate {} {} {} {}", compoundPredicate, parentPath, currentRule, result);
+        logger.trace("declareIntermediateRuleFromCompoundPredicate {} {} {} {}", compoundPredicate, parentPath, currentRule, result);
         switch (compoundPredicate.getBooleanOperator()) {
             case SURROGATE:
                 declareRuleFromCompoundPredicateSurrogate(parentPath, currentRule, result, isFinalLeaf);
@@ -91,7 +91,7 @@ public class KiePMMLTreeModelCompoundPredicateASTFactory extends KiePMMLTreeMode
                                                          final String currentRule,
                                                          final Object result,
                                                          boolean isFinalLeaf) {
-        logger.debug("declareRuleFromCompoundPredicateAndOrXor {} {} {}", compoundPredicate, parentPath, currentRule);
+        logger.trace("declareRuleFromCompoundPredicateAndOrXor {} {} {}", compoundPredicate, parentPath, currentRule);
         if (!CompoundPredicate.BooleanOperator.AND.equals(compoundPredicate.getBooleanOperator()) &&
                 !CompoundPredicate.BooleanOperator.OR.equals((compoundPredicate.getBooleanOperator())) &&
                 !CompoundPredicate.BooleanOperator.XOR.equals((compoundPredicate.getBooleanOperator()))) {
@@ -137,7 +137,7 @@ public class KiePMMLTreeModelCompoundPredicateASTFactory extends KiePMMLTreeMode
                                                           final String currentRule,
                                                           final Object result,
                                                           boolean isFinalLeaf) {
-        logger.debug("declareRuleFromCompoundPredicateSurrogate {} {} {} {}", compoundPredicate, parentPath, currentRule, result);
+        logger.trace("declareRuleFromCompoundPredicateSurrogate {} {} {} {}", compoundPredicate, parentPath, currentRule, result);
 
         if (!CompoundPredicate.BooleanOperator.SURROGATE.equals(compoundPredicate.getBooleanOperator())) {
             throw new KiePMMLException(String.format("declareRuleFromCompoundPredicateSurrogate invoked with %s CompoundPredicate", compoundPredicate.getBooleanOperator()));

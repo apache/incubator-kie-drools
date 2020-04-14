@@ -51,7 +51,7 @@ public class KiePMMLDescrRhsFactory {
     }
 
     public void declareRhs(final KiePMMLDroolsRule rule) {
-        logger.debug("declareRhs {}", rule);
+        logger.trace("declareRhs {}", rule);
         if (rule.getIfBreakField() != null) {
             declareIfThen(rule);
         } else {

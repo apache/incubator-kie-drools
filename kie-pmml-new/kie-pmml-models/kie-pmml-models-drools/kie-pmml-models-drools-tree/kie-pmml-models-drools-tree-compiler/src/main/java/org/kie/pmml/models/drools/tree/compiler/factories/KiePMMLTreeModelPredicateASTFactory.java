@@ -62,7 +62,7 @@ public class KiePMMLTreeModelPredicateASTFactory extends KiePMMLTreeModelAbstrac
                                          final String currentRule,
                                          final Object result,
                                          final boolean isFinalLeaf) {
-        logger.debug("declareRuleFromPredicate {} {} {} {}", predicate, parentPath, currentRule, result);
+        logger.trace("declareRuleFromPredicate {} {} {} {}", predicate, parentPath, currentRule, result);
         if (predicate instanceof True) {
             KiePMMLTreeModelTruePredicateASTFactory.factory((True) predicate, outputFields, rules).declareRuleFromTruePredicate(parentPath, currentRule, result, isFinalLeaf);
         } else if (predicate instanceof SimplePredicate) {

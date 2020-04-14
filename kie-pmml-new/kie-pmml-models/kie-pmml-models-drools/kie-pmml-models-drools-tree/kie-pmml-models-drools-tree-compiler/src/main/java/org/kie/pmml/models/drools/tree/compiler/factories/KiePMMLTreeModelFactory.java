@@ -45,7 +45,7 @@ public class KiePMMLTreeModelFactory {
     }
 
     public static KiePMMLTreeModel getKiePMMLTreeModel(DataDictionary dataDictionary, TreeModel model) {
-        logger.debug("getKiePMMLTreeModel {}", model);
+        logger.trace("getKiePMMLTreeModel {}", model);
         String name = model.getModelName();
         Optional<String> targetFieldName = getTargetFieldName(dataDictionary, model);
         final Map<String, KiePMMLOriginalTypeGeneratedType> fieldTypeMap = new HashMap<>();

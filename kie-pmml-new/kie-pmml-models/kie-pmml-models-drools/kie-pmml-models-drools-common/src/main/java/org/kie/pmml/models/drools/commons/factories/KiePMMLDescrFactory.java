@@ -46,7 +46,7 @@ public class KiePMMLDescrFactory {
      * @return
      */
     public static PackageDescr getBaseDescr(final KiePMMLDroolsAST kiePMMLDroolsAST, String packageName) {
-        logger.debug("getBaseDescr {} {}", kiePMMLDroolsAST, packageName);
+        logger.trace("getBaseDescr {} {}", kiePMMLDroolsAST, packageName);
         PackageDescrBuilder builder = DescrFactory.newPackage()
                 .name(packageName);
         builder.newImport().target(KiePMMLStatusHolder.class.getName());

@@ -60,7 +60,7 @@ public class KiePMMLTreeModelSimplePredicateASTFactory extends KiePMMLTreeModelA
             final String agendaActivationGroup,
             final Object result,
             boolean isFinalLeaf) {
-        logger.debug("declareRuleFromSimplePredicateSurrogate {} {} {} {}", simplePredicate, currentRule, agendaActivationGroup, result);
+        logger.trace("declareRuleFromSimplePredicateSurrogate {} {} {} {}", simplePredicate, currentRule, agendaActivationGroup, result);
         String fieldName = fieldTypeMap.get(simplePredicate.getField().getValue()).getGeneratedType();
         String surrogateCurrentRule = String.format(SURROGATE_RULENAME_PATTERN, currentRule, fieldName);
         final List<KiePMMLFieldOperatorValue> constraints = Collections.singletonList(KiePMMLASTFactoryUtils.getConstraintEntryFromSimplePredicates(fieldName, "surrogate", Collections.singletonList(simplePredicate), fieldTypeMap));
@@ -87,7 +87,7 @@ public class KiePMMLTreeModelSimplePredicateASTFactory extends KiePMMLTreeModelA
                                                final String currentRule,
                                                final Object result,
                                                boolean isFinalLeaf) {
-        logger.debug("declareRuleFromSimplePredicate {} {} {}", simplePredicate, parentPath, currentRule);
+        logger.trace("declareRuleFromSimplePredicate {} {} {}", simplePredicate, parentPath, currentRule);
         String statusConstraint = StringUtils.isEmpty(parentPath) ? STATUS_NULL : String.format(STATUS_PATTERN, parentPath);
         String key = fieldTypeMap.get(simplePredicate.getField().getValue()).getGeneratedType();
         String operator = OPERATOR.byName(simplePredicate.getOperator().value()).getOperator();
