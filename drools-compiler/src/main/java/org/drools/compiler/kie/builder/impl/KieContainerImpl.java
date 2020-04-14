@@ -71,6 +71,7 @@ import org.kie.api.runtime.StatelessKieSession;
 import org.kie.api.time.Calendar;
 import org.kie.internal.builder.ChangeType;
 import org.kie.internal.builder.KnowledgeBuilder;
+import org.kie.internal.builder.ResourceChange;
 import org.kie.internal.builder.ResourceChangeSet;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -239,7 +240,7 @@ public class KieContainerImpl
     private Results update( InternalKieModule currentKM, InternalKieModule newKM ) {
         final KieJarChangeSet cs = currentKM.getChanges( newKM );
         List<String> modifiedClassNames = getModifiedClasses(cs);
-        final boolean modifyingUsedClass = isModifyingUsedClass( modifiedClassNames, getClassLoader() );
+        final boolean modifyingUsedClass = isModifyingUsedClass( modifiedClassNames, getClassLoader() ) || isModifyingUsedFunction(cs);
         final Collection<Class<?>> modifiedClasses = reinitModifiedClasses( newKM, modifiedClassNames, getClassLoader(), modifyingUsedClass );
         final Collection<String> unchangedResources = getUnchangedResources( newKM, cs );
 
@@ -276,6 +277,13 @@ public class KieContainerImpl
         this.statelessKSessions.entrySet().removeIf( ksession -> kProject.getKieSessionModel( ksession.getKey() ) == null );
 
         return results;
+    }
+
+    private boolean isModifyingUsedFunction(KieJarChangeSet cs) {
+        return cs.getChanges().values()
+                 .stream()
+                 .flatMap(resourceChangeSet -> resourceChangeSet.getChanges().stream())
+                 .anyMatch(change -> change.getType() == ResourceChange.Type.FUNCTION && change.getChangeType() == ChangeType.UPDATED);
     }
 
     private Collection<String> getUnchangedResources( InternalKieModule newKM, KieJarChangeSet cs ) {
