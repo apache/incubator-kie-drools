@@ -29,9 +29,10 @@ import javax.inject.Inject;
 
 import com.fasterxml.jackson.databind.node.ObjectNode;
 import io.vertx.core.eventbus.EventBus;
-import io.vertx.core.eventbus.Message;
 import io.vertx.core.eventbus.MessageConsumer;
+import org.eclipse.microprofile.reactive.messaging.Acknowledgment;
 import org.eclipse.microprofile.reactive.messaging.Incoming;
+import org.eclipse.microprofile.reactive.messaging.Message;
 import org.kie.kogito.index.event.DomainModelRegisteredEvent;
 import org.kie.kogito.index.event.KogitoJobCloudEvent;
 import org.kie.kogito.index.event.KogitoProcessCloudEvent;
@@ -61,16 +62,16 @@ public class ReactiveMessagingEventConsumer {
 
     @Inject
     EventBus eventBus;
-    
+
     @Inject
     ObjectNodeMessageCodec codec;
-    
-    @PostConstruct
-    public void setup(){
-        eventBus.registerDefaultCodec(ObjectNode.class, codec);
-    }
 
     private Map<String, MessageConsumer<ObjectNode>> consumers = new HashMap<>();
+
+    @PostConstruct
+    public void setup() {
+        eventBus.registerDefaultCodec(ObjectNode.class, codec);
+    }
 
     public void onDomainModelRegisteredEvent(@Observes DomainModelRegisteredEvent event) {
         LOGGER.info("New domain model registered for Process Id: {}", event.getProcessId());
@@ -82,45 +83,81 @@ public class ReactiveMessagingEventConsumer {
     }
 
     @Incoming(KOGITO_PROCESSINSTANCES_EVENTS)
-    public CompletionStage<Void> onProcessInstanceEvent(KogitoProcessCloudEvent event) {
+    @Acknowledgment(Acknowledgment.Strategy.MANUAL)
+    public CompletionStage<Void> onProcessInstanceEvent(Message<KogitoProcessCloudEvent> event) {
         LOGGER.debug("Process instance consumer received KogitoCloudEvent: \n{}", event);
-        return CompletableFuture.runAsync(() -> indexingService.indexProcessInstance(event.getData()));
+        return CompletableFuture.runAsync(() -> indexingService.indexProcessInstance(event.getPayload().getData()))
+                .thenRun(() -> event.ack())
+                .exceptionally(t -> {
+                    LOGGER.error("Error processing process instance KogitoCloudEvent: {}", t.getMessage(), t);
+                    return null;
+                });
     }
 
     @Incoming(KOGITO_PROCESSDOMAIN_EVENTS)
-    public CompletionStage<Void> onProcessInstanceDomainEvent(KogitoProcessCloudEvent event) {
+    @Acknowledgment(Acknowledgment.Strategy.MANUAL)
+    public CompletionStage<Void> onProcessInstanceDomainEvent(Message<KogitoProcessCloudEvent> event) {
         LOGGER.debug("Process domain consumer received KogitoCloudEvent: \n{}", event);
-        ObjectNode json = new ProcessInstanceMetaMapper().apply(event);
-        return sendMessage(json);
+        return CompletableFuture.supplyAsync(() -> new ProcessInstanceMetaMapper().apply(event.getPayload()))
+                .thenCompose(json -> sendMessage(json))
+                .thenRun(() -> event.ack())
+                .exceptionally(t -> {
+                    LOGGER.error("Error processing process domain KogitoCloudEvent: {}", t.getMessage(), t);
+                    return null;
+                });
     }
 
     @Incoming(KOGITO_USERTASKINSTANCES_EVENTS)
-    public CompletionStage<Void> onUserTaskInstanceEvent(KogitoUserTaskCloudEvent event) {
+    @Acknowledgment(Acknowledgment.Strategy.MANUAL)
+    public CompletionStage<Void> onUserTaskInstanceEvent(Message<KogitoUserTaskCloudEvent> event) {
         LOGGER.debug("Task instance received KogitoUserTaskCloudEvent \n{}", event);
-        return CompletableFuture.runAsync(() -> indexingService.indexUserTaskInstance(event.getData()));
+        return CompletableFuture.runAsync(() -> indexingService.indexUserTaskInstance(event.getPayload().getData()))
+                .thenRun(() -> event.ack())
+                .exceptionally(t -> {
+                    LOGGER.error("Error processing task instance KogitoUserTaskCloudEvent: {}", t.getMessage(), t);
+                    return null;
+                });
     }
 
     @Incoming(KOGITO_USERTASKDOMAIN_EVENTS)
-    public CompletionStage<Void> onUserTaskInstanceDomainEvent(KogitoUserTaskCloudEvent event) {
+    @Acknowledgment(Acknowledgment.Strategy.MANUAL)
+    public CompletionStage<Void> onUserTaskInstanceDomainEvent(Message<KogitoUserTaskCloudEvent> event) {
         LOGGER.debug("Task domain received KogitoUserTaskCloudEvent \n{}", event);
-        ObjectNode json = new UserTaskInstanceMetaMapper().apply(event);
-        return sendMessage(json);
+        return CompletableFuture.supplyAsync(() -> new UserTaskInstanceMetaMapper().apply(event.getPayload()))
+                .thenCompose(json -> sendMessage(json))
+                .thenRun(() -> event.ack())
+                .exceptionally(t -> {
+                    LOGGER.error("Error processing task domain KogitoUserTaskCloudEvent: {}", t.getMessage(), t);
+                    return null;
+                });
     }
 
     @Incoming(KOGITO_JOBS_EVENTS)
-    public CompletionStage<Void> onJobEvent(KogitoJobCloudEvent event) {
+    @Acknowledgment(Acknowledgment.Strategy.MANUAL)
+    public CompletionStage<Void> onJobEvent(Message<KogitoJobCloudEvent> event) {
         LOGGER.debug("Job received KogitoJobCloudEvent \n{}", event);
-        return CompletableFuture.runAsync(() -> indexingService.indexJob(event.getData()));
+        return CompletableFuture.runAsync(() -> indexingService.indexJob(event.getPayload().getData()))
+                .thenRun(() -> event.ack())
+                .exceptionally(t -> {
+                    LOGGER.error("Error processing job KogitoJobCloudEvent: {}", t.getMessage(), t);
+                    return null;
+                });
     }
 
-    private CompletableFuture<Void> sendMessage(ObjectNode json) {
+    protected CompletableFuture<Void> sendMessage(ObjectNode json) {
         CompletableFuture<Void> cf = new CompletableFuture<>();
         String processId = json.get("processId").asText();
-        eventBus.request(format(KOGITO_DOMAIN_EVENTS, processId), json, async -> cf.complete(null));
+        eventBus.request(format(KOGITO_DOMAIN_EVENTS, processId), json, async -> {
+            if (async.succeeded()) {
+                cf.complete(null);
+            } else {
+                cf.completeExceptionally(async.cause());
+            }
+        });
         return cf;
     }
 
-    private void onDomainEvent(Message<ObjectNode> message) {
+    private void onDomainEvent(io.vertx.core.eventbus.Message<ObjectNode> message) {
         try {
             LOGGER.debug("Processing domain message: {}", message);
             indexingService.indexModel(message.body());

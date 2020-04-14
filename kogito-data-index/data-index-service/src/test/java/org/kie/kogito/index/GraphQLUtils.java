@@ -146,7 +146,7 @@ public class GraphQLUtils {
         return getJobQuery("JobById", id);
     }
 
-    public static String geTravelsByUserTaskId(String id) {
+    public static String getTravelsByUserTaskId(String id) {
         return getQuery("TravelsByUserTaskId", id);
     }
 

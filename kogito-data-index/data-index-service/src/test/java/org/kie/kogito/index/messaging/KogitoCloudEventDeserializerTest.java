@@ -16,8 +16,6 @@
 
 package org.kie.kogito.index.messaging;
 
-import java.io.IOException;
-import java.io.InputStream;
 import java.net.URI;
 import java.time.ZonedDateTime;
 import java.time.format.DateTimeFormatter;
@@ -29,12 +27,13 @@ import org.kie.kogito.index.event.KogitoProcessCloudEvent;
 import org.kie.kogito.index.event.KogitoUserTaskCloudEvent;
 
 import static java.util.Collections.emptySet;
+import static org.kie.kogito.index.TestUtils.readFileContent;
 
 public class KogitoCloudEventDeserializerTest {
 
     @Test
     public void testProcessDeserializer() throws Exception {
-        KogitoProcessCloudEvent event = new KogitoProcessCloudEventDeserializer().deserialize(null, getJsonEventBytes("process_instance_event.json"));
+        KogitoProcessCloudEvent event = new KogitoProcessCloudEventDeserializer().deserialize(null, readFileContent("process_instance_event.json").getBytes());
         SoftAssertions softly = new SoftAssertions();
         softly.assertThat(event)
                 .isNotNull()
@@ -48,6 +47,7 @@ public class KogitoCloudEventDeserializerTest {
                 .hasFieldOrPropertyWithValue("kogitoAddons", "jobs-management,prometheus-monitoring,process-management")
                 .hasFieldOrPropertyWithValue("time", ZonedDateTime.parse("2019-08-20T19:26:02.110668Z[UTC]", DateTimeFormatter.ISO_DATE_TIME))
                 .hasFieldOrPropertyWithValue("type", "ProcessInstanceEvent")
+                .hasFieldOrPropertyWithValue("source", URI.create("/hotelBooking"))
                 .hasFieldOrPropertyWithValue("data.id", "c2fa5c5e-3002-44c7-aef7-bce82297e3fe")
                 .hasFieldOrPropertyWithValue("data.processId", "hotelBooking")
                 .hasFieldOrPropertyWithValue("data.end", ZonedDateTime.parse("2019-08-20T19:26:02.092Z[UTC]", DateTimeFormatter.ISO_DATE_TIME))
@@ -75,7 +75,7 @@ public class KogitoCloudEventDeserializerTest {
 
     @Test
     public void testProcessEmptyIdsDeserializer() throws Exception {
-        KogitoProcessCloudEvent event = new KogitoProcessCloudEventDeserializer().deserialize(null, getJsonEventBytes("process_instance_empty_event.json"));
+        KogitoProcessCloudEvent event = new KogitoProcessCloudEventDeserializer().deserialize(null, readFileContent("process_instance_empty_event.json").getBytes());
         SoftAssertions softly = new SoftAssertions();
         softly.assertThat(event)
                 .isNotNull()
@@ -102,8 +102,8 @@ public class KogitoCloudEventDeserializerTest {
     }
 
     @Test
-    public void testUserTaskDeserializer() throws IOException {
-        KogitoUserTaskCloudEvent event = new KogitoUserTaskCloudEventDeserializer().deserialize(null, getJsonEventBytes("user_task_instance_event.json"));
+    public void testUserTaskDeserializer() throws Exception {
+        KogitoUserTaskCloudEvent event = new KogitoUserTaskCloudEventDeserializer().deserialize(null, readFileContent("user_task_instance_event.json").getBytes());
         SoftAssertions softly = new SoftAssertions();
         softly.assertThat(event)
                 .isNotNull()
@@ -144,8 +144,8 @@ public class KogitoCloudEventDeserializerTest {
     }
 
     @Test
-    public void testJobDeserializer() throws IOException {
-        KogitoJobCloudEvent event = new KogitoJobCloudEventDeserializer().deserialize(null, getJsonEventBytes("job_event.json"));
+    public void testJobDeserializer() throws Exception {
+        KogitoJobCloudEvent event = new KogitoJobCloudEventDeserializer().deserialize(null, readFileContent("job_event.json").getBytes());
         SoftAssertions softly = new SoftAssertions();
         softly.assertThat(event)
                 .isNotNull()
@@ -175,13 +175,5 @@ public class KogitoCloudEventDeserializerTest {
                 .hasFieldOrPropertyWithValue("data.expirationTime", ZonedDateTime.parse("2020-01-16T20:40:58.918Z[UTC]", DateTimeFormatter.ISO_DATE_TIME));
 
         softly.assertAll();
-    }
-
-    private byte[] getJsonEventBytes(String file) throws IOException {
-        try (InputStream is = Thread.currentThread().getContextClassLoader().getResourceAsStream(file)) {
-            byte[] bytes = new byte[is.available()];
-            is.read(bytes);
-            return bytes;
-        }
     }
 }

@@ -125,7 +125,7 @@ public class WebSocketSubscriptionTest {
                 .then().log().ifValidationFails().statusCode(200).body("data.Travels", isA(Collection.class));
 
         KogitoProcessCloudEvent event = getProcessCloudEvent(processId, processInstanceId, state, null, null, null);
-        consumer.onProcessInstanceDomainEvent(event);
+        consumer.onProcessInstanceDomainEvent(() -> event);
 
         JsonObject json = cf.get(1, TimeUnit.MINUTES);
 
@@ -144,7 +144,7 @@ public class WebSocketSubscriptionTest {
                 .then().log().ifValidationFails().statusCode(200).body("data.Travels", isA(Collection.class));
 
         KogitoProcessCloudEvent event = getProcessCloudEvent(processId, processInstanceId, state, null, null, null);
-        consumer.onProcessInstanceEvent(event);
+        consumer.onProcessInstanceEvent(() -> event);
 
         JsonObject json = cf.get(1, TimeUnit.MINUTES);
 
@@ -163,7 +163,7 @@ public class WebSocketSubscriptionTest {
                 .then().log().ifValidationFails().statusCode(200).body("data.Deals", isA(Collection.class));
 
         KogitoUserTaskCloudEvent event = getUserTaskCloudEvent(taskId, processId, processInstanceId, null, null, state);
-        consumer.onUserTaskInstanceEvent(event);
+        consumer.onUserTaskInstanceEvent(() -> event);
 
         JsonObject json = cf.get(1, TimeUnit.MINUTES);
 
@@ -179,7 +179,7 @@ public class WebSocketSubscriptionTest {
         CompletableFuture<JsonObject> cf = subscribe(subscription);
 
         KogitoJobCloudEvent event = getJobCloudEvent(taskId, processId, processInstanceId, null, null, status);
-        consumer.onJobEvent(event);
+        consumer.onJobEvent(() -> event);
 
         JsonObject json = cf.get(1, TimeUnit.MINUTES);
 

@@ -47,6 +47,11 @@
       <groupId>io.quarkus</groupId>
       <artifactId>quarkus-oidc</artifactId>
     </dependency>
+    <!-- Metrics -->
+    <dependency>
+      <groupId>io.quarkus</groupId>
+      <artifactId>quarkus-smallrye-metrics</artifactId>
+    </dependency>
 
     <!-- Health Check -->
     <dependency>
@@ -99,6 +104,16 @@
       <artifactId>testcontainers</artifactId>
       <scope>test</scope>
     </dependency>
+    <dependency>
+      <groupId>org.testcontainers</groupId>
+      <artifactId>kafka</artifactId>
+      <scope>test</scope>
+    </dependency>
+    <dependency>
+      <groupId>io.vertx</groupId>
+      <artifactId>vertx-kafka-client</artifactId>
+      <scope>test</scope>
+    </dependency>
   </dependencies>
   <build>
     <plugins>
@@ -113,6 +128,28 @@
             <goals>
               <goal>build</goal>
             </goals>
+          </execution>
+        </executions>
+      </plugin>
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-failsafe-plugin</artifactId>
+        <executions>
+          <execution>
+            <goals>
+              <goal>integration-test</goal>
+              <goal>verify</goal>
+            </goals>
+            <configuration>
+              <excludes>
+                <exclude>**/Native*IT.java</exclude>
+              </excludes>
+              <systemProperties>
+                <java.util.logging.manager>org.jboss.logmanager.LogManager</java.util.logging.manager>
+                <infinispan.version>${version.org.infinispan.image}</infinispan.version>
+                <keycloak.version>${version.org.keycloak.image}</keycloak.version>
+              </systemProperties>
+            </configuration>
           </execution>
         </executions>
       </plugin>
@@ -180,6 +217,9 @@
                   <goal>verify</goal>
                 </goals>
                 <configuration>
+                  <includes>
+                    <include>**/Native*IT.java</include>
+                  </includes>
                   <systemProperties>
                     <native.image.path>${project.build.directory}/${project.build.finalName}-runner</native.image.path>
                   </systemProperties>
