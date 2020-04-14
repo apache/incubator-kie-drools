@@ -27,8 +27,7 @@
   <logger name="org.kie.dmn.core.compiler.execmodelbased" level="info"/> <!-- useful default when moving generic org.kie to <info -->
   <logger name="org.kie.dmn.feel.codegen" level="info"/> <!-- useful default when moving generic org.kie to <info -->
 
-  <!-- enable this to inspect class generation in Typesafe DMN -->
-  <!-- <logger name="org.drools.modelcompiler.builder.generator.declaredtype.generator.GeneratedClassDeclaration" level="debug"/> -->
+  <logger name="org.drools.modelcompiler.builder.generator.declaredtype.generator.GeneratedClassDeclaration" level="info"/><!-- DEBUG this to inspect class generation in Typesafe DMN -->
 
   <root level="warn">
     <appender-ref ref="consoleAppender" />
