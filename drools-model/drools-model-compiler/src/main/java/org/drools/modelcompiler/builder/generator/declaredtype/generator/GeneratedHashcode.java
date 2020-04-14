@@ -17,8 +17,8 @@
 
 package org.drools.modelcompiler.builder.generator.declaredtype.generator;
 
-import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 import com.github.javaparser.ast.Modifier;
 import com.github.javaparser.ast.NodeList;
@@ -39,15 +39,12 @@ import static org.drools.modelcompiler.builder.generator.declaredtype.generator.
 class GeneratedHashcode {
 
     private static final String HASH_CODE = "hashCode";
-    private List<Statement> hashCodeFieldStatement = new ArrayList<>();
 
-    private final boolean hasSuper;
+    static MethodDeclaration method( List<GeneratedMethods.PojoField> fields, boolean hasSuper ) {
+        List<Statement> hashCodeFieldStatement = fields.stream()
+                .map( GeneratedHashcode::generateHashCodeForField )
+                .collect( Collectors.toList());
 
-    GeneratedHashcode(boolean hasSuper) {
-        this.hasSuper = hasSuper;
-    }
-
-    MethodDeclaration method() {
         final Statement header = parseStatement(hasSuper ? "int result = super.hashCode();" : "int result = 1;");
         NodeList<Statement> hashCodeStatements = nodeList(header);
         hashCodeStatements.addAll(hashCodeFieldStatement);
@@ -60,18 +57,13 @@ class GeneratedHashcode {
         return equals;
     }
 
-    public void addHashCodeForField(String fieldName, Type type) {
-        Statement hashCodeStatement = generateHashCodeForField(fieldName, type);
-        hashCodeFieldStatement.add(hashCodeStatement);
-    }
-
-    private static Statement generateHashCodeForField(String fieldName, Type type) {
-        if (type.isClassOrInterfaceType()) {
-            return hashCodeClass(fieldName);
-        } else if (type.isArrayType()) {
-            return hashCodeArrayType(fieldName, (ArrayType) type);
-        } else if (type.isPrimitiveType()) {
-            return hashCodePrimitiveType(fieldName, (PrimitiveType) type);
+    private static Statement generateHashCodeForField(GeneratedMethods.PojoField field) {
+        if (field.type.isClassOrInterfaceType()) {
+            return hashCodeClass(field.name);
+        } else if (field.type.isArrayType()) {
+            return hashCodeArrayType(field.name, (ArrayType) field.type);
+        } else if (field.type.isPrimitiveType()) {
+            return hashCodePrimitiveType(field.name, (PrimitiveType) field.type);
         } else {
             throw new RuntimeException("Unknown type");
         }

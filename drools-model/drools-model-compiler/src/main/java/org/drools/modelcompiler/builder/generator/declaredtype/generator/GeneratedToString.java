@@ -17,8 +17,8 @@
 
 package org.drools.modelcompiler.builder.generator.declaredtype.generator;
 
-import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 import com.github.javaparser.ast.Modifier;
 import com.github.javaparser.ast.body.MethodDeclaration;
@@ -31,25 +31,18 @@ import static java.text.MessageFormat.format;
 import static com.github.javaparser.StaticJavaParser.parseStatement;
 import static com.github.javaparser.StaticJavaParser.parseType;
 import static com.github.javaparser.ast.NodeList.nodeList;
-import static org.drools.modelcompiler.builder.generator.declaredtype.generator.GeneratedClassDeclaration.OVERRIDE;
 import static org.drools.modelcompiler.builder.generator.declaredtype.POJOGenerator.quote;
+import static org.drools.modelcompiler.builder.generator.declaredtype.generator.GeneratedClassDeclaration.OVERRIDE;
 
 public class GeneratedToString {
 
     private static final String TO_STRING = "toString";
 
-    private final String generatedClassName;
-    private List<String> toStringStatements = new ArrayList<>();
+    static MethodDeclaration method( List<GeneratedMethods.PojoField> fields, String generatedClassName ) {
+        List<String> toStringStatements = fields.stream()
+                .map( field -> format("+ {0}+{1}", quote(field.name + "="), field.name) )
+                .collect( Collectors.toList());
 
-    GeneratedToString(String generatedClassName) {
-        this.generatedClassName = generatedClassName;
-    }
-
-    public void add(String toStringStatement) {
-        toStringStatements.add(toStringStatement);
-    }
-
-    public MethodDeclaration method() {
         final String header = format("return {0} + {1}", quote(generatedClassName), quote("( "));
         final String body = String.join(format("+ {0}", quote(", ")), toStringStatements);
         final String close = format("+{0};", quote(" )"));

@@ -19,6 +19,7 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
+import java.util.Objects;
 import java.util.Optional;
 
 import static java.util.stream.Collectors.toList;
@@ -71,8 +72,8 @@ public abstract class AbstractScesimData {
     }
 
     public Optional<FactMappingValue> getFactMappingValue(FactIdentifier factIdentifier, ExpressionIdentifier expressionIdentifier) {
-        return factMappingValues.stream().filter(e -> e.getFactIdentifier().equals(factIdentifier) &&
-                e.getExpressionIdentifier().equals(expressionIdentifier)).findFirst();
+        return factMappingValues.stream().filter(e -> Objects.equals(e.getFactIdentifier(), factIdentifier) &&
+                Objects.equals(e.getExpressionIdentifier(), expressionIdentifier)).findFirst();
     }
 
     public Optional<FactMappingValue> getFactMappingValue(FactMapping factMapping) {
@@ -80,13 +81,13 @@ public abstract class AbstractScesimData {
     }
 
     public List<FactMappingValue> getFactMappingValuesByFactIdentifier(FactIdentifier factIdentifier) {
-        return factMappingValues.stream().filter(e -> e.getFactIdentifier().equals(factIdentifier)).collect(toList());
+        return factMappingValues.stream().filter(e -> Objects.equals(e.getFactIdentifier(), factIdentifier)).collect(toList());
     }
 
     public String getDescription() {
         return factMappingValues.stream()
-                .filter(e -> e.getExpressionIdentifier().equals(ExpressionIdentifier.DESCRIPTION) &&
-                        e.getFactIdentifier().equals(FactIdentifier.DESCRIPTION) &&
+                .filter(e -> Objects.equals(e.getExpressionIdentifier(), ExpressionIdentifier.DESCRIPTION) &&
+                        Objects.equals(e.getFactIdentifier(), FactIdentifier.DESCRIPTION) &&
                         e.getRawValue() != null)
                 .map(e -> (String) e.getRawValue())
                 .findFirst().orElse("");

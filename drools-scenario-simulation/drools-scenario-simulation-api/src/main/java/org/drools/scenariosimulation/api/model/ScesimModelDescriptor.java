@@ -18,6 +18,7 @@ package org.drools.scenariosimulation.api.model;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+import java.util.Objects;
 import java.util.Optional;
 import java.util.Set;
 import java.util.function.Predicate;
@@ -76,8 +77,8 @@ public class ScesimModelDescriptor {
     public int getIndexByIdentifier(FactIdentifier factIdentifier, ExpressionIdentifier expressionIdentifier) {
         return IntStream.range(0, factMappings.size()).filter(index -> {
             FactMapping factMapping = factMappings.get(index);
-            return factMapping.getExpressionIdentifier().equals(expressionIdentifier) &&
-                    factMapping.getFactIdentifier().equals(factIdentifier);
+            return Objects.equals(factMapping.getExpressionIdentifier(), expressionIdentifier) &&
+                    Objects.equals(factMapping.getFactIdentifier(), factIdentifier);
         }).findFirst().orElseThrow(() -> new IllegalArgumentException(
                 new StringBuilder().append("Impossible to find a FactMapping with factIdentifier '").append(factIdentifier.getName())
                         .append("' and expressionIdentifier '").append(expressionIdentifier.getName()).append("'").toString()));
@@ -88,8 +89,8 @@ public class ScesimModelDescriptor {
     }
 
     public Optional<FactMapping> getFactMapping(FactIdentifier factIdentifier, ExpressionIdentifier ei) {
-        List<FactMapping> factMappings = internalFilter(e -> e.getExpressionIdentifier().equals(ei) &&
-                e.getFactIdentifier().equals(factIdentifier));
+        List<FactMapping> factMappings = internalFilter(e -> Objects.equals(e.getExpressionIdentifier(), ei) &&
+                Objects.equals(e.getFactIdentifier(), factIdentifier));
         return factMappings.stream().findFirst();
     }
 

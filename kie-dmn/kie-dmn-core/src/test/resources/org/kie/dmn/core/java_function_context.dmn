@@ -58,7 +58,7 @@
       <semantic:requiredKnowledge href="#_9de2ce2e-82dd-44b9-9bc7-9e9fc3db7cac"/>
     </semantic:knowledgeRequirement>
     <semantic:literalExpression id="_178db6f8-1dbc-403d-95db-4c84d39307a6">
-      <semantic:text>Cosinus2(Input)</semantic:text>
+      <semantic:text>Cosinus2()(Input)</semantic:text>
     </semantic:literalExpression>
   </semantic:decision>
   <semantic:inputData id="_835f756b-aca3-4dc3-b79e-af9fbf2ffbec" name="Input" triso:displayName="Input">

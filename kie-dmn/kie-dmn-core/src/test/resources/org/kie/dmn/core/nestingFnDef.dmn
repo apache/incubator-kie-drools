@@ -1,0 +1,23 @@
+<dmn:definitions xmlns:dmn="http://www.omg.org/spec/DMN/20180521/MODEL/" xmlns="https://kiegroup.org/dmn/_FC72DC4B-DC64-4E43-9685-945FC3B7E4BC" xmlns:di="http://www.omg.org/spec/DMN/20180521/DI/" xmlns:kie="http://www.drools.org/kie/dmn/1.2" xmlns:dmndi="http://www.omg.org/spec/DMN/20180521/DMNDI/" xmlns:dc="http://www.omg.org/spec/DMN/20180521/DC/" xmlns:feel="http://www.omg.org/spec/DMN/20180521/FEEL/" id="_87BE81D1-2673-450C-B891-2DBC3EF92893" name="new-file" typeLanguage="http://www.omg.org/spec/DMN/20180521/FEEL/" namespace="https://kiegroup.org/dmn/_FC72DC4B-DC64-4E43-9685-945FC3B7E4BC">
+  <dmn:businessKnowledgeModel id="_1FDF375A-A95F-4709-8B80-1777CAFB5567" name="bkm">
+    <dmn:variable id="_B084F871-C6DC-435B-9AF1-7C76D503B0C5" name="bkm" typeRef="Any"/>
+    <dmn:encapsulatedLogic id="_E6FFF98A-3B48-46E0-8179-55C655BD97F4" kind="FEEL">
+      <dmn:formalParameter id="_0C8997BF-F47B-4F56-BE65-E7FA211FCA12" name="p1" typeRef="number"/>
+      <dmn:functionDefinition id="_3AE0143D-5DA7-4AEF-BDCC-1B685FB7DE26" kind="FEEL">
+        <dmn:formalParameter id="_DE50255E-240A-49D0-864C-B13D4D317554" name="p2" typeRef="number"/>
+        <dmn:literalExpression id="_CE3046AD-C6F7-4EA7-99F8-A424CAD39274">
+          <dmn:text>p1+p2</dmn:text>
+        </dmn:literalExpression>
+      </dmn:functionDefinition>
+    </dmn:encapsulatedLogic>
+  </dmn:businessKnowledgeModel>
+  <dmn:decision id="_BCE7B21C-8756-4D3D-B0F7-C2E10782277E" name="Decision-1">
+    <dmn:variable id="_927AE325-9DC5-4ED4-B570-3D4A45DAA3C2" name="Decision-1" typeRef="number"/>
+    <dmn:knowledgeRequirement id="_B64E890B-C193-4FB7-A1AF-AE3AD3EF7871">
+      <dmn:requiredKnowledge href="#_1FDF375A-A95F-4709-8B80-1777CAFB5567"/>
+    </dmn:knowledgeRequirement>
+    <dmn:literalExpression id="_9AEB0B9A-813A-4E31-9E6E-E69C655E7BA3">
+      <dmn:text>bkm(1)(2)</dmn:text>
+    </dmn:literalExpression>
+  </dmn:decision>
+</dmn:definitions>

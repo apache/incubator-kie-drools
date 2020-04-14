@@ -546,4 +546,33 @@ public class DeclaredTypesTest extends BaseModelTest {
         ksession.insert(f1);
         assertEquals( 1, ksession.fireAllRules() );
     }
+
+    @Test
+    public void testExtendPojo() throws Exception {
+        String str =
+                "package org.test;\n" +
+                "import " + Person.class.getCanonicalName() + ";" +
+                "declare MyPerson extends Person\n" +
+                "    style : String\n" +
+                "end\n" +
+                "\n" +
+                "rule \"with nested date\" when\n" +
+                "    MyPerson(name == \"Mario\", style == \"Steampunk\")\n" +
+                "then\n" +
+                "end";
+
+        KieSession ksession = getKieSession( str );
+        KieBase kbase = ksession.getKieBase();
+
+        FactType factType = kbase.getFactType("org.test", "MyPerson");
+        assertEquals( String.class, factType.getField( "name" ).getType() );
+        assertEquals( String.class, factType.getField( "style" ).getType() );
+
+        Object f1 = factType.newInstance();
+        factType.set(f1, "name", "Mario");
+        factType.set(f1, "style", "Steampunk");
+
+        ksession.insert(f1);
+        assertEquals( 1, ksession.fireAllRules() );
+    }
 }

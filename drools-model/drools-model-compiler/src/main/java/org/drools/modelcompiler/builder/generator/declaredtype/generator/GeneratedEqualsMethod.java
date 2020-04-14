@@ -17,8 +17,8 @@
 
 package org.drools.modelcompiler.builder.generator.declaredtype.generator;
 
-import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 import com.github.javaparser.ast.Modifier;
 import com.github.javaparser.ast.NodeList;
@@ -42,21 +42,9 @@ class GeneratedEqualsMethod {
     private static final Statement referenceEquals = parseStatement("if (this == o) { return true; }");
     private static final Statement classCheckEquals = parseStatement("if (o == null || getClass() != o.getClass()) { return false; }");
 
-    private final String generatedClassName;
-    private final boolean hasSuper;
-    private List<Statement> equalsFieldStatement = new ArrayList<>();
     private static final String EQUALS = "equals";
 
-    GeneratedEqualsMethod(String generatedClassName, boolean hasSuper) {
-        this.generatedClassName = generatedClassName;
-        this.hasSuper = hasSuper;
-    }
-
-    void add(MethodDeclaration getter, String fieldName) {
-        equalsFieldStatement.add(generateEqualsForField(getter, fieldName));
-    }
-
-    private Statement classCastStatement(String className) {
+    private static Statement classCastStatement(String className) {
         Statement statement = parseStatement("__className that = (__className) o;");
         statement.findAll(ClassOrInterfaceType.class)
                 .stream()
@@ -65,28 +53,30 @@ class GeneratedEqualsMethod {
         return statement;
     }
 
-    private Statement generateEqualsForField(MethodDeclaration getter, String fieldName) {
-
-        Type type = getter.getType();
+    private static Statement generateEqualsForField(GeneratedMethods.PojoField field) {
         Statement statement;
-        if (type instanceof ClassOrInterfaceType) {
+        if (field.type instanceof ClassOrInterfaceType) {
             statement = parseStatement(" if( __fieldName != null ? !__fieldName.equals(that.__fieldName) : that.__fieldName != null) { return false; }");
-        } else if (type instanceof ArrayType) {
-            Type componentType = ((ArrayType) type).getComponentType();
+        } else if (field.type instanceof ArrayType) {
+            Type componentType = ((ArrayType) field.type).getComponentType();
             if (componentType instanceof PrimitiveType) {
                 statement = parseStatement(" if( !java.util.Arrays.equals((" + componentType + "[])__fieldName, (" + componentType + "[])that.__fieldName)) { return false; }");
             } else {
                 statement = parseStatement(" if( !java.util.Arrays.equals((Object[])__fieldName, (Object[])that.__fieldName)) { return false; }");
             }
-        } else if (type instanceof PrimitiveType) {
+        } else if (field.type instanceof PrimitiveType) {
             statement = parseStatement(" if( __fieldName != that.__fieldName) { return false; }");
         } else {
             throw new RuntimeException("Unknown type");
         }
-        return replaceFieldName(statement, fieldName);
+        return replaceFieldName(statement, field.name);
     }
 
-    public MethodDeclaration method() {
+    static MethodDeclaration method(List<GeneratedMethods.PojoField> fields, String generatedClassName, boolean hasSuper) {
+        List<Statement> equalsFieldStatement = fields.stream()
+                .map( GeneratedEqualsMethod::generateEqualsForField )
+                .collect( Collectors.toList());
+
         NodeList<Statement> equalsStatements = nodeList(referenceEquals, classCheckEquals);
         equalsStatements.add(classCastStatement(generatedClassName));
         if (hasSuper) {

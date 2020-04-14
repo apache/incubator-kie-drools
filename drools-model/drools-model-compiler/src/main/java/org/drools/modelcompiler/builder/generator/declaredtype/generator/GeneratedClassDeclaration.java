@@ -20,6 +20,7 @@ package org.drools.modelcompiler.builder.generator.declaredtype.generator;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
@@ -42,8 +43,6 @@ import org.drools.modelcompiler.builder.generator.declaredtype.api.TypeResolver;
 import static com.github.javaparser.StaticJavaParser.parseExpression;
 import static com.github.javaparser.StaticJavaParser.parseType;
 import static com.github.javaparser.ast.NodeList.nodeList;
-import static java.text.MessageFormat.format;
-import static org.drools.modelcompiler.builder.generator.declaredtype.POJOGenerator.quote;
 
 public class GeneratedClassDeclaration {
 
@@ -51,11 +50,9 @@ public class GeneratedClassDeclaration {
 
     private final TypeDefinition typeDefinition;
     private TypeResolver typeResolver;
-    private GeneratedHashcode generatedHashcode;
-    private GeneratedToString generatedToString;
-    private GeneratedEqualsMethod generatedEqualsMethod;
-    private ClassOrInterfaceDeclaration generatedClass;
     private final Collection<Class<?>> markerInterfaceAnnotations;
+
+    private ClassOrInterfaceDeclaration generatedClass;
 
     public GeneratedClassDeclaration(TypeDefinition typeDefinition,
                               TypeResolver typeResolver,
@@ -71,12 +68,17 @@ public class GeneratedClassDeclaration {
         generatedClass = createBasicDeclaredClass(generatedClassName);
         addAnnotations(generatedClass, typeDefinition.getAnnotationsToBeAdded());
 
+        Class<?> superClass = findSuperClass();
+        boolean hasSuper = generatedClass.getExtendedTypes().isNonEmpty();
+
         Collection<FieldDefinition> inheritedFields = typeDefinition.findInheritedDeclaredFields();
         if (inheritedFields.isEmpty() && typeDefinition.getFields().isEmpty()) {
-            generatedClass.addMember(new GeneratedToString(generatedClassName).method());
+            generatedClass.addMember(GeneratedToString.method( Collections.emptyList(), generatedClassName ));
+            generatedClass.addMember(GeneratedAccessibleMethods.getterMethod( Collections.emptyList(), superClass, hasSuper ));
+            generatedClass.addMember(GeneratedAccessibleMethods.setterMethod( Collections.emptyList(), superClass, hasSuper ));
             return generatedClass;
         } else {
-            return generateFullClass(generatedClassName, inheritedFields);
+            return generateFullClass(new GeneratedMethods(generatedClassName, superClass, hasSuper), inheritedFields);
         }
     }
 
@@ -93,53 +95,44 @@ public class GeneratedClassDeclaration {
         return basicDeclaredClass;
     }
 
-    private ClassOrInterfaceDeclaration generateFullClass(String generatedClassName, Collection<FieldDefinition> inheritedFields) {
-        generateInheritanceDefinition();
-
-        boolean hasSuper = typeDefinition.getSuperTypeName().isPresent();
-
-        generatedHashcode = new GeneratedHashcode(hasSuper);
-        generatedToString = new GeneratedToString(generatedClassName);
-        generatedEqualsMethod = new GeneratedEqualsMethod(generatedClassName, hasSuper);
-
+    private ClassOrInterfaceDeclaration generateFullClass(GeneratedMethods generatedMethods, Collection<FieldDefinition> inheritedFields) {
         List<FieldDefinition> typeFields = typeDefinition.getFields();
-
-        GeneratedConstructor fullArgumentConstructor = GeneratedConstructor.factory(generatedClass, typeFields);
-
         for (FieldDefinition tf : typeFields) {
-            processTypeField(tf);
+            processTypeField(generatedMethods, tf);
         }
 
         List<FieldDefinition> keyFields = typeDefinition.getKeyFields();
-
-        fullArgumentConstructor.generateConstructor(inheritedFields, keyFields);
+        GeneratedConstructor.factory(generatedClass, typeFields).generateConstructor(inheritedFields, keyFields);
         if (!keyFields.isEmpty()) {
-            generatedClass.addMember(generatedEqualsMethod.method());
-            generatedClass.addMember(generatedHashcode.method());
+            generatedClass.addMember(generatedMethods.equalsMethod());
+            generatedClass.addMember(generatedMethods.hashcodeMethod());
         }
 
-        generatedClass.addMember(generatedToString.method());
+        generatedClass.addMember(generatedMethods.toStringMethod());
+        generatedClass.addMember(generatedMethods.getterMethod());
+        generatedClass.addMember(generatedMethods.setterMethod());
         return generatedClass;
     }
 
-    private void generateInheritanceDefinition() {
-        typeDefinition.getSuperTypeName().ifPresent( superTypeName -> {
+    private Class<?> findSuperClass() {
+        return typeDefinition.getSuperTypeName().map( superTypeName -> {
             Optional<Class<?>> optResolvedSuper = typeResolver.resolveType(superTypeName);
-            optResolvedSuper.ifPresent(resolvedSuper -> {
+            return optResolvedSuper.map(resolvedSuper -> {
                 if (resolvedSuper.isInterface()) {
                     generatedClass.addImplementedType(superTypeName);
+                    return resolvedSuper;
                 } else {
                     generatedClass.addExtendedType(superTypeName);
+                    return resolvedSuper;
                 }
-            });
-
-            if (!optResolvedSuper.isPresent()) {
+            }).orElseGet( () -> {
                 generatedClass.addExtendedType(superTypeName);
-            }
-        });
+                return (Class<?>) null;
+            } );
+        }).orElse( null );
     }
 
-    private void processTypeField(FieldDefinition fieldDefinition) {
+    private void processTypeField(GeneratedMethods generatedMethods, FieldDefinition fieldDefinition) {
         String fieldName = fieldDefinition.getFieldName();
         Type returnType = parseType(fieldDefinition.getObjectType());
 
@@ -156,15 +149,10 @@ public class GeneratedClassDeclaration {
             field.createSetter();
             MethodDeclaration getter = field.createGetter();
 
-            if (fieldDefinition.isKeyField()) {
-                generatedEqualsMethod.add(getter, fieldName);
-                generatedHashcode.addHashCodeForField(fieldName, getter.getType());
-            }
+            generatedMethods.addField(getter.getType(), fieldName, fieldDefinition.isKeyField());
         }
 
         addAnnotations(field, fieldDefinition.getAnnotations());
-
-        generatedToString.add(format("+ {0}+{1}", quote(fieldName + "="), fieldName));
     }
 
     private void addAnnotations(NodeWithAnnotations<?> fieldAnnotated, List<AnnotationDefinition> annotations) {

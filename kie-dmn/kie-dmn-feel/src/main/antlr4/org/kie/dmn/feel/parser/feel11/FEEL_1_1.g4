@@ -274,6 +274,7 @@ unaryExpression
 	:	SUB unaryExpression                      #signedUnaryExpressionMinus
 	|   unaryExpressionNotPlusMinus              #nonSignedUnaryExpression
     |	ADD unaryExpressionNotPlusMinus          #signedUnaryExpressionPlus
+    | unaryExpression parameters #fnInvocation
 	;
 
 unaryExpressionNotPlusMinus
@@ -290,7 +291,7 @@ primary
     | context                     #primaryContext
     | LPAREN expression RPAREN          #primaryParens
     | simplePositiveUnaryTest     #primaryUnaryTest
-    | qualifiedName parameters?   #primaryName
+    | qualifiedName    #primaryName
     ;
 
 // #33 - #39
@@ -711,7 +712,8 @@ ZeroToThree
 // This is not in the spec but prevents having to preprocess the input
 fragment
 UnicodeEscape
-    :   '\\' 'u' HexDigit HexDigit HexDigit HexDigit
+    :   '\\' 'U' HexDigit HexDigit HexDigit HexDigit HexDigit HexDigit
+    |   '\\' 'u' HexDigit HexDigit HexDigit HexDigit
     ;
 
 // The Null Literal

@@ -1,0 +1,100 @@
+<dmn:definitions xmlns:dmn="http://www.omg.org/spec/DMN/20180521/MODEL/" xmlns="https://kiegroup.org/dmn/_2E160C58-B13A-4C35-B161-BB4B31E049B4" xmlns:di="http://www.omg.org/spec/DMN/20180521/DI/" xmlns:kie="http://www.drools.org/kie/dmn/1.2" xmlns:dmndi="http://www.omg.org/spec/DMN/20180521/DMNDI/" xmlns:dc="http://www.omg.org/spec/DMN/20180521/DC/" xmlns:feel="http://www.omg.org/spec/DMN/20180521/FEEL/" id="_28900F8A-B3D1-4EF3-9457-79905F8ADC6F" name="new-file" typeLanguage="http://www.omg.org/spec/DMN/20180521/FEEL/" namespace="https://kiegroup.org/dmn/_2E160C58-B13A-4C35-B161-BB4B31E049B4">
+  <dmn:extensionElements/>
+  <dmn:decision id="_219C88A0-2823-4A2F-BAAA-FED6B7C77911" name="Y">
+    <dmn:extensionElements/>
+    <dmn:variable id="_30003A71-AE71-4D1C-8620-8634DC669E14" name="Y"/>
+    <dmn:literalExpression id="_92070CFE-252A-4AE4-8269-5CEB42BB7D18">
+      <dmn:text>function(f) (function(x) x(x))(function(y) f(function(x) y(y)(x)))</dmn:text>
+    </dmn:literalExpression>
+  </dmn:decision>
+  <dmn:decision id="_EA30B452-4DCA-4624-9B62-AFDA062AD7EF" name="fac">
+    <dmn:extensionElements/>
+    <dmn:variable id="_014A77B3-FB01-43B2-877D-6BFC37527C2B" name="fac"/>
+    <dmn:informationRequirement id="_8A480245-72B7-4881-B04D-A522005BF814">
+      <dmn:requiredDecision href="#_219C88A0-2823-4A2F-BAAA-FED6B7C77911"/>
+    </dmn:informationRequirement>
+    <dmn:literalExpression id="_33031C0E-5883-40D5-9827-A0F5836EF33A">
+      <dmn:text>Y(function(f) function(n) if n &gt; 1 then n * f(n-1) else 1)</dmn:text>
+    </dmn:literalExpression>
+  </dmn:decision>
+  <dmn:decision id="_260175A3-A21E-4E0A-9DFD-1820F06B1863" name="fac3">
+    <dmn:extensionElements/>
+    <dmn:variable id="_ADF1A8A5-07E5-4129-9F96-8F9BBE8D2A35" name="fac3"/>
+    <dmn:informationRequirement id="_CEFD4CB2-5CA7-4D89-85F5-FDF53C5F5D50">
+      <dmn:requiredDecision href="#_EA30B452-4DCA-4624-9B62-AFDA062AD7EF"/>
+    </dmn:informationRequirement>
+    <dmn:literalExpression id="_7FDBAF84-1B6A-4ADE-A44C-9301EF9D2066">
+      <dmn:text>fac(3)</dmn:text>
+    </dmn:literalExpression>
+  </dmn:decision>
+  <dmn:decision id="d_fib" name="fib">
+    <dmn:variable name="fib"/>
+    <dmn:informationRequirement>
+      <dmn:requiredDecision href="#_219C88A0-2823-4A2F-BAAA-FED6B7C77911"/>
+    </dmn:informationRequirement>
+    <dmn:literalExpression>
+      <dmn:text>Y(function(f) function(n) if n = 2 then [1, 1] else {p : f(n-1), r: concatenate(p, [ p[-1]+p[-2] ])}.r )</dmn:text>
+    </dmn:literalExpression>
+  </dmn:decision>
+  <dmn:decision name="fib5">
+    <dmn:variable name="fib5"/>
+    <dmn:informationRequirement>
+      <dmn:requiredDecision href="#d_fib"/>
+    </dmn:informationRequirement>
+    <dmn:literalExpression>
+      <dmn:text>fib(5)</dmn:text>
+    </dmn:literalExpression>
+  </dmn:decision>
+  <dmndi:DMNDI>
+    <dmndi:DMNDiagram>
+      <di:extension>
+        <kie:ComponentsWidthsExtension>
+          <kie:ComponentWidths dmnElementRef="_92070CFE-252A-4AE4-8269-5CEB42BB7D18">
+            <kie:width>1199</kie:width>
+          </kie:ComponentWidths>
+          <kie:ComponentWidths dmnElementRef="_33031C0E-5883-40D5-9827-A0F5836EF33A">
+            <kie:width>710</kie:width>
+          </kie:ComponentWidths>
+          <kie:ComponentWidths dmnElementRef="_7FDBAF84-1B6A-4ADE-A44C-9301EF9D2066">
+            <kie:width>300</kie:width>
+          </kie:ComponentWidths>
+        </kie:ComponentsWidthsExtension>
+      </di:extension>
+      <dmndi:DMNShape id="dmnshape-_219C88A0-2823-4A2F-BAAA-FED6B7C77911" dmnElementRef="_219C88A0-2823-4A2F-BAAA-FED6B7C77911" isCollapsed="false">
+        <dmndi:DMNStyle>
+          <dmndi:FillColor red="255" green="255" blue="255"/>
+          <dmndi:StrokeColor red="0" green="0" blue="0"/>
+          <dmndi:FontColor red="0" green="0" blue="0"/>
+        </dmndi:DMNStyle>
+        <dc:Bounds x="420" y="183" width="100" height="50"/>
+        <dmndi:DMNLabel/>
+      </dmndi:DMNShape>
+      <dmndi:DMNShape id="dmnshape-_EA30B452-4DCA-4624-9B62-AFDA062AD7EF" dmnElementRef="_EA30B452-4DCA-4624-9B62-AFDA062AD7EF" isCollapsed="false">
+        <dmndi:DMNStyle>
+          <dmndi:FillColor red="255" green="255" blue="255"/>
+          <dmndi:StrokeColor red="0" green="0" blue="0"/>
+          <dmndi:FontColor red="0" green="0" blue="0"/>
+        </dmndi:DMNStyle>
+        <dc:Bounds x="600" y="183" width="100" height="50"/>
+        <dmndi:DMNLabel/>
+      </dmndi:DMNShape>
+      <dmndi:DMNShape id="dmnshape-_260175A3-A21E-4E0A-9DFD-1820F06B1863" dmnElementRef="_260175A3-A21E-4E0A-9DFD-1820F06B1863" isCollapsed="false">
+        <dmndi:DMNStyle>
+          <dmndi:FillColor red="255" green="255" blue="255"/>
+          <dmndi:StrokeColor red="0" green="0" blue="0"/>
+          <dmndi:FontColor red="0" green="0" blue="0"/>
+        </dmndi:DMNStyle>
+        <dc:Bounds x="780" y="183" width="100" height="50"/>
+        <dmndi:DMNLabel/>
+      </dmndi:DMNShape>
+      <dmndi:DMNEdge id="dmnedge-_8A480245-72B7-4881-B04D-A522005BF814" dmnElementRef="_8A480245-72B7-4881-B04D-A522005BF814">
+        <di:waypoint x="520" y="208"/>
+        <di:waypoint x="600" y="208"/>
+      </dmndi:DMNEdge>
+      <dmndi:DMNEdge id="dmnedge-_CEFD4CB2-5CA7-4D89-85F5-FDF53C5F5D50" dmnElementRef="_CEFD4CB2-5CA7-4D89-85F5-FDF53C5F5D50">
+        <di:waypoint x="700" y="208"/>
+        <di:waypoint x="780" y="208"/>
+      </dmndi:DMNEdge>
+    </dmndi:DMNDiagram>
+  </dmndi:DMNDI>
+</dmn:definitions>

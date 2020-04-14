@@ -19,7 +19,6 @@ package org.drools.modelcompiler.builder.generator.declaredtype;
 
 import java.util.Arrays;
 import java.util.Collection;
-import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
@@ -35,6 +34,7 @@ import org.drools.compiler.lang.descr.PackageDescr;
 import org.drools.compiler.lang.descr.TypeDeclarationDescr;
 import org.drools.core.addon.TypeResolver;
 import org.drools.core.definitions.InternalKnowledgePackage;
+import org.drools.core.factmodel.AccessibleFact;
 import org.drools.core.factmodel.GeneratedFact;
 import org.drools.modelcompiler.builder.GeneratedClassWithPackage;
 import org.drools.modelcompiler.builder.ModelBuilderImpl;
@@ -56,6 +56,7 @@ public class POJOGenerator {
     private PackageModel packageModel;
 
     private static final List<String> exprAnnotations = Arrays.asList("duration", "timestamp");
+    private static final List<Class<?>> IMPLEMENTED_INTERFACES = Arrays.asList(GeneratedFact.class, AccessibleFact.class);
 
     public POJOGenerator(ModelBuilderImpl builder, InternalKnowledgePackage pkg, PackageDescr packageDescr, PackageModel packageModel) {
         this.builder = builder;
@@ -124,10 +125,7 @@ public class POJOGenerator {
         DescrTypeDefinition descrDeclaredTypeDefinition = new DescrTypeDefinition(packageDescr, typeDescr, typeResolver);
         descrDeclaredTypeDefinition.getErrors().forEach(builder::addBuilderResult);
 
-        ClassOrInterfaceDeclaration generatedClass = new GeneratedClassDeclaration(descrDeclaredTypeDefinition,
-                                                                                   typeResolver,
-                                                                                   Collections.singletonList(GeneratedFact.class))
-                .toClassDeclaration();
+        ClassOrInterfaceDeclaration generatedClass = new GeneratedClassDeclaration(descrDeclaredTypeDefinition, typeResolver, IMPLEMENTED_INTERFACES).toClassDeclaration();
         packageModel.addGeneratedPOJO(generatedClass);
         addTypeMetadata(typeDescr.getTypeName());
     }

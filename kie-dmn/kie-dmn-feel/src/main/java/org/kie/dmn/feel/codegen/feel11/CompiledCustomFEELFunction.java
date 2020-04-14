@@ -24,23 +24,8 @@ import org.kie.dmn.feel.runtime.functions.AbstractCustomFEELFunction;
 
 public class CompiledCustomFEELFunction extends AbstractCustomFEELFunction<Function<EvaluationContext, Object>> {
 
-    private final EvaluationContext ctx;
-
-    public CompiledCustomFEELFunction(String name, List<Param> parameters, Function<EvaluationContext, Object> body) {
-        this(name, parameters, body, null);
-    }
-
     public CompiledCustomFEELFunction(String name, List<Param> parameters, Function<EvaluationContext, Object> body, EvaluationContext ctx) {
-        super(name, parameters, body);
-        this.ctx = ctx;
-    }
-
-    public boolean isProperClosure() {
-        return ctx != null;
-    }
-
-    public EvaluationContext getEvaluationContext() {
-        return ctx;
+        super(name, parameters, body, ctx);
     }
 
     @Override

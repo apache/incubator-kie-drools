@@ -116,7 +116,7 @@ public class DMNInvocationEvaluator
                     function = (FEELFunction) r;
                 }
             }
-            // this invocation will need to resolve parameters according to the importING scope, hence I need to pop scope to push it back later at actual invocation.
+            // this invocation will need to resolve parameters according to the importING scope, but thanks to closure no longer need to pop scope to push it back later at actual invocation.
             if (walkedIntoScope) {
                 dmnContext.popScope();
             }
@@ -174,15 +174,7 @@ public class DMNInvocationEvaluator
 
             EvaluationContextImpl ctx = new EvaluationContextImpl(listenerMgr, eventManager.getRuntime());
 
-            if (walkedIntoScope) {
-                // the DMN Invocation needed to resolve parameters according to the importING scope, hence the import scope was pop-ed previously to resolve correctly the parameters.
-                // now walk back into the importED scope to actually invoke the `function`.
-                dmnContext.pushScope(fnameParts[0], importAlias.getNamespaceURI());
-            }
             invocationResult = function.invokeReflectively( ctx, namedParams );
-            if (walkedIntoScope) {
-                dmnContext.popScope();
-            }
 
             boolean hasErrors = hasErrors( events, eventManager, result );
             return new EvaluatorResultImpl( invocationResult, hasErrors ? ResultType.FAILURE : ResultType.SUCCESS );
