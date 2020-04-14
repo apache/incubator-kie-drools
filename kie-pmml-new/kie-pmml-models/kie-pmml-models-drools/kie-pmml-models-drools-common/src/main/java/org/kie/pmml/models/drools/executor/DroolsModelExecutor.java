@@ -1,11 +1,7 @@
 package org.kie.pmml.models.drools.executor;
 
-import java.util.ArrayList;
-import java.util.List;
 import java.util.Map;
 
-import org.drools.modelcompiler.ExecutableModelProject;
-import org.kie.api.definition.type.FactType;
 import org.kie.api.event.rule.AfterMatchFiredEvent;
 import org.kie.api.event.rule.AgendaEventListener;
 import org.kie.api.event.rule.AgendaGroupPoppedEvent;
@@ -16,8 +12,6 @@ import org.kie.api.event.rule.MatchCreatedEvent;
 import org.kie.api.event.rule.RuleFlowGroupActivatedEvent;
 import org.kie.api.event.rule.RuleFlowGroupDeactivatedEvent;
 import org.kie.api.pmml.PMML4Result;
-import org.kie.api.runtime.KieSession;
-import org.kie.internal.utils.KieHelper;
 import org.kie.pmml.commons.enums.ResultCode;
 import org.kie.pmml.commons.model.KiePMMLModel;
 import org.kie.pmml.evaluator.api.exceptions.KiePMMLModelException;
@@ -25,6 +19,7 @@ import org.kie.pmml.evaluator.api.executor.PMMLContext;
 import org.kie.pmml.evaluator.core.executor.PMMLModelExecutor;
 import org.kie.pmml.models.drools.commons.model.KiePMMLDroolsModel;
 import org.kie.pmml.models.drools.tuples.KiePMMLOriginalTypeGeneratedType;
+import org.kie.pmml.models.drools.utils.KiePMMLSessionUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -34,56 +29,35 @@ public abstract class DroolsModelExecutor implements PMMLModelExecutor {
 
     private static final Logger logger = LoggerFactory.getLogger(DroolsModelExecutor.class.getName());
 
-    private static final AgendaEventListener agendaEventListener = getAgendaEventListener();
+    private static final AgendaEventListener agendaEventListener = new AgendaEventListener() {
+        public void matchCancelled(MatchCancelledEvent event) {/*Not used */}
 
-    private static AgendaEventListener getAgendaEventListener() {
-        return new AgendaEventListener() {
+        public void matchCreated(MatchCreatedEvent event) {/*Not used */}
 
-            public void matchCancelled(MatchCancelledEvent event) {
-                // Not used
+        public void afterMatchFired(AfterMatchFiredEvent event) {
+            if (logger.isDebugEnabled()) {
+                logger.debug(event.toString());
             }
+        }
 
-            public void matchCreated(MatchCreatedEvent event) {
-                // Not used
-            }
+        public void agendaGroupPopped(AgendaGroupPoppedEvent event) {/*Not used */}
 
-            public void afterMatchFired(AfterMatchFiredEvent event) {
-                if (logger.isDebugEnabled()) {
-                    logger.debug(event.toString());
-                }
+        public void agendaGroupPushed(AgendaGroupPushedEvent event) {
+            if (logger.isDebugEnabled()) {
+                logger.debug(event.toString());
             }
+        }
 
-            public void agendaGroupPopped(AgendaGroupPoppedEvent event) {
-                // Not used
-            }
+        public void beforeMatchFired(BeforeMatchFiredEvent event) {/*Not used */}
 
-            public void agendaGroupPushed(AgendaGroupPushedEvent event) {
-                if (logger.isDebugEnabled()) {
-                    logger.debug(event.toString());
-                }
-            }
+        public void beforeRuleFlowGroupActivated(RuleFlowGroupActivatedEvent event) {/*Not used */}
 
-            public void beforeMatchFired(BeforeMatchFiredEvent event) {
-                // Not used
-            }
+        public void afterRuleFlowGroupActivated(RuleFlowGroupActivatedEvent event) {/*Not used */}
 
-            public void beforeRuleFlowGroupActivated(RuleFlowGroupActivatedEvent event) {
-                // Not used
-            }
+        public void beforeRuleFlowGroupDeactivated(RuleFlowGroupDeactivatedEvent event) {/*Not used */}
 
-            public void afterRuleFlowGroupActivated(RuleFlowGroupActivatedEvent event) {
-                // Not used
-            }
-
-            public void beforeRuleFlowGroupDeactivated(RuleFlowGroupDeactivatedEvent event) {
-                // Not used
-            }
-
-            public void afterRuleFlowGroupDeactivated(RuleFlowGroupDeactivatedEvent event) {
-                // Not used
-            }
-        };
-    }
+        public void afterRuleFlowGroupDeactivated(RuleFlowGroupDeactivatedEvent event) {/*Not used */}
+    };
 
     @Override
     public PMML4Result evaluate(KiePMMLModel model, PMMLContext pmmlContext, String releaseId) {
@@ -91,37 +65,22 @@ public abstract class DroolsModelExecutor implements PMMLModelExecutor {
             throw new KiePMMLModelException("Expected a KiePMMLDroolsModel, received a " + model.getClass().getName());
         }
         final KiePMMLDroolsModel drooledModel = (KiePMMLDroolsModel) model;
-        KieSession kSession = new KieHelper()
-                .addContent(drooledModel.getPackageDescr())
-                .build(ExecutableModelProject.class)
-                .newKieSession();
+        final PMML4Result toReturn = getPMML4Result(drooledModel.getTargetField());
         final Map<String, Object> unwrappedInputParams = getUnwrappedParametersMap(pmmlContext.getRequestData().getMappedRequestParams());
-        List<Object> executionParams = new ArrayList<>();
-        KiePMMLStatusHolder statusHolder = new KiePMMLStatusHolder();
-        executionParams.add(statusHolder);
+        final Map<String, KiePMMLOriginalTypeGeneratedType> fieldTypeMap = drooledModel.getFieldTypeMap();
+        final KiePMMLSessionUtils kiePMMLSessionUtils = KiePMMLSessionUtils.builder(drooledModel.getPackageDescr(), toReturn)
+                .withAgendaEventListener(agendaEventListener)
+                .withUnwrappedInputParams(unwrappedInputParams)
+                .withFieldTypeMap(fieldTypeMap)
+                .build();
+        kiePMMLSessionUtils.fireAllRules();
+        return toReturn;
+    }
+
+    protected PMML4Result getPMML4Result(final String targetField) {
         PMML4Result toReturn = new PMML4Result();
         toReturn.setResultCode(ResultCode.FAIL.getName());
-        toReturn.setResultObjectName(drooledModel.getTargetField());
-        executionParams.add(toReturn);
-        final Map<String, KiePMMLOriginalTypeGeneratedType> fieldTypeMap = drooledModel.getFieldTypeMap();
-        for (Map.Entry<String, Object> entry : unwrappedInputParams.entrySet()) {
-            if (!fieldTypeMap.containsKey(entry.getKey())) {
-                throw new KiePMMLModelException(String.format("Field %s not mapped to generated type", entry.getKey()));
-            }
-            try {
-                String generatedTypeName = fieldTypeMap.get(entry.getKey()).getGeneratedType();
-                FactType factType = kSession.getKieBase().getFactType(drooledModel.getPackageDescr().getName(), generatedTypeName);
-                Object toAdd = factType.newInstance();
-                factType.set(toAdd, "value", entry.getValue());
-                executionParams.add(toAdd);
-            } catch (Exception e) {
-                throw new KiePMMLModelException(e.getMessage(), e);
-            }
-        }
-        executionParams.forEach(kSession::insert);
-        kSession.addEventListener(agendaEventListener);
-        kSession.setGlobal("$pmml4Result", toReturn);
-        kSession.fireAllRules();
+        toReturn.setResultObjectName(targetField);
         return toReturn;
     }
 }

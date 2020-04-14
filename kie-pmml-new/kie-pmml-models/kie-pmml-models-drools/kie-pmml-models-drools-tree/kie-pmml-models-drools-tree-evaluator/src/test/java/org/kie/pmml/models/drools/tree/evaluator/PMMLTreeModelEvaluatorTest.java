@@ -84,7 +84,7 @@ public class PMMLTreeModelEvaluatorTest {
         commonEvaluate(modelName, inputData, null);
         inputData.clear();
         inputData.put(OUTLOOK, SUNNY);
-        inputData.put(TEMPERATURE, 65);
+        inputData.put(TEMPERATURE, 65.0);
         commonEvaluate(modelName, inputData, null);
         inputData.clear();
         inputData.put(OUTLOOK, OVERCAST);
@@ -94,7 +94,7 @@ public class PMMLTreeModelEvaluatorTest {
         commonEvaluate(modelName, inputData, null);
         inputData.clear();
         inputData.put(OUTLOOK, OVERCAST);
-        inputData.put(TEMPERATURE, 80);
+        inputData.put(TEMPERATURE, 80.0);
         commonEvaluate(modelName, inputData, null);
     }
 
@@ -102,8 +102,8 @@ public class PMMLTreeModelEvaluatorTest {
     public void evaluateWillPlay() throws Exception {
         Map<String, Object> inputData = new HashMap<>();
         inputData.put(OUTLOOK, SUNNY);
-        inputData.put(TEMPERATURE, 65);
-        inputData.put(HUMIDITY, 65);
+        inputData.put(TEMPERATURE, 65.0);
+        inputData.put(HUMIDITY, 65.0);
         commonEvaluate(modelName, inputData, WILL_PLAY);
     }
 
@@ -111,25 +111,25 @@ public class PMMLTreeModelEvaluatorTest {
     public void evaluateNoPlay() throws Exception {
         Map<String, Object> inputData = new HashMap<>();
         inputData.put(OUTLOOK, SUNNY);
-        inputData.put(TEMPERATURE, 65);
-        inputData.put(HUMIDITY, 95);
+        inputData.put(TEMPERATURE, 65.0);
+        inputData.put(HUMIDITY, 95.0);
         commonEvaluate(modelName, inputData, NO_PLAY);
         inputData.clear();
         inputData.put(OUTLOOK, SUNNY);
-        inputData.put(HUMIDITY, 95);
-        inputData.put(TEMPERATURE, 95);
+        inputData.put(HUMIDITY, 95.0);
+        inputData.put(TEMPERATURE, 95.0);
         commonEvaluate(modelName, inputData, NO_PLAY);
         inputData.clear();
         inputData.put(OUTLOOK, SUNNY);
-        inputData.put(TEMPERATURE, 95);
+        inputData.put(TEMPERATURE, 95.0);
         commonEvaluate(modelName, inputData, NO_PLAY);
         inputData.clear();
         inputData.put(OUTLOOK, SUNNY);
-        inputData.put(TEMPERATURE, 45);
+        inputData.put(TEMPERATURE, 45.0);
         commonEvaluate(modelName, inputData, NO_PLAY);
         inputData.clear();
         inputData.put(OUTLOOK, RAIN);
-        inputData.put(HUMIDITY, 45);
+        inputData.put(HUMIDITY, 45.0);
         commonEvaluate(modelName, inputData, NO_PLAY);
     }
 
@@ -137,8 +137,8 @@ public class PMMLTreeModelEvaluatorTest {
     public void evaluateMayPlay() throws Exception {
         Map<String, Object> inputData = new HashMap<>();
         inputData.put(OUTLOOK, OVERCAST);
-        inputData.put(TEMPERATURE, 70);
-        inputData.put(HUMIDITY, 60);
+        inputData.put(TEMPERATURE, 70.0);
+        inputData.put(HUMIDITY, 60.0);
         inputData.put(WINDY, "false");
         commonEvaluate(modelName, inputData, MAY_PLAY);
     }
@@ -146,14 +146,14 @@ public class PMMLTreeModelEvaluatorTest {
     @Test
     public void evaluateWhoPlay() throws Exception {
         Map<String, Object> inputData = new HashMap<>();
-        inputData.put(TEMPERATURE, 75);
+        inputData.put(TEMPERATURE, 75.0);
         inputData.put(WINDY, "true");
-        inputData.put(HUMIDITY, 75);
+        inputData.put(HUMIDITY, 75.0);
         commonEvaluate(modelName, inputData, WHO_PLAY);
         inputData.clear();
         inputData.put(WINDY, "false");
-        inputData.put(TEMPERATURE, 65);
-        inputData.put(HUMIDITY, 75);
+        inputData.put(TEMPERATURE, 65.0);
+        inputData.put(HUMIDITY, 75.0);
         commonEvaluate(modelName, inputData, WHO_PLAY);
     }
 
