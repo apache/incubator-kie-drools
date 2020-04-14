@@ -336,6 +336,7 @@
       </plugins>
     </pluginManagement>
     <plugins>
+      <!-- TODO: enable code formatting plugins once the team makes the switch.
       <plugin>
         <groupId>net.revelc.code.formatter</groupId>
         <artifactId>formatter-maven-plugin</artifactId>
@@ -344,6 +345,7 @@
         <groupId>net.revelc.code</groupId>
         <artifactId>impsort-maven-plugin</artifactId>
       </plugin>
+      -->
     </plugins>
   </build>
 
