@@ -67,6 +67,8 @@ import static java.util.stream.Collectors.toSet;
 import static com.github.javaparser.StaticJavaParser.parseClassOrInterfaceType;
 import static com.github.javaparser.StaticJavaParser.parseExpression;
 import static com.github.javaparser.ast.NodeList.nodeList;
+import static org.drools.core.util.ClassUtils.isGetter;
+import static org.drools.core.util.ClassUtils.isSetter;
 import static org.drools.core.util.ClassUtils.getter2property;
 import static org.drools.core.util.ClassUtils.setter2property;
 import static org.drools.modelcompiler.builder.PackageModel.DOMAIN_CLASSESS_METADATA_FILE_NAME;
@@ -395,28 +397,32 @@ public class Consequence {
             Optional<Expression> root = removeRootNodeViaScope.getRootNode()
                     .filter(s -> isNameExprWithName(s, updatedVar));
             if (methodCall.getScope().isPresent() && root.isPresent()) {
-                String propName = methodToProperty(methodCall, removeRootNodeViaScope.getFirstChild());
+                boolean isDirectMethod = removeRootNodeViaScope.getFirstChild().equals(removeRootNodeViaScope.getWithoutRootNode());
+                String propName = null;
+                if (isDirectMethod && isSetter(methodCall.getNameAsString())) {
+                    // direct setter of the updated fact
+                    propName = setter2property(methodCall.getNameAsString());
+                } else if (!isDirectMethod && !isGetter(methodCall.getNameAsString())) {
+                    // indirect setter so the prop of the first getter is modified
+                    // using "!isGetter()" instead of "isSetter()" because we want the behavior similar to standard-drl (DialectUtil.parseModifiedProperties)
+                    Expression firstExpr = removeRootNodeViaScope.getFirstChild();
+                    if (firstExpr.isMethodCallExpr()) {
+                        propName = getter2property(firstExpr.asMethodCallExpr().getNameAsString());
+                    }
+                } else {
+                    // e.g. only getter
+                    continue;
+                }
                 if (propName != null) {
+                    // TODO: also register additional property in case the invoked method is annotated with @Modifies
                     modifiedProps.add(propName);
                 } else {
                     // if we were unable to detect the property the mask has to be all set, so avoid the rest of the cycle
-                    return null;
+                    return new HashSet<>();
                 }
             }
         }
         return modifiedProps;
-    }
-
-    private String methodToProperty(MethodCallExpr mce, Expression getter) {
-        String propertyName = setter2property(mce.getNameAsString());
-
-        if (propertyName == null && getter.isMethodCallExpr()) {
-            propertyName = getter2property(getter.asMethodCallExpr().getNameAsString());
-        }
-
-        // TODO also register additional property in case the invoked method is annotated with @Modifies
-
-        return propertyName;
     }
 
     private static boolean hasDroolsAsParameter( MethodCallExpr mce ) {
