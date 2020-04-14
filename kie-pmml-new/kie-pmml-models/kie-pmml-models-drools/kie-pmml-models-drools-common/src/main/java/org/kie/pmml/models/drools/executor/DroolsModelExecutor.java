@@ -70,8 +70,7 @@ public abstract class DroolsModelExecutor implements PMMLModelExecutor {
         final Map<String, KiePMMLOriginalTypeGeneratedType> fieldTypeMap = drooledModel.getFieldTypeMap();
         final KiePMMLSessionUtils kiePMMLSessionUtils = KiePMMLSessionUtils.builder(drooledModel.getPackageDescr(), toReturn)
                 .withAgendaEventListener(agendaEventListener)
-                .withUnwrappedInputParams(unwrappedInputParams)
-                .withFieldTypeMap(fieldTypeMap)
+                .withObjectsInSession(unwrappedInputParams, fieldTypeMap)
                 .build();
         kiePMMLSessionUtils.fireAllRules();
         return toReturn;

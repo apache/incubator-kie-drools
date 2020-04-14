@@ -34,34 +34,37 @@ import org.kie.pmml.models.drools.tuples.KiePMMLOriginalTypeGeneratedType;
 public class KiePMMLSessionUtils {
 
     private final PackageDescr packageDescr;
-    private final PMML4Result pmml4Result;
-    private AgendaEventListener agendaEventListener;
-    private Map<String, Object> unwrappedInputParams;
-    private Map<String, KiePMMLOriginalTypeGeneratedType> fieldTypeMap;
+    private final KieSession kieSession;
 
     private KiePMMLSessionUtils(final PackageDescr packageDescr, final PMML4Result pmml4Result) {
         this.packageDescr = packageDescr;
-        this.pmml4Result = pmml4Result;
+        kieSession = new KieHelper()
+                .addContent(packageDescr)
+                .build(ExecutableModelProject.class)
+                .newKieSession();
+        kieSession.insert(new KiePMMLStatusHolder());
+        kieSession.insert(pmml4Result);
+        kieSession.setGlobal("$pmml4Result", pmml4Result);
     }
 
     public static Builder builder(final PackageDescr packageDescr, final PMML4Result pmml4Result) {
         return new Builder(packageDescr, pmml4Result);
     }
 
+    /**
+     * Invoke <code>KieSession.fireAllRules()</code>
+     */
     public void fireAllRules() {
-        KieSession kieSession = new KieHelper()
-                .addContent(packageDescr)
-                .build(ExecutableModelProject.class)
-                .newKieSession();
-        kieSession.addEventListener(agendaEventListener);
-        kieSession.setGlobal("$pmml4Result", pmml4Result);
-        addExecutionsParameters(kieSession);
         kieSession.fireAllRules();
     }
 
-    private void addExecutionsParameters(final KieSession kieSession) {
-        kieSession.insert(new KiePMMLStatusHolder());
-        kieSession.insert(pmml4Result);
+    /**
+     * Add <code>Object</code>s to the underlying <code>KieSession</code>.
+     * Such <code>Object</code>s are retrieved/instantiated from the given <code>Map</code>s and the content of the current kieSession' <code>KieBase</code>
+     * @param unwrappedInputParams
+     * @param fieldTypeMap
+     */
+    private void addObjectsToSession(final Map<String, Object> unwrappedInputParams, final Map<String, KiePMMLOriginalTypeGeneratedType> fieldTypeMap) {
         for (Map.Entry<String, Object> entry : unwrappedInputParams.entrySet()) {
             if (!fieldTypeMap.containsKey(entry.getKey())) {
                 throw new KiePMMLModelException(String.format("Field %s not mapped to generated type", entry.getKey()));
@@ -86,18 +89,27 @@ public class KiePMMLSessionUtils {
             this.toBuild = new KiePMMLSessionUtils(packageDescr, pmml4Result);
         }
 
+        /**
+         * Add an <code>AgendaEventListener</code> to the underlying <code>KieSession</code>
+         *
+         * @param agendaEventListener
+         * @return
+         */
         public Builder withAgendaEventListener(AgendaEventListener agendaEventListener) {
-            this.toBuild.agendaEventListener = agendaEventListener;
+            this.toBuild.kieSession.addEventListener(agendaEventListener);
             return this;
         }
 
-        public Builder withUnwrappedInputParams(final Map<String, Object> unwrappedInputParams) {
-            this.toBuild.unwrappedInputParams = unwrappedInputParams;
-            return this;
-        }
-
-        public Builder withFieldTypeMap(final Map<String, KiePMMLOriginalTypeGeneratedType> fieldTypeMap) {
-            this.toBuild.fieldTypeMap = fieldTypeMap;
+        /**
+         * Insert <code>Object</code>s to the underlying <code>KieSession</code>.
+         * Such <code>Object</code>s are retrieved out of the given <code>Map</code>s
+         *
+         * @param unwrappedInputParams
+         * @param fieldTypeMap
+         * @return
+         */
+        public Builder withObjectsInSession(final Map<String, Object> unwrappedInputParams, final Map<String, KiePMMLOriginalTypeGeneratedType> fieldTypeMap) {
+            this.toBuild.addObjectsToSession(unwrappedInputParams, fieldTypeMap);
             return this;
         }
 
