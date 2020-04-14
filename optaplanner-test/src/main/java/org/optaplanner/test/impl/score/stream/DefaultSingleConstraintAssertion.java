@@ -122,7 +122,7 @@ public final class DefaultSingleConstraintAssertion<Solution_>
                 .filter(matchWeight -> !Objects.equals(matchWeight, zero))
                 .collect(Collectors.toList());
         if (matchWeightsFound.isEmpty()) {
-            return 0;
+            return zero;
         } else if (matchWeightsFound.size() != 1) {
             throw new IllegalStateException("Impossible state: expecting at most one match weight," +
                     " but got matchWeightsFound (" + matchWeightsFound + ") instead.");
