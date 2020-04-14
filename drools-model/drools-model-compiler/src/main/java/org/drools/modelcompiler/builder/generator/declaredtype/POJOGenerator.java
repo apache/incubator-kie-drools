@@ -51,6 +51,8 @@ import static org.drools.modelcompiler.builder.generator.DslMethodNames.TYPE_MET
 
 public class POJOGenerator {
 
+    private final static List<Class<?>> MARKER_INTERFACES = Arrays.asList(GeneratedFact.class, AccessibleFact.class);
+
     private ModelBuilderImpl builder;
     private InternalKnowledgePackage pkg;
     private PackageDescr packageDescr;
@@ -127,7 +129,7 @@ public class POJOGenerator {
 
         // Implemented types should be probably in
         ClassOrInterfaceDeclaration generatedClass = new GeneratedClassDeclaration(descrDeclaredTypeDefinition,
-                                                                                   Arrays.asList(GeneratedFact.class, AccessibleFact.class))
+                                                                                   MARKER_INTERFACES)
                 .toClassDeclaration();
         packageModel.addGeneratedPOJO(generatedClass);
         addTypeMetadata(typeDescr.getTypeName());
