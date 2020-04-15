@@ -1,6 +1,3 @@
-#set($symbol_pound='#')
-#set($symbol_dollar='$')
-#set($symbol_escape='\' )
 /*
  * Copyright 2020 Red Hat, Inc. and/or its affiliates.
  *
@@ -16,15 +13,15 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package  ${package}.${packageModelName}.model;
+package  org.kie.pmml.models.naive_bayes.model;
 
 import org.kie.pmml.commons.model.KiePMMLModel;
 import org.kie.pmml.commons.model.enums.MINING_FUNCTION;
 import org.kie.pmml.commons.model.enums.PMML_MODEL;
 
-public class KiePMML${modelName}Model extends KiePMMLModel {
+public class KiePMMLNaiveBayesModel extends KiePMMLModel {
 
-    public static final PMML_MODEL PMML_MODEL_TYPE = PMML_MODEL.${modelNameUppercase}_MODEL;
+    public static final PMML_MODEL PMML_MODEL_TYPE = PMML_MODEL.NAIVEBAYES_MODEL;
 
 
     public static Builder builder(String name, MINING_FUNCTION miningFunction) {
@@ -35,20 +32,14 @@ public class KiePMML${modelName}Model extends KiePMMLModel {
         return PMML_MODEL_TYPE;
     }
 
-    private KiePMML${modelName}Model(String modelName) {
-        super(modelName, Collections.emptyList());
+    private KiePMMLNaiveBayesModel() {
     }
 
-    @Override
-    public Object evaluate(Map<String, Object> requestData) {
-        // TODO
-        throw new UnsupportedOperationException();
-    }
 
-    public static class Builder extends KiePMMLModel.Builder<KiePMML${modelName}Model>{
+    public static class Builder extends KiePMMLModel.Builder<KiePMMLNaiveBayesModel>{
 
         private Builder(String name,MINING_FUNCTION miningFunction){
-            super("${modelName}-", PMML_MODEL_TYPE, miningFunction, () -> new KiePMML${modelName}(name));
+            super(name, "NaiveBayes-", PMML_MODEL_TYPE, miningFunction, KiePMMLNaiveBayesModel::new);
         }
 
         @Override

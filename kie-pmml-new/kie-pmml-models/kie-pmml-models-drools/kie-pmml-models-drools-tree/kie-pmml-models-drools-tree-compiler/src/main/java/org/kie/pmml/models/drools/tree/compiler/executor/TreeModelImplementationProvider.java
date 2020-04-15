@@ -27,7 +27,7 @@ import org.slf4j.LoggerFactory;
 import static org.kie.pmml.models.drools.tree.model.KiePMMLTreeModel.PMML_MODEL_TYPE;
 
 /**
- * Default <code>ModelImplementationProvider</code> for <b>Tree</b>
+ * Default <code>DroolsModelProvider</code> for <b>Tree</b>
  */
 public class TreeModelImplementationProvider extends DroolsModelProvider<TreeModel, KiePMMLTreeModel> {
 

@@ -18,25 +18,29 @@
  */
 package  ${package}.${packageModelName}.model;
 
-import org.kie.pmml.commons.model.KiePMMLModel;
+import java.util.List;
+import java.util.Map;
+
+import org.kie.pmml.commons.model.KiePMMLExtension;
 import org.kie.pmml.commons.model.enums.MINING_FUNCTION;
 import org.kie.pmml.commons.model.enums.PMML_MODEL;
+import org.kie.pmml.models.drools.commons.model.KiePMMLDroolsModel;
 
-public class KiePMML${modelName}Model extends KiePMMLModel {
+public class KiePMML${modelName}Model extends KiePMMLDroolsModel {
 
     public static final PMML_MODEL PMML_MODEL_TYPE = PMML_MODEL.${modelNameUppercase}_MODEL;
 
 
-    public static Builder builder(String name, MINING_FUNCTION miningFunction) {
-        return new Builder(name, miningFunction);
+    public static Builder builder(String name, List<KiePMMLExtension> extensions, MINING_FUNCTION miningFunction) {
+        return new Builder(name, extensions, miningFunction);
     }
 
     public static PMML_MODEL getPmmlModelType() {
         return PMML_MODEL_TYPE;
     }
 
-    private KiePMML${modelName}Model(String modelName) {
-        super(modelName, Collections.emptyList());
+    private KiePMML${modelName}Model(String modelName, List<KiePMMLExtension> extensions) {
+        super(modelName, extensions);
     }
 
     @Override
@@ -45,15 +49,10 @@ public class KiePMML${modelName}Model extends KiePMMLModel {
         throw new UnsupportedOperationException();
     }
 
-    public static class Builder extends KiePMMLModel.Builder<KiePMML${modelName}Model>{
+    public static class Builder extends KiePMMLDroolsModel.Builder<KiePMML${modelName}Model>{
 
-        private Builder(String name,MINING_FUNCTION miningFunction){
-            super("${modelName}-", PMML_MODEL_TYPE, miningFunction, () -> new KiePMML${modelName}(name));
-        }
-
-        @Override
-        public Builder withTargetField(String targetField){
-            return (Builder)super.withTargetField(targetField);
+        private Builder(String name, List<KiePMMLExtension> extensions, MINING_FUNCTION miningFunction){
+            super("${modelName}-", PMML_MODEL_TYPE, miningFunction, () -> new KiePMML${modelName}Model(name, extensions));
         }
     }
 
