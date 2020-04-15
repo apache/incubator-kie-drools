@@ -1,5 +1,5 @@
 /*
- * Copyright 2016 Red Hat, Inc. and/or its affiliates.
+ * Copyright 2020 Red Hat, Inc. and/or its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -18,13 +18,16 @@ package org.optaplanner.test.impl.score.buildin.bendable;
 
 import org.optaplanner.core.api.domain.solution.PlanningSolution;
 import org.optaplanner.core.api.score.buildin.bendable.BendableScore;
+import org.optaplanner.core.api.score.stream.ConstraintStream;
 import org.optaplanner.core.api.solver.SolverFactory;
 import org.optaplanner.core.impl.score.buildin.bendable.BendableScoreDefinition;
+import org.optaplanner.test.api.score.stream.ConstraintVerifier;
 import org.optaplanner.test.impl.score.AbstractScoreVerifier;
 
 /**
  * To assert the constraints (including score rules) of a {@link SolverFactory}
  * that uses a {@link BendableScore}.
+ * If you're using {@link ConstraintStream}s, use {@link ConstraintVerifier} instead.
  * @param <Solution_> the solution type, the class with the {@link PlanningSolution} annotation
  */
 public class BendableScoreVerifier<Solution_> extends AbstractScoreVerifier<Solution_> {

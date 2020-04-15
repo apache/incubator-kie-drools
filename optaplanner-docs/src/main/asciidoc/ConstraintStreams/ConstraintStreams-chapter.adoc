@@ -578,6 +578,12 @@ the stream.
 == Testing a constraint stream
 
 Constraint streams include the Constraint Verifier unit testing harness.
+To use it, first add a test scoped dependency to the `optaplanner-test` JAR.
+
+
+[[constraintStreamsTestingIsolatedConstraints]]
+== Testing constraints in isolation
+
 Consider the following constraint stream:
 
 [source,java,options="nowrap"]
@@ -661,8 +667,9 @@ Alternatively, you can use a `rewardsWith(...)` call to check for rewards instea
 The method to use here depends on whether the constraint stream in question is terminated with a `penalize` or a
 `reward` building block.
 
-[[constraintStreamsIntegrationTesting]]
-=== Integration testing
+
+[[constraintStreamsTestingAllConstraints]]
+=== Testing all constraints together
 
 In addition to testing individual constraints, you can test the entire `ConstraintProvider` instance.
 Consider the following test:

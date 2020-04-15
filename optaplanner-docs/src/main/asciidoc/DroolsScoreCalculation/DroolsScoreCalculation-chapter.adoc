@@ -301,3 +301,98 @@ end
 Notice how `addSoftConstraintMatch()` specifies that it's a soft constraint,
 and needs a negative number to penalize each match. Otherwise it would reward such matches.
 The parameter `($capacity - $studentSize)` always results in a negative number because `studentSize > $capacity`.
+
+
+[[testingDroolsConstraints]]
+== Testing Drools-based constraints
+
+Drools-based constraints come with a unit testing harness.
+To use it, first add a test scoped dependency to the `optaplanner-test` jar to take advantage of the JUnit integration
+and use the `ScoreVerifier` classes to test score rules in DRL (or a constraint match aware incremental score calculator).
+For example, suppose you want to test these score rules:
+
+[source,options="nowrap"]
+----
+global HardSoftScoreHolder scoreHolder;
+
+rule "requiredCpuPowerTotal"
+    when
+        ...
+    then
+        scoreHolder.addHardConstraintMatch(...);
+end
+
+...
+
+rule "computerCost"
+    when
+        ...
+    then
+        scoreHolder.addSoftConstraintMatch(...);
+end
+----
+
+For each score rule, create a separate `@Test` that only tests the effect of that score rule on the score:
+
+[source,java,options="nowrap"]
+----
+public class CloudBalancingScoreConstraintTest {
+
+    private HardSoftScoreVerifier<CloudBalance> scoreVerifier = new HardSoftScoreVerifier<>(
+            SolverFactory.createFromXmlResource(
+                    "org/optaplanner/examples/cloudbalancing/solver/cloudBalancingSolverConfig.xml"));
+
+    @Test
+    public void requiredCpuPowerTotal() {
+        CloudComputer c1 = new CloudComputer(1L, 1000, 1, 1, 1);
+        CloudComputer c2 = new CloudComputer(2L, 200, 1, 1, 1);
+        CloudProcess p1 = new CloudProcess(1L, 700, 0, 0);
+        CloudProcess p2 = new CloudProcess(2L, 70, 0, 0);
+        CloudBalance solution = new CloudBalance(0L,
+                Arrays.asList(c1, c2),
+                Arrays.asList(p1, p2));
+        // Uninitialized
+        scoreVerifier.assertHardWeight("requiredCpuPowerTotal", 0, solution);
+        p1.setComputer(c1);
+        p2.setComputer(c1);
+        // Usage 700 + 70 is within capacity 1000 of c1
+        scoreVerifier.assertHardWeight("requiredCpuPowerTotal", 0, solution);
+        p1.setComputer(c2);
+        p2.setComputer(c2);
+        // Usage 700 + 70 is above capacity 200 of c2
+        scoreVerifier.assertHardWeight("requiredCpuPowerTotal", -570, solution);
+    }
+
+    ...
+
+    @Test
+    public void computerCost() {
+        CloudComputer c1 = new CloudComputer(1L, 1, 1, 1, 200);
+        CloudComputer c2 = new CloudComputer(2L, 1, 1, 1, 30);
+        CloudProcess p1 = new CloudProcess(1L, 0, 0, 0);
+        CloudProcess p2 = new CloudProcess(2L, 0, 0, 0);
+        CloudBalance solution = new CloudBalance(0L,
+                Arrays.asList(c1, c2),
+                Arrays.asList(p1, p2));
+        // Uninitialized
+        scoreVerifier.assertSoftWeight("computerCost", 0, solution);
+        p1.setComputer(c1);
+        p2.setComputer(c1);
+        // Pay 200 for c1
+        scoreVerifier.assertSoftWeight("computerCost", -200, solution);
+        p2.setComputer(c2);
+        // Pay 200 + 30 for c1 and c2
+        scoreVerifier.assertSoftWeight("computerCost", -230, solution);
+    }
+
+}
+----
+
+There is a `ScoreVerifier` implementation for each `Score` implementation.
+In the `assertHardWeight()` and `assertSoftWeight()` methods, the weight of the other score rules is ignored (even those of the same score level).
+
+[NOTE]
+====
+A ScoreVerifier does not work well to isolate score corruption,
+use <<invalidScoreDetection, an `assertionScoreDirectorFactory`>> instead.
+====
