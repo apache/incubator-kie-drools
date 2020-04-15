@@ -145,7 +145,7 @@ public class JavaParserCompiler {
         return getPrettyPrinter().print(cu);
     }
 
-    public static class InternalClassLoader extends ClassLoader {
+    static class InternalClassLoader extends ClassLoader {
         private final MemoryFileSystem mfs;
 
         public InternalClassLoader(ClassLoader parent, MemoryFileSystem mfs) {
