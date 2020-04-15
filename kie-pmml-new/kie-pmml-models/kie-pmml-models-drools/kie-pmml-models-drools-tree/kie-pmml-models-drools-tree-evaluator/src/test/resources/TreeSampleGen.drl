@@ -1,0 +1,175 @@
+package golfing
+
+import org.kie.pmml.models.drools.executor.KiePMMLStatusHolder
+import org.dmg.pmml.SimplePredicate
+import org.kie.api.pmml.PMML4Result
+
+global PMML4Result $pmml4Result
+
+declare  TEMPERATURE
+
+    value : double
+end
+
+declare  HUMIDITY
+
+    value : double
+end
+
+declare  WINDY
+
+    value : String
+end
+
+declare  OUTLOOK
+
+    value : String
+end
+
+declare  WHATIDO
+
+    value : String
+end
+
+
+rule "_will play"
+when
+    $statusHolder : KiePMMLStatusHolder( status == null )
+then
+System.out.println("_will play match");
+$statusHolder.setStatus("_will play");
+update($statusHolder);
+
+end
+
+rule "_will play_will play"
+when
+    $statusHolder : KiePMMLStatusHolder( status == "_will play" )
+    OUTLOOK( value == "sunny" )
+then
+System.out.println("_will play_will play match");
+$statusHolder.setStatus("_will play_will play");
+update($statusHolder);
+
+end
+
+rule "_will play_will play_will play"
+when
+    $statusHolder : KiePMMLStatusHolder( status == "_will play_will play" )
+    TEMPERATURE( value < 90 && value > 50 )
+then
+System.out.println("_will play_will play_will play match");
+$statusHolder.setStatus("_will play_will play_will play");
+update($statusHolder);
+
+end
+
+rule "_will play_will play_will play_will play"
+when
+    $statusHolder : KiePMMLStatusHolder( status == "_will play_will play_will play" )
+    HUMIDITY( value < 80 )
+then
+System.out.println("_will play_will play_will play_will play match");
+$statusHolder.setStatus("DONE");
+update($statusHolder);
+System.out.println("setResultCode OK");
+$pmml4Result.setResultCode("OK");
+$pmml4Result.addResultVariable($pmml4Result.getResultObjectName(), "will play");
+
+end
+
+rule "_will play_will play_will play_no play"
+when
+    $statusHolder : KiePMMLStatusHolder( status == "_will play_will play_will play" )
+    HUMIDITY( value >= 80 )
+then
+System.out.println("_will play_will play_will play_no play match");
+$statusHolder.setStatus("DONE");
+update($statusHolder);
+System.out.println("setResultCode OK");
+$pmml4Result.setResultCode("OK");
+$pmml4Result.addResultVariable($pmml4Result.getResultObjectName(), "no play");
+
+end
+
+rule "_will play_will play_no play"
+when
+    $statusHolder : KiePMMLStatusHolder( status == "_will play_will play" )
+    TEMPERATURE( value >= 90 || value <= 50 )
+then
+System.out.println("_will play_will play_no play match");
+$statusHolder.setStatus("DONE");
+update($statusHolder);
+System.out.println("setResultCode OK");
+$pmml4Result.setResultCode("OK");
+$pmml4Result.addResultVariable($pmml4Result.getResultObjectName(), "no play");
+
+end
+
+rule "_will play_may play"
+when
+    $statusHolder : KiePMMLStatusHolder( status == "_will play" )
+    OUTLOOK( value == "overcast" || value == "rain" )
+then
+System.out.println("_will play_may play match");
+$statusHolder.setStatus("_will play_may play");
+update($statusHolder);
+
+end
+
+rule "_will play_may play_may play"
+when
+    $statusHolder : KiePMMLStatusHolder( status == "_will play_may play" )
+
+    HUMIDITY( value < 70 )
+    TEMPERATURE( value > 60 && value < 100 )
+    WINDY( value == "false" )
+    OUTLOOK( value == "overcast" )
+then
+System.out.println("_will play_may play_may play match");
+$statusHolder.setStatus("DONE");
+update($statusHolder);
+System.out.println("setResultCode OK");
+$pmml4Result.setResultCode("OK");
+$pmml4Result.addResultVariable($pmml4Result.getResultObjectName(), "may play");
+
+end
+
+rule "_will play_may play_no play"
+when
+    $statusHolder : KiePMMLStatusHolder( status == "_will play_may play" )
+
+    OUTLOOK( value == "rain" )
+    HUMIDITY( value < 70 )
+then
+System.out.println("setResultCode OK");
+$statusHolder.setStatus("DONE");
+update($statusHolder);
+System.out.println("setResultCode OK");
+$pmml4Result.setResultCode("OK");
+$pmml4Result.addResultVariable($pmml4Result.getResultObjectName(), "no play");
+
+end
+
+rule "_will play_who play"
+when
+    $statusHolder : KiePMMLStatusHolder( status == "_will play" )
+    (
+    not(
+    (
+    TEMPERATURE( value < 70 )  and
+    WINDY( value == "true" )  )  ) and
+    exists(
+    (
+    TEMPERATURE( value < 70 )  or
+
+    WINDY( value == "true" )   )  ) )
+then
+System.out.println("_will play_who play match");
+$statusHolder.setStatus("DONE");
+update($statusHolder);
+System.out.println("setResultCode OK");
+$pmml4Result.setResultCode("OK");
+$pmml4Result.addResultVariable($pmml4Result.getResultObjectName(), "who play");
+
+end

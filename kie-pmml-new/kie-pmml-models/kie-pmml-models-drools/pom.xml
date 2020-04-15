@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+  <parent>
+    <groupId>org.kie</groupId>
+    <artifactId>kie-pmml-models</artifactId>
+    <version>7.37.0-SNAPSHOT</version>
+  </parent>
+  <modelVersion>4.0.0</modelVersion>
+
+  <artifactId>kie-pmml-models-drools</artifactId>
+  <packaging>pom</packaging>
+
+  <name>KIE :: PMML :: Models :: Drools</name>
+  <description>PMML Models with Drools Implementations</description>
+
+  <modules>
+    <module>kie-pmml-models-drools-common</module>
+    <module>kie-pmml-models-drools-tree</module>
+  </modules>
+
+
+</project>

@@ -39,6 +39,7 @@ public abstract class KiePMMLRegressionClassificationTable extends KiePMMLRegres
     protected Map<String, Object> outputFieldsMap = new HashMap<>();
     protected Map<String, KiePMMLRegressionTable> categoryTableMap = new HashMap<>();
 
+    @Override
     public Object evaluateRegression(Map<String, Object> input) {
         final LinkedHashMap<String, Double> resultMap = new LinkedHashMap<>();
         for (Map.Entry<String, KiePMMLRegressionTable> entry : categoryTableMap.entrySet()) {

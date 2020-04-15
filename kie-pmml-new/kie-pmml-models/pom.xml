@@ -15,6 +15,7 @@
 
   <modules>
     <module>kie-pmml-models-regression</module>
+    <module>kie-pmml-models-drools</module>
   </modules>
 
 </project>

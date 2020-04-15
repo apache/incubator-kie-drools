@@ -16,7 +16,6 @@
 package org.kie.pmml.models.regression.compiler.factories;
 
 import java.io.IOException;
-import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.Map;
@@ -36,20 +35,18 @@ import org.dmg.pmml.DataDictionary;
 import org.dmg.pmml.DataField;
 import org.dmg.pmml.MiningFunction;
 import org.dmg.pmml.OpType;
-import org.dmg.pmml.OutputField;
 import org.dmg.pmml.regression.RegressionModel;
 import org.kie.memorycompiler.KieMemoryCompiler;
 import org.kie.pmml.commons.model.KiePMMLOutputField;
 import org.kie.pmml.commons.model.enums.MINING_FUNCTION;
 import org.kie.pmml.commons.model.enums.PMML_MODEL;
-import org.kie.pmml.commons.model.enums.RESULT_FEATURE;
 import org.kie.pmml.models.regression.model.KiePMMLRegressionModel;
 import org.kie.pmml.models.regression.model.tuples.KiePMMLTableSourceCategory;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import static org.kie.pmml.compiler.commons.factories.KiePMMLExtensionFactory.getKiePMMLExtensions;
-import static org.kie.pmml.compiler.commons.utils.ModelUtils.getTargetField;
+import static org.kie.pmml.compiler.commons.factories.KiePMMLOutputFieldFactory.getOutputFields;
+import static org.kie.pmml.compiler.commons.utils.ModelUtils.getTargetFieldName;
 
 public class KiePMMLRegressionModelFactory {
 
@@ -65,9 +62,9 @@ public class KiePMMLRegressionModelFactory {
     }
 
     public static KiePMMLRegressionModel getKiePMMLRegressionModel(DataDictionary dataDictionary, RegressionModel model) throws IOException, IllegalAccessException, InstantiationException {
-        logger.debug("getKiePMMLRegressionModel {}", model);
+        logger.trace("getKiePMMLRegressionModel {}", model);
         String name = model.getModelName();
-        String targetFieldName = getTargetField(dataDictionary, model).orElse(null);
+        String targetFieldName = getTargetFieldName(dataDictionary, model).orElse(null);
         List<KiePMMLOutputField> outputFields = getOutputFields(model);
         Map<String, KiePMMLTableSourceCategory> tablesSourceMap = getRegressionTablesMap(dataDictionary, model, targetFieldName, outputFields);
         CompilationUnit templateCU = StaticJavaParser.parseResource(KIE_PMML_REGRESSION_MODEL_TEMPLATE_JAVA);
@@ -86,14 +83,6 @@ public class KiePMMLRegressionModelFactory {
         sourcesMap.put(fullClassName, cloneCU.toString());
         final Map<String, Class<?>> compiledClasses = KieMemoryCompiler.compile(sourcesMap, Thread.currentThread().getContextClassLoader());
         return (KiePMMLRegressionModel) compiledClasses.get(fullClassName).newInstance();
-    }
-
-    private static List<KiePMMLOutputField> getOutputFields(RegressionModel model) {
-        List<KiePMMLOutputField> outputFields = new ArrayList<>();
-        if (model.getOutput() != null) {
-            outputFields.addAll(model.getOutput().getOutputFields().stream().map(KiePMMLRegressionModelFactory::getKiePMMLOutputField).collect(Collectors.toList()));
-        }
-        return outputFields;
     }
 
     private static Map<String, KiePMMLTableSourceCategory> getRegressionTablesMap(DataDictionary dataDictionary, RegressionModel model, String targetFieldName, List<KiePMMLOutputField> outputFields) throws IOException {
@@ -133,14 +122,6 @@ public class KiePMMLRegressionModelFactory {
                 }
             });
         });
-    }
-
-    private static KiePMMLOutputField getKiePMMLOutputField(OutputField outputField) {
-        return KiePMMLOutputField.builder(outputField.getName().getValue(), getKiePMMLExtensions(outputField.getExtensions()))
-                .withResultFeature(RESULT_FEATURE.byName(outputField.getResultFeature().value()))
-                .withTargetField(outputField.getTargetField() != null ? outputField.getTargetField().getValue() : null)
-                .withValue(outputField.getValue())
-                .build();
     }
 
     private static boolean isRegression(MiningFunction miningFunction, String targetField, OpType targetOpType) {

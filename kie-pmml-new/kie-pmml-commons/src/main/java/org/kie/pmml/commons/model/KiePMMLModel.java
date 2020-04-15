@@ -17,24 +17,27 @@ package org.kie.pmml.commons.model;
 
 import java.util.Collections;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
+import java.util.function.Supplier;
 
+import org.kie.pmml.commons.model.abstracts.AbstractKiePMMLBase;
 import org.kie.pmml.commons.model.enums.MINING_FUNCTION;
 import org.kie.pmml.commons.model.enums.PMML_MODEL;
 
 /**
  * KIE representation of PMML model
  */
-public abstract class KiePMMLModel {
+public abstract class KiePMMLModel extends AbstractKiePMMLBase {
 
-    protected String name;
     protected PMML_MODEL pmmlMODEL;
     protected MINING_FUNCTION miningFunction;
     protected String targetField;
     protected Map<String, Object> outputFieldsMap = new HashMap<>();
+    protected Map<String, Object> missingValueReplacementMap = new HashMap<>();
 
-    protected KiePMMLModel(String name) {
-        this.name = name;
+    protected KiePMMLModel(String name, List<KiePMMLExtension> extensions) {
+        super(name, extensions);
     }
 
     public PMML_MODEL getPmmlMODEL() {
@@ -49,13 +52,37 @@ public abstract class KiePMMLModel {
         return targetField;
     }
 
-    public String getName() {
-        return name;
-    }
-
     public Map<String, Object> getOutputFieldsMap() {
         return Collections.unmodifiableMap(outputFieldsMap);
     }
 
+    public Map<String, Object> getMissingValueReplacementMap() {
+        return Collections.unmodifiableMap(missingValueReplacementMap);
+    }
+
     public abstract Object evaluate(Map<String, Object> requestData);
+
+    public abstract static class Builder<T extends KiePMMLModel> extends AbstractKiePMMLBase.Builder<T> {
+
+        protected Builder(String prefix, PMML_MODEL pmmlMODEL, MINING_FUNCTION miningFunction, Supplier<T> supplier) {
+            super(prefix, supplier);
+            toBuild.pmmlMODEL = pmmlMODEL;
+            toBuild.miningFunction = miningFunction;
+        }
+
+        public Builder<T> withTargetField(String targetField) {
+            toBuild.targetField = targetField;
+            return this;
+        }
+
+        public Builder<T> withOutputFieldsMap(Map<String, Object> outputFieldsMap) {
+            toBuild.outputFieldsMap.putAll(outputFieldsMap);
+            return this;
+        }
+
+        public Builder<T> withMissingValueReplacementMap(Map<String, Object> missingValueReplacementMap) {
+            toBuild.missingValueReplacementMap.putAll(missingValueReplacementMap);
+            return this;
+        }
+    }
 }

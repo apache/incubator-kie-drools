@@ -1,0 +1,2528 @@
+package bostonhousingtreemodel
+
+import org.kie.pmml.models.drools.executor.KiePMMLStatusHolder
+import org.dmg.pmml.SimplePredicate
+import org.kie.api.pmml.PMML4Result
+
+global PMML4Result $pmml4Result
+
+declare  MEDV
+
+    value : double
+end
+
+declare  CRIM
+
+    value : double
+end
+
+declare  ZN
+
+    value : double
+end
+
+declare  INDUS
+
+    value : double
+end
+
+declare  CHAS
+
+    value : String
+end
+
+declare  NOX
+
+    value : double
+end
+
+declare  RM
+
+    value : double
+end
+
+declare  AGE
+
+    value : double
+end
+
+declare  DIS
+
+    value : double
+end
+
+declare  RAD
+
+    value : double
+end
+
+declare  TAX
+
+    value : double
+end
+
+declare  PTRATIO
+
+    value : double
+end
+
+declare  B
+
+    value : double
+end
+
+declare  LSTAT
+
+    value : double
+end
+
+
+rule "_22.5328063241107"
+when
+    $statusHolder : KiePMMLStatusHolder( status == null )
+then
+
+$statusHolder.setStatus("_22.5328063241107");
+update($statusHolder);
+
+end
+
+rule "_22.5328063241107_19.9337209302326"
+when
+    $statusHolder : KiePMMLStatusHolder( status == "_22.5328063241107" )
+then
+
+kcontext.getKieRuntime().getAgenda().getAgendaGroup( "_22.5328063241107_19.9337209302326_surrogate" ).setFocus();
+
+end
+
+rule "_22.5328063241107_19.9337209302326_surrogate_RM_TRUE"
+    agenda-group "_22.5328063241107_19.9337209302326_surrogate"
+    activation-group "_22.5328063241107_19.9337209302326_surrogate"
+when
+    $statusHolder : KiePMMLStatusHolder(  )
+    RM( value < 6.941 )
+then
+
+$statusHolder.setStatus("_22.5328063241107_19.9337209302326");
+update($statusHolder);
+
+end
+
+rule "_22.5328063241107_19.9337209302326_surrogate_RM_FALSE"
+    agenda-group "_22.5328063241107_19.9337209302326_surrogate"
+    activation-group "_22.5328063241107_19.9337209302326_surrogate"
+when
+    $statusHolder : KiePMMLStatusHolder(  )
+
+    not(
+
+    RM( value < 6.941 )    )
+then
+
+$statusHolder.setStatus("_22.5328063241107");
+update($statusHolder);
+
+end
+
+rule "_22.5328063241107_19.9337209302326_surrogate_LSTAT_TRUE"
+    agenda-group "_22.5328063241107_19.9337209302326_surrogate"
+    activation-group "_22.5328063241107_19.9337209302326_surrogate"
+when
+    $statusHolder : KiePMMLStatusHolder(  )
+    LSTAT( value >= 4.83 )
+then
+
+$statusHolder.setStatus("_22.5328063241107_19.9337209302326");
+update($statusHolder);
+
+end
+
+rule "_22.5328063241107_19.9337209302326_surrogate_LSTAT_FALSE"
+    agenda-group "_22.5328063241107_19.9337209302326_surrogate"
+    activation-group "_22.5328063241107_19.9337209302326_surrogate"
+when
+    $statusHolder : KiePMMLStatusHolder(  )
+
+    not(
+
+    LSTAT( value >= 4.83 )    )
+then
+
+$statusHolder.setStatus("_22.5328063241107");
+update($statusHolder);
+
+end
+
+rule "_22.5328063241107_19.9337209302326_surrogate_PTRATIO_TRUE"
+    agenda-group "_22.5328063241107_19.9337209302326_surrogate"
+    activation-group "_22.5328063241107_19.9337209302326_surrogate"
+when
+    $statusHolder : KiePMMLStatusHolder(  )
+    PTRATIO( value >= 14.55 )
+then
+
+$statusHolder.setStatus("_22.5328063241107_19.9337209302326");
+update($statusHolder);
+
+end
+
+rule "_22.5328063241107_19.9337209302326_surrogate_PTRATIO_FALSE"
+    agenda-group "_22.5328063241107_19.9337209302326_surrogate"
+    activation-group "_22.5328063241107_19.9337209302326_surrogate"
+when
+    $statusHolder : KiePMMLStatusHolder(  )
+
+    not(
+
+    PTRATIO( value >= 14.55 )    )
+then
+
+$statusHolder.setStatus("_22.5328063241107");
+update($statusHolder);
+
+end
+
+rule "_22.5328063241107_19.9337209302326_surrogate_ZN_TRUE"
+    agenda-group "_22.5328063241107_19.9337209302326_surrogate"
+    activation-group "_22.5328063241107_19.9337209302326_surrogate"
+when
+    $statusHolder : KiePMMLStatusHolder(  )
+    ZN( value < 87.5 )
+then
+
+$statusHolder.setStatus("_22.5328063241107_19.9337209302326");
+update($statusHolder);
+
+end
+
+rule "_22.5328063241107_19.9337209302326_surrogate_ZN_FALSE"
+    agenda-group "_22.5328063241107_19.9337209302326_surrogate"
+    activation-group "_22.5328063241107_19.9337209302326_surrogate"
+when
+    $statusHolder : KiePMMLStatusHolder(  )
+
+    not(
+
+    ZN( value < 87.5 )    )
+then
+
+$statusHolder.setStatus("_22.5328063241107");
+update($statusHolder);
+
+end
+
+rule "_22.5328063241107_19.9337209302326_surrogate_INDUS_TRUE"
+    agenda-group "_22.5328063241107_19.9337209302326_surrogate"
+    activation-group "_22.5328063241107_19.9337209302326_surrogate"
+when
+    $statusHolder : KiePMMLStatusHolder(  )
+    INDUS( value >= 1.605 )
+then
+
+$statusHolder.setStatus("_22.5328063241107_19.9337209302326");
+update($statusHolder);
+
+end
+
+rule "_22.5328063241107_19.9337209302326_surrogate_INDUS_FALSE"
+    agenda-group "_22.5328063241107_19.9337209302326_surrogate"
+    activation-group "_22.5328063241107_19.9337209302326_surrogate"
+when
+    $statusHolder : KiePMMLStatusHolder(  )
+
+    not(
+
+    INDUS( value >= 1.605 )    )
+then
+
+$statusHolder.setStatus("_22.5328063241107");
+update($statusHolder);
+
+end
+
+rule "_22.5328063241107_19.9337209302326_surrogate_CRIM_TRUE"
+    agenda-group "_22.5328063241107_19.9337209302326_surrogate"
+    activation-group "_22.5328063241107_19.9337209302326_surrogate"
+when
+    $statusHolder : KiePMMLStatusHolder(  )
+    CRIM( value >= 0.013355 )
+then
+
+$statusHolder.setStatus("_22.5328063241107_19.9337209302326");
+update($statusHolder);
+
+end
+
+rule "_22.5328063241107_19.9337209302326_surrogate_CRIM_FALSE"
+    agenda-group "_22.5328063241107_19.9337209302326_surrogate"
+    activation-group "_22.5328063241107_19.9337209302326_surrogate"
+when
+    $statusHolder : KiePMMLStatusHolder(  )
+
+    not(
+
+    CRIM( value >= 0.013355 )    )
+then
+
+$statusHolder.setStatus("_22.5328063241107");
+update($statusHolder);
+
+end
+
+rule "_22.5328063241107_19.9337209302326_14.956"
+when
+    $statusHolder : KiePMMLStatusHolder( status == "_22.5328063241107_19.9337209302326" )
+then
+
+kcontext.getKieRuntime().getAgenda().getAgendaGroup( "_22.5328063241107_19.9337209302326_14.956_surrogate" ).setFocus();
+
+end
+
+rule "_22.5328063241107_19.9337209302326_14.956_surrogate_LSTAT_TRUE"
+    agenda-group "_22.5328063241107_19.9337209302326_14.956_surrogate"
+    activation-group "_22.5328063241107_19.9337209302326_14.956_surrogate"
+when
+    $statusHolder : KiePMMLStatusHolder(  )
+    LSTAT( value >= 14.4 )
+then
+
+$statusHolder.setStatus("_22.5328063241107_19.9337209302326_14.956");
+update($statusHolder);
+
+end
+
+rule "_22.5328063241107_19.9337209302326_14.956_surrogate_LSTAT_FALSE"
+    agenda-group "_22.5328063241107_19.9337209302326_14.956_surrogate"
+    activation-group "_22.5328063241107_19.9337209302326_14.956_surrogate"
+when
+    $statusHolder : KiePMMLStatusHolder(  )
+
+    not(
+
+    LSTAT( value >= 14.4 )    )
+then
+
+$statusHolder.setStatus("_22.5328063241107_19.9337209302326");
+update($statusHolder);
+
+end
+
+rule "_22.5328063241107_19.9337209302326_14.956_surrogate_AGE_TRUE"
+    agenda-group "_22.5328063241107_19.9337209302326_14.956_surrogate"
+    activation-group "_22.5328063241107_19.9337209302326_14.956_surrogate"
+when
+    $statusHolder : KiePMMLStatusHolder(  )
+    AGE( value >= 84.3 )
+then
+
+$statusHolder.setStatus("_22.5328063241107_19.9337209302326_14.956");
+update($statusHolder);
+
+end
+
+rule "_22.5328063241107_19.9337209302326_14.956_surrogate_AGE_FALSE"
+    agenda-group "_22.5328063241107_19.9337209302326_14.956_surrogate"
+    activation-group "_22.5328063241107_19.9337209302326_14.956_surrogate"
+when
+    $statusHolder : KiePMMLStatusHolder(  )
+
+    not(
+
+    AGE( value >= 84.3 )    )
+then
+
+$statusHolder.setStatus("_22.5328063241107_19.9337209302326");
+update($statusHolder);
+
+end
+
+rule "_22.5328063241107_19.9337209302326_14.956_surrogate_INDUS_TRUE"
+    agenda-group "_22.5328063241107_19.9337209302326_14.956_surrogate"
+    activation-group "_22.5328063241107_19.9337209302326_14.956_surrogate"
+when
+    $statusHolder : KiePMMLStatusHolder(  )
+    INDUS( value >= 16.57 )
+then
+
+$statusHolder.setStatus("_22.5328063241107_19.9337209302326_14.956");
+update($statusHolder);
+
+end
+
+rule "_22.5328063241107_19.9337209302326_14.956_surrogate_INDUS_FALSE"
+    agenda-group "_22.5328063241107_19.9337209302326_14.956_surrogate"
+    activation-group "_22.5328063241107_19.9337209302326_14.956_surrogate"
+when
+    $statusHolder : KiePMMLStatusHolder(  )
+
+    not(
+
+    INDUS( value >= 16.57 )    )
+then
+
+$statusHolder.setStatus("_22.5328063241107_19.9337209302326");
+update($statusHolder);
+
+end
+
+rule "_22.5328063241107_19.9337209302326_14.956_surrogate_NOX_TRUE"
+    agenda-group "_22.5328063241107_19.9337209302326_14.956_surrogate"
+    activation-group "_22.5328063241107_19.9337209302326_14.956_surrogate"
+when
+    $statusHolder : KiePMMLStatusHolder(  )
+    NOX( value >= 0.5765 )
+then
+
+$statusHolder.setStatus("_22.5328063241107_19.9337209302326_14.956");
+update($statusHolder);
+
+end
+
+rule "_22.5328063241107_19.9337209302326_14.956_surrogate_NOX_FALSE"
+    agenda-group "_22.5328063241107_19.9337209302326_14.956_surrogate"
+    activation-group "_22.5328063241107_19.9337209302326_14.956_surrogate"
+when
+    $statusHolder : KiePMMLStatusHolder(  )
+
+    not(
+
+    NOX( value >= 0.5765 )    )
+then
+
+$statusHolder.setStatus("_22.5328063241107_19.9337209302326");
+update($statusHolder);
+
+end
+
+rule "_22.5328063241107_19.9337209302326_14.956_surrogate_DIS_TRUE"
+    agenda-group "_22.5328063241107_19.9337209302326_14.956_surrogate"
+    activation-group "_22.5328063241107_19.9337209302326_14.956_surrogate"
+when
+    $statusHolder : KiePMMLStatusHolder(  )
+    DIS( value < 2.23935 )
+then
+
+$statusHolder.setStatus("_22.5328063241107_19.9337209302326_14.956");
+update($statusHolder);
+
+end
+
+rule "_22.5328063241107_19.9337209302326_14.956_surrogate_DIS_FALSE"
+    agenda-group "_22.5328063241107_19.9337209302326_14.956_surrogate"
+    activation-group "_22.5328063241107_19.9337209302326_14.956_surrogate"
+when
+    $statusHolder : KiePMMLStatusHolder(  )
+
+    not(
+
+    DIS( value < 2.23935 )    )
+then
+
+$statusHolder.setStatus("_22.5328063241107_19.9337209302326");
+update($statusHolder);
+
+end
+
+rule "_22.5328063241107_19.9337209302326_14.956_surrogate_TAX_TRUE"
+    agenda-group "_22.5328063241107_19.9337209302326_14.956_surrogate"
+    activation-group "_22.5328063241107_19.9337209302326_14.956_surrogate"
+when
+    $statusHolder : KiePMMLStatusHolder(  )
+    TAX( value >= 434.5 )
+then
+
+$statusHolder.setStatus("_22.5328063241107_19.9337209302326_14.956");
+update($statusHolder);
+
+end
+
+rule "_22.5328063241107_19.9337209302326_14.956_surrogate_TAX_FALSE"
+    agenda-group "_22.5328063241107_19.9337209302326_14.956_surrogate"
+    activation-group "_22.5328063241107_19.9337209302326_14.956_surrogate"
+when
+    $statusHolder : KiePMMLStatusHolder(  )
+
+    not(
+
+    TAX( value >= 434.5 )    )
+then
+
+$statusHolder.setStatus("_22.5328063241107_19.9337209302326");
+update($statusHolder);
+
+end
+
+rule "_22.5328063241107_19.9337209302326_14.956_11.9783783783784"
+when
+    $statusHolder : KiePMMLStatusHolder( status == "_22.5328063241107_19.9337209302326_14.956" )
+then
+
+kcontext.getKieRuntime().getAgenda().getAgendaGroup( "_22.5328063241107_19.9337209302326_14.956_11.9783783783784_surrogate" ).setFocus();
+
+end
+
+rule "_22.5328063241107_19.9337209302326_14.956_11.9783783783784_surrogate_CRIM_TRUE"
+    agenda-group "_22.5328063241107_19.9337209302326_14.956_11.9783783783784_surrogate"
+    activation-group "_22.5328063241107_19.9337209302326_14.956_11.9783783783784_surrogate"
+when
+    $statusHolder : KiePMMLStatusHolder(  )
+    CRIM( value >= 6.99237 )
+then
+
+$statusHolder.setStatus("DONE");
+update($statusHolder);
+$pmml4Result.setResultCode("OK");
+$pmml4Result.addResultVariable($pmml4Result.getResultObjectName(), 11.9783783783784);
+
+end
+
+rule "_22.5328063241107_19.9337209302326_14.956_11.9783783783784_surrogate_CRIM_FALSE"
+    agenda-group "_22.5328063241107_19.9337209302326_14.956_11.9783783783784_surrogate"
+    activation-group "_22.5328063241107_19.9337209302326_14.956_11.9783783783784_surrogate"
+when
+    $statusHolder : KiePMMLStatusHolder(  )
+
+    not(
+
+    CRIM( value >= 6.99237 )    )
+then
+
+$statusHolder.setStatus("_22.5328063241107_19.9337209302326_14.956");
+update($statusHolder);
+
+end
+
+rule "_22.5328063241107_19.9337209302326_14.956_11.9783783783784_surrogate_RAD_TRUE"
+    agenda-group "_22.5328063241107_19.9337209302326_14.956_11.9783783783784_surrogate"
+    activation-group "_22.5328063241107_19.9337209302326_14.956_11.9783783783784_surrogate"
+when
+    $statusHolder : KiePMMLStatusHolder(  )
+    RAD( value >= 16.0 )
+then
+
+$statusHolder.setStatus("DONE");
+update($statusHolder);
+$pmml4Result.setResultCode("OK");
+$pmml4Result.addResultVariable($pmml4Result.getResultObjectName(), 11.9783783783784);
+
+end
+
+rule "_22.5328063241107_19.9337209302326_14.956_11.9783783783784_surrogate_RAD_FALSE"
+    agenda-group "_22.5328063241107_19.9337209302326_14.956_11.9783783783784_surrogate"
+    activation-group "_22.5328063241107_19.9337209302326_14.956_11.9783783783784_surrogate"
+when
+    $statusHolder : KiePMMLStatusHolder(  )
+
+    not(
+
+    RAD( value >= 16.0 )    )
+then
+
+$statusHolder.setStatus("_22.5328063241107_19.9337209302326_14.956");
+update($statusHolder);
+
+end
+
+rule "_22.5328063241107_19.9337209302326_14.956_11.9783783783784_surrogate_TAX_TRUE"
+    agenda-group "_22.5328063241107_19.9337209302326_14.956_11.9783783783784_surrogate"
+    activation-group "_22.5328063241107_19.9337209302326_14.956_11.9783783783784_surrogate"
+when
+    $statusHolder : KiePMMLStatusHolder(  )
+    TAX( value >= 567.5 )
+then
+
+$statusHolder.setStatus("DONE");
+update($statusHolder);
+$pmml4Result.setResultCode("OK");
+$pmml4Result.addResultVariable($pmml4Result.getResultObjectName(), 11.9783783783784);
+
+end
+
+rule "_22.5328063241107_19.9337209302326_14.956_11.9783783783784_surrogate_TAX_FALSE"
+    agenda-group "_22.5328063241107_19.9337209302326_14.956_11.9783783783784_surrogate"
+    activation-group "_22.5328063241107_19.9337209302326_14.956_11.9783783783784_surrogate"
+when
+    $statusHolder : KiePMMLStatusHolder(  )
+
+    not(
+
+    TAX( value >= 567.5 )    )
+then
+
+$statusHolder.setStatus("_22.5328063241107_19.9337209302326_14.956");
+update($statusHolder);
+
+end
+
+rule "_22.5328063241107_19.9337209302326_14.956_11.9783783783784_surrogate_NOX_TRUE"
+    agenda-group "_22.5328063241107_19.9337209302326_14.956_11.9783783783784_surrogate"
+    activation-group "_22.5328063241107_19.9337209302326_14.956_11.9783783783784_surrogate"
+when
+    $statusHolder : KiePMMLStatusHolder(  )
+    NOX( value >= 0.657 )
+then
+
+$statusHolder.setStatus("DONE");
+update($statusHolder);
+$pmml4Result.setResultCode("OK");
+$pmml4Result.addResultVariable($pmml4Result.getResultObjectName(), 11.9783783783784);
+
+end
+
+rule "_22.5328063241107_19.9337209302326_14.956_11.9783783783784_surrogate_NOX_FALSE"
+    agenda-group "_22.5328063241107_19.9337209302326_14.956_11.9783783783784_surrogate"
+    activation-group "_22.5328063241107_19.9337209302326_14.956_11.9783783783784_surrogate"
+when
+    $statusHolder : KiePMMLStatusHolder(  )
+
+    not(
+
+    NOX( value >= 0.657 )    )
+then
+
+$statusHolder.setStatus("_22.5328063241107_19.9337209302326_14.956");
+update($statusHolder);
+
+end
+
+rule "_22.5328063241107_19.9337209302326_14.956_11.9783783783784_surrogate_DIS_TRUE"
+    agenda-group "_22.5328063241107_19.9337209302326_14.956_11.9783783783784_surrogate"
+    activation-group "_22.5328063241107_19.9337209302326_14.956_11.9783783783784_surrogate"
+when
+    $statusHolder : KiePMMLStatusHolder(  )
+    DIS( value < 2.202 )
+then
+
+$statusHolder.setStatus("DONE");
+update($statusHolder);
+$pmml4Result.setResultCode("OK");
+$pmml4Result.addResultVariable($pmml4Result.getResultObjectName(), 11.9783783783784);
+
+end
+
+rule "_22.5328063241107_19.9337209302326_14.956_11.9783783783784_surrogate_DIS_FALSE"
+    agenda-group "_22.5328063241107_19.9337209302326_14.956_11.9783783783784_surrogate"
+    activation-group "_22.5328063241107_19.9337209302326_14.956_11.9783783783784_surrogate"
+when
+    $statusHolder : KiePMMLStatusHolder(  )
+
+    not(
+
+    DIS( value < 2.202 )    )
+then
+
+$statusHolder.setStatus("_22.5328063241107_19.9337209302326_14.956");
+update($statusHolder);
+
+end
+
+rule "_22.5328063241107_19.9337209302326_14.956_11.9783783783784_surrogate_PTRATIO_TRUE"
+    agenda-group "_22.5328063241107_19.9337209302326_14.956_11.9783783783784_surrogate"
+    activation-group "_22.5328063241107_19.9337209302326_14.956_11.9783783783784_surrogate"
+when
+    $statusHolder : KiePMMLStatusHolder(  )
+    PTRATIO( value >= 20.15 )
+then
+
+$statusHolder.setStatus("DONE");
+update($statusHolder);
+$pmml4Result.setResultCode("OK");
+$pmml4Result.addResultVariable($pmml4Result.getResultObjectName(), 11.9783783783784);
+
+end
+
+rule "_22.5328063241107_19.9337209302326_14.956_11.9783783783784_surrogate_PTRATIO_FALSE"
+    agenda-group "_22.5328063241107_19.9337209302326_14.956_11.9783783783784_surrogate"
+    activation-group "_22.5328063241107_19.9337209302326_14.956_11.9783783783784_surrogate"
+when
+    $statusHolder : KiePMMLStatusHolder(  )
+
+    not(
+
+    PTRATIO( value >= 20.15 )    )
+then
+
+$statusHolder.setStatus("_22.5328063241107_19.9337209302326_14.956");
+update($statusHolder);
+
+end
+
+rule "_22.5328063241107_19.9337209302326_14.956_17.1376237623762"
+when
+    $statusHolder : KiePMMLStatusHolder( status == "_22.5328063241107_19.9337209302326_14.956" )
+then
+
+kcontext.getKieRuntime().getAgenda().getAgendaGroup( "_22.5328063241107_19.9337209302326_14.956_17.1376237623762_surrogate" ).setFocus();
+
+end
+
+rule "_22.5328063241107_19.9337209302326_14.956_17.1376237623762_surrogate_CRIM_TRUE"
+    agenda-group "_22.5328063241107_19.9337209302326_14.956_17.1376237623762_surrogate"
+    activation-group "_22.5328063241107_19.9337209302326_14.956_17.1376237623762_surrogate"
+when
+    $statusHolder : KiePMMLStatusHolder(  )
+    CRIM( value < 6.99237 )
+then
+
+$statusHolder.setStatus("DONE");
+update($statusHolder);
+$pmml4Result.setResultCode("OK");
+$pmml4Result.addResultVariable($pmml4Result.getResultObjectName(), 17.1376237623762);
+
+end
+
+rule "_22.5328063241107_19.9337209302326_14.956_17.1376237623762_surrogate_CRIM_FALSE"
+    agenda-group "_22.5328063241107_19.9337209302326_14.956_17.1376237623762_surrogate"
+    activation-group "_22.5328063241107_19.9337209302326_14.956_17.1376237623762_surrogate"
+when
+    $statusHolder : KiePMMLStatusHolder(  )
+
+    not(
+
+    CRIM( value < 6.99237 )    )
+then
+
+$statusHolder.setStatus("_22.5328063241107_19.9337209302326_14.956");
+update($statusHolder);
+
+end
+
+rule "_22.5328063241107_19.9337209302326_14.956_17.1376237623762_surrogate_RAD_TRUE"
+    agenda-group "_22.5328063241107_19.9337209302326_14.956_17.1376237623762_surrogate"
+    activation-group "_22.5328063241107_19.9337209302326_14.956_17.1376237623762_surrogate"
+when
+    $statusHolder : KiePMMLStatusHolder(  )
+    RAD( value < 16.0 )
+then
+
+$statusHolder.setStatus("DONE");
+update($statusHolder);
+$pmml4Result.setResultCode("OK");
+$pmml4Result.addResultVariable($pmml4Result.getResultObjectName(), 17.1376237623762);
+
+end
+
+rule "_22.5328063241107_19.9337209302326_14.956_17.1376237623762_surrogate_RAD_FALSE"
+    agenda-group "_22.5328063241107_19.9337209302326_14.956_17.1376237623762_surrogate"
+    activation-group "_22.5328063241107_19.9337209302326_14.956_17.1376237623762_surrogate"
+when
+    $statusHolder : KiePMMLStatusHolder(  )
+
+    not(
+
+    RAD( value < 16.0 )    )
+then
+
+$statusHolder.setStatus("_22.5328063241107_19.9337209302326_14.956");
+update($statusHolder);
+
+end
+
+rule "_22.5328063241107_19.9337209302326_14.956_17.1376237623762_surrogate_TAX_TRUE"
+    agenda-group "_22.5328063241107_19.9337209302326_14.956_17.1376237623762_surrogate"
+    activation-group "_22.5328063241107_19.9337209302326_14.956_17.1376237623762_surrogate"
+when
+    $statusHolder : KiePMMLStatusHolder(  )
+    TAX( value < 567.5 )
+then
+
+$statusHolder.setStatus("DONE");
+update($statusHolder);
+$pmml4Result.setResultCode("OK");
+$pmml4Result.addResultVariable($pmml4Result.getResultObjectName(), 17.1376237623762);
+
+end
+
+rule "_22.5328063241107_19.9337209302326_14.956_17.1376237623762_surrogate_TAX_FALSE"
+    agenda-group "_22.5328063241107_19.9337209302326_14.956_17.1376237623762_surrogate"
+    activation-group "_22.5328063241107_19.9337209302326_14.956_17.1376237623762_surrogate"
+when
+    $statusHolder : KiePMMLStatusHolder(  )
+
+    not(
+
+    TAX( value < 567.5 )    )
+then
+
+$statusHolder.setStatus("_22.5328063241107_19.9337209302326_14.956");
+update($statusHolder);
+
+end
+
+rule "_22.5328063241107_19.9337209302326_14.956_17.1376237623762_surrogate_NOX_TRUE"
+    agenda-group "_22.5328063241107_19.9337209302326_14.956_17.1376237623762_surrogate"
+    activation-group "_22.5328063241107_19.9337209302326_14.956_17.1376237623762_surrogate"
+when
+    $statusHolder : KiePMMLStatusHolder(  )
+    NOX( value < 0.657 )
+then
+
+$statusHolder.setStatus("DONE");
+update($statusHolder);
+$pmml4Result.setResultCode("OK");
+$pmml4Result.addResultVariable($pmml4Result.getResultObjectName(), 17.1376237623762);
+
+end
+
+rule "_22.5328063241107_19.9337209302326_14.956_17.1376237623762_surrogate_NOX_FALSE"
+    agenda-group "_22.5328063241107_19.9337209302326_14.956_17.1376237623762_surrogate"
+    activation-group "_22.5328063241107_19.9337209302326_14.956_17.1376237623762_surrogate"
+when
+    $statusHolder : KiePMMLStatusHolder(  )
+
+    not(
+
+    NOX( value < 0.657 )    )
+then
+
+$statusHolder.setStatus("_22.5328063241107_19.9337209302326_14.956");
+update($statusHolder);
+
+end
+
+rule "_22.5328063241107_19.9337209302326_14.956_17.1376237623762_surrogate_DIS_TRUE"
+    agenda-group "_22.5328063241107_19.9337209302326_14.956_17.1376237623762_surrogate"
+    activation-group "_22.5328063241107_19.9337209302326_14.956_17.1376237623762_surrogate"
+when
+    $statusHolder : KiePMMLStatusHolder(  )
+    DIS( value >= 2.202 )
+then
+
+$statusHolder.setStatus("DONE");
+update($statusHolder);
+$pmml4Result.setResultCode("OK");
+$pmml4Result.addResultVariable($pmml4Result.getResultObjectName(), 17.1376237623762);
+
+end
+
+rule "_22.5328063241107_19.9337209302326_14.956_17.1376237623762_surrogate_DIS_FALSE"
+    agenda-group "_22.5328063241107_19.9337209302326_14.956_17.1376237623762_surrogate"
+    activation-group "_22.5328063241107_19.9337209302326_14.956_17.1376237623762_surrogate"
+when
+    $statusHolder : KiePMMLStatusHolder(  )
+
+    not(
+
+    DIS( value >= 2.202 )    )
+then
+
+$statusHolder.setStatus("_22.5328063241107_19.9337209302326_14.956");
+update($statusHolder);
+
+end
+
+rule "_22.5328063241107_19.9337209302326_14.956_17.1376237623762_surrogate_PTRATIO_TRUE"
+    agenda-group "_22.5328063241107_19.9337209302326_14.956_17.1376237623762_surrogate"
+    activation-group "_22.5328063241107_19.9337209302326_14.956_17.1376237623762_surrogate"
+when
+    $statusHolder : KiePMMLStatusHolder(  )
+    PTRATIO( value < 20.15 )
+then
+
+$statusHolder.setStatus("DONE");
+update($statusHolder);
+$pmml4Result.setResultCode("OK");
+$pmml4Result.addResultVariable($pmml4Result.getResultObjectName(), 17.1376237623762);
+
+end
+
+rule "_22.5328063241107_19.9337209302326_14.956_17.1376237623762_surrogate_PTRATIO_FALSE"
+    agenda-group "_22.5328063241107_19.9337209302326_14.956_17.1376237623762_surrogate"
+    activation-group "_22.5328063241107_19.9337209302326_14.956_17.1376237623762_surrogate"
+when
+    $statusHolder : KiePMMLStatusHolder(  )
+
+    not(
+
+    PTRATIO( value < 20.15 )    )
+then
+
+$statusHolder.setStatus("_22.5328063241107_19.9337209302326_14.956");
+update($statusHolder);
+
+end
+
+rule "default__22.5328063241107_19.9337209302326_14.956"
+when
+    $statusHolder : KiePMMLStatusHolder( status == "_22.5328063241107_19.9337209302326_14.956" )
+then
+
+$statusHolder.setStatus("DONE");
+update($statusHolder);
+$pmml4Result.setResultCode("OK");
+$pmml4Result.addResultVariable($pmml4Result.getResultObjectName(), 14.956);
+
+end
+
+rule "_22.5328063241107_19.9337209302326_23.3498039215686"
+when
+    $statusHolder : KiePMMLStatusHolder( status == "_22.5328063241107_19.9337209302326" )
+then
+
+kcontext.getKieRuntime().getAgenda().getAgendaGroup( "_22.5328063241107_19.9337209302326_23.3498039215686_surrogate" ).setFocus();
+
+end
+
+rule "_22.5328063241107_19.9337209302326_23.3498039215686_surrogate_LSTAT_TRUE"
+    agenda-group "_22.5328063241107_19.9337209302326_23.3498039215686_surrogate"
+    activation-group "_22.5328063241107_19.9337209302326_23.3498039215686_surrogate"
+when
+    $statusHolder : KiePMMLStatusHolder(  )
+    LSTAT( value < 14.4 )
+then
+
+$statusHolder.setStatus("_22.5328063241107_19.9337209302326_23.3498039215686");
+update($statusHolder);
+
+end
+
+rule "_22.5328063241107_19.9337209302326_23.3498039215686_surrogate_LSTAT_FALSE"
+    agenda-group "_22.5328063241107_19.9337209302326_23.3498039215686_surrogate"
+    activation-group "_22.5328063241107_19.9337209302326_23.3498039215686_surrogate"
+when
+    $statusHolder : KiePMMLStatusHolder(  )
+
+    not(
+
+    LSTAT( value < 14.4 )    )
+then
+
+$statusHolder.setStatus("_22.5328063241107_19.9337209302326");
+update($statusHolder);
+
+end
+
+rule "_22.5328063241107_19.9337209302326_23.3498039215686_surrogate_AGE_TRUE"
+    agenda-group "_22.5328063241107_19.9337209302326_23.3498039215686_surrogate"
+    activation-group "_22.5328063241107_19.9337209302326_23.3498039215686_surrogate"
+when
+    $statusHolder : KiePMMLStatusHolder(  )
+    AGE( value < 84.3 )
+then
+
+$statusHolder.setStatus("_22.5328063241107_19.9337209302326_23.3498039215686");
+update($statusHolder);
+
+end
+
+rule "_22.5328063241107_19.9337209302326_23.3498039215686_surrogate_AGE_FALSE"
+    agenda-group "_22.5328063241107_19.9337209302326_23.3498039215686_surrogate"
+    activation-group "_22.5328063241107_19.9337209302326_23.3498039215686_surrogate"
+when
+    $statusHolder : KiePMMLStatusHolder(  )
+
+    not(
+
+    AGE( value < 84.3 )    )
+then
+
+$statusHolder.setStatus("_22.5328063241107_19.9337209302326");
+update($statusHolder);
+
+end
+
+rule "_22.5328063241107_19.9337209302326_23.3498039215686_surrogate_INDUS_TRUE"
+    agenda-group "_22.5328063241107_19.9337209302326_23.3498039215686_surrogate"
+    activation-group "_22.5328063241107_19.9337209302326_23.3498039215686_surrogate"
+when
+    $statusHolder : KiePMMLStatusHolder(  )
+    INDUS( value < 16.57 )
+then
+
+$statusHolder.setStatus("_22.5328063241107_19.9337209302326_23.3498039215686");
+update($statusHolder);
+
+end
+
+rule "_22.5328063241107_19.9337209302326_23.3498039215686_surrogate_INDUS_FALSE"
+    agenda-group "_22.5328063241107_19.9337209302326_23.3498039215686_surrogate"
+    activation-group "_22.5328063241107_19.9337209302326_23.3498039215686_surrogate"
+when
+    $statusHolder : KiePMMLStatusHolder(  )
+
+    not(
+
+    INDUS( value < 16.57 )    )
+then
+
+$statusHolder.setStatus("_22.5328063241107_19.9337209302326");
+update($statusHolder);
+
+end
+
+rule "_22.5328063241107_19.9337209302326_23.3498039215686_surrogate_NOX_TRUE"
+    agenda-group "_22.5328063241107_19.9337209302326_23.3498039215686_surrogate"
+    activation-group "_22.5328063241107_19.9337209302326_23.3498039215686_surrogate"
+when
+    $statusHolder : KiePMMLStatusHolder(  )
+    NOX( value < 0.5765 )
+then
+
+$statusHolder.setStatus("_22.5328063241107_19.9337209302326_23.3498039215686");
+update($statusHolder);
+
+end
+
+rule "_22.5328063241107_19.9337209302326_23.3498039215686_surrogate_NOX_FALSE"
+    agenda-group "_22.5328063241107_19.9337209302326_23.3498039215686_surrogate"
+    activation-group "_22.5328063241107_19.9337209302326_23.3498039215686_surrogate"
+when
+    $statusHolder : KiePMMLStatusHolder(  )
+
+    not(
+
+    NOX( value < 0.5765 )    )
+then
+
+$statusHolder.setStatus("_22.5328063241107_19.9337209302326");
+update($statusHolder);
+
+end
+
+rule "_22.5328063241107_19.9337209302326_23.3498039215686_surrogate_DIS_TRUE"
+    agenda-group "_22.5328063241107_19.9337209302326_23.3498039215686_surrogate"
+    activation-group "_22.5328063241107_19.9337209302326_23.3498039215686_surrogate"
+when
+    $statusHolder : KiePMMLStatusHolder(  )
+    DIS( value >= 2.23935 )
+then
+
+$statusHolder.setStatus("_22.5328063241107_19.9337209302326_23.3498039215686");
+update($statusHolder);
+
+end
+
+rule "_22.5328063241107_19.9337209302326_23.3498039215686_surrogate_DIS_FALSE"
+    agenda-group "_22.5328063241107_19.9337209302326_23.3498039215686_surrogate"
+    activation-group "_22.5328063241107_19.9337209302326_23.3498039215686_surrogate"
+when
+    $statusHolder : KiePMMLStatusHolder(  )
+
+    not(
+
+    DIS( value >= 2.23935 )    )
+then
+
+$statusHolder.setStatus("_22.5328063241107_19.9337209302326");
+update($statusHolder);
+
+end
+
+rule "_22.5328063241107_19.9337209302326_23.3498039215686_surrogate_TAX_TRUE"
+    agenda-group "_22.5328063241107_19.9337209302326_23.3498039215686_surrogate"
+    activation-group "_22.5328063241107_19.9337209302326_23.3498039215686_surrogate"
+when
+    $statusHolder : KiePMMLStatusHolder(  )
+    TAX( value < 434.5 )
+then
+
+$statusHolder.setStatus("_22.5328063241107_19.9337209302326_23.3498039215686");
+update($statusHolder);
+
+end
+
+rule "_22.5328063241107_19.9337209302326_23.3498039215686_surrogate_TAX_FALSE"
+    agenda-group "_22.5328063241107_19.9337209302326_23.3498039215686_surrogate"
+    activation-group "_22.5328063241107_19.9337209302326_23.3498039215686_surrogate"
+when
+    $statusHolder : KiePMMLStatusHolder(  )
+
+    not(
+
+    TAX( value < 434.5 )    )
+then
+
+$statusHolder.setStatus("_22.5328063241107_19.9337209302326");
+update($statusHolder);
+
+end
+
+rule "_22.5328063241107_19.9337209302326_23.3498039215686_22.9362903225807"
+when
+    $statusHolder : KiePMMLStatusHolder( status == "_22.5328063241107_19.9337209302326_23.3498039215686" )
+then
+
+kcontext.getKieRuntime().getAgenda().getAgendaGroup( "_22.5328063241107_19.9337209302326_23.3498039215686_22.9362903225807_surrogate" ).setFocus();
+
+end
+
+rule "_22.5328063241107_19.9337209302326_23.3498039215686_22.9362903225807_surrogate_DIS_TRUE"
+    agenda-group "_22.5328063241107_19.9337209302326_23.3498039215686_22.9362903225807_surrogate"
+    activation-group "_22.5328063241107_19.9337209302326_23.3498039215686_22.9362903225807_surrogate"
+when
+    $statusHolder : KiePMMLStatusHolder(  )
+    DIS( value >= 1.5511 )
+then
+
+$statusHolder.setStatus("_22.5328063241107_19.9337209302326_23.3498039215686_22.9362903225807");
+update($statusHolder);
+
+end
+
+rule "_22.5328063241107_19.9337209302326_23.3498039215686_22.9362903225807_surrogate_DIS_FALSE"
+    agenda-group "_22.5328063241107_19.9337209302326_23.3498039215686_22.9362903225807_surrogate"
+    activation-group "_22.5328063241107_19.9337209302326_23.3498039215686_22.9362903225807_surrogate"
+when
+    $statusHolder : KiePMMLStatusHolder(  )
+
+    not(
+
+    DIS( value >= 1.5511 )    )
+then
+
+$statusHolder.setStatus("_22.5328063241107_19.9337209302326_23.3498039215686");
+update($statusHolder);
+
+end
+
+rule "_22.5328063241107_19.9337209302326_23.3498039215686_22.9362903225807_surrogate_CRIM_TRUE"
+    agenda-group "_22.5328063241107_19.9337209302326_23.3498039215686_22.9362903225807_surrogate"
+    activation-group "_22.5328063241107_19.9337209302326_23.3498039215686_22.9362903225807_surrogate"
+when
+    $statusHolder : KiePMMLStatusHolder(  )
+    CRIM( value < 8.053285 )
+then
+
+$statusHolder.setStatus("_22.5328063241107_19.9337209302326_23.3498039215686_22.9362903225807");
+update($statusHolder);
+
+end
+
+rule "_22.5328063241107_19.9337209302326_23.3498039215686_22.9362903225807_surrogate_CRIM_FALSE"
+    agenda-group "_22.5328063241107_19.9337209302326_23.3498039215686_22.9362903225807_surrogate"
+    activation-group "_22.5328063241107_19.9337209302326_23.3498039215686_22.9362903225807_surrogate"
+when
+    $statusHolder : KiePMMLStatusHolder(  )
+
+    not(
+
+    CRIM( value < 8.053285 )    )
+then
+
+$statusHolder.setStatus("_22.5328063241107_19.9337209302326_23.3498039215686");
+update($statusHolder);
+
+end
+
+rule "_22.5328063241107_19.9337209302326_23.3498039215686_22.9362903225807_21.6564766839378"
+when
+    $statusHolder : KiePMMLStatusHolder( status == "_22.5328063241107_19.9337209302326_23.3498039215686_22.9362903225807" )
+then
+
+kcontext.getKieRuntime().getAgenda().getAgendaGroup( "_22.5328063241107_19.9337209302326_23.3498039215686_22.9362903225807_21.6564766839378_surrogate" ).setFocus();
+
+end
+
+rule "_22.5328063241107_19.9337209302326_23.3498039215686_22.9362903225807_21.6564766839378_surrogate_RM_TRUE"
+    agenda-group "_22.5328063241107_19.9337209302326_23.3498039215686_22.9362903225807_21.6564766839378_surrogate"
+    activation-group "_22.5328063241107_19.9337209302326_23.3498039215686_22.9362903225807_21.6564766839378_surrogate"
+when
+    $statusHolder : KiePMMLStatusHolder(  )
+    RM( value < 6.543 )
+then
+
+$statusHolder.setStatus("DONE");
+update($statusHolder);
+$pmml4Result.setResultCode("OK");
+$pmml4Result.addResultVariable($pmml4Result.getResultObjectName(), 21.6564766839378);
+
+end
+
+rule "_22.5328063241107_19.9337209302326_23.3498039215686_22.9362903225807_21.6564766839378_surrogate_RM_FALSE"
+    agenda-group "_22.5328063241107_19.9337209302326_23.3498039215686_22.9362903225807_21.6564766839378_surrogate"
+    activation-group "_22.5328063241107_19.9337209302326_23.3498039215686_22.9362903225807_21.6564766839378_surrogate"
+when
+    $statusHolder : KiePMMLStatusHolder(  )
+
+    not(
+
+    RM( value < 6.543 )    )
+then
+
+$statusHolder.setStatus("_22.5328063241107_19.9337209302326_23.3498039215686_22.9362903225807");
+update($statusHolder);
+
+end
+
+rule "_22.5328063241107_19.9337209302326_23.3498039215686_22.9362903225807_21.6564766839378_surrogate_LSTAT_TRUE"
+    agenda-group "_22.5328063241107_19.9337209302326_23.3498039215686_22.9362903225807_21.6564766839378_surrogate"
+    activation-group "_22.5328063241107_19.9337209302326_23.3498039215686_22.9362903225807_21.6564766839378_surrogate"
+when
+    $statusHolder : KiePMMLStatusHolder(  )
+    LSTAT( value >= 5.055 )
+then
+
+$statusHolder.setStatus("DONE");
+update($statusHolder);
+$pmml4Result.setResultCode("OK");
+$pmml4Result.addResultVariable($pmml4Result.getResultObjectName(), 21.6564766839378);
+
+end
+
+rule "_22.5328063241107_19.9337209302326_23.3498039215686_22.9362903225807_21.6564766839378_surrogate_LSTAT_FALSE"
+    agenda-group "_22.5328063241107_19.9337209302326_23.3498039215686_22.9362903225807_21.6564766839378_surrogate"
+    activation-group "_22.5328063241107_19.9337209302326_23.3498039215686_22.9362903225807_21.6564766839378_surrogate"
+when
+    $statusHolder : KiePMMLStatusHolder(  )
+
+    not(
+
+    LSTAT( value >= 5.055 )    )
+then
+
+$statusHolder.setStatus("_22.5328063241107_19.9337209302326_23.3498039215686_22.9362903225807");
+update($statusHolder);
+
+end
+
+rule "_22.5328063241107_19.9337209302326_23.3498039215686_22.9362903225807_21.6564766839378_surrogate_CRIM_TRUE"
+    agenda-group "_22.5328063241107_19.9337209302326_23.3498039215686_22.9362903225807_21.6564766839378_surrogate"
+    activation-group "_22.5328063241107_19.9337209302326_23.3498039215686_22.9362903225807_21.6564766839378_surrogate"
+when
+    $statusHolder : KiePMMLStatusHolder(  )
+    CRIM( value >= 0.017895 )
+then
+
+$statusHolder.setStatus("DONE");
+update($statusHolder);
+$pmml4Result.setResultCode("OK");
+$pmml4Result.addResultVariable($pmml4Result.getResultObjectName(), 21.6564766839378);
+
+end
+
+rule "_22.5328063241107_19.9337209302326_23.3498039215686_22.9362903225807_21.6564766839378_surrogate_CRIM_FALSE"
+    agenda-group "_22.5328063241107_19.9337209302326_23.3498039215686_22.9362903225807_21.6564766839378_surrogate"
+    activation-group "_22.5328063241107_19.9337209302326_23.3498039215686_22.9362903225807_21.6564766839378_surrogate"
+when
+    $statusHolder : KiePMMLStatusHolder(  )
+
+    not(
+
+    CRIM( value >= 0.017895 )    )
+then
+
+$statusHolder.setStatus("_22.5328063241107_19.9337209302326_23.3498039215686_22.9362903225807");
+update($statusHolder);
+
+end
+
+rule "_22.5328063241107_19.9337209302326_23.3498039215686_22.9362903225807_21.6564766839378_surrogate_ZN_TRUE"
+    agenda-group "_22.5328063241107_19.9337209302326_23.3498039215686_22.9362903225807_21.6564766839378_surrogate"
+    activation-group "_22.5328063241107_19.9337209302326_23.3498039215686_22.9362903225807_21.6564766839378_surrogate"
+when
+    $statusHolder : KiePMMLStatusHolder(  )
+    ZN( value < 31.5 )
+then
+
+$statusHolder.setStatus("DONE");
+update($statusHolder);
+$pmml4Result.setResultCode("OK");
+$pmml4Result.addResultVariable($pmml4Result.getResultObjectName(), 21.6564766839378);
+
+end
+
+rule "_22.5328063241107_19.9337209302326_23.3498039215686_22.9362903225807_21.6564766839378_surrogate_ZN_FALSE"
+    agenda-group "_22.5328063241107_19.9337209302326_23.3498039215686_22.9362903225807_21.6564766839378_surrogate"
+    activation-group "_22.5328063241107_19.9337209302326_23.3498039215686_22.9362903225807_21.6564766839378_surrogate"
+when
+    $statusHolder : KiePMMLStatusHolder(  )
+
+    not(
+
+    ZN( value < 31.5 )    )
+then
+
+$statusHolder.setStatus("_22.5328063241107_19.9337209302326_23.3498039215686_22.9362903225807");
+update($statusHolder);
+
+end
+
+rule "_22.5328063241107_19.9337209302326_23.3498039215686_22.9362903225807_21.6564766839378_surrogate_DIS_TRUE"
+    agenda-group "_22.5328063241107_19.9337209302326_23.3498039215686_22.9362903225807_21.6564766839378_surrogate"
+    activation-group "_22.5328063241107_19.9337209302326_23.3498039215686_22.9362903225807_21.6564766839378_surrogate"
+when
+    $statusHolder : KiePMMLStatusHolder(  )
+    DIS( value < 10.648 )
+then
+
+$statusHolder.setStatus("DONE");
+update($statusHolder);
+$pmml4Result.setResultCode("OK");
+$pmml4Result.addResultVariable($pmml4Result.getResultObjectName(), 21.6564766839378);
+
+end
+
+rule "_22.5328063241107_19.9337209302326_23.3498039215686_22.9362903225807_21.6564766839378_surrogate_DIS_FALSE"
+    agenda-group "_22.5328063241107_19.9337209302326_23.3498039215686_22.9362903225807_21.6564766839378_surrogate"
+    activation-group "_22.5328063241107_19.9337209302326_23.3498039215686_22.9362903225807_21.6564766839378_surrogate"
+when
+    $statusHolder : KiePMMLStatusHolder(  )
+
+    not(
+
+    DIS( value < 10.648 )    )
+then
+
+$statusHolder.setStatus("_22.5328063241107_19.9337209302326_23.3498039215686_22.9362903225807");
+update($statusHolder);
+
+end
+
+rule "_22.5328063241107_19.9337209302326_23.3498039215686_22.9362903225807_27.4272727272727"
+when
+    $statusHolder : KiePMMLStatusHolder( status == "_22.5328063241107_19.9337209302326_23.3498039215686_22.9362903225807" )
+then
+
+kcontext.getKieRuntime().getAgenda().getAgendaGroup( "_22.5328063241107_19.9337209302326_23.3498039215686_22.9362903225807_27.4272727272727_surrogate" ).setFocus();
+
+end
+
+rule "_22.5328063241107_19.9337209302326_23.3498039215686_22.9362903225807_27.4272727272727_surrogate_RM_TRUE"
+    agenda-group "_22.5328063241107_19.9337209302326_23.3498039215686_22.9362903225807_27.4272727272727_surrogate"
+    activation-group "_22.5328063241107_19.9337209302326_23.3498039215686_22.9362903225807_27.4272727272727_surrogate"
+when
+    $statusHolder : KiePMMLStatusHolder(  )
+    RM( value >= 6.543 )
+then
+
+$statusHolder.setStatus("DONE");
+update($statusHolder);
+$pmml4Result.setResultCode("OK");
+$pmml4Result.addResultVariable($pmml4Result.getResultObjectName(), 27.4272727272727);
+
+end
+
+rule "_22.5328063241107_19.9337209302326_23.3498039215686_22.9362903225807_27.4272727272727_surrogate_RM_FALSE"
+    agenda-group "_22.5328063241107_19.9337209302326_23.3498039215686_22.9362903225807_27.4272727272727_surrogate"
+    activation-group "_22.5328063241107_19.9337209302326_23.3498039215686_22.9362903225807_27.4272727272727_surrogate"
+when
+    $statusHolder : KiePMMLStatusHolder(  )
+
+    not(
+
+    RM( value >= 6.543 )    )
+then
+
+$statusHolder.setStatus("_22.5328063241107_19.9337209302326_23.3498039215686_22.9362903225807");
+update($statusHolder);
+
+end
+
+rule "_22.5328063241107_19.9337209302326_23.3498039215686_22.9362903225807_27.4272727272727_surrogate_LSTAT_TRUE"
+    agenda-group "_22.5328063241107_19.9337209302326_23.3498039215686_22.9362903225807_27.4272727272727_surrogate"
+    activation-group "_22.5328063241107_19.9337209302326_23.3498039215686_22.9362903225807_27.4272727272727_surrogate"
+when
+    $statusHolder : KiePMMLStatusHolder(  )
+    LSTAT( value < 5.055 )
+then
+
+$statusHolder.setStatus("DONE");
+update($statusHolder);
+$pmml4Result.setResultCode("OK");
+$pmml4Result.addResultVariable($pmml4Result.getResultObjectName(), 27.4272727272727);
+
+end
+
+rule "_22.5328063241107_19.9337209302326_23.3498039215686_22.9362903225807_27.4272727272727_surrogate_LSTAT_FALSE"
+    agenda-group "_22.5328063241107_19.9337209302326_23.3498039215686_22.9362903225807_27.4272727272727_surrogate"
+    activation-group "_22.5328063241107_19.9337209302326_23.3498039215686_22.9362903225807_27.4272727272727_surrogate"
+when
+    $statusHolder : KiePMMLStatusHolder(  )
+
+    not(
+
+    LSTAT( value < 5.055 )    )
+then
+
+$statusHolder.setStatus("_22.5328063241107_19.9337209302326_23.3498039215686_22.9362903225807");
+update($statusHolder);
+
+end
+
+rule "_22.5328063241107_19.9337209302326_23.3498039215686_22.9362903225807_27.4272727272727_surrogate_CRIM_TRUE"
+    agenda-group "_22.5328063241107_19.9337209302326_23.3498039215686_22.9362903225807_27.4272727272727_surrogate"
+    activation-group "_22.5328063241107_19.9337209302326_23.3498039215686_22.9362903225807_27.4272727272727_surrogate"
+when
+    $statusHolder : KiePMMLStatusHolder(  )
+    CRIM( value < 0.017895 )
+then
+
+$statusHolder.setStatus("DONE");
+update($statusHolder);
+$pmml4Result.setResultCode("OK");
+$pmml4Result.addResultVariable($pmml4Result.getResultObjectName(), 27.4272727272727);
+
+end
+
+rule "_22.5328063241107_19.9337209302326_23.3498039215686_22.9362903225807_27.4272727272727_surrogate_CRIM_FALSE"
+    agenda-group "_22.5328063241107_19.9337209302326_23.3498039215686_22.9362903225807_27.4272727272727_surrogate"
+    activation-group "_22.5328063241107_19.9337209302326_23.3498039215686_22.9362903225807_27.4272727272727_surrogate"
+when
+    $statusHolder : KiePMMLStatusHolder(  )
+
+    not(
+
+    CRIM( value < 0.017895 )    )
+then
+
+$statusHolder.setStatus("_22.5328063241107_19.9337209302326_23.3498039215686_22.9362903225807");
+update($statusHolder);
+
+end
+
+rule "_22.5328063241107_19.9337209302326_23.3498039215686_22.9362903225807_27.4272727272727_surrogate_ZN_TRUE"
+    agenda-group "_22.5328063241107_19.9337209302326_23.3498039215686_22.9362903225807_27.4272727272727_surrogate"
+    activation-group "_22.5328063241107_19.9337209302326_23.3498039215686_22.9362903225807_27.4272727272727_surrogate"
+when
+    $statusHolder : KiePMMLStatusHolder(  )
+    ZN( value >= 31.5 )
+then
+
+$statusHolder.setStatus("DONE");
+update($statusHolder);
+$pmml4Result.setResultCode("OK");
+$pmml4Result.addResultVariable($pmml4Result.getResultObjectName(), 27.4272727272727);
+
+end
+
+rule "_22.5328063241107_19.9337209302326_23.3498039215686_22.9362903225807_27.4272727272727_surrogate_ZN_FALSE"
+    agenda-group "_22.5328063241107_19.9337209302326_23.3498039215686_22.9362903225807_27.4272727272727_surrogate"
+    activation-group "_22.5328063241107_19.9337209302326_23.3498039215686_22.9362903225807_27.4272727272727_surrogate"
+when
+    $statusHolder : KiePMMLStatusHolder(  )
+
+    not(
+
+    ZN( value >= 31.5 )    )
+then
+
+$statusHolder.setStatus("_22.5328063241107_19.9337209302326_23.3498039215686_22.9362903225807");
+update($statusHolder);
+
+end
+
+rule "_22.5328063241107_19.9337209302326_23.3498039215686_22.9362903225807_27.4272727272727_surrogate_DIS_TRUE"
+    agenda-group "_22.5328063241107_19.9337209302326_23.3498039215686_22.9362903225807_27.4272727272727_surrogate"
+    activation-group "_22.5328063241107_19.9337209302326_23.3498039215686_22.9362903225807_27.4272727272727_surrogate"
+when
+    $statusHolder : KiePMMLStatusHolder(  )
+    DIS( value >= 10.648 )
+then
+
+$statusHolder.setStatus("DONE");
+update($statusHolder);
+$pmml4Result.setResultCode("OK");
+$pmml4Result.addResultVariable($pmml4Result.getResultObjectName(), 27.4272727272727);
+
+end
+
+rule "_22.5328063241107_19.9337209302326_23.3498039215686_22.9362903225807_27.4272727272727_surrogate_DIS_FALSE"
+    agenda-group "_22.5328063241107_19.9337209302326_23.3498039215686_22.9362903225807_27.4272727272727_surrogate"
+    activation-group "_22.5328063241107_19.9337209302326_23.3498039215686_22.9362903225807_27.4272727272727_surrogate"
+when
+    $statusHolder : KiePMMLStatusHolder(  )
+
+    not(
+
+    DIS( value >= 10.648 )    )
+then
+
+$statusHolder.setStatus("_22.5328063241107_19.9337209302326_23.3498039215686_22.9362903225807");
+update($statusHolder);
+
+end
+
+rule "default__22.5328063241107_19.9337209302326_23.3498039215686_22.9362903225807"
+when
+    $statusHolder : KiePMMLStatusHolder( status == "_22.5328063241107_19.9337209302326_23.3498039215686_22.9362903225807" )
+then
+
+$statusHolder.setStatus("DONE");
+update($statusHolder);
+$pmml4Result.setResultCode("OK");
+$pmml4Result.addResultVariable($pmml4Result.getResultObjectName(), 22.9362903225807);
+
+end
+
+rule "_22.5328063241107_19.9337209302326_23.3498039215686_38"
+when
+    $statusHolder : KiePMMLStatusHolder( status == "_22.5328063241107_19.9337209302326_23.3498039215686" )
+then
+
+kcontext.getKieRuntime().getAgenda().getAgendaGroup( "_22.5328063241107_19.9337209302326_23.3498039215686_38_surrogate" ).setFocus();
+
+end
+
+rule "_22.5328063241107_19.9337209302326_23.3498039215686_38_surrogate_DIS_TRUE"
+    agenda-group "_22.5328063241107_19.9337209302326_23.3498039215686_38_surrogate"
+    activation-group "_22.5328063241107_19.9337209302326_23.3498039215686_38_surrogate"
+when
+    $statusHolder : KiePMMLStatusHolder(  )
+    DIS( value < 1.5511 )
+then
+
+$statusHolder.setStatus("DONE");
+update($statusHolder);
+$pmml4Result.setResultCode("OK");
+$pmml4Result.addResultVariable($pmml4Result.getResultObjectName(), 38.0);
+
+end
+
+rule "_22.5328063241107_19.9337209302326_23.3498039215686_38_surrogate_DIS_FALSE"
+    agenda-group "_22.5328063241107_19.9337209302326_23.3498039215686_38_surrogate"
+    activation-group "_22.5328063241107_19.9337209302326_23.3498039215686_38_surrogate"
+when
+    $statusHolder : KiePMMLStatusHolder(  )
+
+    not(
+
+    DIS( value < 1.5511 )    )
+then
+
+$statusHolder.setStatus("_22.5328063241107_19.9337209302326_23.3498039215686");
+update($statusHolder);
+
+end
+
+rule "_22.5328063241107_19.9337209302326_23.3498039215686_38_surrogate_CRIM_TRUE"
+    agenda-group "_22.5328063241107_19.9337209302326_23.3498039215686_38_surrogate"
+    activation-group "_22.5328063241107_19.9337209302326_23.3498039215686_38_surrogate"
+when
+    $statusHolder : KiePMMLStatusHolder(  )
+    CRIM( value >= 8.053285 )
+then
+
+$statusHolder.setStatus("DONE");
+update($statusHolder);
+$pmml4Result.setResultCode("OK");
+$pmml4Result.addResultVariable($pmml4Result.getResultObjectName(), 38.0);
+
+end
+
+rule "_22.5328063241107_19.9337209302326_23.3498039215686_38_surrogate_CRIM_FALSE"
+    agenda-group "_22.5328063241107_19.9337209302326_23.3498039215686_38_surrogate"
+    activation-group "_22.5328063241107_19.9337209302326_23.3498039215686_38_surrogate"
+when
+    $statusHolder : KiePMMLStatusHolder(  )
+
+    not(
+
+    CRIM( value >= 8.053285 )    )
+then
+
+$statusHolder.setStatus("_22.5328063241107_19.9337209302326_23.3498039215686");
+update($statusHolder);
+
+end
+
+rule "default__22.5328063241107_19.9337209302326_23.3498039215686"
+when
+    $statusHolder : KiePMMLStatusHolder( status == "_22.5328063241107_19.9337209302326_23.3498039215686" )
+then
+
+$statusHolder.setStatus("DONE");
+update($statusHolder);
+$pmml4Result.setResultCode("OK");
+$pmml4Result.addResultVariable($pmml4Result.getResultObjectName(), 23.3498039215686);
+
+end
+
+rule "default__22.5328063241107_19.9337209302326"
+when
+    $statusHolder : KiePMMLStatusHolder( status == "_22.5328063241107_19.9337209302326" )
+then
+
+$statusHolder.setStatus("DONE");
+update($statusHolder);
+$pmml4Result.setResultCode("OK");
+$pmml4Result.addResultVariable($pmml4Result.getResultObjectName(), 19.9337209302326);
+
+end
+
+rule "_22.5328063241107_37.2381578947369"
+when
+    $statusHolder : KiePMMLStatusHolder( status == "_22.5328063241107" )
+then
+
+kcontext.getKieRuntime().getAgenda().getAgendaGroup( "_22.5328063241107_37.2381578947369_surrogate" ).setFocus();
+
+end
+
+rule "_22.5328063241107_37.2381578947369_surrogate_RM_TRUE"
+    agenda-group "_22.5328063241107_37.2381578947369_surrogate"
+    activation-group "_22.5328063241107_37.2381578947369_surrogate"
+when
+    $statusHolder : KiePMMLStatusHolder(  )
+    RM( value >= 6.941 )
+then
+
+$statusHolder.setStatus("_22.5328063241107_37.2381578947369");
+update($statusHolder);
+
+end
+
+rule "_22.5328063241107_37.2381578947369_surrogate_RM_FALSE"
+    agenda-group "_22.5328063241107_37.2381578947369_surrogate"
+    activation-group "_22.5328063241107_37.2381578947369_surrogate"
+when
+    $statusHolder : KiePMMLStatusHolder(  )
+
+    not(
+
+    RM( value >= 6.941 )    )
+then
+
+$statusHolder.setStatus("_22.5328063241107");
+update($statusHolder);
+
+end
+
+rule "_22.5328063241107_37.2381578947369_surrogate_LSTAT_TRUE"
+    agenda-group "_22.5328063241107_37.2381578947369_surrogate"
+    activation-group "_22.5328063241107_37.2381578947369_surrogate"
+when
+    $statusHolder : KiePMMLStatusHolder(  )
+    LSTAT( value < 4.83 )
+then
+
+$statusHolder.setStatus("_22.5328063241107_37.2381578947369");
+update($statusHolder);
+
+end
+
+rule "_22.5328063241107_37.2381578947369_surrogate_LSTAT_FALSE"
+    agenda-group "_22.5328063241107_37.2381578947369_surrogate"
+    activation-group "_22.5328063241107_37.2381578947369_surrogate"
+when
+    $statusHolder : KiePMMLStatusHolder(  )
+
+    not(
+
+    LSTAT( value < 4.83 )    )
+then
+
+$statusHolder.setStatus("_22.5328063241107");
+update($statusHolder);
+
+end
+
+rule "_22.5328063241107_37.2381578947369_surrogate_PTRATIO_TRUE"
+    agenda-group "_22.5328063241107_37.2381578947369_surrogate"
+    activation-group "_22.5328063241107_37.2381578947369_surrogate"
+when
+    $statusHolder : KiePMMLStatusHolder(  )
+    PTRATIO( value < 14.55 )
+then
+
+$statusHolder.setStatus("_22.5328063241107_37.2381578947369");
+update($statusHolder);
+
+end
+
+rule "_22.5328063241107_37.2381578947369_surrogate_PTRATIO_FALSE"
+    agenda-group "_22.5328063241107_37.2381578947369_surrogate"
+    activation-group "_22.5328063241107_37.2381578947369_surrogate"
+when
+    $statusHolder : KiePMMLStatusHolder(  )
+
+    not(
+
+    PTRATIO( value < 14.55 )    )
+then
+
+$statusHolder.setStatus("_22.5328063241107");
+update($statusHolder);
+
+end
+
+rule "_22.5328063241107_37.2381578947369_surrogate_ZN_TRUE"
+    agenda-group "_22.5328063241107_37.2381578947369_surrogate"
+    activation-group "_22.5328063241107_37.2381578947369_surrogate"
+when
+    $statusHolder : KiePMMLStatusHolder(  )
+    ZN( value >= 87.5 )
+then
+
+$statusHolder.setStatus("_22.5328063241107_37.2381578947369");
+update($statusHolder);
+
+end
+
+rule "_22.5328063241107_37.2381578947369_surrogate_ZN_FALSE"
+    agenda-group "_22.5328063241107_37.2381578947369_surrogate"
+    activation-group "_22.5328063241107_37.2381578947369_surrogate"
+when
+    $statusHolder : KiePMMLStatusHolder(  )
+
+    not(
+
+    ZN( value >= 87.5 )    )
+then
+
+$statusHolder.setStatus("_22.5328063241107");
+update($statusHolder);
+
+end
+
+rule "_22.5328063241107_37.2381578947369_surrogate_INDUS_TRUE"
+    agenda-group "_22.5328063241107_37.2381578947369_surrogate"
+    activation-group "_22.5328063241107_37.2381578947369_surrogate"
+when
+    $statusHolder : KiePMMLStatusHolder(  )
+    INDUS( value < 1.605 )
+then
+
+$statusHolder.setStatus("_22.5328063241107_37.2381578947369");
+update($statusHolder);
+
+end
+
+rule "_22.5328063241107_37.2381578947369_surrogate_INDUS_FALSE"
+    agenda-group "_22.5328063241107_37.2381578947369_surrogate"
+    activation-group "_22.5328063241107_37.2381578947369_surrogate"
+when
+    $statusHolder : KiePMMLStatusHolder(  )
+
+    not(
+
+    INDUS( value < 1.605 )    )
+then
+
+$statusHolder.setStatus("_22.5328063241107");
+update($statusHolder);
+
+end
+
+rule "_22.5328063241107_37.2381578947369_surrogate_CRIM_TRUE"
+    agenda-group "_22.5328063241107_37.2381578947369_surrogate"
+    activation-group "_22.5328063241107_37.2381578947369_surrogate"
+when
+    $statusHolder : KiePMMLStatusHolder(  )
+    CRIM( value < 0.013355 )
+then
+
+$statusHolder.setStatus("_22.5328063241107_37.2381578947369");
+update($statusHolder);
+
+end
+
+rule "_22.5328063241107_37.2381578947369_surrogate_CRIM_FALSE"
+    agenda-group "_22.5328063241107_37.2381578947369_surrogate"
+    activation-group "_22.5328063241107_37.2381578947369_surrogate"
+when
+    $statusHolder : KiePMMLStatusHolder(  )
+
+    not(
+
+    CRIM( value < 0.013355 )    )
+then
+
+$statusHolder.setStatus("_22.5328063241107");
+update($statusHolder);
+
+end
+
+rule "_22.5328063241107_37.2381578947369_32.1130434782609"
+when
+    $statusHolder : KiePMMLStatusHolder( status == "_22.5328063241107_37.2381578947369" )
+then
+
+kcontext.getKieRuntime().getAgenda().getAgendaGroup( "_22.5328063241107_37.2381578947369_32.1130434782609_surrogate" ).setFocus();
+
+end
+
+rule "_22.5328063241107_37.2381578947369_32.1130434782609_surrogate_RM_TRUE"
+    agenda-group "_22.5328063241107_37.2381578947369_32.1130434782609_surrogate"
+    activation-group "_22.5328063241107_37.2381578947369_32.1130434782609_surrogate"
+when
+    $statusHolder : KiePMMLStatusHolder(  )
+    RM( value < 7.437 )
+then
+
+$statusHolder.setStatus("_22.5328063241107_37.2381578947369_32.1130434782609");
+update($statusHolder);
+
+end
+
+rule "_22.5328063241107_37.2381578947369_32.1130434782609_surrogate_RM_FALSE"
+    agenda-group "_22.5328063241107_37.2381578947369_32.1130434782609_surrogate"
+    activation-group "_22.5328063241107_37.2381578947369_32.1130434782609_surrogate"
+when
+    $statusHolder : KiePMMLStatusHolder(  )
+
+    not(
+
+    RM( value < 7.437 )    )
+then
+
+$statusHolder.setStatus("_22.5328063241107_37.2381578947369");
+update($statusHolder);
+
+end
+
+rule "_22.5328063241107_37.2381578947369_32.1130434782609_surrogate_LSTAT_TRUE"
+    agenda-group "_22.5328063241107_37.2381578947369_32.1130434782609_surrogate"
+    activation-group "_22.5328063241107_37.2381578947369_32.1130434782609_surrogate"
+when
+    $statusHolder : KiePMMLStatusHolder(  )
+    LSTAT( value >= 3.99 )
+then
+
+$statusHolder.setStatus("_22.5328063241107_37.2381578947369_32.1130434782609");
+update($statusHolder);
+
+end
+
+rule "_22.5328063241107_37.2381578947369_32.1130434782609_surrogate_LSTAT_FALSE"
+    agenda-group "_22.5328063241107_37.2381578947369_32.1130434782609_surrogate"
+    activation-group "_22.5328063241107_37.2381578947369_32.1130434782609_surrogate"
+when
+    $statusHolder : KiePMMLStatusHolder(  )
+
+    not(
+
+    LSTAT( value >= 3.99 )    )
+then
+
+$statusHolder.setStatus("_22.5328063241107_37.2381578947369");
+update($statusHolder);
+
+end
+
+rule "_22.5328063241107_37.2381578947369_32.1130434782609_surrogate_PTRATIO_TRUE"
+    agenda-group "_22.5328063241107_37.2381578947369_32.1130434782609_surrogate"
+    activation-group "_22.5328063241107_37.2381578947369_32.1130434782609_surrogate"
+when
+    $statusHolder : KiePMMLStatusHolder(  )
+    PTRATIO( value >= 14.75 )
+then
+
+$statusHolder.setStatus("_22.5328063241107_37.2381578947369_32.1130434782609");
+update($statusHolder);
+
+end
+
+rule "_22.5328063241107_37.2381578947369_32.1130434782609_surrogate_PTRATIO_FALSE"
+    agenda-group "_22.5328063241107_37.2381578947369_32.1130434782609_surrogate"
+    activation-group "_22.5328063241107_37.2381578947369_32.1130434782609_surrogate"
+when
+    $statusHolder : KiePMMLStatusHolder(  )
+
+    not(
+
+    PTRATIO( value >= 14.75 )    )
+then
+
+$statusHolder.setStatus("_22.5328063241107_37.2381578947369");
+update($statusHolder);
+
+end
+
+rule "_22.5328063241107_37.2381578947369_32.1130434782609_surrogate_B_TRUE"
+    agenda-group "_22.5328063241107_37.2381578947369_32.1130434782609_surrogate"
+    activation-group "_22.5328063241107_37.2381578947369_32.1130434782609_surrogate"
+when
+    $statusHolder : KiePMMLStatusHolder(  )
+    B( value >= 389.885 )
+then
+
+$statusHolder.setStatus("_22.5328063241107_37.2381578947369_32.1130434782609");
+update($statusHolder);
+
+end
+
+rule "_22.5328063241107_37.2381578947369_32.1130434782609_surrogate_B_FALSE"
+    agenda-group "_22.5328063241107_37.2381578947369_32.1130434782609_surrogate"
+    activation-group "_22.5328063241107_37.2381578947369_32.1130434782609_surrogate"
+when
+    $statusHolder : KiePMMLStatusHolder(  )
+
+    not(
+
+    B( value >= 389.885 )    )
+then
+
+$statusHolder.setStatus("_22.5328063241107_37.2381578947369");
+update($statusHolder);
+
+end
+
+rule "_22.5328063241107_37.2381578947369_32.1130434782609_surrogate_CRIM_TRUE"
+    agenda-group "_22.5328063241107_37.2381578947369_32.1130434782609_surrogate"
+    activation-group "_22.5328063241107_37.2381578947369_32.1130434782609_surrogate"
+when
+    $statusHolder : KiePMMLStatusHolder(  )
+    CRIM( value < 0.11276 )
+then
+
+$statusHolder.setStatus("_22.5328063241107_37.2381578947369_32.1130434782609");
+update($statusHolder);
+
+end
+
+rule "_22.5328063241107_37.2381578947369_32.1130434782609_surrogate_CRIM_FALSE"
+    agenda-group "_22.5328063241107_37.2381578947369_32.1130434782609_surrogate"
+    activation-group "_22.5328063241107_37.2381578947369_32.1130434782609_surrogate"
+when
+    $statusHolder : KiePMMLStatusHolder(  )
+
+    not(
+
+    CRIM( value < 0.11276 )    )
+then
+
+$statusHolder.setStatus("_22.5328063241107_37.2381578947369");
+update($statusHolder);
+
+end
+
+rule "_22.5328063241107_37.2381578947369_32.1130434782609_surrogate_INDUS_TRUE"
+    agenda-group "_22.5328063241107_37.2381578947369_32.1130434782609_surrogate"
+    activation-group "_22.5328063241107_37.2381578947369_32.1130434782609_surrogate"
+when
+    $statusHolder : KiePMMLStatusHolder(  )
+    INDUS( value < 18.84 )
+then
+
+$statusHolder.setStatus("_22.5328063241107_37.2381578947369_32.1130434782609");
+update($statusHolder);
+
+end
+
+rule "_22.5328063241107_37.2381578947369_32.1130434782609_surrogate_INDUS_FALSE"
+    agenda-group "_22.5328063241107_37.2381578947369_32.1130434782609_surrogate"
+    activation-group "_22.5328063241107_37.2381578947369_32.1130434782609_surrogate"
+when
+    $statusHolder : KiePMMLStatusHolder(  )
+
+    not(
+
+    INDUS( value < 18.84 )    )
+then
+
+$statusHolder.setStatus("_22.5328063241107_37.2381578947369");
+update($statusHolder);
+
+end
+
+rule "_22.5328063241107_37.2381578947369_32.1130434782609_23.0571428571429"
+when
+    $statusHolder : KiePMMLStatusHolder( status == "_22.5328063241107_37.2381578947369_32.1130434782609" )
+then
+
+kcontext.getKieRuntime().getAgenda().getAgendaGroup( "_22.5328063241107_37.2381578947369_32.1130434782609_23.0571428571429_surrogate" ).setFocus();
+
+end
+
+rule "_22.5328063241107_37.2381578947369_32.1130434782609_23.0571428571429_surrogate_LSTAT_TRUE"
+    agenda-group "_22.5328063241107_37.2381578947369_32.1130434782609_23.0571428571429_surrogate"
+    activation-group "_22.5328063241107_37.2381578947369_32.1130434782609_23.0571428571429_surrogate"
+when
+    $statusHolder : KiePMMLStatusHolder(  )
+    LSTAT( value >= 9.65 )
+then
+
+$statusHolder.setStatus("DONE");
+update($statusHolder);
+$pmml4Result.setResultCode("OK");
+$pmml4Result.addResultVariable($pmml4Result.getResultObjectName(), 23.0571428571429);
+
+end
+
+rule "_22.5328063241107_37.2381578947369_32.1130434782609_23.0571428571429_surrogate_LSTAT_FALSE"
+    agenda-group "_22.5328063241107_37.2381578947369_32.1130434782609_23.0571428571429_surrogate"
+    activation-group "_22.5328063241107_37.2381578947369_32.1130434782609_23.0571428571429_surrogate"
+when
+    $statusHolder : KiePMMLStatusHolder(  )
+
+    not(
+
+    LSTAT( value >= 9.65 )    )
+then
+
+$statusHolder.setStatus("_22.5328063241107_37.2381578947369_32.1130434782609");
+update($statusHolder);
+
+end
+
+rule "_22.5328063241107_37.2381578947369_32.1130434782609_23.0571428571429_surrogate_CRIM_TRUE"
+    agenda-group "_22.5328063241107_37.2381578947369_32.1130434782609_23.0571428571429_surrogate"
+    activation-group "_22.5328063241107_37.2381578947369_32.1130434782609_23.0571428571429_surrogate"
+when
+    $statusHolder : KiePMMLStatusHolder(  )
+    CRIM( value >= 0.724605 )
+then
+
+$statusHolder.setStatus("DONE");
+update($statusHolder);
+$pmml4Result.setResultCode("OK");
+$pmml4Result.addResultVariable($pmml4Result.getResultObjectName(), 23.0571428571429);
+
+end
+
+rule "_22.5328063241107_37.2381578947369_32.1130434782609_23.0571428571429_surrogate_CRIM_FALSE"
+    agenda-group "_22.5328063241107_37.2381578947369_32.1130434782609_23.0571428571429_surrogate"
+    activation-group "_22.5328063241107_37.2381578947369_32.1130434782609_23.0571428571429_surrogate"
+when
+    $statusHolder : KiePMMLStatusHolder(  )
+
+    not(
+
+    CRIM( value >= 0.724605 )    )
+then
+
+$statusHolder.setStatus("_22.5328063241107_37.2381578947369_32.1130434782609");
+update($statusHolder);
+
+end
+
+rule "_22.5328063241107_37.2381578947369_32.1130434782609_23.0571428571429_surrogate_NOX_TRUE"
+    agenda-group "_22.5328063241107_37.2381578947369_32.1130434782609_23.0571428571429_surrogate"
+    activation-group "_22.5328063241107_37.2381578947369_32.1130434782609_23.0571428571429_surrogate"
+when
+    $statusHolder : KiePMMLStatusHolder(  )
+    NOX( value >= 0.659 )
+then
+
+$statusHolder.setStatus("DONE");
+update($statusHolder);
+$pmml4Result.setResultCode("OK");
+$pmml4Result.addResultVariable($pmml4Result.getResultObjectName(), 23.0571428571429);
+
+end
+
+rule "_22.5328063241107_37.2381578947369_32.1130434782609_23.0571428571429_surrogate_NOX_FALSE"
+    agenda-group "_22.5328063241107_37.2381578947369_32.1130434782609_23.0571428571429_surrogate"
+    activation-group "_22.5328063241107_37.2381578947369_32.1130434782609_23.0571428571429_surrogate"
+when
+    $statusHolder : KiePMMLStatusHolder(  )
+
+    not(
+
+    NOX( value >= 0.659 )    )
+then
+
+$statusHolder.setStatus("_22.5328063241107_37.2381578947369_32.1130434782609");
+update($statusHolder);
+
+end
+
+rule "_22.5328063241107_37.2381578947369_32.1130434782609_23.0571428571429_surrogate_RAD_TRUE"
+    agenda-group "_22.5328063241107_37.2381578947369_32.1130434782609_23.0571428571429_surrogate"
+    activation-group "_22.5328063241107_37.2381578947369_32.1130434782609_23.0571428571429_surrogate"
+when
+    $statusHolder : KiePMMLStatusHolder(  )
+    RAD( value >= 16.0 )
+then
+
+$statusHolder.setStatus("DONE");
+update($statusHolder);
+$pmml4Result.setResultCode("OK");
+$pmml4Result.addResultVariable($pmml4Result.getResultObjectName(), 23.0571428571429);
+
+end
+
+rule "_22.5328063241107_37.2381578947369_32.1130434782609_23.0571428571429_surrogate_RAD_FALSE"
+    agenda-group "_22.5328063241107_37.2381578947369_32.1130434782609_23.0571428571429_surrogate"
+    activation-group "_22.5328063241107_37.2381578947369_32.1130434782609_23.0571428571429_surrogate"
+when
+    $statusHolder : KiePMMLStatusHolder(  )
+
+    not(
+
+    RAD( value >= 16.0 )    )
+then
+
+$statusHolder.setStatus("_22.5328063241107_37.2381578947369_32.1130434782609");
+update($statusHolder);
+
+end
+
+rule "_22.5328063241107_37.2381578947369_32.1130434782609_23.0571428571429_surrogate_TAX_TRUE"
+    agenda-group "_22.5328063241107_37.2381578947369_32.1130434782609_23.0571428571429_surrogate"
+    activation-group "_22.5328063241107_37.2381578947369_32.1130434782609_23.0571428571429_surrogate"
+when
+    $statusHolder : KiePMMLStatusHolder(  )
+    TAX( value >= 534.5 )
+then
+
+$statusHolder.setStatus("DONE");
+update($statusHolder);
+$pmml4Result.setResultCode("OK");
+$pmml4Result.addResultVariable($pmml4Result.getResultObjectName(), 23.0571428571429);
+
+end
+
+rule "_22.5328063241107_37.2381578947369_32.1130434782609_23.0571428571429_surrogate_TAX_FALSE"
+    agenda-group "_22.5328063241107_37.2381578947369_32.1130434782609_23.0571428571429_surrogate"
+    activation-group "_22.5328063241107_37.2381578947369_32.1130434782609_23.0571428571429_surrogate"
+when
+    $statusHolder : KiePMMLStatusHolder(  )
+
+    not(
+
+    TAX( value >= 534.5 )    )
+then
+
+$statusHolder.setStatus("_22.5328063241107_37.2381578947369_32.1130434782609");
+update($statusHolder);
+
+end
+
+rule "_22.5328063241107_37.2381578947369_32.1130434782609_23.0571428571429_surrogate_INDUS_TRUE"
+    agenda-group "_22.5328063241107_37.2381578947369_32.1130434782609_23.0571428571429_surrogate"
+    activation-group "_22.5328063241107_37.2381578947369_32.1130434782609_23.0571428571429_surrogate"
+when
+    $statusHolder : KiePMMLStatusHolder(  )
+    INDUS( value >= 15.015 )
+then
+
+$statusHolder.setStatus("DONE");
+update($statusHolder);
+$pmml4Result.setResultCode("OK");
+$pmml4Result.addResultVariable($pmml4Result.getResultObjectName(), 23.0571428571429);
+
+end
+
+rule "_22.5328063241107_37.2381578947369_32.1130434782609_23.0571428571429_surrogate_INDUS_FALSE"
+    agenda-group "_22.5328063241107_37.2381578947369_32.1130434782609_23.0571428571429_surrogate"
+    activation-group "_22.5328063241107_37.2381578947369_32.1130434782609_23.0571428571429_surrogate"
+when
+    $statusHolder : KiePMMLStatusHolder(  )
+
+    not(
+
+    INDUS( value >= 15.015 )    )
+then
+
+$statusHolder.setStatus("_22.5328063241107_37.2381578947369_32.1130434782609");
+update($statusHolder);
+
+end
+
+rule "_22.5328063241107_37.2381578947369_32.1130434782609_33.7384615384615"
+when
+    $statusHolder : KiePMMLStatusHolder( status == "_22.5328063241107_37.2381578947369_32.1130434782609" )
+then
+
+kcontext.getKieRuntime().getAgenda().getAgendaGroup( "_22.5328063241107_37.2381578947369_32.1130434782609_33.7384615384615_surrogate" ).setFocus();
+
+end
+
+rule "_22.5328063241107_37.2381578947369_32.1130434782609_33.7384615384615_surrogate_LSTAT_TRUE"
+    agenda-group "_22.5328063241107_37.2381578947369_32.1130434782609_33.7384615384615_surrogate"
+    activation-group "_22.5328063241107_37.2381578947369_32.1130434782609_33.7384615384615_surrogate"
+when
+    $statusHolder : KiePMMLStatusHolder(  )
+    LSTAT( value < 9.65 )
+then
+
+$statusHolder.setStatus("DONE");
+update($statusHolder);
+$pmml4Result.setResultCode("OK");
+$pmml4Result.addResultVariable($pmml4Result.getResultObjectName(), 33.7384615384615);
+
+end
+
+rule "_22.5328063241107_37.2381578947369_32.1130434782609_33.7384615384615_surrogate_LSTAT_FALSE"
+    agenda-group "_22.5328063241107_37.2381578947369_32.1130434782609_33.7384615384615_surrogate"
+    activation-group "_22.5328063241107_37.2381578947369_32.1130434782609_33.7384615384615_surrogate"
+when
+    $statusHolder : KiePMMLStatusHolder(  )
+
+    not(
+
+    LSTAT( value < 9.65 )    )
+then
+
+$statusHolder.setStatus("_22.5328063241107_37.2381578947369_32.1130434782609");
+update($statusHolder);
+
+end
+
+rule "_22.5328063241107_37.2381578947369_32.1130434782609_33.7384615384615_surrogate_CRIM_TRUE"
+    agenda-group "_22.5328063241107_37.2381578947369_32.1130434782609_33.7384615384615_surrogate"
+    activation-group "_22.5328063241107_37.2381578947369_32.1130434782609_33.7384615384615_surrogate"
+when
+    $statusHolder : KiePMMLStatusHolder(  )
+    CRIM( value < 0.724605 )
+then
+
+$statusHolder.setStatus("DONE");
+update($statusHolder);
+$pmml4Result.setResultCode("OK");
+$pmml4Result.addResultVariable($pmml4Result.getResultObjectName(), 33.7384615384615);
+
+end
+
+rule "_22.5328063241107_37.2381578947369_32.1130434782609_33.7384615384615_surrogate_CRIM_FALSE"
+    agenda-group "_22.5328063241107_37.2381578947369_32.1130434782609_33.7384615384615_surrogate"
+    activation-group "_22.5328063241107_37.2381578947369_32.1130434782609_33.7384615384615_surrogate"
+when
+    $statusHolder : KiePMMLStatusHolder(  )
+
+    not(
+
+    CRIM( value < 0.724605 )    )
+then
+
+$statusHolder.setStatus("_22.5328063241107_37.2381578947369_32.1130434782609");
+update($statusHolder);
+
+end
+
+rule "_22.5328063241107_37.2381578947369_32.1130434782609_33.7384615384615_surrogate_NOX_TRUE"
+    agenda-group "_22.5328063241107_37.2381578947369_32.1130434782609_33.7384615384615_surrogate"
+    activation-group "_22.5328063241107_37.2381578947369_32.1130434782609_33.7384615384615_surrogate"
+when
+    $statusHolder : KiePMMLStatusHolder(  )
+    NOX( value < 0.659 )
+then
+
+$statusHolder.setStatus("DONE");
+update($statusHolder);
+$pmml4Result.setResultCode("OK");
+$pmml4Result.addResultVariable($pmml4Result.getResultObjectName(), 33.7384615384615);
+
+end
+
+rule "_22.5328063241107_37.2381578947369_32.1130434782609_33.7384615384615_surrogate_NOX_FALSE"
+    agenda-group "_22.5328063241107_37.2381578947369_32.1130434782609_33.7384615384615_surrogate"
+    activation-group "_22.5328063241107_37.2381578947369_32.1130434782609_33.7384615384615_surrogate"
+when
+    $statusHolder : KiePMMLStatusHolder(  )
+
+    not(
+
+    NOX( value < 0.659 )    )
+then
+
+$statusHolder.setStatus("_22.5328063241107_37.2381578947369_32.1130434782609");
+update($statusHolder);
+
+end
+
+rule "_22.5328063241107_37.2381578947369_32.1130434782609_33.7384615384615_surrogate_RAD_TRUE"
+    agenda-group "_22.5328063241107_37.2381578947369_32.1130434782609_33.7384615384615_surrogate"
+    activation-group "_22.5328063241107_37.2381578947369_32.1130434782609_33.7384615384615_surrogate"
+when
+    $statusHolder : KiePMMLStatusHolder(  )
+    RAD( value < 16.0 )
+then
+
+$statusHolder.setStatus("DONE");
+update($statusHolder);
+$pmml4Result.setResultCode("OK");
+$pmml4Result.addResultVariable($pmml4Result.getResultObjectName(), 33.7384615384615);
+
+end
+
+rule "_22.5328063241107_37.2381578947369_32.1130434782609_33.7384615384615_surrogate_RAD_FALSE"
+    agenda-group "_22.5328063241107_37.2381578947369_32.1130434782609_33.7384615384615_surrogate"
+    activation-group "_22.5328063241107_37.2381578947369_32.1130434782609_33.7384615384615_surrogate"
+when
+    $statusHolder : KiePMMLStatusHolder(  )
+
+    not(
+
+    RAD( value < 16.0 )    )
+then
+
+$statusHolder.setStatus("_22.5328063241107_37.2381578947369_32.1130434782609");
+update($statusHolder);
+
+end
+
+rule "_22.5328063241107_37.2381578947369_32.1130434782609_33.7384615384615_surrogate_TAX_TRUE"
+    agenda-group "_22.5328063241107_37.2381578947369_32.1130434782609_33.7384615384615_surrogate"
+    activation-group "_22.5328063241107_37.2381578947369_32.1130434782609_33.7384615384615_surrogate"
+when
+    $statusHolder : KiePMMLStatusHolder(  )
+    TAX( value < 534.5 )
+then
+
+$statusHolder.setStatus("DONE");
+update($statusHolder);
+$pmml4Result.setResultCode("OK");
+$pmml4Result.addResultVariable($pmml4Result.getResultObjectName(), 33.7384615384615);
+
+end
+
+rule "_22.5328063241107_37.2381578947369_32.1130434782609_33.7384615384615_surrogate_TAX_FALSE"
+    agenda-group "_22.5328063241107_37.2381578947369_32.1130434782609_33.7384615384615_surrogate"
+    activation-group "_22.5328063241107_37.2381578947369_32.1130434782609_33.7384615384615_surrogate"
+when
+    $statusHolder : KiePMMLStatusHolder(  )
+
+    not(
+
+    TAX( value < 534.5 )    )
+then
+
+$statusHolder.setStatus("_22.5328063241107_37.2381578947369_32.1130434782609");
+update($statusHolder);
+
+end
+
+rule "_22.5328063241107_37.2381578947369_32.1130434782609_33.7384615384615_surrogate_INDUS_TRUE"
+    agenda-group "_22.5328063241107_37.2381578947369_32.1130434782609_33.7384615384615_surrogate"
+    activation-group "_22.5328063241107_37.2381578947369_32.1130434782609_33.7384615384615_surrogate"
+when
+    $statusHolder : KiePMMLStatusHolder(  )
+    INDUS( value < 15.015 )
+then
+
+$statusHolder.setStatus("DONE");
+update($statusHolder);
+$pmml4Result.setResultCode("OK");
+$pmml4Result.addResultVariable($pmml4Result.getResultObjectName(), 33.7384615384615);
+
+end
+
+rule "_22.5328063241107_37.2381578947369_32.1130434782609_33.7384615384615_surrogate_INDUS_FALSE"
+    agenda-group "_22.5328063241107_37.2381578947369_32.1130434782609_33.7384615384615_surrogate"
+    activation-group "_22.5328063241107_37.2381578947369_32.1130434782609_33.7384615384615_surrogate"
+when
+    $statusHolder : KiePMMLStatusHolder(  )
+
+    not(
+
+    INDUS( value < 15.015 )    )
+then
+
+$statusHolder.setStatus("_22.5328063241107_37.2381578947369_32.1130434782609");
+update($statusHolder);
+
+end
+
+rule "default__22.5328063241107_37.2381578947369_32.1130434782609"
+when
+    $statusHolder : KiePMMLStatusHolder( status == "_22.5328063241107_37.2381578947369_32.1130434782609" )
+then
+
+$statusHolder.setStatus("DONE");
+update($statusHolder);
+$pmml4Result.setResultCode("OK");
+$pmml4Result.addResultVariable($pmml4Result.getResultObjectName(), 32.1130434782609);
+
+end
+
+rule "_22.5328063241107_37.2381578947369_45.0966666666667"
+when
+    $statusHolder : KiePMMLStatusHolder( status == "_22.5328063241107_37.2381578947369" )
+then
+
+kcontext.getKieRuntime().getAgenda().getAgendaGroup( "_22.5328063241107_37.2381578947369_45.0966666666667_surrogate" ).setFocus();
+
+end
+
+rule "_22.5328063241107_37.2381578947369_45.0966666666667_surrogate_RM_TRUE"
+    agenda-group "_22.5328063241107_37.2381578947369_45.0966666666667_surrogate"
+    activation-group "_22.5328063241107_37.2381578947369_45.0966666666667_surrogate"
+when
+    $statusHolder : KiePMMLStatusHolder(  )
+    RM( value >= 7.437 )
+then
+
+$statusHolder.setStatus("DONE");
+update($statusHolder);
+$pmml4Result.setResultCode("OK");
+$pmml4Result.addResultVariable($pmml4Result.getResultObjectName(), 45.0966666666667);
+
+end
+
+rule "_22.5328063241107_37.2381578947369_45.0966666666667_surrogate_RM_FALSE"
+    agenda-group "_22.5328063241107_37.2381578947369_45.0966666666667_surrogate"
+    activation-group "_22.5328063241107_37.2381578947369_45.0966666666667_surrogate"
+when
+    $statusHolder : KiePMMLStatusHolder(  )
+
+    not(
+
+    RM( value >= 7.437 )    )
+then
+
+$statusHolder.setStatus("_22.5328063241107_37.2381578947369");
+update($statusHolder);
+
+end
+
+rule "_22.5328063241107_37.2381578947369_45.0966666666667_surrogate_LSTAT_TRUE"
+    agenda-group "_22.5328063241107_37.2381578947369_45.0966666666667_surrogate"
+    activation-group "_22.5328063241107_37.2381578947369_45.0966666666667_surrogate"
+when
+    $statusHolder : KiePMMLStatusHolder(  )
+    LSTAT( value < 3.99 )
+then
+
+$statusHolder.setStatus("DONE");
+update($statusHolder);
+$pmml4Result.setResultCode("OK");
+$pmml4Result.addResultVariable($pmml4Result.getResultObjectName(), 45.0966666666667);
+
+end
+
+rule "_22.5328063241107_37.2381578947369_45.0966666666667_surrogate_LSTAT_FALSE"
+    agenda-group "_22.5328063241107_37.2381578947369_45.0966666666667_surrogate"
+    activation-group "_22.5328063241107_37.2381578947369_45.0966666666667_surrogate"
+when
+    $statusHolder : KiePMMLStatusHolder(  )
+
+    not(
+
+    LSTAT( value < 3.99 )    )
+then
+
+$statusHolder.setStatus("_22.5328063241107_37.2381578947369");
+update($statusHolder);
+
+end
+
+rule "_22.5328063241107_37.2381578947369_45.0966666666667_surrogate_PTRATIO_TRUE"
+    agenda-group "_22.5328063241107_37.2381578947369_45.0966666666667_surrogate"
+    activation-group "_22.5328063241107_37.2381578947369_45.0966666666667_surrogate"
+when
+    $statusHolder : KiePMMLStatusHolder(  )
+    PTRATIO( value < 14.75 )
+then
+
+$statusHolder.setStatus("DONE");
+update($statusHolder);
+$pmml4Result.setResultCode("OK");
+$pmml4Result.addResultVariable($pmml4Result.getResultObjectName(), 45.0966666666667);
+
+end
+
+rule "_22.5328063241107_37.2381578947369_45.0966666666667_surrogate_PTRATIO_FALSE"
+    agenda-group "_22.5328063241107_37.2381578947369_45.0966666666667_surrogate"
+    activation-group "_22.5328063241107_37.2381578947369_45.0966666666667_surrogate"
+when
+    $statusHolder : KiePMMLStatusHolder(  )
+
+    not(
+
+    PTRATIO( value < 14.75 )    )
+then
+
+$statusHolder.setStatus("_22.5328063241107_37.2381578947369");
+update($statusHolder);
+
+end
+
+rule "_22.5328063241107_37.2381578947369_45.0966666666667_surrogate_B_TRUE"
+    agenda-group "_22.5328063241107_37.2381578947369_45.0966666666667_surrogate"
+    activation-group "_22.5328063241107_37.2381578947369_45.0966666666667_surrogate"
+when
+    $statusHolder : KiePMMLStatusHolder(  )
+    B( value < 389.885 )
+then
+
+$statusHolder.setStatus("DONE");
+update($statusHolder);
+$pmml4Result.setResultCode("OK");
+$pmml4Result.addResultVariable($pmml4Result.getResultObjectName(), 45.0966666666667);
+
+end
+
+rule "_22.5328063241107_37.2381578947369_45.0966666666667_surrogate_B_FALSE"
+    agenda-group "_22.5328063241107_37.2381578947369_45.0966666666667_surrogate"
+    activation-group "_22.5328063241107_37.2381578947369_45.0966666666667_surrogate"
+when
+    $statusHolder : KiePMMLStatusHolder(  )
+
+    not(
+
+    B( value < 389.885 )    )
+then
+
+$statusHolder.setStatus("_22.5328063241107_37.2381578947369");
+update($statusHolder);
+
+end
+
+rule "_22.5328063241107_37.2381578947369_45.0966666666667_surrogate_CRIM_TRUE"
+    agenda-group "_22.5328063241107_37.2381578947369_45.0966666666667_surrogate"
+    activation-group "_22.5328063241107_37.2381578947369_45.0966666666667_surrogate"
+when
+    $statusHolder : KiePMMLStatusHolder(  )
+    CRIM( value >= 0.11276 )
+then
+
+$statusHolder.setStatus("DONE");
+update($statusHolder);
+$pmml4Result.setResultCode("OK");
+$pmml4Result.addResultVariable($pmml4Result.getResultObjectName(), 45.0966666666667);
+
+end
+
+rule "_22.5328063241107_37.2381578947369_45.0966666666667_surrogate_CRIM_FALSE"
+    agenda-group "_22.5328063241107_37.2381578947369_45.0966666666667_surrogate"
+    activation-group "_22.5328063241107_37.2381578947369_45.0966666666667_surrogate"
+when
+    $statusHolder : KiePMMLStatusHolder(  )
+
+    not(
+
+    CRIM( value >= 0.11276 )    )
+then
+
+$statusHolder.setStatus("_22.5328063241107_37.2381578947369");
+update($statusHolder);
+
+end
+
+rule "_22.5328063241107_37.2381578947369_45.0966666666667_surrogate_INDUS_TRUE"
+    agenda-group "_22.5328063241107_37.2381578947369_45.0966666666667_surrogate"
+    activation-group "_22.5328063241107_37.2381578947369_45.0966666666667_surrogate"
+when
+    $statusHolder : KiePMMLStatusHolder(  )
+    INDUS( value >= 18.84 )
+then
+
+$statusHolder.setStatus("DONE");
+update($statusHolder);
+$pmml4Result.setResultCode("OK");
+$pmml4Result.addResultVariable($pmml4Result.getResultObjectName(), 45.0966666666667);
+
+end
+
+rule "_22.5328063241107_37.2381578947369_45.0966666666667_surrogate_INDUS_FALSE"
+    agenda-group "_22.5328063241107_37.2381578947369_45.0966666666667_surrogate"
+    activation-group "_22.5328063241107_37.2381578947369_45.0966666666667_surrogate"
+when
+    $statusHolder : KiePMMLStatusHolder(  )
+
+    not(
+
+    INDUS( value >= 18.84 )    )
+then
+
+$statusHolder.setStatus("_22.5328063241107_37.2381578947369");
+update($statusHolder);
+
+end
+
+rule "default__22.5328063241107_37.2381578947369"
+when
+    $statusHolder : KiePMMLStatusHolder( status == "_22.5328063241107_37.2381578947369" )
+then
+
+$statusHolder.setStatus("DONE");
+update($statusHolder);
+$pmml4Result.setResultCode("OK");
+$pmml4Result.addResultVariable($pmml4Result.getResultObjectName(), 37.2381578947369);
+
+end
+
+rule "default__22.5328063241107"
+when
+    $statusHolder : KiePMMLStatusHolder( status == "_22.5328063241107" )
+then
+
+$statusHolder.setStatus("DONE");
+update($statusHolder);
+$pmml4Result.setResultCode("OK");
+$pmml4Result.addResultVariable($pmml4Result.getResultObjectName(), 22.5328063241107);
+
+end

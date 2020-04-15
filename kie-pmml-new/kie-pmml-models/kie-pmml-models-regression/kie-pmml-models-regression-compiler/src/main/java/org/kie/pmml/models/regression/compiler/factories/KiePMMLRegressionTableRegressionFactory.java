@@ -78,7 +78,7 @@ public class KiePMMLRegressionTableRegressionFactory {
     }
 
     public static Map<String, KiePMMLTableSourceCategory> getRegressionTables(final List<RegressionTable> regressionTables, final RegressionModel.NormalizationMethod normalizationMethod, final String targetField) throws IOException {
-        logger.debug("getRegressionTables {}", regressionTables);
+        logger.trace("getRegressionTables {}", regressionTables);
         CompilationUnit templateCU = StaticJavaParser.parseResource(KIE_PMML_REGRESSION_TABLE_REGRESSION_TEMPLATE_JAVA);
         Map<String, KiePMMLTableSourceCategory> toReturn = new HashMap<>();
         for (RegressionTable regressionTable : regressionTables) {
@@ -90,7 +90,7 @@ public class KiePMMLRegressionTableRegressionFactory {
     }
 
     public static Map.Entry<String, String> getRegressionTable(final CompilationUnit templateCU, final RegressionTable regressionTable, final RegressionModel.NormalizationMethod normalizationMethod, final String targetField) {
-        logger.debug("getRegressionTable {}", regressionTable);
+        logger.trace("getRegressionTable {}", regressionTable);
         CompilationUnit cloneCU = templateCU.clone();
         ClassOrInterfaceDeclaration tableTemplate = cloneCU.getClassByName(KIE_PMML_REGRESSION_TABLE_REGRESSION_TEMPLATE)
                 .orElseThrow(() -> new RuntimeException(MAIN_CLASS_NOT_FOUND));

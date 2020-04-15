@@ -15,15 +15,19 @@
  */
 package org.kie.pmml.compiler.commons.utils;
 
+import java.util.ArrayList;
+import java.util.LinkedHashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Objects;
 import java.util.Optional;
-import java.util.stream.Collectors;
 
 import org.dmg.pmml.DataDictionary;
 import org.dmg.pmml.MiningField;
 import org.dmg.pmml.Model;
+import org.dmg.pmml.Target;
 import org.kie.pmml.commons.exceptions.KiePMMLInternalException;
+import org.kie.pmml.commons.model.enums.DATA_TYPE;
 import org.kie.pmml.commons.model.enums.OP_TYPE;
 import org.kie.pmml.commons.model.tuples.KiePMMLNameOpType;
 
@@ -44,26 +48,70 @@ public class ModelUtils {
      * @param model
      * @return
      */
-    public static Optional<String> getTargetField(DataDictionary dataDictionary, Model model) {
+    public static Optional<String> getTargetFieldName(DataDictionary dataDictionary, Model model) {
         return getTargetFields(dataDictionary, model).stream().map(KiePMMLNameOpType::getName).findFirst();
     }
 
+    /**
+     * Return the <code>DATA_TYPE</code>> of the field whose <b>usageType</b> is <code>TARGET</code> or <code>PREDICTED</code>.
+     * It throws exception if none of such fields are found
+     * <p>
+     * While the xsd schema does not strictly enforce this, it seems that <b>by convention</b> majority of models has only one target.
+     * <p>
+     * (see https://github.com/jpmml/jpmml-evaluator/issues/64 discussion)
+     * @param dataDictionary
+     * @param model
+     * @return
+     */
+    public static DATA_TYPE getTargetFieldType(DataDictionary dataDictionary, Model model) {
+        return getTargetFieldsTypeMap(dataDictionary, model).entrySet().iterator().next().getValue();
+    }
+
+    /**
+     * Return a <code>List&lt;KiePMMLNameOpType&gt;</code> of target fields
+     * @param dataDictionary
+     * @param model
+     * @return
+     */
     public static List<KiePMMLNameOpType> getTargetFields(DataDictionary dataDictionary, Model model) {
+        List<KiePMMLNameOpType> toReturn = new ArrayList<>();
         if (model.getTargets() != null && model.getTargets().getTargets() != null) {
-            return model.getTargets().getTargets().stream()
-                    .map(target -> {
-                        OP_TYPE opType = target.getOpType() != null ? OP_TYPE.byName(target.getOpType().value()) : getOpType(dataDictionary, model, target.getField().getValue());
-                        return new KiePMMLNameOpType(target.getField().getValue(), opType);
-                    }).collect(Collectors.toList());
+            for (Target target : model.getTargets().getTargets()) {
+                OP_TYPE opType = target.getOpType() != null ? OP_TYPE.byName(target.getOpType().value()) : getOpType(dataDictionary, model, target.getField().getValue());
+                toReturn.add(new KiePMMLNameOpType(target.getField().getValue(), opType));
+            }
         } else {
-            return model.getMiningSchema().getMiningFields().stream()
-                    .filter(miningField -> MiningField.UsageType.TARGET.equals(miningField.getUsageType()) || MiningField.UsageType.PREDICTED.equals(miningField.getUsageType()))
-                    .map(miningField -> {
-                        OP_TYPE opType = miningField.getOpType() != null ? OP_TYPE.byName(miningField.getOpType().value()) : getOpType(dataDictionary, model, miningField.getName().getValue());
-                        return new KiePMMLNameOpType(miningField.getName().getValue(), opType);
-                    })
-                    .collect(Collectors.toList());
+            for (MiningField miningField : model.getMiningSchema().getMiningFields()) {
+                if (MiningField.UsageType.TARGET.equals(miningField.getUsageType()) || MiningField.UsageType.PREDICTED.equals(miningField.getUsageType())) {
+                    OP_TYPE opType = miningField.getOpType() != null ? OP_TYPE.byName(miningField.getOpType().value()) : getOpType(dataDictionary, model, miningField.getName().getValue());
+
+                    toReturn.add(new KiePMMLNameOpType(miningField.getName().getValue(), opType));
+                }
+            }
         }
+        return toReturn;
+    }
+
+    /**
+     * Returns a <code>Map&lt;String, DATA_TYPE&gt;</code> of target fields, where the key is the name of the field, and the value is the <b>type</b> of the field
+     * @param dataDictionary
+     * @param model
+     * @return
+     */
+    public static Map<String, DATA_TYPE> getTargetFieldsTypeMap(DataDictionary dataDictionary, Model model) {
+        Map<String, DATA_TYPE> toReturn = new LinkedHashMap<>();
+        if (model.getTargets() != null && model.getTargets().getTargets() != null) {
+            for (Target target : model.getTargets().getTargets()) {
+                toReturn.put(target.getField().getValue(), getDataType(dataDictionary, target.getField().getValue()));
+            }
+        } else {
+            for (MiningField miningField : model.getMiningSchema().getMiningFields()) {
+                if (MiningField.UsageType.TARGET.equals(miningField.getUsageType()) || MiningField.UsageType.PREDICTED.equals(miningField.getUsageType())) {
+                    toReturn.put(miningField.getName().getValue(), getDataType(dataDictionary, miningField.getName().getValue()));
+                }
+            }
+        }
+        return toReturn;
     }
 
     /**
@@ -87,5 +135,19 @@ public class ModelUtils {
                     .map(dataField -> OP_TYPE.byName(dataField.getOpType().value()));
         }
         return toReturn.orElseThrow(() -> new KiePMMLInternalException(String.format("Failed to find OpType for field %s", targetFieldName)));
+    }
+
+    /**
+     * <code>DATA_TYPE</code> of the given <b>field</b>
+     * @param dataDictionary
+     * @param targetFieldName
+     * @return
+     */
+    public static DATA_TYPE getDataType(DataDictionary dataDictionary, String targetFieldName) {
+        Optional<DATA_TYPE> toReturn = dataDictionary.getDataFields().stream()
+                .filter(dataField -> Objects.equals(targetFieldName, dataField.getName().getValue()))
+                .findFirst()
+                .map(dataField -> DATA_TYPE.byName(dataField.getDataType().value()));
+        return toReturn.orElseThrow(() -> new KiePMMLInternalException(String.format("Failed to find DataType for field %s", targetFieldName)));
     }
 }

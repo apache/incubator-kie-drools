@@ -70,7 +70,7 @@ public class KiePMMLRegressionTableClassificationFactory {
     }
 
     public static Map<String, KiePMMLTableSourceCategory> getRegressionTables(final List<RegressionTable> regressionTables, final RegressionModel.NormalizationMethod normalizationMethod, final OpType opType, final List<KiePMMLOutputField> outputFields, final String targetField) throws IOException {
-        logger.debug("getRegressionTables {}", regressionTables);
+        logger.trace("getRegressionTables {}", regressionTables);
         CompilationUnit templateCU = StaticJavaParser.parseResource(KIE_PMML_REGRESSION_TABLE_CLASSIFICATION_TEMPLATE_JAVA);
         Map<String, KiePMMLTableSourceCategory> toReturn = KiePMMLRegressionTableRegressionFactory.getRegressionTables(regressionTables, RegressionModel.NormalizationMethod.NONE, targetField);
         Map.Entry<String, String> regressionTableEntry = getRegressionTable(templateCU, toReturn, normalizationMethod, opType, outputFields, targetField);
@@ -79,7 +79,7 @@ public class KiePMMLRegressionTableClassificationFactory {
     }
 
     public static Map.Entry<String, String> getRegressionTable(final CompilationUnit templateCU, final Map<String, KiePMMLTableSourceCategory> regressionTablesMap, final RegressionModel.NormalizationMethod normalizationMethod, final OpType opType, final List<KiePMMLOutputField> outputFields, final String targetField) throws IOException {
-        logger.debug("getRegressionTable {}", regressionTablesMap);
+        logger.trace("getRegressionTable {}", regressionTablesMap);
         CompilationUnit cloneCU = templateCU.clone();
         final REGRESSION_NORMALIZATION_METHOD regressionNormalizationMethod = REGRESSION_NORMALIZATION_METHOD.byName(normalizationMethod.value());
         final OP_TYPE op_type = OP_TYPE.byName(opType.value());

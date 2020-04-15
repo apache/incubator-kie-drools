@@ -1,0 +1,56 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xmlns="http://maven.apache.org/POM/4.0.0"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+  <parent>
+    <groupId>org.kie</groupId>
+    <artifactId>kie-pmml-models-drools</artifactId>
+    <version>7.37.0-SNAPSHOT</version>
+  </parent>
+  <modelVersion>4.0.0</modelVersion>
+
+  <artifactId>kie-pmml-models-drools-common</artifactId>
+
+  <name>KIE :: PMML :: Models :: Drools :: Common</name>
+  <description>Common code for PMML Models with Drools Implementations</description>
+
+  <dependencies>
+    <!-- PMML -->
+    <dependency>
+      <groupId>org.kie</groupId>
+      <artifactId>kie-pmml-commons</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>org.kie</groupId>
+      <artifactId>kie-pmml-compiler-commons</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>org.kie</groupId>
+      <artifactId>kie-pmml-evaluator-core</artifactId>
+    </dependency>
+    <!-- DROOLS/KIE -->
+    <dependency>
+      <groupId>org.drools</groupId>
+      <artifactId>drools-compiler</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>org.drools</groupId>
+      <artifactId>drools-model-compiler</artifactId>
+      <scope>compile</scope>
+    </dependency>
+    <!-- EXTERNAL -->
+    <dependency>
+      <groupId>org.jpmml</groupId>
+      <artifactId>pmml-model</artifactId>
+    </dependency>
+    <!-- TEST -->
+    <dependency>
+      <groupId>org.kie</groupId>
+      <artifactId>kie-pmml-commons</artifactId>
+      <classifier>tests</classifier>
+      <scope>test</scope>
+    </dependency>
+  </dependencies>
+
+
+</project>

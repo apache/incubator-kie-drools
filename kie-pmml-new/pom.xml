@@ -104,6 +104,12 @@
         <artifactId>kie-pmml-evaluator-assembler</artifactId>
         <version>${version.org.kie}</version>
       </dependency>
+      <!-- Drools -->
+      <dependency>
+        <groupId>org.kie</groupId>
+        <artifactId>kie-pmml-models-drools-common</artifactId>
+        <version>${version.org.kie}</version>
+      </dependency>
       <!-- Regression -->
       <dependency>
         <groupId>org.kie</groupId>
@@ -120,6 +126,22 @@
         <artifactId>kie-pmml-models-regression-evaluator</artifactId>
         <version>${version.org.kie}</version>
       </dependency>
+      <!-- Tree -->
+      <dependency>
+        <groupId>org.kie</groupId>
+        <artifactId>kie-pmml-models-drools-tree-model</artifactId>
+        <version>${version.org.kie}</version>
+      </dependency>
+      <dependency>
+        <groupId>org.kie</groupId>
+        <artifactId>kie-pmml-models-drools-tree-compiler</artifactId>
+        <version>${version.org.kie}</version>
+      </dependency>
+      <dependency>
+        <groupId>org.kie</groupId>
+        <artifactId>kie-pmml-models-drools-tree-evaluator</artifactId>
+        <version>${version.org.kie}</version>
+      </dependency>
       <!-- EXTERNAL -->
       <!-- TEST -->
       <dependency>
@@ -128,6 +150,7 @@
         <classifier>tests</classifier>
         <version>${version.org.kie}</version>
       </dependency>
+      <!-- Compiler -->
       <dependency>
         <groupId>org.kie</groupId>
         <artifactId>kie-pmml-compiler-api</artifactId>
@@ -140,6 +163,7 @@
         <classifier>tests</classifier>
         <version>${version.org.kie}</version>
       </dependency>
+      <!-- Regression -->
       <dependency>
         <groupId>org.kie</groupId>
         <artifactId>kie-pmml-models-regression-compiler</artifactId>
@@ -149,6 +173,13 @@
       <dependency>
         <groupId>org.kie</groupId>
         <artifactId>kie-pmml-models-regression-evaluator</artifactId>
+        <classifier>tests</classifier>
+        <version>${version.org.kie}</version>
+      </dependency>
+      <!-- Tree -->
+      <dependency>
+        <groupId>org.kie</groupId>
+        <artifactId>kie-pmml-models-drools-tree-compiler</artifactId>
         <classifier>tests</classifier>
         <version>${version.org.kie}</version>
       </dependency>

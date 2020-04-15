@@ -30,7 +30,7 @@ public class KiePMMLTestingModel extends KiePMMLModel {
     public static final PMML_MODEL PMML_MODEL_TYPE = PMML_MODEL.REGRESSION_MODEL;
 
     protected KiePMMLTestingModel(String name, List<KiePMMLExtension> extensions) {
-        super(name);
+        super(name, extensions);
     }
 
     @Override

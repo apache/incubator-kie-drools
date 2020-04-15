@@ -1,0 +1,338 @@
+package iristreemodel
+
+import org.kie.pmml.models.drools.executor.KiePMMLStatusHolder
+import org.dmg.pmml.SimplePredicate
+import org.kie.api.pmml.PMML4Result
+
+global PMML4Result $pmml4Result
+
+declare  SPECIES
+
+    value : String
+end
+
+declare  SEPAL_LENGTH
+
+    value : double
+end
+
+declare  SEPAL_WIDTH
+
+    value : double
+end
+
+declare  PETAL_LENGTH
+
+    value : double
+end
+
+declare  PETAL_WIDTH
+
+    value : double
+end
+
+
+rule "_setosa"
+when
+    $statusHolder : KiePMMLStatusHolder( status == null )
+then
+System.out.println("_setosa match");
+$statusHolder.setStatus("_setosa");
+update($statusHolder);
+
+end
+
+rule "_setosa_setosa"
+when
+    $statusHolder : KiePMMLStatusHolder( status == "_setosa" )
+then
+System.out.println("_setosa_setosa match");
+System.out.println("set focus to _setosa_setosa_surrogate agenda-group");
+kcontext.getKieRuntime().getAgenda().getAgendaGroup( "_setosa_setosa_surrogate" ).setFocus();
+end
+
+
+rule "_setosa_setosa_surrogate_PETAL_LENGTH"
+agenda-group "_setosa_setosa_surrogate"
+activation-group "_setosa_setosa_surrogate"
+when
+    $statusHolder : KiePMMLStatusHolder()
+    PETAL_LENGTH( value < 2.45 )
+then
+System.out.println("_setosa_setosa_surrogate_PETAL_LENGTH match");
+System.out.println("setStatus DONE");
+$statusHolder.setStatus("DONE");
+update($statusHolder);
+$pmml4Result.setResultCode("OK");
+$pmml4Result.addResultVariable($pmml4Result.getResultObjectName(), "setosa");
+end
+
+rule "_setosa_setosa_surrogate_PETAL_WIDTH"
+agenda-group "_setosa_setosa_surrogate"
+activation-group "_setosa_setosa_surrogate"
+when
+    $statusHolder : KiePMMLStatusHolder()
+    PETAL_WIDTH( value  < 0.8)
+then
+System.out.println("_setosa_setosa_surrogate_PETAL_WIDTH match");
+System.out.println("setStatus DONE");
+$statusHolder.setStatus("DONE");
+update($statusHolder);
+$pmml4Result.setResultCode("OK");
+$pmml4Result.addResultVariable($pmml4Result.getResultObjectName(), "setosa");
+end
+
+rule "_setosa_setosa_surrogate_SEPAL_LENGTH"
+agenda-group "_setosa_setosa_surrogate"
+activation-group "_setosa_setosa_surrogate"
+when
+    $statusHolder : KiePMMLStatusHolder()
+    SEPAL_LENGTH( value < 5.45 )
+then
+System.out.println("_setosa_setosa_surrogate_SEPAL_LENGTH match");
+System.out.println("setStatus DONE");
+$statusHolder.setStatus("DONE");
+update($statusHolder);
+$pmml4Result.setResultCode("OK");
+$pmml4Result.addResultVariable($pmml4Result.getResultObjectName(), "setosa");
+end
+
+rule "_setosa_setosa_surrogate_SEPAL_WIDTH"
+agenda-group "_setosa_setosa_surrogate"
+activation-group "_setosa_setosa_surrogate"
+when
+    $statusHolder : KiePMMLStatusHolder()
+    SEPAL_WIDTH( value >= 3.35)
+then
+System.out.println("_setosa_setosa_surrogate_SEPAL_WIDTH match");
+System.out.println("setStatus DONE");
+$statusHolder.setStatus("DONE");
+update($statusHolder);
+$pmml4Result.setResultCode("OK");
+$pmml4Result.addResultVariable($pmml4Result.getResultObjectName(), "setosa");
+end
+
+rule "_setosa_versicolor"
+
+when
+    $statusHolder : KiePMMLStatusHolder( status == "_setosa" )
+then
+System.out.println("_setosa_versicolor match");
+System.out.println("set focus to _setosa_versicolor_surrogate agenda-group");
+kcontext.getKieRuntime().getAgenda().getAgendaGroup( "_setosa_versicolor_surrogate" ).setFocus();
+end
+
+rule "_setosa_versicolor_surrogate_PETAL_LENGTH"
+agenda-group "_setosa_versicolor_surrogate"
+activation-group "_setosa_versicolor_surrogate"
+when
+    $statusHolder : KiePMMLStatusHolder()
+    PETAL_LENGTH( value  >= 2.45  )
+then
+System.out.println("_setosa_versicolor_surrogate_PETAL_LENGTH match");
+System.out.println("setStatus _setosa_versicolor");
+$statusHolder.setStatus("_setosa_versicolor");
+update($statusHolder);
+end
+
+rule "_setosa_versicolor_surrogate_PETAL_WIDTH"
+agenda-group "_setosa_versicolor_surrogate"
+activation-group "_setosa_versicolor_surrogate"
+when
+    $statusHolder : KiePMMLStatusHolder()
+    PETAL_WIDTH( value >= 0.8 )
+then
+System.out.println("_setosa_versicolor_surrogate_PETAL_WIDTH match");
+System.out.println("setStatus _setosa_versicolor");
+$statusHolder.setStatus("_setosa_versicolor");
+update($statusHolder);
+end
+
+rule "_setosa_versicolor_surrogate_SEPAL_LENGTH"
+agenda-group "_setosa_versicolor_surrogate"
+activation-group "_setosa_versicolor_surrogate"
+when
+    $statusHolder : KiePMMLStatusHolder()
+    SEPAL_LENGTH( value >= 5.45 )
+then
+System.out.println("_setosa_versicolor_surrogate_SEPAL_LENGTH match");
+System.out.println("setStatus _setosa_versicolor");
+$statusHolder.setStatus("_setosa_versicolor");
+update($statusHolder);
+end
+
+rule "_setosa_versicolor_surrogate_SEPAL_WIDTH"
+agenda-group "_setosa_versicolor_surrogate"
+activation-group "_setosa_versicolor_surrogate"
+when
+     $statusHolder : KiePMMLStatusHolder()
+    SEPAL_WIDTH( value < 3.35 )
+then
+System.out.println("_setosa_versicolor_surrogate_SEPAL_WIDTH match");
+System.out.println("setStatus _setosa_versicolor");
+$statusHolder.setStatus("_setosa_versicolor");
+update($statusHolder);
+end
+
+rule "_setosa_versicolor_versicolor"
+when
+    $statusHolder : KiePMMLStatusHolder( status == "_setosa_versicolor" )
+then
+System.out.println("_setosa_versicolor_versicolor match");
+System.out.println("set focus to _setosa_versicolor_versicolor_surrogate agenda-group");
+kcontext.getKieRuntime().getAgenda().getAgendaGroup( "_setosa_versicolor_versicolor_surrogate" ).setFocus();
+end
+
+rule "_setosa_versicolor_versicolor_surrogate_PETAL_WIDTH"
+agenda-group "_setosa_versicolor_versicolor_surrogate"
+activation-group "_setosa_versicolor_versicolor_surrogate"
+when
+     $statusHolder : KiePMMLStatusHolder()
+    PETAL_WIDTH( value < 1.75 )
+then
+System.out.println("_setosa_versicolor_versicolor_surrogate_PETAL_WIDTH match");
+System.out.println("setStatus DONE");
+$statusHolder.setStatus("DONE");
+update($statusHolder);
+$pmml4Result.setResultCode("OK");
+$pmml4Result.addResultVariable($pmml4Result.getResultObjectName(), "versicolor");
+end
+
+rule "_setosa_versicolor_versicolor_surrogate_PETAL_LENGTH"
+agenda-group "_setosa_versicolor_versicolor_surrogate"
+activation-group "_setosa_versicolor_versicolor_surrogate"
+when
+     $statusHolder : KiePMMLStatusHolder()
+    PETAL_LENGTH( value  < 4.75 )
+then
+System.out.println("_setosa_versicolor_versicolor_surrogate_PETAL_LENGTH match");
+System.out.println("setStatus DONE");
+$statusHolder.setStatus("DONE");
+update($statusHolder);
+$pmml4Result.setResultCode("OK");
+$pmml4Result.addResultVariable($pmml4Result.getResultObjectName(), "versicolor");
+end
+
+rule "_setosa_versicolor_versicolor_surrogate_SEPAL_LENGTH"
+agenda-group "_setosa_versicolor_versicolor_surrogate"
+activation-group "_setosa_versicolor_versicolor_surrogate"
+when
+     $statusHolder : KiePMMLStatusHolder()
+    SEPAL_LENGTH( value  < 6.15 )
+then
+System.out.println("_setosa_versicolor_versicolor_surrogate_SEPAL_LENGTH match");
+System.out.println("setStatus DONE");
+$statusHolder.setStatus("DONE");
+update($statusHolder);
+$pmml4Result.setResultCode("OK");
+$pmml4Result.addResultVariable($pmml4Result.getResultObjectName(), "versicolor");
+end
+
+rule "_setosa_versicolor_versicolor_surrogate_SEPAL_WIDTH"
+agenda-group "_setosa_versicolor_versicolor_surrogate"
+activation-group "_setosa_versicolor_versicolor_surrogate"
+when
+    $statusHolder : KiePMMLStatusHolder()
+    SEPAL_WIDTH( value   < 2.95 )
+then
+System.out.println("_setosa_versicolor_versicolor_surrogate_SEPAL_WIDTH match");
+System.out.println("setStatus DONE");
+$statusHolder.setStatus("DONE");
+update($statusHolder);
+$pmml4Result.setResultCode("OK");
+$pmml4Result.addResultVariable($pmml4Result.getResultObjectName(), "versicolor");
+end
+
+
+rule "_setosa_versicolor_virginica"
+when
+    $statusHolder : KiePMMLStatusHolder( status == "_setosa_versicolor" )
+then
+System.out.println("_setosa_versicolor_virginica match");
+System.out.println("set focus to _setosa_versicolor_virginica_surrogate agenda-group");
+kcontext.getKieRuntime().getAgenda().getAgendaGroup( "_setosa_versicolor_virginica_surrogate" ).setFocus();
+end
+
+rule "_setosa_versicolor_virginica_surrogate_PETAL_WIDTH"
+agenda-group "_setosa_versicolor_virginica_surrogate"
+activation-group "_setosa_versicolor_virginica_surrogate"
+when
+    $statusHolder : KiePMMLStatusHolder()
+    PETAL_WIDTH( value  >= 1.75 )
+then
+System.out.println("_setosa_versicolor_virginica_surrogate_PETAL_WIDTH match");
+System.out.println("setStatus DONE");
+$statusHolder.setStatus("DONE");
+update($statusHolder);
+$pmml4Result.setResultCode("OK");
+$pmml4Result.addResultVariable($pmml4Result.getResultObjectName(), "virginica");
+end
+
+rule "_setosa_versicolor_virginica_surrogate_PETAL_LENGTH"
+agenda-group "_setosa_versicolor_virginica_surrogate"
+activation-group "_setosa_versicolor_virginica_surrogate"
+when
+    $statusHolder : KiePMMLStatusHolder()
+    PETAL_LENGTH( value  >= 4.75 )
+then
+System.out.println("_setosa_versicolor_virginica_surrogate_PETAL_LENGTH match");
+System.out.println("setStatus DONE");
+$statusHolder.setStatus("DONE");
+update($statusHolder);
+$pmml4Result.setResultCode("OK");
+$pmml4Result.addResultVariable($pmml4Result.getResultObjectName(), "virginica");
+end
+
+rule "_setosa_versicolor_virginica_surrogate_SEPAL_LENGTH"
+agenda-group "_setosa_versicolor_virginica_surrogate"
+activation-group "_setosa_versicolor_virginica_surrogate"
+when
+    $statusHolder : KiePMMLStatusHolder()
+    SEPAL_LENGTH( value  >= 6.15 )
+then
+System.out.println("_setosa_versicolor_virginica_surrogate_SEPAL_LENGTH match");
+System.out.println("setStatus DONE");
+$statusHolder.setStatus("DONE");
+update($statusHolder);
+$pmml4Result.setResultCode("OK");
+$pmml4Result.addResultVariable($pmml4Result.getResultObjectName(), "virginica");
+end
+
+rule "_setosa_versicolor_virginica_surrogate_SEPAL_WIDTH"
+agenda-group "_setosa_versicolor_virginica_surrogate"
+activation-group "_setosa_versicolor_virginica_surrogate"
+when
+    $statusHolder : KiePMMLStatusHolder()
+    SEPAL_WIDTH( value  >= 2.95 )
+then
+System.out.println("_setosa_versicolor_virginica_surrogate_SEPAL_WIDTH match");
+System.out.println("setStatus DONE");
+$statusHolder.setStatus("DONE");
+update($statusHolder);
+$pmml4Result.setResultCode("OK");
+$pmml4Result.addResultVariable($pmml4Result.getResultObjectName(), "virginica");
+end
+
+//rule "default__setosa_versicolor"
+//when
+//    $statusHolder : KiePMMLStatusHolder( status == "_setosa_versicolor" )
+//then
+//System.out.println("default__setosa_versicolor match");
+//$statusHolder.setStatus("DONE");
+//update($statusHolder);
+//$pmml4Result.setResultCode("OK");
+//$pmml4Result.addResultVariable($pmml4Result.getResultObjectName(), "versicolor");
+//
+//end
+//
+//rule "default__setosa"
+//when
+//    $statusHolder : KiePMMLStatusHolder( status == "_setosa" )
+//then
+//System.out.println("default__setosa match");
+//$statusHolder.setStatus("DONE");
+//update($statusHolder);
+//$pmml4Result.setResultCode("OK");
+//$pmml4Result.addResultVariable($pmml4Result.getResultObjectName(), "setosa");
+
+//end

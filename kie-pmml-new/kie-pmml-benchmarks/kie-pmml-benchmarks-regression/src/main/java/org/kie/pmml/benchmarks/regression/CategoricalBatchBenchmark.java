@@ -78,11 +78,11 @@ public class CategoricalBatchBenchmark extends AbstractRegressionBenchmark {
 
     @Setup
     public void setupModel() throws Exception {
-        logger.info("setup model...");
+        logger.debug("setup model...");
         modelName = "Sample for logistic regression";
         fileName = "CategoricalRegressionSample.pmml";
         super.setupModel();
-        logger.info("setup pmmlContext...");
+        logger.debug("setup pmmlContext...");
         pmmlContext = readCSV(LINES[index]);
     }
 
