@@ -135,10 +135,6 @@ const ProcessBulkListComponent: React.FC<IOwnProps> = ({
                   </Text>
                 </TextContent>
               )}
-            <Divider component="div" className="pf-u-my-xl" />
-            <TextContent>
-              <Text component={TextVariants.h2}>No processes were skipped</Text>
-            </TextContent>
           </>
         )}
       {Object.keys(abortedMessageObj).length !== 0 &&
