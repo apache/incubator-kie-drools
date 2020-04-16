@@ -45,7 +45,7 @@
 
   <scm>
     <connection>scm:git:https://github.com:kiegroup/drools.git</connection>
-    <developerConnection>scm:git:git@github.com:kirgroup/drools.git</developerConnection>
+    <developerConnection>scm:git:git@github.com:kiegroup/drools.git</developerConnection>
     <url>https://github.com/kiegroup/drools</url>
   </scm>
 
