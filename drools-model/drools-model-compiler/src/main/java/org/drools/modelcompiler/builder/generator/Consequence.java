@@ -393,6 +393,9 @@ public class Consequence {
     private Set<String> findModifiedProperties( List<MethodCallExpr> methodCallExprs, MethodCallExpr updateExpr, String updatedVar ) {
         Set<String> modifiedProps = new HashSet<>();
         for (MethodCallExpr methodCall : methodCallExprs.subList(0, methodCallExprs.indexOf(updateExpr))) {
+            if (!isDirectExpression(methodCall)) {
+                continue; // don't evaluate a method which is a part of other expression
+            }
             DrlxParseUtil.RemoveRootNodeResult removeRootNodeViaScope = DrlxParseUtil.findRemoveRootNodeViaScope(methodCall);
             Optional<Expression> root = removeRootNodeViaScope.getRootNode()
                     .filter(s -> isNameExprWithName(s, updatedVar));
@@ -423,6 +426,10 @@ public class Consequence {
             }
         }
         return modifiedProps;
+    }
+
+    private boolean isDirectExpression(MethodCallExpr methodCall) {
+        return methodCall.getParentNode().map(parent -> parent instanceof ExpressionStmt).orElse(false);
     }
 
     private static boolean hasDroolsAsParameter( MethodCallExpr mce ) {
