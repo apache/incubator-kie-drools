@@ -39,6 +39,16 @@ import static org.drools.mvel.parser.printer.PrintUtil.printConstraint;
  */
 public class PreprocessPhase {
 
+    private final boolean failOnEmptyRootScope;
+
+    public PreprocessPhase() {
+        this(false);
+    }
+
+    public PreprocessPhase(boolean failOnEmptyRootScope) {
+        this.failOnEmptyRootScope = failOnEmptyRootScope;
+    }
+
     interface PreprocessPhaseResult {
 
         Set<String> getUsedBindings();
@@ -237,10 +247,12 @@ public class PreprocessPhase {
             Expression scope = opt.get();
             if (scope.isMethodCallExpr()) {
                 return findRootScope(scope.asMethodCallExpr());
-            } else {
-                return null;
             }
         }
+        if (failOnEmptyRootScope) {
+            throw new MvelCompilerException( "Invalid modify statement: " + mcExpr );
+        }
+        return null;
     }
 
     private AssignExpr assignToFieldAccess(PreprocessPhaseResult result, Expression scope, AssignExpr assignExpr) {

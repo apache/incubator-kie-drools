@@ -134,4 +134,20 @@ public class CompilationFailuresTest extends BaseModelTest {
         Results results = getCompilationResults(drl);
         assertFalse(results.getMessages( Message.Level.ERROR).isEmpty());
     }
+
+
+    @Test
+    public void testModifyOnFactInScope() {
+        // DROOLS-5242
+        String drl =
+                "import " + Person.class.getCanonicalName() + ";" +
+                "rule R1 when\n" +
+                "  $p : Person(name == \"Mario\")\n" +
+                "then\n" +
+                "  modify($p) { $p.setName(\"Mark\") }\n" +
+                "end";
+
+        Results results = getCompilationResults(drl);
+        assertFalse(results.getMessages( Message.Level.ERROR).isEmpty());
+    }
 }

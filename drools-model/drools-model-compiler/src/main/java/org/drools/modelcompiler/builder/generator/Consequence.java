@@ -204,15 +204,15 @@ public class Consequence {
                                   compile.getUsedBindings());
     }
     private BlockStmt rewriteConsequence(String consequence) {
-        String ruleConsequenceAsBlock = rewriteModifyBlock(consequence.trim());
-
-        String ruleConsequenceRewrittenForPrimitives =
-                new PrimitiveTypeConsequenceRewrite(context)
-                        .rewrite(addCurlyBracesToBlock(ruleConsequenceAsBlock));
-
         try {
+            String ruleConsequenceAsBlock = rewriteModifyBlock(consequence.trim());
+
+            String ruleConsequenceRewrittenForPrimitives =
+                    new PrimitiveTypeConsequenceRewrite(context)
+                            .rewrite(addCurlyBracesToBlock(ruleConsequenceAsBlock));
+
             return parseBlock( ruleConsequenceRewrittenForPrimitives );
-        } catch (ParseProblemException e) {
+        } catch (MvelCompilerException | ParseProblemException e) {
             context.addCompilationError( new InvalidExpressionErrorResult( "Unable to parse consequence caused by: " + e.getMessage() ) );
         }
         return null;
