@@ -18,6 +18,7 @@ package org.kie.kogito.codegen.decision;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.Collection;
+import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 
@@ -103,7 +104,7 @@ public class DecisionContainerGenerator extends AbstractApplicationSection {
 
     @Override
     public List<Statement> setupStatements() {
-        return List.of(
+        return Collections.singletonList(
                 new IfStmt(
                         new BinaryExpr(
                                 new MethodCallExpr(new MethodCallExpr(null, "config"), "decision"),
