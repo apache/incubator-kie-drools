@@ -24,7 +24,7 @@
     "dev-remote-dataindex": "yarn start --define process.env.KOGITO_DATAINDEX_HTTP_URL='\"http://localhost:8180/graphql\"'",
     "dev-remote-dataindex-auth": "yarn start-auth --define process.env.KOGITO_DATAINDEX_HTTP_URL='\"http://localhost:8180/graphql\"'",
     "lint": "tslint -c ./tslint.json --project . './src/**/*.ts{,x}'",
-    "format": "prettier --config ../../.prettierrc --check --write ./src/**/*.{tsx,ts,js}",
+    "format": "prettier --config ../../.prettierrc --check --write './src/**/*.{tsx,ts,js}'",
     "build:bundle-profile": "webpack --config webpack.prod.js --profile --json > stats.json",
     "bundle-profile:analyze": "yarn build:bundle-profile && webpack-bundle-analyzer ./stats.json",
     "clean": "rimraf dist",
@@ -86,5 +86,11 @@
     "moduleNameMapper": {
       "\\.(scss|sass|css)$": "identity-obj-proxy"
     }
+  },
+  "lint-staged": {
+    "*.{ts,tsx,js}": [
+      "yarn run format",
+      "yarn run lint"
+    ]
   }
 }

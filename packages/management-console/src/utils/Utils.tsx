@@ -180,14 +180,22 @@ export const handleAbort = (
     });
 };
 
-export const isModalOpen = (modalTitle, isSkipModalOpen, isRetryModalOpen): boolean => {
+export const isModalOpen = (
+  modalTitle,
+  isSkipModalOpen,
+  isRetryModalOpen
+): boolean => {
   if (modalTitle === 'Skip operation') {
     return isSkipModalOpen;
   } else if (modalTitle === 'Retry operation') {
     return isRetryModalOpen;
   }
 };
-export const modalToggle = (modalTitle, handleSkipModalToggle, handleRetryModalToggle): (() => void) => {
+export const modalToggle = (
+  modalTitle,
+  handleSkipModalToggle,
+  handleRetryModalToggle
+): (() => void) => {
   if (modalTitle === 'Skip operation') {
     return handleSkipModalToggle;
   } else if (modalTitle === 'Retry operation') {

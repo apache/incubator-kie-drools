@@ -6,7 +6,7 @@ import {
   SelectGroup,
   Button
 } from '@patternfly/react-core';
-import {SyncIcon} from '@patternfly/react-icons';
+import { SyncIcon } from '@patternfly/react-icons';
 import { query } from 'gql-query-builder';
 import _ from 'lodash';
 import gql from 'graphql-tag';
@@ -24,7 +24,7 @@ export interface IOwnProps {
   setSelected: any;
   data: any;
   getPicker: any;
-  setError: any
+  setError: any;
   setDisplayEmptyState: any;
 }
 
@@ -47,7 +47,6 @@ const DomainExplorerColumnPicker: React.FC<IOwnProps> = ({
   // tslint:disable: no-floating-promises
   const [isExpanded, setIsExpanded] = useState(false);
   const [enableRefresh, setEnableRefresh] = useState(true);
-
 
   const nullTypes = [null, 'String', 'Boolean', 'Int', 'DateTime'];
   const client = useApolloClient();
@@ -102,83 +101,82 @@ const DomainExplorerColumnPicker: React.FC<IOwnProps> = ({
   }, [parameters.length > 1]);
 
   const nestedCheck = (ele, valueObj) => {
-    for(const key in ele) {
-      const temp = ele[key]
-     if(typeof temp[0] === 'object'){
-       for(const nestedProp  in temp[0]){
-       const nestedObj = {}
-       const result = nestedCheck(temp[0], valueObj)
-       if(valueObj.hasOwnProperty(nestedProp)){
-         valueObj[nestedProp] = result
-       } else {
-         nestedObj[nestedProp] = result
-         valueObj = {...valueObj, ...nestedObj}
-       }
-       return valueObj;
-       }   
-     } else {
-       const val = ele[key]
-        const tempObj={};
+    for (const key in ele) {
+      const temp = ele[key];
+      if (typeof temp[0] === 'object') {
+        for (const nestedProp in temp[0]) {
+          const nestedObj = {};
+          const result = nestedCheck(temp[0], valueObj);
+          if (valueObj.hasOwnProperty(nestedProp)) {
+            valueObj[nestedProp] = result;
+          } else {
+            nestedObj[nestedProp] = result;
+            valueObj = { ...valueObj, ...nestedObj };
+          }
+          return valueObj;
+        }
+      } else {
+        const val = ele[key];
+        const tempObj = {};
         tempObj[val[0]] = null;
-        const firstKey = Object.keys(valueObj)[0]
-        valueObj = {...valueObj[firstKey], ...tempObj}
-        return valueObj;  
-     }
-   }
-  }
+        const firstKey = Object.keys(valueObj)[0];
+        valueObj = { ...valueObj[firstKey], ...tempObj };
+        return valueObj;
+      }
+    }
+  };
 
   const checkFunc = (ele, valueObj) => {
-     for(const key in ele) {
-       const temp = ele[key]
-      if(typeof temp[0] === 'object'){
-        for(const nestedProp  in temp[0]){
-        const nestedObj = {}
-        if(valueObj.hasOwnProperty(nestedProp)){
-          const result = nestedCheck(temp[0], valueObj)
-          valueObj[nestedProp] = result
-        } else {
-          const result = checkFunc(temp[0], valueObj)
-          nestedObj[nestedProp] = result
-          valueObj = {...valueObj, ...nestedObj}
+    for (const key in ele) {
+      const temp = ele[key];
+      if (typeof temp[0] === 'object') {
+        for (const nestedProp in temp[0]) {
+          const nestedObj = {};
+          if (valueObj.hasOwnProperty(nestedProp)) {
+            const result = nestedCheck(temp[0], valueObj);
+            valueObj[nestedProp] = result;
+          } else {
+            const result = checkFunc(temp[0], valueObj);
+            nestedObj[nestedProp] = result;
+            valueObj = { ...valueObj, ...nestedObj };
+          }
+          return valueObj;
         }
-        return valueObj;
-        }   
       } else {
-        const val = ele[key]
-         const tempObj={};
-         tempObj[val[0]] = null;
-         valueObj = {...valueObj , ...tempObj}
-         return valueObj;  
+        const val = ele[key];
+        const tempObj = {};
+        tempObj[val[0]] = null;
+        valueObj = { ...valueObj, ...tempObj };
+        return valueObj;
       }
     }
-  }
+  };
 
-  const validateResponse = (obj) => {
-    let contentObj= {}
-    for(const prop in obj){
-    const arr = [];
-      if(obj[prop] === null){
-        const parentObj = {}
+  const validateResponse = obj => {
+    let contentObj = {};
+    for (const prop in obj) {
+      const arr = [];
+      if (obj[prop] === null) {
+        const parentObj = {};
         parameters.map(params => {
-         if(params.hasOwnProperty(prop)){
-          arr.push(params)
-         }
-        })
-        let valueObj = {}
+          if (params.hasOwnProperty(prop)) {
+            arr.push(params);
+          }
+        });
+        let valueObj = {};
         arr.filter(ele => {
-         valueObj = checkFunc(ele, valueObj)
-        })
-        parentObj[prop] = valueObj
-        contentObj = {...contentObj, ...parentObj}
+          valueObj = checkFunc(ele, valueObj);
+        });
+        parentObj[prop] = valueObj;
+        contentObj = { ...contentObj, ...parentObj };
       } else {
-        const elseObj= {}
-        elseObj[prop] = obj[prop]
-        contentObj = {...contentObj, ...elseObj}
+        const elseObj = {};
+        elseObj[prop] = obj[prop];
+        contentObj = { ...contentObj, ...elseObj };
       }
-      
     }
     return contentObj;
-  }
+  };
 
   async function generateQuery() {
     setTableLoading(true);
@@ -204,11 +202,11 @@ const DomainExplorerColumnPicker: React.FC<IOwnProps> = ({
               const resp = response.data;
               const respKeys = Object.keys(resp)[0];
               const tableContent = resp[respKeys];
-              const finalResp = []
+              const finalResp = [];
               tableContent.map(content => {
                 const finalObject = validateResponse(content);
-                finalResp.push(finalObject)
-              })
+                finalResp.push(finalObject);
+              });
               setColumnFilters(finalResp);
               setDisplayTable(true);
             } else {
@@ -216,10 +214,10 @@ const DomainExplorerColumnPicker: React.FC<IOwnProps> = ({
             }
           });
       } catch (error) {
-        setError(error)
+        setError(error);
       }
     } else {
-      setDisplayEmptyState(false)
+      setDisplayEmptyState(false);
       setDisplayTable(false);
     }
   }
@@ -238,49 +236,49 @@ const DomainExplorerColumnPicker: React.FC<IOwnProps> = ({
 
   let childItems;
   let finalResult: any = [];
-  let parentItems: any;
 
   const childSelectionItems = (_data, title, ...attr) => {
     let nestedTitles = '';
-    childItems = !getQueryTypes.loading && _data.map(group => {
-      const label = title + ' / ' + attr.join();
-      const childEle = (
-        <SelectGroup
-          label={label.replace(/\,/g, '')}
-          key={Math.random()}
-          id={group.name}
-          value={title + group.name}
-        >
-          {group.fields
-            .filter((item, _index) => {
-              if (!nullTypes.includes(item.type.name)) {
-                const tempData = [];
-                const n = fetchSchema(item);
-                tempData.push(n);
-                nestedTitles = nestedTitles + ' / ' + item.name;
-                childSelectionItems(tempData, title, attr, nestedTitles);
-              } else {
-                return item;
-              }
-            })
-            .map(item => (
-              <SelectOption
-                key={Math.random()}
-                value={item.name + title + group.name}
-              >
-                {item.name}
-              </SelectOption>
-            ))}
-        </SelectGroup>
-      );
-      return childEle;
-    });
+    childItems =
+      !getQueryTypes.loading &&
+      _data.map(group => {
+        const label = title + ' / ' + attr.join();
+        const childEle = (
+          <SelectGroup
+            label={label.replace(/\,/g, '')}
+            key={Math.random()}
+            id={group.name}
+            value={title + group.name}
+          >
+            {group.fields
+              .filter((item, _index) => {
+                if (!nullTypes.includes(item.type.name)) {
+                  const tempData = [];
+                  const n = fetchSchema(item);
+                  tempData.push(n);
+                  nestedTitles = nestedTitles + ' / ' + item.name;
+                  childSelectionItems(tempData, title, attr, nestedTitles);
+                } else {
+                  return item;
+                }
+              })
+              .map(item => (
+                <SelectOption
+                  key={Math.random()}
+                  value={item.name + title + group.name}
+                >
+                  {item.name}
+                </SelectOption>
+              ))}
+          </SelectGroup>
+        );
+        return childEle;
+      });
     finalResult.push(childItems);
   };
   const child = [];
   const selectionItems = _data => {
-    parentItems =
-      !getPicker.loading &&
+    !getPicker.loading &&
       _data
         .filter((group, index) => {
           if (group.type.kind !== 'SCALAR') {
@@ -344,11 +342,11 @@ const DomainExplorerColumnPicker: React.FC<IOwnProps> = ({
   }
 
   const onRefresh = () => {
-    if(enableRefresh && parameters.length > 1) {
-    generateQuery()
+    if (enableRefresh && parameters.length > 1) {
+      generateQuery();
     }
-  }
-  
+  };
+
   return (
     <React.Fragment>
       {!getPicker.loading && columnPickerType && (
@@ -370,7 +368,12 @@ const DomainExplorerColumnPicker: React.FC<IOwnProps> = ({
           <Button variant="primary" onClick={generateQuery}>
             Apply columns
           </Button>
-          <Button variant="plain" onClick={onRefresh} className="pf-u-m-md" aria-label={"Refresh list"}>
+          <Button
+            variant="plain"
+            onClick={onRefresh}
+            className="pf-u-m-md"
+            aria-label={'Refresh list'}
+          >
             <SyncIcon />
           </Button>
         </>

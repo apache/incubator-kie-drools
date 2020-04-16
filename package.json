@@ -17,16 +17,9 @@
   },
   "husky": {
     "hooks": {
-      "pre-commit": "lerna run --concurrency 1 --stream precommit",
+      "pre-commit": "lerna run --concurrency 1 --stream precommit --since HEAD",
       "post-commit": "git update-index --again"
     }
-  },
-  "lint-staged": {
-    "*.{ts,tsx}": [
-      "prettier --write",
-      "tslint --fix",
-      "git add"
-    ]
   },
   "devDependencies": {
     "@apollo/react-testing": "^3.1.3",

@@ -2,6 +2,6 @@
 
 exports[`Title Component Test cases testing snapshot 1`] = `
 <div>
-   Task-Console
+  Task-Console
 </div>
 `;

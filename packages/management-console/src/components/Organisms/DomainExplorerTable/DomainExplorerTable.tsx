@@ -15,35 +15,34 @@ import {
   CardBody
 } from '@patternfly/react-core';
 import {
-  EllipsisVIcon,
-  ExternalLinkAltIcon,
-  InProgressIcon,
   CheckCircleIcon,
-  ExclamationCircleIcon,
-  SyncIcon,
   BanIcon,
   OnRunningIcon,
   SearchIcon,
   ErrorCircleOIcon,
   PausedIcon,
-  HistoryIcon,
-  FilterIcon
-} from "@patternfly/react-icons";
+  HistoryIcon
+} from '@patternfly/react-icons';
 import Moment from 'react-moment';
-import {Link} from 'react-router-dom';
-import {ProcessInstanceState} from '../../../graphql/types';
+import { Link } from 'react-router-dom';
+import { ProcessInstanceState } from '../../../graphql/types';
 import './DomainExplorerTable.css';
 import SpinnerComponent from '../../Atoms/SpinnerComponent/SpinnerComponent';
 import ProcessDescriptor from '../../Molecules/ProcessDescriptor/ProcessDescriptor';
 
-const DomainExplorerTable = ({ columnFilters, tableLoading, displayTable, displayEmptyState }) => {
+const DomainExplorerTable = ({
+  columnFilters,
+  tableLoading,
+  displayTable,
+  displayEmptyState
+}) => {
   // tslint:disable: forin
   const [columns, setColumns] = useState([]);
   const [rows, setRows] = useState([]);
-  const currentPage = { prev: location.pathname}
-  window.localStorage.setItem('state', JSON.stringify(currentPage))
+  const currentPage = { prev: location.pathname };
+  window.localStorage.setItem('state', JSON.stringify(currentPage));
 
-  const stateIcon = (state) => {
+  const stateIcon = state => {
     switch (state) {
       case ProcessInstanceState.Active:
         return (
@@ -81,7 +80,7 @@ const DomainExplorerTable = ({ columnFilters, tableLoading, displayTable, displa
           <>
             <PausedIcon className="pf-u-mr-sm" />
             Pending
-            </>
+          </>
         );
       case ProcessInstanceState.Error:
         return (
@@ -94,7 +93,7 @@ const DomainExplorerTable = ({ columnFilters, tableLoading, displayTable, displa
           </>
         );
     }
-  }
+  };
 
   const getKeys = object => {
     const iter = (data, k = '') => {
@@ -126,8 +125,6 @@ const DomainExplorerTable = ({ columnFilters, tableLoading, displayTable, displa
     return { tempKeys, tempValue };
   };
 
-
-
   const getChildKeys = object => {
     const iter = (data, k = '') => {
       for (const i in data) {
@@ -146,38 +143,34 @@ const DomainExplorerTable = ({ columnFilters, tableLoading, displayTable, displa
           if (rest !== '__typename' && !rest.match('/ __typename')) {
             !tempKeys.includes(k + rest) && tempKeys.push(k + rest);
             if (rest.hasOwnProperty) {
-              if(rest === 'processName') {
+              if (rest === 'processName') {
                 const tempObj = {
                   id: data.id,
                   processName: data.processName,
                   businessKey: data.businessKey
-                }
+                };
                 const ele = {
                   title: (
                     <>
-                     <Link to={'/Process/' + tempObj.id}>
-                    <strong>
-                      <ProcessDescriptor processInstanceData={tempObj}/>
-                      </strong>
+                      <Link to={'/Process/' + tempObj.id}>
+                        <strong>
+                          <ProcessDescriptor processInstanceData={tempObj} />
+                        </strong>
                       </Link>
                     </>
                   )
-                }
-                tempValue.push(ele)
-              }
-              else if (rest === 'start') {
+                };
+                tempValue.push(ele);
+              } else if (rest === 'start') {
                 const ele = {
-                  title: (
-                      <Moment fromNow>{data[i].toString()}</Moment>
-                  )
-                }
-                tempValue.push(ele)
+                  title: <Moment fromNow>{data[i].toString()}</Moment>
+                };
+                tempValue.push(ele);
               } else if (rest === 'state') {
                 const ele = {
-                  title:
-                    stateIcon(data[i].toString())
-                }
-                tempValue.push(ele)
+                  title: stateIcon(data[i].toString())
+                };
+                tempValue.push(ele);
               } else if (rest === 'lastUpdate') {
                 const ele = {
                   title: (
@@ -186,9 +179,9 @@ const DomainExplorerTable = ({ columnFilters, tableLoading, displayTable, displa
                       <Moment fromNow>{data[i].toString()}</Moment>
                     </>
                   )
-                }
-                tempValue.push(ele)
-              } 
+                };
+                tempValue.push(ele);
+              }
             }
           }
         }
@@ -197,10 +190,9 @@ const DomainExplorerTable = ({ columnFilters, tableLoading, displayTable, displa
     const tempKeys = [];
     let tempValue = [];
     iter(object);
-    tempValue = tempValue.filter(value => value !== null)
+    tempValue = tempValue.filter(value => value !== null);
     return { tempKeys, tempValue };
   };
-  const firstKey = Object.keys(columnFilters)[0];
   const tableContent = columnFilters;
 
   const parentkeys = [];
@@ -208,7 +200,7 @@ const DomainExplorerTable = ({ columnFilters, tableLoading, displayTable, displa
   let parentIndex = 0;
 
   const initLoad = () => {
-    if (columnFilters.length> 0) {
+    if (columnFilters.length > 0) {
       columnFilters.map(item => {
         let metaArray = [];
         const metaKeys = [];
@@ -272,18 +264,12 @@ const DomainExplorerTable = ({ columnFilters, tableLoading, displayTable, displa
     }
     const finalKeys = parentkeys[0];
     finalKeys && setColumns([...finalKeys]);
-    setRows([...values]); 
-
+    setRows([...values]);
   };
 
   useEffect(() => {
     initLoad();
   }, [tableContent]);
-
-
-  const onRowSelect = (event, isSelected, rowId) => {
-    return null;
-  };
 
   const onCollapse = (event, rowKey, isOpen) => {
     rows[rowKey].isOpen = isOpen;
@@ -292,7 +278,7 @@ const DomainExplorerTable = ({ columnFilters, tableLoading, displayTable, displa
 
   return (
     <React.Fragment>
-      {displayTable && !displayEmptyState &&(
+      {displayTable && !displayEmptyState && (
         <Table
           cells={columns}
           rows={rows}
@@ -304,7 +290,7 @@ const DomainExplorerTable = ({ columnFilters, tableLoading, displayTable, displa
           <TableBody rowKey="rowKey" />
         </Table>
       )}
-      {!displayEmptyState && !displayTable  && (
+      {!displayEmptyState && !displayTable && (
         <Card component={'div'}>
           <CardBody>
             <Bullseye>
@@ -337,8 +323,7 @@ const DomainExplorerTable = ({ columnFilters, tableLoading, displayTable, displa
             </Bullseye>
           </CardBody>
         </Card>
-      )
-      }
+      )}
     </React.Fragment>
   );
 };

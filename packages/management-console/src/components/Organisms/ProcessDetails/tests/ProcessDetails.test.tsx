@@ -13,16 +13,18 @@ const props = {
         endpoint: 'test',
         start: '2019-10-22T03:40:44.089Z',
         end: '2019-10-22T03:40:44.089Z',
-        parentProcessInstance:{
-          id:''
-        },
-        childProcessInstances: [{
+        parentProcessInstance: {
           id: ''
-        }]
+        },
+        childProcessInstances: [
+          {
+            id: ''
+          }
+        ]
       }
     ]
   },
-  from: {prev: ''},
+  from: { prev: '' },
   loading: true,
   childLoading: true,
   parentLoading: true,
@@ -52,12 +54,14 @@ const props2 = {
         endpoint: 'test',
         start: '2019-10-22T03:40:44.089Z',
         end: '2019-10-22T03:40:44.089Z',
-        parentProcessInstance:{
-          id:''
-        },
-        childProcessInstances: [{
+        parentProcessInstance: {
           id: ''
-        }]
+        },
+        childProcessInstances: [
+          {
+            id: ''
+          }
+        ]
       }
     ]
   },

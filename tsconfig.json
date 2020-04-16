@@ -11,7 +11,8 @@
     "esModuleInterop": true,
     "moduleResolution": "node",
     "resolveJsonModule": true,
-    "lib": ["es6", "dom"]
+    "lib": ["es6", "dom"],
+    "noUnusedLocals": true
   },
   "exclude": ["node_modules"]
 }

@@ -12,15 +12,13 @@ import {
   SelectVariant,
   InputGroup,
   TextInput,
-  ButtonVariant,
   Dropdown,
   DropdownToggle,
   DropdownToggleCheckbox,
   DropdownItem,
-  DropdownPosition,
-  Badge
+  DropdownPosition
 } from '@patternfly/react-core';
-import { FilterIcon, SyncIcon, SearchIcon } from '@patternfly/react-icons';
+import { FilterIcon, SyncIcon } from '@patternfly/react-icons';
 import _ from 'lodash';
 import './DatatoolbarComponent.css';
 import { ProcessInstanceState } from '../../../graphql/types';
@@ -73,7 +71,6 @@ const DataToolbarComponent: React.FC<IOwnProps> = ({
 }) => {
   const [isExpanded, setIsExpanded] = useState<boolean>(false);
   const [isFilterClicked, setIsFilterClicked] = useState<boolean>(false);
-  const [isClearAllClicked, setIsClearAllClicked] = useState<boolean>(false);
   const [shouldRefresh, setShouldRefresh] = useState<boolean>(true);
   const [isCheckboxDropdownOpen, setisCheckboxDropdownOpen] = useState(false);
   const onFilterClick = () => {
@@ -92,7 +89,6 @@ const DataToolbarComponent: React.FC<IOwnProps> = ({
 
   const onSelect = (event, selection) => {
     setIsFilterClicked(false);
-    setIsClearAllClicked(false);
     setShouldRefresh(false);
     if (selection) {
       const index = checkedArray.indexOf(selection);
@@ -160,7 +156,6 @@ const DataToolbarComponent: React.FC<IOwnProps> = ({
   const clearAll = () => {
     setOffset(0);
     setLimit(pageSize);
-    setIsClearAllClicked(true);
     setSearchWord('');
     setCheckedArray(['ACTIVE']);
     setFilters({ ...filters, status: ['ACTIVE'], businessKey: [] });
@@ -463,7 +458,11 @@ const DataToolbarComponent: React.FC<IOwnProps> = ({
       </DataToolbarToggleGroup>
       <DataToolbarGroup variant="icon-button-group">
         <DataToolbarItem>
-          <Button variant="plain" onClick={onRefreshClick} aria-label="Refresh list">
+          <Button
+            variant="plain"
+            onClick={onRefreshClick}
+            aria-label="Refresh list"
+          >
             <SyncIcon />
           </Button>
         </DataToolbarItem>

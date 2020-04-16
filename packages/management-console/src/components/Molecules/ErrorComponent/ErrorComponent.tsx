@@ -9,21 +9,19 @@ import {
   EmptyStateBody,
   Title
 } from '@patternfly/react-core';
-import {
-  ExclamationCircleIcon
-} from '@patternfly/react-icons';
+import { ExclamationCircleIcon } from '@patternfly/react-icons';
 import { Redirect } from 'react-router';
 
-const ErrorComponent = (props) => {
+const ErrorComponent = props => {
   let prevPath;
   if (props.location.state !== undefined) {
     prevPath = props.location.state.prev;
   } else {
-    prevPath = '/ProcessInstances'
+    prevPath = '/ProcessInstances';
   }
 
   const tempPath = prevPath.split('/');
-  prevPath = tempPath.filter(item => item)
+  prevPath = tempPath.filter(item => item);
 
   const [isRedirect, setIsredirect] = useState(false);
   const redirectHandler = () => {
@@ -38,14 +36,15 @@ const ErrorComponent = (props) => {
             <EmptyStateIcon
               icon={ExclamationCircleIcon}
               size="md"
-              color="var(--pf-global--danger-color--100)" />
-            <Title headingLevel="h1" size="4xl">404 Error: page not found</Title>
-            <EmptyStateBody>
-              This page could not be found.
-            </EmptyStateBody>
+              color="var(--pf-global--danger-color--100)"
+            />
+            <Title headingLevel="h1" size="4xl">
+              404 Error: page not found
+            </Title>
+            <EmptyStateBody>This page could not be found.</EmptyStateBody>
             <Button variant="primary" onClick={redirectHandler}>
-              Go to process instances
-              </Button>
+              Go to process instances               
+            </Button>
           </EmptyState>
         </Bullseye>
       </PageSection>

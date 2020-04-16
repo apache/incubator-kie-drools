@@ -11,10 +11,12 @@ import { onError } from 'apollo-link-error';
 import { InMemoryCache, NormalizedCacheObject } from 'apollo-cache-inmemory';
 import NoServerComponent from './components/Molecules/NoServerComponent/NoServerComponent';
 
-// @ts-ignore
-const httpLink = new HttpLink({ uri:  window.DATA_INDEX_ENDPOINT || process.env.KOGITO_DATAINDEX_HTTP_URL, });
+const httpLink = new HttpLink({
+  // @ts-ignore
+  uri: window.DATA_INDEX_ENDPOINT || process.env.KOGITO_DATAINDEX_HTTP_URL
+});
 
-const fallbackUI = onError(({networkError}:any) => {
+const fallbackUI = onError(({ networkError }: any) => {
   if (networkError && networkError.stack === 'TypeError: Failed to fetch') {
     return ReactDOM.render(
       <ApolloProvider client={client}>
@@ -23,7 +25,7 @@ const fallbackUI = onError(({networkError}:any) => {
       document.getElementById('root')
     );
   }
-})
+});
 
 const cache = new InMemoryCache();
 const client: ApolloClient<NormalizedCacheObject> = new ApolloClient({

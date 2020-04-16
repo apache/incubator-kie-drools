@@ -1,7 +1,7 @@
 import React from 'react';
 
 const TitleComponent = () => {
-  return <div> Task-Console</div>;
+  return <div>Task-Console</div>;
 };
 
 export default TitleComponent;

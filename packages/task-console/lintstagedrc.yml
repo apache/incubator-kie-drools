@@ -1,5 +1,0 @@
-linters:
-  src/*.{ts,tsx}:
-    - prettier --write --config ../../.prettierrc
-    - tslint --fix -c ./tslint.json --project . './src/**/*.ts{,x}'
-    - git add

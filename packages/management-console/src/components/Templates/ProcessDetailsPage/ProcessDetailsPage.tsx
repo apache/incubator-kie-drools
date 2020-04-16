@@ -3,7 +3,6 @@ import {
   BreadcrumbItem,
   Grid,
   GridItem,
-  Page,
   PageSection,
   Title,
   Card,
@@ -18,7 +17,6 @@ import {
 import React, { useState } from 'react';
 import { Link, Redirect } from 'react-router-dom';
 import ProcessDetails from '../../Organisms/ProcessDetails/ProcessDetails';
-import ProcessDetailsProcessDiagram from '../../Organisms/ProcessDetailsProcessDiagram/ProcessDetailsProcessDiagram';
 import ProcessDetailsProcessVariables from '../../Organisms/ProcessDetailsProcessVariables/ProcessDetailsProcessVariables';
 import ProcessDetailsTimeline from '../../Organisms/ProcessDetailsTimeline/ProcessDetailsTimeline';
 import './ProcessDetailsPage.css';
@@ -31,7 +29,12 @@ import SpinnerComponent from '../../Atoms/SpinnerComponent/SpinnerComponent';
 import ServerErrorsComponent from '../../Molecules/ServerErrorsComponent/ServerErrorsComponent';
 import PageTitleComponent from '../../Molecules/PageTitleComponent/PageTitleComponent';
 import ProcessBulkModalComponent from '../../Atoms/ProcessBulkModalComponent/ProcessBulkModalComponent';
-import { handleAbort, setTitle, isModalOpen, modalToggle } from '../../../utils/Utils';
+import {
+  handleAbort,
+  setTitle,
+  isModalOpen,
+  modalToggle
+} from '../../../utils/Utils';
 
 const ProcessDetailsPage = ({ match }) => {
   const [isSkipModalOpen, setIsSkipModalOpen] = useState<boolean>(false);
@@ -93,16 +96,16 @@ const ProcessDetailsPage = ({ match }) => {
   };
 
   let prevPath;
-  const BreadCrumb = []
-  let BreadCrumbRoute = []
+  const BreadCrumb = [];
+  let BreadCrumbRoute = [];
   if (data) {
     const result = data.ProcessInstances;
     if (currentPage) {
-      const tempPath = currentPage.prev.split('/')
-      prevPath = tempPath.filter(item => item)
-      BreadCrumb.push(...prevPath)
+      const tempPath = currentPage.prev.split('/');
+      prevPath = tempPath.filter(item => item);
+      BreadCrumb.push(...prevPath);
       let sum = '';
-      BreadCrumbRoute = BreadCrumb.map(elem => sum = (sum) + `/${elem}`);
+      BreadCrumbRoute = BreadCrumb.map(elem => (sum = sum + `/${elem}`));
     }
     if (result.length === 0) {
       return (
@@ -113,7 +116,12 @@ const ProcessDetailsPage = ({ match }) => {
               prev: currentPage ? currentPage.prev : '/ProcessInstances',
               title: 'Process not found',
               description: `Process instance with the id ${id} not found`,
-              buttonText: currentPage ? `Go to ${prevPath[0].replace(/([A-Z])/g, ' $1').trim().toLowerCase()}` : 'Go to process instances'
+              buttonText: currentPage
+                ? `Go to ${prevPath[0]
+                    .replace(/([A-Z])/g, ' $1')
+                    .trim()
+                    .toLowerCase()}`
+                : 'Go to process instances'
             }
           }}
         />
@@ -123,8 +131,8 @@ const ProcessDetailsPage = ({ match }) => {
 
   return (
     <>
-      {!error ?
-        (<>
+      {!error ? (
+        <>
           <PageSection variant="light">
             <ProcessBulkModalComponent
               isModalOpen={isAbortModalOpen}
@@ -141,15 +149,23 @@ const ProcessDetailsPage = ({ match }) => {
               isAbortModalOpen={isAbortModalOpen}
             />
             <ProcessBulkModalComponent
-              isModalOpen={isModalOpen(modalTitle, isSkipModalOpen, isRetryModalOpen)}
-              handleModalToggle={modalToggle(modalTitle, handleSkipModalToggle, handleRetryModalToggle)}
+              isModalOpen={isModalOpen(
+                modalTitle,
+                isSkipModalOpen,
+                isRetryModalOpen
+              )}
+              handleModalToggle={modalToggle(
+                modalTitle,
+                handleSkipModalToggle,
+                handleRetryModalToggle
+              )}
               checkedArray={data && [data.ProcessInstances[0].state]}
               modalTitle={setTitle(titleType, modalTitle)}
               modalContent={modalContent}
             />
             <PageTitleComponent title="Process Details" />
-            {!loading ?
-              (<Grid gutter="md" span={12} lg={6} xl={4}>
+            {!loading ? (
+              <Grid gutter="md" span={12} lg={6} xl={4}>
                 <GridItem span={12}>
                   <Breadcrumb>
                     <BreadcrumbItem>
@@ -171,7 +187,9 @@ const ProcessDetailsPage = ({ match }) => {
                   </Breadcrumb>
                 </GridItem>
               </Grid>
-              ) : ''}
+            ) : (
+              ''
+            )}
           </PageSection>
           <PageSection>
             {!loading ? (
@@ -183,7 +201,7 @@ const ProcessDetailsPage = ({ match }) => {
                     className="pf-u-align-items-center"
                   >
                     <SplitItem isFilled={true}>
-                    <Title
+                      <Title
                         headingLevel="h2"
                         size="4xl"
                         className="kogito-management-console--details__title"
@@ -204,9 +222,11 @@ const ProcessDetailsPage = ({ match }) => {
                     </SplitItem>
                   </Split>
                 </GridItem>
-                {currentPage && <GridItem>
-                  <ProcessDetails data={data} from={currentPage} />
-                </GridItem>}
+                {currentPage && (
+                  <GridItem>
+                    <ProcessDetails data={data} from={currentPage} />
+                  </GridItem>
+                )}
                 <GridItem>
                   <ProcessDetailsProcessVariables data={data} />
                 </GridItem>
@@ -222,15 +242,19 @@ const ProcessDetailsPage = ({ match }) => {
                 </GridItem>
               </Grid>
             ) : (
-                <Card>
-                  <Bullseye>
-                    <SpinnerComponent spinnerText="Loading process details..." />
-                  </Bullseye>
-                </Card>
-              )}
+              <Card>
+                <Bullseye>
+                  <SpinnerComponent spinnerText="Loading process details..." />
+                </Bullseye>
+              </Card>
+            )}
           </PageSection>
-        </>) : (<ServerErrorsComponent message={error} />)}
-    </>);
+        </>
+      ) : (
+        <ServerErrorsComponent message={error} />
+      )}
+    </>
+  );
 };
 
 export default ProcessDetailsPage;

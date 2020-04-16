@@ -40,37 +40,36 @@ const DomainExplorerDashboard = props => {
     }
   });
   const [pathName] = BreadCrumb.slice(-1);
-  const [initData2, setInitData2] = useState<any>({
-    __schema: { queryType: [] }
-  });
-  const [schemaDropdown, setSchemaDropDown] = useState(false);
-  const [currentCategory, setCurrentCategory] = useState('Domains');
-  const [currentSchema, setCurrentSchema] = useState([]);
   const [currentQuery, setCurrentQuery] = useState('');
   const [columnPickerType, setColumnPickerType] = useState('');
-  const [isCategoryDropdownOpen, setIsCategoryDropdownOpen] = useState(false);
   const [columnFilters, setColumnFilters] = useState({});
   const [tableLoading, setTableLoading] = useState(true);
   const [displayTable, setDisplayTable] = useState(false);
   const [displayEmptyState, setDisplayEmptyState] = useState(false);
   const [selected, setSelected] = useState([]);
-  const [error, setError] = useState()
+  const [error, setError] = useState();
   const [parameters, setParameters] = useState([
-    { metadata: [{ processInstances: ['id','processName', 'state', 'start', 'lastUpdate','businessKey'] }] }
+    {
+      metadata: [
+        {
+          processInstances: [
+            'id',
+            'processName',
+            'state',
+            'start',
+            'lastUpdate',
+            'businessKey'
+          ]
+        }
+      ]
+    }
   ]);
 
-  const temp = [];
-
   const getQuery = useGetQueryFieldsQuery();
-
   const getQueryTypes = useGetQueryTypesQuery();
   const getPicker = useGetColumnPickerAttributesQuery({
     variables: { columnPickerType }
   });
-
-  useEffect(() => {
-    setInitData2(getQueryTypes.data);
-  }, [getQueryTypes.data]);
 
   useEffect(() => {
     setColumnPickerType(domainName);
@@ -151,10 +150,6 @@ const DomainExplorerDashboard = props => {
     variables: { currentQuery }
   });
 
-  useEffect(() => {
-    setCurrentSchema(temp);
-  }, [getSchema.data]);
-
   const renderToolbar = () => {
     return (
       <DataToolbar
@@ -189,26 +184,34 @@ const DomainExplorerDashboard = props => {
     );
   };
 
-  if(!getQuery.loading && getQuery.error) {
-    return (<ServerErrorsComponent message={getQuery.error}/>)
+  if (!getQuery.loading && getQuery.error) {
+    return <ServerErrorsComponent message={getQuery.error} />;
   }
 
-  if(!getQueryTypes.loading && getQueryTypes.error) {
-    return (<ServerErrorsComponent message={getQueryTypes.error}/>)
+  if (!getQueryTypes.loading && getQueryTypes.error) {
+    return <ServerErrorsComponent message={getQueryTypes.error} />;
   }
 
-  if(!getPicker.loading && getPicker.error) {
-    return (<ServerErrorsComponent message={getPicker.error}/>)
+  if (!getPicker.loading && getPicker.error) {
+    return <ServerErrorsComponent message={getPicker.error} />;
   }
   return (
     <>
-      {!getQuery.loading && !props.domains.includes(domainName) && !props.domains.includes(pathName) && <Redirect to={{
-        pathname: '/NoData', state: {
-          prev: location.pathname,
-          title: 'Domain not found', description: `Domain with the name ${domainName} not found`,
-          buttonText: 'Go to domain explorer'
-        }
-      }} />}
+      {!getQuery.loading &&
+        !props.domains.includes(domainName) &&
+        !props.domains.includes(pathName) && (
+          <Redirect
+            to={{
+              pathname: '/NoData',
+              state: {
+                prev: location.pathname,
+                title: 'Domain not found',
+                description: `Domain with the name ${domainName} not found`,
+                buttonText: 'Go to domain explorer'
+              }
+            }}
+          />
+        )}
       <PageSection variant="light">
         <PageTitleComponent title="Domain Explorer" />
         <Breadcrumb>
@@ -235,24 +238,29 @@ const DomainExplorerDashboard = props => {
         </Breadcrumb>
       </PageSection>
       {!error ? (
-      <PageSection>
-        {renderToolbar()}
+        <PageSection>
+          {renderToolbar()}
 
-        {!tableLoading ? (<div className="kogito-management-console--domain-explorer__table-OverFlow">
-          <DomainExplorerTable
-            columnFilters={columnFilters}
-            tableLoading={tableLoading}
-            displayTable={displayTable}
-            displayEmptyState={displayEmptyState}
-          />
-        </div>) : (
+          {!tableLoading ? (
+            <div className="kogito-management-console--domain-explorer__table-OverFlow">
+              <DomainExplorerTable
+                columnFilters={columnFilters}
+                tableLoading={tableLoading}
+                displayTable={displayTable}
+                displayEmptyState={displayEmptyState}
+              />
+            </div>
+          ) : (
             <Card>
               <Bullseye>
                 <SpinnerComponent spinnerText="Loading domain data..." />
               </Bullseye>
             </Card>
           )}
-      </PageSection>): (<ServerErrorsComponent message={error} />) }
+        </PageSection>
+      ) : (
+        <ServerErrorsComponent message={error} />
+      )}
     </>
   );
 };

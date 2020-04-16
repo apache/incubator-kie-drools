@@ -75,11 +75,14 @@ const DataListItemComponent: React.FC<IOwnProps> = ({
   const [isAbortModalOpen, setIsAbortModalOpen] = useState(false);
   const [titleType, setTitleType] = useState('');
   const isChecked = 'isChecked';
-  const [getChildInstances, { loading, data, error }] = useGetChildInstancesLazyQuery({
+  const [
+    getChildInstances,
+    { loading, data, error }
+  ] = useGetChildInstancesLazyQuery({
     fetchPolicy: 'network-only'
   });
-  const currentPage = { prev: location.pathname }
-  window.localStorage.setItem('state', JSON.stringify(currentPage))
+  const currentPage = { prev: location.pathname };
+  window.localStorage.setItem('state', JSON.stringify(currentPage));
   const handleSkipModalToggle = () => {
     setIsSkipModalOpen(!isSkipModalOpen);
   };
@@ -114,9 +117,9 @@ const DataListItemComponent: React.FC<IOwnProps> = ({
     const newExpanded =
       index >= 0
         ? [
-          ...expanded.slice(0, index),
-          ...expanded.slice(index + 1, expanded.length)
-        ]
+            ...expanded.slice(0, index),
+            ...expanded.slice(index + 1, expanded.length)
+          ]
         : [...expanded, _id];
     setexpanded(newExpanded);
 
@@ -311,7 +314,11 @@ const DataListItemComponent: React.FC<IOwnProps> = ({
       />
       <ProcessBulkModalComponent
         isModalOpen={isModalOpen(modalTitle, isSkipModalOpen, isRetryModalOpen)}
-        handleModalToggle={modalToggle(modalTitle, handleSkipModalToggle, handleRetryModalToggle)}
+        handleModalToggle={modalToggle(
+          modalTitle,
+          handleSkipModalToggle,
+          handleRetryModalToggle
+        )}
         checkedArray={checkedArray}
         modalTitle={setTitle(titleType, modalTitle)}
         modalContent={modalContent}
@@ -367,36 +374,36 @@ const DataListItemComponent: React.FC<IOwnProps> = ({
                   </div>
                 </Link>
                 {!processInstanceData.rootProcessInstanceId &&
-                  processInstanceData.serviceUrl !== null ? (
-                    <Button
-                      component={'a'}
-                      variant={'link'}
-                      target={'_blank'}
-                      href={`${processInstanceData.serviceUrl}`}
-                      isInline={true}
-                    >
-                      Endpoint{<ExternalLinkAltIcon className="pf-u-ml-xs" />}
-                    </Button>
-                  ) : (
-                    <Tooltip content="This Kogito runtime is missing the kogito.service.url property. Contact your administrator to set up.">
-                      <>
-                        <span
-                          style={{
-                            color: 'var(--pf-global--disabled-color--100)'
-                          }}
-                        >
-                          {' '}
+                processInstanceData.serviceUrl !== null ? (
+                  <Button
+                    component={'a'}
+                    variant={'link'}
+                    target={'_blank'}
+                    href={`${processInstanceData.serviceUrl}`}
+                    isInline={true}
+                  >
+                    Endpoint{<ExternalLinkAltIcon className="pf-u-ml-xs" />}
+                  </Button>
+                ) : (
+                  <Tooltip content="This Kogito runtime is missing the kogito.service.url property. Contact your administrator to set up.">
+                    <>
+                      <span
+                        style={{
+                          color: 'var(--pf-global--disabled-color--100)'
+                        }}
+                      >
+                        {' '}
                         Endpoint
                       </span>
-                        {
-                          <ExternalLinkAltIcon
-                            className="pf-u-ml-xs"
-                            color="var(--pf-global--disabled-color--100)"
-                          />
-                        }
-                      </>
-                    </Tooltip>
-                  )}
+                      {
+                        <ExternalLinkAltIcon
+                          className="pf-u-ml-xs"
+                          color="var(--pf-global--disabled-color--100)"
+                        />
+                      }
+                    </>
+                  </Tooltip>
+                )}
               </DataListCell>,
               <DataListCell key={4}>
                 {processInstanceData.state === 'ERROR' ? (
@@ -409,8 +416,8 @@ const DataListItemComponent: React.FC<IOwnProps> = ({
                     handleSkipModalToggle={handleSkipModalToggle}
                   />
                 ) : (
-                    stateIconCreator(processInstanceData.state)
-                  )}
+                  stateIconCreator(processInstanceData.state)
+                )}
               </DataListCell>,
               <DataListCell key={2}>
                 {processInstanceData.start ? (
@@ -418,8 +425,8 @@ const DataListItemComponent: React.FC<IOwnProps> = ({
                     {new Date(`${processInstanceData.start}`)}
                   </Moment>
                 ) : (
-                    ''
-                  )}
+                  ''
+                )}
               </DataListCell>,
               <DataListCell key={3}>
                 {processInstanceData.lastUpdate ? (
@@ -431,8 +438,8 @@ const DataListItemComponent: React.FC<IOwnProps> = ({
                     </Moment>
                   </span>
                 ) : (
-                    ''
-                  )}
+                  ''
+                )}
               </DataListCell>
             ]}
           />
@@ -442,31 +449,31 @@ const DataListItemComponent: React.FC<IOwnProps> = ({
             aria-label="Actions"
           >
             {processInstanceData.state === 'ERROR' ||
-              processInstanceData.state === 'ACTIVE' ||
-              processInstanceData.state === 'SUSPENDED' ? (
-                <Dropdown
-                  isPlain
-                  position={DropdownPosition.right}
-                  isOpen={isOpen}
-                  onSelect={onSelect}
-                  toggle={
-                    <KebabToggle
-                      isDisabled={dropDownList().length === 0}
-                      onToggle={onToggle}
-                    />
-                  }
-                  dropdownItems={dropDownList()}
-                />
-              ) : (
-                <Dropdown
-                  isPlain
-                  position={DropdownPosition.right}
-                  isOpen={isOpen}
-                  onSelect={onSelect}
-                  toggle={<KebabToggle isDisabled onToggle={onToggle} />}
-                  dropdownItems={[]}
-                />
-              )}
+            processInstanceData.state === 'ACTIVE' ||
+            processInstanceData.state === 'SUSPENDED' ? (
+              <Dropdown
+                isPlain
+                position={DropdownPosition.right}
+                isOpen={isOpen}
+                onSelect={onSelect}
+                toggle={
+                  <KebabToggle
+                    isDisabled={dropDownList().length === 0}
+                    onToggle={onToggle}
+                  />
+                }
+                dropdownItems={dropDownList()}
+              />
+            ) : (
+              <Dropdown
+                isPlain
+                position={DropdownPosition.right}
+                isOpen={isOpen}
+                onSelect={onSelect}
+                toggle={<KebabToggle isDisabled onToggle={onToggle} />}
+                dropdownItems={[]}
+              />
+            )}
           </DataListAction>
         </DataListItemRow>
         <DataListContent
@@ -477,7 +484,8 @@ const DataListItemComponent: React.FC<IOwnProps> = ({
         >
           {isLoaded &&
             !loading &&
-            !loadingInitData && !error &&
+            !loadingInitData &&
+            !error &&
             initData.ProcessInstances.map((instance, idx) => {
               if (instance.id === processInstanceData.id) {
                 if (instance.childDataList.length === 0) {

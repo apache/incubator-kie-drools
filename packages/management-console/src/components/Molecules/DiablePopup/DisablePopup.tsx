@@ -1,5 +1,5 @@
 import React from 'react';
-import { Tooltip, DataListCheck } from '@patternfly/react-core';
+import { Tooltip } from '@patternfly/react-core';
 import { ProcessInstance } from '../../../graphql/types';
 
 interface IOwnProps {

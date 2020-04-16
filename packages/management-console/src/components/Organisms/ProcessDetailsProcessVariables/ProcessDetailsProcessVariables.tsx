@@ -2,9 +2,7 @@ import {
   Card,
   CardBody,
   CardHeader,
-  Text,
   TextContent,
-  TextVariants,
   Title
 } from '@patternfly/react-core';
 import React from 'react';
@@ -20,15 +18,13 @@ const ProcessDetailsProcessVariables = ({ data }) => {
       </CardHeader>
       <CardBody>
         <TextContent>
-          {
-            data.ProcessInstances.map((item, index) => {
-              return (
-                <div key={index}>
-                  <ReactJson src={JSON.parse(item.variables)} />
-                </div>
-              );
-            })
-          }
+          {data.ProcessInstances.map((item, index) => {
+            return (
+              <div key={index}>
+                <ReactJson src={JSON.parse(item.variables)} />
+              </div>
+            );
+          })}
         </TextContent>
       </CardBody>
     </Card>

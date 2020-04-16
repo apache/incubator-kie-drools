@@ -53,13 +53,7 @@ const DataListComponent: React.FC<IOwnProps> = ({
   selectedNumber,
   setSelectedNumber
 }) => {
-  const {
-    loading,
-    error,
-    data,
-    refetch,
-    networkStatus
-  } = useGetProcessInstancesQuery({
+  const { loading, error, data, networkStatus } = useGetProcessInstancesQuery({
     variables: {
       state: [ProcessInstanceState.Active],
       offset: 0,
@@ -105,9 +99,7 @@ const DataListComponent: React.FC<IOwnProps> = ({
 
   if (error) {
     setIsError(true);
-    return (
-      <ServerErrorsComponent message={error}/>
-    );
+    return <ServerErrorsComponent message={error} />;
   }
 
   return (

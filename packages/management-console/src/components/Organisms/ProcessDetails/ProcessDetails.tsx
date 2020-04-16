@@ -113,8 +113,8 @@ const ProcessDetails: React.FC<IOwnProps> = ({ data, from }) => {
                 {data.ProcessInstances[0].endpoint}
               </Text>
             ) : (
-                ''
-              )}
+              ''
+            )}
           </FormGroup>
           <FormGroup label="Start" fieldId="start">
             {data.ProcessInstances[0].start ? (
@@ -124,8 +124,8 @@ const ProcessDetails: React.FC<IOwnProps> = ({ data, from }) => {
                 </Moment>
               </Text>
             ) : (
-                ''
-              )}
+              ''
+            )}
           </FormGroup>
           {data.ProcessInstances[0].end && (
             <FormGroup label="End" fieldId="end">
@@ -141,9 +141,10 @@ const ProcessDetails: React.FC<IOwnProps> = ({ data, from }) => {
               <div>
                 <Link
                   to={{
-                   pathname: '/Process/' +
-                    data.ProcessInstances[0].parentProcessInstance.id,
-                   state: from
+                    pathname:
+                      '/Process/' +
+                      data.ProcessInstances[0].parentProcessInstance.id,
+                    state: from
                   }}
                 >
                   <Tooltip
@@ -167,7 +168,9 @@ const ProcessDetails: React.FC<IOwnProps> = ({ data, from }) => {
               {data.ProcessInstances[0].childProcessInstances.map(
                 (child, index) => (
                   <div key={child.id}>
-                    <Link to={{pathname:'/Process/' + child.id,state: from}}>
+                    <Link
+                      to={{ pathname: '/Process/' + child.id, state: from }}
+                    >
                       <Tooltip content={child.id}>
                         <Button variant="link" icon={<LevelDownAltIcon />}>
                           <ProcessDescriptor processInstanceData={child} />
