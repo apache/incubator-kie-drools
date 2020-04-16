@@ -19,6 +19,7 @@ package org.drools.workbench.models.commons.backend.rule;
 import java.io.IOException;
 import java.io.StringReader;
 import java.math.BigDecimal;
+import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
@@ -6909,6 +6910,7 @@ public class RuleModelDRLPersistenceUnmarshallingTest extends BaseRuleModelTest 
             FreeFormLine ffl = (FreeFormLine) m.rhs[0];
             assertEquals("DateTime newStartDate = new DateTime();",
                          ffl.getText());
+            assertDateBoilerPlateCodeIsNotUnmarshaledToFreeFormLine(m.rhs);
 
             assertTrue(m.rhs[1] instanceof ActionUpdateField);
             ActionUpdateField auf = (ActionUpdateField) m.rhs[1];
@@ -6997,6 +6999,7 @@ public class RuleModelDRLPersistenceUnmarshallingTest extends BaseRuleModelTest 
             FreeFormLine ffl = (FreeFormLine) m.rhs[0];
             assertEquals("java.util.Date newStartDate = new java.util.Date();",
                          ffl.getText());
+            assertDateBoilerPlateCodeIsNotUnmarshaledToFreeFormLine(m.rhs);
 
             assertTrue(m.rhs[1] instanceof ActionUpdateField);
             ActionUpdateField auf = (ActionUpdateField) m.rhs[1];
@@ -7084,6 +7087,7 @@ public class RuleModelDRLPersistenceUnmarshallingTest extends BaseRuleModelTest 
             FreeFormLine ffl = (FreeFormLine) m.rhs[0];
             assertEquals("java.util.Date newStartDate = new java.util.Date();",
                          ffl.getText());
+            assertDateBoilerPlateCodeIsNotUnmarshaledToFreeFormLine(m.rhs);
 
             assertTrue(m.rhs[1] instanceof ActionUpdateField);
             ActionUpdateField auf = (ActionUpdateField) m.rhs[1];
@@ -7097,6 +7101,89 @@ public class RuleModelDRLPersistenceUnmarshallingTest extends BaseRuleModelTest 
             assertEquals("newStartDate",
                          afv.getValue());
             assertEquals(FieldNatureType.TYPE_FORMULA,
+                         afv.getNature());
+
+            assertEqualsIgnoreWhitespace(drl,
+                                         RuleModelDRLPersistenceImpl.getInstance().marshal(m));
+        } finally {
+            if (oldValue == null) {
+                System.clearProperty("drools.dateformat");
+            } else {
+                System.setProperty("drools.dateformat",
+                                   oldValue);
+            }
+        }
+    }
+
+    @Test
+    public void testLocalDateBoilerPlateCodeUnmarshaling() {
+        String oldValue = System.getProperty("drools.dateformat");
+        try {
+
+            System.setProperty("drools.dateformat",
+                               "dd-MMM-yyyy");
+
+            String drl = "package org.test;\n"
+                    + "rule \"rule1\"\n"
+                    + "  dialect \"java\"\n"
+                    + "  when\n"
+                    + "    $a : Applicant()\n"
+                    + "  then\n"
+                    + "    java.time.format.DateTimeFormatter dtf = java.time.format.DateTimeFormatter.ofPattern(\"dd-MMM-yyyy\");\n"
+                    + "    modify( $a ) {\n"
+                    + "      setApplicantDate( java.time.LocalDate.parse(\"31-Jan-2000\", dtf) )"
+                    + "    }\n"
+                    + "end\n";
+
+            addModelField("org.test.Applicant",
+                          "this",
+                          "org.test.Applicant",
+                          DataType.TYPE_THIS);
+            addModelField("org.test.Applicant",
+                          "applicantDate",
+                          LocalDate.class.getName(),
+                          DataType.TYPE_LOCAL_DATE);
+
+            when(dmo.getPackageName()).thenReturn("org.test");
+
+            RuleModel m = RuleModelDRLPersistenceImpl.getInstance().unmarshal(drl,
+                                                                              Collections.emptyList(),
+                                                                              dmo);
+
+            assertNotNull(m);
+            assertEquals("rule1",
+                         m.name);
+
+            assertEquals(1,
+                         m.lhs.length);
+            IPattern p = m.lhs[0];
+            assertTrue(p instanceof FactPattern);
+
+            FactPattern fp = (FactPattern) p;
+            assertEquals("Applicant",
+                         fp.getFactType());
+            assertEquals("$a",
+                         fp.getBoundName());
+
+            assertNull(fp.getConstraintList());
+
+            assertEquals(1,
+                         m.rhs.length);
+
+            assertDateBoilerPlateCodeIsNotUnmarshaledToFreeFormLine(m.rhs);
+
+            assertTrue(m.rhs[0] instanceof ActionUpdateField);
+            ActionUpdateField auf = (ActionUpdateField) m.rhs[0];
+            assertEquals("$a",
+                         auf.getVariable());
+            assertEquals(1,
+                         auf.getFieldValues().length);
+            ActionFieldValue afv = auf.getFieldValues()[0];
+            assertEquals("applicantDate",
+                         afv.getField());
+            assertEquals("31-Jan-2000",
+                         afv.getValue());
+            assertEquals(FieldNatureType.TYPE_LITERAL,
                          afv.getNature());
 
             assertEqualsIgnoreWhitespace(drl,
@@ -9805,5 +9892,16 @@ public class RuleModelDRLPersistenceUnmarshallingTest extends BaseRuleModelTest 
 
         assertEqualsIgnoreWhitespace(expectedDRL,
                                      RuleModelDRLPersistenceImpl.getInstance().marshal(model));
+    }
+
+    /**
+     * For more details see https://issues.redhat.com/browse/DROOLS-5249
+     */
+    private void assertDateBoilerPlateCodeIsNotUnmarshaledToFreeFormLine(final IAction[] actions) {
+        Assertions.assertThat(actions)
+                .as("SimpleDateFormat and DateTimeFormatter boiler plates shouldn't be unmarshaled")
+                .filteredOn(action -> action instanceof FreeFormLine)
+                .noneMatch(action -> ((FreeFormLine)action).getText().contains("SimpleDateFormat"))
+                .noneMatch(action -> ((FreeFormLine)action).getText().contains("DateTimeFormatter"));
     }
 }
