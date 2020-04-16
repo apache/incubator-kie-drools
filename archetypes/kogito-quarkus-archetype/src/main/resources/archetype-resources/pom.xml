@@ -14,7 +14,7 @@
     <compiler.version>${version.compiler.plugin}</compiler.version>
 
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-    <maven.compiler.release>${maven.compiler.release}</maven.compiler.release>
+    <maven.compiler.release>${maven.compiler.release}</maven.compiler.release> 
   </properties>
 
   <dependencyManagement>

@@ -15,47 +15,40 @@
 
 package org.jbpm.serverless.workflow;
 
+import java.io.InputStreamReader;
+import java.io.Reader;
+
 import org.jbpm.serverless.workflow.api.Workflow;
 import org.jbpm.serverless.workflow.api.end.End;
 import org.jbpm.serverless.workflow.api.events.EventDefinition;
-import org.jbpm.serverless.workflow.api.interfaces.State;
 import org.jbpm.serverless.workflow.api.start.Start;
 import org.jbpm.serverless.workflow.api.states.DefaultState;
 import org.jbpm.serverless.workflow.api.states.RelayState;
 import org.jbpm.serverless.workflow.parser.ServerlessWorkflowParser;
 
-import java.io.InputStreamReader;
-import java.io.Reader;
-import java.util.ArrayList;
+import static java.util.Arrays.asList;
+import static java.util.Collections.singletonList;
 
 public abstract class BaseServerlessTest {
 
-    protected static final Workflow singleRelayStateWorkflow = new Workflow().withStates(new ArrayList<>() {{
-        add(
-                new RelayState().withName("relayState").withType(DefaultState.Type.RELAY).withStart(new Start().withKind(Start.Kind.DEFAULT))
-                        .withEnd(new End(End.Kind.DEFAULT))
-        );
-    }});
+    protected static final Workflow singleRelayStateWorkflow = new Workflow().withStates(singletonList(
+            new RelayState().withName("relayState").withType(DefaultState.Type.RELAY).withStart(new Start().withKind(Start.Kind.DEFAULT))
+                    .withEnd(new End(End.Kind.DEFAULT))
+    ));
 
-    protected static final Workflow multiRelayStateWorkflow = new Workflow().withStates(new ArrayList<>() {{
-        add(
-                new RelayState().withName("relayState").withType(DefaultState.Type.RELAY).withStart(new Start().withKind(Start.Kind.DEFAULT))
-                        .withEnd(new End(End.Kind.DEFAULT))
-        );
-        add(
-                new RelayState().withName("relayState2").withType(DefaultState.Type.RELAY).withEnd(new End(End.Kind.DEFAULT))
-        );
-    }});
+    protected static final Workflow multiRelayStateWorkflow = new Workflow().withStates(asList(
+            new RelayState().withName("relayState").withType(DefaultState.Type.RELAY).withStart(new Start().withKind(Start.Kind.DEFAULT))
+                    .withEnd(new End(End.Kind.DEFAULT)),
+            new RelayState().withName("relayState2").withType(DefaultState.Type.RELAY).withEnd(new End(End.Kind.DEFAULT))
+    ));
 
-    protected static final Workflow eventDefOnlyWorkflow = new Workflow().withEvents(new ArrayList<>() {{
-        add(
-                new EventDefinition().withName("sampleEvent").withSource("sampleSource").withType("sampleType")
-        );
-     }});
+    protected static final Workflow eventDefOnlyWorkflow = new Workflow().withEvents(singletonList(
+            new EventDefinition().withName("sampleEvent").withSource("sampleSource").withType("sampleType")
+    ));
 
-    protected  ServerlessWorkflowParser getWorkflowParser(String workflowLocation) {
+    protected ServerlessWorkflowParser getWorkflowParser(String workflowLocation) {
         ServerlessWorkflowParser parser;
-        if(workflowLocation.endsWith(".sw.json")) {
+        if (workflowLocation.endsWith(".sw.json")) {
             parser = new ServerlessWorkflowParser("json");
         } else {
             parser = new ServerlessWorkflowParser("yml");

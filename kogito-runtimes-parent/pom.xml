@@ -27,7 +27,8 @@
   </licenses>
 
   <properties>
-    <maven.compiler.release>11</maven.compiler.release>
+    <maven.compiler.release>8</maven.compiler.release>
+
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 
     <checkstyle.header.template>.*</checkstyle.header.template>
