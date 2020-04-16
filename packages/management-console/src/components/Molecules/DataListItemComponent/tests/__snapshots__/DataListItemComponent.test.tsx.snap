@@ -79,16 +79,15 @@ exports[`DataListItem component tests Snapshot tests 1`] = `
     modalContent=""
   />
   <DataListItem
-    aria-labelledby="kie-datalist-item"
+    aria-labelledby="kie-datalist-item-c54ca5b0-b975-46e2-a9a0-6a86bf7ac21e"
     isExpanded={false}
   >
     <DataListItemRow>
       <DisablePopup
         component={
           <DataListCheck
-            aria-labelledby="width-kie-datalist-item"
+            aria-labelledby="kie-datalist-item-c54ca5b0-b975-46e2-a9a0-6a86bf7ac21e"
             isDisabled={true}
-            name="width-kie-datalist-item"
           />
         }
         processInstanceData={
@@ -149,7 +148,9 @@ exports[`DataListItem component tests Snapshot tests 1`] = `
       <DataListItemCells
         dataListCells={
           Array [
-            <DataListCell>
+            <DataListCell
+              id="kie-datalist-item-c54ca5b0-b975-46e2-a9a0-6a86bf7ac21e"
+            >
               <Link
                 to="/Process/c54ca5b0-b975-46e2-a9a0-6a86bf7ac21e"
               >
@@ -359,7 +360,7 @@ exports[`DataListItem component tests Snapshot tests 1`] = `
     <DataListContent
       aria-label="Primary Content Details"
       className="kogito-management-console__embedded-list pf-m-compact"
-      id="kie-datalist-expand1"
+      id="kie-datalist-expand-c54ca5b0-b975-46e2-a9a0-6a86bf7ac21e"
       isHidden={true}
     >
       <Bullseye>

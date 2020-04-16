@@ -463,7 +463,7 @@ const DataToolbarComponent: React.FC<IOwnProps> = ({
       </DataToolbarToggleGroup>
       <DataToolbarGroup variant="icon-button-group">
         <DataToolbarItem>
-          <Button variant="plain" onClick={onRefreshClick}>
+          <Button variant="plain" onClick={onRefreshClick} aria-label="Refresh list">
             <SyncIcon />
           </Button>
         </DataToolbarItem>

@@ -317,7 +317,7 @@ const DataListItemComponent: React.FC<IOwnProps> = ({
         modalContent={modalContent}
       />
       <DataListItem
-        aria-labelledby="kie-datalist-item"
+        aria-labelledby={'kie-datalist-item-' + processInstanceData.id}
         isExpanded={expanded.includes('kie-datalist-toggle')}
       >
         <DataListItemRow>
@@ -325,35 +325,38 @@ const DataListItemComponent: React.FC<IOwnProps> = ({
             <DataListToggle
               onClick={() => toggle('kie-datalist-toggle')}
               isExpanded={expanded.includes('kie-datalist-toggle')}
-              id="kie-datalist-toggle"
+              id={'kie-datalist-toggle-' + processInstanceData.id}
               aria-controls="kie-datalist-expand"
             />
           )}
           {processInstanceData.addons.includes('process-management') &&
-            processInstanceData.serviceUrl !== null ? (
-              <DataListCheck
-                aria-labelledby="width-kie-datalist-item"
-                name="width-kie-datalist-item"
-                checked={processInstanceData[isChecked]}
-                onChange={() => {
-                  onCheckBoxClick();
-                }}
-              />
-            ) : (
-              <DisablePopup
-                processInstanceData={processInstanceData}
-                component={
-                  <DataListCheck
-                    aria-labelledby="width-kie-datalist-item"
-                    name="width-kie-datalist-item"
-                    isDisabled={true}
-                  />
-                }
-              />
-            )}
+          processInstanceData.serviceUrl !== null ? (
+            <DataListCheck
+              aria-labelledby={'kie-datalist-item-' + processInstanceData.id}
+              checked={processInstanceData[isChecked]}
+              onChange={() => {
+                onCheckBoxClick();
+              }}
+            />
+          ) : (
+            <DisablePopup
+              processInstanceData={processInstanceData}
+              component={
+                <DataListCheck
+                  aria-labelledby={
+                    'kie-datalist-item-' + processInstanceData.id
+                  }
+                  isDisabled={true}
+                />
+              }
+            />
+          )}
           <DataListItemCells
             dataListCells={[
-              <DataListCell key={1}>
+              <DataListCell
+                key={1}
+                id={'kie-datalist-item-' + processInstanceData.id}
+              >
                 <Link to={'/Process/' + processInstanceData.id}>
                   <div>
                     <strong>
@@ -468,7 +471,7 @@ const DataListItemComponent: React.FC<IOwnProps> = ({
         </DataListItemRow>
         <DataListContent
           aria-label="Primary Content Details"
-          id="kie-datalist-expand1"
+          id={'kie-datalist-expand-' + processInstanceData.id}
           isHidden={!expanded.includes('kie-datalist-toggle')}
           className="kogito-management-console__embedded-list pf-m-compact"
         >

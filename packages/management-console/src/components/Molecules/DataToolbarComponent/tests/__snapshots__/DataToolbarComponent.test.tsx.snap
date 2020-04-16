@@ -216,6 +216,7 @@ exports[`DataToolbar component tests Snapshot tests 1`] = `
     >
       <DataToolbarItem>
         <Component
+          aria-label="Refresh list"
           onClick={[Function]}
           variant="plain"
         >
