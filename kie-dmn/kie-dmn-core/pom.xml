@@ -119,8 +119,6 @@
       <groupId>org.jpmml</groupId>
       <artifactId>pmml-model</artifactId>
     </dependency>
-
-
     <dependency>
       <groupId>junit</groupId>
       <artifactId>junit</artifactId>
@@ -160,6 +158,11 @@
     <dependency>
       <groupId>org.eclipse</groupId>
       <artifactId>yasson</artifactId>
+      <scope>test</scope>
+    </dependency>
+    <dependency>
+      <groupId>org.kie</groupId>
+      <artifactId>kie-memory-compiler</artifactId>
       <scope>test</scope>
     </dependency>
   </dependencies>

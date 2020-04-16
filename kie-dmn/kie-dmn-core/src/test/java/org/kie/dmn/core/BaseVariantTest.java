@@ -16,20 +16,41 @@
 
 package org.kie.dmn.core;
 
+import java.util.HashMap;
+import java.util.Map;
+
 import org.junit.runner.RunWith;
 import org.junit.runners.Parameterized;
+import org.kie.dmn.api.core.DMNContext;
+import org.kie.dmn.api.core.DMNModel;
+import org.kie.dmn.api.core.DMNResult;
 import org.kie.dmn.api.core.DMNRuntime;
+import org.kie.dmn.api.core.FEELPropertyAccessible;
 import org.kie.dmn.core.compiler.RuntimeTypeCheckOption;
+import org.kie.dmn.core.impl.DMNContextFPAImpl;
 import org.kie.dmn.core.internal.utils.DMNRuntimeBuilder;
 import org.kie.dmn.core.internal.utils.DMNRuntimeBuilder.DMNRuntimeBuilderConfigured;
 import org.kie.dmn.core.util.DMNRuntimeUtil;
+import org.kie.dmn.typesafe.DMNAllTypesIndex;
+import org.kie.dmn.typesafe.DMNTypeSafePackageName;
+import org.kie.dmn.typesafe.DMNTypeSafeTypeGenerator;
+import org.kie.memorycompiler.KieMemoryCompiler;
+
+import static org.hamcrest.CoreMatchers.notNullValue;
+import static org.junit.Assert.assertThat;
+import static org.kie.dmn.core.BaseVariantTest.VariantTestConf.BUILDER_DEFAULT_NOCL_TYPECHECK;
+import static org.kie.dmn.core.BaseVariantTest.VariantTestConf.BUILDER_DEFAULT_NOCL_TYPECHECK_TYPESAFE;
+import static org.kie.dmn.core.BaseVariantTest.VariantTestConf.BUILDER_STRICT;
+import static org.kie.dmn.core.BaseVariantTest.VariantTestConf.KIE_API_TYPECHECK;
+import static org.kie.dmn.core.BaseVariantTest.VariantTestConf.KIE_API_TYPECHECK_TYPESAFE;
 
 @RunWith(Parameterized.class)
-public abstract class BaseVariantTest implements VariantTest {
+public abstract class BaseVariantTest {
 
-    public static enum VariantTestConf implements VariantTest {
+    private DMNTypeSafePackageName.Factory factory;
+
+    public enum VariantTestConf implements VariantTest {
         KIE_API_TYPECHECK {
-
             @Override
             public DMNRuntime createRuntime(String string, Class<?> class1) {
                 return DMNRuntimeUtil.createRuntime(string, class1);
@@ -39,9 +60,13 @@ public abstract class BaseVariantTest implements VariantTest {
             public DMNRuntime createRuntimeWithAdditionalResources(String string, Class<?> class1, String... string2) {
                 return DMNRuntimeUtil.createRuntimeWithAdditionalResources(string, class1, string2);
             }
+
+            @Override
+            public boolean isTypeSafe() {
+                return false;
+            }
         },
         BUILDER_STRICT {
-
             private DMNRuntimeBuilderConfigured builder() {
                 return DMNRuntimeBuilder.usingStrict();
             }
@@ -55,9 +80,13 @@ public abstract class BaseVariantTest implements VariantTest {
             public DMNRuntime createRuntimeWithAdditionalResources(String string, Class<?> class1, String... string2) {
                 return builder().fromClasspathResources(string, class1, string2).getOrElseThrow(RuntimeException::new);
             }
+
+            @Override
+            public boolean isTypeSafe() {
+                return false;
+            }
         },
         BUILDER_DEFAULT_NOCL_TYPECHECK {
-
             private DMNRuntimeBuilderConfigured builder() {
                 return DMNRuntimeBuilder.fromDefaults().setRootClassLoader(null).setOption(new RuntimeTypeCheckOption(true)).buildConfiguration();
             }
@@ -71,13 +100,53 @@ public abstract class BaseVariantTest implements VariantTest {
             public DMNRuntime createRuntimeWithAdditionalResources(String string, Class<?> class1, String... string2) {
                 return builder().fromClasspathResources(string, class1, string2).getOrElseThrow(RuntimeException::new);
             }
-        };
 
+            @Override
+            public boolean isTypeSafe() {
+                return false;
+            }
+        },
+        KIE_API_TYPECHECK_TYPESAFE {
+            @Override
+            public DMNRuntime createRuntime(String string, Class<?> class1) {
+                return DMNRuntimeUtil.createRuntime(string, class1);
+            }
+
+            @Override
+            public DMNRuntime createRuntimeWithAdditionalResources(String string, Class<?> class1, String... string2) {
+                return DMNRuntimeUtil.createRuntimeWithAdditionalResources(string, class1, string2);
+            }
+
+            @Override
+            public boolean isTypeSafe() {
+                return true;
+            }
+        },
+        BUILDER_DEFAULT_NOCL_TYPECHECK_TYPESAFE {
+            private DMNRuntimeBuilderConfigured builder() {
+                return DMNRuntimeBuilder.fromDefaults().setRootClassLoader(null).setOption(new RuntimeTypeCheckOption(true)).buildConfiguration();
+            }
+
+            @Override
+            public DMNRuntime createRuntime(String string, Class<?> class1) {
+                return builder().fromClasspathResource(string, class1).getOrElseThrow(RuntimeException::new);
+            }
+
+            @Override
+            public DMNRuntime createRuntimeWithAdditionalResources(String string, Class<?> class1, String... string2) {
+                return builder().fromClasspathResources(string, class1, string2).getOrElseThrow(RuntimeException::new);
+            }
+
+            @Override
+            public boolean isTypeSafe() {
+                return true;
+            }
+        }
     }
 
     @Parameterized.Parameters(name = "{0}")
     public static Object[] params() {
-        return new Object[]{VariantTestConf.KIE_API_TYPECHECK, VariantTestConf.BUILDER_STRICT, VariantTestConf.BUILDER_DEFAULT_NOCL_TYPECHECK};
+        return new Object[]{KIE_API_TYPECHECK, BUILDER_STRICT, BUILDER_DEFAULT_NOCL_TYPECHECK, BUILDER_DEFAULT_NOCL_TYPECHECK_TYPESAFE, KIE_API_TYPECHECK_TYPESAFE};
     }
 
     private final VariantTestConf testConfig;
@@ -86,14 +155,66 @@ public abstract class BaseVariantTest implements VariantTest {
         this.testConfig = testConfig;
     }
 
-    @Override
     public DMNRuntime createRuntime(String string, Class<?> class1) {
-        return testConfig.createRuntime(string, class1);
+        DMNRuntime runtime = testConfig.createRuntime(string, class1);
+        if (testConfig.isTypeSafe()) {
+            createTypeSafeInput(runtime);
+        }
+        return runtime;
     }
 
-    @Override
     public DMNRuntime createRuntimeWithAdditionalResources(String string, Class<?> class1, String... string2) {
-        return testConfig.createRuntimeWithAdditionalResources(string, class1, string2);
+        DMNRuntime runtimeWithAdditionalResources = testConfig.createRuntimeWithAdditionalResources(string, class1, string2);
+        if (testConfig.isTypeSafe()) {
+            createTypeSafeInput(runtimeWithAdditionalResources);
+        }
+        return runtimeWithAdditionalResources;
+    }
+
+    protected Map<String, Class<?>> allCompiledClasses;
+
+    protected String testName = "";
+
+    private void createTypeSafeInput(DMNRuntime runtime) {
+        String prefix = String.format("%s%s", testName, testConfig.name());
+        factory = new DMNTypeSafePackageName.ModelFactory(prefix);
+        DMNAllTypesIndex index = new DMNAllTypesIndex(runtime.getModels(), factory);
+        Map<String, String> allSources = new HashMap<>();
+
+        for (DMNModel m : runtime.getModels()) {
+            Map<String, String> allTypesSourceCode = new DMNTypeSafeTypeGenerator(m, index, factory)
+                    .generateSourceCodeOfAllTypes();
+            allSources.putAll(allTypesSourceCode);
+        }
+
+        allCompiledClasses = KieMemoryCompiler.compile(allSources, this.getClass().getClassLoader());
+    }
+
+    protected DMNResult evaluateModel(DMNRuntime runtime, DMNModel dmnModel, DMNContext context) {
+        if (testConfig.isTypeSafe()) {
+            return evaluateTypeSafe(runtime, dmnModel, context);
+        } else {
+            return runtime.evaluateAll(dmnModel, context);
+        }
+    }
+
+    private DMNResult evaluateTypeSafe(DMNRuntime runtime, DMNModel dmnModel, DMNContext context) {
+        Map<String, Object> inputMap = context.getAll();
+        FEELPropertyAccessible inputSet;
+        try {
+            inputSet = createInstanceFromCompiledClasses(allCompiledClasses, factory.create(dmnModel), "InputSet");
+            inputSet.fromMap(inputMap);
+            return runtime.evaluateAll(dmnModel, new DMNContextFPAImpl(inputSet));
+        } catch (Exception e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+    protected FEELPropertyAccessible createInstanceFromCompiledClasses(Map<String, Class<?>> compile, DMNTypeSafePackageName packageName, String className) throws Exception {
+        Class<?> inputSetClass = compile.get(packageName.appendPackage(className));
+        assertThat(inputSetClass, notNullValue());
+        Object inputSetInstance = inputSetClass.getDeclaredConstructor().newInstance();
+        return (FEELPropertyAccessible) inputSetInstance;
     }
 }
 
@@ -103,4 +224,5 @@ interface VariantTest {
 
     DMNRuntime createRuntimeWithAdditionalResources(String string, Class<?> class1, String... string2);
 
+    boolean isTypeSafe();
 }

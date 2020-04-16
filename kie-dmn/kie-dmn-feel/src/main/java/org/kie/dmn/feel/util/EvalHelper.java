@@ -43,6 +43,7 @@ import java.util.concurrent.atomic.AtomicLong;
 import java.util.function.BiPredicate;
 import java.util.stream.Stream;
 
+import org.kie.dmn.api.core.FEELPropertyAccessible;
 import org.kie.dmn.feel.lang.EvaluationContext;
 import org.kie.dmn.feel.lang.FEELProperty;
 import org.kie.dmn.feel.lang.types.BuiltInType;
@@ -272,7 +273,7 @@ public class EvalHelper {
         return text;
     }
 
-    public static class PropertyValueResult {
+    public static class PropertyValueResult implements FEELPropertyAccessible.AbstractPropertyValueResult {
 
         private final boolean defined;
         private final Either<Exception, Object> valueResult;
@@ -300,6 +301,11 @@ public class EvalHelper {
 
         public Either<Exception, Object> getValueResult() {
             return valueResult;
+        }
+
+        @Override
+        public Optional<Object> toOptional() {
+            return valueResult.cata(l -> Optional.empty(), Optional::of);
         }
 
     }

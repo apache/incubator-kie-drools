@@ -58,16 +58,21 @@ public class KieMemoryCompilerTest {
 
     private final static String WARNING_CLASS = "package org.kie.memorycompiler;\n" +
             "\n" +
+            "import java.util.List;\n" +
+            "\n" +
             "public class WarningClass {\n" +
             "\n" +
-            "    @Deprecated" +
-            "    public int minusDeprecated(Integer a, Integer b){\n" +
+            "    private List<String> warningField;\n" +
+            "\n" +
+            "    public void setWarningField(Object warningField) {\n" +
+            "        this.warningField = (List<String>) warningField;\n" +
+            "    }\n" +
+            "\n" +
+            "    public int minus(Integer a, Integer b) {\n" +
             "        return a - b;\n" +
             "    }\n" +
-            "    public int triggerWarning() {\n" +
-            "        return minusDeprecated(8, 4);\n" +
-            "    }\n" +
-            "}";
+            "\n" +
+            "};\n";
 
     @Test
     public void doNotFailOnWarning() throws Exception {
@@ -78,8 +83,8 @@ public class KieMemoryCompilerTest {
         assertThat(exampleClazz, is(notNullValue()));
 
         Object instance = exampleClazz.getDeclaredConstructors()[0].newInstance();
-        Method sumMethod = exampleClazz.getMethod("triggerWarning");
-        Object result = sumMethod.invoke(instance);
+        Method minusMethod = exampleClazz.getMethod("minus", Integer.class, Integer.class);
+        Object result = minusMethod.invoke(instance, 8, 4);
         assertThat(result, is(4));
     }
 }
