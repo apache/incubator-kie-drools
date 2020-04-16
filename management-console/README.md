@@ -61,3 +61,51 @@ The native build of the application bundling in the React JS frontend does not d
 ```
 mvn package -Dui -Dnative
 ```
+
+
+## Domain Explorer
+
+Domain Explorer allows you to inspect domain related data and process instances based on domains that are available.
+
+You can navigate to Domain Explorer by clicking "**Domain Explorer**" tab available on the sidebar, which will take you landing page of
+domain explorer and there you can see a list of available Domains.
+
+![Domain Explorer](./docs/DELandingpage.png "Domain Explorer")
+
+Selecting a domain on the landing page will direct you to a dashboard, where you can view all domain related data and list of processes associated with it.
+
+
+### Column Picker
+
+Domain Explorer allows you to select the domain attributes that you wish to see on the result table.
+
+This column picker is a multi select dropdown that contains the available domain attributes, that allows you to select any number of options available in the dropdown, there are few options that are selected by default which can be changed of your choice. The options available in the dropdown follows a certain nested pattern, displayed the entire graph of attributes available in the specific domain.
+
+eg: "**hotel/address**" denotes address attribute of hotel.
+
+After selecting/deselecting options from the dropdown, clicking on "**Apply columns**" would get you domain data on the table.
+
+![Column Picker](./docs/pickColumns.gif "Column Picker")
+
+### Refresh option
+
+There can be a possibilites of,
+* change in state of processes, while performing operations like skip, retry or abort
+* New process instance being added.
+
+In order to check the current state of processes or current list of processes available on the domain you can always do a refresh of the table by clicking icon placed next to Apply columns button. This will get you current and updated content to the table.
+
+
+### Dashboard
+
+The table on the Domain Explorer will provide you information about the specific domain data and list of processes associated with it.
+
+To check the list of processes, you may have to expand each row of the table by clicking on the **carret** icon available on each row.
+
+![Dashboard](./docs/expandRow.gif "Dashboard")
+
+### Navigate to process details
+
+To get to know more about a process, you can always click on any process instance to direct to process details page and there you can see details about the process as well as the timeline and process variables.
+
+![navigate](./docs/navigate.gif "navigate")
