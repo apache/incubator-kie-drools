@@ -67,7 +67,7 @@ public class DescrFieldDefinition implements FieldDefinition {
     }
 
     @Override
-    public List<AnnotationDefinition> getAnnotations() {
+    public List<AnnotationDefinition> getFieldAnnotations() {
         return Arrays.asList(annotations.values().toArray(new AnnotationDefinition[0]));
     }
 

@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package org.kie.dmn.typesafe;
+package org.kie.dmn.core.v1_3;
 
 import java.math.BigDecimal;
 import java.util.HashMap;
@@ -31,6 +31,9 @@ import org.kie.dmn.api.core.FEELPropertyAccessible;
 import org.kie.dmn.core.BaseVariantTest;
 import org.kie.dmn.core.impl.DMNContextFPAImpl;
 import org.kie.dmn.core.util.DMNRuntimeUtil;
+import org.kie.dmn.typesafe.DMNAllTypesIndex;
+import org.kie.dmn.typesafe.DMNTypeSafePackageName;
+import org.kie.dmn.typesafe.DMNTypeSafeTypeGenerator;
 import org.kie.memorycompiler.KieMemoryCompiler;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;

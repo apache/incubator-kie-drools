@@ -33,22 +33,31 @@ public interface DMNTypeSafeTypeTemplate {
     void fromMap(Map<String, Object> values) {
         // Simple fields
         {
-            $property$ = (PropertyType) values.get("$property$");
+            Object propertyValues = values.get("$property$");
+            if(propertyValues != null) {
+                $property$ = (PropertyType) propertyValues;
+            }
         }
 
         // Composite fields
         {
-            $property$ = new PropertyType();
-            $property$.fromMap((java.util.Map<String, Object>) values.get("$property$"));
+            Object propertyValues = values.get("$property$");
+            if(propertyValues != null) {
+                $property$ = new PropertyType();
+                $property$.fromMap((java.util.Map<String, Object>) propertyValues);
+            }
         }
 
         // Collections fields
         {
-            $property$ = new java.util.ArrayList<>();
-            for(java.util.Map<String, Object> v : (java.util.Collection<java.util.Map<String, Object>>)values.get("$property$")) {
-                PropertyType item = new PropertyType();
-                item.fromMap(v);
-                $property$.add(item);
+            Object propertyValues = values.get("$property$");
+            if(propertyValues != null) {
+                $property$ = new java.util.ArrayList<>();
+                for (java.util.Map<String, Object> v : (java.util.Collection<java.util.Map<String, Object>>) propertyValues) {
+                    PropertyType item = new PropertyType();
+                    item.fromMap(v);
+                    $property$.add(item);
+                }
             }
         }
     }

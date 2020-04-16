@@ -16,7 +16,13 @@
 
 package org.kie.dmn.typesafe;
 
+import java.time.Duration;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.time.LocalTime;
+import java.time.Period;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
@@ -28,6 +34,7 @@ import com.github.javaparser.ast.type.ClassOrInterfaceType;
 import org.drools.core.util.StringUtils;
 import org.drools.modelcompiler.builder.generator.declaredtype.api.AnnotationDefinition;
 import org.drools.modelcompiler.builder.generator.declaredtype.api.FieldDefinition;
+import org.drools.modelcompiler.builder.generator.declaredtype.api.SimpleAnnotationDefinition;
 import org.kie.dmn.api.core.DMNType;
 import org.kie.dmn.feel.codegen.feel11.CodegenStringUtil;
 
@@ -41,11 +48,10 @@ public class DMNDeclaredField implements FieldDefinition {
     private String fieldName;
     private String originalMapKey;
     private DMNType fieldDMNType;
-    private List<AnnotationDefinition> annotations = new ArrayList<>();
 
     DMNDeclaredField(DMNAllTypesIndex index, Map.Entry<String, DMNType> dmnField) {
         this.index = index;
-        this.fieldName = CodegenStringUtil.escapeIdentifier(dmnField.getKey());
+        this.fieldName = CodegenStringUtil.escapeIdentifier(StringUtils.lcFirst(dmnField.getKey()));
         this.originalMapKey = dmnField.getKey();
         this.fieldDMNType = dmnField.getValue();
     }
@@ -64,14 +70,17 @@ public class DMNDeclaredField implements FieldDefinition {
         if (fieldDMNType.isCollection()) {
             String typeName = getBaseType(fieldDMNType);
             String typeNameWithPackage = withPackage(typeName);
-            return String.format("java.util.Collection<%s>", typeNameWithPackage);
+            String convertedType = convertType(typeNameWithPackage);
+            return String.format("java.util.Collection<%s>", convertedType);
         } else {
             return fieldTypeWithPackage();
         }
     }
 
     private String fieldTypeWithPackage() {
-        return withPackage(getFieldNameWithAnyCheck());
+        String fieldNameWithAnyCheck = getFieldNameWithAnyCheck();
+        String withPackage = withPackage(fieldNameWithAnyCheck);
+        return convertType(withPackage);
     }
 
     private String getFieldNameWithAnyCheck() {
@@ -106,14 +115,43 @@ public class DMNDeclaredField implements FieldDefinition {
                 .orElse(OBJECT_TYPE);
     }
 
+    private String convertType(String originalType) {
+        Class<?> convertedClass;
+        switch (originalType) {
+            case "Any":
+                convertedClass = Object.class;
+                break;
+            case "Date":
+                convertedClass = LocalDate.class;
+                break;
+            case "Time":
+                convertedClass = LocalTime.class;
+                break;
+            case "DateTime":
+                convertedClass = LocalDateTime.class;
+                break;
+            case "DayTimeDuration":
+                convertedClass = Duration.class;
+                break;
+            case "YearMonthDuration":
+                convertedClass = Period.class;
+                break;
+            default:
+                convertedClass = null;
+        }
+        return convertedClass != null ? convertedClass.getCanonicalName() : originalType;
+    }
+
     @Override
     public String getInitExpr() {
         return null;
     }
 
     @Override
-    public List<AnnotationDefinition> getAnnotations() {
-        return annotations;
+    public List<AnnotationDefinition> getterAnnotations() {
+        SimpleAnnotationDefinition annotation = new SimpleAnnotationDefinition("org.kie.dmn.feel.lang.FEELProperty");
+        annotation.getValueMap().put("value", "\"" + originalMapKey + "\"");
+        return Collections.singletonList(annotation);
     }
 
     @Override
