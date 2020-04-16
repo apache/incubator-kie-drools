@@ -18,6 +18,8 @@ package org.kie.kogito.dmn;
 import java.io.InputStreamReader;
 
 import org.junit.jupiter.api.Test;
+import org.kie.dmn.api.core.DMNMessage.Severity;
+import org.kie.dmn.api.core.DMNModel;
 import org.kie.dmn.api.core.DMNRuntime;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -27,6 +29,15 @@ public class DMNKogitoTest {
     @Test
     public void testBasic() {
         DMNRuntime dmnRuntime = DMNKogito.createGenericDMNRuntime(new InputStreamReader(DMNKogitoTest.class.getResourceAsStream("TrafficViolation.dmn")));
-        assertEquals(dmnRuntime.getModels().size(), 1);
+        assertEquals(1, dmnRuntime.getModels().size());
+    }
+
+    @Test
+    public void testProfile() {
+        DMNRuntime dmnRuntime = DMNKogito.createGenericDMNRuntime(new InputStreamReader(DMNKogitoTest.class.getResourceAsStream("profile.dmn")));
+        assertEquals(1, dmnRuntime.getModels().size());
+
+        DMNModel dmnModel = dmnRuntime.getModels().get(0);
+        assertEquals(0, dmnModel.getMessages(Severity.ERROR).size()); // nn any() is a Kie-extended built-in function.
     }
 }
