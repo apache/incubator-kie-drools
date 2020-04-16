@@ -16,12 +16,6 @@
   <name>KIE :: PMML :: Models :: Drools :: Archetype</name>
   <description>Archetype for actual PMML model with Drools implementation</description>
 
-  <properties>
-    <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-    <maven.compiler.source>1.8</maven.compiler.source>
-    <maven.compiler.target>1.8</maven.compiler.target>
-  </properties>
-
   <build>
     <plugins>
       <plugin>
@@ -42,7 +36,6 @@
       </plugin>
       <plugin>
         <artifactId>maven-resources-plugin</artifactId>
-        <version>3.1.0</version>
         <configuration>
           <includeEmptyDirs>true</includeEmptyDirs>
         </configuration>
@@ -80,16 +73,6 @@
                 </resource>
               </resources>
             </configuration>
-          </execution>
-        </executions>
-      </plugin>
-      <plugin>
-        <groupId>org.kie</groupId>
-        <artifactId>blueprinter-maven-plugin</artifactId>
-        <executions>
-          <execution>
-            <id>skip-blueprinter</id>
-            <phase>none</phase>
           </execution>
         </executions>
       </plugin>

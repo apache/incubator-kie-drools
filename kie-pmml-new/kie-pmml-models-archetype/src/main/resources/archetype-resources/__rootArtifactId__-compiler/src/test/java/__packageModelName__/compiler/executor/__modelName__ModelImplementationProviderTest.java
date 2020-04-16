@@ -36,5 +36,6 @@ public class ${modelName}ModelImplementationProviderTest {
     @Test
     public void getKiePMMLModel() throws Exception {
         // TODO
+        throw new UnsupportedOperationException();
     }
 }
