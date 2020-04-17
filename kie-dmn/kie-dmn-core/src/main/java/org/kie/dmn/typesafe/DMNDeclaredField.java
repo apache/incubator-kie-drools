@@ -21,7 +21,6 @@ import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.time.Period;
-import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.Map;
@@ -78,19 +77,19 @@ public class DMNDeclaredField implements FieldDefinition {
     }
 
     private String fieldTypeWithPackage() {
-        String fieldNameWithAnyCheck = getFieldNameWithAnyCheck();
+        String fieldNameWithAnyCheck = getRecursiveBaseType(fieldDMNType)
+                .map(this::getFieldNameWithAnyCheck)
+                .orElse(Object.class.getCanonicalName());
         String withPackage = withPackage(fieldNameWithAnyCheck);
         return convertType(withPackage);
     }
 
-    private String getFieldNameWithAnyCheck() {
+    private String getFieldNameWithAnyCheck(DMNType fieldDMNType) {
         String name = fieldDMNType.getName();
         if ("Any".equals(name)) {
             return OBJECT_TYPE;
-        } else if (!fieldDMNType.getAllowedValues().isEmpty()) {
-            return getBaseType(fieldDMNType);
         } else {
-            return name;
+            return CodegenStringUtil.escapeIdentifier(name);
         }
     }
 
@@ -110,9 +109,18 @@ public class DMNDeclaredField implements FieldDefinition {
     }
 
     public String getBaseType(DMNType fieldType) {
-        Optional<DMNType> baseType = Optional.ofNullable(fieldType.getBaseType());
-        return baseType.map(DMNType::getName)
-                .orElse(OBJECT_TYPE);
+        Optional<DMNType> baseType = getRecursiveBaseType(fieldType);
+        return baseType.map(this::getFieldNameWithAnyCheck).orElse(OBJECT_TYPE);
+    }
+
+    private Optional<DMNType> getRecursiveBaseType(DMNType fieldType) {
+        if (index.isIndexedClass(getFieldNameWithAnyCheck(fieldType))) {
+            return Optional.of(fieldType);
+        } else if (fieldType.getBaseType() == null) {
+            return Optional.of(fieldType);
+        } else {
+            return getRecursiveBaseType(fieldType.getBaseType());
+        }
     }
 
     private String convertType(String originalType) {
@@ -131,6 +139,7 @@ public class DMNDeclaredField implements FieldDefinition {
                 convertedClass = LocalDateTime.class;
                 break;
             case "DayTimeDuration":
+            case "Days_32and_32time_32duration":
                 convertedClass = Duration.class;
                 break;
             case "YearMonthDuration":
@@ -176,8 +185,10 @@ public class DMNDeclaredField implements FieldDefinition {
 
     public BlockStmt createFromMapEntry(BlockStmt simplePropertyBlock,
                                         BlockStmt pojoPropertyBlock,
-                                        BlockStmt collectionsPropertyBlock) {
-        if (fieldDMNType.isCollection() && fieldIsDifferentThanObject()) {
+                                        BlockStmt collectionsPropertyBlock, BlockStmt collectionsBasic) {
+        if (fieldDMNType.isCollection() && fieldIsBasic()) {
+            return replaceTemplate(collectionsBasic, fieldTypeUnwrapped());
+        } else if (fieldDMNType.isCollection() && fieldIsDifferentThanObject()) {
             return replaceTemplate(collectionsPropertyBlock, fieldTypeUnwrapped());
         } else if (fieldDMNType.isComposite()) {
             return replaceTemplate(pojoPropertyBlock, fieldTypeWithPackage());
@@ -186,6 +197,10 @@ public class DMNDeclaredField implements FieldDefinition {
         } else {
             return new BlockStmt();
         }
+    }
+
+    private boolean fieldIsBasic() {
+        return fieldDMNType.getBaseType() != null && !fieldDMNType.getBaseType().isComposite();
     }
 
     private boolean fieldIsDifferentThanObject() {

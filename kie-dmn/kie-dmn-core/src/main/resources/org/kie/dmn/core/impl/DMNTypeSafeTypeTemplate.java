@@ -48,7 +48,7 @@ public interface DMNTypeSafeTypeTemplate {
             }
         }
 
-        // Collections fields
+        // Collections of composite fields
         {
             Object propertyValues = values.get("$property$");
             if(propertyValues != null) {
@@ -57,6 +57,16 @@ public interface DMNTypeSafeTypeTemplate {
                     PropertyType item = new PropertyType();
                     item.fromMap(v);
                     $property$.add(item);
+                }
+            }
+        }
+        // Collections of basic fields
+        {
+            Object propertyValues = values.get("$property$");
+            if(propertyValues != null) {
+                $property$ = new java.util.ArrayList<>();
+                for (Object item : (Iterable<?>)propertyValues) {
+                    $property$.add((PropertyType)item);
                 }
             }
         }

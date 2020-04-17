@@ -23,6 +23,7 @@ import java.util.Map;
 
 import org.junit.Before;
 import org.junit.Test;
+import org.junit.runners.Parameterized;
 import org.kie.dmn.api.core.DMNContext;
 import org.kie.dmn.api.core.DMNModel;
 import org.kie.dmn.api.core.DMNResult;
@@ -42,10 +43,16 @@ import static java.util.Arrays.asList;
 import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.CoreMatchers.notNullValue;
 import static org.junit.Assert.assertThat;
+import static org.kie.dmn.core.BaseVariantTest.VariantTestConf.KIE_API_TYPECHECK_TYPESAFE;
 import static org.kie.dmn.core.util.DynamicTypeUtils.entry;
 import static org.kie.dmn.core.util.DynamicTypeUtils.mapOf;
 
 public class DMNTypeSafeTest extends BaseVariantTest {
+
+    @Parameterized.Parameters(name = "{0}")
+    public static Object[] params() {
+        return new Object[]{KIE_API_TYPECHECK_TYPESAFE};
+    }
 
     public static final Logger LOG = LoggerFactory.getLogger(DMNTypeSafeTest.class);
 
@@ -61,7 +68,7 @@ public class DMNTypeSafeTest extends BaseVariantTest {
 
     @Before
     public void setUp() {
-        runtime = createRuntime("a.dmn", this.getClass());
+        runtime = DMNRuntimeUtil.createRuntime("a.dmn", this.getClass());
         String namespace = "http://www.trisotech.com/definitions/_2ceee5b6-0f0d-41ef-890e-2cd6fb1adb10";
         String modelName = "Drawing 1";
 

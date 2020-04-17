@@ -146,7 +146,7 @@ public abstract class BaseVariantTest {
 
     @Parameterized.Parameters(name = "{0}")
     public static Object[] params() {
-        return new Object[]{KIE_API_TYPECHECK, BUILDER_STRICT, BUILDER_DEFAULT_NOCL_TYPECHECK, BUILDER_DEFAULT_NOCL_TYPECHECK_TYPESAFE, KIE_API_TYPECHECK_TYPESAFE};
+        return new Object[]{KIE_API_TYPECHECK, BUILDER_DEFAULT_NOCL_TYPECHECK, BUILDER_DEFAULT_NOCL_TYPECHECK_TYPESAFE, KIE_API_TYPECHECK_TYPESAFE};
     }
 
     private final VariantTestConf testConfig;
@@ -156,12 +156,11 @@ public abstract class BaseVariantTest {
     }
 
     public DMNRuntime createRuntime(final Class testClass) {
-//        DMNRuntime runtime = DMNRuntimeUtil.createRuntime(testClass);
-//        if (testConfig.isTypeSafe()) {
-//            createTypeSafeInput(runtime);
-//        }
-//        return runtime;
-        return null;
+        DMNRuntime runtime = DMNRuntimeUtil.createRuntime(testClass);
+        if (testConfig.isTypeSafe()) {
+            createTypeSafeInput(runtime);
+        }
+        return runtime;
     }
 
 
@@ -197,7 +196,9 @@ public abstract class BaseVariantTest {
             allSources.putAll(allTypesSourceCode);
         }
 
-        allCompiledClasses = KieMemoryCompiler.compile(allSources, this.getClass().getClassLoader());
+        if(!allSources.isEmpty()) {
+            allCompiledClasses = KieMemoryCompiler.compile(allSources, this.getClass().getClassLoader());
+        }
     }
 
     protected DMNResult evaluateModel(DMNRuntime runtime, DMNModel dmnModel, DMNContext context) {

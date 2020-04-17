@@ -172,11 +172,13 @@ public class FEELPropertyAccessibleImplementation {
 
         BlockStmt simplePropertyBLock = (BlockStmt) originalStatements.getStatement(0);
         BlockStmt pojoPropertyBlock = (BlockStmt) originalStatements.getStatement(1);
-        BlockStmt collectionsPropertyBlock = (BlockStmt) originalStatements.getStatement(2);
+        BlockStmt collectionsCompositePropertyBlock = (BlockStmt) originalStatements.getStatement(2);
+        BlockStmt collectionsBasic = (BlockStmt) originalStatements.getStatement(3);
 
         List<Statement> allStatements = fields.stream().map(f -> f.createFromMapEntry(simplePropertyBLock,
-                                                                                 pojoPropertyBlock,
-                                                                                 collectionsPropertyBlock))
+                                                                                      pojoPropertyBlock,
+                                                                                      collectionsCompositePropertyBlock,
+                                                                                      collectionsBasic))
                 .collect(Collectors.toList());
 
         BlockStmt body = new BlockStmt(nodeList(allStatements));

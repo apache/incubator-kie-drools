@@ -43,7 +43,10 @@ class DMNModelTypesIndex {
 
     public void createIndex() {
         List<DMNType> itemDefinitions = model.getItemDefinitions()
-                .stream().map(ItemDefNode::getType).collect(Collectors.toList());
+                .stream()
+                .map(ItemDefNode::getType)
+                .filter(this::shouldIndex)
+                .collect(Collectors.toList());
 
         itemDefinitions.forEach(this::index);
         itemDefinitions.stream().flatMap(this::innerTypes).forEach(this::index);
@@ -58,15 +61,7 @@ class DMNModelTypesIndex {
     }
 
     private boolean shouldIndex(DMNType dmnType) {
-        if (dmnType.isCollection()) {
-            return false;
-        }
-        if(!dmnType.getAllowedValues().isEmpty()) {
-            // assume it's an enumeration
-            return false;
-        }
-        String internalFEELUri = model.getDefinitions().getURIFEEL();
-        return !dmnType.getNamespace().equals(internalFEELUri);
+        return dmnType.isComposite();
     }
 
     private void index(DMNType innerType) {

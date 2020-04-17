@@ -26,6 +26,7 @@ import org.kie.dmn.core.impl.DMNContextImpl;
 public final class DMNFactory {
 
     public static DMNContext newContext() {
+//        throw new UnsupportedOperationException();
         return new DMNContextImpl();
     }
 
