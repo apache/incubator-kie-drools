@@ -4,6 +4,8 @@
 
 = OptaPlanner
 
+https://www.optaplanner.org/[www.optaplanner.org]
+
 image:https://img.shields.io/badge/stackoverflow-ask_question-orange.svg?logo=stackoverflow[
 "Ask question on Stack Overflow", link="https://stackoverflow.com/questions/tagged/optaplanner"]
 image:https://img.shields.io/badge/zulip-join_chat-brightgreen.svg?logo=zulip[
@@ -15,8 +17,6 @@ image:https://img.shields.io/badge/zulip-join_chat-brightgreen.svg?logo=zulip[
 {sonarBadge}&metric=sqale_rating["Maintainability Rating", {sonarLink}]
 {sonarBadge}&metric=ncloc["Lines of Code", {sonarLink}]
 {sonarBadge}&metric=coverage["Coverage", {sonarLink}]
-
-https://www.optaplanner.org/[www.optaplanner.org]
 
 == Quick development start
 
