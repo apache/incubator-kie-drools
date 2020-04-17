@@ -14,15 +14,15 @@ import org.kie.dmn.api.core.DMNResult;
 import org.kie.dmn.api.core.DMNRuntime;
 import org.kie.dmn.core.util.DMNRuntimeUtil;
 
-public class OnlineDatingTest extends BaseInterpretedVsCompiledTest {
+public class OnlineDatingTest extends BaseVariantTest {
 
-    public OnlineDatingTest(final boolean useExecModelCompiler) {
+    public OnlineDatingTest(final BaseVariantTest.VariantTestConf useExecModelCompiler) {
         super(useExecModelCompiler);
     }
 
     @Test
     public void testDMChallengeMarch2017() {
-        final DMNRuntime runtime = DMNRuntimeUtil.createRuntime("dmcommunity_challenge_2017_03.dmn", this.getClass() );
+        final DMNRuntime runtime = createRuntime("dmcommunity_challenge_2017_03.dmn", this.getClass() );
         final DMNModel dmnModel = runtime.getModel(
                 "http://www.trisotech.com/definitions/_1b5a3a8f-ccf0-459b-8783-38601977e828",
                 "DMCommunity Challenge - March 2017" );

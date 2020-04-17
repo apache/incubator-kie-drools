@@ -41,15 +41,15 @@ import static org.junit.Assert.assertThat;
 import static org.kie.dmn.core.util.DynamicTypeUtils.entry;
 import static org.kie.dmn.core.util.DynamicTypeUtils.prototype;
 
-public class DMNInputRuntimeTest extends BaseInterpretedVsCompiledTest {
+public class DMNInputRuntimeTest extends BaseVariantTest {
 
-    public DMNInputRuntimeTest(final boolean useExecModelCompiler ) {
+    public DMNInputRuntimeTest(final BaseVariantTest.VariantTestConf useExecModelCompiler ) {
         super( useExecModelCompiler );
     }
 
     @Test
     public void testInputStringEvaluateAll() {
-        final DMNRuntime runtime = DMNRuntimeUtil.createRuntime( "0001-input-data-string.dmn", this.getClass() );
+        final DMNRuntime runtime = createRuntime( "0001-input-data-string.dmn", this.getClass() );
         final DMNModel dmnModel = runtime.getModel( "https://github.com/kiegroup/drools/kie-dmn", "_0001-input-data-string" );
         assertThat( dmnModel, notNullValue() );
 
@@ -68,7 +68,7 @@ public class DMNInputRuntimeTest extends BaseInterpretedVsCompiledTest {
 
     @Test
     public void testInputStringEvaluateDecisionByName() {
-        final DMNRuntime runtime = DMNRuntimeUtil.createRuntime( "0001-input-data-string.dmn", this.getClass() );
+        final DMNRuntime runtime = createRuntime( "0001-input-data-string.dmn", this.getClass() );
         final DMNModel dmnModel = runtime.getModel( "https://github.com/kiegroup/drools/kie-dmn", "_0001-input-data-string" );
         assertThat( dmnModel, notNullValue() );
 
@@ -99,7 +99,7 @@ public class DMNInputRuntimeTest extends BaseInterpretedVsCompiledTest {
 
     @Test
     public void testInputStringEvaluateDecisionById() {
-        final DMNRuntime runtime = DMNRuntimeUtil.createRuntime( "0001-input-data-string.dmn", this.getClass() );
+        final DMNRuntime runtime = createRuntime( "0001-input-data-string.dmn", this.getClass() );
         final DMNModel dmnModel = runtime.getModel( "https://github.com/kiegroup/drools/kie-dmn", "_0001-input-data-string" );
         assertThat( dmnModel, notNullValue() );
 
@@ -130,7 +130,7 @@ public class DMNInputRuntimeTest extends BaseInterpretedVsCompiledTest {
 
     @Test
     public void testInputStringAllowedValuesEvaluateAll() {
-        final DMNRuntime runtime = DMNRuntimeUtil.createRuntime( "0003-input-data-string-allowed-values.dmn", this.getClass() );
+        final DMNRuntime runtime = createRuntime( "0003-input-data-string-allowed-values.dmn", this.getClass() );
         final DMNModel dmnModel = runtime.getModel( "https://github.com/kiegroup/kie-dmn", "0003-input-data-string-allowed-values" );
         assertThat( dmnModel, notNullValue() );
 
@@ -155,7 +155,7 @@ public class DMNInputRuntimeTest extends BaseInterpretedVsCompiledTest {
     }
 
     private void testInputStringNotAllowedValuesEvaluateAll(final Object inputValue) {
-        final DMNRuntime runtime = DMNRuntimeUtil.createRuntime( "0003-input-data-string-allowed-values.dmn", this.getClass() );
+        final DMNRuntime runtime = createRuntime( "0003-input-data-string-allowed-values.dmn", this.getClass() );
         final DMNModel dmnModel = runtime.getModel( "https://github.com/kiegroup/kie-dmn", "0003-input-data-string-allowed-values" );
         assertThat( dmnModel, notNullValue() );
 
@@ -174,7 +174,7 @@ public class DMNInputRuntimeTest extends BaseInterpretedVsCompiledTest {
 
     @Test
     public void testInputNumberEvaluateAll() {
-        final DMNRuntime runtime = DMNRuntimeUtil.createRuntime( "0002-input-data-number.dmn", this.getClass() );
+        final DMNRuntime runtime = createRuntime( "0002-input-data-number.dmn", this.getClass() );
         final DMNModel dmnModel = runtime.getModel( "https://github.com/kiegroup/kie-dmn", "0002-input-data-number" );
         assertThat( dmnModel, notNullValue() );
 
@@ -190,7 +190,7 @@ public class DMNInputRuntimeTest extends BaseInterpretedVsCompiledTest {
 
     @Test
     public void testGetRequiredInputsByName() {
-        final DMNRuntime runtime = DMNRuntimeUtil.createRuntime( "0001-input-data-string.dmn", this.getClass() );
+        final DMNRuntime runtime = createRuntime( "0001-input-data-string.dmn", this.getClass() );
         final DMNModel dmnModel = runtime.getModel( "https://github.com/kiegroup/drools/kie-dmn", "_0001-input-data-string" );
         assertThat( dmnModel, notNullValue() );
 
@@ -205,7 +205,7 @@ public class DMNInputRuntimeTest extends BaseInterpretedVsCompiledTest {
 
     @Test
     public void testGetRequiredInputsById() {
-        final DMNRuntime runtime = DMNRuntimeUtil.createRuntime( "0001-input-data-string.dmn", this.getClass() );
+        final DMNRuntime runtime = createRuntime( "0001-input-data-string.dmn", this.getClass() );
         final DMNModel dmnModel = runtime.getModel( "https://github.com/kiegroup/drools/kie-dmn", "_0001-input-data-string" );
         assertThat( dmnModel, notNullValue() );
 
@@ -220,7 +220,7 @@ public class DMNInputRuntimeTest extends BaseInterpretedVsCompiledTest {
 
     @Test
     public void testNonexistantInputNodeName() {
-        final DMNRuntime runtime = DMNRuntimeUtil.createRuntime( "0001-input-data-string.dmn", this.getClass() );
+        final DMNRuntime runtime = createRuntime( "0001-input-data-string.dmn", this.getClass() );
         final DMNModel dmnModel = runtime.getModel( "https://github.com/kiegroup/drools/kie-dmn", "_0001-input-data-string" );
         assertThat( dmnModel, notNullValue() );
 
@@ -239,7 +239,7 @@ public class DMNInputRuntimeTest extends BaseInterpretedVsCompiledTest {
 
     @Test
     public void testAllowedValuesChecks() {
-        final DMNRuntime runtime = DMNRuntimeUtil.createRuntime( "AllowedValuesChecks.dmn", this.getClass() );
+        final DMNRuntime runtime = createRuntime( "AllowedValuesChecks.dmn", this.getClass() );
         final DMNModel dmnModel = runtime.getModel(
                 "http://www.trisotech.com/definitions/_238bd96d-47cd-4746-831b-504f3e77b442",
                 "AllowedValuesChecks" );
@@ -274,7 +274,7 @@ public class DMNInputRuntimeTest extends BaseInterpretedVsCompiledTest {
     @Test
     public void testDMNInputDataNodeTypeTest() {
         // DROOLS-1569
-        final DMNRuntime runtime = DMNRuntimeUtil.createRuntime("DMNInputDataNodeTypeTest.dmn", this.getClass());
+        final DMNRuntime runtime = createRuntime("DMNInputDataNodeTypeTest.dmn", this.getClass());
         final String MODEL_NAMESPACE = "http://www.trisotech.com/definitions/_17396034-163a-48aa-9a7f-c6eb17f9cc6c";
         final String FEEL_NAMESPACE = "http://www.omg.org/spec/FEEL/20140401";
         final DMNModel dmnModel = runtime.getModel(MODEL_NAMESPACE, "DMNInputDataNodeTypeTest");
@@ -314,7 +314,7 @@ public class DMNInputRuntimeTest extends BaseInterpretedVsCompiledTest {
 
     @Test
     public void testInputClauseTypeRefWithAllowedValues() {
-        final DMNRuntime runtime = DMNRuntimeUtil.createRuntime("actualInputMatchInputValues-forTypeRef.dmn", this.getClass());
+        final DMNRuntime runtime = createRuntime("actualInputMatchInputValues-forTypeRef.dmn", this.getClass());
         final DMNModel dmnModel = runtime.getModel("https://www.drools.org/kie-dmn/definitions", "definitions");
         assertThat(dmnModel, notNullValue());
         assertThat(DMNRuntimeUtil.formatMessages(dmnModel.getMessages()), dmnModel.hasErrors(), is(false));
@@ -322,7 +322,7 @@ public class DMNInputRuntimeTest extends BaseInterpretedVsCompiledTest {
         final DMNContext context = runtime.newContext();
         context.set("MyInput", "a");
 
-        final DMNResult dmnResult = runtime.evaluateAll(dmnModel, context);
+        final DMNResult dmnResult = evaluateModel(runtime, dmnModel, context);
 
         assertThat(DMNRuntimeUtil.formatMessages(dmnResult.getMessages()), dmnResult.hasErrors(), is(false));
         final DMNContext result = dmnResult.getContext();
@@ -331,7 +331,7 @@ public class DMNInputRuntimeTest extends BaseInterpretedVsCompiledTest {
 
     @Test
     public void testInputDataTypeRefWithAllowedValues() {
-        final DMNRuntime runtime = DMNRuntimeUtil.createRuntime("actualInputMatchInputValues-forTypeRef.dmn", this.getClass());
+        final DMNRuntime runtime = createRuntime("actualInputMatchInputValues-forTypeRef.dmn", this.getClass());
         final DMNModel dmnModel = runtime.getModel("https://www.drools.org/kie-dmn/definitions", "definitions");
         assertThat(dmnModel, notNullValue());
         assertThat(DMNRuntimeUtil.formatMessages(dmnModel.getMessages()), dmnModel.hasErrors(), is(false));
@@ -339,7 +339,7 @@ public class DMNInputRuntimeTest extends BaseInterpretedVsCompiledTest {
         final DMNContext context = runtime.newContext();
         context.set("MyInput", "zzz");              // <<< `zzz` is NOT in the list of allowed value as declared by the typeRef for this inputdata
 
-        final DMNResult dmnResult = runtime.evaluateAll(dmnModel, context);
+        final DMNResult dmnResult = evaluateModel(runtime, dmnModel, context);
         assertThat(DMNRuntimeUtil.formatMessages(dmnResult.getMessages()), dmnResult.hasErrors(), is(true));
         assertThat(dmnResult.getMessages().size(), is(1));
         assertThat(dmnResult.getMessages().get(0).getSourceId(), is("_3d560678-a126-4654-a686-bc6d941fe40b"));
