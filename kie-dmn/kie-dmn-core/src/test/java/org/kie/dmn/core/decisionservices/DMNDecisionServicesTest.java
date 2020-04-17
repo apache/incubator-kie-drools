@@ -25,7 +25,7 @@ import org.kie.dmn.api.core.DMNContext;
 import org.kie.dmn.api.core.DMNModel;
 import org.kie.dmn.api.core.DMNResult;
 import org.kie.dmn.api.core.DMNRuntime;
-import org.kie.dmn.core.BaseInterpretedVsCompiledTest;
+import org.kie.dmn.core.BaseVariantTest;
 import org.kie.dmn.core.api.DMNFactory;
 import org.kie.dmn.core.compiler.CoerceDecisionServiceSingletonOutputOption;
 import org.kie.dmn.core.util.DMNRuntimeUtil;
@@ -43,17 +43,17 @@ import static org.junit.Assert.assertThat;
 import static org.kie.dmn.core.util.DynamicTypeUtils.entry;
 import static org.kie.dmn.core.util.DynamicTypeUtils.mapOf;
 
-public class DMNDecisionServicesTest extends BaseInterpretedVsCompiledTest {
+public class DMNDecisionServicesTest extends BaseVariantTest {
 
     public static final Logger LOG = LoggerFactory.getLogger(DMNDecisionServicesTest.class);
 
-    public DMNDecisionServicesTest(final boolean useExecModelCompiler) {
+    public DMNDecisionServicesTest(final BaseVariantTest.VariantTestConf useExecModelCompiler) {
         super(useExecModelCompiler);
     }
 
     @Test
     public void testBasic() {
-        final DMNRuntime runtime = DMNRuntimeUtil.createRuntime("0004-decision-services.dmn", this.getClass());
+        final DMNRuntime runtime = createRuntime("0004-decision-services.dmn", this.getClass());
         final DMNModel dmnModel = runtime.getModel("http://www.trisotech.com/definitions/_686f58d4-4ec3-4c65-8c06-0e4fd8983def", "Decision Services");
         assertThat(dmnModel, notNullValue());
         assertThat(DMNRuntimeUtil.formatMessages(dmnModel.getMessages()), dmnModel.hasErrors(), is(false));
@@ -110,7 +110,7 @@ public class DMNDecisionServicesTest extends BaseInterpretedVsCompiledTest {
 
     @Test
     public void testDSInLiteralExpression() {
-        final DMNRuntime runtime = DMNRuntimeUtil.createRuntime("DecisionServicesInLiteralExpression.dmn", this.getClass());
+        final DMNRuntime runtime = createRuntime("DecisionServicesInLiteralExpression.dmn", this.getClass());
         final DMNModel dmnModel = runtime.getModel("http://www.trisotech.com/definitions/_686f58d4-4ec3-4c65-8c06-0e4fd8983def", "Decision Services");
         assertThat(dmnModel, notNullValue());
         assertThat(DMNRuntimeUtil.formatMessages(dmnModel.getMessages()), dmnModel.hasErrors(), is(false));
@@ -119,7 +119,7 @@ public class DMNDecisionServicesTest extends BaseInterpretedVsCompiledTest {
         context.set("D", "d");
         context.set("E", "e");
 
-        final DMNResult dmnResult = runtime.evaluateAll(dmnModel, context);
+        final DMNResult dmnResult = evaluateModel(runtime, dmnModel, context);
         LOG.debug("{}", dmnResult);
         dmnResult.getDecisionResults().forEach(x -> LOG.debug("{}", x));
         assertThat(DMNRuntimeUtil.formatMessages(dmnResult.getMessages()), dmnResult.hasErrors(), is(false));
@@ -130,7 +130,7 @@ public class DMNDecisionServicesTest extends BaseInterpretedVsCompiledTest {
 
     @Test
     public void testDSInLiteralExpressionWithBKM() {
-        final DMNRuntime runtime = DMNRuntimeUtil.createRuntime("DecisionServicesInLiteralExpressionWithBKM.dmn", this.getClass());
+        final DMNRuntime runtime = createRuntime("DecisionServicesInLiteralExpressionWithBKM.dmn", this.getClass());
         final DMNModel dmnModel = runtime.getModel("http://www.trisotech.com/definitions/_686f58d4-4ec3-4c65-8c06-0e4fd8983def", "Decision Services");
         assertThat(dmnModel, notNullValue());
         assertThat(DMNRuntimeUtil.formatMessages(dmnModel.getMessages()), dmnModel.hasErrors(), is(false));
@@ -139,7 +139,7 @@ public class DMNDecisionServicesTest extends BaseInterpretedVsCompiledTest {
         context.set("D", "d");
         context.set("E", "e");
 
-        final DMNResult dmnResult = runtime.evaluateAll(dmnModel, context);
+        final DMNResult dmnResult = evaluateModel(runtime, dmnModel, context);
         LOG.debug("{}", dmnResult);
         dmnResult.getDecisionResults().forEach(x -> LOG.debug("{}", x));
         assertThat(DMNRuntimeUtil.formatMessages(dmnResult.getMessages()), dmnResult.hasErrors(), is(false));
@@ -150,7 +150,7 @@ public class DMNDecisionServicesTest extends BaseInterpretedVsCompiledTest {
 
     @Test
     public void testDSInLiteralExpressionWithBKMUsingInvocation() {
-        final DMNRuntime runtime = DMNRuntimeUtil.createRuntime("DecisionServicesInLiteralExpressionWithBKMUsingInvocation.dmn", this.getClass());
+        final DMNRuntime runtime = createRuntime("DecisionServicesInLiteralExpressionWithBKMUsingInvocation.dmn", this.getClass());
         final DMNModel dmnModel = runtime.getModel("http://www.trisotech.com/definitions/_686f58d4-4ec3-4c65-8c06-0e4fd8983def", "Decision Services");
         assertThat(dmnModel, notNullValue());
         assertThat(DMNRuntimeUtil.formatMessages(dmnModel.getMessages()), dmnModel.hasErrors(), is(false));
@@ -159,7 +159,7 @@ public class DMNDecisionServicesTest extends BaseInterpretedVsCompiledTest {
         context.set("D", "d");
         context.set("E", "e");
 
-        final DMNResult dmnResult = runtime.evaluateAll(dmnModel, context);
+        final DMNResult dmnResult = evaluateModel(runtime, dmnModel, context);
         LOG.debug("{}", dmnResult);
         dmnResult.getDecisionResults().forEach(x -> LOG.debug("{}", x));
         assertThat(DMNRuntimeUtil.formatMessages(dmnResult.getMessages()), dmnResult.hasErrors(), is(false));
@@ -170,7 +170,7 @@ public class DMNDecisionServicesTest extends BaseInterpretedVsCompiledTest {
 
     @Test
     public void testDSInLiteralExpressionOnlyfromBKMUsingInvocation() {
-        final DMNRuntime runtime = DMNRuntimeUtil.createRuntime("DecisionServicesInLiteralExpressionOnlyFromBKMUsingInvocation.dmn", this.getClass());
+        final DMNRuntime runtime = createRuntime("DecisionServicesInLiteralExpressionOnlyFromBKMUsingInvocation.dmn", this.getClass());
         final DMNModel dmnModel = runtime.getModel("http://www.trisotech.com/definitions/_686f58d4-4ec3-4c65-8c06-0e4fd8983def", "Decision Services");
         assertThat(dmnModel, notNullValue());
         assertThat(DMNRuntimeUtil.formatMessages(dmnModel.getMessages()), dmnModel.hasErrors(), is(false));
@@ -179,7 +179,7 @@ public class DMNDecisionServicesTest extends BaseInterpretedVsCompiledTest {
         context.set("D", "d");
         context.set("E", "e");
 
-        final DMNResult dmnResult = runtime.evaluateAll(dmnModel, context);
+        final DMNResult dmnResult = evaluateModel(runtime, dmnModel, context);
         LOG.debug("{}", dmnResult);
         dmnResult.getDecisionResults().forEach(x -> LOG.debug("{}", x));
         assertThat(DMNRuntimeUtil.formatMessages(dmnResult.getMessages()), dmnResult.hasErrors(), is(false));
@@ -190,7 +190,7 @@ public class DMNDecisionServicesTest extends BaseInterpretedVsCompiledTest {
 
     @Test
     public void testMixtypeDS() {
-        final DMNRuntime runtime = DMNRuntimeUtil.createRuntime("mixtype-DS.dmn", this.getClass());
+        final DMNRuntime runtime = createRuntime("mixtype-DS.dmn", this.getClass());
         final DMNModel dmnModel = runtime.getModel("http://www.trisotech.com/dmn/definitions/_c9885563-aa54-4c7b-ae8a-738cfd29b544", "mixtype DS");
         assertThat(dmnModel, notNullValue());
         assertThat(DMNRuntimeUtil.formatMessages(dmnModel.getMessages()), dmnModel.hasErrors(), is(false));
@@ -199,7 +199,7 @@ public class DMNDecisionServicesTest extends BaseInterpretedVsCompiledTest {
         context.set("Person name", "John");
         context.set("Person year of birth", BigDecimal.valueOf(1980));
 
-        final DMNResult dmnResult = runtime.evaluateAll(dmnModel, context);
+        final DMNResult dmnResult = evaluateModel(runtime, dmnModel, context);
         LOG.debug("{}", dmnResult);
         dmnResult.getDecisionResults().forEach(x -> LOG.debug("{}", x));
         assertThat(DMNRuntimeUtil.formatMessages(dmnResult.getMessages()), dmnResult.hasErrors(), is(false));
@@ -283,7 +283,7 @@ public class DMNDecisionServicesTest extends BaseInterpretedVsCompiledTest {
 
     @Test
     public void testDSForTypeCheck() {
-        final DMNRuntime runtime = DMNRuntimeUtil.createRuntime("DecisionService20180718.dmn", this.getClass());
+        final DMNRuntime runtime = createRuntime("DecisionService20180718.dmn", this.getClass());
         final DMNModel dmnModel = runtime.getModel("http://www.trisotech.com/dmn/definitions/_6eef3a7c-bb0d-40bb-858d-f9067789c18a", "Decision Service 20180718");
         assertThat(dmnModel, notNullValue());
         assertThat(DMNRuntimeUtil.formatMessages(dmnModel.getMessages()), dmnModel.hasErrors(), is(false));
@@ -299,7 +299,7 @@ public class DMNDecisionServicesTest extends BaseInterpretedVsCompiledTest {
         context.set("Person name", "John");
         context.set("Person age", BigDecimal.valueOf(21));
 
-        final DMNResult dmnResult = runtime.evaluateAll(dmnModel, context);
+        final DMNResult dmnResult = evaluateModel(runtime, dmnModel, context);
         LOG.debug("{}", dmnResult);
         dmnResult.getDecisionResults().forEach(x -> LOG.debug("{}", x));
         assertThat(DMNRuntimeUtil.formatMessages(dmnResult.getMessages()), dmnResult.hasErrors(), is(false));
@@ -315,7 +315,7 @@ public class DMNDecisionServicesTest extends BaseInterpretedVsCompiledTest {
         context.set("Person name", BigDecimal.valueOf(21));
         context.set("Person age", "John");
 
-        final DMNResult dmnResult = runtime.evaluateAll(dmnModel, context);
+        final DMNResult dmnResult = evaluateModel(runtime, dmnModel, context);
         LOG.debug("{}", dmnResult);
         dmnResult.getDecisionResults().forEach(x -> LOG.debug("{}", x));
         assertThat(DMNRuntimeUtil.formatMessages(dmnResult.getMessages()), dmnResult.hasErrors(), is(true));
@@ -352,7 +352,7 @@ public class DMNDecisionServicesTest extends BaseInterpretedVsCompiledTest {
 
     @Test
     public void testDSSingletonOrMultipleOutputDecisions() {
-        final DMNRuntime runtime = DMNRuntimeUtil.createRuntime("Decision-Services-singleton-or-multiple-output-decisions.dmn", this.getClass());
+        final DMNRuntime runtime = createRuntime("Decision-Services-singleton-or-multiple-output-decisions.dmn", this.getClass());
         final DMNModel dmnModel = runtime.getModel("http://www.trisotech.com/dmn/definitions/_b4ebfbf2-8608-4297-9662-be70bab01974", "Decision Services singleton or multiple output decisions");
         assertThat(dmnModel, notNullValue());
         assertThat(DMNRuntimeUtil.formatMessages(dmnModel.getMessages()), dmnModel.hasErrors(), is(false));
@@ -393,7 +393,7 @@ public class DMNDecisionServicesTest extends BaseInterpretedVsCompiledTest {
     public void testDSSingletonOrMultipleOutputDecisions_OVERRIDE() {
         try {
             System.setProperty(CoerceDecisionServiceSingletonOutputOption.PROPERTY_NAME, "false");
-            final DMNRuntime runtime = DMNRuntimeUtil.createRuntime("Decision-Services-singleton-or-multiple-output-decisions.dmn", this.getClass());
+            final DMNRuntime runtime = createRuntime("Decision-Services-singleton-or-multiple-output-decisions.dmn", this.getClass());
             final DMNModel dmnModel = runtime.getModel("http://www.trisotech.com/dmn/definitions/_b4ebfbf2-8608-4297-9662-be70bab01974", "Decision Services singleton or multiple output decisions");
             assertThat(dmnModel, notNullValue());
             assertThat(DMNRuntimeUtil.formatMessages(dmnModel.getMessages()), dmnModel.hasErrors(), is(false));
@@ -453,7 +453,7 @@ public class DMNDecisionServicesTest extends BaseInterpretedVsCompiledTest {
         final DMNContext context = DMNFactory.newContext();
         context.set("L1 person name", "L1 Import John");
 
-        final DMNResult dmnResult = runtime.evaluateAll(dmnModel, context);
+        final DMNResult dmnResult = evaluateModel(runtime, dmnModel, context);
         LOG.debug("{}", dmnResult);
         dmnResult.getDecisionResults().forEach(x -> LOG.debug("{}", x));
         assertThat(DMNRuntimeUtil.formatMessages(dmnResult.getMessages()), dmnResult.hasErrors(), is(false));
@@ -497,7 +497,7 @@ public class DMNDecisionServicesTest extends BaseInterpretedVsCompiledTest {
         final DMNContext context = DMNFactory.newContext();
         context.set("L2 Person name", "L2 Bob");
 
-        final DMNResult dmnResult = runtime.evaluateAll(dmnModel, context);
+        final DMNResult dmnResult = evaluateModel(runtime, dmnModel, context);
         LOG.debug("{}", dmnResult);
         dmnResult.getDecisionResults().forEach(x -> LOG.debug("{}", x));
         assertThat(DMNRuntimeUtil.formatMessages(dmnResult.getMessages()), dmnResult.hasErrors(), is(false));
@@ -524,7 +524,7 @@ public class DMNDecisionServicesTest extends BaseInterpretedVsCompiledTest {
     @Test
     public void testDecisionServiceCompiler20180830() {
         // DROOLS-2943 DMN DecisionServiceCompiler not correctly wired for DMNv1.2 format
-        final DMNRuntime runtime = DMNRuntimeUtil.createRuntime("DecisionServiceABC.dmn", this.getClass());
+        final DMNRuntime runtime = createRuntime("DecisionServiceABC.dmn", this.getClass());
         final DMNModel dmnModel = runtime.getModel("http://www.trisotech.com/dmn/definitions/_2443d3f5-f178-47c6-a0c9-b1fd1c933f60", "Drawing 1");
         assertThat(dmnModel, notNullValue());
         assertThat(DMNRuntimeUtil.formatMessages(dmnModel.getMessages()), dmnModel.hasErrors(), is(false));
@@ -533,10 +533,10 @@ public class DMNDecisionServicesTest extends BaseInterpretedVsCompiledTest {
         testDecisionServiceCompiler20180830_testEvaluateAll(runtime, dmnModel);
     }
 
-    public static void testDecisionServiceCompiler20180830_testEvaluateAll(final DMNRuntime runtime, final DMNModel dmnModel) {
+    public void testDecisionServiceCompiler20180830_testEvaluateAll(final DMNRuntime runtime, final DMNModel dmnModel) {
         final DMNContext context = DMNFactory.newContext();
 
-        final DMNResult dmnResult = runtime.evaluateAll(dmnModel, context);
+        final DMNResult dmnResult = evaluateModel(runtime, dmnModel, context);
         LOG.debug("{}", dmnResult);
         dmnResult.getDecisionResults().forEach(x -> LOG.debug("{}", x));
         assertThat(DMNRuntimeUtil.formatMessages(dmnResult.getMessages()), dmnResult.hasErrors(), is(false));
@@ -574,11 +574,11 @@ public class DMNDecisionServicesTest extends BaseInterpretedVsCompiledTest {
         testDecisionService20180920_testEvaluateDS(runtime, dmnModel);
     }
 
-    private static void testDecisionService20180920_testEvaluateAll(final DMNRuntime runtime, final DMNModel dmnModel) {
+    private void testDecisionService20180920_testEvaluateAll(final DMNRuntime runtime, final DMNModel dmnModel) {
         final DMNContext context = DMNFactory.newContext();
         context.set("Model A", mapOf(entry("Input 1", "input 1 value")));
 
-        final DMNResult dmnResult = runtime.evaluateAll(dmnModel, context);
+        final DMNResult dmnResult = evaluateModel(runtime, dmnModel, context);
         LOG.debug("{}", dmnResult);
         dmnResult.getDecisionResults().forEach(x -> LOG.debug("{}", x));
         assertThat(DMNRuntimeUtil.formatMessages(dmnResult.getMessages()), dmnResult.hasErrors(), is(false));
@@ -604,7 +604,7 @@ public class DMNDecisionServicesTest extends BaseInterpretedVsCompiledTest {
 
     @Test
     public void test20190520() {
-        final DMNRuntime runtime = DMNRuntimeUtil.createRuntime("DStypecheck.dmn", this.getClass());
+        final DMNRuntime runtime = createRuntime("DStypecheck.dmn", this.getClass());
         final DMNModel dmnModel = runtime.getModel("http://www.trisotech.com/definitions/_6e76b9ca-ce06-426a-91c0-99b70665321a", "Drawing 1");
         assertThat(dmnModel, notNullValue());
         assertThat(DMNRuntimeUtil.formatMessages(dmnModel.getMessages()), dmnModel.hasErrors(), is(false));

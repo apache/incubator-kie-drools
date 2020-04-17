@@ -28,15 +28,15 @@ import static org.hamcrest.Matchers.is;
 import static org.hamcrest.core.IsNull.notNullValue;
 import static org.junit.Assert.assertThat;
 
-public class DMNDecisionTableWithSymbolsTest extends BaseInterpretedVsCompiledTest {
+public class DMNDecisionTableWithSymbolsTest extends BaseVariantTest {
 
-    public DMNDecisionTableWithSymbolsTest(final boolean useExecModelCompiler ) {
+    public DMNDecisionTableWithSymbolsTest(final BaseVariantTest.VariantTestConf useExecModelCompiler ) {
         super( useExecModelCompiler );
     }
 
     @Test
     public void testDecisionWithArgumentsOnOutput() {
-        final DMNRuntime runtime = DMNRuntimeUtil.createRuntime("Decide with symbols.dmn", this.getClass());
+        final DMNRuntime runtime = createRuntime("Decide with symbols.dmn", this.getClass());
         final DMNModel dmnModel = runtime.getModel("http://www.trisotech.com/dmn/definitions/_79b16a68-013b-484c-98f5-49ff77808800", "Decide with symbols");
         assertThat(dmnModel, notNullValue());
 
@@ -44,7 +44,7 @@ public class DMNDecisionTableWithSymbolsTest extends BaseInterpretedVsCompiledTe
         context.set("Person age", 44);
         context.set("Person name", "Mario");
 
-        final DMNResult dmnResult = runtime.evaluateAll(dmnModel, context);
+        final DMNResult dmnResult = evaluateModel(runtime, dmnModel, context);
         final DMNContext result = dmnResult.getContext();
         assertThat(result.get("Decide with symbol"), is("Hello, Mario"));
     }

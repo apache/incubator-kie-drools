@@ -29,7 +29,7 @@ import org.kie.dmn.api.core.DMNContext;
 import org.kie.dmn.api.core.DMNModel;
 import org.kie.dmn.api.core.DMNResult;
 import org.kie.dmn.api.core.DMNRuntime;
-import org.kie.dmn.core.BaseInterpretedVsCompiledTest;
+import org.kie.dmn.core.BaseVariantTest;
 import org.kie.dmn.core.api.DMNFactory;
 import org.kie.dmn.core.util.DMNRuntimeUtil;
 import org.slf4j.Logger;
@@ -41,18 +41,18 @@ import static org.junit.Assert.assertThat;
 import static org.kie.dmn.core.util.DynamicTypeUtils.entry;
 import static org.kie.dmn.core.util.DynamicTypeUtils.mapOf;
 
-public class DMN12specificTest extends BaseInterpretedVsCompiledTest {
+public class DMN12specificTest extends BaseVariantTest {
 
     public static final Logger LOG = LoggerFactory.getLogger(DMN12specificTest.class);
 
-    public DMN12specificTest(final boolean useExecModelCompiler) {
+    public DMN12specificTest(final BaseVariantTest.VariantTestConf useExecModelCompiler) {
         super(useExecModelCompiler);
     }
 
     @Test
     public void testDMN12typeAliases() {
         // DROOLS-
-        final DMNRuntime runtime = DMNRuntimeUtil.createRuntime("typeAliases.dmn", this.getClass());
+        final DMNRuntime runtime = createRuntime("typeAliases.dmn", this.getClass());
         final DMNModel dmnModel = runtime.getModel("http://www.trisotech.com/dmn/definitions/_9f6be450-17c0-49d9-a67f-960ad04b046f", "Drawing 1");
         assertThat(dmnModel, notNullValue());
         assertThat(DMNRuntimeUtil.formatMessages(dmnModel.getMessages()), dmnModel.hasErrors(), is(false));
@@ -60,7 +60,7 @@ public class DMN12specificTest extends BaseInterpretedVsCompiledTest {
         final DMNContext context = DMNFactory.newContext();
         context.set("a date and time", LocalDateTime.of(2018, 9, 28, 16, 7));
 
-        final DMNResult dmnResult = runtime.evaluateAll(dmnModel, context);
+        final DMNResult dmnResult = evaluateModel(runtime, dmnModel, context);
         LOG.debug("{}", dmnResult);
         assertThat(DMNRuntimeUtil.formatMessages(dmnResult.getMessages()), dmnResult.hasErrors(), is(false));
 
@@ -70,7 +70,7 @@ public class DMN12specificTest extends BaseInterpretedVsCompiledTest {
 
     @Test
     public void testItemDefCollection() {
-        final DMNRuntime runtime = DMNRuntimeUtil.createRuntime("0001-filter.dmn", getClass());
+        final DMNRuntime runtime = createRuntime("0001-filter.dmn", getClass());
         final DMNModel dmnModel = runtime.getModel("http://www.trisotech.com/definitions/_f52ca843-504b-4c3b-a6bc-4d377bffef7a", "filter01");
         assertThat(dmnModel, notNullValue());
         assertThat(dmnModel.getMessages().toString(), dmnModel.hasErrors(), is(false));
@@ -91,7 +91,7 @@ public class DMN12specificTest extends BaseInterpretedVsCompiledTest {
         final DMNContext context = DMNFactory.newContext();
         context.set("Employees", employees);
 
-        final DMNResult dmnResult = runtime.evaluateAll(dmnModel, context);
+        final DMNResult dmnResult = evaluateModel(runtime, dmnModel, context);
         LOG.debug("{}", dmnResult);
         assertThat(dmnResult.hasErrors(), is(false));
         assertThat(dmnResult.getContext().get("filter01"), is(Arrays.asList("Adams", "Ford")));
@@ -110,7 +110,7 @@ public class DMN12specificTest extends BaseInterpretedVsCompiledTest {
     }
 
     private void check_testDMN12typeRefInformationItem(String filename) {
-        final DMNRuntime runtime = DMNRuntimeUtil.createRuntime(filename, this.getClass());
+        final DMNRuntime runtime = createRuntime(filename, this.getClass());
         final DMNModel dmnModel = runtime.getModel("http://www.trisotech.com/definitions/_fe2fd9ea-5928-4a35-b218-036de5798776", "Drawing 1");
         assertThat(dmnModel, notNullValue());
         assertThat(DMNRuntimeUtil.formatMessages(dmnModel.getMessages()), dmnModel.hasErrors(), is(false));

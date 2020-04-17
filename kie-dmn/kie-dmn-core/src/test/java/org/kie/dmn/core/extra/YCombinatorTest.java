@@ -24,7 +24,7 @@ import org.kie.dmn.api.core.DMNContext;
 import org.kie.dmn.api.core.DMNModel;
 import org.kie.dmn.api.core.DMNResult;
 import org.kie.dmn.api.core.DMNRuntime;
-import org.kie.dmn.core.BaseInterpretedVsCompiledTest;
+import org.kie.dmn.core.BaseVariantTest;
 import org.kie.dmn.core.util.DMNRuntimeUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -33,9 +33,9 @@ import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.CoreMatchers.notNullValue;
 import static org.junit.Assert.assertThat;
 
-public class YCombinatorTest extends BaseInterpretedVsCompiledTest {
+public class YCombinatorTest extends BaseVariantTest {
 
-    public YCombinatorTest(final boolean useExecModelCompiler) {
+    public YCombinatorTest(final BaseVariantTest.VariantTestConf useExecModelCompiler) {
         super(useExecModelCompiler);
     }
 
@@ -43,7 +43,7 @@ public class YCombinatorTest extends BaseInterpretedVsCompiledTest {
 
     @Test
     public void testY() {
-        final DMNRuntime runtime = DMNRuntimeUtil.createRuntime("Y.dmn", this.getClass());
+        final DMNRuntime runtime = createRuntime("Y.dmn", this.getClass());
         final DMNModel dmnModel = runtime.getModel("https://kiegroup.org/dmn/_2E160C58-B13A-4C35-B161-BB4B31E049B4",
                                                    "new-file");
         assertThat(dmnModel, notNullValue());
@@ -64,7 +64,7 @@ public class YCombinatorTest extends BaseInterpretedVsCompiledTest {
 
     @Test
     public void testYboxed() {
-        final DMNRuntime runtime = DMNRuntimeUtil.createRuntime("Yboxed.dmn", this.getClass());
+        final DMNRuntime runtime = createRuntime("Yboxed.dmn", this.getClass());
         final DMNModel dmnModel = runtime.getModel("https://kiegroup.org/dmn/_2E160C58-B13A-4C35-B161-BB4B31E049B4",
                                                    "new-file");
         assertThat(dmnModel, notNullValue());
