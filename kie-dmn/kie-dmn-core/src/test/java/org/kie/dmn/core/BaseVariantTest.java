@@ -194,8 +194,12 @@ public abstract class BaseVariantTest {
         if (testConfig.isTypeSafe()) {
             return evaluateTypeSafe(runtime, dmnModel, context);
         } else {
-            return evaluateModel(runtime, dmnModel, context);
+            return internalEvaluateModel(runtime, dmnModel, context);
         }
+    }
+
+    protected DMNResult internalEvaluateModel(DMNRuntime runtime, DMNModel dmnModel, DMNContext context) {
+        return runtime.evaluateAll(dmnModel, context);
     }
 
     private DMNResult evaluateTypeSafe(DMNRuntime runtime, DMNModel dmnModel, DMNContext context) {
