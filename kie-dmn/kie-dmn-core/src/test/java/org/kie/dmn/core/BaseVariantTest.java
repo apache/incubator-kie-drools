@@ -194,7 +194,7 @@ public abstract class BaseVariantTest {
         if (testConfig.isTypeSafe()) {
             return evaluateTypeSafe(runtime, dmnModel, context);
         } else {
-            return runtime.evaluateAll(dmnModel, context);
+            return evaluateModel(runtime, dmnModel, context);
         }
     }
 

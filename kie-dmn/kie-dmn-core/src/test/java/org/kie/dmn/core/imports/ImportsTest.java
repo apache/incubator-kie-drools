@@ -25,7 +25,7 @@ import org.kie.dmn.api.core.DMNContext;
 import org.kie.dmn.api.core.DMNModel;
 import org.kie.dmn.api.core.DMNResult;
 import org.kie.dmn.api.core.DMNRuntime;
-import org.kie.dmn.core.BaseInterpretedVsCompiledTest;
+import org.kie.dmn.core.BaseVariantTest;
 import org.kie.dmn.core.impl.DMNModelImpl;
 import org.kie.dmn.core.util.DMNRuntimeUtil;
 import org.slf4j.Logger;
@@ -43,9 +43,9 @@ import static org.kie.dmn.core.util.DMNTestUtil.getAndAssertModelNoErrors;
 import static org.kie.dmn.core.util.DynamicTypeUtils.entry;
 import static org.kie.dmn.core.util.DynamicTypeUtils.mapOf;
 
-public class ImportsTest extends BaseInterpretedVsCompiledTest {
+public class ImportsTest extends BaseVariantTest {
 
-    public ImportsTest(final boolean useExecModelCompiler ) {
+    public ImportsTest(final BaseVariantTest.VariantTestConf useExecModelCompiler ) {
         super( useExecModelCompiler );
     }
 
@@ -70,7 +70,7 @@ public class ImportsTest extends BaseInterpretedVsCompiledTest {
         final DMNContext context = runtime.newContext();
         context.set("A Person", mapOf(entry("name", "John"), entry("age", 47)));
 
-        final DMNResult evaluateAll = runtime.evaluateAll(dmnModel, context);
+        final DMNResult evaluateAll = evaluateModel(runtime, dmnModel, context);
         assertThat(DMNRuntimeUtil.formatMessages(evaluateAll.getMessages()), evaluateAll.hasErrors(), is(false));
 
         LOG.debug("{}", evaluateAll);
@@ -96,7 +96,7 @@ public class ImportsTest extends BaseInterpretedVsCompiledTest {
         final DMNContext context = runtime.newContext();
         context.set("Person name", "John");
 
-        final DMNResult evaluateAll = runtime.evaluateAll(dmnModel, context);
+        final DMNResult evaluateAll = evaluateModel(runtime, dmnModel, context);
         assertThat(DMNRuntimeUtil.formatMessages(evaluateAll.getMessages()), evaluateAll.hasErrors(), is(false));
 
         LOG.debug("{}", evaluateAll);
@@ -149,7 +149,7 @@ public class ImportsTest extends BaseInterpretedVsCompiledTest {
         final DMNContext context = runtime.newContext();
         context.set("Person name", "Bob");
 
-        final DMNResult evaluateAll = runtime.evaluateAll(dmnModel, context);
+        final DMNResult evaluateAll = evaluateModel(runtime, dmnModel, context);
         assertThat(DMNRuntimeUtil.formatMessages(evaluateAll.getMessages()), evaluateAll.hasErrors(), is(false));
 
         LOG.debug("{}", evaluateAll);
@@ -214,7 +214,7 @@ public class ImportsTest extends BaseInterpretedVsCompiledTest {
         final DMNContext context = runtime.newContext();
         context.set("Person Name", "John");
 
-        final DMNResult evaluateAll = runtime.evaluateAll(dmnModel, context);
+        final DMNResult evaluateAll = evaluateModel(runtime, dmnModel, context);
         assertThat(DMNRuntimeUtil.formatMessages(evaluateAll.getMessages()), evaluateAll.hasErrors(), is(false));
 
         LOG.debug("{}", evaluateAll);
@@ -243,7 +243,7 @@ public class ImportsTest extends BaseInterpretedVsCompiledTest {
         final DMNContext context = runtime.newContext();
         context.set("modelA", mapOf(entry("Person name", "John")));
 
-        final DMNResult evaluateAll = runtime.evaluateAll(dmnModel, context);
+        final DMNResult evaluateAll = evaluateModel(runtime, dmnModel, context);
         LOG.debug("{}", evaluateAll);
         assertThat(DMNRuntimeUtil.formatMessages(evaluateAll.getMessages()), evaluateAll.hasErrors(), is(false));
 
@@ -263,7 +263,7 @@ public class ImportsTest extends BaseInterpretedVsCompiledTest {
         context.set("Model B", mapOf(entry("modelA", mapOf(entry("Person name", "B.A.John")))));
         context.set("Model B2", mapOf(entry("modelA", mapOf(entry("Person name", "B2.A.John2")))));
 
-        final DMNResult evaluateAll = runtime.evaluateAll(dmnModel, context);
+        final DMNResult evaluateAll = evaluateModel(runtime, dmnModel, context);
         LOG.debug("{}", evaluateAll);
         assertThat(DMNRuntimeUtil.formatMessages(evaluateAll.getMessages()), evaluateAll.hasErrors(), is(false));
 
@@ -281,7 +281,7 @@ public class ImportsTest extends BaseInterpretedVsCompiledTest {
         final DMNContext context = runtime.newContext();
         context.set("my import hello", mapOf(entry("Person name", "DROOLS-2944")));
 
-        final DMNResult evaluateAll = runtime.evaluateAll(dmnModel, context);
+        final DMNResult evaluateAll = evaluateModel(runtime, dmnModel, context);
         LOG.debug("{}", evaluateAll);
         assertThat(DMNRuntimeUtil.formatMessages(evaluateAll.getMessages()), evaluateAll.hasErrors(), is(false));
 
@@ -391,7 +391,7 @@ public class ImportsTest extends BaseInterpretedVsCompiledTest {
         final DMNContext context = runtime.newContext();
         context.set("name", "John Doe");
 
-        final DMNResult evaluateAll = runtime.evaluateAll(dmnModel, context);
+        final DMNResult evaluateAll = evaluateModel(runtime, dmnModel, context);
         assertThat(DMNRuntimeUtil.formatMessages(evaluateAll.getMessages()), evaluateAll.hasErrors(), is(false));
 
         LOG.debug("{}", evaluateAll);
@@ -417,7 +417,7 @@ public class ImportsTest extends BaseInterpretedVsCompiledTest {
 
         final DMNContext context = runtime.newContext();
 
-        final DMNResult evaluateAll = runtime.evaluateAll(dmnModel, context);
+        final DMNResult evaluateAll = evaluateModel(runtime, dmnModel, context);
         assertThat(DMNRuntimeUtil.formatMessages(evaluateAll.getMessages()), evaluateAll.hasErrors(), is(false));
 
         LOG.debug("{}", evaluateAll);

@@ -24,7 +24,7 @@ import org.kie.dmn.api.core.DMNModel;
 import org.kie.dmn.api.core.DMNResult;
 import org.kie.dmn.api.core.DMNRuntime;
 import org.kie.dmn.api.core.event.DMNRuntimeEventListener;
-import org.kie.dmn.core.BaseInterpretedVsCompiledTest;
+import org.kie.dmn.core.BaseVariantTest;
 import org.kie.dmn.core.api.DMNFactory;
 import org.kie.dmn.core.util.DMNRuntimeUtil;
 import org.slf4j.Logger;
@@ -34,9 +34,9 @@ import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.CoreMatchers.notNullValue;
 import static org.junit.Assert.assertThat;
 
-public class DMNRecursionTest extends BaseInterpretedVsCompiledTest {
+public class DMNRecursionTest extends BaseVariantTest {
 
-    public DMNRecursionTest(final boolean useExecModelCompiler) {
+    public DMNRecursionTest(final BaseVariantTest.VariantTestConf useExecModelCompiler) {
         super(useExecModelCompiler);
     }
 
@@ -53,7 +53,7 @@ public class DMNRecursionTest extends BaseInterpretedVsCompiledTest {
         final DMNContext context = DMNFactory.newContext();
         context.set("My number", 3);
 
-        final DMNResult dmnResult = runtime.evaluateAll(dmnModel, context);
+        final DMNResult dmnResult = evaluateModel(runtime, dmnModel, context);
         LOG.debug("{}", dmnResult);
         assertThat(DMNRuntimeUtil.formatMessages(dmnResult.getMessages()), dmnResult.hasErrors(), is(false));
         assertThat(dmnResult.getDecisionResultByName("compute factorial").getResult(), is(new BigDecimal(6)));

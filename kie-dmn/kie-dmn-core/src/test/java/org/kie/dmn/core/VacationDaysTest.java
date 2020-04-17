@@ -30,9 +30,9 @@ import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.CoreMatchers.notNullValue;
 import static org.junit.Assert.assertThat;
 
-public class VacationDaysTest extends BaseInterpretedVsCompiledTest {
+public class VacationDaysTest extends BaseVariantTest {
 
-    public VacationDaysTest(final boolean useExecModelCompiler ) {
+    public VacationDaysTest(final BaseVariantTest.VariantTestConf useExecModelCompiler ) {
         super( useExecModelCompiler );
     }
 

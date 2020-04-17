@@ -23,10 +23,10 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
 
-public class DMNAssemblerTest extends BaseInterpretedVsCompiledTest {
+public class DMNAssemblerTest extends BaseVariantTest {
     public static final Logger LOG = LoggerFactory.getLogger(DMNAssemblerTest.class);
 
-    public DMNAssemblerTest(final boolean useExecModelCompiler) {
+    public DMNAssemblerTest(final BaseVariantTest.VariantTestConf useExecModelCompiler) {
         super(useExecModelCompiler);
     }
 

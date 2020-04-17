@@ -41,9 +41,9 @@ import static org.hamcrest.Matchers.isEmptyOrNullString;
 import static org.junit.Assert.assertThat;
 import static org.junit.Assert.assertTrue;
 
-public class DMNDecisionTableHitPolicyTest extends BaseInterpretedVsCompiledTest {
+public class DMNDecisionTableHitPolicyTest extends BaseVariantTest {
 
-    public DMNDecisionTableHitPolicyTest(final boolean useExecModelCompiler ) {
+    public DMNDecisionTableHitPolicyTest(final BaseVariantTest.VariantTestConf useExecModelCompiler ) {
         super( useExecModelCompiler );
     }
 
@@ -65,7 +65,7 @@ public class DMNDecisionTableHitPolicyTest extends BaseInterpretedVsCompiledTest
         assertThat(dmnModel, notNullValue());
 
         final DMNContext context = getSimpleTableContext(BigDecimal.valueOf(18), "ASD", false);
-        final DMNResult dmnResult = runtime.evaluateAll(dmnModel, context);
+        final DMNResult dmnResult = evaluateModel(runtime, dmnModel, context);
         final DMNContext result = dmnResult.getContext();
 
         assertThat(result.get("Approval Status"), nullValue());
@@ -79,7 +79,7 @@ public class DMNDecisionTableHitPolicyTest extends BaseInterpretedVsCompiledTest
         assertThat(dmnModel, notNullValue());
 
         final DMNContext context = getSimpleTableContext(BigDecimal.valueOf(18), "ASD", false);
-        final DMNResult dmnResult = runtime.evaluateAll(dmnModel, context);
+        final DMNResult dmnResult = evaluateModel(runtime, dmnModel, context);
         final DMNContext result = dmnResult.getContext();
 
         assertThat(result.get("Approval Status"), nullValue());
@@ -97,7 +97,7 @@ public class DMNDecisionTableHitPolicyTest extends BaseInterpretedVsCompiledTest
         context.set("Branches dispersion", "Province");
         context.set("Number of Branches", BigDecimal.valueOf(10));
 
-        final DMNResult dmnResult = runtime.evaluateAll(dmnModel, context);
+        final DMNResult dmnResult = evaluateModel(runtime, dmnModel, context);
         assertThat(dmnResult.hasErrors(), is(false));
 
         final DMNContext result = dmnResult.getContext();
@@ -134,7 +134,7 @@ public class DMNDecisionTableHitPolicyTest extends BaseInterpretedVsCompiledTest
         assertThat(dmnModel, notNullValue());
 
         final DMNContext context = getSimpleTableContext(BigDecimal.valueOf(18), "Medium", true);
-        final DMNResult dmnResult = runtime.evaluateAll(dmnModel, context);
+        final DMNResult dmnResult = evaluateModel(runtime, dmnModel, context);
         final DMNContext result = dmnResult.getContext();
         if (equalRules) {
             assertThat(result.get("Approval Status"), is("Approved"));
@@ -256,7 +256,7 @@ public class DMNDecisionTableHitPolicyTest extends BaseInterpretedVsCompiledTest
         assertThat(dmnModel, notNullValue());
 
         final DMNContext context = getSimpleTableContext(BigDecimal.valueOf(70), "Medium", true);
-        final DMNResult dmnResult = runtime.evaluateAll(dmnModel, context);
+        final DMNResult dmnResult = evaluateModel(runtime, dmnModel, context);
 
         final DMNContext result = dmnResult.getContext();
         final Map<String, Object> decisionResult = (Map<String, Object>) result.get("Decision Result");
@@ -325,7 +325,7 @@ public class DMNDecisionTableHitPolicyTest extends BaseInterpretedVsCompiledTest
         final DMNContext context = DMNFactory.newContext();
         context.set("Input", 20);
 
-        final DMNResult dmnResult = runtime.evaluateAll(dmnModel, context);
+        final DMNResult dmnResult = evaluateModel(runtime, dmnModel, context);
         assertThat(dmnResult.hasErrors(), is(false));
 
         final DMNContext result = dmnResult.getContext();
@@ -356,7 +356,7 @@ public class DMNDecisionTableHitPolicyTest extends BaseInterpretedVsCompiledTest
         final DMNContext context = DMNFactory.newContext();
         context.set("a number", number);
 
-        final DMNResult dmnResult = runtime.evaluateAll(dmnModel, context);
+        final DMNResult dmnResult = evaluateModel(runtime, dmnModel, context);
         return dmnResult;
     }
 }

@@ -41,9 +41,9 @@ import static org.junit.Assert.assertThat;
 import static org.kie.dmn.core.util.DynamicTypeUtils.entry;
 import static org.kie.dmn.core.util.DynamicTypeUtils.prototype;
 
-public class DMNInputRuntimeTest extends BaseInterpretedVsCompiledTest {
+public class DMNInputRuntimeTest extends BaseVariantTest {
 
-    public DMNInputRuntimeTest(final boolean useExecModelCompiler ) {
+    public DMNInputRuntimeTest(final BaseVariantTest.VariantTestConf useExecModelCompiler ) {
         super( useExecModelCompiler );
     }
 
@@ -322,7 +322,7 @@ public class DMNInputRuntimeTest extends BaseInterpretedVsCompiledTest {
         final DMNContext context = runtime.newContext();
         context.set("MyInput", "a");
 
-        final DMNResult dmnResult = runtime.evaluateAll(dmnModel, context);
+        final DMNResult dmnResult = evaluateModel(runtime, dmnModel, context);
 
         assertThat(DMNRuntimeUtil.formatMessages(dmnResult.getMessages()), dmnResult.hasErrors(), is(false));
         final DMNContext result = dmnResult.getContext();
@@ -339,7 +339,7 @@ public class DMNInputRuntimeTest extends BaseInterpretedVsCompiledTest {
         final DMNContext context = runtime.newContext();
         context.set("MyInput", "zzz");              // <<< `zzz` is NOT in the list of allowed value as declared by the typeRef for this inputdata
 
-        final DMNResult dmnResult = runtime.evaluateAll(dmnModel, context);
+        final DMNResult dmnResult = evaluateModel(runtime, dmnModel, context);
         assertThat(DMNRuntimeUtil.formatMessages(dmnResult.getMessages()), dmnResult.hasErrors(), is(true));
         assertThat(dmnResult.getMessages().size(), is(1));
         assertThat(dmnResult.getMessages().get(0).getSourceId(), is("_3d560678-a126-4654-a686-bc6d941fe40b"));

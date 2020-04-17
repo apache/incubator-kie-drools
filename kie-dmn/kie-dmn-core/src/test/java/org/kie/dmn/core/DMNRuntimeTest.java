@@ -100,9 +100,9 @@ import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.verify;
 import static org.mockito.internal.verification.VerificationModeFactory.times;
 
-public class DMNRuntimeTest extends BaseInterpretedVsCompiledTest {
+public class DMNRuntimeTest extends BaseVariantTest {
 
-    public DMNRuntimeTest(final boolean useExecModelCompiler) {
+    public DMNRuntimeTest(final BaseVariantTest.VariantTestConf useExecModelCompiler) {
         super(useExecModelCompiler);
     }
 
@@ -1632,7 +1632,7 @@ public class DMNRuntimeTest extends BaseInterpretedVsCompiledTest {
         final DMNContext context = DMNFactory.newContext();
         context.set("number", 123.123456d);
 
-        final DMNResult dmnResult = runtime.evaluateAll(dmnModel, context);
+        final DMNResult dmnResult = evaluateModel(runtime, dmnModel, context);
         System.out.println(dmnResult);
         assertThat(DMNRuntimeUtil.formatMessages(dmnResult.getMessages()), dmnResult.hasErrors(), is(false));
 
@@ -1652,7 +1652,7 @@ public class DMNRuntimeTest extends BaseInterpretedVsCompiledTest {
         final DMNContext context = DMNFactory.newContext();
         context.set("number", "ciao");
 
-        final DMNResult dmnResult = runtime.evaluateAll(dmnModel, context);
+        final DMNResult dmnResult = evaluateModel(runtime, dmnModel, context);
         System.out.println(dmnResult);
         assertThat(DMNRuntimeUtil.formatMessages(dmnResult.getMessages()), dmnResult.hasErrors(), is(true));
 
@@ -1674,7 +1674,7 @@ public class DMNRuntimeTest extends BaseInterpretedVsCompiledTest {
         context.set("person", "Bob");
         context.set("list of persons", Arrays.asList("Bob", "John"));
 
-        final DMNResult dmnResult = runtime.evaluateAll(dmnModel, context);
+        final DMNResult dmnResult = evaluateModel(runtime, dmnModel, context);
         assertThat(DMNRuntimeUtil.formatMessages(dmnResult.getMessages()), dmnResult.hasErrors(), is(false));
 
         final DMNContext result = dmnResult.getContext();
@@ -1695,7 +1695,7 @@ public class DMNRuntimeTest extends BaseInterpretedVsCompiledTest {
 
         final DMNContext context = DMNFactory.newContext();
 
-        final DMNResult dmnResult = runtime.evaluateAll(dmnModel, context);
+        final DMNResult dmnResult = evaluateModel(runtime, dmnModel, context);
         assertThat(DMNRuntimeUtil.formatMessages(dmnResult.getMessages()), dmnResult.hasErrors(), is(false));
 
         final DMNContext resultContext = dmnResult.getContext();
@@ -1725,7 +1725,7 @@ public class DMNRuntimeTest extends BaseInterpretedVsCompiledTest {
         }
         context.set("number", sb.toString());
 
-        final DMNResult dmnResult = runtime.evaluateAll(dmnModel, context);
+        final DMNResult dmnResult = evaluateModel(runtime, dmnModel, context);
         System.out.println(dmnResult);
         assertThat(DMNRuntimeUtil.formatMessages(dmnResult.getMessages()), dmnResult.hasErrors(), is(true));
 
@@ -1760,7 +1760,7 @@ public class DMNRuntimeTest extends BaseInterpretedVsCompiledTest {
         final DMNContext context = DMNFactory.newContext();
         context.set("a number", -1);
 
-        final DMNResult dmnResult = runtime.evaluateAll(dmnModel, context);
+        final DMNResult dmnResult = evaluateModel(runtime, dmnModel, context);
         assertThat(DMNRuntimeUtil.formatMessages(dmnResult.getMessages()), dmnResult.hasErrors(), is(false));
 
         final DMNContext resultContext = dmnResult.getContext();
@@ -1807,7 +1807,7 @@ public class DMNRuntimeTest extends BaseInterpretedVsCompiledTest {
         final DMNContext context = DMNFactory.newContext();
         context.set("a number", 0);
 
-        final DMNResult dmnResult = runtime.evaluateAll(dmnModel, context);
+        final DMNResult dmnResult = evaluateModel(runtime, dmnModel, context);
         assertThat(DMNRuntimeUtil.formatMessages(dmnResult.getMessages()), dmnResult.hasErrors(), is(false));
 
         final DMNContext resultContext = dmnResult.getContext();
@@ -1905,7 +1905,7 @@ public class DMNRuntimeTest extends BaseInterpretedVsCompiledTest {
         context.set("an office", prototype(entry("opened from", LocalDateTime.of(2018, 12, 31, 8, 0)),
                                            entry("opened till", LocalDateTime.of(2018, 12, 31, 16, 0))));
 
-        final DMNResult dmnResult = runtime.evaluateAll(dmnModel, context);
+        final DMNResult dmnResult = evaluateModel(runtime, dmnModel, context);
         assertThat(DMNRuntimeUtil.formatMessages(dmnResult.getMessages()), dmnResult.hasErrors(), is(false));
         LOG.debug("{}", dmnResult);
         assertThat(dmnResult.getDecisionResultByName("is open").getEvaluationStatus(), is(DecisionEvaluationStatus.SUCCEEDED));
@@ -1980,7 +1980,7 @@ public class DMNRuntimeTest extends BaseInterpretedVsCompiledTest {
         final Map<String, Object> d3 = prototype(entry("aDate", LocalDate.of(2018, 3, 7)), entry("Close", 1030));
         context.set("DailyTable", Arrays.asList(d1, d2, d3));
 
-        final DMNResult dmnResult = runtime.evaluateAll(dmnModel, context);
+        final DMNResult dmnResult = evaluateModel(runtime, dmnModel, context);
         assertThat(DMNRuntimeUtil.formatMessages(dmnResult.getMessages()), dmnResult.hasErrors(), is(false));
         LOG.debug("{}", dmnResult);
 
@@ -2001,7 +2001,7 @@ public class DMNRuntimeTest extends BaseInterpretedVsCompiledTest {
         final DMNContext context = DMNFactory.newContext();
         context.set("a letter", "a");
 
-        final DMNResult dmnResult = runtime.evaluateAll(dmnModel, context);
+        final DMNResult dmnResult = evaluateModel(runtime, dmnModel, context);
         assertThat(DMNRuntimeUtil.formatMessages(dmnResult.getMessages()), dmnResult.hasErrors(), is(false));
 
         final DMNContext result = dmnResult.getContext();
@@ -2019,7 +2019,7 @@ public class DMNRuntimeTest extends BaseInterpretedVsCompiledTest {
         final DMNContext context = DMNFactory.newContext();
         context.set("Passenger", prototype(entry("name", "Osama bin Laden")));
 
-        final DMNResult dmnResult = runtime.evaluateAll(dmnModel, context);
+        final DMNResult dmnResult = evaluateModel(runtime, dmnModel, context);
         assertThat(DMNRuntimeUtil.formatMessages(dmnResult.getMessages()), dmnResult.hasErrors(), is(false));
 
         final DMNContext result = dmnResult.getContext();
@@ -2037,7 +2037,7 @@ public class DMNRuntimeTest extends BaseInterpretedVsCompiledTest {
         final DMNContext context = DMNFactory.newContext();
         context.set("an employee", prototype(entry("age", BigDecimal.valueOf(50))));
 
-        final DMNResult dmnResult = runtime.evaluateAll(dmnModel, context);
+        final DMNResult dmnResult = evaluateModel(runtime, dmnModel, context);
         assertThat(DMNRuntimeUtil.formatMessages(dmnResult.getMessages()), dmnResult.hasErrors(), is(false));
 
         final DMNContext result = dmnResult.getContext();
@@ -2054,7 +2054,7 @@ public class DMNRuntimeTest extends BaseInterpretedVsCompiledTest {
 
         final DMNContext context = DMNFactory.newContext();
 
-        final DMNResult dmnResult = runtime.evaluateAll(dmnModel, context);
+        final DMNResult dmnResult = evaluateModel(runtime, dmnModel, context);
         System.out.println(dmnResult);
         assertThat(DMNRuntimeUtil.formatMessages(dmnResult.getMessages()), dmnResult.hasErrors(), is(false));
 
@@ -2145,7 +2145,7 @@ public class DMNRuntimeTest extends BaseInterpretedVsCompiledTest {
                                              prototype(entry("Title", "85"), entry("Price", new BigDecimal(8)), entry("Quantity", new BigDecimal(5))),
                                              prototype(entry("Title", "66"), entry("Price", new BigDecimal(6)), entry("Quantity", new BigDecimal(6)))));
 
-        final DMNResult dmnResult = runtime.evaluateAll(dmnModel, context);
+        final DMNResult dmnResult = evaluateModel(runtime, dmnModel, context);
         assertThat(DMNRuntimeUtil.formatMessages(dmnResult.getMessages()), dmnResult.hasErrors(), is(false));
 
         final DMNContext result = dmnResult.getContext();
@@ -2198,7 +2198,7 @@ public class DMNRuntimeTest extends BaseInterpretedVsCompiledTest {
             final DMNContext context = DMNFactory.newContext();
             context.set("Run Date", LocalDate.of(2018, 6, 25).plusDays(i));
 
-            final DMNResult dmnResult = runtime.evaluateAll(dmnModel, context);
+            final DMNResult dmnResult = evaluateModel(runtime, dmnModel, context);
             LOG.debug("{}", dmnResult);
             assertThat(DMNRuntimeUtil.formatMessages(dmnResult.getMessages()), dmnResult.hasErrors(), is(false));
 
@@ -2221,7 +2221,7 @@ public class DMNRuntimeTest extends BaseInterpretedVsCompiledTest {
         context.set("input date time", LocalDateTime.of(2018, 6, 28, 12, 34));
         context.set("input myType", LocalDate.of(2018, 6, 28));
 
-        final DMNResult dmnResult = runtime.evaluateAll(dmnModel, context);
+        final DMNResult dmnResult = evaluateModel(runtime, dmnModel, context);
         LOG.debug("{}", dmnResult);
         assertThat(DMNRuntimeUtil.formatMessages(dmnResult.getMessages()), dmnResult.hasErrors(), is(false));
 
@@ -2298,7 +2298,7 @@ public class DMNRuntimeTest extends BaseInterpretedVsCompiledTest {
                                                entry("Term", new BigDecimal(36)),
                                                entry("Amount", new BigDecimal(100_000))));
         context.set("Supporting documents", null);
-        final DMNResult dmnResult = runtime.evaluateAll(dmnModel, context);
+        final DMNResult dmnResult = evaluateModel(runtime, dmnModel, context);
         LOG.debug("{}", dmnResult);
         assertThat(DMNRuntimeUtil.formatMessages(dmnResult.getMessages()), dmnResult.hasErrors(), is(false));
 
@@ -2318,7 +2318,7 @@ public class DMNRuntimeTest extends BaseInterpretedVsCompiledTest {
             final DMNContext context = DMNFactory.newContext();
             context.set("a Person", new Person("John", "Doe", i));
 
-            final DMNResult dmnResult = runtime.evaluateAll(dmnModel, context);
+            final DMNResult dmnResult = evaluateModel(runtime, dmnModel, context);
             LOG.debug("{}", dmnResult);
             assertThat(DMNRuntimeUtil.formatMessages(dmnResult.getMessages()), dmnResult.hasErrors(), is(false));
 
@@ -2352,7 +2352,7 @@ public class DMNRuntimeTest extends BaseInterpretedVsCompiledTest {
         context.set("A Person here", mapOf(entry("age", new BigDecimal(17)),
                                            entry("name", "John")));
 
-        final DMNResult dmnResult = runtime.evaluateAll(dmnModel, context);
+        final DMNResult dmnResult = evaluateModel(runtime, dmnModel, context);
         LOG.debug("{}", dmnResult);
         assertThat(DMNRuntimeUtil.formatMessages(dmnResult.getMessages()), dmnResult.hasErrors(), is(false));
 
@@ -2370,7 +2370,7 @@ public class DMNRuntimeTest extends BaseInterpretedVsCompiledTest {
 
         final DMNContext context = DMNFactory.newContext();
         context.set("an input letter", null);
-        final DMNResult dmnResult = runtime.evaluateAll(dmnModel, context);
+        final DMNResult dmnResult = evaluateModel(runtime, dmnModel, context);
         LOG.debug("{}", dmnResult);
         DMNRuntimeUtil.formatMessages(dmnResult.getMessages());
         assertThat(dmnResult.hasErrors(), is(true));
@@ -2388,7 +2388,7 @@ public class DMNRuntimeTest extends BaseInterpretedVsCompiledTest {
 
         final DMNContext context = DMNFactory.newContext();
         context.set("an input letter", null);
-        final DMNResult dmnResult = runtime.evaluateAll(dmnModel, context);
+        final DMNResult dmnResult = evaluateModel(runtime, dmnModel, context);
         LOG.debug("{}", dmnResult);
         assertThat(DMNRuntimeUtil.formatMessages(dmnResult.getMessages()), dmnResult.hasErrors(), is(false));
         assertThat(dmnResult.getDecisionResultByName("hardcoded letter").getEvaluationStatus(), is(DecisionEvaluationStatus.SUCCEEDED));
@@ -2409,11 +2409,11 @@ public class DMNRuntimeTest extends BaseInterpretedVsCompiledTest {
         checkEmptyinputValuesoutputValuesdefaultOutputEntry(runtime, dmnModel, -1, "negative");
     }
 
-    private static void checkEmptyinputValuesoutputValuesdefaultOutputEntry(final DMNRuntime runtime, final DMNModel dmnModel, int my_number, String my_DT) {
+    private void checkEmptyinputValuesoutputValuesdefaultOutputEntry(final DMNRuntime runtime, final DMNModel dmnModel, int my_number, String my_DT) {
         final DMNContext context = DMNFactory.newContext();
         context.set("my number", my_number);
 
-        final DMNResult dmnResult = runtime.evaluateAll(dmnModel, context);
+        final DMNResult dmnResult = evaluateModel(runtime, dmnModel, context);
         LOG.debug("{}", dmnResult);
         assertThat(DMNRuntimeUtil.formatMessages(dmnResult.getMessages()), dmnResult.hasErrors(), is(false));
 
@@ -2528,7 +2528,7 @@ public class DMNRuntimeTest extends BaseInterpretedVsCompiledTest {
         context.set("my input", mapOf(entry("Date", LocalDate.of(2019, 5, 10)),
                                       entry("Text", "John")));
 
-        final DMNResult dmnResult = runtime.evaluateAll(dmnModel, context);
+        final DMNResult dmnResult = evaluateModel(runtime, dmnModel, context);
         LOG.debug("{}", dmnResult);
         assertThat(DMNRuntimeUtil.formatMessages(dmnResult.getMessages()), dmnResult.hasErrors(), is(false));
 
@@ -2545,7 +2545,7 @@ public class DMNRuntimeTest extends BaseInterpretedVsCompiledTest {
         assertThat(DMNRuntimeUtil.formatMessages(dmnModel.getMessages()), dmnModel.hasErrors(), is(false));
 
         final DMNContext context = DMNFactory.newContext();
-        final DMNResult dmnResult = runtime.evaluateAll(dmnModel, context);
+        final DMNResult dmnResult = evaluateModel(runtime, dmnModel, context);
         LOG.debug("{}", dmnResult);
         assertThat(DMNRuntimeUtil.formatMessages(dmnResult.getMessages()), dmnResult.hasErrors(), is(false));
 
@@ -2576,7 +2576,7 @@ public class DMNRuntimeTest extends BaseInterpretedVsCompiledTest {
 
         final DMNContext context = DMNFactory.newContext();
         context.set("test", Arrays.asList("r2", "r1"));
-        final DMNResult dmnResult = runtime.evaluateAll(dmnModel, context);
+        final DMNResult dmnResult = evaluateModel(runtime, dmnModel, context);
         LOG.debug("{}", dmnResult);
         assertThat(DMNRuntimeUtil.formatMessages(dmnResult.getMessages()), dmnResult.hasErrors(), is(false));
 
@@ -2596,7 +2596,7 @@ public class DMNRuntimeTest extends BaseInterpretedVsCompiledTest {
         final DMNContext context = DMNFactory.newContext();
         context.set("A/B", "A");
 
-        final DMNResult dmnResult = runtime.evaluateAll(dmnModel, context);
+        final DMNResult dmnResult = evaluateModel(runtime, dmnModel, context);
         LOG.debug("{}", dmnResult);
         assertThat(DMNRuntimeUtil.formatMessages(dmnResult.getMessages()), dmnResult.hasErrors(), is(false));
 
@@ -2615,7 +2615,7 @@ public class DMNRuntimeTest extends BaseInterpretedVsCompiledTest {
 
         final DMNContext context = DMNFactory.newContext();
 
-        final DMNResult dmnResult = runtime.evaluateAll(dmnModel, context);
+        final DMNResult dmnResult = evaluateModel(runtime, dmnModel, context);
         LOG.debug("{}", dmnResult);
         assertThat(DMNRuntimeUtil.formatMessages(dmnResult.getMessages()), dmnResult.hasErrors(), is(false));
 
@@ -2638,7 +2638,7 @@ public class DMNRuntimeTest extends BaseInterpretedVsCompiledTest {
         context.set("inputNumber", 1);
         context.set("inputNumberList", Arrays.asList(0, 1));
 
-        final DMNResult dmnResult = runtime.evaluateAll(dmnModel, context);
+        final DMNResult dmnResult = evaluateModel(runtime, dmnModel, context);
         LOG.debug("{}", dmnResult);
         assertThat(DMNRuntimeUtil.formatMessages(dmnResult.getMessages()), dmnResult.hasErrors(), is(false));
 
@@ -2660,7 +2660,7 @@ public class DMNRuntimeTest extends BaseInterpretedVsCompiledTest {
 
         final DMNContext context = DMNFactory.newContext();
 
-        final DMNResult dmnResult = runtime.evaluateAll(dmnModel, context);
+        final DMNResult dmnResult = evaluateModel(runtime, dmnModel, context);
         LOG.debug("{}", dmnResult);
         assertThat(DMNRuntimeUtil.formatMessages(dmnResult.getMessages()), dmnResult.hasErrors(), is(false));
         assertThat(DMNRuntimeUtil.formatMessages(dmnModel.getMessages()), dmnModel.getMessages(DMNMessage.Severity.WARN).size(), is(1));
@@ -2696,7 +2696,7 @@ public class DMNRuntimeTest extends BaseInterpretedVsCompiledTest {
         final DMNContext context = DMNFactory.newContext();
         context.set("person", mapOf(entry("name", "John"), entry("age", new BigDecimal(9))));
 
-        final DMNResult dmnResult = runtime.evaluateAll(dmnModel, context);
+        final DMNResult dmnResult = evaluateModel(runtime, dmnModel, context);
         LOG.debug("{}", dmnResult);
         assertThat(DMNRuntimeUtil.formatMessages(dmnResult.getMessages()), dmnResult.hasErrors(), is(false));
         assertThat(DMNRuntimeUtil.formatMessages(dmnResult.getMessages()), dmnResult.getDecisionResultByName("greet").getResult(), is("Hello, John"));
@@ -2711,7 +2711,7 @@ public class DMNRuntimeTest extends BaseInterpretedVsCompiledTest {
 
         final DMNContext context = DMNFactory.newContext();
 
-        final DMNResult dmnResult = runtime.evaluateAll(dmnModel, context);
+        final DMNResult dmnResult = evaluateModel(runtime, dmnModel, context);
         LOG.debug("{}", dmnResult);
         assertThat(DMNRuntimeUtil.formatMessages(dmnResult.getMessages()), dmnResult.hasErrors(), is(false));
         assertThat(DMNRuntimeUtil.formatMessages(dmnResult.getMessages()), dmnResult.getDecisionResultByName("decision1").getResult(), is("make and model"));
@@ -2726,7 +2726,7 @@ public class DMNRuntimeTest extends BaseInterpretedVsCompiledTest {
 
         final DMNContext context = DMNFactory.newContext();
 
-        final DMNResult dmnResult = runtime.evaluateAll(dmnModel, context);
+        final DMNResult dmnResult = evaluateModel(runtime, dmnModel, context);
         LOG.debug("{}", dmnResult);
         assertThat(DMNRuntimeUtil.formatMessages(dmnResult.getMessages()), dmnResult.hasErrors(), is(false));
         assertThat(DMNRuntimeUtil.formatMessages(dmnResult.getMessages()), dmnResult.getDecisionResultByName("decision1").getResult(), is("DMN"));
@@ -2742,7 +2742,7 @@ public class DMNRuntimeTest extends BaseInterpretedVsCompiledTest {
 
         final DMNContext context = DMNFactory.newContext();
 
-        final DMNResult dmnResult = runtime.evaluateAll(dmnModel, context);
+        final DMNResult dmnResult = evaluateModel(runtime, dmnModel, context);
         LOG.debug("{}", dmnResult);
         assertThat(DMNRuntimeUtil.formatMessages(dmnResult.getMessages()), dmnResult.hasErrors(), is(true));
         assertThat(DMNRuntimeUtil.formatMessages(dmnResult.getMessages()),
@@ -2773,7 +2773,7 @@ public class DMNRuntimeTest extends BaseInterpretedVsCompiledTest {
                 context.set("value", value);
                 context.set("threshold", threshold);
 
-                final DMNResult dmnResult = runtime.evaluateAll(dmnModel, context);
+                final DMNResult dmnResult = evaluateModel(runtime, dmnModel, context);
                 LOG.debug("{}", dmnResult);
                 assertThat(DMNRuntimeUtil.formatMessages(dmnResult.getMessages()), dmnResult.hasErrors(), is(false));
                 assertThat(DMNRuntimeUtil.formatMessages(dmnResult.getMessages()), dmnResult.getDecisionResultByName("classic comparison").getResult(), is(expectedResult));
@@ -2791,7 +2791,7 @@ public class DMNRuntimeTest extends BaseInterpretedVsCompiledTest {
 
         final DMNContext context = DMNFactory.newContext();
 
-        final DMNResult dmnResult = runtime.evaluateAll(dmnModel, context);
+        final DMNResult dmnResult = evaluateModel(runtime, dmnModel, context);
         LOG.debug("{}", dmnResult);
         assertThat(DMNRuntimeUtil.formatMessages(dmnResult.getMessages()), dmnResult.hasErrors(), is(false));
         assertThat(DMNRuntimeUtil.formatMessages(dmnResult.getMessages()), dmnResult.getDecisionResultByName("hardcoded").getResult(), is("Hello, x"));
@@ -2862,7 +2862,7 @@ public class DMNRuntimeTest extends BaseInterpretedVsCompiledTest {
         final DMNContext context = DMNFactory.newContext();
         context.set("my data", new JavaPojoCharUtilDate("Doe", new Character('J'), new java.util.Date(2020, 0, 28, 10, 15)));
 
-        final DMNResult dmnResult = runtime.evaluateAll(dmnModel, context);
+        final DMNResult dmnResult = evaluateModel(runtime, dmnModel, context);
         LOG.debug("{}", dmnResult);
         assertThat(DMNRuntimeUtil.formatMessages(dmnResult.getMessages()), dmnResult.hasErrors(), is(false));
         assertThat(DMNRuntimeUtil.formatMessages(dmnResult.getMessages()), dmnResult.getDecisionResultByName("my decision").getResult(), is("The person: Doe J., on the 28 of the month 1 at the 10 hour."));
@@ -2878,7 +2878,7 @@ public class DMNRuntimeTest extends BaseInterpretedVsCompiledTest {
         final DMNContext context = DMNFactory.newContext();
         context.set("name", "John Doe");
 
-        final DMNResult dmnResult = runtime.evaluateAll(dmnModel, context);
+        final DMNResult dmnResult = evaluateModel(runtime, dmnModel, context);
         LOG.debug("{}", dmnResult);
         assertThat(DMNRuntimeUtil.formatMessages(dmnResult.getMessages()), dmnResult.hasErrors(), is(false));
         assertThat(dmnResult.getDecisionResultByName("Decision-2").getResult(), is(true));
@@ -2899,7 +2899,7 @@ public class DMNRuntimeTest extends BaseInterpretedVsCompiledTest {
         final DMNContext context = DMNFactory.newContext();
         context.set("inputInteger", input);
 
-        final DMNResult dmnResult = runtime.evaluateAll(dmnModel, context);
+        final DMNResult dmnResult = evaluateModel(runtime, dmnModel, context);
         LOG.debug("{}", dmnResult);
         assertThat(DMNRuntimeUtil.formatMessages(dmnResult.getMessages()), dmnResult.hasErrors(), is(false));
         assertThat(dmnResult.getDecisionResultByName("Decision_decisionboolean").getResult(), is(output));
@@ -2915,7 +2915,7 @@ public class DMNRuntimeTest extends BaseInterpretedVsCompiledTest {
 
         final DMNContext context = DMNFactory.newContext();
 
-        final DMNResult dmnResult = runtime.evaluateAll(dmnModel, context);
+        final DMNResult dmnResult = evaluateModel(runtime, dmnModel, context);
         LOG.debug("{}", dmnResult);
         assertThat(DMNRuntimeUtil.formatMessages(dmnResult.getMessages()), dmnResult.hasErrors(), is(true));
         assertThat(dmnResult.getDecisionResultByName("Decision-1").getEvaluationStatus(), is(DecisionEvaluationStatus.FAILED));

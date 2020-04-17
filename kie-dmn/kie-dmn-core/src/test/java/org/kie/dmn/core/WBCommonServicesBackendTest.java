@@ -44,11 +44,11 @@ import static org.junit.Assert.assertThat;
 import static org.kie.dmn.core.util.DynamicTypeUtils.entry;
 import static org.kie.dmn.core.util.DynamicTypeUtils.mapOf;
 
-public class WBCommonServicesBackendTest extends BaseInterpretedVsCompiledTest {
+public class WBCommonServicesBackendTest extends BaseVariantTest {
 
     public static final Logger LOG = LoggerFactory.getLogger(WBCommonServicesBackendTest.class);
 
-    public WBCommonServicesBackendTest(final boolean useExecModelCompiler) {
+    public WBCommonServicesBackendTest(final BaseVariantTest.VariantTestConf useExecModelCompiler) {
         super(useExecModelCompiler);
     }
 
@@ -87,7 +87,7 @@ public class WBCommonServicesBackendTest extends BaseInterpretedVsCompiledTest {
         context.set("local", mapOf(entry("distance", new BigDecimal(10))));
         context.set("highway", mapOf(entry("distance", new BigDecimal(5))));
 
-        final DMNResult dmnResult = runtime.evaluateAll(dmnModel, context);
+        final DMNResult dmnResult = evaluateModel(runtime, dmnModel, context);
         LOG.debug("{}", dmnResult);
         assertThat(DMNRuntimeUtil.formatMessages(dmnResult.getMessages()), dmnResult.hasErrors(), is(false));
 

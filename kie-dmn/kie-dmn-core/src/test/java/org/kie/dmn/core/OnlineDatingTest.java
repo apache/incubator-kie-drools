@@ -14,9 +14,9 @@ import org.kie.dmn.api.core.DMNResult;
 import org.kie.dmn.api.core.DMNRuntime;
 import org.kie.dmn.core.util.DMNRuntimeUtil;
 
-public class OnlineDatingTest extends BaseInterpretedVsCompiledTest {
+public class OnlineDatingTest extends BaseVariantTest {
 
-    public OnlineDatingTest(final boolean useExecModelCompiler) {
+    public OnlineDatingTest(final BaseVariantTest.VariantTestConf useExecModelCompiler) {
         super(useExecModelCompiler);
     }
 
