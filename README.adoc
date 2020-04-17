@@ -57,7 +57,7 @@ If you want your pull requests (or patches) to be merged into master, please res
 
 OptaPlanner has adopted the https://github.com/quarkusio/quarkus[Quarkus] code style, enforces it, and automatically formats code during the build.
 To setup your IDE, please see the
-<<ide-configuration/ide-configuration.adoc, IDE Setup Instructions>>.
+<<ide-configuration/ide-configuration.adoc#, IDE Setup Instructions>>.
 
 === Definition of Done
 
