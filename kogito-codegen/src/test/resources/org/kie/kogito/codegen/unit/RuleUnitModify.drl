@@ -7,7 +7,7 @@ import org.kie.kogito.codegen.data.Results
 rule MakeAdult when
     $p: /persons[ age < 18 ]
 then
-    modify($p) { $p.setAge(22) };
+    modify($p) { setAge(22) };
 end
 
 rule IsAdult when

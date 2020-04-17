@@ -17,13 +17,13 @@ end
 rule CheckAdult when
     $p: /persons[ age >= 18 ]
 then
-    modify($p) { $p.setAdult(true) };
+    modify($p) { setAdult(true) };
 end
 
 rule CheckNotAdult when
     $p: /persons[ age < 18 ]
 then
-    modify($p) { $p.setAdult(false) };
+    modify($p) { setAdult(false) };
 end
 
 query FindAdultNames

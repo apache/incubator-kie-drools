@@ -13,7 +13,7 @@ then
     // but for now we don't want to enable an update of an object directly on the DataStore from a consequence
     // otherwise all the property reactivity information will be lost. The following modify will anyway have the
     // effect to propagate the update to the DataStore and then to all the rule units sharing it.
-    modify($p) { $p.setAdult(true) };
+    modify($p) { setAdult(true) };
 end
 
 rule RemoveNonAdult when
