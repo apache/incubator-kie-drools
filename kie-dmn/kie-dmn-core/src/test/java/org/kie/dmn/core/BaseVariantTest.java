@@ -53,7 +53,7 @@ public abstract class BaseVariantTest {
         KIE_API_TYPECHECK {
             @Override
             public DMNRuntime createRuntime(String string, Class<?> class1) {
-                return DMNRuntimeUtil.createRuntime(string, class1);
+                return createRuntime(string, class1);
             }
 
             @Override
@@ -109,7 +109,7 @@ public abstract class BaseVariantTest {
         KIE_API_TYPECHECK_TYPESAFE {
             @Override
             public DMNRuntime createRuntime(String string, Class<?> class1) {
-                return DMNRuntimeUtil.createRuntime(string, class1);
+                return createRuntime(string, class1);
             }
 
             @Override
@@ -155,6 +155,16 @@ public abstract class BaseVariantTest {
         this.testConfig = testConfig;
     }
 
+    public DMNRuntime createRuntime(final Class testClass) {
+//        DMNRuntime runtime = DMNRuntimeUtil.createRuntime(testClass);
+//        if (testConfig.isTypeSafe()) {
+//            createTypeSafeInput(runtime);
+//        }
+//        return runtime;
+        return null;
+    }
+
+
     public DMNRuntime createRuntime(String string, Class<?> class1) {
         DMNRuntime runtime = testConfig.createRuntime(string, class1);
         if (testConfig.isTypeSafe()) {
@@ -194,12 +204,8 @@ public abstract class BaseVariantTest {
         if (testConfig.isTypeSafe()) {
             return evaluateTypeSafe(runtime, dmnModel, context);
         } else {
-            return internalEvaluateModel(runtime, dmnModel, context);
+            return runtime.evaluateAll(dmnModel, context);
         }
-    }
-
-    protected DMNResult internalEvaluateModel(DMNRuntime runtime, DMNModel dmnModel, DMNContext context) {
-        return runtime.evaluateAll(dmnModel, context);
     }
 
     private DMNResult evaluateTypeSafe(DMNRuntime runtime, DMNModel dmnModel, DMNContext context) {
