@@ -140,7 +140,7 @@ public class DMNRuntimeListenerTest extends BaseVariantTest {
 
     @Test
     public void testListenerWithBKM() throws Exception {
-        final DMNRuntime runtime = DMNRuntimeUtil.createRuntime("org/kie/dmn/core/say_for_hello.dmn", this.getClass());
+        final DMNRuntime runtime = createRuntime("org/kie/dmn/core/say_for_hello.dmn", this.getClass());
         TestEventListener listener = new TestEventListener();
         runtime.addListener(listener);
         final DMNModel dmnModel = runtime.getModel("http://www.trisotech.com/dmn/definitions/_b6f2a9ca-a246-4f27-896a-e8ef04ea439c", "say for hello");
@@ -189,7 +189,7 @@ public class DMNRuntimeListenerTest extends BaseVariantTest {
 
     @Test
     public void testListenerWithDecisionService() {
-        final DMNRuntime runtime = DMNRuntimeUtil.createRuntime("org/kie/dmn/core/decisionservices/DecisionServiceABC.dmn", this.getClass());
+        final DMNRuntime runtime = createRuntime("org/kie/dmn/core/decisionservices/DecisionServiceABC.dmn", this.getClass());
         TestEventListener listener = new TestEventListener();
         runtime.addListener(listener);
         final DMNModel dmnModel = runtime.getModel("http://www.trisotech.com/dmn/definitions/_2443d3f5-f178-47c6-a0c9-b1fd1c933f60", "Drawing 1");
@@ -234,7 +234,7 @@ public class DMNRuntimeListenerTest extends BaseVariantTest {
         final String modelNamespace = "http://www.trisotech.com/dmn/definitions/_b6f2a9ca-a246-4f27-896a-e8ef04ea439c";
         final String modelName = "say for hello";
 
-        final DMNRuntime runtime = DMNRuntimeUtil.createRuntime(modelResource, this.getClass());
+        final DMNRuntime runtime = createRuntime(modelResource, this.getClass());
 
         TestBeforeAndAfterEvaluateAllEventListener listener = new TestBeforeAndAfterEvaluateAllEventListener();
         runtime.addListener(listener);

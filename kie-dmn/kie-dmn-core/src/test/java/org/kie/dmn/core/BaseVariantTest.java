@@ -53,7 +53,7 @@ public abstract class BaseVariantTest {
         KIE_API_TYPECHECK {
             @Override
             public DMNRuntime createRuntime(String string, Class<?> class1) {
-                return createRuntime(string, class1);
+                return DMNRuntimeUtil.createRuntime(string, class1);
             }
 
             @Override
@@ -109,7 +109,7 @@ public abstract class BaseVariantTest {
         KIE_API_TYPECHECK_TYPESAFE {
             @Override
             public DMNRuntime createRuntime(String string, Class<?> class1) {
-                return createRuntime(string, class1);
+                return DMNRuntimeUtil.createRuntime(string, class1);
             }
 
             @Override

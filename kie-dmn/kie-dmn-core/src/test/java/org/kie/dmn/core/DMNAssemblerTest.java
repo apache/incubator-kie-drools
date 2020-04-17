@@ -48,7 +48,7 @@ public class DMNAssemblerTest extends BaseVariantTest {
 
     @Test
     public void testExtendedMode() {
-        final DMNRuntime runtime = DMNRuntimeUtil.createRuntime("strictMode.dmn", this.getClass() );
+        final DMNRuntime runtime = createRuntime("strictMode.dmn", this.getClass() );
         final DMNModel model = runtime.getModel("http://www.trisotech.com/dmn/definitions/_ecf4ea54-2abc-4e2f-a101-4fe14e356a46", "strictMode" );
         final DMNContext ctx = runtime.newContext();
         ctx.set( "timestring", "2016-12-20T14:30:22z" );
@@ -59,7 +59,7 @@ public class DMNAssemblerTest extends BaseVariantTest {
     @Test
     public void testStrictMode() {
         System.setProperty("org.kie.dmn.strictConformance", "true");
-        final DMNRuntime runtime = DMNRuntimeUtil.createRuntime("strictMode.dmn", this.getClass() );
+        final DMNRuntime runtime = createRuntime("strictMode.dmn", this.getClass() );
         final DMNModel model = runtime.getModel("http://www.trisotech.com/dmn/definitions/_ecf4ea54-2abc-4e2f-a101-4fe14e356a46", "strictMode" );
         final DMNContext ctx = runtime.newContext();
         ctx.set( "timestring", "2016-12-20T14:30:22z" );

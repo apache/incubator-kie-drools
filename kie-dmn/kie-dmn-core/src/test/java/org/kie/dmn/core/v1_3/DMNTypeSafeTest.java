@@ -61,7 +61,7 @@ public class DMNTypeSafeTest extends BaseVariantTest {
 
     @Before
     public void setUp() {
-        runtime = DMNRuntimeUtil.createRuntime("a.dmn", this.getClass());
+        runtime = createRuntime("a.dmn", this.getClass());
         String namespace = "http://www.trisotech.com/definitions/_2ceee5b6-0f0d-41ef-890e-2cd6fb1adb10";
         String modelName = "Drawing 1";
 

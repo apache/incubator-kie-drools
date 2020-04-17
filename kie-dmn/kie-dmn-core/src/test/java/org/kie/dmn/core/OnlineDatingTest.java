@@ -22,7 +22,7 @@ public class OnlineDatingTest extends BaseVariantTest {
 
     @Test
     public void testDMChallengeMarch2017() {
-        final DMNRuntime runtime = DMNRuntimeUtil.createRuntime("dmcommunity_challenge_2017_03.dmn", this.getClass() );
+        final DMNRuntime runtime = createRuntime("dmcommunity_challenge_2017_03.dmn", this.getClass() );
         final DMNModel dmnModel = runtime.getModel(
                 "http://www.trisotech.com/definitions/_1b5a3a8f-ccf0-459b-8783-38601977e828",
                 "DMCommunity Challenge - March 2017" );
