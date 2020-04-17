@@ -16,16 +16,6 @@
 
 package org.jbpm.compiler.canonical;
 
-import java.util.Map.Entry;
-
-import org.jbpm.process.core.context.variable.Variable;
-import org.jbpm.process.core.context.variable.VariableScope;
-import org.jbpm.ruleflow.core.factory.SplitFactory;
-import org.jbpm.workflow.core.Constraint;
-import org.kie.api.definition.process.Node;
-import org.jbpm.workflow.core.impl.ConnectionRef;
-import org.jbpm.workflow.core.node.Split;
-
 import com.github.javaparser.ast.body.Parameter;
 import com.github.javaparser.ast.expr.IntegerLiteralExpr;
 import com.github.javaparser.ast.expr.LambdaExpr;
@@ -33,6 +23,15 @@ import com.github.javaparser.ast.expr.LongLiteralExpr;
 import com.github.javaparser.ast.expr.StringLiteralExpr;
 import com.github.javaparser.ast.stmt.BlockStmt;
 import com.github.javaparser.ast.type.UnknownType;
+import org.jbpm.process.core.context.variable.Variable;
+import org.jbpm.process.core.context.variable.VariableScope;
+import org.jbpm.ruleflow.core.factory.SplitFactory;
+import org.jbpm.workflow.core.Constraint;
+import org.jbpm.workflow.core.impl.ConnectionRef;
+import org.jbpm.workflow.core.node.Split;
+import org.kie.api.definition.process.Node;
+
+import java.util.Map.Entry;
 
 public class SplitNodeVisitor extends AbstractVisitor {
 
@@ -44,7 +43,7 @@ public class SplitNodeVisitor extends AbstractVisitor {
         addFactoryMethodWithArgs(body, "splitNode" + node.getId(), "type", new IntegerLiteralExpr(splitNode.getType()));
         
         visitMetaData(splitNode.getMetaData(), body, "splitNode" + node.getId());            
-        
+
         if (splitNode.getType() == Split.TYPE_OR || splitNode.getType() == Split.TYPE_XOR) {
             for (Entry<ConnectionRef, Constraint> entry : splitNode.getConstraints().entrySet()) {
                 
@@ -63,13 +62,14 @@ public class SplitNodeVisitor extends AbstractVisitor {
                     constraintBody.addStatement(entry.getValue().getConstraint());
                                   
                     actionBody.addStatement(constraintBody);
-                    
-                    addFactoryMethodWithArgs(body, "splitNode" + node.getId(), "constraint", new LongLiteralExpr(entry.getKey().getNodeId()),                
-                                             new StringLiteralExpr(getOrDefault(entry.getKey().getConnectionId(), "")),
-                                             new StringLiteralExpr(entry.getKey().getToType()),
-                                             new StringLiteralExpr(entry.getValue().getDialect()),
-                                             lambda,
-                                             new IntegerLiteralExpr(entry.getValue().getPriority()));
+
+                    addFactoryMethodWithArgs(body, "splitNode" + node.getId(), "constraint",
+                            new LongLiteralExpr(entry.getKey().getNodeId()),
+                            new StringLiteralExpr(getOrDefault(entry.getKey().getConnectionId(), "")),
+                            new StringLiteralExpr(entry.getKey().getToType()),
+                            new StringLiteralExpr(entry.getValue().getDialect()),
+                            lambda,
+                            new IntegerLiteralExpr(entry.getValue().getPriority()));
                 }
             }
         }

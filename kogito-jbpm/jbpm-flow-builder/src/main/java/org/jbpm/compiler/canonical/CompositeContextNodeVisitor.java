@@ -53,6 +53,7 @@ public class CompositeContextNodeVisitor extends AbstractCompositeNodeVisitor {
         CompositeContextNode compositeContextNode = (CompositeContextNode) node;        
         
         addFactoryMethodWithArgsWithAssignment(factoryField, body, factoryClass(), C_C_NODE_VAR + node.getId(), factoryMethod(), new LongLiteralExpr(compositeContextNode.getId()));
+        addFactoryMethodWithArgs(body, C_C_NODE_VAR + node.getId(), "name", new StringLiteralExpr(getOrDefault(node.getName(), "Composite")));
         visitMetaData(compositeContextNode.getMetaData(), body, C_C_NODE_VAR + node.getId());
         VariableScope variableScopeNode = (VariableScope) compositeContextNode.getDefaultContext(VariableScope.VARIABLE_SCOPE);
         

@@ -133,7 +133,7 @@ public class ProcessCodegen extends AbstractGenerator {
         return new ProcessCodegen(processes);
     }
 
-    private static List<Process> parseProcesses(Collection<File> processFiles) throws IOException {
+    static List<Process> parseProcesses(Collection<File> processFiles) throws IOException {
         List<Process> processes = new ArrayList<>();
         for (File processSourceFile : processFiles) {
             try {

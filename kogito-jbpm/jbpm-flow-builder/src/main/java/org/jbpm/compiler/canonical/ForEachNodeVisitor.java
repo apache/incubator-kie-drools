@@ -43,7 +43,7 @@ public class ForEachNodeVisitor extends AbstractCompositeNodeVisitor {
         
         addFactoryMethodWithArgsWithAssignment(factoryField, body, ForEachNodeFactory.class, "forEachNode" + node.getId(), "forEachNode", new LongLiteralExpr(forEachNode.getId()));
         visitMetaData(forEachNode.getMetaData(), body, "forEachNode" + node.getId());
-        
+        addFactoryMethodWithArgs(body, "forEachNode" + node.getId(), "name", new StringLiteralExpr(getOrDefault(node.getName(), "ForEach")));
         addFactoryMethodWithArgs(body, "forEachNode" + node.getId(), "collectionExpression", new StringLiteralExpr(stripExpression(forEachNode.getCollectionExpression())));
         addFactoryMethodWithArgs(body, "forEachNode" + node.getId(), "variable", new StringLiteralExpr(forEachNode.getVariableName()), 
                                                                                  new ObjectCreationExpr(null, new ClassOrInterfaceType(null, ObjectDataType.class.getSimpleName()), NodeList.nodeList(

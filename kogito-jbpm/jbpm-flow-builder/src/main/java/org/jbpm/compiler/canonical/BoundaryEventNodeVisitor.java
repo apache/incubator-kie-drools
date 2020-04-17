@@ -38,7 +38,8 @@ public class BoundaryEventNodeVisitor extends AbstractVisitor {
         addFactoryMethodWithArgs(body, "boundaryEventNode" + node.getId(), "name", new StringLiteralExpr(getOrDefault(boundaryEventNode.getName(), "BoundaryEvent")));
         addFactoryMethodWithArgs(body, "boundaryEventNode" + node.getId(), "eventType", new StringLiteralExpr(boundaryEventNode.getType()));
         addFactoryMethodWithArgs(body, "boundaryEventNode" + node.getId(), "attachedTo", new StringLiteralExpr(boundaryEventNode.getAttachedToNodeId()));
-        
+        addFactoryMethodWithArgs(body, "boundaryEventNode" + node.getId(), "scope", getOrNullExpr(boundaryEventNode.getScope()));
+
         Variable variable = null;
         if (boundaryEventNode.getVariableName() != null) {
             addFactoryMethodWithArgs(body, "boundaryEventNode" + node.getId(), "variableName", new StringLiteralExpr(boundaryEventNode.getVariableName()));

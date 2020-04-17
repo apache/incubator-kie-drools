@@ -29,9 +29,6 @@ import org.jbpm.workflow.core.impl.DroolsConsequenceAction;
 import org.jbpm.workflow.core.node.CompositeContextNode;
 import org.jbpm.workflow.core.node.DynamicNode;
 
-/**
- *
- */
 public class DynamicNodeFactory extends RuleFlowNodeContainerFactory {
 
 	private RuleFlowNodeContainerFactory nodeContainerFactory;

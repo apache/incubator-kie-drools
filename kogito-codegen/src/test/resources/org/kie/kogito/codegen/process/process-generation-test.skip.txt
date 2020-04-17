@@ -1,0 +1,13 @@
+invalid/invalid-process-id.bpmn2
+messageevent/EventNodeMalformed.bpmn2
+ruletask/BusinessRuleTaskMalformed.bpmn2
+ruletask/ExampleGenerated.bpmn
+ruletask/ExampleGeneratedWrong.bpmn
+servicetask/ServiceProcessMalformed.bpmn2
+subprocess/CallActivityWithIOexpression.bpmn2
+subprocess/CallActivity.bpmn2
+subprocess/CallActivityVarIOExpression.bpmn2
+subprocess/CallActivityWithTypeInfo.bpmn2
+subprocess/CallActivitySubProcess.bpmn2
+subprocess/CallActivityWithIOexpressionNested.bpmn2
+subprocess/CallActivityMI.bpmn2

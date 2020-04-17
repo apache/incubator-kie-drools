@@ -50,19 +50,20 @@ public class StartNodeFactory extends NodeFactory {
         getStartNode().setInterrupting(interrupting);
         return this;
     }
-    
+
     public StartNodeFactory trigger(String triggerEventType, String mapping) {
+        return trigger(triggerEventType, mapping, null);
+    }
+
+    public StartNodeFactory trigger(String triggerEventType, String mapping, String variableName) {
         EventTrigger trigger = new EventTrigger();
         EventTypeFilter eventFilter = new EventTypeFilter();
         eventFilter.setType(triggerEventType);
         trigger.addEventFilter(eventFilter);
-        
         if (mapping != null) {
-            trigger.addInMapping(mapping, getStartNode().getOutMapping(mapping));
+            trigger.addInMapping(mapping, variableName);
         }
-
         getStartNode().addTrigger(trigger);
-        
         return this;
     }
 

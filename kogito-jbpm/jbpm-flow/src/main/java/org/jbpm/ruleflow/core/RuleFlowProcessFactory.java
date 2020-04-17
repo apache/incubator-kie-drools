@@ -19,9 +19,9 @@ package org.jbpm.ruleflow.core;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
-import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 import org.jbpm.process.core.context.exception.ActionExceptionHandler;
 import org.jbpm.process.core.context.exception.ExceptionHandler;
@@ -50,8 +50,10 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 public class RuleFlowProcessFactory extends RuleFlowNodeContainerFactory {
-    
+
     private static final Logger logger = LoggerFactory.getLogger(RuleFlowProcessFactory.class);
+
+    public static final String METADATA_ACTION = "Action";
 
     public static RuleFlowProcessFactory createProcess(String id) {
         return new RuleFlowProcessFactory(id);
@@ -97,12 +99,12 @@ public class RuleFlowProcessFactory extends RuleFlowNodeContainerFactory {
     }
 
     public RuleFlowProcessFactory imports(String... imports) {
-    	getRuleFlowProcess().setImports(new HashSet<String>(Arrays.asList(imports)));
+        getRuleFlowProcess().addImports(Arrays.asList(imports));
         return this;
     }
     
     public RuleFlowProcessFactory functionImports(String... functionImports) {
-    	getRuleFlowProcess().setFunctionImports(Arrays.asList(functionImports));
+        getRuleFlowProcess().addFunctionImports(Arrays.asList(functionImports));
         return this;
     }
     
@@ -249,7 +251,7 @@ public class RuleFlowProcessFactory extends RuleFlowNodeContainerFactory {
                 actions = new ArrayList<>();
             }
             DroolsConsequenceAction cancelAction =  new DroolsConsequenceAction("java", null);
-            cancelAction.setMetaData("Action", new CancelNodeInstanceAction(attachedTo));
+            cancelAction.setMetaData(METADATA_ACTION, new CancelNodeInstanceAction(attachedTo));
             actions.add(cancelAction);
             ((EventNode)node).setActions(EndNode.EVENT_NODE_EXIT, actions);
         }
@@ -263,7 +265,7 @@ public class RuleFlowProcessFactory extends RuleFlowNodeContainerFactory {
                 actions = new ArrayList<>();
             }
             DroolsConsequenceAction action =  new DroolsConsequenceAction("java", null);
-            action.setMetaData("Action", new CancelNodeInstanceAction(attachedTo));
+            action.setMetaData(METADATA_ACTION, new CancelNodeInstanceAction(attachedTo));
             actions.add(action);
             ((EventNode)node).setActions(EndNode.EVENT_NODE_EXIT, actions);
         }

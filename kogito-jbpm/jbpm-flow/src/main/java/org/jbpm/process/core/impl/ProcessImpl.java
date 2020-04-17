@@ -19,6 +19,7 @@ package org.jbpm.process.core.impl;
 import java.io.IOException;
 import java.io.Serializable;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
@@ -54,7 +55,7 @@ public class ProcessImpl implements Process, Serializable, ContextResolver {
     private transient Map<String, Object> runtimeMetaData = new HashMap<String, Object>();
     private Set<String> imports = new HashSet<>();
     private Map<String, String> globals;
-    private List<String> functionImports;
+    private List<String> functionImports = new ArrayList<>();
 
     
     public void setId(final String id) {
@@ -184,6 +185,10 @@ public class ProcessImpl implements Process, Serializable, ContextResolver {
     public void setImports(Set<String> imports) {
         this.imports = imports;
     }
+
+    public void addImports(Collection<String> imports) {
+        this.imports.addAll(imports);
+    }
     
     public List<String> getFunctionImports() {
         return functionImports;
@@ -191,7 +196,11 @@ public class ProcessImpl implements Process, Serializable, ContextResolver {
 
     public void setFunctionImports(List<String> functionImports) {
         this.functionImports = functionImports;
-    }    
+    }
+
+    public void addFunctionImports(Collection<String> functionImports) {
+        this.functionImports.addAll(functionImports);
+    }
     
     public Map<String, String> getGlobals() {
         return globals;

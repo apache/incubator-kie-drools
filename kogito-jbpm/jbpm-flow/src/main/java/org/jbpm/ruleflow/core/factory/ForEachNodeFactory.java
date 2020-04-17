@@ -22,9 +22,6 @@ import org.jbpm.workflow.core.Node;
 import org.jbpm.workflow.core.NodeContainer;
 import org.jbpm.workflow.core.node.ForEachNode;
 
-/**
- *
- */
 public class ForEachNodeFactory extends RuleFlowNodeContainerFactory {
 	
 	private RuleFlowNodeContainerFactory nodeContainerFactory;
@@ -42,6 +39,11 @@ public class ForEachNodeFactory extends RuleFlowNodeContainerFactory {
     
     protected ForEachNode getForEachNode() {
     	return (ForEachNode) getNodeContainer();
+    }
+
+    public ForEachNodeFactory name(String name) {
+        getForEachNode().setName(name);
+        return this;
     }
 
     public ForEachNodeFactory collectionExpression(String collectionExpression) {

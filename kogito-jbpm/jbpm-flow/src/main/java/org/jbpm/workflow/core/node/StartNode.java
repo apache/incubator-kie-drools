@@ -118,12 +118,12 @@ public class StartNode extends ExtendedNodeImpl implements Mappable {
 
     @Override
     public String getInMapping(String parameterName) {
-        throw new IllegalArgumentException("A start event [" + this.getMetaData("UniqueId") + ", " + this.getName() + "] does not support input mappings");
+        return null;
     }
 
     @Override
     public Map<String, String> getInMappings() {
-        throw new IllegalArgumentException("A start event does not support input mappings");
+        return Collections.emptyMap();
     }
 
     @Override
@@ -133,7 +133,7 @@ public class StartNode extends ExtendedNodeImpl implements Mappable {
 
     @Override
     public List<DataAssociation> getInAssociations() {
-        throw new IllegalArgumentException("A start event does not support input mappings");
+        return Collections.emptyList();
     }
 
     public void addOutMapping(String parameterName, String variableName) {
