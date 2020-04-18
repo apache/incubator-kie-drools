@@ -21,6 +21,8 @@ import org.springframework.boot.context.properties.NestedConfigurationProperty;
 
 public class SolverProperties {
 
+    public static final String DEFAULT_SCORE_DRL_URL = "scoreRules.drl";
+
     /**
      * Enable runtime assertions to detect common bugs in your implementation during development.
      * Defaults to "REPRODUCIBLE".

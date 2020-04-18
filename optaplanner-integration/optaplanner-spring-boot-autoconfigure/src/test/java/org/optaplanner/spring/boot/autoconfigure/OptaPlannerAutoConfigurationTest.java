@@ -66,7 +66,7 @@ public class OptaPlannerAutoConfigurationTest {
                     assertEquals(TestdataSpringConstraintProvider.class, solverConfig.getScoreDirectorFactoryConfig().getConstraintProviderClass());
                     // No termination defined
                     assertNull(solverConfig.getTerminationConfig());
-                    SolverFactory solverFactory = context.getBean(SolverFactory.class);
+                    SolverFactory<TestdataSpringSolution> solverFactory = context.getBean(SolverFactory.class);
                     assertNotNull(solverFactory);
                     assertNotNull(solverFactory.buildSolver());
                 });
@@ -83,7 +83,7 @@ public class OptaPlannerAutoConfigurationTest {
                     assertEquals(TestdataSpringConstraintProvider.class, solverConfig.getScoreDirectorFactoryConfig().getConstraintProviderClass());
                     // Properties defined in solverConfig.xml
                     assertEquals(2L, solverConfig.getTerminationConfig().getSecondsSpentLimit().longValue());
-                    SolverFactory solverFactory = context.getBean(SolverFactory.class);
+                    SolverFactory<TestdataSpringSolution> solverFactory = context.getBean(SolverFactory.class);
                     assertNotNull(solverFactory);
                     assertNotNull(solverFactory.buildSolver());
                 });
@@ -101,7 +101,7 @@ public class OptaPlannerAutoConfigurationTest {
                     assertEquals(TestdataSpringConstraintProvider.class, solverConfig.getScoreDirectorFactoryConfig().getConstraintProviderClass());
                     // Properties defined in customSpringBootSolverConfig.xml
                     assertEquals(3L, solverConfig.getTerminationConfig().getMinutesSpentLimit().longValue());
-                    SolverFactory solverFactory = context.getBean(SolverFactory.class);
+                    SolverFactory<TestdataSpringSolution> solverFactory = context.getBean(SolverFactory.class);
                     assertNotNull(solverFactory);
                     assertNotNull(solverFactory.buildSolver());
                 });
@@ -189,7 +189,7 @@ public class OptaPlannerAutoConfigurationTest {
                 .withClassLoader(new FilteredClassLoader(new ClassPathResource("solverConfig.xml")))
                 .withPropertyValues("optaplanner.solver.termination.best-score-limit=0")
                 .run(context -> {
-                    SolverManager solverManager = context.getBean(SolverManager.class);
+                    SolverManager<TestdataSpringSolution, Long> solverManager = context.getBean(SolverManager.class);
                     TestdataSpringSolution problem = new TestdataSpringSolution();
                     problem.setValueList(IntStream.range(1, 3)
                             .mapToObj(i -> "v" + i)

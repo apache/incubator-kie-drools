@@ -17,6 +17,7 @@
 package org.optaplanner.spring.boot.autoconfigure;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
@@ -137,6 +138,10 @@ public class OptaPlannerAutoConfiguration implements BeanClassLoaderAware {
             scoreDirectorFactoryConfig.setEasyScoreCalculatorClass(findImplementingClass(EasyScoreCalculator.class));
             scoreDirectorFactoryConfig.setConstraintProviderClass(findImplementingClass(ConstraintProvider.class));
             scoreDirectorFactoryConfig.setIncrementalScoreCalculatorClass(findImplementingClass(IncrementalScoreCalculator.class));
+            if (beanClassLoader.getResource(SolverProperties.DEFAULT_SCORE_DRL_URL) != null) {
+                scoreDirectorFactoryConfig.setScoreDrlList(Collections.singletonList(
+                        SolverProperties.DEFAULT_SCORE_DRL_URL));
+            }
             solverConfig.setScoreDirectorFactoryConfig(scoreDirectorFactoryConfig);
         }
         SolverProperties solverProperties = optaPlannerProperties.getSolver();
@@ -214,7 +219,7 @@ public class OptaPlannerAutoConfiguration implements BeanClassLoaderAware {
                 .collect(Collectors.toList());
         if (classList.size() > 1) {
             throw new IllegalStateException("Multiple classes (" + classList
-                    + ") found that implement " + targetClass.getSimpleName() + ".");
+                    + ") found that implement the interface " + targetClass.getSimpleName() + ".");
         }
         if (classList.isEmpty()) {
             return null;
