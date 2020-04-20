@@ -46,11 +46,6 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import static org.drools.core.phreak.AddRemoveRule.flushLeftTupleIfNecessary;
-import static org.drools.core.reteoo.PropertySpecificUtil.calculatePositiveMask;
-import static org.drools.core.reteoo.PropertySpecificUtil.getAccessibleProperties;
-import static org.drools.core.reteoo.PropertySpecificUtil.isPropertyReactive;
-
-import static org.drools.core.phreak.AddRemoveRule.flushLeftTupleIfNecessary;
 import static org.drools.core.reteoo.PropertySpecificUtil.isPropertyReactive;
 
 /**
@@ -74,7 +69,7 @@ public class LeftInputAdapterNode extends LeftTupleSource
 
     private boolean leftTupleMemoryEnabled;
 
-    private BitMask sinkMask;
+    protected BitMask sinkMask;
 
     public LeftInputAdapterNode() {
 
@@ -206,7 +201,7 @@ public class LeftInputAdapterNode extends LeftTupleSource
         }
 
         LeftTupleSink sink = liaNode.getSinkPropagator().getFirstLeftTupleSink();
-        LeftTuple leftTuple = sink.createLeftTuple( factHandle, sink, useLeftMemory );
+        LeftTuple leftTuple = sink.createLeftTuple( factHandle, useLeftMemory );
         leftTuple.setPropagationContext( context );
         doInsertSegmentMemory( wm, notifySegment, lm, sm, leftTuple, liaNode.isStreamMode() );
 
@@ -377,11 +372,12 @@ public class LeftInputAdapterNode extends LeftTupleSource
         LeftTuple leftTuple = processDeletesFromModify(modifyPreviousTuples, context, workingMemory, otnId);
         LiaNodeMemory lm = workingMemory.getNodeMemory( this );
 
+        LeftTupleSink sink = getSinkPropagator().getFirstLeftTupleSink();
+        BitMask mask = sink.getLeftInferredMask();
+
         if ( leftTuple != null && leftTuple.getInputOtnId().equals( otnId ) ) {
             modifyPreviousTuples.removeLeftTuple(partitionId);
             leftTuple.reAdd();
-            LeftTupleSink sink = getSinkPropagator().getFirstLeftTupleSink();
-            BitMask mask = sink.getLeftInferredMask();
             if ( context.getModificationMask().intersects( mask) ) {
                 doUpdateObject(leftTuple, context, workingMemory, leftTuple.getTupleSource(), true, lm, lm.getOrCreateSegmentMemory(this, workingMemory ) );
                 if (leftTuple instanceof Activation) {
@@ -389,8 +385,6 @@ public class LeftInputAdapterNode extends LeftTupleSource
                 }
             }
         } else {
-            LeftTupleSink sink = getSinkPropagator().getFirstLeftTupleSink();
-            BitMask mask = sink.getLeftInferredMask();
             if ( context.getModificationMask().intersects( mask) ) {
                 doInsertObject(factHandle, context, this,
                                workingMemory,
@@ -400,16 +394,11 @@ public class LeftInputAdapterNode extends LeftTupleSource
         }
     }
 
-    private LeftTuple processDeletesFromModify(ModifyPreviousTuples modifyPreviousTuples, PropagationContext context, InternalWorkingMemory workingMemory, Id otnId) {
+    protected LeftTuple processDeletesFromModify(ModifyPreviousTuples modifyPreviousTuples, PropagationContext context, InternalWorkingMemory workingMemory, Id otnId) {
         LeftTuple leftTuple = modifyPreviousTuples.peekLeftTuple(partitionId);
         while ( leftTuple != null && leftTuple.getInputOtnId().before( otnId ) ) {
             modifyPreviousTuples.removeLeftTuple(partitionId);
-
-            LeftInputAdapterNode prevLiaNode = leftTuple.getTupleSource();
-            LiaNodeMemory prevLm = workingMemory.getNodeMemory( prevLiaNode );
-            SegmentMemory prevSm = prevLm.getSegmentMemory();
-            doDeleteObject( leftTuple, context, prevSm, workingMemory, prevLiaNode, true, prevLm );
-
+            modifyPreviousTuples.doDeleteObject(context, workingMemory, leftTuple);
             leftTuple = modifyPreviousTuples.peekLeftTuple(partitionId);
         }
         return leftTuple;
@@ -485,7 +474,7 @@ public class LeftInputAdapterNode extends LeftTupleSource
             return true;
         }
 
-        if ( !(object instanceof LeftInputAdapterNode) || this.hashCode() != object.hashCode() ) {
+        if ( object.getClass() != LeftInputAdapterNode.class || this.hashCode() != object.hashCode() ) {
             return false;
         }
         return this.objectSource.getId() == ((LeftInputAdapterNode)object).objectSource.getId() && this.sinkMask.equals( ((LeftInputAdapterNode) object).sinkMask );
@@ -674,5 +663,9 @@ public class LeftInputAdapterNode extends LeftTupleSource
             objectSource.sink.changeSinkPartition(this, this.partitionId, partitionId, objectSource.alphaNodeHashingThreshold );
         }
         this.partitionId = partitionId;
+    }
+
+    public boolean isTerminal() {
+        return false;
     }
 }

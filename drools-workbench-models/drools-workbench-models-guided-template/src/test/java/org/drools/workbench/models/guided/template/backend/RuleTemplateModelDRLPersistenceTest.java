@@ -77,10 +77,11 @@ public class RuleTemplateModelDRLPersistenceTest {
         m.addRow(new String[]{"\"3\",\"4\""});
         m.addRow(new String[]{"(5,6)"});
 
-        final String expected = "rule \"t1_2\"" +
+        final String expected =
+                "rule \"t1_0\"" +
                 "dialect \"mvel\"\n" +
                 "when \n" +
-                "  Person( field1 in (5, 6) )" +
+                "  Person( field1 in (1, 2) )" +
                 "then \n" +
                 "end" +
                 "rule \"t1_1\"" +
@@ -89,10 +90,10 @@ public class RuleTemplateModelDRLPersistenceTest {
                 "  Person( field1 in (3, 4) )" +
                 "then \n" +
                 "end" +
-                "rule \"t1_0\"" +
+                "rule \"t1_2\"" +
                 "dialect \"mvel\"\n" +
                 "when \n" +
-                "  Person( field1 in (1, 2) )" +
+                "  Person( field1 in (5, 6) )" +
                 "then \n" +
                 "end";
 
@@ -121,22 +122,11 @@ public class RuleTemplateModelDRLPersistenceTest {
         m.addRow(new String[]{"( \"ak4\", \"mk4\" )"});
         m.addRow(new String[]{"( \"ak5 \", \" mk5\" )"});
 
-        String expected = "rule \"t1_4\"" +
+        String expected =
+                "rule \"t1_0\"" +
                 "dialect \"mvel\"\n" +
                 "when \n" +
-                "  Person( field1 in (\"ak5 \",\" mk5\") )" +
-                "then \n" +
-                "end" +
-                "rule \"t1_3\"" +
-                "dialect \"mvel\"\n" +
-                "when \n" +
-                "  Person( field1 in (\"ak4\",\"mk4\") )" +
-                "then \n" +
-                "end" +
-                "rule \"t1_2\"" +
-                "dialect \"mvel\"\n" +
-                "when \n" +
-                "  Person( field1 in (\"ak3\",\"mk3\") )" +
+                "  Person( field1 in (\"ak1\",\"mk1\") )" +
                 "then \n" +
                 "end" +
                 "rule \"t1_1\"" +
@@ -145,10 +135,22 @@ public class RuleTemplateModelDRLPersistenceTest {
                 "  Person( field1 in (\"ak2\",\"mk2\") )" +
                 "then \n" +
                 "end" +
-                "rule \"t1_0\"" +
+                "rule \"t1_2\"" +
                 "dialect \"mvel\"\n" +
                 "when \n" +
-                "  Person( field1 in (\"ak1\",\"mk1\") )" +
+                "  Person( field1 in (\"ak3\",\"mk3\") )" +
+                "then \n" +
+                "end" +
+                "rule \"t1_3\"" +
+                "dialect \"mvel\"\n" +
+                "when \n" +
+                "  Person( field1 in (\"ak4\",\"mk4\") )" +
+                "then \n" +
+                "end" +
+                "rule \"t1_4\"" +
+                "dialect \"mvel\"\n" +
+                "when \n" +
+                "  Person( field1 in (\"ak5 \",\" mk5\") )" +
                 "then \n" +
                 "end";
 
@@ -234,22 +236,23 @@ public class RuleTemplateModelDRLPersistenceTest {
         m.addRow(new String[]{"foo2"});
         m.addRow(1, new String[]{"foo3"});
 
-        final String expected = "rule \"t1_2\"" +
+        final String expected =
+                "rule \"t1_0\"" +
                 "dialect \"mvel\"\n" +
                 "when \n" +
-                "  Person( field1 == \"foo2\" )" +
+                "  Person( field1 == \"foo1\" )" +
                 "then \n" +
-                "end" +
+                "end\n" +
                 "rule \"t1_1\"" +
                 "dialect \"mvel\"\n" +
                 "when \n" +
                 "  Person( field1 == \"foo3\" )" +
                 "then \n" +
                 "end" +
-                "rule \"t1_0\"" +
+                "rule \"t1_2\"" +
                 "dialect \"mvel\"\n" +
                 "when \n" +
-                "  Person( field1 == \"foo1\" )" +
+                "  Person( field1 == \"foo2\" )" +
                 "then \n" +
                 "end";
 
@@ -4726,7 +4729,7 @@ public class RuleTemplateModelDRLPersistenceTest {
                 "    }" +
                 "end";
 
-        checkMarshall(expected2 + expected1,
+        checkMarshall(expected1 + expected2,
                       m1);
     }
 
