@@ -53,9 +53,9 @@ import static org.kie.dmn.core.util.DynamicTypeUtils.entry;
 import static org.kie.dmn.core.util.DynamicTypeUtils.prototype;
 
 /* These are duplicated test that are run against the Typesafe DMN */
-public class DMNRegressionTest extends BaseVariantTest {
+public class DMNTypessafeSupportTest extends BaseVariantTest {
 
-    public DMNRegressionTest(VariantTestConf testConfig) {
+    public DMNTypessafeSupportTest(VariantTestConf testConfig) {
         super(testConfig);
     }
 
