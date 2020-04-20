@@ -31,6 +31,7 @@ import org.kie.pmml.models.drools.tree.evaluator.PMMLTreeModelEvaluator;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
+import static org.kie.pmml.compiler.commons.factories.TransformationsMapFactory.getTransformationsMap;
 
 public abstract class AbstractPMMLTreeTest {
 
@@ -62,7 +63,7 @@ public abstract class AbstractPMMLTreeTest {
         assertEquals(1, pmml.getModels().size());
         assertTrue(pmml.getModels().get(0) instanceof TreeModel);
 
-        final KiePMMLModel pmmlModel = PROVIDER.getKiePMMLDroolsModel(pmml.getDataDictionary(),
+        final KiePMMLModel pmmlModel = PROVIDER.getKiePMMLDroolsModel(pmml.getDataDictionary(), getTransformationsMap(pmml.getTransformationDictionary()),
                                                                       (TreeModel) pmml.getModels().get(0));
         Assertions.assertThat(pmmlModel).isNotNull();
 

@@ -19,6 +19,7 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.function.Function;
 import java.util.function.Supplier;
 
 import org.kie.pmml.commons.model.abstracts.AbstractKiePMMLBase;
@@ -35,6 +36,7 @@ public abstract class KiePMMLModel extends AbstractKiePMMLBase {
     protected String targetField;
     protected Map<String, Object> outputFieldsMap = new HashMap<>();
     protected Map<String, Object> missingValueReplacementMap = new HashMap<>();
+    protected Map<String, Function> transformationsMap = new HashMap<>();
 
     protected KiePMMLModel(String name, List<KiePMMLExtension> extensions) {
         super(name, extensions);
@@ -60,6 +62,10 @@ public abstract class KiePMMLModel extends AbstractKiePMMLBase {
         return Collections.unmodifiableMap(missingValueReplacementMap);
     }
 
+    public Map<String, Function> getTransformationsMap() {
+        return Collections.unmodifiableMap(transformationsMap);
+    }
+
     public abstract Object evaluate(Map<String, Object> requestData);
 
     public abstract static class Builder<T extends KiePMMLModel> extends AbstractKiePMMLBase.Builder<T> {
@@ -82,6 +88,11 @@ public abstract class KiePMMLModel extends AbstractKiePMMLBase {
 
         public Builder<T> withMissingValueReplacementMap(Map<String, Object> missingValueReplacementMap) {
             toBuild.missingValueReplacementMap.putAll(missingValueReplacementMap);
+            return this;
+        }
+
+        public Builder<T> withTransformationsMap(Map<String, Function> transformationsMap) {
+            toBuild.transformationsMap.putAll(transformationsMap);
             return this;
         }
     }

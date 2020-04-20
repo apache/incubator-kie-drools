@@ -17,6 +17,7 @@ package org.kie.pmml.models.regression.model;
 
 import java.util.Collections;
 import java.util.Map;
+import java.util.function.Function;
 
 import org.kie.pmml.commons.model.KiePMMLModel;
 
@@ -44,4 +45,10 @@ public abstract class KiePMMLRegressionModel extends KiePMMLModel {
     public KiePMMLRegressionTable getRegressionTable() {
         return regressionTable;
     }
+
+    public void setTransformationsMap(Map<String, Function> transformationsMap) {
+        this.transformationsMap = transformationsMap;
+    }
+
+
 }

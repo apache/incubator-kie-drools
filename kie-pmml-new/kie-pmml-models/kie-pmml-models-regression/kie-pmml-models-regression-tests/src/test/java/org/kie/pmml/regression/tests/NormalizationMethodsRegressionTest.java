@@ -16,6 +16,12 @@
 
 package org.kie.pmml.regression.tests;
 
+import java.nio.charset.Charset;
+import java.util.Arrays;
+import java.util.Collection;
+import java.util.HashMap;
+import java.util.Map;
+
 import org.apache.commons.io.IOUtils;
 import org.assertj.core.api.Assertions;
 import org.dmg.pmml.PMML;
@@ -29,14 +35,9 @@ import org.kie.pmml.commons.model.KiePMMLModel;
 import org.kie.pmml.compiler.testutils.TestUtils;
 import org.kie.pmml.evaluator.core.PMMLContextImpl;
 
-import java.nio.charset.Charset;
-import java.util.Arrays;
-import java.util.Collection;
-import java.util.HashMap;
-import java.util.Map;
-
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
+import static org.kie.pmml.compiler.commons.factories.TransformationsMapFactory.getTransformationsMap;
 
 @RunWith(Parameterized.class)
 public class NormalizationMethodsRegressionTest extends AbstractPMMLRegressionTest {
@@ -55,6 +56,12 @@ public class NormalizationMethodsRegressionTest extends AbstractPMMLRegressionTe
     private double y;
     private String normalizationMethod;
 
+    public NormalizationMethodsRegressionTest(double x, double y, String normalizationMethod) {
+        this.x = x;
+        this.y = y;
+        this.normalizationMethod = normalizationMethod;
+    }
+
     @Parameterized.Parameters
     public static Collection<Object[]> data() {
         return Arrays.asList(new Object[][]{
@@ -65,12 +72,6 @@ public class NormalizationMethodsRegressionTest extends AbstractPMMLRegressionTe
                 {0, 0, "exp"}, {-1, 2, "exp"}, {0.5, -2.5, "exp"}, {3, 1, "exp"}, {25, 50, "exp"},
                 {-100, 250, "exp"}, {-100.1, 800, "exp"}, {-8, 12.5, "exp"}, {-1001.1, -500.2, "exp"}, {-1701, 508, "exp"},
         });
-    }
-
-    public NormalizationMethodsRegressionTest(double x, double y, String normalizationMethod) {
-        this.x = x;
-        this.y = y;
-        this.normalizationMethod = normalizationMethod;
     }
 
     private static double normalizedRegressionFunction(double x, double y, String normalizationMethod) {
@@ -95,8 +96,8 @@ public class NormalizationMethodsRegressionTest extends AbstractPMMLRegressionTe
         assertEquals(1, pmml.getModels().size());
         assertTrue(pmml.getModels().get(0) instanceof RegressionModel);
 
-        final KiePMMLModel pmmlModel = PROVIDER.getKiePMMLModel(pmml.getDataDictionary(),
-                (RegressionModel) pmml.getModels().get(0), RELEASE_ID);
+        final KiePMMLModel pmmlModel = PROVIDER.getKiePMMLModel(pmml.getDataDictionary(), getTransformationsMap(pmml.getTransformationDictionary()),
+                                                                (RegressionModel) pmml.getModels().get(0), RELEASE_ID);
         Assertions.assertThat(pmmlModel).isNotNull();
 
         final Map<String, Object> inputData = new HashMap<>();

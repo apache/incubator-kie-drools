@@ -17,11 +17,14 @@ package org.kie.pmml.compiler.executor;
 
 import java.io.InputStream;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
+import java.util.function.Function;
 import java.util.stream.Collectors;
 
 import org.dmg.pmml.DataDictionary;
 import org.dmg.pmml.PMML;
+import org.dmg.pmml.TransformationDictionary;
 import org.kie.pmml.commons.exceptions.ExternalException;
 import org.kie.pmml.commons.exceptions.KiePMMLException;
 import org.kie.pmml.commons.exceptions.KiePMMLInternalException;
@@ -30,7 +33,8 @@ import org.kie.pmml.compiler.commons.utils.KiePMMLUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import static org.kie.pmml.compiler.commons.implementations.KiePMMLModelRetriever.getFromDataDictionaryAndModel;
+import static org.kie.pmml.compiler.commons.factories.TransformationsMapFactory.getTransformationsMap;
+import static org.kie.pmml.compiler.commons.implementations.KiePMMLModelRetriever.getFromCommonDataAndModel;
 
 /**
  * <code>PMMLCompiler</code> default implementation
@@ -63,11 +67,12 @@ public class PMMLCompilerImpl implements PMMLCompiler {
      */
     private List<KiePMMLModel> getModels(PMML pmml, Object kbuilder) {
         logger.trace("getModels {}", pmml);
-        DataDictionary dataDictionary = pmml.getDataDictionary();
+        final DataDictionary dataDictionary = pmml.getDataDictionary();
+        final Map<String, Function> transformationsMap = getTransformationsMap(pmml.getTransformationDictionary());
         return pmml
                 .getModels()
                 .stream()
-                .map(model -> getFromDataDictionaryAndModel(dataDictionary, model, kbuilder))
+                .map(model -> getFromCommonDataAndModel(dataDictionary, transformationsMap, model, kbuilder))
                 .filter(Optional::isPresent)
                 .map(Optional::get)
                 .collect(Collectors.toList());

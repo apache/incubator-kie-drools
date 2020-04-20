@@ -21,6 +21,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 import java.util.concurrent.atomic.AtomicInteger;
+import java.util.function.Function;
 import java.util.stream.Collectors;
 
 import com.github.javaparser.StaticJavaParser;
@@ -35,6 +36,7 @@ import org.dmg.pmml.DataDictionary;
 import org.dmg.pmml.DataField;
 import org.dmg.pmml.MiningFunction;
 import org.dmg.pmml.OpType;
+import org.dmg.pmml.TransformationDictionary;
 import org.dmg.pmml.regression.RegressionModel;
 import org.kie.memorycompiler.KieMemoryCompiler;
 import org.kie.pmml.commons.model.KiePMMLOutputField;
@@ -61,8 +63,8 @@ public class KiePMMLRegressionModelFactory {
     private KiePMMLRegressionModelFactory() {
     }
 
-    public static KiePMMLRegressionModel getKiePMMLRegressionModel(DataDictionary dataDictionary, RegressionModel model) throws IOException, IllegalAccessException, InstantiationException {
-        logger.trace("getKiePMMLRegressionModel {}", model);
+    public static KiePMMLRegressionModel getKiePMMLRegressionModel(final DataDictionary dataDictionary, final Map<String, Function> transformationsMap, RegressionModel model) throws IOException, IllegalAccessException, InstantiationException {
+        logger.trace("getKiePMMLRegressionModel {} {} {}", dataDictionary, transformationsMap, model);
         String name = model.getModelName();
         String targetFieldName = getTargetFieldName(dataDictionary, model).orElse(null);
         List<KiePMMLOutputField> outputFields = getOutputFields(model);
@@ -82,7 +84,9 @@ public class KiePMMLRegressionModelFactory {
         String fullClassName = BASE_PACKAGE + className;
         sourcesMap.put(fullClassName, cloneCU.toString());
         final Map<String, Class<?>> compiledClasses = KieMemoryCompiler.compile(sourcesMap, Thread.currentThread().getContextClassLoader());
-        return (KiePMMLRegressionModel) compiledClasses.get(fullClassName).newInstance();
+        KiePMMLRegressionModel toReturn = (KiePMMLRegressionModel) compiledClasses.get(fullClassName).newInstance();
+        toReturn.setTransformationsMap(transformationsMap);
+        return toReturn;
     }
 
     private static Map<String, KiePMMLTableSourceCategory> getRegressionTablesMap(DataDictionary dataDictionary, RegressionModel model, String targetFieldName, List<KiePMMLOutputField> outputFields) throws IOException {

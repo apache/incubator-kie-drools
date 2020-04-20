@@ -15,7 +15,11 @@
  */
 package org.kie.pmml.models.drools.tree.compiler.executor;
 
+import java.util.Map;
+import java.util.function.Function;
+
 import org.dmg.pmml.DataDictionary;
+import org.dmg.pmml.TransformationDictionary;
 import org.dmg.pmml.tree.TreeModel;
 import org.kie.pmml.commons.model.enums.PMML_MODEL;
 import org.kie.pmml.models.drools.provider.DroolsModelProvider;
@@ -40,8 +44,8 @@ public class TreeModelImplementationProvider extends DroolsModelProvider<TreeMod
     }
 
     @Override
-    public KiePMMLTreeModel getKiePMMLDroolsModel(DataDictionary dataDictionary, TreeModel model) {
-        logger.trace("getKiePMMLDroolsModel {} {}", dataDictionary, model);
-        return KiePMMLTreeModelFactory.getKiePMMLTreeModel(dataDictionary, model);
+    public KiePMMLTreeModel getKiePMMLDroolsModel(final DataDictionary dataDictionary, final Map<String, Function> transformationsMap, TreeModel model) {
+        logger.trace("getKiePMMLDroolsModel {} {} {}", dataDictionary, transformationsMap, model);
+        return KiePMMLTreeModelFactory.getKiePMMLTreeModel(dataDictionary, transformationsMap, model);
     }
 }

@@ -39,6 +39,7 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
+import static org.kie.pmml.compiler.commons.factories.TransformationsMapFactory.getTransformationsMap;
 
 public class PMMLTreeModelEvaluatorTest {
 
@@ -69,7 +70,7 @@ public class PMMLTreeModelEvaluatorTest {
         assertNotNull(pmml);
         assertEquals(1, pmml.getModels().size());
         assertTrue(pmml.getModels().get(0) instanceof TreeModel);
-        kiePMMLModel = KiePMMLTreeModelFactory.getKiePMMLTreeModel(pmml.getDataDictionary(), (TreeModel) pmml.getModels().get(0));
+        kiePMMLModel = KiePMMLTreeModelFactory.getKiePMMLTreeModel(pmml.getDataDictionary(), getTransformationsMap(pmml.getTransformationDictionary()), (TreeModel) pmml.getModels().get(0));
     }
 
     @Test

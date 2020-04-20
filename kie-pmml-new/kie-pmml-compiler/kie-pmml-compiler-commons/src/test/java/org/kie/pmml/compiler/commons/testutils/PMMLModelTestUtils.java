@@ -25,6 +25,7 @@ import org.dmg.pmml.MiningField;
 import org.dmg.pmml.MiningFunction;
 import org.dmg.pmml.MiningSchema;
 import org.dmg.pmml.OpType;
+import org.dmg.pmml.TransformationDictionary;
 import org.dmg.pmml.regression.CategoricalPredictor;
 import org.dmg.pmml.regression.NumericPredictor;
 import org.dmg.pmml.regression.PredictorTerm;
@@ -39,6 +40,11 @@ public class PMMLModelTestUtils {
     public static DataDictionary getDataDictionary(List<DataField> dataFields) {
         DataDictionary toReturn = new DataDictionary();
         toReturn.addDataFields(dataFields.toArray(new DataField[0]));
+        return toReturn;
+    }
+
+    public static TransformationDictionary getTransformationDictionary() {
+        TransformationDictionary toReturn = new TransformationDictionary();
         return toReturn;
     }
 

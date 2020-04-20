@@ -16,6 +16,12 @@
 
 package org.kie.pmml.regression.tests;
 
+import java.nio.charset.Charset;
+import java.util.Arrays;
+import java.util.Collection;
+import java.util.HashMap;
+import java.util.Map;
+
 import org.apache.commons.io.IOUtils;
 import org.assertj.core.api.Assertions;
 import org.assertj.core.data.Percentage;
@@ -30,11 +36,9 @@ import org.kie.pmml.commons.model.KiePMMLModel;
 import org.kie.pmml.compiler.testutils.TestUtils;
 import org.kie.pmml.evaluator.core.PMMLContextImpl;
 
-import java.nio.charset.Charset;
-import java.util.*;
-
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
+import static org.kie.pmml.compiler.commons.factories.TransformationsMapFactory.getTransformationsMap;
 
 @RunWith(Parameterized.class)
 public class LogisticRegressionWithNormalizationTest extends AbstractPMMLRegressionTest {
@@ -115,8 +119,8 @@ public class LogisticRegressionWithNormalizationTest extends AbstractPMMLRegress
         assertEquals(1, pmml.getModels().size());
         assertTrue(pmml.getModels().get(0) instanceof RegressionModel);
 
-        final KiePMMLModel pmmlModel = PROVIDER.getKiePMMLModel(pmml.getDataDictionary(),
-                (RegressionModel) pmml.getModels().get(0), RELEASE_ID);
+        final KiePMMLModel pmmlModel = PROVIDER.getKiePMMLModel(pmml.getDataDictionary(), getTransformationsMap(pmml.getTransformationDictionary()),
+                                                                (RegressionModel) pmml.getModels().get(0), RELEASE_ID);
         Assertions.assertThat(pmmlModel).isNotNull();
 
         final Map<String, Object> inputData = new HashMap<>();

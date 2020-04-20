@@ -15,13 +15,16 @@
  */
 package org.kie.pmml.models.drools.provider;
 
+import java.util.Map;
+import java.util.function.Function;
+
 import org.dmg.pmml.DataDictionary;
 import org.dmg.pmml.Model;
 import org.drools.compiler.builder.impl.KnowledgeBuilderImpl;
 import org.kie.internal.builder.KnowledgeBuilder;
 import org.kie.pmml.commons.exceptions.KiePMMLException;
-import org.kie.pmml.models.drools.commons.model.KiePMMLDroolsModel;
 import org.kie.pmml.compiler.api.provider.ModelImplementationProvider;
+import org.kie.pmml.models.drools.commons.model.KiePMMLDroolsModel;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -33,9 +36,9 @@ public abstract class DroolsModelProvider<T extends Model, E extends KiePMMLDroo
     private static final Logger logger = LoggerFactory.getLogger(DroolsModelProvider.class.getName());
 
     @Override
-    public E getKiePMMLModel(DataDictionary dataDictionary, T model, Object kBuilder) {
-        logger.trace("getKiePMMLModel {} {}", dataDictionary, model);
-        E toReturn = getKiePMMLDroolsModel(dataDictionary, model);
+    public E getKiePMMLModel(final DataDictionary dataDictionary, final Map<String, Function> transformationsMap, T model, Object kBuilder) {
+        logger.trace("getKiePMMLModel {} {} {}", dataDictionary, transformationsMap, model);
+        E toReturn = getKiePMMLDroolsModel(dataDictionary, transformationsMap, model);
         if (!(kBuilder instanceof KnowledgeBuilder)) {
             throw new KiePMMLException(String.format("Expecting KnowledgeBuilder, received %s", kBuilder.getClass().getName()));
         }
@@ -43,5 +46,5 @@ public abstract class DroolsModelProvider<T extends Model, E extends KiePMMLDroo
         return toReturn;
     }
 
-    public abstract E getKiePMMLDroolsModel(DataDictionary dataDictionary, T model);
+    public abstract E getKiePMMLDroolsModel(final DataDictionary dataDictionary, final Map<String, Function> transformationsMap, T model);
 }

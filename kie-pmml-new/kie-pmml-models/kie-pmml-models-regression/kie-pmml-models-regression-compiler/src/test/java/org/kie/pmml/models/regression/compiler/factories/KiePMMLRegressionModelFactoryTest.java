@@ -35,6 +35,7 @@ import org.dmg.pmml.MiningField;
 import org.dmg.pmml.MiningFunction;
 import org.dmg.pmml.MiningSchema;
 import org.dmg.pmml.OpType;
+import org.dmg.pmml.TransformationDictionary;
 import org.dmg.pmml.regression.CategoricalPredictor;
 import org.dmg.pmml.regression.NumericPredictor;
 import org.dmg.pmml.regression.PredictorTerm;
@@ -53,6 +54,7 @@ import org.kie.pmml.models.regression.model.enums.REGRESSION_NORMALIZATION_METHO
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
+import static org.kie.pmml.compiler.commons.factories.TransformationsMapFactory.getTransformationsMap;
 import static org.kie.pmml.compiler.commons.testutils.PMMLModelTestUtils.getCategoricalPredictor;
 import static org.kie.pmml.compiler.commons.testutils.PMMLModelTestUtils.getDataDictionary;
 import static org.kie.pmml.compiler.commons.testutils.PMMLModelTestUtils.getDataField;
@@ -62,6 +64,7 @@ import static org.kie.pmml.compiler.commons.testutils.PMMLModelTestUtils.getNume
 import static org.kie.pmml.compiler.commons.testutils.PMMLModelTestUtils.getPredictorTerm;
 import static org.kie.pmml.compiler.commons.testutils.PMMLModelTestUtils.getRegressionModel;
 import static org.kie.pmml.compiler.commons.testutils.PMMLModelTestUtils.getRegressionTable;
+import static org.kie.pmml.compiler.commons.testutils.PMMLModelTestUtils.getTransformationDictionary;
 import static org.kie.pmml.models.regression.compiler.factories.KiePMMLRegressionModelFactory.getKiePMMLRegressionModel;
 
 @RunWith(Parameterized.class)
@@ -72,6 +75,7 @@ public class KiePMMLRegressionModelFactoryTest {
     private List<MiningField> miningFields;
     private MiningField targetMiningField;
     private DataDictionary dataDictionary;
+    private TransformationDictionary transformationDictionary;
     private MiningSchema miningSchema;
     private RegressionModel regressionModel;
 
@@ -103,6 +107,7 @@ public class KiePMMLRegressionModelFactoryTest {
         targetMiningField = miningFields.get(0);
         targetMiningField.setUsageType(MiningField.UsageType.TARGET);
         dataDictionary = getDataDictionary(dataFields);
+        transformationDictionary = getTransformationDictionary();
         miningSchema = getMiningSchema(miningFields);
         regressionModel = getRegressionModel(modelName, MiningFunction.REGRESSION, miningSchema, regressionTables);
     }
@@ -117,7 +122,7 @@ public class KiePMMLRegressionModelFactoryTest {
 
     @Test
     public void getKiePMMLRegressionModelTest() throws IOException, IllegalAccessException, InstantiationException {
-        KiePMMLRegressionModel retrieved = getKiePMMLRegressionModel(dataDictionary, regressionModel);
+        KiePMMLRegressionModel retrieved = getKiePMMLRegressionModel(dataDictionary, getTransformationsMap(transformationDictionary), regressionModel);
         assertNotNull(retrieved);
         assertEquals(regressionModel.getModelName(), retrieved.getName());
         assertEquals(MINING_FUNCTION.byName(regressionModel.getMiningFunction().value()), retrieved.getMiningFunction());
@@ -148,7 +153,7 @@ public class KiePMMLRegressionModelFactoryTest {
         for (CategoricalPredictor categoricalPredictor : originalRegressionTable.getCategoricalPredictors()) {
             assertTrue(categoricalFunctionMap.containsKey(categoricalPredictor.getName().getValue()));
         }
-        final  Map<String, Function<Map<String, Object>, Double>>  predictorTermsFunctionMap = regressionTable.getPredictorTermsFunctionMap();
+        final Map<String, Function<Map<String, Object>, Double>> predictorTermsFunctionMap = regressionTable.getPredictorTermsFunctionMap();
         for (PredictorTerm predictorTerm : originalRegressionTable.getPredictorTerms()) {
             assertTrue(predictorTermsFunctionMap.containsKey(predictorTerm.getName().getValue()));
         }

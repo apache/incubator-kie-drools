@@ -37,6 +37,8 @@ import org.kie.pmml.evaluator.core.executor.PMMLModelExecutorFinderImpl;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import static org.kie.pmml.evaluator.core.utils.KiePMMLTransformationsUtils.doTransformations;
+
 public class PMMLRuntimeImpl implements PMMLRuntime {
 
     private static final Logger logger = LoggerFactory.getLogger(PMMLRuntimeImpl.class);
@@ -74,6 +76,7 @@ public class PMMLRuntimeImpl implements PMMLRuntime {
     @Override
     public PMML4Result evaluate(KiePMMLModel model, PMMLContext context, String releaseId) {
         logger.debug("evaluate {} {}", model, context);
+        doTransformations(model, context);
         addMissingValuesReplacements(model, context);
         Optional<PMMLModelExecutor> pmmlModelExecutor = getFromPMMLModelType(model.getPmmlMODEL());
         return pmmlModelExecutor.isPresent() ? pmmlModelExecutor.get().evaluate(model, context, releaseId) : new PMML4Result();

@@ -16,8 +16,6 @@
 
 package org.kie.pmml.regression.tests;
 
-import java.io.IOException;
-import java.io.InputStream;
 import java.util.Map;
 
 import org.assertj.core.api.Assertions;
@@ -30,12 +28,10 @@ import org.kie.pmml.evaluator.core.executor.PMMLModelExecutor;
 import org.kie.pmml.evaluator.core.utils.PMMLRequestDataBuilder;
 import org.kie.pmml.models.regression.compiler.executor.RegressionModelImplementationProvider;
 import org.kie.pmml.models.regression.evaluator.PMMLRegressionModelExecutor;
-import org.xml.sax.SAXException;
-
-import javax.xml.bind.JAXBException;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
+import static org.kie.pmml.compiler.commons.factories.TransformationsMapFactory.getTransformationsMap;
 
 public abstract class AbstractPMMLRegressionTest {
 
@@ -67,7 +63,7 @@ public abstract class AbstractPMMLRegressionTest {
         assertEquals(1, pmml.getModels().size());
         assertTrue(pmml.getModels().get(0) instanceof RegressionModel);
 
-        final KiePMMLModel pmmlModel = PROVIDER.getKiePMMLModel(pmml.getDataDictionary(),
+        final KiePMMLModel pmmlModel = PROVIDER.getKiePMMLModel(pmml.getDataDictionary(), getTransformationsMap(pmml.getTransformationDictionary()),
                                                                 (RegressionModel) pmml.getModels().get(0), RELEASE_ID);
         Assertions.assertThat(pmmlModel).isNotNull();
 

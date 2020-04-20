@@ -19,8 +19,10 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Optional;
+import java.util.function.Function;
 
 import org.dmg.pmml.DataDictionary;
+import org.dmg.pmml.TransformationDictionary;
 import org.dmg.pmml.tree.TreeModel;
 import org.drools.compiler.lang.descr.PackageDescr;
 import org.kie.pmml.commons.model.enums.MINING_FUNCTION;
@@ -30,6 +32,7 @@ import org.kie.pmml.models.drools.tree.model.KiePMMLTreeModel;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import static org.kie.pmml.compiler.commons.factories.TransformationsMapFactory.getTransformationsMap;
 import static org.kie.pmml.models.drools.commons.factories.KiePMMLDescrFactory.getBaseDescr;
 import static org.kie.pmml.compiler.commons.utils.ModelUtils.getTargetFieldName;
 import static org.kie.pmml.models.drools.tree.compiler.factories.KiePMMLTreeModelASTFactory.getKiePMMLDroolsAST;
@@ -44,7 +47,7 @@ public class KiePMMLTreeModelFactory {
     private KiePMMLTreeModelFactory() {
     }
 
-    public static KiePMMLTreeModel getKiePMMLTreeModel(DataDictionary dataDictionary, TreeModel model) {
+    public static KiePMMLTreeModel getKiePMMLTreeModel(final DataDictionary dataDictionary, final Map<String, Function> transformationsMap, final TreeModel model) {
         logger.trace("getKiePMMLTreeModel {}", model);
         String name = model.getModelName();
         Optional<String> targetFieldName = getTargetFieldName(dataDictionary, model);
@@ -55,6 +58,7 @@ public class KiePMMLTreeModelFactory {
                 .withPackageDescr(baseDescr)
                 .withFieldTypeMap(fieldTypeMap)
                 .withTargetField(targetFieldName.orElse(null))
+                .withTransformationsMap(transformationsMap)
                 .build();
     }
 }
