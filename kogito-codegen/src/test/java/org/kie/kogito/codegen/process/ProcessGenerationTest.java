@@ -25,6 +25,7 @@ import org.jbpm.workflow.core.impl.NodeImpl;
 import org.jbpm.workflow.core.node.ActionNode;
 import org.jbpm.workflow.core.node.Assignment;
 import org.jbpm.workflow.core.node.BoundaryEventNode;
+import org.jbpm.workflow.core.node.CompositeNode;
 import org.jbpm.workflow.core.node.DataAssociation;
 import org.jbpm.workflow.core.node.EndNode;
 import org.jbpm.workflow.core.node.EventNode;
@@ -36,6 +37,7 @@ import org.jbpm.workflow.core.node.StartNode;
 import org.jbpm.workflow.core.node.StateBasedNode;
 import org.jbpm.workflow.core.node.Trigger;
 import org.jbpm.workflow.core.node.WorkItemNode;
+import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.MethodSource;
 import org.kie.api.definition.process.Connection;
@@ -95,13 +97,13 @@ public class ProcessGenerationTest extends AbstractCodegenTest {
 
     private static final Collection<String> IGNORED_PROCESS_META = Arrays.asList("Definitions", "BPMN.Connections", "ItemDefinitions");
     private static final Path BASE_PATH = Paths.get("src/test/resources");
-    private static final Collection<String> PROCESS_EXTENSIONS = Arrays.asList(".bpmn2", ".bpmn");
 
     static Stream<String> processesProvider() throws IOException {
         Set<String> ignoredFiles = Files.lines(BASE_PATH.resolve("org/kie/kogito/codegen/process/process-generation-test.skip.txt"))
                 .collect(Collectors.toSet());
         return Files.find(BASE_PATH, 10, ((path, basicFileAttributes) -> basicFileAttributes.isRegularFile()
-                && PROCESS_EXTENSIONS.stream().anyMatch(ext -> path.getFileName().toString().endsWith(ext))))
+                && (ProcessCodegen.SUPPORTED_BPMN_EXTENSIONS.stream().anyMatch(ext -> path.getFileName().toString().endsWith(ext))
+                || ProcessCodegen.SUPPORTED_SW_EXTENSIONS.keySet().stream().anyMatch(ext -> path.getFileName().toString().endsWith(ext)))))
                 .map(BASE_PATH::relativize)
                 .map(Path::toString)
                 .filter(p -> !ignoredFiles.contains(p));
@@ -136,11 +138,23 @@ public class ProcessGenerationTest extends AbstractCodegenTest {
         assertEquals(expected.getFunctionImports(), current.getFunctionImports(), "FunctionImports");
         assertMetadata(expected.getMetaData(), current.getMetaData(), IGNORED_PROCESS_META);
 
-        List<Node> expectedNodes = expected.getNodesRecursively();
-        List<Node> currentNodes = current.getNodesRecursively();
-        assertEquals(expectedNodes.size(), currentNodes.size());
-        expectedNodes.forEach(eNode -> {
-            Optional<Node> cNode = currentNodes.stream().filter(c -> eNode.getMetaData().get("UniqueId").equals(c.getMetaData().get("UniqueId"))).findFirst();
+        assertNodes(expected.getNodes(), current.getNodes());
+    }
+
+    @Test
+    public void testInvalidProcess() throws Exception {
+        try {
+            testProcessGeneration("messageevent/EventNodeMalformed.bpmn2");
+            fail("Expected ProcessCodegenException");
+        } catch (ProcessCodegenException e) {
+            assertNotNull(e);
+        }
+    }
+
+    private static void assertNodes(Node[] expected, Node[] current) {
+        assertEquals(expected.length, current.length);
+        Stream.of(expected).forEach(eNode -> {
+            Optional<Node> cNode = Stream.of(current).filter(c -> c.getId() == eNode.getId()).findFirst();
             assertTrue(cNode.isPresent(), "Missing node " + eNode.getName());
             assertNode(eNode, cNode.get());
         });
@@ -151,7 +165,7 @@ public class ProcessGenerationTest extends AbstractCodegenTest {
         if (expected.getName() != null) {
             assertEquals(expected.getName(), current.getName());
         } else {
-            assertNotNull(current.getName());
+            assertNotNull(current.getName(), current.getClass().getName());
         }
         assertConnections(expected.getIncomingConnections(), current.getIncomingConnections());
         assertConnections(expected.getOutgoingConnections(), current.getOutgoingConnections());
@@ -295,6 +309,14 @@ public class ProcessGenerationTest extends AbstractCodegenTest {
         assertEquals(expected.getMatchVariable(), current.getMatchVariable(), "MatchVariable");
     };
 
+    private static final BiConsumer<Node, Node> compositeNodeAsserter = (eNode, cNode) -> {
+        assertTrue(CompositeNode.class.isAssignableFrom(eNode.getClass()));
+        assertTrue(CompositeNode.class.isAssignableFrom(cNode.getClass()));
+        CompositeNode expected = (CompositeNode) eNode;
+        CompositeNode current = (CompositeNode) cNode;
+        assertNodes(expected.getNodes(), current.getNodes());
+    };
+
     private static final Map<Class<? extends Node>, BiConsumer<Node, Node>> nodeAsserters = new HashMap<>();
 
     static {
@@ -311,6 +333,7 @@ public class ProcessGenerationTest extends AbstractCodegenTest {
         nodeAsserters.put(BoundaryEventNode.class, boundaryEventNodeAsserter);
         nodeAsserters.put(ActionNode.class, actionNodeAsserter);
         nodeAsserters.put(MilestoneNode.class, milestoneNodeAsserter);
+        nodeAsserters.put(CompositeNode.class, compositeNodeAsserter);
     }
 
     private static void assertNode(Node expected, Node current) {

@@ -16,21 +16,12 @@
 
 package org.jbpm.ruleflow.core.factory;
 
-import java.util.ArrayList;
-import java.util.List;
-
-import org.jbpm.process.core.timer.Timer;
 import org.jbpm.ruleflow.core.RuleFlowNodeContainerFactory;
-import org.jbpm.workflow.core.DroolsAction;
 import org.jbpm.workflow.core.Node;
 import org.jbpm.workflow.core.NodeContainer;
-import org.jbpm.workflow.core.impl.DroolsConsequenceAction;
 import org.jbpm.workflow.core.node.MilestoneNode;
 
-/**
- *
- */
-public class MilestoneNodeFactory extends NodeFactory {
+public class MilestoneNodeFactory extends StateBasedNodeFactory {
 
     public MilestoneNodeFactory(RuleFlowNodeContainerFactory nodeContainerFactory, NodeContainer nodeContainer, long id) {
         super(nodeContainerFactory, nodeContainer, id);
@@ -44,30 +35,27 @@ public class MilestoneNodeFactory extends NodeFactory {
         return (MilestoneNode) getNode();
     }
 
+    @Override
     public MilestoneNodeFactory name(String name) {
-        getNode().setName(name);
+        super.name(name);
         return this;
     }
 
+    @Override
     public MilestoneNodeFactory onEntryAction(String dialect, String action) {
-        if (getMilestoneNode().getActions(dialect) != null) {
-            getMilestoneNode().getActions(dialect).add(new DroolsConsequenceAction(dialect, action));
-        } else {
-            List<DroolsAction> actions = new ArrayList<DroolsAction>();
-            actions.add(new DroolsConsequenceAction(dialect, action));
-            getMilestoneNode().setActions(MilestoneNode.EVENT_NODE_ENTER, actions);
-        }
+        super.onEntryAction(dialect, action);
         return this;
     }
 
+    @Override
     public MilestoneNodeFactory onExitAction(String dialect, String action) {
-        if (getMilestoneNode().getActions(dialect) != null) {
-            getMilestoneNode().getActions(dialect).add(new DroolsConsequenceAction(dialect, action));
-        } else {
-            List<DroolsAction> actions = new ArrayList<DroolsAction>();
-            actions.add(new DroolsConsequenceAction(dialect, action));
-            getMilestoneNode().setActions(MilestoneNode.EVENT_NODE_EXIT, actions);
-        }
+        super.onExitAction(dialect, action);
+        return this;
+    }
+
+    @Override
+    public MilestoneNodeFactory timer(String delay, String period, String dialect, String action) {
+        super.timer(delay, period, dialect, action);
         return this;
     }
 
@@ -75,14 +63,4 @@ public class MilestoneNodeFactory extends NodeFactory {
         getMilestoneNode().setConstraint(constraint);
         return this;
     }
-
-    public MilestoneNodeFactory timer(String delay, String period, String dialect, String action) {
-    	Timer timer = new Timer();
-    	timer.setDelay(delay);
-    	timer.setPeriod(period);
-    	getMilestoneNode().addTimer(timer, new DroolsConsequenceAction(dialect, action));
-    	return this;
-    }
-    
 }
-

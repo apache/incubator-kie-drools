@@ -16,47 +16,52 @@
 
 package org.jbpm.compiler.canonical;
 
+import com.github.javaparser.ast.expr.IntegerLiteralExpr;
+import com.github.javaparser.ast.expr.LongLiteralExpr;
+import com.github.javaparser.ast.expr.StringLiteralExpr;
+import com.github.javaparser.ast.stmt.BlockStmt;
 import org.jbpm.process.core.context.variable.VariableScope;
 import org.jbpm.process.core.timer.Timer;
 import org.jbpm.ruleflow.core.factory.TimerNodeFactory;
 import org.jbpm.workflow.core.node.TimerNode;
 import org.kie.api.definition.process.Node;
 
-import com.github.javaparser.ast.expr.IntegerLiteralExpr;
-import com.github.javaparser.ast.expr.LongLiteralExpr;
-import com.github.javaparser.ast.expr.StringLiteralExpr;
-import com.github.javaparser.ast.stmt.BlockStmt;
+import static org.jbpm.ruleflow.core.factory.TimerNodeFactory.METHOD_DATE;
+import static org.jbpm.ruleflow.core.factory.TimerNodeFactory.METHOD_DELAY;
+import static org.jbpm.ruleflow.core.factory.TimerNodeFactory.METHOD_PERIOD;
+import static org.jbpm.ruleflow.core.factory.TimerNodeFactory.METHOD_TYPE;
 
-public class TimerNodeVisitor extends AbstractVisitor {
-    
-    protected static final String TIMER_NODE_VAR = "timerNode";
+public class TimerNodeVisitor extends AbstractNodeVisitor {
+
+    protected static final String NODE_KEY = "timerNode";
+
+    @Override
+    protected String getNodeKey() {
+        return NODE_KEY;
+    }
 
     @Override
     public void visitNode(String factoryField, Node node, BlockStmt body, VariableScope variableScope, ProcessMetaData metadata) {
         TimerNode timerNode = (TimerNode) node;
-        
-        addFactoryMethodWithArgsWithAssignment(factoryField, body, TimerNodeFactory.class, TIMER_NODE_VAR + node.getId(), "timerNode", new LongLiteralExpr(timerNode.getId()));
-        addFactoryMethodWithArgs(body, TIMER_NODE_VAR + node.getId(), "name", new StringLiteralExpr(getOrDefault(timerNode.getName(), "End")));
-        
+
+        body.addStatement(getAssignedFactoryMethod(factoryField, TimerNodeFactory.class, getNodeId(node), NODE_KEY, new LongLiteralExpr(timerNode.getId())))
+        .addStatement(getNameMethod(node, "End"));
+
         Timer timer = timerNode.getTimer();
-        addFactoryMethodWithArgs(body, TIMER_NODE_VAR + node.getId(), "type", new IntegerLiteralExpr(timer.getTimeType()));
-        
-        if (timer.getTimeType() == Timer.TIME_CYCLE) {           
-            addFactoryMethodWithArgs(body, TIMER_NODE_VAR + node.getId(), "delay", new StringLiteralExpr(timer.getDelay()));
-            
+        body.addStatement(getFactoryMethod(getNodeId(node), METHOD_TYPE, new IntegerLiteralExpr(timer.getTimeType())));
+
+        if (timer.getTimeType() == Timer.TIME_CYCLE) {
+            body.addStatement(getFactoryMethod(getNodeId(node), METHOD_DELAY, new StringLiteralExpr(timer.getDelay())));
             if (timer.getPeriod() != null && !timer.getPeriod().isEmpty()) {
-                addFactoryMethodWithArgs(body, TIMER_NODE_VAR + node.getId(), "period", new StringLiteralExpr(timer.getPeriod()));
+                body.addStatement(getFactoryMethod(getNodeId(node), METHOD_PERIOD, new StringLiteralExpr(timer.getPeriod())));
             }
-        } else if (timer.getTimeType() == Timer.TIME_DURATION) {           
-            addFactoryMethodWithArgs(body, TIMER_NODE_VAR + node.getId(), "delay", new StringLiteralExpr(timer.getDelay()));
-            
-        } else if (timer.getTimeType() == Timer.TIME_DATE) {           
-            addFactoryMethodWithArgs(body, TIMER_NODE_VAR + node.getId(), "date", new StringLiteralExpr(timer.getDate()));
+        } else if (timer.getTimeType() == Timer.TIME_DURATION) {
+            body.addStatement(getFactoryMethod(getNodeId(node), METHOD_DELAY, new StringLiteralExpr(timer.getDelay())));
+        } else if (timer.getTimeType() == Timer.TIME_DATE) {
+            body.addStatement(getFactoryMethod(getNodeId(node), METHOD_DATE, new StringLiteralExpr(timer.getDate())));
         }
-        
-               
-        visitMetaData(timerNode.getMetaData(), body, TIMER_NODE_VAR + node.getId());
-        
-        addFactoryMethodWithArgs(body, TIMER_NODE_VAR + node.getId(), "done");
+
+        visitMetaData(timerNode.getMetaData(), body, getNodeId(node));
+        body.addStatement(getDoneMethod(getNodeId(node)));
     }
 }

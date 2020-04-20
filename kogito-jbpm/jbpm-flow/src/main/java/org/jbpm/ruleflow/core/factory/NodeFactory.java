@@ -20,15 +20,16 @@ import org.jbpm.ruleflow.core.RuleFlowNodeContainerFactory;
 import org.jbpm.workflow.core.Node;
 import org.jbpm.workflow.core.NodeContainer;
 
-/**
- *
- */
 public abstract class NodeFactory {
+
+    public static final String METHOD_NAME = "name";
+    public static final String METHOD_METADATA = "metaData";
+    public static final String METHOD_DONE = "done";
 
     private Node node;
     private NodeContainer nodeContainer;
     protected RuleFlowNodeContainerFactory nodeContainerFactory;
-    
+
     protected NodeFactory(RuleFlowNodeContainerFactory nodeContainerFactory, NodeContainer nodeContainer, long id) {
         this.nodeContainerFactory = nodeContainerFactory;
         this.nodeContainer = nodeContainer;
@@ -38,20 +39,22 @@ public abstract class NodeFactory {
 
     protected abstract Node createNode();
 
-    public RuleFlowNodeContainerFactory done() {
-        nodeContainer.addNode(node);
-        return this.nodeContainerFactory;
+    protected Node getNode() {
+        return node;
     }
-    
+
+    public NodeFactory name(String name) {
+        getNode().setName(name);
+        return this;
+    }
+
     public NodeFactory metaData(String name, Object value) {
         getNode().setMetaData(name, value);
         return this;
     }
 
-    protected Node getNode() {
-        return node;
+    public RuleFlowNodeContainerFactory done() {
+        nodeContainer.addNode(node);
+        return this.nodeContainerFactory;
     }
 }
-
-
-    

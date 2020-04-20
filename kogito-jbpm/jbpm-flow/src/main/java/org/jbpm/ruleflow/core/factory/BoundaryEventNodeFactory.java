@@ -24,7 +24,16 @@ import org.jbpm.workflow.core.Node;
 import org.jbpm.workflow.core.NodeContainer;
 import org.jbpm.workflow.core.node.BoundaryEventNode;
 
-public class BoundaryEventNodeFactory extends NodeFactory {
+public class BoundaryEventNodeFactory extends EventNodeFactory {
+
+    public static final String METHOD_ATTACHED_TO = "attachedTo";
+
+    public static final String EVENT_TYPE_TIMER = "Timer";
+    public static final String METADATA_ATTACHED_TO = "AttachedTo";
+    public static final String METADATA_TIME_CYCLE = "TimeCycle";
+    public static final String METADATA_LANGUAGE = "Language";
+    public static final String METADATA_TIME_DURATION = "TimeDuration";
+    public static final String METADATA_CANCEL_ACTIVITY = "CancelActivity";
 
     private NodeContainer nodeContainer;
 
@@ -35,47 +44,69 @@ public class BoundaryEventNodeFactory extends NodeFactory {
         this.nodeContainer = nodeContainer;
     }
 
-    public BoundaryEventNodeFactory attachedTo(long attachedToId) {
-        attachedToUniqueId = (String)nodeContainer.getNode(attachedToId).getMetaData().get("UniqueId");
-        getBoundaryEventNode().setAttachedToNodeId(attachedToUniqueId);
-        getBoundaryEventNode().setMetaData("AttachedTo", attachedToUniqueId);
-        return this;
-    }
-    
-    public BoundaryEventNodeFactory attachedTo(String attachedToId) {
-        attachedToUniqueId = attachedToId;
-        getBoundaryEventNode().setAttachedToNodeId(attachedToUniqueId);
-        getBoundaryEventNode().setMetaData("AttachedTo", attachedToUniqueId);
-        return this;
+    protected BoundaryEventNode getBoundaryEventNode() {
+        return (BoundaryEventNode) getNode();
     }
 
+    @Override
     protected Node createNode() {
         return new BoundaryEventNode();
     }
 
-    protected BoundaryEventNode getBoundaryEventNode() {
-        return(BoundaryEventNode) getNode();
-    }
-
+    @Override
     public BoundaryEventNodeFactory name(String name) {
-        getNode().setName(name);
+        super.name(name);
         return this;
     }
 
+    @Override
     public BoundaryEventNodeFactory variableName(String variableName) {
-        getBoundaryEventNode().setVariableName(variableName);
+        super.variableName(variableName);
         return this;
     }
 
+    @Override
     public BoundaryEventNodeFactory eventFilter(EventFilter eventFilter) {
-        getBoundaryEventNode().addEventFilter(eventFilter);
+        super.eventFilter(eventFilter);
         return this;
     }
 
+    @Override
+    public BoundaryEventNodeFactory eventTransformer(EventTransformer transformer) {
+        super.eventTransformer(transformer);
+        return this;
+    }
+
+    @Override
+    public BoundaryEventNodeFactory scope(String scope) {
+        super.scope(scope);
+        return this;
+    }
+
+    @Override
+    public BoundaryEventNodeFactory metaData(String name, Object value) {
+        super.metaData(name, value);
+        return this;
+    }
+
+    public BoundaryEventNodeFactory attachedTo(long attachedToId) {
+        attachedToUniqueId = (String) nodeContainer.getNode(attachedToId).getMetaData().get("UniqueId");
+        getBoundaryEventNode().setAttachedToNodeId(attachedToUniqueId);
+        getBoundaryEventNode().setMetaData(BoundaryEventNodeFactory.METADATA_ATTACHED_TO, attachedToUniqueId);
+        return this;
+    }
+
+    public BoundaryEventNodeFactory attachedTo(String attachedToId) {
+        attachedToUniqueId = attachedToId;
+        getBoundaryEventNode().setAttachedToNodeId(attachedToUniqueId);
+        getBoundaryEventNode().setMetaData(METADATA_ATTACHED_TO, attachedToUniqueId);
+        return this;
+    }
+
+    @Override
     public BoundaryEventNodeFactory eventType(String eventType) {
-        EventTypeFilter filter = new EventTypeFilter();
-        filter.setType(eventType);
-        return eventFilter(filter);
+        super.eventType(eventType);
+        return this;
     }
 
     public BoundaryEventNodeFactory eventType(String eventTypePrefix, String eventTypeSurffix) {
@@ -84,45 +115,27 @@ public class BoundaryEventNodeFactory extends NodeFactory {
         }
         EventTypeFilter filter = new EventTypeFilter();
         filter.setType(eventTypePrefix + "-" + attachedToUniqueId + "-" + eventTypeSurffix);
-        return eventFilter(filter);
+        super.eventFilter(filter);
+        return this;
     }
 
     public BoundaryEventNodeFactory timeCycle(String timeCycle) {
-        eventType("Timer", timeCycle);
-        setMetaData("TimeCycle", timeCycle);
-        return this;
+        eventType(EVENT_TYPE_TIMER, timeCycle);
+        return metaData(METADATA_TIME_CYCLE, timeCycle);
     }
 
     public BoundaryEventNodeFactory timeCycle(String timeCycle, String language) {
-        eventType("Timer", timeCycle);
-        setMetaData("TimeCycle", timeCycle);
-        setMetaData("Language", language);
-        return this;
+        eventType(EVENT_TYPE_TIMER, timeCycle);
+        metaData(METADATA_TIME_CYCLE, timeCycle);
+        return metaData(METADATA_LANGUAGE, language);
     }
 
     public BoundaryEventNodeFactory timeDuration(String timeDuration) {
-        eventType("Timer", timeDuration);
-        setMetaData("TimeDuration", timeDuration);
-        return this;
+        eventType(EVENT_TYPE_TIMER, timeDuration);
+        return metaData(METADATA_TIME_DURATION, timeDuration);
     }
 
     public BoundaryEventNodeFactory cancelActivity(boolean cancelActivity) {
-        setMetaData("CancelActivity", cancelActivity);
-        return this;
-    }
-
-    public BoundaryEventNodeFactory eventTransformer(EventTransformer transformer) {
-        getBoundaryEventNode().setEventTransformer(transformer);
-        return this;
-    }
-
-    public BoundaryEventNodeFactory scope(String scope) {
-        getBoundaryEventNode().setScope(scope);
-        return this;
-    }
-
-    public BoundaryEventNodeFactory setMetaData(String name,Object value) {
-        getBoundaryEventNode().setMetaData(name, value);
-        return this;
+        return metaData(METADATA_CANCEL_ACTIVITY, cancelActivity);
     }
 }

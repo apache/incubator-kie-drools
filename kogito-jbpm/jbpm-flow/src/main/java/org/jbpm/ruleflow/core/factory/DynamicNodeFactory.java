@@ -16,108 +16,93 @@
 
 package org.jbpm.ruleflow.core.factory;
 
-import org.jbpm.process.core.datatype.DataType;
-import org.jbpm.process.core.context.exception.ActionExceptionHandler;
 import org.jbpm.process.core.context.exception.ExceptionHandler;
-import org.jbpm.process.core.context.exception.ExceptionScope;
-import org.jbpm.process.core.context.variable.Variable;
-import org.jbpm.process.core.context.variable.VariableScope;
+import org.jbpm.process.core.datatype.DataType;
 import org.jbpm.ruleflow.core.RuleFlowNodeContainerFactory;
-import org.jbpm.workflow.core.Node;
 import org.jbpm.workflow.core.NodeContainer;
-import org.jbpm.workflow.core.impl.DroolsConsequenceAction;
 import org.jbpm.workflow.core.node.CompositeContextNode;
 import org.jbpm.workflow.core.node.DynamicNode;
 
-public class DynamicNodeFactory extends RuleFlowNodeContainerFactory {
+public class DynamicNodeFactory extends CompositeContextNodeFactory {
 
-	private RuleFlowNodeContainerFactory nodeContainerFactory;
-	private NodeContainer nodeContainer;
-	private long linkedIncomingNodeId = -1;
-	private long linkedOutgoingNodeId = -1;
-	
     public DynamicNodeFactory(RuleFlowNodeContainerFactory nodeContainerFactory, NodeContainer nodeContainer, long id) {
-    	this.nodeContainerFactory = nodeContainerFactory;
-    	this.nodeContainer = nodeContainer;
-    	DynamicNode compositeNode = new DynamicNode();
-        compositeNode.setId(id);
-        setNodeContainer(compositeNode);
+        super(nodeContainerFactory, nodeContainer, id);
     }
-    
-    protected CompositeContextNode getCompositeNode() {
-    	return (CompositeContextNode) getNodeContainer();
+
+    @Override
+    protected CompositeContextNode createNode() {
+        return new DynamicNode();
     }
-    
+
     protected DynamicNode getDynamicNode() {
-    	return (DynamicNode) getNodeContainer();
+        return (DynamicNode) getNodeContainer();
     }
 
+    @Override
+    protected CompositeContextNode getCompositeNode() {
+        return (CompositeContextNode) getNodeContainer();
+    }
+
+    @Override
     public DynamicNodeFactory variable(String name, DataType type) {
-    	return variable(name, type, null);
+        super.variable(name, type);
+        return this;
     }
-    
+
+    @Override
     public DynamicNodeFactory variable(String name, DataType type, Object value) {
-    	Variable variable = new Variable();
-    	variable.setName(name);
-    	variable.setType(type);
-    	variable.setValue(value);
-    	VariableScope variableScope = (VariableScope)
-			getCompositeNode().getDefaultContext(VariableScope.VARIABLE_SCOPE);
-		if (variableScope == null) {
-			variableScope = new VariableScope();
-			getCompositeNode().addContext(variableScope);
-			getCompositeNode().setDefaultContext(variableScope);
-		}
-		variableScope.getVariables().add(variable);
+        super.variable(name, type, value);
         return this;
     }
-    
+
+    @Override
     public DynamicNodeFactory exceptionHandler(String exception, ExceptionHandler exceptionHandler) {
-    	ExceptionScope exceptionScope = (ExceptionScope)
-			getCompositeNode().getDefaultContext(ExceptionScope.EXCEPTION_SCOPE);
-		if (exceptionScope == null) {
-			exceptionScope = new ExceptionScope();
-			getCompositeNode().addContext(exceptionScope);
-			getCompositeNode().setDefaultContext(exceptionScope);
-		}
-		exceptionScope.setExceptionHandler(exception, exceptionHandler);
-    	return this;
-    }
-    
-    public DynamicNodeFactory exceptionHandler(String exception, String dialect, String action) {
-    	ActionExceptionHandler exceptionHandler = new ActionExceptionHandler();
-    	exceptionHandler.setAction(new DroolsConsequenceAction(dialect, action));
-    	return exceptionHandler(exception, exceptionHandler);
-    }
-    
-    public DynamicNodeFactory autoComplete(boolean autoComplete) {
-    	getDynamicNode().setAutoComplete(autoComplete);
-    	return this;
-    }
-    
-    public DynamicNodeFactory linkIncomingConnections(long nodeId) {
-    	this.linkedIncomingNodeId = nodeId;
+        super.exceptionHandler(exception, exceptionHandler);
         return this;
     }
 
+    @Override
+    public DynamicNodeFactory exceptionHandler(String exception, String dialect, String action) {
+        super.exceptionHandler(exception, dialect, action);
+        return this;
+    }
+
+    @Override
+    public DynamicNodeFactory autoComplete(boolean autoComplete) {
+        super.autoComplete(autoComplete);
+        return this;
+    }
+
+    @Override
+    public DynamicNodeFactory linkIncomingConnections(long nodeId) {
+        super.linkIncomingConnections(nodeId);
+        return this;
+    }
+
+    @Override
     public DynamicNodeFactory linkOutgoingConnections(long nodeId) {
-    	this.linkedOutgoingNodeId = nodeId;
-    	return this;
+        super.linkOutgoingConnections(nodeId);
+        return this;
     }
 
-    public RuleFlowNodeContainerFactory done() {
-    	if (linkedIncomingNodeId != -1) {
-    		getCompositeNode().linkIncomingConnections(
-				Node.CONNECTION_DEFAULT_TYPE,
-		        linkedIncomingNodeId, Node.CONNECTION_DEFAULT_TYPE);
-    	}
-    	if (linkedOutgoingNodeId != -1) {
-    		getCompositeNode().linkOutgoingConnections(
-				linkedOutgoingNodeId, Node.CONNECTION_DEFAULT_TYPE,
-	            Node.CONNECTION_DEFAULT_TYPE);
-    	}
-        nodeContainer.addNode(getCompositeNode());
-        return nodeContainerFactory;
+    @Override
+    public DynamicNodeFactory metaData(String name, Object value) {
+        super.metaData(name, value);
+        return this;
     }
 
+    public DynamicNodeFactory language(String language) {
+        getDynamicNode().setLanguage(language);
+        return this;
+    }
+
+    public DynamicNodeFactory activationExpression(String activationExpression) {
+        getDynamicNode().setActivationExpression(activationExpression);
+        return this;
+    }
+
+    public DynamicNodeFactory completionExpression(String completionExpression) {
+        getDynamicNode().setCompletionExpression(completionExpression);
+        return this;
+    }
 }

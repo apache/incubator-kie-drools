@@ -24,10 +24,11 @@ import org.jbpm.workflow.core.NodeContainer;
 import org.jbpm.workflow.core.node.EventTrigger;
 import org.jbpm.workflow.core.node.StartNode;
 
-/**
- *
- */
-public class StartNodeFactory extends NodeFactory {
+public class StartNodeFactory extends ExtendedNodeFactory {
+
+    public static final String METHOD_INTERRUPTING = "interrupting";
+    public static final String METHOD_TRIGGER = "trigger";
+    public static final String METHOD_TIMER = "timer";
 
     public StartNodeFactory(RuleFlowNodeContainerFactory nodeContainerFactory, NodeContainer nodeContainer, long id) {
         super(nodeContainerFactory, nodeContainer, id);
@@ -36,16 +37,17 @@ public class StartNodeFactory extends NodeFactory {
     protected Node createNode() {
         return new StartNode();
     }
-    
+
     protected StartNode getStartNode() {
         return (StartNode) getNode();
     }
 
+    @Override
     public StartNodeFactory name(String name) {
-        getNode().setName(name);
+        super.name(name);
         return this;
-    } 
-    
+    }
+
     public StartNodeFactory interrupting(boolean interrupting) {
         getStartNode().setInterrupting(interrupting);
         return this;

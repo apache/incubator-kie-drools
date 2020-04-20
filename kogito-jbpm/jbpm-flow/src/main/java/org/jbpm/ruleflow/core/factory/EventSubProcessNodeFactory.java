@@ -21,16 +21,13 @@ import org.jbpm.workflow.core.NodeContainer;
 import org.jbpm.workflow.core.node.CompositeContextNode;
 import org.jbpm.workflow.core.node.EventSubProcessNode;
 
-/**
- *
- */
-public class EventSubProcessNodeFactory extends CompositeNodeFactory {
+public class EventSubProcessNodeFactory extends CompositeContextNodeFactory {
 
 
     public EventSubProcessNodeFactory(RuleFlowNodeContainerFactory nodeContainerFactory, NodeContainer nodeContainer, long id) {
-    	super(nodeContainerFactory, nodeContainer, id);
+        super(nodeContainerFactory, nodeContainer, id);
     }
-    
+
     @Override
     protected CompositeContextNode createNode() {
         return new EventSubProcessNode();

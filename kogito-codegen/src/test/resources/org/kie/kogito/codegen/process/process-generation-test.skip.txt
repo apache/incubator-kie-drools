@@ -3,6 +3,8 @@ messageevent/EventNodeMalformed.bpmn2
 ruletask/BusinessRuleTaskMalformed.bpmn2
 ruletask/ExampleGenerated.bpmn
 ruletask/ExampleGeneratedWrong.bpmn
+serverless/parallel-state.sw.json
+serverless/single-subflow.sw.json
 servicetask/ServiceProcessMalformed.bpmn2
 subprocess/CallActivityWithIOexpression.bpmn2
 subprocess/CallActivity.bpmn2

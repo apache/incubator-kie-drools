@@ -15,25 +15,6 @@
 
 package org.kie.kogito.codegen.process;
 
-import java.io.File;
-import java.io.IOException;
-import java.io.UncheckedIOException;
-import java.nio.charset.StandardCharsets;
-import java.nio.file.Files;
-import java.nio.file.Path;
-import java.nio.file.Paths;
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.Collections;
-import java.util.Enumeration;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.stream.Collectors;
-import java.util.stream.Stream;
-import java.util.zip.ZipEntry;
-import java.util.zip.ZipFile;
-
 import com.github.javaparser.ast.body.ClassOrInterfaceDeclaration;
 import org.drools.core.io.impl.ByteArrayResource;
 import org.drools.core.io.impl.FileSystemResource;
@@ -69,6 +50,28 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.xml.sax.SAXException;
 
+import java.io.File;
+import java.io.IOException;
+import java.io.UncheckedIOException;
+import java.nio.charset.StandardCharsets;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collection;
+import java.util.Collections;
+import java.util.Enumeration;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
+import java.util.zip.ZipEntry;
+import java.util.zip.ZipFile;
+
 import static org.drools.core.util.IoUtils.readBytesFromInputStream;
 import static org.kie.api.io.ResourceType.determineResourceType;
 import static org.kie.kogito.codegen.ApplicationGenerator.log;
@@ -81,17 +84,27 @@ public class ProcessCodegen extends AbstractGenerator {
     private static final Logger LOGGER = LoggerFactory.getLogger(ProcessCodegen.class);
 
     private static final SemanticModules BPMN_SEMANTIC_MODULES = new SemanticModules();
+    public static final Set<String> SUPPORTED_BPMN_EXTENSIONS = Collections.unmodifiableSet(new HashSet<>(Arrays.asList(".bpmn", ".bpmn2")));
+    private static final String YAML_PARSER = "yml";
+    private static final String JSON_PARSER = "json";
+    public static final Map<String, String> SUPPORTED_SW_EXTENSIONS;
 
     static {
         BPMN_SEMANTIC_MODULES.addSemanticModule(new BPMNSemanticModule());
         BPMN_SEMANTIC_MODULES.addSemanticModule(new BPMNExtensionsSemanticModule());
         BPMN_SEMANTIC_MODULES.addSemanticModule(new BPMNDISemanticModule());
+
+        Map<String, String> extMap = new HashMap<>();
+        extMap.put(".sw.yml", YAML_PARSER);
+        extMap.put(".sw.yaml", YAML_PARSER);
+        extMap.put(".sw.json", JSON_PARSER);
+        SUPPORTED_SW_EXTENSIONS = Collections.unmodifiableMap(extMap);
     }
 
     private ClassLoader contextClassLoader;
     private ResourceGeneratorFactory resourceGeneratorFactory;
 
-    public static ProcessCodegen ofJar(Path jarPath) throws IOException {
+    public static ProcessCodegen ofJar(Path jarPath) {
         List<Process> processes = new ArrayList<>();
 
         try (ZipFile zipFile = new ZipFile(jarPath.toFile())) {
@@ -99,7 +112,7 @@ public class ProcessCodegen extends AbstractGenerator {
             while (entries.hasMoreElements()) {
                 ZipEntry entry = entries.nextElement();
                 ResourceType resourceType = determineResourceType(entry.getName());
-                if (entry.getName().endsWith(".bpmn") || entry.getName().endsWith(".bpmn2") || entry.getName().endsWith(".sw.json") || entry.getName().endsWith(".sw.yml")) {
+                if (SUPPORTED_BPMN_EXTENSIONS.stream().anyMatch(entry.getName()::endsWith)) {
                     InternalResource resource = new ByteArrayResource(readBytesFromInputStream(zipFile.getInputStream(entry)));
                     resource.setResourceType(resourceType);
                     resource.setSourcePath(entry.getName());
@@ -117,14 +130,15 @@ public class ProcessCodegen extends AbstractGenerator {
         Path srcPath = Paths.get(path.toString());
         try (Stream<Path> filesStream = Files.walk(srcPath)) {
             List<File> files = filesStream
-                    .filter(p -> p.toString().endsWith(".bpmn") || p.toString().endsWith(".bpmn2") || p.toString().endsWith(".sw.json") || p.toString().endsWith(".sw.yml"))
+                    .filter(p -> SUPPORTED_BPMN_EXTENSIONS.stream().anyMatch(p.toString()::endsWith) ||
+                            SUPPORTED_SW_EXTENSIONS.keySet().stream().anyMatch(p.toString()::endsWith))
                     .map(Path::toFile)
                     .collect(Collectors.toList());
             return ofFiles(files);
         }
     }
 
-    public static ProcessCodegen ofFiles(Collection<File> processFiles) throws IOException {
+    public static ProcessCodegen ofFiles(Collection<File> processFiles) {
         List<Process> allProcesses = parseProcesses(processFiles);
         return ofProcesses(allProcesses);
     }
@@ -133,19 +147,21 @@ public class ProcessCodegen extends AbstractGenerator {
         return new ProcessCodegen(processes);
     }
 
-    static List<Process> parseProcesses(Collection<File> processFiles) throws IOException {
+    static List<Process> parseProcesses(Collection<File> processFiles) {
         List<Process> processes = new ArrayList<>();
         for (File processSourceFile : processFiles) {
             try {
                 FileSystemResource r = new FileSystemResource(processSourceFile);
-                if (processSourceFile.getPath().endsWith(".sw.json")) {
-                    Process process = parseWorkflowFile(r, "json");
-                    processes.add(process);
-                } else if (processSourceFile.getPath().endsWith(".sw.yml")) {
-                    Process process = parseWorkflowFile(r, "yml");
-                    processes.add(process);
-                } else {
+                if (SUPPORTED_BPMN_EXTENSIONS.stream().anyMatch(processSourceFile.getPath()::endsWith)) {
                     processes.addAll(parseProcessFile(r));
+                } else {
+                    SUPPORTED_SW_EXTENSIONS.entrySet()
+                            .stream()
+                            .filter(e -> processSourceFile.getPath().endsWith(e.getKey()))
+                            .forEach(e -> processes.add(parseWorkflowFile(r, e.getValue())));
+                }
+                if (processes.isEmpty()) {
+                    throw new IllegalArgumentException("Unable to process file with unsupported extension: " + processSourceFile);
                 }
             } catch (RuntimeException e) {
                 throw new ProcessCodegenException(processSourceFile.getAbsolutePath(), e);
@@ -154,22 +170,22 @@ public class ProcessCodegen extends AbstractGenerator {
         return processes;
     }
 
-    private static Process parseWorkflowFile(Resource r, String workflowType) throws IOException {
+    private static Process parseWorkflowFile(Resource r, String parser) {
         try {
-            ServerlessWorkflowParser workflowParser = new ServerlessWorkflowParser(workflowType);
+            ServerlessWorkflowParser workflowParser = new ServerlessWorkflowParser(parser);
             return workflowParser.parseWorkFlow(r.getReader());
-        } catch (Exception e) {
+        } catch (IOException e) {
             throw new ProcessParsingException("Could not parse file " + r.getSourcePath(), e);
         }
     }
 
-    private static Collection<? extends Process> parseProcessFile(Resource r) throws IOException {
+    private static Collection<? extends Process> parseProcessFile(Resource r) {
         try {
             XmlProcessReader xmlReader = new XmlProcessReader(
                     BPMN_SEMANTIC_MODULES,
                     Thread.currentThread().getContextClassLoader());
             return xmlReader.read(r.getReader());
-        } catch (SAXException e) {
+        } catch (SAXException | IOException e) {
             throw new ProcessParsingException("Could not parse file " + r.getSourcePath(), e);
         }
     }
@@ -185,8 +201,7 @@ public class ProcessCodegen extends AbstractGenerator {
 
     private boolean persistence;
 
-    public ProcessCodegen(
-            Collection<? extends Process> processes) {
+    public ProcessCodegen(Collection<? extends Process> processes) {
         this.processes = new HashMap<>();
         for (Process process : processes) {
             this.processes.put(process.getId(), (WorkflowProcess) process);
@@ -327,10 +342,10 @@ public class ProcessCodegen extends AbstractGenerator {
 
             //Creating and adding the ResourceGenerator
             resourceGeneratorFactory.create(context(),
-                                            workFlowProcess,
-                                            modelClassGenerator.className(),
-                                            execModelGen.className(),
-                                            applicationCanonicalName)
+                    workFlowProcess,
+                    modelClassGenerator.className(),
+                    execModelGen.className(),
+                    applicationCanonicalName)
                     .map(r -> r
                             .withDependencyInjection(annotator)
                             .withUserTasks(processIdToUserTaskModel.get(workFlowProcess.getId()))
@@ -346,7 +361,7 @@ public class ProcessCodegen extends AbstractGenerator {
                     if (trigger.getType().equals(TriggerMetaData.TriggerType.ConsumeMessage)) {
 
                         MessageDataEventGenerator msgDataEventGenerator = new MessageDataEventGenerator(workFlowProcess,
-                                                                                                        trigger)
+                                trigger)
                                 .withDependencyInjection(annotator);
                         mdegs.add(msgDataEventGenerator);
 
@@ -357,11 +372,11 @@ public class ProcessCodegen extends AbstractGenerator {
                                 applicationCanonicalName,
                                 msgDataEventGenerator.className(),
                                 trigger)
-                                         .withDependencyInjection(annotator));
+                                .withDependencyInjection(annotator));
                     } else if (trigger.getType().equals(TriggerMetaData.TriggerType.ProduceMessage)) {
 
                         MessageDataEventGenerator msgDataEventGenerator = new MessageDataEventGenerator(workFlowProcess,
-                                                                                                        trigger)
+                                trigger)
                                 .withDependencyInjection(annotator);
                         mdegs.add(msgDataEventGenerator);
 
@@ -371,7 +386,7 @@ public class ProcessCodegen extends AbstractGenerator {
                                 execModelGen.className(),
                                 msgDataEventGenerator.className(),
                                 trigger)
-                                         .withDependencyInjection(annotator));
+                                .withDependencyInjection(annotator));
                     }
                 }
             }
@@ -385,19 +400,19 @@ public class ProcessCodegen extends AbstractGenerator {
         for (ModelClassGenerator modelClassGenerator : processIdToModelGenerator.values()) {
             ModelMetaData mmd = modelClassGenerator.generate();
             storeFile(Type.MODEL, modelClassGenerator.generatedFilePath(),
-                      mmd.generate());
+                    mmd.generate());
         }
 
         for (InputModelClassGenerator modelClassGenerator : processIdToInputModelGenerator.values()) {
             ModelMetaData mmd = modelClassGenerator.generate();
             storeFile(Type.MODEL, modelClassGenerator.generatedFilePath(),
-                      mmd.generate());
+                    mmd.generate());
         }
 
         for (OutputModelClassGenerator modelClassGenerator : processIdToOutputModelGenerator.values()) {
             ModelMetaData mmd = modelClassGenerator.generate();
             storeFile(Type.MODEL, modelClassGenerator.generatedFilePath(),
-                      mmd.generate());
+                    mmd.generate());
         }
 
         for (List<UserTaskModelMetaData> utmd : processIdToUserTaskModel.values()) {
@@ -411,22 +426,22 @@ public class ProcessCodegen extends AbstractGenerator {
 
         for (AbstractResourceGenerator resourceGenerator : rgs) {
             storeFile(Type.REST, resourceGenerator.generatedFilePath(),
-                      resourceGenerator.generate());
+                    resourceGenerator.generate());
         }
 
         for (MessageDataEventGenerator messageDataEventGenerator : mdegs) {
             storeFile(Type.CLASS, messageDataEventGenerator.generatedFilePath(),
-                      messageDataEventGenerator.generate());
+                    messageDataEventGenerator.generate());
         }
 
         for (MessageConsumerGenerator messageConsumerGenerator : megs) {
             storeFile(Type.MESSAGE_CONSUMER, messageConsumerGenerator.generatedFilePath(),
-                      messageConsumerGenerator.generate());
+                    messageConsumerGenerator.generate());
         }
 
         for (MessageProducerGenerator messageProducerGenerator : mpgs) {
             storeFile(Type.MESSAGE_PRODUCER, messageProducerGenerator.generatedFilePath(),
-                      messageProducerGenerator.generate());
+                    messageProducerGenerator.generate());
         }
 
         for (ProcessGenerator p : ps) {

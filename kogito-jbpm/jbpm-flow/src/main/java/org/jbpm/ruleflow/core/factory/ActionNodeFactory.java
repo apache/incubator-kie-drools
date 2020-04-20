@@ -24,14 +24,10 @@ import org.jbpm.workflow.core.NodeContainer;
 import org.jbpm.workflow.core.impl.DroolsConsequenceAction;
 import org.jbpm.workflow.core.node.ActionNode;
 
-public class ActionNodeFactory extends NodeFactory {
+public class ActionNodeFactory extends ExtendedNodeFactory {
 
-    public ActionNodeFactory(RuleFlowNodeContainerFactory nodeContainerFactory,
-                             NodeContainer nodeContainer,
-                             long id) {
-        super(nodeContainerFactory,
-              nodeContainer,
-              id);
+    public ActionNodeFactory(RuleFlowNodeContainerFactory nodeContainerFactory, NodeContainer nodeContainer, long id) {
+        super(nodeContainerFactory, nodeContainer, id);
     }
 
     protected Node createNode() {
@@ -42,35 +38,32 @@ public class ActionNodeFactory extends NodeFactory {
         return (ActionNode) getNode();
     }
 
+    @Override
     public ActionNodeFactory name(String name) {
-        getNode().setName(name);
+        super.name(name);
         return this;
     }
 
-    public ActionNodeFactory action(String dialect,
-                                    String action) {
+    public ActionNodeFactory action(String dialect, String action) {
         return action(dialect, action, false);
     }
 
     public ActionNodeFactory action(String dialect,
                                     String action,
                                     boolean isDroolsAction) {
-        if(isDroolsAction) {
+        if (isDroolsAction) {
             DroolsAction droolsAction = new DroolsAction();
-            droolsAction.setMetaData("Action",
-                                     action);
+            droolsAction.setMetaData(METADATA_ACTION, action);
             getActionNode().setAction(droolsAction);
         } else {
-            getActionNode().setAction(new DroolsConsequenceAction(dialect,
-                                                                  action));
+            getActionNode().setAction(new DroolsConsequenceAction(dialect, action));
         }
         return this;
     }
 
     public ActionNodeFactory action(Action action) {
         DroolsAction droolsAction = new DroolsAction();
-        droolsAction.setMetaData("Action",
-                                 action);
+        droolsAction.setMetaData(METADATA_ACTION, action);
         getActionNode().setAction(droolsAction);
         return this;
     }

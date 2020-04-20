@@ -16,33 +16,41 @@
 
 package org.jbpm.compiler.canonical;
 
+import com.github.javaparser.ast.expr.LongLiteralExpr;
+import com.github.javaparser.ast.stmt.BlockStmt;
 import org.jbpm.process.core.Work;
 import org.jbpm.process.core.context.variable.VariableScope;
 import org.jbpm.ruleflow.core.factory.HumanTaskNodeFactory;
-import org.kie.api.definition.process.Node;
 import org.jbpm.workflow.core.node.HumanTaskNode;
+import org.kie.api.definition.process.Node;
 
-import com.github.javaparser.ast.expr.LongLiteralExpr;
-import com.github.javaparser.ast.expr.StringLiteralExpr;
-import com.github.javaparser.ast.stmt.BlockStmt;
+public class HumanTaskNodeVisitor extends WorkItemNodeVisitor {
 
-public class HumanTaskNodeVisitor extends AbstractVisitor {
+    private static final String NODE_KEY = "humanTaskNode";
+
+    public HumanTaskNodeVisitor() {
+        super(null);
+    }
+
+    @Override
+    protected String getNodeKey() {
+        return NODE_KEY;
+    }
 
     @Override
     public void visitNode(String factoryField, Node node, BlockStmt body, VariableScope variableScope, ProcessMetaData metadata) {
         HumanTaskNode humanTaskNode = (HumanTaskNode) node;
         Work work = humanTaskNode.getWork();
-        
-        addFactoryMethodWithArgsWithAssignment(factoryField, body, HumanTaskNodeFactory.class, "humanTaskNode" + node.getId(), "humanTaskNode", new LongLiteralExpr(humanTaskNode.getId()));
-        addFactoryMethodWithArgs(body, "humanTaskNode" + node.getId(), "name", new StringLiteralExpr(getOrDefault(humanTaskNode.getName(), "Task")));            
-        
-        addWorkItemParameters(work, body, "humanTaskNode" + node.getId());
-        addNodeMappings(humanTaskNode, body, "humanTaskNode" + node.getId());
-        
-        addFactoryMethodWithArgs(body, "humanTaskNode" + node.getId(), "done");
-        
-        visitMetaData(humanTaskNode.getMetaData(), body, "humanTaskNode" + node.getId());    
-        
+
+        body.addStatement(getAssignedFactoryMethod(factoryField, HumanTaskNodeFactory.class, getNodeId(node), NODE_KEY, new LongLiteralExpr(humanTaskNode.getId())))
+                .addStatement(getNameMethod(node, "Task"));
+
+        addWorkItemParameters(work, body, getNodeId(node));
+        addNodeMappings(humanTaskNode, body, getNodeId(node));
+        body.addStatement(getDoneMethod(getNodeId(node)));
+
+        visitMetaData(humanTaskNode.getMetaData(), body, getNodeId(node));
+
         metadata.getWorkItems().add(work.getName());
     }
 }

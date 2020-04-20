@@ -22,10 +22,12 @@ import org.jbpm.workflow.core.Node;
 import org.jbpm.workflow.core.NodeContainer;
 import org.jbpm.workflow.core.node.TimerNode;
 
-/**
- *
- */
-public class TimerNodeFactory extends NodeFactory {
+public class TimerNodeFactory extends ExtendedNodeFactory {
+
+    public static final String METHOD_TYPE = "type";
+    public static final String METHOD_DELAY = "delay";
+    public static final String METHOD_PERIOD = "period";
+    public static final String METHOD_DATE = "date";
 
     public TimerNodeFactory(RuleFlowNodeContainerFactory nodeContainerFactory, NodeContainer nodeContainer, long id) {
         super(nodeContainerFactory, nodeContainer, id);
@@ -34,16 +36,17 @@ public class TimerNodeFactory extends NodeFactory {
     protected Node createNode() {
         return new TimerNode();
     }
-    
+
     protected TimerNode getTimerNode() {
-    	return (TimerNode) getNode();
+        return (TimerNode) getNode();
     }
 
+    @Override
     public TimerNodeFactory name(String name) {
-        getNode().setName(name);
+        super.name(name);
         return this;
     }
-    
+
     public TimerNodeFactory type(int type) {
         Timer timer = getTimerNode().getTimer();
         if (timer == null) {
@@ -53,27 +56,27 @@ public class TimerNodeFactory extends NodeFactory {
         timer.setTimeType(type);
         return this;
     }
-    
+
     public TimerNodeFactory delay(String delay) {
-    	Timer timer = getTimerNode().getTimer();
-    	if (timer == null) {
-    		timer = new Timer();
-    		getTimerNode().setTimer(timer);
-    	}
-    	timer.setDelay(delay);
-    	return this;
+        Timer timer = getTimerNode().getTimer();
+        if (timer == null) {
+            timer = new Timer();
+            getTimerNode().setTimer(timer);
+        }
+        timer.setDelay(delay);
+        return this;
     }
-    
+
     public TimerNodeFactory period(String period) {
-    	Timer timer = getTimerNode().getTimer();
-    	if (timer == null) {
-    		timer = new Timer();
-    		getTimerNode().setTimer(timer);
-    	}
-    	timer.setPeriod(period);
-    	return this;
+        Timer timer = getTimerNode().getTimer();
+        if (timer == null) {
+            timer = new Timer();
+            getTimerNode().setTimer(timer);
+        }
+        timer.setPeriod(period);
+        return this;
     }
-    
+
     public TimerNodeFactory date(String date) {
         Timer timer = getTimerNode().getTimer();
         if (timer == null) {

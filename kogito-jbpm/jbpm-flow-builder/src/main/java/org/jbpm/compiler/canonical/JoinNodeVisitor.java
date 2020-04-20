@@ -16,27 +16,33 @@
 
 package org.jbpm.compiler.canonical;
 
-import org.jbpm.process.core.context.variable.VariableScope;
-import org.jbpm.ruleflow.core.factory.JoinFactory;
-import org.kie.api.definition.process.Node;
-import org.jbpm.workflow.core.node.Join;
-
 import com.github.javaparser.ast.expr.IntegerLiteralExpr;
 import com.github.javaparser.ast.expr.LongLiteralExpr;
-import com.github.javaparser.ast.expr.StringLiteralExpr;
 import com.github.javaparser.ast.stmt.BlockStmt;
+import org.jbpm.process.core.context.variable.VariableScope;
+import org.jbpm.ruleflow.core.factory.JoinFactory;
+import org.jbpm.workflow.core.node.Join;
+import org.kie.api.definition.process.Node;
 
-public class JoinNodeVisitor extends AbstractVisitor {
+import static org.jbpm.ruleflow.core.factory.JoinFactory.METHOD_TYPE;
+
+public class JoinNodeVisitor extends AbstractNodeVisitor {
+
+    private static final String NODE_KEY = "joinNode";
+
+    @Override
+    protected String getNodeKey() {
+        return NODE_KEY;
+    }
 
     @Override
     public void visitNode(String factoryField, Node node, BlockStmt body, VariableScope variableScope, ProcessMetaData metadata) {
         Join joinNode = (Join) node;
-        addFactoryMethodWithArgsWithAssignment(factoryField, body, JoinFactory.class, "joinNode" + node.getId(), "joinNode", new LongLiteralExpr(joinNode.getId()));
-        addFactoryMethodWithArgs(body, "joinNode" + node.getId(), "name", new StringLiteralExpr(getOrDefault(joinNode.getName(), "Join")));
-        addFactoryMethodWithArgs(body, "joinNode" + node.getId(), "type", new IntegerLiteralExpr(joinNode.getType()));
+        body.addStatement(getAssignedFactoryMethod(factoryField, JoinFactory.class, getNodeId(node), NODE_KEY, new LongLiteralExpr(joinNode.getId())));
+        body.addStatement(getNameMethod(node, "Join"));
+        body.addStatement(getFactoryMethod(getNodeId(node), METHOD_TYPE, new IntegerLiteralExpr(joinNode.getType())));
 
-        visitMetaData(joinNode.getMetaData(), body, "joinNode" + node.getId());
-        
-        addFactoryMethodWithArgs(body, "joinNode" + node.getId(), "done");
+        visitMetaData(joinNode.getMetaData(), body, getNodeId(node));
+        body.addStatement(getDoneMethod(getNodeId(node)));
     }
 }

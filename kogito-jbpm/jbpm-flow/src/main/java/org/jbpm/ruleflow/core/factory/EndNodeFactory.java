@@ -16,20 +16,21 @@
 
 package org.jbpm.ruleflow.core.factory;
 
-import java.util.ArrayList;
-import java.util.List;
-
 import org.jbpm.process.instance.impl.Action;
 import org.jbpm.ruleflow.core.RuleFlowNodeContainerFactory;
 import org.jbpm.workflow.core.DroolsAction;
 import org.jbpm.workflow.core.Node;
 import org.jbpm.workflow.core.NodeContainer;
+import org.jbpm.workflow.core.impl.ExtendedNodeImpl;
 import org.jbpm.workflow.core.node.EndNode;
 
-/**
- *
- */
-public class EndNodeFactory extends NodeFactory {
+import java.util.ArrayList;
+import java.util.List;
+
+public class EndNodeFactory extends ExtendedNodeFactory {
+
+    public static final String METHOD_TERMINATE = "terminate";
+    public static final String METHOD_ACTION = "action";
 
     public EndNodeFactory(RuleFlowNodeContainerFactory nodeContainerFactory, NodeContainer nodeContainer, long id) {
         super(nodeContainerFactory, nodeContainer, id);
@@ -43,8 +44,9 @@ public class EndNodeFactory extends NodeFactory {
         return (EndNode) getNode();
     }
 
+    @Override
     public EndNodeFactory name(String name) {
-        getNode().setName(name);
+        super.name(name);
         return this;
     }
 
@@ -52,14 +54,14 @@ public class EndNodeFactory extends NodeFactory {
         getEndNode().setTerminate(terminate);
         return this;
     }
-    
+
     public EndNodeFactory action(Action action) {
         DroolsAction droolsAction = new DroolsAction();
-        droolsAction.setMetaData("Action", action);
-        List<DroolsAction> enterActions = getEndNode().getActions(EndNode.EVENT_NODE_ENTER);
+        droolsAction.setMetaData(METADATA_ACTION, action);
+        List<DroolsAction> enterActions = getEndNode().getActions(ExtendedNodeImpl.EVENT_NODE_ENTER);
         if (enterActions == null) {
             enterActions = new ArrayList<>();
-            getEndNode().setActions(EndNode.EVENT_NODE_ENTER, enterActions);
+            getEndNode().setActions(ExtendedNodeImpl.EVENT_NODE_ENTER, enterActions);
         }
         enterActions.add(droolsAction);
         return this;

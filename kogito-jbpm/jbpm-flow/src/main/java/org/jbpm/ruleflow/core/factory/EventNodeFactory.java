@@ -24,10 +24,11 @@ import org.jbpm.workflow.core.Node;
 import org.jbpm.workflow.core.NodeContainer;
 import org.jbpm.workflow.core.node.EventNode;
 
-/**
- *
- */
-public class EventNodeFactory extends NodeFactory {
+public class EventNodeFactory extends ExtendedNodeFactory {
+
+    public static final String METHOD_EVENT_TYPE = "eventType";
+    public static final String METHOD_SCOPE = "scope";
+    public static final String METHOD_VARIABLE_NAME = "variableName";
 
     public EventNodeFactory(RuleFlowNodeContainerFactory nodeContainerFactory, NodeContainer nodeContainer, long id) {
         super(nodeContainerFactory, nodeContainer, id);
@@ -36,39 +37,40 @@ public class EventNodeFactory extends NodeFactory {
     protected Node createNode() {
         return new EventNode();
     }
-    
+
     protected EventNode getEventNode() {
-    	return(EventNode) getNode();
+        return (EventNode) getNode();
     }
 
+    @Override
     public EventNodeFactory name(String name) {
-        getNode().setName(name);
+        super.name(name);
         return this;
     }
 
     public EventNodeFactory variableName(String variableName) {
-    	getEventNode().setVariableName(variableName);
+        getEventNode().setVariableName(variableName);
         return this;
     }
 
     public EventNodeFactory eventFilter(EventFilter eventFilter) {
-    	getEventNode().addEventFilter(eventFilter);
+        getEventNode().addEventFilter(eventFilter);
         return this;
     }
 
     public EventNodeFactory eventType(String eventType) {
-    	EventTypeFilter filter = new EventTypeFilter();
-    	filter.setType(eventType);
-    	return eventFilter(filter);
+        EventTypeFilter filter = new EventTypeFilter();
+        filter.setType(eventType);
+        return eventFilter(filter);
     }
 
     public EventNodeFactory eventTransformer(EventTransformer transformer) {
-    	getEventNode().setEventTransformer(transformer);
+        getEventNode().setEventTransformer(transformer);
         return this;
     }
 
     public EventNodeFactory scope(String scope) {
-    	getEventNode().setScope(scope);
+        getEventNode().setScope(scope);
         return this;
     }
 }

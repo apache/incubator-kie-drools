@@ -1,5 +1,5 @@
 /*
- * Copyright 2017 Red Hat, Inc. and/or its affiliates.
+ * Copyright 2020 Red Hat, Inc. and/or its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -16,41 +16,27 @@
 
 package org.jbpm.ruleflow.core.factory;
 
+import org.jbpm.process.core.timer.Timer;
 import org.jbpm.ruleflow.core.RuleFlowNodeContainerFactory;
-import org.jbpm.workflow.core.Node;
 import org.jbpm.workflow.core.NodeContainer;
-import org.jbpm.workflow.core.node.Join;
+import org.jbpm.workflow.core.impl.DroolsConsequenceAction;
+import org.jbpm.workflow.core.node.StateBasedNode;
 
-public class JoinFactory extends NodeFactory {
+public abstract class StateBasedNodeFactory extends ExtendedNodeFactory {
 
-    public static final String METHOD_TYPE = "type";
-
-    public JoinFactory(RuleFlowNodeContainerFactory nodeContainerFactory, NodeContainer nodeContainer, long id) {
+    protected StateBasedNodeFactory(RuleFlowNodeContainerFactory nodeContainerFactory, NodeContainer nodeContainer, long id) {
         super(nodeContainerFactory, nodeContainer, id);
     }
 
-    protected Node createNode() {
-        return new Join();
+    protected StateBasedNode getStateBasedNode() {
+        return (StateBasedNode) getNode();
     }
 
-    protected Join getJoin() {
-        return (Join) getNode();
-    }
-
-    @Override
-    public JoinFactory name(String name) {
-        super.name(name);
+    public StateBasedNodeFactory timer(String delay, String period, String dialect, String action) {
+        Timer timer = new Timer();
+        timer.setDelay(delay);
+        timer.setPeriod(period);
+        getStateBasedNode().addTimer(timer, new DroolsConsequenceAction(dialect, action));
         return this;
     }
-
-    public JoinFactory type(int type) {
-        getJoin().setType(type);
-        return this;
-    }
-
-    public JoinFactory type(String n) {
-        getJoin().setN(n);
-        return this;
-    }
-
 }

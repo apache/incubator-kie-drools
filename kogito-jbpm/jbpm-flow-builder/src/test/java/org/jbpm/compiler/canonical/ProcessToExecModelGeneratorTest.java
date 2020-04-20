@@ -61,9 +61,9 @@ public class ProcessToExecModelGeneratorTest {
         .connection(4, 2)
         .connection(1, 3);
         
-        Process process = factory.validate().getProcess();
+        WorkflowProcess process = factory.validate().getProcess();
         
-        ProcessMetaData processMetadata = ProcessToExecModelGenerator.INSTANCE.generate((WorkflowProcess) process);
+        ProcessMetaData processMetadata = ProcessToExecModelGenerator.INSTANCE.generate(process);
         assertNotNull(processMetadata, "Dumper should return non null class for process");
         
         logger.debug(processMetadata.getGeneratedClassModel().toString());

@@ -16,8 +16,6 @@
 
 package org.jbpm.compiler.canonical;
 
-import java.text.MessageFormat;
-
 import com.github.javaparser.ast.NodeList;
 import com.github.javaparser.ast.body.Parameter;
 import com.github.javaparser.ast.expr.Expression;
@@ -46,10 +44,15 @@ import org.kie.kogito.rules.units.impl.RuleUnitComponentFactoryImpl;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import java.text.MessageFormat;
 
-public class RuleSetNodeVisitor extends AbstractVisitor {
+import static org.jbpm.ruleflow.core.factory.RuleSetNodeFactory.METHOD_DECISION;
+
+public class RuleSetNodeVisitor extends AbstractNodeVisitor {
 
     public static final Logger logger = LoggerFactory.getLogger(ProcessToExecModelGenerator.class);
+
+    private static final String NODE_KEY = "ruleSetNode";
 
     private final ClassLoader contextClassLoader;
     private final AssignableChecker assignableChecker;
@@ -60,13 +63,17 @@ public class RuleSetNodeVisitor extends AbstractVisitor {
     }
 
     @Override
+    protected String getNodeKey() {
+        return NODE_KEY;
+    }
+
+    @Override
     public void visitNode(String factoryField, Node node, BlockStmt body, VariableScope variableScope, ProcessMetaData metadata) {
         RuleSetNode ruleSetNode = (RuleSetNode) node;
         String nodeName = ruleSetNode.getName();
 
-        String callTargetName = "ruleSetNode" + node.getId();
-        addFactoryMethodWithArgsWithAssignment(factoryField, body, RuleSetNodeFactory.class, callTargetName, "ruleSetNode", new LongLiteralExpr(ruleSetNode.getId()));
-        addFactoryMethodWithArgs(body, callTargetName, "name", new StringLiteralExpr(getOrDefault(nodeName, "Rule")));
+        body.addStatement(getAssignedFactoryMethod(factoryField, RuleSetNodeFactory.class, getNodeId(node), NODE_KEY, new LongLiteralExpr(ruleSetNode.getId())))
+                .addStatement(getNameMethod(node, "Rule"));
 
         RuleSetNode.RuleType ruleType = ruleSetNode.getRuleType();
         if (ruleType.getName().isEmpty()) {
@@ -75,9 +82,9 @@ public class RuleSetNodeVisitor extends AbstractVisitor {
                             "Rule task \"{0}\" is invalid: you did not set a unit name, a rule flow group or a decision model.", nodeName));
         }
 
-        addNodeMappings(ruleSetNode, body, callTargetName);
+        addNodeMappings(ruleSetNode, body, getNodeId(node));
 
-        NameExpr methodScope = new NameExpr(callTargetName);
+        NameExpr methodScope = new NameExpr(getNodeId(node));
         MethodCallExpr m;
         if (ruleType.isRuleFlowGroup()) {
             m = handleRuleFlowGroup(ruleType);
@@ -91,10 +98,8 @@ public class RuleSetNodeVisitor extends AbstractVisitor {
         m.setScope(methodScope);
         body.addStatement(m);
 
-        visitMetaData(ruleSetNode.getMetaData(), body, callTargetName);
-
-        addFactoryMethodWithArgs(body, callTargetName, "done");
-
+        visitMetaData(ruleSetNode.getMetaData(), body, getNodeId(node));
+        body.addStatement(getDoneMethod(getNodeId(node)));
     }
 
     private MethodCallExpr handleDecision(RuleSetNode.RuleType.Decision ruleType) {
@@ -115,11 +120,11 @@ public class RuleSetNodeVisitor extends AbstractVisitor {
         LambdaExpr lambda = new LambdaExpr(new Parameter(new UnknownType(), "()"), actionBody);
         actionBody.addStatement(new ReturnStmt(decisionModel));
 
-        return new MethodCallExpr("decision")
-                        .addArgument(namespace)
-                        .addArgument(model)
-                        .addArgument(decision)
-                        .addArgument(lambda);
+        return new MethodCallExpr(METHOD_DECISION)
+                .addArgument(namespace)
+                .addArgument(model)
+                .addArgument(decision)
+                .addArgument(lambda);
     }
 
     private MethodCallExpr handleRuleUnit(VariableScope variableScope, ProcessMetaData metadata, RuleSetNode ruleSetNode, String nodeName, RuleSetNode.RuleType ruleType) {
@@ -132,7 +137,7 @@ public class RuleSetNodeVisitor extends AbstractVisitor {
             description = new ReflectiveRuleUnitDescription(null, (Class<? extends RuleUnitData>) unitClass);
         } catch (ClassNotFoundException e) {
             logger.warn("Rule task \"{}\": cannot load class {}. " +
-                                "The unit data object will be generated.", nodeName, unitName);
+                    "The unit data object will be generated.", nodeName, unitName);
 
             GeneratedRuleUnitDescription d = generateRuleUnitDescription(unitName, processContext);
             RuleUnitComponentFactoryImpl impl = (RuleUnitComponentFactoryImpl) RuleUnitComponentFactory.get();
@@ -140,12 +145,12 @@ public class RuleSetNodeVisitor extends AbstractVisitor {
             description = d;
         }
 
-        RuleUnitHandler handler = new RuleUnitHandler(description, processContext, ruleSetNode, assignableChecker );
+        RuleUnitHandler handler = new RuleUnitHandler(description, processContext, ruleSetNode, assignableChecker);
         Expression ruleUnitFactory = handler.invoke();
 
         return new MethodCallExpr("ruleUnit")
-                        .addArgument(new StringLiteralExpr(ruleType.getName()))
-                        .addArgument(ruleUnitFactory);
+                .addArgument(new StringLiteralExpr(ruleType.getName()))
+                .addArgument(ruleUnitFactory);
 
     }
 
@@ -160,7 +165,7 @@ public class RuleSetNodeVisitor extends AbstractVisitor {
         return d;
     }
 
-    private MethodCallExpr handleRuleFlowGroup( RuleSetNode.RuleType ruleType) {
+    private MethodCallExpr handleRuleFlowGroup(RuleSetNode.RuleType ruleType) {
         // build supplier for rule runtime
         BlockStmt actionBody = new BlockStmt();
         LambdaExpr lambda = new LambdaExpr(new Parameter(new UnknownType(), "()"), actionBody);

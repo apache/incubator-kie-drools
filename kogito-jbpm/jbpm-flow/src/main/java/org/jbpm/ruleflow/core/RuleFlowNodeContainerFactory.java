@@ -18,7 +18,7 @@ package org.jbpm.ruleflow.core;
 
 import org.jbpm.ruleflow.core.factory.ActionNodeFactory;
 import org.jbpm.ruleflow.core.factory.BoundaryEventNodeFactory;
-import org.jbpm.ruleflow.core.factory.CompositeNodeFactory;
+import org.jbpm.ruleflow.core.factory.CompositeContextNodeFactory;
 import org.jbpm.ruleflow.core.factory.DynamicNodeFactory;
 import org.jbpm.ruleflow.core.factory.EndNodeFactory;
 import org.jbpm.ruleflow.core.factory.EventNodeFactory;
@@ -40,14 +40,16 @@ import org.kie.api.definition.process.Node;
 
 public abstract class RuleFlowNodeContainerFactory {
 
+    public static final String METHOD_CONNECTION = "connection";
+
     private NodeContainer nodeContainer;
 
     protected void setNodeContainer(NodeContainer nodeContainer) {
-    	this.nodeContainer = nodeContainer;
+        this.nodeContainer = nodeContainer;
     }
-    
+
     protected NodeContainer getNodeContainer() {
-    	return nodeContainer;
+        return nodeContainer;
     }
 
     public StartNodeFactory startNode(long id) {
@@ -102,41 +104,40 @@ public abstract class RuleFlowNodeContainerFactory {
         return new BoundaryEventNodeFactory(this, nodeContainer, id);
     }
 
-    public CompositeNodeFactory compositeNode(long id) {
-        return new CompositeNodeFactory(this, nodeContainer, id);
+    public CompositeContextNodeFactory compositeNode(long id) {
+        return new CompositeContextNodeFactory(this, nodeContainer, id);
     }
 
     public ForEachNodeFactory forEachNode(long id) {
         return new ForEachNodeFactory(this, nodeContainer, id);
     }
-    
+
     public DynamicNodeFactory dynamicNode(long id) {
         return new DynamicNodeFactory(this, nodeContainer, id);
     }
-    
+
     public WorkItemNodeFactory workItemNode(long id) {
-    	return new WorkItemNodeFactory(this, nodeContainer, id);
+        return new WorkItemNodeFactory(this, nodeContainer, id);
     }
-    
+
     public EventSubProcessNodeFactory eventSubProcessNode(long id) {
         return new EventSubProcessNodeFactory(this, nodeContainer, id);
     }
 
-    public RuleFlowNodeContainerFactory connection(long fromId, long toId) {        
+    public RuleFlowNodeContainerFactory connection(long fromId, long toId) {
         return connection(fromId, toId, "");
     }
-    
+
     public RuleFlowNodeContainerFactory connection(long fromId, long toId, String uniqueId) {
         Node from = nodeContainer.getNode(fromId);
         Node to = nodeContainer.getNode(toId);
         ConnectionImpl connection = new ConnectionImpl(
-            from, org.jbpm.workflow.core.Node.CONNECTION_DEFAULT_TYPE,
-            to, org.jbpm.workflow.core.Node.CONNECTION_DEFAULT_TYPE);
+                from, org.jbpm.workflow.core.Node.CONNECTION_DEFAULT_TYPE,
+                to, org.jbpm.workflow.core.Node.CONNECTION_DEFAULT_TYPE);
         connection.setMetaData("UniqueId", uniqueId);
         return this;
     }
-    
+
     public abstract RuleFlowNodeContainerFactory done();
 
 }
-

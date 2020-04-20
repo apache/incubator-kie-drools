@@ -21,10 +21,10 @@ import org.jbpm.workflow.core.Node;
 import org.jbpm.workflow.core.NodeContainer;
 import org.jbpm.workflow.core.node.FaultNode;
 
-/**
- *
- */
-public class FaultNodeFactory extends NodeFactory {
+public class FaultNodeFactory extends ExtendedNodeFactory {
+
+    public static final String METHOD_FAULT_NAME = "faultName";
+    public static final String METHOD_FAULT_VARIABLE = "faultVariable";
 
     public FaultNodeFactory(RuleFlowNodeContainerFactory nodeContainerFactory, NodeContainer nodeContainer, long id) {
         super(nodeContainerFactory, nodeContainer, id);
@@ -34,18 +34,23 @@ public class FaultNodeFactory extends NodeFactory {
         return new FaultNode();
     }
 
+    protected FaultNode getFaultNode() {
+        return (FaultNode) getNode();
+    }
+
+    @Override
     public FaultNodeFactory name(String name) {
-        getNode().setName(name);
+        super.name(name);
         return this;
     }
 
-    public FaultNodeFactory setFaultVariable(String faultVariable) {
-        ((FaultNode) getNode()).setFaultVariable(faultVariable);
+    public FaultNodeFactory faultVariable(String faultVariable) {
+        getFaultNode().setFaultVariable(faultVariable);
         return this;
     }
 
-    public FaultNodeFactory setFaultName(String faultName) {
-        ((FaultNode) getNode()).setFaultName(faultName);
+    public FaultNodeFactory faultName(String faultName) {
+        getFaultNode().setFaultName(faultName);
         return this;
     }
 }

@@ -16,26 +16,17 @@
 
 package org.jbpm.compiler.canonical;
 
-import java.io.InputStream;
-import java.util.Map;
-import java.util.Optional;
-import java.util.regex.Matcher;
-
 import com.github.javaparser.ast.body.MethodDeclaration;
 import com.github.javaparser.ast.expr.AssignExpr;
 import com.github.javaparser.ast.expr.BooleanLiteralExpr;
-import com.github.javaparser.ast.expr.CastExpr;
 import com.github.javaparser.ast.expr.Expression;
 import com.github.javaparser.ast.expr.LongLiteralExpr;
 import com.github.javaparser.ast.expr.MethodCallExpr;
 import com.github.javaparser.ast.expr.NameExpr;
 import com.github.javaparser.ast.expr.StringLiteralExpr;
-import com.github.javaparser.ast.expr.VariableDeclarationExpr;
 import com.github.javaparser.ast.stmt.BlockStmt;
-import com.github.javaparser.ast.stmt.ExpressionStmt;
 import com.github.javaparser.ast.stmt.ReturnStmt;
 import com.github.javaparser.ast.type.ClassOrInterfaceType;
-
 import org.drools.core.util.StringUtils;
 import org.jbpm.process.core.context.variable.Variable;
 import org.jbpm.process.core.context.variable.VariableScope;
@@ -46,11 +37,25 @@ import org.jbpm.workflow.core.node.SubProcessNode;
 import org.kie.api.definition.process.Node;
 import org.kie.api.definition.process.WorkflowProcess;
 
+import java.io.InputStream;
+import java.util.Map;
+import java.util.Optional;
+import java.util.regex.Matcher;
+
 import static com.github.javaparser.StaticJavaParser.parse;
+import static org.jbpm.ruleflow.core.factory.SubProcessNodeFactory.METHOD_INDEPENDENT;
+import static org.jbpm.ruleflow.core.factory.SubProcessNodeFactory.METHOD_PROCESS_ID;
+import static org.jbpm.ruleflow.core.factory.SubProcessNodeFactory.METHOD_PROCESS_NAME;
+import static org.jbpm.ruleflow.core.factory.SubProcessNodeFactory.METHOD_WAIT_FOR_COMPLETION;
 
-public class LambdaSubProcessNodeVisitor extends AbstractVisitor {
+public class LambdaSubProcessNodeVisitor extends AbstractNodeVisitor {
 
-    public LambdaSubProcessNodeVisitor() {
+    private static final String NODE_KEY = "subProcessNode";
+    private static final String FACTORY_NAME = "subProcessFactory";
+
+    @Override
+    protected String getNodeKey() {
+        return NODE_KEY;
     }
 
     @Override
@@ -58,35 +63,31 @@ public class LambdaSubProcessNodeVisitor extends AbstractVisitor {
 
         InputStream resourceAsStream = this.getClass().getResourceAsStream("/class-templates/SubProcessFactoryTemplate.java");
         Optional<Expression> retValue = parse(resourceAsStream).findFirst(Expression.class);
-
         SubProcessNode subProcessNode = (SubProcessNode) node;
         String name = subProcessNode.getName();
         String subProcessId = subProcessNode.getProcessId();
-        String processName = subProcessNode.getProcessName();
 
-        NodeValidator.of("subProcessNode", name)
+        NodeValidator.of(NODE_KEY, name)
                 .notEmpty("subProcessId", subProcessId)
                 .validate();
 
 
-        String nodeVar = "subProcessNode" + node.getId();
-
-        addFactoryMethodWithArgsWithAssignment(factoryField, body, SubProcessNodeFactory.class, nodeVar, "subProcessNode", new LongLiteralExpr(subProcessNode.getId()));
-        addFactoryMethodWithArgs(body, nodeVar, "name", new StringLiteralExpr(getOrDefault(name, "Call Activity")));
-        addFactoryMethodWithArgs(body, nodeVar, "processId", new StringLiteralExpr(subProcessId));
-        addFactoryMethodWithArgs(body, nodeVar, "processName", new StringLiteralExpr(getOrDefault(processName, "")));
-        addFactoryMethodWithArgs(body, nodeVar, "waitForCompletion", new BooleanLiteralExpr(subProcessNode.isWaitForCompletion()));
-        addFactoryMethodWithArgs(body, nodeVar, "independent", new BooleanLiteralExpr(subProcessNode.isIndependent()));
+        body.addStatement(getAssignedFactoryMethod(factoryField, SubProcessNodeFactory.class, getNodeId(node), NODE_KEY, new LongLiteralExpr(subProcessNode.getId())))
+                .addStatement(getNameMethod(node, "Call Activity"))
+                .addStatement(getFactoryMethod(getNodeId(node), METHOD_PROCESS_ID, new StringLiteralExpr(subProcessId)))
+                .addStatement(getFactoryMethod(getNodeId(node), METHOD_PROCESS_NAME, new StringLiteralExpr(getOrDefault(subProcessNode.getProcessName(), ""))))
+                .addStatement(getFactoryMethod(getNodeId(node), METHOD_WAIT_FOR_COMPLETION, new BooleanLiteralExpr(subProcessNode.isWaitForCompletion())))
+                .addStatement(getFactoryMethod(getNodeId(node), METHOD_INDEPENDENT, new BooleanLiteralExpr(subProcessNode.isIndependent())));
 
         Map<String, String> inputTypes = (Map<String, String>) subProcessNode.getMetaData("BPMN.InputTypes");
 
         String subProcessModelClassName = ProcessToExecModelGenerator.extractModelClassName(subProcessId);
         ModelMetaData subProcessModel = new ModelMetaData(subProcessId,
-                                                          metadata.getPackageName(),
-                                                          subProcessModelClassName,
-                                                          WorkflowProcess.PRIVATE_VISIBILITY,
-                                                          VariableDeclarations.ofRawInfo(inputTypes),
-                                                          false);
+                metadata.getPackageName(),
+                subProcessModelClassName,
+                WorkflowProcess.PRIVATE_VISIBILITY,
+                VariableDeclarations.ofRawInfo(inputTypes),
+                false);
 
         retValue.ifPresent(retValueExpression -> {
             retValueExpression.findAll(ClassOrInterfaceType.class)
@@ -103,14 +104,13 @@ public class LambdaSubProcessNodeVisitor extends AbstractVisitor {
         });
 
         if (retValue.isPresent()) {
-            addFactoryMethodWithArgs(body, nodeVar, "subProcessFactory", retValue.get());
+            body.addStatement(getFactoryMethod(getNodeId(node), FACTORY_NAME, retValue.get()));
         } else {
-            addFactoryMethodWithArgs(body, nodeVar, "subProcessFactory");
+            body.addStatement(getFactoryMethod(getNodeId(node), FACTORY_NAME));
         }
-        
-        visitMetaData(subProcessNode.getMetaData(), body, "subProcessNode" + node.getId());
-        
-        addFactoryMethodWithArgs(body, nodeVar, "done");
+
+        visitMetaData(subProcessNode.getMetaData(), body, getNodeId(node));
+        body.addStatement(getDoneMethod(getNodeId(node)));
     }
 
     private BlockStmt bind(VariableScope variableScope, SubProcessNode subProcessNode, ModelMetaData subProcessModel) {
@@ -120,16 +120,16 @@ public class LambdaSubProcessNodeVisitor extends AbstractVisitor {
         for (Map.Entry<String, String> e : subProcessNode.getInMappings().entrySet()) {
             // check if given mapping is an expression
             Matcher matcher = PatternConstants.PARAMETER_MATCHER.matcher(e.getValue());
-            if (matcher.find()) {  
-                
-                String expression = matcher.group(1);  
+            if (matcher.find()) {
+
+                String expression = matcher.group(1);
                 String topLevelVariable = expression.split("\\.")[0];
                 Variable v = variableScope.findVariable(topLevelVariable);
-                
+
                 actionBody.addStatement(makeAssignment(v));
                 actionBody.addStatement(subProcessModel.callSetter("model", e.getKey(), dotNotationToGetExpression(expression)));
             } else {
-            
+
                 Variable v = variableScope.findVariable(e.getValue());
                 if (v != null) {
                     actionBody.addStatement(makeAssignment(v));
@@ -150,7 +150,7 @@ public class LambdaSubProcessNodeVisitor extends AbstractVisitor {
         MethodCallExpr processInstanceSupplier = new MethodCallExpr(new NameExpr(processFielName), "createInstance").addArgument("model");
 
         metadata.getSubProcesses().put(processId, subProcessNode.getProcessId());
-        
+
         return new BlockStmt().addStatement(new ReturnStmt(processInstanceSupplier));
     }
 
@@ -158,87 +158,86 @@ public class LambdaSubProcessNodeVisitor extends AbstractVisitor {
         BlockStmt stmts = new BlockStmt();
 
         for (Map.Entry<String, String> e : subProcessNode.getOutMappings().entrySet()) {
-            
+
             // check if given mapping is an expression
             Matcher matcher = PatternConstants.PARAMETER_MATCHER.matcher(e.getValue());
-            if (matcher.find()) {  
-                
+            if (matcher.find()) {
+
                 String expression = matcher.group(1);
                 String topLevelVariable = expression.split("\\.")[0];
                 Map<String, String> dataOutputs = (Map<String, String>) subProcessNode.getMetaData("BPMN.OutputTypes");
                 Variable variable = new Variable();
                 variable.setName(topLevelVariable);
                 variable.setType(new ObjectDataType(dataOutputs.get(e.getKey())));
-                
-                stmts.addStatement(makeAssignment(variableScope.findVariable(topLevelVariable)));                
+
+                stmts.addStatement(makeAssignment(variableScope.findVariable(topLevelVariable)));
                 stmts.addStatement(makeAssignmentFromModel(variable, e.getKey()));
-                
+
                 stmts.addStatement(dotNotationToSetExpression(expression, e.getKey()));
-                
+
                 stmts.addStatement(new MethodCallExpr()
-                                   .setScope(new NameExpr("kcontext"))
-                                   .setName("setVariable")
-                                   .addArgument(new StringLiteralExpr(topLevelVariable))
-                                   .addArgument(topLevelVariable));
+                        .setScope(new NameExpr(KCONTEXT_VAR))
+                        .setName("setVariable")
+                        .addArgument(new StringLiteralExpr(topLevelVariable))
+                        .addArgument(topLevelVariable));
             } else {
 
                 stmts.addStatement(makeAssignmentFromModel(variableScope.findVariable(e.getValue()), e.getKey()));
                 stmts.addStatement(new MethodCallExpr()
-                                       .setScope(new NameExpr("kcontext"))
-                                       .setName("setVariable")
-                                       .addArgument(new StringLiteralExpr(e.getValue()))
-                                       .addArgument(e.getKey()));
+                        .setScope(new NameExpr(KCONTEXT_VAR))
+                        .setName("setVariable")
+                        .addArgument(new StringLiteralExpr(e.getValue()))
+                        .addArgument(e.getKey()));
             }
-            
+
         }
 
         return stmts;
     }
-    
+
     protected Expression dotNotationToSetExpression(String dotNotation, String value) {
         String[] elements = dotNotation.split("\\.");
         Expression scope = new NameExpr(elements[0]);
         if (elements.length == 1) {
             AssignExpr assignExpr = new AssignExpr(
-                                                   scope,
-                                                   new NameExpr(value),
-                                                   AssignExpr.Operator.ASSIGN);
+                    scope,
+                    new NameExpr(value),
+                    AssignExpr.Operator.ASSIGN);
 
-            return assignExpr;            
+            return assignExpr;
         }
         for (int i = 1; i < elements.length - 1; i++) {
             MethodCallExpr get = new MethodCallExpr()
-                .setScope(scope)
-                .setName("get" + StringUtils.capitalize(elements[i]));
-            
+                    .setScope(scope)
+                    .setName("get" + StringUtils.capitalize(elements[i]));
+
             scope = get;
         }
-        
+
         MethodCallExpr set = new MethodCallExpr()
                 .setScope(scope)
                 .setName("set" + StringUtils.capitalize(elements[elements.length - 1]))
                 .addArgument(value);
-        
+
         return set;
     }
-    
+
     protected Expression dotNotationToGetExpression(String dotNotation) {
         String[] elements = dotNotation.split("\\.");
         Expression scope = new NameExpr(elements[0]);
-        
+
         if (elements.length == 1) {
             return scope;
         }
-        
+
         for (int i = 1; i < elements.length; i++) {
             MethodCallExpr get = new MethodCallExpr()
-                .setScope(scope)
-                .setName("get" + StringUtils.capitalize(elements[i]));
-            
+                    .setScope(scope)
+                    .setName("get" + StringUtils.capitalize(elements[i]));
+
             scope = get;
         }
-   
+
         return scope;
     }
-    
 }

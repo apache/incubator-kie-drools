@@ -15,84 +15,85 @@
 
 package org.jbpm.compiler.canonical;
 
-import java.util.ArrayList;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Map;
-
-import org.jbpm.process.core.context.variable.VariableScope;
-import org.jbpm.ruleflow.core.factory.CompositeNodeFactory;
-import org.jbpm.workflow.core.impl.ConnectionImpl;
-import org.jbpm.workflow.core.node.CompositeContextNode;
-import org.kie.api.definition.process.Connection;
-import org.kie.api.definition.process.Node;
-
+import com.github.javaparser.ast.NodeList;
 import com.github.javaparser.ast.expr.LongLiteralExpr;
+import com.github.javaparser.ast.expr.NullLiteralExpr;
+import com.github.javaparser.ast.expr.ObjectCreationExpr;
 import com.github.javaparser.ast.expr.StringLiteralExpr;
 import com.github.javaparser.ast.stmt.BlockStmt;
+import com.github.javaparser.ast.type.ClassOrInterfaceType;
+import org.jbpm.process.core.context.variable.Variable;
+import org.jbpm.process.core.context.variable.VariableScope;
+import org.jbpm.process.core.datatype.impl.type.ObjectDataType;
+import org.jbpm.ruleflow.core.factory.CompositeContextNodeFactory;
+import org.jbpm.workflow.core.node.CompositeContextNode;
+import org.kie.api.definition.process.Node;
+
+import java.util.HashSet;
+import java.util.Map;
+import java.util.Set;
+
+import static org.jbpm.ruleflow.core.factory.CompositeContextNodeFactory.METHOD_VARIABLE;
 
 public class CompositeContextNodeVisitor extends AbstractCompositeNodeVisitor {
-    
-    protected static final String C_C_NODE_VAR = "compositeContextNode";
+
+    private static final String NODE_KEY = "compositeContextNode";
     private static final String FACTORY_METHOD_NAME = "compositeNode";
-    
-    public CompositeContextNodeVisitor(Map<Class<?>, AbstractVisitor> nodesVisitors) {
+    private static final String DEFAULT_NAME = "Composite";
+
+    @Override
+    protected String getNodeKey() {
+        return NODE_KEY;
+    }
+
+    public CompositeContextNodeVisitor(Map<Class<?>, AbstractNodeVisitor> nodesVisitors) {
         super(nodesVisitors);
     }
-    
-    protected Class<? extends CompositeNodeFactory> factoryClass() {
-        return CompositeNodeFactory.class;
+
+    protected Class<? extends CompositeContextNodeFactory> factoryClass() {
+        return CompositeContextNodeFactory.class;
     }
-    
+
     protected String factoryMethod() {
         return FACTORY_METHOD_NAME;
     }
 
     @Override
     public void visitNode(String factoryField, Node node, BlockStmt body, VariableScope variableScope, ProcessMetaData metadata) {
-        CompositeContextNode compositeContextNode = (CompositeContextNode) node;        
-        
-        addFactoryMethodWithArgsWithAssignment(factoryField, body, factoryClass(), C_C_NODE_VAR + node.getId(), factoryMethod(), new LongLiteralExpr(compositeContextNode.getId()));
-        addFactoryMethodWithArgs(body, C_C_NODE_VAR + node.getId(), "name", new StringLiteralExpr(getOrDefault(node.getName(), "Composite")));
-        visitMetaData(compositeContextNode.getMetaData(), body, C_C_NODE_VAR + node.getId());
+        CompositeContextNode compositeContextNode = (CompositeContextNode) node;
+
+        body.addStatement(getAssignedFactoryMethod(factoryField, factoryClass(), getNodeId(node), factoryMethod(), new LongLiteralExpr(compositeContextNode.getId())))
+                .addStatement(getNameMethod(node, getDefaultName()));
+        visitMetaData(compositeContextNode.getMetaData(), body, getNodeId(node));
         VariableScope variableScopeNode = (VariableScope) compositeContextNode.getDefaultContext(VariableScope.VARIABLE_SCOPE);
-        
+
         if (variableScope != null) {
-            visitVariableScope(C_C_NODE_VAR + node.getId(), variableScopeNode, body, new HashSet<>());
+            visitVariableScope(getNodeId(node), variableScopeNode, body, new HashSet<>());
         }
-        
+
         // visit nodes
-        visitNodes(C_C_NODE_VAR + node.getId(), compositeContextNode.getNodes(), body, ((VariableScope) compositeContextNode.getDefaultContext(VariableScope.VARIABLE_SCOPE)), metadata);      
-        visitConnections(C_C_NODE_VAR + node.getId(), compositeContextNode.getNodes(), body);
-
-        addFactoryMethodWithArgs(body, C_C_NODE_VAR + node.getId(), "done");
-        
+        visitNodes(getNodeId(node), compositeContextNode.getNodes(), body, ((VariableScope) compositeContextNode.getDefaultContext(VariableScope.VARIABLE_SCOPE)), metadata);
+        visitConnections(getNodeId(node), compositeContextNode.getNodes(), body);
+        body.addStatement(getDoneMethod(getNodeId(node)));
     }
-    
-    protected void visitConnections(String factoryField, Node[] nodes, BlockStmt body) {
 
-        List<Connection> connections = new ArrayList<>();
-        for (Node node : nodes) {
-            for (List<Connection> connectionList : node.getIncomingConnections().values()) {
-                connections.addAll(connectionList);
+    protected String getDefaultName() {
+        return DEFAULT_NAME;
+    }
+
+    protected void visitVariableScope(String contextNode, VariableScope variableScope, BlockStmt body, Set<String> visitedVariables) {
+        if (variableScope != null && !variableScope.getVariables().isEmpty()) {
+            for (Variable variable : variableScope.getVariables()) {
+                if (!visitedVariables.add(variable.getName())) {
+                    continue;
+                }
+                String tags = (String) variable.getMetaData(Variable.VARIABLE_TAGS);
+                ClassOrInterfaceType variableType = new ClassOrInterfaceType(null, ObjectDataType.class.getSimpleName());
+                ObjectCreationExpr variableValue = new ObjectCreationExpr(null, variableType, new NodeList<>(new StringLiteralExpr(variable.getType().getStringType())));
+                body.addStatement(getFactoryMethod(contextNode, METHOD_VARIABLE,
+                        new StringLiteralExpr(variable.getName()), variableValue,
+                        new StringLiteralExpr(Variable.VARIABLE_TAGS), (tags != null ? new StringLiteralExpr(tags) : new NullLiteralExpr())));
             }
         }
-        for (Connection connection : connections) {
-            visitConnection(factoryField, connection, body);
-        }
     }
-    
-    protected void visitConnection(String factoryField, Connection connection, BlockStmt body) {
-        // if the connection is a hidden one (compensations), don't dump
-        Object hidden = ((ConnectionImpl) connection).getMetaData("hidden");
-        if (hidden != null && ((Boolean) hidden)) {
-            return;
-        }
-
-        addFactoryMethodWithArgs(factoryField, body, "connection", new LongLiteralExpr(connection.getFrom().getId()),
-                                 new LongLiteralExpr(connection.getTo().getId()),
-                                 new StringLiteralExpr(getOrDefault((String) ((ConnectionImpl) connection).getMetaData().get("UniqueId"), "")));
-    }
-
-    
 }

@@ -15,26 +15,31 @@
 
 package org.jbpm.compiler.canonical;
 
-import java.util.Map;
-
-import org.jbpm.ruleflow.core.factory.CompositeNodeFactory;
+import org.jbpm.ruleflow.core.factory.CompositeContextNodeFactory;
 import org.jbpm.ruleflow.core.factory.EventSubProcessNodeFactory;
 
+import java.util.Map;
+
 public class EventSubprocessNodeVisitor extends CompositeContextNodeVisitor {
-    
+
     private static final String FACTORY_METHOD_NAME = "eventSubProcessNode";
-    
-    public EventSubprocessNodeVisitor(Map<Class<?>, AbstractVisitor> nodesVisitors) {
+
+    public EventSubprocessNodeVisitor(Map<Class<?>, AbstractNodeVisitor> nodesVisitors) {
         super(nodesVisitors);
     }
 
     @Override
-    protected Class<? extends CompositeNodeFactory> factoryClass() {
+    protected Class<? extends CompositeContextNodeFactory> factoryClass() {
         return EventSubProcessNodeFactory.class;
     }
-    
+
     @Override
     protected String factoryMethod() {
         return FACTORY_METHOD_NAME;
+    }
+
+    @Override
+    protected String getDefaultName() {
+        return "Event Subprocess";
     }
 }

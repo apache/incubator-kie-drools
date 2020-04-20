@@ -16,33 +16,41 @@
 
 package org.jbpm.compiler.canonical;
 
+import com.github.javaparser.ast.expr.LongLiteralExpr;
+import com.github.javaparser.ast.expr.StringLiteralExpr;
+import com.github.javaparser.ast.stmt.BlockStmt;
 import org.jbpm.process.core.context.variable.VariableScope;
 import org.jbpm.ruleflow.core.factory.FaultNodeFactory;
 import org.jbpm.workflow.core.node.FaultNode;
 import org.kie.api.definition.process.Node;
 
-import com.github.javaparser.ast.expr.LongLiteralExpr;
-import com.github.javaparser.ast.expr.StringLiteralExpr;
-import com.github.javaparser.ast.stmt.BlockStmt;
+import static org.jbpm.ruleflow.core.factory.FaultNodeFactory.METHOD_FAULT_NAME;
+import static org.jbpm.ruleflow.core.factory.FaultNodeFactory.METHOD_FAULT_VARIABLE;
 
-public class FaultNodeVisitor extends AbstractVisitor {
+public class FaultNodeVisitor extends AbstractNodeVisitor {
+
+    private static final String NODE_KEY = "faultNode";
+
+    @Override
+    protected String getNodeKey() {
+        return NODE_KEY;
+    }
 
     @Override
     public void visitNode(String factoryField, Node node, BlockStmt body, VariableScope variableScope, ProcessMetaData metadata) {
         FaultNode faultNode = (FaultNode) node;
-        
-        addFactoryMethodWithArgsWithAssignment(factoryField, body, FaultNodeFactory.class, "faultNode" + node.getId(), "faultNode", new LongLiteralExpr(faultNode.getId()));
-        addFactoryMethodWithArgs(body, "faultNode" + node.getId(), "name", new StringLiteralExpr(getOrDefault(faultNode.getName(), "Error")));
+
+        body.addStatement(getAssignedFactoryMethod(factoryField, FaultNodeFactory.class, getNodeId(node), NODE_KEY, new LongLiteralExpr(faultNode.getId())))
+                .addStatement(getNameMethod(node, "Error"));
         if (faultNode.getFaultVariable() != null) {
-            addFactoryMethodWithArgs(body, "faultNode" + node.getId(), "setFaultVariable", new StringLiteralExpr(faultNode.getFaultVariable()));
+            body.addStatement(getFactoryMethod(getNodeId(node), METHOD_FAULT_VARIABLE, new StringLiteralExpr(faultNode.getFaultVariable())));
         }
         if (faultNode.getFaultName() != null) {
-            addFactoryMethodWithArgs(body, "faultNode" + node.getId(), "setFaultName", new StringLiteralExpr(faultNode.getFaultName()));
+            body.addStatement(getFactoryMethod(getNodeId(node), METHOD_FAULT_NAME, new StringLiteralExpr(faultNode.getFaultName())));
         }
 
-        visitMetaData(faultNode.getMetaData(), body, "faultNode" + node.getId());
-        
-        addFactoryMethodWithArgs(body, "faultNode" + node.getId(), "done");
-        
+        visitMetaData(faultNode.getMetaData(), body, getNodeId(node));
+        body.addStatement(getDoneMethod(getNodeId(node)));
+
     }
 }
