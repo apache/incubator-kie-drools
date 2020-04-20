@@ -30,6 +30,7 @@ import java.util.Map;
 
 import org.junit.Ignore;
 import org.junit.Test;
+import org.junit.runners.Parameterized;
 import org.kie.dmn.api.core.DMNContext;
 import org.kie.dmn.api.core.DMNModel;
 import org.kie.dmn.api.core.DMNResult;
@@ -49,14 +50,23 @@ import static org.hamcrest.Matchers.hasEntry;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertThat;
 import static org.junit.Assert.assertTrue;
+import static org.kie.dmn.core.BaseVariantTest.VariantTestConf.BUILDER_DEFAULT_NOCL_TYPECHECK;
+import static org.kie.dmn.core.BaseVariantTest.VariantTestConf.BUILDER_DEFAULT_NOCL_TYPECHECK_TYPESAFE;
+import static org.kie.dmn.core.BaseVariantTest.VariantTestConf.KIE_API_TYPECHECK;
+import static org.kie.dmn.core.BaseVariantTest.VariantTestConf.KIE_API_TYPECHECK_TYPESAFE;
 import static org.kie.dmn.core.util.DynamicTypeUtils.entry;
 import static org.kie.dmn.core.util.DynamicTypeUtils.prototype;
 
-/* These are duplicated test that are run against the Typesafe DMN */
-public class DMNTypessafeSupportTest extends BaseVariantTest {
+/* These are duplicated test that are run against the Typesafe DMN, see https://issues.redhat.com/browse/DROOLS-5061 */
+public class DMNTypesafeSupportTest extends BaseVariantTest {
 
-    public DMNTypessafeSupportTest(VariantTestConf testConfig) {
+    public DMNTypesafeSupportTest(VariantTestConf testConfig) {
         super(testConfig);
+    }
+
+    @Parameterized.Parameters(name = "{0}")
+    public static Object[] params() {
+        return new Object[]{KIE_API_TYPECHECK, BUILDER_DEFAULT_NOCL_TYPECHECK, BUILDER_DEFAULT_NOCL_TYPECHECK_TYPESAFE, KIE_API_TYPECHECK_TYPESAFE};
     }
 
     @Test
