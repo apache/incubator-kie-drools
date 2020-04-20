@@ -61,7 +61,7 @@ public class ValidatorImportTest extends AbstractValidatorTest {
 
         DMNContext context = DMNFactory.newContext();
         context.set("Customer", mapOf(entry("full name", "John Doe"), entry("age", 47)));
-        DMNResult dmnResult = evaluateModel(runtime, dmnModel, context);
+        DMNResult dmnResult = runtime.evaluateAll(dmnModel, context);
         LOG.debug("{}", dmnResult);
         assertThat(DMNRuntimeUtil.formatMessages(dmnResult.getMessages()), dmnResult.hasErrors(), is(false));
     }
@@ -189,7 +189,7 @@ public class ValidatorImportTest extends AbstractValidatorTest {
         assertThat(DMNRuntimeUtil.formatMessages(dmnModel.getMessages()), dmnModel.hasErrors(), is(false));
 
         DMNContext context = DMNFactory.newContext();
-        DMNResult dmnResult = evaluateModel(runtime, dmnModel, context);
+        DMNResult dmnResult = runtime.evaluateAll(dmnModel, context);
         LOG.debug("{}", dmnResult);
         assertThat(DMNRuntimeUtil.formatMessages(dmnResult.getMessages()), dmnResult.hasErrors(), is(false));
         assertThat(dmnResult.getDecisionResultByName("aaa").getResult(), is(new BigDecimal(2)));
