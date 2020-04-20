@@ -37,9 +37,15 @@ If the generated project does not compile (due to some modification in the under
 
 See https://maven.apache.org/archetype/maven-archetype-plugin/integration-test-mojo.html for more details.
 
+Post-creation steps
+-------------------
 
+The following overriding methods are not currently implemented, and will throw _UnsupportedOperationException_ if invoked:
 
+1. KiePMML(_modelName_)ModelFactory.getKiePMML(_modelName_)Model(DataDictionary dataDictionary, (_modelName_)Model model)
+2. KiePMML(_modelName_)Model.evaluate(Map<String, Object> requestData)
 
+Also, some _dependencyManagement_ declarations are defined inside generated pom, and must be moved to _kie-pmml-new/pom.xml_
 
-
-
+1. kie-pmml-models-(_modelName_)-compiler/pom.xml
+1. kie-pmml-models-(_modelName_)-evaluator/pom.xml

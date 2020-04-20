@@ -13,7 +13,7 @@
   <packaging>pom</packaging>
 
   <name>KIE :: PMML :: Compiler</name>
-  <description>PMML evaluator</description>
+  <description>PMML Compiler</description>
 
   <modules>
     <module>kie-pmml-compiler-api</module>

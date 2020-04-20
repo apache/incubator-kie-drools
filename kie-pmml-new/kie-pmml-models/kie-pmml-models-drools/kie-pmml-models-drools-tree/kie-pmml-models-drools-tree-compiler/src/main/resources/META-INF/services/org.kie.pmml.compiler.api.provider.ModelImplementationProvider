@@ -1,2 +1,2 @@
 # SPI implementation
-org.kie.pmml.models.tree.executor.TreeModelImplementationProvider
+org.kie.pmml.models.drools.tree.compiler.executor.TreeModelImplementationProvider

@@ -1,0 +1,2 @@
+# SPI implementation
+${package}.${artifactModelName}.drools.compiler.executor.${modelName}ModelImplementationProvider
