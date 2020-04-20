@@ -17,6 +17,7 @@
 package org.kie.kogito.jobs.service.scheduler.impl;
 
 import java.time.Duration;
+import java.util.Objects;
 import java.util.concurrent.CompletionStage;
 
 import javax.enterprise.context.ApplicationScoped;
@@ -89,6 +90,7 @@ public class VertxJobScheduler extends BaseTimerJobScheduler {
         return ReactiveStreams
                 .of(scheduledJob)
                 .map(ScheduledJob::getScheduledId)
+                .filter(Objects::nonNull)
                 .map(Long::valueOf)
                 .map(vertx::cancelTimer)
                 .buildRs();

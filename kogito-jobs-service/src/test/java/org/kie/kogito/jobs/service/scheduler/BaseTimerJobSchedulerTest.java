@@ -22,6 +22,7 @@ import java.util.Optional;
 import java.util.UUID;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.CompletionStage;
+import java.util.concurrent.TimeUnit;
 
 import io.reactivex.Flowable;
 import io.reactivex.disposables.Disposable;
@@ -45,6 +46,7 @@ import org.mockito.Mock;
 import org.reactivestreams.Publisher;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.kie.kogito.jobs.service.model.JobStatus.CANCELED;
 import static org.kie.kogito.jobs.service.model.JobStatus.SCHEDULED;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.eq;
@@ -165,6 +167,20 @@ public abstract class BaseTimerJobSchedulerTest {
         verify(tested(), expired ? never() : times(1)).doSchedule(delayCaptor.capture(), eq(job));
         verify(jobRepository, expired ? never() : times(1)).save(scheduleCaptor.capture());
 
+        //assert always a scheduled job is canceled (periodic or not)
+        Optional.ofNullable(jobStatus)
+                .filter(SCHEDULED::equals)
+                .ifPresent(s -> {
+                    verify(tested()).cancel(scheduleCaptorFuture.capture());
+                    try {
+                        ScheduledJob value = scheduleCaptorFuture.getValue().toCompletableFuture().get(1, TimeUnit.MILLISECONDS);
+                        assertThat(value.getId()).isEqualTo(scheduledJob.getId());
+                        assertThat(value.getStatus()).isEqualTo(CANCELED);
+                    } catch (Exception e) {
+                        throw new RuntimeException(e);
+                    }
+                });
+
         if (!expired) {
             ScheduledJob returnedScheduledJob = scheduleCaptor.getValue();
             assertThat(returnedScheduledJob.getScheduledId()).isEqualTo(SCHEDULED_ID);
@@ -261,8 +277,7 @@ public abstract class BaseTimerJobSchedulerTest {
         verify(tested(), never()).doSchedule(delayCaptor.capture(), eq(scheduledJob));
     }
 
-    @NotNull
-    private <T> Consumer<T> dummyCallback() {
+    protected  <T> Consumer<T> dummyCallback() {
         return t -> {
         };
     }
@@ -285,15 +300,23 @@ public abstract class BaseTimerJobSchedulerTest {
 
     @Test
     void testCancelScheduledJob() {
+        scheduledJob = ScheduledJob.builder().job(job).status(SCHEDULED).scheduledId("1").build();
         when(tested().doCancel(scheduledJob)).thenReturn(ReactiveStreams.of(true).buildRs());
 
-        tested().cancel(scheduled);
+        tested().cancel(CompletableFuture.completedFuture(scheduledJob));
         verify(tested()).doCancel(scheduledJob);
         verify(jobRepository).delete(scheduledJob);
     }
 
     @Test
-    void testScheduleOutOfCurrentChunk(){
+    void testCancelNotScheduledJob() {
+        tested().cancel(scheduled);
+        verify(tested(), never()).doCancel(scheduledJob);
+        verify(jobRepository).delete(scheduledJob);
+    }
+
+    @Test
+    void testScheduleOutOfCurrentChunk() {
         expirationTime = DateUtil.now().plusMinutes(tested().schedulerChunkInMinutes + 10);
 
         job = JobBuilder.builder()
@@ -314,7 +337,7 @@ public abstract class BaseTimerJobSchedulerTest {
     }
 
     @Test
-    void testScheduleInCurrentChunk(){
+    void testScheduleInCurrentChunk() {
         when(jobRepository.exists(any())).thenReturn(CompletableFuture.completedFuture(Boolean.FALSE));
 
         subscribeOn(tested().schedule(job));
@@ -327,9 +350,8 @@ public abstract class BaseTimerJobSchedulerTest {
         assertThat(current.getScheduledId()).isNotNull();
     }
 
-
     @Test
-    void testScheduled(){
+    void testScheduled() {
         testExistingJob(false, SCHEDULED);
         Optional<ZonedDateTime> scheduled = tested().scheduled(JOB_ID);
         assertThat(scheduled).isNotNull();

@@ -148,11 +148,7 @@ public abstract class BaseTimerJobScheduler implements ReactiveJobScheduler<Sche
                         j -> {
                             switch (j.getStatus()) {
                                 case SCHEDULED:
-                                    return wasPeriodicScheduled(j)
-                                            ? handleJobExecutionSuccess(j)
-                                            //return empty since the job was already processed
-                                            .flatMap(periodic -> ReactiveStreams.empty())
-                                            : handleExpirationTime(j)
+                                    return handleExpirationTime(j)
                                             .map(scheduled -> ScheduledJob.builder()
                                                     .of(scheduled)
                                                     .status(JobStatus.CANCELED)
@@ -331,12 +327,11 @@ public abstract class BaseTimerJobScheduler implements ReactiveJobScheduler<Sche
         return ReactiveStreams
                 .fromCompletionStageNullable(futureJob)
                 .peek(job -> LOGGER.debug("Cancel Job Scheduling {}", job))
-                .flatMap(scheduledJob ->
-                                 //always returns the scheduledJob
-                                 ReactiveStreams.concat(
-                                         ReactiveStreams.of(scheduledJob),
-                                         ReactiveStreams.fromPublisher(this.doCancel(scheduledJob))
-                                                 .map(b -> scheduledJob)))
+                .flatMap(scheduledJob -> Optional.ofNullable(scheduledJob.getScheduledId())
+                        .map(id -> ReactiveStreams
+                                .fromPublisher(this.doCancel(scheduledJob))
+                                .map(b -> scheduledJob))
+                        .orElse(ReactiveStreams.of(scheduledJob)))
                 //final state, removing the job
                 .flatMapCompletionStage(jobRepository::delete)
                 .findFirst()
@@ -348,11 +343,14 @@ public abstract class BaseTimerJobScheduler implements ReactiveJobScheduler<Sche
     public CompletionStage<ScheduledJob> cancel(String jobId) {
         return cancel(jobRepository
                               .get(jobId)
-                              .thenApply(scheduledJob -> ScheduledJob
-                                      .builder()
-                                      .of(scheduledJob)
-                                      .status(JobStatus.CANCELED)
-                                      .build()));
+                              .thenApply(scheduledJob -> Optional
+                                      .ofNullable(scheduledJob)
+                                      .map(j -> ScheduledJob
+                                              .builder()
+                                              .of(j)
+                                              .status(JobStatus.CANCELED)
+                                              .build())
+                                      .orElse(null)));
     }
 
     public abstract Publisher<Boolean> doCancel(ScheduledJob scheduledJob);

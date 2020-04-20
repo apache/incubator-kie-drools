@@ -67,7 +67,6 @@ class VertxJobSchedulerTest extends BaseTimerJobSchedulerTest {
     @Captor
     private ArgumentCaptor<Long> timeCaptor;
 
-
     @BeforeEach
     public void setUp() {
         super.setUp();
@@ -84,7 +83,7 @@ class VertxJobSchedulerTest extends BaseTimerJobSchedulerTest {
     void testDoSchedule() {
         PublisherBuilder<String> schedule = tested.doSchedule(Duration.ofMillis(1), job);
         verify(vertx, never()).setTimer(timeCaptor.capture(), handlerCaptor.capture());
-        Flowable.fromPublisher(schedule.buildRs()).subscribe();
+        Flowable.fromPublisher(schedule.buildRs()).subscribe(dummyCallback(), dummyCallback());
         verify(vertx).setTimer(timeCaptor.capture(), handlerCaptor.capture());
         assertJobSchedule();
     }
@@ -100,7 +99,7 @@ class VertxJobSchedulerTest extends BaseTimerJobSchedulerTest {
     void testDoPeriodicSchedule() {
         PublisherBuilder<String> periodicSchedule = tested.doPeriodicSchedule(Duration.ofMillis(1), job);
         verify(vertx, never()).setPeriodic(timeCaptor.capture(), handlerCaptor.capture());
-        Flowable.fromPublisher(periodicSchedule.buildRs()).subscribe();
+        Flowable.fromPublisher(periodicSchedule.buildRs()).subscribe(dummyCallback(), dummyCallback());
         verify(vertx).setPeriodic(timeCaptor.capture(), handlerCaptor.capture());
         assertJobSchedule();
     }
@@ -109,7 +108,14 @@ class VertxJobSchedulerTest extends BaseTimerJobSchedulerTest {
     void testDoCancel() {
         Publisher<Boolean> cancel = tested.doCancel(ScheduledJob.builder().job(job).scheduledId(SCHEDULED_ID).build());
         verify(vertx, never()).cancelTimer(Long.valueOf(SCHEDULED_ID));
-        Flowable.fromPublisher(cancel).subscribe();
+        Flowable.fromPublisher(cancel).subscribe(dummyCallback(), dummyCallback());
         verify(vertx).cancelTimer(Long.valueOf(SCHEDULED_ID));
+    }
+
+    @Test
+    void testDoCancelNullId() {
+        Publisher<Boolean> cancel = tested.doCancel(ScheduledJob.builder().job(job).scheduledId(null).build());
+        Flowable.fromPublisher(cancel).subscribe(dummyCallback(), dummyCallback());
+        verify(vertx, never()).cancelTimer(anyLong());
     }
 }

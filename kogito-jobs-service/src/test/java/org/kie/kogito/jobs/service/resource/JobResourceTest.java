@@ -17,6 +17,8 @@
 package org.kie.kogito.jobs.service.resource;
 
 import java.io.IOException;
+import java.time.temporal.ChronoUnit;
+import java.util.UUID;
 
 import javax.inject.Inject;
 
@@ -26,6 +28,7 @@ import io.quarkus.test.common.QuarkusTestResource;
 import io.quarkus.test.junit.QuarkusTest;
 import io.restassured.http.ContentType;
 import io.restassured.response.ValidatableResponse;
+import io.vertx.core.Vertx;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.TestInstance;
 import org.kie.kogito.jobs.api.Job;
@@ -35,6 +38,7 @@ import org.kie.kogito.jobs.service.model.ScheduledJob;
 import org.kie.kogito.jobs.service.utils.DateUtil;
 
 import static io.restassured.RestAssured.given;
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 
@@ -45,6 +49,9 @@ public class JobResourceTest {
 
     @Inject
     private ObjectMapper objectMapper;
+
+    @Inject
+    private Vertx vertx;
 
     @Test
     void create() throws Exception {
@@ -100,17 +107,7 @@ public class JobResourceTest {
         final String id = "3";
         final Job job = getJob(id);
         create(jobToJson(job));
-        final ScheduledJob scheduledJob = given()
-                .pathParam("id", id)
-                .when()
-                .get(JobResource.JOBS_PATH + "/{id}")
-                .then()
-                .statusCode(200)
-                .contentType(ContentType.JSON)
-                .assertThat()
-                .extract()
-                .as(ScheduledJob.class);
-        assertEquals(scheduledJob.getId(), job.getId());
+        assertGetScheduledJob(id);
     }
 
     @Test
@@ -118,7 +115,107 @@ public class JobResourceTest {
         final String id = "4";
         final Job job = getJob(id);
         create(jobToJson(job));
-        final ScheduledJob scheduledJob = given()
+        final ScheduledJob scheduledJob = assertGetScheduledJob(id);
+        assertEquals(scheduledJob.getId(), job.getId());
+        assertEquals(0, scheduledJob.getRetries());
+        assertEquals(JobStatus.SCHEDULED, scheduledJob.getStatus());
+        assertNotNull(scheduledJob.getScheduledId());
+    }
+
+    @Test
+    void cancelRunningNonPeriodicJobTest() throws Exception {
+        final String id = UUID.randomUUID().toString();
+        final Job job = JobBuilder
+                .builder()
+                .id(id)
+                .expirationTime(DateUtil.now().plus(10, ChronoUnit.SECONDS))
+                .callbackEndpoint("http://localhost:8081/callback")
+                .priority(1)
+                .build();
+        create(jobToJson(job));
+
+        assertGetScheduledJob(id);
+
+        //guarantee the job is scheduled on vertx
+        Thread.sleep(500);
+
+        //canceled the running job
+        ScheduledJob scheduledJob = assertCancelScheduledJob(id);
+
+        //assert the job was deleted from the api perspective
+        assertJobNotFound(id);
+
+        //ensure the job was indeed canceled on vertx
+        assertJobNotScheduledOnVertx(scheduledJob);
+    }
+
+    @Test
+    void cancelRunningPeriodicJobTest() throws Exception {
+        final String id = UUID.randomUUID().toString();
+        int timeMillis = 1000;
+        final Job job = JobBuilder
+                .builder()
+                .id(id)
+                .expirationTime(DateUtil.now().plus(timeMillis, ChronoUnit.MILLIS))
+                .repeatLimit(10)
+                .repeatInterval(500l)
+                .callbackEndpoint("http://localhost:8081/callback")
+                .priority(1)
+                .build();
+        create(jobToJson(job));
+
+        //check the job was created
+        assertGetScheduledJob(id);
+
+        //guarantee the job is running
+        Thread.sleep(timeMillis + 1);
+
+        //canceled the running job
+        ScheduledJob scheduledJob = assertCancelScheduledJob(id);
+        assertThat(scheduledJob.getExecutionCounter()).isGreaterThan(0);
+
+        //assert the job was deleted from the api perspective
+        assertJobNotFound(id);
+
+        //ensure the job was indeed canceled on vertx
+        assertJobNotScheduledOnVertx(scheduledJob);
+    }
+
+    private void assertJobNotScheduledOnVertx(ScheduledJob scheduledJob) {
+        Long scheduledId = Long.valueOf(scheduledJob.getScheduledId());
+        boolean timerCanceled = vertx.cancelTimer(scheduledId);
+        assertThat(timerCanceled).isFalse();
+    }
+
+    private void assertJobNotFound(String id) {
+        given()
+                .pathParam("id", id)
+                .when()
+                .get(JobResource.JOBS_PATH + "/{id}")
+                .then()
+                .statusCode(404);
+    }
+
+    private ScheduledJob assertCancelScheduledJob(String id) {
+        ScheduledJob scheduledJob = given()
+                .pathParam("id", id)
+                .when()
+                .delete(JobResource.JOBS_PATH + "/{id}")
+                .then()
+                .statusCode(200)
+                .contentType(ContentType.JSON)
+                .assertThat()
+                .extract()
+                .as(ScheduledJob.class);
+
+        assertEquals(scheduledJob.getId(), id);
+        assertEquals(JobStatus.CANCELED, scheduledJob.getStatus());
+        assertThat(scheduledJob.getScheduledId()).isNotBlank();
+        return scheduledJob;
+    }
+
+    private ScheduledJob assertGetScheduledJob(String id) {
+        ScheduledJob scheduledJob = given()
                 .pathParam("id", id)
                 .when()
                 .get(JobResource.JOBS_PATH + "/{id}")
@@ -128,9 +225,10 @@ public class JobResourceTest {
                 .assertThat()
                 .extract()
                 .as(ScheduledJob.class);
-        assertEquals(scheduledJob.getId(), job.getId());
-        assertEquals(0, scheduledJob.getRetries());
-        assertEquals(JobStatus.SCHEDULED, scheduledJob.getStatus());
-        assertNotNull(scheduledJob.getScheduledId());
+
+        assertThat(scheduledJob.getId()).isEqualTo(id);
+        assertThat(scheduledJob.getStatus()).isEqualTo(JobStatus.SCHEDULED);
+        assertThat(scheduledJob.getScheduledId()).isNotBlank();
+        return scheduledJob;
     }
 }
