@@ -28,9 +28,9 @@ import static org.hamcrest.Matchers.is;
 import static org.hamcrest.core.IsNull.notNullValue;
 import static org.junit.Assert.assertThat;
 
-public class DMNDecisionTableWithSymbolsTest extends BaseVariantTest {
+public class DMNDecisionTableWithSymbolsTest extends BaseInterpretedVsCompiledTest {
 
-    public DMNDecisionTableWithSymbolsTest(final BaseVariantTest.VariantTestConf useExecModelCompiler ) {
+    public DMNDecisionTableWithSymbolsTest(final boolean useExecModelCompiler ) {
         super( useExecModelCompiler );
     }
 
@@ -44,7 +44,7 @@ public class DMNDecisionTableWithSymbolsTest extends BaseVariantTest {
         context.set("Person age", 44);
         context.set("Person name", "Mario");
 
-        final DMNResult dmnResult = evaluateModel(runtime, dmnModel, context);
+        final DMNResult dmnResult = runtime.evaluateAll(dmnModel, context);
         final DMNContext result = dmnResult.getContext();
         assertThat(result.get("Decide with symbol"), is("Hello, Mario"));
     }

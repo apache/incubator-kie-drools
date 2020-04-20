@@ -48,13 +48,13 @@ import static org.junit.Assert.assertThat;
 import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
 
-public class DMNRuntimeTypeCheckTest extends BaseVariantTest {
+public class DMNRuntimeTypeCheckTest extends BaseInterpretedVsCompiledTest {
 
     public static final Logger LOG = LoggerFactory.getLogger(DMNRuntimeTypeCheckTest.class);
 
     private static final KieServices ks = KieServices.Factory.get();
 
-    public DMNRuntimeTypeCheckTest(final BaseVariantTest.VariantTestConf useExecModelCompiler) {
+    public DMNRuntimeTypeCheckTest(final boolean useExecModelCompiler) {
         super(useExecModelCompiler);
     }
 
@@ -152,7 +152,7 @@ public class DMNRuntimeTypeCheckTest extends BaseVariantTest {
         final DMNContext context = DMNFactory.newContext();
         context.set("a number", "ciao");
 
-        final DMNResult dmnResult = evaluateModel(runtime, dmnModel, context);
+        final DMNResult dmnResult = runtime.evaluateAll(dmnModel, context);
 
         assertThat(DMNRuntimeUtil.formatMessages(dmnResult.getMessages()),
                    dmnResult.getMessages(DMNMessage.Severity.ERROR)
@@ -177,7 +177,7 @@ public class DMNRuntimeTypeCheckTest extends BaseVariantTest {
         final DMNContext context = DMNFactory.newContext();
         context.set("a number", "ciao");
 
-        final DMNResult dmnResult = evaluateModel(runtime, dmnModel, context);
+        final DMNResult dmnResult = runtime.evaluateAll(dmnModel, context);
 
         assertThat("Should throw several errors, not only for 1 specific Decision: " + DMNRuntimeUtil.formatMessages(dmnResult.getMessages()),
                    dmnResult.getMessages(DMNMessage.Severity.ERROR)

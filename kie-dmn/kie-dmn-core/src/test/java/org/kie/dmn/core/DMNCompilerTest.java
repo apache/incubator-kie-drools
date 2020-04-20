@@ -47,11 +47,11 @@ import static org.junit.Assert.assertThat;
 import static org.kie.dmn.core.util.DynamicTypeUtils.entry;
 import static org.kie.dmn.core.util.DynamicTypeUtils.mapOf;
 
-public class DMNCompilerTest extends BaseVariantTest {
+public class DMNCompilerTest extends BaseInterpretedVsCompiledTest {
 
     public static final Logger LOG = LoggerFactory.getLogger(DMNCompilerTest.class);
 
-    public DMNCompilerTest(final BaseVariantTest.VariantTestConf useExecModelCompiler) {
+    public DMNCompilerTest(final boolean useExecModelCompiler) {
         super(useExecModelCompiler);
     }
 
@@ -162,7 +162,7 @@ public class DMNCompilerTest extends BaseVariantTest {
         final DMNContext context = runtime.newContext();
         context.set("A Person", mapOf(entry("name", "John"), entry("age", 47)));
 
-        final DMNResult evaluateAll = evaluateModel(runtime, dmnModel, context);
+        final DMNResult evaluateAll = runtime.evaluateAll(dmnModel, context);
         for (final DMNMessage message : evaluateAll.getMessages()) {
             LOG.debug("{}", message);
         }

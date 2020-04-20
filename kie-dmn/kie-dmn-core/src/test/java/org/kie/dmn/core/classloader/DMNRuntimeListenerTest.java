@@ -45,7 +45,7 @@ import org.kie.dmn.api.core.event.BeforeEvaluateDecisionServiceEvent;
 import org.kie.dmn.api.core.event.BeforeInvokeBKMEvent;
 import org.kie.dmn.api.core.event.DMNEvent;
 import org.kie.dmn.api.core.event.DMNRuntimeEventListener;
-import org.kie.dmn.core.BaseVariantTest;
+import org.kie.dmn.core.BaseInterpretedVsCompiledTest;
 import org.kie.dmn.core.api.DMNFactory;
 import org.kie.dmn.core.util.DMNRuntimeUtil;
 import org.slf4j.Logger;
@@ -60,9 +60,9 @@ import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertThat;
 import static org.junit.Assert.assertTrue;
 
-public class DMNRuntimeListenerTest extends BaseVariantTest {
+public class DMNRuntimeListenerTest extends BaseInterpretedVsCompiledTest {
 
-    public DMNRuntimeListenerTest(final BaseVariantTest.VariantTestConf useExecModelCompiler) {
+    public DMNRuntimeListenerTest(final boolean useExecModelCompiler) {
         super(useExecModelCompiler);
     }
 
@@ -125,7 +125,7 @@ public class DMNRuntimeListenerTest extends BaseVariantTest {
         final DMNContext context = DMNFactory.newContext();
         context.set("Name", "John Doe");
 
-        final DMNResult dmnResult = evaluateModel(runtime, dmnModel, context);
+        final DMNResult dmnResult = runtime.evaluateAll(dmnModel, context);
         LOG.debug("{}", dmnResult);
         assertThat(DMNRuntimeUtil.formatMessages(dmnResult.getMessages()), dmnResult.hasErrors(), is(false));
 

@@ -25,7 +25,7 @@ import org.kie.dmn.api.core.DMNContext;
 import org.kie.dmn.api.core.DMNModel;
 import org.kie.dmn.api.core.DMNResult;
 import org.kie.dmn.api.core.DMNRuntime;
-import org.kie.dmn.core.BaseVariantTest;
+import org.kie.dmn.core.BaseInterpretedVsCompiledTest;
 import org.kie.dmn.core.api.DMNFactory;
 import org.kie.dmn.core.compiler.CoerceDecisionServiceSingletonOutputOption;
 import org.kie.dmn.core.util.DMNRuntimeUtil;
@@ -43,11 +43,11 @@ import static org.junit.Assert.assertThat;
 import static org.kie.dmn.core.util.DynamicTypeUtils.entry;
 import static org.kie.dmn.core.util.DynamicTypeUtils.mapOf;
 
-public class DMNDecisionServicesTest extends BaseVariantTest {
+public class DMNDecisionServicesTest extends BaseInterpretedVsCompiledTest {
 
     public static final Logger LOG = LoggerFactory.getLogger(DMNDecisionServicesTest.class);
 
-    public DMNDecisionServicesTest(final BaseVariantTest.VariantTestConf useExecModelCompiler) {
+    public DMNDecisionServicesTest(final boolean useExecModelCompiler) {
         super(useExecModelCompiler);
     }
 
@@ -119,7 +119,7 @@ public class DMNDecisionServicesTest extends BaseVariantTest {
         context.set("D", "d");
         context.set("E", "e");
 
-        final DMNResult dmnResult = evaluateModel(runtime, dmnModel, context);
+        final DMNResult dmnResult = runtime.evaluateAll(dmnModel, context);
         LOG.debug("{}", dmnResult);
         dmnResult.getDecisionResults().forEach(x -> LOG.debug("{}", x));
         assertThat(DMNRuntimeUtil.formatMessages(dmnResult.getMessages()), dmnResult.hasErrors(), is(false));
@@ -139,7 +139,7 @@ public class DMNDecisionServicesTest extends BaseVariantTest {
         context.set("D", "d");
         context.set("E", "e");
 
-        final DMNResult dmnResult = evaluateModel(runtime, dmnModel, context);
+        final DMNResult dmnResult = runtime.evaluateAll(dmnModel, context);
         LOG.debug("{}", dmnResult);
         dmnResult.getDecisionResults().forEach(x -> LOG.debug("{}", x));
         assertThat(DMNRuntimeUtil.formatMessages(dmnResult.getMessages()), dmnResult.hasErrors(), is(false));
@@ -159,7 +159,7 @@ public class DMNDecisionServicesTest extends BaseVariantTest {
         context.set("D", "d");
         context.set("E", "e");
 
-        final DMNResult dmnResult = evaluateModel(runtime, dmnModel, context);
+        final DMNResult dmnResult = runtime.evaluateAll(dmnModel, context);
         LOG.debug("{}", dmnResult);
         dmnResult.getDecisionResults().forEach(x -> LOG.debug("{}", x));
         assertThat(DMNRuntimeUtil.formatMessages(dmnResult.getMessages()), dmnResult.hasErrors(), is(false));
@@ -179,7 +179,7 @@ public class DMNDecisionServicesTest extends BaseVariantTest {
         context.set("D", "d");
         context.set("E", "e");
 
-        final DMNResult dmnResult = evaluateModel(runtime, dmnModel, context);
+        final DMNResult dmnResult = runtime.evaluateAll(dmnModel, context);
         LOG.debug("{}", dmnResult);
         dmnResult.getDecisionResults().forEach(x -> LOG.debug("{}", x));
         assertThat(DMNRuntimeUtil.formatMessages(dmnResult.getMessages()), dmnResult.hasErrors(), is(false));
@@ -199,7 +199,7 @@ public class DMNDecisionServicesTest extends BaseVariantTest {
         context.set("Person name", "John");
         context.set("Person year of birth", BigDecimal.valueOf(1980));
 
-        final DMNResult dmnResult = evaluateModel(runtime, dmnModel, context);
+        final DMNResult dmnResult = runtime.evaluateAll(dmnModel, context);
         LOG.debug("{}", dmnResult);
         dmnResult.getDecisionResults().forEach(x -> LOG.debug("{}", x));
         assertThat(DMNRuntimeUtil.formatMessages(dmnResult.getMessages()), dmnResult.hasErrors(), is(false));
@@ -299,7 +299,7 @@ public class DMNDecisionServicesTest extends BaseVariantTest {
         context.set("Person name", "John");
         context.set("Person age", BigDecimal.valueOf(21));
 
-        final DMNResult dmnResult = evaluateModel(runtime, dmnModel, context);
+        final DMNResult dmnResult = runtime.evaluateAll(dmnModel, context);
         LOG.debug("{}", dmnResult);
         dmnResult.getDecisionResults().forEach(x -> LOG.debug("{}", x));
         assertThat(DMNRuntimeUtil.formatMessages(dmnResult.getMessages()), dmnResult.hasErrors(), is(false));
@@ -315,7 +315,7 @@ public class DMNDecisionServicesTest extends BaseVariantTest {
         context.set("Person name", BigDecimal.valueOf(21));
         context.set("Person age", "John");
 
-        final DMNResult dmnResult = evaluateModel(runtime, dmnModel, context);
+        final DMNResult dmnResult = runtime.evaluateAll(dmnModel, context);
         LOG.debug("{}", dmnResult);
         dmnResult.getDecisionResults().forEach(x -> LOG.debug("{}", x));
         assertThat(DMNRuntimeUtil.formatMessages(dmnResult.getMessages()), dmnResult.hasErrors(), is(true));
@@ -453,7 +453,7 @@ public class DMNDecisionServicesTest extends BaseVariantTest {
         final DMNContext context = DMNFactory.newContext();
         context.set("L1 person name", "L1 Import John");
 
-        final DMNResult dmnResult = evaluateModel(runtime, dmnModel, context);
+        final DMNResult dmnResult = runtime.evaluateAll(dmnModel, context);
         LOG.debug("{}", dmnResult);
         dmnResult.getDecisionResults().forEach(x -> LOG.debug("{}", x));
         assertThat(DMNRuntimeUtil.formatMessages(dmnResult.getMessages()), dmnResult.hasErrors(), is(false));
@@ -497,7 +497,7 @@ public class DMNDecisionServicesTest extends BaseVariantTest {
         final DMNContext context = DMNFactory.newContext();
         context.set("L2 Person name", "L2 Bob");
 
-        final DMNResult dmnResult = evaluateModel(runtime, dmnModel, context);
+        final DMNResult dmnResult = runtime.evaluateAll(dmnModel, context);
         LOG.debug("{}", dmnResult);
         dmnResult.getDecisionResults().forEach(x -> LOG.debug("{}", x));
         assertThat(DMNRuntimeUtil.formatMessages(dmnResult.getMessages()), dmnResult.hasErrors(), is(false));
@@ -533,10 +533,10 @@ public class DMNDecisionServicesTest extends BaseVariantTest {
         testDecisionServiceCompiler20180830_testEvaluateAll(runtime, dmnModel);
     }
 
-    public void testDecisionServiceCompiler20180830_testEvaluateAll(final DMNRuntime runtime, final DMNModel dmnModel) {
+    public static void testDecisionServiceCompiler20180830_testEvaluateAll(final DMNRuntime runtime, final DMNModel dmnModel) {
         final DMNContext context = DMNFactory.newContext();
 
-        final DMNResult dmnResult = evaluateModel(runtime, dmnModel, context);
+        final DMNResult dmnResult = runtime.evaluateAll(dmnModel, context);
         LOG.debug("{}", dmnResult);
         dmnResult.getDecisionResults().forEach(x -> LOG.debug("{}", x));
         assertThat(DMNRuntimeUtil.formatMessages(dmnResult.getMessages()), dmnResult.hasErrors(), is(false));
@@ -574,11 +574,11 @@ public class DMNDecisionServicesTest extends BaseVariantTest {
         testDecisionService20180920_testEvaluateDS(runtime, dmnModel);
     }
 
-    private void testDecisionService20180920_testEvaluateAll(final DMNRuntime runtime, final DMNModel dmnModel) {
+    private static void testDecisionService20180920_testEvaluateAll(final DMNRuntime runtime, final DMNModel dmnModel) {
         final DMNContext context = DMNFactory.newContext();
         context.set("Model A", mapOf(entry("Input 1", "input 1 value")));
 
-        final DMNResult dmnResult = evaluateModel(runtime, dmnModel, context);
+        final DMNResult dmnResult = runtime.evaluateAll(dmnModel, context);
         LOG.debug("{}", dmnResult);
         dmnResult.getDecisionResults().forEach(x -> LOG.debug("{}", x));
         assertThat(DMNRuntimeUtil.formatMessages(dmnResult.getMessages()), dmnResult.hasErrors(), is(false));

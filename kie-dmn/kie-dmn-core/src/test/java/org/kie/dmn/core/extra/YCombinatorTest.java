@@ -24,7 +24,7 @@ import org.kie.dmn.api.core.DMNContext;
 import org.kie.dmn.api.core.DMNModel;
 import org.kie.dmn.api.core.DMNResult;
 import org.kie.dmn.api.core.DMNRuntime;
-import org.kie.dmn.core.BaseVariantTest;
+import org.kie.dmn.core.BaseInterpretedVsCompiledTest;
 import org.kie.dmn.core.util.DMNRuntimeUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -33,9 +33,9 @@ import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.CoreMatchers.notNullValue;
 import static org.junit.Assert.assertThat;
 
-public class YCombinatorTest extends BaseVariantTest {
+public class YCombinatorTest extends BaseInterpretedVsCompiledTest {
 
-    public YCombinatorTest(final BaseVariantTest.VariantTestConf useExecModelCompiler) {
+    public YCombinatorTest(final boolean useExecModelCompiler) {
         super(useExecModelCompiler);
     }
 

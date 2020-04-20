@@ -19,7 +19,7 @@ package org.kie.dmn.core.v1_2;
 import org.junit.Test;
 import org.kie.dmn.api.core.DMNModel;
 import org.kie.dmn.api.core.DMNRuntime;
-import org.kie.dmn.core.BaseVariantTest;
+import org.kie.dmn.core.BaseInterpretedVsCompiledTest;
 import org.kie.dmn.core.util.DMNRuntimeUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -28,11 +28,11 @@ import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.CoreMatchers.notNullValue;
 import static org.junit.Assert.assertThat;
 
-public class DMNDecisionServicesTest extends BaseVariantTest {
+public class DMNDecisionServicesTest extends BaseInterpretedVsCompiledTest {
 
     public static final Logger LOG = LoggerFactory.getLogger(DMNDecisionServicesTest.class);
 
-    public DMNDecisionServicesTest(final BaseVariantTest.VariantTestConf useExecModelCompiler) {
+    public DMNDecisionServicesTest(final boolean useExecModelCompiler) {
         super(useExecModelCompiler);
     }
 
@@ -45,7 +45,7 @@ public class DMNDecisionServicesTest extends BaseVariantTest {
         assertThat(DMNRuntimeUtil.formatMessages(dmnModel.getMessages()), dmnModel.hasErrors(), is(false));
 
         org.kie.dmn.core.decisionservices.DMNDecisionServicesTest.testDecisionServiceCompiler20180830_testEvaluateDS(runtime, dmnModel);
-//        org.kie.dmn.core.decisionservices.DMNDecisionServicesTest.testDecisionServiceCompiler20180830_testEvaluateAll(runtime, dmnModel);
+        org.kie.dmn.core.decisionservices.DMNDecisionServicesTest.testDecisionServiceCompiler20180830_testEvaluateAll(runtime, dmnModel);
     }
 
 }
