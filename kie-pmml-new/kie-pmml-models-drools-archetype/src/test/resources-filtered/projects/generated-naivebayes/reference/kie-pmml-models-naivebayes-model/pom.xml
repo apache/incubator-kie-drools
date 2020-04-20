@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://maven.apache.org/POM/4.0.0" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+  <parent>
+    <groupId>org.kie</groupId>
+    <artifactId>kie-pmml-models-naivebayes</artifactId>
+    <version>${version.org.kie}</version>
+  </parent>
+  <modelVersion>4.0.0</modelVersion>
+
+  <artifactId>kie-pmml-models-naivebayes-model</artifactId>
+
+  <name>KIE :: PMML :: Models :: NaiveBayes :: Model</name>
+  <description>KiePMML Model for NaiveBayes implementation</description>
+
+  <dependencies>
+    <!-- PMML -->
+    <dependency>
+      <groupId>org.kie</groupId>
+      <artifactId>kie-pmml-commons</artifactId>
+    </dependency>
+    <!-- EXTERNAL -->
+    <!-- TEST -->
+    <dependency>
+      <groupId>org.kie</groupId>
+      <artifactId>kie-pmml-commons</artifactId>
+      <classifier>tests</classifier>
+      <scope>test</scope>
+    </dependency>
+  </dependencies>
+
+  <dependencyManagement>
+    <!-- TODO MOVE TO kie-pmml-new/pom.xml -->
+    <dependencies>
+      <dependency>
+        <groupId>org.kie</groupId>
+        <artifactId>kie-pmml-commons</artifactId>
+        <classifier>tests</classifier>
+        <version>${version.org.kie}</version>
+      </dependency>
+    </dependencies>
+  </dependencyManagement>
+
+
+</project>

@@ -16,12 +16,6 @@
   <name>KIE :: PMML :: Models :: Archetype</name>
   <description>Archetype for actual PMML model implementation</description>
 
-  <properties>
-    <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-    <maven.compiler.source>1.8</maven.compiler.source>
-    <maven.compiler.target>1.8</maven.compiler.target>
-  </properties>
-
   <build>
     <plugins>
       <plugin>
@@ -42,7 +36,6 @@
       </plugin>
       <plugin>
         <artifactId>maven-resources-plugin</artifactId>
-        <version>3.1.0</version>
         <configuration>
           <includeEmptyDirs>true</includeEmptyDirs>
         </configuration>

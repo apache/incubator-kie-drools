@@ -35,14 +35,20 @@ public class KiePMML${modelName}Model extends KiePMMLModel {
         return PMML_MODEL_TYPE;
     }
 
-    private KiePMML${modelName}Model() {
+    private KiePMML${modelName}Model(String modelName) {
+        super(modelName, Collections.emptyList());
     }
 
+    @Override
+    public Object evaluate(Map<String, Object> requestData) {
+        // TODO
+        throw new UnsupportedOperationException();
+    }
 
     public static class Builder extends KiePMMLModel.Builder<KiePMML${modelName}Model>{
 
         private Builder(String name,MINING_FUNCTION miningFunction){
-            super(name, "${modelName}-", PMML_MODEL_TYPE, miningFunction, KiePMML${modelName}Model::new);
+            super("${modelName}-", PMML_MODEL_TYPE, miningFunction, () -> new KiePMML${modelName}(name));
         }
 
         @Override

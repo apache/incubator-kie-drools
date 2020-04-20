@@ -37,32 +37,11 @@
     <module>kie-pmml-compiler</module>
     <module>kie-pmml-evaluator</module>
     <module>kie-pmml-models-archetype</module>
+    <module>kie-pmml-models-drools-archetype</module>
     <module>kie-pmml-models</module>
     <module>kie-pmml-integration-tests</module>
     <module>kie-pmml-benchmarks</module>
   </modules>
-
-  <properties>
-    <version.blueprinter>1.0</version.blueprinter>
-  </properties>
-
-  <build>
-    <plugins>
-      <plugin>
-        <groupId>org.kie</groupId>
-        <artifactId>blueprinter-maven-plugin</artifactId>
-      </plugin>
-    </plugins>
-    <pluginManagement>
-      <plugins>
-        <plugin>
-          <groupId>org.kie</groupId>
-          <artifactId>blueprinter-maven-plugin</artifactId>
-          <version>${version.blueprinter}</version>
-        </plugin>
-      </plugins>
-    </pluginManagement>
-  </build>
 
   <dependencyManagement>
     <dependencies>
