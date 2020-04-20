@@ -52,7 +52,7 @@ public class DMN12specificTest extends BaseInterpretedVsCompiledTest {
     @Test
     public void testDMN12typeAliases() {
         // DROOLS-
-        final DMNRuntime runtime = createRuntime("typeAliases.dmn", this.getClass());
+        final DMNRuntime runtime = DMNRuntimeUtil.createRuntime("typeAliases.dmn", this.getClass());
         final DMNModel dmnModel = runtime.getModel("http://www.trisotech.com/dmn/definitions/_9f6be450-17c0-49d9-a67f-960ad04b046f", "Drawing 1");
         assertThat(dmnModel, notNullValue());
         assertThat(DMNRuntimeUtil.formatMessages(dmnModel.getMessages()), dmnModel.hasErrors(), is(false));
@@ -70,7 +70,7 @@ public class DMN12specificTest extends BaseInterpretedVsCompiledTest {
 
     @Test
     public void testItemDefCollection() {
-        final DMNRuntime runtime = createRuntime("0001-filter.dmn", getClass());
+        final DMNRuntime runtime = DMNRuntimeUtil.createRuntime("0001-filter.dmn", getClass());
         final DMNModel dmnModel = runtime.getModel("http://www.trisotech.com/definitions/_f52ca843-504b-4c3b-a6bc-4d377bffef7a", "filter01");
         assertThat(dmnModel, notNullValue());
         assertThat(dmnModel.getMessages().toString(), dmnModel.hasErrors(), is(false));
@@ -110,7 +110,7 @@ public class DMN12specificTest extends BaseInterpretedVsCompiledTest {
     }
 
     private void check_testDMN12typeRefInformationItem(String filename) {
-        final DMNRuntime runtime = createRuntime(filename, this.getClass());
+        final DMNRuntime runtime = DMNRuntimeUtil.createRuntime(filename, this.getClass());
         final DMNModel dmnModel = runtime.getModel("http://www.trisotech.com/definitions/_fe2fd9ea-5928-4a35-b218-036de5798776", "Drawing 1");
         assertThat(dmnModel, notNullValue());
         assertThat(DMNRuntimeUtil.formatMessages(dmnModel.getMessages()), dmnModel.hasErrors(), is(false));

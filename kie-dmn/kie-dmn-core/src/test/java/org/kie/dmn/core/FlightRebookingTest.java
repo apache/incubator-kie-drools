@@ -44,7 +44,7 @@ public class FlightRebookingTest extends BaseInterpretedVsCompiledTest {
 
     @Test
     public void testSolution1() {
-        final DMNRuntime runtime = createRuntime("0019-flight-rebooking.dmn", this.getClass() );
+        final DMNRuntime runtime = DMNRuntimeUtil.createRuntime("0019-flight-rebooking.dmn", this.getClass() );
         final DMNModel dmnModel = runtime.getModel("https://www.drools.org/kie-dmn", "0019-flight-rebooking" );
         assertThat( dmnModel, notNullValue() );
         assertThat( DMNRuntimeUtil.formatMessages( dmnModel.getMessages() ), dmnModel.hasErrors(), is(false) ); // need proper type support to enable this
@@ -66,7 +66,7 @@ public class FlightRebookingTest extends BaseInterpretedVsCompiledTest {
 
     @Test
     public void testSolutionAlternate() {
-        final DMNRuntime runtime = createRuntime("0019-flight-rebooking-alternative.dmn", this.getClass() );
+        final DMNRuntime runtime = DMNRuntimeUtil.createRuntime("0019-flight-rebooking-alternative.dmn", this.getClass() );
         final DMNModel dmnModel = runtime.getModel("https://www.drools.org/kie-dmn", "0019-flight-rebooking" );
         assertThat( dmnModel, notNullValue() );
         assertThat( DMNRuntimeUtil.formatMessages( dmnModel.getMessages() ), dmnModel.hasErrors(), is(false) );
@@ -88,7 +88,7 @@ public class FlightRebookingTest extends BaseInterpretedVsCompiledTest {
 
     @Test
     public void testSolutionSingletonLists() {
-        final DMNRuntime runtime = createRuntime("0019-flight-rebooking-singleton-lists.dmn", this.getClass() );
+        final DMNRuntime runtime = DMNRuntimeUtil.createRuntime("0019-flight-rebooking-singleton-lists.dmn", this.getClass() );
         final DMNModel dmnModel = runtime.getModel("https://www.drools.org/kie-dmn", "0019-flight-rebooking" );
         assertThat( dmnModel, notNullValue() );
         assertThat( DMNRuntimeUtil.formatMessages( dmnModel.getMessages() ), dmnModel.hasErrors(), is(false) );
@@ -110,7 +110,7 @@ public class FlightRebookingTest extends BaseInterpretedVsCompiledTest {
 
     @Test
     public void testSolutionBadExample() {
-        final DMNRuntime runtime = createRuntime("0019-flight-rebooking-bad-example.dmn", this.getClass() );
+        final DMNRuntime runtime = DMNRuntimeUtil.createRuntime("0019-flight-rebooking-bad-example.dmn", this.getClass() );
         final DMNModel dmnModel = runtime.getModel("https://www.drools.org/kie-dmn", "0019-flight-rebooking" );
         assertThat( dmnModel, notNullValue() );
         assertThat( DMNRuntimeUtil.formatMessages( dmnModel.getMessages() ), dmnModel.hasErrors(), is(false) );
@@ -132,7 +132,7 @@ public class FlightRebookingTest extends BaseInterpretedVsCompiledTest {
 
     @Test
     public void testUninterpreted() {
-        final DMNRuntime runtime = createRuntime("0019-flight-rebooking-uninterpreted.dmn", this.getClass() );
+        final DMNRuntime runtime = DMNRuntimeUtil.createRuntime("0019-flight-rebooking-uninterpreted.dmn", this.getClass() );
         final DMNModel dmnModel = runtime.getModel("http://www.trisotech.com/dmn/definitions/_188d6caf-a355-49b5-a692-bd6ce713da08", "0019-flight-rebooking" );
         runtime.addListener( DMNRuntimeUtil.createListener() );
         assertThat( dmnModel, notNullValue() );

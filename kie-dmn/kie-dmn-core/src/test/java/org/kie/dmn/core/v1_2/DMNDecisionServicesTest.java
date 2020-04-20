@@ -39,7 +39,7 @@ public class DMNDecisionServicesTest extends BaseInterpretedVsCompiledTest {
     @Test
     public void testDecisionServiceCompiler20180830_DMN12() {
         // DROOLS-2943 DMN DecisionServiceCompiler not correctly wired for DMNv1.2 format
-        final DMNRuntime runtime = createRuntime("DecisionServiceABC_DMN12.dmn", this.getClass());
+        final DMNRuntime runtime = DMNRuntimeUtil.createRuntime("DecisionServiceABC_DMN12.dmn", this.getClass());
         final DMNModel dmnModel = runtime.getModel("http://www.trisotech.com/dmn/definitions/_2443d3f5-f178-47c6-a0c9-b1fd1c933f60", "Drawing 1");
         assertThat(dmnModel, notNullValue());
         assertThat(DMNRuntimeUtil.formatMessages(dmnModel.getMessages()), dmnModel.hasErrors(), is(false));

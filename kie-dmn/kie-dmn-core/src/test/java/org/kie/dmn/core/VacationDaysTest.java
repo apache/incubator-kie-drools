@@ -72,7 +72,7 @@ public class VacationDaysTest extends BaseInterpretedVsCompiledTest {
     }
 
     private void executeTest(final int age, final int yearsService, final int expectedVacationDays ) {
-        final DMNRuntime runtime = createRuntime("0020-vacation-days.dmn", this.getClass() );
+        final DMNRuntime runtime = DMNRuntimeUtil.createRuntime("0020-vacation-days.dmn", this.getClass() );
         final DMNModel dmnModel = runtime.getModel("https://www.drools.org/kie-dmn", "0020-vacation-days" );
         assertThat( dmnModel, notNullValue() );
 

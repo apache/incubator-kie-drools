@@ -110,7 +110,7 @@ public class DMNRuntimeTest extends BaseInterpretedVsCompiledTest {
 
     @Test
     public void testSimpleItemDefinition() {
-        final DMNRuntime runtime = createRuntime("simple-item-def.dmn", this.getClass() );
+        final DMNRuntime runtime = DMNRuntimeUtil.createRuntime("simple-item-def.dmn", this.getClass() );
         final DMNModel dmnModel = runtime.getModel("https://github.com/kiegroup/kie-dmn/itemdef", "simple-item-def" );
         assertThat( dmnModel, notNullValue() );
         assertThat( DMNRuntimeUtil.formatMessages( dmnModel.getMessages() ), dmnModel.hasErrors(), is( false ) );
@@ -128,7 +128,7 @@ public class DMNRuntimeTest extends BaseInterpretedVsCompiledTest {
 
     @Test
     public void testCompositeItemDefinition() {
-        final DMNRuntime runtime = createRuntime("0008-LX-arithmetic.dmn", this.getClass() );
+        final DMNRuntime runtime = DMNRuntimeUtil.createRuntime("0008-LX-arithmetic.dmn", this.getClass() );
         final DMNModel dmnModel = runtime.getModel("https://github.com/kiegroup/kie-dmn", "0008-LX-arithmetic" );
         assertThat( dmnModel, notNullValue() );
 
@@ -148,7 +148,7 @@ public class DMNRuntimeTest extends BaseInterpretedVsCompiledTest {
 
     @Test
     public void testTrisotechNamespace() {
-        final DMNRuntime runtime = createRuntime("trisotech_namespace.dmn", this.getClass() );
+        final DMNRuntime runtime = DMNRuntimeUtil.createRuntime("trisotech_namespace.dmn", this.getClass() );
         final DMNModel dmnModel = runtime.getModel("http://www.trisotech.com/dmn/definitions/_b8feec86-dadf-4051-9feb-8e6093bbb530", "Solution 3" );
         assertThat( dmnModel, notNullValue() );
         assertThat( DMNRuntimeUtil.formatMessages( dmnModel.getMessages() ), dmnModel.hasErrors(), is( false ) );
@@ -167,7 +167,7 @@ public class DMNRuntimeTest extends BaseInterpretedVsCompiledTest {
 
     @Test
     public void testEmptyDecision1() {
-        final DMNRuntime runtime = createRuntime("empty_decision.dmn", this.getClass() );
+        final DMNRuntime runtime = DMNRuntimeUtil.createRuntime("empty_decision.dmn", this.getClass() );
         final DMNModel dmnModel = runtime.getModel("http://www.trisotech.com/dmn/definitions/_ba9fc4b1-5ced-4d00-9b61-290de4bf3213", "Solution 3" );
         assertThat( dmnModel, notNullValue() );
 
@@ -188,7 +188,7 @@ public class DMNRuntimeTest extends BaseInterpretedVsCompiledTest {
 
     @Test
     public void testEmptyDecision2() {
-        final DMNRuntime runtime = createRuntime("empty_decision.dmn", this.getClass() );
+        final DMNRuntime runtime = DMNRuntimeUtil.createRuntime("empty_decision.dmn", this.getClass() );
         final DMNModel dmnModel = runtime.getModel("http://www.trisotech.com/dmn/definitions/_ba9fc4b1-5ced-4d00-9b61-290de4bf3213", "Solution 3" );
         assertThat( dmnModel, notNullValue() );
 
@@ -217,7 +217,7 @@ public class DMNRuntimeTest extends BaseInterpretedVsCompiledTest {
 
     @Test
     public void testEventListeners() {
-        final DMNRuntime runtime = createRuntime("car_damage_responsibility.dmn", this.getClass() );
+        final DMNRuntime runtime = DMNRuntimeUtil.createRuntime("car_damage_responsibility.dmn", this.getClass() );
 
         final DMNRuntimeEventListener listener = mock(DMNRuntimeEventListener.class );
         runtime.addListener( listener );
@@ -261,7 +261,7 @@ public class DMNRuntimeTest extends BaseInterpretedVsCompiledTest {
 
     @Test
     public void testContextEventListeners() {
-        final DMNRuntime runtime = createRuntime("context_listener.dmn", this.getClass() );
+        final DMNRuntime runtime = DMNRuntimeUtil.createRuntime("context_listener.dmn", this.getClass() );
 
         final DMNRuntimeEventListener listener = mock(DMNRuntimeEventListener.class );
         runtime.addListener( listener );
@@ -334,7 +334,7 @@ public class DMNRuntimeTest extends BaseInterpretedVsCompiledTest {
 
     @Test
     public void testOutputReuse() {
-        final DMNRuntime runtime = createRuntime("Input_reuse_in_output.dmn", this.getClass() );
+        final DMNRuntime runtime = DMNRuntimeUtil.createRuntime("Input_reuse_in_output.dmn", this.getClass() );
         final DMNModel dmnModel = runtime.getModel("http://www.trisotech.com/dmn/definitions/_098bb607-eff7-4772-83ac-6ded8b371fa7", "Input reuse in output" );
         assertThat( dmnModel, notNullValue() );
 
@@ -351,7 +351,7 @@ public class DMNRuntimeTest extends BaseInterpretedVsCompiledTest {
 
     @Test
     public void testSimpleNot() {
-        final DMNRuntime runtime = createRuntime("Simple_Not.dmn", this.getClass() );
+        final DMNRuntime runtime = DMNRuntimeUtil.createRuntime("Simple_Not.dmn", this.getClass() );
         final DMNModel dmnModel = runtime.getModel("http://www.trisotech.com/definitions/_98436ebb-7c42-48c0-8d11-d693e2a817c9", "Simple Not" );
         assertThat( dmnModel, notNullValue() );
 
@@ -367,7 +367,7 @@ public class DMNRuntimeTest extends BaseInterpretedVsCompiledTest {
 
     @Test
     public void testSimpleNot2() {
-        final DMNRuntime runtime = createRuntime("Simple_Not.dmn", this.getClass() );
+        final DMNRuntime runtime = DMNRuntimeUtil.createRuntime("Simple_Not.dmn", this.getClass() );
         final DMNModel dmnModel = runtime.getModel("http://www.trisotech.com/definitions/_98436ebb-7c42-48c0-8d11-d693e2a817c9", "Simple Not" );
         assertThat( dmnModel, notNullValue() );
 
@@ -383,7 +383,7 @@ public class DMNRuntimeTest extends BaseInterpretedVsCompiledTest {
 
     @Test
     public void testDinner() {
-        final DMNRuntime runtime = createRuntime("Dinner.dmn", this.getClass() );
+        final DMNRuntime runtime = DMNRuntimeUtil.createRuntime("Dinner.dmn", this.getClass() );
         final DMNModel dmnModel = runtime.getModel("http://www.trisotech.com/definitions/_0c45df24-0d57-4acc-b296-b4cba8b71a36", "Dinner" );
         assertThat( dmnModel, notNullValue() );
         assertThat( dmnModel.hasErrors(), is( false ) );
@@ -404,7 +404,7 @@ public class DMNRuntimeTest extends BaseInterpretedVsCompiledTest {
 
     @Test
     public void testNotificationsApproved2() {
-        final DMNRuntime runtime = createRuntime("NotificationsTest2.dmn", this.getClass() );
+        final DMNRuntime runtime = DMNRuntimeUtil.createRuntime("NotificationsTest2.dmn", this.getClass() );
         final DMNModel dmnModel = runtime.getModel("https://github.com/kiegroup/kie-dmn", "building-structure-rules" );
         assertThat( dmnModel, notNullValue() );
 
@@ -421,7 +421,7 @@ public class DMNRuntimeTest extends BaseInterpretedVsCompiledTest {
 
     @Test
     public void testBoxedContext() {
-        final DMNRuntime runtime = createRuntime("BoxedContext.dmn", this.getClass() );
+        final DMNRuntime runtime = DMNRuntimeUtil.createRuntime("BoxedContext.dmn", this.getClass() );
         final DMNModel dmnModel = runtime.getModel("http://www.trisotech.com/dmn/definitions/_0de36357-fec0-4b4e-b7f1-382d381e06e9", "Dessin 1" );
         assertThat( dmnModel, notNullValue() );
         assertThat( DMNRuntimeUtil.formatMessages( dmnModel.getMessages() ) , dmnModel.hasErrors(), is( false ) );
@@ -438,7 +438,7 @@ public class DMNRuntimeTest extends BaseInterpretedVsCompiledTest {
 
     @Test
     public void testFunctionDefAndInvocation() {
-        final DMNRuntime runtime = createRuntime("FunctionDefinition.dmn", this.getClass() );
+        final DMNRuntime runtime = DMNRuntimeUtil.createRuntime("FunctionDefinition.dmn", this.getClass() );
         final DMNModel dmnModel = runtime.getModel("http://www.trisotech.com/dmn/definitions/_0de36357-fec0-4b4e-b7f1-382d381e06e9", "Dessin 1" );
         assertThat( dmnModel, notNullValue() );
         assertThat( dmnModel.getMessages().toString(), dmnModel.hasErrors(), is( false ) );
@@ -454,7 +454,7 @@ public class DMNRuntimeTest extends BaseInterpretedVsCompiledTest {
 
     @Test
     public void testBuiltInFunctionInvocation() {
-        final DMNRuntime runtime = createRuntime("BuiltInFunctionInvocation.dmn", this.getClass() );
+        final DMNRuntime runtime = DMNRuntimeUtil.createRuntime("BuiltInFunctionInvocation.dmn", this.getClass() );
         final DMNModel dmnModel = runtime.getModel("http://www.trisotech.com/definitions/_b77219ee-ec28-48e3-b240-8e0dbbabefeb", "built in function invocation" );
         assertThat( dmnModel, notNullValue() );
         assertThat( dmnModel.getMessages().toString(), dmnModel.hasErrors(), is( false ) );
@@ -473,7 +473,7 @@ public class DMNRuntimeTest extends BaseInterpretedVsCompiledTest {
 
     @Test
     public void testBKMNode() {
-        final DMNRuntime runtime = createRuntime("0009-invocation-arithmetic.dmn", getClass() );
+        final DMNRuntime runtime = DMNRuntimeUtil.createRuntime("0009-invocation-arithmetic.dmn", getClass() );
 //        runtime.addListener( DMNRuntimeUtil.createListener() );
 
         final DMNModel dmnModel = runtime.getModel("http://www.trisotech.com/definitions/_cb28c255-91cd-4c01-ac7b-1a9cb1ecdb11", "literal invocation1" );
@@ -497,7 +497,7 @@ public class DMNRuntimeTest extends BaseInterpretedVsCompiledTest {
 
     @Test
     public void testItemDefCollection() {
-        final DMNRuntime runtime = createRuntime("0001-filter.dmn", getClass() );
+        final DMNRuntime runtime = DMNRuntimeUtil.createRuntime("0001-filter.dmn", getClass() );
 //        runtime.addListener( DMNRuntimeUtil.createListener() );
 
         final DMNModel dmnModel = runtime.getModel("http://www.trisotech.com/definitions/_f52ca843-504b-4c3b-a6bc-4d377bffef7a", "filter01" );
@@ -527,7 +527,7 @@ public class DMNRuntimeTest extends BaseInterpretedVsCompiledTest {
 
     @Test
     public void testList() {
-        final DMNRuntime runtime = createRuntime("list-expression.dmn", getClass() );
+        final DMNRuntime runtime = DMNRuntimeUtil.createRuntime("list-expression.dmn", getClass() );
 //        runtime.addListener( DMNRuntimeUtil.createListener() );
 
         final DMNModel dmnModel = runtime.getModel("https://github.com/kiegroup/kie-dmn", "list-expression" );
@@ -542,7 +542,7 @@ public class DMNRuntimeTest extends BaseInterpretedVsCompiledTest {
 
     @Test
     public void testRelation() {
-        final DMNRuntime runtime = createRuntime("relation-expression.dmn", getClass() );
+        final DMNRuntime runtime = DMNRuntimeUtil.createRuntime("relation-expression.dmn", getClass() );
 //        runtime.addListener( DMNRuntimeUtil.createListener() );
 
         final DMNModel dmnModel = runtime.getModel("https://github.com/kiegroup/kie-dmn", "relation-expression" );
@@ -568,7 +568,7 @@ public class DMNRuntimeTest extends BaseInterpretedVsCompiledTest {
 
     @Test
     public void testLendingExample() {
-        final DMNRuntime runtime = createRuntime("0004-lending.dmn", getClass() );
+        final DMNRuntime runtime = DMNRuntimeUtil.createRuntime("0004-lending.dmn", getClass() );
 //        runtime.addListener( DMNRuntimeUtil.createListener() );
 
         final DMNModel dmnModel = runtime.getModel("http://www.trisotech.com/definitions/_4e0f0b70-d31c-471c-bd52-5ca709ed362b", "Lending1" );
@@ -618,7 +618,7 @@ public class DMNRuntimeTest extends BaseInterpretedVsCompiledTest {
 
     @Test
     public void testDateAndTime() {
-        final DMNRuntime runtime = createRuntime("0007-date-time.dmn", getClass() );
+        final DMNRuntime runtime = DMNRuntimeUtil.createRuntime("0007-date-time.dmn", getClass() );
         runtime.addListener( DMNRuntimeUtil.createListener() );
 
         final DMNModel dmnModel = runtime.getModel("http://www.trisotech.com/definitions/_69430b3e-17b8-430d-b760-c505bf6469f9", "dateTime Table 58" );
@@ -671,7 +671,7 @@ public class DMNRuntimeTest extends BaseInterpretedVsCompiledTest {
 
     @Test
     public void testFiltering() {
-        final DMNRuntime runtime = createRuntime("Person_filtering_by_age.dmn", getClass() );
+        final DMNRuntime runtime = DMNRuntimeUtil.createRuntime("Person_filtering_by_age.dmn", getClass() );
         runtime.addListener( DMNRuntimeUtil.createListener() );
 
         final DMNModel dmnModel = runtime.getModel("http://www.trisotech.com/definitions/_e215ed7a-701b-4c53-b8df-4b4d23d5fe32", "Person filtering by age" );
@@ -686,7 +686,7 @@ public class DMNRuntimeTest extends BaseInterpretedVsCompiledTest {
 
     @Test
     public void testNowFunction() {
-        final DMNRuntime runtime = createRuntime("today_function_test.dmn", getClass() );
+        final DMNRuntime runtime = DMNRuntimeUtil.createRuntime("today_function_test.dmn", getClass() );
         runtime.addListener( DMNRuntimeUtil.createListener() );
 
         final DMNModel dmnModel = runtime.getModel("http://www.trisotech.com/dmn/definitions/_4ad80959-5fd8-46b7-8c9a-ab2fa58cb5b4", "When is it" );
@@ -701,7 +701,7 @@ public class DMNRuntimeTest extends BaseInterpretedVsCompiledTest {
 
     @Test
     public void testTimeFunction() {
-        final DMNRuntime runtime = createRuntime("TimeFromDate.dmn", getClass() );
+        final DMNRuntime runtime = DMNRuntimeUtil.createRuntime("TimeFromDate.dmn", getClass() );
         runtime.addListener( DMNRuntimeUtil.createListener() );
 
         final DMNModel dmnModel = runtime.getModel("http://www.trisotech.com/dmn/definitions/_ecf4ea54-2abc-4e2f-a101-4fe14e356a46", "Dessin 1" );
@@ -716,7 +716,7 @@ public class DMNRuntimeTest extends BaseInterpretedVsCompiledTest {
 
     @Test
     public void testAlternativeNSDecl() {
-        final DMNRuntime runtime = createRuntime("alternative_feel_ns_declaration.dmn", this.getClass() );
+        final DMNRuntime runtime = DMNRuntimeUtil.createRuntime("alternative_feel_ns_declaration.dmn", this.getClass() );
         final DMNModel dmnModel = runtime.getModel("https://github.com/kiegroup/kie-dmn", "0001-input-data-string" );
         assertThat( dmnModel, notNullValue() );
 
@@ -735,7 +735,7 @@ public class DMNRuntimeTest extends BaseInterpretedVsCompiledTest {
 
     @Test
     public void testLoanComparison() {
-        final DMNRuntime runtime = createRuntime("loanComparison.dmn", this.getClass() );
+        final DMNRuntime runtime = DMNRuntimeUtil.createRuntime("loanComparison.dmn", this.getClass() );
         final DMNModel dmnModel = runtime.getModel("http://www.trisotech.com/definitions/_3a1fd8f4-ea04-4453-aa30-ff14140e3441", "loanComparison" );
         assertThat( dmnModel, notNullValue() );
         assertThat( DMNRuntimeUtil.formatMessages( dmnModel.getMessages() ), dmnModel.hasErrors(), is( false ) );
@@ -749,7 +749,7 @@ public class DMNRuntimeTest extends BaseInterpretedVsCompiledTest {
 
     @Test
     public void testGetViableLoanProducts() {
-        final DMNRuntime runtime = createRuntime("Get_Viable_Loan_Products.dmn", this.getClass() );
+        final DMNRuntime runtime = DMNRuntimeUtil.createRuntime("Get_Viable_Loan_Products.dmn", this.getClass() );
         final DMNModel dmnModel = runtime.getModel("http://www.trisotech.com/definitions/_3e1a628d-36bc-45f1-8464-b201735e5ce0", "Get Viable Loan Products" );
         assertThat( dmnModel, notNullValue() );
         assertThat( DMNRuntimeUtil.formatMessages( dmnModel.getMessages() ), dmnModel.hasErrors(), is( false ) );
@@ -773,7 +773,7 @@ public class DMNRuntimeTest extends BaseInterpretedVsCompiledTest {
 
     @Test
     public void testYearsAndMonthsDuration() {
-        final DMNRuntime runtime = createRuntime("yearMonthDuration.dmn", this.getClass() );
+        final DMNRuntime runtime = DMNRuntimeUtil.createRuntime("yearMonthDuration.dmn", this.getClass() );
         final DMNModel dmnModel = runtime.getModel("http://www.trisotech.com/dmn/definitions/_6eda1490-21ca-441e-8a26-ab3ca800e43c", "Drawing 1" );
         assertThat( dmnModel, notNullValue() );
         assertThat( DMNRuntimeUtil.formatMessages( dmnModel.getMessages() ), dmnModel.hasErrors(), is( false ) );
@@ -799,7 +799,7 @@ public class DMNRuntimeTest extends BaseInterpretedVsCompiledTest {
 
     @Test
     public void testNull() {
-        final DMNRuntime runtime = createRuntime("null_values.dmn", this.getClass() );
+        final DMNRuntime runtime = DMNRuntimeUtil.createRuntime("null_values.dmn", this.getClass() );
         final DMNModel dmnModel = runtime.getModel("https://github.com/kiegroup/kie-dmn", "Null values model" );
         assertThat( dmnModel, notNullValue() );
         assertThat( DMNRuntimeUtil.formatMessages( dmnModel.getMessages() ), dmnModel.hasErrors(), is( false ) );
@@ -824,7 +824,7 @@ public class DMNRuntimeTest extends BaseInterpretedVsCompiledTest {
 
     @Test
     public void testInvalidUHitPolicy() {
-        final DMNRuntime runtime = createRuntime("Invalid_U_hit_policy.dmn", this.getClass() );
+        final DMNRuntime runtime = DMNRuntimeUtil.createRuntime("Invalid_U_hit_policy.dmn", this.getClass() );
         final DMNModel dmnModel = runtime.getModel("http://www.trisotech.com/definitions/_7cf49108-9b55-4f35-b5ef-f83448061757", "Greater than 5 - Invalid U hit policy" );
         assertThat( dmnModel, notNullValue() );
         assertThat( DMNRuntimeUtil.formatMessages( dmnModel.getMessages() ), dmnModel.hasErrors(), is( false ) );
@@ -849,7 +849,7 @@ public class DMNRuntimeTest extends BaseInterpretedVsCompiledTest {
 
     @Test
     public void testNullOnNumber() {
-        final DMNRuntime runtime = createRuntime("Number_and_null_entry.dmn", this.getClass() );
+        final DMNRuntime runtime = DMNRuntimeUtil.createRuntime("Number_and_null_entry.dmn", this.getClass() );
         final DMNModel dmnModel = runtime.getModel("http://www.trisotech.com/definitions/_a293b9f9-c912-41ee-8147-eae59ba86ac5", "Number and null entry" );
         assertThat( dmnModel, notNullValue() );
         assertThat( DMNRuntimeUtil.formatMessages( dmnModel.getMessages() ), dmnModel.hasErrors(), is( false ) );
@@ -874,7 +874,7 @@ public class DMNRuntimeTest extends BaseInterpretedVsCompiledTest {
 
     @Test
     public void testLoan_Recommendation2() {
-        final DMNRuntime runtime = createRuntime("Loan_Recommendation2.dmn", this.getClass() );
+        final DMNRuntime runtime = DMNRuntimeUtil.createRuntime("Loan_Recommendation2.dmn", this.getClass() );
         final DMNModel dmnModel = runtime.getModel("http://www.trisotech.com/definitions/_35c7339b-b868-43da-8f06-eb481708c73c", "Loan Recommendation2" );
         assertThat( dmnModel, notNullValue() );
         assertThat( DMNRuntimeUtil.formatMessages( dmnModel.getMessages() ), dmnModel.hasErrors(), is( false ) );
@@ -907,7 +907,7 @@ public class DMNRuntimeTest extends BaseInterpretedVsCompiledTest {
     
     @Test
     public void testPriority_table() {
-        final DMNRuntime runtime = createRuntime("priority_table.dmn", this.getClass() );
+        final DMNRuntime runtime = DMNRuntimeUtil.createRuntime("priority_table.dmn", this.getClass() );
         final DMNModel dmnModel = runtime.getModel(
                 "http://www.trisotech.com/definitions/_ff54a44d-b8f5-48fc-b2b7-43db767e8a1c",
                 "not quite all or nothing P" );
@@ -925,7 +925,7 @@ public class DMNRuntimeTest extends BaseInterpretedVsCompiledTest {
     
     @Test
     public void testPriority_table_context_recursion() {
-        final DMNRuntime runtime = createRuntime("priority_table_context_recursion.dmn", this.getClass() );
+        final DMNRuntime runtime = DMNRuntimeUtil.createRuntime("priority_table_context_recursion.dmn", this.getClass() );
         final DMNModel dmnModel = runtime.getModel(
                 "http://www.trisotech.com/definitions/_ff54a44d-b8f5-48fc-b2b7-43db767e8a1c",
                 "not quite all or nothing P" );
@@ -949,7 +949,7 @@ public class DMNRuntimeTest extends BaseInterpretedVsCompiledTest {
 
     @Test
     public void test_non_Priority_table_missing_output_values() {
-        final DMNRuntime runtime = createRuntime("DTABLE_NON_PRIORITY_MISSING_OUTVALS.dmn", this.getClass() );
+        final DMNRuntime runtime = DMNRuntimeUtil.createRuntime("DTABLE_NON_PRIORITY_MISSING_OUTVALS.dmn", this.getClass() );
         final DMNModel dmnModel = runtime.getModel(
         "https://github.com/kiegroup/kie-dmn",
         "DTABLE_NON_PRIORITY_MISSING_OUTVALS" );
@@ -959,7 +959,7 @@ public class DMNRuntimeTest extends BaseInterpretedVsCompiledTest {
 
     @Test
     public void testPriority_table_one_output_value() {
-        final DMNRuntime runtime = createRuntime("DTABLE_PRIORITY_ONE_OUTVAL.dmn", this.getClass() );
+        final DMNRuntime runtime = DMNRuntimeUtil.createRuntime("DTABLE_PRIORITY_ONE_OUTVAL.dmn", this.getClass() );
         final DMNModel dmnModel = runtime.getModel(
         "https://github.com/kiegroup/kie-dmn",
         "DTABLE_PRIORITY_ONE_OUTVAL" );
@@ -969,7 +969,7 @@ public class DMNRuntimeTest extends BaseInterpretedVsCompiledTest {
     
     @Test
     public void testNoPrefix() {
-        final DMNRuntime runtime = createRuntime("drools1502-noprefix.dmn", this.getClass() );
+        final DMNRuntime runtime = DMNRuntimeUtil.createRuntime("drools1502-noprefix.dmn", this.getClass() );
         final DMNModel dmnModel = runtime.getModel(
                 "https://www.drools.org/kie-dmn/definitions",
                 "definitions" );
@@ -1004,7 +1004,7 @@ public class DMNRuntimeTest extends BaseInterpretedVsCompiledTest {
     @Test
     public void testResolutionOfVariableWithLeadingOrTrailingSpaces() {
         // DROOLS-1504
-        final DMNRuntime runtime = createRuntime("variableLeadingTrailingSpaces.dmn", this.getClass() );
+        final DMNRuntime runtime = DMNRuntimeUtil.createRuntime("variableLeadingTrailingSpaces.dmn", this.getClass() );
         final DMNModel dmnModel = runtime.getModel(
                 "https://www.drools.org/kie-dmn/definitions",
                 "definitions" );
@@ -1026,7 +1026,7 @@ public class DMNRuntimeTest extends BaseInterpretedVsCompiledTest {
 
     @Test
     public void testOutOfOrderItemsNPE() {
-        final DMNRuntime runtime = createRuntime("out-of-order-items.dmn", this.getClass() );
+        final DMNRuntime runtime = DMNRuntimeUtil.createRuntime("out-of-order-items.dmn", this.getClass() );
         final DMNModel dmnModel = runtime.getModel(
                 "https://github.com/kiegroup/kie-dmn",
                 "out-of-order" );
@@ -1037,7 +1037,7 @@ public class DMNRuntimeTest extends BaseInterpretedVsCompiledTest {
     @Test
     public void testItemDefDependencies() {
         // DROOLS-1505
-        final DMNRuntime runtime = createRuntime("itemDef-dependency.dmn", this.getClass() );
+        final DMNRuntime runtime = DMNRuntimeUtil.createRuntime("itemDef-dependency.dmn", this.getClass() );
         final DMNModel dmnModel = runtime.getModel(
                 "http://www.trisotech.com/definitions/_2374ee6d-75ed-4e9d-95d3-a88c135e1c43",
                 "Drawing 1a" );
@@ -1060,7 +1060,7 @@ public class DMNRuntimeTest extends BaseInterpretedVsCompiledTest {
     @Test
     public void testDecisionResultTypeCheck() {
         // DROOLS-1513
-        final DMNRuntime runtime = createRuntime("LoanRecommendationWrongOutputType.dmn", this.getClass() );
+        final DMNRuntime runtime = DMNRuntimeUtil.createRuntime("LoanRecommendationWrongOutputType.dmn", this.getClass() );
         final DMNModel dmnModel = runtime.getModel(
                 "http://www.trisotech.com/dmn/definitions/_591d49d0-26e1-4a1c-9f72-b65bec09964a",
                 "Loan Recommendation Multi-step" );
@@ -1085,7 +1085,7 @@ public class DMNRuntimeTest extends BaseInterpretedVsCompiledTest {
     @Test
     public void testNPE() {
         // DROOLS-1512
-        final DMNRuntime runtime = createRuntime("NPE.dmn", this.getClass() );
+        final DMNRuntime runtime = DMNRuntimeUtil.createRuntime("NPE.dmn", this.getClass() );
         final DMNModel dmnModel = runtime.getModel(
                 "http://www.trisotech.com/dmn/definitions/_95b7ee22-1964-4be5-b7db-7db66692c707",
                 "Dessin 1" );
@@ -1101,7 +1101,7 @@ public class DMNRuntimeTest extends BaseInterpretedVsCompiledTest {
     
     @Test
     public void testUnionofLetters() {
-        final DMNRuntime runtime = createRuntime("Union_of_letters.dmn", this.getClass() );
+        final DMNRuntime runtime = DMNRuntimeUtil.createRuntime("Union_of_letters.dmn", this.getClass() );
         final DMNModel dmnModel = runtime.getModel(
                 "http://www.trisotech.com/definitions/_76362694-41e8-400c-8dea-e5f033d4f405",
                 "Union of letters" );
@@ -1140,7 +1140,7 @@ public class DMNRuntimeTest extends BaseInterpretedVsCompiledTest {
 
     @Test
     public void testSingleDecisionWithContext() {
-        final DMNRuntime runtime = createRuntime("SingleDecisionWithContext.dmn", this.getClass() );
+        final DMNRuntime runtime = DMNRuntimeUtil.createRuntime("SingleDecisionWithContext.dmn", this.getClass() );
         final DMNModel dmnModel = runtime.getModel(
                 "http://www.trisotech.com/definitions/_71af58db-e1df-4b0f-aee2-48e0e8d89672",
                 "SingleDecisionWithContext" );
@@ -1157,7 +1157,7 @@ public class DMNRuntimeTest extends BaseInterpretedVsCompiledTest {
 
     @Test
     public void testEx_6_1() {
-        final DMNRuntime runtime = createRuntime("Ex_6_1.dmn", this.getClass() );
+        final DMNRuntime runtime = DMNRuntimeUtil.createRuntime("Ex_6_1.dmn", this.getClass() );
         final DMNModel dmnModel = runtime.getModel(
                 "http://www.trisotech.com/definitions/_5f1269c8-1e6f-4748-9eca-26aa1b1278ef",
                 "Ex 6-1" );
@@ -1193,7 +1193,7 @@ public class DMNRuntimeTest extends BaseInterpretedVsCompiledTest {
     
     @Test
     public void testSingletonlist_function_call() {
-        final DMNRuntime runtime = createRuntime("singletonlist_fuction_call.dmn", this.getClass() );
+        final DMNRuntime runtime = DMNRuntimeUtil.createRuntime("singletonlist_fuction_call.dmn", this.getClass() );
         final DMNModel dmnModel = runtime.getModel(
                 "http://www.trisotech.com/definitions/_0768879b-5ee1-410f-92f0-7732573b069d",
                 "expression function subst [a] with a" );
@@ -1221,7 +1221,7 @@ public class DMNRuntimeTest extends BaseInterpretedVsCompiledTest {
 
     @Test
     public void testJavaFunctionContext() {
-        final DMNRuntime runtime = createRuntime("java_function_context.dmn", this.getClass() );
+        final DMNRuntime runtime = DMNRuntimeUtil.createRuntime("java_function_context.dmn", this.getClass() );
         final DMNModel dmnModel = runtime.getModel(
                 "http://www.trisotech.com/dmn/definitions/_b42317c4-4f0c-474e-a0bf-2895b0b3c314",
                 "Dessin 1" );
@@ -1251,7 +1251,7 @@ public class DMNRuntimeTest extends BaseInterpretedVsCompiledTest {
 
     @Test
     public void testNestingFnDef() {
-        final DMNRuntime runtime = createRuntime("nestingFnDef.dmn", this.getClass());
+        final DMNRuntime runtime = DMNRuntimeUtil.createRuntime("nestingFnDef.dmn", this.getClass());
         final DMNModel dmnModel = runtime.getModel("https://kiegroup.org/dmn/_FC72DC4B-DC64-4E43-9685-945FC3B7E4BC",
                                                    "new-file");
         assertThat(dmnModel, notNullValue());
@@ -1267,7 +1267,7 @@ public class DMNRuntimeTest extends BaseInterpretedVsCompiledTest {
 
     @Test
     public void testBkmCurried() {
-        final DMNRuntime runtime = createRuntime("bkmCurried.dmn", this.getClass());
+        final DMNRuntime runtime = DMNRuntimeUtil.createRuntime("bkmCurried.dmn", this.getClass());
         final DMNModel dmnModel = runtime.getModel("https://kiegroup.org/dmn/_A7F17D7B-F0AB-4C0B-B521-02EA26C2FB7D",
                                                    "new-file");
         assertThat(dmnModel, notNullValue());
@@ -1285,7 +1285,7 @@ public class DMNRuntimeTest extends BaseInterpretedVsCompiledTest {
     @Ignore("the purpose of this work is to enable PMML execution.")
     @Test
     public void testPMMLFunctionContext() {
-        final DMNRuntime runtime = createRuntime("pmml_function_context.dmn", this.getClass() );
+        final DMNRuntime runtime = DMNRuntimeUtil.createRuntime("pmml_function_context.dmn", this.getClass() );
         final DMNModel dmnModel = runtime.getModel(
                 "http://www.trisotech.com/dmn/definitions/_b42317c4-4f0c-474e-a0bf-2895b0b3c314",
                 "Dessin 1" );
@@ -1299,7 +1299,7 @@ public class DMNRuntimeTest extends BaseInterpretedVsCompiledTest {
     @Test
     public void test_countCSATradeRatings() {
         // DROOLS-1563
-        final DMNRuntime runtime = createRuntime("countCSATradeRatings.dmn", this.getClass() );
+        final DMNRuntime runtime = DMNRuntimeUtil.createRuntime("countCSATradeRatings.dmn", this.getClass() );
         final DMNModel dmnModel = runtime.getModel(
                 "http://www.trisotech.com/definitions/_1a7d184c-2e38-4462-ae28-15591ef6d534",
                 "countCSATradeRatings" );
@@ -1334,7 +1334,7 @@ public class DMNRuntimeTest extends BaseInterpretedVsCompiledTest {
     @Test
     public void testForLoopTypeCheck() {
         // DROOLS-1580
-        final DMNRuntime runtime = createRuntime("PersonListHelloBKM.dmn", this.getClass() );
+        final DMNRuntime runtime = DMNRuntimeUtil.createRuntime("PersonListHelloBKM.dmn", this.getClass() );
         final DMNModel dmnModel = runtime.getModel(
                 "http://www.trisotech.com/definitions/_ec5a78c7-a317-4c39-8310-db59be60f1c8",
                 "PersonListHelloBKM" );
@@ -1358,7 +1358,7 @@ public class DMNRuntimeTest extends BaseInterpretedVsCompiledTest {
     @Test
     public void testTypeInferenceForNestedContextAnonymousEntry() {
         // DROOLS-1585
-        final DMNRuntime runtime = createRuntime("PersonListHelloBKM2.dmn", this.getClass() );
+        final DMNRuntime runtime = DMNRuntimeUtil.createRuntime("PersonListHelloBKM2.dmn", this.getClass() );
         final DMNModel dmnModel = runtime.getModel(
                 "http://www.trisotech.com/definitions/_7e41a76e-2df6-4899-bf81-ae098757a3b6",
                 "PersonListHelloBKM2" );
@@ -1383,7 +1383,7 @@ public class DMNRuntimeTest extends BaseInterpretedVsCompiledTest {
     @Test
     public void testSameEveryTypeCheck() {
         // DROOLS-1587
-        final DMNRuntime runtime = createRuntime("same_every_type_check.dmn", this.getClass() );
+        final DMNRuntime runtime = DMNRuntimeUtil.createRuntime("same_every_type_check.dmn", this.getClass() );
         final DMNModel dmnModel = runtime.getModel(
                 "http://www.trisotech.com/definitions/_09a13244-114d-43fb-9e00-cda89a2000dd",
                 "same every type check" );
@@ -1405,7 +1405,7 @@ public class DMNRuntimeTest extends BaseInterpretedVsCompiledTest {
 
     @Test
     public void testDateAllowedValues() {
-        final DMNRuntime runtime = createRuntime("date_allowed_values.dmn", this.getClass() );
+        final DMNRuntime runtime = DMNRuntimeUtil.createRuntime("date_allowed_values.dmn", this.getClass() );
         final DMNModel dmnModel = runtime.getModel(
                 "http://www.trisotech.com/definitions/_fbf002a3-615b-4f02-98e4-c28d4676225a",
                 "Error with constraints verification" );
@@ -1427,7 +1427,7 @@ public class DMNRuntimeTest extends BaseInterpretedVsCompiledTest {
     
     @Test
     public void testArtificialAttributes() {
-        final DMNRuntime runtime = createRuntime("0001-input-data-string-artificial-attributes.dmn", this.getClass() );
+        final DMNRuntime runtime = DMNRuntimeUtil.createRuntime("0001-input-data-string-artificial-attributes.dmn", this.getClass() );
         final DMNModel dmnModel = runtime.getModel("https://github.com/kiegroup/drools", "0001-input-data-string" );
         assertThat( dmnModel, notNullValue() );
 
@@ -1564,7 +1564,7 @@ public class DMNRuntimeTest extends BaseInterpretedVsCompiledTest {
         model.setDefinitions(defs);
         model.addDecision(a);
         model.addDecision(b);
-        final DMNRuntime runtime = createRuntime(this.getClass());
+        final DMNRuntime runtime = DMNRuntimeUtil.createRuntime(this.getClass());
         final DMNResult result = runtime.evaluateAll(model, DMNFactory.newContext());
         assertTrue(result.hasErrors());
     }
@@ -1577,7 +1577,7 @@ public class DMNRuntimeTest extends BaseInterpretedVsCompiledTest {
         final DMNModelImpl model = new DMNModelImpl(defs);
         model.setDefinitions(defs);
         model.addDecision(decision);
-        final DMNRuntime runtime = createRuntime(this.getClass());
+        final DMNRuntime runtime = DMNRuntimeUtil.createRuntime(this.getClass());
         final DMNResult result = runtime.evaluateAll(model, DMNFactory.newContext());
         assertTrue(result.hasErrors());
     }
@@ -1595,7 +1595,7 @@ public class DMNRuntimeTest extends BaseInterpretedVsCompiledTest {
         model.addDecision(a);
         model.addDecision(b);
         model.addDecision(c);
-        final DMNRuntime runtime = createRuntime(this.getClass());
+        final DMNRuntime runtime = DMNRuntimeUtil.createRuntime(this.getClass());
         final DMNResult result = runtime.evaluateAll(model, DMNFactory.newContext());
         assertFalse(result.hasErrors());
     }
@@ -1617,14 +1617,14 @@ public class DMNRuntimeTest extends BaseInterpretedVsCompiledTest {
         model.addDecision(b);
         model.addDecision(c);
         model.addDecision(d);
-        final DMNRuntime runtime = createRuntime(this.getClass());
+        final DMNRuntime runtime = DMNRuntimeUtil.createRuntime(this.getClass());
         final DMNResult result = runtime.evaluateAll(model, DMNFactory.newContext());
         assertFalse(result.hasErrors());
     }
 
     @Test
     public void testEx_4_3simplified() {
-        final DMNRuntime runtime = createRuntime("Ex_4_3simplified.dmn", this.getClass());
+        final DMNRuntime runtime = DMNRuntimeUtil.createRuntime("Ex_4_3simplified.dmn", this.getClass());
         final DMNModel dmnModel = runtime.getModel("http://www.trisotech.com/definitions/_5c5a9c72-627e-4666-ae85-31356fed3658", "Ex_4_3simplified");
         assertThat(dmnModel, notNullValue());
         assertThat(DMNRuntimeUtil.formatMessages(dmnModel.getMessages()), dmnModel.hasErrors(), is(false));
@@ -1644,7 +1644,7 @@ public class DMNRuntimeTest extends BaseInterpretedVsCompiledTest {
     @Test
     public void testEx_4_3simplifiedASD() {
         // DROOLS-2117 improve Msg.ERROR_EVAL_NODE_DEP_WRONG_TYPE
-        final DMNRuntime runtime = createRuntime("Ex_4_3simplified.dmn", this.getClass());
+        final DMNRuntime runtime = DMNRuntimeUtil.createRuntime("Ex_4_3simplified.dmn", this.getClass());
         final DMNModel dmnModel = runtime.getModel("http://www.trisotech.com/definitions/_5c5a9c72-627e-4666-ae85-31356fed3658", "Ex_4_3simplified");
         assertThat(dmnModel, notNullValue());
         assertThat(DMNRuntimeUtil.formatMessages(dmnModel.getMessages()), dmnModel.hasErrors(), is(false));
@@ -1665,7 +1665,7 @@ public class DMNRuntimeTest extends BaseInterpretedVsCompiledTest {
     @Test
     public void testDrools2125() {
         // DROOLS-2125
-        final DMNRuntime runtime = createRuntime("drools2125.dmn", this.getClass());
+        final DMNRuntime runtime = DMNRuntimeUtil.createRuntime("drools2125.dmn", this.getClass());
         final DMNModel dmnModel = runtime.getModel("http://www.trisotech.com/definitions/_9f976b29-4cdd-42e9-8737-0ccbc2ad9498", "drools2125");
         assertThat(dmnModel, notNullValue());
         assertThat(DMNRuntimeUtil.formatMessages(dmnModel.getMessages()), dmnModel.hasErrors(), is(false));
@@ -1688,7 +1688,7 @@ public class DMNRuntimeTest extends BaseInterpretedVsCompiledTest {
     @Test
     public void testDROOLS2147() {
         // DROOLS-2147
-        final DMNRuntime runtime = createRuntime("DROOLS-2147.dmn", this.getClass());
+        final DMNRuntime runtime = DMNRuntimeUtil.createRuntime("DROOLS-2147.dmn", this.getClass());
         final DMNModel dmnModel = runtime.getModel("http://www.trisotech.com/dmn/definitions/_cbdacb7b-f72d-457d-b4f4-54020a06db24", "Drawing 1");
         assertThat(dmnModel, notNullValue());
         assertThat(DMNRuntimeUtil.formatMessages(dmnModel.getMessages()), dmnModel.hasErrors(), is(false));
@@ -1713,7 +1713,7 @@ public class DMNRuntimeTest extends BaseInterpretedVsCompiledTest {
     @Test
     public void testDROOLS2147_message() {
         // DROOLS-2147 truncate message length
-        final DMNRuntime runtime = createRuntime("Ex_4_3simplified.dmn", this.getClass());
+        final DMNRuntime runtime = DMNRuntimeUtil.createRuntime("Ex_4_3simplified.dmn", this.getClass());
         final DMNModel dmnModel = runtime.getModel("http://www.trisotech.com/definitions/_5c5a9c72-627e-4666-ae85-31356fed3658", "Ex_4_3simplified");
         assertThat(dmnModel, notNullValue());
         assertThat(DMNRuntimeUtil.formatMessages(dmnModel.getMessages()), dmnModel.hasErrors(), is(false));
@@ -1735,7 +1735,7 @@ public class DMNRuntimeTest extends BaseInterpretedVsCompiledTest {
     @Test
     public void testDROOLS2192() {
         // DROOLS-2192
-        final DMNRuntime runtime = createRuntime("hardcoded_function_definition.dmn", this.getClass());
+        final DMNRuntime runtime = DMNRuntimeUtil.createRuntime("hardcoded_function_definition.dmn", this.getClass());
         final DMNModel dmnModel = runtime.getModel("http://www.trisotech.com/definitions/_99854980-65c8-4e9b-b365-bd30ded69f40", "hardcoded_function_definition");
         assertThat(dmnModel, notNullValue());
         assertThat(DMNRuntimeUtil.formatMessages(dmnModel.getMessages()), dmnModel.hasErrors(), is(false));
@@ -1752,7 +1752,7 @@ public class DMNRuntimeTest extends BaseInterpretedVsCompiledTest {
     @Test
     public void testDROOLS2200() {
         // DROOLS-2200
-        final DMNRuntime runtime = createRuntime("will_be_null_if_negative.dmn", this.getClass());
+        final DMNRuntime runtime = DMNRuntimeUtil.createRuntime("will_be_null_if_negative.dmn", this.getClass());
         final DMNModel dmnModel = runtime.getModel("http://www.trisotech.com/definitions/_c5889555-7ae5-4a67-a872-3a9492caf6e7", "will be null if negative");
         assertThat(dmnModel, notNullValue());
         assertThat(DMNRuntimeUtil.formatMessages(dmnModel.getMessages()), dmnModel.hasErrors(), is(false));
@@ -1868,7 +1868,7 @@ public class DMNRuntimeTest extends BaseInterpretedVsCompiledTest {
     }
 
     private void assertDROOLS2286(final DMNContext context) {
-        final DMNRuntime runtime = createRuntime("FilterJohns.dmn", this.getClass());
+        final DMNRuntime runtime = DMNRuntimeUtil.createRuntime("FilterJohns.dmn", this.getClass());
         final DMNModel model = runtime.getModel("http://www.trisotech.com/definitions/_feb9886e-22ce-469a-bbb6-096f13b71c7d", "FilterJohns");
 
         final DMNResult result = runtime.evaluateAll(model, context);
@@ -1880,7 +1880,7 @@ public class DMNRuntimeTest extends BaseInterpretedVsCompiledTest {
     @Test
     public void testVerifyExtendedKieFEELFunction_now() {
         // DROOLS-2322
-        final DMNRuntime runtime = createRuntime("just_now.dmn", this.getClass());
+        final DMNRuntime runtime = DMNRuntimeUtil.createRuntime("just_now.dmn", this.getClass());
         final DMNModel dmnModel = runtime.getModel("http://www.trisotech.com/definitions/_56fd6445-ff6a-4c28-8206-71fce7f80436", "just now");
         assertThat(dmnModel, notNullValue());
         assertThat(DMNRuntimeUtil.formatMessages(dmnModel.getMessages()), dmnModel.hasErrors(), is(false));
@@ -1896,7 +1896,7 @@ public class DMNRuntimeTest extends BaseInterpretedVsCompiledTest {
     @Test
     public void testNowBetweenTwoDates() {
         // DROOLS-3670 DMN `between` FEEL operator alignments
-        final DMNRuntime runtime = createRuntime("is office open.dmn", this.getClass());
+        final DMNRuntime runtime = DMNRuntimeUtil.createRuntime("is office open.dmn", this.getClass());
         final DMNModel dmnModel = runtime.getModel("https://github.com/kiegroup/drools/kie-dmn/_19170B18-B561-4EB2-9D38-714E2442710E",
                                                    "is office open");
         assertThat(DMNRuntimeUtil.formatMessages(dmnModel.getMessages()), dmnModel.hasErrors(), is(false));
@@ -1915,7 +1915,7 @@ public class DMNRuntimeTest extends BaseInterpretedVsCompiledTest {
     @Test
     public void testVerifyExtendedKieFEELFunction_today() {
         // DROOLS-2322
-        final DMNRuntime runtime = createRuntime("just_today.dmn", this.getClass());
+        final DMNRuntime runtime = DMNRuntimeUtil.createRuntime("just_today.dmn", this.getClass());
         final DMNModel dmnModel = runtime.getModel("http://www.trisotech.com/definitions/_56fd6445-ff6a-4c28-8206-71fce7f80436", "just today");
         assertThat(dmnModel, notNullValue());
         assertThat(DMNRuntimeUtil.formatMessages(dmnModel.getMessages()), dmnModel.hasErrors(), is(false));
@@ -1931,7 +1931,7 @@ public class DMNRuntimeTest extends BaseInterpretedVsCompiledTest {
     @Test
     public void testEnhancedForLoop() {
         // DROOLS-2307
-        final DMNRuntime runtime = createRuntime("drools2307.dmn", this.getClass());
+        final DMNRuntime runtime = DMNRuntimeUtil.createRuntime("drools2307.dmn", this.getClass());
         final DMNModel dmnModel = runtime.getModel("http://www.trisotech.com/dmn/definitions/_03d9481e-dcfc-4a59-9bdd-4f021cb2f0d8", "Drawing 1");
         assertThat(dmnModel, notNullValue());
         assertThat(DMNRuntimeUtil.formatMessages(dmnModel.getMessages()), dmnModel.hasErrors(), is(false));
@@ -1948,7 +1948,7 @@ public class DMNRuntimeTest extends BaseInterpretedVsCompiledTest {
     @Test
     public void testList_of_Vowels() {
         // DROOLS-2357
-        final DMNRuntime runtime = createRuntime("List_of_Vowels.dmn", this.getClass());
+        final DMNRuntime runtime = DMNRuntimeUtil.createRuntime("List_of_Vowels.dmn", this.getClass());
         final DMNModel dmnModel = runtime.getModel("http://www.trisotech.com/dmn/definitions/_c5f007ce-4d45-4aac-8729-991d4abc7826", "List of Vowels");
         assertThat(dmnModel, notNullValue());
         assertThat(DMNRuntimeUtil.formatMessages(dmnModel.getMessages()), dmnModel.hasErrors(), is(false));
@@ -1969,7 +1969,7 @@ public class DMNRuntimeTest extends BaseInterpretedVsCompiledTest {
 
     @Test
     public void testEnhancedForLoop2() {
-        final DMNRuntime runtime = createRuntime("MACD-enhanced_iteration.dmn", this.getClass());
+        final DMNRuntime runtime = DMNRuntimeUtil.createRuntime("MACD-enhanced_iteration.dmn", this.getClass());
         final DMNModel dmnModel = runtime.getModel("http://www.trisotech.com/definitions/_6cfe7d88-6741-45d1-968c-b61a597d0964", "MACD-enhanced iteration");
         assertThat(dmnModel, notNullValue());
         assertThat(DMNRuntimeUtil.formatMessages(dmnModel.getMessages()), dmnModel.hasErrors(), is(false));
@@ -1993,7 +1993,7 @@ public class DMNRuntimeTest extends BaseInterpretedVsCompiledTest {
     @Test
     public void testNotListInDT() {
         // DROOLS-2416
-        final DMNRuntime runtime = createRuntime("anot.dmn", this.getClass());
+        final DMNRuntime runtime = DMNRuntimeUtil.createRuntime("anot.dmn", this.getClass());
         final DMNModel dmnModel = runtime.getModel("http://www.trisotech.com/dmn/definitions/_292c1c7b-6b38-415d-938f-e9ca51d30b2b", "anot");
         assertThat(dmnModel, notNullValue());
         assertThat(DMNRuntimeUtil.formatMessages(dmnModel.getMessages()), dmnModel.hasErrors(), is(false));
@@ -2011,7 +2011,7 @@ public class DMNRuntimeTest extends BaseInterpretedVsCompiledTest {
     @Test
     public void testListContainmentDT() {
         // DROOLS-2416
-        final DMNRuntime runtime = createRuntime("list_containment_DT.dmn", this.getClass());
+        final DMNRuntime runtime = DMNRuntimeUtil.createRuntime("list_containment_DT.dmn", this.getClass());
         final DMNModel dmnModel = runtime.getModel("http://www.trisotech.com/definitions/_6ab2bd6d-adaa-45c4-a141-a84382a201eb", "list containment DT");
         assertThat(dmnModel, notNullValue());
         assertThat(DMNRuntimeUtil.formatMessages(dmnModel.getMessages()), dmnModel.hasErrors(), is(false));
@@ -2028,7 +2028,7 @@ public class DMNRuntimeTest extends BaseInterpretedVsCompiledTest {
 
     @Test
     public void testStructureContainment() {
-        final DMNRuntime runtime = createRuntime("structure-containtment.dmn", this.getClass());
+        final DMNRuntime runtime = DMNRuntimeUtil.createRuntime("structure-containtment.dmn", this.getClass());
         final DMNModel dmnModel = runtime.getModel("https://github.com/kiegroup/drools/kie-dmn/_7FB5C3E4-4DF8-42A6-A7FA-28315DECCDD0",
                                                    "structure-containtment");
         assertThat(dmnModel, notNullValue());
@@ -2047,7 +2047,7 @@ public class DMNRuntimeTest extends BaseInterpretedVsCompiledTest {
     @Test
     public void testRelationwithemptycell() {
         // DROOLS-2439
-        final DMNRuntime runtime = createRuntime("relation_with_empty_cell.dmn", this.getClass());
+        final DMNRuntime runtime = DMNRuntimeUtil.createRuntime("relation_with_empty_cell.dmn", this.getClass());
         final DMNModel dmnModel = runtime.getModel("http://www.trisotech.com/dmn/definitions/_99a00903-2943-47df-bab1-a32f276617ea", "Relation with empty cell");
         assertThat(dmnModel, notNullValue());
         assertThat(DMNRuntimeUtil.formatMessages(dmnModel.getMessages()), dmnModel.hasErrors(), is(false));
@@ -2068,7 +2068,7 @@ public class DMNRuntimeTest extends BaseInterpretedVsCompiledTest {
     @Test
     public void testFor() {
         // DROOLS-2317
-        final DMNRuntime runtime = createRuntime("Dynamic composition.dmn", this.getClass());
+        final DMNRuntime runtime = DMNRuntimeUtil.createRuntime("Dynamic composition.dmn", this.getClass());
         final DMNModel dmnModel = runtime.getModel("http://www.trisotech.com/definitions/_c2d86765-c3c7-4e1d-b1fa-b830fa5bc529", "Dynamic composition");
         assertThat(dmnModel, notNullValue());
         assertThat(DMNRuntimeUtil.formatMessages(dmnModel.getMessages()), dmnModel.hasErrors(), is(false));
@@ -2077,7 +2077,7 @@ public class DMNRuntimeTest extends BaseInterpretedVsCompiledTest {
     @Test
     public void testUsingReusableKeywordAsPartOfBKMName() {
         // DROOLS-2317 FEEL Syntax error on function(bkm) containing `for` keyword
-        final DMNRuntime runtime = createRuntime("say_for_hello.dmn", this.getClass());
+        final DMNRuntime runtime = DMNRuntimeUtil.createRuntime("say_for_hello.dmn", this.getClass());
         final DMNModel dmnModel = runtime.getModel("http://www.trisotech.com/dmn/definitions/_b6f2a9ca-a246-4f27-896a-e8ef04ea439c", "say for hello");
         assertThat(dmnModel, notNullValue());
         assertThat(DMNRuntimeUtil.formatMessages(dmnModel.getMessages()), dmnModel.hasErrors(), is(false));
@@ -2093,7 +2093,7 @@ public class DMNRuntimeTest extends BaseInterpretedVsCompiledTest {
 
     @Test
     public void testProductFunction() {
-        final DMNRuntime runtime = createRuntime("product.dmn", this.getClass() );
+        final DMNRuntime runtime = DMNRuntimeUtil.createRuntime("product.dmn", this.getClass() );
         final DMNModel model = runtime.getModel("http://www.trisotech.com/dmn/definitions/_40fdbc2c-a631-4ba4-8435-17571b5d1942", "Drawing 1" );
         assertThat( model, notNullValue() );
         assertThat( DMNRuntimeUtil.formatMessages( model.getMessages() ), model.hasErrors(), is( false ) );
@@ -2110,7 +2110,7 @@ public class DMNRuntimeTest extends BaseInterpretedVsCompiledTest {
     @Test
     public void testNotWithPredicates20180601() {
         // DROOLS-2605
-        final DMNRuntime runtime = createRuntime("test20180601.dmn", this.getClass());
+        final DMNRuntime runtime = DMNRuntimeUtil.createRuntime("test20180601.dmn", this.getClass());
         final DMNModel dmnModel = runtime.getModel("http://www.trisotech.com/dmn/definitions/_9b8f2642-2597-4a99-9fcd-f9302692d3dc", "Drawing 1");
         assertThat(dmnModel, notNullValue());
         assertThat(DMNRuntimeUtil.formatMessages(dmnModel.getMessages()), dmnModel.hasErrors(), is(false));
@@ -2133,7 +2133,7 @@ public class DMNRuntimeTest extends BaseInterpretedVsCompiledTest {
     @Test
     public void testNotWithPredicates20180601b() {
         // DROOLS-2605
-        final DMNRuntime runtime = createRuntime("BruceTask20180601.dmn", this.getClass());
+        final DMNRuntime runtime = DMNRuntimeUtil.createRuntime("BruceTask20180601.dmn", this.getClass());
         final DMNModel dmnModel = runtime.getModel("http://www.trisotech.com/definitions/_3802fcb2-5b93-4502-aff4-0f5c61244eab", "Bruce Task");
         assertThat(dmnModel, notNullValue());
         assertThat(DMNRuntimeUtil.formatMessages(dmnModel.getMessages()), dmnModel.hasErrors(), is(false));
@@ -2179,7 +2179,7 @@ public class DMNRuntimeTest extends BaseInterpretedVsCompiledTest {
     
     @Test
     public void testModelById() {
-        final DMNRuntime runtime = createRuntime("simple-item-def.dmn", this.getClass() );
+        final DMNRuntime runtime = DMNRuntimeUtil.createRuntime("simple-item-def.dmn", this.getClass() );
         final DMNModel dmnModel = runtime.getModelById("https://github.com/kiegroup/kie-dmn/itemdef", "_simple-item-def" );
         assertThat( dmnModel, notNullValue() );
         assertThat( DMNRuntimeUtil.formatMessages( dmnModel.getMessages() ), dmnModel.hasErrors(), is( false ) );
@@ -2189,7 +2189,7 @@ public class DMNRuntimeTest extends BaseInterpretedVsCompiledTest {
     @Test
     public void testWeekdayOnDateDMN12() {
         // DROOLS-2648 DMN v1.2 weekday on 'date', 'date and time'
-        final DMNRuntime runtime = createRuntime("weekday-on-date.dmn", this.getClass());
+        final DMNRuntime runtime = DMNRuntimeUtil.createRuntime("weekday-on-date.dmn", this.getClass());
         final DMNModel dmnModel = runtime.getModel("http://www.trisotech.com/definitions/_55a2dafd-ab4d-4154-bace-826d426da251", "weekday on date");
         assertThat(dmnModel, notNullValue());
         assertThat(DMNRuntimeUtil.formatMessages(dmnModel.getMessages()), dmnModel.hasErrors(), is(false));
@@ -2210,7 +2210,7 @@ public class DMNRuntimeTest extends BaseInterpretedVsCompiledTest {
     @Test
     public void testDMN_Vs_FEEL_instanceof_interaction() {
         // DROOLS-2665
-        final DMNRuntime runtime = createRuntime("Instance_of.dmn", this.getClass());
+        final DMNRuntime runtime = DMNRuntimeUtil.createRuntime("Instance_of.dmn", this.getClass());
         final DMNModel dmnModel = runtime.getModel("http://www.trisotech.com/definitions/_b5c4d644-5a15-4528-8028-86537cb1c836", "Instance of");
         assertThat(dmnModel, notNullValue());
         assertThat(DMNRuntimeUtil.formatMessages(dmnModel.getMessages()), dmnModel.hasErrors(), is(false));
@@ -2235,7 +2235,7 @@ public class DMNRuntimeTest extends BaseInterpretedVsCompiledTest {
     @Test
     public void testInvokingAFunctionOnALiteralContext() {
         // DROOLS-2732 FEEL invoking a function on a literal context
-        final DMNRuntime runtime = createRuntime("invokingAFunctionOnALiteralContext.dmn", this.getClass());
+        final DMNRuntime runtime = DMNRuntimeUtil.createRuntime("invokingAFunctionOnALiteralContext.dmn", this.getClass());
         final DMNModel dmnModel = runtime.getModel("http://www.trisotech.com/dmn/definitions/_781968dd-64dc-4231-9cd0-2ce590881f2c", "Drawing 1");
         assertThat(dmnModel, notNullValue());
         assertThat(DMNRuntimeUtil.formatMessages(dmnModel.getMessages()), dmnModel.hasErrors(), is(false));
@@ -2261,7 +2261,7 @@ public class DMNRuntimeTest extends BaseInterpretedVsCompiledTest {
     @Test
     public void testNotHeuristicForFunctionInvocation() {
         // DROOLS-2822 FEEL augment not() heuristic for function invocation
-        final DMNRuntime runtime = createRuntime("Not-heuristic-for-function-invocation-drools-2822.dmn", this.getClass());
+        final DMNRuntime runtime = DMNRuntimeUtil.createRuntime("Not-heuristic-for-function-invocation-drools-2822.dmn", this.getClass());
         final DMNModel dmnModel = runtime.getModel("http://www.trisotech.com/dmn/definitions/_82f7e67e-0a8c-492d-aa78-94851c10eee6", "Drawing 1");
         assertThat(dmnModel, notNullValue());
         assertThat(DMNRuntimeUtil.formatMessages(dmnModel.getMessages()), dmnModel.hasErrors(), is(false));
@@ -2278,7 +2278,7 @@ public class DMNRuntimeTest extends BaseInterpretedVsCompiledTest {
 
     @Test
     public void testDMNv1_2_ch11Modified() {
-        final DMNRuntime runtime = createRuntime("v1_2/ch11MODIFIED.dmn", this.getClass());
+        final DMNRuntime runtime = DMNRuntimeUtil.createRuntime("v1_2/ch11MODIFIED.dmn", this.getClass());
         final DMNModel dmnModel = runtime.getModel("http://www.trisotech.com/definitions/_3068644b-d2c7-4b81-ab9d-64f011f81f47", "DMN Specification Chapter 11 Example");
         assertThat(dmnModel, notNullValue());
         assertThat(DMNRuntimeUtil.formatMessages(dmnModel.getMessages()), dmnModel.hasErrors(), is(false));
@@ -2309,7 +2309,7 @@ public class DMNRuntimeTest extends BaseInterpretedVsCompiledTest {
     
     @Test(timeout = 30_000L)
     public void testAccessorCache() {
-        final DMNRuntime runtime = createRuntime("20180731-pr1997.dmn", this.getClass());
+        final DMNRuntime runtime = DMNRuntimeUtil.createRuntime("20180731-pr1997.dmn", this.getClass());
         final DMNModel dmnModel = runtime.getModel("http://www.trisotech.com/dmn/definitions/_7a39d775-bce9-45e3-aa3b-147d6f0028c7", "20180731-pr1997");
         assertThat(dmnModel, notNullValue());
         assertThat(DMNRuntimeUtil.formatMessages(dmnModel.getMessages()), dmnModel.hasErrors(), is(false));
@@ -2363,7 +2363,7 @@ public class DMNRuntimeTest extends BaseInterpretedVsCompiledTest {
     @Test
     public void testAssignNullToAllowedValues() {
         // DROOLS-3132 DMN assign null to ItemDefinition with allowedValues
-        final DMNRuntime runtime = createRuntime("assignNullToAllowedValues.dmn", this.getClass());
+        final DMNRuntime runtime = DMNRuntimeUtil.createRuntime("assignNullToAllowedValues.dmn", this.getClass());
         final DMNModel dmnModel = runtime.getModel("http://www.trisotech.com/dmn/definitions/_700a46e0-01ed-4361-9034-4afdb2537ea4", "Drawing 1");
         assertThat(dmnModel, notNullValue());
         assertThat(DMNRuntimeUtil.formatMessages(dmnModel.getMessages()), dmnModel.hasErrors(), is(false));
@@ -2381,7 +2381,7 @@ public class DMNRuntimeTest extends BaseInterpretedVsCompiledTest {
     @Test
     public void testAssignNullToAllowedValuesExplicitingNull() {
         // DROOLS-3132 DMN assign null to ItemDefinition with allowedValues
-        final DMNRuntime runtime = createRuntime("assignNullToAllowedValuesExplicitingNull.dmn", this.getClass());
+        final DMNRuntime runtime = DMNRuntimeUtil.createRuntime("assignNullToAllowedValuesExplicitingNull.dmn", this.getClass());
         final DMNModel dmnModel = runtime.getModel("http://www.trisotech.com/dmn/definitions/_700a46e0-01ed-4361-9034-4afdb2537ea4", "Drawing 1");
         assertThat(dmnModel, notNullValue());
         assertThat(DMNRuntimeUtil.formatMessages(dmnModel.getMessages()), dmnModel.hasErrors(), is(false));
@@ -2400,7 +2400,7 @@ public class DMNRuntimeTest extends BaseInterpretedVsCompiledTest {
     @Test
     public void testEmptyinputValuesoutputValuesdefaultOutputEntry() {
         // DROOLS-
-        final DMNRuntime runtime = createRuntime("EmptyinputValuesoutputValuesdefaultOutputEntry.dmn", this.getClass());
+        final DMNRuntime runtime = DMNRuntimeUtil.createRuntime("EmptyinputValuesoutputValuesdefaultOutputEntry.dmn", this.getClass());
         final DMNModel dmnModel = runtime.getModel("http://www.trisotech.com/dmn/definitions/_31f2dde9-b27c-41f8-97b4-5c8dd728942e", "Drawing 1");
         assertThat(dmnModel, notNullValue());
         assertThat(DMNRuntimeUtil.formatMessages(dmnModel.getMessages()), dmnModel.hasErrors(), is(false));
@@ -2424,7 +2424,7 @@ public class DMNRuntimeTest extends BaseInterpretedVsCompiledTest {
     @Test
     public void testAnyExpression() {
         // DROOLS-3279 DMN DRGElement typeRef to allow FEEL Any
-        final DMNRuntime runtime = createRuntime("any-expression.dmn", this.getClass());
+        final DMNRuntime runtime = DMNRuntimeUtil.createRuntime("any-expression.dmn", this.getClass());
         final DMNModel dmnModel = runtime.getModel("https://github.com/kiegroup/drools/kie-dmn/_D8154592-7406-4E5A-B7F7-347984A92288", "_40F20B8D-84C1-4AC2-B28C-267892C15077");
         assertThat(dmnModel, notNullValue());
         assertThat(DMNRuntimeUtil.formatMessages(dmnModel.getMessages()), dmnModel.hasErrors(), is(false));
@@ -2440,7 +2440,7 @@ public class DMNRuntimeTest extends BaseInterpretedVsCompiledTest {
     @Test
     public void testGetEntries() {
         // DROOLS-3308 DMN implement missing functions only described in chapter "10.3.2.6 Context"
-        final DMNRuntime runtime = createRuntime("getentriesgetvalue.dmn", this.getClass());
+        final DMNRuntime runtime = DMNRuntimeUtil.createRuntime("getentriesgetvalue.dmn", this.getClass());
         final DMNModel dmnModel = getAndAssertModelNoErrors(runtime, "http://www.trisotech.com/dmn/definitions/_0fad1a80-0642-4278-ac3d-47668c4f689a", "Drawing 1");
 
         final DMNContext emptyContext = DMNFactory.newContext();
@@ -2454,7 +2454,7 @@ public class DMNRuntimeTest extends BaseInterpretedVsCompiledTest {
     @Test
     public void testGetValue() {
         // DROOLS-3308 DMN implement missing functions only described in chapter "10.3.2.6 Context"
-        final DMNRuntime runtime = createRuntime("getentriesgetvalue.dmn", this.getClass());
+        final DMNRuntime runtime = DMNRuntimeUtil.createRuntime("getentriesgetvalue.dmn", this.getClass());
         final DMNModel dmnModel = getAndAssertModelNoErrors(runtime, "http://www.trisotech.com/dmn/definitions/_0fad1a80-0642-4278-ac3d-47668c4f689a", "Drawing 1");
 
         final DMNContext emptyContext = DMNFactory.newContext();
@@ -2468,7 +2468,7 @@ public class DMNRuntimeTest extends BaseInterpretedVsCompiledTest {
     @Test
     public void testChronoPeriod() {
         // DROOLS-3848 DMN Years and Months internals expect value is Comparable
-        final DMNRuntime runtime = createRuntime("ChronoPeriod.dmn", this.getClass());
+        final DMNRuntime runtime = DMNRuntimeUtil.createRuntime("ChronoPeriod.dmn", this.getClass());
         final DMNModel dmnModel = getAndAssertModelNoErrors(runtime, "http://www.trisotech.com/definitions/_f6036734-c7b3-42d2-adde-d7db17953114", "Drawing 1");
 
         final ChronoPeriod p1Period = Period.parse("P1Y");
@@ -2519,7 +2519,7 @@ public class DMNRuntimeTest extends BaseInterpretedVsCompiledTest {
     @Test
     public void testTable61ForAliasFeelType() {
         // DROOLS-3998 DMN FEEL parser Table61 error with aliased type
-        final DMNRuntime runtime = createRuntime("Table61ForAliasFeelType.dmn", this.getClass());
+        final DMNRuntime runtime = DMNRuntimeUtil.createRuntime("Table61ForAliasFeelType.dmn", this.getClass());
         final DMNModel dmnModel = runtime.getModel("http://www.trisotech.com/definitions/_aaff9a5f-a654-40d3-a209-8a7dc1d74eeb", "Drawing 1");
         assertThat(dmnModel, notNullValue());
         assertThat(DMNRuntimeUtil.formatMessages(dmnModel.getMessages()), dmnModel.hasErrors(), is(false));
@@ -2539,7 +2539,7 @@ public class DMNRuntimeTest extends BaseInterpretedVsCompiledTest {
     @Test
     public void testcItemDef() {
         // DROOLS-4173 DMN composite recursive ItemDefinition
-        final DMNRuntime runtime = createRuntime("cItemDef.dmn", this.getClass());
+        final DMNRuntime runtime = DMNRuntimeUtil.createRuntime("cItemDef.dmn", this.getClass());
         final DMNModel dmnModel = runtime.getModel("http://www.trisotech.com/definitions/_f776b6fb-31bc-43b6-9c89-2bbc2973babf", "Drawing 1");
         assertThat(dmnModel, notNullValue());
         assertThat(DMNRuntimeUtil.formatMessages(dmnModel.getMessages()), dmnModel.hasErrors(), is(false));
@@ -2558,13 +2558,13 @@ public class DMNRuntimeTest extends BaseInterpretedVsCompiledTest {
 
     @Test
     public void testDTinputExprCollectionWithAllowedValuesA() {
-        final DMNRuntime runtime = createRuntime("DROOLS-4379.dmn", this.getClass());
+        final DMNRuntime runtime = DMNRuntimeUtil.createRuntime("DROOLS-4379.dmn", this.getClass());
         testDTinputExprCollectionWithAllowedValues(runtime);
     }
 
     @Test
     public void testDTinputExprCollectionWithAllowedValuesB() {
-        final DMNRuntime runtime = createRuntime("DROOLS-4379b.dmn", this.getClass());
+        final DMNRuntime runtime = DMNRuntimeUtil.createRuntime("DROOLS-4379b.dmn", this.getClass());
         testDTinputExprCollectionWithAllowedValues(runtime);
     }
 
@@ -2588,7 +2588,7 @@ public class DMNRuntimeTest extends BaseInterpretedVsCompiledTest {
     @Test
     public void testInputDataWithSlash() {
         // DROOLS-4390 DMN correct FEEL grammar exclusion
-        final DMNRuntime runtime = createRuntime("Slash.dmn", this.getClass());
+        final DMNRuntime runtime = DMNRuntimeUtil.createRuntime("Slash.dmn", this.getClass());
         final DMNModel dmnModel = runtime.getModel("http://www.trisotech.com/definitions/_efb0df9e-cd3a-4bda-b731-e6b184a6cd73", "Drawing 1");
         assertThat(dmnModel, notNullValue());
         assertThat(DMNRuntimeUtil.formatMessages(dmnModel.getMessages()), dmnModel.hasErrors(), is(false));
@@ -2608,7 +2608,7 @@ public class DMNRuntimeTest extends BaseInterpretedVsCompiledTest {
     @Test
     public void testTimeOffsetAccessorFromDeclVariable() {
         // DROOLS-4504 DMN time offset accessor from decl variable type
-        final DMNRuntime runtime = createRuntime("ContextEntryTypeCascade.dmn", this.getClass());
+        final DMNRuntime runtime = DMNRuntimeUtil.createRuntime("ContextEntryTypeCascade.dmn", this.getClass());
         final DMNModel dmnModel = runtime.getModel("http://www.trisotech.com/definitions/_8a15bd3c-c732-42c8-a2e4-60f1a23a1c5a", "Drawing 1");
         assertThat(dmnModel, notNullValue());
         assertThat(DMNRuntimeUtil.formatMessages(dmnModel.getMessages()), dmnModel.hasErrors(), is(false));
@@ -2629,7 +2629,7 @@ public class DMNRuntimeTest extends BaseInterpretedVsCompiledTest {
     @Test
     public void testSO58507157() {
         // DROOLS-4679 DMN FEEL list contains() invocation from DMN layer fixes
-        final DMNRuntime runtime = createRuntime("so58507157.dmn", this.getClass());
+        final DMNRuntime runtime = DMNRuntimeUtil.createRuntime("so58507157.dmn", this.getClass());
         final DMNModel dmnModel = runtime.getModel("http://sample.dmn", "DecisionNumberInList");
         assertThat(dmnModel, notNullValue());
         assertThat(DMNRuntimeUtil.formatMessages(dmnModel.getMessages()), dmnModel.hasErrors(), is(false));
@@ -2652,7 +2652,7 @@ public class DMNRuntimeTest extends BaseInterpretedVsCompiledTest {
     @Test
     public void testNoExpr() {
         // DROOLS-4765 DMN validation rule alignment for missing expression
-        final DMNRuntime runtime = createRuntime("noExpr.dmn", this.getClass());
+        final DMNRuntime runtime = DMNRuntimeUtil.createRuntime("noExpr.dmn", this.getClass());
         final DMNModel dmnModel = runtime.getModel("http://www.trisotech.com/definitions/_461041dc-9ab9-4e23-ae01-3366a7544cd3", "Drawing 1");
         assertThat(dmnModel, notNullValue());
         assertThat(DMNRuntimeUtil.formatMessages(dmnModel.getMessages()), dmnModel.hasErrors(), is(false));
@@ -2677,14 +2677,14 @@ public class DMNRuntimeTest extends BaseInterpretedVsCompiledTest {
     @Test
     public void testItemDefinitionInXmlns_dmn() {
         // DROOLS-4797 DMN itemdef resolution in xml namespaces
-        final DMNRuntime runtime = createRuntime("itemDefXmlns_dmn.dmn", this.getClass());
+        final DMNRuntime runtime = DMNRuntimeUtil.createRuntime("itemDefXmlns_dmn.dmn", this.getClass());
         verify_testItemDefinitionInXmlns(runtime);
     }
 
     @Test
     public void testItemDefinitionInXmlns_model() {
         // DROOLS-4797 DMN itemdef resolution in xml namespaces
-        final DMNRuntime runtime = createRuntime("itemDefXmlns_model.dmn", this.getClass());
+        final DMNRuntime runtime = DMNRuntimeUtil.createRuntime("itemDefXmlns_model.dmn", this.getClass());
         verify_testItemDefinitionInXmlns(runtime);
     }
 
@@ -2704,7 +2704,7 @@ public class DMNRuntimeTest extends BaseInterpretedVsCompiledTest {
 
     @Test
     public void testOpInNames1() {
-        final DMNRuntime runtime = createRuntime("OpInNames1.dmn", this.getClass());
+        final DMNRuntime runtime = DMNRuntimeUtil.createRuntime("OpInNames1.dmn", this.getClass());
         final DMNModel dmnModel = runtime.getModel("http://www.trisotech.com/definitions/_dae806ec-f00e-41a8-b6d1-2754fcd7fa2d", "Drawing 1");
         assertThat(dmnModel, notNullValue());
         assertThat(DMNRuntimeUtil.formatMessages(dmnModel.getMessages()), dmnModel.hasErrors(), is(false));
@@ -2719,7 +2719,7 @@ public class DMNRuntimeTest extends BaseInterpretedVsCompiledTest {
 
     @Test
     public void testOpInNames2() {
-        final DMNRuntime runtime = createRuntime("OpInNames2.dmn", this.getClass());
+        final DMNRuntime runtime = DMNRuntimeUtil.createRuntime("OpInNames2.dmn", this.getClass());
         final DMNModel dmnModel = runtime.getModel("http://www.trisotech.com/definitions/_dae806ec-f00e-41a8-b6d1-2754fcd7fa2d", "Drawing 1");
         assertThat(dmnModel, notNullValue());
         assertThat(DMNRuntimeUtil.formatMessages(dmnModel.getMessages()), dmnModel.hasErrors(), is(false));
@@ -2735,7 +2735,7 @@ public class DMNRuntimeTest extends BaseInterpretedVsCompiledTest {
     @Test
     public void testBindingContextTypeCheck() {
         // DROOLS-4825 DMN v1.3 verify DMN13-132 type conversions
-        final DMNRuntime runtime = createRuntime("v1_3/DMN13-132.dmn", this.getClass());
+        final DMNRuntime runtime = DMNRuntimeUtil.createRuntime("v1_3/DMN13-132.dmn", this.getClass());
         final DMNModel dmnModel = runtime.getModel("http://www.trisotech.com/definitions/_9d01a0c4-f529-4ad8-ad8e-ec5fb5d96ad4", "DMN13-132");
         assertThat(dmnModel, notNullValue());
         assertThat(DMNRuntimeUtil.formatMessages(dmnModel.getMessages()), dmnModel.hasErrors(), is(false));
@@ -2757,7 +2757,7 @@ public class DMNRuntimeTest extends BaseInterpretedVsCompiledTest {
 
     @Test
     public void testClassicComparisonVsRange() {
-        final DMNRuntime runtime = createRuntime("classicComparisonVsRange.dmn", this.getClass());
+        final DMNRuntime runtime = DMNRuntimeUtil.createRuntime("classicComparisonVsRange.dmn", this.getClass());
         final DMNModel dmnModel = runtime.getModel("http://www.trisotech.com/definitions/_ac6efb68-08ed-43ec-b427-e99e78f51ba1", "Drawing 1");
         assertThat(dmnModel, notNullValue());
         assertThat(DMNRuntimeUtil.formatMessages(dmnModel.getMessages()), dmnModel.hasErrors(), is(false));
@@ -2784,7 +2784,7 @@ public class DMNRuntimeTest extends BaseInterpretedVsCompiledTest {
 
     @Test
     public void testFunctionDefinitionParameterTrailingSpace() {
-        final DMNRuntime runtime = createRuntime("DROOLS4555.dmn", this.getClass());
+        final DMNRuntime runtime = DMNRuntimeUtil.createRuntime("DROOLS4555.dmn", this.getClass());
         final DMNModel dmnModel = runtime.getModel("http://www.trisotech.com/definitions/_e1645e17-7e28-4226-ad60-95e6f81cb50b", "Drawing 1");
         assertThat(dmnModel, notNullValue());
         assertThat(DMNRuntimeUtil.formatMessages(dmnModel.getMessages()), dmnModel.hasErrors(), is(false));
@@ -2799,7 +2799,7 @@ public class DMNRuntimeTest extends BaseInterpretedVsCompiledTest {
 
     @Test(expected = IllegalArgumentException.class)
     public void testEvaluateByNameWithEmptyParam() {
-        final DMNRuntime runtime = createRuntime("simple-item-def.dmn", this.getClass());
+        final DMNRuntime runtime = DMNRuntimeUtil.createRuntime("simple-item-def.dmn", this.getClass());
         final DMNModel dmnModel = runtime.getModel("https://github.com/kiegroup/kie-dmn/itemdef", "simple-item-def");
         assertThat(dmnModel, notNullValue());
         assertThat(DMNRuntimeUtil.formatMessages(dmnModel.getMessages()), dmnModel.hasErrors(), is(false));
@@ -2813,7 +2813,7 @@ public class DMNRuntimeTest extends BaseInterpretedVsCompiledTest {
 
     @Test(expected = IllegalArgumentException.class)
     public void testEvaluateByIdWithEmptyParam() {
-        final DMNRuntime runtime = createRuntime("simple-item-def.dmn", this.getClass());
+        final DMNRuntime runtime = DMNRuntimeUtil.createRuntime("simple-item-def.dmn", this.getClass());
         final DMNModel dmnModel = runtime.getModel("https://github.com/kiegroup/kie-dmn/itemdef", "simple-item-def");
         assertThat(dmnModel, notNullValue());
         assertThat(DMNRuntimeUtil.formatMessages(dmnModel.getMessages()), dmnModel.hasErrors(), is(false));
@@ -2854,7 +2854,7 @@ public class DMNRuntimeTest extends BaseInterpretedVsCompiledTest {
 
     @Test
     public void testJavaPojoCharUtilDate() {
-        final DMNRuntime runtime = createRuntime("javaPojoCharUtilDate.dmn", this.getClass());
+        final DMNRuntime runtime = DMNRuntimeUtil.createRuntime("javaPojoCharUtilDate.dmn", this.getClass());
         final DMNModel dmnModel = runtime.getModel("http://www.trisotech.com/definitions/_5eaccc88-cbf0-4c58-945a-952d8bf974ed", "Drawing 1");
         assertThat(dmnModel, notNullValue());
         assertThat(DMNRuntimeUtil.formatMessages(dmnModel.getMessages()), dmnModel.hasErrors(), is(false));
@@ -2870,7 +2870,7 @@ public class DMNRuntimeTest extends BaseInterpretedVsCompiledTest {
 
     @Test
     public void testInstanceOfItemDefBasic() {
-        final DMNRuntime runtime = createRuntime("instanceOfItemDefBasic.dmn", this.getClass());
+        final DMNRuntime runtime = DMNRuntimeUtil.createRuntime("instanceOfItemDefBasic.dmn", this.getClass());
         final DMNModel dmnModel = runtime.getModel("https://kiegroup.org/dmn/_CF9357D4-C83F-4F7E-83E3-510310EB16F4", "testItemDefName");
         assertThat(dmnModel, notNullValue());
         assertThat(DMNRuntimeUtil.formatMessages(dmnModel.getMessages()), dmnModel.hasErrors(), is(false));
@@ -2886,7 +2886,7 @@ public class DMNRuntimeTest extends BaseInterpretedVsCompiledTest {
 
     @Test
     public void testUniqueMissingMatchDefaultEmpty() {
-        final DMNRuntime runtime = createRuntime("uniqueNoMatch.dmn", this.getClass());
+        final DMNRuntime runtime = DMNRuntimeUtil.createRuntime("uniqueNoMatch.dmn", this.getClass());
         final DMNModel dmnModel = runtime.getModel("http://activiti.org/schema/1.0/dmn", "decisionmulti");
         assertThat(dmnModel, notNullValue());
         assertThat(DMNRuntimeUtil.formatMessages(dmnModel.getMessages()), dmnModel.hasErrors(), is(false));
@@ -2907,7 +2907,7 @@ public class DMNRuntimeTest extends BaseInterpretedVsCompiledTest {
 
     @Test
     public void testErrorWhileLiteral() {
-        final DMNRuntime runtime = createRuntime("errorWhileLiteral.dmn", this.getClass());
+        final DMNRuntime runtime = DMNRuntimeUtil.createRuntime("errorWhileLiteral.dmn", this.getClass());
         runtime.addListener(new DMNRuntimeEventListener() {});
         final DMNModel dmnModel = runtime.getModel("https://kiegroup.org/dmn/_8DF63435-B34B-4C19-A06B-C6A3416194A9", "testBasic");
         assertThat(dmnModel, notNullValue());

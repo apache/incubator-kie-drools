@@ -43,7 +43,7 @@ public class YCombinatorTest extends BaseInterpretedVsCompiledTest {
 
     @Test
     public void testY() {
-        final DMNRuntime runtime = createRuntime("Y.dmn", this.getClass());
+        final DMNRuntime runtime = DMNRuntimeUtil.createRuntime("Y.dmn", this.getClass());
         final DMNModel dmnModel = runtime.getModel("https://kiegroup.org/dmn/_2E160C58-B13A-4C35-B161-BB4B31E049B4",
                                                    "new-file");
         assertThat(dmnModel, notNullValue());
@@ -64,7 +64,7 @@ public class YCombinatorTest extends BaseInterpretedVsCompiledTest {
 
     @Test
     public void testYboxed() {
-        final DMNRuntime runtime = createRuntime("Yboxed.dmn", this.getClass());
+        final DMNRuntime runtime = DMNRuntimeUtil.createRuntime("Yboxed.dmn", this.getClass());
         final DMNModel dmnModel = runtime.getModel("https://kiegroup.org/dmn/_2E160C58-B13A-4C35-B161-BB4B31E049B4",
                                                    "new-file");
         assertThat(dmnModel, notNullValue());
