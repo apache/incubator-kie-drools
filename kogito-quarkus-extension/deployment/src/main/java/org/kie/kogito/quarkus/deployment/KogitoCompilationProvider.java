@@ -14,14 +14,13 @@ import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
 
+import io.quarkus.deployment.dev.JavaCompilationProvider;
 import org.kie.kogito.codegen.ApplicationGenerator;
 import org.kie.kogito.codegen.GeneratedFile;
 import org.kie.kogito.codegen.Generator;
 import org.kie.kogito.codegen.GeneratorContext;
 import org.kie.kogito.codegen.context.QuarkusKogitoBuildContext;
 import org.kie.kogito.codegen.di.CDIDependencyInjectionAnnotator;
-
-import io.quarkus.dev.JavaCompilationProvider;
 
 public abstract class KogitoCompilationProvider extends JavaCompilationProvider {
 

@@ -76,14 +76,15 @@ public class KogitoAssetsProcessor {
     private final transient String persistenceFactoryClass = "org.kie.kogito.persistence.KogitoProcessInstancesFactory";
     private final transient String metricsClass = "org.kie.kogito.monitoring.rest.MetricsResource";
 
+
     @BuildStep
     CapabilityBuildItem capability() {
-        return new CapabilityBuildItem(Capabilities.KOGITO);
+        return new CapabilityBuildItem("kogito");
     }
 
     @BuildStep
     FeatureBuildItem featureBuildItem() {
-        return new FeatureBuildItem(FeatureBuildItem.KOGITO);
+        return new FeatureBuildItem("kogito");
     }
 
     public void generatePersistenceInfo(ArchiveRootBuildItem root,
@@ -264,6 +265,7 @@ public class KogitoAssetsProcessor {
 
         JavaCompiler javaCompiler = JavaParserCompiler.getCompiler();
         JavaCompilerSettings compilerSettings = javaCompiler.createDefaultSettings();
+        compilerSettings.addOption("-proc:none"); // force disable annotation processing
         compilerSettings.addClasspath(root.getArchiveLocation().toString());
         if (appModel != null) {
             for (AppDependency i : appModel.getUserDependencies()) {

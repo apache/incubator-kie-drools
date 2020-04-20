@@ -9,7 +9,7 @@ import java.util.Collections;
 import java.util.HashSet;
 import java.util.Set;
 
-import io.quarkus.dev.JavaCompilationProvider;
+import io.quarkus.deployment.dev.JavaCompilationProvider;
 import org.kie.kogito.codegen.GeneratedFile;
 import org.kie.kogito.codegen.Generator;
 import org.kie.kogito.codegen.decision.DecisionCodegen;
