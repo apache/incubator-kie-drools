@@ -20,7 +20,6 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.atomic.AtomicReference;
 
-import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 import org.kie.api.time.SessionPseudoClock;
 import org.kie.kogito.Application;
@@ -233,7 +232,6 @@ public class RuleUnitCompilerTest extends AbstractCodegenTest {
     }
 
     @Test
-    @Disabled( "Requires drools 7.36" )
     public void test2PatternsOopath() throws Exception {
         Application application = generateCodeRulesOnly("org/kie/kogito/codegen/unit/TwoPatternsQuery.drl");
 
