@@ -33,7 +33,6 @@ import org.jbpm.workflow.core.impl.ConnectionImpl;
 import org.jbpm.workflow.core.node.EndNode;
 import org.jbpm.workflow.core.node.RuleSetNode;
 import org.jbpm.workflow.core.node.StartNode;
-import org.jbpm.workflow.instance.WorkflowProcessInstance;
 import org.junit.jupiter.api.Test;
 import org.kie.api.runtime.KieSession;
 import org.kie.api.runtime.process.ProcessInstance;
@@ -43,6 +42,7 @@ import org.kie.kogito.dmn.DmnDecisionModel;
 import org.slf4j.LoggerFactory;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 public class RuleSetTest extends AbstractBaseTest {
@@ -81,21 +81,9 @@ public class RuleSetTest extends AbstractBaseTest {
         String modelName = "wrong-name";
         String decisionName = "isAdult";
 
-        RuleFlowProcess process = createProcess(namespace, modelName, decisionName);
-
-        KieSession ksession = createKieSession(process);
-
-        Map<String, Object> parameters = new HashMap<>();
-        Person person = new Person("John", 25);
-
-        parameters.put("person", person);
-        parameters.put("isAdult", false);
-
-        ProcessInstance pi = ksession.startProcess("org.drools.core.process.process", parameters);
-        assertEquals(ProcessInstance.STATE_ERROR, pi.getState());
-
-        assertTrue(((WorkflowProcessInstance) pi).getErrorMessage().contains(namespace));
-        assertTrue(((WorkflowProcessInstance) pi).getErrorMessage().contains(modelName));
+        IllegalStateException illegalStateException = assertThrows(IllegalStateException.class, () -> createProcess(namespace, modelName, decisionName));
+        assertTrue(illegalStateException.getMessage().contains(namespace));
+        assertTrue(illegalStateException.getMessage().contains(modelName));
     }
 
     private RuleFlowProcess createProcess(String namespace, String modelName, String decisionName) {

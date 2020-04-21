@@ -21,6 +21,7 @@ import org.junit.jupiter.api.Test;
 import org.kie.dmn.api.core.DMNMessage.Severity;
 import org.kie.dmn.api.core.DMNModel;
 import org.kie.dmn.api.core.DMNRuntime;
+import org.kie.kogito.decision.DecisionModel;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
@@ -30,6 +31,13 @@ public class DMNKogitoTest {
     public void testBasic() {
         DMNRuntime dmnRuntime = DMNKogito.createGenericDMNRuntime(new InputStreamReader(DMNKogitoTest.class.getResourceAsStream("TrafficViolation.dmn")));
         assertEquals(1, dmnRuntime.getModels().size());
+
+        final String TRAFFIC_VIOLATION_NS = "https://github.com/kiegroup/drools/kie-dmn/_A4BCA8B8-CF08-433F-93B2-A2598F19ECFF";
+        final String TRAFFIC_VIOLATION_NAME = "Traffic Violation";
+        DecisionModel kogitoAPI = new DmnDecisionModel(dmnRuntime, TRAFFIC_VIOLATION_NS, TRAFFIC_VIOLATION_NAME);
+        assertEquals(TRAFFIC_VIOLATION_NS, kogitoAPI.getDMNModel().getNamespace());
+        assertEquals(TRAFFIC_VIOLATION_NAME, kogitoAPI.getDMNModel().getName());
+        assertEquals(2, kogitoAPI.getDMNModel().getInputs().size(), "Traffic Violation model has 2 inputs");
     }
 
     @Test

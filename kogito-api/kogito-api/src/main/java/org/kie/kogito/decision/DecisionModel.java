@@ -18,6 +18,7 @@ package org.kie.kogito.decision;
 import java.util.Map;
 
 import org.kie.dmn.api.core.DMNContext;
+import org.kie.dmn.api.core.DMNModel;
 import org.kie.dmn.api.core.DMNResult;
 
 public interface DecisionModel {
@@ -27,5 +28,7 @@ public interface DecisionModel {
     DMNResult evaluateAll(DMNContext context);
 
     DMNResult evaluateDecisionService(DMNContext context, String decisionServiceName);
+
+    DMNModel getDMNModel();
 
 }
