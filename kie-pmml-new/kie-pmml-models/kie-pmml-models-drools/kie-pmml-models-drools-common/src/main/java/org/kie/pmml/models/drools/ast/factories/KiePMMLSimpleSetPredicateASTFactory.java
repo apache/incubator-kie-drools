@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.kie.pmml.models.drools.tree.compiler.factories;
+package org.kie.pmml.models.drools.ast.factories;
 
 import java.util.Arrays;
 import java.util.Collections;
@@ -31,25 +31,25 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import static org.kie.pmml.commons.Constants.DONE;
-import static org.kie.pmml.models.drools.tree.compiler.factories.KiePMMLTreeModelASTFactory.STATUS_NULL;
-import static org.kie.pmml.models.drools.tree.compiler.factories.KiePMMLTreeModelASTFactory.STATUS_PATTERN;
+import static org.kie.pmml.models.drools.ast.factories.KiePMMLAbstractModelASTFactory.STATUS_NULL;
+import static org.kie.pmml.models.drools.ast.factories.KiePMMLAbstractModelASTFactory.STATUS_PATTERN;
 
 /**
  * Class used to generate <code>KiePMMLDroolsRule</code> out of a <code>SimpleSetPredicate</code>
  */
-public class KiePMMLTreeModelSimpleSetPredicateASTFactory extends KiePMMLTreeModelAbstractPredicateASTFactory {
+public class KiePMMLSimpleSetPredicateASTFactory extends KiePMMLAbstractPredicateASTFactory {
 
-    private static final Logger logger = LoggerFactory.getLogger(KiePMMLTreeModelSimpleSetPredicateASTFactory.class.getName());
+    private static final Logger logger = LoggerFactory.getLogger(KiePMMLSimpleSetPredicateASTFactory.class.getName());
 
     private final SimpleSetPredicate simpleSetPredicate;
 
-    private KiePMMLTreeModelSimpleSetPredicateASTFactory(final SimpleSetPredicate simpleSetPredicate, final Map<String, KiePMMLOriginalTypeGeneratedType> fieldTypeMap, final List<KiePMMLOutputField> outputFields, final List<KiePMMLDroolsRule> rules) {
+    private KiePMMLSimpleSetPredicateASTFactory(final SimpleSetPredicate simpleSetPredicate, final Map<String, KiePMMLOriginalTypeGeneratedType> fieldTypeMap, final List<KiePMMLOutputField> outputFields, final List<KiePMMLDroolsRule> rules) {
         super(fieldTypeMap, outputFields, rules);
         this.simpleSetPredicate = simpleSetPredicate;
     }
 
-    public static KiePMMLTreeModelSimpleSetPredicateASTFactory factory(final SimpleSetPredicate simpleSetPredicate, final Map<String, KiePMMLOriginalTypeGeneratedType> fieldTypeMap, final List<KiePMMLOutputField> outputFields, final List<KiePMMLDroolsRule> rules) {
-        return new KiePMMLTreeModelSimpleSetPredicateASTFactory(simpleSetPredicate, fieldTypeMap, outputFields, rules);
+    public static KiePMMLSimpleSetPredicateASTFactory factory(final SimpleSetPredicate simpleSetPredicate, final Map<String, KiePMMLOriginalTypeGeneratedType> fieldTypeMap, final List<KiePMMLOutputField> outputFields, final List<KiePMMLDroolsRule> rules) {
+        return new KiePMMLSimpleSetPredicateASTFactory(simpleSetPredicate, fieldTypeMap, outputFields, rules);
     }
 
     public void declareRuleFromSimpleSetPredicate(final String parentPath,

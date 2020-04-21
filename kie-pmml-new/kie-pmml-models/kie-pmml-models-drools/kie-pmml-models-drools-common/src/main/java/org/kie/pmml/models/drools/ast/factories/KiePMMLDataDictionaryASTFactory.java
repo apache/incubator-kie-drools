@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.kie.pmml.models.drools.tree.compiler.factories;
+package org.kie.pmml.models.drools.ast.factories;
 
 import java.util.List;
 import java.util.Map;
@@ -30,11 +30,11 @@ import static org.kie.pmml.models.drools.commons.utils.KiePMMLDroolsModelUtils.g
 /**
  * Class used to generate <code>KiePMMLDroolsType</code>s out of a <code>DataDictionary</code>
  */
-public class KiePMMLTreeModelDataDictionaryASTFactory {
+public class KiePMMLDataDictionaryASTFactory {
 
     private final Map<String, KiePMMLOriginalTypeGeneratedType> fieldTypeMap;
 
-    private KiePMMLTreeModelDataDictionaryASTFactory(final Map<String, KiePMMLOriginalTypeGeneratedType> fieldTypeMap) {
+    private KiePMMLDataDictionaryASTFactory(final Map<String, KiePMMLOriginalTypeGeneratedType> fieldTypeMap) {
         this.fieldTypeMap = fieldTypeMap;
     }
 
@@ -42,8 +42,8 @@ public class KiePMMLTreeModelDataDictionaryASTFactory {
      * @param fieldTypeMap the <code>Map&lt;String, KiePMMLOriginalTypeGeneratedType&gt;</code> to be populated with mapping between original field' name and <b>original type/generated type</b> tupla
      * @return
      */
-    public static KiePMMLTreeModelDataDictionaryASTFactory factory(final Map<String, KiePMMLOriginalTypeGeneratedType> fieldTypeMap) {
-        return new KiePMMLTreeModelDataDictionaryASTFactory(fieldTypeMap);
+    public static KiePMMLDataDictionaryASTFactory factory(final Map<String, KiePMMLOriginalTypeGeneratedType> fieldTypeMap) {
+        return new KiePMMLDataDictionaryASTFactory(fieldTypeMap);
     }
 
     /**

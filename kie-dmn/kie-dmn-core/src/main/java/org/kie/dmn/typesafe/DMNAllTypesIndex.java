@@ -29,7 +29,7 @@ public class DMNAllTypesIndex {
 
     private final List<DMNType> indexedTypes = new ArrayList<>();
 
-    Map<String, DMNTypeSafePackageName> mapNamespaceIndex = new HashMap<>();
+    Map<String, DMNModelTypesIndex.IndexValue> mapNamespaceIndex = new HashMap<>();
 
     public DMNAllTypesIndex(DMNTypeSafePackageName.Factory packageName, DMNModel... allModels) {
         for (DMNModel m : allModels) {
@@ -48,7 +48,7 @@ public class DMNAllTypesIndex {
     }
 
     public Optional<DMNTypeSafePackageName> namespaceOfClass(String typeName) {
-        return Optional.ofNullable(mapNamespaceIndex.get(typeName));
+        return Optional.ofNullable(mapNamespaceIndex.get(typeName)).map(DMNModelTypesIndex.IndexValue::getPackageName);
     }
 
     public boolean isIndexedClass(String typeName) {

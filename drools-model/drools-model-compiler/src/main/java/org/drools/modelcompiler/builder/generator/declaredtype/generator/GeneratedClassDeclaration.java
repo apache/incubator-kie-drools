@@ -31,6 +31,7 @@ import com.github.javaparser.ast.body.MethodDeclaration;
 import com.github.javaparser.ast.expr.FieldAccessExpr;
 import com.github.javaparser.ast.expr.NameExpr;
 import com.github.javaparser.ast.expr.NormalAnnotationExpr;
+import com.github.javaparser.ast.expr.SingleMemberAnnotationExpr;
 import com.github.javaparser.ast.nodeTypes.NodeWithAnnotations;
 import com.github.javaparser.ast.stmt.Statement;
 import com.github.javaparser.ast.type.Type;
@@ -177,8 +178,11 @@ public class GeneratedClassDeclaration {
         }
 
         if (fieldDefinition.createAccessors()) {
-            field.createSetter();
+            MethodDeclaration setter = field.createSetter();
+            fieldDefinition.setterAnnotations().forEach(a -> addAnnotationToMethodDeclaration(setter, a));
+
             MethodDeclaration getter = field.createGetter();
+            fieldDefinition.getterAnnotations().forEach(a -> addAnnotationToMethodDeclaration(getter, a));
 
             if (fieldDefinition.isKeyField()) {
                 generatedEqualsMethod.add(getter, fieldName);
@@ -186,9 +190,16 @@ public class GeneratedClassDeclaration {
             }
         }
 
-        addAnnotations(field, fieldDefinition.getAnnotations());
+        addAnnotations(field, fieldDefinition.getFieldAnnotations());
 
         generatedToString.add(format("+ {0}+{1}", quote(fieldName + "="), fieldName));
+    }
+
+    private void addAnnotationToMethodDeclaration(MethodDeclaration setter, AnnotationDefinition a) {
+        NormalAnnotationExpr annotation = new NormalAnnotationExpr();
+        annotation.setName(a.getName());
+        a.getValueMap().forEach(annotation::addPair);
+        setter.addAnnotation(annotation);
     }
 
     private void addAnnotations(NodeWithAnnotations<?> fieldAnnotated, List<AnnotationDefinition> annotations) {

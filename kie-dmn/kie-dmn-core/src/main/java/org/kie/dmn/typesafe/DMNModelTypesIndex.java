@@ -29,7 +29,7 @@ import org.kie.dmn.api.core.ast.ItemDefNode;
 
 class DMNModelTypesIndex {
 
-    Map<String, DMNTypeSafePackageName> classesNamespaceIndex = new HashMap<>();
+    Map<String, IndexValue> classesNamespaceIndex = new HashMap<>();
     private final List<DMNType> typesToGenerate = new ArrayList<>();
     private DMNModel model;
     private final DMNTypeSafePackageName.Factory packageName;
@@ -43,7 +43,10 @@ class DMNModelTypesIndex {
 
     public void createIndex() {
         List<DMNType> itemDefinitions = model.getItemDefinitions()
-                .stream().map(ItemDefNode::getType).collect(Collectors.toList());
+                .stream()
+                .map(ItemDefNode::getType)
+                .filter(this::shouldIndex)
+                .collect(Collectors.toList());
 
         itemDefinitions.forEach(this::index);
         itemDefinitions.stream().flatMap(this::innerTypes).forEach(this::index);
@@ -58,27 +61,31 @@ class DMNModelTypesIndex {
     }
 
     private boolean shouldIndex(DMNType dmnType) {
-        if (dmnType.isCollection()) {
-            return false;
-        }
-        if(!dmnType.getAllowedValues().isEmpty()) {
-            // assume it's an enumeration
-            return false;
-        }
-        String internalFEELUri = model.getDefinitions().getURIFEEL();
-        return !dmnType.getNamespace().equals(internalFEELUri);
+        return dmnType.isComposite();
     }
 
     private void index(DMNType innerType) {
-        classesNamespaceIndex.put(innerType.getName(),packageName.create(model));
+        classesNamespaceIndex.put(innerType.getName(), new IndexValue(packageName.create(model)));
         typesToGenerate.add(innerType);
     }
 
-    public Map<String, DMNTypeSafePackageName> getIndex() {
+    public Map<String, IndexValue> getIndex() {
         return classesNamespaceIndex;
     }
 
     public List<DMNType> getTypesToGenerate() {
         return typesToGenerate;
+    }
+
+    static class IndexValue {
+        final DMNTypeSafePackageName packageName;
+
+        public IndexValue(DMNTypeSafePackageName packageName) {
+            this.packageName = packageName;
+        }
+
+        public DMNTypeSafePackageName getPackageName() {
+            return packageName;
+        }
     }
 }

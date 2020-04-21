@@ -286,7 +286,7 @@ public class DTAnalysis {
             results.add(new DMNDTAnalysisMessage(this,
                                                  Severity.WARN,
                                                  MsgUtil.createMessage(Msg.DTANALYSIS_HITPOLICY_FIRST,
-                                                                       sourceDT.getOutputLabel()),
+                                                                       nameOrIDOfTable()),
                                                  Msg.DTANALYSIS_HITPOLICY_FIRST.getType()));
         }
     }

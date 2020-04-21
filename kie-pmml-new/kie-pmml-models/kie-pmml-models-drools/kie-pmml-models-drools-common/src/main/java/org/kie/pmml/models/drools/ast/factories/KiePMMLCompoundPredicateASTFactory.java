@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.kie.pmml.models.drools.tree.compiler.factories;
+package org.kie.pmml.models.drools.ast.factories;
 
 import java.util.List;
 import java.util.Map;
@@ -33,27 +33,25 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import static org.kie.pmml.commons.Constants.DONE;
-import static org.kie.pmml.models.drools.tree.compiler.factories.KiePMMLASTFactoryUtils.getConstraintEntriesFromAndOrCompoundPredicate;
-import static org.kie.pmml.models.drools.tree.compiler.factories.KiePMMLASTFactoryUtils.getConstraintEntriesFromXOrCompoundPredicate;
-import static org.kie.pmml.models.drools.tree.compiler.factories.KiePMMLTreeModelASTFactory.STATUS_NULL;
-import static org.kie.pmml.models.drools.tree.compiler.factories.KiePMMLTreeModelASTFactory.STATUS_PATTERN;
-import static org.kie.pmml.models.drools.tree.compiler.factories.KiePMMLTreeModelASTFactory.SURROGATE_GROUP_PATTERN;
+import static org.kie.pmml.models.drools.ast.factories.KiePMMLAbstractModelASTFactory.STATUS_PATTERN;
+import static org.kie.pmml.models.drools.utils.KiePMMLASTFactoryUtils.getConstraintEntriesFromAndOrCompoundPredicate;
+import static org.kie.pmml.models.drools.utils.KiePMMLASTFactoryUtils.getConstraintEntriesFromXOrCompoundPredicate;
 
 /**
  * Class used to generate <code>KiePMMLDroolsRule</code>s out of a <code>CompoundPredicate</code>
  */
-public class KiePMMLTreeModelCompoundPredicateASTFactory extends KiePMMLTreeModelAbstractPredicateASTFactory {
+public class KiePMMLCompoundPredicateASTFactory extends KiePMMLAbstractPredicateASTFactory {
 
-    private static final Logger logger = LoggerFactory.getLogger(KiePMMLTreeModelCompoundPredicateASTFactory.class.getName());
+    private static final Logger logger = LoggerFactory.getLogger(KiePMMLCompoundPredicateASTFactory.class.getName());
     private final CompoundPredicate compoundPredicate;
 
-    private KiePMMLTreeModelCompoundPredicateASTFactory(final CompoundPredicate compoundPredicate, final Map<String, KiePMMLOriginalTypeGeneratedType> fieldTypeMap, final List<KiePMMLOutputField> outputFields, final List<KiePMMLDroolsRule> rules) {
+    private KiePMMLCompoundPredicateASTFactory(final CompoundPredicate compoundPredicate, final Map<String, KiePMMLOriginalTypeGeneratedType> fieldTypeMap, final List<KiePMMLOutputField> outputFields, final List<KiePMMLDroolsRule> rules) {
         super(fieldTypeMap, outputFields, rules);
         this.compoundPredicate = compoundPredicate;
     }
 
-    public static KiePMMLTreeModelCompoundPredicateASTFactory factory(final CompoundPredicate compoundPredicate, final Map<String, KiePMMLOriginalTypeGeneratedType> fieldTypeMap, final List<KiePMMLOutputField> outputFields, final List<KiePMMLDroolsRule> rules) {
-        return new KiePMMLTreeModelCompoundPredicateASTFactory(compoundPredicate, fieldTypeMap, outputFields, rules);
+    public static KiePMMLCompoundPredicateASTFactory factory(final CompoundPredicate compoundPredicate, final Map<String, KiePMMLOriginalTypeGeneratedType> fieldTypeMap, final List<KiePMMLOutputField> outputFields, final List<KiePMMLDroolsRule> rules) {
+        return new KiePMMLCompoundPredicateASTFactory(compoundPredicate, fieldTypeMap, outputFields, rules);
     }
 
     public void declareRuleFromCompoundPredicate(final String parentPath,
@@ -97,7 +95,7 @@ public class KiePMMLTreeModelCompoundPredicateASTFactory extends KiePMMLTreeMode
                 !CompoundPredicate.BooleanOperator.XOR.equals((compoundPredicate.getBooleanOperator()))) {
             throw new KiePMMLException(String.format("getConstraintEntriesFromAndOrCompoundPredicate invoked with %s CompoundPredicate", compoundPredicate.getBooleanOperator()));
         }
-        String statusConstraint = StringUtils.isEmpty(parentPath) ? STATUS_NULL : String.format(STATUS_PATTERN, parentPath);
+        String statusConstraint = StringUtils.isEmpty(parentPath) ? KiePMMLAbstractModelASTFactory.STATUS_NULL : String.format(STATUS_PATTERN, parentPath);
         List<KiePMMLFieldOperatorValue> constraints;
         String statusToSet = isFinalLeaf ? DONE : currentRule;
         KiePMMLDroolsRule.Builder builder = KiePMMLDroolsRule.builder(currentRule, statusToSet, outputFields)
@@ -142,7 +140,7 @@ public class KiePMMLTreeModelCompoundPredicateASTFactory extends KiePMMLTreeMode
         if (!CompoundPredicate.BooleanOperator.SURROGATE.equals(compoundPredicate.getBooleanOperator())) {
             throw new KiePMMLException(String.format("declareRuleFromCompoundPredicateSurrogate invoked with %s CompoundPredicate", compoundPredicate.getBooleanOperator()));
         }
-        final String agendaActivationGroup = String.format(SURROGATE_GROUP_PATTERN, currentRule);
+        final String agendaActivationGroup = String.format(KiePMMLAbstractModelASTFactory.SURROGATE_GROUP_PATTERN, currentRule);
         KiePMMLDroolsRule.Builder builder = KiePMMLDroolsRule.builder(currentRule, null, outputFields)
                 .withStatusConstraint(String.format(STATUS_PATTERN, parentPath))
                 .withFocusedAgendaGroup(agendaActivationGroup);
@@ -151,7 +149,7 @@ public class KiePMMLTreeModelCompoundPredicateASTFactory extends KiePMMLTreeMode
         final List<Predicate> simplePredicates = compoundPredicate.getPredicates().stream().filter(predicate -> predicate instanceof SimplePredicate).collect(Collectors.toList());
         simplePredicates.forEach(predicate -> {
             SimplePredicate simplePredicate = (SimplePredicate) predicate;
-            KiePMMLTreeModelSimplePredicateASTFactory.factory(simplePredicate, fieldTypeMap, outputFields, rules).declareRuleFromSimplePredicateSurrogate(parentPath, currentRule, agendaActivationGroup, result, isFinalLeaf);
+            KiePMMLSimplePredicateASTFactory.factory(simplePredicate, fieldTypeMap, outputFields, rules).declareRuleFromSimplePredicateSurrogate(parentPath, currentRule, agendaActivationGroup, result, isFinalLeaf);
         });
     }
 }

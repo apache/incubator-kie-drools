@@ -16,6 +16,7 @@
 
 package org.drools.modelcompiler.builder.generator.declaredtype.api;
 
+import java.util.Collections;
 import java.util.List;
 
 public interface FieldDefinition {
@@ -26,7 +27,11 @@ public interface FieldDefinition {
 
     String getInitExpr();
 
-    List<AnnotationDefinition> getAnnotations();
+    default List<AnnotationDefinition> getFieldAnnotations() { return Collections.emptyList(); }
+
+    default List<AnnotationDefinition> setterAnnotations() { return Collections.emptyList(); }
+
+    default List<AnnotationDefinition> getterAnnotations() { return Collections.emptyList(); }
 
     boolean isKeyField();
 

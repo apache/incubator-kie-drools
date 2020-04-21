@@ -155,6 +155,15 @@ public abstract class BaseVariantTest {
         this.testConfig = testConfig;
     }
 
+    public DMNRuntime createRuntime(final Class testClass) {
+        DMNRuntime runtime = DMNRuntimeUtil.createRuntime(testClass);
+        if (testConfig.isTypeSafe()) {
+            createTypeSafeInput(runtime);
+        }
+        return runtime;
+    }
+
+
     public DMNRuntime createRuntime(String string, Class<?> class1) {
         DMNRuntime runtime = testConfig.createRuntime(string, class1);
         if (testConfig.isTypeSafe()) {
@@ -187,7 +196,9 @@ public abstract class BaseVariantTest {
             allSources.putAll(allTypesSourceCode);
         }
 
-        allCompiledClasses = KieMemoryCompiler.compile(allSources, this.getClass().getClassLoader());
+        if(!allSources.isEmpty()) {
+            allCompiledClasses = KieMemoryCompiler.compile(allSources, this.getClass().getClassLoader());
+        }
     }
 
     protected DMNResult evaluateModel(DMNRuntime runtime, DMNModel dmnModel, DMNContext context) {
