@@ -621,7 +621,8 @@ public class AddRemoveRule {
     }
 
     public static boolean flushLeftTupleIfNecessary(InternalWorkingMemory wm, SegmentMemory sm, LeftTuple leftTuple, boolean streamMode, short stagedType) {
-        PathMemory pmem = streamMode ?
+        boolean forceFlush = streamMode || ( leftTuple != null && leftTuple.getFactHandle() != null && leftTuple.getFactHandle().isEvent() );
+        PathMemory pmem = forceFlush ?
                           sm.getPathMemories().get(0) :
                           sm.getFirstDataDrivenPathMemory();
 
