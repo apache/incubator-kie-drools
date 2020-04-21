@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package org.kie.pmml.models.drools.tree.compiler.factories;
+package org.kie.pmml.models.drools.utils;
 
 import java.util.HashMap;
 import java.util.List;
@@ -30,7 +30,6 @@ import org.kie.pmml.models.drools.tuples.KiePMMLOriginalTypeGeneratedType;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
-import static org.kie.pmml.models.drools.tree.compiler.factories.KiePMMLTreeModelASTTestUtils.getSimplePredicate;
 
 public class KiePMMLASTFactoryUtilsTest {
 
@@ -39,7 +38,7 @@ public class KiePMMLASTFactoryUtilsTest {
         final Map<String, KiePMMLOriginalTypeGeneratedType> fieldTypeMap = new HashMap<>();
         String fieldName = "FIELD_NAME";
         List<SimplePredicate> simplePredicates = IntStream.range(0, 2)
-                .mapToObj(index -> getSimplePredicate(fieldName, DataType.STRING, "VALUE-" + index, fieldTypeMap)).collect(Collectors.toList());
+                .mapToObj(index -> KiePMMLASTTestUtils.getSimplePredicate(fieldName, DataType.STRING, "VALUE-" + index, fieldTypeMap)).collect(Collectors.toList());
         final KiePMMLFieldOperatorValue retrieved = KiePMMLASTFactoryUtils.getConstraintEntryFromSimplePredicates(fieldName, "or", simplePredicates, fieldTypeMap);
         assertEquals(fieldName, retrieved.getName());
         assertNotNull(retrieved.getConstraintsAsString());

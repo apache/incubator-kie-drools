@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.kie.pmml.models.drools.tree.compiler.factories;
+package org.kie.pmml.models.drools.ast.factories;
 
 import java.util.List;
 import java.util.Map;
@@ -32,16 +32,16 @@ import org.slf4j.LoggerFactory;
 /**
  * Class used to generate <code>KiePMMLDroolsRule</code>s out of a <code>Predicate</code>
  */
-public class KiePMMLTreeModelPredicateASTFactory extends KiePMMLTreeModelAbstractPredicateASTFactory {
+public class KiePMMLPredicateASTFactory extends KiePMMLAbstractPredicateASTFactory {
 
-    private static final Logger logger = LoggerFactory.getLogger(KiePMMLTreeModelPredicateASTFactory.class.getName());
+    private static final Logger logger = LoggerFactory.getLogger(KiePMMLPredicateASTFactory.class.getName());
 
-    private KiePMMLTreeModelPredicateASTFactory(final Map<String, KiePMMLOriginalTypeGeneratedType> fieldTypeMap, final List<KiePMMLOutputField> outputFields, final List<KiePMMLDroolsRule> rules) {
+    private KiePMMLPredicateASTFactory(final Map<String, KiePMMLOriginalTypeGeneratedType> fieldTypeMap, final List<KiePMMLOutputField> outputFields, final List<KiePMMLDroolsRule> rules) {
         super(fieldTypeMap, outputFields, rules);
     }
 
-    public static KiePMMLTreeModelPredicateASTFactory factory(final Map<String, KiePMMLOriginalTypeGeneratedType> fieldTypeMap, final List<KiePMMLOutputField> outputFields, final List<KiePMMLDroolsRule> rules) {
-        return new KiePMMLTreeModelPredicateASTFactory(fieldTypeMap, outputFields, rules);
+    public static KiePMMLPredicateASTFactory factory(final Map<String, KiePMMLOriginalTypeGeneratedType> fieldTypeMap, final List<KiePMMLOutputField> outputFields, final List<KiePMMLDroolsRule> rules) {
+        return new KiePMMLPredicateASTFactory(fieldTypeMap, outputFields, rules);
     }
 
     /**
@@ -64,13 +64,13 @@ public class KiePMMLTreeModelPredicateASTFactory extends KiePMMLTreeModelAbstrac
                                          final boolean isFinalLeaf) {
         logger.trace("declareRuleFromPredicate {} {} {} {}", predicate, parentPath, currentRule, result);
         if (predicate instanceof True) {
-            KiePMMLTreeModelTruePredicateASTFactory.factory((True) predicate, outputFields, rules).declareRuleFromTruePredicate(parentPath, currentRule, result, isFinalLeaf);
+            KiePMMLTruePredicateASTFactory.factory((True) predicate, outputFields, rules).declareRuleFromTruePredicate(parentPath, currentRule, result, isFinalLeaf);
         } else if (predicate instanceof SimplePredicate) {
-            KiePMMLTreeModelSimplePredicateASTFactory.factory((SimplePredicate) predicate, fieldTypeMap, outputFields, rules).declareRuleFromSimplePredicate(parentPath, currentRule, result, isFinalLeaf);
+            KiePMMLSimplePredicateASTFactory.factory((SimplePredicate) predicate, fieldTypeMap, outputFields, rules).declareRuleFromSimplePredicate(parentPath, currentRule, result, isFinalLeaf);
         } else if (predicate instanceof SimpleSetPredicate) {
-            KiePMMLTreeModelSimpleSetPredicateASTFactory.factory((SimpleSetPredicate) predicate, fieldTypeMap, outputFields, rules).declareRuleFromSimpleSetPredicate(parentPath, currentRule, result, isFinalLeaf);
+            KiePMMLSimpleSetPredicateASTFactory.factory((SimpleSetPredicate) predicate, fieldTypeMap, outputFields, rules).declareRuleFromSimpleSetPredicate(parentPath, currentRule, result, isFinalLeaf);
         } else if (predicate instanceof CompoundPredicate) {
-            KiePMMLTreeModelCompoundPredicateASTFactory.factory((CompoundPredicate) predicate, fieldTypeMap, outputFields, rules).declareRuleFromCompoundPredicate(parentPath, currentRule, result, isFinalLeaf);
+            KiePMMLCompoundPredicateASTFactory.factory((CompoundPredicate) predicate, fieldTypeMap, outputFields, rules).declareRuleFromCompoundPredicate(parentPath, currentRule, result, isFinalLeaf);
         }
     }
 }

@@ -76,16 +76,6 @@
           </execution>
         </executions>
       </plugin>
-      <plugin>
-        <groupId>org.kie</groupId>
-        <artifactId>blueprinter-maven-plugin</artifactId>
-        <executions>
-          <execution>
-            <id>skip-blueprinter</id>
-            <phase>none</phase>
-          </execution>
-        </executions>
-      </plugin>
     </plugins>
 
   </build>

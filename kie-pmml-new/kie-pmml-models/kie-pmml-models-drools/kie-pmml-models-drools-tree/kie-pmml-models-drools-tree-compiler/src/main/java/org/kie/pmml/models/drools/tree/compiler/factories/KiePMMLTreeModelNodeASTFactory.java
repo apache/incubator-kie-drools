@@ -28,6 +28,7 @@ import org.dmg.pmml.tree.TreeModel;
 import org.kie.pmml.commons.model.KiePMMLOutputField;
 import org.kie.pmml.commons.model.enums.DATA_TYPE;
 import org.kie.pmml.models.drools.ast.KiePMMLDroolsRule;
+import org.kie.pmml.models.drools.ast.factories.KiePMMLPredicateASTFactory;
 import org.kie.pmml.models.drools.tuples.KiePMMLOriginalTypeGeneratedType;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -97,7 +98,7 @@ public class KiePMMLTreeModelNodeASTFactory {
         }
         String currentRule = String.format(PATH_PATTERN, parentPath, node.getScore());
         if (!(predicate instanceof True)) {
-            KiePMMLTreeModelPredicateASTFactory.factory(fieldTypeMap, outputFields, rules).declareRuleFromPredicate(predicate, parentPath, currentRule, getCorrectlyFormattedResult(node.getScore(), targetType), true);
+            KiePMMLPredicateASTFactory.factory(fieldTypeMap, outputFields, rules).declareRuleFromPredicate(predicate, parentPath, currentRule, getCorrectlyFormattedResult(node.getScore(), targetType), true);
         }
     }
 
@@ -119,7 +120,7 @@ public class KiePMMLTreeModelNodeASTFactory {
             return;
         }
         String currentRule = String.format(PATH_PATTERN, parentPath, node.getScore());
-        KiePMMLTreeModelPredicateASTFactory.factory(fieldTypeMap, outputFields, rules).declareRuleFromPredicate(predicate, parentPath, currentRule, node.getScore(), false);
+        KiePMMLPredicateASTFactory.factory(fieldTypeMap, outputFields, rules).declareRuleFromPredicate(predicate, parentPath, currentRule, node.getScore(), false);
         node.getNodes().forEach(child -> declareRuleFromNode(child, currentRule, rules));
     }
 
@@ -136,7 +137,7 @@ public class KiePMMLTreeModelNodeASTFactory {
         logger.trace("declareDefaultRuleFromNode {} {}", node, parentPath);
         String originalRule = String.format(PATH_PATTERN, parentPath, node.getScore());
         String currentRule = String.format(PATH_PATTERN, "default", originalRule);
-        KiePMMLTreeModelPredicateASTFactory.factory(fieldTypeMap, outputFields, rules).declareRuleFromPredicate(new True(), originalRule, currentRule, getCorrectlyFormattedResult(node.getScore(), targetType), true);
+        KiePMMLPredicateASTFactory.factory(fieldTypeMap, outputFields, rules).declareRuleFromPredicate(new True(), originalRule, currentRule, getCorrectlyFormattedResult(node.getScore(), targetType), true);
     }
 
     protected boolean isFinalLeaf(final Node node) {

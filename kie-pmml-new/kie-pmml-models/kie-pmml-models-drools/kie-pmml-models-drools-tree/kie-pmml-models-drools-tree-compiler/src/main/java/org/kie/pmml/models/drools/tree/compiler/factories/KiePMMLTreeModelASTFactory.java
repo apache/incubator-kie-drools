@@ -25,6 +25,8 @@ import org.kie.pmml.commons.model.enums.DATA_TYPE;
 import org.kie.pmml.models.drools.ast.KiePMMLDroolsAST;
 import org.kie.pmml.models.drools.ast.KiePMMLDroolsRule;
 import org.kie.pmml.models.drools.ast.KiePMMLDroolsType;
+import org.kie.pmml.models.drools.ast.factories.KiePMMLAbstractModelASTFactory;
+import org.kie.pmml.models.drools.ast.factories.KiePMMLDataDictionaryASTFactory;
 import org.kie.pmml.models.drools.tuples.KiePMMLOriginalTypeGeneratedType;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -35,13 +37,8 @@ import static org.kie.pmml.compiler.commons.utils.ModelUtils.getTargetFieldType;
 /**
  * Class used to generate a <code>KiePMMLDroolsAST</code> out of a <code>DataDictionary</code> and a <code>TreeModel</code>
  */
-public class KiePMMLTreeModelASTFactory {
+public class KiePMMLTreeModelASTFactory extends KiePMMLAbstractModelASTFactory {
 
-    public static final String SURROGATE_RULENAME_PATTERN = "%s_surrogate_%s";
-    public static final String SURROGATE_GROUP_PATTERN = "%s_surrogate";
-    public static final String STATUS_NULL = "status == null";
-    public static final String STATUS_PATTERN = "status == \"%s\"";
-    public static final String PATH_PATTERN = "%s_%s";
     private static final Logger logger = LoggerFactory.getLogger(KiePMMLTreeModelASTFactory.class.getName());
 
     private KiePMMLTreeModelASTFactory() {
@@ -59,7 +56,7 @@ public class KiePMMLTreeModelASTFactory {
     public static KiePMMLDroolsAST getKiePMMLDroolsAST(DataDictionary dataDictionary, TreeModel model, final Map<String, KiePMMLOriginalTypeGeneratedType> fieldTypeMap) {
         logger.trace("getKiePMMLDroolsAST {} {}", dataDictionary, model);
         DATA_TYPE targetType = getTargetFieldType(dataDictionary, model);
-        List<KiePMMLDroolsType> types = KiePMMLTreeModelDataDictionaryASTFactory.factory(fieldTypeMap).declareTypes(dataDictionary);
+        List<KiePMMLDroolsType> types = KiePMMLDataDictionaryASTFactory.factory(fieldTypeMap).declareTypes(dataDictionary);
         final List<KiePMMLOutputField> outputFields = getOutputFields(model);
         List<KiePMMLDroolsRule> rules = KiePMMLTreeModelNodeASTFactory.factory(fieldTypeMap, outputFields, model.getNoTrueChildStrategy(), targetType).declareRulesFromRootNode(model.getNode(), "");
         return new KiePMMLDroolsAST(types, rules);

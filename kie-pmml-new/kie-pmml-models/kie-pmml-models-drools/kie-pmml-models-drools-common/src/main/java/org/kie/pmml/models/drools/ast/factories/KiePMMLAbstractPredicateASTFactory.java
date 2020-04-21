@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.kie.pmml.models.drools.tree.compiler.factories;
+package org.kie.pmml.models.drools.ast.factories;
 
 import java.util.List;
 import java.util.Map;
@@ -25,13 +25,13 @@ import org.kie.pmml.models.drools.tuples.KiePMMLOriginalTypeGeneratedType;
 /**
  * Abstract class to be extended to generate <code>KiePMMLDroolsRule</code>s out of a <code>Predicate</code>s
  */
-public class KiePMMLTreeModelAbstractPredicateASTFactory {
+public class KiePMMLAbstractPredicateASTFactory {
 
     protected final Map<String, KiePMMLOriginalTypeGeneratedType> fieldTypeMap;
     protected final List<KiePMMLOutputField> outputFields;
     protected final List<KiePMMLDroolsRule> rules;
 
-    protected KiePMMLTreeModelAbstractPredicateASTFactory(final Map<String, KiePMMLOriginalTypeGeneratedType> fieldTypeMap, final List<KiePMMLOutputField> outputFields, final List<KiePMMLDroolsRule> rules) {
+    protected KiePMMLAbstractPredicateASTFactory(final Map<String, KiePMMLOriginalTypeGeneratedType> fieldTypeMap, final List<KiePMMLOutputField> outputFields, final List<KiePMMLDroolsRule> rules) {
         this.fieldTypeMap = fieldTypeMap;
         this.outputFields = outputFields;
         this.rules = rules;

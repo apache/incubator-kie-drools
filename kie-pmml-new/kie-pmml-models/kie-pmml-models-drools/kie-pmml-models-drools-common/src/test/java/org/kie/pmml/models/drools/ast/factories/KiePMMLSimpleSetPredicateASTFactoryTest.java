@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package org.kie.pmml.models.drools.tree.compiler.factories;
+package org.kie.pmml.models.drools.ast.factories;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -35,9 +35,10 @@ import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
 import static org.kie.pmml.commons.Constants.DONE;
-import static org.kie.pmml.models.drools.tree.compiler.factories.KiePMMLTreeModelASTTestUtils.getSimpleSetPredicate;
+import static org.kie.pmml.models.drools.ast.factories.KiePMMLAbstractModelASTFactory.STATUS_PATTERN;
+import static org.kie.pmml.models.drools.utils.KiePMMLASTTestUtils.getSimpleSetPredicate;
 
-public class KiePMMLTreeModelSimpleSetPredicateASTFactoryTest {
+public class KiePMMLSimpleSetPredicateASTFactoryTest {
 
     @Test
     public void declareRuleFromSimpleSetPredicateIsInFinalLeaf() {
@@ -49,13 +50,13 @@ public class KiePMMLTreeModelSimpleSetPredicateASTFactoryTest {
         String result = "classB";
         String declaredType = fieldTypeMap.get("input1").getGeneratedType();
         final List<KiePMMLDroolsRule> rules = new ArrayList<>();
-        KiePMMLTreeModelSimpleSetPredicateASTFactory.factory(simpleSetPredicate, fieldTypeMap, Collections.emptyList(), rules).declareRuleFromSimpleSetPredicate(parentPath, currentRule, result, true);
+        KiePMMLSimpleSetPredicateASTFactory.factory(simpleSetPredicate, fieldTypeMap, Collections.emptyList(), rules).declareRuleFromSimpleSetPredicate(parentPath, currentRule, result, true);
         assertEquals(1, rules.size());
         final KiePMMLDroolsRule retrieved = rules.get(0);
         assertNotNull(retrieved);
         assertEquals(currentRule, retrieved.getName());
         assertEquals(DONE, retrieved.getStatusToSet());
-        assertEquals(String.format(KiePMMLTreeModelASTFactory.STATUS_PATTERN, parentPath), retrieved.getStatusConstraint());
+        assertEquals(String.format(STATUS_PATTERN, parentPath), retrieved.getStatusConstraint());
         assertEquals(ResultCode.OK, retrieved.getResultCode());
         assertEquals(result, retrieved.getResult());
         assertNotNull(retrieved.getInConstraints());
@@ -80,13 +81,13 @@ public class KiePMMLTreeModelSimpleSetPredicateASTFactoryTest {
         String result = "classB";
         String declaredType = fieldTypeMap.get("input1").getGeneratedType();
         final List<KiePMMLDroolsRule> rules = new ArrayList<>();
-        KiePMMLTreeModelSimpleSetPredicateASTFactory.factory(simpleSetPredicate, fieldTypeMap, Collections.emptyList(), rules).declareRuleFromSimpleSetPredicate(parentPath, currentRule, result, false);
+        KiePMMLSimpleSetPredicateASTFactory.factory(simpleSetPredicate, fieldTypeMap, Collections.emptyList(), rules).declareRuleFromSimpleSetPredicate(parentPath, currentRule, result, false);
         assertEquals(1, rules.size());
         final KiePMMLDroolsRule retrieved = rules.get(0);
         assertNotNull(retrieved);
         assertEquals(currentRule, retrieved.getName());
         assertEquals(currentRule, retrieved.getStatusToSet());
-        assertEquals(String.format(KiePMMLTreeModelASTFactory.STATUS_PATTERN, parentPath), retrieved.getStatusConstraint());
+        assertEquals(String.format(STATUS_PATTERN, parentPath), retrieved.getStatusConstraint());
         assertNull(retrieved.getResultCode());
         assertNull(retrieved.getResult());
         assertNotNull(retrieved.getInConstraints());
@@ -112,13 +113,13 @@ public class KiePMMLTreeModelSimpleSetPredicateASTFactoryTest {
         String declaredType = fieldTypeMap.get("input2").getGeneratedType();
         final List<KiePMMLDroolsRule> rules = new ArrayList<>();
         String statusToSet = DONE;
-        KiePMMLTreeModelSimpleSetPredicateASTFactory.factory(simpleSetPredicate, fieldTypeMap, Collections.emptyList(), rules).declareRuleFromSimpleSetPredicate(parentPath, currentRule, result, true);
+        KiePMMLSimpleSetPredicateASTFactory.factory(simpleSetPredicate, fieldTypeMap, Collections.emptyList(), rules).declareRuleFromSimpleSetPredicate(parentPath, currentRule, result, true);
         assertEquals(1, rules.size());
         final KiePMMLDroolsRule retrieved = rules.get(0);
         assertNotNull(retrieved);
         assertEquals(currentRule, retrieved.getName());
         assertEquals(statusToSet, retrieved.getStatusToSet());
-        assertEquals(String.format(KiePMMLTreeModelASTFactory.STATUS_PATTERN, parentPath), retrieved.getStatusConstraint());
+        assertEquals(String.format(STATUS_PATTERN, parentPath), retrieved.getStatusConstraint());
         assertEquals(ResultCode.OK, retrieved.getResultCode());
         assertEquals(result, retrieved.getResult());
         assertNotNull(retrieved.getNotInConstraints());
@@ -144,13 +145,13 @@ public class KiePMMLTreeModelSimpleSetPredicateASTFactoryTest {
         String declaredType = fieldTypeMap.get("input2").getGeneratedType();
         final List<KiePMMLDroolsRule> rules = new ArrayList<>();
         String statusToSet = DONE;
-        KiePMMLTreeModelSimpleSetPredicateASTFactory.factory(simpleSetPredicate, fieldTypeMap, Collections.emptyList(), rules).declareRuleFromSimpleSetPredicate(parentPath, currentRule, result, false);
+        KiePMMLSimpleSetPredicateASTFactory.factory(simpleSetPredicate, fieldTypeMap, Collections.emptyList(), rules).declareRuleFromSimpleSetPredicate(parentPath, currentRule, result, false);
         assertEquals(1, rules.size());
         final KiePMMLDroolsRule retrieved = rules.get(0);
         assertNotNull(retrieved);
         assertEquals(currentRule, retrieved.getName());
         assertEquals(currentRule, retrieved.getStatusToSet());
-        assertEquals(String.format(KiePMMLTreeModelASTFactory.STATUS_PATTERN, parentPath), retrieved.getStatusConstraint());
+        assertEquals(String.format(STATUS_PATTERN, parentPath), retrieved.getStatusConstraint());
         assertNull(retrieved.getResultCode());
         assertNull(retrieved.getResult());
         assertNotNull(retrieved.getNotInConstraints());

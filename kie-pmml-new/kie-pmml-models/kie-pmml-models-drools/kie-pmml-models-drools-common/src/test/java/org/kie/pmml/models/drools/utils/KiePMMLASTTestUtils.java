@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.kie.pmml.models.drools.tree.compiler.factories;
+package org.kie.pmml.models.drools.utils;
 
 import java.util.List;
 import java.util.Map;
@@ -29,7 +29,10 @@ import org.kie.pmml.models.drools.tuples.KiePMMLOriginalTypeGeneratedType;
 
 import static org.kie.pmml.models.drools.commons.utils.KiePMMLDroolsModelUtils.getSanitizedClassName;
 
-public class KiePMMLTreeModelASTTestUtils {
+/**
+ * Utility methods for other <b>Test</b> classes
+ */
+public class KiePMMLASTTestUtils {
 
     public static DataField getTypeDataField() {
         DataField toReturn = new DataField();

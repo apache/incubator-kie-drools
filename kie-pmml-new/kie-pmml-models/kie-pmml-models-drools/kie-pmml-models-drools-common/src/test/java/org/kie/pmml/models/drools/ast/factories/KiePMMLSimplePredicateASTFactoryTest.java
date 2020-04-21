@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package org.kie.pmml.models.drools.tree.compiler.factories;
+package org.kie.pmml.models.drools.ast.factories;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -34,11 +34,9 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNull;
 import static org.kie.pmml.commons.Constants.DONE;
-import static org.kie.pmml.models.drools.tree.compiler.factories.KiePMMLTreeModelASTFactory.STATUS_PATTERN;
-import static org.kie.pmml.models.drools.tree.compiler.factories.KiePMMLTreeModelASTFactory.SURROGATE_RULENAME_PATTERN;
-import static org.kie.pmml.models.drools.tree.compiler.factories.KiePMMLTreeModelASTTestUtils.getSimplePredicate;
+import static org.kie.pmml.models.drools.utils.KiePMMLASTTestUtils.getSimplePredicate;
 
-public class KiePMMLTreeModelSimplePredicateASTFactoryTest {
+public class KiePMMLSimplePredicateASTFactoryTest {
 
     @Test
     public void declareRuleFromSimplePredicateSurrogateFinalLeaf() {
@@ -49,12 +47,12 @@ public class KiePMMLTreeModelSimplePredicateASTFactoryTest {
         String result = "RESULT";
         String parentPath = "parentPath";
         final List<KiePMMLDroolsRule> rules = new ArrayList<>();
-        KiePMMLTreeModelSimplePredicateASTFactory.factory(simplePredicate, fieldTypeMap, Collections.emptyList(), rules).declareRuleFromSimplePredicateSurrogate(parentPath, currentRule, agendaActivationGroup, result, true);
+        KiePMMLSimplePredicateASTFactory.factory(simplePredicate, fieldTypeMap, Collections.emptyList(), rules).declareRuleFromSimplePredicateSurrogate(parentPath, currentRule, agendaActivationGroup, result, true);
         assertEquals(2, rules.size());
         // This is the "TRUE" matching rule
         KiePMMLDroolsRule retrieved = rules.get(0);
         assertNotNull(retrieved);
-        String baseExpectedRule = String.format(SURROGATE_RULENAME_PATTERN, currentRule, fieldTypeMap.get(simplePredicate.getField().getValue()).getGeneratedType());
+        String baseExpectedRule = String.format(KiePMMLAbstractModelASTFactory.SURROGATE_RULENAME_PATTERN, currentRule, fieldTypeMap.get(simplePredicate.getField().getValue()).getGeneratedType());
         String expectedRule = baseExpectedRule + "_TRUE";
         assertEquals(expectedRule, retrieved.getName());
         assertEquals(DONE, retrieved.getStatusToSet());
@@ -105,12 +103,12 @@ public class KiePMMLTreeModelSimplePredicateASTFactoryTest {
         String result = "RESULT";
         String parentPath = "parentPath";
         final List<KiePMMLDroolsRule> rules = new ArrayList<>();
-        KiePMMLTreeModelSimplePredicateASTFactory.factory(simplePredicate, fieldTypeMap, Collections.emptyList(), rules).declareRuleFromSimplePredicateSurrogate(parentPath, currentRule, agendaActivationGroup, result, false);
+        KiePMMLSimplePredicateASTFactory.factory(simplePredicate, fieldTypeMap, Collections.emptyList(), rules).declareRuleFromSimplePredicateSurrogate(parentPath, currentRule, agendaActivationGroup, result, false);
         assertEquals(2, rules.size());
         // This is the "TRUE" matching rule
         KiePMMLDroolsRule retrieved = rules.get(0);
         assertNotNull(retrieved);
-        String baseExpectedRule = String.format(SURROGATE_RULENAME_PATTERN, currentRule, fieldTypeMap.get(simplePredicate.getField().getValue()).getGeneratedType());
+        String baseExpectedRule = String.format(KiePMMLAbstractModelASTFactory.SURROGATE_RULENAME_PATTERN, currentRule, fieldTypeMap.get(simplePredicate.getField().getValue()).getGeneratedType());
         String expectedRule = baseExpectedRule + "_TRUE";
         assertEquals(expectedRule, retrieved.getName());
         assertEquals(currentRule, retrieved.getStatusToSet());
@@ -160,13 +158,13 @@ public class KiePMMLTreeModelSimplePredicateASTFactoryTest {
         String declaredType = fieldTypeMap.get("outlook").getGeneratedType();
         String result = "RESULT";
         final List<KiePMMLDroolsRule> rules = new ArrayList<>();
-        KiePMMLTreeModelSimplePredicateASTFactory.factory(simplePredicate, fieldTypeMap, Collections.emptyList(), rules).declareRuleFromSimplePredicate(parentPath, currentRule, result, true);
+        KiePMMLSimplePredicateASTFactory.factory(simplePredicate, fieldTypeMap, Collections.emptyList(), rules).declareRuleFromSimplePredicate(parentPath, currentRule, result, true);
         assertEquals(1, rules.size());
         final KiePMMLDroolsRule retrieved = rules.get(0);
         assertNotNull(retrieved);
         assertEquals(currentRule, retrieved.getName());
         assertEquals(DONE, retrieved.getStatusToSet());
-        assertEquals(String.format(STATUS_PATTERN, parentPath), retrieved.getStatusConstraint());
+        assertEquals(String.format(KiePMMLAbstractModelASTFactory.STATUS_PATTERN, parentPath), retrieved.getStatusConstraint());
         assertEquals(ResultCode.OK, retrieved.getResultCode());
         assertEquals(result, retrieved.getResult());
         final List<KiePMMLFieldOperatorValue> andConstraints = retrieved.getAndConstraints();
@@ -188,13 +186,13 @@ public class KiePMMLTreeModelSimplePredicateASTFactoryTest {
         String declaredType = fieldTypeMap.get("outlook").getGeneratedType();
         String result = "RESULT";
         final List<KiePMMLDroolsRule> rules = new ArrayList<>();
-        KiePMMLTreeModelSimplePredicateASTFactory.factory(simplePredicate, fieldTypeMap, Collections.emptyList(), rules).declareRuleFromSimplePredicate(parentPath, currentRule, result, false);
+        KiePMMLSimplePredicateASTFactory.factory(simplePredicate, fieldTypeMap, Collections.emptyList(), rules).declareRuleFromSimplePredicate(parentPath, currentRule, result, false);
         assertEquals(1, rules.size());
         final KiePMMLDroolsRule retrieved = rules.get(0);
         assertNotNull(retrieved);
         assertEquals(currentRule, retrieved.getName());
         assertEquals(currentRule, retrieved.getStatusToSet());
-        assertEquals(String.format(STATUS_PATTERN, parentPath), retrieved.getStatusConstraint());
+        assertEquals(String.format(KiePMMLAbstractModelASTFactory.STATUS_PATTERN, parentPath), retrieved.getStatusConstraint());
         assertEquals(currentRule, retrieved.getStatusToSet());
         final List<KiePMMLFieldOperatorValue> andConstraints = retrieved.getAndConstraints();
         assertNotNull(andConstraints);
