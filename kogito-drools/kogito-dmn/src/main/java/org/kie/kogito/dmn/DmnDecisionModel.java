@@ -6,17 +6,29 @@ import org.kie.dmn.api.core.DMNContext;
 import org.kie.dmn.api.core.DMNModel;
 import org.kie.dmn.api.core.DMNResult;
 import org.kie.dmn.api.core.DMNRuntime;
+import org.kie.kogito.ExecutionIdSupplier;
+import org.kie.kogito.decision.DecisionExecutionIdUtils;
 import org.kie.kogito.decision.DecisionModel;
 
 public class DmnDecisionModel implements DecisionModel {
+
     private final DMNRuntime dmnRuntime;
     private final String namespace;
     private final String name;
+    private final ExecutionIdSupplier execIdSupplier;
 
     public DmnDecisionModel(DMNRuntime dmnRuntime, String namespace, String name) {
         this.dmnRuntime = dmnRuntime;
         this.namespace = namespace;
         this.name = name;
+        this.execIdSupplier = null;
+    }
+
+    public DmnDecisionModel(DMNRuntime dmnRuntime, String namespace, String name, ExecutionIdSupplier execIdSupplier) {
+        this.dmnRuntime = dmnRuntime;
+        this.namespace = namespace;
+        this.name = name;
+        this.execIdSupplier = execIdSupplier;
     }
 
     @Override
@@ -30,7 +42,7 @@ public class DmnDecisionModel implements DecisionModel {
         if (dmnModel == null) {
             throw new IllegalArgumentException("DMN model '" + name + "' not found with namespace '" + namespace + "'");
         }
-        return dmnRuntime.evaluateAll(dmnModel, context);
+        return dmnRuntime.evaluateAll(dmnModel, inject(context));
     }
 
     @Override
@@ -39,6 +51,13 @@ public class DmnDecisionModel implements DecisionModel {
         if (dmnModel == null) {
             throw new IllegalArgumentException("DMN model '" + name + "' not found with namespace '" + namespace + "'");
         }
-        return dmnRuntime.evaluateDecisionService(dmnModel, context, decisionServiceName);
+        return dmnRuntime.evaluateDecisionService(dmnModel, inject(context), decisionServiceName);
     }
+
+    private DMNContext inject(DMNContext context) {
+        return execIdSupplier != null
+                ? DecisionExecutionIdUtils.inject(context, execIdSupplier)
+                : context;
+    }
+
 }
