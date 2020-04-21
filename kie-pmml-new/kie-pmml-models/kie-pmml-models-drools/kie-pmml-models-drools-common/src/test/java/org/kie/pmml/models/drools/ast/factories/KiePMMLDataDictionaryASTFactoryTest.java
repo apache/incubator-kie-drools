@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package org.kie.pmml.models.drools.tree.compiler.factories;
+package org.kie.pmml.models.drools.ast.factories;
 
 import java.util.Arrays;
 import java.util.HashMap;
@@ -33,17 +33,17 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
 import static org.kie.pmml.models.drools.commons.utils.KiePMMLDroolsModelUtils.getSanitizedClassName;
-import static org.kie.pmml.models.drools.tree.compiler.factories.KiePMMLTreeModelASTTestUtils.getDottedTypeDataField;
-import static org.kie.pmml.models.drools.tree.compiler.factories.KiePMMLTreeModelASTTestUtils.getTypeDataField;
+import static org.kie.pmml.models.drools.utils.KiePMMLASTTestUtils.getDottedTypeDataField;
+import static org.kie.pmml.models.drools.utils.KiePMMLASTTestUtils.getTypeDataField;
 
-public class KiePMMLTreeModelDataDictionaryASTFactoryTest {
+public class KiePMMLDataDictionaryASTFactoryTest {
 
     @Test
     public void declareTypes() {
         List<DataField> dataFields = Arrays.asList(getTypeDataField(), getDottedTypeDataField(), getTypeDataField(), getDottedTypeDataField());
         DataDictionary dataDictionary = new DataDictionary(dataFields);
         final Map<String, KiePMMLOriginalTypeGeneratedType> fieldTypeMap = new HashMap<>();
-        List<KiePMMLDroolsType> retrieved = KiePMMLTreeModelDataDictionaryASTFactory.factory(fieldTypeMap).declareTypes(dataDictionary);
+        List<KiePMMLDroolsType> retrieved = KiePMMLDataDictionaryASTFactory.factory(fieldTypeMap).declareTypes(dataDictionary);
         assertNotNull(retrieved);
         assertEquals(dataFields.size(), retrieved.size());
         IntStream.range(0, dataFields.size()).forEach(i -> commonVerifyTypeDeclarationDescr(dataFields.get(i), fieldTypeMap, retrieved.get(i)));
@@ -53,7 +53,7 @@ public class KiePMMLTreeModelDataDictionaryASTFactoryTest {
     public void declareType() {
         DataField dataField = getTypeDataField();
         final Map<String, KiePMMLOriginalTypeGeneratedType> fieldTypeMap = new HashMap<>();
-        KiePMMLDroolsType retrieved = KiePMMLTreeModelDataDictionaryASTFactory.factory(fieldTypeMap).declareType(dataField);
+        KiePMMLDroolsType retrieved = KiePMMLDataDictionaryASTFactory.factory(fieldTypeMap).declareType(dataField);
         assertNotNull(retrieved);
         commonVerifyTypeDeclarationDescr(dataField, fieldTypeMap, retrieved);
     }

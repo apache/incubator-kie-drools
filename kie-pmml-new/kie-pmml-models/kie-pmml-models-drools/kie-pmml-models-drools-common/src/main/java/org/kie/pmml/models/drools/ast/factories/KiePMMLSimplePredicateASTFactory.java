@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.kie.pmml.models.drools.tree.compiler.factories;
+package org.kie.pmml.models.drools.ast.factories;
 
 import java.util.Collections;
 import java.util.List;
@@ -23,35 +23,33 @@ import org.dmg.pmml.SimplePredicate;
 import org.drools.core.util.StringUtils;
 import org.kie.pmml.commons.enums.ResultCode;
 import org.kie.pmml.commons.model.KiePMMLOutputField;
+import org.kie.pmml.commons.model.enums.OPERATOR;
 import org.kie.pmml.models.drools.ast.KiePMMLDroolsRule;
 import org.kie.pmml.models.drools.ast.KiePMMLFieldOperatorValue;
 import org.kie.pmml.models.drools.tuples.KiePMMLOperatorValue;
 import org.kie.pmml.models.drools.tuples.KiePMMLOriginalTypeGeneratedType;
-import org.kie.pmml.models.drools.tree.model.enums.OPERATOR;
+import org.kie.pmml.models.drools.utils.KiePMMLASTFactoryUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import static org.kie.pmml.commons.Constants.DONE;
-import static org.kie.pmml.models.drools.tree.compiler.factories.KiePMMLTreeModelASTFactory.STATUS_NULL;
-import static org.kie.pmml.models.drools.tree.compiler.factories.KiePMMLTreeModelASTFactory.STATUS_PATTERN;
-import static org.kie.pmml.models.drools.tree.compiler.factories.KiePMMLTreeModelASTFactory.SURROGATE_RULENAME_PATTERN;
 
 /**
  * Class used to generate <code>KiePMMLDroolsRule</code> out of a <code>SimplePredicate</code>
  */
-public class KiePMMLTreeModelSimplePredicateASTFactory extends KiePMMLTreeModelAbstractPredicateASTFactory {
+public class KiePMMLSimplePredicateASTFactory extends KiePMMLAbstractPredicateASTFactory {
 
-    private static final Logger logger = LoggerFactory.getLogger(KiePMMLTreeModelSimplePredicateASTFactory.class.getName());
+    private static final Logger logger = LoggerFactory.getLogger(KiePMMLSimplePredicateASTFactory.class.getName());
 
     private final SimplePredicate simplePredicate;
 
-    private KiePMMLTreeModelSimplePredicateASTFactory(final SimplePredicate simplePredicate, final Map<String, KiePMMLOriginalTypeGeneratedType> fieldTypeMap, final List<KiePMMLOutputField> outputFields, final List<KiePMMLDroolsRule> rules) {
+    private KiePMMLSimplePredicateASTFactory(final SimplePredicate simplePredicate, final Map<String, KiePMMLOriginalTypeGeneratedType> fieldTypeMap, final List<KiePMMLOutputField> outputFields, final List<KiePMMLDroolsRule> rules) {
         super(fieldTypeMap, outputFields, rules);
         this.simplePredicate = simplePredicate;
     }
 
-    public static KiePMMLTreeModelSimplePredicateASTFactory factory(final SimplePredicate simplePredicate, final Map<String, KiePMMLOriginalTypeGeneratedType> fieldTypeMap, final List<KiePMMLOutputField> outputFields, final List<KiePMMLDroolsRule> rules) {
-        return new KiePMMLTreeModelSimplePredicateASTFactory(simplePredicate, fieldTypeMap, outputFields, rules);
+    public static KiePMMLSimplePredicateASTFactory factory(final SimplePredicate simplePredicate, final Map<String, KiePMMLOriginalTypeGeneratedType> fieldTypeMap, final List<KiePMMLOutputField> outputFields, final List<KiePMMLDroolsRule> rules) {
+        return new KiePMMLSimplePredicateASTFactory(simplePredicate, fieldTypeMap, outputFields, rules);
     }
 
     public void declareRuleFromSimplePredicateSurrogate(
@@ -62,7 +60,7 @@ public class KiePMMLTreeModelSimplePredicateASTFactory extends KiePMMLTreeModelA
             boolean isFinalLeaf) {
         logger.trace("declareRuleFromSimplePredicateSurrogate {} {} {} {}", simplePredicate, currentRule, agendaActivationGroup, result);
         String fieldName = fieldTypeMap.get(simplePredicate.getField().getValue()).getGeneratedType();
-        String surrogateCurrentRule = String.format(SURROGATE_RULENAME_PATTERN, currentRule, fieldName);
+        String surrogateCurrentRule = String.format(KiePMMLAbstractModelASTFactory.SURROGATE_RULENAME_PATTERN, currentRule, fieldName);
         final List<KiePMMLFieldOperatorValue> constraints = Collections.singletonList(KiePMMLASTFactoryUtils.getConstraintEntryFromSimplePredicates(fieldName, "surrogate", Collections.singletonList(simplePredicate), fieldTypeMap));
         String statusToSet = isFinalLeaf ? DONE : currentRule;
         // Create "TRUE" matcher
@@ -88,7 +86,7 @@ public class KiePMMLTreeModelSimplePredicateASTFactory extends KiePMMLTreeModelA
                                                final Object result,
                                                boolean isFinalLeaf) {
         logger.trace("declareRuleFromSimplePredicate {} {} {}", simplePredicate, parentPath, currentRule);
-        String statusConstraint = StringUtils.isEmpty(parentPath) ? STATUS_NULL : String.format(STATUS_PATTERN, parentPath);
+        String statusConstraint = StringUtils.isEmpty(parentPath) ? KiePMMLAbstractModelASTFactory.STATUS_NULL : String.format(KiePMMLAbstractModelASTFactory.STATUS_PATTERN, parentPath);
         String key = fieldTypeMap.get(simplePredicate.getField().getValue()).getGeneratedType();
         String operator = OPERATOR.byName(simplePredicate.getOperator().value()).getOperator();
         Object value = KiePMMLASTFactoryUtils.getCorrectlyFormattedObject(simplePredicate, fieldTypeMap);

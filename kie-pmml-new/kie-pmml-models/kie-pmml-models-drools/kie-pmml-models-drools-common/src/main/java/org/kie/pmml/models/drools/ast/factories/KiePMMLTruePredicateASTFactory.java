@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.kie.pmml.models.drools.tree.compiler.factories;
+package org.kie.pmml.models.drools.ast.factories;
 
 import java.util.Collections;
 import java.util.List;
@@ -27,25 +27,23 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import static org.kie.pmml.commons.Constants.DONE;
-import static org.kie.pmml.models.drools.tree.compiler.factories.KiePMMLTreeModelASTFactory.STATUS_NULL;
-import static org.kie.pmml.models.drools.tree.compiler.factories.KiePMMLTreeModelASTFactory.STATUS_PATTERN;
 
 /**
  * Class used to generate a <code>KiePMMLDroolsRule</code> out of a <code>True</code> predicate
  */
-public class KiePMMLTreeModelTruePredicateASTFactory extends KiePMMLTreeModelAbstractPredicateASTFactory {
+public class KiePMMLTruePredicateASTFactory extends KiePMMLAbstractPredicateASTFactory {
 
-    private static final Logger logger = LoggerFactory.getLogger(KiePMMLTreeModelTruePredicateASTFactory.class.getName());
+    private static final Logger logger = LoggerFactory.getLogger(KiePMMLTruePredicateASTFactory.class.getName());
 
     private final True truePredicate;
 
-    private KiePMMLTreeModelTruePredicateASTFactory(final True truePredicate, final List<KiePMMLOutputField> outputFields, final List<KiePMMLDroolsRule> rules) {
+    private KiePMMLTruePredicateASTFactory(final True truePredicate, final List<KiePMMLOutputField> outputFields, final List<KiePMMLDroolsRule> rules) {
         super(Collections.emptyMap(), outputFields, rules);
         this.truePredicate = truePredicate;
     }
 
-    public static KiePMMLTreeModelTruePredicateASTFactory factory(final True truePredicate, final List<KiePMMLOutputField> outputFields, final List<KiePMMLDroolsRule> rules) {
-        return new KiePMMLTreeModelTruePredicateASTFactory(truePredicate, outputFields, rules);
+    public static KiePMMLTruePredicateASTFactory factory(final True truePredicate, final List<KiePMMLOutputField> outputFields, final List<KiePMMLDroolsRule> rules) {
+        return new KiePMMLTruePredicateASTFactory(truePredicate, outputFields, rules);
     }
 
     public void declareRuleFromTruePredicate(final String parentPath,
@@ -53,7 +51,7 @@ public class KiePMMLTreeModelTruePredicateASTFactory extends KiePMMLTreeModelAbs
                                              final Object result,
                                              boolean isFinalLeaf) {
         logger.trace("declareRuleFromTruePredicate {} {} {}", truePredicate, parentPath, currentRule);
-        String statusConstraint = StringUtils.isEmpty(parentPath) ? STATUS_NULL : String.format(STATUS_PATTERN, parentPath);
+        String statusConstraint = StringUtils.isEmpty(parentPath) ? KiePMMLAbstractModelASTFactory.STATUS_NULL : String.format(KiePMMLAbstractModelASTFactory.STATUS_PATTERN, parentPath);
         String statusToSet = isFinalLeaf ? DONE : currentRule;
         KiePMMLDroolsRule.Builder builder = KiePMMLDroolsRule.builder(currentRule, statusToSet, outputFields)
                 .withStatusConstraint(statusConstraint);

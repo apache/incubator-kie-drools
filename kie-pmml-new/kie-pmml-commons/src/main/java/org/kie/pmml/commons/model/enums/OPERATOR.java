@@ -13,32 +13,36 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.kie.pmml.models.drools.tree.model.enums;
+package org.kie.pmml.commons.model.enums;
 
 import java.util.Arrays;
 
 import org.kie.pmml.commons.exceptions.KieEnumException;
 
 /**
- * @see <a href=http://dmg.org/pmml/v4-4/TreeModel.html#xsdElement_CompoundPredicate>CompoundPredicate</a>
+ * @see <a href=http://dmg.org/pmml/v4-4/TreeModel.html#xsdGroup_PREDICATE>PREDICATE</a>
  */
-public enum BOOLEAN_OPERATOR {
+public enum OPERATOR {
 
-    OR("or", "||"),
-    AND("and", "&&"),
-    XOR("xor", "^"),
-    SURROGATE("surrogate", "surrogate");
+    EQUAL("equal", "=="),
+    NOT_EQUAL("notEqual", "!="),
+    LESS_THAN("lessThan", "<"),
+    LESS_OR_EQUAL("lessOrEqual", "<="),
+    GREATER_THAN("greaterThan", ">"),
+    GREATER_OR_EQUAL("greaterOrEqual", ">="),
+    IS_MISSING("isMissing", ""),
+    IS_NOT_MISSING("isNotMissing", "");
 
-    private String name;
-    private String customOperator;
+    private final String name;
+    private final String operator;
 
-    BOOLEAN_OPERATOR(String name, String customOperator) {
+    OPERATOR(String name, String operator) {
         this.name = name;
-        this.customOperator = customOperator;
+        this.operator = operator;
     }
 
-    public static BOOLEAN_OPERATOR byName(String name) {
-        return Arrays.stream(BOOLEAN_OPERATOR.values())
+    public static OPERATOR byName(String name) {
+        return Arrays.stream(OPERATOR.values())
                 .filter(value -> name.equals(value.name))
                 .findFirst()
                 .orElseThrow(() -> new KieEnumException("Failed to find MODEL_TYPE with name: " + name));
@@ -48,7 +52,7 @@ public enum BOOLEAN_OPERATOR {
         return name;
     }
 
-    public String getCustomOperator() {
-        return customOperator;
+    public String getOperator() {
+        return operator;
     }
 }

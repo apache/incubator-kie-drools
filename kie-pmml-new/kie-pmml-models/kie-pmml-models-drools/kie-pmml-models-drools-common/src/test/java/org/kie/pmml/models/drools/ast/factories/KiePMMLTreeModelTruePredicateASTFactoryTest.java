@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package org.kie.pmml.models.drools.tree.compiler.factories;
+package org.kie.pmml.models.drools.ast.factories;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -29,6 +29,7 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNull;
 import static org.kie.pmml.commons.Constants.DONE;
+import static org.kie.pmml.models.drools.ast.factories.KiePMMLAbstractModelASTFactory.STATUS_PATTERN;
 
 public class KiePMMLTreeModelTruePredicateASTFactoryTest {
 
@@ -38,13 +39,13 @@ public class KiePMMLTreeModelTruePredicateASTFactoryTest {
         String currentRule = "_will play_will play";
         final List<KiePMMLDroolsRule> rules = new ArrayList<>();
         True truePredicate = new True();
-        KiePMMLTreeModelTruePredicateASTFactory.factory(truePredicate, Collections.emptyList(), rules).declareRuleFromTruePredicate(parentPath, currentRule, DONE, false);
+        KiePMMLTruePredicateASTFactory.factory(truePredicate, Collections.emptyList(), rules).declareRuleFromTruePredicate(parentPath, currentRule, DONE, false);
         assertEquals(1, rules.size());
         final KiePMMLDroolsRule retrieved = rules.get(0);
         assertNotNull(retrieved);
         assertEquals(currentRule, retrieved.getName());
         assertEquals(currentRule, retrieved.getStatusToSet());
-        assertEquals(String.format(KiePMMLTreeModelASTFactory.STATUS_PATTERN, parentPath), retrieved.getStatusConstraint());
+        assertEquals(String.format(STATUS_PATTERN, parentPath), retrieved.getStatusConstraint());
         assertNull(retrieved.getAndConstraints());
         assertNull(retrieved.getResultCode());
     }
@@ -56,13 +57,13 @@ public class KiePMMLTreeModelTruePredicateASTFactoryTest {
         final List<KiePMMLDroolsRule> rules = new ArrayList<>();
         String statusToSet = DONE;
         True truePredicate = new True();
-        KiePMMLTreeModelTruePredicateASTFactory.factory(truePredicate, Collections.emptyList(), rules).declareRuleFromTruePredicate(parentPath, currentRule, statusToSet, true);
+        KiePMMLTruePredicateASTFactory.factory(truePredicate, Collections.emptyList(), rules).declareRuleFromTruePredicate(parentPath, currentRule, statusToSet, true);
         assertEquals(1, rules.size());
         final KiePMMLDroolsRule retrieved = rules.get(0);
         assertNotNull(retrieved);
         assertEquals(currentRule, retrieved.getName());
         assertEquals(statusToSet, retrieved.getStatusToSet());
-        assertEquals(String.format(KiePMMLTreeModelASTFactory.STATUS_PATTERN, parentPath), retrieved.getStatusConstraint());
+        assertEquals(String.format(STATUS_PATTERN, parentPath), retrieved.getStatusConstraint());
         assertNull(retrieved.getAndConstraints());
         assertEquals(DONE, retrieved.getResult());
         assertEquals(ResultCode.OK, retrieved.getResultCode());
