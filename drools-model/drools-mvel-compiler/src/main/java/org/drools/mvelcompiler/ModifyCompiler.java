@@ -16,7 +16,7 @@ import static com.github.javaparser.ast.NodeList.nodeList;
 // A special case of compiler in which only the modify statements are processed
 public class ModifyCompiler {
 
-    private PreprocessPhase preprocessPhase = new PreprocessPhase();
+    private static final PreprocessPhase preprocessPhase = new PreprocessPhase(true);
 
     public ParsingResult compile(String mvelBlock) {
 

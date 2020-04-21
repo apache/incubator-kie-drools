@@ -91,9 +91,7 @@ public class BetaNodeBuilder {
                                                           new ClassObjectType(leftType),
                                                           buildContext);
 
-        LeftInputAdapterNode leftInput = nFactory.buildLeftInputAdapterNode(buildContext.getNextId(),
-                                                                            otn,
-                                                                            buildContext);
+        LeftInputAdapterNode leftInput = nFactory.buildLeftInputAdapterNode(buildContext.getNextId(), otn, buildContext, false);
 
         ObjectSource rightInput = nFactory.buildObjectTypeNode(buildContext.getNextId(),
                                                                epn,

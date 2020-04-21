@@ -39,31 +39,25 @@ public class KieMemoryCompiler {
     /**
      * Compile the given sources and add compiled classes to the given <code>ClassLoader</code>
      * <b>classNameSourceMap</b>' key must be the <b>FQDN</b> of the class to compile
+     *
      * @param classNameSourceMap
      * @param classLoader
      * @return
      */
     public static Map<String, Class<?>> compile(Map<String, String> classNameSourceMap, ClassLoader classLoader) {
         Map<String, KieMemoryCompilerSourceCode> sourceCodes = classNameSourceMap.entrySet().stream().collect(Collectors.toMap(Map.Entry::getKey,
-                                                                                                                     entry -> new KieMemoryCompilerSourceCode(entry.getKey(), entry.getValue())));
+                                                                                                                               entry -> new KieMemoryCompilerSourceCode(entry.getKey(), entry.getValue())));
         KieMemoryCompilerClassLoader kieMemoryCompilerClassLoader = new KieMemoryCompilerClassLoader(classLoader);
         DiagnosticCollector<JavaFileObject> collector = new DiagnosticCollector<>();
         KieMemoryCompilerFileManager fileManager = new KieMemoryCompilerFileManager(JAVA_COMPILER.getStandardFileManager(null, null, null), kieMemoryCompilerClassLoader);
         JavaCompiler.CompilationTask task = JAVA_COMPILER.getTask(null, fileManager, collector, OPTIONS, null, sourceCodes.values());
-        boolean result = task.call();
-        if (!result || !collector.getDiagnostics().isEmpty()) {
-            StringBuilder errorBuilder = new StringBuilder();
-            errorBuilder.append("Compilation failed");
-            for (Diagnostic<? extends JavaFileObject> diagnostic : collector.getDiagnostics()) {
-                errorBuilder.append("\r\n");
-                errorBuilder.append(diagnostic.getKind());
-                errorBuilder.append("; line: ");
-                errorBuilder.append(diagnostic.getLineNumber());
-                errorBuilder.append("; ");
-                errorBuilder.append(diagnostic.getMessage(Locale.US));
-            }
-            throw new KieMemoryCompilerException(errorBuilder.toString());
+
+        boolean compilationSuccess = task.call();
+        boolean hasCompilerError = collector.getDiagnostics().stream().anyMatch(d -> d.getKind().equals(Diagnostic.Kind.ERROR));
+        if (!compilationSuccess || hasCompilerError) {
+            compilerError(collector);
         }
+
         Map<String, Class<?>> toReturn = new HashMap<>();
         for (String className : sourceCodes.keySet()) {
             try {
@@ -73,5 +67,21 @@ public class KieMemoryCompiler {
             }
         }
         return toReturn;
+    }
+
+    private static void compilerError(DiagnosticCollector<JavaFileObject> collector) {
+        StringBuilder errorBuilder = new StringBuilder();
+        errorBuilder.append("Compilation failed");
+        for (Diagnostic<? extends JavaFileObject> diagnostic : collector.getDiagnostics()) {
+            errorBuilder.append(" file: ");
+            errorBuilder.append(diagnostic.getSource());
+            errorBuilder.append("\r\n");
+            errorBuilder.append(diagnostic.getKind());
+            errorBuilder.append("; line: ");
+            errorBuilder.append(diagnostic.getLineNumber());
+            errorBuilder.append("; ");
+            errorBuilder.append(diagnostic.getMessage(Locale.US));
+        }
+        throw new KieMemoryCompilerException(errorBuilder.toString());
     }
 }

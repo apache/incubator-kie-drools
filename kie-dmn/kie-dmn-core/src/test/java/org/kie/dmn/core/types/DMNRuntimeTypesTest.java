@@ -30,7 +30,7 @@ import org.kie.dmn.api.core.DMNContext;
 import org.kie.dmn.api.core.DMNModel;
 import org.kie.dmn.api.core.DMNResult;
 import org.kie.dmn.api.core.DMNRuntime;
-import org.kie.dmn.core.BaseInterpretedVsCompiledTest;
+import org.kie.dmn.core.BaseVariantNonTypeSafeTest;
 import org.kie.dmn.core.api.DMNFactory;
 import org.kie.dmn.core.util.DMNRuntimeUtil;
 import org.kie.dmn.feel.lang.types.impl.ComparablePeriod;
@@ -43,17 +43,17 @@ import static org.junit.Assert.assertThat;
 import static org.kie.dmn.core.util.DynamicTypeUtils.entry;
 import static org.kie.dmn.core.util.DynamicTypeUtils.mapOf;
 
-public class DMNRuntimeTypesTest extends BaseInterpretedVsCompiledTest {
-
-    public DMNRuntimeTypesTest(final boolean useExecModelCompiler) {
-        super(useExecModelCompiler);
-    }
+public class DMNRuntimeTypesTest extends BaseVariantNonTypeSafeTest {
 
     public static final Logger LOG = LoggerFactory.getLogger(DMNRuntimeTypesTest.class);
 
+    public DMNRuntimeTypesTest(VariantTestConf testConfig) {
+        super(testConfig);
+    }
+
     @Test
     public void testOneOfEachType() {
-        final DMNRuntime runtime = DMNRuntimeUtil.createRuntime("OneOfEachType.dmn", this.getClass());
+        final DMNRuntime runtime = createRuntime("OneOfEachType.dmn", this.getClass());
         final DMNModel dmnModel = runtime.getModel("http://www.trisotech.com/definitions/_4f5608e9-4d74-4c22-a47e-ab657257fc9c", "OneOfEachType");
         assertThat(dmnModel, notNullValue());
         assertThat(DMNRuntimeUtil.formatMessages(dmnModel.getMessages()), dmnModel.hasErrors(), is(false));
@@ -68,7 +68,7 @@ public class DMNRuntimeTypesTest extends BaseInterpretedVsCompiledTest {
         context.set("InputDate", LocalDate.of(2020, 4, 2));
         context.set("InputTime", LocalTime.of(9, 0));
 
-        final DMNResult dmnResult = runtime.evaluateAll(dmnModel, context);
+        final DMNResult dmnResult = evaluateModel(runtime, dmnModel, context);
         LOG.debug("{}", dmnResult);
         assertThat(DMNRuntimeUtil.formatMessages(dmnResult.getMessages()), dmnResult.hasErrors(), is(false));
         assertThat(dmnResult.getDecisionResultByName("DecisionString").getResult(), is("Hello, John Doe"));
@@ -83,7 +83,8 @@ public class DMNRuntimeTypesTest extends BaseInterpretedVsCompiledTest {
 
     @Test
     public void testRecursiveEmployee() {
-        final DMNRuntime runtime = DMNRuntimeUtil.createRuntime("recursiveEmployee.dmn", this.getClass());
+        final DMNRuntime runtime = createRuntime("recursiveEmployee.dmn", this.getClass());
+
         final DMNModel dmnModel = runtime.getModel("http://www.trisotech.com/definitions/_d1e3d83e-230d-42fb-bc58-313463f7f40b", "Drawing 1");
         assertThat(dmnModel, notNullValue());
         assertThat(DMNRuntimeUtil.formatMessages(dmnModel.getMessages()), dmnModel.hasErrors(), is(false));
@@ -108,7 +109,7 @@ public class DMNRuntimeTypesTest extends BaseInterpretedVsCompiledTest {
         final DMNContext context = DMNFactory.newContext();
         context.set("an Employee", john);
 
-        final DMNResult dmnResult = runtime.evaluateAll(dmnModel, context);
+        final DMNResult dmnResult = evaluateModel(runtime, dmnModel, context);
         LOG.debug("{}", dmnResult);
         assertThat(DMNRuntimeUtil.formatMessages(dmnResult.getMessages()), dmnResult.hasErrors(), is(false));
         assertThat(dmnResult.getDecisionResultByName("highlights").getResult(), is("John Doe: reports to John's Manager and is manager of 2 : [ Bob, Carl ]"));
