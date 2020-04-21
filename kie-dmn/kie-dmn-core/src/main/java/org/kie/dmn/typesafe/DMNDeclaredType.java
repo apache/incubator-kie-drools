@@ -29,6 +29,7 @@ import org.drools.modelcompiler.builder.generator.declaredtype.api.MethodDefinit
 import org.drools.modelcompiler.builder.generator.declaredtype.api.TypeDefinition;
 import org.kie.dmn.api.core.DMNType;
 import org.kie.dmn.api.core.FEELPropertyAccessible;
+import org.kie.dmn.feel.codegen.feel11.CodegenStringUtil;
 
 class DMNDeclaredType implements TypeDefinition {
 
@@ -45,7 +46,7 @@ class DMNDeclaredType implements TypeDefinition {
 
     @Override
     public String getTypeName() {
-        return StringUtils.ucFirst(dmnType.getName());
+        return StringUtils.ucFirst(CodegenStringUtil.escapeIdentifier(dmnType.getName()));
     }
 
     @Override
@@ -70,6 +71,7 @@ class DMNDeclaredType implements TypeDefinition {
     public Optional<String> getSuperTypeName() {
         return Optional.ofNullable(dmnType.getBaseType())
                 .map(DMNType::getName)
+                .map(StringUtils::ucFirst)
                 .filter(index::isIndexedClass);
     }
 

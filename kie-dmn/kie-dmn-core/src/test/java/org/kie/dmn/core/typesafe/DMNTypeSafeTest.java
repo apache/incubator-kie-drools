@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package org.kie.dmn.typesafe;
+package org.kie.dmn.core.typesafe;
 
 import java.math.BigDecimal;
 import java.util.HashMap;
@@ -23,6 +23,7 @@ import java.util.Map;
 
 import org.junit.Before;
 import org.junit.Test;
+import org.junit.runners.Parameterized;
 import org.kie.dmn.api.core.DMNContext;
 import org.kie.dmn.api.core.DMNModel;
 import org.kie.dmn.api.core.DMNResult;
@@ -31,6 +32,9 @@ import org.kie.dmn.api.core.FEELPropertyAccessible;
 import org.kie.dmn.core.BaseVariantTest;
 import org.kie.dmn.core.impl.DMNContextFPAImpl;
 import org.kie.dmn.core.util.DMNRuntimeUtil;
+import org.kie.dmn.typesafe.DMNAllTypesIndex;
+import org.kie.dmn.typesafe.DMNTypeSafePackageName;
+import org.kie.dmn.typesafe.DMNTypeSafeTypeGenerator;
 import org.kie.memorycompiler.KieMemoryCompiler;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -39,10 +43,16 @@ import static java.util.Arrays.asList;
 import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.CoreMatchers.notNullValue;
 import static org.junit.Assert.assertThat;
+import static org.kie.dmn.core.BaseVariantTest.VariantTestConf.KIE_API_TYPECHECK_TYPESAFE;
 import static org.kie.dmn.core.util.DynamicTypeUtils.entry;
 import static org.kie.dmn.core.util.DynamicTypeUtils.mapOf;
 
 public class DMNTypeSafeTest extends BaseVariantTest {
+
+    @Parameterized.Parameters(name = "{0}")
+    public static Object[] params() {
+        return new Object[]{KIE_API_TYPECHECK_TYPESAFE};
+    }
 
     public static final Logger LOG = LoggerFactory.getLogger(DMNTypeSafeTest.class);
 

@@ -116,13 +116,13 @@ public class FEELPropertyAccessibleImplementation {
                 .clone();
     }
 
-    private SwitchEntry toGetPropertySwitchEntry(FieldDefinition fieldDefinition) {
+    private SwitchEntry toGetPropertySwitchEntry(DMNDeclaredField fieldDefinition) {
         ReturnStmt returnStmt = new ReturnStmt();
         MethodCallExpr mc = StaticJavaParser.parseExpression(EvalHelper.PropertyValueResult.class.getCanonicalName() + ".ofValue()");
         String accessorName = getAccessorName(fieldDefinition, "get");
         mc.addArgument(new MethodCallExpr(new ThisExpr(), accessorName));
         returnStmt.setExpression(mc);
-        return new SwitchEntry(nodeList(new StringLiteralExpr(fieldDefinition.getFieldName())), SwitchEntry.Type.STATEMENT_GROUP, nodeList(returnStmt));
+        return new SwitchEntry(nodeList(new StringLiteralExpr(fieldDefinition.getOriginalMapKey())), SwitchEntry.Type.STATEMENT_GROUP, nodeList(returnStmt));
     }
 
     private MethodDefinition setFeelPropertyDefinition() {
@@ -149,7 +149,7 @@ public class FEELPropertyAccessibleImplementation {
         return setFeelPropertyDefinition;
     }
 
-    private SwitchEntry toSetPropertySwitchEntry(FieldDefinition fieldDefinition) {
+    private SwitchEntry toSetPropertySwitchEntry(DMNDeclaredField fieldDefinition) {
 
         String accessorName = getAccessorName(fieldDefinition, "set");
         MethodCallExpr setMethod = new MethodCallExpr(new ThisExpr(), accessorName);
@@ -158,7 +158,7 @@ public class FEELPropertyAccessibleImplementation {
         ExpressionStmt setStatement = new ExpressionStmt();
         setStatement.setExpression(setMethod);
 
-        NodeList<Expression> labels = nodeList(new StringLiteralExpr(fieldDefinition.getFieldName()));
+        NodeList<Expression> labels = nodeList(new StringLiteralExpr(fieldDefinition.getOriginalMapKey()));
         NodeList<Statement> statements = nodeList(setStatement, new ReturnStmt());
         return new SwitchEntry(labels, SwitchEntry.Type.STATEMENT_GROUP, statements);
     }
@@ -172,11 +172,13 @@ public class FEELPropertyAccessibleImplementation {
 
         BlockStmt simplePropertyBLock = (BlockStmt) originalStatements.getStatement(0);
         BlockStmt pojoPropertyBlock = (BlockStmt) originalStatements.getStatement(1);
-        BlockStmt collectionsPropertyBlock = (BlockStmt) originalStatements.getStatement(2);
+        BlockStmt collectionsCompositePropertyBlock = (BlockStmt) originalStatements.getStatement(2);
+        BlockStmt collectionsBasic = (BlockStmt) originalStatements.getStatement(3);
 
         List<Statement> allStatements = fields.stream().map(f -> f.createFromMapEntry(simplePropertyBLock,
-                                                                                 pojoPropertyBlock,
-                                                                                 collectionsPropertyBlock))
+                                                                                      pojoPropertyBlock,
+                                                                                      collectionsCompositePropertyBlock,
+                                                                                      collectionsBasic))
                 .collect(Collectors.toList());
 
         BlockStmt body = new BlockStmt(nodeList(allStatements));
