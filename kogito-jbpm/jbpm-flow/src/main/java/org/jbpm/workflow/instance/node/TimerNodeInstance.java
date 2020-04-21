@@ -16,7 +16,11 @@
 
 package org.jbpm.workflow.instance.node;
 
+import java.util.Collections;
 import java.util.Date;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.Set;
 
 import org.jbpm.process.instance.InternalProcessRuntime;
 import org.jbpm.workflow.core.node.TimerNode;
@@ -26,6 +30,8 @@ import org.kie.api.runtime.process.NodeInstance;
 import org.kie.kogito.jobs.ExpirationTime;
 import org.kie.kogito.jobs.JobsService;
 import org.kie.kogito.jobs.ProcessInstanceJobDescription;
+import org.kie.kogito.process.BaseEventDescription;
+import org.kie.kogito.process.EventDescription;
 import org.kie.services.time.TimerInstance;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -34,6 +40,7 @@ public class TimerNodeInstance extends StateBasedNodeInstance implements EventLi
 
     private static final long serialVersionUID = 510l;
     private static final Logger logger = LoggerFactory.getLogger(TimerNodeInstance.class);
+    private static final String TIMER_TRIGGERED_EVENT = "timerTriggered";
     
     private String timerId;
     
@@ -67,7 +74,7 @@ public class TimerNodeInstance extends StateBasedNodeInstance implements EventLi
 
     
     public void signalEvent(String type, Object event) {
-    	if ("timerTriggered".equals(type)) {
+    	if (TIMER_TRIGGERED_EVENT.equals(type)) {
     		TimerInstance timer = (TimerInstance) event;
             if (timer.getId().equals(timerId)) {
                 triggerCompleted(timer.getRepeatLimit() <= 0);
@@ -76,7 +83,7 @@ public class TimerNodeInstance extends StateBasedNodeInstance implements EventLi
     }
     
     public String[] getEventTypes() {
-    	return new String[] { "timerTriggered" };
+    	return new String[] { TIMER_TRIGGERED_EVENT };
     }
     
     public void triggerCompleted(boolean remove) {
@@ -99,7 +106,18 @@ public class TimerNodeInstance extends StateBasedNodeInstance implements EventLi
     
     public void removeEventListeners() {
         super.removeEventListeners();
-        ((WorkflowProcessInstance) getProcessInstance()).removeEventListener("timerTriggered", this, false);
+        ((WorkflowProcessInstance) getProcessInstance()).removeEventListener(TIMER_TRIGGERED_EVENT, this, false);
+    }
+
+    @Override
+    public Set<EventDescription<?>> getEventDescriptions() {
+        Map<String, String> properties = new HashMap<>();
+        properties.put("TimerID", timerId);
+        properties.put("Delay", getTimerNode().getTimer().getDelay());
+        properties.put("Period", getTimerNode().getTimer().getPeriod());
+        properties.put("Date", getTimerNode().getTimer().getDate());
+        return Collections.singleton(new BaseEventDescription(TIMER_TRIGGERED_EVENT, getNodeDefinitionId(), getNodeName(), "timer", getId(), getProcessInstance().getId(), null, properties));
+
     }
 
 }

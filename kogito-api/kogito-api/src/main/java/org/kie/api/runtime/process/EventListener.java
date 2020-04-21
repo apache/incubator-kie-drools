@@ -16,6 +16,11 @@
 
 package org.kie.api.runtime.process;
 
+import java.util.Collections;
+import java.util.Set;
+
+import org.kie.kogito.process.EventDescription;
+
 /**
  * An interface that represents an element that is listening
  * for specific types of events.
@@ -38,5 +43,14 @@ public interface EventListener {
      * May return <code>null</code> if the event types are unknown.
      */
     String[] getEventTypes();
+    
+    
+    /**
+     * Returns unique set of event descriptions that this event listener is interested in.
+     * @return returns set of event definitions awaiting or empty set
+     */
+    default Set<EventDescription<?>> getEventDescriptions() {
+        return Collections.emptySet();
+    }
 
 }

@@ -491,4 +491,9 @@ public class CompositeNode extends StateBasedNode implements NodeContainer, Even
         
     }
 
+    @Override
+    public String getVariableName() {
+        return null;
+    }
+
 }

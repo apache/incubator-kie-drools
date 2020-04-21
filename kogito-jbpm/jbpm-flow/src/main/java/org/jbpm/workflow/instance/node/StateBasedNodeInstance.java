@@ -483,4 +483,28 @@ public abstract class StateBasedNodeInstance extends ExtendedNodeInstanceImpl im
             }
         }
     }
+    
+    public Map<String, String> extractTimerEventInformation() {
+        if (getTimerInstances() != null) {
+            for (String id : getTimerInstances()) {
+                String[] ids = id.split("_");
+                
+                for (Timer entry : getEventBasedNode().getTimers().keySet()) {
+                    if (entry.getId() == Long.valueOf(ids[1])) {
+                        Map<String, String> properties = new HashMap<>();
+                        properties.put("TimerID", id);
+                        properties.put("Delay", entry.getDelay());
+                        properties.put("Period", entry.getPeriod());
+                        properties.put("Date", entry.getDate()); 
+                        
+                        return properties;
+                    }
+                
+                }
+            }
+        }
+        
+        return null;
+    }
+     
 }

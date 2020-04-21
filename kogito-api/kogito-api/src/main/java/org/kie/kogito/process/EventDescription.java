@@ -1,5 +1,5 @@
 /*
- * Copyright 2017 Red Hat, Inc. and/or its affiliates.
+ * Copyright 2020 Red Hat, Inc. and/or its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -14,18 +14,28 @@
  * limitations under the License.
  */
 
-package org.jbpm.workflow.core.node;
+package org.kie.kogito.process;
 
-import java.util.function.Function;
+import java.util.Map;
 
-public interface EventNodeInterface {
-	
-	boolean acceptsEvent(String type, Object event);
-	
-	default	boolean acceptsEvent(String type, Object event, Function<String, String> resolver) {
-	    return acceptsEvent(type, event);
-	}
-	
-	String getVariableName();
+public interface EventDescription<T> {
+
+    String getId();
+
+    String getEvent();
+
+    String getNodeId();
+
+    String getNodeName();
+
+    String getEventType();
+
+    String getNodeInstanceId();
+
+    String getProcessInstanceId();
+
+    T getDataType();
+
+    Map<String, String> getProperties();
 
 }

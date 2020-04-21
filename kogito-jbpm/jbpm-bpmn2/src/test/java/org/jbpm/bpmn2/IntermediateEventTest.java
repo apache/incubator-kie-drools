@@ -37,6 +37,7 @@ import org.jbpm.bpmn2.handler.SendTaskHandler;
 import org.jbpm.bpmn2.objects.Person;
 import org.jbpm.bpmn2.objects.TestWorkItemHandler;
 import org.jbpm.bpmn2.test.RequirePersistence;
+import org.jbpm.process.core.datatype.impl.type.StringDataType;
 import org.jbpm.process.instance.event.listeners.RuleAwareProcessEventListener;
 import org.jbpm.process.instance.impl.demo.DoNothingWorkItemHandler;
 import org.jbpm.process.instance.impl.demo.SystemOutWorkItemHandler;
@@ -54,7 +55,6 @@ import org.kie.api.event.process.ProcessStartedEvent;
 import org.kie.api.runtime.Context;
 import org.kie.api.runtime.KieSession;
 import org.kie.api.runtime.ObjectFilter;
-import org.kie.api.runtime.process.NodeInstance;
 import org.kie.api.runtime.process.ProcessInstance;
 import org.kie.api.runtime.process.WorkItem;
 import org.kie.api.runtime.process.WorkItemManager;
@@ -62,6 +62,8 @@ import org.kie.api.runtime.process.WorkflowProcessInstance;
 import org.kie.api.runtime.rule.FactHandle;
 import org.kie.internal.command.RegistryContext;
 import org.kie.internal.runtime.StatefulKnowledgeSession;
+import org.kie.kogito.process.EventDescription;
+import org.kie.kogito.process.NamedDataType;
 
 public class IntermediateEventTest extends JbpmBpmn2TestCase {
 
@@ -104,7 +106,21 @@ public class IntermediateEventTest extends JbpmBpmn2TestCase {
                 handler);
         ProcessInstance processInstance = ksession
                 .startProcess("BoundarySignalOnTask");
-
+        
+        Set<EventDescription<?>> eventDescriptions = processInstance.getEventDescriptions();
+        assertThat(eventDescriptions)
+            .hasSize(2)
+            .extracting("event").contains("MySignal");
+        assertThat(eventDescriptions)
+            .extracting("eventType").contains("signal");
+        assertThat(eventDescriptions)            
+            .extracting("processInstanceId").contains(processInstance.getId());
+        assertThat(eventDescriptions)
+            .filteredOn("eventType", "signal")
+            .hasSize(1)
+            .extracting("properties", Map.class)
+            .anyMatch(m -> m.containsKey("AttachedToID") && m.containsKey("AttachedToName"));
+               
         ProcessInstance processInstance2 = ksession
                 .startProcess("SignalIntermediateEvent");
         assertProcessInstanceFinished(processInstance2, ksession);
@@ -158,6 +174,30 @@ public class IntermediateEventTest extends JbpmBpmn2TestCase {
         ksession.addEventListener(LOGGING_EVENT_LISTENER);
         ProcessInstance processInstance = ksession
                 .startProcess("BoundarySignalOnTask");
+        
+        Set<EventDescription<?>> eventDescriptions = processInstance.getEventDescriptions();
+        assertThat(eventDescriptions)
+            .hasSize(2)
+            .extracting("event").contains("MySignal");
+        assertThat(eventDescriptions)
+            .extracting("eventType").contains("signal");
+        assertThat(eventDescriptions)            
+            .extracting("processInstanceId").contains(processInstance.getId());
+        assertThat(eventDescriptions)
+            .filteredOn("eventType", "signal")
+            .hasSize(1)
+            .extracting("properties", Map.class)
+            .anyMatch(m -> m.containsKey("AttachedToID") && m.containsKey("AttachedToName"));
+        assertThat(eventDescriptions)
+            .filteredOn("eventType", "signal")
+            .hasSize(1)
+            .extracting("nodeInstanceId").containsOnlyNulls();        
+        
+        assertThat(eventDescriptions)
+            .filteredOn("eventType", "workItem")
+            .hasSize(1)
+            .extracting("nodeInstanceId").doesNotContainNull();
+        
         ksession.signalEvent("MySignal", "value");
         assertProcessInstanceFinished(processInstance, ksession);
 
@@ -205,6 +245,20 @@ public class IntermediateEventTest extends JbpmBpmn2TestCase {
         ProcessInstance processInstance = ksession
                 .startProcess("SignalBoundaryEvent");
         assertProcessInstanceActive(processInstance);
+        
+        Set<EventDescription<?>> eventDescriptions = processInstance.getEventDescriptions();
+        assertThat(eventDescriptions)
+            .hasSize(2)
+            .extracting("event").contains("MyMessage");
+        assertThat(eventDescriptions)
+            .extracting("eventType").contains("signal");
+        assertThat(eventDescriptions)            
+            .extracting("processInstanceId").contains(processInstance.getId());
+        assertThat(eventDescriptions)
+            .filteredOn("eventType", "signal")
+            .hasSize(1)
+            .extracting("properties", Map.class)
+            .anyMatch(m -> m.containsKey("AttachedToID") && m.containsKey("AttachedToName"));
 
         ksession = restoreSession(ksession, true);
         ksession.signalEvent("MyMessage", null);
@@ -263,6 +317,20 @@ public class IntermediateEventTest extends JbpmBpmn2TestCase {
                 new SystemOutWorkItemHandler());
         ksession.getWorkItemManager().registerWorkItemHandler("Email2",
                 new SystemOutWorkItemHandler());
+        
+        Set<EventDescription<?>> eventDescriptions = processInstance.getEventDescriptions();
+        assertThat(eventDescriptions)
+            .hasSize(2)
+            .extracting("event").contains("Yes", "No");
+        assertThat(eventDescriptions)
+            .extracting("eventType").contains("signal");
+        assertThat(eventDescriptions)
+             .extracting("dataType").hasOnlyElementsOfType(NamedDataType.class).extracting("dataType").hasOnlyElementsOfType(StringDataType.class);
+        assertThat(eventDescriptions)            
+            .extracting("processInstanceId").contains(processInstance.getId());
+        assertThat(eventDescriptions)            
+            .extracting("nodeInstanceId").doesNotContainNull();
+        
         ksession.signalEvent("Yes", "YesValue", processInstance.getId());
         assertProcessInstanceFinished(processInstance, ksession);
         // No
@@ -357,6 +425,23 @@ public class IntermediateEventTest extends JbpmBpmn2TestCase {
         ProcessInstance processInstance = ksession
                 .startProcess("com.sample.test");
         assertProcessInstanceActive(processInstance);
+        
+        Set<EventDescription<?>> eventDescriptions = processInstance.getEventDescriptions();
+        assertThat(eventDescriptions)
+            .hasSize(2)
+            .extracting("event").contains("Yes", "timerTriggered");
+        assertThat(eventDescriptions)
+            .extracting("eventType").contains("signal", "timer");
+        assertThat(eventDescriptions).filteredOn(i -> i.getDataType() != null)
+             .extracting("dataType").hasOnlyElementsOfType(NamedDataType.class).extracting("dataType").hasOnlyElementsOfType(StringDataType.class);
+        assertThat(eventDescriptions)            
+            .extracting("processInstanceId").contains(processInstance.getId());
+        assertThat(eventDescriptions)
+        .filteredOn("eventType", "timer")
+        .hasSize(1)
+        .extracting("properties", Map.class)
+        .anyMatch(m -> m.containsKey("TimerID") && m.containsKey("Delay"));
+        
         ksession = restoreSession(ksession, true);
         ksession.addEventListener(countDownListener);
         ksession.getWorkItemManager().registerWorkItemHandler("Email1",
@@ -410,6 +495,18 @@ public class IntermediateEventTest extends JbpmBpmn2TestCase {
         ProcessInstance processInstance = ksession
                 .startProcess("com.sample.test");
         assertProcessInstanceActive(processInstance);
+        
+        Set<EventDescription<?>> eventDescriptions = processInstance.getEventDescriptions();
+        assertThat(eventDescriptions)
+            .hasSize(2)
+            .extracting("event").contains("Yes");
+        assertThat(eventDescriptions)
+            .extracting("eventType").contains("signal", "conditional");
+        assertThat(eventDescriptions).filteredOn(i -> i.getDataType() != null)
+             .extracting("dataType").hasOnlyElementsOfType(NamedDataType.class).extracting("dataType").hasOnlyElementsOfType(StringDataType.class);
+        assertThat(eventDescriptions)            
+            .extracting("processInstanceId").contains(processInstance.getId());
+        
         ksession = restoreSession(ksession, true);
         ksession.getWorkItemManager().registerWorkItemHandler("Email1",
                 new SystemOutWorkItemHandler());
@@ -443,6 +540,18 @@ public class IntermediateEventTest extends JbpmBpmn2TestCase {
         ProcessInstance processInstance = ksession
                 .startProcess("com.sample.test");
         assertProcessInstanceActive(processInstance);
+        
+        Set<EventDescription<?>> eventDescriptions = processInstance.getEventDescriptions();
+        assertThat(eventDescriptions)
+            .hasSize(2)
+            .extracting("event").contains("Message-YesMessage", "Message-NoMessage");
+        assertThat(eventDescriptions)
+            .extracting("eventType").contains("message", "message");
+        assertThat(eventDescriptions)
+             .extracting("dataType").hasOnlyElementsOfType(NamedDataType.class).extracting("dataType").hasOnlyElementsOfType(StringDataType.class);
+        assertThat(eventDescriptions)            
+            .extracting("processInstanceId").contains(processInstance.getId());
+        
         ksession = restoreSession(ksession, true);
         ksession.getWorkItemManager().registerWorkItemHandler("Email1",
                 new SystemOutWorkItemHandler());
@@ -587,11 +696,21 @@ public class IntermediateEventTest extends JbpmBpmn2TestCase {
         assertProcessInstanceActive(processInstance);
         ksession = restoreSession(ksession, true);
         ksession.addEventListener(listener);
-
+        
+        Set<EventDescription<?>> eventDescriptions = processInstance.getEventDescriptions();
+        assertThat(eventDescriptions)
+            .hasSize(2)
+            .extracting("event").contains("MySignal", "workItemCompleted");
+        assertThat(eventDescriptions)
+            .extracting("eventType").contains("signal", "workItem");
+        assertThat(eventDescriptions)            
+            .extracting("processInstanceId").contains(processInstance.getId());
         ksession.signalEvent("MySignal", null, processInstance.getId());
         assertProcessInstanceActive(processInstance);
+        
         ksession.signalEvent("MySignal", null);
         assertProcessInstanceActive(processInstance);
+        
         ksession.signalEvent("MySignal", null);
         assertProcessInstanceActive(processInstance);
         ksession.signalEvent("MySignal", null);
@@ -728,6 +847,14 @@ public class IntermediateEventTest extends JbpmBpmn2TestCase {
         ProcessInstance processInstance = ksession
                 .startProcess("BPMN2-EventSubprocessMessage");
         assertProcessInstanceActive(processInstance);
+        Set<EventDescription<?>> eventDescriptions = processInstance.getEventDescriptions();
+        assertThat(eventDescriptions)
+            .hasSize(2)
+            .extracting("event").contains("Message-HelloMessage", "workItemCompleted");
+        assertThat(eventDescriptions)
+            .extracting("eventType").contains("signal", "workItem");       
+        assertThat(eventDescriptions)            
+            .extracting("processInstanceId").contains(processInstance.getId());
         ksession = restoreSession(ksession, true);
         ksession.addEventListener(listener);
 
@@ -765,7 +892,32 @@ public class IntermediateEventTest extends JbpmBpmn2TestCase {
         ProcessInstance processInstance = ksession
                 .startProcess("BPMN2-EventSubprocessTimer");
         assertProcessInstanceActive(processInstance);
+        
+        Set<EventDescription<?>> eventDescriptions = processInstance.getEventDescriptions();
+        assertThat(eventDescriptions)
+            .hasSize(2)
+            .extracting("event").contains("workItemCompleted", "timerTriggered");
+        assertThat(eventDescriptions)
+            .extracting("eventType").contains("workItem", "timer");
+        assertThat(eventDescriptions)            
+            .extracting("processInstanceId").contains(processInstance.getId());
+        assertThat(eventDescriptions)
+            .filteredOn("eventType", "timer")
+            .hasSize(1)
+            .extracting("properties", Map.class)
+            .anyMatch(m -> m.containsKey("TimerID") && m.containsKey("Delay"));
+        
+        
         countDownListener.waitTillCompleted();
+        
+        eventDescriptions = processInstance.getEventDescriptions();
+        assertThat(eventDescriptions)
+            .hasSize(1)
+            .extracting("event").contains("workItemCompleted");
+        assertThat(eventDescriptions)            
+            .extracting("eventType").contains("workItem");
+        assertThat(eventDescriptions)            
+            .extracting("processInstanceId").contains(processInstance.getId());
 
         WorkItem workItem = workItemHandler.getWorkItem();
         assertThat(workItem).isNotNull();
@@ -791,6 +943,21 @@ public class IntermediateEventTest extends JbpmBpmn2TestCase {
         ProcessInstance processInstance = ksession
                 .startProcess("BPMN2-EventSubprocessTimer");
         assertProcessInstanceActive(processInstance);
+        
+        Set<EventDescription<?>> eventDescriptions = processInstance.getEventDescriptions();
+        assertThat(eventDescriptions)
+            .hasSize(2)
+            .extracting("event").contains("workItemCompleted", "timerTriggered");
+        assertThat(eventDescriptions)
+            .extracting("eventType").contains("workItem", "timer");
+        assertThat(eventDescriptions)            
+            .extracting("processInstanceId").contains(processInstance.getId());
+        assertThat(eventDescriptions)
+            .filteredOn("eventType", "timer")
+            .hasSize(1)
+            .extracting("properties", Map.class)
+            .anyMatch(m -> m.containsKey("TimerID") && m.containsKey("Period"));
+        
         countDownListener.waitTillCompleted();
 
         WorkItem workItem = workItemHandler.getWorkItem();
@@ -1006,6 +1173,21 @@ public class IntermediateEventTest extends JbpmBpmn2TestCase {
         ksession.addEventListener(countDownListener);
         ProcessInstance processInstance = ksession.startProcess("TimerBoundaryEvent");
         assertProcessInstanceActive(processInstance);
+        
+        Set<EventDescription<?>> eventDescriptions = processInstance.getEventDescriptions();
+        assertThat(eventDescriptions)
+            .hasSize(2)
+            .extracting("event").contains("workItemCompleted", "timerTriggered");
+        assertThat(eventDescriptions)
+            .extracting("eventType").contains("workItem", "timer");
+        assertThat(eventDescriptions)            
+            .extracting("processInstanceId").contains(processInstance.getId());
+        assertThat(eventDescriptions)
+            .filteredOn("eventType", "timer")
+            .hasSize(1)
+            .extracting("properties", Map.class)
+            .anyMatch(m -> m.containsKey("TimerID") && m.containsKey("Period"));
+        
         countDownListener.waitTillCompleted();
         ksession = restoreSession(ksession, true);
         assertProcessInstanceFinished(processInstance, ksession);
@@ -1172,6 +1354,7 @@ public class IntermediateEventTest extends JbpmBpmn2TestCase {
         ProcessInstance processInstance = ksession
                 .startProcess("IntermediateCatchEvent");
         assertProcessInstanceActive(processInstance);
+   
         ksession = restoreSession(ksession, true);
         // now signal process instance
         ksession.signalEvent("MyMessage", "SomeValue", processInstance.getId());
@@ -1189,6 +1372,7 @@ public class IntermediateEventTest extends JbpmBpmn2TestCase {
         ProcessInstance processInstance = ksession
                 .startProcess("IntermediateCatchEvent");
         assertProcessInstanceActive(processInstance);
+                
         ksession = restoreSession(ksession, true);
         // now signal process instance
         ksession.signalEvent("Message-HelloMessage", "SomeValue",
@@ -1226,7 +1410,7 @@ public class IntermediateEventTest extends JbpmBpmn2TestCase {
         ProcessInstance processInstance = ksession
                 .startProcess("IntermediateCatchEvent");
         assertProcessInstanceActive(processInstance);
-
+  
         // now wait for 1 second for timer to trigger
         countDownListener.waitTillCompleted();
 
@@ -1742,6 +1926,19 @@ public class IntermediateEventTest extends JbpmBpmn2TestCase {
 
         ProcessInstance processInstance = ksession.startProcess("boundary-catch-error-event", params);
         assertProcessInstanceActive(processInstance);
+        Set<EventDescription<?>> eventDescriptions = processInstance.getEventDescriptions();
+        assertThat(eventDescriptions)
+            .hasSize(3)
+            .extracting("event").contains("workItemCompleted", "Inside", "Error-_D83CFC28-3322-4ABC-A12D-83476B08C7E8-MyError");
+        assertThat(eventDescriptions)
+            .extracting("eventType").contains("workItem", "signal");
+        assertThat(eventDescriptions)            
+            .extracting("processInstanceId").contains(processInstance.getId());
+        assertThat(eventDescriptions)
+            .filteredOn("eventType", "signal")
+            .hasSize(2)
+            .extracting("properties", Map.class)
+            .anyMatch(m -> m.containsKey("AttachedToID") && m.containsKey("AttachedToName"));
 
         List<WorkItem> workItems = handler.getWorkItems();
         assertThat(workItems).isNotNull();
@@ -2362,11 +2559,7 @@ public class IntermediateEventTest extends JbpmBpmn2TestCase {
         
         ksession.signalEvent("signal1", null, processInstance.getId());        
         assertProcessInstanceActive(processInstance.getId(), ksession);
-        
-        for (NodeInstance nodeInstance: ((WorkflowProcessInstance) processInstance).getNodeInstances()) {
-            System.out.println("Active node instance " + nodeInstance);
-        }
-        
+  
         ksession.signalEvent("signal2", null, processInstance.getId());
         assertProcessInstanceActive(processInstance.getId(), ksession);
         

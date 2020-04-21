@@ -100,7 +100,7 @@ public abstract class AbstractProcess<T extends Model> implements Process<T> {
     public <S> void send(Signal<S> signal) {
         instances().values().forEach(pi -> pi.send(signal));
     }
-    
+
     public Process<T> configure() {
 
         registerListeners();

@@ -22,6 +22,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Optional;
+import java.util.Set;
 import java.util.function.Consumer;
 import java.util.function.Supplier;
 import java.util.stream.Collectors;
@@ -42,6 +43,7 @@ import org.kie.internal.process.CorrelationAwareProcessRuntime;
 import org.kie.internal.process.CorrelationKey;
 import org.kie.internal.process.CorrelationProperty;
 import org.kie.kogito.Model;
+import org.kie.kogito.process.EventDescription;
 import org.kie.kogito.process.MutableProcessInstances;
 import org.kie.kogito.process.NodeInstanceNotFoundException;
 import org.kie.kogito.process.NodeNotFoundException;
@@ -351,6 +353,13 @@ public abstract class AbstractProcessInstance<T extends Model> implements Proces
         this.rt.getWorkItemManager().transitionWorkItem(id, transition);
         removeOnFinish();
     }
+    
+    
+    @Override
+    public Set<EventDescription<?>> events() {
+        return legacyProcessInstance().getEventDescriptions();
+    }
+
 
     protected void removeOnFinish() {
 

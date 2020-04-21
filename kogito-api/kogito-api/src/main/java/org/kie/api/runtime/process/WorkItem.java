@@ -147,7 +147,7 @@ public interface WorkItem {
      * @return the related node instance
      */
     NodeInstance getNodeInstance();
-    
+
     /**
      * The process instance that requested the execution of this
      * work item

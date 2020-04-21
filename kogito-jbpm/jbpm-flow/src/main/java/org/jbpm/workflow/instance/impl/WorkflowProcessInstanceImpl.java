@@ -16,14 +16,18 @@
 
 package org.jbpm.workflow.instance.impl;
 
+import static org.jbpm.workflow.instance.impl.DummyEventListener.EMPTY_EVENT_LISTENER;
+
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Iterator;
+import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 import java.util.UUID;
 import java.util.concurrent.CopyOnWriteArrayList;
 import java.util.function.Function;
@@ -33,6 +37,7 @@ import java.util.stream.Collectors;
 import org.drools.core.common.InternalKnowledgeRuntime;
 import org.drools.core.util.MVELSafeHelper;
 import org.jbpm.process.core.ContextContainer;
+import org.jbpm.process.core.context.variable.Variable;
 import org.jbpm.process.core.context.variable.VariableScope;
 import org.jbpm.process.core.timer.BusinessCalendar;
 import org.jbpm.process.core.timer.DateTimeUtils;
@@ -45,12 +50,14 @@ import org.jbpm.util.PatternConstants;
 import org.jbpm.workflow.core.DroolsAction;
 import org.jbpm.workflow.core.impl.NodeImpl;
 import org.jbpm.workflow.core.node.ActionNode;
+import org.jbpm.workflow.core.node.BoundaryEventNode;
 import org.jbpm.workflow.core.node.DynamicNode;
 import org.jbpm.workflow.core.node.EndNode;
 import org.jbpm.workflow.core.node.EventNode;
 import org.jbpm.workflow.core.node.EventNodeInterface;
 import org.jbpm.workflow.core.node.EventSubProcessNode;
 import org.jbpm.workflow.core.node.StateBasedNode;
+import org.jbpm.workflow.core.node.StateNode;
 import org.jbpm.workflow.instance.NodeInstance;
 import org.jbpm.workflow.instance.WorkflowProcessInstance;
 import org.jbpm.workflow.instance.node.CompositeNodeInstance;
@@ -61,6 +68,7 @@ import org.jbpm.workflow.instance.node.EventNodeInstance;
 import org.jbpm.workflow.instance.node.EventNodeInstanceInterface;
 import org.jbpm.workflow.instance.node.EventSubProcessNodeInstance;
 import org.jbpm.workflow.instance.node.FaultNodeInstance;
+import org.jbpm.workflow.instance.node.StateBasedNodeInstance;
 import org.kie.api.definition.process.Node;
 import org.kie.api.definition.process.NodeContainer;
 import org.kie.api.definition.process.WorkflowProcess;
@@ -70,12 +78,13 @@ import org.kie.api.runtime.process.ProcessInstance;
 import org.kie.internal.process.CorrelationKey;
 import org.kie.kogito.jobs.DurationExpirationTime;
 import org.kie.kogito.jobs.ProcessInstanceJobDescription;
+import org.kie.kogito.process.BaseEventDescription;
+import org.kie.kogito.process.EventDescription;
+import org.kie.kogito.process.NamedDataType;
 import org.kie.services.time.TimerInstance;
 import org.mvel2.integration.VariableResolverFactory;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-
-import static org.jbpm.workflow.instance.impl.DummyEventListener.EMPTY_EVENT_LISTENER;
 
 /**
  * Default implementation of a RuleFlow process instance.
@@ -764,6 +773,96 @@ public abstract class WorkflowProcessInstanceImpl extends ProcessInstanceImpl
     @Override
     public String[] getEventTypes() {
         return externalEventListeners.keySet().stream().map(this::resolveVariable).collect(Collectors.toList()).toArray(new String[externalEventListeners.size()]);
+    }
+    
+    @Override
+    public Set<EventDescription<?>> getEventDescriptions() {
+        if (getState() == ProcessInstance.STATE_COMPLETED || getState() == ProcessInstance.STATE_ABORTED) {
+            return Collections.emptySet();
+        }
+        VariableScope variableScope = (VariableScope) ((ContextContainer) getProcess()).getDefaultContext(VariableScope.VARIABLE_SCOPE);
+        Set<EventDescription<?>> eventDesciptions = new LinkedHashSet<>();
+        
+        List<EventListener> activeListeners = eventListeners.values().stream()
+                .flatMap(List::stream)
+                .collect(Collectors.toList());
+        
+        activeListeners.addAll(externalEventListeners.values().stream()
+                    .flatMap(List::stream)
+                    .collect(Collectors.toList()));
+        
+        activeListeners.forEach(el -> eventDesciptions.addAll(el.getEventDescriptions()));
+        
+ 
+        ((org.jbpm.workflow.core.WorkflowProcess)getProcess()).getNodesRecursively().stream().filter(n -> n instanceof EventNodeInterface).forEach(n -> {
+            
+            NamedDataType dataType = null;
+            if (((EventNodeInterface)n).getVariableName() != null) {
+                Variable eventVar = variableScope.findVariable(((EventNodeInterface)n).getVariableName());
+                if (eventVar != null) {
+                    dataType = new NamedDataType(eventVar.getName(), eventVar.getType());
+                }
+            }
+            if (n instanceof BoundaryEventNode) {
+                BoundaryEventNode boundaryEventNode = (BoundaryEventNode) n;
+                StateBasedNodeInstance attachedToNodeInstance = (StateBasedNodeInstance) getNodeInstances(true).stream().filter( ni -> ni.getNode().getMetaData().get("UniqueId").equals(boundaryEventNode.getAttachedToNodeId())).findFirst().orElse(null);
+                if (attachedToNodeInstance != null) {
+                    Map<String, String> properties = new HashMap<>();
+                    properties.put("AttachedToID", attachedToNodeInstance.getNodeDefinitionId());
+                    properties.put("AttachedToName", attachedToNodeInstance.getNodeName());
+                    String eventType = "signal";
+                    String eventName = boundaryEventNode.getType();
+                    Map<String, String> timerProperties = attachedToNodeInstance.extractTimerEventInformation();
+                    if (timerProperties != null) {
+                        properties.putAll(timerProperties);
+                        eventType = "timer";
+                        eventName = "timerTriggered";
+                    } 
+                
+                    eventDesciptions.add(new BaseEventDescription(eventName, (String)n.getMetaData().get("UniqueId"), n.getName(), eventType, null, getId(), dataType, properties));
+                    
+                }
+                
+            } else if (n instanceof EventSubProcessNode) {
+                EventSubProcessNode eventSubProcessNode = (EventSubProcessNode) n;
+                Node startNode = eventSubProcessNode.findStartNode();
+                Map<Timer, DroolsAction> timers = eventSubProcessNode.getTimers();
+                if (timers != null && !timers.isEmpty()) {
+                    getNodeInstances(eventSubProcessNode.getId()).forEach(ni -> {
+                        
+                        Map<String, String> timerProperties = ((StateBasedNodeInstance) ni).extractTimerEventInformation();
+                        if (timerProperties != null) {
+                         
+                            eventDesciptions.add(new BaseEventDescription("timerTriggered", (String)startNode.getMetaData().get("UniqueId"), startNode.getName(), "timer", ni.getId(), getId(), null, timerProperties));
+                          
+                        }
+                    });
+                } else {
+                
+                    for (String eventName : eventSubProcessNode.getEvents()) {
+                        
+                        eventDesciptions.add(new BaseEventDescription(eventName, (String)startNode.getMetaData().get("UniqueId"), startNode.getName(), "signal", null, getId(), dataType));
+                    }
+                
+                }
+            } else if (n instanceof EventNode) {
+                NamedDataType finalDataType = dataType;
+                getNodeInstances(n.getId()).forEach(ni -> {
+                    eventDesciptions.add(new BaseEventDescription(((EventNode) n).getType(), (String) n.getMetaData().get("UniqueId"), n.getName(), (String) n.getMetaData().getOrDefault("EventType", "signal"), ni.getId(),
+                                                              getId(), finalDataType));
+                });
+            } else if (n instanceof StateNode) {
+                
+                getNodeInstances(n.getId()).forEach(ni -> {
+                    eventDesciptions.add(new BaseEventDescription((String) n.getMetaData().get("Condition"), (String) n.getMetaData().get("UniqueId"), n.getName(), (String) 
+                                                                  n.getMetaData().getOrDefault("EventType", "signal"), ni.getId(), getId(), null));
+                });
+            }
+            
+        });
+        
+        
+        return eventDesciptions;
     }
 
     @Override

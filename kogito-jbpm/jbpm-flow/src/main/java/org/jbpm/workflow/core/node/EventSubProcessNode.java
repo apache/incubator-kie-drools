@@ -92,5 +92,15 @@ public class EventSubProcessNode extends CompositeContextNode {
         return super.acceptsEvent(type, event);
     }
     
+    @Override
+    public String getVariableName() {
+        StartNode startNode = findStartNode();
+        if (startNode != null) {
+            return (String) startNode.getMetaData("TriggerMapping");
+        }
+        
+        return super.getVariableName();
+    }
+    
 }
 

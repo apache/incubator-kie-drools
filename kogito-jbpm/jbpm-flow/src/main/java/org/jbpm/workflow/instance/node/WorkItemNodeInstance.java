@@ -19,11 +19,13 @@ package org.jbpm.workflow.instance.node;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 import java.util.regex.Matcher;
 
 import org.drools.core.WorkItemHandlerNotFoundException;
@@ -34,6 +36,7 @@ import org.drools.core.spi.ProcessContext;
 import org.drools.core.util.MVELSafeHelper;
 import org.jbpm.process.core.Context;
 import org.jbpm.process.core.ContextContainer;
+import org.jbpm.process.core.ParameterDefinition;
 import org.jbpm.process.core.Work;
 import org.jbpm.process.core.context.exception.ExceptionScope;
 import org.jbpm.process.core.context.variable.Variable;
@@ -66,6 +69,10 @@ import org.kie.api.runtime.process.DataTransformer;
 import org.kie.api.runtime.process.EventListener;
 import org.kie.api.runtime.process.NodeInstance;
 import org.kie.api.runtime.process.ProcessWorkItemHandlerException;
+import org.kie.kogito.process.EventDescription;
+import org.kie.kogito.process.GroupedNamedDataType;
+import org.kie.kogito.process.IOEventDescription;
+import org.kie.kogito.process.NamedDataType;
 import org.kie.kogito.process.workitem.WorkItemExecutionError;
 import org.mvel2.MVEL;
 import org.slf4j.Logger;
@@ -682,6 +689,25 @@ public class WorkItemNodeInstance extends StateBasedNodeInstance implements Even
         KieRuntime kruntime = ((ProcessInstance) getProcessInstance()).getKnowledgeRuntime();        
         
         return kruntime;
+    }
+
+    @Override
+    public Set<EventDescription<?>> getEventDescriptions() {
+        List<NamedDataType> inputs = new ArrayList<>();
+        for (ParameterDefinition paramDef : getWorkItemNode().getWork().getParameterDefinitions()) {
+            inputs.add(new NamedDataType(paramDef.getName(), paramDef.getType()));
+        }
+
+        List<NamedDataType> outputs = new ArrayList<>();
+        VariableScope variableScope = (VariableScope) getProcessInstance().getContextContainer().getDefaultContext(VariableScope.VARIABLE_SCOPE);
+        getWorkItemNode().getOutAssociations().forEach(da -> da.getSources().forEach(s -> outputs.add(new NamedDataType(s, variableScope.findVariable(da.getTarget()).getType()))));
+
+        GroupedNamedDataType dataTypes = new GroupedNamedDataType();
+        dataTypes.add("Input", inputs);
+        dataTypes.add("Output", outputs);
+
+        // return just the main completion type of an event
+        return Collections.singleton(new IOEventDescription("workItemCompleted", getNodeDefinitionId(), getNodeName(), "workItem", getWorkItemId(), getProcessInstance().getId(), dataTypes));
     }
     
     /*

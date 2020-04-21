@@ -19,11 +19,14 @@ import static org.assertj.core.api.Assertions.assertThat;
 
 import java.util.Collections;
 import java.util.List;
+import java.util.Set;
 
 import org.junit.jupiter.api.Test;
 import org.kie.kogito.Application;
 import org.kie.kogito.Model;
 import org.kie.kogito.codegen.AbstractCodegenTest;
+import org.kie.kogito.process.EventDescription;
+import org.kie.kogito.process.GroupedNamedDataType;
 import org.kie.kogito.process.Process;
 import org.kie.kogito.process.ProcessInstance;
 import org.kie.kogito.process.WorkItem;
@@ -47,11 +50,29 @@ public class SignalEventTest extends AbstractCodegenTest {
         
         assertThat(processInstance.status()).isEqualTo(ProcessInstance.STATE_ACTIVE);
         
+        Set<EventDescription<?>> eventDescriptions = processInstance.events();
+        assertThat(eventDescriptions)
+            .hasSize(1)
+            .extracting("event").contains("workItemCompleted");
+        assertThat(eventDescriptions)
+            .extracting("eventType").contains("workItem");
+        assertThat(eventDescriptions)            
+            .extracting("processInstanceId").contains(processInstance.id());
+        
         List<WorkItem> workItems = processInstance.workItems();
         assertThat(workItems).hasSize(1);
         
         processInstance.completeWorkItem(workItems.get(0).getId(), null);
         assertThat(processInstance.status()).isEqualTo(ProcessInstance.STATE_ACTIVE);
+        
+        eventDescriptions = processInstance.events();
+        assertThat(eventDescriptions)
+            .hasSize(1)
+            .extracting("event").contains("MyMessage");
+        assertThat(eventDescriptions)
+            .extracting("eventType").contains("signal");
+        assertThat(eventDescriptions)            
+            .extracting("processInstanceId").contains(processInstance.id());
         
         processInstance.send(Sig.of("MyMessage", "test"));
         
@@ -78,6 +99,17 @@ public class SignalEventTest extends AbstractCodegenTest {
         processInstance.start();
    
         assertThat(processInstance.status()).isEqualTo(ProcessInstance.STATE_ACTIVE);
+        
+        Set<EventDescription<?>> eventDescriptions = processInstance.events();
+        assertThat(eventDescriptions)
+            .hasSize(2)
+            .extracting("event").contains("MySignal", "workItemCompleted");
+        assertThat(eventDescriptions)
+            .extracting("eventType").contains("signal", "workItem");
+        assertThat(eventDescriptions)
+            .extracting("dataType").hasAtLeastOneElementOfType(GroupedNamedDataType.class);
+        assertThat(eventDescriptions)            
+            .extracting("processInstanceId").contains(processInstance.id());
         
         processInstance.send(Sig.of("MySignal", "test"));
         
