@@ -210,8 +210,14 @@ public class PreprocessPhase {
             Expression expression = e.asExpressionStmt().getExpression();
             if (expression.isMethodCallExpr()) {
                 MethodCallExpr mcExpr = expression.asMethodCallExpr();
+
+                MethodCallExpr rootMcExpr = findRootScope(mcExpr);
+                if (rootMcExpr == null) {
+                    return e;
+                }
+
                 Expression enclosed = new EnclosedExpr(scope);
-                mcExpr.setScope(enclosed);
+                rootMcExpr.setScope(enclosed);
 
                 if (scope.isNameExpr() || scope instanceof DrlNameExpr) { // some classes such "AtomicInteger" have a setter called "set"
                     result.addUsedBinding(printConstraint(scope));
@@ -221,6 +227,20 @@ public class PreprocessPhase {
             }
         }
         return e;
+    }
+
+    private MethodCallExpr findRootScope(MethodCallExpr mcExpr) {
+        Optional<Expression> opt = mcExpr.getScope();
+        if (!opt.isPresent()) {
+            return mcExpr;
+        } else {
+            Expression scope = opt.get();
+            if (scope.isMethodCallExpr()) {
+                return findRootScope(scope.asMethodCallExpr());
+            } else {
+                return null;
+            }
+        }
     }
 
     private AssignExpr assignToFieldAccess(PreprocessPhaseResult result, Expression scope, AssignExpr assignExpr) {
