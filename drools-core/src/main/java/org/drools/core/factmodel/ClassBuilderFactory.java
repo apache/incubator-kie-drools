@@ -60,8 +60,8 @@ public class ClassBuilderFactory implements Serializable {
 
     public void setDefaultTraitBuilder() {
         traitBuilder = new TraitClassBuilderImpl();
-    }    
-    
+    }
+
     public static ClassBuilder getDefaultTraitBuilder() {
         return new TraitClassBuilderImpl();
     }
