@@ -15,21 +15,47 @@
  */
 package org.kie.pmml.models.drools.scorecard.compiler.factories;
 
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.Optional;
+
 import org.dmg.pmml.DataDictionary;
 import org.dmg.pmml.scorecard.Scorecard;
+import org.drools.compiler.lang.descr.PackageDescr;
+import org.kie.pmml.commons.model.enums.MINING_FUNCTION;
+import org.kie.pmml.models.drools.ast.KiePMMLDroolsAST;
 import org.kie.pmml.models.drools.scorecard.model.KiePMMLScorecardModel;
+import org.kie.pmml.models.drools.tuples.KiePMMLOriginalTypeGeneratedType;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import static org.kie.pmml.compiler.commons.utils.ModelUtils.getTargetFieldName;
+import static org.kie.pmml.models.drools.commons.factories.KiePMMLDescrFactory.getBaseDescr;
+import static org.kie.pmml.models.drools.scorecard.compiler.factories.KiePMMLScorecardModelASTFactory.getKiePMMLDroolsAST;
 
 /**
  * Class used to generate <code>KiePMMLScorecard</code> out of a <code>DataDictionary</code> and a <code>ScorecardModel</code>
  */
 public class KiePMMLScorecardModelFactory {
 
+    private static final Logger logger = LoggerFactory.getLogger(KiePMMLScorecardModelFactory.class.getName());
+
     private KiePMMLScorecardModelFactory() {
         // Avoid instantiation
     }
 
     public static KiePMMLScorecardModel getKiePMMLScorecardModel(DataDictionary dataDictionary, Scorecard model) {
-        // TODO
-        throw new UnsupportedOperationException();
+        logger.trace("getKiePMMLScorecardModel {}", model);
+        String name = model.getModelName();
+        Optional<String> targetFieldName = getTargetFieldName(dataDictionary, model);
+        final Map<String, KiePMMLOriginalTypeGeneratedType> fieldTypeMap = new HashMap<>();
+        final KiePMMLDroolsAST kiePMMLDroolsAST = getKiePMMLDroolsAST(dataDictionary, model, fieldTypeMap);
+        final PackageDescr baseDescr = getBaseDescr(kiePMMLDroolsAST, name.toLowerCase());
+        return KiePMMLScorecardModel.builder(name, Collections.emptyList(), MINING_FUNCTION.byName(model.getMiningFunction().value()))
+                .withPackageDescr(baseDescr)
+                .withFieldTypeMap(fieldTypeMap)
+                .withTargetField(targetFieldName.orElse(null))
+                .build();
     }
 }
