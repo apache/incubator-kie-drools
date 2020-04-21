@@ -893,10 +893,11 @@ public class DefaultBeanClassBuilder implements Opcodes, BeanClassBuilder, Seria
      */
     protected void buildField( ClassVisitor cw,
                                FieldDefinition fieldDef) {
+        GenericTypeDefinitionTraits gtd = new GenericTypeDefinitionTraits(fieldDef.getGenericType());
         FieldVisitor fv = cw.visitField( Opcodes.ACC_PROTECTED,
                                          fieldDef.getName(),
-                                         fieldDef.getGenericType().getDescriptor(),
-                                         fieldDef.getGenericType().getSignature(),
+                                         gtd.getDescriptor(),
+                                         gtd.getSignature(),
                                          null );
 
 
@@ -1241,10 +1242,11 @@ public class DefaultBeanClassBuilder implements Opcodes, BeanClassBuilder, Seria
         MethodVisitor mv;
         // set method
         {
+            GenericTypeDefinitionTraits gtd = new GenericTypeDefinitionTraits(fieldDef.getGenericType());
             mv = cw.visitMethod( Opcodes.ACC_PUBLIC,
                     fieldDef.getWriteMethod(),
-                    "(" + fieldDef.getGenericType().getDescriptor() + ")V",
-                    fieldDef.getGenericType().hasGenerics() ? "(" + fieldDef.getGenericType().getSignature() + ")V" : null,
+                    "(" + gtd.getDescriptor() + ")V",
+                    fieldDef.getGenericType().hasGenerics() ? "(" + gtd.getSignature() + ")V" : null,
                     null );
             mv.visitCode();
             Label l0 = null;
@@ -1309,10 +1311,11 @@ public class DefaultBeanClassBuilder implements Opcodes, BeanClassBuilder, Seria
         MethodVisitor mv;
         // Get method
         {
+            GenericTypeDefinitionTraits gtd = new GenericTypeDefinitionTraits(fieldDef.getGenericType());
             mv = cw.visitMethod( Opcodes.ACC_PUBLIC,
                     fieldDef.getReadMethod(),
-                    "()" + Type.getType( fieldDef.getGenericType().getDescriptor() ),
-                    fieldDef.getGenericType().hasGenerics() ? "()" + fieldDef.getGenericType().getSignature() : null,
+                    "()" + Type.getType( gtd.getDescriptor() ),
+                    fieldDef.getGenericType().hasGenerics() ? "()" + gtd.getSignature() : null,
                     null );
             mv.visitCode();
             Label l0 = null;
