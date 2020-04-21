@@ -110,7 +110,7 @@ public class DMNRuntimeBuilder {
     }
 
     public DMNRuntimeBuilderConfigured buildConfiguration() {
-        return buildConfigurationUsingCustomCompiler((config) -> new DMNCompilerImpl(config));
+        return buildConfigurationUsingCustomCompiler(DMNCompilerImpl::new);
     }
 
     public DMNRuntimeBuilderConfigured buildConfigurationUsingCustomCompiler(Function<DMNCompilerConfiguration, DMNCompiler> dmnCompilerFn) {
