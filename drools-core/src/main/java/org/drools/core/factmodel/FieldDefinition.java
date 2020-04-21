@@ -26,7 +26,7 @@ import java.util.List;
 import java.util.Map;
 
 import org.drools.core.base.ClassFieldAccessor;
-import org.drools.core.factmodel.traits.Alias;
+//import org.drools.core.factmodel.traits.Alias;
 import org.drools.core.util.MVELSafeHelper;
 import org.drools.core.util.StringUtils;
 import org.kie.api.definition.type.Annotation;
@@ -482,10 +482,12 @@ public class FieldDefinition
     public String resolveAlias( ) {
         if ( getAnnotations() != null ) {
             for ( AnnotationDefinition def : getAnnotations() ) {
-                if ( def.getName().equals( Alias.class.getName() ) ) {
-                    String alias =  (String) def.getValues().get( "value" ).getValue();
-                    return alias;
-                }
+
+                // todo trait
+//                if ( def.getName().equals( Alias.class.getName() ) ) {
+//                    String alias =  (String) def.getValues().get( "value" ).getValue();
+//                    return alias;
+//                }
             }
         }
         return getName();
@@ -494,9 +496,9 @@ public class FieldDefinition
     public String getAlias() {
         if ( getAnnotations() != null ) {
             for ( AnnotationDefinition def : getAnnotations() ) {
-                if ( def.getName().equals( Alias.class.getName() ) ) {
-                    return (String) def.getValues().get( "value" ).getValue();
-                }
+//                if ( def.getName().equals( Alias.class.getName() ) ) {
+//                    return (String) def.getValues().get( "value" ).getValue();
+//                }
             }
         }
         return getName();
@@ -507,9 +509,9 @@ public class FieldDefinition
             return false;
         }
         for ( AnnotationDefinition def : getAnnotations() ) {
-            if ( def.getName().equals( Alias.class.getName() ) ) {
-                return true;
-            }
+//            if ( def.getName().equals( Alias.class.getName() ) ) {
+//                return true;
+//            }
         }
         return false;
     }

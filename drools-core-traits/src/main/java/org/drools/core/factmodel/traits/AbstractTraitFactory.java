@@ -61,25 +61,26 @@ public abstract class AbstractTraitFactory<T extends Thing<K>, K extends Traitab
     public AbstractTraitFactory() {
     }
 
+    // todo traits
     protected static void setMode(VirtualPropertyMode newMode, ClassBuilderFactory cbf, TraitFactory traitFactory) {
         traitFactory.mode = newMode;
         switch (newMode) {
-            case MAP:
-                if (!(cbf.getPropertyWrapperBuilder() instanceof TraitMapProxyClassBuilderImpl)) {
-                    cbf.setPropertyWrapperBuilder(new TraitMapPropertyWrapperClassBuilderImpl());
-                }
-                if (!(cbf.getTraitProxyBuilder() instanceof TraitMapProxyClassBuilderImpl)) {
-                    cbf.setTraitProxyBuilder(new TraitMapProxyClassBuilderImpl());
-                }
-                break;
-            case TRIPLES:
-                if (!(cbf.getPropertyWrapperBuilder() instanceof TraitTriplePropertyWrapperClassBuilderImpl)) {
-                    cbf.setPropertyWrapperBuilder(new TraitTriplePropertyWrapperClassBuilderImpl());
-                }
-                if (!(cbf.getTraitProxyBuilder() instanceof TraitTripleProxyClassBuilderImpl)) {
-                    cbf.setTraitProxyBuilder(new TraitTripleProxyClassBuilderImpl());
-                }
-                break;
+//            case MAP:
+//                if (!(cbf.getPropertyWrapperBuilder() instanceof TraitMapProxyClassBuilderImpl)) {
+//                    cbf.setPropertyWrapperBuilder(new TraitMapPropertyWrapperClassBuilderImpl());
+//                }
+//                if (!(cbf.getTraitProxyBuilder() instanceof TraitMapProxyClassBuilderImpl)) {
+//                    cbf.setTraitProxyBuilder(new TraitMapProxyClassBuilderImpl());
+//                }
+//                break;
+//            case TRIPLES:
+//                if (!(cbf.getPropertyWrapperBuilder() instanceof TraitTriplePropertyWrapperClassBuilderImpl)) {
+//                    cbf.setPropertyWrapperBuilder(new TraitTriplePropertyWrapperClassBuilderImpl());
+//                }
+//                if (!(cbf.getTraitProxyBuilder() instanceof TraitTripleProxyClassBuilderImpl)) {
+//                    cbf.setTraitProxyBuilder(new TraitTripleProxyClassBuilderImpl());
+//                }
+//                break;
             default:
                 throw new RuntimeException(" This should not happen : unexpected property wrapping method " + newMode);
         }
@@ -227,7 +228,7 @@ public abstract class AbstractTraitFactory<T extends Thing<K>, K extends Traitab
 
 //        ClassBuilderFactory classBuilderFactory = rcf.getClassBuilderFactory();
         ClassBuilderFactory classBuilderFactory = new ClassBuilderFactory(); // TODO instantiate this
-        TraitPropertyWrapperClassBuilder propWrapperBuilder = (TraitPropertyWrapperClassBuilder) classBuilderFactory.getPropertyWrapperBuilder();
+        TraitPropertyWrapperClassBuilder propWrapperBuilder = null;
 
         propWrapperBuilder.init(tdef, getTraitRegistry());
         try {
@@ -237,7 +238,7 @@ public abstract class AbstractTraitFactory<T extends Thing<K>, K extends Traitab
             e.printStackTrace();
         }
 
-        TraitProxyClassBuilder proxyBuilder = (TraitProxyClassBuilder) classBuilderFactory.getTraitProxyBuilder();
+        TraitProxyClassBuilder proxyBuilder = null;
 
         proxyBuilder.init(tdef, rcf.getBaseTraitProxyClass(), getTraitRegistry());
         try {

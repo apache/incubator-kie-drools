@@ -18,9 +18,7 @@ package org.drools.core.factmodel.traits;
 
 import org.drools.core.factmodel.BuildUtils;
 import org.drools.core.factmodel.ClassDefinition;
-import org.drools.core.factmodel.DefaultBeanClassBuilder;
 import org.drools.core.factmodel.FieldDefinition;
-import org.drools.core.rule.builder.dialect.asm.ClassGenerator;
 import org.kie.api.definition.type.FactField;
 import org.mvel2.asm.AnnotationVisitor;
 import org.mvel2.asm.ClassWriter;

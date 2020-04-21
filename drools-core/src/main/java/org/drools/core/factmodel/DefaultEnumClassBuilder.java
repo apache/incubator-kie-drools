@@ -31,9 +31,7 @@ import static org.drools.core.rule.builder.dialect.asm.ClassGenerator.createClas
 /**
  * A builder to dynamically build simple Javabean(TM) classes
  */
-public class DefaultEnumClassBuilder implements Opcodes,
-                                                Serializable,
-                                                ClassBuilder {
+public class DefaultEnumClassBuilder implements Opcodes, EnumClassBuilder, Serializable {
 
 
     /**
@@ -62,23 +60,23 @@ public class DefaultEnumClassBuilder implements Opcodes,
         ClassWriter cw = this.buildClassHeader( classLoader, edef );
 
         this.buildLiterals(cw,
-                edef);
+                           edef);
 
         this.buildFields( cw,
-                edef );
+                          edef );
 
 
         this.buildConstructors( cw,
-                edef );
+                                edef );
 
         this.buildGettersAndSetters( cw,
-                edef );
+                                     edef );
 
         this.buildEqualityMethods( cw,
-                edef );
+                                   edef );
 
         this.buildToString( cw,
-                edef );
+                            edef );
 
         cw.visitEnd();
 
@@ -103,19 +101,19 @@ public class DefaultEnumClassBuilder implements Opcodes,
         FieldVisitor fv;
         for ( EnumLiteralDefinition lit : classDef.getEnumLiterals() ) {
             fv = cw.visitField( ACC_PUBLIC + ACC_FINAL + ACC_STATIC + ACC_ENUM,
-                    lit.getName(),
-                    BuildUtils.getTypeDescriptor( classDef.getClassName() ),
-                    null,
-                    null);
+                                lit.getName(),
+                                BuildUtils.getTypeDescriptor( classDef.getClassName() ),
+                                null,
+                                null);
             fv.visitEnd();
         }
 
         {
             fv = cw.visitField( ACC_PRIVATE + ACC_FINAL + ACC_STATIC + ACC_SYNTHETIC,
-                    "$VALUES",
-                    "[" + BuildUtils.getTypeDescriptor( classDef.getClassName() ),
-                    null,
-                    null);
+                                "$VALUES",
+                                "[" + BuildUtils.getTypeDescriptor( classDef.getClassName() ),
+                                null,
+                                null);
             fv.visitEnd();
         }
     }
@@ -125,10 +123,10 @@ public class DefaultEnumClassBuilder implements Opcodes,
         FieldVisitor fv;
         for ( FieldDefinition fld : classDef.getFieldsDefinitions() ) {
             fv = cw.visitField( ACC_PRIVATE + ACC_FINAL,
-                    fld.getName(),
-                    BuildUtils.getTypeDescriptor( fld.getTypeName() ),
-                    null,
-                    null);
+                                fld.getName(),
+                                BuildUtils.getTypeDescriptor( fld.getTypeName() ),
+                                null,
+                                null);
             fv.visitEnd();
         }
     }
@@ -148,25 +146,25 @@ public class DefaultEnumClassBuilder implements Opcodes,
             int ofs = 3;
 
             mv = cw.visitMethod( ACC_PRIVATE,
-                    "<init>",
-                    "(Ljava/lang/String;I" + argTypesBuilder.toString() +")V",
-                    "(" + argTypesBuilder.toString() + ")V",
-                    null );
+                                 "<init>",
+                                 "(Ljava/lang/String;I" + argTypesBuilder.toString() +")V",
+                                 "(" + argTypesBuilder.toString() + ")V",
+                                 null );
             mv.visitCode();
             mv.visitVarInsn( ALOAD, 0 );
             mv.visitVarInsn( ALOAD, 1 );
             mv.visitVarInsn( ILOAD, 2 );
             mv.visitMethodInsn( INVOKESPECIAL,
-                    "java/lang/Enum",
-                    "<init>",
-                    "(Ljava/lang/String;I)V" );
+                                "java/lang/Enum",
+                                "<init>",
+                                "(Ljava/lang/String;I)V" );
             for ( FieldDefinition fld : classDef.getFieldsDefinitions() ) {
                 mv.visitVarInsn( ALOAD, 0 );
                 mv.visitVarInsn( BuildUtils.varType( fld.getTypeName() ), ofs );
                 mv.visitFieldInsn( PUTFIELD,
-                        BuildUtils.getInternalType( classDef.getName() ),
-                        fld.getName(),
-                        BuildUtils.getTypeDescriptor( fld.getTypeName() ) );
+                                   BuildUtils.getInternalType( classDef.getName() ),
+                                   fld.getName(),
+                                   BuildUtils.getTypeDescriptor( fld.getTypeName() ) );
                 ofs += BuildUtils.sizeOf( fld.getTypeName() );
             }
             mv.visitInsn( RETURN );
@@ -179,16 +177,16 @@ public class DefaultEnumClassBuilder implements Opcodes,
 
 
             mv = cw.visitMethod( ACC_STATIC,
-                    "<clinit>",
-                    "()V",
-                    null,
-                    null);
+                                 "<clinit>",
+                                 "()V",
+                                 null,
+                                 null);
             mv.visitCode();
 
             int N = classDef.getEnumLiterals().size();
 
             mv.visitTypeInsn( NEW,
-                    BuildUtils.getInternalType( classDef.getClassName() ) );
+                              BuildUtils.getInternalType( classDef.getClassName() ) );
 
             for ( int j = 0; j < N; j++ ) {
                 EnumLiteralDefinition lit = classDef.getEnumLiterals().get( j );
@@ -202,31 +200,31 @@ public class DefaultEnumClassBuilder implements Opcodes,
 
                     mv.visitLdcInsn( args.get( k ) );
                     mv.visitMethodInsn( INVOKESTATIC,
-                            "org/mvel2/MVEL",
-                            "eval",
-                            "(Ljava/lang/String;)Ljava/lang/Object;");
+                                        "org/mvel2/MVEL",
+                                        "eval",
+                                        "(Ljava/lang/String;)Ljava/lang/Object;");
 
                     if ( BuildUtils.isPrimitive( argType ) ) {
                         mv.visitTypeInsn( CHECKCAST,
-                                BuildUtils.getInternalType( BuildUtils.box( argType ) ) );
+                                          BuildUtils.getInternalType( BuildUtils.box( argType ) ) );
                         mv.visitMethodInsn( INVOKEVIRTUAL,
-                                BuildUtils.getInternalType( BuildUtils.box( argType ) ),
-                                BuildUtils.numericMorph( BuildUtils.box( argType ) ),
-                                "()" + BuildUtils.getTypeDescriptor( argType ) );
+                                            BuildUtils.getInternalType( BuildUtils.box( argType ) ),
+                                            BuildUtils.numericMorph( BuildUtils.box( argType ) ),
+                                            "()" + BuildUtils.getTypeDescriptor( argType ) );
                     } else {
                         mv.visitTypeInsn( CHECKCAST,
-                                BuildUtils.getInternalType( argType ) );
+                                          BuildUtils.getInternalType( argType ) );
                     }
                 }
 
                 mv.visitMethodInsn( INVOKESPECIAL,
-                        BuildUtils.getInternalType( classDef.getClassName() ),
-                        "<init>",
-                        "(Ljava/lang/String;I" + argTypesBuilder.toString() + ")V" );
+                                    BuildUtils.getInternalType( classDef.getClassName() ),
+                                    "<init>",
+                                    "(Ljava/lang/String;I" + argTypesBuilder.toString() + ")V" );
                 mv.visitFieldInsn(PUTSTATIC,
-                        BuildUtils.getInternalType(classDef.getClassName()),
-                        lit.getName(),
-                        BuildUtils.getTypeDescriptor(classDef.getClassName()));
+                                  BuildUtils.getInternalType(classDef.getClassName()),
+                                  lit.getName(),
+                                  BuildUtils.getTypeDescriptor(classDef.getClassName()));
                 mv.visitTypeInsn( NEW, BuildUtils.getInternalType( classDef.getClassName() ) );
             }
 
@@ -239,17 +237,17 @@ public class DefaultEnumClassBuilder implements Opcodes,
                 mv.visitInsn(DUP);
                 BuildUtils.pushInt( mv, j );
                 mv.visitFieldInsn( GETSTATIC,
-                        BuildUtils.getInternalType( classDef.getClassName() ),
-                        lit.getName(),
-                        BuildUtils.getTypeDescriptor( classDef.getClassName() ) );
+                                   BuildUtils.getInternalType( classDef.getClassName() ),
+                                   lit.getName(),
+                                   BuildUtils.getTypeDescriptor( classDef.getClassName() ) );
                 mv.visitInsn(AASTORE);
             }
 
 
             mv.visitFieldInsn( PUTSTATIC,
-                    BuildUtils.getInternalType( classDef.getClassName() ),
-                    "$VALUES",
-                    "[" + BuildUtils.getTypeDescriptor( classDef.getClassName() ));
+                               BuildUtils.getInternalType( classDef.getClassName() ),
+                               "$VALUES",
+                               "[" + BuildUtils.getTypeDescriptor( classDef.getClassName() ));
 
             mv.visitInsn( RETURN );
             mv.visitMaxs( 4 + size, 0 );
@@ -260,19 +258,19 @@ public class DefaultEnumClassBuilder implements Opcodes,
 
         {
             mv = cw.visitMethod( ACC_PUBLIC + ACC_STATIC,
-                    "valueOf",
-                    "(Ljava/lang/String;)" + BuildUtils.getTypeDescriptor( classDef.getClassName() ),
-                    null,
-                    null );
+                                 "valueOf",
+                                 "(Ljava/lang/String;)" + BuildUtils.getTypeDescriptor( classDef.getClassName() ),
+                                 null,
+                                 null );
             mv.visitCode();
             mv.visitLdcInsn( Type.getType( BuildUtils.getTypeDescriptor( classDef.getClassName() ) ) );
             mv.visitVarInsn( ALOAD, 0 );
             mv.visitMethodInsn( INVOKESTATIC,
-                    "java/lang/Enum",
-                    "valueOf",
-                    "(Ljava/lang/Class;Ljava/lang/String;)Ljava/lang/Enum;" );
+                                "java/lang/Enum",
+                                "valueOf",
+                                "(Ljava/lang/Class;Ljava/lang/String;)Ljava/lang/Enum;" );
             mv.visitTypeInsn( CHECKCAST,
-                    BuildUtils.getInternalType( classDef.getClassName() ) );
+                              BuildUtils.getInternalType( classDef.getClassName() ) );
             mv.visitInsn( ARETURN );
             mv.visitMaxs( 2, 1 );
             mv.visitEnd();
@@ -286,21 +284,21 @@ public class DefaultEnumClassBuilder implements Opcodes,
         MethodVisitor mv;
         {
             mv = cw.visitMethod( ACC_PUBLIC + ACC_STATIC,
-                    "values",
-                    "()[" + BuildUtils.getTypeDescriptor( classDef.getClassName() ),
-                    null,
-                    null);
+                                 "values",
+                                 "()[" + BuildUtils.getTypeDescriptor( classDef.getClassName() ),
+                                 null,
+                                 null);
             mv.visitCode();
             mv.visitFieldInsn( GETSTATIC,
-                    BuildUtils.getInternalType( classDef.getClassName() ),
-                    "$VALUES",
-                    "[" + BuildUtils.getTypeDescriptor( classDef.getClassName() ) );
+                               BuildUtils.getInternalType( classDef.getClassName() ),
+                               "$VALUES",
+                               "[" + BuildUtils.getTypeDescriptor( classDef.getClassName() ) );
             mv.visitMethodInsn( INVOKEVIRTUAL,
-                    "[" + BuildUtils.getTypeDescriptor( classDef.getClassName() ),
-                    "clone",
-                    "()Ljava/lang/Object;" );
+                                "[" + BuildUtils.getTypeDescriptor( classDef.getClassName() ),
+                                "clone",
+                                "()Ljava/lang/Object;" );
             mv.visitTypeInsn( CHECKCAST,
-                    "[" + BuildUtils.getTypeDescriptor( classDef.getClassName() ) );
+                              "[" + BuildUtils.getTypeDescriptor( classDef.getClassName() ) );
             mv.visitInsn( ARETURN );
             mv.visitMaxs( 1, 0 );
             mv.visitEnd();
@@ -308,26 +306,26 @@ public class DefaultEnumClassBuilder implements Opcodes,
 
         for ( FieldDefinition fld : classDef.getFieldsDefinitions() ) {
             mv = cw.visitMethod( ACC_PUBLIC,
-                    BuildUtils.getterName( fld.getName(), fld.getTypeName() ),
-                    "()" + BuildUtils.getTypeDescriptor( fld.getTypeName() ),
-                    null,
-                    null );
+                                 BuildUtils.getterName( fld.getName(), fld.getTypeName() ),
+                                 "()" + BuildUtils.getTypeDescriptor( fld.getTypeName() ),
+                                 null,
+                                 null );
             mv.visitCode();
             mv.visitVarInsn( ALOAD, 0 );
             mv.visitFieldInsn( GETFIELD,
-                    BuildUtils.getInternalType( classDef.getName() ),
-                    fld.getName(),
-                    BuildUtils.getTypeDescriptor( fld.getTypeName() ) );
+                               BuildUtils.getInternalType( classDef.getName() ),
+                               fld.getName(),
+                               BuildUtils.getTypeDescriptor( fld.getTypeName() ) );
             mv.visitInsn( BuildUtils.returnType( fld.getTypeName() ) );
             mv.visitMaxs( BuildUtils.sizeOf( fld.getTypeName() ), 1 );
             mv.visitEnd();
 
 
             mv = cw.visitMethod( ACC_PUBLIC,
-                    BuildUtils.setterName( fld.getName()),
-                    "(" + BuildUtils.getTypeDescriptor( fld.getTypeName() ) + ")V",
-                    null,
-                    null );
+                                 BuildUtils.setterName( fld.getName()),
+                                 "(" + BuildUtils.getTypeDescriptor( fld.getTypeName() ) + ")V",
+                                 null,
+                                 null );
             mv.visitCode();
             mv.visitInsn( RETURN );
             mv.visitMaxs( 0, 1 + BuildUtils.sizeOf( fld.getTypeName() ) );

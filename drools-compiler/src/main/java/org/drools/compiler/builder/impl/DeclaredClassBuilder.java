@@ -46,16 +46,16 @@ public class DeclaredClassBuilder {
             JavaDialectRuntimeData dialect = (JavaDialectRuntimeData) pkgRegistry.getDialectRuntimeRegistry().getDialectData("java");
             if (ensureJavaTypeConsistency(typeDescr, def, pkgRegistry.getTypeResolver())) {
                 switch (type.getKind()) {
-                    case TRAIT:
-                        try {
-                            buildClass(def, fullName, dialect, this.kbuilder.getBuilderConfiguration().getClassBuilderFactory().getTraitBuilder(), pkgRegistry);
-                        } catch (Exception e) {
-                            e.printStackTrace();
-                            this.kbuilder.addBuilderResult(new TypeDeclarationError(typeDescr,
-                                                                                    "Unable to compile declared trait " + fullName +
-                                                                                            ": " + e.getMessage() + ";"));
-                        }
-                        break;
+//                    case TRAIT:
+//                        try {
+//                            buildClass(def, fullName, dialect, this.kbuilder.getBuilderConfiguration().getClassBuilderFactory().getTraitBuilder(), pkgRegistry);
+//                        } catch (Exception e) {
+//                            e.printStackTrace();
+//                            this.kbuilder.addBuilderResult(new TypeDeclarationError(typeDescr,
+//                                                                                    "Unable to compile declared trait " + fullName +
+//                                                                                            ": " + e.getMessage() + ";"));
+//                        }
+//                        break;
                     case ENUM:
                         try {
                             buildClass(def, fullName, dialect, this.kbuilder.getBuilderConfiguration().getClassBuilderFactory().getEnumClassBuilder(), pkgRegistry);

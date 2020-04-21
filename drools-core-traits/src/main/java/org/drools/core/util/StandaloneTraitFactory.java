@@ -195,7 +195,7 @@ public class StandaloneTraitFactory<T extends Thing<K>, K extends TraitableBean>
                 // TODO trait instantiate this somehow
 //                ClassBuilderFactory classBuilderFactory = getComponentFactory().getClassBuilderFactory();
                 ClassBuilderFactory classBuilderFactory = new ClassBuilderFactory();
-                byte[] ext = classBuilderFactory.getTraitBuilder().buildClass(extDef, classLoader );
+                byte[] ext = new byte[0];
                 Class<?> klass = registerAndLoadTypeDefinition( extName, ext );
 
                 ClassDefinition tDef = buildClassDefinition( trait, trait );

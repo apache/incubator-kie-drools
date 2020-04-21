@@ -16,8 +16,6 @@
 
 package org.drools.core.factmodel;
 
-import org.drools.core.factmodel.traits.*;
-
 import java.io.Serializable;
 
 public class ClassBuilderFactory implements Serializable {
@@ -25,7 +23,7 @@ public class ClassBuilderFactory implements Serializable {
 
     // Generic beans
 
-    private  BeanClassBuilder beanClassBuilder = new DefaultBeanClassBuilder();
+    private  BeanClassBuilder beanClassBuilder = null;
 
     public ClassBuilder getBeanClassBuilder() {
         return beanClassBuilder;
@@ -36,83 +34,102 @@ public class ClassBuilderFactory implements Serializable {
     }
 
     public void setDefaultBeanClassBuilder() {
-        beanClassBuilder = new DefaultBeanClassBuilder() ;
+        beanClassBuilder = null ;
     }
     
     public static ClassBuilder getDefaultBeanClassBuilder() {
-        return new DefaultBeanClassBuilder();
+        return null;
+    }
+
+    private  EnumClassBuilder enumClassBuilder = new DefaultEnumClassBuilder();
+
+    public EnumClassBuilder getEnumClassBuilder() {
+        return enumClassBuilder;
+    }
+
+    public void setEnumClassBuilder( EnumClassBuilder ecb ) {
+        enumClassBuilder = ecb;
+    }
+
+    public void setDefaultEnumClassBuilder() {
+        enumClassBuilder = new DefaultEnumClassBuilder();
+    }
+
+    public static EnumClassBuilder getDefaultEnumClassBuilder() {
+        return new DefaultEnumClassBuilder();
     }
 
 
 
 
+// todo trait
     // Trait interfaces
 
-    private TraitClassBuilder traitBuilder = new TraitClassBuilderImpl();
-
-    public ClassBuilder getTraitBuilder() {
-        return traitBuilder;
-    }
-
-    public void setTraitBuilder( TraitClassBuilder tcb ) {
-        traitBuilder = tcb;
-    }
-
-    public void setDefaultTraitBuilder() {
-        traitBuilder = new TraitClassBuilderImpl();
-    }
-
-    public static ClassBuilder getDefaultTraitBuilder() {
-        return new TraitClassBuilderImpl();
-    }
-
-
-
-    // Trait property wrappers
-
-
-    private ClassBuilder propertyWrapperBuilder = new TraitMapPropertyWrapperClassBuilderImpl();
-
-    public ClassBuilder getPropertyWrapperBuilder() {
-        return propertyWrapperBuilder;
-    }
-
-    public void setPropertyWrapperBuilder( TraitPropertyWrapperClassBuilder pcb ) {
-        propertyWrapperBuilder = pcb;
-    }
-
-    public void setDefaultPropertyWrapperBuilder() {
-        propertyWrapperBuilder = new TraitTriplePropertyWrapperClassBuilderImpl();
-    }
-
-    public static ClassBuilder getDefaultPropertyWrapperBuilder() {
-        return new TraitTriplePropertyWrapperClassBuilderImpl();
-    }
-
-
-
-
-    // Trait proxy wrappers
-
-    private  TraitProxyClassBuilder traitProxyBuilder = new TraitMapProxyClassBuilderImpl();
-
-    public ClassBuilder getTraitProxyBuilder() {
-        return traitProxyBuilder;
-    }
-
-    public void setTraitProxyBuilder( TraitProxyClassBuilder tpcb ) {
-        traitProxyBuilder = tpcb;
-    }
-
-    public void setDefaultTraitProxyBuilder() {
-        traitProxyBuilder = new TraitTripleProxyClassBuilderImpl();
-    }
-
-    public static ClassBuilder getDefaultTraitProxyBuilder() {
-        return new TraitTripleProxyClassBuilderImpl();
-    }
-
-
+//    private TraitClassBuilder traitBuilder = new TraitClassBuilderImpl();
+//
+//    public ClassBuilder getTraitBuilder() {
+//        return traitBuilder;
+//    }
+//
+//    public void setTraitBuilder( TraitClassBuilder tcb ) {
+//        traitBuilder = tcb;
+//    }
+//
+//    public void setDefaultTraitBuilder() {
+//        traitBuilder = new TraitClassBuilderImpl();
+//    }
+//
+//    public static ClassBuilder getDefaultTraitBuilder() {
+//        return new TraitClassBuilderImpl();
+//    }
+//
+//
+//
+//    // Trait property wrappers
+//
+//
+//    private ClassBuilder propertyWrapperBuilder = new TraitMapPropertyWrapperClassBuilderImpl();
+//
+//    public ClassBuilder getPropertyWrapperBuilder() {
+//        return propertyWrapperBuilder;
+//    }
+//
+//    public void setPropertyWrapperBuilder( TraitPropertyWrapperClassBuilder pcb ) {
+//        propertyWrapperBuilder = pcb;
+//    }
+//
+//    public void setDefaultPropertyWrapperBuilder() {
+//        propertyWrapperBuilder = new TraitTriplePropertyWrapperClassBuilderImpl();
+//    }
+//
+//    public static ClassBuilder getDefaultPropertyWrapperBuilder() {
+//        return new TraitTriplePropertyWrapperClassBuilderImpl();
+//    }
+//
+//
+//
+//
+//    // Trait proxy wrappers
+//
+//    private  TraitProxyClassBuilder traitProxyBuilder = new TraitMapProxyClassBuilderImpl();
+//
+//    public ClassBuilder getTraitProxyBuilder() {
+//        return traitProxyBuilder;
+//    }
+//
+//    public void setTraitProxyBuilder( TraitProxyClassBuilder tpcb ) {
+//        traitProxyBuilder = tpcb;
+//    }
+//
+//    public void setDefaultTraitProxyBuilder() {
+//        traitProxyBuilder = new TraitTripleProxyClassBuilderImpl();
+//    }
+//
+//    public static ClassBuilder getDefaultTraitProxyBuilder() {
+//        return new TraitTripleProxyClassBuilderImpl();
+//    }
+//
+//
 
 
 }
