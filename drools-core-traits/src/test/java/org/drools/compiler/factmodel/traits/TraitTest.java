@@ -842,7 +842,7 @@ public class TraitTest extends CommonTestMethodBase {
             }
 
 
-            StudentProxy2 sp2 = new StudentProxy2( new Imp2(), null );
+            StudentProxy2 sp2 = new StudentProxy2(new Imp2(), null );
             System.out.println( sp2.toString() );
 
         } catch ( Exception e ) {
@@ -2078,7 +2078,7 @@ public class TraitTest extends CommonTestMethodBase {
         ksession.setGlobal("list",
                            list);
 
-        ksession.insert( new StudentImpl( "skool", "john", 27 ) );
+        ksession.insert( new StudentImpl("skool", "john", 27 ) );
 
 
         assertEquals( 3, ksession.fireAllRules() );
