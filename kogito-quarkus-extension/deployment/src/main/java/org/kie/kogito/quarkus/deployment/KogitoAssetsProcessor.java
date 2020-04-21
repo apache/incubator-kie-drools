@@ -108,6 +108,8 @@ public class KogitoAssetsProcessor {
             }
         }
 
+        GeneratorContext context = buildContext(projectPath, index);
+
         Collection<ClassInfo> modelClasses = index
                 .getAllKnownImplementors(createDotName(Model.class.getCanonicalName()));
 
@@ -118,6 +120,7 @@ public class KogitoAssetsProcessor {
                 parameters);
         persistenceGenerator.setDependencyInjection(new CDIDependencyInjectionAnnotator());
         persistenceGenerator.setPackageName(appPackageName);
+        persistenceGenerator.setContext(context);
 
         Collection<GeneratedFile> generatedFiles = persistenceGenerator.generate();
 
@@ -347,12 +350,7 @@ public class KogitoAssetsProcessor {
         boolean useMonitoring = combinedIndexBuildItem.getIndex()
                 .getClassByName(createDotName(metricsClass)) != null;
 
-        GeneratorContext context = GeneratorContext.ofResourcePath(projectPath.resolve("src/main/resources").toFile());
-        context.withBuildContext(new QuarkusKogitoBuildContext(className -> {
-                DotName classDotName = createDotName(className);
-                return !combinedIndexBuildItem.getIndex().getAnnotations(classDotName).isEmpty() || combinedIndexBuildItem.getIndex().getClassByName(classDotName) != null;
-
-        }));
+        GeneratorContext context = buildContext(projectPath, combinedIndexBuildItem.getIndex());
 
         ApplicationGenerator appGen = new ApplicationGenerator(appPackageName, new File(projectPath.toFile(), "target"))
                 .withDependencyInjection(new CDIDependencyInjectionAnnotator())
@@ -472,6 +470,17 @@ public class KogitoAssetsProcessor {
             }
         }
         return DotName.createComponentized(lastDollarName, name, true);
+    }
+
+    private GeneratorContext buildContext(Path projectPath, IndexView index) {
+    	GeneratorContext context = GeneratorContext.ofResourcePath(projectPath.resolve("src/main/resources").toFile());
+        context.withBuildContext(new QuarkusKogitoBuildContext(className -> {
+                DotName classDotName = createDotName(className);
+                return !index.getAnnotations(classDotName).isEmpty() || index.getClassByName(classDotName) != null;
+
+        }));
+
+        return context;
     }
 
 }

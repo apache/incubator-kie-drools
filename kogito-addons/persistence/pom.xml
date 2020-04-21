@@ -12,5 +12,6 @@
   <modules>
     <module>infinispan-persistence-addon</module>
     <module>infinispan-quarkus-health-addon</module>
+    <module>filesystem-persistence-addon</module>
   </modules>
 </project>

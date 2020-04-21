@@ -46,6 +46,7 @@ import org.drools.compiler.rule.builder.dialect.java.JavaDialectConfiguration;
 import org.kie.kogito.Model;
 import org.kie.kogito.codegen.ApplicationGenerator;
 import org.kie.kogito.codegen.GeneratedFile;
+import org.kie.kogito.codegen.GeneratorContext;
 import org.kie.kogito.codegen.process.persistence.PersistenceGenerator;
 import org.kie.kogito.codegen.process.persistence.proto.ReflectionProtoGenerator;
 import org.kie.kogito.process.ProcessInstancesFactory;
@@ -66,6 +67,9 @@ public class ProcessClassesMojo extends AbstractKieMojo {
     
     @Parameter(required = true, defaultValue = "${project.build.directory}")
     private File targetDirectory;
+    
+    @Parameter(required = true, defaultValue = "${project.basedir}/src/main/resources")
+    private File kieSourcesDirectory;
     
     @Parameter(property = "kogito.di.enabled", defaultValue = "true")
     private boolean dependencyInjection;
@@ -107,10 +111,14 @@ public class ProcessClassesMojo extends AbstractKieMojo {
                         parameters.add(t.getTypeName());
                     }
                 }
+                
+                GeneratorContext context = GeneratorContext.ofResourcePath(kieSourcesDirectory);
+                context.withBuildContext(discoverKogitoRuntimeContext(project));
 
-                PersistenceGenerator persistenceGenerator = new PersistenceGenerator(targetDirectory, modelClasses, !parameters.isEmpty(), new ReflectionProtoGenerator(), cl, parameters);
+                PersistenceGenerator persistenceGenerator = new PersistenceGenerator(targetDirectory, modelClasses, !classes.isEmpty(), new ReflectionProtoGenerator(), cl, parameters);
                 persistenceGenerator.setPackageName(appPackageName);
                 persistenceGenerator.setDependencyInjection(discoverDependencyInjectionAnnotator(dependencyInjection, project));
+                persistenceGenerator.setContext(context);
                 Collection<GeneratedFile> generatedFiles = persistenceGenerator.generate();
 
 

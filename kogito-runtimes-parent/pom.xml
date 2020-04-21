@@ -842,6 +842,8 @@
                               <include name="**/target/classes/**/*.class"/>
                               <!-- To avoid a complaint about duplicate classes from archetypes. -->
                               <exclude name="**/target/test-classes/**/*.class"/>
+                              <!-- To avoid a complaint about duplicate classes as KogitoProcessInstancesFactory.class is required in every persistence addon that is mutually exclusive. -->
+                              <exclude name="**/target/classes/org/kie/kogito/persistence/KogitoProcessInstancesFactory.class"/>
                             </fileset>
                           </classfiles>
                           <sourcefiles encoding="UTF-8">
