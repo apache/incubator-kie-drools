@@ -15,6 +15,7 @@
 
 package org.kie.kogito.codegen.decision;
 
+import java.io.File;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.Collection;
@@ -83,7 +84,7 @@ public class DecisionContainerGenerator extends AbstractApplicationSection {
         for (DMNModel model : models) {
             Path sourcePath = Paths.get(model.getResource().getSourcePath());
             Path relativizedPath = basePath.relativize(sourcePath);
-            String resourcePath = "/" + relativizedPath;
+            String resourcePath = "/" + relativizedPath.toString().replace(File.separatorChar, '/');
             MethodCallExpr getResAsStream = new MethodCallExpr(new FieldAccessExpr(applicationClass.getNameAsExpression(), "class"), "getResourceAsStream").addArgument(new StringLiteralExpr(resourcePath));
             ObjectCreationExpr isr = new ObjectCreationExpr().setType(inputStreamReaderClass).addArgument(getResAsStream);
             Optional<FieldDeclaration> dmnRuntimeField = typeDeclaration.getFieldByName("dmnRuntime");
