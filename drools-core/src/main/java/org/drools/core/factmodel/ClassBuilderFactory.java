@@ -23,7 +23,7 @@ public class ClassBuilderFactory implements Serializable {
 
     // Generic beans
 
-    private  BeanClassBuilder beanClassBuilder = null;
+    private  BeanClassBuilder beanClassBuilder = new DefaultBeanClassBuilder();
 
     public ClassBuilder getBeanClassBuilder() {
         return beanClassBuilder;
