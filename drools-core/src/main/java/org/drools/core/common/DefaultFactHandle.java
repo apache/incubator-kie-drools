@@ -330,7 +330,7 @@ public class DefaultFactHandle extends AbstractBaseLinkedListNode<DefaultFactHan
 //            }
 //            this.traitType = newType;
 //        } else {
-//            this.identityHashCode = determineIdentityHashCode( object );
+            this.identityHashCode = determineIdentityHashCode( object );
 //        }
     }
 
