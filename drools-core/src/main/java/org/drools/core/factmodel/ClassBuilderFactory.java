@@ -23,7 +23,7 @@ public class ClassBuilderFactory implements Serializable {
 
     // Generic beans
 
-    private  BeanClassBuilder beanClassBuilder = new DefaultBeanClassBuilder();
+    private  BeanClassBuilder beanClassBuilder = new DefaultBeanClassBuilder(true);
 
     public ClassBuilder getBeanClassBuilder() {
         return beanClassBuilder;
@@ -34,11 +34,11 @@ public class ClassBuilderFactory implements Serializable {
     }
 
     public void setDefaultBeanClassBuilder() {
-        beanClassBuilder = null ;
+        beanClassBuilder = new DefaultBeanClassBuilder(true) ;
     }
-    
+
     public static ClassBuilder getDefaultBeanClassBuilder() {
-        return null;
+        return new DefaultBeanClassBuilder(true);
     }
 
     private  EnumClassBuilder enumClassBuilder = new DefaultEnumClassBuilder();

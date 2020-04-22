@@ -1,11 +1,11 @@
 /*
- * Copyright 2020 Red Hat, Inc. and/or its affiliates.
+ * Copyright 2008 Red Hat, Inc. and/or its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
  *
- *     http://www.apache.org/licenses/LICENSE-2.0
+ *      http://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
@@ -810,7 +810,7 @@ public class DefaultBeanClassBuilder implements Opcodes, BeanClassBuilder, Seria
      * @param def
      */
     protected void buildFieldTMS( ClassWriter cw, ClassDefinition def ) {
-//
+
 //        FieldVisitor fv = cw.visitField( Opcodes.ACC_PRIVATE,
 //                                         TraitableBean.FIELDTMS_FIELD_NAME,
 //                                         Type.getDescriptor( TraitFieldTMS.class ),
@@ -893,17 +893,16 @@ public class DefaultBeanClassBuilder implements Opcodes, BeanClassBuilder, Seria
      */
     protected void buildField( ClassVisitor cw,
                                FieldDefinition fieldDef) {
-//        GenericTypeDefinitionTraits gtd = new GenericTypeDefinitionTraits(fieldDef.getGenericType());
-//        FieldVisitor fv = cw.visitField( Opcodes.ACC_PROTECTED,
-//                                         fieldDef.getName(),
-//                                         gtd.getDescriptor(),
-//                                         gtd.getSignature(),
-//                                         null );
-//
-//
-//        buildFieldAnnotations( fieldDef, fv );
-//
-//        fv.visitEnd();
+        FieldVisitor fv = cw.visitField( Opcodes.ACC_PROTECTED,
+                                         fieldDef.getName(),
+                                         fieldDef.getGenericType().getDescriptor(),
+                                         fieldDef.getGenericType().getSignature(),
+                                         null );
+
+
+        buildFieldAnnotations( fieldDef, fv );
+
+        fv.visitEnd();
     }
 
 
@@ -1242,59 +1241,58 @@ public class DefaultBeanClassBuilder implements Opcodes, BeanClassBuilder, Seria
         MethodVisitor mv;
         // set method
         {
-//            GenericTypeDefinitionTraits gtd = new GenericTypeDefinitionTraits(fieldDef.getGenericType());
-//            mv = cw.visitMethod( Opcodes.ACC_PUBLIC,
-//                    fieldDef.getWriteMethod(),
-//                    "(" + gtd.getDescriptor() + ")V",
-//                    fieldDef.getGenericType().hasGenerics() ? "(" + gtd.getSignature() + ")V" : null,
-//                    null );
-//            mv.visitCode();
+            mv = cw.visitMethod( Opcodes.ACC_PUBLIC,
+                    fieldDef.getWriteMethod(),
+                    "(" + fieldDef.getGenericType().getDescriptor() + ")V",
+                    fieldDef.getGenericType().hasGenerics() ? "(" + fieldDef.getGenericType().getSignature() + ")V" : null,
+                    null );
+            mv.visitCode();
             Label l0 = null;
-//            if ( this.debug ) {
-//                l0 = new Label();
-//                mv.visitLabel( l0 );
-//            }
-//            mv.visitVarInsn( Opcodes.ALOAD, 0 );
-//
-//            if ( classDef.isTraitable() && classDef.isFullTraiting() ) {
-//                updateTraitableField( mv, classDef, fieldDef );
-//            } else {
-//                mv.visitVarInsn( Type.getType( BuildUtils.getTypeDescriptor( fieldDef.getTypeName() ) ).getOpcode( Opcodes.ILOAD ), 1 );
-//            }
-//
-//            if ( ! fieldDef.hasOverride() ) {
-//                mv.visitFieldInsn( Opcodes.PUTFIELD,
-//                                   BuildUtils.getInternalType( classDef.getClassName() ),
-//                                   fieldDef.getName(),
-//                                   BuildUtils.getTypeDescriptor( fieldDef.getTypeName() ) );
-//            } else {
-//                mv.visitMethodInsn( INVOKESPECIAL,
-//                                    BuildUtils.getInternalType( classDef.getSuperClass() ),
-//                                    BuildUtils.setterName( fieldDef.getName()),
-//                                    Type.getMethodDescriptor( Type.VOID_TYPE,
-//                                                              new Type[]{Type.getType( BuildUtils.getTypeDescriptor( fieldDef.getOverriding()) )} ),
-//                                    false );
-//            }
-//
-//            if (classDef.isReactive()) {
-//                mv.visitVarInsn( ALOAD, 0 );
-//                mv.visitMethodInsn( INVOKEVIRTUAL, BuildUtils.getInternalType( classDef.getClassName() ), "notifyModification", "()V", false );
-//            }
-//
-//            mv.visitInsn( Opcodes.RETURN );
-//            Label l1 = null;
-//            if ( this.debug ) {
-//                l1 = new Label();
-//                mv.visitLabel( l1 );
-//                mv.visitLocalVariable( "this",
-//                        BuildUtils.getTypeDescriptor( classDef.getClassName() ),
-//                        null,
-//                        l0,
-//                        l1,
-//                        0 );
-//            }
-//            mv.visitMaxs( 0, 0 );
-//            mv.visitEnd();
+            if ( this.debug ) {
+                l0 = new Label();
+                mv.visitLabel( l0 );
+            }
+            mv.visitVarInsn( Opcodes.ALOAD, 0 );
+
+            if ( classDef.isTraitable() && classDef.isFullTraiting() ) {
+                updateTraitableField( mv, classDef, fieldDef );
+            } else {
+                mv.visitVarInsn( Type.getType( BuildUtils.getTypeDescriptor( fieldDef.getTypeName() ) ).getOpcode( Opcodes.ILOAD ), 1 );
+            }
+
+            if ( ! fieldDef.hasOverride() ) {
+                mv.visitFieldInsn( Opcodes.PUTFIELD,
+                                   BuildUtils.getInternalType( classDef.getClassName() ),
+                                   fieldDef.getName(),
+                                   BuildUtils.getTypeDescriptor( fieldDef.getTypeName() ) );
+            } else {
+                mv.visitMethodInsn( INVOKESPECIAL,
+                                    BuildUtils.getInternalType( classDef.getSuperClass() ),
+                                    BuildUtils.setterName( fieldDef.getName()),
+                                    Type.getMethodDescriptor( Type.VOID_TYPE,
+                                                              new Type[]{Type.getType( BuildUtils.getTypeDescriptor( fieldDef.getOverriding()) )} ),
+                                    false );
+            }
+
+            if (classDef.isReactive()) {
+                mv.visitVarInsn( ALOAD, 0 );
+                mv.visitMethodInsn( INVOKEVIRTUAL, BuildUtils.getInternalType( classDef.getClassName() ), "notifyModification", "()V", false );
+            }
+
+            mv.visitInsn( Opcodes.RETURN );
+            Label l1 = null;
+            if ( this.debug ) {
+                l1 = new Label();
+                mv.visitLabel( l1 );
+                mv.visitLocalVariable( "this",
+                        BuildUtils.getTypeDescriptor( classDef.getClassName() ),
+                        null,
+                        l0,
+                        l1,
+                        0 );
+            }
+            mv.visitMaxs( 0, 0 );
+            mv.visitEnd();
         }
     }
 
@@ -1311,50 +1309,49 @@ public class DefaultBeanClassBuilder implements Opcodes, BeanClassBuilder, Seria
         MethodVisitor mv;
         // Get method
         {
-//            GenericTypeDefinitionTraits gtd = new GenericTypeDefinitionTraits(fieldDef.getGenericType());
-//            mv = cw.visitMethod( Opcodes.ACC_PUBLIC,
-//                    fieldDef.getReadMethod(),
-//                    "()" + Type.getType( gtd.getDescriptor() ),
-//                    fieldDef.getGenericType().hasGenerics() ? "()" + gtd.getSignature() : null,
-//                    null );
-//            mv.visitCode();
-//            Label l0 = null;
-//            if ( this.debug ) {
-//                l0 = new Label();
-//                mv.visitLabel( l0 );
-//            }
-//            mv.visitVarInsn( Opcodes.ALOAD,
-//                    0 );
-//            if ( ! fieldDef.hasOverride() ) {
-//                mv.visitFieldInsn( Opcodes.GETFIELD,
-//                                   BuildUtils.getInternalType( classDef.getClassName() ),
-//                                   fieldDef.getName(),
-//                                   BuildUtils.getTypeDescriptor( fieldDef.getTypeName() ) );
-//                mv.visitInsn( Type.getType( BuildUtils.getTypeDescriptor( fieldDef.getTypeName() ) ).getOpcode( Opcodes.IRETURN ) );
-//            } else {
-//                mv.visitMethodInsn( INVOKESPECIAL,
-//                                    BuildUtils.getInternalType( classDef.getSuperClass() ),
-//                                    BuildUtils.getterName( fieldDef.getName(), fieldDef.getOverriding() ),
-//                                    Type.getMethodDescriptor( Type.getType( BuildUtils.getTypeDescriptor( fieldDef.getOverriding() ) ), new Type[]{} ),
-//                                    false );
-//                mv.visitTypeInsn( CHECKCAST, BuildUtils.getInternalType( fieldDef.getTypeName() ) );
-//                mv.visitInsn( BuildUtils.returnType( fieldDef.getTypeName() ) );
-//            }
-//
-//            Label l1 = null;
-//            if ( this.debug ) {
-//                l1 = new Label();
-//                mv.visitLabel( l1 );
-//                mv.visitLocalVariable( "this",
-//                        BuildUtils.getTypeDescriptor( classDef.getClassName() ),
-//                        null,
-//                        l0,
-//                        l1,
-//                        0 );
-//            }
-//            mv.visitMaxs( 0,
-//                    0 );
-//            mv.visitEnd();
+            mv = cw.visitMethod( Opcodes.ACC_PUBLIC,
+                    fieldDef.getReadMethod(),
+                    "()" + Type.getType( fieldDef.getGenericType().getDescriptor() ),
+                    fieldDef.getGenericType().hasGenerics() ? "()" + fieldDef.getGenericType().getSignature() : null,
+                    null );
+            mv.visitCode();
+            Label l0 = null;
+            if ( this.debug ) {
+                l0 = new Label();
+                mv.visitLabel( l0 );
+            }
+            mv.visitVarInsn( Opcodes.ALOAD,
+                    0 );
+            if ( ! fieldDef.hasOverride() ) {
+                mv.visitFieldInsn( Opcodes.GETFIELD,
+                                   BuildUtils.getInternalType( classDef.getClassName() ),
+                                   fieldDef.getName(),
+                                   BuildUtils.getTypeDescriptor( fieldDef.getTypeName() ) );
+                mv.visitInsn( Type.getType( BuildUtils.getTypeDescriptor( fieldDef.getTypeName() ) ).getOpcode( Opcodes.IRETURN ) );
+            } else {
+                mv.visitMethodInsn( INVOKESPECIAL,
+                                    BuildUtils.getInternalType( classDef.getSuperClass() ),
+                                    BuildUtils.getterName( fieldDef.getName(), fieldDef.getOverriding() ),
+                                    Type.getMethodDescriptor( Type.getType( BuildUtils.getTypeDescriptor( fieldDef.getOverriding() ) ), new Type[]{} ),
+                                    false );
+                mv.visitTypeInsn( CHECKCAST, BuildUtils.getInternalType( fieldDef.getTypeName() ) );
+                mv.visitInsn( BuildUtils.returnType( fieldDef.getTypeName() ) );
+            }
+
+            Label l1 = null;
+            if ( this.debug ) {
+                l1 = new Label();
+                mv.visitLabel( l1 );
+                mv.visitLocalVariable( "this",
+                        BuildUtils.getTypeDescriptor( classDef.getClassName() ),
+                        null,
+                        l0,
+                        l1,
+                        0 );
+            }
+            mv.visitMaxs( 0,
+                    0 );
+            mv.visitEnd();
         }
     }
 
