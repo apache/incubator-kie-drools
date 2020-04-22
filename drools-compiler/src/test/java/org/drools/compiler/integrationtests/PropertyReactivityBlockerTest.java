@@ -15,32 +15,20 @@
 
 package org.drools.compiler.integrationtests;
 
-import java.math.BigDecimal;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 
-import org.drools.compiler.Address;
 import org.drools.compiler.Cell;
 import org.drools.compiler.CommonTestMethodBase;
 import org.drools.compiler.Neighbor;
 import org.drools.compiler.Person;
 import org.drools.core.event.DebugAgendaEventListener;
-import org.drools.core.factmodel.traits.Traitable;
-import org.drools.core.impl.StatefulKnowledgeSessionImpl;
-import org.drools.core.io.impl.ByteArrayResource;
 import org.drools.core.reteoo.ReteDumper;
 import org.junit.Test;
-import org.kie.api.KieBase;
-import org.kie.api.definition.type.Modifies;
-import org.kie.api.definition.type.PropertyReactive;
 import org.kie.api.io.ResourceType;
 import org.kie.api.runtime.KieSession;
 import org.kie.api.runtime.rule.FactHandle;
-import org.kie.internal.builder.KnowledgeBuilder;
-import org.kie.internal.builder.KnowledgeBuilderFactory;
 import org.kie.internal.builder.conf.PropertySpecificOption;
-import org.kie.internal.runtime.StatefulKnowledgeSession;
 import org.kie.internal.utils.KieHelper;
 
 import static org.junit.Assert.assertEquals;

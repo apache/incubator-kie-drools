@@ -35,7 +35,7 @@ import java.util.concurrent.TimeUnit;
 import org.drools.compiler.CommonTestMethodBase;
 import org.drools.compiler.Person;
 import org.drools.compiler.ReviseTraitTestWithPRAlwaysCategory;
-import org.drools.compiler.integrationtests.SerializationHelper;
+import org.drools.compiler.SerializationHelper;
 import org.drools.core.ObjectFilter;
 import org.drools.core.base.ClassObjectType;
 import org.drools.core.common.InternalFactHandle;
@@ -5935,7 +5935,7 @@ public class TraitTest extends CommonTestMethodBase {
         KieBase kbase = getKieBaseFromString( drl );
 
         try {
-            kbase = SerializationHelper.serializeObject( kbase, ((InternalKnowledgeBase) kbase).getRootClassLoader() );
+            kbase = SerializationHelper.serializeObject(kbase, ((InternalKnowledgeBase) kbase).getRootClassLoader() );
         } catch (Exception e) {
             throw new RuntimeException(e);
         }

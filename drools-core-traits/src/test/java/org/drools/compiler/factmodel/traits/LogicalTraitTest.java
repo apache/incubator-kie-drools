@@ -19,7 +19,7 @@ package org.drools.compiler.factmodel.traits;
 
 import org.drools.compiler.CommonTestMethodBase;
 import org.drools.compiler.ReviseTraitTestWithPRAlwaysCategory;
-import org.drools.compiler.integrationtests.SerializationHelper;
+import org.drools.compiler.SerializationHelper;
 import org.drools.core.common.InternalFactHandle;
 import org.drools.core.factmodel.traits.CoreWrapper;
 import org.drools.core.factmodel.traits.TraitFactory;
@@ -43,7 +43,6 @@ import org.kie.internal.builder.KnowledgeBuilder;
 import org.kie.internal.builder.KnowledgeBuilderFactory;
 import org.kie.internal.builder.conf.PropertySpecificOption;
 import org.kie.internal.io.ResourceFactory;
-import org.kie.internal.runtime.StatefulKnowledgeSession;
 import org.kie.internal.utils.KieHelper;
 
 import java.util.ArrayList;
@@ -103,7 +102,7 @@ public class LogicalTraitTest extends CommonTestMethodBase {
 
 
         try {
-            ks = SerializationHelper.getSerialisedStatefulKnowledgeSession( ks, true );
+            ks = SerializationHelper.getSerialisedStatefulKnowledgeSession(ks, true );
         } catch ( Exception e ) {
             e.printStackTrace();
             fail( e.getMessage() );

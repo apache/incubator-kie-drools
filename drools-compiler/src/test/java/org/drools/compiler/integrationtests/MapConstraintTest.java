@@ -35,7 +35,6 @@ import org.drools.compiler.Person;
 import org.drools.compiler.Pet;
 import org.drools.core.WorkingMemory;
 import org.drools.core.audit.WorkingMemoryConsoleLogger;
-import org.junit.Assert;
 import org.junit.Test;
 import org.kie.api.KieBase;
 import org.kie.api.event.rule.AfterMatchFiredEvent;

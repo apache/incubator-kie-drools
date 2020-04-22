@@ -43,7 +43,6 @@ import org.kie.internal.builder.KnowledgeBuilderFactory;
 import org.kie.internal.event.rule.RuleEventListener;
 import org.kie.internal.event.rule.RuleEventManager;
 import org.kie.internal.io.ResourceFactory;
-import org.kie.internal.runtime.StatefulKnowledgeSession;
 
 import static org.junit.Assert.*;
 
