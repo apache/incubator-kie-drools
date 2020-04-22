@@ -20,7 +20,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
-import org.drools.compiler.CommonTestMethodBase;
+import org.drools.compiler.CommonTraitTest;
 import org.drools.compiler.Person;
 import org.drools.core.beliefsystem.abductive.Abducible;
 import org.drools.core.factmodel.traits.Thing;
@@ -46,7 +46,7 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
 
-public class TraitTypeGenerationTest extends CommonTestMethodBase {
+public class TraitTypeGenerationTest extends CommonTraitTest {
 
     @PropertyReactive
     @Traitable

@@ -17,7 +17,7 @@
 package org.drools.compiler.factmodel.traits;
 
 
-import org.drools.compiler.CommonTestMethodBase;
+import org.drools.compiler.CommonTraitTest;
 import org.drools.compiler.ReviseTraitTestWithPRAlwaysCategory;
 import org.drools.compiler.SerializationHelper;
 import org.drools.core.common.InternalFactHandle;
@@ -57,7 +57,7 @@ import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
 
 @RunWith(Parameterized.class)
-public class LogicalTraitTest extends CommonTestMethodBase {
+public class LogicalTraitTest extends CommonTraitTest {
 
 
     public VirtualPropertyMode mode;

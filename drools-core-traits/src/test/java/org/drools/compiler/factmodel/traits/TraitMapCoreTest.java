@@ -15,7 +15,12 @@
 
 package org.drools.compiler.factmodel.traits;
 
-import org.drools.compiler.CommonTestMethodBase;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
+import org.drools.compiler.CommonTraitTest;
 import org.drools.core.ClassObjectFilter;
 import org.drools.core.factmodel.TraitableMap;
 import org.drools.core.factmodel.traits.TraitFactory;
@@ -24,17 +29,12 @@ import org.drools.core.factmodel.traits.VirtualPropertyMode;
 import org.junit.Test;
 import org.kie.api.runtime.KieSession;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
 
-public class TraitMapCoreTest extends CommonTestMethodBase {
+public class TraitMapCoreTest extends CommonTraitTest {
 
     @Test(timeout=10000)
     public void testMapCoreManyTraits(  ) {

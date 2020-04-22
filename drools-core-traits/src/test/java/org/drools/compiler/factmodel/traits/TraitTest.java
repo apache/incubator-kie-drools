@@ -32,7 +32,7 @@ import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.TimeUnit;
 
-import org.drools.compiler.CommonTestMethodBase;
+import org.drools.compiler.CommonTraitTest;
 import org.drools.compiler.Person;
 import org.drools.compiler.ReviseTraitTestWithPRAlwaysCategory;
 import org.drools.compiler.SerializationHelper;
@@ -113,7 +113,7 @@ import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 
 @RunWith(Parameterized.class)
-public class TraitTest extends CommonTestMethodBase {
+public class TraitTest extends CommonTraitTest {
 
     private static long t0;
 

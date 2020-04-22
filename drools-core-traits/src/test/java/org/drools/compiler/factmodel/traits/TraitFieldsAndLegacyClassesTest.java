@@ -20,7 +20,7 @@ import java.util.Arrays;
 import java.util.Collection;
 import java.util.List;
 
-import org.drools.compiler.CommonTestMethodBase;
+import org.drools.compiler.CommonTraitTest;
 import org.drools.compiler.ReviseTraitTestWithPRAlwaysCategory;
 import org.drools.core.factmodel.FieldDefinition;
 import org.drools.core.factmodel.traits.TraitFactory;
@@ -41,7 +41,7 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 
 @RunWith(Parameterized.class)
-public class TraitFieldsAndLegacyClassesTest extends CommonTestMethodBase {
+public class TraitFieldsAndLegacyClassesTest extends CommonTraitTest {
 
     public VirtualPropertyMode mode;
 
