@@ -2702,57 +2702,6 @@ public class Misc2Test extends CommonTestMethodBase {
     }
 
     @Test
-    public void testIsAWith2KContainers() {
-        // BZ-996056
-        String str =
-                "import org.drools.compiler.Person\n" +
-                "\n" +
-                "global java.util.List students\n" +
-                "\n" +
-                "declare trait Student\n" +
-                "    school : String\n" +
-                "end\n" +
-                "\n" +
-                "rule \"create student\" \n" +
-                "    when\n" +
-                "        $student : Person( age < 26, this not isA Student )\n" +
-                "    then\n" +
-                "        Student s = don( $student, Student.class );\n" +
-                "        s.setSchool(\"Masaryk University\");\n" +
-                "        update( $student );\n" +
-                "end\n" +
-                "\n" +
-                "rule \"found student\"\n" +
-                "    salience 10\n" +
-                "    when\n" +
-                "        student : Person( this isA Student )\n" +
-                "    then\n" +
-                "        students.add(student);\n" +
-                "end";
-
-        KieServices ks = KieServices.Factory.get();
-        KieFileSystem kfs = ks.newKieFileSystem();
-
-        kfs.write( "src/main/resources/isA.drl", str );
-
-        KieBuilder kbuilder = ks.newKieBuilder( kfs );
-
-        kbuilder.buildAll();
-        assertEquals( 0, kbuilder.getResults().getMessages().size() );
-
-        ks.newKieContainer( kbuilder.getKieModule().getReleaseId() ).getKieBase();
-
-        KieSession ksession = ks.newKieContainer( kbuilder.getKieModule().getReleaseId() ).newKieSession();
-        assertNotNull( ksession );
-
-        List students = new ArrayList();
-        ksession.setGlobal( "students", students );
-        ksession.insert( new Person( "tom", 20 ) );
-        ksession.fireAllRules();
-        assertEquals( 1, students.size() );
-    }
-
-    @Test
     public void testAutomaticallySwitchFromReteOOToPhreak() {
         String str = "rule R when then end\n";
 
@@ -3181,42 +3130,6 @@ public class Misc2Test extends CommonTestMethodBase {
 
         public void setSafe( boolean safe ) {
         }
-    }
-
-    @Test
-    public void testMvelJittingWithTraitProxies() throws Exception {
-        // DROOLS-291
-        String drl = "package org.drools.test; \n" +
-                     "" +
-                     "import org.drools.compiler.integrationtests.Misc2Test.FooIntf; \n" +
-                     "import org.drools.compiler.integrationtests.Misc2Test.BarKlass; \n" +
-                     "" +
-                     "declare BarKlass end \n" +
-                     "declare FooIntf end \n" +
-                     "" +
-                     "declare trait ExtFoo extends FooIntf end \n" +
-                     "" +
-                     "declare Kore @Traitable safe : boolean end \n" +
-                     "" +
-                     "rule \"Test2\" when FooIntf( safe == true ) then end \n" +
-                     "" +
-                     "rule \"In1\" when $s : String() then don( new Kore( true ), ExtFoo.class ); end \n" +
-                     "rule \"In2\" when $s : Integer() then insert( new BarKlass() ); end \n" +
-                     "" +
-                     "";
-        KieBase kb = loadKnowledgeBaseFromString( drl );
-        KieSession ks = kb.newKieSession();
-
-        for ( int j = 0; j < 21; j++ ) {
-            ks.insert( "x" + j );
-            ks.fireAllRules();
-        }
-
-        // wait for jitting
-        Thread.sleep( 100 );
-
-        ks.insert( 0 );
-        ks.fireAllRules();
     }
 
     @Test
@@ -4074,7 +3987,6 @@ public class Misc2Test extends CommonTestMethodBase {
         assertEquals( 4, list.get( 2 ) );
 
     }
-
 
     @Test
     public void testEvalConstraintWithMvelOperator() {
