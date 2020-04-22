@@ -20,6 +20,7 @@ import java.io.Externalizable;
 import java.util.HashSet;
 import java.util.Set;
 
+import com.google.protobuf.Internal;
 import org.drools.core.base.ClassFieldAccessorStore;
 import org.drools.core.definitions.InternalKnowledgePackage;
 import org.drools.core.definitions.impl.KnowledgePackageImpl;
@@ -30,6 +31,7 @@ import org.drools.core.util.HierarchyEncoder;
 import org.drools.core.util.TripleFactory;
 import org.drools.core.util.TripleStore;
 import org.kie.api.KieBase;
+import org.kie.api.cdi.KBase;
 import org.mvel2.asm.Opcodes;
 
 public class TraitFactoryImpl<T extends Thing<K>, K extends TraitableBean> extends AbstractTraitFactory<T,K> implements Opcodes, Externalizable, TraitFactory {
@@ -44,11 +46,11 @@ public class TraitFactoryImpl<T extends Thing<K>, K extends TraitableBean> exten
     }
 
     public static TraitFactoryImpl getTraitBuilderForKnowledgeBase(KieBase kb ) {
-        return (TraitFactoryImpl) ((InternalKnowledgeBase) kb).getConfiguration().getComponentFactory().getTraitFactory();
+        return new TraitFactoryImpl((InternalKnowledgeBase) kb);
     }
 
-    public TraitFactoryImpl() {
-
+    private TraitFactoryImpl(InternalKnowledgeBase kBase) {
+        this.kBase = kBase;
     }
 
     protected Class<?> registerAndLoadTypeDefinition( String proxyName, byte[] proxy ) throws ClassNotFoundException {

@@ -37,6 +37,7 @@ import org.drools.reflective.classloader.ProjectClassLoader;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.Parameterized;
+import org.kie.api.KieBase;
 import org.kie.api.definition.type.PropertyReactive;
 import org.kie.api.io.ResourceType;
 import org.kie.api.runtime.KieSession;
@@ -280,11 +281,12 @@ public class LegacyTraitTest {
 
 
         KieSession ks = getSessionFromString( source );
-        KieComponentFactory componentFactory = ((KnowledgeBaseImpl) ks.getKieBase()).getConfiguration().getComponentFactory();
-        componentFactory.setTraitFactory(new TraitFactoryImpl<>());
+        KieBase kieBase = ks.getKieBase();
+        KieComponentFactory componentFactory = ((KnowledgeBaseImpl) kieBase).getConfiguration().getComponentFactory();
+        componentFactory.setTraitFactory(TraitFactoryImpl.getTraitBuilderForKnowledgeBase(kieBase));
         componentFactory.setTraitRegistry(new TraitRegistryImpl());
 
-        TraitFactoryImpl.setMode(mode, ks.getKieBase() );
+        TraitFactoryImpl.setMode(mode, kieBase);
         ArrayList list = new ArrayList();
         ks.setGlobal( "list", list );
 
