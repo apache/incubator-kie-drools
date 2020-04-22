@@ -1213,21 +1213,6 @@ public class TypeDeclarationTest {
 
     }
 
-    public static class SomeClass {}
-
-    @Test
-    public void testRedeclareClassAsTrait() {
-        final String s1 = "package test; " +
-                          "global java.util.List list; " +
-
-                          "declare trait " + SomeClass.class.getCanonicalName() + " end ";
-
-        KieHelper kh = new KieHelper();
-        kh.addContent( s1, ResourceType.DRL );
-
-        assertEquals( 1, kh.verify().getMessages( Message.Level.ERROR ).size() );
-    }
-
     public static class BeanishClass {
         private int foo;
         public int getFoo() { return foo; }

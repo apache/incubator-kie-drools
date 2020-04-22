@@ -21,18 +21,32 @@ import org.drools.core.impl.InternalKnowledgeBase;
 import org.drools.core.impl.KnowledgeBaseFactory;
 import org.drools.core.io.impl.ByteArrayResource;
 import org.junit.Test;
+import org.kie.api.builder.Message;
 import org.kie.api.definition.type.FactType;
 import org.kie.api.io.ResourceType;
 import org.kie.internal.builder.KnowledgeBuilder;
 import org.kie.internal.builder.KnowledgeBuilderFactory;
+import org.kie.internal.utils.KieHelper;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 
-/**
- * Test for declared bean Extension
- */
-public class TraitExtendsTest extends CommonTestMethodBase {
+public class TraitTypeGenerationTest extends CommonTestMethodBase {
+
+    @Test
+    public void testRedeclareClassAsTrait() {
+        final String s1 = "package test; " +
+                "global java.util.List list; " +
+
+                "declare trait " + SomeClass.class.getCanonicalName() + " end ";
+
+        KieHelper kh = new KieHelper();
+        kh.addContent( s1, ResourceType.DRL );
+
+        assertEquals( 1, kh.verify().getMessages(Message.Level.ERROR ).size() );
+    }
+
+    public static class SomeClass {}
 
     @Test
     public void testMultipleInheritanceWithPosition1() throws Exception {
