@@ -24,6 +24,7 @@ import org.drools.compiler.CommonTestMethodBase;
 import org.drools.compiler.Person;
 import org.drools.core.beliefsystem.abductive.Abducible;
 import org.drools.core.factmodel.traits.Thing;
+import org.drools.core.factmodel.traits.Traitable;
 import org.drools.core.impl.InternalKnowledgeBase;
 import org.drools.core.impl.KnowledgeBaseFactory;
 import org.drools.core.io.impl.ByteArrayResource;
@@ -34,6 +35,7 @@ import org.kie.api.builder.KieBuilder;
 import org.kie.api.builder.KieFileSystem;
 import org.kie.api.builder.Message;
 import org.kie.api.definition.type.FactType;
+import org.kie.api.definition.type.PropertyReactive;
 import org.kie.api.io.ResourceType;
 import org.kie.api.runtime.KieSession;
 import org.kie.internal.builder.KnowledgeBuilder;
@@ -45,6 +47,111 @@ import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
 
 public class TraitTypeGenerationTest extends CommonTestMethodBase {
+
+    @PropertyReactive
+    @Traitable
+    public static class Bean {
+        private int a;
+        private int b;
+
+        public Bean() { }
+
+        public Bean(final int a, final int b) {
+            this.a = a;
+            this.b = b;
+        }
+
+        public int getA() {
+            return a;
+        }
+
+        public void setA(final int a) {
+            this.a = a;
+        }
+
+        public int getB() {
+            return b;
+        }
+
+        public void setB(final int b) {
+            this.b = b;
+        }
+    }
+
+    @Test(timeout=10000)
+    public void testWithDeclaredTypeAndTraitInDifferentPackages() {
+        // DROOLS-91
+        final String str1 =
+                "package org.pkg1;\n" +
+                        "declare trait Trait " +
+                        "    @propertyReactive\n" +
+                        "    a : int\n" +
+                        "end";
+
+        final String str2 =
+                "package org.pkg2;\n" +
+                        "declare Bean " +
+                        "    @propertyReactive\n" +
+                        "    @Traitable\n" +
+                        "    a : int\n" +
+                        "    b : int\n" +
+                        "end";
+
+        final String str3 =
+                "package org.pkg3;\n" +
+                        "import org.pkg1.Trait;\n" +
+                        "import org.pkg2.Bean;\n" +
+                        "rule Init\n" +
+                        "when\n" +
+                        "then\n" +
+                        "    insert(new Bean(1, 2));\n" +
+                        "end\n" +
+                        "rule R\n" +
+                        "when\n" +
+                        "   $b : Bean( b == 2)" +
+                        "then\n" +
+                        "   Trait t = don( $b, Trait.class, true );\n" +
+                        "   modify(t) { setA(2) };\n" +
+                        "end";
+
+        final KieBase kbase = loadKnowledgeBaseFromString(str1, str2, str3);
+        final KieSession ksession = kbase.newKieSession();
+
+        ksession.fireAllRules();
+    }
+
+    @Test(timeout=10000)
+    public void testWithBeanAndTraitInDifferentPackages() {
+        // DROOLS-91
+        final String str1 =
+                "package org.drools.compiler.integrationtests;\n" +
+                        "declare trait Trait " +
+                        "    @propertyReactive\n" +
+                        "    a : int\n" +
+                        "end";
+
+        final String str2 =
+                "package org.drools.test;\n" +
+                        "import org.drools.compiler.integrationtests.Trait;\n" +
+                        "import " + Bean.class.getCanonicalName() + ";\n" +
+                        "rule Init\n" +
+                        "when\n" +
+                        "then\n" +
+                        "    insert(new Bean(1, 2));\n" +
+                        "end\n" +
+                        "rule R\n" +
+                        "when\n" +
+                        "   $b : Bean( b == 2)" +
+                        "then\n" +
+                        "   Trait t = don( $b, Trait.class, true );\n" +
+                        "   modify(t) { setA(2) };\n" +
+                        "end";
+
+        final KieBase kbase = loadKnowledgeBaseFromString(str1, str2);
+        final KieSession ksession = kbase.newKieSession();
+
+        ksession.fireAllRules();
+    }
 
     @Test
     public void testIsAWith2KContainers() {
