@@ -58,8 +58,8 @@ public class KiePMMLScorecardModelASTFactory extends KiePMMLAbstractModelASTFact
         DATA_TYPE targetType = getTargetFieldType(dataDictionary, model);
         List<KiePMMLDroolsType> types = KiePMMLDataDictionaryASTFactory.factory(fieldTypeMap).declareTypes(dataDictionary);
         final List<KiePMMLOutputField> outputFields = getOutputFields(model);
-        List<KiePMMLDroolsRule> rules = KiePMMLScorecardModelCharacteristicASTFactory.factory(fieldTypeMap, outputFields, targetType)
-                .declareRulesFromCharacteristics(model.getCharacteristics(), "");
+        final List<KiePMMLDroolsRule> rules = KiePMMLScorecardModelCharacteristicASTFactory.factory(fieldTypeMap, outputFields, targetType)
+                .declareRulesFromCharacteristics(model.getCharacteristics(), "", model.getInitialScore());
         return new KiePMMLDroolsAST(types, rules);
     }
 }

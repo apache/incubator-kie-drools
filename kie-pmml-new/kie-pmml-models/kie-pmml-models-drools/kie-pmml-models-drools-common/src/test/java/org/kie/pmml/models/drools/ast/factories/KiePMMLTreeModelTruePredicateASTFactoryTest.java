@@ -39,7 +39,7 @@ public class KiePMMLTreeModelTruePredicateASTFactoryTest {
         String currentRule = "_will play_will play";
         final List<KiePMMLDroolsRule> rules = new ArrayList<>();
         True truePredicate = new True();
-        KiePMMLTruePredicateASTFactory.factory(truePredicate, Collections.emptyList(), rules).declareRuleFromTruePredicate(parentPath, currentRule, DONE, false);
+        KiePMMLTruePredicateASTFactory.factory(truePredicate, Collections.emptyList(), rules).declareRuleFromTruePredicateWithResult(parentPath, currentRule, DONE, false);
         assertEquals(1, rules.size());
         final KiePMMLDroolsRule retrieved = rules.get(0);
         assertNotNull(retrieved);
@@ -57,7 +57,7 @@ public class KiePMMLTreeModelTruePredicateASTFactoryTest {
         final List<KiePMMLDroolsRule> rules = new ArrayList<>();
         String statusToSet = DONE;
         True truePredicate = new True();
-        KiePMMLTruePredicateASTFactory.factory(truePredicate, Collections.emptyList(), rules).declareRuleFromTruePredicate(parentPath, currentRule, statusToSet, true);
+        KiePMMLTruePredicateASTFactory.factory(truePredicate, Collections.emptyList(), rules).declareRuleFromTruePredicateWithResult(parentPath, currentRule, statusToSet, true);
         assertEquals(1, rules.size());
         final KiePMMLDroolsRule retrieved = rules.get(0);
         assertNotNull(retrieved);

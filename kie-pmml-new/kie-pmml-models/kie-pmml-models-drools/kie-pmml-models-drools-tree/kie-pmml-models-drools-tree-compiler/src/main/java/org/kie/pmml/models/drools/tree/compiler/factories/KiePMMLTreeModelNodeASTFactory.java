@@ -98,7 +98,7 @@ public class KiePMMLTreeModelNodeASTFactory {
         }
         String currentRule = String.format(PATH_PATTERN, parentPath, node.getScore());
         if (!(predicate instanceof True)) {
-            KiePMMLPredicateASTFactory.factory(fieldTypeMap, outputFields, rules).declareRuleFromPredicate(predicate, parentPath, currentRule, getCorrectlyFormattedResult(node.getScore(), targetType), true);
+            KiePMMLPredicateASTFactory.factory(fieldTypeMap, outputFields, rules).declareRuleFromPredicateWithResult(predicate, parentPath, currentRule, getCorrectlyFormattedResult(node.getScore(), targetType), true);
         }
     }
 
@@ -120,7 +120,7 @@ public class KiePMMLTreeModelNodeASTFactory {
             return;
         }
         String currentRule = String.format(PATH_PATTERN, parentPath, node.getScore());
-        KiePMMLPredicateASTFactory.factory(fieldTypeMap, outputFields, rules).declareRuleFromPredicate(predicate, parentPath, currentRule, node.getScore(), false);
+        KiePMMLPredicateASTFactory.factory(fieldTypeMap, outputFields, rules).declareRuleFromPredicateWithResult(predicate, parentPath, currentRule, node.getScore(), false);
         node.getNodes().forEach(child -> declareRuleFromNode(child, currentRule, rules));
     }
 
@@ -137,7 +137,7 @@ public class KiePMMLTreeModelNodeASTFactory {
         logger.trace("declareDefaultRuleFromNode {} {}", node, parentPath);
         String originalRule = String.format(PATH_PATTERN, parentPath, node.getScore());
         String currentRule = String.format(PATH_PATTERN, "default", originalRule);
-        KiePMMLPredicateASTFactory.factory(fieldTypeMap, outputFields, rules).declareRuleFromPredicate(new True(), originalRule, currentRule, getCorrectlyFormattedResult(node.getScore(), targetType), true);
+        KiePMMLPredicateASTFactory.factory(fieldTypeMap, outputFields, rules).declareRuleFromPredicateWithResult(new True(), originalRule, currentRule, getCorrectlyFormattedResult(node.getScore(), targetType), true);
     }
 
     protected boolean isFinalLeaf(final Node node) {

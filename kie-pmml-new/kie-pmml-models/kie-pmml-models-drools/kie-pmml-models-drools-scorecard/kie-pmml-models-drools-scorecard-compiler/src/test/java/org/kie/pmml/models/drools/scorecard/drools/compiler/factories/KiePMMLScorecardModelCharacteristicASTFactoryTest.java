@@ -58,7 +58,7 @@ public class KiePMMLScorecardModelCharacteristicASTFactoryTest {
         final Map<String, KiePMMLOriginalTypeGeneratedType> fieldTypeMap = new HashMap<>();
         DATA_TYPE targetType = getTargetFieldType(samplePmml.getDataDictionary(), scorecardModel);
         KiePMMLDataDictionaryASTFactory.factory(fieldTypeMap).declareTypes(samplePmml.getDataDictionary());
-        KiePMMLScorecardModelCharacteristicASTFactory.factory(fieldTypeMap, Collections.emptyList(), targetType).declareRulesFromCharacteristics(characteristics, "_will");
+        KiePMMLScorecardModelCharacteristicASTFactory.factory(fieldTypeMap, Collections.emptyList(), targetType).declareRulesFromCharacteristics(characteristics, "_will", null);
         assertFalse(fieldTypeMap.isEmpty());
     }
 }

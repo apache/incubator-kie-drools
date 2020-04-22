@@ -54,23 +54,60 @@ public class KiePMMLCompoundPredicateASTFactory extends KiePMMLAbstractPredicate
         return new KiePMMLCompoundPredicateASTFactory(compoundPredicate, fieldTypeMap, outputFields, rules);
     }
 
-    public void declareRuleFromCompoundPredicate(final String parentPath,
-                                                 final String currentRule,
-                                                 final Object result,
-                                                 boolean isFinalLeaf) {
-        logger.trace("declareIntermediateRuleFromCompoundPredicate {} {} {} {}", compoundPredicate, parentPath, currentRule, result);
+    /**
+     * @param parentPath
+     * @param currentRule
+     * @param result
+     * @param isFinalLeaf
+     */
+    public void declareRuleFromCompoundPredicateWithResult(final String parentPath,
+                                                           final String currentRule,
+                                                           final Object result,
+                                                           boolean isFinalLeaf) {
+        logger.trace("declareRuleFromCompoundPredicateWithResult {} {} {} {} {}", compoundPredicate, parentPath, currentRule, result, isFinalLeaf);
         switch (compoundPredicate.getBooleanOperator()) {
             case SURROGATE:
-                declareRuleFromCompoundPredicateSurrogate(parentPath, currentRule, result, isFinalLeaf);
+                declareRuleFromCompoundPredicateSurrogateWithResult(parentPath, currentRule, result, isFinalLeaf);
                 break;
             case AND:
-                declareRuleFromCompoundPredicateAndOrXor(parentPath, currentRule, result, isFinalLeaf);
+                declareRuleFromCompoundPredicateAndOrXorWithResult(parentPath, currentRule, result, isFinalLeaf);
                 break;
             case OR:
-                declareRuleFromCompoundPredicateAndOrXor(parentPath, currentRule, result, isFinalLeaf);
+                declareRuleFromCompoundPredicateAndOrXorWithResult(parentPath, currentRule, result, isFinalLeaf);
                 break;
             case XOR:
-                declareRuleFromCompoundPredicateAndOrXor(parentPath, currentRule, result, isFinalLeaf);
+                declareRuleFromCompoundPredicateAndOrXorWithResult(parentPath, currentRule, result, isFinalLeaf);
+                break;
+            default:
+                throw new IllegalStateException(String.format("Unknown CompoundPredicate.booleanOperator %st", compoundPredicate.getBooleanOperator()));
+        }
+    }
+
+    /**
+     * @param parentPath
+     * @param currentRule
+     * @param toAccumulate
+     * @param statusToSet
+     * @param isLastCharacteristic
+     */
+    public void declareRuleFromCompoundPredicateWithAccumulation(final String parentPath,
+                                                                 final String currentRule,
+                                                                 final Number toAccumulate,
+                                                                 final String statusToSet,
+                                                                 boolean isLastCharacteristic) {
+        logger.trace("declareRuleFromCompoundPredicateWithAccumulation {} {} {} {} {}", compoundPredicate, parentPath, currentRule, statusToSet, isLastCharacteristic);
+        switch (compoundPredicate.getBooleanOperator()) {
+            case SURROGATE:
+                declareRuleFromCompoundPredicateSurrogateWithAccumulation(parentPath, currentRule, toAccumulate, statusToSet, isLastCharacteristic);
+                break;
+            case AND:
+                declareRuleFromCompoundPredicateAndOrXorWithAccumulation(parentPath, currentRule, toAccumulate, statusToSet, isLastCharacteristic);
+                break;
+            case OR:
+                declareRuleFromCompoundPredicateAndOrXorWithAccumulation(parentPath, currentRule, toAccumulate, statusToSet, isLastCharacteristic);
+                break;
+            case XOR:
+                declareRuleFromCompoundPredicateAndOrXorWithAccumulation(parentPath, currentRule, toAccumulate, statusToSet, isLastCharacteristic);
                 break;
             default:
                 throw new IllegalStateException(String.format("Unknown CompoundPredicate.booleanOperator %st", compoundPredicate.getBooleanOperator()));
@@ -85,15 +122,15 @@ public class KiePMMLCompoundPredicateASTFactory extends KiePMMLAbstractPredicate
      * @param result
      * @param isFinalLeaf
      */
-    public void declareRuleFromCompoundPredicateAndOrXor(final String parentPath,
-                                                         final String currentRule,
-                                                         final Object result,
-                                                         boolean isFinalLeaf) {
+    public void declareRuleFromCompoundPredicateAndOrXorWithResult(final String parentPath,
+                                                                   final String currentRule,
+                                                                   final Object result,
+                                                                   boolean isFinalLeaf) {
         logger.trace("declareRuleFromCompoundPredicateAndOrXor {} {} {}", compoundPredicate, parentPath, currentRule);
         if (!CompoundPredicate.BooleanOperator.AND.equals(compoundPredicate.getBooleanOperator()) &&
                 !CompoundPredicate.BooleanOperator.OR.equals((compoundPredicate.getBooleanOperator())) &&
                 !CompoundPredicate.BooleanOperator.XOR.equals((compoundPredicate.getBooleanOperator()))) {
-            throw new KiePMMLException(String.format("getConstraintEntriesFromAndOrCompoundPredicate invoked with %s CompoundPredicate", compoundPredicate.getBooleanOperator()));
+            throw new KiePMMLException(String.format("declareRuleFromCompoundPredicateAndOrXor invoked with %s CompoundPredicate", compoundPredicate.getBooleanOperator()));
         }
         String statusConstraint = StringUtils.isEmpty(parentPath) ? KiePMMLAbstractModelASTFactory.STATUS_NULL : String.format(STATUS_PATTERN, parentPath);
         List<KiePMMLFieldOperatorValue> constraints;
@@ -124,6 +161,53 @@ public class KiePMMLCompoundPredicateASTFactory extends KiePMMLAbstractPredicate
     }
 
     /**
+     * Method to be invoked when <b>compoundPredicate.getBooleanOperator()</b> is <code>AND</code>, <code>OR</code> or
+     * <XOR>XOR</XOR>. Throws exception otherwise
+     * @param parentPath
+     * @param currentRule
+     * @param statusToSet
+     * @param isLastCharacteristic
+     */
+    public void declareRuleFromCompoundPredicateAndOrXorWithAccumulation(final String parentPath,
+                                                                         final String currentRule,
+                                                                         final Number toAccumulate,
+                                                                         final String statusToSet,
+                                                                         boolean isLastCharacteristic) {
+        logger.trace("declareRuleFromCompoundPredicateAndOrXorWithAccumulation {} {} {}", compoundPredicate, parentPath, currentRule);
+        if (!CompoundPredicate.BooleanOperator.AND.equals(compoundPredicate.getBooleanOperator()) &&
+                !CompoundPredicate.BooleanOperator.OR.equals((compoundPredicate.getBooleanOperator())) &&
+                !CompoundPredicate.BooleanOperator.XOR.equals((compoundPredicate.getBooleanOperator()))) {
+            throw new KiePMMLException(String.format("declareRuleFromCompoundPredicateAndOrXorWithAccumulation invoked with %s CompoundPredicate", compoundPredicate.getBooleanOperator()));
+        }
+        String statusConstraint = StringUtils.isEmpty(parentPath) ? KiePMMLAbstractModelASTFactory.STATUS_NULL : String.format(STATUS_PATTERN, parentPath);
+        List<KiePMMLFieldOperatorValue> constraints;
+        KiePMMLDroolsRule.Builder builder = KiePMMLDroolsRule.builder(currentRule, statusToSet, outputFields)
+                .withStatusConstraint(statusConstraint)
+                .withAccumulation(toAccumulate);
+        switch (compoundPredicate.getBooleanOperator()) {
+            case AND:
+                constraints = getConstraintEntriesFromAndOrCompoundPredicate(compoundPredicate, fieldTypeMap);
+                builder = builder.withAndConstraints(constraints);
+                break;
+            case OR:
+                constraints = getConstraintEntriesFromAndOrCompoundPredicate(compoundPredicate, fieldTypeMap);
+                builder = builder.withOrConstraints(constraints);
+                break;
+            case XOR:
+                constraints = getConstraintEntriesFromXOrCompoundPredicate(compoundPredicate, fieldTypeMap);
+                builder = builder.withXorConstraints(constraints);
+                break;
+            default:
+                throw new IllegalStateException(String.format("CompoundPredicate.booleanOperator should never be %s at this point", compoundPredicate.getBooleanOperator()));
+        }
+        if (isLastCharacteristic) {
+            builder = builder.withAccumulationResult(true)
+                    .withResultCode(ResultCode.OK);
+        }
+        rules.add(builder.build());
+    }
+
+    /**
      * Method to be invoked when <b>compoundPredicate.getBooleanOperator()</b> is <code>SURROGATE</code>.
      * Throws exception otherwise
      * @param parentPath
@@ -131,10 +215,10 @@ public class KiePMMLCompoundPredicateASTFactory extends KiePMMLAbstractPredicate
      * @param result
      * @param isFinalLeaf
      */
-    public void declareRuleFromCompoundPredicateSurrogate(final String parentPath,
-                                                          final String currentRule,
-                                                          final Object result,
-                                                          boolean isFinalLeaf) {
+    public void declareRuleFromCompoundPredicateSurrogateWithResult(final String parentPath,
+                                                                    final String currentRule,
+                                                                    final Object result,
+                                                                    boolean isFinalLeaf) {
         logger.trace("declareRuleFromCompoundPredicateSurrogate {} {} {} {}", compoundPredicate, parentPath, currentRule, result);
 
         if (!CompoundPredicate.BooleanOperator.SURROGATE.equals(compoundPredicate.getBooleanOperator())) {
@@ -149,7 +233,39 @@ public class KiePMMLCompoundPredicateASTFactory extends KiePMMLAbstractPredicate
         final List<Predicate> simplePredicates = compoundPredicate.getPredicates().stream().filter(predicate -> predicate instanceof SimplePredicate).collect(Collectors.toList());
         simplePredicates.forEach(predicate -> {
             SimplePredicate simplePredicate = (SimplePredicate) predicate;
-            KiePMMLSimplePredicateASTFactory.factory(simplePredicate, fieldTypeMap, outputFields, rules).declareRuleFromSimplePredicateSurrogate(parentPath, currentRule, agendaActivationGroup, result, isFinalLeaf);
+            KiePMMLSimplePredicateASTFactory.factory(simplePredicate, fieldTypeMap, outputFields, rules).declareRuleFromSimplePredicateSurrogateWithResult(parentPath, currentRule, agendaActivationGroup, result, isFinalLeaf);
+        });
+    }
+
+    /**
+     * Method to be invoked when <b>compoundPredicate.getBooleanOperator()</b> is <code>SURROGATE</code>.
+     * Throws exception otherwise
+     * @param parentPath
+     * @param currentRule
+     * @param toAccumulate
+     * @param statusToSet
+     * @param isLastCharacteristic
+     */
+    public void declareRuleFromCompoundPredicateSurrogateWithAccumulation(final String parentPath,
+                                                                          final String currentRule,
+                                                                          final Number toAccumulate,
+                                                                          final String statusToSet,
+                                                                          final boolean isLastCharacteristic) {
+        logger.trace("declareRuleFromCompoundPredicateSurrogateWithAccumulation {} {} {} {} {} {}", compoundPredicate, parentPath, currentRule, toAccumulate, statusToSet, isLastCharacteristic);
+
+        if (!CompoundPredicate.BooleanOperator.SURROGATE.equals(compoundPredicate.getBooleanOperator())) {
+            throw new KiePMMLException(String.format("declareRuleFromCompoundPredicateSurrogateWithAccumulation invoked with %s CompoundPredicate", compoundPredicate.getBooleanOperator()));
+        }
+        final String agendaActivationGroup = String.format(KiePMMLAbstractModelASTFactory.SURROGATE_GROUP_PATTERN, currentRule);
+        KiePMMLDroolsRule.Builder builder = KiePMMLDroolsRule.builder(currentRule, null, outputFields)
+                .withStatusConstraint(String.format(STATUS_PATTERN, parentPath))
+                .withFocusedAgendaGroup(agendaActivationGroup);
+        rules.add(builder.build());
+        // Managing only SimplePredicates for the moment being
+        final List<Predicate> simplePredicates = compoundPredicate.getPredicates().stream().filter(predicate -> predicate instanceof SimplePredicate).collect(Collectors.toList());
+        simplePredicates.forEach(predicate -> {
+            SimplePredicate simplePredicate = (SimplePredicate) predicate;
+            KiePMMLSimplePredicateASTFactory.factory(simplePredicate, fieldTypeMap, outputFields, rules).declareRuleFromSimplePredicateSurrogateWithAccumulation(parentPath, currentRule, agendaActivationGroup, toAccumulate, statusToSet, isLastCharacteristic);
         });
     }
 }

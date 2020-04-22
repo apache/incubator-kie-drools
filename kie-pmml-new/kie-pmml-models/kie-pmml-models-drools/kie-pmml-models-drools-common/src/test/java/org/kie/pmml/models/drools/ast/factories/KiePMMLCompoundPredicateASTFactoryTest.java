@@ -58,7 +58,7 @@ public class KiePMMLCompoundPredicateASTFactoryTest {
             compoundPredicate.setBooleanOperator(operator);
             predicates.forEach(compoundPredicate::addPredicates);
             final List<KiePMMLDroolsRule> rules = new ArrayList<>();
-            KiePMMLCompoundPredicateASTFactory.factory(compoundPredicate, fieldTypeMap, Collections.emptyList(), rules).declareRuleFromCompoundPredicateAndOrXor(parentPath, currentRule, result, true);
+            KiePMMLCompoundPredicateASTFactory.factory(compoundPredicate, fieldTypeMap, Collections.emptyList(), rules).declareRuleFromCompoundPredicateAndOrXorWithResult(parentPath, currentRule, result, true);
             assertEquals(1, rules.size());
             final KiePMMLDroolsRule retrieved = rules.get(0);
             assertNotNull(retrieved);
@@ -98,7 +98,7 @@ public class KiePMMLCompoundPredicateASTFactoryTest {
             compoundPredicate.setBooleanOperator(operator);
             predicates.forEach(compoundPredicate::addPredicates);
             final List<KiePMMLDroolsRule> rules = new ArrayList<>();
-            KiePMMLCompoundPredicateASTFactory.factory(compoundPredicate, fieldTypeMap, Collections.emptyList(), rules).declareRuleFromCompoundPredicateAndOrXor(parentPath, currentRule, result, false);
+            KiePMMLCompoundPredicateASTFactory.factory(compoundPredicate, fieldTypeMap, Collections.emptyList(), rules).declareRuleFromCompoundPredicateAndOrXorWithResult(parentPath, currentRule, result, false);
             assertEquals(1, rules.size());
             final KiePMMLDroolsRule retrieved = rules.get(0);
             assertNotNull(retrieved);
@@ -132,7 +132,7 @@ public class KiePMMLCompoundPredicateASTFactoryTest {
         compoundPredicate.setBooleanOperator(CompoundPredicate.BooleanOperator.SURROGATE);
         predicates.forEach(compoundPredicate::addPredicates);
         final List<KiePMMLDroolsRule> rules = new ArrayList<>();
-        KiePMMLCompoundPredicateASTFactory.factory(compoundPredicate, fieldTypeMap, Collections.emptyList(), rules).declareRuleFromCompoundPredicateSurrogate(parentPath, currentRule, result, true);
+        KiePMMLCompoundPredicateASTFactory.factory(compoundPredicate, fieldTypeMap, Collections.emptyList(), rules).declareRuleFromCompoundPredicateSurrogateWithResult(parentPath, currentRule, result, true);
         int expectedRules = (predicates.size() * 2) + 1; // For each "surrogate" predicate two rules -"TRUE" and "FALSE" - are generated; one more rule is generated for the Compound predicate itself
         assertEquals(expectedRules, rules.size());
         String agendaActivationGroup = String.format(SURROGATE_GROUP_PATTERN, currentRule);
@@ -188,7 +188,7 @@ public class KiePMMLCompoundPredicateASTFactoryTest {
         compoundPredicate.setBooleanOperator(CompoundPredicate.BooleanOperator.SURROGATE);
         predicates.forEach(compoundPredicate::addPredicates);
         final List<KiePMMLDroolsRule> rules = new ArrayList<>();
-        KiePMMLCompoundPredicateASTFactory.factory(compoundPredicate, fieldTypeMap, Collections.emptyList(), rules).declareRuleFromCompoundPredicateSurrogate(parentPath, currentRule, result, false);
+        KiePMMLCompoundPredicateASTFactory.factory(compoundPredicate, fieldTypeMap, Collections.emptyList(), rules).declareRuleFromCompoundPredicateSurrogateWithResult(parentPath, currentRule, result, false);
         int expectedRules = (predicates.size() * 2) + 1; // For each "surrogate" predicate two rules -"TRUE" and "FALSE" - are generated; one more rule is generated for the Compound predicate itself
         assertEquals(expectedRules, rules.size());
         String agendaActivationGroup = String.format(SURROGATE_GROUP_PATTERN, currentRule);

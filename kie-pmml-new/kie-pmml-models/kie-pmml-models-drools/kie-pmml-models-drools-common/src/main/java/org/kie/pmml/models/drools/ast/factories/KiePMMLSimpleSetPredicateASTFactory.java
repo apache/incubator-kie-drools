@@ -52,11 +52,11 @@ public class KiePMMLSimpleSetPredicateASTFactory extends KiePMMLAbstractPredicat
         return new KiePMMLSimpleSetPredicateASTFactory(simpleSetPredicate, fieldTypeMap, outputFields, rules);
     }
 
-    public void declareRuleFromSimpleSetPredicate(final String parentPath,
-                                                  final String currentRule,
-                                                  final Object result,
-                                                  boolean isFinalLeaf) {
-        logger.trace("declareRuleFromSimpleSetPredicate {} {} {}", simpleSetPredicate, parentPath, currentRule);
+    public void declareRuleFromSimpleSetPredicateWithResult(final String parentPath,
+                                                            final String currentRule,
+                                                            final Object result,
+                                                            boolean isFinalLeaf) {
+        logger.trace("declareRuleFromSimpleSetPredicateWithResult {} {} {}", simpleSetPredicate, parentPath, currentRule);
         String statusConstraint = StringUtils.isEmpty(parentPath) ? STATUS_NULL : String.format(STATUS_PATTERN, parentPath);
         String key = fieldTypeMap.get(simpleSetPredicate.getField().getValue()).getGeneratedType();
         String stringValue = (String) simpleSetPredicate.getArray().getValue();
@@ -83,6 +83,43 @@ public class KiePMMLSimpleSetPredicateASTFactory extends KiePMMLAbstractPredicat
         }
         if (isFinalLeaf) {
             builder = builder.withResult(result)
+                    .withResultCode(ResultCode.OK);
+        }
+        rules.add(builder.build());
+    }
+
+    public void declareRuleFromSimpleSetPredicateWithAccumulation(final String parentPath,
+                                                                  final String currentRule,
+                                                                  final Number toAccumulate,
+                                                                  final String statusToSet,
+                                                                  final boolean isLastCharacteristic) {
+        logger.trace("declareRuleFromSimpleSetPredicateWithAccumulation {} {} {} {} {} {}", simpleSetPredicate, parentPath, currentRule, toAccumulate, statusToSet, isLastCharacteristic);
+        String statusConstraint = StringUtils.isEmpty(parentPath) ? STATUS_NULL : String.format(STATUS_PATTERN, parentPath);
+        String key = fieldTypeMap.get(simpleSetPredicate.getField().getValue()).getGeneratedType();
+        String stringValue = (String) simpleSetPredicate.getArray().getValue();
+        String[] valuesArray = stringValue.split(" ");
+        List<Object> value = Arrays.stream(valuesArray).map(rawValue -> {
+            String originalType = fieldTypeMap.get(simpleSetPredicate.getField().getValue()).getOriginalType();
+            switch (originalType) {
+                case "string":
+                    return "\"" + rawValue + "\"";
+                case "double":
+                    return Double.valueOf(rawValue).toString();
+                default:
+                    return rawValue;
+            }
+        }).collect(Collectors.toList());
+        Map<String, List<Object>> constraints = Collections.singletonMap(key, value);
+        KiePMMLDroolsRule.Builder builder = KiePMMLDroolsRule.builder(currentRule, statusToSet, outputFields)
+                .withStatusConstraint(statusConstraint);
+        if (SimpleSetPredicate.BooleanOperator.IS_IN.equals(simpleSetPredicate.getBooleanOperator())) {
+            builder = builder.withInConstraints(constraints);
+        } else {
+            builder = builder.withNotInConstraints(constraints);
+        }
+        builder = builder.withAccumulation(toAccumulate);
+        if (isLastCharacteristic) {
+            builder = builder.withAccumulationResult(true)
                     .withResultCode(ResultCode.OK);
         }
         rules.add(builder.build());

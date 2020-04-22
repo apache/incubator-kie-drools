@@ -21,7 +21,6 @@ import java.util.Map;
 
 import org.dmg.pmml.PMML;
 import org.dmg.pmml.scorecard.Scorecard;
-import org.dmg.pmml.tree.TreeModel;
 import org.junit.Before;
 import org.junit.Test;
 import org.kie.pmml.compiler.testutils.TestUtils;
@@ -45,7 +44,7 @@ public class KiePMMLScorecardModelASTFactoryTest {
         samplePmml = TestUtils.loadFromFile(SOURCE_SAMPLE);
         assertNotNull(samplePmml);
         assertEquals(1, samplePmml.getModels().size());
-        assertTrue(samplePmml.getModels().get(0) instanceof TreeModel);
+        assertTrue(samplePmml.getModels().get(0) instanceof Scorecard);
         scorecardModel = ((Scorecard) samplePmml.getModels().get(0));
     }
 

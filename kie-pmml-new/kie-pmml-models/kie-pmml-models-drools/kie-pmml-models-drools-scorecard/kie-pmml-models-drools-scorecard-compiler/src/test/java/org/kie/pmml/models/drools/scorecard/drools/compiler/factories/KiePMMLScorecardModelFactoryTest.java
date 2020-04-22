@@ -23,7 +23,8 @@ import org.dmg.pmml.DataDictionary;
 import org.dmg.pmml.DataField;
 import org.dmg.pmml.PMML;
 import org.dmg.pmml.scorecard.Scorecard;
-import org.dmg.pmml.tree.TreeModel;
+import org.drools.compiler.lang.DrlDumper;
+import org.drools.compiler.lang.descr.PackageDescr;
 import org.junit.Before;
 import org.junit.Test;
 import org.kie.pmml.commons.model.enums.MINING_FUNCTION;
@@ -38,11 +39,11 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
 
-public class KiePMMLTreeModelFactoryTest {
+public class KiePMMLScorecardModelFactoryTest {
 
     private static final String SOURCE_1 = "ScorecardSample.pmml";
-    private static final Logger logger = LoggerFactory.getLogger(KiePMMLTreeModelFactoryTest.class);
-    private static final String TARGET_FIELD = "whatIdo";
+    private static final Logger logger = LoggerFactory.getLogger(KiePMMLScorecardModelFactoryTest.class);
+    private static final String TARGET_FIELD = "overallScore";
     private static final MINING_FUNCTION _MINING_FUNCTION = MINING_FUNCTION.CLASSIFICATION;
     private PMML pmml;
     private Scorecard scorecardModel;
@@ -52,12 +53,12 @@ public class KiePMMLTreeModelFactoryTest {
         pmml = TestUtils.loadFromFile(SOURCE_1);
         assertNotNull(pmml);
         assertEquals(1, pmml.getModels().size());
-        assertTrue(pmml.getModels().get(0) instanceof TreeModel);
+        assertTrue(pmml.getModels().get(0) instanceof Scorecard);
         scorecardModel = (Scorecard) pmml.getModels().get(0);
     }
 
     @Test
-    public void getKiePMMLTreeModel() {
+    public void getKiePMMLScorecardModel() {
         final DataDictionary dataDictionary = pmml.getDataDictionary();
         KiePMMLScorecardModel retrieved = KiePMMLScorecardModelFactory.getKiePMMLScorecardModel(dataDictionary, scorecardModel);
         assertNotNull(retrieved);
@@ -68,5 +69,13 @@ public class KiePMMLTreeModelFactoryTest {
         List<DataField> dataFields = dataDictionary.getDataFields();
         assertEquals(dataFields.size(), fieldTypeMap.size());
         dataFields.forEach(dataField -> assertTrue(fieldTypeMap.containsKey(dataField.getName().getValue())));
+        // TODO REMOVE - developing only purpose
+        dump(retrieved.getPackageDescr());
+    }
+
+    private void dump(PackageDescr packageDescr) {
+        final DrlDumper drlDumper = new DrlDumper();
+        final String drlResult = drlDumper.dump(packageDescr);
+        logger.info(drlResult);
     }
 }

@@ -51,7 +51,8 @@ public class KiePMMLScorecardModelFactory {
         Optional<String> targetFieldName = getTargetFieldName(dataDictionary, model);
         final Map<String, KiePMMLOriginalTypeGeneratedType> fieldTypeMap = new HashMap<>();
         final KiePMMLDroolsAST kiePMMLDroolsAST = getKiePMMLDroolsAST(dataDictionary, model, fieldTypeMap);
-        final PackageDescr baseDescr = getBaseDescr(kiePMMLDroolsAST, name.toLowerCase());
+        String packageName = name.replace(" ", "_").toLowerCase();
+        final PackageDescr baseDescr = getBaseDescr(kiePMMLDroolsAST, packageName);
         return KiePMMLScorecardModel.builder(name, Collections.emptyList(), MINING_FUNCTION.byName(model.getMiningFunction().value()))
                 .withPackageDescr(baseDescr)
                 .withFieldTypeMap(fieldTypeMap)

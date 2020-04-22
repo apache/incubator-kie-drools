@@ -52,7 +52,7 @@ public class KiePMMLSimplePredicateASTFactory extends KiePMMLAbstractPredicateAS
         return new KiePMMLSimplePredicateASTFactory(simplePredicate, fieldTypeMap, outputFields, rules);
     }
 
-    public void declareRuleFromSimplePredicateSurrogate(
+    public void declareRuleFromSimplePredicateSurrogateWithResult(
             final String parentPath,
             final String currentRule,
             final String agendaActivationGroup,
@@ -81,10 +81,68 @@ public class KiePMMLSimplePredicateASTFactory extends KiePMMLAbstractPredicateAS
         rules.add(builder.build());
     }
 
-    public void declareRuleFromSimplePredicate(final String parentPath,
-                                               final String currentRule,
-                                               final Object result,
-                                               boolean isFinalLeaf) {
+    public void declareRuleFromSimplePredicateSurrogateWithAccumulation(
+            final String parentPath,
+            final String currentRule,
+            final String agendaActivationGroup,
+            final Number toAccumulate,
+            final String statusToSet,
+            final boolean isLastCharacteristic) {
+        logger.trace("declareRuleFromSimplePredicateSurrogateWithAccumulation {} {} {} {} {} {}", simplePredicate, currentRule, agendaActivationGroup, toAccumulate, statusToSet, isLastCharacteristic);
+        String fieldName = fieldTypeMap.get(simplePredicate.getField().getValue()).getGeneratedType();
+        String surrogateCurrentRule = String.format(KiePMMLAbstractModelASTFactory.SURROGATE_RULENAME_PATTERN, currentRule, fieldName);
+        final List<KiePMMLFieldOperatorValue> constraints = Collections.singletonList(KiePMMLASTFactoryUtils.getConstraintEntryFromSimplePredicates(fieldName, "surrogate", Collections.singletonList(simplePredicate), fieldTypeMap));
+        // Create "TRUE" matcher
+        KiePMMLDroolsRule.Builder builder = KiePMMLDroolsRule.builder(surrogateCurrentRule + "_TRUE", statusToSet, outputFields)
+                .withAgendaGroup(agendaActivationGroup)
+                .withActivationGroup(agendaActivationGroup)
+                .withAndConstraints(constraints)
+                .withAccumulation(toAccumulate);
+        if (isLastCharacteristic) {
+            builder = builder.withAccumulationResult(true)
+                    .withResultCode(ResultCode.OK);
+        }
+        rules.add(builder.build());
+        // Create "FALSE" matcher
+        builder = KiePMMLDroolsRule.builder(surrogateCurrentRule + "_FALSE", parentPath, outputFields)
+                .withAgendaGroup(agendaActivationGroup)
+                .withActivationGroup(agendaActivationGroup)
+                .withNotConstraints(constraints)
+                .withAccumulation(toAccumulate);
+        rules.add(builder.build());
+    }
+
+    /**
+     * This method will create a <b>rule</b> that, in the RHS,
+     * 1) update the status (used for flowing between rules)
+     * 2) add <i>outputfields</i> to result variables
+     * 3) eventually (if isFinalLeaf == true) set the final result and the result code to OK
+     * <p>
+     * Example of generated rule with isFinalLeaf == true
+     * rule "_classRootNode_classOrAndNestedNode"
+     * when
+     * $statusHolder : KiePMMLStatusHolder( status == "_classRootNode" )
+     * (
+     * INPUT1( value < -5.0 )  or
+     * <p>
+     * INPUT2( value < -5.0 && value > -10.0 )   )
+     * then
+     * <p>
+     * $statusHolder.setStatus("DONE");
+     * update($statusHolder);
+     * $pmml4Result.setResultCode("OK");
+     * $pmml4Result.addResultVariable($pmml4Result.getResultObjectName(), "classOrAndNestedNode");
+     * <p>
+     * end
+     * @param parentPath
+     * @param currentRule
+     * @param result
+     * @param isFinalLeaf
+     */
+    public void declareRuleFromSimplePredicateWithResult(final String parentPath,
+                                                         final String currentRule,
+                                                         final Object result,
+                                                         boolean isFinalLeaf) {
         logger.trace("declareRuleFromSimplePredicate {} {} {}", simplePredicate, parentPath, currentRule);
         String statusConstraint = StringUtils.isEmpty(parentPath) ? KiePMMLAbstractModelASTFactory.STATUS_NULL : String.format(KiePMMLAbstractModelASTFactory.STATUS_PATTERN, parentPath);
         String key = fieldTypeMap.get(simplePredicate.getField().getValue()).getGeneratedType();
@@ -97,6 +155,53 @@ public class KiePMMLSimplePredicateASTFactory extends KiePMMLAbstractPredicateAS
                 .withAndConstraints(andConstraints);
         if (isFinalLeaf) {
             builder = builder.withResult(result)
+                    .withResultCode(ResultCode.OK);
+        }
+        rules.add(builder.build());
+    }
+
+    /**
+     * This method will create a <b>rule</b> that, in the RHS,
+     * 1) update the status (used for flowing between rules)
+     * 2) add <i>outputfields</i> to result variables
+     * 3) eventually set the value to accumulate
+     * <p>
+     * rule "_ResidenceStateScore_1"
+     * when
+     * $statusHolder : KiePMMLStatusHolder( status == "_ResidenceStateScore" )
+     * <p>
+     * RESIDENCESTATE( value == "KN" )
+     * then
+     * <p>
+     * $statusHolder.setStatus("_ResidenceStateScore_1");
+     * $statusHolder.accumulate("10.0");
+     * update($statusHolder);
+     * <p>
+     * end
+     * <p>
+     * end
+     * @param parentPath
+     * @param currentRule
+     * @param toAccumulate
+     * @param isLastCharacteristic
+     */
+    public void declareRuleFromSimplePredicateWithAccumulation(final String parentPath,
+                                                               final String currentRule,
+                                                               final Number toAccumulate,
+                                                               final String statusToSet,
+                                                               final boolean isLastCharacteristic) {
+        logger.trace("declareRuleFromSimplePredicateWithAccumulation {} {} {} {} {}", parentPath, currentRule, toAccumulate, statusToSet, isLastCharacteristic);
+        String statusConstraint = StringUtils.isEmpty(parentPath) ? KiePMMLAbstractModelASTFactory.STATUS_NULL : String.format(KiePMMLAbstractModelASTFactory.STATUS_PATTERN, parentPath);
+        String key = fieldTypeMap.get(simplePredicate.getField().getValue()).getGeneratedType();
+        String operator = OPERATOR.byName(simplePredicate.getOperator().value()).getOperator();
+        Object value = KiePMMLASTFactoryUtils.getCorrectlyFormattedObject(simplePredicate, fieldTypeMap);
+        List<KiePMMLFieldOperatorValue> andConstraints = Collections.singletonList(new KiePMMLFieldOperatorValue(key, "and", Collections.singletonList(new KiePMMLOperatorValue(operator, value)), null));
+        KiePMMLDroolsRule.Builder builder = KiePMMLDroolsRule.builder(currentRule, statusToSet, outputFields)
+                .withStatusConstraint(statusConstraint)
+                .withAndConstraints(andConstraints)
+                .withAccumulation(toAccumulate);
+        if (isLastCharacteristic) {
+            builder = builder.withAccumulationResult(true)
                     .withResultCode(ResultCode.OK);
         }
         rules.add(builder.build());

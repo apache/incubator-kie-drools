@@ -24,14 +24,17 @@ import org.dmg.pmml.Predicate;
 import org.dmg.pmml.scorecard.Attribute;
 import org.dmg.pmml.scorecard.Characteristic;
 import org.dmg.pmml.scorecard.Characteristics;
+import org.drools.core.util.StringUtils;
 import org.kie.pmml.commons.model.KiePMMLOutputField;
 import org.kie.pmml.commons.model.enums.DATA_TYPE;
 import org.kie.pmml.models.drools.ast.KiePMMLDroolsRule;
+import org.kie.pmml.models.drools.ast.factories.KiePMMLAbstractModelASTFactory;
 import org.kie.pmml.models.drools.ast.factories.KiePMMLPredicateASTFactory;
 import org.kie.pmml.models.drools.tuples.KiePMMLOriginalTypeGeneratedType;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import static org.kie.pmml.commons.Constants.DONE;
 import static org.kie.pmml.models.drools.ast.factories.KiePMMLAbstractModelASTFactory.PATH_PATTERN;
 import static org.kie.pmml.models.drools.commons.utils.KiePMMLDroolsModelUtils.getCorrectlyFormattedResult;
 
@@ -56,27 +59,46 @@ public class KiePMMLScorecardModelCharacteristicASTFactory {
         return new KiePMMLScorecardModelCharacteristicASTFactory(fieldTypeMap, outputFields, targetType);
     }
 
-    public List<KiePMMLDroolsRule> declareRulesFromCharacteristics(final Characteristics characteristics, final String parentPath) {
-        logger.trace("declareRulesFromCharacteristics {} {}", characteristics, parentPath);
-        List<KiePMMLDroolsRule> toReturn = new ArrayList<>();
-        for (Characteristic characteristic : characteristics) {
-            declareRuleFromCharacteristic(characteristic, parentPath, toReturn);
+    public List<KiePMMLDroolsRule> declareRulesFromCharacteristics(final Characteristics characteristics, final String parentPath, Number initialScore) {
+        logger.trace("declareRulesFromCharacteristics {} {} {}", characteristics, parentPath, initialScore);
+        final List<KiePMMLDroolsRule> toReturn = new ArrayList<>();
+        final List<Characteristic> characteristicList = characteristics.getCharacteristics();
+        for (int i = 0; i < characteristicList.size(); i++) {
+            final Characteristic characteristic = characteristicList.get(i);
+            if (i == 0) {
+                String statusConstraint = StringUtils.isEmpty(parentPath) ? KiePMMLAbstractModelASTFactory.STATUS_NULL : String.format(KiePMMLAbstractModelASTFactory.STATUS_PATTERN, parentPath);
+                String currentRule = String.format(PATH_PATTERN, parentPath, characteristic.getName());
+                KiePMMLDroolsRule.Builder builder = KiePMMLDroolsRule.builder(currentRule, currentRule, null)
+                        .withStatusConstraint(statusConstraint);
+                if (initialScore != null)  {
+                    builder = builder.withAccumulation(initialScore);
+                }
+                toReturn.add(builder.build());
+            }
+            boolean isLastCharacteristic = (i == characteristicList.size() - 1);
+            String statusToSet = isLastCharacteristic ? DONE : String.format(PATH_PATTERN, parentPath, characteristicList.get(i + 1).getName());
+            declareRuleFromCharacteristic(characteristic, parentPath, toReturn, statusToSet, isLastCharacteristic);
         }
         return toReturn;
     }
 
     protected void declareRuleFromCharacteristic(final Characteristic characteristic, final String parentPath,
-                                                 final List<KiePMMLDroolsRule> rules) {
+                                                 final List<KiePMMLDroolsRule> rules,
+                                                 final String statusToSet,
+                                                 final boolean isLastCharacteristic) {
         logger.trace("declareRuleFromCharacteristic {} {}", characteristic, parentPath);
         String currentRule = String.format(PATH_PATTERN, parentPath, characteristic.getName());
         final List<Attribute> attributes = characteristic.getAttributes();
         for (int i = 0; i < attributes.size(); i++) {
-            declareRuleFromAttribute(attributes.get(i), currentRule, i, rules);
+            declareRuleFromAttribute(attributes.get(i), currentRule, i, rules, statusToSet, isLastCharacteristic);
         }
     }
 
-    protected void declareRuleFromAttribute(final Attribute attribute, final String parentPath, final int attributeIndex,
-                                            final List<KiePMMLDroolsRule> rules) {
+    protected void declareRuleFromAttribute(final Attribute attribute, final String parentPath,
+                                            final int attributeIndex,
+                                            final List<KiePMMLDroolsRule> rules,
+                                            final String statusToSet,
+                                            final boolean isLastCharacteristic) {
         logger.trace("declareRuleFromAttribute {} {}", attribute, parentPath);
         final Predicate predicate = attribute.getPredicate();
         // This means the rule should not be created at all.
@@ -86,6 +108,7 @@ public class KiePMMLScorecardModelCharacteristicASTFactory {
             return;
         }
         String currentRule = String.format(PATH_PATTERN, parentPath, attributeIndex);
-        KiePMMLPredicateASTFactory.factory(fieldTypeMap, outputFields, rules).declareRuleFromPredicate(predicate, parentPath, currentRule, getCorrectlyFormattedResult(attribute.getPartialScore(), targetType), false);
+        KiePMMLPredicateASTFactory.factory(fieldTypeMap, outputFields, rules)
+                .declareRuleFromPredicateWithAccumulation(predicate, parentPath, currentRule, (Number) getCorrectlyFormattedResult(attribute.getPartialScore(), targetType), statusToSet, isLastCharacteristic);
     }
 }

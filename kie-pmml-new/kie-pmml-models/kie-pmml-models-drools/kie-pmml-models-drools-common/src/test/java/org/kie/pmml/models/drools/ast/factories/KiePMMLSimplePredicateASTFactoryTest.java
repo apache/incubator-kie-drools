@@ -47,7 +47,7 @@ public class KiePMMLSimplePredicateASTFactoryTest {
         String result = "RESULT";
         String parentPath = "parentPath";
         final List<KiePMMLDroolsRule> rules = new ArrayList<>();
-        KiePMMLSimplePredicateASTFactory.factory(simplePredicate, fieldTypeMap, Collections.emptyList(), rules).declareRuleFromSimplePredicateSurrogate(parentPath, currentRule, agendaActivationGroup, result, true);
+        KiePMMLSimplePredicateASTFactory.factory(simplePredicate, fieldTypeMap, Collections.emptyList(), rules).declareRuleFromSimplePredicateSurrogateWithResult(parentPath, currentRule, agendaActivationGroup, result, true);
         assertEquals(2, rules.size());
         // This is the "TRUE" matching rule
         KiePMMLDroolsRule retrieved = rules.get(0);
@@ -103,7 +103,7 @@ public class KiePMMLSimplePredicateASTFactoryTest {
         String result = "RESULT";
         String parentPath = "parentPath";
         final List<KiePMMLDroolsRule> rules = new ArrayList<>();
-        KiePMMLSimplePredicateASTFactory.factory(simplePredicate, fieldTypeMap, Collections.emptyList(), rules).declareRuleFromSimplePredicateSurrogate(parentPath, currentRule, agendaActivationGroup, result, false);
+        KiePMMLSimplePredicateASTFactory.factory(simplePredicate, fieldTypeMap, Collections.emptyList(), rules).declareRuleFromSimplePredicateSurrogateWithResult(parentPath, currentRule, agendaActivationGroup, result, false);
         assertEquals(2, rules.size());
         // This is the "TRUE" matching rule
         KiePMMLDroolsRule retrieved = rules.get(0);
@@ -158,7 +158,7 @@ public class KiePMMLSimplePredicateASTFactoryTest {
         String declaredType = fieldTypeMap.get("outlook").getGeneratedType();
         String result = "RESULT";
         final List<KiePMMLDroolsRule> rules = new ArrayList<>();
-        KiePMMLSimplePredicateASTFactory.factory(simplePredicate, fieldTypeMap, Collections.emptyList(), rules).declareRuleFromSimplePredicate(parentPath, currentRule, result, true);
+        KiePMMLSimplePredicateASTFactory.factory(simplePredicate, fieldTypeMap, Collections.emptyList(), rules).declareRuleFromSimplePredicateWithResult(parentPath, currentRule, result, true);
         assertEquals(1, rules.size());
         final KiePMMLDroolsRule retrieved = rules.get(0);
         assertNotNull(retrieved);
@@ -186,7 +186,7 @@ public class KiePMMLSimplePredicateASTFactoryTest {
         String declaredType = fieldTypeMap.get("outlook").getGeneratedType();
         String result = "RESULT";
         final List<KiePMMLDroolsRule> rules = new ArrayList<>();
-        KiePMMLSimplePredicateASTFactory.factory(simplePredicate, fieldTypeMap, Collections.emptyList(), rules).declareRuleFromSimplePredicate(parentPath, currentRule, result, false);
+        KiePMMLSimplePredicateASTFactory.factory(simplePredicate, fieldTypeMap, Collections.emptyList(), rules).declareRuleFromSimplePredicateWithResult(parentPath, currentRule, result, false);
         assertEquals(1, rules.size());
         final KiePMMLDroolsRule retrieved = rules.get(0);
         assertNotNull(retrieved);

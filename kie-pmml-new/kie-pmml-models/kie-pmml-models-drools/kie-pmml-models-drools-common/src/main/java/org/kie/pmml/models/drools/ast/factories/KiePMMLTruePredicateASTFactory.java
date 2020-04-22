@@ -46,17 +46,32 @@ public class KiePMMLTruePredicateASTFactory extends KiePMMLAbstractPredicateASTF
         return new KiePMMLTruePredicateASTFactory(truePredicate, outputFields, rules);
     }
 
-    public void declareRuleFromTruePredicate(final String parentPath,
-                                             final String currentRule,
-                                             final Object result,
-                                             boolean isFinalLeaf) {
-        logger.trace("declareRuleFromTruePredicate {} {} {}", truePredicate, parentPath, currentRule);
+    public void declareRuleFromTruePredicateWithResult(final String parentPath,
+                                                       final String currentRule,
+                                                       final Object result,
+                                                       boolean isFinalLeaf) {
+        logger.trace("declareRuleFromTruePredicateWithResult {} {} {}", truePredicate, parentPath, currentRule);
         String statusConstraint = StringUtils.isEmpty(parentPath) ? KiePMMLAbstractModelASTFactory.STATUS_NULL : String.format(KiePMMLAbstractModelASTFactory.STATUS_PATTERN, parentPath);
         String statusToSet = isFinalLeaf ? DONE : currentRule;
         KiePMMLDroolsRule.Builder builder = KiePMMLDroolsRule.builder(currentRule, statusToSet, outputFields)
                 .withStatusConstraint(statusConstraint);
         if (isFinalLeaf) {
             builder = builder.withResult(result)
+                    .withResultCode(ResultCode.OK);
+        }
+        rules.add(builder.build());
+    }
+
+    public void declareRuleFromTruePredicateWithAccumulation(final String parentPath,
+                                                             final String currentRule,
+                                                             final String statusToSet,
+                                                             boolean isLastCharacteristic) {
+        logger.trace("declareRuleFromTruePredicateWithAccumulation {} {} {} {} {}", truePredicate, parentPath, currentRule, statusToSet, isLastCharacteristic);
+        String statusConstraint = StringUtils.isEmpty(parentPath) ? KiePMMLAbstractModelASTFactory.STATUS_NULL : String.format(KiePMMLAbstractModelASTFactory.STATUS_PATTERN, parentPath);
+        KiePMMLDroolsRule.Builder builder = KiePMMLDroolsRule.builder(currentRule, statusToSet, outputFields)
+                .withStatusConstraint(statusConstraint);
+        if (isLastCharacteristic) {
+            builder = builder.withAccumulationResult(true)
                     .withResultCode(ResultCode.OK);
         }
         rules.add(builder.build());
