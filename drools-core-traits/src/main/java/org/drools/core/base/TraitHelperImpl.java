@@ -65,19 +65,19 @@ import org.kie.api.runtime.rule.FactHandle;
 
 import static org.drools.core.reteoo.PropertySpecificUtil.onlyTraitBitSetMask;
 
-public class TraitHelper implements Externalizable {
+public class TraitHelperImpl implements Externalizable, TraitHelper {
 
 
     private InternalWorkingMemoryActions              workingMemory;
     private InternalWorkingMemoryEntryPoint           entryPoint;
 
 
-    public TraitHelper( InternalWorkingMemoryActions workingMemory, InternalWorkingMemoryEntryPoint nep ) {
+    public TraitHelperImpl(InternalWorkingMemoryActions workingMemory, InternalWorkingMemoryEntryPoint nep ) {
         this.workingMemory = workingMemory;
         this.entryPoint = nep;
     }
 
-    public TraitHelper() {
+    public TraitHelperImpl() {
     }
 
     public <T, K> T don( Activation activation, K core, Collection<Class<? extends Thing>> traits, boolean logical, Mode... modes ) {

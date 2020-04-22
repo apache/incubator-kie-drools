@@ -18,6 +18,7 @@ package org.drools.core.common;
 
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
+import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.util.Collection;
@@ -109,8 +110,18 @@ public class NamedEntryPoint
         this.handleFactory = this.wm.getFactHandleFactory();
         this.pctxFactory = kBase.getConfiguration().getComponentFactory().getPropagationContextFactory();
         this.objectStore = new ClassAwareObjectStore(this.kBase.getConfiguration(), this.lock);
-//        this.traitHelper = new TraitHelper( wm, this );
-        this.traitHelper = null; // TODO inject trait helper here
+        this.traitHelper = createTraitHelper( wm, this );
+    }
+
+    // TODO better DI here
+    private TraitHelper createTraitHelper(StatefulKnowledgeSessionImpl wm, NamedEntryPoint namedEntryPoint) {
+        try {
+            Class<?> aClass = Class.forName("org.drools.core.base.TraitHelperImpl");
+            Constructor<?> constructor = aClass.getConstructor(InternalWorkingMemoryActions.class, InternalWorkingMemoryEntryPoint.class);
+            return (TraitHelper) constructor.newInstance(wm, namedEntryPoint);
+        } catch (ClassNotFoundException | NoSuchMethodException | InstantiationException | IllegalAccessException | InvocationTargetException e) {
+            return null;
+        }
     }
 
     protected NamedEntryPoint( EntryPointId entryPoint,

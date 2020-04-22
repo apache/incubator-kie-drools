@@ -250,17 +250,6 @@ public class KieComponentFactory implements Serializable {
         this.traitRegistry = traitRegistry;
     }
 
-    public TraitHelper traitHelper = null;
-
-    public TraitHelper getTraitHelper() {
-        return traitHelper;
-    }
-
-    public void setTraitHelper(TraitHelper traitHelper) {
-        this.traitHelper = traitHelper;
-    }
-
-    //
 //    public TraitRegistry getTraitRegistry() {
 //        if ( traitRegistry == null ) {
 //            traitRegistry = new TraitRegistry();

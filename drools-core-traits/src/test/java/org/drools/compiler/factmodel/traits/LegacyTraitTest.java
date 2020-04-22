@@ -21,7 +21,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
 
-import org.drools.core.base.TraitHelper;
+import org.drools.core.base.TraitHelperImpl;
 import org.drools.core.factmodel.traits.LogicalTypeInconsistencyException;
 import org.drools.core.factmodel.traits.Trait;
 import org.drools.core.factmodel.traits.TraitFactoryImpl;
@@ -283,7 +283,6 @@ public class LegacyTraitTest {
         KieComponentFactory componentFactory = ((KnowledgeBaseImpl) ks.getKieBase()).getConfiguration().getComponentFactory();
         componentFactory.setTraitFactory(new TraitFactoryImpl<>());
         componentFactory.setTraitRegistry(new TraitRegistryImpl());
-        componentFactory.setTraitHelper(new TraitHelper());
 
         TraitFactoryImpl.setMode(mode, ks.getKieBase() );
         ArrayList list = new ArrayList();
