@@ -16,10 +16,6 @@
 
 package org.drools.compiler;
 
-import org.drools.core.factmodel.traits.Traitable;
-
-import javax.xml.bind.annotation.XmlAccessType;
-import javax.xml.bind.annotation.XmlAccessorType;
 import java.io.Serializable;
 import java.math.BigDecimal;
 import java.math.BigInteger;
@@ -27,6 +23,11 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+
+import javax.xml.bind.annotation.XmlAccessType;
+import javax.xml.bind.annotation.XmlAccessorType;
+
+import org.drools.core.factmodel.traits.Traitable;
 
 @Traitable
 @XmlAccessorType(XmlAccessType.FIELD)
