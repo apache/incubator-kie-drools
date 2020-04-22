@@ -23,11 +23,12 @@ import java.util.Collection;
 
 import org.drools.core.factmodel.traits.LogicalTypeInconsistencyException;
 import org.drools.core.factmodel.traits.Trait;
-import org.drools.core.factmodel.traits.TraitFactory;
+import org.drools.core.factmodel.traits.TraitFactoryImpl;
 import org.drools.core.factmodel.traits.Traitable;
 import org.drools.core.factmodel.traits.VirtualPropertyMode;
 import org.drools.core.impl.InternalKnowledgeBase;
 import org.drools.core.impl.KnowledgeBaseFactory;
+import org.drools.core.impl.KnowledgeBaseImpl;
 import org.drools.core.util.StandaloneTraitFactory;
 import org.drools.reflective.classloader.ProjectClassLoader;
 import org.junit.Test;
@@ -194,7 +195,7 @@ public class LegacyTraitTest {
                         "\n";
 
         KieSession ks = getSessionFromString( source );
-        TraitFactory.setMode( mode, ks.getKieBase() );
+        TraitFactoryImpl.setMode(mode, ks.getKieBase() );
 
         ExtendedProcedureImpl procedure1 = new ExtendedProcedureImpl();
         ExtendedProcedureImpl procedure2 = new ExtendedProcedureImpl();
@@ -274,8 +275,11 @@ public class LegacyTraitTest {
 
                         "";
 
+
         KieSession ks = getSessionFromString( source );
-        TraitFactory.setMode( mode, ks.getKieBase() );
+        ((KnowledgeBaseImpl) ks.getKieBase()).getConfiguration().getComponentFactory().setTraitFactory(new TraitFactoryImpl<>());
+
+        TraitFactoryImpl.setMode(mode, ks.getKieBase() );
         ArrayList list = new ArrayList();
         ks.setGlobal( "list", list );
 

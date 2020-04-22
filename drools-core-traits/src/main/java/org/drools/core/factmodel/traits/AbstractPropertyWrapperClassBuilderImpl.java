@@ -53,11 +53,11 @@ public abstract class AbstractPropertyWrapperClassBuilderImpl implements TraitPr
 
         mv.visitVarInsn(ALOAD, 2);
         if (BuildUtils.isPrimitive(field.getTypeName())) {
-            TraitFactory.primitiveValue(mv, field.getTypeName());
+            TraitFactoryImpl.primitiveValue(mv, field.getTypeName());
             mv.visitVarInsn(BuildUtils.storeType(field.getTypeName()), 3);
-            TraitFactory.invokeInjector(mv, wrapperName, core, field, false, 3);
+            TraitFactoryImpl.invokeInjector(mv, wrapperName, core, field, false, 3);
         } else {
-            TraitFactory.invokeInjector(mv, wrapperName, core, field, false, 2);
+            TraitFactoryImpl.invokeInjector(mv, wrapperName, core, field, false, 2);
         }
 
         mv.visitVarInsn(ALOAD, 2);
@@ -72,14 +72,14 @@ public abstract class AbstractPropertyWrapperClassBuilderImpl implements TraitPr
         Label l1 = new Label();
         mv.visitJumpInsn(IFEQ, l1);
 
-        TraitFactory.invokeExtractor(mv, wrapperName, core, field);
+        TraitFactoryImpl.invokeExtractor(mv, wrapperName, core, field);
 
         if (BuildUtils.isPrimitive(field.getTypeName())) {
-            TraitFactory.valueOf(mv, field.getTypeName());
+            TraitFactoryImpl.valueOf(mv, field.getTypeName());
         }
         mv.visitVarInsn(ASTORE, 2);
 
-        TraitFactory.invokeInjector(mv, wrapperName, core, field, true, 1);
+        TraitFactoryImpl.invokeInjector(mv, wrapperName, core, field, true, 1);
 
         mv.visitVarInsn(ALOAD, 2);
         mv.visitInsn(ARETURN);
@@ -136,10 +136,10 @@ public abstract class AbstractPropertyWrapperClassBuilderImpl implements TraitPr
         mv.visitVarInsn(ALOAD, 1);
         mv.visitLdcInsn(field.getName());
 
-        TraitFactory.invokeExtractor(mv, wrapperName, core, field);
+        TraitFactoryImpl.invokeExtractor(mv, wrapperName, core, field);
 
         if (BuildUtils.isPrimitive(field.getTypeName())) {
-            TraitFactory.valueOf(mv, field.getTypeName());
+            TraitFactoryImpl.valueOf(mv, field.getTypeName());
         }
 
         mv.visitMethodInsn(INVOKESTATIC,
@@ -158,10 +158,10 @@ public abstract class AbstractPropertyWrapperClassBuilderImpl implements TraitPr
     protected void extractAndCollect(MethodVisitor mv, String wrapperName, FieldDefinition field, ClassDefinition core) {
         mv.visitVarInsn(ALOAD, 1);
 
-        TraitFactory.invokeExtractor(mv, wrapperName, core, field);
+        TraitFactoryImpl.invokeExtractor(mv, wrapperName, core, field);
 
         if (BuildUtils.isPrimitive(field.getTypeName())) {
-            TraitFactory.valueOf(mv, field.getTypeName());
+            TraitFactoryImpl.valueOf(mv, field.getTypeName());
         }
 
         mv.visitMethodInsn(INVOKEINTERFACE,
@@ -173,7 +173,7 @@ public abstract class AbstractPropertyWrapperClassBuilderImpl implements TraitPr
     }
 
     protected void extractAndTestNotNull(MethodVisitor mv, String wrapperName, ClassDefinition core, FieldDefinition field) {
-        TraitFactory.invokeExtractor(mv, wrapperName, core, field);
+        TraitFactoryImpl.invokeExtractor(mv, wrapperName, core, field);
         Label l1 = new Label();
         mv.visitJumpInsn(IFNONNULL, l1);
         mv.visitInsn(ICONST_1);

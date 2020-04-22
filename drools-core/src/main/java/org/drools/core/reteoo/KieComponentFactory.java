@@ -31,6 +31,7 @@ import org.drools.core.common.PriorityQueueAgendaGroupFactory;
 import org.drools.core.common.PropagationContextFactory;
 import org.drools.core.common.WorkingMemoryFactory;
 //import org.drools.core.factmodel.ClassBuilderFactory;
+import org.drools.core.factmodel.ClassBuilderFactory;
 import org.drools.core.factmodel.traits.TraitFactory;
 import org.drools.core.factmodel.traits.TraitProxy;
 import org.drools.core.factmodel.traits.TraitRegistry;
@@ -234,19 +235,11 @@ public class KieComponentFactory implements Serializable {
     public TraitFactory getTraitFactory() {
         return traitFactory;
     }
-//
-//    public void setTraitFactory( TraitFactory tf ) {
-//        traitFactory = tf;
-//    }
-//
-//    public void setDefaultTraitFactory() {
-//        traitFactory = new TraitFactory();
-//    }
-//
-//    public static TraitFactory getDefaultTraitFactory() {
-//        return new TraitFactory();
-//    }
-//
+
+    public void setTraitFactory( TraitFactory tf ) {
+        traitFactory = tf;
+    }
+
     private TraitRegistry traitRegistry; // TODO initialise this
 
     public TraitRegistry getTraitRegistry() {
@@ -292,25 +285,15 @@ public class KieComponentFactory implements Serializable {
         return new TripleStore();
     }
 
+    private ClassBuilderFactory classBuilderFactory = new ClassBuilderFactory();
 
-//    private ClassBuilderFactory classBuilderFactory = new ClassBuilderFactory();
-//
-//    public ClassBuilderFactory getClassBuilderFactory() {
-//        return classBuilderFactory;
-//    }
-//
-//    public void setClassBuilderFactory( ClassBuilderFactory tf ) {
-//        classBuilderFactory = tf;
-//    }
-//
-//    public void setDefaultClassBuilderFactory() {
-//        classBuilderFactory = new ClassBuilderFactory();
-//    }
-//
-//    public static ClassBuilderFactory getDefaultClassBuilderFactory() {
-//        return new ClassBuilderFactory();
-//    }
+    public ClassBuilderFactory getClassBuilderFactory() {
+        return classBuilderFactory;
+    }
 
+    public void setClassBuilderFactory( ClassBuilderFactory tf ) {
+        classBuilderFactory = tf;
+    }
 
     private Class<?> baseTraitProxyClass = TraitProxy.class;
 

@@ -23,7 +23,7 @@ import java.util.Map;
 import org.drools.compiler.CommonTraitTest;
 import org.drools.core.ClassObjectFilter;
 import org.drools.core.factmodel.TraitableMap;
-import org.drools.core.factmodel.traits.TraitFactory;
+import org.drools.core.factmodel.traits.TraitFactoryImpl;
 import org.drools.core.factmodel.traits.Traitable;
 import org.drools.core.factmodel.traits.VirtualPropertyMode;
 import org.junit.Test;
@@ -76,7 +76,7 @@ public class TraitMapCoreTest extends CommonTraitTest {
                         "\n";
 
         KieSession ks = loadKnowledgeBaseFromString( source ).newKieSession();
-        TraitFactory.setMode( VirtualPropertyMode.MAP, ks.getKieBase() );
+        TraitFactoryImpl.setMode(VirtualPropertyMode.MAP, ks.getKieBase() );
 
         List list = new ArrayList();
         ks.setGlobal( "list", list );
@@ -132,7 +132,7 @@ public class TraitMapCoreTest extends CommonTraitTest {
                         "end \n";
 
         KieSession ksession = loadKnowledgeBaseFromString( source ).newKieSession();
-        TraitFactory.setMode( VirtualPropertyMode.MAP, ksession.getKieBase() );
+        TraitFactoryImpl.setMode(VirtualPropertyMode.MAP, ksession.getKieBase() );
 
         List list = new ArrayList();
         ksession.setGlobal( "list", list );
@@ -252,7 +252,7 @@ public class TraitMapCoreTest extends CommonTraitTest {
                         "\n";
 
         KieSession ks = loadKnowledgeBaseFromString( source ).newKieSession();
-        TraitFactory.setMode( VirtualPropertyMode.MAP, ks.getKieBase() );
+        TraitFactoryImpl.setMode(VirtualPropertyMode.MAP, ks.getKieBase() );
 
         List list = new ArrayList();
         ks.setGlobal( "list", list );
@@ -320,7 +320,7 @@ public class TraitMapCoreTest extends CommonTraitTest {
                         "\n";
 
         KieSession ks = loadKnowledgeBaseFromString( source ).newKieSession();
-        TraitFactory.setMode( VirtualPropertyMode.MAP, ks.getKieBase() );
+        TraitFactoryImpl.setMode(VirtualPropertyMode.MAP, ks.getKieBase() );
 
         List list = new ArrayList();
         ks.setGlobal( "list", list );
@@ -378,7 +378,7 @@ public class TraitMapCoreTest extends CommonTraitTest {
                         "\n";
 
         KieSession ks = loadKnowledgeBaseFromString( source ).newKieSession();
-        TraitFactory.setMode( VirtualPropertyMode.MAP, ks.getKieBase() );
+        TraitFactoryImpl.setMode(VirtualPropertyMode.MAP, ks.getKieBase() );
 
         List list = new ArrayList();
         ks.setGlobal( "list", list );
@@ -472,7 +472,7 @@ public class TraitMapCoreTest extends CommonTraitTest {
 
         KieSession ksession = loadKnowledgeBaseFromString(drl).newKieSession();
 
-        TraitFactory.setMode(VirtualPropertyMode.MAP, ksession.getKieBase());
+        TraitFactoryImpl.setMode(VirtualPropertyMode.MAP, ksession.getKieBase());
         List list = new ArrayList();
         ksession.setGlobal( "list", list );
         ksession.fireAllRules();
@@ -561,7 +561,7 @@ public class TraitMapCoreTest extends CommonTraitTest {
 
         KieSession ksession = loadKnowledgeBaseFromString(drl).newKieSession();
 
-        TraitFactory.setMode(VirtualPropertyMode.MAP, ksession.getKieBase());
+        TraitFactoryImpl.setMode(VirtualPropertyMode.MAP, ksession.getKieBase());
         List list = new ArrayList();
         ksession.setGlobal("list", list);
         ksession.fireAllRules();
@@ -680,7 +680,7 @@ public class TraitMapCoreTest extends CommonTraitTest {
 
         KieSession ksession = loadKnowledgeBaseFromString(drl).newKieSession();
 
-        TraitFactory.setMode(VirtualPropertyMode.MAP, ksession.getKieBase());
+        TraitFactoryImpl.setMode(VirtualPropertyMode.MAP, ksession.getKieBase());
         List list = new ArrayList();
         ksession.setGlobal( "list", list );
         ksession.fireAllRules();
@@ -783,7 +783,7 @@ public class TraitMapCoreTest extends CommonTraitTest {
 
         KieSession ksession = loadKnowledgeBaseFromString(drl).newKieSession();
 
-        TraitFactory.setMode(VirtualPropertyMode.MAP, ksession.getKieBase());
+        TraitFactoryImpl.setMode(VirtualPropertyMode.MAP, ksession.getKieBase());
         List list = new ArrayList();
         ksession.setGlobal( "list", list );
         ksession.fireAllRules();
@@ -844,7 +844,7 @@ public class TraitMapCoreTest extends CommonTraitTest {
                      "end";
 
         KieSession ksession = loadKnowledgeBaseFromString(drl).newKieSession();
-        TraitFactory.setMode(VirtualPropertyMode.MAP, ksession.getKieBase());
+        TraitFactoryImpl.setMode(VirtualPropertyMode.MAP, ksession.getKieBase());
 
         List list = new ArrayList();
         ksession.setGlobal("list",list);
@@ -901,7 +901,7 @@ public class TraitMapCoreTest extends CommonTraitTest {
                      "end";
 
         KieSession ksession = loadKnowledgeBaseFromString(drl).newKieSession();
-        TraitFactory.setMode(VirtualPropertyMode.MAP, ksession.getKieBase());
+        TraitFactoryImpl.setMode(VirtualPropertyMode.MAP, ksession.getKieBase());
 
         List list = new ArrayList();
         ksession.setGlobal("list",list);
@@ -950,7 +950,7 @@ public class TraitMapCoreTest extends CommonTraitTest {
                      "";
 
         KieSession ksession = loadKnowledgeBaseFromString(drl).newKieSession();
-        TraitFactory.setMode( VirtualPropertyMode.MAP, ksession.getKieBase());
+        TraitFactoryImpl.setMode(VirtualPropertyMode.MAP, ksession.getKieBase());
 
         List list = new ArrayList();
         ksession.setGlobal("list",list);
@@ -1019,7 +1019,7 @@ public class TraitMapCoreTest extends CommonTraitTest {
                      "";
 
         KieSession ksession = loadKnowledgeBaseFromString(drl).newKieSession();
-        TraitFactory.setMode(VirtualPropertyMode.MAP, ksession.getKieBase());
+        TraitFactoryImpl.setMode(VirtualPropertyMode.MAP, ksession.getKieBase());
 
         List list = new ArrayList();
         ksession.setGlobal("list",list);
@@ -1091,7 +1091,7 @@ public class TraitMapCoreTest extends CommonTraitTest {
                      "";
 
         KieSession ksession = loadKnowledgeBaseFromString(drl).newKieSession();
-        TraitFactory.setMode(VirtualPropertyMode.MAP, ksession.getKieBase());
+        TraitFactoryImpl.setMode(VirtualPropertyMode.MAP, ksession.getKieBase());
 
         List list = new ArrayList();
         ksession.setGlobal("list",list);
@@ -1163,7 +1163,7 @@ public class TraitMapCoreTest extends CommonTraitTest {
                      "";
 
         KieSession ksession = loadKnowledgeBaseFromString(drl).newKieSession();
-        TraitFactory.setMode(VirtualPropertyMode.MAP, ksession.getKieBase());
+        TraitFactoryImpl.setMode(VirtualPropertyMode.MAP, ksession.getKieBase());
 
         List list = new ArrayList();
         ksession.setGlobal("list",list);
@@ -1238,7 +1238,7 @@ public class TraitMapCoreTest extends CommonTraitTest {
                      "";
 
         KieSession ksession = loadKnowledgeBaseFromString(drl).newKieSession();
-        TraitFactory.setMode( VirtualPropertyMode.MAP, ksession.getKieBase());
+        TraitFactoryImpl.setMode(VirtualPropertyMode.MAP, ksession.getKieBase());
 
         List list = new ArrayList();
         ksession.setGlobal("list",list);
@@ -1282,7 +1282,7 @@ public class TraitMapCoreTest extends CommonTraitTest {
                 "end \n";
 
         KieSession ksession = loadKnowledgeBaseFromString( source ).newKieSession();
-        TraitFactory.setMode( VirtualPropertyMode.MAP, ksession.getKieBase() );
+        TraitFactoryImpl.setMode(VirtualPropertyMode.MAP, ksession.getKieBase() );
 
         List list = new ArrayList();
         ksession.setGlobal( "list", list );

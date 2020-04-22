@@ -61,8 +61,9 @@ public abstract class AbstractTraitFactory<T extends Thing<K>, K extends Traitab
     public AbstractTraitFactory() {
     }
 
-    // todo traits
-    protected static void setMode(VirtualPropertyMode newMode, ClassBuilderFactory cbf, TraitFactory traitFactory) {
+    protected static void setMode(VirtualPropertyMode newMode, KieComponentFactory rcf) {
+        ClassBuilderFactory cbf = rcf.getClassBuilderFactory();
+        TraitFactoryImpl traitFactory = (TraitFactoryImpl) rcf.getTraitFactory();
         traitFactory.mode = newMode;
         switch (newMode) {
             case MAP:

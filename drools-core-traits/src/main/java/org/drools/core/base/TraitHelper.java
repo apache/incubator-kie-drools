@@ -41,7 +41,7 @@ import org.drools.core.factmodel.ClassDefinition;
 import org.drools.core.factmodel.traits.CoreWrapper;
 import org.drools.core.factmodel.traits.LogicalTypeInconsistencyException;
 import org.drools.core.factmodel.traits.Thing;
-import org.drools.core.factmodel.traits.TraitFactory;
+import org.drools.core.factmodel.traits.TraitFactoryImpl;
 import org.drools.core.factmodel.traits.TraitFieldTMS;
 import org.drools.core.factmodel.traits.TraitProxy;
 import org.drools.core.factmodel.traits.TraitRegistry;
@@ -195,7 +195,7 @@ public class TraitHelper implements Externalizable {
     protected <T, K> T applyManyTraits( Activation activation, K core, Collection<Class<? extends Thing>> traits, Object value, boolean logical, Mode... modes ) throws LogicalTypeInconsistencyException {
         // Precondition : traits is not empty, checked by don
 
-        TraitFactory builder = TraitFactory.getTraitBuilderForKnowledgeBase( entryPoint.getKnowledgeBase() );
+        TraitFactoryImpl builder = TraitFactoryImpl.getTraitBuilderForKnowledgeBase(entryPoint.getKnowledgeBase() );
 
         TraitableBean inner = makeTraitable( core, builder, logical, activation );
 
@@ -258,7 +258,7 @@ public class TraitHelper implements Externalizable {
     }
 
     protected <T, K> T applyTrait( Activation activation, K core, Class<T> trait, Object value, boolean logical, Mode... modes ) throws LogicalTypeInconsistencyException {
-        TraitFactory builder = TraitFactory.getTraitBuilderForKnowledgeBase( entryPoint.getKnowledgeBase() );
+        TraitFactoryImpl builder = TraitFactoryImpl.getTraitBuilderForKnowledgeBase(entryPoint.getKnowledgeBase() );
 
         TraitableBean inner = makeTraitable( core, builder, logical, activation );
 
@@ -419,7 +419,7 @@ public class TraitHelper implements Externalizable {
         return ts;
     }
 
-    private <T, K> T asTrait( K core, TraitableBean inner, Class<T> trait, boolean needsProxy, boolean hasTrait, boolean needsUpdate, TraitFactory builder, boolean logical, Activation activation ) throws LogicalTypeInconsistencyException {
+    private <T, K> T asTrait(K core, TraitableBean inner, Class<T> trait, boolean needsProxy, boolean hasTrait, boolean needsUpdate, TraitFactoryImpl builder, boolean logical, Activation activation ) throws LogicalTypeInconsistencyException {
         T thing;
         if ( needsProxy ) {
             thing = (T) inner;
@@ -451,7 +451,7 @@ public class TraitHelper implements Externalizable {
         return thing;
     }
 
-    private <K> TraitableBean makeTraitable( K core, TraitFactory builder, boolean logical, Activation activation ) {
+    private <K> TraitableBean makeTraitable(K core, TraitFactoryImpl builder, boolean logical, Activation activation ) {
         boolean needsWrapping = ! ( core instanceof TraitableBean );
 
         ClassDefinition coreDef = lookupClassDefinition( core );

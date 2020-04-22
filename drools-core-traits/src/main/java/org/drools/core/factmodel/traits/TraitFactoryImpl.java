@@ -32,7 +32,7 @@ import org.drools.core.util.TripleStore;
 import org.kie.api.KieBase;
 import org.mvel2.asm.Opcodes;
 
-public class TraitFactory<T extends Thing<K>, K extends TraitableBean> extends AbstractTraitFactory<T,K> implements Opcodes, Externalizable {
+public class TraitFactoryImpl<T extends Thing<K>, K extends TraitableBean> extends AbstractTraitFactory<T,K> implements Opcodes, Externalizable, TraitFactory {
 
     private transient InternalKnowledgeBase kBase;
 
@@ -40,14 +40,14 @@ public class TraitFactory<T extends Thing<K>, K extends TraitableBean> extends A
 
     public static void setMode( VirtualPropertyMode newMode, KieBase kBase ) {
         KieComponentFactory rcf = ((InternalKnowledgeBase) kBase).getConfiguration().getComponentFactory();
-        setMode(newMode, null, rcf.getTraitFactory());
+        setMode( newMode, rcf );
     }
 
-    public static TraitFactory getTraitBuilderForKnowledgeBase( KieBase kb ) {
-        return ((InternalKnowledgeBase) kb).getConfiguration().getComponentFactory().getTraitFactory();
+    public static TraitFactoryImpl getTraitBuilderForKnowledgeBase(KieBase kb ) {
+        return (TraitFactoryImpl) ((InternalKnowledgeBase) kb).getConfiguration().getComponentFactory().getTraitFactory();
     }
 
-    public TraitFactory() {
+    public TraitFactoryImpl() {
 
     }
 

@@ -30,7 +30,7 @@ import org.drools.core.factmodel.traits.CoreWrapper;
 import org.drools.core.factmodel.traits.LogicalTypeInconsistencyException;
 import org.drools.core.factmodel.traits.Thing;
 import org.drools.core.factmodel.traits.Trait;
-import org.drools.core.factmodel.traits.TraitFactory;
+import org.drools.core.factmodel.traits.TraitFactoryImpl;
 import org.drools.core.factmodel.traits.TraitRegistry;
 import org.drools.core.factmodel.traits.TraitableBean;
 import org.drools.core.factmodel.traits.VirtualPropertyMode;
@@ -67,7 +67,7 @@ public class StandaloneTraitFactory<T extends Thing<K>, K extends TraitableBean>
         encoder.encode( Thing.class, Collections.emptyList() );
 
         this.mode = mode;
-        setMode(this.mode, new ClassBuilderFactory(), new TraitFactory());
+        setMode(this.mode, new ClassBuilderFactory(), new TraitFactoryImpl());
     }
 
     /**

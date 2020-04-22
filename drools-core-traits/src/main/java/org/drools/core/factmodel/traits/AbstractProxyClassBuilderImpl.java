@@ -183,7 +183,7 @@ public abstract class AbstractProxyClassBuilderImpl implements TraitProxyClassBu
 		mv.visitCode();
 		mv.visitVarInsn( ALOAD, 0 );
 		mv.visitMethodInsn( INVOKEVIRTUAL,
-		                    BuildUtils.getInternalType( TraitFactory.getProxyName( trait, core ) ),
+		                    BuildUtils.getInternalType(TraitFactoryImpl.getProxyName(trait, core ) ),
 		                    "getCore",
 		                    Type.getMethodDescriptor( Type.getType( core.getDefinedClass() ) ),
 		                    false );
@@ -311,7 +311,7 @@ public abstract class AbstractProxyClassBuilderImpl implements TraitProxyClassBu
 			helpSet( core, field, mv, masterName );
 		}
 
-		TraitFactory.invokeInjector( mv, masterName, core, field, false, 1 );
+		TraitFactoryImpl.invokeInjector(mv, masterName, core, field, false, 1 );
 
 		mv.visitInsn( RETURN );
 

@@ -65,8 +65,8 @@ public class TraitMapProxyClassBuilderImpl extends AbstractProxyClassBuilderImpl
         // get the method bitmask
         BitSet mask = traitRegistry.getFieldMask( getTrait().getName(), core.getDefinedClass().getName() );
 
-        String name = TraitFactory.getPropertyWrapperName( getTrait(), core );
-        String masterName = TraitFactory.getProxyName( getTrait(), core );
+        String name = TraitFactoryImpl.getPropertyWrapperName(getTrait(), core );
+        String masterName = TraitFactoryImpl.getProxyName(getTrait(), core );
         Class<?> traitClass = getTrait().getDefinedClass();
 
         String internalWrapper  = BuildUtils.getInternalType( name );
@@ -217,7 +217,7 @@ public class TraitMapProxyClassBuilderImpl extends AbstractProxyClassBuilderImpl
 
             // core.addTrait
             mv.visitVarInsn( ALOAD, 1 );
-            mv.visitLdcInsn( trait.getName().endsWith( TraitFactory.SUFFIX ) ? trait.getName().replace(  TraitFactory.SUFFIX , "" ) : trait.getName() );
+            mv.visitLdcInsn( trait.getName().endsWith(TraitFactoryImpl.SUFFIX ) ? trait.getName().replace(TraitFactoryImpl.SUFFIX , "" ) : trait.getName() );
             mv.visitVarInsn( ALOAD, 0 );
             mv.visitMethodInsn( INVOKEVIRTUAL, internalCore, "addTrait",  Type.getMethodDescriptor( Type.VOID_TYPE, Type.getType( String.class ), Type.getType( Thing.class ) ), false );
 
@@ -374,11 +374,11 @@ public class TraitMapProxyClassBuilderImpl extends AbstractProxyClassBuilderImpl
 
     protected void buildShadowMethods( ClassWriter cw, ClassDefinition trait, ClassDefinition core ) {
         for ( Method m : trait.getDefinedClass().getMethods() ) {
-            if ( ! TraitFactory.excludeFromShadowing( m, trait ) ) {
+            if ( ! TraitFactoryImpl.excludeFromShadowing(m, trait ) ) {
                 Method q;
                 try {
                     q = core.getDefinedClass().getMethod( m.getName(), m.getParameterTypes() );
-                    if ( TraitFactory.isCompatible( m, q ) ) {
+                    if ( TraitFactoryImpl.isCompatible(m, q ) ) {
                         buildShadowMethod( cw, trait, core, m );
                     }
                 } catch ( NoSuchMethodException e ) {
@@ -419,7 +419,7 @@ public class TraitMapProxyClassBuilderImpl extends AbstractProxyClassBuilderImpl
 		                                   null);
 		mv.visitCode();
 
-		TraitFactory.invokeExtractor(mv, masterName, core, field );
+		TraitFactoryImpl.invokeExtractor(mv, masterName, core, field );
 
 		if ( ! BuildUtils.isPrimitive( field.getTypeName() ) ) {
 			mv.visitTypeInsn( CHECKCAST, Type.getInternalName( fieldType ) );
@@ -459,7 +459,7 @@ public class TraitMapProxyClassBuilderImpl extends AbstractProxyClassBuilderImpl
         mv.visitLdcInsn( field.resolveAlias() );
         mv.visitVarInsn( BuildUtils.varType( type ), 1 );
         if ( BuildUtils.isPrimitive( type ) ) {
-            TraitFactory.valueOf( mv, type );
+            TraitFactoryImpl.valueOf(mv, type );
         }
         mv.visitMethodInsn( INVOKEINTERFACE, Type.getInternalName( Map.class ), "put", 
                             "(" + Type.getDescriptor( Object.class ) + Type.getDescriptor( Object.class ) + ")" + Type.getDescriptor( Object.class ), true );
@@ -510,7 +510,7 @@ public class TraitMapProxyClassBuilderImpl extends AbstractProxyClassBuilderImpl
             mv.visitTypeInsn( CHECKCAST, BuildUtils.getInternalType( actualType ) );
 
         if ( BuildUtils.isPrimitive( type ) ) {
-            TraitFactory.primitiveValue( mv, type );
+            TraitFactoryImpl.primitiveValue(mv, type );
             mv.visitInsn( BuildUtils.returnType( type ) );
             mv.visitLabel( l0 );
             mv.visitInsn( BuildUtils.zero( type ) );
@@ -864,7 +864,7 @@ public class TraitMapProxyClassBuilderImpl extends AbstractProxyClassBuilderImpl
 
 
     protected void buildExtendedMethods( ClassWriter cw, ClassDefinition trait, ClassDefinition core ) {
-        buildSynchFields( cw, TraitFactory.getProxyName( trait, core ), trait, core );
+        buildSynchFields(cw, TraitFactoryImpl.getProxyName(trait, core ), trait, core );
     }
 
 

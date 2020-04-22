@@ -181,7 +181,7 @@ public class TraitBuilderUtil {
     private static void buildMixinMethods( ClassWriter cw, String wrapperName, String mixin, Class mixinClass,
                                            MixinInfo mixinInfo, Collection<Method> mixinMethods, Set<String> createdSignatures ) {
         for ( Method method : mixinMethods ) {
-            String signature = TraitFactory.buildSignature( method );
+            String signature = TraitFactoryImpl.buildSignature(method );
             String methodSignature = method.getName() + signature;
             if (createdSignatures.contains( methodSignature )) {
                 if (mixinInfo.throwsErrorOnConflict()) {

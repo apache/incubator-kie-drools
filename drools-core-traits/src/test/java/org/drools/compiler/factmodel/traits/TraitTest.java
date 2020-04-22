@@ -47,7 +47,7 @@ import org.drools.core.factmodel.traits.LogicalTypeInconsistencyException;
 import org.drools.core.factmodel.traits.MapWrapper;
 import org.drools.core.factmodel.traits.Thing;
 import org.drools.core.factmodel.traits.Trait;
-import org.drools.core.factmodel.traits.TraitFactory;
+import org.drools.core.factmodel.traits.TraitFactoryImpl;
 import org.drools.core.factmodel.traits.TraitProxy;
 import org.drools.core.factmodel.traits.TraitRegistry;
 import org.drools.core.factmodel.traits.TraitTypeMap;
@@ -170,7 +170,7 @@ public class TraitTest extends CommonTraitTest {
                 "end\n";
 
         KieSession ks = getSessionFromString( drl );
-        TraitFactory.setMode(mode, ks.getKieBase());
+        TraitFactoryImpl.setMode(mode, ks.getKieBase());
 
         assertEquals(2, ks.fireAllRules());
 
@@ -195,10 +195,10 @@ public class TraitTest extends CommonTraitTest {
             fail( kbuilder.getErrors().toString() );
         }
         InternalKnowledgeBase kb = KnowledgeBaseFactory.newKnowledgeBase();
-        TraitFactory.setMode( mode, kb );
+        TraitFactoryImpl.setMode(mode, kb );
         kb.addPackages( kbuilder.getKnowledgePackages() );
 
-        TraitFactory tFactory = ((KnowledgeBaseImpl) kb).getConfiguration().getComponentFactory().getTraitFactory();
+        TraitFactoryImpl tFactory = (TraitFactoryImpl) kb.getConfiguration().getComponentFactory().getTraitFactory();
 
         try {
             FactType impClass = kb.getFactType( "org.drools.compiler.trait.test",
@@ -248,7 +248,7 @@ public class TraitTest extends CommonTraitTest {
         String source = "org/drools/compiler/factmodel/traits/testTraitShed.drl";
 
         KieSession ks = getSession( source );
-        TraitFactory.setMode( mode, ks.getKieBase() );
+        TraitFactoryImpl.setMode(mode, ks.getKieBase() );
 
 
         List info = new ArrayList();
@@ -289,7 +289,7 @@ public class TraitTest extends CommonTraitTest {
         String source = "org/drools/compiler/factmodel/traits/testTraitDon.drl";
 
         KieSession ks = getSession( source );
-        TraitFactory.setMode( mode, ks.getKieBase() );
+        TraitFactoryImpl.setMode(mode, ks.getKieBase() );
 
         List info = new ArrayList();
         ks.setGlobal( "list",
@@ -325,7 +325,7 @@ public class TraitTest extends CommonTraitTest {
         String source = "org/drools/compiler/factmodel/traits/testTraitMixin.drl";
 
         KieSession ks = getSession( source );
-        TraitFactory.setMode( mode, ks.getKieBase() );
+        TraitFactoryImpl.setMode(mode, ks.getKieBase() );
 
         List info = new ArrayList();
         ks.setGlobal( "list",
@@ -342,7 +342,7 @@ public class TraitTest extends CommonTraitTest {
         String source = "org/drools/compiler/factmodel/traits/testTraitWrapping.drl";
 
         KieSession ks = getSession( source );
-        TraitFactory.setMode( mode, ks.getKieBase() );
+        TraitFactoryImpl.setMode(mode, ks.getKieBase() );
 
         List errors = new ArrayList();
         ks.setGlobal( "list",
@@ -363,7 +363,7 @@ public class TraitTest extends CommonTraitTest {
         String source = "org/drools/compiler/factmodel/traits/testTraitWrappingPrimitives.drl";
 
         KieSession ks = getSession( source );
-        TraitFactory.setMode( mode, ks.getKieBase() );
+        TraitFactoryImpl.setMode(mode, ks.getKieBase() );
 
         List errors = new ArrayList();
         ks.setGlobal( "list",
@@ -394,8 +394,8 @@ public class TraitTest extends CommonTraitTest {
         }
         InternalKnowledgeBase kb = KnowledgeBaseFactory.newKnowledgeBase();
         kb.addPackages( kbuilder.getKnowledgePackages() );
-        TraitFactory.setMode( mode, kb );
-        TraitFactory tFactory = ((KnowledgeBaseImpl) kb).getConfiguration().getComponentFactory().getTraitFactory();
+        TraitFactoryImpl.setMode(mode, kb );
+        TraitFactoryImpl tFactory = (TraitFactoryImpl) ((KnowledgeBaseImpl) kb).getConfiguration().getComponentFactory().getTraitFactory();
 
         try {
             FactType impClass = kb.getFactType( "org.drools.compiler.trait.test",
@@ -473,8 +473,8 @@ public class TraitTest extends CommonTraitTest {
         InternalKnowledgeBase kb = KnowledgeBaseFactory.newKnowledgeBase();
         kb.addPackages( kbuilder.getKnowledgePackages() );
 
-        TraitFactory.setMode( mode, kb );
-        TraitFactory tFactory = ((KnowledgeBaseImpl) kb).getConfiguration().getComponentFactory().getTraitFactory();
+        TraitFactoryImpl.setMode(mode, kb );
+        TraitFactoryImpl tFactory = (TraitFactoryImpl) ((KnowledgeBaseImpl) kb).getConfiguration().getComponentFactory().getTraitFactory();
 
 
         try {
@@ -600,9 +600,9 @@ public class TraitTest extends CommonTraitTest {
         }
         InternalKnowledgeBase kb = KnowledgeBaseFactory.newKnowledgeBase();
         kb.addPackages( kbuilder.getKnowledgePackages() );
-        TraitFactory.setMode( mode, kb );
+        TraitFactoryImpl.setMode(mode, kb );
 
-        TraitFactory tFactory = ((KnowledgeBaseImpl) kb).getConfiguration().getComponentFactory().getTraitFactory();
+        TraitFactoryImpl tFactory = (TraitFactoryImpl) ((KnowledgeBaseImpl) kb).getConfiguration().getComponentFactory().getTraitFactory();
 
         try {
             FactType impClass = kb.getFactType( "org.drools.compiler.trait.test",
@@ -683,8 +683,8 @@ public class TraitTest extends CommonTraitTest {
         kb.addPackages( kbuilder.getKnowledgePackages() );
 
 
-        TraitFactory.setMode( mode, kb );
-        TraitFactory tFactory = ((KnowledgeBaseImpl) kb).getConfiguration().getComponentFactory().getTraitFactory();
+        TraitFactoryImpl.setMode(mode, kb );
+        TraitFactoryImpl tFactory = (TraitFactoryImpl) ((KnowledgeBaseImpl) kb).getConfiguration().getComponentFactory().getTraitFactory();
 
         try {
             FactType impClass = kb.getFactType( "org.drools.compiler.trait.test",
@@ -806,8 +806,8 @@ public class TraitTest extends CommonTraitTest {
         InternalKnowledgeBase kb = KnowledgeBaseFactory.newKnowledgeBase();
         kb.addPackages( kbuilder.getKnowledgePackages() );
 
-        TraitFactory.setMode( mode, kb );
-        TraitFactory tFactory = ((KnowledgeBaseImpl) kb).getConfiguration().getComponentFactory().getTraitFactory();
+        TraitFactoryImpl.setMode(mode, kb );
+        TraitFactoryImpl tFactory = (TraitFactoryImpl) ((KnowledgeBaseImpl) kb).getConfiguration().getComponentFactory().getTraitFactory();
 
 
         try {
@@ -868,9 +868,9 @@ public class TraitTest extends CommonTraitTest {
         }
         InternalKnowledgeBase kb = KnowledgeBaseFactory.newKnowledgeBase();
         kb.addPackages( kbuilder.getKnowledgePackages() );
-        TraitFactory.setMode( mode, kb );
+        TraitFactoryImpl.setMode(mode, kb );
 
-        TraitFactory tFactory = ((KnowledgeBaseImpl) kb).getConfiguration().getComponentFactory().getTraitFactory();
+        TraitFactoryImpl tFactory = (TraitFactoryImpl) ((KnowledgeBaseImpl) kb).getConfiguration().getComponentFactory().getTraitFactory();
 
         try {
             FactType impClass = kb.getFactType( "org.drools.compiler.trait.test",
@@ -966,8 +966,8 @@ public class TraitTest extends CommonTraitTest {
         }
         InternalKnowledgeBase kb = KnowledgeBaseFactory.newKnowledgeBase();
         kb.addPackages( kbuilder.getKnowledgePackages() );
-        TraitFactory.setMode( mode, kb );
-        TraitFactory tFactory = ((KnowledgeBaseImpl) kb).getConfiguration().getComponentFactory().getTraitFactory();
+        TraitFactoryImpl.setMode(mode, kb );
+        TraitFactoryImpl tFactory = (TraitFactoryImpl) ((KnowledgeBaseImpl) kb).getConfiguration().getComponentFactory().getTraitFactory();
 
         try {
             FactType impClass = kb.getFactType( "org.drools.compiler.trait.test",
@@ -1135,7 +1135,7 @@ public class TraitTest extends CommonTraitTest {
                         "\n";
 
         KieSession ks = getSessionFromString( source );
-        TraitFactory.setMode( mode, ks.getKieBase() );
+        TraitFactoryImpl.setMode(mode, ks.getKieBase() );
 
         List info = new ArrayList();
         ks.setGlobal( "list",
@@ -1154,7 +1154,7 @@ public class TraitTest extends CommonTraitTest {
         String source = "org/drools/compiler/factmodel/traits/testTraitIsA.drl";
 
         KieSession ks = getSession( source );
-        TraitFactory.setMode( mode, ks.getKieBase() );
+        TraitFactoryImpl.setMode(mode, ks.getKieBase() );
 
         List info = new ArrayList();
         ks.setGlobal( "list",
@@ -1181,7 +1181,7 @@ public class TraitTest extends CommonTraitTest {
         String source = "org/drools/compiler/factmodel/traits/testTraitOverride.drl";
 
         KieSession ks = getSession( source );
-        TraitFactory.setMode( mode, ks.getKieBase() );
+        TraitFactoryImpl.setMode(mode, ks.getKieBase() );
 
         List info = new ArrayList();
         ks.setGlobal( "list",
@@ -1215,7 +1215,7 @@ public class TraitTest extends CommonTraitTest {
                      "end\n";
 
         KieSession ks = getSessionFromString( drl );
-        TraitFactory.setMode( mode, ks.getKieBase() );
+        TraitFactoryImpl.setMode(mode, ks.getKieBase() );
 
         try {
             ks.fireAllRules();
@@ -1244,7 +1244,7 @@ public class TraitTest extends CommonTraitTest {
                      "end\n";
 
         KieSession ks = getSessionFromString( drl );
-        TraitFactory.setMode( mode, ks.getKieBase() );
+        TraitFactoryImpl.setMode(mode, ks.getKieBase() );
 
         try {
             ks.fireAllRules();
@@ -1260,7 +1260,7 @@ public class TraitTest extends CommonTraitTest {
         String source = "org/drools/compiler/factmodel/traits/testTraitLegacyTrait.drl";
 
         KieSession ks = getSession( source );
-        TraitFactory.setMode( mode, ks.getKieBase() );
+        TraitFactoryImpl.setMode(mode, ks.getKieBase() );
 
 
         List info = new ArrayList();
@@ -1295,7 +1295,7 @@ public class TraitTest extends CommonTraitTest {
         String source = "org/drools/compiler/factmodel/traits/testTraitCollections.drl";
 
         KieSession ks = getSession( source );
-        TraitFactory.setMode( mode, ks.getKieBase() );
+        TraitFactoryImpl.setMode(mode, ks.getKieBase() );
 
 
         List info = new ArrayList();
@@ -1326,7 +1326,7 @@ public class TraitTest extends CommonTraitTest {
         String source = "org/drools/compiler/factmodel/traits/testTraitLegacyCore.drl";
 
         KieSession ks = getSession( source );
-        TraitFactory.setMode( mode, ks.getKieBase() );
+        TraitFactoryImpl.setMode(mode, ks.getKieBase() );
 
         List info = new ArrayList();
         ks.setGlobal( "list",
@@ -1357,7 +1357,7 @@ public class TraitTest extends CommonTraitTest {
         String source = "org/drools/compiler/factmodel/traits/testTraitWithEquality.drl";
 
         KieSession ks = getSession( source );
-        TraitFactory.setMode( mode, ks.getKieBase() );
+        TraitFactoryImpl.setMode(mode, ks.getKieBase() );
 
         List info = new ArrayList();
         ks.setGlobal( "list",
@@ -1379,7 +1379,7 @@ public class TraitTest extends CommonTraitTest {
         List<Integer> untrueTraits = new ArrayList<Integer>();
 
         KieSession ks = getSession( "org/drools/compiler/factmodel/traits/testDeclaredFactTrait.drl" );
-        TraitFactory.setMode( mode, ks.getKieBase() );
+        TraitFactoryImpl.setMode(mode, ks.getKieBase() );
 
         ks.setGlobal( "trueTraits",
                       trueTraits );
@@ -1404,7 +1404,7 @@ public class TraitTest extends CommonTraitTest {
         List<Integer> untrueTraits = new ArrayList<Integer>();
 
         KieSession session = getSession( "org/drools/compiler/factmodel/traits/testPojoFactTrait.drl" );
-        TraitFactory.setMode( mode, session.getKieBase() );
+        TraitFactoryImpl.setMode(mode, session.getKieBase() );
 
         session.setGlobal( "trueTraits",
                            trueTraits );
@@ -1427,7 +1427,7 @@ public class TraitTest extends CommonTraitTest {
     public void testIsAOperator() {
         String source = "org/drools/compiler/factmodel/traits/testTraitIsA2.drl";
         KieSession ksession = getSession( source );
-        TraitFactory.setMode( mode, ksession.getKieBase() );
+        TraitFactoryImpl.setMode(mode, ksession.getKieBase() );
 
 
         AgendaEventListener ael = mock( AgendaEventListener.class );
@@ -1499,7 +1499,7 @@ public class TraitTest extends CommonTraitTest {
                         "            list.add(\"OK\");\n" +
                         "    end";
         KieSession ksession = getSessionFromString( source );
-        TraitFactory.setMode( mode, ksession.getKieBase() );
+        TraitFactoryImpl.setMode(mode, ksession.getKieBase() );
 
 
         List list = new ArrayList();
@@ -1520,7 +1520,7 @@ public class TraitTest extends CommonTraitTest {
     public void traitManyTimes() {
 
         KieSession ksession = getSession( "org/drools/compiler/factmodel/traits/testTraitDonMultiple.drl" );
-        TraitFactory.setMode( mode, ksession.getKieBase() );
+        TraitFactoryImpl.setMode(mode, ksession.getKieBase() );
 
         List list = new ArrayList();
         ksession.setGlobal( "list", list );
@@ -1595,7 +1595,7 @@ public class TraitTest extends CommonTraitTest {
         List list = new ArrayList();
 
         KieBase kbase = kbuilder.newKieBase();
-        TraitFactory.setMode( mode, kbase );
+        TraitFactoryImpl.setMode(mode, kbase );
 
         StatelessKieSession ksession = kbase.newStatelessKieSession();
 
@@ -1665,7 +1665,7 @@ public class TraitTest extends CommonTraitTest {
                         "            list.add(\"OK\");\n" +
                         "    end";
         KieBase kb = getKieBaseFromString( source );
-        TraitFactory.setMode( mode, kb );
+        TraitFactoryImpl.setMode(mode, kb );
 
         KieSession ksession = kb.newKieSession();
 
@@ -1735,7 +1735,7 @@ public class TraitTest extends CommonTraitTest {
                      "end";
 
         KieSession ksession = getSessionFromString( drl );
-        TraitFactory.setMode( mode, ksession.getKieBase() );
+        TraitFactoryImpl.setMode(mode, ksession.getKieBase() );
 
         List list = new ArrayList();
         ksession.setGlobal( "list", list );
@@ -1797,7 +1797,7 @@ public class TraitTest extends CommonTraitTest {
 
 
         KieSession ksession = getSessionFromString(drl);
-        TraitFactory.setMode( mode, ksession.getKieBase() );
+        TraitFactoryImpl.setMode(mode, ksession.getKieBase() );
 
         List list = new ArrayList();
         ksession.setGlobal( "list", list );
@@ -1867,7 +1867,7 @@ public class TraitTest extends CommonTraitTest {
         kbase.addPackages( kbuilder.getKnowledgePackages() );
 
         KieSession ksession = kbase.newKieSession();
-        TraitFactory.setMode( mode, ksession.getKieBase() );
+        TraitFactoryImpl.setMode(mode, ksession.getKieBase() );
 
         ksession.fireAllRules();
 
@@ -1941,7 +1941,7 @@ public class TraitTest extends CommonTraitTest {
         kbase.addPackages( kbuilder.getKnowledgePackages() );
 
         KieSession ksession = kbase.newKieSession();
-        TraitFactory.setMode( mode, ksession.getKieBase() );
+        TraitFactoryImpl.setMode(mode, ksession.getKieBase() );
         List<?> list = new ArrayList<Object>();
 
         ksession.setGlobal("list",
@@ -1985,8 +1985,8 @@ public class TraitTest extends CommonTraitTest {
         }
         InternalKnowledgeBase kb = KnowledgeBaseFactory.newKnowledgeBase();
         kb.addPackages(kbuilder.getKnowledgePackages());
-        TraitFactory traitBuilder = ((KnowledgeBaseImpl) kb).getConfiguration().getComponentFactory().getTraitFactory();
-        TraitFactory.setMode( mode, kb );
+        TraitFactoryImpl traitBuilder = (TraitFactoryImpl) kb.getConfiguration().getComponentFactory().getTraitFactory();
+        TraitFactoryImpl.setMode(mode, kb );
 
         try {
             FactType impClass = kb.getFactType("org.drools.compiler.trait.test","Imp");
@@ -2072,7 +2072,7 @@ public class TraitTest extends CommonTraitTest {
         kbase.addPackages( kbuilder.getKnowledgePackages() );
 
         KieSession ksession = kbase.newKieSession();
-        TraitFactory.setMode( mode, ksession.getKieBase() );
+        TraitFactoryImpl.setMode(mode, ksession.getKieBase() );
         List<?> list = new ArrayList<Object>();
 
         ksession.setGlobal("list",
@@ -2122,7 +2122,7 @@ public class TraitTest extends CommonTraitTest {
             fail( kbuilder.getErrors().toString() );
         }
         InternalKnowledgeBase kbase = KnowledgeBaseFactory.newKnowledgeBase();
-        TraitFactory.setMode( mode, kbase );
+        TraitFactoryImpl.setMode(mode, kbase );
 
         kbase.addPackages( kbuilder.getKnowledgePackages() );
 
@@ -2198,7 +2198,7 @@ public class TraitTest extends CommonTraitTest {
             fail( kbuilder.getErrors().toString() );
         }
         InternalKnowledgeBase kbase = KnowledgeBaseFactory.newKnowledgeBase();
-        TraitFactory.setMode( mode, kbase );
+        TraitFactoryImpl.setMode(mode, kbase );
 
         kbase.addPackages( kbuilder.getKnowledgePackages() );
 
@@ -2241,7 +2241,7 @@ public class TraitTest extends CommonTraitTest {
             fail( kbuilder.getErrors().toString() );
         }
         InternalKnowledgeBase kbase = KnowledgeBaseFactory.newKnowledgeBase();
-        TraitFactory.setMode( mode, kbase );
+        TraitFactoryImpl.setMode(mode, kbase );
 
         kbase.addPackages( kbuilder.getKnowledgePackages() );
 
@@ -2363,7 +2363,7 @@ public class TraitTest extends CommonTraitTest {
             fail( kbuilder.getErrors().toString() );
         }
         InternalKnowledgeBase kbase = KnowledgeBaseFactory.newKnowledgeBase();
-        TraitFactory.setMode( mode, kbase );
+        TraitFactoryImpl.setMode(mode, kbase );
 
         kbase.addPackages( kbuilder.getKnowledgePackages() );
 
@@ -2462,7 +2462,7 @@ public class TraitTest extends CommonTraitTest {
             fail( kbuilder.getErrors().toString() );
         }
         InternalKnowledgeBase kbase = KnowledgeBaseFactory.newKnowledgeBase();
-        TraitFactory.setMode( mode, kbase ); // not relevant
+        TraitFactoryImpl.setMode(mode, kbase ); // not relevant
 
         kbase.addPackages( kbuilder.getKnowledgePackages() );
 
@@ -2527,7 +2527,7 @@ public class TraitTest extends CommonTraitTest {
             fail( kbuilder.getErrors().toString() );
         }
         InternalKnowledgeBase kbase = KnowledgeBaseFactory.newKnowledgeBase();
-        TraitFactory.setMode( mode, kbase ); // not relevant
+        TraitFactoryImpl.setMode(mode, kbase ); // not relevant
         kbase.addPackages( kbuilder.getKnowledgePackages() );
         KieSession ksession = kbase.newKieSession();
 
@@ -2627,7 +2627,7 @@ public class TraitTest extends CommonTraitTest {
             fail( kbuilder.getErrors().toString() );
         }
         InternalKnowledgeBase kbase = KnowledgeBaseFactory.newKnowledgeBase();
-        TraitFactory.setMode( mode, kbase ); // not relevant
+        TraitFactoryImpl.setMode(mode, kbase ); // not relevant
 
         kbase.addPackages( kbuilder.getKnowledgePackages() );
 
@@ -2745,7 +2745,7 @@ public class TraitTest extends CommonTraitTest {
             fail( kbuilder.getErrors().toString() );
         }
         InternalKnowledgeBase kbase = KnowledgeBaseFactory.newKnowledgeBase();
-        TraitFactory.setMode( mode, kbase ); // not relevant
+        TraitFactoryImpl.setMode(mode, kbase ); // not relevant
 
         kbase.addPackages( kbuilder.getKnowledgePackages() );
 
@@ -2792,7 +2792,7 @@ public class TraitTest extends CommonTraitTest {
             fail( kbuilder.getErrors().toString() );
         }
         InternalKnowledgeBase kbase = KnowledgeBaseFactory.newKnowledgeBase();
-        TraitFactory.setMode( mode, kbase );
+        TraitFactoryImpl.setMode(mode, kbase );
 
         kbase.addPackages( kbuilder.getKnowledgePackages() );
 
@@ -2813,7 +2813,7 @@ public class TraitTest extends CommonTraitTest {
 
         String source = "org/drools/compiler/factmodel/traits/testTraitIsAWithBC.drl";
         KieSession ksession = getSession( source );
-        TraitFactory.setMode( mode, ksession.getKieBase() );
+        TraitFactoryImpl.setMode(mode, ksession.getKieBase() );
 
         List list = new ArrayList();
         ksession.setGlobal( "list", list );
@@ -2875,7 +2875,7 @@ public class TraitTest extends CommonTraitTest {
                 ;
 
         KieSession ks = getSessionFromString( source );
-        TraitFactory.setMode( mode, ks.getKieBase() );
+        TraitFactoryImpl.setMode(mode, ks.getKieBase() );
 
         List list = new ArrayList();
         ks.setGlobal( "list", list );
@@ -2946,7 +2946,7 @@ public class TraitTest extends CommonTraitTest {
                 ;
 
         KieSession ks = getSessionFromString( source );
-        TraitFactory.setMode( mode, ks.getKieBase() );
+        TraitFactoryImpl.setMode(mode, ks.getKieBase() );
 
         List list = new ArrayList();
         ks.setGlobal( "list", list );
@@ -3019,7 +3019,7 @@ public class TraitTest extends CommonTraitTest {
                 ;
 
         KieSession ks = getSessionFromString( source );
-        TraitFactory.setMode( mode, ks.getKieBase() );
+        TraitFactoryImpl.setMode(mode, ks.getKieBase() );
 
         List list = new ArrayList();
         ks.setGlobal( "list", list );
@@ -3085,7 +3085,7 @@ public class TraitTest extends CommonTraitTest {
 
 
         KieSession ks = getSessionFromString( source );
-        TraitFactory.setMode( mode, ks.getKieBase() );
+        TraitFactoryImpl.setMode(mode, ks.getKieBase() );
 
         List list = new ArrayList();
         ks.setGlobal( "list", list );
@@ -3143,7 +3143,7 @@ public class TraitTest extends CommonTraitTest {
 
 
         KieSession ks = getSessionFromString( source );
-        TraitFactory.setMode( mode, ks.getKieBase() );
+        TraitFactoryImpl.setMode(mode, ks.getKieBase() );
 
         List list = new ArrayList();
         ks.setGlobal( "list", list );
@@ -3208,7 +3208,7 @@ public class TraitTest extends CommonTraitTest {
 
 
         KieSession ks = getSessionFromString( source );
-        TraitFactory.setMode( mode, ks.getKieBase() );
+        TraitFactoryImpl.setMode(mode, ks.getKieBase() );
 
         List list = new ArrayList();
         ks.setGlobal( "list", list );
@@ -3252,7 +3252,7 @@ public class TraitTest extends CommonTraitTest {
 
 
         KieSession ks = getSessionFromString( source );
-        TraitFactory.setMode( mode, ks.getKieBase() );
+        TraitFactoryImpl.setMode(mode, ks.getKieBase() );
 
         ks.fireAllRules();
 
@@ -3311,7 +3311,7 @@ public class TraitTest extends CommonTraitTest {
 
 
         KieSession ks = getSessionFromString( source );
-        TraitFactory.setMode( mode, ks.getKieBase() );
+        TraitFactoryImpl.setMode(mode, ks.getKieBase() );
 
         List list = new ArrayList();
         ks.setGlobal( "list", list );
@@ -3374,7 +3374,7 @@ public class TraitTest extends CommonTraitTest {
 
 
         KieSession ks = getSessionFromString( source );
-        TraitFactory.setMode( mode, ks.getKieBase() );
+        TraitFactoryImpl.setMode(mode, ks.getKieBase() );
 
         List list = new ArrayList();
         ks.setGlobal( "list", list );
@@ -3448,7 +3448,7 @@ public class TraitTest extends CommonTraitTest {
 
 
         KieSession ks = getSessionFromString( source );
-        TraitFactory.setMode( mode, ks.getKieBase() );
+        TraitFactoryImpl.setMode(mode, ks.getKieBase() );
 
         List list = new ArrayList();
         ks.setGlobal( "list", list );
@@ -3513,7 +3513,7 @@ public class TraitTest extends CommonTraitTest {
 
 
         KieSession ks = getSessionFromString( source );
-        TraitFactory.setMode( mode, ks.getKieBase() );
+        TraitFactoryImpl.setMode(mode, ks.getKieBase() );
 
         List list = new ArrayList();
         ks.setGlobal( "list", list );
@@ -3576,7 +3576,7 @@ public class TraitTest extends CommonTraitTest {
                         "end\n" +
                         "";
         KieSession ks = getSessionFromString( source );
-        TraitFactory.setMode( mode, ks.getKieBase() );
+        TraitFactoryImpl.setMode(mode, ks.getKieBase() );
 
         List list = new ArrayList();
         ks.setGlobal( "list", list );
@@ -3655,7 +3655,7 @@ public class TraitTest extends CommonTraitTest {
 
 
         KieSession ksession = getSessionFromString(drl);
-        TraitFactory.setMode( mode, ksession.getKieBase() );
+        TraitFactoryImpl.setMode(mode, ksession.getKieBase() );
 
         List list = new ArrayList();
         ksession.setGlobal( "list", list );
@@ -3773,7 +3773,7 @@ public class TraitTest extends CommonTraitTest {
             fail( kbuilder.getErrors().toString() );
         }
         InternalKnowledgeBase kbase = KnowledgeBaseFactory.newKnowledgeBase();
-        TraitFactory.setMode( mode, kbase ); // not relevant
+        TraitFactoryImpl.setMode(mode, kbase ); // not relevant
 
         kbase.addPackages( kbuilder.getKnowledgePackages() );
 
@@ -3843,7 +3843,7 @@ public class TraitTest extends CommonTraitTest {
             fail( kbuilder.getErrors().toString() );
         }
         InternalKnowledgeBase kbase = KnowledgeBaseFactory.newKnowledgeBase();
-        TraitFactory.setMode( mode, kbase );
+        TraitFactoryImpl.setMode(mode, kbase );
 
         kbase.addPackages( kbuilder.getKnowledgePackages() );
 
@@ -3901,7 +3901,7 @@ public class TraitTest extends CommonTraitTest {
 
 
         KieSession ksession = getSessionFromString(drl);
-        TraitFactory.setMode( mode, ksession.getKieBase() );
+        TraitFactoryImpl.setMode(mode, ksession.getKieBase() );
 
         List list = new ArrayList();
         ksession.setGlobal( "list", list );
@@ -3972,7 +3972,7 @@ public class TraitTest extends CommonTraitTest {
 
 
         KieSession ksession = getSessionFromString(drl);
-        TraitFactory.setMode( mode, ksession.getKieBase() );
+        TraitFactoryImpl.setMode(mode, ksession.getKieBase() );
         ksession.addEventListener( new DebugAgendaEventListener(  ) );
 
         ksession.insert( new TraitableFoo( "xx", 0, null ) );
@@ -4036,7 +4036,7 @@ public class TraitTest extends CommonTraitTest {
                         "\n";
 
         KieSession ks = getSessionFromString( source );
-        TraitFactory.setMode( mode, ks.getKieBase() );
+        TraitFactoryImpl.setMode(mode, ks.getKieBase() );
 
         List list = new ArrayList();
         ks.setGlobal( "list", list );
@@ -4098,7 +4098,7 @@ public class TraitTest extends CommonTraitTest {
                         "end";
 
         KieSession ks = getSessionFromString( source );
-        TraitFactory.setMode( mode, ks.getKieBase() );
+        TraitFactoryImpl.setMode(mode, ks.getKieBase() );
 
         List list = new ArrayList();
         ks.setGlobal( "list", list );
@@ -4188,7 +4188,7 @@ public class TraitTest extends CommonTraitTest {
                         "end";
 
         KieSession ks = getSessionFromString( source );
-        TraitFactory.setMode( mode, ks.getKieBase() );
+        TraitFactoryImpl.setMode(mode, ks.getKieBase() );
 
         List list = new ArrayList();
         ks.setGlobal( "list", list );
@@ -4301,7 +4301,7 @@ public class TraitTest extends CommonTraitTest {
                      "\n";
 
         KieSession ks = getSessionFromString( drl );
-        TraitFactory.setMode( mode, ks.getKieBase() );
+        TraitFactoryImpl.setMode(mode, ks.getKieBase() );
 
         List list = new ArrayList();
         ks.setGlobal( "list", list );
@@ -4351,7 +4351,7 @@ public class TraitTest extends CommonTraitTest {
         }
 
         KieSession ks = new KieHelper().addContent( drl, ResourceType.DRL ).build().newKieSession();
-        TraitFactory.setMode( mode, ks.getKieBase() );
+        TraitFactoryImpl.setMode(mode, ks.getKieBase() );
 
         List list = new ArrayList();
         ks.setGlobal( "list", list );
@@ -4428,7 +4428,7 @@ public class TraitTest extends CommonTraitTest {
 
 
         KieSession ks = getSessionFromString( drl );
-        TraitFactory.setMode( mode, ks.getKieBase() );
+        TraitFactoryImpl.setMode(mode, ks.getKieBase() );
 
         List list = new ArrayList();
         ks.setGlobal( "list", list );
@@ -4469,7 +4469,7 @@ public class TraitTest extends CommonTraitTest {
                      "";
 
         KieSession ks = getSessionFromString( drl );
-        TraitFactory.setMode( mode, ks.getKieBase() );
+        TraitFactoryImpl.setMode(mode, ks.getKieBase() );
 
         List list = new ArrayList();
         ks.setGlobal( "list", list );
@@ -4545,7 +4545,7 @@ public class TraitTest extends CommonTraitTest {
                      "end";
 
         KieSession ksession = loadKnowledgeBaseFromString(drl).newKieSession();
-        TraitFactory.setMode( mode, ksession.getKieBase());
+        TraitFactoryImpl.setMode(mode, ksession.getKieBase());
 
         List list = new ArrayList();
         ksession.setGlobal("list",list);
@@ -4581,7 +4581,7 @@ public class TraitTest extends CommonTraitTest {
                      "";
 
         KieSession ksession = loadKnowledgeBaseFromString(drl).newKieSession();
-        TraitFactory.setMode( mode, ksession.getKieBase() );
+        TraitFactoryImpl.setMode(mode, ksession.getKieBase() );
 
         FactHandle handle = ksession.insert( new Entity(  ) );
         ksession.fireAllRules();
@@ -4636,7 +4636,7 @@ public class TraitTest extends CommonTraitTest {
                "";
 
         KieSession ksession = loadKnowledgeBaseFromString(drl).newKieSession();
-        TraitFactory.setMode( mode, ksession.getKieBase() );
+        TraitFactoryImpl.setMode(mode, ksession.getKieBase() );
 
         ksession.fireAllRules();
 
@@ -4761,7 +4761,7 @@ public class TraitTest extends CommonTraitTest {
                      "end \n";
 
         KieSession ksession = loadKnowledgeBaseFromString(drl).newKieSession();
-        TraitFactory.setMode( mode, ksession.getKieBase() );
+        TraitFactoryImpl.setMode(mode, ksession.getKieBase() );
         ArrayList list = new ArrayList();
         ksession.setGlobal( "list", list );
 
@@ -4850,7 +4850,7 @@ public class TraitTest extends CommonTraitTest {
                      "" ;
 
         KieSession ksession = loadKnowledgeBaseFromString(drl).newKieSession();
-        TraitFactory.setMode( mode, ksession.getKieBase() );
+        TraitFactoryImpl.setMode(mode, ksession.getKieBase() );
         ArrayList list = new ArrayList();
         ksession.setGlobal( "list", list );
 
@@ -4934,7 +4934,7 @@ public class TraitTest extends CommonTraitTest {
                           "		};" +
                           "end";
         KieBase kbase = getKieBaseFromString(s1);
-        TraitFactory.setMode( mode, kbase );
+        TraitFactoryImpl.setMode(mode, kbase );
 
         // might need to tweak these numbers.  often works with 7-10,100,60, but often fails 15-20,100,60
         int MAX_THREADS = 20;
@@ -4993,7 +4993,7 @@ public class TraitTest extends CommonTraitTest {
                           "";
 
         KieBase kbase = getKieBaseFromString(s1);
-        TraitFactory.setMode( mode, kbase );
+        TraitFactoryImpl.setMode(mode, kbase );
         ArrayList list = new ArrayList();
 
         KieSession knowledgeSession = kbase.newKieSession();
@@ -5070,7 +5070,7 @@ public class TraitTest extends CommonTraitTest {
                           "";
 
         KieBase kbase = getKieBaseFromString(s1);
-        TraitFactory.setMode( mode, kbase );
+        TraitFactoryImpl.setMode(mode, kbase );
         ArrayList list = new ArrayList();
 
         KieSession knowledgeSession = kbase.newKieSession();
@@ -5123,7 +5123,7 @@ public class TraitTest extends CommonTraitTest {
                           "";
 
         KieBase kbase = getKieBaseFromString(s1);
-        TraitFactory.setMode( mode, kbase );
+        TraitFactoryImpl.setMode(mode, kbase );
         ArrayList list = new ArrayList();
 
         KieSession knowledgeSession = kbase.newKieSession();
@@ -5159,7 +5159,7 @@ public class TraitTest extends CommonTraitTest {
                           "end\n";
 
         KieBase kbase = getKieBaseFromString(s1);
-        TraitFactory.setMode( mode, kbase );
+        TraitFactoryImpl.setMode(mode, kbase );
         ArrayList list = new ArrayList();
 
         KieSession knowledgeSession = kbase.newKieSession();
@@ -5195,7 +5195,7 @@ public class TraitTest extends CommonTraitTest {
                           " end ";
 
         KieBase kbase = getKieBaseFromString(s1);
-        TraitFactory.setMode( mode, kbase );
+        TraitFactoryImpl.setMode(mode, kbase );
         ArrayList list = new ArrayList();
 
         KieSession knowledgeSession = kbase.newKieSession();
@@ -5253,7 +5253,7 @@ public class TraitTest extends CommonTraitTest {
 
 
         KieBase kbase = new KieHelper(PropertySpecificOption.ALLOWED).addContent( drl, ResourceType.DRL ).build();
-        TraitFactory.setMode( mode, kbase );
+        TraitFactoryImpl.setMode(mode, kbase );
         ArrayList list = new ArrayList();
 
         KieSession ksession = kbase.newKieSession();
@@ -5313,7 +5313,7 @@ public class TraitTest extends CommonTraitTest {
 
 
         KieBase kbase = loadKnowledgeBaseFromString( drl );
-        TraitFactory.setMode( mode, kbase );
+        TraitFactoryImpl.setMode(mode, kbase );
         ArrayList list = new ArrayList();
 
         KieSession ksession = kbase.newKieSession();
@@ -5345,7 +5345,7 @@ public class TraitTest extends CommonTraitTest {
                      "";
 
         InternalKnowledgeBase knowledgeBase = KnowledgeBaseFactory.newKnowledgeBase();
-        TraitFactory.setMode( mode, knowledgeBase );
+        TraitFactoryImpl.setMode(mode, knowledgeBase );
 
         KnowledgeBuilder kb = KnowledgeBuilderFactory.newKnowledgeBuilder();
         kb.add( new ByteArrayResource( drl0.getBytes() ), ResourceType.DRL );
@@ -5407,7 +5407,7 @@ public class TraitTest extends CommonTraitTest {
 
         KieBase kbase = getKieBaseFromString(s1, EqualityBehaviorOption.IDENTITY);
 
-        TraitFactory.setMode( mode, kbase );
+        TraitFactoryImpl.setMode(mode, kbase );
         ArrayList list = new ArrayList();
 
         KieSession knowledgeSession = kbase.newKieSession();
@@ -5475,7 +5475,7 @@ public class TraitTest extends CommonTraitTest {
 
         KieBase kbase = getKieBaseFromString(s1);
 
-        TraitFactory.setMode( mode, kbase );
+        TraitFactoryImpl.setMode(mode, kbase );
         ArrayList list = new ArrayList();
 
         KieSession knowledgeSession = kbase.newKieSession();
@@ -5527,7 +5527,7 @@ public class TraitTest extends CommonTraitTest {
                 "\n";
 
         KieBase kbase = getKieBaseFromString( drl );
-        TraitFactory.setMode( mode, kbase );
+        TraitFactoryImpl.setMode(mode, kbase );
         KieSession kSession = kbase.newKieSession();
 
         assertEquals( 3, kSession.fireAllRules() );
@@ -5562,7 +5562,7 @@ public class TraitTest extends CommonTraitTest {
                 "\n";
 
         final KieBase kbase = getKieBaseFromString( drl );
-        TraitFactory.setMode( mode, kbase );
+        TraitFactoryImpl.setMode(mode, kbase );
         KieSession kSession = kbase.newKieSession();
 
         assertEquals( 3, kSession.fireAllRules() );
@@ -5603,7 +5603,7 @@ public class TraitTest extends CommonTraitTest {
                 " ";
 
         KieBase kbase = new KieHelper().addContent( drl, ResourceType.DRL ).build();
-        TraitFactory.setMode( mode, kbase );
+        TraitFactoryImpl.setMode(mode, kbase );
         KieSession ksession = kbase.newKieSession();
 
         List list = new ArrayList();
@@ -5659,7 +5659,7 @@ public class TraitTest extends CommonTraitTest {
                      "end ";
 
         KieBase kbase = getKieBaseFromString( drl );
-        TraitFactory.setMode( mode, kbase );
+        TraitFactoryImpl.setMode(mode, kbase );
         KieSession ksession = kbase.newKieSession();
         List list = new ArrayList();
         ksession.setGlobal( "list", list );
@@ -5716,7 +5716,7 @@ public class TraitTest extends CommonTraitTest {
                      "";
 
         KieBase kbase = getKieBaseFromString( drl );
-        TraitFactory.setMode( mode, kbase );
+        TraitFactoryImpl.setMode(mode, kbase );
         KieSession ksession = kbase.newKieSession();
         List list = new ArrayList();
         ksession.setGlobal( "list", list );
@@ -5801,7 +5801,7 @@ public class TraitTest extends CommonTraitTest {
                      "end ";
 
         KieBase kbase = getKieBaseFromString( drl, EqualityBehaviorOption.EQUALITY );
-        TraitFactory.setMode( mode, kbase );
+        TraitFactoryImpl.setMode(mode, kbase );
 
         KieSession ksession = kbase.newKieSession();
         List list = new ArrayList();
@@ -5839,7 +5839,7 @@ public class TraitTest extends CommonTraitTest {
 
         KieBase kbase = getKieBaseFromString( drl );
         List list = new ArrayList(  );
-        TraitFactory.setMode( mode, kbase );
+        TraitFactoryImpl.setMode(mode, kbase );
 
         KieSession knowledgeSession = kbase.newKieSession();
         knowledgeSession.setGlobal( "list", list );
@@ -5865,7 +5865,7 @@ public class TraitTest extends CommonTraitTest {
 
         KieBase kbase = getKieBaseFromString( drl );
         List list = new ArrayList(  );
-        TraitFactory.setMode( mode, kbase );
+        TraitFactoryImpl.setMode(mode, kbase );
 
         KieSession knowledgeSession = kbase.newKieSession();
         knowledgeSession.setGlobal( "list", list );
@@ -5941,7 +5941,7 @@ public class TraitTest extends CommonTraitTest {
         }
 
         List list = new ArrayList(  );
-        TraitFactory.setMode( mode, kbase );
+        TraitFactoryImpl.setMode(mode, kbase );
 
         KieSession knowledgeSession = kbase.newKieSession();
         knowledgeSession.setGlobal( "list", list );
@@ -5994,7 +5994,7 @@ public class TraitTest extends CommonTraitTest {
                  "end\n";
 
         KieSession ks = getSessionFromString( drl );
-        TraitFactory.setMode( mode, ks.getKieBase() );
+        TraitFactoryImpl.setMode(mode, ks.getKieBase() );
 
         ks.fireAllRules();
     }
@@ -6093,7 +6093,7 @@ public class TraitTest extends CommonTraitTest {
                 "end\n";
 
         KieSession ks = getSessionFromString( drl );
-        TraitFactory.setMode( mode, ks.getKieBase() );
+        TraitFactoryImpl.setMode(mode, ks.getKieBase() );
 
         List<String> list = new ArrayList<String>();
         ks.setGlobal( "list", list );
@@ -6138,7 +6138,7 @@ public class TraitTest extends CommonTraitTest {
                 "end\n";
 
         KieSession ks = getSessionFromString( drl );
-        TraitFactory.setMode( mode, ks.getKieBase() );
+        TraitFactoryImpl.setMode(mode, ks.getKieBase() );
 
         List<String> list = new ArrayList<String>();
         ks.setGlobal( "list", list );

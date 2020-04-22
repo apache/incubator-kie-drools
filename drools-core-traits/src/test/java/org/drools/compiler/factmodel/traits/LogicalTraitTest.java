@@ -22,7 +22,7 @@ import org.drools.compiler.ReviseTraitTestWithPRAlwaysCategory;
 import org.drools.compiler.SerializationHelper;
 import org.drools.core.common.InternalFactHandle;
 import org.drools.core.factmodel.traits.CoreWrapper;
-import org.drools.core.factmodel.traits.TraitFactory;
+import org.drools.core.factmodel.traits.TraitFactoryImpl;
 import org.drools.core.factmodel.traits.TraitField;
 import org.drools.core.factmodel.traits.Traitable;
 import org.drools.core.factmodel.traits.TraitableBean;
@@ -87,7 +87,7 @@ public class LogicalTraitTest extends CommonTraitTest {
         InternalKnowledgeBase kbase = KnowledgeBaseFactory.newKnowledgeBase();
         kbase.addPackages( kbuilderImpl.getKnowledgePackages() );
 
-        TraitFactory.setMode( mode, kbase );
+        TraitFactoryImpl.setMode(mode, kbase );
 
         KieSession ks = kbase.newKieSession();
 
@@ -161,7 +161,7 @@ public class LogicalTraitTest extends CommonTraitTest {
         InternalKnowledgeBase kbase = KnowledgeBaseFactory.newKnowledgeBase();
         kbase.addPackages( kbuilderImpl.getKnowledgePackages() );
 
-        TraitFactory.setMode( mode, kbase );
+        TraitFactoryImpl.setMode(mode, kbase );
 
         KieSession ks = kbase.newKieSession();
         ArrayList list = new ArrayList();
@@ -240,7 +240,7 @@ public class LogicalTraitTest extends CommonTraitTest {
         InternalKnowledgeBase kbase = KnowledgeBaseFactory.newKnowledgeBase();
         kbase.addPackages( kbuilderImpl.getKnowledgePackages() );
 
-        TraitFactory.setMode( mode, kbase );
+        TraitFactoryImpl.setMode(mode, kbase );
 
         KieSession ks = kbase.newKieSession();
         ArrayList list = new ArrayList();
@@ -314,7 +314,7 @@ public class LogicalTraitTest extends CommonTraitTest {
         InternalKnowledgeBase kbase = KnowledgeBaseFactory.newKnowledgeBase();
         kbase.addPackages( kbuilderImpl.getKnowledgePackages() );
 
-        TraitFactory.setMode( mode, kbase );
+        TraitFactoryImpl.setMode(mode, kbase );
 
         KieSession ks = kbase.newKieSession();
         ArrayList list = new ArrayList();
@@ -392,7 +392,7 @@ public class LogicalTraitTest extends CommonTraitTest {
                      "" +
                      "";
         KieBase knowledgeBase = loadKnowledgeBaseFromString( drl );
-        TraitFactory.setMode( mode, knowledgeBase );
+        TraitFactoryImpl.setMode(mode, knowledgeBase );
 
         KieSession knowledgeSession = knowledgeBase.newKieSession();
         ArrayList list = new ArrayList();
@@ -475,7 +475,7 @@ public class LogicalTraitTest extends CommonTraitTest {
                      "" +
                      "";
         KieBase knowledgeBase = loadKnowledgeBaseFromString( drl );
-        TraitFactory.setMode( mode, knowledgeBase );
+        TraitFactoryImpl.setMode(mode, knowledgeBase );
 
         KieSession knowledgeSession = knowledgeBase.newKieSession();
         ArrayList list = new ArrayList();
@@ -559,7 +559,7 @@ public class LogicalTraitTest extends CommonTraitTest {
                      "end ";
 
         KieBase knowledgeBase = new KieHelper(PropertySpecificOption.ALLOWED).addContent( drl, ResourceType.DRL ).build();
-        TraitFactory.setMode( mode, knowledgeBase );
+        TraitFactoryImpl.setMode(mode, knowledgeBase );
 
         KieSession knowledgeSession = knowledgeBase.newKieSession();
         ArrayList list = new ArrayList();
@@ -634,7 +634,7 @@ public class LogicalTraitTest extends CommonTraitTest {
                      "" +
                      "";
         KieBase knowledgeBase = loadKnowledgeBaseFromString( drl );
-        TraitFactory.setMode( mode, knowledgeBase );
+        TraitFactoryImpl.setMode(mode, knowledgeBase );
 
         KieSession knowledgeSession = knowledgeBase.newKieSession();
 
@@ -697,7 +697,7 @@ public class LogicalTraitTest extends CommonTraitTest {
                      "";
 
         KieBase knowledgeBase = loadKnowledgeBaseFromString( drl );
-        TraitFactory.setMode( mode, knowledgeBase );
+        TraitFactoryImpl.setMode(mode, knowledgeBase );
 
         KieSession knowledgeSession = knowledgeBase.newKieSession();
 
@@ -786,7 +786,7 @@ public class LogicalTraitTest extends CommonTraitTest {
         InternalKnowledgeBase kbase = KnowledgeBaseFactory.newKnowledgeBase();
         kbase.addPackages( kbuilderImpl.getKnowledgePackages() );
 
-        TraitFactory.setMode( mode, kbase );
+        TraitFactoryImpl.setMode(mode, kbase );
 
         KieSession ks = kbase.newKieSession();
         ArrayList list = new ArrayList();
@@ -879,7 +879,7 @@ public class LogicalTraitTest extends CommonTraitTest {
         InternalKnowledgeBase kbase = KnowledgeBaseFactory.newKnowledgeBase();
         kbase.addPackages( kbuilderImpl.getKnowledgePackages() );
 
-        TraitFactory.setMode( mode, kbase );
+        TraitFactoryImpl.setMode(mode, kbase );
 
         KieSession ks = kbase.newKieSession();
 
@@ -997,7 +997,7 @@ public class LogicalTraitTest extends CommonTraitTest {
         InternalKnowledgeBase kbase = KnowledgeBaseFactory.newKnowledgeBase();
         kbase.addPackages( kbuilderImpl.getKnowledgePackages() );
 
-        TraitFactory.setMode( mode, kbase );
+        TraitFactoryImpl.setMode(mode, kbase );
 
         KieSession ks = kbase.newKieSession();
         ArrayList list = new ArrayList();
@@ -1123,7 +1123,7 @@ public class LogicalTraitTest extends CommonTraitTest {
         InternalKnowledgeBase kbase = KnowledgeBaseFactory.newKnowledgeBase();
         kbase.addPackages( kbuilderImpl.getKnowledgePackages() );
 
-        TraitFactory.setMode( mode, kbase );
+        TraitFactoryImpl.setMode(mode, kbase );
 
         KieSession ks = kbase.newKieSession();
         ArrayList list = new ArrayList();
@@ -1192,7 +1192,7 @@ public class LogicalTraitTest extends CommonTraitTest {
         InternalKnowledgeBase kbase = KnowledgeBaseFactory.newKnowledgeBase();
         kbase.addPackages( kbuilderImpl.getKnowledgePackages() );
 
-        TraitFactory.setMode( mode, kbase );
+        TraitFactoryImpl.setMode(mode, kbase );
 
         KieSession ks = kbase.newKieSession();
         ArrayList list = new ArrayList();
@@ -1261,7 +1261,7 @@ public class LogicalTraitTest extends CommonTraitTest {
                      "end";
 
         KieSession ksession = loadKnowledgeBaseFromString(drl).newKieSession();
-        TraitFactory.setMode( mode, ksession.getKieBase());
+        TraitFactoryImpl.setMode(mode, ksession.getKieBase());
 
         List list = new ArrayList();
         ksession.setGlobal("list",list);
@@ -1315,7 +1315,7 @@ public class LogicalTraitTest extends CommonTraitTest {
                      "end";
 
         KieSession ksession = loadKnowledgeBaseFromString(drl).newKieSession();
-        TraitFactory.setMode( mode, ksession.getKieBase());
+        TraitFactoryImpl.setMode(mode, ksession.getKieBase());
 
         List list = new ArrayList();
         ksession.setGlobal("list",list);
@@ -1369,7 +1369,7 @@ public class LogicalTraitTest extends CommonTraitTest {
                      "end";
 
         KieSession ksession = loadKnowledgeBaseFromString(drl).newKieSession();
-        TraitFactory.setMode( mode, ksession.getKieBase());
+        TraitFactoryImpl.setMode(mode, ksession.getKieBase());
 
         List list = new ArrayList();
         ksession.setGlobal("list",list);

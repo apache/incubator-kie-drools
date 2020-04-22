@@ -559,7 +559,7 @@ public class TraitCoreWrapperClassBuilderImpl implements TraitCoreWrapperClassBu
                 continue;
             }
 
-            String signature = TraitFactory.buildSignature( method );
+            String signature = TraitFactoryImpl.buildSignature(method );
             {
                 mv = cw.visitMethod( ACC_PUBLIC,
                         method.getName(),
@@ -593,7 +593,7 @@ public class TraitCoreWrapperClassBuilderImpl implements TraitCoreWrapperClassBu
                         signature );
 
                 mv.visitInsn( BuildUtils.returnType( method.getReturnType().getName() ) );
-                int stack = TraitFactory.getStackSize( method );
+                int stack = TraitFactoryImpl.getStackSize(method );
                 mv.visitMaxs( 0, 0 );
                 mv.visitEnd();
             }

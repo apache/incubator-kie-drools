@@ -58,7 +58,7 @@ public class TraitMapPropertyWrapperClassBuilderImpl extends AbstractPropertyWra
         // get the method bitmask
         BitSet mask = traitRegistry.getFieldMask( trait.getName(), core.getDefinedClass().getName() );
 
-        String name = TraitFactory.getPropertyWrapperName(trait, core);
+        String name = TraitFactoryImpl.getPropertyWrapperName(trait, core);
 
 
         String internalWrapper  = BuildUtils.getInternalType( name );
@@ -192,7 +192,7 @@ public class TraitMapPropertyWrapperClassBuilderImpl extends AbstractPropertyWra
                 mv.visitLdcInsn( field.getName() );
                 mv.visitInsn( BuildUtils.zero( field.getTypeName() ) );
                 if ( BuildUtils.isPrimitive( field.getTypeName() ) ) {
-                    TraitFactory.valueOf( mv, field.getTypeName() );
+                    TraitFactoryImpl.valueOf(mv, field.getTypeName() );
                 }
                 mv.visitMethodInsn( INVOKEINTERFACE, Type.getInternalName( Map.class ), "put", 
                                     "(" + Type.getDescriptor( Object.class ) + Type.getDescriptor( Object.class ) + ")" + Type.getDescriptor( Object.class ), true );
@@ -240,7 +240,7 @@ public class TraitMapPropertyWrapperClassBuilderImpl extends AbstractPropertyWra
                 mv.visitLdcInsn( field.resolveAlias() );
                 mv.visitInsn( BuildUtils.zero( field.getTypeName() ) );
                 if ( BuildUtils.isPrimitive( field.getTypeName() ) ) {
-                    TraitFactory.valueOf( mv, field.getTypeName() );
+                    TraitFactoryImpl.valueOf(mv, field.getTypeName() );
                 }
                 mv.visitMethodInsn( INVOKEINTERFACE, Type.getInternalName( Map.class ), "put",
                                     Type.getMethodDescriptor( Type.getType( Object.class ), Type.getType( Object.class ), Type.getType( Object.class ) ), true );
@@ -265,7 +265,7 @@ public class TraitMapPropertyWrapperClassBuilderImpl extends AbstractPropertyWra
 
         for ( FieldDefinition field : core.getFieldsDefinitions() ) {
             if ( field.isKey() ) continue;
-            TraitFactory.invokeInjector( mv, wrapperName, core, field, true, 1 );
+            TraitFactoryImpl.invokeInjector(mv, wrapperName, core, field, true, 1 );
         }
 
         mv.visitVarInsn( ALOAD, 0 );
@@ -318,10 +318,10 @@ public class TraitMapPropertyWrapperClassBuilderImpl extends AbstractPropertyWra
 
             mv.visitVarInsn( ALOAD, 1 );
 
-            TraitFactory.invokeExtractor(mv, wrapperName, core, field );
+            TraitFactoryImpl.invokeExtractor(mv, wrapperName, core, field );
 
             if ( BuildUtils.isPrimitive( field.getTypeName() ) ) {
-                TraitFactory.valueOf( mv, field.getTypeName() );
+                TraitFactoryImpl.valueOf(mv, field.getTypeName() );
             }
             mv.visitMethodInsn( INVOKEVIRTUAL,
                                 Type.getInternalName( Object.class ),
@@ -438,10 +438,10 @@ public class TraitMapPropertyWrapperClassBuilderImpl extends AbstractPropertyWra
         Label l0 = new Label();
         mv.visitJumpInsn( IFEQ, l0 );
 
-        TraitFactory.invokeExtractor(mv, wrapperName, core, field );
+        TraitFactoryImpl.invokeExtractor(mv, wrapperName, core, field );
 
         if ( BuildUtils.isPrimitive( field.getTypeName() ) ) {
-            TraitFactory.valueOf( mv, field.getTypeName() );
+            TraitFactoryImpl.valueOf(mv, field.getTypeName() );
         }
         mv.visitInsn( ARETURN );
         mv.visitLabel( l0 );
