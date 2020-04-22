@@ -9,6 +9,7 @@ Kogito
 [![GitHub Forks](https://img.shields.io/github/forks/kiegroup/kogito-runtimes.svg)](https://github.com/kiegroup/kogito-runtimes/network/members)
 [![GitHub Issues](https://img.shields.io/github/issues/kiegroup/kogito-runtimes.svg)]()
 [![Pull Requests](https://img.shields.io/github/issues-pr/kiegroup/kogito-runtimes.svg?style=flat-square)](https://github.com/kiegroup/kogito-runtimes/pulls)
+[![Zulip chat](https://img.shields.io/badge/zulip-join_chat-brightgreen.svg)]( https://kie.zulipchat.com)
 [![Contributors](https://img.shields.io/github/contributors/kiegroup/kogito-runtimes.svg?style=flat-square)](https://github.com/kiegroup/kogito-runtimes/graphs/contributors)
 [![License](https://img.shields.io/github/license/kiegroup/kogito-runtimes.svg)](https://github.com/kiegroup/kogito-runtimes/blob/master/LICENSE)
 [![Twitter Follow](https://img.shields.io/twitter/follow/kogito_kie.svg?label=Follow&style=social)](https://twitter.com/kogito_kie?lang=en)
