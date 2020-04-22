@@ -16,7 +16,13 @@
 
 package org.drools.compiler.integrationtests;
 
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
+
 import org.drools.compiler.CommonTestMethodBase;
+import org.drools.core.beliefsystem.abductive.Abducible;
+import org.drools.core.factmodel.traits.Thing;
 import org.drools.core.impl.InternalKnowledgeBase;
 import org.drools.core.impl.KnowledgeBaseFactory;
 import org.drools.core.io.impl.ByteArrayResource;
@@ -24,6 +30,7 @@ import org.junit.Test;
 import org.kie.api.builder.Message;
 import org.kie.api.definition.type.FactType;
 import org.kie.api.io.ResourceType;
+import org.kie.api.runtime.KieSession;
 import org.kie.internal.builder.KnowledgeBuilder;
 import org.kie.internal.builder.KnowledgeBuilderFactory;
 import org.kie.internal.utils.KieHelper;
@@ -32,6 +39,86 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 
 public class TraitTypeGenerationTest extends CommonTestMethodBase {
+
+
+    @Test
+    public void testNeeds() {
+        // revisiting OPSJ's version of a fragment of the famous monkey&bananas AI problem
+        String droolsSource =
+                "package org.drools.abductive.test; \n" +
+                        "" +
+                        "import " + Thing.class.getPackage().getName() + ".*;" +
+                        "import " + Abducible.class.getName() + "; \n" +
+                        "global java.util.List list; \n" +
+
+                        "declare Goal \n" +
+                        "   entity : Thing \n" +
+                        "   property : String \n" +
+                        "   value : Object \n" +
+                        "end \n" +
+
+                        "query check( Thing $thing, String $prop, Object $val ) " +
+                        "   Thing( this == $thing, fields[ $prop ] == $val ) " +
+                        "   or" +
+                        "   ( " +
+                        "     need( $thing, $prop, $val ; ) " +
+                        "     and" +
+                        "     Thing( this == $thing, fields[ $prop ] == $val ) " +
+                        "   ) " +
+                        "end \n " +
+
+                        "query need( Thing $thing, String $prop, Object $val ) " +
+                        "   @Abductive( target=Goal.class ) \n" +
+                        "   Thing( this == $thing, fields[ $prop ] != $val ) " +
+                        "end \n "+
+
+                        "rule HandleGoal " +
+                        "when " +
+                        "   $g : Goal( $m : entity, $prop : property, $val : value ) " +
+                        "then " +
+                        "   System.out.println( 'Satisfy ' + $g ); \n" +
+                        "   modify ( $m ) { getFields().put( $prop, $val ); } \n" +
+                        "end " +
+
+                        "declare trait Monkey\n" +
+                        "   position : Integer = 1 \n " +
+                        "end \n" +
+
+                        "rule Main\n" +
+                        "when \n" +
+                        "then \n" +
+                        "   System.out.println( 'Don MONKEY ' ); " +
+                        "   Entity e = new Entity(); \n" +
+                        "   Monkey monkey = don( e, Monkey.class );" +
+                        "end \n" +
+
+                        "rule MoveAround " +
+                        "when " +
+                        "   $m : Monkey( $pos : position ) " +
+                        "   ?check( $m, \"position\", 4 ; ) " +
+                        "then " +
+                        "   System.out.println( 'Monkey madness' + $m ); " +
+                        "   list.add( $m.getPosition() ); " +
+                        "end " +
+
+                        "";
+
+        /////////////////////////////////////
+
+        KieSession session = loadKnowledgeBaseFromString(droolsSource ).newKieSession();
+        List list = new ArrayList();
+        session.setGlobal( "list", list );
+
+        session.fireAllRules();
+
+        for ( Object o : session.getObjects() ) {
+            System.out.println( ">>> " + o );
+        }
+
+        assertEquals(Arrays.asList(4 ), list );
+    }
+
+
 
     @Test
     public void testRedeclareClassAsTrait() {
