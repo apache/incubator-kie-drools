@@ -44,7 +44,7 @@ import org.drools.core.factmodel.traits.Thing;
 import org.drools.core.factmodel.traits.TraitFactoryImpl;
 import org.drools.core.factmodel.traits.TraitFieldTMS;
 import org.drools.core.factmodel.traits.TraitProxy;
-import org.drools.core.factmodel.traits.TraitRegistry;
+import org.drools.core.factmodel.traits.TraitRegistryImpl;
 import org.drools.core.factmodel.traits.TraitType;
 import org.drools.core.factmodel.traits.TraitTypeMap;
 import org.drools.core.factmodel.traits.TraitableBean;
@@ -244,7 +244,7 @@ public class TraitHelper implements Externalizable {
         if ( ! inner.hasTraits() ) {
             TraitTypeMap ttm = (TraitTypeMap) inner._getTraitMap();
             if ( ttm != null && ttm.getStaticTypeCode() == null ) {
-                TraitRegistry registry = this.workingMemory.getKnowledgeBase().getConfiguration().getComponentFactory().getTraitRegistry();
+                TraitRegistryImpl registry = (TraitRegistryImpl) this.workingMemory.getKnowledgeBase().getConfiguration().getComponentFactory().getTraitRegistry();
                 // code that summarizes ALL the static types
                 BitSet staticCode = registry.getStaticTypeCode( inner.getClass().getName() );
                 ttm.setStaticTypeCode( staticCode );

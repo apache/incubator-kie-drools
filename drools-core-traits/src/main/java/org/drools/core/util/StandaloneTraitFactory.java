@@ -31,7 +31,7 @@ import org.drools.core.factmodel.traits.LogicalTypeInconsistencyException;
 import org.drools.core.factmodel.traits.Thing;
 import org.drools.core.factmodel.traits.Trait;
 import org.drools.core.factmodel.traits.TraitFactoryImpl;
-import org.drools.core.factmodel.traits.TraitRegistry;
+import org.drools.core.factmodel.traits.TraitRegistryImpl;
 import org.drools.core.factmodel.traits.TraitableBean;
 import org.drools.core.factmodel.traits.VirtualPropertyMode;
 import org.drools.core.reteoo.KieComponentFactory;
@@ -41,7 +41,7 @@ public class StandaloneTraitFactory<T extends Thing<K>, K extends TraitableBean>
 
     private ProjectClassLoader classLoader;
     private KieComponentFactory kieComponentFactory;
-    private TraitRegistry registry;
+    private TraitRegistryImpl registry;
     private ClassFieldAccessorStore store;
     private HierarchyEncoder encoder;
 
@@ -59,7 +59,7 @@ public class StandaloneTraitFactory<T extends Thing<K>, K extends TraitableBean>
     public StandaloneTraitFactory( ProjectClassLoader classLoader, KieComponentFactory factory, VirtualPropertyMode mode ) {
         this.classLoader = classLoader;
         this.kieComponentFactory = factory;
-        this.registry = kieComponentFactory.getTraitRegistry();
+        this.registry = (TraitRegistryImpl) kieComponentFactory.getTraitRegistry();
         this.store = new ClassFieldAccessorStore();
             this.store.setClassFieldAccessorCache( new ClassFieldAccessorCache( this.classLoader ) );
         this.encoder = new HierarchyEncoderImpl();
@@ -67,7 +67,7 @@ public class StandaloneTraitFactory<T extends Thing<K>, K extends TraitableBean>
         encoder.encode( Thing.class, Collections.emptyList() );
 
         this.mode = mode;
-        setMode(this.mode, new ClassBuilderFactory(), new TraitFactoryImpl());
+        setMode( this.mode, getComponentFactory() );
     }
 
     /**
@@ -100,9 +100,9 @@ public class StandaloneTraitFactory<T extends Thing<K>, K extends TraitableBean>
     }
 
     @Override
-    protected TraitRegistry getTraitRegistry() {
+    protected TraitRegistryImpl getTraitRegistry() {
         if(registry == null) {
-            registry = new TraitRegistry(); // TODO check if it's right
+            registry = new TraitRegistryImpl(); // TODO check if it's right
         }
         return registry;
     }

@@ -65,7 +65,7 @@ public class TraitTripleProxyClassBuilderImpl extends AbstractProxyClassBuilderI
         MethodVisitor mv;
 
         // get the method bitmask
-        BitSet mask = traitRegistry.getFieldMask( getTrait().getName(), core.getDefinedClass().getName() );
+        BitSet mask = traitRegistryImpl.getFieldMask(getTrait().getName(), core.getDefinedClass().getName() );
 
         String name = TraitFactoryImpl.getPropertyWrapperName(getTrait(), core );
         String masterName = TraitFactoryImpl.getProxyName(getTrait(), core );
@@ -387,7 +387,7 @@ public class TraitTripleProxyClassBuilderImpl extends AbstractProxyClassBuilderI
         int j = 0;
 
         for ( FieldDefinition field : getTrait().getFieldsDefinitions() ) {
-            boolean isSoftField = TraitRegistry.isSoftField( field, j++, mask );
+            boolean isSoftField = TraitRegistryImpl.isSoftField(field, j++, mask );
             buildProxyAccessor( cw, masterName, core, mixinInfo, field, isSoftField );
         }
 

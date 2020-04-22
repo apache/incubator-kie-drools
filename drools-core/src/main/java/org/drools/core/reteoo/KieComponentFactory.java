@@ -20,6 +20,7 @@ import java.io.Serializable;
 
 import org.drools.core.base.FieldDataFactory;
 import org.drools.core.base.FieldFactory;
+import org.drools.core.base.TraitHelper;
 import org.drools.core.common.AgendaFactory;
 import org.drools.core.common.AgendaGroupFactory;
 import org.drools.core.common.BeliefSystemFactory;
@@ -229,7 +230,6 @@ public class KieComponentFactory implements Serializable {
         return new DefaultLogicTransformerFactory();
     }
 
-    // TODO inject this
     private TraitFactory traitFactory = null;
 
     public TraitFactory getTraitFactory() {
@@ -240,10 +240,24 @@ public class KieComponentFactory implements Serializable {
         traitFactory = tf;
     }
 
-    private TraitRegistry traitRegistry; // TODO initialise this
+    private TraitRegistry traitRegistry = null;
 
     public TraitRegistry getTraitRegistry() {
         return traitRegistry;
+    }
+
+    public void setTraitRegistry(TraitRegistry traitRegistry) {
+        this.traitRegistry = traitRegistry;
+    }
+
+    public TraitHelper traitHelper = null;
+
+    public TraitHelper getTraitHelper() {
+        return traitHelper;
+    }
+
+    public void setTraitHelper(TraitHelper traitHelper) {
+        this.traitHelper = traitHelper;
     }
 
     //

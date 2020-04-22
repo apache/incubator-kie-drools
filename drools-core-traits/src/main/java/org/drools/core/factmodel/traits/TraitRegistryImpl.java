@@ -40,7 +40,7 @@ import org.drools.core.util.HierarchyEncoder;
 import org.drools.core.util.HierarchyEncoderImpl;
 import org.kie.api.definition.type.FactField;
 
-public class TraitRegistry implements Externalizable {
+public class TraitRegistryImpl implements Externalizable, TraitRegistry {
 
 
     private Map<String, ClassDefinition> traits;
@@ -54,7 +54,7 @@ public class TraitRegistry implements Externalizable {
     private HierarchyEncoder<String> hierarchy;
 
 
-    public TraitRegistry() {
+    public TraitRegistryImpl() {
         init();
     }
 
@@ -89,7 +89,8 @@ public class TraitRegistry implements Externalizable {
         addTraitable( logicalMapcoreDef );
     }
 
-    public void merge( TraitRegistry other ) {
+    public void merge( TraitRegistry otherRegistry ) {
+        TraitRegistryImpl other = (TraitRegistryImpl) otherRegistry;
         if ( staticTraitTypes == null && other.staticTraitTypes != null ) {
             staticTraitTypes = new HashMap<String, Set<String>>();
             staticTraitTypes.putAll( other.staticTraitTypes );
@@ -123,7 +124,7 @@ public class TraitRegistry implements Externalizable {
         }
     }
 
-    private static HierarchyEncoder<String> mergeHierarchy( TraitRegistry first, TraitRegistry second ) {
+    private static HierarchyEncoder<String> mergeHierarchy(TraitRegistryImpl first, TraitRegistryImpl second ) {
         for ( String traitName : second.getHierarchy().getSortedMembers() ) {
             ClassDefinition trait = second.traits.get( traitName );
             List<String> parentTraits = new ArrayList<String>( );

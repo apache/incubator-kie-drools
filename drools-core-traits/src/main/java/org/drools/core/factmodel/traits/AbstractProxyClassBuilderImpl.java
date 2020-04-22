@@ -43,16 +43,16 @@ public abstract class AbstractProxyClassBuilderImpl implements TraitProxyClassBu
 
 	protected transient Class<?> proxyBaseClass;
 
-	protected transient TraitRegistry traitRegistry;
+	protected transient TraitRegistryImpl traitRegistryImpl;
 
     protected ClassDefinition getTrait() {
         return trait;
     }
 
-    public void init( ClassDefinition trait, Class<?> baseClass, TraitRegistry traitRegistry ) {
+    public void init( ClassDefinition trait, Class<?> baseClass, TraitRegistryImpl traitRegistryImpl) {
         this.trait = trait;
         this.proxyBaseClass = baseClass;
-        this.traitRegistry = traitRegistry;
+        this.traitRegistryImpl = traitRegistryImpl;
     }
 
 
@@ -160,7 +160,7 @@ public abstract class AbstractProxyClassBuilderImpl implements TraitProxyClassBu
 				Iterator<FieldDefinition> iter = trait.getFieldsDefinitions().iterator();
 				for ( int j = 0; j < trait.getFieldsDefinitions().size(); j++ ) {
 					FieldDefinition fld = iter.next();
-					boolean hardField = ! TraitRegistry.isSoftField( fld, j, mask );
+					boolean hardField = ! TraitRegistryImpl.isSoftField(fld, j, mask );
 					shedField( mv, fld, internalProxy, core, hardField, j + 2 );
 				}
 			}

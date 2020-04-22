@@ -33,15 +33,15 @@ public abstract class AbstractPropertyWrapperClassBuilderImpl implements TraitPr
 
     protected transient ClassDefinition trait;
 
-    protected transient TraitRegistry traitRegistry;
+    protected transient TraitRegistryImpl traitRegistryImpl;
 
     protected ClassDefinition getTrait() {
         return trait;
     }
 
-    public void init(ClassDefinition trait, TraitRegistry traitRegistry) {
+    public void init(ClassDefinition trait, TraitRegistryImpl traitRegistryImpl) {
         this.trait = trait;
-        this.traitRegistry = traitRegistry;
+        this.traitRegistryImpl = traitRegistryImpl;
     }
 
     protected void invokePut(MethodVisitor mv, String wrapperName, ClassDefinition core, String fieldName, FieldDefinition field) {

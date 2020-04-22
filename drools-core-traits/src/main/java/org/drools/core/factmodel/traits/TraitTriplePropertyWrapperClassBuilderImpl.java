@@ -59,7 +59,7 @@ public class TraitTriplePropertyWrapperClassBuilderImpl extends AbstractProperty
 		MethodVisitor mv;
 
 		// get the method bitmask
-		BitSet mask = traitRegistry.getFieldMask(trait.getName(), core.getDefinedClass().getName());
+		BitSet mask = traitRegistryImpl.getFieldMask(trait.getName(), core.getDefinedClass().getName());
 
 		String name = TraitFactoryImpl.getPropertyWrapperName(trait, core );
 
@@ -224,7 +224,7 @@ public class TraitTriplePropertyWrapperClassBuilderImpl extends AbstractProperty
 
 		int j = 0;
 		for ( FieldDefinition field : trait.getFieldsDefinitions() ) {
-			boolean isSoftField = TraitRegistry.isSoftField( field, j++, mask );
+			boolean isSoftField = TraitRegistryImpl.isSoftField(field, j++, mask );
 			if ( isSoftField ) {
 				stack = Math.max( stack, BuildUtils.sizeOf( field.getTypeName() ) );
 
@@ -303,7 +303,7 @@ public class TraitTriplePropertyWrapperClassBuilderImpl extends AbstractProperty
 	protected void initSoftFields( MethodVisitor mv, String wrapperName, ClassDefinition trait, ClassDefinition core, BitSet mask ) {
 		int j = 0;
 		for ( FieldDefinition field : trait.getFieldsDefinitions() ) {
-			boolean isSoftField = TraitRegistry.isSoftField( field, j++, mask );
+			boolean isSoftField = TraitRegistryImpl.isSoftField(field, j++, mask );
 			if ( isSoftField ) {
 				initSoftField( mv, wrapperName, field, core, wrapperName );
 			}
@@ -400,7 +400,7 @@ public class TraitTriplePropertyWrapperClassBuilderImpl extends AbstractProperty
 
 		int j = 0;
 		for ( FieldDefinition field : trait.getFieldsDefinitions() ) {
-			boolean isSoftField = TraitRegistry.isSoftField( field, j++, mask );
+			boolean isSoftField = TraitRegistryImpl.isSoftField(field, j++, mask );
 			if ( isSoftField ) {
 				clearSoftField(mv, wrapperName, field);
 			}

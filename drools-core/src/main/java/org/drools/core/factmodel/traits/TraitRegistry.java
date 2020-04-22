@@ -6,6 +6,5 @@ public interface TraitRegistry {
 
     HierarchyEncoder<String> getHierarchy();
 
-    public void merge( TraitRegistry other );
-
-    }
+    void merge(TraitRegistry other);
+}

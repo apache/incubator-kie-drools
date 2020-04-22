@@ -49,7 +49,7 @@ import org.drools.core.factmodel.traits.Thing;
 import org.drools.core.factmodel.traits.Trait;
 import org.drools.core.factmodel.traits.TraitFactoryImpl;
 import org.drools.core.factmodel.traits.TraitProxy;
-import org.drools.core.factmodel.traits.TraitRegistry;
+import org.drools.core.factmodel.traits.TraitRegistryImpl;
 import org.drools.core.factmodel.traits.TraitTypeMap;
 import org.drools.core.factmodel.traits.Traitable;
 import org.drools.core.factmodel.traits.TraitableBean;
@@ -2202,7 +2202,7 @@ public class TraitTest extends CommonTraitTest {
 
         kbase.addPackages( kbuilder.getKnowledgePackages() );
 
-        TraitRegistry tr = ((KnowledgeBaseImpl) kbase).getConfiguration().getComponentFactory().getTraitRegistry();
+        TraitRegistryImpl tr = (TraitRegistryImpl) kbase.getConfiguration().getComponentFactory().getTraitRegistry();
         System.out.println( tr.getHierarchy() );
 
 

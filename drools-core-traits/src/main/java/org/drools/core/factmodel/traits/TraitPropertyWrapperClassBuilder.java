@@ -21,6 +21,6 @@ import org.drools.core.factmodel.ClassDefinition;
 
 public interface TraitPropertyWrapperClassBuilder extends ClassBuilder {
 
-	void init( ClassDefinition trait, TraitRegistry traitRegistry );
+	void init( ClassDefinition trait, TraitRegistryImpl traitRegistryImpl);
 
 }

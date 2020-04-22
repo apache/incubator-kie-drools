@@ -63,7 +63,7 @@ public class TraitMapProxyClassBuilderImpl extends AbstractProxyClassBuilderImpl
         MethodVisitor mv;
 
         // get the method bitmask
-        BitSet mask = traitRegistry.getFieldMask( getTrait().getName(), core.getDefinedClass().getName() );
+        BitSet mask = traitRegistryImpl.getFieldMask(getTrait().getName(), core.getDefinedClass().getName() );
 
         String name = TraitFactoryImpl.getPropertyWrapperName(getTrait(), core );
         String masterName = TraitFactoryImpl.getProxyName(getTrait(), core );
@@ -349,7 +349,7 @@ public class TraitMapProxyClassBuilderImpl extends AbstractProxyClassBuilderImpl
         int j = 0;
         for ( FieldDefinition field : trait.getFieldsDefinitions() ) {
 
-            boolean hardField = ! TraitRegistry.isSoftField( field, j++, mask );
+            boolean hardField = ! TraitRegistryImpl.isSoftField(field, j++, mask );
 
             if ( core.isFullTraiting() ) {
                 buildLogicalGetter( cw, field, masterName, core );

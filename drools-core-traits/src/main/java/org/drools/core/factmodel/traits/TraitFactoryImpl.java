@@ -71,8 +71,8 @@ public class TraitFactoryImpl<T extends Thing<K>, K extends TraitableBean> exten
         return kBase.getConfiguration().getComponentFactory();
     }
 
-    protected TraitRegistry getTraitRegistry() {
-        return kBase.getTraitRegistry();
+    protected TraitRegistryImpl getTraitRegistry() {
+        return (TraitRegistryImpl) kBase.getTraitRegistry();
     }
 
     protected HierarchyEncoder getHierarchyEncoder() {

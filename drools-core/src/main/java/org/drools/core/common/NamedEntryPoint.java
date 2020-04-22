@@ -775,6 +775,8 @@ public class NamedEntryPoint
         return traitHelper;
     }
 
+
+
     @Override
     public String toString() {
         return entryPoint.toString();

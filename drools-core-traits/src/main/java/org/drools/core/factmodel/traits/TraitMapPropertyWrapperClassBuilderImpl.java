@@ -56,7 +56,7 @@ public class TraitMapPropertyWrapperClassBuilderImpl extends AbstractPropertyWra
         MethodVisitor mv;
 
         // get the method bitmask
-        BitSet mask = traitRegistry.getFieldMask( trait.getName(), core.getDefinedClass().getName() );
+        BitSet mask = traitRegistryImpl.getFieldMask(trait.getName(), core.getDefinedClass().getName() );
 
         String name = TraitFactoryImpl.getPropertyWrapperName(trait, core);
 
@@ -167,7 +167,7 @@ public class TraitMapPropertyWrapperClassBuilderImpl extends AbstractPropertyWra
 
         int j = 0;
         for ( FieldDefinition field : trait.getFieldsDefinitions() ) {
-            boolean isSoftField = TraitRegistry.isSoftField( field, j++, mask );
+            boolean isSoftField = TraitRegistryImpl.isSoftField(field, j++, mask );
             if ( isSoftField ) {
                 mv.visitLdcInsn( field.getName() );
                 mv.visitVarInsn( ALOAD, 1 );
@@ -225,7 +225,7 @@ public class TraitMapPropertyWrapperClassBuilderImpl extends AbstractPropertyWra
     protected void initSoftFields( MethodVisitor mv, ClassDefinition trait, ClassDefinition core, String internalWrapper, BitSet mask, int varNum ) {
         int j = 0;
         for ( FieldDefinition field : trait.getFieldsDefinitions() ) {
-            boolean isSoftField = TraitRegistry.isSoftField( field, j++, mask );
+            boolean isSoftField = TraitRegistryImpl.isSoftField(field, j++, mask );
             if ( isSoftField ) {
 
                 mv.visitVarInsn( ALOAD, varNum );

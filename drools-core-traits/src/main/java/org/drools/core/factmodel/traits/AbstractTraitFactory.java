@@ -542,7 +542,7 @@ public abstract class AbstractTraitFactory<T extends Thing<K>, K extends Traitab
 
     protected abstract KieComponentFactory getComponentFactory();
 
-    protected abstract TraitRegistry getTraitRegistry();
+    protected abstract TraitRegistryImpl getTraitRegistry();
 
     protected abstract HierarchyEncoder getHierarchyEncoder();
 
