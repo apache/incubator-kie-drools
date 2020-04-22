@@ -18,6 +18,8 @@ package org.drools.core.factmodel;
 
 import java.io.Serializable;
 
+import org.drools.core.factmodel.traits.TraitClassBuilder;
+
 public class ClassBuilderFactory implements Serializable {
 
 
@@ -62,74 +64,39 @@ public class ClassBuilderFactory implements Serializable {
 
 
 
-// todo trait
     // Trait interfaces
+    private TraitClassBuilder traitBuilder;
 
-//    private TraitClassBuilder traitBuilder = new TraitClassBuilderImpl();
-//
-//    public ClassBuilder getTraitBuilder() {
-//        return traitBuilder;
-//    }
-//
-//    public void setTraitBuilder( TraitClassBuilder tcb ) {
-//        traitBuilder = tcb;
-//    }
-//
-//    public void setDefaultTraitBuilder() {
-//        traitBuilder = new TraitClassBuilderImpl();
-//    }
-//
-//    public static ClassBuilder getDefaultTraitBuilder() {
-//        return new TraitClassBuilderImpl();
-//    }
-//
-//
-//
-//    // Trait property wrappers
-//
-//
-//    private ClassBuilder propertyWrapperBuilder = new TraitMapPropertyWrapperClassBuilderImpl();
-//
-//    public ClassBuilder getPropertyWrapperBuilder() {
-//        return propertyWrapperBuilder;
-//    }
-//
-//    public void setPropertyWrapperBuilder( TraitPropertyWrapperClassBuilder pcb ) {
-//        propertyWrapperBuilder = pcb;
-//    }
-//
-//    public void setDefaultPropertyWrapperBuilder() {
-//        propertyWrapperBuilder = new TraitTriplePropertyWrapperClassBuilderImpl();
-//    }
-//
-//    public static ClassBuilder getDefaultPropertyWrapperBuilder() {
-//        return new TraitTriplePropertyWrapperClassBuilderImpl();
-//    }
-//
-//
-//
-//
-//    // Trait proxy wrappers
-//
-//    private  TraitProxyClassBuilder traitProxyBuilder = new TraitMapProxyClassBuilderImpl();
-//
-//    public ClassBuilder getTraitProxyBuilder() {
-//        return traitProxyBuilder;
-//    }
-//
-//    public void setTraitProxyBuilder( TraitProxyClassBuilder tpcb ) {
-//        traitProxyBuilder = tpcb;
-//    }
-//
-//    public void setDefaultTraitProxyBuilder() {
-//        traitProxyBuilder = new TraitTripleProxyClassBuilderImpl();
-//    }
-//
-//    public static ClassBuilder getDefaultTraitProxyBuilder() {
-//        return new TraitTripleProxyClassBuilderImpl();
-//    }
-//
-//
+    public ClassBuilder getTraitBuilder() {
+        return traitBuilder;
+    }
+
+    public void setTraitBuilder( TraitClassBuilder tcb ) {
+        traitBuilder = tcb;
+    }
+
+    // Trait property wrappers
 
 
+    private ClassBuilder propertyWrapperBuilder;
+
+    public ClassBuilder getPropertyWrapperBuilder() {
+        return propertyWrapperBuilder;
+    }
+
+    public void setPropertyWrapperBuilder( ClassBuilder pcb ) {
+        propertyWrapperBuilder = pcb;
+    }
+
+    // Trait proxy wrappers
+
+    private ClassBuilder traitProxyBuilder;
+
+    public ClassBuilder getTraitProxyBuilder() {
+        return traitProxyBuilder;
+    }
+
+    public void setTraitProxyBuilder(ClassBuilder tpcb ) {
+        traitProxyBuilder = tpcb;
+    }
 }
