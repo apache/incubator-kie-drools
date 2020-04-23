@@ -42,7 +42,6 @@ public interface LeftTupleSink
     LeftTuple createPeer(LeftTuple original);
     
     LeftTuple createLeftTuple(final InternalFactHandle factHandle,
-                              Sink sink,
                               boolean leftTupleMemoryEnabled);
 
     LeftTuple createLeftTuple(final InternalFactHandle factHandle,

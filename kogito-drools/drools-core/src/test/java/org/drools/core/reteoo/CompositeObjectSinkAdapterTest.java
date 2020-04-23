@@ -718,9 +718,8 @@ public class CompositeObjectSinkAdapterTest {
         }
 
         public LeftTuple createLeftTuple(InternalFactHandle factHandle,
-                                         Sink sink,
                                          boolean leftTupleMemoryEnabled) {
-            return new LeftTupleImpl(factHandle, sink, leftTupleMemoryEnabled );
+            return new LeftTupleImpl(factHandle, this, leftTupleMemoryEnabled );
         }    
         
         public LeftTuple createLeftTuple(LeftTuple leftTuple,

@@ -49,7 +49,7 @@ public class LeftMemory {
         List<LeftTuple> list = new ArrayList<LeftTuple>();
         for ( Object object : objects ) {
             InternalFactHandle fh = (InternalFactHandle) wm.insert( object );
-            LeftTuple expectedLeftTuple = node.createLeftTuple( fh, node, true );
+            LeftTuple expectedLeftTuple = node.createLeftTuple( fh, true );
             expectedLeftTuple.setPropagationContext( new PhreakPropagationContext() );
             list.add( expectedLeftTuple );
            

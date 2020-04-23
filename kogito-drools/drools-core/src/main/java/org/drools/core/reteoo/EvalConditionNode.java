@@ -200,9 +200,8 @@ public class EvalConditionNode extends LeftTupleSource
 
 
     public LeftTuple createLeftTuple(InternalFactHandle factHandle,
-                                     Sink sink,
                                      boolean leftTupleMemoryEnabled) {
-        return new EvalNodeLeftTuple(factHandle, sink, leftTupleMemoryEnabled );
+        return new EvalNodeLeftTuple(factHandle, this, leftTupleMemoryEnabled );
     }
 
     public LeftTuple createLeftTuple(final InternalFactHandle factHandle,

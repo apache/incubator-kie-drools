@@ -39,6 +39,7 @@ import org.drools.core.impl.InternalKnowledgeBase;
 import org.drools.core.reteoo.AbstractTerminalNode;
 import org.drools.core.reteoo.AccumulateNode.AccumulateContext;
 import org.drools.core.reteoo.AccumulateNode.AccumulateMemory;
+import org.drools.core.reteoo.AlphaTerminalNode;
 import org.drools.core.reteoo.BetaMemory;
 import org.drools.core.reteoo.BetaNode;
 import org.drools.core.reteoo.FromNode.FromMemory;
@@ -851,6 +852,11 @@ public class AddRemoveRule {
         // Must iterate up until a node with memory is found, this can be followed to find the LeftTuples
         // which provide the potential peer of the tuple being added or removed
 
+        if ( node instanceof AlphaTerminalNode ) {
+            processLeftTuplesOnLian( wm, insert, rule, (LeftInputAdapterNode) node );
+            return;
+        }
+
         Memory memory = wm.getNodeMemories().peekNodeMemory(node);
         if (memory == null || memory.getSegmentMemory() == null) {
             // segment has never been initialized, which means the rule(s) have never been linked and thus no Tuples to fix
@@ -904,13 +910,15 @@ public class AddRemoveRule {
 
         // No beta or from nodes, so must retrieve LeftTuples from the LiaNode.
         // This is done by scanning all the LeftTuples referenced from the FactHandles in the ObjectTypeNode
-        LeftInputAdapterNode lian = (LeftInputAdapterNode) node;
+        processLeftTuplesOnLian( wm, insert, rule, (LeftInputAdapterNode) node );
+    }
 
+    private static void processLeftTuplesOnLian( InternalWorkingMemory wm, boolean insert, Rule rule, LeftInputAdapterNode lian ) {
         ObjectSource os = lian.getObjectSource();
         while (os.getType() != NodeTypeEnums.ObjectTypeNode) {
             os = os.getParentObjectSource();
         }
-        ObjectTypeNode             otn  = (ObjectTypeNode) os;
+        ObjectTypeNode otn  = (ObjectTypeNode) os;
         final ObjectTypeNodeMemory omem = wm.getNodeMemory(otn);
         if (omem == null) {
             // no OTN memory yet, i.e. no inserted matching objects, so no Tuples to process
@@ -986,7 +994,7 @@ public class AddRemoveRule {
                 lt = lt.getPeer();
             } else {
                 // there is a sink without a peer LT, so create the peer LT
-                prevLt = insertPeerLeftTuple(prevLt, sink, wm);
+                prevLt = insertPeerLeftTuple(prevLt, sink, wm, insert);
             }
         }
     }
@@ -1015,13 +1023,24 @@ public class AddRemoveRule {
     /**
      * Create all missing peers
      */
-    private static LeftTuple insertPeerLeftTuple(LeftTuple lt, LeftTupleSinkNode node, InternalWorkingMemory wm) {
+    private static LeftTuple insertPeerLeftTuple(LeftTuple lt, LeftTupleSinkNode node, InternalWorkingMemory wm, boolean insert) {
+        LeftTuple peer = node.createPeer(lt);
+
+        if ( node.getLeftTupleSource() instanceof AlphaTerminalNode ) {
+            if (insert) {
+                TerminalNode rtn = ( TerminalNode ) node;
+                InternalAgenda agenda = wm.getAgenda();
+                RuleAgendaItem agendaItem = AlphaTerminalNode.getRuleAgendaItem( wm, agenda, rtn, insert );
+                PhreakRuleTerminalNode.doLeftTupleInsert( rtn, agendaItem.getRuleExecutor(), agenda, agendaItem, peer );
+            }
+            return peer;
+        }
+
         LeftInputAdapterNode.LiaNodeMemory liaMem = null;
         if ( node.getLeftTupleSource().getType() == NodeTypeEnums.LeftInputAdapterNode ) {
             liaMem = wm.getNodeMemory(((LeftInputAdapterNode) node.getLeftTupleSource()));
         }
 
-        LeftTuple peer = node.createPeer(lt);
         Memory memory = wm.getNodeMemories().peekNodeMemory(node);
         if (memory == null || memory.getSegmentMemory() == null) {
             throw new IllegalStateException("Defensive Programming: this should not be possilbe, as the addRule code should init child segments if they are needed ");

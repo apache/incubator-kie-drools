@@ -17,9 +17,11 @@
 package org.drools.core.reteoo;
 
 import org.drools.core.common.DefaultFactHandle;
+import org.drools.core.common.InternalAgenda;
 import org.drools.core.common.InternalFactHandle;
 import org.drools.core.common.InternalWorkingMemory;
 import org.drools.core.common.RuleBasePartitionId;
+import org.drools.core.phreak.PhreakRuleTerminalNode;
 import org.drools.core.spi.PropagationContext;
 
 public class ModifyPreviousTuples {
@@ -70,7 +72,15 @@ public class ModifyPreviousTuples {
     public void doDeleteObject(PropagationContext pctx, InternalWorkingMemory wm, LeftTuple leftTuple) {
         LeftInputAdapterNode liaNode = leftTuple.getTupleSource();
         LeftInputAdapterNode.LiaNodeMemory lm = wm.getNodeMemory( liaNode );
-        LeftInputAdapterNode.doDeleteObject(leftTuple, pctx, lm.getSegmentMemory(), wm, liaNode, true, lm);
+        SegmentMemory sm = lm.getSegmentMemory();
+        if (sm != null) {
+            LeftInputAdapterNode.doDeleteObject( leftTuple, pctx, sm, wm, liaNode, true, lm );
+        } else {
+            InternalAgenda agenda = wm.getAgenda();
+            TerminalNode rtn = ( TerminalNode ) leftTuple.getTupleSink();
+            PathMemory pathMemory = wm.getNodeMemory( rtn );
+            PhreakRuleTerminalNode.doLeftDelete(agenda, pathMemory.getRuleAgendaItem().getRuleExecutor(), leftTuple);
+        }
     }
 
     public void doRightDelete(PropagationContext pctx, InternalWorkingMemory wm, RightTuple rightTuple) {

@@ -180,10 +180,12 @@ public class PhreakActivationIterator
         // No beta or from nodes, so must retrieve LeftTuples from the LiaNode.
         // This is done by scanning all the LeftTuples referenced from the FactHandles in the ObjectTypeNode
         LeftInputAdapterNode lian = (LeftInputAdapterNode) node;
-        Memory memory = wm.getNodeMemory((MemoryFactory) node);
-        if (memory.getSegmentMemory() == null) {
-            // segment has never been initialized, which means the rule has never been linked.
-            return;
+        if ( !lian.isTerminal() ) {
+            Memory memory = wm.getNodeMemory( ( MemoryFactory ) node );
+            if ( memory.getSegmentMemory() == null ) {
+                // segment has never been initialized, which means the rule has never been linked.
+                return;
+            }
         }
 
         ObjectSource os = lian.getObjectSource();

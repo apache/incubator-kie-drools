@@ -726,8 +726,8 @@ public class DefeasibilityTest {
         session.setGlobal( "negList", negList );
 
         session.insert( 10 );
-        session.insert( 20 );
         session.insert( 30 );
+        session.insert( 20 );
 
         session.fireAllRules();
 

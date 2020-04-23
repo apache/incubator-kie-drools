@@ -340,9 +340,8 @@ public class RuleTerminalNode extends AbstractTerminalNode {
     }
 
     public LeftTuple createLeftTuple(InternalFactHandle factHandle,
-                                     Sink sink,
                                      boolean leftTupleMemoryEnabled) {
-        return new RuleTerminalNodeLeftTuple( factHandle, sink, leftTupleMemoryEnabled );
+        return new RuleTerminalNodeLeftTuple( factHandle, this, leftTupleMemoryEnabled );
     }
 
     public LeftTuple createLeftTuple(LeftTuple leftTuple,

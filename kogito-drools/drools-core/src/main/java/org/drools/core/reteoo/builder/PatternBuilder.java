@@ -169,7 +169,7 @@ public class PatternBuilder
 
     private void buildXpathConstraints(BuildContext context, BuildUtils utils, Pattern pattern, Constraints constraints) {
         if (!constraints.xpathConstraints.isEmpty()) {
-            buildTupleSource(context, utils);
+            buildTupleSource(context, utils, false);
 
             if (constraints.xpathConstraints.size() == 1 && constraints.xpathConstraints.get(0).getXpathStartDeclaration() != null) {
                 context.setObjectSource( null );

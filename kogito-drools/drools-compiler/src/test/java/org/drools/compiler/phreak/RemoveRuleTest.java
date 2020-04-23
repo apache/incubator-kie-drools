@@ -585,8 +585,8 @@ public class RemoveRuleTest {
         RuleTerminalNode rtn1 = getRtn( "org.kie.r1", kbase1 );
         RuleTerminalNode rtn2 = getRtn( "org.kie.r2", kbase1 );
 
-        assertEquals( 2, wm.getNodeMemory(rtn1).getSegmentMemories().length );
-        assertEquals( 2, wm.getNodeMemory(rtn2).getSegmentMemories().length );
+        assertEquals( 1, wm.getNodeMemory(rtn1).getSegmentMemories().length );
+        assertEquals( 1, wm.getNodeMemory(rtn2).getSegmentMemories().length );
 
         kbase1.removeRule("org.kie", "r2");
         assertEquals( 1, wm.getNodeMemory(rtn1).getSegmentMemories().length );
@@ -602,8 +602,8 @@ public class RemoveRuleTest {
         RuleTerminalNode rtn1 = getRtn( "org.kie.r1", kbase1 );
         RuleTerminalNode rtn2 = getRtn( "org.kie.r2", kbase1 );
 
-        assertEquals( 2, wm.getNodeMemory(rtn1).getSegmentMemories().length );
-        assertEquals( 2, wm.getNodeMemory(rtn2).getSegmentMemories().length );
+        assertEquals( 1, wm.getNodeMemory(rtn1).getSegmentMemories().length );
+        assertEquals( 1, wm.getNodeMemory(rtn2).getSegmentMemories().length );
 
         kbase1.removeRule("org.kie", "r2");
         assertEquals( 1, wm.getNodeMemory(rtn1).getSegmentMemories().length );

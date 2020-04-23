@@ -136,12 +136,8 @@ public class AlphaNode extends ObjectSource
     public void assertObject(final InternalFactHandle factHandle,
                              final PropagationContext context,
                              final InternalWorkingMemory workingMemory) {
-        if (this.constraint.isAllowed(factHandle,
-                workingMemory)) {
-
-            this.sink.propagateAssertObject(factHandle,
-                    context,
-                    workingMemory);
+        if (this.constraint.isAllowed(factHandle, workingMemory)) {
+            this.sink.propagateAssertObject( factHandle, context, workingMemory );
         }
     }
 

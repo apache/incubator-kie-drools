@@ -517,11 +517,8 @@ public class QueryElementNode extends LeftTupleSource
 
     @Override
     public LeftTuple createLeftTuple(InternalFactHandle factHandle,
-                                     Sink sink,
                                      boolean leftTupleMemoryEnabled) {
-        return new QueryElementNodeLeftTuple( factHandle,
-                                              sink,
-                                              leftTupleMemoryEnabled );
+        return new QueryElementNodeLeftTuple( factHandle, this, leftTupleMemoryEnabled );
     }
 
     @Override

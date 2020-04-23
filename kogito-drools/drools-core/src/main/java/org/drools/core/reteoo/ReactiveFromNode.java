@@ -78,9 +78,8 @@ public class ReactiveFromNode extends FromNode<ReactiveFromNode.ReactiveFromMemo
     }
 
     public LeftTuple createLeftTuple(InternalFactHandle factHandle,
-                                     Sink sink,
                                      boolean leftTupleMemoryEnabled) {
-        return new ReactiveFromNodeLeftTuple(factHandle, sink, leftTupleMemoryEnabled );
+        return new ReactiveFromNodeLeftTuple(factHandle, this, leftTupleMemoryEnabled );
     }
 
     public LeftTuple createLeftTuple(final InternalFactHandle factHandle,
