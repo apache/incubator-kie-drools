@@ -22,15 +22,16 @@ import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.time.Period;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Map;
 
 import org.junit.Test;
 import org.kie.dmn.api.core.DMNContext;
+import org.kie.dmn.api.core.DMNDecisionResult.DecisionEvaluationStatus;
 import org.kie.dmn.api.core.DMNModel;
 import org.kie.dmn.api.core.DMNResult;
 import org.kie.dmn.api.core.DMNRuntime;
-import org.kie.dmn.core.BaseVariantNonTypeSafeTest;
 import org.kie.dmn.core.BaseVariantTest;
 import org.kie.dmn.core.api.DMNFactory;
 import org.kie.dmn.core.util.DMNRuntimeUtil;
@@ -39,6 +40,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import static org.hamcrest.CoreMatchers.is;
+import static org.hamcrest.CoreMatchers.not;
 import static org.hamcrest.CoreMatchers.notNullValue;
 import static org.junit.Assert.assertThat;
 import static org.kie.dmn.core.util.DynamicTypeUtils.entry;
@@ -82,6 +84,10 @@ public class DMNRuntimeTypesTest extends BaseVariantTest {
         assertThat(dmnResult.getDecisionResultByName("DecisionTime").getResult(), is(LocalTime.of(10, 0)));
     }
 
+    class Asd extends ArrayList<String> {
+
+    }
+
     @Test
     public void testRecursiveEmployee() {
         final DMNRuntime runtime = createRuntime("recursiveEmployee.dmn", this.getClass());
@@ -114,6 +120,54 @@ public class DMNRuntimeTypesTest extends BaseVariantTest {
         LOG.debug("{}", dmnResult);
         assertThat(DMNRuntimeUtil.formatMessages(dmnResult.getMessages()), dmnResult.hasErrors(), is(false));
         assertThat(dmnResult.getDecisionResultByName("highlights").getResult(), is("John Doe: reports to John's Manager and is manager of 2 : [ Bob, Carl ]"));
+    }
+
+    @Test
+    public void testListBasic() {
+        final DMNRuntime runtime = createRuntime("listBasic.dmn", this.getClass());
+        final DMNModel dmnModel = runtime.getModel("https://kiegroup.org/dmn/_B84B17F3-3E84-4DED-996E-AA630A6BF9C4", "new-file");
+        assertThat(dmnModel, notNullValue());
+        assertThat(DMNRuntimeUtil.formatMessages(dmnModel.getMessages()), dmnModel.hasErrors(), is(false));
+
+        final DMNContext context = DMNFactory.newContext();
+        context.set("listNumber", Arrays.asList(1, 2, 3));
+        context.set("vowel", "e");
+        context.set("listVowel", Arrays.asList("a", "e"));
+        context.set("justA", "a");
+        context.set("listOfA", Arrays.asList("a"));
+
+        final DMNResult dmnResult = evaluateModel(runtime, dmnModel, context);
+        LOG.debug("{}", dmnResult);
+        assertThat(DMNRuntimeUtil.formatMessages(dmnResult.getMessages()), dmnResult.hasErrors(), is(false));
+        assertThat(dmnResult.getDecisionResultByName("DecisionListNumber").getResult(), is(new BigDecimal(3)));
+        assertThat(dmnResult.getDecisionResultByName("DecisionVowel").getResult(), is("the e"));
+        assertThat(dmnResult.getDecisionResultByName("DecisionListVowel").getResult(), is(new BigDecimal(2)));
+        assertThat(dmnResult.getDecisionResultByName("DecisionJustA").getResult(), is("the a"));
+        assertThat(dmnResult.getDecisionResultByName("DecisionListOfA").getResult(), is(new BigDecimal(1)));
+    }
+
+    @Test
+    public void testListBasic_LOVerror() {
+        final DMNRuntime runtime = createRuntime("listBasic.dmn", this.getClass());
+        final DMNModel dmnModel = runtime.getModel("https://kiegroup.org/dmn/_B84B17F3-3E84-4DED-996E-AA630A6BF9C4", "new-file");
+        assertThat(dmnModel, notNullValue());
+        assertThat(DMNRuntimeUtil.formatMessages(dmnModel.getMessages()), dmnModel.hasErrors(), is(false));
+
+        final DMNContext context = DMNFactory.newContext();
+        context.set("listNumber", Arrays.asList(1, 2, 3));
+        context.set("vowel", "x"); // fails allowedValues
+        context.set("listVowel", Arrays.asList("a", "x")); // fails allowedValues of the inner type
+        context.set("justA", "e"); // fails allowedValues
+        context.set("listOfA", Arrays.asList("e")); // fails allowedValues of the inner type
+
+        final DMNResult dmnResult = evaluateModel(runtime, dmnModel, context);
+        LOG.debug("{}", dmnResult);
+        assertThat(DMNRuntimeUtil.formatMessages(dmnResult.getMessages()), dmnResult.hasErrors(), is(true));
+        assertThat(dmnResult.getDecisionResultByName("DecisionListNumber").getResult(), is(new BigDecimal(3)));
+        assertThat(dmnResult.getDecisionResultByName("DecisionVowel").getEvaluationStatus(), not(DecisionEvaluationStatus.SUCCEEDED));
+        assertThat(dmnResult.getDecisionResultByName("DecisionListVowel").getEvaluationStatus(), not(DecisionEvaluationStatus.SUCCEEDED));
+        assertThat(dmnResult.getDecisionResultByName("DecisionJustA").getEvaluationStatus(), not(DecisionEvaluationStatus.SUCCEEDED));
+        assertThat(dmnResult.getDecisionResultByName("DecisionListOfA").getEvaluationStatus(), not(DecisionEvaluationStatus.SUCCEEDED));
     }
 }
 
