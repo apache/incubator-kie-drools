@@ -170,8 +170,7 @@ public class KiePMMLDescrRhsFactoryTest {
         StringJoiner joiner = new StringJoiner("");
         KiePMMLDescrRhsFactory.factory(ruleBuilder).commonDeclareThen(rule, joiner);
         String retrieved = joiner.toString();
-        String expected = String.format(ADD_PMML4_OUTPUT_FIELD, outputFieldName, null);
-        assertTrue(retrieved.contains(expected));
+        assertTrue(retrieved.isEmpty());
         //
         ResultCode resultCode = ResultCode.OK;
         builder = builder.withResultCode(resultCode);
@@ -179,7 +178,7 @@ public class KiePMMLDescrRhsFactoryTest {
         joiner = new StringJoiner("");
         KiePMMLDescrRhsFactory.factory(ruleBuilder).commonDeclareThen(rule, joiner);
         retrieved = joiner.toString();
-        expected = String.format(SET_PMML4_RESULT_CODE, resultCode);
+        String expected = String.format(SET_PMML4_RESULT_CODE, resultCode);
         assertTrue(retrieved.contains(expected));
         //
         builder = builder.withResult(result);

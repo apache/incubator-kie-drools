@@ -68,18 +68,20 @@ public class KiePMMLDescrRhsFactory {
         if (rule.getStatusToSet() != null) {
             joiner.add(String.format(UPDATE_STATUS_HOLDER_STATUS, rule.getStatusToSet()));
         }
+        if (rule.getStatusToSet() != null || rule.getToAccumulate() != null) {
+            joiner.add(UPDATE_STATUS_HOLDER);
+        }
         commonDeclareThen(rule, joiner);
-        joiner.add(UPDATE_STATUS_HOLDER);
         builder.rhs(joiner.toString());
     }
 
     protected void declareIfThen(final KiePMMLDroolsRule rule) {
         builder.rhs(String.format(UPDATE_STATUS_HOLDER_STATUS, rule.getStatusToSet()));
-        builder.rhs(UPDATE_STATUS_HOLDER);
+//        builder.rhs(UPDATE_STATUS_HOLDER);
         StringJoiner joiner = new StringJoiner("");
         joiner.add(String.format(UPDATE_STATUS_HOLDER_STATUS, DONE));
         commonDeclareThen(rule, joiner);
-        joiner.add(UPDATE_STATUS_HOLDER);
+//        joiner.add(UPDATE_STATUS_HOLDER);
         builder.namedRhs(KiePMMLDescrRulesFactory.BREAK_LABEL, joiner.toString());
     }
 
@@ -99,7 +101,7 @@ public class KiePMMLDescrRhsFactory {
         if (rule.getResult() != null) {
             joiner.add(String.format(ADD_PMML4_RESULT_VARIABLE, rule.getResult()));
         }
-        if (rule.getOutputFields() != null) {
+        if (rule.getOutputFields() != null && rule.getResult() != null) {
             commonDeclareOutputFields(rule.getOutputFields(), rule.getResult(), joiner);
         }
     }

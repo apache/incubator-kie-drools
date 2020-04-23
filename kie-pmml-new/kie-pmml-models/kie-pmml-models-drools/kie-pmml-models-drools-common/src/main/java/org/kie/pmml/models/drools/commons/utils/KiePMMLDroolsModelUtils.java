@@ -43,6 +43,9 @@ public class KiePMMLDroolsModelUtils {
      * @return
      */
     public static Object getCorrectlyFormattedResult(Object rawValue, DATA_TYPE targetType) {
+        if (rawValue == null) {
+            return null;
+        }
         Object toReturn = targetType.getActualValue(rawValue);
         if (DATA_TYPE.STRING.equals(targetType)) {
             toReturn = "\"" + toReturn + "\"";

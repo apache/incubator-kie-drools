@@ -22,15 +22,20 @@ import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
+import java.util.function.Function;
 
 import org.drools.core.builder.conf.impl.ResourceConfigurationImpl;
 import org.drools.core.impl.InternalKnowledgeBase;
 import org.drools.core.io.impl.ClassPathResource;
 import org.kie.api.io.Resource;
 import org.kie.api.io.ResourceType;
+import org.kie.dmn.api.core.DMNCompiler;
+import org.kie.dmn.api.core.DMNCompilerConfiguration;
 import org.kie.dmn.api.core.DMNModel;
 import org.kie.dmn.api.core.DMNRuntime;
 import org.kie.dmn.api.core.event.DMNRuntimeEventListener;
+import org.kie.dmn.api.marshalling.DMNMarshaller;
+import org.kie.dmn.backend.marshalling.v1x.DMNMarshallerFactory;
 import org.kie.dmn.core.assembler.DMNAssemblerService;
 import org.kie.dmn.core.assembler.DMNResource;
 import org.kie.dmn.core.assembler.DMNResourceDependenciesSorter;
@@ -105,16 +110,19 @@ public class DMNRuntimeBuilder {
     }
 
     public DMNRuntimeBuilderConfigured buildConfiguration() {
-        DMNCompilerImpl dmnCompiler = new DMNCompilerImpl(ctx.cc);
-        return new DMNRuntimeBuilderConfigured(ctx, dmnCompiler);
+        return buildConfigurationUsingCustomCompiler(DMNCompilerImpl::new);
+    }
+
+    public DMNRuntimeBuilderConfigured buildConfigurationUsingCustomCompiler(Function<DMNCompilerConfiguration, DMNCompiler> dmnCompilerFn) {
+        return new DMNRuntimeBuilderConfigured(ctx, dmnCompilerFn.apply(ctx.cc));
     }
 
     public static class DMNRuntimeBuilderConfigured {
 
         private final DMNRuntimeBuilderCtx ctx;
-        private final DMNCompilerImpl dmnCompiler;
+        private final DMNCompiler dmnCompiler;
 
-        private DMNRuntimeBuilderConfigured(DMNRuntimeBuilderCtx ctx, DMNCompilerImpl dmnCompiler) {
+        private DMNRuntimeBuilderConfigured(DMNRuntimeBuilderCtx ctx, DMNCompiler dmnCompiler) {
             this.ctx = ctx;
             this.dmnCompiler = dmnCompiler;
         }
@@ -137,7 +145,7 @@ public class DMNRuntimeBuilder {
             for (Resource r : resources) {
                 Definitions definitions;
                 try {
-                    definitions = dmnCompiler.getMarshaller().unmarshal(r.getReader());
+                    definitions = getMarshaller().unmarshal(r.getReader());
                 } catch (IOException e) {
                     return Either.ofLeft(e);
                 }
@@ -157,6 +165,14 @@ public class DMNRuntimeBuilder {
                 dmnModels.add(dmnModel);
             }
             return Either.ofRight(new DMNRuntimeImpl(new DMNRuntimeKBStatic(dmnModels, ctx.dmnProfiles)));
+        }
+
+        private DMNMarshaller getMarshaller() {
+            if (!ctx.cc.getRegisteredExtensions().isEmpty()) {
+                return DMNMarshallerFactory.newMarshallerWithExtensions(ctx.cc.getRegisteredExtensions());
+            } else {
+                return DMNMarshallerFactory.newDefaultMarshaller();
+            }
         }
     }
 

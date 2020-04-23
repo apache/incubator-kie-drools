@@ -19,12 +19,17 @@ import java.util.List;
 import java.util.Map;
 
 import org.dmg.pmml.Array;
+import org.dmg.pmml.CompoundPredicate;
 import org.dmg.pmml.DataField;
 import org.dmg.pmml.DataType;
 import org.dmg.pmml.FieldName;
 import org.dmg.pmml.OpType;
+import org.dmg.pmml.Predicate;
 import org.dmg.pmml.SimplePredicate;
 import org.dmg.pmml.SimpleSetPredicate;
+import org.kie.pmml.commons.model.KiePMMLOutputField;
+import org.kie.pmml.models.drools.ast.KiePMMLDroolsRule;
+import org.kie.pmml.models.drools.ast.factories.PredicateASTFactoryData;
 import org.kie.pmml.models.drools.tuples.KiePMMLOriginalTypeGeneratedType;
 
 import static org.kie.pmml.models.drools.commons.utils.KiePMMLDroolsModelUtils.getSanitizedClassName;
@@ -33,6 +38,15 @@ import static org.kie.pmml.models.drools.commons.utils.KiePMMLDroolsModelUtils.g
  * Utility methods for other <b>Test</b> classes
  */
 public class KiePMMLASTTestUtils {
+
+    public static PredicateASTFactoryData getPredicateASTFactoryData(Predicate predicate,
+                                                                     List<KiePMMLOutputField> outputFields,
+                                                                     List<KiePMMLDroolsRule> rules,
+                                                                     String parentPath,
+                                                                     String currentRule,
+                                                                     Map<String, KiePMMLOriginalTypeGeneratedType> fieldTypeMap) {
+        return new PredicateASTFactoryData(predicate, outputFields, rules, parentPath, currentRule, fieldTypeMap);
+    }
 
     public static DataField getTypeDataField() {
         DataField toReturn = new DataField();

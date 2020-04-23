@@ -101,6 +101,7 @@ rule "_22.5328063241107_19.9337209302326_surrogate_RM_TRUE"
     activation-group "_22.5328063241107_19.9337209302326_surrogate"
 when
     $statusHolder : KiePMMLStatusHolder(  )
+
     RM( value < 6.941 )
 then
 
@@ -130,6 +131,7 @@ rule "_22.5328063241107_19.9337209302326_surrogate_LSTAT_TRUE"
     activation-group "_22.5328063241107_19.9337209302326_surrogate"
 when
     $statusHolder : KiePMMLStatusHolder(  )
+
     LSTAT( value >= 4.83 )
 then
 
@@ -159,6 +161,7 @@ rule "_22.5328063241107_19.9337209302326_surrogate_PTRATIO_TRUE"
     activation-group "_22.5328063241107_19.9337209302326_surrogate"
 when
     $statusHolder : KiePMMLStatusHolder(  )
+
     PTRATIO( value >= 14.55 )
 then
 
@@ -188,6 +191,7 @@ rule "_22.5328063241107_19.9337209302326_surrogate_ZN_TRUE"
     activation-group "_22.5328063241107_19.9337209302326_surrogate"
 when
     $statusHolder : KiePMMLStatusHolder(  )
+
     ZN( value < 87.5 )
 then
 
@@ -217,6 +221,7 @@ rule "_22.5328063241107_19.9337209302326_surrogate_INDUS_TRUE"
     activation-group "_22.5328063241107_19.9337209302326_surrogate"
 when
     $statusHolder : KiePMMLStatusHolder(  )
+
     INDUS( value >= 1.605 )
 then
 
@@ -246,6 +251,7 @@ rule "_22.5328063241107_19.9337209302326_surrogate_CRIM_TRUE"
     activation-group "_22.5328063241107_19.9337209302326_surrogate"
 when
     $statusHolder : KiePMMLStatusHolder(  )
+
     CRIM( value >= 0.013355 )
 then
 
@@ -284,6 +290,7 @@ rule "_22.5328063241107_19.9337209302326_14.956_surrogate_LSTAT_TRUE"
     activation-group "_22.5328063241107_19.9337209302326_14.956_surrogate"
 when
     $statusHolder : KiePMMLStatusHolder(  )
+
     LSTAT( value >= 14.4 )
 then
 
@@ -313,6 +320,7 @@ rule "_22.5328063241107_19.9337209302326_14.956_surrogate_AGE_TRUE"
     activation-group "_22.5328063241107_19.9337209302326_14.956_surrogate"
 when
     $statusHolder : KiePMMLStatusHolder(  )
+
     AGE( value >= 84.3 )
 then
 
@@ -342,6 +350,7 @@ rule "_22.5328063241107_19.9337209302326_14.956_surrogate_INDUS_TRUE"
     activation-group "_22.5328063241107_19.9337209302326_14.956_surrogate"
 when
     $statusHolder : KiePMMLStatusHolder(  )
+
     INDUS( value >= 16.57 )
 then
 
@@ -371,6 +380,7 @@ rule "_22.5328063241107_19.9337209302326_14.956_surrogate_NOX_TRUE"
     activation-group "_22.5328063241107_19.9337209302326_14.956_surrogate"
 when
     $statusHolder : KiePMMLStatusHolder(  )
+
     NOX( value >= 0.5765 )
 then
 
@@ -400,6 +410,7 @@ rule "_22.5328063241107_19.9337209302326_14.956_surrogate_DIS_TRUE"
     activation-group "_22.5328063241107_19.9337209302326_14.956_surrogate"
 when
     $statusHolder : KiePMMLStatusHolder(  )
+
     DIS( value < 2.23935 )
 then
 
@@ -429,6 +440,7 @@ rule "_22.5328063241107_19.9337209302326_14.956_surrogate_TAX_TRUE"
     activation-group "_22.5328063241107_19.9337209302326_14.956_surrogate"
 when
     $statusHolder : KiePMMLStatusHolder(  )
+
     TAX( value >= 434.5 )
 then
 
@@ -467,6 +479,7 @@ rule "_22.5328063241107_19.9337209302326_14.956_11.9783783783784_surrogate_CRIM_
     activation-group "_22.5328063241107_19.9337209302326_14.956_11.9783783783784_surrogate"
 when
     $statusHolder : KiePMMLStatusHolder(  )
+
     CRIM( value >= 6.99237 )
 then
 
@@ -474,6 +487,7 @@ $statusHolder.setStatus("DONE");
 update($statusHolder);
 $pmml4Result.setResultCode("OK");
 $pmml4Result.addResultVariable($pmml4Result.getResultObjectName(), 11.9783783783784);
+$pmml4Result.addResultVariable("Predicted_medv", 11.9783783783784);
 
 end
 
@@ -498,6 +512,7 @@ rule "_22.5328063241107_19.9337209302326_14.956_11.9783783783784_surrogate_RAD_T
     activation-group "_22.5328063241107_19.9337209302326_14.956_11.9783783783784_surrogate"
 when
     $statusHolder : KiePMMLStatusHolder(  )
+
     RAD( value >= 16.0 )
 then
 
@@ -505,6 +520,7 @@ $statusHolder.setStatus("DONE");
 update($statusHolder);
 $pmml4Result.setResultCode("OK");
 $pmml4Result.addResultVariable($pmml4Result.getResultObjectName(), 11.9783783783784);
+$pmml4Result.addResultVariable("Predicted_medv", 11.9783783783784);
 
 end
 
@@ -529,6 +545,7 @@ rule "_22.5328063241107_19.9337209302326_14.956_11.9783783783784_surrogate_TAX_T
     activation-group "_22.5328063241107_19.9337209302326_14.956_11.9783783783784_surrogate"
 when
     $statusHolder : KiePMMLStatusHolder(  )
+
     TAX( value >= 567.5 )
 then
 
@@ -536,6 +553,7 @@ $statusHolder.setStatus("DONE");
 update($statusHolder);
 $pmml4Result.setResultCode("OK");
 $pmml4Result.addResultVariable($pmml4Result.getResultObjectName(), 11.9783783783784);
+$pmml4Result.addResultVariable("Predicted_medv", 11.9783783783784);
 
 end
 
@@ -560,6 +578,7 @@ rule "_22.5328063241107_19.9337209302326_14.956_11.9783783783784_surrogate_NOX_T
     activation-group "_22.5328063241107_19.9337209302326_14.956_11.9783783783784_surrogate"
 when
     $statusHolder : KiePMMLStatusHolder(  )
+
     NOX( value >= 0.657 )
 then
 
@@ -567,6 +586,7 @@ $statusHolder.setStatus("DONE");
 update($statusHolder);
 $pmml4Result.setResultCode("OK");
 $pmml4Result.addResultVariable($pmml4Result.getResultObjectName(), 11.9783783783784);
+$pmml4Result.addResultVariable("Predicted_medv", 11.9783783783784);
 
 end
 
@@ -591,6 +611,7 @@ rule "_22.5328063241107_19.9337209302326_14.956_11.9783783783784_surrogate_DIS_T
     activation-group "_22.5328063241107_19.9337209302326_14.956_11.9783783783784_surrogate"
 when
     $statusHolder : KiePMMLStatusHolder(  )
+
     DIS( value < 2.202 )
 then
 
@@ -598,6 +619,7 @@ $statusHolder.setStatus("DONE");
 update($statusHolder);
 $pmml4Result.setResultCode("OK");
 $pmml4Result.addResultVariable($pmml4Result.getResultObjectName(), 11.9783783783784);
+$pmml4Result.addResultVariable("Predicted_medv", 11.9783783783784);
 
 end
 
@@ -622,6 +644,7 @@ rule "_22.5328063241107_19.9337209302326_14.956_11.9783783783784_surrogate_PTRAT
     activation-group "_22.5328063241107_19.9337209302326_14.956_11.9783783783784_surrogate"
 when
     $statusHolder : KiePMMLStatusHolder(  )
+
     PTRATIO( value >= 20.15 )
 then
 
@@ -629,6 +652,7 @@ $statusHolder.setStatus("DONE");
 update($statusHolder);
 $pmml4Result.setResultCode("OK");
 $pmml4Result.addResultVariable($pmml4Result.getResultObjectName(), 11.9783783783784);
+$pmml4Result.addResultVariable("Predicted_medv", 11.9783783783784);
 
 end
 
@@ -662,6 +686,7 @@ rule "_22.5328063241107_19.9337209302326_14.956_17.1376237623762_surrogate_CRIM_
     activation-group "_22.5328063241107_19.9337209302326_14.956_17.1376237623762_surrogate"
 when
     $statusHolder : KiePMMLStatusHolder(  )
+
     CRIM( value < 6.99237 )
 then
 
@@ -669,6 +694,7 @@ $statusHolder.setStatus("DONE");
 update($statusHolder);
 $pmml4Result.setResultCode("OK");
 $pmml4Result.addResultVariable($pmml4Result.getResultObjectName(), 17.1376237623762);
+$pmml4Result.addResultVariable("Predicted_medv", 17.1376237623762);
 
 end
 
@@ -693,6 +719,7 @@ rule "_22.5328063241107_19.9337209302326_14.956_17.1376237623762_surrogate_RAD_T
     activation-group "_22.5328063241107_19.9337209302326_14.956_17.1376237623762_surrogate"
 when
     $statusHolder : KiePMMLStatusHolder(  )
+
     RAD( value < 16.0 )
 then
 
@@ -700,6 +727,7 @@ $statusHolder.setStatus("DONE");
 update($statusHolder);
 $pmml4Result.setResultCode("OK");
 $pmml4Result.addResultVariable($pmml4Result.getResultObjectName(), 17.1376237623762);
+$pmml4Result.addResultVariable("Predicted_medv", 17.1376237623762);
 
 end
 
@@ -724,6 +752,7 @@ rule "_22.5328063241107_19.9337209302326_14.956_17.1376237623762_surrogate_TAX_T
     activation-group "_22.5328063241107_19.9337209302326_14.956_17.1376237623762_surrogate"
 when
     $statusHolder : KiePMMLStatusHolder(  )
+
     TAX( value < 567.5 )
 then
 
@@ -731,6 +760,7 @@ $statusHolder.setStatus("DONE");
 update($statusHolder);
 $pmml4Result.setResultCode("OK");
 $pmml4Result.addResultVariable($pmml4Result.getResultObjectName(), 17.1376237623762);
+$pmml4Result.addResultVariable("Predicted_medv", 17.1376237623762);
 
 end
 
@@ -755,6 +785,7 @@ rule "_22.5328063241107_19.9337209302326_14.956_17.1376237623762_surrogate_NOX_T
     activation-group "_22.5328063241107_19.9337209302326_14.956_17.1376237623762_surrogate"
 when
     $statusHolder : KiePMMLStatusHolder(  )
+
     NOX( value < 0.657 )
 then
 
@@ -762,6 +793,7 @@ $statusHolder.setStatus("DONE");
 update($statusHolder);
 $pmml4Result.setResultCode("OK");
 $pmml4Result.addResultVariable($pmml4Result.getResultObjectName(), 17.1376237623762);
+$pmml4Result.addResultVariable("Predicted_medv", 17.1376237623762);
 
 end
 
@@ -786,6 +818,7 @@ rule "_22.5328063241107_19.9337209302326_14.956_17.1376237623762_surrogate_DIS_T
     activation-group "_22.5328063241107_19.9337209302326_14.956_17.1376237623762_surrogate"
 when
     $statusHolder : KiePMMLStatusHolder(  )
+
     DIS( value >= 2.202 )
 then
 
@@ -793,6 +826,7 @@ $statusHolder.setStatus("DONE");
 update($statusHolder);
 $pmml4Result.setResultCode("OK");
 $pmml4Result.addResultVariable($pmml4Result.getResultObjectName(), 17.1376237623762);
+$pmml4Result.addResultVariable("Predicted_medv", 17.1376237623762);
 
 end
 
@@ -817,6 +851,7 @@ rule "_22.5328063241107_19.9337209302326_14.956_17.1376237623762_surrogate_PTRAT
     activation-group "_22.5328063241107_19.9337209302326_14.956_17.1376237623762_surrogate"
 when
     $statusHolder : KiePMMLStatusHolder(  )
+
     PTRATIO( value < 20.15 )
 then
 
@@ -824,6 +859,7 @@ $statusHolder.setStatus("DONE");
 update($statusHolder);
 $pmml4Result.setResultCode("OK");
 $pmml4Result.addResultVariable($pmml4Result.getResultObjectName(), 17.1376237623762);
+$pmml4Result.addResultVariable("Predicted_medv", 17.1376237623762);
 
 end
 
@@ -852,6 +888,7 @@ $statusHolder.setStatus("DONE");
 update($statusHolder);
 $pmml4Result.setResultCode("OK");
 $pmml4Result.addResultVariable($pmml4Result.getResultObjectName(), 14.956);
+$pmml4Result.addResultVariable("Predicted_medv", 14.956);
 
 end
 
@@ -869,6 +906,7 @@ rule "_22.5328063241107_19.9337209302326_23.3498039215686_surrogate_LSTAT_TRUE"
     activation-group "_22.5328063241107_19.9337209302326_23.3498039215686_surrogate"
 when
     $statusHolder : KiePMMLStatusHolder(  )
+
     LSTAT( value < 14.4 )
 then
 
@@ -898,6 +936,7 @@ rule "_22.5328063241107_19.9337209302326_23.3498039215686_surrogate_AGE_TRUE"
     activation-group "_22.5328063241107_19.9337209302326_23.3498039215686_surrogate"
 when
     $statusHolder : KiePMMLStatusHolder(  )
+
     AGE( value < 84.3 )
 then
 
@@ -927,6 +966,7 @@ rule "_22.5328063241107_19.9337209302326_23.3498039215686_surrogate_INDUS_TRUE"
     activation-group "_22.5328063241107_19.9337209302326_23.3498039215686_surrogate"
 when
     $statusHolder : KiePMMLStatusHolder(  )
+
     INDUS( value < 16.57 )
 then
 
@@ -956,6 +996,7 @@ rule "_22.5328063241107_19.9337209302326_23.3498039215686_surrogate_NOX_TRUE"
     activation-group "_22.5328063241107_19.9337209302326_23.3498039215686_surrogate"
 when
     $statusHolder : KiePMMLStatusHolder(  )
+
     NOX( value < 0.5765 )
 then
 
@@ -985,6 +1026,7 @@ rule "_22.5328063241107_19.9337209302326_23.3498039215686_surrogate_DIS_TRUE"
     activation-group "_22.5328063241107_19.9337209302326_23.3498039215686_surrogate"
 when
     $statusHolder : KiePMMLStatusHolder(  )
+
     DIS( value >= 2.23935 )
 then
 
@@ -1014,6 +1056,7 @@ rule "_22.5328063241107_19.9337209302326_23.3498039215686_surrogate_TAX_TRUE"
     activation-group "_22.5328063241107_19.9337209302326_23.3498039215686_surrogate"
 when
     $statusHolder : KiePMMLStatusHolder(  )
+
     TAX( value < 434.5 )
 then
 
@@ -1052,6 +1095,7 @@ rule "_22.5328063241107_19.9337209302326_23.3498039215686_22.9362903225807_surro
     activation-group "_22.5328063241107_19.9337209302326_23.3498039215686_22.9362903225807_surrogate"
 when
     $statusHolder : KiePMMLStatusHolder(  )
+
     DIS( value >= 1.5511 )
 then
 
@@ -1081,6 +1125,7 @@ rule "_22.5328063241107_19.9337209302326_23.3498039215686_22.9362903225807_surro
     activation-group "_22.5328063241107_19.9337209302326_23.3498039215686_22.9362903225807_surrogate"
 when
     $statusHolder : KiePMMLStatusHolder(  )
+
     CRIM( value < 8.053285 )
 then
 
@@ -1119,6 +1164,7 @@ rule "_22.5328063241107_19.9337209302326_23.3498039215686_22.9362903225807_21.65
     activation-group "_22.5328063241107_19.9337209302326_23.3498039215686_22.9362903225807_21.6564766839378_surrogate"
 when
     $statusHolder : KiePMMLStatusHolder(  )
+
     RM( value < 6.543 )
 then
 
@@ -1126,6 +1172,7 @@ $statusHolder.setStatus("DONE");
 update($statusHolder);
 $pmml4Result.setResultCode("OK");
 $pmml4Result.addResultVariable($pmml4Result.getResultObjectName(), 21.6564766839378);
+$pmml4Result.addResultVariable("Predicted_medv", 21.6564766839378);
 
 end
 
@@ -1150,6 +1197,7 @@ rule "_22.5328063241107_19.9337209302326_23.3498039215686_22.9362903225807_21.65
     activation-group "_22.5328063241107_19.9337209302326_23.3498039215686_22.9362903225807_21.6564766839378_surrogate"
 when
     $statusHolder : KiePMMLStatusHolder(  )
+
     LSTAT( value >= 5.055 )
 then
 
@@ -1157,6 +1205,7 @@ $statusHolder.setStatus("DONE");
 update($statusHolder);
 $pmml4Result.setResultCode("OK");
 $pmml4Result.addResultVariable($pmml4Result.getResultObjectName(), 21.6564766839378);
+$pmml4Result.addResultVariable("Predicted_medv", 21.6564766839378);
 
 end
 
@@ -1181,6 +1230,7 @@ rule "_22.5328063241107_19.9337209302326_23.3498039215686_22.9362903225807_21.65
     activation-group "_22.5328063241107_19.9337209302326_23.3498039215686_22.9362903225807_21.6564766839378_surrogate"
 when
     $statusHolder : KiePMMLStatusHolder(  )
+
     CRIM( value >= 0.017895 )
 then
 
@@ -1188,6 +1238,7 @@ $statusHolder.setStatus("DONE");
 update($statusHolder);
 $pmml4Result.setResultCode("OK");
 $pmml4Result.addResultVariable($pmml4Result.getResultObjectName(), 21.6564766839378);
+$pmml4Result.addResultVariable("Predicted_medv", 21.6564766839378);
 
 end
 
@@ -1212,6 +1263,7 @@ rule "_22.5328063241107_19.9337209302326_23.3498039215686_22.9362903225807_21.65
     activation-group "_22.5328063241107_19.9337209302326_23.3498039215686_22.9362903225807_21.6564766839378_surrogate"
 when
     $statusHolder : KiePMMLStatusHolder(  )
+
     ZN( value < 31.5 )
 then
 
@@ -1219,6 +1271,7 @@ $statusHolder.setStatus("DONE");
 update($statusHolder);
 $pmml4Result.setResultCode("OK");
 $pmml4Result.addResultVariable($pmml4Result.getResultObjectName(), 21.6564766839378);
+$pmml4Result.addResultVariable("Predicted_medv", 21.6564766839378);
 
 end
 
@@ -1243,6 +1296,7 @@ rule "_22.5328063241107_19.9337209302326_23.3498039215686_22.9362903225807_21.65
     activation-group "_22.5328063241107_19.9337209302326_23.3498039215686_22.9362903225807_21.6564766839378_surrogate"
 when
     $statusHolder : KiePMMLStatusHolder(  )
+
     DIS( value < 10.648 )
 then
 
@@ -1250,6 +1304,7 @@ $statusHolder.setStatus("DONE");
 update($statusHolder);
 $pmml4Result.setResultCode("OK");
 $pmml4Result.addResultVariable($pmml4Result.getResultObjectName(), 21.6564766839378);
+$pmml4Result.addResultVariable("Predicted_medv", 21.6564766839378);
 
 end
 
@@ -1283,6 +1338,7 @@ rule "_22.5328063241107_19.9337209302326_23.3498039215686_22.9362903225807_27.42
     activation-group "_22.5328063241107_19.9337209302326_23.3498039215686_22.9362903225807_27.4272727272727_surrogate"
 when
     $statusHolder : KiePMMLStatusHolder(  )
+
     RM( value >= 6.543 )
 then
 
@@ -1290,6 +1346,7 @@ $statusHolder.setStatus("DONE");
 update($statusHolder);
 $pmml4Result.setResultCode("OK");
 $pmml4Result.addResultVariable($pmml4Result.getResultObjectName(), 27.4272727272727);
+$pmml4Result.addResultVariable("Predicted_medv", 27.4272727272727);
 
 end
 
@@ -1314,6 +1371,7 @@ rule "_22.5328063241107_19.9337209302326_23.3498039215686_22.9362903225807_27.42
     activation-group "_22.5328063241107_19.9337209302326_23.3498039215686_22.9362903225807_27.4272727272727_surrogate"
 when
     $statusHolder : KiePMMLStatusHolder(  )
+
     LSTAT( value < 5.055 )
 then
 
@@ -1321,6 +1379,7 @@ $statusHolder.setStatus("DONE");
 update($statusHolder);
 $pmml4Result.setResultCode("OK");
 $pmml4Result.addResultVariable($pmml4Result.getResultObjectName(), 27.4272727272727);
+$pmml4Result.addResultVariable("Predicted_medv", 27.4272727272727);
 
 end
 
@@ -1345,6 +1404,7 @@ rule "_22.5328063241107_19.9337209302326_23.3498039215686_22.9362903225807_27.42
     activation-group "_22.5328063241107_19.9337209302326_23.3498039215686_22.9362903225807_27.4272727272727_surrogate"
 when
     $statusHolder : KiePMMLStatusHolder(  )
+
     CRIM( value < 0.017895 )
 then
 
@@ -1352,6 +1412,7 @@ $statusHolder.setStatus("DONE");
 update($statusHolder);
 $pmml4Result.setResultCode("OK");
 $pmml4Result.addResultVariable($pmml4Result.getResultObjectName(), 27.4272727272727);
+$pmml4Result.addResultVariable("Predicted_medv", 27.4272727272727);
 
 end
 
@@ -1376,6 +1437,7 @@ rule "_22.5328063241107_19.9337209302326_23.3498039215686_22.9362903225807_27.42
     activation-group "_22.5328063241107_19.9337209302326_23.3498039215686_22.9362903225807_27.4272727272727_surrogate"
 when
     $statusHolder : KiePMMLStatusHolder(  )
+
     ZN( value >= 31.5 )
 then
 
@@ -1383,6 +1445,7 @@ $statusHolder.setStatus("DONE");
 update($statusHolder);
 $pmml4Result.setResultCode("OK");
 $pmml4Result.addResultVariable($pmml4Result.getResultObjectName(), 27.4272727272727);
+$pmml4Result.addResultVariable("Predicted_medv", 27.4272727272727);
 
 end
 
@@ -1407,6 +1470,7 @@ rule "_22.5328063241107_19.9337209302326_23.3498039215686_22.9362903225807_27.42
     activation-group "_22.5328063241107_19.9337209302326_23.3498039215686_22.9362903225807_27.4272727272727_surrogate"
 when
     $statusHolder : KiePMMLStatusHolder(  )
+
     DIS( value >= 10.648 )
 then
 
@@ -1414,6 +1478,7 @@ $statusHolder.setStatus("DONE");
 update($statusHolder);
 $pmml4Result.setResultCode("OK");
 $pmml4Result.addResultVariable($pmml4Result.getResultObjectName(), 27.4272727272727);
+$pmml4Result.addResultVariable("Predicted_medv", 27.4272727272727);
 
 end
 
@@ -1442,6 +1507,7 @@ $statusHolder.setStatus("DONE");
 update($statusHolder);
 $pmml4Result.setResultCode("OK");
 $pmml4Result.addResultVariable($pmml4Result.getResultObjectName(), 22.9362903225807);
+$pmml4Result.addResultVariable("Predicted_medv", 22.9362903225807);
 
 end
 
@@ -1459,6 +1525,7 @@ rule "_22.5328063241107_19.9337209302326_23.3498039215686_38_surrogate_DIS_TRUE"
     activation-group "_22.5328063241107_19.9337209302326_23.3498039215686_38_surrogate"
 when
     $statusHolder : KiePMMLStatusHolder(  )
+
     DIS( value < 1.5511 )
 then
 
@@ -1466,6 +1533,7 @@ $statusHolder.setStatus("DONE");
 update($statusHolder);
 $pmml4Result.setResultCode("OK");
 $pmml4Result.addResultVariable($pmml4Result.getResultObjectName(), 38.0);
+$pmml4Result.addResultVariable("Predicted_medv", 38.0);
 
 end
 
@@ -1490,6 +1558,7 @@ rule "_22.5328063241107_19.9337209302326_23.3498039215686_38_surrogate_CRIM_TRUE
     activation-group "_22.5328063241107_19.9337209302326_23.3498039215686_38_surrogate"
 when
     $statusHolder : KiePMMLStatusHolder(  )
+
     CRIM( value >= 8.053285 )
 then
 
@@ -1497,6 +1566,7 @@ $statusHolder.setStatus("DONE");
 update($statusHolder);
 $pmml4Result.setResultCode("OK");
 $pmml4Result.addResultVariable($pmml4Result.getResultObjectName(), 38.0);
+$pmml4Result.addResultVariable("Predicted_medv", 38.0);
 
 end
 
@@ -1525,6 +1595,7 @@ $statusHolder.setStatus("DONE");
 update($statusHolder);
 $pmml4Result.setResultCode("OK");
 $pmml4Result.addResultVariable($pmml4Result.getResultObjectName(), 23.3498039215686);
+$pmml4Result.addResultVariable("Predicted_medv", 23.3498039215686);
 
 end
 
@@ -1537,6 +1608,7 @@ $statusHolder.setStatus("DONE");
 update($statusHolder);
 $pmml4Result.setResultCode("OK");
 $pmml4Result.addResultVariable($pmml4Result.getResultObjectName(), 19.9337209302326);
+$pmml4Result.addResultVariable("Predicted_medv", 19.9337209302326);
 
 end
 
@@ -1554,6 +1626,7 @@ rule "_22.5328063241107_37.2381578947369_surrogate_RM_TRUE"
     activation-group "_22.5328063241107_37.2381578947369_surrogate"
 when
     $statusHolder : KiePMMLStatusHolder(  )
+
     RM( value >= 6.941 )
 then
 
@@ -1583,6 +1656,7 @@ rule "_22.5328063241107_37.2381578947369_surrogate_LSTAT_TRUE"
     activation-group "_22.5328063241107_37.2381578947369_surrogate"
 when
     $statusHolder : KiePMMLStatusHolder(  )
+
     LSTAT( value < 4.83 )
 then
 
@@ -1612,6 +1686,7 @@ rule "_22.5328063241107_37.2381578947369_surrogate_PTRATIO_TRUE"
     activation-group "_22.5328063241107_37.2381578947369_surrogate"
 when
     $statusHolder : KiePMMLStatusHolder(  )
+
     PTRATIO( value < 14.55 )
 then
 
@@ -1641,6 +1716,7 @@ rule "_22.5328063241107_37.2381578947369_surrogate_ZN_TRUE"
     activation-group "_22.5328063241107_37.2381578947369_surrogate"
 when
     $statusHolder : KiePMMLStatusHolder(  )
+
     ZN( value >= 87.5 )
 then
 
@@ -1670,6 +1746,7 @@ rule "_22.5328063241107_37.2381578947369_surrogate_INDUS_TRUE"
     activation-group "_22.5328063241107_37.2381578947369_surrogate"
 when
     $statusHolder : KiePMMLStatusHolder(  )
+
     INDUS( value < 1.605 )
 then
 
@@ -1699,6 +1776,7 @@ rule "_22.5328063241107_37.2381578947369_surrogate_CRIM_TRUE"
     activation-group "_22.5328063241107_37.2381578947369_surrogate"
 when
     $statusHolder : KiePMMLStatusHolder(  )
+
     CRIM( value < 0.013355 )
 then
 
@@ -1737,6 +1815,7 @@ rule "_22.5328063241107_37.2381578947369_32.1130434782609_surrogate_RM_TRUE"
     activation-group "_22.5328063241107_37.2381578947369_32.1130434782609_surrogate"
 when
     $statusHolder : KiePMMLStatusHolder(  )
+
     RM( value < 7.437 )
 then
 
@@ -1766,6 +1845,7 @@ rule "_22.5328063241107_37.2381578947369_32.1130434782609_surrogate_LSTAT_TRUE"
     activation-group "_22.5328063241107_37.2381578947369_32.1130434782609_surrogate"
 when
     $statusHolder : KiePMMLStatusHolder(  )
+
     LSTAT( value >= 3.99 )
 then
 
@@ -1795,6 +1875,7 @@ rule "_22.5328063241107_37.2381578947369_32.1130434782609_surrogate_PTRATIO_TRUE
     activation-group "_22.5328063241107_37.2381578947369_32.1130434782609_surrogate"
 when
     $statusHolder : KiePMMLStatusHolder(  )
+
     PTRATIO( value >= 14.75 )
 then
 
@@ -1824,6 +1905,7 @@ rule "_22.5328063241107_37.2381578947369_32.1130434782609_surrogate_B_TRUE"
     activation-group "_22.5328063241107_37.2381578947369_32.1130434782609_surrogate"
 when
     $statusHolder : KiePMMLStatusHolder(  )
+
     B( value >= 389.885 )
 then
 
@@ -1853,6 +1935,7 @@ rule "_22.5328063241107_37.2381578947369_32.1130434782609_surrogate_CRIM_TRUE"
     activation-group "_22.5328063241107_37.2381578947369_32.1130434782609_surrogate"
 when
     $statusHolder : KiePMMLStatusHolder(  )
+
     CRIM( value < 0.11276 )
 then
 
@@ -1882,6 +1965,7 @@ rule "_22.5328063241107_37.2381578947369_32.1130434782609_surrogate_INDUS_TRUE"
     activation-group "_22.5328063241107_37.2381578947369_32.1130434782609_surrogate"
 when
     $statusHolder : KiePMMLStatusHolder(  )
+
     INDUS( value < 18.84 )
 then
 
@@ -1920,6 +2004,7 @@ rule "_22.5328063241107_37.2381578947369_32.1130434782609_23.0571428571429_surro
     activation-group "_22.5328063241107_37.2381578947369_32.1130434782609_23.0571428571429_surrogate"
 when
     $statusHolder : KiePMMLStatusHolder(  )
+
     LSTAT( value >= 9.65 )
 then
 
@@ -1927,6 +2012,7 @@ $statusHolder.setStatus("DONE");
 update($statusHolder);
 $pmml4Result.setResultCode("OK");
 $pmml4Result.addResultVariable($pmml4Result.getResultObjectName(), 23.0571428571429);
+$pmml4Result.addResultVariable("Predicted_medv", 23.0571428571429);
 
 end
 
@@ -1951,6 +2037,7 @@ rule "_22.5328063241107_37.2381578947369_32.1130434782609_23.0571428571429_surro
     activation-group "_22.5328063241107_37.2381578947369_32.1130434782609_23.0571428571429_surrogate"
 when
     $statusHolder : KiePMMLStatusHolder(  )
+
     CRIM( value >= 0.724605 )
 then
 
@@ -1958,6 +2045,7 @@ $statusHolder.setStatus("DONE");
 update($statusHolder);
 $pmml4Result.setResultCode("OK");
 $pmml4Result.addResultVariable($pmml4Result.getResultObjectName(), 23.0571428571429);
+$pmml4Result.addResultVariable("Predicted_medv", 23.0571428571429);
 
 end
 
@@ -1982,6 +2070,7 @@ rule "_22.5328063241107_37.2381578947369_32.1130434782609_23.0571428571429_surro
     activation-group "_22.5328063241107_37.2381578947369_32.1130434782609_23.0571428571429_surrogate"
 when
     $statusHolder : KiePMMLStatusHolder(  )
+
     NOX( value >= 0.659 )
 then
 
@@ -1989,6 +2078,7 @@ $statusHolder.setStatus("DONE");
 update($statusHolder);
 $pmml4Result.setResultCode("OK");
 $pmml4Result.addResultVariable($pmml4Result.getResultObjectName(), 23.0571428571429);
+$pmml4Result.addResultVariable("Predicted_medv", 23.0571428571429);
 
 end
 
@@ -2013,6 +2103,7 @@ rule "_22.5328063241107_37.2381578947369_32.1130434782609_23.0571428571429_surro
     activation-group "_22.5328063241107_37.2381578947369_32.1130434782609_23.0571428571429_surrogate"
 when
     $statusHolder : KiePMMLStatusHolder(  )
+
     RAD( value >= 16.0 )
 then
 
@@ -2020,6 +2111,7 @@ $statusHolder.setStatus("DONE");
 update($statusHolder);
 $pmml4Result.setResultCode("OK");
 $pmml4Result.addResultVariable($pmml4Result.getResultObjectName(), 23.0571428571429);
+$pmml4Result.addResultVariable("Predicted_medv", 23.0571428571429);
 
 end
 
@@ -2044,6 +2136,7 @@ rule "_22.5328063241107_37.2381578947369_32.1130434782609_23.0571428571429_surro
     activation-group "_22.5328063241107_37.2381578947369_32.1130434782609_23.0571428571429_surrogate"
 when
     $statusHolder : KiePMMLStatusHolder(  )
+
     TAX( value >= 534.5 )
 then
 
@@ -2051,6 +2144,7 @@ $statusHolder.setStatus("DONE");
 update($statusHolder);
 $pmml4Result.setResultCode("OK");
 $pmml4Result.addResultVariable($pmml4Result.getResultObjectName(), 23.0571428571429);
+$pmml4Result.addResultVariable("Predicted_medv", 23.0571428571429);
 
 end
 
@@ -2075,6 +2169,7 @@ rule "_22.5328063241107_37.2381578947369_32.1130434782609_23.0571428571429_surro
     activation-group "_22.5328063241107_37.2381578947369_32.1130434782609_23.0571428571429_surrogate"
 when
     $statusHolder : KiePMMLStatusHolder(  )
+
     INDUS( value >= 15.015 )
 then
 
@@ -2082,6 +2177,7 @@ $statusHolder.setStatus("DONE");
 update($statusHolder);
 $pmml4Result.setResultCode("OK");
 $pmml4Result.addResultVariable($pmml4Result.getResultObjectName(), 23.0571428571429);
+$pmml4Result.addResultVariable("Predicted_medv", 23.0571428571429);
 
 end
 
@@ -2115,6 +2211,7 @@ rule "_22.5328063241107_37.2381578947369_32.1130434782609_33.7384615384615_surro
     activation-group "_22.5328063241107_37.2381578947369_32.1130434782609_33.7384615384615_surrogate"
 when
     $statusHolder : KiePMMLStatusHolder(  )
+
     LSTAT( value < 9.65 )
 then
 
@@ -2122,6 +2219,7 @@ $statusHolder.setStatus("DONE");
 update($statusHolder);
 $pmml4Result.setResultCode("OK");
 $pmml4Result.addResultVariable($pmml4Result.getResultObjectName(), 33.7384615384615);
+$pmml4Result.addResultVariable("Predicted_medv", 33.7384615384615);
 
 end
 
@@ -2146,6 +2244,7 @@ rule "_22.5328063241107_37.2381578947369_32.1130434782609_33.7384615384615_surro
     activation-group "_22.5328063241107_37.2381578947369_32.1130434782609_33.7384615384615_surrogate"
 when
     $statusHolder : KiePMMLStatusHolder(  )
+
     CRIM( value < 0.724605 )
 then
 
@@ -2153,6 +2252,7 @@ $statusHolder.setStatus("DONE");
 update($statusHolder);
 $pmml4Result.setResultCode("OK");
 $pmml4Result.addResultVariable($pmml4Result.getResultObjectName(), 33.7384615384615);
+$pmml4Result.addResultVariable("Predicted_medv", 33.7384615384615);
 
 end
 
@@ -2177,6 +2277,7 @@ rule "_22.5328063241107_37.2381578947369_32.1130434782609_33.7384615384615_surro
     activation-group "_22.5328063241107_37.2381578947369_32.1130434782609_33.7384615384615_surrogate"
 when
     $statusHolder : KiePMMLStatusHolder(  )
+
     NOX( value < 0.659 )
 then
 
@@ -2184,6 +2285,7 @@ $statusHolder.setStatus("DONE");
 update($statusHolder);
 $pmml4Result.setResultCode("OK");
 $pmml4Result.addResultVariable($pmml4Result.getResultObjectName(), 33.7384615384615);
+$pmml4Result.addResultVariable("Predicted_medv", 33.7384615384615);
 
 end
 
@@ -2208,6 +2310,7 @@ rule "_22.5328063241107_37.2381578947369_32.1130434782609_33.7384615384615_surro
     activation-group "_22.5328063241107_37.2381578947369_32.1130434782609_33.7384615384615_surrogate"
 when
     $statusHolder : KiePMMLStatusHolder(  )
+
     RAD( value < 16.0 )
 then
 
@@ -2215,6 +2318,7 @@ $statusHolder.setStatus("DONE");
 update($statusHolder);
 $pmml4Result.setResultCode("OK");
 $pmml4Result.addResultVariable($pmml4Result.getResultObjectName(), 33.7384615384615);
+$pmml4Result.addResultVariable("Predicted_medv", 33.7384615384615);
 
 end
 
@@ -2239,6 +2343,7 @@ rule "_22.5328063241107_37.2381578947369_32.1130434782609_33.7384615384615_surro
     activation-group "_22.5328063241107_37.2381578947369_32.1130434782609_33.7384615384615_surrogate"
 when
     $statusHolder : KiePMMLStatusHolder(  )
+
     TAX( value < 534.5 )
 then
 
@@ -2246,6 +2351,7 @@ $statusHolder.setStatus("DONE");
 update($statusHolder);
 $pmml4Result.setResultCode("OK");
 $pmml4Result.addResultVariable($pmml4Result.getResultObjectName(), 33.7384615384615);
+$pmml4Result.addResultVariable("Predicted_medv", 33.7384615384615);
 
 end
 
@@ -2270,6 +2376,7 @@ rule "_22.5328063241107_37.2381578947369_32.1130434782609_33.7384615384615_surro
     activation-group "_22.5328063241107_37.2381578947369_32.1130434782609_33.7384615384615_surrogate"
 when
     $statusHolder : KiePMMLStatusHolder(  )
+
     INDUS( value < 15.015 )
 then
 
@@ -2277,6 +2384,7 @@ $statusHolder.setStatus("DONE");
 update($statusHolder);
 $pmml4Result.setResultCode("OK");
 $pmml4Result.addResultVariable($pmml4Result.getResultObjectName(), 33.7384615384615);
+$pmml4Result.addResultVariable("Predicted_medv", 33.7384615384615);
 
 end
 
@@ -2305,6 +2413,7 @@ $statusHolder.setStatus("DONE");
 update($statusHolder);
 $pmml4Result.setResultCode("OK");
 $pmml4Result.addResultVariable($pmml4Result.getResultObjectName(), 32.1130434782609);
+$pmml4Result.addResultVariable("Predicted_medv", 32.1130434782609);
 
 end
 
@@ -2322,6 +2431,7 @@ rule "_22.5328063241107_37.2381578947369_45.0966666666667_surrogate_RM_TRUE"
     activation-group "_22.5328063241107_37.2381578947369_45.0966666666667_surrogate"
 when
     $statusHolder : KiePMMLStatusHolder(  )
+
     RM( value >= 7.437 )
 then
 
@@ -2329,6 +2439,7 @@ $statusHolder.setStatus("DONE");
 update($statusHolder);
 $pmml4Result.setResultCode("OK");
 $pmml4Result.addResultVariable($pmml4Result.getResultObjectName(), 45.0966666666667);
+$pmml4Result.addResultVariable("Predicted_medv", 45.0966666666667);
 
 end
 
@@ -2353,6 +2464,7 @@ rule "_22.5328063241107_37.2381578947369_45.0966666666667_surrogate_LSTAT_TRUE"
     activation-group "_22.5328063241107_37.2381578947369_45.0966666666667_surrogate"
 when
     $statusHolder : KiePMMLStatusHolder(  )
+
     LSTAT( value < 3.99 )
 then
 
@@ -2360,6 +2472,7 @@ $statusHolder.setStatus("DONE");
 update($statusHolder);
 $pmml4Result.setResultCode("OK");
 $pmml4Result.addResultVariable($pmml4Result.getResultObjectName(), 45.0966666666667);
+$pmml4Result.addResultVariable("Predicted_medv", 45.0966666666667);
 
 end
 
@@ -2384,6 +2497,7 @@ rule "_22.5328063241107_37.2381578947369_45.0966666666667_surrogate_PTRATIO_TRUE
     activation-group "_22.5328063241107_37.2381578947369_45.0966666666667_surrogate"
 when
     $statusHolder : KiePMMLStatusHolder(  )
+
     PTRATIO( value < 14.75 )
 then
 
@@ -2391,6 +2505,7 @@ $statusHolder.setStatus("DONE");
 update($statusHolder);
 $pmml4Result.setResultCode("OK");
 $pmml4Result.addResultVariable($pmml4Result.getResultObjectName(), 45.0966666666667);
+$pmml4Result.addResultVariable("Predicted_medv", 45.0966666666667);
 
 end
 
@@ -2415,6 +2530,7 @@ rule "_22.5328063241107_37.2381578947369_45.0966666666667_surrogate_B_TRUE"
     activation-group "_22.5328063241107_37.2381578947369_45.0966666666667_surrogate"
 when
     $statusHolder : KiePMMLStatusHolder(  )
+
     B( value < 389.885 )
 then
 
@@ -2422,6 +2538,7 @@ $statusHolder.setStatus("DONE");
 update($statusHolder);
 $pmml4Result.setResultCode("OK");
 $pmml4Result.addResultVariable($pmml4Result.getResultObjectName(), 45.0966666666667);
+$pmml4Result.addResultVariable("Predicted_medv", 45.0966666666667);
 
 end
 
@@ -2446,6 +2563,7 @@ rule "_22.5328063241107_37.2381578947369_45.0966666666667_surrogate_CRIM_TRUE"
     activation-group "_22.5328063241107_37.2381578947369_45.0966666666667_surrogate"
 when
     $statusHolder : KiePMMLStatusHolder(  )
+
     CRIM( value >= 0.11276 )
 then
 
@@ -2453,6 +2571,7 @@ $statusHolder.setStatus("DONE");
 update($statusHolder);
 $pmml4Result.setResultCode("OK");
 $pmml4Result.addResultVariable($pmml4Result.getResultObjectName(), 45.0966666666667);
+$pmml4Result.addResultVariable("Predicted_medv", 45.0966666666667);
 
 end
 
@@ -2477,6 +2596,7 @@ rule "_22.5328063241107_37.2381578947369_45.0966666666667_surrogate_INDUS_TRUE"
     activation-group "_22.5328063241107_37.2381578947369_45.0966666666667_surrogate"
 when
     $statusHolder : KiePMMLStatusHolder(  )
+
     INDUS( value >= 18.84 )
 then
 
@@ -2484,6 +2604,7 @@ $statusHolder.setStatus("DONE");
 update($statusHolder);
 $pmml4Result.setResultCode("OK");
 $pmml4Result.addResultVariable($pmml4Result.getResultObjectName(), 45.0966666666667);
+$pmml4Result.addResultVariable("Predicted_medv", 45.0966666666667);
 
 end
 
@@ -2512,6 +2633,7 @@ $statusHolder.setStatus("DONE");
 update($statusHolder);
 $pmml4Result.setResultCode("OK");
 $pmml4Result.addResultVariable($pmml4Result.getResultObjectName(), 37.2381578947369);
+$pmml4Result.addResultVariable("Predicted_medv", 37.2381578947369);
 
 end
 
@@ -2524,5 +2646,6 @@ $statusHolder.setStatus("DONE");
 update($statusHolder);
 $pmml4Result.setResultCode("OK");
 $pmml4Result.addResultVariable($pmml4Result.getResultObjectName(), 22.5328063241107);
+$pmml4Result.addResultVariable("Predicted_medv", 22.5328063241107);
 
 end
