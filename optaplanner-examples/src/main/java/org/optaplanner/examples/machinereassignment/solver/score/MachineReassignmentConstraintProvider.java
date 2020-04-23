@@ -31,7 +31,6 @@ import org.optaplanner.core.api.score.stream.Joiners;
 import org.optaplanner.examples.machinereassignment.domain.MrGlobalPenaltyInfo;
 import org.optaplanner.examples.machinereassignment.domain.MrMachineCapacity;
 import org.optaplanner.examples.machinereassignment.domain.MrProcessAssignment;
-import org.optaplanner.examples.machinereassignment.domain.MrResource;
 import org.optaplanner.examples.machinereassignment.domain.MrService;
 import org.optaplanner.examples.machinereassignment.domain.solver.MrServiceDependency;
 
@@ -77,16 +76,6 @@ public class MachineReassignmentConstraintProvider implements ConstraintProvider
                         (machine, machineCapacity, usage) -> usage - machineCapacity.getMaximumCapacity());
     }
 
-    /*
-     * More elegant solution, which is not compatible with Drools due to uninitialized entities:
-     *
-     * protected Constraint serviceConflict(ConstraintFactory factory) {
-     * return factory.fromUniquePair(MrProcessAssignment.class,
-     * equal(MrProcessAssignment::getMachine),
-     * equal(MrProcessAssignment::getService)
-     * ).penalize(MrConstraints.SERVICE_CONFLICT, HardSoftLongScore.ONE_HARD);
-     *
-     */
     protected Constraint serviceConflict(ConstraintFactory factory) {
         return factory.fromUnfiltered(MrProcessAssignment.class)
                 .join(factory.fromUnfiltered(MrProcessAssignment.class),
@@ -100,20 +89,6 @@ public class MachineReassignmentConstraintProvider implements ConstraintProvider
      */
     protected Constraint serviceLocationSpread(ConstraintFactory factory) {
         throw new UnsupportedOperationException("ConstraintCollectors.countDistinct should not count null as a distinct value");
-        /*
-         * return factory.from(MrService.class)
-         * .join(MrLocation.class)
-         * .ifExists(MrProcessAssignment.class,
-         * equal((service, location) -> service, MrProcessAssignment::getService),
-         * equal((service, location) -> location, MrProcessAssignment::getLocation))
-         * .groupBy((service, location) -> service,
-         * ConstraintCollectors.countDistinct((service, location) -> location)
-         * )
-         * .filter((service, distinctLocationCount) -> distinctLocationCount < service.getLocationSpread())
-         * .penalizeLong(MrConstraints.SERVICE_LOCATION_SPREAD, HardSoftLongScore.ONE_HARD,
-         * (service, distinctLocationCount) -> service.getLocationSpread() - distinctLocationCount);
-         *
-         */
     }
 
     /**
@@ -178,61 +153,6 @@ public class MachineReassignmentConstraintProvider implements ConstraintProvider
      */
     protected Constraint balanceCost(ConstraintFactory factory) {
         throw new UnsupportedOperationException("Not yet implemented.");
-        /*
-         * return factory.from(MrMachineCapacity.class)
-         * .join(MrProcessAssignment.class,
-         * equal(MrMachineCapacity::getMachine, MrProcessAssignment::getMachine)
-         * )
-         * .groupBy((machineCapacity, processAssignment) -> new ImmutablePair<MrMachine,
-         * MrResource>(machineCapacity.getMachine(), machineCapacity.getResource()),
-         * sumLong((machineCapacity, processAssignment) -> machineCapacity.getMaximumCapacity() - getUsage(processAssignment,
-         * machineCapacity.getResource()))
-         * )
-         * .filter((pair, originAvailability) -> {
-         * System.out.println(pair + ", " + originAvailability);
-         * return true;
-         * })
-         * .join(MrBalancePenalty.class,
-         * equal((pair, availability) -> pair.getRight(), penalty -> penalty.getOriginResource())
-         * )
-         * .join(MrMachineCapacity.class, // for the same machine and the other - target resource
-         * equal((pair, availability, penalty) -> pair.getLeft(), capacity -> capacity.getMachine()),
-         * equal((pair, availability, penalty) -> penalty.getTargetResource(), capacity -> capacity.getResource())
-         * )
-         * .filter((pair, originAvailability, penalty, targetCapacity) -> {
-         * System.out.println(pair + ", " + originAvailability + ", " + penalty + ", " + targetCapacity);
-         * return true;
-         * })
-         * .groupBy((pair, availability, penalty, targetCapacity) -> new ImmutableTriple<MrMachine, MrResource,
-         * Long>(pair.getLeft(), pair.getRight(), availability),
-         * (pair, availability, penalty, targetCapacity) -> new ImmutablePair<MrBalancePenalty, MrMachineCapacity>(penalty,
-         * targetCapacity)
-         * )
-         * .filter((triple, pair) -> {
-         * System.out.println(triple + ", " + pair);
-         * return true;
-         * })
-         * .join(MrProcessAssignment.class,
-         * equal((triple, pair) -> pair.getRight().getMachine(), MrProcessAssignment::getMachine))
-         * .groupBy((triple, pair, processAssignment) -> triple,
-         * (triple, pair, processAssignment) -> pair, // TODO: it should be groupedBy Resource
-         * // get the target availability
-         * sumLong((triple, pair, processAssignment) -> pair.getRight().getMaximumCapacity() - getUsage(processAssignment,
-         * pair.getRight().getResource()))
-         * )
-         * .filter((originTriple, pair, targetAvailability) -> originTriple.right > 0 && targetAvailability <
-         * pair.left.getMultiplicand() * originTriple.right)
-         * .penalizeLong(MrConstraints.BALANCE_COST, HardSoftLongScore.ONE_SOFT, (originTriple, pair, targetAvailability) -> {
-         * System.out.println(originTriple + ", " + pair + ", " + targetAvailability);
-         * return (targetAvailability - pair.left.getMultiplicand() * originTriple.right) * pair.left.getWeight();
-         * });
-         */
-    }
-
-    private long getUsage(MrProcessAssignment processAssignment, MrResource resource) {
-        // System.out.println(String.format("Usage of resource %d by a process %s is: %d",
-        //         resource.getIndex(), processAssignment.getProcess(), processAssignment.getUsage(resource)));
-        return processAssignment.getUsage(resource);
     }
 
     /**
