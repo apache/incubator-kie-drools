@@ -15,13 +15,7 @@
  */
 package org.kie.pmml.models.drools.ast.factories;
 
-import java.util.Collections;
-import java.util.List;
-
-import org.dmg.pmml.True;
 import org.drools.core.util.StringUtils;
-import org.kie.pmml.commons.enums.ResultCode;
-import org.kie.pmml.commons.model.KiePMMLOutputField;
 import org.kie.pmml.models.drools.ast.KiePMMLDroolsRule;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -35,30 +29,31 @@ public class KiePMMLTruePredicateASTFactory extends KiePMMLAbstractPredicateASTF
 
     private static final Logger logger = LoggerFactory.getLogger(KiePMMLTruePredicateASTFactory.class.getName());
 
-    private final True truePredicate;
-
-    private KiePMMLTruePredicateASTFactory(final True truePredicate, final List<KiePMMLOutputField> outputFields, final List<KiePMMLDroolsRule> rules) {
-        super(Collections.emptyMap(), outputFields, rules);
-        this.truePredicate = truePredicate;
+    protected KiePMMLTruePredicateASTFactory(final PredicateASTFactoryData predicateASTFactoryData) {
+        super(predicateASTFactoryData);
     }
 
-    public static KiePMMLTruePredicateASTFactory factory(final True truePredicate, final List<KiePMMLOutputField> outputFields, final List<KiePMMLDroolsRule> rules) {
-        return new KiePMMLTruePredicateASTFactory(truePredicate, outputFields, rules);
+    public static KiePMMLTruePredicateASTFactory factory(final PredicateASTFactoryData predicateASTFactoryData) {
+        return new KiePMMLTruePredicateASTFactory(predicateASTFactoryData);
     }
 
-    public void declareRuleFromTruePredicate(final String parentPath,
-                                             final String currentRule,
-                                             final Object result,
-                                             boolean isFinalLeaf) {
-        logger.trace("declareRuleFromTruePredicate {} {} {}", truePredicate, parentPath, currentRule);
-        String statusConstraint = StringUtils.isEmpty(parentPath) ? KiePMMLAbstractModelASTFactory.STATUS_NULL : String.format(KiePMMLAbstractModelASTFactory.STATUS_PATTERN, parentPath);
-        String statusToSet = isFinalLeaf ? DONE : currentRule;
-        KiePMMLDroolsRule.Builder builder = KiePMMLDroolsRule.builder(currentRule, statusToSet, outputFields)
+    public void declareRuleFromTruePredicateWithResult(final Object result,
+                                                       final boolean isFinalLeaf) {
+        String statusToSet = isFinalLeaf ? DONE : predicateASTFactoryData.getCurrentRule();
+        KiePMMLDroolsRule.Builder builder = getRuleBuilder(statusToSet);
+        KiePMMLTruePredicateWithResultASTFactory.declareRuleFromTruePredicate(builder, predicateASTFactoryData.getRules(), result, isFinalLeaf);
+    }
+
+    public void declareRuleFromTruePredicateWithAccumulation(final String statusToSet,
+                                                             final boolean isLastCharacteristic) {
+        KiePMMLDroolsRule.Builder builder = getRuleBuilder(statusToSet);
+        KiePMMLTruePredicateWithAccumulationASTFactory.declareRuleFromTruePredicate(builder, predicateASTFactoryData.getRules(), statusToSet, isLastCharacteristic);
+    }
+
+    protected KiePMMLDroolsRule.Builder getRuleBuilder(final String statusToSet) {
+        logger.trace("getRuleBuilder {} {} {} {}", predicateASTFactoryData.getPredicate(), predicateASTFactoryData.getParentPath(), predicateASTFactoryData.getCurrentRule(), statusToSet);
+        String statusConstraint = StringUtils.isEmpty(predicateASTFactoryData.getParentPath()) ? KiePMMLAbstractModelASTFactory.STATUS_NULL : String.format(KiePMMLAbstractModelASTFactory.STATUS_PATTERN, predicateASTFactoryData.getParentPath());
+        return KiePMMLDroolsRule.builder(predicateASTFactoryData.getCurrentRule(), statusToSet, predicateASTFactoryData.getOutputFields())
                 .withStatusConstraint(statusConstraint);
-        if (isFinalLeaf) {
-            builder = builder.withResult(result)
-                    .withResultCode(ResultCode.OK);
-        }
-        rules.add(builder.build());
     }
 }

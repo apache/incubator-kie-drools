@@ -111,6 +111,16 @@ public enum DATA_TYPE {
                 throw new KieDataFieldException("Fail to convert " + rawValue + "[" + rawValue.getClass().getName() + "] to expected class " + mappedClass.getName(), e);
             }
         }
+        if (!rawValue.getClass().isPrimitive()) {
+            try {
+                if (mappedClass.equals(rawValue.getClass().getField("TYPE").get(null))) {
+                    // No cast/transformation needed
+                    return rawValue;
+                }
+            } catch (Exception e) {
+                throw new KieDataFieldException("Unexpected " + rawValue + "[" + rawValue.getClass().getName() + "] to convert");
+            }
+        }
         throw new KieDataFieldException("Unexpected " + rawValue + "[" + rawValue.getClass().getName() + "] to convert");
     }
 }

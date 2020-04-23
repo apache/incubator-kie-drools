@@ -17,17 +17,13 @@ package org.kie.pmml.models.drools.ast.factories;
 
 import java.util.Collections;
 import java.util.List;
-import java.util.Map;
 
 import org.dmg.pmml.SimplePredicate;
 import org.drools.core.util.StringUtils;
-import org.kie.pmml.commons.enums.ResultCode;
-import org.kie.pmml.commons.model.KiePMMLOutputField;
 import org.kie.pmml.commons.model.enums.OPERATOR;
 import org.kie.pmml.models.drools.ast.KiePMMLDroolsRule;
 import org.kie.pmml.models.drools.ast.KiePMMLFieldOperatorValue;
 import org.kie.pmml.models.drools.tuples.KiePMMLOperatorValue;
-import org.kie.pmml.models.drools.tuples.KiePMMLOriginalTypeGeneratedType;
 import org.kie.pmml.models.drools.utils.KiePMMLASTFactoryUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -41,64 +37,172 @@ public class KiePMMLSimplePredicateASTFactory extends KiePMMLAbstractPredicateAS
 
     private static final Logger logger = LoggerFactory.getLogger(KiePMMLSimplePredicateASTFactory.class.getName());
 
-    private final SimplePredicate simplePredicate;
-
-    private KiePMMLSimplePredicateASTFactory(final SimplePredicate simplePredicate, final Map<String, KiePMMLOriginalTypeGeneratedType> fieldTypeMap, final List<KiePMMLOutputField> outputFields, final List<KiePMMLDroolsRule> rules) {
-        super(fieldTypeMap, outputFields, rules);
-        this.simplePredicate = simplePredicate;
+    private KiePMMLSimplePredicateASTFactory(final PredicateASTFactoryData predicateASTFactoryData) {
+        super(predicateASTFactoryData);
     }
 
-    public static KiePMMLSimplePredicateASTFactory factory(final SimplePredicate simplePredicate, final Map<String, KiePMMLOriginalTypeGeneratedType> fieldTypeMap, final List<KiePMMLOutputField> outputFields, final List<KiePMMLDroolsRule> rules) {
-        return new KiePMMLSimplePredicateASTFactory(simplePredicate, fieldTypeMap, outputFields, rules);
+    public static KiePMMLSimplePredicateASTFactory factory(final PredicateASTFactoryData predicateASTFactoryData) {
+        return new KiePMMLSimplePredicateASTFactory(predicateASTFactoryData);
     }
 
     public void declareRuleFromSimplePredicateSurrogate(
-            final String parentPath,
-            final String currentRule,
+            final String agendaActivationGroup,
+            final Number toAccumulate,
+            final String statusToSet,
+            final boolean isLastCharacteristic) {
+        logger.trace("declareRuleFromSimplePredicateSurrogate {} {} {} {}", agendaActivationGroup, toAccumulate, statusToSet, isLastCharacteristic);
+        String fieldName = predicateASTFactoryData.getFieldTypeMap().get(((SimplePredicate) predicateASTFactoryData.getPredicate()).getField().getValue()).getGeneratedType();
+        String surrogateCurrentRule = String.format(KiePMMLAbstractModelASTFactory.SURROGATE_RULENAME_PATTERN, predicateASTFactoryData.getCurrentRule(), fieldName);
+        final List<KiePMMLFieldOperatorValue> constraints = Collections.singletonList(KiePMMLASTFactoryUtils.getConstraintEntryFromSimplePredicates(fieldName, "surrogate", Collections.singletonList((SimplePredicate) predicateASTFactoryData.getPredicate()), predicateASTFactoryData.getFieldTypeMap()));
+        // Create "TRUE" matcher
+        KiePMMLDroolsRule.Builder builder = getBuilderForSimplePredicateSurrogateTrueMatcher(agendaActivationGroup, surrogateCurrentRule, constraints, statusToSet)
+                .withAccumulation(toAccumulate);
+        KiePMMLSimplePredicateWithAccumulationASTFactory.declareRuleFromSimplePredicateSurrogateTrueMatcher(builder, predicateASTFactoryData.getRules(), isLastCharacteristic);
+        // Create "FALSE" matcher
+        builder = getBuilderForSimplePredicateSurrogateFalseMatcher(agendaActivationGroup, surrogateCurrentRule, constraints, statusToSet)
+                .withAccumulation(toAccumulate);
+        KiePMMLSimplePredicateWithAccumulationASTFactory.declareRuleFromSimplePredicateSurrogateFalseMatcher(builder, predicateASTFactoryData.getRules());
+    }
+
+    public void declareRuleFromSimplePredicateSurrogate(
             final String agendaActivationGroup,
             final Object result,
             boolean isFinalLeaf) {
-        logger.trace("declareRuleFromSimplePredicateSurrogate {} {} {} {}", simplePredicate, currentRule, agendaActivationGroup, result);
-        String fieldName = fieldTypeMap.get(simplePredicate.getField().getValue()).getGeneratedType();
-        String surrogateCurrentRule = String.format(KiePMMLAbstractModelASTFactory.SURROGATE_RULENAME_PATTERN, currentRule, fieldName);
-        final List<KiePMMLFieldOperatorValue> constraints = Collections.singletonList(KiePMMLASTFactoryUtils.getConstraintEntryFromSimplePredicates(fieldName, "surrogate", Collections.singletonList(simplePredicate), fieldTypeMap));
-        String statusToSet = isFinalLeaf ? DONE : currentRule;
+        logger.trace("declareRuleFromSimplePredicateSurrogate {} {} {}", agendaActivationGroup, result, isFinalLeaf);
+        String fieldName = predicateASTFactoryData.getFieldTypeMap().get(((SimplePredicate) predicateASTFactoryData.getPredicate()).getField().getValue()).getGeneratedType();
+        String surrogateCurrentRule = String.format(KiePMMLAbstractModelASTFactory.SURROGATE_RULENAME_PATTERN, predicateASTFactoryData.getCurrentRule(), fieldName);
+        final List<KiePMMLFieldOperatorValue> constraints = Collections.singletonList(KiePMMLASTFactoryUtils.getConstraintEntryFromSimplePredicates(fieldName, "surrogate", Collections.singletonList((SimplePredicate) predicateASTFactoryData.getPredicate()), predicateASTFactoryData.getFieldTypeMap()));
+        String statusToSet = isFinalLeaf ? DONE : predicateASTFactoryData.getCurrentRule();
         // Create "TRUE" matcher
-        KiePMMLDroolsRule.Builder builder = KiePMMLDroolsRule.builder(surrogateCurrentRule + "_TRUE", statusToSet, outputFields)
+        KiePMMLDroolsRule.Builder builder = getBuilderForSimplePredicateSurrogateTrueMatcher(agendaActivationGroup, surrogateCurrentRule, constraints, statusToSet);
+        KiePMMLSimplePredicateWithResultASTFactory.declareRuleFromSimplePredicateSurrogateTrueMatcher(builder, predicateASTFactoryData.getRules(), result, isFinalLeaf);
+        // Create "FALSE" matcher
+        builder = getBuilderForSimplePredicateSurrogateFalseMatcher(agendaActivationGroup, surrogateCurrentRule, constraints, statusToSet);
+        KiePMMLSimplePredicateWithResultASTFactory.declareRuleFromSimplePredicateSurrogateFalseMatcher(builder, predicateASTFactoryData.getRules());
+    }
+
+    /**
+     * This method will create a <b>rule</b> that, in the RHS,
+     * 1) update the status (used for flowing between rules)
+     * 2) add <i>outputfields</i> to result variables
+     * 3) eventually set the value to accumulate
+     * <p>
+     * rule "_ResidenceStateScore_1"
+     * when
+     * $statusHolder : KiePMMLStatusHolder( status == "_ResidenceStateScore" )
+     * <p>
+     * RESIDENCESTATE( value == "KN" )
+     * then
+     * <p>
+     * $statusHolder.setStatus("_ResidenceStateScore_1");
+     * $statusHolder.accumulate("10.0");
+     * update($statusHolder);
+     * <p>
+     * end
+     * <p>
+     * end
+     * @param toAccumulate
+     * @param statusToSet
+     * @param isLastCharacteristic
+     */
+    public void declareRuleFromSimplePredicate(final Number toAccumulate,
+                                               final String statusToSet,
+                                               final boolean isLastCharacteristic) {
+        logger.trace("declareRuleFromSimplePredicate {} {} {}", toAccumulate, statusToSet, isLastCharacteristic);
+        KiePMMLDroolsRule.Builder builder = getBuilderForSimplePredicate(statusToSet)
+                .withAccumulation(toAccumulate);
+        KiePMMLSimplePredicateWithAccumulationASTFactory.declareRuleFromSimplePredicate(builder, predicateASTFactoryData.getRules(), isLastCharacteristic);
+    }
+
+    /**
+     * This method will create a <b>rule</b> that, in the RHS,
+     * 1) update the status (used for flowing between rules)
+     * 2) add <i>outputfields</i> to result variables
+     * 3) eventually set the value to accumulate
+     * <p>
+     * rule "_ResidenceStateScore_1"
+     * when
+     * $statusHolder : KiePMMLStatusHolder( status == "_ResidenceStateScore" )
+     * <p>
+     * RESIDENCESTATE( value == "KN" )
+     * then
+     * <p>
+     * $statusHolder.setStatus("_ResidenceStateScore_1");
+     * $statusHolder.accumulate("10.0");
+     * update($statusHolder);
+     * <p>
+     * end
+     * <p>
+     * end
+     * @param result
+     * @param isFinalLeaf
+     */
+    public void declareRuleFromSimplePredicate(final Object result,
+                                               final boolean isFinalLeaf) {
+        logger.trace("declareRuleFromSimplePredicate {} {}", result, isFinalLeaf);
+        String statusToSet = isFinalLeaf ? DONE : predicateASTFactoryData.getCurrentRule();
+        KiePMMLDroolsRule.Builder builder = getBuilderForSimplePredicate(statusToSet);
+        KiePMMLSimplePredicateWithResultASTFactory.declareRuleFromSimplePredicate(builder, predicateASTFactoryData.getRules(), result, isFinalLeaf);
+    }
+
+    private KiePMMLDroolsRule.Builder getBuilderForSimplePredicateSurrogateTrueMatcher(
+            final String agendaActivationGroup,
+            final String surrogateCurrentRule,
+            final List<KiePMMLFieldOperatorValue> constraints,
+            final String statusToSet) {
+        logger.trace("getBuilderForSimplePredicateSurrogateTrueMatcher {} {} {} {}", agendaActivationGroup, surrogateCurrentRule, constraints, statusToSet);
+        // Create "TRUE" matcher
+        return KiePMMLDroolsRule.builder(surrogateCurrentRule + "_TRUE", statusToSet, predicateASTFactoryData.getOutputFields())
                 .withAgendaGroup(agendaActivationGroup)
                 .withActivationGroup(agendaActivationGroup)
                 .withAndConstraints(constraints);
-        if (isFinalLeaf) {
-            builder = builder.withResult(result)
-                    .withResultCode(ResultCode.OK);
-        }
-        rules.add(builder.build());
+    }
+
+    private KiePMMLDroolsRule.Builder getBuilderForSimplePredicateSurrogateFalseMatcher(
+            final String agendaActivationGroup,
+            final String surrogateCurrentRule,
+            final List<KiePMMLFieldOperatorValue> constraints,
+            final String statusToSet) {
+        logger.trace("getBuilderForSimplePredicateSurrogateFalseMatcher {} {} {} {}", agendaActivationGroup, surrogateCurrentRule, constraints, statusToSet);
         // Create "FALSE" matcher
-        builder = KiePMMLDroolsRule.builder(surrogateCurrentRule + "_FALSE", parentPath, outputFields)
+        return KiePMMLDroolsRule.builder(surrogateCurrentRule + "_FALSE", predicateASTFactoryData.getParentPath(), predicateASTFactoryData.getOutputFields())
                 .withAgendaGroup(agendaActivationGroup)
                 .withActivationGroup(agendaActivationGroup)
                 .withNotConstraints(constraints);
-        rules.add(builder.build());
     }
 
-    public void declareRuleFromSimplePredicate(final String parentPath,
-                                               final String currentRule,
-                                               final Object result,
-                                               boolean isFinalLeaf) {
-        logger.trace("declareRuleFromSimplePredicate {} {} {}", simplePredicate, parentPath, currentRule);
-        String statusConstraint = StringUtils.isEmpty(parentPath) ? KiePMMLAbstractModelASTFactory.STATUS_NULL : String.format(KiePMMLAbstractModelASTFactory.STATUS_PATTERN, parentPath);
-        String key = fieldTypeMap.get(simplePredicate.getField().getValue()).getGeneratedType();
-        String operator = OPERATOR.byName(simplePredicate.getOperator().value()).getOperator();
-        Object value = KiePMMLASTFactoryUtils.getCorrectlyFormattedObject(simplePredicate, fieldTypeMap);
-        String statusToSet = isFinalLeaf ? DONE : currentRule;
+    /**
+     * This method will create a <b>rule</b> that, in the RHS,
+     * 1) update the status (used for flowing between rules)
+     * 2) add <i>outputfields</i> to result variables
+     * 3) eventually set the value to accumulate
+     * <p>
+     * rule "_ResidenceStateScore_1"
+     * when
+     * $statusHolder : KiePMMLStatusHolder( status == "_ResidenceStateScore" )
+     * <p>
+     * RESIDENCESTATE( value == "KN" )
+     * then
+     * <p>
+     * $statusHolder.setStatus("_ResidenceStateScore_1");
+     * $statusHolder.accumulate("10.0");
+     * update($statusHolder);
+     * <p>
+     * end
+     * <p>
+     * end
+     * @param statusToSet
+     * @return
+     */
+    protected KiePMMLDroolsRule.Builder getBuilderForSimplePredicate(final String statusToSet) {
+        logger.trace("getBuilderForSimplePredicate {}", statusToSet);
+        String statusConstraint = StringUtils.isEmpty(predicateASTFactoryData.getParentPath()) ? KiePMMLAbstractModelASTFactory.STATUS_NULL : String.format(KiePMMLAbstractModelASTFactory.STATUS_PATTERN, predicateASTFactoryData.getParentPath());
+        String key = predicateASTFactoryData.getFieldTypeMap().get(((SimplePredicate) predicateASTFactoryData.getPredicate()).getField().getValue()).getGeneratedType();
+        String operator = OPERATOR.byName(((SimplePredicate) predicateASTFactoryData.getPredicate()).getOperator().value()).getOperator();
+        Object value = KiePMMLASTFactoryUtils.getCorrectlyFormattedObject(((SimplePredicate) predicateASTFactoryData.getPredicate()), predicateASTFactoryData.getFieldTypeMap());
         List<KiePMMLFieldOperatorValue> andConstraints = Collections.singletonList(new KiePMMLFieldOperatorValue(key, "and", Collections.singletonList(new KiePMMLOperatorValue(operator, value)), null));
-        KiePMMLDroolsRule.Builder builder = KiePMMLDroolsRule.builder(currentRule, statusToSet, outputFields)
+        return KiePMMLDroolsRule.builder(predicateASTFactoryData.getCurrentRule(), statusToSet, predicateASTFactoryData.getOutputFields())
                 .withStatusConstraint(statusConstraint)
                 .withAndConstraints(andConstraints);
-        if (isFinalLeaf) {
-            builder = builder.withResult(result)
-                    .withResultCode(ResultCode.OK);
-        }
-        rules.add(builder.build());
     }
 }

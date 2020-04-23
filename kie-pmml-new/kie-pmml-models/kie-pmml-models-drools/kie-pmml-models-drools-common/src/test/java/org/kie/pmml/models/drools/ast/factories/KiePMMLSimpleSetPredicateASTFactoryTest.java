@@ -36,6 +36,7 @@ import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
 import static org.kie.pmml.commons.Constants.DONE;
 import static org.kie.pmml.models.drools.ast.factories.KiePMMLAbstractModelASTFactory.STATUS_PATTERN;
+import static org.kie.pmml.models.drools.utils.KiePMMLASTTestUtils.getPredicateASTFactoryData;
 import static org.kie.pmml.models.drools.utils.KiePMMLASTTestUtils.getSimpleSetPredicate;
 
 public class KiePMMLSimpleSetPredicateASTFactoryTest {
@@ -50,7 +51,8 @@ public class KiePMMLSimpleSetPredicateASTFactoryTest {
         String result = "classB";
         String declaredType = fieldTypeMap.get("input1").getGeneratedType();
         final List<KiePMMLDroolsRule> rules = new ArrayList<>();
-        KiePMMLSimpleSetPredicateASTFactory.factory(simpleSetPredicate, fieldTypeMap, Collections.emptyList(), rules).declareRuleFromSimpleSetPredicate(parentPath, currentRule, result, true);
+        PredicateASTFactoryData predicateASTFactoryData = getPredicateASTFactoryData(simpleSetPredicate, Collections.emptyList(), rules, parentPath, currentRule, fieldTypeMap);
+        KiePMMLSimpleSetPredicateASTFactory.factory(predicateASTFactoryData).declareRuleFromSimpleSetPredicate(result, true);
         assertEquals(1, rules.size());
         final KiePMMLDroolsRule retrieved = rules.get(0);
         assertNotNull(retrieved);
@@ -81,7 +83,8 @@ public class KiePMMLSimpleSetPredicateASTFactoryTest {
         String result = "classB";
         String declaredType = fieldTypeMap.get("input1").getGeneratedType();
         final List<KiePMMLDroolsRule> rules = new ArrayList<>();
-        KiePMMLSimpleSetPredicateASTFactory.factory(simpleSetPredicate, fieldTypeMap, Collections.emptyList(), rules).declareRuleFromSimpleSetPredicate(parentPath, currentRule, result, false);
+        PredicateASTFactoryData predicateASTFactoryData = getPredicateASTFactoryData(simpleSetPredicate, Collections.emptyList(), rules, parentPath, currentRule, fieldTypeMap);
+        KiePMMLSimpleSetPredicateASTFactory.factory(predicateASTFactoryData).declareRuleFromSimpleSetPredicate(result, false);
         assertEquals(1, rules.size());
         final KiePMMLDroolsRule retrieved = rules.get(0);
         assertNotNull(retrieved);
@@ -113,7 +116,8 @@ public class KiePMMLSimpleSetPredicateASTFactoryTest {
         String declaredType = fieldTypeMap.get("input2").getGeneratedType();
         final List<KiePMMLDroolsRule> rules = new ArrayList<>();
         String statusToSet = DONE;
-        KiePMMLSimpleSetPredicateASTFactory.factory(simpleSetPredicate, fieldTypeMap, Collections.emptyList(), rules).declareRuleFromSimpleSetPredicate(parentPath, currentRule, result, true);
+        PredicateASTFactoryData predicateASTFactoryData = getPredicateASTFactoryData(simpleSetPredicate, Collections.emptyList(), rules, parentPath, currentRule, fieldTypeMap);
+        KiePMMLSimpleSetPredicateASTFactory.factory(predicateASTFactoryData).declareRuleFromSimpleSetPredicate(result, true);
         assertEquals(1, rules.size());
         final KiePMMLDroolsRule retrieved = rules.get(0);
         assertNotNull(retrieved);
@@ -144,8 +148,8 @@ public class KiePMMLSimpleSetPredicateASTFactoryTest {
         String result = "classC";
         String declaredType = fieldTypeMap.get("input2").getGeneratedType();
         final List<KiePMMLDroolsRule> rules = new ArrayList<>();
-        String statusToSet = DONE;
-        KiePMMLSimpleSetPredicateASTFactory.factory(simpleSetPredicate, fieldTypeMap, Collections.emptyList(), rules).declareRuleFromSimpleSetPredicate(parentPath, currentRule, result, false);
+        PredicateASTFactoryData predicateASTFactoryData = getPredicateASTFactoryData(simpleSetPredicate, Collections.emptyList(), rules, parentPath, currentRule, fieldTypeMap);
+        KiePMMLSimpleSetPredicateASTFactory.factory(predicateASTFactoryData).declareRuleFromSimpleSetPredicate(result, false);
         assertEquals(1, rules.size());
         final KiePMMLDroolsRule retrieved = rules.get(0);
         assertNotNull(retrieved);

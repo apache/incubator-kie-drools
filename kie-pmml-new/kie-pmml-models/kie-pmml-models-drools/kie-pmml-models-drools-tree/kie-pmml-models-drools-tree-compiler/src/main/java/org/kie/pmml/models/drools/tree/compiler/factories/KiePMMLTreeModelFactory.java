@@ -25,13 +25,13 @@ import org.dmg.pmml.tree.TreeModel;
 import org.drools.compiler.lang.descr.PackageDescr;
 import org.kie.pmml.commons.model.enums.MINING_FUNCTION;
 import org.kie.pmml.models.drools.ast.KiePMMLDroolsAST;
-import org.kie.pmml.models.drools.tuples.KiePMMLOriginalTypeGeneratedType;
 import org.kie.pmml.models.drools.tree.model.KiePMMLTreeModel;
+import org.kie.pmml.models.drools.tuples.KiePMMLOriginalTypeGeneratedType;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import static org.kie.pmml.models.drools.commons.factories.KiePMMLDescrFactory.getBaseDescr;
 import static org.kie.pmml.compiler.commons.utils.ModelUtils.getTargetFieldName;
+import static org.kie.pmml.models.drools.commons.factories.KiePMMLDescrFactory.getBaseDescr;
 import static org.kie.pmml.models.drools.tree.compiler.factories.KiePMMLTreeModelASTFactory.getKiePMMLDroolsAST;
 
 /**
