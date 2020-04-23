@@ -16,8 +16,9 @@
 
 package org.optaplanner.examples.machinereassignment.domain;
 
-import com.thoughtworks.xstream.annotations.XStreamAlias;
 import org.optaplanner.examples.common.domain.AbstractPersistable;
+
+import com.thoughtworks.xstream.annotations.XStreamAlias;
 
 @XStreamAlias("MrMachineCapacity")
 public class MrMachineCapacity extends AbstractPersistable {
@@ -27,6 +28,24 @@ public class MrMachineCapacity extends AbstractPersistable {
 
     private long maximumCapacity;
     private long safetyCapacity;
+
+    public MrMachineCapacity() {
+    }
+
+    public MrMachineCapacity(MrMachine machine, MrResource resource, long maximumCapacity, long safetyCapacity) {
+        this.machine = machine;
+        this.resource = resource;
+        this.maximumCapacity = maximumCapacity;
+        this.safetyCapacity = safetyCapacity;
+    }
+
+    public MrMachineCapacity(long id, MrMachine machine, MrResource resource, long maximumCapacity, long safetyCapacity) {
+        super(id);
+        this.machine = machine;
+        this.resource = resource;
+        this.maximumCapacity = maximumCapacity;
+        this.safetyCapacity = safetyCapacity;
+    }
 
     public MrMachine getMachine() {
         return machine;

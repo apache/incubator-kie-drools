@@ -16,8 +16,9 @@
 
 package org.optaplanner.examples.machinereassignment.domain;
 
-import com.thoughtworks.xstream.annotations.XStreamAlias;
 import org.optaplanner.examples.common.domain.AbstractPersistable;
+
+import com.thoughtworks.xstream.annotations.XStreamAlias;
 
 @XStreamAlias("MrBalancePenalty")
 public class MrBalancePenalty extends AbstractPersistable {
@@ -26,6 +27,24 @@ public class MrBalancePenalty extends AbstractPersistable {
     private MrResource targetResource;
     private int multiplicand;
     private int weight;
+
+    public MrBalancePenalty() {
+    }
+
+    public MrBalancePenalty(MrResource originResource, MrResource targetResource, int multiplicand, int weight) {
+        this.originResource = originResource;
+        this.targetResource = targetResource;
+        this.multiplicand = multiplicand;
+        this.weight = weight;
+    }
+
+    public MrBalancePenalty(long id, MrResource originResource, MrResource targetResource, int multiplicand, int weight) {
+        super(id);
+        this.originResource = originResource;
+        this.targetResource = targetResource;
+        this.multiplicand = multiplicand;
+        this.weight = weight;
+    }
 
     public MrResource getOriginResource() {
         return originResource;

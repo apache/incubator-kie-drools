@@ -16,6 +16,10 @@
 
 package org.optaplanner.examples.machinereassignment.solver.score;
 
+import static org.optaplanner.core.api.score.stream.ConstraintCollectors.sumLong;
+import static org.optaplanner.core.api.score.stream.Joiners.equal;
+import static org.optaplanner.core.api.score.stream.Joiners.filtering;
+
 import java.util.function.BiFunction;
 
 import org.optaplanner.core.api.score.buildin.hardsoftlong.HardSoftLongScore;
@@ -23,28 +27,26 @@ import org.optaplanner.core.api.score.stream.Constraint;
 import org.optaplanner.core.api.score.stream.ConstraintCollectors;
 import org.optaplanner.core.api.score.stream.ConstraintFactory;
 import org.optaplanner.core.api.score.stream.ConstraintProvider;
-import org.optaplanner.examples.machinereassignment.domain.MrBalancePenalty;
-import org.optaplanner.examples.machinereassignment.domain.MrMachine;
+import org.optaplanner.core.api.score.stream.Joiners;
+import org.optaplanner.examples.machinereassignment.domain.MrGlobalPenaltyInfo;
 import org.optaplanner.examples.machinereassignment.domain.MrMachineCapacity;
 import org.optaplanner.examples.machinereassignment.domain.MrProcessAssignment;
+import org.optaplanner.examples.machinereassignment.domain.MrResource;
 import org.optaplanner.examples.machinereassignment.domain.MrService;
 import org.optaplanner.examples.machinereassignment.domain.solver.MrServiceDependency;
-
-import static org.optaplanner.core.api.score.stream.ConstraintCollectors.sumLong;
-import static org.optaplanner.core.api.score.stream.Joiners.equal;
-import static org.optaplanner.core.api.score.stream.Joiners.filtering;
 
 public class MachineReassignmentConstraintProvider implements ConstraintProvider {
 
     @Override
     public Constraint[] defineConstraints(ConstraintFactory factory) {
-        return new Constraint[]{
+        return new Constraint[] {
                 // hard constraints
                 maximumCapacity(factory),
                 serviceConflict(factory),
                 serviceLocationSpread(factory),
                 serviceDependency(factory),
                 transientUsage(factory),
+
                 // soft constraints
                 loadCost(factory),
                 balanceCost(factory),
@@ -61,58 +63,72 @@ public class MachineReassignmentConstraintProvider implements ConstraintProvider
     /**
      * Maximum capacity: The maximum capacity for each resource for each machine must not be exceeded.
      */
-    private Constraint maximumCapacity(ConstraintFactory factory) {
+    protected Constraint maximumCapacity(ConstraintFactory factory) {
         return factory.from(MrMachineCapacity.class)
                 .join(MrProcessAssignment.class,
-                        equal(MrMachineCapacity::getMachine, MrProcessAssignment::getMachine)
-                )
-                .groupBy((machineCapacity, processAssignment) -> machineCapacity,
-                        sumLong((machineCapacity, processAssignment) ->
-                                processAssignment.getUsage(machineCapacity.getResource()))
-                )
-                .filter(((machineCapacity, usage) -> machineCapacity.getMaximumCapacity() < usage))
+                        equal(MrMachineCapacity::getMachine, MrProcessAssignment::getMachine))
+                .groupBy((machineCapacity, processAssignment) -> machineCapacity.getMachine(),
+                        (machineCapacity, processAssignment) -> machineCapacity,
+                        sumLong((machineCapacity, processAssignment) -> processAssignment
+                                .getUsage(machineCapacity.getResource())))
+                .filter(((machine, machineCapacity, usage) -> machineCapacity.getMaximumCapacity() < usage))
                 .penalizeLong(MrConstraints.MAXIMUM_CAPACITY,
                         HardSoftLongScore.ONE_HARD,
-                        (machineCapacity, usage) -> usage - machineCapacity.getMaximumCapacity());
+                        (machine, machineCapacity, usage) -> usage - machineCapacity.getMaximumCapacity());
     }
 
-    /**
-     * Conflict: Processes of the same service must run on distinct machines.
+    /*
+     * More elegant solution, which is not compatible with Drools due to uninitialized entities:
+     *
+     * protected Constraint serviceConflict(ConstraintFactory factory) {
+     * return factory.fromUniquePair(MrProcessAssignment.class,
+     * equal(MrProcessAssignment::getMachine),
+     * equal(MrProcessAssignment::getService)
+     * ).penalize(MrConstraints.SERVICE_CONFLICT, HardSoftLongScore.ONE_HARD);
+     *
      */
-    private Constraint serviceConflict(ConstraintFactory factory) {
-        return factory.fromUniquePair(MrProcessAssignment.class,
-                equal(MrProcessAssignment::getMachine),
-                equal(MrProcessAssignment::getService)
-        ).penalize(MrConstraints.SERVICE_CONFLICT,
-                HardSoftLongScore.ONE_HARD);
+    protected Constraint serviceConflict(ConstraintFactory factory) {
+        return factory.fromUnfiltered(MrProcessAssignment.class)
+                .join(factory.fromUnfiltered(MrProcessAssignment.class),
+                        equal(MrProcessAssignment::getMachine, MrProcessAssignment::getMachine))
+                .filter((left, right) -> left.getService().equals(right.getService()) && right.getId() > left.getId())
+                .penalize(MrConstraints.SERVICE_CONFLICT, HardSoftLongScore.ONE_HARD);
     }
 
     /**
      * Spread: Processes of the same service must be serviceLocationSpread out across locations.
      */
-    private Constraint serviceLocationSpread(ConstraintFactory factory) {
-        return factory.from(MrProcessAssignment.class)
-                .groupBy(MrProcessAssignment::getService,
-                        ConstraintCollectors.countDistinct(MrProcessAssignment::getLocation))
-                .filter((service, distinctLocationCount) -> service.getLocationSpread() > distinctLocationCount)
-                .penalize(MrConstraints.SERVICE_LOCATION_SPREAD,
-                        HardSoftLongScore.ONE_HARD);
+    protected Constraint serviceLocationSpread(ConstraintFactory factory) {
+        throw new UnsupportedOperationException("ConstraintCollectors.countDistinct should not count null as a distinct value");
+        /*
+         * return factory.from(MrService.class)
+         * .join(MrLocation.class)
+         * .ifExists(MrProcessAssignment.class,
+         * equal((service, location) -> service, MrProcessAssignment::getService),
+         * equal((service, location) -> location, MrProcessAssignment::getLocation))
+         * .groupBy((service, location) -> service,
+         * ConstraintCollectors.countDistinct((service, location) -> location)
+         * )
+         * .filter((service, distinctLocationCount) -> distinctLocationCount < service.getLocationSpread())
+         * .penalizeLong(MrConstraints.SERVICE_LOCATION_SPREAD, HardSoftLongScore.ONE_HARD,
+         * (service, distinctLocationCount) -> service.getLocationSpread() - distinctLocationCount);
+         *
+         */
     }
 
     /**
      * Dependency: The processes of a service depending on another service must run in the neighborhood of a process
      * of the other service.
      */
-    private Constraint serviceDependency(ConstraintFactory factory) {
+    protected Constraint serviceDependency(ConstraintFactory factory) {
         return factory.from(MrServiceDependency.class)
                 .join(MrProcessAssignment.class,
                         equal(MrServiceDependency::getFromService, MrProcessAssignment::getService))
                 .ifExists(MrProcessAssignment.class,
                         equal((serviceDependency, processFrom) -> serviceDependency.getToService(),
                                 MrProcessAssignment::getService),
-                        filtering((serviceDependency, processFrom, processTo) ->
-                                !processFrom.getNeighborhood().equals(processTo.getNeighborhood()))
-                )
+                        filtering((serviceDependency, processFrom,
+                                processTo) -> !processFrom.getNeighborhood().equals(processTo.getNeighborhood())))
                 .penalize(MrConstraints.SERVICE_DEPENDENCY,
                         HardSoftLongScore.ONE_HARD);
     }
@@ -121,21 +137,18 @@ public class MachineReassignmentConstraintProvider implements ConstraintProvider
      * Transient usage: Some resources are transient and count towards the maximum capacity of both the original
      * machine as the newly assigned machine.
      */
-    private Constraint transientUsage(ConstraintFactory factory) {
+    protected Constraint transientUsage(ConstraintFactory factory) {
         return factory.from(MrMachineCapacity.class)
                 .filter(MrMachineCapacity::isTransientlyConsumed)
                 .join(factory.from(MrProcessAssignment.class).filter(MrProcessAssignment::isMoved),
-                        equal(MrMachineCapacity::getMachine, MrProcessAssignment::getOriginalMachine)
-                )
+                        equal(MrMachineCapacity::getMachine, MrProcessAssignment::getOriginalMachine))
                 .groupBy((machineCapacity, processAssignment) -> machineCapacity,
-                        sumLong((machineCapacity, processAssignment)
-                                -> processAssignment.getUsage(machineCapacity.getResource())
-                        )
-                )
+                        sumLong((machineCapacity, processAssignment) -> processAssignment
+                                .getUsage(machineCapacity.getResource())))
                 .filter(((machineCapacity, usage) -> machineCapacity.getMaximumCapacity() < usage))
                 .penalizeLong(MrConstraints.TRANSIENT_USAGE,
                         HardSoftLongScore.ONE_HARD,
-                        (machineCapacity, usage) -> machineCapacity.getMaximumCapacity() - usage);
+                        (machineCapacity, usage) -> usage - machineCapacity.getMaximumCapacity());
     }
 
     // ************************************************************************
@@ -145,74 +158,121 @@ public class MachineReassignmentConstraintProvider implements ConstraintProvider
     /**
      * Load: The safety capacity for each resource for each machine should not be exceeded.
      */
-    private Constraint loadCost(ConstraintFactory factory) {
+    protected Constraint loadCost(ConstraintFactory factory) {
         return factory.from(MrMachineCapacity.class)
                 .join(MrProcessAssignment.class,
-                        equal(MrMachineCapacity::getMachine, MrProcessAssignment::getMachine)
-                )
+                        equal(MrMachineCapacity::getMachine, MrProcessAssignment::getMachine))
                 .groupBy((machineCapacity, processAssignment) -> machineCapacity,
-                        sumLong((machineCapacity, processAssignment) ->
-                                processAssignment.getUsage(machineCapacity.getResource()))
-                )
+                        sumLong((machineCapacity, processAssignment) -> processAssignment
+                                .getUsage(machineCapacity.getResource())))
                 .filter(((machineCapacity, usage) -> machineCapacity.getSafetyCapacity() < usage))
                 .penalizeLong(MrConstraints.LOAD_COST,
                         HardSoftLongScore.ONE_SOFT,
-                        (machineCapacity, usage) -> usage - machineCapacity.getSafetyCapacity());
+                        (machineCapacity, usage) -> machineCapacity.getResource().getLoadCostWeight()
+                                * (usage - machineCapacity.getSafetyCapacity()));
     }
 
     /**
      * availability(r) = capacity(m, r) - usage(m, r)
      * balanceCost = sum(max(0, multiplier * availability(m, r1) - availability(m, r2)))
      */
-    private Constraint balanceCost(ConstraintFactory factory) {
-        return factory.from(MrBalancePenalty.class)
-                .join(MrProcessAssignment.class)
-                .groupBy((penalty, processAssignment) -> penalty, (penalty, processAssignment) -> processAssignment.getMachine(),
-                        sumLong((penalty, processAssignment) -> processAssignment.getUsage(penalty.getOriginResource())),
-                        sumLong((penalty, processAssignment) -> processAssignment.getUsage(penalty.getTargetResource()))
-                )
-                .penalizeLong(MrConstraints.BALANCE_COST, HardSoftLongScore.ONE_SOFT, this::balanceCost);
+    protected Constraint balanceCost(ConstraintFactory factory) {
+        throw new UnsupportedOperationException("Not yet implemented.");
+        /*
+         * return factory.from(MrMachineCapacity.class)
+         * .join(MrProcessAssignment.class,
+         * equal(MrMachineCapacity::getMachine, MrProcessAssignment::getMachine)
+         * )
+         * .groupBy((machineCapacity, processAssignment) -> new ImmutablePair<MrMachine,
+         * MrResource>(machineCapacity.getMachine(), machineCapacity.getResource()),
+         * sumLong((machineCapacity, processAssignment) -> machineCapacity.getMaximumCapacity() - getUsage(processAssignment,
+         * machineCapacity.getResource()))
+         * )
+         * .filter((pair, originAvailability) -> {
+         * System.out.println(pair + ", " + originAvailability);
+         * return true;
+         * })
+         * .join(MrBalancePenalty.class,
+         * equal((pair, availability) -> pair.getRight(), penalty -> penalty.getOriginResource())
+         * )
+         * .join(MrMachineCapacity.class, // for the same machine and the other - target resource
+         * equal((pair, availability, penalty) -> pair.getLeft(), capacity -> capacity.getMachine()),
+         * equal((pair, availability, penalty) -> penalty.getTargetResource(), capacity -> capacity.getResource())
+         * )
+         * .filter((pair, originAvailability, penalty, targetCapacity) -> {
+         * System.out.println(pair + ", " + originAvailability + ", " + penalty + ", " + targetCapacity);
+         * return true;
+         * })
+         * .groupBy((pair, availability, penalty, targetCapacity) -> new ImmutableTriple<MrMachine, MrResource,
+         * Long>(pair.getLeft(), pair.getRight(), availability),
+         * (pair, availability, penalty, targetCapacity) -> new ImmutablePair<MrBalancePenalty, MrMachineCapacity>(penalty,
+         * targetCapacity)
+         * )
+         * .filter((triple, pair) -> {
+         * System.out.println(triple + ", " + pair);
+         * return true;
+         * })
+         * .join(MrProcessAssignment.class,
+         * equal((triple, pair) -> pair.getRight().getMachine(), MrProcessAssignment::getMachine))
+         * .groupBy((triple, pair, processAssignment) -> triple,
+         * (triple, pair, processAssignment) -> pair, // TODO: it should be groupedBy Resource
+         * // get the target availability
+         * sumLong((triple, pair, processAssignment) -> pair.getRight().getMaximumCapacity() - getUsage(processAssignment,
+         * pair.getRight().getResource()))
+         * )
+         * .filter((originTriple, pair, targetAvailability) -> originTriple.right > 0 && targetAvailability <
+         * pair.left.getMultiplicand() * originTriple.right)
+         * .penalizeLong(MrConstraints.BALANCE_COST, HardSoftLongScore.ONE_SOFT, (originTriple, pair, targetAvailability) -> {
+         * System.out.println(originTriple + ", " + pair + ", " + targetAvailability);
+         * return (targetAvailability - pair.left.getMultiplicand() * originTriple.right) * pair.left.getWeight();
+         * });
+         */
     }
 
-    private long balanceCost(MrBalancePenalty penalty, MrMachine machine, long originalUsage, long targetUsage) {
-        long originalAvailability =
-                machine.getMachineCapacity(penalty.getOriginResource()).getMaximumCapacity() - originalUsage;
-        long targetAvailability =
-                machine.getMachineCapacity(penalty.getTargetResource()).getMaximumCapacity() - targetUsage;
-        long balanceCost = penalty.getMultiplicand() * originalAvailability - targetAvailability;
-        return Math.max(0, balanceCost);
+    private long getUsage(MrProcessAssignment processAssignment, MrResource resource) {
+        // System.out.println(String.format("Usage of resource %d by a process %s is: %d",
+        //         resource.getIndex(), processAssignment.getProcess(), processAssignment.getUsage(resource)));
+        return processAssignment.getUsage(resource);
     }
 
     /**
      * Process move cost: A process has a move cost.
      */
-    private Constraint processMoveCost(ConstraintFactory factory) {
-        return factory.from(MrProcessAssignment.class)
-                .filter(MrProcessAssignment::isMoved)
+    protected Constraint processMoveCost(ConstraintFactory factory) {
+        return factory.fromUnfiltered(MrProcessAssignment.class)
+                .filter(processAssignment -> processAssignment.isMoved() && processAssignment.getProcessMoveCost() > 0)
+                .join(MrGlobalPenaltyInfo.class,
+                        Joiners.filtering((processAssignment, penalty) -> penalty.getProcessMoveCostWeight() > 0))
                 .penalizeLong(MrConstraints.PROCESS_MOVE_COST,
                         HardSoftLongScore.ONE_SOFT,
-                        MrProcessAssignment::getProcessMoveCost);
+                        (processAssignment, penalty) -> processAssignment.getProcessMoveCost() * penalty
+                                .getProcessMoveCostWeight());
     }
 
     /**
      * Service move cost: A service has a move cost.
      */
-    private Constraint serviceMoveCost(ConstraintFactory factory) {
-        return factory.from(MrProcessAssignment.class)
+    protected Constraint serviceMoveCost(ConstraintFactory factory) {
+        return factory.fromUnfiltered(MrProcessAssignment.class)
                 .filter(MrProcessAssignment::isMoved)
                 .groupBy(processAssignment -> processAssignment.getService(), ConstraintCollectors.count())
                 .groupBy(ConstraintCollectors.max((BiFunction<MrService, Integer, Integer>) (service, count) -> count))
-                .penalizeLong(MrConstraints.SERVICE_MOVE_COST, HardSoftLongScore.ONE_SOFT, count -> count);
+                .join(MrGlobalPenaltyInfo.class)
+                .penalizeLong(MrConstraints.SERVICE_MOVE_COST, HardSoftLongScore.ONE_SOFT,
+                        (count, penalty) -> count * penalty.getServiceMoveCostWeight());
     }
 
     /**
      * Machine move cost: Moving a process from machine A to machine B has another A-B specific move cost.
      */
-    private Constraint machineMoveCost(ConstraintFactory factory) {
+    protected Constraint machineMoveCost(ConstraintFactory factory) {
         return factory.from(MrProcessAssignment.class)
-                .filter(MrProcessAssignment::isMoved)
+                .filter(processAssignment -> processAssignment.isMoved() && processAssignment.getMachineMoveCost() > 0)
+                .join(MrGlobalPenaltyInfo.class,
+                        Joiners.filtering((processAssignment, penalty) -> penalty.getMachineMoveCostWeight() > 0))
                 .penalizeLong(MrConstraints.MACHINE_MOVE_COST,
                         HardSoftLongScore.ONE_SOFT,
-                        MrProcessAssignment::getMachineMoveCost);
+                        (processAssignment, penalty) -> processAssignment.getMachineMoveCost()
+                                * penalty.getMachineMoveCostWeight());
     }
 }

@@ -25,6 +25,14 @@ public class MrServiceDependency implements Serializable {
     private MrService fromService;
     private MrService toService;
 
+    public MrServiceDependency() {
+    }
+
+    public MrServiceDependency(MrService fromService, MrService toService) {
+        this.fromService = fromService;
+        this.toService = toService;
+    }
+
     public MrService getFromService() {
         return fromService;
     }

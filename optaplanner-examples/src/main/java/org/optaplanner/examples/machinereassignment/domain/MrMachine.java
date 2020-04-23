@@ -19,9 +19,10 @@ package org.optaplanner.examples.machinereassignment.domain;
 import java.util.List;
 import java.util.Map;
 
-import com.thoughtworks.xstream.annotations.XStreamAlias;
 import org.optaplanner.examples.common.domain.AbstractPersistable;
 import org.optaplanner.examples.common.swingui.components.Labeled;
+
+import com.thoughtworks.xstream.annotations.XStreamAlias;
 
 @XStreamAlias("MrMachine")
 public class MrMachine extends AbstractPersistable implements Labeled {
@@ -32,6 +33,18 @@ public class MrMachine extends AbstractPersistable implements Labeled {
     // Order is equal to resourceList so resource.getIndex() can be used
     private List<MrMachineCapacity> machineCapacityList;
     private Map<MrMachine, Integer> machineMoveCostMap; // key is toMachine
+
+    public MrMachine() {
+    }
+
+    public MrMachine(long id) {
+        super(id);
+    }
+
+    public MrMachine(long id, MrLocation location) {
+        super(id);
+        this.location = location;
+    }
 
     public MrNeighborhood getNeighborhood() {
         return neighborhood;
