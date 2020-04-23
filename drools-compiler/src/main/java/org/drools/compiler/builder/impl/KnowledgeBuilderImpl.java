@@ -44,6 +44,7 @@ import java.util.concurrent.ExecutionException;
 import java.util.concurrent.ForkJoinPool;
 import java.util.function.Supplier;
 
+import org.drools.compiler.KieTraits;
 import org.drools.compiler.builder.DroolsAssemblerContext;
 import org.drools.compiler.builder.impl.errors.MissingImplementationException;
 import org.drools.compiler.compiler.AnnotationDeclarationError;
@@ -283,6 +284,11 @@ public class KnowledgeBuilderImpl implements KnowledgeBuilder,
             pkgRegistry.addImport(new ImportDescr(implDecl.getTarget()));
         }
 
+
+        KieTraits traits = ServiceRegistry.getInstance().get(KieTraits.class);
+        System.out.println(traits.helloWorld());
+
+
         processBuilder = ProcessBuilderFactory.newProcessBuilder(this);
         // todo build updateTypeDeclaration
         typeBuilder = new TypeDeclarationBuilder(this, null);
@@ -309,6 +315,11 @@ public class KnowledgeBuilderImpl implements KnowledgeBuilder,
         this.results = new ArrayList<>();
 
         this.kBase = kBase;
+
+
+        KieTraits traits = ServiceRegistry.getInstance().get(KieTraits.class);
+        System.out.println(traits.helloWorld());
+
 
         processBuilder = ProcessBuilderFactory.newProcessBuilder(this);
         // todo build updateTypeDeclaration
