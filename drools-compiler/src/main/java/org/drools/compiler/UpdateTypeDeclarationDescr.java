@@ -16,6 +16,8 @@
 
 package org.drools.compiler;
 
+import org.drools.compiler.builder.impl.DeclaredClassBuilder;
+import org.drools.compiler.builder.impl.KnowledgeBuilderImpl;
 import org.drools.compiler.compiler.PackageRegistry;
 import org.drools.compiler.lang.descr.AbstractClassTypeDeclarationDescr;
 import org.drools.core.factmodel.ClassDefinition;
@@ -23,6 +25,5 @@ import org.drools.core.rule.TypeDeclaration;
 
 public interface UpdateTypeDeclarationDescr {
 
-    void updateTraitInformation(AbstractClassTypeDeclarationDescr typeDescr, TypeDeclaration type, ClassDefinition def, PackageRegistry pkgRegistry );
-
+    void updateTraitInformation(KnowledgeBuilderImpl kbuilder, DeclaredClassBuilder declaredClassBuilder, AbstractClassTypeDeclarationDescr typeDescr, TypeDeclaration type, ClassDefinition def, PackageRegistry pkgRegistry);
 }

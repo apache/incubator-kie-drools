@@ -20,5 +20,5 @@ import org.kie.api.internal.utils.KieService;
 
 public interface KieTraits extends KieService {
 
-    String helloWorld();
+    UpdateTypeDeclarationDescr updateTypeDescr();
 }

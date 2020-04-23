@@ -34,18 +34,11 @@ import org.drools.core.rule.TypeDeclaration;
 
 public class UpdateTraitInformation implements UpdateTypeDeclarationDescr {
 
-    protected final KnowledgeBuilderImpl kbuilder;
-    protected final DeclaredClassBuilder declaredClassBuilder;
 
     protected TraitRegistryImpl traitRegistry;
 
-    public UpdateTraitInformation(KnowledgeBuilderImpl kbuilder, DeclaredClassBuilder declaredClassBuilder) {
-        this.kbuilder = kbuilder;
-        this.declaredClassBuilder = declaredClassBuilder;
-    }
-
     @Override
-    public void updateTraitInformation(AbstractClassTypeDeclarationDescr typeDescr, TypeDeclaration type, ClassDefinition def, PackageRegistry pkgRegistry ) {
+    public void updateTraitInformation(KnowledgeBuilderImpl kbuilder, DeclaredClassBuilder declaredClassBuilder, AbstractClassTypeDeclarationDescr typeDescr, TypeDeclaration type, ClassDefinition def, PackageRegistry pkgRegistry ) {
         traitRegistry = (TraitRegistryImpl) pkgRegistry.getTraitRegistry();
         if ( typeDescr.hasAnnotation(Traitable.class )
              || ( ! type.getKind().equals( TypeDeclaration.Kind.TRAIT ) &&

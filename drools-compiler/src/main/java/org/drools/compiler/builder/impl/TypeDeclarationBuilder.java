@@ -20,6 +20,7 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 import java.util.Set;
 
 import org.drools.compiler.UpdateTypeDeclarationDescr;
@@ -51,9 +52,9 @@ public class TypeDeclarationBuilder {
     protected TypeDeclarationConfigurator typeDeclarationConfigurator;
     protected DeclaredClassBuilder declaredClassBuilder;
 
-    protected UpdateTypeDeclarationDescr updateTypeDeclarationTraitDescr;
+    protected Optional<UpdateTypeDeclarationDescr> updateTypeDeclarationTraitDescr;
 
-    TypeDeclarationBuilder(KnowledgeBuilderImpl kbuilder, UpdateTypeDeclarationDescr updateTypeDeclarationTraitDescr) {
+    TypeDeclarationBuilder(KnowledgeBuilderImpl kbuilder, Optional<UpdateTypeDeclarationDescr> updateTypeDeclarationTraitDescr) {
         this.kbuilder = kbuilder;
         this.classDeclarationExtractor = new TypeDeclarationCache( kbuilder );
         this.typeDeclarationNameResolver = new TypeDeclarationNameResolver( kbuilder );
@@ -264,8 +265,8 @@ public class TypeDeclarationBuilder {
             }
             success = ( def != null ) && ( ! kbuilder.hasErrors() );
 
-            if (success && updateTypeDeclarationTraitDescr != null) {
-                updateTypeDeclarationTraitDescr.updateTraitInformation(typeDescr, type, def, pkgRegistry);
+            if (success && updateTypeDeclarationTraitDescr.isPresent()) {
+                updateTypeDeclarationTraitDescr.get().updateTraitInformation(kbuilder, declaredClassBuilder, typeDescr, type, def, pkgRegistry);
             }
             success = ! kbuilder.hasErrors();
 

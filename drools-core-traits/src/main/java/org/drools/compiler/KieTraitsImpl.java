@@ -18,12 +18,9 @@ package org.drools.compiler;
 
 public class KieTraitsImpl implements KieTraits {
 
-    public KieTraitsImpl() {
-
-    }
 
     @Override
-    public String helloWorld() {
-        return "it works!";
+    public UpdateTypeDeclarationDescr updateTypeDescr() {
+        return new UpdateTraitInformation();
     }
 }

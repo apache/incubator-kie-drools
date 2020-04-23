@@ -36,6 +36,7 @@ import java.util.LinkedHashMap;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 import java.util.Set;
 import java.util.Stack;
 import java.util.UUID;
@@ -284,14 +285,9 @@ public class KnowledgeBuilderImpl implements KnowledgeBuilder,
             pkgRegistry.addImport(new ImportDescr(implDecl.getTarget()));
         }
 
-
-        KieTraits traits = ServiceRegistry.getInstance().get(KieTraits.class);
-        System.out.println(traits.helloWorld());
-
-
         processBuilder = ProcessBuilderFactory.newProcessBuilder(this);
-        // todo build updateTypeDeclaration
-        typeBuilder = new TypeDeclarationBuilder(this, null);
+        Optional<KieTraits> traits = Optional.ofNullable(ServiceRegistry.getInstance().get(KieTraits.class));
+        typeBuilder = new TypeDeclarationBuilder(this, traits.map(KieTraits::updateTypeDescr));
     }
 
     public KnowledgeBuilderImpl(InternalKnowledgeBase kBase,
@@ -316,14 +312,10 @@ public class KnowledgeBuilderImpl implements KnowledgeBuilder,
 
         this.kBase = kBase;
 
-
-        KieTraits traits = ServiceRegistry.getInstance().get(KieTraits.class);
-        System.out.println(traits.helloWorld());
-
-
         processBuilder = ProcessBuilderFactory.newProcessBuilder(this);
-        // todo build updateTypeDeclaration
-        typeBuilder = new TypeDeclarationBuilder(this, null);
+
+        Optional<KieTraits> traits = Optional.ofNullable(ServiceRegistry.getInstance().get(KieTraits.class));
+        typeBuilder = new TypeDeclarationBuilder(this, traits.map(KieTraits::updateTypeDescr));
     }
 
     public void setReleaseId( ReleaseId releaseId ) {
