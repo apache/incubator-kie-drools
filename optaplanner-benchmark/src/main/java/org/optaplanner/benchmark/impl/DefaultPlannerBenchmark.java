@@ -1,5 +1,5 @@
 /*
- * Copyright 2014 Red Hat, Inc. and/or its affiliates.
+ * Copyright 2020 Red Hat, Inc. and/or its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -146,7 +146,14 @@ public class DefaultPlannerBenchmark implements PlannerBenchmark {
         long timeLeftTotal = plannerBenchmarkResult.getWarmUpTimeMillisSpentLimit();
         int parallelBenchmarkCount = plannerBenchmarkResult.getParallelBenchmarkCount();
         int solverBenchmarkResultCount = plannerBenchmarkResult.getSolverBenchmarkResultList().size();
-        int cyclesCount = ConfigUtils.ceilDivide(solverBenchmarkResultCount, parallelBenchmarkCount);
+        /*
+         * cyclesCount needs to be long, as opposed to its natural int,
+         * otherwise JDK 11 compiler uses Math.floorDiv(long, int), which is only available on JDK 9+.
+         * When such compiled code is then used on Java 8, there is a NoSuchMethodError.
+         * All is fine When the code is compiled on JDK 8, the compiler will use the good old Math.floorDiv(long, long).
+         * TODO Remove when JDK 8 is no longer supported.
+         */
+        long cyclesCount = ConfigUtils.ceilDivide(solverBenchmarkResultCount, parallelBenchmarkCount);
         long timeLeftPerCycle = Math.floorDiv(timeLeftTotal, cyclesCount);
         Map<ProblemBenchmarkResult, List<ProblemStatistic>> originalProblemStatisticMap
                 = new HashMap<>(plannerBenchmarkResult.getUnifiedProblemBenchmarkResultList().size());
