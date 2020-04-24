@@ -20,9 +20,9 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
-import java.util.Optional;
 import java.util.Set;
 
+import org.drools.compiler.KieTraitsCompiler;
 import org.drools.compiler.UpdateTypeDeclarationDescr;
 import org.drools.compiler.compiler.PackageRegistry;
 import org.drools.compiler.compiler.TypeDeclarationError;
@@ -52,9 +52,9 @@ public class TypeDeclarationBuilder {
     protected TypeDeclarationConfigurator typeDeclarationConfigurator;
     protected DeclaredClassBuilder declaredClassBuilder;
 
-    protected Optional<UpdateTypeDeclarationDescr> updateTypeDeclarationTraitDescr;
+    protected KieTraitsCompiler kieTraitsCompiler;
 
-    TypeDeclarationBuilder(KnowledgeBuilderImpl kbuilder, Optional<UpdateTypeDeclarationDescr> updateTypeDeclarationTraitDescr) {
+    TypeDeclarationBuilder(KnowledgeBuilderImpl kbuilder, KieTraitsCompiler kieTraitsCompiler) {
         this.kbuilder = kbuilder;
         this.classDeclarationExtractor = new TypeDeclarationCache( kbuilder );
         this.typeDeclarationNameResolver = new TypeDeclarationNameResolver( kbuilder );
@@ -62,7 +62,7 @@ public class TypeDeclarationBuilder {
         this.classDefinitionFactory = new ClassDefinitionFactory( kbuilder );
         this.typeDeclarationConfigurator = new TypeDeclarationConfigurator( kbuilder );
         this.declaredClassBuilder = new DeclaredClassBuilder( kbuilder );
-        this.updateTypeDeclarationTraitDescr = updateTypeDeclarationTraitDescr;
+        this.kieTraitsCompiler = kieTraitsCompiler;
     }
 
     public TypeDeclaration getAndRegisterTypeDeclaration( Class<?> cls, String packageName ) {
@@ -265,8 +265,10 @@ public class TypeDeclarationBuilder {
             }
             success = ( def != null ) && ( ! kbuilder.hasErrors() );
 
-            if (success && updateTypeDeclarationTraitDescr.isPresent()) {
-                updateTypeDeclarationTraitDescr.get().updateTraitInformation(kbuilder, declaredClassBuilder, typeDescr, type, def, pkgRegistry);
+            UpdateTypeDeclarationDescr updateTypeDescr = kieTraitsCompiler.updateTypeDescr();
+            if (success && updateTypeDescr != null) {
+
+                updateTypeDescr.updateTraitInformation(kbuilder, declaredClassBuilder, typeDescr, type, def, pkgRegistry);
             }
             success = ! kbuilder.hasErrors();
 

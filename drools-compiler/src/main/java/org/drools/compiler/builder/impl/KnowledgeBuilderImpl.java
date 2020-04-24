@@ -36,7 +36,6 @@ import java.util.LinkedHashMap;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
-import java.util.Optional;
 import java.util.Set;
 import java.util.Stack;
 import java.util.UUID;
@@ -45,7 +44,7 @@ import java.util.concurrent.ExecutionException;
 import java.util.concurrent.ForkJoinPool;
 import java.util.function.Supplier;
 
-import org.drools.compiler.KieTraits;
+import org.drools.compiler.KieTraitsCompiler;
 import org.drools.compiler.builder.DroolsAssemblerContext;
 import org.drools.compiler.builder.impl.errors.MissingImplementationException;
 import org.drools.compiler.compiler.AnnotationDeclarationError;
@@ -116,6 +115,7 @@ import org.drools.core.builder.conf.impl.JaxbConfigurationImpl;
 import org.drools.core.definitions.InternalKnowledgePackage;
 import org.drools.core.definitions.impl.KnowledgePackageImpl;
 import org.drools.core.definitions.rule.impl.RuleImpl;
+import org.drools.core.factmodel.ClassBuilderFactory;
 import org.drools.core.impl.InternalKnowledgeBase;
 import org.drools.core.impl.KnowledgeBaseFactory;
 import org.drools.core.io.impl.BaseResource;
@@ -286,9 +286,11 @@ public class KnowledgeBuilderImpl implements KnowledgeBuilder,
         }
 
         processBuilder = ProcessBuilderFactory.newProcessBuilder(this);
-        Optional<KieTraits> traits = Optional.ofNullable(ServiceRegistry.getInstance().get(KieTraits.class));
-        typeBuilder = new TypeDeclarationBuilder(this, traits.map(KieTraits::updateTypeDescr));
+        KieTraitsCompiler traits = ServiceRegistry.getInstance().get(KieTraitsCompiler.class);
+        typeBuilder = new TypeDeclarationBuilder(this, traits);
     }
+
+    KieTraitsCompiler traits;
 
     public KnowledgeBuilderImpl(InternalKnowledgeBase kBase,
                                 KnowledgeBuilderConfigurationImpl configuration) {
@@ -314,8 +316,14 @@ public class KnowledgeBuilderImpl implements KnowledgeBuilder,
 
         processBuilder = ProcessBuilderFactory.newProcessBuilder(this);
 
-        Optional<KieTraits> traits = Optional.ofNullable(ServiceRegistry.getInstance().get(KieTraits.class));
-        typeBuilder = new TypeDeclarationBuilder(this, traits.map(KieTraits::updateTypeDescr));
+        this.traits = ServiceRegistry.getInstance().get(KieTraitsCompiler.class);
+
+        if(traits != null) {
+            ClassBuilderFactory classBuilderFactory = getBuilderConfiguration().getClassBuilderFactory();
+            classBuilderFactory.setTraitBuilder(traits.getTraitBuilder());
+        }
+
+        typeBuilder = new TypeDeclarationBuilder(this, traits);
     }
 
     public void setReleaseId( ReleaseId releaseId ) {
@@ -1014,6 +1022,7 @@ public class KnowledgeBuilderImpl implements KnowledgeBuilder,
 
         // add default import for this namespace
         pkgRegistry.addImport(new ImportDescr(packageDescr.getNamespace() + ".*"));
+
 
         for (ImportDescr importDescr : packageDescr.getImports()) {
             pkgRegistry.registerImport(importDescr.getTarget());

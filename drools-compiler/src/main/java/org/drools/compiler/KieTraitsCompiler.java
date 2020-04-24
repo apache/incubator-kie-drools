@@ -16,11 +16,12 @@
 
 package org.drools.compiler;
 
-public class KieTraitsImpl implements KieTraits {
+import org.drools.core.factmodel.traits.TraitClassBuilder;
+import org.kie.api.internal.utils.KieService;
 
+public interface KieTraitsCompiler extends KieService {
 
-    @Override
-    public UpdateTypeDeclarationDescr updateTypeDescr() {
-        return new UpdateTraitInformation();
-    }
+    UpdateTypeDeclarationDescr updateTypeDescr();
+
+    TraitClassBuilder getTraitBuilder();
 }
