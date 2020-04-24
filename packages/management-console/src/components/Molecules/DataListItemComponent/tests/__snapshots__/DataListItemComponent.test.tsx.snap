@@ -215,57 +215,10 @@ exports[`DataListItem component tests Snapshot tests 1`] = `
                   </strong>
                 </div>
               </Link>
-              <Tooltip
-                appendTo={[Function]}
-                aria="describedby"
-                boundary="window"
-                className=""
-                content="This Kogito runtime is missing the kogito.service.url property. Contact your administrator to set up."
-                distance={15}
-                enableFlip={true}
-                entryDelay={500}
-                exitDelay={500}
-                flipBehavior={
-                  Array [
-                    "top",
-                    "right",
-                    "bottom",
-                    "left",
-                    "top",
-                    "right",
-                    "bottom",
-                  ]
-                }
-                id=""
-                isAppLauncher={false}
-                isContentLeftAligned={false}
-                isVisible={false}
-                maxWidth="18.75rem"
-                position="top"
-                tippyProps={Object {}}
-                trigger="mouseenter focus"
-                zIndex={9999}
-              >
-                <React.Fragment>
-                  <span
-                    style={
-                      Object {
-                        "color": "var(--pf-global--disabled-color--100)",
-                      }
-                    }
-                  >
-                     
-                    Endpoint
-                  </span>
-                  <ExternalLinkAltIcon
-                    className="pf-u-ml-xs"
-                    color="var(--pf-global--disabled-color--100)"
-                    noVerticalAlign={false}
-                    size="sm"
-                    title={null}
-                  />
-                </React.Fragment>
-              </Tooltip>
+              <EndpointLink
+                isLinkShown={false}
+                serviceUrl={null}
+              />
             </DataListCell>,
             <DataListCell>
               <React.Fragment>
