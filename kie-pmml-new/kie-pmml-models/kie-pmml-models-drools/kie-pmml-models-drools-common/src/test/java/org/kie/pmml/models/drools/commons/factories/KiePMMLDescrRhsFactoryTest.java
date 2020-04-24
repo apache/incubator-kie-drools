@@ -37,7 +37,7 @@ import static org.kie.pmml.models.drools.commons.factories.KiePMMLDescrRhsFactor
 import static org.kie.pmml.models.drools.commons.factories.KiePMMLDescrRhsFactory.ADD_PMML4_RESULT_VARIABLE;
 import static org.kie.pmml.models.drools.commons.factories.KiePMMLDescrRhsFactory.FOCUS_AGENDA_GROUP;
 import static org.kie.pmml.models.drools.commons.factories.KiePMMLDescrRhsFactory.SET_PMML4_RESULT_CODE;
-import static org.kie.pmml.models.drools.commons.factories.KiePMMLDescrRhsFactory.UPDATE_STATUS_HOLDER;
+import static org.kie.pmml.models.drools.commons.factories.KiePMMLDescrRhsFactory.UPDATE_STATUS_HOLDER_STATUS;
 import static org.kie.pmml.models.drools.commons.factories.KiePMMLDescrRulesFactory.BREAK_LABEL;
 import static org.kie.pmml.commons.model.enums.RESULT_FEATURE.PREDICTED_VALUE;
 
@@ -61,7 +61,7 @@ public class KiePMMLDescrRhsFactoryTest {
         KiePMMLDroolsRule rule = KiePMMLDroolsRule.builder(name, statusToSet, Collections.emptyList()).build();
         KiePMMLDescrRhsFactory.factory(ruleBuilder).declareRhs(rule);
         assertNotNull(ruleBuilder.getDescr().getConsequence());
-        String expectedConsequence = String.format(UPDATE_STATUS_HOLDER, statusToSet);
+        String expectedConsequence = String.format(UPDATE_STATUS_HOLDER_STATUS, statusToSet);
         assertTrue(ruleBuilder.getDescr().getConsequence().toString().contains(expectedConsequence));
         assertNotNull(ruleBuilder.getDescr().getNamedConsequences());
         assertTrue(ruleBuilder.getDescr().getNamedConsequences().isEmpty());
@@ -79,7 +79,7 @@ public class KiePMMLDescrRhsFactoryTest {
                 .build();
         KiePMMLDescrRhsFactory.factory(ruleBuilder).declareRhs(rule);
         assertNotNull(ruleBuilder.getDescr().getConsequence());
-        String expectedConsequence = String.format(UPDATE_STATUS_HOLDER, statusToSet);
+        String expectedConsequence = String.format(UPDATE_STATUS_HOLDER_STATUS, statusToSet);
         assertTrue(ruleBuilder.getDescr().getConsequence().toString().contains(expectedConsequence));
         assertNotNull(ruleBuilder.getDescr().getNamedConsequences());
         assertEquals(1, ruleBuilder.getDescr().getNamedConsequences().size());
@@ -93,7 +93,7 @@ public class KiePMMLDescrRhsFactoryTest {
         KiePMMLDroolsRule rule = KiePMMLDroolsRule.builder(name, statusToSet, Collections.emptyList()).build();
         KiePMMLDescrRhsFactory.factory(ruleBuilder).declareDefaultThen(rule);
         assertNotNull(ruleBuilder.getDescr().getConsequence());
-        String expectedConsequence = String.format(UPDATE_STATUS_HOLDER, statusToSet);
+        String expectedConsequence = String.format(UPDATE_STATUS_HOLDER_STATUS, statusToSet);
         assertTrue(ruleBuilder.getDescr().getConsequence().toString().contains(expectedConsequence));
         assertNotNull(ruleBuilder.getDescr().getNamedConsequences());
         assertTrue(ruleBuilder.getDescr().getNamedConsequences().isEmpty());
@@ -112,7 +112,7 @@ public class KiePMMLDescrRhsFactoryTest {
         KiePMMLDescrRhsFactory.factory(ruleBuilder).declareDefaultThen(rule);
         assertNotNull(ruleBuilder.getDescr().getConsequence());
         String retrievedConsequence = ruleBuilder.getDescr().getConsequence().toString();
-        assertTrue(retrievedConsequence.contains(String.format(UPDATE_STATUS_HOLDER, statusToSet)));
+        assertTrue(retrievedConsequence.contains(String.format(UPDATE_STATUS_HOLDER_STATUS, statusToSet)));
         assertTrue(retrievedConsequence.contains(String.format(SET_PMML4_RESULT_CODE, resultCode)));
         assertTrue(retrievedConsequence.contains(String.format(ADD_PMML4_RESULT_VARIABLE, result)));
         assertNotNull(ruleBuilder.getDescr().getNamedConsequences());
@@ -126,12 +126,12 @@ public class KiePMMLDescrRhsFactoryTest {
         KiePMMLDroolsRule rule = KiePMMLDroolsRule.builder(name, statusToSet, Collections.emptyList()).build();
         KiePMMLDescrRhsFactory.factory(ruleBuilder).declareIfThen(rule);
         assertNotNull(ruleBuilder.getDescr().getConsequence());
-        String expectedConsequence = String.format(UPDATE_STATUS_HOLDER, statusToSet);
+        String expectedConsequence = String.format(UPDATE_STATUS_HOLDER_STATUS, statusToSet);
         assertEquals(expectedConsequence, ruleBuilder.getDescr().getConsequence());
         assertNotNull(ruleBuilder.getDescr().getNamedConsequences());
         assertEquals(1, ruleBuilder.getDescr().getNamedConsequences().size());
         assertNotNull(ruleBuilder.getDescr().getNamedConsequences().get(BREAK_LABEL));
-        expectedConsequence = String.format(UPDATE_STATUS_HOLDER, DONE);
+        expectedConsequence = String.format(UPDATE_STATUS_HOLDER_STATUS, DONE);
         assertTrue(expectedConsequence, ruleBuilder.getDescr().getNamedConsequences().get(BREAK_LABEL).toString().contains(expectedConsequence));
     }
 
@@ -147,13 +147,13 @@ public class KiePMMLDescrRhsFactoryTest {
                 .build();
         KiePMMLDescrRhsFactory.factory(ruleBuilder).declareIfThen(rule);
         assertNotNull(ruleBuilder.getDescr().getConsequence());
-        String expectedConsequence = String.format(UPDATE_STATUS_HOLDER, statusToSet);
+        String expectedConsequence = String.format(UPDATE_STATUS_HOLDER_STATUS, statusToSet);
         assertEquals(expectedConsequence, ruleBuilder.getDescr().getConsequence());
         assertNotNull(ruleBuilder.getDescr().getNamedConsequences());
         assertEquals(1, ruleBuilder.getDescr().getNamedConsequences().size());
         assertNotNull(ruleBuilder.getDescr().getNamedConsequences().get(BREAK_LABEL));
         String retrievedConsequence = ruleBuilder.getDescr().getNamedConsequences().get(BREAK_LABEL).toString();
-        assertTrue(retrievedConsequence.contains(String.format(UPDATE_STATUS_HOLDER, DONE)));
+        assertTrue(retrievedConsequence.contains(String.format(UPDATE_STATUS_HOLDER_STATUS, DONE)));
         assertTrue(retrievedConsequence.contains(String.format(SET_PMML4_RESULT_CODE, resultCode)));
         assertTrue(retrievedConsequence.contains(String.format(ADD_PMML4_RESULT_VARIABLE, result)));
     }
@@ -170,8 +170,7 @@ public class KiePMMLDescrRhsFactoryTest {
         StringJoiner joiner = new StringJoiner("");
         KiePMMLDescrRhsFactory.factory(ruleBuilder).commonDeclareThen(rule, joiner);
         String retrieved = joiner.toString();
-        String expected = String.format(ADD_PMML4_OUTPUT_FIELD, outputFieldName, null);
-        assertTrue(retrieved.contains(expected));
+        assertTrue(retrieved.isEmpty());
         //
         ResultCode resultCode = ResultCode.OK;
         builder = builder.withResultCode(resultCode);
@@ -179,7 +178,7 @@ public class KiePMMLDescrRhsFactoryTest {
         joiner = new StringJoiner("");
         KiePMMLDescrRhsFactory.factory(ruleBuilder).commonDeclareThen(rule, joiner);
         retrieved = joiner.toString();
-        expected = String.format(SET_PMML4_RESULT_CODE, resultCode);
+        String expected = String.format(SET_PMML4_RESULT_CODE, resultCode);
         assertTrue(retrieved.contains(expected));
         //
         builder = builder.withResult(result);

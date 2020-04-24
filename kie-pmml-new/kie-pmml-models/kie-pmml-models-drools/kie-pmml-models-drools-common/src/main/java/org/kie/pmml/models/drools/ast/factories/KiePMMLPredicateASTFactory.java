@@ -15,17 +15,10 @@
  */
 package org.kie.pmml.models.drools.ast.factories;
 
-import java.util.List;
-import java.util.Map;
-
 import org.dmg.pmml.CompoundPredicate;
-import org.dmg.pmml.Predicate;
 import org.dmg.pmml.SimplePredicate;
 import org.dmg.pmml.SimpleSetPredicate;
 import org.dmg.pmml.True;
-import org.kie.pmml.commons.model.KiePMMLOutputField;
-import org.kie.pmml.models.drools.ast.KiePMMLDroolsRule;
-import org.kie.pmml.models.drools.tuples.KiePMMLOriginalTypeGeneratedType;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -36,41 +29,73 @@ public class KiePMMLPredicateASTFactory extends KiePMMLAbstractPredicateASTFacto
 
     private static final Logger logger = LoggerFactory.getLogger(KiePMMLPredicateASTFactory.class.getName());
 
-    private KiePMMLPredicateASTFactory(final Map<String, KiePMMLOriginalTypeGeneratedType> fieldTypeMap, final List<KiePMMLOutputField> outputFields, final List<KiePMMLDroolsRule> rules) {
-        super(fieldTypeMap, outputFields, rules);
+    private KiePMMLPredicateASTFactory(final PredicateASTFactoryData predicateASTFactoryData) {
+        super(predicateASTFactoryData);
     }
 
-    public static KiePMMLPredicateASTFactory factory(final Map<String, KiePMMLOriginalTypeGeneratedType> fieldTypeMap, final List<KiePMMLOutputField> outputFields, final List<KiePMMLDroolsRule> rules) {
-        return new KiePMMLPredicateASTFactory(fieldTypeMap, outputFields, rules);
+    public static KiePMMLPredicateASTFactory factory(final PredicateASTFactoryData predicateASTFactoryData) {
+        return new KiePMMLPredicateASTFactory(predicateASTFactoryData);
     }
 
     /**
-     * Manage the given <code>Predicate</code>. At this point of the execution, <b>predicate</b> could be:
+     * Manage the given <code>Predicate</code>.
+     * <p>
+     * It creates rules that, in the <b>rhs</b>, set an <b>accumulation</b> value
+     * <p>
+     * At this point of the execution, <b>predicate</b> could be:
      *
      * <p>1) @see <a href="http://dmg.org/pmml/v4-4/TreeModel.html#xsdElement_True">True</a><p>
      * <p>2) @see <a href="http://dmg.org/pmml/v4-4/TreeModel.html#xsdElement_SimplePredicate">SimplePredicate</a><p>
      * <p>3) @see <a href="http://dmg.org/pmml/v4-4/TreeModel.html#xsdElement_CompoundPredicate">CompoundPredicate</a><p>
      * <p>4) @see <a href="http://dmg.org/pmml/v4-4/TreeModel.html#xsdElement_SimpleSetPredicate">SimpleSetPredicate</a><p>
-     * @param predicate
-     * @param parentPath
-     * @param currentRule
+     * @param toAccumulate
+     * @param isLastCharacteristic
+     */
+    public void declareRuleFromPredicate(final Number toAccumulate,
+                                         final String statusToSet,
+                                         final boolean isLastCharacteristic) {
+        logger.trace("declareRuleFromPredicate {} {} {} {} {}", predicateASTFactoryData.getPredicate(), predicateASTFactoryData.getParentPath(), predicateASTFactoryData.getCurrentRule(), toAccumulate, isLastCharacteristic);
+        if (predicateASTFactoryData.getPredicate() instanceof True) {
+            KiePMMLTruePredicateASTFactory.factory(predicateASTFactoryData)
+                    .declareRuleFromTruePredicateWithAccumulation(statusToSet, isLastCharacteristic);
+        } else if (predicateASTFactoryData.getPredicate() instanceof SimplePredicate) {
+            KiePMMLSimplePredicateASTFactory.factory(predicateASTFactoryData)
+                    .declareRuleFromSimplePredicate(toAccumulate, statusToSet, isLastCharacteristic);
+        } else if (predicateASTFactoryData.getPredicate() instanceof SimpleSetPredicate) {
+            KiePMMLSimpleSetPredicateASTFactory.factory(predicateASTFactoryData)
+                    .declareRuleFromSimpleSetPredicate(toAccumulate, statusToSet, isLastCharacteristic);
+        } else if (predicateASTFactoryData.getPredicate() instanceof CompoundPredicate) {
+            KiePMMLCompoundPredicateASTFactory.factory(predicateASTFactoryData).declareRuleFromCompoundPredicate(toAccumulate, statusToSet, isLastCharacteristic);
+        }
+    }
+
+    /**
+     * Manage the given <code>Predicate</code>.
+     * <p>
+     * It creates rules that, in the <b>rhs</b>, eventually set a <b>final</b> result
+     * <p>
+     * At this point of the execution, <b>predicate</b> could be:
+     *
+     * <p>1) @see <a href="http://dmg.org/pmml/v4-4/TreeModel.html#xsdElement_True">True</a><p>
+     * <p>2) @see <a href="http://dmg.org/pmml/v4-4/TreeModel.html#xsdElement_SimplePredicate">SimplePredicate</a><p>
+     * <p>3) @see <a href="http://dmg.org/pmml/v4-4/TreeModel.html#xsdElement_CompoundPredicate">CompoundPredicate</a><p>
+     * <p>4) @see <a href="http://dmg.org/pmml/v4-4/TreeModel.html#xsdElement_SimpleSetPredicate">SimpleSetPredicate</a><p>
      * @param result
      * @param isFinalLeaf
      */
-    public void declareRuleFromPredicate(final Predicate predicate,
-                                         final String parentPath,
-                                         final String currentRule,
-                                         final Object result,
+    public void declareRuleFromPredicate(final Object result,
                                          final boolean isFinalLeaf) {
-        logger.trace("declareRuleFromPredicate {} {} {} {}", predicate, parentPath, currentRule, result);
-        if (predicate instanceof True) {
-            KiePMMLTruePredicateASTFactory.factory((True) predicate, outputFields, rules).declareRuleFromTruePredicate(parentPath, currentRule, result, isFinalLeaf);
-        } else if (predicate instanceof SimplePredicate) {
-            KiePMMLSimplePredicateASTFactory.factory((SimplePredicate) predicate, fieldTypeMap, outputFields, rules).declareRuleFromSimplePredicate(parentPath, currentRule, result, isFinalLeaf);
-        } else if (predicate instanceof SimpleSetPredicate) {
-            KiePMMLSimpleSetPredicateASTFactory.factory((SimpleSetPredicate) predicate, fieldTypeMap, outputFields, rules).declareRuleFromSimpleSetPredicate(parentPath, currentRule, result, isFinalLeaf);
-        } else if (predicate instanceof CompoundPredicate) {
-            KiePMMLCompoundPredicateASTFactory.factory((CompoundPredicate) predicate, fieldTypeMap, outputFields, rules).declareRuleFromCompoundPredicate(parentPath, currentRule, result, isFinalLeaf);
+        logger.trace("declareRuleFromPredicate {} {} {} {}", predicateASTFactoryData.getPredicate(), predicateASTFactoryData.getParentPath(), predicateASTFactoryData.getCurrentRule(), result);
+        if (predicateASTFactoryData.getPredicate() instanceof True) {
+            KiePMMLTruePredicateASTFactory.factory(predicateASTFactoryData).declareRuleFromTruePredicateWithResult(result, isFinalLeaf);
+        } else if (predicateASTFactoryData.getPredicate() instanceof SimplePredicate) {
+            KiePMMLSimplePredicateASTFactory.factory(predicateASTFactoryData)
+                    .declareRuleFromSimplePredicate(result, isFinalLeaf);
+        } else if (predicateASTFactoryData.getPredicate() instanceof SimpleSetPredicate) {
+            KiePMMLSimpleSetPredicateASTFactory.factory(predicateASTFactoryData)
+                    .declareRuleFromSimpleSetPredicate(result, isFinalLeaf);
+        } else if (predicateASTFactoryData.getPredicate() instanceof CompoundPredicate) {
+            KiePMMLCompoundPredicateASTFactory.factory(predicateASTFactoryData).declareRuleFromCompoundPredicate(result, isFinalLeaf);
         }
     }
 }
