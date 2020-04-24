@@ -115,7 +115,7 @@ public class DMNDeclaredField implements FieldDefinition {
             return replaceTemplate(pojoPropertyBlock, getObjectType());
         } else if (fieldIsDifferentThanObject()) {
             return replaceTemplate(simplePropertyBlock, getObjectType());
-        } else if (FEELTypeUtils.isFEELAny(fieldDMNType)) { // feel:Any
+        } else if (DMNTypeUtils.isFEELAny(fieldDMNType)) { // feel:Any
             return replaceTemplate(simplePropertyBlock, getObjectType());
         } else {
             return new BlockStmt();
@@ -127,7 +127,7 @@ public class DMNDeclaredField implements FieldDefinition {
     }
 
     private boolean fieldIsDifferentThanObject() {
-        if (FEELTypeUtils.isFEELAny(fieldDMNType)) {
+        if (DMNTypeUtils.isFEELAny(fieldDMNType)) {
             return false;
         }
         boolean isOtherObject = fieldDMNType.isCollection() ? fieldTypeUnwrapped().equals(OBJECT_TYPE) : getObjectType().equals(OBJECT_TYPE);

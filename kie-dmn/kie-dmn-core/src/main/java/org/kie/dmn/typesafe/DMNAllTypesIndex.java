@@ -28,11 +28,9 @@ import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Optional;
 
-import org.drools.core.util.StringUtils;
 import org.kie.dmn.api.core.DMNModel;
 import org.kie.dmn.api.core.DMNType;
 import org.kie.dmn.core.impl.BaseDMNTypeImpl;
-import org.kie.dmn.feel.codegen.feel11.CodegenStringUtil;
 import org.kie.dmn.feel.lang.SimpleType;
 import org.kie.dmn.feel.lang.Type;
 import org.kie.dmn.feel.lang.types.BuiltInType;
@@ -41,7 +39,7 @@ public class DMNAllTypesIndex {
 
     private final List<DMNType> indexedTypes = new ArrayList<>();
 
-    Map<DMNTypeKey, DMNModelTypesIndex.IndexValue> mapNamespaceIndex = new HashMap<>();
+    Map<IndexKey, DMNModelTypesIndex.IndexValue> mapNamespaceIndex = new HashMap<>();
 
     public DMNAllTypesIndex(DMNTypeSafePackageName.Factory packageName, DMNModel... allModels) {
         for (DMNModel m : allModels) {
@@ -58,7 +56,7 @@ public class DMNAllTypesIndex {
     @Deprecated
     public Optional<DMNTypeSafePackageName> namespaceOfClass(String typeName) {
         return mapNamespaceIndex.entrySet().stream()
-                                .filter(kv -> kv.getKey().name.equals(typeName))
+                                .filter(kv -> kv.getKey().getName().equals(typeName))
                                 .findFirst()
                                 .map(Entry::getValue)
                                 .map(DMNModelTypesIndex.IndexValue::getPackageName);
@@ -75,11 +73,11 @@ public class DMNAllTypesIndex {
     }
 
     public String converDMNTypeAsJava(DMNType dmnType) {
-        if (mapNamespaceIndex.containsKey(DMNTypeKey.from(dmnType))) {
-            String simpleName = StringUtils.ucFirst(CodegenStringUtil.escapeIdentifier(dmnType.getName()));
-            return mapNamespaceIndex.get(DMNTypeKey.from(dmnType)).getPackageName().appendPackage(simpleName);
+        if (mapNamespaceIndex.containsKey(IndexKey.from(dmnType))) {
+            String simpleName = DMNDeclaredType.asJavaSimpleName(dmnType);
+            return mapNamespaceIndex.get(IndexKey.from(dmnType)).getPackageName().appendPackage(simpleName);
         }
-        if (FEELTypeUtils.isFEELBuiltInType(dmnType)) {
+        if (DMNTypeUtils.isFEELBuiltInType(dmnType)) {
             return convertBuiltin(dmnType);
         }
         if (dmnType.getBaseType() == null) {

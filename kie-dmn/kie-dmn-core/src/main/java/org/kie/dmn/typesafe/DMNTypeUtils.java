@@ -24,9 +24,9 @@ import org.kie.dmn.feel.lang.types.BuiltInType;
 /**
  * Internal utility class
  */
-public class FEELTypeUtils {
+public class DMNTypeUtils {
 
-    private FEELTypeUtils() {
+    private DMNTypeUtils() {
         // only static method in this class.
     }
 
@@ -41,6 +41,15 @@ public class FEELTypeUtils {
 
     private static Type getFEELType(DMNType dmnType) {
         return ((BaseDMNTypeImpl) dmnType).getFeelType();
+    }
+
+    public static boolean isInnerComposite(DMNType dmnType) {
+        DMNType belonging = getBelongingType(dmnType);
+        return belonging != null && dmnType.isComposite();
+    }
+
+    public static DMNType getBelongingType(DMNType dmnType) {
+        return ((BaseDMNTypeImpl) dmnType).getBelongingType();
     }
 
 }
