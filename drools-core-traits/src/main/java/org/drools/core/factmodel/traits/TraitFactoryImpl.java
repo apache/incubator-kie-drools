@@ -45,12 +45,11 @@ public class TraitFactoryImpl<T extends Thing<K>, K extends TraitableBean> exten
         setMode( newMode, rcf );
     }
 
-    public static TraitFactoryImpl getTraitBuilderForKnowledgeBase(KieBase kb ) {
-        return new TraitFactoryImpl((InternalKnowledgeBase) kb);
+    public static TraitFactoryImpl getTraitBuilderForKnowledgeBase( KieBase kb ) {
+        return (TraitFactoryImpl) ((InternalKnowledgeBase) kb).getConfiguration().getComponentFactory().getTraitFactory();
     }
 
-    private TraitFactoryImpl(InternalKnowledgeBase kBase) {
-        this.kBase = kBase;
+    public TraitFactoryImpl() {
     }
 
     protected Class<?> registerAndLoadTypeDefinition( String proxyName, byte[] proxy ) throws ClassNotFoundException {

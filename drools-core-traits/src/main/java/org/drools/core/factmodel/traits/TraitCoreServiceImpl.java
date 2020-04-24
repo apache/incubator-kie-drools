@@ -22,4 +22,9 @@ public class TraitCoreServiceImpl implements TraitCoreService {
     public TraitRegistry createRegistry() {
         return new TraitRegistryImpl();
     }
+
+    @Override
+    public TraitFactory createTraitFactory() {
+        return new TraitFactoryImpl();
+    }
 }

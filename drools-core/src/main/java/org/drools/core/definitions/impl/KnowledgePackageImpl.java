@@ -63,12 +63,11 @@ import org.kie.api.definition.rule.Global;
 import org.kie.api.definition.rule.Query;
 import org.kie.api.definition.rule.Rule;
 import org.kie.api.definition.type.FactType;
-import org.kie.api.internal.utils.ServiceRegistry;
 import org.kie.api.io.Resource;
 import org.kie.api.io.ResourceType;
 import org.kie.api.runtime.rule.AccumulateFunction;
 
-import static org.drools.core.reteoo.KieComponentFactory.createTraitRegistry;
+import static org.drools.core.reteoo.KieComponentFactory.fromTraitRegistry;
 
 public class KnowledgePackageImpl
         implements
@@ -685,7 +684,7 @@ public class KnowledgePackageImpl
 
    public TraitRegistry getTraitRegistry() {
         if (traitRegistry == null) {
-            traitRegistry = createTraitRegistry();
+            traitRegistry = fromTraitRegistry(TraitCoreService::createRegistry);
         }
         return traitRegistry;
     }

@@ -17,10 +17,11 @@
 package org.drools.core.reteoo;
 
 import java.io.Serializable;
+import java.util.Optional;
+import java.util.function.Function;
 
 import org.drools.core.base.FieldDataFactory;
 import org.drools.core.base.FieldFactory;
-import org.drools.core.base.TraitHelper;
 import org.drools.core.common.AgendaFactory;
 import org.drools.core.common.AgendaGroupFactory;
 import org.drools.core.common.BeliefSystemFactory;
@@ -232,7 +233,7 @@ public class KieComponentFactory implements Serializable {
         return new DefaultLogicTransformerFactory();
     }
 
-    private TraitFactory traitFactory = null;
+    private TraitFactory traitFactory = fromTraitRegistry(TraitCoreService::createTraitFactory);
 
     public TraitFactory getTraitFactory() {
         return traitFactory;
@@ -242,20 +243,21 @@ public class KieComponentFactory implements Serializable {
         traitFactory = tf;
     }
 
-    public static TraitRegistry createTraitRegistry() {
-        TraitCoreService traitCoreService = ServiceRegistry.getInstance().get(TraitCoreService.class);
-        if(traitCoreService != null) {
-            return traitCoreService.createRegistry();
-        } else {
-            throw new RuntimeException("Need a " + TraitCoreService.class.getCanonicalName() + " injected through kie.conf");
-        }
+    public static <T> T fromTraitRegistry(Function<TraitCoreService, T> producer) {
+        return getTraitCoreService()
+                .map(producer)
+                .orElseThrow(() -> new RuntimeException(String.format("Need a %s injected through kie.conf", TraitCoreService.class.getCanonicalName())));
     }
 
-    private TraitRegistry traitRegistry = null;
+    private static Optional<TraitCoreService> getTraitCoreService() {
+        return Optional.ofNullable(ServiceRegistry.getInstance().get(TraitCoreService.class));
+    }
+
+    private TraitRegistry traitRegistry;
 
     public TraitRegistry getTraitRegistry() {
         if ( traitRegistry == null ) {
-            traitRegistry = createTraitRegistry();
+            traitRegistry = fromTraitRegistry(TraitCoreService::createRegistry);
         }
         return traitRegistry;
     }
@@ -264,20 +266,6 @@ public class KieComponentFactory implements Serializable {
         this.traitRegistry = traitRegistry;
     }
 
-//
-//    public void setTraitFactory( TraitRegistry tr ) {
-//        traitRegistry = tr;
-//    }
-//
-//    public void setDefaultTraitRegistry() {
-//        traitRegistry = new TraitRegistry();
-//    }
-//
-//    public static TraitRegistry getDefaultTraitRegistry() {
-//        return new TraitRegistry();
-//    }
-//
-//
     private TripleStore tripleStore = new TripleStore();
 
     public TripleStore getTripleStore() {
