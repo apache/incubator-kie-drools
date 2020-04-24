@@ -3,7 +3,7 @@
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
- * 
+ *
  *      http://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing, software
@@ -282,10 +282,6 @@ public class LegacyTraitTest {
 
         KieSession ks = getSessionFromString( source );
         KieBase kieBase = ks.getKieBase();
-        KieComponentFactory componentFactory = ((KnowledgeBaseImpl) kieBase).getConfiguration().getComponentFactory();
-        componentFactory.setTraitFactory(TraitFactoryImpl.getTraitBuilderForKnowledgeBase(kieBase));
-        componentFactory.setTraitRegistry(new TraitRegistryImpl());
-
         TraitFactoryImpl.setMode(mode, kieBase);
         ArrayList list = new ArrayList();
         ks.setGlobal( "list", list );
