@@ -625,9 +625,9 @@ public class TraitCoreWrapperClassBuilderImpl implements TraitCoreWrapperClassBu
         if ( coreDef.isFullTraiting() ) {
 
             mv.visitVarInsn( ALOAD, 0 );
-            mv.visitTypeInsn( NEW, Type.getInternalName( TraitFieldTMSImpl.class ) );
+            mv.visitTypeInsn( NEW, TraitFieldTMS.TYPE_NAME );
             mv.visitInsn( DUP );
-            mv.visitMethodInsn( INVOKESPECIAL, Type.getInternalName( TraitFieldTMSImpl.class ), "<init>", "()V" );
+            mv.visitMethodInsn( INVOKESPECIAL, TraitFieldTMS.TYPE_NAME, "<init>", "()V" );
             mv.visitFieldInsn( PUTFIELD, BuildUtils.getInternalType( wrapperName ), TraitableBean.FIELDTMS_FIELD_NAME, Type.getDescriptor( TraitFieldTMS.class ) );
 
             for ( FactField hardField : coreDef.getFields() ) {

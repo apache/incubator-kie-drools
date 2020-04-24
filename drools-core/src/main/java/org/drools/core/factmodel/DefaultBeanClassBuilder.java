@@ -29,8 +29,7 @@ import java.util.Set;
 
 import org.drools.core.factmodel.traits.Thing;
 import org.drools.core.factmodel.traits.TraitFieldTMS;
-import org.drools.core.factmodel.traits.TraitFieldTMSImpl;
-import org.drools.core.factmodel.traits.TraitTypeMap;
+import org.drools.core.factmodel.traits.TraitTypeMapConstants;
 import org.drools.core.factmodel.traits.TraitableBean;
 import org.drools.core.phreak.ReactiveObject;
 import org.kie.api.definition.type.FactField;
@@ -623,9 +622,9 @@ public class DefaultBeanClassBuilder implements Opcodes, BeanClassBuilder, Seria
         mv.visitCode();
         mv.visitVarInsn( ALOAD, 0 );
         mv.visitMethodInsn( INVOKEVIRTUAL, BuildUtils.getInternalType( classDef.getName() ), "_getTraitMap", Type.getMethodDescriptor( Type.getType( Map.class ), new Type[] {} ) );
-        mv.visitTypeInsn( CHECKCAST, Type.getInternalName( TraitTypeMap.class ) );
+        mv.visitTypeInsn(CHECKCAST, TraitTypeMapConstants.TYPE_NAME );
         mv.visitVarInsn(ALOAD, 1);
-        mv.visitMethodInsn( INVOKEVIRTUAL, Type.getInternalName( TraitTypeMap.class ), "removeCascade",
+        mv.visitMethodInsn( INVOKEVIRTUAL, TraitTypeMapConstants.TYPE_NAME, "removeCascade",
                             Type.getMethodDescriptor( Type.getType( Collection.class ), new Type[] { Type.getType( String.class )} ) );
         mv.visitInsn( ARETURN );
         mv.visitMaxs( 0, 0 );
@@ -638,9 +637,9 @@ public class DefaultBeanClassBuilder implements Opcodes, BeanClassBuilder, Seria
         mv.visitCode();
         mv.visitVarInsn( ALOAD, 0 );
         mv.visitMethodInsn( INVOKEVIRTUAL, BuildUtils.getInternalType( classDef.getName() ), "_getTraitMap", Type.getMethodDescriptor( Type.getType( Map.class ), new Type[] {} ) );
-        mv.visitTypeInsn( CHECKCAST, Type.getInternalName( TraitTypeMap.class ) );
+        mv.visitTypeInsn( CHECKCAST, TraitTypeMapConstants.TYPE_NAME );
         mv.visitVarInsn( ALOAD, 1 );
-        mv.visitMethodInsn( INVOKEVIRTUAL, Type.getInternalName( TraitTypeMap.class ), "removeCascade",
+        mv.visitMethodInsn( INVOKEVIRTUAL, TraitTypeMapConstants.TYPE_NAME, "removeCascade",
                             Type.getMethodDescriptor( Type.getType( Collection.class ), new Type[] { Type.getType( BitSet.class )} ) );
         mv.visitInsn( ARETURN );
         mv.visitMaxs( 0, 0 );
@@ -674,10 +673,10 @@ public class DefaultBeanClassBuilder implements Opcodes, BeanClassBuilder, Seria
         mv.visitCode();
         mv.visitVarInsn( ALOAD, 0 );
         mv.visitFieldInsn( GETFIELD, BuildUtils.getInternalType( classDef.getName() ), TraitableBean.TRAITSET_FIELD_NAME , Type.getDescriptor( Map.class ) );
-        mv.visitTypeInsn( CHECKCAST, Type.getInternalName( TraitTypeMap.class ) );
+        mv.visitTypeInsn( CHECKCAST, TraitTypeMapConstants.TYPE_NAME );
         mv.visitVarInsn( ALOAD, 1 );
         mv.visitMethodInsn( INVOKEVIRTUAL,
-                            Type.getInternalName( TraitTypeMap.class ),
+                            TraitTypeMapConstants.TYPE_NAME,
                             "setBottomCode",
                             Type.getMethodDescriptor( Type.getType( void.class ), new Type[] { Type.getType( BitSet.class ) } ) );
         mv.visitInsn( RETURN );
@@ -703,9 +702,9 @@ public class DefaultBeanClassBuilder implements Opcodes, BeanClassBuilder, Seria
         mv.visitFieldInsn( GETFIELD, BuildUtils.getInternalType( classDef.getName() ),
                            TraitableBean.TRAITSET_FIELD_NAME ,
                            Type.getDescriptor( Map.class ) );
-        mv.visitTypeInsn( CHECKCAST, Type.getInternalName( TraitTypeMap.class ) );
+        mv.visitTypeInsn( CHECKCAST, TraitTypeMapConstants.TYPE_NAME );
         mv.visitMethodInsn( INVOKEVIRTUAL,
-                            Type.getInternalName( TraitTypeMap.class ),
+                            TraitTypeMapConstants.TYPE_NAME,
                             "getMostSpecificTraits",
                             Type.getMethodDescriptor( Type.getType( Collection.class ), new Type[] { } )  );
         mv.visitInsn( ARETURN );
@@ -739,9 +738,9 @@ public class DefaultBeanClassBuilder implements Opcodes, BeanClassBuilder, Seria
                            BuildUtils.getInternalType( classDef.getName() ),
                            TraitableBean.TRAITSET_FIELD_NAME,
                            Type.getDescriptor( Map.class ) );
-        mv.visitTypeInsn( CHECKCAST, Type.getInternalName( TraitTypeMap.class ) );
+        mv.visitTypeInsn( CHECKCAST, TraitTypeMapConstants.TYPE_NAME );
         mv.visitMethodInsn( INVOKEVIRTUAL,
-                            Type.getInternalName( TraitTypeMap.class ),
+                            TraitTypeMapConstants.TYPE_NAME,
                             "getCurrentTypeCode",
                             Type.getMethodDescriptor( Type.getType( BitSet.class ), new Type[] { } ) );
         mv.visitInsn( ARETURN );
@@ -1059,9 +1058,9 @@ public class DefaultBeanClassBuilder implements Opcodes, BeanClassBuilder, Seria
         if ( classDef.isFullTraiting() ) {
 
             mv.visitVarInsn( ALOAD, 0 );
-            mv.visitTypeInsn( NEW, Type.getInternalName( TraitFieldTMSImpl.class ) );
+            mv.visitTypeInsn( NEW, TraitFieldTMS.TYPE_NAME );
             mv.visitInsn( DUP );
-            mv.visitMethodInsn( INVOKESPECIAL, Type.getInternalName( TraitFieldTMSImpl.class ), "<init>", "()V" );
+            mv.visitMethodInsn( INVOKESPECIAL, TraitFieldTMS.TYPE_NAME, "<init>", "()V" );
             mv.visitFieldInsn( PUTFIELD, BuildUtils.getInternalType( classDef.getClassName() ), TraitableBean.FIELDTMS_FIELD_NAME, Type.getDescriptor( TraitFieldTMS.class ) );
 
             for ( FactField hardField : classDef.getFields() ) {

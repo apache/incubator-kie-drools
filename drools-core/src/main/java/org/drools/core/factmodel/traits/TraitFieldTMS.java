@@ -22,6 +22,8 @@ import java.io.Externalizable;
 
 public interface TraitFieldTMS extends Externalizable {
 
+    String TYPE_NAME = "org/drools/core/factmodel/traits/TraitFieldTMSImpl";
+
     void init( WorkingMemory wm );
 
     boolean needsInit();
