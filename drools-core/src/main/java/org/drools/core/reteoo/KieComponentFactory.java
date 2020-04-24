@@ -33,6 +33,7 @@ import org.drools.core.common.PropagationContextFactory;
 import org.drools.core.common.WorkingMemoryFactory;
 //import org.drools.core.factmodel.ClassBuilderFactory;
 import org.drools.core.factmodel.ClassBuilderFactory;
+import org.drools.core.factmodel.traits.TraitCoreService;
 import org.drools.core.factmodel.traits.TraitFactory;
 import org.drools.core.factmodel.traits.TraitProxy;
 import org.drools.core.factmodel.traits.TraitRegistry;
@@ -44,6 +45,7 @@ import org.drools.core.spi.FactHandleFactory;
 import org.drools.core.util.TripleFactory;
 import org.drools.core.util.TripleFactoryImpl;
 import org.drools.core.util.TripleStore;
+import org.kie.api.internal.utils.ServiceRegistry;
 
 public class KieComponentFactory implements Serializable {
 
@@ -240,9 +242,21 @@ public class KieComponentFactory implements Serializable {
         traitFactory = tf;
     }
 
+    public static TraitRegistry createTraitRegistry() {
+        TraitCoreService traitCoreService = ServiceRegistry.getInstance().get(TraitCoreService.class);
+        if(traitCoreService != null) {
+            return traitCoreService.createRegistry();
+        } else {
+            throw new RuntimeException("Need a " + TraitCoreService.class.getCanonicalName() + " injected through kie.conf");
+        }
+    }
+
     private TraitRegistry traitRegistry = null;
 
     public TraitRegistry getTraitRegistry() {
+        if ( traitRegistry == null ) {
+            traitRegistry = createTraitRegistry();
+        }
         return traitRegistry;
     }
 
@@ -250,12 +264,6 @@ public class KieComponentFactory implements Serializable {
         this.traitRegistry = traitRegistry;
     }
 
-//    public TraitRegistry getTraitRegistry() {
-//        if ( traitRegistry == null ) {
-//            traitRegistry = new TraitRegistry();
-//        }
-//        return traitRegistry;
-//    }
 //
 //    public void setTraitFactory( TraitRegistry tr ) {
 //        traitRegistry = tr;

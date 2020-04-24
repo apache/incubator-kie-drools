@@ -45,6 +45,7 @@ import org.drools.core.definitions.ProcessPackage;
 import org.drools.core.definitions.ResourceTypePackageRegistry;
 import org.drools.core.definitions.rule.impl.GlobalImpl;
 import org.drools.core.definitions.rule.impl.RuleImpl;
+import org.drools.core.factmodel.traits.TraitCoreService;
 import org.drools.core.factmodel.traits.TraitRegistry;
 import org.drools.core.facttemplates.FactTemplate;
 import org.drools.core.rule.DialectRuntimeRegistry;
@@ -62,9 +63,12 @@ import org.kie.api.definition.rule.Global;
 import org.kie.api.definition.rule.Query;
 import org.kie.api.definition.rule.Rule;
 import org.kie.api.definition.type.FactType;
+import org.kie.api.internal.utils.ServiceRegistry;
 import org.kie.api.io.Resource;
 import org.kie.api.io.ResourceType;
 import org.kie.api.runtime.rule.AccumulateFunction;
+
+import static org.drools.core.reteoo.KieComponentFactory.createTraitRegistry;
 
 public class KnowledgePackageImpl
         implements
@@ -680,11 +684,9 @@ public class KnowledgePackageImpl
     }
 
    public TraitRegistry getTraitRegistry() {
-
-        // TODO instantiate this
-//        if (traitRegistry == null) {
-//            traitRegistry = new TraitRegistry();
-//        }
+        if (traitRegistry == null) {
+            traitRegistry = createTraitRegistry();
+        }
         return traitRegistry;
     }
 
