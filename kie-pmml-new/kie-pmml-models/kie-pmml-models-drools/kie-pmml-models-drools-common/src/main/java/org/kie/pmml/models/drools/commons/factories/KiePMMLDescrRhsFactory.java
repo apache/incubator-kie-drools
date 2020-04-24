@@ -77,11 +77,9 @@ public class KiePMMLDescrRhsFactory {
 
     protected void declareIfThen(final KiePMMLDroolsRule rule) {
         builder.rhs(String.format(UPDATE_STATUS_HOLDER_STATUS, rule.getStatusToSet()));
-//        builder.rhs(UPDATE_STATUS_HOLDER);
         StringJoiner joiner = new StringJoiner("");
         joiner.add(String.format(UPDATE_STATUS_HOLDER_STATUS, DONE));
         commonDeclareThen(rule, joiner);
-//        joiner.add(UPDATE_STATUS_HOLDER);
         builder.namedRhs(KiePMMLDescrRulesFactory.BREAK_LABEL, joiner.toString());
     }
 

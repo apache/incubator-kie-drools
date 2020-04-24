@@ -43,11 +43,11 @@ public class PredicateASTFactoryData {
                                    String currentRule,
                                    Map<String, KiePMMLOriginalTypeGeneratedType> fieldTypeMap) {
         this.predicate = predicate;
-        this.outputFields = outputFields;
+        this.outputFields = outputFields != null ? Collections.unmodifiableList(outputFields) : Collections.emptyList();
         this.rules = rules;
         this.parentPath = parentPath;
         this.currentRule = currentRule;
-        this.fieldTypeMap = fieldTypeMap;
+        this.fieldTypeMap = fieldTypeMap != null ? Collections.unmodifiableMap(fieldTypeMap) : Collections.emptyMap();
     }
 
     public PredicateASTFactoryData cloneWithPredicate(Predicate predicate) {
@@ -59,7 +59,7 @@ public class PredicateASTFactoryData {
     }
 
     public List<KiePMMLOutputField> getOutputFields() {
-        return outputFields != null ? Collections.unmodifiableList(outputFields) : Collections.emptyList();
+        return outputFields;
     }
 
     public List<KiePMMLDroolsRule> getRules() {
@@ -75,6 +75,6 @@ public class PredicateASTFactoryData {
     }
 
     public Map<String, KiePMMLOriginalTypeGeneratedType> getFieldTypeMap() {
-        return fieldTypeMap != null ? Collections.unmodifiableMap(fieldTypeMap) : Collections.emptyMap();
+        return fieldTypeMap;
     }
 }
