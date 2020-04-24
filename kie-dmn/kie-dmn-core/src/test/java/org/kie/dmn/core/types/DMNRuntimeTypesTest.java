@@ -22,7 +22,6 @@ import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.time.Period;
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Map;
 
@@ -84,8 +83,30 @@ public class DMNRuntimeTypesTest extends BaseVariantTest {
         assertThat(dmnResult.getDecisionResultByName("DecisionTime").getResult(), is(LocalTime.of(10, 0)));
     }
 
-    class Asd extends ArrayList<String> {
+    @Test
+    public void testInnerComposite() {
+        final DMNRuntime runtime = createRuntime("innerComposite.dmn", this.getClass());
+        final DMNModel dmnModel = runtime.getModel("https://kiegroup.org/dmn/_641BCEBF-8D10-4E08-B47F-A9181C737A82", "new-file");
+        assertThat(dmnModel, notNullValue());
+        assertThat(DMNRuntimeUtil.formatMessages(dmnModel.getMessages()), dmnModel.hasErrors(), is(false));
 
+        final DMNContext context = DMNFactory.newContext();
+        Map<String, Object> yearly = mapOf(entry("Q1", 1),
+                                           entry("Q2", new BigDecimal(2)),
+                                           entry("Q3", 3),
+                                           entry("Q4", new BigDecimal(4)));
+        context.set("Yearly", yearly);
+
+        Map<String, Object> employee = mapOf(entry("Name", "John Doe"),
+                                             entry("Yearly", mapOf(entry("H1", 1),
+                                                                   entry("H2", new BigDecimal(2)))));
+        context.set("Employee", employee);
+
+        final DMNResult dmnResult = evaluateModel(runtime, dmnModel, context);
+        LOG.debug("{}", dmnResult);
+        assertThat(DMNRuntimeUtil.formatMessages(dmnResult.getMessages()), dmnResult.hasErrors(), is(false));
+        assertThat(dmnResult.getDecisionResultByName("Decision Yearly").getResult(), is("Total Yearly 10"));
+        assertThat(dmnResult.getDecisionResultByName("Decision Employee").getResult(), is("For John Doe total: 3"));
     }
 
     @Test

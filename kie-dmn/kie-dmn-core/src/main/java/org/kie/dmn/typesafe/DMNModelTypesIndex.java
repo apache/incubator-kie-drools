@@ -39,7 +39,6 @@ class DMNModelTypesIndex {
         this.packageName = dmnTypeSafePackageName;
 
         createIndex();
-        System.out.println("x");
     }
 
     public void createIndex() {
@@ -50,7 +49,7 @@ class DMNModelTypesIndex {
                 .collect(Collectors.toList());
 
         itemDefinitions.forEach(this::index);
-        itemDefinitions.stream().flatMap(this::innerTypes).forEach(this::index);
+        // TODO itemDefinitions.stream().flatMap(this::innerTypes).forEach(this::index);
     }
 
     private Stream<DMNType> innerTypes(DMNType type) {
