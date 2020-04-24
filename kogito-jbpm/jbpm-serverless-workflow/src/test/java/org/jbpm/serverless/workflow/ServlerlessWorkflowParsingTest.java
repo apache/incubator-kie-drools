@@ -340,7 +340,7 @@ public class ServlerlessWorkflowParsingTest extends BaseServerlessTest {
         assertEquals(2, split.getConstraints().size());
 
         boolean haveDefaultConstraint = false;
-        for(Constraint constraint : split.getConstraints().values()) {
+        for (Constraint constraint : split.getConstraints().values()) {
             haveDefaultConstraint = haveDefaultConstraint || constraint.isDefault();
         }
 

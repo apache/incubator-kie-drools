@@ -22,6 +22,7 @@ import org.jbpm.serverless.workflow.api.Workflow;
 import org.jbpm.serverless.workflow.api.branches.Branch;
 import org.jbpm.serverless.workflow.api.choices.DefaultChoice;
 import org.jbpm.serverless.workflow.api.events.EventDefinition;
+import org.jbpm.serverless.workflow.api.functions.Function;
 import org.jbpm.serverless.workflow.api.interfaces.State;
 import org.jbpm.serverless.workflow.api.mapper.BaseObjectMapper;
 import org.jbpm.serverless.workflow.api.mapper.JsonObjectMapper;
@@ -46,16 +47,22 @@ public class ServerlessWorkflowUtils {
             ".jsonProvider(new com.jayway.jsonpath.spi.json.JacksonJsonNodeJsonProvider()).build(); ";
 
 
+    private static final String APP_PROPERTIES_BASE = "kogito.sw.";
+    private static final String APP_PROPERTIES_FUNCTIONS_BASE = "functions.";
+    private static final String APP_PROPERTIES_EVENTS_BASE = "events.";
+    private static final String APP_PROPERTIES_STATES_BASE = "states.";
+
     private static final Logger LOGGER = LoggerFactory.getLogger(ServerlessWorkflowUtils.class);
 
-    private ServerlessWorkflowUtils() {}
+    private ServerlessWorkflowUtils() {
+    }
 
     public static BaseObjectMapper getObjectMapper(String workflowFormat) {
-        if(workflowFormat != null && workflowFormat.equalsIgnoreCase(DEFAULT_WORKFLOW_FORMAT)) {
+        if (workflowFormat != null && workflowFormat.equalsIgnoreCase(DEFAULT_WORKFLOW_FORMAT)) {
             return new JsonObjectMapper();
         }
 
-        if(workflowFormat != null && workflowFormat.equalsIgnoreCase(ALTERNATE_WORKFLOW_FORMAT)) {
+        if (workflowFormat != null && workflowFormat.equalsIgnoreCase(ALTERNATE_WORKFLOW_FORMAT)) {
             return new YamlObjectMapper();
         }
 
@@ -86,8 +93,8 @@ public class ServerlessWorkflowUtils {
     }
 
     public static boolean includesSupportedStates(Workflow workflow) {
-        for(State state : workflow.getStates()) {
-            if(!state.getType().equals(DefaultState.Type.EVENT)
+        for (State state : workflow.getStates()) {
+            if (!state.getType().equals(DefaultState.Type.EVENT)
                     && !state.getType().equals(DefaultState.Type.OPERATION)
                     && !state.getType().equals(DefaultState.Type.DELAY)
                     && !state.getType().equals(DefaultState.Type.SUBFLOW)
@@ -97,8 +104,8 @@ public class ServerlessWorkflowUtils {
                 return false;
             }
 
-            if(state.getType().equals(DefaultState.Type.PARALLEL)) {
-                if(!supportedParallelState((ParallelState) state)) {
+            if (state.getType().equals(DefaultState.Type.PARALLEL)) {
+                if (!supportedParallelState((ParallelState) state)) {
                     LOGGER.warn("unsupported parallel state");
                     return false;
                 }
@@ -113,9 +120,9 @@ public class ServerlessWorkflowUtils {
         // currently branches must exist and states included can
         // be single subflow states only
         // this will be improved in future
-        if(parallelState.getBranches() != null && parallelState.getBranches().size() > 0) {
-            for(Branch branch : parallelState.getBranches()) {
-                if(branch.getStates() == null || branch.getStates().size() != 1 || !(branch.getStates().get(0) instanceof SubflowState)) {
+        if (parallelState.getBranches() != null && parallelState.getBranches().size() > 0) {
+            for (Branch branch : parallelState.getBranches()) {
+                if (branch.getStates() == null || branch.getStates().size() != 1 || !(branch.getStates().get(0) instanceof SubflowState)) {
                     return false;
                 }
             }
@@ -149,22 +156,22 @@ public class ServerlessWorkflowUtils {
 
     public static String conditionScript(String path, DefaultChoice.Operator operator, String value) {
 
-        if(path.startsWith("$.")) {
+        if (path.startsWith("$.")) {
             path = path.substring(2);
         }
 
         String workflowDataToInteger = "return java.lang.Integer.parseInt(workflowdata.get(\"";
 
         String retStr = "";
-        if(operator == DefaultChoice.Operator.EQUALS) {
+        if (operator == DefaultChoice.Operator.EQUALS) {
             retStr += "return workflowdata.get(\"" + path + "\").textValue().equals(\"" + value + "\");";
-        } else if(operator == DefaultChoice.Operator.GREATER_THAN) {
+        } else if (operator == DefaultChoice.Operator.GREATER_THAN) {
             retStr += workflowDataToInteger + path + "\").textValue()) > " + value + ";";
-        } else if(operator == DefaultChoice.Operator.GREATER_THAN_EQUALS) {
+        } else if (operator == DefaultChoice.Operator.GREATER_THAN_EQUALS) {
             retStr += workflowDataToInteger + path + "\").textValue()) >= " + value + ";";
-        } else if(operator == DefaultChoice.Operator.LESS_THAN ) {
+        } else if (operator == DefaultChoice.Operator.LESS_THAN) {
             retStr += workflowDataToInteger + path + "\").textValue()) < " + value + ";";
-        } else if(operator == DefaultChoice.Operator.LESS_THAN_EQUALS) {
+        } else if (operator == DefaultChoice.Operator.LESS_THAN_EQUALS) {
             retStr += workflowDataToInteger + path + "\").textValue()) <= " + value + ";";
         }
 
@@ -173,12 +180,12 @@ public class ServerlessWorkflowUtils {
 
     public static String getJsonPathScript(String script) {
 
-        if(script.indexOf("$") >= 0) {
+        if (script.indexOf("$") >= 0) {
 
             String replacement = "toPrint += com.jayway.jsonpath.JsonPath.using(jsonPathConfig)" +
                     ".parse(((com.fasterxml.jackson.databind.JsonNode)kcontext.getVariable(\"workflowdata\")))" +
                     ".read(\"@@.$1\", com.fasterxml.jackson.databind.JsonNode.class).textValue();";
-            script =  script.replaceAll("\\$.([A-Za-z]+)", replacement);
+            script = script.replaceAll("\\$.([A-Za-z]+)", replacement);
             script = script.replaceAll("@@", Matcher.quoteReplacement("$"));
             return script;
         } else {
@@ -207,10 +214,67 @@ public class ServerlessWorkflowUtils {
                     "        }\n" +
                     "        kcontext.setVariable(\"workflowdata\", mainNode2);\n";
 
-        } catch(JsonProcessingException e) {
+        } catch (JsonProcessingException e) {
             LOGGER.warn("unable to set inject script: {}", e.getMessage());
             return "";
         }
     }
+
+    public static String resolveFunctionMetadata(Function function, String metadataKey, WorkflowAppContext workflowAppContext) {
+        if (function != null && function.getMetadata() != null && function.getMetadata().containsKey(metadataKey)) {
+            return function.getMetadata().get(metadataKey);
+        }
+
+        if (function != null && workflowAppContext != null &&
+                workflowAppContext.getApplicationProperties().containsKey(APP_PROPERTIES_BASE + APP_PROPERTIES_FUNCTIONS_BASE + function.getName() + "." + metadataKey)) {
+            return workflowAppContext.getApplicationProperty(APP_PROPERTIES_BASE + APP_PROPERTIES_FUNCTIONS_BASE + function.getName() + "." + metadataKey);
+        }
+
+        LOGGER.warn("Could not resolve function metadata: {}", metadataKey);
+        return "";
+    }
+
+    public static String resolveEvenDefinitiontMetadata(EventDefinition eventDefinition, String metadataKey, WorkflowAppContext workflowAppContext) {
+        if (eventDefinition != null && eventDefinition.getMetadata() != null && eventDefinition.getMetadata().containsKey(metadataKey)) {
+            return eventDefinition.getMetadata().get(metadataKey);
+        }
+
+        if (eventDefinition != null && workflowAppContext != null &&
+                workflowAppContext.getApplicationProperties().containsKey(APP_PROPERTIES_BASE + APP_PROPERTIES_EVENTS_BASE + eventDefinition.getName() + "." + metadataKey)) {
+            return workflowAppContext.getApplicationProperty(APP_PROPERTIES_BASE + APP_PROPERTIES_EVENTS_BASE + eventDefinition.getName() + "." + metadataKey);
+        }
+
+        LOGGER.warn("Could not resolve event definition metadata: {}", metadataKey);
+        return "";
+    }
+
+    public static String resolveStatetMetadata(State state, String metadataKey, WorkflowAppContext workflowAppContext) {
+        if (state != null && state.getMetadata() != null && state.getMetadata().containsKey(metadataKey)) {
+            return state.getMetadata().get(metadataKey);
+        }
+
+        if (state != null && workflowAppContext != null &&
+                workflowAppContext.getApplicationProperties().containsKey(APP_PROPERTIES_BASE + APP_PROPERTIES_STATES_BASE + state.getName() + "." + metadataKey)) {
+            return workflowAppContext.getApplicationProperty(APP_PROPERTIES_BASE + APP_PROPERTIES_STATES_BASE + state.getName() + "." + metadataKey);
+        }
+
+        LOGGER.warn("Could not resolve state metadata: {}", metadataKey);
+        return "";
+    }
+
+    public static String resolveWorkflowMetadata(Workflow workflow, String metadataKey, WorkflowAppContext workflowAppContext) {
+        if (workflow != null && workflow.getMetadata() != null && workflow.getMetadata().containsKey(metadataKey)) {
+            return workflow.getMetadata().get(metadataKey);
+        }
+
+        if (workflow != null && workflowAppContext != null &&
+                workflowAppContext.getApplicationProperties().containsKey(APP_PROPERTIES_BASE + workflow.getId() + "." + metadataKey)) {
+            return workflowAppContext.getApplicationProperty(APP_PROPERTIES_BASE + workflow.getId() + "." + metadataKey);
+        }
+
+        LOGGER.warn("Could not resolve state metadata: {}", metadataKey);
+        return "";
+    }
+
 
 }

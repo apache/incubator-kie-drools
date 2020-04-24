@@ -31,6 +31,7 @@ import org.jbpm.serverless.workflow.api.end.End;
 import org.jbpm.serverless.workflow.api.events.EventDefinition;
 import org.jbpm.serverless.workflow.api.functions.Function;
 import org.jbpm.serverless.workflow.parser.util.ServerlessWorkflowUtils;
+import org.jbpm.serverless.workflow.parser.util.WorkflowAppContext;
 import org.jbpm.workflow.core.DroolsAction;
 import org.jbpm.workflow.core.NodeContainer;
 import org.jbpm.workflow.core.impl.ConnectionImpl;
@@ -47,7 +48,7 @@ import java.util.*;
 public class ServerlessWorkflowFactory {
     private static final Logger LOGGER = LoggerFactory.getLogger(ServerlessWorkflowFactory.class);
 
-    private static final String EOL = System.getProperty( "line.separator" );
+    private static final String EOL = System.getProperty("line.separator");
     private static final String DEFAULT_WORKFLOW_ID = "serverless";
     private static final String DEFAULT_WORKFLOW_NAME = "workflow";
     private static final String DEFAULT_WORKFLOW_VERSION = "1.0";
@@ -57,32 +58,42 @@ public class ServerlessWorkflowFactory {
     private static final String JSON_NODE = "com.fasterxml.jackson.databind.JsonNode";
     private static final String DEFAULT_WORKFLOW_VAR = "workflowdata";
     private static final String UNIQUE_ID_PARAM = "UniqueId";
+    private static final String DEFAULT_SERVICE_IMPL = "Java";
+    private static final String SERVICE_INTERFACE_KEY = "interface";
+    private static final String SERVICE_OPERATION_KEY = "operation";
+    private static final String SERVICE_IMPL_KEY = "implementation";
+
+    private WorkflowAppContext workflowAppContext;
+
+    public ServerlessWorkflowFactory(WorkflowAppContext workflowAppContext) {
+        this.workflowAppContext = workflowAppContext;
+    }
 
     public RuleFlowProcess createProcess(Workflow workflow) {
         RuleFlowProcess process = new RuleFlowProcess();
 
-        if(workflow.getId() != null && !workflow.getId().isEmpty()) {
+        if (workflow.getId() != null && !workflow.getId().isEmpty()) {
             process.setId(workflow.getId());
         } else {
             LOGGER.info("setting default id {}", DEFAULT_WORKFLOW_ID);
             process.setId(DEFAULT_WORKFLOW_ID);
         }
 
-        if(workflow.getName() != null && !workflow.getName().isEmpty()) {
+        if (workflow.getName() != null && !workflow.getName().isEmpty()) {
             process.setName(workflow.getName());
         } else {
             LOGGER.info("setting default name {}", DEFAULT_WORKFLOW_NAME);
             process.setName(DEFAULT_WORKFLOW_NAME);
         }
 
-        if(workflow.getVersion() != null && !workflow.getVersion().isEmpty()) {
+        if (workflow.getVersion() != null && !workflow.getVersion().isEmpty()) {
             process.setVersion(workflow.getVersion());
         } else {
             LOGGER.info("setting default version {}", DEFAULT_WORKFLOW_VERSION);
             process.setVersion(DEFAULT_WORKFLOW_VERSION);
         }
 
-        if(workflow.getMetadata() != null && workflow.getMetadata().get("package") != null) {
+        if (workflow.getMetadata() != null && workflow.getMetadata().get("package") != null) {
             process.setPackageName(workflow.getMetadata().get("package"));
         } else {
             process.setPackageName(DEFAULT_PACKAGE_NAME);
@@ -195,7 +206,7 @@ public class ServerlessWorkflowFactory {
         return subProcessNode;
     }
 
-    public void addMessageEndNodeAction(EndNode endNode, String variable, String messageType){
+    public void addMessageEndNodeAction(EndNode endNode, String variable, String messageType) {
         List<DroolsAction> actions = new ArrayList<>();
 
         actions.add(new DroolsConsequenceAction("java",
@@ -231,8 +242,8 @@ public class ServerlessWorkflowFactory {
         scriptNode.setName(name);
 
         scriptNode.setAction(new DroolsConsequenceAction());
-        ((DroolsConsequenceAction)scriptNode.getAction()).setConsequence(script);
-        ((DroolsConsequenceAction)scriptNode.getAction()).setDialect(JavaDialect.ID);
+        ((DroolsConsequenceAction) scriptNode.getAction()).setConsequence(script);
+        ((DroolsConsequenceAction) scriptNode.getAction()).setDialect(JavaDialect.ID);
 
         nodeContainer.addNode(scriptNode);
 
@@ -249,16 +260,16 @@ public class ServerlessWorkflowFactory {
         workItemNode.setWork(work);
 
         work.setName("Service Task");
-        work.setParameter("Interface", function.getMetadata().get("interface"));
-        work.setParameter("Operation", function.getMetadata().get("operation"));
-        work.setParameter("interfaceImplementationRef", function.getMetadata().get("interface"));
-        work.setParameter("operationImplementationRef", function.getMetadata().get("operation"));
+        work.setParameter("Interface", ServerlessWorkflowUtils.resolveFunctionMetadata(function, SERVICE_INTERFACE_KEY, workflowAppContext));
+        work.setParameter("Operation", ServerlessWorkflowUtils.resolveFunctionMetadata(function, SERVICE_OPERATION_KEY, workflowAppContext));
+        work.setParameter("interfaceImplementationRef", ServerlessWorkflowUtils.resolveFunctionMetadata(function, SERVICE_INTERFACE_KEY, workflowAppContext));
+        work.setParameter("operationImplementationRef", ServerlessWorkflowUtils.resolveFunctionMetadata(function, SERVICE_OPERATION_KEY, workflowAppContext));
         work.setParameter("ParameterType", JSON_NODE);
-        String metaImpl = function.getMetadata().get("implementation");
-        if(metaImpl == null) {
-            metaImpl = "Java";
+        String metaImpl = ServerlessWorkflowUtils.resolveFunctionMetadata(function, SERVICE_IMPL_KEY, workflowAppContext);
+        if (metaImpl == null || metaImpl.isEmpty()) {
+            metaImpl = DEFAULT_SERVICE_IMPL;
         }
-        work.setParameter("implementation", metaImpl);
+        work.setParameter(SERVICE_IMPL_KEY, metaImpl);
 
         workItemNode.addInMapping("Parameter", DEFAULT_WORKFLOW_VAR);
         workItemNode.addOutMapping("Result", DEFAULT_WORKFLOW_VAR);
@@ -291,11 +302,6 @@ public class ServerlessWorkflowFactory {
 
 
     public Split splitNode(long id, String name, int type, NodeContainer nodeContainer) {
-        // 0 = TYPE_UNDEFINED
-        // 1 = TYPE_AND
-        // 2 = TYPE_XOR
-        // 3 = TYPE_OR
-        // 4 = TYPE_XAND
         Split split = new Split();
         split.setId(id);
         split.setName(name);
@@ -307,12 +313,6 @@ public class ServerlessWorkflowFactory {
     }
 
     public Join joinNode(long id, String name, int type, NodeContainer nodeContainer) {
-        // 0 = TYPE_UNDEFINED
-        // 1 = TYPE_AND
-        // 2 = TYPE_XOR
-        // 3 = TYPE_DISCRIMINATOR
-        // 4 = TYPE_N_OF_M
-        // 5 = TYPE_OR
         Join join = new Join();
         join.setId(id);
         join.setName(name);
