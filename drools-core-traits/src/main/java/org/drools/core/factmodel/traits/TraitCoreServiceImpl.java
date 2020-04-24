@@ -16,6 +16,8 @@
 
 package org.drools.core.factmodel.traits;
 
+import org.drools.core.factmodel.ClassBuilder;
+
 public class TraitCoreServiceImpl implements TraitCoreService {
 
     @Override
@@ -26,5 +28,10 @@ public class TraitCoreServiceImpl implements TraitCoreService {
     @Override
     public TraitFactory createTraitFactory() {
         return new TraitFactoryImpl();
+    }
+
+    @Override
+    public ClassBuilder createTraitProxyClassBuilder() {
+        return new TraitMapProxyClassBuilderImpl();
     }
 }

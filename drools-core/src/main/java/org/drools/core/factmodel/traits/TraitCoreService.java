@@ -16,8 +16,12 @@
 
 package org.drools.core.factmodel.traits;
 
+import org.drools.core.factmodel.ClassBuilder;
+
 public interface TraitCoreService {
     TraitRegistry createRegistry();
 
     TraitFactory createTraitFactory();
+
+    ClassBuilder createTraitProxyClassBuilder();
 }

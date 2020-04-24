@@ -19,6 +19,9 @@ package org.drools.core.factmodel;
 import java.io.Serializable;
 
 import org.drools.core.factmodel.traits.TraitClassBuilder;
+import org.drools.core.factmodel.traits.TraitCoreService;
+
+import static org.drools.core.reteoo.KieComponentFactory.fromTraitRegistry;
 
 public class ClassBuilderFactory implements Serializable {
 
@@ -90,7 +93,7 @@ public class ClassBuilderFactory implements Serializable {
 
     // Trait proxy wrappers
 
-    private ClassBuilder traitProxyBuilder;
+    private ClassBuilder traitProxyBuilder = fromTraitRegistry(TraitCoreService::createTraitProxyClassBuilder);
 
     public ClassBuilder getTraitProxyBuilder() {
         return traitProxyBuilder;

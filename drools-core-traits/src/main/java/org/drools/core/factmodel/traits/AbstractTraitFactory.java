@@ -237,7 +237,7 @@ public abstract class AbstractTraitFactory<T extends Thing<K>, K extends Traitab
             e.printStackTrace();
         }
 
-        TraitProxyClassBuilder proxyBuilder = null;
+        TraitProxyClassBuilder proxyBuilder = (TraitProxyClassBuilder) rcf.getClassBuilderFactory().getTraitProxyBuilder();
 
         proxyBuilder.init(tdef, rcf.getBaseTraitProxyClass(), getTraitRegistry());
         try {
