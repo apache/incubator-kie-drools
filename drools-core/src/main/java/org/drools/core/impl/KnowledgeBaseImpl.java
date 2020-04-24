@@ -210,7 +210,7 @@ public class KnowledgeBaseImpl
         kieComponentFactory = getConfiguration().getComponentFactory();
 
         this.factHandleFactory = kieComponentFactory.getFactHandleFactoryService();
-//        kieComponentFactory.getTraitFactory().setRuleBase(this);
+        kieComponentFactory.getTraitFactory().setRuleBase(this);
         kieComponentFactory.getTripleStore().setId(id);
 
         setupRete();
