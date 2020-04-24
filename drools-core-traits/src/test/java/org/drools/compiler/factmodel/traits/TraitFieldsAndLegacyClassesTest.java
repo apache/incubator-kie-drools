@@ -59,7 +59,7 @@ public class TraitFieldsAndLegacyClassesTest extends CommonTraitTest {
     }
 
 
-    @Test
+    @Test(timeout = 2000)
     public void testTraitFieldUpdate0() {
 
         String drl = "" +
@@ -124,7 +124,7 @@ public class TraitFieldsAndLegacyClassesTest extends CommonTraitTest {
 
 
 
-    @Test
+    @Test(timeout = 2000)
     public void testTraitFieldUpdate1() {
 
         String drl = "" +
@@ -211,7 +211,7 @@ public class TraitFieldsAndLegacyClassesTest extends CommonTraitTest {
 
     }
 
-    @Test
+    @Test(timeout = 2000)
     public void testTraitFieldUpdate2() {
 
         String drl = "" +
@@ -309,7 +309,7 @@ public class TraitFieldsAndLegacyClassesTest extends CommonTraitTest {
         assertEquals( 1, list.size() );
     }
 
-    @Test
+    @Test(timeout = 2000)
     public void testTraitFieldUpdate3() {
 
         String drl = "" +
@@ -405,7 +405,7 @@ public class TraitFieldsAndLegacyClassesTest extends CommonTraitTest {
     }
 
     @Category(ReviseTraitTestWithPRAlwaysCategory.class)
-    @Test
+    @Test(timeout = 2000)
     public void testTraitFieldUpdate4() {
 
         String drl = "" +
@@ -483,7 +483,7 @@ public class TraitFieldsAndLegacyClassesTest extends CommonTraitTest {
         assertEquals( 1, list.size() );
     }
 
-    @Test
+    @Test(timeout = 2000)
     public void testTraitFieldUpdate5() {
 
         String drl = "" +
@@ -567,7 +567,7 @@ public class TraitFieldsAndLegacyClassesTest extends CommonTraitTest {
         assertEquals( 1, list.size() );
     }
 
-    @Test
+    @Test(timeout = 2000)
     public void testTraitFieldUpdate6() {
 
         String drl = "" +
@@ -660,7 +660,7 @@ public class TraitFieldsAndLegacyClassesTest extends CommonTraitTest {
     }
 
 
-    @Test
+    @Test(timeout = 2000)
     public void testTraitFieldUpdate7() {
 
         String drl = "" +
@@ -744,7 +744,7 @@ public class TraitFieldsAndLegacyClassesTest extends CommonTraitTest {
 
 
 
-    @Test
+    @Test(timeout = 2000)
     public void testTraitFieldUpdate8() {
 
         String drl = "" +
@@ -826,7 +826,7 @@ public class TraitFieldsAndLegacyClassesTest extends CommonTraitTest {
         assertEquals( 1, list.size() );
     }
 
-    @Test
+    @Test(timeout = 2000)
     public void testTraitFieldUpdate9() {
 
         String drl = "" +
@@ -917,7 +917,7 @@ public class TraitFieldsAndLegacyClassesTest extends CommonTraitTest {
         assertEquals( 1, list.size() );
     }
 
-    @Test
+    @Test(timeout = 2000)
     public void testTraitFieldUpdate10() {
 
         String drl = "" +
@@ -1009,7 +1009,7 @@ public class TraitFieldsAndLegacyClassesTest extends CommonTraitTest {
         assertEquals( 1, list.size() );
     }
 
-    @Test
+    @Test(timeout = 2000)
     public void testTraitTwoParentOneChild() {
 
         String drl = "" +
@@ -1120,7 +1120,7 @@ public class TraitFieldsAndLegacyClassesTest extends CommonTraitTest {
         assertEquals( 1, list.size() );
     }
 
-    @Test(timeout = 10000L) @Ignore
+    @Test(timeout = 2000) @Ignore
     public void testTraitWithPositionArgs(){
 
         String drl = "" +
@@ -1259,7 +1259,7 @@ public class TraitFieldsAndLegacyClassesTest extends CommonTraitTest {
     }
 
 
-    @Test
+    @Test(timeout = 2000)
     public void singlePositionTraitTest(){
 
 
