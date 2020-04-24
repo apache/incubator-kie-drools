@@ -110,6 +110,22 @@ public class DMNRuntimeTypesTest extends BaseVariantTest {
     }
 
     @Test
+    public void testInputAny() {
+        final DMNRuntime runtime = createRuntime("inputAny.dmn", this.getClass());
+        final DMNModel dmnModel = runtime.getModel("https://kiegroup.org/dmn/_7D9140EF-DC52-4DC1-8983-9C2EC5B89BAE", "new-file");
+        assertThat(dmnModel, notNullValue());
+        assertThat(DMNRuntimeUtil.formatMessages(dmnModel.getMessages()), dmnModel.hasErrors(), is(false));
+
+        final DMNContext context = DMNFactory.newContext();
+        context.set("Input Any", "John Doe");
+
+        final DMNResult dmnResult = evaluateModel(runtime, dmnModel, context);
+        LOG.debug("{}", dmnResult);
+        assertThat(DMNRuntimeUtil.formatMessages(dmnResult.getMessages()), dmnResult.hasErrors(), is(false));
+        assertThat(dmnResult.getDecisionResultByName("Decision-1").getResult(), is("Decision: John Doe"));
+    }
+
+    @Test
     public void testRecursiveEmployee() {
         final DMNRuntime runtime = createRuntime("recursiveEmployee.dmn", this.getClass());
 

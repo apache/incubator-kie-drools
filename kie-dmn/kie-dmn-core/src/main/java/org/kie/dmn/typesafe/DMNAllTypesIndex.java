@@ -79,7 +79,7 @@ public class DMNAllTypesIndex {
             String simpleName = StringUtils.ucFirst(CodegenStringUtil.escapeIdentifier(dmnType.getName()));
             return mapNamespaceIndex.get(DMNTypeKey.from(dmnType)).getPackageName().appendPackage(simpleName);
         }
-        if (dmnType.getNamespace().contains("FEEL")) { // TODO
+        if (FEELTypeUtils.isFEELBuiltInType(dmnType)) {
             return convertBuiltin(dmnType);
         }
         if (dmnType.getBaseType() == null) {
