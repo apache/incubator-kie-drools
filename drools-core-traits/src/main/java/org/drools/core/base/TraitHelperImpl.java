@@ -29,6 +29,7 @@ import java.util.List;
 import java.util.PriorityQueue;
 
 import org.drools.core.WorkingMemoryEntryPoint;
+import org.drools.core.common.DefaultFactHandle;
 import org.drools.core.common.InternalFactHandle;
 import org.drools.core.common.InternalWorkingMemoryActions;
 import org.drools.core.common.InternalWorkingMemoryEntryPoint;
@@ -80,7 +81,7 @@ public class TraitHelperImpl implements Externalizable, TraitHelper {
     public TraitHelperImpl() {
     }
 
-    public <T, K> T don( Activation activation, K core, Collection<Class<? extends Thing>> traits, boolean logical, Mode... modes ) {
+    public <T, K> T don(Activation activation, K core, Collection<Class<? extends Thing>> traits, boolean logical, Mode... modes ) {
         if ( core instanceof Thing && ( (Thing) core ).getCore() != core ) {
             return don( activation, ((Thing) core).getCore(), traits, logical, modes );
         }
@@ -640,7 +641,8 @@ public class TraitHelperImpl implements Externalizable, TraitHelper {
         }
     }
 
-    public static <K> K extractTrait( InternalFactHandle handle, Class<K> klass ) {
+    @Override
+    public <K> K extractTrait( InternalFactHandle handle, Class<K> klass ) {
         TraitableBean tb;
         if ( handle.isTraitable() ) {
             tb = (TraitableBean) handle.getObject();

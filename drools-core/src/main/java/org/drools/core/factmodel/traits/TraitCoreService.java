@@ -16,6 +16,7 @@
 
 package org.drools.core.factmodel.traits;
 
+import org.drools.core.base.TraitHelper;
 import org.drools.core.factmodel.ClassBuilder;
 
 public interface TraitCoreService {
@@ -24,4 +25,6 @@ public interface TraitCoreService {
     TraitFactory createTraitFactory();
 
     ClassBuilder createTraitProxyClassBuilder();
+
+    TraitHelper createTraitHelper();
 }

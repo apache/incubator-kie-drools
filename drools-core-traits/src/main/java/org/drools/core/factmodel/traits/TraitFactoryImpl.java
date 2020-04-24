@@ -108,7 +108,8 @@ public class TraitFactoryImpl<T extends Thing<K>, K extends TraitableBean> exten
         this.kBase = kBase;
     }
 
-    public static TraitTypeEnum determineTraitType( Object object ) {
+    @Override
+    public TraitTypeEnum determineTraitType( Object object ) {
         if ( object instanceof TraitProxy ) {
             return TraitTypeEnum.TRAIT;
         } else if ( object instanceof CoreWrapper ) {

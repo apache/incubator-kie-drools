@@ -27,6 +27,7 @@ import javax.xml.bind.annotation.XmlAttribute;
 import javax.xml.bind.annotation.XmlRootElement;
 import org.drools.core.WorkingMemoryEntryPoint;
 import org.drools.core.base.TraitHelper;
+import org.drools.core.factmodel.traits.TraitCoreService;
 import org.drools.core.factmodel.traits.TraitFactory;
 import org.drools.core.factmodel.traits.TraitTypeEnum;
 import org.drools.core.impl.InternalKnowledgeBase;
@@ -38,6 +39,8 @@ import org.drools.core.spi.Tuple;
 import org.drools.core.util.AbstractBaseLinkedListNode;
 import org.drools.core.util.StringUtils;
 import org.kie.api.runtime.rule.FactHandle;
+
+import static org.drools.core.reteoo.KieComponentFactory.fromTraitRegistry;
 
 /**
  * Implementation of <code>FactHandle</code>.
@@ -125,8 +128,7 @@ public class DefaultFactHandle extends AbstractBaseLinkedListNode<DefaultFactHan
                              final long recency,
                              final WorkingMemoryEntryPoint wmEntryPoint,
                              final boolean isTraitOrTraitable ) {
-        // TODO trait specific type
-        this(id, identityHashCode, object, recency, wmEntryPoint == null ? null : wmEntryPoint.getEntryPoint(), null);
+        this(id, identityHashCode, object, recency, wmEntryPoint == null ? null : wmEntryPoint.getEntryPoint(), determineTraitType(object, isTraitOrTraitable));
         if (wmEntryPoint != null) {
             setLinkedTuples( wmEntryPoint.getKnowledgeBase() );
             this.wmEntryPoint = wmEntryPoint;
@@ -146,7 +148,7 @@ public class DefaultFactHandle extends AbstractBaseLinkedListNode<DefaultFactHan
         this.recency = recency;
         setObject( object );
         this.identityHashCode = identityHashCode;
-        this.traitType = TraitTypeEnum.NON_TRAIT;
+        this.traitType = traitType;
     }
 
     public DefaultFactHandle(long id,
@@ -195,15 +197,13 @@ public class DefaultFactHandle extends AbstractBaseLinkedListNode<DefaultFactHan
     public <K> K as( Class<K> klass ) throws ClassCastException {
         if ( klass.isAssignableFrom( object.getClass() ) ) {
             return (K) object;
+        } else if ( this.isTraitOrTraitable() ) {
+            TraitHelper traitFactory = fromTraitRegistry(TraitCoreService::createTraitHelper);
+            K k = traitFactory.extractTrait( this, klass );
+            if ( k != null ) {
+                return  k;
+            }
         }
-
-        // TODO trait specific code
-//        if ( this.isTraitOrTraitable() ) {
-//            K k = TraitHelper.extractTrait( this, klass );
-//            if ( k != null ) {
-//                return  k;
-//            }
-//        }
         throw new ClassCastException( "The Handle's Object can't be cast to " + klass );
     }
 
@@ -244,7 +244,7 @@ public class DefaultFactHandle extends AbstractBaseLinkedListNode<DefaultFactHan
 
     /**
      * format_version:id:identity:hashcode:recency
-     * 
+     *
      * @see FactHandle
      */
     public final String toExternalForm() {
@@ -320,18 +320,17 @@ public class DefaultFactHandle extends AbstractBaseLinkedListNode<DefaultFactHan
             this.objectHashCode = 0;
         }
 
-        // TODO this is trait specific code
-//        if ( isTraitOrTraitable() ) {
-//            TraitTypeEnum newType = determineTraitType(object, isTraitOrTraitable());
-//            if ( ! ( this.traitType == TraitTypeEnum.LEGACY_TRAITABLE && newType != TraitTypeEnum.LEGACY_TRAITABLE ) ) {
-//                this.identityHashCode = determineIdentityHashCode( object );
-//            } else {
-//                // we are replacing a non-traitable object with its proxy, so we need to preserve the identity hashcode
-//            }
-//            this.traitType = newType;
-//        } else {
+        if ( isTraitOrTraitable() ) {
+            TraitTypeEnum newType = determineTraitType(object, isTraitOrTraitable());
+            if ( ! ( this.traitType == TraitTypeEnum.LEGACY_TRAITABLE && newType != TraitTypeEnum.LEGACY_TRAITABLE ) ) {
+                this.identityHashCode = determineIdentityHashCode( object );
+            } else {
+                // we are replacing a non-traitable object with its proxy, so we need to preserve the identity hashcode
+            }
+            this.traitType = newType;
+        } else {
             this.identityHashCode = determineIdentityHashCode( object );
-//        }
+        }
     }
 
     /**
@@ -468,15 +467,14 @@ public class DefaultFactHandle extends AbstractBaseLinkedListNode<DefaultFactHan
         handle.objectClassName = elements.length > 7 ? elements[7] : null;
     }
 
-
-    // TODO trait specific code
-//    private static TraitTypeEnum determineTraitType(Object object, boolean isTraitOrTraitable) {
-//        if ( isTraitOrTraitable ) {
-//            return TraitFactory.determineTraitType( object );
-//        } else {
-//            return TraitTypeEnum.NON_TRAIT;
-//        }
-//    }
+    private static TraitTypeEnum determineTraitType(Object object, boolean isTraitOrTraitable) {
+        if ( isTraitOrTraitable ) {
+            TraitFactory traitFactory = fromTraitRegistry(TraitCoreService::createTraitFactory);
+            return traitFactory.determineTraitType( object );
+        } else {
+            return TraitTypeEnum.NON_TRAIT;
+        }
+    }
 
     public boolean isTraitable() {
         return traitType == TraitTypeEnum.TRAITABLE || traitType == TraitTypeEnum.WRAPPED_TRAITABLE;

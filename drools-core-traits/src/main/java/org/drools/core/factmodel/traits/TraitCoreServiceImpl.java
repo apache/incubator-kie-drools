@@ -16,6 +16,8 @@
 
 package org.drools.core.factmodel.traits;
 
+import org.drools.core.base.TraitHelper;
+import org.drools.core.base.TraitHelperImpl;
 import org.drools.core.factmodel.ClassBuilder;
 
 public class TraitCoreServiceImpl implements TraitCoreService {
@@ -33,5 +35,10 @@ public class TraitCoreServiceImpl implements TraitCoreService {
     @Override
     public ClassBuilder createTraitProxyClassBuilder() {
         return new TraitMapProxyClassBuilderImpl();
+    }
+
+    @Override
+    public TraitHelper createTraitHelper() {
+        return new TraitHelperImpl();
     }
 }

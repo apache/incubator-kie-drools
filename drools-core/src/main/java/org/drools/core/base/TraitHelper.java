@@ -13,6 +13,8 @@ import org.kie.api.internal.runtime.beliefs.Mode;
 
 public interface TraitHelper {
 
+    <K> K extractTrait(InternalFactHandle defaultFactHandle, Class<K> klass);
+
     <T, K> T don(Activation activation, K core, Collection<Class<? extends Thing>> traits, boolean logical, Mode... modes);
 
     <T, K> T don(Activation activation, K core, Class<T> trait, boolean logical, Mode... modes);
