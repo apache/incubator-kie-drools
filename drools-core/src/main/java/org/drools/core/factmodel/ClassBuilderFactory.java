@@ -93,9 +93,16 @@ public class ClassBuilderFactory implements Serializable {
 
     // Trait proxy wrappers
 
-    private ClassBuilder traitProxyBuilder = fromTraitRegistry(TraitCoreService::createTraitProxyClassBuilder);
+    private ClassBuilder traitProxyBuilder;
 
     public ClassBuilder getTraitProxyBuilder() {
+        if(traitProxyBuilder == null) {
+            try {
+                traitProxyBuilder = fromTraitRegistry(TraitCoreService::createTraitProxyClassBuilder);
+            } catch(Throwable e) {
+                // TODO fix this
+            }
+        }
         return traitProxyBuilder;
     }
 

@@ -57,6 +57,7 @@ import org.drools.core.definitions.impl.KnowledgePackageImpl;
 import org.drools.core.definitions.rule.impl.RuleImpl;
 import org.drools.core.event.KieBaseEventSupport;
 import org.drools.core.factmodel.ClassDefinition;
+import org.drools.core.factmodel.traits.TraitFactory;
 import org.drools.core.factmodel.traits.TraitRegistry;
 import org.drools.core.management.DroolsManagementAgent;
 import org.drools.core.reteoo.AsyncReceiveNode;
@@ -210,7 +211,10 @@ public class KnowledgeBaseImpl
         kieComponentFactory = getConfiguration().getComponentFactory();
 
         this.factHandleFactory = kieComponentFactory.getFactHandleFactoryService();
-        kieComponentFactory.getTraitFactory().setRuleBase(this);
+        TraitFactory traitFactory = kieComponentFactory.getTraitFactory();
+        if(traitFactory != null) { // TODO fix this
+            traitFactory.setRuleBase(this);
+        }
         kieComponentFactory.getTripleStore().setId(id);
 
         setupRete();

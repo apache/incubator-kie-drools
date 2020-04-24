@@ -233,9 +233,16 @@ public class KieComponentFactory implements Serializable {
         return new DefaultLogicTransformerFactory();
     }
 
-    private TraitFactory traitFactory = fromTraitRegistry(TraitCoreService::createTraitFactory);
+    private TraitFactory traitFactory;
 
     public TraitFactory getTraitFactory() {
+        if(traitFactory == null) {
+            try {
+                traitFactory = fromTraitRegistry(TraitCoreService::createTraitFactory);
+            } catch(Throwable e) {
+
+            }
+        }
         return traitFactory;
     }
 
