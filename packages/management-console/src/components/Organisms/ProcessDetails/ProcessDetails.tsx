@@ -103,13 +103,19 @@ const ProcessDetails: React.FC<IOwnProps> = ({ data, from }) => {
             </Text>
           </FormGroup>
           <FormGroup label="Id" fieldId="id">
-            <Text component={TextVariants.p}>
+            <Text
+              component={TextVariants.p}
+              className="kogito-management-console--u-WordBreak"
+            >
               {data.ProcessInstances[0].id}
             </Text>
           </FormGroup>
           <FormGroup label="Endpoint" fieldId="endpoint">
             {data.ProcessInstances[0].endpoint ? (
-              <Text component={TextVariants.p}>
+              <Text
+                component={TextVariants.p}
+                className="kogito-management-console--u-WordBreak"
+              >
                 {data.ProcessInstances[0].endpoint}
               </Text>
             ) : (

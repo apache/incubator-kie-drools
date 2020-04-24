@@ -33,6 +33,7 @@ exports[`Process Details component Snapshot tests 1`] = `
         label="Id"
       >
         <Text
+          className="kogito-management-console--u-WordBreak"
           component="p"
         />
       </FormGroup>
@@ -41,6 +42,7 @@ exports[`Process Details component Snapshot tests 1`] = `
         label="Endpoint"
       >
         <Text
+          className="kogito-management-console--u-WordBreak"
           component="p"
         >
           test
