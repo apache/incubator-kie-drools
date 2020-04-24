@@ -80,7 +80,6 @@ public class PMMLScorecardModelEvaluatorTest {
         assertEquals(1, pmml.getModels().size());
         assertTrue(pmml.getModels().get(0) instanceof Scorecard);
         kiePMMLModel = KiePMMLScorecardModelFactory.getKiePMMLScorecardModel(pmml.getDataDictionary(), (Scorecard) pmml.getModels().get(0));
-        System.out.println("setUp");
     }
 
     @Parameterized.Parameters

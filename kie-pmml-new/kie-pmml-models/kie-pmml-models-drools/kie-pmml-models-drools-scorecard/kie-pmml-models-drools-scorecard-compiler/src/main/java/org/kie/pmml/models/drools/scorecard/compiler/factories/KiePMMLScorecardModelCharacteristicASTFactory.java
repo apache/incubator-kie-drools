@@ -30,6 +30,7 @@ import org.kie.pmml.commons.model.enums.DATA_TYPE;
 import org.kie.pmml.models.drools.ast.KiePMMLDroolsRule;
 import org.kie.pmml.models.drools.ast.factories.KiePMMLAbstractModelASTFactory;
 import org.kie.pmml.models.drools.ast.factories.KiePMMLPredicateASTFactory;
+import org.kie.pmml.models.drools.ast.factories.PredicateASTFactoryData;
 import org.kie.pmml.models.drools.tuples.KiePMMLOriginalTypeGeneratedType;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -70,7 +71,7 @@ public class KiePMMLScorecardModelCharacteristicASTFactory {
                 String currentRule = String.format(PATH_PATTERN, parentPath, characteristic.getName());
                 KiePMMLDroolsRule.Builder builder = KiePMMLDroolsRule.builder(currentRule, currentRule, null)
                         .withStatusConstraint(statusConstraint);
-                if (initialScore != null)  {
+                if (initialScore != null) {
                     builder = builder.withAccumulation(initialScore);
                 }
                 toReturn.add(builder.build());
@@ -108,7 +109,7 @@ public class KiePMMLScorecardModelCharacteristicASTFactory {
             return;
         }
         String currentRule = String.format(PATH_PATTERN, parentPath, attributeIndex);
-        KiePMMLPredicateASTFactory.factory(fieldTypeMap, outputFields, rules)
-                .declareRuleFromPredicateWithAccumulation(predicate, parentPath, currentRule, (Number) getCorrectlyFormattedResult(attribute.getPartialScore(), targetType), statusToSet, isLastCharacteristic);
+        PredicateASTFactoryData predicateASTFactoryData = new PredicateASTFactoryData(predicate, outputFields, rules, parentPath, currentRule, fieldTypeMap);
+        KiePMMLPredicateASTFactory.factory(predicateASTFactoryData).declareRuleFromPredicate((Number) getCorrectlyFormattedResult(attribute.getPartialScore(), targetType), statusToSet, isLastCharacteristic);
     }
 }
