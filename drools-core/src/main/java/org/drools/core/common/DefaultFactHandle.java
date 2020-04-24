@@ -469,8 +469,12 @@ public class DefaultFactHandle extends AbstractBaseLinkedListNode<DefaultFactHan
 
     private static TraitTypeEnum determineTraitType(Object object, boolean isTraitOrTraitable) {
         if ( isTraitOrTraitable ) {
-            TraitFactory traitFactory = fromTraitRegistry(TraitCoreService::createTraitFactory);
-            return traitFactory.determineTraitType( object );
+            try {
+                TraitFactory traitFactory = fromTraitRegistry(TraitCoreService::createTraitFactory);
+                return traitFactory.determineTraitType(object);
+            } catch(Throwable e) { // TODO fix this
+                return TraitTypeEnum.NON_TRAIT;
+            }
         } else {
             return TraitTypeEnum.NON_TRAIT;
         }
