@@ -15,13 +15,10 @@
  */
 package org.kie.pmml.models.drools.executor;
 
-import java.util.Objects;
 import java.util.concurrent.atomic.AtomicReference;
 
 /**
  * Class used inside drools. Rules are fired based on the value of status
- *
- *
  */
 public class KiePMMLStatusHolder {
 
@@ -51,23 +48,5 @@ public class KiePMMLStatusHolder {
                 "status='" + status + '\'' +
                 "accumulator='" + accumulator + '\'' +
                 '}';
-    }
-
-    @Override
-    public boolean equals(Object o) {
-        if (this == o) {
-            return true;
-        }
-        if (o == null || getClass() != o.getClass()) {
-            return false;
-        }
-        KiePMMLStatusHolder that = (KiePMMLStatusHolder) o;
-        return Objects.equals(status, that.status) &&
-                Objects.equals(accumulator, that.accumulator);
-    }
-
-    @Override
-    public int hashCode() {
-        return Objects.hash(status, accumulator);
     }
 }

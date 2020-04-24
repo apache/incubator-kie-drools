@@ -37,7 +37,9 @@ public class KiePMMLDroolsModelUtils {
 
     /**
      * Return an <code>Object</code> correctly formatted to be put in drl (e.g. if the <b>targetType</b>
-     * is <code>DATA_TYPE.STRING</code> returns the <b>quoted</b> rawValue
+     * is <code>DATA_TYPE.STRING</code> returns the <b>quoted</b> rawValue.
+     *
+     * If <b>rawValue</b> is <code>null</code>, returns <code>null</code>
      * @param rawValue
      * @param targetType
      * @return
