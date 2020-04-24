@@ -85,7 +85,7 @@ end
 // Conflict constraints
 rule "serviceConflict"
     when
-        $leftProcessAssignment : MrProcessAssignment($service : service, $machine : machine, $leftId : id)
+        $leftProcessAssignment : MrProcessAssignment(machine != null, $service : service, $machine : machine, $leftId : id)
         $rightProcessAssignment : MrProcessAssignment(service == $service, machine == $machine, id > $leftId)
     then
         scoreHolder.addHardConstraintMatch(kcontext, -1);
@@ -109,7 +109,7 @@ end
 rule "serviceDependency"
     when
         $serviceDependency : MrServiceDependency($fromService : fromService, $toService : toService)
-        $processAssignment : MrProcessAssignment(service == $fromService, $neighborhood : neighborhood)
+        $processAssignment : MrProcessAssignment(machine != null, service == $fromService, $neighborhood : neighborhood)
         not MrProcessAssignment(service == $toService, neighborhood == $neighborhood)
     then
         scoreHolder.addHardConstraintMatch(kcontext, -1);
