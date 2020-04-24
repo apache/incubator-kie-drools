@@ -16,7 +16,6 @@
 package org.kie.pmml.models.drools.executor;
 
 import java.util.concurrent.atomic.AtomicReference;
-import java.util.concurrent.atomic.AtomicReference;
 
 /**
  * Class used inside drools. Rules are fired based on the value of status
