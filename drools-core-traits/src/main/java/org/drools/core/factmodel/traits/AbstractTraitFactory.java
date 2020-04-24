@@ -227,9 +227,7 @@ public abstract class AbstractTraitFactory<T extends Thing<K>, K extends Traitab
 
         KieComponentFactory rcf = getComponentFactory();
 
-//        ClassBuilderFactory classBuilderFactory = rcf.getClassBuilderFactory();
-        ClassBuilderFactory classBuilderFactory = new ClassBuilderFactory(); // TODO instantiate this
-        TraitPropertyWrapperClassBuilder propWrapperBuilder = null;
+        TraitPropertyWrapperClassBuilder propWrapperBuilder = (TraitPropertyWrapperClassBuilder) rcf.getClassBuilderFactory().getPropertyWrapperBuilder();
 
         propWrapperBuilder.init(tdef, getTraitRegistry());
         try {
