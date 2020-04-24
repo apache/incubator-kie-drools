@@ -113,29 +113,6 @@ public class MachineReassignmentConstraintProviderTest {
     }
 
     @Test
-    @Ignore("The constraint has not been fully implemented yet.")
-    public void serviceLocationSpreadWithUnassignedProcess() {
-        MrLocation location = new MrLocation(0L);
-
-        MrMachine machine = new MrMachine(0L, location);
-
-        // the service is expected to be spread across at least 5 locations
-        MrService service = new MrService(0L);
-        service.setToDependencyServiceList(Collections.emptyList());
-        service.setLocationSpread(5);
-
-        MrProcess process = new MrProcess(0L, service);
-
-        // the service is spread across no machines
-        MrProcessAssignment processAssignment = new MrProcessAssignment(0L, process);
-
-        constraintVerifier.verifyThat(MachineReassignmentConstraintProvider::serviceLocationSpread)
-                .given(service, location, machine, process, processAssignment)
-                .penalizesBy(5L);
-    }
-
-    @Test
-    @Ignore("The constraint has not been fully implemented yet.")
     public void serviceLocationSpread() {
         MrLocation location1 = new MrLocation(1L);
         MrLocation location2 = new MrLocation(2L);
@@ -145,12 +122,12 @@ public class MachineReassignmentConstraintProviderTest {
         MrMachine machine3 = new MrMachine(2L, location2);
 
         // the service is expected to be spread across at least 5 locations
-        MrService service1 = new MrService();
-        service1.setLocationSpread(5);
+        MrService service = new MrService();
+        service.setLocationSpread(5);
 
-        MrProcess process1 = new MrProcess(service1);
-        MrProcess process2 = new MrProcess(service1);
-        MrProcess process3 = new MrProcess(service1);
+        MrProcess process1 = new MrProcess(service);
+        MrProcess process2 = new MrProcess(service);
+        MrProcess process3 = new MrProcess(service);
 
         // the service is spread across 3 machines in 2 different locations
         MrProcessAssignment process1AssignmentToMachine1 = new MrProcessAssignment(1L, process1, machine1);
@@ -158,7 +135,7 @@ public class MachineReassignmentConstraintProviderTest {
         MrProcessAssignment process3AssignmentToMachine3 = new MrProcessAssignment(3L, process3, machine3);
 
         constraintVerifier.verifyThat(MachineReassignmentConstraintProvider::serviceLocationSpread)
-                .given(service1, location1, location2, machine1, machine2, machine3, process1, process2, process3,
+                .given(service, location1, location2, machine1, machine2, machine3, process1, process2, process3,
                         process1AssignmentToMachine1, process2AssignmentToMachine2, process3AssignmentToMachine3)
                 .penalizesBy(3L); // 5 - 3 (expected - real location spread)
     }
@@ -293,10 +270,8 @@ public class MachineReassignmentConstraintProviderTest {
         MrProcessAssignment processAssignment2 = new MrProcessAssignment(0L, process2, machine1, machine2);
         MrProcessAssignment processAssignment3 = new MrProcessAssignment(0L, process3, machine2, machine1);
 
-        /*
-         * 2 processes are moving from machine1 to machine2, which has a cost of 20 => 2 * 20 * 10 (global penalty) = 400.
-         * The process3 moves from machine2 to machine1, which has a zero cost.
-         */
+        // 2 processes are moving from machine1 to machine2, which has a cost of 20 => 2 * 20 * 10 (global penalty) = 400.
+        // The process3 moves from machine2 to machine1, which has a zero cost.
         constraintVerifier.verifyThat(MachineReassignmentConstraintProvider::machineMoveCost)
                 .given(globalPenaltyInfo, machine1, machine2, process1, process2, process3, processAssignment1,
                         processAssignment2, processAssignment3)

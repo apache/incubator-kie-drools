@@ -21,6 +21,7 @@ import static org.optaplanner.core.api.score.stream.Joiners.equal;
 import static org.optaplanner.core.api.score.stream.Joiners.filtering;
 
 import java.util.function.BiFunction;
+import java.util.function.Function;
 
 import org.optaplanner.core.api.score.buildin.hardsoftlong.HardSoftLongScore;
 import org.optaplanner.core.api.score.stream.Constraint;
@@ -48,7 +49,7 @@ public class MachineReassignmentConstraintProvider implements ConstraintProvider
 
                 // soft constraints
                 loadCost(factory),
-                balanceCost(factory),
+           //     balanceCost(factory),
                 processMoveCost(factory),
                 serviceMoveCost(factory),
                 machineMoveCost(factory)
@@ -77,10 +78,9 @@ public class MachineReassignmentConstraintProvider implements ConstraintProvider
     }
 
     protected Constraint serviceConflict(ConstraintFactory factory) {
-        return factory.fromUnfiltered(MrProcessAssignment.class)
-                .join(factory.fromUnfiltered(MrProcessAssignment.class),
-                        equal(MrProcessAssignment::getMachine, MrProcessAssignment::getMachine))
-                .filter((left, right) -> left.getService().equals(right.getService()) && right.getId() > left.getId())
+        return factory.fromUniquePair(MrProcessAssignment.class,
+                equal(MrProcessAssignment::getMachine, MrProcessAssignment::getMachine),
+                equal(MrProcessAssignment::getService, MrProcessAssignment::getService))
                 .penalize(MrConstraints.SERVICE_CONFLICT, HardSoftLongScore.ONE_HARD);
     }
 
@@ -88,7 +88,13 @@ public class MachineReassignmentConstraintProvider implements ConstraintProvider
      * Spread: Processes of the same service must be serviceLocationSpread out across locations.
      */
     protected Constraint serviceLocationSpread(ConstraintFactory factory) {
-        throw new UnsupportedOperationException("ConstraintCollectors.countDistinct should not count null as a distinct value");
+        return factory.from(MrService.class)
+                .join(MrProcessAssignment.class, equal(Function.identity(), MrProcessAssignment::getService))
+                .groupBy((service, processAssignment) -> service,
+                        ConstraintCollectors.countDistinct((service, processAssignment) -> processAssignment.getLocation()))
+                .filter((service, distinctLocationCount) -> distinctLocationCount < service.getLocationSpread())
+                .penalizeLong(MrConstraints.SERVICE_LOCATION_SPREAD, HardSoftLongScore.ONE_HARD,
+                        (service, distinctLocationCount) -> service.getLocationSpread() - distinctLocationCount);
     }
 
     /**
@@ -159,7 +165,7 @@ public class MachineReassignmentConstraintProvider implements ConstraintProvider
      * Process move cost: A process has a move cost.
      */
     protected Constraint processMoveCost(ConstraintFactory factory) {
-        return factory.fromUnfiltered(MrProcessAssignment.class)
+        return factory.from(MrProcessAssignment.class)
                 .filter(processAssignment -> processAssignment.isMoved() && processAssignment.getProcessMoveCost() > 0)
                 .join(MrGlobalPenaltyInfo.class,
                         Joiners.filtering((processAssignment, penalty) -> penalty.getProcessMoveCostWeight() > 0))
@@ -173,7 +179,7 @@ public class MachineReassignmentConstraintProvider implements ConstraintProvider
      * Service move cost: A service has a move cost.
      */
     protected Constraint serviceMoveCost(ConstraintFactory factory) {
-        return factory.fromUnfiltered(MrProcessAssignment.class)
+        return factory.from(MrProcessAssignment.class)
                 .filter(MrProcessAssignment::isMoved)
                 .groupBy(processAssignment -> processAssignment.getService(), ConstraintCollectors.count())
                 .groupBy(ConstraintCollectors.max((BiFunction<MrService, Integer, Integer>) (service, count) -> count))
