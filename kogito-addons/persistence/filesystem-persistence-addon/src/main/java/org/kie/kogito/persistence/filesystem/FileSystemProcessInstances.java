@@ -40,7 +40,8 @@ public class FileSystemProcessInstances implements MutableProcessInstances {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(FileSystemProcessInstances.class);
 
-    private static final String PI_DESCRIPTION = "ProcessInstanceDescription";
+    public static final String PI_DESCRIPTION = "ProcessInstanceDescription";
+    public static final String PI_STATUS = "ProcessInstanceStatus";
     private Process<?> process;
     private Path storage;
 
@@ -135,6 +136,7 @@ public class FileSystemProcessInstances implements MutableProcessInstances {
             byte[] data = marshaller.marhsallProcessInstance(instance);
             Files.write(processInstanceStorage, data);
             setMetadata(processInstanceStorage, PI_DESCRIPTION, instance.description());
+            setMetadata(processInstanceStorage, PI_STATUS, String.valueOf(instance.status()));
 
             disconnect(processInstanceStorage, instance);
         } catch (IOException e) {
@@ -165,7 +167,7 @@ public class FileSystemProcessInstances implements MutableProcessInstances {
         });
     }
 
-    protected String getMetadata(Path file, String key) {
+    public String getMetadata(Path file, String key) {
         
         if (supportsUserDefinedAttributes(file)) {
             UserDefinedFileAttributeView view = Files.getFileAttributeView(file, UserDefinedFileAttributeView.class);
@@ -181,7 +183,7 @@ public class FileSystemProcessInstances implements MutableProcessInstances {
         return null;
     }
 
-    protected boolean setMetadata(Path file, String key, String value) {
+    public boolean setMetadata(Path file, String key, String value) {
 
         if (supportsUserDefinedAttributes(file)) {
             UserDefinedFileAttributeView view = Files.getFileAttributeView(file, UserDefinedFileAttributeView.class);

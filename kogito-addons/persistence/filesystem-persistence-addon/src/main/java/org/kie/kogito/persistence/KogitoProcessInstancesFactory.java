@@ -15,7 +15,6 @@
 
 package org.kie.kogito.persistence;
 
-import java.nio.file.Path;
 import java.nio.file.Paths;
 
 import org.kie.kogito.persistence.filesystem.FileSystemProcessInstances;
@@ -28,21 +27,11 @@ import org.kie.kogito.process.ProcessInstancesFactory;
  */
 public abstract class KogitoProcessInstancesFactory implements ProcessInstancesFactory {
    
-	private Path storage; 
-
-    public KogitoProcessInstancesFactory() {
-    }
-    
-    public KogitoProcessInstancesFactory(Path storage) {
-    	this.storage = storage;
-    }
-    
+	
     public FileSystemProcessInstances createProcessInstances(Process<?> process) {
         return new FileSystemProcessInstances(process, Paths.get(path()));
     }
     
-    public String path() {
-        return storage.toString();
-    }
+    public abstract String path();
     
 }

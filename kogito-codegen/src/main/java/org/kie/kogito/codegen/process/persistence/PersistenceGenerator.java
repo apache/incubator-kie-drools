@@ -54,7 +54,6 @@ import com.github.javaparser.ast.expr.NullLiteralExpr;
 import com.github.javaparser.ast.expr.ObjectCreationExpr;
 import com.github.javaparser.ast.expr.SimpleName;
 import com.github.javaparser.ast.expr.StringLiteralExpr;
-import com.github.javaparser.ast.expr.SuperExpr;
 import com.github.javaparser.ast.expr.VariableDeclarationExpr;
 import com.github.javaparser.ast.stmt.BlockStmt;
 import com.github.javaparser.ast.stmt.ExplicitConstructorInvocationStmt;
@@ -302,17 +301,7 @@ public class PersistenceGenerator extends AbstractGenerator {
                 .addExtendedType("org.kie.kogito.persistence.KogitoProcessInstancesFactory");
         
         CompilationUnit compilationUnit = new CompilationUnit("org.kie.kogito.persistence");            
-        compilationUnit.getTypes().add(persistenceProviderClazz);  
-        
-        persistenceProviderClazz.addConstructor(Keyword.PUBLIC).setBody(new BlockStmt().addStatement(new SuperExpr()));
-        
-        ConstructorDeclaration constructor = persistenceProviderClazz.addConstructor(Keyword.PUBLIC);
-        constructor.addParameter(new ClassOrInterfaceType(null, String.class.getName()), "storagePath");
-        BlockStmt body = new BlockStmt();
-        ExplicitConstructorInvocationStmt superExp = new ExplicitConstructorInvocationStmt(false, null, NodeList.nodeList(new MethodCallExpr(new NameExpr(Paths.class.getCanonicalName()), "get").addArgument(new NameExpr("storagePath"))));
-        body.addStatement(superExp);
-        
-        constructor.setBody(body);
+        compilationUnit.getTypes().add(persistenceProviderClazz);                 
         
         if (useInjection()) {
             annotator.withApplicationComponent(persistenceProviderClazz);            
