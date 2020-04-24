@@ -29,8 +29,8 @@ import java.util.Set;
 
 import org.drools.core.factmodel.traits.Thing;
 import org.drools.core.factmodel.traits.TraitFieldTMS;
-//import org.drools.core.factmodel.traits.TraitFieldTMSImpl;
-//import org.drools.core.factmodel.traits.TraitTypeMap;
+import org.drools.core.factmodel.traits.TraitFieldTMSImpl;
+import org.drools.core.factmodel.traits.TraitTypeMap;
 import org.drools.core.factmodel.traits.TraitableBean;
 import org.drools.core.phreak.ReactiveObject;
 import org.kie.api.definition.type.FactField;
@@ -128,13 +128,13 @@ public class DefaultBeanClassBuilder implements Opcodes, BeanClassBuilder, Seria
                 mv.visitVarInsn( ALOAD, 1 );
                 mv.visitVarInsn( ALOAD, 0 );
                 visitFieldOrGetter( mv, classDef, field );
-                mv.visitMethodInsn( INVOKEINTERFACE, 
-                                    "java/io/ObjectOutput", 
+                mv.visitMethodInsn( INVOKEINTERFACE,
+                                    "java/io/ObjectOutput",
                                     BuildUtils.serializationWriterName( field.getTypeName() ),
                                     "(" + ( BuildUtils.isPrimitive( field.getTypeName() ) ?
                                             BuildUtils.getTypeDescriptor( BuildUtils.serializationType( field.getTypeName() ) ) :
                                             "Ljava/lang/Object;" ) + ")V");
-                               
+
             }
 
             if ( classDef.isTraitable() ) {
@@ -189,8 +189,8 @@ public class DefaultBeanClassBuilder implements Opcodes, BeanClassBuilder, Seria
                                     "java/io/ObjectInput",
                                     BuildUtils.serializationReaderName( field.getTypeName() ),
                                     "()" + ( BuildUtils.isPrimitive( field.getTypeName() ) ?
-                                             BuildUtils.getTypeDescriptor( field.getTypeName() ) :
-                                             "Ljava/lang/Object;" ) );
+                                            BuildUtils.getTypeDescriptor( field.getTypeName() ) :
+                                            "Ljava/lang/Object;" ) );
                 if  ( !  BuildUtils.isPrimitive( field.getTypeName() ) ) {
                     mv.visitTypeInsn( CHECKCAST, BuildUtils.getInternalType( field.getTypeName() ) );
                 }
@@ -252,11 +252,11 @@ public class DefaultBeanClassBuilder implements Opcodes, BeanClassBuilder, Seria
         for ( FieldDefinition fieldDef : classDef.getFieldsDefinitions() ) {
             if (! fieldDef.isInherited() || fieldDef.hasOverride()) {
                 this.buildGetMethod( cw,
-                        classDef,
-                        fieldDef );
+                                     classDef,
+                                     fieldDef );
                 this.buildSetMethod( cw,
-                        classDef,
-                        fieldDef );
+                                     classDef,
+                                     fieldDef );
             }
         }
     }
@@ -272,9 +272,9 @@ public class DefaultBeanClassBuilder implements Opcodes, BeanClassBuilder, Seria
 
         if (hasKey) {
             this.buildEquals( cw,
-                    classDef );
+                              classDef );
             this.buildHashCode( cw,
-                    classDef );
+                                classDef );
         }
     }
 
@@ -358,9 +358,9 @@ public class DefaultBeanClassBuilder implements Opcodes, BeanClassBuilder, Seria
             mv.visitEnd();
         }
         /*
-            public Collection<Tuple> getLeftTuples() {             
+            public Collection<Tuple> getLeftTuples() {
                 return _lts != null ? _lts : Collections.emptyList();
-            }                                                      
+            }
          */
         {
             mv = cw.visitMethod( ACC_PUBLIC, "getLeftTuples", "()Ljava/util/Collection;", "()Ljava/util/Collection<Lorg/drools/core/spi/Tuple;>;", null );
@@ -389,9 +389,9 @@ public class DefaultBeanClassBuilder implements Opcodes, BeanClassBuilder, Seria
             mv.visitEnd();
         }
         /*
-            protected void notifyModification() {           
+            protected void notifyModification() {
                 ReactiveObjectUtil.notifyModification(this);
-            }                                               
+            }
          */
         {
             mv = cw.visitMethod( ACC_PROTECTED, "notifyModification", "()V", null, null );
@@ -445,7 +445,7 @@ public class DefaultBeanClassBuilder implements Opcodes, BeanClassBuilder, Seria
         // Building default constructor
         try {
             this.buildDefaultConstructor( cw,
-                    classDef );
+                                          classDef );
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -453,8 +453,8 @@ public class DefaultBeanClassBuilder implements Opcodes, BeanClassBuilder, Seria
         // Building constructor with all fields
         if (classDef.getFieldsDefinitions().size() > 0 && classDef.getFieldsDefinitions().size() < 120) {
             this.buildConstructorWithFields( cw,
-                    classDef,
-                    classDef.getFieldsDefinitions() );
+                                             classDef,
+                                             classDef.getFieldsDefinitions() );
         }
 
         // Building constructor with key fields only
@@ -466,8 +466,8 @@ public class DefaultBeanClassBuilder implements Opcodes, BeanClassBuilder, Seria
         }
         if ( !keys.isEmpty() && keys.size() != classDef.getFieldsDefinitions().size() ) {
             this.buildConstructorWithFields( cw,
-                    classDef,
-                    keys );
+                                             classDef,
+                                             keys );
         }
     }
 
@@ -484,10 +484,10 @@ public class DefaultBeanClassBuilder implements Opcodes, BeanClassBuilder, Seria
     protected void buildTraitMap(ClassWriter cw, ClassDefinition classDef) {
 
         FieldVisitor fv = cw.visitField( ACC_PRIVATE,
-                TraitableBean.TRAITSET_FIELD_NAME,
-                Type.getDescriptor( Map.class ),
-                "Ljava/util/Map<Ljava/lang/String;Lorg/drools/core/factmodel/traits/Thing;>;",
-                null );
+                                         TraitableBean.TRAITSET_FIELD_NAME,
+                                         Type.getDescriptor( Map.class ),
+                                         "Ljava/util/Map<Ljava/lang/String;Lorg/drools/core/factmodel/traits/Thing;>;",
+                                         null );
         fv.visitEnd();
 
         MethodVisitor mv;
@@ -518,20 +518,20 @@ public class DefaultBeanClassBuilder implements Opcodes, BeanClassBuilder, Seria
 
 
         mv = cw.visitMethod( ACC_PUBLIC, "addTrait",
-                Type.getMethodDescriptor( Type.getType( void.class ), new Type[] { Type.getType( String.class ), Type.getType( Thing.class ) } ),
-                "(Ljava/lang/String;Lorg/drools/core/factmodel/traits/Thing;)V", null );
+                             Type.getMethodDescriptor( Type.getType( void.class ), new Type[] { Type.getType( String.class ), Type.getType( Thing.class ) } ),
+                             "(Ljava/lang/String;Lorg/drools/core/factmodel/traits/Thing;)V", null );
         mv.visitCode();
         mv.visitVarInsn( ALOAD, 0 );
         mv.visitMethodInsn( INVOKEVIRTUAL,
-                BuildUtils.getInternalType( classDef.getName() ),
-                "_getTraitMap",
-                Type.getMethodDescriptor( Type.getType( Map.class ), new Type[] {} ) );
+                            BuildUtils.getInternalType( classDef.getName() ),
+                            "_getTraitMap",
+                            Type.getMethodDescriptor( Type.getType( Map.class ), new Type[] {} ) );
         mv.visitVarInsn( ALOAD, 1 );
         mv.visitVarInsn( ALOAD, 2 );
         mv.visitMethodInsn( INVOKEINTERFACE,
-                Type.getInternalName( Map.class ),
-                "put",
-                Type.getMethodDescriptor( Type.getType( Object.class ), new Type[] { Type.getType( Object.class ), Type.getType( Object.class ) } ) );
+                            Type.getInternalName( Map.class ),
+                            "put",
+                            Type.getMethodDescriptor( Type.getType( Object.class ), new Type[] { Type.getType( Object.class ), Type.getType( Object.class ) } ) );
         mv.visitInsn( POP );
         mv.visitInsn( RETURN );
         mv.visitMaxs( 0, 0 );
@@ -539,21 +539,21 @@ public class DefaultBeanClassBuilder implements Opcodes, BeanClassBuilder, Seria
 
 
         mv = cw.visitMethod( ACC_PUBLIC,
-                "getTrait",
-                Type.getMethodDescriptor( Type.getType( Thing.class ), new Type[] { Type.getType( String.class ) } ),
-                Type.getMethodDescriptor( Type.getType( Thing.class ), new Type[] { Type.getType( String.class ) } ),
-                null );
+                             "getTrait",
+                             Type.getMethodDescriptor( Type.getType( Thing.class ), new Type[] { Type.getType( String.class ) } ),
+                             Type.getMethodDescriptor( Type.getType( Thing.class ), new Type[] { Type.getType( String.class ) } ),
+                             null );
         mv.visitCode();
         mv.visitVarInsn( ALOAD, 0 );
         mv.visitMethodInsn( INVOKEVIRTUAL,
-                BuildUtils.getInternalType( classDef.getName() ),
-                "_getTraitMap",
-                Type.getMethodDescriptor( Type.getType( Map.class ), new Type[] {} ) );
+                            BuildUtils.getInternalType( classDef.getName() ),
+                            "_getTraitMap",
+                            Type.getMethodDescriptor( Type.getType( Map.class ), new Type[] {} ) );
         mv.visitVarInsn( ALOAD, 1 );
         mv.visitMethodInsn( INVOKEINTERFACE,
-                Type.getInternalName( Map.class ),
-                "get",
-                Type.getMethodDescriptor( Type.getType( Object.class ), new Type[] { Type.getType( Object.class ) } ) );
+                            Type.getInternalName( Map.class ),
+                            "get",
+                            Type.getMethodDescriptor( Type.getType( Object.class ), new Type[] { Type.getType( Object.class ) } ) );
         mv.visitTypeInsn( CHECKCAST, Type.getInternalName( Thing.class ) );
         mv.visitInsn( ARETURN );
         mv.visitMaxs( 0, 0 );
@@ -561,16 +561,16 @@ public class DefaultBeanClassBuilder implements Opcodes, BeanClassBuilder, Seria
 
 
         mv = cw.visitMethod( ACC_PUBLIC,
-                "hasTrait",
-                Type.getMethodDescriptor( Type.getType( boolean.class ), new Type[] { Type.getType( String.class ) } ),
-                null,
-                null );
+                             "hasTrait",
+                             Type.getMethodDescriptor( Type.getType( boolean.class ), new Type[] { Type.getType( String.class ) } ),
+                             null,
+                             null );
         mv.visitCode();
         mv.visitVarInsn( ALOAD, 0 );
         mv.visitMethodInsn( INVOKEVIRTUAL,
-                BuildUtils.getInternalType( classDef.getName() ),
-                "_getTraitMap",
-                Type.getMethodDescriptor( Type.getType( Map.class ), new Type[] {} ) );
+                            BuildUtils.getInternalType( classDef.getName() ),
+                            "_getTraitMap",
+                            Type.getMethodDescriptor( Type.getType( Map.class ), new Type[] {} ) );
         Label l0 = new Label();
         mv.visitJumpInsn( IFNONNULL, l0 );
         mv.visitInsn( ICONST_0 );
@@ -578,24 +578,24 @@ public class DefaultBeanClassBuilder implements Opcodes, BeanClassBuilder, Seria
         mv.visitLabel( l0 );
         mv.visitVarInsn( ALOAD, 0 );
         mv.visitMethodInsn( INVOKEVIRTUAL,
-                BuildUtils.getInternalType( classDef.getName() ),
-                "_getTraitMap",
-                Type.getMethodDescriptor( Type.getType( Map.class ), new Type[] {} ) );
+                            BuildUtils.getInternalType( classDef.getName() ),
+                            "_getTraitMap",
+                            Type.getMethodDescriptor( Type.getType( Map.class ), new Type[] {} ) );
         mv.visitVarInsn( ALOAD, 1 );
         mv.visitMethodInsn( INVOKEINTERFACE,
-                Type.getInternalName( Map.class ),
-                "containsKey",
-                Type.getMethodDescriptor( Type.getType( boolean.class ), new Type[] { Type.getType( Object.class ) } ) );
+                            Type.getInternalName( Map.class ),
+                            "containsKey",
+                            Type.getMethodDescriptor( Type.getType( boolean.class ), new Type[] { Type.getType( Object.class ) } ) );
         mv.visitInsn( IRETURN );
         mv.visitMaxs( 0, 0 );
         mv.visitEnd();
 
 
         mv = cw.visitMethod( ACC_PUBLIC,
-                "hasTraits",
-                Type.getMethodDescriptor( Type.getType( boolean.class ), new Type[] {} ),
-                null,
-                null );
+                             "hasTraits",
+                             Type.getMethodDescriptor( Type.getType( boolean.class ), new Type[] {} ),
+                             null,
+                             null );
         mv.visitCode();
         mv.visitVarInsn( ALOAD, 0 );
         mv.visitFieldInsn( GETFIELD, BuildUtils.getInternalType( classDef.getName() ),TraitableBean.TRAITSET_FIELD_NAME, Type.getDescriptor( Map.class ) );
@@ -617,84 +617,84 @@ public class DefaultBeanClassBuilder implements Opcodes, BeanClassBuilder, Seria
 
 
         mv = cw.visitMethod( ACC_PUBLIC, "removeTrait",
-                Type.getMethodDescriptor( Type.getType( Collection.class ), new Type[] { Type.getType( String.class ) } ),
-                Type.getMethodDescriptor( Type.getType( Collection.class ), new Type[] { Type.getType( String.class ) } ),
-                null );
+                             Type.getMethodDescriptor( Type.getType( Collection.class ), new Type[] { Type.getType( String.class ) } ),
+                             Type.getMethodDescriptor( Type.getType( Collection.class ), new Type[] { Type.getType( String.class ) } ),
+                             null );
         mv.visitCode();
         mv.visitVarInsn( ALOAD, 0 );
         mv.visitMethodInsn( INVOKEVIRTUAL, BuildUtils.getInternalType( classDef.getName() ), "_getTraitMap", Type.getMethodDescriptor( Type.getType( Map.class ), new Type[] {} ) );
-//        mv.visitTypeInsn( CHECKCAST, Type.getInternalName( TraitTypeMap.class ) );
+        mv.visitTypeInsn( CHECKCAST, Type.getInternalName( TraitTypeMap.class ) );
         mv.visitVarInsn(ALOAD, 1);
-//        mv.visitMethodInsn( INVOKEVIRTUAL, Type.getInternalName( TraitTypeMap.class ), "removeCascade",
-//                Type.getMethodDescriptor( Type.getType( Collection.class ), new Type[] { Type.getType( String.class )} ) );
+        mv.visitMethodInsn( INVOKEVIRTUAL, Type.getInternalName( TraitTypeMap.class ), "removeCascade",
+                            Type.getMethodDescriptor( Type.getType( Collection.class ), new Type[] { Type.getType( String.class )} ) );
         mv.visitInsn( ARETURN );
         mv.visitMaxs( 0, 0 );
         mv.visitEnd();
 
         mv = cw.visitMethod( ACC_PUBLIC, "removeTrait",
-                Type.getMethodDescriptor( Type.getType( Collection.class ), new Type[] { Type.getType( BitSet.class ) } ),
-                Type.getMethodDescriptor( Type.getType( Collection.class ), new Type[] { Type.getType( BitSet.class ) } ),
-                null );
+                             Type.getMethodDescriptor( Type.getType( Collection.class ), new Type[] { Type.getType( BitSet.class ) } ),
+                             Type.getMethodDescriptor( Type.getType( Collection.class ), new Type[] { Type.getType( BitSet.class ) } ),
+                             null );
         mv.visitCode();
         mv.visitVarInsn( ALOAD, 0 );
         mv.visitMethodInsn( INVOKEVIRTUAL, BuildUtils.getInternalType( classDef.getName() ), "_getTraitMap", Type.getMethodDescriptor( Type.getType( Map.class ), new Type[] {} ) );
-//        mv.visitTypeInsn( CHECKCAST, Type.getInternalName( TraitTypeMap.class ) );
+        mv.visitTypeInsn( CHECKCAST, Type.getInternalName( TraitTypeMap.class ) );
         mv.visitVarInsn( ALOAD, 1 );
-//        mv.visitMethodInsn( INVOKEVIRTUAL, Type.getInternalName( TraitTypeMap.class ), "removeCascade",
-//                Type.getMethodDescriptor( Type.getType( Collection.class ), new Type[] { Type.getType( BitSet.class )} ) );
+        mv.visitMethodInsn( INVOKEVIRTUAL, Type.getInternalName( TraitTypeMap.class ), "removeCascade",
+                            Type.getMethodDescriptor( Type.getType( Collection.class ), new Type[] { Type.getType( BitSet.class )} ) );
         mv.visitInsn( ARETURN );
         mv.visitMaxs( 0, 0 );
         mv.visitEnd();
 
 
         mv = cw.visitMethod( ACC_PUBLIC,
-                "getTraits",
-                Type.getMethodDescriptor( Type.getType( Collection.class ), new Type[] { } ),
-                "()Ljava/util/Collection<Ljava/lang/String;>;",
-                null );
+                             "getTraits",
+                             Type.getMethodDescriptor( Type.getType( Collection.class ), new Type[] { } ),
+                             "()Ljava/util/Collection<Ljava/lang/String;>;",
+                             null );
         mv.visitCode();
         mv.visitVarInsn( ALOAD, 0 );
         mv.visitMethodInsn( INVOKEVIRTUAL,
-                BuildUtils.getInternalType( classDef.getName() ),
-                "_getTraitMap",
-                Type.getMethodDescriptor( Type.getType( Map.class ), new Type[] {} ) );
+                            BuildUtils.getInternalType( classDef.getName() ),
+                            "_getTraitMap",
+                            Type.getMethodDescriptor( Type.getType( Map.class ), new Type[] {} ) );
         mv.visitMethodInsn( INVOKEINTERFACE,
-                Type.getInternalName( Map.class ),
-                "keySet",
-                Type.getMethodDescriptor( Type.getType( Set.class ), new Type[] {} ) );
+                            Type.getInternalName( Map.class ),
+                            "keySet",
+                            Type.getMethodDescriptor( Type.getType( Set.class ), new Type[] {} ) );
         mv.visitInsn( ARETURN );
         mv.visitMaxs( 0, 0 );
         mv.visitEnd();
 
 
         mv = cw.visitMethod( ACC_PUBLIC,
-                "_setBottomTypeCode",
-                Type.getMethodDescriptor( Type.getType( void.class ), new Type[] { Type.getType( BitSet.class ) } ),
-                null, null );
+                             "_setBottomTypeCode",
+                             Type.getMethodDescriptor( Type.getType( void.class ), new Type[] { Type.getType( BitSet.class ) } ),
+                             null, null );
         mv.visitCode();
         mv.visitVarInsn( ALOAD, 0 );
         mv.visitFieldInsn( GETFIELD, BuildUtils.getInternalType( classDef.getName() ), TraitableBean.TRAITSET_FIELD_NAME , Type.getDescriptor( Map.class ) );
-//        mv.visitTypeInsn( CHECKCAST, Type.getInternalName( TraitTypeMap.class ) );
+        mv.visitTypeInsn( CHECKCAST, Type.getInternalName( TraitTypeMap.class ) );
         mv.visitVarInsn( ALOAD, 1 );
-//        mv.visitMethodInsn( INVOKEVIRTUAL,
-//                Type.getInternalName( TraitTypeMap.class ),
-//                "setBottomCode",
-//                Type.getMethodDescriptor( Type.getType( void.class ), new Type[] { Type.getType( BitSet.class ) } ) );
+        mv.visitMethodInsn( INVOKEVIRTUAL,
+                            Type.getInternalName( TraitTypeMap.class ),
+                            "setBottomCode",
+                            Type.getMethodDescriptor( Type.getType( void.class ), new Type[] { Type.getType( BitSet.class ) } ) );
         mv.visitInsn( RETURN );
         mv.visitMaxs( 0, 0 );
         mv.visitEnd();
 
         mv = cw.visitMethod( ACC_PUBLIC,
-                "getMostSpecificTraits",
-                Type.getMethodDescriptor( Type.getType( Collection.class ), new Type[] { } ) ,
-                "()Ljava/util/Collection<Lorg/drools/core/factmodel/traits/Thing;>;",
-                null );
+                             "getMostSpecificTraits",
+                             Type.getMethodDescriptor( Type.getType( Collection.class ), new Type[] { } ) ,
+                             "()Ljava/util/Collection<Lorg/drools/core/factmodel/traits/Thing;>;",
+                             null );
         mv.visitCode();
 
         mv.visitVarInsn( ALOAD, 0 );
         mv.visitFieldInsn( GETFIELD, BuildUtils.getInternalType( classDef.getName() ),
-                TraitableBean.TRAITSET_FIELD_NAME ,
-                Type.getDescriptor( Map.class ) );
+                           TraitableBean.TRAITSET_FIELD_NAME ,
+                           Type.getDescriptor( Map.class ) );
 
 
         Label l99 = new Label();
@@ -703,11 +703,11 @@ public class DefaultBeanClassBuilder implements Opcodes, BeanClassBuilder, Seria
         mv.visitFieldInsn( GETFIELD, BuildUtils.getInternalType( classDef.getName() ),
                            TraitableBean.TRAITSET_FIELD_NAME ,
                            Type.getDescriptor( Map.class ) );
-//        mv.visitTypeInsn( CHECKCAST, Type.getInternalName( TraitTypeMap.class ) );
-//        mv.visitMethodInsn( INVOKEVIRTUAL,
-//                Type.getInternalName( TraitTypeMap.class ),
-//                "getMostSpecificTraits",
-//                Type.getMethodDescriptor( Type.getType( Collection.class ), new Type[] { } )  );
+        mv.visitTypeInsn( CHECKCAST, Type.getInternalName( TraitTypeMap.class ) );
+        mv.visitMethodInsn( INVOKEVIRTUAL,
+                            Type.getInternalName( TraitTypeMap.class ),
+                            "getMostSpecificTraits",
+                            Type.getMethodDescriptor( Type.getType( Collection.class ), new Type[] { } )  );
         mv.visitInsn( ARETURN );
         mv.visitLabel( l99 );
         mv.visitMethodInsn( INVOKESTATIC,
@@ -739,11 +739,11 @@ public class DefaultBeanClassBuilder implements Opcodes, BeanClassBuilder, Seria
                            BuildUtils.getInternalType( classDef.getName() ),
                            TraitableBean.TRAITSET_FIELD_NAME,
                            Type.getDescriptor( Map.class ) );
-//        mv.visitTypeInsn( CHECKCAST, Type.getInternalName( TraitTypeMap.class ) );
-//        mv.visitMethodInsn( INVOKEVIRTUAL,
-//                            Type.getInternalName( TraitTypeMap.class ),
-//                            "getCurrentTypeCode",
-//                            Type.getMethodDescriptor( Type.getType( BitSet.class ), new Type[] { } ) );
+        mv.visitTypeInsn( CHECKCAST, Type.getInternalName( TraitTypeMap.class ) );
+        mv.visitMethodInsn( INVOKEVIRTUAL,
+                            Type.getInternalName( TraitTypeMap.class ),
+                            "getCurrentTypeCode",
+                            Type.getMethodDescriptor( Type.getType( BitSet.class ), new Type[] { } ) );
         mv.visitInsn( ARETURN );
         mv.visitMaxs( 0, 0 );
         mv.visitEnd();
@@ -765,17 +765,17 @@ public class DefaultBeanClassBuilder implements Opcodes, BeanClassBuilder, Seria
     protected void buildDynamicPropertyMap( ClassWriter cw, ClassDefinition def ) {
 
         FieldVisitor fv = cw.visitField( Opcodes.ACC_PRIVATE,
-                TraitableBean.MAP_FIELD_NAME,
-                Type.getDescriptor( Map.class ) ,
-                "Ljava/util/Map<Ljava/lang/String;Ljava/lang/Object;>;",
-                null);
+                                         TraitableBean.MAP_FIELD_NAME,
+                                         Type.getDescriptor( Map.class ) ,
+                                         "Ljava/util/Map<Ljava/lang/String;Ljava/lang/Object;>;",
+                                         null);
         fv.visitEnd();
 
         MethodVisitor mv = cw.visitMethod( Opcodes.ACC_PUBLIC,
-                "_getDynamicProperties",
-                Type.getMethodDescriptor( Type.getType( Map.class ), new Type[] {} ),
-                "()Ljava/util/Map<Ljava/lang/String;Ljava/lang/Object;>;",
-                null);
+                                           "_getDynamicProperties",
+                                           Type.getMethodDescriptor( Type.getType( Map.class ), new Type[] {} ),
+                                           "()Ljava/util/Map<Ljava/lang/String;Ljava/lang/Object;>;",
+                                           null);
         mv.visitCode();
         mv.visitVarInsn( ALOAD, 0 );
         mv.visitFieldInsn( GETFIELD, BuildUtils.getInternalType(def.getName()), TraitableBean.MAP_FIELD_NAME, Type.getDescriptor( Map.class ) );
@@ -786,10 +786,10 @@ public class DefaultBeanClassBuilder implements Opcodes, BeanClassBuilder, Seria
 
 
         mv = cw.visitMethod( ACC_PUBLIC,
-                "_setDynamicProperties",
-                Type.getMethodDescriptor( Type.getType( void.class ), new Type[] { Type.getType( Map.class ) } ),
-                "(Ljava/util/Map<Ljava/lang/String;Ljava/lang/Object;>;)V",
-                null);
+                             "_setDynamicProperties",
+                             Type.getMethodDescriptor( Type.getType( void.class ), new Type[] { Type.getType( Map.class ) } ),
+                             "(Ljava/util/Map<Ljava/lang/String;Ljava/lang/Object;>;)V",
+                             null);
         mv.visitCode();
         mv.visitVarInsn( ALOAD, 0 );
         mv.visitVarInsn( ALOAD, 1 );
@@ -819,10 +819,10 @@ public class DefaultBeanClassBuilder implements Opcodes, BeanClassBuilder, Seria
         fv.visitEnd();
 
         MethodVisitor mv = cw.visitMethod( Opcodes.ACC_PUBLIC,
-                "_getFieldTMS",
-                Type.getMethodDescriptor( Type.getType( TraitFieldTMS.class ), new Type[] {} ),
-                null,
-                null);
+                                           "_getFieldTMS",
+                                           Type.getMethodDescriptor( Type.getType( TraitFieldTMS.class ), new Type[] {} ),
+                                           null,
+                                           null);
         mv.visitCode();
         mv.visitVarInsn( ALOAD, 0 );
         mv.visitFieldInsn( GETFIELD, BuildUtils.getInternalType( def.getName() ), TraitableBean.FIELDTMS_FIELD_NAME, Type.getDescriptor( TraitFieldTMS.class ) );
@@ -831,10 +831,10 @@ public class DefaultBeanClassBuilder implements Opcodes, BeanClassBuilder, Seria
         mv.visitEnd();
 
         mv = cw.visitMethod( ACC_PUBLIC,
-                "_setFieldTMS",
-                Type.getMethodDescriptor( Type.VOID_TYPE, new Type[] { Type.getType( TraitFieldTMS.class ) } ),
-                null,
-                null);
+                             "_setFieldTMS",
+                             Type.getMethodDescriptor( Type.VOID_TYPE, new Type[] { Type.getType( TraitFieldTMS.class ) } ),
+                             null,
+                             null);
         mv.visitCode();
         mv.visitVarInsn( ALOAD, 0 );
         mv.visitVarInsn( ALOAD, 1 );
@@ -917,11 +917,11 @@ public class DefaultBeanClassBuilder implements Opcodes, BeanClassBuilder, Seria
 
 
         MethodVisitor mv = cw.visitMethod( Opcodes.ACC_PUBLIC,
-                "<init>",
-                Type.getMethodDescriptor( Type.VOID_TYPE,
-                        new Type[]{} ),
-                null,
-                null );
+                                           "<init>",
+                                           Type.getMethodDescriptor( Type.VOID_TYPE,
+                                                                     new Type[]{} ),
+                                           null,
+                                           null );
         mv.visitCode();
 
         Label l0 = null;
@@ -954,7 +954,7 @@ public class DefaultBeanClassBuilder implements Opcodes, BeanClassBuilder, Seria
         // Building default constructor
 
         mv.visitVarInsn( Opcodes.ALOAD,
-                0 );
+                         0 );
 
         String sup = "";
         try {
@@ -963,10 +963,10 @@ public class DefaultBeanClassBuilder implements Opcodes, BeanClassBuilder, Seria
             sup = BuildUtils.getInternalType( classDef.getSuperClass() );
         }
         mv.visitMethodInsn( Opcodes.INVOKESPECIAL,
-                sup,
-                "<init>",
-                Type.getMethodDescriptor( Type.VOID_TYPE,
-                        new Type[]{} ) );
+                            sup,
+                            "<init>",
+                            Type.getMethodDescriptor( Type.VOID_TYPE,
+                                                      new Type[]{} ) );
 
         boolean hasObjects = false;
         for (FieldDefinition field : classDef.getFieldsDefinitions()) {
@@ -1000,9 +1000,9 @@ public class DefaultBeanClassBuilder implements Opcodes, BeanClassBuilder, Seria
                 mv.visitLdcInsn(val);
                 if ( BuildUtils.isBoxed(field.getTypeName()) ) {
                     mv.visitMethodInsn(Opcodes.INVOKESTATIC,
-                            BuildUtils.getInternalType(field.getTypeName()),
-                            "valueOf",
-                            "("+BuildUtils.unBox(field.getTypeName())+")"+BuildUtils.getTypeDescriptor(field.getTypeName()));
+                                       BuildUtils.getInternalType(field.getTypeName()),
+                                       "valueOf",
+                                       "("+BuildUtils.unBox(field.getTypeName())+")"+BuildUtils.getTypeDescriptor(field.getTypeName()));
                 }
             } else {
                 hasObjects = true;
@@ -1010,9 +1010,9 @@ public class DefaultBeanClassBuilder implements Opcodes, BeanClassBuilder, Seria
                 mv.visitTypeInsn( NEW, type );
                 mv.visitInsn(DUP);
                 mv.visitMethodInsn( INVOKESPECIAL,
-                        type,
-                        "<init>",
-                        "()V");
+                                    type,
+                                    "<init>",
+                                    "()V");
             }
         } else {
             // there's a complex init expression
@@ -1020,9 +1020,9 @@ public class DefaultBeanClassBuilder implements Opcodes, BeanClassBuilder, Seria
                 mv.visitVarInsn( ALOAD, 0 );
                 mv.visitLdcInsn( field.getInitExpr() );
                 mv.visitMethodInsn( INVOKESTATIC,
-                        "org/mvel2/MVEL",
-                        "eval",
-                        "(Ljava/lang/String;)Ljava/lang/Object;");
+                                    "org/mvel2/MVEL",
+                                    "eval",
+                                    "(Ljava/lang/String;)Ljava/lang/Object;");
                 mv.visitTypeInsn( CHECKCAST, BuildUtils.getInternalType( field.getTypeName() ) );
                 val = field.getInitExpr();
             }
@@ -1032,16 +1032,16 @@ public class DefaultBeanClassBuilder implements Opcodes, BeanClassBuilder, Seria
         if ( val != null ) {
             if (! field.isInherited()) {
                 mv.visitFieldInsn( Opcodes.PUTFIELD,
-                        BuildUtils.getInternalType( classDef.getClassName() ),
-                        field.getName(),
-                        BuildUtils.getTypeDescriptor( field.getTypeName() ) );
+                                   BuildUtils.getInternalType( classDef.getClassName() ),
+                                   field.getName(),
+                                   BuildUtils.getTypeDescriptor( field.getTypeName() ) );
             } else {
                 mv.visitMethodInsn(Opcodes.INVOKEVIRTUAL,
-                        BuildUtils.getInternalType( classDef.getClassName() ),
-                        field.getWriteMethod(),
-                        Type.getMethodDescriptor(Type.VOID_TYPE,
-                                new Type[]{Type.getType(BuildUtils.getTypeDescriptor(field.getTypeName()))}
-                        ));
+                                   BuildUtils.getInternalType( classDef.getClassName() ),
+                                   field.getWriteMethod(),
+                                   Type.getMethodDescriptor(Type.VOID_TYPE,
+                                                            new Type[]{Type.getType(BuildUtils.getTypeDescriptor(field.getTypeName()))}
+                                   ));
             }
 
         }
@@ -1059,10 +1059,10 @@ public class DefaultBeanClassBuilder implements Opcodes, BeanClassBuilder, Seria
         if ( classDef.isFullTraiting() ) {
 
             mv.visitVarInsn( ALOAD, 0 );
-//            mv.visitTypeInsn( NEW, Type.getInternalName( TraitFieldTMSImpl.class ) );
+            mv.visitTypeInsn( NEW, Type.getInternalName( TraitFieldTMSImpl.class ) );
             mv.visitInsn( DUP );
-//            mv.visitMethodInsn( INVOKESPECIAL, Type.getInternalName( TraitFieldTMSImpl.class ), "<init>", "()V" );
-//            mv.visitFieldInsn( PUTFIELD, BuildUtils.getInternalType( classDef.getClassName() ), TraitableBean.FIELDTMS_FIELD_NAME, Type.getDescriptor( TraitFieldTMS.class ) );
+            mv.visitMethodInsn( INVOKESPECIAL, Type.getInternalName( TraitFieldTMSImpl.class ), "<init>", "()V" );
+            mv.visitFieldInsn( PUTFIELD, BuildUtils.getInternalType( classDef.getClassName() ), TraitableBean.FIELDTMS_FIELD_NAME, Type.getDescriptor( TraitFieldTMS.class ) );
 
             for ( FactField hardField : classDef.getFields() ) {
                 FieldDefinition fld = (FieldDefinition) hardField;
@@ -1119,11 +1119,11 @@ public class DefaultBeanClassBuilder implements Opcodes, BeanClassBuilder, Seria
         }
 
         MethodVisitor mv = cw.visitMethod( Opcodes.ACC_PUBLIC,
-                "<init>",
-                Type.getMethodDescriptor( Type.VOID_TYPE,
-                        params ),
-                null,
-                null );
+                                           "<init>",
+                                           Type.getMethodDescriptor( Type.VOID_TYPE,
+                                                                     params ),
+                                           null,
+                                           null );
         mv.visitCode();
         Label l0 = null;
         if ( this.debug ) {
@@ -1139,31 +1139,31 @@ public class DefaultBeanClassBuilder implements Opcodes, BeanClassBuilder, Seria
             l1 = new Label();
             mv.visitLabel( l1 );
             mv.visitLocalVariable( "this",
-                    BuildUtils.getTypeDescriptor( classDef.getClassName() ),
-                    null,
-                    l0,
-                    l1,
-                    0 );
+                                   BuildUtils.getTypeDescriptor( classDef.getClassName() ),
+                                   null,
+                                   l0,
+                                   l1,
+                                   0 );
             for ( FieldDefinition field : classDef.getFieldsDefinitions() ) {
                 Label l11 = new Label();
                 mv.visitLabel( l11 );
                 mv.visitLocalVariable( field.getName(),
-                        BuildUtils.getTypeDescriptor( field.getTypeName() ),
-                        null,
-                        l0,
-                        l1,
-                        0 );
+                                       BuildUtils.getTypeDescriptor( field.getTypeName() ),
+                                       null,
+                                       l0,
+                                       l1,
+                                       0 );
             }
         }
         mv.visitMaxs( 0,
-                0 );
+                      0 );
         mv.visitEnd();
 
     }
 
     protected void fieldConstructorStart(MethodVisitor mv, ClassDefinition classDef, Collection<FieldDefinition> fieldDefs) {
         mv.visitVarInsn( Opcodes.ALOAD,
-                0 );
+                         0 );
 
         String sup = "";
         try {
@@ -1173,10 +1173,10 @@ public class DefaultBeanClassBuilder implements Opcodes, BeanClassBuilder, Seria
         }
 
         mv.visitMethodInsn( Opcodes.INVOKESPECIAL,
-                sup,
-                "<init>",
-                Type.getMethodDescriptor( Type.VOID_TYPE,
-                        new Type[]{} ) );
+                            sup,
+                            "<init>",
+                            Type.getMethodDescriptor( Type.VOID_TYPE,
+                                                      new Type[]{} ) );
 
         int index = 1; // local vars start at 1, as 0 is "this"
         for ( FieldDefinition field : fieldDefs ) {
@@ -1185,9 +1185,9 @@ public class DefaultBeanClassBuilder implements Opcodes, BeanClassBuilder, Seria
                 mv.visitLabel( l11 );
             }
             mv.visitVarInsn( Opcodes.ALOAD,
-                    0 );
+                             0 );
             mv.visitVarInsn( Type.getType( BuildUtils.getTypeDescriptor( field.getTypeName() ) ).getOpcode( Opcodes.ILOAD ),
-                    index++ );
+                             index++ );
             if ( field.getTypeName().equals( "long" ) || field.getTypeName().equals( "double" ) ) {
                 // long and double variables use 2 words on the variables table
                 index++;
@@ -1195,16 +1195,16 @@ public class DefaultBeanClassBuilder implements Opcodes, BeanClassBuilder, Seria
 
             if (! field.isInherited()) {
                 mv.visitFieldInsn( Opcodes.PUTFIELD,
-                        BuildUtils.getInternalType( classDef.getClassName() ),
-                        field.getName(),
-                        BuildUtils.getTypeDescriptor( field.getTypeName() ) );
+                                   BuildUtils.getInternalType( classDef.getClassName() ),
+                                   field.getName(),
+                                   BuildUtils.getTypeDescriptor( field.getTypeName() ) );
             } else {
                 mv.visitMethodInsn(Opcodes.INVOKEVIRTUAL,
-                        BuildUtils.getInternalType(classDef.getClassName()),
-                        field.getWriteMethod(),
-                        Type.getMethodDescriptor(Type.VOID_TYPE,
-                                new Type[]{Type.getType(BuildUtils.getTypeDescriptor(field.getTypeName()))}
-                        ));
+                                   BuildUtils.getInternalType(classDef.getClassName()),
+                                   field.getWriteMethod(),
+                                   Type.getMethodDescriptor(Type.VOID_TYPE,
+                                                            new Type[]{Type.getType(BuildUtils.getTypeDescriptor(field.getTypeName()))}
+                                   ));
             }
 
         }
@@ -1242,10 +1242,10 @@ public class DefaultBeanClassBuilder implements Opcodes, BeanClassBuilder, Seria
         // set method
         {
             mv = cw.visitMethod( Opcodes.ACC_PUBLIC,
-                    fieldDef.getWriteMethod(),
-                    "(" + fieldDef.getGenericType().getDescriptor() + ")V",
-                    fieldDef.getGenericType().hasGenerics() ? "(" + fieldDef.getGenericType().getSignature() + ")V" : null,
-                    null );
+                                 fieldDef.getWriteMethod(),
+                                 "(" + fieldDef.getGenericType().getDescriptor() + ")V",
+                                 fieldDef.getGenericType().hasGenerics() ? "(" + fieldDef.getGenericType().getSignature() + ")V" : null,
+                                 null );
             mv.visitCode();
             Label l0 = null;
             if ( this.debug ) {
@@ -1285,11 +1285,11 @@ public class DefaultBeanClassBuilder implements Opcodes, BeanClassBuilder, Seria
                 l1 = new Label();
                 mv.visitLabel( l1 );
                 mv.visitLocalVariable( "this",
-                        BuildUtils.getTypeDescriptor( classDef.getClassName() ),
-                        null,
-                        l0,
-                        l1,
-                        0 );
+                                       BuildUtils.getTypeDescriptor( classDef.getClassName() ),
+                                       null,
+                                       l0,
+                                       l1,
+                                       0 );
             }
             mv.visitMaxs( 0, 0 );
             mv.visitEnd();
@@ -1310,10 +1310,10 @@ public class DefaultBeanClassBuilder implements Opcodes, BeanClassBuilder, Seria
         // Get method
         {
             mv = cw.visitMethod( Opcodes.ACC_PUBLIC,
-                    fieldDef.getReadMethod(),
-                    "()" + Type.getType( fieldDef.getGenericType().getDescriptor() ),
-                    fieldDef.getGenericType().hasGenerics() ? "()" + fieldDef.getGenericType().getSignature() : null,
-                    null );
+                                 fieldDef.getReadMethod(),
+                                 "()" + Type.getType( fieldDef.getGenericType().getDescriptor() ),
+                                 fieldDef.getGenericType().hasGenerics() ? "()" + fieldDef.getGenericType().getSignature() : null,
+                                 null );
             mv.visitCode();
             Label l0 = null;
             if ( this.debug ) {
@@ -1321,7 +1321,7 @@ public class DefaultBeanClassBuilder implements Opcodes, BeanClassBuilder, Seria
                 mv.visitLabel( l0 );
             }
             mv.visitVarInsn( Opcodes.ALOAD,
-                    0 );
+                             0 );
             if ( ! fieldDef.hasOverride() ) {
                 mv.visitFieldInsn( Opcodes.GETFIELD,
                                    BuildUtils.getInternalType( classDef.getClassName() ),
@@ -1343,14 +1343,14 @@ public class DefaultBeanClassBuilder implements Opcodes, BeanClassBuilder, Seria
                 l1 = new Label();
                 mv.visitLabel( l1 );
                 mv.visitLocalVariable( "this",
-                        BuildUtils.getTypeDescriptor( classDef.getClassName() ),
-                        null,
-                        l0,
-                        l1,
-                        0 );
+                                       BuildUtils.getTypeDescriptor( classDef.getClassName() ),
+                                       null,
+                                       l0,
+                                       l1,
+                                       0 );
             }
             mv.visitMaxs( 0,
-                    0 );
+                          0 );
             mv.visitEnd();
         }
     }
@@ -1361,10 +1361,10 @@ public class DefaultBeanClassBuilder implements Opcodes, BeanClassBuilder, Seria
         // Building equals method
         {
             mv = cw.visitMethod( Opcodes.ACC_PUBLIC,
-                    "equals",
-                    "(Ljava/lang/Object;)Z",
-                    null,
-                    null );
+                                 "equals",
+                                 "(Ljava/lang/Object;)Z",
+                                 null,
+                                 null );
             mv.visitCode();
             Label l0 = null;
             if ( this.debug ) {
@@ -1374,55 +1374,55 @@ public class DefaultBeanClassBuilder implements Opcodes, BeanClassBuilder, Seria
 
             // if ( this == obj ) return true;
             mv.visitVarInsn( Opcodes.ALOAD,
-                    0 );
+                             0 );
             mv.visitVarInsn( Opcodes.ALOAD,
-                    1 );
+                             1 );
             Label l1 = new Label();
             mv.visitJumpInsn( Opcodes.IF_ACMPNE,
-                    l1 );
+                              l1 );
             mv.visitInsn( Opcodes.ICONST_1 );
             mv.visitInsn( Opcodes.IRETURN );
 
             // if ( obj == null ) return false;
             mv.visitLabel( l1 );
             mv.visitVarInsn( Opcodes.ALOAD,
-                    1 );
+                             1 );
             Label l2 = new Label();
             mv.visitJumpInsn( Opcodes.IFNONNULL,
-                    l2 );
+                              l2 );
             mv.visitInsn( Opcodes.ICONST_0 );
             mv.visitInsn( Opcodes.IRETURN );
 
             // if ( getClass() != obj.getClass() ) return false;
             mv.visitLabel( l2 );
             mv.visitVarInsn( Opcodes.ALOAD,
-                    0 );
+                             0 );
             mv.visitMethodInsn( Opcodes.INVOKEVIRTUAL,
-                    Type.getInternalName( Object.class ),
-                    "getClass",
-                    Type.getMethodDescriptor( Type.getType( Class.class ),
-                            new Type[]{} ) );
+                                Type.getInternalName( Object.class ),
+                                "getClass",
+                                Type.getMethodDescriptor( Type.getType( Class.class ),
+                                                          new Type[]{} ) );
             mv.visitVarInsn( Opcodes.ALOAD,
-                    1 );
+                             1 );
             mv.visitMethodInsn( Opcodes.INVOKEVIRTUAL,
-                    Type.getInternalName( Object.class ),
-                    "getClass",
-                    Type.getMethodDescriptor( Type.getType( Class.class ),
-                            new Type[]{} ) );
+                                Type.getInternalName( Object.class ),
+                                "getClass",
+                                Type.getMethodDescriptor( Type.getType( Class.class ),
+                                                          new Type[]{} ) );
             Label l3 = new Label();
             mv.visitJumpInsn( Opcodes.IF_ACMPEQ,
-                    l3 );
+                              l3 );
             mv.visitInsn( Opcodes.ICONST_0 );
             mv.visitInsn( Opcodes.IRETURN );
 
             // final <classname> other = (<classname>) obj;
             mv.visitLabel( l3 );
             mv.visitVarInsn( Opcodes.ALOAD,
-                    1 );
+                             1 );
             mv.visitTypeInsn( Opcodes.CHECKCAST,
-                    BuildUtils.getInternalType( classDef.getClassName() ) );
+                              BuildUtils.getInternalType( classDef.getClassName() ) );
             mv.visitVarInsn( Opcodes.ASTORE,
-                    2 );
+                             2 );
 
             // for each key field
             int count = 0;
@@ -1437,32 +1437,32 @@ public class DefaultBeanClassBuilder implements Opcodes, BeanClassBuilder, Seria
 
                         // if ( this.<attr> != other.<booleanAttr> ) return false;
                         mv.visitVarInsn( Opcodes.ALOAD,
-                                0 );
+                                         0 );
 
 
                         visitFieldOrGetter(mv, classDef, field);
 
                         mv.visitVarInsn(Opcodes.ALOAD,
-                                2);
+                                        2);
 
                         visitFieldOrGetter(mv, classDef, field);
 
                         if ( field.getTypeName().equals( "long" ) ) {
                             mv.visitInsn( Opcodes.LCMP );
                             mv.visitJumpInsn( Opcodes.IFEQ,
-                                    goNext );
+                                              goNext );
                         } else if ( field.getTypeName().equals( "double" ) ) {
                             mv.visitInsn( Opcodes.DCMPL );
                             mv.visitJumpInsn( Opcodes.IFEQ,
-                                    goNext );
+                                              goNext );
                         } else if ( field.getTypeName().equals( "float" ) ) {
                             mv.visitInsn( Opcodes.FCMPL );
                             mv.visitJumpInsn( Opcodes.IFEQ,
-                                    goNext );
+                                              goNext );
                         } else {
                             // boolean, byte, char, short, int
                             mv.visitJumpInsn( Opcodes.IF_ICMPEQ,
-                                    goNext );
+                                              goNext );
                         }
                         mv.visitInsn( Opcodes.ICONST_0 );
                         mv.visitInsn( Opcodes.IRETURN );
@@ -1472,59 +1472,59 @@ public class DefaultBeanClassBuilder implements Opcodes, BeanClassBuilder, Seria
                         // if ( this.<attr> == null && other.<attr> != null ||
                         //      this.<attr> != null && ! this.<attr>.equals( other.<attr> ) ) return false;
                         mv.visitVarInsn( Opcodes.ALOAD,
-                                0 );
+                                         0 );
 
                         visitFieldOrGetter(mv, classDef, field);
 
                         Label secondIfPart = new Label();
                         mv.visitJumpInsn( Opcodes.IFNONNULL,
-                                secondIfPart );
+                                          secondIfPart );
 
                         // if ( other.objAttr != null ) return false;
                         mv.visitVarInsn( Opcodes.ALOAD,
-                                2 );
+                                         2 );
 
                         visitFieldOrGetter(mv, classDef, field);
 
                         Label returnFalse = new Label();
                         mv.visitJumpInsn( Opcodes.IFNONNULL,
-                                returnFalse );
+                                          returnFalse );
 
                         mv.visitLabel( secondIfPart );
                         mv.visitVarInsn( Opcodes.ALOAD,
-                                0 );
+                                         0 );
 
                         visitFieldOrGetter(mv, classDef, field);
 
                         mv.visitJumpInsn( Opcodes.IFNULL,
-                                goNext );
+                                          goNext );
 
                         mv.visitVarInsn( Opcodes.ALOAD,
-                                0 );
+                                         0 );
 
                         visitFieldOrGetter(mv, classDef, field);
 
                         mv.visitVarInsn( Opcodes.ALOAD,
-                                2 );
+                                         2 );
 
                         visitFieldOrGetter(mv, classDef, field);
 
                         if ( ! BuildUtils.isArray( field.getTypeName() ) ) {
                             mv.visitMethodInsn( Opcodes.INVOKEVIRTUAL,
-                                    "java/lang/Object",
-                                    "equals",
-                                    "(Ljava/lang/Object;)Z" );
+                                                "java/lang/Object",
+                                                "equals",
+                                                "(Ljava/lang/Object;)Z" );
                         } else {
                             mv.visitMethodInsn( Opcodes.INVOKESTATIC,
-                                    "java/util/Arrays",
-                                    "equals",
-                                    "(" +
-                                            BuildUtils.arrayType( field.getTypeName() ) +
-                                            BuildUtils.arrayType( field.getTypeName() ) +
-                                    ")Z" );
+                                                "java/util/Arrays",
+                                                "equals",
+                                                "(" +
+                                                        BuildUtils.arrayType( field.getTypeName() ) +
+                                                        BuildUtils.arrayType( field.getTypeName() ) +
+                                                        ")Z" );
                         }
                         mv.visitJumpInsn( Opcodes.IFNE,
-                                goNext );
+                                          goNext );
 
                         mv.visitLabel( returnFalse );
                         mv.visitInsn( Opcodes.ICONST_0 );
@@ -1544,26 +1544,26 @@ public class DefaultBeanClassBuilder implements Opcodes, BeanClassBuilder, Seria
                 lastLabel = new Label();
                 mv.visitLabel( lastLabel );
                 mv.visitLocalVariable( "this",
-                        BuildUtils.getTypeDescriptor( classDef.getClassName() ),
-                        null,
-                        l0,
-                        lastLabel,
-                        0 );
+                                       BuildUtils.getTypeDescriptor( classDef.getClassName() ),
+                                       null,
+                                       l0,
+                                       lastLabel,
+                                       0 );
                 mv.visitLocalVariable( "obj",
-                        Type.getDescriptor( Object.class ),
-                        null,
-                        l0,
-                        lastLabel,
-                        1 );
+                                       Type.getDescriptor( Object.class ),
+                                       null,
+                                       l0,
+                                       lastLabel,
+                                       1 );
                 mv.visitLocalVariable( "other",
-                        BuildUtils.getTypeDescriptor( classDef.getClassName() ),
-                        null,
-                        l0,
-                        lastLabel,
-                        2 );
+                                       BuildUtils.getTypeDescriptor( classDef.getClassName() ),
+                                       null,
+                                       l0,
+                                       lastLabel,
+                                       2 );
             }
             mv.visitMaxs( 0,
-                    0 );
+                          0 );
             mv.visitEnd();
         }
     }
@@ -1589,10 +1589,10 @@ public class DefaultBeanClassBuilder implements Opcodes, BeanClassBuilder, Seria
         // Building hashCode() method
         {
             mv = cw.visitMethod( Opcodes.ACC_PUBLIC,
-                    "hashCode",
-                    "()I",
-                    null,
-                    null );
+                                 "hashCode",
+                                 "()I",
+                                 null,
+                                 null );
             mv.visitCode();
             Label l0 = null;
             if ( this.debug ) {
@@ -1611,15 +1611,15 @@ public class DefaultBeanClassBuilder implements Opcodes, BeanClassBuilder, Seria
 
                     // result = result * 31 + <attr_hash>
                     mv.visitVarInsn( Opcodes.ILOAD,
-                            1 );
+                                     1 );
                     mv.visitIntInsn( Opcodes.BIPUSH,
-                            31 );
+                                     31 );
                     mv.visitVarInsn( Opcodes.ILOAD,
-                            1 );
+                                     1 );
                     mv.visitInsn( Opcodes.IMUL );
 
                     mv.visitVarInsn(Opcodes.ALOAD,
-                            0);
+                                    0);
 
                     visitFieldOrGetter(mv, classDef, field);
 
@@ -1627,25 +1627,25 @@ public class DefaultBeanClassBuilder implements Opcodes, BeanClassBuilder, Seria
                         // attr_hash ::== <boolean_attr> ? 1231 : 1237;
                         Label blabel1 = new Label();
                         mv.visitJumpInsn( Opcodes.IFEQ,
-                                blabel1 );
+                                          blabel1 );
                         mv.visitIntInsn( Opcodes.SIPUSH,
-                                1231 );
+                                         1231 );
                         Label blabel2 = new Label();
                         mv.visitJumpInsn( Opcodes.GOTO,
-                                blabel2 );
+                                          blabel2 );
                         mv.visitLabel( blabel1 );
                         mv.visitIntInsn( Opcodes.SIPUSH,
-                                1237 );
+                                         1237 );
                         mv.visitLabel( blabel2 );
                     } else if ( "long".equals( field.getTypeName() ) ) {
                         // attr_hash ::== (int) (longAttr ^ (longAttr >>> 32))
                         mv.visitVarInsn( Opcodes.ALOAD,
-                                0 );
+                                         0 );
 
                         visitFieldOrGetter(mv, classDef, field);
 
                         mv.visitIntInsn( Opcodes.BIPUSH,
-                                32 );
+                                         32 );
                         mv.visitInsn( Opcodes.LUSHR );
                         mv.visitInsn( Opcodes.LXOR );
                         mv.visitInsn( Opcodes.L2I );
@@ -1653,18 +1653,18 @@ public class DefaultBeanClassBuilder implements Opcodes, BeanClassBuilder, Seria
                     } else if ( "float".equals( field.getTypeName() ) ) {
                         // attr_hash ::== Float.floatToIntBits( floatAttr );
                         mv.visitMethodInsn( Opcodes.INVOKESTATIC,
-                                Type.getInternalName( Float.class ),
-                                "floatToIntBits",
-                                "(F)I" );
+                                            Type.getInternalName( Float.class ),
+                                            "floatToIntBits",
+                                            "(F)I" );
                     } else if ( "double".equals( field.getTypeName() ) ) {
                         // attr_hash ::== (int) (Double.doubleToLongBits( doubleAttr ) ^ (Double.doubleToLongBits( doubleAttr ) >>> 32));
                         mv.visitMethodInsn( Opcodes.INVOKESTATIC,
-                                Type.getInternalName( Double.class ),
-                                "doubleToLongBits",
-                                "(D)J" );
+                                            Type.getInternalName( Double.class ),
+                                            "doubleToLongBits",
+                                            "(D)J" );
                         mv.visitInsn( Opcodes.DUP2 );
                         mv.visitIntInsn( Opcodes.BIPUSH,
-                                32 );
+                                         32 );
                         mv.visitInsn( Opcodes.LUSHR );
                         mv.visitInsn( Opcodes.LXOR );
                         mv.visitInsn( Opcodes.L2I );
@@ -1672,34 +1672,34 @@ public class DefaultBeanClassBuilder implements Opcodes, BeanClassBuilder, Seria
                         // attr_hash ::== ((objAttr == null) ? 0 : objAttr.hashCode());
                         Label olabel1 = new Label();
                         mv.visitJumpInsn( Opcodes.IFNONNULL,
-                                olabel1 );
+                                          olabel1 );
                         mv.visitInsn( Opcodes.ICONST_0 );
                         Label olabel2 = new Label();
                         mv.visitJumpInsn( Opcodes.GOTO,
-                                olabel2 );
+                                          olabel2 );
                         mv.visitLabel( olabel1 );
                         mv.visitVarInsn( Opcodes.ALOAD,
-                                0 );
+                                         0 );
 
                         visitFieldOrGetter(mv, classDef, field);
 
                         if ( ! BuildUtils.isArray( field.getTypeName() ) ) {
                             mv.visitMethodInsn( Opcodes.INVOKEVIRTUAL,
-                                    "java/lang/Object",
-                                    "hashCode",
-                                    "()I" );
+                                                "java/lang/Object",
+                                                "hashCode",
+                                                "()I" );
                         } else {
                             mv.visitMethodInsn( INVOKESTATIC,
-                                    "java/util/Arrays",
-                                    "hashCode",
-                                    "(" + BuildUtils.arrayType( field.getTypeName() ) + ")I");
+                                                "java/util/Arrays",
+                                                "hashCode",
+                                                "(" + BuildUtils.arrayType( field.getTypeName() ) + ")I");
                         }
                         mv.visitLabel( olabel2 );
                     }
 
                     mv.visitInsn( Opcodes.IADD );
                     mv.visitVarInsn( Opcodes.ISTORE,
-                            1 );
+                                     1 );
                 }
             }
             mv.visitVarInsn( Opcodes.ILOAD,
@@ -1711,20 +1711,20 @@ public class DefaultBeanClassBuilder implements Opcodes, BeanClassBuilder, Seria
                 lastLabel = new Label();
                 mv.visitLabel( lastLabel );
                 mv.visitLocalVariable( "this",
-                        BuildUtils.getTypeDescriptor( classDef.getClassName() ),
-                        null,
-                        l0,
-                        lastLabel,
-                        0 );
+                                       BuildUtils.getTypeDescriptor( classDef.getClassName() ),
+                                       null,
+                                       l0,
+                                       lastLabel,
+                                       0 );
                 mv.visitLocalVariable( "hash",
-                        Type.getDescriptor( int.class ),
-                        null,
-                        l0,
-                        lastLabel,
-                        1 );
+                                       Type.getDescriptor( int.class ),
+                                       null,
+                                       l0,
+                                       lastLabel,
+                                       1 );
             }
             mv.visitMaxs( 0,
-                    0 );
+                          0 );
             mv.visitEnd();
         }
     }
@@ -1840,27 +1840,27 @@ public class DefaultBeanClassBuilder implements Opcodes, BeanClassBuilder, Seria
             if ( BuildUtils.isPrimitive(field.getTypeName()) ) {
                 String type = field.getTypeName().matches( "(byte|short)" ) ? "int" : field.getTypeName();
                 mv.visitMethodInsn( Opcodes.INVOKEVIRTUAL,
-                        Type.getInternalName( StringBuilder.class ),
-                        "append",
-                        Type.getMethodDescriptor( Type.getType( StringBuilder.class ), Type.getType( BuildUtils.getTypeDescriptor( type ) ) ) );
+                                    Type.getInternalName( StringBuilder.class ),
+                                    "append",
+                                    Type.getMethodDescriptor( Type.getType( StringBuilder.class ), Type.getType( BuildUtils.getTypeDescriptor( type ) ) ) );
             } else if ( BuildUtils.isArray( field.getTypeName() ) && BuildUtils.arrayDimSize( field.getTypeName() ) == 1 ) {
 
 
                 mv.visitMethodInsn( INVOKESTATIC,
-                        "java/util/Arrays",
-                        "toString",
-                        "(" + BuildUtils.getTypeDescriptor( BuildUtils.arrayType( field.getTypeName() ) ) + ")Ljava/lang/String;" );
+                                    "java/util/Arrays",
+                                    "toString",
+                                    "(" + BuildUtils.getTypeDescriptor( BuildUtils.arrayType( field.getTypeName() ) ) + ")Ljava/lang/String;" );
 
                 mv.visitMethodInsn( INVOKEVIRTUAL,
-                        "java/lang/StringBuilder",
-                        "append",
-                        "(Ljava/lang/Object;)Ljava/lang/StringBuilder;" );
+                                    "java/lang/StringBuilder",
+                                    "append",
+                                    "(Ljava/lang/Object;)Ljava/lang/StringBuilder;" );
 
             } else {
                 mv.visitMethodInsn( Opcodes.INVOKEVIRTUAL,
-                        Type.getInternalName( StringBuilder.class ),
-                        "append",
-                        Type.getMethodDescriptor( Type.getType( StringBuilder.class ), Type.getType( Object.class ) ) );
+                                    Type.getInternalName( StringBuilder.class ),
+                                    "append",
+                                    Type.getMethodDescriptor( Type.getType( StringBuilder.class ), Type.getType( Object.class ) ) );
             }
         }
     }
@@ -1948,15 +1948,15 @@ public class DefaultBeanClassBuilder implements Opcodes, BeanClassBuilder, Seria
     protected void visitFieldOrGetter(MethodVisitor mv, ClassDefinition classDef, FieldDefinition field) {
         if (! field.isInherited()) {
             mv.visitFieldInsn( Opcodes.GETFIELD,
-                    BuildUtils.getInternalType( classDef.getClassName() ),
-                    field.getName(),
-                    BuildUtils.getTypeDescriptor( field.getTypeName() ) );
+                               BuildUtils.getInternalType( classDef.getClassName() ),
+                               field.getName(),
+                               BuildUtils.getTypeDescriptor( field.getTypeName() ) );
         } else {
             mv.visitMethodInsn( Opcodes.INVOKEVIRTUAL,
-                    BuildUtils.getInternalType( classDef.getClassName()),
-                    field.getReadMethod(),
-                    Type.getMethodDescriptor(Type.getType(BuildUtils.getTypeDescriptor(field.getTypeName())),
-                            new Type[]{})
+                                BuildUtils.getInternalType( classDef.getClassName()),
+                                field.getReadMethod(),
+                                Type.getMethodDescriptor(Type.getType(BuildUtils.getTypeDescriptor(field.getTypeName())),
+                                                         new Type[]{})
             );
         }
     }
@@ -1964,7 +1964,7 @@ public class DefaultBeanClassBuilder implements Opcodes, BeanClassBuilder, Seria
 
     protected  void updateTraitableField( MethodVisitor mv, ClassDefinition classDef, FieldDefinition fieldDef ) {
         String fieldType = fieldDef.getTypeName();
-        
+
         mv.visitVarInsn( ALOAD, 0 );
         mv.visitFieldInsn( GETFIELD, BuildUtils.getInternalType( classDef.getClassName() ), TraitableBean.FIELDTMS_FIELD_NAME, Type.getDescriptor( TraitFieldTMS.class ) );
 
