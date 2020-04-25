@@ -17,11 +17,9 @@
 package org.optaplanner.examples.machinereassignment.solver.score;
 
 import java.util.Arrays;
-import java.util.Collections;
 import java.util.Map;
 
 import org.apache.commons.collections4.map.HashedMap;
-import org.junit.Ignore;
 import org.junit.Test;
 import org.optaplanner.examples.machinereassignment.domain.MachineReassignment;
 import org.optaplanner.examples.machinereassignment.domain.MrBalancePenalty;
@@ -280,54 +278,51 @@ public class MachineReassignmentConstraintProviderTest {
     }
 
     @Test
-    @Ignore("The constraint has not been fully implemented yet.")
     public void balanceCost() {
-        MrResource cpu = new MrResource(0, false, 10);
-        MrResource mem = new MrResource(1, false, 10);
-        MrResource disk = new MrResource(2, false, 10);
+        MrResource cpu = new MrResource(0, false, 0);
+        MrResource mem = new MrResource(1, false, 0);
+        MrResource disk = new MrResource(2, false, 0);
 
-        MrBalancePenalty balancePenalty1 = new MrBalancePenalty(cpu, mem, 50, 10);
-        MrBalancePenalty balancePenalty2 = new MrBalancePenalty(cpu, disk, 100, 20);
-        MrBalancePenalty balancePenalty3 = new MrBalancePenalty(mem, disk, 2, 5);
+        MrBalancePenalty cpuMemBalance = new MrBalancePenalty(cpu, mem, 3, 1);
+        MrBalancePenalty cpuDiskBalance = new MrBalancePenalty(cpu, disk, 5, 1_000);
 
         MrMachine machine1 = new MrMachine(0L);
-        MrMachineCapacity machine1Capacity1 = new MrMachineCapacity(machine1, cpu, 2L, 1L);
-        MrMachineCapacity machine1Capacity2 = new MrMachineCapacity(machine1, mem, 100L, 50L);
-        MrMachineCapacity machine1Capacity3 = new MrMachineCapacity(machine1, disk, 200L, 100L);
+        MrMachineCapacity machine1Capacity1 = new MrMachineCapacity(machine1, cpu, 20L, 1L);
+        MrMachineCapacity machine1Capacity2 = new MrMachineCapacity(machine1, mem, 300L, 1L);
+        MrMachineCapacity machine1Capacity3 = new MrMachineCapacity(machine1, disk, 4000L, 1L);
         machine1.setMachineCapacityList(Arrays.asList(machine1Capacity1, machine1Capacity2, machine1Capacity3));
 
         MrMachine machine2 = new MrMachine(1L);
-        MrMachineCapacity machine2Capacity1 = new MrMachineCapacity(machine2, cpu, 4L, 2L);
-        MrMachineCapacity machine2Capacity2 = new MrMachineCapacity(machine2, mem, 200L, 100L);
-        MrMachineCapacity machine2Capacity3 = new MrMachineCapacity(machine2, disk, 400L, 200L);
-        machine1.setMachineCapacityList(Arrays.asList(machine2Capacity1, machine2Capacity2, machine2Capacity3));
+        MrMachineCapacity machine2Capacity1 = new MrMachineCapacity(machine2, cpu, 90L, 1L);
+        MrMachineCapacity machine2Capacity2 = new MrMachineCapacity(machine2, mem, 800L, 1L);
+        MrMachineCapacity machine2Capacity3 = new MrMachineCapacity(machine2, disk, 7000L, 1L);
+        machine2.setMachineCapacityList(Arrays.asList(machine2Capacity1, machine2Capacity2, machine2Capacity3));
 
         MrProcess process1 = new MrProcess(0L);
-        MrProcessRequirement process1Requirement1 = new MrProcessRequirement(process1, cpu, 1L);
-        MrProcessRequirement process1Requirement2 = new MrProcessRequirement(process1, mem, 50L);
-        MrProcessRequirement process1Requirement3 = new MrProcessRequirement(process1, disk, 10L);
+        MrProcessRequirement process1Requirement1 = new MrProcessRequirement(process1, cpu, 10L);
+        MrProcessRequirement process1Requirement2 = new MrProcessRequirement(process1, mem, 200L);
+        MrProcessRequirement process1Requirement3 = new MrProcessRequirement(process1, disk, 3000L);
         process1.setProcessRequirementList(Arrays.asList(process1Requirement1, process1Requirement2, process1Requirement3));
 
         MrProcessAssignment processAssignment1 = new MrProcessAssignment(1L, process1, machine1);
 
         MrProcess process2 = new MrProcess(1L);
-        MrProcessRequirement process2Requirement1 = new MrProcessRequirement(process2, cpu, 4L);
-        MrProcessRequirement process2Requirement2 = new MrProcessRequirement(process2, mem, 100L);
-        MrProcessRequirement process2Requirement3 = new MrProcessRequirement(process2, disk, 300L);
+        MrProcessRequirement process2Requirement1 = new MrProcessRequirement(process2, cpu, 8L); // 20 - 18 = 2
+        MrProcessRequirement process2Requirement2 = new MrProcessRequirement(process2, mem, 95L); // 300 - 295 = 5. Needs 6, lacks 1
+        MrProcessRequirement process2Requirement3 = new MrProcessRequirement(process2, disk, 997L); // 4000 - 3997 = 3. Needs 10, lacks 7
         process2.setProcessRequirementList(Arrays.asList(process2Requirement1, process2Requirement2, process2Requirement3));
 
         MrProcessAssignment processAssignment2 = new MrProcessAssignment(2L, process2, machine1);
 
         constraintVerifier.verifyThat(MachineReassignmentConstraintProvider::balanceCost)
-                .given(cpu, mem, disk, balancePenalty1, balancePenalty2, balancePenalty3, machine1, machine2,
+                .given(cpu, mem, disk, cpuMemBalance, cpuDiskBalance, machine1, machine2,
                         machine1Capacity1, machine1Capacity2, machine1Capacity3, machine2Capacity1, machine2Capacity2,
                         machine2Capacity3, process1, process2, process1Requirement1, process2Requirement2, processAssignment1,
                         processAssignment2)
-                .penalizesBy(500L);
+                .penalizesBy(7_001L);
     }
 
     @Test
-    @Ignore("The constraint has not been fully implemented yet.")
     public void balanceCostSingleMachine() {
         MrResource cpu = new MrResource(0L, 0, false, 1);
         MrResource mem = new MrResource(1L, 1, false, 1);

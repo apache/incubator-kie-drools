@@ -16,10 +16,6 @@
 
 package org.optaplanner.examples.machinereassignment.solver.score;
 
-import static org.optaplanner.core.api.score.stream.ConstraintCollectors.sumLong;
-import static org.optaplanner.core.api.score.stream.Joiners.equal;
-import static org.optaplanner.core.api.score.stream.Joiners.filtering;
-
 import java.util.function.BiFunction;
 import java.util.function.Function;
 
@@ -29,11 +25,17 @@ import org.optaplanner.core.api.score.stream.ConstraintCollectors;
 import org.optaplanner.core.api.score.stream.ConstraintFactory;
 import org.optaplanner.core.api.score.stream.ConstraintProvider;
 import org.optaplanner.core.api.score.stream.Joiners;
+import org.optaplanner.examples.machinereassignment.domain.MrBalancePenalty;
 import org.optaplanner.examples.machinereassignment.domain.MrGlobalPenaltyInfo;
+import org.optaplanner.examples.machinereassignment.domain.MrMachine;
 import org.optaplanner.examples.machinereassignment.domain.MrMachineCapacity;
 import org.optaplanner.examples.machinereassignment.domain.MrProcessAssignment;
 import org.optaplanner.examples.machinereassignment.domain.MrService;
 import org.optaplanner.examples.machinereassignment.domain.solver.MrServiceDependency;
+
+import static org.optaplanner.core.api.score.stream.ConstraintCollectors.sumLong;
+import static org.optaplanner.core.api.score.stream.Joiners.equal;
+import static org.optaplanner.core.api.score.stream.Joiners.filtering;
 
 public class MachineReassignmentConstraintProvider implements ConstraintProvider {
 
@@ -49,7 +51,7 @@ public class MachineReassignmentConstraintProvider implements ConstraintProvider
 
                 // soft constraints
                 loadCost(factory),
-           //     balanceCost(factory),
+                balanceCost(factory),
                 processMoveCost(factory),
                 serviceMoveCost(factory),
                 machineMoveCost(factory)
@@ -158,7 +160,25 @@ public class MachineReassignmentConstraintProvider implements ConstraintProvider
      * balanceCost = sum(max(0, multiplier * availability(m, r1) - availability(m, r2)))
      */
     protected Constraint balanceCost(ConstraintFactory factory) {
-        throw new UnsupportedOperationException("Not yet implemented.");
+        return factory.from(MrBalancePenalty.class)
+                .join(MrProcessAssignment.class)
+                .groupBy((penalty, processAssignment) -> penalty, (penalty, processAssignment) -> processAssignment.getMachine(),
+                        sumLong((penalty, processAssignment) -> processAssignment.getUsage(penalty.getOriginResource())),
+                        sumLong((penalty, processAssignment) -> processAssignment.getUsage(penalty.getTargetResource()))
+                )
+                .penalizeLong(MrConstraints.BALANCE_COST, HardSoftLongScore.ONE_SOFT, this::balanceCost);
+    }
+
+    private long balanceCost(MrBalancePenalty penalty, MrMachine machine, long originalUsage, long targetUsage) {
+        long originalAvailability =
+                machine.getMachineCapacity(penalty.getOriginResource()).getMaximumCapacity() - originalUsage;
+        long targetAvailability =
+                machine.getMachineCapacity(penalty.getTargetResource()).getMaximumCapacity() - targetUsage;
+        long lackingAvailability = (penalty.getMultiplicand() * originalAvailability) - targetAvailability;
+        if (lackingAvailability <= 0L) {
+            return 0L;
+        }
+        return lackingAvailability * penalty.getWeight();
     }
 
     /**
