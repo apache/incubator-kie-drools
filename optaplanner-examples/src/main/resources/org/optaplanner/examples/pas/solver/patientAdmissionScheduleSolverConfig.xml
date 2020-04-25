@@ -7,7 +7,7 @@
   <entityClass>org.optaplanner.examples.pas.domain.BedDesignation</entityClass>
 
   <scoreDirectorFactory>
-    <scoreDrl>org/optaplanner/examples/pas/solver/patientAdmissionScheduleScoreRules.drl</scoreDrl>
+    <scoreDrl>org/optaplanner/examples/pas/solver/patientAdmissionScheduleConstraints.drl</scoreDrl>
   </scoreDirectorFactory>
 
   <termination>

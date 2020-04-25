@@ -12,7 +12,7 @@
   <scoreDirectorFactory>
     <!--<easyScoreCalculatorClass>org.optaplanner.examples.coachshuttlegathering.solver.CoachShuttleGatheringEasyScoreCalculator</easyScoreCalculatorClass>-->
     <!--<incrementalScoreCalculatorClass>org.optaplanner.examples.coachshuttlegathering.solver.score.CoachShuttleGatheringIncrementalScoreCalculator</incrementalScoreCalculatorClass>-->
-    <scoreDrl>org/optaplanner/examples/coachshuttlegathering/solver/coachShuttleGatheringScoreRules.drl</scoreDrl>
+    <scoreDrl>org/optaplanner/examples/coachshuttlegathering/solver/coachShuttleGatheringConstraints.drl</scoreDrl>
     <!--<assertionScoreDirectorFactory>-->
       <!--<easyScoreCalculatorClass>org.optaplanner.examples.coachshuttlegathering.solver.CoachShuttleGatheringEasyScoreCalculator</easyScoreCalculatorClass>-->
     <!--</assertionScoreDirectorFactory>-->

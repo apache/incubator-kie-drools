@@ -8,9 +8,9 @@
 
   <scoreDirectorFactory>
     <!--<constraintProviderClass>org.optaplanner.examples.travelingtournament.optional.score.TravelingTournamentConstraintProvider</constraintProviderClass>-->
-    <scoreDrl>org/optaplanner/examples/travelingtournament/solver/travelingTournamentScoreRules.drl</scoreDrl>
+    <scoreDrl>org/optaplanner/examples/travelingtournament/solver/travelingTournamentConstraints.drl</scoreDrl>
     <!--<assertionScoreDirectorFactory>-->
-    <!--<scoreDrl>org/optaplanner/examples/travelingtournament/solver/travelingTournamentScoreRules.drl</scoreDrl>-->
+    <!--<scoreDrl>org/optaplanner/examples/travelingtournament/solver/travelingTournamentConstraints.drl</scoreDrl>-->
     <!--</assertionScoreDirectorFactory>-->
   </scoreDirectorFactory>
 

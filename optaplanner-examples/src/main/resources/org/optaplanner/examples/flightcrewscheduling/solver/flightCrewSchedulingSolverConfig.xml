@@ -9,7 +9,7 @@
 
   <scoreDirectorFactory>
     <!--<constraintProviderClass>org.optaplanner.examples.flightcrewscheduling.optional.score.FlightCrewSchedulingConstraintProvider</constraintProviderClass>-->
-    <scoreDrl>org/optaplanner/examples/flightcrewscheduling/solver/flightCrewSchedulingScoreRules.drl</scoreDrl>
+    <scoreDrl>org/optaplanner/examples/flightcrewscheduling/solver/flightCrewSchedulingConstraints.drl</scoreDrl>
   </scoreDirectorFactory>
 
   <!--<termination>-->

@@ -49,11 +49,11 @@ Just add the score rules DRL file in the solver configuration as a `<scoreDrl>` 
 [source,xml,options="nowrap"]
 ----
   <scoreDirectorFactory>
-    <scoreDrl>org/optaplanner/examples/nqueens/solver/nQueensScoreRules.drl</scoreDrl>
+    <scoreDrl>org/optaplanner/examples/nqueens/solver/nQueensConstraints.drl</scoreDrl>
   </scoreDirectorFactory>
 ----
 
-In a typical project (following the Maven directory structure), that DRL file would be located at `$PROJECT_DIR/src/main/resources/org/optaplanner/examples/nqueens/solver/nQueensScoreRules.drl` (even for a war project).
+In a typical project (following the Maven directory structure), that DRL file would be located at `$PROJECT_DIR/src/main/resources/org/optaplanner/examples/nqueens/solver/nQueensConstraints.drl` (even for a war project).
 
 [NOTE]
 ====
@@ -68,7 +68,7 @@ Optionally, you can also set drools configuration properties:
 [source,xml,options="nowrap"]
 ----
   <scoreDirectorFactory>
-    <scoreDrl>org/optaplanner/examples/nqueens/solver/nQueensScoreRules.drl</scoreDrl>
+    <scoreDrl>org/optaplanner/examples/nqueens/solver/nQueensConstraints.drl</scoreDrl>
     <kieBaseConfigurationProperties>
       <drools.equalityBehavior>...</drools.equalityBehavior>
     </kieBaseConfigurationProperties>
@@ -88,7 +88,7 @@ To use `File` on the local file system, instead of a classpath resource, add the
 [source,xml,options="nowrap"]
 ----
   <scoreDirectorFactory>
-    <scoreDrlFile>/home/ge0ffrey/tmp/nQueensScoreRules.drl</scoreDrlFile>
+    <scoreDrlFile>/home/ge0ffrey/tmp/nQueensConstraints.drl</scoreDrlFile>
   </scoreDirectorFactory>
 ----
 

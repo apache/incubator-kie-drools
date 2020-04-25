@@ -30,6 +30,7 @@ import org.optaplanner.core.api.score.Score;
 import org.optaplanner.core.api.score.constraint.ConstraintMatch;
 import org.optaplanner.core.api.score.constraint.ConstraintMatchTotal;
 import org.optaplanner.core.api.score.constraint.Indictment;
+import org.optaplanner.core.api.score.stream.Constraint;
 import org.optaplanner.core.api.solver.Solver;
 import org.optaplanner.core.api.solver.SolverFactory;
 import org.optaplanner.core.impl.domain.variable.descriptor.VariableDescriptor;
@@ -79,8 +80,7 @@ public interface ScoreDirector<Solution_> extends AutoCloseable {
     boolean isConstraintMatchEnabled();
 
     /**
-     * Explains the {@link Score} of {@link #calculateScore()} by splitting it up per constraint type
-     * (which is usually a score rule).
+     * Explains the {@link Score} of {@link #calculateScore()} by splitting it up per {@link Constraint}.
      * <p>
      * The sum of {@link ConstraintMatchTotal#getScore()} equals {@link #calculateScore()}.
      * <p>
@@ -94,8 +94,7 @@ public interface ScoreDirector<Solution_> extends AutoCloseable {
     Collection<ConstraintMatchTotal> getConstraintMatchTotals();
 
     /**
-     * Explains the {@link Score} of {@link #calculateScore()} by splitting it up per constraint type
-     * (which is usually a score rule).
+     * Explains the {@link Score} of {@link #calculateScore()} by splitting it up per {@link Constraint}.
      * <p>
      * The sum of {@link ConstraintMatchTotal#getScore()} equals {@link #calculateScore()}.
      * <p>
@@ -113,9 +112,6 @@ public interface ScoreDirector<Solution_> extends AutoCloseable {
      * An {@link Indictment} is basically the inverse of a {@link ConstraintMatchTotal}:
      * it is a {@link Score} total for each justification {@link Object}
      * in {@link ConstraintMatch#getJustificationList()}.
-     * <p>
-     * Warning: In practice, it often doesn't include the full impact on the {@link Score},
-     * for example in DRL score rules with accumulate, the accumulate elements won't be indicted.
      * <p>
      * The sum of {@link ConstraintMatchTotal#getScore()} differs from {@link #calculateScore()}
      * because each {@link ConstraintMatch#getScore()} is counted

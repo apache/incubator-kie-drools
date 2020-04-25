@@ -63,7 +63,7 @@ public interface Solution<S extends Score> {
     /**
      * Called by the {@link DroolsScoreDirector} when the {@link PlanningSolution} needs to be inserted
      * into an empty {@link KieSession}.
-     * These facts can be used by the score rules.
+     * These facts can be used by the constraints.
      * They don't change during planning (except through {@link ProblemFactChange} events).
      * <p>
      * Do not include the planning entities as problem facts:

@@ -9,7 +9,7 @@
 
   <scoreDirectorFactory>
     <!--<constraintProviderClass>org.optaplanner.examples.rocktour.optional.score.RockTourConstraintProvider</constraintProviderClass>-->
-    <scoreDrl>org/optaplanner/examples/rocktour/solver/rockTourScoreRules.drl</scoreDrl>
+    <scoreDrl>org/optaplanner/examples/rocktour/solver/rockTourConstraints.drl</scoreDrl>
   </scoreDirectorFactory>
 
   <!--<termination>-->

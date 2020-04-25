@@ -8,7 +8,7 @@
 
   <scoreDirectorFactory>
     <incrementalScoreCalculatorClass>org.optaplanner.examples.projectjobscheduling.solver.score.ProjectJobSchedulingIncrementalScoreCalculator</incrementalScoreCalculatorClass>
-    <!--<scoreDrl>org/optaplanner/examples/projectjobscheduling/solver/projectJobSchedulingScoreRules.drl</scoreDrl>-->
+    <!--<scoreDrl>org/optaplanner/examples/projectjobscheduling/solver/projectJobSchedulingConstraints.drl</scoreDrl>-->
   </scoreDirectorFactory>
   <termination>
     <minutesSpentLimit>5</minutesSpentLimit>

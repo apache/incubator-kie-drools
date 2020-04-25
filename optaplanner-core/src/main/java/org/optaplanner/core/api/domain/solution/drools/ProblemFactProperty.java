@@ -19,25 +19,26 @@ package org.optaplanner.core.api.domain.solution.drools;
 import java.lang.annotation.Retention;
 import java.lang.annotation.Target;
 
-import org.kie.api.runtime.KieSession;
 import org.optaplanner.core.api.domain.constraintweight.ConstraintConfiguration;
 import org.optaplanner.core.api.domain.entity.PlanningEntity;
 import org.optaplanner.core.api.domain.solution.PlanningSolution;
-import org.optaplanner.core.impl.score.director.drools.DroolsScoreDirector;
+import org.optaplanner.core.api.score.stream.ConstraintFactory;
+import org.optaplanner.core.api.score.stream.ConstraintProvider;
 import org.optaplanner.core.impl.solver.ProblemFactChange;
 
-import static java.lang.annotation.ElementType.*;
-import static java.lang.annotation.RetentionPolicy.*;
+import static java.lang.annotation.ElementType.FIELD;
+import static java.lang.annotation.ElementType.METHOD;
+import static java.lang.annotation.RetentionPolicy.RUNTIME;
 
 /**
  * Specifies that a property (or a field) on a {@link PlanningSolution} class is a problem fact.
- * A problem fact must not change during solving (except through {@link ProblemFactChange} event).
+ * A problem fact must not change during solving (except through a {@link ProblemFactChange} event).
  * <p>
- * The problem fact will be added as a fact in the {@link KieSession} of the {@link DroolsScoreDirector},
- * so the score rules can use it.
+ * A {@link ConstraintProvider} builds constraints from such a problem fact
+ * with {@link ConstraintFactory#from(Class)}.
  * <p>
- * Do not annotate {@link PlanningEntity planning entities} or a {@link ConstraintConfiguration planning paramerization}
- * as problem facts: they are automatically inserted into the {@link KieSession}.
+ * Do not annotate a {@link PlanningEntity planning entity} or a {@link ConstraintConfiguration planning paramerization}
+ * as a problem fact: they are automatically available as facts with {@link ConstraintFactory#from(Class)}.
  * @see ProblemFactCollectionProperty
  */
 @Target({METHOD, FIELD})

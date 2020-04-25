@@ -57,7 +57,7 @@
     <name>TS with Drools</name>
     <solver>
       <scoreDirectorFactory>
-        <scoreDrl>org/optaplanner/examples/machinereassignment/solver/machineReassignmentScoreRules.drl</scoreDrl>
+        <scoreDrl>org/optaplanner/examples/machinereassignment/solver/machineReassignmentConstraints.drl</scoreDrl>
       </scoreDirectorFactory>
     </solver>
   </solverBenchmark>

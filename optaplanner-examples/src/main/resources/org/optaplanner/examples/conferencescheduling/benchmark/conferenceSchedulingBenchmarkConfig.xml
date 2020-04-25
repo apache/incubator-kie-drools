@@ -27,7 +27,7 @@
       <entityClass>org.optaplanner.examples.conferencescheduling.domain.Talk</entityClass>
 
       <scoreDirectorFactory>
-        <scoreDrl>org/optaplanner/examples/conferencescheduling/solver/conferenceSchedulingScoreRules.drl</scoreDrl>
+        <scoreDrl>org/optaplanner/examples/conferencescheduling/solver/conferenceSchedulingConstraints.drl</scoreDrl>
       </scoreDirectorFactory>
       <termination>
         <minutesSpentLimit>15</minutesSpentLimit>

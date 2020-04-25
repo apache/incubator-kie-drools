@@ -123,7 +123,7 @@ public class Room extends AbstractPersistable {
             case FEMALE_ONLY:
                 return patient.getGender() == Gender.FEMALE ? 0 : 4;
             case SAME_GENDER:
-                // scoreRules check this
+                // Constraints check this
                 return 1;
             default:
                 throw new IllegalStateException("The genderLimitation (" + genderLimitation + ") is not implemented.");

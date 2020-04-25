@@ -88,7 +88,7 @@
     <name>DRL (Drools)</name>
     <solver>
       <scoreDirectorFactory>
-        <scoreDrl>org/optaplanner/examples/nqueens/solver/nQueensScoreRules.drl</scoreDrl>
+        <scoreDrl>org/optaplanner/examples/nqueens/solver/nQueensConstraints.drl</scoreDrl>
       </scoreDirectorFactory>
     </solver>
   </solverBenchmark>

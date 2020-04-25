@@ -12,7 +12,7 @@
     <!--<easyScoreCalculatorClass>org.optaplanner.examples.investment.solver.score.InvestmentEasyScoreCalculator</easyScoreCalculatorClass>-->
     <!--<incrementalScoreCalculatorClass>org.optaplanner.examples.investment.solver.score.InvestmentIncrementalScoreCalculator</incrementalScoreCalculatorClass>-->
     <!--<constraintProviderClass>org.optaplanner.examples.investment.optional.score.InvestmentConstraintProvider</constraintProviderClass>-->
-    <scoreDrl>org/optaplanner/examples/investment/solver/investmentScoreRules.drl</scoreDrl>
+    <scoreDrl>org/optaplanner/examples/investment/solver/investmentConstraints.drl</scoreDrl>
     <initializingScoreTrend>ONLY_DOWN/ANY</initializingScoreTrend>
     <!--<assertionScoreDirectorFactory>-->
     <!--<easyScoreCalculatorClass>org.optaplanner.examples.investment.solver.score.InvestmentEasyScoreCalculator</easyScoreCalculatorClass>-->

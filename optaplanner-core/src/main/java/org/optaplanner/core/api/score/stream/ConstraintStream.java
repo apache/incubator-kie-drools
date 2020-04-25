@@ -34,7 +34,7 @@ import org.optaplanner.core.impl.score.director.ScoreDirector;
 /**
  * A constraint stream is a declaration on how to match {@link UniConstraintStream one}, {@link BiConstraintStream two}
  * or more objects.
- * Constraint steams are similar to a declaration of a JDK {@link Stream} or an SQL query,
+ * Constraint streams are similar to a declaration of a JDK {@link Stream} or an SQL query,
  * but they support incremental score calculation
  * and {@link ScoreDirector#getConstraintMatchTotalMap()} score justification}.
  * <p>

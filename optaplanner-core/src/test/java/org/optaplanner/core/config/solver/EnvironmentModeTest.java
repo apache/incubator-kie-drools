@@ -87,7 +87,7 @@ public class EnvironmentModeTest {
     }
 
     @Test
-    public void determinismTest() {
+    public void determinism() {
         setSolverConfigCalculatorClass(TestdataDifferentValuesCalculator.class);
 
         Solver solver1 = SolverFactory.create(solverConfig).buildSolver();
@@ -110,7 +110,7 @@ public class EnvironmentModeTest {
     }
 
     @Test
-    public void corruptedCustomMovesTest() {
+    public void corruptedCustomMoves() {
         // Intrusive modes should throw exception about corrupted undoMove
         setSolverConfigCalculatorClass(TestdataDifferentValuesCalculator.class);
 
@@ -135,7 +135,7 @@ public class EnvironmentModeTest {
     }
 
     @Test
-    public void corruptedScoreRulesTest() {
+    public void corruptedConstraints() {
         // For full assert modes it should throw exception about corrupted score
         setSolverConfigCalculatorClass(TestdataCorruptedDifferentValuesCalculator.class);
 

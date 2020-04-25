@@ -45,7 +45,7 @@
     <name>DRL (Drools)</name>
     <solver>
       <scoreDirectorFactory>
-        <scoreDrl>org/optaplanner/examples/taskassigning/solver/taskAssigningScoreRules.drl</scoreDrl>
+        <scoreDrl>org/optaplanner/examples/taskassigning/solver/taskAssigningConstraints.drl</scoreDrl>
       </scoreDirectorFactory>
     </solver>
   </solverBenchmark>

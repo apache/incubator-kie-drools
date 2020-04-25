@@ -34,7 +34,7 @@ import org.optaplanner.core.impl.score.director.ScoreDirector;
 public enum EnvironmentMode {
     /**
      * This mode turns on all assertions
-     * to fail-fast on a bug in a {@link Move} implementation, a score rule, the rule engine itself or something else
+     * to fail-fast on a bug in a {@link Move} implementation, a constraint, the engine itself or something else
      * at a horrible performance cost.
      * <p>
      * This mode is reproducible (see {@link #REPRODUCIBLE} mode).
@@ -47,7 +47,7 @@ public enum EnvironmentMode {
     FULL_ASSERT,
     /**
      * This mode turns on several assertions (but not all of them)
-     * to fail-fast on a bug in a {@link Move} implementation, a score rule, the rule engine itself or something else
+     * to fail-fast on a bug in a {@link Move} implementation, a constraint, the engine itself or something else
      * at a horrible performance cost.
      * <p>
      * This mode is reproducible (see {@link #REPRODUCIBLE} mode).
@@ -59,7 +59,7 @@ public enum EnvironmentMode {
     NON_INTRUSIVE_FULL_ASSERT,
     /**
      * This mode turns on several assertions (but not all of them)
-     * to fail-fast on a bug in a {@link Move} implementation, a score rule, the rule engine itself or something else
+     * to fail-fast on a bug in a {@link Move} implementation, a constraint rule, the engine itself or something else
      * at a reasonable performance cost (in development at least).
      * <p>
      * This mode is reproducible (see {@link #REPRODUCIBLE} mode).

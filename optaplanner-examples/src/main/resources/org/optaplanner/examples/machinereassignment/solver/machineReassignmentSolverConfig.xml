@@ -9,10 +9,10 @@
   <scoreDirectorFactory>
     <incrementalScoreCalculatorClass>org.optaplanner.examples.machinereassignment.solver.score.MachineReassignmentIncrementalScoreCalculator</incrementalScoreCalculatorClass>
     <!--<constraintProviderClass>org.optaplanner.examples.machinereassignment.solver.score.MachineReassignmentConstraintProvider</constraintProviderClass>-->
-    <!--<scoreDrl>org/optaplanner/examples/machinereassignment/solver/machineReassignmentScoreRules.drl</scoreDrl>-->
+    <!--<scoreDrl>org/optaplanner/examples/machinereassignment/solver/machineReassignmentConstraints.drl</scoreDrl>-->
     <!-- TODO incrementalScoreCalculator and scoreDRL give different scores, so assertionScoreDirectorFactory fails -->
     <!--<assertionScoreDirectorFactory>-->
-      <!--<scoreDrl>org/optaplanner/examples/machinereassignment/solver/machineReassignmentScoreRules.drl</scoreDrl>-->
+      <!--<scoreDrl>org/optaplanner/examples/machinereassignment/solver/machineReassignmentConstraints.drl</scoreDrl>-->
     <!--</assertionScoreDirectorFactory>-->
   </scoreDirectorFactory>
   <termination>

@@ -777,7 +777,7 @@ Many of those have an `InitializingScoreTrend` that only goes down:
 [source,xml,options="nowrap"]
 ----
   <scoreDirectorFactory>
-    <scoreDrl>.../cloudBalancingScoreRules.drl</scoreDrl>
+    <scoreDrl>.../cloudBalancingConstraints.drl</scoreDrl>
     <initializingScoreTrend>ONLY_DOWN</initializingScoreTrend>
   </scoreDirectorFactory>
 ----
@@ -787,7 +787,7 @@ Alternatively, you can also specify the trend for each score level separately:
 [source,xml,options="nowrap"]
 ----
   <scoreDirectorFactory>
-    <scoreDrl>.../cloudBalancingScoreRules.drl</scoreDrl>
+    <scoreDrl>.../cloudBalancingConstraints.drl</scoreDrl>
     <initializingScoreTrend>ONLY_DOWN/ONLY_DOWN</initializingScoreTrend>
   </scoreDirectorFactory>
 ----
@@ -799,28 +799,28 @@ Alternatively, you can also specify the trend for each score level separately:
 When you put the <<environmentMode,`environmentMode`>> in `FULL_ASSERT` (or ``FAST_ASSERT``),
 it will detect score corruption in the <<incrementalScoreCalculation,incremental score calculation>>.
 However, that will not verify that your score calculator actually implements your score constraints as your business desires.
-For example, one score rule might consistently match the wrong pattern.
-To verify the score rules against an independent implementation, configure a ``assertionScoreDirectorFactory``:
+For example, one constraint might consistently match the wrong pattern.
+To verify the constraints against an independent implementation, configure a ``assertionScoreDirectorFactory``:
 
 [source,xml,options="nowrap"]
 ----
   <environmentMode>FAST_ASSERT</environmentMode>
   ...
   <scoreDirectorFactory>
-    <scoreDrl>org/optaplanner/examples/nqueens/solver/nQueensScoreRules.drl</scoreDrl>
+    <constraintProviderClass>org.optaplanner.examples.nqueens.solver.score.NQueensConstraintProvider</constraintProviderClass>
     <assertionScoreDirectorFactory>
       <easyScoreCalculatorClass>org.optaplanner.examples.nqueens.solver.score.NQueensEasyScoreCalculator</easyScoreCalculatorClass>
     </assertionScoreDirectorFactory>
   </scoreDirectorFactory>
 ----
 
-This way, the `scoreDrl` will be validated by the ``EasyScoreCalculator``.
+This way, the `NQueensConstraintProvider` implementation is validated by the ``EasyScoreCalculator``.
 
 [NOTE]
 ====
 This works well to isolate score corruption,
-but to verify that the score rules implement the real business needs,
-<<testingScoreConstraints, a unit test with a ScoreVerifier>> is usually better.
+but to verify that the constraint implement the real business needs,
+<<constraintStreamsTesting, a unit test with a ConstraintVerifier>> is usually better.
 ====
 
 
@@ -1258,8 +1258,7 @@ image::ScoreCalculation/scoreVisualization.png[align="center"]
 [[constraintMatchTotal]]
 === Constraint match total: break down the score by constraint
 
-To break down the score per constraint (so per score rule with Drools score calculation),
-get the ``ConstraintMatchTotal``s from the ``ScoreDirector``:
+To break down the score per constraint, get the ``ConstraintMatchTotal``s from the ``ScoreDirector``:
 
 [source,java,options="nowrap"]
 ----
@@ -1277,7 +1276,7 @@ for (ConstraintMatchTotal constraintMatchTotal : constraintMatchTotals) {
 }
 ----
 
-Each `ConstraintMatchTotal` represents one constraint (so one score rule) and has a part of the overall score.
+Each `ConstraintMatchTotal` represents one constraint and has a part of the overall score.
 The sum of all the `ConstraintMatchTotal.getScore()` equals the overall score.
 
 [NOTE]

@@ -9,7 +9,7 @@
 
   <!-- Score configuration -->
   <scoreDirectorFactory>
-    <scoreDrl>org/optaplanner/examples/tennis/solver/tennisScoreRules.drl</scoreDrl>
+    <scoreDrl>org/optaplanner/examples/tennis/solver/tennisConstraints.drl</scoreDrl>
     <initializingScoreTrend>ONLY_DOWN</initializingScoreTrend>
   </scoreDirectorFactory>
 

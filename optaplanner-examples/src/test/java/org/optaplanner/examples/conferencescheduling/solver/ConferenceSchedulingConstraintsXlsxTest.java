@@ -54,18 +54,19 @@ import org.optaplanner.examples.conferencescheduling.domain.Timeslot;
 import org.optaplanner.examples.conferencescheduling.persistence.ConferenceSchedulingXlsxFileIO;
 import org.optaplanner.test.impl.score.buildin.hardmediumsoft.HardMediumSoftScoreVerifier;
 
-import static org.optaplanner.examples.common.persistence.AbstractXlsxSolutionFileIO.*;
+import static org.optaplanner.examples.common.persistence.AbstractXlsxSolutionFileIO.DAY_FORMATTER;
+import static org.optaplanner.examples.common.persistence.AbstractXlsxSolutionFileIO.TIME_FORMATTER;
 
 @RunWith(Parameterized.class)
-public class ConferenceSchedulingScoreRulesXlsxTest {
+public class ConferenceSchedulingConstraintsXlsxTest {
 
     @Parameterized.Parameters(name = "{4}")
     public static Collection<Object[]> testSheetParameters() {
-        File testFile = new File(ConferenceSchedulingScoreRulesXlsxTest.class.getResource(testFileName).getFile());
+        File testFile = new File(ConferenceSchedulingConstraintsXlsxTest.class.getResource(testFileName).getFile());
         try (InputStream in = new BufferedInputStream(new FileInputStream(testFile))) {
             XSSFWorkbook workbook = new XSSFWorkbook(in);
             ConferenceSolution initialSolution = new ConferenceSchedulingXlsxFileIO(false).read(testFile);
-            TestConferenceSchedulingScoreRulesReader reader = new TestConferenceSchedulingScoreRulesReader(workbook, initialSolution);
+            TestConferenceSchedulingConstraintsReader reader = new TestConferenceSchedulingConstraintsReader(workbook, initialSolution);
 
             List<Object[]> parametersList = new ArrayList<>();
             for (Object[] parameters = reader.nextTestSheetParameters();
@@ -79,7 +80,7 @@ public class ConferenceSchedulingScoreRulesXlsxTest {
         }
     }
 
-    private static final String testFileName = "testConferenceSchedulingScoreRules.xlsx";
+    private static final String testFileName = "testConferenceSchedulingConstraints.xlsx";
     private static final HardMediumSoftScore unassignedScore = HardMediumSoftScore.ZERO;
 
     private String constraintPackage;
@@ -91,7 +92,7 @@ public class ConferenceSchedulingScoreRulesXlsxTest {
     private static HardMediumSoftScoreVerifier<ConferenceSolution> scoreVerifier = new HardMediumSoftScoreVerifier<>(
             SolverFactory.createFromXmlResource(ConferenceSchedulingApp.SOLVER_CONFIG));
 
-    public ConferenceSchedulingScoreRulesXlsxTest(String constraintPackage, String constraintName,
+    public ConferenceSchedulingConstraintsXlsxTest(String constraintPackage, String constraintName,
                 HardMediumSoftScore expectedScore, ConferenceSolution solution, String testSheetName) {
         this.constraintPackage = constraintPackage;
         this.constraintName = constraintName;
@@ -101,13 +102,13 @@ public class ConferenceSchedulingScoreRulesXlsxTest {
     }
 
     @Test
-    public void scoreRules() {
+    public void constraints() {
         scoreVerifier.assertHardWeight(constraintPackage, constraintName, expectedScore.getHardScore(), solution);
         scoreVerifier.assertMediumWeight(constraintPackage, constraintName, expectedScore.getMediumScore(), solution);
         scoreVerifier.assertSoftWeight(constraintPackage, constraintName, expectedScore.getSoftScore(), solution);
     }
 
-    private static class TestConferenceSchedulingScoreRulesReader extends AbstractXlsxSolutionFileIO.AbstractXlsxReader<ConferenceSolution> {
+    private static class TestConferenceSchedulingConstraintsReader extends AbstractXlsxSolutionFileIO.AbstractXlsxReader<ConferenceSolution> {
 
         // TODO Abstract out, mention ConferenceSchedulingApp.SOLVER_CONFIG once and get the solutionDescriptor from there
         private final SolutionDescriptor<ConferenceSolution> solutionDescriptor
@@ -121,7 +122,7 @@ public class ConferenceSchedulingScoreRulesXlsxTest {
         private Map<Integer, LocalTime> columnIndexToStartTimeMap;
         private Map<Integer, LocalTime> columnIndexToEndTimeMap;
 
-        private TestConferenceSchedulingScoreRulesReader(XSSFWorkbook workbook, ConferenceSolution initialSolution) {
+        private TestConferenceSchedulingConstraintsReader(XSSFWorkbook workbook, ConferenceSolution initialSolution) {
             super(workbook, ConferenceSchedulingApp.SOLVER_CONFIG);
             this.numberOfSheets = workbook.getNumberOfSheets();
             this.currentTestSheetIndex = workbook.getSheetIndex("Talks") + 1;

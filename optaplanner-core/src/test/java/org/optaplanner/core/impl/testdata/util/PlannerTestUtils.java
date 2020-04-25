@@ -57,9 +57,7 @@ import org.optaplanner.core.impl.testdata.domain.TestdataSolution;
 import org.optaplanner.core.impl.testdata.domain.TestdataValue;
 
 import static java.util.Arrays.stream;
-import static org.mockito.Mockito.any;
-import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.when;
+import static org.mockito.Mockito.*;
 
 /**
  * @see PlannerAssert
@@ -101,7 +99,7 @@ public class PlannerTestUtils {
         ScoreDirectorFactoryConfig scoreDirectorFactoryConfig = solverConfig.getScoreDirectorFactoryConfig();
         scoreDirectorFactoryConfig.setEasyScoreCalculatorClass(null);
         scoreDirectorFactoryConfig.setScoreDrlList(Collections.singletonList(
-                "org/optaplanner/core/impl/score/dummySimpleScoreDroolsScoreRules.drl"));
+                "org/optaplanner/core/impl/score/dummySimpleScoreDroolsConstraints.drl"));
         return SolverFactory.create(solverConfig);
     }
 

@@ -17,7 +17,7 @@
 
       <!-- Score configuration -->
       <scoreDirectorFactory>
-        <scoreDrl>divertThroughClassLoader/org/optaplanner/core/api/solver/classloaderTestdataScoreRules.drl</scoreDrl>
+        <scoreDrl>divertThroughClassLoader/org/optaplanner/core/api/solver/classloaderTestdataConstraints.drl</scoreDrl>
       </scoreDirectorFactory>
       <termination>
         <secondsSpentLimit>0</secondsSpentLimit>

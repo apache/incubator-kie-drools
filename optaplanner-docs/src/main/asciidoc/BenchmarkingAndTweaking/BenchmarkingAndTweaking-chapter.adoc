@@ -322,7 +322,7 @@ To quickly configure and run a benchmark for typical solver configs, use a `solv
     <solver>
       <scanAnnotatedClasses/>
       <scoreDirectorFactory>
-        <scoreDrl>org/optaplanner/examples/nqueens/solver/nQueensScoreRules.drl</scoreDrl>
+        <scoreDrl>org/optaplanner/examples/nqueens/solver/nQueensConstraints.drl</scoreDrl>
         <initializingScoreTrend>ONLY_DOWN</initializingScoreTrend>
       </scoreDirectorFactory>
       <termination>
@@ -541,7 +541,9 @@ Useful for visualizing the return on investment (ROI) to decision makers.
 
 Shows the score calculation speed: a count per second per problem scale for each solver configuration.
 
-Useful for comparing different score calculators and/or score rule implementations (presuming that the solver configurations do not differ otherwise). Also useful to measure the scalability cost of an extra constraint.
+Useful for comparing different score calculators and/or constraint implementations
+(presuming that the solver configurations do not differ otherwise).
+Also useful to measure the scalability cost of an extra constraint.
 
 
 [[benchmarkReportTimeSpentSummary]]

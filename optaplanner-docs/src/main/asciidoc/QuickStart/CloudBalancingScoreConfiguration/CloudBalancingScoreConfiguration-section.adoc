@@ -101,13 +101,13 @@ To use the Drools rule engine as a score function, simply add a `scoreDrl` resou
 [source,xml,options="nowrap"]
 ----
   <scoreDirectorFactory>
-    <scoreDrl>org/optaplanner/examples/cloudbalancing/solver/cloudBalancingScoreRules.drl</scoreDrl>
+    <scoreDrl>org/optaplanner/examples/cloudbalancing/solver/cloudBalancingConstraints.drl</scoreDrl>
   </scoreDirectorFactory>
 ----
 
 . We want to make sure that all computers have enough CPU, RAM and network bandwidth to support all their processes, so we make these hard constraints:
 +
-.cloudBalancingScoreRules.drl - Hard Constraints
+.cloudBalancingConstraints.drl - Hard Constraints
 ====
 [source,options="nowrap"]
 ----
@@ -149,7 +149,7 @@ end
 
 . If those constraints are met, we want to minimize the maintenance cost, so we add that as a soft constraint:
 +
-.cloudBalancingScoreRules.drl - Soft Constraints
+.cloudBalancingConstraints.drl - Soft Constraints
 ====
 [source,options="nowrap"]
 ----

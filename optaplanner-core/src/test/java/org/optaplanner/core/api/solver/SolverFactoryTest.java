@@ -124,7 +124,7 @@ public class SolverFactoryTest {
         SolverConfig solverConfig = PlannerTestUtils.buildSolverConfig(TestdataSolution.class, TestdataEntity.class);
         solverConfig.setClassLoader(classLoader);
         solverConfig.setScoreDirectorFactoryConfig(new ScoreDirectorFactoryConfig()
-                .withScoreDrls("divertThroughClassLoader/org/optaplanner/core/api/solver/classloaderTestdataScoreRules.drl"));
+                .withScoreDrls("divertThroughClassLoader/org/optaplanner/core/api/solver/classloaderTestdataConstraints.drl"));
         SolverFactory<TestdataSolution> solverFactory = SolverFactory.create(solverConfig);
         Solver<TestdataSolution> solver = solverFactory.buildSolver();
         assertNotNull(solver);

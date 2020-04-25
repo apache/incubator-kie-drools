@@ -100,13 +100,13 @@ public class KieContainerHelper {
                                              "testdata/kjar/ClassloadedTestdataEntity.java");
         Resource solutionClass = buildResource("org/optaplanner/core/impl/testdata/domain/classloaded/ClassloadedTestdataSolution.java",
                                                "testdata/kjar/ClassloadedTestdataSolution.java");
-        Resource scoreRules = buildResource("org/optaplanner/core/api/solver/kieContainerTestdataScoreRules.drl",
-                                            "testdata/kjar/scoreRules.drl");
+        Resource constraints = buildResource("org/optaplanner/core/api/solver/kieContainerTestdataConstraints.drl",
+                                            "testdata/kjar/constraints.drl");
         Collection<Resource> resources = new ArrayList<>(Arrays.asList(additionalResources));
         resources.add(valueClass);
         resources.add(entityClass);
         resources.add(solutionClass);
-        resources.add(scoreRules);
+        resources.add(constraints);
 
         CommonTestMethodBase.createAndDeployJar(kieServices, kmodule, releaseId, resources.toArray(new Resource[0]));
 

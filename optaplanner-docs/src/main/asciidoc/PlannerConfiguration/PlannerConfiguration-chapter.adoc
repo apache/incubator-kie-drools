@@ -85,7 +85,7 @@ A solver configuration XML file looks like this:
 
   <!-- Define the score function -->
   <scoreDirectorFactory>
-    <scoreDrl>org/optaplanner/examples/nqueens/solver/nQueensScoreRules.drl</scoreDrl>
+    <scoreDrl>org/optaplanner/examples/nqueens/solver/nQueensConstraints.drl</scoreDrl>
   </scoreDirectorFactory>
 
   <!-- Configure the optimization algorithms (optional) -->
@@ -1155,8 +1155,7 @@ This annotation can also be <<autoDiscoverSolutionProperties, auto discovered>> 
 For <<constraintStreams,constraint streams>> and <<droolsScoreCalculation,Drools score calculation>>,
 OptaPlanner needs to extract the problem fact instances from the solution instance.
 It gets those collection(s) by calling every method (or field) that is annotated with ``@ProblemFactCollectionProperty``.
-All objects returned by those methods will be inserted into the ConstrainStreams or Drools session,
-so the constraint steams or score rules can access them.
+All objects returned by those methods are available to use by the constraint streams or Drools rules.
 For example in `NQueens` all `Column` and `Row` instances are problem facts.
 
 [source,java,options="nowrap"]
@@ -1556,7 +1555,7 @@ These are the environment modes:
 [[environmentModeFullAssert]]
 ==== `FULL_ASSERT`
 
-The FULL_ASSERT mode turns on all assertions (such as assert that the incremental score calculation is uncorrupted for each move) to fail-fast on a bug in a Move implementation, a score rule, the rule engine itself, ...
+The FULL_ASSERT mode turns on all assertions (such as assert that the incremental score calculation is uncorrupted for each move) to fail-fast on a bug in a Move implementation, a constraint, the engine itself, ...
 
 This mode is reproducible (see the reproducible mode). It is also intrusive because it calls the method `calculateScore()` more frequently than a non-assert mode.
 
@@ -1566,7 +1565,7 @@ The FULL_ASSERT mode is horribly slow (because it does not rely on incremental s
 [[environmentModeNonIntrusiveFullAssert]]
 ==== `NON_INTRUSIVE_FULL_ASSERT`
 
-The NON_INTRUSIVE_FULL_ASSERT turns on several assertions to fail-fast on a bug in a Move implementation, a score rule, the rule engine itself, ...
+The NON_INTRUSIVE_FULL_ASSERT turns on several assertions to fail-fast on a bug in a Move implementation, a constraint, the engine itself, ...
 
 This mode is reproducible (see the reproducible mode). It is non-intrusive because it does not call the method `calculateScore()` more frequently than a non assert mode.
 
@@ -1576,7 +1575,7 @@ The NON_INTRUSIVE_FULL_ASSERT mode is horribly slow (because it does not rely on
 [[environmentModeFastAssert]]
 ==== `FAST_ASSERT`
 
-The FAST_ASSERT mode turns on most assertions (such as assert that an undoMove's score is the same as before the Move) to fail-fast on a bug in a Move implementation, a score rule, the rule engine itself, ...
+The FAST_ASSERT mode turns on most assertions (such as assert that an undoMove's score is the same as before the Move) to fail-fast on a bug in a Move implementation, a constraint, the engine itself, ...
 
 This mode is reproducible (see the reproducible mode). It is also intrusive because it calls the method `calculateScore()` more frequently than a non assert mode.
 

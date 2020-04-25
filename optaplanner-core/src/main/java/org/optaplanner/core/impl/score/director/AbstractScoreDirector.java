@@ -677,7 +677,7 @@ public abstract class AbstractScoreDirector<Solution_, Factory_ extends Abstract
             logger.trace("        Corruption detected. Diagnosing...");
             // TODO PLANNER-421 Avoid undoMove.toString() because it's stale (because the move is already done)
             String undoMoveString = "Undo(" + move + ")";
-            // Precondition: assert that there are probably no corrupted score rules
+            // Precondition: assert that there are probably no corrupted constraints
             assertWorkingScoreFromScratch(undoScore, undoMoveString);
             // Precondition: assert that shadow variables aren't stale after doing the undoMove
             assertShadowVariablesAreNotStale(undoScore, undoMoveString);
@@ -772,7 +772,7 @@ public abstract class AbstractScoreDirector<Solution_, Factory_ extends Abstract
         Map<List<Object>, ConstraintMatch> constraintMatchMap = new LinkedHashMap<>(constraintMatchTotals.size() * 16);
         for (ConstraintMatchTotal constraintMatchTotal : constraintMatchTotals) {
             for (ConstraintMatch constraintMatch : constraintMatchTotal.getConstraintMatchSet()) {
-                // The order of justificationLists for score rules that include accumulates isn't stable, so we make it.
+                // The order of justificationLists for constraints that include accumulates isn't stable, so we make it.
                 List<Object> justificationList = new ArrayList<>(constraintMatch.getJustificationList());
                 Collections.sort(justificationList, comparator);
                 // And now we store the reference to the constraint match.

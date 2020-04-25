@@ -7,8 +7,8 @@
   <entityClass>org.optaplanner.examples.dinnerparty.domain.SeatDesignation</entityClass>
 
   <scoreDirectorFactory>
-    <scoreDrl>org/optaplanner/examples/dinnerparty/solver/dinnerPartyScoreRules.drl</scoreDrl>
-    <scoreDrl>org/optaplanner/examples/dinnerparty/solver/dinnerPartyExtraScoreRules.xls</scoreDrl>
+    <scoreDrl>org/optaplanner/examples/dinnerparty/solver/dinnerPartyConstraints.drl</scoreDrl>
+    <scoreDrl>org/optaplanner/examples/dinnerparty/solver/dinnerPartyExtraConstraints.xls</scoreDrl>
   </scoreDirectorFactory>
 
   <termination>

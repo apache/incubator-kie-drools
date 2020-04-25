@@ -346,7 +346,7 @@
                             <div class="tab-pane active" id="summary_scoreCalculationSpeed">
                                 <h3>Score calculation speed summary</h3>
                                 <p>
-                                    Useful for comparing different score calculators and/or score rule implementations
+                                    Useful for comparing different score calculators and/or constraints implementations
                                     (presuming that the solver configurations do not differ otherwise).
                                     Also useful to measure the scalability cost of an extra constraint.
                                 </p>
@@ -411,7 +411,7 @@
                             <div class="tab-pane" id="summary_worstScoreCalculationSpeedDifferencePercentage">
                                 <h3>Worst score calculation speed difference percentage</h3>
                                 <p>
-                                    Useful for comparing different score calculators and/or score rule implementations
+                                    Useful for comparing different score calculators and/or constraints implementations
                                     (presuming that the solver configurations do not differ otherwise).
                                     Also useful to measure the scalability cost of an extra constraint.
                                 </p>

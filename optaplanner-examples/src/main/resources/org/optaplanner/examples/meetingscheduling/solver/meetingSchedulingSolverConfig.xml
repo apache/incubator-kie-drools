@@ -7,7 +7,7 @@
   <entityClass>org.optaplanner.examples.meetingscheduling.domain.MeetingAssignment</entityClass>
 
   <scoreDirectorFactory>
-    <scoreDrl>org/optaplanner/examples/meetingscheduling/solver/meetingSchedulingScoreRules.drl</scoreDrl>
+    <scoreDrl>org/optaplanner/examples/meetingscheduling/solver/meetingSchedulingConstraints.drl</scoreDrl>
   </scoreDirectorFactory>
 
   <termination>

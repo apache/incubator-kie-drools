@@ -32,7 +32,7 @@ import org.optaplanner.test.impl.score.buildin.hardsoft.HardSoftScoreVerifier;
 import static org.junit.Assert.*;
 
 /**
- * Used in unit tests to assert that 1 particular solution has a specific weight for a specific score rule.
+ * Used in unit tests to assert that 1 particular solution has a specific weight for a specific constraint.
  * This works well to verify that the implementation is in sync with the business constraints.
  * This does not work well to detect score corruption,
  * use {@link ScoreDirectorFactoryConfig#setAssertionScoreDirectorFactory(ScoreDirectorFactoryConfig)} for that instead.
@@ -65,12 +65,11 @@ public abstract class AbstractScoreVerifier<Solution_> {
     }
 
     /**
-     * Assert that the constraint (which is usually a score rule) of {@link PlanningSolution}
-     * has the expected weight for that score level.
+     * Assert that the constraint of {@link PlanningSolution} has the expected weight for that score level.
      * @param constraintPackage sometimes null.
      * When null, {@code constraintName} for the {@code scoreLevel} must be unique.
      * @param scoreLevel at least 0
-     * @param constraintName never null, the name of the constraint, which is usually the name of the score rule
+     * @param constraintName never null, the name of the constraint
      * @param expectedWeight never null, the total weight for all matches of that 1 constraint
      * @param solution never null
      */
@@ -81,7 +80,7 @@ public abstract class AbstractScoreVerifier<Solution_> {
         scoreDirector.setWorkingSolution(solution);
         scoreDirector.calculateScore();
         ConstraintMatchTotal matchTotal = findConstraintMatchTotal(constraintPackage, constraintName, scoreDirector);
-        // A matchTotal is null if the score rule didn't fire now and never fired in a previous incremental calculation
+        // A matchTotal is null if the constraint did match now and never matched in a previous incremental calculation
         // (including those that are undone).
         // To avoid user pitfalls, the expectedWeight cannot be null and a matchTotal of null is treated as zero.
         if (expectedWeight == null) {
@@ -117,7 +116,7 @@ public abstract class AbstractScoreVerifier<Solution_> {
     /**
      * @param constraintPackage sometimes null.
      * When null, {@code constraintName} for the {@code scoreLevel} must be unique.
-     * @param constraintName never null, the name of the constraint, which is usually the name of the score rule
+     * @param constraintName never null, the name of the constraint
      * @param scoreDirector never null
      * @return null if there is no constraint matched or the constraint doesn't exist
      */
