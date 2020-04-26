@@ -48,7 +48,7 @@ public enum EnvironmentMode {
     /**
      * This mode turns on several assertions (but not all of them)
      * to fail-fast on a bug in a {@link Move} implementation, a constraint, the engine itself or something else
-     * at a horrible performance cost.
+     * at an overwhelming performance cost.
      * <p>
      * This mode is reproducible (see {@link #REPRODUCIBLE} mode).
      * <p>
