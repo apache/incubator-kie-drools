@@ -34,11 +34,11 @@ import static java.lang.annotation.RetentionPolicy.RUNTIME;
  * Specifies that a property (or a field) on a {@link PlanningSolution} class is a {@link Collection} of problem facts.
  * A problem fact must not change during solving (except through a {@link ProblemFactChange} event).
  * <p>
- * A {@link ConstraintProvider} builds constraints from such problem facts
- * with {@link ConstraintFactory#from(Class)}.
+ * The constraints in a {@link ConstraintProvider} rely on problem facts for {@link ConstraintFactory#from(Class)}.
+ * Alternatively, scoreDRL relies on problem facts too.
  * <p>
  * Do not annotate {@link PlanningEntity planning entities} as problem facts:
- * they are automatically available as facts with {@link ConstraintFactory#from(Class)}.
+ * they are automatically available as facts for {@link ConstraintFactory#from(Class)} or DRL.
  * @see ProblemFactProperty
  */
 @Target({METHOD, FIELD})
