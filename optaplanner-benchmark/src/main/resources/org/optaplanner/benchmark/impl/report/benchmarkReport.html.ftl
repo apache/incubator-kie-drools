@@ -411,7 +411,7 @@
                             <div class="tab-pane" id="summary_worstScoreCalculationSpeedDifferencePercentage">
                                 <h3>Worst score calculation speed difference percentage</h3>
                                 <p>
-                                    Useful for comparing different score calculators and/or constraints implementations
+                                    Useful for comparing different score calculators and/or constraint implementations
                                     (presuming that the solver configurations do not differ otherwise).
                                     Also useful to measure the scalability cost of an extra constraint.
                                 </p>
