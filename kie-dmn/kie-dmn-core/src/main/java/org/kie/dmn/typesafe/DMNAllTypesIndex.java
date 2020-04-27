@@ -30,9 +30,7 @@ import java.util.Optional;
 
 import org.kie.dmn.api.core.DMNModel;
 import org.kie.dmn.api.core.DMNType;
-import org.kie.dmn.core.impl.BaseDMNTypeImpl;
 import org.kie.dmn.feel.lang.SimpleType;
-import org.kie.dmn.feel.lang.Type;
 import org.kie.dmn.feel.lang.types.BuiltInType;
 
 public class DMNAllTypesIndex {
@@ -91,50 +89,48 @@ public class DMNAllTypesIndex {
     }
 
     private String convertBuiltin(DMNType expectedFEELType) {
-        Type feelType = ((BaseDMNTypeImpl) expectedFEELType).getFeelType();
-        BuiltInType builtin;
-        try {
-            builtin = (BuiltInType) feelType;
-        } catch (ClassCastException e) {
-            throw new IllegalArgumentException();
-        }
+        BuiltInType builtin = DMNTypeUtils.getFEELBuiltInType(expectedFEELType);
         Class<?> convertedClass = Object.class;
-        switch (builtin) {
-            case DATE:
-                convertedClass = LocalDate.class;
-                break;
-            case TIME:
-                convertedClass = LocalTime.class;
-                break;
-            case DATE_TIME:
-                convertedClass = LocalDateTime.class;
-                break;
-            case DURATION:
-                switch (expectedFEELType.getName()) {
-                    case SimpleType.YEARS_AND_MONTHS_DURATION:
-                    case "yearMonthDuration":
-                        convertedClass = Period.class;
-                        break;
-                    case SimpleType.DAYS_AND_TIME_DURATION:
-                    case "dayTimeDuration":
-                        convertedClass = Duration.class;
-                        break;
-                    default:
-                        throw new IllegalArgumentException();
-                }
-                break;
-            case BOOLEAN:
-                convertedClass = Boolean.class;
-                break;
-            case NUMBER:
-                convertedClass = Number.class;
-                break;
-            case STRING:
-                convertedClass = String.class;
-                break;
-            default:
-                convertedClass = Object.class;
+        if (builtin == BuiltInType.DURATION) {
+            convertedClass = convertDurationToJavaClass(expectedFEELType);
+        } else {
+            convertedClass = convertBuiltInToJavaClass(builtin);
         }
         return convertedClass.getCanonicalName();
+    }
+
+    private Class<?> convertBuiltInToJavaClass(BuiltInType builtin) {
+        switch (builtin) {
+            case UNKNOWN:
+                return Object.class;
+            case DATE:
+                return LocalDate.class;
+            case TIME:
+                return LocalTime.class;
+            case DATE_TIME:
+                return LocalDateTime.class;
+            case BOOLEAN:
+                return Boolean.class;
+            case NUMBER:
+                return Number.class;
+            case STRING:
+                return String.class;
+            case DURATION:
+            default:
+                throw new IllegalArgumentException();
+        }
+    }
+
+    private static Class<?> convertDurationToJavaClass(DMNType expectedFEELType) {
+        switch (expectedFEELType.getName()) {
+            case SimpleType.YEARS_AND_MONTHS_DURATION:
+            case "yearMonthDuration":
+                return Period.class;
+            case SimpleType.DAYS_AND_TIME_DURATION:
+            case "dayTimeDuration":
+                return Duration.class;
+            default:
+                throw new IllegalArgumentException();
+        }
     }
 }

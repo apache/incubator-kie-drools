@@ -30,9 +30,10 @@ public class DMNTypeUtils {
         // only static method in this class.
     }
 
-    // TODO
     public static boolean isFEELBuiltInType(DMNType dmnType) {
-        return dmnType.getNamespace().contains("FEEL");
+        return dmnType.getNamespace().equals(org.kie.dmn.model.v1_1.KieDMNModelInstrumentedBase.URI_FEEL) ||
+               dmnType.getNamespace().equals(org.kie.dmn.model.v1_2.KieDMNModelInstrumentedBase.URI_FEEL) ||
+               dmnType.getNamespace().equals(org.kie.dmn.model.v1_3.KieDMNModelInstrumentedBase.URI_FEEL);
     }
 
     public static boolean isFEELAny(DMNType dmnType) {
@@ -41,6 +42,17 @@ public class DMNTypeUtils {
 
     private static Type getFEELType(DMNType dmnType) {
         return ((BaseDMNTypeImpl) dmnType).getFeelType();
+    }
+
+    public static BuiltInType getFEELBuiltInType(DMNType dmnType) {
+        Type feelType = DMNTypeUtils.getFEELType(dmnType);
+        BuiltInType builtin;
+        try {
+            builtin = (BuiltInType) feelType;
+        } catch (ClassCastException e) {
+            throw new IllegalArgumentException();
+        }
+        return builtin;
     }
 
     public static boolean isInnerComposite(DMNType dmnType) {
