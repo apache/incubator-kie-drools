@@ -71,7 +71,7 @@ class TestGenTestWriter {
     private void printInit() {
         sb.append("package org.optaplanner.testgen;\n\n");
         List<String> imports = new ArrayList<>();
-        imports.add("org.junit.Test");
+        imports.add("org.junit.jupiter.api.Test");
         imports.add("org.kie.api.KieServices");
         imports.add("org.kie.api.builder.KieFileSystem");
         imports.add("org.kie.api.runtime.KieContainer");
