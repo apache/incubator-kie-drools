@@ -45,13 +45,13 @@ import static org.mockito.Mockito.verify;
  * The functions themselves are tested directly, using unit tests, and as such this
  * test case only has a single scenario for each function.
  */
-public class DMNTwoValueLogicTest extends BaseVariantTest {
+public class DMNTwoValueLogicTest extends BaseInterpretedVsCompiledTest {
 
     private static DMNRuntime runtime;
     private static DMNContext context;
     private static DMNModel dmnModel;
 
-    public DMNTwoValueLogicTest(final BaseVariantTest.VariantTestConf useExecModelCompiler) {
+    public DMNTwoValueLogicTest(final boolean useExecModelCompiler) {
         super(useExecModelCompiler);
     }
 
