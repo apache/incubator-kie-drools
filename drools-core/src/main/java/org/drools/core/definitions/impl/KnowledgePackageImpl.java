@@ -684,7 +684,8 @@ public class KnowledgePackageImpl
 
    public TraitRegistry getTraitRegistry() {
         if (traitRegistry == null) {
-            traitRegistry = fromTraitRegistry(TraitCoreService::createRegistry);
+            traitRegistry = fromTraitRegistry(TraitCoreService::createRegistry)
+                    .orElse(null);
         }
         return traitRegistry;
     }

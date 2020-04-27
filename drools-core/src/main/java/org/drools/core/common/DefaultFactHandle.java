@@ -17,6 +17,7 @@
 package org.drools.core.common;
 
 import java.util.Objects;
+import java.util.Optional;
 import java.util.function.Consumer;
 import java.util.function.Predicate;
 import java.util.stream.Stream;
@@ -198,11 +199,15 @@ public class DefaultFactHandle extends AbstractBaseLinkedListNode<DefaultFactHan
         if ( klass.isAssignableFrom( object.getClass() ) ) {
             return (K) object;
         } else if ( this.isTraitOrTraitable() ) {
-            TraitHelper traitFactory = fromTraitRegistry(TraitCoreService::createTraitHelper);
-            K k = traitFactory.extractTrait( this, klass );
-            if ( k != null ) {
-                return  k;
-            }
+            Optional<TraitHelper> traitFactory = fromTraitRegistry(TraitCoreService::createTraitHelper);
+            traitFactory.map(t -> {
+                K k = t.extractTrait( this, klass );
+                if ( k != null ) {
+                    return  k;
+                } else {
+                    throw new RuntimeException(String.format("Cannot trait to %s", klass));
+                }
+            }).orElseThrow(() -> new RuntimeException(String.format("Cannot trait to %s", klass)));
         }
         throw new ClassCastException( "The Handle's Object can't be cast to " + klass );
     }
@@ -468,13 +473,9 @@ public class DefaultFactHandle extends AbstractBaseLinkedListNode<DefaultFactHan
     }
 
     private static TraitTypeEnum determineTraitType(Object object, boolean isTraitOrTraitable) {
-        if ( isTraitOrTraitable ) {
-            try {
-                TraitFactory traitFactory = fromTraitRegistry(TraitCoreService::createTraitFactory);
-                return traitFactory.determineTraitType(object);
-            } catch(Throwable e) { // TODO fix this
-                return TraitTypeEnum.NON_TRAIT;
-            }
+        if (isTraitOrTraitable) {
+            Optional<TraitFactory> traitFactory = fromTraitRegistry(TraitCoreService::createTraitFactory);
+            return traitFactory.map(t -> t.determineTraitType(object)).orElse(TraitTypeEnum.NON_TRAIT);
         } else {
             return TraitTypeEnum.NON_TRAIT;
         }

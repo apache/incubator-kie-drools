@@ -96,12 +96,8 @@ public class ClassBuilderFactory implements Serializable {
     private ClassBuilder traitProxyBuilder;
 
     public ClassBuilder getTraitProxyBuilder() {
-        if(traitProxyBuilder == null) {
-            try {
-                traitProxyBuilder = fromTraitRegistry(TraitCoreService::createTraitProxyClassBuilder);
-            } catch(Throwable e) {
-                // TODO fix this
-            }
+        if (traitProxyBuilder == null) {
+            traitProxyBuilder = fromTraitRegistry(TraitCoreService::createTraitProxyClassBuilder).orElse(null);
         }
         return traitProxyBuilder;
     }

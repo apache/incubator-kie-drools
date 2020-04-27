@@ -47,8 +47,12 @@ import org.drools.core.util.TripleFactory;
 import org.drools.core.util.TripleFactoryImpl;
 import org.drools.core.util.TripleStore;
 import org.kie.api.internal.utils.ServiceRegistry;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 public class KieComponentFactory implements Serializable {
+
+    Logger logger = LoggerFactory.getLogger(KieComponentFactory.class);
 
     public static final KieComponentFactory DEFAULT = new KieComponentFactory();
 
@@ -237,11 +241,9 @@ public class KieComponentFactory implements Serializable {
 
     public TraitFactory getTraitFactory() {
         if(traitFactory == null) {
-            try {
-                traitFactory = fromTraitRegistry(TraitCoreService::createTraitFactory);
-            } catch(Throwable e) {
-
-            }
+            traitFactory =
+                    fromTraitRegistry(TraitCoreService::createTraitFactory)
+                    .orElse(null);
         }
         return traitFactory;
     }
@@ -250,10 +252,13 @@ public class KieComponentFactory implements Serializable {
         traitFactory = tf;
     }
 
-    public static <T> T fromTraitRegistry(Function<TraitCoreService, T> producer) {
-        return getTraitCoreService()
-                .map(producer)
-                .orElseThrow(() -> new RuntimeException(String.format("Need a %s injected through kie.conf", TraitCoreService.class.getCanonicalName())));
+    public static <T> Optional<T> fromTraitRegistry(Function<TraitCoreService, T> producer) {
+        try {
+            return getTraitCoreService()
+                    .map(producer);
+        } catch (Throwable e) {
+            return Optional.empty();
+        }
     }
 
     private static Optional<TraitCoreService> getTraitCoreService() {
@@ -264,7 +269,9 @@ public class KieComponentFactory implements Serializable {
 
     public TraitRegistry getTraitRegistry() {
         if ( traitRegistry == null ) {
-            traitRegistry = fromTraitRegistry(TraitCoreService::createRegistry);
+            traitRegistry =
+                    fromTraitRegistry(TraitCoreService::createRegistry)
+                    .orElse(null);
         }
         return traitRegistry;
     }
