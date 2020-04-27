@@ -49,6 +49,8 @@ import org.kie.dmn.core.impl.DMNRuntimeKB;
 import org.kie.dmn.feel.util.Either;
 import org.kie.dmn.model.api.Definitions;
 import org.kie.internal.io.ResourceWithConfigurationImpl;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * Internal Utility class.
@@ -119,6 +121,8 @@ public class DMNRuntimeBuilder {
 
     public static class DMNRuntimeBuilderConfigured {
 
+        private static final Logger LOG = LoggerFactory.getLogger(DMNRuntimeBuilderConfigured.class);
+
         private final DMNRuntimeBuilderCtx ctx;
         private final DMNCompiler dmnCompiler;
 
@@ -162,7 +166,12 @@ public class DMNRuntimeBuilder {
             List<DMNModel> dmnModels = new ArrayList<>();
             for (DMNResource dmnRes : sortedDmnResources) {
                 DMNModel dmnModel = dmnCompiler.compile(dmnRes.getDefinitions(), dmnRes.getResAndConfig().getResource(), dmnModels);
-                dmnModels.add(dmnModel);
+                if (dmnModel != null) {
+                    dmnModels.add(dmnModel);
+                } else {
+                    LOG.error("Unable to compile DMN model for the resource {}", dmnRes.getResAndConfig().getResource());
+                    return Either.ofLeft(new IllegalStateException("Unable to compile DMN model for the resource " + dmnRes.getResAndConfig().getResource()));
+                }
             }
             return Either.ofRight(new DMNRuntimeImpl(new DMNRuntimeKBStatic(dmnModels, ctx.dmnProfiles)));
         }

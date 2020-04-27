@@ -44,6 +44,7 @@ import static org.hamcrest.CoreMatchers.nullValue;
 import static org.hamcrest.Matchers.hasSize;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertThat;
+import static org.junit.Assert.fail;
 import static org.kie.dmn.core.util.DynamicTypeUtils.entry;
 import static org.kie.dmn.core.util.DynamicTypeUtils.mapOf;
 
@@ -126,7 +127,8 @@ public class DMNCompilerTest extends BaseVariantTest {
     public void testCompilationThrowsNPE() {
         try {
             createRuntime( "compilationThrowsNPE.dmn", this.getClass() );
-        } catch (final IllegalStateException ex) {
+            fail("shouldn't have reached here.");
+        } catch (final Exception ex) {
             assertThat(ex.getMessage(), Matchers.containsString("Unable to compile DMN model for the resource"));
         }
     }

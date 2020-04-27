@@ -194,7 +194,7 @@ public class DMNAssemblerService implements KieAssemblerService {
             dmnpkg.addProfiles(kbuilderImpl.getCachedOrCreate(DMN_PROFILES_CACHE_KEY, () -> getDMNProfiles(kbuilderImpl)));
         } else {
             kbuilderImpl.addBuilderResult(new DMNKnowledgeBuilderError(ResultSeverity.ERROR, resource, "Unable to compile DMN model for the resource"));
-            logger.error( "Unable to compile DMN model for resource {}", resource.getSourcePath() );
+            logger.error("Unable to compile DMN model for the resource {}", resource.getSourcePath());
         }
         return model;
     }
