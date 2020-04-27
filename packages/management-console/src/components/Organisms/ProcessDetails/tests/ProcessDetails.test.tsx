@@ -1,6 +1,7 @@
 import React from 'react';
 import { shallow } from 'enzyme';
 import ProcessDetails from '../ProcessDetails';
+import { ProcessInstanceState } from '../../../../graphql/types';
 
 const props = {
   data: {
@@ -8,19 +9,13 @@ const props = {
       {
         id: '',
         processId: '',
-        state: '',
+        state: ProcessInstanceState.Active,
         parentProcessInstanceId: 'e4448857-fa0c-403b-ad69-f0a353458b9d',
         endpoint: 'test',
         start: '2019-10-22T03:40:44.089Z',
         end: '2019-10-22T03:40:44.089Z',
-        parentProcessInstance: {
-          id: ''
-        },
-        childProcessInstances: [
-          {
-            id: ''
-          }
-        ]
+        parentProcessInstance: null,
+        childProcessInstances: []
       }
     ]
   },
@@ -49,19 +44,13 @@ const props2 = {
       {
         id: '2d962eef-45b8-48a9-ad4e-9cde0ad6af88',
         processId: 'hotelBooking',
-        state: 'COMPLETED',
+        state: ProcessInstanceState.Active,
         parentProcessInstanceId: 'e4448857-fa0c-403b-ad69-f0a353458b9d',
         endpoint: 'test',
         start: '2019-10-22T03:40:44.089Z',
         end: '2019-10-22T03:40:44.089Z',
-        parentProcessInstance: {
-          id: ''
-        },
-        childProcessInstances: [
-          {
-            id: ''
-          }
-        ]
+        parentProcessInstance: null,
+        childProcessInstances: []
       }
     ]
   },

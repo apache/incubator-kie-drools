@@ -26,7 +26,16 @@ exports[`Process Details component Snapshot tests 1`] = `
       >
         <Text
           component="p"
-        />
+        >
+          <OnRunningIcon
+            className="pf-u-mr-sm"
+            color="currentColor"
+            noVerticalAlign={false}
+            size="sm"
+            title={null}
+          />
+          Active
+        </Text>
       </FormGroup>
       <FormGroup
         fieldId="id"
@@ -36,17 +45,6 @@ exports[`Process Details component Snapshot tests 1`] = `
           className="kogito-management-console--u-WordBreak"
           component="p"
         />
-      </FormGroup>
-      <FormGroup
-        fieldId="endpoint"
-        label="Endpoint"
-      >
-        <Text
-          className="kogito-management-console--u-WordBreak"
-          component="p"
-        >
-          test
-        </Text>
       </FormGroup>
       <FormGroup
         fieldId="start"
@@ -103,146 +101,6 @@ exports[`Process Details component Snapshot tests 1`] = `
             <Component />
           </t>
         </Text>
-      </FormGroup>
-      <FormGroup
-        fieldId="parent"
-        label="Parent Process"
-      >
-        <div>
-          <Link
-            to={
-              Object {
-                "pathname": "/Process/",
-                "state": Object {
-                  "prev": "",
-                },
-              }
-            }
-          >
-            <Tooltip
-              appendTo={[Function]}
-              aria="describedby"
-              boundary="window"
-              className=""
-              content=""
-              distance={15}
-              enableFlip={true}
-              entryDelay={500}
-              exitDelay={500}
-              flipBehavior={
-                Array [
-                  "top",
-                  "right",
-                  "bottom",
-                  "left",
-                  "top",
-                  "right",
-                  "bottom",
-                ]
-              }
-              id=""
-              isAppLauncher={false}
-              isContentLeftAligned={false}
-              isVisible={false}
-              maxWidth="18.75rem"
-              position="top"
-              tippyProps={Object {}}
-              trigger="mouseenter focus"
-              zIndex={9999}
-            >
-              <Component
-                icon={
-                  <LevelUpAltIcon
-                    color="currentColor"
-                    noVerticalAlign={false}
-                    size="sm"
-                    title={null}
-                  />
-                }
-                variant="link"
-              >
-                <ProcessDescriptor
-                  processInstanceData={
-                    Object {
-                      "id": "",
-                    }
-                  }
-                />
-              </Component>
-            </Tooltip>
-          </Link>
-        </div>
-      </FormGroup>
-      <FormGroup
-        fieldId="child"
-        label="Sub Processes"
-      >
-        <div
-          key=""
-        >
-          <Link
-            to={
-              Object {
-                "pathname": "/Process/",
-                "state": Object {
-                  "prev": "",
-                },
-              }
-            }
-          >
-            <Tooltip
-              appendTo={[Function]}
-              aria="describedby"
-              boundary="window"
-              className=""
-              content=""
-              distance={15}
-              enableFlip={true}
-              entryDelay={500}
-              exitDelay={500}
-              flipBehavior={
-                Array [
-                  "top",
-                  "right",
-                  "bottom",
-                  "left",
-                  "top",
-                  "right",
-                  "bottom",
-                ]
-              }
-              id=""
-              isAppLauncher={false}
-              isContentLeftAligned={false}
-              isVisible={false}
-              maxWidth="18.75rem"
-              position="top"
-              tippyProps={Object {}}
-              trigger="mouseenter focus"
-              zIndex={9999}
-            >
-              <Component
-                icon={
-                  <LevelDownAltIcon
-                    color="currentColor"
-                    noVerticalAlign={false}
-                    size="sm"
-                    title={null}
-                  />
-                }
-                variant="link"
-              >
-                <ProcessDescriptor
-                  processInstanceData={
-                    Object {
-                      "id": "",
-                    }
-                  }
-                />
-              </Component>
-            </Tooltip>
-          </Link>
-        </div>
       </FormGroup>
     </Form>
   </CardBody>

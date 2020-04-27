@@ -14,68 +14,32 @@ import {
 import React from 'react';
 import {
   LevelDownAltIcon,
-  LevelUpAltIcon,
-  OnRunningIcon,
-  CheckCircleIcon,
-  BanIcon,
-  PausedIcon,
-  ErrorCircleOIcon
+  LevelUpAltIcon
 } from '@patternfly/react-icons';
 import { Link } from 'react-router-dom';
-import { ProcessInstanceState } from '../../../graphql/types';
 import ProcessDescriptor from '../../Molecules/ProcessDescriptor/ProcessDescriptor';
+import { stateIconCreator } from '../../../utils/Utils';
+import { ProcessInstance } from '../../../graphql/types';
+import EndpointLink from '../../Molecules/EndpointLink/EndpointLink';
 
 interface IOwnProps {
-  data: any;
+  data: {
+    ProcessInstances?: Pick<
+      ProcessInstance,
+      | 'id'
+      | 'processName'
+      | 'businessKey'
+      | 'serviceUrl'
+      | 'state'
+      | 'start'
+      | 'end'
+      | 'parentProcessInstance'
+      | 'childProcessInstances'
+    >[];
+  };
   from: any;
 }
 const ProcessDetails: React.FC<IOwnProps> = ({ data, from }) => {
-  const stateIconCreator = state => {
-    switch (state) {
-      case ProcessInstanceState.Active:
-        return (
-          <>
-            <OnRunningIcon className="pf-u-mr-sm" />
-            Active
-          </>
-        );
-      case ProcessInstanceState.Completed:
-        return (
-          <>
-            <CheckCircleIcon
-              className="pf-u-mr-sm"
-              color="var(--pf-global--success-color--100)"
-            />
-            Completed
-          </>
-        );
-      case ProcessInstanceState.Aborted:
-        return (
-          <>
-            <BanIcon className="pf-u-mr-sm" />
-            Aborted
-          </>
-        );
-      case ProcessInstanceState.Suspended:
-        return (
-          <>
-            <PausedIcon className="pf-u-mr-sm" />
-            Suspended
-          </>
-        );
-      case ProcessInstanceState.Error:
-        return (
-          <>
-            <ErrorCircleOIcon
-              className="pf-u-mr-sm"
-              color="var(--pf-global--danger-color--100)"
-            />
-            Error
-          </>
-        );
-    }
-  };
-
   return (
     <Card>
       <CardHeader>
@@ -110,18 +74,14 @@ const ProcessDetails: React.FC<IOwnProps> = ({ data, from }) => {
               {data.ProcessInstances[0].id}
             </Text>
           </FormGroup>
-          <FormGroup label="Endpoint" fieldId="endpoint">
-            {data.ProcessInstances[0].endpoint ? (
+          {data.ProcessInstances[0].serviceUrl?<FormGroup label="Endpoint" fieldId="endpoint">
               <Text
                 component={TextVariants.p}
                 className="kogito-management-console--u-WordBreak"
               >
-                {data.ProcessInstances[0].endpoint}
+               <EndpointLink serviceUrl={data.ProcessInstances[0].serviceUrl} isLinkShown={true} />
               </Text>
-            ) : (
-              ''
-            )}
-          </FormGroup>
+          </FormGroup>: ''}
           <FormGroup label="Start" fieldId="start">
             {data.ProcessInstances[0].start ? (
               <Text component={TextVariants.p}>

@@ -1378,6 +1378,7 @@ module.exports = data = [
     state: 'ACTIVE',
     serviceUrl: 'http://localhost:4000',
     rootProcessInstanceId: null,
+    serviceUrl:'http://localhost:4000',
     endpoint: 'http://localhost:4000/',
     addons: [],
     error: {
@@ -1731,7 +1732,7 @@ module.exports = data = [
     roles: [],
     state: 'ACTIVE',
     rootProcessInstanceId: null,
-    serviceUrl: 'http://localhost:4000',
+    serviceUrl:null,
     endpoint: 'http://localhost:4000/',
     addons: [],
     error: {
@@ -1849,7 +1850,7 @@ module.exports = data = [
     roles: [],
     state: 'ACTIVE',
     rootProcessInstanceId: null,
-    serviceUrl: null,
+    serviceUrl:'http://localhost:4000',
     endpoint: 'http://localhost:4000/',
     addons: [],
     error: {
@@ -1967,7 +1968,7 @@ module.exports = data = [
     roles: [],
     state: 'ACTIVE',
     rootProcessInstanceId: null,
-    serviceUrl: null,
+    serviceUrl:null,
     endpoint: 'http://localhost:4000/',
     addons: [],
     error: {
@@ -2085,7 +2086,7 @@ module.exports = data = [
     roles: [],
     state: 'ACTIVE',
     rootProcessInstanceId: null,
-    serviceUrl: null,
+    serviceUrl:null,
     endpoint: 'http://localhost:4000/',
     addons: [],
     error: {
@@ -2203,7 +2204,7 @@ module.exports = data = [
     roles: [],
     state: 'ACTIVE',
     rootProcessInstanceId: null,
-    serviceUrl: null,
+    serviceUrl:'http://localhost:4000',
     endpoint: 'http://localhost:4000/',
     addons: [],
     error: {
@@ -2321,7 +2322,7 @@ module.exports = data = [
     roles: [],
     state: 'ACTIVE',
     rootProcessInstanceId: null,
-    serviceUrl: null,
+    serviceUrl:'http://localhost:4000',
     endpoint: 'http://localhost:4000/',
     addons: [],
     error: {
@@ -2557,7 +2558,7 @@ module.exports = data = [
     roles: [],
     state: 'ACTIVE',
     rootProcessInstanceId: null,
-    serviceUrl: 'http://localhost:4000',
+    serviceUrl:null,
     endpoint: 'http://localhost:4000/',
     addons: [],
     error: {
