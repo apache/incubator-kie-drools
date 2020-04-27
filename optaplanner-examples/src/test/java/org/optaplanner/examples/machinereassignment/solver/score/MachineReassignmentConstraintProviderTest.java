@@ -317,8 +317,7 @@ public class MachineReassignmentConstraintProviderTest {
         constraintVerifier.verifyThat(MachineReassignmentConstraintProvider::balanceCost)
                 .given(cpu, mem, disk, cpuMemBalance, cpuDiskBalance, machine1, machine2,
                         machine1Capacity1, machine1Capacity2, machine1Capacity3, machine2Capacity1, machine2Capacity2,
-                        machine2Capacity3, process1, process2, process1Requirement1, process2Requirement2, processAssignment1,
-                        processAssignment2)
+                        machine2Capacity3, process1, process2, processAssignment1, processAssignment2)
                 .penalizesBy(7_001L);
     }
 
@@ -347,8 +346,7 @@ public class MachineReassignmentConstraintProviderTest {
 
         constraintVerifier.verifyThat(MachineReassignmentConstraintProvider::balanceCost)
                 .given(cpu, mem, disk, balancePenaltyCpuMem, machine, machineCapacityCpu, machineCapacityMem,
-                        machineCapacityDisk,
-                        process, processRequirementCpu, processRequirementMem, processRequirementDisk, processAssignment)
+                        machineCapacityDisk, process, processAssignment)
                 .penalizesBy(2L);
     }
 }
