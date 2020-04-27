@@ -38,6 +38,11 @@ public class TraitCoreServiceImpl implements TraitCoreService {
     }
 
     @Override
+    public ClassBuilder createPropertyWrapperBuilder() {
+        return new TraitMapPropertyWrapperClassBuilderImpl();
+    }
+
+    @Override
     public TraitHelper createTraitHelper() {
         return new TraitHelperImpl();
     }

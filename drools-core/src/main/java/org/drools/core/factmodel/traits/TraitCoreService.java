@@ -26,6 +26,8 @@ public interface TraitCoreService {
 
     ClassBuilder createTraitProxyClassBuilder();
 
+    ClassBuilder createPropertyWrapperBuilder();
+
     TraitHelper createTraitHelper();
 
     Class<?> baseTraitProxyClass();

@@ -150,7 +150,7 @@ public class TraitTest extends CommonTraitTest {
     }
 
 
-    @Test
+    @Test(timeout = 2000)
     public void testRetract( ) {
         String drl = "package org.drools.compiler.trait.test; \n" +
                 "import org.drools.core.factmodel.traits.Traitable; \n" +
@@ -6149,7 +6149,7 @@ public class TraitTest extends CommonTraitTest {
         } catch (Exception e) { }
     }
 
-    @Test(timeout = 2000)
+    @Test
     public void testPreserveAllSetBitMask() {
         // DROOLS-1699
         String drl =

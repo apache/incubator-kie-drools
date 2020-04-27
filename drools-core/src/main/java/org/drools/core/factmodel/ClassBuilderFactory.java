@@ -84,6 +84,9 @@ public class ClassBuilderFactory implements Serializable {
     private ClassBuilder propertyWrapperBuilder;
 
     public ClassBuilder getPropertyWrapperBuilder() {
+        if (propertyWrapperBuilder == null) {
+            propertyWrapperBuilder = fromTraitRegistry(TraitCoreService::createPropertyWrapperBuilder).orElse(null);
+        }
         return propertyWrapperBuilder;
     }
 
