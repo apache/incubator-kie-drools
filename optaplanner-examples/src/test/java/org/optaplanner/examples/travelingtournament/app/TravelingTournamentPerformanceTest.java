@@ -16,41 +16,26 @@
 
 package org.optaplanner.examples.travelingtournament.app;
 
-import java.io.File;
+import java.util.stream.Stream;
 
-import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.Timeout;
 import org.optaplanner.core.config.solver.EnvironmentMode;
 import org.optaplanner.examples.common.app.SolverPerformanceTest;
 import org.optaplanner.examples.travelingtournament.domain.TravelingTournament;
 
 public class TravelingTournamentPerformanceTest extends SolverPerformanceTest<TravelingTournament> {
 
-    public TravelingTournamentPerformanceTest(String moveThreadCount) {
-        super(moveThreadCount);
-    }
+    private static final String UNSOLVED_DATA_FILE = "data/travelingtournament/unsolved/1-nl10.xml";
 
     @Override
     protected TravelingTournamentApp createCommonApp() {
         return new TravelingTournamentApp();
     }
 
-    // ************************************************************************
-    // Tests
-    // ************************************************************************
-
-    @Test
-    @Timeout(600)
-    public void solveComp01_initialized() {
-        File unsolvedDataFile = new File("data/travelingtournament/unsolved/1-nl10.xml");
-        runSpeedTest(unsolvedDataFile, "0hard/-75968soft");
+    @Override
+    protected Stream<TestData> testData() {
+        return Stream.of(
+                testData(UNSOLVED_DATA_FILE, "0hard/-75968soft", EnvironmentMode.REPRODUCIBLE),
+                testData(UNSOLVED_DATA_FILE, "0hard/-77619soft", EnvironmentMode.FAST_ASSERT)
+        );
     }
-
-    @Test
-    @Timeout(600)
-    public void solveTestdata01_initializedFastAssert() {
-        File unsolvedDataFile = new File("data/travelingtournament/unsolved/1-nl10.xml");
-        runSpeedTest(unsolvedDataFile, "0hard/-77619soft", EnvironmentMode.FAST_ASSERT);
-    }
-
 }

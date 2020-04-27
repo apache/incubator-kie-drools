@@ -16,41 +16,26 @@
 
 package org.optaplanner.examples.scrabble.app;
 
-import java.io.File;
+import java.util.stream.Stream;
 
-import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.Timeout;
 import org.optaplanner.core.config.solver.EnvironmentMode;
 import org.optaplanner.examples.common.app.SolverPerformanceTest;
 import org.optaplanner.examples.scrabble.domain.ScrabbleSolution;
 
 public class ScrabblePerformanceTest extends SolverPerformanceTest<ScrabbleSolution> {
 
-    public ScrabblePerformanceTest(String moveThreadCount) {
-        super(moveThreadCount);
-    }
+    private static final String UNSOLVED_DATA_FILE = "data/scrabble/unsolved/jbossProjects.xml";
 
     @Override
     protected ScrabbleApp createCommonApp() {
         return new ScrabbleApp();
     }
 
-    // ************************************************************************
-    // Tests
-    // ************************************************************************
-
-    @Test
-    @Timeout(600)
-    public void solveModel() {
-        File unsolvedDataFile = new File("data/scrabble/unsolved/jbossProjects.xml");
-        runSpeedTest(unsolvedDataFile, "0hard/328medium/-1165soft");
+    @Override
+    protected Stream<TestData> testData() {
+        return Stream.of(
+                testData(UNSOLVED_DATA_FILE, "0hard/328medium/-1165soft", EnvironmentMode.REPRODUCIBLE),
+                testData(UNSOLVED_DATA_FILE, "0hard/328medium/-1165soft", EnvironmentMode.FAST_ASSERT)
+        );
     }
-
-    @Test
-    @Timeout(600)
-    public void solveModelFastAssert() {
-        File unsolvedDataFile = new File("data/scrabble/unsolved/jbossProjects.xml");
-        runSpeedTest(unsolvedDataFile, "0hard/328medium/-1165soft", EnvironmentMode.FAST_ASSERT);
-    }
-
 }

@@ -16,55 +16,29 @@
 
 package org.optaplanner.examples.vehiclerouting.app;
 
-import java.io.File;
+import java.util.stream.Stream;
 
-import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.Timeout;
 import org.optaplanner.core.config.solver.EnvironmentMode;
 import org.optaplanner.examples.common.app.SolverPerformanceTest;
 import org.optaplanner.examples.vehiclerouting.domain.VehicleRoutingSolution;
 
 public class VehicleRoutingPerformanceTest extends SolverPerformanceTest<VehicleRoutingSolution> {
 
-    public VehicleRoutingPerformanceTest(String moveThreadCount) {
-        super(moveThreadCount);
-    }
+    private static final String CVRP_32_CUSTOMERS_XML = "data/vehiclerouting/unsolved/cvrp-32customers.xml";
+    private static final String CVRPTW_100_CUSTOMERS_A_XML = "data/vehiclerouting/unsolved/cvrptw-100customers-A.xml";
 
     @Override
     protected VehicleRoutingApp createCommonApp() {
         return new VehicleRoutingApp();
     }
 
-    // ************************************************************************
-    // Tests
-    // ************************************************************************
-
-    @Test
-    @Timeout(600)
-    public void solveModel_cvrp_32customers() {
-        File unsolvedDataFile = new File("data/vehiclerouting/unsolved/cvrp-32customers.xml");
-        runSpeedTest(unsolvedDataFile, "0hard/-750000soft");
+    @Override
+    protected Stream<TestData> testData() {
+        return Stream.of(
+                testData(CVRP_32_CUSTOMERS_XML, "0hard/-750000soft", EnvironmentMode.REPRODUCIBLE),
+                testData(CVRP_32_CUSTOMERS_XML, "0hard/-770000soft", EnvironmentMode.FAST_ASSERT),
+                testData(CVRPTW_100_CUSTOMERS_A_XML, "0hard/-1869903soft", EnvironmentMode.REPRODUCIBLE),
+                testData(CVRPTW_100_CUSTOMERS_A_XML, "0hard/-1877466soft", EnvironmentMode.FAST_ASSERT)
+        );
     }
-
-    @Test
-    @Timeout(600)
-    public void solveModel_cvrp_32customersFastAssert() {
-        File unsolvedDataFile = new File("data/vehiclerouting/unsolved/cvrp-32customers.xml");
-        runSpeedTest(unsolvedDataFile, "0hard/-770000soft", EnvironmentMode.FAST_ASSERT);
-    }
-
-    @Test
-    @Timeout(600)
-    public void solveModel_cvrptw_100customers_A() {
-        File unsolvedDataFile = new File("data/vehiclerouting/unsolved/cvrptw-100customers-A.xml");
-        runSpeedTest(unsolvedDataFile, "0hard/-1869903soft");
-    }
-
-    @Test
-    @Timeout(600)
-    public void solveModel_cvrptw_100customers_AFastAssert() {
-        File unsolvedDataFile = new File("data/vehiclerouting/unsolved/cvrptw-100customers-A.xml");
-        runSpeedTest(unsolvedDataFile, "0hard/-1877466soft", EnvironmentMode.FAST_ASSERT);
-    }
-
 }

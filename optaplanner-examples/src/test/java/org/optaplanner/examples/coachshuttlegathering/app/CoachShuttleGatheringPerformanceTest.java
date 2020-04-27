@@ -16,41 +16,26 @@
 
 package org.optaplanner.examples.coachshuttlegathering.app;
 
-import java.io.File;
+import java.util.stream.Stream;
 
-import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.Timeout;
 import org.optaplanner.core.config.solver.EnvironmentMode;
 import org.optaplanner.examples.coachshuttlegathering.domain.CoachShuttleGatheringSolution;
 import org.optaplanner.examples.common.app.SolverPerformanceTest;
 
 public class CoachShuttleGatheringPerformanceTest extends SolverPerformanceTest<CoachShuttleGatheringSolution> {
 
-    public CoachShuttleGatheringPerformanceTest(String moveThreadCount) {
-        super(moveThreadCount);
-    }
+    private static final String UNSOLVED_DATA_FILE = "data/coachshuttlegathering/unsolved/demo01.xml";
 
     @Override
     protected CoachShuttleGatheringApp createCommonApp() {
         return new CoachShuttleGatheringApp();
     }
 
-    // ************************************************************************
-    // Tests
-    // ************************************************************************
-
-    @Test
-    @Timeout(600)
-    public void solveDemo01() {
-        File unsolvedDataFile = new File("data/coachshuttlegathering/unsolved/demo01.xml");
-        runSpeedTest(unsolvedDataFile, "0hard/-389030soft");
+    @Override
+    protected Stream<TestData> testData() {
+        return Stream.of(
+                testData(UNSOLVED_DATA_FILE, "0hard/-389030soft", EnvironmentMode.REPRODUCIBLE),
+                testData(UNSOLVED_DATA_FILE, "0hard/-389030soft", EnvironmentMode.FAST_ASSERT)
+        );
     }
-
-    @Test
-    @Timeout(600)
-    public void solveDemo01FastAssert() {
-        File unsolvedDataFile = new File("data/coachshuttlegathering/unsolved/demo01.xml");
-        runSpeedTest(unsolvedDataFile, "0hard/-389030soft", EnvironmentMode.FAST_ASSERT);
-    }
-
 }

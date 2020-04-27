@@ -16,41 +16,26 @@
 
 package org.optaplanner.examples.dinnerparty.app;
 
-import java.io.File;
+import java.util.stream.Stream;
 
-import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.Timeout;
 import org.optaplanner.core.config.solver.EnvironmentMode;
 import org.optaplanner.examples.common.app.SolverPerformanceTest;
 import org.optaplanner.examples.dinnerparty.domain.DinnerParty;
 
 public class DinnerPartyPerformanceTest extends SolverPerformanceTest<DinnerParty> {
 
-    public DinnerPartyPerformanceTest(String moveThreadCount) {
-        super(moveThreadCount);
-    }
+    private static final String UNSOLVED_DATA_FILE = "data/dinnerparty/unsolved/wedding01.xml";
 
     @Override
     protected DinnerPartyApp createCommonApp() {
         return new DinnerPartyApp();
     }
 
-    // ************************************************************************
-    // Tests
-    // ************************************************************************
-
-    @Test
-    @Timeout(600)
-    public void solveModel_wedding01() {
-        File unsolvedDataFile = new File("data/dinnerparty/unsolved/wedding01.xml");
-        runSpeedTest(unsolvedDataFile, "-90");
+    @Override
+    protected Stream<TestData> testData() {
+        return Stream.of(
+                testData(UNSOLVED_DATA_FILE, "-90", EnvironmentMode.REPRODUCIBLE),
+                testData(UNSOLVED_DATA_FILE, "-390", EnvironmentMode.FAST_ASSERT)
+        );
     }
-
-    @Test
-    @Timeout(600)
-    public void solveModel_wedding01FastAssert() {
-        File unsolvedDataFile = new File("data/dinnerparty/unsolved/wedding01.xml");
-        runSpeedTest(unsolvedDataFile, "-390", EnvironmentMode.FAST_ASSERT);
-    }
-
 }

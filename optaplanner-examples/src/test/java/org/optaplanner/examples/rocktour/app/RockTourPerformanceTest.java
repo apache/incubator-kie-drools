@@ -16,40 +16,26 @@
 
 package org.optaplanner.examples.rocktour.app;
 
-import java.io.File;
+import java.util.stream.Stream;
 
-import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.Timeout;
 import org.optaplanner.core.config.solver.EnvironmentMode;
 import org.optaplanner.examples.common.app.SolverPerformanceTest;
 import org.optaplanner.examples.rocktour.domain.RockTourSolution;
 
 public class RockTourPerformanceTest extends SolverPerformanceTest<RockTourSolution> {
 
-    public RockTourPerformanceTest(String moveThreadCount) {
-        super(moveThreadCount);
-    }
+    private static final String UNSOLVED_DATA_FILE = "data/rocktour/unsolved/47shows.xlsx";
 
     @Override
     protected RockTourApp createCommonApp() {
         return new RockTourApp();
     }
 
-    // ************************************************************************
-    // Tests
-    // ************************************************************************
-
-    @Test
-    @Timeout(600)
-    public void solveModel() {
-        File unsolvedDataFile = new File("data/rocktour/unsolved/47shows.xlsx");
-        runSpeedTest(unsolvedDataFile, "0hard/72725670medium/-6208480soft");
-    }
-
-    @Test
-    @Timeout(600)
-    public void solveModelFastAssert() {
-        File unsolvedDataFile = new File("data/rocktour/unsolved/47shows.xlsx");
-        runSpeedTest(unsolvedDataFile, "0hard/72725039medium/-5186309soft", EnvironmentMode.FAST_ASSERT);
+    @Override
+    protected Stream<TestData> testData() {
+        return Stream.of(
+                testData(UNSOLVED_DATA_FILE, "0hard/72725670medium/-6208480soft", EnvironmentMode.REPRODUCIBLE),
+                testData(UNSOLVED_DATA_FILE, "0hard/72725039medium/-5186309soft", EnvironmentMode.FAST_ASSERT)
+        );
     }
 }

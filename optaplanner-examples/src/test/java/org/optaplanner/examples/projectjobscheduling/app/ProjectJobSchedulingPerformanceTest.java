@@ -16,41 +16,26 @@
 
 package org.optaplanner.examples.projectjobscheduling.app;
 
-import java.io.File;
+import java.util.stream.Stream;
 
-import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.Timeout;
 import org.optaplanner.core.config.solver.EnvironmentMode;
 import org.optaplanner.examples.common.app.SolverPerformanceTest;
 import org.optaplanner.examples.projectjobscheduling.domain.Schedule;
 
 public class ProjectJobSchedulingPerformanceTest extends SolverPerformanceTest<Schedule> {
 
-    public ProjectJobSchedulingPerformanceTest(String moveThreadCount) {
-        super(moveThreadCount);
-    }
+    private static final String UNSOLVED_DATA_FILE = "data/projectjobscheduling/unsolved/A-4.xml";
 
     @Override
     protected ProjectJobSchedulingApp createCommonApp() {
         return new ProjectJobSchedulingApp();
     }
 
-    // ************************************************************************
-    // Tests
-    // ************************************************************************
-
-    @Test
-    @Timeout(600)
-    public void solveModel_A_4() {
-        File unsolvedDataFile = new File("data/projectjobscheduling/unsolved/A-4.xml");
-        runSpeedTest(unsolvedDataFile, "[0]hard/[-152/-69]soft");
+    @Override
+    protected Stream<TestData> testData() {
+        return Stream.of(
+                testData(UNSOLVED_DATA_FILE, "[0]hard/[-152/-69]soft", EnvironmentMode.REPRODUCIBLE),
+                testData(UNSOLVED_DATA_FILE, "[0]hard/[-193/-92]soft", EnvironmentMode.FAST_ASSERT)
+        );
     }
-
-    @Test
-    @Timeout(600)
-    public void solveModel_A_4FastAssert() {
-        File unsolvedDataFile = new File("data/projectjobscheduling/unsolved/A-4.xml");
-        runSpeedTest(unsolvedDataFile, "[0]hard/[-193/-92]soft", EnvironmentMode.FAST_ASSERT);
-    }
-
 }

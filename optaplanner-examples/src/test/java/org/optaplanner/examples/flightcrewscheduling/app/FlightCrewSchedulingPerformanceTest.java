@@ -16,41 +16,26 @@
 
 package org.optaplanner.examples.flightcrewscheduling.app;
 
-import java.io.File;
+import java.util.stream.Stream;
 
-import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.Timeout;
 import org.optaplanner.core.config.solver.EnvironmentMode;
 import org.optaplanner.examples.common.app.SolverPerformanceTest;
 import org.optaplanner.examples.flightcrewscheduling.domain.FlightCrewSolution;
 
 public class FlightCrewSchedulingPerformanceTest extends SolverPerformanceTest<FlightCrewSolution> {
 
-    public FlightCrewSchedulingPerformanceTest(String moveThreadCount) {
-        super(moveThreadCount);
-    }
+    private static final String UNSOLVED_DATA_FILE = "data/flightcrewscheduling/unsolved/175flights-7days-Europe.xlsx";
 
     @Override
     protected FlightCrewSchedulingApp createCommonApp() {
         return new FlightCrewSchedulingApp();
     }
 
-    // ************************************************************************
-    // Tests
-    // ************************************************************************
-
-    @Test
-    @Timeout(600)
-    public void solveModel() {
-        File unsolvedDataFile = new File("data/flightcrewscheduling/unsolved/175flights-7days-Europe.xlsx");
-        runSpeedTest(unsolvedDataFile, "0hard/-129000000soft");
+    @Override
+    protected Stream<TestData> testData() {
+        return Stream.of(
+                testData(UNSOLVED_DATA_FILE, "0hard/-129000000soft", EnvironmentMode.REPRODUCIBLE),
+                testData(UNSOLVED_DATA_FILE, "0hard/-129000000soft", EnvironmentMode.FAST_ASSERT)
+        );
     }
-
-    @Test
-    @Timeout(600)
-    public void solveModelFastAssert() {
-        File unsolvedDataFile = new File("data/flightcrewscheduling/unsolved/175flights-7days-Europe.xlsx");
-        runSpeedTest(unsolvedDataFile, "0hard/-129000000soft", EnvironmentMode.FAST_ASSERT);
-    }
-
 }

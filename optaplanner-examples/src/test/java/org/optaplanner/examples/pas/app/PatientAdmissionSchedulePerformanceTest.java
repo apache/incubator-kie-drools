@@ -16,45 +16,30 @@
 
 package org.optaplanner.examples.pas.app;
 
-import java.io.File;
+import java.util.stream.Stream;
 
-import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.Timeout;
 import org.optaplanner.core.config.solver.EnvironmentMode;
 import org.optaplanner.examples.common.app.SolverPerformanceTest;
 import org.optaplanner.examples.pas.domain.PatientAdmissionSchedule;
 
 public class PatientAdmissionSchedulePerformanceTest extends SolverPerformanceTest<PatientAdmissionSchedule> {
 
-    public PatientAdmissionSchedulePerformanceTest(String moveThreadCount) {
-        super(moveThreadCount);
-    }
+    private static final String UNSOLVED_DATA_FILE = "data/pas/unsolved/testdata01.xml";
 
     @Override
     protected PatientAdmissionScheduleApp createCommonApp() {
         return new PatientAdmissionScheduleApp();
     }
 
-    // ************************************************************************
-    // Tests
-    // ************************************************************************
-
-    @Test
-    @Timeout(600)
-    public void solveTestdata01() {
-        File unsolvedDataFile = new File("data/pas/unsolved/testdata01.xml");
-        runSpeedTest(unsolvedDataFile, "0hard/0medium/-7458soft");
-        // TODO Adding overconstrained functionality reduced Solver efficiency, so this ran too long (over 1 minute):
-//        runSpeedTest(unsolvedDataFile, "0hard/0medium/-7172soft");
+    @Override
+    protected Stream<TestData> testData() {
+        return Stream.of(
+                testData(UNSOLVED_DATA_FILE, "0hard/0medium/-7458soft", EnvironmentMode.REPRODUCIBLE),
+                // TODO Adding overconstrained functionality reduced Solver efficiency, so this ran too long (over 1 minute):
+//                testData(UNSOLVED_DATA_FILE, "0hard/0medium/-7172soft", EnvironmentMode.REPRODUCIBLE),
+                testData(UNSOLVED_DATA_FILE, "0hard/0medium/-7408soft", EnvironmentMode.FAST_ASSERT)
+                // TODO Adding overconstrained functionality reduced Solver efficiency, so this ran too long (over 1 minute):
+//                testData(UNSOLVED_DATA_FILE, "0hard/0medium/-7192soft", EnvironmentMode.FAST_ASSERT)
+        );
     }
-
-    @Test
-    @Timeout(600)
-    public void solveTestdata01FastAssert() {
-        File unsolvedDataFile = new File("data/pas/unsolved/testdata01.xml");
-        runSpeedTest(unsolvedDataFile, "0hard/0medium/-7408soft", EnvironmentMode.FAST_ASSERT);
-        // TODO Adding overconstrained functionality reduced Solver efficiency, so this ran too long (over 1 minute):
-//        runSpeedTest(unsolvedDataFile, "0hard/0medium/-7192soft", EnvironmentMode.FAST_ASSERT);
-    }
-
 }

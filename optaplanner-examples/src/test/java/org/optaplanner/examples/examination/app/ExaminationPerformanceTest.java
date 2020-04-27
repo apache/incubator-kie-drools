@@ -16,41 +16,26 @@
 
 package org.optaplanner.examples.examination.app;
 
-import java.io.File;
+import java.util.stream.Stream;
 
-import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.Timeout;
 import org.optaplanner.core.config.solver.EnvironmentMode;
 import org.optaplanner.examples.common.app.SolverPerformanceTest;
 import org.optaplanner.examples.examination.domain.Examination;
 
 public class ExaminationPerformanceTest extends SolverPerformanceTest<Examination> {
 
-    public ExaminationPerformanceTest(String moveThreadCount) {
-        super(moveThreadCount);
-    }
+    private static final String UNSOLVED_DATA_FILE = "data/examination/unsolved/exam_comp_set5.xml";
 
     @Override
     protected ExaminationApp createCommonApp() {
         return new ExaminationApp();
     }
 
-    // ************************************************************************
-    // Tests
-    // ************************************************************************
-
-    @Test
-    @Timeout(600)
-    public void solveComp_set5() {
-        File unsolvedDataFile = new File("data/examination/unsolved/exam_comp_set5.xml");
-        runSpeedTest(unsolvedDataFile, "0hard/-4393soft");
+    @Override
+    protected Stream<TestData> testData() {
+        return Stream.of(
+                testData(UNSOLVED_DATA_FILE, "0hard/-4393soft", EnvironmentMode.REPRODUCIBLE),
+                testData(UNSOLVED_DATA_FILE, "0hard/-4407soft", EnvironmentMode.FAST_ASSERT)
+        );
     }
-
-    @Test
-    @Timeout(600)
-    public void solveComp_set5FastAssert() {
-        File unsolvedDataFile = new File("data/examination/unsolved/exam_comp_set5.xml");
-        runSpeedTest(unsolvedDataFile, "0hard/-4407soft", EnvironmentMode.FAST_ASSERT);
-    }
-
 }

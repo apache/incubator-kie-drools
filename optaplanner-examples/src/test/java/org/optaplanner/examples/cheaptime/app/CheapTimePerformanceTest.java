@@ -16,42 +16,26 @@
 
 package org.optaplanner.examples.cheaptime.app;
 
-import java.io.File;
+import java.util.stream.Stream;
 
-import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.Timeout;
 import org.optaplanner.core.config.solver.EnvironmentMode;
 import org.optaplanner.examples.cheaptime.domain.CheapTimeSolution;
-import org.optaplanner.examples.common.app.CommonApp;
 import org.optaplanner.examples.common.app.SolverPerformanceTest;
 
 public class CheapTimePerformanceTest extends SolverPerformanceTest<CheapTimeSolution> {
 
-    public CheapTimePerformanceTest(String moveThreadCount) {
-        super(moveThreadCount);
-    }
+    private static final String UNSOLVED_DATA_FILE = "data/cheaptime/unsolved/instance00.xml";
 
     @Override
     protected CheapTimeApp createCommonApp() {
         return new CheapTimeApp();
     }
 
-    // ************************************************************************
-    // Tests
-    // ************************************************************************
-
-    @Test
-    @Timeout(600)
-    public void solveInstance00() {
-        File unsolvedDataFile = new File("data/cheaptime/unsolved/instance00.xml");
-        runSpeedTest(unsolvedDataFile, "0hard/-902335925205947medium/-20672soft");
+    @Override
+    protected Stream<TestData> testData() {
+        return Stream.of(
+                testData(UNSOLVED_DATA_FILE, "0hard/-902335925205947medium/-20672soft", EnvironmentMode.REPRODUCIBLE),
+                testData(UNSOLVED_DATA_FILE, "0hard/-918680355373904medium/-22228soft", EnvironmentMode.FAST_ASSERT)
+        );
     }
-
-    @Test
-    @Timeout(600)
-    public void solveInstance00FastAssert() {
-        File unsolvedDataFile = new File("data/cheaptime/unsolved/instance00.xml");
-        runSpeedTest(unsolvedDataFile, "0hard/-918680355373904medium/-22228soft", EnvironmentMode.FAST_ASSERT);
-    }
-
 }

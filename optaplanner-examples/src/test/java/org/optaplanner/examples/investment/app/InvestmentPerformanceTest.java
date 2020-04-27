@@ -16,41 +16,26 @@
 
 package org.optaplanner.examples.investment.app;
 
-import java.io.File;
+import java.util.stream.Stream;
 
-import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.Timeout;
 import org.optaplanner.core.config.solver.EnvironmentMode;
 import org.optaplanner.examples.common.app.SolverPerformanceTest;
 import org.optaplanner.examples.investment.domain.InvestmentSolution;
 
 public class InvestmentPerformanceTest extends SolverPerformanceTest<InvestmentSolution> {
 
-    public InvestmentPerformanceTest(String moveThreadCount) {
-        super(moveThreadCount);
-    }
+    private static final String UNSOLVED_DATA_FILE = "data/investment/unsolved/irrinki_1.xml";
 
     @Override
     protected InvestmentApp createCommonApp() {
         return new InvestmentApp();
     }
 
-    // ************************************************************************
-    // Tests
-    // ************************************************************************
-
-    @Test
-    @Timeout(600)
-    public void solveIrrinki_1() {
-        File unsolvedDataFile = new File("data/investment/unsolved/irrinki_1.xml");
-        runSpeedTest(unsolvedDataFile, "0hard/74630soft");
+    @Override
+    protected Stream<TestData> testData() {
+        return Stream.of(
+                testData(UNSOLVED_DATA_FILE, "0hard/74630soft", EnvironmentMode.REPRODUCIBLE),
+                testData(UNSOLVED_DATA_FILE, "0hard/74595soft", EnvironmentMode.FAST_ASSERT)
+        );
     }
-
-    @Test
-    @Timeout(600)
-    public void solveIrrinki_1FastAssert() {
-        File unsolvedDataFile = new File("data/investment/unsolved/irrinki_1.xml");
-        runSpeedTest(unsolvedDataFile, "0hard/74595soft", EnvironmentMode.FAST_ASSERT);
-    }
-
 }

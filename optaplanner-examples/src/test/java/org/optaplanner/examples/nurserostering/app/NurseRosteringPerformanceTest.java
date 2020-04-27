@@ -16,41 +16,26 @@
 
 package org.optaplanner.examples.nurserostering.app;
 
-import java.io.File;
+import java.util.stream.Stream;
 
-import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.Timeout;
 import org.optaplanner.core.config.solver.EnvironmentMode;
 import org.optaplanner.examples.common.app.SolverPerformanceTest;
 import org.optaplanner.examples.nurserostering.domain.NurseRoster;
 
 public class NurseRosteringPerformanceTest extends SolverPerformanceTest<NurseRoster> {
 
-    public NurseRosteringPerformanceTest(String moveThreadCount) {
-        super(moveThreadCount);
-    }
+    private static final String UNSOLVED_DATA_FILE = "data/nurserostering/unsolved/medium_late01_initialized.xml";
 
     @Override
     protected NurseRosteringApp createCommonApp() {
         return new NurseRosteringApp();
     }
 
-    // ************************************************************************
-    // Tests
-    // ************************************************************************
-
-    @Test
-    @Timeout(600)
-    public void solveMedium_late01_initialized() {
-        File unsolvedDataFile = new File("data/nurserostering/unsolved/medium_late01_initialized.xml");
-        runSpeedTest(unsolvedDataFile, "0hard/-350soft");
+    @Override
+    protected Stream<TestData> testData() {
+        return Stream.of(
+                testData(UNSOLVED_DATA_FILE, "0hard/-350soft", EnvironmentMode.REPRODUCIBLE),
+                testData(UNSOLVED_DATA_FILE, "0hard/-473soft", EnvironmentMode.FAST_ASSERT)
+        );
     }
-
-    @Test
-    @Timeout(600)
-    public void solveMedium_late01_initializedFastAssert() {
-        File unsolvedDataFile = new File("data/nurserostering/unsolved/medium_late01_initialized.xml");
-        runSpeedTest(unsolvedDataFile, "0hard/-473soft", EnvironmentMode.FAST_ASSERT);
-    }
-
 }

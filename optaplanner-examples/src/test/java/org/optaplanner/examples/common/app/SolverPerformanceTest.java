@@ -19,14 +19,14 @@ package org.optaplanner.examples.common.app;
 import java.io.File;
 import java.util.Arrays;
 import java.util.Collection;
-import java.util.Collections;
-import java.util.List;
-import java.util.stream.Collectors;
+import java.util.Optional;
+import java.util.stream.Stream;
 
 import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.DynamicTest;
 import org.junit.jupiter.api.Test;
-import org.junit.runner.RunWith;
-import org.junit.runners.Parameterized;
+import org.junit.jupiter.api.TestFactory;
+import org.junit.jupiter.api.Timeout;
 import org.optaplanner.core.api.domain.solution.PlanningSolution;
 import org.optaplanner.core.api.score.Score;
 import org.optaplanner.core.api.score.constraint.ConstraintMatchTotal;
@@ -41,40 +41,46 @@ import org.optaplanner.core.impl.score.director.ScoreDirector;
 import org.optaplanner.examples.common.TestSystemProperties;
 import org.optaplanner.persistence.common.api.domain.solution.SolutionFileIO;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertTrue;
+import static org.junit.jupiter.api.DynamicTest.dynamicTest;
 
 /**
  * Runs an example {@link Solver}.
  * <p>
  * A test should run in less than 10 seconds on a 3 year old desktop computer, choose the bestScoreLimit accordingly.
- * Always use a {@link Test#timeout()} on {@link Test}, preferably 10 minutes because some of the Jenkins machines are old.
+ * Always use a {@link Timeout} on {@link Test}, preferably 10 minutes because some of the Jenkins machines are old.
  * @param <Solution_> the solution type, the class with the {@link PlanningSolution} annotation
  */
-@RunWith(Parameterized.class)
 public abstract class SolverPerformanceTest<Solution_> extends LoggingTest {
 
     private static final String MOVE_THREAD_COUNTS_STRING = System.getProperty(TestSystemProperties.MOVE_THREAD_COUNTS);
 
-    private final String moveThreadCount;
-
     protected SolutionFileIO<Solution_> solutionFileIO;
     protected String solverConfigResource;
 
-    @Parameterized.Parameters(name = "{index}: {0}")
-    public static Collection<Object[]> getSolutionFilesAsParameters() {
-        List<Object[]> parameterList;
-        if (MOVE_THREAD_COUNTS_STRING != null) {
-            parameterList = Arrays.stream(MOVE_THREAD_COUNTS_STRING.split(","))
-                    .map(moveThreadCount -> new Object[]{moveThreadCount})
-                    .collect(Collectors.toList());
-        } else {
-            parameterList = Collections.singletonList(new Object[]{SolverConfig.MOVE_THREAD_COUNT_NONE});
-        }
-        return parameterList;
+    static Stream<String> moveThreadCounts() {
+        return Optional.ofNullable(MOVE_THREAD_COUNTS_STRING)
+                .map(s -> Arrays.stream(s.split(",")))
+                .orElse(Stream.of(SolverConfig.MOVE_THREAD_COUNT_NONE));
     }
 
-    public SolverPerformanceTest(String moveThreadCount) {
-        this.moveThreadCount = moveThreadCount;
+    @TestFactory
+    @Timeout(600)
+    Stream<DynamicTest> testSpeed() {
+        return moveThreadCounts().flatMap(moveThreadCount -> testData().map(testData ->
+                dynamicTest(
+                        testData.unsolvedDataFile.replaceFirst(".*/", "")
+                                + ", "
+                                + testData.environmentMode
+                                + ", threads: " + moveThreadCount,
+                        () -> runSpeedTest(
+                                new File(testData.unsolvedDataFile),
+                                testData.bestScoreLimit,
+                                testData.environmentMode,
+                                moveThreadCount)
+                )));
     }
 
     @BeforeEach
@@ -86,12 +92,15 @@ public abstract class SolverPerformanceTest<Solution_> extends LoggingTest {
 
     protected abstract CommonApp<Solution_> createCommonApp();
 
-    protected void runSpeedTest(File unsolvedDataFile, String bestScoreLimitString) {
-        runSpeedTest(unsolvedDataFile, bestScoreLimitString, EnvironmentMode.REPRODUCIBLE);
-    }
+    protected abstract Stream<TestData> testData();
 
-    protected void runSpeedTest(File unsolvedDataFile, String bestScoreLimitString, EnvironmentMode environmentMode) {
-        SolverFactory<Solution_> solverFactory = buildSolverFactory(bestScoreLimitString, environmentMode);
+    private void runSpeedTest(
+            File unsolvedDataFile,
+            String bestScoreLimitString,
+            EnvironmentMode environmentMode,
+            String moveThreadCount) {
+        SolverFactory<Solution_> solverFactory = buildSolverFactory(
+                bestScoreLimitString, environmentMode, moveThreadCount);
         Solution_ problem = solutionFileIO.read(unsolvedDataFile);
         logger.info("Opened: {}", unsolvedDataFile);
         Solver<Solution_> solver = solverFactory.buildSolver();
@@ -99,7 +108,10 @@ public abstract class SolverPerformanceTest<Solution_> extends LoggingTest {
         assertScoreAndConstraintMatches(solverFactory, bestSolution, bestScoreLimitString);
     }
 
-    protected SolverFactory<Solution_> buildSolverFactory(String bestScoreLimitString, EnvironmentMode environmentMode) {
+    protected SolverFactory<Solution_> buildSolverFactory(
+            String bestScoreLimitString,
+            EnvironmentMode environmentMode,
+            String moveThreadCount) {
         SolverConfig solverConfig = SolverConfig.createFromXmlResource(solverConfigResource);
         solverConfig.withEnvironmentMode(environmentMode)
                 .withTerminationConfig(new TerminationConfig()
@@ -135,4 +147,20 @@ public abstract class SolverPerformanceTest<Solution_> extends LoggingTest {
         }
     }
 
+    protected static TestData testData(String unsolvedDataFile, String bestScoreLimit, EnvironmentMode environmentMode) {
+        return new TestData(unsolvedDataFile, bestScoreLimit, environmentMode);
+    }
+
+    protected static class TestData {
+
+        final String unsolvedDataFile;
+        final String bestScoreLimit;
+        final EnvironmentMode environmentMode;
+
+        public TestData(String unsolvedDataFile, String bestScoreLimit, EnvironmentMode environmentMode) {
+            this.unsolvedDataFile = unsolvedDataFile;
+            this.bestScoreLimit = bestScoreLimit;
+            this.environmentMode = environmentMode;
+        }
+    }
 }
