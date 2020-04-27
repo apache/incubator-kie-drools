@@ -131,8 +131,7 @@ public class DMNDeclaredField implements FieldDefinition {
             return false;
         }
         boolean isOtherObject = fieldDMNType.isCollection() ? fieldTypeUnwrapped().equals(OBJECT_TYPE) : getObjectType().equals(OBJECT_TYPE);
-        boolean b = !isOtherObject;
-        return b;
+        return !isOtherObject;
     }
 
     private BlockStmt replaceTemplate(BlockStmt pojoPropertyBlock, String objectType) {
