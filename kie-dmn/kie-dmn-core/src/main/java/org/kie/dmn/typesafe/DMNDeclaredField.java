@@ -66,8 +66,7 @@ public class DMNDeclaredField implements FieldDefinition {
     // This returns the generic type i.e. when Collection<String> then String
     private String fieldTypeUnwrapped() {
         if (fieldDMNType.isCollection()) {
-            String typeName = index.asJava(fieldDMNType.getBaseType());
-            return typeName;
+            return index.asJava(fieldDMNType.getBaseType());
         }
         throw new IllegalArgumentException();
     }

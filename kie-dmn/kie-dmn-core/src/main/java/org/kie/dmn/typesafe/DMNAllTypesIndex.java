@@ -65,15 +65,11 @@ public class DMNAllTypesIndex {
         return namespaceOfClass(typeName).isPresent();
     }
 
-    public String asJava(DMNType fieldDMNType) {
-        String converted = converDMNTypeAsJava(fieldDMNType);
-        return converted;
-    }
-
-    public String converDMNTypeAsJava(DMNType dmnType) {
-        if (mapNamespaceIndex.containsKey(IndexKey.from(dmnType))) {
+    public String asJava(DMNType dmnType) {
+        Optional<DMNModelTypesIndex.IndexValue> ivLookup = Optional.ofNullable(mapNamespaceIndex.get(IndexKey.from(dmnType)));
+        if (ivLookup.isPresent()) {
             String simpleName = DMNDeclaredType.asJavaSimpleName(dmnType);
-            return mapNamespaceIndex.get(IndexKey.from(dmnType)).getPackageName().appendPackage(simpleName);
+            return ivLookup.get().getPackageName().appendPackage(simpleName);
         }
         if (DMNTypeUtils.isFEELBuiltInType(dmnType)) {
             return convertBuiltin(dmnType);
@@ -81,7 +77,7 @@ public class DMNAllTypesIndex {
         if (dmnType.getBaseType() == null) {
             throw new IllegalStateException();
         }
-        String baseConverted = converDMNTypeAsJava(dmnType.getBaseType());
+        String baseConverted = asJava(dmnType.getBaseType());
         if (dmnType.isCollection()) {
             return String.format("java.util.Collection<%s>", baseConverted);
         }
