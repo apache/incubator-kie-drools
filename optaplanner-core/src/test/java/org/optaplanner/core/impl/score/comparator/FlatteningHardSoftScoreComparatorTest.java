@@ -19,29 +19,14 @@ package org.optaplanner.core.impl.score.comparator;
 import java.util.Arrays;
 import java.util.Collection;
 
-import org.junit.jupiter.api.Test;
-import org.junit.runner.RunWith;
-import org.junit.runners.Parameterized;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.MethodSource;
 import org.optaplanner.core.impl.score.buildin.hardsoft.HardSoftScoreDefinition;
 
 import static org.junit.Assert.*;
 
-@RunWith(Parameterized.class)
 public class FlatteningHardSoftScoreComparatorTest {
 
-    private int expectedResult;
-    private int modifier;
-    private String firstScore;
-    private String secondScore;
-
-    public FlatteningHardSoftScoreComparatorTest(int expectedResult, int modifier, String firstScore, String secondScore) {
-        this.expectedResult = expectedResult;
-        this.modifier = modifier;
-        this.firstScore = firstScore;
-        this.secondScore = secondScore;
-    }
-
-    @Parameterized.Parameters(name = "{index}: {0}")
     public static Collection parameters() {
         String simpleScore = "10hard/123soft";
         String lowHardScore = "10hard/987654321soft";
@@ -68,8 +53,9 @@ public class FlatteningHardSoftScoreComparatorTest {
         });
     }
 
-    @Test
-    public void compare() {
+    @ParameterizedTest(name = "{index}: {0}")
+    @MethodSource("parameters")
+    public void compare(int expectedResult, int modifier, String firstScore, String secondScore) {
         assertEquals(expectedResult, new FlatteningHardSoftScoreComparator(modifier)
                 .compare(new HardSoftScoreDefinition().parseScore(firstScore),
                         new HardSoftScoreDefinition().parseScore(secondScore)));

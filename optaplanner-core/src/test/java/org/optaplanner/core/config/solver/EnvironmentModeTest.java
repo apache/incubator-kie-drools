@@ -2,7 +2,6 @@ package org.optaplanner.core.config.solver;
 
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
 import java.util.Random;
@@ -10,11 +9,9 @@ import java.util.stream.IntStream;
 
 import org.assertj.core.api.Assertions;
 import org.assertj.core.api.SoftAssertions;
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.BeforeAll;
-import org.junit.jupiter.api.Test;
-import org.junit.runner.RunWith;
-import org.junit.runners.Parameterized;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.EnumSource;
 import org.optaplanner.core.api.score.Score;
 import org.optaplanner.core.api.solver.Solver;
 import org.optaplanner.core.api.solver.SolverFactory;
@@ -42,20 +39,13 @@ import org.optaplanner.core.impl.testdata.util.PlannerTestUtils;
 
 import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
 
-@RunWith(Parameterized.class)
 public class EnvironmentModeTest {
 
     private static final int NUMBER_OF_RANDOM_NUMBERS_GENERATED = 1000;
     private static final int NUMBER_OF_TIMES_RUN = 10;
     private static final int NUMBER_OF_TERMINATION_STEP_COUNT_LIMIT = 20;
 
-    private final EnvironmentMode environmentMode;
     private static TestdataSolution inputProblem;
-    private SolverConfig solverConfig;
-
-    public EnvironmentModeTest(EnvironmentMode environmentMode) {
-        this.environmentMode = environmentMode;
-    }
 
     @BeforeAll
     public static void setUpInputProblem() {
@@ -66,29 +56,26 @@ public class EnvironmentModeTest {
                                                  new TestdataEntity("e3"), new TestdataEntity("e4")));
     }
 
-    @BeforeEach
-    public void setUpSolverConfig() {
+    private static SolverConfig buildSolverConfig(EnvironmentMode environmentMode) {
         CustomPhaseConfig initializerPhaseConfig = new CustomPhaseConfig()
                 .withCustomPhaseCommandClassList(Collections.singletonList(TestdataFirstValueInitializer.class));
 
         LocalSearchPhaseConfig localSearchPhaseConfig = new LocalSearchPhaseConfig();
         localSearchPhaseConfig.setTerminationConfig(new TerminationConfig().withStepCountLimit(NUMBER_OF_TERMINATION_STEP_COUNT_LIMIT));
 
-        solverConfig = new SolverConfig()
+        return new SolverConfig()
                 .withSolutionClass(TestdataSolution.class)
                 .withEntityClasses(TestdataEntity.class)
                 .withEnvironmentMode(environmentMode)
                 .withPhases(initializerPhaseConfig, localSearchPhaseConfig);
     }
 
-    @Parameterized.Parameters(name = "{0}")
-    public static Collection<EnvironmentMode> params() {
-        return Arrays.asList(EnvironmentMode.values());
-    }
 
-    @Test
-    public void determinism() {
-        setSolverConfigCalculatorClass(TestdataDifferentValuesCalculator.class);
+    @ParameterizedTest(name = "{0}")
+    @EnumSource(EnvironmentMode.class)
+    public void determinism(EnvironmentMode environmentMode) {
+        SolverConfig solverConfig = buildSolverConfig(environmentMode);
+        setSolverConfigCalculatorClass(solverConfig, TestdataDifferentValuesCalculator.class);
 
         Solver solver1 = SolverFactory.create(solverConfig).buildSolver();
         Solver solver2 = SolverFactory.create(solverConfig).buildSolver();
@@ -109,20 +96,26 @@ public class EnvironmentModeTest {
         }
     }
 
-    @Test
-    public void corruptedCustomMoves() {
+    @ParameterizedTest(name = "{0}")
+    @EnumSource(EnvironmentMode.class)
+    public void corruptedCustomMoves(EnvironmentMode environmentMode) {
+        SolverConfig solverConfig = buildSolverConfig(environmentMode);
         // Intrusive modes should throw exception about corrupted undoMove
-        setSolverConfigCalculatorClass(TestdataDifferentValuesCalculator.class);
+        setSolverConfigCalculatorClass(solverConfig, TestdataDifferentValuesCalculator.class);
 
         switch (environmentMode) {
             case FULL_ASSERT:
             case FAST_ASSERT:
-                setSolverConfigMoveListFactoryClassToCorrupted(TestdataCorruptedUndoMoveFactory.class);
-                assertIllegalStateExceptionWhileSolving("corrupted undoMove");
+                setSolverConfigMoveListFactoryClassToCorrupted(
+                        solverConfig,
+                        TestdataCorruptedUndoMoveFactory.class);
+                assertIllegalStateExceptionWhileSolving(solverConfig, "corrupted undoMove");
                 break;
             case NON_INTRUSIVE_FULL_ASSERT:
-                setSolverConfigMoveListFactoryClassToCorrupted(TestdataCorruptedEntityUndoMoveFactory.class);
-                assertIllegalStateExceptionWhileSolving("not the uncorruptedScore");
+                setSolverConfigMoveListFactoryClassToCorrupted(
+                        solverConfig,
+                        TestdataCorruptedEntityUndoMoveFactory.class);
+                assertIllegalStateExceptionWhileSolving(solverConfig, "not the uncorruptedScore");
                 break;
             case REPRODUCIBLE:
             case NON_REPRODUCIBLE:
@@ -134,18 +127,24 @@ public class EnvironmentModeTest {
         }
     }
 
-    @Test
-    public void corruptedConstraints() {
+    @ParameterizedTest(name = "{0}")
+    @EnumSource(EnvironmentMode.class)
+    public void corruptedConstraints(EnvironmentMode environmentMode) {
+        SolverConfig solverConfig = buildSolverConfig(environmentMode);
         // For full assert modes it should throw exception about corrupted score
-        setSolverConfigCalculatorClass(TestdataCorruptedDifferentValuesCalculator.class);
+        setSolverConfigCalculatorClass(solverConfig, TestdataCorruptedDifferentValuesCalculator.class);
 
         switch (environmentMode) {
             case FULL_ASSERT:
             case NON_INTRUSIVE_FULL_ASSERT:
-                assertIllegalStateExceptionWhileSolving("not the uncorruptedScore");
+                assertIllegalStateExceptionWhileSolving(
+                        solverConfig,
+                        "not the uncorruptedScore");
                 break;
             case FAST_ASSERT:
-                assertIllegalStateExceptionWhileSolving("Score corruption analysis could not be generated ");
+                assertIllegalStateExceptionWhileSolving(
+                        solverConfig,
+                        "Score corruption analysis could not be generated ");
                 break;
             case REPRODUCIBLE:
             case NON_REPRODUCIBLE:
@@ -169,7 +168,7 @@ public class EnvironmentModeTest {
         assertDifferentScoreSeries(solver1, solver2);
     }
 
-    private void assertIllegalStateExceptionWhileSolving(String exceptionMessage) {
+    private void assertIllegalStateExceptionWhileSolving(SolverConfig solverConfig, String exceptionMessage) {
         assertThatExceptionOfType(IllegalStateException.class)
                 .isThrownBy(() -> PlannerTestUtils.solve(solverConfig, inputProblem))
                 .withMessageContaining(exceptionMessage);
@@ -236,12 +235,16 @@ public class EnvironmentModeTest {
                         .isNotEqualTo(random2.nextInt())));
     }
 
-    private void setSolverConfigCalculatorClass(Class<? extends EasyScoreCalculator<TestdataSolution>> easyScoreCalculatorClass) {
+    private void setSolverConfigCalculatorClass(
+            SolverConfig solverConfig,
+            Class<? extends EasyScoreCalculator<TestdataSolution>> easyScoreCalculatorClass) {
         solverConfig.setScoreDirectorFactoryConfig(new ScoreDirectorFactoryConfig()
                                                            .withEasyScoreCalculatorClass(easyScoreCalculatorClass));
     }
 
-    private void setSolverConfigMoveListFactoryClassToCorrupted(Class<? extends MoveListFactory<TestdataSolution>> move) {
+    private void setSolverConfigMoveListFactoryClassToCorrupted(
+            SolverConfig solverConfig,
+            Class<? extends MoveListFactory<TestdataSolution>> move) {
         MoveListFactoryConfig moveListFactoryConfig = new MoveListFactoryConfig();
         moveListFactoryConfig.setMoveListFactoryClass(move);
 

@@ -11,10 +11,8 @@ import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 import org.assertj.core.api.Assertions;
-import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.Test;
-import org.junit.runner.RunWith;
-import org.junit.runners.Parameterized;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.MethodSource;
 import org.optaplanner.core.api.score.buildin.simple.SimpleScore;
 import org.optaplanner.core.api.solver.Solver;
 import org.optaplanner.core.api.solver.SolverFactory;
@@ -53,32 +51,13 @@ import static org.assertj.core.api.Assertions.assertThat;
  * the second entity doesn't have a value and the third entity has 2, the score is -1) The score is reduced for
  * every duplicate present. (meaning a solution of 1111 has the score of -4)
  */
-@RunWith(Parameterized.class)
 public class BlackBoxExhaustiveSearchPhaseTest {
-
-    private final ExhaustiveSearchType exhaustiveSearchType;
-    private final NodeExplorationType nodeExplorationType;
-    private final EntitySorterManner entitySorterManner;
-    private final ValueSorterManner valueSorterManner;
-    private final List<String> steps;
-    private TestdataDifficultyComparingSolution solution;
-    private SolverConfig solverConfig;
-
-    public BlackBoxExhaustiveSearchPhaseTest(ExhaustiveSearchType exhaustiveSearchType, NodeExplorationType nodeExplorationType,
-                                             EntitySorterManner entitySorterManner, ValueSorterManner valueSorterManner, List<String> steps) {
-        this.exhaustiveSearchType = exhaustiveSearchType;
-        this.nodeExplorationType = nodeExplorationType;
-        this.entitySorterManner = entitySorterManner;
-        this.valueSorterManner = valueSorterManner;
-        this.steps = steps;
-    }
 
     /**
      * Initialize combination of input parameters.
      *
      * @return collection of combination of input parameters
      */
-    @Parameterized.Parameters(name = "{0}, NodeExplorationType-{1}, EntitySorterManner-{2}, ValueSorterManner-{3}")
     public static Collection<Object[]> params() {
         return Stream.concat(getBranchAndBoundConfigs(), getBruteForceConfigs()).collect(Collectors.toList());
     }
@@ -374,9 +353,12 @@ public class BlackBoxExhaustiveSearchPhaseTest {
         return parameters;
     }
 
-    @BeforeEach
-    public void setUp() {
-        solverConfig = PlannerTestUtils.buildSolverConfig(
+    private static SolverConfig buildSolverConfig(
+            EntitySorterManner entitySorterManner,
+            ValueSorterManner valueSorterManner,
+            ExhaustiveSearchType exhaustiveSearchType,
+            NodeExplorationType nodeExplorationType) {
+        SolverConfig solverConfig = PlannerTestUtils.buildSolverConfig(
                 TestdataDifficultyComparingSolution.class, TestdataDifficultyComparingEntity.class);
 
         EntitySelectorConfig entitySelectorConfig = new EntitySelectorConfig();
@@ -404,7 +386,11 @@ public class BlackBoxExhaustiveSearchPhaseTest {
                                                            .withEasyScoreCalculatorClass(TestdataComparableDifferentValuesCalculator.class)
                                                            .withInitializingScoreTrend("ONLY_DOWN"));
 
-        solution = new TestdataDifficultyComparingSolution("solution");
+        return solverConfig;
+    }
+
+    private static TestdataDifficultyComparingSolution buildSolution() {
+        TestdataDifficultyComparingSolution solution = new TestdataDifficultyComparingSolution("solution");
         // Intentionally not sorted, the string is used for sorting in cases it applies.
         solution.setEntityList(Arrays.asList(new TestdataDifficultyComparingEntity("entity4"),
                                              new TestdataDifficultyComparingEntity("entity2"),
@@ -413,10 +399,22 @@ public class BlackBoxExhaustiveSearchPhaseTest {
         solution.setValueList(Arrays.asList(new TestdataValue("1"),
                                             new TestdataValue("3"),
                                             new TestdataValue("2")));
+        return solution;
     }
 
-    @Test
-    public void verifyExhaustiveSearchSteps() {
+    @ParameterizedTest(name = "{0}, NodeExplorationType-{1}, EntitySorterManner-{2}, ValueSorterManner-{3}")
+    @MethodSource("params")
+    public void verifyExhaustiveSearchSteps(
+            ExhaustiveSearchType exhaustiveSearchType,
+            NodeExplorationType nodeExplorationType,
+            EntitySorterManner entitySorterManner,
+            ValueSorterManner valueSorterManner,
+            List<String> steps) {
+        SolverConfig solverConfig = buildSolverConfig(
+                entitySorterManner,
+                valueSorterManner,
+                exhaustiveSearchType,
+                nodeExplorationType);
         SolverFactory<TestdataDifficultyComparingSolution> solverFactory = SolverFactory.create(solverConfig);
 
         if (exhaustiveSearchType == ExhaustiveSearchType.BRUTE_FORCE && nodeExplorationType != null) {
@@ -431,7 +429,7 @@ public class BlackBoxExhaustiveSearchPhaseTest {
             TestdataSolutionStateRecorder listener = new TestdataSolutionStateRecorder();
             ((DefaultSolver<TestdataDifficultyComparingSolution>) solver).addPhaseLifecycleListener(listener);
 
-            solver.solve(solution);
+            solver.solve(buildSolution());
 
             assertThat(listener.getWorkingSolutions()).containsExactlyElementsOf(steps);
         }
