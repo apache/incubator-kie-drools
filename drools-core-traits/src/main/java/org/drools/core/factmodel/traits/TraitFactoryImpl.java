@@ -20,7 +20,6 @@ import java.io.Externalizable;
 import java.util.HashSet;
 import java.util.Set;
 
-import com.google.protobuf.Internal;
 import org.drools.core.base.ClassFieldAccessorStore;
 import org.drools.core.definitions.InternalKnowledgePackage;
 import org.drools.core.definitions.impl.KnowledgePackageImpl;
@@ -31,7 +30,6 @@ import org.drools.core.util.HierarchyEncoder;
 import org.drools.core.util.TripleFactory;
 import org.drools.core.util.TripleStore;
 import org.kie.api.KieBase;
-import org.kie.api.cdi.KBase;
 import org.mvel2.asm.Opcodes;
 
 public class TraitFactoryImpl<T extends Thing<K>, K extends TraitableBean> extends AbstractTraitFactory<T,K> implements Opcodes, Externalizable, TraitFactory {
@@ -110,7 +108,7 @@ public class TraitFactoryImpl<T extends Thing<K>, K extends TraitableBean> exten
 
     @Override
     public TraitTypeEnum determineTraitType( Object object ) {
-        if ( object instanceof TraitProxy ) {
+        if ( object instanceof TraitProxyImpl) {
             return TraitTypeEnum.TRAIT;
         } else if ( object instanceof CoreWrapper ) {
             return TraitTypeEnum.WRAPPED_TRAITABLE;

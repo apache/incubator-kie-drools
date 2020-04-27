@@ -16,13 +16,13 @@
 
 package org.drools.compiler.factmodel.traits;
 
-import org.drools.core.factmodel.traits.TraitProxy;
+import org.drools.core.factmodel.traits.TraitProxyImpl;
 import org.drools.core.factmodel.traits.TraitableBean;
 
 import java.util.BitSet;
 import java.util.Map;
 
-public class DoSomethingProxy<K,T> extends TraitProxy implements ISomethingWithBehaviour<K> {
+public class DoSomethingProxyImpl<K,T> extends TraitProxyImpl implements ISomethingWithBehaviour<K> {
 
     private static final String traitType = ISomethingWithBehaviour.class.getName();
 
@@ -34,7 +34,7 @@ public class DoSomethingProxy<K,T> extends TraitProxy implements ISomethingWithB
     private Object object;
     private Map<String, Object> map;
 
-    public DoSomethingProxy( Imp2 obj, Map<String, Object> m ) {
+    public DoSomethingProxyImpl(Imp2 obj, Map<String, Object> m ) {
         this.object = obj;
         this.map = m;
 

@@ -48,7 +48,7 @@ import org.drools.core.factmodel.traits.MapWrapper;
 import org.drools.core.factmodel.traits.Thing;
 import org.drools.core.factmodel.traits.Trait;
 import org.drools.core.factmodel.traits.TraitFactoryImpl;
-import org.drools.core.factmodel.traits.TraitProxy;
+import org.drools.core.factmodel.traits.TraitProxyImpl;
 import org.drools.core.factmodel.traits.TraitRegistryImpl;
 import org.drools.core.factmodel.traits.TraitTypeMap;
 import org.drools.core.factmodel.traits.Traitable;
@@ -207,8 +207,8 @@ public class TraitTest extends CommonTraitTest {
             Class trait = kb.getFactType( "org.drools.compiler.trait.test",
                                           "Student" ).getFactClass();
 
-            TraitProxy proxy = (TraitProxy) tFactory.getProxy( imp,
-                                                               trait );
+            TraitProxyImpl proxy = (TraitProxyImpl) tFactory.getProxy(imp,
+                                                                      trait );
 
             Map<String, Object> virtualFields = imp._getDynamicProperties();
             Map<String, Object> wrapper = proxy.getFields();
@@ -411,21 +411,21 @@ public class TraitTest extends CommonTraitTest {
                                            "Role" ).getFactClass();
 
             assertNotNull( trait );
-            TraitProxy proxy = (TraitProxy) tFactory.getProxy( imp,
-                                                               trait );
+            TraitProxyImpl proxy = (TraitProxyImpl) tFactory.getProxy(imp,
+                                                                      trait );
             proxy.getFields().put( "field",
                                    "xyz" );
             //            proxy.getFields().put("name", "aaa");
 
             assertNotNull( proxy );
 
-            TraitProxy proxy2 = (TraitProxy) tFactory.getProxy( imp,
-                                                                trait );
+            TraitProxyImpl proxy2 = (TraitProxyImpl) tFactory.getProxy(imp,
+                                                                       trait );
             assertSame( proxy2,
                         proxy );
 
-            TraitProxy proxy3 = (TraitProxy) tFactory.getProxy( imp,
-                                                                trait2 );
+            TraitProxyImpl proxy3 = (TraitProxyImpl) tFactory.getProxy(imp,
+                                                                       trait2 );
             assertNotNull( proxy3 );
             assertEquals( "xyz",
                           proxy3.getFields().get( "field" ) );
@@ -436,8 +436,8 @@ public class TraitTest extends CommonTraitTest {
             impClass.set( imp2,
                           "name",
                           "aaa" );
-            TraitProxy proxy4 = (TraitProxy) tFactory.getProxy( imp2,
-                                                                trait );
+            TraitProxyImpl proxy4 = (TraitProxyImpl) tFactory.getProxy(imp2,
+                                                                       trait );
             //            proxy4.getFields().put("name", "aaa");
             proxy4.getFields().put( "field",
                                     "xyz" );
@@ -484,8 +484,8 @@ public class TraitTest extends CommonTraitTest {
             FactType traitClass = kb.getFactType( "org.drools.compiler.trait.test",
                                                   "Student" );
             Class trait = traitClass.getFactClass();
-            TraitProxy proxy = (TraitProxy) tFactory.getProxy( imp,
-                                                               trait );
+            TraitProxyImpl proxy = (TraitProxyImpl) tFactory.getProxy(imp,
+                                                                      trait );
 
             Map<String, Object> virtualFields = imp._getDynamicProperties();
             Map<String, Object> wrapper = proxy.getFields();
@@ -520,8 +520,8 @@ public class TraitTest extends CommonTraitTest {
             //            TraitableBean ind = (TraitableBean) indClass.newInstance();
             TraitableBean ind = new Entity();
 
-            TraitProxy proxy2 = (TraitProxy) tFactory.getProxy( ind,
-                                                                trait );
+            TraitProxyImpl proxy2 = (TraitProxyImpl) tFactory.getProxy(ind,
+                                                                       trait );
 
             Map virtualFields2 = ind._getDynamicProperties();
             Map wrapper2 = proxy2.getFields();
@@ -558,8 +558,8 @@ public class TraitTest extends CommonTraitTest {
             //            TraitableBean ind2 = (TraitableBean) indClass.newInstance();
             TraitableBean ind2 = new Entity();
 
-            TraitProxy proxy99 = (TraitProxy) tFactory.getProxy( ind2,
-                                                                 trait2 );
+            TraitProxyImpl proxy99 = (TraitProxyImpl) tFactory.getProxy(ind2,
+                                                                        trait2 );
 
             proxy99.getFields().put( "surname",
                                      "xxx" );
@@ -571,8 +571,8 @@ public class TraitTest extends CommonTraitTest {
             assertEquals( 3,
                           proxy99.getFields().size() );
 
-            TraitProxy proxy100 = (TraitProxy) tFactory.getProxy( ind2,
-                                                                  trait );
+            TraitProxyImpl proxy100 = (TraitProxyImpl) tFactory.getProxy(ind2,
+                                                                         trait );
 
             assertEquals( 4,
                           proxy100.getFields().size() );
@@ -612,8 +612,8 @@ public class TraitTest extends CommonTraitTest {
             FactType studentClass = kb.getFactType( "org.drools.compiler.trait.test",
                                                     "Student" );
             Class trait = studentClass.getFactClass();
-            TraitProxy proxy = (TraitProxy) tFactory.getProxy( imp,
-                                                               trait );
+            TraitProxyImpl proxy = (TraitProxyImpl) tFactory.getProxy(imp,
+                                                                      trait );
 
             Map<String, Object> virtualFields = imp._getDynamicProperties();
             Map<String, Object> wrapper = proxy.getFields();
@@ -644,8 +644,8 @@ public class TraitTest extends CommonTraitTest {
             FactType RoleClass = kb.getFactType( "org.drools.compiler.trait.test",
                                                  "Role" );
             Class trait2 = RoleClass.getFactClass();
-            TraitProxy proxy2 = (TraitProxy) tFactory.getProxy( ind,
-                                                                trait2 );
+            TraitProxyImpl proxy2 = (TraitProxyImpl) tFactory.getProxy(ind,
+                                                                       trait2 );
 
             Map<String, Object> wrapper2 = proxy2.getFields();
             assertTrue( wrapper2.isEmpty() );
@@ -697,8 +697,8 @@ public class TraitTest extends CommonTraitTest {
             FactType traitClass = kb.getFactType( "org.drools.compiler.trait.test",
                                                   "Student" );
             Class trait = traitClass.getFactClass();
-            TraitProxy proxy = (TraitProxy) tFactory.getProxy( imp,
-                                                               trait );
+            TraitProxyImpl proxy = (TraitProxyImpl) tFactory.getProxy(imp,
+                                                                      trait );
 
             Map<String, Object> virtualFields = imp._getDynamicProperties();
             Map<String, Object> wrapper = proxy.getFields();
@@ -717,8 +717,8 @@ public class TraitTest extends CommonTraitTest {
             //            FactType indClass = kb.getFactType("org.drools.compiler.trait.test","Entity");
             TraitableBean ind = new Entity();
 
-            TraitProxy proxy2 = (TraitProxy) tFactory.getProxy( ind,
-                                                                trait );
+            TraitProxyImpl proxy2 = (TraitProxyImpl) tFactory.getProxy(ind,
+                                                                       trait );
 
             Map virtualFields2 = ind._getDynamicProperties();
             Map wrapper2 = proxy2.getFields();
@@ -741,8 +741,8 @@ public class TraitTest extends CommonTraitTest {
             Class trait2 = traitClass2.getFactClass();
             TraitableBean ind2 = new Entity();
 
-            TraitProxy proxy99 = (TraitProxy) tFactory.getProxy( ind2,
-                                                                 trait2 );
+            TraitProxyImpl proxy99 = (TraitProxyImpl) tFactory.getProxy(ind2,
+                                                                        trait2 );
             Map<String, Object> wrapper99 = proxy99.getFields();
 
             assertFalse( wrapper99.containsKey( "name" ) );
@@ -766,16 +766,16 @@ public class TraitTest extends CommonTraitTest {
 
             TraitableBean ind0 = new Entity();
 
-            TraitProxy proxy100 = (TraitProxy) tFactory.getProxy( ind0,
-                                                                  trait2 );
+            TraitProxyImpl proxy100 = (TraitProxyImpl) tFactory.getProxy(ind0,
+                                                                         trait2 );
             Map<String, Object> wrapper100 = proxy100.getFields();
             assertFalse( wrapper100.containsKey( "name" ) );
             assertFalse( wrapper100.containsKey( "school" ) );
             assertFalse( wrapper100.containsKey( "age" ) );
             assertFalse( wrapper100.containsKey( "surname" ) );
 
-            TraitProxy proxy101 = (TraitProxy) tFactory.getProxy( ind0,
-                                                                  trait );
+            TraitProxyImpl proxy101 = (TraitProxyImpl) tFactory.getProxy(ind0,
+                                                                         trait );
             // object gains properties by virtue of another trait
             // so new props are accessible even using the old proxy
             assertTrue( wrapper100.containsKey( "name" ) );
@@ -817,8 +817,8 @@ public class TraitTest extends CommonTraitTest {
             FactType traitClass = kb.getFactType( "org.drools.compiler.trait.test",
                                                   "Student" );
             Class trait = traitClass.getFactClass();
-            TraitProxy proxy = (TraitProxy) tFactory.getProxy( imp,
-                                                               trait );
+            TraitProxyImpl proxy = (TraitProxyImpl) tFactory.getProxy(imp,
+                                                                      trait );
             Object proxyFields = proxy.getFields();
             Object coreTraits = imp._getTraitMap();
             Object coreProperties = imp._getDynamicProperties();
@@ -842,7 +842,7 @@ public class TraitTest extends CommonTraitTest {
             }
 
 
-            StudentProxy2 sp2 = new StudentProxy2(new Imp2(), null );
+            StudentProxyImpl2 sp2 = new StudentProxyImpl2(new Imp2(), null );
             System.out.println( sp2.toString() );
 
         } catch ( Exception e ) {
@@ -879,8 +879,8 @@ public class TraitTest extends CommonTraitTest {
             FactType traitClass = kb.getFactType( "org.drools.compiler.trait.test",
                                                   "Student" );
             Class trait = traitClass.getFactClass();
-            TraitProxy proxy = (TraitProxy) tFactory.getProxy( imp,
-                                                               trait );
+            TraitProxyImpl proxy = (TraitProxyImpl) tFactory.getProxy(imp,
+                                                                      trait );
 
             impClass.set( imp,
                           "name",
@@ -979,8 +979,8 @@ public class TraitTest extends CommonTraitTest {
             FactType traitClass = kb.getFactType( "org.drools.compiler.trait.test",
                                                   "Student" );
             Class trait = traitClass.getFactClass();
-            TraitProxy proxy = (TraitProxy) tFactory.getProxy( imp,
-                                                               trait );
+            TraitProxyImpl proxy = (TraitProxyImpl) tFactory.getProxy(imp,
+                                                                      trait );
 
             proxy.getFields().put( "surname",
                                    "xxx" );
@@ -1998,13 +1998,13 @@ public class TraitTest extends CommonTraitTest {
 
             assertNotNull( trait);
 
-            TraitProxy proxy = (TraitProxy) traitBuilder.getProxy(imp, trait);
+            TraitProxyImpl proxy = (TraitProxyImpl) traitBuilder.getProxy(imp, trait);
             Thing thing = traitBuilder.getProxy(imp, Thing.class);
 
             TraitableBean core = (TraitableBean) proxy.getObject();
 
 
-            TraitProxy proxy2 = (TraitProxy) traitBuilder.getProxy(imp, trait);
+            TraitProxyImpl proxy2 = (TraitProxyImpl) traitBuilder.getProxy(imp, trait);
             Thing thing2 = traitBuilder.getProxy(imp, Thing.class);
 
             assertSame(proxy,proxy2);
@@ -2137,8 +2137,8 @@ public class TraitTest extends CommonTraitTest {
                 bs.set( 0 );
                 assertEquals( bs, tb.getCurrentTypeCode() );
             }
-            if ( o instanceof TraitProxy ) {
-                TraitProxy tp = (TraitProxy) o;
+            if ( o instanceof TraitProxyImpl) {
+                TraitProxyImpl tp = (TraitProxyImpl) o;
                 assertEquals( 0, tp.listAssignedOtnTypeCodes().size() );
             }
         }
@@ -4593,8 +4593,8 @@ public class TraitTest extends CommonTraitTest {
             public void objectUpdated( org.kie.api.event.rule.ObjectUpdatedEvent objectUpdatedEvent ) { }
             public void objectDeleted( org.kie.api.event.rule.ObjectDeletedEvent objectRetractedEvent ) {
                 Object o = objectRetractedEvent.getOldObject();
-                if ( o instanceof TraitProxy ) {
-                    String traitName = ( (TraitProxy) o )._getTraitName();
+                if ( o instanceof TraitProxyImpl) {
+                    String traitName = ( (TraitProxyImpl) o )._getTraitName();
                     list.add( traitName.substring( traitName.lastIndexOf( "." ) + 1 ) );
                 }
             }
@@ -5734,8 +5734,8 @@ public class TraitTest extends CommonTraitTest {
 
         int counter = 0;
         for ( Object o : ksession.getObjects() ) {
-            if ( o instanceof TraitProxy ) {
-                TraitProxy tp = (TraitProxy) o;
+            if ( o instanceof TraitProxyImpl) {
+                TraitProxyImpl tp = (TraitProxyImpl) o;
                 if ( tp._getTypeCode().equals( c ) ) {
                     assertEquals( 1, tp.listAssignedOtnTypeCodes().size() );
                     assertTrue( tp.listAssignedOtnTypeCodes().contains( b ) );
@@ -5760,8 +5760,8 @@ public class TraitTest extends CommonTraitTest {
 
         int counter2 = 0;
         for ( Object o : ksession.getObjects() ) {
-            if ( o instanceof TraitProxy ) {
-                TraitProxy tp = (TraitProxy) o;
+            if ( o instanceof TraitProxyImpl) {
+                TraitProxyImpl tp = (TraitProxyImpl) o;
                 assertEquals( d, tp._getTypeCode() );
                 assertEquals( 1, tp.listAssignedOtnTypeCodes().size() );
                 assertTrue( tp.listAssignedOtnTypeCodes().contains( b ) );
@@ -5900,7 +5900,7 @@ public class TraitTest extends CommonTraitTest {
         Set<BitSet> otns = new HashSet<BitSet>();
 
         for ( Object o : core._getTraitMap().values() ) {
-            TraitProxy tp = (TraitProxy) o;
+            TraitProxyImpl tp = (TraitProxyImpl) o;
             Set<BitSet> localNodes = tp.listAssignedOtnTypeCodes();
 
             for ( BitSet code : localNodes ) {

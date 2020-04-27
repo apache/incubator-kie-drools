@@ -16,7 +16,7 @@
 
 package org.drools.compiler.factmodel.traits;
 
-import org.drools.core.factmodel.traits.TraitProxy;
+import org.drools.core.factmodel.traits.TraitProxyImpl;
 import org.drools.core.factmodel.traits.TraitTypeMap;
 import org.drools.core.factmodel.traits.TraitableBean;
 import org.drools.core.spi.InternalReadAccessor;
@@ -26,7 +26,7 @@ import org.drools.core.util.ExternalizableLinkedHashMap;
 import java.util.HashMap;
 import java.util.Map;
 
-public class StudentProxy2 extends TraitProxy implements IStudent {
+public class StudentProxyImpl2 extends TraitProxyImpl implements IStudent {
 
     public final Imp2 object;
     public final Map<String, Object> map;
@@ -41,7 +41,7 @@ public class StudentProxy2 extends TraitProxy implements IStudent {
     private static final String traitType = IStudent.class.getName();
 
 
-    public StudentProxy2(Imp2 obj, Map<String, Object> m) {
+    public StudentProxyImpl2(Imp2 obj, Map<String, Object> m) {
         if ( m == null ) {
             m = new HashMap<String,Object>();
         }
@@ -86,7 +86,7 @@ public class StudentProxy2 extends TraitProxy implements IStudent {
             return false;
         }
 
-        TraitProxy that = (TraitProxy) o;
+        TraitProxyImpl that = (TraitProxyImpl) o;
         return getFields().equals( that.getFields() );
     }
 

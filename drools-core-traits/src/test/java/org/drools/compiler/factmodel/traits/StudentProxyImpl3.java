@@ -16,7 +16,7 @@
 
 package org.drools.compiler.factmodel.traits;
 
-import org.drools.core.factmodel.traits.TraitProxy;
+import org.drools.core.factmodel.traits.TraitProxyImpl;
 import org.drools.core.factmodel.traits.TraitTypeMap;
 import org.drools.core.factmodel.traits.TraitableBean;
 import org.drools.core.factmodel.traits.TripleBasedBean;
@@ -33,7 +33,7 @@ import org.kie.api.runtime.rule.Variable;
 import java.util.Map;
 
 
-public class StudentProxy3 extends TraitProxy implements IStudent {
+public class StudentProxyImpl3 extends TraitProxyImpl implements IStudent {
 
     private static final String traitType = IStudent.class.getName();
 
@@ -50,7 +50,7 @@ public class StudentProxy3 extends TraitProxy implements IStudent {
 
 
 
-    public StudentProxy3(Imp2 obj, final TripleStore m, TripleFactory factory) {
+    public StudentProxyImpl3(Imp2 obj, final TripleStore m, TripleFactory factory) {
 
         System.out.println( "ABSCS" );
 
@@ -173,7 +173,7 @@ public class StudentProxy3 extends TraitProxy implements IStudent {
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
-        TraitProxy that = (TraitProxy) o;
+        TraitProxyImpl that = (TraitProxyImpl) o;
 
         if ( ! getFields().equals( that.getFields() ) ) return false;
         if ( ! getObject().equals( that.getObject() ) ) return false;

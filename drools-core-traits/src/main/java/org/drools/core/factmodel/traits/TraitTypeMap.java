@@ -43,7 +43,7 @@ public class TraitTypeMap<T extends String, K extends Thing<C>, C>
         innerMap = map;
 
         // create "top" element placeholder. will be replaced by a Thing proxy later, should the core object don it
-        ThingProxyPlaceHolder thingPlaceHolder = ThingProxyPlaceHolder.getThingPlaceHolder();
+        ThingProxyImplPlaceHolder thingPlaceHolder = ThingProxyImplPlaceHolder.getThingPlaceHolder();
         addMember( (K) thingPlaceHolder, thingPlaceHolder._getTypeCode() );
     }
 
@@ -107,10 +107,10 @@ public class TraitTypeMap<T extends String, K extends Thing<C>, C>
 
     public K remove( Object key ) {
         K t = innerMap.remove( key );
-        if ( t instanceof TraitProxy ) {
-            ((TraitProxy) t).shed();
+        if ( t instanceof TraitProxyImpl) {
+            ((TraitProxyImpl) t).shed();
         }
-        removeMember( ( (TraitProxy) t )._getTypeCode() );
+        removeMember( ( (TraitProxyImpl) t )._getTypeCode() );
 
         mostSpecificTraits = null;
         resetCurrentCode();
@@ -141,8 +141,8 @@ public class TraitTypeMap<T extends String, K extends Thing<C>, C>
                 ret.add( t.getValue() );
                 removeMember( tt._getTypeCode() );
                 K thing = innerMap.remove( tt._getTraitName() );
-                if ( thing instanceof TraitProxy ) {
-                    ((TraitProxy) thing).shed(); //is this working?
+                if ( thing instanceof TraitProxyImpl) {
+                    ((TraitProxyImpl) thing).shed(); //is this working?
                 }
             }
         }
@@ -166,7 +166,7 @@ public class TraitTypeMap<T extends String, K extends Thing<C>, C>
 
     public void putAll( Map<? extends String, ? extends K> m ) {
         for ( K proxy : m.values() ) {
-            addMember( proxy, ((TraitProxy) proxy)._getTypeCode() );
+            addMember( proxy, ((TraitProxyImpl) proxy)._getTypeCode() );
         }
         resetCurrentCode();
         mostSpecificTraits = null;

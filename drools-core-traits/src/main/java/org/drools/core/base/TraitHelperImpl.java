@@ -29,7 +29,6 @@ import java.util.List;
 import java.util.PriorityQueue;
 
 import org.drools.core.WorkingMemoryEntryPoint;
-import org.drools.core.common.DefaultFactHandle;
 import org.drools.core.common.InternalFactHandle;
 import org.drools.core.common.InternalWorkingMemoryActions;
 import org.drools.core.common.InternalWorkingMemoryEntryPoint;
@@ -44,7 +43,7 @@ import org.drools.core.factmodel.traits.LogicalTypeInconsistencyException;
 import org.drools.core.factmodel.traits.Thing;
 import org.drools.core.factmodel.traits.TraitFactoryImpl;
 import org.drools.core.factmodel.traits.TraitFieldTMS;
-import org.drools.core.factmodel.traits.TraitProxy;
+import org.drools.core.factmodel.traits.TraitProxyImpl;
 import org.drools.core.factmodel.traits.TraitRegistryImpl;
 import org.drools.core.factmodel.traits.TraitType;
 import org.drools.core.factmodel.traits.TraitTypeMap;
@@ -382,10 +381,10 @@ public class TraitHelperImpl implements Externalizable, TraitHelper {
         }
         Collection<Thing<K>> mst = ( (TraitTypeMap) core._getTraitMap() ).getMostSpecificTraits();
         for ( Thing<K> shedded : removedTraits ) {
-            for ( BitSet bs : ( (TraitProxy) shedded ).listAssignedOtnTypeCodes() ) {
+            for ( BitSet bs : ( (TraitProxyImpl) shedded ).listAssignedOtnTypeCodes() ) {
                 boolean found = false;
                 for ( Thing<K> tp : mst ) {
-                    TraitProxy candidate = (TraitProxy) tp;
+                    TraitProxyImpl candidate = (TraitProxyImpl) tp;
                     if ( HierarchyEncoderImpl.supersetOrEqualset( candidate._getTypeCode(), bs ) ) {
                         candidate.assignOtn( bs );
                         found = true;
@@ -411,8 +410,8 @@ public class TraitHelperImpl implements Externalizable, TraitHelper {
 
         Collection<Thing> ts = new ArrayList<Thing>();
         for ( Thing t : inner._getTraitMap().values() )     {
-            if ( t instanceof TraitProxy ) {
-                if ( ( (TraitProxy) t ).hasOtns() ) {
+            if ( t instanceof TraitProxyImpl) {
+                if ( ( (TraitProxyImpl) t ).hasOtns() ) {
                     ts.add( t );
                 }
             }
@@ -623,12 +622,12 @@ public class TraitHelperImpl implements Externalizable, TraitHelper {
     public void deleteWMAssertedTraitProxies( InternalFactHandle handle, RuleImpl rule, TerminalNode terminalNode ) {
         TraitableBean traitableBean = (TraitableBean) handle.getObject();
         if( traitableBean.hasTraits() ){
-            PriorityQueue<TraitProxy> removedTypes =
-                    new PriorityQueue<TraitProxy>( traitableBean._getTraitMap().values().size() );
+            PriorityQueue<TraitProxyImpl> removedTypes =
+                    new PriorityQueue<TraitProxyImpl>(traitableBean._getTraitMap().values().size() );
             removedTypes.addAll( traitableBean._getTraitMap().values() );
 
             while ( ! removedTypes.isEmpty() ) {
-                TraitProxy proxy = removedTypes.poll();
+                TraitProxyImpl proxy = removedTypes.poll();
                 if ( ! proxy._isVirtual() ) {
                     InternalFactHandle proxyHandle = (InternalFactHandle) getFactHandle( proxy );
                     if ( proxyHandle.getEqualityKey() == null || proxyHandle.getEqualityKey().getLogicalFactHandle() != proxyHandle ) {
@@ -647,7 +646,7 @@ public class TraitHelperImpl implements Externalizable, TraitHelper {
         if ( handle.isTraitable() ) {
             tb = (TraitableBean) handle.getObject();
         } else if ( handle.isTraiting() ) {
-            tb = ((TraitProxy) handle.getObject()).getObject();
+            tb = ((TraitProxyImpl) handle.getObject()).getObject();
         } else {
             return null;
         }

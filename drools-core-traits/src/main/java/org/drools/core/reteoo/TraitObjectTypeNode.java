@@ -26,7 +26,7 @@ import org.drools.core.base.ClassObjectType;
 import org.drools.core.common.InternalFactHandle;
 import org.drools.core.common.InternalWorkingMemory;
 import org.drools.core.factmodel.traits.Thing;
-import org.drools.core.factmodel.traits.TraitProxy;
+import org.drools.core.factmodel.traits.TraitProxyImpl;
 import org.drools.core.factmodel.traits.TraitType;
 import org.drools.core.factmodel.traits.TraitTypeMap;
 import org.drools.core.reteoo.builder.BuildContext;
@@ -69,13 +69,13 @@ public class TraitObjectTypeNode extends ObjectTypeNode {
 
     private boolean isAssertAllowed( InternalFactHandle factHandle ) {
         if ( factHandle.isTraiting() )  {
-            TraitProxy proxy = (TraitProxy) factHandle.getObject();
+            TraitProxyImpl proxy = (TraitProxyImpl) factHandle.getObject();
             BitSet vetoMask = proxy.computeInsertionVetoMask();
             boolean vetoed = ( vetoMask != null
                                && ! typeMask.isEmpty()
                                && HierarchyEncoderImpl.supersetOrEqualset( vetoMask, this.typeMask ) );
 
-            boolean allowed = ! vetoed || sameAndNotCoveredByDescendants( (TraitProxy) factHandle.getObject(), typeMask );
+            boolean allowed = ! vetoed || sameAndNotCoveredByDescendants((TraitProxyImpl) factHandle.getObject(), typeMask );
             if ( allowed ) {
                 //System.err.println(" INSERT PASS !! " + factHandle.getObject() + " " + ( (TraitProxy) factHandle.getObject() )._getTypeCode() + " >> " + vetoMask + " checks in " + typeMask );
                 proxy.assignOtn( this.typeMask );
@@ -95,7 +95,7 @@ public class TraitObjectTypeNode extends ObjectTypeNode {
      *  On don/insertion of C, C may be vetoed by its parents, but might have been
      *  already covered by one of its descendants (D)
      */
-    private boolean sameAndNotCoveredByDescendants( TraitProxy proxy, BitSet typeMask ) {
+    private boolean sameAndNotCoveredByDescendants(TraitProxyImpl proxy, BitSet typeMask ) {
         boolean isSameType = typeMask.equals( proxy._getTypeCode() );
         if ( isSameType ) {
             TraitTypeMap<String,Thing<?>,?> ttm = (TraitTypeMap<String,Thing<?>,?>) proxy.getObject()._getTraitMap();
@@ -119,7 +119,7 @@ public class TraitObjectTypeNode extends ObjectTypeNode {
 
     private boolean isModifyAllowed( InternalFactHandle factHandle ) {
         if ( factHandle.isTraiting() ) {
-            TraitProxy proxy = ( (TraitProxy) factHandle.getObject() );
+            TraitProxyImpl proxy = ( (TraitProxyImpl) factHandle.getObject() );
             return proxy.listAssignedOtnTypeCodes().contains( this.typeMask );
         }
         return true;

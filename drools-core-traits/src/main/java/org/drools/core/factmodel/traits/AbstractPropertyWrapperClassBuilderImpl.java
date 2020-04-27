@@ -143,7 +143,7 @@ public abstract class AbstractPropertyWrapperClassBuilderImpl implements TraitPr
         }
 
         mv.visitMethodInsn(INVOKESTATIC,
-                           Type.getInternalName(TraitProxy.class),
+                           Type.getInternalName(TraitProxyImpl.class),
                            "buildEntry",
                            "(" + Type.getDescriptor(String.class) + Type.getDescriptor(Object.class) + ")" + Type.getDescriptor(Map.Entry.class),
                            false);

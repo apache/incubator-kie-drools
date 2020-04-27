@@ -84,7 +84,7 @@ public class TripleBasedTypes extends TripleBasedStruct {
         Triple t = store.get( tripleFactory.newTriple( key, TripleStore.PROXY, Variable.v ) );
         while ( t != null ) {
             Object o = t.getValue();
-            if ( o instanceof TraitProxy && (( TraitProxy ) o ).getObject() == this.object ) {
+            if ( o instanceof TraitProxyImpl && ((TraitProxyImpl) o ).getObject() == this.object ) {
                 return o;
             } else {
                 t = (Triple) t.getNext();
@@ -154,7 +154,7 @@ public class TripleBasedTypes extends TripleBasedStruct {
 //            set.add( TraitProxy.buildEntry( (String) t.getValue(), proxy.getValue() ) );
             Triple x = getProxyTripleByTraitType( t.getValue() );
             if ( x != null ) {
-                set.add( TraitProxy.buildEntry( (String) t.getValue(), x.getValue() ) );
+                set.add(TraitProxyImpl.buildEntry((String) t.getValue(), x.getValue() ) );
             }
         }
         return set;
@@ -203,7 +203,7 @@ public class TripleBasedTypes extends TripleBasedStruct {
     public Triple getProxyTripleByTraitType( Object key ) {
         Collection<Triple> candidates = store.getAll( tripleFactory.newTriple( key, TripleStore.PROXY, Variable.v ) );
         for ( Triple t : candidates ) {
-            if ( ((TraitProxy) t.getValue() ).getObject() == object ) {
+            if ( ((TraitProxyImpl) t.getValue() ).getObject() == object ) {
                 return t;
             }
         }

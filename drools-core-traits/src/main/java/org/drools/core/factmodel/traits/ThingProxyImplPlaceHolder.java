@@ -18,20 +18,20 @@ package org.drools.core.factmodel.traits;
 import java.io.Serializable;
 import java.util.BitSet;
 
-public class ThingProxyPlaceHolder<K> extends TraitProxy implements Thing<K>, TraitType, Serializable {
+public class ThingProxyImplPlaceHolder<K> extends TraitProxyImpl implements Thing<K>, TraitType, Serializable {
 
     private static final long serialVersionUID = 6017272084020598391L;
 
-    private transient static ThingProxyPlaceHolder singleton;
+    private transient static ThingProxyImplPlaceHolder singleton;
 
-    public static ThingProxyPlaceHolder getThingPlaceHolder() {
+    public static ThingProxyImplPlaceHolder getThingPlaceHolder() {
         if ( singleton == null ) {
-            singleton = new ThingProxyPlaceHolder();
+            singleton = new ThingProxyImplPlaceHolder();
         }
         return singleton;
     }
 
-    public ThingProxyPlaceHolder() {
+    public ThingProxyImplPlaceHolder() {
         setTypeCode( new BitSet() );
     }
 

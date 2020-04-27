@@ -146,7 +146,7 @@ public abstract class TripleBasedStruct implements Map<String, Object>, External
     public Set<Entry<String, Object>> entrySet() {
         Set<Entry<String, Object>> set = new HashSet<Entry<String, Object>>();
         for ( Triple t : getTriplesForSubject( getObject() ) ) {
-            set.add( TraitProxy.buildEntry( (String) t.getProperty(), t.getValue() ) );
+            set.add(TraitProxyImpl.buildEntry((String) t.getProperty(), t.getValue() ) );
         }
         return set;
     }

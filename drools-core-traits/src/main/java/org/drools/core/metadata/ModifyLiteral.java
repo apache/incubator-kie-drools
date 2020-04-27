@@ -21,7 +21,7 @@ import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
 
-import org.drools.core.factmodel.traits.TraitProxy;
+import org.drools.core.factmodel.traits.TraitProxyImpl;
 import org.drools.core.impl.InternalKnowledgeBase;
 import org.drools.core.reteoo.PropertySpecificUtil;
 import org.drools.core.util.ClassUtils;
@@ -226,8 +226,8 @@ public abstract class ModifyLiteral<T> extends AbstractWMTask<T> implements Modi
             for ( Object o : coll ) {
                 if ( o == value ) {
                     return true;
-                } else if ( o instanceof TraitProxy ) {
-                    if ( value == ((TraitProxy) o).getObject() ) {
+                } else if ( o instanceof TraitProxyImpl) {
+                    if ( value == ((TraitProxyImpl) o).getObject() ) {
                         return true;
                     }
                 }

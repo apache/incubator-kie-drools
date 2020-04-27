@@ -614,13 +614,13 @@ public abstract class AbstractProxyClassBuilderImpl implements TraitProxyClassBu
 				mv.visitVarInsn( ASTORE, 1 );
 			} else if ( ! isCoreTrait && isTraitTrait ) {
 				mv.visitVarInsn( ALOAD, 1 );
-				mv.visitTypeInsn( CHECKCAST, Type.getInternalName( TraitProxy.class ) );
-				mv.visitMethodInsn( INVOKEVIRTUAL, Type.getInternalName( TraitProxy.class ), "getObject", Type.getMethodDescriptor( Type.getType( TraitableBean.class ) ), false );
+				mv.visitTypeInsn( CHECKCAST, Type.getInternalName( TraitProxyImpl.class ) );
+				mv.visitMethodInsn(INVOKEVIRTUAL, Type.getInternalName( TraitProxyImpl.class ), "getObject", Type.getMethodDescriptor(Type.getType(TraitableBean.class ) ), false );
 				mv.visitVarInsn( ASTORE, 1 );
 			} else if ( isCoreTrait ) {
 				mv.visitVarInsn( ALOAD, 1 );
-				mv.visitTypeInsn( CHECKCAST, Type.getInternalName( TraitProxy.class ) );
-				mv.visitMethodInsn( INVOKEVIRTUAL, Type.getInternalName( TraitProxy.class ), "getObject", Type.getMethodDescriptor( Type.getType( TraitableBean.class ) ), false );
+				mv.visitTypeInsn( CHECKCAST, Type.getInternalName( TraitProxyImpl.class ) );
+				mv.visitMethodInsn(INVOKEVIRTUAL, Type.getInternalName( TraitProxyImpl.class ), "getObject", Type.getMethodDescriptor(Type.getType(TraitableBean.class ) ), false );
 				mv.visitTypeInsn( CHECKCAST, Type.getInternalName( TraitableBean.class ) );
 				mv.visitLdcInsn( hardField.getTypeName() );
 				mv.visitMethodInsn( INVOKEINTERFACE,

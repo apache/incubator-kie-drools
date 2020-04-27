@@ -31,7 +31,7 @@ import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
 
-public abstract class TraitProxy implements Externalizable, TraitType, Comparable<TraitProxy> {
+public abstract class TraitProxyImpl implements Externalizable, TraitType, Comparable<TraitProxyImpl>, TraitProxy {
 
     protected TripleFactory tripleFactory;
 
@@ -40,7 +40,7 @@ public abstract class TraitProxy implements Externalizable, TraitType, Comparabl
 
     private Set<BitSet> otns;
 
-    public TraitProxy() {
+    public TraitProxyImpl() {
 
     }
 
@@ -109,7 +109,7 @@ public abstract class TraitProxy implements Externalizable, TraitType, Comparabl
     public boolean equals(Object o) {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
-        return getObject().equals( ( (TraitProxy) o ).getObject() );
+        return getObject().equals( ( (TraitProxyImpl) o ).getObject() );
     }
 
 
@@ -151,7 +151,7 @@ public abstract class TraitProxy implements Externalizable, TraitType, Comparabl
 
     }
 
-    public int compareTo( TraitProxy o ) {
+    public int compareTo( TraitProxyImpl o ) {
         if ( HierarchyEncoderImpl.supersetOrEqualset( this.typeCode, o.typeCode ) ) {
             return -1;
         } else {
@@ -165,7 +165,7 @@ public abstract class TraitProxy implements Externalizable, TraitType, Comparabl
 
         for ( Object o : getObject()._getTraitMap().values() ) {
             if ( o != this ) {
-                typeMask.or(((TraitProxy) o).propagationTypeCode);
+                typeMask.or(((TraitProxyImpl) o).propagationTypeCode);
             }
         }
 

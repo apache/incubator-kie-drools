@@ -78,8 +78,8 @@ public class TraitField implements Serializable, Externalizable {
                 this.value = value;
                 isExplicitlySet |= explicitSetEnabled;
             } else {
-                if ( value instanceof TraitProxy ) {
-                    set( ( (TraitProxy) value ).getObject(), klass, wm );
+                if ( value instanceof TraitProxyImpl) {
+                    set(( (TraitProxyImpl) value ).getObject(), klass, wm );
                 } else if ( value instanceof TraitableBean ) {
                     set( ( (TraitableBean) value ).getTrait( klass.getName() ), klass, wm );
                 }
@@ -127,8 +127,8 @@ public class TraitField implements Serializable, Externalizable {
             return value;
         } else if ( value instanceof TraitableBean ) {
             return ( (TraitableBean) value ).getTrait( klass.getName() );
-        } else if ( value instanceof TraitProxy ) {
-            return ( (TraitProxy) value ).getObject();
+        } else if ( value instanceof TraitProxyImpl) {
+            return ( (TraitProxyImpl) value ).getObject();
         } else if ( klass.getKlass() == null ) {
             // possible during deserialization, when
             return value;
@@ -146,8 +146,8 @@ public class TraitField implements Serializable, Externalizable {
         TraitableBean obj = null;
         if ( value instanceof TraitableBean ) {
             obj = (TraitableBean) value;
-        } else if ( value instanceof TraitProxy ) {
-            obj = (TraitableBean) ( (TraitProxy) value ).getObject();
+        } else if ( value instanceof TraitProxyImpl) {
+            obj = (TraitableBean) ( (TraitProxyImpl) value ).getObject();
         }
         if ( obj == null ) {
             return false;
@@ -201,16 +201,16 @@ public class TraitField implements Serializable, Externalizable {
                     // may trying to apply a cascaded trait
                     return donTraitable( (TraitableBean) value, klass, logical, wm );
 
-                } else if ( value instanceof TraitProxy ) {
+                } else if ( value instanceof TraitProxyImpl) {
                     // dual case : the field's original type is a trait,
                     // we need to consider the current proxy's core and see if it is compatible
-                    TraitableBean core = (TraitableBean) ( (TraitProxy) value ).getObject();
+                    TraitableBean core = (TraitableBean) ( (TraitProxyImpl) value ).getObject();
                     return donTraitable( core, klass, logical, wm );
 
                 } else {
                     boolean isFullyTraitable = inspectForTraitability( value, wm );
                     if ( isFullyTraitable ) {
-                        TraitProxy proxy = (TraitProxy) don( value, klass, logical, wm );
+                        TraitProxyImpl proxy = (TraitProxyImpl) don(value, klass, logical, wm );
                         value = proxy.getObject();
                         return proxy;
                     } else {
@@ -297,8 +297,8 @@ public class TraitField implements Serializable, Externalizable {
             return this.value;
         } else if ( this.value instanceof TraitableBean ) {
             return ((TraitableBean) this.value).getTrait( klass.getName() );
-        } else if ( this.value instanceof TraitProxy ) {
-            return ((TraitProxy) this.value).getObject().getTrait( klass.getName() );
+        } else if ( this.value instanceof TraitProxyImpl) {
+            return ((TraitProxyImpl) this.value).getObject().getTrait(klass.getName() );
         } else {
             throw new IllegalStateException( "Logical field shed : illegal value for a field : " + this.value + ", class expected " + klass.getName() );
         }
