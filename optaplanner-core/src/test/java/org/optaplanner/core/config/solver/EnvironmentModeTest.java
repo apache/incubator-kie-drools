@@ -11,7 +11,7 @@ import java.util.stream.IntStream;
 import org.assertj.core.api.Assertions;
 import org.assertj.core.api.SoftAssertions;
 import org.junit.jupiter.api.BeforeEach;
-import org.junit.BeforeClass;
+import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.Parameterized;
@@ -57,7 +57,7 @@ public class EnvironmentModeTest {
         this.environmentMode = environmentMode;
     }
 
-    @BeforeClass
+    @BeforeAll
     public static void setUpInputProblem() {
         inputProblem = new TestdataSolution("s1");
         inputProblem.setValueList(Arrays.asList(new TestdataValue("v1"), new TestdataValue("v2"),

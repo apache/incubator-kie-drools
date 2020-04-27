@@ -24,7 +24,7 @@ import java.nio.file.StandardCopyOption;
 import java.util.Arrays;
 import java.util.Collections;
 
-import org.junit.BeforeClass;
+import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 import org.kie.api.KieServices;
 import org.kie.api.builder.ReleaseId;
@@ -49,7 +49,7 @@ public class PlannerBenchmarkFactoryTest {
     private static File benchmarkTestDir;
     private static File benchmarkOutputTestDir;
 
-    @BeforeClass
+    @BeforeAll
     public static void setup() throws IOException {
         benchmarkTestDir = new File("target/test/benchmarkTest/");
         benchmarkTestDir.mkdirs();

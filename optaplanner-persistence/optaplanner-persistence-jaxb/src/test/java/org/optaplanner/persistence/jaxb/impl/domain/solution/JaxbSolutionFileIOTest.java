@@ -20,7 +20,7 @@ import java.io.File;
 import java.io.IOException;
 import java.util.Arrays;
 
-import org.junit.BeforeClass;
+import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 import org.optaplanner.core.api.score.buildin.simple.SimpleScore;
 import org.optaplanner.persistence.jaxb.impl.testdata.domain.JaxbTestdataEntity;
@@ -36,7 +36,7 @@ public class JaxbSolutionFileIOTest {
 
     private static File solutionTestDir;
 
-    @BeforeClass
+    @BeforeAll
     public static void setup() throws IOException {
         solutionTestDir = new File("target/solutionTest/");
         solutionTestDir.mkdirs();

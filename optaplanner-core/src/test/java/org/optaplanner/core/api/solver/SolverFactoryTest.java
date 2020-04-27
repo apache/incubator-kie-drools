@@ -23,7 +23,7 @@ import java.nio.file.Files;
 import java.nio.file.StandardCopyOption;
 import java.util.Arrays;
 
-import org.junit.BeforeClass;
+import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 import org.optaplanner.core.api.score.Score;
 import org.optaplanner.core.config.score.director.ScoreDirectorFactoryConfig;
@@ -42,7 +42,7 @@ public class SolverFactoryTest {
 
     private static File solverTestDir;
 
-    @BeforeClass
+    @BeforeAll
     public static void setup() {
         solverTestDir = new File("target/test/solverTest/");
         solverTestDir.mkdirs();
