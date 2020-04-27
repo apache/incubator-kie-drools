@@ -18,7 +18,7 @@ package org.optaplanner.core.impl.domain.lookup;
 
 import java.util.Comparator;
 
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 import org.optaplanner.core.impl.testdata.domain.score.lavish.TestdataLavishEntity;
 import org.optaplanner.core.impl.testdata.domain.score.lavish.TestdataLavishEntityGroup;
 

@@ -18,7 +18,7 @@ package org.optaplanner.persistence.jsonb.api.score.buildin.simplelong;
 
 import javax.json.bind.annotation.JsonbTypeAdapter;
 
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 import org.optaplanner.core.api.score.buildin.simplelong.SimpleLongScore;
 import org.optaplanner.persistence.jsonb.api.score.AbstractScoreJsonbAdapterTest;
 

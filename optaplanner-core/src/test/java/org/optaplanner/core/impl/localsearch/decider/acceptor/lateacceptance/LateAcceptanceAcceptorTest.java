@@ -16,7 +16,7 @@
 
 package org.optaplanner.core.impl.localsearch.decider.acceptor.lateacceptance;
 
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 import org.optaplanner.core.api.score.buildin.simple.SimpleScore;
 import org.optaplanner.core.impl.localsearch.decider.acceptor.AbstractAcceptorTest;
 import org.optaplanner.core.impl.localsearch.scope.LocalSearchMoveScope;

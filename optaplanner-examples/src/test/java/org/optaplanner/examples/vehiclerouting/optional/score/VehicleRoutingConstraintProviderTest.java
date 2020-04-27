@@ -16,7 +16,7 @@
 
 package org.optaplanner.examples.vehiclerouting.optional.score;
 
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 import org.optaplanner.examples.vehiclerouting.domain.Customer;
 import org.optaplanner.examples.vehiclerouting.domain.Depot;
 import org.optaplanner.examples.vehiclerouting.domain.Standstill;

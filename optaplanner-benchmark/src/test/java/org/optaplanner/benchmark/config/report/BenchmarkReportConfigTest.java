@@ -2,7 +2,7 @@ package org.optaplanner.benchmark.config.report;
 
 import java.util.Locale;
 
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 import org.optaplanner.benchmark.config.ranking.SolverRankingType;
 import org.optaplanner.benchmark.impl.ranking.TotalRankSolverRankingWeightFactory;
 import org.optaplanner.benchmark.impl.ranking.TotalScoreSolverRankingComparator;

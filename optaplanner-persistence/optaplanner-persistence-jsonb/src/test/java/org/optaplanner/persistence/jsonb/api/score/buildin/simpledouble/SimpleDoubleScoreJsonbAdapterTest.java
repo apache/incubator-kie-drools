@@ -18,7 +18,7 @@ package org.optaplanner.persistence.jsonb.api.score.buildin.simpledouble;
 
 import javax.json.bind.annotation.JsonbTypeAdapter;
 
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 import org.optaplanner.core.api.score.buildin.simpledouble.SimpleDoubleScore;
 import org.optaplanner.persistence.jsonb.api.score.AbstractScoreJsonbAdapterTest;
 

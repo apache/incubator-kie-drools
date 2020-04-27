@@ -18,7 +18,7 @@ package org.optaplanner.core.impl.localsearch.decider.acceptor.simulatedannealin
 
 import java.util.Random;
 
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 import org.optaplanner.core.api.score.buildin.hardmediumsoft.HardMediumSoftScore;
 import org.optaplanner.core.api.score.buildin.simple.SimpleScore;
 import org.optaplanner.core.impl.localsearch.decider.acceptor.AbstractAcceptorTest;

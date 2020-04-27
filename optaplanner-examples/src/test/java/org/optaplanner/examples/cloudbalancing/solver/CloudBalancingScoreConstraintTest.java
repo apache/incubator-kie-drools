@@ -18,7 +18,7 @@ package org.optaplanner.examples.cloudbalancing.solver;
 
 import java.util.Arrays;
 
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 import org.optaplanner.core.api.solver.SolverFactory;
 import org.optaplanner.examples.cloudbalancing.app.CloudBalancingApp;
 import org.optaplanner.examples.cloudbalancing.domain.CloudBalance;

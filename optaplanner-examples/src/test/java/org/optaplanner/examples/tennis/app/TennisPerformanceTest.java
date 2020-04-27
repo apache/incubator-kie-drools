@@ -18,7 +18,7 @@ package org.optaplanner.examples.tennis.app;
 
 import java.io.File;
 
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 import org.optaplanner.core.config.solver.EnvironmentMode;
 import org.optaplanner.examples.common.app.SolverPerformanceTest;
 import org.optaplanner.examples.tennis.domain.TennisSolution;

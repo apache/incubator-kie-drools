@@ -18,7 +18,7 @@ package org.optaplanner.core.impl.score.director.easy;
 import java.util.Arrays;
 
 import org.junit.Rule;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 import org.junit.rules.ExpectedException;
 import org.optaplanner.core.api.score.buildin.simple.SimpleScore;
 import org.optaplanner.core.config.score.trend.InitializingScoreTrendLevel;

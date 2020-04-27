@@ -18,7 +18,7 @@ package org.optaplanner.examples.common.persistence;
 
 import java.io.IOException;
 
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 import org.optaplanner.core.api.domain.solution.PlanningSolution;
 
 import static org.junit.Assert.*;

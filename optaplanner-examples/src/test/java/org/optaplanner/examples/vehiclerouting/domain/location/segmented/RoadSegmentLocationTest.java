@@ -19,7 +19,7 @@ package org.optaplanner.examples.vehiclerouting.domain.location.segmented;
 import java.util.LinkedHashMap;
 import java.util.Map;
 
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 import org.optaplanner.examples.vehiclerouting.domain.location.Location;
 
 import static org.junit.Assert.*;

@@ -20,7 +20,7 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 import org.optaplanner.core.api.solver.SolverFactory;
 import org.optaplanner.examples.meetingscheduling.app.MeetingSchedulingApp;
 import org.optaplanner.examples.meetingscheduling.domain.Attendance;

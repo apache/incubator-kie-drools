@@ -19,7 +19,7 @@ package org.optaplanner.core.impl.heuristic.selector.move.generic.chained;
 import java.util.Arrays;
 
 import org.junit.Ignore;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 import org.optaplanner.core.impl.domain.solution.descriptor.SolutionDescriptor;
 import org.optaplanner.core.impl.domain.variable.anchor.AnchorVariableDemand;
 import org.optaplanner.core.impl.domain.variable.anchor.AnchorVariableSupply;

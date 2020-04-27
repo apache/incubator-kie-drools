@@ -16,7 +16,7 @@
 
 package org.optaplanner.benchmark.impl.ranking;
 
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 import org.optaplanner.benchmark.impl.result.ProblemBenchmarkResult;
 import org.optaplanner.benchmark.impl.result.SingleBenchmarkResult;
 import org.optaplanner.benchmark.impl.result.SolverBenchmarkResult;

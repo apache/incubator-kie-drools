@@ -19,7 +19,7 @@ package org.optaplanner.persistence.xstream.api.score.buildin.simplebigdecimal;
 import java.math.BigDecimal;
 
 import com.thoughtworks.xstream.annotations.XStreamConverter;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 import org.optaplanner.core.api.score.buildin.simplebigdecimal.SimpleBigDecimalScore;
 import org.optaplanner.persistence.xstream.api.score.AbstractScoreXStreamConverterTest;
 

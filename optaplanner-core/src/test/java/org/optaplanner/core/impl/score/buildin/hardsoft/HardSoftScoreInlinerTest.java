@@ -18,7 +18,7 @@ package org.optaplanner.core.impl.score.buildin.hardsoft;
 
 import java.util.function.Consumer;
 
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 import org.optaplanner.core.api.score.Score;
 import org.optaplanner.core.api.score.buildin.hardsoft.HardSoftScore;
 import org.optaplanner.core.impl.score.inliner.IntWeightedScoreImpacter;
@@ -51,7 +51,7 @@ public class HardSoftScoreInlinerTest {
         assertEquals(HardSoftScore.of(-800, -13), scoreInliner.extractScore(0));
         softUndo.undoScoreImpact();
         assertEquals(HardSoftScore.of(-800, -10), scoreInliner.extractScore(0));
-        
+
         IntWeightedScoreImpacter allLevelsImpacter = scoreInliner.buildWeightedScoreImpacter(HardSoftScore.of(-1000, -3000));
         UndoScoreImpacter allLevelsUndo = allLevelsImpacter.impactScore(1, scoreConsumer);
         assertEquals(HardSoftScore.of(-1800, -3010), scoreInliner.extractScore(0));

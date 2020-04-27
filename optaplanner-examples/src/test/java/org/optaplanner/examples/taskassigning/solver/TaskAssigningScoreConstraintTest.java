@@ -18,7 +18,7 @@ package org.optaplanner.examples.taskassigning.solver;
 
 import java.util.Arrays;
 
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 import org.optaplanner.core.api.solver.SolverFactory;
 import org.optaplanner.examples.taskassigning.app.TaskAssigningApp;
 import org.optaplanner.examples.taskassigning.domain.Customer;

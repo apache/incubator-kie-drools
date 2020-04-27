@@ -22,7 +22,7 @@ import java.util.function.Function;
 import java.util.stream.Stream;
 
 import com.google.common.base.Functions;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 import org.optaplanner.core.api.score.buildin.simple.SimpleScore;
 import org.optaplanner.core.impl.score.director.InnerScoreDirector;
 import org.optaplanner.core.impl.testdata.domain.score.lavish.TestdataLavishEntity;

@@ -16,7 +16,7 @@
 
 package org.optaplanner.core.impl.exhaustivesearch.node.comparator;
 
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 public class DepthFirstNodeComparatorTest extends AbstractNodeComparatorTest {
 

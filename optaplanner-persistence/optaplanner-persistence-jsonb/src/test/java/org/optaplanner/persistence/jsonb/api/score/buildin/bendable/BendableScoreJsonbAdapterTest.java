@@ -18,7 +18,7 @@ package org.optaplanner.persistence.jsonb.api.score.buildin.bendable;
 
 import javax.json.bind.annotation.JsonbTypeAdapter;
 
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 import org.optaplanner.core.api.score.buildin.bendable.BendableScore;
 import org.optaplanner.persistence.jsonb.api.score.AbstractScoreJsonbAdapterTest;
 

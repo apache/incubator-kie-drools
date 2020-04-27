@@ -21,7 +21,7 @@ import javax.persistence.Entity;
 
 import org.hibernate.annotations.Columns;
 import org.hibernate.annotations.TypeDef;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 import org.optaplanner.core.api.score.buildin.hardsoftdouble.HardSoftDoubleScore;
 import org.optaplanner.persistence.jpa.impl.score.AbstractScoreHibernateTypeTest;
 

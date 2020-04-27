@@ -19,7 +19,7 @@ package org.optaplanner.core.impl.heuristic.selector.common.nearby;
 import java.util.Arrays;
 import java.util.List;
 
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 import org.optaplanner.core.impl.testdata.domain.TestdataObject;
 
 import static org.junit.Assert.*;

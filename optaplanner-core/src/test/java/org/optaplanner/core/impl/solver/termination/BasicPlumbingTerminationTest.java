@@ -19,7 +19,7 @@ package org.optaplanner.core.impl.solver.termination;
 import java.util.Arrays;
 import java.util.concurrent.atomic.AtomicInteger;
 
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 import static org.junit.Assert.*;
 import static org.mockito.Mockito.mock;

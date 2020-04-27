@@ -16,7 +16,7 @@
 
 package org.optaplanner.core.impl.heuristic.selector.move.generic.chained;
 
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 import org.optaplanner.core.impl.domain.variable.descriptor.GenuineVariableDescriptor;
 import org.optaplanner.core.impl.heuristic.selector.value.EntityIndependentValueSelector;
 import org.optaplanner.core.impl.heuristic.selector.value.chained.DefaultSubChainSelector;

@@ -21,7 +21,7 @@ import java.math.BigInteger;
 import java.util.function.BiFunction;
 import java.util.function.Function;
 
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 import org.optaplanner.core.api.function.QuadFunction;
 import org.optaplanner.core.api.function.TriFunction;
 import org.optaplanner.core.impl.score.stream.bi.AbstractBiJoiner;

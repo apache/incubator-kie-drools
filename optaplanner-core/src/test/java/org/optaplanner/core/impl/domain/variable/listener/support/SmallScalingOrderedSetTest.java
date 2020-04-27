@@ -18,7 +18,7 @@ package org.optaplanner.core.impl.domain.variable.listener.support;
 
 import java.util.Arrays;
 
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 import static org.junit.Assert.*;
 

@@ -16,7 +16,7 @@
 
 package org.optaplanner.core.impl.localsearch.decider.acceptor.stepcountinghillclimbing;
 
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 import org.optaplanner.core.api.score.buildin.simple.SimpleScore;
 import org.optaplanner.core.config.localsearch.decider.acceptor.stepcountinghillclimbing.StepCountingHillClimbingType;
 import org.optaplanner.core.impl.localsearch.decider.acceptor.AbstractAcceptorTest;

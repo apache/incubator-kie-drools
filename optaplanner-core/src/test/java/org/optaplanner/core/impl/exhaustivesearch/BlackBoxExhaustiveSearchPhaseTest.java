@@ -12,7 +12,7 @@ import java.util.stream.Stream;
 
 import org.assertj.core.api.Assertions;
 import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.Parameterized;
 import org.optaplanner.core.api.score.buildin.simple.SimpleScore;

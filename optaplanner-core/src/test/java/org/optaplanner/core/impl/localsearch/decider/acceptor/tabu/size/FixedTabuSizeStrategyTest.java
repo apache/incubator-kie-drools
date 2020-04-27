@@ -16,7 +16,7 @@
 
 package org.optaplanner.core.impl.localsearch.decider.acceptor.tabu.size;
 
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 import org.optaplanner.core.impl.localsearch.scope.LocalSearchStepScope;
 
 import static org.junit.Assert.*;

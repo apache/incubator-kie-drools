@@ -22,7 +22,7 @@ import java.util.Arrays;
 import java.util.Map;
 
 import org.apache.commons.collections4.map.HashedMap;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 import org.optaplanner.core.api.score.buildin.hardsoftlong.HardSoftLongScore;
 import org.optaplanner.examples.machinereassignment.domain.MachineReassignment;
 import org.optaplanner.examples.machinereassignment.domain.MrBalancePenalty;

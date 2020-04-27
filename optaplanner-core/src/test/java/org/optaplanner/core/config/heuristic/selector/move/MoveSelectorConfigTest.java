@@ -16,7 +16,7 @@
 
 package org.optaplanner.core.config.heuristic.selector.move;
 
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 import org.optaplanner.core.config.AbstractConfig;
 import org.optaplanner.core.config.heuristic.policy.HeuristicConfigPolicy;
 import org.optaplanner.core.config.heuristic.selector.AbstractSelectorConfigTest;

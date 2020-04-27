@@ -18,7 +18,7 @@ package org.optaplanner.examples.common.persistence;
 
 import java.math.BigInteger;
 
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 import static org.junit.Assert.*;
 

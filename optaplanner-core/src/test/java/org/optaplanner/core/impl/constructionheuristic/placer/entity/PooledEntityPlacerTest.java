@@ -18,7 +18,7 @@ package org.optaplanner.core.impl.constructionheuristic.placer.entity;
 
 import java.util.Iterator;
 
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 import org.optaplanner.core.impl.constructionheuristic.placer.Placement;
 import org.optaplanner.core.impl.constructionheuristic.placer.PooledEntityPlacer;
 import org.optaplanner.core.impl.heuristic.move.DummyMove;

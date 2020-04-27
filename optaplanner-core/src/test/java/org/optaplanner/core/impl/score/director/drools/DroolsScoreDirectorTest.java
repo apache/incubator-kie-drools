@@ -16,7 +16,7 @@
 package org.optaplanner.core.impl.score.director.drools;
 
 import org.junit.Rule;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 import org.junit.rules.ExpectedException;
 import org.kie.api.runtime.KieSession;
 import org.kie.internal.event.rule.RuleEventManager;

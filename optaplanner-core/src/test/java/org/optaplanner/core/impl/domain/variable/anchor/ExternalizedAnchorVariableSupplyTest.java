@@ -18,7 +18,7 @@ package org.optaplanner.core.impl.domain.variable.anchor;
 
 import java.util.Arrays;
 
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 import org.optaplanner.core.impl.domain.variable.descriptor.GenuineVariableDescriptor;
 import org.optaplanner.core.impl.domain.variable.inverserelation.ExternalizedSingletonInverseVariableSupply;
 import org.optaplanner.core.impl.score.director.ScoreDirector;

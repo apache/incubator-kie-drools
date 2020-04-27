@@ -21,7 +21,7 @@ import java.nio.charset.StandardCharsets;
 
 import com.thoughtworks.xstream.XStream;
 import org.apache.commons.io.IOUtils;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 import org.optaplanner.core.api.solver.SolverFactory;
 import org.optaplanner.core.impl.solver.io.XStreamConfigReader;
 

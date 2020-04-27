@@ -16,7 +16,7 @@
 
 package org.optaplanner.core.impl.heuristic.move;
 
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 import org.optaplanner.core.impl.score.director.ScoreDirector;
 import org.optaplanner.core.impl.testdata.domain.TestdataSolution;
 

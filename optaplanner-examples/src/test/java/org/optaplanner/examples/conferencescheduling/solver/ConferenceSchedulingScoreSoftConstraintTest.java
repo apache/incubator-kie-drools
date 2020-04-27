@@ -6,7 +6,7 @@ import java.util.Collections;
 import java.util.HashSet;
 
 import org.junit.Ignore;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 import org.optaplanner.core.api.score.buildin.hardmediumsoft.HardMediumSoftScore;
 import org.optaplanner.core.api.solver.SolverFactory;
 import org.optaplanner.examples.conferencescheduling.app.ConferenceSchedulingApp;

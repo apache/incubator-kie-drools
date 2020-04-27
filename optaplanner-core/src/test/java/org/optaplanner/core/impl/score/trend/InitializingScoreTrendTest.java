@@ -16,7 +16,7 @@
 
 package org.optaplanner.core.impl.score.trend;
 
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 import org.optaplanner.core.config.score.trend.InitializingScoreTrendLevel;
 
 import static org.junit.Assert.*;

@@ -19,7 +19,7 @@ package org.optaplanner.examples.nqueens.solver.score;
 import java.io.IOException;
 import java.io.InputStream;
 
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 import org.optaplanner.core.api.score.buildin.simple.SimpleScore;
 import org.optaplanner.examples.nqueens.domain.Column;
 import org.optaplanner.examples.nqueens.domain.NQueens;

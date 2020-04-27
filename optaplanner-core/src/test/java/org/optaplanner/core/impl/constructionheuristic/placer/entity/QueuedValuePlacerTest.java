@@ -18,7 +18,7 @@ package org.optaplanner.core.impl.constructionheuristic.placer.entity;
 
 import java.util.Iterator;
 
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 import org.optaplanner.core.impl.constructionheuristic.placer.Placement;
 import org.optaplanner.core.impl.constructionheuristic.placer.QueuedValuePlacer;
 import org.optaplanner.core.impl.domain.variable.descriptor.GenuineVariableDescriptor;

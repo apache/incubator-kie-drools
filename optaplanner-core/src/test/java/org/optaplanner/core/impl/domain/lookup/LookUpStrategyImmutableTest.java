@@ -38,7 +38,7 @@ import java.time.temporal.TemporalUnit;
 import java.util.Collections;
 
 import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.Parameterized;
 import org.optaplanner.core.api.domain.lookup.LookUpStrategyType;

@@ -19,7 +19,7 @@ package org.optaplanner.core.impl.score.stream.quad;
 import java.math.BigDecimal;
 import java.math.BigInteger;
 
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 import org.optaplanner.core.api.score.stream.Joiners;
 import org.optaplanner.core.api.score.stream.quad.QuadJoiner;
 import org.optaplanner.core.impl.score.stream.common.JoinerType;

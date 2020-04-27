@@ -25,7 +25,7 @@ import java.util.TreeSet;
 
 import com.thoughtworks.xstream.XStream;
 import org.apache.commons.io.IOUtils;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 import org.optaplanner.benchmark.api.PlannerBenchmarkFactory;
 import org.optaplanner.core.config.util.ConfigUtils;
 import org.optaplanner.core.impl.solver.io.XStreamConfigReader;

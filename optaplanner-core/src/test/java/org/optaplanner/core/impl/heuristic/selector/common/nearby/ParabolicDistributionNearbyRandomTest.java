@@ -18,7 +18,7 @@ package org.optaplanner.core.impl.heuristic.selector.common.nearby;
 
 import java.util.Random;
 
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 import static org.junit.Assert.*;
 import static org.mockito.Mockito.*;

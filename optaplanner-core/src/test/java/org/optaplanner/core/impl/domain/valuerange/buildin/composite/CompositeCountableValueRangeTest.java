@@ -22,7 +22,7 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Random;
 
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 import org.optaplanner.core.impl.domain.valuerange.buildin.collection.ListValueRange;
 
 import static org.junit.Assert.assertEquals;
