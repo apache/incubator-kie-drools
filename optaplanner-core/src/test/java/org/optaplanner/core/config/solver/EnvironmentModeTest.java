@@ -10,7 +10,7 @@ import java.util.stream.IntStream;
 
 import org.assertj.core.api.Assertions;
 import org.assertj.core.api.SoftAssertions;
-import org.junit.Before;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.BeforeClass;
 import org.junit.jupiter.api.Test;
 import org.junit.runner.RunWith;
@@ -66,7 +66,7 @@ public class EnvironmentModeTest {
                                                  new TestdataEntity("e3"), new TestdataEntity("e4")));
     }
 
-    @Before
+    @BeforeEach
     public void setUpSolverConfig() {
         CustomPhaseConfig initializerPhaseConfig = new CustomPhaseConfig()
                 .withCustomPhaseCommandClassList(Collections.singletonList(TestdataFirstValueInitializer.class));

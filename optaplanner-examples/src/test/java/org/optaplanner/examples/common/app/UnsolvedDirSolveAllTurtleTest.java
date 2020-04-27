@@ -21,7 +21,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.apache.commons.io.FileUtils;
-import org.junit.Before;
+import org.junit.jupiter.api.BeforeEach;
 import org.optaplanner.core.api.domain.solution.PlanningSolution;
 import org.optaplanner.examples.common.business.ProblemFileComparator;
 import org.optaplanner.persistence.common.api.domain.solution.SolutionFileIO;
@@ -61,7 +61,7 @@ public abstract class UnsolvedDirSolveAllTurtleTest<Solution_> extends SolveAllT
         this.dataFile = dataFile;
     }
 
-    @Before
+    @BeforeEach
     public void setUp() {
         solutionFileIO = commonApp.createSolutionFileIO();
     }

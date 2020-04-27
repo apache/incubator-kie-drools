@@ -17,7 +17,7 @@ package org.optaplanner.core.impl.score.director.drools.testgen.mutation;
 
 import java.util.ArrayList;
 
-import org.junit.Before;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
 import static org.junit.Assert.*;
@@ -26,7 +26,7 @@ public class TestGenHeadCuttingMutatorTest {
 
     private ArrayList<Integer> list = new ArrayList<>();
 
-    @Before
+    @BeforeEach
     public void setUp() {
         for (int i = 0; i < 25; i++) {
             list.add(i);

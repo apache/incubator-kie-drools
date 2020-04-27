@@ -19,7 +19,7 @@ package org.optaplanner.benchmark.impl.ranking;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.junit.Before;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.optaplanner.benchmark.impl.report.BenchmarkReport;
 import org.optaplanner.benchmark.impl.result.SingleBenchmarkResult;
@@ -38,7 +38,7 @@ public class WorstScoreSolverRankingComparatorTest extends AbstractSolverRanking
     private List<SingleBenchmarkResult> aSingleBenchmarkResultList;
     private List<SingleBenchmarkResult> bSingleBenchmarkResultList;
 
-    @Before
+    @BeforeEach
     public void setUp() {
         benchmarkReport = mock(BenchmarkReport.class);
         comparator = new WorstScoreSolverRankingComparator();

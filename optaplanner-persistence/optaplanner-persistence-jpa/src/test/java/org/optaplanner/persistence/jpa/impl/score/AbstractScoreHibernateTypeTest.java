@@ -32,8 +32,8 @@ import javax.transaction.RollbackException;
 import javax.transaction.SystemException;
 import javax.transaction.TransactionManager;
 
-import org.junit.After;
-import org.junit.Before;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeEach;
 import org.kie.test.util.db.PersistenceUtil;
 import org.optaplanner.core.api.score.Score;
 
@@ -45,14 +45,14 @@ public abstract class AbstractScoreHibernateTypeTest {
     protected EntityManagerFactory entityManagerFactory;
     protected TransactionManager transactionManager;
 
-    @Before
+    @BeforeEach
     public void setUp() throws Exception {
         context = PersistenceUtil.setupWithPoolingDataSource("org.optaplanner.persistence.jpa.test");
         entityManagerFactory = (EntityManagerFactory) context.get(PersistenceUtil.ENTITY_MANAGER_FACTORY);
         transactionManager = (TransactionManager) InitialContext.doLookup("java:comp/TransactionManager");
     }
 
-    @After
+    @AfterEach
     public void tearDown() throws Exception {
         PersistenceUtil.cleanUp(context);
     }

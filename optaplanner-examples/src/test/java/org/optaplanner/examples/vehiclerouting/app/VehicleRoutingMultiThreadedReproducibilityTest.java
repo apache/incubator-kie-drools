@@ -3,7 +3,7 @@ package org.optaplanner.examples.vehiclerouting.app;
 import java.io.File;
 import java.util.stream.IntStream;
 
-import org.junit.Before;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.optaplanner.core.api.solver.Solver;
 import org.optaplanner.core.api.solver.SolverFactory;
@@ -38,7 +38,7 @@ public class VehicleRoutingMultiThreadedReproducibilityTest extends AbstractTurt
 
     private SolverFactory<VehicleRoutingSolution> solverFactory;
 
-    @Before
+    @BeforeEach
     public void createUninitializedSolutions() {
         checkRunTurtleTests();
         final VehicleRoutingImporter importer = new VehicleRoutingImporter();

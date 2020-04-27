@@ -37,7 +37,7 @@ import java.time.temporal.ChronoUnit;
 import java.time.temporal.TemporalUnit;
 import java.util.Collections;
 
-import org.junit.Before;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.Parameterized;
@@ -90,7 +90,7 @@ public class LookUpStrategyImmutableTest {
         };
     }
 
-    @Before
+    @BeforeEach
     public void setUpLookUpManager() {
         lookUpManager = new LookUpManager(new LookUpStrategyResolver(LookUpStrategyType.PLANNING_ID_OR_NONE));
         lookUpManager.resetWorkingObjects(Collections.emptyList());

@@ -22,7 +22,7 @@ import java.util.concurrent.Executors;
 import java.util.concurrent.Future;
 import java.util.concurrent.TimeUnit;
 
-import org.junit.After;
+import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.Test;
 import org.optaplanner.core.api.score.buildin.simple.SimpleScore;
 import org.optaplanner.core.impl.heuristic.move.DummyMove;
@@ -43,7 +43,7 @@ public class OrderByMoveIndexBlockingQueueTest {
 
     private final ExecutorService executorService = Executors.newFixedThreadPool(2);
 
-    @After
+    @AfterEach
     public void tearDown() throws InterruptedException {
         executorService.shutdownNow();
         if (!executorService.awaitTermination(1, TimeUnit.MILLISECONDS)) {

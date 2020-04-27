@@ -11,7 +11,7 @@ import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 import org.assertj.core.api.Assertions;
-import org.junit.Before;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.Parameterized;
@@ -374,7 +374,7 @@ public class BlackBoxExhaustiveSearchPhaseTest {
         return parameters;
     }
 
-    @Before
+    @BeforeEach
     public void setUp() {
         solverConfig = PlannerTestUtils.buildSolverConfig(
                 TestdataDifficultyComparingSolution.class, TestdataDifficultyComparingEntity.class);

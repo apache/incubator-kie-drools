@@ -18,7 +18,7 @@ package org.optaplanner.core.impl.score.director.drools.testgen.mutation;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.junit.Before;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
 import static org.junit.Assert.*;
@@ -28,7 +28,7 @@ public class TestGenRemoveRandomBlockMutatorTest {
     private static final int LIST_SIZE = 500;
     private ArrayList<Integer> list = new ArrayList<>();
 
-    @Before
+    @BeforeEach
     public void setUp() {
         for (int i = 0; i < LIST_SIZE; i++) {
             list.add(i);

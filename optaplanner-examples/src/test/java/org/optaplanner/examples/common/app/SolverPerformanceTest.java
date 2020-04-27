@@ -23,7 +23,7 @@ import java.util.Collections;
 import java.util.List;
 import java.util.stream.Collectors;
 
-import org.junit.Before;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.Parameterized;
@@ -77,7 +77,7 @@ public abstract class SolverPerformanceTest<Solution_> extends LoggingTest {
         this.moveThreadCount = moveThreadCount;
     }
 
-    @Before
+    @BeforeEach
     public void setUp() {
         CommonApp<Solution_> commonApp = createCommonApp();
         solutionFileIO = commonApp.createSolutionFileIO();

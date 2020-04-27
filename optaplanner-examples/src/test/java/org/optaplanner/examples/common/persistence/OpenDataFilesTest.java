@@ -22,7 +22,7 @@ import java.util.Collection;
 import java.util.List;
 
 import org.apache.commons.io.FileUtils;
-import org.junit.Before;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.Parameterized;
@@ -73,7 +73,7 @@ public abstract class OpenDataFilesTest<Solution_> extends LoggingTest {
         this.solutionFile = solutionFile;
     }
 
-    @Before
+    @BeforeEach
     public void setUp() {
         solutionFileIO = commonApp.createSolutionFileIO();
     }

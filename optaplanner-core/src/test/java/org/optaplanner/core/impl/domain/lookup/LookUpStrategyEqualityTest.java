@@ -17,7 +17,7 @@ package org.optaplanner.core.impl.domain.lookup;
 
 import java.util.Collections;
 
-import org.junit.Before;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.Rule;
 import org.junit.jupiter.api.Test;
 import org.junit.rules.ExpectedException;
@@ -36,7 +36,7 @@ public class LookUpStrategyEqualityTest {
 
     private LookUpManager lookUpManager;
 
-    @Before
+    @BeforeEach
     public void setUpLookUpManager() {
         lookUpManager = new LookUpManager(new LookUpStrategyResolver(LookUpStrategyType.EQUALITY));
         lookUpManager.resetWorkingObjects(Collections.emptyList());
