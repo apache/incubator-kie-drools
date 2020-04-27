@@ -32,6 +32,7 @@
     <impsort.goal>sort</impsort.goal>
     <jacoco.agent.argLine/>
     <spotbugs.failOnViolation>true</spotbugs.failOnViolation>
+    <version.org.mockito>3.1.0</version.org.mockito>
   </properties>
 
   <repositories>
