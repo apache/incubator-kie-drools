@@ -70,6 +70,7 @@ public class SolverBenchmarkConfigTest {
         config.validate();
     }
 
+    @Test
     public void validNullSubSingleCount() {
         SolverBenchmarkConfig config = new SolverBenchmarkConfig();
         config.setName("name");
