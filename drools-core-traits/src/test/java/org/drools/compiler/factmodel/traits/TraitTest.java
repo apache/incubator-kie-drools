@@ -2382,7 +2382,7 @@ public class TraitTest extends CommonTraitTest {
 
 
 
-    @Test
+    @Test(timeout = 2000)
     public void testTraitModifyCore2() {
         String s1 = "package test; " +
                     "import org.drools.core.factmodel.traits.*; " +
@@ -3262,7 +3262,7 @@ public class TraitTest extends CommonTraitTest {
 
     }
 
-    @Test
+    @Test(timeout = 2000)
     public void testTypeRefractionOnQuery2(  ) {
         String source = "package t.x \n" +
                         "import java.util.*; \n" +
@@ -3323,7 +3323,7 @@ public class TraitTest extends CommonTraitTest {
 
     }
 
-    @Test
+    @Test(timeout = 2000)
     public void testNodePartitioningByProxies(  ) {
         String source = "package t.x  " +
                         "import java.util.*;  " +
@@ -3396,7 +3396,7 @@ public class TraitTest extends CommonTraitTest {
 
     }
 
-    @Test
+    @Test(timeout = 2000)
     public void testNodePartitioningByProxiesAfterShed(  ) {
         String source = "package t.x  " +
                         "import java.util.*;  " +
@@ -4202,7 +4202,7 @@ public class TraitTest extends CommonTraitTest {
     }
 
 
-    @Test
+    @Test(timeout=2000)
     public void testMultipleModifications() {
         String drl = "package org.drools.traits.test;\n" +
                      "\n" +
@@ -4316,7 +4316,7 @@ public class TraitTest extends CommonTraitTest {
 
     }
 
-    @Test
+    @Test(timeout=2000)
     public void testPropagation() {
         String drl = "package org.drools.test;\n" +
                      "import org.drools.core.factmodel.traits.*; \n" +
@@ -4816,7 +4816,7 @@ public class TraitTest extends CommonTraitTest {
         assertTrue( list.containsAll( Arrays.asList( 0, 1, 2, 3 ) ) );
     }
 
-    @Test
+    @Test(timeout=2000)
     public void testDonManyTraitsAtOnce2() {
         String drl = "" +
                      "package org.drools.core.factmodel.traits.test;\n" +
@@ -5433,7 +5433,7 @@ public class TraitTest extends CommonTraitTest {
 
     }
 
-    @Test
+    @Test(timeout=2000)
     public void testCastOnTheFly() throws InterruptedException {
         final String s1 = "package test; " +
 
@@ -5488,7 +5488,7 @@ public class TraitTest extends CommonTraitTest {
 
 
 
-    @Test
+    @Test(timeout=2000)
     public void testDonModify() {
         String drl =
                 "import org.drools.core.factmodel.traits.Entity;\n" +
@@ -5533,7 +5533,7 @@ public class TraitTest extends CommonTraitTest {
         assertEquals( 3, kSession.fireAllRules() );
     }
 
-    @Test
+    @Test(timeout = 2000)
     public void testAlphaNodeSharing() {
         String drl =
                 "package test; " +
@@ -5572,7 +5572,7 @@ public class TraitTest extends CommonTraitTest {
         assertEquals( 1, otn.getObjectSinkPropagator().getSinks().length );
     }
 
-    @Test
+    @Test(timeout = 2000)
     public void testPartitionWithSiblingsOnDelete() {
         String drl =
                 "import " + Entity.class.getName() + ";" +
@@ -5612,7 +5612,7 @@ public class TraitTest extends CommonTraitTest {
         Entity e = new Entity();
         ksession.insert( e );
         ksession.fireAllRules();
-        
+
         assertEquals( Arrays.asList( 'A', 'B', 'C' ), list );
 
         ksession.insert( "go" );
@@ -5625,7 +5625,7 @@ public class TraitTest extends CommonTraitTest {
     }
 
 
-    @Test
+    @Test(timeout=2000)
     public void testTupleIntegrityOnModification() {
         String drl = "package test " +
                      "import " + Entity.class.getName() + ";" +
@@ -5682,7 +5682,7 @@ public class TraitTest extends CommonTraitTest {
         assertEquals( Arrays.asList( 0, 42 ), list );
     }
 
-    @Test
+    @Test(timeout=2000)
     public void testShedVacancy() {
         String drl = "package org.drools.test " +
                      "import " + Entity.class.getName() + ";" +
@@ -5776,7 +5776,7 @@ public class TraitTest extends CommonTraitTest {
     }
 
 
-    @Test
+    @Test(timeout=2000)
     public void testExternalUpdateWithProxyRefreshInEqualityMode() {
         String drl = "package org.drools.trait.test; " +
                      "import " + ExtEntity.class.getCanonicalName() + "; " +
@@ -6149,7 +6149,7 @@ public class TraitTest extends CommonTraitTest {
         } catch (Exception e) { }
     }
 
-    @Test
+    @Test(timeout = 2000)
     public void testPreserveAllSetBitMask() {
         // DROOLS-1699
         String drl =
