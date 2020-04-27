@@ -24,6 +24,8 @@ import java.util.Map;
 
 import org.drools.compiler.Person;
 import org.drools.core.factmodel.traits.Entity;
+import org.drools.core.factmodel.traits.TraitClassBuilderImpl;
+import org.drools.core.factmodel.traits.TraitFactoryImpl;
 import org.drools.core.meta.org.test.AnotherKlass;
 import org.drools.core.meta.org.test.AnotherKlassImpl;
 import org.drools.core.meta.org.test.AnotherKlass_;
@@ -37,6 +39,7 @@ import org.drools.core.metadata.Identifiable;
 import org.drools.core.metadata.Lit;
 import org.drools.core.metadata.MetadataContainer;
 import org.drools.core.metadata.With;
+import org.drools.core.reteoo.KieComponentFactory;
 import org.drools.core.util.StandaloneTraitFactory;
 import org.drools.reflective.classloader.ProjectClassLoader;
 import org.junit.Test;
@@ -223,7 +226,7 @@ public class MetadataTest {
         entity._getDynamicProperties().put( "prop", "hello" );
 
         Klass klass = Klass_.donKlass( entity )
-                .setTraitFactory( new StandaloneTraitFactory( ProjectClassLoader.createProjectClassLoader() ) )
+                .setTraitFactory(createStandaloneTraitFactory())
                 .call();
 
         assertEquals( "hello", klass.getProp() );
@@ -235,13 +238,25 @@ public class MetadataTest {
         Entity entity = new Entity( "123" );
         entity._setDynamicProperties( new HashMap() );
 
-        SubKlass klass = SubKlass_.donSubKlass( entity )
-                .setTraitFactory( new StandaloneTraitFactory( ProjectClassLoader.createProjectClassLoader() ) )
+        SubKlass klass = SubKlass_.donSubKlass(entity )
+                .setTraitFactory(createStandaloneTraitFactory())
                 .prop( "hello" ).subProp( 32 )
                 .call();
 
         assertEquals( "hello", klass.getProp() );
         assertEquals( 32, (int) klass.getSubProp() );
+    }
+
+    private StandaloneTraitFactory createStandaloneTraitFactory() {
+        return new StandaloneTraitFactory(ProjectClassLoader.createProjectClassLoader()) {
+                @Override
+                protected KieComponentFactory getComponentFactory() {
+                    KieComponentFactory componentFactory = super.getComponentFactory();
+                    componentFactory.setTraitFactory(new TraitFactoryImpl());
+                    componentFactory.getClassBuilderFactory().setTraitBuilder(new TraitClassBuilderImpl());
+                    return componentFactory;
+                }
+            };
     }
 
     @Test
