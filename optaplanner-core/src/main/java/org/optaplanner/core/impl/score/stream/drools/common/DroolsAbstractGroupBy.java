@@ -17,9 +17,9 @@
 package org.optaplanner.core.impl.score.stream.drools.common;
 
 import java.io.Serializable;
+import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
-import java.util.Set;
 
 import org.drools.core.common.InternalFactHandle;
 
@@ -50,7 +50,7 @@ public abstract class DroolsAbstractGroupBy<InTuple, OutTuple> implements Serial
         undo.run();
     }
 
-    public Set<OutTuple> getResult() {
+    public Collection<OutTuple> getResult() {
         return acc.finish();
     }
 

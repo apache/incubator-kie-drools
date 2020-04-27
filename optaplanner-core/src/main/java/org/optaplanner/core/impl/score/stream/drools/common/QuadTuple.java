@@ -49,7 +49,8 @@ public final class QuadTuple<A, B, C, D> implements FactTuple {
             return false;
         }
         final QuadTuple<?, ?, ?, ?> other = (QuadTuple<?, ?, ?, ?>) o;
-        return Objects.equals(a, other.a) &&
+        return hashCode == other.hashCode &&
+                Objects.equals(a, other.a) &&
                 Objects.equals(b, other.b) &&
                 Objects.equals(c, other.c) &&
                 Objects.equals(d, other.d);

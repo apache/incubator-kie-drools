@@ -16,7 +16,10 @@
 
 package org.optaplanner.core.impl.score.stream.drools.common;
 
+import static org.drools.model.DSL.from;
+
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
 import java.util.Set;
@@ -37,8 +40,6 @@ import org.optaplanner.core.impl.score.stream.drools.bi.DroolsBiRuleStructure;
 import org.optaplanner.core.impl.score.stream.drools.quad.DroolsQuadRuleStructure;
 import org.optaplanner.core.impl.score.stream.drools.tri.DroolsTriRuleStructure;
 import org.optaplanner.core.impl.score.stream.drools.uni.DroolsUniRuleStructure;
-
-import static org.drools.model.DSL.from;
 
 /**
  * Represents the left-hand side of a Drools rule.
@@ -225,8 +226,8 @@ public abstract class DroolsRuleStructure<PatternVar> {
                 Collections.emptyList(), getDependents(), getVariableIdSupplier());
     }
 
-    public <NewA> DroolsUniRuleStructure<NewA, NewA> regroup(Variable<Set<NewA>> newASource,
-            PatternDef<Set<NewA>> collectPattern, ViewItem<?> accumulatePattern) {
+    public <NewA> DroolsUniRuleStructure<NewA, NewA> regroup(Variable<Collection<NewA>> newASource,
+            PatternDef<Collection<NewA>> collectPattern, ViewItem<?> accumulatePattern) {
         Variable<NewA> newA = createVariable("groupKey", from(newASource));
         DroolsPatternBuilder<NewA> newPrimaryPattern = new DroolsPatternBuilder<>(newA);
         return new DroolsUniRuleStructure<>(newA, newPrimaryPattern, mergeShelved(accumulatePattern),
@@ -234,8 +235,8 @@ public abstract class DroolsRuleStructure<PatternVar> {
     }
 
     public <NewA, NewB> DroolsBiRuleStructure<NewA, NewB, BiTuple<NewA, NewB>> regroupBi(
-            Variable<Set<BiTuple<NewA, NewB>>> newSource, PatternDef<Set<BiTuple<NewA, NewB>>> collectPattern,
-            ViewItem<?> accumulatePattern) {
+            Variable<Collection<BiTuple<NewA, NewB>>> newSource,
+            PatternDef<Collection<BiTuple<NewA, NewB>>> collectPattern, ViewItem<?> accumulatePattern) {
         Variable<BiTuple<NewA, NewB>> newTuple =
                 (Variable<BiTuple<NewA, NewB>>) createVariable(BiTuple.class,"groupKey", from(newSource));
         Variable<NewA> newA = createVariable("newA");

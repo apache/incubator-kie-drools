@@ -47,7 +47,8 @@ public final class TriTuple<A, B, C> implements FactTuple {
             return false;
         }
         final TriTuple<?, ?, ?> other = (TriTuple<?, ?, ?>) o;
-        return Objects.equals(a, other.a) &&
+        return hashCode == other.hashCode &&
+                Objects.equals(a, other.a) &&
                 Objects.equals(b, other.b) &&
                 Objects.equals(c, other.c);
     }

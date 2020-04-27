@@ -19,6 +19,7 @@ package org.optaplanner.core.impl.score.stream.drools.common;
 import java.io.Serializable;
 import java.util.Arrays;
 import java.util.Map;
+import java.util.Objects;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 
@@ -37,26 +38,46 @@ public abstract class DroolsAbstractGroupByInvoker<InTuple> implements Accumulat
      * This will memoize the map based on the input array of declarations. For each accumulate, there should only be
      * one, but this code is being called so often that the memoization has a meaningful impact.
      */
-    private final Function<Declaration[], Map<String, Declaration>> memoizingDeclarationMapper =
-            Memoizer.memoize(DroolsAbstractGroupByInvoker::getDeclarationMap);
+    private final Function<Declaration[], Map<String, Declaration>> memoizingDeclarationMapper = Memoizer
+            .memoize(DroolsAbstractGroupByInvoker::getDeclarationMap);
 
     private static Map<String, Declaration> getDeclarationMap(Declaration... declarations) {
         return Arrays.stream(declarations)
                 .collect(Collectors.toMap(Declaration::getIdentifier, Function.identity()));
     }
 
-    protected <X> X getValue(Variable<X> var, InternalWorkingMemory internalWorkingMemory, Object handleObject,
-            Declaration... innerDeclarations) {
-        Map<String, Declaration> declarations = memoizingDeclarationMapper.apply(innerDeclarations);
-        Declaration varDeclaration = declarations.get(var.getName());
-        Object actualHandleObject = handleObject instanceof SubnetworkTuple ?
-                ((SubnetworkTuple) handleObject).getObject(varDeclaration) :
-                handleObject;
-        return (X) varDeclaration.getValue(internalWorkingMemory, actualHandleObject);
+    private static boolean isCorrectType(Object object, Variable var) {
+        return Objects.equals(object.getClass(), var.getType());
     }
 
     protected static <X, X2> X materialize(Variable<X> var, Function<Variable<X2>, X2> valueFinder) {
         return (X) valueFinder.apply((Variable<X2>) var);
+    }
+
+    private Declaration getVariableDeclaration(Variable variable, Declaration... declarations) {
+        if (declarations.length == 1) {
+            return declarations[0];
+        } else {
+            Map<String, Declaration> declarationMap = memoizingDeclarationMapper.apply(declarations);
+            return declarationMap.get(variable.getName());
+        }
+    }
+
+    protected <X> X getValue(Variable<X> var, InternalWorkingMemory internalWorkingMemory, Object handleObject,
+            Declaration... declarations) {
+        if (isCorrectType(handleObject, var)) {
+            return (X) handleObject;
+        }
+        Declaration varDeclaration = getVariableDeclaration(var, declarations);
+        Object actualHandleObject = handleObject;
+        if (handleObject instanceof SubnetworkTuple) {
+            actualHandleObject = ((SubnetworkTuple) handleObject).getObject(varDeclaration);
+            if (isCorrectType(actualHandleObject, var)) {
+                return (X) actualHandleObject;
+            }
+        }
+        // The variable is likely a result of applying a lambda on a FactTuple.
+        return (X) varDeclaration.getValue(internalWorkingMemory, actualHandleObject);
     }
 
     @Override

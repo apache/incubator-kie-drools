@@ -45,7 +45,8 @@ public final class BiTuple<A, B> implements FactTuple {
             return false;
         }
         final BiTuple<?, ?> other = (BiTuple<?, ?>) o;
-        return Objects.equals(a, other.a) &&
+        return hashCode == other.hashCode &&
+                Objects.equals(a, other.a) &&
                 Objects.equals(b, other.b);
     }
 
