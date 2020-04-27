@@ -21,6 +21,7 @@ import java.util.List;
 
 import org.junit.Rule;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.migrationsupport.rules.EnableRuleMigrationSupport;
 import org.junit.rules.ExpectedException;
 import org.mockito.InOrder;
 import org.optaplanner.core.api.score.Score;
@@ -34,6 +35,7 @@ import org.optaplanner.core.impl.testdata.domain.chained.shadow.TestdataShadowin
 import static org.junit.Assert.*;
 import static org.mockito.Mockito.*;
 
+@EnableRuleMigrationSupport
 public class IncrementalScoreDirectorTest {
 
     @Rule

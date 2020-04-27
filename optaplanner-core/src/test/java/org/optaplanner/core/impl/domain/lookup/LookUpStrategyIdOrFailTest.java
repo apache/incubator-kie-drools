@@ -20,6 +20,7 @@ import java.util.Collections;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.Rule;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.migrationsupport.rules.EnableRuleMigrationSupport;
 import org.junit.rules.ExpectedException;
 import org.optaplanner.core.api.domain.lookup.LookUpStrategyType;
 import org.optaplanner.core.api.domain.lookup.PlanningId;
@@ -31,6 +32,7 @@ import org.optaplanner.core.impl.testdata.domain.clone.lookup.TestdataObjectNoId
 
 import static org.junit.Assert.*;
 
+@EnableRuleMigrationSupport
 public class LookUpStrategyIdOrFailTest {
 
     @Rule

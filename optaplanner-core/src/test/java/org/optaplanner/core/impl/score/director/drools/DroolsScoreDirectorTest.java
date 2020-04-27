@@ -17,6 +17,7 @@ package org.optaplanner.core.impl.score.director.drools;
 
 import org.junit.Rule;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.migrationsupport.rules.EnableRuleMigrationSupport;
 import org.junit.rules.ExpectedException;
 import org.kie.api.runtime.KieSession;
 import org.kie.internal.event.rule.RuleEventManager;
@@ -26,6 +27,7 @@ import org.optaplanner.core.impl.score.buildin.simple.SimpleScoreDefinition;
 import static org.junit.Assert.*;
 import static org.mockito.Mockito.*;
 
+@EnableRuleMigrationSupport
 public class DroolsScoreDirectorTest {
 
     @Rule

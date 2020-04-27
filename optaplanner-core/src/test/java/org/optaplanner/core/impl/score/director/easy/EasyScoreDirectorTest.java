@@ -19,6 +19,7 @@ import java.util.Arrays;
 
 import org.junit.Rule;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.migrationsupport.rules.EnableRuleMigrationSupport;
 import org.junit.rules.ExpectedException;
 import org.optaplanner.core.api.score.buildin.simple.SimpleScore;
 import org.optaplanner.core.config.score.trend.InitializingScoreTrendLevel;
@@ -31,6 +32,7 @@ import org.optaplanner.core.impl.testdata.domain.shadow.corrupted.TestdataCorrup
 import static org.junit.Assert.*;
 import static org.mockito.Mockito.*;
 
+@EnableRuleMigrationSupport
 public class EasyScoreDirectorTest {
 
     @Rule

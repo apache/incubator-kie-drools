@@ -22,6 +22,7 @@ import java.util.Map;
 
 import org.junit.Rule;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.migrationsupport.rules.EnableRuleMigrationSupport;
 import org.junit.rules.ExpectedException;
 
 import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
@@ -29,6 +30,7 @@ import static org.assertj.core.api.Assertions.assertThatIllegalStateException;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 
+@EnableRuleMigrationSupport
 public class ConfigUtilsTest {
 
     @Rule

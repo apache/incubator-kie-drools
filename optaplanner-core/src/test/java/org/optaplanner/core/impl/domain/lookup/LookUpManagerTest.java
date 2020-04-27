@@ -21,12 +21,14 @@ import java.util.Collections;
 import org.junit.Assert;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.migrationsupport.rules.EnableRuleMigrationSupport;
 import org.junit.rules.ExpectedException;
 import org.optaplanner.core.api.domain.lookup.LookUpStrategyType;
 import org.optaplanner.core.impl.testdata.domain.clone.lookup.TestdataObjectIntegerId;
 
 import static org.junit.Assert.*;
 
+@EnableRuleMigrationSupport
 public class LookUpManagerTest {
 
     public final ExpectedException expectedException = ExpectedException.none();

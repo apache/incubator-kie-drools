@@ -17,6 +17,7 @@ package org.optaplanner.core.api.domain.solution.cloner;
 
 import org.junit.Rule;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.migrationsupport.rules.EnableRuleMigrationSupport;
 import org.junit.rules.ExpectedException;
 import org.optaplanner.core.api.solver.SolverFactory;
 import org.optaplanner.core.config.solver.EnvironmentMode;
@@ -30,6 +31,7 @@ import org.optaplanner.core.impl.testdata.util.PlannerTestUtils;
 
 import static org.junit.Assert.*;
 
+@EnableRuleMigrationSupport
 public class CustomSolutionClonerTest {
 
     @Rule
