@@ -17,7 +17,7 @@
 
   <properties>
     <!-- override for extension: remove when kogito-apps are upgraded -->
-    <version.io.quarkus>1.4.0.CR1</version.io.quarkus>
+    <version.io.quarkus>1.4.1.Final</version.io.quarkus>
     <version.io.smallrye.reactive>2.0.1</version.io.smallrye.reactive>
   </properties>
 

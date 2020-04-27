@@ -21,7 +21,6 @@ import io.quarkus.test.QuarkusDevModeTest;
 import io.restassured.http.ContentType;
 import org.jboss.shrinkwrap.api.ShrinkWrap;
 import org.jboss.shrinkwrap.api.spec.JavaArchive;
-import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.RegisterExtension;
 
@@ -31,15 +30,20 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 public class HotReloadTest {
 
     private static final String PACKAGE = "io.quarkus.it.kogito.jbpm";
-    private static final String RESOURCE_FILE = PACKAGE.replace('.', '/') + "/text-process.bpmn";
-    private static final String RESOURCE_HELPER_CLASS = PACKAGE.replace('.', '/') + "/JbpmHotReloadTestHelper.java";
+    private static final String PACKAGE_FOLDER = PACKAGE.replace('.', '/');
+    private static final String RESOURCE_FILE = PACKAGE_FOLDER + "/text-process.bpmn";
     private static final String HTTP_TEST_PORT = "65535";
 
     @RegisterExtension
     final static QuarkusDevModeTest test = new QuarkusDevModeTest().setArchiveProducer(
             () -> ShrinkWrap.create(JavaArchive.class)
+                    .addAsResource("orders.txt", PACKAGE_FOLDER + "/orders.bpmn")
+                    .addAsResource("orderItems.txt", PACKAGE_FOLDER + "/orderItems.bpmn")
+                    .addAsResource("CalculationService.txt", PACKAGE_FOLDER + "/CalculationService.java")
+                    .addAsResource("Order.txt", PACKAGE_FOLDER + "/Order.java")
+                    .addAsResource("OrdersProcessService.txt", PACKAGE_FOLDER + "/OrdersProcessService.java")
                     .addAsResource("text-process.txt", RESOURCE_FILE)
-                    .addAsResource("JbpmHotReloadTestHelper.txt", RESOURCE_HELPER_CLASS));
+                    .addAsResource("JbpmHotReloadTestHelper.txt", PACKAGE_FOLDER + "/JbpmHotReloadTestHelper.java"));
 
     @Test
     public void testServletChange() {
