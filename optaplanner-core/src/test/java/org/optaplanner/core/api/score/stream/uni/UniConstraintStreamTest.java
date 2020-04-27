@@ -47,6 +47,7 @@ import org.optaplanner.core.impl.testdata.domain.score.lavish.TestdataLavishValu
 import org.optaplanner.core.impl.testdata.domain.score.lavish.TestdataLavishValueGroup;
 
 import static java.util.Comparator.comparing;
+import static org.assertj.core.api.Assertions.assertThatIllegalStateException;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.junit.Assert.assertEquals;
 import static org.optaplanner.core.api.score.stream.ConstraintCollectors.count;
@@ -1344,7 +1345,7 @@ public class UniConstraintStreamTest extends AbstractConstraintStreamTest {
     // Combinations
     // ************************************************************************
 
-    @Test(expected = IllegalStateException.class)
+    @Test
     public void duplicateConstraintId() {
         ConstraintStreamScoreDirectorFactory<TestdataLavishSolution> scoreDirectorFactory
                 = new ConstraintStreamScoreDirectorFactory<>(
@@ -1354,7 +1355,8 @@ public class UniConstraintStreamTest extends AbstractConstraintStreamTest {
                 factory.from(TestdataLavishEntity.class)
                         .penalize("duplicateConstraintName", SimpleScore.ONE)
         }, constraintStreamImplType);
-        InnerScoreDirector<TestdataLavishSolution> scoreDirector = scoreDirectorFactory.buildScoreDirector(false, constraintMatchEnabled);
+        assertThatIllegalStateException()
+                .isThrownBy(() -> scoreDirectorFactory.buildScoreDirector(false, constraintMatchEnabled));
     }
 
     @Test

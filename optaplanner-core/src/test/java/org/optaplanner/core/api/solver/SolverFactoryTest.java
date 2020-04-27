@@ -36,6 +36,7 @@ import org.optaplanner.core.impl.testdata.domain.TestdataSolution;
 import org.optaplanner.core.impl.testdata.domain.TestdataValue;
 import org.optaplanner.core.impl.testdata.util.PlannerTestUtils;
 
+import static org.assertj.core.api.Assertions.assertThatIllegalArgumentException;
 import static org.junit.Assert.*;
 
 public class SolverFactoryTest {
@@ -65,12 +66,10 @@ public class SolverFactoryTest {
         assertNotNull(solver);
     }
 
-    @Test(expected = IllegalArgumentException.class)
+    @Test
     public void createFromXmlResource_nonExisting() {
-        SolverFactory<TestdataSolution> solverFactory = SolverFactory.createFromXmlResource(
-                "org/optaplanner/core/api/solver/nonExistingSolverConfig.xml");
-        Solver<TestdataSolution> solver = solverFactory.buildSolver();
-        assertNotNull(solver);
+        assertThatIllegalArgumentException().isThrownBy(() -> SolverFactory.createFromXmlResource(
+                "org/optaplanner/core/api/solver/nonExistingSolverConfig.xml"));
     }
 
     @Test

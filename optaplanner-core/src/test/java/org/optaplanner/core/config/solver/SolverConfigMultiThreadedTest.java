@@ -29,6 +29,7 @@ import org.optaplanner.core.impl.testdata.domain.TestdataSolution;
 import org.optaplanner.core.impl.testdata.domain.TestdataValue;
 import org.optaplanner.core.impl.testdata.util.PlannerTestUtils;
 
+import static org.assertj.core.api.Assertions.assertThatIllegalArgumentException;
 import static org.junit.Assert.*;
 import static org.mockito.Mockito.*;
 
@@ -60,11 +61,11 @@ public class SolverConfigMultiThreadedTest {
         assertEquals(Integer.valueOf(2), solverConfig.resolveMoveThreadCount());
     }
 
-    @Test(expected = IllegalArgumentException.class)
+    @Test
     public void moveThreadCountThrowsExceptionWhenValueIsNegative() {
         SolverConfig solverConfig = new SolverConfig();
         solverConfig.setMoveThreadCount("-6");
-        solverConfig.resolveMoveThreadCount();
+        assertThatIllegalArgumentException().isThrownBy(solverConfig::resolveMoveThreadCount);
     }
 
     @Test

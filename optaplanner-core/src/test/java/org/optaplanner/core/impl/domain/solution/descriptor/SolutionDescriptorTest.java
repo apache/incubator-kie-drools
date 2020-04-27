@@ -51,6 +51,8 @@ import org.optaplanner.core.impl.testdata.domain.solutionproperties.invalid.Test
 import org.optaplanner.core.impl.testdata.util.CodeAssertableArrayList;
 import org.optaplanner.core.impl.testdata.util.PlannerTestUtils;
 
+import static org.assertj.core.api.Assertions.assertThatIllegalArgumentException;
+import static org.assertj.core.api.Assertions.assertThatIllegalStateException;
 import static org.optaplanner.core.impl.testdata.util.PlannerAssert.*;
 
 public class SolutionDescriptorTest {
@@ -78,29 +80,34 @@ public class SolutionDescriptorTest {
                 "valueList", "createProblemFacts");
     }
 
-    @Test(expected = IllegalStateException.class)
+    @Test
     public void problemFactCollectionPropertyWithArgument() {
-        TestdataProblemFactCollectionPropertyWithArgumentSolution.buildSolutionDescriptor();
+        assertThatIllegalStateException().isThrownBy(
+                TestdataProblemFactCollectionPropertyWithArgumentSolution::buildSolutionDescriptor);
     }
 
-    @Test(expected = IllegalStateException.class)
+    @Test
     public void duplicateProblemFactCollectionProperty() {
-        TestdataDuplicateProblemFactCollectionPropertySolution.buildSolutionDescriptor();
+        assertThatIllegalStateException().isThrownBy(
+                TestdataDuplicateProblemFactCollectionPropertySolution::buildSolutionDescriptor);
     }
 
-    @Test(expected = IllegalStateException.class)
+    @Test
     public void duplicatePlanningEntityCollectionProperty() {
-        TestdataDuplicatePlanningEntityCollectionPropertySolution.buildSolutionDescriptor();
+        assertThatIllegalStateException().isThrownBy(
+                TestdataDuplicatePlanningEntityCollectionPropertySolution::buildSolutionDescriptor);
     }
 
-    @Test(expected = IllegalStateException.class)
+    @Test
     public void duplicatePlanningScorePropertyProperty() {
-        TestdataDuplicatePlanningScorePropertySolution.buildSolutionDescriptor();
+        assertThatIllegalStateException().isThrownBy(
+                TestdataDuplicatePlanningScorePropertySolution::buildSolutionDescriptor);
     }
 
-    @Test(expected = IllegalStateException.class)
+    @Test
     public void problemFactIsPlanningEntityCollectionProperty() {
-        TestdataProblemFactIsPlanningEntityCollectionPropertySolution.buildSolutionDescriptor();
+        assertThatIllegalStateException().isThrownBy(
+                TestdataProblemFactIsPlanningEntityCollectionPropertySolution::buildSolutionDescriptor);
     }
 
     @Test
@@ -111,12 +118,12 @@ public class SolutionDescriptorTest {
         solverFactory.buildSolver();
     }
 
-    @Test(expected = IllegalStateException.class)
+    @Test
     public void noProblemFactPropertyWithDroolsScoreCalculation() {
         SolverFactory<TestdataNoProblemFactPropertySolution> solverFactory
                 = PlannerTestUtils.buildSolverFactoryWithDroolsScoreDirector(
                         TestdataNoProblemFactPropertySolution.class, TestdataEntity.class);
-        solverFactory.buildSolver();
+        assertThatIllegalStateException().isThrownBy(solverFactory::buildSolver);
     }
 
     @Test
@@ -215,14 +222,14 @@ public class SolutionDescriptorTest {
     // Autodiscovery
     // ************************************************************************
 
-    @Test(expected = IllegalArgumentException.class)
+    @Test
     public void autoDiscoverProblemFactCollectionPropertyElementTypeUnsupported() {
-        TestdataUnsupportedFactTypeSolution.buildSolutionDescriptor();
+        assertThatIllegalArgumentException().isThrownBy(TestdataUnsupportedFactTypeSolution::buildSolutionDescriptor);
     }
 
-    @Test(expected = IllegalArgumentException.class)
+    @Test
     public void autoDiscoverProblemFactCollectionPropertyElementTypeUnknown() {
-        TestdataUnknownFactTypeSolution.buildSolutionDescriptor();
+        assertThatIllegalArgumentException().isThrownBy(TestdataUnknownFactTypeSolution::buildSolutionDescriptor);
     }
 
     @Test

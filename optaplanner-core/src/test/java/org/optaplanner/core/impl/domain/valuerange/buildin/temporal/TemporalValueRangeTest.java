@@ -27,6 +27,8 @@ import java.util.Random;
 
 import org.junit.jupiter.api.Test;
 
+import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
+import static org.assertj.core.api.Assertions.assertThatIllegalArgumentException;
 import static org.junit.Assert.*;
 import static org.mockito.Mockito.*;
 import static org.optaplanner.core.impl.testdata.util.PlannerAssert.*;
@@ -394,79 +396,90 @@ public class TemporalValueRangeTest {
         assertFalse(range.contains(to));
     }
 
-    @Test(expected = IllegalArgumentException.class)
+    @Test
     public void nullFrom() {
-        assertNotNull(new TemporalValueRange<>(null, LocalDate.MAX, 1, ChronoUnit.DAYS));
+        assertThatIllegalArgumentException()
+                .isThrownBy(() -> new TemporalValueRange<>(null, LocalDate.MAX, 1, ChronoUnit.DAYS));
     }
 
-    @Test(expected = IllegalArgumentException.class)
+    @Test
     public void nullTo() {
-        assertNotNull(new TemporalValueRange<>(LocalDate.MIN, null, 1, ChronoUnit.DAYS));
+        assertThatIllegalArgumentException()
+                .isThrownBy(() -> new TemporalValueRange<>(LocalDate.MIN, null, 1, ChronoUnit.DAYS));
     }
 
-    @Test(expected = IllegalArgumentException.class)
+    @Test
     public void nullIncrementUnitType() {
-        assertNotNull(new TemporalValueRange<>(LocalDate.MIN, LocalDate.MAX, 1, null));
+        assertThatIllegalArgumentException()
+                .isThrownBy(() -> new TemporalValueRange<>(LocalDate.MIN, LocalDate.MAX, 1, null));
     }
 
-    @Test(expected = IllegalArgumentException.class)
+    @Test
     public void invalidIncrementUnitAmount() {
-        assertNotNull(new TemporalValueRange<>(LocalDate.MIN, LocalDate.MAX, 0, ChronoUnit.DAYS));
+        assertThatIllegalArgumentException()
+                .isThrownBy(() -> new TemporalValueRange<>(LocalDate.MIN, LocalDate.MAX, 0, ChronoUnit.DAYS));
     }
 
-    @Test(expected = IllegalArgumentException.class)
+    @Test
     public void fromAfterTo() {
-        assertNotNull(new TemporalValueRange<>(LocalDate.MAX, LocalDate.MIN, 1, ChronoUnit.DAYS));
+        assertThatIllegalArgumentException()
+                .isThrownBy(() -> new TemporalValueRange<>(LocalDate.MAX, LocalDate.MIN, 1, ChronoUnit.DAYS));
     }
 
-    @Test(expected = IllegalArgumentException.class)
+    @Test
     public void incrementUnitTypeNotSupportedByFrom() {
         TemporalMock from = mock(TemporalMock.class);
         when(from.isSupported(any(TemporalUnit.class))).thenReturn(Boolean.FALSE);
         TemporalMock to = mock(TemporalMock.class);
         when(from.isSupported(any(TemporalUnit.class))).thenReturn(Boolean.TRUE);
-        assertNotNull(new TemporalValueRange<>(from, to, 1, mock(TemporalUnit.class)));
+        assertThatIllegalArgumentException()
+                .isThrownBy(() -> new TemporalValueRange<>(from, to, 1, mock(TemporalUnit.class)));
     }
 
-    @Test(expected = IllegalArgumentException.class)
+    @Test
     public void incrementUnitTypeNotSupportedByTo() {
         TemporalMock from = mock(TemporalMock.class);
         when(from.isSupported(any(TemporalUnit.class))).thenReturn(Boolean.TRUE);
         TemporalMock to = mock(TemporalMock.class);
         when(from.isSupported(any(TemporalUnit.class))).thenReturn(Boolean.FALSE);
-        assertNotNull(new TemporalValueRange<>(from, to, 1, mock(TemporalUnit.class)));
+        assertThatIllegalArgumentException()
+                .isThrownBy(() -> new TemporalValueRange<>(from, to, 1, mock(TemporalUnit.class)));
     }
 
-    @Test(expected = IllegalArgumentException.class)
+    @Test
     public void remainderOnIncrementAmount() {
-        assertNotNull(new TemporalValueRange<>(Year.of(0), Year.of(3), 2, ChronoUnit.YEARS));
+        assertThatIllegalArgumentException()
+                .isThrownBy(() -> new TemporalValueRange<>(Year.of(0), Year.of(3), 2, ChronoUnit.YEARS));
     }
 
-    @Test(expected = IllegalArgumentException.class)
+    @Test
     public void remainderOnIncrementType() {
         LocalTime from = LocalTime.of(11, 30);
         LocalTime to = LocalTime.of(13, 29);
-        assertNotNull(new TemporalValueRange<>(from, to, 1, ChronoUnit.HOURS));
+        assertThatIllegalArgumentException()
+                .isThrownBy(() -> new TemporalValueRange<>(from, to, 1, ChronoUnit.HOURS));
     }
 
-    @Test(expected = IllegalArgumentException.class)
+    @Test
     public void remainderOnIncrementTypeExceedsMaximumYear() {
         Year from = Year.of(Year.MIN_VALUE);
         Year to = Year.of(Year.MAX_VALUE - 0);
         assertNotEquals(0, (to.getValue() - from.getValue()) % 10); // Maximum Year range is not divisible by 10
-        assertNotNull(new TemporalValueRange<>(from, to, 1, ChronoUnit.DECADES));
+        assertThatIllegalArgumentException()
+                .isThrownBy(() -> new TemporalValueRange<>(from, to, 1, ChronoUnit.DECADES));
     }
 
-    @Test(expected = IndexOutOfBoundsException.class)
+    @Test
     public void getIndexNegative() {
-        new TemporalValueRange<>(Year.of(0), Year.of(1), 1, ChronoUnit.YEARS).get(-1);
+        assertThatExceptionOfType(IndexOutOfBoundsException.class)
+                .isThrownBy(() -> new TemporalValueRange<>(Year.of(0), Year.of(1), 1, ChronoUnit.YEARS).get(-1));
     }
 
-    @Test(expected = IndexOutOfBoundsException.class)
+    @Test
     public void getIndexGreaterThanSize() {
         TemporalValueRange<Year> range = new TemporalValueRange<>(Year.of(0), Year.of(1), 1, ChronoUnit.YEARS);
         assertEquals(1L, range.getSize());
-        range.get(1);
+        assertThatExceptionOfType(IndexOutOfBoundsException.class).isThrownBy(() -> range.get(1));
     }
 
     private static interface TemporalMock extends Temporal, Comparable<Temporal> {

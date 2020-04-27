@@ -20,6 +20,7 @@ import java.util.Random;
 
 import org.junit.jupiter.api.Test;
 
+import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
 import static org.junit.Assert.assertEquals;
 import static org.mockito.Mockito.*;
 import static org.optaplanner.core.impl.testdata.util.PlannerAssert.*;
@@ -58,14 +59,14 @@ public class BooleanValueRangeTest {
                 Boolean.TRUE, Boolean.TRUE, Boolean.FALSE, Boolean.TRUE);
     }
 
-    @Test(expected = IndexOutOfBoundsException.class)
+    @Test
     public void getIndexNegative() {
-        new BooleanValueRange().get(-1);
+        assertThatExceptionOfType(IndexOutOfBoundsException.class).isThrownBy(() -> new BooleanValueRange().get(-1));
     }
 
-    @Test(expected = IndexOutOfBoundsException.class)
+    @Test
     public void getIndexGreaterThanSize() {
-        new BooleanValueRange().get(2);
+        assertThatExceptionOfType(IndexOutOfBoundsException.class).isThrownBy(() -> new BooleanValueRange().get(2));
     }
 
 }

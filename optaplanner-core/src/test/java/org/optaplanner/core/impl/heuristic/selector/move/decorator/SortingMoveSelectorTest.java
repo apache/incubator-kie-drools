@@ -29,6 +29,7 @@ import org.optaplanner.core.impl.phase.scope.AbstractStepScope;
 import org.optaplanner.core.impl.solver.scope.DefaultSolverScope;
 import org.optaplanner.core.impl.testdata.domain.TestdataSolution;
 
+import static org.assertj.core.api.Assertions.assertThatIllegalArgumentException;
 import static org.mockito.Mockito.*;
 import static org.optaplanner.core.impl.testdata.util.PlannerAssert.*;
 
@@ -49,9 +50,9 @@ public class SortingMoveSelectorTest {
         runCacheType(SelectionCacheType.STEP, 5);
     }
 
-    @Test(expected = IllegalArgumentException.class)
+    @Test
     public void cacheTypeJustInTime() {
-        runCacheType(SelectionCacheType.JUST_IN_TIME, 5);
+        assertThatIllegalArgumentException().isThrownBy(() -> runCacheType(SelectionCacheType.JUST_IN_TIME, 5));
     }
 
     public void runCacheType(SelectionCacheType cacheType, int timesCalled) {

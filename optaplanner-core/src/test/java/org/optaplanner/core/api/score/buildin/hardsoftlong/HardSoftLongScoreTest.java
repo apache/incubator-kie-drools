@@ -21,6 +21,7 @@ import org.optaplanner.core.api.score.buildin.AbstractScoreTest;
 import org.optaplanner.core.impl.testdata.util.PlannerAssert;
 import org.optaplanner.core.impl.testdata.util.PlannerTestUtils;
 
+import static org.assertj.core.api.Assertions.assertThatIllegalArgumentException;
 import static org.junit.Assert.*;
 
 public class HardSoftLongScoreTest extends AbstractScoreTest {
@@ -61,9 +62,9 @@ public class HardSoftLongScoreTest extends AbstractScoreTest {
         assertEquals("-7init/-147hard/-258soft", HardSoftLongScore.ofUninitialized(-7, -147L, -258L).toString());
     }
 
-    @Test(expected = IllegalArgumentException.class)
+    @Test
     public void parseScoreIllegalArgument() {
-        HardSoftLongScore.parseScore("-147");
+        assertThatIllegalArgumentException().isThrownBy(() -> HardSoftLongScore.parseScore("-147"));
     }
 
     @Test

@@ -24,6 +24,7 @@ import org.optaplanner.core.impl.heuristic.selector.entity.EntitySelector;
 import org.optaplanner.core.impl.heuristic.selector.entity.FromSolutionEntitySelector;
 import org.optaplanner.core.impl.heuristic.selector.entity.decorator.ShufflingEntitySelector;
 
+import static org.assertj.core.api.Assertions.assertThatIllegalArgumentException;
 import static org.optaplanner.core.impl.testdata.util.PlannerAssert.*;
 
 public class EntitySelectorConfigTest extends AbstractSelectorConfigTest {
@@ -134,14 +135,14 @@ public class EntitySelectorConfigTest extends AbstractSelectorConfigTest {
         assertEquals(SelectionCacheType.STEP, entitySelector.getCacheType());
     }
 
-    @Test(expected = IllegalArgumentException.class)
+    @Test
     public void justInTimeShuffled() {
         EntitySelectorConfig entitySelectorConfig = new EntitySelectorConfig();
         entitySelectorConfig.setCacheType(SelectionCacheType.JUST_IN_TIME);
         entitySelectorConfig.setSelectionOrder(SelectionOrder.SHUFFLED);
-        EntitySelector entitySelector = entitySelectorConfig.buildEntitySelector(
+        assertThatIllegalArgumentException().isThrownBy(() -> entitySelectorConfig.buildEntitySelector(
                 buildHeuristicConfigPolicy(),
-                SelectionCacheType.JUST_IN_TIME, SelectionOrder.RANDOM);
+                SelectionCacheType.JUST_IN_TIME, SelectionOrder.RANDOM));
     }
 
 }

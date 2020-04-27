@@ -30,6 +30,7 @@ import org.optaplanner.core.impl.solver.scope.DefaultSolverScope;
 import org.optaplanner.core.impl.testdata.domain.TestdataEntity;
 import org.optaplanner.core.impl.testdata.domain.TestdataSolution;
 
+import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
 import static org.mockito.Mockito.*;
 import static org.optaplanner.core.impl.testdata.util.PlannerAssert.*;
 
@@ -119,18 +120,18 @@ public class FilteringEntitySelectorTest {
         verify(childEntitySelector, times(timesCalled)).getSize();
     }
 
-    @Test(expected = UnsupportedOperationException.class)
+    @Test
     public void listIteratorWithRandomSelection() {
         EntitySelector childEntitySelector = SelectorTestUtils.mockEntitySelector(TestdataEntity.class);
         EntitySelector entitySelector = new FilteringEntitySelector(childEntitySelector, null);
-        entitySelector.listIterator();
+        assertThatExceptionOfType(UnsupportedOperationException.class).isThrownBy(entitySelector::listIterator);
     }
 
-    @Test(expected = UnsupportedOperationException.class)
+    @Test
     public void indexedListIteratorWithRandomSelection() {
         EntitySelector childEntitySelector = SelectorTestUtils.mockEntitySelector(TestdataEntity.class);
         EntitySelector entitySelector = new FilteringEntitySelector(childEntitySelector, null);
-        entitySelector.listIterator(0);
+        assertThatExceptionOfType(UnsupportedOperationException.class).isThrownBy(() -> entitySelector.listIterator(0));
     }
 
 }

@@ -42,6 +42,7 @@ import org.springframework.boot.test.context.runner.ApplicationContextRunner;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.core.io.ClassPathResource;
 
+import static org.assertj.core.api.Assertions.assertThatIllegalStateException;
 import static org.junit.Assert.*;
 
 public class OptaPlannerAutoConfigurationTest {
@@ -107,13 +108,11 @@ public class OptaPlannerAutoConfigurationTest {
                 });
     }
 
-    @Test(expected = IllegalStateException.class)
+    @Test
     public void scanAnnotatedClasses() {
-        contextRunner
+        assertThatIllegalStateException().isThrownBy(() -> contextRunner
                 .withPropertyValues("optaplanner.solver-config-xml=org/optaplanner/spring/boot/autoconfigure/illegalScanAnnotatedSpringBootSolverConfig.xml")
-                .run(context -> {
-                    context.getBean(SolverConfig.class);
-                });
+                .run(context -> context.getBean(SolverConfig.class)));
     }
 
     @Test

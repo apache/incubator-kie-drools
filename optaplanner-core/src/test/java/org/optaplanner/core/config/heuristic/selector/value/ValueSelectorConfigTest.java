@@ -27,6 +27,7 @@ import org.optaplanner.core.impl.heuristic.selector.value.ValueSelector;
 import org.optaplanner.core.impl.heuristic.selector.value.decorator.ShufflingValueSelector;
 import org.optaplanner.core.impl.testdata.domain.TestdataEntity;
 
+import static org.assertj.core.api.Assertions.assertThatIllegalArgumentException;
 import static org.junit.Assert.assertEquals;
 import static org.optaplanner.core.impl.testdata.util.PlannerAssert.*;
 
@@ -164,7 +165,7 @@ public class ValueSelectorConfigTest extends AbstractSelectorConfigTest {
         assertEquals(SelectionCacheType.STEP, valueSelector.getCacheType());
     }
 
-    @Test(expected = IllegalArgumentException.class)
+    @Test
     public void justInTimeShuffled() {
         HeuristicConfigPolicy configPolicy = buildHeuristicConfigPolicy();
         EntityDescriptor entityDescriptor = configPolicy.getSolutionDescriptor()
@@ -172,9 +173,9 @@ public class ValueSelectorConfigTest extends AbstractSelectorConfigTest {
         ValueSelectorConfig valueSelectorConfig = new ValueSelectorConfig();
         valueSelectorConfig.setCacheType(SelectionCacheType.JUST_IN_TIME);
         valueSelectorConfig.setSelectionOrder(SelectionOrder.SHUFFLED);
-        ValueSelector valueSelector = valueSelectorConfig.buildValueSelector(
+        assertThatIllegalArgumentException().isThrownBy(() -> valueSelectorConfig.buildValueSelector(
                 configPolicy, entityDescriptor,
-                SelectionCacheType.JUST_IN_TIME, SelectionOrder.RANDOM);
+                SelectionCacheType.JUST_IN_TIME, SelectionOrder.RANDOM));
     }
 
 }

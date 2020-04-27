@@ -20,39 +20,40 @@ import java.util.Random;
 
 import org.junit.jupiter.api.Test;
 
+import static org.assertj.core.api.Assertions.assertThatIllegalArgumentException;
 import static org.junit.Assert.*;
 import static org.mockito.Mockito.*;
 
 public class BlockDistributionNearbyRandomTest {
 
-    @Test(expected = IllegalArgumentException.class)
+    @Test
     public void sizeMinimumTooLow() {
-        NearbyRandom nearbyRandom = new BlockDistributionNearbyRandom(-10, 300, 0.2, 0.0);
+        assertThatIllegalArgumentException().isThrownBy(() -> new BlockDistributionNearbyRandom(-10, 300, 0.2, 0.0));
     }
 
-    @Test(expected = IllegalArgumentException.class)
+    @Test
     public void sizeMaximumTooLow() {
-        NearbyRandom nearbyRandom = new BlockDistributionNearbyRandom(10, 8, 0.2, 0.0);
+        assertThatIllegalArgumentException().isThrownBy(() -> new BlockDistributionNearbyRandom(10, 8, 0.2, 0.0));
     }
 
-    @Test(expected = IllegalArgumentException.class)
+    @Test
     public void sizeRatioTooLow() {
-        NearbyRandom nearbyRandom = new BlockDistributionNearbyRandom(10, 300, -0.2, 0.0);
+        assertThatIllegalArgumentException().isThrownBy(() -> new BlockDistributionNearbyRandom(10, 300, -0.2, 0.0));
     }
 
-    @Test(expected = IllegalArgumentException.class)
+    @Test
     public void sizeRatioTooHigh() {
-        NearbyRandom nearbyRandom = new BlockDistributionNearbyRandom(10, 300, 1.2, 0.0);
+        assertThatIllegalArgumentException().isThrownBy(() -> new BlockDistributionNearbyRandom(10, 300, 1.2, 0.0));
     }
 
-    @Test(expected = IllegalArgumentException.class)
+    @Test
     public void uniformDistributionProbabilityTooLow() {
-        NearbyRandom nearbyRandom = new BlockDistributionNearbyRandom(10, 300, 0.2, 1.3);
+        assertThatIllegalArgumentException().isThrownBy(() -> new BlockDistributionNearbyRandom(10, 300, 0.2, 1.3));
     }
 
-    @Test(expected = IllegalArgumentException.class)
+    @Test
     public void uniformDistributionProbabilityTooHigh() {
-        NearbyRandom nearbyRandom = new BlockDistributionNearbyRandom(10, 300, 0.2, -0.3);
+        assertThatIllegalArgumentException().isThrownBy(() -> new BlockDistributionNearbyRandom(10, 300, 0.2, -0.3));
     }
 
     @Test

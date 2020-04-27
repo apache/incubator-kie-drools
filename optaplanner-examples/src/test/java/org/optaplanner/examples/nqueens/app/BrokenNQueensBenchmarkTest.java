@@ -28,6 +28,8 @@ import org.optaplanner.examples.common.app.PlannerBenchmarkTest;
 import org.optaplanner.examples.nqueens.domain.NQueens;
 import org.optaplanner.persistence.xstream.impl.domain.solution.XStreamSolutionFileIO;
 
+import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
+
 public class BrokenNQueensBenchmarkTest extends PlannerBenchmarkTest {
 
     public BrokenNQueensBenchmarkTest() {
@@ -38,7 +40,7 @@ public class BrokenNQueensBenchmarkTest extends PlannerBenchmarkTest {
     // Tests
     // ************************************************************************
 
-    @Test(expected = PlannerBenchmarkException.class)
+    @Test
     @Timeout(100)
     public void benchmarkBroken8queens() {
         NQueens problem = new XStreamSolutionFileIO<NQueens>(NQueens.class)
@@ -48,7 +50,7 @@ public class BrokenNQueensBenchmarkTest extends PlannerBenchmarkTest {
         benchmarkConfig.getInheritedSolverBenchmarkConfig().getSolverConfig().getTerminationConfig()
                 .setStepCountLimit(-100); // Intentionally crash the solver
         PlannerBenchmark benchmark = PlannerBenchmarkFactory.create(benchmarkConfig).buildPlannerBenchmark(problem);
-        benchmark.benchmark();
+        assertThatExceptionOfType(PlannerBenchmarkException.class).isThrownBy(benchmark::benchmark);
     }
 
 }

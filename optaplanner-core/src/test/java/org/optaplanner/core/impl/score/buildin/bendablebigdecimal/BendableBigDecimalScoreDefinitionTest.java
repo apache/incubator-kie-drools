@@ -22,6 +22,7 @@ import org.junit.jupiter.api.Test;
 import org.optaplanner.core.api.score.buildin.bendablebigdecimal.BendableBigDecimalScore;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatIllegalArgumentException;
 import static org.junit.Assert.assertArrayEquals;
 import static org.junit.Assert.assertEquals;
 
@@ -67,10 +68,11 @@ public class BendableBigDecimalScoreDefinitionTest {
         assertEquals(5, new BendableBigDecimalScoreDefinition(5, 0).getFeasibleLevelsSize());
     }
 
-    @Test(expected = IllegalArgumentException.class)
+    @Test
     public void createScoreWithIllegalArgument() {
         BendableBigDecimalScoreDefinition bendableScoreDefinition = new BendableBigDecimalScoreDefinition(2, 3);
-        bendableScoreDefinition.createScore(new BigDecimal(1), new BigDecimal(2), new BigDecimal(3));
+        assertThatIllegalArgumentException().isThrownBy(() -> bendableScoreDefinition.createScore(
+                new BigDecimal(1), new BigDecimal(2), new BigDecimal(3)));
     }
 
     @Test

@@ -28,6 +28,7 @@ import org.optaplanner.core.impl.localsearch.scope.LocalSearchStepScope;
 import org.optaplanner.core.impl.solver.scope.DefaultSolverScope;
 import org.optaplanner.core.impl.testdata.domain.TestdataSolution;
 
+import static org.assertj.core.api.Assertions.assertThatIllegalArgumentException;
 import static org.junit.Assert.*;
 import static org.mockito.Mockito.*;
 
@@ -102,11 +103,12 @@ public class SimulatedAnnealingAcceptorTest extends AbstractAcceptorTest {
         acceptor.phaseEnded(phaseScope);
     }
 
-    @Test(expected = IllegalArgumentException.class)
+    @Test
     public void negativeSimulatedAnnealingSize() {
         SimulatedAnnealingAcceptor acceptor = new SimulatedAnnealingAcceptor();
-        acceptor.setStartingTemperature(HardMediumSoftScore.parseScore("1, -1, 2"));
-        acceptor.phaseStarted(null);
+        // FIXME this tests score parsing
+        assertThatIllegalArgumentException()
+                .isThrownBy(() -> acceptor.setStartingTemperature(HardMediumSoftScore.parseScore("1, -1, 2")));
     }
 
 }

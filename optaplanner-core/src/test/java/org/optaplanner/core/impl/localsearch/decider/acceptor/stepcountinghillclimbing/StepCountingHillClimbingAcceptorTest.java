@@ -26,6 +26,7 @@ import org.optaplanner.core.impl.localsearch.scope.LocalSearchStepScope;
 import org.optaplanner.core.impl.solver.scope.DefaultSolverScope;
 import org.optaplanner.core.impl.testdata.domain.TestdataSolution;
 
+import static org.assertj.core.api.Assertions.assertThatIllegalArgumentException;
 import static org.junit.Assert.*;
 
 public class StepCountingHillClimbingAcceptorTest extends AbstractAcceptorTest {
@@ -349,14 +350,16 @@ public class StepCountingHillClimbingAcceptorTest extends AbstractAcceptorTest {
         acceptor.phaseEnded(phaseScope);
     }
 
-    @Test(expected = IllegalArgumentException.class)
+    @Test
     public void zeroStepCountingHillClimbingSize() {
-        StepCountingHillClimbingAcceptor acceptor = new StepCountingHillClimbingAcceptor(0, StepCountingHillClimbingType.STEP);
+        assertThatIllegalArgumentException()
+                .isThrownBy(() -> new StepCountingHillClimbingAcceptor(0, StepCountingHillClimbingType.STEP));
     }
 
-    @Test(expected = IllegalArgumentException.class)
+    @Test
     public void negativeStepCountingHillClimbingSize() {
-        StepCountingHillClimbingAcceptor acceptor = new StepCountingHillClimbingAcceptor(-1, StepCountingHillClimbingType.STEP);
+        assertThatIllegalArgumentException()
+                .isThrownBy(() -> new StepCountingHillClimbingAcceptor(-1, StepCountingHillClimbingType.STEP));
     }
 
 }

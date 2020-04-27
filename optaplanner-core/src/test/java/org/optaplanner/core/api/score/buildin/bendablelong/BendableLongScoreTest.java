@@ -22,6 +22,7 @@ import org.optaplanner.core.impl.score.buildin.bendablelong.BendableLongScoreDef
 import org.optaplanner.core.impl.testdata.util.PlannerAssert;
 import org.optaplanner.core.impl.testdata.util.PlannerTestUtils;
 
+import static org.assertj.core.api.Assertions.assertThatIllegalArgumentException;
 import static org.junit.Assert.*;
 
 public class BendableLongScoreTest extends AbstractScoreTest {
@@ -78,9 +79,9 @@ public class BendableLongScoreTest extends AbstractScoreTest {
                 new BendableLongScoreDefinition(0, 0).createScore().toString());
     }
 
-    @Test(expected = IllegalArgumentException.class)
+    @Test
     public void parseScoreIllegalArgument() {
-        scoreDefinitionHSS.parseScore("-147");
+        assertThatIllegalArgumentException().isThrownBy(() -> scoreDefinitionHSS.parseScore("-147"));
     }
 
     @Test

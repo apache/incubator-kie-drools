@@ -30,6 +30,8 @@ import org.optaplanner.core.impl.solver.scope.DefaultSolverScope;
 import org.optaplanner.core.impl.testdata.domain.TestdataEntity;
 import org.optaplanner.core.impl.testdata.domain.TestdataSolution;
 
+import static org.assertj.core.api.Assertions.assertThatIllegalArgumentException;
+import static org.assertj.core.api.Assertions.assertThatIllegalStateException;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 import static org.mockito.Mockito.*;
@@ -138,19 +140,21 @@ public class ProbabilityEntitySelectorTest {
         assertEquals(4, entitySelector.getSize());
     }
 
-    @Test(expected = IllegalStateException.class)
+    @Test
     public void withNeverEndingSelection() {
         EntitySelector childEntitySelector = SelectorTestUtils.mockEntitySelector(TestdataEntity.class);
         when(childEntitySelector.isNeverEnding()).thenReturn(true);
         SelectionProbabilityWeightFactory prob = mock(SelectionProbabilityWeightFactory.class);
-        ProbabilityEntitySelector entitySelector = new ProbabilityEntitySelector(childEntitySelector, SelectionCacheType.STEP, prob);
+        assertThatIllegalStateException().isThrownBy(
+                () -> new ProbabilityEntitySelector(childEntitySelector, SelectionCacheType.STEP, prob));
     }
 
-    @Test(expected = IllegalArgumentException.class)
+    @Test
     public void withoutCachedSelectionType() {
         EntitySelector childEntitySelector = SelectorTestUtils.mockEntitySelector(TestdataEntity.class);
         SelectionProbabilityWeightFactory prob = mock(SelectionProbabilityWeightFactory.class);
-        ProbabilityEntitySelector entitySelector = new ProbabilityEntitySelector(childEntitySelector, SelectionCacheType.JUST_IN_TIME, prob);
+        assertThatIllegalArgumentException().isThrownBy(
+                () -> new ProbabilityEntitySelector(childEntitySelector, SelectionCacheType.JUST_IN_TIME, prob));
     }
 
 }

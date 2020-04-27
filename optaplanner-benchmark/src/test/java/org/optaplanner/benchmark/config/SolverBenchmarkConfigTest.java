@@ -18,6 +18,8 @@ package org.optaplanner.benchmark.config;
 
 import org.junit.jupiter.api.Test;
 
+import static org.assertj.core.api.Assertions.assertThatIllegalStateException;
+
 public class SolverBenchmarkConfigTest {
 
     @Test
@@ -36,28 +38,28 @@ public class SolverBenchmarkConfigTest {
         config.validate();
     }
 
-    @Test(expected = IllegalStateException.class)
+    @Test
     public void invalidNameWithSlash() {
         SolverBenchmarkConfig config = new SolverBenchmarkConfig();
         config.setName("slash/name");
         config.setSubSingleCount(1);
-        config.validate();
+        assertThatIllegalStateException().isThrownBy(config::validate);
     }
 
-    @Test(expected = IllegalStateException.class)
+    @Test
     public void invalidNameWithSuffixWhitespace() {
         SolverBenchmarkConfig config = new SolverBenchmarkConfig();
         config.setName("Suffixed with space ");
         config.setSubSingleCount(1);
-        config.validate();
+        assertThatIllegalStateException().isThrownBy(config::validate);
     }
 
-    @Test(expected = IllegalStateException.class)
+    @Test
     public void invalidNameWithPrefixWhitespace() {
         SolverBenchmarkConfig config = new SolverBenchmarkConfig();
         config.setName(" prefixed with space");
         config.setSubSingleCount(1);
-        config.validate();
+        assertThatIllegalStateException().isThrownBy(config::validate);
     }
 
     @Test
@@ -75,12 +77,12 @@ public class SolverBenchmarkConfigTest {
         config.validate();
     }
 
-    @Test(expected = IllegalStateException.class)
+    @Test
     public void invalidZeroSubSingleCount() {
         SolverBenchmarkConfig config = new SolverBenchmarkConfig();
         config.setName("name");
         config.setSubSingleCount(0);
-        config.validate();
+        assertThatIllegalStateException().isThrownBy(config::validate);
     }
 
 }

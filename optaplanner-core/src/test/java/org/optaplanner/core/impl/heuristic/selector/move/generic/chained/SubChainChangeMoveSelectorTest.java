@@ -23,13 +23,14 @@ import org.optaplanner.core.impl.heuristic.selector.value.chained.DefaultSubChai
 import org.optaplanner.core.impl.heuristic.selector.value.chained.SubChainSelector;
 import org.optaplanner.core.impl.testdata.domain.TestdataEntity;
 
+import static org.assertj.core.api.Assertions.assertThatIllegalStateException;
 import static org.junit.Assert.*;
 import static org.mockito.Mockito.*;
 
 
 public class SubChainChangeMoveSelectorTest {
 
-    @Test(expected = IllegalStateException.class)
+    @Test
     public void differentValueDescriptorException() {
         SubChainSelector subChainSelector = mock(DefaultSubChainSelector.class);
         GenuineVariableDescriptor descriptor = TestdataEntity.buildVariableDescriptorForValue();
@@ -37,11 +38,11 @@ public class SubChainChangeMoveSelectorTest {
         EntityIndependentValueSelector valueSelector = mock(EntityIndependentValueSelector.class);
         GenuineVariableDescriptor otherDescriptor = TestdataEntity.buildVariableDescriptorForValue();
         when(valueSelector.getVariableDescriptor()).thenReturn(otherDescriptor);
-        SubChainChangeMoveSelector testedSelector =
-                new SubChainChangeMoveSelector(subChainSelector, valueSelector, true, true);
+        assertThatIllegalStateException().isThrownBy(
+                () -> new SubChainChangeMoveSelector(subChainSelector, valueSelector, true, true));
     }
 
-    @Test(expected = IllegalStateException.class)
+    @Test
     public void determinedSelectionWithNeverEndingChainSelector() {
         SubChainSelector subChainSelector = mock(DefaultSubChainSelector.class);
         when(subChainSelector.isNeverEnding()).thenReturn(true);
@@ -49,11 +50,11 @@ public class SubChainChangeMoveSelectorTest {
         when(subChainSelector.getVariableDescriptor()).thenReturn(descriptor);
         EntityIndependentValueSelector valueSelector = mock(EntityIndependentValueSelector.class);
         when(valueSelector.getVariableDescriptor()).thenReturn(descriptor);
-        SubChainChangeMoveSelector testedSelector =
-                new SubChainChangeMoveSelector(subChainSelector, valueSelector, false, true);
+        assertThatIllegalStateException().isThrownBy(
+                () -> new SubChainChangeMoveSelector(subChainSelector, valueSelector, false, true));
     }
 
-    @Test(expected = IllegalStateException.class)
+    @Test
     public void determinedSelectionWithNeverEndingValueSelector() {
         SubChainSelector subChainSelector = mock(DefaultSubChainSelector.class);
         GenuineVariableDescriptor descriptor = TestdataEntity.buildVariableDescriptorForValue();
@@ -61,8 +62,8 @@ public class SubChainChangeMoveSelectorTest {
         EntityIndependentValueSelector valueSelector = mock(EntityIndependentValueSelector.class);
         when(valueSelector.isNeverEnding()).thenReturn(true);
         when(valueSelector.getVariableDescriptor()).thenReturn(descriptor);
-        SubChainChangeMoveSelector testedSelector =
-                new SubChainChangeMoveSelector(subChainSelector, valueSelector, false, true);
+        assertThatIllegalStateException().isThrownBy(
+                () -> new SubChainChangeMoveSelector(subChainSelector, valueSelector, false, true));
     }
 
     @Test

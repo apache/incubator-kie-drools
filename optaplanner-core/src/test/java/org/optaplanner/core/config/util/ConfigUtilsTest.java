@@ -24,7 +24,10 @@ import org.junit.Rule;
 import org.junit.jupiter.api.Test;
 import org.junit.rules.ExpectedException;
 
-import static org.junit.Assert.*;
+import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
+import static org.assertj.core.api.Assertions.assertThatIllegalStateException;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
 
 public class ConfigUtilsTest {
 
@@ -78,9 +81,9 @@ public class ConfigUtilsTest {
         assertEquals(11, ConfigUtils.ceilDivide(-21, -2));
     }
 
-    @Test(expected = ArithmeticException.class)
+    @Test
     public void ceilDivideByZero() {
-        ConfigUtils.ceilDivide(20, -0);
+        assertThatExceptionOfType(ArithmeticException.class).isThrownBy(() -> ConfigUtils.ceilDivide(20, -0));
     }
 
     @Test
@@ -125,12 +128,13 @@ public class ConfigUtilsTest {
         assertEquals("This is a sentence.", bean.string);
     }
 
-    @Test(expected = IllegalStateException.class)
+    @Test
     public void applyCustomPropertiesNonExistingCustomProperty() {
         Map<String, String> customProperties = new HashMap<>();
         customProperties.put("doesNotExist", "This is a sentence.");
         ConfigUtilsTestBean bean = new ConfigUtilsTestBean();
-        ConfigUtils.applyCustomProperties(bean, "bean", customProperties, "customProperties");
+        assertThatIllegalStateException().isThrownBy(
+                () -> ConfigUtils.applyCustomProperties(bean, "bean", customProperties, "customProperties"));
     }
 
     private static class ConfigUtilsTestBean {

@@ -25,6 +25,7 @@ import org.optaplanner.core.impl.score.buildin.bendablebigdecimal.BendableBigDec
 import org.optaplanner.core.impl.testdata.util.PlannerAssert;
 import org.optaplanner.core.impl.testdata.util.PlannerTestUtils;
 
+import static org.assertj.core.api.Assertions.assertThatIllegalArgumentException;
 import static org.junit.Assert.*;
 
 public class BendableBigDecimalScoreTest extends AbstractScoreTest {
@@ -122,9 +123,9 @@ public class BendableBigDecimalScoreTest extends AbstractScoreTest {
                 new BendableBigDecimalScoreDefinition(0, 0).createScore().toString());
     }
 
-    @Test(expected = IllegalArgumentException.class)
+    @Test
     public void parseScoreIllegalArgument() {
-        scoreDefinitionHSS.parseScore("-147");
+        assertThatIllegalArgumentException().isThrownBy(() -> scoreDefinitionHSS.parseScore("-147"));
     }
 
     @Test

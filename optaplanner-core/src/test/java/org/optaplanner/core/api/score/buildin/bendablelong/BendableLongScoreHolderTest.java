@@ -21,6 +21,7 @@ import org.kie.api.definition.rule.Rule;
 import org.kie.api.runtime.rule.RuleContext;
 import org.optaplanner.core.api.score.holder.AbstractScoreHolderTest;
 
+import static org.assertj.core.api.Assertions.assertThatIllegalArgumentException;
 import static org.junit.Assert.*;
 
 public class BendableLongScoreHolderTest extends AbstractScoreHolderTest {
@@ -128,18 +129,18 @@ public class BendableLongScoreHolderTest extends AbstractScoreHolderTest {
         assertEquals(BendableLongScore.of(new long[]{-210L}, new long[]{-90L, 310L}), scoreHolder.extractScore(0));
     }
 
-    @Test(expected = IllegalArgumentException.class)
+    @Test
     public void failFastHardLevel() {
         BendableLongScoreHolder scoreHolder = new BendableLongScoreHolder(false, 2, 5);
         RuleContext rule = mockRuleContext("rule");
-        scoreHolder.addHardConstraintMatch(rule, 3, -1L);
+        assertThatIllegalArgumentException().isThrownBy(() -> scoreHolder.addHardConstraintMatch(rule, 3, -1L));
     }
 
-    @Test(expected = IllegalArgumentException.class)
+    @Test
     public void failFastSoftLevel() {
         BendableLongScoreHolder scoreHolder = new BendableLongScoreHolder(false, 5, 2);
         RuleContext rule = mockRuleContext("rule");
-        scoreHolder.addSoftConstraintMatch(rule, 3, -1L);
+        assertThatIllegalArgumentException().isThrownBy(() -> scoreHolder.addSoftConstraintMatch(rule, 3, -1L));
     }
 
 }

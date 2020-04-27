@@ -23,6 +23,7 @@ import org.optaplanner.core.api.score.buildin.AbstractScoreTest;
 import org.optaplanner.core.impl.testdata.util.PlannerAssert;
 import org.optaplanner.core.impl.testdata.util.PlannerTestUtils;
 
+import static org.assertj.core.api.Assertions.assertThatIllegalArgumentException;
 import static org.junit.Assert.*;
 
 public class HardMediumSoftBigDecimalScoreTest extends AbstractScoreTest {
@@ -73,10 +74,12 @@ public class HardMediumSoftBigDecimalScoreTest extends AbstractScoreTest {
                 HardMediumSoftBigDecimalScore.ofUninitialized(-7, new BigDecimal("-147.2"), new BigDecimal("-3.20"), new BigDecimal("-258.3")).toString());
     }
 
-    @Test(expected = IllegalArgumentException.class)
+    @Test
     public void parseScoreIllegalArgument() {
-        HardMediumSoftBigDecimalScore.parseScore("-147.2");
-        HardMediumSoftBigDecimalScore.parseScore("-147.2hard/-258.3soft");
+        assertThatIllegalArgumentException()
+                .isThrownBy(() -> HardMediumSoftBigDecimalScore.parseScore("-147.2"));
+        assertThatIllegalArgumentException()
+                .isThrownBy(() -> HardMediumSoftBigDecimalScore.parseScore("-147.2hard/-258.3soft"));
     }
 
     @Test

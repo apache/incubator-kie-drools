@@ -28,6 +28,7 @@ import org.optaplanner.core.impl.heuristic.selector.move.MoveSelector;
 import org.optaplanner.core.impl.heuristic.selector.move.decorator.CachingMoveSelector;
 import org.optaplanner.core.impl.heuristic.selector.move.decorator.ShufflingMoveSelector;
 
+import static org.assertj.core.api.Assertions.assertThatIllegalArgumentException;
 import static org.junit.Assert.*;
 import static org.optaplanner.core.impl.testdata.util.PlannerAssert.assertSame;
 import static org.optaplanner.core.impl.testdata.util.PlannerAssert.*;
@@ -184,7 +185,7 @@ public class MoveSelectorConfigTest extends AbstractSelectorConfigTest {
         assertSame(baseMoveSelector, ((ShufflingMoveSelector) moveSelector).getChildMoveSelector());
     }
 
-    @Test(expected = IllegalArgumentException.class)
+    @Test
     public void justInTimeShuffled() {
         final MoveSelector baseMoveSelector = SelectorTestUtils.mockMoveSelector(DummyMove.class);
         MoveSelectorConfig moveSelectorConfig = new MoveSelectorConfig() {
@@ -206,9 +207,9 @@ public class MoveSelectorConfigTest extends AbstractSelectorConfigTest {
         };
         moveSelectorConfig.setCacheType(SelectionCacheType.JUST_IN_TIME);
         moveSelectorConfig.setSelectionOrder(SelectionOrder.SHUFFLED);
-        MoveSelector moveSelector = moveSelectorConfig.buildMoveSelector(
+        assertThatIllegalArgumentException().isThrownBy(() -> moveSelectorConfig.buildMoveSelector(
                 buildHeuristicConfigPolicy(),
-                SelectionCacheType.JUST_IN_TIME, SelectionOrder.RANDOM);
+                SelectionCacheType.JUST_IN_TIME, SelectionOrder.RANDOM));
     }
 
 }

@@ -31,6 +31,8 @@ import org.optaplanner.core.config.util.ConfigUtils;
 import org.optaplanner.core.impl.solver.io.XStreamConfigReader;
 import org.optaplanner.core.impl.testdata.domain.TestdataSolution;
 
+import static org.assertj.core.api.Assertions.assertThatIllegalArgumentException;
+import static org.assertj.core.api.Assertions.assertThatIllegalStateException;
 import static org.junit.Assert.*;
 
 public class PlannerBenchmarkConfigTest {
@@ -51,39 +53,39 @@ public class PlannerBenchmarkConfigTest {
         config.validate();
     }
 
-    @Test(expected = IllegalStateException.class)
+    @Test
     public void invalidNameWithSlash() {
         PlannerBenchmarkConfig config = new PlannerBenchmarkConfig();
         config.setName("slash/name");
         config.setSolverBenchmarkConfigList(Collections.singletonList(new SolverBenchmarkConfig()));
-        config.validate();
+        assertThatIllegalStateException().isThrownBy(config::validate);
     }
 
-    @Test(expected = IllegalStateException.class)
+    @Test
     public void invalidNameWithSuffixWhitespace() {
         PlannerBenchmarkConfig config = new PlannerBenchmarkConfig();
         config.setName("Suffixed with space ");
         config.setSolverBenchmarkConfigList(Collections.singletonList(new SolverBenchmarkConfig()));
-        config.validate();
+        assertThatIllegalStateException().isThrownBy(config::validate);
     }
 
-    @Test(expected = IllegalStateException.class)
+    @Test
     public void invalidNameWithPrefixWhitespace() {
         PlannerBenchmarkConfig config = new PlannerBenchmarkConfig();
         config.setName(" prefixed with space");
         config.setSolverBenchmarkConfigList(Collections.singletonList(new SolverBenchmarkConfig()));
-        config.validate();
+        assertThatIllegalStateException().isThrownBy(config::validate);
     }
 
-    @Test(expected = IllegalArgumentException.class)
+    @Test
     public void noSolverConfigs() {
         PlannerBenchmarkConfig config = new PlannerBenchmarkConfig();
         config.setSolverBenchmarkConfigList(null);
         config.setSolverBenchmarkBluePrintConfigList(null);
-        config.validate();
+        assertThatIllegalArgumentException().isThrownBy(config::validate);
     }
 
-    @Test(expected = IllegalStateException.class)
+    @Test
     public void nonUniqueSolverConfigName() {
         PlannerBenchmarkConfig config = new PlannerBenchmarkConfig();
         final String sbcName = "x";
@@ -92,7 +94,7 @@ public class PlannerBenchmarkConfigTest {
         SolverBenchmarkConfig sbc2 = new SolverBenchmarkConfig();
         sbc2.setName(sbcName);
         config.setSolverBenchmarkConfigList(Arrays.asList(sbc1, sbc2));
-        config.generateSolverBenchmarkConfigNames();
+        assertThatIllegalStateException().isThrownBy(config::generateSolverBenchmarkConfigNames);
     }
 
     @Test
@@ -143,11 +145,11 @@ public class PlannerBenchmarkConfigTest {
         assertEquals(1, config.resolveParallelBenchmarkCount());
     }
 
-    @Test(expected = IllegalArgumentException.class)
+    @Test
     public void resolvedParallelBenchmarkCountNegative() {
         PlannerBenchmarkConfig config = new PlannerBenchmarkConfig();
         config.setParallelBenchmarkCount("-1");
-        config.resolveParallelBenchmarkCount();
+        assertThatIllegalArgumentException().isThrownBy(config::resolveParallelBenchmarkCount);
     }
 
     @Test

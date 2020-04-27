@@ -21,15 +21,17 @@ import org.optaplanner.core.api.score.buildin.bendable.BendableScore;
 import org.optaplanner.core.api.score.buildin.hardsoft.HardSoftScore;
 import org.optaplanner.core.api.score.buildin.simple.SimpleScore;
 
+import static org.assertj.core.api.Assertions.assertThatIllegalStateException;
 import static org.junit.Assert.*;
 
 public class ScoreDifferencePercentageTest {
 
-    @Test(expected = IllegalStateException.class)
+    @Test
     public void calculateScoreDifferencePercentageException() {
         BendableScore score1 = BendableScore.of(new int[]{1, 2, 3}, new int[]{4, 5});
         BendableScore score2 = BendableScore.of(new int[]{1, 2}, new int[]{4, 5});
-        ScoreDifferencePercentage.calculateScoreDifferencePercentage(score1, score2);
+        assertThatIllegalStateException().isThrownBy(
+                () -> ScoreDifferencePercentage.calculateScoreDifferencePercentage(score1, score2));
     }
 
     @Test
@@ -170,7 +172,7 @@ public class ScoreDifferencePercentageTest {
         assertEquals(9.0, levels[1], tolerance);
     }
 
-    @Test(expected = IllegalStateException.class)
+    @Test
     public void addWithWrongDimension() {
         HardSoftScore hardSoftScore1 = HardSoftScore.of(-100, -1);
         HardSoftScore hardSoftScore2 = HardSoftScore.of(-200, -10);
@@ -182,10 +184,11 @@ public class ScoreDifferencePercentageTest {
         ScoreDifferencePercentage scoreDifferencePercentage2 =
                 ScoreDifferencePercentage.calculateScoreDifferencePercentage(score1, score2);
 
-        scoreDifferencePercentage.add(scoreDifferencePercentage2);
+        assertThatIllegalStateException().isThrownBy(
+                () -> scoreDifferencePercentage.add(scoreDifferencePercentage2));
     }
 
-    @Test(expected = IllegalStateException.class)
+    @Test
     public void subtractWithWrongDimension() {
         HardSoftScore hardSoftScore1 = HardSoftScore.of(-100, -1);
         HardSoftScore hardSoftScore2 = HardSoftScore.of(-200, -10);
@@ -197,7 +200,8 @@ public class ScoreDifferencePercentageTest {
         ScoreDifferencePercentage scoreDifferencePercentage2 =
                 ScoreDifferencePercentage.calculateScoreDifferencePercentage(score1, score2);
 
-        scoreDifferencePercentage.subtract(scoreDifferencePercentage2);
+        assertThatIllegalStateException().isThrownBy(
+                () -> scoreDifferencePercentage.subtract(scoreDifferencePercentage2));
     }
 
 }

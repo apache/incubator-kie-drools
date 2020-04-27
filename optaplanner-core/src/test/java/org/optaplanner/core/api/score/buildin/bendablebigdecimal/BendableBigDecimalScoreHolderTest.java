@@ -23,6 +23,7 @@ import org.kie.api.definition.rule.Rule;
 import org.kie.api.runtime.rule.RuleContext;
 import org.optaplanner.core.api.score.holder.AbstractScoreHolderTest;
 
+import static org.assertj.core.api.Assertions.assertThatIllegalArgumentException;
 import static org.junit.Assert.*;
 
 public class BendableBigDecimalScoreHolderTest extends AbstractScoreHolderTest {
@@ -130,18 +131,18 @@ public class BendableBigDecimalScoreHolderTest extends AbstractScoreHolderTest {
         assertEquals(BendableBigDecimalScore.of(new BigDecimal[]{new BigDecimal("-210.0")}, new BigDecimal[]{new BigDecimal("-90.0"), new BigDecimal("310.0")}), scoreHolder.extractScore(0));
     }
 
-    @Test(expected = IllegalArgumentException.class)
+    @Test
     public void failFastHardLevel() {
         BendableBigDecimalScoreHolder scoreHolder = new BendableBigDecimalScoreHolder(false, 2, 5);
         RuleContext rule = mockRuleContext("rule");
-        scoreHolder.addHardConstraintMatch(rule, 3, new BigDecimal("-0.01"));
+        assertThatIllegalArgumentException().isThrownBy(() -> scoreHolder.addHardConstraintMatch(rule, 3, new BigDecimal("-0.01")));
     }
 
-    @Test(expected = IllegalArgumentException.class)
+    @Test
     public void failFastSoftLevel() {
         BendableBigDecimalScoreHolder scoreHolder = new BendableBigDecimalScoreHolder(false, 5, 2);
         RuleContext rule = mockRuleContext("rule");
-        scoreHolder.addSoftConstraintMatch(rule, 3, new BigDecimal("-0.01"));
+        assertThatIllegalArgumentException().isThrownBy(() -> scoreHolder.addSoftConstraintMatch(rule, 3, new BigDecimal("-0.01")));
     }
 
 }

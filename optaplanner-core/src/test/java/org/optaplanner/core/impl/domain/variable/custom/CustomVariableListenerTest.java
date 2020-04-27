@@ -34,18 +34,19 @@ import org.optaplanner.core.impl.testdata.domain.shadow.manytomany.TestdataManyT
 import org.optaplanner.core.impl.testdata.domain.shadow.manytomany.TestdataManyToManyShadowedSolution;
 import org.optaplanner.core.impl.testdata.util.PlannerTestUtils;
 
+import static org.assertj.core.api.Assertions.assertThatIllegalStateException;
 import static org.junit.Assert.*;
 
 public class CustomVariableListenerTest {
 
-    @Test(expected = IllegalStateException.class)
+    @Test
     public void cyclic() {
-        SolutionDescriptor solutionDescriptor = TestdataCyclicShadowedSolution.buildSolutionDescriptor();
+        assertThatIllegalStateException().isThrownBy(TestdataCyclicShadowedSolution::buildSolutionDescriptor);
     }
 
-    @Test(expected = IllegalStateException.class)
+    @Test
     public void cyclicReferenced() {
-        SolutionDescriptor solutionDescriptor = TestdataCyclicReferencedShadowedSolution.buildSolutionDescriptor();
+        assertThatIllegalStateException().isThrownBy(TestdataCyclicReferencedShadowedSolution::buildSolutionDescriptor);
     }
 
     @Test()

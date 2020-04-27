@@ -20,14 +20,15 @@ import java.util.Random;
 
 import org.junit.jupiter.api.Test;
 
+import static org.assertj.core.api.Assertions.assertThatIllegalArgumentException;
 import static org.junit.Assert.*;
 import static org.mockito.Mockito.*;
 
 public class ParabolicDistributionNearbyRandomTest {
 
-    @Test(expected = IllegalArgumentException.class)
+    @Test
     public void sizeMaximumTooLow() {
-        NearbyRandom nearbyRandom = new ParabolicDistributionNearbyRandom(-10);
+        assertThatIllegalArgumentException().isThrownBy(() -> new ParabolicDistributionNearbyRandom(-10));
     }
 
     @Test

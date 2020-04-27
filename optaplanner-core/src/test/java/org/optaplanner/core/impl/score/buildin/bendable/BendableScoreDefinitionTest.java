@@ -22,6 +22,7 @@ import org.optaplanner.core.config.score.trend.InitializingScoreTrendLevel;
 import org.optaplanner.core.impl.score.trend.InitializingScoreTrend;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatIllegalArgumentException;
 import static org.junit.Assert.assertArrayEquals;
 import static org.junit.Assert.assertEquals;
 
@@ -66,10 +67,10 @@ public class BendableScoreDefinitionTest {
         assertEquals(5, new BendableScoreDefinition(5, 0).getFeasibleLevelsSize());
     }
 
-    @Test(expected = IllegalArgumentException.class)
+    @Test
     public void createScoreWithIllegalArgument() {
         BendableScoreDefinition bendableScoreDefinition = new BendableScoreDefinition(2, 3);
-        bendableScoreDefinition.createScore(1, 2, 3);
+        assertThatIllegalArgumentException().isThrownBy(() -> bendableScoreDefinition.createScore(1, 2, 3));
     }
 
     @Test

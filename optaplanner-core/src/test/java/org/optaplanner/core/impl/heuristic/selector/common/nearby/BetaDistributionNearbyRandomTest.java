@@ -20,19 +20,20 @@ import java.util.Random;
 
 import org.junit.jupiter.api.Test;
 
+import static org.assertj.core.api.Assertions.assertThatIllegalArgumentException;
 import static org.junit.Assert.*;
 import static org.mockito.Mockito.*;
 
 public class BetaDistributionNearbyRandomTest {
 
-    @Test(expected = IllegalArgumentException.class)
+    @Test
     public void betaDistributionAlphaTooLow() {
-        NearbyRandom nearbyRandom = new BetaDistributionNearbyRandom(-0.2, 0.3);
+        assertThatIllegalArgumentException().isThrownBy(() -> new BetaDistributionNearbyRandom(-0.2, 0.3));
     }
 
-    @Test(expected = IllegalArgumentException.class)
+    @Test
     public void betaDistributionBetaTooLow() {
-        NearbyRandom nearbyRandom = new BetaDistributionNearbyRandom(0.2, -0.3);
+        assertThatIllegalArgumentException().isThrownBy(() -> new BetaDistributionNearbyRandom(0.2, -0.3));
     }
 
     @Test

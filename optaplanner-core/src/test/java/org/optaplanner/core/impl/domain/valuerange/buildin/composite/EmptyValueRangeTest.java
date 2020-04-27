@@ -20,6 +20,7 @@ import java.util.Random;
 
 import org.junit.jupiter.api.Test;
 
+import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
 import static org.junit.Assert.assertEquals;
 import static org.mockito.Mockito.*;
 import static org.optaplanner.core.impl.testdata.util.PlannerAssert.*;
@@ -31,9 +32,10 @@ public class EmptyValueRangeTest {
         assertEquals(0L, new EmptyValueRange<Integer>().getSize());
     }
 
-    @Test(expected = IndexOutOfBoundsException.class)
+    @Test
     public void get() {
-        new EmptyValueRange<Integer>().get(0L);
+        assertThatExceptionOfType(IndexOutOfBoundsException.class)
+                .isThrownBy(() -> new EmptyValueRange<Integer>().get(0L));
     }
 
     @Test

@@ -26,6 +26,7 @@ import org.optaplanner.core.impl.phase.scope.AbstractStepScope;
 import org.optaplanner.core.impl.solver.scope.DefaultSolverScope;
 import org.optaplanner.core.impl.testdata.domain.TestdataEntity;
 
+import static org.assertj.core.api.Assertions.assertThatIllegalStateException;
 import static org.mockito.Mockito.*;
 import static org.optaplanner.core.impl.testdata.util.PlannerAssert.*;
 
@@ -105,18 +106,18 @@ public class CachingEntitySelectorTest {
         verify(childEntitySelector, times(timesCalled)).getSize();
     }
 
-    @Test(expected = IllegalStateException.class)
+    @Test
     public void listIteratorWithRandomSelection() {
         EntitySelector childEntitySelector = SelectorTestUtils.mockEntitySelector(TestdataEntity.class);
         CachingEntitySelector cachingEntitySelector = new CachingEntitySelector(childEntitySelector, SelectionCacheType.PHASE, true);
-        cachingEntitySelector.listIterator();
+        assertThatIllegalStateException().isThrownBy(cachingEntitySelector::listIterator);
     }
 
-    @Test(expected = IllegalStateException.class)
+    @Test
     public void indexedListIteratorWithRandomSelection() {
         EntitySelector childEntitySelector = SelectorTestUtils.mockEntitySelector(TestdataEntity.class);
         CachingEntitySelector cachingEntitySelector = new CachingEntitySelector(childEntitySelector, SelectionCacheType.PHASE, true);
-        cachingEntitySelector.listIterator(0);
+        assertThatIllegalStateException().isThrownBy(() -> cachingEntitySelector.listIterator(0));
     }
 
     @Test

@@ -30,6 +30,7 @@ import org.optaplanner.core.impl.solver.scope.DefaultSolverScope;
 import org.optaplanner.core.impl.testdata.domain.TestdataEntity;
 import org.optaplanner.core.impl.testdata.domain.TestdataSolution;
 
+import static org.assertj.core.api.Assertions.assertThatIllegalStateException;
 import static org.mockito.Mockito.*;
 import static org.optaplanner.core.impl.testdata.util.PlannerAssert.*;
 
@@ -373,20 +374,20 @@ public class FromSolutionEntitySelectorTest {
         verify(entityDescriptor, times(4)).extractEntities(workingSolution);
     }
 
-    @Test(expected = IllegalStateException.class)
+    @Test
     public void listIteratorWithRandomSelection() {
         EntityDescriptor entityDescriptor = mock(EntityDescriptor.class);
         when(entityDescriptor.getEntityClass()).thenReturn((Class) TestdataEntity.class);
         FromSolutionEntitySelector entitySelector = new FromSolutionEntitySelector(entityDescriptor, SelectionCacheType.JUST_IN_TIME, true);
-        entitySelector.listIterator();
+        assertThatIllegalStateException().isThrownBy(entitySelector::listIterator);
     }
 
-    @Test(expected = IllegalStateException.class)
+    @Test
     public void indexedListIteratorWithRandomSelection() {
         EntityDescriptor entityDescriptor = mock(EntityDescriptor.class);
         when(entityDescriptor.getEntityClass()).thenReturn((Class) TestdataEntity.class);
         FromSolutionEntitySelector entitySelector = new FromSolutionEntitySelector(entityDescriptor, SelectionCacheType.JUST_IN_TIME, true);
-        entitySelector.listIterator(0);
+        assertThatIllegalStateException().isThrownBy(() -> entitySelector.listIterator(0));
     }
 
 }

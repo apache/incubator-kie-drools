@@ -42,6 +42,7 @@ import org.optaplanner.core.impl.testdata.domain.TestdataValue;
 import org.optaplanner.core.impl.testdata.util.KieContainerHelper;
 import org.optaplanner.core.impl.testdata.util.PlannerTestUtils;
 
+import static org.assertj.core.api.Assertions.assertThatIllegalArgumentException;
 import static org.junit.Assert.*;
 
 public class PlannerBenchmarkFactoryTest {
@@ -94,16 +95,17 @@ public class PlannerBenchmarkFactoryTest {
         assertNotNull(benchmarkFactory.buildPlannerBenchmark(solution));
     }
 
-    @Test(expected = IllegalArgumentException.class)
+    @Test
     public void problemIsNotASolutionInstance() {
         SolverConfig solverConfig = PlannerTestUtils.buildSolverConfig(
                 TestdataSolution.class, TestdataEntity.class);
         PlannerBenchmarkFactory benchmarkFactory = PlannerBenchmarkFactory.create(
                 PlannerBenchmarkConfig.createFromSolverConfig(solverConfig));
-        benchmarkFactory.buildPlannerBenchmark("This is not a solution instance.");
+        assertThatIllegalArgumentException().isThrownBy(
+                () -> benchmarkFactory.buildPlannerBenchmark("This is not a solution instance."));
     }
 
-    @Test(expected = IllegalArgumentException.class)
+    @Test
     public void problemIsNull() {
         SolverConfig solverConfig = PlannerTestUtils.buildSolverConfig(
                 TestdataSolution.class, TestdataEntity.class);
@@ -112,7 +114,7 @@ public class PlannerBenchmarkFactoryTest {
         TestdataSolution solution = new TestdataSolution("s1");
         solution.setEntityList(Arrays.asList(new TestdataEntity("e1"), new TestdataEntity("e2"), new TestdataEntity("e3")));
         solution.setValueList(Arrays.asList(new TestdataValue("v1"), new TestdataValue("v2")));
-        benchmarkFactory.buildPlannerBenchmark(solution, null);
+        assertThatIllegalArgumentException().isThrownBy(() -> benchmarkFactory.buildPlannerBenchmark(solution, null));
     }
 
     @Test
@@ -154,13 +156,10 @@ public class PlannerBenchmarkFactoryTest {
         plannerBenchmark.benchmark();
     }
 
-    @Test(expected = IllegalArgumentException.class)
+    @Test
     public void createFromXmlResource_nonExisting() {
-        PlannerBenchmarkFactory plannerBenchmarkFactory = PlannerBenchmarkFactory.createFromXmlResource(
-                "org/optaplanner/benchmark/api/nonExistingBenchmarkConfig.xml");
-        PlannerBenchmark plannerBenchmark = plannerBenchmarkFactory.buildPlannerBenchmark();
-        assertNotNull(plannerBenchmark);
-        plannerBenchmark.benchmark();
+        assertThatIllegalArgumentException().isThrownBy(() -> PlannerBenchmarkFactory.createFromXmlResource(
+                "org/optaplanner/benchmark/api/nonExistingBenchmarkConfig.xml"));
     }
 
     @Test
@@ -239,13 +238,10 @@ public class PlannerBenchmarkFactoryTest {
         plannerBenchmark.benchmark();
     }
 
-    @Test(expected = IllegalArgumentException.class)
+    @Test
     public void createFromFreemarkerXmlResource_nonExisting() {
-        PlannerBenchmarkFactory plannerBenchmarkFactory = PlannerBenchmarkFactory.createFromFreemarkerXmlResource(
-                "org/optaplanner/benchmark/api/nonExistingBenchmarkConfigTemplate.xml.ftl");
-        PlannerBenchmark plannerBenchmark = plannerBenchmarkFactory.buildPlannerBenchmark();
-        assertNotNull(plannerBenchmark);
-        plannerBenchmark.benchmark();
+        assertThatIllegalArgumentException().isThrownBy(() -> PlannerBenchmarkFactory.createFromFreemarkerXmlResource(
+                "org/optaplanner/benchmark/api/nonExistingBenchmarkConfigTemplate.xml.ftl"));
     }
 
     @Test

@@ -25,6 +25,7 @@ import org.optaplanner.core.impl.localsearch.scope.LocalSearchStepScope;
 import org.optaplanner.core.impl.solver.scope.DefaultSolverScope;
 import org.optaplanner.core.impl.testdata.domain.TestdataSolution;
 
+import static org.assertj.core.api.Assertions.assertThatIllegalArgumentException;
 import static org.junit.Assert.*;
 
 public class LateAcceptanceAcceptorTest extends AbstractAcceptorTest {
@@ -243,17 +244,17 @@ public class LateAcceptanceAcceptorTest extends AbstractAcceptorTest {
         acceptor.phaseEnded(phaseScope);
     }
 
-    @Test(expected = IllegalArgumentException.class)
+    @Test
     public void zeroLateAcceptanceSize() {
         LateAcceptanceAcceptor acceptor = new LateAcceptanceAcceptor();
         acceptor.setLateAcceptanceSize(0);
-        acceptor.phaseStarted(null);
+        assertThatIllegalArgumentException().isThrownBy(() -> acceptor.phaseStarted(null));
     }
 
-    @Test(expected = IllegalArgumentException.class)
+    @Test
     public void negativeLateAcceptanceSize() {
         LateAcceptanceAcceptor acceptor = new LateAcceptanceAcceptor();
         acceptor.setLateAcceptanceSize(-1);
-        acceptor.phaseStarted(null);
+        assertThatIllegalArgumentException().isThrownBy(() -> acceptor.phaseStarted(null));
     }
 }
