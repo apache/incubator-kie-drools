@@ -182,7 +182,7 @@ public class TraitTest extends CommonTraitTest {
     }
 
 
-    @Test(timeout=10000)
+    @Test(timeout=2000)
     public void testTraitWrapGetAndSet() {
         String source = "org/drools/compiler/factmodel/traits/testTraitDon.drl";
 
@@ -243,7 +243,7 @@ public class TraitTest extends CommonTraitTest {
 
 
 
-    @Test(timeout=10000)
+    @Test(timeout=2000)
     public void testTraitShed() {
         String source = "org/drools/compiler/factmodel/traits/testTraitShed.drl";
 
@@ -284,7 +284,7 @@ public class TraitTest extends CommonTraitTest {
 
 
 
-    @Test(timeout=10000)
+    @Test(timeout=2000)
     public void testTraitDon() {
         String source = "org/drools/compiler/factmodel/traits/testTraitDon.drl";
 
@@ -320,7 +320,7 @@ public class TraitTest extends CommonTraitTest {
 
 
 
-    @Test(timeout=10000)
+    @Test(timeout=2000)
     public void testMixin() {
         String source = "org/drools/compiler/factmodel/traits/testTraitMixin.drl";
 
@@ -337,7 +337,7 @@ public class TraitTest extends CommonTraitTest {
     }
 
 
-    @Test(timeout=10000)
+    @Test(timeout=2000)
     public void traitMethodsWithObjects() {
         String source = "org/drools/compiler/factmodel/traits/testTraitWrapping.drl";
 
@@ -358,7 +358,7 @@ public class TraitTest extends CommonTraitTest {
     }
 
 
-    @Test(timeout=10000)
+    @Test(timeout=2000)
     public void traitMethodsWithPrimitives() {
         String source = "org/drools/compiler/factmodel/traits/testTraitWrappingPrimitives.drl";
 
@@ -379,7 +379,7 @@ public class TraitTest extends CommonTraitTest {
     }
 
 
-    @Test(timeout=10000)
+    @Test(timeout=2000)
     public void testTraitProxy() {
 
         String source = "org/drools/compiler/factmodel/traits/testTraitDon.drl";
@@ -458,7 +458,7 @@ public class TraitTest extends CommonTraitTest {
     }
 
 
-    @Test(timeout=10000)
+    @Test(timeout=2000)
     public void testWrapperSize() {
         String source = "org/drools/compiler/factmodel/traits/testTraitDon.drl";
 
@@ -586,7 +586,7 @@ public class TraitTest extends CommonTraitTest {
 
 
 
-    @Test(timeout=10000)
+    @Test(timeout=2000)
     public void testWrapperEmpty() {
         String source = "org/drools/compiler/factmodel/traits/testTraitDon.drl";
 
@@ -667,7 +667,7 @@ public class TraitTest extends CommonTraitTest {
 
 
 
-    @Test(timeout=10000)
+    @Test(timeout=2000)
     public void testWrapperContainsKey() {
         String source = "org/drools/compiler/factmodel/traits/testTraitDon.drl";
 
@@ -791,7 +791,7 @@ public class TraitTest extends CommonTraitTest {
     }
 
 
-    @Test(timeout=10000)
+    @Test(timeout=2000)
     public void testInternalComponents1(  ) {
         String source = "org/drools/compiler/factmodel/traits/testTraitDon.drl";
 
@@ -854,7 +854,7 @@ public class TraitTest extends CommonTraitTest {
 
 
 
-    @Test(timeout=10000)
+    @Test(timeout=2000)
     public void testWrapperKeySetAndValues() {
         String source = "org/drools/compiler/factmodel/traits/testTraitDon.drl";
 
@@ -952,7 +952,7 @@ public class TraitTest extends CommonTraitTest {
 
 
 
-    @Test(timeout=10000)
+    @Test(timeout=2000)
     public void testWrapperClearAndRemove() {
         String source = "org/drools/compiler/factmodel/traits/testTraitDon.drl";
 
@@ -1076,7 +1076,7 @@ public class TraitTest extends CommonTraitTest {
 
 
 
-    @Test(timeout=10000)
+    @Test(timeout=2000)
     public void testIsAEvaluator( ) {
         String source = "package org.drools.compiler.trait.test;\n" +
                         "\n" +
@@ -1149,7 +1149,7 @@ public class TraitTest extends CommonTraitTest {
 
 
 
-    @Test(timeout=10000)
+    @Test(timeout=2000)
     public void testIsA() {
         String source = "org/drools/compiler/factmodel/traits/testTraitIsA.drl";
 
@@ -1176,7 +1176,7 @@ public class TraitTest extends CommonTraitTest {
 
 
 
-    @Test(timeout=10000)
+    @Test(timeout=2000)
     public void testOverrideType() {
         String source = "org/drools/compiler/factmodel/traits/testTraitOverride.drl";
 
@@ -1198,7 +1198,7 @@ public class TraitTest extends CommonTraitTest {
 
 
 
-    @Test(timeout=10000)
+    @Test(timeout=2000)
     public void testOverrideType2( ) {
         String drl = "package org.drools.compiler.trait.test; \n" +
                      "import org.drools.core.factmodel.traits.Traitable; \n" +
@@ -1227,7 +1227,7 @@ public class TraitTest extends CommonTraitTest {
 
 
 
-    @Test(timeout=10000)
+    @Test(timeout=2000)
     public void testOverrideType3( ) {
         String drl = "package org.drools.compiler.trait.test; \n" +
                      "import org.drools.core.factmodel.traits.Traitable; \n" +
@@ -1255,7 +1255,7 @@ public class TraitTest extends CommonTraitTest {
     }
 
 
-    @Test(timeout=10000)
+    @Test(timeout=2000)
     public void testTraitLegacy() {
         String source = "org/drools/compiler/factmodel/traits/testTraitLegacyTrait.drl";
 
@@ -1290,7 +1290,7 @@ public class TraitTest extends CommonTraitTest {
 
 
 
-    @Test(timeout=10000)
+    @Test(timeout=2000)
     public void testTraitCollections() {
         String source = "org/drools/compiler/factmodel/traits/testTraitCollections.drl";
 
@@ -1352,7 +1352,7 @@ public class TraitTest extends CommonTraitTest {
 
 
 
-    @Test(timeout=10000)
+    @Test(timeout=2000)
     public void traitWithEquality() {
         String source = "org/drools/compiler/factmodel/traits/testTraitWithEquality.drl";
 
@@ -1372,7 +1372,7 @@ public class TraitTest extends CommonTraitTest {
 
 
 
-    @Test(timeout=10000)
+    @Test(timeout=2000)
     public void traitDeclared() {
 
         List<Integer> trueTraits = new ArrayList<Integer>();
@@ -1397,7 +1397,7 @@ public class TraitTest extends CommonTraitTest {
 
 
 
-    @Test(timeout=10000)
+    @Test(timeout=2000)
     public void traitPojo() {
 
         List<Integer> trueTraits = new ArrayList<Integer>();
@@ -1423,7 +1423,7 @@ public class TraitTest extends CommonTraitTest {
 
 
 
-    @Test(timeout=10000)
+    @Test(timeout=2000)
     public void testIsAOperator() {
         String source = "org/drools/compiler/factmodel/traits/testTraitIsA2.drl";
         KieSession ksession = getSession( source );
@@ -1455,7 +1455,7 @@ public class TraitTest extends CommonTraitTest {
 
 
 
-    @Test(timeout=10000)
+    @Test(timeout=2000)
     public void testManyTraits() {
         String source = "" +
                         "import org.drools.compiler.Message;" +
@@ -1516,7 +1516,7 @@ public class TraitTest extends CommonTraitTest {
     }
 
 
-    @Test(timeout=10000)
+    @Test(timeout=2000)
     public void traitManyTimes() {
 
         KieSession ksession = getSession( "org/drools/compiler/factmodel/traits/testTraitDonMultiple.drl" );
@@ -1545,7 +1545,7 @@ public class TraitTest extends CommonTraitTest {
 
 
     // BZ #748752
-    @Test(timeout=10000)
+    @Test(timeout=2000)
     public void traitsInBatchExecution() {
         String str = "package org.jboss.qa.brms.traits\n" +
                      "import org.drools.compiler.Person;\n" +
@@ -1621,7 +1621,7 @@ public class TraitTest extends CommonTraitTest {
 
 
 
-    @Test(timeout=10000)
+    @Test(timeout=2000)
     public void testManyTraitsStateless() {
         String source = "" +
                         "import org.drools.compiler.Message;" +
@@ -1681,7 +1681,7 @@ public class TraitTest extends CommonTraitTest {
 
 
 
-    @Test(timeout=10000)
+    @Test(timeout=2000)
     public void testAliasing() {
         String drl = "package org.drools.traits\n" +
                      "import org.drools.core.factmodel.traits.Traitable;\n" +
@@ -1755,7 +1755,7 @@ public class TraitTest extends CommonTraitTest {
 
 
 
-    @Test(timeout=10000)
+    @Test(timeout=2000)
     public void testTraitLogicalRemoval() {
         String drl = "package org.drools.trait.test;\n" +
                      "\n" +
@@ -1830,7 +1830,7 @@ public class TraitTest extends CommonTraitTest {
     }
 
 
-    @Test(timeout=10000)
+    @Test(timeout=2000)
     public void testTMSConsistencyWithNonTraitableBeans() {
 
         String s1 = "package org.drools.test;\n" +
@@ -1894,7 +1894,7 @@ public class TraitTest extends CommonTraitTest {
 
 
 
-    @Test(timeout=10000)
+    @Test(timeout=2000)
     public void testTraitsLegacyWrapperCoherence() {
         String str = "package org.drools.trait.test; \n" +
                      "global java.util.List list; \n" +
@@ -1971,7 +1971,7 @@ public class TraitTest extends CommonTraitTest {
 
 
 
-    @Test(timeout=10000)
+    @Test(timeout=2000)
     public void testHasTypes() {
 
         String source = "org/drools/compiler/factmodel/traits/testTraitDon.drl";
@@ -2024,7 +2024,7 @@ public class TraitTest extends CommonTraitTest {
 
 
 
-    @Test(timeout=10000)
+    @Test(timeout=2000)
     public void testTraitRedundancy() {
         String str = "package org.drools.compiler.factmodel.traits; \n" +
                      "global java.util.List list; \n" +
@@ -2090,7 +2090,7 @@ public class TraitTest extends CommonTraitTest {
     }
 
 
-    @Test(timeout=10000)
+    @Test(timeout=2000)
     public void traitSimpleTypes() {
 
         String s1 = "package org.drools.factmodel.traits;\n" +
@@ -2146,7 +2146,7 @@ public class TraitTest extends CommonTraitTest {
 
 
 
-    @Test(timeout=10000)
+    @Test(timeout=2000)
     public void testTraitEncoding() {
         String s1 = "package org.drools.core.factmodel.traits;\n" +
                     "declare trait A end\n" +
@@ -2223,12 +2223,12 @@ public class TraitTest extends CommonTraitTest {
 
 
 
-    @Test(timeout=10000)
+    @Test(timeout=2000)
     public void testTraitActualTypeCodeWithEntities() {
         testTraitActualTypeCodeWithEntities( "ent", mode );
     }
 
-    @Test(timeout=10000)
+    @Test(timeout=2000)
     public void testTraitActualTypeCodeWithCoreMap() {
         testTraitActualTypeCodeWithEntities( "kor", mode );
     }
@@ -2281,7 +2281,7 @@ public class TraitTest extends CommonTraitTest {
     }
 
 
-    @Test(timeout=10000)
+    @Test(timeout=2000)
     public void testTraitModifyCore() {
         String s1 = "package test; " +
                     "import org.drools.core.factmodel.traits.*; " +
@@ -2478,7 +2478,7 @@ public class TraitTest extends CommonTraitTest {
 
     }
 
-    @Test(timeout=10000)
+    @Test(timeout=2000)
     public void testTraitModifyCore2a() {
         String s1 = "package test;\n" +
                     "import org.drools.core.factmodel.traits.*;\n" +
@@ -2543,7 +2543,7 @@ public class TraitTest extends CommonTraitTest {
 
 
 
-    @Test(timeout=10000)
+    @Test(timeout=2000)
     public void testTraitModifyCore3() {
         String s1 = "package test;\n" +
                     "import org.drools.core.factmodel.traits.*;\n" +
@@ -2654,7 +2654,7 @@ public class TraitTest extends CommonTraitTest {
 
 
 
-    @Test(timeout=10000)
+    @Test(timeout=2000)
     public void testTraitModifyCoreWithPropertyReactivity() {
         String s1 = "package test;\n" +
                     "import org.drools.core.factmodel.traits.*;\n" +
@@ -2772,7 +2772,7 @@ public class TraitTest extends CommonTraitTest {
 
     public static interface IntfParent {}
 
-    @Test(timeout=10000)
+    @Test(timeout=2000)
     public void testTraitEncodeExtendingNonTrait() {
 
         String s1 = "package test;\n" +
@@ -2808,7 +2808,7 @@ public class TraitTest extends CommonTraitTest {
 
 
 
-    @Test(timeout=10000)
+    @Test(timeout=2000)
     public void isAWithBackChaining() {
 
         String source = "org/drools/compiler/factmodel/traits/testTraitIsAWithBC.drl";
@@ -2830,7 +2830,7 @@ public class TraitTest extends CommonTraitTest {
 
 
 
-    @Test(timeout=10000)
+    @Test(timeout=2000)
     public void testIsAEvaluatorOnClassification( ) {
         String source = "package t.x \n" +
                         "\n" +
@@ -2889,7 +2889,7 @@ public class TraitTest extends CommonTraitTest {
 
 
 
-    @Test(timeout=10000)
+    @Test(timeout=2000)
     public void testShedWithTMS( ) {
         String source = "package t.x \n" +
                         "\n" +
@@ -2969,7 +2969,7 @@ public class TraitTest extends CommonTraitTest {
 
 
 
-    @Test(timeout=10000)
+    @Test(timeout=2000)
     public void testTraitInitialization() {
         String source = "package t.x \n" +
                         "import java.util.*; \n" +
@@ -3045,7 +3045,7 @@ public class TraitTest extends CommonTraitTest {
 
 
 
-    @Test(timeout=10000)
+    @Test(timeout=2000)
     public void testUnTraitedBean() {
         String source = "package t.x \n" +
                         "import java.util.*; \n" +
@@ -3095,7 +3095,7 @@ public class TraitTest extends CommonTraitTest {
 
 
 
-    @Test(timeout=10000)
+    @Test(timeout=2000)
     public void testIsAOptimization(  ) {
         String source = "package t.x \n" +
                         "import java.util.*; \n" +
@@ -3155,7 +3155,7 @@ public class TraitTest extends CommonTraitTest {
 
 
 
-    @Test(timeout=10000)
+    @Test(timeout=2000)
     public void testTypeRefractionOnInsert(  ) {
         String source = "package t.x \n" +
                         "import java.util.*; \n" +
@@ -3220,7 +3220,7 @@ public class TraitTest extends CommonTraitTest {
 
 
 
-    @Test(timeout=10000)
+    @Test(timeout=2000)
     public void testTypeRefractionOnQuery(  ) {
         String source = "declare BaseObject\n" +
                         "@Traitable\n" +
@@ -3472,7 +3472,7 @@ public class TraitTest extends CommonTraitTest {
 
 
 
-    @Test(timeout=10000)
+    @Test(timeout=2000)
     public void testTypeRefractionOnQueryWithIsA(  ) {
         String source = "package t.x \n" +
                         "import java.util.*; \n" +
@@ -3530,7 +3530,7 @@ public class TraitTest extends CommonTraitTest {
 
 
 
-    @Test(timeout=10000)
+    @Test(timeout=2000)
     public void testCoreUpdate4(  ) {
         String source = "package t.x \n" +
                         "import java.util.*; \n" +
@@ -3590,7 +3590,7 @@ public class TraitTest extends CommonTraitTest {
 
 
 
-    @Test(timeout=10000)
+    @Test(timeout=2000)
     public void traitLogicalSupportAnddelete() {
         String drl = "package org.drools.trait.test;\n" +
                      "\n" +
@@ -3724,7 +3724,7 @@ public class TraitTest extends CommonTraitTest {
 
 
 
-    @Test(timeout=10000)
+    @Test(timeout=2000)
     public void testShedThing() {
         String s1 = "package test;\n" +
                     "import org.drools.core.factmodel.traits.*;\n" +
@@ -3794,7 +3794,7 @@ public class TraitTest extends CommonTraitTest {
     }
 
 
-    @Test(timeout=10000)
+    @Test(timeout=2000)
     public void testdeleteThings() {
         String s1 = "package test;\n" +
                     "import org.drools.core.factmodel.traits.*;\n" +
@@ -3863,7 +3863,7 @@ public class TraitTest extends CommonTraitTest {
         assertEquals( 0, ksession.getObjects().size() );
     }
 
-    @Test(timeout=10000)
+    @Test(timeout=2000)
     public void traitLogicalRemovalSimple( ) {
         String drl = "package org.drools.compiler.trait.test;\n" +
                      "\n" +
@@ -3951,7 +3951,7 @@ public class TraitTest extends CommonTraitTest {
     }
 
 
-    @Test(timeout=10000)
+    @Test(timeout=2000)
     public void testTraitDonLegacyClassWithoutEmptyConstructor( ) {
         String drl = "package org.drools.compiler.trait.test;\n" +
                      "\n" +
@@ -3987,7 +3987,7 @@ public class TraitTest extends CommonTraitTest {
 
 
 
-    @Test(timeout=10000)
+    @Test(timeout=2000)
     public void testdeleteCoreObjectChained(  ) {
         String source = "package org.drools.test;\n" +
                         "import java.util.List; \n" +
@@ -4055,7 +4055,7 @@ public class TraitTest extends CommonTraitTest {
     }
 
 
-    @Test(timeout=10000)
+    @Test(timeout=2000)
     public void testUpdateLegacyClass(  ) {
         String source = "package org.drools.text;\n" +
                         "\n" +
@@ -4116,7 +4116,7 @@ public class TraitTest extends CommonTraitTest {
 
 
 
-    @Test(timeout=10000)
+    @Test(timeout=2000)
     public void testSoftPropertyClash() {
         String source = "package org.drools.text;\n" +
                         "\n" +
@@ -4408,7 +4408,7 @@ public class TraitTest extends CommonTraitTest {
 
 
 
-    @Test(timeout=10000)
+    @Test(timeout=2000)
     public void testParentBlockers() {
         String drl = "package org.drools.test;\n" +
                      "import org.drools.core.factmodel.traits.*; \n" +
@@ -4450,7 +4450,7 @@ public class TraitTest extends CommonTraitTest {
 
 
 
-    @Test(timeout=10000)
+    @Test(timeout=2000)
     public void testTraitLogicalTMS() {
         String drl = "package org.drools.test;\n" +
                      "import org.drools.core.factmodel.traits.*; \n" +
@@ -4500,7 +4500,7 @@ public class TraitTest extends CommonTraitTest {
     }
 
 
-    @Test(timeout=10000)
+    @Test(timeout=2000)
     public void testTraitNoType() {
         String drl = "" +
                      "package org.drools.core.factmodel.traits.test;\n" +
@@ -4558,7 +4558,7 @@ public class TraitTest extends CommonTraitTest {
 
 
 
-    @Test(timeout=10000)
+    @Test(timeout=2000)
     public void testTraitdeleteOrder() {
         String drl = "" +
                      "package org.drools.core.factmodel.traits.test;\n" +
@@ -4608,7 +4608,7 @@ public class TraitTest extends CommonTraitTest {
     }
 
 
-    @Test(timeout=10000)
+    @Test(timeout=2000)
     public void testTraitWithManySoftFields() {
         String drl = "" +
                      "package org.drools.core.factmodel.traits.test;\n" +
@@ -4692,7 +4692,7 @@ public class TraitTest extends CommonTraitTest {
     }
 
 
-    @Test(timeout=10000)
+    @Test(timeout=2000)
     public void testDonManyTraitsAtOnce() {
         String drl = "" +
                      "package org.drools.core.factmodel.traits.test;\n" +
@@ -4903,7 +4903,7 @@ public class TraitTest extends CommonTraitTest {
         }
     }
 
-    @Test(timeout=10000)
+    @Test(timeout=2000)
     @Ignore("Triple Store is not thread safe and needs to be rewritten")
     public void testMultithreadingTraits() throws InterruptedException {
         final String s1 = "package test;\n" +
@@ -4957,7 +4957,7 @@ public class TraitTest extends CommonTraitTest {
     }
 
 
-    @Test(timeout=10000)
+    @Test(timeout=2000)
     public void testShedOneLastTrait() throws InterruptedException {
         final String s1 = "package test;\n" +
                           "import org.drools.core.factmodel.traits.*; \n" +
@@ -5013,7 +5013,7 @@ public class TraitTest extends CommonTraitTest {
 
 
 
-    @Test(timeout=10000)
+    @Test(timeout=2000)
     public void testShedThingCompletelyThenDonAgain() throws InterruptedException {
         final String s1 = "package test;\n" +
                           "import org.drools.core.factmodel.traits.*; \n" +
@@ -5104,7 +5104,7 @@ public class TraitTest extends CommonTraitTest {
     }
 
 
-    @Test(timeout=10000)
+    @Test(timeout=2000)
     public void testTraitImplicitInsertionExceptionOnNonTraitable() throws InterruptedException {
         final String s1 = "package test;\n" +
                           "import org.drools.core.factmodel.traits.*; \n" +
@@ -5145,7 +5145,7 @@ public class TraitTest extends CommonTraitTest {
         public void setFoo( String foo );
     }
 
-    @Test(timeout=10000)
+    @Test(timeout=2000)
     public void testTraitLegacyTraitableWithLegacyTrait() {
         final String s1 = "package org.drools.compiler.factmodel.traits;\n" +
                           "import " + TraitTest.class.getName() + ".SomeTrait; \n" +
@@ -5170,7 +5170,7 @@ public class TraitTest extends CommonTraitTest {
         assertEquals( 2, knowledgeSession.getObjects().size() );
     }
 
-    @Test(timeout=10000)
+    @Test(timeout=2000)
     public void testIsALegacyTrait() {
         final String s1 = "package org.drools.compiler.factmodel.traits;\n" +
                           "import " + TraitTest.class.getName() + ".SomeTrait; \n" +
@@ -5207,7 +5207,7 @@ public class TraitTest extends CommonTraitTest {
     }
 
     @Category(ReviseTraitTestWithPRAlwaysCategory.class)
-    @Test(timeout=10000)
+    @Test(timeout=2000)
     public void testClassLiteralsWithOr() {
 
         String drl = "package org.drools.test; " +
@@ -5267,7 +5267,7 @@ public class TraitTest extends CommonTraitTest {
 
 
 
-    @Test(timeout=10000)
+    @Test(timeout=2000)
     public void testIsASwappedArg() {
 
         String drl = "package org.drools.test; " +
@@ -5328,7 +5328,7 @@ public class TraitTest extends CommonTraitTest {
     }
 
 
-    @Test(timeout=10000)
+    @Test(timeout=2000)
     public void testHierarchyEncodeOnPackageMerge() {
 
         String drl0 = "package org.drools.test; " +
@@ -5372,7 +5372,7 @@ public class TraitTest extends CommonTraitTest {
 
 
 
-    @Test(timeout=10000)
+    @Test(timeout=2000)
     public void testDonThenReinsert() throws InterruptedException {
         final String s1 = "package test;\n" +
                           "import org.drools.core.factmodel.traits.*; \n" +
@@ -5817,7 +5817,7 @@ public class TraitTest extends CommonTraitTest {
     }
 
 
-    @Test(timeout=10000)
+    @Test(timeout=2000)
     public void testIsAInstanceOf() {
 
         String drl = "package org.drools.test; " +
@@ -5850,7 +5850,7 @@ public class TraitTest extends CommonTraitTest {
     }
 
 
-    @Test(timeout=10000)
+    @Test(timeout=2000)
     public void testIsAInstanceOfNonTraitable() {
 
         String drl = "package org.drools.test; " +
@@ -5912,7 +5912,7 @@ public class TraitTest extends CommonTraitTest {
         return otns;
     }
 
-    @Test(timeout=10000)
+    @Test(timeout=2000)
     public void testSerializeKieBaseWithTraits() {
         // DRL-1123
         String drl = "package org.drools.test; " +
@@ -5951,7 +5951,7 @@ public class TraitTest extends CommonTraitTest {
         assertEquals( Arrays.asList( 1, 2 ), list );
     }
 
-    @Test(timeout=10000)
+    @Test(timeout=2000)
     public void testMixin2() {
         String drl =
                  "package org.drools.test.traits\n" +
@@ -6056,7 +6056,7 @@ public class TraitTest extends CommonTraitTest {
         }
     }
 
-    @Test(timeout=10000)
+    @Test(timeout=2000)
     public void testMixinWithConflictsUsingDeclarationOrder() {
         checkMixinResolutionUsesOrder("Y,Z", "Y");
         checkMixinResolutionUsesOrder("Z,Y", "Z");
@@ -6106,7 +6106,7 @@ public class TraitTest extends CommonTraitTest {
         assertEquals( first, list.get(2) );
     }
 
-    @Test(timeout=10000)
+    @Test(timeout=2000)
     public void testMixinWithConflictsThrowingError() {
         String drl =
                 "package org.drools.test.traits\n" +
