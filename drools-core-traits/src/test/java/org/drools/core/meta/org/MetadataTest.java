@@ -44,6 +44,7 @@ import org.drools.core.util.StandaloneTraitFactory;
 import org.drools.reflective.classloader.ProjectClassLoader;
 import org.junit.Test;
 
+import static org.drools.compiler.factmodel.traits.TraitTestUtils.createStandaloneTraitFactory;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
@@ -245,18 +246,6 @@ public class MetadataTest {
 
         assertEquals( "hello", klass.getProp() );
         assertEquals( 32, (int) klass.getSubProp() );
-    }
-
-    private StandaloneTraitFactory createStandaloneTraitFactory() {
-        return new StandaloneTraitFactory(ProjectClassLoader.createProjectClassLoader()) {
-                @Override
-                protected KieComponentFactory getComponentFactory() {
-                    KieComponentFactory componentFactory = super.getComponentFactory();
-                    componentFactory.setTraitFactory(new TraitFactoryImpl());
-                    componentFactory.getClassBuilderFactory().setTraitBuilder(new TraitClassBuilderImpl());
-                    return componentFactory;
-                }
-            };
     }
 
     @Test

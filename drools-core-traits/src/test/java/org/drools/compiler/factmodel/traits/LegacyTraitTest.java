@@ -43,6 +43,7 @@ import org.kie.internal.builder.KnowledgeBuilderFactory;
 import org.kie.internal.io.ResourceFactory;
 import org.kie.internal.utils.KieHelper;
 
+import static org.drools.compiler.factmodel.traits.TraitTestUtils.createStandaloneTraitFactory;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.fail;
 
@@ -297,7 +298,7 @@ public class LegacyTraitTest {
 
     @Test
     public void testTraitWithNonAccessorMethodShadowing() {
-        StandaloneTraitFactory factory = new StandaloneTraitFactory( ProjectClassLoader.createProjectClassLoader() );
+        StandaloneTraitFactory factory = createStandaloneTraitFactory();
         try {
             SomeInterface r = (SomeInterface) factory.don( new SomeClass(), SomeInterface.class );
             r.prepare();
