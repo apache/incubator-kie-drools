@@ -16,21 +16,13 @@
 
 package org.optaplanner.examples.vehiclerouting.app;
 
-import java.util.Collection;
-
-import org.junit.runners.Parameterized;
 import org.optaplanner.examples.common.app.AbstractBenchmarkConfigTest;
 import org.optaplanner.examples.common.app.CommonBenchmarkApp;
 
 public class VehicleRoutingBenchmarkConfigTest extends AbstractBenchmarkConfigTest {
 
-    @Parameterized.Parameters(name = "{index}: {0}")
-    public static Collection<Object[]> getArgOptionsAsParameters() {
-        return getArgOptionsAsParameters(new VehicleRoutingBenchmarkApp());
+    @Override
+    protected CommonBenchmarkApp getBenchmarkApp() {
+        return new VehicleRoutingBenchmarkApp();
     }
-
-    public VehicleRoutingBenchmarkConfigTest(CommonBenchmarkApp.ArgOption argOption) {
-        super(argOption);
-    }
-
 }

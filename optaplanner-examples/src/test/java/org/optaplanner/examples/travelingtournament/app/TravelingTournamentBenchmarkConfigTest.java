@@ -16,21 +16,13 @@
 
 package org.optaplanner.examples.travelingtournament.app;
 
-import java.util.Collection;
-
-import org.junit.runners.Parameterized;
 import org.optaplanner.examples.common.app.AbstractBenchmarkConfigTest;
 import org.optaplanner.examples.common.app.CommonBenchmarkApp;
 
 public class TravelingTournamentBenchmarkConfigTest extends AbstractBenchmarkConfigTest {
 
-    @Parameterized.Parameters(name = "{index}: {0}")
-    public static Collection<Object[]> getArgOptionsAsParameters() {
-        return getArgOptionsAsParameters(new TravelingTournamentBenchmarkApp());
+    @Override
+    protected CommonBenchmarkApp getBenchmarkApp() {
+        return new TravelingTournamentBenchmarkApp();
     }
-
-    public TravelingTournamentBenchmarkConfigTest(CommonBenchmarkApp.ArgOption argOption) {
-        super(argOption);
-    }
-
 }

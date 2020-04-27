@@ -16,21 +16,13 @@
 
 package org.optaplanner.examples.projectjobscheduling.app;
 
-import java.util.Collection;
-
-import org.junit.runners.Parameterized;
 import org.optaplanner.examples.common.app.AbstractBenchmarkConfigTest;
 import org.optaplanner.examples.common.app.CommonBenchmarkApp;
 
 public class ProjectJobSchedulingBenchmarkConfigTest extends AbstractBenchmarkConfigTest {
 
-    @Parameterized.Parameters(name = "{index}: {0}")
-    public static Collection<Object[]> getArgOptionsAsParameters() {
-        return getArgOptionsAsParameters(new ProjectJobSchedulingBenchmarkApp());
+    @Override
+    protected CommonBenchmarkApp getBenchmarkApp() {
+        return new ProjectJobSchedulingBenchmarkApp();
     }
-
-    public ProjectJobSchedulingBenchmarkConfigTest(CommonBenchmarkApp.ArgOption argOption) {
-        super(argOption);
-    }
-
 }

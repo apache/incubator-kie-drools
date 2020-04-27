@@ -16,21 +16,13 @@
 
 package org.optaplanner.examples.nqueens.app;
 
-import java.util.Collection;
-
-import org.junit.runners.Parameterized;
 import org.optaplanner.examples.common.app.AbstractBenchmarkConfigTest;
 import org.optaplanner.examples.common.app.CommonBenchmarkApp;
 
 public class NQueensBenchmarkConfigTest extends AbstractBenchmarkConfigTest {
 
-    @Parameterized.Parameters(name = "{index}: {0}")
-    public static Collection<Object[]> getArgOptionsAsParameters() {
-        return getArgOptionsAsParameters(new NQueensBenchmarkApp());
+    @Override
+    protected CommonBenchmarkApp getBenchmarkApp() {
+        return new NQueensBenchmarkApp();
     }
-
-    public NQueensBenchmarkConfigTest(CommonBenchmarkApp.ArgOption argOption) {
-        super(argOption);
-    }
-
 }
