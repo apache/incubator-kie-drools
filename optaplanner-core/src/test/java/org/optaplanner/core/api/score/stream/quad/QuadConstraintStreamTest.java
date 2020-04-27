@@ -21,7 +21,7 @@ import java.util.Arrays;
 import java.util.Objects;
 
 import org.junit.jupiter.api.Disabled;
-import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.TestTemplate;
 import org.optaplanner.core.api.score.buildin.simple.SimpleScore;
 import org.optaplanner.core.api.score.buildin.simplebigdecimal.SimpleBigDecimalScore;
 import org.optaplanner.core.api.score.buildin.simplelong.SimpleLongScore;
@@ -59,7 +59,7 @@ public class QuadConstraintStreamTest extends AbstractConstraintStreamTest {
     // Filter
     // ************************************************************************
 
-    @Test
+    @TestTemplate
     public void filter_entity() {
         assumeDrools();
         TestdataLavishSolution solution = TestdataLavishSolution.generateSolution(1, 0, 1, 0);
@@ -111,7 +111,7 @@ public class QuadConstraintStreamTest extends AbstractConstraintStreamTest {
                 assertMatch(entity2, entity3, value1, extra1));
     }
 
-    @Test
+    @TestTemplate
     public void filterConsecutive() {
         assumeDrools();
         TestdataLavishSolution solution = TestdataLavishSolution.generateSolution(5, 5);
@@ -153,7 +153,7 @@ public class QuadConstraintStreamTest extends AbstractConstraintStreamTest {
     // If (not) exists
     // ************************************************************************
 
-    @Test
+    @TestTemplate
     public void ifExists_0Joiner0Filter() {
         assumeDrools();
         TestdataLavishSolution solution = TestdataLavishSolution.generateSolution(1, 1, 1, 1);
@@ -181,7 +181,7 @@ public class QuadConstraintStreamTest extends AbstractConstraintStreamTest {
         assertScore(scoreDirector);
     }
 
-    @Test
+    @TestTemplate
     public void ifExists_0Join1Filter() {
         assumeDrools();
         TestdataLavishSolution solution = TestdataLavishSolution.generateSolution(2, 2, 1, 1);
@@ -218,7 +218,7 @@ public class QuadConstraintStreamTest extends AbstractConstraintStreamTest {
         assertScore(scoreDirector);
     }
 
-    @Test
+    @TestTemplate
     public void ifExists_1Join0Filter() {
         assumeDrools();
         TestdataLavishSolution solution = TestdataLavishSolution.generateSolution(2, 5, 1, 1);
@@ -255,7 +255,7 @@ public class QuadConstraintStreamTest extends AbstractConstraintStreamTest {
                 assertMatch(entity1, solution.getFirstEntity(), solution.getFirstEntityGroup(), solution.getFirstValue()));
     }
 
-    @Test
+    @TestTemplate
     public void ifExists_1Join1Filter() {
         assumeDrools();
         TestdataLavishSolution solution = TestdataLavishSolution.generateSolution(2, 5, 1, 1);
@@ -290,7 +290,7 @@ public class QuadConstraintStreamTest extends AbstractConstraintStreamTest {
         assertScore(scoreDirector);
     }
 
-    @Test
+    @TestTemplate
     public void ifNotExists_0Joiner0Filter() {
         assumeDrools();
         TestdataLavishSolution solution = TestdataLavishSolution.generateSolution(1, 1, 1, 1);
@@ -318,7 +318,7 @@ public class QuadConstraintStreamTest extends AbstractConstraintStreamTest {
                 assertMatch(solution.getFirstEntity(), solution.getFirstEntityGroup(), solution.getFirstValue(), solution.getFirstEntity()));
     }
 
-    @Test
+    @TestTemplate
     public void ifNotExists_0Join1Filter() {
         assumeDrools();
         TestdataLavishSolution solution = TestdataLavishSolution.generateSolution(2, 2, 1, 1);
@@ -355,7 +355,7 @@ public class QuadConstraintStreamTest extends AbstractConstraintStreamTest {
                 assertMatch(entity1, solution.getFirstEntity(), solution.getFirstEntityGroup(), solution.getFirstValue()));
     }
 
-    @Test
+    @TestTemplate
     public void ifNotExists_1Join0Filter() {
         assumeDrools();
         TestdataLavishSolution solution = TestdataLavishSolution.generateSolution(2, 5, 1, 1);
@@ -388,7 +388,7 @@ public class QuadConstraintStreamTest extends AbstractConstraintStreamTest {
                 assertMatch(entity1, solution.getFirstEntity(), solution.getFirstEntityGroup(), solution.getFirstValue()));
     }
 
-    @Test
+    @TestTemplate
     public void ifNotExists_1Join1Filter() {
         assumeDrools();
         TestdataLavishSolution solution = TestdataLavishSolution.generateSolution(2, 5, 1, 1);
@@ -427,7 +427,7 @@ public class QuadConstraintStreamTest extends AbstractConstraintStreamTest {
     // Group by
     // ************************************************************************
 
-    @Test
+    @TestTemplate
     public void groupBy_OMapping1Collector() {
         assumeDrools();
         /*
@@ -461,7 +461,7 @@ public class QuadConstraintStreamTest extends AbstractConstraintStreamTest {
                 assertMatchWithScore(-2, 2)); // E2 G2 V2 E2, E3 G1 V1 E3
     }
 
-    @Test
+    @TestTemplate
     public void groupBy_1Mapping0Collector() {
         assumeDrools();
         TestdataLavishSolution solution = TestdataLavishSolution.generateSolution(1, 2, 2, 3);
@@ -485,7 +485,7 @@ public class QuadConstraintStreamTest extends AbstractConstraintStreamTest {
                 assertMatchWithScore(-1, value1));
     }
 
-    @Test
+    @TestTemplate
     public void groupBy_1Mapping1Collector_count() {
         assumeDrools();
         TestdataLavishSolution solution = TestdataLavishSolution.generateSolution(1, 2, 2, 3);
@@ -519,7 +519,7 @@ public class QuadConstraintStreamTest extends AbstractConstraintStreamTest {
                 assertMatchWithScore(-1, value1, 1));
     }
 
-    @Test
+    @TestTemplate
     public void groupBy_2Mapping0Collector() {
         assumeDrools();
         TestdataLavishSolution solution = TestdataLavishSolution.generateSolution(1, 2, 2, 3);
@@ -554,7 +554,7 @@ public class QuadConstraintStreamTest extends AbstractConstraintStreamTest {
                 assertMatchWithScore(-1, group1, value1));
     }
 
-    @Test
+    @TestTemplate
     public void groupBy_2Mapping1Collector_count() {
         assumeDrools();
         TestdataLavishSolution solution = TestdataLavishSolution.generateSolution(1, 2, 2, 3);
@@ -591,7 +591,7 @@ public class QuadConstraintStreamTest extends AbstractConstraintStreamTest {
                 assertMatchWithScore(-1, group1, value1, 1));
     }
 
-    @Test
+    @TestTemplate
     public void groupBy_2Mapping2Collector() {
         assumeDrools();
         TestdataLavishSolution solution = TestdataLavishSolution.generateSolution(1, 2, 2, 3);
@@ -632,7 +632,7 @@ public class QuadConstraintStreamTest extends AbstractConstraintStreamTest {
     // Penalize/reward
     // ************************************************************************
 
-    @Test
+    @TestTemplate
     public void penalize_Int() {
         assumeDrools();
         TestdataSolution solution = new TestdataSolution();
@@ -660,7 +660,7 @@ public class QuadConstraintStreamTest extends AbstractConstraintStreamTest {
         assertEquals(SimpleScore.of(-21), scoreDirector.calculateScore());
     }
 
-    @Test
+    @TestTemplate
     public void penalize_Long() {
         assumeDrools();
         TestdataSimpleLongScoreSolution solution = new TestdataSimpleLongScoreSolution();
@@ -690,7 +690,7 @@ public class QuadConstraintStreamTest extends AbstractConstraintStreamTest {
         assertEquals(SimpleLongScore.of(-21L), scoreDirector.calculateScore());
     }
 
-    @Test
+    @TestTemplate
     public void penalize_BigDecimal() {
         assumeDrools();
         TestdataSimpleBigDecimalScoreSolution solution = new TestdataSimpleBigDecimalScoreSolution();
@@ -720,7 +720,7 @@ public class QuadConstraintStreamTest extends AbstractConstraintStreamTest {
         assertEquals(SimpleBigDecimalScore.of(new BigDecimal("-1.2")), scoreDirector.calculateScore());
     }
 
-    @Test
+    @TestTemplate
     public void penalize_negative() {
         assumeDrools();
         TestdataLavishSolution solution = TestdataLavishSolution.generateSolution(1, 1, 1, 2);
@@ -741,7 +741,7 @@ public class QuadConstraintStreamTest extends AbstractConstraintStreamTest {
         assertThatThrownBy(scoreDirector::calculateScore).hasMessageContaining(constraintName);
     }
 
-    @Test
+    @TestTemplate
     public void reward_Int() {
         assumeDrools();
         TestdataSolution solution = new TestdataSolution();
@@ -769,7 +769,7 @@ public class QuadConstraintStreamTest extends AbstractConstraintStreamTest {
         assertEquals(SimpleScore.of(21), scoreDirector.calculateScore());
     }
 
-    @Test
+    @TestTemplate
     public void reward_Long() {
         assumeDrools();
         TestdataSimpleLongScoreSolution solution = new TestdataSimpleLongScoreSolution();
@@ -797,7 +797,7 @@ public class QuadConstraintStreamTest extends AbstractConstraintStreamTest {
         assertEquals(SimpleLongScore.of(21L), scoreDirector.calculateScore());
     }
 
-    @Test
+    @TestTemplate
     public void reward_BigDecimal() {
         assumeDrools();
         TestdataSimpleBigDecimalScoreSolution solution = new TestdataSimpleBigDecimalScoreSolution();
@@ -825,7 +825,7 @@ public class QuadConstraintStreamTest extends AbstractConstraintStreamTest {
         assertEquals(SimpleBigDecimalScore.of(new BigDecimal("1.2")), scoreDirector.calculateScore());
     }
 
-    @Test
+    @TestTemplate
     public void reward_negative() {
         assumeDrools();
         TestdataLavishSolution solution = TestdataLavishSolution.generateSolution(1, 1, 1, 2);
@@ -850,13 +850,13 @@ public class QuadConstraintStreamTest extends AbstractConstraintStreamTest {
     // Combinations
     // ************************************************************************
 
-    @Test
+    @TestTemplate
     @Disabled("Not yet implemented") // TODO
     public void globalNodeOrder() {
 
     }
 
-    @Test
+    @TestTemplate
     @Disabled("Not yet supported") // TODO
     public void nodeSharing() {
 

@@ -23,7 +23,7 @@ import java.util.function.Function;
 import java.util.stream.Stream;
 
 import org.junit.jupiter.api.Disabled;
-import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.TestTemplate;
 import org.optaplanner.core.api.score.buildin.simple.SimpleScore;
 import org.optaplanner.core.api.score.buildin.simplebigdecimal.SimpleBigDecimalScore;
 import org.optaplanner.core.api.score.buildin.simplelong.SimpleLongScore;
@@ -60,7 +60,7 @@ public class BiConstraintStreamTest extends AbstractConstraintStreamTest {
     // Filter
     // ************************************************************************
 
-    @Test
+    @TestTemplate
     public void filter_entity() {
         TestdataLavishSolution solution = TestdataLavishSolution.generateSolution(1, 0, 1, 0);
         TestdataLavishValue value1 = new TestdataLavishValue("MyValue 1", solution.getFirstValueGroup());
@@ -103,7 +103,7 @@ public class BiConstraintStreamTest extends AbstractConstraintStreamTest {
                 assertMatch(entity2, value1));
     }
 
-    @Test
+    @TestTemplate
     public void filterConsecutive() {
         TestdataLavishSolution solution = TestdataLavishSolution.generateSolution(5, 5);
         TestdataLavishEntity entity1 = solution.getEntityList().get(0);
@@ -135,7 +135,7 @@ public class BiConstraintStreamTest extends AbstractConstraintStreamTest {
     // Join
     // ************************************************************************
 
-    @Test
+    @TestTemplate
     public void join_0() {
         TestdataLavishSolution solution = TestdataLavishSolution.generateSolution(1, 0, 1, 0);
         TestdataLavishValue value1 = new TestdataLavishValue("MyValue 1", solution.getFirstValueGroup());
@@ -186,7 +186,7 @@ public class BiConstraintStreamTest extends AbstractConstraintStreamTest {
         assertScore(scoreDirector);
     }
 
-    @Test
+    @TestTemplate
     public void join_1Equal() {
         TestdataLavishSolution solution = TestdataLavishSolution.generateSolution(1, 0, 1, 0);
         TestdataLavishValue value1 = new TestdataLavishValue("MyValue 1", solution.getFirstValueGroup());
@@ -238,7 +238,7 @@ public class BiConstraintStreamTest extends AbstractConstraintStreamTest {
         assertScore(scoreDirector);
     }
 
-    @Test
+    @TestTemplate
     public void join_1Filtering() {
         TestdataLavishSolution solution = TestdataLavishSolution.generateSolution(1, 0, 1, 0);
         TestdataLavishValue value1 = new TestdataLavishValue("MyValue 1", solution.getFirstValueGroup());
@@ -290,7 +290,7 @@ public class BiConstraintStreamTest extends AbstractConstraintStreamTest {
         assertScore(scoreDirector);
     }
 
-    @Test
+    @TestTemplate
     public void join_2Equal() {
         TestdataLavishSolution solution = TestdataLavishSolution.generateSolution(1, 0, 1, 0);
         TestdataLavishValue value1 = new TestdataLavishValue("MyValue 1", solution.getFirstValueGroup());
@@ -346,7 +346,7 @@ public class BiConstraintStreamTest extends AbstractConstraintStreamTest {
         assertScore(scoreDirector);
     }
 
-    @Test
+    @TestTemplate
     public void join_filtering_comesLast() {
         assertThatThrownBy(() -> buildScoreDirector((factory) -> {
             return factory.from(TestdataLavishEntity.class)
@@ -357,7 +357,7 @@ public class BiConstraintStreamTest extends AbstractConstraintStreamTest {
         })).isInstanceOf(IllegalStateException.class);
     }
 
-    @Test
+    @TestTemplate
     public void join_mixedEqualsAndFiltering() {
         TestdataLavishSolution solution = TestdataLavishSolution.generateSolution(1, 0, 1, 0);
         TestdataLavishValue value1 = new TestdataLavishValue("MyValue 1", solution.getFirstValueGroup());
@@ -402,7 +402,7 @@ public class BiConstraintStreamTest extends AbstractConstraintStreamTest {
     // If (not) exists
     // ************************************************************************
 
-    @Test
+    @TestTemplate
     public void ifExists_0Joiner0Filter() {
         assumeDrools();
         TestdataLavishSolution solution = TestdataLavishSolution.generateSolution(1, 1, 1, 1);
@@ -428,7 +428,7 @@ public class BiConstraintStreamTest extends AbstractConstraintStreamTest {
         assertScore(scoreDirector);
     }
 
-    @Test
+    @TestTemplate
     public void ifExists_0Join1Filter() {
         assumeDrools();
         TestdataLavishSolution solution = TestdataLavishSolution.generateSolution(2, 5, 1, 1);
@@ -461,7 +461,7 @@ public class BiConstraintStreamTest extends AbstractConstraintStreamTest {
         assertScore(scoreDirector);
     }
 
-    @Test
+    @TestTemplate
     public void ifExists_1Join0Filter() {
         assumeDrools();
         TestdataLavishSolution solution = TestdataLavishSolution.generateSolution(2, 5, 1, 1);
@@ -496,7 +496,7 @@ public class BiConstraintStreamTest extends AbstractConstraintStreamTest {
                 assertMatch(solution.getFirstEntity(), entity2));
     }
 
-    @Test
+    @TestTemplate
     public void ifExists_1Join1Filter() {
         assumeDrools();
         TestdataLavishSolution solution = TestdataLavishSolution.generateSolution(2, 5, 1, 1);
@@ -529,7 +529,7 @@ public class BiConstraintStreamTest extends AbstractConstraintStreamTest {
         assertScore(scoreDirector);
     }
 
-    @Test
+    @TestTemplate
     public void ifNotExists_0Joiner0Filter() {
         assumeDrools();
         TestdataLavishSolution solution = TestdataLavishSolution.generateSolution(1, 1, 1, 1);
@@ -555,7 +555,7 @@ public class BiConstraintStreamTest extends AbstractConstraintStreamTest {
                 assertMatch(valueGroup, solution.getFirstValueGroup()));
     }
 
-    @Test
+    @TestTemplate
     public void ifNotExists_0Join1Filter() {
         assumeDrools();
         TestdataLavishSolution solution = TestdataLavishSolution.generateSolution(2, 5, 1, 1);
@@ -592,7 +592,7 @@ public class BiConstraintStreamTest extends AbstractConstraintStreamTest {
                 assertMatch(entity1, entity2));
     }
 
-    @Test
+    @TestTemplate
     public void ifNotExists_1Join0Filter() {
         assumeDrools();
         TestdataLavishSolution solution = TestdataLavishSolution.generateSolution(2, 5, 1, 1);
@@ -623,7 +623,7 @@ public class BiConstraintStreamTest extends AbstractConstraintStreamTest {
                 assertMatch(entity1, entity2));
     }
 
-    @Test
+    @TestTemplate
     public void ifNotExists_1Join1Filter() {
         assumeDrools();
         TestdataLavishSolution solution = TestdataLavishSolution.generateSolution(2, 5, 1, 1);
@@ -664,7 +664,7 @@ public class BiConstraintStreamTest extends AbstractConstraintStreamTest {
     // Group by
     // ************************************************************************
 
-    @Test
+    @TestTemplate
     public void groupBy_1Mapping0Collector() {
         assumeDrools();
         TestdataLavishSolution solution = TestdataLavishSolution.generateSolution(2, 5, 1, 7);
@@ -699,7 +699,7 @@ public class BiConstraintStreamTest extends AbstractConstraintStreamTest {
         assertScore(scoreDirector, assertMatchWithScore(-1, solution.getFirstEntityGroup()));
     }
 
-    @Test
+    @TestTemplate
     public void groupBy_0Mapping1Collector_count() {
         assumeDrools();
         TestdataLavishSolution solution = TestdataLavishSolution.generateSolution(2, 5, 2, 3);
@@ -722,7 +722,7 @@ public class BiConstraintStreamTest extends AbstractConstraintStreamTest {
         assertScore(scoreDirector, assertMatchWithScore(-1, 1));
     }
 
-    @Test
+    @TestTemplate
     public void groupBy_1Mapping1Collector_count() {
         assumeDrools();
         TestdataLavishSolution solution = TestdataLavishSolution.generateSolution(2, 5, 3, 7);
@@ -749,7 +749,7 @@ public class BiConstraintStreamTest extends AbstractConstraintStreamTest {
                 assertMatchWithScore(-1, TEST_CONSTRAINT_NAME, solution.getFirstEntity().toString(), 5));
     }
 
-    @Test
+    @TestTemplate
     public void groupBy_2Mapping0Collector() {
         assumeDrools();
         TestdataLavishSolution solution = TestdataLavishSolution.generateSolution(2, 5, 3, 3);
@@ -779,7 +779,7 @@ public class BiConstraintStreamTest extends AbstractConstraintStreamTest {
                 assertMatchWithScore(-1, group2, group3));
     }
 
-    @Test
+    @TestTemplate
     public void groupBy_2Mapping1Collector_count() {
         assumeDrools();
         TestdataLavishSolution solution = TestdataLavishSolution.generateSolution(1, 1, 2, 4);
@@ -812,7 +812,7 @@ public class BiConstraintStreamTest extends AbstractConstraintStreamTest {
                 assertMatchWithScore(-1, group2, group1, 1));
     }
 
-    @Test
+    @TestTemplate
     public void groupBy_2Mapping2Collector() {
         assumeDrools();
         TestdataLavishSolution solution = TestdataLavishSolution.generateSolution(1, 1, 2, 4);
@@ -850,7 +850,7 @@ public class BiConstraintStreamTest extends AbstractConstraintStreamTest {
     // Penalize/reward
     // ************************************************************************
 
-    @Test
+    @TestTemplate
     public void penalize_Int() {
         TestdataSolution solution = new TestdataSolution();
         TestdataValue v1 = new TestdataValue("v1");
@@ -875,7 +875,7 @@ public class BiConstraintStreamTest extends AbstractConstraintStreamTest {
         assertEquals(SimpleScore.of(-42), scoreDirector.calculateScore());
     }
 
-    @Test
+    @TestTemplate
     public void penalize_Long() {
         TestdataSimpleLongScoreSolution solution = new TestdataSimpleLongScoreSolution();
         TestdataValue v1 = new TestdataValue("v1");
@@ -900,7 +900,7 @@ public class BiConstraintStreamTest extends AbstractConstraintStreamTest {
         assertEquals(SimpleLongScore.of(-42L), scoreDirector.calculateScore());
     }
 
-    @Test
+    @TestTemplate
     public void penalize_BigDecimal() {
         TestdataSimpleBigDecimalScoreSolution solution = new TestdataSimpleBigDecimalScoreSolution();
         TestdataValue v1 = new TestdataValue("v1");
@@ -925,7 +925,7 @@ public class BiConstraintStreamTest extends AbstractConstraintStreamTest {
         assertEquals(SimpleBigDecimalScore.of(new BigDecimal("-2.4")), scoreDirector.calculateScore());
     }
 
-    @Test
+    @TestTemplate
     public void penalize_negative() {
         TestdataLavishSolution solution = TestdataLavishSolution.generateSolution(1, 1, 1, 1);
 
@@ -944,7 +944,7 @@ public class BiConstraintStreamTest extends AbstractConstraintStreamTest {
         assertThatThrownBy(scoreDirector::calculateScore).hasMessageContaining(constraintName);
     }
 
-    @Test
+    @TestTemplate
     public void reward_Int() {
         TestdataSolution solution = new TestdataSolution();
         TestdataValue v1 = new TestdataValue("v1");
@@ -969,7 +969,7 @@ public class BiConstraintStreamTest extends AbstractConstraintStreamTest {
         assertEquals(SimpleScore.of(42), scoreDirector.calculateScore());
     }
 
-    @Test
+    @TestTemplate
     public void reward_Long() {
         TestdataSimpleLongScoreSolution solution = new TestdataSimpleLongScoreSolution();
         TestdataValue v1 = new TestdataValue("v1");
@@ -994,7 +994,7 @@ public class BiConstraintStreamTest extends AbstractConstraintStreamTest {
         assertEquals(SimpleLongScore.of(42L), scoreDirector.calculateScore());
     }
 
-    @Test
+    @TestTemplate
     public void reward_BigDecimal() {
         TestdataSimpleBigDecimalScoreSolution solution = new TestdataSimpleBigDecimalScoreSolution();
         TestdataValue v1 = new TestdataValue("v1");
@@ -1019,7 +1019,7 @@ public class BiConstraintStreamTest extends AbstractConstraintStreamTest {
         assertEquals(SimpleBigDecimalScore.of(new BigDecimal("2.4")), scoreDirector.calculateScore());
     }
 
-    @Test
+    @TestTemplate
     public void reward_negative() {
         TestdataLavishSolution solution = TestdataLavishSolution.generateSolution(1, 1, 1, 1);
 
@@ -1042,17 +1042,17 @@ public class BiConstraintStreamTest extends AbstractConstraintStreamTest {
     // Combinations
     // ************************************************************************
 
-    @Test @Disabled("Not yet implemented") // TODO
+    @TestTemplate @Disabled("Not yet implemented") // TODO
     public void globalNodeOrder() {
 
     }
 
-    @Test @Disabled("Not yet supported") // TODO
+    @TestTemplate @Disabled("Not yet supported") // TODO
     public void nodeSharing() {
 
     }
 
-    @Test
+    @TestTemplate
     public void joinerEqualsAndSameness() {
         TestdataLavishSolution solution = TestdataLavishSolution.generateSolution(1, 2, 1, 2);
         // The two bigDecimals are not the same, but they equals()

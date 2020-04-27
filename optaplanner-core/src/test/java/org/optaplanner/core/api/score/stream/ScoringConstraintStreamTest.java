@@ -18,7 +18,7 @@ package org.optaplanner.core.api.score.stream;
 
 import java.math.BigDecimal;
 
-import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.TestTemplate;
 import org.optaplanner.core.api.score.buildin.simple.SimpleScore;
 import org.optaplanner.core.api.score.buildin.simplebigdecimal.SimpleBigDecimalScore;
 import org.optaplanner.core.api.score.buildin.simplelong.SimpleLongScore;
@@ -41,7 +41,7 @@ public class ScoringConstraintStreamTest extends AbstractConstraintStreamTest {
         super(constraintMatchEnabled, constraintStreamImplType);
     }
 
-    @Test
+    @TestTemplate
     public void penalizeUniUnweighed() {
         TestdataLavishSolution solution = TestdataLavishSolution.generateSolution();
 
@@ -54,7 +54,7 @@ public class ScoringConstraintStreamTest extends AbstractConstraintStreamTest {
         assertThat(scoreDirector.calculateScore()).isEqualTo(SimpleScore.of(-7));
     }
 
-    @Test
+    @TestTemplate
     public void penalizeUni() {
         TestdataLavishSolution solution = TestdataLavishSolution.generateSolution();
 
@@ -67,7 +67,7 @@ public class ScoringConstraintStreamTest extends AbstractConstraintStreamTest {
         assertThat(scoreDirector.calculateScore()).isEqualTo(SimpleScore.of(-14));
     }
 
-    @Test
+    @TestTemplate
     public void penalizeUniLong() {
         TestdataSimpleLongScoreSolution solution = TestdataSimpleLongScoreSolution.generateSolution();
 
@@ -81,7 +81,7 @@ public class ScoringConstraintStreamTest extends AbstractConstraintStreamTest {
         assertThat(scoreDirector.calculateScore()).isEqualTo(SimpleLongScore.of(-14));
     }
 
-    @Test
+    @TestTemplate
     public void penalizeUniBigDecimal() {
         TestdataSimpleBigDecimalScoreSolution solution = TestdataSimpleBigDecimalScoreSolution.generateSolution();
 
@@ -95,7 +95,7 @@ public class ScoringConstraintStreamTest extends AbstractConstraintStreamTest {
         assertThat(scoreDirector.calculateScore()).isEqualTo(SimpleBigDecimalScore.of(BigDecimal.valueOf(-14)));
     }
 
-    @Test
+    @TestTemplate
     public void rewardUniUnweighed() {
         TestdataLavishSolution solution = TestdataLavishSolution.generateSolution();
 
@@ -108,7 +108,7 @@ public class ScoringConstraintStreamTest extends AbstractConstraintStreamTest {
         assertThat(scoreDirector.calculateScore()).isEqualTo(SimpleScore.of(7));
     }
 
-    @Test
+    @TestTemplate
     public void rewardUni() {
         TestdataLavishSolution solution = TestdataLavishSolution.generateSolution();
 
@@ -121,7 +121,7 @@ public class ScoringConstraintStreamTest extends AbstractConstraintStreamTest {
         assertThat(scoreDirector.calculateScore()).isEqualTo(SimpleScore.of(14));
     }
 
-    @Test
+    @TestTemplate
     public void rewardUniLong() {
         TestdataSimpleLongScoreSolution solution = TestdataSimpleLongScoreSolution.generateSolution();
 
@@ -135,7 +135,7 @@ public class ScoringConstraintStreamTest extends AbstractConstraintStreamTest {
         assertThat(scoreDirector.calculateScore()).isEqualTo(SimpleLongScore.of(14));
     }
 
-    @Test
+    @TestTemplate
     public void rewardUniBigDecimal() {
         TestdataSimpleBigDecimalScoreSolution solution = TestdataSimpleBigDecimalScoreSolution.generateSolution();
 
@@ -149,7 +149,7 @@ public class ScoringConstraintStreamTest extends AbstractConstraintStreamTest {
         assertThat(scoreDirector.calculateScore()).isEqualTo(SimpleBigDecimalScore.of(BigDecimal.valueOf(14)));
     }
 
-    @Test
+    @TestTemplate
     public void impactPositiveUniUnweighed() {
         TestdataLavishSolution solution = TestdataLavishSolution.generateSolution();
 
@@ -162,7 +162,7 @@ public class ScoringConstraintStreamTest extends AbstractConstraintStreamTest {
         assertThat(scoreDirector.calculateScore()).isEqualTo(SimpleScore.of(7));
     }
 
-    @Test
+    @TestTemplate
     public void impactPositiveUni() {
         TestdataLavishSolution solution = TestdataLavishSolution.generateSolution();
 
@@ -175,7 +175,7 @@ public class ScoringConstraintStreamTest extends AbstractConstraintStreamTest {
         assertThat(scoreDirector.calculateScore()).isEqualTo(SimpleScore.of(14));
     }
 
-    @Test
+    @TestTemplate
     public void impactPositiveUniLong() {
         TestdataSimpleLongScoreSolution solution = TestdataSimpleLongScoreSolution.generateSolution();
 
@@ -189,7 +189,7 @@ public class ScoringConstraintStreamTest extends AbstractConstraintStreamTest {
         assertThat(scoreDirector.calculateScore()).isEqualTo(SimpleLongScore.of(14));
     }
 
-    @Test
+    @TestTemplate
     public void impactPositiveUniBigDecimal() {
         TestdataSimpleBigDecimalScoreSolution solution = TestdataSimpleBigDecimalScoreSolution.generateSolution();
 
@@ -203,7 +203,7 @@ public class ScoringConstraintStreamTest extends AbstractConstraintStreamTest {
         assertThat(scoreDirector.calculateScore()).isEqualTo(SimpleBigDecimalScore.of(BigDecimal.valueOf(14)));
     }
 
-    @Test
+    @TestTemplate
     public void impactNegativeUni() {
         TestdataLavishSolution solution = TestdataLavishSolution.generateSolution();
 
@@ -216,7 +216,7 @@ public class ScoringConstraintStreamTest extends AbstractConstraintStreamTest {
         assertThat(scoreDirector.calculateScore()).isEqualTo(SimpleScore.of(-14));
     }
 
-    @Test
+    @TestTemplate
     public void impactNegativeUniLong() {
         TestdataSimpleLongScoreSolution solution = TestdataSimpleLongScoreSolution.generateSolution();
 
@@ -230,7 +230,7 @@ public class ScoringConstraintStreamTest extends AbstractConstraintStreamTest {
         assertThat(scoreDirector.calculateScore()).isEqualTo(SimpleLongScore.of(-14));
     }
 
-    @Test
+    @TestTemplate
     public void impactNegativeUniBigDecimal() {
         TestdataSimpleBigDecimalScoreSolution solution = TestdataSimpleBigDecimalScoreSolution.generateSolution();
 
@@ -244,7 +244,7 @@ public class ScoringConstraintStreamTest extends AbstractConstraintStreamTest {
         assertThat(scoreDirector.calculateScore()).isEqualTo(SimpleBigDecimalScore.of(BigDecimal.valueOf(-14)));
     }
 
-    @Test
+    @TestTemplate
     public void penalizeBiUnweighed() {
         TestdataLavishSolution solution = TestdataLavishSolution.generateSolution();
 
@@ -257,7 +257,7 @@ public class ScoringConstraintStreamTest extends AbstractConstraintStreamTest {
         assertThat(scoreDirector.calculateScore()).isEqualTo(SimpleScore.of(-21));
     }
 
-    @Test
+    @TestTemplate
     public void penalizeBi() {
         TestdataLavishSolution solution = TestdataLavishSolution.generateSolution();
 
@@ -270,7 +270,7 @@ public class ScoringConstraintStreamTest extends AbstractConstraintStreamTest {
         assertThat(scoreDirector.calculateScore()).isEqualTo(SimpleScore.of(-42));
     }
 
-    @Test
+    @TestTemplate
     public void penalizeBiLong() {
         TestdataSimpleLongScoreSolution solution = TestdataSimpleLongScoreSolution.generateSolution();
 
@@ -284,7 +284,7 @@ public class ScoringConstraintStreamTest extends AbstractConstraintStreamTest {
         assertThat(scoreDirector.calculateScore()).isEqualTo(SimpleLongScore.of(-42));
     }
 
-    @Test
+    @TestTemplate
     public void penalizeBiBigDecimal() {
         TestdataSimpleBigDecimalScoreSolution solution = TestdataSimpleBigDecimalScoreSolution.generateSolution();
 
@@ -299,7 +299,7 @@ public class ScoringConstraintStreamTest extends AbstractConstraintStreamTest {
         assertThat(scoreDirector.calculateScore()).isEqualTo(SimpleBigDecimalScore.of(BigDecimal.valueOf(-42)));
     }
 
-    @Test
+    @TestTemplate
     public void rewardBiUnweighed() {
         TestdataLavishSolution solution = TestdataLavishSolution.generateSolution();
 
@@ -312,7 +312,7 @@ public class ScoringConstraintStreamTest extends AbstractConstraintStreamTest {
         assertThat(scoreDirector.calculateScore()).isEqualTo(SimpleScore.of(21));
     }
 
-    @Test
+    @TestTemplate
     public void rewardBi() {
         TestdataLavishSolution solution = TestdataLavishSolution.generateSolution();
 
@@ -325,7 +325,7 @@ public class ScoringConstraintStreamTest extends AbstractConstraintStreamTest {
         assertThat(scoreDirector.calculateScore()).isEqualTo(SimpleScore.of(42));
     }
 
-    @Test
+    @TestTemplate
     public void rewardBiLong() {
         TestdataSimpleLongScoreSolution solution = TestdataSimpleLongScoreSolution.generateSolution();
 
@@ -339,7 +339,7 @@ public class ScoringConstraintStreamTest extends AbstractConstraintStreamTest {
         assertThat(scoreDirector.calculateScore()).isEqualTo(SimpleLongScore.of(42));
     }
 
-    @Test
+    @TestTemplate
     public void rewardBiBigDecimal() {
         TestdataSimpleBigDecimalScoreSolution solution = TestdataSimpleBigDecimalScoreSolution.generateSolution();
 
@@ -354,7 +354,7 @@ public class ScoringConstraintStreamTest extends AbstractConstraintStreamTest {
         assertThat(scoreDirector.calculateScore()).isEqualTo(SimpleBigDecimalScore.of(BigDecimal.valueOf(42)));
     }
 
-    @Test
+    @TestTemplate
     public void impactPositiveBiUnweighed() {
         TestdataLavishSolution solution = TestdataLavishSolution.generateSolution();
 
@@ -367,7 +367,7 @@ public class ScoringConstraintStreamTest extends AbstractConstraintStreamTest {
         assertThat(scoreDirector.calculateScore()).isEqualTo(SimpleScore.of(21));
     }
 
-    @Test
+    @TestTemplate
     public void impactPositiveBi() {
         TestdataLavishSolution solution = TestdataLavishSolution.generateSolution();
 
@@ -380,7 +380,7 @@ public class ScoringConstraintStreamTest extends AbstractConstraintStreamTest {
         assertThat(scoreDirector.calculateScore()).isEqualTo(SimpleScore.of(42));
     }
 
-    @Test
+    @TestTemplate
     public void impactPositiveBiLong() {
         TestdataSimpleLongScoreSolution solution = TestdataSimpleLongScoreSolution.generateSolution();
 
@@ -394,7 +394,7 @@ public class ScoringConstraintStreamTest extends AbstractConstraintStreamTest {
         assertThat(scoreDirector.calculateScore()).isEqualTo(SimpleLongScore.of(42));
     }
 
-    @Test
+    @TestTemplate
     public void impactPositiveBiBigDecimal() {
         TestdataSimpleBigDecimalScoreSolution solution = TestdataSimpleBigDecimalScoreSolution.generateSolution();
 
@@ -409,7 +409,7 @@ public class ScoringConstraintStreamTest extends AbstractConstraintStreamTest {
         assertThat(scoreDirector.calculateScore()).isEqualTo(SimpleBigDecimalScore.of(BigDecimal.valueOf(42)));
     }
 
-    @Test
+    @TestTemplate
     public void impactNegativeBi() {
         TestdataLavishSolution solution = TestdataLavishSolution.generateSolution();
 
@@ -422,7 +422,7 @@ public class ScoringConstraintStreamTest extends AbstractConstraintStreamTest {
         assertThat(scoreDirector.calculateScore()).isEqualTo(SimpleScore.of(-42));
     }
 
-    @Test
+    @TestTemplate
     public void impactNegativeBiLong() {
         TestdataSimpleLongScoreSolution solution = TestdataSimpleLongScoreSolution.generateSolution();
 
@@ -436,7 +436,7 @@ public class ScoringConstraintStreamTest extends AbstractConstraintStreamTest {
         assertThat(scoreDirector.calculateScore()).isEqualTo(SimpleLongScore.of(-42));
     }
 
-    @Test
+    @TestTemplate
     public void impactNegativeBiBigDecimal() {
         TestdataSimpleBigDecimalScoreSolution solution = TestdataSimpleBigDecimalScoreSolution.generateSolution();
 
@@ -451,7 +451,7 @@ public class ScoringConstraintStreamTest extends AbstractConstraintStreamTest {
         assertThat(scoreDirector.calculateScore()).isEqualTo(SimpleBigDecimalScore.of(BigDecimal.valueOf(-42)));
     }
 
-    @Test
+    @TestTemplate
     public void penalizeTriUnweighed() {
         TestdataLavishSolution solution = TestdataLavishSolution.generateSolution();
 
@@ -465,7 +465,7 @@ public class ScoringConstraintStreamTest extends AbstractConstraintStreamTest {
         assertThat(scoreDirector.calculateScore()).isEqualTo(SimpleScore.of(-2));
     }
 
-    @Test
+    @TestTemplate
     public void penalizeTri() {
         TestdataLavishSolution solution = TestdataLavishSolution.generateSolution();
 
@@ -479,7 +479,7 @@ public class ScoringConstraintStreamTest extends AbstractConstraintStreamTest {
         assertThat(scoreDirector.calculateScore()).isEqualTo(SimpleScore.of(-4));
     }
 
-    @Test
+    @TestTemplate
     public void penalizeTriLong() {
         TestdataSimpleLongScoreSolution solution = TestdataSimpleLongScoreSolution.generateSolution();
 
@@ -494,7 +494,7 @@ public class ScoringConstraintStreamTest extends AbstractConstraintStreamTest {
         assertThat(scoreDirector.calculateScore()).isEqualTo(SimpleLongScore.of(-4));
     }
 
-    @Test
+    @TestTemplate
     public void penalizeTriBigDecimal() {
         TestdataSimpleBigDecimalScoreSolution solution = TestdataSimpleBigDecimalScoreSolution.generateSolution();
 
@@ -510,7 +510,7 @@ public class ScoringConstraintStreamTest extends AbstractConstraintStreamTest {
         assertThat(scoreDirector.calculateScore()).isEqualTo(SimpleBigDecimalScore.of(BigDecimal.valueOf(-4)));
     }
 
-    @Test
+    @TestTemplate
     public void rewardTriUnweighed() {
         TestdataLavishSolution solution = TestdataLavishSolution.generateSolution();
 
@@ -524,7 +524,7 @@ public class ScoringConstraintStreamTest extends AbstractConstraintStreamTest {
         assertThat(scoreDirector.calculateScore()).isEqualTo(SimpleScore.of(2));
     }
 
-    @Test
+    @TestTemplate
     public void rewardTri() {
         TestdataLavishSolution solution = TestdataLavishSolution.generateSolution();
 
@@ -538,7 +538,7 @@ public class ScoringConstraintStreamTest extends AbstractConstraintStreamTest {
         assertThat(scoreDirector.calculateScore()).isEqualTo(SimpleScore.of(4));
     }
 
-    @Test
+    @TestTemplate
     public void rewardTriLong() {
         TestdataSimpleLongScoreSolution solution = TestdataSimpleLongScoreSolution.generateSolution();
 
@@ -553,7 +553,7 @@ public class ScoringConstraintStreamTest extends AbstractConstraintStreamTest {
         assertThat(scoreDirector.calculateScore()).isEqualTo(SimpleLongScore.of(4));
     }
 
-    @Test
+    @TestTemplate
     public void rewardTriBigDecimal() {
         TestdataSimpleBigDecimalScoreSolution solution = TestdataSimpleBigDecimalScoreSolution.generateSolution();
 
@@ -569,7 +569,7 @@ public class ScoringConstraintStreamTest extends AbstractConstraintStreamTest {
         assertThat(scoreDirector.calculateScore()).isEqualTo(SimpleBigDecimalScore.of(BigDecimal.valueOf(4)));
     }
 
-    @Test
+    @TestTemplate
     public void impactPositiveTriUnweighed() {
         TestdataLavishSolution solution = TestdataLavishSolution.generateSolution();
 
@@ -583,7 +583,7 @@ public class ScoringConstraintStreamTest extends AbstractConstraintStreamTest {
         assertThat(scoreDirector.calculateScore()).isEqualTo(SimpleScore.of(2));
     }
 
-    @Test
+    @TestTemplate
     public void impactPositiveTri() {
         TestdataLavishSolution solution = TestdataLavishSolution.generateSolution();
 
@@ -597,7 +597,7 @@ public class ScoringConstraintStreamTest extends AbstractConstraintStreamTest {
         assertThat(scoreDirector.calculateScore()).isEqualTo(SimpleScore.of(4));
     }
 
-    @Test
+    @TestTemplate
     public void impactPositiveTriLong() {
         TestdataSimpleLongScoreSolution solution = TestdataSimpleLongScoreSolution.generateSolution();
 
@@ -612,7 +612,7 @@ public class ScoringConstraintStreamTest extends AbstractConstraintStreamTest {
         assertThat(scoreDirector.calculateScore()).isEqualTo(SimpleLongScore.of(4));
     }
 
-    @Test
+    @TestTemplate
     public void impactPositiveTriBigDecimal() {
         TestdataSimpleBigDecimalScoreSolution solution = TestdataSimpleBigDecimalScoreSolution.generateSolution();
 
@@ -628,7 +628,7 @@ public class ScoringConstraintStreamTest extends AbstractConstraintStreamTest {
         assertThat(scoreDirector.calculateScore()).isEqualTo(SimpleBigDecimalScore.of(BigDecimal.valueOf(4)));
     }
 
-    @Test
+    @TestTemplate
     public void impactNegativeTri() {
         TestdataLavishSolution solution = TestdataLavishSolution.generateSolution();
 
@@ -642,7 +642,7 @@ public class ScoringConstraintStreamTest extends AbstractConstraintStreamTest {
         assertThat(scoreDirector.calculateScore()).isEqualTo(SimpleScore.of(-4));
     }
 
-    @Test
+    @TestTemplate
     public void impactNegativeTriLong() {
         TestdataSimpleLongScoreSolution solution = TestdataSimpleLongScoreSolution.generateSolution();
 
@@ -657,7 +657,7 @@ public class ScoringConstraintStreamTest extends AbstractConstraintStreamTest {
         assertThat(scoreDirector.calculateScore()).isEqualTo(SimpleLongScore.of(-4));
     }
 
-    @Test
+    @TestTemplate
     public void impactNegativeTriBigDecimal() {
         TestdataSimpleBigDecimalScoreSolution solution = TestdataSimpleBigDecimalScoreSolution.generateSolution();
 
@@ -673,7 +673,7 @@ public class ScoringConstraintStreamTest extends AbstractConstraintStreamTest {
         assertThat(scoreDirector.calculateScore()).isEqualTo(SimpleBigDecimalScore.of(BigDecimal.valueOf(-4)));
     }
 
-    @Test
+    @TestTemplate
     public void penalizeQuadUnweighed() {
         assumeDrools();
         TestdataLavishSolution solution = TestdataLavishSolution.generateSolution();
@@ -689,7 +689,7 @@ public class ScoringConstraintStreamTest extends AbstractConstraintStreamTest {
         assertThat(scoreDirector.calculateScore()).isEqualTo(SimpleScore.of(-2));
     }
 
-    @Test
+    @TestTemplate
     public void penalizeQuad() {
         assumeDrools();
         TestdataLavishSolution solution = TestdataLavishSolution.generateSolution();
@@ -705,7 +705,7 @@ public class ScoringConstraintStreamTest extends AbstractConstraintStreamTest {
         assertThat(scoreDirector.calculateScore()).isEqualTo(SimpleScore.of(-4));
     }
 
-    @Test
+    @TestTemplate
     public void penalizeQuadLong() {
         assumeDrools();
         TestdataSimpleLongScoreSolution solution = TestdataSimpleLongScoreSolution.generateSolution();
@@ -722,7 +722,7 @@ public class ScoringConstraintStreamTest extends AbstractConstraintStreamTest {
         assertThat(scoreDirector.calculateScore()).isEqualTo(SimpleLongScore.of(-4));
     }
 
-    @Test
+    @TestTemplate
     public void penalizeQuadBigDecimal() {
         assumeDrools();
         TestdataSimpleBigDecimalScoreSolution solution = TestdataSimpleBigDecimalScoreSolution.generateSolution();
@@ -740,7 +740,7 @@ public class ScoringConstraintStreamTest extends AbstractConstraintStreamTest {
         assertThat(scoreDirector.calculateScore()).isEqualTo(SimpleBigDecimalScore.of(BigDecimal.valueOf(-4)));
     }
 
-    @Test
+    @TestTemplate
     public void rewardQuadUnweighed() {
         assumeDrools();
         TestdataLavishSolution solution = TestdataLavishSolution.generateSolution();
@@ -756,7 +756,7 @@ public class ScoringConstraintStreamTest extends AbstractConstraintStreamTest {
         assertThat(scoreDirector.calculateScore()).isEqualTo(SimpleScore.of(2));
     }
 
-    @Test
+    @TestTemplate
     public void rewardQuad() {
         assumeDrools();
         TestdataLavishSolution solution = TestdataLavishSolution.generateSolution();
@@ -772,7 +772,7 @@ public class ScoringConstraintStreamTest extends AbstractConstraintStreamTest {
         assertThat(scoreDirector.calculateScore()).isEqualTo(SimpleScore.of(4));
     }
 
-    @Test
+    @TestTemplate
     public void rewardQuadLong() {
         assumeDrools();
         TestdataSimpleLongScoreSolution solution = TestdataSimpleLongScoreSolution.generateSolution();
@@ -789,7 +789,7 @@ public class ScoringConstraintStreamTest extends AbstractConstraintStreamTest {
         assertThat(scoreDirector.calculateScore()).isEqualTo(SimpleLongScore.of(4));
     }
 
-    @Test
+    @TestTemplate
     public void rewardQuadBigDecimal() {
         assumeDrools();
         TestdataSimpleBigDecimalScoreSolution solution = TestdataSimpleBigDecimalScoreSolution.generateSolution();
@@ -807,7 +807,7 @@ public class ScoringConstraintStreamTest extends AbstractConstraintStreamTest {
         assertThat(scoreDirector.calculateScore()).isEqualTo(SimpleBigDecimalScore.of(BigDecimal.valueOf(4)));
     }
 
-    @Test
+    @TestTemplate
     public void impactPositiveQuadUnweighed() {
         assumeDrools();
         TestdataLavishSolution solution = TestdataLavishSolution.generateSolution();
@@ -823,7 +823,7 @@ public class ScoringConstraintStreamTest extends AbstractConstraintStreamTest {
         assertThat(scoreDirector.calculateScore()).isEqualTo(SimpleScore.of(2));
     }
 
-    @Test
+    @TestTemplate
     public void impactPositiveQuad() {
         assumeDrools();
         TestdataLavishSolution solution = TestdataLavishSolution.generateSolution();
@@ -839,7 +839,7 @@ public class ScoringConstraintStreamTest extends AbstractConstraintStreamTest {
         assertThat(scoreDirector.calculateScore()).isEqualTo(SimpleScore.of(4));
     }
 
-    @Test
+    @TestTemplate
     public void impactPositiveQuadLong() {
         assumeDrools();
         TestdataSimpleLongScoreSolution solution = TestdataSimpleLongScoreSolution.generateSolution();
@@ -856,7 +856,7 @@ public class ScoringConstraintStreamTest extends AbstractConstraintStreamTest {
         assertThat(scoreDirector.calculateScore()).isEqualTo(SimpleLongScore.of(4));
     }
 
-    @Test
+    @TestTemplate
     public void impactPositiveQuadBigDecimal() {
         assumeDrools();
         TestdataSimpleBigDecimalScoreSolution solution = TestdataSimpleBigDecimalScoreSolution.generateSolution();
@@ -874,7 +874,7 @@ public class ScoringConstraintStreamTest extends AbstractConstraintStreamTest {
         assertThat(scoreDirector.calculateScore()).isEqualTo(SimpleBigDecimalScore.of(BigDecimal.valueOf(4)));
     }
 
-    @Test
+    @TestTemplate
     public void impactNegativeQuad() {
         assumeDrools();
         TestdataLavishSolution solution = TestdataLavishSolution.generateSolution();
@@ -890,7 +890,7 @@ public class ScoringConstraintStreamTest extends AbstractConstraintStreamTest {
         assertThat(scoreDirector.calculateScore()).isEqualTo(SimpleScore.of(-4));
     }
 
-    @Test
+    @TestTemplate
     public void impactNegativeQuadLong() {
         assumeDrools();
         TestdataSimpleLongScoreSolution solution = TestdataSimpleLongScoreSolution.generateSolution();
@@ -907,7 +907,7 @@ public class ScoringConstraintStreamTest extends AbstractConstraintStreamTest {
         assertThat(scoreDirector.calculateScore()).isEqualTo(SimpleLongScore.of(-4));
     }
 
-    @Test
+    @TestTemplate
     public void impactNegativeQuadBigDecimal() {
         assumeDrools();
         TestdataSimpleBigDecimalScoreSolution solution = TestdataSimpleBigDecimalScoreSolution.generateSolution();

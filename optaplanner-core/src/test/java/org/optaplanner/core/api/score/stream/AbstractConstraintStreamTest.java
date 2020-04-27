@@ -24,8 +24,7 @@ import java.util.function.Supplier;
 import java.util.stream.Collectors;
 
 import org.junit.Assume;
-import org.junit.runner.RunWith;
-import org.junit.runners.Parameterized;
+import org.junit.jupiter.api.extension.ExtendWith;
 import org.optaplanner.core.api.score.buildin.simple.SimpleScore;
 import org.optaplanner.core.api.score.constraint.ConstraintMatch;
 import org.optaplanner.core.api.score.constraint.ConstraintMatchTotal;
@@ -38,20 +37,10 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.fail;
 import static org.optaplanner.core.api.score.constraint.ConstraintMatchTotal.composeConstraintId;
 
-@RunWith(Parameterized.class)
+@ExtendWith(ConstraintStreamTestExtension.class)
 public abstract class AbstractConstraintStreamTest {
 
     protected static final String TEST_CONSTRAINT_NAME = "testConstraintName";
-
-    @Parameterized.Parameters(name = "constraintMatchEnabled={0}, constraintStreamImplType={1}")
-    public static Object[][] data() {
-        return new Object[][]{
-                {false, ConstraintStreamImplType.BAVET},
-                {true, ConstraintStreamImplType.BAVET},
-                {false, ConstraintStreamImplType.DROOLS},
-                {true, ConstraintStreamImplType.DROOLS}
-        };
-    }
 
     protected final boolean constraintMatchEnabled;
     protected final ConstraintStreamImplType constraintStreamImplType;

@@ -22,7 +22,7 @@ import java.util.function.Function;
 import java.util.stream.Stream;
 
 import com.google.common.base.Functions;
-import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.TestTemplate;
 import org.optaplanner.core.api.score.buildin.simple.SimpleScore;
 import org.optaplanner.core.impl.score.director.InnerScoreDirector;
 import org.optaplanner.core.impl.testdata.domain.score.lavish.TestdataLavishEntity;
@@ -47,7 +47,7 @@ public class AdvancedGroupByConstraintStreamTest extends AbstractConstraintStrea
         super(constraintMatchEnabled, constraintStreamImplType);
     }
 
-    @Test
+    @TestTemplate
     public void collectedAndFiltered() {
         assumeDrools();
         TestdataLavishSolution solution = TestdataLavishSolution.generateSolution(2, 5, 1, 7);
@@ -81,7 +81,7 @@ public class AdvancedGroupByConstraintStreamTest extends AbstractConstraintStrea
         assertScore(scoreDirector); // There is less than 10 entities, and therefore there are no penalties.
     }
 
-    @Test
+    @TestTemplate
     public void collectedFilteredRecollected() {
         assumeDrools();
         TestdataLavishSolution solution = TestdataLavishSolution.generateSolution(2, 2, 2, 2);
@@ -105,7 +105,7 @@ public class AdvancedGroupByConstraintStreamTest extends AbstractConstraintStrea
         assertScore(scoreDirector, assertMatchWithScore(-1, 1));
     }
 
-    @Test
+    @TestTemplate
     public void uniGroupByRecollected() {
         assumeDrools();
         TestdataLavishSolution solution = TestdataLavishSolution.generateSolution(2, 2, 2, 2);
@@ -133,7 +133,7 @@ public class AdvancedGroupByConstraintStreamTest extends AbstractConstraintStrea
                 assertMatchWithScore(-1, asSet(entity2.getEntityGroup())));
     }
 
-    @Test
+    @TestTemplate
     public void biGroupByRecollected() {
         assumeDrools();
         TestdataLavishSolution solution = TestdataLavishSolution.generateSolution(2, 3, 2, 5);
@@ -162,7 +162,7 @@ public class AdvancedGroupByConstraintStreamTest extends AbstractConstraintStrea
                         asMap(solution.getFirstEntityGroup(), 1, solution.getEntityGroupList().get(1), 1)));
     }
 
-    @Test
+    @TestTemplate
     public void triGroupByRecollected() {
         assumeDrools();
         TestdataLavishSolution solution = TestdataLavishSolution.generateSolution(2, 3, 2, 6);
@@ -194,7 +194,7 @@ public class AdvancedGroupByConstraintStreamTest extends AbstractConstraintStrea
                         asMap(solution.getEntityGroupList().get(1), 3)));
     }
 
-    @Test
+    @TestTemplate
     public void quadGroupByRecollected() {
         assumeDrools();
         TestdataLavishSolution solution = TestdataLavishSolution.generateSolution(2, 3, 2, 8);
@@ -229,7 +229,7 @@ public class AdvancedGroupByConstraintStreamTest extends AbstractConstraintStrea
                         asMap(solution.getEntityGroupList().get(1), 12)));
     }
 
-    @Test
+    @TestTemplate
     public void biGroupByRegrouped() {
         assumeDrools();
         TestdataLavishSolution solution = TestdataLavishSolution.generateSolution(2, 2, 2, 4);
@@ -257,7 +257,7 @@ public class AdvancedGroupByConstraintStreamTest extends AbstractConstraintStrea
         assertScore(scoreDirector, assertMatchWithScore(-1, entity2.getEntityGroup(), 1));
     }
 
-    @Test
+    @TestTemplate
     public void triGroupByRegrouped() {
         assumeDrools();
         TestdataLavishSolution solution = TestdataLavishSolution.generateSolution(2, 2, 2, 6);
@@ -289,7 +289,7 @@ public class AdvancedGroupByConstraintStreamTest extends AbstractConstraintStrea
         assertScore(scoreDirector, assertMatchWithScore(-1, entity2.getEntityGroup(), 1));
     }
 
-    @Test
+    @TestTemplate
     public void quadGroupByRegrouped() {
         assumeDrools();
         TestdataLavishSolution solution = TestdataLavishSolution.generateSolution(2, 2, 2, 8);
@@ -324,7 +324,7 @@ public class AdvancedGroupByConstraintStreamTest extends AbstractConstraintStrea
         assertScore(scoreDirector, assertMatchWithScore(-1, entity2.getEntityGroup(), 1));
     }
 
-    @Test
+    @TestTemplate
     public void biGroupByRegroupedDouble() {
         assumeDrools();
         TestdataLavishSolution solution = TestdataLavishSolution.generateSolution(2, 2, 2, 4);
@@ -353,7 +353,7 @@ public class AdvancedGroupByConstraintStreamTest extends AbstractConstraintStrea
         assertScore(scoreDirector, assertMatchWithScore(-1, new Object[] {entity2.getEntityGroup().toString(), 1}));
     }
 
-    @Test
+    @TestTemplate
     public void triGroupByRegroupedDouble() {
         assumeDrools();
         TestdataLavishSolution solution = TestdataLavishSolution.generateSolution(2, 2, 2, 6);
@@ -386,7 +386,7 @@ public class AdvancedGroupByConstraintStreamTest extends AbstractConstraintStrea
         assertScore(scoreDirector, assertMatchWithScore(-1, new Object[] {entity2.getEntityGroup().toString(), 1}));
     }
 
-    @Test
+    @TestTemplate
     public void quadGroupByRegroupedDouble() {
         assumeDrools();
         TestdataLavishSolution solution = TestdataLavishSolution.generateSolution(2, 2, 2, 8);
@@ -422,7 +422,7 @@ public class AdvancedGroupByConstraintStreamTest extends AbstractConstraintStrea
         assertScore(scoreDirector, assertMatchWithScore(-1, new Object[] {entity2.getEntityGroup().toString(), 1}));
     }
 
-    @Test
+    @TestTemplate
     public void existsAfterGroupBy() {
         assumeDrools();
         TestdataLavishSolution solution = TestdataLavishSolution.generateSolution(1, 1, 1, 1);
@@ -457,7 +457,7 @@ public class AdvancedGroupByConstraintStreamTest extends AbstractConstraintStrea
                 assertMatchWithScore(-2, solution.getFirstEntityGroup(), 2));
     }
 
-    @Test
+    @TestTemplate
     public void groupByAfterExists() {
         assumeDrools();
         TestdataLavishSolution solution = TestdataLavishSolution.generateSolution(1, 1, 1, 1);
