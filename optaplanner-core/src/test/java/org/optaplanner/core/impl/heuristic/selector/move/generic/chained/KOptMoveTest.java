@@ -18,7 +18,7 @@ package org.optaplanner.core.impl.heuristic.selector.move.generic.chained;
 
 import java.util.Arrays;
 
-import org.junit.Ignore;
+import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 import org.optaplanner.core.impl.domain.solution.descriptor.SolutionDescriptor;
 import org.optaplanner.core.impl.domain.variable.anchor.AnchorVariableDemand;
@@ -181,7 +181,7 @@ public class KOptMoveTest {
         assertEquals(false, move.isMoveDoable(scoreDirector));
     }
 
-    @Test @Ignore("Valid 1 chain moves aren't supported yet") // TODO
+    @Test @Disabled("Valid 1 chain moves aren't supported yet") // TODO
     public void doMove3OptWithOnly1Chain() {
         GenuineVariableDescriptor<TestdataChainedSolution> variableDescriptor = TestdataChainedEntity.buildVariableDescriptorForChainedObject();
         SolutionDescriptor<TestdataChainedSolution> solutionDescriptor = variableDescriptor.getEntityDescriptor().getSolutionDescriptor();
@@ -243,7 +243,7 @@ public class KOptMoveTest {
         // TODO
     }
 
-    @Test @Ignore("https://issues.redhat.com/browse/PLANNER-1250") // TODO https://issues.redhat.com/browse/PLANNER-1250
+    @Test @Disabled("https://issues.redhat.com/browse/PLANNER-1250") // TODO https://issues.redhat.com/browse/PLANNER-1250
     public void rebase() {
         GenuineVariableDescriptor<TestdataChainedSolution> variableDescriptor = TestdataChainedEntity.buildVariableDescriptorForChainedObject();
 

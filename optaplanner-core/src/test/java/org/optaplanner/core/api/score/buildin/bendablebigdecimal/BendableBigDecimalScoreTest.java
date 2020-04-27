@@ -18,7 +18,7 @@ package org.optaplanner.core.api.score.buildin.bendablebigdecimal;
 
 import java.math.BigDecimal;
 
-import org.junit.Ignore;
+import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 import org.optaplanner.core.api.score.buildin.AbstractScoreTest;
 import org.optaplanner.core.impl.score.buildin.bendablebigdecimal.BendableBigDecimalScoreDefinition;
@@ -202,7 +202,7 @@ public class BendableBigDecimalScoreTest extends AbstractScoreTest {
     }
 
     @Test
-    @Ignore("The problem of BigDecimal ^ BigDecimal.")
+    @Disabled("The problem of BigDecimal ^ BigDecimal.")
     public void powerHSS() {
         // .multiply(1.0) is there to get the proper BigDecimal scale
         assertEquals(scoreDefinitionHSS.createScore(NINE, PLUS_16, PLUS_25),
@@ -311,7 +311,7 @@ public class BendableBigDecimalScoreTest extends AbstractScoreTest {
     }
 
     @Test
-    @Ignore("The problem of BigDecimal ^ BigDecimal.")
+    @Disabled("The problem of BigDecimal ^ BigDecimal.")
     public void powerHHSSS() {
         // .multiply(1.0) is there to get the proper BigDecimal scale
         assertEquals(scoreDefinitionHHSSS.createScore(NINE, PLUS_16, PLUS_25, ZERO, ZERO),

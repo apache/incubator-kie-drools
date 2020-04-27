@@ -21,7 +21,7 @@ import java.util.Arrays;
 import java.util.Objects;
 import java.util.stream.Stream;
 
-import org.junit.Ignore;
+import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 import org.optaplanner.core.api.score.buildin.simple.SimpleScore;
 import org.optaplanner.core.api.score.buildin.simplebigdecimal.SimpleBigDecimalScore;
@@ -987,12 +987,12 @@ public class TriConstraintStreamTest extends AbstractConstraintStreamTest {
     // ************************************************************************
 
 
-    @Test @Ignore("Not yet implemented") // TODO
+    @Test @Disabled("Not yet implemented") // TODO
     public void globalNodeOrder() {
 
     }
 
-    @Test @Ignore("Not yet supported") // TODO
+    @Test @Disabled("Not yet supported") // TODO
     public void nodeSharing() {
 
     }

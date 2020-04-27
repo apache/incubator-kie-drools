@@ -16,7 +16,7 @@
 
 package org.optaplanner.core.impl.domain.entity.descriptor;
 
-import org.junit.Ignore;
+import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 import org.optaplanner.core.impl.domain.solution.descriptor.SolutionDescriptor;
 import org.optaplanner.core.impl.heuristic.selector.common.decorator.SelectionFilter;
@@ -44,7 +44,7 @@ public class EntityDescriptorTest {
                 new TestdataImmovableEntity("e2", null, true, false)));
     }
 
-    @Test @Ignore // TODO FIXME PLANNER-849
+    @Test @Disabled // TODO FIXME PLANNER-849
     public void extendedMovableEntitySelectionFilterUsedByParentSelector() {
         ScoreDirector scoreDirector = mock(ScoreDirector.class);
         SolutionDescriptor solutionDescriptor = TestdataExtendedImmovableSolution.buildSolutionDescriptor();

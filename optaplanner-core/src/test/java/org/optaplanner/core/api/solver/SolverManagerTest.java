@@ -32,7 +32,7 @@ import java.util.function.Function;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 
-import org.junit.Ignore;
+import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 import org.optaplanner.core.config.constructionheuristic.ConstructionHeuristicPhaseConfig;
 import org.optaplanner.core.config.localsearch.LocalSearchPhaseConfig;
@@ -197,7 +197,7 @@ public class SolverManagerTest {
         solverJob.getFinalBestSolution();
     }
 
-    @Ignore("Skip ahead not yet supported")
+    @Disabled("Skip ahead not yet supported")
     @Test(timeout = 60_000)
     public void skipAhead() throws ExecutionException, InterruptedException {
         CountDownLatch latch = new CountDownLatch(1);
@@ -321,7 +321,7 @@ public class SolverManagerTest {
     /**
      * Tests whether SolverManager can solve on multiple threads problems that use multiple thread counts.
      */
-    @Ignore("https://issues.redhat.com/browse/PLANNER-1837")
+    @Disabled("https://issues.redhat.com/browse/PLANNER-1837")
     @Test(timeout = 60_000)
     public void solveMultipleThreadedMovesWithSolverManager_allGetSolved() throws ExecutionException, InterruptedException {
         int processCount = Runtime.getRuntime().availableProcessors();

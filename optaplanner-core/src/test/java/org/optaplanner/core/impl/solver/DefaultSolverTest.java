@@ -19,7 +19,7 @@ package org.optaplanner.core.impl.solver;
 import java.util.Arrays;
 import java.util.Collections;
 
-import org.junit.Ignore;
+import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 import org.optaplanner.core.api.solver.Solver;
 import org.optaplanner.core.api.solver.SolverFactory;
@@ -118,7 +118,7 @@ public class DefaultSolverTest {
     }
 
     // TODO https://issues.redhat.com/browse/PLANNER-1738
-    @Test @Ignore("We currently don't support an empty value list yet if the entity list is not empty.")
+    @Test @Disabled("We currently don't support an empty value list yet if the entity list is not empty.")
     public void solveEmptyValueList() {
         SolverConfig solverConfig = PlannerTestUtils.buildSolverConfig(TestdataSolution.class, TestdataEntity.class);
         SolverFactory<TestdataSolution> solverFactory = SolverFactory.create(solverConfig);
@@ -134,7 +134,7 @@ public class DefaultSolverTest {
         assertSame(solution, solver.getBestSolution());
     }
 
-    @Test @Ignore("We currently don't support an empty value list yet if the entity list is not empty.")
+    @Test @Disabled("We currently don't support an empty value list yet if the entity list is not empty.")
     public void solveChainedEmptyValueList() {
         SolverConfig solverConfig = PlannerTestUtils.buildSolverConfig(TestdataChainedSolution.class, TestdataChainedEntity.class);
         SolverFactory<TestdataChainedSolution> solverFactory = SolverFactory.create(solverConfig);

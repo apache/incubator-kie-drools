@@ -5,7 +5,7 @@ import java.util.Arrays;
 import java.util.Collections;
 import java.util.HashSet;
 
-import org.junit.Ignore;
+import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 import org.optaplanner.core.api.score.buildin.hardmediumsoft.HardMediumSoftScore;
 import org.optaplanner.core.api.solver.SolverFactory;
@@ -32,7 +32,7 @@ import static org.optaplanner.examples.conferencescheduling.domain.ConferenceCon
 import static org.optaplanner.examples.conferencescheduling.domain.ConferenceConstraintConfiguration.THEME_TRACK_CONFLICT;
 
 // TODO https://issues.redhat.com/browse/PLANNER-1335
-@Ignore("Temporarily disabled until ScoreVerifier.assertPenalty() exists to avoid unneeded refactor")
+@Disabled("Temporarily disabled until ScoreVerifier.assertPenalty() exists to avoid unneeded refactor")
 public class ConferenceSchedulingScoreSoftConstraintTest {
 
     private HardMediumSoftScoreVerifier<ConferenceSolution> scoreVerifier = new HardMediumSoftScoreVerifier<>(

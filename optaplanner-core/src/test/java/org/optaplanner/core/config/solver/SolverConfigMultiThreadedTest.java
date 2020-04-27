@@ -20,7 +20,7 @@ import java.util.List;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 
-import org.junit.Ignore;
+import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 import org.optaplanner.core.config.solver.testutil.MockThreadFactory;
 import org.optaplanner.core.impl.testdata.domain.TestdataEntity;
@@ -78,7 +78,7 @@ public class SolverConfigMultiThreadedTest {
         runSolvingAndVerifySolution(10, 20, "256");
     }
 
-    @Ignore("PLANNER-1180")
+    @Disabled("PLANNER-1180")
     @Test(timeout = 5000L)
     public void solvingOfVerySmallProblemFinishes() {
         runSolvingAndVerifySolution(1, 1, "2");
