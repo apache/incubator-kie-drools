@@ -1321,7 +1321,7 @@ public class TraitTest extends CommonTraitTest {
 
 
 
-    @Test()
+    @Test(timeout = 2000)
     public void testTraitCore() {
         String source = "org/drools/compiler/factmodel/traits/testTraitLegacyCore.drl";
 
