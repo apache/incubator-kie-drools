@@ -30,9 +30,9 @@ import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.CoreMatchers.notNullValue;
 import static org.junit.Assert.assertThat;
 
-public class VacationDaysTest extends BaseVariantTest {
+public class VacationDaysTest extends BaseInterpretedVsCompiledTest {
 
-    public VacationDaysTest(final BaseVariantTest.VariantTestConf useExecModelCompiler ) {
+    public VacationDaysTest(final boolean useExecModelCompiler ) {
         super( useExecModelCompiler );
     }
 
@@ -72,7 +72,7 @@ public class VacationDaysTest extends BaseVariantTest {
     }
 
     private void executeTest(final int age, final int yearsService, final int expectedVacationDays ) {
-        final DMNRuntime runtime = createRuntime("0020-vacation-days.dmn", this.getClass() );
+        final DMNRuntime runtime = DMNRuntimeUtil.createRuntime("0020-vacation-days.dmn", this.getClass() );
         final DMNModel dmnModel = runtime.getModel("https://www.drools.org/kie-dmn", "0020-vacation-days" );
         assertThat( dmnModel, notNullValue() );
 

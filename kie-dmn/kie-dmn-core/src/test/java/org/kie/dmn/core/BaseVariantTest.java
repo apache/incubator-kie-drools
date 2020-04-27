@@ -146,7 +146,7 @@ public abstract class BaseVariantTest {
 
     @Parameterized.Parameters(name = "{0}")
     public static Object[] params() {
-        return new Object[]{KIE_API_TYPECHECK, BUILDER_DEFAULT_NOCL_TYPECHECK, BUILDER_DEFAULT_NOCL_TYPECHECK_TYPESAFE, KIE_API_TYPECHECK_TYPESAFE};
+        return new Object[]{KIE_API_TYPECHECK, BUILDER_STRICT, BUILDER_DEFAULT_NOCL_TYPECHECK, BUILDER_DEFAULT_NOCL_TYPECHECK_TYPESAFE, KIE_API_TYPECHECK_TYPESAFE};
     }
 
     private final VariantTestConf testConfig;
