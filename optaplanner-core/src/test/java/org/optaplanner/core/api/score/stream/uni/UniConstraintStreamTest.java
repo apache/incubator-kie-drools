@@ -32,6 +32,7 @@ import org.optaplanner.core.api.score.buildin.simplebigdecimal.SimpleBigDecimalS
 import org.optaplanner.core.api.score.buildin.simplelong.SimpleLongScore;
 import org.optaplanner.core.api.score.stream.AbstractConstraintStreamTest;
 import org.optaplanner.core.api.score.stream.Constraint;
+import org.optaplanner.core.api.score.stream.ConstraintProvider;
 import org.optaplanner.core.api.score.stream.ConstraintStreamImplType;
 import org.optaplanner.core.impl.score.director.InnerScoreDirector;
 import org.optaplanner.core.impl.score.director.stream.ConstraintStreamScoreDirectorFactory;
@@ -1347,16 +1348,15 @@ public class UniConstraintStreamTest extends AbstractConstraintStreamTest {
 
     @TestTemplate
     public void duplicateConstraintId() {
-        ConstraintStreamScoreDirectorFactory<TestdataLavishSolution> scoreDirectorFactory
-                = new ConstraintStreamScoreDirectorFactory<>(
-                TestdataLavishSolution.buildSolutionDescriptor(), (factory) -> new Constraint[] {
-                factory.from(TestdataLavishEntity.class)
-                        .penalize("duplicateConstraintName", SimpleScore.ONE),
-                factory.from(TestdataLavishEntity.class)
-                        .penalize("duplicateConstraintName", SimpleScore.ONE)
-        }, constraintStreamImplType);
-        assertThatIllegalStateException()
-                .isThrownBy(() -> scoreDirectorFactory.buildScoreDirector(false, constraintMatchEnabled));
+        ConstraintProvider constraintProvider = factory -> new Constraint[]{
+                factory.from(TestdataLavishEntity.class).penalize("duplicateConstraintName", SimpleScore.ONE),
+                factory.from(TestdataLavishEntity.class).penalize("duplicateConstraintName", SimpleScore.ONE)
+        };
+        assertThatIllegalStateException().isThrownBy(() -> new ConstraintStreamScoreDirectorFactory<>(
+                TestdataLavishSolution.buildSolutionDescriptor(),
+                constraintProvider,
+                constraintStreamImplType)
+        );
     }
 
     @TestTemplate
