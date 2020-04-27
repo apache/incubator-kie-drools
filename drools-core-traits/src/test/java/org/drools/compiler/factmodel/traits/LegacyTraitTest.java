@@ -34,12 +34,14 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.Parameterized;
 import org.kie.api.KieBase;
+import org.kie.api.builder.Message;
 import org.kie.api.definition.type.PropertyReactive;
 import org.kie.api.io.ResourceType;
 import org.kie.api.runtime.KieSession;
 import org.kie.internal.builder.KnowledgeBuilder;
 import org.kie.internal.builder.KnowledgeBuilderFactory;
 import org.kie.internal.io.ResourceFactory;
+import org.kie.internal.utils.KieHelper;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.fail;
@@ -305,6 +307,27 @@ public class LegacyTraitTest {
             e.printStackTrace();
             fail( e.getMessage() );
         }
+    }
+
+    @Test()
+    public void testPojoExtendInterface() {
+        // DROOLS-697
+        // It is now allowed for a declared type to extend an interface
+        // The interface itself will be added to the implements part of the generated class
+
+        final String s1 = "package test;\n" +
+
+                "declare Poojo extends Mask " +
+                "end " +
+
+                "declare trait Mask " +
+                "end " +
+                "";
+
+        KieHelper kh = new KieHelper();
+        kh.addContent( s1, ResourceType.DRL );
+
+        assertEquals( 0, kh.verify().getMessages(Message.Level.ERROR ).size() );
     }
 
 }

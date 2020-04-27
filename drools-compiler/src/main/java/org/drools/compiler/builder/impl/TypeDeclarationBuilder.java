@@ -265,10 +265,11 @@ public class TypeDeclarationBuilder {
             }
             success = ( def != null ) && ( ! kbuilder.hasErrors() );
 
-            UpdateTypeDeclarationDescr updateTypeDescr = kieTraitsCompiler.updateTypeDescr();
-            if (success && updateTypeDescr != null) {
-
-                updateTypeDescr.updateTraitInformation(kbuilder, declaredClassBuilder, typeDescr, type, def, pkgRegistry);
+            if(kieTraitsCompiler != null) {
+                UpdateTypeDeclarationDescr updateTypeDescr = kieTraitsCompiler.updateTypeDescr();
+                if (success) {
+                    updateTypeDescr.updateTraitInformation(kbuilder, declaredClassBuilder, typeDescr, type, def, pkgRegistry);
+                }
             }
             success = ! kbuilder.hasErrors();
 

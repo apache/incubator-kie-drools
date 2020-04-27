@@ -1099,28 +1099,6 @@ public class TypeDeclarationTest {
         assertEquals( 1, kh.verify().getMessages( Message.Level.ERROR ).size() );
     }
 
-    @Test()
-    public void testPojoExtendInterface() {
-        // DROOLS-697
-        // It is now allowed for a declared type to extend an interface
-        // The interface itself will be added to the implements part of the generated class
-
-        final String s1 = "package test;\n" +
-
-                          "declare Poojo extends Mask " +
-                          "end " +
-
-                          "declare trait Mask " +
-                          "end " +
-                          "";
-
-        KieHelper kh = new KieHelper();
-        kh.addContent( s1, ResourceType.DRL );
-
-        assertEquals( 0, kh.verify().getMessages( Message.Level.ERROR ).size() );
-    }
-
-
     public static interface Base {
         public Object getFld();
         public void setFld( Object x );
