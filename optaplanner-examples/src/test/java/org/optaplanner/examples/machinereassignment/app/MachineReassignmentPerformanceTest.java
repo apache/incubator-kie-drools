@@ -19,6 +19,7 @@ package org.optaplanner.examples.machinereassignment.app;
 import java.io.File;
 
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.Timeout;
 import org.optaplanner.core.config.solver.EnvironmentMode;
 import org.optaplanner.examples.common.app.SolverPerformanceTest;
 import org.optaplanner.examples.machinereassignment.domain.MachineReassignment;
@@ -38,13 +39,15 @@ public class MachineReassignmentPerformanceTest extends SolverPerformanceTest<Ma
     // Tests
     // ************************************************************************
 
-    @Test(timeout = 600000)
+    @Test
+    @Timeout(600)
     public void solveModel_a2_1() {
         File unsolvedDataFile = new File("data/machinereassignment/unsolved/model_a2_1.xml");
         runSpeedTest(unsolvedDataFile, "0hard/-117351236soft");
     }
 
-    @Test(timeout = 600000)
+    @Test
+    @Timeout(600)
     public void solveModel_a2_1FastAssert() {
         File unsolvedDataFile = new File("data/machinereassignment/unsolved/model_a2_1.xml");
         runSpeedTest(unsolvedDataFile, "0hard/-272621414soft", EnvironmentMode.FAST_ASSERT);

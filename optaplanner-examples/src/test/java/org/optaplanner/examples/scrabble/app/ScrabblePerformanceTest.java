@@ -19,6 +19,7 @@ package org.optaplanner.examples.scrabble.app;
 import java.io.File;
 
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.Timeout;
 import org.optaplanner.core.config.solver.EnvironmentMode;
 import org.optaplanner.examples.common.app.SolverPerformanceTest;
 import org.optaplanner.examples.scrabble.domain.ScrabbleSolution;
@@ -38,13 +39,15 @@ public class ScrabblePerformanceTest extends SolverPerformanceTest<ScrabbleSolut
     // Tests
     // ************************************************************************
 
-    @Test(timeout = 600000)
+    @Test
+    @Timeout(600)
     public void solveModel() {
         File unsolvedDataFile = new File("data/scrabble/unsolved/jbossProjects.xml");
         runSpeedTest(unsolvedDataFile, "0hard/328medium/-1165soft");
     }
 
-    @Test(timeout = 600000)
+    @Test
+    @Timeout(600)
     public void solveModelFastAssert() {
         File unsolvedDataFile = new File("data/scrabble/unsolved/jbossProjects.xml");
         runSpeedTest(unsolvedDataFile, "0hard/328medium/-1165soft", EnvironmentMode.FAST_ASSERT);

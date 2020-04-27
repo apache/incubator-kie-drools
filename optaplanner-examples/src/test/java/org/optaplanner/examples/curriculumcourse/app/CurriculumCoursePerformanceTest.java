@@ -19,6 +19,7 @@ package org.optaplanner.examples.curriculumcourse.app;
 import java.io.File;
 
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.Timeout;
 import org.optaplanner.core.config.solver.EnvironmentMode;
 import org.optaplanner.examples.common.app.SolverPerformanceTest;
 import org.optaplanner.examples.curriculumcourse.domain.CourseSchedule;
@@ -38,13 +39,15 @@ public class CurriculumCoursePerformanceTest extends SolverPerformanceTest<Cours
     // Tests
     // ************************************************************************
 
-    @Test(timeout = 600000)
+    @Test
+    @Timeout(600)
     public void solveComp01_initialized() {
         File unsolvedDataFile = new File("data/curriculumcourse/unsolved/comp01_initialized.xml");
         runSpeedTest(unsolvedDataFile, "0hard/-99soft");
     }
 
-    @Test(timeout = 600000)
+    @Test
+    @Timeout(600)
     public void solveComp01_initializedFastAssert() {
         File unsolvedDataFile = new File("data/curriculumcourse/unsolved/comp01_initialized.xml");
         runSpeedTest(unsolvedDataFile, "0hard/-140soft", EnvironmentMode.FAST_ASSERT);

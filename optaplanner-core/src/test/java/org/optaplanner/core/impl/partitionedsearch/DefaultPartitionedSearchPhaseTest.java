@@ -28,6 +28,7 @@ import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.Timeout;
 import org.optaplanner.core.api.solver.Solver;
 import org.optaplanner.core.api.solver.SolverFactory;
 import org.optaplanner.core.config.constructionheuristic.ConstructionHeuristicPhaseConfig;
@@ -51,12 +52,14 @@ import static org.junit.Assert.*;
 
 public class DefaultPartitionedSearchPhaseTest {
 
-    @Test(timeout = 5_000L)
+    @Test
+    @Timeout(5)
     public void partCount() {
         partCount(SolverConfig.MOVE_THREAD_COUNT_NONE);
     }
 
-    @Test(timeout = 5_000L)
+    @Test
+    @Timeout(5)
     public void partCountAndMoveThreadCount() {
         partCount("2");
     }
@@ -110,7 +113,8 @@ public class DefaultPartitionedSearchPhaseTest {
         return solution;
     }
 
-    @Test(timeout = 5_000L)
+    @Test
+    @Timeout(5)
     public void exceptionPropagation() {
         final int partSize = 7;
         final int partCount = 3;
@@ -130,7 +134,8 @@ public class DefaultPartitionedSearchPhaseTest {
         }
     }
 
-    @Test(timeout = 5_000L)
+    @Test
+    @Timeout(5)
     public void terminateEarly() throws InterruptedException, ExecutionException {
         final int partSize = 1;
         final int partCount = 2;
@@ -163,7 +168,8 @@ public class DefaultPartitionedSearchPhaseTest {
         assertNotNull(solutionFuture.get());
     }
 
-    @Test(timeout = 5_000L)
+    @Test
+    @Timeout(5)
     public void shutdownMainThreadAbruptly() throws InterruptedException {
         final int partSize = 5;
         final int partCount = 3;

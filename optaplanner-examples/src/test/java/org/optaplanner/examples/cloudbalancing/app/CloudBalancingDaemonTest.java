@@ -23,6 +23,7 @@ import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.atomic.AtomicInteger;
 
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.Timeout;
 import org.optaplanner.core.api.solver.Solver;
 import org.optaplanner.core.api.solver.SolverFactory;
 import org.optaplanner.core.api.solver.event.BestSolutionChangedEvent;
@@ -48,7 +49,8 @@ public class CloudBalancingDaemonTest extends LoggingTest {
     private Queue<CloudProcess> notYetAddedProcessQueue = new ArrayDeque<>();
     private volatile Throwable solverThreadException = null;
 
-    @Test(timeout = 600000)
+    @Test
+    @Timeout(600)
     public void daemon() throws InterruptedException {
         // In main thread
         Solver<CloudBalance> solver = buildSolver();

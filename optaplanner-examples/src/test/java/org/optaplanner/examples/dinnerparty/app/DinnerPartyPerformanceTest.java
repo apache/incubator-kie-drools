@@ -19,6 +19,7 @@ package org.optaplanner.examples.dinnerparty.app;
 import java.io.File;
 
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.Timeout;
 import org.optaplanner.core.config.solver.EnvironmentMode;
 import org.optaplanner.examples.common.app.SolverPerformanceTest;
 import org.optaplanner.examples.dinnerparty.domain.DinnerParty;
@@ -38,13 +39,15 @@ public class DinnerPartyPerformanceTest extends SolverPerformanceTest<DinnerPart
     // Tests
     // ************************************************************************
 
-    @Test(timeout = 600000)
+    @Test
+    @Timeout(600)
     public void solveModel_wedding01() {
         File unsolvedDataFile = new File("data/dinnerparty/unsolved/wedding01.xml");
         runSpeedTest(unsolvedDataFile, "-90");
     }
 
-    @Test(timeout = 600000)
+    @Test
+    @Timeout(600)
     public void solveModel_wedding01FastAssert() {
         File unsolvedDataFile = new File("data/dinnerparty/unsolved/wedding01.xml");
         runSpeedTest(unsolvedDataFile, "-390", EnvironmentMode.FAST_ASSERT);

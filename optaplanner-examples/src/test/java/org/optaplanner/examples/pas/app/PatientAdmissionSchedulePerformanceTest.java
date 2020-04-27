@@ -19,6 +19,7 @@ package org.optaplanner.examples.pas.app;
 import java.io.File;
 
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.Timeout;
 import org.optaplanner.core.config.solver.EnvironmentMode;
 import org.optaplanner.examples.common.app.SolverPerformanceTest;
 import org.optaplanner.examples.pas.domain.PatientAdmissionSchedule;
@@ -38,7 +39,8 @@ public class PatientAdmissionSchedulePerformanceTest extends SolverPerformanceTe
     // Tests
     // ************************************************************************
 
-    @Test(timeout = 600000)
+    @Test
+    @Timeout(600)
     public void solveTestdata01() {
         File unsolvedDataFile = new File("data/pas/unsolved/testdata01.xml");
         runSpeedTest(unsolvedDataFile, "0hard/0medium/-7458soft");
@@ -46,7 +48,8 @@ public class PatientAdmissionSchedulePerformanceTest extends SolverPerformanceTe
 //        runSpeedTest(unsolvedDataFile, "0hard/0medium/-7172soft");
     }
 
-    @Test(timeout = 600000)
+    @Test
+    @Timeout(600)
     public void solveTestdata01FastAssert() {
         File unsolvedDataFile = new File("data/pas/unsolved/testdata01.xml");
         runSpeedTest(unsolvedDataFile, "0hard/0medium/-7408soft", EnvironmentMode.FAST_ASSERT);

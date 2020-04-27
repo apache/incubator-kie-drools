@@ -19,6 +19,7 @@ package org.optaplanner.examples.projectjobscheduling.app;
 import java.io.File;
 
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.Timeout;
 import org.optaplanner.core.config.solver.EnvironmentMode;
 import org.optaplanner.examples.common.app.SolverPerformanceTest;
 import org.optaplanner.examples.projectjobscheduling.domain.Schedule;
@@ -38,13 +39,15 @@ public class ProjectJobSchedulingPerformanceTest extends SolverPerformanceTest<S
     // Tests
     // ************************************************************************
 
-    @Test(timeout = 600000)
+    @Test
+    @Timeout(600)
     public void solveModel_A_4() {
         File unsolvedDataFile = new File("data/projectjobscheduling/unsolved/A-4.xml");
         runSpeedTest(unsolvedDataFile, "[0]hard/[-152/-69]soft");
     }
 
-    @Test(timeout = 600000)
+    @Test
+    @Timeout(600)
     public void solveModel_A_4FastAssert() {
         File unsolvedDataFile = new File("data/projectjobscheduling/unsolved/A-4.xml");
         runSpeedTest(unsolvedDataFile, "[0]hard/[-193/-92]soft", EnvironmentMode.FAST_ASSERT);

@@ -19,6 +19,7 @@ package org.optaplanner.examples.coachshuttlegathering.app;
 import java.io.File;
 
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.Timeout;
 import org.optaplanner.core.config.solver.EnvironmentMode;
 import org.optaplanner.examples.coachshuttlegathering.domain.CoachShuttleGatheringSolution;
 import org.optaplanner.examples.common.app.SolverPerformanceTest;
@@ -38,13 +39,15 @@ public class CoachShuttleGatheringPerformanceTest extends SolverPerformanceTest<
     // Tests
     // ************************************************************************
 
-    @Test(timeout = 600000)
+    @Test
+    @Timeout(600)
     public void solveDemo01() {
         File unsolvedDataFile = new File("data/coachshuttlegathering/unsolved/demo01.xml");
         runSpeedTest(unsolvedDataFile, "0hard/-389030soft");
     }
 
-    @Test(timeout = 600000)
+    @Test
+    @Timeout(600)
     public void solveDemo01FastAssert() {
         File unsolvedDataFile = new File("data/coachshuttlegathering/unsolved/demo01.xml");
         runSpeedTest(unsolvedDataFile, "0hard/-389030soft", EnvironmentMode.FAST_ASSERT);

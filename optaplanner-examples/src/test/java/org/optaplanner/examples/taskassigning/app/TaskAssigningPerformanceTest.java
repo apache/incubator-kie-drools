@@ -19,6 +19,7 @@ package org.optaplanner.examples.taskassigning.app;
 import java.io.File;
 
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.Timeout;
 import org.optaplanner.core.config.solver.EnvironmentMode;
 import org.optaplanner.examples.common.app.SolverPerformanceTest;
 import org.optaplanner.examples.taskassigning.domain.TaskAssigningSolution;
@@ -38,13 +39,15 @@ public class TaskAssigningPerformanceTest extends SolverPerformanceTest<TaskAssi
     // Tests
     // ************************************************************************
 
-    @Test(timeout = 600000)
+    @Test
+    @Timeout(600)
     public void solveModel_50tasks_5employees() {
         File unsolvedDataFile = new File("data/taskassigning/unsolved/50tasks-5employees.xml");
         runSpeedTest(unsolvedDataFile, "[0]hard/[-3925/-6293940/-7772/-20463]soft");
     }
 
-    @Test(timeout = 600000)
+    @Test
+    @Timeout(600)
     public void solveModel_50tasks_5employeesFastAssert() {
         File unsolvedDataFile = new File("data/taskassigning/unsolved/50tasks-5employees.xml");
         runSpeedTest(unsolvedDataFile, "[0]hard/[-3988/-10452712/-15713/-21195]soft", EnvironmentMode.FAST_ASSERT);

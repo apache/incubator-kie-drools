@@ -19,6 +19,7 @@ package org.optaplanner.examples.nqueens.app;
 import java.io.File;
 
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.Timeout;
 import org.optaplanner.core.config.solver.EnvironmentMode;
 import org.optaplanner.examples.common.app.SolverPerformanceTest;
 import org.optaplanner.examples.nqueens.domain.NQueens;
@@ -38,19 +39,22 @@ public class NQueensPerformanceTest extends SolverPerformanceTest<NQueens> {
     // Tests
     // ************************************************************************
 
-    @Test(timeout = 600000)
+    @Test
+    @Timeout(600)
     public void solveModel_16queens() {
         runSpeedTest(new File("data/nqueens/unsolved/16queens.xml"),
                 "0");
     }
 
-    @Test(timeout = 600000)
+    @Test
+    @Timeout(600)
     public void solveModel_8queensFastAssert() {
         runSpeedTest(new File("data/nqueens/unsolved/8queens.xml"),
                 "0", EnvironmentMode.FAST_ASSERT);
     }
 
-    @Test(timeout = 600000)
+    @Test
+    @Timeout(600)
     public void solveModel_4queensFullAssert() {
         runSpeedTest(new File("data/nqueens/unsolved/4queens.xml"),
                 "0", EnvironmentMode.FULL_ASSERT);

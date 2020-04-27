@@ -19,6 +19,7 @@ package org.optaplanner.examples.tsp.app;
 import java.io.File;
 
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.Timeout;
 import org.optaplanner.core.config.solver.EnvironmentMode;
 import org.optaplanner.examples.common.app.SolverPerformanceTest;
 import org.optaplanner.examples.tsp.domain.TspSolution;
@@ -38,13 +39,15 @@ public class TspPerformanceTest extends SolverPerformanceTest<TspSolution> {
     // Tests
     // ************************************************************************
 
-    @Test(timeout = 600000)
+    @Test
+    @Timeout(600)
     public void solveModel_a2_1() {
         File unsolvedDataFile = new File("data/tsp/unsolved/europe40.xml");
         runSpeedTest(unsolvedDataFile, "-217957000");
     }
 
-    @Test(timeout = 600000)
+    @Test
+    @Timeout(600)
     public void solveModel_a2_1FastAssert() {
         File unsolvedDataFile = new File("data/tsp/unsolved/europe40.xml");
         runSpeedTest(unsolvedDataFile, "-219637000", EnvironmentMode.FAST_ASSERT);

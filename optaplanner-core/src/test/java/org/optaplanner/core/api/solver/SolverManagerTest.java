@@ -34,6 +34,7 @@ import java.util.stream.IntStream;
 
 import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.Timeout;
 import org.optaplanner.core.config.constructionheuristic.ConstructionHeuristicPhaseConfig;
 import org.optaplanner.core.config.localsearch.LocalSearchPhaseConfig;
 import org.optaplanner.core.config.phase.PhaseConfig;
@@ -57,7 +58,8 @@ import static org.optaplanner.core.impl.testdata.util.PlannerAssert.*;
 
 public class SolverManagerTest {
 
-    @Test(timeout = 60_000)
+    @Test
+    @Timeout(60)
     public void solveBatch_2InParallel() throws ExecutionException, InterruptedException {
         SolverConfig solverConfig = PlannerTestUtils.buildSolverConfig(TestdataSolution.class, TestdataEntity.class)
                 .withPhases(createPhaseWithConcurrentSolvingStart(2), new ConstructionHeuristicPhaseConfig());
@@ -85,7 +87,8 @@ public class SolverManagerTest {
                 });
     }
 
-    @Test(timeout = 60_000)
+    @Test
+    @Timeout(60)
     public void getSolverStatus() throws InterruptedException, BrokenBarrierException, ExecutionException {
         CyclicBarrier solverThreadReadyBarrier = new CyclicBarrier(2);
         CyclicBarrier mainThreadReadyBarrier = new CyclicBarrier(2);
@@ -131,7 +134,8 @@ public class SolverManagerTest {
         assertEquals(NOT_SOLVING, solverJob2.getSolverStatus());
     }
 
-    @Test(timeout = 60_000)
+    @Test
+    @Timeout(60)
     public void exceptionInSolver() throws InterruptedException {
         SolverConfig solverConfig = PlannerTestUtils.buildSolverConfig(TestdataSolution.class, TestdataEntity.class)
                 .withPhases(new CustomPhaseConfig().withCustomPhaseCommands(
@@ -156,7 +160,8 @@ public class SolverManagerTest {
         assertEquals(NOT_SOLVING, solverJob1.getSolverStatus());
     }
 
-    @Test(timeout = 60_000)
+    @Test
+    @Timeout(60)
     public void exceptionInConsumer() throws InterruptedException {
         SolverConfig solverConfig = PlannerTestUtils.buildSolverConfig(TestdataSolution.class, TestdataEntity.class)
                 .withPhases(new ConstructionHeuristicPhaseConfig());
@@ -180,7 +185,8 @@ public class SolverManagerTest {
         assertEquals(NOT_SOLVING, solverJob1.getSolverStatus());
     }
 
-    @Test(timeout = 60_000)
+    @Test
+    @Timeout(60)
     public void solveGenerics() throws ExecutionException, InterruptedException {
         SolverConfig solverConfig = PlannerTestUtils
                 .buildSolverConfig(TestdataSolution.class, TestdataEntity.class);
@@ -198,7 +204,8 @@ public class SolverManagerTest {
     }
 
     @Disabled("Skip ahead not yet supported")
-    @Test(timeout = 60_000)
+    @Test
+    @Timeout(60)
     public void skipAhead() throws ExecutionException, InterruptedException {
         CountDownLatch latch = new CountDownLatch(1);
         SolverConfig solverConfig = PlannerTestUtils.buildSolverConfig(TestdataSolution.class, TestdataEntity.class)
@@ -260,7 +267,8 @@ public class SolverManagerTest {
         assertTrue(eventCount.get() < 4);
     }
 
-    @Test(timeout = 600_000L)
+    @Test
+    @Timeout(600)
     public void terminateEarly() throws InterruptedException, BrokenBarrierException {
         CyclicBarrier startedBarrier = new CyclicBarrier(2);
         SolverConfig solverConfig = PlannerTestUtils.buildSolverConfig(TestdataSolution.class, TestdataEntity.class)
@@ -322,7 +330,8 @@ public class SolverManagerTest {
      * Tests whether SolverManager can solve on multiple threads problems that use multiple thread counts.
      */
     @Disabled("https://issues.redhat.com/browse/PLANNER-1837")
-    @Test(timeout = 60_000)
+    @Test
+    @Timeout(60)
     public void solveMultipleThreadedMovesWithSolverManager_allGetSolved() throws ExecutionException, InterruptedException {
         int processCount = Runtime.getRuntime().availableProcessors();
         SolverConfig solverConfig = PlannerTestUtils.buildSolverConfig(TestdataSolution.class, TestdataEntity.class)
@@ -348,7 +357,8 @@ public class SolverManagerTest {
         }
     }
 
-    @Test(timeout = 60_000)
+    @Test
+    @Timeout(60)
     public void submitMoreProblemsThanCpus_allGetSolved() throws InterruptedException, ExecutionException {
         // Use twice the amount of problems than available processors.
         int problemCount = Runtime.getRuntime().availableProcessors() * 2;
@@ -461,7 +471,8 @@ public class SolverManagerTest {
         assertThat(entity.getValue()).isNull();
     }
 
-    @Test(timeout = 60_000)
+    @Test
+    @Timeout(60)
     public void runSameIdProcesses_throwsIllegalStateException() {
         SolverManagerConfig solverManagerConfig = new SolverManagerConfig();
 

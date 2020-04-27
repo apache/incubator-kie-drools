@@ -19,6 +19,7 @@ package org.optaplanner.examples.tennis.app;
 import java.io.File;
 
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.Timeout;
 import org.optaplanner.core.config.solver.EnvironmentMode;
 import org.optaplanner.examples.common.app.SolverPerformanceTest;
 import org.optaplanner.examples.tennis.domain.TennisSolution;
@@ -38,13 +39,15 @@ public class TennisPerformanceTest extends SolverPerformanceTest<TennisSolution>
     // Tests
     // ************************************************************************
 
-    @Test(timeout = 600000)
+    @Test
+    @Timeout(600)
     public void solveModel_munich_7teams() {
         File unsolvedDataFile = new File("data/tennis/unsolved/munich-7teams.xml");
         runSpeedTest(unsolvedDataFile, "0hard/-27239medium/-23706soft");
     }
 
-    @Test(timeout = 600000)
+    @Test
+    @Timeout(600)
     public void solveModel_munich_7teamsFastAssert() {
         File unsolvedDataFile = new File("data/tennis/unsolved/munich-7teams.xml");
         runSpeedTest(unsolvedDataFile, "0hard/-27239medium/-23706soft", EnvironmentMode.FAST_ASSERT);

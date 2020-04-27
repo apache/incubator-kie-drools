@@ -19,6 +19,7 @@ package org.optaplanner.examples.flightcrewscheduling.app;
 import java.io.File;
 
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.Timeout;
 import org.optaplanner.core.config.solver.EnvironmentMode;
 import org.optaplanner.examples.common.app.SolverPerformanceTest;
 import org.optaplanner.examples.flightcrewscheduling.domain.FlightCrewSolution;
@@ -38,13 +39,15 @@ public class FlightCrewSchedulingPerformanceTest extends SolverPerformanceTest<F
     // Tests
     // ************************************************************************
 
-    @Test(timeout = 600000)
+    @Test
+    @Timeout(600)
     public void solveModel() {
         File unsolvedDataFile = new File("data/flightcrewscheduling/unsolved/175flights-7days-Europe.xlsx");
         runSpeedTest(unsolvedDataFile, "0hard/-129000000soft");
     }
 
-    @Test(timeout = 600000)
+    @Test
+    @Timeout(600)
     public void solveModelFastAssert() {
         File unsolvedDataFile = new File("data/flightcrewscheduling/unsolved/175flights-7days-Europe.xlsx");
         runSpeedTest(unsolvedDataFile, "0hard/-129000000soft", EnvironmentMode.FAST_ASSERT);

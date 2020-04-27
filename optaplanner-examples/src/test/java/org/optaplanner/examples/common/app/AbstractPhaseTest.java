@@ -23,6 +23,7 @@ import java.util.List;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.Timeout;
 import org.junit.runner.RunWith;
 import org.junit.runners.Parameterized;
 import org.optaplanner.core.api.domain.solution.PlanningSolution;
@@ -71,7 +72,8 @@ public abstract class AbstractPhaseTest<Solution_> extends LoggingTest {
         solutionFileIO = commonApp.createSolutionFileIO();
     }
 
-    @Test(timeout = 600000)
+    @Test
+    @Timeout(600)
     public void runPhase() {
         SolverFactory<Solution_> solverFactory = buildSolverFactory();
         Solution_ problem = readProblem();

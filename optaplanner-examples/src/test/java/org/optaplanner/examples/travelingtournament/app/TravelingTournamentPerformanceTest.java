@@ -19,6 +19,7 @@ package org.optaplanner.examples.travelingtournament.app;
 import java.io.File;
 
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.Timeout;
 import org.optaplanner.core.config.solver.EnvironmentMode;
 import org.optaplanner.examples.common.app.SolverPerformanceTest;
 import org.optaplanner.examples.travelingtournament.domain.TravelingTournament;
@@ -38,13 +39,15 @@ public class TravelingTournamentPerformanceTest extends SolverPerformanceTest<Tr
     // Tests
     // ************************************************************************
 
-    @Test(timeout = 600000)
+    @Test
+    @Timeout(600)
     public void solveComp01_initialized() {
         File unsolvedDataFile = new File("data/travelingtournament/unsolved/1-nl10.xml");
         runSpeedTest(unsolvedDataFile, "0hard/-75968soft");
     }
 
-    @Test(timeout = 600000)
+    @Test
+    @Timeout(600)
     public void solveTestdata01_initializedFastAssert() {
         File unsolvedDataFile = new File("data/travelingtournament/unsolved/1-nl10.xml");
         runSpeedTest(unsolvedDataFile, "0hard/-77619soft", EnvironmentMode.FAST_ASSERT);

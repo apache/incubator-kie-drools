@@ -19,6 +19,7 @@ package org.optaplanner.examples.nurserostering.app;
 import java.io.File;
 
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.Timeout;
 import org.optaplanner.core.config.solver.EnvironmentMode;
 import org.optaplanner.examples.common.app.SolverPerformanceTest;
 import org.optaplanner.examples.nurserostering.domain.NurseRoster;
@@ -38,13 +39,15 @@ public class NurseRosteringPerformanceTest extends SolverPerformanceTest<NurseRo
     // Tests
     // ************************************************************************
 
-    @Test(timeout = 600000)
+    @Test
+    @Timeout(600)
     public void solveMedium_late01_initialized() {
         File unsolvedDataFile = new File("data/nurserostering/unsolved/medium_late01_initialized.xml");
         runSpeedTest(unsolvedDataFile, "0hard/-350soft");
     }
 
-    @Test(timeout = 600000)
+    @Test
+    @Timeout(600)
     public void solveMedium_late01_initializedFastAssert() {
         File unsolvedDataFile = new File("data/nurserostering/unsolved/medium_late01_initialized.xml");
         runSpeedTest(unsolvedDataFile, "0hard/-473soft", EnvironmentMode.FAST_ASSERT);

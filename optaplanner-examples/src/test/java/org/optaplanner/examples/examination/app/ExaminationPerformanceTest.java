@@ -19,6 +19,7 @@ package org.optaplanner.examples.examination.app;
 import java.io.File;
 
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.Timeout;
 import org.optaplanner.core.config.solver.EnvironmentMode;
 import org.optaplanner.examples.common.app.SolverPerformanceTest;
 import org.optaplanner.examples.examination.domain.Examination;
@@ -38,13 +39,15 @@ public class ExaminationPerformanceTest extends SolverPerformanceTest<Examinatio
     // Tests
     // ************************************************************************
 
-    @Test(timeout = 600000)
+    @Test
+    @Timeout(600)
     public void solveComp_set5() {
         File unsolvedDataFile = new File("data/examination/unsolved/exam_comp_set5.xml");
         runSpeedTest(unsolvedDataFile, "0hard/-4393soft");
     }
 
-    @Test(timeout = 600000)
+    @Test
+    @Timeout(600)
     public void solveComp_set5FastAssert() {
         File unsolvedDataFile = new File("data/examination/unsolved/exam_comp_set5.xml");
         runSpeedTest(unsolvedDataFile, "0hard/-4407soft", EnvironmentMode.FAST_ASSERT);

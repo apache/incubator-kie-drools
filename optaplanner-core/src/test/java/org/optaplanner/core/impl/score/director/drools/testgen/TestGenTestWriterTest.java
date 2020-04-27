@@ -33,6 +33,7 @@ import java.util.stream.Collectors;
 
 import org.apache.commons.lang3.StringUtils;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.Timeout;
 import org.optaplanner.core.api.score.buildin.simple.SimpleScore;
 import org.optaplanner.core.impl.domain.variable.descriptor.VariableDescriptor;
 import org.optaplanner.core.impl.score.buildin.simple.SimpleScoreDefinition;
@@ -48,7 +49,8 @@ public class TestGenTestWriterTest {
     private static final String DRL_FILE_PLACEHOLDER = "SCORE_DRL_ABSOLUTE_PATH";
     private static final String DRL_FILE_PATH = "/x/y.drl";
 
-    @Test(timeout = 600000)
+    @Test
+    @Timeout(600)
     public void fullJournalOutput() throws IOException, URISyntaxException {
         TestGenKieSessionJournal journal = new TestGenKieSessionJournal();
         TestdataEntity entity = new TestdataEntity("E");

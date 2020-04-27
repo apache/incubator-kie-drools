@@ -19,6 +19,7 @@ package org.optaplanner.examples.cloudbalancing.app;
 import java.io.File;
 
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.Timeout;
 import org.optaplanner.core.config.solver.EnvironmentMode;
 import org.optaplanner.examples.cloudbalancing.domain.CloudBalance;
 import org.optaplanner.examples.common.app.SolverPerformanceTest;
@@ -38,13 +39,15 @@ public class CloudBalancingPerformanceTest extends SolverPerformanceTest<CloudBa
     // Tests
     // ************************************************************************
 
-    @Test(timeout = 600000)
+    @Test
+    @Timeout(600)
     public void solveModel_200computers_600processes() {
         File unsolvedDataFile = new File("data/cloudbalancing/unsolved/200computers-600processes.xml");
         runSpeedTest(unsolvedDataFile, "0hard/-218850soft");
     }
 
-    @Test(timeout = 600000)
+    @Test
+    @Timeout(600)
     public void solveModel_200computers_600processesFastAssert() {
         File unsolvedDataFile = new File("data/cloudbalancing/unsolved/200computers-600processes.xml");
         runSpeedTest(unsolvedDataFile, "0hard/-223260soft", EnvironmentMode.FAST_ASSERT);

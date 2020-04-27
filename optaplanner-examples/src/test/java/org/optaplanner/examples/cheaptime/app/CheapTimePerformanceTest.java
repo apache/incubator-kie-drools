@@ -19,6 +19,7 @@ package org.optaplanner.examples.cheaptime.app;
 import java.io.File;
 
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.Timeout;
 import org.optaplanner.core.config.solver.EnvironmentMode;
 import org.optaplanner.examples.cheaptime.domain.CheapTimeSolution;
 import org.optaplanner.examples.common.app.CommonApp;
@@ -39,13 +40,15 @@ public class CheapTimePerformanceTest extends SolverPerformanceTest<CheapTimeSol
     // Tests
     // ************************************************************************
 
-    @Test(timeout = 600000)
+    @Test
+    @Timeout(600)
     public void solveInstance00() {
         File unsolvedDataFile = new File("data/cheaptime/unsolved/instance00.xml");
         runSpeedTest(unsolvedDataFile, "0hard/-902335925205947medium/-20672soft");
     }
 
-    @Test(timeout = 600000)
+    @Test
+    @Timeout(600)
     public void solveInstance00FastAssert() {
         File unsolvedDataFile = new File("data/cheaptime/unsolved/instance00.xml");
         runSpeedTest(unsolvedDataFile, "0hard/-918680355373904medium/-22228soft", EnvironmentMode.FAST_ASSERT);

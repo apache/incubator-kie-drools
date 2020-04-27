@@ -22,6 +22,7 @@ import java.util.stream.IntStream;
 
 import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.Timeout;
 import org.optaplanner.core.config.solver.testutil.MockThreadFactory;
 import org.optaplanner.core.impl.testdata.domain.TestdataEntity;
 import org.optaplanner.core.impl.testdata.domain.TestdataSolution;
@@ -73,13 +74,15 @@ public class SolverConfigMultiThreadedTest {
         assertNull(solverConfig.resolveMoveThreadCount());
     }
 
-    @Test(timeout = 5000L)
+    @Test
+    @Timeout(5)
     public void solvingWithTooHighThreadCountFinishes() {
         runSolvingAndVerifySolution(10, 20, "256");
     }
 
     @Disabled("PLANNER-1180")
-    @Test(timeout = 5000L)
+    @Test
+    @Timeout(5)
     public void solvingOfVerySmallProblemFinishes() {
         runSolvingAndVerifySolution(1, 1, "2");
     }
@@ -111,7 +114,8 @@ public class SolverConfigMultiThreadedTest {
         return testdataSolution;
     }
 
-    @Test(timeout = 5000L)
+    @Test
+    @Timeout(5)
     public void customThreadFactoryClassIsUsed() {
         SolverConfig solverConfig = PlannerTestUtils.buildSolverConfig(
                 TestdataSolution.class, TestdataEntity.class);

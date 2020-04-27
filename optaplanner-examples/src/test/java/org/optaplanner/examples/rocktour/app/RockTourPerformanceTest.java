@@ -19,6 +19,7 @@ package org.optaplanner.examples.rocktour.app;
 import java.io.File;
 
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.Timeout;
 import org.optaplanner.core.config.solver.EnvironmentMode;
 import org.optaplanner.examples.common.app.SolverPerformanceTest;
 import org.optaplanner.examples.rocktour.domain.RockTourSolution;
@@ -38,13 +39,15 @@ public class RockTourPerformanceTest extends SolverPerformanceTest<RockTourSolut
     // Tests
     // ************************************************************************
 
-    @Test(timeout = 600000)
+    @Test
+    @Timeout(600)
     public void solveModel() {
         File unsolvedDataFile = new File("data/rocktour/unsolved/47shows.xlsx");
         runSpeedTest(unsolvedDataFile, "0hard/72725670medium/-6208480soft");
     }
 
-    @Test(timeout = 600000)
+    @Test
+    @Timeout(600)
     public void solveModelFastAssert() {
         File unsolvedDataFile = new File("data/rocktour/unsolved/47shows.xlsx");
         runSpeedTest(unsolvedDataFile, "0hard/72725039medium/-5186309soft", EnvironmentMode.FAST_ASSERT);

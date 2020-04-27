@@ -19,6 +19,7 @@ package org.optaplanner.examples.investment.app;
 import java.io.File;
 
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.Timeout;
 import org.optaplanner.core.config.solver.EnvironmentMode;
 import org.optaplanner.examples.common.app.SolverPerformanceTest;
 import org.optaplanner.examples.investment.domain.InvestmentSolution;
@@ -38,13 +39,15 @@ public class InvestmentPerformanceTest extends SolverPerformanceTest<InvestmentS
     // Tests
     // ************************************************************************
 
-    @Test(timeout = 600000)
+    @Test
+    @Timeout(600)
     public void solveIrrinki_1() {
         File unsolvedDataFile = new File("data/investment/unsolved/irrinki_1.xml");
         runSpeedTest(unsolvedDataFile, "0hard/74630soft");
     }
 
-    @Test(timeout = 600000)
+    @Test
+    @Timeout(600)
     public void solveIrrinki_1FastAssert() {
         File unsolvedDataFile = new File("data/investment/unsolved/irrinki_1.xml");
         runSpeedTest(unsolvedDataFile, "0hard/74595soft", EnvironmentMode.FAST_ASSERT);

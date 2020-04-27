@@ -19,6 +19,7 @@ package org.optaplanner.examples.conferencescheduling.app;
 import java.io.File;
 
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.Timeout;
 import org.optaplanner.core.config.solver.EnvironmentMode;
 import org.optaplanner.examples.common.app.SolverPerformanceTest;
 import org.optaplanner.examples.conferencescheduling.domain.ConferenceSolution;
@@ -38,13 +39,15 @@ public class ConferenceSchedulingPerformanceTest extends SolverPerformanceTest<C
     // Tests
     // ************************************************************************
 
-    @Test(timeout = 600000)
+    @Test
+    @Timeout(600)
     public void solveModel() {
         File unsolvedDataFile = new File("data/conferencescheduling/unsolved/72talks-12timeslots-10rooms.xlsx");
         runSpeedTest(unsolvedDataFile, "-2115hard/0medium/-1350915soft");
     }
 
-    @Test(timeout = 600000)
+    @Test
+    @Timeout(600)
     public void solveModelFastAssert() {
         File unsolvedDataFile = new File("data/conferencescheduling/unsolved/72talks-12timeslots-10rooms.xlsx");
         runSpeedTest(unsolvedDataFile, "-2700hard/0medium/-1379805soft", EnvironmentMode.FAST_ASSERT);

@@ -19,6 +19,7 @@ package org.optaplanner.examples.vehiclerouting.app;
 import java.io.File;
 
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.Timeout;
 import org.optaplanner.core.config.solver.EnvironmentMode;
 import org.optaplanner.examples.common.app.SolverPerformanceTest;
 import org.optaplanner.examples.vehiclerouting.domain.VehicleRoutingSolution;
@@ -38,25 +39,29 @@ public class VehicleRoutingPerformanceTest extends SolverPerformanceTest<Vehicle
     // Tests
     // ************************************************************************
 
-    @Test(timeout = 600000)
+    @Test
+    @Timeout(600)
     public void solveModel_cvrp_32customers() {
         File unsolvedDataFile = new File("data/vehiclerouting/unsolved/cvrp-32customers.xml");
         runSpeedTest(unsolvedDataFile, "0hard/-750000soft");
     }
 
-    @Test(timeout = 600000)
+    @Test
+    @Timeout(600)
     public void solveModel_cvrp_32customersFastAssert() {
         File unsolvedDataFile = new File("data/vehiclerouting/unsolved/cvrp-32customers.xml");
         runSpeedTest(unsolvedDataFile, "0hard/-770000soft", EnvironmentMode.FAST_ASSERT);
     }
 
-    @Test(timeout = 600000)
+    @Test
+    @Timeout(600)
     public void solveModel_cvrptw_100customers_A() {
         File unsolvedDataFile = new File("data/vehiclerouting/unsolved/cvrptw-100customers-A.xml");
         runSpeedTest(unsolvedDataFile, "0hard/-1869903soft");
     }
 
-    @Test(timeout = 600000)
+    @Test
+    @Timeout(600)
     public void solveModel_cvrptw_100customers_AFastAssert() {
         File unsolvedDataFile = new File("data/vehiclerouting/unsolved/cvrptw-100customers-A.xml");
         runSpeedTest(unsolvedDataFile, "0hard/-1877466soft", EnvironmentMode.FAST_ASSERT);
