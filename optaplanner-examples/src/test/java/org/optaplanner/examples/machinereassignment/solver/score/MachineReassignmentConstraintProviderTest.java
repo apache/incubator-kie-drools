@@ -16,11 +16,14 @@
 
 package org.optaplanner.examples.machinereassignment.solver.score;
 
+import java.io.IOException;
+import java.io.InputStream;
 import java.util.Arrays;
 import java.util.Map;
 
 import org.apache.commons.collections4.map.HashedMap;
 import org.junit.Test;
+import org.optaplanner.core.api.score.buildin.hardsoftlong.HardSoftLongScore;
 import org.optaplanner.examples.machinereassignment.domain.MachineReassignment;
 import org.optaplanner.examples.machinereassignment.domain.MrBalancePenalty;
 import org.optaplanner.examples.machinereassignment.domain.MrGlobalPenaltyInfo;
@@ -34,6 +37,7 @@ import org.optaplanner.examples.machinereassignment.domain.MrProcessRequirement;
 import org.optaplanner.examples.machinereassignment.domain.MrResource;
 import org.optaplanner.examples.machinereassignment.domain.MrService;
 import org.optaplanner.examples.machinereassignment.domain.solver.MrServiceDependency;
+import org.optaplanner.persistence.xstream.impl.domain.solution.XStreamSolutionFileIO;
 import org.optaplanner.test.api.score.stream.ConstraintVerifier;
 
 public class MachineReassignmentConstraintProviderTest {
@@ -348,5 +352,19 @@ public class MachineReassignmentConstraintProviderTest {
                 .given(cpu, mem, disk, balancePenaltyCpuMem, machine, machineCapacityCpu, machineCapacityMem,
                         machineCapacityDisk, process, processAssignment)
                 .penalizesBy(2L);
+    }
+    
+    @Test
+    public void solutionWithMultipleConstraints() throws IOException {
+        constraintVerifier.verifyThat()
+                .givenSolution(readSolution("model-a1-1-0hard-44306501soft.xml"))
+                .scores(HardSoftLongScore.of(-0, -44306501));
+    }
+
+    private static MachineReassignment readSolution(String resource) throws IOException {
+        XStreamSolutionFileIO<MachineReassignment> solutionFileIO = new XStreamSolutionFileIO<>(MachineReassignment.class);
+        try (InputStream inputStream = MachineReassignmentConstraintProviderTest.class.getResourceAsStream(resource)) {
+            return solutionFileIO.read(inputStream);
+        }
     }
 }
