@@ -41,4 +41,9 @@ public class TraitCoreServiceImpl implements TraitCoreService {
     public TraitHelper createTraitHelper() {
         return new TraitHelperImpl();
     }
+
+    @Override
+    public Class<?> baseTraitProxyClass() {
+        return TraitProxyImpl.class;
+    }
 }

@@ -308,9 +308,13 @@ public class KieComponentFactory implements Serializable {
         classBuilderFactory = tf;
     }
 
-    private Class<?> baseTraitProxyClass = TraitProxy.class;
+    private Class<?> baseTraitProxyClass;
 
     public Class<?> getBaseTraitProxyClass() {
+        if(baseTraitProxyClass == null) {
+            baseTraitProxyClass = fromTraitRegistry(TraitCoreService::baseTraitProxyClass)
+                    .orElseThrow(RuntimeException::new);
+        }
         return baseTraitProxyClass;
     }
 
