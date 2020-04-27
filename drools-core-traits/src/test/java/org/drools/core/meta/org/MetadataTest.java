@@ -22,6 +22,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import org.drools.compiler.Person;
 import org.drools.core.factmodel.traits.Entity;
 import org.drools.core.meta.org.test.AnotherKlass;
 import org.drools.core.meta.org.test.AnotherKlassImpl;
@@ -207,14 +208,13 @@ public class MetadataTest {
     }
 
 
-    // TODO TRAIT
-//    @Test
-//    public void testURIsOnLegacyClasses() {
-//        Person p = new Person();
-//        URI uri = MetadataContainer.getIdentifier( p );
-//
-//        assertEquals( URI.create( "urn:" + p.getClass().getPackage().getName() +  "/" + p.getClass().getSimpleName() + "/" + System.identityHashCode( p ) ), uri );
-//    }
+    @Test
+    public void testURIsOnLegacyClasses() {
+        Person p = new Person();
+        URI uri = MetadataContainer.getIdentifier( p );
+
+        assertEquals( URI.create( "urn:" + p.getClass().getPackage().getName() +  "/" + p.getClass().getSimpleName() + "/" + System.identityHashCode( p ) ), uri );
+    }
 
     @Test
     public void testDon() {
