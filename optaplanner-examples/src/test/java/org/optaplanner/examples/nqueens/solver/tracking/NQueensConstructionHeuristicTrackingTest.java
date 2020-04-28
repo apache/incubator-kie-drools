@@ -22,9 +22,8 @@ import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
 
-import org.junit.jupiter.api.Test;
-import org.junit.runner.RunWith;
-import org.junit.runners.Parameterized;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.MethodSource;
 import org.optaplanner.core.api.solver.SolverFactory;
 import org.optaplanner.core.config.constructionheuristic.ConstructionHeuristicPhaseConfig;
 import org.optaplanner.core.config.constructionheuristic.ConstructionHeuristicType;
@@ -37,27 +36,15 @@ import org.optaplanner.examples.nqueens.app.NQueensApp;
 import org.optaplanner.examples.nqueens.domain.NQueens;
 import org.optaplanner.examples.nqueens.persistence.NQueensGenerator;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertNotNull;
 
-@RunWith(Parameterized.class)
 public class NQueensConstructionHeuristicTrackingTest extends NQueensAbstractTrackingTest {
 
-    private final ConstructionHeuristicType constructionHeuristicType;
-    private final EntitySorterManner entitySorterManner;
-    private final ValueSorterManner valueSorterManner;
-    private final List<NQueensStepTracking> expectedCoordinates;
-
-    public NQueensConstructionHeuristicTrackingTest(ConstructionHeuristicType constructionHeuristicType,
+    @ParameterizedTest(name = "ConstructionHeuristicType: {0}, EntitySorterManner: {1}, ValueSorterManner: {2}")
+    @MethodSource("parameters")
+    public void trackConstructionHeuristics(ConstructionHeuristicType constructionHeuristicType,
             EntitySorterManner entitySorterManner, ValueSorterManner valueSorterManner,
             List<NQueensStepTracking> expectedCoordinates) {
-        this.constructionHeuristicType = constructionHeuristicType;
-        this.entitySorterManner = entitySorterManner;
-        this.valueSorterManner = valueSorterManner;
-        this.expectedCoordinates = expectedCoordinates;
-    }
-
-    @Test
-    public void trackConstructionHeuristics() {
         SolverConfig solverConfig = SolverConfig.createFromXmlResource(NQueensApp.SOLVER_CONFIG);
 
         ConstructionHeuristicPhaseConfig chConfig = new ConstructionHeuristicPhaseConfig();
@@ -79,7 +66,6 @@ public class NQueensConstructionHeuristicTrackingTest extends NQueensAbstractTra
         assertTrackingList(expectedCoordinates, listener.getTrackingList());
     }
 
-    @Parameterized.Parameters(name = "ConstructionHeuristicType: {0}, EntitySorterManner: {1}, ValueSorterManner: {2}")
     public static Collection<Object[]> parameters() {
         Collection<Object[]> params = new ArrayList<>();
 

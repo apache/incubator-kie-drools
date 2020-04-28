@@ -37,9 +37,8 @@ import java.util.stream.StreamSupport;
 import org.apache.commons.lang3.tuple.Pair;
 import org.apache.poi.xssf.usermodel.XSSFCell;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
-import org.junit.jupiter.api.Test;
-import org.junit.runner.RunWith;
-import org.junit.runners.Parameterized;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.MethodSource;
 import org.optaplanner.core.api.domain.constraintweight.ConstraintWeight;
 import org.optaplanner.core.api.score.buildin.hardmediumsoft.HardMediumSoftScore;
 import org.optaplanner.core.api.solver.SolverFactory;
@@ -57,10 +56,8 @@ import org.optaplanner.test.impl.score.buildin.hardmediumsoft.HardMediumSoftScor
 import static org.optaplanner.examples.common.persistence.AbstractXlsxSolutionFileIO.DAY_FORMATTER;
 import static org.optaplanner.examples.common.persistence.AbstractXlsxSolutionFileIO.TIME_FORMATTER;
 
-@RunWith(Parameterized.class)
 public class ConferenceSchedulingConstraintsXlsxTest {
 
-    @Parameterized.Parameters(name = "{4}")
     public static Collection<Object[]> testSheetParameters() {
         File testFile = new File(ConferenceSchedulingConstraintsXlsxTest.class.getResource(testFileName).getFile());
         try (InputStream in = new BufferedInputStream(new FileInputStream(testFile))) {
@@ -83,26 +80,13 @@ public class ConferenceSchedulingConstraintsXlsxTest {
     private static final String testFileName = "testConferenceSchedulingConstraints.xlsx";
     private static final HardMediumSoftScore unassignedScore = HardMediumSoftScore.ZERO;
 
-    private String constraintPackage;
-    private String constraintName;
-    private HardMediumSoftScore expectedScore;
-    private ConferenceSolution solution;
-    private String testSheetName;
-
     private static HardMediumSoftScoreVerifier<ConferenceSolution> scoreVerifier = new HardMediumSoftScoreVerifier<>(
             SolverFactory.createFromXmlResource(ConferenceSchedulingApp.SOLVER_CONFIG));
 
-    public ConferenceSchedulingConstraintsXlsxTest(String constraintPackage, String constraintName,
-                HardMediumSoftScore expectedScore, ConferenceSolution solution, String testSheetName) {
-        this.constraintPackage = constraintPackage;
-        this.constraintName = constraintName;
-        this.expectedScore = expectedScore;
-        this.solution = solution;
-        this.testSheetName = testSheetName;
-    }
-
-    @Test
-    public void constraints() {
+    @ParameterizedTest(name = "{4}")
+    @MethodSource("testSheetParameters")
+    public void constraints(String constraintPackage, String constraintName,
+            HardMediumSoftScore expectedScore, ConferenceSolution solution, String testSheetName) {
         scoreVerifier.assertHardWeight(constraintPackage, constraintName, expectedScore.getHardScore(), solution);
         scoreVerifier.assertMediumWeight(constraintPackage, constraintName, expectedScore.getMediumScore(), solution);
         scoreVerifier.assertSoftWeight(constraintPackage, constraintName, expectedScore.getSoftScore(), solution);

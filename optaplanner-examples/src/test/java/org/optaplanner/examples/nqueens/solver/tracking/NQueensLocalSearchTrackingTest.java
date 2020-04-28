@@ -21,9 +21,8 @@ import java.util.Arrays;
 import java.util.Collection;
 import java.util.List;
 
-import org.junit.jupiter.api.Test;
-import org.junit.runner.RunWith;
-import org.junit.runners.Parameterized;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.MethodSource;
 import org.optaplanner.core.api.solver.SolverFactory;
 import org.optaplanner.core.config.heuristic.selector.common.SelectionOrder;
 import org.optaplanner.core.config.heuristic.selector.move.generic.ChangeMoveSelectorConfig;
@@ -38,27 +37,17 @@ import org.optaplanner.examples.nqueens.app.NQueensApp;
 import org.optaplanner.examples.nqueens.domain.NQueens;
 import org.optaplanner.examples.nqueens.persistence.NQueensGenerator;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertNotNull;
 
-@RunWith(Parameterized.class)
 public class NQueensLocalSearchTrackingTest extends NQueensAbstractTrackingTest {
 
     private static final int N = 6;
 
-    private final AcceptorConfig acceptorConfig;
-    private final LocalSearchForagerConfig localSearchForagerConfig;
-    private final List<NQueensStepTracking> expectedCoordinates;
-
-    public NQueensLocalSearchTrackingTest(AcceptorConfig acceptorConfig,
+    @ParameterizedTest(name = "AcceptorType: {0}")
+    @MethodSource("parameters")
+    public void trackLocalSearch(AcceptorConfig acceptorConfig,
             LocalSearchForagerConfig localSearchForagerConfig,
             List<NQueensStepTracking> expectedCoordinates) {
-        this.expectedCoordinates = expectedCoordinates;
-        this.localSearchForagerConfig = localSearchForagerConfig;
-        this.acceptorConfig = acceptorConfig;
-    }
-
-    @Test
-    public void trackLocalSearch() {
         SolverConfig solverConfig = SolverConfig.createFromXmlResource(NQueensApp.SOLVER_CONFIG);
 
         NQueensGenerator generator = new NQueensGenerator();
@@ -83,7 +72,6 @@ public class NQueensLocalSearchTrackingTest extends NQueensAbstractTrackingTest 
         assertTrackingList(expectedCoordinates, listener.getTrackingList());
     }
 
-    @Parameterized.Parameters(name = "AcceptorType: {0}")
     public static Collection<Object[]> parameters() {
         Collection<Object[]> params = new ArrayList<>();
 
