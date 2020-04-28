@@ -16,10 +16,7 @@
 
 package org.optaplanner.examples.projectjobscheduling.persistence;
 
-import java.io.File;
-import java.util.Collection;
-
-import org.junit.runners.Parameterized;
+import org.optaplanner.examples.common.persistence.AbstractSolutionImporter;
 import org.optaplanner.examples.common.persistence.ImportDataFilesTest;
 import org.optaplanner.examples.projectjobscheduling.app.ProjectJobSchedulingApp;
 import org.optaplanner.examples.projectjobscheduling.domain.Schedule;
@@ -27,17 +24,12 @@ import org.optaplanner.examples.projectjobscheduling.domain.Schedule;
 public class ProjectJobSchedulingImporterTest extends ImportDataFilesTest<Schedule> {
 
     @Override
-    protected ProjectJobSchedulingImporter createSolutionImporter() {
+    protected AbstractSolutionImporter<Schedule> createSolutionImporter() {
         return new ProjectJobSchedulingImporter();
     }
 
-    @Parameterized.Parameters(name = "{index}: {0}")
-    public static Collection<Object[]> getInputFilesAsParameters() {
-        return getInputFilesAsParameters(ProjectJobSchedulingApp.DATA_DIR_NAME, new ProjectJobSchedulingImporter());
+    @Override
+    protected String getDataDirName() {
+        return ProjectJobSchedulingApp.DATA_DIR_NAME;
     }
-
-    public ProjectJobSchedulingImporterTest(File solutionFile) {
-        super(solutionFile);
-    }
-
 }

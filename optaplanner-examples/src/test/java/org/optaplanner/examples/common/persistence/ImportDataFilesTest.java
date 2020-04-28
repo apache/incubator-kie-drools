@@ -20,28 +20,36 @@ import java.io.File;
 import java.io.FileFilter;
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Collection;
 import java.util.List;
 import java.util.Objects;
+import java.util.function.Predicate;
+import java.util.stream.Stream;
 
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.filefilter.DirectoryFileFilter;
-import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.Test;
-import org.junit.runner.RunWith;
-import org.junit.runners.Parameterized;
+import org.junit.jupiter.api.DynamicTest;
+import org.junit.jupiter.api.TestFactory;
 import org.optaplanner.core.api.domain.solution.PlanningSolution;
 import org.optaplanner.examples.common.app.CommonApp;
 import org.optaplanner.examples.common.app.LoggingTest;
 import org.optaplanner.examples.common.business.ProblemFileComparator;
 
+import static org.junit.jupiter.api.DynamicTest.dynamicTest;
+
 /**
  * @param <Solution_> the solution type, the class with the {@link PlanningSolution} annotation
  */
-@RunWith(Parameterized.class)
 public abstract class ImportDataFilesTest<Solution_> extends LoggingTest {
 
-    protected static <Solution_> Collection<Object[]> getInputFilesAsParameters(String dataDirName, AbstractSolutionImporter solutionImporter) {
+    protected abstract AbstractSolutionImporter<Solution_> createSolutionImporter();
+
+    protected abstract String getDataDirName();
+
+    protected Predicate<File> dataFileInclusionFilter() {
+        return file -> true;
+    }
+
+    private static List<File> getInputFiles(String dataDirName, AbstractSolutionImporter<?> solutionImporter) {
         File importDir = new File(CommonApp.determineDataDir(dataDirName), "import");
         List<File> fileList;
         if (solutionImporter.isInputFileDirectory()) {
@@ -54,30 +62,16 @@ public abstract class ImportDataFilesTest<Solution_> extends LoggingTest {
                     FileUtils.listFiles(importDir, new String[]{solutionImporter.getInputFileSuffix()}, true));
         }
         fileList.sort(new ProblemFileComparator());
-        List<Object[]> filesAsParameters = new ArrayList<>();
-        for (File file : fileList) {
-            filesAsParameters.add(new Object[]{file});
-        }
-        return filesAsParameters;
+        return fileList;
     }
 
-    protected final File importFile;
-
-    protected AbstractSolutionImporter<Solution_> solutionImporter;
-
-    protected ImportDataFilesTest(File importFile) {
-        this.importFile = importFile;
-    }
-
-    @BeforeEach
-    public void setUp() {
-        solutionImporter = createSolutionImporter();
-    }
-
-    protected abstract AbstractSolutionImporter<Solution_> createSolutionImporter();
-
-    @Test
-    public void readSolution() {
-        solutionImporter.readSolution(importFile);
+    @TestFactory
+    Stream<DynamicTest> readSolution() {
+        AbstractSolutionImporter<Solution_> solutionImporter = createSolutionImporter();
+        return getInputFiles(getDataDirName(), solutionImporter).stream()
+                .filter(dataFileInclusionFilter())
+                .map(importFile -> dynamicTest(
+                        importFile.getName(),
+                        () -> solutionImporter.readSolution(importFile)));
     }
 }

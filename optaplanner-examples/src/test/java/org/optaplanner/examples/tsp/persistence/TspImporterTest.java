@@ -16,10 +16,7 @@
 
 package org.optaplanner.examples.tsp.persistence;
 
-import java.io.File;
-import java.util.Collection;
-
-import org.junit.runners.Parameterized;
+import org.optaplanner.examples.common.persistence.AbstractSolutionImporter;
 import org.optaplanner.examples.common.persistence.ImportDataFilesTest;
 import org.optaplanner.examples.tsp.app.TspApp;
 import org.optaplanner.examples.tsp.domain.TspSolution;
@@ -27,17 +24,12 @@ import org.optaplanner.examples.tsp.domain.TspSolution;
 public class TspImporterTest extends ImportDataFilesTest<TspSolution> {
 
     @Override
-    protected TspImporter createSolutionImporter() {
+    protected AbstractSolutionImporter<TspSolution> createSolutionImporter() {
         return new TspImporter();
     }
 
-    @Parameterized.Parameters(name = "{index}: {0}")
-    public static Collection<Object[]> getInputFilesAsParameters() {
-        return getInputFilesAsParameters(TspApp.DATA_DIR_NAME, new TspImporter());
+    @Override
+    protected String getDataDirName() {
+        return TspApp.DATA_DIR_NAME;
     }
-
-    public TspImporterTest(File solutionFile) {
-        super(solutionFile);
-    }
-
 }

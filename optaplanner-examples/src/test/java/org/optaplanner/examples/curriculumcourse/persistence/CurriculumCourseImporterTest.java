@@ -16,10 +16,7 @@
 
 package org.optaplanner.examples.curriculumcourse.persistence;
 
-import java.io.File;
-import java.util.Collection;
-
-import org.junit.runners.Parameterized;
+import org.optaplanner.examples.common.persistence.AbstractSolutionImporter;
 import org.optaplanner.examples.common.persistence.ImportDataFilesTest;
 import org.optaplanner.examples.curriculumcourse.app.CurriculumCourseApp;
 import org.optaplanner.examples.curriculumcourse.domain.CourseSchedule;
@@ -27,17 +24,12 @@ import org.optaplanner.examples.curriculumcourse.domain.CourseSchedule;
 public class CurriculumCourseImporterTest extends ImportDataFilesTest<CourseSchedule> {
 
     @Override
-    protected CurriculumCourseImporter createSolutionImporter() {
+    protected AbstractSolutionImporter<CourseSchedule> createSolutionImporter() {
         return new CurriculumCourseImporter();
     }
 
-    @Parameterized.Parameters(name = "{index}: {0}")
-    public static Collection<Object[]> getInputFilesAsParameters() {
-        return getInputFilesAsParameters(CurriculumCourseApp.DATA_DIR_NAME, new CurriculumCourseImporter());
+    @Override
+    protected String getDataDirName() {
+        return CurriculumCourseApp.DATA_DIR_NAME;
     }
-
-    public CurriculumCourseImporterTest(File solutionFile) {
-        super(solutionFile);
-    }
-
 }

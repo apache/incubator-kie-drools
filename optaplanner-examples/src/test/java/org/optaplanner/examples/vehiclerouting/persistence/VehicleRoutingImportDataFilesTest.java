@@ -16,10 +16,7 @@
 
 package org.optaplanner.examples.vehiclerouting.persistence;
 
-import java.io.File;
-import java.util.Collection;
-
-import org.junit.runners.Parameterized;
+import org.optaplanner.examples.common.persistence.AbstractSolutionImporter;
 import org.optaplanner.examples.common.persistence.ImportDataFilesTest;
 import org.optaplanner.examples.vehiclerouting.app.VehicleRoutingApp;
 import org.optaplanner.examples.vehiclerouting.domain.VehicleRoutingSolution;
@@ -27,17 +24,12 @@ import org.optaplanner.examples.vehiclerouting.domain.VehicleRoutingSolution;
 public class VehicleRoutingImportDataFilesTest extends ImportDataFilesTest<VehicleRoutingSolution> {
 
     @Override
-    protected VehicleRoutingImporter createSolutionImporter() {
+    protected AbstractSolutionImporter<VehicleRoutingSolution> createSolutionImporter() {
         return new VehicleRoutingImporter();
     }
 
-    @Parameterized.Parameters(name = "{index}: {0}")
-    public static Collection<Object[]> getInputFilesAsParameters() {
-        return getInputFilesAsParameters(VehicleRoutingApp.DATA_DIR_NAME, new VehicleRoutingImporter());
+    @Override
+    protected String getDataDirName() {
+        return VehicleRoutingApp.DATA_DIR_NAME;
     }
-
-    public VehicleRoutingImportDataFilesTest(File solutionFile) {
-        super(solutionFile);
-    }
-
 }

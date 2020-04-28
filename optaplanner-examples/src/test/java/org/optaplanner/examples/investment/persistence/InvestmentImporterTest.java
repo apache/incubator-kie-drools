@@ -16,10 +16,7 @@
 
 package org.optaplanner.examples.investment.persistence;
 
-import java.io.File;
-import java.util.Collection;
-
-import org.junit.runners.Parameterized;
+import org.optaplanner.examples.common.persistence.AbstractSolutionImporter;
 import org.optaplanner.examples.common.persistence.ImportDataFilesTest;
 import org.optaplanner.examples.investment.app.InvestmentApp;
 import org.optaplanner.examples.investment.domain.InvestmentSolution;
@@ -27,17 +24,12 @@ import org.optaplanner.examples.investment.domain.InvestmentSolution;
 public class InvestmentImporterTest extends ImportDataFilesTest<InvestmentSolution> {
 
     @Override
-    protected InvestmentImporter createSolutionImporter() {
+    protected AbstractSolutionImporter<InvestmentSolution> createSolutionImporter() {
         return new InvestmentImporter();
     }
 
-    @Parameterized.Parameters(name = "{index}: {0}")
-    public static Collection<Object[]> getInputFilesAsParameters() {
-        return getInputFilesAsParameters(InvestmentApp.DATA_DIR_NAME, new InvestmentImporter());
+    @Override
+    protected String getDataDirName() {
+        return InvestmentApp.DATA_DIR_NAME;
     }
-
-    public InvestmentImporterTest(File solutionFile) {
-        super(solutionFile);
-    }
-
 }

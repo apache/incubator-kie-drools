@@ -16,10 +16,7 @@
 
 package org.optaplanner.examples.examination.persistence;
 
-import java.io.File;
-import java.util.Collection;
-
-import org.junit.runners.Parameterized;
+import org.optaplanner.examples.common.persistence.AbstractSolutionImporter;
 import org.optaplanner.examples.common.persistence.ImportDataFilesTest;
 import org.optaplanner.examples.examination.app.ExaminationApp;
 import org.optaplanner.examples.examination.domain.Examination;
@@ -27,17 +24,12 @@ import org.optaplanner.examples.examination.domain.Examination;
 public class ExaminationImporterTest extends ImportDataFilesTest<Examination> {
 
     @Override
-    protected ExaminationImporter createSolutionImporter() {
+    protected AbstractSolutionImporter<Examination> createSolutionImporter() {
         return new ExaminationImporter();
     }
 
-    @Parameterized.Parameters(name = "{index}: {0}")
-    public static Collection<Object[]> getInputFilesAsParameters() {
-        return getInputFilesAsParameters(ExaminationApp.DATA_DIR_NAME, new ExaminationImporter());
+    @Override
+    protected String getDataDirName() {
+        return ExaminationApp.DATA_DIR_NAME;
     }
-
-    public ExaminationImporterTest(File solutionFile) {
-        super(solutionFile);
-    }
-
 }

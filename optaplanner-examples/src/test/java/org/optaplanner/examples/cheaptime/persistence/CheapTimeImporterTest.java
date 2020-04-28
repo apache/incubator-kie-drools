@@ -16,28 +16,20 @@
 
 package org.optaplanner.examples.cheaptime.persistence;
 
-import java.io.File;
-import java.util.Collection;
-
-import org.junit.runners.Parameterized;
 import org.optaplanner.examples.cheaptime.app.CheapTimeApp;
 import org.optaplanner.examples.cheaptime.domain.CheapTimeSolution;
+import org.optaplanner.examples.common.persistence.AbstractSolutionImporter;
 import org.optaplanner.examples.common.persistence.ImportDataFilesTest;
 
 public class CheapTimeImporterTest extends ImportDataFilesTest<CheapTimeSolution> {
 
     @Override
-    protected CheapTimeImporter createSolutionImporter() {
+    protected AbstractSolutionImporter<CheapTimeSolution> createSolutionImporter() {
         return new CheapTimeImporter();
     }
 
-    @Parameterized.Parameters(name = "{index}: {0}")
-    public static Collection<Object[]> getInputFilesAsParameters() {
-        return getInputFilesAsParameters(CheapTimeApp.DATA_DIR_NAME, new CheapTimeImporter());
+    @Override
+    protected String getDataDirName() {
+        return CheapTimeApp.DATA_DIR_NAME;
     }
-
-    public CheapTimeImporterTest(File solutionFile) {
-        super(solutionFile);
-    }
-
 }

@@ -16,10 +16,7 @@
 
 package org.optaplanner.examples.travelingtournament.persistence;
 
-import java.io.File;
-import java.util.Collection;
-
-import org.junit.runners.Parameterized;
+import org.optaplanner.examples.common.persistence.AbstractSolutionImporter;
 import org.optaplanner.examples.common.persistence.ImportDataFilesTest;
 import org.optaplanner.examples.travelingtournament.app.TravelingTournamentApp;
 import org.optaplanner.examples.travelingtournament.domain.TravelingTournament;
@@ -27,17 +24,12 @@ import org.optaplanner.examples.travelingtournament.domain.TravelingTournament;
 public class TravelingTournamentImporterTest extends ImportDataFilesTest<TravelingTournament> {
 
     @Override
-    protected TravelingTournamentImporter createSolutionImporter() {
+    protected AbstractSolutionImporter<TravelingTournament> createSolutionImporter() {
         return new TravelingTournamentImporter();
     }
 
-    @Parameterized.Parameters(name = "{index}: {0}")
-    public static Collection<Object[]> getInputFilesAsParameters() {
-        return getInputFilesAsParameters(TravelingTournamentApp.DATA_DIR_NAME, new TravelingTournamentImporter());
+    @Override
+    protected String getDataDirName() {
+        return TravelingTournamentApp.DATA_DIR_NAME;
     }
-
-    public TravelingTournamentImporterTest(File solutionFile) {
-        super(solutionFile);
-    }
-
 }
