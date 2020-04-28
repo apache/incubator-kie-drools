@@ -88,7 +88,6 @@ public class KiePMMLScorecardModelCharacteristicASTFactoryTest {
         final List<Characteristic> characteristicList = characteristics.getCharacteristics();
         List<Attribute> attributes = new ArrayList<>();
         AtomicInteger counter = new AtomicInteger(0);
-        System.out.println(retrieved);
         for (int i = 0; i < characteristicList.size(); i++) {
             Characteristic characteristic = characteristicList.get(i);
             attributes.addAll(characteristic.getAttributes());
