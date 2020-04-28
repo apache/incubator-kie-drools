@@ -99,6 +99,8 @@ public class RuleContext {
     private Deque<Scope> scopesStack = new LinkedList<>();
     private Map<String, String> definedVars = new HashMap<>();
 
+    private int legacyAccumulateCounter = 0;
+
     public enum RuleDialect {
         JAVA,
         MVEL;
@@ -535,6 +537,14 @@ public class RuleContext {
                 return;
             }
         }
+    }
+
+    public int getLegacyAccumulateCounter() {
+        return legacyAccumulateCounter;
+    }
+
+    public void increaseLegacyAccumulateCounter() {
+        legacyAccumulateCounter++;
     }
 }
 
