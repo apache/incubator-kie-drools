@@ -113,11 +113,13 @@ public class MultiThreadedLocalSearchDecider<Solution_> extends LocalSearchDecid
     public void phaseEnded(LocalSearchPhaseScope<Solution_> phaseScope) {
         super.phaseEnded(phaseScope);
         // Tell the move thread runners to stop
+        // Don't clear the operationsQueue to avoid moveThreadBarrier deadlock:
+        // The MoveEvaluationOperations are already cleared and the new ApplyStepOperation isn't added yet.
         DestroyOperation<Solution_> destroyOperation = new DestroyOperation<>();
         for (int i = 0; i < moveThreadCount; i++) {
             operationQueue.add(destroyOperation);
         }
-        // TODO This should probably be in a finally that spawns at least the entire phase, maybe even the entire solve
+        // TODO This should probably be in a finally that spans at least the entire phase, maybe even the entire solve
         ThreadUtils.shutdownAwaitOrKill(executor, logIndentation, "Multithreaded Local Search");
         long childThreadsScoreCalculationCount = 0;
         for (MoveThreadRunner<Solution_> moveThreadRunner : moveThreadRunnerList) {
