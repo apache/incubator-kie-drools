@@ -34,7 +34,7 @@ import org.drools.workbench.models.testscenarios.shared.VerifyFact;
 import org.drools.workbench.models.testscenarios.shared.VerifyField;
 import org.drools.workbench.models.testscenarios.shared.VerifyRuleFired;
 import org.drools.workbench.models.testscenarios.shared.VerifyScorecardScore;
-import org.kie.soup.commons.xstream.XStreamUtils;
+import org.kie.soup.xstream.XStreamUtils;
 import org.kie.soup.project.datamodel.imports.Imports;
 
 /**
