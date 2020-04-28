@@ -25,6 +25,7 @@ import org.drools.reflective.classloader.ProjectClassLoader;
 import org.junit.Before;
 import org.junit.Test;
 
+import static org.drools.compiler.factmodel.traits.TraitTestUtils.createStandaloneTraitFactory;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNull;
@@ -37,7 +38,7 @@ public class StandaloneTest {
     @Before
     public void init() {
         ProjectClassLoader loader = ProjectClassLoader.createProjectClassLoader();
-        factory = new StandaloneTraitFactory( loader );
+        factory = createStandaloneTraitFactory();
     }
 
     @Test
