@@ -16,24 +16,32 @@
 
 package org.optaplanner.examples.curriculumcourse.app;
 
-import java.io.File;
-import java.util.Collection;
+import java.util.function.Predicate;
+import java.util.stream.Stream;
 
-import org.junit.runners.Parameterized;
 import org.optaplanner.core.config.constructionheuristic.ConstructionHeuristicType;
 import org.optaplanner.examples.common.app.AbstractConstructionHeuristicTest;
+import org.optaplanner.examples.common.app.CommonApp;
 import org.optaplanner.examples.curriculumcourse.domain.CourseSchedule;
 
 public class CurriculumCourseConstructionHeuristicTest extends AbstractConstructionHeuristicTest<CourseSchedule> {
 
-    @Parameterized.Parameters(name = "{index}: {0} - {1}")
-    public static Collection<Object[]> getSolutionFilesAsParameters() {
-        return buildParameters(new CurriculumCourseApp(), "toy01.xml");
+    @Override
+    protected Predicate<ConstructionHeuristicType> includeConstructionHeuristicType() {
+        /*
+         * TODO Delete this temporary workaround to ignore ALLOCATE_TO_VALUE_FROM_QUEUE,
+         * see https://issues.redhat.com/browse/PLANNER-486
+         */
+        return constructionHeuristicType -> constructionHeuristicType != ConstructionHeuristicType.ALLOCATE_TO_VALUE_FROM_QUEUE;
     }
 
-    public CurriculumCourseConstructionHeuristicTest(File unsolvedDataFile,
-            ConstructionHeuristicType constructionHeuristicType) {
-        super(new CurriculumCourseApp(), unsolvedDataFile, constructionHeuristicType);
+    @Override
+    protected CommonApp<CourseSchedule> createCommonApp() {
+        return new CurriculumCourseApp();
     }
 
+    @Override
+    protected Stream<String> unsolvedFileNames() {
+        return Stream.of("toy01.xml");
+    }
 }

@@ -17,66 +17,55 @@
 package org.optaplanner.examples.common.app;
 
 import java.io.File;
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.List;
+import java.util.stream.Stream;
 
-import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.DynamicTest;
+import org.junit.jupiter.api.TestFactory;
 import org.junit.jupiter.api.Timeout;
-import org.junit.runner.RunWith;
-import org.junit.runners.Parameterized;
 import org.optaplanner.core.api.domain.solution.PlanningSolution;
 import org.optaplanner.core.api.solver.Solver;
 import org.optaplanner.core.api.solver.SolverFactory;
 import org.optaplanner.persistence.common.api.domain.solution.SolutionFileIO;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.jupiter.api.DynamicTest.dynamicTest;
 
 /**
  * @param <Solution_> the solution type, the class with the {@link PlanningSolution} annotation
  */
-@RunWith(Parameterized.class)
 public abstract class AbstractPhaseTest<Solution_> extends LoggingTest {
 
-    protected static <Solution_, Enum_ extends Enum> Collection<Object[]> buildParameters(
-            CommonApp<Solution_> commonApp, Enum_[] types, String... unsolvedFileNames) {
-        List<Object[]> filesAsParameters = new ArrayList<>(unsolvedFileNames.length * types.length);
+    protected abstract CommonApp<Solution_> createCommonApp();
+
+    protected abstract Stream<String> unsolvedFileNames();
+
+    protected abstract Stream<SolverFactory<Solution_>> buildSolverFactories(CommonApp<Solution_> commonApp);
+
+    protected static File buildFile(File unsolvedDataDir, String unsolvedFileName) {
+        File unsolvedFile = new File(unsolvedDataDir, unsolvedFileName);
+        if (!unsolvedFile.exists()) {
+            throw new IllegalStateException("The directory unsolvedFile (" + unsolvedFile.getAbsolutePath()
+                    + ") does not exist.");
+        }
+        return unsolvedFile;
+    }
+
+    @TestFactory
+    @Timeout(600)
+    Stream<DynamicTest> runPhase() {
+        CommonApp<Solution_> commonApp = createCommonApp();
+        SolutionFileIO<Solution_> solutionFileIO = commonApp.createSolutionFileIO();
         File dataDir = CommonApp.determineDataDir(commonApp.getDataDirName());
         File unsolvedDataDir = new File(dataDir, "unsolved");
-        for (String unsolvedFileName : unsolvedFileNames) {
-            File unsolvedFile = new File(unsolvedDataDir, unsolvedFileName);
-            if (!unsolvedFile.exists()) {
-                throw new IllegalStateException("The directory unsolvedFile (" + unsolvedFile.getAbsolutePath()
-                        + ") does not exist.");
-            }
-            for (Enum_ type : types) {
-                filesAsParameters.add(new Object[]{unsolvedFile, type});
-            }
-        }
-        return filesAsParameters;
+        return buildSolverFactories(commonApp).flatMap(solverFactory ->
+                unsolvedFileNames().map(unsolvedFileName ->
+                        dynamicTest(
+                                unsolvedFileName + ", TODO enum",
+                                () -> runPhase(solverFactory, readProblem(solutionFileIO, buildFile(unsolvedDataDir, unsolvedFileName)))
+                        )));
     }
 
-    protected final CommonApp<Solution_> commonApp;
-    protected final File dataFile;
-
-    protected SolutionFileIO<Solution_> solutionFileIO;
-
-    protected AbstractPhaseTest(CommonApp<Solution_> commonApp, File dataFile) {
-        this.commonApp = commonApp;
-        this.dataFile = dataFile;
-    }
-
-    @BeforeEach
-    public void setUp() {
-        solutionFileIO = commonApp.createSolutionFileIO();
-    }
-
-    @Test
-    @Timeout(600)
-    public void runPhase() {
-        SolverFactory<Solution_> solverFactory = buildSolverFactory();
-        Solution_ problem = readProblem();
+    private void runPhase(SolverFactory<Solution_> solverFactory, Solution_ problem) {
         Solver<Solution_> solver = solverFactory.buildSolver();
 
         Solution_ bestSolution = solver.solve(problem);
@@ -88,12 +77,9 @@ public abstract class AbstractPhaseTest<Solution_> extends LoggingTest {
         assertNotNull(bestSolution);
     }
 
-    protected abstract SolverFactory<Solution_> buildSolverFactory();
-
-    protected Solution_ readProblem() {
+    private Solution_ readProblem(SolutionFileIO<Solution_> solutionFileIO, File dataFile) {
         Solution_ problem = solutionFileIO.read(dataFile);
         logger.info("Opened: {}", dataFile);
         return problem;
     }
-
 }

@@ -16,25 +16,21 @@
 
 package org.optaplanner.examples.tsp.app;
 
-import java.io.File;
-import java.util.Collection;
+import java.util.stream.Stream;
 
-import org.junit.runners.Parameterized;
-import org.optaplanner.core.config.constructionheuristic.ConstructionHeuristicType;
 import org.optaplanner.examples.common.app.AbstractConstructionHeuristicTest;
+import org.optaplanner.examples.common.app.CommonApp;
 import org.optaplanner.examples.tsp.domain.TspSolution;
 
 public class TspConstructionHeuristicTest extends AbstractConstructionHeuristicTest<TspSolution> {
 
-    @Parameterized.Parameters(name = "{index}: {0} - {1}")
-    public static Collection<Object[]> getSolutionFilesAsParameters() {
-        return buildParameters(new TspApp(),
-                "europe40.xml");
+    @Override
+    protected CommonApp<TspSolution> createCommonApp() {
+        return new TspApp();
     }
 
-    public TspConstructionHeuristicTest(File unsolvedDataFile,
-            ConstructionHeuristicType constructionHeuristicType) {
-        super(new TspApp(), unsolvedDataFile, constructionHeuristicType);
+    @Override
+    protected Stream<String> unsolvedFileNames() {
+        return Stream.of("europe40.xml");
     }
-
 }

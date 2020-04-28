@@ -16,26 +16,21 @@
 
 package org.optaplanner.examples.cloudbalancing.app;
 
-import java.io.File;
-import java.util.Collection;
+import java.util.stream.Stream;
 
-import org.junit.runners.Parameterized;
-import org.optaplanner.core.config.constructionheuristic.ConstructionHeuristicType;
 import org.optaplanner.examples.cloudbalancing.domain.CloudBalance;
 import org.optaplanner.examples.common.app.AbstractConstructionHeuristicTest;
+import org.optaplanner.examples.common.app.CommonApp;
 
 public class CloudBalancingConstructionHeuristicTest extends AbstractConstructionHeuristicTest<CloudBalance> {
 
-    @Parameterized.Parameters(name = "{index}: {0} - {1}")
-    public static Collection<Object[]> getSolutionFilesAsParameters() {
-        return buildParameters(new CloudBalancingApp(),
-                "2computers-6processes.xml",
-                "3computers-9processes.xml");
+    @Override
+    protected CommonApp<CloudBalance> createCommonApp() {
+        return new CloudBalancingApp();
     }
 
-    public CloudBalancingConstructionHeuristicTest(File unsolvedDataFile,
-            ConstructionHeuristicType constructionHeuristicType) {
-        super(new CloudBalancingApp(), unsolvedDataFile, constructionHeuristicType);
+    @Override
+    protected Stream<String> unsolvedFileNames() {
+        return Stream.of("2computers-6processes.xml", "3computers-9processes.xml");
     }
-
 }

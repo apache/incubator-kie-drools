@@ -16,25 +16,21 @@
 
 package org.optaplanner.examples.curriculumcourse.app;
 
-import java.io.File;
-import java.util.Collection;
+import java.util.stream.Stream;
 
-import org.junit.runners.Parameterized;
-import org.optaplanner.core.config.exhaustivesearch.ExhaustiveSearchType;
 import org.optaplanner.examples.common.app.AbstractExhaustiveSearchTest;
+import org.optaplanner.examples.common.app.CommonApp;
 import org.optaplanner.examples.curriculumcourse.domain.CourseSchedule;
 
 public class CurriculumCourseExhaustiveSearchTest extends AbstractExhaustiveSearchTest<CourseSchedule> {
 
-    @Parameterized.Parameters(name = "{index}: {0} - {1}")
-    public static Collection<Object[]> getSolutionFilesAsParameters() {
-        return buildParameters(new CurriculumCourseApp(),
-                "toy01.xml");
+    @Override
+    protected CommonApp<CourseSchedule> createCommonApp() {
+        return new CurriculumCourseApp();
     }
 
-    public CurriculumCourseExhaustiveSearchTest(File unsolvedDataFile,
-            ExhaustiveSearchType exhaustiveSearchType) {
-        super(new CurriculumCourseApp(), unsolvedDataFile, exhaustiveSearchType);
+    @Override
+    protected Stream<String> unsolvedFileNames() {
+        return Stream.of("toy01.xml");
     }
-
 }

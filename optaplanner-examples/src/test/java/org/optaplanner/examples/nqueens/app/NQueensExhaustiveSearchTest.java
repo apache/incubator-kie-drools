@@ -16,25 +16,24 @@
 
 package org.optaplanner.examples.nqueens.app;
 
-import java.io.File;
-import java.util.Collection;
+import java.util.stream.Stream;
 
-import org.junit.runners.Parameterized;
-import org.optaplanner.core.config.exhaustivesearch.ExhaustiveSearchType;
 import org.optaplanner.examples.common.app.AbstractExhaustiveSearchTest;
+import org.optaplanner.examples.common.app.CommonApp;
 import org.optaplanner.examples.nqueens.domain.NQueens;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
 
 public class NQueensExhaustiveSearchTest extends AbstractExhaustiveSearchTest<NQueens> {
 
-    @Parameterized.Parameters(name = "{index}: {0} - {1}")
-    public static Collection<Object[]> getSolutionFilesAsParameters() {
-        return buildParameters(new NQueensApp(), "4queens.xml");
+    @Override
+    protected CommonApp<NQueens> createCommonApp() {
+        return new NQueensApp();
     }
 
-    public NQueensExhaustiveSearchTest(File unsolvedDataFile, ExhaustiveSearchType exhaustiveSearchType) {
-        super(new NQueensApp(), unsolvedDataFile, exhaustiveSearchType);
+    @Override
+    protected Stream<String> unsolvedFileNames() {
+        return Stream.of("4queens.xml");
     }
 
     @Override
@@ -42,5 +41,4 @@ public class NQueensExhaustiveSearchTest extends AbstractExhaustiveSearchTest<NQ
         super.assertSolution(bestSolution);
         assertEquals(0, ((NQueens) bestSolution).getScore().getScore());
     }
-
 }

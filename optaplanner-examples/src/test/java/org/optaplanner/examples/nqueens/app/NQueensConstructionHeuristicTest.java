@@ -16,26 +16,21 @@
 
 package org.optaplanner.examples.nqueens.app;
 
-import java.io.File;
-import java.util.Collection;
+import java.util.stream.Stream;
 
-import org.junit.runners.Parameterized;
-import org.optaplanner.core.config.constructionheuristic.ConstructionHeuristicType;
 import org.optaplanner.examples.common.app.AbstractConstructionHeuristicTest;
+import org.optaplanner.examples.common.app.CommonApp;
 import org.optaplanner.examples.nqueens.domain.NQueens;
 
 public class NQueensConstructionHeuristicTest extends AbstractConstructionHeuristicTest<NQueens> {
 
-    @Parameterized.Parameters(name = "{index}: {0} - {1}")
-    public static Collection<Object[]> getSolutionFilesAsParameters() {
-        return buildParameters(new NQueensApp(),
-                "4queens.xml",
-                "8queens.xml");
+    @Override
+    protected CommonApp<NQueens> createCommonApp() {
+        return new NQueensApp();
     }
 
-    public NQueensConstructionHeuristicTest(File unsolvedDataFile,
-            ConstructionHeuristicType constructionHeuristicType) {
-        super(new NQueensApp(), unsolvedDataFile, constructionHeuristicType);
+    @Override
+    protected Stream<String> unsolvedFileNames() {
+        return Stream.of("4queens.xml", "8queens.xml");
     }
-
 }
