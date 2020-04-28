@@ -17,7 +17,7 @@ public class ModifyCompilerTest implements CompilerTest {
     @Test
     public void testUncompiledMethod() {
         test("{modify( (List)$toEdit.get(0) ){ setEnabled( true ) }}",
-             "{ ((List) $toEdit.get(0)).setEnabled(true); }",
+             "{ { ((List) $toEdit.get(0)).setEnabled(true); } }",
              result -> assertThat(allUsedBindings(result), is(empty())));
     }
 
@@ -25,7 +25,7 @@ public class ModifyCompilerTest implements CompilerTest {
     public void testModify() {
         test(ctx -> ctx.addDeclaration("$p", Person.class),
              "{  modify($p) { setCanDrink(true); } }",
-             "{ ($p).setCanDrink(true); update($p); }",
+             "{ { ($p).setCanDrink(true); update($p); } }",
              result -> assertThat(allUsedBindings(result), containsInAnyOrder("$p")));
     }
 
@@ -33,7 +33,7 @@ public class ModifyCompilerTest implements CompilerTest {
     public void testModifyWithLambda() {
         test(ctx -> ctx.addDeclaration("$p", Person.class),
              "{  modify($p) {  setCanDrinkLambda(() -> true); } }",
-             "{ ($p).setCanDrinkLambda(() -> true); update($p); }",
+             "{ { ($p).setCanDrinkLambda(() -> true); update($p); } }",
              result -> assertThat(allUsedBindings(result), containsInAnyOrder("$p")));
     }
 
@@ -50,8 +50,10 @@ public class ModifyCompilerTest implements CompilerTest {
                      "if ($fact.getResult() != null) { " +
                      "  $fact.setResult(\"OK\"); " +
                      "} else { " +
-                         "($fact).setResult(\"FIRST\"); " +
-                         "update($fact); " +
+                         "{ " +
+                         "  ($fact).setResult(\"FIRST\"); " +
+                         "  update($fact); " +
+                         "} " +
                      "} " +
                      "} ",
              result -> assertThat(allUsedBindings(result), containsInAnyOrder("$fact")));

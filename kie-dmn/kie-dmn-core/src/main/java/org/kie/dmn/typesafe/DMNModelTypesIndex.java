@@ -29,7 +29,7 @@ import org.kie.dmn.api.core.ast.ItemDefNode;
 
 class DMNModelTypesIndex {
 
-    Map<String, IndexValue> classesNamespaceIndex = new HashMap<>();
+    Map<IndexKey, IndexValue> classesNamespaceIndex = new HashMap<>();
     private final List<DMNType> typesToGenerate = new ArrayList<>();
     private DMNModel model;
     private final DMNTypeSafePackageName.Factory packageName;
@@ -54,22 +54,22 @@ class DMNModelTypesIndex {
 
     private Stream<DMNType> innerTypes(DMNType type) {
         if (type.isComposite()) {
-            return type.getFields().values().stream().filter(this::shouldIndex);
+            return type.getFields().values().stream().filter(DMNTypeUtils::isInnerComposite).map(t -> t.isCollection() ? t.getBaseType() : t);
         } else {
             return Stream.empty();
         }
     }
 
     private boolean shouldIndex(DMNType dmnType) {
-        return dmnType.isComposite();
+        return !dmnType.getNamespace().equals(model.getDefinitions().getURIFEEL()) && dmnType.isComposite();
     }
 
     private void index(DMNType innerType) {
-        classesNamespaceIndex.put(innerType.getName(), new IndexValue(packageName.create(model)));
+        classesNamespaceIndex.put(IndexKey.from(innerType), new IndexValue(packageName.create(model)));
         typesToGenerate.add(innerType);
     }
 
-    public Map<String, IndexValue> getIndex() {
+    public Map<IndexKey, IndexValue> getIndex() {
         return classesNamespaceIndex;
     }
 

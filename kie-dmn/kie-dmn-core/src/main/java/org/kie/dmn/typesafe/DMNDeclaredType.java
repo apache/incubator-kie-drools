@@ -46,7 +46,16 @@ class DMNDeclaredType implements TypeDefinition {
 
     @Override
     public String getTypeName() {
-        return StringUtils.ucFirst(CodegenStringUtil.escapeIdentifier(dmnType.getName()));
+        return asJavaSimpleName(dmnType);
+    }
+
+    public static String asJavaSimpleName(DMNType dmnType) {
+        String sn = StringUtils.ucFirst(CodegenStringUtil.escapeIdentifier(dmnType.getName()));
+        if (DMNTypeUtils.isInnerComposite(dmnType)) {
+            String parentSN = asJavaSimpleName(DMNTypeUtils.getBelongingType(dmnType));
+            sn = parentSN + "_" + sn;
+        }
+        return sn;
     }
 
     @Override

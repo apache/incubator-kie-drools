@@ -2272,4 +2272,37 @@ public class CompilerTest extends BaseModelTest {
         ksession.insert(appObj);
         assertEquals(2, ksession.fireAllRules());
     }
+
+    @Test()
+    public void testRhsOrderWithModify() {
+        String str =
+                "import " + Person.class.getCanonicalName() + ";" +
+                "global java.util.List list;\n" +
+                "rule R when\n" +
+                "  $p1 : Person(name == \"John\")\n" +
+                "  $p2 : Person(name == \"Paul\")\n" +
+                "then\n" +
+                "  list.add($p1.getAge());\n" +
+                "  list.add($p2.getAge());\n" +
+                "  modify($p1) { setAge($p1.getAge()+1) }\n" +
+                "  list.add($p1.getAge());\n" +
+                "  list.add($p2.getAge());\n" +
+                "  modify($p2) { setAge($p2.getAge()+5) }\n" +
+                "  list.add($p1.getAge());\n" +
+                "  list.add($p2.getAge());\n" +
+                "end";
+
+        KieSession ksession = getKieSession( str );
+        final List<Integer> list = new ArrayList<>();
+        ksession.setGlobal("list", list);
+
+        Person p1 = new Person( "John", 40 );
+        Person p2 = new Person( "Paul", 38 );
+
+        ksession.insert( p1 );
+        ksession.insert( p2 );
+        ksession.fireAllRules();
+
+        Assertions.assertThat(list).containsExactlyInAnyOrder(40, 38, 41, 38, 41, 43);
+    }
 }

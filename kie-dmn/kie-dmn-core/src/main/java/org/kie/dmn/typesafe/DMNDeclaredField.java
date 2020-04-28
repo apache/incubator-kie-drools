@@ -16,15 +16,9 @@
 
 package org.kie.dmn.typesafe;
 
-import java.time.Duration;
-import java.time.LocalDate;
-import java.time.LocalDateTime;
-import java.time.LocalTime;
-import java.time.Period;
 import java.util.Collections;
 import java.util.List;
 import java.util.Map;
-import java.util.Optional;
 
 import com.github.javaparser.ast.expr.NameExpr;
 import com.github.javaparser.ast.expr.StringLiteralExpr;
@@ -66,89 +60,15 @@ public class DMNDeclaredField implements FieldDefinition {
 
     @Override
     public String getObjectType() {
-        if (fieldDMNType.isCollection()) {
-            String typeName = getBaseType(fieldDMNType);
-            String typeNameWithPackage = withPackage(typeName);
-            String convertedType = convertType(typeNameWithPackage);
-            return String.format("java.util.Collection<%s>", convertedType);
-        } else {
-            return fieldTypeWithPackage();
-        }
-    }
-
-    private String fieldTypeWithPackage() {
-        String fieldNameWithAnyCheck = getRecursiveBaseType(fieldDMNType)
-                .map(this::getFieldNameWithAnyCheck)
-                .orElse(Object.class.getCanonicalName());
-        String withPackage = withPackage(fieldNameWithAnyCheck);
-        return convertType(withPackage);
-    }
-
-    private String getFieldNameWithAnyCheck(DMNType fieldDMNType) {
-        String name = fieldDMNType.getName();
-        if ("Any".equals(name)) {
-            return OBJECT_TYPE;
-        } else {
-            return CodegenStringUtil.escapeIdentifier(name);
-        }
+        return index.asJava(fieldDMNType);
     }
 
     // This returns the generic type i.e. when Collection<String> then String
     private String fieldTypeUnwrapped() {
         if (fieldDMNType.isCollection()) {
-            String typeName = getBaseType(fieldDMNType);
-            return withPackage(typeName);
+            return index.asJava(fieldDMNType.getBaseType());
         }
-        return fieldTypeWithPackage();
-    }
-
-    private String withPackage(String typeName) {
-        String typeNameUpperCase = StringUtils.ucFirst(typeName);
-        Optional<DMNTypeSafePackageName> dmnTypeSafePackageName = index.namespaceOfClass(typeName);
-        return dmnTypeSafePackageName.map(p -> p.appendPackage(typeNameUpperCase)).orElse(typeNameUpperCase);
-    }
-
-    public String getBaseType(DMNType fieldType) {
-        Optional<DMNType> baseType = getRecursiveBaseType(fieldType);
-        return baseType.map(this::getFieldNameWithAnyCheck).orElse(OBJECT_TYPE);
-    }
-
-    private Optional<DMNType> getRecursiveBaseType(DMNType fieldType) {
-        if (index.isIndexedClass(getFieldNameWithAnyCheck(fieldType))) {
-            return Optional.of(fieldType);
-        } else if (fieldType.getBaseType() == null) {
-            return Optional.of(fieldType);
-        } else {
-            return getRecursiveBaseType(fieldType.getBaseType());
-        }
-    }
-
-    private String convertType(String originalType) {
-        Class<?> convertedClass;
-        switch (originalType) {
-            case "Any":
-                convertedClass = Object.class;
-                break;
-            case "Date":
-                convertedClass = LocalDate.class;
-                break;
-            case "Time":
-                convertedClass = LocalTime.class;
-                break;
-            case "DateTime":
-                convertedClass = LocalDateTime.class;
-                break;
-            case "DayTimeDuration":
-            case "Days_32and_32time_32duration":
-                convertedClass = Duration.class;
-                break;
-            case "YearMonthDuration":
-                convertedClass = Period.class;
-                break;
-            default:
-                convertedClass = null;
-        }
-        return convertedClass != null ? convertedClass.getCanonicalName() : originalType;
+        throw new IllegalArgumentException();
     }
 
     @Override
@@ -191,9 +111,11 @@ public class DMNDeclaredField implements FieldDefinition {
         } else if (fieldDMNType.isCollection() && fieldIsDifferentThanObject()) {
             return replaceTemplate(collectionsPropertyBlock, fieldTypeUnwrapped());
         } else if (fieldDMNType.isComposite()) {
-            return replaceTemplate(pojoPropertyBlock, fieldTypeWithPackage());
+            return replaceTemplate(pojoPropertyBlock, getObjectType());
         } else if (fieldIsDifferentThanObject()) {
-            return replaceTemplate(simplePropertyBlock, fieldTypeWithPackage());
+            return replaceTemplate(simplePropertyBlock, getObjectType());
+        } else if (DMNTypeUtils.isFEELAny(fieldDMNType)) { // feel:Any
+            return replaceTemplate(simplePropertyBlock, getObjectType());
         } else {
             return new BlockStmt();
         }
@@ -204,7 +126,11 @@ public class DMNDeclaredField implements FieldDefinition {
     }
 
     private boolean fieldIsDifferentThanObject() {
-        return !fieldTypeUnwrapped().equals(OBJECT_TYPE);
+        if (DMNTypeUtils.isFEELAny(fieldDMNType)) {
+            return false;
+        }
+        boolean isOtherObject = fieldDMNType.isCollection() ? fieldTypeUnwrapped().equals(OBJECT_TYPE) : getObjectType().equals(OBJECT_TYPE);
+        return !isOtherObject;
     }
 
     private BlockStmt replaceTemplate(BlockStmt pojoPropertyBlock, String objectType) {
