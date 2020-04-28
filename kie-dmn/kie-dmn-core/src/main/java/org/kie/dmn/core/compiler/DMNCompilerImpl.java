@@ -352,7 +352,7 @@ public class DMNCompilerImpl implements DMNCompiler {
         
         for ( ItemDefinition id : ordered ) {
             ItemDefNodeImpl idn = new ItemDefNodeImpl( id );
-            DMNType type = buildTypeDef(ctx, model, idn, id, true);
+            DMNType type = buildTypeDef(ctx, model, idn, id, null);
             idn.setType( type );
             model.addItemDefinition( idn );
         }
@@ -546,7 +546,10 @@ public class DMNCompilerImpl implements DMNCompiler {
         return href.startsWith("#") ? href.substring(1) : href;
     }
 
-    private DMNType buildTypeDef(DMNCompilerContext ctx, DMNModelImpl dmnModel, DMNNode node, ItemDefinition itemDef, boolean topLevel) {
+    /**
+     * @param topLevel null if it is a top level ItemDefinition
+     */
+    private DMNType buildTypeDef(DMNCompilerContext ctx, DMNModelImpl dmnModel, DMNNode node, ItemDefinition itemDef, DMNType topLevel) {
         BaseDMNTypeImpl type = null;
         if ( itemDef.getTypeRef() != null ) {
             // this is a reference to an existing type, so resolve the reference
@@ -556,7 +559,7 @@ public class DMNCompilerImpl implements DMNCompiler {
 
                 // we only want to clone the type definition if it is a top level type (not a field in a composite type)
                 // or if it changes the metadata for the base type
-                if( topLevel || allowedValuesStr != null || itemDef.isIsCollection() != type.isCollection() ) {
+                if (topLevel == null || allowedValuesStr != null || itemDef.isIsCollection() != type.isCollection()) {
 
                     // we have to clone this type definition into a new one
                     String name = itemDef.getName();
@@ -593,8 +596,11 @@ public class DMNCompilerImpl implements DMNCompiler {
                     } else if (type instanceof SimpleTypeImpl) {
                         type = new SimpleTypeImpl(namespace, name, id, isCollection, av, baseType, baseFEELType);
                     }
+                    if (topLevel != null) {
+                        ((BaseDMNTypeImpl) type).setBelongingType(topLevel);
+                    }
                 }
-                if( topLevel ) {
+                if (topLevel == null) {
                     DMNType registered = dmnModel.getTypeRegistry().registerType( type );
                     if( registered != type ) {
                         MsgUtil.reportMessage( logger,
@@ -613,7 +619,7 @@ public class DMNCompilerImpl implements DMNCompiler {
             DMNCompilerHelper.checkVariableName( dmnModel, itemDef, itemDef.getName() );
             CompositeTypeImpl compType = new CompositeTypeImpl( dmnModel.getNamespace(), itemDef.getName(), itemDef.getId(), itemDef.isIsCollection() );
             type = compType;
-            if( topLevel ) {
+            if (topLevel == null) {
                 DMNType registered = dmnModel.getTypeRegistry().registerType( type );
                 if( registered != type ) {
                     MsgUtil.reportMessage( logger,
@@ -625,10 +631,12 @@ public class DMNCompilerImpl implements DMNCompiler {
                                            Msg.DUPLICATED_ITEM_DEFINITION,
                                            itemDef.getName() );
                 }
+            } else {
+                ((BaseDMNTypeImpl) type).setBelongingType(topLevel);
             }
             for (ItemDefinition fieldDef : itemDef.getItemComponent()) {
                 DMNCompilerHelper.checkVariableName(dmnModel, fieldDef, fieldDef.getName());
-                DMNType fieldType = buildTypeDef(ctx, dmnModel, node, fieldDef, false);
+                DMNType fieldType = buildTypeDef(ctx, dmnModel, node, fieldDef, compType);
                 fieldType = fieldType != null ? fieldType : dmnModel.getTypeRegistry().unknown();
                 compType.addField(fieldDef.getName(), fieldType);
             }

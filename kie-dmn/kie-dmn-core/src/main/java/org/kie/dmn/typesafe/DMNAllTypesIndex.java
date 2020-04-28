@@ -16,20 +16,28 @@
 
 package org.kie.dmn.typesafe;
 
+import java.time.Duration;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.time.LocalTime;
+import java.time.Period;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Map.Entry;
 import java.util.Optional;
 
 import org.kie.dmn.api.core.DMNModel;
 import org.kie.dmn.api.core.DMNType;
+import org.kie.dmn.feel.lang.SimpleType;
+import org.kie.dmn.feel.lang.types.BuiltInType;
 
 public class DMNAllTypesIndex {
 
     private final List<DMNType> indexedTypes = new ArrayList<>();
 
-    Map<String, DMNModelTypesIndex.IndexValue> mapNamespaceIndex = new HashMap<>();
+    Map<IndexKey, DMNModelTypesIndex.IndexValue> mapNamespaceIndex = new HashMap<>();
 
     public DMNAllTypesIndex(DMNTypeSafePackageName.Factory packageName, DMNModel... allModels) {
         for (DMNModel m : allModels) {
@@ -39,19 +47,86 @@ public class DMNAllTypesIndex {
         }
     }
 
-    public DMNAllTypesIndex(List<DMNModel> allModels, DMNTypeSafePackageName.Factory packageName) {
-        this(packageName, allModels.toArray(new DMNModel[0]));
-    }
-
     public List<DMNType> allTypesToGenerate() {
         return indexedTypes;
     }
 
+    @Deprecated
     public Optional<DMNTypeSafePackageName> namespaceOfClass(String typeName) {
-        return Optional.ofNullable(mapNamespaceIndex.get(typeName)).map(DMNModelTypesIndex.IndexValue::getPackageName);
+        return mapNamespaceIndex.entrySet().stream()
+                                .filter(kv -> kv.getKey().getName().equals(typeName))
+                                .findFirst()
+                                .map(Entry::getValue)
+                                .map(DMNModelTypesIndex.IndexValue::getPackageName);
     }
 
+    @Deprecated
     public boolean isIndexedClass(String typeName) {
         return namespaceOfClass(typeName).isPresent();
+    }
+
+    public String asJava(DMNType dmnType) {
+        Optional<DMNModelTypesIndex.IndexValue> ivLookup = Optional.ofNullable(mapNamespaceIndex.get(IndexKey.from(dmnType)));
+        if (ivLookup.isPresent()) {
+            String simpleName = DMNDeclaredType.asJavaSimpleName(dmnType);
+            return ivLookup.get().getPackageName().appendPackage(simpleName);
+        }
+        if (DMNTypeUtils.isFEELBuiltInType(dmnType)) {
+            return convertBuiltin(dmnType);
+        }
+        if (dmnType.getBaseType() == null) {
+            throw new IllegalStateException();
+        }
+        String baseConverted = asJava(dmnType.getBaseType());
+        if (dmnType.isCollection()) {
+            return String.format("java.util.Collection<%s>", baseConverted);
+        }
+        return baseConverted;
+    }
+
+    private String convertBuiltin(DMNType expectedFEELType) {
+        BuiltInType builtin = DMNTypeUtils.getFEELBuiltInType(expectedFEELType);
+        Class<?> convertedClass = Object.class;
+        if (builtin == BuiltInType.DURATION) {
+            convertedClass = convertDurationToJavaClass(expectedFEELType);
+        } else {
+            convertedClass = convertBuiltInToJavaClass(builtin);
+        }
+        return convertedClass.getCanonicalName();
+    }
+
+    private Class<?> convertBuiltInToJavaClass(BuiltInType builtin) {
+        switch (builtin) {
+            case UNKNOWN:
+                return Object.class;
+            case DATE:
+                return LocalDate.class;
+            case TIME:
+                return LocalTime.class;
+            case DATE_TIME:
+                return LocalDateTime.class;
+            case BOOLEAN:
+                return Boolean.class;
+            case NUMBER:
+                return Number.class;
+            case STRING:
+                return String.class;
+            case DURATION:
+            default:
+                throw new IllegalArgumentException();
+        }
+    }
+
+    private static Class<?> convertDurationToJavaClass(DMNType expectedFEELType) {
+        switch (expectedFEELType.getName()) {
+            case SimpleType.YEARS_AND_MONTHS_DURATION:
+            case "yearMonthDuration":
+                return Period.class;
+            case SimpleType.DAYS_AND_TIME_DURATION:
+            case "dayTimeDuration":
+                return Duration.class;
+            default:
+                throw new IllegalArgumentException();
+        }
     }
 }

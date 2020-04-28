@@ -187,7 +187,7 @@ public abstract class BaseVariantTest {
     private void createTypeSafeInput(DMNRuntime runtime) {
         String prefix = String.format("%s%s", testName, testConfig.name());
         factory = new DMNTypeSafePackageName.ModelFactory(prefix);
-        DMNAllTypesIndex index = new DMNAllTypesIndex(runtime.getModels(), factory);
+        DMNAllTypesIndex index = new DMNAllTypesIndex(factory, runtime.getModels().toArray(new DMNModel[]{}));
         Map<String, String> allSources = new HashMap<>();
 
         for (DMNModel m : runtime.getModels()) {
