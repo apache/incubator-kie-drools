@@ -1621,7 +1621,7 @@ public class TraitTest extends CommonTraitTest {
 
 
 
-    @Test(timeout=2000)
+    @Test
     public void testManyTraitsStateless() {
         String source = "" +
                         "import org.drools.compiler.Message;" +
