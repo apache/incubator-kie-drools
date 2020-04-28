@@ -18,6 +18,8 @@ package org.drools.core.factmodel.traits;
 
 import org.drools.core.base.TraitHelper;
 import org.drools.core.base.TraitHelperImpl;
+import org.drools.core.common.InternalWorkingMemoryActions;
+import org.drools.core.common.InternalWorkingMemoryEntryPoint;
 import org.drools.core.factmodel.ClassBuilder;
 
 public class TraitCoreServiceImpl implements TraitCoreService {
@@ -45,6 +47,11 @@ public class TraitCoreServiceImpl implements TraitCoreService {
     @Override
     public TraitHelper createTraitHelper() {
         return new TraitHelperImpl();
+    }
+
+    @Override
+    public TraitHelper createTraitHelper(InternalWorkingMemoryActions workingMemory, InternalWorkingMemoryEntryPoint nep) {
+        return new TraitHelperImpl(workingMemory, nep);
     }
 
     @Override

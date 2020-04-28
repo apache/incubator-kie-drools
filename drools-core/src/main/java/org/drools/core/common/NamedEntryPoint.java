@@ -53,6 +53,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import static java.util.Arrays.asList;
+import static org.drools.core.reteoo.KieComponentFactory.fromTraitRegistry;
 import static org.drools.core.reteoo.PropertySpecificUtil.allSetBitMask;
 import static org.drools.core.reteoo.PropertySpecificUtil.calculatePositiveMask;
 
@@ -113,15 +114,9 @@ public class NamedEntryPoint
         this.traitHelper = createTraitHelper( wm, this );
     }
 
-    // TODO better DI here
     private TraitHelper createTraitHelper(StatefulKnowledgeSessionImpl wm, NamedEntryPoint namedEntryPoint) {
-        try {
-            Class<?> aClass = Class.forName("org.drools.core.base.TraitHelperImpl");
-            Constructor<?> constructor = aClass.getConstructor(InternalWorkingMemoryActions.class, InternalWorkingMemoryEntryPoint.class);
-            return (TraitHelper) constructor.newInstance(wm, namedEntryPoint);
-        } catch (ClassNotFoundException | NoSuchMethodException | InstantiationException | IllegalAccessException | InvocationTargetException e) {
-            return null;
-        }
+        return fromTraitRegistry(traitCoreService -> traitCoreService.createTraitHelper(wm, namedEntryPoint))
+                .orElse(null);
     }
 
     protected NamedEntryPoint( EntryPointId entryPoint,
@@ -134,7 +129,7 @@ public class NamedEntryPoint
         this.handleFactory = handleFactory;
         this.lock = lock;
         this.objectStore = objectStore;
-//        this.traitHelper = new TraitHelper( wm, this ); // TODO inject trait helper here
+        this.traitHelper = createTraitHelper(wm, this);
     }
 
      public void lock() {

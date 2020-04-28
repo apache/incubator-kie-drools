@@ -17,6 +17,8 @@
 package org.drools.core.factmodel.traits;
 
 import org.drools.core.base.TraitHelper;
+import org.drools.core.common.InternalWorkingMemoryActions;
+import org.drools.core.common.InternalWorkingMemoryEntryPoint;
 import org.drools.core.factmodel.ClassBuilder;
 
 public interface TraitCoreService {
@@ -29,6 +31,8 @@ public interface TraitCoreService {
     ClassBuilder createPropertyWrapperBuilder();
 
     TraitHelper createTraitHelper();
+
+    TraitHelper createTraitHelper(InternalWorkingMemoryActions workingMemory, InternalWorkingMemoryEntryPoint nep );
 
     Class<?> baseTraitProxyClass();
 }
