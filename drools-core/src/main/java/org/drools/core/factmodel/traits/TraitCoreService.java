@@ -20,6 +20,10 @@ import org.drools.core.base.TraitHelper;
 import org.drools.core.common.InternalWorkingMemoryActions;
 import org.drools.core.common.InternalWorkingMemoryEntryPoint;
 import org.drools.core.factmodel.ClassBuilder;
+import org.drools.core.reteoo.EntryPointNode;
+import org.drools.core.reteoo.ObjectTypeNode;
+import org.drools.core.reteoo.builder.BuildContext;
+import org.drools.core.spi.ObjectType;
 
 public interface TraitCoreService {
     TraitRegistry createRegistry();
@@ -35,4 +39,6 @@ public interface TraitCoreService {
     TraitHelper createTraitHelper(InternalWorkingMemoryActions workingMemory, InternalWorkingMemoryEntryPoint nep );
 
     Class<?> baseTraitProxyClass();
+
+    ObjectTypeNode createTraitObjectTypeNode(int id, EntryPointNode source, ObjectType objectType, BuildContext context );
 }

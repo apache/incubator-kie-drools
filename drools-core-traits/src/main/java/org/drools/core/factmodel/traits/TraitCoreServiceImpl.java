@@ -21,6 +21,11 @@ import org.drools.core.base.TraitHelperImpl;
 import org.drools.core.common.InternalWorkingMemoryActions;
 import org.drools.core.common.InternalWorkingMemoryEntryPoint;
 import org.drools.core.factmodel.ClassBuilder;
+import org.drools.core.reteoo.EntryPointNode;
+import org.drools.core.reteoo.ObjectTypeNode;
+import org.drools.core.reteoo.TraitObjectTypeNode;
+import org.drools.core.reteoo.builder.BuildContext;
+import org.drools.core.spi.ObjectType;
 
 public class TraitCoreServiceImpl implements TraitCoreService {
 
@@ -57,5 +62,10 @@ public class TraitCoreServiceImpl implements TraitCoreService {
     @Override
     public Class<?> baseTraitProxyClass() {
         return TraitProxyImpl.class;
+    }
+
+    @Override
+    public ObjectTypeNode createTraitObjectTypeNode(int id, EntryPointNode source, ObjectType objectType, BuildContext context) {
+        return new TraitObjectTypeNode(id, source, objectType, context );
     }
 }
