@@ -1,0 +1,42 @@
+# Tests PRs on multiple operating systems and Java versions
+
+name: OptaPlanner CI
+
+on:
+  push:
+    branches:
+      - master
+  pull_request:
+    branches:
+      - master
+
+jobs:
+  os-java:
+    name: OS x Java
+    strategy:
+      matrix:
+        os: [ubuntu-latest, windows-latest]
+        java: [8, 11]
+    runs-on: ${{ matrix.os }}
+    steps:
+      - uses: actions/checkout@v2
+      - name: Set up JDK
+        uses: actions/setup-java@v1
+        with:
+          java-version: ${{ matrix.java }}
+      - name: Build with Maven
+        run: mvn -B verify
+
+  # Early feedback on a compatibility with the newest Java version.
+  # TODO: update each time a new major Java version is released.
+  latest-jdk:
+    name: Java 14
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+      - name: Set up JDK
+        uses: actions/setup-java@v1
+        with:
+          java-version: 14
+      - name: Build with Maven
+        run: mvn -B verify
