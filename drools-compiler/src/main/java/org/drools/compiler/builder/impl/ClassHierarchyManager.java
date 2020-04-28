@@ -1,5 +1,5 @@
 /*
- * Copyright 2020 Red Hat, Inc. and/or its affiliates.
+ * Copyright 2015 Red Hat, Inc. and/or its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -36,7 +36,7 @@ import org.drools.compiler.lang.descr.TypeFieldDescr;
 import org.drools.core.definitions.InternalKnowledgePackage;
 import org.drools.core.factmodel.ClassDefinition;
 import org.drools.core.factmodel.FieldDefinition;
-//import org.drools.core.factmodel.traits.Alias;
+import org.drools.core.factmodel.traits.Alias;
 import org.drools.core.rule.TypeDeclaration;
 import org.drools.core.util.HierarchySorter;
 import org.drools.core.util.asm.ClassFieldInspector;
@@ -398,11 +398,11 @@ public class ClassHierarchyManager {
         int overrideCount = 0;
         // only @aliasing local fields may override defaults.
         for (TypeFieldDescr localField : typeDescr.getFields().values()) {
-//            Alias alias = localField.getTypedAnnotation(Alias.class);
-//            if (alias != null && fld.getName().equals(alias.value().replaceAll("\"", "")) && localField.getInitExpr() != null) {
-//                overrideCount++;
-//                initExprOverride = localField.getInitExpr();
-//            }
+            Alias alias = localField.getTypedAnnotation(Alias.class);
+            if (alias != null && fld.getName().equals(alias.value().replaceAll("\"", "")) && localField.getInitExpr() != null) {
+                overrideCount++;
+                initExprOverride = localField.getInitExpr();
+            }
         }
         if (overrideCount > 1) {
             // however, only one is allowed
