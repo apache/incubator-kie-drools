@@ -21,11 +21,11 @@ import org.junit.Test;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 
-public class KiePMMLPrimitiveBoxedTest {
+public class PrimitiveBoxedUtilsTest {
 
-    private static final Class<?>[] primitives = {boolean.class,
-            byte.class, char.class, float.class, int.class,
-            long.class, short.class, double.class};
+    private static final Class<?>[] primitives = {Boolean.TYPE,
+            Byte.TYPE, Character.TYPE, Float.TYPE, Integer.TYPE,
+            Long.TYPE, Short.TYPE, Double.TYPE};
     private static final Class<?>[] boxeds = {Boolean.class,
             Byte.class, Character.class, Float.class, Integer.class,
             Long.class, Short.class, Double.class};

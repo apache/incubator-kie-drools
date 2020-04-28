@@ -121,6 +121,22 @@
         <artifactId>kie-pmml-models-drools-tree-evaluator</artifactId>
         <version>${version.org.kie}</version>
       </dependency>
+      <!-- Scorecard -->
+      <dependency>
+        <groupId>org.kie</groupId>
+        <artifactId>kie-pmml-models-drools-scorecard-model</artifactId>
+        <version>${version.org.kie}</version>
+      </dependency>
+      <dependency>
+        <groupId>org.kie</groupId>
+        <artifactId>kie-pmml-models-drools-scorecard-compiler</artifactId>
+        <version>${version.org.kie}</version>
+      </dependency>
+      <dependency>
+        <groupId>org.kie</groupId>
+        <artifactId>kie-pmml-models-drools-scorecard-evaluator</artifactId>
+        <version>${version.org.kie}</version>
+      </dependency>
       <!-- EXTERNAL -->
       <!-- TEST -->
       <dependency>
@@ -169,6 +185,14 @@
         <classifier>tests</classifier>
         <version>${version.org.kie}</version>
       </dependency>
+      <!-- Scorecard -->
+      <dependency>
+        <groupId>org.kie</groupId>
+        <artifactId>kie-pmml-models-drools-scorecard-compiler</artifactId>
+        <scope>test</scope>
+        <version>${version.org.kie}</version>
+      </dependency>
+      <!-- EXTERNAL -->
       <dependency>
         <groupId>org.kie</groupId>
         <artifactId>kie-test-util</artifactId>

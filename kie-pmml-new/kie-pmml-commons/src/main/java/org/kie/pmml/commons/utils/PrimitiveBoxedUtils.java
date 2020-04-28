@@ -27,14 +27,14 @@ import java.util.Set;
 public class PrimitiveBoxedUtils {
 
     private static final Set<PrimitiveBoxed> KIE_PMML_PRIMITIVE_BOXEDS = new HashSet<>(
-            Arrays.asList(new PrimitiveBoxed(boolean.class, Boolean.class),
-                          new PrimitiveBoxed(byte.class, Byte.class),
-                          new PrimitiveBoxed(char.class, Character.class),
-                          new PrimitiveBoxed(float.class, Float.class),
-                          new PrimitiveBoxed(int.class, Integer.class),
-                          new PrimitiveBoxed(long.class, Long.class),
-                          new PrimitiveBoxed(short.class, Short.class),
-                          new PrimitiveBoxed(double.class, Double.class)));
+            Arrays.asList(new PrimitiveBoxed(Boolean.TYPE, Boolean.class),
+                          new PrimitiveBoxed(Byte.TYPE, Byte.class),
+                          new PrimitiveBoxed(Character.TYPE, Character.class),
+                          new PrimitiveBoxed(Float.TYPE, Float.class),
+                          new PrimitiveBoxed(Integer.TYPE, Integer.class),
+                          new PrimitiveBoxed(Long.TYPE, Long.class),
+                          new PrimitiveBoxed(Short.TYPE, Short.class),
+                          new PrimitiveBoxed(Double.TYPE, Double.class)));
 
     public static Optional<PrimitiveBoxed> getKiePMMLPrimitiveBoxed(Class<?> c) {
         return KIE_PMML_PRIMITIVE_BOXEDS.stream().filter(pBoxed -> c.equals(pBoxed.getPrimitive()) || c.equals(pBoxed.getBoxed())).findFirst();
