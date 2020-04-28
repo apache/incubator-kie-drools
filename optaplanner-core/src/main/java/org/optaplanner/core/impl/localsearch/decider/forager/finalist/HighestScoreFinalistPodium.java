@@ -49,10 +49,9 @@ public class HighestScoreFinalistPodium extends AbstractFinalistPodium {
         int scoreComparison = doComparison(moveScore);
         if (scoreComparison > 0) {
             finalistScore = moveScore;
-            finalistList.clear();
-            finalistList.add(moveScope);
+            clearAndAddFinalist(moveScope);
         } else if (scoreComparison == 0) {
-            finalistList.add(moveScope);
+            addFinalist(moveScope);
         }
     }
 

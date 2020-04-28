@@ -72,10 +72,9 @@ public class StrategicOscillationByLevelFinalistPodium extends AbstractFinalistP
             finalistScore = moveScore;
             finalistLevelNumbers = moveLevelNumbers;
             finalistImprovesUponReference = (moveScore.compareTo(referenceScore) > 0);
-            finalistList.clear();
-            finalistList.add(moveScope);
+            clearAndAddFinalist(moveScope);
         } else if (comparison == 0) {
-            finalistList.add(moveScope);
+            addFinalist(moveScope);
         }
     }
 

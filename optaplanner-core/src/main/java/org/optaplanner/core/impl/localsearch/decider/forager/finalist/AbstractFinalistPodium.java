@@ -32,6 +32,8 @@ import org.slf4j.LoggerFactory;
  */
 public abstract class AbstractFinalistPodium extends LocalSearchPhaseLifecycleListenerAdapter implements FinalistPodium {
 
+    protected static final int FINALIST_LIST_MAX_SIZE = 1_024_000;
+
     protected final transient Logger logger = LoggerFactory.getLogger(getClass());
 
     protected boolean finalistIsAccepted;
@@ -42,6 +44,19 @@ public abstract class AbstractFinalistPodium extends LocalSearchPhaseLifecycleLi
         super.stepStarted(stepScope);
         finalistIsAccepted = false;
         finalistList = new ArrayList<>(1024);
+    }
+
+    protected void clearAndAddFinalist(LocalSearchMoveScope moveScope) {
+        finalistList.clear();
+        finalistList.add(moveScope);
+    }
+
+    protected void addFinalist(LocalSearchMoveScope moveScope) {
+        if (finalistList.size() >= FINALIST_LIST_MAX_SIZE) {
+            // Avoid unbounded growth and OutOfMemoryException
+            return;
+        }
+        finalistList.add(moveScope);
     }
 
     @Override
