@@ -37,6 +37,7 @@ import org.drools.core.rule.VariableRestriction.VariableContextEntry;
 import org.drools.core.spi.Evaluator;
 import org.drools.core.spi.FieldValue;
 import org.drools.core.spi.InternalReadAccessor;
+import org.drools.core.util.AbstractBitwiseHierarchyImpl;
 import org.drools.core.util.CodedHierarchy;
 import org.kie.api.runtime.ObjectFilter;
 
@@ -368,9 +369,7 @@ public class IsAEvaluatorDefinition implements EvaluatorDefinition {
                 return false;
             }
 
-            // TODO trait specific code
-//            return targetTraits == null || HierarchyEncoderImpl.supersetOrEqualset( sourceTraits, targetTraits );
-            return targetTraits == null;
+            return targetTraits == null || AbstractBitwiseHierarchyImpl.supersetOrEqualset(sourceTraits, targetTraits );
         }
 
         @Override
