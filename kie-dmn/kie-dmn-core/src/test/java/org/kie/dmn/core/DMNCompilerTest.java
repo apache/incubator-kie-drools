@@ -44,20 +44,21 @@ import static org.hamcrest.CoreMatchers.nullValue;
 import static org.hamcrest.Matchers.hasSize;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertThat;
+import static org.junit.Assert.fail;
 import static org.kie.dmn.core.util.DynamicTypeUtils.entry;
 import static org.kie.dmn.core.util.DynamicTypeUtils.mapOf;
 
-public class DMNCompilerTest extends BaseInterpretedVsCompiledTest {
+public class DMNCompilerTest extends BaseVariantTest {
 
     public static final Logger LOG = LoggerFactory.getLogger(DMNCompilerTest.class);
 
-    public DMNCompilerTest(final boolean useExecModelCompiler) {
-        super(useExecModelCompiler);
+    public DMNCompilerTest(VariantTestConf testConfig) {
+        super(testConfig);
     }
 
     @Test
     public void testItemDefAllowedValuesString() {
-        final DMNRuntime runtime = DMNRuntimeUtil.createRuntime("0003-input-data-string-allowed-values.dmn", this.getClass() );
+        final DMNRuntime runtime = createRuntime("0003-input-data-string-allowed-values.dmn", this.getClass());
         final DMNModel dmnModel = runtime.getModel("https://github.com/kiegroup/kie-dmn", "0003-input-data-string-allowed-values" );
         assertThat( dmnModel, notNullValue() );
 
@@ -87,7 +88,7 @@ public class DMNCompilerTest extends BaseInterpretedVsCompiledTest {
 
     @Test
     public void testCompositeItemDefinition() {
-        final DMNRuntime runtime = DMNRuntimeUtil.createRuntime("0008-LX-arithmetic.dmn", this.getClass() );
+        final DMNRuntime runtime = createRuntime("0008-LX-arithmetic.dmn", this.getClass());
         final DMNModel dmnModel = runtime.getModel("https://github.com/kiegroup/kie-dmn", "0008-LX-arithmetic" );
         assertThat( dmnModel, notNullValue() );
 
@@ -125,23 +126,25 @@ public class DMNCompilerTest extends BaseInterpretedVsCompiledTest {
     @Test
     public void testCompilationThrowsNPE() {
         try {
-            DMNRuntimeUtil.createRuntime( "compilationThrowsNPE.dmn", this.getClass() );
-        } catch (final IllegalStateException ex) {
+            createRuntime("compilationThrowsNPE.dmn", this.getClass());
+            fail("shouldn't have reached here.");
+        } catch (final Exception ex) {
             assertThat(ex.getMessage(), Matchers.containsString("Unable to compile DMN model for the resource"));
         }
     }
 
     @Test
     public void testRecursiveFunctions() {
-        final DMNRuntime runtime = DMNRuntimeUtil.createRuntime("Recursive.dmn", this.getClass() );
+        // DROOLS-2161
+        final DMNRuntime runtime = createRuntime("Recursive.dmn", this.getClass());
         final DMNModel dmnModel = runtime.getModel("https://github.com/kiegroup/kie-dmn", "Recursive" );
         assertThat( dmnModel, notNullValue() );
-        assertFalse( runtime.evaluateAll( dmnModel, DMNFactory.newContext() ).hasErrors() );
+        assertFalse( evaluateModel(runtime, dmnModel, DMNFactory.newContext() ).hasErrors() );
     }
 
     @Test
     public void testImport() {
-        final DMNRuntime runtime = DMNRuntimeUtil.createRuntimeWithAdditionalResources("Importing_Model.dmn",
+        final DMNRuntime runtime = createRuntimeWithAdditionalResources("Importing_Model.dmn",
                                                                                        this.getClass(),
                                                                                        "Imported_Model.dmn");
 
@@ -162,7 +165,7 @@ public class DMNCompilerTest extends BaseInterpretedVsCompiledTest {
         final DMNContext context = runtime.newContext();
         context.set("A Person", mapOf(entry("name", "John"), entry("age", 47)));
 
-        final DMNResult evaluateAll = runtime.evaluateAll(dmnModel, context);
+        final DMNResult evaluateAll = evaluateModel(runtime, dmnModel, context);
         for (final DMNMessage message : evaluateAll.getMessages()) {
             LOG.debug("{}", message);
         }
@@ -172,7 +175,7 @@ public class DMNCompilerTest extends BaseInterpretedVsCompiledTest {
 
     @Test
     public void testWrongComparisonOps() {
-        final DMNRuntime runtime = DMNRuntimeUtil.createRuntime("WrongComparisonOps.dmn", this.getClass());
+        final DMNRuntime runtime = createRuntime("WrongComparisonOps.dmn", this.getClass());
         final DMNModel dmnModel = runtime.getModel("http://www.trisotech.com/definitions/_a937d093-86d3-4306-8db8-1e7a33588b68", "Drawing 1");
         assertThat(dmnModel, notNullValue());
         assertThat(DMNRuntimeUtil.formatMessages(dmnModel.getMessages()), dmnModel.hasErrors(), is(false));
