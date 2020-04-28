@@ -102,7 +102,7 @@ public class StandaloneTraitFactory<T extends Thing<K>, K extends TraitableBean>
     @Override
     protected TraitRegistryImpl getTraitRegistry() {
         if(registry == null) {
-            registry = new TraitRegistryImpl(); // TODO check if it's right
+            registry = new TraitRegistryImpl();
         }
         return registry;
     }
