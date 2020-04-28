@@ -27,6 +27,7 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.Map.Entry;
+import java.util.Optional;
 
 import com.google.protobuf.ByteString;
 import com.google.protobuf.ByteString.Output;
@@ -36,6 +37,7 @@ import org.drools.core.beliefsystem.simple.BeliefSystemLogicalCallback;
 import org.drools.core.common.DroolsObjectInputStream;
 import org.drools.core.common.DroolsObjectOutputStream;
 import org.drools.core.common.WorkingMemoryAction;
+import org.drools.core.factmodel.traits.TraitCoreService;
 import org.drools.core.factmodel.traits.TraitFactory;
 import org.drools.core.impl.StatefulKnowledgeSessionImpl.WorkingMemoryReteAssertAction;
 import org.drools.core.impl.StatefulKnowledgeSessionImpl.WorkingMemoryReteExpireAction;
@@ -52,6 +54,8 @@ import org.drools.core.util.KeyStoreHelper;
 import org.drools.reflective.classloader.ProjectClassLoader;
 import org.kie.api.marshalling.ObjectMarshallingStrategy;
 import org.kie.api.marshalling.ObjectMarshallingStrategy.Context;
+
+import static org.drools.core.reteoo.KieComponentFactory.fromTraitRegistry;
 
 public class PersisterHelper {
     public static WorkingMemoryAction readWorkingMemoryAction(MarshallerReaderContext context) throws IOException,
@@ -237,19 +241,20 @@ public class PersisterHelper {
             return;
         }
 
-        // TODO trait specific code
-//        TraitFactory traitFactory = TraitFactory.getTraitBuilderForKnowledgeBase( context.kBase );
-//        List<String> runtimeClassNames = new ArrayList( pcl.getStore().keySet() );
-//        Collections.sort( runtimeClassNames );
-//        ProtobufMessages.RuntimeClassDef.Builder _classDef = ProtobufMessages.RuntimeClassDef.newBuilder();
-//        for ( String resourceName : runtimeClassNames ) {
-//            if ( traitFactory.isRuntimeClass( resourceName ) ) {
-//                _classDef.clear();
-//                _classDef.setClassFqName( resourceName );
-//                _classDef.setClassDef( ByteString.copyFrom( pcl.getStore().get( resourceName ) ) );
-//                _header.addRuntimeClassDefinitions( _classDef.build() );
-//            }
-//        }
+        Optional<TraitFactory> optTraitFactory = fromTraitRegistry(TraitCoreService::createTraitFactory);
+        optTraitFactory.ifPresent(traitFactory -> {
+            List<String> runtimeClassNames = new ArrayList( pcl.getStore().keySet() );
+            Collections.sort( runtimeClassNames );
+            ProtobufMessages.RuntimeClassDef.Builder _classDef = ProtobufMessages.RuntimeClassDef.newBuilder();
+            for ( String resourceName : runtimeClassNames ) {
+                if ( traitFactory.isRuntimeClass( resourceName ) ) {
+                    _classDef.clear();
+                    _classDef.setClassFqName( resourceName );
+                    _classDef.setClassDef( ByteString.copyFrom( pcl.getStore().get( resourceName ) ) );
+                    _header.addRuntimeClassDefinitions( _classDef.build() );
+                }
+            }
+        });
     }
 
     private static void writeStrategiesIndex(MarshallerWriteContext context,

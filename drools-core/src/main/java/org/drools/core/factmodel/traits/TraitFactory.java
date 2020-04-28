@@ -7,4 +7,6 @@ public interface TraitFactory {
     void setRuleBase( InternalKnowledgeBase kBase );
 
     TraitTypeEnum determineTraitType( Object object );
+
+    boolean isRuntimeClass( String resourceName );
 }

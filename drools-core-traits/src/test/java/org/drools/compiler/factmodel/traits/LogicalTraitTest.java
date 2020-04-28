@@ -76,7 +76,7 @@ public class LogicalTraitTest extends CommonTraitTest {
     }
 
 
-    @Test(timeout = 2000)
+    @Test
     public void testShadowAlias() {
 
         KnowledgeBuilder kbuilderImpl = KnowledgeBuilderFactory.newKnowledgeBuilder();

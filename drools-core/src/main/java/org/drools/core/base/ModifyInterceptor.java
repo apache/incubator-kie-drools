@@ -143,16 +143,15 @@ public class ModifyInterceptor
             }
 
 
-            // TODO trait specific code
-//            List<String> modifiedProps = typeDeclaration.getTypeClassDef().getModifiedPropsByMethod(method);
-//            if (modifiedProps != null) {
-//                for (String modifiedProp : modifiedProps) {
-//                    int index = settableProperties.indexOf(modifiedProp);
-//                    if (index >= 0) {
-//                        modificationMask = setPropertyOnMask(modificationMask, index);
-//                    }
-//                }
-//            }
+            List<String> modifiedProps = typeDeclaration.getTypeClassDef().getModifiedPropsByMethod(method);
+            if (modifiedProps != null) {
+                for (String modifiedProp : modifiedProps) {
+                    int index = settableProperties.indexOf(modifiedProp);
+                    if (index >= 0) {
+                        modificationMask = setPropertyOnMask(modificationMask, index);
+                    }
+                }
+            }
         }
     }
 

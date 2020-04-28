@@ -79,12 +79,11 @@ public class PropertySpecificUtil {
 
         BitMask mask = getEmptyPropertyReactiveMask(accessibleProperties.size());
 
-        // TODO trait specific code
-//        if (listenedProperties.contains( TraitableBean.TRAITSET_FIELD_NAME )) {
-//            if (isPositive && listenedProperties.contains( TraitableBean.TRAITSET_FIELD_NAME ) ) {
-//                mask = mask.set(TRAITABLE_BIT);
-//            }
-//        }
+        if (listenedProperties.contains( TraitableBean.TRAITSET_FIELD_NAME )) {
+            if (isPositive && listenedProperties.contains( TraitableBean.TRAITSET_FIELD_NAME ) ) {
+                mask = mask.set(TRAITABLE_BIT);
+            }
+        }
         for (String propertyName : listenedProperties) {
             if (propertyName.equals(isPositive ? "*" : "!*")) {
                 return isPositive ? AllSetBitMask.get() : allSetButTraitBitMask();

@@ -19,6 +19,7 @@ import java.io.Externalizable;
 import java.io.IOException;
 import java.io.ObjectInput;
 import java.io.ObjectOutput;
+import java.util.Optional;
 import java.util.function.Consumer;
 import java.util.function.Predicate;
 
@@ -33,6 +34,7 @@ import javax.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
 import org.drools.core.WorkingMemoryEntryPoint;
 import org.drools.core.base.ArrayElements;
 import org.drools.core.base.DroolsQuery;
+import org.drools.core.factmodel.traits.TraitCoreService;
 import org.drools.core.factmodel.traits.TraitFactory;
 import org.drools.core.factmodel.traits.TraitTypeEnum;
 import org.drools.core.reteoo.LeftTuple;
@@ -41,6 +43,8 @@ import org.drools.core.rule.EntryPointId;
 import org.drools.core.spi.Tuple;
 import org.drools.core.xml.jaxb.util.JaxbUnknownAdapter;
 import org.kie.api.runtime.rule.FactHandle;
+
+import static org.drools.core.reteoo.KieComponentFactory.fromTraitRegistry;
 
 @XmlRootElement(name="disconnected-fact-handle")
 @XmlAccessorType(XmlAccessType.NONE)
@@ -418,12 +422,12 @@ public class DisconnectedFactHandle
     }
 
     private TraitTypeEnum determineTraitType() {
-        // TODO trait specific code
-//        if ( isTraitOrTraitable() ) {
-//            return TraitFactory.determineTraitType( object );
-//        } else {
+        if ( isTraitOrTraitable() ) {
+            Optional<TraitFactory> traitFactory = fromTraitRegistry(TraitCoreService::createTraitFactory);
+            return traitFactory.map(t -> t.determineTraitType(object)).orElse(TraitTypeEnum.NON_TRAIT);
+        } else {
             return TraitTypeEnum.NON_TRAIT;
-//        }
+        }
     }
 
     @Override

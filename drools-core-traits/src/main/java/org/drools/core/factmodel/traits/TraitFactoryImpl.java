@@ -119,6 +119,7 @@ public class TraitFactoryImpl<T extends Thing<K>, K extends TraitableBean> exten
         }
     }
 
+    @Override
     public boolean isRuntimeClass( String resourceName ) {
         return runtimeClasses != null && runtimeClasses.contains( resourceName );
     }
