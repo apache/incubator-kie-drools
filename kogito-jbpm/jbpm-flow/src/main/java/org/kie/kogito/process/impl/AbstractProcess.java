@@ -45,14 +45,11 @@ import org.kie.kogito.process.Signal;
 
 public abstract class AbstractProcess<T extends Model> implements Process<T> {
 
-    protected ProcessInstancesFactory processInstancesFactory;
-
-    protected MutableProcessInstances<T> instances;
-
     protected final ProcessRuntimeServiceProvider services;
-
+    protected ProcessInstancesFactory processInstancesFactory;
+    protected MutableProcessInstances<T> instances;
     protected CompletionEventListener completionEventListener = new CompletionEventListener();
-    
+
     protected boolean activated;
     protected List<String> startTimerInstances = new ArrayList<>();
     protected ProcessRuntime processRuntime;
@@ -64,13 +61,12 @@ public abstract class AbstractProcess<T extends Model> implements Process<T> {
     protected AbstractProcess(ProcessConfig config) {
         this(new ConfiguredProcessServices(config));
     }
-    
+
     protected AbstractProcess(ProcessRuntimeServiceProvider services) {
         this.services = services;
-        this.instances = new MapProcessInstances<>();   
-        
+        this.instances = new MapProcessInstances<>();
     }
-    
+
     @Override
     public String id() {
         return legacyProcess().getId();
@@ -79,7 +75,7 @@ public abstract class AbstractProcess<T extends Model> implements Process<T> {
     @Override
     public T createModel() {
         return null;
-    }    
+    }
 
     @Override
     public ProcessInstance<T> createInstance(Model m) {
@@ -109,18 +105,16 @@ public abstract class AbstractProcess<T extends Model> implements Process<T> {
         }
         //services.getWorkItemManager().registerWorkItemHandler(name, handlerConfig.forName(name)
         //services.getEventSupport().addEventListener(listener)
-        
 
         return this;
     }
 
     protected void registerListeners() {
-        
+
     }
 
     @Override
     public void activate() {
-
         configure();
         WorkflowProcessImpl p = (WorkflowProcessImpl) legacyProcess();
         List<StartNode> startNodes = p.getTimerStart();
@@ -128,9 +122,7 @@ public abstract class AbstractProcess<T extends Model> implements Process<T> {
             this.processRuntime = createLegacyProcessRuntime();
             for (StartNode startNode : startNodes) {
                 if (startNode != null && startNode.getTimer() != null) {
-
                     String timerId = processRuntime.getJobsService().scheduleProcessJob(ProcessJobDescription.of(configureTimerInstance(startNode.getTimer()), this));
-
                     startTimerInstances.add(timerId);
                 }
             }
@@ -140,7 +132,6 @@ public abstract class AbstractProcess<T extends Model> implements Process<T> {
 
     @Override
     public void deactivate() {
-
         for (String startTimerId : startTimerInstances) {
             this.processRuntime.getJobsService().cancelJob(startTimerId);
         }
@@ -164,7 +155,6 @@ public abstract class AbstractProcess<T extends Model> implements Process<T> {
                     long period = -1;
                     try {
                         period = TimeUtils.parseTimeString(timer.getPeriod());
-
                     } catch (RuntimeException e) {
                         period = repeatValues[0];
                     }
@@ -184,12 +174,11 @@ public abstract class AbstractProcess<T extends Model> implements Process<T> {
             default:
                 throw new UnsupportedOperationException("Not supported timer definition");
         }
-
     }
 
     public abstract org.kie.api.definition.process.Process legacyProcess();
 
-    protected ProcessRuntime createLegacyProcessRuntime() {        
+    protected ProcessRuntime createLegacyProcessRuntime() {
         return new LightProcessRuntime(
                 new LightProcessRuntimeContext(Collections.singletonList(legacyProcess())),
                 services);
@@ -197,14 +186,14 @@ public abstract class AbstractProcess<T extends Model> implements Process<T> {
 
     protected boolean isProcessFactorySet() {
         return processInstancesFactory != null;
-    }    
-    
+    }
+
     public void setProcessInstancesFactory(ProcessInstancesFactory processInstancesFactory) {
         this.processInstancesFactory = processInstancesFactory;
     }
-    
+
     private class CompletionEventListener implements EventListener {
-        
+
         @Override
         public void signalEvent(String type, Object event) {
             if (type.startsWith("processInstanceCompleted:")) {
@@ -214,7 +203,7 @@ public abstract class AbstractProcess<T extends Model> implements Process<T> {
                 }
             }
         }
-        
+
         @Override
         public String[] getEventTypes() {
             return new String[0];

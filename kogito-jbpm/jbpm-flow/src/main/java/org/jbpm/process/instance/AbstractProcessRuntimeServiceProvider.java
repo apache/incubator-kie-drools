@@ -38,12 +38,11 @@ public class AbstractProcessRuntimeServiceProvider implements ProcessRuntimeServ
     private final ProcessEventSupport eventSupport;
     private final UnitOfWorkManager unitOfWorkManager;
 
-    public AbstractProcessRuntimeServiceProvider(
-            JobsService jobsService,
-            WorkItemHandlerConfig workItemHandlerProvider,
-            ProcessEventListenerConfig processEventListenerProvider,
-            SignalManagerHub compositeSignalManager,
-            UnitOfWorkManager unitOfWorkManager) {
+    public AbstractProcessRuntimeServiceProvider(JobsService jobsService,
+                                                 WorkItemHandlerConfig workItemHandlerProvider,
+                                                 ProcessEventListenerConfig processEventListenerProvider,
+                                                 SignalManagerHub compositeSignalManager,
+                                                 UnitOfWorkManager unitOfWorkManager) {
         this.unitOfWorkManager = unitOfWorkManager;
         processInstanceManager = new DefaultProcessInstanceManager();
         signalManager = new LightSignalManager(
@@ -58,9 +57,7 @@ public class AbstractProcessRuntimeServiceProvider implements ProcessRuntimeServ
             workItemManager.registerWorkItemHandler(
                     workItem, workItemHandlerProvider.forName(workItem));
         }
-        
-        
-        
+
         for (ProcessEventListener listener : processEventListenerProvider.listeners()) {
             this.eventSupport.addEventListener(listener);
         }
@@ -87,7 +84,7 @@ public class AbstractProcessRuntimeServiceProvider implements ProcessRuntimeServ
     }
 
     @Override
-    public ProcessEventSupport getEventSupport() {        
+    public ProcessEventSupport getEventSupport() {
         return eventSupport;
     }
 

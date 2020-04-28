@@ -32,49 +32,49 @@ import org.kie.kogito.jobs.ProcessJobDescription;
 import org.kie.kogito.services.uow.UnitOfWorkExecutor;
 import org.kie.kogito.uow.UnitOfWorkManager;
 import org.kie.services.time.TimerInstance;
-
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 public class InMemoryJobService implements JobsService {
+
+    private static final Logger LOGGER = LoggerFactory.getLogger(InMemoryJobService.class);
+    private static final String TRIGGER = "timer";
 
     protected final ScheduledThreadPoolExecutor scheduler;
     protected final ProcessRuntime processRuntime;
     protected final UnitOfWorkManager unitOfWorkManager;
-    
+
     protected ConcurrentHashMap<String, ScheduledFuture<?>> scheduledJobs = new ConcurrentHashMap<>();
-    
+
     public InMemoryJobService(ProcessRuntime processRuntime, UnitOfWorkManager unitOfWorkManager) {
-        this.scheduler = new ScheduledThreadPoolExecutor(1);
-        this.processRuntime = processRuntime;
-        this.unitOfWorkManager = unitOfWorkManager;
+        this(1, processRuntime, unitOfWorkManager);
     }
-    
+
     public InMemoryJobService(int threadPoolSize, ProcessRuntime processRuntime, UnitOfWorkManager unitOfWorkManager) {
         this.scheduler = new ScheduledThreadPoolExecutor(threadPoolSize);
         this.processRuntime = processRuntime;
         this.unitOfWorkManager = unitOfWorkManager;
     }
-    
 
     @Override
     public String scheduleProcessJob(ProcessJobDescription description) {
+        LOGGER.debug("ScheduleProcessJob: {}", description);
         ScheduledFuture<?> future = null;
         if (description.expirationTime().repeatInterval() != null) {
             future = scheduler.scheduleAtFixedRate(repeatableProcessJobByDescription(description), calculateDelay(description), description.expirationTime().repeatInterval(), TimeUnit.MILLISECONDS);
         } else {
-        
             future = scheduler.schedule(processJobByDescription(description), calculateDelay(description), TimeUnit.MILLISECONDS);
         }
         scheduledJobs.put(description.id(), future);
         return description.id();
     }
-    
+
     @Override
     public String scheduleProcessInstanceJob(ProcessInstanceJobDescription description) {
         ScheduledFuture<?> future = null;
         if (description.expirationTime().repeatInterval() != null) {
             future = scheduler.scheduleAtFixedRate(new SignalProcessInstanceOnExpiredTimer(description.id(), description.processInstanceId(), false, description.expirationTime().repeatLimit()), calculateDelay(description), description.expirationTime().repeatInterval(), TimeUnit.MILLISECONDS);
         } else {
-        
             future = scheduler.schedule(new SignalProcessInstanceOnExpiredTimer(description.id(), description.processInstanceId(), true, -1), calculateDelay(description), TimeUnit.MILLISECONDS);
         }
         scheduledJobs.put(description.id(), future);
@@ -83,15 +83,16 @@ public class InMemoryJobService implements JobsService {
 
     @Override
     public boolean cancelJob(String id) {
+        LOGGER.debug("Cancel Job: {}", id);
         if (scheduledJobs.containsKey(id)) {
             return scheduledJobs.remove(id).cancel(true);
         }
-        
+
         return false;
     }
-    
+
     protected long calculateDelay(JobDescription description) {
-        return Duration.between(ZonedDateTime.now(), description.expirationTime().get()).toMillis();       
+        return Duration.between(ZonedDateTime.now(), description.expirationTime().get()).toMillis();
     }
 
     protected Runnable processJobByDescription(ProcessJobDescription description) {
@@ -111,29 +112,29 @@ public class InMemoryJobService implements JobsService {
     }
 
     private class SignalProcessInstanceOnExpiredTimer implements Runnable {
+
         private final String id;
-        
         private boolean removeAtExecution;
         private String processInstanceId;
-        
         private Integer limit;
-        
+
         private SignalProcessInstanceOnExpiredTimer(String id, String processInstanceId, boolean removeAtExecution, Integer limit) {
             this.id = id;
             this.processInstanceId = processInstanceId;
             this.removeAtExecution = removeAtExecution;
             this.limit = limit;
         }
+
         @Override
         public void run() {
             try {
+                LOGGER.debug("Job {} started", id);
                 UnitOfWorkExecutor.executeInUnitOfWork(unitOfWorkManager, () -> {
                     ProcessInstance pi = processRuntime.getProcessInstance(processInstanceId);
                     if (pi != null) {
                         String[] ids = id.split("_");
                         limit--;
                         pi.signalEvent("timerTriggered", TimerInstance.with(Long.valueOf(ids[1]), id, limit));
-                        
                         if (limit == 0) {
                             scheduledJobs.remove(id).cancel(false);
                         }
@@ -141,9 +142,10 @@ public class InMemoryJobService implements JobsService {
                         // since owning process instance does not exist cancel timers
                         scheduledJobs.remove(id).cancel(false);
                     }
-    
+
                     return null;
                 });
+                LOGGER.debug("Job {} completed", id);
             } finally {
                 if (removeAtExecution) {
                     scheduledJobs.remove(id);
@@ -173,10 +175,11 @@ public class InMemoryJobService implements JobsService {
         @Override
         public void run() {
             try {
+                LOGGER.debug("Job {} started", id);
                 UnitOfWorkExecutor.executeInUnitOfWork(unitOfWorkManager, () -> {
                     org.kie.kogito.process.ProcessInstance<?> pi = process.createInstance(process.createModel());
                     if (pi != null) {
-                        pi.start("timer", null);
+                        pi.start(TRIGGER, null);
                     }
 
                     return null;
@@ -185,6 +188,7 @@ public class InMemoryJobService implements JobsService {
                 if (limit == 0) {
                     scheduledJobs.remove(id).cancel(false);
                 }
+                LOGGER.debug("Job {} completed", id);
             } finally {
                 if (removeAtExecution) {
                     scheduledJobs.remove(id);
@@ -212,10 +216,11 @@ public class InMemoryJobService implements JobsService {
         @Override
         public void run() {
             try {
+                LOGGER.debug("Job {} started", id);
                 UnitOfWorkExecutor.executeInUnitOfWork(unitOfWorkManager, () -> {
                     ProcessInstance pi = processRuntime.createProcessInstance(processId, null);
                     if (pi != null) {
-                        processRuntime.startProcessInstance(pi.getId(), "timer");
+                        processRuntime.startProcessInstance(pi.getId(), TRIGGER);
                     }
 
                     return null;
@@ -224,6 +229,7 @@ public class InMemoryJobService implements JobsService {
                 if (limit == 0) {
                     scheduledJobs.remove(id).cancel(false);
                 }
+                LOGGER.debug("Job {} completed", id);
             } finally {
                 if (removeAtExecution) {
                     scheduledJobs.remove(id);

@@ -16,62 +16,39 @@
 
 package org.kie.kogito.jobs;
 
-import static java.util.Objects.requireNonNull;
-
 import java.util.UUID;
 
 import org.kie.kogito.process.Process;
 
+import static java.util.Objects.requireNonNull;
+
 public class ProcessJobDescription implements JobDescription {
 
-	public static final Integer DEFAULT_PRIORITY = 5;
+    public static final Integer DEFAULT_PRIORITY = 5;
 
-	private final String id;
+    private final String id;
 
-	private final ExpirationTime expirationTime;
+    private final ExpirationTime expirationTime;
 
-	private final Integer priority;
+    private final Integer priority;
 
-	private String processId;
+    private String processId;
 
-	private Process<?> process;
+    private Process<?> process;
 
-	private ProcessJobDescription(ExpirationTime expirationTime, Integer priority, String processId) {
-		this.id = UUID.randomUUID().toString();
-		this.expirationTime = requireNonNull(expirationTime);
-		this.priority = requireNonNull(priority);
-		this.processId = requireNonNull(processId);
-	}
+    private ProcessJobDescription(ExpirationTime expirationTime, Integer priority, String processId) {
+        this.id = UUID.randomUUID().toString();
+        this.expirationTime = requireNonNull(expirationTime);
+        this.priority = requireNonNull(priority);
+        this.processId = requireNonNull(processId);
+    }
 
-	public ProcessJobDescription(ExpirationTime expirationTime, Integer priority, Process<?> process) {
-		this.id = UUID.randomUUID().toString();
-		this.expirationTime = requireNonNull(expirationTime);
-		this.priority = requireNonNull(priority);
-		this.process = requireNonNull(process);
-	}
-
-	@Override
-	public String id() {
-		return id;
-	}
-
-	@Override
-	public ExpirationTime expirationTime() {
-		return expirationTime;
-	}
-
-	@Override
-	public Integer priority() {
-		return priority;
-	}
-
-	public String processId() {
-		return processId;
-	}
-
-	public Process<?> process() {
-		return process;
-	}
+    public ProcessJobDescription(ExpirationTime expirationTime, Integer priority, Process<?> process) {
+        this.id = UUID.randomUUID().toString();
+        this.expirationTime = requireNonNull(expirationTime);
+        this.priority = requireNonNull(priority);
+        this.process = requireNonNull(process);
+    }
 
     public static ProcessJobDescription of(ExpirationTime expirationTime, Process<?> process) {
         return new ProcessJobDescription(expirationTime, DEFAULT_PRIORITY, process);
@@ -84,5 +61,28 @@ public class ProcessJobDescription implements JobDescription {
     public static ProcessJobDescription of(ExpirationTime expirationTime, Integer priority, String processId) {
 
         return new ProcessJobDescription(expirationTime, priority, processId);
+    }
+
+    @Override
+    public String id() {
+        return id;
+    }
+
+    @Override
+    public ExpirationTime expirationTime() {
+        return expirationTime;
+    }
+
+    @Override
+    public Integer priority() {
+        return priority;
+    }
+
+    public String processId() {
+        return processId;
+    }
+
+    public Process<?> process() {
+        return process;
     }
 }
