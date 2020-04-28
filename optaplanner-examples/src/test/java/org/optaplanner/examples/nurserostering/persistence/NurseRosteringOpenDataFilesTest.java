@@ -16,23 +16,15 @@
 
 package org.optaplanner.examples.nurserostering.persistence;
 
-import java.io.File;
-import java.util.Collection;
-
-import org.junit.runners.Parameterized;
+import org.optaplanner.examples.common.app.CommonApp;
 import org.optaplanner.examples.common.persistence.OpenDataFilesTest;
 import org.optaplanner.examples.nurserostering.app.NurseRosteringApp;
 import org.optaplanner.examples.nurserostering.domain.NurseRoster;
 
 public class NurseRosteringOpenDataFilesTest extends OpenDataFilesTest<NurseRoster> {
 
-    @Parameterized.Parameters(name = "{index}: {0}")
-    public static Collection<Object[]> getSolutionFilesAsParameters() {
-        return getSolutionFilesAsParameters(new NurseRosteringApp());
+    @Override
+    protected CommonApp<NurseRoster> getCommonApp() {
+        return new NurseRosteringApp();
     }
-
-    public NurseRosteringOpenDataFilesTest(File solutionFile) {
-        super(new NurseRosteringApp(), solutionFile);
-    }
-
 }

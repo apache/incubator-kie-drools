@@ -16,23 +16,15 @@
 
 package org.optaplanner.examples.curriculumcourse.persistence;
 
-import java.io.File;
-import java.util.Collection;
-
-import org.junit.runners.Parameterized;
+import org.optaplanner.examples.common.app.CommonApp;
 import org.optaplanner.examples.common.persistence.OpenDataFilesTest;
 import org.optaplanner.examples.curriculumcourse.app.CurriculumCourseApp;
 import org.optaplanner.examples.curriculumcourse.domain.CourseSchedule;
 
 public class CurriculumCourseOpenDataFilesTest extends OpenDataFilesTest<CourseSchedule> {
 
-    @Parameterized.Parameters(name = "{index}: {0}")
-    public static Collection<Object[]> getSolutionFilesAsParameters() {
-        return getSolutionFilesAsParameters(new CurriculumCourseApp());
+    @Override
+    protected CommonApp<CourseSchedule> getCommonApp() {
+        return new CurriculumCourseApp();
     }
-
-    public CurriculumCourseOpenDataFilesTest(File solutionFile) {
-        super(new CurriculumCourseApp(), solutionFile);
-    }
-
 }

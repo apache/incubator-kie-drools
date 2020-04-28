@@ -16,23 +16,15 @@
 
 package org.optaplanner.examples.cheaptime.persistence;
 
-import java.io.File;
-import java.util.Collection;
-
-import org.junit.runners.Parameterized;
 import org.optaplanner.examples.cheaptime.app.CheapTimeApp;
 import org.optaplanner.examples.cheaptime.domain.CheapTimeSolution;
+import org.optaplanner.examples.common.app.CommonApp;
 import org.optaplanner.examples.common.persistence.OpenDataFilesTest;
 
 public class CheapTimeOpenDataFilesTest extends OpenDataFilesTest<CheapTimeSolution> {
 
-    @Parameterized.Parameters(name = "{index}: {0}")
-    public static Collection<Object[]> getSolutionFilesAsParameters() {
-        return getSolutionFilesAsParameters(new CheapTimeApp());
+    @Override
+    protected CommonApp<CheapTimeSolution> getCommonApp() {
+        return new CheapTimeApp();
     }
-
-    public CheapTimeOpenDataFilesTest(File solutionFile) {
-        super(new CheapTimeApp(), solutionFile);
-    }
-
 }

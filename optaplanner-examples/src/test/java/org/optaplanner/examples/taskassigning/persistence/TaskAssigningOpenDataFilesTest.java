@@ -16,23 +16,15 @@
 
 package org.optaplanner.examples.taskassigning.persistence;
 
-import java.io.File;
-import java.util.Collection;
-
-import org.junit.runners.Parameterized;
+import org.optaplanner.examples.common.app.CommonApp;
 import org.optaplanner.examples.common.persistence.OpenDataFilesTest;
 import org.optaplanner.examples.taskassigning.app.TaskAssigningApp;
 import org.optaplanner.examples.taskassigning.domain.TaskAssigningSolution;
 
 public class TaskAssigningOpenDataFilesTest extends OpenDataFilesTest<TaskAssigningSolution> {
 
-    @Parameterized.Parameters(name = "{index}: {0}")
-    public static Collection<Object[]> getSolutionFilesAsParameters() {
-        return getSolutionFilesAsParameters(new TaskAssigningApp());
+    @Override
+    protected CommonApp<TaskAssigningSolution> getCommonApp() {
+        return new TaskAssigningApp();
     }
-
-    public TaskAssigningOpenDataFilesTest(File solutionFile) {
-        super(new TaskAssigningApp(), solutionFile);
-    }
-
 }

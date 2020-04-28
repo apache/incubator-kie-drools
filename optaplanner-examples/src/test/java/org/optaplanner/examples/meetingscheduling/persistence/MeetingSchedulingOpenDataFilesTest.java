@@ -16,22 +16,15 @@
 
 package org.optaplanner.examples.meetingscheduling.persistence;
 
-import java.io.File;
-import java.util.Collection;
-
-import org.junit.runners.Parameterized;
+import org.optaplanner.examples.common.app.CommonApp;
 import org.optaplanner.examples.common.persistence.OpenDataFilesTest;
 import org.optaplanner.examples.meetingscheduling.app.MeetingSchedulingApp;
+import org.optaplanner.examples.meetingscheduling.domain.MeetingSchedule;
 
-public class MeetingSchedulingOpenDataFilesTest extends OpenDataFilesTest {
+public class MeetingSchedulingOpenDataFilesTest extends OpenDataFilesTest<MeetingSchedule> {
 
-    @Parameterized.Parameters(name = "{index}: {0}")
-    public static Collection<Object[]> getSolutionFilesAsParameters() {
-        return getSolutionFilesAsParameters(new MeetingSchedulingApp());
+    @Override
+    protected CommonApp<MeetingSchedule> getCommonApp() {
+        return new MeetingSchedulingApp();
     }
-
-    public MeetingSchedulingOpenDataFilesTest(File solutionFile) {
-        super(new MeetingSchedulingApp(), solutionFile);
-    }
-
 }

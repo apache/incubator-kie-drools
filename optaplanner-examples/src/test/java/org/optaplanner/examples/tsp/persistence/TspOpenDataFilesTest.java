@@ -16,23 +16,15 @@
 
 package org.optaplanner.examples.tsp.persistence;
 
-import java.io.File;
-import java.util.Collection;
-
-import org.junit.runners.Parameterized;
+import org.optaplanner.examples.common.app.CommonApp;
 import org.optaplanner.examples.common.persistence.OpenDataFilesTest;
 import org.optaplanner.examples.tsp.app.TspApp;
 import org.optaplanner.examples.tsp.domain.TspSolution;
 
 public class TspOpenDataFilesTest extends OpenDataFilesTest<TspSolution> {
 
-    @Parameterized.Parameters(name = "{index}: {0}")
-    public static Collection<Object[]> getSolutionFilesAsParameters() {
-        return getSolutionFilesAsParameters(new TspApp());
+    @Override
+    protected CommonApp<TspSolution> getCommonApp() {
+        return new TspApp();
     }
-
-    public TspOpenDataFilesTest(File solutionFile) {
-        super(new TspApp(), solutionFile);
-    }
-
 }

@@ -16,23 +16,15 @@
 
 package org.optaplanner.examples.projectjobscheduling.persistence;
 
-import java.io.File;
-import java.util.Collection;
-
-import org.junit.runners.Parameterized;
+import org.optaplanner.examples.common.app.CommonApp;
 import org.optaplanner.examples.common.persistence.OpenDataFilesTest;
 import org.optaplanner.examples.projectjobscheduling.app.ProjectJobSchedulingApp;
 import org.optaplanner.examples.projectjobscheduling.domain.Schedule;
 
 public class ProjectJobSchedulingOpenDataFilesTest extends OpenDataFilesTest<Schedule> {
 
-    @Parameterized.Parameters(name = "{index}: {0}")
-    public static Collection<Object[]> getSolutionFilesAsParameters() {
-        return getSolutionFilesAsParameters(new ProjectJobSchedulingApp());
+    @Override
+    protected CommonApp<Schedule> getCommonApp() {
+        return new ProjectJobSchedulingApp();
     }
-
-    public ProjectJobSchedulingOpenDataFilesTest(File solutionFile) {
-        super(new ProjectJobSchedulingApp(), solutionFile);
-    }
-
 }

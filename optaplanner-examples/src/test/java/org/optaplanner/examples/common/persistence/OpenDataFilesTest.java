@@ -18,27 +18,28 @@ package org.optaplanner.examples.common.persistence;
 
 import java.io.File;
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.List;
+import java.util.stream.Stream;
 
 import org.apache.commons.io.FileUtils;
-import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.Test;
-import org.junit.runner.RunWith;
-import org.junit.runners.Parameterized;
+import org.junit.jupiter.api.DynamicTest;
+import org.junit.jupiter.api.TestFactory;
 import org.optaplanner.core.api.domain.solution.PlanningSolution;
 import org.optaplanner.examples.common.app.CommonApp;
 import org.optaplanner.examples.common.app.LoggingTest;
 import org.optaplanner.examples.common.business.ProblemFileComparator;
 import org.optaplanner.persistence.common.api.domain.solution.SolutionFileIO;
 
+import static org.junit.jupiter.api.DynamicTest.dynamicTest;
+
 /**
  * @param <Solution_> the solution type, the class with the {@link PlanningSolution} annotation
  */
-@RunWith(Parameterized.class)
 public abstract class OpenDataFilesTest<Solution_> extends LoggingTest {
 
-    protected static <Solution_> Collection<Object[]> getSolutionFilesAsParameters(CommonApp<Solution_> commonApp) {
+    protected abstract CommonApp<Solution_> getCommonApp();
+
+    private static List<File> getSolutionFiles(CommonApp<?> commonApp) {
         List<File> fileList = new ArrayList<>(0);
         File dataDir = CommonApp.determineDataDir(commonApp.getDataDirName());
         File unsolvedDataDir = new File(dataDir, "unsolved");
@@ -56,32 +57,21 @@ public abstract class OpenDataFilesTest<Solution_> extends LoggingTest {
                     FileUtils.listFiles(solvedDataDir, new String[]{outputFileExtension}, true));
         }
         fileList.sort(new ProblemFileComparator());
-        List<Object[]> filesAsParameters = new ArrayList<>();
-        for (File file : fileList) {
-            filesAsParameters.add(new Object[]{file});
-        }
-        return filesAsParameters;
+        return fileList;
     }
 
-    protected final CommonApp<Solution_> commonApp;
-    protected final File solutionFile;
-
-    protected SolutionFileIO<Solution_> solutionFileIO;
-
-    protected OpenDataFilesTest(CommonApp<Solution_> commonApp, File solutionFile) {
-        this.commonApp = commonApp;
-        this.solutionFile = solutionFile;
+    @TestFactory
+    Stream<DynamicTest> readSolution() {
+        CommonApp<Solution_> commonApp = getCommonApp();
+        SolutionFileIO<Solution_> solutionFileIO = commonApp.createSolutionFileIO();
+        return getSolutionFiles(commonApp).stream()
+                .map(solutionFile -> dynamicTest(
+                        solutionFile.getName(),
+                        () -> readSolution(solutionFileIO, solutionFile)));
     }
 
-    @BeforeEach
-    public void setUp() {
-        solutionFileIO = commonApp.createSolutionFileIO();
-    }
-
-    @Test
-    public void readSolution() {
+    private void readSolution(SolutionFileIO<Solution_> solutionFileIO, File solutionFile) {
         solutionFileIO.read(solutionFile);
         logger.info("Opened: {}", solutionFile);
     }
-
 }

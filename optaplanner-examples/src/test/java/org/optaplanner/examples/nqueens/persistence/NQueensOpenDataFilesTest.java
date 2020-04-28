@@ -16,23 +16,15 @@
 
 package org.optaplanner.examples.nqueens.persistence;
 
-import java.io.File;
-import java.util.Collection;
-
-import org.junit.runners.Parameterized;
+import org.optaplanner.examples.common.app.CommonApp;
 import org.optaplanner.examples.common.persistence.OpenDataFilesTest;
 import org.optaplanner.examples.nqueens.app.NQueensApp;
 import org.optaplanner.examples.nqueens.domain.NQueens;
 
 public class NQueensOpenDataFilesTest extends OpenDataFilesTest<NQueens> {
 
-    @Parameterized.Parameters(name = "{index}: {0}")
-    public static Collection<Object[]> getSolutionFilesAsParameters() {
-        return getSolutionFilesAsParameters(new NQueensApp());
+    @Override
+    protected CommonApp<NQueens> getCommonApp() {
+        return new NQueensApp();
     }
-
-    public NQueensOpenDataFilesTest(File solutionFile) {
-        super(new NQueensApp(), solutionFile);
-    }
-
 }

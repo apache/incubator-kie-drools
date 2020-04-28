@@ -16,23 +16,15 @@
 
 package org.optaplanner.examples.machinereassignment.persistence;
 
-import java.io.File;
-import java.util.Collection;
-
-import org.junit.runners.Parameterized;
+import org.optaplanner.examples.common.app.CommonApp;
 import org.optaplanner.examples.common.persistence.OpenDataFilesTest;
 import org.optaplanner.examples.machinereassignment.app.MachineReassignmentApp;
 import org.optaplanner.examples.machinereassignment.domain.MachineReassignment;
 
 public class MachineReassignmentOpenDataFilesTest extends OpenDataFilesTest<MachineReassignment> {
 
-    @Parameterized.Parameters(name = "{index}: {0}")
-    public static Collection<Object[]> getSolutionFilesAsParameters() {
-        return getSolutionFilesAsParameters(new MachineReassignmentApp());
+    @Override
+    protected CommonApp<MachineReassignment> getCommonApp() {
+        return new MachineReassignmentApp();
     }
-
-    public MachineReassignmentOpenDataFilesTest(File solutionFile) {
-        super(new MachineReassignmentApp(), solutionFile);
-    }
-
 }

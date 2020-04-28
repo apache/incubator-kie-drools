@@ -16,23 +16,15 @@
 
 package org.optaplanner.examples.cloudbalancing.persistence;
 
-import java.io.File;
-import java.util.Collection;
-
-import org.junit.runners.Parameterized;
 import org.optaplanner.examples.cloudbalancing.app.CloudBalancingApp;
 import org.optaplanner.examples.cloudbalancing.domain.CloudBalance;
+import org.optaplanner.examples.common.app.CommonApp;
 import org.optaplanner.examples.common.persistence.OpenDataFilesTest;
 
 public class CloudBalancingOpenDataFilesTest extends OpenDataFilesTest<CloudBalance> {
 
-    @Parameterized.Parameters(name = "{index}: {0}")
-    public static Collection<Object[]> getSolutionFilesAsParameters() {
-        return getSolutionFilesAsParameters(new CloudBalancingApp());
+    @Override
+    protected CommonApp<CloudBalance> getCommonApp() {
+        return new CloudBalancingApp();
     }
-
-    public CloudBalancingOpenDataFilesTest(File solutionFile) {
-        super(new CloudBalancingApp(), solutionFile);
-    }
-
 }

@@ -16,22 +16,15 @@
 
 package org.optaplanner.examples.rocktour.persistence;
 
-import java.io.File;
-import java.util.Collection;
-
-import org.junit.runners.Parameterized;
+import org.optaplanner.examples.common.app.CommonApp;
 import org.optaplanner.examples.common.persistence.OpenDataFilesTest;
 import org.optaplanner.examples.rocktour.app.RockTourApp;
+import org.optaplanner.examples.rocktour.domain.RockTourSolution;
 
-public class RockTourOpenDataFilesTest extends OpenDataFilesTest {
+public class RockTourOpenDataFilesTest extends OpenDataFilesTest<RockTourSolution> {
 
-    @Parameterized.Parameters(name = "{index}: {0}")
-    public static Collection<Object[]> getSolutionFilesAsParameters() {
-        return getSolutionFilesAsParameters(new RockTourApp());
+    @Override
+    protected CommonApp<RockTourSolution> getCommonApp() {
+        return new RockTourApp();
     }
-
-    public RockTourOpenDataFilesTest(File solutionFile) {
-        super(new RockTourApp(), solutionFile);
-    }
-
 }

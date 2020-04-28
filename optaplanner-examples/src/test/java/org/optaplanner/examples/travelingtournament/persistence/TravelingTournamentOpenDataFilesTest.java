@@ -16,23 +16,15 @@
 
 package org.optaplanner.examples.travelingtournament.persistence;
 
-import java.io.File;
-import java.util.Collection;
-
-import org.junit.runners.Parameterized;
+import org.optaplanner.examples.common.app.CommonApp;
 import org.optaplanner.examples.common.persistence.OpenDataFilesTest;
 import org.optaplanner.examples.travelingtournament.app.TravelingTournamentApp;
 import org.optaplanner.examples.travelingtournament.domain.TravelingTournament;
 
 public class TravelingTournamentOpenDataFilesTest extends OpenDataFilesTest<TravelingTournament> {
 
-    @Parameterized.Parameters(name = "{index}: {0}")
-    public static Collection<Object[]> getSolutionFilesAsParameters() {
-        return getSolutionFilesAsParameters(new TravelingTournamentApp());
+    @Override
+    protected CommonApp<TravelingTournament> getCommonApp() {
+        return new TravelingTournamentApp();
     }
-
-    public TravelingTournamentOpenDataFilesTest(File solutionFile) {
-        super(new TravelingTournamentApp(), solutionFile);
-    }
-
 }

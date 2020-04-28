@@ -16,22 +16,15 @@
 
 package org.optaplanner.examples.flightcrewscheduling.persistence;
 
-import java.io.File;
-import java.util.Collection;
-
-import org.junit.runners.Parameterized;
+import org.optaplanner.examples.common.app.CommonApp;
 import org.optaplanner.examples.common.persistence.OpenDataFilesTest;
 import org.optaplanner.examples.flightcrewscheduling.app.FlightCrewSchedulingApp;
+import org.optaplanner.examples.flightcrewscheduling.domain.FlightCrewSolution;
 
-public class FlightCrewSchedulingOpenDataFilesTest extends OpenDataFilesTest {
+public class FlightCrewSchedulingOpenDataFilesTest extends OpenDataFilesTest<FlightCrewSolution> {
 
-    @Parameterized.Parameters(name = "{index}: {0}")
-    public static Collection<Object[]> getSolutionFilesAsParameters() {
-        return getSolutionFilesAsParameters(new FlightCrewSchedulingApp());
+    @Override
+    protected CommonApp<FlightCrewSolution> getCommonApp() {
+        return new FlightCrewSchedulingApp();
     }
-
-    public FlightCrewSchedulingOpenDataFilesTest(File solutionFile) {
-        super(new FlightCrewSchedulingApp(), solutionFile);
-    }
-
 }

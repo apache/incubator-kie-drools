@@ -16,23 +16,15 @@
 
 package org.optaplanner.examples.examination.persistence;
 
-import java.io.File;
-import java.util.Collection;
-
-import org.junit.runners.Parameterized;
+import org.optaplanner.examples.common.app.CommonApp;
 import org.optaplanner.examples.common.persistence.OpenDataFilesTest;
 import org.optaplanner.examples.examination.app.ExaminationApp;
 import org.optaplanner.examples.examination.domain.Examination;
 
 public class ExaminationOpenDataFilesTest extends OpenDataFilesTest<Examination> {
 
-    @Parameterized.Parameters(name = "{index}: {0}")
-    public static Collection<Object[]> getSolutionFilesAsParameters() {
-        return getSolutionFilesAsParameters(new ExaminationApp());
+    @Override
+    protected CommonApp<Examination> getCommonApp() {
+        return new ExaminationApp();
     }
-
-    public ExaminationOpenDataFilesTest(File solutionFile) {
-        super(new ExaminationApp(), solutionFile);
-    }
-
 }

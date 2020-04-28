@@ -16,23 +16,15 @@
 
 package org.optaplanner.examples.pas.persistence;
 
-import java.io.File;
-import java.util.Collection;
-
-import org.junit.runners.Parameterized;
+import org.optaplanner.examples.common.app.CommonApp;
 import org.optaplanner.examples.common.persistence.OpenDataFilesTest;
 import org.optaplanner.examples.pas.app.PatientAdmissionScheduleApp;
 import org.optaplanner.examples.pas.domain.PatientAdmissionSchedule;
 
 public class PatientAdmissionScheduleOpenDataFilesTest extends OpenDataFilesTest<PatientAdmissionSchedule> {
 
-    @Parameterized.Parameters(name = "{index}: {0}")
-    public static Collection<Object[]> getSolutionFilesAsParameters() {
-        return getSolutionFilesAsParameters(new PatientAdmissionScheduleApp());
+    @Override
+    protected CommonApp<PatientAdmissionSchedule> getCommonApp() {
+        return new PatientAdmissionScheduleApp();
     }
-
-    public PatientAdmissionScheduleOpenDataFilesTest(File solutionFile) {
-        super(new PatientAdmissionScheduleApp(), solutionFile);
-    }
-
 }
