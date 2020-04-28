@@ -16,22 +16,14 @@
 
 package org.optaplanner.examples.examination.app;
 
-import java.io.File;
-import java.util.Collection;
-
-import org.junit.runners.Parameterized;
+import org.optaplanner.examples.common.app.CommonApp;
 import org.optaplanner.examples.common.app.UnsolvedDirSolveAllTurtleTest;
 import org.optaplanner.examples.examination.domain.Examination;
 
 public class ExaminationSolveAllTurtleTest extends UnsolvedDirSolveAllTurtleTest<Examination> {
 
-    @Parameterized.Parameters(name = "{index}: {0}")
-    public static Collection<Object[]> getSolutionFilesAsParameters() {
-        return getUnsolvedDirFilesAsParameters(new ExaminationApp());
+    @Override
+    protected CommonApp<Examination> createCommonApp() {
+        return new ExaminationApp();
     }
-
-    public ExaminationSolveAllTurtleTest(File unsolvedDataFile) {
-        super(new ExaminationApp(), unsolvedDataFile);
-    }
-
 }

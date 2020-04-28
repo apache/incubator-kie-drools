@@ -16,22 +16,14 @@
 
 package org.optaplanner.examples.machinereassignment.app;
 
-import java.io.File;
-import java.util.Collection;
-
-import org.junit.runners.Parameterized;
+import org.optaplanner.examples.common.app.CommonApp;
 import org.optaplanner.examples.common.app.UnsolvedDirSolveAllTurtleTest;
 import org.optaplanner.examples.machinereassignment.domain.MachineReassignment;
 
 public class MachineReassignmentSolveAllTurtleTest extends UnsolvedDirSolveAllTurtleTest<MachineReassignment> {
 
-    @Parameterized.Parameters(name = "{index}: {0}")
-    public static Collection<Object[]> getSolutionFilesAsParameters() {
-        return getUnsolvedDirFilesAsParameters(new MachineReassignmentApp());
+    @Override
+    protected CommonApp<MachineReassignment> createCommonApp() {
+        return new MachineReassignmentApp();
     }
-
-    public MachineReassignmentSolveAllTurtleTest(File unsolvedDataFile) {
-        super(new MachineReassignmentApp(), unsolvedDataFile);
-    }
-
 }

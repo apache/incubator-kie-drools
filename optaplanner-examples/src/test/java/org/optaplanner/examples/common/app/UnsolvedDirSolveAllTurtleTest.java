@@ -21,7 +21,6 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.apache.commons.io.FileUtils;
-import org.junit.jupiter.api.BeforeEach;
 import org.optaplanner.core.api.domain.solution.PlanningSolution;
 import org.optaplanner.examples.common.business.ProblemFileComparator;
 import org.optaplanner.persistence.common.api.domain.solution.SolutionFileIO;
@@ -31,8 +30,7 @@ import org.optaplanner.persistence.common.api.domain.solution.SolutionFileIO;
  */
 public abstract class UnsolvedDirSolveAllTurtleTest<Solution_> extends SolveAllTurtleTest<Solution_> {
 
-    protected static <Solution_> List<Object[]> getUnsolvedDirFilesAsParameters(CommonApp<Solution_> commonApp) {
-        List<Object[]> filesAsParameters = new ArrayList<>();
+    private static <Solution_> List<File> getUnsolvedDirFilesAsParameters(CommonApp<Solution_> commonApp) {
         File dataDir = CommonApp.determineDataDir(commonApp.getDataDirName());
         File unsolvedDataDir = new File(dataDir, "unsolved");
         if (!unsolvedDataDir.exists()) {
@@ -43,34 +41,22 @@ public abstract class UnsolvedDirSolveAllTurtleTest<Solution_> extends SolveAllT
             List<File> fileList = new ArrayList<>(
                     FileUtils.listFiles(unsolvedDataDir, new String[]{inputFileExtension}, true));
             fileList.sort(new ProblemFileComparator());
-            for (File file : fileList) {
-                filesAsParameters.add(new Object[]{file});
-            }
+            return fileList;
         }
-        return filesAsParameters;
-    }
-
-    protected final CommonApp<Solution_> commonApp;
-    protected final File dataFile;
-
-    protected SolutionFileIO<Solution_> solutionFileIO;
-
-    protected UnsolvedDirSolveAllTurtleTest(CommonApp<Solution_> commonApp, File dataFile) {
-        super(commonApp.getSolverConfigResource());
-        this.commonApp = commonApp;
-        this.dataFile = dataFile;
-    }
-
-    @BeforeEach
-    public void setUp() {
-        solutionFileIO = commonApp.createSolutionFileIO();
     }
 
     @Override
-    protected Solution_ readProblem() {
-        Solution_ problem = solutionFileIO.read(dataFile);
-        logger.info("Opened: {}", dataFile);
-        return problem;
+    protected List<File> getSolutionFiles(CommonApp<Solution_> commonApp) {
+        return getUnsolvedDirFilesAsParameters(commonApp);
     }
 
+    @Override
+    protected ProblemFactory<Solution_> createProblemFactory(CommonApp<Solution_> commonApp) {
+        SolutionFileIO<Solution_> solutionFileIO = commonApp.createSolutionFileIO();
+        return (dataFile) -> {
+            Solution_ problem = solutionFileIO.read(dataFile);
+            logger.info("Opened: {}", dataFile);
+            return problem;
+        };
+    }
 }

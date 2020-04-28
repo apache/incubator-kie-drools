@@ -18,11 +18,9 @@ package org.optaplanner.examples.common.app;
 
 import java.io.File;
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.List;
 
 import org.apache.commons.io.FileUtils;
-import org.junit.jupiter.api.BeforeEach;
 import org.optaplanner.core.api.domain.solution.PlanningSolution;
 import org.optaplanner.examples.common.business.ProblemFileComparator;
 import org.optaplanner.examples.common.persistence.AbstractSolutionImporter;
@@ -32,8 +30,7 @@ import org.optaplanner.examples.common.persistence.AbstractSolutionImporter;
  */
 public abstract class ImportDirSolveAllTurtleTest<Solution_> extends SolveAllTurtleTest<Solution_> {
 
-    protected static <Solution_> Collection<Object[]> getImportDirFilesAsParameters(CommonApp<Solution_> commonApp) {
-        List<Object[]> filesAsParameters = new ArrayList<>();
+    private static <Solution_> List<File> getImportDirFilesAsParameters(CommonApp<Solution_> commonApp) {
         File dataDir = CommonApp.determineDataDir(commonApp.getDataDirName());
         File importDataDir = new File(dataDir, "import");
         if (!importDataDir.exists()) {
@@ -44,14 +41,11 @@ public abstract class ImportDirSolveAllTurtleTest<Solution_> extends SolveAllTur
             List<File> fileList = new ArrayList<>(
                     FileUtils.listFiles(importDataDir, new String[]{inputFileSuffix}, true));
             fileList.sort(new ProblemFileComparator());
-            for (File file : fileList) {
-                filesAsParameters.add(new Object[]{file});
-            }
+            return fileList;
         }
-        return filesAsParameters;
     }
 
-    protected static <Solution_> AbstractSolutionImporter<Solution_> createSolutionImporter(CommonApp<Solution_> commonApp) {
+    private static <Solution_> AbstractSolutionImporter<Solution_> createSolutionImporter(CommonApp<Solution_> commonApp) {
         AbstractSolutionImporter[] importers = commonApp.createSolutionImporters();
         if (importers.length != 1) {
             throw new IllegalStateException("The importers size (" + importers.length + ") should be 1.");
@@ -59,25 +53,14 @@ public abstract class ImportDirSolveAllTurtleTest<Solution_> extends SolveAllTur
         return importers[0];
     }
 
-    protected final CommonApp<Solution_> commonApp;
-    protected final File dataFile;
-
-    protected AbstractSolutionImporter<Solution_> solutionImporter;
-
-    protected ImportDirSolveAllTurtleTest(CommonApp<Solution_> commonApp, File dataFile) {
-        super(commonApp.getSolverConfigResource());
-        this.commonApp = commonApp;
-        this.dataFile = dataFile;
-    }
-
-    @BeforeEach
-    public void setUp() {
-        solutionImporter = createSolutionImporter(commonApp);
+    @Override
+    protected List<File> getSolutionFiles(CommonApp<Solution_> commonApp) {
+        return getImportDirFilesAsParameters(commonApp);
     }
 
     @Override
-    protected Solution_ readProblem() {
-        return solutionImporter.readSolution(dataFile);
+    protected ProblemFactory<Solution_> createProblemFactory(CommonApp<Solution_> commonApp) {
+        AbstractSolutionImporter<Solution_> solutionImporter = createSolutionImporter(commonApp);
+        return solutionImporter::readSolution;
     }
-
 }

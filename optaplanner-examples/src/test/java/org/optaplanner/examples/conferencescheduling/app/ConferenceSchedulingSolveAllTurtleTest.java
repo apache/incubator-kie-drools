@@ -16,22 +16,14 @@
 
 package org.optaplanner.examples.conferencescheduling.app;
 
-import java.io.File;
-import java.util.Collection;
-
-import org.junit.runners.Parameterized;
+import org.optaplanner.examples.common.app.CommonApp;
 import org.optaplanner.examples.common.app.UnsolvedDirSolveAllTurtleTest;
 import org.optaplanner.examples.conferencescheduling.domain.ConferenceSolution;
 
 public class ConferenceSchedulingSolveAllTurtleTest extends UnsolvedDirSolveAllTurtleTest<ConferenceSolution> {
 
-    @Parameterized.Parameters(name = "{index}: {0}")
-    public static Collection<Object[]> getSolutionFilesAsParameters() {
-        return getUnsolvedDirFilesAsParameters(new ConferenceSchedulingApp());
+    @Override
+    protected CommonApp<ConferenceSolution> createCommonApp() {
+        return new ConferenceSchedulingApp();
     }
-
-    public ConferenceSchedulingSolveAllTurtleTest(File unsolvedDataFile) {
-        super(new ConferenceSchedulingApp(), unsolvedDataFile);
-    }
-
 }

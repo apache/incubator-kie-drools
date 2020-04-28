@@ -16,29 +16,21 @@
 
 package org.optaplanner.examples.investment.app;
 
-import java.io.File;
-import java.util.Collection;
-
-import org.junit.runners.Parameterized;
 import org.optaplanner.core.impl.score.director.easy.EasyScoreCalculator;
+import org.optaplanner.examples.common.app.CommonApp;
 import org.optaplanner.examples.common.app.UnsolvedDirSolveAllTurtleTest;
 import org.optaplanner.examples.investment.domain.InvestmentSolution;
 import org.optaplanner.examples.investment.solver.score.InvestmentEasyScoreCalculator;
 
 public class InvestmentSolveAllTurtleTest extends UnsolvedDirSolveAllTurtleTest<InvestmentSolution> {
 
-    @Parameterized.Parameters(name = "{index}: {0}")
-    public static Collection<Object[]> getSolutionFilesAsParameters() {
-        return getUnsolvedDirFilesAsParameters(new InvestmentApp());
-    }
-
-    public InvestmentSolveAllTurtleTest(File unsolvedDataFile) {
-        super(new InvestmentApp(), unsolvedDataFile);
+    @Override
+    protected CommonApp<InvestmentSolution> createCommonApp() {
+        return new InvestmentApp();
     }
 
     @Override
     protected Class<? extends EasyScoreCalculator> overwritingEasyScoreCalculatorClass() {
         return InvestmentEasyScoreCalculator.class;
     }
-
 }

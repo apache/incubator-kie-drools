@@ -16,9 +16,13 @@
 
 package org.optaplanner.examples.common.app;
 
-import org.junit.jupiter.api.Test;
-import org.junit.runner.RunWith;
-import org.junit.runners.Parameterized;
+import java.io.File;
+import java.util.List;
+import java.util.function.Function;
+import java.util.stream.Stream;
+
+import org.junit.jupiter.api.DynamicTest;
+import org.junit.jupiter.api.TestFactory;
 import org.optaplanner.core.api.domain.solution.PlanningSolution;
 import org.optaplanner.core.api.solver.Solver;
 import org.optaplanner.core.api.solver.SolverFactory;
@@ -29,27 +33,41 @@ import org.optaplanner.core.config.solver.termination.TerminationConfig;
 import org.optaplanner.core.impl.score.director.easy.EasyScoreCalculator;
 import org.optaplanner.examples.common.TestSystemProperties;
 
+import static org.junit.jupiter.api.DynamicTest.dynamicTest;
+
 /**
  * @param <Solution_> the solution type, the class with the {@link PlanningSolution} annotation
  */
-@RunWith(Parameterized.class)
 public abstract class SolveAllTurtleTest<Solution_> extends AbstractTurtleTest {
+
+    interface ProblemFactory<Solution_> extends Function<File, Solution_> {
+
+        default Solution_ loadProblem(File f) {
+            return apply(f);
+        }
+    }
 
     private static final String MOVE_THREAD_COUNT_OVERRIDE = System.getProperty(TestSystemProperties.MOVE_THREAD_COUNT);
 
-    private final String solverConfigResource;
+    protected abstract List<File> getSolutionFiles(CommonApp<Solution_> commonApp);
 
-    public SolveAllTurtleTest(String solverConfigResource) {
-        this.solverConfigResource = solverConfigResource;
+    protected abstract CommonApp<Solution_> createCommonApp();
+
+    protected abstract ProblemFactory<Solution_> createProblemFactory(CommonApp<Solution_> commonApp);
+
+    @TestFactory
+    Stream<DynamicTest> runFastAndFullAssert() {
+        checkRunTurtleTests();
+        CommonApp<Solution_> commonApp = createCommonApp();
+        ProblemFactory<Solution_> problemFactory = createProblemFactory(commonApp);
+        return getSolutionFiles(commonApp).stream()
+                .map(solutionFile -> dynamicTest(solutionFile.getName(), () -> runFastAndFullAssert(
+                        buildSolverConfig(commonApp.getSolverConfigResource()),
+                        problemFactory.loadProblem(solutionFile)
+                )));
     }
 
-    protected abstract Solution_ readProblem();
-
-    @Test
-    public void runFastAndFullAssert() {
-        checkRunTurtleTests();
-        SolverConfig solverConfig = buildSolverConfig();
-        Solution_ problem = readProblem();
+    public void runFastAndFullAssert(SolverConfig solverConfig, Solution_ problem) {
         // Specifically use NON_INTRUSIVE_FULL_ASSERT instead of FULL_ASSERT to flush out bugs hidden by intrusiveness
         // 1) NON_INTRUSIVE_FULL_ASSERT ASSERT to find CH bugs (but covers little ground)
         problem = buildAndSolve(solverConfig, EnvironmentMode.NON_INTRUSIVE_FULL_ASSERT, problem, 2L);
@@ -59,7 +77,7 @@ public abstract class SolveAllTurtleTest<Solution_> extends AbstractTurtleTest {
         problem = buildAndSolve(solverConfig, EnvironmentMode.NON_INTRUSIVE_FULL_ASSERT, problem, 3L);
     }
 
-    protected SolverConfig buildSolverConfig() {
+    private static SolverConfig buildSolverConfig(String solverConfigResource) {
         SolverConfig solverConfig = SolverConfig.createFromXmlResource(solverConfigResource);
         // buildAndSolve() fills in minutesSpentLimit
         solverConfig.setTerminationConfig(new TerminationConfig());
@@ -69,7 +87,7 @@ public abstract class SolveAllTurtleTest<Solution_> extends AbstractTurtleTest {
         return solverConfig;
     }
 
-    protected Solution_ buildAndSolve(SolverConfig solverConfig, EnvironmentMode environmentMode,
+    private Solution_ buildAndSolve(SolverConfig solverConfig, EnvironmentMode environmentMode,
             Solution_ problem, long maximumMinutesSpent) {
         solverConfig.getTerminationConfig().setMinutesSpentLimit(maximumMinutesSpent);
         solverConfig.setEnvironmentMode(environmentMode);
@@ -85,8 +103,7 @@ public abstract class SolveAllTurtleTest<Solution_> extends AbstractTurtleTest {
         return solver.solve(problem);
     }
 
-    protected Class<? extends EasyScoreCalculator> overwritingEasyScoreCalculatorClass()  {
+    protected Class<? extends EasyScoreCalculator> overwritingEasyScoreCalculatorClass() {
         return null;
     }
-
 }

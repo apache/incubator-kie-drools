@@ -16,29 +16,21 @@
 
 package org.optaplanner.examples.nqueens.app;
 
-import java.io.File;
-import java.util.Collection;
-
-import org.junit.runners.Parameterized;
 import org.optaplanner.core.impl.score.director.easy.EasyScoreCalculator;
+import org.optaplanner.examples.common.app.CommonApp;
 import org.optaplanner.examples.common.app.UnsolvedDirSolveAllTurtleTest;
 import org.optaplanner.examples.nqueens.domain.NQueens;
 import org.optaplanner.examples.nqueens.solver.score.NQueensEasyScoreCalculator;
 
 public class NQueensSolveAllTurtleTest extends UnsolvedDirSolveAllTurtleTest<NQueens> {
 
-    @Parameterized.Parameters(name = "{index}: {0}")
-    public static Collection<Object[]> getSolutionFilesAsParameters() {
-        return getUnsolvedDirFilesAsParameters(new NQueensApp());
-    }
-
-    public NQueensSolveAllTurtleTest(File unsolvedDataFile) {
-        super(new NQueensApp(), unsolvedDataFile);
+    @Override
+    protected CommonApp<NQueens> createCommonApp() {
+        return new NQueensApp();
     }
 
     @Override
     protected Class<? extends EasyScoreCalculator> overwritingEasyScoreCalculatorClass() {
         return NQueensEasyScoreCalculator.class;
     }
-
 }

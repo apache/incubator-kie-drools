@@ -16,22 +16,14 @@
 
 package org.optaplanner.examples.flightcrewscheduling.app;
 
-import java.io.File;
-import java.util.Collection;
-
-import org.junit.runners.Parameterized;
+import org.optaplanner.examples.common.app.CommonApp;
 import org.optaplanner.examples.common.app.UnsolvedDirSolveAllTurtleTest;
 import org.optaplanner.examples.flightcrewscheduling.domain.FlightCrewSolution;
 
 public class FlightCrewSchedulingSolveAllTurtleTest extends UnsolvedDirSolveAllTurtleTest<FlightCrewSolution> {
 
-    @Parameterized.Parameters(name = "{index}: {0}")
-    public static Collection<Object[]> getSolutionFilesAsParameters() {
-        return getUnsolvedDirFilesAsParameters(new FlightCrewSchedulingApp());
+    @Override
+    protected CommonApp<FlightCrewSolution> createCommonApp() {
+        return new FlightCrewSchedulingApp();
     }
-
-    public FlightCrewSchedulingSolveAllTurtleTest(File unsolvedDataFile) {
-        super(new FlightCrewSchedulingApp(), unsolvedDataFile);
-    }
-
 }

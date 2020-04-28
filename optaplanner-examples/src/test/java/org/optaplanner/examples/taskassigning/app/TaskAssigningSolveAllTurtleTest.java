@@ -16,22 +16,14 @@
 
 package org.optaplanner.examples.taskassigning.app;
 
-import java.io.File;
-import java.util.Collection;
-
-import org.junit.runners.Parameterized;
+import org.optaplanner.examples.common.app.CommonApp;
 import org.optaplanner.examples.common.app.UnsolvedDirSolveAllTurtleTest;
 import org.optaplanner.examples.taskassigning.domain.TaskAssigningSolution;
 
 public class TaskAssigningSolveAllTurtleTest extends UnsolvedDirSolveAllTurtleTest<TaskAssigningSolution> {
 
-    @Parameterized.Parameters(name = "{index}: {0}")
-    public static Collection<Object[]> getSolutionFilesAsParameters() {
-        return getUnsolvedDirFilesAsParameters(new TaskAssigningApp());
+    @Override
+    protected CommonApp<TaskAssigningSolution> createCommonApp() {
+        return new TaskAssigningApp();
     }
-
-    public TaskAssigningSolveAllTurtleTest(File unsolvedDataFile) {
-        super(new TaskAssigningApp(), unsolvedDataFile);
-    }
-
 }

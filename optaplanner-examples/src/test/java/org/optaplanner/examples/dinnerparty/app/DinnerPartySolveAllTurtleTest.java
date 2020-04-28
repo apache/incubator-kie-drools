@@ -16,22 +16,14 @@
 
 package org.optaplanner.examples.dinnerparty.app;
 
-import java.io.File;
-import java.util.Collection;
-
-import org.junit.runners.Parameterized;
+import org.optaplanner.examples.common.app.CommonApp;
 import org.optaplanner.examples.common.app.UnsolvedDirSolveAllTurtleTest;
 import org.optaplanner.examples.dinnerparty.domain.DinnerParty;
 
 public class DinnerPartySolveAllTurtleTest extends UnsolvedDirSolveAllTurtleTest<DinnerParty> {
 
-    @Parameterized.Parameters(name = "{index}: {0}")
-    public static Collection<Object[]> getSolutionFilesAsParameters() {
-        return getUnsolvedDirFilesAsParameters(new DinnerPartyApp());
+    @Override
+    protected CommonApp<DinnerParty> createCommonApp() {
+        return new DinnerPartyApp();
     }
-
-    public DinnerPartySolveAllTurtleTest(File unsolvedDataFile) {
-        super(new DinnerPartyApp(), unsolvedDataFile);
-    }
-
 }

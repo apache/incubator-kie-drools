@@ -16,22 +16,14 @@
 
 package org.optaplanner.examples.rocktour.app;
 
-import java.io.File;
-import java.util.Collection;
-
-import org.junit.runners.Parameterized;
+import org.optaplanner.examples.common.app.CommonApp;
 import org.optaplanner.examples.common.app.UnsolvedDirSolveAllTurtleTest;
 import org.optaplanner.examples.rocktour.domain.RockTourSolution;
 
 public class RockTourSolveAllTurtleTest extends UnsolvedDirSolveAllTurtleTest<RockTourSolution> {
 
-    @Parameterized.Parameters(name = "{index}: {0}")
-    public static Collection<Object[]> getSolutionFilesAsParameters() {
-        return getUnsolvedDirFilesAsParameters(new RockTourApp());
+    @Override
+    protected CommonApp<RockTourSolution> createCommonApp() {
+        return new RockTourApp();
     }
-
-    public RockTourSolveAllTurtleTest(File unsolvedDataFile) {
-        super(new RockTourApp(), unsolvedDataFile);
-    }
-
 }

@@ -16,29 +16,21 @@
 
 package org.optaplanner.examples.cheaptime.app;
 
-import java.io.File;
-import java.util.Collection;
-
-import org.junit.runners.Parameterized;
 import org.optaplanner.core.impl.score.director.easy.EasyScoreCalculator;
 import org.optaplanner.examples.cheaptime.domain.CheapTimeSolution;
 import org.optaplanner.examples.cheaptime.solver.score.CheapTimeEasyScoreCalculator;
+import org.optaplanner.examples.common.app.CommonApp;
 import org.optaplanner.examples.common.app.UnsolvedDirSolveAllTurtleTest;
 
 public class CheapTimeSolveAllTurtleTest extends UnsolvedDirSolveAllTurtleTest<CheapTimeSolution> {
 
-    @Parameterized.Parameters(name = "{index}: {0}")
-    public static Collection<Object[]> getSolutionFilesAsParameters() {
-        return getUnsolvedDirFilesAsParameters(new CheapTimeApp());
-    }
-
-    public CheapTimeSolveAllTurtleTest(File unsolvedDataFile) {
-        super(new CheapTimeApp(), unsolvedDataFile);
+    @Override
+    protected CommonApp<CheapTimeSolution> createCommonApp() {
+        return new CheapTimeApp();
     }
 
     @Override
     protected Class<? extends EasyScoreCalculator> overwritingEasyScoreCalculatorClass() {
         return CheapTimeEasyScoreCalculator.class;
     }
-
 }

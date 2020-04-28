@@ -16,22 +16,14 @@
 
 package org.optaplanner.examples.tennis.app;
 
-import java.io.File;
-import java.util.Collection;
-
-import org.junit.runners.Parameterized;
+import org.optaplanner.examples.common.app.CommonApp;
 import org.optaplanner.examples.common.app.UnsolvedDirSolveAllTurtleTest;
 import org.optaplanner.examples.tennis.domain.TennisSolution;
 
 public class TennisSolveAllTurtleTest extends UnsolvedDirSolveAllTurtleTest<TennisSolution> {
 
-    @Parameterized.Parameters(name = "{index}: {0}")
-    public static Collection<Object[]> getSolutionFilesAsParameters() {
-        return getUnsolvedDirFilesAsParameters(new TennisApp());
+    @Override
+    protected CommonApp<TennisSolution> createCommonApp() {
+        return new TennisApp();
     }
-
-    public TennisSolveAllTurtleTest(File unsolvedDataFile) {
-        super(new TennisApp(), unsolvedDataFile);
-    }
-
 }

@@ -16,22 +16,14 @@
 
 package org.optaplanner.examples.nurserostering.app;
 
-import java.io.File;
-import java.util.Collection;
-
-import org.junit.runners.Parameterized;
+import org.optaplanner.examples.common.app.CommonApp;
 import org.optaplanner.examples.common.app.UnsolvedDirSolveAllTurtleTest;
 import org.optaplanner.examples.nurserostering.domain.NurseRoster;
 
 public class NurseRosteringSolveAllTurtleTest extends UnsolvedDirSolveAllTurtleTest<NurseRoster> {
 
-    @Parameterized.Parameters(name = "{index}: {0}")
-    public static Collection<Object[]> getSolutionFilesAsParameters() {
-        return getUnsolvedDirFilesAsParameters(new NurseRosteringApp());
+    @Override
+    protected CommonApp<NurseRoster> createCommonApp() {
+        return new NurseRosteringApp();
     }
-
-    public NurseRosteringSolveAllTurtleTest(File unsolvedDataFile) {
-        super(new NurseRosteringApp(), unsolvedDataFile);
-    }
-
 }
