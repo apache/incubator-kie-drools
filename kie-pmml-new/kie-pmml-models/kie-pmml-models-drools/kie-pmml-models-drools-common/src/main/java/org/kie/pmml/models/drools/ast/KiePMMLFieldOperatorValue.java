@@ -65,6 +65,10 @@ public class KiePMMLFieldOperatorValue {
         return nestedKiePMMLFieldOperatorValues != null ? Collections.unmodifiableList(nestedKiePMMLFieldOperatorValues) : null;
     }
 
+    public List<KiePMMLOperatorValue> getKiePMMLOperatorValues() {
+        return kiePMMLOperatorValues;
+    }
+
     @Override
     public String toString() {
         return "KiePMMLFieldOperatorValue{" +

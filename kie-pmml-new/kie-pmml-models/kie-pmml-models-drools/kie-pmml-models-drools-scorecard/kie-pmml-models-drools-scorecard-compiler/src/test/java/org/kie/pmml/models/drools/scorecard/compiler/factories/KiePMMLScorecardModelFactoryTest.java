@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package org.kie.pmml.models.drools.scorecard.drools.compiler.factories;
+package org.kie.pmml.models.drools.scorecard.compiler.factories;
 
 import java.util.List;
 import java.util.Map;
@@ -29,7 +29,6 @@ import org.junit.Before;
 import org.junit.Test;
 import org.kie.pmml.commons.model.enums.MINING_FUNCTION;
 import org.kie.pmml.compiler.testutils.TestUtils;
-import org.kie.pmml.models.drools.scorecard.compiler.factories.KiePMMLScorecardModelFactory;
 import org.kie.pmml.models.drools.scorecard.model.KiePMMLScorecardModel;
 import org.kie.pmml.models.drools.tuples.KiePMMLOriginalTypeGeneratedType;
 import org.slf4j.Logger;

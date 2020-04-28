@@ -14,30 +14,26 @@
  * limitations under the License.
  */
 
-package org.kie.pmml.models.drools.scorecard.drools.compiler.factories;
+package org.kie.pmml.models.drools.scorecard.compiler.factories;
 
-import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
 
 import org.dmg.pmml.PMML;
-import org.dmg.pmml.scorecard.Characteristics;
 import org.dmg.pmml.scorecard.Scorecard;
 import org.junit.Before;
 import org.junit.Test;
-import org.kie.pmml.commons.model.enums.DATA_TYPE;
 import org.kie.pmml.compiler.testutils.TestUtils;
-import org.kie.pmml.models.drools.ast.factories.KiePMMLDataDictionaryASTFactory;
-import org.kie.pmml.models.drools.scorecard.compiler.factories.KiePMMLScorecardModelCharacteristicASTFactory;
+import org.kie.pmml.models.drools.ast.KiePMMLDroolsAST;
+import org.kie.pmml.models.drools.scorecard.compiler.factories.KiePMMLScorecardModelASTFactory;
 import org.kie.pmml.models.drools.tuples.KiePMMLOriginalTypeGeneratedType;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
-import static org.kie.pmml.compiler.commons.utils.ModelUtils.getTargetFieldType;
 
-public class KiePMMLScorecardModelCharacteristicASTFactoryTest {
+public class KiePMMLScorecardModelASTFactoryTest {
 
     private static final String SOURCE_SAMPLE = "ScorecardSample.pmml";
     private PMML samplePmml;
@@ -53,12 +49,11 @@ public class KiePMMLScorecardModelCharacteristicASTFactoryTest {
     }
 
     @Test
-    public void declareRulesFromCharacteristics() {
-        Characteristics characteristics = scorecardModel.getCharacteristics();
+    public void getKiePMMLDroolsSampleAST() {
         final Map<String, KiePMMLOriginalTypeGeneratedType> fieldTypeMap = new HashMap<>();
-        DATA_TYPE targetType = getTargetFieldType(samplePmml.getDataDictionary(), scorecardModel);
-        KiePMMLDataDictionaryASTFactory.factory(fieldTypeMap).declareTypes(samplePmml.getDataDictionary());
-        KiePMMLScorecardModelCharacteristicASTFactory.factory(fieldTypeMap, Collections.emptyList(), targetType).declareRulesFromCharacteristics(characteristics, "_will", null);
-        assertFalse(fieldTypeMap.isEmpty());
+        KiePMMLDroolsAST retrieved = KiePMMLScorecardModelASTFactory.getKiePMMLDroolsAST(samplePmml.getDataDictionary(), scorecardModel, fieldTypeMap);
+        assertNotNull(retrieved);
+        assertFalse(retrieved.getTypes().isEmpty());
+        assertFalse(retrieved.getRules().isEmpty());
     }
 }

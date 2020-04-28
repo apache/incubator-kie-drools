@@ -47,7 +47,11 @@ public class KiePMMLCompoundPredicateASTFactoryTest {
     @Test
     public void declareRuleFromCompoundPredicateAndOrXorFinalLeaf() {
         final Map<String, KiePMMLOriginalTypeGeneratedType> fieldTypeMap = new HashMap<>();
-        List<SimplePredicate> predicates = IntStream.range(0, 2).mapToObj(index -> getSimplePredicate("SIMPLEPREDICATE-" + index, DataType.STRING, "VALUE-" + index, fieldTypeMap)).collect(Collectors.toList());
+        List<SimplePredicate> predicates = IntStream.range(0, 2).mapToObj(index ->
+                                                                                  getSimplePredicate("SIMPLEPREDICATE-" + index,
+                                                                                                     DataType.STRING, "VALUE-" + index,
+                                                                                                     SimplePredicate.Operator.LESS_THAN,
+                                                                                                     fieldTypeMap)).collect(Collectors.toList());
         String parentPath = "_will play";
         String currentRule = "_will play_will play";
         String result = "RESULT";
@@ -88,7 +92,11 @@ public class KiePMMLCompoundPredicateASTFactoryTest {
     @Test
     public void declareRuleFromCompoundPredicateAndOrXorNotFinalLeaf() {
         final Map<String, KiePMMLOriginalTypeGeneratedType> fieldTypeMap = new HashMap<>();
-        List<SimplePredicate> predicates = IntStream.range(0, 2).mapToObj(index -> getSimplePredicate("SIMPLEPREDICATE-" + index, DataType.STRING, "VALUE-" + index, fieldTypeMap)).collect(Collectors.toList());
+        List<SimplePredicate> predicates = IntStream.range(0, 2).mapToObj(index -> getSimplePredicate("SIMPLEPREDICATE-" + index,
+                                                                                                      DataType.STRING,
+                                                                                                      "VALUE-" + index,
+                                                                                                      SimplePredicate.Operator.LESS_THAN,
+                                                                                                      fieldTypeMap)).collect(Collectors.toList());
         String parentPath = "_will play";
         String currentRule = "_will play_will play";
         String result = "RESULT";
@@ -127,7 +135,11 @@ public class KiePMMLCompoundPredicateASTFactoryTest {
     @Test
     public void declareRuleFromCompoundPredicateSurrogateFinalLeaf() {
         final Map<String, KiePMMLOriginalTypeGeneratedType> fieldTypeMap = new HashMap<>();
-        List<SimplePredicate> predicates = IntStream.range(0, 2).mapToObj(index -> getSimplePredicate("SIMPLEPREDICATE-" + index, DataType.STRING, "VALUE-" + index, fieldTypeMap)).collect(Collectors.toList());
+        List<SimplePredicate> predicates = IntStream.range(0, 2).mapToObj(index -> getSimplePredicate("SIMPLEPREDICATE-" + index,
+                                                                                                      DataType.STRING,
+                                                                                                      "VALUE-" + index,
+                                                                                                      SimplePredicate.Operator.LESS_THAN,
+                                                                                                      fieldTypeMap)).collect(Collectors.toList());
         String parentPath = "_will play";
         String currentRule = "_will play_will play";
         String result = "RESULT";
@@ -184,7 +196,11 @@ public class KiePMMLCompoundPredicateASTFactoryTest {
     @Test
     public void declareRuleFromCompoundPredicateSurrogateNotFinalLeaf() {
         final Map<String, KiePMMLOriginalTypeGeneratedType> fieldTypeMap = new HashMap<>();
-        List<SimplePredicate> predicates = IntStream.range(0, 2).mapToObj(index -> getSimplePredicate("SIMPLEPREDICATE-" + index, DataType.STRING, "VALUE-" + index, fieldTypeMap)).collect(Collectors.toList());
+        List<SimplePredicate> predicates = IntStream.range(0, 2).mapToObj(index -> getSimplePredicate("SIMPLEPREDICATE-" + index,
+                                                                                                      DataType.STRING,
+                                                                                                      "VALUE-" + index,
+                                                                                                      SimplePredicate.Operator.LESS_THAN,
+                                                                                                      fieldTypeMap)).collect(Collectors.toList());
         String parentPath = "_will play";
         String currentRule = "_will play_will play";
         String result = "RESULT";

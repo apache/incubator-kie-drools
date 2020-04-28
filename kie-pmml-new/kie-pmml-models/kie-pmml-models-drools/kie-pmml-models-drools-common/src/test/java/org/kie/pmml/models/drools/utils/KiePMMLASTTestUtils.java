@@ -64,12 +64,12 @@ public class KiePMMLASTTestUtils {
         return toReturn;
     }
 
-    public static SimplePredicate getSimplePredicate(String predicateName, DataType dataType, String value, final Map<String, KiePMMLOriginalTypeGeneratedType> fieldTypeMap) {
+    public static SimplePredicate getSimplePredicate(String predicateName, DataType dataType, Object value, final SimplePredicate.Operator operator, final Map<String, KiePMMLOriginalTypeGeneratedType> fieldTypeMap) {
         FieldName fieldName = FieldName.create(predicateName);
         fieldTypeMap.put(fieldName.getValue(), new KiePMMLOriginalTypeGeneratedType(dataType.value(), getSanitizedClassName(fieldName.getValue().toUpperCase())));
         SimplePredicate toReturn = new SimplePredicate();
         toReturn.setField(fieldName);
-        toReturn.setOperator(SimplePredicate.Operator.LESS_THAN);
+        toReturn.setOperator(operator);
         toReturn.setValue(value);
         return toReturn;
     }

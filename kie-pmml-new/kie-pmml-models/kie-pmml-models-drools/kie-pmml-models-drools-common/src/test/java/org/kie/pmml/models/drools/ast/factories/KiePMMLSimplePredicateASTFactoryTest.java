@@ -42,7 +42,7 @@ public class KiePMMLSimplePredicateASTFactoryTest {
     @Test
     public void declareRuleFromSimplePredicateSurrogateFinalLeaf() {
         final Map<String, KiePMMLOriginalTypeGeneratedType> fieldTypeMap = new HashMap<>();
-        SimplePredicate simplePredicate = getSimplePredicate("outlook", DataType.STRING, "VALUE", fieldTypeMap);
+        SimplePredicate simplePredicate = getSimplePredicate("outlook", DataType.STRING, "VALUE", SimplePredicate.Operator.LESS_THAN, fieldTypeMap);
         String currentRule = "_will play_will play";
         String agendaActivationGroup = "_will play_will play Group";
         String result = "RESULT";
@@ -99,7 +99,7 @@ public class KiePMMLSimplePredicateASTFactoryTest {
     @Test
     public void declareRuleFromSimplePredicateSurrogateNotFinalLeaf() {
         final Map<String, KiePMMLOriginalTypeGeneratedType> fieldTypeMap = new HashMap<>();
-        SimplePredicate simplePredicate = getSimplePredicate("outlook", DataType.STRING, "VALUE", fieldTypeMap);
+        SimplePredicate simplePredicate = getSimplePredicate("outlook", DataType.STRING, "VALUE", SimplePredicate.Operator.LESS_THAN, fieldTypeMap);
         String currentRule = "_will play_will play";
         String agendaActivationGroup = "_will play_will play Group";
         String result = "RESULT";
@@ -155,7 +155,7 @@ public class KiePMMLSimplePredicateASTFactoryTest {
     @Test
     public void declareRuleFromSimplePredicateFinalLeaf() {
         final Map<String, KiePMMLOriginalTypeGeneratedType> fieldTypeMap = new HashMap<>();
-        SimplePredicate simplePredicate = getSimplePredicate("outlook", DataType.STRING, "VALUE", fieldTypeMap);
+        SimplePredicate simplePredicate = getSimplePredicate("outlook", DataType.STRING, "VALUE", SimplePredicate.Operator.LESS_THAN, fieldTypeMap);
         String parentPath = "_will play";
         String currentRule = "_will play_will play";
         String declaredType = fieldTypeMap.get("outlook").getGeneratedType();
@@ -184,7 +184,7 @@ public class KiePMMLSimplePredicateASTFactoryTest {
     @Test
     public void declareIntermediateRuleFromSimplePredicateNotFinalLeaf() {
         final Map<String, KiePMMLOriginalTypeGeneratedType> fieldTypeMap = new HashMap<>();
-        SimplePredicate simplePredicate = getSimplePredicate("outlook", DataType.STRING, "VALUE", fieldTypeMap);
+        SimplePredicate simplePredicate = getSimplePredicate("outlook", DataType.STRING, "VALUE", SimplePredicate.Operator.LESS_THAN, fieldTypeMap);
         String parentPath = "_will play";
         String currentRule = "_will play_will play";
         String declaredType = fieldTypeMap.get("outlook").getGeneratedType();

@@ -38,7 +38,7 @@ public class KiePMMLASTFactoryUtilsTest {
         final Map<String, KiePMMLOriginalTypeGeneratedType> fieldTypeMap = new HashMap<>();
         String fieldName = "FIELD_NAME";
         List<SimplePredicate> simplePredicates = IntStream.range(0, 2)
-                .mapToObj(index -> KiePMMLASTTestUtils.getSimplePredicate(fieldName, DataType.STRING, "VALUE-" + index, fieldTypeMap)).collect(Collectors.toList());
+                .mapToObj(index -> KiePMMLASTTestUtils.getSimplePredicate(fieldName, DataType.STRING, "VALUE-" + index, SimplePredicate.Operator.LESS_THAN, fieldTypeMap)).collect(Collectors.toList());
         final KiePMMLFieldOperatorValue retrieved = KiePMMLASTFactoryUtils.getConstraintEntryFromSimplePredicates(fieldName, "or", simplePredicates, fieldTypeMap);
         assertEquals(fieldName, retrieved.getName());
         assertNotNull(retrieved.getConstraintsAsString());

@@ -18,6 +18,7 @@ package org.kie.pmml.models.drools.ast;
 import java.util.Collections;
 import java.util.List;
 import java.util.Map;
+import java.util.StringJoiner;
 
 import org.kie.pmml.commons.enums.ResultCode;
 import org.kie.pmml.commons.model.KiePMMLOutputField;
@@ -195,12 +196,75 @@ public class KiePMMLDroolsRule {
         return accumulationResult;
     }
 
+    @Override
+    public String toString() {
+        StringJoiner stringJoiner = new StringJoiner(", ", KiePMMLDroolsRule.class.getSimpleName() + "[", "]");
+        if (name != null) {
+            stringJoiner.add("name='" + name + "'");
+        }
+        if (statusToSet != null) {
+            stringJoiner.add("statusToSet='" + statusToSet + "'");
+        }
+        if (outputFields != null && !outputFields.isEmpty()) {
+            stringJoiner.add("outputFields='" + outputFields + "'");
+        }
+        if (agendaGroup != null) {
+            stringJoiner.add("agendaGroup='" + agendaGroup + "'");
+        }
+        if (activationGroup != null) {
+            stringJoiner.add("activationGroup='" + activationGroup + "'");
+        }
+        if (statusConstraint != null) {
+            stringJoiner.add("statusConstraint='" + statusConstraint + "'");
+        }
+        if (andConstraints != null && !andConstraints.isEmpty()) {
+            stringJoiner.add("andConstraints='" + andConstraints + "'");
+        }
+        if (orConstraints != null && !orConstraints.isEmpty()) {
+            stringJoiner.add("orConstraints='" + orConstraints + "'");
+        }
+        if (xorConstraints != null && !xorConstraints.isEmpty()) {
+            stringJoiner.add("xorConstraints='" + xorConstraints + "'");
+        }
+        if (notConstraints != null && !notConstraints.isEmpty()) {
+            stringJoiner.add("notConstraints='" + notConstraints + "'");
+        }
+        if (inConstraints != null && !inConstraints.isEmpty()) {
+            stringJoiner.add("inConstraints='" + inConstraints + "'");
+        }
+        if (notInConstraints != null && !notInConstraints.isEmpty()) {
+            stringJoiner.add("notInConstraints='" + notInConstraints + "'");
+        }
+        if (ifBreakField != null) {
+            stringJoiner.add("ifBreakField='" + ifBreakField + "'");
+        }
+        if (ifBreakOperator != null) {
+            stringJoiner.add("ifBreakOperator='" + ifBreakOperator + "'");
+        }
+        if (ifBreakValue != null) {
+            stringJoiner.add("ifBreakValue='" + ifBreakValue + "'");
+        }
+        if (focusedAgendaGroup != null) {
+            stringJoiner.add("focusedAgendaGroup='" + focusedAgendaGroup + "'");
+        }
+        if (resultCode != null) {
+            stringJoiner.add("resultCode='" + resultCode + "'");
+        }
+        if (result != null) {
+            stringJoiner.add("result='" + result + "'");
+        }
+        if (toAccumulate != null) {
+            stringJoiner.add("toAccumulate='" + toAccumulate + "'");
+        }
+        stringJoiner.add("accumulationResult='" + accumulationResult + "'");
+        return stringJoiner.toString();
+    }
+
     public static class Builder {
 
         protected KiePMMLDroolsRule toBuild;
 
         /**
-         *
          * @param name
          * @param statusToSet
          * @param outputFields
@@ -215,7 +279,6 @@ public class KiePMMLDroolsRule {
          * (lhs)
          *
          * <p><code>$statusHolder : KiePMMLStatusHolder( status == "_constraint_" )</code></p>
-         *
          * @param constraint
          * @return
          */
@@ -418,7 +481,6 @@ public class KiePMMLDroolsRule {
          * <p>
          * (rhs)
          * <p><code>$pmml4Result.addResultVariable($pmml4Result.getResultObjectName(), $statusHolder.getAccumulator());</code></p>
-         *
          * @param accumulationResult
          * @return
          */
