@@ -200,7 +200,7 @@ public class DefaultFactHandle extends AbstractBaseLinkedListNode<DefaultFactHan
             return (K) object;
         } else if ( this.isTraitOrTraitable() ) {
             Optional<TraitHelper> traitFactory = fromTraitRegistry(TraitCoreService::createTraitHelper);
-            traitFactory.map(t -> {
+            return traitFactory.map(t -> {
                 K k = t.extractTrait( this, klass );
                 if ( k != null ) {
                     return  k;
