@@ -53,7 +53,7 @@ public final class MojoUtil {
         mavenProject.setArtifactFilter(new CumulativeScopeArtifactFilter(Arrays.asList("compile", "runtime")));
         for (final Artifact artifact : mavenProject.getArtifacts()) {
             final File file = artifact.getFile();
-            if (file != null) {
+            if (file != null && file.isFile()) {
                 urls.add(file.toURI().toURL());
                 final KieModuleModel depModel = getDependencyKieModel(file);
                 if (kmoduleDeps != null && depModel != null) {
