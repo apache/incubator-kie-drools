@@ -1621,10 +1621,10 @@ public class TraitTest extends CommonTraitTest {
 
 
 
-    @Test
+    @Test(timeout=10000)
     public void testManyTraitsStateless() {
         String source = "" +
-                        "import org.drools.compiler.Message;" +
+                        "import " + Message.class.getCanonicalName() + ";\n" +
                         "" +
                         "global java.util.List list; \n" +
                         "" +
