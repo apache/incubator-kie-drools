@@ -1458,7 +1458,7 @@ public class TraitTest extends CommonTraitTest {
     @Test
     public void testManyTraits() {
         String source = "" +
-                        "import org.drools.compiler.Message;" +
+                        "import " + Message.class.getCanonicalName() + ";\n" +
                         "" +
                         "global java.util.List list; \n" +
                         "" +
