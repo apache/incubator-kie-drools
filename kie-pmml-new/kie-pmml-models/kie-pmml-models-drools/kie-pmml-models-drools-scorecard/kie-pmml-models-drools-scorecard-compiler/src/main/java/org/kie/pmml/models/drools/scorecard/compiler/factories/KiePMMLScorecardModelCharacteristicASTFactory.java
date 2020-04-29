@@ -37,7 +37,6 @@ import org.slf4j.LoggerFactory;
 
 import static org.kie.pmml.commons.Constants.DONE;
 import static org.kie.pmml.models.drools.ast.factories.KiePMMLAbstractModelASTFactory.PATH_PATTERN;
-import static org.kie.pmml.models.drools.commons.utils.KiePMMLDroolsModelUtils.getCorrectlyFormattedResult;
 
 /**
  * Class used to generate <code>KiePMMLDroolsRule</code>s out of a <code>Characteristic</code>
@@ -110,6 +109,6 @@ public class KiePMMLScorecardModelCharacteristicASTFactory {
         }
         String currentRule = String.format(PATH_PATTERN, parentPath, attributeIndex);
         PredicateASTFactoryData predicateASTFactoryData = new PredicateASTFactoryData(predicate, outputFields, rules, parentPath, currentRule, fieldTypeMap);
-        KiePMMLPredicateASTFactory.factory(predicateASTFactoryData).declareRuleFromPredicate((Number) getCorrectlyFormattedResult(attribute.getPartialScore(), targetType), statusToSet, isLastCharacteristic);
+        KiePMMLPredicateASTFactory.factory(predicateASTFactoryData).declareRuleFromPredicate(attribute.getPartialScore(), statusToSet, isLastCharacteristic);
     }
 }
