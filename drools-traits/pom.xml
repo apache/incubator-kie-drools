@@ -9,10 +9,10 @@
     <version>7.37.0-SNAPSHOT</version>
   </parent>
 
-  <artifactId>drools-core-traits</artifactId>
+  <artifactId>drools-traits</artifactId>
   <packaging>bundle</packaging><!-- bundle = jar + OSGi metadata -->
 
-  <name>Drools :: Core :: Traits</name>
+  <name>Drools :: Traits</name>
 
   <properties>
     <java.module.name>org.drools.core.traits</java.module.name>
@@ -31,16 +31,6 @@
       <artifactId>drools-compiler</artifactId>
     </dependency>
 
-    <dependency>
-      <groupId>org.osgi</groupId>
-      <artifactId>org.osgi.core</artifactId>
-      <scope>provided</scope>
-    </dependency>
-    <dependency>
-      <groupId>org.osgi</groupId>
-      <artifactId>org.osgi.compendium</artifactId>
-      <scope>provided</scope>
-    </dependency>
     <!--
       following are required for parser (lang). May be refactored out of
       core module.
@@ -149,118 +139,7 @@
       <scope>test</scope>
     </dependency>
 
-    <!-- Base64 encoding -->
-    <dependency>
-      <groupId>commons-codec</groupId>
-      <artifactId>commons-codec</artifactId>
-    </dependency>
-
-    <dependency>
-      <groupId>org.apache.commons</groupId>
-      <artifactId>commons-lang3</artifactId>
-      <scope>test</scope>
-    </dependency>
-
   </dependencies>
-
-  <profiles>
-    <profile>
-      <id>grammarsProfile</id>
-      <activation>
-        <property>
-          <name>grammars</name>
-        </property>
-      </activation>
-      <build>
-        <plugins>
-          <plugin><!-- TODO JBRULES-2740 use mojo's antlr-maven-plugin or antlr3-maven-plugin so the jar versions are always up to date -->
-            <artifactId>maven-antrun-plugin</artifactId>
-            <executions>
-              <execution>
-                <phase>generate-sources</phase>
-                <configuration>
-                  <tasks if="generategrammars">
-                    <path id="base.classpath">
-                      <pathelement
-                          path="${user.home}/.m2/repository/antlr/antlr/2.7.7/antlr-2.7.7.jar"/>
-                      <pathelement
-                          path="${user.home}/.m2/repository/org/antlr/stringtemplate/3.2/stringtemplate-3.2.jar"/>
-                      <pathelement
-                          path="${user.home}/.m2/repository/org/antlr/antlr/3.1.1/antlr-3.1.1.jar"/>
-                    </path>
-                    <property name="antlr_classpath" refid="maven.compile.classpath"/>
-                    <echo message="Generating Antlr Grammars"/>
-                    <java classname="org.antlr.Tool" fork="true">
-                      <arg
-                          line="-lib src/test/resources/org/drools/reteoo/test/parser src/test/resources/org/drools/reteoo/test/parser/NodeTestDSL.g src/test/resources/org/drools/reteoo/test/parser/NodeTestDSLTree.g"/>
-                      <classpath refid="base.classpath"/>
-                    </java>
-                    <move todir="src/test/java/org/drools/reteoo/test/parser">
-                      <fileset dir="src/test/resources/org/drools/reteoo/test/parser">
-                        <include name="**/*.java"/>
-                        <exclude name="**/__*"/>
-                      </fileset>
-                    </move>
-                    <delete>
-                      <fileset dir="src/test/resources/org/drools/reteoo/test/parser">
-                        <include name="**/*.tokens"/>
-                        <include name="**/classes"/>
-                        <include name="**/__*"/>
-                        <include name="NodeTestDSL__.g"/>
-                      </fileset>
-                    </delete>
-                  </tasks>
-                </configuration>
-                <goals>
-                  <goal>run</goal>
-                </goals>
-              </execution>
-            </executions>
-          </plugin>
-        </plugins>
-      </build>
-    </profile>
-
-    <profile>
-      <id>protobufProfile</id>
-      <activation>
-        <property>
-          <name>proto</name>
-        </property>
-      </activation>
-      <build>
-        <plugins>
-          <plugin>
-            <groupId>org.codehaus.mojo</groupId>
-            <artifactId>exec-maven-plugin</artifactId>
-            <version>1.3.2</version>
-            <executions>
-              <execution>
-                <goals>
-                  <goal>exec</goal>
-                </goals>
-              </execution>
-            </executions>
-            <configuration>
-              <executable>protoc</executable>
-              <arguments>
-                <argument>-I=src/main/resources</argument>
-                <argument>--java_out=src/main/java</argument>
-                <argument>src/main/resources/org/drools/core/marshalling/droolsmessages.proto</argument>
-              </arguments>
-            </configuration>
-          </plugin>
-        </plugins>
-      </build>
-    </profile>
-    <profile>
-      <id>sonarcloud-analysis</id>
-      <properties>
-        <!-- Generated classes should not show up in Sonar. -->
-        <sonar.exclusions>**/ProtobufMessages.java</sonar.exclusions>
-      </properties>
-    </profile>
-  </profiles>
 
   <build>
     <resources>
@@ -320,11 +199,6 @@
         <configuration>
           <excludeFilterFile>${project.basedir}/src/main/spotbugs/spotbugs-exclude.xml</excludeFilterFile>
         </configuration>
-      </plugin>
-
-      <plugin>
-        <groupId>org.revapi</groupId>
-        <artifactId>revapi-maven-plugin</artifactId>
       </plugin>
 
     </plugins>
