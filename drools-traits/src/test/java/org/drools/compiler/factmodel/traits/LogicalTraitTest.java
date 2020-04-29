@@ -16,6 +16,11 @@
 
 package org.drools.compiler.factmodel.traits;
 
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collection;
+import java.util.List;
+import java.util.Set;
 
 import org.drools.compiler.CommonTraitTest;
 import org.drools.compiler.ReviseTraitTestWithPRAlwaysCategory;
@@ -44,12 +49,6 @@ import org.kie.internal.builder.KnowledgeBuilderFactory;
 import org.kie.internal.builder.conf.PropertySpecificOption;
 import org.kie.internal.io.ResourceFactory;
 import org.kie.internal.utils.KieHelper;
-
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collection;
-import java.util.List;
-import java.util.Set;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
@@ -1019,11 +1018,11 @@ public class LogicalTraitTest extends CommonTraitTest {
             assertTrue( o instanceof TraitableBean );
             TraitableBean tb = (TraitableBean) o;
 
-            TraitField fld = tb._getFieldTMS().getRegisteredTraitField( "fld" );
+            TraitField fld = tb._getFieldTMS().getRegisteredTraitField("fld" );
             Set<Class<?>> types = fld.getRangeTypes();
             assertEquals( 2, types.size() );
 
-            TraitField fld2 = tb._getFieldTMS().getRegisteredTraitField( "fld2" );
+            TraitField fld2 = tb._getFieldTMS().getRegisteredTraitField("fld2" );
             Set<Class<?>> types2 = fld2.getRangeTypes();
             assertEquals( 1, types2.size() );
         }

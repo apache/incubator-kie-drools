@@ -36,7 +36,7 @@ import static org.drools.core.reteoo.PropertySpecificUtil.setPropertyOnMask;
 
 public class TraitFieldTMSImpl implements TraitFieldTMS, Externalizable {
 
-    private Map<String, TraitField> fieldTMS = new LinkedHashMap<String, TraitField>();
+    private Map<String, TraitFieldImpl> fieldTMS = new LinkedHashMap<String, TraitFieldImpl>();
     private transient WorkingMemory workingMemory;
 
     private TypeCache typeCache = new TypeCache();
@@ -59,7 +59,7 @@ public class TraitFieldTMSImpl implements TraitFieldTMS, Externalizable {
 
     public void registerField( Class domainKlass, String name, Class rangeKlass, Object value, String initial ) {
         short pos = (short) ClassUtils.getAccessibleProperties( domainKlass ).indexOf( name );
-        TraitField fld = new TraitField( getKlass( rangeKlass ), value, initial != null ? MVELSafeHelper.getEvaluator().eval( initial, rangeKlass ) : null, pos );
+        TraitFieldImpl fld = new TraitFieldImpl(getKlass(rangeKlass ), value, initial != null ? MVELSafeHelper.getEvaluator().eval(initial, rangeKlass ) : null, pos );
         fieldTMS.put( name, fld );
     }
 
@@ -76,13 +76,13 @@ public class TraitFieldTMSImpl implements TraitFieldTMS, Externalizable {
     }
 
     public Object donField( String name, TraitType trait, String defaultValue, Class klass, boolean logical ) {
-        TraitField fld = fieldTMS.get( name );
+        TraitFieldImpl fld = fieldTMS.get(name );
         modificationMask = setPropertyOnMask(modificationMask, fld.getPosition());
         return fld.don( trait, defaultValue != null ? MVELSafeHelper.getEvaluator().eval( defaultValue, klass ) : null, getKlass( klass ), logical, workingMemory );
     }
 
     public Object shedField( String name, TraitType trait, Class rangeKlass, Class asKlass ) {
-        TraitField fld = fieldTMS.get( name );
+        TraitFieldImpl fld = fieldTMS.get(name );
         modificationMask = setPropertyOnMask(modificationMask, fld.getPosition());
         return fld.shed( trait, getKlass( rangeKlass ), getKlass( asKlass ), workingMemory );
     }
@@ -108,7 +108,7 @@ public class TraitFieldTMSImpl implements TraitFieldTMS, Externalizable {
         modificationMask = onlyTraitBitSetMask();
     }
 
-    public TraitField getRegisteredTraitField( String name ) {
+    public TraitFieldImpl getRegisteredTraitField(String name ) {
         return fieldTMS.get( name );
     }
 
@@ -127,11 +127,11 @@ public class TraitFieldTMSImpl implements TraitFieldTMS, Externalizable {
     }
 
     public void readExternal( ObjectInput in ) throws IOException, ClassNotFoundException {
-        fieldTMS = new HashMap<String, TraitField>();
+        fieldTMS = new HashMap<String, TraitFieldImpl>();
         int n = in.readInt();
         for ( int j = 0; j < n; j++ ) {
             String k = (String) in.readObject();
-            TraitField tf = (TraitField) in.readObject();
+            TraitFieldImpl tf = (TraitFieldImpl) in.readObject();
             fieldTMS.put( k, tf );
         }
 

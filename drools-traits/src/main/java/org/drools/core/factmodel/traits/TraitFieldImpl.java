@@ -35,7 +35,7 @@ import java.util.Iterator;
 import java.util.PriorityQueue;
 import java.util.Set;
 
-public class TraitField implements Serializable, Externalizable {
+public class TraitFieldImpl implements Serializable, Externalizable, TraitField {
 
     private Object value;
     private boolean isExplicitlySet = false;
@@ -49,10 +49,10 @@ public class TraitField implements Serializable, Externalizable {
     private Object defaultValueByClass;
     private short position;
 
-    public TraitField() {
+    public TraitFieldImpl() {
     }
 
-    public TraitField( TypeWrapper klass, Object value, Object defaultValue, short pos ) {
+    public TraitFieldImpl(TypeWrapper klass, Object value, Object defaultValue, short pos ) {
         this.rangeTypes = new PriorityQueue<TypeWrapper>( 1, TypeComparator.instance() );
         this.rangeTypes.offer( klass );
 
@@ -328,6 +328,7 @@ public class TraitField implements Serializable, Externalizable {
         this.explicitSetEnabled = true;
     }
 
+    @Override
     public Set<Class<?>> getRangeTypes() {
         Set<Class<?>> set = new HashSet<Class<?>>( rangeTypes.size() );
         for ( TypeWrapper type : rangeTypes ) {
