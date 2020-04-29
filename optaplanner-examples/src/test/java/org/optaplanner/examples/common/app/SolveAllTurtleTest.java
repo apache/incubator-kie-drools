@@ -32,13 +32,14 @@ import org.optaplanner.core.config.solver.SolverConfig;
 import org.optaplanner.core.config.solver.termination.TerminationConfig;
 import org.optaplanner.core.impl.score.director.easy.EasyScoreCalculator;
 import org.optaplanner.examples.common.TestSystemProperties;
+import org.optaplanner.examples.common.TurtleTest;
 
 import static org.junit.jupiter.api.DynamicTest.dynamicTest;
 
 /**
  * @param <Solution_> the solution type, the class with the {@link PlanningSolution} annotation
  */
-public abstract class SolveAllTurtleTest<Solution_> extends AbstractTurtleTest {
+public abstract class SolveAllTurtleTest<Solution_> extends LoggingTest {
 
     interface ProblemFactory<Solution_> extends Function<File, Solution_> {
 
@@ -56,8 +57,8 @@ public abstract class SolveAllTurtleTest<Solution_> extends AbstractTurtleTest {
     protected abstract ProblemFactory<Solution_> createProblemFactory(CommonApp<Solution_> commonApp);
 
     @TestFactory
+    @TurtleTest
     Stream<DynamicTest> runFastAndFullAssert() {
-        checkRunTurtleTests();
         CommonApp<Solution_> commonApp = createCommonApp();
         ProblemFactory<Solution_> problemFactory = createProblemFactory(commonApp);
         return getSolutionFiles(commonApp).stream()

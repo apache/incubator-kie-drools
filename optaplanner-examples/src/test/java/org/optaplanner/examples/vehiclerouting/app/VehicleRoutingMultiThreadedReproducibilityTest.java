@@ -4,15 +4,14 @@ import java.io.File;
 import java.util.stream.IntStream;
 
 import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.Test;
 import org.optaplanner.core.api.solver.Solver;
 import org.optaplanner.core.api.solver.SolverFactory;
 import org.optaplanner.core.config.localsearch.LocalSearchPhaseConfig;
 import org.optaplanner.core.config.solver.EnvironmentMode;
 import org.optaplanner.core.config.solver.SolverConfig;
 import org.optaplanner.core.config.solver.termination.TerminationConfig;
-import org.optaplanner.examples.common.app.AbstractTurtleTest;
 import org.optaplanner.examples.common.app.CommonApp;
+import org.optaplanner.examples.common.TurtleTest;
 import org.optaplanner.examples.vehiclerouting.domain.VehicleRoutingSolution;
 import org.optaplanner.examples.vehiclerouting.persistence.VehicleRoutingImporter;
 
@@ -22,7 +21,7 @@ import static org.junit.Assert.*;
  * The idea is to verify one of the basic requirements of Multithreaded Solving - the reproducibility of results. After
  * a constant number of steps, every iteration must finish with the same score.
  */
-public class VehicleRoutingMultiThreadedReproducibilityTest extends AbstractTurtleTest {
+public class VehicleRoutingMultiThreadedReproducibilityTest {
 
     private static final int REPETITION_COUNT = 10;
 
@@ -40,7 +39,6 @@ public class VehicleRoutingMultiThreadedReproducibilityTest extends AbstractTurt
 
     @BeforeEach
     public void createUninitializedSolutions() {
-        checkRunTurtleTests();
         final VehicleRoutingImporter importer = new VehicleRoutingImporter();
         for (int i = 0; i < REPETITION_COUNT; i++) {
             File dataSetFile = new File(CommonApp.determineDataDir(vehicleRoutingApp.getDataDirName()), DATA_SET);
@@ -59,9 +57,8 @@ public class VehicleRoutingMultiThreadedReproducibilityTest extends AbstractTurt
         solverFactory = SolverFactory.create(solverConfig);
     }
 
-    @Test
+    @TurtleTest
     public void multiThreadedSolvingIsReproducible() {
-        checkRunTurtleTests();
         IntStream.range(0, REPETITION_COUNT).forEach(iteration -> solveAndCompareWithPrevious(iteration));
     }
 
