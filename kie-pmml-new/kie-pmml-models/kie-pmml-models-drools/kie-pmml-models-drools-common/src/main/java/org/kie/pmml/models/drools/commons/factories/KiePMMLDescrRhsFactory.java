@@ -99,8 +99,12 @@ public class KiePMMLDescrRhsFactory {
         if (rule.getResult() != null) {
             joiner.add(String.format(ADD_PMML4_RESULT_VARIABLE, rule.getResult()));
         }
-        if (rule.getOutputFields() != null && rule.getResult() != null) {
-            commonDeclareOutputFields(rule.getOutputFields(), rule.getResult(), joiner);
+        if (rule.getOutputFields() != null) {
+            if (rule.getResult() != null) {
+                commonDeclareOutputFields(rule.getOutputFields(), rule.getResult(), joiner);
+            } else if (rule.isAccumulationResult()) {
+                commonDeclareOutputFields(rule.getOutputFields(), "$statusHolder.getAccumulator()", joiner);
+            }
         }
     }
 
