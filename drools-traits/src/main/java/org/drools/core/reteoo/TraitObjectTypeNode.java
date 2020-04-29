@@ -35,6 +35,8 @@ import org.drools.core.spi.PropagationContext;
 import org.drools.core.util.HierarchyEncoderImpl;
 import org.drools.core.util.bitmask.BitMask;
 
+import static org.drools.core.factmodel.traits.TraitUtils.supersetOrEqualset;
+
 public class TraitObjectTypeNode extends ObjectTypeNode {
 
     private BitSet typeMask;
@@ -73,7 +75,7 @@ public class TraitObjectTypeNode extends ObjectTypeNode {
             BitSet vetoMask = proxy.computeInsertionVetoMask();
             boolean vetoed = ( vetoMask != null
                                && ! typeMask.isEmpty()
-                               && HierarchyEncoderImpl.supersetOrEqualset( vetoMask, this.typeMask ) );
+                               && supersetOrEqualset( vetoMask, this.typeMask ) );
 
             boolean allowed = ! vetoed || sameAndNotCoveredByDescendants((TraitProxyImpl) factHandle.getObject(), typeMask );
             if ( allowed ) {

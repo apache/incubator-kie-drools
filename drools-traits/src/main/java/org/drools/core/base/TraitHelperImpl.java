@@ -63,6 +63,7 @@ import org.kie.api.internal.runtime.beliefs.Mode;
 import org.kie.api.runtime.rule.EntryPoint;
 import org.kie.api.runtime.rule.FactHandle;
 
+import static org.drools.core.factmodel.traits.TraitUtils.supersetOrEqualset;
 import static org.drools.core.reteoo.PropertySpecificUtil.onlyTraitBitSetMask;
 
 public class TraitHelperImpl implements Externalizable, TraitHelper {
@@ -385,7 +386,7 @@ public class TraitHelperImpl implements Externalizable, TraitHelper {
                 boolean found = false;
                 for ( Thing<K> tp : mst ) {
                     TraitProxyImpl candidate = (TraitProxyImpl) tp;
-                    if ( HierarchyEncoderImpl.supersetOrEqualset( candidate._getTypeCode(), bs ) ) {
+                    if ( supersetOrEqualset( candidate._getTypeCode(), bs ) ) {
                         candidate.assignOtn( bs );
                         found = true;
                         break;

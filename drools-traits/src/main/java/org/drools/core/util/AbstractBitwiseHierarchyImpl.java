@@ -32,6 +32,7 @@ import java.util.Map;
 import java.util.SortedMap;
 import java.util.TreeMap;
 
+import static org.drools.core.factmodel.traits.TraitUtils.supersetOrEqualset;
 
 public abstract class AbstractBitwiseHierarchyImpl<H ,J extends LatticeElement<H>> implements Externalizable, CodedHierarchy<H> {
 
@@ -362,23 +363,6 @@ public abstract class AbstractBitwiseHierarchyImpl<H ,J extends LatticeElement<H
             b.set(0);
         }
         return b;
-    }
-
-    public static boolean supersetOrEqualset( BitSet n1, BitSet n2 ) {
-        BitSet x;
-        int l1 = n1.length();
-        int l2 = n2.length();
-
-        if ( l1 > l2 ) {
-            x = new BitSet( l2 );
-            x.or( n2 );
-            x.and( n1 );
-        } else {
-            x = new BitSet( l1 );
-            x.or( n1 );
-            x.and( n2 );
-        }
-        return x.equals( n2 );
     }
 
     int superset( J n1, J n2 ) {

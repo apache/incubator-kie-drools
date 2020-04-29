@@ -37,9 +37,10 @@ import org.drools.core.rule.VariableRestriction.VariableContextEntry;
 import org.drools.core.spi.Evaluator;
 import org.drools.core.spi.FieldValue;
 import org.drools.core.spi.InternalReadAccessor;
-import org.drools.core.util.AbstractBitwiseHierarchyImpl;
 import org.drools.core.util.CodedHierarchy;
 import org.kie.api.runtime.ObjectFilter;
+
+import static org.drools.core.factmodel.traits.TraitUtils.supersetOrEqualset;
 
 /**
  * <p>The implementation of the 'str' evaluator definition.</p>
@@ -369,7 +370,7 @@ public class IsAEvaluatorDefinition implements EvaluatorDefinition {
                 return false;
             }
 
-            return targetTraits == null || AbstractBitwiseHierarchyImpl.supersetOrEqualset(sourceTraits, targetTraits );
+            return targetTraits == null || supersetOrEqualset(sourceTraits, targetTraits );
         }
 
         @Override

@@ -31,6 +31,8 @@ import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
 
+import static org.drools.core.factmodel.traits.TraitUtils.supersetOrEqualset;
+
 public abstract class TraitProxyImpl implements Externalizable, TraitType, Comparable<TraitProxyImpl>, TraitProxy {
 
     protected TripleFactory tripleFactory;
@@ -152,7 +154,7 @@ public abstract class TraitProxyImpl implements Externalizable, TraitType, Compa
     }
 
     public int compareTo( TraitProxyImpl o ) {
-        if ( HierarchyEncoderImpl.supersetOrEqualset( this.typeCode, o.typeCode ) ) {
+        if ( supersetOrEqualset( this.typeCode, o.typeCode ) ) {
             return -1;
         } else {
             return 1;
