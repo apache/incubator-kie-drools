@@ -18,8 +18,6 @@ package org.drools.compiler;
 
 import org.drools.core.factmodel.traits.Traitable;
 
-import javax.xml.bind.annotation.XmlAccessType;
-import javax.xml.bind.annotation.XmlAccessorType;
 import java.io.Serializable;
 import java.math.BigDecimal;
 import java.math.BigInteger;
@@ -29,7 +27,6 @@ import java.util.List;
 import java.util.Map;
 
 @Traitable
-@XmlAccessorType(XmlAccessType.FIELD)
 public class Person
         implements
         Serializable,
