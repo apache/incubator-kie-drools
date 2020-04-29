@@ -467,9 +467,8 @@ const DataToolbarComponent: React.FC<IOwnProps> = ({
           </Button>
         </DataToolbarItem>
       </DataToolbarGroup>
-      <DataToolbarGroup className="pf-u-ml-auto">
-        {buttonItems}
-      </DataToolbarGroup>
+      <DataToolbarItem variant="separator" />
+      <DataToolbarGroup className="pf-u-ml-md">{buttonItems}</DataToolbarGroup>
     </React.Fragment>
   );
 

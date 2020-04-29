@@ -229,8 +229,11 @@ exports[`DataToolbar component tests Snapshot tests 1`] = `
         </Component>
       </DataToolbarItem>
     </ForwardRef>
+    <DataToolbarItem
+      variant="separator"
+    />
     <ForwardRef
-      className="pf-u-ml-auto"
+      className="pf-u-ml-md"
     >
       <DataToolbarItem>
         <Component
