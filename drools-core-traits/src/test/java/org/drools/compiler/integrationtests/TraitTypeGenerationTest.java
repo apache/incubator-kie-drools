@@ -204,14 +204,28 @@ public class TraitTypeGenerationTest extends CommonTraitTest {
         assertEquals( 1, students.size() );
     }
 
+    public static interface FooIntf {
+        public boolean isSafe();
+
+        public void setSafe( boolean safe );
+    }
+
+    public static class BarKlass implements FooIntf {
+        public boolean isSafe() {
+            return true;
+        }
+
+        public void setSafe( boolean safe ) {
+        }
+    }
 
     @Test
     public void testMvelJittingWithTraitProxies() throws Exception {
         // DROOLS-291
         String drl = "package org.drools.test; \n" +
                 "" +
-                "import org.drools.compiler.integrationtests.Misc2Test.FooIntf; \n" +
-                "import org.drools.compiler.integrationtests.Misc2Test.BarKlass; \n" +
+                "import " + FooIntf.class.getCanonicalName() + ";\n" +
+                "import "+ BarKlass.class.getCanonicalName() + ";\n" +
                 "" +
                 "declare BarKlass end \n" +
                 "declare FooIntf end \n" +

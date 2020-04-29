@@ -3117,21 +3117,6 @@ public class Misc2Test extends CommonTestMethodBase {
         }
     }
 
-    public static interface FooIntf {
-        public boolean isSafe();
-
-        public void setSafe( boolean safe );
-    }
-
-    public static class BarKlass implements FooIntf {
-        public boolean isSafe() {
-            return true;
-        }
-
-        public void setSafe( boolean safe ) {
-        }
-    }
-
     @Test
     public void testReportErrorOnWrongDateEffective() {
         // BZ-1013545
