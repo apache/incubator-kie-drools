@@ -33,6 +33,7 @@ import org.drools.core.common.InternalAgenda;
 import org.drools.core.common.InternalWorkingMemory;
 import org.drools.core.phreak.RuleAgendaItem;
 import org.drools.core.spi.AgendaGroup;
+import org.junit.Assert;
 import org.junit.Test;
 import org.kie.api.KieBase;
 import org.kie.api.event.rule.AfterMatchFiredEvent;

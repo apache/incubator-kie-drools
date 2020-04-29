@@ -1023,7 +1023,6 @@ public class KnowledgeBuilderImpl implements KnowledgeBuilder,
         // add default import for this namespace
         pkgRegistry.addImport(new ImportDescr(packageDescr.getNamespace() + ".*"));
 
-
         for (ImportDescr importDescr : packageDescr.getImports()) {
             pkgRegistry.registerImport(importDescr.getTarget());
         }
