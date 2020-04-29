@@ -107,11 +107,6 @@ public class SubKlass_<T extends SubKlass> extends Klass_<T> implements Serializ
             }
             return (SubKlass_Modify<T>) setter;
         }
-
-        @Override
-        public Class<T> getInstanceClass() {
-            return SubKlass_Meta.getInstance().getTargetClass();
-        }
     }
 
     public static class SubKlass_Modify<T extends SubKlass> extends  Klass_.Klass_Modify<T> implements Serializable {

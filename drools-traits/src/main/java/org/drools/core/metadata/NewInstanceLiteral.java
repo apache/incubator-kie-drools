@@ -15,17 +15,13 @@
 
 package org.drools.core.metadata;
 
-import org.drools.core.factmodel.traits.InstantiatorFactory;
-
 import java.net.URI;
-import java.util.UUID;
 
 public abstract class NewInstanceLiteral<T extends Metadatable> extends AbstractWMTask<T> implements NewInstance<T> {
     protected URI uri;
     protected T result;
 
     protected ModifyLiteral setter;
-    protected InstantiatorFactory instantiatorFactory;
 
     protected With[] with;
 
@@ -53,16 +49,6 @@ public abstract class NewInstanceLiteral<T extends Metadatable> extends Abstract
     }
 
     @Override
-    public Object callUntyped() {
-        return construct();
-    }
-
-    @Override
-    public Modify getInitArgs() {
-        return setter;
-    }
-
-    @Override
     public T call() {
         result = (T) construct();
         if ( setter != null ) {
@@ -73,25 +59,6 @@ public abstract class NewInstanceLiteral<T extends Metadatable> extends Abstract
     }
 
     protected abstract Object construct();
-
-    protected void constructId( Class<?> klass ) {
-        if ( uri == null ) {
-            uri = URI.create( getInstantiatorFactory() != null ?
-                              getInstantiatorFactory().createId( klass ).toString() :
-                              UUID.randomUUID().toString()
-            );
-        }
-
-    }
-
-    public InstantiatorFactory getInstantiatorFactory() {
-        return instantiatorFactory;
-    }
-
-    public NewInstance<T> setInstantiatorFactory( InstantiatorFactory instantiatorFactory ) {
-        this.instantiatorFactory = instantiatorFactory;
-        return this;
-    }
 
     @Override
     public URI getUri() {

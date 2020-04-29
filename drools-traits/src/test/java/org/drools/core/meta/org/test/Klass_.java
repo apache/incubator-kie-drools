@@ -114,11 +114,6 @@ public class Klass_<T extends Klass> extends MetadataContainer<T> implements Ser
             }
             return (Klass_Modify<T>) setter;
         }
-
-        @Override
-        public Class<T> getInstanceClass() {
-            return Klass_Meta.getInstance().getTargetClass();
-        }
     }
 
     public static class Klass_Modify<T extends Klass> extends ModifyLiteral<T> implements Serializable {

@@ -124,11 +124,6 @@ public class AnotherKlass_<T extends AnotherKlass> extends MetadataContainer<T> 
             }
             return (AnotherKlass_Modify<T>) setter;
         }
-
-        @Override
-        public Class<T> getInstanceClass() {
-            return AnotherKlass_Meta.getInstance().getTargetClass();
-        }
     }
 
     public static class AnotherKlass_Modify<T extends AnotherKlass> extends ModifyLiteral<T> implements Serializable {
