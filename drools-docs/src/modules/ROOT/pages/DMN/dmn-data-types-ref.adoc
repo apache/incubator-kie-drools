@@ -188,7 +188,7 @@ For example, the following literal expression defines an interval between `1` an
 The following literal expression defines an interval between 1 hour and 12 hours, including the lower boundary (a closed interval), but excluding the upper boundary (an open interval):
 
 ----
-[ duration("PT1H") .. duration("PT12H") ]
+[ duration("PT1H") .. duration("PT12H") )
 ----
 
 You can use ranges in decision tables to test for ranges of values, or use ranges in simple literal expressions. For example, the following literal expression returns `true` if the value of a variable `x` is between `0` and `100`:
