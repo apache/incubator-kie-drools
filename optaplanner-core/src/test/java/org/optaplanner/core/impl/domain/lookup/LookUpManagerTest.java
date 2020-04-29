@@ -19,6 +19,7 @@ import java.util.Arrays;
 import java.util.Collections;
 
 import org.junit.Assert;
+import org.junit.Rule;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.migrationsupport.rules.EnableRuleMigrationSupport;
@@ -31,6 +32,7 @@ import static org.junit.Assert.*;
 @EnableRuleMigrationSupport
 public class LookUpManagerTest {
 
+    @Rule
     public final ExpectedException expectedException = ExpectedException.none();
 
     private LookUpManager lookUpManager;
@@ -61,10 +63,10 @@ public class LookUpManagerTest {
     @Test
     public void clearWorkingObjects() {
         lookUpManager.resetWorkingObjects(Collections.emptyList());
-        lookUpManager.addWorkingObject("");
+        lookUpManager.addWorkingObject(new TestdataObjectIntegerId(0));
         lookUpManager.clearWorkingObjects();
         expectedException.expect(NullPointerException.class);
-        lookUpManager.addWorkingObject("");
+        lookUpManager.addWorkingObject(new TestdataObjectIntegerId(0));
     }
 
 }
