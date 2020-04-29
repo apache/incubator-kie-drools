@@ -24,7 +24,7 @@ import org.optaplanner.examples.common.persistence.OpenDataFilesTest;
 public class CloudBalancingOpenDataFilesTest extends OpenDataFilesTest<CloudBalance> {
 
     @Override
-    protected CommonApp<CloudBalance> getCommonApp() {
+    protected CommonApp<CloudBalance> createCommonApp() {
         return new CloudBalancingApp();
     }
 }

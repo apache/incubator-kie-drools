@@ -24,7 +24,7 @@ import org.optaplanner.examples.examination.domain.Examination;
 public class ExaminationOpenDataFilesTest extends OpenDataFilesTest<Examination> {
 
     @Override
-    protected CommonApp<Examination> getCommonApp() {
+    protected CommonApp<Examination> createCommonApp() {
         return new ExaminationApp();
     }
 }

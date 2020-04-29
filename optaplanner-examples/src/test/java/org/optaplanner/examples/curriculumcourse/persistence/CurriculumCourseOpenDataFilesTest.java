@@ -24,7 +24,7 @@ import org.optaplanner.examples.curriculumcourse.domain.CourseSchedule;
 public class CurriculumCourseOpenDataFilesTest extends OpenDataFilesTest<CourseSchedule> {
 
     @Override
-    protected CommonApp<CourseSchedule> getCommonApp() {
+    protected CommonApp<CourseSchedule> createCommonApp() {
         return new CurriculumCourseApp();
     }
 }

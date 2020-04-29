@@ -24,7 +24,7 @@ import org.optaplanner.examples.pas.domain.PatientAdmissionSchedule;
 public class PatientAdmissionScheduleOpenDataFilesTest extends OpenDataFilesTest<PatientAdmissionSchedule> {
 
     @Override
-    protected CommonApp<PatientAdmissionSchedule> getCommonApp() {
+    protected CommonApp<PatientAdmissionSchedule> createCommonApp() {
         return new PatientAdmissionScheduleApp();
     }
 }

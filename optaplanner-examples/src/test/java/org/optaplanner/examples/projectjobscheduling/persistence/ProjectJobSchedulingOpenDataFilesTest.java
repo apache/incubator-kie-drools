@@ -24,7 +24,7 @@ import org.optaplanner.examples.projectjobscheduling.domain.Schedule;
 public class ProjectJobSchedulingOpenDataFilesTest extends OpenDataFilesTest<Schedule> {
 
     @Override
-    protected CommonApp<Schedule> getCommonApp() {
+    protected CommonApp<Schedule> createCommonApp() {
         return new ProjectJobSchedulingApp();
     }
 }

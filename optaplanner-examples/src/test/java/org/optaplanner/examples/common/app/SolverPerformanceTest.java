@@ -60,7 +60,7 @@ public abstract class SolverPerformanceTest<Solution_> extends LoggingTest {
     protected SolutionFileIO<Solution_> solutionFileIO;
     protected String solverConfigResource;
 
-    static Stream<String> moveThreadCounts() {
+    private static Stream<String> moveThreadCounts() {
         return Optional.ofNullable(MOVE_THREAD_COUNTS_STRING)
                 .map(s -> Arrays.stream(s.split(",")))
                 .orElse(Stream.of(SolverConfig.MOVE_THREAD_COUNT_NONE));
@@ -68,7 +68,7 @@ public abstract class SolverPerformanceTest<Solution_> extends LoggingTest {
 
     @TestFactory
     @Timeout(600)
-    Stream<DynamicTest> testSpeed() {
+    Stream<DynamicTest> runSpeedTest() {
         return moveThreadCounts().flatMap(moveThreadCount -> testData().map(testData ->
                 dynamicTest(
                         testData.unsolvedDataFile.replaceFirst(".*/", "")
@@ -108,7 +108,7 @@ public abstract class SolverPerformanceTest<Solution_> extends LoggingTest {
         assertScoreAndConstraintMatches(solverFactory, bestSolution, bestScoreLimitString);
     }
 
-    protected SolverFactory<Solution_> buildSolverFactory(
+    private SolverFactory<Solution_> buildSolverFactory(
             String bestScoreLimitString,
             EnvironmentMode environmentMode,
             String moveThreadCount) {
@@ -153,11 +153,11 @@ public abstract class SolverPerformanceTest<Solution_> extends LoggingTest {
 
     protected static class TestData {
 
-        final String unsolvedDataFile;
-        final String bestScoreLimit;
-        final EnvironmentMode environmentMode;
+        private final String unsolvedDataFile;
+        private final String bestScoreLimit;
+        private final EnvironmentMode environmentMode;
 
-        public TestData(String unsolvedDataFile, String bestScoreLimit, EnvironmentMode environmentMode) {
+        private TestData(String unsolvedDataFile, String bestScoreLimit, EnvironmentMode environmentMode) {
             this.unsolvedDataFile = unsolvedDataFile;
             this.bestScoreLimit = bestScoreLimit;
             this.environmentMode = environmentMode;

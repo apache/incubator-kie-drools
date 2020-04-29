@@ -24,7 +24,7 @@ import org.optaplanner.examples.tennis.domain.TennisSolution;
 public class TennisOpenDataFilesTest extends OpenDataFilesTest<TennisSolution> {
 
     @Override
-    protected CommonApp<TennisSolution> getCommonApp() {
+    protected CommonApp<TennisSolution> createCommonApp() {
         return new TennisApp();
     }
 }

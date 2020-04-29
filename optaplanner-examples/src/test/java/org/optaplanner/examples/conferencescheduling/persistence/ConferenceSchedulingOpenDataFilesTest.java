@@ -24,7 +24,7 @@ import org.optaplanner.examples.conferencescheduling.domain.ConferenceSolution;
 public class ConferenceSchedulingOpenDataFilesTest extends OpenDataFilesTest<ConferenceSolution> {
 
     @Override
-    protected CommonApp<ConferenceSolution> getCommonApp() {
+    protected CommonApp<ConferenceSolution> createCommonApp() {
         return new ConferenceSchedulingApp();
     }
 }

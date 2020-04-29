@@ -24,7 +24,7 @@ import org.optaplanner.examples.common.persistence.OpenDataFilesTest;
 public class CoachShuttleGatheringOpenDataFilesTest extends OpenDataFilesTest<CoachShuttleGatheringSolution> {
 
     @Override
-    protected CommonApp<CoachShuttleGatheringSolution> getCommonApp() {
+    protected CommonApp<CoachShuttleGatheringSolution> createCommonApp() {
         return new CoachShuttleGatheringApp();
     }
 }

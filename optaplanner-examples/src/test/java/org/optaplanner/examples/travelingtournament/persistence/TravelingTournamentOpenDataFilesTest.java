@@ -24,7 +24,7 @@ import org.optaplanner.examples.travelingtournament.domain.TravelingTournament;
 public class TravelingTournamentOpenDataFilesTest extends OpenDataFilesTest<TravelingTournament> {
 
     @Override
-    protected CommonApp<TravelingTournament> getCommonApp() {
+    protected CommonApp<TravelingTournament> createCommonApp() {
         return new TravelingTournamentApp();
     }
 }

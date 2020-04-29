@@ -24,7 +24,7 @@ import org.optaplanner.examples.vehiclerouting.domain.VehicleRoutingSolution;
 public class VehicleRoutingOpenDataFilesTest extends OpenDataFilesTest<VehicleRoutingSolution> {
 
     @Override
-    protected CommonApp<VehicleRoutingSolution> getCommonApp() {
+    protected CommonApp<VehicleRoutingSolution> createCommonApp() {
         return new VehicleRoutingApp();
     }
 }

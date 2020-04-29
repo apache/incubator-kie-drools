@@ -37,7 +37,7 @@ import static org.junit.jupiter.api.DynamicTest.dynamicTest;
  */
 public abstract class OpenDataFilesTest<Solution_> extends LoggingTest {
 
-    protected abstract CommonApp<Solution_> getCommonApp();
+    protected abstract CommonApp<Solution_> createCommonApp();
 
     private static List<File> getSolutionFiles(CommonApp<?> commonApp) {
         List<File> fileList = new ArrayList<>(0);
@@ -62,7 +62,7 @@ public abstract class OpenDataFilesTest<Solution_> extends LoggingTest {
 
     @TestFactory
     Stream<DynamicTest> readSolution() {
-        CommonApp<Solution_> commonApp = getCommonApp();
+        CommonApp<Solution_> commonApp = createCommonApp();
         SolutionFileIO<Solution_> solutionFileIO = commonApp.createSolutionFileIO();
         return getSolutionFiles(commonApp).stream()
                 .map(solutionFile -> dynamicTest(

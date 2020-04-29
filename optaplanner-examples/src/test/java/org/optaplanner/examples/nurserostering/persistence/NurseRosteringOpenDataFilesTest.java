@@ -24,7 +24,7 @@ import org.optaplanner.examples.nurserostering.domain.NurseRoster;
 public class NurseRosteringOpenDataFilesTest extends OpenDataFilesTest<NurseRoster> {
 
     @Override
-    protected CommonApp<NurseRoster> getCommonApp() {
+    protected CommonApp<NurseRoster> createCommonApp() {
         return new NurseRosteringApp();
     }
 }

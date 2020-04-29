@@ -24,7 +24,7 @@ import org.optaplanner.examples.flightcrewscheduling.domain.FlightCrewSolution;
 public class FlightCrewSchedulingOpenDataFilesTest extends OpenDataFilesTest<FlightCrewSolution> {
 
     @Override
-    protected CommonApp<FlightCrewSolution> getCommonApp() {
+    protected CommonApp<FlightCrewSolution> createCommonApp() {
         return new FlightCrewSchedulingApp();
     }
 }

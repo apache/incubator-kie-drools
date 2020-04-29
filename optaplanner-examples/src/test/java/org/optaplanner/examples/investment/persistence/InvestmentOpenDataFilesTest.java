@@ -24,7 +24,7 @@ import org.optaplanner.examples.investment.domain.InvestmentSolution;
 public class InvestmentOpenDataFilesTest extends OpenDataFilesTest<InvestmentSolution> {
 
     @Override
-    protected CommonApp<InvestmentSolution> getCommonApp() {
+    protected CommonApp<InvestmentSolution> createCommonApp() {
         return new InvestmentApp();
     }
 }

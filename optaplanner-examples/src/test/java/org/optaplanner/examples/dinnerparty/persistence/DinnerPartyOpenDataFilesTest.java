@@ -24,7 +24,7 @@ import org.optaplanner.examples.dinnerparty.domain.DinnerParty;
 public class DinnerPartyOpenDataFilesTest extends OpenDataFilesTest<DinnerParty> {
 
     @Override
-    protected CommonApp<DinnerParty> getCommonApp() {
+    protected CommonApp<DinnerParty> createCommonApp() {
         return new DinnerPartyApp();
     }
 }

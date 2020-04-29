@@ -24,7 +24,7 @@ import org.optaplanner.examples.common.persistence.OpenDataFilesTest;
 public class CheapTimeOpenDataFilesTest extends OpenDataFilesTest<CheapTimeSolution> {
 
     @Override
-    protected CommonApp<CheapTimeSolution> getCommonApp() {
+    protected CommonApp<CheapTimeSolution> createCommonApp() {
         return new CheapTimeApp();
     }
 }

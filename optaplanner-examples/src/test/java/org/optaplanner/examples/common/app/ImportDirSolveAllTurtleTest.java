@@ -30,7 +30,7 @@ import org.optaplanner.examples.common.persistence.AbstractSolutionImporter;
  */
 public abstract class ImportDirSolveAllTurtleTest<Solution_> extends SolveAllTurtleTest<Solution_> {
 
-    private static <Solution_> List<File> getImportDirFilesAsParameters(CommonApp<Solution_> commonApp) {
+    private static <Solution_> List<File> getImportDirFiles(CommonApp<Solution_> commonApp) {
         File dataDir = CommonApp.determineDataDir(commonApp.getDataDirName());
         File importDataDir = new File(dataDir, "import");
         if (!importDataDir.exists()) {
@@ -55,7 +55,7 @@ public abstract class ImportDirSolveAllTurtleTest<Solution_> extends SolveAllTur
 
     @Override
     protected List<File> getSolutionFiles(CommonApp<Solution_> commonApp) {
-        return getImportDirFilesAsParameters(commonApp);
+        return getImportDirFiles(commonApp);
     }
 
     @Override
