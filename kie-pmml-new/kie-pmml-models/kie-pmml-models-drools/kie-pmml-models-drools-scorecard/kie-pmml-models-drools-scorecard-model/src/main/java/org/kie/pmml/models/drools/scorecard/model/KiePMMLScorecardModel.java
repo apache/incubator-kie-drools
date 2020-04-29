@@ -13,10 +13,9 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package  org.kie.pmml.models.drools.scorecard.model;
+package org.kie.pmml.models.drools.scorecard.model;
 
 import java.util.List;
-import java.util.Map;
 
 import org.kie.pmml.commons.model.KiePMMLExtension;
 import org.kie.pmml.commons.model.enums.MINING_FUNCTION;
@@ -27,6 +26,9 @@ public class KiePMMLScorecardModel extends KiePMMLDroolsModel {
 
     public static final PMML_MODEL PMML_MODEL_TYPE = PMML_MODEL.SCORECARD_MODEL;
 
+    private KiePMMLScorecardModel(String modelName, List<KiePMMLExtension> extensions) {
+        super(modelName, extensions);
+    }
 
     public static Builder builder(String name, List<KiePMMLExtension> extensions, MINING_FUNCTION miningFunction) {
         return new Builder(name, extensions, miningFunction);
@@ -36,21 +38,10 @@ public class KiePMMLScorecardModel extends KiePMMLDroolsModel {
         return PMML_MODEL_TYPE;
     }
 
-    private KiePMMLScorecardModel(String modelName, List<KiePMMLExtension> extensions) {
-        super(modelName, extensions);
-    }
+    public static class Builder extends KiePMMLDroolsModel.Builder<KiePMMLScorecardModel> {
 
-    @Override
-    public Object evaluate(Map<String, Object> requestData) {
-        // TODO
-        throw new UnsupportedOperationException();
-    }
-
-    public static class Builder extends KiePMMLDroolsModel.Builder<KiePMMLScorecardModel>{
-
-        private Builder(String name, List<KiePMMLExtension> extensions, MINING_FUNCTION miningFunction){
+        private Builder(String name, List<KiePMMLExtension> extensions, MINING_FUNCTION miningFunction) {
             super("Scorecard-", PMML_MODEL_TYPE, miningFunction, () -> new KiePMMLScorecardModel(name, extensions));
         }
     }
-
 }

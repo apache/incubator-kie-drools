@@ -21,16 +21,28 @@ import java.util.Objects;
 import java.util.function.Supplier;
 
 import org.drools.compiler.lang.descr.PackageDescr;
+import org.kie.api.event.rule.AgendaEventListener;
+import org.kie.api.pmml.PMML4Result;
+import org.kie.pmml.commons.enums.ResultCode;
 import org.kie.pmml.commons.model.KiePMMLExtension;
 import org.kie.pmml.commons.model.KiePMMLModel;
 import org.kie.pmml.commons.model.enums.MINING_FUNCTION;
 import org.kie.pmml.commons.model.enums.PMML_MODEL;
 import org.kie.pmml.models.drools.tuples.KiePMMLOriginalTypeGeneratedType;
+import org.kie.pmml.models.drools.utils.KiePMMLSessionUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import static org.kie.pmml.models.drools.utils.KiePMMLAgendaListenerUtils.getAgendaEventListener;
 
 /**
  * KIE representation of PMML model that use <b>drool</b> for implementation
  */
 public abstract class KiePMMLDroolsModel extends KiePMMLModel {
+
+    private static final Logger logger = LoggerFactory.getLogger(KiePMMLDroolsModel.class.getName());
+
+    private static final AgendaEventListener agendaEventListener = getAgendaEventListener(logger);
 
     protected PackageDescr packageDescr;
     /**
@@ -48,6 +60,24 @@ public abstract class KiePMMLDroolsModel extends KiePMMLModel {
 
     public Map<String, KiePMMLOriginalTypeGeneratedType> getFieldTypeMap() {
         return fieldTypeMap;
+    }
+
+    @Override
+    public Object evaluate(Map<String, Object> requestData) {
+        final PMML4Result toReturn = getPMML4Result(targetField);
+        final KiePMMLSessionUtils kiePMMLSessionUtils = KiePMMLSessionUtils.builder(packageDescr, toReturn)
+                .withAgendaEventListener(agendaEventListener)
+                .withObjectsInSession(requestData, fieldTypeMap)
+                .build();
+        kiePMMLSessionUtils.fireAllRules();
+        return toReturn;
+    }
+
+    private PMML4Result getPMML4Result(final String targetField) {
+        PMML4Result toReturn = new PMML4Result();
+        toReturn.setResultCode(ResultCode.FAIL.getName());
+        toReturn.setResultObjectName(targetField);
+        return toReturn;
     }
 
     @Override
