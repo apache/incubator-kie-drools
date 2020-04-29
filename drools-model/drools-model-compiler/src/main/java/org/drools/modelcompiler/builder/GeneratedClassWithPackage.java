@@ -42,6 +42,10 @@ public class GeneratedClassWithPackage {
         return packageName;
     }
 
+    public String getClassName() {
+        return generatedClass.getNameAsString();
+    }
+
     public Collection<String> getImports() {
         return imports;
     }
