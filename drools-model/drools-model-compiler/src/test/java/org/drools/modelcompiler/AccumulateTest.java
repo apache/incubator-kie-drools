@@ -32,7 +32,9 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 import java.util.Set;
+import java.util.StringJoiner;
 import java.util.stream.IntStream;
 
 import org.assertj.core.api.Assertions;
@@ -1619,7 +1621,7 @@ public class AccumulateTest extends BaseModelTest {
     public static class GroupByAcc {
         private final Map<String, Integer> map = new HashMap<>();
         private final Set<String> keys = new HashSet<>();
-        private final List<Pair<String, Integer>> results = new ArrayList<>();
+        private final List<AccumulateTest.GroupByAcc.Pair<String, Integer>> results = new ArrayList<>();
 
         public void action(String key, Integer value) {
             keys.add( key );
@@ -1633,10 +1635,10 @@ public class AccumulateTest extends BaseModelTest {
             map.put( key, i - value );
         }
 
-        public List<Pair<String, Integer>> result() {
+        public List<AccumulateTest.GroupByAcc.Pair<String, Integer>> result() {
             results.clear();
             for (String k : keys) {
-                results.add( new Pair( k, map.get(k) ) );
+                results.add( new AccumulateTest.GroupByAcc.Pair( k, map.get(k) ) );
             }
             keys.clear();
             return results;
@@ -1657,6 +1659,32 @@ public class AccumulateTest extends BaseModelTest {
 
             public V getValue() {
                 return value;
+            }
+
+            @Override
+            public boolean equals(final Object o) {
+                if (this == o) {
+                    return true;
+                }
+                if (o == null || !Objects.equals(getClass(), o.getClass())) {
+                    return false;
+                }
+                final AccumulateTest.GroupByAcc.Pair<?, ?> pair = (AccumulateTest.GroupByAcc.Pair<?, ?>) o;
+                return Objects.equals(key, pair.key) &&
+                        Objects.equals(value, pair.value);
+            }
+
+            @Override
+            public int hashCode() {
+                return Objects.hash(key, value);
+            }
+
+            @Override
+            public String toString() {
+                return new StringJoiner(", ", AccumulateTest.GroupByAcc.Pair.class.getSimpleName() + "[", "]")
+                        .add("key=" + key)
+                        .add("value=" + value)
+                        .toString();
             }
         }
     }
@@ -1891,6 +1919,7 @@ public class AccumulateTest extends BaseModelTest {
                         "import " + GroupByAcc.class.getCanonicalName() + ";\n" +
                         "import " + GroupByAcc.Pair.class.getCanonicalName() + ";\n" +
                         "import " + Person.class.getCanonicalName() + ";\n" +
+                        "global java.util.Set result; \n" +
                         "rule R when\n" +
                         "  $pairs : List( size > 0 ) from accumulate (\n" +
                         "            Person( $age : age, $firstLetter : name.substring(0,1) ),\n" +
@@ -1908,9 +1937,13 @@ public class AccumulateTest extends BaseModelTest {
                         "         )\n" +
                         "  $p: GroupByAcc.Pair() from $pairs2\n" +
                         "then\n" +
-                        "  System.out.println($p.toString());\n" +
+                        "  System.out.println($p);\n" +
+                        "  result.add($p);\n" +
                         "end";
+        Set<GroupByAcc.Pair<String, Integer>> result = new HashSet<>();
+
         KieSession ksession = getKieSession(str);
+        ksession.setGlobal("result", result);
 
         ksession.insert(new Person("Mark", 42));
         ksession.insert(new Person("Edson", 38));
@@ -1920,15 +1953,28 @@ public class AccumulateTest extends BaseModelTest {
         FactHandle geoffreyFH = ksession.insert(new Person("Geoffrey", 35));
         ksession.fireAllRules();
 
+        Assertions.assertThat(result)
+                .containsExactlyInAnyOrder(new GroupByAcc.Pair<>("M", 126),
+                        new GroupByAcc.Pair<>("E", 71),
+                        new GroupByAcc.Pair<>("G", 35));
         System.out.println("----");
 
         ksession.delete( meFH );
         ksession.fireAllRules();
 
+        Assertions.assertThat(result)
+                .contains(new GroupByAcc.Pair<>("M", 81));
+        Assertions.assertThat(result)
+                .doesNotContain(new GroupByAcc.Pair<>("G", 0),
+                        new GroupByAcc.Pair<>("E", 0));
         System.out.println("----");
 
         ksession.update(geoffreyFH, new Person("Geoffrey", 40));
         ksession.insert(new Person("Matteo", 38));
         ksession.fireAllRules();
+
+        Assertions.assertThat(result)
+                .contains(new GroupByAcc.Pair<>("G", 40),
+                        new GroupByAcc.Pair<>("M", 119));
     }
 }
