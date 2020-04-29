@@ -256,7 +256,7 @@ public class KieComponentFactory implements Serializable {
         try {
             return getTraitCoreService()
                     .map(producer);
-        } catch (Throwable e) {
+        } catch (RuntimeException e) {
             return Optional.empty();
         }
     }
