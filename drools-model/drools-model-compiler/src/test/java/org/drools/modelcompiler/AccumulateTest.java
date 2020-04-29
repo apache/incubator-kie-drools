@@ -1882,4 +1882,53 @@ public class AccumulateTest extends BaseModelTest {
         assertEquals(60, result.iterator().next().longValue());
 
     }
+
+    @Test
+    public void testGroupByRegrouped() {
+        // DROOLS-5283
+        String str =
+                "import java.util.*;\n" +
+                        "import " + GroupByAcc.class.getCanonicalName() + ";\n" +
+                        "import " + GroupByAcc.Pair.class.getCanonicalName() + ";\n" +
+                        "import " + Person.class.getCanonicalName() + ";\n" +
+                        "rule R when\n" +
+                        "  $pairs : List( size > 0 ) from accumulate (\n" +
+                        "            Person( $age : age, $firstLetter : name.substring(0,1) ),\n" +
+                        "                init( GroupByAcc acc = new GroupByAcc(); ),\n" +
+                        "                action( acc.action( $firstLetter, $age ); ),\n" +
+                        "                reverse( acc.reverse( $firstLetter, $age ); ),\n" +
+                        "                result( acc.result() )\n" +
+                        "         )\n" +
+                        "  $pairs2 : List( size > 0 ) from accumulate (\n" +
+                        "            GroupByAcc.Pair( $initial : key, $sumOfAges : value ) from $pairs,\n" +
+                        "                init( GroupByAcc acc2 = new GroupByAcc(); ),\n" +
+                        "                action( acc2.action( (String) $initial, (Integer) $sumOfAges ); ),\n" +
+                        "                reverse( acc2.reverse( (String) $initial, (Integer) $sumOfAges ); ),\n" +
+                        "                result( acc2.result() )\n" +
+                        "         )\n" +
+                        "  $p: GroupByAcc.Pair() from $pairs2\n" +
+                        "then\n" +
+                        "  System.out.println($p.toString());\n" +
+                        "end";
+        KieSession ksession = getKieSession(str);
+
+        ksession.insert(new Person("Mark", 42));
+        ksession.insert(new Person("Edson", 38));
+        FactHandle meFH = ksession.insert(new Person("Mario", 45));
+        ksession.insert(new Person("Maciej", 39));
+        ksession.insert(new Person("Edoardo", 33));
+        FactHandle geoffreyFH = ksession.insert(new Person("Geoffrey", 35));
+        ksession.fireAllRules();
+
+        System.out.println("----");
+
+        ksession.delete( meFH );
+        ksession.fireAllRules();
+
+        System.out.println("----");
+
+        ksession.update(geoffreyFH, new Person("Geoffrey", 40));
+        ksession.insert(new Person("Matteo", 38));
+        ksession.fireAllRules();
+    }
 }
