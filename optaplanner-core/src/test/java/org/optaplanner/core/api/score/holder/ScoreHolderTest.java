@@ -15,27 +15,20 @@
  */
 package org.optaplanner.core.api.score.holder;
 
-import org.junit.Rule;
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.migrationsupport.rules.EnableRuleMigrationSupport;
-import org.junit.rules.ExpectedException;
-import org.optaplanner.core.api.score.Score;
 import org.optaplanner.core.api.score.buildin.simple.SimpleScore;
 
-import static org.junit.Assert.*;
+import static org.assertj.core.api.Assertions.assertThatIllegalStateException;
+import static org.junit.Assert.assertNotNull;
 
-@EnableRuleMigrationSupport
 public class ScoreHolderTest {
-
-    @Rule
-    public final ExpectedException expectedException = ExpectedException.none();
 
     @Test
     public void illegalStateExceptionThrownWhenConstraintMatchNotEnabled() {
         ScoreHolder scoreHolder = buildScoreHolder(false);
-        expectedException.expect(IllegalStateException.class);
-        expectedException.expectMessage("constraintMatchEnabled");
-        scoreHolder.getConstraintMatchTotals().clear();
+        assertThatIllegalStateException()
+                .isThrownBy(scoreHolder::getConstraintMatchTotals)
+                .withMessageContaining("constraintMatchEnabled");
     }
 
     @Test
@@ -56,5 +49,4 @@ public class ScoreHolderTest {
             }
         };
     }
-
 }

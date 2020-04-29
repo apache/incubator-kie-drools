@@ -18,23 +18,19 @@ package org.optaplanner.core.impl.domain.lookup;
 import java.util.Collections;
 
 import org.junit.jupiter.api.BeforeEach;
-import org.junit.Rule;
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.migrationsupport.rules.EnableRuleMigrationSupport;
-import org.junit.rules.ExpectedException;
 import org.optaplanner.core.api.domain.lookup.LookUpStrategyType;
 import org.optaplanner.core.impl.testdata.domain.clone.lookup.TestdataObjectEquals;
 import org.optaplanner.core.impl.testdata.domain.clone.lookup.TestdataObjectEqualsNoHashCode;
 import org.optaplanner.core.impl.testdata.domain.clone.lookup.TestdataObjectEqualsSubclass;
 import org.optaplanner.core.impl.testdata.domain.clone.lookup.TestdataObjectNoId;
 
-import static org.junit.Assert.*;
+import static org.assertj.core.api.Assertions.assertThatIllegalArgumentException;
+import static org.assertj.core.api.Assertions.assertThatIllegalStateException;
+import static org.junit.Assert.assertNull;
+import static org.junit.Assert.assertSame;
 
-@EnableRuleMigrationSupport
 public class LookUpStrategyEqualityTest {
-
-    @Rule
-    public final ExpectedException expectedException = ExpectedException.none();
 
     private LookUpManager lookUpManager;
 
@@ -63,45 +59,45 @@ public class LookUpStrategyEqualityTest {
     @Test
     public void addWithoutEquals() {
         TestdataObjectNoId object = new TestdataObjectNoId();
-        expectedException.expect(IllegalArgumentException.class);
-        expectedException.expectMessage("override the equals() method");
-        expectedException.expectMessage(TestdataObjectNoId.class.getSimpleName());
-        lookUpManager.addWorkingObject(object);
+        assertThatIllegalArgumentException()
+                .isThrownBy(() -> lookUpManager.addWorkingObject(object))
+                .withMessageContaining("override the equals() method")
+                .withMessageContaining(TestdataObjectNoId.class.getSimpleName());
     }
 
     @Test
     public void addWithoutHashCode() {
         TestdataObjectEqualsNoHashCode object = new TestdataObjectEqualsNoHashCode(0);
-        expectedException.expect(IllegalArgumentException.class);
-        expectedException.expectMessage("overrides the hashCode() method");
-        expectedException.expectMessage(TestdataObjectEqualsNoHashCode.class.getSimpleName());
-        lookUpManager.addWorkingObject(object);
+        assertThatIllegalArgumentException()
+                .isThrownBy(() -> lookUpManager.addWorkingObject(object))
+                .withMessageContaining("overrides the hashCode() method")
+                .withMessageContaining(TestdataObjectEqualsNoHashCode.class.getSimpleName());
     }
 
     @Test
     public void removeWithoutEquals() {
         TestdataObjectNoId object = new TestdataObjectNoId();
-        expectedException.expect(IllegalArgumentException.class);
-        expectedException.expectMessage("override the equals() method");
-        expectedException.expectMessage(TestdataObjectNoId.class.getSimpleName());
-        lookUpManager.removeWorkingObject(object);
+        assertThatIllegalArgumentException()
+                .isThrownBy(() -> lookUpManager.removeWorkingObject(object))
+                .withMessageContaining("override the equals() method")
+                .withMessageContaining(TestdataObjectNoId.class.getSimpleName());
     }
 
     @Test
     public void addEqualObjects() {
         TestdataObjectEquals object = new TestdataObjectEquals(2);
         lookUpManager.addWorkingObject(object);
-        expectedException.expect(IllegalStateException.class);
-        expectedException.expectMessage(object.toString());
-        lookUpManager.addWorkingObject(new TestdataObjectEquals(2));
+        assertThatIllegalStateException()
+                .isThrownBy(() -> lookUpManager.addWorkingObject(new TestdataObjectEquals(2)))
+                .withMessageContaining(object.toString());
     }
 
     @Test
     public void removeWithoutAdding() {
         TestdataObjectEquals object = new TestdataObjectEquals(0);
-        expectedException.expect(IllegalStateException.class);
-        expectedException.expectMessage("differ");
-        lookUpManager.removeWorkingObject(object);
+        assertThatIllegalStateException()
+                .isThrownBy(() -> lookUpManager.removeWorkingObject(object))
+                .withMessageContaining("differ");
     }
 
     @Test
@@ -114,9 +110,9 @@ public class LookUpStrategyEqualityTest {
     @Test
     public void lookUpWithoutEquals() {
         TestdataObjectNoId object = new TestdataObjectNoId();
-        expectedException.expect(IllegalArgumentException.class);
-        expectedException.expectMessage("override the equals() method");
-        lookUpManager.lookUpWorkingObject(object);
+        assertThatIllegalArgumentException()
+                .isThrownBy(() -> lookUpManager.lookUpWorkingObject(object))
+                .withMessageContaining("override the equals() method");
     }
 
     @Test
@@ -124,5 +120,4 @@ public class LookUpStrategyEqualityTest {
         TestdataObjectEquals object = new TestdataObjectEquals(0);
         assertNull(lookUpManager.lookUpWorkingObjectOrReturnNull(object));
     }
-
 }

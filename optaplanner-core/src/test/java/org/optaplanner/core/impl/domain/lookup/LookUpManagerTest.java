@@ -19,21 +19,15 @@ import java.util.Arrays;
 import java.util.Collections;
 
 import org.junit.Assert;
-import org.junit.Rule;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.migrationsupport.rules.EnableRuleMigrationSupport;
-import org.junit.rules.ExpectedException;
 import org.optaplanner.core.api.domain.lookup.LookUpStrategyType;
 import org.optaplanner.core.impl.testdata.domain.clone.lookup.TestdataObjectIntegerId;
 
-import static org.junit.Assert.*;
+import static org.assertj.core.api.Assertions.assertThatNullPointerException;
+import static org.junit.Assert.assertNull;
 
-@EnableRuleMigrationSupport
 public class LookUpManagerTest {
-
-    @Rule
-    public final ExpectedException expectedException = ExpectedException.none();
 
     private LookUpManager lookUpManager;
 
@@ -65,8 +59,7 @@ public class LookUpManagerTest {
         lookUpManager.resetWorkingObjects(Collections.emptyList());
         lookUpManager.addWorkingObject(new TestdataObjectIntegerId(0));
         lookUpManager.clearWorkingObjects();
-        expectedException.expect(NullPointerException.class);
-        lookUpManager.addWorkingObject(new TestdataObjectIntegerId(0));
+        assertThatNullPointerException()
+                .isThrownBy(() -> lookUpManager.addWorkingObject(new TestdataObjectIntegerId(0)));
     }
-
 }

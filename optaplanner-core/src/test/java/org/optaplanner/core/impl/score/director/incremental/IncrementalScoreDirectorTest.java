@@ -19,10 +19,7 @@ package org.optaplanner.core.impl.score.director.incremental;
 import java.util.Arrays;
 import java.util.List;
 
-import org.junit.Rule;
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.migrationsupport.rules.EnableRuleMigrationSupport;
-import org.junit.rules.ExpectedException;
 import org.mockito.InOrder;
 import org.optaplanner.core.api.score.Score;
 import org.optaplanner.core.api.score.buildin.simple.SimpleScore;
@@ -32,14 +29,17 @@ import org.optaplanner.core.impl.testdata.domain.chained.shadow.TestdataShadowin
 import org.optaplanner.core.impl.testdata.domain.chained.shadow.TestdataShadowingChainedEntity;
 import org.optaplanner.core.impl.testdata.domain.chained.shadow.TestdataShadowingChainedSolution;
 
-import static org.junit.Assert.*;
-import static org.mockito.Mockito.*;
+import static org.assertj.core.api.Assertions.assertThatIllegalStateException;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertNotNull;
+import static org.mockito.Mockito.inOrder;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.reset;
+import static org.mockito.Mockito.times;
+import static org.mockito.Mockito.when;
 
-@EnableRuleMigrationSupport
 public class IncrementalScoreDirectorTest {
-
-    @Rule
-    public final ExpectedException expectedException = ExpectedException.none();
 
     @Test
     public void variableListener() {
@@ -97,9 +97,9 @@ public class IncrementalScoreDirectorTest {
                 = new IncrementalScoreDirector<>(mockIncrementalScoreDirectorFactory(), false, false,
                 mockIncrementalScoreCalculator(false));
         director.setWorkingSolution(new Object());
-        expectedException.expect(IllegalStateException.class);
-        expectedException.expectMessage("constraintMatchEnabled");
-        director.getConstraintMatchTotals();
+        assertThatIllegalStateException()
+                .isThrownBy(director::getConstraintMatchTotals)
+                .withMessageContaining("constraintMatchEnabled");
     }
 
     @Test
@@ -134,5 +134,4 @@ public class IncrementalScoreDirectorTest {
                 ? mock(ConstraintMatchAwareIncrementalScoreCalculator.class)
                 : mock(IncrementalScoreCalculator.class);
     }
-
 }

@@ -17,10 +17,7 @@ package org.optaplanner.core.impl.score.director.easy;
 
 import java.util.Arrays;
 
-import org.junit.Rule;
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.migrationsupport.rules.EnableRuleMigrationSupport;
-import org.junit.rules.ExpectedException;
 import org.optaplanner.core.api.score.buildin.simple.SimpleScore;
 import org.optaplanner.core.config.score.trend.InitializingScoreTrendLevel;
 import org.optaplanner.core.impl.domain.solution.descriptor.SolutionDescriptor;
@@ -29,23 +26,22 @@ import org.optaplanner.core.impl.testdata.domain.TestdataValue;
 import org.optaplanner.core.impl.testdata.domain.shadow.corrupted.TestdataCorruptedShadowedEntity;
 import org.optaplanner.core.impl.testdata.domain.shadow.corrupted.TestdataCorruptedShadowedSolution;
 
-import static org.junit.Assert.*;
-import static org.mockito.Mockito.*;
+import static org.assertj.core.api.Assertions.assertThatIllegalStateException;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.fail;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.when;
 
-@EnableRuleMigrationSupport
 public class EasyScoreDirectorTest {
-
-    @Rule
-    public final ExpectedException expectedException = ExpectedException.none();
 
     @Test
     public void constraintMatchTotalsUnsupported() {
         EasyScoreDirector<Object> director
                 = new EasyScoreDirector<>(mockEasyScoreDirectorFactory(), false, true, null);
         assertFalse(director.isConstraintMatchEnabled());
-        expectedException.expect(IllegalStateException.class);
-        expectedException.expectMessage("not supported");
-        director.getConstraintMatchTotals();
+        assertThatIllegalStateException()
+                .isThrownBy(director::getConstraintMatchTotals)
+                .withMessageContaining("not supported");
     }
 
     @SuppressWarnings("unchecked")
@@ -89,5 +85,4 @@ public class EasyScoreDirectorTest {
             // ok
         }
     }
-
 }

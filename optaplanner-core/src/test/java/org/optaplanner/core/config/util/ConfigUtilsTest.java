@@ -20,21 +20,15 @@ import java.math.BigDecimal;
 import java.util.HashMap;
 import java.util.Map;
 
-import org.junit.Rule;
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.migrationsupport.rules.EnableRuleMigrationSupport;
-import org.junit.rules.ExpectedException;
 
 import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
+import static org.assertj.core.api.Assertions.assertThatIllegalArgumentException;
 import static org.assertj.core.api.Assertions.assertThatIllegalStateException;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 
-@EnableRuleMigrationSupport
 public class ConfigUtilsTest {
-
-    @Rule
-    public ExpectedException expectedException = ExpectedException.none();
 
     @Test
     public void mergeProperty() {
@@ -225,9 +219,10 @@ public class ConfigUtilsTest {
 
     @Test
     public void newInstanceStaticInnerClassWithArgsConstructor() {
-        expectedException.expect(IllegalArgumentException.class);
-        expectedException.expectMessage("no-arg constructor.");
-        assertNotNull(ConfigUtils.newInstance(this, "testProperty", StaticInnerClassWithArgsConstructor.class));
+        assertThatIllegalArgumentException()
+                .isThrownBy(() -> ConfigUtils.newInstance(
+                        this, "testProperty", StaticInnerClassWithArgsConstructor.class))
+                .withMessageContaining("no-arg constructor.");
     }
 
     public static class StaticInnerClassWithArgsConstructor {
@@ -239,9 +234,9 @@ public class ConfigUtilsTest {
 
     @Test
     public void newInstanceNonStaticInnerClass() {
-        expectedException.expect(IllegalArgumentException.class);
-        expectedException.expectMessage("inner class");
-        assertNotNull(ConfigUtils.newInstance(this, "testProperty", NonStaticInnerClass.class));
+        assertThatIllegalArgumentException()
+                .isThrownBy(() -> ConfigUtils.newInstance(this, "testProperty", NonStaticInnerClass.class))
+                .withMessageContaining("inner class");
     }
 
     public class NonStaticInnerClass {
@@ -250,9 +245,9 @@ public class ConfigUtilsTest {
     @Test
     public void newInstanceLocalClass() {
         class LocalClass {}
-        expectedException.expect(IllegalArgumentException.class);
-        expectedException.expectMessage("inner class");
-        assertNotNull(ConfigUtils.newInstance(this, "testProperty", LocalClass.class));
+        assertThatIllegalArgumentException()
+                .isThrownBy(() -> ConfigUtils.newInstance(this, "testProperty", LocalClass.class))
+                .withMessageContaining("inner class");
     }
 
 }

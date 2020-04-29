@@ -17,24 +17,17 @@ package org.optaplanner.core.impl.domain.lookup;
 
 import java.util.Collections;
 
-import org.junit.Rule;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.migrationsupport.rules.EnableRuleMigrationSupport;
-import org.junit.rules.ExpectedException;
 import org.optaplanner.core.api.domain.lookup.LookUpStrategyType;
 import org.optaplanner.core.impl.testdata.domain.clone.lookup.TestdataObjectIntegerId;
 import org.optaplanner.core.impl.testdata.domain.clone.lookup.TestdataObjectMultipleIds;
 import org.optaplanner.core.impl.testdata.domain.clone.lookup.TestdataObjectNoId;
 import org.optaplanner.core.impl.testdata.domain.clone.lookup.TestdataObjectPrimitiveIntId;
 
-import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.assertj.core.api.Assertions.assertThatIllegalArgumentException;
 
-@EnableRuleMigrationSupport
 public class LookUpStrategyNoneTest {
-
-    @Rule
-    public final ExpectedException expectedException = ExpectedException.none();
 
     private LookUpManager lookUpManager;
 
@@ -104,9 +97,9 @@ public class LookUpStrategyNoneTest {
         TestdataObjectIntegerId object = new TestdataObjectIntegerId(0);
         lookUpManager.addWorkingObject(object);
         // not allowed
-        expectedException.expect(IllegalArgumentException.class);
-        expectedException.expectMessage("cannot be looked up");
-        lookUpManager.lookUpWorkingObject(object);
+        assertThatIllegalArgumentException()
+                .isThrownBy(() -> lookUpManager.lookUpWorkingObject(object))
+                .withMessageContaining("cannot be looked up");
     }
 
     @Test
@@ -114,18 +107,18 @@ public class LookUpStrategyNoneTest {
         TestdataObjectNoId object = new TestdataObjectNoId();
         lookUpManager.addWorkingObject(object);
         // not allowed
-        expectedException.expect(IllegalArgumentException.class);
-        expectedException.expectMessage("cannot be looked up");
-        lookUpManager.lookUpWorkingObject(object);
+        assertThatIllegalArgumentException()
+                .isThrownBy(() -> lookUpManager.lookUpWorkingObject(object))
+                .withMessageContaining("cannot be looked up");
     }
 
     @Test
     public void lookUpWithoutAdding() {
         TestdataObjectIntegerId object = new TestdataObjectIntegerId(0);
         // not allowed
-        expectedException.expect(IllegalArgumentException.class);
-        expectedException.expectMessage("cannot be looked up");
-        lookUpManager.lookUpWorkingObject(object);
+        assertThatIllegalArgumentException()
+                .isThrownBy(() -> lookUpManager.lookUpWorkingObject(object))
+                .withMessageContaining("cannot be looked up");
     }
 
     @Test

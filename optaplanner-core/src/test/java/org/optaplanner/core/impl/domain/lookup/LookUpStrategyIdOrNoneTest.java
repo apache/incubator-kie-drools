@@ -18,10 +18,7 @@ package org.optaplanner.core.impl.domain.lookup;
 import java.util.Collections;
 
 import org.junit.jupiter.api.BeforeEach;
-import org.junit.Rule;
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.migrationsupport.rules.EnableRuleMigrationSupport;
-import org.junit.rules.ExpectedException;
 import org.optaplanner.core.api.domain.lookup.LookUpStrategyType;
 import org.optaplanner.core.api.domain.lookup.PlanningId;
 import org.optaplanner.core.impl.testdata.domain.clone.lookup.TestdataObjectIntegerId;
@@ -30,13 +27,12 @@ import org.optaplanner.core.impl.testdata.domain.clone.lookup.TestdataObjectMult
 import org.optaplanner.core.impl.testdata.domain.clone.lookup.TestdataObjectNoId;
 import org.optaplanner.core.impl.testdata.domain.clone.lookup.TestdataObjectPrimitiveIntId;
 
-import static org.junit.Assert.*;
+import static org.assertj.core.api.Assertions.assertThatIllegalArgumentException;
+import static org.assertj.core.api.Assertions.assertThatIllegalStateException;
+import static org.junit.Assert.assertNull;
+import static org.junit.Assert.assertSame;
 
-@EnableRuleMigrationSupport
 public class LookUpStrategyIdOrNoneTest {
-
-    @Rule
-    public final ExpectedException expectedException = ExpectedException.none();
 
     private LookUpManager lookUpManager;
 
@@ -67,19 +63,19 @@ public class LookUpStrategyIdOrNoneTest {
     @Test
     public void addWithNullIdInSuperclass() {
         TestdataObjectIntegerId object = new TestdataObjectIntegerIdSubclass(null);
-        expectedException.expect(IllegalArgumentException.class);
-        expectedException.expectMessage("must not be null");
-        expectedException.expectMessage(TestdataObjectIntegerIdSubclass.class.getCanonicalName());
-        expectedException.expectMessage(object.toString());
-        lookUpManager.addWorkingObject(object);
+        assertThatIllegalArgumentException()
+                .isThrownBy(() -> lookUpManager.addWorkingObject(object))
+                .withMessageContaining("must not be null")
+                .withMessageContaining(TestdataObjectIntegerIdSubclass.class.getCanonicalName())
+                .withMessageContaining(object.toString());
     }
 
     @Test
     public void removeWithNullId() {
         TestdataObjectIntegerId object = new TestdataObjectIntegerId(null);
-        expectedException.expect(IllegalArgumentException.class);
-        expectedException.expectMessage("must not be null");
-        lookUpManager.removeWorkingObject(object);
+        assertThatIllegalArgumentException()
+                .isThrownBy(() -> lookUpManager.removeWorkingObject(object))
+                .withMessageContaining("must not be null");
     }
 
     @Test
@@ -98,18 +94,18 @@ public class LookUpStrategyIdOrNoneTest {
     public void addSameIdTwice() {
         TestdataObjectIntegerId object = new TestdataObjectIntegerId(2);
         lookUpManager.addWorkingObject(object);
-        expectedException.expect(IllegalStateException.class);
-        expectedException.expectMessage(" have the same planningId ");
-        expectedException.expectMessage(object.toString());
-        lookUpManager.addWorkingObject(new TestdataObjectIntegerId(2));
+        assertThatIllegalStateException()
+                .isThrownBy(() -> lookUpManager.addWorkingObject(new TestdataObjectIntegerId(2)))
+                .withMessageContaining(" have the same planningId ")
+                .withMessageContaining(object.toString());
     }
 
     @Test
     public void removeWithoutAdding() {
         TestdataObjectIntegerId object = new TestdataObjectIntegerId(0);
-        expectedException.expect(IllegalStateException.class);
-        expectedException.expectMessage("differ");
-        lookUpManager.removeWorkingObject(object);
+        assertThatIllegalStateException()
+                .isThrownBy(() -> lookUpManager.removeWorkingObject(object))
+                .withMessageContaining("differ");
     }
 
     @Test
@@ -123,9 +119,9 @@ public class LookUpStrategyIdOrNoneTest {
     public void lookUpWithoutId() {
         TestdataObjectNoId object = new TestdataObjectNoId();
         lookUpManager.addWorkingObject(object);
-        expectedException.expect(IllegalArgumentException.class);
-        expectedException.expectMessage("cannot be looked up");
-        lookUpManager.lookUpWorkingObject(object);
+        assertThatIllegalArgumentException()
+                .isThrownBy(() -> lookUpManager.lookUpWorkingObject(object))
+                .withMessageContaining("cannot be looked up");
     }
 
     @Test
@@ -137,18 +133,18 @@ public class LookUpStrategyIdOrNoneTest {
     @Test
     public void addWithTwoIds() {
         TestdataObjectMultipleIds object = new TestdataObjectMultipleIds();
-        expectedException.expect(IllegalArgumentException.class);
-        expectedException.expectMessage("3 members");
-        expectedException.expectMessage(PlanningId.class.getSimpleName());
-        lookUpManager.addWorkingObject(object);
+        assertThatIllegalArgumentException()
+                .isThrownBy(() -> lookUpManager.addWorkingObject(object))
+                .withMessageContaining("3 members")
+                .withMessageContaining(PlanningId.class.getSimpleName());
     }
 
     @Test
     public void removeWithTwoIds() {
         TestdataObjectMultipleIds object = new TestdataObjectMultipleIds();
-        expectedException.expect(IllegalArgumentException.class);
-        expectedException.expectMessage("3 members");
-        expectedException.expectMessage(PlanningId.class.getSimpleName());
-        lookUpManager.removeWorkingObject(object);
+        assertThatIllegalArgumentException()
+                .isThrownBy(() -> lookUpManager.removeWorkingObject(object))
+                .withMessageContaining("3 members")
+                .withMessageContaining(PlanningId.class.getSimpleName());
     }
 }

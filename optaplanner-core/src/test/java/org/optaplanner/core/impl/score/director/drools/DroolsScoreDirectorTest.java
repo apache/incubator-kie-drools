@@ -15,31 +15,27 @@
  */
 package org.optaplanner.core.impl.score.director.drools;
 
-import org.junit.Rule;
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.migrationsupport.rules.EnableRuleMigrationSupport;
-import org.junit.rules.ExpectedException;
 import org.kie.api.runtime.KieSession;
 import org.kie.internal.event.rule.RuleEventManager;
 import org.optaplanner.core.impl.domain.solution.descriptor.SolutionDescriptor;
 import org.optaplanner.core.impl.score.buildin.simple.SimpleScoreDefinition;
 
-import static org.junit.Assert.*;
-import static org.mockito.Mockito.*;
+import static org.assertj.core.api.Assertions.assertThatIllegalStateException;
+import static org.junit.Assert.assertNotNull;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.when;
+import static org.mockito.Mockito.withSettings;
 
-@EnableRuleMigrationSupport
 public class DroolsScoreDirectorTest {
-
-    @Rule
-    public final ExpectedException expectedException = ExpectedException.none();
 
     @Test
     public void illegalStateExceptionThrownWhenConstraintMatchNotEnabled() {
         DroolsScoreDirector<Object> director = new DroolsScoreDirector<>(mockDroolsScoreDirectorFactory(), false, false);
         director.setWorkingSolution(new Object());
-        expectedException.expect(IllegalStateException.class);
-        expectedException.expectMessage("constraintMatchEnabled");
-        director.getConstraintMatchTotals();
+        assertThatIllegalStateException()
+                .isThrownBy(director::getConstraintMatchTotals)
+                .withMessageContaining("constraintMatchEnabled");
     }
 
     @Test
@@ -66,5 +62,4 @@ public class DroolsScoreDirectorTest {
                 mock(KieSession.class, withSettings().extraInterfaces(RuleEventManager.class)));
         return factory;
     }
-
 }
