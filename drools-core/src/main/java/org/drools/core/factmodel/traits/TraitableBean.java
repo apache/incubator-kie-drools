@@ -13,7 +13,7 @@ public interface TraitableBean<K, X extends TraitableBean> {
 
     Collection<Thing<K>> removeTrait(BitSet typeCode);
 
-    // TODO this is duplicaated in drools-core-traits/TraitableBean
+    // TODO this is duplicated in drools-traits/TraitableBean
     String MAP_FIELD_NAME = "__$$dynamic_properties_map$$";
     String TRAITSET_FIELD_NAME = "__$$dynamic_traits_map$$";
     String FIELDTMS_FIELD_NAME = "__$$field_Tms$$";
