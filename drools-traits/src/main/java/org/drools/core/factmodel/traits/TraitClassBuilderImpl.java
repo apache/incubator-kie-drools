@@ -20,6 +20,7 @@ import java.io.Serializable;
 
 import org.drools.core.factmodel.AnnotationDefinition;
 import org.drools.core.factmodel.BuildUtils;
+import org.drools.core.factmodel.ClassBuilder;
 import org.drools.core.factmodel.ClassDefinition;
 import org.drools.core.factmodel.FieldDefinition;
 import org.drools.core.factmodel.GeneratedFact;
@@ -31,7 +32,7 @@ import org.mvel2.asm.Type;
 import static org.drools.core.factmodel.DefaultBeanClassBuilder.addAnnotationAttribute;
 import static org.drools.core.rule.builder.dialect.asm.ClassGenerator.createClassWriter;
 
-public class TraitClassBuilderImpl implements TraitClassBuilder,
+public class TraitClassBuilderImpl implements ClassBuilder,
                                               Serializable {
 
     public byte[] buildClass(ClassDefinition classDef, ClassLoader classLoader) {

@@ -16,12 +16,12 @@
 
 package org.drools.compiler;
 
-import org.drools.core.factmodel.traits.TraitClassBuilder;
+import org.drools.core.factmodel.ClassBuilder;
 import org.kie.api.internal.utils.KieService;
 
 public interface KieTraitsCompiler extends KieService {
 
     UpdateTypeDeclarationDescr updateTypeDescr();
 
-    TraitClassBuilder getTraitBuilder();
+    ClassBuilder getTraitBuilder();
 }

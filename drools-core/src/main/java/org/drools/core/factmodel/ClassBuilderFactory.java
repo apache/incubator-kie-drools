@@ -18,7 +18,6 @@ package org.drools.core.factmodel;
 
 import java.io.Serializable;
 
-import org.drools.core.factmodel.traits.TraitClassBuilder;
 import org.drools.core.factmodel.traits.TraitCoreService;
 
 import static org.drools.core.reteoo.KieComponentFactory.fromTraitRegistry;
@@ -68,13 +67,13 @@ public class ClassBuilderFactory implements Serializable {
 
 
     // Trait interfaces
-    private TraitClassBuilder traitBuilder;
+    private ClassBuilder traitBuilder;
 
     public ClassBuilder getTraitBuilder() {
         return traitBuilder;
     }
 
-    public void setTraitBuilder( TraitClassBuilder tcb ) {
+    public void setTraitBuilder( ClassBuilder tcb ) {
         traitBuilder = tcb;
     }
 

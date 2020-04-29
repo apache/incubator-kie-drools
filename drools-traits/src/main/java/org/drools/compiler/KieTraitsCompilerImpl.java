@@ -16,7 +16,7 @@
 
 package org.drools.compiler;
 
-import org.drools.core.factmodel.traits.TraitClassBuilder;
+import org.drools.core.factmodel.ClassBuilder;
 import org.drools.core.factmodel.traits.TraitClassBuilderImpl;
 
 public class KieTraitsCompilerImpl implements KieTraitsCompiler {
@@ -28,7 +28,7 @@ public class KieTraitsCompilerImpl implements KieTraitsCompiler {
     }
 
     @Override
-    public TraitClassBuilder getTraitBuilder() {
+    public ClassBuilder getTraitBuilder() {
         return new TraitClassBuilderImpl();
     }
 }
