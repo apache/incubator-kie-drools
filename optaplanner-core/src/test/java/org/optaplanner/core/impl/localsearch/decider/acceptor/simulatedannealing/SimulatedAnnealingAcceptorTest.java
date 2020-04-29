@@ -106,9 +106,8 @@ public class SimulatedAnnealingAcceptorTest extends AbstractAcceptorTest {
     @Test
     public void negativeSimulatedAnnealingSize() {
         SimulatedAnnealingAcceptor acceptor = new SimulatedAnnealingAcceptor();
-        // FIXME this tests score parsing
-        assertThatIllegalArgumentException()
-                .isThrownBy(() -> acceptor.setStartingTemperature(HardMediumSoftScore.parseScore("1, -1, 2")));
+        acceptor.setStartingTemperature(HardMediumSoftScore.of(1, -1, 2));
+        assertThatIllegalArgumentException().isThrownBy(() -> acceptor.phaseStarted(null));
     }
 
 }
