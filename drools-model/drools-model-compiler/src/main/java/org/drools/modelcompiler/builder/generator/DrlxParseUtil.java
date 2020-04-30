@@ -738,32 +738,6 @@ public class DrlxParseUtil {
                         .collect( toList() );
     }
 
-    public static Optional<MethodCallExpr> findPatternWithBinding(RuleContext context, Collection<String> patternBindings, List<Expression> expressions) {
-        return expressions.stream().flatMap((Expression e) -> {
-            final Optional<MethodCallExpr> pattern = e.findFirst(MethodCallExpr.class, expr -> {
-                boolean isPatternExpr = expr.getName().asString().equals(PATTERN_CALL);
-                List<Expression> bindingExprsVars = patternBindings.stream().map(context::getVarExpr).collect(Collectors.toList());
-                boolean hasBindingHasArgument = !Collections.disjoint(bindingExprsVars, expr.getArguments());
-                return isPatternExpr && hasBindingHasArgument;
-            });
-            return pattern.map(Stream::of).orElse(Stream.empty());
-        }).findFirst();
-    }
-
-    public static Optional<MethodCallExpr> findPatternWithBinding2(RuleContext context, Collection<String> patternBindings, List<Expression> expressions) {
-        return expressions.stream().flatMap((Expression e) -> {
-            final Optional<MethodCallExpr> bind = e.findFirst(MethodCallExpr.class, expr -> {
-                boolean isBindCall = expr.getName().asString().equals(BIND_CALL);
-                List<Expression> bindingExprsVars = patternBindings.stream().map(context::getVarExpr).collect(toList());
-                boolean hasBindingHasArgument = !Collections.disjoint(bindingExprsVars, expr.getArguments());
-                return isBindCall && hasBindingHasArgument;
-            });
-            return bind
-                    .flatMap( b -> b.getScope().map(Expression::asMethodCallExpr))
-                    .map(Stream::of).orElse(Stream.empty());
-        }).findFirst();
-    }
-
     public static Optional<MethodCallExpr> findLastPattern(List<Expression> expressions) {
         final Stream<MethodCallExpr> patterns = expressions.stream().flatMap((Expression e) -> {
             final List<MethodCallExpr> pattern = e.findAll(MethodCallExpr.class, expr -> expr.getName().asString().equals(PATTERN_CALL));
