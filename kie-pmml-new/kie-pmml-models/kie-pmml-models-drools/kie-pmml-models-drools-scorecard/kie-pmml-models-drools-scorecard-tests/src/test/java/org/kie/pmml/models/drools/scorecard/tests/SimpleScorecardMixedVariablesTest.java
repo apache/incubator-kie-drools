@@ -32,10 +32,10 @@ import java.util.HashMap;
 import java.util.Map;
 
 @RunWith(Parameterized.class)
-public class SimpleScorecardTest extends AbstractPMMLScorecardTest {
+public class SimpleScorecardMixedVariablesTest extends AbstractPMMLScorecardTest {
 
-    private static final String MODEL_NAME = "SimpleScorecard";
-    private static final String PMML_SOURCE = "SimpleScorecard.pmml";
+    private static final String MODEL_NAME = "SimpleScorecardMixedVariables";
+    private static final String PMML_SOURCE = "SimpleScorecardMixedVariables.pmml";
     private static final String TARGET_FIELD = "Score";
     private static final String REASON_CODE1_FIELD = "Reason Code 1";
     private static final String REASON_CODE2_FIELD = "Reason Code 2";
@@ -43,12 +43,12 @@ public class SimpleScorecardTest extends AbstractPMMLScorecardTest {
     private static KiePMMLModel pmmlModel;
 
     private double input1;
-    private double input2;
+    private String input2;
     private double score;
     private String reasonCode1;
     private String reasonCode2;
 
-    public SimpleScorecardTest(double input1, double input2, double score, String reasonCode1, String reasonCode2) {
+    public SimpleScorecardMixedVariablesTest(double input1, String input2, double score, String reasonCode1, String reasonCode2) {
         this.input1 = input1;
         this.input2 = input2;
         this.score = score;
@@ -64,16 +64,16 @@ public class SimpleScorecardTest extends AbstractPMMLScorecardTest {
     @Parameterized.Parameters
     public static Collection<Object[]> data() {
         return Arrays.asList(new Object[][]{
-                { 5, 5, 25, "Input1ReasonCode", null },
-                { 5, -10, -15, "Input1ReasonCode", "Input2ReasonCode" },
-                { 20.5, 4, 87, null, null },
-                { 23.5, -12, 47, "Input2ReasonCode", null },
-                { 10, -5, -15, "Input1ReasonCode", "Input2ReasonCode" },
+                { 5, "classB", 25, "Input1ReasonCode", null },
+                { 5, "classA", -15, "Input1ReasonCode", "Input2ReasonCode" },
+                { 20.5, "classB", 87, null, null },
+                { 23.5, "classA", 47, "Input2ReasonCode", null },
+                { 10, "classA", -15, "Input1ReasonCode", "Input2ReasonCode" },
         });
     }
 
     @Test
-    public void testSimpleScorecard() {
+    public void testSimpleScorecardMixedVariables() {
         final Map<String, Object> inputData = new HashMap<>();
         inputData.put("input1", input1);
         inputData.put("input2", input2);
