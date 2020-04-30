@@ -75,6 +75,34 @@ exports[`Process Details component Snapshot tests 1`] = `
         </Text>
       </FormGroup>
       <FormGroup
+        fieldId="lastUpdate"
+        label="Last Updated"
+      >
+        <Text
+          component="p"
+        >
+          <t
+            ago={false}
+            calendar={false}
+            decimal={false}
+            element={null}
+            filter={[Function]}
+            fromNow={true}
+            interval={60000}
+            local={false}
+            onChange={[Function]}
+            titleFormat=""
+            toNow={false}
+            unit={null}
+            unix={false}
+            utc={false}
+            withTitle={false}
+          >
+            <Component />
+          </t>
+        </Text>
+      </FormGroup>
+      <FormGroup
         fieldId="end"
         label="End"
       >

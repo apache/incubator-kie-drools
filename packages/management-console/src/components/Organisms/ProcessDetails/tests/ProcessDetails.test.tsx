@@ -15,7 +15,8 @@ const props = {
         start: '2019-10-22T03:40:44.089Z',
         end: '2019-10-22T03:40:44.089Z',
         parentProcessInstance: null,
-        childProcessInstances: []
+        childProcessInstances: [],
+        lastUpdate: '2019-10-22T03:40:44.089Z'
       }
     ]
   },
@@ -50,7 +51,8 @@ const props2 = {
         start: '2019-10-22T03:40:44.089Z',
         end: '2019-10-22T03:40:44.089Z',
         parentProcessInstance: null,
-        childProcessInstances: []
+        childProcessInstances: [],
+        lastUpdate: '2019-10-22T03:40:44.089Z'
       }
     ]
   },

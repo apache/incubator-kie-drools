@@ -12,10 +12,7 @@ import {
   Tooltip
 } from '@patternfly/react-core';
 import React from 'react';
-import {
-  LevelDownAltIcon,
-  LevelUpAltIcon
-} from '@patternfly/react-icons';
+import { LevelDownAltIcon, LevelUpAltIcon } from '@patternfly/react-icons';
 import { Link } from 'react-router-dom';
 import ProcessDescriptor from '../../Molecules/ProcessDescriptor/ProcessDescriptor';
 import { stateIconCreator } from '../../../utils/Utils';
@@ -35,6 +32,7 @@ interface IOwnProps {
       | 'end'
       | 'parentProcessInstance'
       | 'childProcessInstances'
+      | 'lastUpdate'
     >[];
   };
   from: any;
@@ -74,14 +72,21 @@ const ProcessDetails: React.FC<IOwnProps> = ({ data, from }) => {
               {data.ProcessInstances[0].id}
             </Text>
           </FormGroup>
-          {data.ProcessInstances[0].serviceUrl?<FormGroup label="Endpoint" fieldId="endpoint">
+          {data.ProcessInstances[0].serviceUrl ? (
+            <FormGroup label="Endpoint" fieldId="endpoint">
               <Text
                 component={TextVariants.p}
                 className="kogito-management-console--u-WordBreak"
               >
-               <EndpointLink serviceUrl={data.ProcessInstances[0].serviceUrl} isLinkShown={true} />
+                <EndpointLink
+                  serviceUrl={data.ProcessInstances[0].serviceUrl}
+                  isLinkShown={true}
+                />
               </Text>
-          </FormGroup>: ''}
+            </FormGroup>
+          ) : (
+            ''
+          )}
           <FormGroup label="Start" fieldId="start">
             {data.ProcessInstances[0].start ? (
               <Text component={TextVariants.p}>
@@ -93,6 +98,17 @@ const ProcessDetails: React.FC<IOwnProps> = ({ data, from }) => {
               ''
             )}
           </FormGroup>
+
+          {data.ProcessInstances[0].lastUpdate && (
+            <FormGroup label="Last Updated" fieldId="lastUpdate">
+              <Text component={TextVariants.p}>
+                <Moment fromNow>
+                  {new Date(`${data.ProcessInstances[0].lastUpdate}`)}
+                </Moment>
+              </Text>
+            </FormGroup>
+          )}
+
           {data.ProcessInstances[0].end && (
             <FormGroup label="End" fieldId="end">
               <Text component={TextVariants.p}>
