@@ -37,6 +37,7 @@ import org.drools.modelcompiler.builder.generator.visitor.ModelGeneratorVisitor;
 import org.drools.modelcompiler.util.LambdaUtil;
 
 import static org.drools.modelcompiler.builder.generator.DrlxParseUtil.findPatternWithBinding;
+import static org.drools.modelcompiler.builder.generator.DrlxParseUtil.findPatternWithBinding2;
 import static org.drools.modelcompiler.builder.generator.DrlxParseUtil.fromVar;
 import static org.drools.modelcompiler.builder.generator.expression.PatternExpressionBuilder.BIND_CALL;
 
@@ -70,6 +71,9 @@ public class AccumulateVisitorPatternDSL extends AccumulateVisitor {
             if (patterBinding.size() == 1) {
                 findPatternWithBinding(context, patterBinding, allExpressions)
                         .ifPresent(pattern -> addBindAsLastChainCall(newBindingExpression, pattern));
+
+                findPatternWithBinding2(context, patterBinding, allExpressions)
+                        .ifPresent(pattern -> composeTwoBindings(newBindingExpression, pattern));
             } else if (patterBinding.size() == 2) {
                 findPatternWithBinding(context, patterBinding, allExpressions)
                         .ifPresent(pattern -> composeTwoBindings(newBindingExpression, pattern));

@@ -102,6 +102,7 @@ import static java.util.stream.Collectors.toList;
 
 import static com.github.javaparser.StaticJavaParser.parseType;
 import static org.drools.modelcompiler.builder.generator.DslMethodNames.PATTERN_CALL;
+import static org.drools.modelcompiler.builder.generator.expression.PatternExpressionBuilder.BIND_CALL;
 import static org.drools.modelcompiler.builder.generator.expressiontyper.ExpressionTyper.findLeftLeafOfNameExpr;
 import static org.drools.modelcompiler.util.ClassUtil.findMethod;
 import static org.drools.modelcompiler.util.ClassUtil.toRawClass;
@@ -746,6 +747,20 @@ public class DrlxParseUtil {
                 return isPatternExpr && hasBindingHasArgument;
             });
             return pattern.map(Stream::of).orElse(Stream.empty());
+        }).findFirst();
+    }
+
+    public static Optional<MethodCallExpr> findPatternWithBinding2(RuleContext context, Collection<String> patternBindings, List<Expression> expressions) {
+        return expressions.stream().flatMap((Expression e) -> {
+            final Optional<MethodCallExpr> bind = e.findFirst(MethodCallExpr.class, expr -> {
+                boolean isBindCall = expr.getName().asString().equals(BIND_CALL);
+                List<Expression> bindingExprsVars = patternBindings.stream().map(context::getVarExpr).collect(toList());
+                boolean hasBindingHasArgument = !Collections.disjoint(bindingExprsVars, expr.getArguments());
+                return isBindCall && hasBindingHasArgument;
+            });
+            return bind
+                    .flatMap( b -> b.getScope().map(Expression::asMethodCallExpr))
+                    .map(Stream::of).orElse(Stream.empty());
         }).findFirst();
     }
 
