@@ -37,6 +37,8 @@ import org.kie.pmml.models.drools.tuples.KiePMMLOperatorValue;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
+import static org.kie.pmml.models.drools.commons.factories.KiePMMLDescrFactory.OUTPUTFIELDS_MAP;
+import static org.kie.pmml.models.drools.commons.factories.KiePMMLDescrFactory.OUTPUTFIELDS_MAP_IDENTIFIER;
 import static org.kie.pmml.models.drools.commons.factories.KiePMMLDescrFactory.PMML4_RESULT;
 import static org.kie.pmml.models.drools.commons.factories.KiePMMLDescrFactory.PMML4_RESULT_IDENTIFIER;
 
@@ -68,7 +70,7 @@ public class KiePMMLDescrFactoryTest {
     }
 
     private void checkImports(List<ImportDescr> toCheck) {
-        assertEquals(3, toCheck.size());
+        assertEquals(4, toCheck.size());
         List<String> expectedImports = Arrays.asList(KiePMMLStatusHolder.class.getName(),
                                                      SimplePredicate.class.getName(),
                                                      PMML4Result.class.getName());
@@ -78,10 +80,13 @@ public class KiePMMLDescrFactoryTest {
     }
 
     private void checkGlobals(List<GlobalDescr> toCheck) {
-        assertEquals(1, toCheck.size());
+        assertEquals(2, toCheck.size());
         GlobalDescr retrieved = toCheck.get(0);
         assertEquals(PMML4_RESULT_IDENTIFIER, retrieved.getIdentifier());
         assertEquals(PMML4_RESULT, retrieved.getType());
+        retrieved = toCheck.get(1);
+        assertEquals(OUTPUTFIELDS_MAP_IDENTIFIER, retrieved.getIdentifier());
+        assertEquals(OUTPUTFIELDS_MAP, retrieved.getType());
     }
 
     private void checkRules(List<RuleDescr> toCheck) {

@@ -17,6 +17,7 @@ package org.kie.pmml.models.drools.ast.factories;
 
 import org.drools.core.util.StringUtils;
 import org.kie.pmml.models.drools.ast.KiePMMLDroolsRule;
+import org.kie.pmml.models.drools.tuples.KiePMMLReasonCodeAndValue;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -45,9 +46,10 @@ public class KiePMMLTruePredicateASTFactory extends KiePMMLAbstractPredicateASTF
     }
 
     public void declareRuleFromTruePredicateWithAccumulation(final String statusToSet,
+                                                             final KiePMMLReasonCodeAndValue reasonCodeAndValue,
                                                              final boolean isLastCharacteristic) {
         KiePMMLDroolsRule.Builder builder = getRuleBuilder(statusToSet);
-        KiePMMLTruePredicateWithAccumulationASTFactory.declareRuleFromTruePredicate(builder, predicateASTFactoryData.getRules(), statusToSet, isLastCharacteristic);
+        KiePMMLTruePredicateWithAccumulationASTFactory.declareRuleFromTruePredicate(builder, predicateASTFactoryData.getRules(), statusToSet, reasonCodeAndValue, isLastCharacteristic);
     }
 
     protected KiePMMLDroolsRule.Builder getRuleBuilder(final String statusToSet) {

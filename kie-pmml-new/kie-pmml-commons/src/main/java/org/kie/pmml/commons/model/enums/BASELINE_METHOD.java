@@ -20,35 +20,31 @@ import java.util.Arrays;
 import org.kie.pmml.commons.exceptions.KieEnumException;
 
 /**
- * @see <a href=http://dmg.org/pmml/v4-4/TreeModel.html#xsdElement_CompoundPredicate>CompoundPredicate</a>
+ * @see <a href=http://dmg.org/pmml/v4-4/Scorecard.html#baselinemethod>baselinemethod</a>
  */
-public enum BOOLEAN_OPERATOR {
+public enum BASELINE_METHOD {
 
-    OR("or", "||"),
-    AND("and", "&&"),
-    XOR("xor", "^"),
-    SURROGATE("surrogate", "surrogate");
+    MAX("max"),
+    MIN("min"),
+    MEAN("mean"),
+    NEUTRAL("neutral"),
+    OTHER("other");
 
     private String name;
-    private String customOperator;
 
-    BOOLEAN_OPERATOR(String name, String customOperator) {
+    BASELINE_METHOD(String name) {
         this.name = name;
-        this.customOperator = customOperator;
     }
 
-    public static BOOLEAN_OPERATOR byName(String name) {
-        return Arrays.stream(BOOLEAN_OPERATOR.values())
+    public static BASELINE_METHOD byName(String name) {
+        return Arrays.stream(BASELINE_METHOD.values())
                 .filter(value -> name.equals(value.name))
                 .findFirst()
-                .orElseThrow(() -> new KieEnumException("Failed to find BOOLEAN_OPERATOR with name: " + name));
+                .orElseThrow(() -> new KieEnumException("Failed to find BASELINE_METHOD with name: " + name));
     }
 
     public String getName() {
         return name;
     }
 
-    public String getCustomOperator() {
-        return customOperator;
-    }
 }

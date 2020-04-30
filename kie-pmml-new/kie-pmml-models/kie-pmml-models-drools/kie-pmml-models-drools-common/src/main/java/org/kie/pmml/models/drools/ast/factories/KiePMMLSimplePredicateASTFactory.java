@@ -24,6 +24,7 @@ import org.kie.pmml.commons.model.enums.OPERATOR;
 import org.kie.pmml.models.drools.ast.KiePMMLDroolsRule;
 import org.kie.pmml.models.drools.ast.KiePMMLFieldOperatorValue;
 import org.kie.pmml.models.drools.tuples.KiePMMLOperatorValue;
+import org.kie.pmml.models.drools.tuples.KiePMMLReasonCodeAndValue;
 import org.kie.pmml.models.drools.utils.KiePMMLASTFactoryUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -50,6 +51,7 @@ public class KiePMMLSimplePredicateASTFactory extends KiePMMLAbstractPredicateAS
             final String agendaActivationGroup,
             final Number toAccumulate,
             final String statusToSet,
+            final KiePMMLReasonCodeAndValue reasonCodeAndValue,
             final boolean isLastCharacteristic) {
         logger.trace("declareRuleFromSimplePredicateSurrogate {} {} {} {}", agendaActivationGroup, toAccumulate, statusToSet, isLastCharacteristic);
         String fieldName = predicateASTFactoryData.getFieldTypeMap().get(((SimplePredicate) predicateASTFactoryData.getPredicate()).getField().getValue()).getGeneratedType();
@@ -58,10 +60,16 @@ public class KiePMMLSimplePredicateASTFactory extends KiePMMLAbstractPredicateAS
         // Create "TRUE" matcher
         KiePMMLDroolsRule.Builder builder = getBuilderForSimplePredicateSurrogateTrueMatcher(agendaActivationGroup, surrogateCurrentRule, constraints, statusToSet)
                 .withAccumulation(toAccumulate);
+        if (reasonCodeAndValue != null) {
+            builder = builder.withReasonCodeAndValue(reasonCodeAndValue);
+        }
         KiePMMLSimplePredicateWithAccumulationASTFactory.declareRuleFromSimplePredicateSurrogateTrueMatcher(builder, predicateASTFactoryData.getRules(), isLastCharacteristic);
         // Create "FALSE" matcher
         builder = getBuilderForSimplePredicateSurrogateFalseMatcher(agendaActivationGroup, surrogateCurrentRule, constraints, statusToSet)
                 .withAccumulation(toAccumulate);
+        if (reasonCodeAndValue != null) {
+            builder = builder.withReasonCodeAndValue(reasonCodeAndValue);
+        }
         KiePMMLSimplePredicateWithAccumulationASTFactory.declareRuleFromSimplePredicateSurrogateFalseMatcher(builder, predicateASTFactoryData.getRules());
     }
 
@@ -98,20 +106,28 @@ public class KiePMMLSimplePredicateASTFactory extends KiePMMLAbstractPredicateAS
      * $statusHolder.setStatus("_ResidenceStateScore_1");
      * $statusHolder.accumulate("10.0");
      * update($statusHolder);
+     * $outputFieldsMap.put("rank-" + $outputFieldsMap.size(), "_reasonCode_");
+     *
      * <p>
      * end
      * <p>
      * end
+     *
      * @param toAccumulate
      * @param statusToSet
+     * @param reasonCodeAndValue
      * @param isLastCharacteristic
      */
     public void declareRuleFromSimplePredicate(final Number toAccumulate,
                                                final String statusToSet,
+                                               final KiePMMLReasonCodeAndValue reasonCodeAndValue,
                                                final boolean isLastCharacteristic) {
         logger.trace("declareRuleFromSimplePredicate {} {} {}", toAccumulate, statusToSet, isLastCharacteristic);
         KiePMMLDroolsRule.Builder builder = getBuilderForSimplePredicate(statusToSet)
                 .withAccumulation(toAccumulate);
+        if (reasonCodeAndValue != null) {
+            builder = builder.withReasonCodeAndValue(reasonCodeAndValue);
+        }
         KiePMMLSimplePredicateWithAccumulationASTFactory.declareRuleFromSimplePredicate(builder, predicateASTFactoryData.getRules(), isLastCharacteristic);
     }
 

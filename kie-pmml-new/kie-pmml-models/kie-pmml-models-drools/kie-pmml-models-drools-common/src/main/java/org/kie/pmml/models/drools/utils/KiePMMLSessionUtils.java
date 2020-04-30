@@ -28,6 +28,9 @@ import org.kie.pmml.evaluator.api.exceptions.KiePMMLModelException;
 import org.kie.pmml.models.drools.executor.KiePMMLStatusHolder;
 import org.kie.pmml.models.drools.tuples.KiePMMLOriginalTypeGeneratedType;
 
+import static org.kie.pmml.models.drools.commons.factories.KiePMMLDescrFactory.OUTPUTFIELDS_MAP_IDENTIFIER;
+import static org.kie.pmml.models.drools.commons.factories.KiePMMLDescrFactory.PMML4_RESULT_IDENTIFIER;
+
 /**
  * Class used to isolate all the <code>KieSession</code> instantiation/usage details
  */
@@ -44,7 +47,7 @@ public class KiePMMLSessionUtils {
                 .newKieSession();
         kieSession.insert(new KiePMMLStatusHolder());
         kieSession.insert(pmml4Result);
-        kieSession.setGlobal("$pmml4Result", pmml4Result);
+        kieSession.setGlobal(PMML4_RESULT_IDENTIFIER, pmml4Result);
     }
 
     public static Builder builder(final PackageDescr packageDescr, final PMML4Result pmml4Result) {
@@ -81,6 +84,16 @@ public class KiePMMLSessionUtils {
         }
     }
 
+    /**
+     * Insert an <code>Object</code> to the underlying <code>KieSession</code>.
+     * @param toInsert the <code>Object</code> to insert
+     * @param globalName its global name
+     */
+    private void insertObjectInSession(final Object toInsert, final String globalName) {
+        kieSession.insert(toInsert);
+        kieSession.setGlobal(globalName, toInsert);
+    }
+
     public static class Builder {
 
         private KiePMMLSessionUtils toBuild;
@@ -91,7 +104,6 @@ public class KiePMMLSessionUtils {
 
         /**
          * Add an <code>AgendaEventListener</code> to the underlying <code>KieSession</code>
-         *
          * @param agendaEventListener
          * @return
          */
@@ -103,13 +115,22 @@ public class KiePMMLSessionUtils {
         /**
          * Insert <code>Object</code>s to the underlying <code>KieSession</code>.
          * Such <code>Object</code>s are retrieved out of the given <code>Map</code>s
-         *
          * @param unwrappedInputParams
          * @param fieldTypeMap
          * @return
          */
         public Builder withObjectsInSession(final Map<String, Object> unwrappedInputParams, final Map<String, KiePMMLOriginalTypeGeneratedType> fieldTypeMap) {
             this.toBuild.addObjectsToSession(unwrappedInputParams, fieldTypeMap);
+            return this;
+        }
+
+        /**
+         * Insert <code>Map&lt;String, Object&gt;</code> <b>outputFieldsMap</b> to the underlying <code>KieSession</code>.
+         * @param outputFieldsMap
+         * @return
+         */
+        public Builder withOutputFieldsMap(final Map<String, Object> outputFieldsMap) {
+            this.toBuild.insertObjectInSession(outputFieldsMap, OUTPUTFIELDS_MAP_IDENTIFIER);
             return this;
         }
 

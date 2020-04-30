@@ -17,12 +17,14 @@ package org.kie.pmml.models.drools.scorecard.compiler.factories;
 
 import java.util.Collections;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 
 import org.dmg.pmml.DataDictionary;
 import org.dmg.pmml.scorecard.Scorecard;
 import org.drools.compiler.lang.descr.PackageDescr;
+import org.kie.pmml.commons.model.KiePMMLOutputField;
 import org.kie.pmml.commons.model.enums.MINING_FUNCTION;
 import org.kie.pmml.models.drools.ast.KiePMMLDroolsAST;
 import org.kie.pmml.models.drools.scorecard.model.KiePMMLScorecardModel;
@@ -30,6 +32,7 @@ import org.kie.pmml.models.drools.tuples.KiePMMLOriginalTypeGeneratedType;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import static org.kie.pmml.compiler.commons.factories.KiePMMLOutputFieldFactory.getOutputFields;
 import static org.kie.pmml.compiler.commons.utils.ModelUtils.getTargetFieldName;
 import static org.kie.pmml.models.drools.commons.factories.KiePMMLDescrFactory.getBaseDescr;
 import static org.kie.pmml.models.drools.scorecard.compiler.factories.KiePMMLScorecardModelASTFactory.getKiePMMLDroolsAST;
@@ -53,7 +56,9 @@ public class KiePMMLScorecardModelFactory {
         final KiePMMLDroolsAST kiePMMLDroolsAST = getKiePMMLDroolsAST(dataDictionary, model, fieldTypeMap);
         String packageName = name.replace(" ", "_").toLowerCase();
         final PackageDescr baseDescr = getBaseDescr(kiePMMLDroolsAST, packageName);
+        final List<KiePMMLOutputField> outputFields = getOutputFields(model);
         return KiePMMLScorecardModel.builder(name, Collections.emptyList(), MINING_FUNCTION.byName(model.getMiningFunction().value()))
+                .withOutputFields(outputFields)
                 .withPackageDescr(baseDescr)
                 .withFieldTypeMap(fieldTypeMap)
                 .withTargetField(targetFieldName.orElse(null))

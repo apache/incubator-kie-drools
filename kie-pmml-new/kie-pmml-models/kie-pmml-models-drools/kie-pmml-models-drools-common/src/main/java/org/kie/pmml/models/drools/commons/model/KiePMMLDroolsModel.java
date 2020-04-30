@@ -18,6 +18,7 @@ package org.kie.pmml.models.drools.commons.model;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
+import java.util.StringJoiner;
 import java.util.function.Supplier;
 
 import org.drools.compiler.lang.descr.PackageDescr;
@@ -26,6 +27,7 @@ import org.kie.api.pmml.PMML4Result;
 import org.kie.pmml.commons.enums.ResultCode;
 import org.kie.pmml.commons.model.KiePMMLExtension;
 import org.kie.pmml.commons.model.KiePMMLModel;
+import org.kie.pmml.commons.model.KiePMMLOutputField;
 import org.kie.pmml.commons.model.enums.MINING_FUNCTION;
 import org.kie.pmml.commons.model.enums.PMML_MODEL;
 import org.kie.pmml.models.drools.tuples.KiePMMLOriginalTypeGeneratedType;
@@ -45,6 +47,9 @@ public abstract class KiePMMLDroolsModel extends KiePMMLModel {
     private static final AgendaEventListener agendaEventListener = getAgendaEventListener(logger);
 
     protected PackageDescr packageDescr;
+
+    protected List<KiePMMLOutputField> outputFields;
+
     /**
      * Map between the original field name and the generated type.
      */
@@ -68,6 +73,7 @@ public abstract class KiePMMLDroolsModel extends KiePMMLModel {
         final KiePMMLSessionUtils kiePMMLSessionUtils = KiePMMLSessionUtils.builder(packageDescr, toReturn)
                 .withAgendaEventListener(agendaEventListener)
                 .withObjectsInSession(requestData, fieldTypeMap)
+                .withOutputFieldsMap(outputFieldsMap)
                 .build();
         kiePMMLSessionUtils.fireAllRules();
         return toReturn;
@@ -82,15 +88,20 @@ public abstract class KiePMMLDroolsModel extends KiePMMLModel {
 
     @Override
     public String toString() {
-        return "KiePMMLDroolsModel {" +
-                "packageDescr=" + packageDescr +
-                ", pmmlMODEL=" + pmmlMODEL +
-                ", miningFunction=" + miningFunction +
-                ", targetField='" + targetField + '\'' +
-                ", name='" + name + '\'' +
-                ", id='" + id + '\'' +
-                ", parentId='" + parentId + '\'' +
-                '}';
+        return new StringJoiner(", ", KiePMMLDroolsModel.class.getSimpleName() + "[", "]")
+                .add("packageDescr=" + packageDescr)
+                .add("outputFields=" + outputFields)
+                .add("fieldTypeMap=" + fieldTypeMap)
+                .add("pmmlMODEL=" + pmmlMODEL)
+                .add("miningFunction=" + miningFunction)
+                .add("targetField='" + targetField + "'")
+                .add("outputFieldsMap=" + outputFieldsMap)
+                .add("missingValueReplacementMap=" + missingValueReplacementMap)
+                .add("name='" + name + "'")
+                .add("extensions=" + extensions)
+                .add("id='" + id + "'")
+                .add("parentId='" + parentId + "'")
+                .toString();
     }
 
     @Override
@@ -126,6 +137,11 @@ public abstract class KiePMMLDroolsModel extends KiePMMLModel {
 
         public Builder<T> withFieldTypeMap(Map<String, KiePMMLOriginalTypeGeneratedType> fieldTypeMap) {
             toBuild.fieldTypeMap = fieldTypeMap;
+            return this;
+        }
+
+        public Builder<T> withOutputFields(List<KiePMMLOutputField> outputFields) {
+            toBuild.outputFields = outputFields;
             return this;
         }
     }

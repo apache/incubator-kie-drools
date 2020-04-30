@@ -38,15 +38,18 @@ import org.dmg.pmml.scorecard.Scorecard;
 import org.junit.Before;
 import org.junit.Test;
 import org.kie.pmml.commons.enums.ResultCode;
+import org.kie.pmml.commons.exceptions.KiePMMLException;
 import org.kie.pmml.commons.model.enums.BOOLEAN_OPERATOR;
 import org.kie.pmml.commons.model.enums.DATA_TYPE;
 import org.kie.pmml.commons.model.enums.OPERATOR;
+import org.kie.pmml.commons.model.enums.REASONCODE_ALGORITHM;
 import org.kie.pmml.compiler.testutils.TestUtils;
 import org.kie.pmml.models.drools.ast.KiePMMLDroolsRule;
 import org.kie.pmml.models.drools.ast.KiePMMLFieldOperatorValue;
 import org.kie.pmml.models.drools.ast.factories.KiePMMLDataDictionaryASTFactory;
 import org.kie.pmml.models.drools.tuples.KiePMMLOperatorValue;
 import org.kie.pmml.models.drools.tuples.KiePMMLOriginalTypeGeneratedType;
+import org.kie.pmml.models.drools.tuples.KiePMMLReasonCodeAndValue;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
@@ -91,7 +94,7 @@ public class KiePMMLScorecardModelCharacteristicASTFactoryTest {
         for (int i = 0; i < characteristicList.size(); i++) {
             Characteristic characteristic = characteristicList.get(i);
             attributes.addAll(characteristic.getAttributes());
-            for (int j = 0; j < characteristic.getAttributes().size(); j++){
+            for (int j = 0; j < characteristic.getAttributes().size(); j++) {
                 Attribute attribute = characteristic.getAttributes().get(j);
                 KiePMMLDroolsRule rule = retrieved.get(counter.incrementAndGet());
                 int expectedOperatorValuesSize = 1;
@@ -167,9 +170,11 @@ public class KiePMMLScorecardModelCharacteristicASTFactoryTest {
         final int attributeIndex = 2;
         final List<KiePMMLDroolsRule> rules = new ArrayList<>();
         final String statusToSet = "status_to_set";
+        final String characteristicReasonCode = "REASON_CODE";
+        final double characteristicBaselineScore = 12;
         final boolean isLastCharacteristic = false;
         getKiePMMLScorecardModelCharacteristicASTFactory()
-                .declareRuleFromAttribute(attribute, parentPath, attributeIndex, rules, statusToSet, isLastCharacteristic);
+                .declareRuleFromAttribute(attribute, parentPath, attributeIndex, rules, statusToSet, characteristicReasonCode, characteristicBaselineScore, isLastCharacteristic);
         assertEquals(1, rules.size());
         commonValidateRule(rules.get(0),
                            attribute,
@@ -185,15 +190,50 @@ public class KiePMMLScorecardModelCharacteristicASTFactoryTest {
     }
 
     @Test
+    public void declareRuleFromAttributeWithSimplePredicateUseReasonCodesTrue() {
+        Attribute attribute = getSimplePredicateAttribute();
+        final String parentPath = "parent_path";
+        final int attributeIndex = 2;
+        final List<KiePMMLDroolsRule> rules = new ArrayList<>();
+        final String statusToSet = "status_to_set";
+        final String characteristicReasonCode = "REASON_CODE";
+        final double characteristicBaselineScore = 12;
+        final boolean isLastCharacteristic = false;
+        getKiePMMLScorecardModelCharacteristicASTFactory()
+                .withReasonCodes(null, REASONCODE_ALGORITHM.POINTS_ABOVE)
+                .declareRuleFromAttribute(attribute, parentPath, attributeIndex, rules, statusToSet, characteristicReasonCode, characteristicBaselineScore, isLastCharacteristic);
+        assertEquals(1, rules.size());
+        KiePMMLDroolsRule toValidate = rules.get(0);
+        commonValidateRule(toValidate,
+                           attribute,
+                           statusToSet,
+                           parentPath,
+                           attributeIndex,
+                           isLastCharacteristic,
+                           1,
+                           null,
+                           BOOLEAN_OPERATOR.AND.getName(),
+                           "value <= 5.0",
+                           1);
+        KiePMMLReasonCodeAndValue retrieved = toValidate.getReasonCodeAndValue();
+        assertNotNull(retrieved);
+        assertEquals(characteristicReasonCode, retrieved.getReasonCode());
+        double expected = attribute.getPartialScore().doubleValue() - characteristicBaselineScore;
+        assertEquals(expected, retrieved.getValue(), 0);
+    }
+
+    @Test
     public void declareRuleFromAttributeWithSimplePredicateLastCharacteristic() {
         Attribute attribute = getSimplePredicateAttribute();
         final String parentPath = "parent_path";
         final int attributeIndex = 2;
         final List<KiePMMLDroolsRule> rules = new ArrayList<>();
         final String statusToSet = "status_to_set";
+        final String characteristicReasonCode = "REASON_CODE";
+        final double characteristicBaselineScore = 12;
         final boolean isLastCharacteristic = true;
         getKiePMMLScorecardModelCharacteristicASTFactory()
-                .declareRuleFromAttribute(attribute, parentPath, attributeIndex, rules, statusToSet, isLastCharacteristic);
+                .declareRuleFromAttribute(attribute, parentPath, attributeIndex, rules, statusToSet, characteristicReasonCode, characteristicBaselineScore, isLastCharacteristic);
         assertEquals(1, rules.size());
         commonValidateRule(rules.get(0),
                            attribute,
@@ -215,9 +255,11 @@ public class KiePMMLScorecardModelCharacteristicASTFactoryTest {
         final int attributeIndex = 2;
         final List<KiePMMLDroolsRule> rules = new ArrayList<>();
         final String statusToSet = "status_to_set";
+        final String characteristicReasonCode = "REASON_CODE";
+        final double characteristicBaselineScore = 12;
         final boolean isLastCharacteristic = false;
         getKiePMMLScorecardModelCharacteristicASTFactory()
-                .declareRuleFromAttribute(attribute, parentPath, attributeIndex, rules, statusToSet, isLastCharacteristic);
+                .declareRuleFromAttribute(attribute, parentPath, attributeIndex, rules, statusToSet, characteristicReasonCode, characteristicBaselineScore, isLastCharacteristic);
         assertEquals(1, rules.size());
         commonValidateRule(rules.get(0),
                            attribute,
@@ -239,9 +281,11 @@ public class KiePMMLScorecardModelCharacteristicASTFactoryTest {
         final int attributeIndex = 2;
         final List<KiePMMLDroolsRule> rules = new ArrayList<>();
         final String statusToSet = "status_to_set";
+        final String characteristicReasonCode = "REASON_CODE";
+        final double characteristicBaselineScore = 12;
         final boolean isLastCharacteristic = false;
         getKiePMMLScorecardModelCharacteristicASTFactory()
-                .declareRuleFromAttribute(attribute, parentPath, attributeIndex, rules, statusToSet, isLastCharacteristic);
+                .declareRuleFromAttribute(attribute, parentPath, attributeIndex, rules, statusToSet, characteristicReasonCode, characteristicBaselineScore, isLastCharacteristic);
         assertEquals(1, rules.size());
         commonValidateRule(rules.get(0),
                            attribute,
@@ -294,7 +338,6 @@ public class KiePMMLScorecardModelCharacteristicASTFactoryTest {
                                              String expectedOperator,
                                              String expectedConstraints,
                                              int expectedOperatorValuesSize) {
-//        assertEquals(fieldName.toUpperCase(), toValidate.getName());
         assertEquals(expectedOperator, toValidate.getOperator());
         if (expectedConstraints != null) {
             assertEquals(expectedConstraints, toValidate.getConstraintsAsString());
@@ -401,6 +444,71 @@ public class KiePMMLScorecardModelCharacteristicASTFactoryTest {
                                                   SimplePredicate.Operator.LESS_THAN,
                                                   fieldTypeMap));
         return toReturn;
+    }
+
+    @Test
+    public void getKiePMMLReasonCodeAndValueUseReasonCodesFalse() {
+        assertNull(getKiePMMLScorecardModelCharacteristicASTFactory().getKiePMMLReasonCodeAndValue(new Attribute(),
+                                                                                                   "", 0));
+    }
+
+    @Test(expected = KiePMMLException.class)
+    public void getKiePMMLReasonCodeAndValueUseReasonCodesTrueNoBaselineScore() {
+        getKiePMMLScorecardModelCharacteristicASTFactory()
+                .withReasonCodes(null, null)
+                .getKiePMMLReasonCodeAndValue(new Attribute(),
+                                              "", null);
+    }
+
+    @Test(expected = KiePMMLException.class)
+    public void getKiePMMLReasonCodeAndValueUseReasonCodesTrueNoReasonCodeAlgorithm() {
+        getKiePMMLScorecardModelCharacteristicASTFactory()
+                .withReasonCodes(null, null)
+                .getKiePMMLReasonCodeAndValue(new Attribute(),
+                                              "", 12);
+    }
+
+    @Test(expected = KiePMMLException.class)
+    public void getKiePMMLReasonCodeAndValueUseReasonCodesTrueNoReasonCode() {
+        getKiePMMLScorecardModelCharacteristicASTFactory()
+                .withReasonCodes(null, REASONCODE_ALGORITHM.POINTS_ABOVE)
+                .getKiePMMLReasonCodeAndValue(new Attribute(),
+                                              "", 12);
+    }
+
+    @Test
+    public void getKiePMMLReasonCodeAndValueUseReasonCodesTrue() {
+        String characteristicReasonCode = "CHARACTERISTIC_REASON_CODE";
+        String attributeReasonCode = "ATTRIBUTE_REASON_CODE";
+        double baselineScore = 13;
+        double characteristicBaselineScore = 24.45;
+        double attributePartialScore = 13.17;
+        Attribute attribute = new Attribute();
+        attribute.setPartialScore(attributePartialScore);
+        KiePMMLReasonCodeAndValue retrieved = getKiePMMLScorecardModelCharacteristicASTFactory()
+                .withReasonCodes(baselineScore, REASONCODE_ALGORITHM.POINTS_ABOVE)
+                .getKiePMMLReasonCodeAndValue(attribute,
+                                              characteristicReasonCode, null);
+        assertNotNull(retrieved);
+        assertEquals(characteristicReasonCode, retrieved.getReasonCode());
+        double expected = attributePartialScore - baselineScore;
+        assertEquals(expected, retrieved.getValue(), 0);
+        retrieved = getKiePMMLScorecardModelCharacteristicASTFactory()
+                .withReasonCodes(baselineScore, REASONCODE_ALGORITHM.POINTS_ABOVE)
+                .getKiePMMLReasonCodeAndValue(attribute,
+                                              characteristicReasonCode, characteristicBaselineScore);
+        assertNotNull(retrieved);
+        assertEquals(characteristicReasonCode, retrieved.getReasonCode());
+        expected = attributePartialScore - characteristicBaselineScore;
+        assertEquals(expected, retrieved.getValue(), 0);
+        attribute.setReasonCode(attributeReasonCode);
+        retrieved = getKiePMMLScorecardModelCharacteristicASTFactory()
+                .withReasonCodes(baselineScore, REASONCODE_ALGORITHM.POINTS_ABOVE)
+                .getKiePMMLReasonCodeAndValue(attribute,
+                                              characteristicReasonCode, characteristicBaselineScore);
+        assertNotNull(retrieved);
+        assertEquals(attributeReasonCode, retrieved.getReasonCode());
+        assertEquals(expected, retrieved.getValue(), 0);
     }
 
     private KiePMMLScorecardModelCharacteristicASTFactory getKiePMMLScorecardModelCharacteristicASTFactory() {

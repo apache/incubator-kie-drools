@@ -21,6 +21,7 @@ import java.util.StringJoiner;
 import org.drools.compiler.lang.api.RuleDescrBuilder;
 import org.kie.pmml.commons.model.KiePMMLOutputField;
 import org.kie.pmml.models.drools.ast.KiePMMLDroolsRule;
+import org.kie.pmml.models.drools.tuples.KiePMMLReasonCodeAndValue;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -35,10 +36,12 @@ public class KiePMMLDescrRhsFactory {
     public static final String ADD_PMML4_RESULT_VARIABLE = "\r\n" + KiePMMLDescrFactory.PMML4_RESULT_IDENTIFIER + ".addResultVariable(" + KiePMMLDescrFactory.PMML4_RESULT_IDENTIFIER + ".getResultObjectName()" + ", %s);";
     public static final String ADD_PMML4_OUTPUT_FIELD = "\r\n" + KiePMMLDescrFactory.PMML4_RESULT_IDENTIFIER + ".addResultVariable(\"%s\", %s);";
 
+    public static final String ADD_OUTPUTFIELD_VALUE = "\r\n" + KiePMMLDescrFactory.OUTPUTFIELDS_MAP_IDENTIFIER + ".put(\"%s\", %s);";
+
     public static final String UPDATE_STATUS_HOLDER_STATUS = "\r\n" + KiePMMLDescrRulesFactory.STATUS_HOLDER + ".setStatus(\"%s\");";
     public static final String UPDATE_STATUS_HOLDER_ACCUMULATE = "\r\n" + KiePMMLDescrRulesFactory.STATUS_HOLDER + ".accumulate(%s);";
     public static final String UPDATE_STATUS_HOLDER = "\r\nupdate(" + KiePMMLDescrRulesFactory.STATUS_HOLDER + ");";
-    public static final String RETURN_ACCUMULATION = "\r\n$pmml4Result.addResultVariable($pmml4Result.getResultObjectName(), $statusHolder.getAccumulator());";
+    public static final String RETURN_ACCUMULATION = "\r\n" + KiePMMLDescrFactory.PMML4_RESULT_IDENTIFIER + ".addResultVariable($pmml4Result.getResultObjectName(), $statusHolder.getAccumulator());";
 
     public static final String FOCUS_AGENDA_GROUP = "\r\nkcontext.getKieRuntime().getAgenda().getAgendaGroup( \"%s\" ).setFocus();";
 
@@ -99,6 +102,10 @@ public class KiePMMLDescrRhsFactory {
         if (rule.getResult() != null) {
             joiner.add(String.format(ADD_PMML4_RESULT_VARIABLE, rule.getResult()));
         }
+        if (rule.getReasonCodeAndValue() != null) {
+            final KiePMMLReasonCodeAndValue reasonCodeAndValue = rule.getReasonCodeAndValue();
+            joiner.add(String.format(ADD_OUTPUTFIELD_VALUE, reasonCodeAndValue.getReasonCode(), reasonCodeAndValue.getValue()));
+        }
         if (rule.getOutputFields() != null) {
             if (rule.getResult() != null) {
                 commonDeclareOutputFields(rule.getOutputFields(), rule.getResult(), joiner);
@@ -113,6 +120,7 @@ public class KiePMMLDescrRhsFactory {
             switch (kiePMMLOutputField.getResultFeature()) {
                 case PREDICTED_VALUE:
                     joiner.add(String.format(ADD_PMML4_OUTPUT_FIELD, kiePMMLOutputField.getName(), result));
+                    break;
                 default:
                     // Not managed, yet
             }

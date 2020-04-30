@@ -18,6 +18,7 @@ package org.kie.pmml.commons.model;
 import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
+import java.util.StringJoiner;
 
 import org.kie.pmml.commons.model.abstracts.AbstractKiePMMLBase;
 import org.kie.pmml.commons.model.enums.RESULT_FEATURE;
@@ -29,6 +30,7 @@ public class KiePMMLOutputField extends AbstractKiePMMLBase {
 
     private RESULT_FEATURE resultFeature = RESULT_FEATURE.PREDICTED_VALUE;
     private String targetField = null;
+    private Integer rank;
     private Object value;
 
     private KiePMMLOutputField(String name, List<KiePMMLExtension> extensions) {
@@ -51,16 +53,22 @@ public class KiePMMLOutputField extends AbstractKiePMMLBase {
         return value;
     }
 
+    public Integer getRank() {
+        return rank;
+    }
+
     @Override
     public String toString() {
-        return "KiePMMLOutputField{" +
-                "resultFeature=" + resultFeature +
-                ", targetField='" + targetField + '\'' +
-                ", value=" + value +
-                ", name='" + name + '\'' +
-                ", id='" + id + '\'' +
-                ", parentId='" + parentId + '\'' +
-                '}';
+        return new StringJoiner(", ", KiePMMLOutputField.class.getSimpleName() + "[", "]")
+                .add("resultFeature=" + resultFeature)
+                .add("targetField='" + targetField + "'")
+                .add("rank=" + rank)
+                .add("value=" + value)
+                .add("name='" + name + "'")
+                .add("extensions=" + extensions)
+                .add("id='" + id + "'")
+                .add("parentId='" + parentId + "'")
+                .toString();
     }
 
     @Override
@@ -103,6 +111,11 @@ public class KiePMMLOutputField extends AbstractKiePMMLBase {
 
         public Builder withValue(Object value) {
             toBuild.value = value;
+            return this;
+        }
+
+        public Builder withRank(Integer rank) {
+            toBuild.rank = rank;
             return this;
         }
     }

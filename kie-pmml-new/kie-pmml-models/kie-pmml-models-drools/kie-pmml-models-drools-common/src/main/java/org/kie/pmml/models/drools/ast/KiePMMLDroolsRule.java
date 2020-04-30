@@ -22,6 +22,7 @@ import java.util.StringJoiner;
 
 import org.kie.pmml.commons.enums.ResultCode;
 import org.kie.pmml.commons.model.KiePMMLOutputField;
+import org.kie.pmml.models.drools.tuples.KiePMMLReasonCodeAndValue;
 
 /**
  * Data-class used to store information needed to generate a <b>Drools rule</b>
@@ -55,6 +56,7 @@ public class KiePMMLDroolsRule {
     private Object ifBreakValue;
     // RHS
     private String focusedAgendaGroup;
+    private KiePMMLReasonCodeAndValue reasonCodeAndValue;
     private ResultCode resultCode;
     private Object result;
     private Double toAccumulate;
@@ -169,6 +171,10 @@ public class KiePMMLDroolsRule {
 
     public Object getIfBreakValue() {
         return ifBreakValue;
+    }
+
+    public KiePMMLReasonCodeAndValue getReasonCodeAndValue() {
+        return reasonCodeAndValue;
     }
 
     public ResultCode getResultCode() {
@@ -486,6 +492,19 @@ public class KiePMMLDroolsRule {
          */
         public Builder withAccumulationResult(boolean accumulationResult) {
             this.toBuild.accumulationResult = accumulationResult;
+            return this;
+        }
+
+        /**
+         * Add the given <b>reasonCode</b> to the ordered map of matched reason codes.
+         * <p>
+         * (rhs)
+         * <p><code$outputFieldsMap.put("_reasonCodeAndValue.reasonCode_", "__reasonCodeAndValue.value_");</code></p>
+         * @param reasonCodeAndValue
+         * @return
+         */
+        public Builder withReasonCodeAndValue(KiePMMLReasonCodeAndValue reasonCodeAndValue) {
+            this.toBuild.reasonCodeAndValue = reasonCodeAndValue;
             return this;
         }
 
