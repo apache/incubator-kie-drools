@@ -76,6 +76,18 @@ public class AbstractRunnerHelperTest {
     };
 
     @Test
+    public void isFactMappingValueToSkip() {
+        FactIdentifier factIdentifier = FactIdentifier.create("MyInstance", String.class.getCanonicalName());
+        ExpressionIdentifier expressionIdentifier = ExpressionIdentifier.create("MyProperty", FactMappingType.GIVEN);
+
+        FactMappingValue factMappingValueWithValidValue = new FactMappingValue(factIdentifier, expressionIdentifier, VALUE);
+        assertFalse(abstractRunnerHelper.isFactMappingValueToSkip(factMappingValueWithValidValue));
+
+        FactMappingValue factMappingValueWithoutValue = new FactMappingValue(factIdentifier, expressionIdentifier, null);
+        assertTrue(abstractRunnerHelper.isFactMappingValueToSkip(factMappingValueWithoutValue));
+    }
+
+    @Test
     public void fillResult() {
         FactIdentifier factIdentifier = FactIdentifier.create("MyInstance", String.class.getCanonicalName());
         ExpressionIdentifier expressionIdentifier = ExpressionIdentifier.create("MyProperty", FactMappingType.GIVEN);
