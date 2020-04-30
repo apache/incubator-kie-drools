@@ -45,10 +45,12 @@ public class KiePMMLTruePredicateASTFactory extends KiePMMLAbstractPredicateASTF
         KiePMMLTruePredicateWithResultASTFactory.declareRuleFromTruePredicate(builder, predicateASTFactoryData.getRules(), result, isFinalLeaf);
     }
 
-    public void declareRuleFromTruePredicateWithAccumulation(final String statusToSet,
+    public void declareRuleFromTruePredicateWithAccumulation(final Number toAccumulate,
+                                                             final String statusToSet,
                                                              final KiePMMLReasonCodeAndValue reasonCodeAndValue,
                                                              final boolean isLastCharacteristic) {
-        KiePMMLDroolsRule.Builder builder = getRuleBuilder(statusToSet);
+        KiePMMLDroolsRule.Builder builder = getRuleBuilder(statusToSet)
+                .withAccumulation(toAccumulate);
         KiePMMLTruePredicateWithAccumulationASTFactory.declareRuleFromTruePredicate(builder, predicateASTFactoryData.getRules(), statusToSet, reasonCodeAndValue, isLastCharacteristic);
     }
 

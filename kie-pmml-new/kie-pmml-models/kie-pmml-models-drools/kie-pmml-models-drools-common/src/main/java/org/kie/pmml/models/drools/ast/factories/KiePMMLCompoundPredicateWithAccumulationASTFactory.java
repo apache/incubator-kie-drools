@@ -77,9 +77,9 @@ public class KiePMMLCompoundPredicateWithAccumulationASTFactory {
         if (isLastCharacteristic) {
             builder = builder.withAccumulationResult(true)
                     .withResultCode(ResultCode.OK);
-            if (reasonCodeAndValue != null) {
-                builder = builder.withReasonCodeAndValue(reasonCodeAndValue);
-            }
+        }
+        if (reasonCodeAndValue != null) {
+            builder = builder.withReasonCodeAndValue(reasonCodeAndValue);
         }
         rules.add(builder.build());
     }

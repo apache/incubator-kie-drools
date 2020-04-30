@@ -61,7 +61,7 @@ public class KiePMMLPredicateASTFactory extends KiePMMLAbstractPredicateASTFacto
         logger.trace("declareRuleFromPredicate {} {} {} {} {}", predicateASTFactoryData.getPredicate(), predicateASTFactoryData.getParentPath(), predicateASTFactoryData.getCurrentRule(), toAccumulate, isLastCharacteristic);
         if (predicateASTFactoryData.getPredicate() instanceof True) {
             KiePMMLTruePredicateASTFactory.factory(predicateASTFactoryData)
-                    .declareRuleFromTruePredicateWithAccumulation(statusToSet, reasonCodeAndValue, isLastCharacteristic);
+                    .declareRuleFromTruePredicateWithAccumulation(toAccumulate, statusToSet, reasonCodeAndValue, isLastCharacteristic);
         } else if (predicateASTFactoryData.getPredicate() instanceof SimplePredicate) {
             KiePMMLSimplePredicateASTFactory.factory(predicateASTFactoryData)
                     .declareRuleFromSimplePredicate(toAccumulate, statusToSet, reasonCodeAndValue, isLastCharacteristic);
