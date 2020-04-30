@@ -46,13 +46,10 @@ import org.drools.modelcompiler.domain.TargetPolicy;
 import org.drools.modelcompiler.oopathdtables.InternationalAddress;
 import org.junit.Ignore;
 import org.junit.Test;
-import org.kie.api.KieBase;
 import org.kie.api.definition.type.FactType;
-import org.kie.api.io.ResourceType;
 import org.kie.api.runtime.KieSession;
 import org.kie.api.runtime.rule.AccumulateFunction;
 import org.kie.api.runtime.rule.FactHandle;
-import org.kie.internal.utils.KieHelper;
 
 import static org.hamcrest.CoreMatchers.hasItem;
 import static org.junit.Assert.assertEquals;
@@ -1933,92 +1930,5 @@ public class AccumulateTest extends BaseModelTest {
         ksession.update(geoffreyFH, new Person("Geoffrey", 40));
         ksession.insert(new Person("Matteo", 38));
         ksession.fireAllRules();
-    }
-
-    public static class InputDataTypes{
-        private int priority;
-
-        public int getPriority() {
-            return priority;
-        }
-        public void setPriority(int priority) {
-            this.priority = priority;
-        }
-        private Calendar dueDate;
-        public Calendar getDueDate() {
-            return dueDate;
-        }
-        public void setDueDate(Calendar date) {
-            dueDate=date;
-        }
-    }
-
-    public static class ControlType
-    {
-        private boolean booleanValue;
-
-        public ControlType(boolean booleanValue) {
-            this.booleanValue = booleanValue;
-        }
-
-        public void setBooleanValue(boolean booleanValue) {
-            this.booleanValue = booleanValue;
-        }
-
-        public boolean getBooleanValue() {
-            return booleanValue;
-        }
-    }
-
-    @Test
-    public void newTest() {
-        final String drl =
-                "package com.wellsfargo.rules.ABCDE;\r\n" +
-                        "import java.util.*;\r\n" +
-                        "import java.math.*;\r\n" +
-                        "import " + AccumulateTest.InputDataTypes.class.getCanonicalName() + ";\r\n" +
-                        "import " + AccumulateTest.ControlType.class.getCanonicalName() + ";\r\n" +
-                        "rule \"AccumulateMinDate\"\r\n" +
-                        "	dialect \"java\"\r\n" +
-                        "	when\r\n" +
-                        "		$var1 : ControlType( booleanValue == false ) \r\n" +
-                        "		$min_1 : Number() from accumulate ( $var2 : ControlType( booleanValue == false ) " +
-                        "                                           and $stepCode_C1_1 : InputDataTypes($dueDate : dueDate, priority <= 10 );" +
-                        "                                           min($dueDate.getTime().getTime())" +
-                        "                                         ) " +
-                        "\r\n" +
-                        "	then\r\n" +
-                        "		System.out.println(\"Fired AccumulateMinDate\");\r\n" +
-                        "		System.out.println(\"First min value -\" + $min_1.longValue());\r\n" +
-                        "		$var1.setBooleanValue(true);\r\n" +
-                        "		update($var1);\r\n" +
-                        "end";
-
-        final KieSession ksession = getKieSession(drl);
-        ReteDumper.dumpRete(ksession);
-
-        ControlType t1 = new ControlType(false);
-        InputDataTypes i1= new InputDataTypes();
-        i1.setPriority(10);
-        i1.setDueDate(Calendar.getInstance());
-
-        InputDataTypes i2= new InputDataTypes();
-        i2.setDueDate(Calendar.getInstance());
-        i2.setPriority(20);
-
-        InputDataTypes i3= new InputDataTypes();
-        i3.setDueDate(Calendar.getInstance());
-
-        ksession.insert(t1);
-        ksession.insert(i1);
-        ksession.insert(i2);
-        ksession.insert(i3);
-
-        try {
-
-            assertEquals(1, ksession.fireAllRules());
-        } finally {
-            ksession.dispose();
-        }
     }
 }
