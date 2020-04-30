@@ -60,40 +60,6 @@ public class AccumulateOnlyPatternTest extends OnlyPatternTest {
         Assertions.assertThat(ksession.fireAllRules()).isEqualTo(1);
     }
 
-    public static class InputDataTypes {
-
-        private Calendar dueDate;
-
-        public InputDataTypes(Calendar dueDate) {
-            this.dueDate = dueDate;
-        }
-
-        public Calendar getDueDate() {
-            return dueDate;
-        }
-
-        public void setDueDate(Calendar date) {
-            dueDate = date;
-        }
-    }
-
-    public static class ControlType {
-
-        private boolean booleanValue;
-
-        public ControlType(boolean booleanValue) {
-            this.booleanValue = booleanValue;
-        }
-
-        public void setBooleanValue(boolean booleanValue) {
-            this.booleanValue = booleanValue;
-        }
-
-        public boolean getBooleanValue() {
-            return booleanValue;
-        }
-    }
-
     @Test
     public void testSubnetworkTuple() {
         final String drl =
@@ -131,6 +97,40 @@ public class AccumulateOnlyPatternTest extends OnlyPatternTest {
             assertEquals(year2019.getTime().getTime(), result.iterator().next().longValue());
         } finally {
             ksession.dispose();
+        }
+    }
+
+    public static class InputDataTypes {
+
+        private Calendar dueDate;
+
+        public InputDataTypes(Calendar dueDate) {
+            this.dueDate = dueDate;
+        }
+
+        public Calendar getDueDate() {
+            return dueDate;
+        }
+
+        public void setDueDate(Calendar date) {
+            dueDate = date;
+        }
+    }
+
+    public static class ControlType {
+
+        private boolean booleanValue;
+
+        public ControlType(boolean booleanValue) {
+            this.booleanValue = booleanValue;
+        }
+
+        public void setBooleanValue(boolean booleanValue) {
+            this.booleanValue = booleanValue;
+        }
+
+        public boolean getBooleanValue() {
+            return booleanValue;
         }
     }
 
