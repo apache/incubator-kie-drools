@@ -180,6 +180,7 @@ public abstract class AbstractRunnerHelper {
 
         Set<FactIdentifier> inputFacts = factMappingValues.stream()
                 .filter(elem -> FactMappingType.GIVEN.equals(elem.getExpressionIdentifier().getType()))
+                .filter(elem -> !isFactMappingValueToSkip(elem))
                 .map(FactMappingValue::getFactIdentifier)
                 .collect(Collectors.toSet());
 
@@ -199,8 +200,7 @@ public abstract class AbstractRunnerHelper {
         for (FactMappingValue factMappingValue : factMappingValues) {
             FactIdentifier factIdentifier = factMappingValue.getFactIdentifier();
 
-            // null means skip
-            if (factMappingValue.getRawValue() == null) {
+            if (isFactMappingValueToSkip(factMappingValue)) {
                 continue;
             }
 
@@ -217,6 +217,10 @@ public abstract class AbstractRunnerHelper {
                     .add(factMappingValue);
         }
         return groupByFactIdentifier;
+    }
+
+    protected boolean isFactMappingValueToSkip(FactMappingValue factMappingValue) {
+        return factMappingValue.getRawValue() == null;
     }
 
     protected Map<List<String>, Object> getParamsForBean(ScesimModelDescriptor scesimModelDescriptor,
