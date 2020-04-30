@@ -1006,4 +1006,14 @@ public class RuleUnitSessionImpl extends AbstractRuntime
     public boolean tryDeactivate() {
         return session.tryDeactivate();
     }
+
+    @Override
+    public ProcessInstance startProcessFromNodeIds(String processId, Map<String, Object> params, String... nodeIds) {
+        return session.startProcessFromNodeIds(processId, params, nodeIds);
+    }
+
+    @Override
+    public ProcessInstance startProcessFromNodeIds(String processId, CorrelationKey key, Map<String, Object> params, String... nodeIds) {
+        return session.startProcessFromNodeIds(processId, key, params, nodeIds);
+    }
 }
