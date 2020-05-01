@@ -25,7 +25,7 @@ import org.optaplanner.core.impl.score.buildin.hardsoft.HardSoftScoreDefinition;
 
 /**
  * Abstract superclass for {@link ScoreDefinition}.
- * 
+ *
  * @see ScoreDefinition
  * @see HardSoftScoreDefinition
  */

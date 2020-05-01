@@ -33,7 +33,7 @@ public class ExhaustiveSearchNode {
     private Score score;
     /**
      * Never worse than the best possible score a leaf node below this node might lead to.
-     * 
+     *
      * @see ScoreBounder#calculateOptimisticBound(ScoreDirector, Score)
      */
     private Score optimisticBound;

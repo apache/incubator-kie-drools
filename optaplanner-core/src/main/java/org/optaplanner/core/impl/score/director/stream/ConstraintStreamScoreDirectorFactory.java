@@ -31,7 +31,7 @@ import org.optaplanner.core.impl.score.stream.drools.DroolsConstraintFactory;
 
 /**
  * FP streams implementation of {@link ScoreDirectorFactory}.
- * 
+ *
  * @param <Solution_> the solution type, the class with the {@link PlanningSolution} annotation
  * @see ConstraintStreamScoreDirector
  * @see ScoreDirectorFactory

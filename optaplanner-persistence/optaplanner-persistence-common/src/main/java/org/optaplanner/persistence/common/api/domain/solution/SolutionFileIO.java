@@ -24,7 +24,7 @@ import org.optaplanner.core.api.domain.solution.PlanningSolution;
  * Reads or writes a {@link PlanningSolution} from or to a {@link File}.
  * <p>
  * An implementation must be thread-safe.
- * 
+ *
  * @param <Solution_> the solution type, the class with the {@link PlanningSolution} annotation
  */
 public interface SolutionFileIO<Solution_> {
@@ -45,7 +45,7 @@ public interface SolutionFileIO<Solution_> {
      * The file extension does not include the dot that separates it from the base name.
      * <p>
      * This method is thread-safe.
-     * 
+     *
      * @return never null, for example "xml"
      */
     String getInputFileExtension();
@@ -54,7 +54,7 @@ public interface SolutionFileIO<Solution_> {
      * It's highly recommended that this method returns the same value as {@link #getInputFileExtension()},
      * which it does by default unless it's overridden,
      * because a good output file is able to function as an input file.
-     * 
+     *
      * @return never null, for example "xml"
      * @see #getInputFileExtension()
      */
@@ -64,7 +64,7 @@ public interface SolutionFileIO<Solution_> {
 
     /**
      * This method is thread-safe.
-     * 
+     *
      * @param inputSolutionFile never null
      * @return never null
      */
@@ -72,7 +72,7 @@ public interface SolutionFileIO<Solution_> {
 
     /**
      * This method is thread-safe.
-     * 
+     *
      * @param solution never null
      * @param outputSolutionFile never null, parent directory already exists
      */

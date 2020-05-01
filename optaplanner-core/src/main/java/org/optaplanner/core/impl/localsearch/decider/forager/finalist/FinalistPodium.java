@@ -24,7 +24,7 @@ import org.optaplanner.core.impl.localsearch.scope.LocalSearchMoveScope;
 
 /**
  * A podium gathers the finalists (the {@link LocalSearchMoveScope}s which might win) and picks the winner.
- * 
+ *
  * @see AbstractFinalistPodium
  * @see HighestScoreFinalistPodium
  */
@@ -32,7 +32,7 @@ public interface FinalistPodium extends LocalSearchPhaseLifecycleListener {
 
     /**
      * See {@link LocalSearchForager#addMove(LocalSearchMoveScope)}.
-     * 
+     *
      * @param moveScope never null
      */
     void addMove(LocalSearchMoveScope moveScope);

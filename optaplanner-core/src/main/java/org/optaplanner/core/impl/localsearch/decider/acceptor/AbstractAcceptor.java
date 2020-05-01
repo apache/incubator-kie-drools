@@ -22,7 +22,7 @@ import org.slf4j.LoggerFactory;
 
 /**
  * Abstract superclass for {@link Acceptor}.
- * 
+ *
  * @see Acceptor
  */
 public abstract class AbstractAcceptor extends LocalSearchPhaseLifecycleListenerAdapter implements Acceptor {

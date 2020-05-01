@@ -23,7 +23,7 @@ import org.optaplanner.core.impl.solver.event.SolverLifecycleListenerAdapter;
 
 /**
  * An adapter for {@link ConstructionHeuristicPhaseLifecycleListener}.
- * 
+ *
  * @param <Solution_> the solution type, the class with the {@link PlanningSolution} annotation
  */
 public class ConstructionHeuristicPhaseLifecycleListenerAdapter<Solution_> extends SolverLifecycleListenerAdapter<Solution_>

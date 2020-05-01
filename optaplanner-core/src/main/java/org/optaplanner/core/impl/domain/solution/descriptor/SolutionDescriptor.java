@@ -1129,7 +1129,7 @@ public class SolutionDescriptor<Solution_> {
     /**
      * Calculates an indication on how big this problem instance is.
      * This is intentionally very loosely defined for now.
-     * 
+     *
      * @param solution never null
      * @return {@code >= 0}
      */
@@ -1214,7 +1214,7 @@ public class SolutionDescriptor<Solution_> {
 
     /**
      * Called when the {@link Score} has been calculated or predicted.
-     * 
+     *
      * @param solution never null
      * @param score sometimes null, in rare occasions to indicate that the old {@link Score} is stale,
      *        but no new ones has been calculated

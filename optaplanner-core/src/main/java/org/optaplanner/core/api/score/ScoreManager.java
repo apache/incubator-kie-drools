@@ -30,7 +30,7 @@ import org.optaplanner.core.impl.score.DefaultScoreManager;
  * To create a ScoreManager, use {@link #create(SolverFactory)}.
  * <p>
  * These methods are thread-safe unless explicitly stated otherwise.
- * 
+ *
  * @param <Solution_> the solution type, the class with the {@link PlanningSolution} annotation
  */
 public interface ScoreManager<Solution_> {
@@ -41,7 +41,7 @@ public interface ScoreManager<Solution_> {
 
     /**
      * Uses a {@link SolverFactory} to build a {@link ScoreManager}.
-     * 
+     *
      * @param solverFactory never null
      * @return never null
      * @param <Solution_> the solution type, the class with the {@link PlanningSolution} annotation
@@ -56,7 +56,7 @@ public interface ScoreManager<Solution_> {
 
     /**
      * Calculates the {@link Score} of a {@link PlanningSolution} and updates its {@link PlanningScore} member.
-     * 
+     *
      * @param solution never null
      */
     void updateScore(Solution_ solution);

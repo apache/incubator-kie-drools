@@ -35,7 +35,7 @@ public interface NearbyRandom {
 
     /**
      * Used to limit the RAM memory size of the nearby distance matrix.
-     * 
+     *
      * @return one more than the maximum number that {@link #nextInt(Random, int)} can return,
      *         {@link Integer#MAX_VALUE} if there is none
      */

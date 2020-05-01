@@ -29,7 +29,7 @@ import java.util.Set;
  * <p>
  * This speeds up {@link #add(Object)} performance (in some cases by 20%) if most instances have a small size
  * because no {@link Object#hashCode()} need to be calculated.
- * 
+ *
  * @param <E>
  */
 public final class SmallScalingOrderedSet<E> implements Set<E> {

@@ -35,7 +35,7 @@ public interface VariableListener<Entity_> extends Supply {
     /**
      * When set to {@code true}, this has a slight performance loss in Planner.
      * When set to {@code false}, it's often easier to make the listener implementation correct and fast.
-     * 
+     *
      * @return true to guarantee that each of the before/after methods will only be called once per entity instance
      *         per operation type (add, change or remove).
      */

@@ -78,7 +78,7 @@ public class SolverConfig extends AbstractConfig<SolverConfig> {
 
     /**
      * Reads an XML solver configuration from the classpath.
-     * 
+     *
      * @param solverConfigResource never null, a classpath resource
      *        as defined by {@link ClassLoader#getResource(String)}
      * @return never null
@@ -89,7 +89,7 @@ public class SolverConfig extends AbstractConfig<SolverConfig> {
 
     /**
      * As defined by {@link #createFromXmlResource(String)}.
-     * 
+     *
      * @param solverConfigResource never null, a classpath resource
      *        as defined by {@link ClassLoader#getResource(String)}
      * @param classLoader sometimes null, the {@link ClassLoader} to use for loading all resources and {@link Class}es,
@@ -129,7 +129,7 @@ public class SolverConfig extends AbstractConfig<SolverConfig> {
      * <p>
      * Warning: this leads to platform dependent code,
      * it's recommend to use {@link #createFromXmlResource(String)} instead.
-     * 
+     *
      * @param solverConfigFile never null
      * @return never null
      */
@@ -139,7 +139,7 @@ public class SolverConfig extends AbstractConfig<SolverConfig> {
 
     /**
      * As defined by {@link #createFromXmlFile(File)}.
-     * 
+     *
      * @param solverConfigFile never null
      * @param classLoader sometimes null, the {@link ClassLoader} to use for loading all resources and {@link Class}es,
      *        null to use the default {@link ClassLoader}
@@ -165,7 +165,7 @@ public class SolverConfig extends AbstractConfig<SolverConfig> {
 
     /**
      * As defined by {@link #createFromXmlInputStream(InputStream)}.
-     * 
+     *
      * @param in never null, gets closed
      * @param classLoader sometimes null, the {@link ClassLoader} to use for loading all resources and {@link Class}es,
      *        null to use the default {@link ClassLoader}
@@ -191,7 +191,7 @@ public class SolverConfig extends AbstractConfig<SolverConfig> {
 
     /**
      * As defined by {@link #createFromXmlReader(Reader)}.
-     * 
+     *
      * @param reader never null, gets closed
      * @param classLoader sometimes null, the {@link ClassLoader} to use for loading all resources and {@link Class}es,
      *        null to use the default {@link ClassLoader}
@@ -272,7 +272,7 @@ public class SolverConfig extends AbstractConfig<SolverConfig> {
      * based on a template solver config,
      * by building a separate {@link SolverFactory} with {@link SolverFactory#create(SolverConfig)}
      * and a separate {@link Solver} per request to avoid race conditions.
-     * 
+     *
      * @param inheritedConfig never null
      */
     public SolverConfig(SolverConfig inheritedConfig) {
@@ -510,7 +510,7 @@ public class SolverConfig extends AbstractConfig<SolverConfig> {
      * Use {@link SolverFactory#buildSolver()} instead.
      * <p>
      * Will be removed in 8.0 (by putting it in an InnerSolverConfig).
-     * 
+     *
      * @param configContext never null
      * @param <Solution_> the solution type, the class with the {@link PlanningSolution} annotation
      * @return never null
@@ -603,7 +603,7 @@ public class SolverConfig extends AbstractConfig<SolverConfig> {
      * Use {@link SolverFactory#getScoreDirectorFactory()} instead.
      * <p>
      * Will be removed in 8.0 (by putting it in an InnerSolverConfig).
-     * 
+     *
      * @param configContext never null
      * @param environmentMode never null
      * @param <Solution_> the solution type, the class with the {@link PlanningSolution} annotation
@@ -624,7 +624,7 @@ public class SolverConfig extends AbstractConfig<SolverConfig> {
      * Do not use this method, it is an internal method.
      * <p>
      * Will be removed in 8.0 (by putting it in an InnerSolverConfig).
-     * 
+     *
      * @param <Solution_> the solution type, the class with the {@link PlanningSolution} annotation
      * @return never null
      */
@@ -676,7 +676,7 @@ public class SolverConfig extends AbstractConfig<SolverConfig> {
     /**
      * Do not use this method, it is an internal method.
      * Use {@link #SolverConfig(SolverConfig)} instead.
-     * 
+     *
      * @param inheritedConfig never null
      */
     @Override

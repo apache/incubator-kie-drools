@@ -40,7 +40,7 @@ import com.google.common.collect.Iterators;
  * For example: a union of {A, B, C} and {X, Y} will result in {A, B, C, X, Y}.
  * <p>
  * Warning: there is no duplicated {@link Move} check, so union of {A, B, C} and {B, D} will result in {A, B, C, B, D}.
- * 
+ *
  * @see CompositeMoveSelector
  */
 public class UnionMoveSelector extends CompositeMoveSelector {

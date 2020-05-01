@@ -26,7 +26,7 @@ public interface EntityIndependentValueRangeDescriptor<Solution_> extends ValueR
 
     /**
      * As specified by {@link ValueRangeDescriptor#extractValueRange}.
-     * 
+     *
      * @param solution never null
      * @return never null
      * @see ValueRangeDescriptor#extractValueRange

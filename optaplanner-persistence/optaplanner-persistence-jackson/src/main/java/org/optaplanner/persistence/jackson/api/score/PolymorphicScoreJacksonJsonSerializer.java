@@ -34,7 +34,7 @@ import com.fasterxml.jackson.databind.SerializerProvider;
  * {@code @JsonSerialize(using = PolymorphicScoreJacksonJsonSerializer.class) @JsonDeserialize(using = PolymorphicScoreJacksonJsonDeserializer.class)}
  * on a {@code Score score} field which contains a {@link HardSoftScore} instance
  * and it will marshalled to JSON as {@code "score":{"type":"HARD_SOFT",score:"-999hard/-999soft"}}.
- * 
+ *
  * @see Score
  * @see PolymorphicScoreJacksonJsonDeserializer
  */

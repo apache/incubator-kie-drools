@@ -465,7 +465,7 @@ public abstract class MoveSelectorConfig<C extends MoveSelectorConfig> extends S
     /**
      * Gather a list of all descendant {@link MoveSelectorConfig}s
      * except for {@link UnionMoveSelectorConfig} and {@link CartesianProductMoveSelectorConfig}.
-     * 
+     *
      * @param leafMoveSelectorConfigList not null
      */
     public void extractLeafMoveSelectorConfigsIntoList(List<MoveSelectorConfig> leafMoveSelectorConfigList) {
@@ -480,7 +480,7 @@ public abstract class MoveSelectorConfig<C extends MoveSelectorConfig> extends S
 
     /**
      * Does not inherit subclass properties because this class and {@code foldedConfig} can be of a different type.
-     * 
+     *
      * @param foldedConfig never null
      */
     public void inheritFolded(MoveSelectorConfig foldedConfig) {

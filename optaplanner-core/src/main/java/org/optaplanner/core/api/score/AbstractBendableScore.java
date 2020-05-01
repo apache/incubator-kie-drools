@@ -25,7 +25,7 @@ import org.optaplanner.core.api.score.buildin.bendable.BendableScore;
  * Abstract superclass for bendable {@link Score} types.
  * <p>
  * Subclasses must be immutable.
- * 
+ *
  * @see BendableScore
  */
 public abstract class AbstractBendableScore<S extends FeasibilityScore<S>> extends AbstractScore<S> {
@@ -88,14 +88,14 @@ public abstract class AbstractBendableScore<S extends FeasibilityScore<S>> exten
 
     /**
      * The sum of this and {@link #getSoftLevelsSize()} equals {@link #getLevelsSize()}.
-     * 
+     *
      * @return {@code >= 0} and {@code <} {@link #getLevelsSize()}
      */
     public abstract int getHardLevelsSize();
 
     /**
      * The sum of {@link #getHardLevelsSize()} and this equals {@link #getLevelsSize()}.
-     * 
+     *
      * @return {@code >= 0} and {@code <} {@link #getLevelsSize()}
      */
     public abstract int getSoftLevelsSize();

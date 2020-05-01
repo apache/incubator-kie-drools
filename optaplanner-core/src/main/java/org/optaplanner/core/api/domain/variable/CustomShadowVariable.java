@@ -36,7 +36,7 @@ public @interface CustomShadowVariable {
 
     /**
      * Use this when this shadow variable is updated by the {@link VariableListener} of another {@link CustomShadowVariable}.
-     * 
+     *
      * @return null if (and only if) any of the other fields is non null.
      */
     PlanningVariableReference variableListenerRef() default @PlanningVariableReference(variableName = "");
@@ -48,7 +48,7 @@ public @interface CustomShadowVariable {
      * <p>
      * For example: VRP with time windows uses a {@link VariableListener} to update the arrival times
      * of all the trailing entities when an entity is changed.
-     * 
+     *
      * @return never null (unless {@link #variableListenerRef()} is not null)
      */
     Class<? extends VariableListener> variableListenerClass() default NullVariableListener.class;
@@ -59,7 +59,7 @@ public @interface CustomShadowVariable {
 
     /**
      * The source variables (masters) that trigger a change to this shadow variable (slave).
-     * 
+     *
      * @return never null (unless {@link #variableListenerRef()} is not null), at least 1
      */
     PlanningVariableReference[] sources() default {};

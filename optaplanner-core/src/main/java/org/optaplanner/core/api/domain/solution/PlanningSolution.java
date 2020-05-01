@@ -62,7 +62,7 @@ public @interface PlanningSolution {
      * to automatically assume {@link PlanningScore}, {@link PlanningEntityCollectionProperty},
      * {@link PlanningEntityProperty}, {@link ProblemFactCollectionProperty}, {@link ProblemFactProperty}
      * and {@link ConstraintConfigurationProvider} annotations based on the member type.
-     * 
+     *
      * @return never null
      */
     AutoDiscoverMemberType autoDiscoverMemberType() default AutoDiscoverMemberType.NONE;
@@ -72,7 +72,7 @@ public @interface PlanningSolution {
      * <p>
      * If this is not specified, then the default reflection-based {@link SolutionCloner} is used,
      * so you don't have to worry about it.
-     * 
+     *
      * @return {@link NullSolutionCloner} when it is null (workaround for annotation limitation)
      */
     Class<? extends SolutionCloner> solutionCloner() default NullSolutionCloner.class;

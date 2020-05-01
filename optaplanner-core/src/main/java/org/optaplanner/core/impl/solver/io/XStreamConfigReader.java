@@ -30,7 +30,7 @@ public final class XStreamConfigReader {
      * Builds the {@link XStream} setup which is used to read/write {@link SolverConfig solver configs} and benchmark configs.
      * It should never be used to read/write {@link PlanningSolution solutions}.
      * Use XStreamSolutionFileIO for that instead.
-     * 
+     *
      * @return never null.
      */
     public static XStream buildXStream() {
@@ -46,7 +46,7 @@ public final class XStreamConfigReader {
 
     /**
      * As defined by {@link #buildXStream()}.
-     * 
+     *
      * @param classLoader sometimes null, ignored if null
      * @return never null
      */

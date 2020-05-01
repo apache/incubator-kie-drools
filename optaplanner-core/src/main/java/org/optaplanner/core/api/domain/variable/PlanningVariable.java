@@ -44,7 +44,7 @@ public @interface PlanningVariable {
      * will automatically be registered with its {@link ValueRangeProvider#id()}.
      * <p>
      * There should be at least 1 element in this array.
-     * 
+     *
      * @return 1 (or more) registered {@link ValueRangeProvider#id()}
      */
     String[] valueRangeProviderRefs() default {};
@@ -58,7 +58,7 @@ public @interface PlanningVariable {
      * <p>
      * Nullable true is not compatible with {@link PlanningVariableGraphType#CHAINED} true.
      * Nullable true is not compatible with a primitive property type.
-     * 
+     *
      * @return true if null is a valid value for this planning variable
      */
     boolean nullable() default false;
@@ -76,7 +76,7 @@ public @interface PlanningVariable {
      * The method {@link SelectionFilter#accept(ScoreDirector, Object)}
      * returns false if the selection entity should be reinitialized for this variable
      * and it returns true if the selection entity should not be reinitialized for this variable
-     * 
+     *
      * @return {@link NullReinitializeVariableEntityFilter} when it is null (workaround for annotation limitation)
      */
     Class<? extends SelectionFilter> reinitializeVariableEntityFilter() default NullReinitializeVariableEntityFilter.class;
@@ -88,7 +88,7 @@ public @interface PlanningVariable {
     /**
      * In some use cases, such as Vehicle Routing, planning entities form a specific graph type,
      * as specified by {@link PlanningVariableGraphType}.
-     * 
+     *
      * @return never null, defaults to {@link PlanningVariableGraphType#NONE}
      */
     PlanningVariableGraphType graphType() default PlanningVariableGraphType.NONE;
@@ -103,7 +103,7 @@ public @interface PlanningVariable {
      * Computer B (1GB RAM), Computer A (2GB RAM), Computer C (7GB RAM),
      * <p>
      * Do not use together with {@link #strengthWeightFactoryClass()}.
-     * 
+     *
      * @return {@link NullStrengthComparator} when it is null (workaround for annotation limitation)
      * @see #strengthWeightFactoryClass()
      */
@@ -117,7 +117,7 @@ public @interface PlanningVariable {
      * The {@link SelectionSorterWeightFactory} alternative for {@link #strengthComparatorClass()}.
      * <p>
      * Do not use together with {@link #strengthComparatorClass()}.
-     * 
+     *
      * @return {@link NullStrengthWeightFactory} when it is null (workaround for annotation limitation)
      * @see #strengthComparatorClass()
      */

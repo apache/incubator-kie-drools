@@ -29,7 +29,7 @@ import org.optaplanner.core.impl.score.trend.InitializingScoreTrend;
 
 /**
  * A ScoreDefinition knows how to compare {@link Score}s and what the perfect maximum/minimum {@link Score} is.
- * 
+ *
  * @see AbstractScoreDefinition
  * @see HardSoftScoreDefinition
  */
@@ -37,7 +37,7 @@ public interface ScoreDefinition<S extends Score<S>> {
 
     /**
      * Returns the label for {@link Score#getInitScore()}.
-     * 
+     *
      * @return never null
      * @see #getLevelLabels()
      */
@@ -46,7 +46,7 @@ public interface ScoreDefinition<S extends Score<S>> {
     /**
      * Returns the length of {@link Score#toLevelNumbers()} for every {@link Score} of this definition.
      * For example: returns 2 on {@link HardSoftScoreDefinition}.
-     * 
+     *
      * @return at least 1
      */
     int getLevelsSize();
@@ -56,7 +56,7 @@ public interface ScoreDefinition<S extends Score<S>> {
      * For example: returns {@code {"hard score", "soft score "}} on {@link HardSoftScoreDefinition}.
      * <p>
      * It does not include the {@link #getInitLabel()}.
-     * 
+     *
      * @return never null, array with length of {@link #getLevelsSize()}, each element is never null
      */
     String[] getLevelLabels();
@@ -64,21 +64,21 @@ public interface ScoreDefinition<S extends Score<S>> {
     /**
      * Returns the {@link Class} of the actual {@link Score} implementation.
      * For example: returns {@link HardSoftScore HardSoftScore.class} on {@link HardSoftScoreDefinition}.
-     * 
+     *
      * @return never null
      */
     Class<S> getScoreClass();
 
     /**
      * The score that represents zero.
-     * 
+     *
      * @return never null
      */
     S getZeroScore();
 
     /**
      * The score that represents the softest possible one.
-     * 
+     *
      * @return never null
      */
     S getOneSoftestScore();
@@ -101,7 +101,7 @@ public interface ScoreDefinition<S extends Score<S>> {
 
     /**
      * Returns a {@link String} representation of the {@link Score}.
-     * 
+     *
      * @param score never null
      * @return never null
      * @see #parseScore(String)
@@ -110,7 +110,7 @@ public interface ScoreDefinition<S extends Score<S>> {
 
     /**
      * Parses the {@link String} and returns a {@link Score}.
-     * 
+     *
      * @param scoreString never null
      * @return never null
      * @see #formatScore(Score)
@@ -120,7 +120,7 @@ public interface ScoreDefinition<S extends Score<S>> {
 
     /**
      * The opposite of {@link Score#toLevelNumbers()}.
-     * 
+     *
      * @param initScore {@code <= 0}, managed by OptaPlanner, needed as a parameter in the {@link Score}'s creation
      *        method, see {@link Score#getInitScore()}
      * @param levelNumbers never null
@@ -130,7 +130,7 @@ public interface ScoreDefinition<S extends Score<S>> {
 
     /**
      * Used by {@link BavetConstraintFactory}
-     * 
+     *
      * @param constraintMatchEnabled true if {@link ScoreDirector#isConstraintMatchEnabled()} should be true
      * @return never null
      */
@@ -138,7 +138,7 @@ public interface ScoreDefinition<S extends Score<S>> {
 
     /**
      * Used by {@link DroolsScoreDirector}.
-     * 
+     *
      * @param constraintMatchEnabled true if {@link ScoreDirector#isConstraintMatchEnabled()} should be true
      * @return never null
      */
@@ -147,7 +147,7 @@ public interface ScoreDefinition<S extends Score<S>> {
     /**
      * Builds a {@link Score} which is equal or better than any other {@link Score} with more variables initialized
      * (while the already variables don't change).
-     * 
+     *
      * @param initializingScoreTrend never null, with {@link InitializingScoreTrend#getLevelsSize()}
      *        equal to {@link #getLevelsSize()}.
      * @param score never null, with {@link Score#getInitScore()} {@code 0}.
@@ -158,7 +158,7 @@ public interface ScoreDefinition<S extends Score<S>> {
     /**
      * Builds a {@link Score} which is equal or worse than any other {@link Score} with more variables initialized
      * (while the already variables don't change).
-     * 
+     *
      * @param initializingScoreTrend never null, with {@link InitializingScoreTrend#getLevelsSize()}
      *        equal to {@link #getLevelsSize()}.
      * @param score never null, with {@link Score#getInitScore()} {@code 0}
@@ -171,7 +171,7 @@ public interface ScoreDefinition<S extends Score<S>> {
      * When rounding is needed, it is floored (as defined by {@link Math#floor(double)}).
      * <p>
      * If any of the levels in the divisor are equal to zero, the method behaves as if they were equal to one instead.
-     * 
+     *
      * @param divisor value by which this Score is to be divided
      * @return this / divisor
      */

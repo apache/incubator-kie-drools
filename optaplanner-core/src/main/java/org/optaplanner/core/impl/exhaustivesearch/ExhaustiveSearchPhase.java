@@ -22,7 +22,7 @@ import org.optaplanner.core.impl.phase.Phase;
 
 /**
  * A {@link ExhaustiveSearchPhase} is a {@link Phase} which uses an exhaustive algorithm, such as Brute Force.
- * 
+ *
  * @param <Solution_> the solution type, the class with the {@link PlanningSolution} annotation
  * @see Phase
  * @see AbstractPhase

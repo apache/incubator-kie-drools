@@ -44,7 +44,7 @@ public interface InnerScoreDirectorFactory<Solution_> extends ScoreDirectorFacto
     /**
      * Like {@link #buildScoreDirector()}, but optionally disables {@link ConstraintMatch} tracking and look up
      * for more performance (presuming the {@link ScoreDirector} implementation actually supports it to begin with).
-     * 
+     *
      * @param lookUpEnabled true if a {@link ScoreDirector} implementation should track all working objects
      *        for {@link ScoreDirector#lookUpWorkingObject(Object)}
      * @param constraintMatchEnabledPreference false if a {@link ScoreDirector} implementation
@@ -63,7 +63,7 @@ public interface InnerScoreDirectorFactory<Solution_> extends ScoreDirectorFacto
     /**
      * Asserts that if the {@link Score} is calculated for the parameter solution,
      * it would be equal to the score of that parameter.
-     * 
+     *
      * @param solution never null
      * @see InnerScoreDirector#assertWorkingScoreFromScratch(Score, Object)
      */

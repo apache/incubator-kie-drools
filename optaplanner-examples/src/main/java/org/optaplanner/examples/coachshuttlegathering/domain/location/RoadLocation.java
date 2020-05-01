@@ -99,7 +99,7 @@ public class RoadLocation extends AbstractPersistable {
 
     /**
      * The angle relative to the direction EAST.
-     * 
+     *
      * @param location never null
      * @return in Cartesian coordinates
      */

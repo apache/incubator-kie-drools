@@ -27,7 +27,7 @@ import org.optaplanner.core.impl.solver.thread.ChildThreadType;
 
 /**
  * Abstract superclass that combines multiple {@link Termination}s.
- * 
+ *
  * @see AndCompositeTermination
  * @see OrCompositeTermination
  */

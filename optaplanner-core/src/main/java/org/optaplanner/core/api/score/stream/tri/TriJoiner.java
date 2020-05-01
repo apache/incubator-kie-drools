@@ -22,7 +22,7 @@ import org.optaplanner.core.api.score.stream.bi.BiConstraintStream;
 /**
  * Created with {@link Joiners}.
  * Used by {@link BiConstraintStream#join(Class, TriJoiner)}, ...
- * 
+ *
  * @see Joiners
  */
 public interface TriJoiner<A, B, C> {

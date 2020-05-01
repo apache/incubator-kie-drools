@@ -453,7 +453,7 @@ public class ProblemBenchmarkResult<Solution_> {
 
     /**
      * Used by {@link ProblemBenchmarksConfig#buildProblemBenchmarkList}.
-     * 
+     *
      * @param o sometimes null
      * @return true if equal
      */

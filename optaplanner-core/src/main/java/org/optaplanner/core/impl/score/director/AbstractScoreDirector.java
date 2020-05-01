@@ -62,7 +62,7 @@ import org.slf4j.LoggerFactory;
  * <li>before* method: last statement should be a call to the super method</li>
  * <li>after* method: first statement should be a call to the super method</li>
  * </ul>
- * 
+ *
  * @see ScoreDirector
  */
 public abstract class AbstractScoreDirector<Solution_, Factory_ extends AbstractScoreDirectorFactory<Solution_>>

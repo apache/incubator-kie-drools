@@ -47,7 +47,7 @@ public class DroolsQuadRuleStructure<A, B, C, D, PatternVar> extends DroolsRuleS
     /**
      * Builds a final version of the ABC pattern as it will no longer be mutated, and turns the D pattern into the new
      * primary pattern.
-     * 
+     *
      * @param abcRuleStructure
      * @param dRuleStructure
      * @param variableIdSupplier

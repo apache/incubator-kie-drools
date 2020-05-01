@@ -25,7 +25,7 @@ import org.optaplanner.core.api.domain.solution.PlanningSolution;
 
 /**
  * Represents a {@link PlanningSolution problem} that has been submitted to solve on the {@link SolverManager}.
- * 
+ *
  * @param <Solution_> the solution type, the class with the {@link PlanningSolution} annotation
  * @param <ProblemId_> the ID type of a submitted problem, such as {@link Long} or {@link UUID}.
  */
@@ -41,7 +41,7 @@ public interface SolverJob<Solution_, ProblemId_> {
      * Returns whether the {@link Solver} is scheduled to solve, actively solving or not.
      * <p>
      * Returns {@link SolverStatus#NOT_SOLVING} if the solver already terminated.
-     * 
+     *
      * @return never null
      */
     SolverStatus getSolverStatus();
@@ -65,7 +65,7 @@ public interface SolverJob<Solution_, ProblemId_> {
 
     /**
      * Waits if necessary for the solver to complete and then returns the final best {@link PlanningSolution}.
-     * 
+     *
      * @return never null, but it could be the original uninitialized problem
      * @throws InterruptedException if the current thread was interrupted while waiting
      * @throws ExecutionException if the computation threw an exception

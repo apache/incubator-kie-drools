@@ -21,7 +21,7 @@ import java.util.ListIterator;
 
 /**
  * An extension on the {@link Iterable} interface that supports {@link #listIterator()} and {@link #listIterator(int)}.
- * 
+ *
  * @param <T> the element type
  */
 public interface ListIterable<T> extends Iterable<T> {

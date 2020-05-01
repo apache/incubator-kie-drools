@@ -39,7 +39,7 @@ import org.optaplanner.test.impl.score.buildin.hardsoft.HardSoftScoreVerifier;
  * <p>
  * Do not use this class directly, instead use the specific subclass for your {@link Score} type,
  * such as {@link HardSoftScoreVerifier}.
- * 
+ *
  * @param <Solution_> the solution type, the class with the {@link PlanningSolution} annotation
  * @see HardSoftScoreVerifier
  */
@@ -69,7 +69,7 @@ public abstract class AbstractScoreVerifier<Solution_> {
 
     /**
      * Assert that the constraint of {@link PlanningSolution} has the expected weight for that score level.
-     * 
+     *
      * @param constraintPackage sometimes null.
      *        When null, {@code constraintName} for the {@code scoreLevel} must be unique.
      * @param scoreLevel at least 0

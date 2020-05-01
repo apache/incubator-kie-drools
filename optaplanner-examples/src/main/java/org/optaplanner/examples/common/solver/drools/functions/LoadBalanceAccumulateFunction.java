@@ -106,7 +106,7 @@ public class LoadBalanceAccumulateFunction implements AccumulateFunction<LoadBal
 
         /**
          * Like standard deviation, but doesn't divide by n.
-         * 
+         *
          * @param scaleMultiplier {@code > 0}
          * @return {@code >= 0}, {@code latexmath:[f(n) = \sqrt{\sum_{i=1}^{n} (x_i - \overline{x})^2}]} multiplied by
          *         scaleMultiplier

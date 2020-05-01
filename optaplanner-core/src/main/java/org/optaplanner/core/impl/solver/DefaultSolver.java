@@ -35,7 +35,7 @@ import org.optaplanner.core.impl.solver.termination.Termination;
 
 /**
  * Default implementation for {@link Solver}.
- * 
+ *
  * @param <Solution_> the solution type, the class with the {@link PlanningSolution} annotation
  * @see Solver
  * @see AbstractSolver

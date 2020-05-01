@@ -43,7 +43,7 @@ public class KieContainerHelper {
     /**
      * Deploys testing kjar containing solver configuration. The kjar already contains testing domain classes and
      * rules for Drools score calculation.
-     * 
+     *
      * @param artifactId artifactId of the kjar to be created
      * @param kmodulePath path to a kmodule.xml
      * @param solverConfigPath path to a solver configuration xml file
@@ -65,7 +65,7 @@ public class KieContainerHelper {
     /**
      * Deploys testing kjar containing benchmark configuration. The kjar already contains testing domain classes and
      * rules for Drools score calculation.
-     * 
+     *
      * @param artifactId artifactId of the kjar to be created
      * @param kmodulePath path to a kmodule.xml
      * @param benchmarkConfigPath path to a benchmark configuration xml file
@@ -86,7 +86,7 @@ public class KieContainerHelper {
 
     /**
      * Deploys testing containing testing domain classes and rules for Drools score calculation.
-     * 
+     *
      * @param artifactId artifactId of the kjar to be created
      * @param kmodulePath path to a kmodule.xml
      * @param additionalResources additional resources that should be included in the kjar

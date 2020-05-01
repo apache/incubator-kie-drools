@@ -20,7 +20,7 @@ import org.optaplanner.core.impl.heuristic.selector.AbstractSelector;
 
 /**
  * Abstract superclass for {@link ValueSelector}.
- * 
+ *
  * @see ValueSelector
  */
 public abstract class AbstractValueSelector extends AbstractSelector implements ValueSelector {

@@ -160,7 +160,7 @@ public class Task extends TaskOrEmployee implements Labeled {
 
     /**
      * In minutes
-     * 
+     *
      * @return at least 1 minute
      */
     public int getDuration() {

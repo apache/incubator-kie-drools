@@ -26,7 +26,7 @@ import org.slf4j.LoggerFactory;
 
 /**
  * Abstract superclass for {@link ScoreDirectorFactory}.
- * 
+ *
  * @param <Solution_> the solution type, the class with the {@link PlanningSolution} annotation
  * @see ScoreDirectorFactory
  */

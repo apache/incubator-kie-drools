@@ -30,7 +30,7 @@ import org.optaplanner.core.impl.solver.termination.Termination;
 
 /**
  * Default implementation of {@link ConstructionHeuristicPhase}.
- * 
+ *
  * @param <Solution_> the solution type, the class with the {@link PlanningSolution} annotation
  */
 public class DefaultConstructionHeuristicPhase<Solution_> extends AbstractPhase<Solution_>

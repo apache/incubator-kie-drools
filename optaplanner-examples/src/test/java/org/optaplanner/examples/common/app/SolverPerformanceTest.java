@@ -51,7 +51,7 @@ import org.optaplanner.persistence.common.api.domain.solution.SolutionFileIO;
  * <p>
  * A test should run in less than 10 seconds on a 3 year old desktop computer, choose the bestScoreLimit accordingly.
  * Always use a {@link Timeout} on {@link Test}, preferably 10 minutes because some of the Jenkins machines are old.
- * 
+ *
  * @param <Solution_> the solution type, the class with the {@link PlanningSolution} annotation
  */
 public abstract class SolverPerformanceTest<Solution_> extends LoggingTest {

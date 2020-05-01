@@ -79,7 +79,7 @@ public interface InnerConstraintFactory<Solution_> extends ConstraintFactory {
 
     /**
      * This method is thread-safe.
-     * 
+     *
      * @param constraints never null
      * @return never null
      */

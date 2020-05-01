@@ -87,7 +87,7 @@ public interface ConstraintStream {
 
     /**
      * The {@link ConstraintFactory} that build this.
-     * 
+     *
      * @return never null
      */
     ConstraintFactory getConstraintFactory();
@@ -103,7 +103,7 @@ public interface ConstraintStream {
      * use {@link #penalizeConfigurable(String)} and a {@link ConstraintConfiguration} instead.
      * <p>
      * The {@link Constraint#getConstraintPackage()} defaults to the package of the {@link PlanningSolution} class.
-     * 
+     *
      * @param constraintName never null, shows up in {@link ConstraintMatchTotal} during score justification
      * @param constraintWeight never null
      * @return never null
@@ -114,7 +114,7 @@ public interface ConstraintStream {
 
     /**
      * As defined by {@link #penalize(String, Score)}.
-     * 
+     *
      * @param constraintPackage never null
      * @param constraintName never null
      * @param constraintWeight never null
@@ -131,7 +131,7 @@ public interface ConstraintStream {
      * If there is no {@link ConstraintConfiguration}, use {@link #penalize(String, Score)} instead.
      * <p>
      * The {@link Constraint#getConstraintPackage()} defaults to {@link ConstraintConfiguration#constraintPackage()}.
-     * 
+     *
      * @param constraintName never null, shows up in {@link ConstraintMatchTotal} during score justification
      * @return never null
      */
@@ -141,7 +141,7 @@ public interface ConstraintStream {
 
     /**
      * As defined by {@link #penalizeConfigurable(String)}.
-     * 
+     *
      * @param constraintPackage never null
      * @param constraintName never null
      * @return never null
@@ -155,7 +155,7 @@ public interface ConstraintStream {
      * use {@link #penalizeConfigurable(String)} and a {@link ConstraintConfiguration} instead.
      * <p>
      * The {@link Constraint#getConstraintPackage()} defaults to the package of the {@link PlanningSolution} class.
-     * 
+     *
      * @param constraintName never null, shows up in {@link ConstraintMatchTotal} during score justification
      * @param constraintWeight never null
      * @return never null
@@ -166,7 +166,7 @@ public interface ConstraintStream {
 
     /**
      * As defined by {@link #reward(String, Score)}.
-     * 
+     *
      * @param constraintPackage never null
      * @param constraintName never null
      * @param constraintWeight never null
@@ -183,7 +183,7 @@ public interface ConstraintStream {
      * If there is no {@link ConstraintConfiguration}, use {@link #reward(String, Score)} instead.
      * <p>
      * The {@link Constraint#getConstraintPackage()} defaults to {@link ConstraintConfiguration#constraintPackage()}.
-     * 
+     *
      * @param constraintName never null, shows up in {@link ConstraintMatchTotal} during score justification
      * @return never null
      */
@@ -193,7 +193,7 @@ public interface ConstraintStream {
 
     /**
      * As defined by {@link #rewardConfigurable(String)}.
-     * 
+     *
      * @param constraintPackage never null
      * @param constraintName never null
      * @return never null
@@ -207,7 +207,7 @@ public interface ConstraintStream {
      * negative weights.
      * <p>
      * The {@link Constraint#getConstraintPackage()} defaults to the package of the {@link PlanningSolution} class.
-     * 
+     *
      * @param constraintName never null, shows up in {@link ConstraintMatchTotal} during score justification
      * @param constraintWeight never null
      * @return never null
@@ -218,7 +218,7 @@ public interface ConstraintStream {
 
     /**
      * As defined by {@link #impact(String, Score)}.
-     * 
+     *
      * @param constraintPackage never null
      * @param constraintName never null
      * @param constraintWeight never null

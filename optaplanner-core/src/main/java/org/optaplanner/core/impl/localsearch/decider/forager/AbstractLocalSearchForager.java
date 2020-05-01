@@ -22,7 +22,7 @@ import org.slf4j.LoggerFactory;
 
 /**
  * Abstract superclass for {@link LocalSearchForager}.
- * 
+ *
  * @see LocalSearchForager
  */
 public abstract class AbstractLocalSearchForager extends LocalSearchPhaseLifecycleListenerAdapter

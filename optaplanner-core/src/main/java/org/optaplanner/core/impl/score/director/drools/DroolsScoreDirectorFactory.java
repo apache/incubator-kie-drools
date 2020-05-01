@@ -39,7 +39,7 @@ import org.optaplanner.core.impl.score.director.ScoreDirectorFactory;
 
 /**
  * Drools implementation of {@link ScoreDirectorFactory}.
- * 
+ *
  * @param <Solution_> the solution type, the class with the {@link PlanningSolution} annotation
  * @see DroolsScoreDirector
  * @see ScoreDirectorFactory

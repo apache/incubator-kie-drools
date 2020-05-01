@@ -35,7 +35,7 @@ import org.optaplanner.core.impl.score.director.ScoreDirector;
 
 /**
  * Applies a new best solution from a partition child solver into the global working solution of the parent solver.
- * 
+ *
  * @param <Solution_> the solution type, the class with the {@link PlanningSolution} annotation
  */
 public final class PartitionChangeMove<Solution_> extends AbstractMove<Solution_> {

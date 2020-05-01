@@ -31,7 +31,7 @@ import com.fasterxml.jackson.databind.ser.ContextualSerializer;
 
 /**
  * This class will be removed in 8.0.
- * 
+ *
  * @deprecated in favor of {@link HardSoftScoreJacksonJsonSerializer} and variants.
  */
 @Deprecated

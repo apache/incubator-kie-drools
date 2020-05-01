@@ -60,7 +60,7 @@ public class LookUpManager {
 
     /**
      * As defined by {@link ScoreDirector#lookUpWorkingObject(Object)}.
-     * 
+     *
      * @param externalObject sometimes null
      * @return null if externalObject is null
      * @throws IllegalArgumentException if there is no workingObject for externalObject, if it cannot be looked up
@@ -78,7 +78,7 @@ public class LookUpManager {
 
     /**
      * As defined by {@link ScoreDirector#lookUpWorkingObjectOrReturnNull(Object)}.
-     * 
+     *
      * @param externalObject sometimes null
      * @return null if externalObject is null or if there is no workingObject for externalObject
      * @throws IllegalArgumentException if it cannot be looked up or if the externalObject's class is not supported

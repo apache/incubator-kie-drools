@@ -26,7 +26,7 @@ import com.fasterxml.jackson.databind.JsonDeserializer;
  * For example: use
  * {@code @JsonSerialize(using = HardSoftScoreScoreJacksonJsonSerializer.class) @JsonDeserialize(using = HardSoftScoreJacksonJsonDeserializer.class)}
  * on a {@code HardSoftScore score} field and it will marshalled to JSON as {@code "score":"-999hard/-999soft"}.
- * 
+ *
  * @see Score
  * @param <Score_> the actual score type
  */

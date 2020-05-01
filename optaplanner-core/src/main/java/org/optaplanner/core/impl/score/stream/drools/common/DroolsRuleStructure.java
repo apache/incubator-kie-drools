@@ -43,7 +43,7 @@ import org.optaplanner.core.impl.score.stream.drools.uni.DroolsUniRuleStructure;
 
 /**
  * Represents the left-hand side of a Drools rule.
- * 
+ *
  * @param <PatternVar> type of the variable of the primary pattern (see {@link #getPrimaryPatternBuilder()})
  */
 public abstract class DroolsRuleStructure<PatternVar> {

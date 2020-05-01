@@ -39,7 +39,7 @@ public class OrderByMoveIndexBlockingQueue<Solution_> {
 
     /**
      * Not thread-safe. Can only be called from the solver thread.
-     * 
+     *
      * @param stepIndex at least 0
      */
     public void startNextStep(int stepIndex) {
@@ -65,7 +65,7 @@ public class OrderByMoveIndexBlockingQueue<Solution_> {
 
     /**
      * This method is thread-safe. It can be called from any move thread.
-     * 
+     *
      * @param moveThreadIndex {@code 0 <= moveThreadIndex < moveThreadCount}
      * @param stepIndex at least 0
      * @param moveIndex at least 0
@@ -85,7 +85,7 @@ public class OrderByMoveIndexBlockingQueue<Solution_> {
 
     /**
      * This method is thread-safe. It can be called from any move thread.
-     * 
+     *
      * @param moveThreadIndex {@code 0 <= moveThreadIndex < moveThreadCount}
      * @param stepIndex at least 0
      * @param moveIndex at least 0
@@ -109,7 +109,7 @@ public class OrderByMoveIndexBlockingQueue<Solution_> {
      * Previous results (that haven't been consumed yet), will still be returned during iteration
      * before the iteration throws an exception,
      * unless there's a lower moveIndex that isn't in the queue yet.
-     * 
+     *
      * @param moveThreadIndex {@code 0 <= moveThreadIndex < moveThreadCount}
      * @param throwable never null
      */
@@ -122,7 +122,7 @@ public class OrderByMoveIndexBlockingQueue<Solution_> {
 
     /**
      * Not thread-safe. Can only be called from the solver thread.
-     * 
+     *
      * @return never null
      * @throws InterruptedException if interrupted
      * @see BlockingQueue#take()

@@ -29,7 +29,7 @@ import org.optaplanner.core.impl.solver.termination.Termination;
 
 /**
  * Default implementation of {@link LocalSearchPhase}.
- * 
+ *
  * @param <Solution_> the solution type, the class with the {@link PlanningSolution} annotation
  */
 public class DefaultLocalSearchPhase<Solution_> extends AbstractPhase<Solution_> implements LocalSearchPhase<Solution_>,

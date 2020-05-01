@@ -43,7 +43,7 @@ import org.optaplanner.core.impl.solver.random.RandomUtils;
  * <p>
  * An implementation must extend {@link AbstractCountableValueRange} or {@link AbstractUncountableValueRange}
  * to ensure backwards compatibility in future versions.
- * 
+ *
  * @see ValueRangeFactory
  * @see CountableValueRange
  * @see AbstractCountableValueRange
@@ -53,7 +53,7 @@ public interface ValueRange<T> {
 
     /**
      * In a {@link CountableValueRange}, this must be consistent with {@link CountableValueRange#getSize()}.
-     * 
+     *
      * @return true if the range is empty
      */
     boolean isEmpty();
@@ -68,7 +68,7 @@ public interface ValueRange<T> {
      * Select in random order, but without shuffling the elements.
      * Each element might be selected multiple times.
      * Scales well because it does not require caching.
-     * 
+     *
      * @param workingRandom never null, the {@link Random} to use when any random number is needed,
      *        so {@link EnvironmentMode#REPRODUCIBLE} works correctly. {@link RandomUtils} can be useful too.
      * @return never null

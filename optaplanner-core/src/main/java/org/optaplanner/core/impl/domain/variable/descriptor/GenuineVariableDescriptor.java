@@ -256,7 +256,7 @@ public class GenuineVariableDescriptor<Solution_> extends VariableDescriptor<Sol
     /**
      * A {@link PlanningVariable#nullable()} value is always considered initialized, but it can still be reinitialized
      * with {@link PlanningVariable#reinitializeVariableEntityFilter()}.
-     * 
+     *
      * @param entity never null
      * @return true if the variable on that entity is initialized
      */

@@ -26,7 +26,7 @@ import com.thoughtworks.xstream.annotations.XStreamInclude;
 /**
  * Subclasses need to implement {@link Object#equals(Object) equals()} and {@link Object#hashCode() hashCode()}
  * which are used by {@link ProblemBenchmarksConfig#buildProblemBenchmarkList}.
- * 
+ *
  * @param <Solution_> the solution type, the class with the {@link PlanningSolution} annotation
  */
 @XStreamAlias("problemProvider")

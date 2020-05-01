@@ -43,7 +43,7 @@ public @interface InverseRelationShadowVariable {
      * <p>
      * When the {@link Solver} changes a genuine variable, it adjusts the shadow variable accordingly.
      * In practice, the {@link Solver} ignores shadow variables (except for consistency housekeeping).
-     * 
+     *
      * @return the variable property name on the opposite end of this bidirectional relationship
      */
     String sourceVariableName();

@@ -31,7 +31,7 @@ import org.optaplanner.core.impl.score.director.ScoreDirector;
 
 /**
  * This {@link Move} is not cacheable.
- * 
+ *
  * @param <Solution_> the solution type, the class with the {@link PlanningSolution} annotation
  */
 public class PillarChangeMove<Solution_> extends AbstractMove<Solution_> {

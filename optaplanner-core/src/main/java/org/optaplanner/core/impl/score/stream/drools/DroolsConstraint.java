@@ -64,7 +64,7 @@ public class DroolsConstraint<Solution_> extends AbstractConstraint<Solution_, D
 
     /**
      * As defined by {@link DroolsRuleStructure#getExpectedJustificationTypes()}.
-     * 
+     *
      * @return never null, never empty
      */
     public Class[] getExpectedJustificationTypes() {

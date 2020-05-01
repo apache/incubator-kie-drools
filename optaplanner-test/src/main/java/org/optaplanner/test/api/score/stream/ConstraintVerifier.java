@@ -33,7 +33,7 @@ public interface ConstraintVerifier<ConstraintProvider_ extends ConstraintProvid
 
     /**
      * Entry point to the API.
-     * 
+     *
      * @param constraintProvider never null, {@link PlanningEntity} used by the {@link PlanningSolution}
      * @param planningSolutionClass never null, {@link PlanningSolution}-annotated class associated with the constraints
      * @param entityClasses never null, at least one, {@link PlanningEntity} types used by the {@link PlanningSolution}
@@ -53,7 +53,7 @@ public interface ConstraintVerifier<ConstraintProvider_ extends ConstraintProvid
     /**
      * All subsequent calls to {@link #verifyThat(BiFunction)} and {@link #verifyThat()}
      * will use the given {@link ConstraintStreamImplType}.
-     * 
+     *
      * @param constraintStreamImplType never null
      * @return this
      */
@@ -62,7 +62,7 @@ public interface ConstraintVerifier<ConstraintProvider_ extends ConstraintProvid
 
     /**
      * Creates a constraint verifier for a given {@link Constraint} of the {@link ConstraintProvider}.
-     * 
+     *
      * @param constraintFunction never null
      * @return never null
      */
@@ -71,7 +71,7 @@ public interface ConstraintVerifier<ConstraintProvider_ extends ConstraintProvid
 
     /**
      * Creates a constraint verifier for all constraints of the {@link ConstraintProvider}.
-     * 
+     *
      * @return never null
      */
     MultiConstraintVerification<Solution_> verifyThat();

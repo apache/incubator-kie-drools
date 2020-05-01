@@ -37,7 +37,7 @@ import org.optaplanner.core.impl.score.director.ScoreDirector;
 /**
  * Drools implementation of {@link ScoreDirector}, which directs the Rule Engine to calculate the {@link Score}
  * of the {@link PlanningSolution working solution}.
- * 
+ *
  * @param <Solution_> the solution type, the class with the {@link PlanningSolution} annotation
  * @see ScoreDirector
  */

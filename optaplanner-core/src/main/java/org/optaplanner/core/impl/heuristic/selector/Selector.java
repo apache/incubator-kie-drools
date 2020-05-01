@@ -34,7 +34,7 @@ public interface Selector extends PhaseLifecycleListener {
 
     /**
      * If false, then {@link #isNeverEnding()} is true.
-     * 
+     *
      * @return true if all the {@link ValueRange}s are countable
      *         (for example a double value range between 1.2 and 1.4 is not countable)
      */
@@ -44,7 +44,7 @@ public interface Selector extends PhaseLifecycleListener {
      * Is true if {@link #isCountable()} is false
      * or if this selector is in random order (for most cases).
      * Is never true when this selector is in shuffled order (which is less scalable but more exact).
-     * 
+     *
      * @return true if the {@link Iterator#hasNext()} of the {@link Iterator} created by {@link Iterable#iterator()}
      *         never returns false (except when it's empty).
      */
@@ -53,7 +53,7 @@ public interface Selector extends PhaseLifecycleListener {
     /**
      * Unless this selector itself caches, this returns {@link SelectionCacheType#JUST_IN_TIME},
      * even if a selector child caches.
-     * 
+     *
      * @return never null
      */
     SelectionCacheType getCacheType();

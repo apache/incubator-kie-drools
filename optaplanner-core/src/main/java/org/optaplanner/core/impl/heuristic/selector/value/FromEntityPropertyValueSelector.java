@@ -27,7 +27,7 @@ import org.optaplanner.core.impl.phase.scope.AbstractPhaseScope;
 
 /**
  * This is the common {@link ValueSelector} implementation.
- * 
+ *
  * @param <Solution_> the solution type, the class with the {@link PlanningSolution} annotation
  */
 public class FromEntityPropertyValueSelector<Solution_> extends AbstractValueSelector {

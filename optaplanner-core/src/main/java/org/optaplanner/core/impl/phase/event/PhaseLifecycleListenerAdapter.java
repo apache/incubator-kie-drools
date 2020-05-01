@@ -23,7 +23,7 @@ import org.optaplanner.core.impl.solver.event.SolverLifecycleListenerAdapter;
 
 /**
  * An adapter for {@link PhaseLifecycleListener}.
- * 
+ *
  * @param <Solution_> the solution type, the class with the {@link PlanningSolution} annotation
  */
 public abstract class PhaseLifecycleListenerAdapter<Solution_> extends SolverLifecycleListenerAdapter<Solution_>

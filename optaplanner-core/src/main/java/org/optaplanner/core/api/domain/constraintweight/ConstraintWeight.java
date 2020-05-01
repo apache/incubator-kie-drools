@@ -41,7 +41,7 @@ public @interface ConstraintWeight {
      * <p>
      * The constraint id is this constraint package
      * concatenated with "/" and {@link #value() the constraint name}.
-     * 
+     *
      * @return defaults to {@link ConstraintConfiguration#constraintPackage()}
      */
     String constraintPackage() default "";
@@ -51,7 +51,7 @@ public @interface ConstraintWeight {
      * <p>
      * The constraint id is {@link #constraintPackage() the constraint package}
      * concatenated with "/" and this constraint name.
-     * 
+     *
      * @return never null, often a constant that is used by the constraints too, because they need to match.
      */
     String value();

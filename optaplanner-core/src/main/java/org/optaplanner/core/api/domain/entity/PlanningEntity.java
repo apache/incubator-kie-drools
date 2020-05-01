@@ -49,7 +49,7 @@ public @interface PlanningEntity {
      * <p>
      * The method {@link SelectionFilter#accept(ScoreDirector, Object)} returns false
      * if the selection entity is immovable and it returns true if the selection entity is movable
-     * 
+     *
      * @return {@link NullMovableEntitySelectionFilter} when it is null (workaround for annotation limitation)
      */
     Class<? extends SelectionFilter> movableEntitySelectionFilter() default NullMovableEntitySelectionFilter.class;
@@ -69,7 +69,7 @@ public @interface PlanningEntity {
      * Process B (1GB RAM), Process A (2GB RAM), Process C (7GB RAM),
      * <p>
      * Do not use together with {@link #difficultyWeightFactoryClass()}.
-     * 
+     *
      * @return {@link NullDifficultyComparator} when it is null (workaround for annotation limitation)
      * @see #difficultyWeightFactoryClass()
      */
@@ -83,7 +83,7 @@ public @interface PlanningEntity {
      * The {@link SelectionSorterWeightFactory} alternative for {@link #difficultyComparatorClass()}.
      * <p>
      * Do not use together with {@link #difficultyComparatorClass()}.
-     * 
+     *
      * @return {@link NullDifficultyWeightFactory} when it is null (workaround for annotation limitation)
      * @see #difficultyComparatorClass()
      */

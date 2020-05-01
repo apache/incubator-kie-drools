@@ -69,7 +69,7 @@ public class NQueensApp extends CommonApp<NQueens> {
 
     /**
      * Normal way to create a {@link Solver}.
-     * 
+     *
      * @return never null
      */
     protected SolverFactory<NQueens> createSolverFactoryByXml() {
@@ -80,7 +80,7 @@ public class NQueensApp extends CommonApp<NQueens> {
      * Unused alternative. A way to create a {@link Solver} without using XML.
      * <p>
      * It is recommended to use {@link #createSolverFactoryByXml()} instead.
-     * 
+     *
      * @return never null
      */
     protected SolverFactory<NQueens> createSolverFactoryByApi() {

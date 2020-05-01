@@ -147,7 +147,7 @@ public abstract class CommonApp<Solution_> extends LoggingMain {
     /**
      * Used for the unsolved and solved directories,
      * not for the import and output directories, in the data directory.
-     * 
+     *
      * @return never null
      */
     public abstract SolutionFileIO<Solution_> createSolutionFileIO();

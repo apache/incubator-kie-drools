@@ -28,7 +28,7 @@ import org.optaplanner.core.impl.score.director.ScoreDirector;
  * Allows a {@link IncrementalScoreCalculator} to report {@link ConstraintMatchTotal}s
  * for explaining a score (= which score constraints match for how much)
  * and also for score corruption analysis.
- * 
+ *
  * @param <Solution_> the solution type, the class with the {@link PlanningSolution} annotation
  * @see IncrementalScoreCalculator
  */
@@ -40,7 +40,7 @@ public interface ConstraintMatchAwareIncrementalScoreCalculator<Solution_>
      * <p>
      * Every implementation should call {@link #resetWorkingSolution}
      * and only handle the constraintMatchEnabled parameter specifically (or ignore it).
-     * 
+     *
      * @param workingSolution never null, to pass to {@link #resetWorkingSolution}.
      * @param constraintMatchEnabled true if {@link #getConstraintMatchTotals()} or {@link #getIndictmentMap()} might be called.
      */

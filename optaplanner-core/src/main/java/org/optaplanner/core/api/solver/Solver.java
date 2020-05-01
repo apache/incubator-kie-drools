@@ -46,7 +46,7 @@ import org.optaplanner.core.impl.solver.termination.Termination;
  * except for the methods that are explicitly marked as thread-safe.
  * Note that despite that {@link #solve} is not thread-safe for clients of this class,
  * that method is free to do multithreading inside itself.
- * 
+ *
  * @param <Solution_> the solution type, the class with the {@link PlanningSolution} annotation
  */
 public interface Solver<Solution_> {
@@ -58,7 +58,7 @@ public interface Solver<Solution_> {
      * It can take seconds, minutes, even hours or days before this method returns,
      * depending on the {@link Termination} configuration.
      * To terminate a {@link Solver} early, call {@link #terminateEarly()}.
-     * 
+     *
      * @param problem never null, a {@link PlanningSolution}, usually its planning variables are uninitialized
      * @return never null, but it can return the original, uninitialized {@link PlanningSolution} with a null {@link Score}.
      * @see #terminateEarly()
@@ -75,7 +75,7 @@ public interface Solver<Solution_> {
      * This method is thread-safe.
      * It can only be called from a different thread
      * because the original thread is still calling {@link #solve(Object)}.
-     * 
+     *
      * @return true if successful, false if was already terminating or terminated
      * @see #isTerminateEarly()
      * @see Future#cancel(boolean)
@@ -91,7 +91,7 @@ public interface Solver<Solution_> {
      * {@link SolverEventListener#bestSolutionChanged(BestSolutionChangedEvent)} is often more appropriate).
      * <p>
      * This method is thread-safe.
-     * 
+     *
      * @return never null (unless {@link #solve(Object)} hasn't been called yet),
      *         but it can return the uninitialized {@link PlanningSolution} with a {@link Score} null.
      */
@@ -104,7 +104,7 @@ public interface Solver<Solution_> {
      * to retrieve the {@link Score} from the {@link #getBestSolution()} easily.
      * <p>
      * This method is thread-safe.
-     * 
+     *
      * @return null if the {@link PlanningSolution} is still uninitialized
      */
     Score getBestScore();
@@ -121,7 +121,7 @@ public interface Solver<Solution_> {
      * and convert those into a domain specific API.
      * <p>
      * This method is thread-safe.
-     * 
+     *
      * @return null if {@link #getBestScore()} returns null
      * @see ScoreDirector#explainScore()
      */
@@ -136,21 +136,21 @@ public interface Solver<Solution_> {
      * A {@link #addProblemFactChange(ProblemFactChange)} triggers a restart which resets this time.
      * <p>
      * This method is thread-safe.
-     * 
+     *
      * @return the amount of milliseconds spent solving since the last (re)start, at least 0
      */
     long getTimeMillisSpent();
 
     /**
      * This method is thread-safe.
-     * 
+     *
      * @return true if the {@link #solve} method is still running.
      */
     boolean isSolving();
 
     /**
      * This method is thread-safe.
-     * 
+     *
      * @return true if terminateEarly has been called since the {@link Solver} started.
      * @see Future#isCancelled()
      */
@@ -165,7 +165,7 @@ public interface Solver<Solution_> {
      * This method is thread-safe.
      * Follows specifications of {@link BlockingQueue#add(Object)} with by default
      * a capacity of {@link Integer#MAX_VALUE}.
-     * 
+     *
      * @param problemFactChange never null
      * @return true (as specified by {@link Collection#add})
      * @see #addProblemFactChanges(List)
@@ -181,7 +181,7 @@ public interface Solver<Solution_> {
      * This method is thread-safe.
      * Follows specifications of {@link BlockingQueue#addAll(Collection)} with by default
      * a capacity of {@link Integer#MAX_VALUE}.
-     * 
+     *
      * @param problemFactChangeList never null
      * @return true (as specified by {@link Collection#add})
      * @see #addProblemFactChange(ProblemFactChange)
@@ -192,7 +192,7 @@ public interface Solver<Solution_> {
      * Checks if all scheduled {@link ProblemFactChange}s have been processed.
      * <p>
      * This method is thread-safe.
-     * 
+     *
      * @return true if there are no {@link ProblemFactChange}s left to do
      */
     boolean isEveryProblemFactChangeProcessed();
@@ -211,7 +211,7 @@ public interface Solver<Solution_> {
      * Useful to reuse the {@link Score} calculation (for example in a UI)
      * and to explain the {@link Score} to the user
      * with the {@link ConstraintMatchTotal} and {@link Indictment} API.
-     * 
+     *
      * @return never null
      * @deprecated in favor of {@link SolverFactory#getScoreDirectorFactory()}
      *             Will be removed in 8.0.

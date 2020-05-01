@@ -41,7 +41,7 @@ import org.optaplanner.core.impl.solver.ProblemFactChange;
  * <p>
  * Internally a SolverManager manages a thread pool of solver threads (which call {@link Solver#solve(Object)})
  * and consumer threads (to handle the {@link BestSolutionChangedEvent}s).
- * 
+ *
  * @param <Solution_> the solution type, the class with the {@link PlanningSolution} annotation
  * @param <ProblemId_> the ID type of a submitted problem, such as {@link Long} or {@link UUID}.
  */
@@ -56,7 +56,7 @@ public interface SolverManager<Solution_, ProblemId_> extends AutoCloseable {
      * <p>
      * When using {@link ScoreManager} too, use {@link #create(SolverFactory, SolverManagerConfig)} instead
      * so they reuse the same {@link SolverFactory} instance.
-     * 
+     *
      * @param solverConfig never null
      * @param solverManagerConfig never null
      * @return never null
@@ -70,7 +70,7 @@ public interface SolverManager<Solution_, ProblemId_> extends AutoCloseable {
 
     /**
      * Use a {@link SolverFactory} and a {@link SolverManagerConfig} to build a {@link SolverManager}.
-     * 
+     *
      * @param solverFactory never null
      * @param solverManagerConfig never null
      * @return never null
@@ -98,7 +98,7 @@ public interface SolverManager<Solution_, ProblemId_> extends AutoCloseable {
      * Defaults to logging exceptions as an error.
      * <p>
      * To stop a solver job before it naturally terminates, call {@link SolverJob#terminateEarly()}.
-     * 
+     *
      * @param problemId never null, a ID for each planning problem. This must be unique.
      *        Use this problemId to {@link #terminateEarly(Object) terminate} the solver early,
      * @param problem never null, a {@link PlanningSolution} usually with uninitialized planning variables
@@ -110,7 +110,7 @@ public interface SolverManager<Solution_, ProblemId_> extends AutoCloseable {
 
     /**
      * As defined by {@link #solve(Object, Object)}.
-     * 
+     *
      * @param problemId never null, a ID for each planning problem. This must be unique.
      *        Use this problemId to {@link #terminateEarly(Object) terminate} the solver early,
      *        {@link #getSolverStatus(Object) to get the status} or if the problem changes while solving.
@@ -125,7 +125,7 @@ public interface SolverManager<Solution_, ProblemId_> extends AutoCloseable {
 
     /**
      * As defined by {@link #solve(Object, Object)}.
-     * 
+     *
      * @param problemId never null, a ID for each planning problem. This must be unique.
      *        Use this problemId to {@link #terminateEarly(Object) terminate} the solver early,
      *        {@link #getSolverStatus(Object) to get the status} or if the problem changes while solving.
@@ -152,7 +152,7 @@ public interface SolverManager<Solution_, ProblemId_> extends AutoCloseable {
      * Defaults to logging exceptions as an error.
      * <p>
      * To stop a solver job before it naturally terminates, call {@link #terminateEarly(Object)}.
-     * 
+     *
      * @param problemId never null, a ID for each planning problem. This must be unique.
      *        Use this problemId to {@link #terminateEarly(Object) terminate} the solver early,
      *        {@link #getSolverStatus(Object) to get the status} or if the problem changes while solving.
@@ -169,7 +169,7 @@ public interface SolverManager<Solution_, ProblemId_> extends AutoCloseable {
 
     /**
      * As defined by {@link #solve(Object, Function, Consumer)}.
-     * 
+     *
      * @param problemId never null, a ID for each planning problem. This must be unique.
      *        Use this problemId to {@link #terminateEarly(Object) terminate} the solver early,
      *        {@link #getSolverStatus(Object) to get the status} or if the problem changes while solving.
@@ -196,7 +196,7 @@ public interface SolverManager<Solution_, ProblemId_> extends AutoCloseable {
      * Defaults to logging exceptions as an error.
      * <p>
      * To stop a solver job before it naturally terminates, call {@link #terminateEarly(Object)}.
-     * 
+     *
      * @param problemId never null, a ID for each planning problem. This must be unique.
      *        Use this problemId to {@link #terminateEarly(Object) terminate} the solver early,
      *        {@link #getSolverStatus(Object) to get the status} or if the problem changes while solving.
@@ -212,7 +212,7 @@ public interface SolverManager<Solution_, ProblemId_> extends AutoCloseable {
 
     /**
      * As defined by {@link #solveAndListen(Object, Function, Consumer)}.
-     * 
+     *
      * @param problemId never null, a ID for each planning problem. This must be unique.
      *        Use this problemId to {@link #terminateEarly(Object) terminate} the solver early,
      *        {@link #getSolverStatus(Object) to get the status} or if the problem changes while solving.
@@ -233,7 +233,7 @@ public interface SolverManager<Solution_, ProblemId_> extends AutoCloseable {
      * Returns {@link SolverStatus#NOT_SOLVING} if the solver already terminated or if the problemId was never added.
      * To distinguish between both cases, use {@link SolverJob#getSolverStatus()} instead.
      * Here, that distinction is not supported because it would cause a memory leak.
-     * 
+     *
      * @param problemId never null, a value given to {@link #solve(Object, Function, Consumer)}
      *        or {@link #solveAndListen(Object, Function, Consumer)}
      * @return never null
@@ -256,7 +256,7 @@ public interface SolverManager<Solution_, ProblemId_> extends AutoCloseable {
      * Waits for the termination or cancellation to complete before returning.
      * During termination, a {@code bestSolutionConsumer} could still be called (on a consumer thread),
      * before this method returns.
-     * 
+     *
      * @param problemId never null, a value given to {@link #solve(Object, Function, Consumer)}
      *        or {@link #solveAndListen(Object, Function, Consumer)}
      */

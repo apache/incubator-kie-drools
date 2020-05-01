@@ -25,7 +25,7 @@ import org.optaplanner.core.impl.score.director.ScoreDirector;
 /**
  * Behaves as if it was a UninitializedVariableEntityFilter, except when the variable is
  * {@link PlanningVariable#nullable()}.
- * 
+ *
  * @param <Solution_> the solution type, the class with the {@link PlanningSolution} annotation
  */
 public class NullValueReinitializeVariableEntityFilter<Solution_> implements SelectionFilter<Solution_, Object> {

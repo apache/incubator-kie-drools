@@ -81,7 +81,7 @@ public class LookUpStrategyResolver {
 
     /**
      * This method is thread-safe.
-     * 
+     *
      * @param object never null
      * @return never null
      */

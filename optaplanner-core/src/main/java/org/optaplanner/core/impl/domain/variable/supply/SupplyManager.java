@@ -24,7 +24,7 @@ public interface SupplyManager {
     /**
      * Returns the {@link Supply} for a {@link Demand}, preferably an existing one.
      * If the {@link Supply} doesn't exist yet (as part of the domain model or externalized), it creates and attaches it.
-     * 
+     *
      * @param demand never null
      * @param <S> Subclass of {@link Supply}
      * @return never null

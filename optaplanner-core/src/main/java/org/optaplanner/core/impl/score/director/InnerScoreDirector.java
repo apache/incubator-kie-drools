@@ -83,7 +83,7 @@ public interface InnerScoreDirector<Solution_> extends ScoreDirector<Solution_> 
     /**
      * Returns a planning clone of the solution,
      * which is not a shallow clone nor a deep clone nor a partition clone.
-     * 
+     *
      * @return never null, planning clone
      */
     Solution_ cloneWorkingSolution();
@@ -91,7 +91,7 @@ public interface InnerScoreDirector<Solution_> extends ScoreDirector<Solution_> 
     /**
      * Returns a planning clone of the solution,
      * which is not a shallow clone nor a deep clone nor a partition clone.
-     * 
+     *
      * @param originalSolution never null
      * @return never null, planning clone
      */
@@ -130,7 +130,7 @@ public interface InnerScoreDirector<Solution_> extends ScoreDirector<Solution_> 
      * <p>
      * This is heavy method, because it usually breaks incremental score calculation. Use it sparingly.
      * Therefore it's best to clone lazily by delaying the clone call as long as possible.
-     * 
+     *
      * @return never null
      */
     ScoreDirector<Solution_> clone();
@@ -139,7 +139,7 @@ public interface InnerScoreDirector<Solution_> extends ScoreDirector<Solution_> 
 
     /**
      * Do not waste performance by propagating changes to step (or higher) mechanisms.
-     * 
+     *
      * @param allChangesWillBeUndoneBeforeStepEnds true if all changes will be undone
      */
     void setAllChangesWillBeUndoneBeforeStepEnds(boolean allChangesWillBeUndoneBeforeStepEnds);
@@ -150,7 +150,7 @@ public interface InnerScoreDirector<Solution_> extends ScoreDirector<Solution_> 
      * it is equal to the parameter {@link Score expectedWorkingScore}.
      * <p>
      * Used to assert that skipping {@link #calculateScore()} (when the score is otherwise determined) is correct.
-     * 
+     *
      * @param expectedWorkingScore never null
      * @param completedAction sometimes null, when assertion fails then the completedAction's {@link Object#toString()}
      *        is included in the exception message
@@ -165,7 +165,7 @@ public interface InnerScoreDirector<Solution_> extends ScoreDirector<Solution_> 
      * is equal to the parameter {@link Score expectedWorkingScore}.
      * <p>
      * Used to assert that the shadow variables' state is consistent with the genuine variables' state.
-     * 
+     *
      * @param expectedWorkingScore never null
      * @param completedAction sometimes null, when assertion fails then the completedAction's {@link Object#toString()}
      *        is included in the exception message
@@ -178,7 +178,7 @@ public interface InnerScoreDirector<Solution_> extends ScoreDirector<Solution_> 
      * it is equal to the parameter {@link Score workingScore}.
      * <p>
      * Furthermore, if the assert fails, a score corruption analysis might be included in the exception message.
-     * 
+     *
      * @param workingScore never null
      * @param completedAction sometimes null, when assertion fails then the completedAction's {@link Object#toString()}
      *        is included in the exception message
@@ -192,7 +192,7 @@ public interface InnerScoreDirector<Solution_> extends ScoreDirector<Solution_> 
      * it is equal to the parameter {@link Score predictedScore}.
      * <p>
      * Furthermore, if the assert fails, a score corruption analysis might be included in the exception message.
-     * 
+     *
      * @param predictedScore never null
      * @param completedAction sometimes null, when assertion fails then the completedAction's {@link Object#toString()}
      *        is included in the exception message
@@ -206,7 +206,7 @@ public interface InnerScoreDirector<Solution_> extends ScoreDirector<Solution_> 
      * it is equal to the parameter {@link Score beforeMoveScore}.
      * <p>
      * Furthermore, if the assert fails, a score corruption analysis might be included in the exception message.
-     * 
+     *
      * @param move never null
      * @param beforeMoveScore never null
      */

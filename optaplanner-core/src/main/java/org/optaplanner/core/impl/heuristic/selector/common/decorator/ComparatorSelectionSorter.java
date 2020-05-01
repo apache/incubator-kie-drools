@@ -26,7 +26,7 @@ import org.optaplanner.core.impl.score.director.ScoreDirector;
 
 /**
  * Sorts a selection {@link List} based on a {@link Comparator}.
- * 
+ *
  * @param <Solution_> the solution type, the class with the {@link PlanningSolution} annotation
  * @param <T> the selection type
  */

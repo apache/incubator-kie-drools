@@ -108,7 +108,7 @@ public class EntityDescriptor<Solution_> {
     /**
      * Using entityDescriptor::isInitialized directly breaks node sharing
      * because it creates multiple instances of this {@link Predicate}.
-     * 
+     *
      * @return never null, always the same {@link Predicate} instance to {@link #isInitialized(Object)}
      */
     public Predicate<Object> getIsInitializedPredicate() {

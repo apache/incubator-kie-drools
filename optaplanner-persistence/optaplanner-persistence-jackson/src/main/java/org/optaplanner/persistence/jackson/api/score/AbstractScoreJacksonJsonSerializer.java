@@ -38,7 +38,7 @@ import com.fasterxml.jackson.databind.ser.ContextualSerializer;
  * {@code @JsonSerialize(using = HardSoftScoreJacksonJsonSerializer.class) @JsonDeserialize(using = HardSoftScoreJacksonJsonDeserializer.class)}
  * on a {@code HardSoftScore score} field and it will marshalled to JSON as {@code "score":"-999hard/-999soft"}.
  * Or better yet, use {@link OptaPlannerJacksonModule} instead.
- * 
+ *
  * @see Score
  * @param <Score_> the actual score type
  */

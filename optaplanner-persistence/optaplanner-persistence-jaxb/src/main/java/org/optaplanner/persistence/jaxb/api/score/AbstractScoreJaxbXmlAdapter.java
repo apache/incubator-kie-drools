@@ -26,7 +26,7 @@ import org.optaplanner.core.api.score.Score;
  * <p>
  * For example: use {@code @XmlJavaTypeAdapter(HardSoftScoreJaxbXmlAdapter.class)}
  * on a {@code HardSoftScore score} field and it will marshalled to XML as {@code <score>-999hard/-999soft</score>}.
- * 
+ *
  * @see Score
  * @param <Score_> the actual score type
  */

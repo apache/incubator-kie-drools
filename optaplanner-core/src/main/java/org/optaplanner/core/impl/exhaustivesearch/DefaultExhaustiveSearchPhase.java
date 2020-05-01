@@ -41,7 +41,7 @@ import org.optaplanner.core.impl.solver.termination.Termination;
 
 /**
  * Default implementation of {@link ExhaustiveSearchPhase}.
- * 
+ *
  * @param <Solution_> the solution type, the class with the {@link PlanningSolution} annotation
  */
 public class DefaultExhaustiveSearchPhase<Solution_> extends AbstractPhase<Solution_>

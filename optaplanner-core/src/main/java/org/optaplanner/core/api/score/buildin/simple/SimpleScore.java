@@ -25,7 +25,7 @@ import org.optaplanner.core.api.score.Score;
  * This {@link Score} is based on 1 level of int constraints.
  * <p>
  * This class is immutable.
- * 
+ *
  * @see Score
  */
 public final class SimpleScore extends AbstractScore<SimpleScore> {
@@ -90,7 +90,7 @@ public final class SimpleScore extends AbstractScore<SimpleScore> {
      * The total of the broken negative constraints and fulfilled positive constraints.
      * Their weight is included in the total.
      * The score is usually a negative number because most use cases only have negative constraints.
-     * 
+     *
      * @return higher is better, usually negative, 0 if no constraints are broken/fulfilled
      */
     public int getScore() {

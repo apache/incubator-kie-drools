@@ -73,7 +73,7 @@ public abstract class Location extends AbstractPersistable {
     /**
      * The distance's unit of measurement depends on the {@link TspSolution}'s {@link DistanceType}.
      * It can be in miles or km, but for most cases it's in the TSPLIB's unit of measurement.
-     * 
+     *
      * @param location never null
      * @return a positive number, the distance multiplied by 1000 to avoid floating point arithmetic rounding errors
      */
@@ -90,7 +90,7 @@ public abstract class Location extends AbstractPersistable {
 
     /**
      * The angle relative to the direction EAST.
-     * 
+     *
      * @param location never null
      * @return in Cartesian coordinates
      */

@@ -145,7 +145,7 @@ public class TravelingTournamentImporter extends AbstractTxtSolutionImporter<Tra
 
         /**
          * Canonical pattern initialization (see papers).
-         * 
+         *
          * @param travelingTournament the traveling tournament
          */
         protected void initializeMatchDays(TravelingTournament travelingTournament) {

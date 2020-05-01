@@ -31,7 +31,7 @@ import org.optaplanner.core.impl.solver.ProblemFactChange;
  * An implementation must extend {@link AbstractCustomPhaseCommand} to ensure backwards compatibility in future versions.
  * <p>
  * To add custom properties, configure custom properties and add public setters for them.
- * 
+ *
  * @param <Solution_> the solution type, the class with the {@link PlanningSolution} annotation
  * @see AbstractCustomPhaseCommand
  */
@@ -48,7 +48,7 @@ public interface CustomPhaseCommand<Solution_> {
      * Don't forget to call {@link ScoreDirector#triggerVariableListeners()} after each set of changes
      * (especially before every {@link ScoreDirector#calculateScore()} call)
      * to ensure all shadow variables are updated.
-     * 
+     *
      * @param scoreDirector never null, the {@link ScoreDirector} that needs to get notified of the changes.
      */
     void changeWorkingSolution(ScoreDirector<Solution_> scoreDirector);

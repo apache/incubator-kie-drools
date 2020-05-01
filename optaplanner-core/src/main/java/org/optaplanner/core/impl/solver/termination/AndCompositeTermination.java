@@ -71,7 +71,7 @@ public class AndCompositeTermination extends AbstractCompositeTermination {
     /**
      * Calculates the minimum timeGradient of all Terminations.
      * Not supported timeGradients (-1.0) are ignored.
-     * 
+     *
      * @param solverScope never null
      * @return the minimum timeGradient of the Terminations.
      */
@@ -90,7 +90,7 @@ public class AndCompositeTermination extends AbstractCompositeTermination {
     /**
      * Calculates the minimum timeGradient of all Terminations.
      * Not supported timeGradients (-1.0) are ignored.
-     * 
+     *
      * @param phaseScope never null
      * @return the minimum timeGradient of the Terminations.
      */

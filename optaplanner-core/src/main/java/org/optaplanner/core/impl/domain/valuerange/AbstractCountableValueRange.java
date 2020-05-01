@@ -24,7 +24,7 @@ import org.optaplanner.core.api.domain.valuerange.ValueRangeFactory;
 
 /**
  * Abstract superclass for {@link CountableValueRange} (and therefore {@link ValueRange}).
- * 
+ *
  * @see CountableValueRange
  * @see ValueRange
  * @see ValueRangeFactory

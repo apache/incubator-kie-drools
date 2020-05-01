@@ -32,7 +32,7 @@ import org.optaplanner.core.impl.localsearch.scope.LocalSearchStepScope;
 
 /**
  * Abstract superclass for all Tabu Acceptors.
- * 
+ *
  * @see Acceptor
  */
 public abstract class AbstractTabuAcceptor extends AbstractAcceptor {

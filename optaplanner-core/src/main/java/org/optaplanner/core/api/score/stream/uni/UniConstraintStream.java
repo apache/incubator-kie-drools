@@ -44,7 +44,7 @@ import org.optaplanner.core.impl.score.stream.uni.UniConstraintStreamHelper;
 
 /**
  * A {@link ConstraintStream} that matches one fact.
- * 
+ *
  * @param <A> the type of the first and only fact in the tuple.
  * @see ConstraintStream
  */
@@ -57,7 +57,7 @@ public interface UniConstraintStream<A> extends ConstraintStream {
     /**
      * Exhaustively test each fact against the {@link Predicate}
      * and match if {@link Predicate#test(Object)} returns true.
-     * 
+     *
      * @param predicate never null
      * @return never null
      */
@@ -74,7 +74,7 @@ public interface UniConstraintStream<A> extends ConstraintStream {
      * than a {@link #join(UniConstraintStream, BiJoiner)},
      * because it doesn't apply hashing and/or indexing on the properties,
      * so it creates and checks every combination of A and B.
-     * 
+     *
      * @param otherStream never null
      * @param <B> the type of the second matched fact
      * @return never null, a stream that matches every combination of A and B
@@ -91,7 +91,7 @@ public interface UniConstraintStream<A> extends ConstraintStream {
      * followed by a {@link BiConstraintStream#filter(BiPredicate) filter},
      * because it applies hashing and/or indexing on the properties,
      * so it doesn't create nor checks every combination of A and B.
-     * 
+     *
      * @param otherStream never null
      * @param joiner never null
      * @param <B> the type of the second matched fact
@@ -108,7 +108,7 @@ public interface UniConstraintStream<A> extends ConstraintStream {
      * so it creates and checks every combination of A and B.
      * <p>
      * This method is syntactic sugar for {@link #join(UniConstraintStream)}.
-     * 
+     *
      * @param otherClass never null
      * @param <B> the type of the second matched fact
      * @return never null, a stream that matches every combination of A and B
@@ -129,7 +129,7 @@ public interface UniConstraintStream<A> extends ConstraintStream {
      * This method is syntactic sugar for {@link #join(UniConstraintStream, BiJoiner)}.
      * <p>
      * This method has overloaded methods with multiple {@link BiJoiner} parameters.
-     * 
+     *
      * @param otherClass never null
      * @param joiner never null
      * @param <B> the type of the second matched fact
@@ -142,7 +142,7 @@ public interface UniConstraintStream<A> extends ConstraintStream {
     /**
      * As defined by {@link #join(Class, BiJoiner)}. For performance reasons, indexing joiners must be placed before
      * filtering joiners.
-     * 
+     *
      * @param otherClass never null
      * @param joiner1 never null
      * @param joiner2 never null
@@ -157,7 +157,7 @@ public interface UniConstraintStream<A> extends ConstraintStream {
     /**
      * As defined by {@link #join(Class, BiJoiner)}. For performance reasons, indexing joiners must be placed before
      * filtering joiners.
-     * 
+     *
      * @param otherClass never null
      * @param joiner1 never null
      * @param joiner2 never null
@@ -174,7 +174,7 @@ public interface UniConstraintStream<A> extends ConstraintStream {
     /**
      * As defined by {@link #join(Class, BiJoiner)}. For performance reasons, indexing joiners must be placed before
      * filtering joiners.
-     * 
+     *
      * @param otherClass never null
      * @param joiner1 never null
      * @param joiner2 never null
@@ -196,7 +196,7 @@ public interface UniConstraintStream<A> extends ConstraintStream {
      * This method causes <i>Unchecked generics array creation for varargs parameter</i> warnings,
      * but we can't fix it with a {@link SafeVarargs} annotation because it's an interface method.
      * Therefore, there are overloaded methods with up to 4 {@link BiJoiner} parameters.
-     * 
+     *
      * @param otherClass never null
      * @param joiners never null
      * @param <B> the type of the second matched fact
@@ -217,7 +217,7 @@ public interface UniConstraintStream<A> extends ConstraintStream {
      * (for the properties it extracts from both facts).
      * <p>
      * This method has overloaded methods with multiple {@link BiJoiner} parameters.
-     * 
+     *
      * @param otherClass never null
      * @param joiner never null
      * @param <B> the type of the second matched fact
@@ -230,7 +230,7 @@ public interface UniConstraintStream<A> extends ConstraintStream {
     /**
      * As defined by {@link #ifExists(Class, BiJoiner)}. For performance reasons, indexing joiners must be placed before
      * filtering joiners.
-     * 
+     *
      * @param otherClass never null
      * @param joiner1 never null
      * @param joiner2 never null
@@ -244,7 +244,7 @@ public interface UniConstraintStream<A> extends ConstraintStream {
     /**
      * As defined by {@link #ifExists(Class, BiJoiner)}. For performance reasons, indexing joiners must be placed before
      * filtering joiners.
-     * 
+     *
      * @param otherClass never null
      * @param joiner1 never null
      * @param joiner2 never null
@@ -260,7 +260,7 @@ public interface UniConstraintStream<A> extends ConstraintStream {
     /**
      * As defined by {@link #ifExists(Class, BiJoiner)}. For performance reasons, indexing joiners must be placed before
      * filtering joiners.
-     * 
+     *
      * @param otherClass never null
      * @param joiner1 never null
      * @param joiner2 never null
@@ -281,7 +281,7 @@ public interface UniConstraintStream<A> extends ConstraintStream {
      * This method causes <i>Unchecked generics array creation for varargs parameter</i> warnings,
      * but we can't fix it with a {@link SafeVarargs} annotation because it's an interface method.
      * Therefore, there are overloaded methods with up to 4 {@link BiJoiner} parameters.
-     * 
+     *
      * @param otherClass never null
      * @param joiners never null
      * @param <B> the type of the second matched fact
@@ -292,7 +292,7 @@ public interface UniConstraintStream<A> extends ConstraintStream {
     /**
      * Create a new {@link UniConstraintStream} for every A, if another A exists that does not {@link #equals(Object)}
      * the first.
-     * 
+     *
      * @param otherClass never null
      * @return never null, a stream that matches every A where a different A exists
      */
@@ -305,7 +305,7 @@ public interface UniConstraintStream<A> extends ConstraintStream {
      * the first, and for which the {@link BiJoiner} is true (for the properties it extracts from both facts).
      * <p>
      * This method has overloaded methods with multiple {@link BiJoiner} parameters.
-     * 
+     *
      * @param otherClass never null
      * @param joiner never null
      * @return never null, a stream that matches every A where a different A exists for which the {@link BiJoiner} is
@@ -318,7 +318,7 @@ public interface UniConstraintStream<A> extends ConstraintStream {
     /**
      * As defined by {@link #ifExistsOther(Class, BiJoiner)}. For performance reasons, indexing joiners must be placed
      * before filtering joiners.
-     * 
+     *
      * @param otherClass never null
      * @param joiner1 never null
      * @param joiner2 never null
@@ -332,7 +332,7 @@ public interface UniConstraintStream<A> extends ConstraintStream {
     /**
      * As defined by {@link #ifExistsOther(Class, BiJoiner)}. For performance reasons, indexing joiners must be placed
      * before filtering joiners.
-     * 
+     *
      * @param otherClass never null
      * @param joiner1 never null
      * @param joiner2 never null
@@ -348,7 +348,7 @@ public interface UniConstraintStream<A> extends ConstraintStream {
     /**
      * As defined by {@link #ifExistsOther(Class, BiJoiner)}. For performance reasons, indexing joiners must be placed
      * before filtering joiners.
-     * 
+     *
      * @param otherClass never null
      * @param joiner1 never null
      * @param joiner2 never null
@@ -369,7 +369,7 @@ public interface UniConstraintStream<A> extends ConstraintStream {
      * This method causes <i>Unchecked generics array creation for varargs parameter</i> warnings,
      * but we can't fix it with a {@link SafeVarargs} annotation because it's an interface method.
      * Therefore, there are overloaded methods with up to 4 {@link BiJoiner} parameters.
-     * 
+     *
      * @param otherClass never null
      * @param joiners never null
      * @return never null, a stream that matches every A where a different A exists for which all the {@link BiJoiner}s
@@ -387,7 +387,7 @@ public interface UniConstraintStream<A> extends ConstraintStream {
      * true (for the properties it extracts from both facts).
      * <p>
      * This method has overloaded methods with multiple {@link BiJoiner} parameters.
-     * 
+     *
      * @param otherClass never null
      * @param joiner never null
      * @param <B> the type of the second matched fact
@@ -400,7 +400,7 @@ public interface UniConstraintStream<A> extends ConstraintStream {
     /**
      * As defined by {@link #ifNotExists(Class, BiJoiner)}. For performance reasons, indexing joiners must be placed
      * before filtering joiners.
-     * 
+     *
      * @param otherClass never null
      * @param joiner1 never null
      * @param joiner2 never null
@@ -416,7 +416,7 @@ public interface UniConstraintStream<A> extends ConstraintStream {
     /**
      * As defined by {@link #ifNotExists(Class, BiJoiner)}. For performance reasons, indexing joiners must be placed
      * before filtering joiners.
-     * 
+     *
      * @param otherClass never null
      * @param joiner1 never null
      * @param joiner2 never null
@@ -433,7 +433,7 @@ public interface UniConstraintStream<A> extends ConstraintStream {
     /**
      * As defined by {@link #ifNotExists(Class, BiJoiner)}. For performance reasons, indexing joiners must be placed
      * before filtering joiners.
-     * 
+     *
      * @param otherClass never null
      * @param joiner1 never null
      * @param joiner2 never null
@@ -455,7 +455,7 @@ public interface UniConstraintStream<A> extends ConstraintStream {
      * This method causes <i>Unchecked generics array creation for varargs parameter</i> warnings,
      * but we can't fix it with a {@link SafeVarargs} annotation because it's an interface method.
      * Therefore, there are overloaded methods with up to 4 {@link BiJoiner} parameters.
-     * 
+     *
      * @param otherClass never null
      * @param joiners never null
      * @param <B> the type of the second matched fact
@@ -467,7 +467,7 @@ public interface UniConstraintStream<A> extends ConstraintStream {
     /**
      * Create a new {@link UniConstraintStream} for every A, if no other A exists that does not {@link #equals(Object)}
      * the first.
-     * 
+     *
      * @param otherClass never null
      * @return never null, a stream that matches every A where a different A does not exist
      */
@@ -480,7 +480,7 @@ public interface UniConstraintStream<A> extends ConstraintStream {
      * the first, and for which the {@link BiJoiner} is true (for the properties it extracts from both facts).
      * <p>
      * This method has overloaded methods with multiple {@link BiJoiner} parameters.
-     * 
+     *
      * @param otherClass never null
      * @param joiner never null
      * @return never null, a stream that matches every A where a different A does not exist for which the
@@ -493,7 +493,7 @@ public interface UniConstraintStream<A> extends ConstraintStream {
     /**
      * As defined by {@link #ifNotExistsOther(Class, BiJoiner)}. For performance reasons, indexing joiners must be
      * placed before filtering joiners.
-     * 
+     *
      * @param otherClass never null
      * @param joiner1 never null
      * @param joiner2 never null
@@ -508,7 +508,7 @@ public interface UniConstraintStream<A> extends ConstraintStream {
     /**
      * As defined by {@link #ifNotExistsOther(Class, BiJoiner)}. For performance reasons, indexing joiners must be
      * placed before filtering joiners.
-     * 
+     *
      * @param otherClass never null
      * @param joiner1 never null
      * @param joiner2 never null
@@ -524,7 +524,7 @@ public interface UniConstraintStream<A> extends ConstraintStream {
     /**
      * As defined by {@link #ifNotExistsOther(Class, BiJoiner)}. For performance reasons, indexing joiners must be
      * placed before filtering joiners.
-     * 
+     *
      * @param otherClass never null
      * @param joiner1 never null
      * @param joiner2 never null
@@ -545,7 +545,7 @@ public interface UniConstraintStream<A> extends ConstraintStream {
      * This method causes <i>Unchecked generics array creation for varargs parameter</i> warnings,
      * but we can't fix it with a {@link SafeVarargs} annotation because it's an interface method.
      * Therefore, there are overloaded methods with up to 4 {@link BiJoiner} parameters.
-     * 
+     *
      * @param otherClass never null
      * @param joiners never null
      * @return never null, a stream that matches every A where a different A does not exist for which all the
@@ -565,7 +565,7 @@ public interface UniConstraintStream<A> extends ConstraintStream {
     /**
      * Convert the {@link UniConstraintStream} to a different {@link UniConstraintStream}, containing only a single
      * tuple, the result of applying {@link UniConstraintCollector}.
-     * 
+     *
      * @param collector never null, the collector to perform the grouping operation with
      *        See {@link ConstraintCollectors} for common operations, such as {@code count()}, {@code sum()} and others.
      * @param <ResultContainer_> the mutable accumulation type (often hidden as an implementation detail)
@@ -579,7 +579,7 @@ public interface UniConstraintStream<A> extends ConstraintStream {
      * Convert the {@link UniConstraintStream} to a different {@link UniConstraintStream}, containing the set of tuples
      * resulting from applying the group key mapping function on all tuples of the original stream.
      * Neither tuple of the new stream {@link Objects#equals(Object, Object)} any other.
-     * 
+     *
      * @param groupKeyMapping never null, mapping function to convert each element in the stream to a different element
      * @param <GroupKey_> the type of a fact in the destination {@link UniConstraintStream}'s tuple
      * @return never null
@@ -593,7 +593,7 @@ public interface UniConstraintStream<A> extends ConstraintStream {
      * The first fact is the return value of the first group key mapping function, applied on the incoming tuple.
      * The second fact is the return value of a given {@link UniConstraintCollector} applied on all incoming tuples with
      * the same first fact.
-     * 
+     *
      * @param groupKeyMapping never null, function to convert the fact in the original tuple to a different fact
      * @param collector never null, the collector to perform the grouping operation with
      *        See {@link ConstraintCollectors} for common operations, such as {@code count()}, {@code sum()} and others.
@@ -613,7 +613,7 @@ public interface UniConstraintStream<A> extends ConstraintStream {
      * The first fact is the return value of the first group key mapping function, applied on the incoming tuple.
      * The second fact is the return value of the second group key mapping function, applied on all incoming tuples with
      * the same first fact.
-     * 
+     *
      * @param groupKeyAMapping never null, function to convert the original tuple into a first fact
      * @param groupKeyBMapping never null, function to convert the original tuple into a second fact
      * @param <GroupKeyA_> the type of the first fact in the destination {@link BiConstraintStream}'s tuple
@@ -628,7 +628,7 @@ public interface UniConstraintStream<A> extends ConstraintStream {
      * That is, the first and second facts in the tuple follow the {@link #groupBy(Function, Function)} semantics, and
      * the third fact is the result of applying {@link UniConstraintCollector#finisher()} on all the tuples of the
      * original {@link UniConstraintStream} that belong to the group.
-     * 
+     *
      * @param groupKeyAMapping never null, function to convert the original tuple into a first fact
      * @param groupKeyBMapping never null, function to convert the original tuple into a second fact
      * @param collector never null, the collector to perform the grouping operation with
@@ -650,7 +650,7 @@ public interface UniConstraintStream<A> extends ConstraintStream {
      * of the original {@link UniConstraintStream} that belong to the group.
      * The fourth fact is the result of applying the second {@link UniConstraintCollector#finisher()} on all the tuples
      * of the original {@link UniConstraintStream} that belong to the group
-     * 
+     *
      * @param groupKeyAMapping never null, function to convert the original tuple into a first fact
      * @param groupKeyBMapping never null, function to convert the original tuple into a second fact
      * @param collectorC never null, the collector to perform the first grouping operation with
@@ -680,7 +680,7 @@ public interface UniConstraintStream<A> extends ConstraintStream {
      * <p>
      * For non-int {@link Score} types use {@link #penalizeLong(String, Score, ToLongFunction)} or
      * {@link #penalizeBigDecimal(String, Score, Function)} instead.
-     * 
+     *
      * @param constraintName never null, shows up in {@link ConstraintMatchTotal} during score justification
      * @param constraintWeight never null
      * @param matchWeigher never null, the result of this function (matchWeight) is multiplied by the constraintWeight
@@ -693,7 +693,7 @@ public interface UniConstraintStream<A> extends ConstraintStream {
 
     /**
      * As defined by {@link #penalize(String, Score, ToIntFunction)}.
-     * 
+     *
      * @param constraintPackage never null
      * @param constraintName never null
      * @param constraintWeight never null
@@ -706,7 +706,7 @@ public interface UniConstraintStream<A> extends ConstraintStream {
     /**
      * Negatively impact the {@link Score}: subtract the constraintWeight multiplied by the match weight.
      * Otherwise as defined by {@link #penalize(String, Score)}.
-     * 
+     *
      * @param constraintName never null, shows up in {@link ConstraintMatchTotal} during score justification
      * @param constraintWeight never null
      * @param matchWeigher never null, the result of this function (matchWeight) is multiplied by the constraintWeight
@@ -719,7 +719,7 @@ public interface UniConstraintStream<A> extends ConstraintStream {
 
     /**
      * As defined by {@link #penalizeLong(String, Score, ToLongFunction)}.
-     * 
+     *
      * @param constraintPackage never null
      * @param constraintName never null
      * @param constraintWeight never null
@@ -732,7 +732,7 @@ public interface UniConstraintStream<A> extends ConstraintStream {
     /**
      * Negatively impact the {@link Score}: subtract the constraintWeight multiplied by the match weight.
      * Otherwise as defined by {@link #penalize(String, Score)}.
-     * 
+     *
      * @param constraintName never null, shows up in {@link ConstraintMatchTotal} during score justification
      * @param constraintWeight never null
      * @param matchWeigher never null, the result of this function (matchWeight) is multiplied by the constraintWeight
@@ -746,7 +746,7 @@ public interface UniConstraintStream<A> extends ConstraintStream {
 
     /**
      * As defined by {@link #penalizeBigDecimal(String, Score, Function)}.
-     * 
+     *
      * @param constraintPackage never null
      * @param constraintName never null
      * @param constraintWeight never null
@@ -762,7 +762,7 @@ public interface UniConstraintStream<A> extends ConstraintStream {
      * <p>
      * For non-int {@link Score} types use {@link #penalizeConfigurableLong(String, ToLongFunction)} or
      * {@link #penalizeConfigurableBigDecimal(String, Function)} instead.
-     * 
+     *
      * @param constraintName never null, shows up in {@link ConstraintMatchTotal} during score justification
      * @param matchWeigher never null, the result of this function (matchWeight) is multiplied by the constraintWeight
      * @return never null
@@ -773,7 +773,7 @@ public interface UniConstraintStream<A> extends ConstraintStream {
 
     /**
      * As defined by {@link #penalizeConfigurable(String, ToIntFunction)}.
-     * 
+     *
      * @param constraintPackage never null
      * @param constraintName never null
      * @param matchWeigher never null
@@ -784,7 +784,7 @@ public interface UniConstraintStream<A> extends ConstraintStream {
     /**
      * Negatively impact the {@link Score}: subtract the {@link ConstraintWeight} multiplied by the match weight.
      * Otherwise as defined by {@link #penalizeConfigurable(String)}.
-     * 
+     *
      * @param constraintName never null, shows up in {@link ConstraintMatchTotal} during score justification
      * @param matchWeigher never null, the result of this function (matchWeight) is multiplied by the constraintWeight
      * @return never null
@@ -796,7 +796,7 @@ public interface UniConstraintStream<A> extends ConstraintStream {
 
     /**
      * As defined by {@link #penalizeConfigurableLong(String, ToLongFunction)}.
-     * 
+     *
      * @param constraintPackage never null
      * @param constraintName never null
      * @param matchWeigher never null
@@ -808,7 +808,7 @@ public interface UniConstraintStream<A> extends ConstraintStream {
     /**
      * Negatively impact the {@link Score}: subtract the {@link ConstraintWeight} multiplied by the match weight.
      * Otherwise as defined by {@link #penalizeConfigurable(String)}.
-     * 
+     *
      * @param constraintName never null, shows up in {@link ConstraintMatchTotal} during score justification
      * @param matchWeigher never null, the result of this function (matchWeight) is multiplied by the constraintWeight
      * @return never null
@@ -820,7 +820,7 @@ public interface UniConstraintStream<A> extends ConstraintStream {
 
     /**
      * As defined by {@link #penalizeConfigurableBigDecimal(String, Function)}.
-     * 
+     *
      * @param constraintPackage never null
      * @param constraintName never null
      * @param matchWeigher never null
@@ -835,7 +835,7 @@ public interface UniConstraintStream<A> extends ConstraintStream {
      * <p>
      * For non-int {@link Score} types use {@link #rewardLong(String, Score, ToLongFunction)} or
      * {@link #rewardBigDecimal(String, Score, Function)} instead.
-     * 
+     *
      * @param constraintName never null, shows up in {@link ConstraintMatchTotal} during score justification
      * @param constraintWeight never null
      * @param matchWeigher never null, the result of this function (matchWeight) is multiplied by the constraintWeight
@@ -848,7 +848,7 @@ public interface UniConstraintStream<A> extends ConstraintStream {
 
     /**
      * As defined by {@link #reward(String, Score, ToIntFunction)}.
-     * 
+     *
      * @param constraintPackage never null
      * @param constraintName never null
      * @param constraintWeight never null
@@ -861,7 +861,7 @@ public interface UniConstraintStream<A> extends ConstraintStream {
     /**
      * Positively impact the {@link Score}: add the constraintWeight multiplied by the match weight.
      * Otherwise as defined by {@link #reward(String, Score)}.
-     * 
+     *
      * @param constraintName never null, shows up in {@link ConstraintMatchTotal} during score justification
      * @param constraintWeight never null
      * @param matchWeigher never null, the result of this function (matchWeight) is multiplied by the constraintWeight
@@ -874,7 +874,7 @@ public interface UniConstraintStream<A> extends ConstraintStream {
 
     /**
      * As defined by {@link #rewardLong(String, Score, ToLongFunction)}.
-     * 
+     *
      * @param constraintPackage never null
      * @param constraintName never null
      * @param constraintWeight never null
@@ -887,7 +887,7 @@ public interface UniConstraintStream<A> extends ConstraintStream {
     /**
      * Positively impact the {@link Score}: add the constraintWeight multiplied by the match weight.
      * Otherwise as defined by {@link #reward(String, Score)}.
-     * 
+     *
      * @param constraintName never null, shows up in {@link ConstraintMatchTotal} during score justification
      * @param constraintWeight never null
      * @param matchWeigher never null, the result of this function (matchWeight) is multiplied by the constraintWeight
@@ -901,7 +901,7 @@ public interface UniConstraintStream<A> extends ConstraintStream {
 
     /**
      * As defined by {@link #rewardBigDecimal(String, Score, Function)}.
-     * 
+     *
      * @param constraintPackage never null
      * @param constraintName never null
      * @param constraintWeight never null
@@ -917,7 +917,7 @@ public interface UniConstraintStream<A> extends ConstraintStream {
      * <p>
      * For non-int {@link Score} types use {@link #rewardConfigurableLong(String, ToLongFunction)} or
      * {@link #rewardConfigurableBigDecimal(String, Function)} instead.
-     * 
+     *
      * @param constraintName never null, shows up in {@link ConstraintMatchTotal} during score justification
      * @param matchWeigher never null, the result of this function (matchWeight) is multiplied by the constraintWeight
      * @return never null
@@ -928,7 +928,7 @@ public interface UniConstraintStream<A> extends ConstraintStream {
 
     /**
      * As defined by {@link #rewardConfigurable(String, ToIntFunction)}.
-     * 
+     *
      * @param constraintPackage never null
      * @param constraintName never null
      * @param matchWeigher never null
@@ -939,7 +939,7 @@ public interface UniConstraintStream<A> extends ConstraintStream {
     /**
      * Positively impact the {@link Score}: add the {@link ConstraintWeight} multiplied by the match weight.
      * Otherwise as defined by {@link #rewardConfigurable(String)}.
-     * 
+     *
      * @param constraintName never null, shows up in {@link ConstraintMatchTotal} during score justification
      * @param matchWeigher never null, the result of this function (matchWeight) is multiplied by the constraintWeight
      * @return never null
@@ -951,7 +951,7 @@ public interface UniConstraintStream<A> extends ConstraintStream {
 
     /**
      * As defined by {@link #rewardConfigurableLong(String, ToLongFunction)}.
-     * 
+     *
      * @param constraintPackage never null
      * @param constraintName never null
      * @param matchWeigher never null
@@ -962,7 +962,7 @@ public interface UniConstraintStream<A> extends ConstraintStream {
     /**
      * Positively impact the {@link Score}: add the {@link ConstraintWeight} multiplied by the match weight.
      * Otherwise as defined by {@link #rewardConfigurable(String)}.
-     * 
+     *
      * @param constraintName never null, shows up in {@link ConstraintMatchTotal} during score justification
      * @param matchWeigher never null, the result of this function (matchWeight) is multiplied by the constraintWeight
      * @return never null
@@ -974,7 +974,7 @@ public interface UniConstraintStream<A> extends ConstraintStream {
 
     /**
      * As defined by {@link #rewardConfigurableBigDecimal(String, Function)}.
-     * 
+     *
      * @param constraintPackage never null
      * @param constraintName never null
      * @param matchWeigher never null
@@ -992,7 +992,7 @@ public interface UniConstraintStream<A> extends ConstraintStream {
      * <p>
      * For non-int {@link Score} types use {@link #impactLong(String, Score, ToLongFunction)} or
      * {@link #impactBigDecimal(String, Score, Function)} instead.
-     * 
+     *
      * @param constraintName never null, shows up in {@link ConstraintMatchTotal} during score justification
      * @param constraintWeight never null
      * @param matchWeigher never null, the result of this function (matchWeight) is multiplied by the constraintWeight
@@ -1005,7 +1005,7 @@ public interface UniConstraintStream<A> extends ConstraintStream {
 
     /**
      * As defined by {@link #impact(String, Score, ToIntFunction)}.
-     * 
+     *
      * @param constraintPackage never null
      * @param constraintName never null
      * @param constraintWeight never null
@@ -1021,7 +1021,7 @@ public interface UniConstraintStream<A> extends ConstraintStream {
      * <p>
      * Use {@code penalizeLong(...)} or {@code rewardLong(...)} instead, unless this constraint can both have positive
      * and negative weights.
-     * 
+     *
      * @param constraintName never null, shows up in {@link ConstraintMatchTotal} during score justification
      * @param constraintWeight never null
      * @param matchWeigher never null, the result of this function (matchWeight) is multiplied by the constraintWeight
@@ -1034,7 +1034,7 @@ public interface UniConstraintStream<A> extends ConstraintStream {
 
     /**
      * As defined by {@link #impactLong(String, Score, ToLongFunction)}.
-     * 
+     *
      * @param constraintPackage never null
      * @param constraintName never null
      * @param constraintWeight never null
@@ -1050,7 +1050,7 @@ public interface UniConstraintStream<A> extends ConstraintStream {
      * <p>
      * Use {@code penalizeBigDecimal(...)} or {@code rewardBigDecimal(...)} instead, unless this constraint can both
      * have positive and negative weights.
-     * 
+     *
      * @param constraintName never null, shows up in {@link ConstraintMatchTotal} during score justification
      * @param constraintWeight never null
      * @param matchWeigher never null, the result of this function (matchWeight) is multiplied by the constraintWeight
@@ -1064,7 +1064,7 @@ public interface UniConstraintStream<A> extends ConstraintStream {
 
     /**
      * As defined by {@link #impactBigDecimal(String, Score, Function)}.
-     * 
+     *
      * @param constraintPackage never null
      * @param constraintName never null
      * @param constraintWeight never null
@@ -1089,7 +1089,7 @@ public interface UniConstraintStream<A> extends ConstraintStream {
      * {@link #impactConfigurableBigDecimal(String, Function)} instead.
      * <p>
      * The {@link Constraint#getConstraintPackage()} defaults to {@link ConstraintConfiguration#constraintPackage()}.
-     * 
+     *
      * @param constraintName never null, shows up in {@link ConstraintMatchTotal} during score justification
      * @param matchWeigher never null, the result of this function (matchWeight) is multiplied by the constraintWeight
      * @return never null
@@ -1100,7 +1100,7 @@ public interface UniConstraintStream<A> extends ConstraintStream {
 
     /**
      * As defined by {@link #impactConfigurable(String, ToIntFunction)}.
-     * 
+     *
      * @param constraintPackage never null
      * @param constraintName never null
      * @param matchWeigher never null
@@ -1120,7 +1120,7 @@ public interface UniConstraintStream<A> extends ConstraintStream {
      * If there is no {@link ConstraintConfiguration}, use {@link #impact(String, Score)} instead.
      * <p>
      * The {@link Constraint#getConstraintPackage()} defaults to {@link ConstraintConfiguration#constraintPackage()}.
-     * 
+     *
      * @param constraintName never null, shows up in {@link ConstraintMatchTotal} during score justification
      * @param matchWeigher never null, the result of this function (matchWeight) is multiplied by the constraintWeight
      * @return never null
@@ -1132,7 +1132,7 @@ public interface UniConstraintStream<A> extends ConstraintStream {
 
     /**
      * As defined by {@link #impactConfigurableLong(String, ToLongFunction)}.
-     * 
+     *
      * @param constraintPackage never null
      * @param constraintName never null
      * @param matchWeigher never null
@@ -1153,7 +1153,7 @@ public interface UniConstraintStream<A> extends ConstraintStream {
      * If there is no {@link ConstraintConfiguration}, use {@link #impact(String, Score)} instead.
      * <p>
      * The {@link Constraint#getConstraintPackage()} defaults to {@link ConstraintConfiguration#constraintPackage()}.
-     * 
+     *
      * @param constraintName never null, shows up in {@link ConstraintMatchTotal} during score justification
      * @param matchWeigher never null, the result of this function (matchWeight) is multiplied by the constraintWeight
      * @return never null
@@ -1165,7 +1165,7 @@ public interface UniConstraintStream<A> extends ConstraintStream {
 
     /**
      * As defined by {@link #impactConfigurableBigDecimal(String, Function)}.
-     * 
+     *
      * @param constraintPackage never null
      * @param constraintName never null
      * @param matchWeigher never null

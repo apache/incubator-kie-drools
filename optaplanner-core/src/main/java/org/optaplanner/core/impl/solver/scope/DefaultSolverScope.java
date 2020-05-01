@@ -152,7 +152,7 @@ public class DefaultSolverScope<Solution_> {
     /**
      * The {@link PlanningSolution best solution} must never be the same instance
      * as the {@link PlanningSolution working solution}, it should be a (un)changed clone.
-     * 
+     *
      * @param bestSolution never null
      */
     public void setBestSolution(Solution_ bestSolution) {

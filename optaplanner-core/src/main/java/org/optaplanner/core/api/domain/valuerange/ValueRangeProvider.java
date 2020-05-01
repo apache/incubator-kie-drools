@@ -40,7 +40,7 @@ public @interface ValueRangeProvider {
     /**
      * Used by {@link PlanningVariable#valueRangeProviderRefs()}
      * to map a {@link PlanningVariable} to a {@link ValueRangeProvider}.
-     * 
+     *
      * @return never null, must be unique across a {@link SolverFactory}
      */
     String id();

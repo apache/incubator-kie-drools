@@ -27,7 +27,7 @@ import org.optaplanner.core.impl.solver.scope.DefaultSolverScope;
 
 /**
  * Internal API.
- * 
+ *
  * @param <Solution_> the solution type, the class with the {@link PlanningSolution} annotation
  */
 public class SolverEventSupport<Solution_> extends AbstractEventSupport<SolverEventListener<Solution_>> {

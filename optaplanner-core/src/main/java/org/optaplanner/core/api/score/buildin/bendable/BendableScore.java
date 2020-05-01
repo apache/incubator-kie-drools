@@ -32,7 +32,7 @@ import org.optaplanner.core.impl.score.buildin.bendable.BendableScoreDefinition;
  * <p>
  * The {@link #getHardLevelsSize()} and {@link #getSoftLevelsSize()} must be the same as in the
  * {@link BendableScoreDefinition} used.
- * 
+ *
  * @see Score
  */
 public final class BendableScore extends AbstractBendableScore<BendableScore>
@@ -58,7 +58,7 @@ public final class BendableScore extends AbstractBendableScore<BendableScore>
 
     /**
      * Creates a new {@link BendableScore}.
-     * 
+     *
      * @param initScore see {@link Score#getInitScore()}
      * @param hardScores never null, never change that array afterwards: it must be immutable
      * @param softScores never null, never change that array afterwards: it must be immutable
@@ -78,7 +78,7 @@ public final class BendableScore extends AbstractBendableScore<BendableScore>
 
     /**
      * Creates a new {@link BendableScore}.
-     * 
+     *
      * @param hardScores never null, never change that array afterwards: it must be immutable
      * @param softScores never null, never change that array afterwards: it must be immutable
      * @return never null
@@ -97,7 +97,7 @@ public final class BendableScore extends AbstractBendableScore<BendableScore>
 
     /**
      * Creates a new {@link BendableScore}.
-     * 
+     *
      * @param hardLevelsSize at least 0
      * @param softLevelsSize at least 0
      * @return never null
@@ -108,7 +108,7 @@ public final class BendableScore extends AbstractBendableScore<BendableScore>
 
     /**
      * Creates a new {@link BendableScore}.
-     * 
+     *
      * @param hardLevelsSize at least 0
      * @param softLevelsSize at least 0
      * @param hardLevel at least 0, less than hardLevelsSize
@@ -123,7 +123,7 @@ public final class BendableScore extends AbstractBendableScore<BendableScore>
 
     /**
      * Creates a new {@link BendableScore}.
-     * 
+     *
      * @param hardLevelsSize at least 0
      * @param softLevelsSize at least 0
      * @param softLevel at least 0, less than softLevelsSize

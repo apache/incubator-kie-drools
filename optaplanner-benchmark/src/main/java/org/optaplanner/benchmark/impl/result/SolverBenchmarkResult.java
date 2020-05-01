@@ -280,7 +280,7 @@ public class SolverBenchmarkResult {
      * Does not call {@link SingleBenchmarkResult#accumulateResults(BenchmarkReport)},
      * because {@link PlannerBenchmarkResult#accumulateResults(BenchmarkReport)} does that already on
      * {@link PlannerBenchmarkResult#getUnifiedProblemBenchmarkResultList()}.
-     * 
+     *
      * @param benchmarkReport never null
      */
     public void accumulateResults(BenchmarkReport benchmarkReport) {

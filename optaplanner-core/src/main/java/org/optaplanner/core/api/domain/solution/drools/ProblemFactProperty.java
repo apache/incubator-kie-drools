@@ -39,7 +39,7 @@ import org.optaplanner.core.impl.solver.ProblemFactChange;
  * <p>
  * Do not annotate a {@link PlanningEntity planning entity} or a {@link ConstraintConfiguration planning paramerization}
  * as a problem fact: they are automatically available as facts for {@link ConstraintFactory#from(Class)} or DRL.
- * 
+ *
  * @see ProblemFactCollectionProperty
  */
 @Target({ METHOD, FIELD })

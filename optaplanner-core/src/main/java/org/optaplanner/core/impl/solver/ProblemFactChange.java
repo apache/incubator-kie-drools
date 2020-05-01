@@ -30,7 +30,7 @@ import org.optaplanner.core.impl.score.director.ScoreDirector;
  * Note that the {@link Solver} clones a {@link PlanningSolution} at will.
  * So any change must be done on the problem facts and planning entities referenced by the {@link PlanningSolution}
  * of the {@link ScoreDirector}. On each change it should also notify the {@link ScoreDirector} accordingly.
- * 
+ *
  * @param <Solution_> the solution type, the class with the {@link PlanningSolution} annotation
  */
 @FunctionalInterface
@@ -41,7 +41,7 @@ public interface ProblemFactChange<Solution_> {
      * and notifies the {@link ScoreDirector} accordingly.
      * Every modification to the {@link PlanningSolution}, must be correctly notified to the {@link ScoreDirector},
      * otherwise the {@link Score} calculation will be corrupted.
-     * 
+     *
      * @param scoreDirector never null
      *        Contains the {@link PlanningSolution working solution} which contains the problem facts
      *        (and {@link PlanningEntity planning entities}) to change.

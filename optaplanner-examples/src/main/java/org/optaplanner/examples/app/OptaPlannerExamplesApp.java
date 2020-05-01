@@ -67,7 +67,7 @@ public class OptaPlannerExamplesApp extends JFrame {
 
     /**
      * Supported system properties: {@link CommonApp#DATA_DIR_SYSTEM_PROPERTY}.
-     * 
+     *
      * @param args never null
      */
     public static void main(String[] args) {

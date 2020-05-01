@@ -39,7 +39,7 @@ public interface ValueRangeDescriptor<Solution_> {
     /**
      * If this method return true, this instance is safe to cast to {@link EntityIndependentValueRangeDescriptor},
      * otherwise it requires an entity to determine the {@link ValueRange}.
-     * 
+     *
      * @return true if the {@link ValueRange} is the same for all entities of the same solution
      */
     boolean isEntityIndependent();

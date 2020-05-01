@@ -80,7 +80,7 @@ public class FieldAccessingSolutionCloner<Solution_> implements SolutionCloner<S
 
     /**
      * This method is thread-safe.
-     * 
+     *
      * @param clazz never null
      * @param <C> type
      * @return never null
@@ -102,7 +102,7 @@ public class FieldAccessingSolutionCloner<Solution_> implements SolutionCloner<S
 
     /**
      * This method is thread-safe.
-     * 
+     *
      * @param clazz never null
      * @param <C> type
      * @return never null
@@ -123,7 +123,7 @@ public class FieldAccessingSolutionCloner<Solution_> implements SolutionCloner<S
 
     /**
      * This method is thread-safe.
-     * 
+     *
      * @param field never null
      * @param fieldInstanceClass never null
      * @param actualValueClass never null
@@ -211,7 +211,7 @@ public class FieldAccessingSolutionCloner<Solution_> implements SolutionCloner<S
 
     /**
      * This method is thread-safe.
-     * 
+     *
      * @param actualValueClass never null
      * @return never null
      */
@@ -423,7 +423,7 @@ public class FieldAccessingSolutionCloner<Solution_> implements SolutionCloner<S
 
         /**
          * Fails fast if {@link #isFieldAnEntityPropertyOnSolution} assumptions were wrong.
-         * 
+         *
          * @param originalSolution never null
          * @param cloneSolution never null
          */

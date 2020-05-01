@@ -27,7 +27,7 @@ import org.optaplanner.core.impl.heuristic.selector.move.MoveSelector;
 
 /**
  * Abstract superclass for every composite {@link MoveSelector}.
- * 
+ *
  * @see MoveSelector
  */
 public abstract class CompositeMoveSelector extends AbstractMoveSelector {

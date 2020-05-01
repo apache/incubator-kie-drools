@@ -40,7 +40,7 @@ import org.optaplanner.core.impl.solver.ProblemFactChange;
 /**
  * The ScoreDirector holds the {@link PlanningSolution working solution}
  * and calculates the {@link Score} for it.
- * 
+ *
  * @param <Solution_> the solution type, the class with the {@link PlanningSolution} annotation
  */
 public interface ScoreDirector<Solution_> extends AutoCloseable {
@@ -53,7 +53,7 @@ public interface ScoreDirector<Solution_> extends AutoCloseable {
      * <p>
      * If the {@link PlanningSolution working solution} has been changed since {@link #calculateScore} was called,
      * its {@link Score} won't be correct.
-     * 
+     *
      * @return never null
      */
     Solution_ getWorkingSolution();
@@ -65,14 +65,14 @@ public interface ScoreDirector<Solution_> extends AutoCloseable {
      * Only call this method on a separate {@link ScoreDirector} instance,
      * built by {@link SolverFactory#getScoreDirectorFactory()},
      * not on the one used inside the {@link Solver} itself.
-     * 
+     *
      * @param workingSolution never null
      */
     void setWorkingSolution(Solution_ workingSolution);
 
     /**
      * Calculates the {@link Score} and updates the {@link PlanningSolution working solution} accordingly.
-     * 
+     *
      * @return never null, the {@link Score} of the {@link PlanningSolution working solution}
      */
     Score calculateScore();
@@ -90,7 +90,7 @@ public interface ScoreDirector<Solution_> extends AutoCloseable {
      * <p>
      * Call {@link #calculateScore()} before calling this method,
      * unless that method has already been called since the last {@link PlanningVariable} changes.
-     * 
+     *
      * @return never null
      * @throws IllegalStateException if {@link #isConstraintMatchEnabled()} returns false
      * @see #getConstraintMatchTotalMap()
@@ -105,7 +105,7 @@ public interface ScoreDirector<Solution_> extends AutoCloseable {
      * <p>
      * Call {@link #calculateScore()} before calling this method,
      * unless that method has already been called since the last {@link PlanningVariable} changes.
-     * 
+     *
      * @return never null, the key is the {@link ConstraintMatchTotal#getConstraintId() constraintId}
      *         (to create one, use {@link ConstraintMatchTotal#composeConstraintId(String, String)}).
      * @throws IllegalStateException if {@link #isConstraintMatchEnabled()} returns false
@@ -125,7 +125,7 @@ public interface ScoreDirector<Solution_> extends AutoCloseable {
      * <p>
      * Call {@link #calculateScore()} before calling this method,
      * unless that method has already been called since the last {@link PlanningVariable} changes.
-     * 
+     *
      * @return never null, the key is a {@link ProblemFactCollectionProperty problem fact} or a {@link PlanningEntity planning
      *         entity}
      * @throws IllegalStateException if {@link #isConstraintMatchEnabled()} returns false
@@ -145,7 +145,7 @@ public interface ScoreDirector<Solution_> extends AutoCloseable {
      * and convert those into a domain specific API.
      * <p>
      * This automatically calls {@link #calculateScore()} first.
-     * 
+     *
      * @return never null
      * @throws IllegalStateException if {@link #isConstraintMatchEnabled()} returns false
      */
@@ -186,7 +186,7 @@ public interface ScoreDirector<Solution_> extends AutoCloseable {
      * <p>
      * Matching is determined by the {@link LookUpStrategyType} on {@link PlanningSolution}.
      * Matching uses a {@link PlanningId} by default.
-     * 
+     *
      * @param externalObject sometimes null
      * @return null if externalObject is null
      * @throws IllegalArgumentException if there is no workingObject for externalObject, if it cannot be looked up
@@ -201,7 +201,7 @@ public interface ScoreDirector<Solution_> extends AutoCloseable {
      * but doesn't fail fast if no workingObject was ever added for the externalObject.
      * It's recommended to use {@link #lookUpWorkingObject(Object)} instead,
      * especially in a {@link Move#rebase(ScoreDirector)} code.
-     * 
+     *
      * @param externalObject sometimes null
      * @return null if externalObject is null or if there is no workingObject for externalObject
      * @throws IllegalArgumentException if it cannot be looked up or if the externalObject's class is not supported

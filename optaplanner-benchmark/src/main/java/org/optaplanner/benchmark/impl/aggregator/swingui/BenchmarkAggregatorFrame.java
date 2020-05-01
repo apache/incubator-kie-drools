@@ -85,7 +85,7 @@ public class BenchmarkAggregatorFrame extends JFrame {
     /**
      * Reads an XML benchmark configuration from the classpath
      * and uses that {@link PlannerBenchmarkConfig} to do an aggregation.
-     * 
+     *
      * @param benchmarkConfigResource never null, same one as in {@link PlannerBenchmarkFactory#createFromXmlResource(String)}
      */
     public static void createAndDisplayFromXmlResource(String benchmarkConfigResource) {
@@ -96,7 +96,7 @@ public class BenchmarkAggregatorFrame extends JFrame {
     /**
      * Reads an Freemarker template from the classpath that generates an XML benchmark configuration
      * and uses that {@link PlannerBenchmarkConfig} to do an aggregation.
-     * 
+     *
      * @param templateResource never null, same one as in
      *        {@link PlannerBenchmarkFactory#createFromFreemarkerXmlResource(String)}
      */
@@ -107,7 +107,7 @@ public class BenchmarkAggregatorFrame extends JFrame {
 
     /**
      * Uses a {@link PlannerBenchmarkConfig} to do an aggregation.
-     * 
+     *
      * @param benchmarkConfig never null
      */
     public static void createAndDisplay(PlannerBenchmarkConfig benchmarkConfig) {

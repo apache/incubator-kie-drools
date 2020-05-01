@@ -40,7 +40,7 @@ import org.optaplanner.core.impl.score.director.drools.OptaPlannerRuleEventListe
 
 /**
  * Abstract superclass for {@link ScoreHolder}.
- * 
+ *
  * @param <Score_> the {@link Score} type
  */
 public abstract class AbstractScoreHolder<Score_ extends Score<Score_>>
@@ -115,7 +115,7 @@ public abstract class AbstractScoreHolder<Score_ extends Score<Score_>>
      * Requires @{@link OptaPlannerRuleEventListener} to be added as event listener on {@link KieSession}, otherwise the
      * score changes caused by the constraint matches would not be undone. See
      * {@link DroolsScoreDirector#resetKieSession()} for an example.
-     * 
+     *
      * @param kcontext The rule for which to register the match.
      * @param constraintUndoListener The operation to run to undo the match.
      * @param scoreSupplier The score change to be undone when constraint justification enabled.
@@ -156,7 +156,7 @@ public abstract class AbstractScoreHolder<Score_ extends Score<Score_>>
 
     /**
      * For internal use only, use penalize() or reward() instead.
-     * 
+     *
      * @param kcontext never null
      */
     public void impactScore(RuleContext kcontext) {
@@ -167,7 +167,7 @@ public abstract class AbstractScoreHolder<Score_ extends Score<Score_>>
 
     /**
      * For internal use only, use penalize() or reward() instead.
-     * 
+     *
      * @param kcontext never null
      * @param weightMultiplier any
      */
@@ -179,7 +179,7 @@ public abstract class AbstractScoreHolder<Score_ extends Score<Score_>>
 
     /**
      * For internal use only, use penalize() or reward() instead.
-     * 
+     *
      * @param kcontext never null
      * @param weightMultiplier any
      */
@@ -191,7 +191,7 @@ public abstract class AbstractScoreHolder<Score_ extends Score<Score_>>
 
     /**
      * For internal use only, use penalize() or reward() instead.
-     * 
+     *
      * @param kcontext never null
      * @param weightMultiplier any
      */

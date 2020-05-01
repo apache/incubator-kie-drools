@@ -21,7 +21,7 @@ import org.optaplanner.core.api.score.stream.Joiners;
 /**
  * Created with {@link Joiners}.
  * Used by {@link TriConstraintStream#join(Class, QuadJoiner)}, ...
- * 
+ *
  * @see Joiners
  */
 public interface QuadJoiner<A, B, C, D> {

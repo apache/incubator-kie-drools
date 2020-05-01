@@ -30,7 +30,7 @@ import org.slf4j.LoggerFactory;
 
 /**
  * Remembers the {@link PlanningSolution best solution} that a {@link Solver} encounters.
- * 
+ *
  * @param <Solution_> the solution type, the class with the {@link PlanningSolution} annotation
  */
 public class BestSolutionRecaller<Solution_> extends PhaseLifecycleListenerAdapter<Solution_> {

@@ -37,7 +37,7 @@ public class SolverConfigContext {
 
     /**
      * Useful for a kjar deployment. The {@link KieContainer} also defines the non-vanilla {@link ClassLoader}.
-     * 
+     *
      * @param kieContainer if null behaves as {@link #SolverConfigContext()}
      */
     public SolverConfigContext(KieContainer kieContainer) {

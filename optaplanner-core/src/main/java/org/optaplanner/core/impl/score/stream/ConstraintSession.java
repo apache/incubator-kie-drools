@@ -38,7 +38,7 @@ public interface ConstraintSession<Solution_> extends AutoCloseable {
 
     /**
      * As defined by {@link ScoreDirector#getConstraintMatchTotalMap()}.
-     * 
+     *
      * @return never null
      * @see ScoreDirector#getConstraintMatchTotalMap()
      */
@@ -46,7 +46,7 @@ public interface ConstraintSession<Solution_> extends AutoCloseable {
 
     /**
      * As defined by {@link ScoreDirector#getIndictmentMap()}.
-     * 
+     *
      * @return never null
      * @see ScoreDirector#getIndictmentMap()
      */

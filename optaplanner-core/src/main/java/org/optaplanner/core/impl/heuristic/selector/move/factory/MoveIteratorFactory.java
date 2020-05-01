@@ -29,7 +29,7 @@ import org.optaplanner.core.impl.score.director.ScoreDirector;
  * An interface to generate an {@link Iterator} of custom {@link Move}s.
  * <p>
  * For a more simple version, see {@link MoveListFactory}.
- * 
+ *
  * @param <Solution_> the solution type, the class with the {@link PlanningSolution} annotation
  */
 public interface MoveIteratorFactory<Solution_> {
@@ -44,7 +44,7 @@ public interface MoveIteratorFactory<Solution_> {
 
     /**
      * When it is called depends on the configured {@link SelectionCacheType}.
-     * 
+     *
      * @param scoreDirector never null, the {@link ScoreDirector}
      *        which has the {@link ScoreDirector#getWorkingSolution()} of which the {@link Move}s need to be generated
      * @return never null, an {@link Iterator} that will end sooner or later
@@ -55,7 +55,7 @@ public interface MoveIteratorFactory<Solution_> {
 
     /**
      * When it is called depends on the configured {@link SelectionCacheType}.
-     * 
+     *
      * @param scoreDirector never null, the {@link ScoreDirector}
      *        which has the {@link ScoreDirector#getWorkingSolution()} of which the {@link Move}s need to be generated
      * @param workingRandom never null, the {@link Random} to use when any random number is needed,

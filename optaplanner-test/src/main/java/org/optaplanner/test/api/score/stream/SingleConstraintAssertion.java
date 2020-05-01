@@ -60,7 +60,7 @@ public interface SingleConstraintAssertion {
 
     /**
      * As defined by {@link #penalizesBy(int)}.
-     * 
+     *
      * @param matchWeightTotal at least 0, expected sum of match weights of matches of the constraint.
      * @param message sometimes null, description of the scenario being asserted
      * @throws AssertionError when the expected penalty is not observed
@@ -69,7 +69,7 @@ public interface SingleConstraintAssertion {
 
     /**
      * As defined by {@link #penalizesBy(int)}.
-     * 
+     *
      * @param matchWeightTotal at least 0, expected sum of match weights of matches of the constraint.
      * @throws AssertionError when the expected penalty is not observed
      */
@@ -79,7 +79,7 @@ public interface SingleConstraintAssertion {
 
     /**
      * As defined by {@link #penalizesBy(int)}.
-     * 
+     *
      * @param matchWeightTotal at least 0, expected sum of match weights of matches of the constraint.
      * @param message sometimes null, description of the scenario being asserted
      * @throws AssertionError when the expected penalty is not observed

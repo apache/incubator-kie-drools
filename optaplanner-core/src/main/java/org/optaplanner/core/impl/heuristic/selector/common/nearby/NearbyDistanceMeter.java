@@ -25,7 +25,7 @@ public interface NearbyDistanceMeter<O, D> {
      * <p>
      * Distances can be asymmetrical: the distance from an origin to a destination
      * often differs from the distance from that destination to that origin.
-     * 
+     *
      * @param origin never null
      * @param destination never null
      * @return Preferably always {@code >= 0.0}. If origin == destination, it usually returns 0.0.

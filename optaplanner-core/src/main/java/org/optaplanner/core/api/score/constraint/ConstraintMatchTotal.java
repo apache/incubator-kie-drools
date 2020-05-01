@@ -92,7 +92,7 @@ public final class ConstraintMatchTotal implements Serializable, Comparable<Cons
      * The value of the {@link ConstraintWeight} annotated member of the {@link ConstraintConfiguration}.
      * It's independent to the state of the {@link PlanningVariable planning variables}.
      * Do not confuse with {@link #getScore()}.
-     * 
+     *
      * @return null if {@link ConstraintWeight} isn't used for this constraint
      */
     public Score getConstraintWeight() {
@@ -115,7 +115,7 @@ public final class ConstraintMatchTotal implements Serializable, Comparable<Cons
 
     /**
      * Sum of the {@link #getConstraintMatchSet()}'s {@link ConstraintMatch#getScore()}.
-     * 
+     *
      * @return never null
      */
     public Score getScore() {
@@ -164,7 +164,7 @@ public final class ConstraintMatchTotal implements Serializable, Comparable<Cons
 
     /**
      * To create a constraintId, use {@link #composeConstraintId(String, String)}.
-     * 
+     *
      * @return never null
      */
     public String getConstraintId() {

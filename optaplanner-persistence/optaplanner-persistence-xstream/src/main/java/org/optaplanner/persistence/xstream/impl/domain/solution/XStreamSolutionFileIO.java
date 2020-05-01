@@ -38,7 +38,7 @@ import com.thoughtworks.xstream.security.AnyTypePermission;
  * Security warning: only use this class with XML files from a trusted source,
  * because {@link XStream} is configured to allow all permissions,
  * which can be exploited if the XML comes from an untrusted source.
- * 
+ *
  * @param <Solution_> the solution type, the class with the {@link PlanningSolution} annotation
  */
 public class XStreamSolutionFileIO<Solution_> implements SolutionFileIO<Solution_> {

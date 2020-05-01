@@ -34,7 +34,7 @@ import com.thoughtworks.xstream.annotations.XStreamAlias;
  * THIS IS VERY EXPERIMENTAL. It's NOT DOCUMENTED because we'll only document it when it actually works in more than 1 use case.
  * It's riddled with TODOs.
  * Do not use.
- * 
+ *
  * @see TailChainSwapMoveSelectorConfig
  */
 @XStreamAlias("kOptMoveSelector")

@@ -23,7 +23,7 @@ import org.optaplanner.core.impl.solver.termination.Termination;
 
 /**
  * A {@link NoChangePhase} is a {@link Phase} which does nothing.
- * 
+ *
  * @param <Solution_> the solution type, the class with the {@link PlanningSolution} annotation
  * @see Phase
  * @see AbstractPhase

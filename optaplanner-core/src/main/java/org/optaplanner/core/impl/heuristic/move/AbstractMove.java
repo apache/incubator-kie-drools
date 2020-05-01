@@ -24,7 +24,7 @@ import org.optaplanner.core.impl.score.director.ScoreDirector;
 
 /**
  * Abstract superclass for {@link Move}.
- * 
+ *
  * @param <Solution_> the solution type, the class with the {@link PlanningSolution} annotation
  * @see Move
  */
@@ -41,7 +41,7 @@ public abstract class AbstractMove<Solution_> implements Move<Solution_> {
     /**
      * Called before the move is done, so the move can be evaluated and then be undone
      * without resulting into a permanent change in the solution.
-     * 
+     *
      * @param scoreDirector the {@link ScoreDirector} not yet modified by the move.
      * @return an undoMove which does the exact opposite of this move.
      */
@@ -50,7 +50,7 @@ public abstract class AbstractMove<Solution_> implements Move<Solution_> {
     /**
      * Like {@link #doMove(ScoreDirector)} but without the {@link ScoreDirector#triggerVariableListeners()} call
      * (because {@link #doMove(ScoreDirector)} already does that).
-     * 
+     *
      * @param scoreDirector never null
      */
     protected abstract void doMoveOnGenuineVariables(ScoreDirector<Solution_> scoreDirector);

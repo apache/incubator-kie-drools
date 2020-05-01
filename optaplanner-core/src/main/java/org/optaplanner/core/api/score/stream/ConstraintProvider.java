@@ -28,7 +28,7 @@ import org.optaplanner.core.impl.score.director.stream.ConstraintStreamScoreDire
  * Used by constraint stream {@link Score} calculation.
  * <p>
  * An implementation must be stateless.
- * 
+ *
  * @see ConstraintStreamScoreDirector
  */
 public interface ConstraintProvider {
@@ -36,7 +36,7 @@ public interface ConstraintProvider {
     /**
      * This method is called once to create the constraints.
      * To create a {@link Constraint}, start with {@link ConstraintFactory#from(Class)}.
-     * 
+     *
      * @param constraintFactory never null
      * @return an array of all {@link Constraint constraints} that could apply.
      *         The constraints with a zero {@link ConstraintWeight} for a particular problem

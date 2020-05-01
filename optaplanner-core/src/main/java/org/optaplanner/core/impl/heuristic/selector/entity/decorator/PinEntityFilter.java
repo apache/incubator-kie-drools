@@ -24,7 +24,7 @@ import org.optaplanner.core.impl.score.director.ScoreDirector;
 
 /**
  * Filters out entities that return true for the {@link PlanningPin} annotated boolean member.
- * 
+ *
  * @param <Solution_> the solution type, the class with the {@link PlanningSolution} annotation
  */
 public class PinEntityFilter<Solution_> implements SelectionFilter<Solution_, Object> {

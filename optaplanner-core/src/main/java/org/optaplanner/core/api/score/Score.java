@@ -29,7 +29,7 @@ import org.optaplanner.core.impl.score.definition.ScoreDefinition;
  * and therefore slightly violate the transitive requirement of {@link Comparable#compareTo(Object)}.
  * <p>
  * An implementation must extend {@link AbstractScore} to ensure backwards compatibility in future versions.
- * 
+ *
  * @param <Score_> the actual score type to allow addition, subtraction and other arithmetic
  * @see AbstractScore
  * @see HardSoftScore
@@ -43,7 +43,7 @@ public interface Score<Score_ extends Score> extends Comparable<Score_> {
      * <p>
      * During {@link #compareTo(Object)}, it's even more important than the hard score:
      * if you don't want this behaviour, read about overconstrained planning in the reference manual.
-     * 
+     *
      * @return higher is better, always negative (except in statistical calculations), 0 if all planning variables are
      *         initialized
      */
@@ -51,21 +51,21 @@ public interface Score<Score_ extends Score> extends Comparable<Score_> {
 
     /**
      * Checks if the {@link PlanningSolution} of this score was fully initialized when it was calculated.
-     * 
+     *
      * @return true if {@link #getInitScore()} is 0
      */
     boolean isSolutionInitialized();
 
     /**
      * For example {@code -7init/0hard/-8soft} returns {@code 0hard/-8soft}.
-     * 
+     *
      * @return equal score except that {@link #getInitScore()} is {@code 0}.
      */
     Score_ toInitializedScore();
 
     /**
      * For example {@code 0hard/-8soft} with {@code -7} returns {@code -7init/0hard/-8soft}.
-     * 
+     *
      * @param newInitScore always negative (except in statistical calculations), 0 if all planning variables are initialized
      * @return equals score except that {@link #getInitScore()} is set to {@code newInitScore}
      * @throws IllegalStateException if the original {@link #getInitScore()} is not 0
@@ -74,7 +74,7 @@ public interface Score<Score_ extends Score> extends Comparable<Score_> {
 
     /**
      * Returns a Score whose value is (this + addend).
-     * 
+     *
      * @param addend value to be added to this Score
      * @return this + addend
      */
@@ -82,7 +82,7 @@ public interface Score<Score_ extends Score> extends Comparable<Score_> {
 
     /**
      * Returns a Score whose value is (this - subtrahend).
-     * 
+     *
      * @param subtrahend value to be subtracted from this Score
      * @return this - subtrahend, rounded as necessary
      */
@@ -94,7 +94,7 @@ public interface Score<Score_ extends Score> extends Comparable<Score_> {
      * <p>
      * If the implementation has a scale/precision, then the unspecified scale/precision of the double multiplicand
      * should have no impact on the returned scale/precision.
-     * 
+     *
      * @param multiplicand value to be multiplied by this Score.
      * @return this * multiplicand
      */
@@ -106,7 +106,7 @@ public interface Score<Score_ extends Score> extends Comparable<Score_> {
      * <p>
      * If the implementation has a scale/precision, then the unspecified scale/precision of the double divisor
      * should have no impact on the returned scale/precision.
-     * 
+     *
      * @param divisor value by which this Score is to be divided
      * @return this / divisor
      */
@@ -118,7 +118,7 @@ public interface Score<Score_ extends Score> extends Comparable<Score_> {
      * <p>
      * If the implementation has a scale/precision, then the unspecified scale/precision of the double exponent
      * should have no impact on the returned scale/precision.
-     * 
+     *
      * @param exponent value by which this Score is to be powered
      * @return this ^ exponent
      */
@@ -126,7 +126,7 @@ public interface Score<Score_ extends Score> extends Comparable<Score_> {
 
     /**
      * Returns a Score whose value is (- this).
-     * 
+     *
      * @return - this
      */
     Score_ negate();
@@ -142,7 +142,7 @@ public interface Score<Score_ extends Score> extends Comparable<Score_> {
      * <p>
      * The level numbers do not contain the {@link #getInitScore()}.
      * For example: {@code -3init/-0hard/-7soft} also returns {@code new int{-0, -7}}
-     * 
+     *
      * @return never null
      * @see ScoreDefinition#fromLevelNumbers(int, Number[])
      */
@@ -161,7 +161,7 @@ public interface Score<Score_ extends Score> extends Comparable<Score_> {
      * <p>
      * Do not use this format to persist information as text, use {@link Object#toString()} instead,
      * so it can be parsed reliably.
-     * 
+     *
      * @return never null
      */
     String toShortString();

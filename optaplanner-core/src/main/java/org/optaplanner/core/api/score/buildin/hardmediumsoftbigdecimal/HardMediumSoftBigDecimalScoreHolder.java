@@ -98,7 +98,7 @@ public class HardMediumSoftBigDecimalScoreHolder extends AbstractScoreHolder<Har
 
     /**
      * Penalize a match by the {@link ConstraintWeight} negated.
-     * 
+     *
      * @param kcontext never null, the magic variable in DRL
      */
     public void penalize(RuleContext kcontext) {
@@ -107,7 +107,7 @@ public class HardMediumSoftBigDecimalScoreHolder extends AbstractScoreHolder<Har
 
     /**
      * Penalize a match by the {@link ConstraintWeight} negated and multiplied with the weightMultiplier for all score levels.
-     * 
+     *
      * @param kcontext never null, the magic variable in DRL
      * @param weightMultiplier at least 0
      */
@@ -119,7 +119,7 @@ public class HardMediumSoftBigDecimalScoreHolder extends AbstractScoreHolder<Har
      * Penalize a match by the {@link ConstraintWeight} negated and multiplied with the specific weightMultiplier per score
      * level.
      * Slower than {@link #penalize(RuleContext, BigDecimal)}.
-     * 
+     *
      * @param kcontext never null, the magic variable in DRL
      * @param hardWeightMultiplier at least 0
      * @param mediumWeightMultiplier at least 0
@@ -132,7 +132,7 @@ public class HardMediumSoftBigDecimalScoreHolder extends AbstractScoreHolder<Har
 
     /**
      * Reward a match by the {@link ConstraintWeight}.
-     * 
+     *
      * @param kcontext never null, the magic variable in DRL
      */
     public void reward(RuleContext kcontext) {
@@ -141,7 +141,7 @@ public class HardMediumSoftBigDecimalScoreHolder extends AbstractScoreHolder<Har
 
     /**
      * Reward a match by the {@link ConstraintWeight} multiplied with the weightMultiplier for all score levels.
-     * 
+     *
      * @param kcontext never null, the magic variable in DRL
      * @param weightMultiplier at least 0
      */
@@ -152,7 +152,7 @@ public class HardMediumSoftBigDecimalScoreHolder extends AbstractScoreHolder<Har
     /**
      * Reward a match by the {@link ConstraintWeight} multiplied with the specific weightMultiplier per score level.
      * Slower than {@link #reward(RuleContext, BigDecimal)}.
-     * 
+     *
      * @param kcontext never null, the magic variable in DRL
      * @param hardWeightMultiplier at least 0
      * @param mediumWeightMultiplier at least 0

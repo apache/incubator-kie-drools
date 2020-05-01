@@ -187,7 +187,7 @@ public class MoveThreadRunner<Solution_> implements Runnable {
 
     /**
      * This method is thread-safe.
-     * 
+     *
      * @return at least 0
      */
     public long getCalculationCount() {

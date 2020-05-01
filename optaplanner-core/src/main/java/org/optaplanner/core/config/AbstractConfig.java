@@ -32,7 +32,7 @@ import org.optaplanner.core.impl.domain.variable.descriptor.GenuineVariableDescr
  * A config class should adhere to "configuration by exception" in its XML/JSON input/output,
  * so all non-static fields should be null by default.
  * Using the config class to build a runtime class, must not alter the config class's XML/JSON output.
- * 
+ *
  * @param <C> the same class as the implementing subclass
  */
 public abstract class AbstractConfig<C extends AbstractConfig> {
@@ -132,7 +132,7 @@ public abstract class AbstractConfig<C extends AbstractConfig> {
      * <p>
      * After the inheritance, if a property on this {@link AbstractConfig} composition is replaced,
      * it should not affect the inherited composition instance.
-     * 
+     *
      * @param inheritedConfig never null
      * @return this
      */
@@ -140,7 +140,7 @@ public abstract class AbstractConfig<C extends AbstractConfig> {
 
     /**
      * Typically implemented by constructing a new instance and calling {@link #inherit(AbstractConfig)} on it
-     * 
+     *
      * @return new instance
      */
     public abstract C copyConfig();

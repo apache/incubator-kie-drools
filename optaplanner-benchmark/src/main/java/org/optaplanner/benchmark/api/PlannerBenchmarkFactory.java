@@ -51,7 +51,7 @@ public abstract class PlannerBenchmarkFactory {
      * The XML root element must be {@code <solver>}.
      * <p>
      * To read an XML benchmark configuration instead, use {@link #createFromXmlResource(String)}.
-     * 
+     *
      * @param solverConfigResource never null, a classpath resource
      *        as defined by {@link ClassLoader#getResource(String)}
      */
@@ -63,7 +63,7 @@ public abstract class PlannerBenchmarkFactory {
 
     /**
      * As defined by {@link #createFromSolverConfigXmlResource(String)}.
-     * 
+     *
      * @param solverConfigResource never null, a classpath resource
      *        as defined by {@link ClassLoader#getResource(String)}.
      * @param classLoader sometimes null, the {@link ClassLoader} to use for loading all resources and {@link Class}es,
@@ -78,7 +78,7 @@ public abstract class PlannerBenchmarkFactory {
 
     /**
      * As defined by {@link #createFromSolverConfigXmlResource(String)}.
-     * 
+     *
      * @param solverConfigResource never null, a classpath resource
      *        as defined by {@link ClassLoader#getResource(String)}
      * @param benchmarkDirectory never null
@@ -93,7 +93,7 @@ public abstract class PlannerBenchmarkFactory {
 
     /**
      * As defined by {@link #createFromSolverConfigXmlResource(String)}.
-     * 
+     *
      * @param solverConfigResource never null, a classpath resource
      *        as defined by {@link ClassLoader#getResource(String)}
      * @param benchmarkDirectory never null
@@ -151,7 +151,7 @@ public abstract class PlannerBenchmarkFactory {
      * The XML root element must be {@code <plannerBenchmark>}.
      * <p>
      * To read an XML solver configuration instead, use {@link #createFromSolverConfigXmlResource(String)}.
-     * 
+     *
      * @param benchmarkConfigResource never null, a classpath resource
      *        as defined by {@link ClassLoader#getResource(String)}
      * @return never null
@@ -163,7 +163,7 @@ public abstract class PlannerBenchmarkFactory {
 
     /**
      * As defined by {@link #createFromXmlResource(String)}.
-     * 
+     *
      * @param benchmarkConfigResource never null, a classpath resource
      *        as defined by {@link ClassLoader#getResource(String)}
      * @param classLoader sometimes null, the {@link ClassLoader} to use for loading all resources and {@link Class}es,
@@ -182,7 +182,7 @@ public abstract class PlannerBenchmarkFactory {
      * <p>
      * Warning: this leads to platform dependent code,
      * it's recommend to use {@link #createFromXmlResource(String)} instead.
-     * 
+     *
      * @param benchmarkConfigFile never null
      * @return never null
      */
@@ -193,7 +193,7 @@ public abstract class PlannerBenchmarkFactory {
 
     /**
      * As defined by {@link #createFromXmlFile(File)}.
-     * 
+     *
      * @param benchmarkConfigFile never null
      * @param classLoader sometimes null, the {@link ClassLoader} to use for loading all resources and {@link Class}es,
      *        null to use the default {@link ClassLoader}
@@ -264,7 +264,7 @@ public abstract class PlannerBenchmarkFactory {
      * Reads an Freemarker template from the classpath that generates an XML benchmark configuration
      * and uses that {@link PlannerBenchmarkConfig} to build a {@link PlannerBenchmarkFactory}.
      * The generated XML root element must be {@code <plannerBenchmark>}.
-     * 
+     *
      * @param templateResource never null, a classpath resource as defined by {@link ClassLoader#getResource(String)}
      * @return never null
      * @see #createFromFreemarkerXmlResource(String)
@@ -276,7 +276,7 @@ public abstract class PlannerBenchmarkFactory {
 
     /**
      * As defined by {@link #createFromFreemarkerXmlResource(String)}.
-     * 
+     *
      * @param templateResource never null, a classpath resource as defined by {@link ClassLoader#getResource(String)}
      * @param classLoader sometimes null, the {@link ClassLoader} to use for loading all resources and {@link Class}es,
      *        null to use the default {@link ClassLoader}
@@ -290,7 +290,7 @@ public abstract class PlannerBenchmarkFactory {
 
     /**
      * As defined by {@link #createFromFreemarkerXmlResource(String)}.
-     * 
+     *
      * @param templateResource never null, a classpath resource as defined by {@link ClassLoader#getResource(String)}
      * @param model sometimes null
      * @return never null
@@ -303,7 +303,7 @@ public abstract class PlannerBenchmarkFactory {
 
     /**
      * As defined by {@link #createFromFreemarkerXmlResource(String)}.
-     * 
+     *
      * @param templateResource never null, a classpath resource as defined by {@link ClassLoader#getResource(String)}
      * @param model sometimes null
      * @param classLoader sometimes null, the {@link ClassLoader} to use for loading all resources and {@link Class}es,
@@ -324,7 +324,7 @@ public abstract class PlannerBenchmarkFactory {
      * <p>
      * Warning: this leads to platform dependent code,
      * it's recommend to use {@link #createFromFreemarkerXmlResource(String)} instead.
-     * 
+     *
      * @param templateFile never null
      * @return never null
      */
@@ -335,7 +335,7 @@ public abstract class PlannerBenchmarkFactory {
 
     /**
      * As defined by {@link #createFromFreemarkerXmlFile(File)}.
-     * 
+     *
      * @param templateFile never null
      * @param classLoader sometimes null, the {@link ClassLoader} to use for loading all resources and {@link Class}es,
      *        null to use the default {@link ClassLoader}
@@ -348,7 +348,7 @@ public abstract class PlannerBenchmarkFactory {
 
     /**
      * As defined by {@link #createFromFreemarkerXmlFile(File)}.
-     * 
+     *
      * @param templateFile never null
      * @param model sometimes null
      * @return never null
@@ -360,7 +360,7 @@ public abstract class PlannerBenchmarkFactory {
 
     /**
      * As defined by {@link #createFromFreemarkerXmlFile(File)}.
-     * 
+     *
      * @param templateFile never null
      * @param model sometimes null
      * @param classLoader sometimes null, the {@link ClassLoader} to use for loading all resources and {@link Class}es,
@@ -497,7 +497,7 @@ public abstract class PlannerBenchmarkFactory {
      * Uses a {@link PlannerBenchmarkConfig} to build a {@link PlannerBenchmarkFactory}.
      * If you don't need to manipulate the {@link PlannerBenchmarkConfig} programmatically,
      * use {@link #createFromXmlResource(String)} instead.
-     * 
+     *
      * @param benchmarkConfig never null
      * @return never null
      */
@@ -513,7 +513,7 @@ public abstract class PlannerBenchmarkFactory {
 
     /**
      * Creates a new {@link PlannerBenchmarkFactory} that uses {@link KieServices#getKieClasspathContainer()}.
-     * 
+     *
      * @param benchmarkConfigResource never null, a classpath resource in the {@link KieContainer}
      *        as defined by {@link ClassLoader#getResource(String)}
      * @return never null
@@ -525,7 +525,7 @@ public abstract class PlannerBenchmarkFactory {
 
     /**
      * Creates a new {@link PlannerBenchmarkFactory} that uses a {@link KieModule} represented by its releaseId.
-     * 
+     *
      * @param releaseId never null
      * @param benchmarkConfigResource never null, a classpath resource in the {@link KieContainer}
      *        as defined by {@link ClassLoader#getResource(String)}
@@ -539,7 +539,7 @@ public abstract class PlannerBenchmarkFactory {
 
     /**
      * Creates a new {@link PlannerBenchmarkFactory} that uses a {@link KieModule} wrapped by a {@link KieContainer}.
-     * 
+     *
      * @param kieContainer never null
      * @param benchmarkConfigResource never null, a classpath resource in the {@link KieContainer}
      *        as defined by {@link ClassLoader#getResource(String)}
@@ -558,14 +558,14 @@ public abstract class PlannerBenchmarkFactory {
 
     /**
      * Creates a new {@link PlannerBenchmark} instance.
-     * 
+     *
      * @return never null
      */
     public abstract PlannerBenchmark buildPlannerBenchmark();
 
     /**
      * Creates a new {@link PlannerBenchmark} instance for datasets that are already in memory.
-     * 
+     *
      * @param problemList never null, can be empty
      * @param <Solution_> the solution type, the class with the {@link PlanningSolution} annotation
      * @return never null
@@ -576,7 +576,7 @@ public abstract class PlannerBenchmarkFactory {
 
     /**
      * Creates a new {@link PlannerBenchmark} instance for datasets that are already in memory.
-     * 
+     *
      * @param problems never null, can be none
      * @param <Solution_> the solution type, the class with the {@link PlanningSolution} annotation
      * @return never null
@@ -588,7 +588,7 @@ public abstract class PlannerBenchmarkFactory {
      * use {@link PlannerBenchmarkFactory#create(PlannerBenchmarkConfig)} instead.
      * <p>
      * This method is not thread-safe.
-     * 
+     *
      * @return never null
      * @deprecated in favor of {@link PlannerBenchmarkConfig()}
      *             and {@link PlannerBenchmarkFactory#create(PlannerBenchmarkConfig)}. Will be removed in 8.0.

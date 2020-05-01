@@ -20,7 +20,7 @@ import org.optaplanner.core.impl.heuristic.selector.AbstractSelector;
 
 /**
  * Abstract superclass for {@link EntitySelector}.
- * 
+ *
  * @see EntitySelector
  */
 public abstract class AbstractEntitySelector extends AbstractSelector implements EntitySelector {

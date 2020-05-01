@@ -30,7 +30,7 @@ import org.optaplanner.core.api.score.Score;
  * Hard constraints determine feasibility.
  * <p>
  * This class is immutable.
- * 
+ *
  * @see Score
  */
 public final class HardMediumSoftScore extends AbstractScore<HardMediumSoftScore>
@@ -122,7 +122,7 @@ public final class HardMediumSoftScore extends AbstractScore<HardMediumSoftScore
      * The total of the broken negative hard constraints and fulfilled positive hard constraints.
      * Their weight is included in the total.
      * The hard score is usually a negative number because most use cases only have negative constraints.
-     * 
+     *
      * @return higher is better, usually negative, 0 if no hard constraints are broken/fulfilled
      */
     public int getHardScore() {
@@ -135,7 +135,7 @@ public final class HardMediumSoftScore extends AbstractScore<HardMediumSoftScore
      * The medium score is usually a negative number because most use cases only have negative constraints.
      * <p>
      * In a normal score comparison, the medium score is irrelevant if the 2 scores don't have the same hard score.
-     * 
+     *
      * @return higher is better, usually negative, 0 if no medium constraints are broken/fulfilled
      */
     public int getMediumScore() {
@@ -148,7 +148,7 @@ public final class HardMediumSoftScore extends AbstractScore<HardMediumSoftScore
      * The soft score is usually a negative number because most use cases only have negative constraints.
      * <p>
      * In a normal score comparison, the soft score is irrelevant if the 2 scores don't have the same hard and medium score.
-     * 
+     *
      * @return higher is better, usually negative, 0 if no soft constraints are broken/fulfilled
      */
     public int getSoftScore() {
@@ -172,7 +172,7 @@ public final class HardMediumSoftScore extends AbstractScore<HardMediumSoftScore
 
     /**
      * A {@link PlanningSolution} is feasible if it has no broken hard constraints.
-     * 
+     *
      * @return true if the {@link #getHardScore()} is 0 or higher
      */
     @Override

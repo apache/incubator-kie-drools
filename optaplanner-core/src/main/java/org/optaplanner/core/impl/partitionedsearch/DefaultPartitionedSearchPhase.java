@@ -49,7 +49,7 @@ import org.optaplanner.core.impl.solver.thread.ThreadUtils;
 
 /**
  * Default implementation of {@link PartitionedSearchPhase}.
- * 
+ *
  * @param <Solution_> the solution type, the class with the {@link PlanningSolution} annotation
  */
 public class DefaultPartitionedSearchPhase<Solution_> extends AbstractPhase<Solution_>

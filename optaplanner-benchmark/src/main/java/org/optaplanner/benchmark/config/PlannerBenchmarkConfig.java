@@ -106,7 +106,7 @@ public class PlannerBenchmarkConfig {
 
     /**
      * Reads an XML benchmark configuration from the classpath.
-     * 
+     *
      * @param benchmarkConfigResource never null, a classpath resource
      *        as defined by {@link ClassLoader#getResource(String)}
      * @return never null
@@ -117,7 +117,7 @@ public class PlannerBenchmarkConfig {
 
     /**
      * As defined by {@link #createFromXmlResource(String)}.
-     * 
+     *
      * @param benchmarkConfigResource never null, a classpath resource
      *        as defined by {@link ClassLoader#getResource(String)}
      * @param classLoader sometimes null, the {@link ClassLoader} to use for loading all resources and {@link Class}es,
@@ -158,7 +158,7 @@ public class PlannerBenchmarkConfig {
      * <p>
      * Warning: this leads to platform dependent code,
      * it's recommend to use {@link #createFromXmlResource(String)} instead.
-     * 
+     *
      * @param benchmarkConfigFile never null
      * @return never null
      */
@@ -168,7 +168,7 @@ public class PlannerBenchmarkConfig {
 
     /**
      * As defined by {@link #createFromXmlFile(File)}.
-     * 
+     *
      * @param benchmarkConfigFile never null
      * @param classLoader sometimes null, the {@link ClassLoader} to use for loading all resources and {@link Class}es,
      *        null to use the default {@link ClassLoader}
@@ -246,7 +246,7 @@ public class PlannerBenchmarkConfig {
 
     /**
      * Reads a Freemarker XML benchmark configuration from the classpath.
-     * 
+     *
      * @param templateResource never null, a classpath resource as defined by {@link ClassLoader#getResource(String)}
      * @return never null
      */
@@ -256,7 +256,7 @@ public class PlannerBenchmarkConfig {
 
     /**
      * As defined by {@link #createFromFreemarkerXmlResource(String)}.
-     * 
+     *
      * @param templateResource never null, a classpath resource as defined by {@link ClassLoader#getResource(String)}
      * @param classLoader sometimes null, the {@link ClassLoader} to use for loading all resources and {@link Class}es,
      *        null to use the default {@link ClassLoader}
@@ -268,7 +268,7 @@ public class PlannerBenchmarkConfig {
 
     /**
      * As defined by {@link #createFromFreemarkerXmlResource(String)}.
-     * 
+     *
      * @param templateResource never null, a classpath resource as defined by {@link ClassLoader#getResource(String)}
      * @param model sometimes null
      * @return never null
@@ -279,7 +279,7 @@ public class PlannerBenchmarkConfig {
 
     /**
      * As defined by {@link #createFromFreemarkerXmlResource(String)}.
-     * 
+     *
      * @param templateResource never null, a classpath resource as defined by {@link ClassLoader#getResource(String)}
      * @param model sometimes null
      * @param classLoader sometimes null, the {@link ClassLoader} to use for loading all resources and {@link Class}es,
@@ -311,7 +311,7 @@ public class PlannerBenchmarkConfig {
      * <p>
      * Warning: this leads to platform dependent code,
      * it's recommend to use {@link #createFromFreemarkerXmlResource(String)} instead.
-     * 
+     *
      * @param templateFile never null
      * @return never null
      */
@@ -321,7 +321,7 @@ public class PlannerBenchmarkConfig {
 
     /**
      * As defined by {@link #createFromFreemarkerXmlFile(File)}.
-     * 
+     *
      * @param templateFile never null
      * @param classLoader sometimes null, the {@link ClassLoader} to use for loading all resources and {@link Class}es,
      *        null to use the default {@link ClassLoader}
@@ -333,7 +333,7 @@ public class PlannerBenchmarkConfig {
 
     /**
      * As defined by {@link #createFromFreemarkerXmlFile(File)}.
-     * 
+     *
      * @param templateFile never null
      * @param model sometimes null
      * @return never null
@@ -344,7 +344,7 @@ public class PlannerBenchmarkConfig {
 
     /**
      * As defined by {@link #createFromFreemarkerXmlFile(File)}.
-     * 
+     *
      * @param templateFile never null
      * @param model sometimes null
      * @param classLoader sometimes null, the {@link ClassLoader} to use for loading all resources and {@link Class}es,
@@ -371,7 +371,7 @@ public class PlannerBenchmarkConfig {
 
     /**
      * As defined by {@link #createFromFreemarkerXmlInputStream(InputStream)}.
-     * 
+     *
      * @param templateIn never null, gets closed
      * @param classLoader sometimes null, the {@link ClassLoader} to use for loading all resources and {@link Class}es,
      *        null to use the default {@link ClassLoader}
@@ -383,7 +383,7 @@ public class PlannerBenchmarkConfig {
 
     /**
      * As defined by {@link #createFromFreemarkerXmlInputStream(InputStream)}.
-     * 
+     *
      * @param templateIn never null, gets closed
      * @param model sometimes null
      * @return never null
@@ -394,7 +394,7 @@ public class PlannerBenchmarkConfig {
 
     /**
      * As defined by {@link #createFromFreemarkerXmlInputStream(InputStream)}.
-     * 
+     *
      * @param templateIn never null, gets closed
      * @param model sometimes null
      * @param classLoader sometimes null, the {@link ClassLoader} to use for loading all resources and {@link Class}es,
@@ -422,7 +422,7 @@ public class PlannerBenchmarkConfig {
 
     /**
      * As defined by {@link #createFromFreemarkerXmlReader(Reader)}.
-     * 
+     *
      * @param templateReader never null, gets closed
      * @param classLoader sometimes null, the {@link ClassLoader} to use for loading all resources and {@link Class}es,
      *        null to use the default {@link ClassLoader}
@@ -434,7 +434,7 @@ public class PlannerBenchmarkConfig {
 
     /**
      * As defined by {@link #createFromFreemarkerXmlReader(Reader)}.
-     * 
+     *
      * @param templateReader never null, gets closed
      * @param model sometimes null
      * @return never null
@@ -445,7 +445,7 @@ public class PlannerBenchmarkConfig {
 
     /**
      * As defined by {@link #createFromFreemarkerXmlReader(Reader)}.
-     * 
+     *
      * @param templateReader never null, gets closed
      * @param model sometimes null
      * @param classLoader sometimes null, the {@link ClassLoader} to use for loading all resources and {@link Class}es,
@@ -569,7 +569,7 @@ public class PlannerBenchmarkConfig {
      * Using multiple parallel benchmarks can decrease the reliability of the results.
      * <p>
      * If there aren't enough processors available, it will be decreased.
-     * 
+     *
      * @return null, a number, {@value #PARALLEL_BENCHMARK_COUNT_AUTO} or a JavaScript calculation using
      *         {@value org.optaplanner.core.config.util.ConfigUtils#AVAILABLE_PROCESSOR_COUNT}.
      */
@@ -662,7 +662,7 @@ public class PlannerBenchmarkConfig {
      * Use {@link PlannerBenchmarkFactory#buildPlannerBenchmark()} instead.
      * <p>
      * Will be removed in 8.0.
-     * 
+     *
      * @param solverConfigContext never null
      * @return never null
      */
@@ -675,7 +675,7 @@ public class PlannerBenchmarkConfig {
      * Use {@link PlannerBenchmarkFactory#buildPlannerBenchmark(Object[])} instead.
      * <p>
      * Will be removed in 8.0.
-     * 
+     *
      * @param solverConfigContext never null
      * @param extraProblems never null
      * @return never null

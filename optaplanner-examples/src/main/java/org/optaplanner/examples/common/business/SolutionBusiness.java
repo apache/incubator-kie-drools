@@ -328,7 +328,7 @@ public class SolutionBusiness<Solution_> {
      * Can be called on any thread.
      * <p>
      * Note: This method does not change the guiScoreDirector because that can only be changed on the event thread.
-     * 
+     *
      * @param problem never null
      * @return never null
      */

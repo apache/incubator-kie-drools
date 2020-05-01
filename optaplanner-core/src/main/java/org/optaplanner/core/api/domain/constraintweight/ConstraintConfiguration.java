@@ -40,7 +40,7 @@ public @interface ConstraintConfiguration {
      * The namespace of the constraints.
      * <p>
      * This is the default for every {@link ConstraintWeight#constraintPackage()} in the annotated class.
-     * 
+     *
      * @return defaults to the annotated class's package.
      */
     String constraintPackage() default "";

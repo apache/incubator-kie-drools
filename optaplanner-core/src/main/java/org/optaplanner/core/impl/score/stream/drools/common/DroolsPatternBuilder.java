@@ -47,7 +47,7 @@ import org.drools.model.Variable;
  * Stream 3, and vice versa.
  * Therefore, Stream 2 and Stream 3 each get their own immutable copy of Stream 1's {@link DroolsPatternBuilder}, one
  * which only applies their individual filters.
- * 
+ *
  * @param <T> generic type of the pattern to be eventually created by this builder
  */
 public final class DroolsPatternBuilder<T> {
@@ -73,7 +73,7 @@ public final class DroolsPatternBuilder<T> {
     /**
      * Mutate the existing {@link PatternDSL.PatternDef}, adding a new operation, such as a new filter or a new variable
      * binding.
-     * 
+     *
      * @return copy of the {@link DroolsPatternBuilder} with the new expanding operation included.
      */
     public DroolsPatternBuilder<T> expand(UnaryOperator<PatternDSL.PatternDef<T>> expander) {
@@ -93,7 +93,7 @@ public final class DroolsPatternBuilder<T> {
     /**
      * Builds a new instance of the pattern, with all the {@link UnaryOperator}s from
      * {@link #expand(UnaryOperator)} applied.
-     * 
+     *
      * @return should no longer be mutated to guarantee that rules can not influence one another
      */
     public PatternDSL.PatternDef<T> build() {
@@ -103,7 +103,7 @@ public final class DroolsPatternBuilder<T> {
     /**
      * Builds a new instance of the pattern, with all the {@link UnaryOperator}s from
      * {@link #expand(UnaryOperator)} applied.
-     * 
+     *
      * @param declarationSource will be applied to the newly created pattern
      * @return should no longer be mutated to guarantee that rules can not influence one another
      */

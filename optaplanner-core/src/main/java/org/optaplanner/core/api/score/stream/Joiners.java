@@ -123,24 +123,24 @@ public final class Joiners {
      * Function<A, ? extends Collection<Property_>> leftMapping, Function <B, Property_> rightMapping) {
      * return new SingleBiJoiner<>(leftMapping, JoinerType.CONTAINING, rightMapping);
      * }
-     * 
+     *
      * // TODO containedBy (inverse contains relationship)
-     * 
+     *
      * public static <A, Property_> BiJoiner<A, A> intersecting(
      * Function<A, ? extends Collection<Property_>> mapping) {
      * return intersecting(mapping, mapping);
      * }
-     * 
+     *
      * public static <A, B, Property_> BiJoiner<A, B> intersecting(
      * Function<A, ? extends Collection<Property_>> leftMapping,
      * Function <B, ? extends Collection<Property_>> rightMapping) {
      * return new SingleBiJoiner<>(leftMapping, JoinerType.INTERSECTING, rightMapping);
      * }
-     * 
+     *
      * public static <A, Property_> BiJoiner<A, A> disjoint(Function<A, ? extends Collection<Property_>> mapping) {
      * return disjoint(mapping, mapping);
      * }
-     * 
+     *
      * public static <A, B, Property_> BiJoiner<A, B> disjoint(Function<A, ? extends Collection<Property_>> leftMapping,
      * Function <B, ? extends Collection<Property_>> rightMapping) {
      * return new SingleBiJoiner<>(leftMapping, JoinerType.DISJOINT, rightMapping);

@@ -28,7 +28,7 @@ import org.optaplanner.core.impl.score.director.ScoreDirector;
  * For example, an immovable {@link PlanningEntity} is rejected and therefore never used in a {@link Move}.
  * <p>
  * A filtered selection is considered as not selected, it does not count as an unaccepted selection.
- * 
+ *
  * @param <Solution_> the solution type, the class with the {@link PlanningSolution} annotation
  * @param <T> the selection type
  */

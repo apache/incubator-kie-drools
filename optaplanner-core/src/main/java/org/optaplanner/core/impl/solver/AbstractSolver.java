@@ -40,7 +40,7 @@ import org.slf4j.LoggerFactory;
  * <p>
  * Do not create a new child {@link Solver} to implement a new heuristic or metaheuristic,
  * just use a new {@link Phase} for that.
- * 
+ *
  * @param <Solution_> the solution type, the class with the {@link PlanningSolution} annotation
  * @see Solver
  * @see DefaultSolver
@@ -134,7 +134,7 @@ public abstract class AbstractSolver<Solution_> implements Solver<Solution_> {
      * and the {@link PhaseLifecycleListener#stepStarted(AbstractStepScope)} step} starting/ending events of all phases.
      * <p>
      * To get notified for only 1 phase, use {@link Phase#addPhaseLifecycleListener(PhaseLifecycleListener)} instead.
-     * 
+     *
      * @param phaseLifecycleListener never null
      */
     public void addPhaseLifecycleListener(PhaseLifecycleListener<Solution_> phaseLifecycleListener) {

@@ -33,7 +33,7 @@ import com.google.common.collect.Ordering;
 
 /**
  * Sorts a selection {@link List} based on a {@link SelectionSorterWeightFactory}.
- * 
+ *
  * @param <Solution_> the solution type, the class with the {@link PlanningSolution} annotation
  * @param <T> the selection type
  */
