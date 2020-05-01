@@ -577,7 +577,10 @@ public class FlightCrewSchedulingXlsxFileIO extends AbstractXlsxSolutionFileIO<F
                                                 .collect(joining(", ")));
                                 int maxArrivalHour = flightAssignmentList.stream()
                                         .map(a -> a.getFlight().getArrivalUTCTime().getHour())
-                                        .max(Comparator.naturalOrder()).get();
+                                        .max(Comparator.naturalOrder())
+                                        .orElseThrow(() -> new IllegalStateException(
+                                                "Impossible state: There is not at least one arrival hour in a non-empty "
+                                                        + "flightAssignmentList (" + flightAssignmentList + ")."));
                                 int stretch = maxArrivalHour - departureHour;
                                 currentSheet.addMergedRegion(new CellRangeAddress(currentRowNumber, currentRowNumber,
                                         currentColumnNumber, currentColumnNumber + stretch));
