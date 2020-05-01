@@ -42,7 +42,8 @@ public class BavetEqualsAndComparisonIndex<Tuple_ extends BavetJoinBridgeTuple> 
     @Override
     public void remove(Tuple_ tuple) {
         Object[] oldIndexProperties = tuple.getIndexProperties();
-        BavetIndexKey oldEqualsIndexKey = new BavetIndexKey(Arrays.copyOfRange(oldIndexProperties, 0, oldIndexProperties.length - 1));
+        BavetIndexKey oldEqualsIndexKey = new BavetIndexKey(
+                Arrays.copyOfRange(oldIndexProperties, 0, oldIndexProperties.length - 1));
         Object oldComparisonIndexProperty = oldIndexProperties[oldIndexProperties.length - 1];
         NavigableMap<Object, Set<Tuple_>> comparisonMap = equalsMap.get(oldEqualsIndexKey);
         Set<Tuple_> tupleSet = comparisonMap.get(oldComparisonIndexProperty);

@@ -16,20 +16,19 @@
 
 package org.optaplanner.examples.cheaptime.solver.drools;
 
+import static java.util.Comparator.comparing;
+import static java.util.Comparator.comparingLong;
+
 import java.util.Comparator;
 import java.util.Objects;
 
 import org.optaplanner.examples.cheaptime.domain.Machine;
 
-import static java.util.Comparator.comparing;
-import static java.util.Comparator.comparingLong;
-
 public class IdleCost implements Comparable<IdleCost> {
 
-    private static final Comparator<IdleCost> COMPARATOR =
-            comparing(IdleCost::getMachine, comparingLong(Machine::getId))
-                    .thenComparingInt(IdleCost::getActivePeriodAfterIdle)
-                    .thenComparingLong(IdleCost::getCost);
+    private static final Comparator<IdleCost> COMPARATOR = comparing(IdleCost::getMachine, comparingLong(Machine::getId))
+            .thenComparingInt(IdleCost::getActivePeriodAfterIdle)
+            .thenComparingLong(IdleCost::getCost);
 
     private final Machine machine;
     private final int activePeriodAfterIdle;

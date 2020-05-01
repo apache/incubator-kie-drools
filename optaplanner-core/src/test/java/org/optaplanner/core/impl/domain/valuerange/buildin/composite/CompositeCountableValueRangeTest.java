@@ -16,6 +16,10 @@
 
 package org.optaplanner.core.impl.domain.valuerange.buildin.composite;
 
+import static org.junit.Assert.assertEquals;
+import static org.mockito.Mockito.*;
+import static org.optaplanner.core.impl.testdata.util.PlannerAssert.*;
+
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
@@ -24,10 +28,6 @@ import java.util.Random;
 
 import org.junit.jupiter.api.Test;
 import org.optaplanner.core.impl.domain.valuerange.buildin.collection.ListValueRange;
-
-import static org.junit.Assert.assertEquals;
-import static org.mockito.Mockito.*;
-import static org.optaplanner.core.impl.testdata.util.PlannerAssert.*;
 
 public class CompositeCountableValueRangeTest {
 
@@ -44,7 +44,7 @@ public class CompositeCountableValueRangeTest {
     public void getSize() {
         assertEquals(7L, createValueRange(Arrays.asList(0, 2, 5, 10), Arrays.asList(-15, 25, -1)).getSize());
         assertEquals(4L, createValueRange(Arrays.asList("a", "b"), Arrays.asList("c"), Arrays.asList("d")).getSize());
-        assertEquals(0L, createValueRange(Collections.<String>emptyList(), Collections.<String>emptyList()).getSize());
+        assertEquals(0L, createValueRange(Collections.<String> emptyList(), Collections.<String> emptyList()).getSize());
     }
 
     @Test
@@ -73,7 +73,7 @@ public class CompositeCountableValueRangeTest {
                 .createOriginalIterator(), 0, 2, 5, 10, -15, 25, -1);
         assertAllElementsOfIterator(createValueRange(Arrays.asList("a", "b"), Arrays.asList("c"), Arrays.asList("d"))
                 .createOriginalIterator(), "a", "b", "c", "d");
-        assertAllElementsOfIterator(createValueRange(Collections.<String>emptyList(), Collections.<String>emptyList())
+        assertAllElementsOfIterator(createValueRange(Collections.<String> emptyList(), Collections.<String> emptyList())
                 .createOriginalIterator());
     }
 
@@ -87,7 +87,7 @@ public class CompositeCountableValueRangeTest {
         when(workingRandom.nextInt(anyInt())).thenReturn(3, 0);
         assertElementsOfIterator(createValueRange(Arrays.asList("a", "b"), Arrays.asList("c"), Arrays.asList("d"))
                 .createRandomIterator(workingRandom), "d", "a");
-        assertElementsOfIterator(createValueRange(Collections.<String>emptyList(), Collections.<String>emptyList())
+        assertElementsOfIterator(createValueRange(Collections.<String> emptyList(), Collections.<String> emptyList())
                 .createRandomIterator(workingRandom));
     }
 

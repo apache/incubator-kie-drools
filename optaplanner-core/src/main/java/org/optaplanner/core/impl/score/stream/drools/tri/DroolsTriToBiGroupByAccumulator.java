@@ -27,7 +27,7 @@ import org.optaplanner.core.impl.score.stream.drools.common.DroolsAbstractUniCol
 import org.optaplanner.core.impl.score.stream.drools.common.TriTuple;
 
 final class DroolsTriToBiGroupByAccumulator<A, B, C, ResultContainer, NewA, NewB>
-    extends DroolsAbstractUniCollectingGroupByAccumulator<ResultContainer, TriTuple<A, B, C>, NewA, BiTuple<NewA, NewB>> {
+        extends DroolsAbstractUniCollectingGroupByAccumulator<ResultContainer, TriTuple<A, B, C>, NewA, BiTuple<NewA, NewB>> {
 
     private final TriFunction<A, B, C, NewA> groupKeyMapping;
     private final Supplier<ResultContainer> supplier;

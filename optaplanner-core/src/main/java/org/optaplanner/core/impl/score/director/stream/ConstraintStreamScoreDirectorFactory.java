@@ -31,6 +31,7 @@ import org.optaplanner.core.impl.score.stream.drools.DroolsConstraintFactory;
 
 /**
  * FP streams implementation of {@link ScoreDirectorFactory}.
+ * 
  * @param <Solution_> the solution type, the class with the {@link PlanningSolution} annotation
  * @see ConstraintStreamScoreDirector
  * @see ScoreDirectorFactory
@@ -52,7 +53,8 @@ public class ConstraintStreamScoreDirectorFactory<Solution_> extends AbstractSco
                 constraintFactory = new DroolsConstraintFactory<>(solutionDescriptor);
                 break;
             default:
-                throw new IllegalStateException("The constraintStreamImplType (" + constraintStreamImplType + ") is not implemented.");
+                throw new IllegalStateException(
+                        "The constraintStreamImplType (" + constraintStreamImplType + ") is not implemented.");
         }
         this.constraints = constraintProvider.defineConstraints(constraintFactory);
         constraintSessionFactory = constraintFactory.buildSessionFactory(constraints);
@@ -68,7 +70,8 @@ public class ConstraintStreamScoreDirectorFactory<Solution_> extends AbstractSco
         return new ConstraintStreamScoreDirector<>(this, lookUpEnabled, constraintMatchEnabledPreference);
     }
 
-    public ConstraintSession<Solution_> newConstraintStreamingSession(boolean constraintMatchEnabled, Solution_ workingSolution) {
+    public ConstraintSession<Solution_> newConstraintStreamingSession(boolean constraintMatchEnabled,
+            Solution_ workingSolution) {
         return constraintSessionFactory.buildSession(constraintMatchEnabled, workingSolution);
     }
 

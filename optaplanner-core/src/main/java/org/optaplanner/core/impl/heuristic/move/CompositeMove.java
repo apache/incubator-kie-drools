@@ -31,6 +31,7 @@ import org.optaplanner.core.impl.score.director.ScoreDirector;
  * <p>
  * Warning: each of moves in the moveList must not rely on the effect of a previous move in the moveList
  * to create its undoMove correctly.
+ * 
  * @param <Solution_> the solution type, the class with the {@link PlanningSolution} annotation
  * @see Move
  */

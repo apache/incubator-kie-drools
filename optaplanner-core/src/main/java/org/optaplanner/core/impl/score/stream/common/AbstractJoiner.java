@@ -21,7 +21,8 @@ public abstract class AbstractJoiner {
     protected void assertMappingIndex(int index) {
         int mappingCount = getJoinerTypes().length;
         if (index >= mappingCount) {
-            throw new IllegalArgumentException("Joiner only has (" + mappingCount + ") mappings, requested index (" + index + ")");
+            throw new IllegalArgumentException(
+                    "Joiner only has (" + mappingCount + ") mappings, requested index (" + index + ")");
         }
     }
 

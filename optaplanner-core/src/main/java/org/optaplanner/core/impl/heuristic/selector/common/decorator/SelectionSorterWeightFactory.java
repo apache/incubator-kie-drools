@@ -26,6 +26,7 @@ import org.optaplanner.core.impl.heuristic.selector.Selector;
  * (a selection is a {@link PlanningEntity}, a planningValue, a {@link Move} or a {@link Selector}).
  * The selections are then sorted by their weight,
  * normally ascending unless it's configured descending.
+ * 
  * @param <Solution_> the solution type, the class with the {@link PlanningSolution} annotation
  * @param <T> the selection type
  */

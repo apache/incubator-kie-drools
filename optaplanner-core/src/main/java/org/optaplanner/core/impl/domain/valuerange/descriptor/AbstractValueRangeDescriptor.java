@@ -48,8 +48,7 @@ public abstract class AbstractValueRangeDescriptor<Solution_> implements ValueRa
 
     @Override
     public boolean mightContainEntity() {
-        SolutionDescriptor<Solution_> solutionDescriptor
-                = variableDescriptor.getEntityDescriptor().getSolutionDescriptor();
+        SolutionDescriptor<Solution_> solutionDescriptor = variableDescriptor.getEntityDescriptor().getSolutionDescriptor();
         Class<?> variablePropertyType = variableDescriptor.getVariablePropertyType();
         for (Class<?> entityClass : solutionDescriptor.getEntityClassSet()) {
             if (variablePropertyType.isAssignableFrom(entityClass)) {

@@ -27,8 +27,7 @@ public class ConferenceSchedulingBenchmarkApp extends CommonBenchmarkApp {
     public ConferenceSchedulingBenchmarkApp() {
         super(
                 new ArgOption("default",
-                        "org/optaplanner/examples/conferencescheduling/benchmark/conferenceSchedulingBenchmarkConfig.xml")
-        );
+                        "org/optaplanner/examples/conferencescheduling/benchmark/conferenceSchedulingBenchmarkConfig.xml"));
     }
 
 }

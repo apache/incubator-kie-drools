@@ -21,8 +21,6 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
-import com.thoughtworks.xstream.annotations.XStreamAlias;
-import com.thoughtworks.xstream.annotations.XStreamImplicit;
 import org.apache.commons.lang3.BooleanUtils;
 import org.optaplanner.benchmark.api.PlannerBenchmarkFactory;
 import org.optaplanner.benchmark.config.statistic.ProblemStatisticType;
@@ -42,6 +40,9 @@ import org.optaplanner.core.config.util.ConfigUtils;
 import org.optaplanner.core.impl.domain.solution.descriptor.SolutionDescriptor;
 import org.optaplanner.persistence.common.api.domain.solution.SolutionFileIO;
 import org.optaplanner.persistence.xstream.impl.domain.solution.XStreamSolutionFileIO;
+
+import com.thoughtworks.xstream.annotations.XStreamAlias;
+import com.thoughtworks.xstream.annotations.XStreamImplicit;
 
 @XStreamAlias("problemBenchmarks")
 public class ProblemBenchmarksConfig extends AbstractConfig<ProblemBenchmarksConfig> {
@@ -128,8 +129,8 @@ public class ProblemBenchmarksConfig extends AbstractConfig<ProblemBenchmarksCon
     public <Solution_> void buildProblemBenchmarkList(SolverConfigContext solverConfigContext,
             SolverBenchmarkResult solverBenchmarkResult, Solution_[] extraProblems) {
         PlannerBenchmarkResult plannerBenchmarkResult = solverBenchmarkResult.getPlannerBenchmarkResult();
-        List<ProblemBenchmarkResult> unifiedProblemBenchmarkResultList
-                = plannerBenchmarkResult.getUnifiedProblemBenchmarkResultList();
+        List<ProblemBenchmarkResult> unifiedProblemBenchmarkResultList = plannerBenchmarkResult
+                .getUnifiedProblemBenchmarkResultList();
         for (ProblemProvider<Solution_> problemProvider : buildProblemProviderList(
                 solverConfigContext, solverBenchmarkResult, extraProblems)) {
             // 2 SolverBenchmarks containing equal ProblemBenchmarks should contain the same instance
@@ -153,9 +154,9 @@ public class ProblemBenchmarksConfig extends AbstractConfig<ProblemBenchmarksCon
         if (ConfigUtils.isEmptyCollection(inputSolutionFileList) && extraProblems.length == 0) {
             throw new IllegalArgumentException(
                     "The solverBenchmarkResult (" + solverBenchmarkResult.getName() + ") has no problems.\n"
-                    + "Maybe configure at least 1 <inputSolutionFile> directly or indirectly by inheriting it.\n"
-                    + "Or maybe pass at least one problem to " + PlannerBenchmarkFactory.class.getSimpleName()
-                    + ".buildPlannerBenchmark().");
+                            + "Maybe configure at least 1 <inputSolutionFile> directly or indirectly by inheriting it.\n"
+                            + "Or maybe pass at least one problem to " + PlannerBenchmarkFactory.class.getSimpleName()
+                            + ".buildPlannerBenchmark().");
         }
         List<ProblemProvider<Solution_>> problemProviderList = new ArrayList<>(
                 extraProblems.length + (inputSolutionFileList == null ? 0 : inputSolutionFileList.size()));
@@ -224,7 +225,8 @@ public class ProblemBenchmarksConfig extends AbstractConfig<ProblemBenchmarksCon
             problemStatisticList = Collections.emptyList();
         } else {
             List<ProblemStatisticType> problemStatisticTypeList_ = (problemStatisticTypeList == null)
-                    ? Collections.singletonList(ProblemStatisticType.BEST_SCORE) : problemStatisticTypeList;
+                    ? Collections.singletonList(ProblemStatisticType.BEST_SCORE)
+                    : problemStatisticTypeList;
             problemStatisticList = new ArrayList<>(problemStatisticTypeList_.size());
             for (ProblemStatisticType problemStatisticType : problemStatisticTypeList_) {
                 problemStatisticList.add(problemStatisticType.buildProblemStatistic(problemBenchmarkResult));
@@ -245,7 +247,8 @@ public class ProblemBenchmarksConfig extends AbstractConfig<ProblemBenchmarksCon
         }
         if (singleStatisticTypeList != null) {
             for (SingleStatisticType singleStatisticType : singleStatisticTypeList) {
-                for (SubSingleBenchmarkResult subSingleBenchmarkResult : singleBenchmarkResult.getSubSingleBenchmarkResultList()) {
+                for (SubSingleBenchmarkResult subSingleBenchmarkResult : singleBenchmarkResult
+                        .getSubSingleBenchmarkResultList()) {
                     subSingleBenchmarkResult.getPureSubSingleStatisticList().add(
                             singleStatisticType.buildPureSubSingleStatistic(subSingleBenchmarkResult));
                 }

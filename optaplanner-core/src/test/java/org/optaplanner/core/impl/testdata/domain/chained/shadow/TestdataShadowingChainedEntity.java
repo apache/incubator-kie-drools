@@ -50,8 +50,8 @@ public class TestdataShadowingChainedEntity extends TestdataObject implements Te
         this.chainedObject = chainedObject;
     }
 
-    @PlanningVariable(valueRangeProviderRefs = {"chainedAnchorRange", "chainedEntityRange"},
-            graphType = PlanningVariableGraphType.CHAINED)
+    @PlanningVariable(valueRangeProviderRefs = { "chainedAnchorRange",
+            "chainedEntityRange" }, graphType = PlanningVariableGraphType.CHAINED)
     public TestdataShadowingChainedObject getChainedObject() {
         return chainedObject;
     }

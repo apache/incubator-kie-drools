@@ -16,16 +16,16 @@
 
 package org.optaplanner.core.impl.domain.valuerange.buildin.composite;
 
+import static org.junit.Assert.assertEquals;
+import static org.mockito.Mockito.*;
+import static org.optaplanner.core.impl.testdata.util.PlannerAssert.*;
+
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.Random;
 
 import org.junit.jupiter.api.Test;
 import org.optaplanner.core.impl.domain.valuerange.buildin.collection.ListValueRange;
-
-import static org.junit.Assert.assertEquals;
-import static org.mockito.Mockito.*;
-import static org.optaplanner.core.impl.testdata.util.PlannerAssert.*;
 
 public class NullableCountableValueRangeTest {
 
@@ -35,15 +35,17 @@ public class NullableCountableValueRangeTest {
         assertEquals(6L, new NullableCountableValueRange<>(new ListValueRange<>(Arrays.asList(100, 120, 5, 7, 8))).getSize());
         assertEquals(4L, new NullableCountableValueRange<>(new ListValueRange<>(Arrays.asList(-15, 25, 0))).getSize());
         assertEquals(4L, new NullableCountableValueRange<>(new ListValueRange<>(Arrays.asList("b", "z", "a"))).getSize());
-        assertEquals(1L, new NullableCountableValueRange<>(new ListValueRange<>(Collections.<String>emptyList())).getSize());
+        assertEquals(1L, new NullableCountableValueRange<>(new ListValueRange<>(Collections.<String> emptyList())).getSize());
     }
 
     @Test
     public void get() {
         assertEquals(5, new NullableCountableValueRange<>(new ListValueRange<>(Arrays.asList(0, 2, 5, 10))).get(2L).intValue());
         assertEquals(null, new NullableCountableValueRange<>(new ListValueRange<>(Arrays.asList(0, 2, 5, 10))).get(4L));
-        assertEquals("c", new NullableCountableValueRange<>(new ListValueRange<>(Arrays.asList("b", "z", "a", "c", "g", "d"))).get(3L));
-        assertEquals(null, new NullableCountableValueRange<>(new ListValueRange<>(Arrays.asList("b", "z", "a", "c", "g", "d"))).get(6L));
+        assertEquals("c",
+                new NullableCountableValueRange<>(new ListValueRange<>(Arrays.asList("b", "z", "a", "c", "g", "d"))).get(3L));
+        assertEquals(null,
+                new NullableCountableValueRange<>(new ListValueRange<>(Arrays.asList("b", "z", "a", "c", "g", "d"))).get(6L));
     }
 
     @Test
@@ -52,17 +54,27 @@ public class NullableCountableValueRangeTest {
         assertEquals(false, new NullableCountableValueRange<>(new ListValueRange<>(Arrays.asList(0, 2, 5, 10))).contains(4));
         assertEquals(true, new NullableCountableValueRange<>(new ListValueRange<>(Arrays.asList(0, 2, 5, 10))).contains(null));
         assertEquals(true, new NullableCountableValueRange<>(new ListValueRange<>(Arrays.asList("b", "z", "a"))).contains("a"));
-        assertEquals(false, new NullableCountableValueRange<>(new ListValueRange<>(Arrays.asList("b", "z", "a"))).contains("n"));
-        assertEquals(true, new NullableCountableValueRange<>(new ListValueRange<>(Arrays.asList("b", "z", "a"))).contains(null));
+        assertEquals(false,
+                new NullableCountableValueRange<>(new ListValueRange<>(Arrays.asList("b", "z", "a"))).contains("n"));
+        assertEquals(true,
+                new NullableCountableValueRange<>(new ListValueRange<>(Arrays.asList("b", "z", "a"))).contains(null));
     }
 
     @Test
     public void createOriginalIterator() {
-        assertAllElementsOfIterator(new NullableCountableValueRange<>(new ListValueRange<>(Arrays.asList(0, 2, 5, 10))).createOriginalIterator(), null, 0, 2, 5, 10);
-        assertAllElementsOfIterator(new NullableCountableValueRange<>(new ListValueRange<>(Arrays.asList(100, 120, 5, 7, 8))).createOriginalIterator(), null, 100, 120, 5, 7, 8);
-        assertAllElementsOfIterator(new NullableCountableValueRange<>(new ListValueRange<>(Arrays.asList(-15, 25, 0))).createOriginalIterator(), null, -15, 25, 0);
-        assertAllElementsOfIterator(new NullableCountableValueRange<>(new ListValueRange<>(Arrays.asList("b", "z", "a"))).createOriginalIterator(), null, "b", "z", "a");
-        assertAllElementsOfIterator(new NullableCountableValueRange<>(new ListValueRange<>(Collections.<String>emptyList())).createOriginalIterator(), new String[]{null});
+        assertAllElementsOfIterator(
+                new NullableCountableValueRange<>(new ListValueRange<>(Arrays.asList(0, 2, 5, 10))).createOriginalIterator(),
+                null, 0, 2, 5, 10);
+        assertAllElementsOfIterator(new NullableCountableValueRange<>(new ListValueRange<>(Arrays.asList(100, 120, 5, 7, 8)))
+                .createOriginalIterator(), null, 100, 120, 5, 7, 8);
+        assertAllElementsOfIterator(
+                new NullableCountableValueRange<>(new ListValueRange<>(Arrays.asList(-15, 25, 0))).createOriginalIterator(),
+                null, -15, 25, 0);
+        assertAllElementsOfIterator(
+                new NullableCountableValueRange<>(new ListValueRange<>(Arrays.asList("b", "z", "a"))).createOriginalIterator(),
+                null, "b", "z", "a");
+        assertAllElementsOfIterator(new NullableCountableValueRange<>(new ListValueRange<>(Collections.<String> emptyList()))
+                .createOriginalIterator(), new String[] { null });
     }
 
     @Test
@@ -70,15 +82,20 @@ public class NullableCountableValueRangeTest {
         Random workingRandom = mock(Random.class);
 
         when(workingRandom.nextInt(anyInt())).thenReturn(3, 0);
-        assertElementsOfIterator(new NullableCountableValueRange<>(new ListValueRange<>(Arrays.asList(0, 2, 5))).createRandomIterator(workingRandom), null, 0);
+        assertElementsOfIterator(new NullableCountableValueRange<>(new ListValueRange<>(Arrays.asList(0, 2, 5)))
+                .createRandomIterator(workingRandom), null, 0);
         when(workingRandom.nextInt(anyInt())).thenReturn(3, 0);
-        assertElementsOfIterator(new NullableCountableValueRange<>(new ListValueRange<>(Arrays.asList(100, 120, 5))).createRandomIterator(workingRandom), null, 100);
+        assertElementsOfIterator(new NullableCountableValueRange<>(new ListValueRange<>(Arrays.asList(100, 120, 5)))
+                .createRandomIterator(workingRandom), null, 100);
         when(workingRandom.nextInt(anyInt())).thenReturn(3, 0);
-        assertElementsOfIterator(new NullableCountableValueRange<>(new ListValueRange<>(Arrays.asList(-15, 25, 0))).createRandomIterator(workingRandom), null, -15);
+        assertElementsOfIterator(new NullableCountableValueRange<>(new ListValueRange<>(Arrays.asList(-15, 25, 0)))
+                .createRandomIterator(workingRandom), null, -15);
         when(workingRandom.nextInt(anyInt())).thenReturn(3, 0);
-        assertElementsOfIterator(new NullableCountableValueRange<>(new ListValueRange<>(Arrays.asList("b", "z", "a"))).createRandomIterator(workingRandom), null, "b");
+        assertElementsOfIterator(new NullableCountableValueRange<>(new ListValueRange<>(Arrays.asList("b", "z", "a")))
+                .createRandomIterator(workingRandom), null, "b");
         when(workingRandom.nextInt(anyInt())).thenReturn(0);
-        assertElementsOfIterator(new NullableCountableValueRange<>(new ListValueRange<>(Collections.<String>emptyList())).createRandomIterator(workingRandom), new String[]{null});
+        assertElementsOfIterator(new NullableCountableValueRange<>(new ListValueRange<>(Collections.<String> emptyList()))
+                .createRandomIterator(workingRandom), new String[] { null });
     }
 
 }

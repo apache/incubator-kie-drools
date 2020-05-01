@@ -29,9 +29,6 @@ import java.util.Map;
 import java.util.SortedMap;
 import java.util.TreeMap;
 
-import com.thoughtworks.xstream.annotations.XStreamAlias;
-import com.thoughtworks.xstream.annotations.XStreamImplicit;
-import com.thoughtworks.xstream.annotations.XStreamOmitField;
 import org.apache.commons.lang3.BooleanUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.optaplanner.benchmark.impl.report.BenchmarkReport;
@@ -42,6 +39,10 @@ import org.optaplanner.core.config.solver.EnvironmentMode;
 import org.optaplanner.core.config.util.ConfigUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+import com.thoughtworks.xstream.annotations.XStreamAlias;
+import com.thoughtworks.xstream.annotations.XStreamImplicit;
+import com.thoughtworks.xstream.annotations.XStreamOmitField;
 
 /**
  * Represents the benchmarks on multiple {@link Solver} configurations on multiple problem instances (data sets).
@@ -247,7 +248,8 @@ public class PlannerBenchmarkResult {
     }
 
     public String getStartingTimestampAsMediumString() {
-        return startingTimestamp == null ? null : startingTimestamp.format(DateTimeFormatter.ofLocalizedDateTime(FormatStyle.MEDIUM));
+        return startingTimestamp == null ? null
+                : startingTimestamp.format(DateTimeFormatter.ofLocalizedDateTime(FormatStyle.MEDIUM));
     }
 
     // ************************************************************************
@@ -412,8 +414,7 @@ public class PlannerBenchmarkResult {
                 previousSolverBenchmarkResult = solverBenchmarkResult;
             }
         } else if (benchmarkReport.getSolverRankingWeightFactory() != null) {
-            SortedMap<Comparable, List<SolverBenchmarkResult>> rankedMap
-                    = new TreeMap<>(Collections.reverseOrder());
+            SortedMap<Comparable, List<SolverBenchmarkResult>> rankedMap = new TreeMap<>(Collections.reverseOrder());
             for (SolverBenchmarkResult solverBenchmarkResult : rankableSolverBenchmarkResultList) {
                 Comparable rankingWeight = benchmarkReport.getSolverRankingWeightFactory()
                         .createRankingWeight(rankableSolverBenchmarkResultList, solverBenchmarkResult);
@@ -438,10 +439,10 @@ public class PlannerBenchmarkResult {
     public static PlannerBenchmarkResult createMergedResult(
             List<SingleBenchmarkResult> singleBenchmarkResultList) {
         PlannerBenchmarkResult mergedResult = createMergeSingleton(singleBenchmarkResultList);
-        Map<SolverBenchmarkResult, SolverBenchmarkResult> solverMergeMap
-                = SolverBenchmarkResult.createMergeMap(mergedResult, singleBenchmarkResultList);
-        Map<ProblemBenchmarkResult, ProblemBenchmarkResult> problemMergeMap
-                = ProblemBenchmarkResult.createMergeMap(mergedResult, singleBenchmarkResultList);
+        Map<SolverBenchmarkResult, SolverBenchmarkResult> solverMergeMap = SolverBenchmarkResult.createMergeMap(mergedResult,
+                singleBenchmarkResultList);
+        Map<ProblemBenchmarkResult, ProblemBenchmarkResult> problemMergeMap = ProblemBenchmarkResult
+                .createMergeMap(mergedResult, singleBenchmarkResultList);
         for (SingleBenchmarkResult singleBenchmarkResult : singleBenchmarkResultList) {
             SolverBenchmarkResult solverBenchmarkResult = solverMergeMap.get(
                     singleBenchmarkResult.getSolverBenchmarkResult());
@@ -455,8 +456,7 @@ public class PlannerBenchmarkResult {
 
     protected static PlannerBenchmarkResult createMergeSingleton(List<SingleBenchmarkResult> singleBenchmarkResultList) {
         PlannerBenchmarkResult newResult = null;
-        Map<PlannerBenchmarkResult, PlannerBenchmarkResult> mergeMap
-                = new IdentityHashMap<>();
+        Map<PlannerBenchmarkResult, PlannerBenchmarkResult> mergeMap = new IdentityHashMap<>();
         for (SingleBenchmarkResult singleBenchmarkResult : singleBenchmarkResultList) {
             PlannerBenchmarkResult oldResult = singleBenchmarkResult
                     .getSolverBenchmarkResult().getPlannerBenchmarkResult();

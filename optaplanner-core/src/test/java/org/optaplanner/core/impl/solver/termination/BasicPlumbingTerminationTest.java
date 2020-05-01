@@ -16,13 +16,12 @@
 
 package org.optaplanner.core.impl.solver.termination;
 
+import static org.junit.Assert.*;
+
 import java.util.Arrays;
 import java.util.concurrent.atomic.AtomicInteger;
 
 import org.junit.jupiter.api.Test;
-
-import static org.junit.Assert.*;
-import static org.mockito.Mockito.mock;
 
 public class BasicPlumbingTerminationTest {
 
@@ -49,8 +48,7 @@ public class BasicPlumbingTerminationTest {
         assertEquals(false, basicPlumbingTermination.waitForRestartSolverDecision());
         basicPlumbingTermination.addProblemFactChanges(Arrays.asList(
                 scoreDirector -> count.getAndIncrement(),
-                scoreDirector -> count.getAndAdd(20)
-        ));
+                scoreDirector -> count.getAndAdd(20)));
         assertEquals(true, basicPlumbingTermination.waitForRestartSolverDecision());
         assertEquals(0, count.get());
         basicPlumbingTermination.startProblemFactChangesProcessing().removeIf(problemFactChange -> {

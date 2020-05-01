@@ -19,8 +19,6 @@ package org.optaplanner.core.config.constructionheuristic.placer;
 import java.util.Collections;
 import java.util.List;
 
-import com.thoughtworks.xstream.annotations.XStreamAlias;
-import com.thoughtworks.xstream.annotations.XStreamImplicit;
 import org.optaplanner.core.api.domain.valuerange.ValueRangeProvider;
 import org.optaplanner.core.config.heuristic.policy.HeuristicConfigPolicy;
 import org.optaplanner.core.config.heuristic.selector.common.SelectionCacheType;
@@ -39,10 +37,14 @@ import org.optaplanner.core.impl.heuristic.selector.move.MoveSelector;
 import org.optaplanner.core.impl.heuristic.selector.value.EntityIndependentValueSelector;
 import org.optaplanner.core.impl.heuristic.selector.value.ValueSelector;
 
+import com.thoughtworks.xstream.annotations.XStreamAlias;
+import com.thoughtworks.xstream.annotations.XStreamImplicit;
+
 @XStreamAlias("queuedValuePlacer")
 public class QueuedValuePlacerConfig extends EntityPlacerConfig<QueuedValuePlacerConfig> {
 
-    public static QueuedValuePlacerConfig unfoldNew(HeuristicConfigPolicy configPolicy, MoveSelectorConfig templateMoveSelectorConfig) {
+    public static QueuedValuePlacerConfig unfoldNew(HeuristicConfigPolicy configPolicy,
+            MoveSelectorConfig templateMoveSelectorConfig) {
         throw new UnsupportedOperationException("The <constructionHeuristic> contains a moveSelector ("
                 + templateMoveSelectorConfig + ") and the <queuedValuePlacer> does not support unfolding those yet.");
     }
@@ -139,7 +141,7 @@ public class QueuedValuePlacerConfig extends EntityPlacerConfig<QueuedValuePlace
         if (valueSelectorConfig_.getCacheType() != null
                 && valueSelectorConfig_.getCacheType().compareTo(SelectionCacheType.PHASE) < 0) {
             throw new IllegalArgumentException("The queuedValuePlacer (" + this
-                    + ") cannot have a valueSelectorConfig ("  + valueSelectorConfig_
+                    + ") cannot have a valueSelectorConfig (" + valueSelectorConfig_
                     + ") with a cacheType (" + valueSelectorConfig_.getCacheType()
                     + ") lower than " + SelectionCacheType.PHASE + ".");
         }

@@ -35,7 +35,6 @@ public class MeetingSchedulingPerformanceTest extends SolverPerformanceTest<Meet
     protected Stream<TestData> testData() {
         return Stream.of(
                 testData(UNSOLVED_DATA_FILE, "-35hard/-86medium/-6090soft", EnvironmentMode.REPRODUCIBLE),
-                testData(UNSOLVED_DATA_FILE, "-36hard/-64medium/-5921soft", EnvironmentMode.FAST_ASSERT)
-        );
+                testData(UNSOLVED_DATA_FILE, "-36hard/-64medium/-5921soft", EnvironmentMode.FAST_ASSERT));
     }
 }

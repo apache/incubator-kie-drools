@@ -27,9 +27,8 @@ public class TaskAssignmentDifficultyComparator implements Comparator<TaskAssign
     private static final Comparator<Task> TASK_COMPARATOR = Comparator.comparingInt(Task::getResourceUsageMultiplicand)
             .thenComparingLong(Task::getPowerConsumptionMicros)
             .thenComparingInt(Task::getDuration);
-    private static final Comparator<TaskAssignment> COMPARATOR =
-            Comparator.comparing(TaskAssignment::getTask, TASK_COMPARATOR)
-                    .thenComparingLong(TaskAssignment::getId);
+    private static final Comparator<TaskAssignment> COMPARATOR = Comparator.comparing(TaskAssignment::getTask, TASK_COMPARATOR)
+            .thenComparingLong(TaskAssignment::getId);
 
     @Override
     public int compare(TaskAssignment a, TaskAssignment b) {

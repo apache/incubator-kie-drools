@@ -29,9 +29,9 @@ public class CourseConflict implements Serializable,
         Comparable<CourseConflict> {
 
     private static final Comparator<Course> COURSE_COMPARATOR = Comparator.comparingLong(Course::getId);
-    private static final Comparator<CourseConflict> COMPARATOR =
-            Comparator.comparing(CourseConflict::getLeftCourse, COURSE_COMPARATOR)
-                    .thenComparing(CourseConflict::getRightCourse, COURSE_COMPARATOR);
+    private static final Comparator<CourseConflict> COMPARATOR = Comparator
+            .comparing(CourseConflict::getLeftCourse, COURSE_COMPARATOR)
+            .thenComparing(CourseConflict::getRightCourse, COURSE_COMPARATOR);
 
     private final Course leftCourse;
     private final Course rightCourse;

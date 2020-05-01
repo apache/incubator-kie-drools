@@ -16,12 +16,8 @@
 
 package org.optaplanner.core.impl.heuristic.move;
 
-import java.util.Collection;
-import java.util.Collections;
-
 import org.optaplanner.core.impl.score.director.ScoreDirector;
 import org.optaplanner.core.impl.testdata.domain.TestdataSolution;
-import org.optaplanner.core.impl.testdata.util.CodeAssertable;
 
 public class NotDoableDummyMove extends DummyMove {
 

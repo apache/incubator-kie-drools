@@ -72,8 +72,8 @@ public class NearEntityNearbyValueSelector extends AbstractValueSelector {
                     + ") which is higher than Integer.MAX_VALUE.");
         }
         nearbyDistanceMatrix = new NearbyDistanceMatrix(nearbyDistanceMeter, (int) originSize);
-        for (Iterator originIt = originEntitySelector.endingIterator(); originIt.hasNext(); ) {
-            final Object origin =  originIt.next();
+        for (Iterator originIt = originEntitySelector.endingIterator(); originIt.hasNext();) {
+            final Object origin = originIt.next();
             long childSize = childValueSelector.getSize(origin);
             if (childSize > (long) Integer.MAX_VALUE) {
                 throw new IllegalStateException("The childEntitySelector (" + childValueSelector

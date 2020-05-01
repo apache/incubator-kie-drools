@@ -28,6 +28,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+
 import javax.swing.AbstractAction;
 import javax.swing.BorderFactory;
 import javax.swing.Icon;
@@ -158,7 +159,7 @@ public class TaskOverviewPanel extends JPanel implements Scrollable {
     }
 
     private JButton createTaskButton(Task task) {
-        JButton taskButton =  SwingUtils.makeSmallButton(new JButton(new TaskAction(task)));
+        JButton taskButton = SwingUtils.makeSmallButton(new JButton(new TaskAction(task)));
         taskButton.setBackground(task.isPinned() ? TangoColorFactory.ALUMINIUM_3 : TangoColorFactory.ALUMINIUM_1);
         taskButton.setHorizontalTextPosition(SwingConstants.CENTER);
         taskButton.setVerticalTextPosition(SwingConstants.TOP);

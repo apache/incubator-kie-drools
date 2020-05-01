@@ -16,6 +16,8 @@
 
 package org.optaplanner.core.config.score.director;
 
+import static org.apache.commons.lang3.ObjectUtils.defaultIfNull;
+
 import java.io.File;
 import java.net.URL;
 import java.util.ArrayList;
@@ -25,10 +27,6 @@ import java.util.Map;
 import java.util.Objects;
 import java.util.stream.Stream;
 
-import com.thoughtworks.xstream.annotations.XStreamAlias;
-import com.thoughtworks.xstream.annotations.XStreamConverter;
-import com.thoughtworks.xstream.annotations.XStreamImplicit;
-import com.thoughtworks.xstream.annotations.XStreamOmitField;
 import org.apache.commons.lang3.BooleanUtils;
 import org.kie.api.KieBase;
 import org.kie.api.KieBaseConfiguration;
@@ -82,17 +80,24 @@ import org.optaplanner.core.impl.score.trend.InitializingScoreTrend;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import static org.apache.commons.lang3.ObjectUtils.defaultIfNull;
+import com.thoughtworks.xstream.annotations.XStreamAlias;
+import com.thoughtworks.xstream.annotations.XStreamConverter;
+import com.thoughtworks.xstream.annotations.XStreamImplicit;
+import com.thoughtworks.xstream.annotations.XStreamOmitField;
 
 @XStreamAlias("scoreDirectorFactory")
 public class ScoreDirectorFactoryConfig extends AbstractConfig<ScoreDirectorFactoryConfig> {
 
     private static final Logger logger = LoggerFactory.getLogger(ScoreDirectorFactoryConfig.class);
 
-    @Deprecated protected Class<? extends ScoreDefinition> scoreDefinitionClass = null;
-    @Deprecated protected ScoreDefinitionType scoreDefinitionType = null;
-    @Deprecated protected Integer bendableHardLevelsSize = null;
-    @Deprecated protected Integer bendableSoftLevelsSize = null;
+    @Deprecated
+    protected Class<? extends ScoreDefinition> scoreDefinitionClass = null;
+    @Deprecated
+    protected ScoreDefinitionType scoreDefinitionType = null;
+    @Deprecated
+    protected Integer bendableHardLevelsSize = null;
+    @Deprecated
+    protected Integer bendableSoftLevelsSize = null;
 
     protected Class<? extends EasyScoreCalculator> easyScoreCalculatorClass = null;
     @XStreamConverter(KeyAsElementMapConverter.class)
@@ -132,7 +137,8 @@ public class ScoreDirectorFactoryConfig extends AbstractConfig<ScoreDirectorFact
      * @return sometimes null
      * @deprecated Use {@link PlanningScore#scoreDefinitionClass()} instead. Will be removed in 8.0.
      */
-    @Deprecated public Class<? extends ScoreDefinition> getScoreDefinitionClass() {
+    @Deprecated
+    public Class<? extends ScoreDefinition> getScoreDefinitionClass() {
         return scoreDefinitionClass;
     }
 
@@ -140,7 +146,8 @@ public class ScoreDirectorFactoryConfig extends AbstractConfig<ScoreDirectorFact
      * @param scoreDefinitionClass sometimes null
      * @deprecated Use {@link PlanningScore#scoreDefinitionClass()} instead. Will be removed in 8.0.
      */
-    @Deprecated public void setScoreDefinitionClass(Class<? extends ScoreDefinition> scoreDefinitionClass) {
+    @Deprecated
+    public void setScoreDefinitionClass(Class<? extends ScoreDefinition> scoreDefinitionClass) {
         this.scoreDefinitionClass = scoreDefinitionClass;
     }
 
@@ -148,7 +155,8 @@ public class ScoreDirectorFactoryConfig extends AbstractConfig<ScoreDirectorFact
      * @return sometimes null
      * @deprecated Use {@link PlanningScore} instead. Will be removed in 8.0.
      */
-    @Deprecated public ScoreDefinitionType getScoreDefinitionType() {
+    @Deprecated
+    public ScoreDefinitionType getScoreDefinitionType() {
         return scoreDefinitionType;
     }
 
@@ -156,7 +164,8 @@ public class ScoreDirectorFactoryConfig extends AbstractConfig<ScoreDirectorFact
      * @param scoreDefinitionType sometimes null
      * @deprecated Use {@link PlanningScore} instead. Will be removed in 8.0.
      */
-    @Deprecated public void setScoreDefinitionType(ScoreDefinitionType scoreDefinitionType) {
+    @Deprecated
+    public void setScoreDefinitionType(ScoreDefinitionType scoreDefinitionType) {
         this.scoreDefinitionType = scoreDefinitionType;
     }
 
@@ -164,7 +173,8 @@ public class ScoreDirectorFactoryConfig extends AbstractConfig<ScoreDirectorFact
      * @return sometimes null
      * @deprecated Use {@link PlanningScore#bendableHardLevelsSize()} instead. Will be removed in 8.0.
      */
-    @Deprecated public Integer getBendableHardLevelsSize() {
+    @Deprecated
+    public Integer getBendableHardLevelsSize() {
         return bendableHardLevelsSize;
     }
 
@@ -172,7 +182,8 @@ public class ScoreDirectorFactoryConfig extends AbstractConfig<ScoreDirectorFact
      * @param bendableHardLevelsSize sometimes null
      * @deprecated Use {@link PlanningScore#bendableHardLevelsSize()} instead. Will be removed in 8.0.
      */
-    @Deprecated public void setBendableHardLevelsSize(Integer bendableHardLevelsSize) {
+    @Deprecated
+    public void setBendableHardLevelsSize(Integer bendableHardLevelsSize) {
         this.bendableHardLevelsSize = bendableHardLevelsSize;
     }
 
@@ -180,7 +191,8 @@ public class ScoreDirectorFactoryConfig extends AbstractConfig<ScoreDirectorFact
      * @return sometimes null
      * @deprecated Use {@link PlanningScore#bendableSoftLevelsSize()} instead. Will be removed in 8.0.
      */
-    @Deprecated public Integer getBendableSoftLevelsSize() {
+    @Deprecated
+    public Integer getBendableSoftLevelsSize() {
         return bendableSoftLevelsSize;
     }
 
@@ -188,7 +200,8 @@ public class ScoreDirectorFactoryConfig extends AbstractConfig<ScoreDirectorFact
      * @param bendableSoftLevelsSize sometimes null
      * @deprecated Use {@link PlanningScore#bendableSoftLevelsSize()} instead. Will be removed in 8.0.
      */
-    @Deprecated public void setBendableSoftLevelsSize(Integer bendableSoftLevelsSize) {
+    @Deprecated
+    public void setBendableSoftLevelsSize(Integer bendableSoftLevelsSize) {
         this.bendableSoftLevelsSize = bendableSoftLevelsSize;
     }
 
@@ -236,7 +249,8 @@ public class ScoreDirectorFactoryConfig extends AbstractConfig<ScoreDirectorFact
         return incrementalScoreCalculatorClass;
     }
 
-    public void setIncrementalScoreCalculatorClass(Class<? extends IncrementalScoreCalculator> incrementalScoreCalculatorClass) {
+    public void setIncrementalScoreCalculatorClass(
+            Class<? extends IncrementalScoreCalculator> incrementalScoreCalculatorClass) {
         this.incrementalScoreCalculatorClass = incrementalScoreCalculatorClass;
     }
 
@@ -258,17 +272,23 @@ public class ScoreDirectorFactoryConfig extends AbstractConfig<ScoreDirectorFact
 
     /**
      * @return sometimes null
-     * @deprecated Use {@link #setKsessionName(String)} and {@link SolverFactory#createFromKieContainerXmlResource(KieContainer, String)} instead. Might be removed in 8.0.
+     * @deprecated Use {@link #setKsessionName(String)} and
+     *             {@link SolverFactory#createFromKieContainerXmlResource(KieContainer, String)} instead. Might be removed in
+     *             8.0.
      */
-    @Deprecated public KieBase getKieBase() {
+    @Deprecated
+    public KieBase getKieBase() {
         return kieBase;
     }
 
     /**
      * @param kieBase sometimes null
-     * @deprecated Use {@link #setKsessionName(String)} and {@link SolverFactory#createFromKieContainerXmlResource(KieContainer, String)} instead. Might be removed in 8.0.
+     * @deprecated Use {@link #setKsessionName(String)} and
+     *             {@link SolverFactory#createFromKieContainerXmlResource(KieContainer, String)} instead. Might be removed in
+     *             8.0.
      */
-    @Deprecated public void setKieBase(KieBase kieBase) {
+    @Deprecated
+    public void setKieBase(KieBase kieBase) {
         this.kieBase = kieBase;
     }
 
@@ -324,12 +344,14 @@ public class ScoreDirectorFactoryConfig extends AbstractConfig<ScoreDirectorFact
     // With methods
     // ************************************************************************
 
-    public ScoreDirectorFactoryConfig withEasyScoreCalculatorClass(Class<? extends EasyScoreCalculator> easyScoreCalculatorClass) {
+    public ScoreDirectorFactoryConfig withEasyScoreCalculatorClass(
+            Class<? extends EasyScoreCalculator> easyScoreCalculatorClass) {
         this.easyScoreCalculatorClass = easyScoreCalculatorClass;
         return this;
     }
 
-    public ScoreDirectorFactoryConfig withEasyScoreCalculatorCustomProperties(Map<String, String> easyScoreCalculatorCustomProperties) {
+    public ScoreDirectorFactoryConfig withEasyScoreCalculatorCustomProperties(
+            Map<String, String> easyScoreCalculatorCustomProperties) {
         this.easyScoreCalculatorCustomProperties = easyScoreCalculatorCustomProperties;
         return this;
     }
@@ -339,7 +361,8 @@ public class ScoreDirectorFactoryConfig extends AbstractConfig<ScoreDirectorFact
         return this;
     }
 
-    public ScoreDirectorFactoryConfig withConstraintProviderCustomProperties(Map<String, String> constraintProviderCustomProperties) {
+    public ScoreDirectorFactoryConfig withConstraintProviderCustomProperties(
+            Map<String, String> constraintProviderCustomProperties) {
         this.constraintProviderCustomProperties = constraintProviderCustomProperties;
         return this;
     }
@@ -349,12 +372,14 @@ public class ScoreDirectorFactoryConfig extends AbstractConfig<ScoreDirectorFact
         return this;
     }
 
-    public ScoreDirectorFactoryConfig withIncrementalScoreCalculatorClass(Class<? extends IncrementalScoreCalculator> incrementalScoreCalculatorClass) {
+    public ScoreDirectorFactoryConfig withIncrementalScoreCalculatorClass(
+            Class<? extends IncrementalScoreCalculator> incrementalScoreCalculatorClass) {
         this.incrementalScoreCalculatorClass = incrementalScoreCalculatorClass;
         return this;
     }
 
-    public ScoreDirectorFactoryConfig withIncrementalScoreCalculatorCustomProperties(Map<String, String> incrementalScoreCalculatorCustomProperties) {
+    public ScoreDirectorFactoryConfig withIncrementalScoreCalculatorCustomProperties(
+            Map<String, String> incrementalScoreCalculatorCustomProperties) {
         this.incrementalScoreCalculatorCustomProperties = incrementalScoreCalculatorCustomProperties;
         return this;
     }
@@ -384,7 +409,8 @@ public class ScoreDirectorFactoryConfig extends AbstractConfig<ScoreDirectorFact
         return this;
     }
 
-    public ScoreDirectorFactoryConfig withAssertionScoreDirectorFactory(ScoreDirectorFactoryConfig assertionScoreDirectorFactory) {
+    public ScoreDirectorFactoryConfig withAssertionScoreDirectorFactory(
+            ScoreDirectorFactoryConfig assertionScoreDirectorFactory) {
         this.assertionScoreDirectorFactory = assertionScoreDirectorFactory;
         return this;
     }
@@ -458,9 +484,12 @@ public class ScoreDirectorFactoryConfig extends AbstractConfig<ScoreDirectorFact
             SolverConfigContext configContext, ClassLoader classLoader, EnvironmentMode environmentMode,
             SolutionDescriptor<Solution_> solutionDescriptor) {
         AbstractScoreDirectorFactory<Solution_> easyScoreDirectorFactory = buildEasyScoreDirectorFactory(solutionDescriptor);
-        AbstractScoreDirectorFactory<Solution_> constraintStreamScoreDirectorFactory = buildConstraintStreamScoreDirectorFactory(solutionDescriptor);
-        AbstractScoreDirectorFactory<Solution_> incrementalScoreDirectorFactory = buildIncrementalScoreDirectorFactory(solutionDescriptor);
-        AbstractScoreDirectorFactory<Solution_> droolsScoreDirectorFactory = buildDroolsScoreDirectorFactory(configContext, classLoader, solutionDescriptor);
+        AbstractScoreDirectorFactory<Solution_> constraintStreamScoreDirectorFactory = buildConstraintStreamScoreDirectorFactory(
+                solutionDescriptor);
+        AbstractScoreDirectorFactory<Solution_> incrementalScoreDirectorFactory = buildIncrementalScoreDirectorFactory(
+                solutionDescriptor);
+        AbstractScoreDirectorFactory<Solution_> droolsScoreDirectorFactory = buildDroolsScoreDirectorFactory(configContext,
+                classLoader, solutionDescriptor);
         if (Stream.of(easyScoreDirectorFactory, constraintStreamScoreDirectorFactory,
                 incrementalScoreDirectorFactory, droolsScoreDirectorFactory)
                 .filter(Objects::nonNull).count() > 1) {
@@ -552,7 +581,7 @@ public class ScoreDirectorFactoryConfig extends AbstractConfig<ScoreDirectorFact
             if (!ConstraintProvider.class.isAssignableFrom(constraintProviderClass)) {
                 throw new IllegalArgumentException(
                         "The constraintProviderClass (" + constraintProviderClass
-                        + ") does not implement " + ConstraintProvider.class.getSimpleName() + ".");
+                                + ") does not implement " + ConstraintProvider.class.getSimpleName() + ".");
             }
             ConstraintProvider constraintProvider = ConfigUtils.newInstance(this,
                     "constraintProviderClass", this.constraintProviderClass);
@@ -560,7 +589,8 @@ public class ScoreDirectorFactoryConfig extends AbstractConfig<ScoreDirectorFact
                     constraintProviderCustomProperties, "constraintProviderCustomProperties");
             ConstraintStreamImplType constraintStreamImplType_ = defaultIfNull(constraintStreamImplType,
                     ConstraintStreamImplType.DROOLS);
-            return new ConstraintStreamScoreDirectorFactory<>(solutionDescriptor, constraintProvider, constraintStreamImplType_);
+            return new ConstraintStreamScoreDirectorFactory<>(solutionDescriptor, constraintProvider,
+                    constraintStreamImplType_);
         } else {
             if (constraintProviderCustomProperties != null) {
                 throw new IllegalStateException("If there is no constraintProviderClass (" + constraintProviderClass
@@ -577,15 +607,16 @@ public class ScoreDirectorFactoryConfig extends AbstractConfig<ScoreDirectorFact
             if (!IncrementalScoreCalculator.class.isAssignableFrom(incrementalScoreCalculatorClass)) {
                 throw new IllegalArgumentException(
                         "The incrementalScoreCalculatorClass (" + incrementalScoreCalculatorClass
-                        + ") does not implement " + IncrementalScoreCalculator.class.getSimpleName() + ".");
+                                + ") does not implement " + IncrementalScoreCalculator.class.getSimpleName() + ".");
             }
             return new IncrementalScoreDirectorFactory<>(solutionDescriptor, incrementalScoreCalculatorClass,
                     incrementalScoreCalculatorCustomProperties);
         } else {
             if (incrementalScoreCalculatorCustomProperties != null) {
-                throw new IllegalStateException("If there is no incrementalScoreCalculatorClass (" + incrementalScoreCalculatorClass
-                        + "), then there can be no incrementalScoreCalculatorCustomProperties ("
-                        + incrementalScoreCalculatorCustomProperties + ") either.");
+                throw new IllegalStateException(
+                        "If there is no incrementalScoreCalculatorClass (" + incrementalScoreCalculatorClass
+                                + "), then there can be no incrementalScoreCalculatorCustomProperties ("
+                                + incrementalScoreCalculatorCustomProperties + ") either.");
             }
             return null;
         }
@@ -697,7 +728,8 @@ public class ScoreDirectorFactoryConfig extends AbstractConfig<ScoreDirectorFact
             }
             KieBase kieBase = kieContainer.newKieBase(kieBaseConfiguration);
             if (BooleanUtils.isTrue(generateDroolsTestOnError)) {
-                return new TestGenLegacyDroolsScoreDirectorFactory<>(solutionDescriptor, kieBase, scoreDrlList, scoreDrlFileList);
+                return new TestGenLegacyDroolsScoreDirectorFactory<>(solutionDescriptor, kieBase, scoreDrlList,
+                        scoreDrlFileList);
             } else {
                 return new LegacyDroolsScoreDirectorFactory<>(solutionDescriptor, kieBase);
             }
@@ -705,8 +737,8 @@ public class ScoreDirectorFactoryConfig extends AbstractConfig<ScoreDirectorFact
             if (kieBaseConfigurationProperties != null) {
                 throw new IllegalArgumentException(
                         "If kieBaseConfigurationProperties (" + kieBaseConfigurationProperties
-                        + ") is not null, the scoreDrlList (" + scoreDrlList
-                        + ") or the scoreDrlFileList (" + scoreDrlFileList + ") must not be empty.");
+                                + ") is not null, the scoreDrlList (" + scoreDrlList
+                                + ") or the scoreDrlFileList (" + scoreDrlFileList + ") must not be empty.");
             }
             if (generateDroolsTestOnError != null) {
                 throw new IllegalArgumentException(

@@ -34,7 +34,8 @@ import org.optaplanner.core.impl.testdata.domain.TestdataValue;
 public class TestdataEntityProvidingSolution extends TestdataObject {
 
     public static SolutionDescriptor<TestdataEntityProvidingSolution> buildSolutionDescriptor() {
-        return SolutionDescriptor.buildSolutionDescriptor(TestdataEntityProvidingSolution.class, TestdataEntityProvidingEntity.class);
+        return SolutionDescriptor.buildSolutionDescriptor(TestdataEntityProvidingSolution.class,
+                TestdataEntityProvidingEntity.class);
     }
 
     private List<TestdataEntityProvidingEntity> entityList;

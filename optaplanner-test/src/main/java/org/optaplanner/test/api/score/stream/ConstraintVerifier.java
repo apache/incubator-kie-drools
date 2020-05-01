@@ -16,6 +16,8 @@
 
 package org.optaplanner.test.api.score.stream;
 
+import static java.util.Objects.requireNonNull;
+
 import java.util.function.BiFunction;
 
 import org.optaplanner.core.api.domain.entity.PlanningEntity;
@@ -27,12 +29,11 @@ import org.optaplanner.core.api.score.stream.ConstraintStreamImplType;
 import org.optaplanner.core.impl.domain.solution.descriptor.SolutionDescriptor;
 import org.optaplanner.test.impl.score.stream.DefaultConstraintVerifier;
 
-import static java.util.Objects.requireNonNull;
-
 public interface ConstraintVerifier<ConstraintProvider_ extends ConstraintProvider, Solution_> {
 
     /**
      * Entry point to the API.
+     * 
      * @param constraintProvider never null, {@link PlanningEntity} used by the {@link PlanningSolution}
      * @param planningSolutionClass never null, {@link PlanningSolution}-annotated class associated with the constraints
      * @param entityClasses never null, at least one, {@link PlanningEntity} types used by the {@link PlanningSolution}
@@ -44,14 +45,15 @@ public interface ConstraintVerifier<ConstraintProvider_ extends ConstraintProvid
             ConstraintProvider_ constraintProvider,
             Class<Solution_> planningSolutionClass, Class<?>... entityClasses) {
         requireNonNull(constraintProvider);
-        SolutionDescriptor<Solution_> solutionDescriptor =
-                SolutionDescriptor.buildSolutionDescriptor(requireNonNull(planningSolutionClass), entityClasses);
+        SolutionDescriptor<Solution_> solutionDescriptor = SolutionDescriptor
+                .buildSolutionDescriptor(requireNonNull(planningSolutionClass), entityClasses);
         return new DefaultConstraintVerifier<>(constraintProvider, solutionDescriptor);
     }
 
     /**
      * All subsequent calls to {@link #verifyThat(BiFunction)} and {@link #verifyThat()}
      * will use the given {@link ConstraintStreamImplType}.
+     * 
      * @param constraintStreamImplType never null
      * @return this
      */
@@ -60,6 +62,7 @@ public interface ConstraintVerifier<ConstraintProvider_ extends ConstraintProvid
 
     /**
      * Creates a constraint verifier for a given {@link Constraint} of the {@link ConstraintProvider}.
+     * 
      * @param constraintFunction never null
      * @return never null
      */
@@ -68,6 +71,7 @@ public interface ConstraintVerifier<ConstraintProvider_ extends ConstraintProvid
 
     /**
      * Creates a constraint verifier for all constraints of the {@link ConstraintProvider}.
+     * 
      * @return never null
      */
     MultiConstraintVerification<Solution_> verifyThat();

@@ -18,8 +18,9 @@ package org.optaplanner.examples.nurserostering.domain.pattern;
 
 import java.time.DayOfWeek;
 
-import com.thoughtworks.xstream.annotations.XStreamAlias;
 import org.optaplanner.examples.nurserostering.domain.ShiftType;
+
+import com.thoughtworks.xstream.annotations.XStreamAlias;
 
 @XStreamAlias("WorkBeforeFreeSequencePattern")
 public class WorkBeforeFreeSequencePattern extends Pattern {

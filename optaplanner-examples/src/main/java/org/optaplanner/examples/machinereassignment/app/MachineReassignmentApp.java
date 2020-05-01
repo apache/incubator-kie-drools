@@ -28,8 +28,7 @@ import org.optaplanner.persistence.xstream.impl.domain.solution.XStreamSolutionF
 
 public class MachineReassignmentApp extends CommonApp<MachineReassignment> {
 
-    public static final String SOLVER_CONFIG
-            = "org/optaplanner/examples/machinereassignment/solver/machineReassignmentSolverConfig.xml";
+    public static final String SOLVER_CONFIG = "org/optaplanner/examples/machinereassignment/solver/machineReassignmentSolverConfig.xml";
 
     public static final String DATA_DIR_NAME = "machinereassignment";
 
@@ -58,7 +57,7 @@ public class MachineReassignmentApp extends CommonApp<MachineReassignment> {
 
     @Override
     protected AbstractSolutionImporter[] createSolutionImporters() {
-        return new AbstractSolutionImporter[]{
+        return new AbstractSolutionImporter[] {
                 new MachineReassignmentImporter()
         };
     }

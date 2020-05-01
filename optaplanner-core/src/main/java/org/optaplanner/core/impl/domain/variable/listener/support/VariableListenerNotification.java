@@ -42,6 +42,7 @@ public class VariableListenerNotification {
     /**
      * Warning: do not test equality of {@link VariableListenerNotification}s for different {@link VariableListener}s
      * (so {@link ShadowVariableDescriptor}s) because equality does not take those into account (for performance)!
+     * 
      * @param o sometimes null
      * @return true if same entity instance and the same type
      */

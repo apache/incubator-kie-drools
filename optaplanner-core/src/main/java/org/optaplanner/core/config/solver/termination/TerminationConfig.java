@@ -21,8 +21,6 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
-import com.thoughtworks.xstream.annotations.XStreamAlias;
-import com.thoughtworks.xstream.annotations.XStreamImplicit;
 import org.optaplanner.core.api.score.Score;
 import org.optaplanner.core.config.AbstractConfig;
 import org.optaplanner.core.config.heuristic.policy.HeuristicConfigPolicy;
@@ -43,6 +41,9 @@ import org.optaplanner.core.impl.solver.termination.UnimprovedTimeMillisSpentSco
 import org.optaplanner.core.impl.solver.termination.UnimprovedTimeMillisSpentTermination;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+import com.thoughtworks.xstream.annotations.XStreamAlias;
+import com.thoughtworks.xstream.annotations.XStreamImplicit;
 
 @XStreamAlias("termination")
 public class TerminationConfig extends AbstractConfig<TerminationConfig> {
@@ -415,7 +416,8 @@ public class TerminationConfig extends AbstractConfig<TerminationConfig> {
                             + unimprovedScoreDifferenceThreshold + ") must be positive.");
 
                 }
-                terminationList.add(new UnimprovedTimeMillisSpentScoreDifferenceThresholdTermination(unimprovedTimeMillisSpentLimit, unimprovedScoreDifferenceThreshold_));
+                terminationList.add(new UnimprovedTimeMillisSpentScoreDifferenceThresholdTermination(
+                        unimprovedTimeMillisSpentLimit, unimprovedScoreDifferenceThreshold_));
             }
         } else if (unimprovedScoreDifferenceThreshold != null) {
             throw new IllegalStateException("The unimprovedScoreDifferenceThreshold ("
@@ -442,8 +444,7 @@ public class TerminationConfig extends AbstractConfig<TerminationConfig> {
                         + ") cannot be false.");
             }
             FeasibilityScoreDefinition feasibilityScoreDefinition = (FeasibilityScoreDefinition) scoreDefinition;
-            double[] timeGradientWeightFeasibleNumbers
-                    = new double[feasibilityScoreDefinition.getFeasibleLevelsSize() - 1];
+            double[] timeGradientWeightFeasibleNumbers = new double[feasibilityScoreDefinition.getFeasibleLevelsSize() - 1];
             Arrays.fill(timeGradientWeightFeasibleNumbers, 0.50); // Number pulled out of thin air
             terminationList.add(new BestScoreFeasibleTermination(feasibilityScoreDefinition,
                     timeGradientWeightFeasibleNumbers));
@@ -455,7 +456,7 @@ public class TerminationConfig extends AbstractConfig<TerminationConfig> {
             logger.info("Deprecated use of calculateCountLimit ({}) in solver configuration.", calculateCountLimit);
             if (scoreCalculationCountLimit != null) {
                 throw new IllegalStateException("The calculateCountLimit (" + calculateCountLimit
-                        + ") and scoreCalculationCountLimit (" +  scoreCalculationCountLimit + ") cannot be used together.");
+                        + ") and scoreCalculationCountLimit (" + scoreCalculationCountLimit + ") cannot be used together.");
             }
             terminationList.add(new ScoreCalculationCountTermination(calculateCountLimit));
         }
@@ -602,8 +603,9 @@ public class TerminationConfig extends AbstractConfig<TerminationConfig> {
         long unimprovedTimeMillisSpentLimit = 0L;
         if (unimprovedMillisecondsSpentLimit != null) {
             if (unimprovedMillisecondsSpentLimit < 0L) {
-                throw new IllegalArgumentException("The termination unimprovedMillisecondsSpentLimit (" + unimprovedMillisecondsSpentLimit
-                        + ") cannot be negative.");
+                throw new IllegalArgumentException(
+                        "The termination unimprovedMillisecondsSpentLimit (" + unimprovedMillisecondsSpentLimit
+                                + ") cannot be negative.");
             }
             unimprovedTimeMillisSpentLimit += unimprovedMillisecondsSpentLimit;
         }

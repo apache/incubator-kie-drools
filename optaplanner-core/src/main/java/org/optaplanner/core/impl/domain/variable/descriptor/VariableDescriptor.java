@@ -90,6 +90,7 @@ public abstract class VariableDescriptor<Solution_> implements Serializable {
 
     /**
      * Inverse of {@link ShadowVariableDescriptor#getSourceVariableDescriptorList()}.
+     * 
      * @return never null, only direct shadow variables that are affected by this variable
      */
     public List<ShadowVariableDescriptor<Solution_>> getSinkVariableDescriptorList() {

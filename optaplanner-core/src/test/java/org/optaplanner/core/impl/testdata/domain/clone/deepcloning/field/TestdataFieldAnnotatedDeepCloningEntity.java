@@ -42,19 +42,20 @@ public class TestdataFieldAnnotatedDeepCloningEntity extends TestdataObject {
 
     public static GenuineVariableDescriptor buildVariableDescriptorForValue() {
         SolutionDescriptor solutionDescriptor = TestdataFieldAnnotatedDeepCloningSolution.buildSolutionDescriptor();
-        EntityDescriptor entityDescriptor = solutionDescriptor.findEntityDescriptorOrFail(TestdataFieldAnnotatedDeepCloningEntity.class);
+        EntityDescriptor entityDescriptor = solutionDescriptor
+                .findEntityDescriptorOrFail(TestdataFieldAnnotatedDeepCloningEntity.class);
         return entityDescriptor.getGenuineVariableDescriptor("value");
     }
 
     @PlanningVariable(valueRangeProviderRefs = "valueRange")
     private TestdataValue value;
     @DeepPlanningClone
-    @CustomShadowVariable(sources = {@PlanningVariableReference(variableName = "value")},
-            variableListenerClass = DummyVariableListener.class)
+    @CustomShadowVariable(sources = {
+            @PlanningVariableReference(variableName = "value") }, variableListenerClass = DummyVariableListener.class)
     private List<String> shadowVariableList;
     @DeepPlanningClone
-    @CustomShadowVariable(sources = {@PlanningVariableReference(variableName = "value")},
-            variableListenerClass = DummyVariableListener.class)
+    @CustomShadowVariable(sources = {
+            @PlanningVariableReference(variableName = "value") }, variableListenerClass = DummyVariableListener.class)
     private Map<String, String> shadowVariableMap;
 
     public TestdataFieldAnnotatedDeepCloningEntity() {
@@ -97,36 +98,41 @@ public class TestdataFieldAnnotatedDeepCloningEntity extends TestdataObject {
     // Complex methods
     // ************************************************************************
 
-
     public static class DummyVariableListener implements VariableListener<TestdataFieldAnnotatedDeepCloningEntity> {
 
         @Override
-        public void beforeEntityAdded(ScoreDirector scoreDirector, TestdataFieldAnnotatedDeepCloningEntity testdataDeepCloningEntity) {
+        public void beforeEntityAdded(ScoreDirector scoreDirector,
+                TestdataFieldAnnotatedDeepCloningEntity testdataDeepCloningEntity) {
             // Do nothing
         }
 
         @Override
-        public void afterEntityAdded(ScoreDirector scoreDirector, TestdataFieldAnnotatedDeepCloningEntity testdataDeepCloningEntity) {
+        public void afterEntityAdded(ScoreDirector scoreDirector,
+                TestdataFieldAnnotatedDeepCloningEntity testdataDeepCloningEntity) {
             // Do nothing
         }
 
         @Override
-        public void beforeVariableChanged(ScoreDirector scoreDirector, TestdataFieldAnnotatedDeepCloningEntity testdataDeepCloningEntity) {
+        public void beforeVariableChanged(ScoreDirector scoreDirector,
+                TestdataFieldAnnotatedDeepCloningEntity testdataDeepCloningEntity) {
             // Do nothing
         }
 
         @Override
-        public void afterVariableChanged(ScoreDirector scoreDirector, TestdataFieldAnnotatedDeepCloningEntity testdataDeepCloningEntity) {
+        public void afterVariableChanged(ScoreDirector scoreDirector,
+                TestdataFieldAnnotatedDeepCloningEntity testdataDeepCloningEntity) {
             // Do nothing
         }
 
         @Override
-        public void beforeEntityRemoved(ScoreDirector scoreDirector, TestdataFieldAnnotatedDeepCloningEntity testdataDeepCloningEntity) {
+        public void beforeEntityRemoved(ScoreDirector scoreDirector,
+                TestdataFieldAnnotatedDeepCloningEntity testdataDeepCloningEntity) {
             // Do nothing
         }
 
         @Override
-        public void afterEntityRemoved(ScoreDirector scoreDirector, TestdataFieldAnnotatedDeepCloningEntity testdataDeepCloningEntity) {
+        public void afterEntityRemoved(ScoreDirector scoreDirector,
+                TestdataFieldAnnotatedDeepCloningEntity testdataDeepCloningEntity) {
             // Do nothing
         }
 

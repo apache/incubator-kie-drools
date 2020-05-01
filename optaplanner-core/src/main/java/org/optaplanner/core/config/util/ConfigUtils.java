@@ -16,6 +16,8 @@
 
 package org.optaplanner.core.config.util;
 
+import static org.optaplanner.core.impl.domain.common.accessor.MemberAccessorFactory.MemberAccessorType.FIELD_OR_READ_METHOD;
+
 import java.lang.annotation.Annotation;
 import java.lang.reflect.AnnotatedElement;
 import java.lang.reflect.Field;
@@ -36,6 +38,7 @@ import java.util.Map;
 import java.util.Objects;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
+
 import javax.script.ScriptEngine;
 import javax.script.ScriptEngineManager;
 import javax.script.ScriptException;
@@ -46,8 +49,6 @@ import org.optaplanner.core.impl.domain.common.AlphabeticMemberComparator;
 import org.optaplanner.core.impl.domain.common.ReflectionHelper;
 import org.optaplanner.core.impl.domain.common.accessor.MemberAccessor;
 import org.optaplanner.core.impl.domain.common.accessor.MemberAccessorFactory;
-
-import static org.optaplanner.core.impl.domain.common.accessor.MemberAccessorFactory.MemberAccessorType.FIELD_OR_READ_METHOD;
 
 public class ConfigUtils {
 
@@ -61,7 +62,8 @@ public class ConfigUtils {
                     + clazz.getName() + ") does not have a public no-arg constructor"
                     // Inner classes include local, anonymous and non-static member classes
                     + ((clazz.isLocalClass() || clazz.isAnonymousClass() || clazz.isMemberClass())
-                    && !Modifier.isStatic(clazz.getModifiers()) ? " because it is an inner class." : "."), e);
+                            && !Modifier.isStatic(clazz.getModifiers()) ? " because it is an inner class." : "."),
+                    e);
         }
     }
 
@@ -141,7 +143,8 @@ public class ConfigUtils {
         return original;
     }
 
-    public static <C extends AbstractConfig<C>> List<C> inheritMergeableListConfig(List<C> originalList, List<C> inheritedList) {
+    public static <C extends AbstractConfig<C>> List<C> inheritMergeableListConfig(List<C> originalList,
+            List<C> inheritedList) {
         if (inheritedList != null) {
             List<C> mergedList = new ArrayList<>(inheritedList.size()
                     + (originalList == null ? 0 : originalList.size()));
@@ -206,9 +209,10 @@ public class ConfigUtils {
      * <p>
      * Null-handling:
      * <ul>
-     *     <li>if <strong>both</strong> properties <strong>are null</strong>, returns null</li>
-     *     <li>if <strong>only one</strong> of the properties <strong>is not null</strong>, returns that property</li>
-     *     <li>if <strong>both</strong> properties <strong>are not null</strong>, returns {@link #mergeProperty(Object, Object)}</li>
+     * <li>if <strong>both</strong> properties <strong>are null</strong>, returns null</li>
+     * <li>if <strong>only one</strong> of the properties <strong>is not null</strong>, returns that property</li>
+     * <li>if <strong>both</strong> properties <strong>are not null</strong>, returns
+     * {@link #mergeProperty(Object, Object)}</li>
      * </ul>
      *
      * @see #mergeProperty(Object, Object)
@@ -319,7 +323,7 @@ public class ConfigUtils {
                 // Example: "Score getScore()" that duplicates "HardSoftScore getScore()"
                 .filter(method -> !method.isBridge())
                 .sorted(alphabeticMemberComparator);
-        return Stream.<Member>concat(fieldStream, methodStream)
+        return Stream.<Member> concat(fieldStream, methodStream)
                 .collect(Collectors.toList());
     }
 
@@ -414,7 +418,8 @@ public class ConfigUtils {
                     + PlanningId.class.getSimpleName() + " annotation.");
         }
         Member member = memberList.get(0);
-        MemberAccessor memberAccessor = MemberAccessorFactory.buildMemberAccessor(member, FIELD_OR_READ_METHOD, PlanningId.class);
+        MemberAccessor memberAccessor = MemberAccessorFactory.buildMemberAccessor(member, FIELD_OR_READ_METHOD,
+                PlanningId.class);
         if (!memberAccessor.getType().isPrimitive() && !Comparable.class.isAssignableFrom(memberAccessor.getType())) {
             throw new IllegalArgumentException("The class (" + clazz
                     + ") has a member (" + member + ") with a " + PlanningId.class.getSimpleName()

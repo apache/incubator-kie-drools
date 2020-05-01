@@ -27,6 +27,7 @@ import org.optaplanner.core.impl.heuristic.selector.move.MoveSelector;
 
 /**
  * Abstract superclass for every composite {@link MoveSelector}.
+ * 
  * @see MoveSelector
  */
 public abstract class CompositeMoveSelector extends AbstractMoveSelector {
@@ -43,20 +44,19 @@ public abstract class CompositeMoveSelector extends AbstractMoveSelector {
         if (!randomSelection) {
             // Only the last childMoveSelector can be neverEnding
             if (!childMoveSelectorList.isEmpty()) {
-                for (MoveSelector childMoveSelector
-                        : childMoveSelectorList.subList(0, childMoveSelectorList.size() - 1)) {
+                for (MoveSelector childMoveSelector : childMoveSelectorList.subList(0, childMoveSelectorList.size() - 1)) {
                     if (childMoveSelector.isNeverEnding()) {
                         throw new IllegalStateException("The selector (" + this
                                 + ")'s non-last childMoveSelector (" + childMoveSelector
                                 + ") has neverEnding (" + childMoveSelector.isNeverEnding()
                                 + ") with randomSelection (" + randomSelection + ")."
                                 + (childMoveSelector.isCountable() ? ""
-                                : "\nThe selector is not countable, check the "
-                                + ValueRange.class.getSimpleName() + "s involved.\n"
-                                + "Verify that a " + ValueRangeProvider.class.getSimpleName()
-                                + " does not return " + ValueRange.class.getSimpleName()
-                                + " when it can return " + CountableValueRange.class.getSimpleName()
-                                + " or " + Collection.class.getSimpleName() + "."));
+                                        : "\nThe selector is not countable, check the "
+                                                + ValueRange.class.getSimpleName() + "s involved.\n"
+                                                + "Verify that a " + ValueRangeProvider.class.getSimpleName()
+                                                + " does not return " + ValueRange.class.getSimpleName()
+                                                + " when it can return " + CountableValueRange.class.getSimpleName()
+                                                + " or " + Collection.class.getSimpleName() + "."));
                     }
                 }
             }

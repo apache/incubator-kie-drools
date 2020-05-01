@@ -35,7 +35,6 @@ public class FlightCrewSchedulingPerformanceTest extends SolverPerformanceTest<F
     protected Stream<TestData> testData() {
         return Stream.of(
                 testData(UNSOLVED_DATA_FILE, "0hard/-129000000soft", EnvironmentMode.REPRODUCIBLE),
-                testData(UNSOLVED_DATA_FILE, "0hard/-129000000soft", EnvironmentMode.FAST_ASSERT)
-        );
+                testData(UNSOLVED_DATA_FILE, "0hard/-129000000soft", EnvironmentMode.FAST_ASSERT));
     }
 }

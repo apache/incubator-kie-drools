@@ -148,7 +148,7 @@ public final class BavetJoinTriNode<A, B, C> extends BavetAbstractTriNode<A, B, 
 
     @Override
     public String toString() {
-        return "Join() with " + childNodeList.size()  + " children";
+        return "Join() with " + childNodeList.size() + " children";
     }
 
     // ************************************************************************

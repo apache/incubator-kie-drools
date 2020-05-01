@@ -15,11 +15,11 @@
  */
 package org.optaplanner.core.api.score.holder;
 
-import org.junit.jupiter.api.Test;
-import org.optaplanner.core.api.score.buildin.simple.SimpleScore;
-
 import static org.assertj.core.api.Assertions.assertThatIllegalStateException;
 import static org.junit.Assert.assertNotNull;
+
+import org.junit.jupiter.api.Test;
+import org.optaplanner.core.api.score.buildin.simple.SimpleScore;
 
 public class ScoreHolderTest {
 

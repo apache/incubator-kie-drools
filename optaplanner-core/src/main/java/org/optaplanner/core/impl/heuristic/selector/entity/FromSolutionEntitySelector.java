@@ -59,7 +59,8 @@ public class FromSolutionEntitySelector extends AbstractEntitySelector {
     public SelectionCacheType getCacheType() {
         SelectionCacheType intrinsicCacheType = SelectionCacheType.STEP;
         return (intrinsicCacheType.compareTo(minimumCacheType) > 0)
-                ? intrinsicCacheType : minimumCacheType;
+                ? intrinsicCacheType
+                : minimumCacheType;
     }
 
     // ************************************************************************

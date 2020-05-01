@@ -59,7 +59,8 @@ public class ChainedSwapMove<Solution_> extends SwapMove<Solution_> {
 
     @Override
     public ChainedSwapMove<Solution_> createUndoMove(ScoreDirector<Solution_> scoreDirector) {
-        return new ChainedSwapMove<>(variableDescriptorList, rightEntity, leftEntity, oldLeftTrailingEntityList, oldRightTrailingEntityList);
+        return new ChainedSwapMove<>(variableDescriptorList, rightEntity, leftEntity, oldLeftTrailingEntityList,
+                oldRightTrailingEntityList);
     }
 
     @Override

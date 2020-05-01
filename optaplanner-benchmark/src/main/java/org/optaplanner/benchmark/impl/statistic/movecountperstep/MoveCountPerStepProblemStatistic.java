@@ -24,7 +24,6 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Locale;
 
-import com.thoughtworks.xstream.annotations.XStreamAlias;
 import org.jfree.chart.JFreeChart;
 import org.jfree.chart.axis.NumberAxis;
 import org.jfree.chart.plot.DefaultDrawingSupplier;
@@ -43,6 +42,8 @@ import org.optaplanner.benchmark.impl.result.SubSingleBenchmarkResult;
 import org.optaplanner.benchmark.impl.statistic.ProblemStatistic;
 import org.optaplanner.benchmark.impl.statistic.SubSingleStatistic;
 import org.optaplanner.benchmark.impl.statistic.common.MillisecondsSpentNumberFormat;
+
+import com.thoughtworks.xstream.annotations.XStreamAlias;
 
 @XStreamAlias("moveCountPerStepProblemStatistic")
 public class MoveCountPerStepProblemStatistic extends ProblemStatistic {
@@ -89,8 +90,8 @@ public class MoveCountPerStepProblemStatistic extends ProblemStatistic {
                     singleBenchmarkResult.getSolverBenchmarkResult().getNameWithFavoriteSuffix() + " selected");
             XYItemRenderer renderer = new XYLineAndShapeRenderer(true, false);
             if (singleBenchmarkResult.hasAllSuccess()) {
-                MoveCountPerStepSubSingleStatistic subSingleStatistic = (MoveCountPerStepSubSingleStatistic)
-                        singleBenchmarkResult.getSubSingleStatistic(problemStatisticType);
+                MoveCountPerStepSubSingleStatistic subSingleStatistic = (MoveCountPerStepSubSingleStatistic) singleBenchmarkResult
+                        .getSubSingleStatistic(problemStatisticType);
                 List<MoveCountPerStepStatisticPoint> list = subSingleStatistic.getPointList();
                 for (MoveCountPerStepStatisticPoint point : list) {
                     long timeMillisSpent = point.getTimeMillisSpent();
@@ -110,11 +111,11 @@ public class MoveCountPerStepProblemStatistic extends ProblemStatistic {
                 renderer.setSeriesStroke(0, new BasicStroke(2.0f));
                 // Dashed line for selected move count
                 renderer.setSeriesStroke(1, new BasicStroke(
-                        2.0f, BasicStroke.CAP_ROUND, BasicStroke.JOIN_ROUND, 1.0f, new float[] {2.0f, 6.0f}, 0.0f));
+                        2.0f, BasicStroke.CAP_ROUND, BasicStroke.JOIN_ROUND, 1.0f, new float[] { 2.0f, 6.0f }, 0.0f));
             } else {
                 // Dashed line for selected move count
                 renderer.setSeriesStroke(1, new BasicStroke(
-                        1.0f, BasicStroke.CAP_ROUND, BasicStroke.JOIN_ROUND, 1.0f, new float[] {2.0f, 6.0f}, 0.0f));
+                        1.0f, BasicStroke.CAP_ROUND, BasicStroke.JOIN_ROUND, 1.0f, new float[] { 2.0f, 6.0f }, 0.0f));
             }
             // Render both lines in the same color
             Paint linePaint = drawingSupplier.getNextPaint();

@@ -34,6 +34,7 @@ public class BigDecimalValueRange extends AbstractCountableValueRange<BigDecimal
 
     /**
      * All parameters must have the same {@link BigDecimal#scale()}.
+     * 
      * @param from never null, inclusive minimum
      * @param to never null, exclusive maximum, {@code >= from}
      */
@@ -43,6 +44,7 @@ public class BigDecimalValueRange extends AbstractCountableValueRange<BigDecimal
 
     /**
      * All parameters must have the same {@link BigDecimal#scale()}.
+     * 
      * @param from never null, inclusive minimum
      * @param to never null, exclusive maximum, {@code >= from}
      * @param incrementUnit never null, {@code > 0}

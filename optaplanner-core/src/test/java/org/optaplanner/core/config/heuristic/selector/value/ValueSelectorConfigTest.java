@@ -16,6 +16,10 @@
 
 package org.optaplanner.core.config.heuristic.selector.value;
 
+import static org.assertj.core.api.Assertions.assertThatIllegalArgumentException;
+import static org.junit.Assert.assertEquals;
+import static org.optaplanner.core.impl.testdata.util.PlannerAssert.*;
+
 import org.junit.jupiter.api.Test;
 import org.optaplanner.core.config.heuristic.policy.HeuristicConfigPolicy;
 import org.optaplanner.core.config.heuristic.selector.AbstractSelectorConfigTest;
@@ -26,10 +30,6 @@ import org.optaplanner.core.impl.heuristic.selector.value.FromSolutionPropertyVa
 import org.optaplanner.core.impl.heuristic.selector.value.ValueSelector;
 import org.optaplanner.core.impl.heuristic.selector.value.decorator.ShufflingValueSelector;
 import org.optaplanner.core.impl.testdata.domain.TestdataEntity;
-
-import static org.assertj.core.api.Assertions.assertThatIllegalArgumentException;
-import static org.junit.Assert.assertEquals;
-import static org.optaplanner.core.impl.testdata.util.PlannerAssert.*;
 
 public class ValueSelectorConfigTest extends AbstractSelectorConfigTest {
 

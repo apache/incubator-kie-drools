@@ -16,12 +16,12 @@
 
 package org.optaplanner.core.impl.solver.termination;
 
+import static org.junit.Assert.*;
+import static org.mockito.Mockito.*;
+
 import org.junit.jupiter.api.Test;
 import org.optaplanner.core.impl.phase.scope.AbstractPhaseScope;
 import org.optaplanner.core.impl.phase.scope.AbstractStepScope;
-
-import static org.junit.Assert.*;
-import static org.mockito.Mockito.*;
 
 public class UnimprovedStepCountTerminationTest {
 

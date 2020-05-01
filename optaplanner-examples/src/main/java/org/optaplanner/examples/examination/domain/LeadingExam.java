@@ -18,9 +18,10 @@ package org.optaplanner.examples.examination.domain;
 
 import java.util.List;
 
-import com.thoughtworks.xstream.annotations.XStreamAlias;
 import org.optaplanner.core.api.domain.entity.PlanningEntity;
 import org.optaplanner.core.api.domain.variable.PlanningVariable;
+
+import com.thoughtworks.xstream.annotations.XStreamAlias;
 
 @PlanningEntity
 @XStreamAlias("LeadingExam")
@@ -40,7 +41,7 @@ public class LeadingExam extends Exam {
     }
 
     @Override
-    @PlanningVariable(valueRangeProviderRefs = {"periodRange"})
+    @PlanningVariable(valueRangeProviderRefs = { "periodRange" })
     public Period getPeriod() {
         return period;
     }

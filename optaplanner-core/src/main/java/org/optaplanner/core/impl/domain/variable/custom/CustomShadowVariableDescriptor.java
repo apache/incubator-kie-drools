@@ -125,7 +125,8 @@ public class CustomShadowVariableDescriptor<Solution_> extends ShadowVariableDes
                 }
             }
             String refVariableName = variableListenerRef.variableName();
-            VariableDescriptor<Solution_> uncastRefVariableDescriptor = refEntityDescriptor.getVariableDescriptor(refVariableName);
+            VariableDescriptor<Solution_> uncastRefVariableDescriptor = refEntityDescriptor
+                    .getVariableDescriptor(refVariableName);
             if (uncastRefVariableDescriptor == null) {
                 throw new IllegalArgumentException("The entityClass (" + entityDescriptor.getEntityClass()
                         + ") has a " + CustomShadowVariable.class.getSimpleName()

@@ -16,10 +16,10 @@
 
 package org.optaplanner.core.config.heuristic.selector.move.generic;
 
+import static org.apache.commons.lang3.ObjectUtils.defaultIfNull;
+
 import java.util.List;
 
-import com.thoughtworks.xstream.annotations.XStreamAlias;
-import com.thoughtworks.xstream.annotations.XStreamImplicit;
 import org.optaplanner.core.config.heuristic.policy.HeuristicConfigPolicy;
 import org.optaplanner.core.config.heuristic.selector.common.SelectionCacheType;
 import org.optaplanner.core.config.heuristic.selector.common.SelectionOrder;
@@ -30,7 +30,8 @@ import org.optaplanner.core.impl.heuristic.selector.entity.pillar.PillarSelector
 import org.optaplanner.core.impl.heuristic.selector.move.MoveSelector;
 import org.optaplanner.core.impl.heuristic.selector.move.generic.PillarSwapMoveSelector;
 
-import static org.apache.commons.lang3.ObjectUtils.defaultIfNull;
+import com.thoughtworks.xstream.annotations.XStreamAlias;
+import com.thoughtworks.xstream.annotations.XStreamImplicit;
 
 @XStreamAlias("pillarSwapMoveSelector")
 public class PillarSwapMoveSelectorConfig extends AbstractPillarMoveSelectorConfig<PillarSwapMoveSelectorConfig> {
@@ -40,9 +41,9 @@ public class PillarSwapMoveSelectorConfig extends AbstractPillarMoveSelectorConf
 
     // TODO Wrap in <variableNameIncludes> https://issues.redhat.com/browse/PLANNER-838
     @XStreamImplicit(itemFieldName = "variableNameInclude")
-//    @XStreamAlias("variableNameIncludes")
-//    @XStreamConverter(value = NamedCollectionConverter.class,
-//            strings = {"variableNameInclude"}, types = {String.class}, useImplicitType = false)
+    //    @XStreamAlias("variableNameIncludes")
+    //    @XStreamConverter(value = NamedCollectionConverter.class,
+    //            strings = {"variableNameInclude"}, types = {String.class}, useImplicitType = false)
     private List<String> variableNameIncludeList = null;
 
     public PillarSelectorConfig getSecondaryPillarSelectorConfig() {
@@ -85,7 +86,8 @@ public class PillarSwapMoveSelectorConfig extends AbstractPillarMoveSelectorConf
     @Override
     public PillarSwapMoveSelectorConfig inherit(PillarSwapMoveSelectorConfig inheritedConfig) {
         super.inherit(inheritedConfig);
-        secondaryPillarSelectorConfig = ConfigUtils.inheritConfig(secondaryPillarSelectorConfig, inheritedConfig.getSecondaryPillarSelectorConfig());
+        secondaryPillarSelectorConfig = ConfigUtils.inheritConfig(secondaryPillarSelectorConfig,
+                inheritedConfig.getSecondaryPillarSelectorConfig());
         variableNameIncludeList = ConfigUtils.inheritMergeableListProperty(
                 variableNameIncludeList, inheritedConfig.getVariableNameIncludeList());
         return this;

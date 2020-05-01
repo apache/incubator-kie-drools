@@ -16,6 +16,8 @@
 
 package org.optaplanner.core.impl.score.stream.drools.quad;
 
+import static org.drools.model.DSL.on;
+
 import java.math.BigDecimal;
 import java.util.Arrays;
 import java.util.List;
@@ -51,8 +53,6 @@ import org.optaplanner.core.impl.score.stream.penta.FilteringPentaJoiner;
 import org.optaplanner.core.impl.score.stream.penta.NonePentaJoiner;
 import org.optaplanner.core.impl.score.stream.tri.NoneTriJoiner;
 
-import static org.drools.model.DSL.on;
-
 public final class DroolsQuadCondition<A, B, C, D, PatternVar> extends
         DroolsCondition<PatternVar, DroolsQuadRuleStructure<A, B, C, D, PatternVar>> {
 
@@ -70,14 +70,11 @@ public final class DroolsQuadCondition<A, B, C, D, PatternVar> extends
 
     public DroolsQuadCondition<A, B, C, D, PatternVar> andFilter(QuadPredicate<A, B, C, D> predicate) {
         boolean shouldMergeFilters = (previousFilter != null);
-        QuadPredicate<A, B, C, D> actualPredicate = shouldMergeFilters ?
-                previousFilter.predicate.and(predicate) :
-                predicate;
+        QuadPredicate<A, B, C, D> actualPredicate = shouldMergeFilters ? previousFilter.predicate.and(predicate) : predicate;
         Predicate5<PatternVar, A, B, C, D> filter = (__, a, b, c, d) -> actualPredicate.test(a, b, c, d);
         // If we're merging consecutive filters, amend the original rule structure, before the first filter was applied.
-        DroolsQuadRuleStructure<A, B, C, D, PatternVar> actualStructure = shouldMergeFilters ?
-                previousFilter.ruleStructure :
-                ruleStructure;
+        DroolsQuadRuleStructure<A, B, C, D, PatternVar> actualStructure = shouldMergeFilters ? previousFilter.ruleStructure
+                : ruleStructure;
         Variable<A> aVariable = actualStructure.getA();
         Variable<B> bVariable = actualStructure.getB();
         Variable<C> cVariable = actualStructure.getC();
@@ -89,8 +86,8 @@ public final class DroolsQuadCondition<A, B, C, D, PatternVar> extends
                 bVariable, cVariable, dVariable, newTargetPattern, actualStructure.getShelvedRuleItems(),
                 actualStructure.getPrerequisites(), actualStructure.getDependents(),
                 actualStructure.getVariableIdSupplier());
-        ImmediatelyPreviousFilter<QuadPredicate<A, B, C, D>> newPreviousFilter =
-                new ImmediatelyPreviousFilter<QuadPredicate<A, B, C, D>>(actualStructure, actualPredicate);
+        ImmediatelyPreviousFilter<QuadPredicate<A, B, C, D>> newPreviousFilter = new ImmediatelyPreviousFilter<QuadPredicate<A, B, C, D>>(
+                actualStructure, actualPredicate);
         // Carry forward the information for filter merging.
         return new DroolsQuadCondition<>(newRuleStructure, newPreviousFilter);
     }
@@ -125,18 +122,14 @@ public final class DroolsQuadCondition<A, B, C, D, PatternVar> extends
                     throw new IllegalStateException("Indexing joiner (" + joiner + ") must not follow a filtering joiner ("
                             + joiners[indexOfFirstFilter] + ").");
                 } else { // Merge this Joiner with the existing Joiners.
-                    finalJoiner = finalJoiner == null ?
-                            joiner :
-                            AbstractPentaJoiner.merge(finalJoiner, joiner);
+                    finalJoiner = finalJoiner == null ? joiner : AbstractPentaJoiner.merge(finalJoiner, joiner);
                 }
             } else {
                 if (!hasAFilter) { // From now on, we only allow filtering joiners.
                     indexOfFirstFilter = i;
                 }
                 // We merge all filters into one, so that we don't pay the penalty for lack of indexing more than once.
-                finalFilter = finalFilter == null ?
-                        joiner.getFilter() :
-                        finalFilter.and(joiner.getFilter());
+                finalFilter = finalFilter == null ? joiner.getFilter() : finalFilter.and(joiner.getFilter());
             }
         }
         return applyJoiners(otherClass, finalJoiner, finalFilter, shouldExist);
@@ -158,9 +151,8 @@ public final class DroolsQuadCondition<A, B, C, D, PatternVar> extends
 
     private <E> DroolsQuadCondition<A, B, C, D, PatternVar> applyFilters(PatternDef<E> existencePattern,
             PentaPredicate<A, B, C, D, E> predicate, boolean shouldExist) {
-        PatternDef<E> possiblyFilteredExistencePattern = predicate == null ?
-                existencePattern :
-                existencePattern.expr("Filter using " + predicate, ruleStructure.getA(), ruleStructure.getB(),
+        PatternDef<E> possiblyFilteredExistencePattern = predicate == null ? existencePattern
+                : existencePattern.expr("Filter using " + predicate, ruleStructure.getA(), ruleStructure.getB(),
                         ruleStructure.getC(), ruleStructure.getD(), (e, a, b, c, d) -> predicate.test(a, b, c, d, e));
         return new DroolsQuadCondition<>(ruleStructure.existsOrNot(possiblyFilteredExistencePattern, shouldExist));
     }
@@ -174,8 +166,7 @@ public final class DroolsQuadCondition<A, B, C, D, PatternVar> extends
 
     public <NewA, __> DroolsUniCondition<NewA, NewA> andCollect(
             QuadConstraintCollector<A, B, C, D, __, NewA> collector) {
-        DroolsQuadAccumulateFunctionBridge<A, B, C, D, __, NewA> bridge =
-                new DroolsQuadAccumulateFunctionBridge<>(collector);
+        DroolsQuadAccumulateFunctionBridge<A, B, C, D, __, NewA> bridge = new DroolsQuadAccumulateFunctionBridge<>(collector);
         return collect(bridge);
     }
 
@@ -201,16 +192,16 @@ public final class DroolsQuadCondition<A, B, C, D, PatternVar> extends
                 }));
     }
 
-    public <NewA, NewB, NewC, __> DroolsTriCondition<NewA, NewB, NewC, TriTuple<NewA, NewB, NewC>>
-    andGroupBiWithCollect(QuadFunction<A, B, C, D, NewA> groupKeyAMapping,
+    public <NewA, NewB, NewC, __> DroolsTriCondition<NewA, NewB, NewC, TriTuple<NewA, NewB, NewC>> andGroupBiWithCollect(
+            QuadFunction<A, B, C, D, NewA> groupKeyAMapping,
             QuadFunction<A, B, C, D, NewB> groupKeyBMapping, QuadConstraintCollector<A, B, C, D, __, NewC> collector) {
         return groupBiWithCollect(() -> new DroolsQuadToTriGroupByInvoker<>(groupKeyAMapping, groupKeyBMapping,
                 collector, getRuleStructure().getA(), getRuleStructure().getB(), getRuleStructure().getC(),
                 getRuleStructure().getD()));
     }
 
-    public <NewA, NewB, NewC, NewD> DroolsQuadCondition<NewA, NewB, NewC, NewD, QuadTuple<NewA, NewB, NewC, NewD>>
-    andGroupBiWithCollectBi(QuadFunction<A, B, C, D, NewA> groupKeyAMapping,
+    public <NewA, NewB, NewC, NewD> DroolsQuadCondition<NewA, NewB, NewC, NewD, QuadTuple<NewA, NewB, NewC, NewD>> andGroupBiWithCollectBi(
+            QuadFunction<A, B, C, D, NewA> groupKeyAMapping,
             QuadFunction<A, B, C, D, NewB> groupKeyBMapping, QuadConstraintCollector<A, B, C, D, ?, NewC> collectorC,
             QuadConstraintCollector<A, B, C, D, ?, NewD> collectorD) {
         return groupBiWithCollectBi(() -> new DroolsQuadGroupByInvoker<>(groupKeyAMapping, groupKeyBMapping,
@@ -250,7 +241,7 @@ public final class DroolsQuadCondition<A, B, C, D, PatternVar> extends
             Global<ScoreHolder> scoreHolderGlobal, Block6<Drools, ScoreHolder, A, B, C, D> consequenceImpl) {
         ConsequenceBuilder._5<ScoreHolder, A, B, C, D> consequence = on(scoreHolderGlobal, ruleStructure.getA(),
                 ruleStructure.getB(), ruleStructure.getC(), ruleStructure.getD())
-                .execute(consequenceImpl);
+                        .execute(consequenceImpl);
         return ruleStructure.finish(consequence);
     }
 

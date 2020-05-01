@@ -43,6 +43,7 @@ import org.optaplanner.core.impl.score.stream.tri.NoneTriJoiner;
 
 /**
  * A {@link ConstraintStream} that matches two facts.
+ * 
  * @param <A> the type of the first fact in the tuple.
  * @param <B> the type of the second fact in the tuple.
  * @see ConstraintStream
@@ -60,6 +61,7 @@ public interface BiConstraintStream<A, B> extends ConstraintStream {
      * Important: This is slower and less scalable than {@link UniConstraintStream#join(UniConstraintStream, BiJoiner)}
      * with a proper {@link BiJoiner} predicate (such as {@link Joiners#equal(Function, Function)},
      * because the latter applies hashing and/or indexing, so it doesn't create every combination just to filter it out.
+     * 
      * @param predicate never null
      * @return never null
      */
@@ -76,6 +78,7 @@ public interface BiConstraintStream<A, B> extends ConstraintStream {
      * than a {@link #join(UniConstraintStream, TriJoiner)},
      * because it doesn't apply hashing and/or indexing on the properties,
      * so it creates and checks every combination of [A, B] and C.
+     * 
      * @param otherStream never null
      * @param <C> the type of the third matched fact
      * @return never null, a stream that matches every combination of [A, B] and C
@@ -92,11 +95,12 @@ public interface BiConstraintStream<A, B> extends ConstraintStream {
      * followed by a {@link TriConstraintStream#filter(TriPredicate) filter},
      * because it applies hashing and/or indexing on the properties,
      * so it doesn't create nor checks every combination of [A, B] and C.
+     * 
      * @param otherStream never null
      * @param joiner never null
      * @param <C> the type of the third matched fact
      * @return never null, a stream that matches every combination of [A, B] and C for which the {@link TriFunction} is
-     * true
+     *         true
      */
     <C> TriConstraintStream<A, B, C> join(UniConstraintStream<C> otherStream, TriJoiner<A, B, C> joiner);
 
@@ -109,6 +113,7 @@ public interface BiConstraintStream<A, B> extends ConstraintStream {
      * so it creates and checks every combination of [A, B] and C.
      * <p>
      * This method is syntactic sugar for {@link #join(UniConstraintStream)}.
+     * 
      * @param otherClass never null
      * @param <C> the type of the third matched fact
      * @return never null, a stream that matches every combination of [A, B] and C
@@ -129,11 +134,12 @@ public interface BiConstraintStream<A, B> extends ConstraintStream {
      * This method is syntactic sugar for {@link #join(UniConstraintStream, TriJoiner)}.
      * <p>
      * This method has overloaded methods with multiple {@link TriJoiner} parameters.
+     * 
      * @param otherClass never null
      * @param joiner never null
      * @param <C> the type of the third matched fact
      * @return never null, a stream that matches every combination of [A, B] and C for which the {@link TriJoiner} is
-     * true
+     *         true
      */
     default <C> TriConstraintStream<A, B, C> join(Class<C> otherClass, TriJoiner<A, B, C> joiner) {
         return join(getConstraintFactory().from(otherClass), joiner);
@@ -141,35 +147,38 @@ public interface BiConstraintStream<A, B> extends ConstraintStream {
 
     /**
      * As defined by {@link #join(Class, TriJoiner)}.
+     * 
      * @param otherClass never null
      * @param joiner1 never null
      * @param joiner2 never null
      * @param <C> the type of the third matched fact
      * @return never null, a stream that matches every combination of [A, B] and C for which all the
-     * {@link TriJoiner joiners} are true
+     *         {@link TriJoiner joiners} are true
      */
     default <C> TriConstraintStream<A, B, C> join(Class<C> otherClass, TriJoiner<A, B, C> joiner1,
             TriJoiner<A, B, C> joiner2) {
-        return join(otherClass, new TriJoiner[] {joiner1, joiner2});
+        return join(otherClass, new TriJoiner[] { joiner1, joiner2 });
     }
 
     /**
      * As defined by {@link #join(Class, TriJoiner)}.
+     * 
      * @param otherClass never null
      * @param joiner1 never null
      * @param joiner2 never null
      * @param joiner3 never null
      * @param <C> the type of the third matched fact
      * @return never null, a stream that matches every combination of [A, B] and C for which all the
-     * {@link TriJoiner joiners} are true
+     *         {@link TriJoiner joiners} are true
      */
     default <C> TriConstraintStream<A, B, C> join(Class<C> otherClass, TriJoiner<A, B, C> joiner1,
             TriJoiner<A, B, C> joiner2, TriJoiner<A, B, C> joiner3) {
-        return join(otherClass, new TriJoiner[] {joiner1, joiner2, joiner3});
+        return join(otherClass, new TriJoiner[] { joiner1, joiner2, joiner3 });
     }
 
     /**
      * As defined by {@link #join(Class, TriJoiner)}.
+     * 
      * @param otherClass never null
      * @param joiner1 never null
      * @param joiner2 never null
@@ -177,11 +186,11 @@ public interface BiConstraintStream<A, B> extends ConstraintStream {
      * @param joiner4 never null
      * @param <C> the type of the third matched fact
      * @return never null, a stream that matches every combination of [A, B] and C for which all the
-     * {@link TriJoiner joiners} are true
+     *         {@link TriJoiner joiners} are true
      */
     default <C> TriConstraintStream<A, B, C> join(Class<C> otherClass, TriJoiner<A, B, C> joiner1,
             TriJoiner<A, B, C> joiner2, TriJoiner<A, B, C> joiner3, TriJoiner<A, B, C> joiner4) {
-        return join(otherClass, new TriJoiner[] {joiner1, joiner2, joiner3, joiner4});
+        return join(otherClass, new TriJoiner[] { joiner1, joiner2, joiner3, joiner4 });
     }
 
     /**
@@ -190,11 +199,12 @@ public interface BiConstraintStream<A, B> extends ConstraintStream {
      * This method causes <i>Unchecked generics array creation for varargs parameter</i> warnings,
      * but we can't fix it with a {@link SafeVarargs} annotation because it's an interface method.
      * Therefore, there are overloaded methods with up to 4 {@link BiJoiner} parameters.
+     * 
      * @param otherClass never null
      * @param joiners never null
      * @param <C> the type of the third matched fact
      * @return never null, a stream that matches every combination of [A, B] and C for which all the
-     * {@link TriJoiner joiners} are true
+     *         {@link TriJoiner joiners} are true
      */
     default <C> TriConstraintStream<A, B, C> join(Class<C> otherClass, TriJoiner<A, B, C>... joiners) {
         BiConstraintStreamHelper<A, B, C> helper = new BiConstraintStreamHelper<>(this);
@@ -210,11 +220,12 @@ public interface BiConstraintStream<A, B> extends ConstraintStream {
      * is true (for the properties it extracts from the facts).
      * <p>
      * This method has overloaded methods with multiple {@link TriJoiner} parameters.
+     * 
      * @param otherClass never null
      * @param joiner never null
      * @param <C> the type of the third matched fact
      * @return never null, a stream that matches every pair of A and B where C exists for which the {@link TriJoiner}
-     * is true
+     *         is true
      */
     default <C> BiConstraintStream<A, B> ifExists(Class<C> otherClass, TriJoiner<A, B, C> joiner) {
         return ifExists(otherClass, new TriJoiner[] { joiner });
@@ -223,37 +234,40 @@ public interface BiConstraintStream<A, B> extends ConstraintStream {
     /**
      * As defined by {@link #ifExists(Class, TriJoiner)}. For performance reasons, indexing joiners must be placed
      * before filtering joiners.
+     * 
      * @param otherClass never null
      * @param joiner1 never null
      * @param joiner2 never null
      * @param <C> the type of the third matched fact
      * @return never null, a stream that matches every pair of A and B where C exists for which the {@link TriJoiner}s
-     * are true
+     *         are true
      */
     default <C> BiConstraintStream<A, B> ifExists(Class<C> otherClass, TriJoiner<A, B, C> joiner1,
             TriJoiner<A, B, C> joiner2) {
-        return ifExists(otherClass, new TriJoiner[] {joiner1, joiner2});
+        return ifExists(otherClass, new TriJoiner[] { joiner1, joiner2 });
     }
 
     /**
      * As defined by {@link #ifExists(Class, TriJoiner)}. For performance reasons, indexing joiners must be placed
      * before filtering joiners.
+     * 
      * @param otherClass never null
      * @param joiner1 never null
      * @param joiner2 never null
      * @param joiner3 never null
      * @param <C> the type of the third matched fact
      * @return never null, a stream that matches every pair of A and B where C exists for which the {@link TriJoiner}s
-     * are true
+     *         are true
      */
     default <C> BiConstraintStream<A, B> ifExists(Class<C> otherClass, TriJoiner<A, B, C> joiner1,
             TriJoiner<A, B, C> joiner2, TriJoiner<A, B, C> joiner3) {
-        return ifExists(otherClass, new TriJoiner[] {joiner1, joiner2, joiner3});
+        return ifExists(otherClass, new TriJoiner[] { joiner1, joiner2, joiner3 });
     }
 
     /**
      * As defined by {@link #ifExists(Class, TriJoiner)}. For performance reasons, indexing joiners must be placed
      * before filtering joiners.
+     * 
      * @param otherClass never null
      * @param joiner1 never null
      * @param joiner2 never null
@@ -261,11 +275,11 @@ public interface BiConstraintStream<A, B> extends ConstraintStream {
      * @param joiner4 never null
      * @param <C> the type of the third matched fact
      * @return never null, a stream that matches every pair of A and B where C exists for which the {@link TriJoiner}s
-     * are true
+     *         are true
      */
     default <C> BiConstraintStream<A, B> ifExists(Class<C> otherClass, TriJoiner<A, B, C> joiner1,
             TriJoiner<A, B, C> joiner2, TriJoiner<A, B, C> joiner3, TriJoiner<A, B, C> joiner4) {
-        return ifExists(otherClass, new TriJoiner[] {joiner1, joiner2, joiner3, joiner4});
+        return ifExists(otherClass, new TriJoiner[] { joiner1, joiner2, joiner3, joiner4 });
     }
 
     /**
@@ -275,11 +289,12 @@ public interface BiConstraintStream<A, B> extends ConstraintStream {
      * This method causes <i>Unchecked generics array creation for varargs parameter</i> warnings,
      * but we can't fix it with a {@link SafeVarargs} annotation because it's an interface method.
      * Therefore, there are overloaded methods with up to 4 {@link TriJoiner} parameters.
+     * 
      * @param otherClass never null
      * @param joiners never null
      * @param <C> the type of the third matched fact
      * @return never null, a stream that matches every pair of A and B where C exists for which the {@link TriJoiner}s
-     * are true
+     *         are true
      */
     <C> BiConstraintStream<A, B> ifExists(Class<C> otherClass, TriJoiner<A, B, C>... joiners);
 
@@ -288,11 +303,12 @@ public interface BiConstraintStream<A, B> extends ConstraintStream {
      * {@link TriJoiner} is true (for the properties it extracts from the facts).
      * <p>
      * This method has overloaded methods with multiple {@link TriJoiner} parameters.
+     * 
      * @param otherClass never null
      * @param joiner never null
      * @param <C> the type of the third matched fact
      * @return never null, a stream that matches every pair of A and B where C does not exist for which the
-     * {@link TriJoiner} is true
+     *         {@link TriJoiner} is true
      */
     default <C> BiConstraintStream<A, B> ifNotExists(Class<C> otherClass, TriJoiner<A, B, C> joiner) {
         return ifNotExists(otherClass, new TriJoiner[] { joiner });
@@ -301,37 +317,40 @@ public interface BiConstraintStream<A, B> extends ConstraintStream {
     /**
      * As defined by {@link #ifNotExists(Class, TriJoiner)}. For performance reasons, indexing joiners must be placed
      * before filtering joiners.
+     * 
      * @param otherClass never null
      * @param joiner1 never null
      * @param joiner2 never null
      * @param <C> the type of the third matched fact
      * @return never null, a stream that matches every pair of A and B where C does not exist for which the
-     * {@link TriJoiner}s are true
+     *         {@link TriJoiner}s are true
      */
     default <C> BiConstraintStream<A, B> ifNotExists(Class<C> otherClass, TriJoiner<A, B, C> joiner1,
             TriJoiner<A, B, C> joiner2) {
-        return ifNotExists(otherClass, new TriJoiner[] {joiner1, joiner2});
+        return ifNotExists(otherClass, new TriJoiner[] { joiner1, joiner2 });
     }
 
     /**
      * As defined by {@link #ifNotExists(Class, TriJoiner)}. For performance reasons, indexing joiners must be placed
      * before filtering joiners.
+     * 
      * @param otherClass never null
      * @param joiner1 never null
      * @param joiner2 never null
      * @param joiner3 never null
      * @param <C> the type of the third matched fact
      * @return never null, a stream that matches every pair of A and B where C does not exist for which the
-     * {@link TriJoiner}s are true
+     *         {@link TriJoiner}s are true
      */
     default <C> BiConstraintStream<A, B> ifNotExists(Class<C> otherClass, TriJoiner<A, B, C> joiner1,
             TriJoiner<A, B, C> joiner2, TriJoiner<A, B, C> joiner3) {
-        return ifNotExists(otherClass, new TriJoiner[] {joiner1, joiner2, joiner3});
+        return ifNotExists(otherClass, new TriJoiner[] { joiner1, joiner2, joiner3 });
     }
 
     /**
      * As defined by {@link #ifNotExists(Class, TriJoiner)}. For performance reasons, indexing joiners must be placed
      * before filtering joiners.
+     * 
      * @param otherClass never null
      * @param joiner1 never null
      * @param joiner2 never null
@@ -339,11 +358,11 @@ public interface BiConstraintStream<A, B> extends ConstraintStream {
      * @param joiner4 never null
      * @param <C> the type of the third matched fact
      * @return never null, a stream that matches every pair of A and B where C does not exist for which the
-     * {@link TriJoiner}s are true
+     *         {@link TriJoiner}s are true
      */
     default <C> BiConstraintStream<A, B> ifNotExists(Class<C> otherClass, TriJoiner<A, B, C> joiner1,
             TriJoiner<A, B, C> joiner2, TriJoiner<A, B, C> joiner3, TriJoiner<A, B, C> joiner4) {
-        return ifNotExists(otherClass, new TriJoiner[] {joiner1, joiner2, joiner3, joiner4});
+        return ifNotExists(otherClass, new TriJoiner[] { joiner1, joiner2, joiner3, joiner4 });
     }
 
     /**
@@ -353,11 +372,12 @@ public interface BiConstraintStream<A, B> extends ConstraintStream {
      * This method causes <i>Unchecked generics array creation for varargs parameter</i> warnings,
      * but we can't fix it with a {@link SafeVarargs} annotation because it's an interface method.
      * Therefore, there are overloaded methods with up to 4 {@link TriJoiner} parameters.
+     * 
      * @param otherClass never null
      * @param joiners never null
      * @param <C> the type of the third matched fact
      * @return never null, a stream that matches every pair of A and B where C does not exist for which the
-     * {@link TriJoiner}s are true
+     *         {@link TriJoiner}s are true
      */
     <C> BiConstraintStream<A, B> ifNotExists(Class<C> otherClass, TriJoiner<A, B, C>... joiners);
 
@@ -368,8 +388,9 @@ public interface BiConstraintStream<A, B> extends ConstraintStream {
     /**
      * Runs all tuples of the stream through a given @{@link BiConstraintCollector} and converts them into a new
      * {@link UniConstraintStream} which only has a single tuple, the result of applying {@link BiConstraintCollector}.
+     * 
      * @param collector never null, the collector to perform the grouping operation with
-     * See {@link ConstraintCollectors} for common operations, such as {@code count()}, {@code sum()} and others.
+     *        See {@link ConstraintCollectors} for common operations, such as {@code count()}, {@code sum()} and others.
      * @param <ResultContainer_> the mutable accumulation type (often hidden as an implementation detail)
      * @param <Result_> the type of a fact in the destination {@link UniConstraintStream}'s tuple
      * @return never null
@@ -381,6 +402,7 @@ public interface BiConstraintStream<A, B> extends ConstraintStream {
      * Convert the {@link BiConstraintStream} to a {@link UniConstraintStream}, containing the set of tuples resulting
      * from applying the group key mapping function on all tuples of the original stream.
      * Neither tuple of the new stream {@link Objects#equals(Object, Object)} any other.
+     * 
      * @param groupKeyMapping never null, mapping function to convert each element in the stream to a different element
      * @param <GroupKey_> the type of a fact in the destination {@link UniConstraintStream}'s tuple
      * @return never null
@@ -393,9 +415,10 @@ public interface BiConstraintStream<A, B> extends ConstraintStream {
      * The first fact is the return value of the first group key mapping function, applied on the incoming tuple.
      * The second fact is the return value of a given {@link BiConstraintCollector} applied on all incoming tuples with
      * the same first fact.
+     * 
      * @param groupKeyMapping never null, function to convert the fact in the original tuple to a different fact
      * @param collector never null, the collector to perform the grouping operation with
-     * See {@link ConstraintCollectors} for common operations, such as {@code count()}, {@code sum()} and others.
+     *        See {@link ConstraintCollectors} for common operations, such as {@code count()}, {@code sum()} and others.
      * @param <GroupKey_> the type of the first fact in the destination {@link BiConstraintStream}'s tuple
      * @param <ResultContainer_> the mutable accumulation type (often hidden as an implementation detail)
      * @param <Result_> the type of the second fact in the destination {@link BiConstraintStream}'s tuple
@@ -411,6 +434,7 @@ public interface BiConstraintStream<A, B> extends ConstraintStream {
      * The first fact is the return value of the first group key mapping function, applied on the incoming tuple.
      * The second fact is the return value of the second group key mapping function, applied on all incoming tuples with
      * the same first fact.
+     * 
      * @param groupKeyAMapping never null, function to convert the facts in the original tuple to a new fact
      * @param groupKeyBMapping never null, function to convert the facts in the original tuple to another new fact
      * @param <GroupKeyA_> the type of the first fact in the destination {@link BiConstraintStream}'s tuple
@@ -425,10 +449,11 @@ public interface BiConstraintStream<A, B> extends ConstraintStream {
      * That is, the first and second facts in the tuple follow the {@link #groupBy(BiFunction, BiFunction)} semantics,
      * and the third fact is the result of applying {@link BiConstraintCollector#finisher()} on all the tuples of the
      * original {@link UniConstraintStream} that belong to the group.
+     * 
      * @param groupKeyAMapping never null, function to convert the original tuple into a first fact
      * @param groupKeyBMapping never null, function to convert the original tuple into a second fact
      * @param collector never null, the collector to perform the grouping operation with
-     * See {@link ConstraintCollectors} for common operations, such as {@code count()}, {@code sum()} and others.
+     *        See {@link ConstraintCollectors} for common operations, such as {@code count()}, {@code sum()} and others.
      * @param <GroupKeyA_> the type of the first fact in the destination {@link TriConstraintStream}'s tuple
      * @param <GroupKeyB_> the type of the second fact in the destination {@link TriConstraintStream}'s tuple
      * @param <ResultContainer_> the mutable accumulation type (often hidden as an implementation detail)
@@ -446,12 +471,13 @@ public interface BiConstraintStream<A, B> extends ConstraintStream {
      * of the original {@link BiConstraintStream} that belong to the group.
      * The fourth fact is the result of applying the second {@link BiConstraintCollector#finisher()} on all the tuples
      * of the original {@link BiConstraintStream} that belong to the group
+     * 
      * @param groupKeyAMapping never null, function to convert the original tuple into a first fact
      * @param groupKeyBMapping never null, function to convert the original tuple into a second fact
      * @param collectorC never null, the collector to perform the first grouping operation with
-     * See {@link ConstraintCollectors} for common operations, such as {@code count()}, {@code sum()} and others.
+     *        See {@link ConstraintCollectors} for common operations, such as {@code count()}, {@code sum()} and others.
      * @param collectorD never null, the collector to perform the second grouping operation with
-     * See {@link ConstraintCollectors} for common operations, such as {@code count()}, {@code sum()} and others.
+     *        See {@link ConstraintCollectors} for common operations, such as {@code count()}, {@code sum()} and others.
      * @param <GroupKeyA_> the type of the first fact in the destination {@link QuadConstraintStream}'s tuple
      * @param <GroupKeyB_> the type of the second fact in the destination {@link QuadConstraintStream}'s tuple
      * @param <ResultContainerC_> the mutable accumulation type (often hidden as an implementation detail)
@@ -460,8 +486,7 @@ public interface BiConstraintStream<A, B> extends ConstraintStream {
      * @param <ResultD_> the type of the fourth fact in the destination {@link QuadConstraintStream}'s tuple
      * @return never null
      */
-    <GroupKeyA_, GroupKeyB_, ResultContainerC_, ResultC_, ResultContainerD_, ResultD_>
-    QuadConstraintStream<GroupKeyA_, GroupKeyB_, ResultC_, ResultD_> groupBy(
+    <GroupKeyA_, GroupKeyB_, ResultContainerC_, ResultC_, ResultContainerD_, ResultD_> QuadConstraintStream<GroupKeyA_, GroupKeyB_, ResultC_, ResultD_> groupBy(
             BiFunction<A, B, GroupKeyA_> groupKeyAMapping, BiFunction<A, B, GroupKeyB_> groupKeyBMapping,
             BiConstraintCollector<A, B, ResultContainerC_, ResultC_> collectorC,
             BiConstraintCollector<A, B, ResultContainerD_, ResultD_> collectorD);
@@ -476,6 +501,7 @@ public interface BiConstraintStream<A, B> extends ConstraintStream {
      * <p>
      * For non-int {@link Score} types use {@link #penalizeLong(String, Score, ToLongBiFunction)} or
      * {@link #penalizeBigDecimal(String, Score, BiFunction)} instead.
+     * 
      * @param constraintName never null, shows up in {@link ConstraintMatchTotal} during score justification
      * @param constraintWeight never null
      * @param matchWeigher never null, the result of this function (matchWeight) is multiplied by the constraintWeight
@@ -488,6 +514,7 @@ public interface BiConstraintStream<A, B> extends ConstraintStream {
 
     /**
      * As defined by {@link #penalize(String, Score, ToIntBiFunction)}.
+     * 
      * @param constraintPackage never null
      * @param constraintName never null
      * @param constraintWeight never null
@@ -500,6 +527,7 @@ public interface BiConstraintStream<A, B> extends ConstraintStream {
     /**
      * Negatively impact the {@link Score}: subtract the constraintWeight multiplied by the match weight.
      * Otherwise as defined by {@link #penalize(String, Score)}.
+     * 
      * @param constraintName never null, shows up in {@link ConstraintMatchTotal} during score justification
      * @param constraintWeight never null
      * @param matchWeigher never null, the result of this function (matchWeight) is multiplied by the constraintWeight
@@ -513,6 +541,7 @@ public interface BiConstraintStream<A, B> extends ConstraintStream {
 
     /**
      * As defined by {@link #penalizeLong(String, Score, ToLongBiFunction)}.
+     * 
      * @param constraintPackage never null
      * @param constraintName never null
      * @param constraintWeight never null
@@ -525,6 +554,7 @@ public interface BiConstraintStream<A, B> extends ConstraintStream {
     /**
      * Negatively impact the {@link Score}: subtract the constraintWeight multiplied by the match weight.
      * Otherwise as defined by {@link #penalize(String, Score)}.
+     * 
      * @param constraintName never null, shows up in {@link ConstraintMatchTotal} during score justification
      * @param constraintWeight never null
      * @param matchWeigher never null, the result of this function (matchWeight) is multiplied by the constraintWeight
@@ -538,6 +568,7 @@ public interface BiConstraintStream<A, B> extends ConstraintStream {
 
     /**
      * As defined by {@link #penalizeBigDecimal(String, Score, BiFunction)}.
+     * 
      * @param constraintPackage never null
      * @param constraintName never null
      * @param constraintWeight never null
@@ -553,6 +584,7 @@ public interface BiConstraintStream<A, B> extends ConstraintStream {
      * <p>
      * For non-int {@link Score} types use {@link #penalizeConfigurableLong(String, ToLongBiFunction)} or
      * {@link #penalizeConfigurableBigDecimal(String, BiFunction)} instead.
+     * 
      * @param constraintName never null, shows up in {@link ConstraintMatchTotal} during score justification
      * @param matchWeigher never null, the result of this function (matchWeight) is multiplied by the constraintWeight
      * @return never null
@@ -563,6 +595,7 @@ public interface BiConstraintStream<A, B> extends ConstraintStream {
 
     /**
      * As defined by {@link #penalizeConfigurable(String, ToIntBiFunction)}.
+     * 
      * @param constraintPackage never null
      * @param constraintName never null
      * @param matchWeigher never null
@@ -574,6 +607,7 @@ public interface BiConstraintStream<A, B> extends ConstraintStream {
     /**
      * Negatively impact the {@link Score}: subtract the {@link ConstraintWeight} multiplied by the match weight.
      * Otherwise as defined by {@link #penalizeConfigurable(String)}.
+     * 
      * @param constraintName never null, shows up in {@link ConstraintMatchTotal} during score justification
      * @param matchWeigher never null, the result of this function (matchWeight) is multiplied by the constraintWeight
      * @return never null
@@ -585,6 +619,7 @@ public interface BiConstraintStream<A, B> extends ConstraintStream {
 
     /**
      * As defined by {@link #penalizeConfigurableLong(String, ToLongBiFunction)}.
+     * 
      * @param constraintPackage never null
      * @param constraintName never null
      * @param matchWeigher never null
@@ -596,6 +631,7 @@ public interface BiConstraintStream<A, B> extends ConstraintStream {
     /**
      * Negatively impact the {@link Score}: subtract the {@link ConstraintWeight} multiplied by the match weight.
      * Otherwise as defined by {@link #penalizeConfigurable(String)}.
+     * 
      * @param constraintName never null, shows up in {@link ConstraintMatchTotal} during score justification
      * @param matchWeigher never null, the result of this function (matchWeight) is multiplied by the constraintWeight
      * @return never null
@@ -608,6 +644,7 @@ public interface BiConstraintStream<A, B> extends ConstraintStream {
 
     /**
      * As defined by {@link #penalizeConfigurableBigDecimal(String, BiFunction)}.
+     * 
      * @param constraintPackage never null
      * @param constraintName never null
      * @param matchWeigher never null
@@ -616,13 +653,13 @@ public interface BiConstraintStream<A, B> extends ConstraintStream {
     Constraint penalizeConfigurableBigDecimal(String constraintPackage, String constraintName,
             BiFunction<A, B, BigDecimal> matchWeigher);
 
-
     /**
      * Positively impact the {@link Score}: add the constraintWeight multiplied by the match weight.
      * Otherwise as defined by {@link #reward(String, Score)}.
      * <p>
      * For non-int {@link Score} types use {@link #rewardLong(String, Score, ToLongBiFunction)} or
      * {@link #rewardBigDecimal(String, Score, BiFunction)} instead.
+     * 
      * @param constraintName never null, shows up in {@link ConstraintMatchTotal} during score justification
      * @param constraintWeight never null
      * @param matchWeigher never null, the result of this function (matchWeight) is multiplied by the constraintWeight
@@ -635,6 +672,7 @@ public interface BiConstraintStream<A, B> extends ConstraintStream {
 
     /**
      * As defined by {@link #reward(String, Score, ToIntBiFunction)}.
+     * 
      * @param constraintPackage never null
      * @param constraintName never null
      * @param constraintWeight never null
@@ -647,6 +685,7 @@ public interface BiConstraintStream<A, B> extends ConstraintStream {
     /**
      * Positively impact the {@link Score}: add the constraintWeight multiplied by the match weight.
      * Otherwise as defined by {@link #reward(String, Score)}.
+     * 
      * @param constraintName never null, shows up in {@link ConstraintMatchTotal} during score justification
      * @param constraintWeight never null
      * @param matchWeigher never null, the result of this function (matchWeight) is multiplied by the constraintWeight
@@ -660,6 +699,7 @@ public interface BiConstraintStream<A, B> extends ConstraintStream {
 
     /**
      * As defined by {@link #rewardLong(String, Score, ToLongBiFunction)}.
+     * 
      * @param constraintPackage never null
      * @param constraintName never null
      * @param constraintWeight never null
@@ -672,6 +712,7 @@ public interface BiConstraintStream<A, B> extends ConstraintStream {
     /**
      * Positively impact the {@link Score}: add the constraintWeight multiplied by the match weight.
      * Otherwise as defined by {@link #reward(String, Score)}.
+     * 
      * @param constraintName never null, shows up in {@link ConstraintMatchTotal} during score justification
      * @param constraintWeight never null
      * @param matchWeigher never null, the result of this function (matchWeight) is multiplied by the constraintWeight
@@ -685,6 +726,7 @@ public interface BiConstraintStream<A, B> extends ConstraintStream {
 
     /**
      * As defined by {@link #rewardBigDecimal(String, Score, BiFunction)}.
+     * 
      * @param constraintPackage never null
      * @param constraintName never null
      * @param constraintWeight never null
@@ -700,6 +742,7 @@ public interface BiConstraintStream<A, B> extends ConstraintStream {
      * <p>
      * For non-int {@link Score} types use {@link #rewardConfigurableLong(String, ToLongBiFunction)} or
      * {@link #rewardConfigurableBigDecimal(String, BiFunction)} instead.
+     * 
      * @param constraintName never null, shows up in {@link ConstraintMatchTotal} during score justification
      * @param matchWeigher never null, the result of this function (matchWeight) is multiplied by the constraintWeight
      * @return never null
@@ -710,6 +753,7 @@ public interface BiConstraintStream<A, B> extends ConstraintStream {
 
     /**
      * As defined by {@link #rewardConfigurable(String, ToIntBiFunction)}.
+     * 
      * @param constraintPackage never null
      * @param constraintName never null
      * @param matchWeigher never null
@@ -720,6 +764,7 @@ public interface BiConstraintStream<A, B> extends ConstraintStream {
     /**
      * Positively impact the {@link Score}: add the {@link ConstraintWeight} multiplied by the match weight.
      * Otherwise as defined by {@link #rewardConfigurable(String)}.
+     * 
      * @param constraintName never null, shows up in {@link ConstraintMatchTotal} during score justification
      * @param matchWeigher never null, the result of this function (matchWeight) is multiplied by the constraintWeight
      * @return never null
@@ -731,6 +776,7 @@ public interface BiConstraintStream<A, B> extends ConstraintStream {
 
     /**
      * As defined by {@link #rewardConfigurableLong(String, ToLongBiFunction)}.
+     * 
      * @param constraintPackage never null
      * @param constraintName never null
      * @param matchWeigher never null
@@ -742,6 +788,7 @@ public interface BiConstraintStream<A, B> extends ConstraintStream {
     /**
      * Positively impact the {@link Score}: add the {@link ConstraintWeight} multiplied by the match weight.
      * Otherwise as defined by {@link #rewardConfigurable(String)}.
+     * 
      * @param constraintName never null, shows up in {@link ConstraintMatchTotal} during score justification
      * @param matchWeigher never null, the result of this function (matchWeight) is multiplied by the constraintWeight
      * @return never null
@@ -753,6 +800,7 @@ public interface BiConstraintStream<A, B> extends ConstraintStream {
 
     /**
      * As defined by {@link #rewardConfigurableBigDecimal(String, BiFunction)}.
+     * 
      * @param constraintPackage never null
      * @param constraintName never null
      * @param matchWeigher never null
@@ -770,6 +818,7 @@ public interface BiConstraintStream<A, B> extends ConstraintStream {
      * <p>
      * For non-int {@link Score} types use {@link #impactLong(String, Score, ToLongBiFunction)} or
      * {@link #impactBigDecimal(String, Score, BiFunction)} instead.
+     * 
      * @param constraintName never null, shows up in {@link ConstraintMatchTotal} during score justification
      * @param constraintWeight never null
      * @param matchWeigher never null, the result of this function (matchWeight) is multiplied by the constraintWeight
@@ -782,6 +831,7 @@ public interface BiConstraintStream<A, B> extends ConstraintStream {
 
     /**
      * As defined by {@link #impact(String, Score, ToIntBiFunction)}.
+     * 
      * @param constraintPackage never null
      * @param constraintName never null
      * @param constraintWeight never null
@@ -797,6 +847,7 @@ public interface BiConstraintStream<A, B> extends ConstraintStream {
      * <p>
      * Use {@code penalizeLong(...)} or {@code rewardLong(...)} instead, unless this constraint can both have positive
      * and negative weights.
+     * 
      * @param constraintName never null, shows up in {@link ConstraintMatchTotal} during score justification
      * @param constraintWeight never null
      * @param matchWeigher never null, the result of this function (matchWeight) is multiplied by the constraintWeight
@@ -810,6 +861,7 @@ public interface BiConstraintStream<A, B> extends ConstraintStream {
 
     /**
      * As defined by {@link #impactLong(String, Score, ToLongBiFunction)}.
+     * 
      * @param constraintPackage never null
      * @param constraintName never null
      * @param constraintWeight never null
@@ -825,6 +877,7 @@ public interface BiConstraintStream<A, B> extends ConstraintStream {
      * <p>
      * Use {@code penalizeBigDecimal(...)} or {@code rewardBigDecimal(...)} instead, unless this constraint can both
      * have positive and negative weights.
+     * 
      * @param constraintName never null, shows up in {@link ConstraintMatchTotal} during score justification
      * @param constraintWeight never null
      * @param matchWeigher never null, the result of this function (matchWeight) is multiplied by the constraintWeight
@@ -838,6 +891,7 @@ public interface BiConstraintStream<A, B> extends ConstraintStream {
 
     /**
      * As defined by {@link #impactBigDecimal(String, Score, BiFunction)}.
+     * 
      * @param constraintPackage never null
      * @param constraintName never null
      * @param constraintWeight never null
@@ -859,6 +913,7 @@ public interface BiConstraintStream<A, B> extends ConstraintStream {
      * If there is no {@link ConstraintConfiguration}, use {@link #impact(String, Score)} instead.
      * <p>
      * The {@link Constraint#getConstraintPackage()} defaults to {@link ConstraintConfiguration#constraintPackage()}.
+     * 
      * @param constraintName never null, shows up in {@link ConstraintMatchTotal} during score justification
      * @param matchWeigher never null, the result of this function (matchWeight) is multiplied by the constraintWeight
      * @return never null
@@ -869,6 +924,7 @@ public interface BiConstraintStream<A, B> extends ConstraintStream {
 
     /**
      * As defined by {@link #impactConfigurable(String, ToIntBiFunction)}.
+     * 
      * @param constraintPackage never null
      * @param constraintName never null
      * @param matchWeigher never null
@@ -889,6 +945,7 @@ public interface BiConstraintStream<A, B> extends ConstraintStream {
      * If there is no {@link ConstraintConfiguration}, use {@link #impact(String, Score)} instead.
      * <p>
      * The {@link Constraint#getConstraintPackage()} defaults to {@link ConstraintConfiguration#constraintPackage()}.
+     * 
      * @param constraintName never null, shows up in {@link ConstraintMatchTotal} during score justification
      * @param matchWeigher never null, the result of this function (matchWeight) is multiplied by the constraintWeight
      * @return never null
@@ -900,6 +957,7 @@ public interface BiConstraintStream<A, B> extends ConstraintStream {
 
     /**
      * As defined by {@link #impactConfigurableLong(String, ToLongBiFunction)}.
+     * 
      * @param constraintPackage never null
      * @param constraintName never null
      * @param matchWeigher never null
@@ -920,6 +978,7 @@ public interface BiConstraintStream<A, B> extends ConstraintStream {
      * If there is no {@link ConstraintConfiguration}, use {@link #impact(String, Score)} instead.
      * <p>
      * The {@link Constraint#getConstraintPackage()} defaults to {@link ConstraintConfiguration#constraintPackage()}.
+     * 
      * @param constraintName never null, shows up in {@link ConstraintMatchTotal} during score justification
      * @param matchWeigher never null, the result of this function (matchWeight) is multiplied by the constraintWeight
      * @return never null
@@ -932,6 +991,7 @@ public interface BiConstraintStream<A, B> extends ConstraintStream {
 
     /**
      * As defined by {@link #impactConfigurableBigDecimal(String, BiFunction)}.
+     * 
      * @param constraintPackage never null
      * @param constraintName never null
      * @param matchWeigher never null
@@ -941,4 +1001,3 @@ public interface BiConstraintStream<A, B> extends ConstraintStream {
             BiFunction<A, B, BigDecimal> matchWeigher);
 
 }
-

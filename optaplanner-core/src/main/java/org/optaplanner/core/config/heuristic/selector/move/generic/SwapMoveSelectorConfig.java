@@ -16,12 +16,12 @@
 
 package org.optaplanner.core.config.heuristic.selector.move.generic;
 
+import static org.apache.commons.lang3.ObjectUtils.defaultIfNull;
+
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 
-import com.thoughtworks.xstream.annotations.XStreamAlias;
-import com.thoughtworks.xstream.annotations.XStreamImplicit;
 import org.optaplanner.core.config.heuristic.policy.HeuristicConfigPolicy;
 import org.optaplanner.core.config.heuristic.selector.common.SelectionCacheType;
 import org.optaplanner.core.config.heuristic.selector.common.SelectionOrder;
@@ -35,7 +35,8 @@ import org.optaplanner.core.impl.heuristic.selector.entity.EntitySelector;
 import org.optaplanner.core.impl.heuristic.selector.move.MoveSelector;
 import org.optaplanner.core.impl.heuristic.selector.move.generic.SwapMoveSelector;
 
-import static org.apache.commons.lang3.ObjectUtils.defaultIfNull;
+import com.thoughtworks.xstream.annotations.XStreamAlias;
+import com.thoughtworks.xstream.annotations.XStreamImplicit;
 
 @XStreamAlias("swapMoveSelector")
 public class SwapMoveSelectorConfig extends MoveSelectorConfig<SwapMoveSelectorConfig> {
@@ -47,9 +48,9 @@ public class SwapMoveSelectorConfig extends MoveSelectorConfig<SwapMoveSelectorC
 
     // TODO Wrap in <variableNameIncludes> https://issues.redhat.com/browse/PLANNER-838
     @XStreamImplicit(itemFieldName = "variableNameInclude")
-//    @XStreamAlias("variableNameIncludes")
-//    @XStreamConverter(value = NamedCollectionConverter.class,
-//            strings = {"variableNameInclude"}, types = {String.class}, useImplicitType = false)
+    //    @XStreamAlias("variableNameIncludes")
+    //    @XStreamConverter(value = NamedCollectionConverter.class,
+    //            strings = {"variableNameInclude"}, types = {String.class}, useImplicitType = false)
     private List<String> variableNameIncludeList = null;
 
     public EntitySelectorConfig getEntitySelectorConfig() {
@@ -104,12 +105,14 @@ public class SwapMoveSelectorConfig extends MoveSelectorConfig<SwapMoveSelectorC
         EntityDescriptor onlyEntityDescriptor = entitySelectorConfig == null ? null
                 : entitySelectorConfig.extractEntityDescriptor(configPolicy);
         if (secondaryEntitySelectorConfig != null) {
-            EntityDescriptor onlySecondaryEntityDescriptor = secondaryEntitySelectorConfig.extractEntityDescriptor(configPolicy);
+            EntityDescriptor onlySecondaryEntityDescriptor = secondaryEntitySelectorConfig
+                    .extractEntityDescriptor(configPolicy);
             if (onlyEntityDescriptor != onlySecondaryEntityDescriptor) {
                 throw new IllegalArgumentException("The entitySelector (" + entitySelectorConfig
                         + ")'s entityClass (" + (onlyEntityDescriptor == null ? null : onlyEntityDescriptor.getEntityClass())
                         + ") and secondaryEntitySelectorConfig (" + secondaryEntitySelectorConfig
-                        + ")'s entityClass (" + (onlySecondaryEntityDescriptor == null ? null : onlySecondaryEntityDescriptor.getEntityClass())
+                        + ")'s entityClass ("
+                        + (onlySecondaryEntityDescriptor == null ? null : onlySecondaryEntityDescriptor.getEntityClass())
                         + ") must be the same entity class.");
             }
         }
@@ -132,7 +135,8 @@ public class SwapMoveSelectorConfig extends MoveSelectorConfig<SwapMoveSelectorC
             }
             childMoveSelectorConfig.setEntitySelectorConfig(childEntitySelectorConfig);
             if (secondaryEntitySelectorConfig != null) {
-                EntitySelectorConfig childSecondaryEntitySelectorConfig = new EntitySelectorConfig(secondaryEntitySelectorConfig);
+                EntitySelectorConfig childSecondaryEntitySelectorConfig = new EntitySelectorConfig(
+                        secondaryEntitySelectorConfig);
                 if (childSecondaryEntitySelectorConfig.getMimicSelectorRef() == null) {
                     childSecondaryEntitySelectorConfig.setEntityClass(entityDescriptor.getEntityClass());
                 }
@@ -156,7 +160,8 @@ public class SwapMoveSelectorConfig extends MoveSelectorConfig<SwapMoveSelectorC
     public SwapMoveSelectorConfig inherit(SwapMoveSelectorConfig inheritedConfig) {
         super.inherit(inheritedConfig);
         entitySelectorConfig = ConfigUtils.inheritConfig(entitySelectorConfig, inheritedConfig.getEntitySelectorConfig());
-        secondaryEntitySelectorConfig = ConfigUtils.inheritConfig(secondaryEntitySelectorConfig, inheritedConfig.getSecondaryEntitySelectorConfig());
+        secondaryEntitySelectorConfig = ConfigUtils.inheritConfig(secondaryEntitySelectorConfig,
+                inheritedConfig.getSecondaryEntitySelectorConfig());
         variableNameIncludeList = ConfigUtils.inheritMergeableListProperty(
                 variableNameIncludeList, inheritedConfig.getVariableNameIncludeList());
         return this;

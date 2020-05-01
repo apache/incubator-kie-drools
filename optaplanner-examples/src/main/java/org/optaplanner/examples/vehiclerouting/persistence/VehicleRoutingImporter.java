@@ -255,7 +255,8 @@ public class VehicleRoutingImporter extends AbstractTxtSolutionImporter<VehicleR
                     long id = Long.parseLong(lineTokens[0]);
                     Location location = locationMap.get(id);
                     if (location == null) {
-                        throw new IllegalArgumentException("The location with id (" + id + ") of line (" + line + ") does not exist.");
+                        throw new IllegalArgumentException(
+                                "The location with id (" + id + ") of line (" + line + ") does not exist.");
                     }
                     Map<HubSegmentLocation, Double> hubTravelDistanceMap = new LinkedHashMap<>(lineTokens.length / 2);
                     Map<RoadSegmentLocation, Double> nearbyTravelDistanceMap = new LinkedHashMap<>(lineTokens.length / 2);
@@ -461,7 +462,8 @@ public class VehicleRoutingImporter extends AbstractTxtSolutionImporter<VehicleR
             capacity = Integer.parseInt(lineTokens[1]);
             readEmptyLine();
             readConstantLine("CUSTOMER");
-            readConstantLine("CUST\\s+NO\\.\\s+XCOORD\\.\\s+YCOORD\\.\\s+DEMAND\\s+READY\\s+TIME\\s+DUE\\s+DATE\\s+SERVICE\\s+TIME");
+            readConstantLine(
+                    "CUST\\s+NO\\.\\s+XCOORD\\.\\s+YCOORD\\.\\s+DEMAND\\s+READY\\s+TIME\\s+DUE\\s+DATE\\s+SERVICE\\s+TIME");
             readEmptyLine();
         }
 

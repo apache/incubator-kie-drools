@@ -18,7 +18,6 @@ package org.optaplanner.examples.nurserostering.domain;
 
 import java.util.Map;
 
-import com.thoughtworks.xstream.annotations.XStreamAlias;
 import org.optaplanner.examples.common.domain.AbstractPersistable;
 import org.optaplanner.examples.common.swingui.components.Labeled;
 import org.optaplanner.examples.nurserostering.domain.contract.Contract;
@@ -26,6 +25,8 @@ import org.optaplanner.examples.nurserostering.domain.request.DayOffRequest;
 import org.optaplanner.examples.nurserostering.domain.request.DayOnRequest;
 import org.optaplanner.examples.nurserostering.domain.request.ShiftOffRequest;
 import org.optaplanner.examples.nurserostering.domain.request.ShiftOnRequest;
+
+import com.thoughtworks.xstream.annotations.XStreamAlias;
 
 @XStreamAlias("Employee")
 public class Employee extends AbstractPersistable implements Labeled, Comparable<Employee> {

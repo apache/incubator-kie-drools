@@ -87,6 +87,7 @@ public enum EnvironmentMode {
     /**
      * This mode has been renamed to {@link #NON_REPRODUCIBLE}
      * because most users prefer to use {@link #REPRODUCIBLE} in production.
+     * 
      * @deprecated Use {@link #NON_REPRODUCIBLE} instead. Will be removed in 8.0.
      */
     @Deprecated

@@ -16,8 +16,9 @@
 
 package org.optaplanner.examples.curriculumcourse.domain;
 
-import com.thoughtworks.xstream.annotations.XStreamAlias;
 import org.optaplanner.examples.common.domain.AbstractPersistable;
+
+import com.thoughtworks.xstream.annotations.XStreamAlias;
 
 @XStreamAlias("Curriculum")
 public class Curriculum extends AbstractPersistable {

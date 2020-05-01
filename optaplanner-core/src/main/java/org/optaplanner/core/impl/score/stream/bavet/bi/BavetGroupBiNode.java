@@ -51,7 +51,8 @@ public final class BavetGroupBiNode<GroupKey_, ResultContainer_, Result_> extend
     // ************************************************************************
 
     @Override
-    public BavetGroupBiTuple<GroupKey_, ResultContainer_, Result_> createTuple(BavetAbstractBiTuple<GroupKey_, Result_> parentTuple) {
+    public BavetGroupBiTuple<GroupKey_, ResultContainer_, Result_> createTuple(
+            BavetAbstractBiTuple<GroupKey_, Result_> parentTuple) {
         throw new IllegalStateException("The Grouped node (" + getClass().getSimpleName()
                 + ") can't have a parentTuple (" + parentTuple + ");");
     }
@@ -80,7 +81,7 @@ public final class BavetGroupBiNode<GroupKey_, ResultContainer_, Result_> extend
 
     @Override
     public String toString() {
-        return "Group() with " + childNodeList.size()  + " children";
+        return "Group() with " + childNodeList.size() + " children";
     }
 
     // ************************************************************************

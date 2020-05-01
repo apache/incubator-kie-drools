@@ -16,9 +16,6 @@
 
 package org.optaplanner.persistence.jackson.api;
 
-import com.fasterxml.jackson.databind.Module;
-import com.fasterxml.jackson.databind.ObjectMapper;
-import com.fasterxml.jackson.databind.module.SimpleModule;
 import org.optaplanner.core.api.score.Score;
 import org.optaplanner.core.api.score.buildin.bendable.BendableScore;
 import org.optaplanner.core.api.score.buildin.bendablebigdecimal.BendableBigDecimalScore;
@@ -61,6 +58,10 @@ import org.optaplanner.persistence.jackson.api.score.buildin.simpledouble.Simple
 import org.optaplanner.persistence.jackson.api.score.buildin.simpledouble.SimpleDoubleScoreJacksonJsonSerializer;
 import org.optaplanner.persistence.jackson.api.score.buildin.simplelong.SimpleLongScoreJacksonJsonDeserializer;
 import org.optaplanner.persistence.jackson.api.score.buildin.simplelong.SimpleLongScoreJacksonJsonSerializer;
+
+import com.fasterxml.jackson.databind.Module;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.module.SimpleModule;
 
 /**
  * This class adds all Jackson serializers and deserializers.

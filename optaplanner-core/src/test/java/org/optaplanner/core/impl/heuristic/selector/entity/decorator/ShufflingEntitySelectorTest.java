@@ -16,12 +16,12 @@
 
 package org.optaplanner.core.impl.heuristic.selector.entity.decorator;
 
+import static org.junit.Assert.*;
+import static org.mockito.Mockito.*;
+
 import org.junit.jupiter.api.Test;
 import org.optaplanner.core.config.heuristic.selector.common.SelectionCacheType;
 import org.optaplanner.core.impl.heuristic.selector.entity.EntitySelector;
-
-import static org.junit.Assert.*;
-import static org.mockito.Mockito.*;
 
 public class ShufflingEntitySelectorTest {
 

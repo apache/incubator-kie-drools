@@ -16,19 +16,19 @@
 
 package org.optaplanner.core.impl.score.trend;
 
+import static org.junit.Assert.*;
+
 import org.junit.jupiter.api.Test;
 import org.optaplanner.core.config.score.trend.InitializingScoreTrendLevel;
-
-import static org.junit.Assert.*;
 
 public class InitializingScoreTrendTest {
 
     @Test
     public void parseTrend() {
-        assertArrayEquals(new InitializingScoreTrendLevel[]{
+        assertArrayEquals(new InitializingScoreTrendLevel[] {
                 InitializingScoreTrendLevel.ONLY_DOWN,
                 InitializingScoreTrendLevel.ANY,
-                InitializingScoreTrendLevel.ONLY_UP},
+                InitializingScoreTrendLevel.ONLY_UP },
                 InitializingScoreTrend.parseTrend("ONLY_DOWN/ANY/ONLY_UP", 3).getTrendLevels());
     }
 

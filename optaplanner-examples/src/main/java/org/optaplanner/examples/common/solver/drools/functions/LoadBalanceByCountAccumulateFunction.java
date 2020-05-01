@@ -24,7 +24,8 @@ import java.util.Map;
 
 import org.kie.api.runtime.rule.AccumulateFunction;
 
-public class LoadBalanceByCountAccumulateFunction implements AccumulateFunction<LoadBalanceByCountAccumulateFunction.LoadBalanceByCountData> {
+public class LoadBalanceByCountAccumulateFunction
+        implements AccumulateFunction<LoadBalanceByCountAccumulateFunction.LoadBalanceByCountData> {
 
     protected static class LoadBalanceByCountData implements Serializable {
 

@@ -45,8 +45,7 @@ public abstract class AbstractConstructionHeuristicTest<Solution_>
     @Override
     protected SolverFactory<Solution_> buildSolverFactory(
             CommonApp<Solution_> commonApp,
-            ConstructionHeuristicType constructionHeuristicType
-    ) {
+            ConstructionHeuristicType constructionHeuristicType) {
         String solverConfigResource = commonApp.getSolverConfigResource();
         SolverConfig solverConfig = SolverConfig.createFromXmlResource(solverConfigResource);
         solverConfig.setTerminationConfig(new TerminationConfig());

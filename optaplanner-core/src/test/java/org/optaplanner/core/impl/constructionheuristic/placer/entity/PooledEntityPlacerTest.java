@@ -16,6 +16,10 @@
 
 package org.optaplanner.core.impl.constructionheuristic.placer.entity;
 
+import static org.junit.Assert.assertTrue;
+import static org.mockito.Mockito.*;
+import static org.optaplanner.core.impl.testdata.util.PlannerAssert.*;
+
 import java.util.Iterator;
 
 import org.junit.jupiter.api.Test;
@@ -27,10 +31,6 @@ import org.optaplanner.core.impl.heuristic.selector.move.MoveSelector;
 import org.optaplanner.core.impl.phase.scope.AbstractPhaseScope;
 import org.optaplanner.core.impl.phase.scope.AbstractStepScope;
 import org.optaplanner.core.impl.solver.scope.DefaultSolverScope;
-
-import static org.junit.Assert.assertTrue;
-import static org.mockito.Mockito.*;
-import static org.optaplanner.core.impl.testdata.util.PlannerAssert.*;
 
 public class PooledEntityPlacerTest extends AbstractEntityPlacerTest {
 

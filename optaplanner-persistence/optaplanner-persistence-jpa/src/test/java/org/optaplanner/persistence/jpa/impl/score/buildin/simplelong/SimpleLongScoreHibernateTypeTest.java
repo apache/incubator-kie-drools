@@ -48,7 +48,7 @@ public class SimpleLongScoreHibernateTypeTest extends AbstractScoreHibernateType
         }
 
         @Override
-        @Columns(columns = {@Column(name = "initScore"), @Column(name = "score")})
+        @Columns(columns = { @Column(name = "initScore"), @Column(name = "score") })
         public SimpleLongScore getScore() {
             return score;
         }

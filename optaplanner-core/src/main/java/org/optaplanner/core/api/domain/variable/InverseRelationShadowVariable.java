@@ -16,21 +16,22 @@
 
 package org.optaplanner.core.api.domain.variable;
 
+import static java.lang.annotation.ElementType.*;
+import static java.lang.annotation.RetentionPolicy.*;
+
 import java.lang.annotation.Retention;
 import java.lang.annotation.Target;
 
 import org.optaplanner.core.api.domain.entity.PlanningEntity;
 import org.optaplanner.core.api.solver.Solver;
 
-import static java.lang.annotation.ElementType.*;
-import static java.lang.annotation.RetentionPolicy.*;
-
 /**
- * Specifies that a bean property (or a field) is the inverse of a {@link PlanningVariable}, which implies it's a shadow variable.
+ * Specifies that a bean property (or a field) is the inverse of a {@link PlanningVariable}, which implies it's a shadow
+ * variable.
  * <p>
  * It is specified on a getter of a java bean property (or a field) of a {@link PlanningEntity} class.
  */
-@Target({METHOD, FIELD})
+@Target({ METHOD, FIELD })
 @Retention(RUNTIME)
 public @interface InverseRelationShadowVariable {
 
@@ -42,6 +43,7 @@ public @interface InverseRelationShadowVariable {
      * <p>
      * When the {@link Solver} changes a genuine variable, it adjusts the shadow variable accordingly.
      * In practice, the {@link Solver} ignores shadow variables (except for consistency housekeeping).
+     * 
      * @return the variable property name on the opposite end of this bidirectional relationship
      */
     String sourceVariableName();

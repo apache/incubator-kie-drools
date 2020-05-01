@@ -16,6 +16,9 @@
 
 package org.optaplanner.examples.flightcrewscheduling.persistence;
 
+import static java.time.temporal.ChronoUnit.DAYS;
+import static org.optaplanner.examples.common.persistence.generator.ProbabilisticDataGenerator.extractRandomElement;
+
 import java.io.File;
 import java.math.BigInteger;
 import java.time.LocalDate;
@@ -46,9 +49,6 @@ import org.optaplanner.examples.flightcrewscheduling.domain.FlightCrewParametriz
 import org.optaplanner.examples.flightcrewscheduling.domain.FlightCrewSolution;
 import org.optaplanner.examples.flightcrewscheduling.domain.Skill;
 import org.optaplanner.persistence.common.api.domain.solution.SolutionFileIO;
-
-import static java.time.temporal.ChronoUnit.DAYS;
-import static org.optaplanner.examples.common.persistence.generator.ProbabilisticDataGenerator.extractRandomElement;
 
 public class FlightCrewSchedulingGenerator extends LoggingMain {
 
@@ -119,7 +119,8 @@ public class FlightCrewSchedulingGenerator extends LoggingMain {
         int employeeListSize = solution.getEmployeeList().size();
         int flightAssignmentListSize = solution.getFlightAssignmentList().size();
         BigInteger possibleSolutionSize = BigInteger.valueOf((long) employeeListSize).pow(flightAssignmentListSize);
-        logger.info("FlightCrew {} has {} skills, {} airports, {} employees, {} flights and {} flight assignments with a search space of {}.",
+        logger.info(
+                "FlightCrew {} has {} skills, {} airports, {} employees, {} flights and {} flight assignments with a search space of {}.",
                 fileName,
                 solution.getSkillList().size(),
                 solution.getAirportList().size(),
@@ -285,7 +286,7 @@ public class FlightCrewSchedulingGenerator extends LoggingMain {
             pool.addAll(allDateList);
             Collections.shuffle(pool, random);
             // Add those that haven't been added yet
-            for (Iterator<LocalDate> it = pool.iterator(); it.hasNext() && unavailableDaySet.size() < size; ) {
+            for (Iterator<LocalDate> it = pool.iterator(); it.hasNext() && unavailableDaySet.size() < size;) {
                 LocalDate date = it.next();
                 if (unavailableDaySet.add(date)) {
                     it.remove();

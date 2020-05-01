@@ -16,12 +16,12 @@
 
 package org.optaplanner.core.api.score.buildin.hardmediumsoft;
 
+import static org.junit.Assert.*;
+
 import org.junit.jupiter.api.Test;
 import org.kie.api.definition.rule.Rule;
 import org.kie.api.runtime.rule.RuleContext;
 import org.optaplanner.core.api.score.holder.AbstractScoreHolderTest;
-
-import static org.junit.Assert.*;
 
 public class HardMediumSoftScoreHolderTest extends AbstractScoreHolderTest {
 
@@ -84,7 +84,8 @@ public class HardMediumSoftScoreHolderTest extends AbstractScoreHolderTest {
         assertEquals(HardMediumSoftScore.ofUninitialized(-7, -7004001, -50020, -600300), scoreHolder.extractScore(-7));
         if (constraintMatchEnabled) {
             assertEquals(HardMediumSoftScore.of(-1, 0, 0), findConstraintMatchTotal(scoreHolder, "hard1").getScore());
-            assertEquals(HardMediumSoftScore.of(0, 0, -300), scoreHolder.getIndictmentMap().get(OTHER_JUSTIFICATION).getScore());
+            assertEquals(HardMediumSoftScore.of(0, 0, -300),
+                    scoreHolder.getIndictmentMap().get(OTHER_JUSTIFICATION).getScore());
             assertNull(scoreHolder.getIndictmentMap().get(UNDO_JUSTIFICATION));
         }
     }

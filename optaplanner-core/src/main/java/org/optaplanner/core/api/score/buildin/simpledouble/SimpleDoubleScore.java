@@ -30,6 +30,7 @@ import org.optaplanner.core.api.score.buildin.simplebigdecimal.SimpleBigDecimalS
  * Use {@link SimpleBigDecimalScore} instead.
  * <p>
  * This class is immutable.
+ * 
  * @see Score
  */
 public final class SimpleDoubleScore extends AbstractScore<SimpleDoubleScore> {
@@ -94,6 +95,7 @@ public final class SimpleDoubleScore extends AbstractScore<SimpleDoubleScore> {
      * The total of the broken negative constraints and fulfilled positive constraints.
      * Their weight is included in the total.
      * The score is usually a negative number because most use cases only have negative constraints.
+     * 
      * @return higher is better, usually negative, 0 if no constraints are broken/fulfilled
      */
     public double getScore() {
@@ -157,7 +159,7 @@ public final class SimpleDoubleScore extends AbstractScore<SimpleDoubleScore> {
 
     @Override
     public Number[] toLevelNumbers() {
-        return new Number[]{score};
+        return new Number[] { score };
     }
 
     @Override

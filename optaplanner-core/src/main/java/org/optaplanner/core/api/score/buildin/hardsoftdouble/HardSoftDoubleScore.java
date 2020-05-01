@@ -33,6 +33,7 @@ import org.optaplanner.core.api.score.buildin.hardsoftbigdecimal.HardSoftBigDeci
  * Use {@link HardSoftBigDecimalScore} instead.
  * <p>
  * This class is immutable.
+ * 
  * @see Score
  */
 public final class HardSoftDoubleScore extends AbstractScore<HardSoftDoubleScore>
@@ -113,6 +114,7 @@ public final class HardSoftDoubleScore extends AbstractScore<HardSoftDoubleScore
      * The total of the broken negative hard constraints and fulfilled positive hard constraints.
      * Their weight is included in the total.
      * The hard score is usually a negative number because most use cases only have negative constraints.
+     * 
      * @return higher is better, usually negative, 0 if no hard constraints are broken/fulfilled
      */
     public double getHardScore() {
@@ -125,6 +127,7 @@ public final class HardSoftDoubleScore extends AbstractScore<HardSoftDoubleScore
      * The soft score is usually a negative number because most use cases only have negative constraints.
      * <p>
      * In a normal score comparison, the soft score is irrelevant if the 2 scores don't have the same hard score.
+     * 
      * @return higher is better, usually negative, 0 if no soft constraints are broken/fulfilled
      */
     public double getSoftScore() {
@@ -198,7 +201,7 @@ public final class HardSoftDoubleScore extends AbstractScore<HardSoftDoubleScore
 
     @Override
     public Number[] toLevelNumbers() {
-        return new Number[]{hardScore, softScore};
+        return new Number[] { hardScore, softScore };
     }
 
     @Override

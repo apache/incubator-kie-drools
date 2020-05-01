@@ -29,8 +29,7 @@ public class CheapTimeBenchmarkApp extends CommonBenchmarkApp {
                 new ArgOption("default",
                         "org/optaplanner/examples/cheaptime/benchmark/cheapTimeBenchmarkConfig.xml"),
                 new ArgOption("template",
-                        "org/optaplanner/examples/cheaptime/benchmark/cheapTimeBenchmarkConfigTemplate.xml.ftl", true)
-        );
+                        "org/optaplanner/examples/cheaptime/benchmark/cheapTimeBenchmarkConfigTemplate.xml.ftl", true));
     }
 
 }

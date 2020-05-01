@@ -16,6 +16,14 @@
 
 package org.optaplanner.core.impl.heuristic.selector.entity.pillar;
 
+import static org.junit.Assert.assertEquals;
+import static org.mockito.Mockito.anyInt;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.when;
+import static org.optaplanner.core.impl.testdata.util.PlannerAssert.assertAllCodesOfIterator;
+import static org.optaplanner.core.impl.testdata.util.PlannerAssert.assertCodesOfIterator;
+import static org.optaplanner.core.impl.testdata.util.PlannerAssert.verifyPhaseLifecycle;
+
 import java.util.Arrays;
 import java.util.Comparator;
 import java.util.Random;
@@ -32,57 +40,49 @@ import org.optaplanner.core.impl.testdata.domain.TestdataEntity;
 import org.optaplanner.core.impl.testdata.domain.TestdataObject;
 import org.optaplanner.core.impl.testdata.domain.TestdataValue;
 
-import static org.junit.Assert.assertEquals;
-import static org.mockito.Mockito.anyInt;
-import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.when;
-import static org.optaplanner.core.impl.testdata.util.PlannerAssert.assertAllCodesOfIterator;
-import static org.optaplanner.core.impl.testdata.util.PlannerAssert.assertCodesOfIterator;
-import static org.optaplanner.core.impl.testdata.util.PlannerAssert.verifyPhaseLifecycle;
-
 public class DefaultPillarSelectorTest {
 
-//    @Test
-//    public void calculateBasePillarSelectionSize() {
-//        assertCalculateBasePillarSelectionSize(4L, 1, 1);
-//        assertCalculateBasePillarSelectionSize(6L, 2, 2);
-//        assertCalculateBasePillarSelectionSize(4L, 3, 3);
-//        assertCalculateBasePillarSelectionSize(1L, 4, 4);
-//
-//        assertCalculateBasePillarSelectionSize(10L, 1, 2);
-//        assertCalculateBasePillarSelectionSize(14L, 1, 3);
-//        assertCalculateBasePillarSelectionSize(15L, 1, 4);
-//        assertCalculateBasePillarSelectionSize(10L, 2, 3);
-//        assertCalculateBasePillarSelectionSize(11L, 2, 4);
-//        assertCalculateBasePillarSelectionSize(5L, 3, 4);
-//
-//        assertCalculateBasePillarSelectionSize(15L, 1, 5);
-//        assertCalculateBasePillarSelectionSize(11L, 2, 5);
-//        assertCalculateBasePillarSelectionSize(5L, 3, 5);
-//        assertCalculateBasePillarSelectionSize(1L, 4, 5);
-//        assertCalculateBasePillarSelectionSize(0L, 5, 5);
-//    }
-//
-//    private void assertCalculateBasePillarSelectionSize(long expected, int minimumPillarSize, int maximumPillarSize) {
-//        TestdataValue val1 = new TestdataValue("1");
-//        TestdataValue val2 = new TestdataValue("2");
-//        TestdataValue val3 = new TestdataValue("3");
-//        TestdataValue val4 = new TestdataValue("4");
-//
-//        final TestdataEntity a = new TestdataEntity("a", val1);
-//        final TestdataEntity b = new TestdataEntity("b", val2);
-//        final TestdataEntity c = new TestdataEntity("c", val3);
-//        final TestdataEntity d = new TestdataEntity("d", val2);
-//
-//        EntitySelector entitySelector = SelectorTestUtils.mockEntitySelector(TestdataEntity.class,
-//                a, b, c, d);
-//        GenuineVariableDescriptor variableDescriptor = SelectorTestUtils.mockVariableDescriptor(
-//                entitySelector.findEntityDescriptorOrFail(), "value");
-//        DefaultPillarSelector selector = new DefaultPillarSelector(
-//                entitySelector, Collections.singletonList(variableDescriptor), false,
-//                true, minimumPillarSize, maximumPillarSize);
-//        assertEquals(expected, selector.calculateBasePillarSelectionSize(Arrays.<Object>asList(a, b, c, d)));
-//    }
+    //    @Test
+    //    public void calculateBasePillarSelectionSize() {
+    //        assertCalculateBasePillarSelectionSize(4L, 1, 1);
+    //        assertCalculateBasePillarSelectionSize(6L, 2, 2);
+    //        assertCalculateBasePillarSelectionSize(4L, 3, 3);
+    //        assertCalculateBasePillarSelectionSize(1L, 4, 4);
+    //
+    //        assertCalculateBasePillarSelectionSize(10L, 1, 2);
+    //        assertCalculateBasePillarSelectionSize(14L, 1, 3);
+    //        assertCalculateBasePillarSelectionSize(15L, 1, 4);
+    //        assertCalculateBasePillarSelectionSize(10L, 2, 3);
+    //        assertCalculateBasePillarSelectionSize(11L, 2, 4);
+    //        assertCalculateBasePillarSelectionSize(5L, 3, 4);
+    //
+    //        assertCalculateBasePillarSelectionSize(15L, 1, 5);
+    //        assertCalculateBasePillarSelectionSize(11L, 2, 5);
+    //        assertCalculateBasePillarSelectionSize(5L, 3, 5);
+    //        assertCalculateBasePillarSelectionSize(1L, 4, 5);
+    //        assertCalculateBasePillarSelectionSize(0L, 5, 5);
+    //    }
+    //
+    //    private void assertCalculateBasePillarSelectionSize(long expected, int minimumPillarSize, int maximumPillarSize) {
+    //        TestdataValue val1 = new TestdataValue("1");
+    //        TestdataValue val2 = new TestdataValue("2");
+    //        TestdataValue val3 = new TestdataValue("3");
+    //        TestdataValue val4 = new TestdataValue("4");
+    //
+    //        final TestdataEntity a = new TestdataEntity("a", val1);
+    //        final TestdataEntity b = new TestdataEntity("b", val2);
+    //        final TestdataEntity c = new TestdataEntity("c", val3);
+    //        final TestdataEntity d = new TestdataEntity("d", val2);
+    //
+    //        EntitySelector entitySelector = SelectorTestUtils.mockEntitySelector(TestdataEntity.class,
+    //                a, b, c, d);
+    //        GenuineVariableDescriptor variableDescriptor = SelectorTestUtils.mockVariableDescriptor(
+    //                entitySelector.findEntityDescriptorOrFail(), "value");
+    //        DefaultPillarSelector selector = new DefaultPillarSelector(
+    //                entitySelector, Collections.singletonList(variableDescriptor), false,
+    //                true, minimumPillarSize, maximumPillarSize);
+    //        assertEquals(expected, selector.calculateBasePillarSelectionSize(Arrays.<Object>asList(a, b, c, d)));
+    //    }
 
     @Test
     public void originalNoSubs() {
@@ -100,7 +100,7 @@ public class DefaultPillarSelectorTest {
 
         GenuineVariableDescriptor variableDescriptor = TestdataEntity.buildVariableDescriptorForValue();
         EntitySelector entitySelector = SelectorTestUtils.mockEntitySelector(variableDescriptor.getEntityDescriptor(),
-                                                                             a, b, c, d, e, f);
+                a, b, c, d, e, f);
 
         DefaultPillarSelector pillarSelector = new DefaultPillarSelector(
                 entitySelector, Arrays.asList(variableDescriptor), false, SubPillarConfigPolicy.withoutSubpillars());
@@ -208,7 +208,7 @@ public class DefaultPillarSelectorTest {
 
         GenuineVariableDescriptor variableDescriptor = TestdataEntity.buildVariableDescriptorForValue();
         EntitySelector entitySelector = SelectorTestUtils.mockEntitySelector(variableDescriptor.getEntityDescriptor(),
-                                                                             a, b, c, d, e, f);
+                a, b, c, d, e, f);
 
         DefaultPillarSelector pillarSelector = new DefaultPillarSelector(
                 entitySelector, Arrays.asList(variableDescriptor), true,
@@ -294,7 +294,7 @@ public class DefaultPillarSelectorTest {
 
         GenuineVariableDescriptor variableDescriptor = TestdataEntity.buildVariableDescriptorForValue();
         EntitySelector entitySelector = SelectorTestUtils.mockEntitySelector(variableDescriptor.getEntityDescriptor(),
-                                                                             a, b, c, d, e, f);
+                a, b, c, d, e, f);
 
         DefaultPillarSelector pillarSelector = new DefaultPillarSelector(
                 entitySelector, Arrays.asList(variableDescriptor), true, SubPillarConfigPolicy.withSubpillars(2, 2));
@@ -326,7 +326,6 @@ public class DefaultPillarSelectorTest {
 
         verifyPhaseLifecycle(entitySelector, 1, 1, 1);
     }
-
 
     @Test
     public void sequentialUnlimited() {
@@ -368,7 +367,7 @@ public class DefaultPillarSelectorTest {
         when(workingRandom.nextInt(anyInt())).thenReturn(
                 1, 1, // [b, d]
                 2, 2, // [c, e, f]
-                2, 1, 1,  // [c, e, f]
+                2, 1, 1, // [c, e, f]
                 0 // [a]
         );
         assertCodesOfNeverEndingPillarSelector(pillarSelector, "[b, d]", "[c, e, f]", "[e, f]", "[a]");

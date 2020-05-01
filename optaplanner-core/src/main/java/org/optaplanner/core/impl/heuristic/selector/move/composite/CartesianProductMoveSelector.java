@@ -35,6 +35,7 @@ import org.optaplanner.core.impl.heuristic.selector.move.MoveSelector;
  * For example: a Cartesian product of {A, B, C} and {X, Y} will result in {AX, AY, BX, BY, CX, CY}.
  * <p>
  * Warning: there is no duplicated {@link Move} check, so union of {A, B} and {B} will result in {AB, BB}.
+ * 
  * @see CompositeMoveSelector
  */
 public class CartesianProductMoveSelector extends CompositeMoveSelector {

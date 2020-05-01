@@ -59,7 +59,7 @@ public class NQueensBenchmarkTest extends PlannerBenchmarkTest {
     public void benchmark64queensSingleThread() {
         NQueens problem = new XStreamSolutionFileIO<NQueens>(NQueens.class)
                 .read(new File("data/nqueens/unsolved/64queens.xml"));
-        PlannerBenchmarkConfig benchmarkConfig= buildPlannerBenchmarkConfig();
+        PlannerBenchmarkConfig benchmarkConfig = buildPlannerBenchmarkConfig();
         addAllStatistics(benchmarkConfig);
         benchmarkConfig.setParallelBenchmarkCount("1");
         PlannerBenchmark benchmark = PlannerBenchmarkFactory.create(benchmarkConfig).buildPlannerBenchmark(problem);

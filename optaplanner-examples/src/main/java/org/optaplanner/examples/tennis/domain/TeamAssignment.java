@@ -16,11 +16,12 @@
 
 package org.optaplanner.examples.tennis.domain;
 
-import com.thoughtworks.xstream.annotations.XStreamAlias;
 import org.optaplanner.core.api.domain.entity.PlanningEntity;
 import org.optaplanner.core.api.domain.entity.PlanningPin;
 import org.optaplanner.core.api.domain.variable.PlanningVariable;
 import org.optaplanner.examples.common.domain.AbstractPersistable;
+
+import com.thoughtworks.xstream.annotations.XStreamAlias;
 
 @PlanningEntity()
 @XStreamAlias("TennisTeamAssignment")
@@ -67,7 +68,7 @@ public class TeamAssignment extends AbstractPersistable {
         this.pinned = pinned;
     }
 
-    @PlanningVariable(valueRangeProviderRefs = {"teamRange"})
+    @PlanningVariable(valueRangeProviderRefs = { "teamRange" })
     public Team getTeam() {
         return team;
     }

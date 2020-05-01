@@ -16,13 +16,13 @@
 
 package org.optaplanner.examples.vehiclerouting.domain.location.segmented;
 
+import static org.junit.Assert.*;
+
 import java.util.LinkedHashMap;
 import java.util.Map;
 
 import org.junit.jupiter.api.Test;
 import org.optaplanner.examples.vehiclerouting.domain.location.Location;
-
-import static org.junit.Assert.*;
 
 public class RoadSegmentLocationTest {
 
@@ -75,7 +75,8 @@ public class RoadSegmentLocationTest {
         return distance;
     }
 
-    private Map<HubSegmentLocation, Double> createHubTravelDistanceMap(Location fromLocation, HubSegmentLocation... toLocations) {
+    private Map<HubSegmentLocation, Double> createHubTravelDistanceMap(Location fromLocation,
+            HubSegmentLocation... toLocations) {
         Map<HubSegmentLocation, Double> map = new LinkedHashMap<>(toLocations.length);
         for (HubSegmentLocation toLocation : toLocations) {
             map.put(toLocation, fromLocation.getAirDistanceDoubleTo(toLocation));

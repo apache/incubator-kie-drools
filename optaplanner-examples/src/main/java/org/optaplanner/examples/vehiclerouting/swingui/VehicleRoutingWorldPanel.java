@@ -22,6 +22,7 @@ import java.awt.event.ComponentEvent;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.awt.image.BufferedImage;
+
 import javax.swing.JPanel;
 
 import org.optaplanner.examples.common.swingui.latitudelongitude.LatitudeLongitudeTranslator;

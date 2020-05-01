@@ -16,9 +16,9 @@
 
 package org.optaplanner.examples.common.solver.drools.functions;
 
-import org.junit.jupiter.api.Test;
-
 import static org.junit.Assert.*;
+
+import org.junit.jupiter.api.Test;
 
 public class LoadBalanceByCountAccumulateFunctionTest {
 

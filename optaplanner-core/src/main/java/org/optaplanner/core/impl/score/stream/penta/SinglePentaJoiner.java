@@ -58,12 +58,12 @@ public final class SinglePentaJoiner<A, B, C, D, E> extends AbstractPentaJoiner<
 
     @Override
     public QuadFunction<A, B, C, D, Object[]> getLeftCombinedMapping() {
-        return (A a, B b, C c, D d) -> new Object[]{getLeftMapping().apply(a, b, c, d)};
+        return (A a, B b, C c, D d) -> new Object[] { getLeftMapping().apply(a, b, c, d) };
     }
 
     @Override
     public JoinerType[] getJoinerTypes() {
-        return new JoinerType[]{joinerType};
+        return new JoinerType[] { joinerType };
     }
 
     @Override
@@ -74,6 +74,6 @@ public final class SinglePentaJoiner<A, B, C, D, E> extends AbstractPentaJoiner<
 
     @Override
     public Function<E, Object[]> getRightCombinedMapping() {
-        return (E e) -> new Object[]{getRightMapping().apply(e)};
+        return (E e) -> new Object[] { getRightMapping().apply(e) };
     }
 }

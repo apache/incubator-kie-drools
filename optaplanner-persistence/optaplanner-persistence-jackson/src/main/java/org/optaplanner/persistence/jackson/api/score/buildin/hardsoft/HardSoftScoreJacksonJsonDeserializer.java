@@ -18,10 +18,11 @@ package org.optaplanner.persistence.jackson.api.score.buildin.hardsoft;
 
 import java.io.IOException;
 
-import com.fasterxml.jackson.core.JsonParser;
-import com.fasterxml.jackson.databind.DeserializationContext;
 import org.optaplanner.core.api.score.buildin.hardsoft.HardSoftScore;
 import org.optaplanner.persistence.jackson.api.score.AbstractScoreJacksonJsonDeserializer;
+
+import com.fasterxml.jackson.core.JsonParser;
+import com.fasterxml.jackson.databind.DeserializationContext;
 
 @SuppressWarnings("checkstyle:javadocstyle")
 /**

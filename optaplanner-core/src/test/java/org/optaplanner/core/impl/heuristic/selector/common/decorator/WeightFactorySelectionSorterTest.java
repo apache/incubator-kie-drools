@@ -16,6 +16,9 @@
 
 package org.optaplanner.core.impl.heuristic.selector.common.decorator;
 
+import static org.mockito.Mockito.*;
+import static org.optaplanner.core.impl.testdata.util.PlannerAssert.*;
+
 import java.util.ArrayList;
 import java.util.List;
 
@@ -25,15 +28,12 @@ import org.optaplanner.core.impl.score.director.ScoreDirector;
 import org.optaplanner.core.impl.testdata.domain.TestdataEntity;
 import org.optaplanner.core.impl.testdata.domain.TestdataSolution;
 
-import static org.mockito.Mockito.*;
-import static org.optaplanner.core.impl.testdata.util.PlannerAssert.*;
-
 public class WeightFactorySelectionSorterTest {
 
     @Test
     public void sortAscending() {
-        SelectionSorterWeightFactory<TestdataSolution, TestdataEntity> weightFactory
-                = (solution, selection) -> Integer.valueOf(selection.getCode().charAt(0));
+        SelectionSorterWeightFactory<TestdataSolution, TestdataEntity> weightFactory = (solution, selection) -> Integer
+                .valueOf(selection.getCode().charAt(0));
         WeightFactorySelectionSorter<TestdataSolution, TestdataEntity> selectionSorter = new WeightFactorySelectionSorter<>(
                 weightFactory, SelectionSorterOrder.ASCENDING);
         ScoreDirector scoreDirector = mock(ScoreDirector.class);
@@ -48,8 +48,8 @@ public class WeightFactorySelectionSorterTest {
 
     @Test
     public void sortDescending() {
-        SelectionSorterWeightFactory<TestdataSolution, TestdataEntity> weightFactory
-                = (solution, selection) -> Integer.valueOf(selection.getCode().charAt(0));
+        SelectionSorterWeightFactory<TestdataSolution, TestdataEntity> weightFactory = (solution, selection) -> Integer
+                .valueOf(selection.getCode().charAt(0));
         WeightFactorySelectionSorter<TestdataSolution, TestdataEntity> selectionSorter = new WeightFactorySelectionSorter<>(
                 weightFactory, SelectionSorterOrder.DESCENDING);
         ScoreDirector scoreDirector = mock(ScoreDirector.class);

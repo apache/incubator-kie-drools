@@ -17,16 +17,7 @@
 package org.optaplanner.persistence.jackson.api.score;
 
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Map;
 
-import com.fasterxml.jackson.core.JsonParser;
-import com.fasterxml.jackson.databind.DeserializationContext;
-import com.fasterxml.jackson.databind.JsonDeserializer;
-import com.fasterxml.jackson.databind.JsonNode;
 import org.optaplanner.core.api.score.Score;
 import org.optaplanner.core.api.score.buildin.bendable.BendableScore;
 import org.optaplanner.core.api.score.buildin.bendablebigdecimal.BendableBigDecimalScore;
@@ -43,13 +34,19 @@ import org.optaplanner.core.api.score.buildin.simpledouble.SimpleDoubleScore;
 import org.optaplanner.core.api.score.buildin.simplelong.SimpleLongScore;
 import org.optaplanner.persistence.jackson.api.score.buildin.hardsoft.HardSoftScoreJacksonJsonDeserializer;
 
+import com.fasterxml.jackson.core.JsonParser;
+import com.fasterxml.jackson.databind.DeserializationContext;
+import com.fasterxml.jackson.databind.JsonDeserializer;
+
 /**
  * Jackson binding support for a {@link Score} type (but not a subtype).
  * For a {@link Score} subtype field, use {@link HardSoftScoreJacksonJsonDeserializer} or similar instead.
  * <p>
- * For example: use {@code @JsonSerialize(using = PolymorphicScoreJacksonJsonSerializer.class) @JsonDeserialize(using = PolymorphicScoreJacksonJsonDeserializer.class)}
+ * For example: use
+ * {@code @JsonSerialize(using = PolymorphicScoreJacksonJsonSerializer.class) @JsonDeserialize(using = PolymorphicScoreJacksonJsonDeserializer.class)}
  * on a {@code Score score} field which contains a {@link HardSoftScore} instance
  * and it will marshalled to JSON as {@code "score":{"type":"HARD_SOFT",score:"-999hard/-999soft"}}.
+ * 
  * @see Score
  * @see PolymorphicScoreJacksonJsonDeserializer
  */

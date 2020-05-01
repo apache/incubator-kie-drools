@@ -16,6 +16,8 @@
 
 package org.optaplanner.examples.vehiclerouting.optional.score;
 
+import static org.optaplanner.core.api.score.stream.ConstraintCollectors.sum;
+
 import org.optaplanner.core.api.score.buildin.hardsoftlong.HardSoftLongScore;
 import org.optaplanner.core.api.score.stream.Constraint;
 import org.optaplanner.core.api.score.stream.ConstraintFactory;
@@ -23,13 +25,11 @@ import org.optaplanner.core.api.score.stream.ConstraintProvider;
 import org.optaplanner.examples.vehiclerouting.domain.Customer;
 import org.optaplanner.examples.vehiclerouting.domain.timewindowed.TimeWindowedCustomer;
 
-import static org.optaplanner.core.api.score.stream.ConstraintCollectors.sum;
-
 public class VehicleRoutingConstraintProvider implements ConstraintProvider {
 
     @Override
     public Constraint[] defineConstraints(ConstraintFactory factory) {
-        return new Constraint[]{
+        return new Constraint[] {
                 vehicleCapacity(factory),
                 distanceToPreviousStandstill(factory),
                 distanceFromLastCustomerToDepot(factory),

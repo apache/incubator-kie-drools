@@ -16,10 +16,11 @@
 
 package org.optaplanner.examples.vehiclerouting.domain.location;
 
-import com.thoughtworks.xstream.annotations.XStreamAlias;
-import com.thoughtworks.xstream.annotations.XStreamInclude;
 import org.optaplanner.examples.common.domain.AbstractPersistable;
 import org.optaplanner.examples.vehiclerouting.domain.VehicleRoutingSolution;
+
+import com.thoughtworks.xstream.annotations.XStreamAlias;
+import com.thoughtworks.xstream.annotations.XStreamInclude;
 
 @XStreamAlias("VrpLocation")
 @XStreamInclude({
@@ -72,6 +73,7 @@ public abstract class Location extends AbstractPersistable {
     /**
      * The distance's unit of measurement depends on the {@link VehicleRoutingSolution}'s {@link DistanceType}.
      * It can be in miles or km, but for most cases it's in the TSPLIB's unit of measurement.
+     * 
      * @param location never null
      * @return a positive number, the distance multiplied by 1000 to avoid floating point arithmetic rounding errors
      */
@@ -88,6 +90,7 @@ public abstract class Location extends AbstractPersistable {
 
     /**
      * The angle relative to the direction EAST.
+     * 
      * @param location never null
      * @return in Cartesian coordinates
      */
@@ -97,7 +100,6 @@ public abstract class Location extends AbstractPersistable {
         double longitudeDifference = location.longitude - longitude;
         return Math.atan2(latitudeDifference, longitudeDifference);
     }
-
 
     @Override
     public String toString() {

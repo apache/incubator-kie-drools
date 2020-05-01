@@ -16,6 +16,9 @@
 
 package org.optaplanner.core.impl.heuristic.selector.value.decorator;
 
+import static org.mockito.Mockito.*;
+import static org.optaplanner.core.impl.testdata.util.PlannerAssert.*;
+
 import java.util.Arrays;
 import java.util.List;
 
@@ -30,9 +33,6 @@ import org.optaplanner.core.impl.testdata.domain.TestdataEntity;
 import org.optaplanner.core.impl.testdata.domain.TestdataSolution;
 import org.optaplanner.core.impl.testdata.domain.TestdataValue;
 
-import static org.mockito.Mockito.*;
-import static org.optaplanner.core.impl.testdata.util.PlannerAssert.*;
-
 public class EntityIndependentFilteringValueSelectorTest {
 
     @Test
@@ -41,9 +41,7 @@ public class EntityIndependentFilteringValueSelectorTest {
                 TestdataEntity.class, "value",
                 new TestdataValue("v1"), new TestdataValue("v2"), new TestdataValue("v3"), new TestdataValue("v4"));
 
-
-        SelectionFilter<TestdataSolution, TestdataValue> filter
-                = (scoreDirector, value) -> !value.getCode().equals("v3");
+        SelectionFilter<TestdataSolution, TestdataValue> filter = (scoreDirector, value) -> !value.getCode().equals("v3");
         List<SelectionFilter> filterList = Arrays.asList(filter);
         EntityIndependentValueSelector valueSelector = new EntityIndependentFilteringValueSelector(
                 childValueSelector, filterList);

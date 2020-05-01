@@ -64,19 +64,22 @@ public class HardMediumSoftBigDecimalScoreHolder extends AbstractScoreHolder<Har
         super.configureConstraintWeight(rule, constraintWeight);
         BiConsumer<RuleContext, BigDecimal> matchExecutor;
         if (constraintWeight.equals(HardMediumSoftBigDecimalScore.ZERO)) {
-            matchExecutor = (RuleContext kcontext, BigDecimal matchWeight) -> {};
-        } else if (constraintWeight.getMediumScore().equals(BigDecimal.ZERO) && constraintWeight.getSoftScore().equals(BigDecimal.ZERO)) {
-            matchExecutor = (RuleContext kcontext, BigDecimal matchWeight)
-                    -> addHardConstraintMatch(kcontext, constraintWeight.getHardScore().multiply(matchWeight));
-        } else if (constraintWeight.getHardScore().equals(BigDecimal.ZERO) && constraintWeight.getSoftScore().equals(BigDecimal.ZERO)) {
-            matchExecutor = (RuleContext kcontext, BigDecimal matchWeight)
-                    -> addMediumConstraintMatch(kcontext, constraintWeight.getMediumScore().multiply(matchWeight));
-        } else if (constraintWeight.getHardScore().equals(BigDecimal.ZERO) && constraintWeight.getMediumScore().equals(BigDecimal.ZERO)) {
-            matchExecutor = (RuleContext kcontext, BigDecimal matchWeight)
-                    -> addSoftConstraintMatch(kcontext, constraintWeight.getSoftScore().multiply(matchWeight));
+            matchExecutor = (RuleContext kcontext, BigDecimal matchWeight) -> {
+            };
+        } else if (constraintWeight.getMediumScore().equals(BigDecimal.ZERO)
+                && constraintWeight.getSoftScore().equals(BigDecimal.ZERO)) {
+            matchExecutor = (RuleContext kcontext, BigDecimal matchWeight) -> addHardConstraintMatch(kcontext,
+                    constraintWeight.getHardScore().multiply(matchWeight));
+        } else if (constraintWeight.getHardScore().equals(BigDecimal.ZERO)
+                && constraintWeight.getSoftScore().equals(BigDecimal.ZERO)) {
+            matchExecutor = (RuleContext kcontext, BigDecimal matchWeight) -> addMediumConstraintMatch(kcontext,
+                    constraintWeight.getMediumScore().multiply(matchWeight));
+        } else if (constraintWeight.getHardScore().equals(BigDecimal.ZERO)
+                && constraintWeight.getMediumScore().equals(BigDecimal.ZERO)) {
+            matchExecutor = (RuleContext kcontext, BigDecimal matchWeight) -> addSoftConstraintMatch(kcontext,
+                    constraintWeight.getSoftScore().multiply(matchWeight));
         } else {
-            matchExecutor = (RuleContext kcontext, BigDecimal matchWeight)
-                    -> addMultiConstraintMatch(kcontext,
+            matchExecutor = (RuleContext kcontext, BigDecimal matchWeight) -> addMultiConstraintMatch(kcontext,
                     constraintWeight.getHardScore().multiply(matchWeight),
                     constraintWeight.getMediumScore().multiply(matchWeight),
                     constraintWeight.getSoftScore().multiply(matchWeight));
@@ -84,9 +87,9 @@ public class HardMediumSoftBigDecimalScoreHolder extends AbstractScoreHolder<Har
         matchExecutorByNumberMap.put(rule, matchExecutor);
         matchExecutorByScoreMap.put(rule, (RuleContext kcontext,
                 HardMediumSoftBigDecimalScore weightMultiplier) -> addMultiConstraintMatch(kcontext,
-                constraintWeight.getHardScore().multiply(weightMultiplier.getHardScore()),
-                constraintWeight.getMediumScore().multiply(weightMultiplier.getMediumScore()),
-                constraintWeight.getSoftScore().multiply(weightMultiplier.getSoftScore())));
+                        constraintWeight.getHardScore().multiply(weightMultiplier.getHardScore()),
+                        constraintWeight.getMediumScore().multiply(weightMultiplier.getMediumScore()),
+                        constraintWeight.getSoftScore().multiply(weightMultiplier.getSoftScore())));
     }
 
     // ************************************************************************
@@ -95,6 +98,7 @@ public class HardMediumSoftBigDecimalScoreHolder extends AbstractScoreHolder<Har
 
     /**
      * Penalize a match by the {@link ConstraintWeight} negated.
+     * 
      * @param kcontext never null, the magic variable in DRL
      */
     public void penalize(RuleContext kcontext) {
@@ -103,6 +107,7 @@ public class HardMediumSoftBigDecimalScoreHolder extends AbstractScoreHolder<Har
 
     /**
      * Penalize a match by the {@link ConstraintWeight} negated and multiplied with the weightMultiplier for all score levels.
+     * 
      * @param kcontext never null, the magic variable in DRL
      * @param weightMultiplier at least 0
      */
@@ -111,19 +116,23 @@ public class HardMediumSoftBigDecimalScoreHolder extends AbstractScoreHolder<Har
     }
 
     /**
-     * Penalize a match by the {@link ConstraintWeight} negated and multiplied with the specific weightMultiplier per score level.
+     * Penalize a match by the {@link ConstraintWeight} negated and multiplied with the specific weightMultiplier per score
+     * level.
      * Slower than {@link #penalize(RuleContext, BigDecimal)}.
+     * 
      * @param kcontext never null, the magic variable in DRL
      * @param hardWeightMultiplier at least 0
      * @param mediumWeightMultiplier at least 0
      * @param softWeightMultiplier at least 0
      */
-    public void penalize(RuleContext kcontext, BigDecimal hardWeightMultiplier, BigDecimal mediumWeightMultiplier, BigDecimal softWeightMultiplier) {
+    public void penalize(RuleContext kcontext, BigDecimal hardWeightMultiplier, BigDecimal mediumWeightMultiplier,
+            BigDecimal softWeightMultiplier) {
         impactScore(kcontext, hardWeightMultiplier.negate(), mediumWeightMultiplier.negate(), softWeightMultiplier.negate());
     }
 
     /**
      * Reward a match by the {@link ConstraintWeight}.
+     * 
      * @param kcontext never null, the magic variable in DRL
      */
     public void reward(RuleContext kcontext) {
@@ -132,6 +141,7 @@ public class HardMediumSoftBigDecimalScoreHolder extends AbstractScoreHolder<Har
 
     /**
      * Reward a match by the {@link ConstraintWeight} multiplied with the weightMultiplier for all score levels.
+     * 
      * @param kcontext never null, the magic variable in DRL
      * @param weightMultiplier at least 0
      */
@@ -142,12 +152,14 @@ public class HardMediumSoftBigDecimalScoreHolder extends AbstractScoreHolder<Har
     /**
      * Reward a match by the {@link ConstraintWeight} multiplied with the specific weightMultiplier per score level.
      * Slower than {@link #reward(RuleContext, BigDecimal)}.
+     * 
      * @param kcontext never null, the magic variable in DRL
      * @param hardWeightMultiplier at least 0
      * @param mediumWeightMultiplier at least 0
      * @param softWeightMultiplier at least 0
      */
-    public void reward(RuleContext kcontext, BigDecimal hardWeightMultiplier, BigDecimal mediumWeightMultiplier, BigDecimal softWeightMultiplier) {
+    public void reward(RuleContext kcontext, BigDecimal hardWeightMultiplier, BigDecimal mediumWeightMultiplier,
+            BigDecimal softWeightMultiplier) {
         impactScore(kcontext, hardWeightMultiplier, mediumWeightMultiplier, softWeightMultiplier);
     }
 
@@ -168,7 +180,8 @@ public class HardMediumSoftBigDecimalScoreHolder extends AbstractScoreHolder<Har
         matchExecutor.accept(kcontext, weightMultiplier);
     }
 
-    private void impactScore(RuleContext kcontext, BigDecimal hardWeightMultiplier, BigDecimal mediumWeightMultiplier, BigDecimal softWeightMultiplier) {
+    private void impactScore(RuleContext kcontext, BigDecimal hardWeightMultiplier, BigDecimal mediumWeightMultiplier,
+            BigDecimal softWeightMultiplier) {
         Rule rule = kcontext.getRule();
         BiConsumer<RuleContext, HardMediumSoftBigDecimalScore> matchExecutor = matchExecutorByScoreMap.get(rule);
         if (matchExecutor == null) {
@@ -176,7 +189,8 @@ public class HardMediumSoftBigDecimalScoreHolder extends AbstractScoreHolder<Har
                     + ") does not match a @" + ConstraintWeight.class.getSimpleName() + " on the @"
                     + ConstraintConfiguration.class.getSimpleName() + " annotated class.");
         }
-        matchExecutor.accept(kcontext, HardMediumSoftBigDecimalScore.of(hardWeightMultiplier, mediumWeightMultiplier, softWeightMultiplier));
+        matchExecutor.accept(kcontext,
+                HardMediumSoftBigDecimalScore.of(hardWeightMultiplier, mediumWeightMultiplier, softWeightMultiplier));
     }
 
     // ************************************************************************
@@ -235,7 +249,8 @@ public class HardMediumSoftBigDecimalScoreHolder extends AbstractScoreHolder<Har
      * @param mediumWeight never null, higher is better, negative for a penalty, positive for a reward
      * @param softWeight never null, higher is better, negative for a penalty, positive for a reward
      */
-    public void addMultiConstraintMatch(RuleContext kcontext, BigDecimal hardWeight, BigDecimal mediumWeight, BigDecimal softWeight) {
+    public void addMultiConstraintMatch(RuleContext kcontext, BigDecimal hardWeight, BigDecimal mediumWeight,
+            BigDecimal softWeight) {
         hardScore = hardScore.add(hardWeight);
         mediumScore = mediumScore.add(mediumWeight);
         softScore = softScore.add(softWeight);

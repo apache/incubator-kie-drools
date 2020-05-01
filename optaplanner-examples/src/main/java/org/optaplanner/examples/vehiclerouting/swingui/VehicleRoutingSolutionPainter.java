@@ -208,7 +208,8 @@ public class VehicleRoutingSolutionPainter {
         g.setColor(TangoColorFactory.ALUMINIUM_4);
         g.fillRect(6, (int) height - 6 - (TEXT_SIZE / 2), 3, 3);
         g.drawString((solution instanceof TimeWindowedVehicleRoutingSolution)
-                ? "Customer: demand, time window and arrival time" : "Customer: demand", 15, (int) height - 5);
+                ? "Customer: demand, time window and arrival time"
+                : "Customer: demand", 15, (int) height - 5);
         String customersSizeString = solution.getCustomerList().size() + " customers";
         g.drawString(customersSizeString,
                 ((int) width - g.getFontMetrics().stringWidth(customersSizeString)) / 2, (int) height - 5);

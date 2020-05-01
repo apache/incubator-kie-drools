@@ -37,8 +37,7 @@ public final class DefaultSingleConstraintVerification<Solution_>
 
     @Override
     public final DefaultSingleConstraintAssertion given(Object... facts) {
-        try (ConstraintSession<Solution_> constraintSession =
-                     scoreDirectorFactory.newConstraintStreamingSession(true, null)) {
+        try (ConstraintSession<Solution_> constraintSession = scoreDirectorFactory.newConstraintStreamingSession(true, null)) {
             Arrays.stream(facts).forEach(constraintSession::insert);
             Map<String, ConstraintMatchTotal> constraintMatchTotalMap = constraintSession.getConstraintMatchTotalMap();
             return new DefaultSingleConstraintAssertion<>(scoreDirectorFactory, constraintMatchTotalMap);
@@ -47,8 +46,7 @@ public final class DefaultSingleConstraintVerification<Solution_>
 
     @Override
     public final DefaultSingleConstraintAssertion givenSolution(Solution_ solution) {
-        try (ScoreDirector<Solution_> scoreDirector =
-                     scoreDirectorFactory.buildScoreDirector(true, true)) {
+        try (ScoreDirector<Solution_> scoreDirector = scoreDirectorFactory.buildScoreDirector(true, true)) {
             scoreDirector.setWorkingSolution(Objects.requireNonNull(solution));
             Map<String, ConstraintMatchTotal> constraintMatchTotalMap = scoreDirector.getConstraintMatchTotalMap();
             return new DefaultSingleConstraintAssertion<>(scoreDirectorFactory, constraintMatchTotalMap);

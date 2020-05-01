@@ -16,6 +16,8 @@
 
 package org.optaplanner.core.api.solver;
 
+import static org.junit.Assert.*;
+
 import java.io.IOException;
 import java.util.Collections;
 
@@ -30,8 +32,6 @@ import org.optaplanner.core.impl.score.director.drools.DroolsScoreDirectorFactor
 import org.optaplanner.core.impl.solver.DefaultSolver;
 import org.optaplanner.core.impl.testdata.domain.TestdataSolution;
 import org.optaplanner.core.impl.testdata.util.KieContainerHelper;
-
-import static org.junit.Assert.*;
 
 public class KieContainerSolverFactoryTest extends CommonTestMethodBase {
 
@@ -91,7 +91,8 @@ public class KieContainerSolverFactoryTest extends CommonTestMethodBase {
     }
 
     @Test
-    public void buildSolverWithEmptyKmodule() throws IOException, ClassNotFoundException, IllegalAccessException, InstantiationException {
+    public void buildSolverWithEmptyKmodule()
+            throws IOException, ClassNotFoundException, IllegalAccessException, InstantiationException {
         ReleaseId releaseId = kieContainerHelper.deployTestdataSolverKjar(
                 "buildSolverWithEmptyKmodule",
                 "org/optaplanner/core/api/solver/kieContainerEmptyKmodule.xml",
@@ -125,7 +126,8 @@ public class KieContainerSolverFactoryTest extends CommonTestMethodBase {
 
     private void assertNewKieSessionSucceeds(Solver<?> solver) {
         DefaultSolver<?> defaultSolver = (DefaultSolver<?>) solver;
-        DroolsScoreDirectorFactory scoreDirectorFactory = (DroolsScoreDirectorFactory<?>) defaultSolver.getScoreDirectorFactory();
+        DroolsScoreDirectorFactory scoreDirectorFactory = (DroolsScoreDirectorFactory<?>) defaultSolver
+                .getScoreDirectorFactory();
         scoreDirectorFactory.newKieSession();
     }
 

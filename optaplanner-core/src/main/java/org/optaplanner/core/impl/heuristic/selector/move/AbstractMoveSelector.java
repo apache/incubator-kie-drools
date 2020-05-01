@@ -20,6 +20,7 @@ import org.optaplanner.core.impl.heuristic.selector.AbstractSelector;
 
 /**
  * Abstract superclass for {@link MoveSelector}.
+ * 
  * @see MoveSelector
  */
 public abstract class AbstractMoveSelector extends AbstractSelector implements MoveSelector {

@@ -19,8 +19,9 @@ package org.optaplanner.examples.examination.domain;
 import java.util.List;
 import java.util.Set;
 
-import com.thoughtworks.xstream.annotations.XStreamAlias;
 import org.optaplanner.examples.common.domain.AbstractPersistable;
+
+import com.thoughtworks.xstream.annotations.XStreamAlias;
 
 @XStreamAlias("Topic")
 public class Topic extends AbstractPersistable {

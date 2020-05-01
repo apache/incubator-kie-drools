@@ -15,6 +15,8 @@
  */
 package org.optaplanner.core.impl.exhaustivesearch.scope;
 
+import static org.junit.Assert.*;
+
 import java.util.TreeSet;
 
 import org.junit.jupiter.api.Test;
@@ -24,14 +26,11 @@ import org.optaplanner.core.impl.exhaustivesearch.node.comparator.ScoreFirstNode
 import org.optaplanner.core.impl.solver.scope.DefaultSolverScope;
 import org.optaplanner.core.impl.testdata.domain.TestdataSolution;
 
-import static org.junit.Assert.*;
-
 public class ExhaustiveSearchPhaseScopeTest extends AbstractNodeComparatorTest {
 
     @Test
     public void testNodePruning() {
-        ExhaustiveSearchPhaseScope<TestdataSolution> phase
-                = new ExhaustiveSearchPhaseScope<>(new DefaultSolverScope<>());
+        ExhaustiveSearchPhaseScope<TestdataSolution> phase = new ExhaustiveSearchPhaseScope<>(new DefaultSolverScope<>());
         phase.setExpandableNodeQueue(new TreeSet<>(new ScoreFirstNodeComparator(true)));
         phase.addExpandableNode(buildNode(0, "0", 0, 0));
         phase.addExpandableNode(buildNode(0, "1", 0, 0));

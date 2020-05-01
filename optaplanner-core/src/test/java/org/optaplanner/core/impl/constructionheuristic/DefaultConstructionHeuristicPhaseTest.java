@@ -16,12 +16,14 @@
 
 package org.optaplanner.core.impl.constructionheuristic;
 
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
+import static org.optaplanner.core.impl.testdata.util.PlannerAssert.*;
+
 import java.util.Arrays;
 import java.util.Collections;
 
 import org.junit.jupiter.api.Test;
-import org.optaplanner.core.api.solver.Solver;
-import org.optaplanner.core.api.solver.SolverFactory;
 import org.optaplanner.core.config.constructionheuristic.ConstructionHeuristicPhaseConfig;
 import org.optaplanner.core.config.solver.SolverConfig;
 import org.optaplanner.core.impl.testdata.domain.TestdataEntity;
@@ -32,10 +34,6 @@ import org.optaplanner.core.impl.testdata.domain.immovable.TestdataImmovableSolu
 import org.optaplanner.core.impl.testdata.domain.reinitialize.TestdataReinitializeEntity;
 import org.optaplanner.core.impl.testdata.domain.reinitialize.TestdataReinitializeSolution;
 import org.optaplanner.core.impl.testdata.util.PlannerTestUtils;
-
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
-import static org.optaplanner.core.impl.testdata.util.PlannerAssert.*;
 
 public class DefaultConstructionHeuristicPhaseTest {
 

@@ -16,6 +16,8 @@
 
 package org.optaplanner.examples.nqueens.solver.tracking;
 
+import static org.junit.Assert.assertNotNull;
+
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
@@ -36,8 +38,6 @@ import org.optaplanner.core.impl.solver.DefaultSolver;
 import org.optaplanner.examples.nqueens.app.NQueensApp;
 import org.optaplanner.examples.nqueens.domain.NQueens;
 import org.optaplanner.examples.nqueens.persistence.NQueensGenerator;
-
-import static org.junit.Assert.assertNotNull;
 
 public class NQueensLocalSearchTrackingTest extends NQueensAbstractTrackingTest {
 
@@ -75,7 +75,7 @@ public class NQueensLocalSearchTrackingTest extends NQueensAbstractTrackingTest 
     public static Collection<Object[]> parameters() {
         Collection<Object[]> params = new ArrayList<>();
 
-        params.add(new Object[]{
+        params.add(new Object[] {
                 new AcceptorConfig()
                         .withAcceptorTypeList(Arrays.asList(AcceptorType.HILL_CLIMBING)),
                 new LocalSearchForagerConfig()
@@ -85,9 +85,8 @@ public class NQueensLocalSearchTrackingTest extends NQueensAbstractTrackingTest 
                         new NQueensStepTracking(4, 3), new NQueensStepTracking(2, 2),
                         new NQueensStepTracking(3, 5), new NQueensStepTracking(1, 4),
                         new NQueensStepTracking(1, 5), new NQueensStepTracking(1, 4),
-                        new NQueensStepTracking(1, 5)
-                )});
-        params.add(new Object[]{
+                        new NQueensStepTracking(1, 5)) });
+        params.add(new Object[] {
                 new AcceptorConfig()
                         .withAcceptorTypeList(Arrays.asList(AcceptorType.ENTITY_TABU))
                         .withEntityTabuSize(N - 1),
@@ -98,9 +97,8 @@ public class NQueensLocalSearchTrackingTest extends NQueensAbstractTrackingTest 
                         new NQueensStepTracking(4, 3), new NQueensStepTracking(2, 2),
                         new NQueensStepTracking(3, 5), new NQueensStepTracking(5, 4),
                         new NQueensStepTracking(1, 4), new NQueensStepTracking(0, 0),
-                        new NQueensStepTracking(4, 1)
-                )});
-        params.add(new Object[]{
+                        new NQueensStepTracking(4, 1)) });
+        params.add(new Object[] {
                 new AcceptorConfig()
                         .withAcceptorTypeList(Arrays.asList(AcceptorType.LATE_ACCEPTANCE))
                         .withLateAcceptanceSize(1),
@@ -110,8 +108,7 @@ public class NQueensLocalSearchTrackingTest extends NQueensAbstractTrackingTest 
                         // (0, 0) is rejected due to high score
                         new NQueensStepTracking(0, 1), new NQueensStepTracking(0, 2),
                         new NQueensStepTracking(0, 1), new NQueensStepTracking(0, 2),
-                        new NQueensStepTracking(0, 1), new NQueensStepTracking(0, 2)
-                )});
+                        new NQueensStepTracking(0, 1), new NQueensStepTracking(0, 2)) });
         return params;
     }
 }

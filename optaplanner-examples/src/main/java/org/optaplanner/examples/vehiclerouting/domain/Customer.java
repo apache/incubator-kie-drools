@@ -16,8 +16,6 @@
 
 package org.optaplanner.examples.vehiclerouting.domain;
 
-import com.thoughtworks.xstream.annotations.XStreamAlias;
-import com.thoughtworks.xstream.annotations.XStreamInclude;
 import org.optaplanner.core.api.domain.entity.PlanningEntity;
 import org.optaplanner.core.api.domain.variable.AnchorShadowVariable;
 import org.optaplanner.core.api.domain.variable.PlanningVariable;
@@ -26,6 +24,9 @@ import org.optaplanner.examples.common.domain.AbstractPersistable;
 import org.optaplanner.examples.vehiclerouting.domain.location.Location;
 import org.optaplanner.examples.vehiclerouting.domain.solver.DepotAngleCustomerDifficultyWeightFactory;
 import org.optaplanner.examples.vehiclerouting.domain.timewindowed.TimeWindowedCustomer;
+
+import com.thoughtworks.xstream.annotations.XStreamAlias;
+import com.thoughtworks.xstream.annotations.XStreamInclude;
 
 @PlanningEntity(difficultyWeightFactoryClass = DepotAngleCustomerDifficultyWeightFactory.class)
 @XStreamAlias("VrpCustomer")
@@ -70,8 +71,8 @@ public class Customer extends AbstractPersistable implements Standstill {
         this.demand = demand;
     }
 
-    @PlanningVariable(valueRangeProviderRefs = {"vehicleRange", "customerRange"},
-            graphType = PlanningVariableGraphType.CHAINED)
+    @PlanningVariable(valueRangeProviderRefs = { "vehicleRange",
+            "customerRange" }, graphType = PlanningVariableGraphType.CHAINED)
     public Standstill getPreviousStandstill() {
         return previousStandstill;
     }

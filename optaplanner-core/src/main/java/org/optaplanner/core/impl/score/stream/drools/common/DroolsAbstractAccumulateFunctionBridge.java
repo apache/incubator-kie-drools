@@ -39,7 +39,7 @@ public abstract class DroolsAbstractAccumulateFunctionBridge<ResultContainer_, I
     public void accumulate(DroolsAccumulateContext<ResultContainer_> context, Object value) {
         Map<Object, Runnable> undoMap = context.getUndoMap();
         if (undoMap.containsKey(value)) {
-            throw new IllegalStateException("Undo for (" + value +  ") already exists.");
+            throw new IllegalStateException("Undo for (" + value + ") already exists.");
         }
         Runnable undo = accumulate(context.getContainer(), (InTuple) value);
         undoMap.put(value, undo);
@@ -49,7 +49,7 @@ public abstract class DroolsAbstractAccumulateFunctionBridge<ResultContainer_, I
     public void reverse(DroolsAccumulateContext<ResultContainer_> context, Object value) {
         Runnable undo = context.getUndoMap().remove(value);
         if (undo == null) {
-            throw new IllegalStateException("Undo for (" + value +  ") does not exist.");
+            throw new IllegalStateException("Undo for (" + value + ") does not exist.");
         }
         undo.run();
     }

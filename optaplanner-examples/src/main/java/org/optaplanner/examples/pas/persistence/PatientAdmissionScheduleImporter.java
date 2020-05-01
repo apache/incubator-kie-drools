@@ -16,6 +16,9 @@
 
 package org.optaplanner.examples.pas.persistence;
 
+import static java.util.Comparator.comparing;
+import static java.util.Comparator.comparingLong;
+
 import java.io.IOException;
 import java.math.BigInteger;
 import java.util.ArrayList;
@@ -46,14 +49,12 @@ import org.optaplanner.examples.pas.domain.RoomEquipment;
 import org.optaplanner.examples.pas.domain.RoomSpecialism;
 import org.optaplanner.examples.pas.domain.Specialism;
 
-import static java.util.Comparator.comparing;
-import static java.util.Comparator.comparingLong;
-
 public class PatientAdmissionScheduleImporter extends AbstractTxtSolutionImporter<PatientAdmissionSchedule> {
 
     public static void main(String[] args) {
         SolutionConverter<PatientAdmissionSchedule> converter = SolutionConverter.createImportConverter(
-                PatientAdmissionScheduleApp.DATA_DIR_NAME, new PatientAdmissionScheduleImporter(), PatientAdmissionSchedule.class);
+                PatientAdmissionScheduleApp.DATA_DIR_NAME, new PatientAdmissionScheduleImporter(),
+                PatientAdmissionSchedule.class);
         converter.convertAll();
     }
 
@@ -64,9 +65,8 @@ public class PatientAdmissionScheduleImporter extends AbstractTxtSolutionImporte
 
     public static class PatientAdmissionScheduleInputBuilder extends TxtInputBuilder<PatientAdmissionSchedule> {
 
-        private static final Comparator<Room> ROOM_COMPARATOR =
-                comparing(Room::getDepartment, comparingLong(Department::getId))
-                        .thenComparingLong(Room::getId);
+        private static final Comparator<Room> ROOM_COMPARATOR = comparing(Room::getDepartment, comparingLong(Department::getId))
+                .thenComparingLong(Room::getId);
         private static final Comparator<Bed> BED_COMPARATOR = comparing(Bed::getRoom, ROOM_COMPARATOR)
                 .thenComparingInt(Bed::getIndexInRoom)
                 .thenComparingLong(Bed::getId);
@@ -113,7 +113,7 @@ public class PatientAdmissionScheduleImporter extends AbstractTxtSolutionImporte
             BigInteger possibleSolutionSize = BigInteger.valueOf(patientAdmissionSchedule.getBedList().size()).pow(
                     patientAdmissionSchedule.getAdmissionPartList().size());
             logger.info("PatientAdmissionSchedule {} has {} specialisms, {} equipments, {} departments, {} rooms, "
-                            + "{} beds, {} nights, {} patients and {} admissions with a search space of {}.",
+                    + "{} beds, {} nights, {} patients and {} admissions with a search space of {}.",
                     getInputId(),
                     patientAdmissionSchedule.getSpecialismList().size(),
                     patientAdmissionSchedule.getEquipmentList().size(),
@@ -351,12 +351,14 @@ public class PatientAdmissionScheduleImporter extends AbstractTxtSolutionImporte
             patientAdmissionSchedule.setNightList(nightList);
         }
 
-        private void readPatientListAndAdmissionPartListAndRequiredPatientEquipmentListAndPreferredPatientEquipmentList() throws IOException {
+        private void readPatientListAndAdmissionPartListAndRequiredPatientEquipmentListAndPreferredPatientEquipmentList()
+                throws IOException {
             readConstantLine("PATIENTS:");
             List<Patient> patientList = new ArrayList<>(patientListSize);
             List<AdmissionPart> admissionPartList = new ArrayList<>(patientListSize);
             List<RequiredPatientEquipment> requiredPatientEquipmentList = new ArrayList<>(patientListSize * equipmentListSize);
-            List<PreferredPatientEquipment> preferredPatientEquipmentList = new ArrayList<>(patientListSize * equipmentListSize);
+            List<PreferredPatientEquipment> preferredPatientEquipmentList = new ArrayList<>(
+                    patientListSize * equipmentListSize);
             long admissionPartId = 0L;
             long requiredPatientEquipmentId = 0L;
             long preferredPatientEquipmentId = 0L;
@@ -381,7 +383,8 @@ public class PatientAdmissionScheduleImporter extends AbstractTxtSolutionImporte
                 patient.setGender(Gender.valueOfCode(patientTokens[3]));
                 int preferredMaximumRoomCapacity = Integer.parseInt(lineTokens[3]);
                 patient.setPreferredMaximumRoomCapacity(preferredMaximumRoomCapacity == 0
-                        ? null : preferredMaximumRoomCapacity);
+                        ? null
+                        : preferredMaximumRoomCapacity);
                 patientList.add(patient);
 
                 String[] admissionPartTokens = splitBySpace(lineTokens[2]);
@@ -447,8 +450,7 @@ public class PatientAdmissionScheduleImporter extends AbstractTxtSolutionImporte
                             + requiredPatientEquipmentTokens.length
                             + ") as equipmentListSize (" + equipmentListSize + ") after 4th pipeline (|).");
                 }
-                List<RequiredPatientEquipment> requiredPatientEquipmentOfPatientList
-                        = new ArrayList<>(equipmentListSize);
+                List<RequiredPatientEquipment> requiredPatientEquipmentOfPatientList = new ArrayList<>(equipmentListSize);
                 for (int j = 0; j < requiredPatientEquipmentTokens.length; j++) {
                     int hasEquipment = Integer.parseInt(requiredPatientEquipmentTokens[j]);
                     if (hasEquipment == 1) {
@@ -473,8 +475,7 @@ public class PatientAdmissionScheduleImporter extends AbstractTxtSolutionImporte
                             + preferredPatientEquipmentTokens.length
                             + ") as equipmentListSize (" + equipmentListSize + ") after 5th pipeline (|).");
                 }
-                List<PreferredPatientEquipment> preferredPatientEquipmentOfPatientList
-                        = new ArrayList<>(equipmentListSize);
+                List<PreferredPatientEquipment> preferredPatientEquipmentOfPatientList = new ArrayList<>(equipmentListSize);
                 for (int j = 0; j < preferredPatientEquipmentTokens.length; j++) {
                     int hasEquipment = Integer.parseInt(preferredPatientEquipmentTokens[j]);
                     if (hasEquipment == 1) {
@@ -503,24 +504,24 @@ public class PatientAdmissionScheduleImporter extends AbstractTxtSolutionImporte
             patientAdmissionSchedule.setPreferredPatientEquipmentList(preferredPatientEquipmentList);
         }
 
-//        /**
-//         * hack to make sure there are enough nights
-//         * @param lastNightIndex {@code >= 0}
-//         */
-//        private void ensureEnoughNights(int lastNightIndex) {
-//            List<Night> nightList = patientAdmissionSchedule.getNightList();
-//            if (lastNightIndex >= nightList.size()) {
-//                long nightId = nightList.size();
-//                for (int j = nightList.size(); j <= lastNightIndex; j++) {
-//                    Night night = new Night();
-//                    night.setId(nightId);
-//                    night.setIndex(j);
-//                    nightList.add(night);
-//                    indexToNightMap.put(j, night);
-//                    nightId++;
-//                }
-//            }
-//        }
+        //        /**
+        //         * hack to make sure there are enough nights
+        //         * @param lastNightIndex {@code >= 0}
+        //         */
+        //        private void ensureEnoughNights(int lastNightIndex) {
+        //            List<Night> nightList = patientAdmissionSchedule.getNightList();
+        //            if (lastNightIndex >= nightList.size()) {
+        //                long nightId = nightList.size();
+        //                for (int j = nightList.size(); j <= lastNightIndex; j++) {
+        //                    Night night = new Night();
+        //                    night.setId(nightId);
+        //                    night.setIndex(j);
+        //                    nightList.add(night);
+        //                    indexToNightMap.put(j, night);
+        //                    nightId++;
+        //                }
+        //            }
+        //        }
 
         private void createBedDesignationList() {
             List<AdmissionPart> admissionPartList = patientAdmissionSchedule.getAdmissionPartList();

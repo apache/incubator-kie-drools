@@ -16,6 +16,9 @@
 
 package org.optaplanner.core.impl.localsearch.decider.acceptor.tabu;
 
+import static org.junit.Assert.*;
+import static org.mockito.Mockito.*;
+
 import java.util.Arrays;
 import java.util.Collection;
 
@@ -29,9 +32,6 @@ import org.optaplanner.core.impl.localsearch.scope.LocalSearchStepScope;
 import org.optaplanner.core.impl.solver.scope.DefaultSolverScope;
 import org.optaplanner.core.impl.testdata.domain.TestdataEntity;
 import org.optaplanner.core.impl.testdata.domain.TestdataSolution;
-
-import static org.junit.Assert.*;
-import static org.mockito.Mockito.*;
 
 public class EntityTabuAcceptorTest {
 

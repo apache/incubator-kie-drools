@@ -28,9 +28,10 @@ import org.optaplanner.core.impl.heuristic.selector.entity.mimic.MimicReplayingE
  * {@link Selector}'s {@link Iterator#hasNext()} or {@link Iterator#next()} methods,
  * because that can cause descendant {@link Selector}s to be selected too early
  * (which breaks {@link MimicReplayingEntitySelector}).
+ * 
  * @param <S> Selection type, for example a {@link Move} class, an entity class or a value class.
  */
-public abstract class UpcomingSelectionIterator<S> extends SelectionIterator<S>  {
+public abstract class UpcomingSelectionIterator<S> extends SelectionIterator<S> {
 
     protected boolean upcomingCreated = false;
     protected boolean hasUpcomingSelection = true;

@@ -16,6 +16,8 @@
 
 package org.optaplanner.core.impl.score.buildin.hardsoft;
 
+import static org.junit.Assert.*;
+
 import java.util.function.Consumer;
 
 import org.junit.jupiter.api.Test;
@@ -23,8 +25,6 @@ import org.optaplanner.core.api.score.Score;
 import org.optaplanner.core.api.score.buildin.hardsoft.HardSoftScore;
 import org.optaplanner.core.impl.score.inliner.IntWeightedScoreImpacter;
 import org.optaplanner.core.impl.score.inliner.UndoScoreImpacter;
-
-import static org.junit.Assert.*;
 
 public class HardSoftScoreInlinerTest {
 

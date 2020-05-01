@@ -15,6 +15,8 @@
  */
 package org.optaplanner.core.impl.score.director.drools.testgen;
 
+import static org.assertj.core.api.Assertions.assertThat;
+
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.IOException;
@@ -41,8 +43,6 @@ import org.optaplanner.core.impl.score.director.drools.testgen.reproducer.TestGe
 import org.optaplanner.core.impl.testdata.domain.TestdataEntity;
 import org.optaplanner.core.impl.testdata.domain.TestdataSolution;
 import org.optaplanner.core.impl.testdata.domain.TestdataValue;
-
-import static org.assertj.core.api.Assertions.assertThat;
 
 public class TestGenTestWriterTest {
 
@@ -113,8 +113,7 @@ public class TestGenTestWriterTest {
 
         assertThat(generatedCode).contains(
                 "import java.util.Date;",
-                "setDate(new Date(" + now.getTime() + "));"
-        );
+                "setDate(new Date(" + now.getTime() + "));");
     }
 
     private static void checkOutput(Path expected, String actual) throws IOException {

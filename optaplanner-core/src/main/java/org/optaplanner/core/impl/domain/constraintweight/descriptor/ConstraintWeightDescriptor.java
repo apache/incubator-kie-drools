@@ -52,7 +52,8 @@ public class ConstraintWeightDescriptor<Solution_> {
                     .getAnnotation(ConstraintConfiguration.class);
             if (constraintConfigurationAnnotation == null) {
                 throw new IllegalStateException("Impossible state: " + ConstraintConfigurationDescriptor.class.getSimpleName()
-                        + " only reflects over members with a " + ConstraintConfiguration.class.getSimpleName() + " annotation.");
+                        + " only reflects over members with a " + ConstraintConfiguration.class.getSimpleName()
+                        + " annotation.");
             }
             constraintPackage = constraintConfigurationAnnotation.constraintPackage();
             if (constraintPackage.isEmpty()) {
@@ -78,13 +79,12 @@ public class ConstraintWeightDescriptor<Solution_> {
 
     public Function<Solution_, Score<?>> createExtractor() {
         SolutionDescriptor<Solution_> solutionDescriptor = constraintConfigurationDescriptor.getSolutionDescriptor();
-        MemberAccessor constraintConfigurationMemberAccessor =
-                solutionDescriptor.getConstraintConfigurationMemberAccessor();
+        MemberAccessor constraintConfigurationMemberAccessor = solutionDescriptor.getConstraintConfigurationMemberAccessor();
         return (Solution_ solution) -> {
-            Object constraintConfiguration =
-                    Objects.requireNonNull(constraintConfigurationMemberAccessor.executeGetter(solution),
-                            "Constraint configuration provider (" + constraintConfigurationMemberAccessor +
-                                    ") returns null.");
+            Object constraintConfiguration = Objects.requireNonNull(
+                    constraintConfigurationMemberAccessor.executeGetter(solution),
+                    "Constraint configuration provider (" + constraintConfigurationMemberAccessor +
+                            ") returns null.");
             return (Score<?>) memberAccessor.executeGetter(constraintConfiguration);
         };
     }

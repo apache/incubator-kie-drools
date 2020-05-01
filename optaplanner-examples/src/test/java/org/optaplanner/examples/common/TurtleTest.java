@@ -12,7 +12,7 @@ import org.junit.jupiter.api.condition.EnabledIfSystemProperty;
 /**
  * Turtle tests are not run by default. They are only run if {@code -DrunTurtleTests=true} because it takes days.
  */
-@Target({ElementType.TYPE, ElementType.METHOD})
+@Target({ ElementType.TYPE, ElementType.METHOD })
 @Retention(RetentionPolicy.RUNTIME)
 @Inherited
 @Test

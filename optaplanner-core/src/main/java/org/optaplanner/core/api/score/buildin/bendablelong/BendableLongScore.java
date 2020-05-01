@@ -32,6 +32,7 @@ import org.optaplanner.core.impl.score.buildin.bendablelong.BendableLongScoreDef
  * <p>
  * The {@link #getHardLevelsSize()} and {@link #getSoftLevelsSize()} must be the same as in the
  * {@link BendableLongScoreDefinition} used.
+ * 
  * @see Score
  */
 public final class BendableLongScore extends AbstractBendableScore<BendableLongScore>
@@ -57,6 +58,7 @@ public final class BendableLongScore extends AbstractBendableScore<BendableLongS
 
     /**
      * Creates a new {@link BendableLongScore}.
+     * 
      * @param initScore see {@link Score#getInitScore()}
      * @param hardScores never null, never change that array afterwards: it must be immutable
      * @param softScores never null, never change that array afterwards: it must be immutable
@@ -76,6 +78,7 @@ public final class BendableLongScore extends AbstractBendableScore<BendableLongS
 
     /**
      * Creates a new {@link BendableLongScore}.
+     * 
      * @param hardScores never null, never change that array afterwards: it must be immutable
      * @param softScores never null, never change that array afterwards: it must be immutable
      * @return never null
@@ -94,6 +97,7 @@ public final class BendableLongScore extends AbstractBendableScore<BendableLongS
 
     /**
      * Creates a new {@link BendableLongScore}.
+     * 
      * @param hardLevelsSize at least 0
      * @param softLevelsSize at least 0
      * @return never null
@@ -104,6 +108,7 @@ public final class BendableLongScore extends AbstractBendableScore<BendableLongS
 
     /**
      * Creates a new {@link BendableLongScore}.
+     * 
      * @param hardLevelsSize at least 0
      * @param softLevelsSize at least 0
      * @param hardLevel at least 0, less than hardLevelsSize
@@ -118,6 +123,7 @@ public final class BendableLongScore extends AbstractBendableScore<BendableLongS
 
     /**
      * Creates a new {@link BendableLongScore}.
+     * 
      * @param hardLevelsSize at least 0
      * @param softLevelsSize at least 0
      * @param softLevel at least 0, less than softLevelsSize
@@ -327,10 +333,10 @@ public final class BendableLongScore extends AbstractBendableScore<BendableLongS
         long[] newHardScores = new long[hardScores.length];
         long[] newSoftScores = new long[softScores.length];
         for (int i = 0; i < newHardScores.length; i++) {
-            newHardScores[i] = - hardScores[i];
+            newHardScores[i] = -hardScores[i];
         }
         for (int i = 0; i < newSoftScores.length; i++) {
-            newSoftScores[i] = - softScores[i];
+            newSoftScores[i] = -softScores[i];
         }
         return new BendableLongScore(-initScore, newHardScores, newSoftScores);
     }

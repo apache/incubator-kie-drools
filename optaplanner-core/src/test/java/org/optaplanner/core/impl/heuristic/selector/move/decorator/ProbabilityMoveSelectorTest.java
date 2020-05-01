@@ -16,6 +16,9 @@
 
 package org.optaplanner.core.impl.heuristic.selector.move.decorator;
 
+import static org.mockito.Mockito.*;
+import static org.optaplanner.core.impl.testdata.util.PlannerAssert.*;
+
 import java.util.Random;
 
 import org.junit.jupiter.api.Test;
@@ -29,9 +32,6 @@ import org.optaplanner.core.impl.phase.scope.AbstractStepScope;
 import org.optaplanner.core.impl.solver.scope.DefaultSolverScope;
 import org.optaplanner.core.impl.testdata.domain.TestdataSolution;
 
-import static org.mockito.Mockito.*;
-import static org.optaplanner.core.impl.testdata.util.PlannerAssert.*;
-
 public class ProbabilityMoveSelectorTest {
 
     @Test
@@ -39,8 +39,7 @@ public class ProbabilityMoveSelectorTest {
         MoveSelector childMoveSelector = SelectorTestUtils.mockMoveSelector(DummyMove.class,
                 new DummyMove("e1"), new DummyMove("e2"), new DummyMove("e3"), new DummyMove("e4"));
 
-        SelectionProbabilityWeightFactory<TestdataSolution, DummyMove> probabilityWeightFactory
-                = (scoreDirector, move) -> {
+        SelectionProbabilityWeightFactory<TestdataSolution, DummyMove> probabilityWeightFactory = (scoreDirector, move) -> {
             switch (move.getCode()) {
                 case "e1":
                     return 1000.0;

@@ -16,18 +16,19 @@
 
 package org.optaplanner.core.impl.domain.common.accessor;
 
+import static org.junit.Assert.*;
+
 import org.junit.jupiter.api.Test;
 import org.optaplanner.core.api.domain.variable.PlanningVariable;
 import org.optaplanner.core.impl.testdata.domain.TestdataValue;
 import org.optaplanner.core.impl.testdata.domain.reflect.field.TestdataFieldAnnotatedEntity;
 
-import static org.junit.Assert.*;
-
 public class ReflectionFieldMemberAccessorTest {
 
     @Test
     public void fieldAnnotatedEntity() throws NoSuchFieldException {
-        ReflectionFieldMemberAccessor memberAccessor = new ReflectionFieldMemberAccessor(TestdataFieldAnnotatedEntity.class.getDeclaredField("value"));
+        ReflectionFieldMemberAccessor memberAccessor = new ReflectionFieldMemberAccessor(
+                TestdataFieldAnnotatedEntity.class.getDeclaredField("value"));
         assertEquals("value", memberAccessor.getName());
         assertEquals(TestdataValue.class, memberAccessor.getType());
         assertEquals(true, memberAccessor.isAnnotationPresent(PlanningVariable.class));

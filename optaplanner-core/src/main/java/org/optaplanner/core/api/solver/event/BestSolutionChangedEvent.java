@@ -27,6 +27,7 @@ import org.optaplanner.core.impl.solver.ProblemFactChange;
 /**
  * Delivered when the {@link PlanningSolution best solution} changes during solving.
  * Delivered in the solver thread (which is the thread that calls {@link Solver#solve}).
+ * 
  * @param <Solution_> the solution type, the class with the {@link PlanningSolution} annotation
  */
 public class BestSolutionChangedEvent<Solution_> extends EventObject {
@@ -52,7 +53,7 @@ public class BestSolutionChangedEvent<Solution_> extends EventObject {
 
     /**
      * @return {@code >= 0}, the amount of millis spent since the {@link Solver} started
-     * until {@link #getNewBestSolution()} was found
+     *         until {@link #getNewBestSolution()} was found
      */
     public long getTimeMillisSpent() {
         return timeMillisSpent;
@@ -61,11 +62,12 @@ public class BestSolutionChangedEvent<Solution_> extends EventObject {
     /**
      * Note that:
      * <ul>
-     *     <li>In real-time planning, not all {@link ProblemFactChange}s might be processed:
-     *     check {@link #isEveryProblemFactChangeProcessed()}.</li>
-     *     <li>this {@link PlanningSolution} might be uninitialized: check {@link Score#isSolutionInitialized()}.</li>
-     *     <li>this {@link PlanningSolution} might be infeasible: check {@link FeasibilityScore#isFeasible()}.</li>
+     * <li>In real-time planning, not all {@link ProblemFactChange}s might be processed:
+     * check {@link #isEveryProblemFactChangeProcessed()}.</li>
+     * <li>this {@link PlanningSolution} might be uninitialized: check {@link Score#isSolutionInitialized()}.</li>
+     * <li>this {@link PlanningSolution} might be infeasible: check {@link FeasibilityScore#isFeasible()}.</li>
      * </ul>
+     * 
      * @return never null
      */
     public Solution_ getNewBestSolution() {
@@ -77,6 +79,7 @@ public class BestSolutionChangedEvent<Solution_> extends EventObject {
      * <p>
      * This is useful for generic code, which doesn't know the type of the {@link PlanningSolution}
      * to retrieve the {@link Score} from the {@link #getNewBestSolution()} easily.
+     * 
      * @return never null, because at this point it's always already calculated
      */
     public Score getNewBestScore() {

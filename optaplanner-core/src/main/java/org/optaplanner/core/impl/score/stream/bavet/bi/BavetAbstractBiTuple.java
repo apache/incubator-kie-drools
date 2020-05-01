@@ -22,7 +22,7 @@ public abstract class BavetAbstractBiTuple<A, B> extends BavetAbstractTuple {
 
     @Override
     public Object[] getFacts() {
-        return new Object[] {getFactA(), getFactB()};
+        return new Object[] { getFactA(), getFactB() };
     }
 
     // ************************************************************************
@@ -30,6 +30,7 @@ public abstract class BavetAbstractBiTuple<A, B> extends BavetAbstractTuple {
     // ************************************************************************
 
     public abstract A getFactA();
+
     public abstract B getFactB();
 
 }

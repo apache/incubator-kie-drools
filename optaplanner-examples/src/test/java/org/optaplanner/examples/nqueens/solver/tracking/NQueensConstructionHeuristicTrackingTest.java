@@ -16,6 +16,8 @@
 
 package org.optaplanner.examples.nqueens.solver.tracking;
 
+import static org.junit.Assert.assertNotNull;
+
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
@@ -36,8 +38,6 @@ import org.optaplanner.examples.nqueens.app.NQueensApp;
 import org.optaplanner.examples.nqueens.domain.NQueens;
 import org.optaplanner.examples.nqueens.persistence.NQueensGenerator;
 
-import static org.junit.Assert.assertNotNull;
-
 public class NQueensConstructionHeuristicTrackingTest extends NQueensAbstractTrackingTest {
 
     @ParameterizedTest(name = "ConstructionHeuristicType: {0}, EntitySorterManner: {1}, ValueSorterManner: {2}")
@@ -51,7 +51,7 @@ public class NQueensConstructionHeuristicTrackingTest extends NQueensAbstractTra
         chConfig.setValueSorterManner(valueSorterManner);
         chConfig.setEntitySorterManner(entitySorterManner);
         chConfig.setConstructionHeuristicType(constructionHeuristicType);
-        solverConfig.setPhaseConfigList(Collections.<PhaseConfig>singletonList(chConfig));
+        solverConfig.setPhaseConfigList(Collections.<PhaseConfig> singletonList(chConfig));
 
         NQueensGenerator generator = new NQueensGenerator();
         NQueens problem = generator.createNQueens(8);
@@ -69,89 +69,89 @@ public class NQueensConstructionHeuristicTrackingTest extends NQueensAbstractTra
     public static Collection<Object[]> parameters() {
         Collection<Object[]> params = new ArrayList<>();
 
-        params.add(new Object[]{ConstructionHeuristicType.FIRST_FIT, null, null, Arrays.asList(
+        params.add(new Object[] { ConstructionHeuristicType.FIRST_FIT, null, null, Arrays.asList(
                 new NQueensStepTracking(0, 0), new NQueensStepTracking(1, 2), new NQueensStepTracking(2, 4),
                 new NQueensStepTracking(3, 1), new NQueensStepTracking(4, 3), new NQueensStepTracking(5, 0),
                 new NQueensStepTracking(6, 2), new NQueensStepTracking(7, 4))
         });
-        params.add(new Object[]{ConstructionHeuristicType.FIRST_FIT_DECREASING, null, null, Arrays.asList(
+        params.add(new Object[] { ConstructionHeuristicType.FIRST_FIT_DECREASING, null, null, Arrays.asList(
                 new NQueensStepTracking(4, 0), new NQueensStepTracking(3, 2), new NQueensStepTracking(5, 3),
                 new NQueensStepTracking(2, 4), new NQueensStepTracking(6, 1), new NQueensStepTracking(1, 1),
                 new NQueensStepTracking(7, 4), new NQueensStepTracking(0, 3))
         });
-        params.add(new Object[]{ConstructionHeuristicType.WEAKEST_FIT, null, null, Arrays.asList(
+        params.add(new Object[] { ConstructionHeuristicType.WEAKEST_FIT, null, null, Arrays.asList(
                 new NQueensStepTracking(0, 3), new NQueensStepTracking(1, 5), new NQueensStepTracking(2, 2),
                 new NQueensStepTracking(3, 4), new NQueensStepTracking(4, 1), new NQueensStepTracking(5, 7),
                 new NQueensStepTracking(6, 4), new NQueensStepTracking(7, 6))
         });
-        params.add(new Object[]{ConstructionHeuristicType.WEAKEST_FIT_DECREASING, null, null, Arrays.asList(
+        params.add(new Object[] { ConstructionHeuristicType.WEAKEST_FIT_DECREASING, null, null, Arrays.asList(
                 new NQueensStepTracking(4, 3), new NQueensStepTracking(3, 5), new NQueensStepTracking(5, 1),
                 new NQueensStepTracking(2, 2), new NQueensStepTracking(6, 4), new NQueensStepTracking(1, 4),
                 new NQueensStepTracking(7, 2), new NQueensStepTracking(0, 1))
         });
-        params.add(new Object[]{ConstructionHeuristicType.STRONGEST_FIT, null, null, Arrays.asList(
+        params.add(new Object[] { ConstructionHeuristicType.STRONGEST_FIT, null, null, Arrays.asList(
                 new NQueensStepTracking(0, 7), new NQueensStepTracking(1, 0), new NQueensStepTracking(2, 6),
                 new NQueensStepTracking(3, 1), new NQueensStepTracking(4, 5), new NQueensStepTracking(5, 7),
                 new NQueensStepTracking(6, 0), new NQueensStepTracking(7, 4))
         });
-        params.add(new Object[]{ConstructionHeuristicType.STRONGEST_FIT_DECREASING, null, null, Arrays.asList(
+        params.add(new Object[] { ConstructionHeuristicType.STRONGEST_FIT_DECREASING, null, null, Arrays.asList(
                 new NQueensStepTracking(4, 7), new NQueensStepTracking(3, 0), new NQueensStepTracking(5, 1),
                 new NQueensStepTracking(2, 6), new NQueensStepTracking(6, 4), new NQueensStepTracking(1, 3),
                 new NQueensStepTracking(7, 2), new NQueensStepTracking(0, 5))
         });
-        params.add(new Object[]{ConstructionHeuristicType.CHEAPEST_INSERTION, null, null, Arrays.asList(
+        params.add(new Object[] { ConstructionHeuristicType.CHEAPEST_INSERTION, null, null, Arrays.asList(
                 new NQueensStepTracking(4, 3), new NQueensStepTracking(3, 5), new NQueensStepTracking(5, 1),
                 new NQueensStepTracking(2, 2), new NQueensStepTracking(6, 4), new NQueensStepTracking(1, 4),
                 new NQueensStepTracking(7, 2), new NQueensStepTracking(0, 1))
         });
-        params.add(new Object[]{ConstructionHeuristicType.ALLOCATE_ENTITY_FROM_QUEUE, null, null, Arrays.asList(
+        params.add(new Object[] { ConstructionHeuristicType.ALLOCATE_ENTITY_FROM_QUEUE, null, null, Arrays.asList(
                 new NQueensStepTracking(4, 3), new NQueensStepTracking(3, 5), new NQueensStepTracking(5, 1),
                 new NQueensStepTracking(2, 2), new NQueensStepTracking(6, 4), new NQueensStepTracking(1, 4),
                 new NQueensStepTracking(7, 2), new NQueensStepTracking(0, 1))
         });
-        params.add(new Object[]{ConstructionHeuristicType.ALLOCATE_ENTITY_FROM_QUEUE, EntitySorterManner.NONE,
+        params.add(new Object[] { ConstructionHeuristicType.ALLOCATE_ENTITY_FROM_QUEUE, EntitySorterManner.NONE,
                 ValueSorterManner.NONE, Arrays.asList(
-                new NQueensStepTracking(0, 0), new NQueensStepTracking(1, 2), new NQueensStepTracking(2, 4),
-                new NQueensStepTracking(3, 1), new NQueensStepTracking(4, 3), new NQueensStepTracking(5, 0),
-                new NQueensStepTracking(6, 2), new NQueensStepTracking(7, 4))
+                        new NQueensStepTracking(0, 0), new NQueensStepTracking(1, 2), new NQueensStepTracking(2, 4),
+                        new NQueensStepTracking(3, 1), new NQueensStepTracking(4, 3), new NQueensStepTracking(5, 0),
+                        new NQueensStepTracking(6, 2), new NQueensStepTracking(7, 4))
         });
-        params.add(new Object[]{ConstructionHeuristicType.ALLOCATE_ENTITY_FROM_QUEUE,
+        params.add(new Object[] { ConstructionHeuristicType.ALLOCATE_ENTITY_FROM_QUEUE,
                 EntitySorterManner.DECREASING_DIFFICULTY, ValueSorterManner.NONE, Arrays.asList(
-                new NQueensStepTracking(4, 0), new NQueensStepTracking(3, 2), new NQueensStepTracking(5, 3),
-                new NQueensStepTracking(2, 4), new NQueensStepTracking(6, 1), new NQueensStepTracking(1, 1),
-                new NQueensStepTracking(7, 4), new NQueensStepTracking(0, 3))
+                        new NQueensStepTracking(4, 0), new NQueensStepTracking(3, 2), new NQueensStepTracking(5, 3),
+                        new NQueensStepTracking(2, 4), new NQueensStepTracking(6, 1), new NQueensStepTracking(1, 1),
+                        new NQueensStepTracking(7, 4), new NQueensStepTracking(0, 3))
         });
-        params.add(new Object[]{ConstructionHeuristicType.ALLOCATE_ENTITY_FROM_QUEUE,
+        params.add(new Object[] { ConstructionHeuristicType.ALLOCATE_ENTITY_FROM_QUEUE,
                 EntitySorterManner.DECREASING_DIFFICULTY_IF_AVAILABLE, ValueSorterManner.NONE, Arrays.asList(
-                new NQueensStepTracking(4, 0), new NQueensStepTracking(3, 2), new NQueensStepTracking(5, 3),
-                new NQueensStepTracking(2, 4), new NQueensStepTracking(6, 1), new NQueensStepTracking(1, 1),
-                new NQueensStepTracking(7, 4), new NQueensStepTracking(0, 3))
+                        new NQueensStepTracking(4, 0), new NQueensStepTracking(3, 2), new NQueensStepTracking(5, 3),
+                        new NQueensStepTracking(2, 4), new NQueensStepTracking(6, 1), new NQueensStepTracking(1, 1),
+                        new NQueensStepTracking(7, 4), new NQueensStepTracking(0, 3))
         });
-        params.add(new Object[]{ConstructionHeuristicType.ALLOCATE_ENTITY_FROM_QUEUE, EntitySorterManner.NONE,
+        params.add(new Object[] { ConstructionHeuristicType.ALLOCATE_ENTITY_FROM_QUEUE, EntitySorterManner.NONE,
                 ValueSorterManner.INCREASING_STRENGTH, Arrays.asList(
-                new NQueensStepTracking(0, 3), new NQueensStepTracking(1, 5), new NQueensStepTracking(2, 2),
-                new NQueensStepTracking(3, 4), new NQueensStepTracking(4, 1), new NQueensStepTracking(5, 7),
-                new NQueensStepTracking(6, 4), new NQueensStepTracking(7, 6))
+                        new NQueensStepTracking(0, 3), new NQueensStepTracking(1, 5), new NQueensStepTracking(2, 2),
+                        new NQueensStepTracking(3, 4), new NQueensStepTracking(4, 1), new NQueensStepTracking(5, 7),
+                        new NQueensStepTracking(6, 4), new NQueensStepTracking(7, 6))
         });
-        params.add(new Object[]{ConstructionHeuristicType.ALLOCATE_ENTITY_FROM_QUEUE, EntitySorterManner.NONE,
+        params.add(new Object[] { ConstructionHeuristicType.ALLOCATE_ENTITY_FROM_QUEUE, EntitySorterManner.NONE,
                 ValueSorterManner.DECREASING_STRENGTH, Arrays.asList(
-                new NQueensStepTracking(0, 7), new NQueensStepTracking(1, 0), new NQueensStepTracking(2, 6),
-                new NQueensStepTracking(3, 1), new NQueensStepTracking(4, 5), new NQueensStepTracking(5, 7),
-                new NQueensStepTracking(6, 0), new NQueensStepTracking(7, 4))
+                        new NQueensStepTracking(0, 7), new NQueensStepTracking(1, 0), new NQueensStepTracking(2, 6),
+                        new NQueensStepTracking(3, 1), new NQueensStepTracking(4, 5), new NQueensStepTracking(5, 7),
+                        new NQueensStepTracking(6, 0), new NQueensStepTracking(7, 4))
         });
-        params.add(new Object[]{ConstructionHeuristicType.ALLOCATE_ENTITY_FROM_QUEUE,
+        params.add(new Object[] { ConstructionHeuristicType.ALLOCATE_ENTITY_FROM_QUEUE,
                 EntitySorterManner.DECREASING_DIFFICULTY, ValueSorterManner.DECREASING_STRENGTH_IF_AVAILABLE,
                 Arrays.asList(
-                new NQueensStepTracking(4, 7), new NQueensStepTracking(3, 0), new NQueensStepTracking(5, 1),
-                new NQueensStepTracking(2, 6), new NQueensStepTracking(6, 4), new NQueensStepTracking(1, 3),
-                new NQueensStepTracking(7, 2), new NQueensStepTracking(0, 5))
+                        new NQueensStepTracking(4, 7), new NQueensStepTracking(3, 0), new NQueensStepTracking(5, 1),
+                        new NQueensStepTracking(2, 6), new NQueensStepTracking(6, 4), new NQueensStepTracking(1, 3),
+                        new NQueensStepTracking(7, 2), new NQueensStepTracking(0, 5))
         });
-        params.add(new Object[]{ConstructionHeuristicType.ALLOCATE_ENTITY_FROM_QUEUE,
+        params.add(new Object[] { ConstructionHeuristicType.ALLOCATE_ENTITY_FROM_QUEUE,
                 EntitySorterManner.DECREASING_DIFFICULTY, ValueSorterManner.INCREASING_STRENGTH_IF_AVAILABLE,
                 Arrays.asList(
-                new NQueensStepTracking(4, 3), new NQueensStepTracking(3, 5), new NQueensStepTracking(5, 1),
-                new NQueensStepTracking(2, 2), new NQueensStepTracking(6, 4), new NQueensStepTracking(1, 4),
-                new NQueensStepTracking(7, 2), new NQueensStepTracking(0, 1))
+                        new NQueensStepTracking(4, 3), new NQueensStepTracking(3, 5), new NQueensStepTracking(5, 1),
+                        new NQueensStepTracking(2, 2), new NQueensStepTracking(6, 4), new NQueensStepTracking(1, 4),
+                        new NQueensStepTracking(7, 2), new NQueensStepTracking(0, 1))
         });
         return params;
     }

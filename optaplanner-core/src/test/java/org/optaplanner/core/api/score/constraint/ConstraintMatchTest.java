@@ -29,18 +29,15 @@ public class ConstraintMatchTest {
         PlannerAssert.assertObjectsAreEqual(
                 new ConstraintMatch("a.b", "c", Arrays.asList("e1"), SimpleScore.ZERO),
                 new ConstraintMatch("a.b", "c", Arrays.asList("e1"), SimpleScore.ZERO),
-                new ConstraintMatch("a.b", "c", Arrays.asList("e1"), SimpleScore.of(-7))
-        );
+                new ConstraintMatch("a.b", "c", Arrays.asList("e1"), SimpleScore.of(-7)));
         PlannerAssert.assertObjectsAreEqual(
                 new ConstraintMatch("a.b", "c", Arrays.asList("e1", "e2"), SimpleScore.ZERO),
                 new ConstraintMatch("a.b", "c", Arrays.asList("e1", "e2"), SimpleScore.ZERO),
-                new ConstraintMatch("a.b", "c", Arrays.asList("e1", "e2"), SimpleScore.of(-7))
-        );
+                new ConstraintMatch("a.b", "c", Arrays.asList("e1", "e2"), SimpleScore.of(-7)));
         PlannerAssert.assertObjectsAreEqual(
                 new ConstraintMatch("a.b", "c", Arrays.asList("e1", "e2", 7), SimpleScore.ZERO),
                 new ConstraintMatch("a.b", "c", Arrays.asList("e1", "e2", 7), SimpleScore.ZERO),
-                new ConstraintMatch("a.b", "c", Arrays.asList("e1", "e2", 7), SimpleScore.of(-7))
-        );
+                new ConstraintMatch("a.b", "c", Arrays.asList("e1", "e2", 7), SimpleScore.of(-7)));
         PlannerAssert.assertObjectsAreNotEqual(
                 new ConstraintMatch("a.b", "c", Arrays.asList("e1"), SimpleScore.ZERO),
                 new ConstraintMatch("a.b", "c", Arrays.asList("e1", "e2"), SimpleScore.ZERO),
@@ -48,8 +45,7 @@ public class ConstraintMatchTest {
                 new ConstraintMatch("a.b", "c", Arrays.asList("e1", "e2", 7), SimpleScore.ZERO),
                 new ConstraintMatch("a.b", "c", Arrays.asList("e1", "e2", 8), SimpleScore.ZERO),
                 new ConstraintMatch("a.b", "d", Arrays.asList("e1", "e2", 8), SimpleScore.ZERO),
-                new ConstraintMatch("a.c", "d", Arrays.asList("e1", "e2", 8), SimpleScore.ZERO)
-        );
+                new ConstraintMatch("a.c", "d", Arrays.asList("e1", "e2", 8), SimpleScore.ZERO));
     }
 
     @Test
@@ -66,8 +62,7 @@ public class ConstraintMatchTest {
                 new ConstraintMatch("a.b", "b", Arrays.asList("a", "c"), SimpleScore.ZERO),
                 new ConstraintMatch("a.c", "a", Arrays.asList("a", "aa"), SimpleScore.ZERO),
                 new ConstraintMatch("a.c", "a", Arrays.asList("a", "ab"), SimpleScore.ZERO),
-                new ConstraintMatch("a.c", "a", Arrays.asList("a", "c"), SimpleScore.ZERO)
-        );
+                new ConstraintMatch("a.c", "a", Arrays.asList("a", "c"), SimpleScore.ZERO));
     }
 
 }

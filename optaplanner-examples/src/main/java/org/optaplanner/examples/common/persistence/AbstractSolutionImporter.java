@@ -20,9 +20,10 @@ import java.io.File;
 import java.math.BigInteger;
 import java.math.RoundingMode;
 
-import com.google.common.math.BigIntegerMath;
 import org.optaplanner.core.api.domain.solution.PlanningSolution;
 import org.optaplanner.examples.common.app.LoggingMain;
+
+import com.google.common.math.BigIntegerMath;
 
 /**
  * @param <Solution_> the solution type, the class with the {@link PlanningSolution} annotation

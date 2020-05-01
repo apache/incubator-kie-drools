@@ -33,8 +33,8 @@ public class MachineReassignmentBenchmarkApp extends CommonBenchmarkApp {
                 new ArgOption("scoreDirector",
                         "org/optaplanner/examples/machinereassignment/benchmark/machineReassignmentScoreDirectorBenchmarkConfig.xml"),
                 new ArgOption("template",
-                        "org/optaplanner/examples/machinereassignment/benchmark/machineReassignmentBenchmarkConfigTemplate.xml.ftl", true)
-        );
+                        "org/optaplanner/examples/machinereassignment/benchmark/machineReassignmentBenchmarkConfigTemplate.xml.ftl",
+                        true));
     }
 
 }

@@ -77,20 +77,18 @@ public class ConferenceSchedulingGenerator extends LoggingMain {
     private final LocalDate timeslotFirstDay = LocalDate.of(2018, 10, 1);
 
     private final List<Pair<LocalTime, LocalTime>> timeslotOptions = Arrays.asList(
-//        Pair.of(LocalTime.of(8, 30), LocalTime.of(9, 30)), // General session
+            //        Pair.of(LocalTime.of(8, 30), LocalTime.of(9, 30)), // General session
             Pair.of(LocalTime.of(10, 15), LocalTime.of(12, 15)), // Lab
             Pair.of(LocalTime.of(10, 15), LocalTime.of(11, 0)),
             Pair.of(LocalTime.of(11, 30), LocalTime.of(12, 15)),
             Pair.of(LocalTime.of(13, 0), LocalTime.of(15, 0)), // Lab
-//        Pair.of(LocalTime.of(13, 45), LocalTime.of(15, 0)), // General session
+            //        Pair.of(LocalTime.of(13, 45), LocalTime.of(15, 0)), // General session
             Pair.of(LocalTime.of(15, 30), LocalTime.of(16, 15)),
-            Pair.of(LocalTime.of(16, 30), LocalTime.of(17, 15))
-    );
+            Pair.of(LocalTime.of(16, 30), LocalTime.of(17, 15)));
 
     private final List<Pair<String, Double>> roomTagProbabilityList = Arrays.asList(
             Pair.of("Large", 0.20),
-            Pair.of("Recorded", 0.50)
-    );
+            Pair.of("Recorded", 0.50));
 
     private final StringDataGenerator speakerNameGenerator = StringDataGenerator.buildFullNames();
 
@@ -192,8 +190,7 @@ public class ConferenceSchedulingGenerator extends LoggingMain {
             "Mobile",
             "IoT",
             "Modern Web",
-            "Security"
-    );
+            "Security");
 
     private final List<String> sectorTagOptions = Arrays.asList(
             "Education",
@@ -201,13 +198,11 @@ public class ConferenceSchedulingGenerator extends LoggingMain {
             "Government",
             "Healthcare",
             "Telecommunications",
-            "Transportation"
-    );
+            "Transportation");
     private final List<String> audienceTypeOptions = Arrays.asList(
             "Programmers",
             "Business analysts",
-            "Managers"
-    );
+            "Managers");
 
     private static final String TIMESLOT_AFTER_LUNCH_TAG = "After lunch";
     private static final List<String> mutuallyExclusiveTagList = Arrays.asList("Platinum Sponsor");
@@ -244,7 +239,7 @@ public class ConferenceSchedulingGenerator extends LoggingMain {
     }
 
     public ConferenceSolution createConferenceSolution(String fileName, int timeslotListSize, int roomListSize,
-                                                       int speakerListSize, int talkListSize) {
+            int speakerListSize, int talkListSize) {
         random = new Random(37);
         ConferenceSolution solution = new ConferenceSolution();
         solution.setId(0L);
@@ -422,9 +417,8 @@ public class ConferenceSchedulingGenerator extends LoggingMain {
             talk.setTitle(talkTitleGenerator.generateNextValue());
             double speakerRandomDouble = random.nextDouble();
             talk.setTalkType(i < labTalkCount ? labTalkType : breakoutTalkType);
-            int speakerCount = (speakerRandomDouble < 0.01) ? 4 :
-                    (speakerRandomDouble < 0.03) ? 3 :
-                            (speakerRandomDouble < 0.40) ? 2 : 1;
+            int speakerCount = (speakerRandomDouble < 0.01) ? 4
+                    : (speakerRandomDouble < 0.03) ? 3 : (speakerRandomDouble < 0.40) ? 2 : 1;
             List<Speaker> speakerList = new ArrayList<>(speakerCount);
             for (int j = 0; j < speakerCount; j++) {
                 speakerList.add(solution.getSpeakerList().get(speakerListIndex));
@@ -517,7 +511,8 @@ public class ConferenceSchedulingGenerator extends LoggingMain {
         solution.setTalkList(talkList);
     }
 
-    private void initializeRoomTagSets(Set<String> requiredRoomTagSet, Set<String> preferredRoomTagSet, Set<String> prohibitedRoomTagSet, Set<String> undesiredRoomTagSet) {
+    private void initializeRoomTagSets(Set<String> requiredRoomTagSet, Set<String> preferredRoomTagSet,
+            Set<String> prohibitedRoomTagSet, Set<String> undesiredRoomTagSet) {
         for (Pair<String, Double> roomTagProbability : roomTagProbabilityList) {
             Double segmentRandom = random.nextDouble();
             if (segmentRandom < roomTagProbability.getValue() / 25.0) {

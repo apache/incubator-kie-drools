@@ -16,6 +16,8 @@
 
 package org.optaplanner.examples.cheaptime.solver.drools;
 
+import static java.util.Comparator.comparing;
+
 import java.util.Arrays;
 import java.util.Comparator;
 import java.util.List;
@@ -26,12 +28,10 @@ import org.optaplanner.examples.cheaptime.domain.Task;
 import org.optaplanner.examples.cheaptime.domain.TaskAssignment;
 import org.optaplanner.examples.cheaptime.domain.TaskRequirement;
 
-import static java.util.Comparator.comparing;
-
 public class MachinePeriodPart implements Comparable<MachinePeriodPart> {
 
-    private static final Comparator<MachinePeriodPart> COMPARATOR =
-            comparing((MachinePeriodPart machinePeriodPart) -> machinePeriodPart.machine.getIndex())
+    private static final Comparator<MachinePeriodPart> COMPARATOR = comparing(
+            (MachinePeriodPart machinePeriodPart) -> machinePeriodPart.machine.getIndex())
                     .thenComparingInt(MachinePeriodPart::getPeriod)
                     .thenComparing(MachinePeriodPart::isActive)
                     .thenComparingInt(machinePeriodPart -> machinePeriodPart.resourceAvailableList.length);

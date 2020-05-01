@@ -69,7 +69,8 @@ public class VariableListenerSupport<Solution_> implements SupplyManager {
             sourceEntityToNotifiableMap.put(entityDescriptor, new ArrayList<>());
         }
         for (EntityDescriptor<Solution_> entityDescriptor : scoreDirector.getSolutionDescriptor().getEntityDescriptors()) {
-            for (ShadowVariableDescriptor<Solution_> shadowVariableDescriptor : entityDescriptor.getDeclaredShadowVariableDescriptors()) {
+            for (ShadowVariableDescriptor<Solution_> shadowVariableDescriptor : entityDescriptor
+                    .getDeclaredShadowVariableDescriptors()) {
                 if (shadowVariableDescriptor.hasVariableListener(scoreDirector)) {
                     VariableListener variableListener = shadowVariableDescriptor.buildVariableListener(scoreDirector);
                     supplyMap.put(shadowVariableDescriptor.getProvidedDemand(), variableListener);
@@ -81,7 +82,8 @@ public class VariableListenerSupport<Solution_> implements SupplyManager {
                     for (VariableDescriptor<Solution_> source : shadowVariableDescriptor.getSourceVariableDescriptorList()) {
                         List<VariableListenerNotifiable> variableNotifiableList = sourceVariableToNotifiableMap.get(source);
                         variableNotifiableList.add(notifiable);
-                        List<VariableListenerNotifiable> entityNotifiableList = sourceEntityToNotifiableMap.get(source.getEntityDescriptor());
+                        List<VariableListenerNotifiable> entityNotifiableList = sourceEntityToNotifiableMap
+                                .get(source.getEntityDescriptor());
                         if (!entityNotifiableList.contains(notifiable)) {
                             entityNotifiableList.add(notifiable);
                         }
@@ -109,7 +111,8 @@ public class VariableListenerSupport<Solution_> implements SupplyManager {
                 nextGlobalOrder++;
                 List<VariableListenerNotifiable> variableNotifiableList = sourceVariableToNotifiableMap.get(source);
                 variableNotifiableList.add(notifiable);
-                List<VariableListenerNotifiable> entityNotifiableList = sourceEntityToNotifiableMap.get(source.getEntityDescriptor());
+                List<VariableListenerNotifiable> entityNotifiableList = sourceEntityToNotifiableMap
+                        .get(source.getEntityDescriptor());
                 if (!entityNotifiableList.contains(notifiable)) {
                     entityNotifiableList.add(notifiable);
                 }

@@ -43,7 +43,7 @@ public class CheapTimePillarSlideMove extends AbstractMove<CheapTimeSolution> {
 
     @Override
     public CheapTimePillarSlideMove createUndoMove(ScoreDirector<CheapTimeSolution> scoreDirector) {
-        return new CheapTimePillarSlideMove(pillar, - startPeriodDiff);
+        return new CheapTimePillarSlideMove(pillar, -startPeriodDiff);
     }
 
     @Override

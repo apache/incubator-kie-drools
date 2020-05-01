@@ -33,9 +33,8 @@ public final class DroolsExistsQuadConstraintStream<Solution_, A, B, C, D>
             PentaJoiner<A, B, C, D, E>... joiners) {
         super(constraintFactory, parent);
         this.streamName = shouldExist ? "QuadIfExists()" : "QuadIfNotExists()";
-        this.condition = shouldExist ?
-                parent.getCondition().andIfExists(otherClass, joiners) :
-                parent.getCondition().andIfNotExists(otherClass, joiners);
+        this.condition = shouldExist ? parent.getCondition().andIfExists(otherClass, joiners)
+                : parent.getCondition().andIfNotExists(otherClass, joiners);
     }
 
     @Override
@@ -54,7 +53,7 @@ public final class DroolsExistsQuadConstraintStream<Solution_, A, B, C, D>
 
     @Override
     public String toString() {
-        return streamName + " with " + getChildStreams().size()  + " children";
+        return streamName + " with " + getChildStreams().size() + " children";
     }
 
 }

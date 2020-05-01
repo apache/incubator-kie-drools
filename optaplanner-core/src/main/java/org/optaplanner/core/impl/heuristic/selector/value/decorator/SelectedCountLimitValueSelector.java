@@ -34,8 +34,9 @@ public class SelectedCountLimitValueSelector extends AbstractValueSelector imple
     /**
      * Unlike most of the other {@link ValueSelector} decorations,
      * this one works for an entity dependent {@link ValueSelector} too.
+     * 
      * @param childValueSelector never null, if any of the {@link EntityIndependentValueSelector} specific methods
-     * are going to be used, this parameter must also implement that interface
+     *        are going to be used, this parameter must also implement that interface
      * @param selectedCountLimit at least 0
      */
     public SelectedCountLimitValueSelector(ValueSelector childValueSelector, long selectedCountLimit) {

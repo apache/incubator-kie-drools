@@ -26,8 +26,8 @@ import org.optaplanner.core.impl.score.stream.drools.common.DroolsAbstractBiColl
 import org.optaplanner.core.impl.score.stream.drools.common.QuadTuple;
 
 final class DroolsUniToQuadGroupByAccumulator<A, NewA, NewB, NewC, NewD, ResultContainerC, ResultContainerD>
-    extends DroolsAbstractBiCollectingGroupByAccumulator<ResultContainerC, ResultContainerD, A, BiTuple<NewA, NewB>,
-        QuadTuple<NewA, NewB, NewC, NewD>> {
+        extends
+        DroolsAbstractBiCollectingGroupByAccumulator<ResultContainerC, ResultContainerD, A, BiTuple<NewA, NewB>, QuadTuple<NewA, NewB, NewC, NewD>> {
 
     private final Function<A, NewA> groupKeyAMapping;
     private final Function<A, NewB> groupKeyBMapping;

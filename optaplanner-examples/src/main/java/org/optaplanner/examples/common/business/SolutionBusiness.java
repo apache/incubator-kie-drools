@@ -22,6 +22,7 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.atomic.AtomicReference;
+
 import javax.swing.SwingUtilities;
 
 import org.apache.commons.io.FileUtils;
@@ -189,14 +190,14 @@ public class SolutionBusiness<Solution_> {
 
     public List<File> getUnsolvedFileList() {
         List<File> fileList = new ArrayList<>(
-                FileUtils.listFiles(unsolvedDataDir, new String[]{solutionFileIO.getInputFileExtension()}, true));
+                FileUtils.listFiles(unsolvedDataDir, new String[] { solutionFileIO.getInputFileExtension() }, true));
         Collections.sort(fileList, FILE_COMPARATOR);
         return fileList;
     }
 
     public List<File> getSolvedFileList() {
         List<File> fileList = new ArrayList<>(
-                FileUtils.listFiles(solvedDataDir, new String[]{solutionFileIO.getOutputFileExtension()}, true));
+                FileUtils.listFiles(solvedDataDir, new String[] { solutionFileIO.getOutputFileExtension() }, true));
         Collections.sort(fileList, FILE_COMPARATOR);
         return fileList;
     }
@@ -327,6 +328,7 @@ public class SolutionBusiness<Solution_> {
      * Can be called on any thread.
      * <p>
      * Note: This method does not change the guiScoreDirector because that can only be changed on the event thread.
+     * 
      * @param problem never null
      * @return never null
      */
@@ -366,8 +368,7 @@ public class SolutionBusiness<Solution_> {
         EntityDescriptor<Solution_> entityDescriptor = solutionDescriptor.findEntityDescriptor(leftEntity.getClass());
         List<GenuineVariableDescriptor<Solution_>> variableDescriptorList = entityDescriptor.getGenuineVariableDescriptorList();
         if (entityDescriptor.hasAnyChainedGenuineVariables()) {
-            List<SingletonInverseVariableSupply> inverseVariableSupplyList
-                    = new ArrayList<>(variableDescriptorList.size());
+            List<SingletonInverseVariableSupply> inverseVariableSupplyList = new ArrayList<>(variableDescriptorList.size());
             SupplyManager supplyManager = guiInnerScoreDirector.getSupplyManager();
             for (GenuineVariableDescriptor variableDescriptor : variableDescriptorList) {
                 SingletonInverseVariableSupply inverseVariableSupply;

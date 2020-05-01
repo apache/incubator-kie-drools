@@ -187,7 +187,8 @@ public final class BavetConstraintSession<Solution_> implements ConstraintSessio
     }
 
     @Override
-    public void close() {}
+    public void close() {
+    }
 
     // ************************************************************************
     // Getters/setters

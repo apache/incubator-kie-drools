@@ -59,8 +59,8 @@ public abstract class DroolsAbstractQuadConstraintStream<Solution_, A, B, C, D>
 
     @Override
     public QuadConstraintStream<A, B, C, D> filter(QuadPredicate<A, B, C, D> predicate) {
-        DroolsAbstractQuadConstraintStream<Solution_, A, B, C, D> stream =
-                new DroolsFilterQuadConstraintStream<>(constraintFactory, this, predicate);
+        DroolsAbstractQuadConstraintStream<Solution_, A, B, C, D> stream = new DroolsFilterQuadConstraintStream<>(
+                constraintFactory, this, predicate);
         addChildStream(stream);
         return stream;
     }
@@ -86,8 +86,8 @@ public abstract class DroolsAbstractQuadConstraintStream<Solution_, A, B, C, D>
     @SafeVarargs
     private final <E> QuadConstraintStream<A, B, C, D> ifExistsOrNot(boolean shouldExist, Class<E> otherClass,
             PentaJoiner<A, B, C, D, E>... joiners) {
-        DroolsExistsQuadConstraintStream<Solution_, A, B, C, D> stream =
-                new DroolsExistsQuadConstraintStream<>(constraintFactory, this, shouldExist, otherClass, joiners);
+        DroolsExistsQuadConstraintStream<Solution_, A, B, C, D> stream = new DroolsExistsQuadConstraintStream<>(
+                constraintFactory, this, shouldExist, otherClass, joiners);
         addChildStream(stream);
         return stream;
     }
@@ -99,16 +99,16 @@ public abstract class DroolsAbstractQuadConstraintStream<Solution_, A, B, C, D>
     @Override
     public <ResultContainer_, Result_> UniConstraintStream<Result_> groupBy(
             QuadConstraintCollector<A, B, C, D, ResultContainer_, Result_> collector) {
-        DroolsGroupingUniConstraintStream<Solution_, Result_> stream =
-                new DroolsGroupingUniConstraintStream<>(constraintFactory, this, collector);
+        DroolsGroupingUniConstraintStream<Solution_, Result_> stream = new DroolsGroupingUniConstraintStream<>(
+                constraintFactory, this, collector);
         addChildStream(stream);
         return stream;
     }
 
     @Override
     public <GroupKey_> UniConstraintStream<GroupKey_> groupBy(QuadFunction<A, B, C, D, GroupKey_> groupKeyMapping) {
-        DroolsGroupingUniConstraintStream<Solution_, GroupKey_> stream =
-                new DroolsGroupingUniConstraintStream<>(constraintFactory, this, groupKeyMapping);
+        DroolsGroupingUniConstraintStream<Solution_, GroupKey_> stream = new DroolsGroupingUniConstraintStream<>(
+                constraintFactory, this, groupKeyMapping);
         addChildStream(stream);
         return stream;
     }
@@ -117,8 +117,8 @@ public abstract class DroolsAbstractQuadConstraintStream<Solution_, A, B, C, D>
     public <GroupKey_, ResultContainer_, Result_> BiConstraintStream<GroupKey_, Result_> groupBy(
             QuadFunction<A, B, C, D, GroupKey_> groupKeyMapping,
             QuadConstraintCollector<A, B, C, D, ResultContainer_, Result_> collector) {
-        DroolsGroupingBiConstraintStream<Solution_, GroupKey_, Result_> stream =
-                new DroolsGroupingBiConstraintStream<>(constraintFactory, this, groupKeyMapping, collector);
+        DroolsGroupingBiConstraintStream<Solution_, GroupKey_, Result_> stream = new DroolsGroupingBiConstraintStream<>(
+                constraintFactory, this, groupKeyMapping, collector);
         addChildStream(stream);
         return stream;
     }
@@ -127,9 +127,9 @@ public abstract class DroolsAbstractQuadConstraintStream<Solution_, A, B, C, D>
     public <GroupKeyA_, GroupKeyB_> BiConstraintStream<GroupKeyA_, GroupKeyB_> groupBy(
             QuadFunction<A, B, C, D, GroupKeyA_> groupKeyAMapping,
             QuadFunction<A, B, C, D, GroupKeyB_> groupKeyBMapping) {
-        DroolsGroupingBiConstraintStream<Solution_, GroupKeyA_, GroupKeyB_> stream =
-                new DroolsGroupingBiConstraintStream<>(constraintFactory, this, groupKeyAMapping,
-                        groupKeyBMapping);
+        DroolsGroupingBiConstraintStream<Solution_, GroupKeyA_, GroupKeyB_> stream = new DroolsGroupingBiConstraintStream<>(
+                constraintFactory, this, groupKeyAMapping,
+                groupKeyBMapping);
         addChildStream(stream);
         return stream;
     }
@@ -139,23 +139,22 @@ public abstract class DroolsAbstractQuadConstraintStream<Solution_, A, B, C, D>
             QuadFunction<A, B, C, D, GroupKeyA_> groupKeyAMapping,
             QuadFunction<A, B, C, D, GroupKeyB_> groupKeyBMapping,
             QuadConstraintCollector<A, B, C, D, ResultContainer_, Result_> collector) {
-        DroolsGroupingTriConstraintStream<Solution_, GroupKeyA_, GroupKeyB_, Result_> stream =
-                new DroolsGroupingTriConstraintStream<>(constraintFactory, this, groupKeyAMapping,
-                        groupKeyBMapping, collector);
+        DroolsGroupingTriConstraintStream<Solution_, GroupKeyA_, GroupKeyB_, Result_> stream = new DroolsGroupingTriConstraintStream<>(
+                constraintFactory, this, groupKeyAMapping,
+                groupKeyBMapping, collector);
         addChildStream(stream);
         return stream;
     }
 
     @Override
-    public <GroupKeyA_, GroupKeyB_, ResultContainerC_, ResultC_, ResultContainerD_, ResultD_>
-    QuadConstraintStream<GroupKeyA_, GroupKeyB_, ResultC_, ResultD_> groupBy(
+    public <GroupKeyA_, GroupKeyB_, ResultContainerC_, ResultC_, ResultContainerD_, ResultD_> QuadConstraintStream<GroupKeyA_, GroupKeyB_, ResultC_, ResultD_> groupBy(
             QuadFunction<A, B, C, D, GroupKeyA_> groupKeyAMapping,
             QuadFunction<A, B, C, D, GroupKeyB_> groupKeyBMapping,
             QuadConstraintCollector<A, B, C, D, ResultContainerC_, ResultC_> collectorC,
             QuadConstraintCollector<A, B, C, D, ResultContainerD_, ResultD_> collectorD) {
-        DroolsGroupingQuadConstraintStream<Solution_, GroupKeyA_, GroupKeyB_, ResultC_, ResultD_> stream =
-                new DroolsGroupingQuadConstraintStream<>(constraintFactory, this, groupKeyAMapping,
-                        groupKeyBMapping, collectorC, collectorD);
+        DroolsGroupingQuadConstraintStream<Solution_, GroupKeyA_, GroupKeyB_, ResultC_, ResultD_> stream = new DroolsGroupingQuadConstraintStream<>(
+                constraintFactory, this, groupKeyAMapping,
+                groupKeyBMapping, collectorC, collectorD);
         addChildStream(stream);
         return stream;
     }
@@ -167,8 +166,8 @@ public abstract class DroolsAbstractQuadConstraintStream<Solution_, A, B, C, D>
     @Override
     protected Constraint impactScore(String constraintPackage, String constraintName, Score<?> constraintWeight,
             ScoreImpactType impactType) {
-        DroolsScoringQuadConstraintStream<Solution_, A, B, C, D> stream =
-                new DroolsScoringQuadConstraintStream<>(constraintFactory, this);
+        DroolsScoringQuadConstraintStream<Solution_, A, B, C, D> stream = new DroolsScoringQuadConstraintStream<>(
+                constraintFactory, this);
         addChildStream(stream);
         return buildConstraint(constraintPackage, constraintName, constraintWeight, impactType, stream);
     }
@@ -176,8 +175,8 @@ public abstract class DroolsAbstractQuadConstraintStream<Solution_, A, B, C, D>
     @Override
     public Constraint impactScore(String constraintPackage, String constraintName, Score<?> constraintWeight,
             ToIntQuadFunction<A, B, C, D> matchWeigher, ScoreImpactType impactType) {
-        DroolsScoringQuadConstraintStream<Solution_, A, B, C, D> stream =
-                new DroolsScoringQuadConstraintStream<>(constraintFactory, this, matchWeigher);
+        DroolsScoringQuadConstraintStream<Solution_, A, B, C, D> stream = new DroolsScoringQuadConstraintStream<>(
+                constraintFactory, this, matchWeigher);
         addChildStream(stream);
         return buildConstraint(constraintPackage, constraintName, constraintWeight, impactType, stream);
     }
@@ -185,8 +184,8 @@ public abstract class DroolsAbstractQuadConstraintStream<Solution_, A, B, C, D>
     @Override
     public Constraint impactScoreLong(String constraintPackage, String constraintName, Score<?> constraintWeight,
             ToLongQuadFunction<A, B, C, D> matchWeigher, ScoreImpactType impactType) {
-        DroolsScoringQuadConstraintStream<Solution_, A, B, C, D> stream =
-                new DroolsScoringQuadConstraintStream<>(constraintFactory, this, matchWeigher);
+        DroolsScoringQuadConstraintStream<Solution_, A, B, C, D> stream = new DroolsScoringQuadConstraintStream<>(
+                constraintFactory, this, matchWeigher);
         addChildStream(stream);
         return buildConstraint(constraintPackage, constraintName, constraintWeight, impactType, stream);
     }
@@ -194,8 +193,8 @@ public abstract class DroolsAbstractQuadConstraintStream<Solution_, A, B, C, D>
     @Override
     public Constraint impactScoreBigDecimal(String constraintPackage, String constraintName, Score<?> constraintWeight,
             QuadFunction<A, B, C, D, BigDecimal> matchWeigher, ScoreImpactType impactType) {
-        DroolsScoringQuadConstraintStream<Solution_, A, B, C, D> stream =
-                new DroolsScoringQuadConstraintStream<>(constraintFactory, this, matchWeigher);
+        DroolsScoringQuadConstraintStream<Solution_, A, B, C, D> stream = new DroolsScoringQuadConstraintStream<>(
+                constraintFactory, this, matchWeigher);
         addChildStream(stream);
         return buildConstraint(constraintPackage, constraintName, constraintWeight, impactType, stream);
     }
@@ -203,8 +202,8 @@ public abstract class DroolsAbstractQuadConstraintStream<Solution_, A, B, C, D>
     @Override
     protected Constraint impactScoreConfigurable(String constraintPackage, String constraintName,
             ScoreImpactType impactType) {
-        DroolsScoringQuadConstraintStream<Solution_, A, B, C, D> stream =
-                new DroolsScoringQuadConstraintStream<>(constraintFactory, this);
+        DroolsScoringQuadConstraintStream<Solution_, A, B, C, D> stream = new DroolsScoringQuadConstraintStream<>(
+                constraintFactory, this);
         addChildStream(stream);
         return buildConstraintConfigurable(constraintPackage, constraintName, impactType, stream);
     }
@@ -212,8 +211,8 @@ public abstract class DroolsAbstractQuadConstraintStream<Solution_, A, B, C, D>
     @Override
     public Constraint impactScoreConfigurable(String constraintPackage, String constraintName,
             ToIntQuadFunction<A, B, C, D> matchWeigher, ScoreImpactType impactType) {
-        DroolsScoringQuadConstraintStream<Solution_, A, B, C, D> stream =
-                new DroolsScoringQuadConstraintStream<>(constraintFactory, this, matchWeigher);
+        DroolsScoringQuadConstraintStream<Solution_, A, B, C, D> stream = new DroolsScoringQuadConstraintStream<>(
+                constraintFactory, this, matchWeigher);
         addChildStream(stream);
         return buildConstraintConfigurable(constraintPackage, constraintName, impactType, stream);
     }
@@ -221,8 +220,8 @@ public abstract class DroolsAbstractQuadConstraintStream<Solution_, A, B, C, D>
     @Override
     public Constraint impactScoreConfigurableLong(String constraintPackage, String constraintName,
             ToLongQuadFunction<A, B, C, D> matchWeigher, ScoreImpactType impactType) {
-        DroolsScoringQuadConstraintStream<Solution_, A, B, C, D> stream =
-                new DroolsScoringQuadConstraintStream<>(constraintFactory, this, matchWeigher);
+        DroolsScoringQuadConstraintStream<Solution_, A, B, C, D> stream = new DroolsScoringQuadConstraintStream<>(
+                constraintFactory, this, matchWeigher);
         addChildStream(stream);
         return buildConstraintConfigurable(constraintPackage, constraintName, impactType, stream);
     }
@@ -230,8 +229,8 @@ public abstract class DroolsAbstractQuadConstraintStream<Solution_, A, B, C, D>
     @Override
     public Constraint impactScoreConfigurableBigDecimal(String constraintPackage, String constraintName,
             QuadFunction<A, B, C, D, BigDecimal> matchWeigher, ScoreImpactType impactType) {
-        DroolsScoringQuadConstraintStream<Solution_, A, B, C, D> stream =
-                new DroolsScoringQuadConstraintStream<>(constraintFactory, this, matchWeigher);
+        DroolsScoringQuadConstraintStream<Solution_, A, B, C, D> stream = new DroolsScoringQuadConstraintStream<>(
+                constraintFactory, this, matchWeigher);
         addChildStream(stream);
         return buildConstraintConfigurable(constraintPackage, constraintName, impactType, stream);
     }
@@ -243,12 +242,11 @@ public abstract class DroolsAbstractQuadConstraintStream<Solution_, A, B, C, D>
     @Override
     public List<DroolsFromUniConstraintStream<Solution_, Object>> getFromStreamList() {
         if (parent == null) {
-            DroolsJoinQuadConstraintStream<Solution_, A, B, C, D> joinStream =
-                    (DroolsJoinQuadConstraintStream<Solution_, A, B, C, D>) this;
-            List<DroolsFromUniConstraintStream<Solution_, Object>> leftParentFromStreamList =
-                    joinStream.getLeftParentStream().getFromStreamList();
-            List<DroolsFromUniConstraintStream<Solution_, Object>> rightParentFromStreamList =
-                    joinStream.getRightParentStream().getFromStreamList();
+            DroolsJoinQuadConstraintStream<Solution_, A, B, C, D> joinStream = (DroolsJoinQuadConstraintStream<Solution_, A, B, C, D>) this;
+            List<DroolsFromUniConstraintStream<Solution_, Object>> leftParentFromStreamList = joinStream.getLeftParentStream()
+                    .getFromStreamList();
+            List<DroolsFromUniConstraintStream<Solution_, Object>> rightParentFromStreamList = joinStream.getRightParentStream()
+                    .getFromStreamList();
             return Stream.concat(leftParentFromStreamList.stream(), rightParentFromStreamList.stream())
                     .collect(Collectors.toList()); // TODO Should we distinct?
         } else {

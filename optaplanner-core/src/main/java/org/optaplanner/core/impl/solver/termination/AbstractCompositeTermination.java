@@ -22,11 +22,12 @@ import java.util.List;
 
 import org.optaplanner.core.impl.phase.scope.AbstractPhaseScope;
 import org.optaplanner.core.impl.phase.scope.AbstractStepScope;
-import org.optaplanner.core.impl.solver.thread.ChildThreadType;
 import org.optaplanner.core.impl.solver.scope.DefaultSolverScope;
+import org.optaplanner.core.impl.solver.thread.ChildThreadType;
 
 /**
  * Abstract superclass that combines multiple {@link Termination}s.
+ * 
  * @see AndCompositeTermination
  * @see OrCompositeTermination
  */
@@ -92,7 +93,8 @@ public abstract class AbstractCompositeTermination extends AbstractTermination {
     // Other methods
     // ************************************************************************
 
-    protected List<Termination> createChildThreadTerminationList(DefaultSolverScope solverScope, ChildThreadType childThreadType) {
+    protected List<Termination> createChildThreadTerminationList(DefaultSolverScope solverScope,
+            ChildThreadType childThreadType) {
         List<Termination> childThreadTerminationList = new ArrayList<>(terminationList.size());
         for (Termination termination : terminationList) {
             childThreadTerminationList.add(termination.createChildThreadTermination(solverScope, childThreadType));

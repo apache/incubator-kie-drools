@@ -23,7 +23,6 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Locale;
 
-import com.thoughtworks.xstream.annotations.XStreamAlias;
 import org.jfree.chart.JFreeChart;
 import org.jfree.chart.axis.NumberAxis;
 import org.jfree.chart.plot.PlotOrientation;
@@ -40,6 +39,8 @@ import org.optaplanner.benchmark.impl.result.SubSingleBenchmarkResult;
 import org.optaplanner.benchmark.impl.statistic.ProblemStatistic;
 import org.optaplanner.benchmark.impl.statistic.SubSingleStatistic;
 import org.optaplanner.benchmark.impl.statistic.common.MillisecondsSpentNumberFormat;
+
+import com.thoughtworks.xstream.annotations.XStreamAlias;
 
 @XStreamAlias("memoryUseProblemStatistic")
 public class MemoryUseProblemStatistic extends ProblemStatistic {
@@ -81,29 +82,29 @@ public class MemoryUseProblemStatistic extends ProblemStatistic {
             XYSeries usedSeries = new XYSeries(
                     singleBenchmarkResult.getSolverBenchmarkResult().getNameWithFavoriteSuffix() + " used");
             // TODO enable max memory, but in the same color as used memory, but with a dotted line instead
-//            XYSeries maxSeries = new XYSeries(
-//                    singleBenchmarkResult.getSolverBenchmarkResult().getNameWithFavoriteSuffix() + " max");
+            //            XYSeries maxSeries = new XYSeries(
+            //                    singleBenchmarkResult.getSolverBenchmarkResult().getNameWithFavoriteSuffix() + " max");
             XYItemRenderer renderer = new XYLineAndShapeRenderer();
             if (singleBenchmarkResult.hasAllSuccess()) {
-                MemoryUseSubSingleStatistic subSingleStatistic = (MemoryUseSubSingleStatistic)
-                        singleBenchmarkResult.getSubSingleStatistic(problemStatisticType);
+                MemoryUseSubSingleStatistic subSingleStatistic = (MemoryUseSubSingleStatistic) singleBenchmarkResult
+                        .getSubSingleStatistic(problemStatisticType);
                 List<MemoryUseStatisticPoint> points = subSingleStatistic.getPointList();
                 for (MemoryUseStatisticPoint point : points) {
                     long timeMillisSpent = point.getTimeMillisSpent();
                     MemoryUseMeasurement memoryUseMeasurement = point.getMemoryUseMeasurement();
                     usedSeries.add(timeMillisSpent, memoryUseMeasurement.getUsedMemory());
-//                    maxSeries.add(timeMillisSpent, memoryUseMeasurement.getMaxMemory());
+                    //                    maxSeries.add(timeMillisSpent, memoryUseMeasurement.getMaxMemory());
                 }
             }
             XYSeriesCollection seriesCollection = new XYSeriesCollection();
             seriesCollection.addSeries(usedSeries);
-//            seriesCollection.addSeries(maxSeries);
+            //            seriesCollection.addSeries(maxSeries);
             plot.setDataset(seriesIndex, seriesCollection);
 
             if (singleBenchmarkResult.getSolverBenchmarkResult().isFavorite()) {
                 // Make the favorite more obvious
                 renderer.setSeriesStroke(0, new BasicStroke(2.0f));
-//                renderer.setSeriesStroke(1, new BasicStroke(2.0f));
+                //                renderer.setSeriesStroke(1, new BasicStroke(2.0f));
             }
             plot.setRenderer(seriesIndex, renderer);
             seriesIndex++;

@@ -16,10 +16,11 @@
 
 package org.optaplanner.core.config.heuristic.selector.entity.pillar;
 
+import static org.apache.commons.lang3.ObjectUtils.defaultIfNull;
+
 import java.util.Comparator;
 import java.util.List;
 
-import com.thoughtworks.xstream.annotations.XStreamAlias;
 import org.optaplanner.core.config.heuristic.policy.HeuristicConfigPolicy;
 import org.optaplanner.core.config.heuristic.selector.SelectorConfig;
 import org.optaplanner.core.config.heuristic.selector.common.SelectionCacheType;
@@ -32,7 +33,7 @@ import org.optaplanner.core.impl.heuristic.selector.entity.EntitySelector;
 import org.optaplanner.core.impl.heuristic.selector.entity.pillar.DefaultPillarSelector;
 import org.optaplanner.core.impl.heuristic.selector.entity.pillar.PillarSelector;
 
-import static org.apache.commons.lang3.ObjectUtils.defaultIfNull;
+import com.thoughtworks.xstream.annotations.XStreamAlias;
 
 @XStreamAlias("pillarSelector")
 public class PillarSelectorConfig extends SelectorConfig<PillarSelectorConfig> {
@@ -97,8 +98,8 @@ public class PillarSelectorConfig extends SelectorConfig<PillarSelectorConfig> {
      * @param subPillarType if null, defaults to {@link SubPillarType#ALL} for backwards compatibility reasons.
      * @param subPillarSequenceComparatorClass if not null, will force entites in the pillar to come in this order
      * @param minimumCacheType never null, If caching is used (different from {@link SelectionCacheType#JUST_IN_TIME}),
-     * then it should be at least this {@link SelectionCacheType} because an ancestor already uses such caching
-     * and less would be pointless.
+     *        then it should be at least this {@link SelectionCacheType} because an ancestor already uses such caching
+     *        and less would be pointless.
      * @param inheritedSelectionOrder never null
      * @param variableNameIncludeList sometimes null
      * @return never null
@@ -122,8 +123,7 @@ public class PillarSelectorConfig extends SelectorConfig<PillarSelectorConfig> {
                     + ") must not be higher than " + SelectionCacheType.STEP
                     + " because the pillars change every step.");
         }
-        boolean subPillarActuallyEnabled =
-                subPillarEnabled != null ? subPillarEnabled : subPillarType != SubPillarType.NONE;
+        boolean subPillarActuallyEnabled = subPillarEnabled != null ? subPillarEnabled : subPillarType != SubPillarType.NONE;
         // EntitySelector uses SelectionOrder.ORIGINAL because a DefaultPillarSelector STEP caches the values
         EntitySelectorConfig entitySelectorConfig_ = entitySelectorConfig == null ? new EntitySelectorConfig()
                 : entitySelectorConfig;
@@ -138,10 +138,10 @@ public class PillarSelectorConfig extends SelectorConfig<PillarSelectorConfig> {
                     + ") or maximumSubPillarSize (" + maximumSubPillarSize + ").");
         }
 
-        SubPillarConfigPolicy subPillarPolicy = subPillarActuallyEnabled ?
-                configureSubPillars(subPillarType, subPillarSequenceComparatorClass, entitySelector, minimumSubPillarSize,
-                        maximumSubPillarSize) :
-                SubPillarConfigPolicy.withoutSubpillars();
+        SubPillarConfigPolicy subPillarPolicy = subPillarActuallyEnabled
+                ? configureSubPillars(subPillarType, subPillarSequenceComparatorClass, entitySelector, minimumSubPillarSize,
+                        maximumSubPillarSize)
+                : SubPillarConfigPolicy.withoutSubpillars();
         return new DefaultPillarSelector(entitySelector, variableDescriptors,
                 inheritedSelectionOrder.toRandomSelectionBoolean(), subPillarPolicy);
     }
@@ -170,7 +170,8 @@ public class PillarSelectorConfig extends SelectorConfig<PillarSelectorConfig> {
                     return SubPillarConfigPolicy.sequential(actualMinimumSubPillarSize, actualMaximumSubPillarSize,
                             comparator);
                 } else {
-                    Comparator<Object> comparator = ConfigUtils.newInstance(this, "pillarOrderComparatorClass", pillarOrderComparatorClass);
+                    Comparator<Object> comparator = ConfigUtils.newInstance(this, "pillarOrderComparatorClass",
+                            pillarOrderComparatorClass);
                     return SubPillarConfigPolicy.sequential(actualMinimumSubPillarSize, actualMaximumSubPillarSize,
                             comparator);
                 }

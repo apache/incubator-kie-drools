@@ -90,7 +90,7 @@ public final class ReflectionMethodMemberAccessor implements MemberAccessor {
 
     @Override
     public boolean supportSetter() {
-        return  false;
+        return false;
     }
 
     @Override

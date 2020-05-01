@@ -145,7 +145,8 @@ public class MeetingConstraintConfiguration extends AbstractPersistable {
         return oneTimeGrainBreakBetweenTwoConsecutiveMeetings;
     }
 
-    public void setOneTimeGrainBreakBetweenTwoConsecutiveMeetings(HardMediumSoftScore oneTimeGrainBreakBetweenTwoConsecutiveMeetings) {
+    public void setOneTimeGrainBreakBetweenTwoConsecutiveMeetings(
+            HardMediumSoftScore oneTimeGrainBreakBetweenTwoConsecutiveMeetings) {
         this.oneTimeGrainBreakBetweenTwoConsecutiveMeetings = oneTimeGrainBreakBetweenTwoConsecutiveMeetings;
     }
 

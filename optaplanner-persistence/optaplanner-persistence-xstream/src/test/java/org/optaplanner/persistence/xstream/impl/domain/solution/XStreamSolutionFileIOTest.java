@@ -16,6 +16,11 @@
 
 package org.optaplanner.persistence.xstream.impl.domain.solution;
 
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotSame;
+import static org.junit.Assert.assertSame;
+import static org.optaplanner.core.impl.testdata.util.PlannerAssert.*;
+
 import java.io.File;
 import java.io.IOException;
 import java.util.Arrays;
@@ -26,11 +31,6 @@ import org.optaplanner.core.api.score.buildin.simple.SimpleScore;
 import org.optaplanner.persistence.xstream.impl.testdata.domain.XStreamTestdataEntity;
 import org.optaplanner.persistence.xstream.impl.testdata.domain.XStreamTestdataSolution;
 import org.optaplanner.persistence.xstream.impl.testdata.domain.XStreamTestdataValue;
-
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotSame;
-import static org.junit.Assert.assertSame;
-import static org.optaplanner.core.impl.testdata.util.PlannerAssert.*;
 
 public class XStreamSolutionFileIOTest {
 
@@ -44,7 +44,8 @@ public class XStreamSolutionFileIOTest {
 
     @Test
     public void readAndWrite() {
-        XStreamSolutionFileIO<XStreamTestdataSolution> solutionFileIO = new XStreamSolutionFileIO<>(XStreamTestdataSolution.class);
+        XStreamSolutionFileIO<XStreamTestdataSolution> solutionFileIO = new XStreamSolutionFileIO<>(
+                XStreamTestdataSolution.class);
         File file = new File(solutionTestDir, "testdataSolution.xml");
 
         XStreamTestdataSolution original = new XStreamTestdataSolution("s1");

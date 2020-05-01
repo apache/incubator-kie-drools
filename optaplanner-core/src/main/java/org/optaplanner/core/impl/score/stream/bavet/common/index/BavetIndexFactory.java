@@ -31,10 +31,10 @@ public class BavetIndexFactory {
                 throw new IllegalArgumentException("The joinerType (" + joinerTypes[i]
                         + ") is currently only supported as the last joinerType.\n"
                         + ((joinerTypes[i + 1] == JoinerType.EQUAL)
-                        ? "Maybe move the next joinerType (" + joinerTypes[i + 1]
-                        + ") before this joinerType (" + joinerTypes[i] + ")."
-                        : "Maybe put the next joinerType (" + joinerTypes[i + 1]
-                        + ") in a filter() predicate after the join() call for now."));
+                                ? "Maybe move the next joinerType (" + joinerTypes[i + 1]
+                                        + ") before this joinerType (" + joinerTypes[i] + ")."
+                                : "Maybe put the next joinerType (" + joinerTypes[i + 1]
+                                        + ") in a filter() predicate after the join() call for now."));
             }
         }
     }

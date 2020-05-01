@@ -16,13 +16,13 @@
 
 package org.optaplanner.core.api.score.buildin.hardsoftdouble;
 
+import static org.assertj.core.api.Assertions.assertThatIllegalArgumentException;
+import static org.junit.Assert.*;
+
 import org.junit.jupiter.api.Test;
 import org.optaplanner.core.api.score.buildin.AbstractScoreTest;
 import org.optaplanner.core.impl.testdata.util.PlannerAssert;
 import org.optaplanner.core.impl.testdata.util.PlannerTestUtils;
-
-import static org.assertj.core.api.Assertions.assertThatIllegalArgumentException;
-import static org.junit.Assert.*;
 
 public class HardSoftDoubleScoreTest extends AbstractScoreTest {
 
@@ -88,14 +88,12 @@ public class HardSoftDoubleScoreTest extends AbstractScoreTest {
                 HardSoftDoubleScore.of(-5.0, 4000.0),
                 HardSoftDoubleScore.of(-0.007, 4000.0),
                 HardSoftDoubleScore.ofUninitialized(-7, -5.0, -300.0),
-                HardSoftDoubleScore.ofUninitialized(-7, 0.0, -300.0)
-        );
+                HardSoftDoubleScore.ofUninitialized(-7, 0.0, -300.0));
         assertScoreFeasible(
                 HardSoftDoubleScore.of(0.0, -300.007),
                 HardSoftDoubleScore.of(0.0, -300.0),
                 HardSoftDoubleScore.of(2.0, -300.0),
-                HardSoftDoubleScore.ofUninitialized(0, 0.0, -300.0)
-        );
+                HardSoftDoubleScore.ofUninitialized(0, 0.0, -300.0));
     }
 
     @Test
@@ -165,18 +163,15 @@ public class HardSoftDoubleScoreTest extends AbstractScoreTest {
         PlannerAssert.assertObjectsAreEqual(
                 HardSoftDoubleScore.of(-10.0, -200.0),
                 HardSoftDoubleScore.of(-10.0, -200.0),
-                HardSoftDoubleScore.ofUninitialized(0, -10.0, -200.0)
-        );
+                HardSoftDoubleScore.ofUninitialized(0, -10.0, -200.0));
         PlannerAssert.assertObjectsAreEqual(
                 HardSoftDoubleScore.ofUninitialized(-7, -10.0, -200.0),
-                HardSoftDoubleScore.ofUninitialized(-7, -10.0, -200.0)
-        );
+                HardSoftDoubleScore.ofUninitialized(-7, -10.0, -200.0));
         PlannerAssert.assertObjectsAreNotEqual(
                 HardSoftDoubleScore.of(-10.0, -200.0),
                 HardSoftDoubleScore.of(-30.0, -200.0),
                 HardSoftDoubleScore.of(-10.0, -400.0),
-                HardSoftDoubleScore.ofUninitialized(-7, -10.0, -200.0)
-        );
+                HardSoftDoubleScore.ofUninitialized(-7, -10.0, -200.0));
     }
 
     @Test
@@ -197,8 +192,7 @@ public class HardSoftDoubleScoreTest extends AbstractScoreTest {
                 HardSoftDoubleScore.of(-1.0, 4000.0),
                 HardSoftDoubleScore.of(0.0, -1.0),
                 HardSoftDoubleScore.of(0.0, 0.0),
-                HardSoftDoubleScore.of(0.0, 1.0)
-        );
+                HardSoftDoubleScore.of(0.0, 1.0));
     }
 
     @Test
@@ -209,16 +203,14 @@ public class HardSoftDoubleScoreTest extends AbstractScoreTest {
                     assertEquals(0, output.getInitScore());
                     assertEquals(-12.3, output.getHardScore(), 0.0);
                     assertEquals(3400.5, output.getSoftScore(), 0.0);
-                }
-        );
+                });
         PlannerTestUtils.serializeAndDeserializeWithAll(
                 HardSoftDoubleScore.ofUninitialized(-7, -12.3, 3400.5),
                 output -> {
                     assertEquals(-7, output.getInitScore());
                     assertEquals(-12.3, output.getHardScore(), 0.0);
                     assertEquals(3400.5, output.getSoftScore(), 0.0);
-                }
-        );
+                });
     }
 
 }

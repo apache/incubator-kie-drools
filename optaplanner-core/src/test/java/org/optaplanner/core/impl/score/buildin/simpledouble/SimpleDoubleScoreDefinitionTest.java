@@ -16,14 +16,14 @@
 
 package org.optaplanner.core.impl.score.buildin.simpledouble;
 
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.junit.Assert.assertArrayEquals;
+import static org.junit.Assert.assertEquals;
+
 import org.junit.jupiter.api.Test;
 import org.optaplanner.core.api.score.buildin.simpledouble.SimpleDoubleScore;
 import org.optaplanner.core.config.score.trend.InitializingScoreTrendLevel;
 import org.optaplanner.core.impl.score.trend.InitializingScoreTrend;
-
-import static org.assertj.core.api.Assertions.assertThat;
-import static org.junit.Assert.assertArrayEquals;
-import static org.junit.Assert.assertEquals;
 
 public class SimpleDoubleScoreDefinitionTest {
 
@@ -46,7 +46,7 @@ public class SimpleDoubleScoreDefinitionTest {
 
     @Test
     public void getLevelLabels() {
-        assertArrayEquals(new String[]{"score"}, new SimpleDoubleScoreDefinition().getLevelLabels());
+        assertArrayEquals(new String[] { "score" }, new SimpleDoubleScoreDefinition().getLevelLabels());
     }
 
     @Test
@@ -92,16 +92,16 @@ public class SimpleDoubleScoreDefinitionTest {
     @Test
     public void divideBySanitizedDivisor() {
         SimpleDoubleScoreDefinition scoreDefinition = new SimpleDoubleScoreDefinition();
-        SimpleDoubleScore dividend = scoreDefinition.fromLevelNumbers(2, new Number[] {10d});
+        SimpleDoubleScore dividend = scoreDefinition.fromLevelNumbers(2, new Number[] { 10d });
         SimpleDoubleScore zeroDivisor = scoreDefinition.getZeroScore();
         assertThat(scoreDefinition.divideBySanitizedDivisor(dividend, zeroDivisor))
                 .isEqualTo(dividend);
         SimpleDoubleScore oneDivisor = scoreDefinition.getOneSoftestScore();
         assertThat(scoreDefinition.divideBySanitizedDivisor(dividend, oneDivisor))
                 .isEqualTo(dividend);
-        SimpleDoubleScore tenDivisor = scoreDefinition.fromLevelNumbers(10, new Number[] {10d});
+        SimpleDoubleScore tenDivisor = scoreDefinition.fromLevelNumbers(10, new Number[] { 10d });
         assertThat(scoreDefinition.divideBySanitizedDivisor(dividend, tenDivisor))
-                .isEqualTo(scoreDefinition.fromLevelNumbers(0, new Number[] {1d}));
+                .isEqualTo(scoreDefinition.fromLevelNumbers(0, new Number[] { 1d }));
     }
 
 }

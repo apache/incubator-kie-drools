@@ -16,6 +16,9 @@
 
 package org.optaplanner.core.impl.domain.variable.anchor;
 
+import static org.junit.Assert.*;
+import static org.mockito.Mockito.*;
+
 import java.util.Arrays;
 
 import org.junit.jupiter.api.Test;
@@ -31,17 +34,14 @@ import org.optaplanner.core.impl.testdata.domain.chained.shadow.TestdataShadowin
 import org.optaplanner.core.impl.testdata.domain.chained.shadow.TestdataShadowingChainedEntity;
 import org.optaplanner.core.impl.testdata.domain.chained.shadow.TestdataShadowingChainedSolution;
 
-import static org.junit.Assert.*;
-import static org.mockito.Mockito.*;
-
 public class AnchorVariableListenerTest {
 
     @Test
     public void chained() {
         SolutionDescriptor solutionDescriptor = TestdataShadowingChainedSolution.buildSolutionDescriptor();
         EntityDescriptor entityDescriptor = solutionDescriptor.findEntityDescriptorOrFail(TestdataShadowingChainedEntity.class);
-        GenuineVariableDescriptor chainedObjectVariableDescriptor
-                = entityDescriptor.getGenuineVariableDescriptor("chainedObject");
+        GenuineVariableDescriptor chainedObjectVariableDescriptor = entityDescriptor
+                .getGenuineVariableDescriptor("chainedObject");
         ShadowVariableDescriptor nextEntityVariableDescriptor = entityDescriptor.getShadowVariableDescriptor("nextEntity");
         SingletonInverseVariableListener inverseVariableListener = new SingletonInverseVariableListener(
                 (InverseRelationShadowVariableDescriptor) nextEntityVariableDescriptor,

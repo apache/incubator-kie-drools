@@ -16,13 +16,13 @@
 
 package org.optaplanner.core.api.score.buildin.simpledouble;
 
+import static org.assertj.core.api.Assertions.assertThatIllegalArgumentException;
+import static org.junit.Assert.*;
+
 import org.junit.jupiter.api.Test;
 import org.optaplanner.core.api.score.buildin.AbstractScoreTest;
 import org.optaplanner.core.impl.testdata.util.PlannerAssert;
 import org.optaplanner.core.impl.testdata.util.PlannerTestUtils;
-
-import static org.assertj.core.api.Assertions.assertThatIllegalArgumentException;
-import static org.junit.Assert.*;
 
 public class SimpleDoubleScoreTest extends AbstractScoreTest {
 
@@ -137,17 +137,14 @@ public class SimpleDoubleScoreTest extends AbstractScoreTest {
         PlannerAssert.assertObjectsAreEqual(
                 SimpleDoubleScore.of(-10.0),
                 SimpleDoubleScore.of(-10.0),
-                SimpleDoubleScore.ofUninitialized(0, -10.0)
-        );
+                SimpleDoubleScore.ofUninitialized(0, -10.0));
         PlannerAssert.assertObjectsAreEqual(
                 SimpleDoubleScore.ofUninitialized(-7, -10.0),
-                SimpleDoubleScore.ofUninitialized(-7, -10.0)
-        );
+                SimpleDoubleScore.ofUninitialized(-7, -10.0));
         PlannerAssert.assertObjectsAreNotEqual(
                 SimpleDoubleScore.of(-10.0),
                 SimpleDoubleScore.of(-30.0),
-                SimpleDoubleScore.ofUninitialized(-7, -10.0)
-        );
+                SimpleDoubleScore.ofUninitialized(-7, -10.0));
     }
 
     @Test
@@ -165,8 +162,7 @@ public class SimpleDoubleScoreTest extends AbstractScoreTest {
                 SimpleDoubleScore.of(-20.0),
                 SimpleDoubleScore.of(-1.0),
                 SimpleDoubleScore.of(0.0),
-                SimpleDoubleScore.of(1.0)
-        );
+                SimpleDoubleScore.of(1.0));
     }
 
     @Test
@@ -176,15 +172,13 @@ public class SimpleDoubleScoreTest extends AbstractScoreTest {
                 output -> {
                     assertEquals(0, output.getInitScore());
                     assertEquals(123.4, output.getScore(), 0.0);
-                }
-        );
+                });
         PlannerTestUtils.serializeAndDeserializeWithAll(
                 SimpleDoubleScore.ofUninitialized(-7, 123.4),
                 output -> {
                     assertEquals(-7, output.getInitScore());
                     assertEquals(123.4, output.getScore(), 0.0);
-                }
-        );
+                });
     }
 
 }

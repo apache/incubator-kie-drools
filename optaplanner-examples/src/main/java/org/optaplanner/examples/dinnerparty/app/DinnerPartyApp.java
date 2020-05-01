@@ -26,8 +26,7 @@ import org.optaplanner.persistence.xstream.impl.domain.solution.XStreamSolutionF
 
 public class DinnerPartyApp extends CommonApp<DinnerParty> {
 
-    public static final String SOLVER_CONFIG
-            = "org/optaplanner/examples/dinnerparty/solver/dinnerPartySolverConfig.xml";
+    public static final String SOLVER_CONFIG = "org/optaplanner/examples/dinnerparty/solver/dinnerPartySolverConfig.xml";
 
     public static final String DATA_DIR_NAME = "dinnerparty";
 
@@ -56,7 +55,7 @@ public class DinnerPartyApp extends CommonApp<DinnerParty> {
 
     @Override
     protected AbstractSolutionImporter[] createSolutionImporters() {
-        return new AbstractSolutionImporter[]{
+        return new AbstractSolutionImporter[] {
                 new DinnerPartyImporter()
         };
     }

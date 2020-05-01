@@ -24,9 +24,9 @@ import org.optaplanner.examples.scrabble.domain.ScrabbleWordAssignment;
 public class ScrabbleWordAssignmentDifficultyComparator implements Comparator<ScrabbleWordAssignment>,
         Serializable {
 
-    private static final Comparator<ScrabbleWordAssignment> COMPARATOR =
-            Comparator.comparingInt((ScrabbleWordAssignment assignment) -> assignment.getWord().length())
-                    .thenComparingLong(ScrabbleWordAssignment::getId);
+    private static final Comparator<ScrabbleWordAssignment> COMPARATOR = Comparator
+            .comparingInt((ScrabbleWordAssignment assignment) -> assignment.getWord().length())
+            .thenComparingLong(ScrabbleWordAssignment::getId);
 
     @Override
     public int compare(ScrabbleWordAssignment a, ScrabbleWordAssignment b) {

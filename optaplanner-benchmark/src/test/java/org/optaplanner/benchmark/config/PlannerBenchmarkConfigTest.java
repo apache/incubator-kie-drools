@@ -16,6 +16,10 @@
 
 package org.optaplanner.benchmark.config;
 
+import static org.assertj.core.api.Assertions.assertThatIllegalArgumentException;
+import static org.assertj.core.api.Assertions.assertThatIllegalStateException;
+import static org.junit.Assert.*;
+
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
 import java.util.Arrays;
@@ -23,7 +27,6 @@ import java.util.Collections;
 import java.util.List;
 import java.util.TreeSet;
 
-import com.thoughtworks.xstream.XStream;
 import org.apache.commons.io.IOUtils;
 import org.junit.jupiter.api.Test;
 import org.optaplanner.benchmark.api.PlannerBenchmarkFactory;
@@ -31,9 +34,7 @@ import org.optaplanner.core.config.util.ConfigUtils;
 import org.optaplanner.core.impl.solver.io.XStreamConfigReader;
 import org.optaplanner.core.impl.testdata.domain.TestdataSolution;
 
-import static org.assertj.core.api.Assertions.assertThatIllegalArgumentException;
-import static org.assertj.core.api.Assertions.assertThatIllegalStateException;
-import static org.junit.Assert.*;
+import com.thoughtworks.xstream.XStream;
 
 public class PlannerBenchmarkConfigTest {
 

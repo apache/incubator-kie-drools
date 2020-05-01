@@ -16,14 +16,15 @@
 
 package org.optaplanner.core.config.localsearch.decider.forager;
 
-import com.thoughtworks.xstream.annotations.XStreamAlias;
+import static org.apache.commons.lang3.ObjectUtils.defaultIfNull;
+
 import org.optaplanner.core.config.AbstractConfig;
 import org.optaplanner.core.config.heuristic.policy.HeuristicConfigPolicy;
 import org.optaplanner.core.config.util.ConfigUtils;
 import org.optaplanner.core.impl.localsearch.decider.forager.AcceptedLocalSearchForager;
 import org.optaplanner.core.impl.localsearch.decider.forager.LocalSearchForager;
 
-import static org.apache.commons.lang3.ObjectUtils.defaultIfNull;
+import com.thoughtworks.xstream.annotations.XStreamAlias;
 
 @XStreamAlias("localSearchForagerConfig")
 public class LocalSearchForagerConfig extends AbstractConfig<LocalSearchForagerConfig> {
@@ -120,7 +121,7 @@ public class LocalSearchForagerConfig extends AbstractConfig<LocalSearchForagerC
         int acceptedCountLimit_ = defaultIfNull(acceptedCountLimit, Integer.MAX_VALUE);
         FinalistPodiumType finalistPodiumType_ = defaultIfNull(finalistPodiumType, FinalistPodiumType.HIGHEST_SCORE);
         // Breaking ties randomly leads statistically to much better results
-        boolean breakTieRandomly_  = defaultIfNull(breakTieRandomly, true);
+        boolean breakTieRandomly_ = defaultIfNull(breakTieRandomly, true);
         return new AcceptedLocalSearchForager(finalistPodiumType_.buildFinalistPodium(), pickEarlyType_,
                 acceptedCountLimit_, breakTieRandomly_);
     }

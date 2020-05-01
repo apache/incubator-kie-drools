@@ -32,7 +32,8 @@ import org.optaplanner.core.impl.testdata.domain.TestdataValue;
 public class TestdataFieldAnnotatedSolution extends TestdataObject {
 
     public static SolutionDescriptor buildSolutionDescriptor() {
-        return SolutionDescriptor.buildSolutionDescriptor(TestdataFieldAnnotatedSolution.class, TestdataFieldAnnotatedEntity.class);
+        return SolutionDescriptor.buildSolutionDescriptor(TestdataFieldAnnotatedSolution.class,
+                TestdataFieldAnnotatedEntity.class);
     }
 
     @ValueRangeProvider(id = "valueRange")
@@ -51,7 +52,8 @@ public class TestdataFieldAnnotatedSolution extends TestdataObject {
         super(code);
     }
 
-    public TestdataFieldAnnotatedSolution(String code, List<TestdataValue> valueList, List<TestdataFieldAnnotatedEntity> entityList) {
+    public TestdataFieldAnnotatedSolution(String code, List<TestdataValue> valueList,
+            List<TestdataFieldAnnotatedEntity> entityList) {
         super(code);
         this.valueList = valueList;
         this.entityList = entityList;

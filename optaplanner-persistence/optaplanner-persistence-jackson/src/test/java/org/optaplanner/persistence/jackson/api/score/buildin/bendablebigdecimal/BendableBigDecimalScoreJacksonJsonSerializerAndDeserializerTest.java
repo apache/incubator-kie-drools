@@ -18,22 +18,26 @@ package org.optaplanner.persistence.jackson.api.score.buildin.bendablebigdecimal
 
 import java.math.BigDecimal;
 
-import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
-import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 import org.junit.jupiter.api.Test;
 import org.optaplanner.core.api.score.buildin.bendablebigdecimal.BendableBigDecimalScore;
 import org.optaplanner.persistence.jackson.api.score.AbstractScoreJacksonJsonSerializerAndDeserializerTest;
 
-public class BendableBigDecimalScoreJacksonJsonSerializerAndDeserializerTest extends AbstractScoreJacksonJsonSerializerAndDeserializerTest {
+import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
+import com.fasterxml.jackson.databind.annotation.JsonSerialize;
+
+public class BendableBigDecimalScoreJacksonJsonSerializerAndDeserializerTest
+        extends AbstractScoreJacksonJsonSerializerAndDeserializerTest {
 
     @Test
     public void serializeAndDeserialize() {
         assertSerializeAndDeserialize(null, new TestBendableBigDecimalScoreWrapper(null));
         BendableBigDecimalScore score = BendableBigDecimalScore.of(
-                new BigDecimal[]{new BigDecimal("1000.0001"), new BigDecimal("200.0020")}, new BigDecimal[]{new BigDecimal("34.4300")});
+                new BigDecimal[] { new BigDecimal("1000.0001"), new BigDecimal("200.0020") },
+                new BigDecimal[] { new BigDecimal("34.4300") });
         assertSerializeAndDeserialize(score, new TestBendableBigDecimalScoreWrapper(score));
         score = BendableBigDecimalScore.ofUninitialized(-7,
-                new BigDecimal[]{new BigDecimal("1000.0001"), new BigDecimal("200.0020")}, new BigDecimal[]{new BigDecimal("34.4300")});
+                new BigDecimal[] { new BigDecimal("1000.0001"), new BigDecimal("200.0020") },
+                new BigDecimal[] { new BigDecimal("34.4300") });
         assertSerializeAndDeserialize(score, new TestBendableBigDecimalScoreWrapper(score));
     }
 

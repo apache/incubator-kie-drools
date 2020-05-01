@@ -16,6 +16,9 @@
 
 package org.optaplanner.core.impl.domain.variable.custom;
 
+import static org.assertj.core.api.Assertions.assertThatIllegalStateException;
+import static org.junit.Assert.*;
+
 import java.util.Arrays;
 
 import org.junit.jupiter.api.Test;
@@ -33,9 +36,6 @@ import org.optaplanner.core.impl.testdata.domain.shadow.extended.TestdataExtende
 import org.optaplanner.core.impl.testdata.domain.shadow.manytomany.TestdataManyToManyShadowedEntity;
 import org.optaplanner.core.impl.testdata.domain.shadow.manytomany.TestdataManyToManyShadowedSolution;
 import org.optaplanner.core.impl.testdata.util.PlannerTestUtils;
-
-import static org.assertj.core.api.Assertions.assertThatIllegalStateException;
-import static org.junit.Assert.*;
 
 public class CustomVariableListenerTest {
 

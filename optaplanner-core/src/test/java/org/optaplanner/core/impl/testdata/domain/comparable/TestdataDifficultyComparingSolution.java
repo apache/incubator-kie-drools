@@ -16,7 +16,8 @@ import org.optaplanner.core.impl.testdata.domain.TestdataValue;
 public class TestdataDifficultyComparingSolution extends TestdataObject {
 
     public static SolutionDescriptor<TestdataDifficultyComparingSolution> buildSolutionDescriptor() {
-        return SolutionDescriptor.buildSolutionDescriptor(TestdataDifficultyComparingSolution.class, TestdataDifficultyComparingEntity.class);
+        return SolutionDescriptor.buildSolutionDescriptor(TestdataDifficultyComparingSolution.class,
+                TestdataDifficultyComparingEntity.class);
     }
 
     private List<TestdataValue> valueList;

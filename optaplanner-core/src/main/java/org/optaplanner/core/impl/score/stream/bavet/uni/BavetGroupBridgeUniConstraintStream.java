@@ -60,14 +60,16 @@ public final class BavetGroupBridgeUniConstraintStream<Solution_, A, NewA, Resul
     protected BavetGroupBridgeUniNode<A, NewA, ResultContainer_, NewB> createNode(BavetNodeBuildPolicy<Solution_> buildPolicy,
             Score<?> constraintWeight, int nodeOrder, BavetAbstractUniNode<A> parentNode) {
         // TODO create bridge first. Move this to createChildNodeChains
-        BavetGroupBiNode<NewA, ResultContainer_, NewB> groupNode = groupStream.createNodeChain(buildPolicy, constraintWeight, nodeOrder + 1, null);
+        BavetGroupBiNode<NewA, ResultContainer_, NewB> groupNode = groupStream.createNodeChain(buildPolicy, constraintWeight,
+                nodeOrder + 1, null);
         BavetGroupBridgeUniNode<A, NewA, ResultContainer_, NewB> node = new BavetGroupBridgeUniNode<>(
                 buildPolicy.getSession(), nodeOrder, parentNode, groupKeyMapping, collector, groupNode);
         return node;
     }
 
     @Override
-    protected void createChildNodeChains(BavetNodeBuildPolicy<Solution_> buildPolicy, Score<?> constraintWeight, int nodeOrder, BavetAbstractUniNode<A> node) {
+    protected void createChildNodeChains(BavetNodeBuildPolicy<Solution_> buildPolicy, Score<?> constraintWeight, int nodeOrder,
+            BavetAbstractUniNode<A> node) {
         if (!childStreamList.isEmpty()) {
             throw new IllegalStateException("Impossible state: the stream (" + this
                     + ") has an non-empty childStreamList (" + childStreamList + ") but it's a groupBy bridge.");

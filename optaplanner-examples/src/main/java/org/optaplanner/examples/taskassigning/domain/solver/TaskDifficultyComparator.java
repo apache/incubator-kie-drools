@@ -24,11 +24,10 @@ import org.optaplanner.examples.taskassigning.domain.Task;
 public class TaskDifficultyComparator implements Comparator<Task>,
         Serializable {
 
-    private static final Comparator<Task> COMPARATOR =
-            Comparator.comparing(Task::getPriority)
-                    .thenComparingInt(task -> task.getTaskType().getRequiredSkillList().size())
-                    .thenComparingInt(task -> task.getTaskType().getBaseDuration())
-                    .thenComparingLong(Task::getId);
+    private static final Comparator<Task> COMPARATOR = Comparator.comparing(Task::getPriority)
+            .thenComparingInt(task -> task.getTaskType().getRequiredSkillList().size())
+            .thenComparingInt(task -> task.getTaskType().getBaseDuration())
+            .thenComparingLong(Task::getId);
 
     @Override
     public int compare(Task a, Task b) {

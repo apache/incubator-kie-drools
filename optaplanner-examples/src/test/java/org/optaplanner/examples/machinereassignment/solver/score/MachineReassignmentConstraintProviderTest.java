@@ -353,7 +353,7 @@ public class MachineReassignmentConstraintProviderTest {
                         machineCapacityDisk, process, processAssignment)
                 .penalizesBy(2L);
     }
-    
+
     @Test
     public void solutionWithMultipleConstraints() throws IOException {
         constraintVerifier.verifyThat()

@@ -16,6 +16,8 @@
 
 package org.optaplanner.examples.cloudbalancing.app;
 
+import static org.junit.Assert.*;
+
 import java.util.ArrayDeque;
 import java.util.ArrayList;
 import java.util.Queue;
@@ -35,8 +37,6 @@ import org.optaplanner.examples.cloudbalancing.domain.CloudProcess;
 import org.optaplanner.examples.cloudbalancing.optional.realtime.AddProcessProblemFactChange;
 import org.optaplanner.examples.cloudbalancing.persistence.CloudBalancingGenerator;
 import org.optaplanner.examples.common.app.LoggingTest;
-
-import static org.junit.Assert.*;
 
 public class CloudBalancingDaemonTest extends LoggingTest {
 

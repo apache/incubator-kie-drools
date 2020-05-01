@@ -18,10 +18,11 @@ package org.optaplanner.examples.vehiclerouting.domain.location.segmented;
 
 import java.util.Map;
 
-import com.thoughtworks.xstream.annotations.XStreamAlias;
 import org.optaplanner.examples.vehiclerouting.domain.location.DistanceType;
 import org.optaplanner.examples.vehiclerouting.domain.location.Location;
 import org.optaplanner.examples.vehiclerouting.domain.location.RoadLocation;
+
+import com.thoughtworks.xstream.annotations.XStreamAlias;
 
 /**
  * Like {@link RoadLocation},

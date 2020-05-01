@@ -16,6 +16,9 @@
 
 package org.optaplanner.core.impl.score.stream.quad;
 
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.optaplanner.core.impl.score.stream.quad.AbstractQuadJoiner.merge;
+
 import java.math.BigDecimal;
 import java.math.BigInteger;
 import java.util.function.Function;
@@ -25,21 +28,16 @@ import org.optaplanner.core.api.function.TriFunction;
 import org.optaplanner.core.api.score.stream.Joiners;
 import org.optaplanner.core.api.score.stream.quad.QuadJoiner;
 
-import static org.assertj.core.api.Assertions.assertThat;
-import static org.optaplanner.core.impl.score.stream.quad.AbstractQuadJoiner.merge;
-
 public class CompositeQuadJoinerTest {
 
     @Test
     public void compositeMappings() {
-        QuadJoiner<BigInteger, BigInteger, BigInteger, BigDecimal> joiner1 =
-                Joiners.equal((a, b, c) -> a.add(b).add(c).longValue(), BigDecimal::longValue);
-        QuadJoiner<BigInteger, BigInteger, BigInteger, BigDecimal> joiner2 =
-                Joiners.lessThan((a, b, c) -> a.add(b).add(c).longValue(), BigDecimal::longValue);
-        AbstractQuadJoiner<BigInteger, BigInteger, BigInteger, BigDecimal> composite =
-                merge(joiner1, joiner2);
-        TriFunction<BigInteger, BigInteger, BigInteger, Object[]> leftMapping =
-                composite.getLeftCombinedMapping();
+        QuadJoiner<BigInteger, BigInteger, BigInteger, BigDecimal> joiner1 = Joiners
+                .equal((a, b, c) -> a.add(b).add(c).longValue(), BigDecimal::longValue);
+        QuadJoiner<BigInteger, BigInteger, BigInteger, BigDecimal> joiner2 = Joiners
+                .lessThan((a, b, c) -> a.add(b).add(c).longValue(), BigDecimal::longValue);
+        AbstractQuadJoiner<BigInteger, BigInteger, BigInteger, BigDecimal> composite = merge(joiner1, joiner2);
+        TriFunction<BigInteger, BigInteger, BigInteger, Object[]> leftMapping = composite.getLeftCombinedMapping();
         Object[] left = leftMapping.apply(BigInteger.ONE, BigInteger.ONE, BigInteger.TEN);
         assertThat(left).containsExactly(12L, 12L);
         Function<BigDecimal, Object[]> rightMapping = composite.getRightCombinedMapping();

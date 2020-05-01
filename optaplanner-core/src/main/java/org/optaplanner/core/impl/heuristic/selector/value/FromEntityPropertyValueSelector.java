@@ -27,6 +27,7 @@ import org.optaplanner.core.impl.phase.scope.AbstractPhaseScope;
 
 /**
  * This is the common {@link ValueSelector} implementation.
+ * 
  * @param <Solution_> the solution type, the class with the {@link PlanningSolution} annotation
  */
 public class FromEntityPropertyValueSelector<Solution_> extends AbstractValueSelector {
@@ -81,8 +82,7 @@ public class FromEntityPropertyValueSelector<Solution_> extends AbstractValueSel
 
     @Override
     public Iterator<Object> iterator(Object entity) {
-        ValueRange<Object> valueRange = (ValueRange<Object>)
-                valueRangeDescriptor.extractValueRange(workingSolution, entity);
+        ValueRange<Object> valueRange = (ValueRange<Object>) valueRangeDescriptor.extractValueRange(workingSolution, entity);
         if (!randomSelection) {
             return ((CountableValueRange<Object>) valueRange).createOriginalIterator();
         } else {
@@ -92,8 +92,7 @@ public class FromEntityPropertyValueSelector<Solution_> extends AbstractValueSel
 
     @Override
     public Iterator<Object> endingIterator(Object entity) {
-        ValueRange<Object> valueRange = (ValueRange<Object>)
-                valueRangeDescriptor.extractValueRange(workingSolution, entity);
+        ValueRange<Object> valueRange = (ValueRange<Object>) valueRangeDescriptor.extractValueRange(workingSolution, entity);
         return ((CountableValueRange<Object>) valueRange).createOriginalIterator();
     }
 

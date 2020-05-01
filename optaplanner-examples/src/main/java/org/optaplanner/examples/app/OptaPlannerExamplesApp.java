@@ -24,6 +24,7 @@ import java.awt.GridLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
+
 import javax.swing.AbstractAction;
 import javax.swing.Action;
 import javax.swing.BorderFactory;
@@ -66,6 +67,7 @@ public class OptaPlannerExamplesApp extends JFrame {
 
     /**
      * Supported system properties: {@link CommonApp#DATA_DIR_SYSTEM_PROPERTY}.
+     * 
      * @param args never null
      */
     public static void main(String[] args) {
@@ -191,7 +193,8 @@ public class OptaPlannerExamplesApp extends JFrame {
         extraPanel.add(new JPanel());
         Action homepageAction = new OpenBrowserAction("www.optaplanner.org", "https://www.optaplanner.org");
         extraPanel.add(new JButton(homepageAction));
-        Action documentationAction = new OpenBrowserAction("Documentation", "https://www.optaplanner.org/learn/documentation.html");
+        Action documentationAction = new OpenBrowserAction("Documentation",
+                "https://www.optaplanner.org/learn/documentation.html");
         extraPanel.add(new JButton(documentationAction));
         return extraPanel;
     }

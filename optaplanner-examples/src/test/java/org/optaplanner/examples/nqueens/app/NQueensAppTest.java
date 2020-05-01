@@ -16,12 +16,12 @@
 
 package org.optaplanner.examples.nqueens.app;
 
+import static org.junit.Assert.*;
+
 import org.junit.jupiter.api.Test;
 import org.optaplanner.core.api.solver.Solver;
 import org.optaplanner.core.api.solver.SolverFactory;
 import org.optaplanner.examples.nqueens.domain.NQueens;
-
-import static org.junit.Assert.*;
 
 public class NQueensAppTest {
 

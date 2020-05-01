@@ -34,7 +34,8 @@ public class CoachShuttleGatheringExporter extends AbstractTxtSolutionExporter<C
 
     public static void main(String[] args) {
         SolutionConverter<CoachShuttleGatheringSolution> converter = SolutionConverter.createExportConverter(
-                CoachShuttleGatheringApp.DATA_DIR_NAME, CoachShuttleGatheringSolution.class, new CoachShuttleGatheringExporter());
+                CoachShuttleGatheringApp.DATA_DIR_NAME, CoachShuttleGatheringSolution.class,
+                new CoachShuttleGatheringExporter());
         converter.convertAll();
     }
 

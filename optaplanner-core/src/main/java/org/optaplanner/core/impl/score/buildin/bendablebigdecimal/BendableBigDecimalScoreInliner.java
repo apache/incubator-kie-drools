@@ -60,9 +60,10 @@ public class BendableBigDecimalScoreInliner extends ScoreInliner<BendableBigDeci
                 int level = singleLevel;
                 return (BigDecimal matchWeight, Consumer<Score<?>> matchScoreConsumer) -> {
                     BigDecimal hardImpact = levelWeight.multiply(matchWeight);
-                    this.hardScores[level] =  this.hardScores[level].add(hardImpact);
+                    this.hardScores[level] = this.hardScores[level].add(hardImpact);
                     if (constraintMatchEnabled) {
-                        matchScoreConsumer.accept(BendableBigDecimalScore.ofHard(hardScores.length, softScores.length, level, hardImpact));
+                        matchScoreConsumer.accept(
+                                BendableBigDecimalScore.ofHard(hardScores.length, softScores.length, level, hardImpact));
                     }
                     return () -> this.hardScores[level] = this.hardScores[level].subtract(hardImpact);
                 };
@@ -72,9 +73,10 @@ public class BendableBigDecimalScoreInliner extends ScoreInliner<BendableBigDeci
                     BigDecimal softImpact = levelWeight.multiply(matchWeight);
                     this.softScores[level] = this.softScores[level].add(softImpact);
                     if (constraintMatchEnabled) {
-                        matchScoreConsumer.accept(BendableBigDecimalScore.ofSoft(hardScores.length, softScores.length, level, softImpact));
+                        matchScoreConsumer.accept(
+                                BendableBigDecimalScore.ofSoft(hardScores.length, softScores.length, level, softImpact));
                     }
-                    return () -> this.softScores[level]  = this.softScores[level].subtract(softImpact);
+                    return () -> this.softScores[level] = this.softScores[level].subtract(softImpact);
                 };
             }
         } else {

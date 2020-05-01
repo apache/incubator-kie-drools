@@ -16,6 +16,9 @@
 
 package org.optaplanner.core.impl.heuristic.selector.value.decorator;
 
+import static org.mockito.Mockito.*;
+import static org.optaplanner.core.impl.testdata.util.PlannerAssert.*;
+
 import org.junit.jupiter.api.Test;
 import org.optaplanner.core.impl.domain.entity.descriptor.EntityDescriptor;
 import org.optaplanner.core.impl.domain.variable.descriptor.GenuineVariableDescriptor;
@@ -27,9 +30,6 @@ import org.optaplanner.core.impl.solver.scope.DefaultSolverScope;
 import org.optaplanner.core.impl.testdata.domain.TestdataEntity;
 import org.optaplanner.core.impl.testdata.domain.TestdataValue;
 import org.optaplanner.core.impl.testdata.domain.multivar.TestdataMultiVarEntity;
-
-import static org.mockito.Mockito.*;
-import static org.optaplanner.core.impl.testdata.util.PlannerAssert.*;
 
 public class ReinitializeVariableValueSelectorTest {
 
@@ -79,7 +79,6 @@ public class ReinitializeVariableValueSelectorTest {
         e2.setValue(null);
         assertAllCodesOfValueSelectorForEntity(valueSelector, e2, "v1", "v2", "v3");
         valueSelector.stepEnded(stepScopeB1);
-
 
         AbstractStepScope stepScopeB2 = mock(AbstractStepScope.class);
         when(stepScopeB2.getPhaseScope()).thenReturn(phaseScopeB);
@@ -145,7 +144,6 @@ public class ReinitializeVariableValueSelectorTest {
         e2.setSecondaryValue(null);
         assertAllCodesOfValueSelectorForEntity(valueSelector, e2, "s1", "s2", "s3");
         valueSelector.stepEnded(stepScopeB1);
-
 
         AbstractStepScope stepScopeB2 = mock(AbstractStepScope.class);
         when(stepScopeB2.getPhaseScope()).thenReturn(phaseScopeB);

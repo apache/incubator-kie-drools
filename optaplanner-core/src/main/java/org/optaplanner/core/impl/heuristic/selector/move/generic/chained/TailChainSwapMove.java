@@ -32,6 +32,7 @@ import org.optaplanner.core.impl.score.director.ScoreDirector;
 
 /**
  * Also known as a 2-opt move.
+ * 
  * @param <Solution_> the solution type, the class with the {@link PlanningSolution} annotation
  */
 public class TailChainSwapMove<Solution_> extends AbstractMove<Solution_> {

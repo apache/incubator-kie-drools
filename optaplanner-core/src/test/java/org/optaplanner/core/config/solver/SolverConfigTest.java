@@ -16,16 +16,17 @@
 
 package org.optaplanner.core.config.solver;
 
+import static org.junit.Assert.*;
+
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
 
-import com.thoughtworks.xstream.XStream;
 import org.apache.commons.io.IOUtils;
 import org.junit.jupiter.api.Test;
 import org.optaplanner.core.api.solver.SolverFactory;
 import org.optaplanner.core.impl.solver.io.XStreamConfigReader;
 
-import static org.junit.Assert.*;
+import com.thoughtworks.xstream.XStream;
 
 public class SolverConfigTest {
 

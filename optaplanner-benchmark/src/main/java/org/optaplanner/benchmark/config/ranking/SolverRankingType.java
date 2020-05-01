@@ -24,16 +24,19 @@ import org.optaplanner.core.api.domain.solution.PlanningSolution;
 public enum SolverRankingType {
     /**
      * Maximize the overall score, so minimize the overall cost if all {@link PlanningSolution}s would be executed.
+     * 
      * @see TotalScoreSolverRankingComparator
      */
     TOTAL_SCORE,
     /**
      * Minimize the worst case scenario.
+     * 
      * @see WorstScoreSolverRankingComparator
      */
     WORST_SCORE,
     /**
      * Maximize the overall ranking.
+     * 
      * @see TotalRankSolverRankingWeightFactory
      */
     TOTAL_RANKING;

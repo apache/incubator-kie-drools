@@ -16,6 +16,11 @@
 
 package org.optaplanner.examples.common.app;
 
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertTrue;
+import static org.junit.jupiter.api.DynamicTest.dynamicTest;
+
 import java.io.File;
 import java.util.Arrays;
 import java.util.Collection;
@@ -41,16 +46,12 @@ import org.optaplanner.core.impl.score.director.ScoreDirector;
 import org.optaplanner.examples.common.TestSystemProperties;
 import org.optaplanner.persistence.common.api.domain.solution.SolutionFileIO;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertTrue;
-import static org.junit.jupiter.api.DynamicTest.dynamicTest;
-
 /**
  * Runs an example {@link Solver}.
  * <p>
  * A test should run in less than 10 seconds on a 3 year old desktop computer, choose the bestScoreLimit accordingly.
  * Always use a {@link Timeout} on {@link Test}, preferably 10 minutes because some of the Jenkins machines are old.
+ * 
  * @param <Solution_> the solution type, the class with the {@link PlanningSolution} annotation
  */
 public abstract class SolverPerformanceTest<Solution_> extends LoggingTest {
@@ -69,18 +70,16 @@ public abstract class SolverPerformanceTest<Solution_> extends LoggingTest {
     @TestFactory
     @Timeout(600)
     Stream<DynamicTest> runSpeedTest() {
-        return moveThreadCounts().flatMap(moveThreadCount -> testData().map(testData ->
-                dynamicTest(
-                        testData.unsolvedDataFile.replaceFirst(".*/", "")
-                                + ", "
-                                + testData.environmentMode
-                                + ", threads: " + moveThreadCount,
-                        () -> runSpeedTest(
-                                new File(testData.unsolvedDataFile),
-                                testData.bestScoreLimit,
-                                testData.environmentMode,
-                                moveThreadCount)
-                )));
+        return moveThreadCounts().flatMap(moveThreadCount -> testData().map(testData -> dynamicTest(
+                testData.unsolvedDataFile.replaceFirst(".*/", "")
+                        + ", "
+                        + testData.environmentMode
+                        + ", threads: " + moveThreadCount,
+                () -> runSpeedTest(
+                        new File(testData.unsolvedDataFile),
+                        testData.bestScoreLimit,
+                        testData.environmentMode,
+                        moveThreadCount))));
     }
 
     @BeforeEach
@@ -123,8 +122,8 @@ public abstract class SolverPerformanceTest<Solution_> extends LoggingTest {
     private void assertScoreAndConstraintMatches(SolverFactory<Solution_> solverFactory,
             Solution_ bestSolution, String bestScoreLimitString) {
         assertNotNull(bestSolution);
-        InnerScoreDirectorFactory<Solution_> scoreDirectorFactory
-                = (InnerScoreDirectorFactory<Solution_>) solverFactory.getScoreDirectorFactory();
+        InnerScoreDirectorFactory<Solution_> scoreDirectorFactory = (InnerScoreDirectorFactory<Solution_>) solverFactory
+                .getScoreDirectorFactory();
         Score bestScore = scoreDirectorFactory.getSolutionDescriptor().getScore(bestSolution);
         ScoreDefinition scoreDefinition = scoreDirectorFactory.getScoreDefinition();
         Score bestScoreLimit = scoreDefinition.parseScore(bestScoreLimitString);

@@ -82,7 +82,8 @@ public class SubSingleBenchmarkRunner<Solution_> implements Callable<SubSingleBe
     public SubSingleBenchmarkRunner<Solution_> call() {
         MDC.put(NAME_MDC, subSingleBenchmarkResult.getName());
         Runtime runtime = Runtime.getRuntime();
-        ProblemBenchmarkResult<Solution_> problemBenchmarkResult = subSingleBenchmarkResult.getSingleBenchmarkResult().getProblemBenchmarkResult();
+        ProblemBenchmarkResult<Solution_> problemBenchmarkResult = subSingleBenchmarkResult.getSingleBenchmarkResult()
+                .getProblemBenchmarkResult();
         Solution_ problem = problemBenchmarkResult.readProblem();
         if (!problemBenchmarkResult.getPlannerBenchmarkResult().hasMultipleParallelBenchmarks()) {
             runtime.gc();
@@ -91,7 +92,8 @@ public class SubSingleBenchmarkRunner<Solution_> implements Callable<SubSingleBe
         logger.trace("Benchmark problem has been read for subSingleBenchmarkResult ({}).",
                 subSingleBenchmarkResult);
 
-        SolverConfig solverConfig = subSingleBenchmarkResult.getSingleBenchmarkResult().getSolverBenchmarkResult().getSolverConfig();
+        SolverConfig solverConfig = subSingleBenchmarkResult.getSingleBenchmarkResult().getSolverBenchmarkResult()
+                .getSolverConfig();
         if (subSingleBenchmarkResult.getSingleBenchmarkResult().getSubSingleCount() > 1) {
             solverConfig = new SolverConfig(solverConfig);
             solverConfig.offerRandomSeedFromSubSingleIndex((long) subSingleBenchmarkResult.getSubSingleBenchmarkIndex());

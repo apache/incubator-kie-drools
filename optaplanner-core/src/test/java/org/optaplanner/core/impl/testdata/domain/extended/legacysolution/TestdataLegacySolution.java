@@ -42,7 +42,8 @@ public class TestdataLegacySolution implements Solution<SimpleScore> {
 
     private SimpleScore score;
 
-    public TestdataLegacySolution() {}
+    public TestdataLegacySolution() {
+    }
 
     @ValueRangeProvider(id = "valueRange")
     public List<TestdataValue> getValueList() {

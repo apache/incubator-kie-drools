@@ -16,8 +16,9 @@
 
 package org.optaplanner.examples.projectjobscheduling.domain.resource;
 
-import com.thoughtworks.xstream.annotations.XStreamAlias;
 import org.optaplanner.examples.projectjobscheduling.domain.Project;
+
+import com.thoughtworks.xstream.annotations.XStreamAlias;
 
 @XStreamAlias("PjsLocalResource")
 public class LocalResource extends Resource {

@@ -15,6 +15,11 @@
  */
 package org.optaplanner.core.impl.domain.lookup;
 
+import static org.assertj.core.api.Assertions.assertThatIllegalArgumentException;
+import static org.assertj.core.api.Assertions.assertThatIllegalStateException;
+import static org.junit.Assert.assertNull;
+import static org.junit.Assert.assertSame;
+
 import java.util.Collections;
 
 import org.junit.jupiter.api.BeforeEach;
@@ -26,11 +31,6 @@ import org.optaplanner.core.impl.testdata.domain.clone.lookup.TestdataObjectInte
 import org.optaplanner.core.impl.testdata.domain.clone.lookup.TestdataObjectMultipleIds;
 import org.optaplanner.core.impl.testdata.domain.clone.lookup.TestdataObjectNoId;
 import org.optaplanner.core.impl.testdata.domain.clone.lookup.TestdataObjectPrimitiveIntId;
-
-import static org.assertj.core.api.Assertions.assertThatIllegalArgumentException;
-import static org.assertj.core.api.Assertions.assertThatIllegalStateException;
-import static org.junit.Assert.assertNull;
-import static org.junit.Assert.assertSame;
 
 public class LookUpStrategyIdOrNoneTest {
 

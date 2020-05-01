@@ -27,7 +27,7 @@ import org.optaplanner.core.impl.score.trend.InitializingScoreTrend;
 public class SimpleBigDecimalScoreDefinition extends AbstractScoreDefinition<SimpleBigDecimalScore> {
 
     public SimpleBigDecimalScoreDefinition() {
-        super(new String[]{"score"});
+        super(new String[] { "score" });
     }
 
     // ************************************************************************

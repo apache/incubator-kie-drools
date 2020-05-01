@@ -16,17 +16,15 @@
 
 package org.optaplanner.core.api.domain.valuerange;
 
+import static org.junit.Assert.*;
+
 import java.util.Arrays;
 
 import org.junit.jupiter.api.Test;
-import org.optaplanner.core.api.solver.Solver;
-import org.optaplanner.core.api.solver.SolverFactory;
 import org.optaplanner.core.config.solver.SolverConfig;
 import org.optaplanner.core.impl.testdata.domain.valuerange.TestdataValueRangeEntity;
 import org.optaplanner.core.impl.testdata.domain.valuerange.TestdataValueRangeSolution;
 import org.optaplanner.core.impl.testdata.util.PlannerTestUtils;
-
-import static org.junit.Assert.*;
 
 public class ValueRangeFactoryTest {
 
@@ -38,7 +36,8 @@ public class ValueRangeFactoryTest {
         TestdataValueRangeSolution solution = new TestdataValueRangeSolution("s1");
         solution.setEntityList(Arrays.asList(new TestdataValueRangeEntity("e1"), new TestdataValueRangeEntity("e2")));
 
-        solution = PlannerTestUtils.solve(solverConfig, solution);;
+        solution = PlannerTestUtils.solve(solverConfig, solution);
+        ;
         assertNotNull(solution);
     }
 

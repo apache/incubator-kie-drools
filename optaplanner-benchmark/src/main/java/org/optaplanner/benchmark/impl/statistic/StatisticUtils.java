@@ -33,6 +33,7 @@ public class StatisticUtils {
 
     /**
      * Calculates standard deviation of {@link BenchmarkResult#getAverageScore()}s from {@code averageScore}.
+     * 
      * @param averageScore not null
      * @return standard deviation double values
      */

@@ -16,14 +16,14 @@
 
 package org.optaplanner.core.api.score.buildin.bendablelong;
 
+import static org.assertj.core.api.Assertions.assertThatIllegalArgumentException;
+import static org.junit.Assert.*;
+
 import org.junit.jupiter.api.Test;
 import org.optaplanner.core.api.score.buildin.AbstractScoreTest;
 import org.optaplanner.core.impl.score.buildin.bendablelong.BendableLongScoreDefinition;
 import org.optaplanner.core.impl.testdata.util.PlannerAssert;
 import org.optaplanner.core.impl.testdata.util.PlannerTestUtils;
-
-import static org.assertj.core.api.Assertions.assertThatIllegalArgumentException;
-import static org.junit.Assert.*;
 
 public class BendableLongScoreTest extends AbstractScoreTest {
 
@@ -111,13 +111,11 @@ public class BendableLongScoreTest extends AbstractScoreTest {
         assertScoreNotFeasible(
                 scoreDefinitionHSS.createScore(-5L, -300L, -9876543210L),
                 scoreDefinitionHSS.createScoreUninitialized(-7, -5L, -300L, -9876543210L),
-                scoreDefinitionHSS.createScoreUninitialized(-7, 0L, -300L, -9876543210L)
-        );
+                scoreDefinitionHSS.createScoreUninitialized(-7, 0L, -300L, -9876543210L));
         assertScoreFeasible(
                 scoreDefinitionHSS.createScore(0L, -300L, -9876543210L),
                 scoreDefinitionHSS.createScore(2L, -300L, -9876543210L),
-                scoreDefinitionHSS.createScoreUninitialized(0, 0L, -300L, -9876543210L)
-        );
+                scoreDefinitionHSS.createScoreUninitialized(0, 0L, -300L, -9876543210L));
     }
 
     @Test
@@ -187,19 +185,16 @@ public class BendableLongScoreTest extends AbstractScoreTest {
         PlannerAssert.assertObjectsAreEqual(
                 scoreDefinitionHSS.createScore(-10L, -200L, -3000L),
                 scoreDefinitionHSS.createScore(-10L, -200L, -3000L),
-                scoreDefinitionHSS.createScoreUninitialized(0, -10L, -200L, -3000L)
-        );
+                scoreDefinitionHSS.createScoreUninitialized(0, -10L, -200L, -3000L));
         PlannerAssert.assertObjectsAreEqual(
                 scoreDefinitionHSS.createScoreUninitialized(-7, -10L, -200L, -3000L),
-                scoreDefinitionHSS.createScoreUninitialized(-7, -10L, -200L, -3000L)
-        );
+                scoreDefinitionHSS.createScoreUninitialized(-7, -10L, -200L, -3000L));
         PlannerAssert.assertObjectsAreNotEqual(
                 scoreDefinitionHSS.createScore(-10L, -200L, -3000L),
                 scoreDefinitionHSS.createScore(-30L, -200L, -3000L),
                 scoreDefinitionHSS.createScore(-10L, -400L, -3000L),
                 scoreDefinitionHSS.createScore(-10L, -400L, -5000L),
-                scoreDefinitionHSS.createScoreUninitialized(-7, -10L, -200L, -3000L)
-        );
+                scoreDefinitionHSS.createScoreUninitialized(-7, -10L, -200L, -3000L));
     }
 
     @Test
@@ -225,8 +220,7 @@ public class BendableLongScoreTest extends AbstractScoreTest {
                 scoreDefinitionHSS.createScore(-1L, -300L, -20L),
                 scoreDefinitionHSS.createScore(-1L, -20L, -300L),
                 scoreDefinitionHSS.createScore(1L, Long.MIN_VALUE, -20L),
-                scoreDefinitionHSS.createScore(1L, -20L, Long.MIN_VALUE)
-        );
+                scoreDefinitionHSS.createScore(1L, -20L, Long.MIN_VALUE));
     }
 
     private BendableLongScoreDefinition scoreDefinitionHHSSS = new BendableLongScoreDefinition(2, 3);
@@ -236,14 +230,12 @@ public class BendableLongScoreTest extends AbstractScoreTest {
         assertScoreNotFeasible(
                 scoreDefinitionHHSSS.createScore(-5L, 0L, -300L, -4000000000L, -5000L),
                 scoreDefinitionHHSSS.createScore(0L, -5000000000L, -300L, -4000L, -5000L),
-                scoreDefinitionHHSSS.createScore(1L, -2L, -300L, -4000L, -5000L)
-        );
+                scoreDefinitionHHSSS.createScore(1L, -2L, -300L, -4000L, -5000L));
         assertScoreFeasible(
                 scoreDefinitionHHSSS.createScore(0L, 0L, -300000000000L, -4000L, -5000L),
                 scoreDefinitionHHSSS.createScore(0L, 2L, -300L, -4000L, -50000000000L),
                 scoreDefinitionHHSSS.createScore(2000000000L, 0L, -300L, -4000L, -5000L),
-                scoreDefinitionHHSSS.createScore(1L, 2L, -300L, -4000L, -5000L)
-        );
+                scoreDefinitionHHSSS.createScore(1L, 2L, -300L, -4000L, -5000L));
     }
 
     @Test
@@ -300,8 +292,7 @@ public class BendableLongScoreTest extends AbstractScoreTest {
     public void equalsAndHashCodeHHSSS() {
         PlannerAssert.assertObjectsAreEqual(
                 scoreDefinitionHHSSS.createScore(-10000000000L, -20000000000L, -30000000000L, 0L, 0L),
-                scoreDefinitionHHSSS.createScore(-10000000000L, -20000000000L, -30000000000L, 0L, 0L)
-        );
+                scoreDefinitionHHSSS.createScore(-10000000000L, -20000000000L, -30000000000L, 0L, 0L));
     }
 
     @Test
@@ -321,8 +312,7 @@ public class BendableLongScoreTest extends AbstractScoreTest {
                 scoreDefinitionHHSSS.createScore(-1L, -300L, -20L, 0L, 0L),
                 scoreDefinitionHHSSS.createScore(-1L, -20L, -300L, 0L, 0L),
                 scoreDefinitionHHSSS.createScore(1L, Long.MIN_VALUE, -20L, 0L, 0L),
-                scoreDefinitionHHSSS.createScore(1L, -20L, Long.MIN_VALUE, 0L, 0L)
-        );
+                scoreDefinitionHHSSS.createScore(1L, -20L, Long.MIN_VALUE, 0L, 0L));
     }
 
     @Test
@@ -334,8 +324,7 @@ public class BendableLongScoreTest extends AbstractScoreTest {
                     assertEquals(-12L, output.getHardScore(0));
                     assertEquals(3400L, output.getSoftScore(0));
                     assertEquals(-56L, output.getSoftScore(1));
-                }
-        );
+                });
         PlannerTestUtils.serializeAndDeserializeWithAll(
                 scoreDefinitionHSS.createScoreUninitialized(-7, -12L, 3400L, -56L),
                 output -> {
@@ -343,8 +332,7 @@ public class BendableLongScoreTest extends AbstractScoreTest {
                     assertEquals(-12L, output.getHardScore(0));
                     assertEquals(3400L, output.getSoftScore(0));
                     assertEquals(-56L, output.getSoftScore(1));
-                }
-        );
+                });
     }
 
 }

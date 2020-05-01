@@ -16,12 +16,12 @@
 
 package org.optaplanner.examples.common.persistence;
 
+import static org.junit.Assert.*;
+
 import java.io.IOException;
 
 import org.junit.jupiter.api.Test;
 import org.optaplanner.core.api.domain.solution.PlanningSolution;
-
-import static org.junit.Assert.*;
 
 /**
  * @param <Solution_> the solution type, the class with the {@link PlanningSolution} annotation
@@ -30,18 +30,17 @@ public class AbstractTxtSolutionImporterTest<Solution_> {
 
     @Test
     public void splitBySpace() {
-        AbstractTxtSolutionImporter.TxtInputBuilder inputBuilder
-                = new AbstractTxtSolutionImporter.TxtInputBuilder() {
+        AbstractTxtSolutionImporter.TxtInputBuilder inputBuilder = new AbstractTxtSolutionImporter.TxtInputBuilder() {
             @Override
             public Solution_ readSolution() throws IOException {
                 return null;
             }
         };
-        assertArrayEquals(new String[]{"one", "two", "three"},
+        assertArrayEquals(new String[] { "one", "two", "three" },
                 inputBuilder.splitBySpace("one two three"));
-        assertArrayEquals(new String[]{"one", "two", "three"},
+        assertArrayEquals(new String[] { "one", "two", "three" },
                 inputBuilder.splitBySpace("one two \"three\"", null, null, false, true));
-        assertArrayEquals(new String[]{"one", "two three"},
+        assertArrayEquals(new String[] { "one", "two three" },
                 inputBuilder.splitBySpace("one \"two three\"", null, null, false, true));
     }
 

@@ -21,8 +21,6 @@ import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
 
-import com.thoughtworks.xstream.annotations.XStreamAlias;
-import com.thoughtworks.xstream.annotations.XStreamImplicit;
 import org.optaplanner.core.config.heuristic.policy.HeuristicConfigPolicy;
 import org.optaplanner.core.config.heuristic.selector.common.SelectionCacheType;
 import org.optaplanner.core.config.heuristic.selector.common.SelectionOrder;
@@ -38,10 +36,14 @@ import org.optaplanner.core.impl.domain.variable.descriptor.GenuineVariableDescr
 import org.optaplanner.core.impl.heuristic.selector.entity.EntitySelector;
 import org.optaplanner.core.impl.heuristic.selector.move.MoveSelector;
 
+import com.thoughtworks.xstream.annotations.XStreamAlias;
+import com.thoughtworks.xstream.annotations.XStreamImplicit;
+
 @XStreamAlias("queuedEntityPlacer")
 public class QueuedEntityPlacerConfig extends EntityPlacerConfig<QueuedEntityPlacerConfig> {
 
-    public static QueuedEntityPlacerConfig unfoldNew(HeuristicConfigPolicy configPolicy, List<MoveSelectorConfig> templateMoveSelectorConfigList) {
+    public static QueuedEntityPlacerConfig unfoldNew(HeuristicConfigPolicy configPolicy,
+            List<MoveSelectorConfig> templateMoveSelectorConfigList) {
         QueuedEntityPlacerConfig config = new QueuedEntityPlacerConfig();
         config.entitySelectorConfig = config.buildEntitySelectorConfig(configPolicy);
         config.moveSelectorConfigList = new ArrayList<>(templateMoveSelectorConfigList.size());
@@ -154,7 +156,7 @@ public class QueuedEntityPlacerConfig extends EntityPlacerConfig<QueuedEntityPla
         if (entitySelectorConfig_.getCacheType() != null
                 && entitySelectorConfig_.getCacheType().compareTo(SelectionCacheType.PHASE) < 0) {
             throw new IllegalArgumentException("The queuedEntityPlacer (" + this
-                    + ") cannot have an entitySelectorConfig ("  + entitySelectorConfig_
+                    + ") cannot have an entitySelectorConfig (" + entitySelectorConfig_
                     + ") with a cacheType (" + entitySelectorConfig_.getCacheType()
                     + ") lower than " + SelectionCacheType.PHASE + ".");
         }

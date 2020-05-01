@@ -46,6 +46,7 @@ public final class ReflectionHelper {
 
     /**
      * Returns the JavaBeans property name of the given member.
+     * 
      * @param member never null
      * @return null if the member is neither a field nor a getter method according to the JavaBeans standard
      */
@@ -79,6 +80,7 @@ public final class ReflectionHelper {
 
     /**
      * Checks whether the given method is a valid getter method according to the JavaBeans standard.
+     * 
      * @param method never null
      * @return true if the given method is a getter method
      */
@@ -293,4 +295,3 @@ public final class ReflectionHelper {
     }
 
 }
-

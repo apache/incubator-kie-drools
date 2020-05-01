@@ -139,7 +139,8 @@ public class SwapMoveSelector extends GenericMoveSelector {
                 @Override
                 protected Move newSwapSelection(Object leftSubSelection, Object rightSubSelection) {
                     return anyChained
-                            ? new ChainedSwapMove(variableDescriptorList, inverseVariableSupplyList, leftSubSelection, rightSubSelection)
+                            ? new ChainedSwapMove(variableDescriptorList, inverseVariableSupplyList, leftSubSelection,
+                                    rightSubSelection)
                             : new SwapMove(variableDescriptorList, leftSubSelection, rightSubSelection);
                 }
             };
@@ -148,7 +149,8 @@ public class SwapMoveSelector extends GenericMoveSelector {
                 @Override
                 protected Move newSwapSelection(Object leftSubSelection, Object rightSubSelection) {
                     return anyChained
-                            ? new ChainedSwapMove(variableDescriptorList, inverseVariableSupplyList, leftSubSelection, rightSubSelection)
+                            ? new ChainedSwapMove(variableDescriptorList, inverseVariableSupplyList, leftSubSelection,
+                                    rightSubSelection)
                             : new SwapMove(variableDescriptorList, leftSubSelection, rightSubSelection);
                 }
             };

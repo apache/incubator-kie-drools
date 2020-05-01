@@ -33,9 +33,8 @@ public final class DroolsExistsUniConstraintStream<Solution_, A> extends DroolsA
         super(constraintFactory);
         this.parent = parent;
         this.streamName = shouldExist ? "IfExists()" : "IfNotExists()";
-        this.condition = shouldExist ?
-                parent.getCondition().andIfExists(otherClass, joiners) :
-                parent.getCondition().andIfNotExists(otherClass, joiners);
+        this.condition = shouldExist ? parent.getCondition().andIfExists(otherClass, joiners)
+                : parent.getCondition().andIfNotExists(otherClass, joiners);
     }
 
     @Override
@@ -54,7 +53,7 @@ public final class DroolsExistsUniConstraintStream<Solution_, A> extends DroolsA
 
     @Override
     public String toString() {
-        return streamName + " with " + getChildStreams().size()  + " children";
+        return streamName + " with " + getChildStreams().size() + " children";
     }
 
 }

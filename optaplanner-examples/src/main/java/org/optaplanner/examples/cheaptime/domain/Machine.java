@@ -18,8 +18,9 @@ package org.optaplanner.examples.cheaptime.domain;
 
 import java.util.List;
 
-import com.thoughtworks.xstream.annotations.XStreamAlias;
 import org.optaplanner.examples.common.domain.AbstractPersistable;
+
+import com.thoughtworks.xstream.annotations.XStreamAlias;
 
 @XStreamAlias("CtMachine")
 public class Machine extends AbstractPersistable {

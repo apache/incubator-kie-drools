@@ -181,7 +181,8 @@ public class InvestmentIncrementalScoreCalculator extends AbstractIncrementalSco
                 long micros = allocation.getQuantifiedStandardDeviationRiskMicros();
                 squaredFemtos += micros * micros * 1000L;
             } else {
-                long picos = allocation.getQuantifiedStandardDeviationRiskMicros() * other.getQuantifiedStandardDeviationRiskMicros();
+                long picos = allocation.getQuantifiedStandardDeviationRiskMicros()
+                        * other.getQuantifiedStandardDeviationRiskMicros();
                 squaredFemtos += picos * allocation.getAssetClass().getCorrelationMillisMap().get(other.getAssetClass());
                 // TODO FIXME the reset hack only works if there are no moves that mix multiple before/after notifications
                 if (!reset) {

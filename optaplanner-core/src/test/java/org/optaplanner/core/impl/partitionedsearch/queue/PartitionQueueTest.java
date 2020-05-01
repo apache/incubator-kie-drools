@@ -16,6 +16,8 @@
 
 package org.optaplanner.core.impl.partitionedsearch.queue;
 
+import static org.junit.Assert.*;
+
 import java.util.Iterator;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.ExecutorService;
@@ -28,8 +30,6 @@ import org.optaplanner.core.impl.partitionedsearch.scope.PartitionChangeMove;
 import org.optaplanner.core.impl.testdata.domain.TestdataSolution;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-
-import static org.junit.Assert.*;
 
 public class PartitionQueueTest {
 

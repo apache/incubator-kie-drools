@@ -23,7 +23,7 @@ import org.optaplanner.core.impl.score.stream.drools.common.GroupByAccumulator;
 import org.optaplanner.core.impl.score.stream.drools.common.TriTuple;
 
 final class DroolsTriGroupBy<A, B, C, NewA, NewB, NewC>
-    extends DroolsAbstractGroupBy<TriTuple<A, B, C>, TriTuple<NewA, NewB, NewC>> {
+        extends DroolsAbstractGroupBy<TriTuple<A, B, C>, TriTuple<NewA, NewB, NewC>> {
 
     private final TriFunction<A, B, C, NewA> groupKeyAMapping;
     private final TriFunction<A, B, C, NewB> groupKeyBMapping;

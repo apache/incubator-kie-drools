@@ -16,6 +16,8 @@
 
 package org.optaplanner.core.impl.domain.constraintweight.descriptor;
 
+import static org.optaplanner.core.impl.domain.common.accessor.MemberAccessorFactory.MemberAccessorType.*;
+
 import java.lang.reflect.AnnotatedElement;
 import java.lang.reflect.Member;
 import java.lang.reflect.Method;
@@ -37,8 +39,6 @@ import org.optaplanner.core.impl.domain.policy.DescriptorPolicy;
 import org.optaplanner.core.impl.domain.solution.descriptor.SolutionDescriptor;
 import org.optaplanner.core.impl.score.definition.ScoreDefinition;
 
-import static org.optaplanner.core.impl.domain.common.accessor.MemberAccessorFactory.MemberAccessorType.*;
-
 /**
  * @param <Solution_> the solution type, the class with the {@link PlanningSolution} annotation
  */
@@ -55,7 +55,8 @@ public class ConstraintConfigurationDescriptor<Solution_> {
     // Constructors and simple getters/setters
     // ************************************************************************
 
-    public ConstraintConfigurationDescriptor(SolutionDescriptor<Solution_> solutionDescriptor, Class<?> constraintConfigurationClass) {
+    public ConstraintConfigurationDescriptor(SolutionDescriptor<Solution_> solutionDescriptor,
+            Class<?> constraintConfigurationClass) {
         this.solutionDescriptor = solutionDescriptor;
         this.constraintConfigurationClass = constraintConfigurationClass;
         constraintWeightDescriptorMap = new LinkedHashMap<>();
@@ -82,7 +83,8 @@ public class ConstraintConfigurationDescriptor<Solution_> {
         ArrayList<Method> potentiallyOverwritingMethodList = new ArrayList<>();
         // Iterate inherited members too (unlike for EntityDescriptor where each one is declared)
         // to make sure each one is registered
-        for (Class<?> lineageClass : ConfigUtils.getAllAnnotatedLineageClasses(constraintConfigurationClass, ConstraintConfiguration.class)) {
+        for (Class<?> lineageClass : ConfigUtils.getAllAnnotatedLineageClasses(constraintConfigurationClass,
+                ConstraintConfiguration.class)) {
             List<Member> memberList = ConfigUtils.getDeclaredMembers(lineageClass);
             for (Member member : memberList) {
                 if (member instanceof Method && potentiallyOverwritingMethodList.stream().anyMatch(
@@ -160,10 +162,11 @@ public class ConstraintConfigurationDescriptor<Solution_> {
         return constraintConfigurationClass;
     }
 
-    public ConstraintWeightDescriptor<Solution_> findConstraintWeightDescriptor(String constraintPackage, String constraintName) {
-        return constraintWeightDescriptorMap.values().stream().filter(constraintWeightDescriptor
-                -> constraintWeightDescriptor.getConstraintPackage().equals(constraintPackage)
-                && constraintWeightDescriptor.getConstraintName().equals(constraintName))
+    public ConstraintWeightDescriptor<Solution_> findConstraintWeightDescriptor(String constraintPackage,
+            String constraintName) {
+        return constraintWeightDescriptorMap.values().stream().filter(
+                constraintWeightDescriptor -> constraintWeightDescriptor.getConstraintPackage().equals(constraintPackage)
+                        && constraintWeightDescriptor.getConstraintName().equals(constraintName))
                 .findFirst().orElse(null);
     }
 

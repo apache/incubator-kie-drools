@@ -16,8 +16,9 @@
 
 package org.optaplanner.examples.machinereassignment.domain;
 
-import com.thoughtworks.xstream.annotations.XStreamAlias;
 import org.optaplanner.examples.common.domain.AbstractPersistable;
+
+import com.thoughtworks.xstream.annotations.XStreamAlias;
 
 @XStreamAlias("MrGlobalPenaltyInfo")
 public class MrGlobalPenaltyInfo extends AbstractPersistable {

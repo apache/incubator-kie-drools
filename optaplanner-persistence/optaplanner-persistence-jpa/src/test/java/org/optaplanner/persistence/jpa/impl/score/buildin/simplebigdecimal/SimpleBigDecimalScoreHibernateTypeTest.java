@@ -17,6 +17,7 @@
 package org.optaplanner.persistence.jpa.impl.score.buildin.simplebigdecimal;
 
 import java.math.BigDecimal;
+
 import javax.persistence.Column;
 import javax.persistence.Entity;
 
@@ -49,7 +50,7 @@ public class SimpleBigDecimalScoreHibernateTypeTest extends AbstractScoreHiberna
         }
 
         @Override
-        @Columns(columns = {@Column(name = "initScore"), @Column(name = "score", precision = 10, scale = 5)})
+        @Columns(columns = { @Column(name = "initScore"), @Column(name = "score", precision = 10, scale = 5) })
         public SimpleBigDecimalScore getScore() {
             return score;
         }

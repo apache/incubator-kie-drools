@@ -16,6 +16,9 @@
 
 package org.optaplanner.core.api.domain.solution;
 
+import static java.lang.annotation.ElementType.*;
+import static java.lang.annotation.RetentionPolicy.*;
+
 import java.lang.annotation.Retention;
 import java.lang.annotation.Target;
 
@@ -23,9 +26,6 @@ import org.optaplanner.core.api.score.AbstractBendableScore;
 import org.optaplanner.core.api.score.Score;
 import org.optaplanner.core.api.solver.Solver;
 import org.optaplanner.core.impl.score.definition.ScoreDefinition;
-
-import static java.lang.annotation.ElementType.*;
-import static java.lang.annotation.RetentionPolicy.*;
 
 /**
  * Specifies that a property (or a field) on a {@link PlanningSolution} class holds the {@link Score} of that solution.
@@ -35,7 +35,7 @@ import static java.lang.annotation.RetentionPolicy.*;
  * This property is modified by the {@link Solver},
  * every time when the {@link Score} of this {@link PlanningSolution} has been calculated.
  */
-@Target({METHOD, FIELD})
+@Target({ METHOD, FIELD })
 @Retention(RUNTIME)
 public @interface PlanningScore {
 
@@ -44,6 +44,7 @@ public @interface PlanningScore {
      * <p>
      * For example with 3 hard levels, hard level 0 always outweighs hard level 1 which always outweighs hard level 2,
      * which outweighs all the soft levels.
+     * 
      * @return 0 or higher if the {@link Score} is a {@link AbstractBendableScore}, not used otherwise
      */
     int bendableHardLevelsSize() default NO_LEVEL_SIZE;
@@ -52,6 +53,7 @@ public @interface PlanningScore {
      * Required for bendable scores.
      * <p>
      * For example with 3 soft levels, soft level 0 always outweighs soft level 1 which always outweighs soft level 2.
+     * 
      * @return 0 or higher if the {@link Score} is a {@link AbstractBendableScore}, not used otherwise
      */
     int bendableSoftLevelsSize() default NO_LEVEL_SIZE;
@@ -64,11 +66,13 @@ public @interface PlanningScore {
      * <p>
      * If this is not specified, the {@link ScoreDefinition} is automatically determined
      * based on the return type of the annotated property (or field) on a {@link PlanningSolution} .
+     * 
      * @return {@link NullScoreDefinition} when it is null (workaround for annotation limitation)
      */
     Class<? extends ScoreDefinition> scoreDefinitionClass() default NullScoreDefinition.class;
 
     /** Workaround for annotation limitation in {@link #scoreDefinitionClass()}. */
-    interface NullScoreDefinition extends ScoreDefinition {}
+    interface NullScoreDefinition extends ScoreDefinition {
+    }
 
 }

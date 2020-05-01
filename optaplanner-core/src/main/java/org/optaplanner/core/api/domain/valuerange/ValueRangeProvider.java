@@ -16,15 +16,15 @@
 
 package org.optaplanner.core.api.domain.valuerange;
 
+import static java.lang.annotation.ElementType.*;
+import static java.lang.annotation.RetentionPolicy.*;
+
 import java.lang.annotation.Retention;
 import java.lang.annotation.Target;
 import java.util.Collection;
 
 import org.optaplanner.core.api.domain.variable.PlanningVariable;
 import org.optaplanner.core.api.solver.SolverFactory;
-
-import static java.lang.annotation.ElementType.*;
-import static java.lang.annotation.RetentionPolicy.*;
 
 /**
  * Provides the planning values that can be used for a {@link PlanningVariable}.
@@ -33,13 +33,14 @@ import static java.lang.annotation.RetentionPolicy.*;
  * which returns a {@link Collection} or {@link ValueRange}.
  * A {@link Collection} is implicitly converted to a {@link ValueRange}.
  */
-@Target({METHOD, FIELD})
+@Target({ METHOD, FIELD })
 @Retention(RUNTIME)
 public @interface ValueRangeProvider {
 
     /**
      * Used by {@link PlanningVariable#valueRangeProviderRefs()}
      * to map a {@link PlanningVariable} to a {@link ValueRangeProvider}.
+     * 
      * @return never null, must be unique across a {@link SolverFactory}
      */
     String id();

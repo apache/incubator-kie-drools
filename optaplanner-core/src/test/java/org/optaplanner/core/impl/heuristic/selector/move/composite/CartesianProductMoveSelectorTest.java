@@ -16,6 +16,9 @@
 
 package org.optaplanner.core.impl.heuristic.selector.move.composite;
 
+import static org.mockito.Mockito.*;
+import static org.optaplanner.core.impl.testdata.util.PlannerAssert.*;
+
 import java.util.ArrayList;
 import java.util.List;
 
@@ -33,9 +36,6 @@ import org.optaplanner.core.impl.phase.scope.AbstractStepScope;
 import org.optaplanner.core.impl.solver.scope.DefaultSolverScope;
 import org.optaplanner.core.impl.testdata.domain.TestdataValue;
 import org.optaplanner.core.impl.testdata.domain.multivar.TestdataMultiVarEntity;
-
-import static org.mockito.Mockito.*;
-import static org.optaplanner.core.impl.testdata.util.PlannerAssert.*;
 
 public class CartesianProductMoveSelectorTest {
 
@@ -116,9 +116,11 @@ public class CartesianProductMoveSelectorTest {
                 new DummyMove("a1"), new DummyMove("a2"), new DummyMove("a3")); // One side is not empty
         ArrayList<MoveSelector> childMoveSelectorList = new ArrayList<>();
         childMoveSelectorList.add(emptyFirst
-                ? SelectorTestUtils.mockMoveSelector(DummyMove.class) : nonEmptyChildMoveSelector);
+                ? SelectorTestUtils.mockMoveSelector(DummyMove.class)
+                : nonEmptyChildMoveSelector);
         childMoveSelectorList.add(emptySecond
-                ? SelectorTestUtils.mockMoveSelector(DummyMove.class) : nonEmptyChildMoveSelector);
+                ? SelectorTestUtils.mockMoveSelector(DummyMove.class)
+                : nonEmptyChildMoveSelector);
         CartesianProductMoveSelector moveSelector = new CartesianProductMoveSelector(childMoveSelectorList,
                 ignoreEmptyChildIterators, false);
 

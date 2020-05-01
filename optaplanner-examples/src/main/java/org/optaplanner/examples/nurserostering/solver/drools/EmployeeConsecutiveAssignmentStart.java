@@ -29,9 +29,9 @@ import org.optaplanner.examples.nurserostering.domain.contract.Contract;
 public class EmployeeConsecutiveAssignmentStart implements Comparable<EmployeeConsecutiveAssignmentStart>,
         Serializable {
 
-    private static final Comparator<EmployeeConsecutiveAssignmentStart> COMPARATOR =
-            Comparator.comparing(EmployeeConsecutiveAssignmentStart::getEmployee)
-                    .thenComparing(EmployeeConsecutiveAssignmentStart::getShiftDate);
+    private static final Comparator<EmployeeConsecutiveAssignmentStart> COMPARATOR = Comparator
+            .comparing(EmployeeConsecutiveAssignmentStart::getEmployee)
+            .thenComparing(EmployeeConsecutiveAssignmentStart::getShiftDate);
 
     private Employee employee;
     private ShiftDate shiftDate;

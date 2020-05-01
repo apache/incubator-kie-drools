@@ -21,6 +21,7 @@ import org.optaplanner.core.impl.heuristic.selector.IterableSelector;
 
 /**
  * Generates {@link Move}s.
+ * 
  * @see AbstractMoveSelector
  */
 public interface MoveSelector extends IterableSelector<Move> {

@@ -16,11 +16,8 @@
 
 package org.optaplanner.examples.conferencescheduling.domain;
 
-import java.util.List;
 import java.util.Set;
 
-import org.optaplanner.core.api.domain.solution.drools.ProblemFactCollectionProperty;
-import org.optaplanner.core.api.domain.valuerange.ValueRangeProvider;
 import org.optaplanner.examples.common.domain.AbstractPersistable;
 
 public class TalkType extends AbstractPersistable {

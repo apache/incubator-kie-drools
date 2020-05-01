@@ -33,8 +33,8 @@ public class VehicleRoutingBenchmarkApp extends CommonBenchmarkApp {
                 new ArgOption("scoreDirector",
                         "org/optaplanner/examples/vehiclerouting/benchmark/vehicleRoutingScoreDirectorBenchmarkConfig.xml"),
                 new ArgOption("template",
-                        "org/optaplanner/examples/vehiclerouting/benchmark/vehicleRoutingBenchmarkConfigTemplate.xml.ftl", true)
-        );
+                        "org/optaplanner/examples/vehiclerouting/benchmark/vehicleRoutingBenchmarkConfigTemplate.xml.ftl",
+                        true));
     }
 
 }

@@ -15,12 +15,12 @@ public final class TaskAssigningConstraintProvider implements ConstraintProvider
 
     @Override
     public Constraint[] defineConstraints(ConstraintFactory constraintFactory) {
-        return new Constraint[]{
+        return new Constraint[] {
                 noMissingSkills(constraintFactory),
                 minimizeMakespan(constraintFactory),
                 /*
                  * TODO potential for performance improvements through API enhancements,
-                 *  see https://issues.redhat.com/browse/PLANNER-1604.
+                 * see https://issues.redhat.com/browse/PLANNER-1604.
                  */
                 criticalPriorityBasedTaskEndTime(constraintFactory),
                 majorPriorityTaskEndTime(constraintFactory),

@@ -16,15 +16,15 @@
 
 package org.optaplanner.core.impl.domain.valuerange.buildin.biginteger;
 
+import static org.junit.Assert.assertEquals;
+import static org.mockito.Mockito.*;
+import static org.optaplanner.core.impl.testdata.util.PlannerAssert.*;
+
 import java.math.BigInteger;
 import java.util.Random;
 
 import org.junit.Assert;
 import org.junit.jupiter.api.Test;
-
-import static org.junit.Assert.assertEquals;
-import static org.mockito.Mockito.*;
-import static org.optaplanner.core.impl.testdata.util.PlannerAssert.*;
 
 public class BigIntegerValueRangeTest {
 
@@ -47,9 +47,12 @@ public class BigIntegerValueRangeTest {
         assertEquals(new BigInteger("-4"), new BigIntegerValueRange(new BigInteger("-5"), new BigInteger("25")).get(1L));
         assertEquals(new BigInteger("1"), new BigIntegerValueRange(new BigInteger("-5"), new BigInteger("25")).get(6L));
         // IncrementUnit
-        assertEquals(new BigInteger("6"), new BigIntegerValueRange(new BigInteger("0"), new BigInteger("10"), new BigInteger("2")).get(3L));
-        assertEquals(new BigInteger("5"), new BigIntegerValueRange(new BigInteger("-1"), new BigInteger("9"), new BigInteger("2")).get(3L));
-        assertEquals(new BigInteger("115"), new BigIntegerValueRange(new BigInteger("100"), new BigInteger("120"), new BigInteger("5")).get(3L));
+        assertEquals(new BigInteger("6"),
+                new BigIntegerValueRange(new BigInteger("0"), new BigInteger("10"), new BigInteger("2")).get(3L));
+        assertEquals(new BigInteger("5"),
+                new BigIntegerValueRange(new BigInteger("-1"), new BigInteger("9"), new BigInteger("2")).get(3L));
+        assertEquals(new BigInteger("115"),
+                new BigIntegerValueRange(new BigInteger("100"), new BigInteger("120"), new BigInteger("5")).get(3L));
     }
 
     @Test
@@ -57,17 +60,26 @@ public class BigIntegerValueRangeTest {
         assertEquals(true, new BigIntegerValueRange(new BigInteger("0"), new BigInteger("10")).contains(new BigInteger("3")));
         assertEquals(false, new BigIntegerValueRange(new BigInteger("0"), new BigInteger("10")).contains(new BigInteger("10")));
         assertEquals(false, new BigIntegerValueRange(new BigInteger("0"), new BigInteger("10")).contains(null));
-        assertEquals(true, new BigIntegerValueRange(new BigInteger("100"), new BigInteger("120")).contains(new BigInteger("100")));
-        assertEquals(false, new BigIntegerValueRange(new BigInteger("100"), new BigInteger("120")).contains(new BigInteger("99")));
+        assertEquals(true,
+                new BigIntegerValueRange(new BigInteger("100"), new BigInteger("120")).contains(new BigInteger("100")));
+        assertEquals(false,
+                new BigIntegerValueRange(new BigInteger("100"), new BigInteger("120")).contains(new BigInteger("99")));
         assertEquals(true, new BigIntegerValueRange(new BigInteger("-5"), new BigInteger("25")).contains(new BigInteger("-4")));
-        assertEquals(false, new BigIntegerValueRange(new BigInteger("-5"), new BigInteger("25")).contains(new BigInteger("-20")));
+        assertEquals(false,
+                new BigIntegerValueRange(new BigInteger("-5"), new BigInteger("25")).contains(new BigInteger("-20")));
         // IncrementUnit
-        assertEquals(true, new BigIntegerValueRange(new BigInteger("0"), new BigInteger("10"), new BigInteger("2")).contains(new BigInteger("2")));
-        assertEquals(false, new BigIntegerValueRange(new BigInteger("0"), new BigInteger("10"), new BigInteger("2")).contains(new BigInteger("3")));
-        assertEquals(true, new BigIntegerValueRange(new BigInteger("-1"), new BigInteger("9"), new BigInteger("2")).contains(new BigInteger("1")));
-        assertEquals(false, new BigIntegerValueRange(new BigInteger("-1"), new BigInteger("9"), new BigInteger("2")).contains(new BigInteger("2")));
-        assertEquals(true, new BigIntegerValueRange(new BigInteger("100"), new BigInteger("120"), new BigInteger("5")).contains(new BigInteger("115")));
-        assertEquals(false, new BigIntegerValueRange(new BigInteger("100"), new BigInteger("120"), new BigInteger("5")).contains(new BigInteger("114")));
+        assertEquals(true, new BigIntegerValueRange(new BigInteger("0"), new BigInteger("10"), new BigInteger("2"))
+                .contains(new BigInteger("2")));
+        assertEquals(false, new BigIntegerValueRange(new BigInteger("0"), new BigInteger("10"), new BigInteger("2"))
+                .contains(new BigInteger("3")));
+        assertEquals(true, new BigIntegerValueRange(new BigInteger("-1"), new BigInteger("9"), new BigInteger("2"))
+                .contains(new BigInteger("1")));
+        assertEquals(false, new BigIntegerValueRange(new BigInteger("-1"), new BigInteger("9"), new BigInteger("2"))
+                .contains(new BigInteger("2")));
+        assertEquals(true, new BigIntegerValueRange(new BigInteger("100"), new BigInteger("120"), new BigInteger("5"))
+                .contains(new BigInteger("115")));
+        assertEquals(false, new BigIntegerValueRange(new BigInteger("100"), new BigInteger("120"), new BigInteger("5"))
+                .contains(new BigInteger("114")));
     }
 
     @Test

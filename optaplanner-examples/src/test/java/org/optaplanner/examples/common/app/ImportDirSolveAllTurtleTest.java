@@ -39,7 +39,7 @@ public abstract class ImportDirSolveAllTurtleTest<Solution_> extends SolveAllTur
         } else {
             String inputFileSuffix = createSolutionImporter(commonApp).getInputFileSuffix();
             List<File> fileList = new ArrayList<>(
-                    FileUtils.listFiles(importDataDir, new String[]{inputFileSuffix}, true));
+                    FileUtils.listFiles(importDataDir, new String[] { inputFileSuffix }, true));
             fileList.sort(new ProblemFileComparator());
             return fileList;
         }

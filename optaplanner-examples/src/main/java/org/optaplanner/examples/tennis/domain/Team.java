@@ -16,9 +16,10 @@
 
 package org.optaplanner.examples.tennis.domain;
 
-import com.thoughtworks.xstream.annotations.XStreamAlias;
 import org.optaplanner.examples.common.domain.AbstractPersistable;
 import org.optaplanner.examples.common.swingui.components.Labeled;
+
+import com.thoughtworks.xstream.annotations.XStreamAlias;
 
 @XStreamAlias("TennisTeam")
 public class Team extends AbstractPersistable implements Labeled {

@@ -22,7 +22,7 @@ public abstract class BavetAbstractUniTuple<A> extends BavetAbstractTuple {
 
     @Override
     public Object[] getFacts() {
-        return new Object[] {getFactA()};
+        return new Object[] { getFactA() };
     }
 
     // ************************************************************************

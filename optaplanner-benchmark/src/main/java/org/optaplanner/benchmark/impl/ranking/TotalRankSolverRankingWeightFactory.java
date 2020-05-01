@@ -40,7 +40,8 @@ public class TotalRankSolverRankingWeightFactory implements SolverRankingWeightF
     private final Comparator<SingleBenchmarkResult> singleBenchmarkRankingComparator = new TotalScoreSingleBenchmarkRankingComparator();
 
     @Override
-    public Comparable createRankingWeight(List<SolverBenchmarkResult> solverBenchmarkResultList, SolverBenchmarkResult solverBenchmarkResult) {
+    public Comparable createRankingWeight(List<SolverBenchmarkResult> solverBenchmarkResultList,
+            SolverBenchmarkResult solverBenchmarkResult) {
         int betterCount = 0;
         int equalCount = 0;
         int lowerCount = 0;
@@ -66,8 +67,7 @@ public class TotalRankSolverRankingWeightFactory implements SolverRankingWeightF
 
     public static class TotalRankSolverRankingWeight implements Comparable<TotalRankSolverRankingWeight> {
 
-        private final Comparator<SolverBenchmarkResult> totalScoreSolverRankingComparator
-                = new TotalScoreSolverRankingComparator();
+        private final Comparator<SolverBenchmarkResult> totalScoreSolverRankingComparator = new TotalScoreSolverRankingComparator();
 
         private SolverBenchmarkResult solverBenchmarkResult;
         private int betterCount;

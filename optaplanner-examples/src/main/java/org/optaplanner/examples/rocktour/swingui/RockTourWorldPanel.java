@@ -28,6 +28,7 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Locale;
 import java.util.Set;
+
 import javax.swing.JPanel;
 
 import org.apache.commons.lang3.StringUtils;
@@ -42,8 +43,7 @@ public class RockTourWorldPanel extends JPanel {
 
     private static final int TEXT_SIZE = 12;
     private static final int LOCATION_NAME_TEXT_SIZE = 8;
-    protected static final DateTimeFormatter DAY_FORMATTER
-            = DateTimeFormatter.ofPattern("E yyyy-MM-dd", Locale.ENGLISH);
+    protected static final DateTimeFormatter DAY_FORMATTER = DateTimeFormatter.ofPattern("E yyyy-MM-dd", Locale.ENGLISH);
 
     private final RockTourPanel rockTourPanel;
 
@@ -93,7 +93,7 @@ public class RockTourWorldPanel extends JPanel {
                 g.drawString(StringUtils.abbreviate(location.getCityName(), 20), x + 3, y - 3);
             }
             if (show.getDate() != null) {
-                g.drawString(DAY_FORMATTER.format(show.getDate()), x + 3, y - 3 + LOCATION_NAME_TEXT_SIZE * 3 /2);
+                g.drawString(DAY_FORMATTER.format(show.getDate()), x + 3, y - 3 + LOCATION_NAME_TEXT_SIZE * 3 / 2);
             }
         }
         g.setColor(TangoColorFactory.ALUMINIUM_4);

@@ -41,7 +41,7 @@ public class NoneLookUpStrategy implements LookUpStrategy {
                 + "Maybe add an @" + PlanningId.class.getSimpleName()
                 + " annotation on an identifier property of the class (" + externalObject.getClass() + ").\n"
                 + "Or otherwise, maybe change the @" + PlanningSolution.class.getSimpleName() + " annotation's "
-                + LookUpStrategyType.class.getSimpleName()+ " (not recommended).");
+                + LookUpStrategyType.class.getSimpleName() + " (not recommended).");
     }
 
     @Override
@@ -51,7 +51,7 @@ public class NoneLookUpStrategy implements LookUpStrategy {
                 + "Maybe add an @" + PlanningId.class.getSimpleName()
                 + " annotation on an identifier property of the class (" + externalObject.getClass() + ").\n"
                 + "Or otherwise, maybe change the @" + PlanningSolution.class.getSimpleName() + " annotation's "
-                + LookUpStrategyType.class.getSimpleName()+ " (not recommended).");
+                + LookUpStrategyType.class.getSimpleName() + " (not recommended).");
     }
 
 }

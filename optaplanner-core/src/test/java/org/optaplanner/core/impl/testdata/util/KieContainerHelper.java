@@ -24,13 +24,14 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
 
-import com.google.common.io.Resources;
 import org.drools.compiler.CommonTestMethodBase;
 import org.kie.api.KieServices;
 import org.kie.api.builder.KieModule;
 import org.kie.api.builder.ReleaseId;
 import org.kie.api.io.Resource;
 import org.kie.api.io.ResourceType;
+
+import com.google.common.io.Resources;
 
 /**
  * Simplifies creating and deploying testing kjars.
@@ -42,6 +43,7 @@ public class KieContainerHelper {
     /**
      * Deploys testing kjar containing solver configuration. The kjar already contains testing domain classes and
      * rules for Drools score calculation.
+     * 
      * @param artifactId artifactId of the kjar to be created
      * @param kmodulePath path to a kmodule.xml
      * @param solverConfigPath path to a solver configuration xml file
@@ -53,7 +55,7 @@ public class KieContainerHelper {
 
         if (solverConfigPath != null) {
             Resource solverConfig = buildResource(solverConfigPath,
-                                                  "testdata/kjar/solverConfig.solver");
+                    "testdata/kjar/solverConfig.solver");
             return deployTestdataKjar(artifactId, kmodulePath, solverConfig);
         } else {
             return deployTestdataKjar(artifactId, kmodulePath);
@@ -63,6 +65,7 @@ public class KieContainerHelper {
     /**
      * Deploys testing kjar containing benchmark configuration. The kjar already contains testing domain classes and
      * rules for Drools score calculation.
+     * 
      * @param artifactId artifactId of the kjar to be created
      * @param kmodulePath path to a kmodule.xml
      * @param benchmarkConfigPath path to a benchmark configuration xml file
@@ -74,7 +77,7 @@ public class KieContainerHelper {
 
         if (benchmarkConfigPath != null) {
             Resource solverConfig = buildResource(benchmarkConfigPath,
-                                                  "testdata/kjar/benchmarkConfig.solver");
+                    "testdata/kjar/benchmarkConfig.solver");
             return deployTestdataKjar(artifactId, kmodulePath, solverConfig);
         } else {
             return deployTestdataKjar(artifactId, kmodulePath);
@@ -83,6 +86,7 @@ public class KieContainerHelper {
 
     /**
      * Deploys testing containing testing domain classes and rules for Drools score calculation.
+     * 
      * @param artifactId artifactId of the kjar to be created
      * @param kmodulePath path to a kmodule.xml
      * @param additionalResources additional resources that should be included in the kjar
@@ -94,14 +98,17 @@ public class KieContainerHelper {
         ReleaseId releaseId = kieServices.newReleaseId("org.optaplanner.core.test", artifactId, "1.0.0");
 
         String kmodule = readResourceToString(kmodulePath);
-        Resource valueClass = buildResource("org/optaplanner/core/impl/testdata/domain/classloaded/ClassloadedTestdataValue.java",
-                                            "testdata/kjar/ClassloadedTestdataValue.java");
-        Resource entityClass = buildResource("org/optaplanner/core/impl/testdata/domain/classloaded/ClassloadedTestdataEntity.java",
-                                             "testdata/kjar/ClassloadedTestdataEntity.java");
-        Resource solutionClass = buildResource("org/optaplanner/core/impl/testdata/domain/classloaded/ClassloadedTestdataSolution.java",
-                                               "testdata/kjar/ClassloadedTestdataSolution.java");
+        Resource valueClass = buildResource(
+                "org/optaplanner/core/impl/testdata/domain/classloaded/ClassloadedTestdataValue.java",
+                "testdata/kjar/ClassloadedTestdataValue.java");
+        Resource entityClass = buildResource(
+                "org/optaplanner/core/impl/testdata/domain/classloaded/ClassloadedTestdataEntity.java",
+                "testdata/kjar/ClassloadedTestdataEntity.java");
+        Resource solutionClass = buildResource(
+                "org/optaplanner/core/impl/testdata/domain/classloaded/ClassloadedTestdataSolution.java",
+                "testdata/kjar/ClassloadedTestdataSolution.java");
         Resource constraints = buildResource("org/optaplanner/core/api/solver/kieContainerTestdataConstraints.drl",
-                                            "testdata/kjar/constraints.drl");
+                "testdata/kjar/constraints.drl");
         Collection<Resource> resources = new ArrayList<>(Arrays.asList(additionalResources));
         resources.add(valueClass);
         resources.add(entityClass);

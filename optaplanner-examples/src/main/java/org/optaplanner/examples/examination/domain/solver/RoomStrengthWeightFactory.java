@@ -16,13 +16,13 @@
 
 package org.optaplanner.examples.examination.domain.solver;
 
+import static java.util.Comparator.*;
+
 import java.util.Comparator;
 
 import org.optaplanner.core.impl.heuristic.selector.common.decorator.SelectionSorterWeightFactory;
 import org.optaplanner.examples.examination.domain.Examination;
 import org.optaplanner.examples.examination.domain.Room;
-
-import static java.util.Comparator.*;
 
 public class RoomStrengthWeightFactory implements SelectionSorterWeightFactory<Examination, Room> {
 

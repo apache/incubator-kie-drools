@@ -16,6 +16,9 @@
 
 package org.optaplanner.core.api.domain.solution.cloner;
 
+import static java.lang.annotation.ElementType.*;
+import static java.lang.annotation.RetentionPolicy.*;
+
 import java.lang.annotation.Inherited;
 import java.lang.annotation.Retention;
 import java.lang.annotation.Target;
@@ -24,9 +27,6 @@ import java.util.Map;
 
 import org.optaplanner.core.api.domain.entity.PlanningEntity;
 import org.optaplanner.core.api.domain.solution.PlanningSolution;
-
-import static java.lang.annotation.ElementType.*;
-import static java.lang.annotation.RetentionPolicy.*;
 
 /**
  * Marks a problem fact class as being required to be deep planning cloned.
@@ -42,7 +42,7 @@ import static java.lang.annotation.RetentionPolicy.*;
  * <p>
  * This annotation is ignored if a custom {@link SolutionCloner} is set with {@link PlanningSolution#solutionCloner()}.
  */
-@Target({TYPE, METHOD, FIELD})
+@Target({ TYPE, METHOD, FIELD })
 @Inherited
 @Retention(RUNTIME)
 public @interface DeepPlanningClone {

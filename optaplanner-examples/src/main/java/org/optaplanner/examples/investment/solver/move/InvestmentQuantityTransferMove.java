@@ -31,7 +31,8 @@ public class InvestmentQuantityTransferMove extends AbstractMove<InvestmentSolut
     private final AssetClassAllocation toAssetClassAllocation;
     private final long transferMillis;
 
-    public InvestmentQuantityTransferMove(AssetClassAllocation fromAssetClassAllocation, AssetClassAllocation toAssetClassAllocation, long transferMillis) {
+    public InvestmentQuantityTransferMove(AssetClassAllocation fromAssetClassAllocation,
+            AssetClassAllocation toAssetClassAllocation, long transferMillis) {
         this.fromAssetClassAllocation = fromAssetClassAllocation;
         this.toAssetClassAllocation = toAssetClassAllocation;
         this.transferMillis = transferMillis;

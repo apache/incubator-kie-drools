@@ -16,13 +16,15 @@
 
 package org.optaplanner.persistence.jackson.api.score.buildin.simpledouble;
 
-import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
-import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 import org.junit.jupiter.api.Test;
 import org.optaplanner.core.api.score.buildin.simpledouble.SimpleDoubleScore;
 import org.optaplanner.persistence.jackson.api.score.AbstractScoreJacksonJsonSerializerAndDeserializerTest;
 
-public class SimpleDoubleScoreJacksonJsonSerializerAndDeserializerTest extends AbstractScoreJacksonJsonSerializerAndDeserializerTest {
+import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
+import com.fasterxml.jackson.databind.annotation.JsonSerialize;
+
+public class SimpleDoubleScoreJacksonJsonSerializerAndDeserializerTest
+        extends AbstractScoreJacksonJsonSerializerAndDeserializerTest {
 
     @Test
     public void serializeAndDeserialize() {

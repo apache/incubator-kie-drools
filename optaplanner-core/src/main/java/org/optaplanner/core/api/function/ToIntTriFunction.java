@@ -19,7 +19,8 @@ package org.optaplanner.core.api.function;
  * Represents a function that accepts three arguments and produces an int-valued result.
  * This is the {@code int}-producing primitive specialization for {@link TriFunction}.
  *
- * <p>This is a <a href="package-summary.html">functional interface</a>
+ * <p>
+ * This is a <a href="package-summary.html">functional interface</a>
  * whose functional method is {@link #applyAsInt(Object, Object, Object)}.
  *
  * @param <A> the type of the first argument to the function

@@ -16,10 +16,10 @@
 
 package org.optaplanner.examples.common.persistence.generator;
 
-import java.util.List;
-
 import static java.util.Arrays.asList;
 import static java.util.Collections.unmodifiableList;
+
+import java.util.List;
 
 public class LocationDataGenerator {
 
@@ -73,8 +73,7 @@ public class LocationDataGenerator {
             new LocationData("STR", 48.69, 9.221944),
             new LocationData("OPO", 41.235556, -8.678056),
             new LocationData("KBP", 50.344722, 30.893333),
-            new LocationData("VCE", 45.505278, 12.351944)
-    ));
+            new LocationData("VCE", 45.505278, 12.351944)));
 
     // Unused, but we're keeping it around if we ever need to recreate the europe40 data set.
     public static final List<LocationData> EUROPE_CAPITALS = unmodifiableList(asList(
@@ -117,8 +116,7 @@ public class LocationDataGenerator {
             new LocationData("Vienna", 48.142143, 16.380615),
             new LocationData("Prague", 50.066778, 14.419556),
             new LocationData("Bratislava", 48.098138, 17.105713),
-            new LocationData("Budapest", 47.440969, 19.039307)
-    ));
+            new LocationData("Budapest", 47.440969, 19.039307)));
 
     public static final List<LocationData> US_MAINLAND_STATE_CAPITALS = unmodifiableList(asList(
             new LocationData("Montgomery, Alabama", 32.377716, -86.300568),
@@ -170,8 +168,7 @@ public class LocationDataGenerator {
             new LocationData("Olympia, Washington", 47.035805, -122.905014),
             new LocationData("Charleston, West Virginia", 38.336246, -81.612328),
             new LocationData("Madison, Wisconsin", 43.074684, -89.384445),
-            new LocationData("Cheyenne, Wyoming", 41.140259, -104.820236)
-    ));
+            new LocationData("Cheyenne, Wyoming", 41.140259, -104.820236)));
 
     public static class LocationData {
         private final String name;

@@ -51,7 +51,7 @@ public class ConferenceCFPImportAction implements CommonApp.ExtraAction<Conferen
     @Override
     public BiConsumer<SolutionBusiness<ConferenceSolution>, SolutionPanel<ConferenceSolution>> getConsumer() {
         return (solutionBusiness, solutionPanel) -> {
-            String[] cfpArray = {"cfp-devoxx"};
+            String[] cfpArray = { "cfp-devoxx" };
             JComboBox<String> cfpConferenceBox = new JComboBox<>(cfpArray);
             JTextField cfpRestUrlTextField = new JTextField("https://dvbe18.confinabox.com/api/conferences/DVBE18");
             Object[] dialogue = {
@@ -76,8 +76,9 @@ public class ConferenceCFPImportAction implements CommonApp.ExtraAction<Conferen
 
         private final JDialog dialog;
 
-        public ConferenceCFPImportWorker(SolutionBusiness<ConferenceSolution> solutionBusiness, SolutionPanel<ConferenceSolution> solutionPanel,
-                                         String conferenceBaseUrl) {
+        public ConferenceCFPImportWorker(SolutionBusiness<ConferenceSolution> solutionBusiness,
+                SolutionPanel<ConferenceSolution> solutionPanel,
+                String conferenceBaseUrl) {
             this.solutionBusiness = solutionBusiness;
             this.solutionPanel = solutionPanel;
             this.conferenceBaseUrl = conferenceBaseUrl;

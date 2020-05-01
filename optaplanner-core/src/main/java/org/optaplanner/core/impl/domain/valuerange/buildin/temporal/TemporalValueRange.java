@@ -43,7 +43,7 @@ public class TemporalValueRange<Temporal_ extends Temporal & Comparable<? super 
      * @param to never null, exclusive maximum, {@code >= from}
      * @param incrementUnitAmount {@code > 0}
      * @param incrementUnitType never null, must be {@link Temporal#isSupported(TemporalUnit) supported} by {@code from}
-     * and {@code to}
+     *        and {@code to}
      */
     public TemporalValueRange(Temporal_ from, Temporal_ to, long incrementUnitAmount, TemporalUnit incrementUnitType) {
         this.from = from;

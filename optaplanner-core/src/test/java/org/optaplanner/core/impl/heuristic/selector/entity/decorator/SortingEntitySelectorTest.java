@@ -16,6 +16,11 @@
 
 package org.optaplanner.core.impl.heuristic.selector.entity.decorator;
 
+import static org.assertj.core.api.Assertions.assertThatIllegalArgumentException;
+import static org.junit.Assert.assertEquals;
+import static org.mockito.Mockito.*;
+import static org.optaplanner.core.impl.testdata.util.PlannerAssert.*;
+
 import java.util.Comparator;
 
 import org.junit.jupiter.api.Test;
@@ -29,11 +34,6 @@ import org.optaplanner.core.impl.solver.scope.DefaultSolverScope;
 import org.optaplanner.core.impl.testdata.domain.TestdataEntity;
 import org.optaplanner.core.impl.testdata.domain.TestdataObject;
 import org.optaplanner.core.impl.testdata.domain.TestdataSolution;
-
-import static org.assertj.core.api.Assertions.assertThatIllegalArgumentException;
-import static org.junit.Assert.assertEquals;
-import static org.mockito.Mockito.*;
-import static org.optaplanner.core.impl.testdata.util.PlannerAssert.*;
 
 public class SortingEntitySelectorTest {
 
@@ -62,8 +62,8 @@ public class SortingEntitySelectorTest {
                 new TestdataEntity("jan"), new TestdataEntity("feb"), new TestdataEntity("mar"),
                 new TestdataEntity("apr"), new TestdataEntity("may"), new TestdataEntity("jun"));
 
-        SelectionSorter<TestdataSolution, TestdataEntity> sorter = (scoreDirector, selectionList)
-                -> selectionList.sort(Comparator.comparing(TestdataObject::getCode));
+        SelectionSorter<TestdataSolution, TestdataEntity> sorter = (scoreDirector, selectionList) -> selectionList
+                .sort(Comparator.comparing(TestdataObject::getCode));
         EntitySelector entitySelector = new SortingEntitySelector(childEntitySelector, cacheType, sorter);
 
         DefaultSolverScope solverScope = mock(DefaultSolverScope.class);

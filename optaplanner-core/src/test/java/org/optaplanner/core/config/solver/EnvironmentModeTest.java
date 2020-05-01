@@ -1,5 +1,7 @@
 package org.optaplanner.core.config.solver;
 
+import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
+
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
@@ -37,8 +39,6 @@ import org.optaplanner.core.impl.testdata.domain.TestdataSolution;
 import org.optaplanner.core.impl.testdata.domain.TestdataValue;
 import org.optaplanner.core.impl.testdata.util.PlannerTestUtils;
 
-import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
-
 public class EnvironmentModeTest {
 
     private static final int NUMBER_OF_RANDOM_NUMBERS_GENERATED = 1000;
@@ -51,9 +51,9 @@ public class EnvironmentModeTest {
     public static void setUpInputProblem() {
         inputProblem = new TestdataSolution("s1");
         inputProblem.setValueList(Arrays.asList(new TestdataValue("v1"), new TestdataValue("v2"),
-                                                new TestdataValue("v3")));
+                new TestdataValue("v3")));
         inputProblem.setEntityList(Arrays.asList(new TestdataEntity("e1"), new TestdataEntity("e2"),
-                                                 new TestdataEntity("e3"), new TestdataEntity("e4")));
+                new TestdataEntity("e3"), new TestdataEntity("e4")));
     }
 
     private static SolverConfig buildSolverConfig(EnvironmentMode environmentMode) {
@@ -61,7 +61,8 @@ public class EnvironmentModeTest {
                 .withCustomPhaseCommandClassList(Collections.singletonList(TestdataFirstValueInitializer.class));
 
         LocalSearchPhaseConfig localSearchPhaseConfig = new LocalSearchPhaseConfig();
-        localSearchPhaseConfig.setTerminationConfig(new TerminationConfig().withStepCountLimit(NUMBER_OF_TERMINATION_STEP_COUNT_LIMIT));
+        localSearchPhaseConfig
+                .setTerminationConfig(new TerminationConfig().withStepCountLimit(NUMBER_OF_TERMINATION_STEP_COUNT_LIMIT));
 
         return new SolverConfig()
                 .withSolutionClass(TestdataSolution.class)
@@ -69,7 +70,6 @@ public class EnvironmentModeTest {
                 .withEnvironmentMode(environmentMode)
                 .withPhases(initializerPhaseConfig, localSearchPhaseConfig);
     }
-
 
     @ParameterizedTest(name = "{0}")
     @EnumSource(EnvironmentMode.class)
@@ -158,13 +158,13 @@ public class EnvironmentModeTest {
 
     private void assertReproducibility(Solver<TestdataSolution> solver1, Solver<TestdataSolution> solver2) {
         assertGeneratingSameNumbers(((DefaultSolver<TestdataSolution>) solver1).getRandomFactory(),
-                                    ((DefaultSolver<TestdataSolution>) solver2).getRandomFactory());
+                ((DefaultSolver<TestdataSolution>) solver2).getRandomFactory());
         assertSameScoreSeries(solver1, solver2);
     }
 
     private void assertNonReproducibility(Solver<TestdataSolution> solver1, Solver<TestdataSolution> solver2) {
         assertGeneratingDifferentNumbers(((DefaultSolver<TestdataSolution>) solver1).getRandomFactory(),
-                                         ((DefaultSolver<TestdataSolution>) solver2).getRandomFactory());
+                ((DefaultSolver<TestdataSolution>) solver2).getRandomFactory());
         assertDifferentScoreSeries(solver1, solver2);
     }
 
@@ -187,7 +187,7 @@ public class EnvironmentModeTest {
                     solver2.solve(inputProblem);
                     softly.assertThat(listener.getScores())
                             .as("Score steps should be the same "
-                                        + "in a reproducible environment mode.")
+                                    + "in a reproducible environment mode.")
                             .isEqualTo(listener2.getScores());
                 }));
     }
@@ -205,9 +205,9 @@ public class EnvironmentModeTest {
                     solver2.solve(inputProblem);
                     softly.assertThat(listener.getScores())
                             .as("Score steps should not be the same in a non-reproducible environment mode. "
-                                        + "This might be possible because searchSpace is not infinite and "
-                                        + "two different random scenarios can have the same results. "
-                                        + "Run test again.")
+                                    + "This might be possible because searchSpace is not infinite and "
+                                    + "two different random scenarios can have the same results. "
+                                    + "Run test again.")
                             .isNotEqualTo(listener2.getScores());
                 }));
     }
@@ -219,7 +219,7 @@ public class EnvironmentModeTest {
         SoftAssertions.assertSoftly(softly -> IntStream.range(0, NUMBER_OF_RANDOM_NUMBERS_GENERATED)
                 .forEach(i -> softly.assertThat(random.nextInt())
                         .as("Random factories should generate the same results "
-                                    + "in a reproducible environment mode.")
+                                + "in a reproducible environment mode.")
                         .isEqualTo(random2.nextInt())));
     }
 
@@ -230,8 +230,8 @@ public class EnvironmentModeTest {
         SoftAssertions.assertSoftly(softly -> IntStream.range(0, NUMBER_OF_RANDOM_NUMBERS_GENERATED)
                 .forEach(i -> softly.assertThat(random.nextInt())
                         .as("Random factories should not generate exactly the same results "
-                                    + "in the non-reproducible environment mode. "
-                                    + "It can happen but the probability is very low. Run test again")
+                                + "in the non-reproducible environment mode. "
+                                + "It can happen but the probability is very low. Run test again")
                         .isNotEqualTo(random2.nextInt())));
     }
 
@@ -239,7 +239,7 @@ public class EnvironmentModeTest {
             SolverConfig solverConfig,
             Class<? extends EasyScoreCalculator<TestdataSolution>> easyScoreCalculatorClass) {
         solverConfig.setScoreDirectorFactoryConfig(new ScoreDirectorFactoryConfig()
-                                                           .withEasyScoreCalculatorClass(easyScoreCalculatorClass));
+                .withEasyScoreCalculatorClass(easyScoreCalculatorClass));
     }
 
     private void setSolverConfigMoveListFactoryClassToCorrupted(
@@ -253,7 +253,8 @@ public class EnvironmentModeTest {
 
         LocalSearchPhaseConfig localSearchPhaseConfig = new LocalSearchPhaseConfig();
         localSearchPhaseConfig.setMoveSelectorConfig(moveListFactoryConfig);
-        localSearchPhaseConfig.setTerminationConfig(new TerminationConfig().withStepCountLimit(NUMBER_OF_TERMINATION_STEP_COUNT_LIMIT));
+        localSearchPhaseConfig
+                .setTerminationConfig(new TerminationConfig().withStepCountLimit(NUMBER_OF_TERMINATION_STEP_COUNT_LIMIT));
 
         solverConfig.withPhases(initializerPhaseConfig, localSearchPhaseConfig);
     }
@@ -276,8 +277,8 @@ public class EnvironmentModeTest {
 
             if (!score.isSolutionInitialized()) {
                 throw new IllegalStateException("The solution (" + TestdataEntity.class.getSimpleName()
-                                                        + ") was not fully initialized by CustomSolverPhase: ("
-                                                        + this.getClass().getCanonicalName() + ")");
+                        + ") was not fully initialized by CustomSolverPhase: ("
+                        + this.getClass().getCanonicalName() + ")");
             }
         }
     }

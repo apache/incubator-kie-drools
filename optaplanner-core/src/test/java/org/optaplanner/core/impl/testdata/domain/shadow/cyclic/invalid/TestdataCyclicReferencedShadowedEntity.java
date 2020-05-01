@@ -38,7 +38,8 @@ public class TestdataCyclicReferencedShadowedEntity extends TestdataObject {
 
     public static GenuineVariableDescriptor buildVariableDescriptorForValue() {
         SolutionDescriptor solutionDescriptor = TestdataCyclicReferencedShadowedSolution.buildSolutionDescriptor();
-        EntityDescriptor entityDescriptor = solutionDescriptor.findEntityDescriptorOrFail(TestdataCyclicReferencedShadowedEntity.class);
+        EntityDescriptor entityDescriptor = solutionDescriptor
+                .findEntityDescriptorOrFail(TestdataCyclicReferencedShadowedEntity.class);
         return entityDescriptor.getGenuineVariableDescriptor("value");
     }
 
@@ -67,9 +68,9 @@ public class TestdataCyclicReferencedShadowedEntity extends TestdataObject {
         this.value = value;
     }
 
-    @CustomShadowVariable(variableListenerClass = BarberAndCutsOwnHairUpdatingVariableListener.class,
-            sources = {@PlanningVariableReference(variableName = "value"),
-                    @PlanningVariableReference(variableName = "cutsOwnHair")})
+    @CustomShadowVariable(variableListenerClass = BarberAndCutsOwnHairUpdatingVariableListener.class, sources = {
+            @PlanningVariableReference(variableName = "value"),
+            @PlanningVariableReference(variableName = "cutsOwnHair") })
     public boolean isBarber() {
         return barber;
     }
@@ -95,7 +96,8 @@ public class TestdataCyclicReferencedShadowedEntity extends TestdataObject {
     // Static inner classes
     // ************************************************************************
 
-    public static class BarberAndCutsOwnHairUpdatingVariableListener extends VariableListenerAdapter<TestdataCyclicReferencedShadowedEntity> {
+    public static class BarberAndCutsOwnHairUpdatingVariableListener
+            extends VariableListenerAdapter<TestdataCyclicReferencedShadowedEntity> {
 
         @Override
         public void afterEntityAdded(ScoreDirector scoreDirector, TestdataCyclicReferencedShadowedEntity entity) {

@@ -71,7 +71,8 @@ public class BendableScoreHolder extends AbstractScoreHolder<BendableScore> {
         super.configureConstraintWeight(rule, constraintWeight);
         BiConsumer<RuleContext, Integer> matchExecutor;
         if (constraintWeight.equals(BendableScore.zero(hardScores.length, softScores.length))) {
-            matchExecutor = (RuleContext kcontext, Integer matchWeight) -> {};
+            matchExecutor = (RuleContext kcontext, Integer matchWeight) -> {
+            };
         } else {
             Integer singleLevel = null;
             Integer singleLevelWeight = null;
@@ -91,15 +92,15 @@ public class BendableScoreHolder extends AbstractScoreHolder<BendableScore> {
                 int levelWeight = singleLevelWeight;
                 if (singleLevel < constraintWeight.getHardLevelsSize()) {
                     int level = singleLevel;
-                    matchExecutor = (RuleContext kcontext, Integer matchWeight)
-                            -> addHardConstraintMatch(kcontext, level, levelWeight * matchWeight);
+                    matchExecutor = (RuleContext kcontext, Integer matchWeight) -> addHardConstraintMatch(kcontext, level,
+                            levelWeight * matchWeight);
                 } else {
                     int level = singleLevel - constraintWeight.getHardLevelsSize();
-                    matchExecutor = (RuleContext kcontext, Integer matchWeight)
-                            -> addSoftConstraintMatch(kcontext, level, levelWeight * matchWeight);
+                    matchExecutor = (RuleContext kcontext, Integer matchWeight) -> addSoftConstraintMatch(kcontext, level,
+                            levelWeight * matchWeight);
                 }
             } else {
-                matchExecutor = (RuleContext kcontext, Integer matchWeight)-> {
+                matchExecutor = (RuleContext kcontext, Integer matchWeight) -> {
                     int[] hardWeights = new int[hardScores.length];
                     int[] softWeights = new int[softScores.length];
                     for (int i = 0; i < hardWeights.length; i++) {
@@ -132,6 +133,7 @@ public class BendableScoreHolder extends AbstractScoreHolder<BendableScore> {
 
     /**
      * Penalize a match by the {@link ConstraintWeight} negated.
+     * 
      * @param kcontext never null, the magic variable in DRL
      */
     public void penalize(RuleContext kcontext) {
@@ -140,6 +142,7 @@ public class BendableScoreHolder extends AbstractScoreHolder<BendableScore> {
 
     /**
      * Penalize a match by the {@link ConstraintWeight} negated and multiplied with the weightMultiplier for all score levels.
+     * 
      * @param kcontext never null, the magic variable in DRL
      * @param weightMultiplier at least 0
      */
@@ -148,8 +151,10 @@ public class BendableScoreHolder extends AbstractScoreHolder<BendableScore> {
     }
 
     /**
-     * Penalize a match by the {@link ConstraintWeight} negated and multiplied with the specific weightMultiplier per score level.
+     * Penalize a match by the {@link ConstraintWeight} negated and multiplied with the specific weightMultiplier per score
+     * level.
      * Slower than {@link #penalize(RuleContext, int)}.
+     * 
      * @param kcontext never null, the magic variable in DRL
      * @param hardWeightsMultiplier elements at least 0
      * @param softWeightsMultiplier elements at least 0
@@ -168,6 +173,7 @@ public class BendableScoreHolder extends AbstractScoreHolder<BendableScore> {
 
     /**
      * Reward a match by the {@link ConstraintWeight}.
+     * 
      * @param kcontext never null, the magic variable in DRL
      */
     public void reward(RuleContext kcontext) {
@@ -176,6 +182,7 @@ public class BendableScoreHolder extends AbstractScoreHolder<BendableScore> {
 
     /**
      * Reward a match by the {@link ConstraintWeight} multiplied with the weightMultiplier for all score levels.
+     * 
      * @param kcontext never null, the magic variable in DRL
      * @param weightMultiplier at least 0
      */
@@ -186,6 +193,7 @@ public class BendableScoreHolder extends AbstractScoreHolder<BendableScore> {
     /**
      * Reward a match by the {@link ConstraintWeight} multiplied with the specific weightMultiplier per score level.
      * Slower than {@link #reward(RuleContext, int)}.
+     * 
      * @param kcontext never null, the magic variable in DRL
      * @param hardWeightsMultiplier elements at least 0
      * @param softWeightsMultiplier elements at least 0
@@ -229,7 +237,7 @@ public class BendableScoreHolder extends AbstractScoreHolder<BendableScore> {
     /**
      * @param kcontext never null, the magic variable in DRL
      * @param hardLevel {@code 0 <= hardLevel <} {@link #getHardLevelsSize()}.
-     * The {@code scoreLevel} is {@code hardLevel} for hard levels and {@code softLevel + hardLevelSize} for soft levels.
+     *        The {@code scoreLevel} is {@code hardLevel} for hard levels and {@code softLevel + hardLevelSize} for soft levels.
      * @param weight higher is better, negative for a penalty, positive for a reward
      */
     public void addHardConstraintMatch(RuleContext kcontext, int hardLevel, int weight) {
@@ -252,7 +260,7 @@ public class BendableScoreHolder extends AbstractScoreHolder<BendableScore> {
     /**
      * @param kcontext never null, the magic variable in DRL
      * @param softLevel {@code 0 <= softLevel <} {@link #getSoftLevelsSize()}.
-     * The {@code scoreLevel} is {@code hardLevel} for hard levels and {@code softLevel + hardLevelSize} for soft levels.
+     *        The {@code scoreLevel} is {@code hardLevel} for hard levels and {@code softLevel + hardLevelSize} for soft levels.
      * @param weight higher is better, negative for a penalty, positive for a reward
      */
     public void addSoftConstraintMatch(RuleContext kcontext, int softLevel, int weight) {

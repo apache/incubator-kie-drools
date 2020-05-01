@@ -16,12 +16,13 @@
 
 package org.optaplanner.persistence.xstream.api.score.buildin.bendable;
 
+import org.optaplanner.core.api.score.buildin.bendable.BendableScore;
+import org.optaplanner.persistence.xstream.api.score.AbstractScoreXStreamConverter;
+
 import com.thoughtworks.xstream.converters.MarshallingContext;
 import com.thoughtworks.xstream.converters.UnmarshallingContext;
 import com.thoughtworks.xstream.io.HierarchicalStreamReader;
 import com.thoughtworks.xstream.io.HierarchicalStreamWriter;
-import org.optaplanner.core.api.score.buildin.bendable.BendableScore;
-import org.optaplanner.persistence.xstream.api.score.AbstractScoreXStreamConverter;
 
 public class BendableScoreXStreamConverter extends AbstractScoreXStreamConverter {
 

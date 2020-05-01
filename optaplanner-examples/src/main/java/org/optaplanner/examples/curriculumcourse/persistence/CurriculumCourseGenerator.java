@@ -16,6 +16,8 @@
 
 package org.optaplanner.examples.curriculumcourse.persistence;
 
+import static org.optaplanner.examples.common.persistence.AbstractSolutionImporter.*;
+
 import java.io.File;
 import java.math.BigInteger;
 import java.util.ArrayList;
@@ -43,8 +45,6 @@ import org.optaplanner.examples.curriculumcourse.domain.UnavailablePeriodPenalty
 import org.optaplanner.persistence.common.api.domain.solution.SolutionFileIO;
 import org.optaplanner.persistence.xstream.impl.domain.solution.XStreamSolutionFileIO;
 
-import static org.optaplanner.examples.common.persistence.AbstractSolutionImporter.*;
-
 public class CurriculumCourseGenerator extends LoggingMain {
 
     private static final int DAY_LIST_SIZE = 5;
@@ -66,22 +66,22 @@ public class CurriculumCourseGenerator extends LoggingMain {
             50
     };
 
-    private final String[] courseCodes = new String[]{
-                    "Math",
-                    "Chemistry",
-                    "Physics",
-                    "Geography",
-                    "Biology",
-                    "History",
-                    "English",
-                    "Spanish",
-                    "French",
-                    "German",
-                    "ICT",
-                    "Economics",
-                    "Psychology",
-                    "Art",
-                    "Music"};
+    private final String[] courseCodes = new String[] {
+            "Math",
+            "Chemistry",
+            "Physics",
+            "Geography",
+            "Biology",
+            "History",
+            "English",
+            "Spanish",
+            "French",
+            "German",
+            "ICT",
+            "Economics",
+            "Psychology",
+            "Art",
+            "Music" };
 
     private final StringDataGenerator teacherNameGenerator = StringDataGenerator.buildFullNames();
 
@@ -101,7 +101,8 @@ public class CurriculumCourseGenerator extends LoggingMain {
         int roomListSize = lectureListSize * 2 / PERIOD_LIST_SIZE;
         String fileName = determineFileName(lectureListSize, PERIOD_LIST_SIZE, roomListSize);
         File outputFile = new File(outputDir, fileName + ".xml");
-        CourseSchedule schedule = createCourseSchedule(fileName, teacherListSize, curriculumListSize, courseListSize, lectureListSize, roomListSize);
+        CourseSchedule schedule = createCourseSchedule(fileName, teacherListSize, curriculumListSize, courseListSize,
+                lectureListSize, roomListSize);
         solutionFileIO.write(schedule, outputFile);
         logger.info("Saved: {}", outputFile);
     }
@@ -110,7 +111,8 @@ public class CurriculumCourseGenerator extends LoggingMain {
         return lectureListSize + "lectures-" + periodListSize + "periods-" + roomListSize + "rooms";
     }
 
-    public CourseSchedule createCourseSchedule(String fileName, int teacherListSize, int curriculumListSize, int courseListSize, int lectureListSize, int roomListSize) {
+    public CourseSchedule createCourseSchedule(String fileName, int teacherListSize, int curriculumListSize, int courseListSize,
+            int lectureListSize, int roomListSize) {
         random = new Random(37);
         CourseSchedule schedule = new CourseSchedule();
         schedule.setId(0L);
@@ -129,7 +131,7 @@ public class CurriculumCourseGenerator extends LoggingMain {
         BigInteger possibleSolutionSize = BigInteger.valueOf(possibleForOneLectureSize).pow(
                 schedule.getLectureList().size());
         logger.info("CourseSchedule {} has {} teachers, {} curricula, {} courses, {} lectures," +
-                        " {} periods, {} rooms and {} unavailable period constraints with a search space of {}.",
+                " {} periods, {} rooms and {} unavailable period constraints with a search space of {}.",
                 fileName,
                 schedule.getTeacherList().size(),
                 schedule.getCurriculumList().size(),

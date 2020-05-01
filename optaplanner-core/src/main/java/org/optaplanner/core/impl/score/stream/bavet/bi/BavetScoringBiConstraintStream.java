@@ -83,7 +83,8 @@ public final class BavetScoringBiConstraintStream<Solution_, A, B>
     private BavetScoringBiConstraintStream(BavetConstraintFactory<Solution_> constraintFactory,
             BavetAbstractBiConstraintStream<Solution_, A, B> parent,
             BavetConstraint<Solution_> constraint, boolean noMatchWeigher,
-            ToIntBiFunction<A, B> intMatchWeigher, ToLongBiFunction<A, B> longMatchWeigher, BiFunction<A, B, BigDecimal> bigDecimalMatchWeigher) {
+            ToIntBiFunction<A, B> intMatchWeigher, ToLongBiFunction<A, B> longMatchWeigher,
+            BiFunction<A, B, BigDecimal> bigDecimalMatchWeigher) {
         super(constraintFactory);
         this.parent = parent;
         this.constraint = constraint;
@@ -117,8 +118,8 @@ public final class BavetScoringBiConstraintStream<Solution_, A, B>
                     return castedWeightedScoreImpacter.impactScore(matchWeight, matchScoreConsumer);
                 };
             } else if (noMatchWeigher) {
-                scoreImpacter = (A a, B b, Consumer<Score<?>> matchScoreConsumer) ->
-                        castedWeightedScoreImpacter.impactScore(1, matchScoreConsumer);
+                scoreImpacter = (A a, B b, Consumer<Score<?>> matchScoreConsumer) -> castedWeightedScoreImpacter.impactScore(1,
+                        matchScoreConsumer);
             } else {
                 throw new IllegalStateException("The matchWeigher of " + BiConstraintStream.class.getSimpleName()
                         + ".penalize(matchWeigher) of the constraint (" + constraint.getConstraintId()
@@ -133,8 +134,8 @@ public final class BavetScoringBiConstraintStream<Solution_, A, B>
                     return castedWeightedScoreImpacter.impactScore(matchWeight, matchScoreConsumer);
                 };
             } else if (noMatchWeigher) {
-                scoreImpacter = (A a, B b, Consumer<Score<?>> matchScoreConsumer) ->
-                        castedWeightedScoreImpacter.impactScore(1L, matchScoreConsumer);
+                scoreImpacter = (A a, B b, Consumer<Score<?>> matchScoreConsumer) -> castedWeightedScoreImpacter.impactScore(1L,
+                        matchScoreConsumer);
             } else {
                 throw new IllegalStateException("The matchWeigher of " + BiConstraintStream.class.getSimpleName()
                         + ".penalize(matchWeigher) of the constraint (" + constraint.getConstraintId()
@@ -149,8 +150,8 @@ public final class BavetScoringBiConstraintStream<Solution_, A, B>
                     return castedWeightedScoreImpacter.impactScore(matchWeight, matchScoreConsumer);
                 };
             } else if (noMatchWeigher) {
-                scoreImpacter = (A a, B b, Consumer<Score<?>> matchScoreConsumer) ->
-                        castedWeightedScoreImpacter.impactScore(BigDecimal.ONE, matchScoreConsumer);
+                scoreImpacter = (A a, B b, Consumer<Score<?>> matchScoreConsumer) -> castedWeightedScoreImpacter
+                        .impactScore(BigDecimal.ONE, matchScoreConsumer);
             } else {
                 throw new IllegalStateException("The matchWeigher of " + BiConstraintStream.class.getSimpleName()
                         + ".penalize(matchWeigher) of the constraint (" + constraint.getConstraintId()
@@ -167,7 +168,8 @@ public final class BavetScoringBiConstraintStream<Solution_, A, B>
     }
 
     @Override
-    protected void createChildNodeChains(BavetNodeBuildPolicy<Solution_> buildPolicy, Score<?> constraintWeight, int nodeOrder, BavetAbstractBiNode<A, B> node) {
+    protected void createChildNodeChains(BavetNodeBuildPolicy<Solution_> buildPolicy, Score<?> constraintWeight, int nodeOrder,
+            BavetAbstractBiNode<A, B> node) {
         if (!childStreamList.isEmpty()) {
             throw new IllegalStateException("Impossible state: the stream (" + this
                     + ") has an non-empty childStreamList (" + childStreamList + ") but it's an endpoint.");

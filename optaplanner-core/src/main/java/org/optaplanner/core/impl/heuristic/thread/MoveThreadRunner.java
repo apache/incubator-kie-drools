@@ -54,7 +54,8 @@ public class MoveThreadRunner<Solution_> implements Runnable {
             OrderByMoveIndexBlockingQueue<Solution_> resultQueue,
             CyclicBarrier moveThreadBarrier,
             boolean assertMoveScoreFromScratch, boolean assertExpectedUndoMoveScore,
-            boolean assertStepScoreFromScratch, boolean assertExpectedStepScore, boolean assertShadowVariablesAreNotStaleAfterStep) {
+            boolean assertStepScoreFromScratch, boolean assertExpectedStepScore,
+            boolean assertShadowVariablesAreNotStaleAfterStep) {
         this.logIndentation = logIndentation;
         this.moveThreadIndex = moveThreadIndex;
         this.evaluateDoable = evaluateDoable;
@@ -186,6 +187,7 @@ public class MoveThreadRunner<Solution_> implements Runnable {
 
     /**
      * This method is thread-safe.
+     * 
      * @return at least 0
      */
     public long getCalculationCount() {

@@ -16,6 +16,9 @@
 
 package org.optaplanner.core.impl.localsearch.decider.forager;
 
+import static org.junit.Assert.*;
+import static org.mockito.Mockito.*;
+
 import java.util.Random;
 
 import org.junit.jupiter.api.Test;
@@ -31,9 +34,6 @@ import org.optaplanner.core.impl.score.buildin.simple.SimpleScoreDefinition;
 import org.optaplanner.core.impl.score.director.InnerScoreDirector;
 import org.optaplanner.core.impl.solver.scope.DefaultSolverScope;
 import org.optaplanner.core.impl.testdata.domain.TestdataSolution;
-
-import static org.junit.Assert.*;
-import static org.mockito.Mockito.*;
 
 public class AcceptedLocalSearchForagerTest {
 

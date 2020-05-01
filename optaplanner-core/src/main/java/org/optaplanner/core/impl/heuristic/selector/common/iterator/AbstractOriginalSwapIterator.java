@@ -47,7 +47,7 @@ public abstract class AbstractOriginalSwapIterator<S, SubS> extends UpcomingSele
         this.rightSubSelector = rightSubSelector;
         leftEqualsRight = (leftSubSelector == rightSubSelector);
         leftSubSelectionIterator = leftSubSelector.listIterator();
-        rightSubSelectionIterator = Collections.<SubS>emptyList().listIterator();
+        rightSubSelectionIterator = Collections.<SubS> emptyList().listIterator();
         // Don't do hasNext() in constructor (to avoid upcoming selections breaking mimic recording)
     }
 

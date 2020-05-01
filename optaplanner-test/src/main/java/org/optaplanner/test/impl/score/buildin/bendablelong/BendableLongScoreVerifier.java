@@ -28,6 +28,7 @@ import org.optaplanner.test.impl.score.AbstractScoreVerifier;
  * To assert the constraints of a {@link SolverFactory}
  * that uses a {@link BendableLongScore}.
  * If you're using {@link ConstraintStream}s, use {@link ConstraintVerifier} instead.
+ * 
  * @param <Solution_> the solution type, the class with the {@link PlanningSolution} annotation
  */
 public class BendableLongScoreVerifier<Solution_> extends AbstractScoreVerifier<Solution_> {
@@ -45,9 +46,10 @@ public class BendableLongScoreVerifier<Solution_> extends AbstractScoreVerifier<
     /**
      * Assert that the constraint of {@link PlanningSolution}
      * has the expected weight for that score level.
+     * 
      * @param constraintName never null, the name of the constraint
      * @param hardLevel {@code 0 <= hardLevel <} {@code hardLevelSize}.
-     * The {@code scoreLevel} is {@code hardLevel} for hard levels and {@code softLevel + hardLevelSize} for soft levels.
+     *        The {@code scoreLevel} is {@code hardLevel} for hard levels and {@code softLevel + hardLevelSize} for soft levels.
      * @param expectedWeight the total weight for all matches of that 1 constraint
      * @param solution never null, the actual {@link PlanningSolution}
      */
@@ -58,11 +60,12 @@ public class BendableLongScoreVerifier<Solution_> extends AbstractScoreVerifier<
     /**
      * Assert that the constraint of {@link PlanningSolution}
      * has the expected weight for that score level.
+     * 
      * @param constraintPackage sometimes null.
-     * When null, {@code constraintName} for the {@code scoreLevel} must be unique.
+     *        When null, {@code constraintName} for the {@code scoreLevel} must be unique.
      * @param constraintName never null, the name of the constraint
      * @param hardLevel {@code 0 <= hardLevel <} {@code hardLevelSize}.
-     * The {@code scoreLevel} is {@code hardLevel} for hard levels and {@code softLevel + hardLevelSize} for soft levels.
+     *        The {@code scoreLevel} is {@code hardLevel} for hard levels and {@code softLevel + hardLevelSize} for soft levels.
      * @param expectedWeight the total weight for all matches of that 1 constraint
      * @param solution never null, the actual {@link PlanningSolution}
      */
@@ -76,9 +79,10 @@ public class BendableLongScoreVerifier<Solution_> extends AbstractScoreVerifier<
     /**
      * Assert that the constraint of {@link PlanningSolution}
      * has the expected weight for that score level.
+     * 
      * @param constraintName never null, the name of the constraint
      * @param softLevel {@code 0 <= softLevel <} {@code softLevelSize}.
-     * The {@code scoreLevel} is {@code hardLevel} for hard levels and {@code softLevel + hardLevelSize} for soft levels.
+     *        The {@code scoreLevel} is {@code hardLevel} for hard levels and {@code softLevel + hardLevelSize} for soft levels.
      * @param expectedWeight the total weight for all matches of that 1 constraint
      * @param solution never null, the actual {@link PlanningSolution}
      */
@@ -89,11 +93,12 @@ public class BendableLongScoreVerifier<Solution_> extends AbstractScoreVerifier<
     /**
      * Assert that the constraint of {@link PlanningSolution}
      * has the expected weight for that score level.
+     * 
      * @param constraintPackage sometimes null.
-     * When null, {@code constraintName} for the {@code scoreLevel} must be unique.
+     *        When null, {@code constraintName} for the {@code scoreLevel} must be unique.
      * @param constraintName never null, the name of the constraint
      * @param softLevel {@code 0 <= softLevel <} {@code softLevelSize}.
-     * The {@code scoreLevel} is {@code hardLevel} for hard levels and {@code softLevel + hardLevelSize} for soft levels.
+     *        The {@code scoreLevel} is {@code hardLevel} for hard levels and {@code softLevel + hardLevelSize} for soft levels.
      * @param expectedWeight the total weight for all matches of that 1 constraint
      * @param solution never null, the actual {@link PlanningSolution}
      */

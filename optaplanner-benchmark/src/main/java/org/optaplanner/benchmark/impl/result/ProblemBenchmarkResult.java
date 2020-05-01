@@ -30,9 +30,6 @@ import java.util.Map;
 import java.util.Objects;
 import java.util.Set;
 
-import com.thoughtworks.xstream.annotations.XStreamAlias;
-import com.thoughtworks.xstream.annotations.XStreamImplicit;
-import com.thoughtworks.xstream.annotations.XStreamOmitField;
 import org.optaplanner.benchmark.config.ProblemBenchmarksConfig;
 import org.optaplanner.benchmark.config.statistic.ProblemStatisticType;
 import org.optaplanner.benchmark.config.statistic.SingleStatisticType;
@@ -49,6 +46,10 @@ import org.optaplanner.core.config.util.ConfigUtils;
 import org.optaplanner.core.impl.score.definition.ScoreDefinition;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+import com.thoughtworks.xstream.annotations.XStreamAlias;
+import com.thoughtworks.xstream.annotations.XStreamImplicit;
+import com.thoughtworks.xstream.annotations.XStreamOmitField;
 
 /**
  * Represents 1 problem instance (data set) benchmarked on multiple {@link Solver} configurations.
@@ -249,7 +250,8 @@ public class ProblemBenchmarkResult<Solution_> {
     public Collection<SingleStatisticType> extractSingleStatisticTypeList() {
         Set<SingleStatisticType> singleStatisticTypeSet = new LinkedHashSet<>();
         for (SingleBenchmarkResult singleBenchmarkResult : singleBenchmarkResultList) {
-            for (PureSubSingleStatistic pureSubSingleStatistic : singleBenchmarkResult.getMedian().getPureSubSingleStatisticList()) {
+            for (PureSubSingleStatistic pureSubSingleStatistic : singleBenchmarkResult.getMedian()
+                    .getPureSubSingleStatisticList()) {
                 singleStatisticTypeSet.add(pureSubSingleStatistic.getStatisticType());
             }
         }
@@ -260,7 +262,8 @@ public class ProblemBenchmarkResult<Solution_> {
         List<PureSubSingleStatistic> pureSubSingleStatisticList = new ArrayList<>(
                 singleBenchmarkResultList.size());
         for (SingleBenchmarkResult singleBenchmarkResult : singleBenchmarkResultList) {
-            for (PureSubSingleStatistic pureSubSingleStatistic : singleBenchmarkResult.getMedian().getPureSubSingleStatisticList()) {
+            for (PureSubSingleStatistic pureSubSingleStatistic : singleBenchmarkResult.getMedian()
+                    .getPureSubSingleStatisticList()) {
                 if (pureSubSingleStatistic.getStatisticType() == singleStatisticType) {
                     pureSubSingleStatisticList.add(pureSubSingleStatistic);
                 }
@@ -334,7 +337,7 @@ public class ProblemBenchmarkResult<Solution_> {
         int usedMemoryAfterInputSolutionCount = 0;
         List<SingleBenchmarkResult> successResultList = new ArrayList<>(singleBenchmarkResultList);
         // Do not rank a SingleBenchmarkResult that has a failure
-        for (Iterator<SingleBenchmarkResult> it = successResultList.iterator(); it.hasNext(); ) {
+        for (Iterator<SingleBenchmarkResult> it = successResultList.iterator(); it.hasNext();) {
             SingleBenchmarkResult singleBenchmarkResult = it.next();
             if (singleBenchmarkResult.hasAnyFailure()) {
                 failureCount++;
@@ -377,7 +380,8 @@ public class ProblemBenchmarkResult<Solution_> {
             previousSingleBenchmarkResult = singleBenchmarkResult;
             previousSameRankingCount++;
         }
-        winningSingleBenchmarkResult = rankedSingleBenchmarkResultList.isEmpty() ? null : rankedSingleBenchmarkResultList.get(0);
+        winningSingleBenchmarkResult = rankedSingleBenchmarkResultList.isEmpty() ? null
+                : rankedSingleBenchmarkResultList.get(0);
         worstSingleBenchmarkResult = rankedSingleBenchmarkResultList.isEmpty() ? null
                 : rankedSingleBenchmarkResultList.get(rankedSingleBenchmarkResultList.size() - 1);
     }
@@ -449,6 +453,7 @@ public class ProblemBenchmarkResult<Solution_> {
 
     /**
      * Used by {@link ProblemBenchmarksConfig#buildProblemBenchmarkList}.
+     * 
      * @param o sometimes null
      * @return true if equal
      */
@@ -476,8 +481,7 @@ public class ProblemBenchmarkResult<Solution_> {
     protected static <Solution_> Map<ProblemBenchmarkResult, ProblemBenchmarkResult> createMergeMap(
             PlannerBenchmarkResult newPlannerBenchmarkResult, List<SingleBenchmarkResult> singleBenchmarkResultList) {
         // IdentityHashMap but despite that different ProblemBenchmarkResult instances are merged
-        Map<ProblemBenchmarkResult, ProblemBenchmarkResult> mergeMap
-                = new IdentityHashMap<>();
+        Map<ProblemBenchmarkResult, ProblemBenchmarkResult> mergeMap = new IdentityHashMap<>();
         Map<ProblemProvider<Solution_>, ProblemBenchmarkResult> problemProviderToNewResultMap = new HashMap<>();
         for (SingleBenchmarkResult singleBenchmarkResult : singleBenchmarkResultList) {
             ProblemBenchmarkResult<Solution_> oldResult = singleBenchmarkResult.getProblemBenchmarkResult();
@@ -506,14 +510,15 @@ public class ProblemBenchmarkResult<Solution_> {
                     if (!Objects.equals(oldResult.name, newResult.name)) {
                         throw new IllegalStateException(
                                 "The oldResult (" + oldResult + ") and newResult (" + newResult
-                                + ") should have the same name, because they have the same problemProvider ("
-                                + oldResult.problemProvider + ").");
+                                        + ") should have the same name, because they have the same problemProvider ("
+                                        + oldResult.problemProvider + ").");
                     }
                     newResult.problemStatisticList.removeIf(
                             newStatistic -> !oldResult.hasProblemStatisticType(newStatistic.getProblemStatisticType()));
                     newResult.entityCount = ConfigUtils.meldProperty(oldResult.entityCount, newResult.entityCount);
                     newResult.variableCount = ConfigUtils.meldProperty(oldResult.variableCount, newResult.variableCount);
-                    newResult.maximumValueCount = ConfigUtils.meldProperty(oldResult.maximumValueCount, newResult.maximumValueCount);
+                    newResult.maximumValueCount = ConfigUtils.meldProperty(oldResult.maximumValueCount,
+                            newResult.maximumValueCount);
                     newResult.problemScale = ConfigUtils.meldProperty(oldResult.problemScale, newResult.problemScale);
                 }
                 mergeMap.put(oldResult, newResult);

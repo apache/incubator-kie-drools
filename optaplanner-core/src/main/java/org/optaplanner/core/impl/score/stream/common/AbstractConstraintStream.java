@@ -38,33 +38,38 @@ public abstract class AbstractConstraintStream<Solution_> implements ConstraintS
     protected Function<Solution_, Score<?>> buildConstraintWeightExtractor(String constraintPackage, String constraintName) {
         validateConstraintId(constraintPackage, constraintName);
         SolutionDescriptor<Solution_> solutionDescriptor = getConstraintFactory().getSolutionDescriptor();
-        ConstraintConfigurationDescriptor<Solution_> configurationDescriptor
-                = solutionDescriptor.getConstraintConfigurationDescriptor();
+        ConstraintConfigurationDescriptor<Solution_> configurationDescriptor = solutionDescriptor
+                .getConstraintConfigurationDescriptor();
         if (configurationDescriptor == null) {
             throw new IllegalStateException("The constraint (" + constraintName + ") of package (" + constraintPackage
                     + ") does not hard-code a constraint weight"
-                    +" and there is no @" + ConstraintConfigurationProvider.class.getSimpleName()
+                    + " and there is no @" + ConstraintConfigurationProvider.class.getSimpleName()
                     + " on the solution class (" + solutionDescriptor.getSolutionClass() + ").\n"
                     + "Maybe add a @" + ConstraintConfiguration.class.getSimpleName() + " class"
                     + " or use " + ConstraintStream.class.getSimpleName() + ".penalize()/reward()"
                     + " instead of penalizeConfigurable()/rewardConfigurable.");
         }
-        ConstraintWeightDescriptor<Solution_> weightDescriptor = configurationDescriptor.findConstraintWeightDescriptor(constraintPackage, constraintName);
+        ConstraintWeightDescriptor<Solution_> weightDescriptor = configurationDescriptor
+                .findConstraintWeightDescriptor(constraintPackage, constraintName);
         if (weightDescriptor == null) {
             throw new IllegalStateException("The constraint (" + constraintName + ") of package (" + constraintPackage
                     + ") does not hard-code a constraint weight"
-                    +" and there is no such @" + ConstraintWeight.class.getSimpleName()
-                    + " on the constraintConfigurationClass (" + configurationDescriptor.getConstraintConfigurationClass() + ").\n"
-                    + "Maybe there is a typo in the constraintPackage or constraintName of one of the @" + ConstraintWeight.class.getSimpleName() + " members.\n"
+                    + " and there is no such @" + ConstraintWeight.class.getSimpleName()
+                    + " on the constraintConfigurationClass (" + configurationDescriptor.getConstraintConfigurationClass()
+                    + ").\n"
+                    + "Maybe there is a typo in the constraintPackage or constraintName of one of the @"
+                    + ConstraintWeight.class.getSimpleName() + " members.\n"
                     + "Maybe add a @" + ConstraintWeight.class.getSimpleName() + " member for it.");
         }
         return weightDescriptor.createExtractor();
     }
 
-    protected Function<Solution_, Score<?>> buildConstraintWeightExtractor(String constraintPackage, String constraintName, Score<?> constraintWeight) {
+    protected Function<Solution_, Score<?>> buildConstraintWeightExtractor(String constraintPackage, String constraintName,
+            Score<?> constraintWeight) {
         validateConstraintId(constraintPackage, constraintName);
         // Duplicates validation when the session is built, but this fails fast when weights are hard coded
-        getConstraintFactory().getSolutionDescriptor().validateConstraintWeight(constraintPackage, constraintName, constraintWeight);
+        getConstraintFactory().getSolutionDescriptor().validateConstraintWeight(constraintPackage, constraintName,
+                constraintWeight);
         return solution -> constraintWeight;
     }
 

@@ -19,6 +19,7 @@ package org.optaplanner.core.impl.heuristic.solution;
 public interface WorkingSolutionAware<T> {
 
     void setWorkingSolution(T workingSolution);
+
     void unsetWorkingSolution();
 
 }

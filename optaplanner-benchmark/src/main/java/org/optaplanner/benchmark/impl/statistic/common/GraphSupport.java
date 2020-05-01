@@ -21,6 +21,7 @@ import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.OutputStream;
+
 import javax.imageio.ImageIO;
 
 import org.jfree.chart.JFreeChart;
@@ -36,6 +37,7 @@ public class GraphSupport {
         }
     }
 
-    private GraphSupport() {}
+    private GraphSupport() {
+    }
 
 }

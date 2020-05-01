@@ -87,8 +87,8 @@ public final class DefaultSingleConstraintAssertion<Solution_>
 
     private void assertImpact(ScoreImpactType scoreImpactType, Number matchWeightTotal, String message) {
         Number impact = deduceImpact();
-        AbstractConstraint<Solution_, ?> constraint
-                = (AbstractConstraint<Solution_, ?>) scoreDirectorFactory.getConstraints()[0];
+        AbstractConstraint<Solution_, ?> constraint = (AbstractConstraint<Solution_, ?>) scoreDirectorFactory
+                .getConstraints()[0];
         boolean sameMatchWeighTotal = matchWeightTotal.equals(impact)
                 // Auto-cast an int matchWeightTotal to a long.
                 || (matchWeightTotal instanceof Integer && Long.valueOf(matchWeightTotal.longValue()).equals(impact));

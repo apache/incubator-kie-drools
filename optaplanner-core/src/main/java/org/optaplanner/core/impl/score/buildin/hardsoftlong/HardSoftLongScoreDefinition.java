@@ -27,7 +27,7 @@ import org.optaplanner.core.impl.score.trend.InitializingScoreTrend;
 public class HardSoftLongScoreDefinition extends AbstractFeasibilityScoreDefinition<HardSoftLongScore> {
 
     public HardSoftLongScoreDefinition() {
-        super(new String[]{"hard score", "soft score"});
+        super(new String[] { "hard score", "soft score" });
     }
 
     // ************************************************************************

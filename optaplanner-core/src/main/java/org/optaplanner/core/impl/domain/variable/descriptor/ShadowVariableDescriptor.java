@@ -62,6 +62,7 @@ public abstract class ShadowVariableDescriptor<Solution_> extends VariableDescri
 
     /**
      * Inverse of {@link #getSinkVariableDescriptorList()}.
+     * 
      * @return never null, only variables affect this shadow variable directly
      */
     public abstract List<VariableDescriptor<Solution_>> getSourceVariableDescriptorList();

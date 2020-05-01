@@ -24,8 +24,7 @@ import org.optaplanner.persistence.xstream.impl.domain.solution.XStreamSolutionF
 
 public class ScrabbleApp extends CommonApp<ScrabbleSolution> {
 
-    public static final String SOLVER_CONFIG
-            = "org/optaplanner/examples/scrabble/solver/scrabbleSolverConfig.xml";
+    public static final String SOLVER_CONFIG = "org/optaplanner/examples/scrabble/solver/scrabbleSolverConfig.xml";
 
     public static final String DATA_DIR_NAME = "scrabble";
 

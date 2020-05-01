@@ -28,7 +28,7 @@ import org.optaplanner.core.impl.score.trend.InitializingScoreTrend;
 public class SimpleDoubleScoreDefinition extends AbstractScoreDefinition<SimpleDoubleScore> {
 
     public SimpleDoubleScoreDefinition() {
-        super(new String[]{"score"});
+        super(new String[] { "score" });
     }
 
     // ************************************************************************
@@ -74,7 +74,6 @@ public class SimpleDoubleScoreDefinition extends AbstractScoreDefinition<SimpleD
         throw new IllegalStateException("ConstraintStreams don't support a " + SimpleDoubleScore.class.getSimpleName()
                 + ") because it is error prone.");
     }
-
 
     @Override
     public SimpleDoubleScoreHolder buildScoreHolder(boolean constraintMatchEnabled) {

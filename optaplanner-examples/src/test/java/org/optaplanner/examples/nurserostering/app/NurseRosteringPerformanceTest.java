@@ -35,7 +35,6 @@ public class NurseRosteringPerformanceTest extends SolverPerformanceTest<NurseRo
     protected Stream<TestData> testData() {
         return Stream.of(
                 testData(UNSOLVED_DATA_FILE, "0hard/-350soft", EnvironmentMode.REPRODUCIBLE),
-                testData(UNSOLVED_DATA_FILE, "0hard/-473soft", EnvironmentMode.FAST_ASSERT)
-        );
+                testData(UNSOLVED_DATA_FILE, "0hard/-473soft", EnvironmentMode.FAST_ASSERT));
     }
 }

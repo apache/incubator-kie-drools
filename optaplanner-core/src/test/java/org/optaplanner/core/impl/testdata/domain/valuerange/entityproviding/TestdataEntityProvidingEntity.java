@@ -31,13 +31,16 @@ import org.optaplanner.core.impl.testdata.domain.TestdataValue;
 public class TestdataEntityProvidingEntity extends TestdataObject {
 
     public static EntityDescriptor<TestdataEntityProvidingSolution> buildEntityDescriptor() {
-        SolutionDescriptor<TestdataEntityProvidingSolution> solutionDescriptor = TestdataEntityProvidingSolution.buildSolutionDescriptor();
+        SolutionDescriptor<TestdataEntityProvidingSolution> solutionDescriptor = TestdataEntityProvidingSolution
+                .buildSolutionDescriptor();
         return solutionDescriptor.findEntityDescriptorOrFail(TestdataEntityProvidingEntity.class);
     }
 
     public static GenuineVariableDescriptor<TestdataEntityProvidingSolution> buildVariableDescriptorForValue() {
-        SolutionDescriptor<TestdataEntityProvidingSolution> solutionDescriptor = TestdataEntityProvidingSolution.buildSolutionDescriptor();
-        EntityDescriptor<TestdataEntityProvidingSolution> entityDescriptor = solutionDescriptor.findEntityDescriptorOrFail(TestdataEntityProvidingEntity.class);
+        SolutionDescriptor<TestdataEntityProvidingSolution> solutionDescriptor = TestdataEntityProvidingSolution
+                .buildSolutionDescriptor();
+        EntityDescriptor<TestdataEntityProvidingSolution> entityDescriptor = solutionDescriptor
+                .findEntityDescriptorOrFail(TestdataEntityProvidingEntity.class);
         return entityDescriptor.getGenuineVariableDescriptor("value");
     }
 

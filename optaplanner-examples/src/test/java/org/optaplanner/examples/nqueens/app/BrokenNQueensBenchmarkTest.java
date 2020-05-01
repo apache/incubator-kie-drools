@@ -16,6 +16,8 @@
 
 package org.optaplanner.examples.nqueens.app;
 
+import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
+
 import java.io.File;
 
 import org.junit.jupiter.api.Test;
@@ -27,8 +29,6 @@ import org.optaplanner.benchmark.config.PlannerBenchmarkConfig;
 import org.optaplanner.examples.common.app.PlannerBenchmarkTest;
 import org.optaplanner.examples.nqueens.domain.NQueens;
 import org.optaplanner.persistence.xstream.impl.domain.solution.XStreamSolutionFileIO;
-
-import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
 
 public class BrokenNQueensBenchmarkTest extends PlannerBenchmarkTest {
 

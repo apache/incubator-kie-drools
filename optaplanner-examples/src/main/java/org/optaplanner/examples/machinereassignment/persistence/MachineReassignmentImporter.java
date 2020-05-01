@@ -167,8 +167,7 @@ public class MachineReassignmentImporter extends AbstractTxtSolutionImporter<Mac
                     idToLocationMap.put(locationId, location);
                 }
                 machine.setLocation(location);
-                List<MrMachineCapacity> machineCapacityListOfMachine
-                        = new ArrayList<>(resourceListSize);
+                List<MrMachineCapacity> machineCapacityListOfMachine = new ArrayList<>(resourceListSize);
                 for (int j = 0; j < resourceListSize; j++) {
                     MrMachineCapacity machineCapacity = new MrMachineCapacity();
                     machineCapacity.setId(machineCapacityId);
@@ -255,8 +254,7 @@ public class MachineReassignmentImporter extends AbstractTxtSolutionImporter<Mac
                 }
                 MrService service = serviceList.get(serviceIndex);
                 process.setService(service);
-                List<MrProcessRequirement> processRequirementList
-                        = new ArrayList<>(resourceListSize);
+                List<MrProcessRequirement> processRequirementList = new ArrayList<>(resourceListSize);
                 for (int j = 0; j < resourceListSize; j++) {
                     MrProcessRequirement processRequirement = new MrProcessRequirement();
                     processRequirement.setId(processRequirementId);
@@ -347,7 +345,7 @@ public class MachineReassignmentImporter extends AbstractTxtSolutionImporter<Mac
             File assignmentInputFile = new File(inputFile.getParent(),
                     inputFileName.replaceFirst(inputFilePrefix, "assignment_").replaceAll("\\.txt$", ".sol"));
             try (BufferedReader assignmentBufferedReader = new BufferedReader(new InputStreamReader(
-                        new FileInputStream(assignmentInputFile), "UTF-8"))) {
+                    new FileInputStream(assignmentInputFile), "UTF-8"))) {
                 return assignmentBufferedReader.readLine();
             } catch (IllegalArgumentException e) {
                 throw new IllegalArgumentException("Exception in assignmentInputFile ("

@@ -144,7 +144,8 @@ public abstract class AbstractScoreHibernateType implements CompositeUserType {
     }
 
     @Override
-    public void nullSafeSet(PreparedStatement statement, Object value, int parameterIndex, SharedSessionContractImplementor session)
+    public void nullSafeSet(PreparedStatement statement, Object value, int parameterIndex,
+            SharedSessionContractImplementor session)
             throws SQLException {
         int levelsSize = scoreDefinition.getLevelsSize();
         if (value == null) {

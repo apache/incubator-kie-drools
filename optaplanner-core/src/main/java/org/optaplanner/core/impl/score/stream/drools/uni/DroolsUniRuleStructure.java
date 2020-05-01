@@ -50,7 +50,7 @@ public final class DroolsUniRuleStructure<A, PatternVar> extends DroolsRuleStruc
 
     public DroolsUniRuleStructure(Class<A> aClass, LongSupplier varialeIdSupplier) {
         super(varialeIdSupplier);
-        this.a = (Variable<A>) createVariable(aClass,"base");
+        this.a = (Variable<A>) createVariable(aClass, "base");
         this.aPattern = new DroolsPatternBuilder<>((Variable<PatternVar>) a);
         this.shelved = Collections.emptyList();
         this.prerequisites = Collections.emptyList();

@@ -16,6 +16,8 @@
 
 package org.optaplanner.benchmark.impl.result;
 
+import static org.junit.Assert.*;
+
 import java.io.File;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -27,8 +29,6 @@ import org.optaplanner.benchmark.impl.loader.FileProblemProvider;
 import org.optaplanner.core.api.score.buildin.simple.SimpleScore;
 import org.optaplanner.core.config.solver.SolverConfig;
 import org.optaplanner.core.config.solver.random.RandomType;
-
-import static org.junit.Assert.*;
 
 public class PlannerBenchmarkResultTest {
 

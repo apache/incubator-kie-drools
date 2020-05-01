@@ -1,5 +1,7 @@
 package org.optaplanner.examples.vehiclerouting.app;
 
+import static org.junit.Assert.*;
+
 import java.io.File;
 import java.util.stream.IntStream;
 
@@ -10,12 +12,10 @@ import org.optaplanner.core.config.localsearch.LocalSearchPhaseConfig;
 import org.optaplanner.core.config.solver.EnvironmentMode;
 import org.optaplanner.core.config.solver.SolverConfig;
 import org.optaplanner.core.config.solver.termination.TerminationConfig;
-import org.optaplanner.examples.common.app.CommonApp;
 import org.optaplanner.examples.common.TurtleTest;
+import org.optaplanner.examples.common.app.CommonApp;
 import org.optaplanner.examples.vehiclerouting.domain.VehicleRoutingSolution;
 import org.optaplanner.examples.vehiclerouting.persistence.VehicleRoutingImporter;
-
-import static org.junit.Assert.*;
 
 /**
  * The idea is to verify one of the basic requirements of Multithreaded Solving - the reproducibility of results. After

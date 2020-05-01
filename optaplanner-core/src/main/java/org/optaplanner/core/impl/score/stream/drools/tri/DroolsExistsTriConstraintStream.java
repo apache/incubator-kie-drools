@@ -33,9 +33,8 @@ public final class DroolsExistsTriConstraintStream<Solution_, A, B, C>
             QuadJoiner<A, B, C, D>... joiners) {
         super(constraintFactory, parent);
         this.streamName = shouldExist ? "TriIfExists()" : "TriIfNotExists()";
-        this.condition = shouldExist ?
-                parent.getCondition().andIfExists(otherClass, joiners) :
-                parent.getCondition().andIfNotExists(otherClass, joiners);
+        this.condition = shouldExist ? parent.getCondition().andIfExists(otherClass, joiners)
+                : parent.getCondition().andIfNotExists(otherClass, joiners);
     }
 
     @Override
@@ -54,7 +53,7 @@ public final class DroolsExistsTriConstraintStream<Solution_, A, B, C>
 
     @Override
     public String toString() {
-        return streamName + " with " + getChildStreams().size()  + " children";
+        return streamName + " with " + getChildStreams().size() + " children";
     }
 
 }

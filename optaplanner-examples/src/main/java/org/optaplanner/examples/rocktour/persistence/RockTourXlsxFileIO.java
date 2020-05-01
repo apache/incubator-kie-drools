@@ -16,6 +16,9 @@
 
 package org.optaplanner.examples.rocktour.persistence;
 
+import static java.util.stream.Collectors.*;
+import static org.optaplanner.examples.rocktour.domain.RockTourConstraintConfiguration.*;
+
 import java.io.BufferedInputStream;
 import java.io.File;
 import java.io.FileInputStream;
@@ -49,9 +52,6 @@ import org.optaplanner.examples.rocktour.domain.RockLocation;
 import org.optaplanner.examples.rocktour.domain.RockShow;
 import org.optaplanner.examples.rocktour.domain.RockTourConstraintConfiguration;
 import org.optaplanner.examples.rocktour.domain.RockTourSolution;
-
-import static java.util.stream.Collectors.*;
-import static org.optaplanner.examples.rocktour.domain.RockTourConstraintConfiguration.*;
 
 public class RockTourXlsxFileIO extends AbstractXlsxSolutionFileIO<RockTourSolution> {
 
@@ -92,13 +92,16 @@ public class RockTourXlsxFileIO extends AbstractXlsxSolutionFileIO<RockTourSolut
                         + ") must match to the regular expression (" + VALID_NAME_PATTERN + ").");
             }
             RockTourConstraintConfiguration constraintConfiguration = new RockTourConstraintConfiguration();
-            readLongConstraintParameterLine(EARLY_LATE_BREAK_DRIVING_SECONDS, constraintConfiguration::setEarlyLateBreakDrivingSecondsBudget,
+            readLongConstraintParameterLine(EARLY_LATE_BREAK_DRIVING_SECONDS,
+                    constraintConfiguration::setEarlyLateBreakDrivingSecondsBudget,
                     "Maximum driving time in seconds between 2 shows on the same day.");
             readLongConstraintParameterLine(NIGHT_DRIVING_SECONDS, constraintConfiguration::setNightDrivingSecondsBudget,
                     "Maximum driving time in seconds per night between 2 shows.");
-            readLongConstraintParameterLine(HOS_WEEK_DRIVING_SECONDS_BUDGET, constraintConfiguration::setHosWeekDrivingSecondsBudget,
+            readLongConstraintParameterLine(HOS_WEEK_DRIVING_SECONDS_BUDGET,
+                    constraintConfiguration::setHosWeekDrivingSecondsBudget,
                     "Maximum driving time in seconds since last weekend rest.");
-            readIntConstraintParameterLine(HOS_WEEK_CONSECUTIVE_DRIVING_DAYS_BUDGET, constraintConfiguration::setHosWeekConsecutiveDrivingDaysBudget,
+            readIntConstraintParameterLine(HOS_WEEK_CONSECUTIVE_DRIVING_DAYS_BUDGET,
+                    constraintConfiguration::setHosWeekConsecutiveDrivingDaysBudget,
                     "Maximum driving days since last weekend rest.");
             readIntConstraintParameterLine(HOS_WEEK_REST_DAYS, constraintConfiguration::setHosWeekRestDays,
                     "Minimum weekend rest in days (actually in full night sleeps: 2 days guarantees only 32 hours).");
@@ -112,12 +115,14 @@ public class RockTourXlsxFileIO extends AbstractXlsxSolutionFileIO<RockTourSolut
                     "Reward per revenue opportunity."));
             constraintConfiguration.setDrivingTimeToShowPerSecond(readScoreConstraintLine(DRIVING_TIME_TO_SHOW_PER_SECOND,
                     "Driving time cost per second, excluding after the last show."));
-            constraintConfiguration.setDrivingTimeToBusArrivalPerSecond(readScoreConstraintLine(DRIVING_TIME_TO_BUS_ARRIVAL_PER_SECOND,
-                    "Driving time cost per second from the last show to the bus arrival location."));
+            constraintConfiguration
+                    .setDrivingTimeToBusArrivalPerSecond(readScoreConstraintLine(DRIVING_TIME_TO_BUS_ARRIVAL_PER_SECOND,
+                            "Driving time cost per second from the last show to the bus arrival location."));
             constraintConfiguration.setDelayShowCostPerDay(readScoreConstraintLine(DELAY_SHOW_COST_PER_DAY,
                     "Cost per day for each day that a show is assigned later in the schedule."));
-            constraintConfiguration.setShortenDrivingTimePerMillisecondSquared(readScoreConstraintLine(SHORTEN_DRIVING_TIME_PER_MILLISECOND_SQUARED,
-                    "Avoid long driving times: Penalty per millisecond of continuous driving time squared."));
+            constraintConfiguration.setShortenDrivingTimePerMillisecondSquared(
+                    readScoreConstraintLine(SHORTEN_DRIVING_TIME_PER_MILLISECOND_SQUARED,
+                            "Avoid long driving times: Penalty per millisecond of continuous driving time squared."));
             solution.setConstraintConfiguration(constraintConfiguration);
         }
 
@@ -242,7 +247,8 @@ public class RockTourXlsxFileIO extends AbstractXlsxSolutionFileIO<RockTourSolut
                     Stream.of(solution.getBus().getStartLocation(), solution.getBus().getEndLocation()),
                     solution.getShowList().stream().map(RockShow::getLocation))
                     .distinct()
-                    .sorted(Comparator.comparing(RockLocation::getLatitude).thenComparing(RockLocation::getLongitude).thenComparing(RockLocation::getCityName))
+                    .sorted(Comparator.comparing(RockLocation::getLatitude).thenComparing(RockLocation::getLongitude)
+                            .thenComparing(RockLocation::getCityName))
                     .collect(groupingBy(location -> Pair.of(location.getLatitude(), location.getLongitude()),
                             LinkedHashMap::new, toList()));
             if (!hasSheet("Driving time")) {
@@ -303,7 +309,6 @@ public class RockTourXlsxFileIO extends AbstractXlsxSolutionFileIO<RockTourSolut
 
     }
 
-
     @Override
     public void write(RockTourSolution solution, File outputSolutionFile) {
         try (FileOutputStream out = new FileOutputStream(outputSolutionFile)) {
@@ -341,13 +346,16 @@ public class RockTourXlsxFileIO extends AbstractXlsxSolutionFileIO<RockTourSolut
             nextHeaderCell("Tour name");
             nextCell().setCellValue(solution.getTourName());
             RockTourConstraintConfiguration constraintConfiguration = solution.getConstraintConfiguration();
-            writeLongConstraintParameterLine(EARLY_LATE_BREAK_DRIVING_SECONDS, constraintConfiguration::getEarlyLateBreakDrivingSecondsBudget,
+            writeLongConstraintParameterLine(EARLY_LATE_BREAK_DRIVING_SECONDS,
+                    constraintConfiguration::getEarlyLateBreakDrivingSecondsBudget,
                     "Maximum driving time in seconds between 2 shows on the same day.");
             writeLongConstraintParameterLine(NIGHT_DRIVING_SECONDS, constraintConfiguration::getNightDrivingSecondsBudget,
                     "Maximum driving time in seconds per night between 2 shows.");
-            writeLongConstraintParameterLine(HOS_WEEK_DRIVING_SECONDS_BUDGET, constraintConfiguration::getHosWeekDrivingSecondsBudget,
+            writeLongConstraintParameterLine(HOS_WEEK_DRIVING_SECONDS_BUDGET,
+                    constraintConfiguration::getHosWeekDrivingSecondsBudget,
                     "Maximum driving time in seconds since last weekend rest.");
-            writeIntConstraintParameterLine(HOS_WEEK_CONSECUTIVE_DRIVING_DAYS_BUDGET, constraintConfiguration::getHosWeekConsecutiveDrivingDaysBudget,
+            writeIntConstraintParameterLine(HOS_WEEK_CONSECUTIVE_DRIVING_DAYS_BUDGET,
+                    constraintConfiguration::getHosWeekConsecutiveDrivingDaysBudget,
                     "Maximum driving days since last weekend rest.");
             writeIntConstraintParameterLine(HOS_WEEK_REST_DAYS, constraintConfiguration::getHosWeekRestDays,
                     "Minimum weekend rest in days (actually in full night sleeps: 2 days guarantees only 32 hours).");
@@ -361,11 +369,13 @@ public class RockTourXlsxFileIO extends AbstractXlsxSolutionFileIO<RockTourSolut
                     "Reward per revenue opportunity.");
             writeScoreConstraintLine(DRIVING_TIME_TO_SHOW_PER_SECOND, constraintConfiguration.getDrivingTimeToShowPerSecond(),
                     "Driving time cost per second, excluding after the last show.");
-            writeScoreConstraintLine(DRIVING_TIME_TO_BUS_ARRIVAL_PER_SECOND, constraintConfiguration.getDrivingTimeToBusArrivalPerSecond(),
+            writeScoreConstraintLine(DRIVING_TIME_TO_BUS_ARRIVAL_PER_SECOND,
+                    constraintConfiguration.getDrivingTimeToBusArrivalPerSecond(),
                     "Driving time cost per second from the last show to the bus arrival location.");
             writeScoreConstraintLine(DELAY_SHOW_COST_PER_DAY, constraintConfiguration.getDelayShowCostPerDay(),
                     "Cost per day for each day that a show is assigned later in the schedule.");
-            writeScoreConstraintLine(SHORTEN_DRIVING_TIME_PER_MILLISECOND_SQUARED, constraintConfiguration.getShortenDrivingTimePerMillisecondSquared(),
+            writeScoreConstraintLine(SHORTEN_DRIVING_TIME_PER_MILLISECOND_SQUARED,
+                    constraintConfiguration.getShortenDrivingTimePerMillisecondSquared(),
                     "Avoid long driving times: Penalty per millisecond of continuous driving time squared.");
             autoSizeColumnsWithHeader();
         }
@@ -425,7 +435,8 @@ public class RockTourXlsxFileIO extends AbstractXlsxSolutionFileIO<RockTourSolut
                         startNextMonthDate = endDate;
                     }
                     currentSheet.addMergedRegion(new CellRangeAddress(currentRowNumber, currentRowNumber,
-                            currentColumnNumber, currentColumnNumber + (int) ChronoUnit.DAYS.between(date, startNextMonthDate) - 1));
+                            currentColumnNumber,
+                            currentColumnNumber + (int) ChronoUnit.DAYS.between(date, startNextMonthDate) - 1));
                 } else {
                     nextCell();
                 }
@@ -471,7 +482,8 @@ public class RockTourXlsxFileIO extends AbstractXlsxSolutionFileIO<RockTourSolut
                     Stream.of(solution.getBus().getStartLocation(), solution.getBus().getEndLocation()),
                     solution.getShowList().stream().map(RockShow::getLocation))
                     .distinct()
-                    .sorted(Comparator.comparing(RockLocation::getLatitude).thenComparing(RockLocation::getLongitude).thenComparing(RockLocation::getCityName))
+                    .sorted(Comparator.comparing(RockLocation::getLatitude).thenComparing(RockLocation::getLongitude)
+                            .thenComparing(RockLocation::getCityName))
                     .collect(groupingBy(location -> Pair.of(location.getLatitude(), location.getLongitude()),
                             LinkedHashMap::new, toList()));
             nextRow();
@@ -498,7 +510,7 @@ public class RockTourXlsxFileIO extends AbstractXlsxSolutionFileIO<RockTourSolut
                                 throw new IllegalStateException("The driving time (" + drivingTime
                                         + ") from (" + fromLocationList.get(0) + ") to (" + toLocationList.get(0)
                                         + ") is not the driving time (" + fromLocation.getDrivingTimeTo(toLocation)
-                                        +  ") from (" + fromLocation + ") to (" + toLocation + ").");
+                                        + ") from (" + fromLocation + ") to (" + toLocation + ").");
                             }
                         }
                     }

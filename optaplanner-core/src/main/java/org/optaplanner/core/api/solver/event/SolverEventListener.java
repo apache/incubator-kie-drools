@@ -42,6 +42,7 @@ public interface SolverEventListener<Solution_> extends EventListener {
      * all {@link ProblemFactChange}s in the queue will be processed and this method is called only once.
      * In that case, the former best {@link PlanningSolution} is considered stale,
      * so it doesn't matter whether the new {@link Score} is better than that or not.
+     * 
      * @param event never null
      */
     void bestSolutionChanged(BestSolutionChangedEvent<Solution_> event);

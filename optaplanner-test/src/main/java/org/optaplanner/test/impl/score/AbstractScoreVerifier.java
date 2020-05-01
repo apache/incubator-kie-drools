@@ -16,6 +16,8 @@
 
 package org.optaplanner.test.impl.score;
 
+import static org.junit.Assert.*;
+
 import java.math.BigDecimal;
 import java.math.BigInteger;
 
@@ -29,8 +31,6 @@ import org.optaplanner.core.impl.score.director.InnerScoreDirectorFactory;
 import org.optaplanner.core.impl.score.director.ScoreDirector;
 import org.optaplanner.test.impl.score.buildin.hardsoft.HardSoftScoreVerifier;
 
-import static org.junit.Assert.*;
-
 /**
  * Used in unit tests to assert that 1 particular solution has a specific weight for a specific constraint.
  * This works well to verify that the implementation is in sync with the business constraints.
@@ -39,6 +39,7 @@ import static org.junit.Assert.*;
  * <p>
  * Do not use this class directly, instead use the specific subclass for your {@link Score} type,
  * such as {@link HardSoftScoreVerifier}.
+ * 
  * @param <Solution_> the solution type, the class with the {@link PlanningSolution} annotation
  * @see HardSoftScoreVerifier
  */
@@ -48,7 +49,8 @@ public abstract class AbstractScoreVerifier<Solution_> {
 
     /**
      * @param solverFactory never null, the {@link SolverFactory} of which you want to test the constraints.
-     * @param expectedScoreClass never null, used to fail fast if a {@link SolverFactory} with another {@link Score} type is used.
+     * @param expectedScoreClass never null, used to fail fast if a {@link SolverFactory} with another {@link Score} type is
+     *        used.
      */
     public AbstractScoreVerifier(SolverFactory<Solution_> solverFactory,
             Class<? extends Score> expectedScoreClass) {
@@ -56,7 +58,8 @@ public abstract class AbstractScoreVerifier<Solution_> {
             throw new IllegalStateException("The solverFactory (" + solverFactory + ") cannot be null.");
         }
         scoreDirectorFactory = (InnerScoreDirectorFactory<Solution_>) solverFactory.getScoreDirectorFactory();
-        SolutionDescriptor<Solution_> solutionDescriptor = ((InnerScoreDirectorFactory<Solution_>) scoreDirectorFactory).getSolutionDescriptor();
+        SolutionDescriptor<Solution_> solutionDescriptor = ((InnerScoreDirectorFactory<Solution_>) scoreDirectorFactory)
+                .getSolutionDescriptor();
         Class<? extends Score> scoreClass = solutionDescriptor.getScoreDefinition().getScoreClass();
         if (expectedScoreClass != scoreClass) {
             throw new IllegalStateException("The solution's scoreClass (" + scoreClass
@@ -66,8 +69,9 @@ public abstract class AbstractScoreVerifier<Solution_> {
 
     /**
      * Assert that the constraint of {@link PlanningSolution} has the expected weight for that score level.
+     * 
      * @param constraintPackage sometimes null.
-     * When null, {@code constraintName} for the {@code scoreLevel} must be unique.
+     *        When null, {@code constraintName} for the {@code scoreLevel} must be unique.
      * @param scoreLevel at least 0
      * @param constraintName never null, the name of the constraint
      * @param expectedWeight never null, the total weight for all matches of that 1 constraint
@@ -115,7 +119,7 @@ public abstract class AbstractScoreVerifier<Solution_> {
 
     /**
      * @param constraintPackage sometimes null.
-     * When null, {@code constraintName} for the {@code scoreLevel} must be unique.
+     *        When null, {@code constraintName} for the {@code scoreLevel} must be unique.
      * @param constraintName never null, the name of the constraint
      * @param scoreDirector never null
      * @return null if there is no constraint matched or the constraint doesn't exist

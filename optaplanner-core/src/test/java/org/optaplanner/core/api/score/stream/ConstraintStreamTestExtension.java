@@ -35,14 +35,12 @@ public class ConstraintStreamTestExtension implements TestTemplateInvocationCont
                 .flatMap(constraintMatchEnabled -> Arrays.stream(ConstraintStreamImplType.values())
                         .map(constraintStreamImplType -> invocationContext(
                                 constraintMatchEnabled,
-                                constraintStreamImplType
-                        )));
+                                constraintStreamImplType)));
     }
 
     private static TestTemplateInvocationContext invocationContext(
             Boolean constraintMatchEnabled,
-            ConstraintStreamImplType constraintStreamImplType
-    ) {
+            ConstraintStreamImplType constraintStreamImplType) {
         return new TestTemplateInvocationContext() {
 
             @Override
@@ -55,8 +53,7 @@ public class ConstraintStreamTestExtension implements TestTemplateInvocationCont
             public List<Extension> getAdditionalExtensions() {
                 return Arrays.asList(
                         parameterResolver(boolean.class, constraintMatchEnabled),
-                        parameterResolver(ConstraintStreamImplType.class, constraintStreamImplType)
-                );
+                        parameterResolver(ConstraintStreamImplType.class, constraintStreamImplType));
             }
         };
     }

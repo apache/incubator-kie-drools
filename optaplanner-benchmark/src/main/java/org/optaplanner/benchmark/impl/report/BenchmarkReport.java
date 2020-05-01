@@ -16,6 +16,8 @@
 
 package org.optaplanner.benchmark.impl.report;
 
+import static java.lang.Double.isFinite;
+
 import java.awt.BasicStroke;
 import java.awt.image.BufferedImage;
 import java.io.File;
@@ -34,11 +36,9 @@ import java.util.Locale;
 import java.util.Map;
 import java.util.NavigableSet;
 import java.util.TreeSet;
+
 import javax.imageio.ImageIO;
 
-import freemarker.template.Configuration;
-import freemarker.template.Template;
-import freemarker.template.TemplateException;
 import org.jfree.chart.JFreeChart;
 import org.jfree.chart.axis.CategoryAxis;
 import org.jfree.chart.axis.LogarithmicAxis;
@@ -74,7 +74,9 @@ import org.optaplanner.core.impl.score.ScoreUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import static java.lang.Double.isFinite;
+import freemarker.template.Configuration;
+import freemarker.template.Template;
+import freemarker.template.TemplateException;
 
 public class BenchmarkReport {
 
@@ -207,7 +209,8 @@ public class BenchmarkReport {
     // ************************************************************************
 
     public String getRelativePathToBenchmarkReportDirectory(File file) {
-        String benchmarkReportDirectoryPath = plannerBenchmarkResult.getBenchmarkReportDirectory().getAbsoluteFile().toURI().getPath();
+        String benchmarkReportDirectoryPath = plannerBenchmarkResult.getBenchmarkReportDirectory().getAbsoluteFile().toURI()
+                .getPath();
         String filePath = file.getAbsoluteFile().toURI().getPath();
         if (!filePath.startsWith(benchmarkReportDirectoryPath)) {
             throw new IllegalArgumentException("The filePath (" + filePath
@@ -250,48 +253,58 @@ public class BenchmarkReport {
         writeTimeSpentSummaryChart();
         writeTimeSpentScalabilitySummaryChart();
         writeBestScorePerTimeSpentSummaryChart();
-        for (ProblemBenchmarkResult<Object> problemBenchmarkResult : plannerBenchmarkResult.getUnifiedProblemBenchmarkResultList()) {
+        for (ProblemBenchmarkResult<Object> problemBenchmarkResult : plannerBenchmarkResult
+                .getUnifiedProblemBenchmarkResultList()) {
             for (SingleBenchmarkResult singleBenchmarkResult : problemBenchmarkResult.getSingleBenchmarkResultList()) {
-                for (SubSingleBenchmarkResult subSingleBenchmarkResult : singleBenchmarkResult.getSubSingleBenchmarkResultList()) {
+                for (SubSingleBenchmarkResult subSingleBenchmarkResult : singleBenchmarkResult
+                        .getSubSingleBenchmarkResultList()) {
                     if (!subSingleBenchmarkResult.hasAllSuccess()) {
                         continue;
                     }
-                    for (SubSingleStatistic subSingleStatistic : subSingleBenchmarkResult.getEffectiveSubSingleStatisticMap().values()) {
+                    for (SubSingleStatistic subSingleStatistic : subSingleBenchmarkResult.getEffectiveSubSingleStatisticMap()
+                            .values()) {
                         try {
                             subSingleStatistic.unhibernatePointList();
                         } catch (IllegalStateException e) {
                             if (!plannerBenchmarkResult.getAggregation()) {
                                 throw new IllegalStateException("Failed to unhibernate point list of SubSingleStatistic ("
-                                        + subSingleStatistic + ") of SubSingleBenchmark (" + subSingleBenchmarkResult + ").", e);
+                                        + subSingleStatistic + ") of SubSingleBenchmark (" + subSingleBenchmarkResult + ").",
+                                        e);
                             }
                             logger.trace("This is expected, aggregator doesn't copy CSV files. Could not read CSV file "
-                                    + "({}) of sub single statistic ({}).", subSingleStatistic.getCsvFile().getAbsolutePath(), subSingleStatistic);
+                                    + "({}) of sub single statistic ({}).", subSingleStatistic.getCsvFile().getAbsolutePath(),
+                                    subSingleStatistic);
                         }
                     }
                 }
             }
         }
-        for (ProblemBenchmarkResult<Object> problemBenchmarkResult : plannerBenchmarkResult.getUnifiedProblemBenchmarkResultList()) {
+        for (ProblemBenchmarkResult<Object> problemBenchmarkResult : plannerBenchmarkResult
+                .getUnifiedProblemBenchmarkResultList()) {
             if (problemBenchmarkResult.hasAnySuccess()) {
                 for (ProblemStatistic problemStatistic : problemBenchmarkResult.getProblemStatisticList()) {
                     problemStatistic.writeGraphFiles(this);
                 }
                 for (SingleBenchmarkResult singleBenchmarkResult : problemBenchmarkResult.getSingleBenchmarkResultList()) {
                     if (singleBenchmarkResult.hasAllSuccess()) {
-                        for (PureSubSingleStatistic pureSubSingleStatistic : singleBenchmarkResult.getMedian().getPureSubSingleStatisticList()) {
+                        for (PureSubSingleStatistic pureSubSingleStatistic : singleBenchmarkResult.getMedian()
+                                .getPureSubSingleStatisticList()) {
                             pureSubSingleStatistic.writeGraphFiles(this);
                         }
                     }
                 }
             }
         }
-        for (ProblemBenchmarkResult<Object> problemBenchmarkResult : plannerBenchmarkResult.getUnifiedProblemBenchmarkResultList()) {
+        for (ProblemBenchmarkResult<Object> problemBenchmarkResult : plannerBenchmarkResult
+                .getUnifiedProblemBenchmarkResultList()) {
             for (SingleBenchmarkResult singleBenchmarkResult : problemBenchmarkResult.getSingleBenchmarkResultList()) {
-                for (SubSingleBenchmarkResult subSingleBenchmarkResult : singleBenchmarkResult.getSubSingleBenchmarkResultList()) {
+                for (SubSingleBenchmarkResult subSingleBenchmarkResult : singleBenchmarkResult
+                        .getSubSingleBenchmarkResultList()) {
                     if (!subSingleBenchmarkResult.hasAllSuccess()) {
                         continue;
                     }
-                    for (SubSingleStatistic subSingleStatistic : subSingleBenchmarkResult.getEffectiveSubSingleStatisticMap().values()) {
+                    for (SubSingleStatistic subSingleStatistic : subSingleBenchmarkResult.getEffectiveSubSingleStatisticMap()
+                            .values()) {
                         if (plannerBenchmarkResult.getAggregation()) {
                             subSingleStatistic.setPointList(null);
                         } else {
@@ -427,7 +440,8 @@ public class BenchmarkReport {
                 String problemLabel = singleBenchmarkResult.getProblemBenchmarkResult().getName();
                 if (singleBenchmarkResult.hasAllSuccess()) {
                     List<List<Double>> distributionLevelList = new ArrayList<>(CHARTED_SCORE_LEVEL_SIZE);
-                    for (SubSingleBenchmarkResult subSingleBenchmarkResult : singleBenchmarkResult.getSubSingleBenchmarkResultList()) {
+                    for (SubSingleBenchmarkResult subSingleBenchmarkResult : singleBenchmarkResult
+                            .getSubSingleBenchmarkResultList()) {
                         double[] levelValues = ScoreUtils.extractLevelDoubles(subSingleBenchmarkResult.getAverageScore());
                         for (int i = 0; i < levelValues.length && i < CHARTED_SCORE_LEVEL_SIZE; i++) {
                             if (i >= distributionLevelList.size()) {
@@ -456,7 +470,8 @@ public class BenchmarkReport {
                     "Best " + scoreLevelLabel, NumberFormat.getInstance(locale));
             JFreeChart chart = new JFreeChart("Best " + scoreLevelLabel + " distribution summary (higher is better)",
                     JFreeChart.DEFAULT_TITLE_FONT, plot, true);
-            bestScoreDistributionSummaryChartFileList.add(writeChartToImageFile(chart, "bestScoreDistributionSummaryLevel" + scoreLevelIndex));
+            bestScoreDistributionSummaryChartFileList
+                    .add(writeChartToImageFile(chart, "bestScoreDistributionSummaryLevel" + scoreLevelIndex));
             scoreLevelIndex++;
         }
     }
@@ -560,8 +575,8 @@ public class BenchmarkReport {
             for (SingleBenchmarkResult singleBenchmarkResult : solverBenchmarkResult.getSingleBenchmarkResultList()) {
                 String problemLabel = singleBenchmarkResult.getProblemBenchmarkResult().getName();
                 if (singleBenchmarkResult.hasAllSuccess()) {
-                    double worstScoreCalculationSpeedDifferencePercentage
-                            = singleBenchmarkResult.getWorstScoreCalculationSpeedDifferencePercentage();
+                    double worstScoreCalculationSpeedDifferencePercentage = singleBenchmarkResult
+                            .getWorstScoreCalculationSpeedDifferencePercentage();
                     if (isFinite(worstScoreCalculationSpeedDifferencePercentage)) {
                         dataset.addValue(worstScoreCalculationSpeedDifferencePercentage, solverLabel, problemLabel);
                     }
@@ -574,7 +589,8 @@ public class BenchmarkReport {
         JFreeChart chart = new JFreeChart("Worst score calculation speed difference percentage"
                 + " summary (higher is better)",
                 JFreeChart.DEFAULT_TITLE_FONT, plot, true);
-        worstScoreCalculationSpeedDifferencePercentageSummaryChartFile = writeChartToImageFile(chart, "worstScoreCalculationSpeedDifferencePercentageSummary");
+        worstScoreCalculationSpeedDifferencePercentageSummaryChartFile = writeChartToImageFile(chart,
+                "worstScoreCalculationSpeedDifferencePercentageSummary");
     }
 
     private void writeTimeSpentSummaryChart() {
@@ -739,8 +755,7 @@ public class BenchmarkReport {
         XYItemRenderer renderer = new StandardXYItemRenderer(StandardXYItemRenderer.SHAPES_AND_LINES);
         // Use dashed line
         renderer.setSeriesStroke(0, new BasicStroke(
-                1.0f, BasicStroke.CAP_ROUND, BasicStroke.JOIN_ROUND, 1.0f, new float[] {2.0f, 6.0f}, 0.0f
-        ));
+                1.0f, BasicStroke.CAP_ROUND, BasicStroke.JOIN_ROUND, 1.0f, new float[] { 2.0f, 6.0f }, 0.0f));
         return renderer;
     }
 
@@ -772,7 +787,8 @@ public class BenchmarkReport {
 
     private void determineDefaultShownScoreLevelIndex() {
         defaultShownScoreLevelIndex = Integer.MAX_VALUE;
-        for (ProblemBenchmarkResult<Object> problemBenchmarkResult : plannerBenchmarkResult.getUnifiedProblemBenchmarkResultList()) {
+        for (ProblemBenchmarkResult<Object> problemBenchmarkResult : plannerBenchmarkResult
+                .getUnifiedProblemBenchmarkResultList()) {
             if (problemBenchmarkResult.hasAnySuccess()) {
                 double[] winningScoreLevels = ScoreUtils.extractLevelDoubles(
                         problemBenchmarkResult.getWinningSingleBenchmarkResult().getAverageScore());

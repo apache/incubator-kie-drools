@@ -20,6 +20,7 @@ import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.Rectangle;
 import java.util.List;
+
 import javax.swing.JPanel;
 import javax.swing.JViewport;
 import javax.swing.Scrollable;
@@ -34,7 +35,6 @@ import org.optaplanner.swing.impl.TangoColorFactory;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-
 /**
  * @param <Solution_> the solution type, the class with the {@link PlanningSolution} annotation
  */
@@ -45,12 +45,12 @@ public abstract class SolutionPanel<Solution_> extends JPanel implements Scrolla
     public static final Dimension PREFERRED_SCROLLABLE_VIEWPORT_SIZE = new Dimension(800, 600);
 
     protected static final Color[][] INDICTMENT_COLORS = {
-            {TangoColorFactory.SCARLET_3, TangoColorFactory.SCARLET_1},
-            {TangoColorFactory.ORANGE_3, TangoColorFactory.ORANGE_1},
-            {TangoColorFactory.BUTTER_3, TangoColorFactory.BUTTER_1},
-            {TangoColorFactory.CHAMELEON_3, TangoColorFactory.CHAMELEON_1},
-            {TangoColorFactory.SKY_BLUE_3, TangoColorFactory.SKY_BLUE_1},
-            {TangoColorFactory.PLUM_3, TangoColorFactory.PLUM_1}
+            { TangoColorFactory.SCARLET_3, TangoColorFactory.SCARLET_1 },
+            { TangoColorFactory.ORANGE_3, TangoColorFactory.ORANGE_1 },
+            { TangoColorFactory.BUTTER_3, TangoColorFactory.BUTTER_1 },
+            { TangoColorFactory.CHAMELEON_3, TangoColorFactory.CHAMELEON_1 },
+            { TangoColorFactory.SKY_BLUE_3, TangoColorFactory.SKY_BLUE_1 },
+            { TangoColorFactory.PLUM_3, TangoColorFactory.PLUM_1 }
     };
 
     protected final transient Logger logger = LoggerFactory.getLogger(getClass());

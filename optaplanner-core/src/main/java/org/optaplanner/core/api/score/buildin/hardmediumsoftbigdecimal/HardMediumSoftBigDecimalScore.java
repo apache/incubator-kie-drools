@@ -32,15 +32,20 @@ import org.optaplanner.core.api.score.Score;
  * Hard constraints determine feasibility.
  * <p>
  * This class is immutable.
+ * 
  * @see Score
  */
 public final class HardMediumSoftBigDecimalScore extends AbstractScore<HardMediumSoftBigDecimalScore>
         implements FeasibilityScore<HardMediumSoftBigDecimalScore> {
 
-    public static final HardMediumSoftBigDecimalScore ZERO = new HardMediumSoftBigDecimalScore(0, BigDecimal.ZERO, BigDecimal.ZERO, BigDecimal.ZERO);
-    public static final HardMediumSoftBigDecimalScore ONE_HARD = new HardMediumSoftBigDecimalScore(0, BigDecimal.ONE, BigDecimal.ZERO, BigDecimal.ZERO);
-    public static final HardMediumSoftBigDecimalScore ONE_MEDIUM = new HardMediumSoftBigDecimalScore(0, BigDecimal.ZERO, BigDecimal.ONE, BigDecimal.ZERO);
-    public static final HardMediumSoftBigDecimalScore ONE_SOFT = new HardMediumSoftBigDecimalScore(0, BigDecimal.ZERO, BigDecimal.ZERO, BigDecimal.ONE);
+    public static final HardMediumSoftBigDecimalScore ZERO = new HardMediumSoftBigDecimalScore(0, BigDecimal.ZERO,
+            BigDecimal.ZERO, BigDecimal.ZERO);
+    public static final HardMediumSoftBigDecimalScore ONE_HARD = new HardMediumSoftBigDecimalScore(0, BigDecimal.ONE,
+            BigDecimal.ZERO, BigDecimal.ZERO);
+    public static final HardMediumSoftBigDecimalScore ONE_MEDIUM = new HardMediumSoftBigDecimalScore(0, BigDecimal.ZERO,
+            BigDecimal.ONE, BigDecimal.ZERO);
+    public static final HardMediumSoftBigDecimalScore ONE_SOFT = new HardMediumSoftBigDecimalScore(0, BigDecimal.ZERO,
+            BigDecimal.ZERO, BigDecimal.ONE);
     private static final String HARD_LABEL = "hard";
     private static final String MEDIUM_LABEL = "medium";
     private static final String SOFT_LABEL = "soft";
@@ -55,7 +60,8 @@ public final class HardMediumSoftBigDecimalScore extends AbstractScore<HardMediu
         return ofUninitialized(initScore, hardScore, mediumScore, softScore);
     }
 
-    public static HardMediumSoftBigDecimalScore ofUninitialized(int initScore, BigDecimal hardScore, BigDecimal mediumScore, BigDecimal softScore) {
+    public static HardMediumSoftBigDecimalScore ofUninitialized(int initScore, BigDecimal hardScore, BigDecimal mediumScore,
+            BigDecimal softScore) {
         return new HardMediumSoftBigDecimalScore(initScore, hardScore, mediumScore, softScore);
     }
 
@@ -63,7 +69,8 @@ public final class HardMediumSoftBigDecimalScore extends AbstractScore<HardMediu
      * @deprecated in favor of {@link #ofUninitialized(int, BigDecimal, BigDecimal, BigDecimal)}
      */
     @Deprecated
-    public static HardMediumSoftBigDecimalScore valueOfUninitialized(int initScore, BigDecimal hardScore, BigDecimal mediumScore, BigDecimal softScore) {
+    public static HardMediumSoftBigDecimalScore valueOfUninitialized(int initScore, BigDecimal hardScore,
+            BigDecimal mediumScore, BigDecimal softScore) {
         return new HardMediumSoftBigDecimalScore(initScore, hardScore, mediumScore, softScore);
     }
 
@@ -123,6 +130,7 @@ public final class HardMediumSoftBigDecimalScore extends AbstractScore<HardMediu
      * The total of the broken negative hard constraints and fulfilled positive hard constraints.
      * Their weight is included in the total.
      * The hard score is usually a negative number because most use cases only have negative constraints.
+     * 
      * @return higher is better, usually negative, 0 if no hard constraints are broken/fulfilled
      */
     public BigDecimal getHardScore() {
@@ -135,6 +143,7 @@ public final class HardMediumSoftBigDecimalScore extends AbstractScore<HardMediu
      * The medium score is usually a negative number because most use cases only have negative constraints.
      * <p>
      * In a normal score comparison, the medium score is irrelevant if the 2 scores don't have the same hard score.
+     * 
      * @return higher is better, usually negative, 0 if no medium constraints are broken/fulfilled
      */
     public BigDecimal getMediumScore() {
@@ -147,6 +156,7 @@ public final class HardMediumSoftBigDecimalScore extends AbstractScore<HardMediu
      * The soft score is usually a negative number because most use cases only have negative constraints.
      * <p>
      * In a normal score comparison, the soft score is irrelevant if the 2 scores don't have the same hard and medium score.
+     * 
      * @return higher is better, usually negative, 0 if no soft constraints are broken/fulfilled
      */
     public BigDecimal getSoftScore() {
@@ -170,6 +180,7 @@ public final class HardMediumSoftBigDecimalScore extends AbstractScore<HardMediu
 
     /**
      * A {@link PlanningSolution} is feasible if it has no broken hard constraints.
+     * 
      * @return true if the {@link #getHardScore()} is 0 or higher
      */
     @Override
@@ -239,7 +250,7 @@ public final class HardMediumSoftBigDecimalScore extends AbstractScore<HardMediu
 
     @Override
     public Number[] toLevelNumbers() {
-        return new Number[]{hardScore, mediumScore, softScore};
+        return new Number[] { hardScore, mediumScore, softScore };
     }
 
     @Override

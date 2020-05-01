@@ -16,13 +16,13 @@
 
 package org.optaplanner.core.api.score.buildin.simple;
 
+import static org.assertj.core.api.Assertions.assertThatIllegalArgumentException;
+import static org.junit.Assert.*;
+
 import org.junit.jupiter.api.Test;
 import org.optaplanner.core.api.score.buildin.AbstractScoreTest;
 import org.optaplanner.core.impl.testdata.util.PlannerAssert;
 import org.optaplanner.core.impl.testdata.util.PlannerTestUtils;
-
-import static org.assertj.core.api.Assertions.assertThatIllegalArgumentException;
-import static org.junit.Assert.*;
 
 public class SimpleScoreTest extends AbstractScoreTest {
 
@@ -134,17 +134,14 @@ public class SimpleScoreTest extends AbstractScoreTest {
         PlannerAssert.assertObjectsAreEqual(
                 SimpleScore.of(-10),
                 SimpleScore.of(-10),
-                SimpleScore.ofUninitialized(0, -10)
-        );
+                SimpleScore.ofUninitialized(0, -10));
         PlannerAssert.assertObjectsAreEqual(
                 SimpleScore.ofUninitialized(-7, -10),
-                SimpleScore.ofUninitialized(-7, -10)
-        );
+                SimpleScore.ofUninitialized(-7, -10));
         PlannerAssert.assertObjectsAreNotEqual(
                 SimpleScore.of(-10),
                 SimpleScore.of(-30),
-                SimpleScore.ofUninitialized(-7, -10)
-        );
+                SimpleScore.ofUninitialized(-7, -10));
     }
 
     @Test
@@ -159,8 +156,7 @@ public class SimpleScoreTest extends AbstractScoreTest {
                 SimpleScore.of(-20),
                 SimpleScore.of(-1),
                 SimpleScore.of(0),
-                SimpleScore.of(1)
-        );
+                SimpleScore.of(1));
     }
 
     @Test
@@ -170,15 +166,13 @@ public class SimpleScoreTest extends AbstractScoreTest {
                 output -> {
                     assertEquals(0, output.getInitScore());
                     assertEquals(123, output.getScore());
-                }
-        );
+                });
         PlannerTestUtils.serializeAndDeserializeWithAll(
                 SimpleScore.ofUninitialized(-7, 123),
                 output -> {
                     assertEquals(-7, output.getInitScore());
                     assertEquals(123, output.getScore());
-                }
-        );
+                });
     }
 
 }

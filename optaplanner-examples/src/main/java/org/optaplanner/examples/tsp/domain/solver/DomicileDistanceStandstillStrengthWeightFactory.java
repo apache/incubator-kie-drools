@@ -32,7 +32,8 @@ public class DomicileDistanceStandstillStrengthWeightFactory implements Selectio
         return new DomicileDistanceStandstillStrengthWeight(standstill, domicileRoundTripDistance);
     }
 
-    public static class DomicileDistanceStandstillStrengthWeight implements Comparable<DomicileDistanceStandstillStrengthWeight> {
+    public static class DomicileDistanceStandstillStrengthWeight
+            implements Comparable<DomicileDistanceStandstillStrengthWeight> {
 
         private static final Comparator<DomicileDistanceStandstillStrengthWeight> COMPARATOR =
                 // Decreasing: closer to depot is stronger

@@ -41,8 +41,7 @@ public final class DefaultMultiConstraintVerification<Solution_>
 
     @Override
     public final DefaultMultiConstraintAssertion given(Object... facts) {
-        try (ConstraintSession<Solution_> constraintSession =
-                     scoreDirectorFactory.newConstraintStreamingSession(true, null)) {
+        try (ConstraintSession<Solution_> constraintSession = scoreDirectorFactory.newConstraintStreamingSession(true, null)) {
             Arrays.stream(facts).forEach(constraintSession::insert);
             Score<?> score = constraintSession.calculateScore(0);
             return new DefaultMultiConstraintAssertion<>(constraintProvider, score);
@@ -51,12 +50,11 @@ public final class DefaultMultiConstraintVerification<Solution_>
 
     @Override
     public final DefaultMultiConstraintAssertion givenSolution(Solution_ solution) {
-        try (ScoreDirector<Solution_> scoreDirector =
-                     scoreDirectorFactory.buildScoreDirector(true, true)) {
+        try (ScoreDirector<Solution_> scoreDirector = scoreDirectorFactory.buildScoreDirector(true, true)) {
             scoreDirector.setWorkingSolution(Objects.requireNonNull(solution));
             Score<?> score = scoreDirector.calculateScore();
             return new DefaultMultiConstraintAssertion<>(constraintProvider, score);
         }
     }
-    
+
 }

@@ -34,7 +34,8 @@ public class TestdataChainedEntity extends TestdataObject implements TestdataCha
 
     public static GenuineVariableDescriptor<TestdataChainedSolution> buildVariableDescriptorForChainedObject() {
         SolutionDescriptor<TestdataChainedSolution> solutionDescriptor = TestdataChainedSolution.buildSolutionDescriptor();
-        EntityDescriptor<TestdataChainedSolution> entityDescriptor = solutionDescriptor.findEntityDescriptorOrFail(TestdataChainedEntity.class);
+        EntityDescriptor<TestdataChainedSolution> entityDescriptor = solutionDescriptor
+                .findEntityDescriptorOrFail(TestdataChainedEntity.class);
         return entityDescriptor.getGenuineVariableDescriptor("chainedObject");
     }
 
@@ -52,8 +53,8 @@ public class TestdataChainedEntity extends TestdataObject implements TestdataCha
         this.chainedObject = chainedObject;
     }
 
-    @PlanningVariable(valueRangeProviderRefs = {"chainedAnchorRange", "chainedEntityRange"},
-            graphType = PlanningVariableGraphType.CHAINED)
+    @PlanningVariable(valueRangeProviderRefs = { "chainedAnchorRange",
+            "chainedEntityRange" }, graphType = PlanningVariableGraphType.CHAINED)
     public TestdataChainedObject getChainedObject() {
         return chainedObject;
     }

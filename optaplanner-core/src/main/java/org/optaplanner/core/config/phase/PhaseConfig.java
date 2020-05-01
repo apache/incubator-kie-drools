@@ -16,8 +16,6 @@
 
 package org.optaplanner.core.config.phase;
 
-import com.thoughtworks.xstream.annotations.XStreamAlias;
-import com.thoughtworks.xstream.annotations.XStreamInclude;
 import org.optaplanner.core.config.AbstractConfig;
 import org.optaplanner.core.config.constructionheuristic.ConstructionHeuristicPhaseConfig;
 import org.optaplanner.core.config.exhaustivesearch.ExhaustiveSearchPhaseConfig;
@@ -31,6 +29,9 @@ import org.optaplanner.core.impl.phase.Phase;
 import org.optaplanner.core.impl.solver.recaller.BestSolutionRecaller;
 import org.optaplanner.core.impl.solver.termination.PhaseToSolverTerminationBridge;
 import org.optaplanner.core.impl.solver.termination.Termination;
+
+import com.thoughtworks.xstream.annotations.XStreamAlias;
+import com.thoughtworks.xstream.annotations.XStreamInclude;
 
 @XStreamInclude({
         CustomPhaseConfig.class,

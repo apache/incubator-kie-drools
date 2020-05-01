@@ -16,30 +16,34 @@
 
 package org.optaplanner.benchmark.impl.ranking;
 
+import static org.mockito.Mockito.*;
+import static org.optaplanner.core.impl.testdata.util.PlannerAssert.*;
+
 import org.junit.jupiter.api.Test;
 import org.optaplanner.benchmark.impl.result.ProblemBenchmarkResult;
 import org.optaplanner.benchmark.impl.result.SingleBenchmarkResult;
 import org.optaplanner.benchmark.impl.result.SolverBenchmarkResult;
 import org.optaplanner.core.api.score.buildin.simple.SimpleScore;
 
-import static org.mockito.Mockito.*;
-import static org.optaplanner.core.impl.testdata.util.PlannerAssert.*;
-
 public class TotalScoreSingleBenchmarkRankingComparatorTest {
 
     @Test
     public void compareTo() {
         TotalScoreSingleBenchmarkRankingComparator comparator = new TotalScoreSingleBenchmarkRankingComparator();
-        SingleBenchmarkResult a = new SingleBenchmarkResult(mock(SolverBenchmarkResult.class), mock(ProblemBenchmarkResult.class));
+        SingleBenchmarkResult a = new SingleBenchmarkResult(mock(SolverBenchmarkResult.class),
+                mock(ProblemBenchmarkResult.class));
         a.setFailureCount(1);
         a.setAverageAndTotalScoreForTesting(null);
-        SingleBenchmarkResult b = new SingleBenchmarkResult(mock(SolverBenchmarkResult.class), mock(ProblemBenchmarkResult.class));
+        SingleBenchmarkResult b = new SingleBenchmarkResult(mock(SolverBenchmarkResult.class),
+                mock(ProblemBenchmarkResult.class));
         b.setFailureCount(0);
         b.setAverageAndTotalScoreForTesting(SimpleScore.ofUninitialized(-7, -1));
-        SingleBenchmarkResult c = new SingleBenchmarkResult(mock(SolverBenchmarkResult.class), mock(ProblemBenchmarkResult.class));
+        SingleBenchmarkResult c = new SingleBenchmarkResult(mock(SolverBenchmarkResult.class),
+                mock(ProblemBenchmarkResult.class));
         c.setFailureCount(0);
         c.setAverageAndTotalScoreForTesting(SimpleScore.of(-300));
-        SingleBenchmarkResult d = new SingleBenchmarkResult(mock(SolverBenchmarkResult.class), mock(ProblemBenchmarkResult.class));
+        SingleBenchmarkResult d = new SingleBenchmarkResult(mock(SolverBenchmarkResult.class),
+                mock(ProblemBenchmarkResult.class));
         d.setFailureCount(0);
         d.setAverageAndTotalScoreForTesting(SimpleScore.of(-20));
         assertCompareToOrder(comparator, a, b, c, d);

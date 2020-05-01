@@ -16,6 +16,9 @@
 
 package org.optaplanner.examples.pas.persistence;
 
+import static java.util.Comparator.comparing;
+import static java.util.Comparator.comparingLong;
+
 import java.io.IOException;
 import java.util.Collections;
 import java.util.Comparator;
@@ -29,14 +32,12 @@ import org.optaplanner.examples.pas.domain.BedDesignation;
 import org.optaplanner.examples.pas.domain.Patient;
 import org.optaplanner.examples.pas.domain.PatientAdmissionSchedule;
 
-import static java.util.Comparator.comparing;
-import static java.util.Comparator.comparingLong;
-
 public class PatientAdmissionScheduleExporter extends AbstractTxtSolutionExporter<PatientAdmissionSchedule> {
 
     public static void main(String[] args) {
         SolutionConverter<PatientAdmissionSchedule> converter = SolutionConverter.createExportConverter(
-                PatientAdmissionScheduleApp.DATA_DIR_NAME, PatientAdmissionSchedule.class, new PatientAdmissionScheduleExporter());
+                PatientAdmissionScheduleApp.DATA_DIR_NAME, PatientAdmissionSchedule.class,
+                new PatientAdmissionScheduleExporter());
         converter.convertAll();
     }
 
@@ -47,10 +48,10 @@ public class PatientAdmissionScheduleExporter extends AbstractTxtSolutionExporte
 
     public static class PatientAdmissionScheduleOutputBuilder extends TxtOutputBuilder<PatientAdmissionSchedule> {
 
-        private static final Comparator<BedDesignation> COMPARATOR =
-                comparing(BedDesignation::getAdmissionPart, comparingLong(AdmissionPart::getId))
-                    .thenComparing(BedDesignation::getBed, comparingLong(Bed::getId))
-                    .thenComparingLong(BedDesignation::getId);
+        private static final Comparator<BedDesignation> COMPARATOR = comparing(BedDesignation::getAdmissionPart,
+                comparingLong(AdmissionPart::getId))
+                        .thenComparing(BedDesignation::getBed, comparingLong(Bed::getId))
+                        .thenComparingLong(BedDesignation::getId);
 
         @Override
         public void writeSolution() throws IOException {

@@ -22,6 +22,7 @@ import java.awt.FlowLayout;
 import java.awt.event.ActionEvent;
 import java.util.List;
 import java.util.Set;
+
 import javax.swing.AbstractAction;
 import javax.swing.Action;
 import javax.swing.BorderFactory;
@@ -73,8 +74,7 @@ public class ConstraintMatchesDialog extends JDialog {
             unsupportedPanel.add(buttonPanel, BorderLayout.SOUTH);
             setContentPane(unsupportedPanel);
         } else {
-            final List<ConstraintMatchTotal> constraintMatchTotalList
-                    = solutionBusiness.getConstraintMatchTotalList();
+            final List<ConstraintMatchTotal> constraintMatchTotalList = solutionBusiness.getConstraintMatchTotalList();
             JSplitPane splitPane = new JSplitPane(JSplitPane.VERTICAL_SPLIT);
             final JTable table = new JTable(new ConstraintMatchTotalTableModel(constraintMatchTotalList));
             TableColumnModel columnModel = table.getColumnModel();
@@ -102,13 +102,11 @@ public class ConstraintMatchesDialog extends JDialog {
                         if (selectedRow < 0) {
                             detailTextArea.setText("");
                         } else {
-                            ConstraintMatchTotal constraintMatchTotal
-                                    = constraintMatchTotalList.get(selectedRow);
+                            ConstraintMatchTotal constraintMatchTotal = constraintMatchTotalList.get(selectedRow);
                             detailTextArea.setText(buildConstraintMatchSetText(constraintMatchTotal));
                             detailTextArea.setCaretPosition(0);
                         }
-                    }
-            );
+                    });
             bottomPanel.add(buttonPanel, BorderLayout.SOUTH);
             splitPane.setBottomComponent(bottomPanel);
             splitPane.setResizeWeight(1.0);

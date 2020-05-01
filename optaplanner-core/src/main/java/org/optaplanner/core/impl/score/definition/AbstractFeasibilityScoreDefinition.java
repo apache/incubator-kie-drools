@@ -20,6 +20,7 @@ import org.optaplanner.core.impl.score.buildin.hardsoft.HardSoftScoreDefinition;
 
 /**
  * Abstract superclass for {@link FeasibilityScoreDefinition}.
+ * 
  * @see FeasibilityScoreDefinition
  * @see HardSoftScoreDefinition
  */

@@ -24,7 +24,7 @@ import org.optaplanner.core.impl.score.stream.drools.common.DroolsAbstractGroupB
 import org.optaplanner.core.impl.score.stream.drools.common.DroolsAbstractGroupByInvoker;
 
 public class DroolsUniToQuadGroupByInvoker<A, NewA, NewB, NewC, NewD>
-    extends DroolsAbstractGroupByInvoker<A> {
+        extends DroolsAbstractGroupByInvoker<A> {
 
     private final Function<A, NewA> groupKeyAMapping;
     private final Function<A, NewB> groupKeyBMapping;

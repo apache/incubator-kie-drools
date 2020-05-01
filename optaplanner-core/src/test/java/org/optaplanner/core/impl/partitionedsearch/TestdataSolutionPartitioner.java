@@ -46,8 +46,7 @@ public class TestdataSolutionPartitioner implements SolutionPartitioner<Testdata
         }
         List<TestdataSolution> partitions = new ArrayList<>();
         for (int i = 0; i < allEntities.size() / partSize; i++) {
-            List<TestdataEntity> partitionEntitites
-                    = new ArrayList<>(allEntities.subList(i * partSize, (i + 1) * partSize));
+            List<TestdataEntity> partitionEntitites = new ArrayList<>(allEntities.subList(i * partSize, (i + 1) * partSize));
             TestdataSolution partition = new TestdataSolution();
             partition.setEntityList(partitionEntitites);
             partition.setValueList(workingSolution.getValueList());

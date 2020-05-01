@@ -113,16 +113,16 @@ public final class DefaultSolverJob<Solution_, ProblemId_> implements SolverJob<
     }
 
     // TODO Future features
-//    @Override
-//    public void reloadProblem(Function<? super ProblemId_, Solution_> problemFinder) {
-//        throw new UnsupportedOperationException("The solver is still solving and reloadProblem() is not yet supported.");
-//    }
+    //    @Override
+    //    public void reloadProblem(Function<? super ProblemId_, Solution_> problemFinder) {
+    //        throw new UnsupportedOperationException("The solver is still solving and reloadProblem() is not yet supported.");
+    //    }
 
     // TODO Future features
-//    @Override
-//    public void addProblemFactChange(ProblemFactChange<Solution_> problemFactChange) {
-//        solver.addProblemFactChange(problemFactChange);
-//    }
+    //    @Override
+    //    public void addProblemFactChange(ProblemFactChange<Solution_> problemFactChange) {
+    //        solver.addProblemFactChange(problemFactChange);
+    //    }
 
     @Override
     public void terminateEarly() {

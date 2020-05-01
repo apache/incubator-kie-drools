@@ -24,7 +24,7 @@ import org.optaplanner.core.impl.score.stream.drools.common.GroupByAccumulator;
 import org.optaplanner.core.impl.score.stream.drools.common.QuadTuple;
 
 final class DroolsQuadToBiGroupBy<A, B, C, D, NewA, NewB>
-    extends DroolsAbstractGroupBy<QuadTuple<A, B, C, D>, BiTuple<NewA, NewB>> {
+        extends DroolsAbstractGroupBy<QuadTuple<A, B, C, D>, BiTuple<NewA, NewB>> {
 
     private final QuadFunction<A, B, C, D, NewA> groupKeyMapping;
     private final QuadConstraintCollector<A, B, C, D, ?, NewB> collector;

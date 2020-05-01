@@ -16,6 +16,10 @@
 
 package org.optaplanner.core.impl.heuristic.selector.move.decorator;
 
+import static org.assertj.core.api.Assertions.assertThatIllegalArgumentException;
+import static org.mockito.Mockito.*;
+import static org.optaplanner.core.impl.testdata.util.PlannerAssert.*;
+
 import java.util.Comparator;
 
 import org.junit.jupiter.api.Test;
@@ -28,10 +32,6 @@ import org.optaplanner.core.impl.phase.scope.AbstractPhaseScope;
 import org.optaplanner.core.impl.phase.scope.AbstractStepScope;
 import org.optaplanner.core.impl.solver.scope.DefaultSolverScope;
 import org.optaplanner.core.impl.testdata.domain.TestdataSolution;
-
-import static org.assertj.core.api.Assertions.assertThatIllegalArgumentException;
-import static org.mockito.Mockito.*;
-import static org.optaplanner.core.impl.testdata.util.PlannerAssert.*;
 
 public class SortingMoveSelectorTest {
 
@@ -60,8 +60,8 @@ public class SortingMoveSelectorTest {
                 new DummyMove("jan"), new DummyMove("feb"), new DummyMove("mar"),
                 new DummyMove("apr"), new DummyMove("may"), new DummyMove("jun"));
 
-        SelectionSorter<TestdataSolution, DummyMove> sorter = (scoreDirector, selectionList)
-                -> selectionList.sort(Comparator.comparing(DummyMove::getCode));
+        SelectionSorter<TestdataSolution, DummyMove> sorter = (scoreDirector, selectionList) -> selectionList
+                .sort(Comparator.comparing(DummyMove::getCode));
         MoveSelector moveSelector = new SortingMoveSelector(childMoveSelector, cacheType, sorter);
 
         DefaultSolverScope solverScope = mock(DefaultSolverScope.class);

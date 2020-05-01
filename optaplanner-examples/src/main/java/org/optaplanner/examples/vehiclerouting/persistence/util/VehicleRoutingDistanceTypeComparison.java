@@ -52,7 +52,8 @@ public class VehicleRoutingDistanceTypeComparison extends LoggingMain {
     public VehicleRoutingDistanceTypeComparison() {
         dataDir = CommonApp.determineDataDir(VehicleRoutingApp.DATA_DIR_NAME);
         solutionFileIO = new XStreamSolutionFileIO<>(VehicleRoutingSolution.class);
-        SolverFactory<VehicleRoutingSolution> solverFactory = SolverFactory.createFromXmlResource(VehicleRoutingApp.SOLVER_CONFIG);
+        SolverFactory<VehicleRoutingSolution> solverFactory = SolverFactory
+                .createFromXmlResource(VehicleRoutingApp.SOLVER_CONFIG);
         scoreDirectorFactory = solverFactory.getScoreDirectorFactory();
     }
 
@@ -103,9 +104,9 @@ public class VehicleRoutingDistanceTypeComparison extends LoggingMain {
         for (Customer varCustomer : varSolution.getCustomerList()) {
             Customer inputCustomer = inputCustomerMap.get(varCustomer.getId());
             Standstill varPrevious = varCustomer.getPreviousStandstill();
-            inputCustomer.setPreviousStandstill(varPrevious == null ? null :
-                    varPrevious instanceof Vehicle ? inputVehicleMap.get(((Vehicle) varPrevious).getId())
-                    : inputCustomerMap.get(((Customer) varPrevious).getId()));
+            inputCustomer.setPreviousStandstill(varPrevious == null ? null
+                    : varPrevious instanceof Vehicle ? inputVehicleMap.get(((Vehicle) varPrevious).getId())
+                            : inputCustomerMap.get(((Customer) varPrevious).getId()));
             Customer varNext = varCustomer.getNextCustomer();
             inputCustomer.setNextCustomer(varNext == null ? null : inputCustomerMap.get(varNext.getId()));
         }

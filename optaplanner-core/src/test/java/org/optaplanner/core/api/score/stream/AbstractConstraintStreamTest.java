@@ -16,6 +16,10 @@
 
 package org.optaplanner.core.api.score.stream;
 
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.fail;
+import static org.optaplanner.core.api.score.constraint.ConstraintMatchTotal.composeConstraintId;
+
 import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
@@ -32,10 +36,6 @@ import org.optaplanner.core.impl.domain.solution.descriptor.SolutionDescriptor;
 import org.optaplanner.core.impl.score.director.InnerScoreDirector;
 import org.optaplanner.core.impl.score.director.stream.ConstraintStreamScoreDirectorFactory;
 import org.optaplanner.core.impl.testdata.domain.score.lavish.TestdataLavishSolution;
-
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.fail;
-import static org.optaplanner.core.api.score.constraint.ConstraintMatchTotal.composeConstraintId;
 
 @ExtendWith(ConstraintStreamTestExtension.class)
 public abstract class AbstractConstraintStreamTest {
@@ -71,10 +71,9 @@ public abstract class AbstractConstraintStreamTest {
     protected <Solution_> InnerScoreDirector<Solution_> buildScoreDirector(
             Supplier<SolutionDescriptor<Solution_>> solutionDescriptorSupplier,
             Function<ConstraintFactory, Constraint> function) {
-        ConstraintStreamScoreDirectorFactory<Solution_> scoreDirectorFactory
-                = new ConstraintStreamScoreDirectorFactory<>(
+        ConstraintStreamScoreDirectorFactory<Solution_> scoreDirectorFactory = new ConstraintStreamScoreDirectorFactory<>(
                 solutionDescriptorSupplier.get(),
-                (constraintFactory) -> new Constraint[] {function.apply(constraintFactory)},
+                (constraintFactory) -> new Constraint[] { function.apply(constraintFactory) },
                 constraintStreamImplType);
         return scoreDirectorFactory.buildScoreDirector(false, constraintMatchEnabled);
     }

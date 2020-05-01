@@ -51,7 +51,8 @@ public abstract class PlannerBenchmarkTest extends LoggingTest {
     protected PlannerBenchmarkConfig buildPlannerBenchmarkConfig() {
         SolverConfig solverConfig = SolverConfig.createFromXmlResource(solverConfigResource);
         File benchmarkDirectory = new File("target/test/data");
-        PlannerBenchmarkConfig benchmarkConfig = PlannerBenchmarkConfig.createFromSolverConfig(solverConfig, benchmarkDirectory);
+        PlannerBenchmarkConfig benchmarkConfig = PlannerBenchmarkConfig.createFromSolverConfig(solverConfig,
+                benchmarkDirectory);
         benchmarkConfig.setWarmUpSecondsSpentLimit(WARM_UP_SECONDS_SPENT);
         benchmarkConfig.setSolverBenchmarkConfigList(Collections.emptyList());
         benchmarkConfig.setSolverBenchmarkBluePrintConfigList(Collections.singletonList(

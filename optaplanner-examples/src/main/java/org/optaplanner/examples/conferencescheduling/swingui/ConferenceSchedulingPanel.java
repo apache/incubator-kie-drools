@@ -50,7 +50,8 @@ public class ConferenceSchedulingPanel extends SolutionPanel<ConferenceSolution>
             SolutionFileIO<ConferenceSolution> solutionFileIO = new ConferenceSchedulingXlsxFileIO();
             File tempFile;
             try {
-                tempFile = File.createTempFile(solutionBusiness.getSolutionFileName(), "." + solutionFileIO.getOutputFileExtension());
+                tempFile = File.createTempFile(solutionBusiness.getSolutionFileName(),
+                        "." + solutionFileIO.getOutputFileExtension());
             } catch (IOException e) {
                 throw new IllegalStateException("Failed to create temp file.", e);
             }
@@ -83,6 +84,5 @@ public class ConferenceSchedulingPanel extends SolutionPanel<ConferenceSolution>
     @Override
     public void resetPanel(ConferenceSolution solution) {
     }
-
 
 }

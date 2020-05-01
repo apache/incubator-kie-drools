@@ -16,7 +16,8 @@
 
 package org.optaplanner.core.config.heuristic.selector.value.chained;
 
-import com.thoughtworks.xstream.annotations.XStreamAlias;
+import static org.apache.commons.lang3.ObjectUtils.defaultIfNull;
+
 import org.optaplanner.core.api.domain.valuerange.ValueRangeProvider;
 import org.optaplanner.core.config.heuristic.policy.HeuristicConfigPolicy;
 import org.optaplanner.core.config.heuristic.selector.SelectorConfig;
@@ -31,7 +32,7 @@ import org.optaplanner.core.impl.heuristic.selector.value.ValueSelector;
 import org.optaplanner.core.impl.heuristic.selector.value.chained.DefaultSubChainSelector;
 import org.optaplanner.core.impl.heuristic.selector.value.chained.SubChainSelector;
 
-import static org.apache.commons.lang3.ObjectUtils.defaultIfNull;
+import com.thoughtworks.xstream.annotations.XStreamAlias;
 
 @XStreamAlias("subChainSelector")
 public class SubChainSelectorConfig extends SelectorConfig<SubChainSelectorConfig> {
@@ -86,8 +87,8 @@ public class SubChainSelectorConfig extends SelectorConfig<SubChainSelectorConfi
      * @param configPolicy never null
      * @param entityDescriptor never null
      * @param minimumCacheType never null, If caching is used (different from {@link SelectionCacheType#JUST_IN_TIME}),
-     * then it should be at least this {@link SelectionCacheType} because an ancestor already uses such caching
-     * and less would be pointless.
+     *        then it should be at least this {@link SelectionCacheType} because an ancestor already uses such caching
+     *        and less would be pointless.
      * @param inheritedSelectionOrder never null
      * @return never null
      */
@@ -114,7 +115,7 @@ public class SubChainSelectorConfig extends SelectorConfig<SubChainSelectorConfi
         return new DefaultSubChainSelector((EntityIndependentValueSelector) valueSelector,
                 inheritedSelectionOrder.toRandomSelectionBoolean(),
                 defaultIfNull(minimumSubChainSize, DEFAULT_MINIMUM_SUB_CHAIN_SIZE),
-                        defaultIfNull(maximumSubChainSize, DEFAULT_MAXIMUM_SUB_CHAIN_SIZE));
+                defaultIfNull(maximumSubChainSize, DEFAULT_MAXIMUM_SUB_CHAIN_SIZE));
     }
 
     @Override

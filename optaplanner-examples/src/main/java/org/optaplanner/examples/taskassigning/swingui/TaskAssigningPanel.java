@@ -16,12 +16,15 @@
 
 package org.optaplanner.examples.taskassigning.swingui;
 
+import static org.optaplanner.examples.taskassigning.persistence.TaskAssigningGenerator.*;
+
 import java.awt.BorderLayout;
 import java.awt.FlowLayout;
 import java.awt.GridLayout;
 import java.awt.event.ActionEvent;
 import java.util.List;
 import java.util.Random;
+
 import javax.swing.AbstractAction;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
@@ -37,8 +40,6 @@ import org.optaplanner.examples.taskassigning.domain.Priority;
 import org.optaplanner.examples.taskassigning.domain.Task;
 import org.optaplanner.examples.taskassigning.domain.TaskAssigningSolution;
 import org.optaplanner.examples.taskassigning.domain.TaskType;
-
-import static org.optaplanner.examples.taskassigning.persistence.TaskAssigningGenerator.*;
 
 public class TaskAssigningPanel extends SolutionPanel<TaskAssigningSolution> {
 

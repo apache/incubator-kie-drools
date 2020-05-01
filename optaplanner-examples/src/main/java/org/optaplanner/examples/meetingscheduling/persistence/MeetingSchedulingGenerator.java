@@ -186,7 +186,8 @@ public class MeetingSchedulingGenerator extends LoggingMain {
         return meetingListSize + "meetings-" + timeGrainListSize + "timegrains-" + roomListSize + "rooms";
     }
 
-    public MeetingSchedule createMeetingSchedule(String fileName, int meetingListSize, int timeGrainListSize, int roomListSize) {
+    public MeetingSchedule createMeetingSchedule(String fileName, int meetingListSize, int timeGrainListSize,
+            int roomListSize) {
         random = new Random(37);
         MeetingSchedule meetingSchedule = new MeetingSchedule();
         meetingSchedule.setId(0L);

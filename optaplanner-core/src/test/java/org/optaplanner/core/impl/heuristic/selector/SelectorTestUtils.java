@@ -16,14 +16,15 @@
 
 package org.optaplanner.core.impl.heuristic.selector;
 
+import static org.junit.Assert.*;
+import static org.mockito.Mockito.*;
+
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 
-import com.google.common.collect.ImmutableListMultimap;
-import com.google.common.collect.ListMultimap;
 import org.apache.commons.lang3.ArrayUtils;
 import org.optaplanner.core.config.heuristic.selector.common.SelectionCacheType;
 import org.optaplanner.core.impl.domain.entity.descriptor.EntityDescriptor;
@@ -38,8 +39,8 @@ import org.optaplanner.core.impl.heuristic.selector.value.ValueSelector;
 import org.optaplanner.core.impl.testdata.domain.chained.TestdataChainedEntity;
 import org.optaplanner.core.impl.testdata.domain.chained.TestdataChainedObject;
 
-import static org.junit.Assert.*;
-import static org.mockito.Mockito.*;
+import com.google.common.collect.ImmutableListMultimap;
+import com.google.common.collect.ListMultimap;
 
 public class SelectorTestUtils {
 
@@ -76,7 +77,7 @@ public class SelectorTestUtils {
             Object... entities) {
         EntitySelector entitySelector = mock(EntitySelector.class);
         when(entitySelector.getEntityDescriptor()).thenReturn(entityDescriptor);
-        final List<Object> entityList = Arrays.<Object>asList(entities);
+        final List<Object> entityList = Arrays.<Object> asList(entities);
         when(entitySelector.iterator()).thenAnswer(invocation -> entityList.iterator());
         when(entitySelector.listIterator()).thenAnswer(invocation -> entityList.listIterator());
         when(entitySelector.spliterator()).thenAnswer(invocation -> entityList.spliterator());
@@ -105,7 +106,7 @@ public class SelectorTestUtils {
     public static ValueSelector mockValueSelector(GenuineVariableDescriptor variableDescriptor, Object... values) {
         ValueSelector valueSelector = mock(ValueSelector.class);
         when(valueSelector.getVariableDescriptor()).thenReturn(variableDescriptor);
-        final List<Object> valueList = Arrays.<Object>asList(values);
+        final List<Object> valueList = Arrays.<Object> asList(values);
         when(valueSelector.iterator(any())).thenAnswer(invocation -> valueList.iterator());
         when(valueSelector.isCountable()).thenReturn(true);
         when(valueSelector.isNeverEnding()).thenReturn(false);
@@ -152,7 +153,7 @@ public class SelectorTestUtils {
             GenuineVariableDescriptor variableDescriptor, Object... values) {
         EntityIndependentValueSelector valueSelector = mock(EntityIndependentValueSelector.class);
         when(valueSelector.getVariableDescriptor()).thenReturn(variableDescriptor);
-        final List<Object> valueList = Arrays.<Object>asList(values);
+        final List<Object> valueList = Arrays.<Object> asList(values);
         when(valueSelector.iterator(any())).thenAnswer(invocation -> valueList.iterator());
         when(valueSelector.endingIterator(any())).thenAnswer(invocation -> valueList.iterator());
         when(valueSelector.iterator()).thenAnswer(invocation -> valueList.iterator());
@@ -166,7 +167,7 @@ public class SelectorTestUtils {
     public static MoveSelector mockMoveSelector(Class<?> moveClass,
             Move... moves) {
         MoveSelector moveSelector = mock(MoveSelector.class);
-        final List<Move> moveList = Arrays.<Move>asList(moves);
+        final List<Move> moveList = Arrays.<Move> asList(moves);
         when(moveSelector.iterator()).thenAnswer(invocation -> moveList.iterator());
         when(moveSelector.isCountable()).thenReturn(true);
         when(moveSelector.isNeverEnding()).thenReturn(false);
@@ -195,9 +196,10 @@ public class SelectorTestUtils {
             if (!Objects.equals(chainedObject, chainedEntity.getChainedObject())) {
                 fail("Chain assertion failed for chainedEntity (" + chainedEntity + ").\n"
                         + "Expected: " + chainedObject + "\n"
-                        + "Actual:   "  + chainedEntity.getChainedObject() + "\n"
+                        + "Actual:   " + chainedEntity.getChainedObject() + "\n"
                         + "Expected chain: " + Arrays.toString(chainedObjects) + "\n"
-                        + "Actual chain:   " + Arrays.toString(ArrayUtils.subarray(chainedObjects, 0, i)) + " ... [" + chainedEntity.getChainedObject() + ", " + chainedEntity + "] ...");
+                        + "Actual chain:   " + Arrays.toString(ArrayUtils.subarray(chainedObjects, 0, i)) + " ... ["
+                        + chainedEntity.getChainedObject() + ", " + chainedEntity + "] ...");
             }
             chainedObject = chainedEntity;
         }

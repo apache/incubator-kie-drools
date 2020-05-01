@@ -46,10 +46,11 @@ public class MutationCounter<Solution_> {
         for (EntityDescriptor<Solution_> entityDescriptor : solutionDescriptor.getGenuineEntityDescriptors()) {
             List<Object> aEntities = entityDescriptor.extractEntities(a);
             List<Object> bEntities = entityDescriptor.extractEntities(b);
-            for (Iterator<Object> aIt = aEntities.iterator(), bIt = bEntities.iterator(); aIt.hasNext() && bIt.hasNext(); ) {
-                Object aEntity =  aIt.next();
-                Object bEntity =  bIt.next();
-                for (GenuineVariableDescriptor<Solution_> variableDescriptor : entityDescriptor.getGenuineVariableDescriptors()) {
+            for (Iterator<Object> aIt = aEntities.iterator(), bIt = bEntities.iterator(); aIt.hasNext() && bIt.hasNext();) {
+                Object aEntity = aIt.next();
+                Object bEntity = bIt.next();
+                for (GenuineVariableDescriptor<Solution_> variableDescriptor : entityDescriptor
+                        .getGenuineVariableDescriptors()) {
                     // TODO broken if the value is an entity, because then it's never the same
                     // But we don't want to depend on value/entity equals() => use surrogate entity IDs to compare
                     // https://issues.redhat.com/browse/PLANNER-170

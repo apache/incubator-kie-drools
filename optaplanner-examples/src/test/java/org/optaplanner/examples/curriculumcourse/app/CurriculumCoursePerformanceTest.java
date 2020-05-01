@@ -35,7 +35,6 @@ public class CurriculumCoursePerformanceTest extends SolverPerformanceTest<Cours
     protected Stream<TestData> testData() {
         return Stream.of(
                 testData(UNSOLVED_DATA_FILE, "0hard/-99soft", EnvironmentMode.REPRODUCIBLE),
-                testData(UNSOLVED_DATA_FILE, "0hard/-140soft", EnvironmentMode.FAST_ASSERT)
-        );
+                testData(UNSOLVED_DATA_FILE, "0hard/-140soft", EnvironmentMode.FAST_ASSERT));
     }
 }

@@ -62,7 +62,7 @@ public final class Joiners {
     }
 
     public static <A, B, Property_> BiJoiner<A, B> equal(Function<A, Property_> leftMapping,
-            Function <B, Property_> rightMapping) {
+            Function<B, Property_> rightMapping) {
         return new SingleBiJoiner<>(leftMapping, JoinerType.EQUAL, rightMapping);
     }
 
@@ -118,34 +118,34 @@ public final class Joiners {
     }
 
     /*
-    // TODO implement these joiners
-    public static <A, B, Property_> BiJoiner<A, B> containing(
-            Function<A, ? extends Collection<Property_>> leftMapping, Function <B, Property_> rightMapping) {
-        return new SingleBiJoiner<>(leftMapping, JoinerType.CONTAINING, rightMapping);
-    }
-
-    // TODO containedBy (inverse contains relationship)
-
-    public static <A, Property_> BiJoiner<A, A> intersecting(
-            Function<A, ? extends Collection<Property_>> mapping) {
-        return intersecting(mapping, mapping);
-    }
-
-    public static <A, B, Property_> BiJoiner<A, B> intersecting(
-            Function<A, ? extends Collection<Property_>> leftMapping,
-            Function <B, ? extends Collection<Property_>> rightMapping) {
-        return new SingleBiJoiner<>(leftMapping, JoinerType.INTERSECTING, rightMapping);
-    }
-
-    public static <A, Property_> BiJoiner<A, A> disjoint(Function<A, ? extends Collection<Property_>> mapping) {
-        return disjoint(mapping, mapping);
-    }
-
-    public static <A, B, Property_> BiJoiner<A, B> disjoint(Function<A, ? extends Collection<Property_>> leftMapping,
-            Function <B, ? extends Collection<Property_>> rightMapping) {
-        return new SingleBiJoiner<>(leftMapping, JoinerType.DISJOINT, rightMapping);
-    }
-    */
+     * // TODO implement these joiners
+     * public static <A, B, Property_> BiJoiner<A, B> containing(
+     * Function<A, ? extends Collection<Property_>> leftMapping, Function <B, Property_> rightMapping) {
+     * return new SingleBiJoiner<>(leftMapping, JoinerType.CONTAINING, rightMapping);
+     * }
+     * 
+     * // TODO containedBy (inverse contains relationship)
+     * 
+     * public static <A, Property_> BiJoiner<A, A> intersecting(
+     * Function<A, ? extends Collection<Property_>> mapping) {
+     * return intersecting(mapping, mapping);
+     * }
+     * 
+     * public static <A, B, Property_> BiJoiner<A, B> intersecting(
+     * Function<A, ? extends Collection<Property_>> leftMapping,
+     * Function <B, ? extends Collection<Property_>> rightMapping) {
+     * return new SingleBiJoiner<>(leftMapping, JoinerType.INTERSECTING, rightMapping);
+     * }
+     * 
+     * public static <A, Property_> BiJoiner<A, A> disjoint(Function<A, ? extends Collection<Property_>> mapping) {
+     * return disjoint(mapping, mapping);
+     * }
+     * 
+     * public static <A, B, Property_> BiJoiner<A, B> disjoint(Function<A, ? extends Collection<Property_>> leftMapping,
+     * Function <B, ? extends Collection<Property_>> rightMapping) {
+     * return new SingleBiJoiner<>(leftMapping, JoinerType.DISJOINT, rightMapping);
+     * }
+     */
 
     // TODO
     // join(..., planningVariableContainsCached(Talk::getPeriod, (Period a, Period b) -> a.overlaps(b)))
@@ -190,7 +190,7 @@ public final class Joiners {
     // ************************************************************************
 
     public static <A, B, C, D, Property_> QuadJoiner<A, B, C, D> equal(
-            TriFunction<A, B, C, Property_> leftMapping, Function <D, Property_> rightMapping) {
+            TriFunction<A, B, C, Property_> leftMapping, Function<D, Property_> rightMapping) {
         return new SingleQuadJoiner<>(leftMapping, JoinerType.EQUAL, rightMapping);
     }
 
@@ -223,7 +223,7 @@ public final class Joiners {
     // ************************************************************************
 
     public static <A, B, C, D, E, Property_> PentaJoiner<A, B, C, D, E> equal(
-            QuadFunction<A, B, C, D, Property_> leftMapping, Function <E, Property_> rightMapping) {
+            QuadFunction<A, B, C, D, Property_> leftMapping, Function<E, Property_> rightMapping) {
         return new SinglePentaJoiner<>(leftMapping, JoinerType.EQUAL, rightMapping);
     }
 
@@ -242,8 +242,8 @@ public final class Joiners {
         return new SinglePentaJoiner<>(leftMapping, JoinerType.GREATER_THAN, rightMapping);
     }
 
-    public static <A, B, C, D, E, Property_ extends Comparable<Property_>> PentaJoiner<A, B, C, D, E>
-    greaterThanOrEqual(QuadFunction<A, B, C, D, Property_> leftMapping, Function<E, Property_> rightMapping) {
+    public static <A, B, C, D, E, Property_ extends Comparable<Property_>> PentaJoiner<A, B, C, D, E> greaterThanOrEqual(
+            QuadFunction<A, B, C, D, Property_> leftMapping, Function<E, Property_> rightMapping) {
         return new SinglePentaJoiner<>(leftMapping, JoinerType.GREATER_THAN_OR_EQUAL, rightMapping);
     }
 
@@ -251,6 +251,7 @@ public final class Joiners {
         return new FilteringPentaJoiner<>(filter);
     }
 
-    private Joiners() {}
+    private Joiners() {
+    }
 
 }

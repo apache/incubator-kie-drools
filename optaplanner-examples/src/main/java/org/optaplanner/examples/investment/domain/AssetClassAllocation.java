@@ -16,11 +16,12 @@
 
 package org.optaplanner.examples.investment.domain;
 
-import com.thoughtworks.xstream.annotations.XStreamAlias;
 import org.optaplanner.core.api.domain.entity.PlanningEntity;
 import org.optaplanner.core.api.domain.variable.PlanningVariable;
 import org.optaplanner.examples.common.domain.AbstractPersistable;
 import org.optaplanner.examples.investment.domain.util.InvestmentNumericUtil;
+
+import com.thoughtworks.xstream.annotations.XStreamAlias;
 
 @PlanningEntity()
 @XStreamAlias("AssetClassAllocation")
@@ -50,7 +51,7 @@ public class AssetClassAllocation extends AbstractPersistable {
         this.assetClass = assetClass;
     }
 
-    @PlanningVariable(valueRangeProviderRefs = {"quantityMillisRange"})
+    @PlanningVariable(valueRangeProviderRefs = { "quantityMillisRange" })
     public Long getQuantityMillis() {
         return quantityMillis;
     }

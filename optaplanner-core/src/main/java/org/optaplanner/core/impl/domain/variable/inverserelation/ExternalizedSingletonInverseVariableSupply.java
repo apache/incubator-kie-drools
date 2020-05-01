@@ -28,7 +28,8 @@ import org.optaplanner.core.impl.score.director.ScoreDirector;
 /**
  * Alternative to {@link SingletonInverseVariableListener}.
  */
-public class ExternalizedSingletonInverseVariableSupply implements StatefulVariableListener<Object>, SingletonInverseVariableSupply {
+public class ExternalizedSingletonInverseVariableSupply
+        implements StatefulVariableListener<Object>, SingletonInverseVariableSupply {
 
     protected final VariableDescriptor sourceVariableDescriptor;
 

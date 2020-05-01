@@ -36,7 +36,8 @@ public class TestdataLavishEntity extends TestdataObject {
 
     public static GenuineVariableDescriptor<TestdataLavishSolution> buildVariableDescriptorForValue() {
         SolutionDescriptor<TestdataLavishSolution> solutionDescriptor = TestdataLavishSolution.buildSolutionDescriptor();
-        EntityDescriptor<TestdataLavishSolution> entityDescriptor = solutionDescriptor.findEntityDescriptorOrFail(TestdataLavishEntity.class);
+        EntityDescriptor<TestdataLavishSolution> entityDescriptor = solutionDescriptor
+                .findEntityDescriptorOrFail(TestdataLavishEntity.class);
         return entityDescriptor.getGenuineVariableDescriptor("value");
     }
 

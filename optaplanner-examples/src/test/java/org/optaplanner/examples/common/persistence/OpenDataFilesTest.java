@@ -16,6 +16,8 @@
 
 package org.optaplanner.examples.common.persistence;
 
+import static org.junit.jupiter.api.DynamicTest.dynamicTest;
+
 import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
@@ -29,8 +31,6 @@ import org.optaplanner.examples.common.app.CommonApp;
 import org.optaplanner.examples.common.app.LoggingTest;
 import org.optaplanner.examples.common.business.ProblemFileComparator;
 import org.optaplanner.persistence.common.api.domain.solution.SolutionFileIO;
-
-import static org.junit.jupiter.api.DynamicTest.dynamicTest;
 
 /**
  * @param <Solution_> the solution type, the class with the {@link PlanningSolution} annotation
@@ -49,12 +49,12 @@ public abstract class OpenDataFilesTest<Solution_> extends LoggingTest {
         }
         String inputFileExtension = commonApp.createSolutionFileIO().getInputFileExtension();
         fileList.addAll(
-                FileUtils.listFiles(unsolvedDataDir, new String[]{inputFileExtension}, true));
+                FileUtils.listFiles(unsolvedDataDir, new String[] { inputFileExtension }, true));
         File solvedDataDir = new File(dataDir, "solved");
         if (solvedDataDir.exists()) {
             String outputFileExtension = commonApp.createSolutionFileIO().getOutputFileExtension();
             fileList.addAll(
-                    FileUtils.listFiles(solvedDataDir, new String[]{outputFileExtension}, true));
+                    FileUtils.listFiles(solvedDataDir, new String[] { outputFileExtension }, true));
         }
         fileList.sort(new ProblemFileComparator());
         return fileList;

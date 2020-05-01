@@ -16,6 +16,8 @@
 
 package org.optaplanner.core.impl.score.stream.drools;
 
+import static java.util.stream.Collectors.toMap;
+
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.LinkedHashSet;
@@ -42,8 +44,6 @@ import org.optaplanner.core.impl.score.stream.ConstraintSession;
 import org.optaplanner.core.impl.score.stream.common.AbstractConstraintSessionFactory;
 import org.optaplanner.core.impl.score.stream.drools.common.DroolsRuleStructure;
 import org.optaplanner.core.impl.score.stream.drools.common.FactTuple;
-
-import static java.util.stream.Collectors.toMap;
 
 public class DroolsConstraintSessionFactory<Solution_> extends AbstractConstraintSessionFactory<Solution_> {
 
@@ -75,10 +75,9 @@ public class DroolsConstraintSessionFactory<Solution_> extends AbstractConstrain
     @Override
     public ConstraintSession<Solution_> buildSession(boolean constraintMatchEnabled, Solution_ workingSolution) {
         // Make sure the constraint justifications match what comes out of Bavet.
-        AbstractScoreHolder scoreHolder =
-                (AbstractScoreHolder) getScoreDefinition().buildScoreHolder(constraintMatchEnabled);
-        scoreHolder.setJustificationListConverter((justificationList, rule) ->
-                matchJustificationsToOutput((List<Object>) justificationList,
+        AbstractScoreHolder scoreHolder = (AbstractScoreHolder) getScoreDefinition().buildScoreHolder(constraintMatchEnabled);
+        scoreHolder.setJustificationListConverter(
+                (justificationList, rule) -> matchJustificationsToOutput((List<Object>) justificationList,
                         compiledRuleToConstraintMap.get(rule).getExpectedJustificationTypes()));
         // Determine which rules to enable based on the fact that their constraints carry weight.
         Score<?> zeroScore = getScoreDefinition().getZeroScore();

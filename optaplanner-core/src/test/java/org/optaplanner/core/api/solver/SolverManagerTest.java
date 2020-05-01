@@ -16,6 +16,14 @@
 
 package org.optaplanner.core.api.solver;
 
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
+import static org.junit.Assert.*;
+import static org.optaplanner.core.api.solver.SolverStatus.NOT_SOLVING;
+import static org.optaplanner.core.api.solver.SolverStatus.SOLVING_ACTIVE;
+import static org.optaplanner.core.api.solver.SolverStatus.SOLVING_SCHEDULED;
+import static org.optaplanner.core.impl.testdata.util.PlannerAssert.*;
+
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
@@ -47,14 +55,6 @@ import org.optaplanner.core.impl.testdata.domain.TestdataEntity;
 import org.optaplanner.core.impl.testdata.domain.TestdataSolution;
 import org.optaplanner.core.impl.testdata.domain.extended.TestdataUnannotatedExtendedSolution;
 import org.optaplanner.core.impl.testdata.util.PlannerTestUtils;
-
-import static org.assertj.core.api.Assertions.assertThat;
-import static org.assertj.core.api.Assertions.assertThatThrownBy;
-import static org.junit.Assert.*;
-import static org.optaplanner.core.api.solver.SolverStatus.NOT_SOLVING;
-import static org.optaplanner.core.api.solver.SolverStatus.SOLVING_ACTIVE;
-import static org.optaplanner.core.api.solver.SolverStatus.SOLVING_SCHEDULED;
-import static org.optaplanner.core.impl.testdata.util.PlannerAssert.*;
 
 public class SolverManagerTest {
 
@@ -196,10 +196,11 @@ public class SolverManagerTest {
         BiConsumer<Object, Object> exceptionHandler = (o1, o2) -> fail("Solving failed.");
         Consumer<Object> finalBestSolutionConsumer = o -> {
         };
-        Function<Object, TestdataUnannotatedExtendedSolution> problemFinder
-                = o -> new TestdataUnannotatedExtendedSolution(PlannerTestUtils.generateTestdataSolution("s1"));
+        Function<Object, TestdataUnannotatedExtendedSolution> problemFinder = o -> new TestdataUnannotatedExtendedSolution(
+                PlannerTestUtils.generateTestdataSolution("s1"));
 
-        SolverJob<TestdataSolution, Long> solverJob = solverManager.solve(1L, problemFinder, finalBestSolutionConsumer, exceptionHandler);
+        SolverJob<TestdataSolution, Long> solverJob = solverManager.solve(1L, problemFinder, finalBestSolutionConsumer,
+                exceptionHandler);
         solverJob.getFinalBestSolution();
     }
 
@@ -336,7 +337,7 @@ public class SolverManagerTest {
         int processCount = Runtime.getRuntime().availableProcessors();
         SolverConfig solverConfig = PlannerTestUtils.buildSolverConfig(TestdataSolution.class, TestdataEntity.class)
                 .withPhases(new ConstructionHeuristicPhaseConfig(), new LocalSearchPhaseConfig())
-//                .withTerminationConfig(new TerminationConfig().withSecondsSpentLimit(4L))
+                //                .withTerminationConfig(new TerminationConfig().withSecondsSpentLimit(4L))
                 // Adds moveThreadCount to the solver config.
                 .withMoveThreadCount("AUTO");
         // Creates solverManagerConfig with multiple threads.
@@ -350,7 +351,8 @@ public class SolverManagerTest {
         assertInitializedJobs(jobs);
     }
 
-    private void assertInitializedJobs(List<SolverJob<TestdataSolution, Integer>> jobs) throws InterruptedException, ExecutionException {
+    private void assertInitializedJobs(List<SolverJob<TestdataSolution, Integer>> jobs)
+            throws InterruptedException, ExecutionException {
         for (SolverJob<TestdataSolution, Integer> job : jobs) {
             // Method getFinalBestSolution() waits for the solving to finish, therefore it ensures synchronization.
             assertSolutionInitialized(job.getFinalBestSolution());
@@ -377,7 +379,8 @@ public class SolverManagerTest {
                             entity.setValue(solution.getValueList().get(x));
                             scoreDirector.afterVariableChanged(entity, "value");
                             scoreDirector.triggerVariableListeners();
-                        })).collect(Collectors.toList());
+                        }))
+                .collect(Collectors.toList());
 
         SolverConfig solverConfig = PlannerTestUtils.buildSolverConfig(TestdataSolution.class, TestdataEntity.class)
                 .withPhases(phaseConfigList.toArray(new PhaseConfig[0]));
@@ -387,7 +390,8 @@ public class SolverManagerTest {
         return SolverManager.create(solverConfig, solverManagerConfig);
     }
 
-    private void assertDifferentSolveMethods(int problemCount, SolverManager<TestdataSolution, Integer> solverManager) throws InterruptedException, ExecutionException {
+    private void assertDifferentSolveMethods(int problemCount, SolverManager<TestdataSolution, Integer> solverManager)
+            throws InterruptedException, ExecutionException {
         assertSolveWithoutConsumer(problemCount, solverManager);
         assertSolveWithConsumer(problemCount, solverManager, true);
         assertSolveWithConsumer(problemCount, solverManager, false);
@@ -479,8 +483,7 @@ public class SolverManagerTest {
         SolverConfig solverConfig = PlannerTestUtils.buildSolverConfig(TestdataSolution.class, TestdataEntity.class)
                 .withPhases(createPhaseWithConcurrentSolvingStart(2));
 
-        SolverManager<TestdataSolution, Long> solverManager =
-                SolverManager.create(solverConfig, solverManagerConfig);
+        SolverManager<TestdataSolution, Long> solverManager = SolverManager.create(solverConfig, solverManagerConfig);
 
         solverManager.solve(1L, PlannerTestUtils.generateTestdataSolution("s1"));
         assertThatThrownBy(() -> solverManager.solve(1L, PlannerTestUtils.generateTestdataSolution("s1")))

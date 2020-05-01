@@ -27,6 +27,7 @@ public interface TestdataShadowingChainedObject {
      */
     @InverseRelationShadowVariable(sourceVariableName = "chainedObject")
     TestdataShadowingChainedEntity getNextEntity();
+
     void setNextEntity(TestdataShadowingChainedEntity nextEntity);
 
 }

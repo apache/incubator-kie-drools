@@ -26,7 +26,7 @@ import org.optaplanner.core.impl.score.stream.drools.common.DroolsAbstractGroupB
 import org.optaplanner.core.impl.score.stream.drools.common.QuadTuple;
 
 public class DroolsQuadGroupByInvoker<A, B, C, D, NewA, NewB, NewC, NewD>
-    extends DroolsAbstractGroupByInvoker<QuadTuple<A, B, C, D>> {
+        extends DroolsAbstractGroupByInvoker<QuadTuple<A, B, C, D>> {
 
     private final QuadFunction<A, B, C, D, NewA> groupKeyAMapping;
     private final QuadFunction<A, B, C, D, NewB> groupKeyBMapping;

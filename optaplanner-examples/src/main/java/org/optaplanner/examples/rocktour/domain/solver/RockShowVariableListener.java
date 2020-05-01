@@ -16,6 +16,8 @@
 
 package org.optaplanner.examples.rocktour.domain.solver;
 
+import static java.time.temporal.ChronoUnit.DAYS;
+
 import java.time.LocalDate;
 import java.util.Objects;
 
@@ -25,8 +27,6 @@ import org.optaplanner.examples.rocktour.domain.RockShow;
 import org.optaplanner.examples.rocktour.domain.RockStandstill;
 import org.optaplanner.examples.rocktour.domain.RockTimeOfDay;
 import org.optaplanner.examples.rocktour.domain.RockTourSolution;
-
-import static java.time.temporal.ChronoUnit.DAYS;
 
 public class RockShowVariableListener implements VariableListener<RockShow> {
 
@@ -68,9 +68,9 @@ public class RockShowVariableListener implements VariableListener<RockShow> {
         RockShow shadowShow = sourceShow;
         while (shadowShow != null
                 && !(Objects.equals(shadowShow.getDate(), arrival.date)
-                    && Objects.equals(shadowShow.getTimeOfDay(), arrival.timeOfDay)
-                    && shadowShow.getHosWeekStart() == arrival.hosWeekStart
-                    && Objects.equals(shadowShow.getHosWeekDrivingSecondsTotal(), arrival.hosWeekDrivingSecondsTotal))) {
+                        && Objects.equals(shadowShow.getTimeOfDay(), arrival.timeOfDay)
+                        && shadowShow.getHosWeekStart() == arrival.hosWeekStart
+                        && Objects.equals(shadowShow.getHosWeekDrivingSecondsTotal(), arrival.hosWeekDrivingSecondsTotal))) {
             scoreDirector.beforeVariableChanged(shadowShow, "date");
             shadowShow.setDate(arrival.date);
             scoreDirector.afterVariableChanged(shadowShow, "date");
@@ -100,7 +100,8 @@ public class RockShowVariableListener implements VariableListener<RockShow> {
         long earlyLateBreakDrivingSecondsBudget = solution.getConstraintConfiguration().getEarlyLateBreakDrivingSecondsBudget();
         long nightDrivingSecondsBudget = solution.getConstraintConfiguration().getNightDrivingSecondsBudget();
         long hosWeekDrivingSecondsBudget = solution.getConstraintConfiguration().getHosWeekDrivingSecondsBudget();
-        int hosWeekConsecutiveDrivingDaysBudget = solution.getConstraintConfiguration().getHosWeekConsecutiveDrivingDaysBudget();
+        int hosWeekConsecutiveDrivingDaysBudget = solution.getConstraintConfiguration()
+                .getHosWeekConsecutiveDrivingDaysBudget();
         int hosWeekRestDays = solution.getConstraintConfiguration().getHosWeekRestDays();
 
         RockTimeOfDay timeOfDay = previousStandstill.getDepartureTimeOfDay();

@@ -16,8 +16,9 @@
 
 package org.optaplanner.examples.dinnerparty.domain;
 
-import com.thoughtworks.xstream.annotations.XStreamAlias;
 import org.optaplanner.examples.common.domain.AbstractPersistable;
+
+import com.thoughtworks.xstream.annotations.XStreamAlias;
 
 @XStreamAlias("HobbyPractician")
 public class HobbyPractician extends AbstractPersistable {

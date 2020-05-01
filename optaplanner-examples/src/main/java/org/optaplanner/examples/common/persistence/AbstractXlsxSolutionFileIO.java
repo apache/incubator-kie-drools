@@ -60,18 +60,15 @@ import org.optaplanner.swing.impl.TangoColorFactory;
 
 public abstract class AbstractXlsxSolutionFileIO<Solution_> implements SolutionFileIO<Solution_> {
 
-    protected static final Pattern VALID_TAG_PATTERN = Pattern.compile("(?U)^[\\w&\\-\\.\\/\\(\\)\\'][\\w&\\-\\.\\/\\(\\)\\' ]*[\\w&\\-\\.\\/\\(\\)\\']?$");
+    protected static final Pattern VALID_TAG_PATTERN = Pattern
+            .compile("(?U)^[\\w&\\-\\.\\/\\(\\)\\'][\\w&\\-\\.\\/\\(\\)\\' ]*[\\w&\\-\\.\\/\\(\\)\\']?$");
     protected static final Pattern VALID_NAME_PATTERN = AbstractXlsxSolutionFileIO.VALID_TAG_PATTERN;
     protected static final Pattern VALID_CODE_PATTERN = Pattern.compile("(?U)^[\\w\\-\\.\\/\\(\\)]+$");
 
-    public static final DateTimeFormatter DAY_FORMATTER
-            = DateTimeFormatter.ofPattern("E yyyy-MM-dd", Locale.ENGLISH);
-    public static final DateTimeFormatter MONTH_FORMATTER
-            = DateTimeFormatter.ofPattern("MMM yyyy", Locale.ENGLISH);
-    public static final DateTimeFormatter TIME_FORMATTER
-            = DateTimeFormatter.ofPattern("HH:mm", Locale.ENGLISH);
-    public static final DateTimeFormatter DATE_TIME_FORMATTER
-            = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm", Locale.ENGLISH);
+    public static final DateTimeFormatter DAY_FORMATTER = DateTimeFormatter.ofPattern("E yyyy-MM-dd", Locale.ENGLISH);
+    public static final DateTimeFormatter MONTH_FORMATTER = DateTimeFormatter.ofPattern("MMM yyyy", Locale.ENGLISH);
+    public static final DateTimeFormatter TIME_FORMATTER = DateTimeFormatter.ofPattern("HH:mm", Locale.ENGLISH);
+    public static final DateTimeFormatter DATE_TIME_FORMATTER = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm", Locale.ENGLISH);
 
     protected static final XSSFColor VIEW_TAB_COLOR = new XSSFColor(TangoColorFactory.BUTTER_1);
     protected static final XSSFColor DISABLED_COLOR = new XSSFColor(TangoColorFactory.ALUMINIUM_3);
@@ -103,8 +100,8 @@ public abstract class AbstractXlsxSolutionFileIO<Solution_> implements SolutionF
 
         public AbstractXlsxReader(XSSFWorkbook workbook, String solverConfigResource) {
             this.workbook = workbook;
-            ScoreDirectorFactory<Solution_> scoreDirectorFactory
-                    = SolverFactory.<Solution_>createFromXmlResource(solverConfigResource).getScoreDirectorFactory();
+            ScoreDirectorFactory<Solution_> scoreDirectorFactory = SolverFactory
+                    .<Solution_> createFromXmlResource(solverConfigResource).getScoreDirectorFactory();
             scoreDefinition = ((InnerScoreDirectorFactory) scoreDirectorFactory).getScoreDefinition();
         }
 
@@ -375,8 +372,8 @@ public abstract class AbstractXlsxSolutionFileIO<Solution_> implements SolutionF
 
         public AbstractXlsxWriter(Solution_ solution, String solverConfigResource) {
             this.solution = solution;
-            ScoreDirectorFactory<Solution_> scoreDirectorFactory
-                    = SolverFactory.<Solution_>createFromXmlResource(solverConfigResource).getScoreDirectorFactory();
+            ScoreDirectorFactory<Solution_> scoreDirectorFactory = SolverFactory
+                    .<Solution_> createFromXmlResource(solverConfigResource).getScoreDirectorFactory();
             scoreDefinition = ((InnerScoreDirectorFactory) scoreDirectorFactory).getScoreDefinition();
             try (ScoreDirector<Solution_> scoreDirector = scoreDirectorFactory.buildScoreDirector()) {
                 scoreDirector.setWorkingSolution(solution);
@@ -501,45 +498,46 @@ public abstract class AbstractXlsxSolutionFileIO<Solution_> implements SolutionF
                             .thenComparing(ConstraintMatchTotal::getConstraintPackage)
                             .thenComparing(ConstraintMatchTotal::getConstraintName))
                     .forEach(constraintMatchTotal -> {
-                nextRow();
-                nextHeaderCell(constraintMatchTotal.getConstraintName());
-                Score constraintWeight = constraintMatchTotal.getConstraintWeight();
-                nextCell(scoreStyle).setCellValue(constraintWeight == null ? "N/A" : constraintWeight.toShortString());
-                nextCell().setCellValue(constraintMatchTotal.getConstraintMatchSet().size());
-                nextCell(scoreStyle).setCellValue(constraintMatchTotal.getScore().toShortString());
-            });
+                        nextRow();
+                        nextHeaderCell(constraintMatchTotal.getConstraintName());
+                        Score constraintWeight = constraintMatchTotal.getConstraintWeight();
+                        nextCell(scoreStyle).setCellValue(constraintWeight == null ? "N/A" : constraintWeight.toShortString());
+                        nextCell().setCellValue(constraintMatchTotal.getConstraintMatchSet().size());
+                        nextCell(scoreStyle).setCellValue(constraintMatchTotal.getScore().toShortString());
+                    });
             nextRow();
             nextRow();
 
-            Comparator<ConstraintMatchTotal> constraintMatchTotalComparator
-                    = Comparator.<ConstraintMatchTotal, Score>comparing(ConstraintMatchTotal::getScore);
+            Comparator<ConstraintMatchTotal> constraintMatchTotalComparator = Comparator
+                    .<ConstraintMatchTotal, Score> comparing(ConstraintMatchTotal::getScore);
             constraintMatchTotalComparator = constraintMatchTotalComparator
                     .thenComparing(ConstraintMatchTotal::getConstraintPackage)
                     .thenComparing(ConstraintMatchTotal::getConstraintName);
-            Comparator<ConstraintMatch> constraintMatchComparator
-                    = Comparator.<ConstraintMatch, Score>comparing(ConstraintMatch::getScore);
+            Comparator<ConstraintMatch> constraintMatchComparator = Comparator
+                    .<ConstraintMatch, Score> comparing(ConstraintMatch::getScore);
             constraintMatchTotals.stream()
                     .sorted(constraintMatchTotalComparator)
                     .forEach(constraintMatchTotal -> {
-                nextRow();
-                nextHeaderCell(constraintMatchTotal.getConstraintName());
-                Score constraintWeight = constraintMatchTotal.getConstraintWeight();
-                nextCell(scoreStyle).setCellValue(constraintWeight == null ? "N/A" : constraintWeight.toShortString());
-                nextCell().setCellValue(constraintMatchTotal.getConstraintMatchSet().size());
-                nextCell(scoreStyle).setCellValue(constraintMatchTotal.getScore().toShortString());
-                constraintMatchTotal.getConstraintMatchSet().stream()
-                        .sorted(constraintMatchComparator)
-                        .forEach(constraintMatch -> {
-                    nextRow();
-                    nextCell();
-                    nextCell();
-                    nextCell();
-                    nextCell();
-                    nextCell();
-                    nextCell(scoreStyle).setCellValue(constraintMatch.getScore().toShortString());
-                    nextCell().setCellValue(justificationListFormatter.apply(constraintMatch.getJustificationList()));
-                });
-            });
+                        nextRow();
+                        nextHeaderCell(constraintMatchTotal.getConstraintName());
+                        Score constraintWeight = constraintMatchTotal.getConstraintWeight();
+                        nextCell(scoreStyle).setCellValue(constraintWeight == null ? "N/A" : constraintWeight.toShortString());
+                        nextCell().setCellValue(constraintMatchTotal.getConstraintMatchSet().size());
+                        nextCell(scoreStyle).setCellValue(constraintMatchTotal.getScore().toShortString());
+                        constraintMatchTotal.getConstraintMatchSet().stream()
+                                .sorted(constraintMatchComparator)
+                                .forEach(constraintMatch -> {
+                                    nextRow();
+                                    nextCell();
+                                    nextCell();
+                                    nextCell();
+                                    nextCell();
+                                    nextCell();
+                                    nextCell(scoreStyle).setCellValue(constraintMatch.getScore().toShortString());
+                                    nextCell().setCellValue(
+                                            justificationListFormatter.apply(constraintMatch.getJustificationList()));
+                                });
+                    });
             autoSizeColumnsWithHeader();
         }
 

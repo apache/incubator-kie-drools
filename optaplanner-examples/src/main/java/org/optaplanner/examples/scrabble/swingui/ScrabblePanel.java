@@ -16,7 +16,11 @@
 
 package org.optaplanner.examples.scrabble.swingui;
 
+import static org.optaplanner.examples.common.swingui.timetable.TimeTablePanel.HeaderColumnKey.*;
+import static org.optaplanner.examples.common.swingui.timetable.TimeTablePanel.HeaderRowKey.*;
+
 import java.awt.BorderLayout;
+
 import javax.swing.BorderFactory;
 import javax.swing.JButton;
 import javax.swing.JLabel;
@@ -31,9 +35,6 @@ import org.optaplanner.examples.scrabble.domain.ScrabbleCell;
 import org.optaplanner.examples.scrabble.domain.ScrabbleSolution;
 import org.optaplanner.swing.impl.SwingUtils;
 import org.optaplanner.swing.impl.TangoColorFactory;
-
-import static org.optaplanner.examples.common.swingui.timetable.TimeTablePanel.HeaderColumnKey.*;
-import static org.optaplanner.examples.common.swingui.timetable.TimeTablePanel.HeaderRowKey.*;
 
 public class ScrabblePanel extends SolutionPanel<ScrabbleSolution> {
 
@@ -108,6 +109,7 @@ public class ScrabblePanel extends SolutionPanel<ScrabbleSolution> {
             }
         }
     }
+
     private JPanel createTableHeader(JLabel label) {
         JPanel headerPanel = new JPanel(new BorderLayout());
         headerPanel.add(label, BorderLayout.NORTH);

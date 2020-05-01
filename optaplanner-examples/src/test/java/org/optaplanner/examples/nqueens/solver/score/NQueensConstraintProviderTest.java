@@ -30,8 +30,8 @@ import org.optaplanner.test.api.score.stream.ConstraintVerifier;
 
 public class NQueensConstraintProviderTest {
 
-    private final ConstraintVerifier<NQueensConstraintProvider, NQueens> constraintVerifier
-            = ConstraintVerifier.build(new NQueensConstraintProvider(), NQueens.class, Queen.class);
+    private final ConstraintVerifier<NQueensConstraintProvider, NQueens> constraintVerifier = ConstraintVerifier
+            .build(new NQueensConstraintProvider(), NQueens.class, Queen.class);
 
     private final Row row1 = new Row(0);
     private final Row row2 = new Row(1);

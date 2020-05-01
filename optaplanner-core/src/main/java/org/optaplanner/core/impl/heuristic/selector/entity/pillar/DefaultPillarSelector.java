@@ -152,9 +152,8 @@ public class DefaultPillarSelector extends AbstractSelector implements PillarSel
         Map<List<Object>, List<Object>> valueStateToPillarMap = new LinkedHashMap<>((int) entitySize);
         int variableCount = variableDescriptors.size();
         entities.forEach(entity -> {
-            List<Object> valueState = variableCount == 1 ?
-                    getSingleVariableValueState(entity, variableDescriptors) :
-                    getMultiVariableValueState(entity, variableDescriptors, variableCount);
+            List<Object> valueState = variableCount == 1 ? getSingleVariableValueState(entity, variableDescriptors)
+                    : getMultiVariableValueState(entity, variableDescriptors, variableCount);
             List<Object> pillar = valueStateToPillarMap.computeIfAbsent(valueState, key -> new ArrayList<>());
             pillar.add(entity);
         });

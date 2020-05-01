@@ -16,6 +16,9 @@
 
 package org.optaplanner.examples.curriculumcourse.optional.score;
 
+import static org.optaplanner.core.api.score.stream.ConstraintCollectors.*;
+import static org.optaplanner.core.api.score.stream.Joiners.*;
+
 import org.optaplanner.core.api.score.buildin.hardsoft.HardSoftScore;
 import org.optaplanner.core.api.score.stream.Constraint;
 import org.optaplanner.core.api.score.stream.ConstraintFactory;
@@ -24,14 +27,11 @@ import org.optaplanner.examples.curriculumcourse.domain.Lecture;
 import org.optaplanner.examples.curriculumcourse.domain.UnavailablePeriodPenalty;
 import org.optaplanner.examples.curriculumcourse.domain.solver.CourseConflict;
 
-import static org.optaplanner.core.api.score.stream.ConstraintCollectors.*;
-import static org.optaplanner.core.api.score.stream.Joiners.*;
-
 public class CourseScheduleConstraintProvider implements ConstraintProvider {
 
     @Override
     public Constraint[] defineConstraints(ConstraintFactory factory) {
-        return new Constraint[]{
+        return new Constraint[] {
                 // TODO replace the 2 conflictingLectures constraints with these
                 // teacherConflict(factory),
                 // curriculumConflict(factory),
@@ -70,8 +70,8 @@ public class CourseScheduleConstraintProvider implements ConstraintProvider {
                 .penalize("curriculumConflict",
                         HardSoftScore.ofHard(1),
                         (lecture1, lecture2) -> (int) lecture1.getCurriculumList().stream()
-                        .filter(lecture -> lecture2.getCurriculumList().contains(lecture))
-                        .count());
+                                .filter(lecture -> lecture2.getCurriculumList().contains(lecture))
+                                .count());
     }
 
     private Constraint conflictingLecturesDifferentCourseInSamePeriod(ConstraintFactory factory) {
@@ -100,12 +100,12 @@ public class CourseScheduleConstraintProvider implements ConstraintProvider {
 
     private Constraint roomOccupancy(ConstraintFactory factory) {
         throw new UnsupportedOperationException("Not yet implemented due to missing support for tri-grouping.");
-//        return factory.from(Lecture.class)
-//                .groupBy(Lecture::getPeriod, Lecture::getRoom, count())
-//                .filter((period, room, count) -> count > 1)
-//                .penalize("roomOccupancy",
-//                        HardSoftScore.ofHard(1),
-//                        (period, room, count) -> count - 1);
+        //        return factory.from(Lecture.class)
+        //                .groupBy(Lecture::getPeriod, Lecture::getRoom, count())
+        //                .filter((period, room, count) -> count > 1)
+        //                .penalize("roomOccupancy",
+        //                        HardSoftScore.ofHard(1),
+        //                        (period, room, count) -> count - 1);
     }
 
     private Constraint unavailablePeriodPenalty(ConstraintFactory factory) {
@@ -140,13 +140,13 @@ public class CourseScheduleConstraintProvider implements ConstraintProvider {
 
     private Constraint curriculumCompactness(ConstraintFactory factory) {
         throw new UnsupportedOperationException("Not yet implemented due to missing support for bi-grouping.");
-//        return factory.from(Curriculum.class)
-//                .join(Lecture.class)
-//                .filter((curriculum, lecture) -> lecture.getCurriculumList().contains(curriculum));
-//                .groupBy(curriculum, collectSortAndFilter(lecture, Lecture::getPeriod(), lectureList -> lectureList.filter(if no before or after))
-//                .flatten()
-//                .penalize("curriculumCompactness",
-//                        HardSoftScore.ofSoft(2));
+        //        return factory.from(Curriculum.class)
+        //                .join(Lecture.class)
+        //                .filter((curriculum, lecture) -> lecture.getCurriculumList().contains(curriculum));
+        //                .groupBy(curriculum, collectSortAndFilter(lecture, Lecture::getPeriod(), lectureList -> lectureList.filter(if no before or after))
+        //                .flatten()
+        //                .penalize("curriculumCompactness",
+        //                        HardSoftScore.ofSoft(2));
     }
 
     private Constraint roomStability(ConstraintFactory factory) {

@@ -1,12 +1,12 @@
 package org.optaplanner.benchmark.impl;
 
+import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.when;
+
 import java.io.File;
 import java.util.Collections;
 import java.util.concurrent.ExecutorService;
-
-import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.when;
-import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
 
 import org.junit.jupiter.api.Test;
 import org.optaplanner.benchmark.api.PlannerBenchmarkException;
@@ -49,8 +49,8 @@ public class DefaultPlannerBenchmarkTest {
         PlannerBenchmarkResult benchmarkResult = new PlannerBenchmarkResult();
 
         DefaultPlannerBenchmark benchmark = new DefaultPlannerBenchmark(benchmarkResult, solverConfigContext,
-                                                                        benchmarkDirectory, executorService,
-                                                                        executorService, benchmarkReport);
+                benchmarkDirectory, executorService,
+                executorService, benchmarkReport);
 
         assertThatExceptionOfType(IllegalArgumentException.class).isThrownBy(benchmark::benchmarkingStarted)
                 .withMessageContaining("solverBenchmarkResultList").withMessageContaining("empty");
@@ -67,8 +67,8 @@ public class DefaultPlannerBenchmarkTest {
         plannerBenchmarkResult.setSolverBenchmarkResultList(Collections.singletonList(benchmarkResult));
 
         DefaultPlannerBenchmark benchmark = new DefaultPlannerBenchmark(plannerBenchmarkResult,
-                                                                        solverConfigContext, null,
-                                                                        executorService, executorService, benchmarkReport);
+                solverConfigContext, null,
+                executorService, executorService, benchmarkReport);
         assertThatExceptionOfType(IllegalArgumentException.class).isThrownBy(benchmark::benchmarkingStarted)
                 .withMessageContaining("benchmarkDirectory").withMessageContaining("null");
     }

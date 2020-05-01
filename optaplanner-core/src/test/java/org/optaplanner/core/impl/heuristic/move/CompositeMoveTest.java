@@ -16,6 +16,10 @@
 
 package org.optaplanner.core.impl.heuristic.move;
 
+import static org.mockito.Mockito.*;
+import static org.optaplanner.core.impl.testdata.util.PlannerAssert.*;
+import static org.optaplanner.core.impl.testdata.util.PlannerTestUtils.*;
+
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
@@ -30,10 +34,6 @@ import org.optaplanner.core.impl.testdata.domain.TestdataEntity;
 import org.optaplanner.core.impl.testdata.domain.TestdataSolution;
 import org.optaplanner.core.impl.testdata.domain.TestdataValue;
 import org.optaplanner.core.impl.testdata.util.PlannerTestUtils;
-
-import static org.mockito.Mockito.*;
-import static org.optaplanner.core.impl.testdata.util.PlannerAssert.*;
-import static org.optaplanner.core.impl.testdata.util.PlannerTestUtils.*;
 
 public class CompositeMoveTest {
 
@@ -106,12 +106,12 @@ public class CompositeMoveTest {
         TestdataEntity destinationE3 = new TestdataEntity("e3", destinationV1);
 
         ScoreDirector<TestdataSolution> destinationScoreDirector = mockRebasingScoreDirector(
-                variableDescriptor.getEntityDescriptor().getSolutionDescriptor(), new Object[][]{
-                        {v1, destinationV1},
-                        {v2, destinationV2},
-                        {e1, destinationE1},
-                        {e2, destinationE2},
-                        {e3, destinationE3},
+                variableDescriptor.getEntityDescriptor().getSolutionDescriptor(), new Object[][] {
+                        { v1, destinationV1 },
+                        { v2, destinationV2 },
+                        { e1, destinationE1 },
+                        { e2, destinationE2 },
+                        { e3, destinationE3 },
                 });
 
         ChangeMove<TestdataSolution> a = new ChangeMove<>(e1, variableDescriptor, v2);
@@ -218,8 +218,8 @@ public class CompositeMoveTest {
         assertSame(v1, e1.getValue());
         assertSame(v2, e2.getValue());
 
-        ScoreDirector<TestdataSolution> scoreDirector
-                = mockScoreDirector(variableDescriptor.getEntityDescriptor().getSolutionDescriptor());
+        ScoreDirector<TestdataSolution> scoreDirector = mockScoreDirector(
+                variableDescriptor.getEntityDescriptor().getSolutionDescriptor());
         Move<TestdataSolution> undoMove = move.doMove(scoreDirector);
 
         assertSame(v3, e1.getValue());

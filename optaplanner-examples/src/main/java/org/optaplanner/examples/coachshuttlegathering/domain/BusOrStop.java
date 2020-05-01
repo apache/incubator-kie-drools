@@ -40,6 +40,7 @@ public interface BusOrStop {
      */
     @InverseRelationShadowVariable(sourceVariableName = "previousBusOrStop")
     BusStop getNextStop();
+
     void setNextStop(BusStop nextStop);
 
 }

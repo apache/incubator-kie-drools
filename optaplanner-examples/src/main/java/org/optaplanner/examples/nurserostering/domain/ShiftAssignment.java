@@ -19,7 +19,6 @@ package org.optaplanner.examples.nurserostering.domain;
 import java.time.DayOfWeek;
 import java.util.Comparator;
 
-import com.thoughtworks.xstream.annotations.XStreamAlias;
 import org.optaplanner.core.api.domain.entity.PlanningEntity;
 import org.optaplanner.core.api.domain.variable.PlanningVariable;
 import org.optaplanner.examples.common.domain.AbstractPersistable;
@@ -28,8 +27,9 @@ import org.optaplanner.examples.nurserostering.domain.solver.EmployeeStrengthCom
 import org.optaplanner.examples.nurserostering.domain.solver.MovableShiftAssignmentSelectionFilter;
 import org.optaplanner.examples.nurserostering.domain.solver.ShiftAssignmentDifficultyComparator;
 
-@PlanningEntity(movableEntitySelectionFilter = MovableShiftAssignmentSelectionFilter.class,
-        difficultyComparatorClass = ShiftAssignmentDifficultyComparator.class)
+import com.thoughtworks.xstream.annotations.XStreamAlias;
+
+@PlanningEntity(movableEntitySelectionFilter = MovableShiftAssignmentSelectionFilter.class, difficultyComparatorClass = ShiftAssignmentDifficultyComparator.class)
 @XStreamAlias("ShiftAssignment")
 public class ShiftAssignment extends AbstractPersistable implements Comparable<ShiftAssignment> {
 
@@ -41,8 +41,7 @@ public class ShiftAssignment extends AbstractPersistable implements Comparable<S
     private int indexInShift;
 
     // Planning variables: changes during planning, between score calculations.
-    @PlanningVariable(valueRangeProviderRefs = {"employeeRange"},
-            strengthComparatorClass = EmployeeStrengthComparator.class)
+    @PlanningVariable(valueRangeProviderRefs = { "employeeRange" }, strengthComparatorClass = EmployeeStrengthComparator.class)
     private Employee employee;
 
     public Shift getShift() {

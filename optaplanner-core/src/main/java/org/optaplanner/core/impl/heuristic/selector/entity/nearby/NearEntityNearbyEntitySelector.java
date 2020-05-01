@@ -55,7 +55,7 @@ public class NearEntityNearbyEntitySelector extends AbstractEntitySelector {
                 originEntitySelector.getEntityDescriptor().getEntityClass())) {
             throw new IllegalArgumentException("The entitySelector (" + this
                     + ") has an entityClass ("
-                    +  childEntitySelector.getEntityDescriptor().getEntityClass()
+                    + childEntitySelector.getEntityDescriptor().getEntityClass()
                     + ") which is not a superclass of the originEntitySelector's entityClass ("
                     + originEntitySelector.getEntityDescriptor().getEntityClass() + ").");
         }
@@ -93,8 +93,8 @@ public class NearEntityNearbyEntitySelector extends AbstractEntitySelector {
             }
         }
         nearbyDistanceMatrix = new NearbyDistanceMatrix(nearbyDistanceMeter, (int) originSize);
-        for (Iterator originIt = originEntitySelector.endingIterator(); originIt.hasNext(); ) {
-            final Object origin =  originIt.next();
+        for (Iterator originIt = originEntitySelector.endingIterator(); originIt.hasNext();) {
+            final Object origin = originIt.next();
             nearbyDistanceMatrix.addAllDestinations(origin, childEntitySelector.endingIterator(), destinationSize);
         }
     }

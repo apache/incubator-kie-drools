@@ -16,12 +16,13 @@
 
 package org.optaplanner.persistence.xstream.api.score.buildin.simpledouble;
 
+import org.optaplanner.core.api.score.buildin.simpledouble.SimpleDoubleScore;
+import org.optaplanner.persistence.xstream.api.score.AbstractScoreXStreamConverter;
+
 import com.thoughtworks.xstream.converters.MarshallingContext;
 import com.thoughtworks.xstream.converters.UnmarshallingContext;
 import com.thoughtworks.xstream.io.HierarchicalStreamReader;
 import com.thoughtworks.xstream.io.HierarchicalStreamWriter;
-import org.optaplanner.core.api.score.buildin.simpledouble.SimpleDoubleScore;
-import org.optaplanner.persistence.xstream.api.score.AbstractScoreXStreamConverter;
 
 public class SimpleDoubleScoreXStreamConverter extends AbstractScoreXStreamConverter {
 

@@ -16,14 +16,14 @@
 
 package org.optaplanner.examples.vehiclerouting.domain.solver;
 
+import static java.util.Comparator.*;
+
 import java.util.Comparator;
 
 import org.optaplanner.core.impl.heuristic.selector.common.decorator.SelectionSorterWeightFactory;
 import org.optaplanner.examples.vehiclerouting.domain.Customer;
 import org.optaplanner.examples.vehiclerouting.domain.Depot;
 import org.optaplanner.examples.vehiclerouting.domain.VehicleRoutingSolution;
-
-import static java.util.Comparator.*;
 
 /**
  * On large datasets, the constructed solution looks like a Matryoshka doll.
@@ -32,7 +32,8 @@ public class DepotDistanceCustomerDifficultyWeightFactory
         implements SelectionSorterWeightFactory<VehicleRoutingSolution, Customer> {
 
     @Override
-    public DepotDistanceCustomerDifficultyWeight createSorterWeight(VehicleRoutingSolution vehicleRoutingSolution, Customer customer) {
+    public DepotDistanceCustomerDifficultyWeight createSorterWeight(VehicleRoutingSolution vehicleRoutingSolution,
+            Customer customer) {
         Depot depot = vehicleRoutingSolution.getDepotList().get(0);
         return new DepotDistanceCustomerDifficultyWeight(customer,
                 customer.getLocation().getDistanceTo(depot.getLocation())
@@ -61,7 +62,7 @@ public class DepotDistanceCustomerDifficultyWeightFactory
 
         @Override
         public int compareTo(DepotDistanceCustomerDifficultyWeight other) {
-            return COMPARATOR.compare(this,other);
+            return COMPARATOR.compare(this, other);
         }
     }
 }

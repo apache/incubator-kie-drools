@@ -29,10 +29,10 @@ public class BendableScoreJaxbXmlAdapterTest extends AbstractScoreJaxbXmlAdapter
     public void serializeAndDeserialize() {
         assertSerializeAndDeserialize(null, new TestBendableScoreWrapper(null));
 
-        BendableScore score = BendableScore.of(new int[]{1000, 200}, new int[]{34});
+        BendableScore score = BendableScore.of(new int[] { 1000, 200 }, new int[] { 34 });
         assertSerializeAndDeserialize(score, new TestBendableScoreWrapper(score));
 
-        score = BendableScore.ofUninitialized(-7, new int[]{1000, 200}, new int[]{34});
+        score = BendableScore.ofUninitialized(-7, new int[] { 1000, 200 }, new int[] { 34 });
         assertSerializeAndDeserialize(score, new TestBendableScoreWrapper(score));
     }
 

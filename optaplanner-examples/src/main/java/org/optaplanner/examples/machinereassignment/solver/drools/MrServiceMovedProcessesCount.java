@@ -16,19 +16,19 @@
 
 package org.optaplanner.examples.machinereassignment.solver.drools;
 
+import static java.util.Comparator.comparing;
+import static java.util.Comparator.comparingLong;
+
 import java.io.Serializable;
 import java.util.Comparator;
 import java.util.Objects;
 
 import org.optaplanner.examples.machinereassignment.domain.MrService;
 
-import static java.util.Comparator.comparing;
-import static java.util.Comparator.comparingLong;
-
 public class MrServiceMovedProcessesCount implements Serializable, Comparable<MrServiceMovedProcessesCount> {
 
-    private static final Comparator<MrServiceMovedProcessesCount> COMPARATOR =
-            comparing((MrServiceMovedProcessesCount count) -> count.service, comparingLong(MrService::getId))
+    private static final Comparator<MrServiceMovedProcessesCount> COMPARATOR = comparing(
+            (MrServiceMovedProcessesCount count) -> count.service, comparingLong(MrService::getId))
                     .thenComparingInt(count -> count.movedProcessesCount);
     private MrService service;
     private int movedProcessesCount;
@@ -56,7 +56,7 @@ public class MrServiceMovedProcessesCount implements Serializable, Comparable<Mr
         }
         final MrServiceMovedProcessesCount other = (MrServiceMovedProcessesCount) o;
         return Objects.equals(service, other.service) &&
-                movedProcessesCount == other.movedProcessesCount ;
+                movedProcessesCount == other.movedProcessesCount;
     }
 
     @Override

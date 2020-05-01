@@ -572,13 +572,13 @@ public class CheapTimeIncrementalScoreCalculator extends AbstractIncrementalScor
                 if (machinePeriod.status == MachinePeriodStatus.SPIN_UP_AND_ACTIVE) {
                     spinUpDownMatchTotal.addConstraintMatch(
                             Arrays.asList(machine, period),
-                            HardMediumSoftLongScore.of(0, - machine.getSpinUpDownCostMicros(), 0));
+                            HardMediumSoftLongScore.of(0, -machine.getSpinUpDownCostMicros(), 0));
                     taskConsumptionWeight += machine.getSpinUpDownCostMicros();
                 }
                 if (machinePeriod.status != MachinePeriodStatus.OFF) {
                     machineConsumptionMatchTotal.addConstraintMatch(
                             Arrays.asList(machine, period),
-                            HardMediumSoftLongScore.of(0, - machinePeriod.machineCostMicros, 0));
+                            HardMediumSoftLongScore.of(0, -machinePeriod.machineCostMicros, 0));
                     taskConsumptionWeight += machinePeriod.machineCostMicros;
                 }
             }
@@ -594,7 +594,7 @@ public class CheapTimeIncrementalScoreCalculator extends AbstractIncrementalScor
             if (startPeriod != null) {
                 minimizeTaskStartPeriodMatchTotal.addConstraintMatch(
                         Arrays.asList(taskAssignment),
-                        HardMediumSoftLongScore.of(0, 0, - startPeriod));
+                        HardMediumSoftLongScore.of(0, 0, -startPeriod));
             }
 
         }

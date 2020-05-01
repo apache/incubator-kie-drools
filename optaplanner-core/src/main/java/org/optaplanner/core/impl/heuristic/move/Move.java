@@ -34,7 +34,7 @@ import org.optaplanner.core.impl.localsearch.decider.acceptor.tabu.MoveTabuAccep
 import org.optaplanner.core.impl.score.director.ScoreDirector;
 
 /**
- * A Move represents a change of 1 or more  {@link PlanningVariable}s of 1 or more  {@link PlanningEntity}s
+ * A Move represents a change of 1 or more {@link PlanningVariable}s of 1 or more {@link PlanningEntity}s
  * in the working {@link PlanningSolution}.
  * <p>
  * Usually the move holds a direct reference to each {@link PlanningEntity} of the {@link PlanningSolution}
@@ -44,6 +44,7 @@ import org.optaplanner.core.impl.score.director.ScoreDirector;
  * A Move should implement {@link Object#equals(Object)} and {@link Object#hashCode()} for {@link MoveTabuAcceptor}.
  * <p>
  * An implementation must extend {@link AbstractMove} to ensure backwards compatibility in future versions.
+ * 
  * @param <Solution_> the solution type, the class with the {@link PlanningSolution} annotation
  * @see AbstractMove
  */
@@ -62,6 +63,7 @@ public interface Move<Solution_> {
      * <p>
      * Although you could also filter out non-doable moves in for example the {@link MoveSelector}
      * or {@link MoveListFactory}, this is not needed as the {@link Solver} will do it for you.
+     * 
      * @param scoreDirector the {@link ScoreDirector} not yet modified by the move.
      * @return true if the move achieves a change in the solution and the move is possible to do on the solution.
      */
@@ -74,10 +76,12 @@ public interface Move<Solution_> {
      * {@link ScoreDirector#afterVariableChanged(Object, String)}),
      * otherwise later calculated {@link Score}s will be corrupted.
      * <p>
-     * This method must end with calling {@link ScoreDirector#triggerVariableListeners()} to ensure all shadow variables are updated.
+     * This method must end with calling {@link ScoreDirector#triggerVariableListeners()} to ensure all shadow variables are
+     * updated.
      * <p>
      * This method must return an undo move, so the move can be evaluated and then be undone
      * without resulting into a permanent change in the solution.
+     * 
      * @param scoreDirector never null, the {@link ScoreDirector} that needs to get notified of the changes
      * @return an undoMove which does the exact opposite of this move
      */
@@ -107,8 +111,9 @@ public interface Move<Solution_> {
      * One thread might rebase a move before, amid or after another thread does that same move instance.
      * <p>
      * This method is thread-safe.
+     * 
      * @param destinationScoreDirector never null, the {@link ScoreDirector#getWorkingSolution()}
-     * that the new move should change the planning entity instances of.
+     *        that the new move should change the planning entity instances of.
      * @return never null, a new move that does the same change as this move on another solution instance
      */
     default Move<Solution_> rebase(ScoreDirector<Solution_> destinationScoreDirector) {
@@ -125,6 +130,7 @@ public interface Move<Solution_> {
      * For example "ChangeMove(Process.computer)".
      * <p>
      * The format is not formalized. Never parse the {@link String} returned by this method.
+     * 
      * @return never null
      */
     default String getSimpleMoveTypeDescription() {
@@ -140,6 +146,7 @@ public interface Move<Solution_> {
      * Duplicate entries in the returned {@link Collection} are best avoided.
      * The returned {@link Collection} is recommended to be in a stable order.
      * For example: use {@link List} or {@link LinkedHashSet}, but not {@link HashSet}.
+     * 
      * @return never null
      */
     default Collection<? extends Object> getPlanningEntities() {
@@ -156,6 +163,7 @@ public interface Move<Solution_> {
      * Duplicate entries in the returned {@link Collection} are best avoided.
      * The returned {@link Collection} is recommended to be in a stable order.
      * For example: use {@link List} or {@link LinkedHashSet}, but not {@link HashSet}.
+     * 
      * @return never null
      */
     default Collection<? extends Object> getPlanningValues() {

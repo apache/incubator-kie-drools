@@ -25,16 +25,16 @@ import org.optaplanner.examples.common.domain.AbstractPersistable;
 @PlanningEntity
 public class FlightAssignment extends AbstractPersistable implements Comparable<FlightAssignment> {
 
-    private static final Comparator<FlightAssignment> PILLAR_SEQUENCE_COMPARATOR =
-            Comparator.comparing((FlightAssignment a) -> a.getFlight().getDepartureUTCDateTime())
-                    .thenComparing(a -> a.getFlight().getArrivalUTCDateTime())
-                    .thenComparing(FlightAssignment::getIndexInFlight);
+    private static final Comparator<FlightAssignment> PILLAR_SEQUENCE_COMPARATOR = Comparator
+            .comparing((FlightAssignment a) -> a.getFlight().getDepartureUTCDateTime())
+            .thenComparing(a -> a.getFlight().getArrivalUTCDateTime())
+            .thenComparing(FlightAssignment::getIndexInFlight);
 
     private Flight flight;
     private int indexInFlight;
     private Skill requiredSkill;
 
-    @PlanningVariable(valueRangeProviderRefs = {"employeeRange"})
+    @PlanningVariable(valueRangeProviderRefs = { "employeeRange" })
     private Employee employee;
 
     public FlightAssignment() {

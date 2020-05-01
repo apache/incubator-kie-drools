@@ -31,6 +31,7 @@ public interface Constraint {
 
     /**
      * The {@link ConstraintFactory} that build this.
+     * 
      * @return never null
      */
     ConstraintFactory getConstraintFactory();
@@ -40,6 +41,7 @@ public interface Constraint {
      * <p>
      * When using a {@link ConstraintConfiguration},
      * it is equal to the {@link ConstraintWeight#constraintPackage()}.
+     * 
      * @return never null
      */
     String getConstraintPackage();
@@ -50,6 +52,7 @@ public interface Constraint {
      * <p>
      * When using a {@link ConstraintConfiguration},
      * it is equal to the {@link ConstraintWeight#value()}.
+     * 
      * @return never null
      */
     String getConstraintName();
@@ -58,6 +61,7 @@ public interface Constraint {
      * The constraint id is {@link #getConstraintPackage() the constraint package}
      * concatenated with "/" and {@link #getConstraintName() the constraint name}.
      * It is unique.
+     * 
      * @return never null
      */
     default String getConstraintId() {

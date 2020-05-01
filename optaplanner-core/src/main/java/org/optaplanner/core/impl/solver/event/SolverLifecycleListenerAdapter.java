@@ -21,6 +21,7 @@ import org.optaplanner.core.impl.solver.scope.DefaultSolverScope;
 
 /**
  * An adapter for {@link SolverLifecycleListener}.
+ * 
  * @param <Solution_> the solution type, the class with the {@link PlanningSolution} annotation
  */
 public abstract class SolverLifecycleListenerAdapter<Solution_> implements SolverLifecycleListener<Solution_> {

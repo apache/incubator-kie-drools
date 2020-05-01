@@ -16,6 +16,9 @@
 
 package org.optaplanner.core.impl.heuristic.selector.value.decorator;
 
+import static org.mockito.Mockito.*;
+import static org.optaplanner.core.impl.testdata.util.PlannerAssert.*;
+
 import org.junit.jupiter.api.Test;
 import org.optaplanner.core.impl.heuristic.selector.SelectorTestUtils;
 import org.optaplanner.core.impl.heuristic.selector.value.EntityIndependentValueSelector;
@@ -25,9 +28,6 @@ import org.optaplanner.core.impl.phase.scope.AbstractStepScope;
 import org.optaplanner.core.impl.solver.scope.DefaultSolverScope;
 import org.optaplanner.core.impl.testdata.domain.TestdataEntity;
 import org.optaplanner.core.impl.testdata.domain.TestdataValue;
-
-import static org.mockito.Mockito.*;
-import static org.optaplanner.core.impl.testdata.util.PlannerAssert.*;
 
 public class SelectedCountLimitValueSelectorTest {
 
@@ -90,7 +90,6 @@ public class SelectedCountLimitValueSelectorTest {
         verify(childValueSelector, times(5)).iterator();
         verify(childValueSelector, times(5)).getSize();
     }
-
 
     @Test
     public void selectSizeLimitHigherThanSelectorSize() {
@@ -156,7 +155,8 @@ public class SelectedCountLimitValueSelectorTest {
         TestdataEntity entity = new TestdataEntity("e1");
         ValueSelector childValueSelector = SelectorTestUtils.mockValueSelectorForEntity(TestdataValue.class,
                 entity, "value",
-                new TestdataValue("v1"), new TestdataValue("v2"), new TestdataValue("v3"), new TestdataValue("v4"), new TestdataValue("v5"));
+                new TestdataValue("v1"), new TestdataValue("v2"), new TestdataValue("v3"), new TestdataValue("v4"),
+                new TestdataValue("v5"));
         ValueSelector valueSelector = new SelectedCountLimitValueSelector(childValueSelector, 3L);
 
         DefaultSolverScope solverScope = mock(DefaultSolverScope.class);
@@ -210,7 +210,6 @@ public class SelectedCountLimitValueSelectorTest {
         verify(childValueSelector, times(5)).iterator(entity);
         verify(childValueSelector, times(5)).getSize(entity);
     }
-
 
     @Test
     public void selectSizeLimitHigherThanSelectorSizeEntityDependent() {

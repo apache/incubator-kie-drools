@@ -16,6 +16,9 @@
 
 package org.optaplanner.core.impl.constructionheuristic.decider.forager;
 
+import static org.junit.Assert.*;
+import static org.mockito.Mockito.*;
+
 import org.junit.jupiter.api.Test;
 import org.optaplanner.core.api.score.Score;
 import org.optaplanner.core.api.score.buildin.hardsoft.HardSoftScore;
@@ -24,9 +27,6 @@ import org.optaplanner.core.config.constructionheuristic.decider.forager.Constru
 import org.optaplanner.core.impl.constructionheuristic.scope.ConstructionHeuristicMoveScope;
 import org.optaplanner.core.impl.constructionheuristic.scope.ConstructionHeuristicPhaseScope;
 import org.optaplanner.core.impl.constructionheuristic.scope.ConstructionHeuristicStepScope;
-
-import static org.junit.Assert.*;
-import static org.mockito.Mockito.*;
 
 public class DefaultConstructionHeuristicForagerTest<Solution_> {
 
@@ -80,7 +80,6 @@ public class DefaultConstructionHeuristicForagerTest<Solution_> {
         assertEquals(true, forager.isQuitEarly());
     }
 
-
     protected ConstructionHeuristicStepScope<Solution_> buildStepScope(Score lastStepScore) {
         ConstructionHeuristicPhaseScope<Solution_> phaseScope = mock(ConstructionHeuristicPhaseScope.class);
         ConstructionHeuristicStepScope<Solution_> lastCompletedStepScope = mock(ConstructionHeuristicStepScope.class);
@@ -93,7 +92,8 @@ public class DefaultConstructionHeuristicForagerTest<Solution_> {
         return stepScope;
     }
 
-    protected ConstructionHeuristicMoveScope<Solution_> buildMoveScope(ConstructionHeuristicStepScope<Solution_> stepScope, Score score) {
+    protected ConstructionHeuristicMoveScope<Solution_> buildMoveScope(ConstructionHeuristicStepScope<Solution_> stepScope,
+            Score score) {
         ConstructionHeuristicMoveScope<Solution_> moveScope = mock(ConstructionHeuristicMoveScope.class);
         when(moveScope.getStepScope()).thenReturn(stepScope);
         when(moveScope.getScore()).thenReturn(score);

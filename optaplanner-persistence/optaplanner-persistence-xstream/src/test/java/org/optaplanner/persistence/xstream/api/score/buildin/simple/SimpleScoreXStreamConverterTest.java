@@ -16,10 +16,11 @@
 
 package org.optaplanner.persistence.xstream.api.score.buildin.simple;
 
-import com.thoughtworks.xstream.annotations.XStreamConverter;
 import org.junit.jupiter.api.Test;
 import org.optaplanner.core.api.score.buildin.simple.SimpleScore;
 import org.optaplanner.persistence.xstream.api.score.AbstractScoreXStreamConverterTest;
+
+import com.thoughtworks.xstream.annotations.XStreamConverter;
 
 public class SimpleScoreXStreamConverterTest extends AbstractScoreXStreamConverterTest {
 

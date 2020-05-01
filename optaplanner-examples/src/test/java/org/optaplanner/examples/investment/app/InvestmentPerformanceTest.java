@@ -35,7 +35,6 @@ public class InvestmentPerformanceTest extends SolverPerformanceTest<InvestmentS
     protected Stream<TestData> testData() {
         return Stream.of(
                 testData(UNSOLVED_DATA_FILE, "0hard/74630soft", EnvironmentMode.REPRODUCIBLE),
-                testData(UNSOLVED_DATA_FILE, "0hard/74595soft", EnvironmentMode.FAST_ASSERT)
-        );
+                testData(UNSOLVED_DATA_FILE, "0hard/74595soft", EnvironmentMode.FAST_ASSERT));
     }
 }

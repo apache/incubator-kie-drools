@@ -16,17 +16,17 @@
 
 package org.optaplanner.core.impl.solver.termination;
 
-import java.time.Clock;
-
-import org.junit.jupiter.api.Test;
-import org.optaplanner.core.impl.phase.scope.AbstractPhaseScope;
-import org.optaplanner.core.impl.solver.scope.DefaultSolverScope;
-
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatIllegalArgumentException;
 import static org.assertj.core.api.Assertions.withPrecision;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
+
+import java.time.Clock;
+
+import org.junit.jupiter.api.Test;
+import org.optaplanner.core.impl.phase.scope.AbstractPhaseScope;
+import org.optaplanner.core.impl.solver.scope.DefaultSolverScope;
 
 public class UnimprovedTimeMillisSpentTerminationTest {
 

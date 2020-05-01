@@ -16,6 +16,10 @@
 
 package org.optaplanner.core.impl.localsearch.decider.acceptor.simulatedannealing;
 
+import static org.assertj.core.api.Assertions.assertThatIllegalArgumentException;
+import static org.junit.Assert.*;
+import static org.mockito.Mockito.*;
+
 import java.util.Random;
 
 import org.junit.jupiter.api.Test;
@@ -27,10 +31,6 @@ import org.optaplanner.core.impl.localsearch.scope.LocalSearchPhaseScope;
 import org.optaplanner.core.impl.localsearch.scope.LocalSearchStepScope;
 import org.optaplanner.core.impl.solver.scope.DefaultSolverScope;
 import org.optaplanner.core.impl.testdata.domain.TestdataSolution;
-
-import static org.assertj.core.api.Assertions.assertThatIllegalArgumentException;
-import static org.junit.Assert.*;
-import static org.mockito.Mockito.*;
 
 public class SimulatedAnnealingAcceptorTest extends AbstractAcceptorTest {
 

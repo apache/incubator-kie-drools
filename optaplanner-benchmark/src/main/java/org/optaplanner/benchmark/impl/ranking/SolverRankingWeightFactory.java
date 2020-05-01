@@ -28,10 +28,12 @@ public interface SolverRankingWeightFactory {
 
     /**
      * The ranking function. Takes the provided solverBenchmarkResultList and ranks them.
+     * 
      * @param solverBenchmarkResultList never null
      * @param solverBenchmarkResult never null
      * @return never null
      */
-    Comparable createRankingWeight(List<SolverBenchmarkResult> solverBenchmarkResultList, SolverBenchmarkResult solverBenchmarkResult);
+    Comparable createRankingWeight(List<SolverBenchmarkResult> solverBenchmarkResultList,
+            SolverBenchmarkResult solverBenchmarkResult);
 
 }

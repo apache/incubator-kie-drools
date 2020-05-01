@@ -26,7 +26,8 @@ import org.optaplanner.core.impl.testdata.domain.TestdataSolution;
 public class TestdataExtendedConstraintConfigurationSolution extends TestdataSolution {
 
     public static SolutionDescriptor<TestdataExtendedConstraintConfigurationSolution> buildExtendedSolutionDescriptor() {
-        return SolutionDescriptor.buildSolutionDescriptor(TestdataExtendedConstraintConfigurationSolution.class, TestdataEntity.class);
+        return SolutionDescriptor.buildSolutionDescriptor(TestdataExtendedConstraintConfigurationSolution.class,
+                TestdataEntity.class);
     }
 
     private TestdataExtendedConstraintConfiguration constraintConfiguration;

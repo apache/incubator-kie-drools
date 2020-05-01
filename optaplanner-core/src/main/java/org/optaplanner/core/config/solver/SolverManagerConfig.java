@@ -93,7 +93,7 @@ public class SolverManagerConfig extends AbstractConfig<SolverManagerConfig> {
         }
         if (resolvedParallelSolverCount > availableProcessorCount) {
             logger.warn("The resolvedParallelSolverCount ({}) is higher "
-                            + "than the availableProcessorCount ({}), which is counter-efficient.",
+                    + "than the availableProcessorCount ({}), which is counter-efficient.",
                     resolvedParallelSolverCount, availableProcessorCount);
             // Still allow it, to reproduce issues of a high-end server machine on a low-end developer machine
         }

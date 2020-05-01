@@ -35,7 +35,7 @@ public class KeyAsElementMapConverter implements Converter {
 
     @Override
     public void marshal(Object mapObject, HierarchicalStreamWriter writer, MarshallingContext context) {
-       Map<String, String> map = (Map<String, String>) mapObject;
+        Map<String, String> map = (Map<String, String>) mapObject;
         for (Map.Entry<String, String> entry : map.entrySet()) {
             writer.startNode(entry.getKey());
             writer.setValue(entry.getValue());

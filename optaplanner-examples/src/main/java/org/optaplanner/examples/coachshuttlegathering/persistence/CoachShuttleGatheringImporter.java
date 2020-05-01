@@ -48,7 +48,7 @@ public class CoachShuttleGatheringImporter extends AbstractTxtSolutionImporter<C
         SolutionConverter<CoachShuttleGatheringSolution> converter = SolutionConverter.createImportConverter(
                 CoachShuttleGatheringApp.DATA_DIR_NAME, new CoachShuttleGatheringImporter(),
                 CoachShuttleGatheringSolution.class);
-       converter.convert("example", "demo01.xml");
+        converter.convert("example", "demo01.xml");
     }
 
     @Override
@@ -95,7 +95,7 @@ public class CoachShuttleGatheringImporter extends AbstractTxtSolutionImporter<C
             BigInteger b = factorial(busListSize - 1);
             BigInteger possibleSolutionSize = (a == null || b == null) ? null : a.divide(b);
             logger.info("CoachShuttleGathering {} has {} road locations, {} coaches, {} shuttles and {} bus stops"
-                         + " with a search space of {}.",
+                    + " with a search space of {}.",
                     getInputId(),
                     solution.getLocationList().size(),
                     solution.getCoachList().size(),
@@ -206,7 +206,8 @@ public class CoachShuttleGatheringImporter extends AbstractTxtSolutionImporter<C
             List<Shuttle> shuttleList = new ArrayList<>();
             try (BufferedReader subBufferedReader = new BufferedReader(
                     new InputStreamReader(new FileInputStream(file), "UTF-8"))) {
-                readConstantLine(subBufferedReader, "TYPE;VEHICLE_ID;CAPACITY;MAX_NUM_STOPS;COSTS \\[MU/km\\];COSTS \\[MU/USAGE\\];X_COORD;Y_COORD");
+                readConstantLine(subBufferedReader,
+                        "TYPE;VEHICLE_ID;CAPACITY;MAX_NUM_STOPS;COSTS \\[MU/km\\];COSTS \\[MU/USAGE\\];X_COORD;Y_COORD");
                 for (String line = subBufferedReader.readLine(); line != null; line = subBufferedReader.readLine()) {
                     if (line.isEmpty()) {
                         continue;
@@ -222,7 +223,7 @@ public class CoachShuttleGatheringImporter extends AbstractTxtSolutionImporter<C
                         bus = new Shuttle();
                         shuttleList.add((Shuttle) bus);
                     } else {
-                        throw new IllegalArgumentException("The fleet vehicle with name (" +  name
+                        throw new IllegalArgumentException("The fleet vehicle with name (" + name
                                 + ") has an unsupported type (" + busType + ").");
                     }
                     bus.setId(busOrStopOrHubId);
@@ -234,7 +235,7 @@ public class CoachShuttleGatheringImporter extends AbstractTxtSolutionImporter<C
                         ((Coach) bus).setStopLimit(stopLimit);
                     } else {
                         if (stopLimit != -1) {
-                            throw new IllegalArgumentException("The shuttle with name (" +  name
+                            throw new IllegalArgumentException("The shuttle with name (" + name
                                     + ") has an unsupported stopLimit (" + stopLimit + ").");
                         }
                     }
@@ -242,7 +243,7 @@ public class CoachShuttleGatheringImporter extends AbstractTxtSolutionImporter<C
                     int setupCost = Integer.parseInt(lineTokens[5]);
                     if (bus instanceof Coach) {
                         if (setupCost != 0) {
-                            throw new IllegalArgumentException("The coach with name (" +  name
+                            throw new IllegalArgumentException("The coach with name (" + name
                                     + ") has an unsupported setupCost (" + setupCost + ").");
                         }
                     } else {
@@ -252,7 +253,7 @@ public class CoachShuttleGatheringImporter extends AbstractTxtSolutionImporter<C
                     double longitude = Double.parseDouble(lineTokens[7]);
                     RoadLocation location = latLongToLocationMap.get(Arrays.asList(latitude, longitude));
                     if (location == null) {
-                        throw new IllegalArgumentException("The fleet vehicle with name (" +  name
+                        throw new IllegalArgumentException("The fleet vehicle with name (" + name
                                 + ") has a coordinate (" + latitude + ", " + longitude
                                 + ") which is not in the coordinates file.");
                     }
@@ -277,7 +278,7 @@ public class CoachShuttleGatheringImporter extends AbstractTxtSolutionImporter<C
                 String name = lineTokens[1];
                 if (busStopType.equalsIgnoreCase("HUB")) {
                     if (solution.getHub() != null) {
-                        throw new IllegalArgumentException("The hub with name (" +  name
+                        throw new IllegalArgumentException("The hub with name (" + name
                                 + ") is not the only hub (" + solution.getHub().getName() + ").");
                     }
                     BusHub hub = new BusHub();
@@ -289,7 +290,7 @@ public class CoachShuttleGatheringImporter extends AbstractTxtSolutionImporter<C
                     double longitude = Double.parseDouble(lineTokens[5]);
                     RoadLocation location = latLongToLocationMap.get(Arrays.asList(latitude, longitude));
                     if (location == null) {
-                        throw new IllegalArgumentException("The bus stop with name (" +  name
+                        throw new IllegalArgumentException("The bus stop with name (" + name
                                 + ") has a coordinate (" + latitude + ", " + longitude
                                 + ") which is not in the coordinates file.");
                     }
@@ -325,7 +326,7 @@ public class CoachShuttleGatheringImporter extends AbstractTxtSolutionImporter<C
                     double longitude = Double.parseDouble(lineTokens[5]);
                     RoadLocation location = latLongToLocationMap.get(Arrays.asList(latitude, longitude));
                     if (location == null) {
-                        throw new IllegalArgumentException("The bus stop with name (" +  name
+                        throw new IllegalArgumentException("The bus stop with name (" + name
                                 + ") has a coordinate (" + latitude + ", " + longitude
                                 + ") which is not in the coordinates file.");
                     }
@@ -336,7 +337,7 @@ public class CoachShuttleGatheringImporter extends AbstractTxtSolutionImporter<C
                     busStop.setTransferShuttleList(new ArrayList<>(solution.getShuttleList().size()));
                     busStopList.add(busStop);
                 } else {
-                    throw new IllegalArgumentException("The bus stop with name (" +  name
+                    throw new IllegalArgumentException("The bus stop with name (" + name
                             + ") has an unsupported type (" + busStopType + ").");
                 }
             }

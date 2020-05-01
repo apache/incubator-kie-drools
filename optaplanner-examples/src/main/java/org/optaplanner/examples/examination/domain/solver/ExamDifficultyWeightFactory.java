@@ -71,11 +71,11 @@ public class ExamDifficultyWeightFactory implements SelectionSorterWeightFactory
 
     public static class ExamDifficultyWeight implements Comparable<ExamDifficultyWeight> {
 
-        private static final Comparator<ExamDifficultyWeight> COMPARATOR =
-                Comparator.comparingInt((ExamDifficultyWeight weight) -> weight.studentSizeTotal)
-                    .thenComparingInt(weight -> weight.maximumDuration)
-                    .thenComparing(weight -> weight.exam instanceof LeadingExam)
-                    .thenComparingLong(weight -> weight.exam.getId());
+        private static final Comparator<ExamDifficultyWeight> COMPARATOR = Comparator
+                .comparingInt((ExamDifficultyWeight weight) -> weight.studentSizeTotal)
+                .thenComparingInt(weight -> weight.maximumDuration)
+                .thenComparing(weight -> weight.exam instanceof LeadingExam)
+                .thenComparingLong(weight -> weight.exam.getId());
 
         private final Exam exam;
         private final int studentSizeTotal;

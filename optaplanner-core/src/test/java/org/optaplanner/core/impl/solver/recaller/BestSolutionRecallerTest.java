@@ -16,6 +16,9 @@
 
 package org.optaplanner.core.impl.solver.recaller;
 
+import static org.junit.Assert.*;
+import static org.mockito.Mockito.*;
+
 import org.junit.jupiter.api.Test;
 import org.optaplanner.core.api.score.Score;
 import org.optaplanner.core.api.score.buildin.simple.SimpleScore;
@@ -26,9 +29,6 @@ import org.optaplanner.core.impl.domain.solution.descriptor.SolutionDescriptor;
 import org.optaplanner.core.impl.score.director.InnerScoreDirector;
 import org.optaplanner.core.impl.solver.event.SolverEventSupport;
 import org.optaplanner.core.impl.solver.scope.DefaultSolverScope;
-
-import static org.junit.Assert.*;
-import static org.mockito.Mockito.*;
 
 public class BestSolutionRecallerTest {
 
@@ -43,9 +43,9 @@ public class BestSolutionRecallerTest {
 
     private static <Solution_> ConstructionHeuristicStepScope<Solution_> setupConstrunctionHeuristics(
             DefaultSolverScope<Solution_> solverScope) {
-        ConstructionHeuristicPhaseScope<Solution_>  phaseScope = mock(ConstructionHeuristicPhaseScope.class);
+        ConstructionHeuristicPhaseScope<Solution_> phaseScope = mock(ConstructionHeuristicPhaseScope.class);
         when(phaseScope.getSolverScope()).thenReturn(solverScope);
-        ConstructionHeuristicStepScope<Solution_>  stepScope = mock(ConstructionHeuristicStepScope.class);
+        ConstructionHeuristicStepScope<Solution_> stepScope = mock(ConstructionHeuristicStepScope.class);
         when(stepScope.getPhaseScope()).thenReturn(phaseScope);
         return stepScope;
     }
@@ -88,7 +88,8 @@ public class BestSolutionRecallerTest {
             boolean stepImprovesBestSolution) {
         DefaultSolverScope<AbstractSolution> solverScope = createSolverScope();
         AbstractSolution originalBestSolution = mock(AbstractSolution.class);
-        when(solverScope.getScoreDirector().getSolutionDescriptor().getScore(originalBestSolution)).thenReturn(originalBestScore);
+        when(solverScope.getScoreDirector().getSolutionDescriptor().getScore(originalBestSolution))
+                .thenReturn(originalBestScore);
         solverScope.setBestSolution(originalBestSolution);
         solverScope.setBestScore(originalBestScore);
 
@@ -116,7 +117,6 @@ public class BestSolutionRecallerTest {
         doProcessWorkingSolutionDuringMove(bestScore, moveScore, false);
     }
 
-
     @Test
     public void unimprovedInitializedProcessWorkingSolutionDuringMove() {
         Score bestScore = SimpleScore.of(0);
@@ -142,7 +142,8 @@ public class BestSolutionRecallerTest {
             boolean moveImprovesBestSolution) {
         DefaultSolverScope<AbstractSolution> solverScope = createSolverScope();
         AbstractSolution originalBestSolution = mock(AbstractSolution.class);
-        when(solverScope.getScoreDirector().getSolutionDescriptor().getScore(originalBestSolution)).thenReturn(originalBestScore);
+        when(solverScope.getScoreDirector().getSolutionDescriptor().getScore(originalBestSolution))
+                .thenReturn(originalBestScore);
         solverScope.setBestSolution(originalBestSolution);
         solverScope.setBestScore(originalBestScore);
 

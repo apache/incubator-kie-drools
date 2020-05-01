@@ -16,6 +16,9 @@
 
 package org.optaplanner.core.impl.score.stream.tri;
 
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.optaplanner.core.impl.score.stream.tri.AbstractTriJoiner.merge;
+
 import java.math.BigDecimal;
 import java.math.BigInteger;
 import java.util.function.BiFunction;
@@ -25,17 +28,14 @@ import org.junit.jupiter.api.Test;
 import org.optaplanner.core.api.score.stream.Joiners;
 import org.optaplanner.core.api.score.stream.tri.TriJoiner;
 
-import static org.assertj.core.api.Assertions.assertThat;
-import static org.optaplanner.core.impl.score.stream.tri.AbstractTriJoiner.merge;
-
 public class CompositeTriJoinerTest {
 
     @Test
     public void compositeMappings() {
-        TriJoiner<BigInteger, BigInteger, BigDecimal> joiner1 =
-                Joiners.equal((a, b) -> a.add(b).longValue(), BigDecimal::longValue);
-        TriJoiner<BigInteger, BigInteger, BigDecimal> joiner2 =
-                Joiners.lessThan((a, b) -> a.add(b).longValue(), BigDecimal::longValue);
+        TriJoiner<BigInteger, BigInteger, BigDecimal> joiner1 = Joiners.equal((a, b) -> a.add(b).longValue(),
+                BigDecimal::longValue);
+        TriJoiner<BigInteger, BigInteger, BigDecimal> joiner2 = Joiners.lessThan((a, b) -> a.add(b).longValue(),
+                BigDecimal::longValue);
         AbstractTriJoiner<BigInteger, BigInteger, BigDecimal> composite = merge(joiner1, joiner2);
         BiFunction<BigInteger, BigInteger, Object[]> leftMapping = composite.getLeftCombinedMapping();
         Object[] left = leftMapping.apply(BigInteger.ONE, BigInteger.TEN);

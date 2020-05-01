@@ -19,9 +19,10 @@ package org.optaplanner.examples.taskassigning.domain;
 import java.util.ArrayList;
 import java.util.List;
 
-import com.thoughtworks.xstream.annotations.XStreamAlias;
 import org.optaplanner.examples.common.domain.AbstractPersistable;
 import org.optaplanner.examples.common.swingui.components.Labeled;
+
+import com.thoughtworks.xstream.annotations.XStreamAlias;
 
 @XStreamAlias("TaTaskType")
 public class TaskType extends AbstractPersistable implements Labeled {

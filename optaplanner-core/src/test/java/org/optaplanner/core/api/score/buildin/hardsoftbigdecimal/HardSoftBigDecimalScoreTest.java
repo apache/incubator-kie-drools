@@ -16,15 +16,15 @@
 
 package org.optaplanner.core.api.score.buildin.hardsoftbigdecimal;
 
+import static org.assertj.core.api.Assertions.assertThatIllegalArgumentException;
+import static org.junit.Assert.*;
+
 import java.math.BigDecimal;
 
 import org.junit.jupiter.api.Test;
 import org.optaplanner.core.api.score.buildin.AbstractScoreTest;
 import org.optaplanner.core.impl.testdata.util.PlannerAssert;
 import org.optaplanner.core.impl.testdata.util.PlannerTestUtils;
-
-import static org.assertj.core.api.Assertions.assertThatIllegalArgumentException;
-import static org.junit.Assert.*;
 
 public class HardSoftBigDecimalScoreTest extends AbstractScoreTest {
 
@@ -59,7 +59,8 @@ public class HardSoftBigDecimalScoreTest extends AbstractScoreTest {
         assertEquals("-7init/-258.3soft",
                 HardSoftBigDecimalScore.ofUninitialized(-7, new BigDecimal("0.0"), new BigDecimal("-258.3")).toShortString());
         assertEquals("-7init/-147.2hard/-258.3soft",
-                HardSoftBigDecimalScore.ofUninitialized(-7, new BigDecimal("-147.2"), new BigDecimal("-258.3")).toShortString());
+                HardSoftBigDecimalScore.ofUninitialized(-7, new BigDecimal("-147.2"), new BigDecimal("-258.3"))
+                        .toShortString());
     }
 
     @Test
@@ -82,7 +83,8 @@ public class HardSoftBigDecimalScoreTest extends AbstractScoreTest {
         assertEquals(HardSoftBigDecimalScore.of(new BigDecimal("-147.2"), new BigDecimal("-258.3")),
                 HardSoftBigDecimalScore.of(new BigDecimal("-147.2"), new BigDecimal("-258.3")).toInitializedScore());
         assertEquals(HardSoftBigDecimalScore.of(new BigDecimal("-147.2"), new BigDecimal("-258.3")),
-                HardSoftBigDecimalScore.ofUninitialized(-7, new BigDecimal("-147.2"), new BigDecimal("-258.3")).toInitializedScore());
+                HardSoftBigDecimalScore.ofUninitialized(-7, new BigDecimal("-147.2"), new BigDecimal("-258.3"))
+                        .toInitializedScore());
     }
 
     @Test
@@ -98,14 +100,12 @@ public class HardSoftBigDecimalScoreTest extends AbstractScoreTest {
                 HardSoftBigDecimalScore.of(new BigDecimal("-5"), new BigDecimal("4000")),
                 HardSoftBigDecimalScore.of(new BigDecimal("-0.007"), new BigDecimal("4000")),
                 HardSoftBigDecimalScore.ofUninitialized(-7, new BigDecimal("-5"), new BigDecimal("-300")),
-                HardSoftBigDecimalScore.ofUninitialized(-7, new BigDecimal("0"), new BigDecimal("-300"))
-        );
+                HardSoftBigDecimalScore.ofUninitialized(-7, new BigDecimal("0"), new BigDecimal("-300")));
         assertScoreFeasible(
                 HardSoftBigDecimalScore.of(new BigDecimal("0"), new BigDecimal("-300.007")),
                 HardSoftBigDecimalScore.of(new BigDecimal("0"), new BigDecimal("-300")),
                 HardSoftBigDecimalScore.of(new BigDecimal("2"), new BigDecimal("-300")),
-                HardSoftBigDecimalScore.ofUninitialized(0, new BigDecimal("0"), new BigDecimal("-300"))
-        );
+                HardSoftBigDecimalScore.ofUninitialized(0, new BigDecimal("0"), new BigDecimal("-300")));
     }
 
     @Test
@@ -174,18 +174,15 @@ public class HardSoftBigDecimalScoreTest extends AbstractScoreTest {
                 HardSoftBigDecimalScore.of(new BigDecimal("-10.0"), new BigDecimal("-200.0")),
                 HardSoftBigDecimalScore.of(new BigDecimal("-10.0"), new BigDecimal("-200.0")),
                 HardSoftBigDecimalScore.of(new BigDecimal("-10.000"), new BigDecimal("-200.000")),
-                HardSoftBigDecimalScore.ofUninitialized(0, new BigDecimal("-10.0"), new BigDecimal("-200.0"))
-        );
+                HardSoftBigDecimalScore.ofUninitialized(0, new BigDecimal("-10.0"), new BigDecimal("-200.0")));
         PlannerAssert.assertObjectsAreEqual(
                 HardSoftBigDecimalScore.ofUninitialized(-7, new BigDecimal("-10.0"), new BigDecimal("-200.0")),
-                HardSoftBigDecimalScore.ofUninitialized(-7, new BigDecimal("-10.0"), new BigDecimal("-200.0"))
-        );
+                HardSoftBigDecimalScore.ofUninitialized(-7, new BigDecimal("-10.0"), new BigDecimal("-200.0")));
         PlannerAssert.assertObjectsAreNotEqual(
                 HardSoftBigDecimalScore.of(new BigDecimal("-10.0"), new BigDecimal("-200.0")),
                 HardSoftBigDecimalScore.of(new BigDecimal("-30.0"), new BigDecimal("-200.0")),
                 HardSoftBigDecimalScore.of(new BigDecimal("-10.0"), new BigDecimal("-400.0")),
-                HardSoftBigDecimalScore.ofUninitialized(-7, new BigDecimal("-10.0"), new BigDecimal("-200.0"))
-        );
+                HardSoftBigDecimalScore.ofUninitialized(-7, new BigDecimal("-10.0"), new BigDecimal("-200.0")));
     }
 
     @Test
@@ -205,8 +202,7 @@ public class HardSoftBigDecimalScoreTest extends AbstractScoreTest {
                 HardSoftBigDecimalScore.of(new BigDecimal("-1"), new BigDecimal("4000")),
                 HardSoftBigDecimalScore.of(new BigDecimal("0"), new BigDecimal("-1")),
                 HardSoftBigDecimalScore.of(new BigDecimal("0"), new BigDecimal("0")),
-                HardSoftBigDecimalScore.of(new BigDecimal("0"), new BigDecimal("1"))
-        );
+                HardSoftBigDecimalScore.of(new BigDecimal("0"), new BigDecimal("1")));
     }
 
     @Test
@@ -217,16 +213,14 @@ public class HardSoftBigDecimalScoreTest extends AbstractScoreTest {
                     assertEquals(0, output.getInitScore());
                     assertEquals(new BigDecimal("-12.3"), output.getHardScore());
                     assertEquals(new BigDecimal("3400.5"), output.getSoftScore());
-                }
-        );
+                });
         PlannerTestUtils.serializeAndDeserializeWithAll(
                 HardSoftBigDecimalScore.ofUninitialized(-7, new BigDecimal("-12.3"), new BigDecimal("3400.5")),
                 output -> {
                     assertEquals(-7, output.getInitScore());
                     assertEquals(new BigDecimal("-12.3"), output.getHardScore());
                     assertEquals(new BigDecimal("3400.5"), output.getSoftScore());
-                }
-        );
+                });
     }
 
 }

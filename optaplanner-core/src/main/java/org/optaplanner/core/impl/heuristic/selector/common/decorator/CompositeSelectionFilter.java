@@ -24,6 +24,7 @@ import org.optaplanner.core.impl.score.director.ScoreDirector;
 /**
  * Combines several {@link SelectionFilter}s into one.
  * Does a logical AND over the accept status of its filters.
+ * 
  * @param <Solution_> the solution type, the class with the {@link PlanningSolution} annotation
  * @param <T> the selection type
  */

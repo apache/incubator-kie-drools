@@ -16,6 +16,10 @@
 
 package org.optaplanner.core.api.domain.solution.drools;
 
+import static java.lang.annotation.ElementType.FIELD;
+import static java.lang.annotation.ElementType.METHOD;
+import static java.lang.annotation.RetentionPolicy.RUNTIME;
+
 import java.lang.annotation.Retention;
 import java.lang.annotation.Target;
 
@@ -26,10 +30,6 @@ import org.optaplanner.core.api.score.stream.ConstraintFactory;
 import org.optaplanner.core.api.score.stream.ConstraintProvider;
 import org.optaplanner.core.impl.solver.ProblemFactChange;
 
-import static java.lang.annotation.ElementType.FIELD;
-import static java.lang.annotation.ElementType.METHOD;
-import static java.lang.annotation.RetentionPolicy.RUNTIME;
-
 /**
  * Specifies that a property (or a field) on a {@link PlanningSolution} class is a problem fact.
  * A problem fact must not change during solving (except through a {@link ProblemFactChange} event).
@@ -39,9 +39,10 @@ import static java.lang.annotation.RetentionPolicy.RUNTIME;
  * <p>
  * Do not annotate a {@link PlanningEntity planning entity} or a {@link ConstraintConfiguration planning paramerization}
  * as a problem fact: they are automatically available as facts for {@link ConstraintFactory#from(Class)} or DRL.
+ * 
  * @see ProblemFactCollectionProperty
  */
-@Target({METHOD, FIELD})
+@Target({ METHOD, FIELD })
 @Retention(RUNTIME)
 public @interface ProblemFactProperty {
 

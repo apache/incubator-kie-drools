@@ -58,7 +58,7 @@ public class TestGenKieSessionUpdate implements TestGenKieSessionOperation {
      * Get the value that is used to update a fact's field (an entity's variable).
      *
      * @return a TestGenFact representing the new value, never null (null value is represented by
-     * {@link TestGenNullFact})
+     *         {@link TestGenNullFact})
      */
     public TestGenFact getValue() {
         return value;

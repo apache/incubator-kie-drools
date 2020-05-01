@@ -162,7 +162,8 @@ public class TaskAssigningGenerator extends LoggingMain {
         BigInteger a = AbstractSolutionImporter.factorial(taskListSize + employeeListSize - 1);
         BigInteger b = AbstractSolutionImporter.factorial(employeeListSize - 1);
         BigInteger possibleSolutionSize = (a == null || b == null) ? null : a.divide(b);
-        logger.info("TaskAssigningSolution {} has {} tasks, {} skills, {} employees, {} task types and {} customers with a search space of {}.",
+        logger.info(
+                "TaskAssigningSolution {} has {} tasks, {} skills, {} employees, {} task types and {} customers with a search space of {}.",
                 fileName,
                 taskListSize,
                 skillListSize,

@@ -37,8 +37,7 @@ public class DefaultSolverThreadFactory implements ThreadFactory {
 
     public DefaultSolverThreadFactory(String threadPrefix) {
         SecurityManager s = System.getSecurityManager();
-        group = (s != null) ? s.getThreadGroup() :
-                Thread.currentThread().getThreadGroup();
+        group = (s != null) ? s.getThreadGroup() : Thread.currentThread().getThreadGroup();
         namePrefix = "OptaPool-" + poolNumber.getAndIncrement() + "-" + threadPrefix + "-";
     }
 

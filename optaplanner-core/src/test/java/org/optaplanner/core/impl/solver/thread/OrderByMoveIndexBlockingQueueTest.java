@@ -16,6 +16,11 @@
 
 package org.optaplanner.core.impl.solver.thread;
 
+import static org.junit.Assert.assertEquals;
+import static org.optaplanner.core.impl.testdata.util.PlannerAssert.*;
+import static org.optaplanner.core.impl.testdata.util.PlannerAssert.assertSame;
+import static org.optaplanner.core.impl.testdata.util.PlannerAssert.fail;
+
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
@@ -31,11 +36,6 @@ import org.optaplanner.core.impl.partitionedsearch.queue.PartitionQueueTest;
 import org.optaplanner.core.impl.testdata.domain.TestdataSolution;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-
-import static org.junit.Assert.assertEquals;
-import static org.optaplanner.core.impl.testdata.util.PlannerAssert.*;
-import static org.optaplanner.core.impl.testdata.util.PlannerAssert.assertSame;
-import static org.optaplanner.core.impl.testdata.util.PlannerAssert.fail;
 
 public class OrderByMoveIndexBlockingQueueTest {
 
@@ -179,7 +179,8 @@ public class OrderByMoveIndexBlockingQueueTest {
         assertEquals(SimpleScore.of(score), result.getScore());
     }
 
-    private void assertResult(String moveCode, boolean doable, OrderByMoveIndexBlockingQueue.MoveResult<TestdataSolution> result) {
+    private void assertResult(String moveCode, boolean doable,
+            OrderByMoveIndexBlockingQueue.MoveResult<TestdataSolution> result) {
         assertCode(moveCode, result.getMove());
         assertEquals(doable, result.isMoveDoable());
     }

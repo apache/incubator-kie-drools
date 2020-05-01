@@ -16,6 +16,9 @@
 
 package org.optaplanner.core.impl.heuristic.selector.value.nearby;
 
+import static org.mockito.Mockito.*;
+import static org.optaplanner.core.impl.testdata.util.PlannerAssert.*;
+
 import org.junit.jupiter.api.Test;
 import org.optaplanner.core.impl.domain.variable.descriptor.GenuineVariableDescriptor;
 import org.optaplanner.core.impl.heuristic.selector.SelectorTestUtils;
@@ -32,9 +35,6 @@ import org.optaplanner.core.impl.testdata.domain.TestdataValue;
 import org.optaplanner.core.impl.testdata.domain.chained.TestdataChainedAnchor;
 import org.optaplanner.core.impl.testdata.domain.chained.TestdataChainedEntity;
 import org.optaplanner.core.impl.testdata.domain.chained.TestdataChainedObject;
-
-import static org.mockito.Mockito.*;
-import static org.optaplanner.core.impl.testdata.util.PlannerAssert.*;
 
 public class NearEntityNearbyValueSelectorTest {
 
@@ -93,7 +93,8 @@ public class NearEntityNearbyValueSelectorTest {
                 throw new IllegalStateException("The origin (" + origin + ") is not implemented.");
             }
         };
-        EntitySelector entitySelector = SelectorTestUtils.mockEntitySelector(variableDescriptor.getEntityDescriptor(), africa, europe, oceania);
+        EntitySelector entitySelector = SelectorTestUtils.mockEntitySelector(variableDescriptor.getEntityDescriptor(), africa,
+                europe, oceania);
         ManualEntityMimicRecorder entityMimicRecorder = new ManualEntityMimicRecorder(entitySelector);
         NearEntityNearbyValueSelector valueSelector = new NearEntityNearbyValueSelector(
                 childValueSelector, new MimicReplayingEntitySelector(entityMimicRecorder), meter, null, false);
@@ -154,8 +155,8 @@ public class NearEntityNearbyValueSelectorTest {
         valueSelector.solvingEnded(solverScope);
 
         verifyPhaseLifecycle(childValueSelector, 1, 2, 5);
-//        verify(childValueSelector, times(5)).endingIterator(any());
-//        verify(childValueSelector, times(5)).getSize(any());
+        //        verify(childValueSelector, times(5)).endingIterator(any());
+        //        verify(childValueSelector, times(5)).getSize(any());
     }
 
     @Test
@@ -210,7 +211,8 @@ public class NearEntityNearbyValueSelectorTest {
                 throw new IllegalStateException("The origin (" + origin + ") is not implemented.");
             }
         };
-        EntitySelector entitySelector = SelectorTestUtils.mockEntitySelector(variableDescriptor.getEntityDescriptor(), morocco, spain, australia);
+        EntitySelector entitySelector = SelectorTestUtils.mockEntitySelector(variableDescriptor.getEntityDescriptor(), morocco,
+                spain, australia);
         ManualEntityMimicRecorder entityMimicRecorder = new ManualEntityMimicRecorder(entitySelector);
         NearEntityNearbyValueSelector valueSelector = new NearEntityNearbyValueSelector(
                 childValueSelector, new MimicReplayingEntitySelector(entityMimicRecorder), meter, null, false);
@@ -271,8 +273,8 @@ public class NearEntityNearbyValueSelectorTest {
         valueSelector.solvingEnded(solverScope);
 
         verifyPhaseLifecycle(childValueSelector, 1, 2, 5);
-//        verify(childValueSelector, times(5)).endingIterator(any());
-//        verify(childValueSelector, times(5)).getSize(any());
+        //        verify(childValueSelector, times(5)).endingIterator(any());
+        //        verify(childValueSelector, times(5)).getSize(any());
     }
 
 }

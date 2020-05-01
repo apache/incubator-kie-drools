@@ -48,10 +48,8 @@ public class HeuristicConfigPolicy {
     private boolean reinitializeVariableFilterEnabled = false;
     private boolean initializedChainedValueFilterEnabled = false;
 
-    private Map<String, EntityMimicRecorder> entityMimicRecorderMap
-            = new HashMap<>();
-    private Map<String, ValueMimicRecorder> valueMimicRecorderMap
-            = new HashMap<>();
+    private Map<String, EntityMimicRecorder> entityMimicRecorderMap = new HashMap<>();
+    private Map<String, ValueMimicRecorder> valueMimicRecorderMap = new HashMap<>();
 
     public HeuristicConfigPolicy(EnvironmentMode environmentMode,
             Integer moveThreadCount, Integer moveThreadBufferSize, Class<? extends ThreadFactory> threadFactoryClass,

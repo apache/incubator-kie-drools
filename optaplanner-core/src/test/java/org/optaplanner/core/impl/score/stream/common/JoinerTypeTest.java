@@ -16,12 +16,6 @@
 
 package org.optaplanner.core.impl.score.stream.common;
 
-import java.util.Arrays;
-import java.util.Collection;
-import java.util.Collections;
-
-import org.junit.jupiter.api.Test;
-
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 import static org.optaplanner.core.impl.score.stream.common.JoinerType.CONTAINING;
@@ -32,6 +26,12 @@ import static org.optaplanner.core.impl.score.stream.common.JoinerType.GREATER_T
 import static org.optaplanner.core.impl.score.stream.common.JoinerType.INTERSECTING;
 import static org.optaplanner.core.impl.score.stream.common.JoinerType.LESS_THAN;
 import static org.optaplanner.core.impl.score.stream.common.JoinerType.LESS_THAN_OR_EQUAL;
+
+import java.util.Arrays;
+import java.util.Collection;
+import java.util.Collections;
+
+import org.junit.jupiter.api.Test;
 
 public class JoinerTypeTest {
 

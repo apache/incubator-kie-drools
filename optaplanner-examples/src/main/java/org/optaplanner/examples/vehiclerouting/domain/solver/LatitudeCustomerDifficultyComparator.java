@@ -26,11 +26,11 @@ import org.optaplanner.examples.vehiclerouting.domain.Customer;
  */
 public class LatitudeCustomerDifficultyComparator implements Comparator<Customer>, Serializable {
 
-    private static final Comparator<Customer> COMPARATOR =
-            Comparator.comparingDouble((Customer customer) -> customer.getLocation().getLatitude())
-                    .thenComparingDouble(customer -> customer.getLocation().getLongitude())
-                    .thenComparingInt(Customer::getDemand)
-                    .thenComparingLong(Customer::getId);
+    private static final Comparator<Customer> COMPARATOR = Comparator
+            .comparingDouble((Customer customer) -> customer.getLocation().getLatitude())
+            .thenComparingDouble(customer -> customer.getLocation().getLongitude())
+            .thenComparingInt(Customer::getDemand)
+            .thenComparingLong(Customer::getId);
 
     @Override
     public int compare(Customer a, Customer b) {

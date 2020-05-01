@@ -18,7 +18,6 @@ package org.optaplanner.examples.curriculumcourse.domain;
 
 import java.util.List;
 
-import com.thoughtworks.xstream.annotations.XStreamAlias;
 import org.optaplanner.core.api.domain.entity.PlanningEntity;
 import org.optaplanner.core.api.domain.entity.PlanningPin;
 import org.optaplanner.core.api.domain.variable.PlanningVariable;
@@ -26,6 +25,8 @@ import org.optaplanner.examples.common.domain.AbstractPersistable;
 import org.optaplanner.examples.curriculumcourse.domain.solver.LectureDifficultyWeightFactory;
 import org.optaplanner.examples.curriculumcourse.domain.solver.PeriodStrengthWeightFactory;
 import org.optaplanner.examples.curriculumcourse.domain.solver.RoomStrengthWeightFactory;
+
+import com.thoughtworks.xstream.annotations.XStreamAlias;
 
 @PlanningEntity(difficultyWeightFactoryClass = LectureDifficultyWeightFactory.class)
 @XStreamAlias("Lecture")
@@ -64,8 +65,8 @@ public class Lecture extends AbstractPersistable {
         this.pinned = pinned;
     }
 
-    @PlanningVariable(valueRangeProviderRefs = {"periodRange"},
-            strengthWeightFactoryClass = PeriodStrengthWeightFactory.class)
+    @PlanningVariable(valueRangeProviderRefs = {
+            "periodRange" }, strengthWeightFactoryClass = PeriodStrengthWeightFactory.class)
     public Period getPeriod() {
         return period;
     }
@@ -74,8 +75,7 @@ public class Lecture extends AbstractPersistable {
         this.period = period;
     }
 
-    @PlanningVariable(valueRangeProviderRefs = {"roomRange"},
-            strengthWeightFactoryClass = RoomStrengthWeightFactory.class)
+    @PlanningVariable(valueRangeProviderRefs = { "roomRange" }, strengthWeightFactoryClass = RoomStrengthWeightFactory.class)
     public Room getRoom() {
         return room;
     }

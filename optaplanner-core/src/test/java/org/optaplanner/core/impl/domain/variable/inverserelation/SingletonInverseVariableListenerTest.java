@@ -16,6 +16,9 @@
 
 package org.optaplanner.core.impl.domain.variable.inverserelation;
 
+import static org.junit.Assert.*;
+import static org.mockito.Mockito.*;
+
 import java.util.Arrays;
 
 import org.junit.jupiter.api.Test;
@@ -27,9 +30,6 @@ import org.optaplanner.core.impl.score.director.ScoreDirector;
 import org.optaplanner.core.impl.testdata.domain.chained.shadow.TestdataShadowingChainedAnchor;
 import org.optaplanner.core.impl.testdata.domain.chained.shadow.TestdataShadowingChainedEntity;
 import org.optaplanner.core.impl.testdata.domain.chained.shadow.TestdataShadowingChainedSolution;
-
-import static org.junit.Assert.*;
-import static org.mockito.Mockito.*;
 
 public class SingletonInverseVariableListenerTest {
 

@@ -26,7 +26,7 @@ import org.optaplanner.core.impl.score.stream.drools.common.DroolsAbstractGroupB
 import org.optaplanner.core.impl.score.stream.drools.common.DroolsAbstractGroupByInvoker;
 
 public class DroolsBiToQuadGroupByInvoker<A, B, NewA, NewB, NewC, NewD>
-    extends DroolsAbstractGroupByInvoker<BiTuple<A, B>> {
+        extends DroolsAbstractGroupByInvoker<BiTuple<A, B>> {
 
     private final BiFunction<A, B, NewA> groupKeyAMapping;
     private final BiFunction<A, B, NewB> groupKeyBMapping;

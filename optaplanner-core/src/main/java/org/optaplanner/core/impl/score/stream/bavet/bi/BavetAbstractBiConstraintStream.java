@@ -68,7 +68,8 @@ public abstract class BavetAbstractBiConstraintStream<Solution_, A, B> extends B
 
     @Override
     public BavetAbstractBiConstraintStream<Solution_, A, B> filter(BiPredicate<A, B> predicate) {
-        BavetFilterBiConstraintStream<Solution_, A, B> stream = new BavetFilterBiConstraintStream<>(constraintFactory, this, predicate);
+        BavetFilterBiConstraintStream<Solution_, A, B> stream = new BavetFilterBiConstraintStream<>(constraintFactory, this,
+                predicate);
         addChildStream(stream);
         return stream;
     }
@@ -86,7 +87,8 @@ public abstract class BavetAbstractBiConstraintStream<Solution_, A, B> extends B
         BavetAbstractUniConstraintStream<Solution_, C> other = (BavetAbstractUniConstraintStream<Solution_, C>) otherStream;
         if (constraintFactory != other.getConstraintFactory()) {
             throw new IllegalStateException("The streams (" + this + ", " + other
-                    + ") are build from different constraintFactories (" + constraintFactory + ", " + other.getConstraintFactory()
+                    + ") are build from different constraintFactories (" + constraintFactory + ", "
+                    + other.getConstraintFactory()
                     + ").");
         }
         if (!(joiner instanceof AbstractTriJoiner)) {
@@ -100,7 +102,8 @@ public abstract class BavetAbstractBiConstraintStream<Solution_, A, B> extends B
         BavetJoinBridgeUniConstraintStream<Solution_, C> rightBridge = new BavetJoinBridgeUniConstraintStream<>(
                 constraintFactory, other, false, castedJoiner.getRightCombinedMapping(), indexFactory);
         other.addChildStream(rightBridge);
-        BavetJoinTriConstraintStream<Solution_, A, B, C> joinStream = new BavetJoinTriConstraintStream<>(constraintFactory, leftBridge, rightBridge);
+        BavetJoinTriConstraintStream<Solution_, A, B, C> joinStream = new BavetJoinTriConstraintStream<>(constraintFactory,
+                leftBridge, rightBridge);
         leftBridge.setJoinStream(joinStream);
         rightBridge.setJoinStream(joinStream);
         return joinStream;
@@ -127,7 +130,8 @@ public abstract class BavetAbstractBiConstraintStream<Solution_, A, B> extends B
     // ************************************************************************
 
     @Override
-    public <ResultContainer_, Result_> UniConstraintStream<Result_> groupBy(BiConstraintCollector<A, B, ResultContainer_, Result_> collector) {
+    public <ResultContainer_, Result_> UniConstraintStream<Result_> groupBy(
+            BiConstraintCollector<A, B, ResultContainer_, Result_> collector) {
         throw new UnsupportedOperationException();
     }
 
@@ -150,12 +154,17 @@ public abstract class BavetAbstractBiConstraintStream<Solution_, A, B> extends B
     }
 
     @Override
-    public <GroupKeyA_, GroupKeyB_, ResultContainer_, Result_> TriConstraintStream<GroupKeyA_, GroupKeyB_, Result_> groupBy(BiFunction<A, B, GroupKeyA_> groupKeyAMapping, BiFunction<A, B, GroupKeyB_> groupKeyBMapping, BiConstraintCollector<A, B, ResultContainer_, Result_> collector) {
+    public <GroupKeyA_, GroupKeyB_, ResultContainer_, Result_> TriConstraintStream<GroupKeyA_, GroupKeyB_, Result_> groupBy(
+            BiFunction<A, B, GroupKeyA_> groupKeyAMapping, BiFunction<A, B, GroupKeyB_> groupKeyBMapping,
+            BiConstraintCollector<A, B, ResultContainer_, Result_> collector) {
         throw new UnsupportedOperationException();
     }
 
     @Override
-    public <GroupKeyA_, GroupKeyB_, ResultContainerC_, ResultC_, ResultContainerD_, ResultD_> QuadConstraintStream<GroupKeyA_, GroupKeyB_, ResultC_, ResultD_> groupBy(BiFunction<A, B, GroupKeyA_> groupKeyAMapping, BiFunction<A, B, GroupKeyB_> groupKeyBMapping, BiConstraintCollector<A, B, ResultContainerC_, ResultC_> collectorC, BiConstraintCollector<A, B, ResultContainerD_, ResultD_> collectorD) {
+    public <GroupKeyA_, GroupKeyB_, ResultContainerC_, ResultC_, ResultContainerD_, ResultD_> QuadConstraintStream<GroupKeyA_, GroupKeyB_, ResultC_, ResultD_> groupBy(
+            BiFunction<A, B, GroupKeyA_> groupKeyAMapping, BiFunction<A, B, GroupKeyB_> groupKeyBMapping,
+            BiConstraintCollector<A, B, ResultContainerC_, ResultC_> collectorC,
+            BiConstraintCollector<A, B, ResultContainerD_, ResultD_> collectorD) {
         throw new UnsupportedOperationException();
     }
 

@@ -28,8 +28,7 @@ import org.optaplanner.persistence.xstream.impl.domain.solution.XStreamSolutionF
 
 public class PatientAdmissionScheduleApp extends CommonApp<PatientAdmissionSchedule> {
 
-    public static final String SOLVER_CONFIG
-            = "org/optaplanner/examples/pas/solver/patientAdmissionScheduleSolverConfig.xml";
+    public static final String SOLVER_CONFIG = "org/optaplanner/examples/pas/solver/patientAdmissionScheduleSolverConfig.xml";
 
     public static final String DATA_DIR_NAME = "pas";
 
@@ -58,7 +57,7 @@ public class PatientAdmissionScheduleApp extends CommonApp<PatientAdmissionSched
 
     @Override
     protected AbstractSolutionImporter[] createSolutionImporters() {
-        return new AbstractSolutionImporter[]{
+        return new AbstractSolutionImporter[] {
                 new PatientAdmissionScheduleImporter()
         };
     }

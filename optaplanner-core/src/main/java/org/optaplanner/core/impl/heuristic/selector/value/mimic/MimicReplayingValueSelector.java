@@ -44,7 +44,7 @@ public class MimicReplayingValueSelector extends AbstractValueSelector
         if (!valueMimicRecorder.getVariableDescriptor().isValueRangeEntityIndependent()) {
             throw new IllegalArgumentException(
                     "The current implementation support only an entityIndependent variable ("
-                    + valueMimicRecorder.getVariableDescriptor() + ").");
+                            + valueMimicRecorder.getVariableDescriptor() + ").");
         }
     }
 

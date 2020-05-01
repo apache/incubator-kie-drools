@@ -16,10 +16,10 @@
 
 package org.optaplanner.examples.common.persistence;
 
+import static org.junit.Assert.*;
+
 import org.junit.jupiter.api.Test;
 import org.optaplanner.examples.common.persistence.generator.StringDataGenerator;
-
-import static org.junit.Assert.*;
 
 public class StringDataGeneratorTest {
 

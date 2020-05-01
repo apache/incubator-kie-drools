@@ -16,19 +16,6 @@
 
 package org.optaplanner.core.api.score.stream;
 
-import java.util.Objects;
-import java.util.Set;
-import java.util.function.Function;
-import java.util.stream.Stream;
-
-import com.google.common.base.Functions;
-import org.junit.jupiter.api.TestTemplate;
-import org.optaplanner.core.api.score.buildin.simple.SimpleScore;
-import org.optaplanner.core.impl.score.director.InnerScoreDirector;
-import org.optaplanner.core.impl.testdata.domain.score.lavish.TestdataLavishEntity;
-import org.optaplanner.core.impl.testdata.domain.score.lavish.TestdataLavishEntityGroup;
-import org.optaplanner.core.impl.testdata.domain.score.lavish.TestdataLavishSolution;
-
 import static org.optaplanner.core.api.score.stream.ConstraintCollectors.count;
 import static org.optaplanner.core.api.score.stream.ConstraintCollectors.countBi;
 import static org.optaplanner.core.api.score.stream.ConstraintCollectors.countQuad;
@@ -41,9 +28,24 @@ import static org.optaplanner.core.api.score.stream.Joiners.filtering;
 import static org.optaplanner.core.impl.testdata.util.PlannerTestUtils.asMap;
 import static org.optaplanner.core.impl.testdata.util.PlannerTestUtils.asSet;
 
+import java.util.Objects;
+import java.util.Set;
+import java.util.function.Function;
+import java.util.stream.Stream;
+
+import org.junit.jupiter.api.TestTemplate;
+import org.optaplanner.core.api.score.buildin.simple.SimpleScore;
+import org.optaplanner.core.impl.score.director.InnerScoreDirector;
+import org.optaplanner.core.impl.testdata.domain.score.lavish.TestdataLavishEntity;
+import org.optaplanner.core.impl.testdata.domain.score.lavish.TestdataLavishEntityGroup;
+import org.optaplanner.core.impl.testdata.domain.score.lavish.TestdataLavishSolution;
+
+import com.google.common.base.Functions;
+
 public class AdvancedGroupByConstraintStreamTest extends AbstractConstraintStreamTest {
 
-    public AdvancedGroupByConstraintStreamTest(boolean constraintMatchEnabled, ConstraintStreamImplType constraintStreamImplType) {
+    public AdvancedGroupByConstraintStreamTest(boolean constraintMatchEnabled,
+            ConstraintStreamImplType constraintStreamImplType) {
         super(constraintMatchEnabled, constraintStreamImplType);
     }
 
@@ -343,14 +345,14 @@ public class AdvancedGroupByConstraintStreamTest extends AbstractConstraintStrea
         // From scratch
         scoreDirector.setWorkingSolution(solution);
         assertScore(scoreDirector,
-                assertMatchWithScore(-1, new Object[] {entity.getEntityGroup().toString(), 1}),
-                assertMatchWithScore(-1, new Object[] {entity2.getEntityGroup().toString(), 1}));
+                assertMatchWithScore(-1, new Object[] { entity.getEntityGroup().toString(), 1 }),
+                assertMatchWithScore(-1, new Object[] { entity2.getEntityGroup().toString(), 1 }));
 
         // Incremental
         scoreDirector.beforeEntityRemoved(entity);
         solution.getEntityList().remove(entity);
         scoreDirector.afterEntityRemoved(entity);
-        assertScore(scoreDirector, assertMatchWithScore(-1, new Object[] {entity2.getEntityGroup().toString(), 1}));
+        assertScore(scoreDirector, assertMatchWithScore(-1, new Object[] { entity2.getEntityGroup().toString(), 1 }));
     }
 
     @TestTemplate
@@ -376,14 +378,14 @@ public class AdvancedGroupByConstraintStreamTest extends AbstractConstraintStrea
         // From scratch
         scoreDirector.setWorkingSolution(solution);
         assertScore(scoreDirector,
-                assertMatchWithScore(-1, new Object[] {entity.getEntityGroup().toString(), 1}),
-                assertMatchWithScore(-1, new Object[] {entity2.getEntityGroup().toString(), 1}));
+                assertMatchWithScore(-1, new Object[] { entity.getEntityGroup().toString(), 1 }),
+                assertMatchWithScore(-1, new Object[] { entity2.getEntityGroup().toString(), 1 }));
 
         // Incremental
         scoreDirector.beforeEntityRemoved(entity);
         solution.getEntityList().remove(entity);
         scoreDirector.afterEntityRemoved(entity);
-        assertScore(scoreDirector, assertMatchWithScore(-1, new Object[] {entity2.getEntityGroup().toString(), 1}));
+        assertScore(scoreDirector, assertMatchWithScore(-1, new Object[] { entity2.getEntityGroup().toString(), 1 }));
     }
 
     @TestTemplate
@@ -412,14 +414,14 @@ public class AdvancedGroupByConstraintStreamTest extends AbstractConstraintStrea
         // From scratch
         scoreDirector.setWorkingSolution(solution);
         assertScore(scoreDirector,
-                assertMatchWithScore(-1, new Object[] {entity.getEntityGroup().toString(), 1}),
-                assertMatchWithScore(-1, new Object[] {entity2.getEntityGroup().toString(), 1}));
+                assertMatchWithScore(-1, new Object[] { entity.getEntityGroup().toString(), 1 }),
+                assertMatchWithScore(-1, new Object[] { entity2.getEntityGroup().toString(), 1 }));
 
         // Incremental
         scoreDirector.beforeEntityRemoved(entity);
         solution.getEntityList().remove(entity);
         scoreDirector.afterEntityRemoved(entity);
-        assertScore(scoreDirector, assertMatchWithScore(-1, new Object[] {entity2.getEntityGroup().toString(), 1}));
+        assertScore(scoreDirector, assertMatchWithScore(-1, new Object[] { entity2.getEntityGroup().toString(), 1 }));
     }
 
     @TestTemplate
@@ -473,7 +475,8 @@ public class AdvancedGroupByConstraintStreamTest extends AbstractConstraintStrea
 
         InnerScoreDirector<TestdataLavishSolution> scoreDirector = buildScoreDirector((factory) -> {
             return factory.from(TestdataLavishEntity.class)
-                    .ifExists(TestdataLavishEntityGroup.class, equal(TestdataLavishEntity::getEntityGroup, Functions.identity()))
+                    .ifExists(TestdataLavishEntityGroup.class,
+                            equal(TestdataLavishEntity::getEntityGroup, Functions.identity()))
                     .groupBy(TestdataLavishEntity::getEntityGroup, count())
                     .penalize(TEST_CONSTRAINT_NAME, SimpleScore.ONE, (groupA, count) -> count);
         });

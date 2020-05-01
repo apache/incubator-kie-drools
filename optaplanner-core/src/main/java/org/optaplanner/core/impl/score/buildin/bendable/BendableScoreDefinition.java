@@ -119,12 +119,14 @@ public class BendableScoreDefinition extends AbstractBendableScoreDefinition<Ben
         int[] hardScores = new int[hardLevelsSize];
         for (int i = 0; i < hardLevelsSize; i++) {
             hardScores[i] = (trendLevels[i] == InitializingScoreTrendLevel.ONLY_DOWN)
-                    ? score.getHardScore(i) : Integer.MAX_VALUE;
+                    ? score.getHardScore(i)
+                    : Integer.MAX_VALUE;
         }
         int[] softScores = new int[softLevelsSize];
         for (int i = 0; i < softLevelsSize; i++) {
             softScores[i] = (trendLevels[hardLevelsSize + i] == InitializingScoreTrendLevel.ONLY_DOWN)
-                    ? score.getSoftScore(i) : Integer.MAX_VALUE;
+                    ? score.getSoftScore(i)
+                    : Integer.MAX_VALUE;
         }
         return BendableScore.ofUninitialized(0, hardScores, softScores);
     }
@@ -135,12 +137,14 @@ public class BendableScoreDefinition extends AbstractBendableScoreDefinition<Ben
         int[] hardScores = new int[hardLevelsSize];
         for (int i = 0; i < hardLevelsSize; i++) {
             hardScores[i] = (trendLevels[i] == InitializingScoreTrendLevel.ONLY_UP)
-                    ? score.getHardScore(i) : Integer.MIN_VALUE;
+                    ? score.getHardScore(i)
+                    : Integer.MIN_VALUE;
         }
         int[] softScores = new int[softLevelsSize];
         for (int i = 0; i < softLevelsSize; i++) {
             softScores[i] = (trendLevels[hardLevelsSize + i] == InitializingScoreTrendLevel.ONLY_UP)
-                    ? score.getSoftScore(i) : Integer.MIN_VALUE;
+                    ? score.getSoftScore(i)
+                    : Integer.MIN_VALUE;
         }
         return BendableScore.ofUninitialized(0, hardScores, softScores);
     }

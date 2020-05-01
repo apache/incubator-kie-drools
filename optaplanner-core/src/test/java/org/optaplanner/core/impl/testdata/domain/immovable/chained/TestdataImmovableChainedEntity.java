@@ -26,7 +26,7 @@ import org.optaplanner.core.impl.testdata.domain.TestdataObject;
 import org.optaplanner.core.impl.testdata.domain.chained.TestdataChainedObject;
 
 @PlanningEntity(movableEntitySelectionFilter = TestdataImmovableChainedEntityFilter.class)
-public class TestdataImmovableChainedEntity extends TestdataObject implements TestdataChainedObject  {
+public class TestdataImmovableChainedEntity extends TestdataObject implements TestdataChainedObject {
 
     public static EntityDescriptor buildEntityDescriptor() {
         SolutionDescriptor solutionDescriptor = TestdataImmovableChainedSolution.buildSolutionDescriptor();
@@ -59,8 +59,8 @@ public class TestdataImmovableChainedEntity extends TestdataObject implements Te
         this.pinned = pinned;
     }
 
-    @PlanningVariable(valueRangeProviderRefs = {"chainedAnchorRange", "chainedEntityRange"},
-            graphType = PlanningVariableGraphType.CHAINED)
+    @PlanningVariable(valueRangeProviderRefs = { "chainedAnchorRange",
+            "chainedEntityRange" }, graphType = PlanningVariableGraphType.CHAINED)
     public TestdataChainedObject getChainedObject() {
         return chainedObject;
     }

@@ -16,25 +16,6 @@
 
 package org.optaplanner.core.api.score.stream;
 
-import java.math.BigDecimal;
-import java.math.BigInteger;
-import java.time.Duration;
-import java.time.Period;
-import java.util.Comparator;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
-import java.util.SortedMap;
-import java.util.SortedSet;
-import java.util.function.BiFunction;
-import java.util.function.Function;
-
-import org.junit.jupiter.api.Test;
-import org.optaplanner.core.api.score.stream.bi.BiConstraintCollector;
-import org.optaplanner.core.api.score.stream.quad.QuadConstraintCollector;
-import org.optaplanner.core.api.score.stream.tri.TriConstraintCollector;
-import org.optaplanner.core.api.score.stream.uni.UniConstraintCollector;
-
 import static java.util.Arrays.asList;
 import static java.util.Collections.emptyList;
 import static java.util.Collections.emptyMap;
@@ -53,6 +34,25 @@ import static org.optaplanner.core.impl.testdata.util.PlannerTestUtils.asMap;
 import static org.optaplanner.core.impl.testdata.util.PlannerTestUtils.asSet;
 import static org.optaplanner.core.impl.testdata.util.PlannerTestUtils.asSortedMap;
 import static org.optaplanner.core.impl.testdata.util.PlannerTestUtils.asSortedSet;
+
+import java.math.BigDecimal;
+import java.math.BigInteger;
+import java.time.Duration;
+import java.time.Period;
+import java.util.Comparator;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
+import java.util.SortedMap;
+import java.util.SortedSet;
+import java.util.function.BiFunction;
+import java.util.function.Function;
+
+import org.junit.jupiter.api.Test;
+import org.optaplanner.core.api.score.stream.bi.BiConstraintCollector;
+import org.optaplanner.core.api.score.stream.quad.QuadConstraintCollector;
+import org.optaplanner.core.api.score.stream.tri.TriConstraintCollector;
+import org.optaplanner.core.api.score.stream.uni.UniConstraintCollector;
 
 public class ConstraintCollectorsTest {
 
@@ -230,8 +230,7 @@ public class ConstraintCollectorsTest {
 
     @Test
     public void countQuad() {
-        QuadConstraintCollector<Integer, Integer, Integer, Integer, ?, Integer> collector =
-                ConstraintCollectors.countQuad();
+        QuadConstraintCollector<Integer, Integer, Integer, Integer, ?, Integer> collector = ConstraintCollectors.countQuad();
         Object container = collector.supplier().get();
         // Add first value, we have one now.
         int firstValueA = 2;
@@ -265,8 +264,7 @@ public class ConstraintCollectorsTest {
 
     @Test
     public void countQuadLong() {
-        QuadConstraintCollector<Integer, Integer, Integer, Integer, ?, Long> collector =
-                countLongQuad();
+        QuadConstraintCollector<Integer, Integer, Integer, Integer, ?, Long> collector = countLongQuad();
         Object container = collector.supplier().get();
         // Add first value, we have one now.
         int firstValueA = 2;
@@ -356,8 +354,7 @@ public class ConstraintCollectorsTest {
 
     @Test
     public void countDistinctBi() {
-        BiConstraintCollector<Integer, Integer, ?, Integer> collector =
-                ConstraintCollectors.countDistinct((a, b) -> a + b);
+        BiConstraintCollector<Integer, Integer, ?, Integer> collector = ConstraintCollectors.countDistinct((a, b) -> a + b);
         Object container = collector.supplier().get();
         // Add first value, we have one now.
         int firstValueA = 2;
@@ -385,8 +382,7 @@ public class ConstraintCollectorsTest {
 
     @Test
     public void countDistinctBiLong() {
-        BiConstraintCollector<Integer, Integer, ?, Long> collector =
-                ConstraintCollectors.countDistinctLong((a, b) -> a + b);
+        BiConstraintCollector<Integer, Integer, ?, Long> collector = ConstraintCollectors.countDistinctLong((a, b) -> a + b);
         Object container = collector.supplier().get();
         // Add first value, we have one now.
         int firstValueA = 2;
@@ -414,8 +410,8 @@ public class ConstraintCollectorsTest {
 
     @Test
     public void countDistinctTri() {
-        TriConstraintCollector<Integer, Integer, Integer, ?, Integer> collector =
-                ConstraintCollectors.countDistinct((a, b, c) -> a + b + c);
+        TriConstraintCollector<Integer, Integer, Integer, ?, Integer> collector = ConstraintCollectors
+                .countDistinct((a, b, c) -> a + b + c);
         Object container = collector.supplier().get();
         // Add first value, we have one now.
         int firstValueA = 2;
@@ -445,8 +441,8 @@ public class ConstraintCollectorsTest {
 
     @Test
     public void countDistinctTriLong() {
-        TriConstraintCollector<Integer, Integer, Integer, ?, Long> collector =
-                ConstraintCollectors.countDistinctLong((a, b, c) -> a + b + c);
+        TriConstraintCollector<Integer, Integer, Integer, ?, Long> collector = ConstraintCollectors
+                .countDistinctLong((a, b, c) -> a + b + c);
         Object container = collector.supplier().get();
         // Add first value, we have one now.
         int firstValueA = 2;
@@ -476,8 +472,8 @@ public class ConstraintCollectorsTest {
 
     @Test
     public void countDistinctQuad() {
-        QuadConstraintCollector<Integer, Integer, Integer, Integer, ?, Integer> collector =
-                ConstraintCollectors.countDistinct((a, b, c, d) -> a + b + c + d);
+        QuadConstraintCollector<Integer, Integer, Integer, Integer, ?, Integer> collector = ConstraintCollectors
+                .countDistinct((a, b, c, d) -> a + b + c + d);
         Object container = collector.supplier().get();
         // Add first value, we have one now.
         int firstValueA = 2;
@@ -511,8 +507,8 @@ public class ConstraintCollectorsTest {
 
     @Test
     public void countDistinctQuadLong() {
-        QuadConstraintCollector<Integer, Integer, Integer, Integer, ?, Long> collector =
-                ConstraintCollectors.countDistinctLong((a, b, c, d) -> a + b + c + d);
+        QuadConstraintCollector<Integer, Integer, Integer, Integer, ?, Long> collector = ConstraintCollectors
+                .countDistinctLong((a, b, c, d) -> a + b + c + d);
         Object container = collector.supplier().get();
         // Add first value, we have one now.
         int firstValueA = 2;
@@ -559,7 +555,7 @@ public class ConstraintCollectorsTest {
         // Add second value, we have two now.
         int secondValue = 1;
         Runnable secondRetractor = accumulate(collector, container, secondValue);
-        assertResult(collector, container,3);
+        assertResult(collector, container, 3);
         // Add third value, same as the second. We now have three values, two of which are the same.
         Runnable thirdRetractor = accumulate(collector, container, secondValue);
         assertResult(collector, container, 4);
@@ -717,7 +713,7 @@ public class ConstraintCollectorsTest {
         int secondValueA = 4;
         int secondValueB = 5;
         Runnable secondRetractor = accumulate(collector, container, secondValueA, secondValueB);
-        assertResult(collector, container,14);
+        assertResult(collector, container, 14);
         // Add third value, same as the second. We now have three values, two of which are the same.
         Runnable thirdRetractor = accumulate(collector, container, secondValueA, secondValueB);
         assertResult(collector, container, 23);
@@ -745,7 +741,7 @@ public class ConstraintCollectorsTest {
         int secondValueA = 4;
         int secondValueB = 5;
         Runnable secondRetractor = accumulate(collector, container, secondValueA, secondValueB);
-        assertResult(collector, container,14L);
+        assertResult(collector, container, 14L);
         // Add third value, same as the second. We now have three values, two of which are the same.
         Runnable thirdRetractor = accumulate(collector, container, secondValueA, secondValueB);
         assertResult(collector, container, 23L);
@@ -762,8 +758,8 @@ public class ConstraintCollectorsTest {
 
     @Test
     public void sumBiBigDecimal() {
-        BiConstraintCollector<Integer, Integer, ?, BigDecimal> collector =
-                ConstraintCollectors.sumBigDecimal((a, b) -> BigDecimal.valueOf(a + b));
+        BiConstraintCollector<Integer, Integer, ?, BigDecimal> collector = ConstraintCollectors
+                .sumBigDecimal((a, b) -> BigDecimal.valueOf(a + b));
         Object container = collector.supplier().get();
         // Add first value, we have one now.
         int firstValueA = 2;
@@ -791,8 +787,8 @@ public class ConstraintCollectorsTest {
 
     @Test
     public void sumBiBigInteger() {
-        BiConstraintCollector<Integer, Integer, ?, BigInteger> collector =
-                ConstraintCollectors.sumBigInteger((a, b) -> BigInteger.valueOf(a + b));
+        BiConstraintCollector<Integer, Integer, ?, BigInteger> collector = ConstraintCollectors
+                .sumBigInteger((a, b) -> BigInteger.valueOf(a + b));
         Object container = collector.supplier().get();
         // Add first value, we have one now.
         int firstValueA = 2;
@@ -820,8 +816,8 @@ public class ConstraintCollectorsTest {
 
     @Test
     public void sumBiDuration() {
-        BiConstraintCollector<Integer, Integer, ?, Duration> collector =
-                ConstraintCollectors.sumDuration((a, b) -> Duration.ofSeconds(a + b));
+        BiConstraintCollector<Integer, Integer, ?, Duration> collector = ConstraintCollectors
+                .sumDuration((a, b) -> Duration.ofSeconds(a + b));
         Object container = collector.supplier().get();
         // Add first value, we have one now.
         int firstValueA = 2;
@@ -849,8 +845,8 @@ public class ConstraintCollectorsTest {
 
     @Test
     public void sumBiPeriod() {
-        BiConstraintCollector<Integer, Integer, ?, Period> collector =
-                ConstraintCollectors.sumPeriod((a, b) -> Period.ofDays(a + b));
+        BiConstraintCollector<Integer, Integer, ?, Period> collector = ConstraintCollectors
+                .sumPeriod((a, b) -> Period.ofDays(a + b));
         Object container = collector.supplier().get();
         // Add first value, we have one now.
         int firstValueA = 2;
@@ -878,8 +874,8 @@ public class ConstraintCollectorsTest {
 
     @Test
     public void sumTri() {
-        TriConstraintCollector<Integer, Integer, Integer, ?, Integer> collector =
-                ConstraintCollectors.sum((a, b, c) -> a + b + c);
+        TriConstraintCollector<Integer, Integer, Integer, ?, Integer> collector = ConstraintCollectors
+                .sum((a, b, c) -> a + b + c);
         Object container = collector.supplier().get();
         // Add first value, we have one now.
         int firstValueA = 2;
@@ -892,7 +888,7 @@ public class ConstraintCollectorsTest {
         int secondValueB = 5;
         int secondValueC = 1;
         Runnable secondRetractor = accumulate(collector, container, secondValueA, secondValueB, secondValueC);
-        assertResult(collector, container,16);
+        assertResult(collector, container, 16);
         // Add third value, same as the second. We now have three values, two of which are the same.
         Runnable thirdRetractor = accumulate(collector, container, secondValueA, secondValueB, secondValueC);
         assertResult(collector, container, 26);
@@ -909,8 +905,8 @@ public class ConstraintCollectorsTest {
 
     @Test
     public void sumTriLong() {
-        TriConstraintCollector<Integer, Integer, Integer, ?, Long> collector =
-                ConstraintCollectors.sumLong((a, b, c) -> a + b + c);
+        TriConstraintCollector<Integer, Integer, Integer, ?, Long> collector = ConstraintCollectors
+                .sumLong((a, b, c) -> a + b + c);
         Object container = collector.supplier().get();
         // Add first value, we have one now.
         int firstValueA = 2;
@@ -924,7 +920,7 @@ public class ConstraintCollectorsTest {
         int secondValueC = 1;
         int secondSum = secondValueA + secondValueB + secondValueC;
         Runnable secondRetractor = accumulate(collector, container, secondValueA, secondValueB, secondValueC);
-        assertResult(collector, container,16L);
+        assertResult(collector, container, 16L);
         // Add third value, same as the second. We now have three values, two of which are the same.
         Runnable thirdRetractor = accumulate(collector, container, secondValueA, secondValueB, secondValueC);
         assertResult(collector, container, 26L);
@@ -941,8 +937,8 @@ public class ConstraintCollectorsTest {
 
     @Test
     public void sumTriBigDecimal() {
-        TriConstraintCollector<Integer, Integer, Integer, ?, BigDecimal> collector =
-                ConstraintCollectors.sumBigDecimal((a, b, c) -> BigDecimal.valueOf(a + b + c));
+        TriConstraintCollector<Integer, Integer, Integer, ?, BigDecimal> collector = ConstraintCollectors
+                .sumBigDecimal((a, b, c) -> BigDecimal.valueOf(a + b + c));
         Object container = collector.supplier().get();
         // Add first value, we have one now.
         int firstValueA = 2;
@@ -972,8 +968,8 @@ public class ConstraintCollectorsTest {
 
     @Test
     public void sumTriBigInteger() {
-        TriConstraintCollector<Integer, Integer, Integer, ?, BigInteger> collector =
-                ConstraintCollectors.sumBigInteger((a, b, c) -> BigInteger.valueOf(a + b + c));
+        TriConstraintCollector<Integer, Integer, Integer, ?, BigInteger> collector = ConstraintCollectors
+                .sumBigInteger((a, b, c) -> BigInteger.valueOf(a + b + c));
         Object container = collector.supplier().get();
         // Add first value, we have one now.
         int firstValueA = 2;
@@ -1003,8 +999,8 @@ public class ConstraintCollectorsTest {
 
     @Test
     public void sumTriDuration() {
-        TriConstraintCollector<Integer, Integer, Integer, ?, Duration> collector =
-                ConstraintCollectors.sumDuration((a, b, c) -> Duration.ofSeconds(a + b + c));
+        TriConstraintCollector<Integer, Integer, Integer, ?, Duration> collector = ConstraintCollectors
+                .sumDuration((a, b, c) -> Duration.ofSeconds(a + b + c));
         Object container = collector.supplier().get();
         // Add first value, we have one now.
         int firstValueA = 2;
@@ -1034,8 +1030,8 @@ public class ConstraintCollectorsTest {
 
     @Test
     public void sumTriPeriod() {
-        TriConstraintCollector<Integer, Integer, Integer, ?, Period> collector =
-                ConstraintCollectors.sumPeriod((a, b, c) -> Period.ofDays(a + b + c));
+        TriConstraintCollector<Integer, Integer, Integer, ?, Period> collector = ConstraintCollectors
+                .sumPeriod((a, b, c) -> Period.ofDays(a + b + c));
         Object container = collector.supplier().get();
         // Add first value, we have one now.
         int firstValueA = 2;
@@ -1065,8 +1061,8 @@ public class ConstraintCollectorsTest {
 
     @Test
     public void sumQuad() {
-        QuadConstraintCollector<Integer, Integer, Integer, Integer, ?, Integer> collector =
-                ConstraintCollectors.sum((a, b, c, d) -> a + b + c + d);
+        QuadConstraintCollector<Integer, Integer, Integer, Integer, ?, Integer> collector = ConstraintCollectors
+                .sum((a, b, c, d) -> a + b + c + d);
         Object container = collector.supplier().get();
         // Add first value, we have one now.
         int firstValueA = 2;
@@ -1082,7 +1078,7 @@ public class ConstraintCollectorsTest {
         int secondValueD = 2;
         Runnable secondRetractor = accumulate(collector, container, secondValueA, secondValueB, secondValueC,
                 secondValueD);
-        assertResult(collector, container,22);
+        assertResult(collector, container, 22);
         // Add third value, same as the second. We now have three values, two of which are the same.
         Runnable thirdRetractor = accumulate(collector, container, secondValueA, secondValueB, secondValueC,
                 secondValueD);
@@ -1100,8 +1096,8 @@ public class ConstraintCollectorsTest {
 
     @Test
     public void sumQuadLong() {
-        QuadConstraintCollector<Integer, Integer, Integer, Integer, ?, Long> collector =
-                ConstraintCollectors.sumLong((a, b, c, d) -> a + b + c + d);
+        QuadConstraintCollector<Integer, Integer, Integer, Integer, ?, Long> collector = ConstraintCollectors
+                .sumLong((a, b, c, d) -> a + b + c + d);
         Object container = collector.supplier().get();
         // Add first value, we have one now.
         int firstValueA = 2;
@@ -1119,7 +1115,7 @@ public class ConstraintCollectorsTest {
         int secondSum = secondValueA + secondValueB + secondValueC + secondValueD;
         Runnable secondRetractor = accumulate(collector, container, secondValueA, secondValueB, secondValueC,
                 secondValueD);
-        assertResult(collector, container,22L);
+        assertResult(collector, container, 22L);
         // Add third value, same as the second. We now have three values, two of which are the same.
         Runnable thirdRetractor = accumulate(collector, container, secondValueA, secondValueB, secondValueC,
                 secondValueD);
@@ -1137,8 +1133,8 @@ public class ConstraintCollectorsTest {
 
     @Test
     public void sumQuadBigDecimal() {
-        QuadConstraintCollector<Integer, Integer, Integer, Integer, ?, BigDecimal> collector =
-                ConstraintCollectors.sumBigDecimal((a, b, c, d) -> BigDecimal.valueOf(a + b + c + d));
+        QuadConstraintCollector<Integer, Integer, Integer, Integer, ?, BigDecimal> collector = ConstraintCollectors
+                .sumBigDecimal((a, b, c, d) -> BigDecimal.valueOf(a + b + c + d));
         Object container = collector.supplier().get();
         // Add first value, we have one now.
         int firstValueA = 2;
@@ -1172,8 +1168,8 @@ public class ConstraintCollectorsTest {
 
     @Test
     public void sumQuadBigInteger() {
-        QuadConstraintCollector<Integer, Integer, Integer, Integer, ?, BigInteger> collector =
-                ConstraintCollectors.sumBigInteger((a, b, c, d) -> BigInteger.valueOf(a + b + c + d));
+        QuadConstraintCollector<Integer, Integer, Integer, Integer, ?, BigInteger> collector = ConstraintCollectors
+                .sumBigInteger((a, b, c, d) -> BigInteger.valueOf(a + b + c + d));
         Object container = collector.supplier().get();
         // Add first value, we have one now.
         int firstValueA = 2;
@@ -1207,8 +1203,8 @@ public class ConstraintCollectorsTest {
 
     @Test
     public void sumQuadDuration() {
-        QuadConstraintCollector<Integer, Integer, Integer, Integer, ?, Duration> collector =
-                ConstraintCollectors.sumDuration((a, b, c,d ) -> Duration.ofSeconds(a + b + c + d));
+        QuadConstraintCollector<Integer, Integer, Integer, Integer, ?, Duration> collector = ConstraintCollectors
+                .sumDuration((a, b, c, d) -> Duration.ofSeconds(a + b + c + d));
         Object container = collector.supplier().get();
         // Add first value, we have one now.
         int firstValueA = 2;
@@ -1242,8 +1238,8 @@ public class ConstraintCollectorsTest {
 
     @Test
     public void sumQuadPeriod() {
-        QuadConstraintCollector<Integer, Integer, Integer, Integer, ?, Period> collector =
-                ConstraintCollectors.sumPeriod((a, b, c, d) -> Period.ofDays(a + b + c+ d));
+        QuadConstraintCollector<Integer, Integer, Integer, Integer, ?, Period> collector = ConstraintCollectors
+                .sumPeriod((a, b, c, d) -> Period.ofDays(a + b + c + d));
         Object container = collector.supplier().get();
         // Add first value, we have one now.
         int firstValueA = 2;
@@ -1307,7 +1303,7 @@ public class ConstraintCollectorsTest {
 
     @Test
     public void minNotComparable() {
-        UniConstraintCollector<Object, ?, Object> collector = min(Comparator.comparing(o -> (String)o));
+        UniConstraintCollector<Object, ?, Object> collector = min(Comparator.comparing(o -> (String) o));
         Object container = collector.supplier().get();
         // add first value, which becomes the min
         String firstValue = "b";
@@ -1360,8 +1356,7 @@ public class ConstraintCollectorsTest {
 
     @Test
     public void minNotComparableBi() {
-        BiConstraintCollector<String, String, ?, String> collector =
-                min((a, b) -> a, Comparator.comparing(o -> (String)o));
+        BiConstraintCollector<String, String, ?, String> collector = min((a, b) -> a, Comparator.comparing(o -> (String) o));
         Object container = collector.supplier().get();
         // add first value, which becomes the min
         String firstValue = "b";
@@ -1413,8 +1408,8 @@ public class ConstraintCollectorsTest {
 
     @Test
     public void minNotComparableTri() {
-        TriConstraintCollector<String, String, String, ?, String> collector =
-                min((a, b, c) -> a, Comparator.comparing(o -> (String)o));
+        TriConstraintCollector<String, String, String, ?, String> collector = min((a, b, c) -> a,
+                Comparator.comparing(o -> (String) o));
         Object container = collector.supplier().get();
         // add first value, which becomes the min
         String firstValue = "b";
@@ -1440,8 +1435,7 @@ public class ConstraintCollectorsTest {
 
     @Test
     public void minComparableQuad() {
-        QuadConstraintCollector<Integer, Integer, Integer, Integer, ?, Integer> collector =
-                min((a, b, c, d) -> a + b + c + d);
+        QuadConstraintCollector<Integer, Integer, Integer, Integer, ?, Integer> collector = min((a, b, c, d) -> a + b + c + d);
         Object container = collector.supplier().get();
         // add first value, which becomes the min
         int firstValue = 2;
@@ -1467,8 +1461,8 @@ public class ConstraintCollectorsTest {
 
     @Test
     public void minNotComparableQuad() {
-        QuadConstraintCollector<String, String, String, String, ?, String> collector =
-                min((a, b, c, d) -> a, Comparator.comparing(o -> (String)o));
+        QuadConstraintCollector<String, String, String, String, ?, String> collector = min((a, b, c, d) -> a,
+                Comparator.comparing(o -> (String) o));
         Object container = collector.supplier().get();
         // add first value, which becomes the min
         String firstValue = "b";
@@ -1491,7 +1485,6 @@ public class ConstraintCollectorsTest {
         firstRetractor.run();
         assertResult(collector, container, null);
     }
-
 
     // ************************************************************************
     // max
@@ -1525,7 +1518,7 @@ public class ConstraintCollectorsTest {
 
     @Test
     public void maxNotComparable() {
-        UniConstraintCollector<String, ?, String> collector = max(Comparator.comparing(o -> (String)o));
+        UniConstraintCollector<String, ?, String> collector = max(Comparator.comparing(o -> (String) o));
         Object container = collector.supplier().get();
         // add first value, which becomes the max
         String firstValue = "b";
@@ -1578,8 +1571,7 @@ public class ConstraintCollectorsTest {
 
     @Test
     public void maxNotComparableBi() {
-        BiConstraintCollector<String, String, ?, String> collector =
-                max((a, b) -> a, Comparator.comparing(o -> (String)o));
+        BiConstraintCollector<String, String, ?, String> collector = max((a, b) -> a, Comparator.comparing(o -> (String) o));
         Object container = collector.supplier().get();
         // add first value, which becomes the max
         String firstValue = "b";
@@ -1631,8 +1623,8 @@ public class ConstraintCollectorsTest {
 
     @Test
     public void maxNotComparableTri() {
-        TriConstraintCollector<String, String, String,?, String> collector =
-                max((a, b, c) -> a, Comparator.comparing(o -> (String)o));
+        TriConstraintCollector<String, String, String, ?, String> collector = max((a, b, c) -> a,
+                Comparator.comparing(o -> (String) o));
         Object container = collector.supplier().get();
         // add first value, which becomes the max
         String firstValue = "b";
@@ -1658,8 +1650,7 @@ public class ConstraintCollectorsTest {
 
     @Test
     public void maxComparableQuad() {
-        QuadConstraintCollector<Integer, Integer, Integer, Integer, ?, Integer> collector =
-                max((a, b, c, d) -> a + b + c + d);
+        QuadConstraintCollector<Integer, Integer, Integer, Integer, ?, Integer> collector = max((a, b, c, d) -> a + b + c + d);
         Object container = collector.supplier().get();
         // add first value, which becomes the max
         int firstValue = 2;
@@ -1685,8 +1676,8 @@ public class ConstraintCollectorsTest {
 
     @Test
     public void maxNotComparableQuad() {
-        QuadConstraintCollector<String, String, String, String, ?, String> collector =
-                max((a, b, c, d) -> a, Comparator.comparing(o -> (String)o));
+        QuadConstraintCollector<String, String, String, String, ?, String> collector = max((a, b, c, d) -> a,
+                Comparator.comparing(o -> (String) o));
         Object container = collector.supplier().get();
         // add first value, which becomes the max
         String firstValue = "b";
@@ -1710,7 +1701,6 @@ public class ConstraintCollectorsTest {
         assertResult(collector, container, null);
     }
 
-
     // ************************************************************************
     // toCollection
     // ************************************************************************
@@ -1732,7 +1722,7 @@ public class ConstraintCollectorsTest {
         assertResult(collector, container, asSet(firstValue, secondValue));
         // Retract one instance of the second value; we only have two values now.
         secondRetractor.run();
-        assertResult(collector, container,asSet(firstValue, secondValue));
+        assertResult(collector, container, asSet(firstValue, secondValue));
         // Retract final instance of the second value; we only have one value now.
         thirdRetractor.run();
         assertResult(collector, container, singleton(firstValue));
@@ -1758,7 +1748,7 @@ public class ConstraintCollectorsTest {
         assertResult(collector, container, asSortedSet(firstValue, secondValue));
         // Retract one instance of the second value; we only have two values now.
         secondRetractor.run();
-        assertResult(collector, container,asSortedSet(firstValue, secondValue));
+        assertResult(collector, container, asSortedSet(firstValue, secondValue));
         // Retract final instance of the second value; we only have one value now.
         thirdRetractor.run();
         assertResult(collector, container, asSortedSet(firstValue));
@@ -1823,8 +1813,8 @@ public class ConstraintCollectorsTest {
 
     @Test
     public void toSortedSetBi() {
-        BiConstraintCollector<Integer, Integer, ?, SortedSet<Integer>> collector =
-                ConstraintCollectors.toSortedSet(Integer::sum);
+        BiConstraintCollector<Integer, Integer, ?, SortedSet<Integer>> collector = ConstraintCollectors
+                .toSortedSet(Integer::sum);
         Object container = collector.supplier().get();
         // Add first value, we have one now.
         int firstValueA = 2;
@@ -1880,8 +1870,8 @@ public class ConstraintCollectorsTest {
 
     @Test
     public void toSetTri() {
-        TriConstraintCollector<Integer, Integer, Integer, ?, Set<Integer>> collector =
-                ConstraintCollectors.toSet((a, b, c) -> a + b + c);
+        TriConstraintCollector<Integer, Integer, Integer, ?, Set<Integer>> collector = ConstraintCollectors
+                .toSet((a, b, c) -> a + b + c);
         Object container = collector.supplier().get();
         // Add first value, we have one now.
         int firstValueA = 2;
@@ -1911,8 +1901,8 @@ public class ConstraintCollectorsTest {
 
     @Test
     public void toSortedSetTri() {
-        TriConstraintCollector<Integer, Integer, Integer, ?, SortedSet<Integer>> collector =
-                ConstraintCollectors.toSortedSet((a, b, c) -> a + b + c);
+        TriConstraintCollector<Integer, Integer, Integer, ?, SortedSet<Integer>> collector = ConstraintCollectors
+                .toSortedSet((a, b, c) -> a + b + c);
         Object container = collector.supplier().get();
         // Add first value, we have one now.
         int firstValueA = 2;
@@ -1942,8 +1932,8 @@ public class ConstraintCollectorsTest {
 
     @Test
     public void toListTri() {
-        TriConstraintCollector<Integer, Integer, Integer, ?, List<Integer>> collector =
-                ConstraintCollectors.toList((a, b, c) -> a + b + c);
+        TriConstraintCollector<Integer, Integer, Integer, ?, List<Integer>> collector = ConstraintCollectors
+                .toList((a, b, c) -> a + b + c);
         Object container = collector.supplier().get();
         // Add first value, we have one now.
         int firstValueA = 2;
@@ -1973,8 +1963,8 @@ public class ConstraintCollectorsTest {
 
     @Test
     public void toSetQuad() {
-        QuadConstraintCollector<Integer, Integer, Integer, Integer, ?, Set<Integer>> collector =
-                ConstraintCollectors.toSet((a, b, c, d) -> a + b + c + d);
+        QuadConstraintCollector<Integer, Integer, Integer, Integer, ?, Set<Integer>> collector = ConstraintCollectors
+                .toSet((a, b, c, d) -> a + b + c + d);
         Object container = collector.supplier().get();
         // Add first value, we have one now.
         int firstValueA = 2;
@@ -2006,8 +1996,8 @@ public class ConstraintCollectorsTest {
 
     @Test
     public void toSortedSetQuad() {
-        QuadConstraintCollector<Integer, Integer, Integer, Integer, ?, SortedSet<Integer>> collector =
-                ConstraintCollectors.toSortedSet((a, b, c, d) -> a + b + c + d);
+        QuadConstraintCollector<Integer, Integer, Integer, Integer, ?, SortedSet<Integer>> collector = ConstraintCollectors
+                .toSortedSet((a, b, c, d) -> a + b + c + d);
         Object container = collector.supplier().get();
         // Add first value, we have one now.
         int firstValueA = 2;
@@ -2039,8 +2029,8 @@ public class ConstraintCollectorsTest {
 
     @Test
     public void toListQuad() {
-        QuadConstraintCollector<Integer, Integer, Integer, Integer, ?, List<Integer>> collector =
-                ConstraintCollectors.toList((a, b, c, d) -> a + b + c + d);
+        QuadConstraintCollector<Integer, Integer, Integer, Integer, ?, List<Integer>> collector = ConstraintCollectors
+                .toList((a, b, c, d) -> a + b + c + d);
         Object container = collector.supplier().get();
         // Add first value, we have one now.
         int firstValueA = 2;
@@ -2072,8 +2062,8 @@ public class ConstraintCollectorsTest {
 
     @Test
     public void toMap() {
-        UniConstraintCollector<Integer, ?, Map<Integer, Set<Integer>>> collector =
-                ConstraintCollectors.toMap(Function.identity(), Function.identity());
+        UniConstraintCollector<Integer, ?, Map<Integer, Set<Integer>>> collector = ConstraintCollectors
+                .toMap(Function.identity(), Function.identity());
         Object container = collector.supplier().get();
 
         assertResult(collector, container, emptyMap());
@@ -2101,8 +2091,8 @@ public class ConstraintCollectorsTest {
 
     @Test
     public void toMapMerged() {
-        UniConstraintCollector<Integer, ?, Map<Integer, Integer>> collector =
-                ConstraintCollectors.toMap(Function.identity(), Function.identity(), Integer::sum);
+        UniConstraintCollector<Integer, ?, Map<Integer, Integer>> collector = ConstraintCollectors.toMap(Function.identity(),
+                Function.identity(), Integer::sum);
         Object container = collector.supplier().get();
 
         assertResult(collector, container, emptyMap());
@@ -2130,8 +2120,8 @@ public class ConstraintCollectorsTest {
 
     @Test
     public void toBiMap() {
-        BiConstraintCollector<Integer, Integer, ?, Map<Integer, Set<Integer>>> collector =
-                ConstraintCollectors.toMap(Integer::sum, Integer::sum);
+        BiConstraintCollector<Integer, Integer, ?, Map<Integer, Set<Integer>>> collector = ConstraintCollectors
+                .toMap(Integer::sum, Integer::sum);
         Object container = collector.supplier().get();
 
         assertResult(collector, container, emptyMap());
@@ -2159,8 +2149,8 @@ public class ConstraintCollectorsTest {
 
     @Test
     public void toMapBiMerged() {
-        BiConstraintCollector<Integer, Integer, ?, Map<Integer, Integer>> collector =
-                ConstraintCollectors.toMap(Integer::sum, Integer::sum, Integer::sum);
+        BiConstraintCollector<Integer, Integer, ?, Map<Integer, Integer>> collector = ConstraintCollectors.toMap(Integer::sum,
+                Integer::sum, Integer::sum);
         Object container = collector.supplier().get();
 
         assertResult(collector, container, emptyMap());
@@ -2188,8 +2178,8 @@ public class ConstraintCollectorsTest {
 
     @Test
     public void toMapTri() {
-        TriConstraintCollector<Integer, Integer, Integer, ?, Map<Integer, Set<Integer>>> collector =
-                ConstraintCollectors.toMap((a, b, c) -> a + b + c, (a, b, c) -> a + b + c);
+        TriConstraintCollector<Integer, Integer, Integer, ?, Map<Integer, Set<Integer>>> collector = ConstraintCollectors
+                .toMap((a, b, c) -> a + b + c, (a, b, c) -> a + b + c);
         Object container = collector.supplier().get();
 
         assertResult(collector, container, emptyMap());
@@ -2217,8 +2207,8 @@ public class ConstraintCollectorsTest {
 
     @Test
     public void toMapTriMerged() {
-        TriConstraintCollector<Integer, Integer, Integer, ?, Map<Integer, Integer>> collector =
-                ConstraintCollectors.toMap((a, b, c) -> a + b + c, (a, b, c) -> a + b + c, Integer::sum);
+        TriConstraintCollector<Integer, Integer, Integer, ?, Map<Integer, Integer>> collector = ConstraintCollectors
+                .toMap((a, b, c) -> a + b + c, (a, b, c) -> a + b + c, Integer::sum);
         Object container = collector.supplier().get();
 
         assertResult(collector, container, emptyMap());
@@ -2246,8 +2236,8 @@ public class ConstraintCollectorsTest {
 
     @Test
     public void toMapQuad() {
-        QuadConstraintCollector<Integer, Integer, Integer, Integer, ?, Map<Integer, Set<Integer>>> collector =
-                ConstraintCollectors.toMap((a, b, c, d) -> a + b + c + d, (a, b, c, d) -> a + b + c + d);
+        QuadConstraintCollector<Integer, Integer, Integer, Integer, ?, Map<Integer, Set<Integer>>> collector = ConstraintCollectors
+                .toMap((a, b, c, d) -> a + b + c + d, (a, b, c, d) -> a + b + c + d);
         Object container = collector.supplier().get();
 
         assertResult(collector, container, emptyMap());
@@ -2275,8 +2265,8 @@ public class ConstraintCollectorsTest {
 
     @Test
     public void toMapQuadMerged() {
-        QuadConstraintCollector<Integer, Integer, Integer, Integer, ?, Map<Integer, Integer>> collector =
-                ConstraintCollectors.toMap((a, b, c, d) -> a + b + c + d, (a, b, c, d) -> a + b + c + d, Integer::sum);
+        QuadConstraintCollector<Integer, Integer, Integer, Integer, ?, Map<Integer, Integer>> collector = ConstraintCollectors
+                .toMap((a, b, c, d) -> a + b + c + d, (a, b, c, d) -> a + b + c + d, Integer::sum);
         Object container = collector.supplier().get();
 
         assertResult(collector, container, emptyMap());
@@ -2304,8 +2294,8 @@ public class ConstraintCollectorsTest {
 
     @Test
     public void toSortedMap() {
-        UniConstraintCollector<Integer, ?, SortedMap<Integer, Set<Integer>>> collector =
-                ConstraintCollectors.toSortedMap(a -> a, Function.identity());
+        UniConstraintCollector<Integer, ?, SortedMap<Integer, Set<Integer>>> collector = ConstraintCollectors
+                .toSortedMap(a -> a, Function.identity());
         Object container = collector.supplier().get();
 
         assertResult(collector, container, emptySortedMap());
@@ -2333,8 +2323,8 @@ public class ConstraintCollectorsTest {
 
     @Test
     public void toSortedMapMerged() {
-        UniConstraintCollector<Integer, ?, SortedMap<Integer, Integer>> collector =
-                ConstraintCollectors.toSortedMap(a -> a, Function.identity(), Integer::sum);
+        UniConstraintCollector<Integer, ?, SortedMap<Integer, Integer>> collector = ConstraintCollectors.toSortedMap(a -> a,
+                Function.identity(), Integer::sum);
         Object container = collector.supplier().get();
 
         assertResult(collector, container, emptySortedMap());
@@ -2362,8 +2352,8 @@ public class ConstraintCollectorsTest {
 
     @Test
     public void toSortedMapBi() {
-        BiConstraintCollector<Integer, Integer, ?, SortedMap<Integer, Set<Integer>>> collector =
-                ConstraintCollectors.toSortedMap(Integer::sum, Integer::sum);
+        BiConstraintCollector<Integer, Integer, ?, SortedMap<Integer, Set<Integer>>> collector = ConstraintCollectors
+                .toSortedMap(Integer::sum, Integer::sum);
         Object container = collector.supplier().get();
 
         assertResult(collector, container, emptySortedMap());
@@ -2391,8 +2381,8 @@ public class ConstraintCollectorsTest {
 
     @Test
     public void toSortedMapBiMerged() {
-        BiConstraintCollector<Integer, Integer, ?, SortedMap<Integer, Integer>> collector =
-                ConstraintCollectors.toSortedMap(Integer::sum, Integer::sum, Integer::sum);
+        BiConstraintCollector<Integer, Integer, ?, SortedMap<Integer, Integer>> collector = ConstraintCollectors
+                .toSortedMap(Integer::sum, Integer::sum, Integer::sum);
         Object container = collector.supplier().get();
 
         assertResult(collector, container, emptySortedMap());
@@ -2420,8 +2410,8 @@ public class ConstraintCollectorsTest {
 
     @Test
     public void toSortedMapTri() {
-        TriConstraintCollector<Integer, Integer, Integer, ?, SortedMap<Integer, Set<Integer>>> collector =
-                ConstraintCollectors.toSortedMap((a, b, c) -> a + b + c, (a, b, c) -> a + b + c);
+        TriConstraintCollector<Integer, Integer, Integer, ?, SortedMap<Integer, Set<Integer>>> collector = ConstraintCollectors
+                .toSortedMap((a, b, c) -> a + b + c, (a, b, c) -> a + b + c);
         Object container = collector.supplier().get();
 
         assertResult(collector, container, emptySortedMap());
@@ -2449,8 +2439,8 @@ public class ConstraintCollectorsTest {
 
     @Test
     public void toSortedMapTriMerged() {
-        TriConstraintCollector<Integer, Integer, Integer, ?, SortedMap<Integer, Integer>> collector =
-                ConstraintCollectors.toSortedMap((a, b, c) -> a + b + c, (a, b, c) -> a + b + c, Integer::sum);
+        TriConstraintCollector<Integer, Integer, Integer, ?, SortedMap<Integer, Integer>> collector = ConstraintCollectors
+                .toSortedMap((a, b, c) -> a + b + c, (a, b, c) -> a + b + c, Integer::sum);
         Object container = collector.supplier().get();
 
         assertResult(collector, container, emptySortedMap());
@@ -2478,8 +2468,8 @@ public class ConstraintCollectorsTest {
 
     @Test
     public void toSortedMapQuad() {
-        QuadConstraintCollector<Integer, Integer, Integer, Integer, ?, SortedMap<Integer, Set<Integer>>> collector =
-                ConstraintCollectors.toSortedMap((a, b, c, d) -> a + b + c + d, (a, b, c, d) -> a + b + c + d);
+        QuadConstraintCollector<Integer, Integer, Integer, Integer, ?, SortedMap<Integer, Set<Integer>>> collector = ConstraintCollectors
+                .toSortedMap((a, b, c, d) -> a + b + c + d, (a, b, c, d) -> a + b + c + d);
         Object container = collector.supplier().get();
 
         assertResult(collector, container, emptySortedMap());
@@ -2507,8 +2497,8 @@ public class ConstraintCollectorsTest {
 
     @Test
     public void toSortedMapQuadMerged() {
-        QuadConstraintCollector<Integer, Integer, Integer, Integer, ?, SortedMap<Integer, Integer>> collector =
-                ConstraintCollectors.toSortedMap((a, b, c, d) -> a + b + c + d, (a, b, c, d) -> a + b + c + d, Integer::sum);
+        QuadConstraintCollector<Integer, Integer, Integer, Integer, ?, SortedMap<Integer, Integer>> collector = ConstraintCollectors
+                .toSortedMap((a, b, c, d) -> a + b + c + d, (a, b, c, d) -> a + b + c + d, Integer::sum);
         Object container = collector.supplier().get();
 
         assertResult(collector, container, emptySortedMap());

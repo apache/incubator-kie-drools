@@ -20,8 +20,6 @@ import java.text.NumberFormat;
 import java.util.Collections;
 import java.util.List;
 
-import com.thoughtworks.xstream.annotations.XStreamAlias;
-import com.thoughtworks.xstream.annotations.XStreamConverter;
 import org.optaplanner.core.api.domain.solution.PlanningEntityCollectionProperty;
 import org.optaplanner.core.api.domain.solution.PlanningScore;
 import org.optaplanner.core.api.domain.solution.PlanningSolution;
@@ -33,6 +31,9 @@ import org.optaplanner.examples.common.domain.AbstractPersistable;
 import org.optaplanner.examples.tsp.domain.location.DistanceType;
 import org.optaplanner.examples.tsp.domain.location.Location;
 import org.optaplanner.persistence.xstream.api.score.buildin.simplelong.SimpleLongScoreXStreamConverter;
+
+import com.thoughtworks.xstream.annotations.XStreamAlias;
+import com.thoughtworks.xstream.annotations.XStreamConverter;
 
 @PlanningSolution
 @XStreamAlias("TspSolution")
@@ -123,12 +124,12 @@ public class TspSolution extends AbstractPersistable {
         if (score == null) {
             return null;
         }
-        long distance = - score.getScore();
+        long distance = -score.getScore();
         if (distanceUnitOfMeasurement == null) {
             return numberFormat.format(((double) distance) / 1000.0);
         }
         switch (distanceUnitOfMeasurement) {
-            case "sec":  // TODO why are the values 1000 larger?
+            case "sec": // TODO why are the values 1000 larger?
                 long hours = distance / 3600000;
                 long minutes = distance % 3600000 / 60000;
                 long seconds = distance % 60000 / 1000;

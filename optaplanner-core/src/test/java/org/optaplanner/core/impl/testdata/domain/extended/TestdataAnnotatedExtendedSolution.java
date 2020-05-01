@@ -46,7 +46,6 @@ public class TestdataAnnotatedExtendedSolution extends TestdataSolution {
         super(code);
     }
 
-
     @ValueRangeProvider(id = "subValueRange")
     @ProblemFactCollectionProperty
     public List<TestdataValue> getSubValueList() {

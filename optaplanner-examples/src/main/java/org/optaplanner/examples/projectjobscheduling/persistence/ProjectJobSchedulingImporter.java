@@ -140,7 +140,8 @@ public class ProjectJobSchedulingImporter extends AbstractTxtSolutionImporter<Sc
         }
 
         private void readProjectFile(Project project, File projectFile) {
-            try (BufferedReader bufferedReader = new BufferedReader(new InputStreamReader(new FileInputStream(projectFile), "UTF-8"))) {
+            try (BufferedReader bufferedReader = new BufferedReader(
+                    new InputStreamReader(new FileInputStream(projectFile), "UTF-8"))) {
                 ProjectFileInputBuilder projectFileInputBuilder = new ProjectFileInputBuilder(schedule, project);
                 projectFileInputBuilder.setInputFile(projectFile);
                 projectFileInputBuilder.setBufferedReader(bufferedReader);

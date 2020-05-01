@@ -37,6 +37,7 @@ import org.optaplanner.core.impl.domain.common.ReflectionHelper;
 /**
  * Only used by OptaPlanner Workbench 6 (but not 7).
  * This class will be removed in 8.0.
+ * 
  * @param <S> the {@link Score} type used by this use case
  * @deprecated Use {@link PlanningSolution#autoDiscoverMemberType()} instead.
  */
@@ -57,7 +58,7 @@ public abstract class AbstractSolution<S extends Score> implements Serializable 
 
     /**
      * @return a list with every problem fact that is in a field of this class
-     * (directly or indirectly as an element of a {@link Collection} or {@link Map} field)
+     *         (directly or indirectly as an element of a {@link Collection} or {@link Map} field)
      */
     @ProblemFactCollectionProperty
     protected List<Object> getProblemFactList() {
@@ -68,6 +69,7 @@ public abstract class AbstractSolution<S extends Score> implements Serializable 
 
     /**
      * Adds to an existing to {@link List} to avoid copying the entire list with {@link List#addAll(Collection)}.
+     * 
      * @param factList never null
      * @param instanceClass never null
      */

@@ -132,12 +132,12 @@ public class MultiThreadedLocalSearchDecider<Solution_> extends LocalSearchDecid
     }
 
     protected ExecutorService createThreadPoolExecutor() {
-        ThreadPoolExecutor threadPoolExecutor
-                = (ThreadPoolExecutor) Executors.newFixedThreadPool(moveThreadCount, threadFactory);
+        ThreadPoolExecutor threadPoolExecutor = (ThreadPoolExecutor) Executors.newFixedThreadPool(moveThreadCount,
+                threadFactory);
         if (threadPoolExecutor.getMaximumPoolSize() < moveThreadCount) {
             throw new IllegalStateException(
                     "The threadPoolExecutor's maximumPoolSize (" + threadPoolExecutor.getMaximumPoolSize()
-                    + ") is less than the moveThreadCount (" + moveThreadCount + "), this is unsupported.");
+                            + ") is less than the moveThreadCount (" + moveThreadCount + "), this is unsupported.");
         }
         return threadPoolExecutor;
     }
@@ -150,7 +150,7 @@ public class MultiThreadedLocalSearchDecider<Solution_> extends LocalSearchDecid
         int selectingMoveIndex = 0;
         int foragingMoveIndex = 0;
         Iterator<Move> moveIterator = moveSelector.iterator();
-        do  {
+        do {
             boolean moveIteratorEmpty = !moveIterator.hasNext();
             // First fill the buffer so move evaluation can run freely in parallel
             // For reproducibility, the selectedMoveBufferSize always need to be entirely selected,

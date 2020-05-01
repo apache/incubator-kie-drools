@@ -16,13 +16,14 @@
 
 package org.optaplanner.core.config.constructionheuristic.decider.forager;
 
-import com.thoughtworks.xstream.annotations.XStreamAlias;
 import org.optaplanner.core.config.AbstractConfig;
 import org.optaplanner.core.config.heuristic.policy.HeuristicConfigPolicy;
 import org.optaplanner.core.config.util.ConfigUtils;
 import org.optaplanner.core.impl.constructionheuristic.decider.forager.ConstructionHeuristicForager;
 import org.optaplanner.core.impl.constructionheuristic.decider.forager.DefaultConstructionHeuristicForager;
 import org.optaplanner.core.impl.score.definition.FeasibilityScoreDefinition;
+
+import com.thoughtworks.xstream.annotations.XStreamAlias;
 
 @XStreamAlias("constructionHeuristicForager")
 public class ConstructionHeuristicForagerConfig extends AbstractConfig<ConstructionHeuristicForagerConfig> {
@@ -45,7 +46,8 @@ public class ConstructionHeuristicForagerConfig extends AbstractConfig<Construct
         ConstructionHeuristicPickEarlyType pickEarlyType_;
         if (pickEarlyType == null) {
             pickEarlyType_ = configPolicy.getScoreDirectorFactory().getInitializingScoreTrend().isOnlyDown()
-                    ? ConstructionHeuristicPickEarlyType.FIRST_NON_DETERIORATING_SCORE : ConstructionHeuristicPickEarlyType.NEVER;
+                    ? ConstructionHeuristicPickEarlyType.FIRST_NON_DETERIORATING_SCORE
+                    : ConstructionHeuristicPickEarlyType.NEVER;
         } else {
             if ((pickEarlyType == ConstructionHeuristicPickEarlyType.FIRST_FEASIBLE_SCORE
                     || pickEarlyType == ConstructionHeuristicPickEarlyType.FIRST_FEASIBLE_SCORE_OR_NON_DETERIORATING_HARD)

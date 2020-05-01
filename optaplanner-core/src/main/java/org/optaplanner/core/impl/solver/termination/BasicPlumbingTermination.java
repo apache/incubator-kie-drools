@@ -22,9 +22,9 @@ import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.LinkedBlockingQueue;
 
 import org.optaplanner.core.impl.phase.scope.AbstractPhaseScope;
-import org.optaplanner.core.impl.solver.thread.ChildThreadType;
 import org.optaplanner.core.impl.solver.ProblemFactChange;
 import org.optaplanner.core.impl.solver.scope.DefaultSolverScope;
+import org.optaplanner.core.impl.solver.thread.ChildThreadType;
 
 /**
  * Concurrency notes:
@@ -58,6 +58,7 @@ public class BasicPlumbingTermination extends AbstractTermination {
      * This method is thread-safe.
      * <p>
      * Concurrency note: unblocks {@link #waitForRestartSolverDecision()}.
+     * 
      * @return true if successful
      */
     public synchronized boolean terminateEarly() {
@@ -78,6 +79,7 @@ public class BasicPlumbingTermination extends AbstractTermination {
      * If this returns true, then the problemFactChangeQueue is definitely not empty.
      * <p>
      * Concurrency note: Blocks until {@link #problemFactChangeQueue} is not empty or {@link #terminatedEarly} is true.
+     * 
      * @return true if the solver needs to be restarted
      */
     public synchronized boolean waitForRestartSolverDecision() {
@@ -98,6 +100,7 @@ public class BasicPlumbingTermination extends AbstractTermination {
 
     /**
      * Concurrency note: unblocks {@link #waitForRestartSolverDecision()}.
+     * 
      * @param problemFactChange never null
      * @return as specified by {@link Collection#add}
      */
@@ -109,6 +112,7 @@ public class BasicPlumbingTermination extends AbstractTermination {
 
     /**
      * Concurrency note: unblocks {@link #waitForRestartSolverDecision()}.
+     * 
      * @param problemFactChangeList never null
      * @return as specified by {@link Collection#add}
      */

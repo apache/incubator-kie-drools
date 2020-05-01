@@ -15,6 +15,9 @@
  */
 package org.optaplanner.core.impl.domain.lookup;
 
+import static org.junit.Assert.*;
+import static org.junit.jupiter.params.provider.Arguments.arguments;
+
 import java.math.BigDecimal;
 import java.math.BigInteger;
 import java.time.DayOfWeek;
@@ -30,11 +33,9 @@ import java.time.OffsetTime;
 import java.time.Period;
 import java.time.Year;
 import java.time.YearMonth;
-import java.time.ZoneId;
 import java.time.ZoneOffset;
 import java.time.ZonedDateTime;
 import java.time.temporal.ChronoUnit;
-import java.time.temporal.TemporalUnit;
 import java.util.Collections;
 import java.util.stream.Stream;
 
@@ -43,9 +44,6 @@ import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.Arguments;
 import org.junit.jupiter.params.provider.MethodSource;
 import org.optaplanner.core.api.domain.lookup.LookUpStrategyType;
-
-import static org.junit.Assert.*;
-import static org.junit.jupiter.params.provider.Arguments.arguments;
 
 public class LookUpStrategyImmutableTest {
 
@@ -74,12 +72,14 @@ public class LookUpStrategyImmutableTest {
                 arguments(Month.DECEMBER, Month.DECEMBER),
                 arguments(YearMonth.of(1999, 12), YearMonth.of(1999, 12)),
                 arguments(Year.of(1999), Year.of(1999)),
-                arguments(OffsetDateTime.of(1, 2, 3, 4, 5, 6, 7, ZoneOffset.UTC), OffsetDateTime.of(1, 2, 3, 4, 5, 6, 7, ZoneOffset.UTC)),
+                arguments(OffsetDateTime.of(1, 2, 3, 4, 5, 6, 7, ZoneOffset.UTC),
+                        OffsetDateTime.of(1, 2, 3, 4, 5, 6, 7, ZoneOffset.UTC)),
                 arguments(OffsetTime.of(1, 2, 3, 4, ZoneOffset.UTC), OffsetTime.of(1, 2, 3, 4, ZoneOffset.UTC)),
-                arguments(ZonedDateTime.of(1, 2, 3, 4, 5, 6, 7, ZoneOffset.UTC), ZonedDateTime.of(1, 2, 3, 4, 5, 6, 7, ZoneOffset.UTC)),
+                arguments(ZonedDateTime.of(1, 2, 3, 4, 5, 6, 7, ZoneOffset.UTC),
+                        ZonedDateTime.of(1, 2, 3, 4, 5, 6, 7, ZoneOffset.UTC)),
                 arguments(ZoneOffset.UTC, ZoneOffset.UTC),
                 arguments(Duration.of(5, ChronoUnit.DAYS), Duration.of(5, ChronoUnit.DAYS)),
-                arguments(Period.of(1 ,2, 3), Period.of(1 ,2, 3)));
+                arguments(Period.of(1, 2, 3), Period.of(1, 2, 3)));
     }
 
     @BeforeEach

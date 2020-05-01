@@ -30,9 +30,10 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import com.google.common.collect.Sets;
 import org.reflections.Reflections;
 import org.reflections.util.ClasspathHelper;
+
+import com.google.common.collect.Sets;
 
 /**
  * Workaround for bug in {@link ClasspathHelper}.
@@ -72,11 +73,9 @@ public abstract class ReflectionsWorkaroundClasspathHelper {
             return classLoaders;
         } else {
             ClassLoader contextClassLoader = contextClassLoader(), staticClassLoader = staticClassLoader();
-            return contextClassLoader != null ?
-                    staticClassLoader != null && contextClassLoader != staticClassLoader ?
-                            new ClassLoader[]{contextClassLoader, staticClassLoader} :
-                            new ClassLoader[]{contextClassLoader} :
-                    new ClassLoader[] {};
+            return contextClassLoader != null ? staticClassLoader != null && contextClassLoader != staticClassLoader
+                    ? new ClassLoader[] { contextClassLoader, staticClassLoader }
+                    : new ClassLoader[] { contextClassLoader } : new ClassLoader[] {};
 
         }
     }
@@ -156,7 +155,8 @@ public abstract class ReflectionsWorkaroundClasspathHelper {
             try {
                 final URL url = classLoader.getResource(resourceName);
                 if (url != null) {
-                    final String normalizedUrl = url.toExternalForm().substring(0, url.toExternalForm().lastIndexOf(aClass.getPackage().getName().replace(".", "/")));
+                    final String normalizedUrl = url.toExternalForm().substring(0,
+                            url.toExternalForm().lastIndexOf(aClass.getPackage().getName().replace(".", "/")));
                     return new URL(normalizedUrl);
                 }
             } catch (MalformedURLException e) {
@@ -203,7 +203,7 @@ public abstract class ReflectionsWorkaroundClasspathHelper {
                 if (classLoader instanceof URLClassLoader) {
                     URL[] urls = ((URLClassLoader) classLoader).getURLs();
                     if (urls != null) {
-                        result.addAll(Sets.<URL>newHashSet(urls));
+                        result.addAll(Sets.<URL> newHashSet(urls));
                     }
                 }
                 classLoader = classLoader.getParent();
@@ -243,14 +243,15 @@ public abstract class ReflectionsWorkaroundClasspathHelper {
     /**
      * Cleans the URL.
      *
-     * @param url  the URL to clean, not null
+     * @param url the URL to clean, not null
      * @return the path, not null
      */
     public static String cleanPath(final URL url) {
         String path = url.getPath();
         try {
             path = URLDecoder.decode(path, "UTF-8");
-        } catch (UnsupportedEncodingException e) { /**/ }
+        } catch (UnsupportedEncodingException e) {
+            /**/ }
         if (path.startsWith("jar:")) {
             path = path.substring("jar:".length());
         }
@@ -284,5 +285,3 @@ public abstract class ReflectionsWorkaroundClasspathHelper {
         return distinct.values();
     }
 }
-
-

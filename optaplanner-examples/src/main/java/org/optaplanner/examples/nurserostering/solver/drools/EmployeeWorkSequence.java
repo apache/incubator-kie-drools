@@ -24,10 +24,9 @@ import org.optaplanner.examples.nurserostering.domain.Employee;
 
 public class EmployeeWorkSequence implements Comparable<EmployeeWorkSequence>, Serializable {
 
-    private static final Comparator<EmployeeWorkSequence> COMPARATOR =
-            Comparator.comparing(EmployeeWorkSequence::getEmployee)
-                    .thenComparingInt(EmployeeWorkSequence::getFirstDayIndex)
-                    .thenComparingInt(EmployeeWorkSequence::getLastDayIndex);
+    private static final Comparator<EmployeeWorkSequence> COMPARATOR = Comparator.comparing(EmployeeWorkSequence::getEmployee)
+            .thenComparingInt(EmployeeWorkSequence::getFirstDayIndex)
+            .thenComparingInt(EmployeeWorkSequence::getLastDayIndex);
 
     private Employee employee;
     private int firstDayIndex;

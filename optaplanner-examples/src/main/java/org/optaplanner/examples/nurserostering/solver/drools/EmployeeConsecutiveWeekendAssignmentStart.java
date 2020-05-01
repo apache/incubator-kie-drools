@@ -26,9 +26,9 @@ import org.optaplanner.examples.nurserostering.domain.contract.Contract;
 public class EmployeeConsecutiveWeekendAssignmentStart implements Comparable<EmployeeConsecutiveWeekendAssignmentStart>,
         Serializable {
 
-    private static final Comparator<EmployeeConsecutiveWeekendAssignmentStart> COMPARATOR =
-            Comparator.comparing(EmployeeConsecutiveWeekendAssignmentStart::getEmployee)
-                    .thenComparingInt(EmployeeConsecutiveWeekendAssignmentStart::getSundayIndex);
+    private static final Comparator<EmployeeConsecutiveWeekendAssignmentStart> COMPARATOR = Comparator
+            .comparing(EmployeeConsecutiveWeekendAssignmentStart::getEmployee)
+            .thenComparingInt(EmployeeConsecutiveWeekendAssignmentStart::getSundayIndex);
 
     private Employee employee;
     private int sundayIndex;
@@ -64,7 +64,7 @@ public class EmployeeConsecutiveWeekendAssignmentStart implements Comparable<Emp
         }
         final EmployeeConsecutiveWeekendAssignmentStart other = (EmployeeConsecutiveWeekendAssignmentStart) o;
         return Objects.equals(employee, other.employee) &&
-                sundayIndex == other.sundayIndex ;
+                sundayIndex == other.sundayIndex;
     }
 
     @Override

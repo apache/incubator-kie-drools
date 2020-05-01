@@ -79,8 +79,7 @@ public class CompositeValueRangeDescriptor<Solution_> extends AbstractValueRange
     public ValueRange<?> extractValueRange(Solution_ solution) {
         List<CountableValueRange<?>> childValueRangeList = new ArrayList<>(childValueRangeDescriptorList.size());
         for (ValueRangeDescriptor<Solution_> valueRangeDescriptor : childValueRangeDescriptorList) {
-            EntityIndependentValueRangeDescriptor<Solution_> entityIndependentValueRangeDescriptor
-                    = (EntityIndependentValueRangeDescriptor) valueRangeDescriptor;
+            EntityIndependentValueRangeDescriptor<Solution_> entityIndependentValueRangeDescriptor = (EntityIndependentValueRangeDescriptor) valueRangeDescriptor;
             childValueRangeList.add((CountableValueRange) entityIndependentValueRangeDescriptor.extractValueRange(solution));
         }
         return doNullInValueRangeWrapping(new CompositeCountableValueRange(childValueRangeList));

@@ -21,8 +21,6 @@ import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
 
-import com.thoughtworks.xstream.annotations.XStreamAlias;
-import com.thoughtworks.xstream.annotations.XStreamImplicit;
 import org.optaplanner.core.config.heuristic.policy.HeuristicConfigPolicy;
 import org.optaplanner.core.config.heuristic.selector.common.SelectionCacheType;
 import org.optaplanner.core.config.heuristic.selector.common.SelectionOrder;
@@ -38,10 +36,14 @@ import org.optaplanner.core.impl.domain.entity.descriptor.EntityDescriptor;
 import org.optaplanner.core.impl.domain.variable.descriptor.GenuineVariableDescriptor;
 import org.optaplanner.core.impl.heuristic.selector.move.MoveSelector;
 
+import com.thoughtworks.xstream.annotations.XStreamAlias;
+import com.thoughtworks.xstream.annotations.XStreamImplicit;
+
 @XStreamAlias("pooledEntityPlacer")
 public class PooledEntityPlacerConfig extends EntityPlacerConfig<PooledEntityPlacerConfig> {
 
-    public static PooledEntityPlacerConfig unfoldNew(HeuristicConfigPolicy configPolicy, MoveSelectorConfig templateMoveSelectorConfig) {
+    public static PooledEntityPlacerConfig unfoldNew(HeuristicConfigPolicy configPolicy,
+            MoveSelectorConfig templateMoveSelectorConfig) {
         PooledEntityPlacerConfig config = new PooledEntityPlacerConfig();
         List<MoveSelectorConfig> leafMoveSelectorConfigList = new ArrayList<>();
         MoveSelectorConfig moveSelectorConfig = (MoveSelectorConfig) templateMoveSelectorConfig.copyConfig();

@@ -40,10 +40,10 @@ public class DepotAngleBusStopDifficultyWeightFactory
 
     public static class DepotAngleBusStopDifficultyWeight implements Comparable<DepotAngleBusStopDifficultyWeight> {
 
-        private static final Comparator<DepotAngleBusStopDifficultyWeight> COMPARATOR =
-                Comparator.comparingDouble((DepotAngleBusStopDifficultyWeight w) -> w.hubAngle)
-                        .thenComparingInt(w -> w.hubRoundTripDistance) // Further from the depot are more difficult.
-                        .thenComparingLong(w -> w.busOrStop.getId());
+        private static final Comparator<DepotAngleBusStopDifficultyWeight> COMPARATOR = Comparator
+                .comparingDouble((DepotAngleBusStopDifficultyWeight w) -> w.hubAngle)
+                .thenComparingInt(w -> w.hubRoundTripDistance) // Further from the depot are more difficult.
+                .thenComparingLong(w -> w.busOrStop.getId());
 
         private final BusOrStop busOrStop;
         private final double hubAngle;

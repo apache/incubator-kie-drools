@@ -68,6 +68,7 @@ public final class Indictment implements Serializable, Comparable<Indictment> {
 
     /**
      * Sum of the {@link #getConstraintMatchSet()}'s {@link ConstraintMatch#getScore()}.
+     * 
      * @return never null
      */
     public Score getScore() {

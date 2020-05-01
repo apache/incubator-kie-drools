@@ -36,9 +36,8 @@ public final class DroolsExistsBiConstraintStream<Solution_, A, B>
         super(constraintFactory);
         this.parent = parent;
         this.streamName = shouldExist ? "BiIfExists()" : "BiIfNotExists()";
-        this.condition = shouldExist ?
-                parent.getCondition().andIfExists(otherClass, joiners) :
-                parent.getCondition().andIfNotExists(otherClass, joiners);
+        this.condition = shouldExist ? parent.getCondition().andIfExists(otherClass, joiners)
+                : parent.getCondition().andIfNotExists(otherClass, joiners);
     }
 
     @Override
@@ -62,7 +61,7 @@ public final class DroolsExistsBiConstraintStream<Solution_, A, B>
 
     @Override
     public String toString() {
-        return streamName + " with " + getChildStreams().size()  + " children";
+        return streamName + " with " + getChildStreams().size() + " children";
     }
 
 }

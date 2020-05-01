@@ -93,8 +93,8 @@ public class GenuineVariableDescriptor<Solution_> extends VariableDescriptor<Sol
                     + ") with nullable (" + nullable + "), which is not compatible with the primitive propertyType ("
                     + variableMemberAccessor.getType() + ").");
         }
-        Class<? extends SelectionFilter> reinitializeVariableEntityFilterClass
-                = planningVariableAnnotation.reinitializeVariableEntityFilter();
+        Class<? extends SelectionFilter> reinitializeVariableEntityFilterClass = planningVariableAnnotation
+                .reinitializeVariableEntityFilter();
         if (reinitializeVariableEntityFilterClass == PlanningVariable.NullReinitializeVariableEntityFilter.class) {
             reinitializeVariableEntityFilterClass = null;
         }
@@ -136,7 +136,8 @@ public class GenuineVariableDescriptor<Solution_> extends VariableDescriptor<Sol
         List<ValueRangeDescriptor<Solution_>> valueRangeDescriptorList = new ArrayList<>(valueRangeProviderRefs.length);
         boolean addNullInValueRange = nullable && valueRangeProviderRefs.length == 1;
         for (String valueRangeProviderRef : valueRangeProviderRefs) {
-            valueRangeDescriptorList.add(buildValueRangeDescriptor(descriptorPolicy, valueRangeProviderRef, addNullInValueRange));
+            valueRangeDescriptorList
+                    .add(buildValueRangeDescriptor(descriptorPolicy, valueRangeProviderRef, addNullInValueRange));
         }
         if (valueRangeDescriptorList.size() == 1) {
             valueRangeDescriptor = valueRangeDescriptorList.get(0);
@@ -165,9 +166,10 @@ public class GenuineVariableDescriptor<Solution_> extends VariableDescriptor<Sol
                     + ") or on that entityClass.\n"
                     + "The valueRangeProviderRef (" + valueRangeProviderRef
                     + ") does not appear in the valueRangeProvideIds (" + providerIds
-                    + ")." + (!providerIds.isEmpty() ? "" : "\nMaybe a @" + ValueRangeProvider.class.getSimpleName()
-                    + " annotation is missing on a method in the solution class ("
-                    + entityDescriptor.getSolutionDescriptor().getSolutionClass().getSimpleName() + ")."));
+                    + ")." + (!providerIds.isEmpty() ? ""
+                            : "\nMaybe a @" + ValueRangeProvider.class.getSimpleName()
+                                    + " annotation is missing on a method in the solution class ("
+                                    + entityDescriptor.getSolutionDescriptor().getSolutionClass().getSimpleName() + ")."));
         }
     }
 
@@ -176,8 +178,8 @@ public class GenuineVariableDescriptor<Solution_> extends VariableDescriptor<Sol
         if (strengthComparatorClass == PlanningVariable.NullStrengthComparator.class) {
             strengthComparatorClass = null;
         }
-        Class<? extends SelectionSorterWeightFactory> strengthWeightFactoryClass
-                = planningVariableAnnotation.strengthWeightFactoryClass();
+        Class<? extends SelectionSorterWeightFactory> strengthWeightFactoryClass = planningVariableAnnotation
+                .strengthWeightFactoryClass();
         if (strengthWeightFactoryClass == PlanningVariable.NullStrengthWeightFactory.class) {
             strengthWeightFactoryClass = null;
         }
@@ -254,6 +256,7 @@ public class GenuineVariableDescriptor<Solution_> extends VariableDescriptor<Sol
     /**
      * A {@link PlanningVariable#nullable()} value is always considered initialized, but it can still be reinitialized
      * with {@link PlanningVariable#reinitializeVariableEntityFilter()}.
+     * 
      * @param entity never null
      * @return true if the variable on that entity is initialized
      */

@@ -16,12 +16,13 @@
 
 package org.optaplanner.persistence.xstream.api.score;
 
+import static org.junit.Assert.*;
+
 import java.io.Serializable;
 
-import com.thoughtworks.xstream.XStream;
 import org.optaplanner.core.api.score.Score;
 
-import static org.junit.Assert.*;
+import com.thoughtworks.xstream.XStream;
 
 public abstract class AbstractScoreXStreamConverterTest {
 
@@ -34,8 +35,8 @@ public abstract class AbstractScoreXStreamConverterTest {
         xStream.setMode(XStream.ID_REFERENCES);
         xStream.processAnnotations(input.getClass());
         XStream.setupDefaultSecurity(xStream);
-        xStream.allowTypesByRegExp(new String[]{"org\\.optaplanner\\.\\w+\\.config\\..*",
-                "org\\.optaplanner\\.persistence\\.xstream\\..*\\$Test\\w+ScoreWrapper"});
+        xStream.allowTypesByRegExp(new String[] { "org\\.optaplanner\\.\\w+\\.config\\..*",
+                "org\\.optaplanner\\.persistence\\.xstream\\..*\\$Test\\w+ScoreWrapper" });
         String xmlString = xStream.toXML(input);
         W output = (W) xStream.fromXML(xmlString);
 

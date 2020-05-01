@@ -16,6 +16,8 @@
 
 package org.optaplanner.core.impl.score.buildin.hardsoftbigdecimal;
 
+import static org.junit.Assert.*;
+
 import java.math.BigDecimal;
 import java.util.function.Consumer;
 
@@ -24,8 +26,6 @@ import org.optaplanner.core.api.score.Score;
 import org.optaplanner.core.api.score.buildin.hardsoftbigdecimal.HardSoftBigDecimalScore;
 import org.optaplanner.core.impl.score.inliner.BigDecimalWeightedScoreImpacter;
 import org.optaplanner.core.impl.score.inliner.UndoScoreImpacter;
-
-import static org.junit.Assert.*;
 
 public class HardSoftBigDecimalScoreInlinerTest {
 
@@ -37,15 +37,18 @@ public class HardSoftBigDecimalScoreInlinerTest {
         HardSoftBigDecimalScoreInliner scoreInliner = new HardSoftBigDecimalScoreInliner(constraintMatchEnabled);
         assertEquals(HardSoftBigDecimalScore.ZERO, scoreInliner.extractScore(0));
 
-        BigDecimalWeightedScoreImpacter hardImpacter = scoreInliner.buildWeightedScoreImpacter(HardSoftBigDecimalScore.ofHard(new BigDecimal("90.0")));
+        BigDecimalWeightedScoreImpacter hardImpacter = scoreInliner
+                .buildWeightedScoreImpacter(HardSoftBigDecimalScore.ofHard(new BigDecimal("90.0")));
         UndoScoreImpacter hardUndo = hardImpacter.impactScore(new BigDecimal("1.0"), scoreConsumer);
         assertEquals(HardSoftBigDecimalScore.of(new BigDecimal("90.0"), BigDecimal.ZERO), scoreInliner.extractScore(0));
-        scoreInliner.buildWeightedScoreImpacter(HardSoftBigDecimalScore.ofHard(new BigDecimal("800.0"))).impactScore(new BigDecimal("1.0"), scoreConsumer);
+        scoreInliner.buildWeightedScoreImpacter(HardSoftBigDecimalScore.ofHard(new BigDecimal("800.0")))
+                .impactScore(new BigDecimal("1.0"), scoreConsumer);
         assertEquals(HardSoftBigDecimalScore.of(new BigDecimal("890.0"), BigDecimal.ZERO), scoreInliner.extractScore(0));
         hardUndo.undoScoreImpact();
         assertEquals(HardSoftBigDecimalScore.of(new BigDecimal("800.0"), BigDecimal.ZERO), scoreInliner.extractScore(0));
 
-        BigDecimalWeightedScoreImpacter softImpacter = scoreInliner.buildWeightedScoreImpacter(HardSoftBigDecimalScore.ofSoft(new BigDecimal("1.0")));
+        BigDecimalWeightedScoreImpacter softImpacter = scoreInliner
+                .buildWeightedScoreImpacter(HardSoftBigDecimalScore.ofSoft(new BigDecimal("1.0")));
         UndoScoreImpacter softUndo = softImpacter.impactScore(new BigDecimal("3.0"), scoreConsumer);
         assertEquals(HardSoftBigDecimalScore.of(new BigDecimal("800.0"), new BigDecimal("3.0")), scoreInliner.extractScore(0));
         softImpacter.impactScore(new BigDecimal("10.0"), scoreConsumer);
@@ -53,9 +56,11 @@ public class HardSoftBigDecimalScoreInlinerTest {
         softUndo.undoScoreImpact();
         assertEquals(HardSoftBigDecimalScore.of(new BigDecimal("800.0"), new BigDecimal("10.0")), scoreInliner.extractScore(0));
 
-        BigDecimalWeightedScoreImpacter allLevelsImpacter = scoreInliner.buildWeightedScoreImpacter(HardSoftBigDecimalScore.of(new BigDecimal("1000.0"), new BigDecimal("3000.0")));
+        BigDecimalWeightedScoreImpacter allLevelsImpacter = scoreInliner
+                .buildWeightedScoreImpacter(HardSoftBigDecimalScore.of(new BigDecimal("1000.0"), new BigDecimal("3000.0")));
         UndoScoreImpacter allLevelsUndo = allLevelsImpacter.impactScore(new BigDecimal("1.0"), scoreConsumer);
-        assertEquals(HardSoftBigDecimalScore.of(new BigDecimal("1800.0"), new BigDecimal("3010.0")), scoreInliner.extractScore(0));
+        assertEquals(HardSoftBigDecimalScore.of(new BigDecimal("1800.0"), new BigDecimal("3010.0")),
+                scoreInliner.extractScore(0));
         allLevelsUndo.undoScoreImpact();
         assertEquals(HardSoftBigDecimalScore.of(new BigDecimal("800.0"), new BigDecimal("10.0")), scoreInliner.extractScore(0));
     }

@@ -35,7 +35,6 @@ public class ScrabblePerformanceTest extends SolverPerformanceTest<ScrabbleSolut
     protected Stream<TestData> testData() {
         return Stream.of(
                 testData(UNSOLVED_DATA_FILE, "0hard/328medium/-1165soft", EnvironmentMode.REPRODUCIBLE),
-                testData(UNSOLVED_DATA_FILE, "0hard/328medium/-1165soft", EnvironmentMode.FAST_ASSERT)
-        );
+                testData(UNSOLVED_DATA_FILE, "0hard/328medium/-1165soft", EnvironmentMode.FAST_ASSERT));
     }
 }

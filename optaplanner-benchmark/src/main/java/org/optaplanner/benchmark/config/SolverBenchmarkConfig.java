@@ -18,7 +18,6 @@ package org.optaplanner.benchmark.config;
 
 import java.util.ArrayList;
 
-import com.thoughtworks.xstream.annotations.XStreamAlias;
 import org.optaplanner.benchmark.impl.result.PlannerBenchmarkResult;
 import org.optaplanner.benchmark.impl.result.SolverBenchmarkResult;
 import org.optaplanner.core.config.AbstractConfig;
@@ -26,6 +25,8 @@ import org.optaplanner.core.config.SolverConfigContext;
 import org.optaplanner.core.config.solver.SolverConfig;
 import org.optaplanner.core.config.util.ConfigUtils;
 import org.optaplanner.core.impl.domain.solution.descriptor.SolutionDescriptor;
+
+import com.thoughtworks.xstream.annotations.XStreamAlias;
 
 @XStreamAlias("solverBenchmark")
 public class SolverBenchmarkConfig<Solution_> extends AbstractConfig<SolverBenchmarkConfig> {
@@ -102,8 +103,7 @@ public class SolverBenchmarkConfig<Solution_> extends AbstractConfig<SolverBench
         solverBenchmarkResult.setScoreDefinition(
                 solutionDescriptor.getScoreDefinition());
         solverBenchmarkResult.setSingleBenchmarkResultList(new ArrayList<>());
-        ProblemBenchmarksConfig problemBenchmarksConfig_
-                = problemBenchmarksConfig == null ? new ProblemBenchmarksConfig()
+        ProblemBenchmarksConfig problemBenchmarksConfig_ = problemBenchmarksConfig == null ? new ProblemBenchmarksConfig()
                 : problemBenchmarksConfig;
         plannerBenchmark.getSolverBenchmarkResultList().add(solverBenchmarkResult);
         problemBenchmarksConfig_.buildProblemBenchmarkList(solverConfigContext, solverBenchmarkResult, extraProblems);

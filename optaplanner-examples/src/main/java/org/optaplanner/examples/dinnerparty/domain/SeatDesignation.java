@@ -16,11 +16,12 @@
 
 package org.optaplanner.examples.dinnerparty.domain;
 
-import com.thoughtworks.xstream.annotations.XStreamAlias;
 import org.optaplanner.core.api.domain.entity.PlanningEntity;
 import org.optaplanner.core.api.domain.variable.PlanningVariable;
 import org.optaplanner.examples.common.domain.AbstractPersistable;
 import org.optaplanner.examples.common.swingui.components.Labeled;
+
+import com.thoughtworks.xstream.annotations.XStreamAlias;
 
 @PlanningEntity
 @XStreamAlias("SeatDesignation")
@@ -37,7 +38,7 @@ public class SeatDesignation extends AbstractPersistable implements Labeled {
         this.guest = guest;
     }
 
-    @PlanningVariable(valueRangeProviderRefs = {"seatRange"})
+    @PlanningVariable(valueRangeProviderRefs = { "seatRange" })
     public Seat getSeat() {
         return seat;
     }
@@ -73,7 +74,7 @@ public class SeatDesignation extends AbstractPersistable implements Labeled {
 
     public Table getSeatTable() {
         if (seat == null) {
-            return  null;
+            return null;
         }
         return seat.getTable();
     }

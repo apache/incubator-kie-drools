@@ -28,8 +28,7 @@ import org.optaplanner.persistence.xstream.impl.domain.solution.XStreamSolutionF
 
 public class CurriculumCourseApp extends CommonApp<CourseSchedule> {
 
-    public static final String SOLVER_CONFIG
-            = "org/optaplanner/examples/curriculumcourse/solver/curriculumCourseSolverConfig.xml";
+    public static final String SOLVER_CONFIG = "org/optaplanner/examples/curriculumcourse/solver/curriculumCourseSolverConfig.xml";
 
     public static final String DATA_DIR_NAME = "curriculumcourse";
 
@@ -58,7 +57,7 @@ public class CurriculumCourseApp extends CommonApp<CourseSchedule> {
 
     @Override
     protected AbstractSolutionImporter[] createSolutionImporters() {
-        return new AbstractSolutionImporter[]{
+        return new AbstractSolutionImporter[] {
                 new CurriculumCourseImporter()
         };
     }

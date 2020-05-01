@@ -16,12 +16,14 @@
 
 package org.optaplanner.core.impl.localsearch;
 
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
+import static org.optaplanner.core.impl.testdata.util.PlannerAssert.*;
+
 import java.util.Arrays;
 import java.util.Collections;
 
 import org.junit.jupiter.api.Test;
-import org.optaplanner.core.api.solver.Solver;
-import org.optaplanner.core.api.solver.SolverFactory;
 import org.optaplanner.core.config.localsearch.LocalSearchPhaseConfig;
 import org.optaplanner.core.config.localsearch.LocalSearchType;
 import org.optaplanner.core.config.solver.SolverConfig;
@@ -32,10 +34,6 @@ import org.optaplanner.core.impl.testdata.domain.TestdataValue;
 import org.optaplanner.core.impl.testdata.domain.immovable.TestdataImmovableEntity;
 import org.optaplanner.core.impl.testdata.domain.immovable.TestdataImmovableSolution;
 import org.optaplanner.core.impl.testdata.util.PlannerTestUtils;
-
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
-import static org.optaplanner.core.impl.testdata.util.PlannerAssert.*;
 
 public class DefaultLocalSearchPhaseTest {
 
@@ -211,6 +209,5 @@ public class DefaultLocalSearchPhaseTest {
         assertNotNull(solution);
         assertEquals(0, solution.getEntityList().size());
     }
-
 
 }

@@ -16,15 +16,15 @@
 
 package org.optaplanner.core.impl.score.buildin.bendablebigdecimal;
 
-import java.math.BigDecimal;
-
-import org.junit.jupiter.api.Test;
-import org.optaplanner.core.api.score.buildin.bendablebigdecimal.BendableBigDecimalScore;
-
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatIllegalArgumentException;
 import static org.junit.Assert.assertArrayEquals;
 import static org.junit.Assert.assertEquals;
+
+import java.math.BigDecimal;
+
+import org.junit.jupiter.api.Test;
+import org.optaplanner.core.api.score.buildin.bendablebigdecimal.BendableBigDecimalScore;
 
 public class BendableBigDecimalScoreDefinitionTest {
 
@@ -37,8 +37,8 @@ public class BendableBigDecimalScoreDefinitionTest {
     @Test
     public void getSoftestOneScore() {
         BendableBigDecimalScore score = new BendableBigDecimalScoreDefinition(1, 2).getOneSoftestScore();
-        assertThat(score).isEqualTo(BendableBigDecimalScore.of(new BigDecimal[] {BigDecimal.ZERO},
-                new BigDecimal[] {BigDecimal.ZERO, BigDecimal.ONE}));
+        assertThat(score).isEqualTo(BendableBigDecimalScore.of(new BigDecimal[] { BigDecimal.ZERO },
+                new BigDecimal[] { BigDecimal.ZERO, BigDecimal.ONE }));
     }
 
     @Test
@@ -52,11 +52,16 @@ public class BendableBigDecimalScoreDefinitionTest {
 
     @Test
     public void getLevelLabels() {
-        assertArrayEquals(new String[]{"hard 0 score", "soft 0 score"}, new BendableBigDecimalScoreDefinition(1, 1).getLevelLabels());
-        assertArrayEquals(new String[]{"hard 0 score", "hard 1 score", "hard 2 score", "soft 0 score", "soft 1 score", "soft 2 score", "soft 3 score"}, new BendableBigDecimalScoreDefinition(3, 4).getLevelLabels());
-        assertArrayEquals(new String[]{"hard 0 score", "hard 1 score", "hard 2 score", "hard 3 score", "soft 0 score", "soft 1 score", "soft 2 score"}, new BendableBigDecimalScoreDefinition(4, 3).getLevelLabels());
-        assertArrayEquals(new String[]{"soft 0 score", "soft 1 score", "soft 2 score", "soft 3 score", "soft 4 score"}, new BendableBigDecimalScoreDefinition(0, 5).getLevelLabels());
-        assertArrayEquals(new String[]{"hard 0 score", "hard 1 score", "hard 2 score", "hard 3 score", "hard 4 score"}, new BendableBigDecimalScoreDefinition(5, 0).getLevelLabels());
+        assertArrayEquals(new String[] { "hard 0 score", "soft 0 score" },
+                new BendableBigDecimalScoreDefinition(1, 1).getLevelLabels());
+        assertArrayEquals(new String[] { "hard 0 score", "hard 1 score", "hard 2 score", "soft 0 score", "soft 1 score",
+                "soft 2 score", "soft 3 score" }, new BendableBigDecimalScoreDefinition(3, 4).getLevelLabels());
+        assertArrayEquals(new String[] { "hard 0 score", "hard 1 score", "hard 2 score", "hard 3 score", "soft 0 score",
+                "soft 1 score", "soft 2 score" }, new BendableBigDecimalScoreDefinition(4, 3).getLevelLabels());
+        assertArrayEquals(new String[] { "soft 0 score", "soft 1 score", "soft 2 score", "soft 3 score", "soft 4 score" },
+                new BendableBigDecimalScoreDefinition(0, 5).getLevelLabels());
+        assertArrayEquals(new String[] { "hard 0 score", "hard 1 score", "hard 2 score", "hard 3 score", "hard 4 score" },
+                new BendableBigDecimalScoreDefinition(5, 0).getLevelLabels());
     }
 
     @Test
@@ -84,7 +89,8 @@ public class BendableBigDecimalScoreDefinitionTest {
                 for (int i = 0; i < levelSize; i++) {
                     scores[i] = new BigDecimal(i);
                 }
-                BendableBigDecimalScoreDefinition bendableScoreDefinition = new BendableBigDecimalScoreDefinition(hardLevelSize, softLevelSize);
+                BendableBigDecimalScoreDefinition bendableScoreDefinition = new BendableBigDecimalScoreDefinition(hardLevelSize,
+                        softLevelSize);
                 BendableBigDecimalScore bendableScore = bendableScoreDefinition.createScore(scores);
                 assertEquals(hardLevelSize, bendableScore.getHardLevelsSize());
                 assertEquals(softLevelSize, bendableScore.getSoftLevelsSize());

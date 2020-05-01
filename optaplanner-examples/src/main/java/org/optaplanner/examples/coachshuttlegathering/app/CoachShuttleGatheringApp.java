@@ -28,8 +28,7 @@ import org.optaplanner.persistence.xstream.impl.domain.solution.XStreamSolutionF
 
 public class CoachShuttleGatheringApp extends CommonApp<CoachShuttleGatheringSolution> {
 
-    public static final String SOLVER_CONFIG
-            = "org/optaplanner/examples/coachshuttlegathering/solver/coachShuttleGatheringSolverConfig.xml";
+    public static final String SOLVER_CONFIG = "org/optaplanner/examples/coachshuttlegathering/solver/coachShuttleGatheringSolverConfig.xml";
 
     public static final String DATA_DIR_NAME = "coachshuttlegathering";
 
@@ -57,7 +56,7 @@ public class CoachShuttleGatheringApp extends CommonApp<CoachShuttleGatheringSol
 
     @Override
     protected AbstractSolutionImporter[] createSolutionImporters() {
-        return new AbstractSolutionImporter[]{
+        return new AbstractSolutionImporter[] {
                 new CoachShuttleGatheringImporter()
         };
     }

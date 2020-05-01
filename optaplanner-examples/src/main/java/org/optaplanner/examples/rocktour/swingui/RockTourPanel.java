@@ -21,6 +21,7 @@ import java.awt.Desktop;
 import java.awt.FlowLayout;
 import java.io.File;
 import java.io.IOException;
+
 import javax.swing.JButton;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
@@ -44,7 +45,8 @@ public class RockTourPanel extends SolutionPanel<RockTourSolution> {
             SolutionFileIO<RockTourSolution> solutionFileIO = new RockTourXlsxFileIO();
             File tempFile;
             try {
-                tempFile = File.createTempFile(solutionBusiness.getSolutionFileName(), "." + solutionFileIO.getOutputFileExtension());
+                tempFile = File.createTempFile(solutionBusiness.getSolutionFileName(),
+                        "." + solutionFileIO.getOutputFileExtension());
             } catch (IOException e) {
                 throw new IllegalStateException("Failed to create temp file.", e);
             }

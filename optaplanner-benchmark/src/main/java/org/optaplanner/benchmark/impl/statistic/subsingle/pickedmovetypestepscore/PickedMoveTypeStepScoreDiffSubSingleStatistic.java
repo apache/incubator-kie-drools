@@ -24,8 +24,6 @@ import java.util.List;
 import java.util.Locale;
 import java.util.Map;
 
-import com.thoughtworks.xstream.annotations.XStreamAlias;
-import com.thoughtworks.xstream.annotations.XStreamOmitField;
 import org.jfree.chart.JFreeChart;
 import org.jfree.chart.axis.NumberAxis;
 import org.jfree.chart.plot.PlotOrientation;
@@ -49,6 +47,9 @@ import org.optaplanner.core.impl.phase.scope.AbstractStepScope;
 import org.optaplanner.core.impl.score.ScoreUtils;
 import org.optaplanner.core.impl.score.definition.ScoreDefinition;
 import org.optaplanner.core.impl.solver.DefaultSolver;
+
+import com.thoughtworks.xstream.annotations.XStreamAlias;
+import com.thoughtworks.xstream.annotations.XStreamOmitField;
 
 @XStreamAlias("pickedMoveTypeStepScoreDiffSubSingleStatistic")
 public class PickedMoveTypeStepScoreDiffSubSingleStatistic<Solution_>
@@ -146,8 +147,7 @@ public class PickedMoveTypeStepScoreDiffSubSingleStatistic<Solution_>
 
     @Override
     public void writeGraphFiles(BenchmarkReport benchmarkReport) {
-        List<Map<String, XYIntervalSeries>> moveTypeToSeriesMapList
-                = new ArrayList<>(BenchmarkReport.CHARTED_SCORE_LEVEL_SIZE);
+        List<Map<String, XYIntervalSeries>> moveTypeToSeriesMapList = new ArrayList<>(BenchmarkReport.CHARTED_SCORE_LEVEL_SIZE);
         List<PickedMoveTypeStepScoreDiffStatisticPoint> points = getPointList();
         for (PickedMoveTypeStepScoreDiffStatisticPoint point : points) {
             long timeMillisSpent = point.getTimeMillisSpent();

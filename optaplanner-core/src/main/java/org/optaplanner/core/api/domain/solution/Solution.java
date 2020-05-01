@@ -41,14 +41,17 @@ import org.optaplanner.core.impl.solver.ProblemFactChange;
  * The planning solution class must implement this interface which is needed to get/set state.
  * But the planning solution class must also be annotated with {@link PlanningSolution}
  * describes declarative properties.
+ * 
  * @param <S> the {@link Score} type used by this use case
- * @deprecated Use {@link PlanningScore}, {@link ProblemFactCollectionProperty} and {@link ProblemFactProperty} instead. Will be removed in 8.0.
+ * @deprecated Use {@link PlanningScore}, {@link ProblemFactCollectionProperty} and {@link ProblemFactProperty} instead. Will be
+ *             removed in 8.0.
  */
 @Deprecated
 public interface Solution<S extends Score> {
 
     /**
      * Returns the {@link Score} of this Solution.
+     * 
      * @return null if the Solution is uninitialized
      *         or the last calculated {@link Score} is dirty the new {@link Score} has not yet been recalculated
      */
@@ -56,6 +59,7 @@ public interface Solution<S extends Score> {
 
     /**
      * Called by the {@link Solver} when the {@link Score} of this Solution has been calculated.
+     * 
      * @param score sometimes null
      */
     void setScore(S score);
@@ -68,6 +72,7 @@ public interface Solution<S extends Score> {
      * <p>
      * Do not include the planning entities as problem facts:
      * they are automatically inserted into the {@link KieSession}.
+     * 
      * @return never null (although an empty collection is allowed),
      *         all the facts of this solution except for the planning entities
      */

@@ -57,7 +57,7 @@ public final class BavetFilterBiConstraintStream<Solution_, A, B> extends BavetA
 
     @Override
     public String toString() {
-        return "Filter() with " + childStreamList.size()  + " children";
+        return "Filter() with " + childStreamList.size() + " children";
     }
 
     // ************************************************************************

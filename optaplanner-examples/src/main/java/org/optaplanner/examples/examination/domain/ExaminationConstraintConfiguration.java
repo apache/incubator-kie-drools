@@ -16,11 +16,12 @@
 
 package org.optaplanner.examples.examination.domain;
 
-import com.thoughtworks.xstream.annotations.XStreamAlias;
 import org.optaplanner.core.api.domain.constraintweight.ConstraintConfiguration;
 import org.optaplanner.core.api.domain.constraintweight.ConstraintWeight;
 import org.optaplanner.core.api.score.buildin.hardsoft.HardSoftScore;
 import org.optaplanner.examples.common.domain.AbstractPersistable;
+
+import com.thoughtworks.xstream.annotations.XStreamAlias;
 
 /**
  * Institutional weightings.
@@ -65,7 +66,6 @@ public class ExaminationConstraintConfiguration extends AbstractPersistable {
     public HardSoftScore getFrontLoadPenaltyAsScore() {
         return HardSoftScore.ofSoft(frontLoadPenalty);
     }
-
 
     public int getTwoInARowPenalty() {
         return twoInARowPenalty;

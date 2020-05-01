@@ -97,7 +97,7 @@ public final class BavetFilterBiNode<A, B> extends BavetAbstractBiNode<A, B> {
 
     @Override
     public String toString() {
-        return "Filter() with " + childNodeList.size()  + " children";
+        return "Filter() with " + childNodeList.size() + " children";
     }
 
     // ************************************************************************

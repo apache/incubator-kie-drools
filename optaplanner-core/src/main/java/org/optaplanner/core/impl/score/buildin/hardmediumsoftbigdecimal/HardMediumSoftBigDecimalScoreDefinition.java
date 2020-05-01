@@ -27,7 +27,7 @@ import org.optaplanner.core.impl.score.trend.InitializingScoreTrend;
 public class HardMediumSoftBigDecimalScoreDefinition extends AbstractFeasibilityScoreDefinition<HardMediumSoftBigDecimalScore> {
 
     public HardMediumSoftBigDecimalScoreDefinition() {
-        super(new String[]{"hard score", "medium score", "soft score"});
+        super(new String[] { "hard score", "medium score", "soft score" });
     }
 
     // ************************************************************************
@@ -70,7 +70,8 @@ public class HardMediumSoftBigDecimalScoreDefinition extends AbstractFeasibility
             throw new IllegalStateException("The levelNumbers (" + Arrays.toString(levelNumbers)
                     + ")'s length (" + levelNumbers.length + ") must equal the levelSize (" + getLevelsSize() + ").");
         }
-        return HardMediumSoftBigDecimalScore.ofUninitialized(initScore, (BigDecimal) levelNumbers[0], (BigDecimal) levelNumbers[1], (BigDecimal) levelNumbers[2]);
+        return HardMediumSoftBigDecimalScore.ofUninitialized(initScore, (BigDecimal) levelNumbers[0],
+                (BigDecimal) levelNumbers[1], (BigDecimal) levelNumbers[2]);
     }
 
     @Override

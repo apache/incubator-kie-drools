@@ -15,17 +15,17 @@
  */
 package org.optaplanner.core.impl.score.director.drools;
 
-import org.junit.jupiter.api.Test;
-import org.kie.api.runtime.KieSession;
-import org.kie.internal.event.rule.RuleEventManager;
-import org.optaplanner.core.impl.domain.solution.descriptor.SolutionDescriptor;
-import org.optaplanner.core.impl.score.buildin.simple.SimpleScoreDefinition;
-
 import static org.assertj.core.api.Assertions.assertThatIllegalStateException;
 import static org.junit.Assert.assertNotNull;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 import static org.mockito.Mockito.withSettings;
+
+import org.junit.jupiter.api.Test;
+import org.kie.api.runtime.KieSession;
+import org.kie.internal.event.rule.RuleEventManager;
+import org.optaplanner.core.impl.domain.solution.descriptor.SolutionDescriptor;
+import org.optaplanner.core.impl.score.buildin.simple.SimpleScoreDefinition;
 
 public class DroolsScoreDirectorTest {
 

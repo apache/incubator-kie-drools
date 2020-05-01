@@ -48,8 +48,7 @@ public class ShiftAssignmentPillarPartSwapMoveFactory implements MoveListFactory
         shiftAssignmentList.removeIf(shiftAssignment -> !filter.accept(nurseRoster, shiftAssignment));
 
         // Hash the assignments per employee
-        Map<Employee, List<AssignmentSequence>> employeeToAssignmentSequenceListMap
-                = new HashMap<>(employeeList.size());
+        Map<Employee, List<AssignmentSequence>> employeeToAssignmentSequenceListMap = new HashMap<>(employeeList.size());
         int assignmentSequenceCapacity = nurseRoster.getShiftDateList().size() + 1 / 2;
         for (Employee employee : employeeList) {
             employeeToAssignmentSequenceListMap.put(employee,
@@ -78,10 +77,9 @@ public class ShiftAssignmentPillarPartSwapMoveFactory implements MoveListFactory
         // For every 2 distinct employees
         for (ListIterator<Employee> leftEmployeeIt = employeeList.listIterator(); leftEmployeeIt.hasNext();) {
             Employee leftEmployee = leftEmployeeIt.next();
-            List<AssignmentSequence> leftAssignmentSequenceList
-                    = employeeToAssignmentSequenceListMap.get(leftEmployee);
-            for (ListIterator<Employee> rightEmployeeIt = employeeList.listIterator(leftEmployeeIt.nextIndex());
-                    rightEmployeeIt.hasNext();) {
+            List<AssignmentSequence> leftAssignmentSequenceList = employeeToAssignmentSequenceListMap.get(leftEmployee);
+            for (ListIterator<Employee> rightEmployeeIt = employeeList.listIterator(leftEmployeeIt.nextIndex()); rightEmployeeIt
+                    .hasNext();) {
                 Employee rightEmployee = rightEmployeeIt.next();
                 List<AssignmentSequence> rightAssignmentSequenceList = employeeToAssignmentSequenceListMap.get(
                         rightEmployee);

@@ -16,6 +16,8 @@
 
 package org.optaplanner.core.impl.solver;
 
+import static org.junit.Assert.*;
+
 import java.util.Arrays;
 import java.util.Collections;
 
@@ -39,8 +41,6 @@ import org.optaplanner.core.impl.testdata.domain.extended.legacysolution.Testdat
 import org.optaplanner.core.impl.testdata.domain.immovable.TestdataImmovableEntity;
 import org.optaplanner.core.impl.testdata.domain.immovable.TestdataImmovableSolution;
 import org.optaplanner.core.impl.testdata.util.PlannerTestUtils;
-
-import static org.junit.Assert.*;
 
 public class DefaultSolverTest {
 
@@ -83,8 +83,7 @@ public class DefaultSolverTest {
     public void solveEmptyEntityList() {
         SolverConfig solverConfig = PlannerTestUtils.buildSolverConfig(TestdataSolution.class, TestdataEntity.class)
                 .withPhases(new CustomPhaseConfig().withCustomPhaseCommands(
-                        scoreDirector -> fail("All phases should be skipped because there are no movable entities.")
-                ));
+                        scoreDirector -> fail("All phases should be skipped because there are no movable entities.")));
         SolverFactory<TestdataSolution> solverFactory = SolverFactory.create(solverConfig);
         Solver<TestdataSolution> solver = solverFactory.buildSolver();
 
@@ -100,10 +99,10 @@ public class DefaultSolverTest {
 
     @Test
     public void solveChainedEmptyEntityList() {
-        SolverConfig solverConfig = PlannerTestUtils.buildSolverConfig(TestdataChainedSolution.class, TestdataChainedEntity.class)
+        SolverConfig solverConfig = PlannerTestUtils
+                .buildSolverConfig(TestdataChainedSolution.class, TestdataChainedEntity.class)
                 .withPhases(new CustomPhaseConfig().withCustomPhaseCommands(
-                        scoreDirector -> fail("All phases should be skipped because there are no movable entities.")
-                ));
+                        scoreDirector -> fail("All phases should be skipped because there are no movable entities.")));
         SolverFactory<TestdataChainedSolution> solverFactory = SolverFactory.create(solverConfig);
         Solver<TestdataChainedSolution> solver = solverFactory.buildSolver();
 
@@ -118,7 +117,8 @@ public class DefaultSolverTest {
     }
 
     // TODO https://issues.redhat.com/browse/PLANNER-1738
-    @Test @Disabled("We currently don't support an empty value list yet if the entity list is not empty.")
+    @Test
+    @Disabled("We currently don't support an empty value list yet if the entity list is not empty.")
     public void solveEmptyValueList() {
         SolverConfig solverConfig = PlannerTestUtils.buildSolverConfig(TestdataSolution.class, TestdataEntity.class);
         SolverFactory<TestdataSolution> solverFactory = SolverFactory.create(solverConfig);
@@ -134,9 +134,11 @@ public class DefaultSolverTest {
         assertSame(solution, solver.getBestSolution());
     }
 
-    @Test @Disabled("We currently don't support an empty value list yet if the entity list is not empty.")
+    @Test
+    @Disabled("We currently don't support an empty value list yet if the entity list is not empty.")
     public void solveChainedEmptyValueList() {
-        SolverConfig solverConfig = PlannerTestUtils.buildSolverConfig(TestdataChainedSolution.class, TestdataChainedEntity.class);
+        SolverConfig solverConfig = PlannerTestUtils.buildSolverConfig(TestdataChainedSolution.class,
+                TestdataChainedEntity.class);
         SolverFactory<TestdataChainedSolution> solverFactory = SolverFactory.create(solverConfig);
         Solver<TestdataChainedSolution> solver = solverFactory.buildSolver();
 
@@ -154,8 +156,7 @@ public class DefaultSolverTest {
     public void solveEmptyEntityListAndEmptyValueList() {
         SolverConfig solverConfig = PlannerTestUtils.buildSolverConfig(TestdataSolution.class, TestdataEntity.class)
                 .withPhases(new CustomPhaseConfig().withCustomPhaseCommands(
-                        scoreDirector -> fail("All phases should be skipped because there are no movable entities.")
-                ));
+                        scoreDirector -> fail("All phases should be skipped because there are no movable entities.")));
         SolverFactory<TestdataSolution> solverFactory = SolverFactory.create(solverConfig);
         Solver<TestdataSolution> solver = solverFactory.buildSolver();
 
@@ -171,10 +172,10 @@ public class DefaultSolverTest {
 
     @Test
     public void solveImmovableEntityList() {
-        SolverConfig solverConfig = PlannerTestUtils.buildSolverConfig(TestdataImmovableSolution.class, TestdataImmovableEntity.class)
+        SolverConfig solverConfig = PlannerTestUtils
+                .buildSolverConfig(TestdataImmovableSolution.class, TestdataImmovableEntity.class)
                 .withPhases(new CustomPhaseConfig().withCustomPhaseCommands(
-                        scoreDirector -> fail("All phases should be skipped because there are no movable entities.")
-                ));
+                        scoreDirector -> fail("All phases should be skipped because there are no movable entities.")));
         SolverFactory<TestdataImmovableSolution> solverFactory = SolverFactory.create(solverConfig);
         Solver<TestdataImmovableSolution> solver = solverFactory.buildSolver();
 
@@ -188,7 +189,6 @@ public class DefaultSolverTest {
         assertEquals(false, solution.getScore().isSolutionInitialized());
         assertSame(solution, solver.getBestSolution());
     }
-
 
     @Test
     public void solveStopsWhenUninitialized() {

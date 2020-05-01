@@ -30,7 +30,8 @@ import org.optaplanner.core.impl.testdata.domain.TestdataValue;
 public class TestdataExtendedAutoDiscoverGetterSolution extends TestdataAutoDiscoverGetterSolution {
 
     public static SolutionDescriptor<TestdataExtendedAutoDiscoverGetterSolution> buildSubclassSolutionDescriptor() {
-        return SolutionDescriptor.buildSolutionDescriptor(TestdataExtendedAutoDiscoverGetterSolution.class, TestdataEntity.class);
+        return SolutionDescriptor.buildSolutionDescriptor(TestdataExtendedAutoDiscoverGetterSolution.class,
+                TestdataEntity.class);
     }
 
     private TestdataObject singleProblemFactFieldOverride;

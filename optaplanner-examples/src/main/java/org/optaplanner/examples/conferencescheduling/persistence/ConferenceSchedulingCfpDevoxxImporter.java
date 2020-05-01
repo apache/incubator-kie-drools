@@ -31,6 +31,7 @@ import java.util.Map;
 import java.util.Set;
 import java.util.function.Function;
 import java.util.stream.Collectors;
+
 import javax.json.Json;
 import javax.json.JsonArray;
 import javax.json.JsonObject;
@@ -57,13 +58,14 @@ public class ConferenceSchedulingCfpDevoxxImporter {
 
     // TODO expose these properties in the "import CFP dialog" or better yet, enhance the cfp-devoxx REST api to expose them
     private static final String ZONE_ID = "Europe/Paris";
-    private static final String[] SMALL_ROOMS_TYPE_NAMES = {"lab", "Hands-on Labs", "bof", "BOF (Bird of a Feather)", "ignite", "Ignite Sessions"};
-    private static final String[] LARGE_ROOMS_TYPE_NAMES = {"tia", "Tools-in-Action", "uni", "University",
-            "conf", "Conference", "Deep Dive", "key", "Keynote", "Quickie", "quick"};
+    private static final String[] SMALL_ROOMS_TYPE_NAMES = { "lab", "Hands-on Labs", "bof", "BOF (Bird of a Feather)", "ignite",
+            "Ignite Sessions" };
+    private static final String[] LARGE_ROOMS_TYPE_NAMES = { "tia", "Tools-in-Action", "uni", "University",
+            "conf", "Conference", "Deep Dive", "key", "Keynote", "Quickie", "quick" };
 
-    private static final String[] IGNORED_TALK_TYPES = {"ignite", "key"};
-    private static final String[] IGNORED_ROOM_IDS = {"ExhibitionHall"};
-    private static final String[] IGNORED_SPEAKER_NAMES = {"Devoxx Partner"};
+    private static final String[] IGNORED_TALK_TYPES = { "ignite", "key" };
+    private static final String[] IGNORED_ROOM_IDS = { "ExhibitionHall" };
+    private static final String[] IGNORED_SPEAKER_NAMES = { "Devoxx Partner" };
 
     private String conferenceBaseUrl;
     private Map<String, TalkType> talkTypeIdToTalkTypeMap;
@@ -97,8 +99,10 @@ public class ConferenceSchedulingCfpDevoxxImporter {
 
         for (TalkType talkType : solution.getTalkTypeList()) {
             LOGGER.info("{}: Timeslots Total is {}, Talks Total is {}.", talkType.getName(),
-                    timeslotTalkTypeToTotalMap.get(talkType.getName()) == null ? 0 : timeslotTalkTypeToTotalMap.get(talkType.getName()),
-                    talkTalkTypeToTotalMap.get(talkType.getName()) == null ? 0 : talkTalkTypeToTotalMap.get(talkType.getName()));
+                    timeslotTalkTypeToTotalMap.get(talkType.getName()) == null ? 0
+                            : timeslotTalkTypeToTotalMap.get(talkType.getName()),
+                    talkTalkTypeToTotalMap.get(talkType.getName()) == null ? 0
+                            : talkTalkTypeToTotalMap.get(talkType.getName()));
         }
         return solution;
     }
@@ -179,7 +183,8 @@ public class ConferenceSchedulingCfpDevoxxImporter {
         }
 
         if (roomList.isEmpty()) {
-            LOGGER.warn("There are no rooms. Log into the CFP webapp, open the tab configuration and add the rooms before importing it here.");
+            LOGGER.warn(
+                    "There are no rooms. Log into the CFP webapp, open the tab configuration and add the rooms before importing it here.");
         }
         roomList.sort(Comparator.comparing(Room::getName));
         solution.setRoomList(roomList);
@@ -326,7 +331,7 @@ public class ConferenceSchedulingCfpDevoxxImporter {
     }
 
     private void createTalk(String code, String title, String talkTypeId, Set<String> themeTrackSet,
-                            String languageg, List<Speaker> speakerList, int audienceLevel, Set<String> contentTagSet) {
+            String languageg, List<Speaker> speakerList, int audienceLevel, Set<String> contentTagSet) {
         Talk talk = new Talk((long) solution.getTalkList().size());
         talk.setCode(code);
         talk.setTitle(title);
@@ -374,11 +379,12 @@ public class ConferenceSchedulingCfpDevoxxImporter {
                 continue;
             }
 
-            LocalDateTime startDateTime = LocalDateTime.ofInstant(Instant.ofEpochMilli(timeslotObject.getJsonNumber("from").longValue()),
+            LocalDateTime startDateTime = LocalDateTime.ofInstant(
+                    Instant.ofEpochMilli(timeslotObject.getJsonNumber("from").longValue()),
                     ZoneId.of(ZONE_ID));
-            LocalDateTime endDateTime = LocalDateTime.ofInstant(Instant.ofEpochMilli(timeslotObject.getJsonNumber("to").longValue()),
+            LocalDateTime endDateTime = LocalDateTime.ofInstant(
+                    Instant.ofEpochMilli(timeslotObject.getJsonNumber("to").longValue()),
                     ZoneId.of(ZONE_ID));
-
 
             Room room = extractRoom(timeslotObject, "id", "room");
 
@@ -400,7 +406,8 @@ public class ConferenceSchedulingCfpDevoxxImporter {
                 timeslot = new Timeslot(timeslotId++);
                 timeslot.withStartDateTime(startDateTime)
                         .withEndDateTime(endDateTime)
-                        .withTalkTypeSet(timeslotTalkType == null ? new HashSet<>() : new HashSet<>(Arrays.asList(timeslotTalkType)));
+                        .withTalkTypeSet(
+                                timeslotTalkType == null ? new HashSet<>() : new HashSet<>(Arrays.asList(timeslotTalkType)));
                 timeslot.setTagSet(new HashSet<>());
 
                 timeslotList.add(timeslot);
@@ -432,9 +439,11 @@ public class ConferenceSchedulingCfpDevoxxImporter {
                     continue;
                 }
 
-                LocalDateTime startDateTime = LocalDateTime.ofInstant(Instant.ofEpochMilli(timeslotObject.getJsonNumber("fromTimeMillis").longValue()),
+                LocalDateTime startDateTime = LocalDateTime.ofInstant(
+                        Instant.ofEpochMilli(timeslotObject.getJsonNumber("fromTimeMillis").longValue()),
                         ZoneId.of(ZONE_ID));
-                LocalDateTime endDateTime = LocalDateTime.ofInstant(Instant.ofEpochMilli(timeslotObject.getJsonNumber("toTimeMillis").longValue()),
+                LocalDateTime endDateTime = LocalDateTime.ofInstant(
+                        Instant.ofEpochMilli(timeslotObject.getJsonNumber("toTimeMillis").longValue()),
                         ZoneId.of(ZONE_ID));
                 Timeslot timeslot = startAndEndTimeToTimeslotMap.get(Pair.of(startDateTime, endDateTime));
                 if (timeslot == null) {
@@ -450,7 +459,8 @@ public class ConferenceSchedulingCfpDevoxxImporter {
         }
 
         if (timeslotList.isEmpty()) {
-            LOGGER.warn("There are no timeslots. Log into the CFP webapp, open the tab configuration and add the timeslots before importing it here.");
+            LOGGER.warn(
+                    "There are no timeslots. Log into the CFP webapp, open the tab configuration and add the timeslots before importing it here.");
         }
         for (Room room : solution.getRoomList()) {
             room.setUnavailableTimeslotSet(timeslotList.stream()
@@ -465,8 +475,9 @@ public class ConferenceSchedulingCfpDevoxxImporter {
     private Room extractRoom(JsonObject timeslotObject, String slotId, String roomId) {
         Room room = roomIdToRoomMap.get(timeslotObject.getString(roomId));
         if (room == null) {
-            throw new IllegalStateException("The timeslot (" + timeslotObject.getString(slotId) + ") has a roomId (" + timeslotObject.getString(roomId)
-                    + ") that does not exist in the rooms list");
+            throw new IllegalStateException(
+                    "The timeslot (" + timeslotObject.getString(slotId) + ") has a roomId (" + timeslotObject.getString(roomId)
+                            + ") that does not exist in the rooms list");
         }
         return room;
     }

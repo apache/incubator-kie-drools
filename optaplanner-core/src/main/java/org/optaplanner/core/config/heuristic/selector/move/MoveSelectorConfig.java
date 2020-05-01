@@ -20,8 +20,6 @@ import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
 
-import com.thoughtworks.xstream.annotations.XStreamImplicit;
-import com.thoughtworks.xstream.annotations.XStreamInclude;
 import org.optaplanner.core.config.heuristic.policy.HeuristicConfigPolicy;
 import org.optaplanner.core.config.heuristic.selector.SelectorConfig;
 import org.optaplanner.core.config.heuristic.selector.common.SelectionCacheType;
@@ -53,6 +51,9 @@ import org.optaplanner.core.impl.heuristic.selector.move.decorator.ProbabilityMo
 import org.optaplanner.core.impl.heuristic.selector.move.decorator.SelectedCountLimitMoveSelector;
 import org.optaplanner.core.impl.heuristic.selector.move.decorator.ShufflingMoveSelector;
 import org.optaplanner.core.impl.heuristic.selector.move.decorator.SortingMoveSelector;
+
+import com.thoughtworks.xstream.annotations.XStreamImplicit;
+import com.thoughtworks.xstream.annotations.XStreamInclude;
 
 /**
  * General superclass for {@link ChangeMoveSelectorConfig}, etc.
@@ -148,7 +149,8 @@ public abstract class MoveSelectorConfig<C extends MoveSelectorConfig> extends S
         return probabilityWeightFactoryClass;
     }
 
-    public void setProbabilityWeightFactoryClass(Class<? extends SelectionProbabilityWeightFactory> probabilityWeightFactoryClass) {
+    public void setProbabilityWeightFactoryClass(
+            Class<? extends SelectionProbabilityWeightFactory> probabilityWeightFactoryClass) {
         this.probabilityWeightFactoryClass = probabilityWeightFactoryClass;
     }
 
@@ -192,7 +194,8 @@ public abstract class MoveSelectorConfig<C extends MoveSelectorConfig> extends S
         return this;
     }
 
-    public MoveSelectorConfig withSorterWeightFactoryClass(Class<? extends SelectionSorterWeightFactory> sorterWeightFactoryClass) {
+    public MoveSelectorConfig withSorterWeightFactoryClass(
+            Class<? extends SelectionSorterWeightFactory> sorterWeightFactoryClass) {
         this.sorterWeightFactoryClass = sorterWeightFactoryClass;
         return this;
     }
@@ -207,7 +210,8 @@ public abstract class MoveSelectorConfig<C extends MoveSelectorConfig> extends S
         return this;
     }
 
-    public MoveSelectorConfig withProbabilityWeightFactoryClass(Class<? extends SelectionProbabilityWeightFactory> probabilityWeightFactoryClass) {
+    public MoveSelectorConfig withProbabilityWeightFactoryClass(
+            Class<? extends SelectionProbabilityWeightFactory> probabilityWeightFactoryClass) {
         this.probabilityWeightFactoryClass = probabilityWeightFactoryClass;
         return this;
     }
@@ -229,8 +233,8 @@ public abstract class MoveSelectorConfig<C extends MoveSelectorConfig> extends S
     /**
      * @param configPolicy never null
      * @param minimumCacheType never null, If caching is used (different from {@link SelectionCacheType#JUST_IN_TIME}),
-     * then it should be at least this {@link SelectionCacheType} because an ancestor already uses such caching
-     * and less would be pointless.
+     *        then it should be at least this {@link SelectionCacheType} because an ancestor already uses such caching
+     *        and less would be pointless.
      * @param inheritedSelectionOrder never null
      * @return never null
      */
@@ -307,10 +311,10 @@ public abstract class MoveSelectorConfig<C extends MoveSelectorConfig> extends S
      *
      * @param configPolicy never null
      * @param minimumCacheType never null, If caching is used (different from {@link SelectionCacheType#JUST_IN_TIME}),
-     * then it should be at least this {@link SelectionCacheType} because an ancestor already uses such caching
-     * and less would be pointless.
+     *        then it should be at least this {@link SelectionCacheType} because an ancestor already uses such caching
+     *        and less would be pointless.
      * @param randomSelection true is equivalent to {@link SelectionOrder#RANDOM},
-     * false is equivalent to {@link SelectionOrder#ORIGINAL}
+     *        false is equivalent to {@link SelectionOrder#ORIGINAL}
      * @return never null
      */
     protected abstract MoveSelector buildBaseMoveSelector(
@@ -338,10 +342,10 @@ public abstract class MoveSelectorConfig<C extends MoveSelectorConfig> extends S
                 || sorterOrder != null || sorterClass != null)
                 && resolvedSelectionOrder != SelectionOrder.SORTED) {
             throw new IllegalArgumentException("The moveSelectorConfig (" + this
-                    + ") with sorterComparatorClass ("  + sorterComparatorClass
-                    + ") and sorterWeightFactoryClass ("  + sorterWeightFactoryClass
-                    + ") and sorterOrder ("  + sorterOrder
-                    + ") and sorterClass ("  + sorterClass
+                    + ") with sorterComparatorClass (" + sorterComparatorClass
+                    + ") and sorterWeightFactoryClass (" + sorterWeightFactoryClass
+                    + ") and sorterOrder (" + sorterOrder
+                    + ") and sorterClass (" + sorterClass
                     + ") has a resolvedSelectionOrder (" + resolvedSelectionOrder
                     + ") that is not " + SelectionOrder.SORTED + ".");
         }
@@ -385,7 +389,7 @@ public abstract class MoveSelectorConfig<C extends MoveSelectorConfig> extends S
                 sorter = ConfigUtils.newInstance(this, "sorterClass", sorterClass);
             } else {
                 throw new IllegalArgumentException("The moveSelectorConfig (" + this
-                        + ") with resolvedSelectionOrder ("  + resolvedSelectionOrder
+                        + ") with resolvedSelectionOrder (" + resolvedSelectionOrder
                         + ") needs a sorterComparatorClass (" + sorterComparatorClass
                         + ") or a sorterWeightFactoryClass (" + sorterWeightFactoryClass
                         + ") or a sorterClass (" + sorterClass + ").");
@@ -461,6 +465,7 @@ public abstract class MoveSelectorConfig<C extends MoveSelectorConfig> extends S
     /**
      * Gather a list of all descendant {@link MoveSelectorConfig}s
      * except for {@link UnionMoveSelectorConfig} and {@link CartesianProductMoveSelectorConfig}.
+     * 
      * @param leafMoveSelectorConfigList not null
      */
     public void extractLeafMoveSelectorConfigsIntoList(List<MoveSelectorConfig> leafMoveSelectorConfigList) {
@@ -475,6 +480,7 @@ public abstract class MoveSelectorConfig<C extends MoveSelectorConfig> extends S
 
     /**
      * Does not inherit subclass properties because this class and {@code foldedConfig} can be of a different type.
+     * 
      * @param foldedConfig never null
      */
     public void inheritFolded(MoveSelectorConfig foldedConfig) {

@@ -40,8 +40,7 @@ public abstract class AbstractExhaustiveSearchTest<Solution_>
     @Override
     protected SolverFactory<Solution_> buildSolverFactory(
             CommonApp<Solution_> commonApp,
-            ExhaustiveSearchType exhaustiveSearchType
-    ) {
+            ExhaustiveSearchType exhaustiveSearchType) {
         String solverConfigResource = commonApp.getSolverConfigResource();
         SolverConfig solverConfig = SolverConfig.createFromXmlResource(solverConfigResource);
         solverConfig.setTerminationConfig(new TerminationConfig());

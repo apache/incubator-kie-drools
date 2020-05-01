@@ -16,6 +16,8 @@
 
 package org.optaplanner.examples.rocktour.domain;
 
+import static java.time.temporal.ChronoUnit.*;
+
 import java.time.LocalDate;
 import java.util.NavigableSet;
 
@@ -28,8 +30,6 @@ import org.optaplanner.core.api.domain.variable.PlanningVariableReference;
 import org.optaplanner.examples.common.domain.AbstractPersistable;
 import org.optaplanner.examples.rocktour.domain.solver.RockShowVariableListener;
 
-import static java.time.temporal.ChronoUnit.*;
-
 @PlanningEntity
 public class RockShow extends AbstractPersistable implements RockStandstill {
 
@@ -41,7 +41,7 @@ public class RockShow extends AbstractPersistable implements RockStandstill {
 
     private NavigableSet<LocalDate> availableDateSet;
 
-    @PlanningVariable(valueRangeProviderRefs = {"busRange", "showRange"}, graphType = PlanningVariableGraphType.CHAINED)
+    @PlanningVariable(valueRangeProviderRefs = { "busRange", "showRange" }, graphType = PlanningVariableGraphType.CHAINED)
     private RockStandstill previousStandstill;
 
     private RockShow nextShow;
@@ -49,9 +49,9 @@ public class RockShow extends AbstractPersistable implements RockStandstill {
     @AnchorShadowVariable(sourceVariableName = "previousStandstill")
     private RockBus bus;
 
-    @CustomShadowVariable(variableListenerClass = RockShowVariableListener.class,
-            sources = {@PlanningVariableReference(variableName = "previousStandstill"),
-            @PlanningVariableReference(variableName = "bus")})
+    @CustomShadowVariable(variableListenerClass = RockShowVariableListener.class, sources = {
+            @PlanningVariableReference(variableName = "previousStandstill"),
+            @PlanningVariableReference(variableName = "bus") })
     private LocalDate date;
 
     @CustomShadowVariable(variableListenerRef = @PlanningVariableReference(variableName = "date"))

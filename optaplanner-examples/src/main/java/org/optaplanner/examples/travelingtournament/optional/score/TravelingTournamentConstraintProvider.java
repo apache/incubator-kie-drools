@@ -16,14 +16,14 @@
 
 package org.optaplanner.examples.travelingtournament.optional.score;
 
+import static org.optaplanner.core.api.score.stream.Joiners.equal;
+
 import org.optaplanner.core.api.score.buildin.hardsoft.HardSoftScore;
 import org.optaplanner.core.api.score.stream.Constraint;
 import org.optaplanner.core.api.score.stream.ConstraintFactory;
 import org.optaplanner.core.api.score.stream.ConstraintProvider;
 import org.optaplanner.examples.travelingtournament.domain.Day;
 import org.optaplanner.examples.travelingtournament.domain.Match;
-
-import static org.optaplanner.core.api.score.stream.Joiners.equal;
 
 public final class TravelingTournamentConstraintProvider implements ConstraintProvider {
 

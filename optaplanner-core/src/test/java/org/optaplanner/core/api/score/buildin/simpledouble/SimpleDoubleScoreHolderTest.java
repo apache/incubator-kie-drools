@@ -16,12 +16,12 @@
 
 package org.optaplanner.core.api.score.buildin.simpledouble;
 
+import static org.junit.Assert.*;
+
 import org.junit.jupiter.api.Test;
 import org.kie.api.definition.rule.Rule;
 import org.kie.api.runtime.rule.RuleContext;
 import org.optaplanner.core.api.score.holder.AbstractScoreHolderTest;
-
-import static org.junit.Assert.*;
 
 public class SimpleDoubleScoreHolderTest extends AbstractScoreHolderTest {
 

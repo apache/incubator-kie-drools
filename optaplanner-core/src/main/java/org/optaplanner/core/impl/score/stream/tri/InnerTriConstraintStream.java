@@ -42,7 +42,8 @@ public interface InnerTriConstraintStream<A, B, C> extends TriConstraintStream<A
     @Override
     default Constraint penalizeBigDecimal(String constraintPackage, String constraintName, Score<?> constraintWeight,
             TriFunction<A, B, C, BigDecimal> matchWeigher) {
-        return impactScoreBigDecimal(constraintPackage, constraintName, constraintWeight, matchWeigher, ScoreImpactType.PENALTY);
+        return impactScoreBigDecimal(constraintPackage, constraintName, constraintWeight, matchWeigher,
+                ScoreImpactType.PENALTY);
     }
 
     @Override
@@ -152,6 +153,5 @@ public interface InnerTriConstraintStream<A, B, C> extends TriConstraintStream<A
 
     Constraint impactScoreConfigurableBigDecimal(String constraintPackage, String constraintName,
             TriFunction<A, B, C, BigDecimal> matchWeigher, ScoreImpactType impactType);
-
 
 }

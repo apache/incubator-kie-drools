@@ -50,7 +50,7 @@ public class KOptMoveSelector extends GenericMoveSelector {
         if (!randomSelection) {
             throw new UnsupportedOperationException(
                     "Non randomSelection (such as original selection) is not yet supported on "
-                    + KOptMoveSelector.class.getSimpleName() + "."); // TODO
+                            + KOptMoveSelector.class.getSimpleName() + "."); // TODO
         }
         variableDescriptor = valueSelectors[0].getVariableDescriptor();
         if (!variableDescriptor.isChained()) {
@@ -70,7 +70,7 @@ public class KOptMoveSelector extends GenericMoveSelector {
         for (ValueSelector valueSelector : valueSelectors) {
             if (valueSelector.getVariableDescriptor() != variableDescriptor) {
                 throw new IllegalStateException("The selector (" + this
-                        + ") has a valueSelector with a variableDescriptor ("  + valueSelector.getVariableDescriptor()
+                        + ") has a valueSelector with a variableDescriptor (" + valueSelector.getVariableDescriptor()
                         + ") that differs from the first variableDescriptor (" + variableDescriptor + ").");
             }
             phaseLifecycleSupport.addEventListener(valueSelector);
@@ -125,10 +125,10 @@ public class KOptMoveSelector extends GenericMoveSelector {
     @Override
     public long getSize() {
         throw new UnsupportedOperationException("Not yet supported."); // TODO
-//        if (valueSelector instanceof IterableSelector) {
-//            return entitySelector.getSize() * (long) Math.pow(((IterableSelector) valueSelector).getSize(), K);
-//        } else {
-//        }
+        //        if (valueSelector instanceof IterableSelector) {
+        //            return entitySelector.getSize() * (long) Math.pow(((IterableSelector) valueSelector).getSize(), K);
+        //        } else {
+        //        }
     }
 
     @Override

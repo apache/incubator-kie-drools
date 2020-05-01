@@ -16,14 +16,14 @@
 
 package org.optaplanner.examples.tsp.domain.solver;
 
+import static java.util.Comparator.*;
+
 import java.util.Comparator;
 
 import org.optaplanner.core.impl.heuristic.selector.common.decorator.SelectionSorterWeightFactory;
 import org.optaplanner.examples.tsp.domain.Domicile;
 import org.optaplanner.examples.tsp.domain.TspSolution;
 import org.optaplanner.examples.tsp.domain.Visit;
-
-import static java.util.Comparator.*;
 
 public class DomicileDistanceVisitDifficultyWeightFactory implements SelectionSorterWeightFactory<TspSolution, Visit> {
 
@@ -52,7 +52,7 @@ public class DomicileDistanceVisitDifficultyWeightFactory implements SelectionSo
 
         @Override
         public int compareTo(DomicileDistanceVisitDifficultyWeight other) {
-            return COMPARATOR.compare(this,other);
+            return COMPARATOR.compare(this, other);
         }
 
     }

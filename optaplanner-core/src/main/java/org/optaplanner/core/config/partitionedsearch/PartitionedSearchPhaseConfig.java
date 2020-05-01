@@ -21,9 +21,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ThreadFactory;
 
-import com.thoughtworks.xstream.annotations.XStreamAlias;
-import com.thoughtworks.xstream.annotations.XStreamConverter;
-import com.thoughtworks.xstream.annotations.XStreamImplicit;
 import org.optaplanner.core.api.solver.Solver;
 import org.optaplanner.core.config.constructionheuristic.ConstructionHeuristicPhaseConfig;
 import org.optaplanner.core.config.heuristic.policy.HeuristicConfigPolicy;
@@ -43,6 +40,10 @@ import org.optaplanner.core.impl.solver.thread.ChildThreadType;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import com.thoughtworks.xstream.annotations.XStreamAlias;
+import com.thoughtworks.xstream.annotations.XStreamConverter;
+import com.thoughtworks.xstream.annotations.XStreamImplicit;
+
 @XStreamAlias("partitionedSearch")
 public class PartitionedSearchPhaseConfig extends PhaseConfig<PartitionedSearchPhaseConfig> {
 
@@ -58,7 +59,7 @@ public class PartitionedSearchPhaseConfig extends PhaseConfig<PartitionedSearchP
     @XStreamConverter(KeyAsElementMapConverter.class)
     protected Map<String, String> solutionPartitionerCustomProperties = null;
 
-    /** @deprecated Use {@link SolverConfig#threadFactoryClass} instead.*/
+    /** @deprecated Use {@link SolverConfig#threadFactoryClass} instead. */
     @Deprecated // TODO remove in 8.0
     protected Class<? extends ThreadFactory> threadFactoryClass = null;
     protected String runnablePartThreadLimit = null;
@@ -109,7 +110,8 @@ public class PartitionedSearchPhaseConfig extends PhaseConfig<PartitionedSearchP
      * <p/>
      * The number of {@link Thread}s is always equal to the number of partitions returned by
      * {@link SolutionPartitioner#splitWorkingSolution(ScoreDirector, Integer)},
-     * because otherwise some partitions would never run (especially with {@link Solver#terminateEarly() asynchronous termination}).
+     * because otherwise some partitions would never run (especially with {@link Solver#terminateEarly() asynchronous
+     * termination}).
      * If this limit (or {@link Runtime#availableProcessors()}) is lower than the number of partitions,
      * this results in a slower score calculation speed per partition {@link Solver}.
      * <p/>
@@ -119,8 +121,10 @@ public class PartitionedSearchPhaseConfig extends PhaseConfig<PartitionedSearchP
      * <p/>
      * Use {@value #ACTIVE_THREAD_COUNT_UNLIMITED} to give it all CPU cores.
      * This is useful if you're handling the CPU consumption on an OS level.
+     * 
      * @return null, a number, {@value #ACTIVE_THREAD_COUNT_AUTO}, {@value #ACTIVE_THREAD_COUNT_UNLIMITED}
-     * or a JavaScript calculation using {@value org.optaplanner.core.config.util.ConfigUtils#AVAILABLE_PROCESSOR_COUNT}.
+     *         or a JavaScript calculation using
+     *         {@value org.optaplanner.core.config.util.ConfigUtils#AVAILABLE_PROCESSOR_COUNT}.
      */
     public String getRunnablePartThreadLimit() {
         return runnablePartThreadLimit;
@@ -203,7 +207,8 @@ public class PartitionedSearchPhaseConfig extends PhaseConfig<PartitionedSearchP
             resolvedActiveThreadCount = null;
         } else {
             resolvedActiveThreadCount = ConfigUtils.resolveThreadPoolSizeScript(
-                    "runnablePartThreadLimit", runnablePartThreadLimit, ACTIVE_THREAD_COUNT_AUTO, ACTIVE_THREAD_COUNT_UNLIMITED);
+                    "runnablePartThreadLimit", runnablePartThreadLimit, ACTIVE_THREAD_COUNT_AUTO,
+                    ACTIVE_THREAD_COUNT_UNLIMITED);
             if (resolvedActiveThreadCount < 1) {
                 throw new IllegalArgumentException("The runnablePartThreadLimit (" + runnablePartThreadLimit
                         + ") resulted in a resolvedActiveThreadCount (" + resolvedActiveThreadCount

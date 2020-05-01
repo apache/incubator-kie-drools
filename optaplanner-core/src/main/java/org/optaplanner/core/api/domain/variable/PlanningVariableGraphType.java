@@ -33,8 +33,8 @@ public enum PlanningVariableGraphType {
      * <p>
      * When a chained planning entity changes position, then chain correction must happen:
      * <ul>
-     *     <li>divert the chain link at the new position to go through the modified planning entity</li>
-     *     <li>close the missing chain link at the old position</li>
+     * <li>divert the chain link at the new position to go through the modified planning entity</li>
+     * <li>close the missing chain link at the old position</li>
      * </ul>
      * For example: Given {@code A <- B <- C <- D <- X <- Y}, when B moves between X and Y, pointing to X,
      * then Y is also changed to point to B

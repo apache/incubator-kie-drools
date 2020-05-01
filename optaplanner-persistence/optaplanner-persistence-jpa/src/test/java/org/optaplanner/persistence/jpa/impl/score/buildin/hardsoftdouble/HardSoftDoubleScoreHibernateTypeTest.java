@@ -48,7 +48,7 @@ public class HardSoftDoubleScoreHibernateTypeTest extends AbstractScoreHibernate
         }
 
         @Override
-        @Columns(columns = {@Column(name = "initScore"), @Column(name = "hardScore"), @Column(name = "softScore")})
+        @Columns(columns = { @Column(name = "initScore"), @Column(name = "hardScore"), @Column(name = "softScore") })
         public HardSoftDoubleScore getScore() {
             return score;
         }

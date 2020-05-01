@@ -16,6 +16,8 @@
 
 package org.optaplanner.core.impl.score.stream;
 
+import static org.optaplanner.core.api.score.stream.Joiners.lessThan;
+
 import java.util.function.BiPredicate;
 import java.util.function.Function;
 import java.util.function.Predicate;
@@ -31,8 +33,6 @@ import org.optaplanner.core.impl.domain.common.accessor.MemberAccessor;
 import org.optaplanner.core.impl.domain.entity.descriptor.EntityDescriptor;
 import org.optaplanner.core.impl.domain.solution.descriptor.SolutionDescriptor;
 import org.optaplanner.core.impl.score.stream.bi.FilteringBiJoiner;
-
-import static org.optaplanner.core.api.score.stream.Joiners.lessThan;
 
 public interface InnerConstraintFactory<Solution_> extends ConstraintFactory {
 
@@ -63,7 +63,7 @@ public interface InnerConstraintFactory<Solution_> extends ConstraintFactory {
         Function<A, Comparable> planningIdGetter = fact -> (Comparable<?>) planningIdMemberAccessor.executeGetter(fact);
         // Joiner.filtering() must come last, yet Bavet requires that Joiner.lessThan() be last. This is a workaround.
         if (joiner instanceof FilteringBiJoiner) {
-            BiPredicate<A, A> filter = ((FilteringBiJoiner<A, A>)joiner).getFilter();
+            BiPredicate<A, A> filter = ((FilteringBiJoiner<A, A>) joiner).getFilter();
             return from(fromClass)
                     .join(fromClass, lessThan(planningIdGetter))
                     .filter(filter);
@@ -79,6 +79,7 @@ public interface InnerConstraintFactory<Solution_> extends ConstraintFactory {
 
     /**
      * This method is thread-safe.
+     * 
      * @param constraints never null
      * @return never null
      */

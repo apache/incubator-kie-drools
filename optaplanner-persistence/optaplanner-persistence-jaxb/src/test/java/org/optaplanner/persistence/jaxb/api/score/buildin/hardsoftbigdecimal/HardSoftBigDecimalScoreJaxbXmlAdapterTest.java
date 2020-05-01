@@ -17,6 +17,7 @@
 package org.optaplanner.persistence.jaxb.api.score.buildin.hardsoftbigdecimal;
 
 import java.math.BigDecimal;
+
 import javax.xml.bind.annotation.XmlRootElement;
 import javax.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
 

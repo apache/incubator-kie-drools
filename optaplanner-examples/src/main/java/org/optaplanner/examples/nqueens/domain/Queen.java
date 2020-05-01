@@ -16,12 +16,13 @@
 
 package org.optaplanner.examples.nqueens.domain;
 
-import com.thoughtworks.xstream.annotations.XStreamAlias;
 import org.optaplanner.core.api.domain.entity.PlanningEntity;
 import org.optaplanner.core.api.domain.variable.PlanningVariable;
 import org.optaplanner.examples.common.domain.AbstractPersistable;
 import org.optaplanner.examples.nqueens.domain.solution.QueenDifficultyWeightFactory;
 import org.optaplanner.examples.nqueens.domain.solution.RowStrengthWeightFactory;
+
+import com.thoughtworks.xstream.annotations.XStreamAlias;
 
 @PlanningEntity(difficultyWeightFactoryClass = QueenDifficultyWeightFactory.class)
 @XStreamAlias("Queen")
@@ -49,8 +50,7 @@ public class Queen extends AbstractPersistable {
         this.column = column;
     }
 
-    @PlanningVariable(valueRangeProviderRefs = {"rowRange"},
-            strengthWeightFactoryClass = RowStrengthWeightFactory.class)
+    @PlanningVariable(valueRangeProviderRefs = { "rowRange" }, strengthWeightFactoryClass = RowStrengthWeightFactory.class)
     public Row getRow() {
         return row;
     }

@@ -25,7 +25,7 @@ import org.optaplanner.core.impl.score.stream.drools.common.BiTuple;
 import org.optaplanner.core.impl.score.stream.drools.common.DroolsAbstractUniCollectingGroupByAccumulator;
 
 final class DroolsUniToBiGroupByAccumulator<A, ResultContainer, NewA, NewB>
-    extends DroolsAbstractUniCollectingGroupByAccumulator<ResultContainer, A, NewA, BiTuple<NewA, NewB>> {
+        extends DroolsAbstractUniCollectingGroupByAccumulator<ResultContainer, A, NewA, BiTuple<NewA, NewB>> {
 
     private final Function<A, NewA> groupKeyMapping;
     private final Supplier<ResultContainer> supplier;

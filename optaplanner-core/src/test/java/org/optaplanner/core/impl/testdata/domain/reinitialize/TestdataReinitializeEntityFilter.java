@@ -19,7 +19,8 @@ package org.optaplanner.core.impl.testdata.domain.reinitialize;
 import org.optaplanner.core.impl.heuristic.selector.common.decorator.SelectionFilter;
 import org.optaplanner.core.impl.score.director.ScoreDirector;
 
-public class TestdataReinitializeEntityFilter implements SelectionFilter<TestdataReinitializeSolution, TestdataReinitializeEntity> {
+public class TestdataReinitializeEntityFilter
+        implements SelectionFilter<TestdataReinitializeSolution, TestdataReinitializeEntity> {
 
     @Override
     public boolean accept(ScoreDirector<TestdataReinitializeSolution> scoreDirector, TestdataReinitializeEntity entity) {

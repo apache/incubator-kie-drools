@@ -92,10 +92,9 @@ public class InvestmentQuantityTransferMoveIteratorFactory implements MoveIterat
 
         @Override
         public InvestmentQuantityTransferMove next() {
-            long transferMillis
-                    = RandomUtils.nextLong(workingRandom, InvestmentNumericUtil.MAXIMUM_QUANTITY_MILLIS) + 1L;
-            Map.Entry<Long, AssetClassAllocation> lowerEntry
-                    = quantityMillisIncrementToAllocationMap.lowerEntry(transferMillis);
+            long transferMillis = RandomUtils.nextLong(workingRandom, InvestmentNumericUtil.MAXIMUM_QUANTITY_MILLIS) + 1L;
+            Map.Entry<Long, AssetClassAllocation> lowerEntry = quantityMillisIncrementToAllocationMap
+                    .lowerEntry(transferMillis);
             Map.Entry<Long, AssetClassAllocation> ceilingEntry = quantityMillisIncrementToAllocationMap
                     .ceilingEntry(transferMillis);
             transferMillis -= (lowerEntry == null ? 0L : lowerEntry.getKey());

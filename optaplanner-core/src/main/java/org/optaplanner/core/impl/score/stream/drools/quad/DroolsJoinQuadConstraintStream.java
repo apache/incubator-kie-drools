@@ -62,7 +62,7 @@ public final class DroolsJoinQuadConstraintStream<Solution_, A, B, C, D>
 
     @Override
     public String toString() {
-        return "QuadJoin() with " + getChildStreams().size()  + " children";
+        return "QuadJoin() with " + getChildStreams().size() + " children";
     }
 
 }

@@ -28,7 +28,7 @@ public final class TspConstraintProvider implements ConstraintProvider {
 
     @Override
     public Constraint[] defineConstraints(ConstraintFactory constraintFactory) {
-        return new Constraint[]{
+        return new Constraint[] {
                 distanceToPreviousStandstill(constraintFactory),
                 distanceFromLastVisitToDomicile(constraintFactory)
         };

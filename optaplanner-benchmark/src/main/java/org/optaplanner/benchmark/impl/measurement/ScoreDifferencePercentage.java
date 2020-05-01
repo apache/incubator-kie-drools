@@ -46,7 +46,7 @@ public class ScoreDifferencePercentage implements Serializable {
     public static double calculateDifferencePercentage(double base, double value) {
         double difference = value - base;
         if (base < 0.0) {
-            return difference / - base;
+            return difference / -base;
         } else if (base == 0.0) {
             if (difference == 0.0) {
                 return 0.0;

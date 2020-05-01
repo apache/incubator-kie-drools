@@ -21,8 +21,6 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import com.thoughtworks.xstream.annotations.XStreamAlias;
-import com.thoughtworks.xstream.annotations.XStreamImplicit;
 import org.optaplanner.core.config.heuristic.policy.HeuristicConfigPolicy;
 import org.optaplanner.core.config.heuristic.selector.common.SelectionCacheType;
 import org.optaplanner.core.config.heuristic.selector.common.SelectionOrder;
@@ -32,6 +30,9 @@ import org.optaplanner.core.impl.heuristic.selector.common.decorator.FixedSelect
 import org.optaplanner.core.impl.heuristic.selector.common.decorator.SelectionProbabilityWeightFactory;
 import org.optaplanner.core.impl.heuristic.selector.move.MoveSelector;
 import org.optaplanner.core.impl.heuristic.selector.move.composite.UnionMoveSelector;
+
+import com.thoughtworks.xstream.annotations.XStreamAlias;
+import com.thoughtworks.xstream.annotations.XStreamImplicit;
 
 @XStreamAlias("unionMoveSelector")
 public class UnionMoveSelectorConfig extends MoveSelectorConfig<UnionMoveSelectorConfig> {
@@ -60,7 +61,8 @@ public class UnionMoveSelectorConfig extends MoveSelectorConfig<UnionMoveSelecto
         return selectorProbabilityWeightFactoryClass;
     }
 
-    public void setSelectorProbabilityWeightFactoryClass(Class<? extends SelectionProbabilityWeightFactory> selectorProbabilityWeightFactoryClass) {
+    public void setSelectorProbabilityWeightFactoryClass(
+            Class<? extends SelectionProbabilityWeightFactory> selectorProbabilityWeightFactoryClass) {
         this.selectorProbabilityWeightFactoryClass = selectorProbabilityWeightFactoryClass;
     }
 

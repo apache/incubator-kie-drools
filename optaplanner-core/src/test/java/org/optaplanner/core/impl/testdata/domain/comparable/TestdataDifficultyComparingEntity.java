@@ -12,16 +12,16 @@ import org.optaplanner.core.impl.testdata.domain.TestdataValue;
 public class TestdataDifficultyComparingEntity extends TestdataObject {
 
     public static EntityDescriptor<TestdataDifficultyComparingSolution> buildEntityDescriptor() {
-        SolutionDescriptor<TestdataDifficultyComparingSolution> solutionDescriptor =
-                TestdataDifficultyComparingSolution.buildSolutionDescriptor();
+        SolutionDescriptor<TestdataDifficultyComparingSolution> solutionDescriptor = TestdataDifficultyComparingSolution
+                .buildSolutionDescriptor();
         return solutionDescriptor.findEntityDescriptorOrFail(TestdataDifficultyComparingEntity.class);
     }
 
     public static GenuineVariableDescriptor<TestdataDifficultyComparingSolution> buildVariableDescriptorForValue() {
-        SolutionDescriptor<TestdataDifficultyComparingSolution> solutionDescriptor =
-                TestdataDifficultyComparingSolution.buildSolutionDescriptor();
-        EntityDescriptor<TestdataDifficultyComparingSolution> entityDescriptor =
-                solutionDescriptor.findEntityDescriptorOrFail(TestdataDifficultyComparingEntity.class);
+        SolutionDescriptor<TestdataDifficultyComparingSolution> solutionDescriptor = TestdataDifficultyComparingSolution
+                .buildSolutionDescriptor();
+        EntityDescriptor<TestdataDifficultyComparingSolution> entityDescriptor = solutionDescriptor
+                .findEntityDescriptorOrFail(TestdataDifficultyComparingEntity.class);
         return entityDescriptor.getGenuineVariableDescriptor("value");
     }
 
@@ -39,8 +39,7 @@ public class TestdataDifficultyComparingEntity extends TestdataObject {
         this.value = value;
     }
 
-    @PlanningVariable(valueRangeProviderRefs = {"valueRange"},
-            strengthComparatorClass = TestdataCodeComparator.class)
+    @PlanningVariable(valueRangeProviderRefs = { "valueRange" }, strengthComparatorClass = TestdataCodeComparator.class)
     public TestdataValue getValue() {
         return value;
     }

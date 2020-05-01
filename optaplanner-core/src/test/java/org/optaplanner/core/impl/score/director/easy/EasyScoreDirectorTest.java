@@ -15,6 +15,12 @@
  */
 package org.optaplanner.core.impl.score.director.easy;
 
+import static org.assertj.core.api.Assertions.assertThatIllegalStateException;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.fail;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.when;
+
 import java.util.Arrays;
 
 import org.junit.jupiter.api.Test;
@@ -26,18 +32,11 @@ import org.optaplanner.core.impl.testdata.domain.TestdataValue;
 import org.optaplanner.core.impl.testdata.domain.shadow.corrupted.TestdataCorruptedShadowedEntity;
 import org.optaplanner.core.impl.testdata.domain.shadow.corrupted.TestdataCorruptedShadowedSolution;
 
-import static org.assertj.core.api.Assertions.assertThatIllegalStateException;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.fail;
-import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.when;
-
 public class EasyScoreDirectorTest {
 
     @Test
     public void constraintMatchTotalsUnsupported() {
-        EasyScoreDirector<Object> director
-                = new EasyScoreDirector<>(mockEasyScoreDirectorFactory(), false, true, null);
+        EasyScoreDirector<Object> director = new EasyScoreDirector<>(mockEasyScoreDirectorFactory(), false, true, null);
         assertFalse(director.isConstraintMatchEnabled());
         assertThatIllegalStateException()
                 .isThrownBy(director::getConstraintMatchTotals)
@@ -53,12 +52,13 @@ public class EasyScoreDirectorTest {
 
     @Test
     public void shadowVariableCorruption() {
-        EasyScoreDirectorFactory<TestdataCorruptedShadowedSolution> scoreDirectorFactory =
-                new EasyScoreDirectorFactory<>(TestdataCorruptedShadowedSolution.buildSolutionDescriptor(),
-                        (EasyScoreCalculator<TestdataCorruptedShadowedSolution>) (solution_) -> SimpleScore.of(0));
+        EasyScoreDirectorFactory<TestdataCorruptedShadowedSolution> scoreDirectorFactory = new EasyScoreDirectorFactory<>(
+                TestdataCorruptedShadowedSolution.buildSolutionDescriptor(),
+                (EasyScoreCalculator<TestdataCorruptedShadowedSolution>) (solution_) -> SimpleScore.of(0));
         scoreDirectorFactory.setInitializingScoreTrend(
                 InitializingScoreTrend.buildUniformTrend(InitializingScoreTrendLevel.ONLY_DOWN, 1));
-        EasyScoreDirector<TestdataCorruptedShadowedSolution> scoreDirector = scoreDirectorFactory.buildScoreDirector(false, false);
+        EasyScoreDirector<TestdataCorruptedShadowedSolution> scoreDirector = scoreDirectorFactory.buildScoreDirector(false,
+                false);
 
         TestdataCorruptedShadowedSolution solution = new TestdataCorruptedShadowedSolution("s1");
         TestdataValue v1 = new TestdataValue("v1");

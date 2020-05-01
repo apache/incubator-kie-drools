@@ -17,6 +17,7 @@
 package org.optaplanner.persistence.jaxb.api.score.buildin.hardmediumsoftbigdecimal;
 
 import java.math.BigDecimal;
+
 import javax.xml.bind.annotation.XmlRootElement;
 import javax.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
 
@@ -30,10 +31,12 @@ public class HardMediumSoftBigDecimalScoreJaxbXmlAdapterTest extends AbstractSco
     public void serializeAndDeserialize() {
         assertSerializeAndDeserialize(null, new TestHardMediumSoftBigDecimalScoreWrapper(null));
 
-        HardMediumSoftBigDecimalScore score = HardMediumSoftBigDecimalScore.of(new BigDecimal("1200.0021"), new BigDecimal("-3.1415"), new BigDecimal("34.4300"));
+        HardMediumSoftBigDecimalScore score = HardMediumSoftBigDecimalScore.of(new BigDecimal("1200.0021"),
+                new BigDecimal("-3.1415"), new BigDecimal("34.4300"));
         assertSerializeAndDeserialize(score, new TestHardMediumSoftBigDecimalScoreWrapper(score));
 
-        score = HardMediumSoftBigDecimalScore.ofUninitialized(-7, new BigDecimal("1200.0021"), new BigDecimal("-3.1415"), new BigDecimal("34.4300"));
+        score = HardMediumSoftBigDecimalScore.ofUninitialized(-7, new BigDecimal("1200.0021"), new BigDecimal("-3.1415"),
+                new BigDecimal("34.4300"));
         assertSerializeAndDeserialize(score, new TestHardMediumSoftBigDecimalScoreWrapper(score));
     }
 

@@ -16,14 +16,14 @@
 
 package org.optaplanner.core.api.domain.constraintweight;
 
+import static java.lang.annotation.ElementType.*;
+import static java.lang.annotation.RetentionPolicy.*;
+
 import java.lang.annotation.Retention;
 import java.lang.annotation.Target;
 
 import org.optaplanner.core.api.domain.solution.PlanningSolution;
 import org.optaplanner.core.api.domain.solution.drools.ProblemFactProperty;
-
-import static java.lang.annotation.ElementType.*;
-import static java.lang.annotation.RetentionPolicy.*;
 
 /**
  * Specifies that a property (or a field) on a {@link PlanningSolution} class is a {@link ConstraintConfiguration}.
@@ -31,7 +31,7 @@ import static java.lang.annotation.RetentionPolicy.*;
  * <p>
  * The type of this property (or field) must have a {@link ConstraintConfiguration} annotation.
  */
-@Target({METHOD, FIELD})
+@Target({ METHOD, FIELD })
 @Retention(RUNTIME)
 public @interface ConstraintConfigurationProvider {
 

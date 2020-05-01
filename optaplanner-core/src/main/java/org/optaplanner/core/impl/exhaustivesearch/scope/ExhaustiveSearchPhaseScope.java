@@ -75,7 +75,6 @@ public class ExhaustiveSearchPhaseScope<Solution_> extends AbstractPhaseScope<So
         this.lastCompletedStepScope = lastCompletedStepScope;
     }
 
-
     // ************************************************************************
     // Calculated methods
     // ************************************************************************

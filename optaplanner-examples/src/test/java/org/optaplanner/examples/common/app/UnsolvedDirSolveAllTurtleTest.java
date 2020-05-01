@@ -39,7 +39,7 @@ public abstract class UnsolvedDirSolveAllTurtleTest<Solution_> extends SolveAllT
         } else {
             String inputFileExtension = commonApp.createSolutionFileIO().getInputFileExtension();
             List<File> fileList = new ArrayList<>(
-                    FileUtils.listFiles(unsolvedDataDir, new String[]{inputFileExtension}, true));
+                    FileUtils.listFiles(unsolvedDataDir, new String[] { inputFileExtension }, true));
             fileList.sort(new ProblemFileComparator());
             return fileList;
         }

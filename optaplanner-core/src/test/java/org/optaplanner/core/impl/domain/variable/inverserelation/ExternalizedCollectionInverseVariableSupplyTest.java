@@ -16,6 +16,9 @@
 
 package org.optaplanner.core.impl.domain.variable.inverserelation;
 
+import static org.mockito.Mockito.*;
+import static org.optaplanner.core.impl.testdata.util.PlannerAssert.*;
+
 import java.util.Arrays;
 import java.util.Collection;
 
@@ -26,16 +29,14 @@ import org.optaplanner.core.impl.testdata.domain.TestdataEntity;
 import org.optaplanner.core.impl.testdata.domain.TestdataSolution;
 import org.optaplanner.core.impl.testdata.domain.TestdataValue;
 
-import static org.mockito.Mockito.*;
-import static org.optaplanner.core.impl.testdata.util.PlannerAssert.*;
-
 public class ExternalizedCollectionInverseVariableSupplyTest {
 
     @Test
     public void normal() {
         GenuineVariableDescriptor variableDescriptor = TestdataEntity.buildVariableDescriptorForValue();
         ScoreDirector scoreDirector = mock(ScoreDirector.class);
-        ExternalizedCollectionInverseVariableSupply supply = new ExternalizedCollectionInverseVariableSupply(variableDescriptor);
+        ExternalizedCollectionInverseVariableSupply supply = new ExternalizedCollectionInverseVariableSupply(
+                variableDescriptor);
 
         TestdataValue val1 = new TestdataValue("1");
         TestdataValue val2 = new TestdataValue("2");

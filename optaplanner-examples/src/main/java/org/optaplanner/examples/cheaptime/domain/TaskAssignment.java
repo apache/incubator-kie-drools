@@ -16,7 +16,6 @@
 
 package org.optaplanner.examples.cheaptime.domain;
 
-import com.thoughtworks.xstream.annotations.XStreamAlias;
 import org.optaplanner.core.api.domain.entity.PlanningEntity;
 import org.optaplanner.core.api.domain.valuerange.CountableValueRange;
 import org.optaplanner.core.api.domain.valuerange.ValueRangeFactory;
@@ -24,6 +23,8 @@ import org.optaplanner.core.api.domain.valuerange.ValueRangeProvider;
 import org.optaplanner.core.api.domain.variable.PlanningVariable;
 import org.optaplanner.examples.cheaptime.domain.solver.TaskAssignmentDifficultyComparator;
 import org.optaplanner.examples.common.domain.AbstractPersistable;
+
+import com.thoughtworks.xstream.annotations.XStreamAlias;
 
 @PlanningEntity(difficultyComparatorClass = TaskAssignmentDifficultyComparator.class)
 @XStreamAlias("CtTaskAssignment")
@@ -43,7 +44,7 @@ public class TaskAssignment extends AbstractPersistable {
         this.task = task;
     }
 
-    @PlanningVariable(valueRangeProviderRefs = {"machineRange"})
+    @PlanningVariable(valueRangeProviderRefs = { "machineRange" })
     public Machine getMachine() {
         return machine;
     }
@@ -52,7 +53,7 @@ public class TaskAssignment extends AbstractPersistable {
         this.machine = machine;
     }
 
-    @PlanningVariable(valueRangeProviderRefs = {"startPeriodRange"})
+    @PlanningVariable(valueRangeProviderRefs = { "startPeriodRange" })
     public Integer getStartPeriod() {
         return startPeriod;
     }
@@ -67,6 +68,7 @@ public class TaskAssignment extends AbstractPersistable {
 
     /**
      * The startPeriod is included and the endPeriod is excluded.
+     * 
      * @return null if {@link #getStartPeriod()} is null
      */
     public Integer getEndPeriod() {

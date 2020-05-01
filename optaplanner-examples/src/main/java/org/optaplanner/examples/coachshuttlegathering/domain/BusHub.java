@@ -18,9 +18,10 @@ package org.optaplanner.examples.coachshuttlegathering.domain;
 
 import java.util.List;
 
-import com.thoughtworks.xstream.annotations.XStreamAlias;
 import org.optaplanner.examples.coachshuttlegathering.domain.location.RoadLocation;
 import org.optaplanner.examples.common.domain.AbstractPersistable;
+
+import com.thoughtworks.xstream.annotations.XStreamAlias;
 
 @XStreamAlias("CsgBusHub")
 public class BusHub extends AbstractPersistable implements StopOrHub {

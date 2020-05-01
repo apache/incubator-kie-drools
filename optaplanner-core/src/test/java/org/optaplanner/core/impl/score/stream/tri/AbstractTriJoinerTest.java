@@ -16,6 +16,10 @@
 
 package org.optaplanner.core.impl.score.stream.tri;
 
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.SoftAssertions.assertSoftly;
+import static org.optaplanner.core.impl.score.stream.tri.AbstractTriJoiner.merge;
+
 import java.math.BigDecimal;
 import java.math.BigInteger;
 
@@ -23,10 +27,6 @@ import org.junit.jupiter.api.Test;
 import org.optaplanner.core.api.score.stream.Joiners;
 import org.optaplanner.core.api.score.stream.tri.TriJoiner;
 import org.optaplanner.core.impl.score.stream.common.JoinerType;
-
-import static org.assertj.core.api.Assertions.assertThat;
-import static org.assertj.core.api.SoftAssertions.assertSoftly;
-import static org.optaplanner.core.impl.score.stream.tri.AbstractTriJoiner.merge;
 
 public class AbstractTriJoinerTest {
 
@@ -47,10 +47,10 @@ public class AbstractTriJoinerTest {
 
     @Test
     public void merge2Joiners() {
-        TriJoiner<BigDecimal, BigDecimal, BigInteger> joiner1 =
-                Joiners.equal((a, b) -> a.add(b).longValue(), BigInteger::longValue);
-        TriJoiner<BigDecimal, BigDecimal, BigInteger> joiner2 =
-                Joiners.lessThan((a, b) -> a.add(b).longValue(), BigInteger::longValue);
+        TriJoiner<BigDecimal, BigDecimal, BigInteger> joiner1 = Joiners.equal((a, b) -> a.add(b).longValue(),
+                BigInteger::longValue);
+        TriJoiner<BigDecimal, BigDecimal, BigInteger> joiner2 = Joiners.lessThan((a, b) -> a.add(b).longValue(),
+                BigInteger::longValue);
         AbstractTriJoiner<BigDecimal, BigDecimal, BigInteger> mergedJoiner = merge(joiner1, joiner2);
         assertSoftly(softly -> {
             softly.assertThat(mergedJoiner).isInstanceOf(CompositeTriJoiner.class);
@@ -62,13 +62,13 @@ public class AbstractTriJoinerTest {
 
     @Test
     public void merge2Joiners1Composite() {
-        TriJoiner<BigDecimal, BigDecimal, BigInteger> joiner1 =
-                Joiners.equal((a, b) -> a.add(b).longValue(), BigInteger::longValue);
-        TriJoiner<BigDecimal, BigDecimal, BigInteger> joiner2 =
-                Joiners.lessThan((a, b) -> a.add(b).longValue(), BigInteger::longValue);
+        TriJoiner<BigDecimal, BigDecimal, BigInteger> joiner1 = Joiners.equal((a, b) -> a.add(b).longValue(),
+                BigInteger::longValue);
+        TriJoiner<BigDecimal, BigDecimal, BigInteger> joiner2 = Joiners.lessThan((a, b) -> a.add(b).longValue(),
+                BigInteger::longValue);
         AbstractTriJoiner<BigDecimal, BigDecimal, BigInteger> mergedJoiner = merge(joiner1, joiner2);
-        TriJoiner<BigDecimal, BigDecimal, BigInteger> joiner3 =
-                Joiners.greaterThan((a, b) -> a.add(b).longValue(), BigInteger::longValue);
+        TriJoiner<BigDecimal, BigDecimal, BigInteger> joiner3 = Joiners.greaterThan((a, b) -> a.add(b).longValue(),
+                BigInteger::longValue);
         AbstractTriJoiner<BigDecimal, BigDecimal, BigInteger> reMergedJoiner = merge(mergedJoiner, joiner3);
         assertSoftly(softly -> {
             softly.assertThat(reMergedJoiner).isInstanceOf(CompositeTriJoiner.class);

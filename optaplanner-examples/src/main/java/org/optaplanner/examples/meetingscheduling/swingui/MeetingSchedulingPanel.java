@@ -16,6 +16,10 @@
 
 package org.optaplanner.examples.meetingscheduling.swingui;
 
+import static org.apache.commons.lang3.ObjectUtils.*;
+import static org.optaplanner.examples.common.swingui.timetable.TimeTablePanel.HeaderColumnKey.*;
+import static org.optaplanner.examples.common.swingui.timetable.TimeTablePanel.HeaderRowKey.*;
+
 import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.GridLayout;
@@ -23,6 +27,7 @@ import java.awt.event.ActionEvent;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+
 import javax.swing.AbstractAction;
 import javax.swing.BorderFactory;
 import javax.swing.JButton;
@@ -50,10 +55,6 @@ import org.optaplanner.examples.meetingscheduling.domain.Room;
 import org.optaplanner.examples.meetingscheduling.domain.TimeGrain;
 import org.optaplanner.swing.impl.SwingUtils;
 import org.optaplanner.swing.impl.TangoColorFactory;
-
-import static org.apache.commons.lang3.ObjectUtils.*;
-import static org.optaplanner.examples.common.swingui.timetable.TimeTablePanel.HeaderColumnKey.*;
-import static org.optaplanner.examples.common.swingui.timetable.TimeTablePanel.HeaderRowKey.*;
 
 public class MeetingSchedulingPanel extends SolutionPanel<MeetingSchedule> {
 

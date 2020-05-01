@@ -17,6 +17,7 @@
 package org.optaplanner.examples.coachshuttlegathering.swingui;
 
 import java.awt.BorderLayout;
+
 import javax.swing.JTabbedPane;
 
 import org.optaplanner.examples.coachshuttlegathering.domain.CoachShuttleGatheringSolution;

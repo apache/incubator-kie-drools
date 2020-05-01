@@ -58,9 +58,11 @@ public class FromSolutionPropertyValueSelector extends AbstractValueSelector
     @Override
     public SelectionCacheType getCacheType() {
         SelectionCacheType intrinsicCacheType = valueRangeMightContainEntity
-                ? SelectionCacheType.STEP : SelectionCacheType.PHASE;
+                ? SelectionCacheType.STEP
+                : SelectionCacheType.PHASE;
         return (intrinsicCacheType.compareTo(minimumCacheType) > 0)
-                ? intrinsicCacheType : minimumCacheType;
+                ? intrinsicCacheType
+                : minimumCacheType;
     }
 
     // ************************************************************************
@@ -71,8 +73,7 @@ public class FromSolutionPropertyValueSelector extends AbstractValueSelector
     public void phaseStarted(AbstractPhaseScope phaseScope) {
         super.phaseStarted(phaseScope);
         InnerScoreDirector scoreDirector = phaseScope.getScoreDirector();
-        cachedValueRange = (ValueRange<Object>)
-                valueRangeDescriptor.extractValueRange(scoreDirector.getWorkingSolution());
+        cachedValueRange = (ValueRange<Object>) valueRangeDescriptor.extractValueRange(scoreDirector.getWorkingSolution());
         if (valueRangeMightContainEntity) {
             cachedEntityListRevision = scoreDirector.getWorkingEntityListRevision();
             cachedEntityListIsDirty = false;
@@ -88,8 +89,8 @@ public class FromSolutionPropertyValueSelector extends AbstractValueSelector
                 if (minimumCacheType.compareTo(SelectionCacheType.STEP) > 0) {
                     cachedEntityListIsDirty = true;
                 } else {
-                    cachedValueRange = (ValueRange<Object>)
-                            valueRangeDescriptor.extractValueRange(scoreDirector.getWorkingSolution());
+                    cachedValueRange = (ValueRange<Object>) valueRangeDescriptor
+                            .extractValueRange(scoreDirector.getWorkingSolution());
                     cachedEntityListRevision = scoreDirector.getWorkingEntityListRevision();
                 }
             }
@@ -147,7 +148,7 @@ public class FromSolutionPropertyValueSelector extends AbstractValueSelector
 
     @Override
     public Iterator<Object> endingIterator(Object entity) {
-       return endingIterator();
+        return endingIterator();
     }
 
     public Iterator<Object> endingIterator() {

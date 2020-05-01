@@ -38,7 +38,6 @@ public class VehicleRoutingPerformanceTest extends SolverPerformanceTest<Vehicle
                 testData(CVRP_32_CUSTOMERS_XML, "0hard/-750000soft", EnvironmentMode.REPRODUCIBLE),
                 testData(CVRP_32_CUSTOMERS_XML, "0hard/-770000soft", EnvironmentMode.FAST_ASSERT),
                 testData(CVRPTW_100_CUSTOMERS_A_XML, "0hard/-1869903soft", EnvironmentMode.REPRODUCIBLE),
-                testData(CVRPTW_100_CUSTOMERS_A_XML, "0hard/-1877466soft", EnvironmentMode.FAST_ASSERT)
-        );
+                testData(CVRPTW_100_CUSTOMERS_A_XML, "0hard/-1877466soft", EnvironmentMode.FAST_ASSERT));
     }
 }

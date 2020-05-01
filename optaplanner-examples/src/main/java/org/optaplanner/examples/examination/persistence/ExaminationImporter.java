@@ -104,7 +104,7 @@ public class ExaminationImporter extends AbstractTxtSolutionImporter<Examination
             BigInteger possibleSolutionSize = BigInteger.valueOf(possibleForOneExamSize).pow(
                     examination.getExamList().size());
             logger.info("Examination {} has {} students, {} exams, {} periods, {} rooms, {} period constraints"
-                            + " and {} room constraints with a search space of {}.",
+                    + " and {} room constraints with a search space of {}.",
                     getInputId(),
                     examination.getStudentList().size(),
                     examination.getExamList().size(),

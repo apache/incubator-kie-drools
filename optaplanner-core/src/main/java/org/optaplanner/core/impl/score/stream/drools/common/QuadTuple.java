@@ -63,6 +63,6 @@ public final class QuadTuple<A, B, C, D> implements FactTuple {
 
     @Override
     public String toString() {
-        return "QuadTuple(" + a + ", " + b + ", " + c  + ", " + d + ")";
+        return "QuadTuple(" + a + ", " + b + ", " + c + ", " + d + ")";
     }
 }

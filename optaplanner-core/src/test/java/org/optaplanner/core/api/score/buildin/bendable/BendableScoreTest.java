@@ -16,14 +16,14 @@
 
 package org.optaplanner.core.api.score.buildin.bendable;
 
+import static org.assertj.core.api.Assertions.assertThatIllegalArgumentException;
+import static org.junit.Assert.*;
+
 import org.junit.jupiter.api.Test;
 import org.optaplanner.core.api.score.buildin.AbstractScoreTest;
 import org.optaplanner.core.impl.score.buildin.bendable.BendableScoreDefinition;
 import org.optaplanner.core.impl.testdata.util.PlannerAssert;
 import org.optaplanner.core.impl.testdata.util.PlannerTestUtils;
-
-import static org.assertj.core.api.Assertions.assertThatIllegalArgumentException;
-import static org.junit.Assert.*;
 
 public class BendableScoreTest extends AbstractScoreTest {
 
@@ -70,7 +70,8 @@ public class BendableScoreTest extends AbstractScoreTest {
         assertEquals("[-147]hard/[-258/-369]soft", scoreDefinitionHSS.createScore(-147, -258, -369).toShortString());
         assertEquals("[-147/-258/-369]hard", scoreDefinitionHHH.createScore(-147, -258, -369).toShortString());
         assertEquals("[-147/-258/-369]soft", scoreDefinitionSSS.createScore(-147, -258, -369).toShortString());
-        assertEquals("-7init/[-147/-258/-369]soft", scoreDefinitionSSS.createScoreUninitialized(-7, -147, -258, -369).toShortString());
+        assertEquals("-7init/[-147/-258/-369]soft",
+                scoreDefinitionSSS.createScoreUninitialized(-7, -147, -258, -369).toShortString());
     }
 
     @Test
@@ -79,7 +80,8 @@ public class BendableScoreTest extends AbstractScoreTest {
         assertEquals("[-147]hard/[-258/-369]soft", scoreDefinitionHSS.createScore(-147, -258, -369).toString());
         assertEquals("[-147/-258/-369]hard/[]soft", scoreDefinitionHHH.createScore(-147, -258, -369).toString());
         assertEquals("[]hard/[-147/-258/-369]soft", scoreDefinitionSSS.createScore(-147, -258, -369).toString());
-        assertEquals("-7init/[]hard/[-147/-258/-369]soft", scoreDefinitionSSS.createScoreUninitialized(-7, -147, -258, -369).toString());
+        assertEquals("-7init/[]hard/[-147/-258/-369]soft",
+                scoreDefinitionSSS.createScoreUninitialized(-7, -147, -258, -369).toString());
         assertEquals("[]hard/[]soft", new BendableScoreDefinition(0, 0).createScore().toString());
     }
 
@@ -116,13 +118,11 @@ public class BendableScoreTest extends AbstractScoreTest {
                 scoreDefinitionHSS.createScore(-20, -300, -4000),
                 scoreDefinitionHSS.createScoreUninitialized(-1, 20, -300, -4000),
                 scoreDefinitionHSS.createScoreUninitialized(-1, 0, -300, -4000),
-                scoreDefinitionHSS.createScoreUninitialized(-1, -20, -300, -4000)
-        );
+                scoreDefinitionHSS.createScoreUninitialized(-1, -20, -300, -4000));
         assertScoreFeasible(
                 scoreDefinitionHSS.createScore(0, -300, -4000),
                 scoreDefinitionHSS.createScore(20, -300, -4000),
-                scoreDefinitionHSS.createScoreUninitialized(0, 0, -300, -4000)
-                );
+                scoreDefinitionHSS.createScoreUninitialized(0, 0, -300, -4000));
     }
 
     @Test
@@ -192,19 +192,16 @@ public class BendableScoreTest extends AbstractScoreTest {
         PlannerAssert.assertObjectsAreEqual(
                 scoreDefinitionHSS.createScore(-10, -200, -3000),
                 scoreDefinitionHSS.createScore(-10, -200, -3000),
-                scoreDefinitionHSS.createScoreUninitialized(0, -10, -200, -3000)
-        );
+                scoreDefinitionHSS.createScoreUninitialized(0, -10, -200, -3000));
         PlannerAssert.assertObjectsAreEqual(
                 scoreDefinitionHSS.createScoreUninitialized(-7, -10, -200, -3000),
-                scoreDefinitionHSS.createScoreUninitialized(-7, -10, -200, -3000)
-        );
+                scoreDefinitionHSS.createScoreUninitialized(-7, -10, -200, -3000));
         PlannerAssert.assertObjectsAreNotEqual(
                 scoreDefinitionHSS.createScore(-10, -200, -3000),
                 scoreDefinitionHSS.createScore(-30, -200, -3000),
                 scoreDefinitionHSS.createScore(-10, -400, -3000),
                 scoreDefinitionHSS.createScore(-10, -400, -5000),
-                scoreDefinitionHSS.createScoreUninitialized(-7, -10, -200, -3000)
-        );
+                scoreDefinitionHSS.createScoreUninitialized(-7, -10, -200, -3000));
     }
 
     @Test
@@ -230,8 +227,7 @@ public class BendableScoreTest extends AbstractScoreTest {
                 scoreDefinitionHSS.createScore(-1, -300, -20),
                 scoreDefinitionHSS.createScore(-1, -20, -300),
                 scoreDefinitionHSS.createScore(1, Integer.MIN_VALUE, -20),
-                scoreDefinitionHSS.createScore(1, -20, Integer.MIN_VALUE)
-        );
+                scoreDefinitionHSS.createScore(1, -20, Integer.MIN_VALUE));
     }
 
     private BendableScoreDefinition scoreDefinitionHHSSS = new BendableScoreDefinition(2, 3);
@@ -243,14 +239,12 @@ public class BendableScoreTest extends AbstractScoreTest {
                 scoreDefinitionHHSSS.createScore(-1, 0, -300, -4000, -5000),
                 scoreDefinitionHHSSS.createScore(-1, 20, -300, -4000, -5000),
                 scoreDefinitionHHSSS.createScore(0, -20, -300, -4000, -5000),
-                scoreDefinitionHHSSS.createScore(1, -20, -300, -4000, -5000)
-        );
+                scoreDefinitionHHSSS.createScore(1, -20, -300, -4000, -5000));
         assertScoreFeasible(
                 scoreDefinitionHHSSS.createScore(0, 0, -300, -4000, -5000),
                 scoreDefinitionHHSSS.createScore(0, 20, -300, -4000, -5000),
                 scoreDefinitionHHSSS.createScore(1, 0, -300, -4000, -5000),
-                scoreDefinitionHHSSS.createScore(1, 20, -300, -4000, -5000)
-        );
+                scoreDefinitionHHSSS.createScore(1, 20, -300, -4000, -5000));
     }
 
     @Test
@@ -307,8 +301,7 @@ public class BendableScoreTest extends AbstractScoreTest {
     public void equalsAndHashCodeHHSSS() {
         PlannerAssert.assertObjectsAreEqual(
                 scoreDefinitionHHSSS.createScore(-10, -20, -30, 0, 0),
-                scoreDefinitionHHSSS.createScore(-10, -20, -30, 0, 0)
-        );
+                scoreDefinitionHHSSS.createScore(-10, -20, -30, 0, 0));
     }
 
     @Test
@@ -328,8 +321,7 @@ public class BendableScoreTest extends AbstractScoreTest {
                 scoreDefinitionHHSSS.createScore(-1, -300, -20, 0, 0),
                 scoreDefinitionHHSSS.createScore(-1, -20, -300, 0, 0),
                 scoreDefinitionHHSSS.createScore(1, Integer.MIN_VALUE, -20, 0, 0),
-                scoreDefinitionHHSSS.createScore(1, -20, Integer.MIN_VALUE, 0, 0)
-        );
+                scoreDefinitionHHSSS.createScore(1, -20, Integer.MIN_VALUE, 0, 0));
     }
 
     @Test
@@ -341,8 +333,7 @@ public class BendableScoreTest extends AbstractScoreTest {
                     assertEquals(-12, output.getHardScore(0));
                     assertEquals(3400, output.getSoftScore(0));
                     assertEquals(-56, output.getSoftScore(1));
-                }
-        );
+                });
         PlannerTestUtils.serializeAndDeserializeWithAll(
                 scoreDefinitionHSS.createScoreUninitialized(-7, -12, 3400, -56),
                 output -> {
@@ -350,8 +341,7 @@ public class BendableScoreTest extends AbstractScoreTest {
                     assertEquals(-12, output.getHardScore(0));
                     assertEquals(3400, output.getSoftScore(0));
                     assertEquals(-56, output.getSoftScore(1));
-                }
-        );
+                });
     }
 
 }

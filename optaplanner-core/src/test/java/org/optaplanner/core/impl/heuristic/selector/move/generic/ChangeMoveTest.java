@@ -16,6 +16,12 @@
 
 package org.optaplanner.core.impl.heuristic.selector.move.generic;
 
+import static org.junit.Assert.assertEquals;
+import static org.mockito.Mockito.*;
+import static org.optaplanner.core.impl.testdata.util.PlannerAssert.*;
+import static org.optaplanner.core.impl.testdata.util.PlannerAssert.assertSame;
+import static org.optaplanner.core.impl.testdata.util.PlannerTestUtils.*;
+
 import java.util.Arrays;
 
 import org.junit.jupiter.api.Test;
@@ -31,12 +37,6 @@ import org.optaplanner.core.impl.testdata.domain.multivar.TestdataOtherValue;
 import org.optaplanner.core.impl.testdata.domain.valuerange.entityproviding.TestdataEntityProvidingEntity;
 import org.optaplanner.core.impl.testdata.domain.valuerange.entityproviding.TestdataEntityProvidingSolution;
 
-import static org.junit.Assert.assertEquals;
-import static org.mockito.Mockito.*;
-import static org.optaplanner.core.impl.testdata.util.PlannerAssert.*;
-import static org.optaplanner.core.impl.testdata.util.PlannerAssert.assertSame;
-import static org.optaplanner.core.impl.testdata.util.PlannerTestUtils.*;
-
 public class ChangeMoveTest {
 
     @Test
@@ -48,9 +48,11 @@ public class ChangeMoveTest {
         TestdataEntityProvidingEntity a = new TestdataEntityProvidingEntity("a", Arrays.asList(v1, v2, v3), null);
 
         ScoreDirector<TestdataEntityProvidingSolution> scoreDirector = mock(ScoreDirector.class);
-        EntityDescriptor<TestdataEntityProvidingSolution> entityDescriptor = TestdataEntityProvidingEntity.buildEntityDescriptor();
+        EntityDescriptor<TestdataEntityProvidingSolution> entityDescriptor = TestdataEntityProvidingEntity
+                .buildEntityDescriptor();
 
-        ChangeMove<TestdataEntityProvidingSolution> aMove = new ChangeMove<>(a, entityDescriptor.getGenuineVariableDescriptor("value"), v2);
+        ChangeMove<TestdataEntityProvidingSolution> aMove = new ChangeMove<>(a,
+                entityDescriptor.getGenuineVariableDescriptor("value"), v2);
         a.setValue(v1);
         assertEquals(true, aMove.isMoveDoable(scoreDirector));
 
@@ -70,9 +72,11 @@ public class ChangeMoveTest {
         TestdataEntityProvidingEntity a = new TestdataEntityProvidingEntity("a", Arrays.asList(v1, v2, v3), null);
 
         ScoreDirector<TestdataEntityProvidingSolution> scoreDirector = mock(ScoreDirector.class);
-        EntityDescriptor<TestdataEntityProvidingSolution> entityDescriptor = TestdataEntityProvidingEntity.buildEntityDescriptor();
+        EntityDescriptor<TestdataEntityProvidingSolution> entityDescriptor = TestdataEntityProvidingEntity
+                .buildEntityDescriptor();
 
-        ChangeMove<TestdataEntityProvidingSolution> aMove = new ChangeMove<>(a, entityDescriptor.getGenuineVariableDescriptor("value"), v2);
+        ChangeMove<TestdataEntityProvidingSolution> aMove = new ChangeMove<>(a,
+                entityDescriptor.getGenuineVariableDescriptor("value"), v2);
         a.setValue(v1);
         aMove.doMove(scoreDirector);
         assertEquals(v2, a.getValue());
@@ -103,12 +107,12 @@ public class ChangeMoveTest {
         TestdataEntity destinationE3 = new TestdataEntity("e3", destinationV1);
 
         ScoreDirector<TestdataSolution> destinationScoreDirector = mockRebasingScoreDirector(
-                variableDescriptor.getEntityDescriptor().getSolutionDescriptor(), new Object[][]{
-                        {v1, destinationV1},
-                        {v2, destinationV2},
-                        {e1, destinationE1},
-                        {e2, destinationE2},
-                        {e3, destinationE3},
+                variableDescriptor.getEntityDescriptor().getSolutionDescriptor(), new Object[][] {
+                        { v1, destinationV1 },
+                        { v2, destinationV2 },
+                        { e1, destinationE1 },
+                        { e2, destinationE2 },
+                        { e3, destinationE3 },
                 });
 
         assertSameProperties(destinationE1, null,
@@ -169,7 +173,8 @@ public class ChangeMoveTest {
         TestdataMultiVarEntity b = new TestdataMultiVarEntity("b", v1, v3, w1);
         TestdataMultiVarEntity c = new TestdataMultiVarEntity("c", v2, v4, w2);
         EntityDescriptor<TestdataMultiVarSolution> entityDescriptor = TestdataMultiVarEntity.buildEntityDescriptor();
-        GenuineVariableDescriptor<TestdataMultiVarSolution> variableDescriptor = entityDescriptor.getGenuineVariableDescriptor("secondaryValue");
+        GenuineVariableDescriptor<TestdataMultiVarSolution> variableDescriptor = entityDescriptor
+                .getGenuineVariableDescriptor("secondaryValue");
 
         assertEquals("a {null -> null}", new ChangeMove<>(a, variableDescriptor, null).toString());
         assertEquals("a {null -> v1}", new ChangeMove<>(a, variableDescriptor, v1).toString());

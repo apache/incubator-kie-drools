@@ -66,7 +66,7 @@ public final class UniConstraintStreamHelper<A, B>
 
     @Override
     public BiPredicate<A, B> extractPredicate(BiJoiner<A, B> joiner) {
-        return ((FilteringBiJoiner<A, B>)joiner).getFilter();
+        return ((FilteringBiJoiner<A, B>) joiner).getFilter();
     }
 
     @Override

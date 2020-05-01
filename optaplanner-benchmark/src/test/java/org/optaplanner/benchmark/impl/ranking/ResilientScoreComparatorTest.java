@@ -16,11 +16,11 @@
 
 package org.optaplanner.benchmark.impl.ranking;
 
+import static org.optaplanner.core.impl.testdata.util.PlannerAssert.*;
+
 import org.junit.jupiter.api.Test;
 import org.optaplanner.core.api.score.buildin.hardsoft.HardSoftScore;
 import org.optaplanner.core.api.score.buildin.simple.SimpleScore;
-
-import static org.optaplanner.core.impl.testdata.util.PlannerAssert.*;
 
 public class ResilientScoreComparatorTest {
 

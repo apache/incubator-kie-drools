@@ -18,13 +18,15 @@ package org.optaplanner.persistence.jackson.api.score.buildin.simplebigdecimal;
 
 import java.math.BigDecimal;
 
-import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
-import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 import org.junit.jupiter.api.Test;
 import org.optaplanner.core.api.score.buildin.simplebigdecimal.SimpleBigDecimalScore;
 import org.optaplanner.persistence.jackson.api.score.AbstractScoreJacksonJsonSerializerAndDeserializerTest;
 
-public class SimpleBigDecimalScoreJacksonJsonSerializerAndDeserializerTest extends AbstractScoreJacksonJsonSerializerAndDeserializerTest {
+import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
+import com.fasterxml.jackson.databind.annotation.JsonSerialize;
+
+public class SimpleBigDecimalScoreJacksonJsonSerializerAndDeserializerTest
+        extends AbstractScoreJacksonJsonSerializerAndDeserializerTest {
 
     @Test
     public void serializeAndDeserialize() {

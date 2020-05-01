@@ -1,11 +1,5 @@
 package org.optaplanner.examples.rocktour.optional.score;
 
-import org.optaplanner.core.api.score.stream.Constraint;
-import org.optaplanner.core.api.score.stream.ConstraintFactory;
-import org.optaplanner.core.api.score.stream.ConstraintProvider;
-import org.optaplanner.core.api.score.stream.uni.UniConstraintStream;
-import org.optaplanner.examples.rocktour.domain.RockShow;
-
 import static org.optaplanner.examples.rocktour.domain.RockTourConstraintConfiguration.DELAY_SHOW_COST_PER_DAY;
 import static org.optaplanner.examples.rocktour.domain.RockTourConstraintConfiguration.DRIVING_TIME_TO_BUS_ARRIVAL_PER_SECOND;
 import static org.optaplanner.examples.rocktour.domain.RockTourConstraintConfiguration.DRIVING_TIME_TO_SHOW_PER_SECOND;
@@ -13,6 +7,12 @@ import static org.optaplanner.examples.rocktour.domain.RockTourConstraintConfigu
 import static org.optaplanner.examples.rocktour.domain.RockTourConstraintConfiguration.REVENUE_OPPORTUNITY;
 import static org.optaplanner.examples.rocktour.domain.RockTourConstraintConfiguration.SHORTEN_DRIVING_TIME_PER_MILLISECOND_SQUARED;
 import static org.optaplanner.examples.rocktour.domain.RockTourConstraintConfiguration.UNASSIGNED_SHOW;
+
+import org.optaplanner.core.api.score.stream.Constraint;
+import org.optaplanner.core.api.score.stream.ConstraintFactory;
+import org.optaplanner.core.api.score.stream.ConstraintProvider;
+import org.optaplanner.core.api.score.stream.uni.UniConstraintStream;
+import org.optaplanner.examples.rocktour.domain.RockShow;
 
 public class RockTourConstraintProvider implements ConstraintProvider {
 

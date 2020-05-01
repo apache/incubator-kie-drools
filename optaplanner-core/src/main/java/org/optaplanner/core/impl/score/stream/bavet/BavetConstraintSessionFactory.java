@@ -29,7 +29,8 @@ public final class BavetConstraintSessionFactory<Solution_> extends AbstractCons
 
     private final List<BavetConstraint<Solution_>> constraintList;
 
-    public BavetConstraintSessionFactory(SolutionDescriptor<Solution_> solutionDescriptor,  List<BavetConstraint<Solution_>> constraintList) {
+    public BavetConstraintSessionFactory(SolutionDescriptor<Solution_> solutionDescriptor,
+            List<BavetConstraint<Solution_>> constraintList) {
         super(solutionDescriptor);
         this.constraintList = constraintList;
     }

@@ -17,6 +17,7 @@
 package org.optaplanner.persistence.jpa.impl.score.buildin.hardsoftbigdecimal;
 
 import java.math.BigDecimal;
+
 import javax.persistence.Column;
 import javax.persistence.Entity;
 
@@ -52,7 +53,7 @@ public class HardSoftBigDecimalScoreHibernateTypeTest extends AbstractScoreHiber
         @Columns(columns = {
                 @Column(name = "initScore"),
                 @Column(name = "hardScore", precision = 10, scale = 5),
-                @Column(name = "softScore", precision = 10, scale = 5)})
+                @Column(name = "softScore", precision = 10, scale = 5) })
         public HardSoftBigDecimalScore getScore() {
             return score;
         }

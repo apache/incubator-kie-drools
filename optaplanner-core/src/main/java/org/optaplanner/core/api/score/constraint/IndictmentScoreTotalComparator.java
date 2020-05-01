@@ -21,6 +21,7 @@ import java.util.Comparator;
 
 /**
  * Compares by {@link Indictment}s based on {@link Indictment#getScore()}.
+ * 
  * @deprecated in favor {@link IndictmentScoreComparator}
  */
 @Deprecated

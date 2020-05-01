@@ -16,6 +16,10 @@
 
 package org.optaplanner.examples.cheaptime.swingui;
 
+import static java.util.Comparator.comparing;
+import static java.util.Comparator.nullsFirst;
+import static java.util.function.Function.identity;
+
 import java.awt.BasicStroke;
 import java.awt.BorderLayout;
 import java.util.ArrayList;
@@ -53,20 +57,16 @@ import org.optaplanner.examples.cheaptime.domain.TaskRequirement;
 import org.optaplanner.examples.common.swingui.SolutionPanel;
 import org.optaplanner.swing.impl.TangoColorFactory;
 
-import static java.util.Comparator.comparing;
-import static java.util.Comparator.nullsFirst;
-import static java.util.function.Function.identity;
-
 public class CheapTimePanel extends SolutionPanel<CheapTimeSolution> {
 
     public static final String LOGO_PATH = "/org/optaplanner/examples/cheaptime/swingui/cheapTimeLogo.png";
-    private static final Comparator<TaskAssignment> STABLE_COMPARATOR =
-            comparing((TaskAssignment a) -> a.getTask().getStartPeriodRangeFrom())
+    private static final Comparator<TaskAssignment> STABLE_COMPARATOR = comparing(
+            (TaskAssignment a) -> a.getTask().getStartPeriodRangeFrom())
                     .thenComparingInt(a -> a.getTask().getStartPeriodRangeTo())
                     .thenComparingInt(a -> a.getTask().getDuration())
                     .thenComparingLong(TaskAssignment::getId);
-    private static final Comparator<TaskAssignment> GROUP_BY_MACHINE_COMPARATOR =
-            comparing(TaskAssignment::getMachine, nullsFirst(comparing(Machine::getId)))
+    private static final Comparator<TaskAssignment> GROUP_BY_MACHINE_COMPARATOR = comparing(TaskAssignment::getMachine,
+            nullsFirst(comparing(Machine::getId)))
                     .thenComparing(TaskAssignment::getStartPeriod, nullsFirst(comparing(identity())))
                     .thenComparingInt(a -> a.getTask().getDuration())
                     .thenComparingLong(TaskAssignment::getId);
@@ -130,8 +130,8 @@ public class CheapTimePanel extends SolutionPanel<CheapTimeSolution> {
             seriesIndex++;
         }
         List<TaskAssignment> taskAssignmentList = new ArrayList<>(solution.getTaskAssignmentList());
-        Collections.sort(taskAssignmentList, groupByMachineCheckBox.isSelected() ?
-                GROUP_BY_MACHINE_COMPARATOR : STABLE_COMPARATOR);
+        Collections.sort(taskAssignmentList,
+                groupByMachineCheckBox.isSelected() ? GROUP_BY_MACHINE_COMPARATOR : STABLE_COMPARATOR);
         int pixelIndex = 0;
         for (TaskAssignment taskAssignment : taskAssignmentList) {
             Task task = taskAssignment.getTask();
@@ -168,8 +168,7 @@ public class CheapTimePanel extends SolutionPanel<CheapTimeSolution> {
     }
 
     private XYPlot createAvailableCapacityPlot(TangoColorFactory tangoColorFactory, CheapTimeSolution solution) {
-        Map<MachineCapacity, List<Integer>> availableMap
-                = new LinkedHashMap<>(solution.getMachineCapacityList().size());
+        Map<MachineCapacity, List<Integer>> availableMap = new LinkedHashMap<>(solution.getMachineCapacityList().size());
         for (MachineCapacity machineCapacity : solution.getMachineCapacityList()) {
             List<Integer> machineAvailableList = new ArrayList<>(
                     solution.getGlobalPeriodRangeTo());

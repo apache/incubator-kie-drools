@@ -31,7 +31,8 @@ import org.optaplanner.core.impl.score.director.ScoreDirector;
 /**
  * Alternative to {@link CollectionInverseVariableListener}.
  */
-public class ExternalizedCollectionInverseVariableSupply implements StatefulVariableListener<Object>, CollectionInverseVariableSupply {
+public class ExternalizedCollectionInverseVariableSupply
+        implements StatefulVariableListener<Object>, CollectionInverseVariableSupply {
 
     protected final VariableDescriptor sourceVariableDescriptor;
 

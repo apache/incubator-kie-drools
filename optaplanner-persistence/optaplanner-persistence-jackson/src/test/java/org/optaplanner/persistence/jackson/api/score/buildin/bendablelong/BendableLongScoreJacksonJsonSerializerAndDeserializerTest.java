@@ -16,20 +16,22 @@
 
 package org.optaplanner.persistence.jackson.api.score.buildin.bendablelong;
 
-import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
-import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 import org.junit.jupiter.api.Test;
 import org.optaplanner.core.api.score.buildin.bendablelong.BendableLongScore;
 import org.optaplanner.persistence.jackson.api.score.AbstractScoreJacksonJsonSerializerAndDeserializerTest;
 
-public class BendableLongScoreJacksonJsonSerializerAndDeserializerTest extends AbstractScoreJacksonJsonSerializerAndDeserializerTest {
+import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
+import com.fasterxml.jackson.databind.annotation.JsonSerialize;
+
+public class BendableLongScoreJacksonJsonSerializerAndDeserializerTest
+        extends AbstractScoreJacksonJsonSerializerAndDeserializerTest {
 
     @Test
     public void serializeAndDeserialize() {
         assertSerializeAndDeserialize(null, new TestBendableLongScoreWrapper(null));
-        BendableLongScore score = BendableLongScore.of(new long[]{1000L, 200L}, new long[]{34L});
+        BendableLongScore score = BendableLongScore.of(new long[] { 1000L, 200L }, new long[] { 34L });
         assertSerializeAndDeserialize(score, new TestBendableLongScoreWrapper(score));
-        score = BendableLongScore.ofUninitialized(-7, new long[]{1000L, 200L}, new long[]{34L});
+        score = BendableLongScore.ofUninitialized(-7, new long[] { 1000L, 200L }, new long[] { 34L });
         assertSerializeAndDeserialize(score, new TestBendableLongScoreWrapper(score));
     }
 

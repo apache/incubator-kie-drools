@@ -16,6 +16,8 @@
 
 package org.optaplanner.core.config.constructionheuristic.placer;
 
+import static org.mockito.Mockito.*;
+
 import java.util.Arrays;
 
 import org.junit.jupiter.api.Test;
@@ -28,8 +30,6 @@ import org.optaplanner.core.impl.domain.solution.descriptor.SolutionDescriptor;
 import org.optaplanner.core.impl.score.buildin.simple.SimpleScoreDefinition;
 import org.optaplanner.core.impl.score.director.InnerScoreDirectorFactory;
 import org.optaplanner.core.impl.testdata.domain.multivar.TestdataMultiVarSolution;
-
-import static org.mockito.Mockito.*;
 
 public class QueuedEntityPlacerConfigTest {
 

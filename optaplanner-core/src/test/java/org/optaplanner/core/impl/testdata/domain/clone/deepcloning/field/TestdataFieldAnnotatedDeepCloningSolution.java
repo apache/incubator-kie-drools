@@ -33,7 +33,8 @@ import org.optaplanner.core.impl.testdata.domain.TestdataValue;
 public class TestdataFieldAnnotatedDeepCloningSolution extends TestdataObject {
 
     public static SolutionDescriptor buildSolutionDescriptor() {
-        return SolutionDescriptor.buildSolutionDescriptor(TestdataFieldAnnotatedDeepCloningSolution.class, TestdataFieldAnnotatedDeepCloningEntity.class);
+        return SolutionDescriptor.buildSolutionDescriptor(TestdataFieldAnnotatedDeepCloningSolution.class,
+                TestdataFieldAnnotatedDeepCloningEntity.class);
     }
 
     @ValueRangeProvider(id = "valueRange")

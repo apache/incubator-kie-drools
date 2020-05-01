@@ -59,8 +59,8 @@ public class TestdataCorruptedShadowedEntity extends TestdataObject {
         this.value = value;
     }
 
-    @CustomShadowVariable(variableListenerClass = CountUpdatingVariableListener.class,
-            sources = {@PlanningVariableReference(variableName = "value")})
+    @CustomShadowVariable(variableListenerClass = CountUpdatingVariableListener.class, sources = {
+            @PlanningVariableReference(variableName = "value") })
     public Integer getCount() {
         return count;
     }

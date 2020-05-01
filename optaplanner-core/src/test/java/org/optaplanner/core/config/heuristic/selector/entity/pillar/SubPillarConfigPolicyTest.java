@@ -1,12 +1,12 @@
 package org.optaplanner.core.config.heuristic.selector.entity.pillar;
 
-import java.util.Comparator;
-
-import org.junit.jupiter.api.Test;
-
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.assertj.core.api.SoftAssertions.assertSoftly;
 import static org.mockito.Mockito.mock;
+
+import java.util.Comparator;
+
+import org.junit.jupiter.api.Test;
 
 public class SubPillarConfigPolicyTest {
 

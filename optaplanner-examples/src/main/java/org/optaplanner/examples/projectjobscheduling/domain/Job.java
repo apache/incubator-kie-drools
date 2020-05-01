@@ -18,8 +18,9 @@ package org.optaplanner.examples.projectjobscheduling.domain;
 
 import java.util.List;
 
-import com.thoughtworks.xstream.annotations.XStreamAlias;
 import org.optaplanner.examples.common.domain.AbstractPersistable;
+
+import com.thoughtworks.xstream.annotations.XStreamAlias;
 
 @XStreamAlias("PjsJob")
 public class Job extends AbstractPersistable {

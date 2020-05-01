@@ -24,6 +24,7 @@ import org.optaplanner.core.impl.heuristic.selector.ListIterableSelector;
 
 /**
  * Selects instances of 1 {@link PlanningEntity} annotated class.
+ * 
  * @see AbstractEntitySelector
  * @see FromSolutionEntitySelector
  */
@@ -39,6 +40,7 @@ public interface EntitySelector extends ListIterableSelector<Object> {
      * This returns an ending {@link Iterator}, that tries to match {@link #iterator()} as much as possible,
      * but returns each distinct element only once and returns every element that might possibly be selected
      * and therefore it might not respect the configuration of this {@link EntitySelector} entirely.
+     * 
      * @return never null
      * @see #iterator()
      */

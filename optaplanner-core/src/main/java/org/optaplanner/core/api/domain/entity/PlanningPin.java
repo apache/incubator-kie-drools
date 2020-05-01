@@ -16,12 +16,12 @@
 
 package org.optaplanner.core.api.domain.entity;
 
-import java.lang.annotation.Retention;
-import java.lang.annotation.Target;
-
 import static java.lang.annotation.ElementType.FIELD;
 import static java.lang.annotation.ElementType.METHOD;
 import static java.lang.annotation.RetentionPolicy.RUNTIME;
+
+import java.lang.annotation.Retention;
+import java.lang.annotation.Target;
 
 /**
  * Specifies that a boolean property (or field) of a {@link PlanningEntity} determines if the planning entity is immovable.
@@ -38,7 +38,7 @@ import static java.lang.annotation.RetentionPolicy.RUNTIME;
  * This is syntactic sugar for {@link PlanningEntity#movableEntitySelectionFilter()},
  * which is a more flexible and verbose way to make a planning entity immovable.
  */
-@Target({METHOD, FIELD})
+@Target({ METHOD, FIELD })
 @Retention(RUNTIME)
 public @interface PlanningPin {
 

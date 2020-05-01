@@ -16,14 +16,17 @@
 
 package org.optaplanner.persistence.jackson.api.score;
 
-import com.fasterxml.jackson.databind.JsonDeserializer;
 import org.optaplanner.core.api.score.Score;
+
+import com.fasterxml.jackson.databind.JsonDeserializer;
 
 /**
  * Jackson binding support for a {@link Score} type.
  * <p>
- * For example: use {@code @JsonSerialize(using = HardSoftScoreScoreJacksonJsonSerializer.class) @JsonDeserialize(using = HardSoftScoreJacksonJsonDeserializer.class)}
+ * For example: use
+ * {@code @JsonSerialize(using = HardSoftScoreScoreJacksonJsonSerializer.class) @JsonDeserialize(using = HardSoftScoreJacksonJsonDeserializer.class)}
  * on a {@code HardSoftScore score} field and it will marshalled to JSON as {@code "score":"-999hard/-999soft"}.
+ * 
  * @see Score
  * @param <Score_> the actual score type
  */

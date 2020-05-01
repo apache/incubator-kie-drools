@@ -24,6 +24,7 @@ import org.optaplanner.core.impl.localsearch.scope.LocalSearchStepScope;
 
 /**
  * Collects the moves and picks the next step from those for the {@link LocalSearchDecider}.
+ * 
  * @see AbstractLocalSearchForager
  */
 public interface LocalSearchForager extends LocalSearchPhaseLifecycleListener {

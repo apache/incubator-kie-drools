@@ -67,8 +67,8 @@ public class ArrivalTimeUpdatingVariableListener implements VariableListener<Cus
         Standstill previousStandstill = sourceCustomer.getPreviousStandstill();
         Long departureTime = previousStandstill == null ? null
                 : (previousStandstill instanceof TimeWindowedCustomer)
-                ? ((TimeWindowedCustomer) previousStandstill).getDepartureTime()
-                : ((TimeWindowedDepot) ((Vehicle) previousStandstill).getDepot()).getReadyTime();
+                        ? ((TimeWindowedCustomer) previousStandstill).getDepartureTime()
+                        : ((TimeWindowedDepot) ((Vehicle) previousStandstill).getDepot()).getReadyTime();
         TimeWindowedCustomer shadowCustomer = sourceCustomer;
         Long arrivalTime = calculateArrivalTime(shadowCustomer, departureTime);
         while (shadowCustomer != null && !Objects.equals(shadowCustomer.getArrivalTime(), arrivalTime)) {

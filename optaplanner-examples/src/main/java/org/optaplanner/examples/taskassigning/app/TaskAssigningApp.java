@@ -24,8 +24,7 @@ import org.optaplanner.persistence.xstream.impl.domain.solution.XStreamSolutionF
 
 public class TaskAssigningApp extends CommonApp<TaskAssigningSolution> {
 
-    public static final String SOLVER_CONFIG
-            = "org/optaplanner/examples/taskassigning/solver/taskAssigningSolverConfig.xml";
+    public static final String SOLVER_CONFIG = "org/optaplanner/examples/taskassigning/solver/taskAssigningSolverConfig.xml";
 
     public static final String DATA_DIR_NAME = "taskassigning";
 
@@ -37,9 +36,9 @@ public class TaskAssigningApp extends CommonApp<TaskAssigningSolution> {
     public TaskAssigningApp() {
         super("Task assigning",
                 "Assign tasks to employees in a sequence.\n\n"
-                + "Match skills and affinity.\n"
-                + "Prioritize critical tasks.\n"
-                + "Minimize the makespan.",
+                        + "Match skills and affinity.\n"
+                        + "Prioritize critical tasks.\n"
+                        + "Minimize the makespan.",
                 SOLVER_CONFIG, DATA_DIR_NAME,
                 TaskAssigningPanel.LOGO_PATH);
     }

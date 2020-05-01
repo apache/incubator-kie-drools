@@ -16,13 +16,13 @@
 
 package org.optaplanner.core.api.score.constraint;
 
+import static java.util.Arrays.*;
+import static org.junit.Assert.*;
+
 import org.junit.jupiter.api.Test;
 import org.optaplanner.core.api.score.buildin.simple.SimpleScore;
 import org.optaplanner.core.impl.testdata.domain.TestdataEntity;
 import org.optaplanner.core.impl.testdata.util.PlannerAssert;
-
-import static java.util.Arrays.*;
-import static org.junit.Assert.*;
 
 public class IndictmentTest {
 
@@ -61,14 +61,12 @@ public class IndictmentTest {
         PlannerAssert.assertObjectsAreEqual(
                 new Indictment("e1", SimpleScore.ZERO),
                 new Indictment("e1", SimpleScore.ZERO),
-                new Indictment("e1", SimpleScore.of(-7))
-        );
+                new Indictment("e1", SimpleScore.of(-7)));
         PlannerAssert.assertObjectsAreNotEqual(
                 new Indictment("a", SimpleScore.ZERO),
                 new Indictment("aa", SimpleScore.ZERO),
                 new Indictment("b", SimpleScore.ZERO),
-                new Indictment("c", SimpleScore.ZERO)
-        );
+                new Indictment("c", SimpleScore.ZERO));
     }
 
     @Test
@@ -79,8 +77,7 @@ public class IndictmentTest {
                 new Indictment("ab", SimpleScore.ZERO),
                 new Indictment("b", SimpleScore.ZERO),
                 new Indictment("c", SimpleScore.ZERO),
-                new Indictment("d", SimpleScore.ZERO)
-        );
+                new Indictment("d", SimpleScore.ZERO));
     }
 
 }

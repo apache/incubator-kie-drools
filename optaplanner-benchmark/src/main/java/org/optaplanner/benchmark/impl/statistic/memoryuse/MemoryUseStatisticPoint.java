@@ -38,7 +38,8 @@ public class MemoryUseStatisticPoint extends StatisticPoint {
 
     @Override
     public String toCsvLine() {
-        return buildCsvLineWithLongs(timeMillisSpent, memoryUseMeasurement.getUsedMemory(), memoryUseMeasurement.getMaxMemory());
+        return buildCsvLineWithLongs(timeMillisSpent, memoryUseMeasurement.getUsedMemory(),
+                memoryUseMeasurement.getMaxMemory());
     }
 
 }

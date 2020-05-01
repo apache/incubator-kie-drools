@@ -16,11 +16,11 @@
 
 package org.optaplanner.core.impl.domain.variable.listener.support;
 
+import static org.junit.Assert.*;
+
 import java.util.Arrays;
 
 import org.junit.jupiter.api.Test;
-
-import static org.junit.Assert.*;
 
 public class SmallScalingOrderedSetTest {
 

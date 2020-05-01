@@ -16,15 +16,15 @@
 
 package org.optaplanner.core.api.score.buildin.simplebigdecimal;
 
+import static org.assertj.core.api.Assertions.assertThatIllegalArgumentException;
+import static org.junit.Assert.*;
+
 import java.math.BigDecimal;
 
 import org.junit.jupiter.api.Test;
 import org.optaplanner.core.api.score.buildin.AbstractScoreTest;
 import org.optaplanner.core.impl.testdata.util.PlannerAssert;
 import org.optaplanner.core.impl.testdata.util.PlannerTestUtils;
-
-import static org.assertj.core.api.Assertions.assertThatIllegalArgumentException;
-import static org.junit.Assert.*;
 
 public class SimpleBigDecimalScoreTest extends AbstractScoreTest {
 
@@ -136,17 +136,14 @@ public class SimpleBigDecimalScoreTest extends AbstractScoreTest {
                 SimpleBigDecimalScore.of(new BigDecimal("-10.0")),
                 SimpleBigDecimalScore.of(new BigDecimal("-10.0")),
                 SimpleBigDecimalScore.of(new BigDecimal("-10.000")),
-                SimpleBigDecimalScore.ofUninitialized(0, new BigDecimal("-10.0"))
-        );
+                SimpleBigDecimalScore.ofUninitialized(0, new BigDecimal("-10.0")));
         PlannerAssert.assertObjectsAreEqual(
                 SimpleBigDecimalScore.ofUninitialized(-7, new BigDecimal("-10.0")),
-                SimpleBigDecimalScore.ofUninitialized(-7, new BigDecimal("-10.0"))
-        );
+                SimpleBigDecimalScore.ofUninitialized(-7, new BigDecimal("-10.0")));
         PlannerAssert.assertObjectsAreNotEqual(
                 SimpleBigDecimalScore.of(new BigDecimal("-10.0")),
                 SimpleBigDecimalScore.of(new BigDecimal("-30.0")),
-                SimpleBigDecimalScore.ofUninitialized(-7, new BigDecimal("-10.0"))
-        );
+                SimpleBigDecimalScore.ofUninitialized(-7, new BigDecimal("-10.0")));
     }
 
     @Test
@@ -164,8 +161,7 @@ public class SimpleBigDecimalScoreTest extends AbstractScoreTest {
                 SimpleBigDecimalScore.of(new BigDecimal("-20")),
                 SimpleBigDecimalScore.of(new BigDecimal("-1")),
                 SimpleBigDecimalScore.of(new BigDecimal("0")),
-                SimpleBigDecimalScore.of(new BigDecimal("1"))
-        );
+                SimpleBigDecimalScore.of(new BigDecimal("1")));
     }
 
     @Test
@@ -175,15 +171,13 @@ public class SimpleBigDecimalScoreTest extends AbstractScoreTest {
                 output -> {
                     assertEquals(0, output.getInitScore());
                     assertEquals(new BigDecimal("123.4"), output.getScore());
-                }
-        );
+                });
         PlannerTestUtils.serializeAndDeserializeWithAll(
                 SimpleBigDecimalScore.ofUninitialized(-7, new BigDecimal("123.4")),
                 output -> {
                     assertEquals(-7, output.getInitScore());
                     assertEquals(new BigDecimal("123.4"), output.getScore());
-                }
-        );
+                });
     }
 
 }

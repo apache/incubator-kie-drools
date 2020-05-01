@@ -19,8 +19,8 @@ package org.optaplanner.core.impl.solver.termination;
 import java.time.Clock;
 
 import org.optaplanner.core.impl.phase.scope.AbstractPhaseScope;
-import org.optaplanner.core.impl.solver.thread.ChildThreadType;
 import org.optaplanner.core.impl.solver.scope.DefaultSolverScope;
+import org.optaplanner.core.impl.solver.thread.ChildThreadType;
 
 public class UnimprovedTimeMillisSpentTermination extends AbstractTermination {
 
@@ -36,7 +36,7 @@ public class UnimprovedTimeMillisSpentTermination extends AbstractTermination {
         this.unimprovedTimeMillisSpentLimit = unimprovedTimeMillisSpentLimit;
         if (unimprovedTimeMillisSpentLimit < 0L) {
             throw new IllegalArgumentException("The unimprovedTimeMillisSpentLimit (" + unimprovedTimeMillisSpentLimit
-                                                       + ") cannot be negative.");
+                    + ") cannot be negative.");
         }
         this.clock = clock;
     }

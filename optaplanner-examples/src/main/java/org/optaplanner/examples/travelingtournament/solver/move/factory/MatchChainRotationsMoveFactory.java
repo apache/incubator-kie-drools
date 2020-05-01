@@ -133,7 +133,8 @@ public class MatchChainRotationsMoveFactory implements MoveListFactory<Traveling
             for (ListIterator<Team> firstTeamIt = teamList.listIterator(); firstTeamIt.hasNext();) {
                 Team firstTeam = firstTeamIt.next();
                 Map<Day, Match> firstTeamDayMap = teamDayMap.get(firstTeam);
-                for (ListIterator<Team> secondTeamIt = teamList.listIterator(firstTeamIt.nextIndex()); secondTeamIt.hasNext();) {
+                for (ListIterator<Team> secondTeamIt = teamList.listIterator(firstTeamIt.nextIndex()); secondTeamIt
+                        .hasNext();) {
                     Team secondTeam = secondTeamIt.next();
                     List<Match> clonedFirstTeamMatchList = new ArrayList<>(firstTeamDayMap.values());
                     while (!clonedFirstTeamMatchList.isEmpty()) {
@@ -155,8 +156,8 @@ public class MatchChainRotationsMoveFactory implements MoveListFactory<Traveling
                         Team teamToFind = getOtherTeam(secondStartMatch, secondTeam);
 
                         while (!teamToFind.equals(firstStartTeam)) {
-//                            boolean shortcut = visitedTeamMap.containsKey(teamToFind);
-//                            if (shortcut) {
+                            //                            boolean shortcut = visitedTeamMap.containsKey(teamToFind);
+                            //                            if (shortcut) {
                             Match firstRepairMatch = homeTeamAwayTeamMap
                                     .get(firstTeamIsHomeTeam ? firstTeam : teamToFind)
                                     .get(firstTeamIsHomeTeam ? teamToFind : firstTeam);
@@ -180,10 +181,10 @@ public class MatchChainRotationsMoveFactory implements MoveListFactory<Traveling
                                     addTeamRotateMove(moveList, firstShortcutRotateList, secondShortcutRotateList);
                                 }
                                 firstTeamIsHomeTeam = !firstTeamIsHomeTeam;
-//                            Team firstRepairHomeTeam = (firstTeamIsHomeTeam ^ shortcut) ? firstTeam : teamToFind;
-//                            Team firstRepairAwayTeam = (firstTeamIsHomeTeam ^ shortcut) ? teamToFind : firstTeam;
-//                            Match firstRepairMatch = homeTeamAwayTeamMap
-//                                    .get(firstRepairHomeTeam).get(firstRepairAwayTeam);
+                                //                            Team firstRepairHomeTeam = (firstTeamIsHomeTeam ^ shortcut) ? firstTeam : teamToFind;
+                                //                            Team firstRepairAwayTeam = (firstTeamIsHomeTeam ^ shortcut) ? teamToFind : firstTeam;
+                                //                            Match firstRepairMatch = homeTeamAwayTeamMap
+                                //                                    .get(firstRepairHomeTeam).get(firstRepairAwayTeam);
                                 firstRepairMatch = homeTeamAwayTeamMap
                                         .get(firstTeamIsHomeTeam ? firstTeam : teamToFind)
                                         .get(firstTeamIsHomeTeam ? teamToFind : firstTeam);

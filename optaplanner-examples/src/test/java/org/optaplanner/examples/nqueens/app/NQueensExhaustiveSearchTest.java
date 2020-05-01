@@ -16,13 +16,13 @@
 
 package org.optaplanner.examples.nqueens.app;
 
+import static org.junit.Assert.assertEquals;
+
 import java.util.stream.Stream;
 
 import org.optaplanner.examples.common.app.AbstractExhaustiveSearchTest;
 import org.optaplanner.examples.common.app.CommonApp;
 import org.optaplanner.examples.nqueens.domain.NQueens;
-
-import static org.junit.Assert.assertEquals;
 
 public class NQueensExhaustiveSearchTest extends AbstractExhaustiveSearchTest<NQueens> {
 

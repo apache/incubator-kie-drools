@@ -16,16 +16,16 @@
 
 package org.optaplanner.core.impl.constructionheuristic.placer.entity;
 
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertTrue;
+import static org.optaplanner.core.impl.testdata.util.PlannerAssert.*;
+
 import java.util.Iterator;
 
 import org.optaplanner.core.impl.constructionheuristic.placer.Placement;
 import org.optaplanner.core.impl.heuristic.move.Move;
 import org.optaplanner.core.impl.heuristic.selector.move.generic.ChangeMove;
-
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertTrue;
-import static org.optaplanner.core.impl.testdata.util.PlannerAssert.*;
 
 public abstract class AbstractEntityPlacerTest {
 

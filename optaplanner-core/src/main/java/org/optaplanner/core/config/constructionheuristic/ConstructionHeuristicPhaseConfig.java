@@ -16,12 +16,12 @@
 
 package org.optaplanner.core.config.constructionheuristic;
 
+import static org.apache.commons.lang3.ObjectUtils.defaultIfNull;
+
 import java.util.Collections;
 import java.util.List;
 import java.util.concurrent.ThreadFactory;
 
-import com.thoughtworks.xstream.annotations.XStreamAlias;
-import com.thoughtworks.xstream.annotations.XStreamImplicit;
 import org.optaplanner.core.config.constructionheuristic.decider.forager.ConstructionHeuristicForagerConfig;
 import org.optaplanner.core.config.constructionheuristic.placer.EntityPlacerConfig;
 import org.optaplanner.core.config.constructionheuristic.placer.PooledEntityPlacerConfig;
@@ -46,7 +46,8 @@ import org.optaplanner.core.impl.solver.recaller.BestSolutionRecaller;
 import org.optaplanner.core.impl.solver.termination.Termination;
 import org.optaplanner.core.impl.solver.thread.ChildThreadType;
 
-import static org.apache.commons.lang3.ObjectUtils.defaultIfNull;
+import com.thoughtworks.xstream.annotations.XStreamAlias;
+import com.thoughtworks.xstream.annotations.XStreamImplicit;
 
 @XStreamAlias("constructionHeuristic")
 public class ConstructionHeuristicPhaseConfig extends PhaseConfig<ConstructionHeuristicPhaseConfig> {
@@ -159,7 +160,6 @@ public class ConstructionHeuristicPhaseConfig extends PhaseConfig<ConstructionHe
     // Builder methods
     // ************************************************************************
 
-
     @Override
     public ConstructionHeuristicPhase buildPhase(int phaseIndex, HeuristicConfigPolicy solverConfigPolicy,
             BestSolutionRecaller bestSolutionRecaller, Termination solverTermination) {
@@ -212,7 +212,8 @@ public class ConstructionHeuristicPhaseConfig extends PhaseConfig<ConstructionHe
 
     private ConstructionHeuristicDecider buildDecider(HeuristicConfigPolicy configPolicy, Termination termination) {
         ConstructionHeuristicForagerConfig foragerConfig_ = foragerConfig == null
-                ? new ConstructionHeuristicForagerConfig() : foragerConfig;
+                ? new ConstructionHeuristicForagerConfig()
+                : foragerConfig;
         ConstructionHeuristicForager forager = foragerConfig_.buildForager(configPolicy);
         EnvironmentMode environmentMode = configPolicy.getEnvironmentMode();
         ConstructionHeuristicDecider decider;
@@ -291,7 +292,8 @@ public class ConstructionHeuristicPhaseConfig extends PhaseConfig<ConstructionHe
                 }
                 return new PooledEntityPlacerConfig();
             default:
-                throw new IllegalStateException("The constructionHeuristicType (" + constructionHeuristicType + ") is not implemented.");
+                throw new IllegalStateException(
+                        "The constructionHeuristicType (" + constructionHeuristicType + ") is not implemented.");
         }
     }
 

@@ -24,7 +24,6 @@ import java.util.Map;
 import java.util.NavigableMap;
 import java.util.TreeMap;
 
-import com.google.common.collect.Iterators;
 import org.optaplanner.core.impl.heuristic.move.Move;
 import org.optaplanner.core.impl.heuristic.selector.common.decorator.SelectionProbabilityWeightFactory;
 import org.optaplanner.core.impl.heuristic.selector.common.iterator.SelectionIterator;
@@ -33,12 +32,15 @@ import org.optaplanner.core.impl.phase.scope.AbstractStepScope;
 import org.optaplanner.core.impl.score.director.ScoreDirector;
 import org.optaplanner.core.impl.solver.random.RandomUtils;
 
+import com.google.common.collect.Iterators;
+
 /**
  * A {@link CompositeMoveSelector} that unions 2 or more {@link MoveSelector}s.
  * <p>
  * For example: a union of {A, B, C} and {X, Y} will result in {A, B, C, X, Y}.
  * <p>
  * Warning: there is no duplicated {@link Move} check, so union of {A, B, C} and {B, D} will result in {A, B, C, B, D}.
+ * 
  * @see CompositeMoveSelector
  */
 public class UnionMoveSelector extends CompositeMoveSelector {
@@ -66,7 +68,7 @@ public class UnionMoveSelector extends CompositeMoveSelector {
             if (selectorProbabilityWeightFactory == null) {
                 throw new IllegalArgumentException("The selector (" + this
                         + ") with randomSelection (" + randomSelection
-                        + ") requires a selectorProbabilityWeightFactory ("  + selectorProbabilityWeightFactory
+                        + ") requires a selectorProbabilityWeightFactory (" + selectorProbabilityWeightFactory
                         + ").");
             }
         }
@@ -150,7 +152,7 @@ public class UnionMoveSelector extends CompositeMoveSelector {
                 if (probabilityItem.probabilityWeight < 0.0) {
                     throw new IllegalStateException(
                             "The selectorProbabilityWeightFactory (" + selectorProbabilityWeightFactory
-                            + ") returned a negative probabilityWeight (" + probabilityItem.probabilityWeight + ").");
+                                    + ") returned a negative probabilityWeight (" + probabilityItem.probabilityWeight + ").");
                 }
                 probabilityItemMap.put(moveIterator, probabilityItem);
             }

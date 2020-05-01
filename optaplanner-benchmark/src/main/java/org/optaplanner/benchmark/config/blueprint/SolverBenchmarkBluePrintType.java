@@ -103,13 +103,15 @@ public enum SolverBenchmarkBluePrintType {
             boolean localSearchEnabled, LocalSearchType localSearchType) {
         SolverBenchmarkConfig solverBenchmarkConfig = new SolverBenchmarkConfig();
         String constructionHeuristicName = constructionHeuristicType == null
-                ? "Construction Heuristic" : constructionHeuristicType.name();
+                ? "Construction Heuristic"
+                : constructionHeuristicType.name();
         String name;
         if (!localSearchEnabled) {
             name = constructionHeuristicName;
         } else {
             String localSearchName = localSearchType == null
-                    ? "Local Search" : localSearchType.name();
+                    ? "Local Search"
+                    : localSearchType.name();
             name = constructionHeuristicType == null ? localSearchName
                     : constructionHeuristicName + " - " + localSearchName;
         }

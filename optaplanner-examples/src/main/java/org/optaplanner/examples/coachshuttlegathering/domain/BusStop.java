@@ -18,7 +18,6 @@ package org.optaplanner.examples.coachshuttlegathering.domain;
 
 import java.util.List;
 
-import com.thoughtworks.xstream.annotations.XStreamAlias;
 import org.optaplanner.core.api.domain.entity.PlanningEntity;
 import org.optaplanner.core.api.domain.variable.AnchorShadowVariable;
 import org.optaplanner.core.api.domain.variable.CustomShadowVariable;
@@ -29,6 +28,8 @@ import org.optaplanner.examples.coachshuttlegathering.domain.location.RoadLocati
 import org.optaplanner.examples.coachshuttlegathering.domain.solver.DepotAngleBusStopDifficultyWeightFactory;
 import org.optaplanner.examples.coachshuttlegathering.domain.solver.TransportTimeToHubUpdatingVariableListener;
 import org.optaplanner.examples.common.domain.AbstractPersistable;
+
+import com.thoughtworks.xstream.annotations.XStreamAlias;
 
 @PlanningEntity(difficultyWeightFactoryClass = DepotAngleBusStopDifficultyWeightFactory.class)
 @XStreamAlias("CsgBusStop")
@@ -82,8 +83,8 @@ public class BusStop extends AbstractPersistable implements BusOrStop, StopOrHub
         this.transportTimeLimit = transportTimeLimit;
     }
 
-    @PlanningVariable(valueRangeProviderRefs = {"coachRange", "shuttleRange", "stopRange"},
-            graphType = PlanningVariableGraphType.CHAINED)
+    @PlanningVariable(valueRangeProviderRefs = { "coachRange", "shuttleRange",
+            "stopRange" }, graphType = PlanningVariableGraphType.CHAINED)
     public BusOrStop getPreviousBusOrStop() {
         return previousBusOrStop;
     }
@@ -122,10 +123,10 @@ public class BusStop extends AbstractPersistable implements BusOrStop, StopOrHub
         this.transferShuttleList = transferShuttleList;
     }
 
-    @CustomShadowVariable(variableListenerClass = TransportTimeToHubUpdatingVariableListener.class,
-            sources = {@PlanningVariableReference(variableName = "nextStop"),
-                    @PlanningVariableReference(variableName = "bus"),
-                    @PlanningVariableReference(entityClass = Shuttle.class, variableName = "destination")})
+    @CustomShadowVariable(variableListenerClass = TransportTimeToHubUpdatingVariableListener.class, sources = {
+            @PlanningVariableReference(variableName = "nextStop"),
+            @PlanningVariableReference(variableName = "bus"),
+            @PlanningVariableReference(entityClass = Shuttle.class, variableName = "destination") })
     @Override
     public Integer getTransportTimeToHub() {
         return transportTimeToHub;

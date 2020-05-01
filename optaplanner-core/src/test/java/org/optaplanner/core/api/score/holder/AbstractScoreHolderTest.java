@@ -16,6 +16,9 @@
 
 package org.optaplanner.core.api.score.holder;
 
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.when;
+
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.List;
@@ -27,9 +30,6 @@ import org.drools.core.common.AgendaItemImpl;
 import org.kie.api.definition.rule.Rule;
 import org.kie.api.runtime.rule.RuleContext;
 import org.optaplanner.core.api.score.constraint.ConstraintMatchTotal;
-
-import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.when;
 
 public abstract class AbstractScoreHolderTest {
 
@@ -47,7 +47,7 @@ public abstract class AbstractScoreHolderTest {
 
     protected RuleContext mockRuleContext(Rule rule, Object... justifications) {
         if (justifications.length == 0) {
-            justifications = new Object[]{DEFAULT_JUSTIFICATION};
+            justifications = new Object[] { DEFAULT_JUSTIFICATION };
         }
         List<Object> justificationList = Arrays.asList(justifications);
         RuleContext kcontext = mock(RuleContext.class);

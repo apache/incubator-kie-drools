@@ -15,6 +15,9 @@
  */
 package org.optaplanner.core.impl.domain.lookup;
 
+import static org.assertj.core.api.Assertions.assertThatNullPointerException;
+import static org.junit.Assert.assertNull;
+
 import java.util.Arrays;
 import java.util.Collections;
 
@@ -23,9 +26,6 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.optaplanner.core.api.domain.lookup.LookUpStrategyType;
 import org.optaplanner.core.impl.testdata.domain.clone.lookup.TestdataObjectIntegerId;
-
-import static org.assertj.core.api.Assertions.assertThatNullPointerException;
-import static org.junit.Assert.assertNull;
 
 public class LookUpManagerTest {
 

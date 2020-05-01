@@ -36,6 +36,7 @@ public interface StopOrHub {
 
     @InverseRelationShadowVariable(sourceVariableName = "destination")
     List<Shuttle> getTransferShuttleList();
+
     void setTransferShuttleList(List<Shuttle> transferShuttleList);
 
     Integer getTransportTimeToHub();

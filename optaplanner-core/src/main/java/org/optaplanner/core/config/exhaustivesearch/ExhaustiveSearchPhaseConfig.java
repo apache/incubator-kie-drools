@@ -16,11 +16,12 @@
 
 package org.optaplanner.core.config.exhaustivesearch;
 
+import static org.apache.commons.lang3.ObjectUtils.defaultIfNull;
+
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 
-import com.thoughtworks.xstream.annotations.XStreamAlias;
 import org.optaplanner.core.config.heuristic.policy.HeuristicConfigPolicy;
 import org.optaplanner.core.config.heuristic.selector.common.SelectionCacheType;
 import org.optaplanner.core.config.heuristic.selector.common.SelectionOrder;
@@ -48,7 +49,7 @@ import org.optaplanner.core.impl.heuristic.selector.move.MoveSelector;
 import org.optaplanner.core.impl.solver.recaller.BestSolutionRecaller;
 import org.optaplanner.core.impl.solver.termination.Termination;
 
-import static org.apache.commons.lang3.ObjectUtils.defaultIfNull;
+import com.thoughtworks.xstream.annotations.XStreamAlias;
 
 @XStreamAlias("exhaustiveSearch")
 public class ExhaustiveSearchPhaseConfig extends PhaseConfig<ExhaustiveSearchPhaseConfig> {
@@ -125,7 +126,8 @@ public class ExhaustiveSearchPhaseConfig extends PhaseConfig<ExhaustiveSearchPha
         phaseConfigPolicy.setReinitializeVariableFilterEnabled(true);
         phaseConfigPolicy.setInitializedChainedValueFilterEnabled(true);
         ExhaustiveSearchType exhaustiveSearchType_ = exhaustiveSearchType == null
-                ? ExhaustiveSearchType.BRANCH_AND_BOUND : exhaustiveSearchType;
+                ? ExhaustiveSearchType.BRANCH_AND_BOUND
+                : exhaustiveSearchType;
         phaseConfigPolicy.setEntitySorterManner(entitySorterManner != null ? entitySorterManner
                 : exhaustiveSearchType_.getDefaultEntitySorterManner());
         phaseConfigPolicy.setValueSorterManner(valueSorterManner != null ? valueSorterManner
@@ -139,7 +141,7 @@ public class ExhaustiveSearchPhaseConfig extends PhaseConfig<ExhaustiveSearchPha
             nodeExplorationType_ = defaultIfNull(nodeExplorationType, NodeExplorationType.ORIGINAL_ORDER);
             if (nodeExplorationType_ != NodeExplorationType.ORIGINAL_ORDER) {
                 throw new IllegalArgumentException("The phaseConfig (" + this
-                        + ") has an nodeExplorationType ("  + nodeExplorationType
+                        + ") has an nodeExplorationType (" + nodeExplorationType
                         + ") which is not compatible with its exhaustiveSearchType (" + exhaustiveSearchType
                         + ").");
             }
@@ -183,7 +185,7 @@ public class ExhaustiveSearchPhaseConfig extends PhaseConfig<ExhaustiveSearchPha
         if (entitySelectorConfig_.getCacheType() != null
                 && entitySelectorConfig_.getCacheType().compareTo(SelectionCacheType.PHASE) < 0) {
             throw new IllegalArgumentException("The phaseConfig (" + this
-                    + ") cannot have an entitySelectorConfig ("  + entitySelectorConfig_
+                    + ") cannot have an entitySelectorConfig (" + entitySelectorConfig_
                     + ") with a cacheType (" + entitySelectorConfig_.getCacheType()
                     + ") lower than " + SelectionCacheType.PHASE + ".");
         }
@@ -213,7 +215,8 @@ public class ExhaustiveSearchPhaseConfig extends PhaseConfig<ExhaustiveSearchPha
         MoveSelector moveSelector = moveSelectorConfig_.buildMoveSelector(configPolicy,
                 SelectionCacheType.JUST_IN_TIME, SelectionOrder.ORIGINAL);
         ScoreBounder scoreBounder = scoreBounderEnabled
-                ? new TrendBasedScoreBounder(configPolicy.getScoreDirectorFactory()) : null;
+                ? new TrendBasedScoreBounder(configPolicy.getScoreDirectorFactory())
+                : null;
         ExhaustiveSearchDecider decider = new ExhaustiveSearchDecider(configPolicy.getLogIndentation(),
                 bestSolutionRecaller, termination,
                 manualEntityMimicRecorder, moveSelector, scoreBounderEnabled, scoreBounder);
@@ -279,7 +282,8 @@ public class ExhaustiveSearchPhaseConfig extends PhaseConfig<ExhaustiveSearchPha
         valueSorterManner = ConfigUtils.inheritOverwritableProperty(valueSorterManner,
                 inheritedConfig.getValueSorterManner());
         entitySelectorConfig = ConfigUtils.inheritConfig(entitySelectorConfig, inheritedConfig.getEntitySelectorConfig());
-        moveSelectorConfig = ConfigUtils.<MoveSelectorConfig>inheritConfig(moveSelectorConfig, inheritedConfig.getMoveSelectorConfig());
+        moveSelectorConfig = ConfigUtils.<MoveSelectorConfig> inheritConfig(moveSelectorConfig,
+                inheritedConfig.getMoveSelectorConfig());
         return this;
     }
 

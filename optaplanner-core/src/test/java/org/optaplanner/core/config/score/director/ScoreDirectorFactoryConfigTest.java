@@ -16,6 +16,9 @@
 
 package org.optaplanner.core.config.score.director;
 
+import static org.junit.Assert.*;
+import static org.optaplanner.core.impl.testdata.util.PlannerAssert.*;
+
 import java.util.HashMap;
 
 import org.junit.jupiter.api.Test;
@@ -31,9 +34,6 @@ import org.optaplanner.core.impl.score.director.easy.EasyScoreDirector;
 import org.optaplanner.core.impl.score.director.incremental.IncrementalScoreCalculator;
 import org.optaplanner.core.impl.score.director.incremental.IncrementalScoreDirector;
 import org.optaplanner.core.impl.testdata.domain.TestdataSolution;
-
-import static org.junit.Assert.*;
-import static org.optaplanner.core.impl.testdata.util.PlannerAssert.*;
 
 public class ScoreDirectorFactoryConfigTest {
 
@@ -68,8 +68,8 @@ public class ScoreDirectorFactoryConfigTest {
                 .buildScoreDirectorFactory(new SolverConfigContext(), getClass().getClassLoader(),
                         EnvironmentMode.REPRODUCIBLE, TestdataSolution.buildSolutionDescriptor())
                 .buildScoreDirector();
-        TestCustomPropertiesEasyScoreCalculator scoreCalculator = (TestCustomPropertiesEasyScoreCalculator)
-                scoreDirector.getEasyScoreCalculator();
+        TestCustomPropertiesEasyScoreCalculator scoreCalculator = (TestCustomPropertiesEasyScoreCalculator) scoreDirector
+                .getEasyScoreCalculator();
         assertEquals("string 1", scoreCalculator.getStringProperty());
         assertEquals(7, scoreCalculator.getIntProperty());
     }
@@ -116,8 +116,8 @@ public class ScoreDirectorFactoryConfigTest {
                 .buildScoreDirectorFactory(new SolverConfigContext(), getClass().getClassLoader(),
                         EnvironmentMode.REPRODUCIBLE, TestdataSolution.buildSolutionDescriptor())
                 .buildScoreDirector();
-        TestCustomPropertiesIncrementalScoreCalculator scoreCalculator = (TestCustomPropertiesIncrementalScoreCalculator)
-                scoreDirector.getIncrementalScoreCalculator();
+        TestCustomPropertiesIncrementalScoreCalculator scoreCalculator = (TestCustomPropertiesIncrementalScoreCalculator) scoreDirector
+                .getIncrementalScoreCalculator();
         assertEquals("string 1", scoreCalculator.getStringProperty());
         assertEquals(7, scoreCalculator.getIntProperty());
     }

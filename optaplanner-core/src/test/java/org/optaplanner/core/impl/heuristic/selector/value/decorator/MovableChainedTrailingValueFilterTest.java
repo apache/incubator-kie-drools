@@ -16,6 +16,8 @@
 
 package org.optaplanner.core.impl.heuristic.selector.value.decorator;
 
+import static org.junit.Assert.*;
+
 import java.util.Arrays;
 
 import org.junit.jupiter.api.Test;
@@ -29,8 +31,6 @@ import org.optaplanner.core.impl.testdata.domain.chained.TestdataChainedAnchor;
 import org.optaplanner.core.impl.testdata.domain.immovable.chained.TestdataImmovableChainedEntity;
 import org.optaplanner.core.impl.testdata.domain.immovable.chained.TestdataImmovableChainedSolution;
 import org.optaplanner.core.impl.testdata.util.PlannerTestUtils;
-
-import static org.junit.Assert.*;
 
 public class MovableChainedTrailingValueFilterTest {
 

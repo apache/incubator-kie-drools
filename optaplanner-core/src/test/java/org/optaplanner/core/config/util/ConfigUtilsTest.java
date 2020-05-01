@@ -16,17 +16,17 @@
 
 package org.optaplanner.core.config.util;
 
-import java.math.BigDecimal;
-import java.util.HashMap;
-import java.util.Map;
-
-import org.junit.jupiter.api.Test;
-
 import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
 import static org.assertj.core.api.Assertions.assertThatIllegalArgumentException;
 import static org.assertj.core.api.Assertions.assertThatIllegalStateException;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
+
+import java.math.BigDecimal;
+import java.util.HashMap;
+import java.util.Map;
+
+import org.junit.jupiter.api.Test;
 
 public class ConfigUtilsTest {
 
@@ -244,7 +244,8 @@ public class ConfigUtilsTest {
 
     @Test
     public void newInstanceLocalClass() {
-        class LocalClass {}
+        class LocalClass {
+        }
         assertThatIllegalArgumentException()
                 .isThrownBy(() -> ConfigUtils.newInstance(this, "testProperty", LocalClass.class))
                 .withMessageContaining("inner class");

@@ -16,15 +16,11 @@
 
 package org.optaplanner.benchmark.impl.loader;
 
-import java.io.File;
-
-import com.thoughtworks.xstream.annotations.XStreamAlias;
-import com.thoughtworks.xstream.annotations.XStreamOmitField;
-import org.apache.commons.io.FilenameUtils;
 import org.optaplanner.benchmark.impl.result.SubSingleBenchmarkResult;
 import org.optaplanner.core.api.domain.solution.cloner.SolutionCloner;
 import org.optaplanner.core.impl.domain.solution.descriptor.SolutionDescriptor;
-import org.optaplanner.persistence.common.api.domain.solution.SolutionFileIO;
+
+import com.thoughtworks.xstream.annotations.XStreamAlias;
 
 @XStreamAlias("instanceProblemProvider")
 public class InstanceProblemProvider<Solution_> implements ProblemProvider<Solution_> {

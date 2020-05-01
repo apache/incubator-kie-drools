@@ -20,9 +20,6 @@ import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
 
-import com.thoughtworks.xstream.annotations.XStreamAlias;
-import com.thoughtworks.xstream.annotations.XStreamAsAttribute;
-import com.thoughtworks.xstream.annotations.XStreamImplicit;
 import org.optaplanner.core.api.domain.valuerange.ValueRangeProvider;
 import org.optaplanner.core.api.domain.variable.PlanningVariable;
 import org.optaplanner.core.config.heuristic.policy.HeuristicConfigPolicy;
@@ -61,6 +58,10 @@ import org.optaplanner.core.impl.heuristic.selector.value.decorator.SortingValue
 import org.optaplanner.core.impl.heuristic.selector.value.mimic.MimicRecordingValueSelector;
 import org.optaplanner.core.impl.heuristic.selector.value.mimic.MimicReplayingValueSelector;
 import org.optaplanner.core.impl.heuristic.selector.value.mimic.ValueMimicRecorder;
+
+import com.thoughtworks.xstream.annotations.XStreamAlias;
+import com.thoughtworks.xstream.annotations.XStreamAsAttribute;
+import com.thoughtworks.xstream.annotations.XStreamImplicit;
 
 @XStreamAlias("valueSelector")
 public class ValueSelectorConfig extends SelectorConfig<ValueSelectorConfig> {
@@ -214,7 +215,8 @@ public class ValueSelectorConfig extends SelectorConfig<ValueSelectorConfig> {
         return probabilityWeightFactoryClass;
     }
 
-    public void setProbabilityWeightFactoryClass(Class<? extends SelectionProbabilityWeightFactory> probabilityWeightFactoryClass) {
+    public void setProbabilityWeightFactoryClass(
+            Class<? extends SelectionProbabilityWeightFactory> probabilityWeightFactoryClass) {
         this.probabilityWeightFactoryClass = probabilityWeightFactoryClass;
     }
 
@@ -255,8 +257,8 @@ public class ValueSelectorConfig extends SelectorConfig<ValueSelectorConfig> {
      * @param configPolicy never null
      * @param entityDescriptor never null
      * @param minimumCacheType never null, If caching is used (different from {@link SelectionCacheType#JUST_IN_TIME}),
-     * then it should be at least this {@link SelectionCacheType} because an ancestor already uses such caching
-     * and less would be pointless.
+     *        then it should be at least this {@link SelectionCacheType} because an ancestor already uses such caching
+     *        and less would be pointless.
      * @param inheritedSelectionOrder never null
      * @return never null
      */
@@ -322,13 +324,13 @@ public class ValueSelectorConfig extends SelectorConfig<ValueSelectorConfig> {
                 || probabilityWeightFactoryClass != null
                 || selectedCountLimit != null) {
             throw new IllegalArgumentException("The valueSelectorConfig (" + this
-                    + ") with mimicSelectorRef ("  + mimicSelectorRef
+                    + ") with mimicSelectorRef (" + mimicSelectorRef
                     + ") has another property that is not null.");
         }
         ValueMimicRecorder valueMimicRecorder = configPolicy.getValueMimicRecorder(mimicSelectorRef);
         if (valueMimicRecorder == null) {
             throw new IllegalArgumentException("The valueSelectorConfig (" + this
-                    + ") has a mimicSelectorRef ("  + mimicSelectorRef
+                    + ") has a mimicSelectorRef (" + mimicSelectorRef
                     + ") for which no valueSelector with that id exists (in its solver phase).");
         }
         return new MimicReplayingValueSelector(valueMimicRecorder);
@@ -430,7 +432,7 @@ public class ValueSelectorConfig extends SelectorConfig<ValueSelectorConfig> {
             SelectionCacheType resolvedCacheType, SelectionOrder resolvedSelectionOrder,
             ValueSelector valueSelector) {
         if (configPolicy.isInitializedChainedValueFilterEnabled()
-                    && variableDescriptor.isChained()) {
+                && variableDescriptor.isChained()) {
             valueSelector = InitializedValueSelector.create(valueSelector);
         }
         return valueSelector;
@@ -441,11 +443,11 @@ public class ValueSelectorConfig extends SelectorConfig<ValueSelectorConfig> {
                 || sorterOrder != null || sorterClass != null)
                 && resolvedSelectionOrder != SelectionOrder.SORTED) {
             throw new IllegalArgumentException("The valueSelectorConfig (" + this
-                    + ") with sorterManner ("  + sorterManner
-                    + ") and sorterComparatorClass ("  + sorterComparatorClass
-                    + ") and sorterWeightFactoryClass ("  + sorterWeightFactoryClass
-                    + ") and sorterOrder ("  + sorterOrder
-                    + ") and sorterClass ("  + sorterClass
+                    + ") with sorterManner (" + sorterManner
+                    + ") and sorterComparatorClass (" + sorterComparatorClass
+                    + ") and sorterWeightFactoryClass (" + sorterWeightFactoryClass
+                    + ") and sorterOrder (" + sorterOrder
+                    + ") and sorterClass (" + sorterClass
                     + ") has a resolvedSelectionOrder (" + resolvedSelectionOrder
                     + ") that is not " + SelectionOrder.SORTED + ".");
         }
@@ -515,7 +517,7 @@ public class ValueSelectorConfig extends SelectorConfig<ValueSelectorConfig> {
                 sorter = ConfigUtils.newInstance(this, "sorterClass", sorterClass);
             } else {
                 throw new IllegalArgumentException("The valueSelectorConfig (" + this
-                        + ") with resolvedSelectionOrder ("  + resolvedSelectionOrder
+                        + ") with resolvedSelectionOrder (" + resolvedSelectionOrder
                         + ") needs a sorterManner (" + sorterManner
                         + ") or a sorterComparatorClass (" + sorterComparatorClass
                         + ") or a sorterWeightFactoryClass (" + sorterWeightFactoryClass
@@ -637,8 +639,8 @@ public class ValueSelectorConfig extends SelectorConfig<ValueSelectorConfig> {
                         + ") needs to be based on an EntityIndependentValueSelector (" + valueSelector + ")."
                         + " Check your @" + ValueRangeProvider.class.getSimpleName() + " annotations.");
             }
-            MimicRecordingValueSelector mimicRecordingValueSelector
-                    = new MimicRecordingValueSelector((EntityIndependentValueSelector) valueSelector);
+            MimicRecordingValueSelector mimicRecordingValueSelector = new MimicRecordingValueSelector(
+                    (EntityIndependentValueSelector) valueSelector);
             configPolicy.addValueMimicRecorder(id, mimicRecordingValueSelector);
             valueSelector = mimicRecordingValueSelector;
         }
@@ -715,7 +717,8 @@ public class ValueSelectorConfig extends SelectorConfig<ValueSelectorConfig> {
         }
     }
 
-    public static SelectionSorter determineSorter(ValueSorterManner valueSorterManner, GenuineVariableDescriptor variableDescriptor) {
+    public static SelectionSorter determineSorter(ValueSorterManner valueSorterManner,
+            GenuineVariableDescriptor variableDescriptor) {
         SelectionSorter sorter;
         switch (valueSorterManner) {
             case NONE:

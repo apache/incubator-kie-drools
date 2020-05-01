@@ -16,20 +16,22 @@
 
 package org.optaplanner.persistence.jackson.api.score.buildin.bendable;
 
-import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
-import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 import org.junit.jupiter.api.Test;
 import org.optaplanner.core.api.score.buildin.bendable.BendableScore;
 import org.optaplanner.persistence.jackson.api.score.AbstractScoreJacksonJsonSerializerAndDeserializerTest;
 
-public class BendableScoreJacksonJsonSerializerAndDeserializerTest extends AbstractScoreJacksonJsonSerializerAndDeserializerTest {
+import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
+import com.fasterxml.jackson.databind.annotation.JsonSerialize;
+
+public class BendableScoreJacksonJsonSerializerAndDeserializerTest
+        extends AbstractScoreJacksonJsonSerializerAndDeserializerTest {
 
     @Test
     public void serializeAndDeserialize() {
         assertSerializeAndDeserialize(null, new TestBendableScoreWrapper(null));
-        BendableScore score = BendableScore.of(new int[]{1000, 200}, new int[]{34});
+        BendableScore score = BendableScore.of(new int[] { 1000, 200 }, new int[] { 34 });
         assertSerializeAndDeserialize(score, new TestBendableScoreWrapper(score));
-        score = BendableScore.ofUninitialized(-7, new int[]{1000, 200}, new int[]{34});
+        score = BendableScore.ofUninitialized(-7, new int[] { 1000, 200 }, new int[] { 34 });
         assertSerializeAndDeserialize(score, new TestBendableScoreWrapper(score));
     }
 

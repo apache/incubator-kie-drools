@@ -16,6 +16,9 @@
 
 package org.optaplanner.core.impl.heuristic.selector.move.decorator;
 
+import static org.mockito.Mockito.*;
+import static org.optaplanner.core.impl.testdata.util.PlannerAssert.*;
+
 import java.util.Arrays;
 import java.util.List;
 
@@ -29,9 +32,6 @@ import org.optaplanner.core.impl.phase.scope.AbstractPhaseScope;
 import org.optaplanner.core.impl.phase.scope.AbstractStepScope;
 import org.optaplanner.core.impl.solver.scope.DefaultSolverScope;
 import org.optaplanner.core.impl.testdata.domain.TestdataSolution;
-
-import static org.mockito.Mockito.*;
-import static org.optaplanner.core.impl.testdata.util.PlannerAssert.*;
 
 public class FilteringMoveSelectorTest {
 
@@ -60,7 +60,7 @@ public class FilteringMoveSelectorTest {
                 new DummyMove("a1"), new DummyMove("a2"), new DummyMove("a3"), new DummyMove("a4"));
 
         SelectionFilter<TestdataSolution, DummyMove> filter = (scoreDirector, move) -> !move.getCode().equals("a3");
-        List<SelectionFilter> filterList = Arrays.<SelectionFilter>asList(filter);
+        List<SelectionFilter> filterList = Arrays.<SelectionFilter> asList(filter);
         MoveSelector moveSelector = new FilteringMoveSelector(childMoveSelector, filterList);
         if (cacheType.isCached()) {
             moveSelector = new CachingMoveSelector(moveSelector, cacheType, false);

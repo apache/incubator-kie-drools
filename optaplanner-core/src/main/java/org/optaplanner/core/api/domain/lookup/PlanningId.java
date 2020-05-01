@@ -16,6 +16,9 @@
 
 package org.optaplanner.core.api.domain.lookup;
 
+import static java.lang.annotation.ElementType.*;
+import static java.lang.annotation.RetentionPolicy.*;
+
 import java.lang.annotation.Retention;
 import java.lang.annotation.Target;
 
@@ -25,9 +28,6 @@ import org.optaplanner.core.api.domain.valuerange.ValueRangeProvider;
 import org.optaplanner.core.impl.heuristic.move.Move;
 import org.optaplanner.core.impl.score.director.ScoreDirector;
 import org.optaplanner.core.impl.solver.ProblemFactChange;
-
-import static java.lang.annotation.ElementType.*;
-import static java.lang.annotation.RetentionPolicy.*;
 
 /**
  * Specifies that a bean property (or a field) is the id to match
@@ -41,7 +41,7 @@ import static java.lang.annotation.RetentionPolicy.*;
  * The return type can be any type which overrides {@link Object#equals(Object)} and {@link Object#hashCode()},
  * but is usually {@link Long} or {@link String}. It must never return a null instance.
  */
-@Target({METHOD, FIELD})
+@Target({ METHOD, FIELD })
 @Retention(RUNTIME)
 public @interface PlanningId {
 

@@ -16,15 +16,15 @@
 
 package org.optaplanner.core.impl.score.buildin.hardsoft;
 
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.junit.Assert.assertArrayEquals;
+import static org.junit.Assert.assertEquals;
+
 import org.junit.jupiter.api.Test;
 import org.optaplanner.core.api.score.buildin.hardsoft.HardSoftScore;
 import org.optaplanner.core.config.score.trend.InitializingScoreTrendLevel;
 import org.optaplanner.core.impl.score.buildin.AbstractScoreDefinitionTest;
 import org.optaplanner.core.impl.score.trend.InitializingScoreTrend;
-
-import static org.assertj.core.api.Assertions.assertThat;
-import static org.junit.Assert.assertArrayEquals;
-import static org.junit.Assert.assertEquals;
 
 public class HardSoftScoreDefinitionTest extends AbstractScoreDefinitionTest {
 
@@ -47,7 +47,7 @@ public class HardSoftScoreDefinitionTest extends AbstractScoreDefinitionTest {
 
     @Test
     public void getLevelLabels() {
-        assertArrayEquals(new String[]{"hard score", "soft score"}, new HardSoftScoreDefinition().getLevelLabels());
+        assertArrayEquals(new String[] { "hard score", "soft score" }, new HardSoftScoreDefinition().getLevelLabels());
     }
 
     @Test
@@ -102,16 +102,16 @@ public class HardSoftScoreDefinitionTest extends AbstractScoreDefinitionTest {
     @Test
     public void divideBySanitizedDivisor() {
         HardSoftScoreDefinition scoreDefinition = new HardSoftScoreDefinition();
-        HardSoftScore dividend = scoreDefinition.fromLevelNumbers(2, new Number[] {0, 10});
+        HardSoftScore dividend = scoreDefinition.fromLevelNumbers(2, new Number[] { 0, 10 });
         HardSoftScore zeroDivisor = scoreDefinition.getZeroScore();
         assertThat(scoreDefinition.divideBySanitizedDivisor(dividend, zeroDivisor))
                 .isEqualTo(dividend);
         HardSoftScore oneDivisor = scoreDefinition.getOneSoftestScore();
         assertThat(scoreDefinition.divideBySanitizedDivisor(dividend, oneDivisor))
                 .isEqualTo(dividend);
-        HardSoftScore tenDivisor = scoreDefinition.fromLevelNumbers(10, new Number[] {10, 10});
+        HardSoftScore tenDivisor = scoreDefinition.fromLevelNumbers(10, new Number[] { 10, 10 });
         assertThat(scoreDefinition.divideBySanitizedDivisor(dividend, tenDivisor))
-                .isEqualTo(scoreDefinition.fromLevelNumbers(0, new Number[] {0, 1}));
+                .isEqualTo(scoreDefinition.fromLevelNumbers(0, new Number[] { 0, 1 }));
     }
 
 }

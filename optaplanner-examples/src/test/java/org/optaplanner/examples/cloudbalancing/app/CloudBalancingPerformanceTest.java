@@ -35,7 +35,6 @@ public class CloudBalancingPerformanceTest extends SolverPerformanceTest<CloudBa
     protected Stream<TestData> testData() {
         return Stream.of(
                 testData(UNSOLVED_DATA_FILE, "0hard/-218850soft", EnvironmentMode.REPRODUCIBLE),
-                testData(UNSOLVED_DATA_FILE, "0hard/-223260soft", EnvironmentMode.FAST_ASSERT)
-        );
+                testData(UNSOLVED_DATA_FILE, "0hard/-223260soft", EnvironmentMode.FAST_ASSERT));
     }
 }

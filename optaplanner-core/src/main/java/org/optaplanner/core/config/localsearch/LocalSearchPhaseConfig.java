@@ -16,13 +16,13 @@
 
 package org.optaplanner.core.config.localsearch;
 
+import static org.apache.commons.lang3.ObjectUtils.defaultIfNull;
+
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 import java.util.concurrent.ThreadFactory;
 
-import com.thoughtworks.xstream.annotations.XStreamAlias;
-import com.thoughtworks.xstream.annotations.XStreamImplicit;
 import org.optaplanner.core.config.heuristic.policy.HeuristicConfigPolicy;
 import org.optaplanner.core.config.heuristic.selector.common.SelectionCacheType;
 import org.optaplanner.core.config.heuristic.selector.common.SelectionOrder;
@@ -49,7 +49,8 @@ import org.optaplanner.core.impl.solver.recaller.BestSolutionRecaller;
 import org.optaplanner.core.impl.solver.termination.Termination;
 import org.optaplanner.core.impl.solver.thread.ChildThreadType;
 
-import static org.apache.commons.lang3.ObjectUtils.defaultIfNull;
+import com.thoughtworks.xstream.annotations.XStreamAlias;
+import com.thoughtworks.xstream.annotations.XStreamImplicit;
 
 @XStreamAlias("localSearch")
 public class LocalSearchPhaseConfig extends PhaseConfig<LocalSearchPhaseConfig> {
@@ -285,7 +286,7 @@ public class LocalSearchPhaseConfig extends PhaseConfig<LocalSearchPhaseConfig> 
         if (ConfigUtils.isEmptyCollection(moveSelectorConfigList)) {
             // Default to changeMoveSelector and swapMoveSelector
             UnionMoveSelectorConfig unionMoveSelectorConfig = new UnionMoveSelectorConfig();
-            unionMoveSelectorConfig.setMoveSelectorConfigList(Arrays.<MoveSelectorConfig>asList(
+            unionMoveSelectorConfig.setMoveSelectorConfigList(Arrays.<MoveSelectorConfig> asList(
                     new ChangeMoveSelectorConfig(), new SwapMoveSelectorConfig()));
             moveSelector = unionMoveSelectorConfig.buildMoveSelector(configPolicy,
                     defaultCacheType, defaultSelectionOrder);

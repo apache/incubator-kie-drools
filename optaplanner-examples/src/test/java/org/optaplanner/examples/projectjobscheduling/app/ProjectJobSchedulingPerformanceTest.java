@@ -35,7 +35,6 @@ public class ProjectJobSchedulingPerformanceTest extends SolverPerformanceTest<S
     protected Stream<TestData> testData() {
         return Stream.of(
                 testData(UNSOLVED_DATA_FILE, "[0]hard/[-152/-69]soft", EnvironmentMode.REPRODUCIBLE),
-                testData(UNSOLVED_DATA_FILE, "[0]hard/[-193/-92]soft", EnvironmentMode.FAST_ASSERT)
-        );
+                testData(UNSOLVED_DATA_FILE, "[0]hard/[-193/-92]soft", EnvironmentMode.FAST_ASSERT));
     }
 }

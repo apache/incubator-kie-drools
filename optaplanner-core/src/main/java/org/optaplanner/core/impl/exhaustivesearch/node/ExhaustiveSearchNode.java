@@ -33,6 +33,7 @@ public class ExhaustiveSearchNode {
     private Score score;
     /**
      * Never worse than the best possible score a leaf node below this node might lead to.
+     * 
      * @see ScoreBounder#calculateOptimisticBound(ScoreDirector, Score)
      */
     private Score optimisticBound;
@@ -124,6 +125,5 @@ public class ExhaustiveSearchNode {
     public String toString() {
         return getTreeId() + " (" + layer.getEntity() + ")";
     }
-
 
 }

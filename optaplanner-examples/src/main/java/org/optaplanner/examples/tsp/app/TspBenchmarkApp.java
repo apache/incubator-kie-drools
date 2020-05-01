@@ -27,8 +27,7 @@ public class TspBenchmarkApp extends CommonBenchmarkApp {
     public TspBenchmarkApp() {
         super(
                 new ArgOption("default",
-                        "org/optaplanner/examples/tsp/benchmark/tspBenchmarkConfig.xml")
-        );
+                        "org/optaplanner/examples/tsp/benchmark/tspBenchmarkConfig.xml"));
     }
 
 }

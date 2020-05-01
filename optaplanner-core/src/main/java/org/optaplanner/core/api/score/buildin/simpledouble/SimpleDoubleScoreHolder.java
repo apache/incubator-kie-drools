@@ -29,6 +29,7 @@ import org.optaplanner.core.api.score.holder.AbstractScoreHolder;
 /**
  * WARNING: NOT RECOMMENDED TO USE DUE TO ROUNDING ERRORS THAT CAUSE SCORE CORRUPTION.
  * Use {@link SimpleDoubleScoreHolder} instead.
+ * 
  * @see SimpleDoubleScore
  */
 public class SimpleDoubleScoreHolder extends AbstractScoreHolder<SimpleDoubleScore> {
@@ -54,10 +55,11 @@ public class SimpleDoubleScoreHolder extends AbstractScoreHolder<SimpleDoubleSco
         super.configureConstraintWeight(rule, constraintWeight);
         BiConsumer<RuleContext, Double> matchExecutor;
         if (constraintWeight.equals(SimpleDoubleScore.ZERO)) {
-            matchExecutor = (RuleContext kcontext, Double matchWeight) -> {};
+            matchExecutor = (RuleContext kcontext, Double matchWeight) -> {
+            };
         } else {
-            matchExecutor = (RuleContext kcontext, Double matchWeight)
-                    -> addConstraintMatch(kcontext, constraintWeight.getScore() * matchWeight);
+            matchExecutor = (RuleContext kcontext, Double matchWeight) -> addConstraintMatch(kcontext,
+                    constraintWeight.getScore() * matchWeight);
         }
         matchExecutorByNumberMap.put(rule, matchExecutor);
     }
@@ -68,6 +70,7 @@ public class SimpleDoubleScoreHolder extends AbstractScoreHolder<SimpleDoubleSco
 
     /**
      * Penalize a match by the {@link ConstraintWeight} negated.
+     * 
      * @param kcontext never null, the magic variable in DRL
      */
     public void penalize(RuleContext kcontext) {
@@ -76,6 +79,7 @@ public class SimpleDoubleScoreHolder extends AbstractScoreHolder<SimpleDoubleSco
 
     /**
      * Penalize a match by the {@link ConstraintWeight} negated and multiplied with the weightMultiplier for all score levels.
+     * 
      * @param kcontext never null, the magic variable in DRL
      * @param weightMultiplier at least 0
      */
@@ -85,6 +89,7 @@ public class SimpleDoubleScoreHolder extends AbstractScoreHolder<SimpleDoubleSco
 
     /**
      * Reward a match by the {@link ConstraintWeight}.
+     * 
      * @param kcontext never null, the magic variable in DRL
      */
     public void reward(RuleContext kcontext) {
@@ -93,6 +98,7 @@ public class SimpleDoubleScoreHolder extends AbstractScoreHolder<SimpleDoubleSco
 
     /**
      * Reward a match by the {@link ConstraintWeight} multiplied with the weightMultiplier for all score levels.
+     * 
      * @param kcontext never null, the magic variable in DRL
      * @param weightMultiplier at least 0
      */

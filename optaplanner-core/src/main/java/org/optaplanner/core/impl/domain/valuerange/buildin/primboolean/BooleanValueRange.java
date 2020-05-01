@@ -25,7 +25,8 @@ import org.optaplanner.core.impl.domain.valuerange.util.ValueRangeIterator;
 
 public class BooleanValueRange extends AbstractCountableValueRange<Boolean> {
 
-    public BooleanValueRange() {}
+    public BooleanValueRange() {
+    }
 
     @Override
     public long getSize() {

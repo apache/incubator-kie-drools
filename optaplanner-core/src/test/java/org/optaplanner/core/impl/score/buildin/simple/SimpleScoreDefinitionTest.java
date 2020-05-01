@@ -16,14 +16,14 @@
 
 package org.optaplanner.core.impl.score.buildin.simple;
 
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.junit.Assert.assertArrayEquals;
+import static org.junit.Assert.assertEquals;
+
 import org.junit.jupiter.api.Test;
 import org.optaplanner.core.api.score.buildin.simple.SimpleScore;
 import org.optaplanner.core.config.score.trend.InitializingScoreTrendLevel;
 import org.optaplanner.core.impl.score.trend.InitializingScoreTrend;
-
-import static org.assertj.core.api.Assertions.assertThat;
-import static org.junit.Assert.assertArrayEquals;
-import static org.junit.Assert.assertEquals;
 
 public class SimpleScoreDefinitionTest {
 
@@ -46,7 +46,7 @@ public class SimpleScoreDefinitionTest {
 
     @Test
     public void getLevelLabels() {
-        assertArrayEquals(new String[]{"score"}, new SimpleScoreDefinition().getLevelLabels());
+        assertArrayEquals(new String[] { "score" }, new SimpleScoreDefinition().getLevelLabels());
     }
 
     @Test
@@ -92,16 +92,16 @@ public class SimpleScoreDefinitionTest {
     @Test
     public void divideBySanitizedDivisor() {
         SimpleScoreDefinition scoreDefinition = new SimpleScoreDefinition();
-        SimpleScore dividend = scoreDefinition.fromLevelNumbers(2, new Number[] {10});
+        SimpleScore dividend = scoreDefinition.fromLevelNumbers(2, new Number[] { 10 });
         SimpleScore zeroDivisor = scoreDefinition.getZeroScore();
         assertThat(scoreDefinition.divideBySanitizedDivisor(dividend, zeroDivisor))
                 .isEqualTo(dividend);
         SimpleScore oneDivisor = scoreDefinition.getOneSoftestScore();
         assertThat(scoreDefinition.divideBySanitizedDivisor(dividend, oneDivisor))
                 .isEqualTo(dividend);
-        SimpleScore tenDivisor = scoreDefinition.fromLevelNumbers(10, new Number[] {10});
+        SimpleScore tenDivisor = scoreDefinition.fromLevelNumbers(10, new Number[] { 10 });
         assertThat(scoreDefinition.divideBySanitizedDivisor(dividend, tenDivisor))
-                .isEqualTo(scoreDefinition.fromLevelNumbers(0, new Number[] {1}));
+                .isEqualTo(scoreDefinition.fromLevelNumbers(0, new Number[] { 1 }));
     }
 
 }

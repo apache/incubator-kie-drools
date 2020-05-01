@@ -30,6 +30,7 @@ import org.optaplanner.core.api.score.holder.AbstractScoreHolder;
 /**
  * WARNING: NOT RECOMMENDED TO USE DUE TO ROUNDING ERRORS THAT CAUSE SCORE CORRUPTION.
  * Use {@link HardSoftBigDecimalScoreHolder} instead.
+ * 
  * @see HardSoftDoubleScore
  */
 public class HardSoftDoubleScoreHolder extends AbstractScoreHolder<HardSoftDoubleScore> {
@@ -62,24 +63,24 @@ public class HardSoftDoubleScoreHolder extends AbstractScoreHolder<HardSoftDoubl
         super.configureConstraintWeight(rule, constraintWeight);
         BiConsumer<RuleContext, Double> matchExecutor;
         if (constraintWeight.equals(HardSoftDoubleScore.ZERO)) {
-            matchExecutor = (RuleContext kcontext, Double matchWeight) -> {};
+            matchExecutor = (RuleContext kcontext, Double matchWeight) -> {
+            };
         } else if (constraintWeight.getSoftScore() == 0.0) {
-            matchExecutor = (RuleContext kcontext, Double matchWeight)
-                    -> addHardConstraintMatch(kcontext, constraintWeight.getHardScore() * matchWeight);
+            matchExecutor = (RuleContext kcontext, Double matchWeight) -> addHardConstraintMatch(kcontext,
+                    constraintWeight.getHardScore() * matchWeight);
         } else if (constraintWeight.getHardScore() == 0.0) {
-            matchExecutor = (RuleContext kcontext, Double matchWeight)
-                    -> addSoftConstraintMatch(kcontext, constraintWeight.getSoftScore() * matchWeight);
+            matchExecutor = (RuleContext kcontext, Double matchWeight) -> addSoftConstraintMatch(kcontext,
+                    constraintWeight.getSoftScore() * matchWeight);
         } else {
-            matchExecutor = (RuleContext kcontext, Double matchWeight)
-                    -> addMultiConstraintMatch(kcontext,
+            matchExecutor = (RuleContext kcontext, Double matchWeight) -> addMultiConstraintMatch(kcontext,
                     constraintWeight.getHardScore() * matchWeight,
                     constraintWeight.getSoftScore() * matchWeight);
         }
         matchExecutorByNumberMap.put(rule, matchExecutor);
         matchExecutorByScoreMap.put(rule, (RuleContext kcontext,
                 HardSoftDoubleScore weightMultiplier) -> addMultiConstraintMatch(kcontext,
-                constraintWeight.getHardScore() * weightMultiplier.getHardScore(),
-                constraintWeight.getSoftScore() * weightMultiplier.getSoftScore()));
+                        constraintWeight.getHardScore() * weightMultiplier.getHardScore(),
+                        constraintWeight.getSoftScore() * weightMultiplier.getSoftScore()));
     }
 
     // ************************************************************************
@@ -88,6 +89,7 @@ public class HardSoftDoubleScoreHolder extends AbstractScoreHolder<HardSoftDoubl
 
     /**
      * Penalize a match by the {@link ConstraintWeight} negated.
+     * 
      * @param kcontext never null, the magic variable in DRL
      */
     public void penalize(RuleContext kcontext) {
@@ -96,6 +98,7 @@ public class HardSoftDoubleScoreHolder extends AbstractScoreHolder<HardSoftDoubl
 
     /**
      * Penalize a match by the {@link ConstraintWeight} negated and multiplied with the weightMultiplier for all score levels.
+     * 
      * @param kcontext never null, the magic variable in DRL
      * @param weightMultiplier at least 0
      */
@@ -104,8 +107,10 @@ public class HardSoftDoubleScoreHolder extends AbstractScoreHolder<HardSoftDoubl
     }
 
     /**
-     * Penalize a match by the {@link ConstraintWeight} negated and multiplied with the specific weightMultiplier per score level.
+     * Penalize a match by the {@link ConstraintWeight} negated and multiplied with the specific weightMultiplier per score
+     * level.
      * Slower than {@link #penalize(RuleContext, double)}.
+     * 
      * @param kcontext never null, the magic variable in DRL
      * @param hardWeightMultiplier at least 0
      * @param softWeightMultiplier at least 0
@@ -116,6 +121,7 @@ public class HardSoftDoubleScoreHolder extends AbstractScoreHolder<HardSoftDoubl
 
     /**
      * Reward a match by the {@link ConstraintWeight}.
+     * 
      * @param kcontext never null, the magic variable in DRL
      */
     public void reward(RuleContext kcontext) {
@@ -124,6 +130,7 @@ public class HardSoftDoubleScoreHolder extends AbstractScoreHolder<HardSoftDoubl
 
     /**
      * Reward a match by the {@link ConstraintWeight} multiplied with the weightMultiplier for all score levels.
+     * 
      * @param kcontext never null, the magic variable in DRL
      * @param weightMultiplier at least 0
      */
@@ -134,6 +141,7 @@ public class HardSoftDoubleScoreHolder extends AbstractScoreHolder<HardSoftDoubl
     /**
      * Reward a match by the {@link ConstraintWeight} multiplied with the specific weightMultiplier per score level.
      * Slower than {@link #reward(RuleContext, double)}.
+     * 
      * @param kcontext never null, the magic variable in DRL
      * @param hardWeightMultiplier at least 0
      * @param softWeightMultiplier at least 0

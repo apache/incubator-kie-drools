@@ -59,7 +59,7 @@ public final class DroolsFromUniConstraintStream<Solution_, A> extends DroolsAbs
 
     @Override
     public String toString() {
-        return "From(" + fromClass.getSimpleName() + ") with " + getChildStreams().size()  + " children";
+        return "From(" + fromClass.getSimpleName() + ") with " + getChildStreams().size() + " children";
     }
 
 }

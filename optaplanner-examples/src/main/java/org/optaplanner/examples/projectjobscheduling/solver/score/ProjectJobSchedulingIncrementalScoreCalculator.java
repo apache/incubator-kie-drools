@@ -44,7 +44,6 @@ public class ProjectJobSchedulingIncrementalScoreCalculator extends AbstractIncr
     private int soft0Score;
     private int soft1Score;
 
-
     @Override
     public void resetWorkingSolution(Schedule schedule) {
         List<Resource> resourceList = schedule.getResourceList();
@@ -61,7 +60,7 @@ public class ProjectJobSchedulingIncrementalScoreCalculator extends AbstractIncr
         soft0Score = 0;
         soft1Score = 0;
         int minimumReleaseDate = Integer.MAX_VALUE;
-        for (Project p: projectList) {
+        for (Project p : projectList) {
             minimumReleaseDate = Math.min(p.getReleaseDate(), minimumReleaseDate);
         }
         soft1Score += minimumReleaseDate;
@@ -172,7 +171,7 @@ public class ProjectJobSchedulingIncrementalScoreCalculator extends AbstractIncr
 
     @Override
     public Score calculateScore() {
-        return BendableScore.of(new int[] {hardScore}, new int[] {soft0Score, soft1Score});
+        return BendableScore.of(new int[] { hardScore }, new int[] { soft0Score, soft1Score });
     }
 
 }

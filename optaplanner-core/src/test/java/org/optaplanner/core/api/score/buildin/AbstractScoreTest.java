@@ -16,10 +16,9 @@
 
 package org.optaplanner.core.api.score.buildin;
 
-import org.optaplanner.core.api.score.FeasibilityScore;
-import org.optaplanner.core.api.score.Score;
-
 import static org.junit.Assert.*;
+
+import org.optaplanner.core.api.score.FeasibilityScore;
 
 public abstract class AbstractScoreTest {
 
@@ -29,7 +28,7 @@ public abstract class AbstractScoreTest {
         }
     }
 
-    public static void assertScoreFeasible(FeasibilityScore ... scores) {
+    public static void assertScoreFeasible(FeasibilityScore... scores) {
         for (FeasibilityScore score : scores) {
             assertEquals(score + " should be feasible.", true, score.isFeasible());
         }

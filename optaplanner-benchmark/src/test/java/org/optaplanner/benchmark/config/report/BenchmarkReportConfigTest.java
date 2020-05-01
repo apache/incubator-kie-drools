@@ -1,5 +1,9 @@
 package org.optaplanner.benchmark.config.report;
 
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
+import static org.mockito.Mockito.mock;
+
 import java.util.Locale;
 
 import org.junit.jupiter.api.Test;
@@ -7,10 +11,6 @@ import org.optaplanner.benchmark.config.ranking.SolverRankingType;
 import org.optaplanner.benchmark.impl.ranking.TotalRankSolverRankingWeightFactory;
 import org.optaplanner.benchmark.impl.ranking.TotalScoreSolverRankingComparator;
 import org.optaplanner.benchmark.impl.result.PlannerBenchmarkResult;
-
-import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
-import static org.assertj.core.api.Assertions.assertThat;
-import static org.mockito.Mockito.mock;
 
 public class BenchmarkReportConfigTest {
 
@@ -26,8 +26,10 @@ public class BenchmarkReportConfigTest {
 
         assertThat(reportConfig.getLocale()).isEqualTo(inheritedReportConfig.getLocale());
         assertThat(reportConfig.getSolverRankingType()).isEqualTo(inheritedReportConfig.getSolverRankingType());
-        assertThat(reportConfig.getSolverRankingComparatorClass()).isEqualTo(inheritedReportConfig.getSolverRankingComparatorClass());
-        assertThat(reportConfig.getSolverRankingWeightFactoryClass()).isEqualTo(inheritedReportConfig.getSolverRankingWeightFactoryClass());
+        assertThat(reportConfig.getSolverRankingComparatorClass())
+                .isEqualTo(inheritedReportConfig.getSolverRankingComparatorClass());
+        assertThat(reportConfig.getSolverRankingWeightFactoryClass())
+                .isEqualTo(inheritedReportConfig.getSolverRankingWeightFactoryClass());
     }
 
     @Test

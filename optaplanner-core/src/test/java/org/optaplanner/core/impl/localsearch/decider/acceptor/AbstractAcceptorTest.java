@@ -16,12 +16,12 @@
 
 package org.optaplanner.core.impl.localsearch.decider.acceptor;
 
+import static org.mockito.Mockito.*;
+
 import org.optaplanner.core.api.score.buildin.simple.SimpleScore;
 import org.optaplanner.core.impl.heuristic.move.Move;
 import org.optaplanner.core.impl.localsearch.scope.LocalSearchMoveScope;
 import org.optaplanner.core.impl.localsearch.scope.LocalSearchStepScope;
-
-import static org.mockito.Mockito.*;
 
 public abstract class AbstractAcceptorTest {
 

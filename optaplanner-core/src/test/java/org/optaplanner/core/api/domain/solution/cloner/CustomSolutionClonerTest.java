@@ -15,6 +15,9 @@
  */
 package org.optaplanner.core.api.domain.solution.cloner;
 
+import static org.assertj.core.api.Assertions.assertThatIllegalStateException;
+import static org.junit.Assert.assertTrue;
+
 import org.junit.jupiter.api.Test;
 import org.optaplanner.core.config.solver.EnvironmentMode;
 import org.optaplanner.core.config.solver.SolverConfig;
@@ -24,9 +27,6 @@ import org.optaplanner.core.impl.testdata.domain.clone.customcloner.TestdataEnti
 import org.optaplanner.core.impl.testdata.domain.clone.customcloner.TestdataScoreNotClonedSolution;
 import org.optaplanner.core.impl.testdata.domain.clone.customcloner.TestdataScoreNotEqualSolution;
 import org.optaplanner.core.impl.testdata.util.PlannerTestUtils;
-
-import static org.assertj.core.api.Assertions.assertThatIllegalStateException;
-import static org.junit.Assert.assertTrue;
 
 public class CustomSolutionClonerTest {
 

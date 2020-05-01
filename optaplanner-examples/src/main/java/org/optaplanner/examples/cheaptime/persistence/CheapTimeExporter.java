@@ -118,8 +118,7 @@ public class CheapTimeExporter extends AbstractTxtSolutionExporter<CheapTimeSolu
         }
 
         private Map<Machine, List<Boolean>> createMachinePeriodActiveListMap(List<Machine> machineList) {
-            Map<Machine, List<Boolean>> machinePeriodActiveListMap
-                    = new LinkedHashMap<>(machineList.size());
+            Map<Machine, List<Boolean>> machinePeriodActiveListMap = new LinkedHashMap<>(machineList.size());
             if (solution.getGlobalPeriodRangeFrom() != 0) {
                 throw new IllegalStateException("The globalPeriodRangeFrom (" + solution.getGlobalPeriodRangeFrom()
                         + ") should be 0.");

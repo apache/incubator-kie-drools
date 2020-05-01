@@ -72,8 +72,7 @@ public class Employee extends AbstractPersistable {
         FlightAssignment previousAssignment = null;
         for (FlightAssignment assignment : flightAssignmentSet) {
             if (previousAssignment != null
-                    && previousAssignment.getFlight().getArrivalAirport()
-                    != assignment.getFlight().getDepartureAirport()) {
+                    && previousAssignment.getFlight().getArrivalAirport() != assignment.getFlight().getDepartureAirport()) {
                 count++;
             }
             previousAssignment = assignment;

@@ -16,9 +16,10 @@
 
 package org.optaplanner.examples.tsp.domain;
 
-import com.thoughtworks.xstream.annotations.XStreamAlias;
 import org.optaplanner.examples.common.domain.AbstractPersistable;
 import org.optaplanner.examples.tsp.domain.location.Location;
+
+import com.thoughtworks.xstream.annotations.XStreamAlias;
 
 @XStreamAlias("Domicile")
 public class Domicile extends AbstractPersistable implements Standstill {

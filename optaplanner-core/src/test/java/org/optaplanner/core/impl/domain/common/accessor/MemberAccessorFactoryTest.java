@@ -16,16 +16,16 @@
 
 package org.optaplanner.core.impl.domain.common.accessor;
 
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertSame;
+import static org.optaplanner.core.impl.testdata.util.PlannerAssert.*;
+
 import org.junit.jupiter.api.Test;
 import org.optaplanner.core.api.domain.solution.drools.ProblemFactProperty;
 import org.optaplanner.core.api.domain.variable.PlanningVariable;
 import org.optaplanner.core.impl.testdata.domain.TestdataValue;
 import org.optaplanner.core.impl.testdata.domain.reflect.accessmodifier.TestdataVisibilityModifierSolution;
 import org.optaplanner.core.impl.testdata.domain.reflect.field.TestdataFieldAnnotatedEntity;
-
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertSame;
-import static org.optaplanner.core.impl.testdata.util.PlannerAssert.*;
 
 public class MemberAccessorFactoryTest {
 
@@ -45,7 +45,6 @@ public class MemberAccessorFactoryTest {
         memberAccessor.executeSetter(e1, v2);
         assertSame(v2, e1.getValue());
     }
-
 
     @Test
     public void privateField() throws NoSuchFieldException {

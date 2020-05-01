@@ -21,10 +21,6 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
 
-import com.thoughtworks.xstream.annotations.XStreamAlias;
-import com.thoughtworks.xstream.annotations.XStreamConverter;
-import com.thoughtworks.xstream.annotations.XStreamImplicit;
-import com.thoughtworks.xstream.annotations.XStreamOmitField;
 import org.optaplanner.core.api.solver.Solver;
 import org.optaplanner.core.config.heuristic.policy.HeuristicConfigPolicy;
 import org.optaplanner.core.config.phase.PhaseConfig;
@@ -37,6 +33,11 @@ import org.optaplanner.core.impl.phase.custom.DefaultCustomPhase;
 import org.optaplanner.core.impl.solver.ProblemFactChange;
 import org.optaplanner.core.impl.solver.recaller.BestSolutionRecaller;
 import org.optaplanner.core.impl.solver.termination.Termination;
+
+import com.thoughtworks.xstream.annotations.XStreamAlias;
+import com.thoughtworks.xstream.annotations.XStreamConverter;
+import com.thoughtworks.xstream.annotations.XStreamImplicit;
+import com.thoughtworks.xstream.annotations.XStreamOmitField;
 
 @XStreamAlias("customPhase")
 public class CustomPhaseConfig extends PhaseConfig<CustomPhaseConfig> {
@@ -52,7 +53,7 @@ public class CustomPhaseConfig extends PhaseConfig<CustomPhaseConfig> {
     @XStreamOmitField
     protected List<CustomPhaseCommand<?>> customPhaseCommandList = null;
 
-    /** @deprecated Use {@link Solver#addProblemFactChange(ProblemFactChange)} instead.*/
+    /** @deprecated Use {@link Solver#addProblemFactChange(ProblemFactChange)} instead. */
     @Deprecated
     protected Boolean forceUpdateBestSolution = null;
 
@@ -98,7 +99,8 @@ public class CustomPhaseConfig extends PhaseConfig<CustomPhaseConfig> {
     // With methods
     // ************************************************************************
 
-    public CustomPhaseConfig withCustomPhaseCommandClassList(List<Class<? extends CustomPhaseCommand>> customPhaseCommandClassList) {
+    public CustomPhaseConfig withCustomPhaseCommandClassList(
+            List<Class<? extends CustomPhaseCommand>> customPhaseCommandClassList) {
         this.customPhaseCommandClassList = customPhaseCommandClassList;
         return this;
     }
@@ -135,7 +137,7 @@ public class CustomPhaseConfig extends PhaseConfig<CustomPhaseConfig> {
         }
         List<CustomPhaseCommand<?>> customPhaseCommandList_ = new ArrayList<>(
                 (customPhaseCommandClassList == null ? 0 : customPhaseCommandClassList.size())
-                + (customPhaseCommandList == null ? 0 : customPhaseCommandList.size()));
+                        + (customPhaseCommandList == null ? 0 : customPhaseCommandList.size()));
         if (customPhaseCommandClassList != null) {
             for (Class<? extends CustomPhaseCommand> customPhaseCommandClass : customPhaseCommandClassList) {
                 CustomPhaseCommand customPhaseCommand = ConfigUtils.newInstance(this,

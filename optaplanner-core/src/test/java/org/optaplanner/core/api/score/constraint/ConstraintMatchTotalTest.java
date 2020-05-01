@@ -16,13 +16,13 @@
 
 package org.optaplanner.core.api.score.constraint;
 
+import static java.util.Arrays.*;
+import static org.junit.Assert.*;
+
 import org.junit.jupiter.api.Test;
 import org.optaplanner.core.api.score.buildin.simple.SimpleScore;
 import org.optaplanner.core.impl.testdata.domain.TestdataEntity;
 import org.optaplanner.core.impl.testdata.util.PlannerAssert;
-
-import static java.util.Arrays.*;
-import static org.junit.Assert.*;
 
 public class ConstraintMatchTotalTest {
 
@@ -55,13 +55,11 @@ public class ConstraintMatchTotalTest {
         PlannerAssert.assertObjectsAreEqual(
                 new ConstraintMatchTotal("a.b", "c", SimpleScore.ZERO),
                 new ConstraintMatchTotal("a.b", "c", SimpleScore.ZERO),
-                new ConstraintMatchTotal("a.b", "c", SimpleScore.of(-7))
-        );
+                new ConstraintMatchTotal("a.b", "c", SimpleScore.of(-7)));
         PlannerAssert.assertObjectsAreNotEqual(
                 new ConstraintMatchTotal("a.b", "c", SimpleScore.ZERO),
                 new ConstraintMatchTotal("a.b", "d", SimpleScore.ZERO),
-                new ConstraintMatchTotal("a.c", "d", SimpleScore.ZERO)
-        );
+                new ConstraintMatchTotal("a.c", "d", SimpleScore.ZERO));
     }
 
     @Test
@@ -74,8 +72,7 @@ public class ConstraintMatchTotalTest {
                 new ConstraintMatchTotal("a.b", "d", SimpleScore.ZERO),
                 new ConstraintMatchTotal("a.c", "a", SimpleScore.ZERO),
                 new ConstraintMatchTotal("a.c", "b", SimpleScore.ZERO),
-                new ConstraintMatchTotal("a.c", "c", SimpleScore.ZERO)
-        );
+                new ConstraintMatchTotal("a.c", "c", SimpleScore.ZERO));
     }
 
 }

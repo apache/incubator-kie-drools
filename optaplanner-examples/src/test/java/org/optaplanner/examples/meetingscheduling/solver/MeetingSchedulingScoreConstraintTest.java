@@ -62,7 +62,7 @@ public class MeetingSchedulingScoreConstraintTest {
 
             Day d = new Day();
             d.setId((long) i);
-            d.setDayOfYear(i+1);
+            d.setDayOfYear(i + 1);
             dayList.add(d);
 
             TimeGrain t = new TimeGrain();
@@ -117,12 +117,13 @@ public class MeetingSchedulingScoreConstraintTest {
         }
         solution.setAttendanceList(aList);
 
-        /* Scenario 1: should penalize
-                t0  t1  t2  t3  t4  t5
-               --- --- --- --- --- ---
-           r0 |  m0   |
-           r1         |  m1   |
-        */
+        /*
+         * Scenario 1: should penalize
+         * t0 t1 t2 t3 t4 t5
+         * --- --- --- --- --- ---
+         * r0 | m0 |
+         * r1 | m1 |
+         */
         MeetingAssignment ma0 = solution.getMeetingAssignmentList().get(0);
         ma0.setStartingTimeGrain(solution.getTimeGrainList().get(0));
         ma0.setRoom(solution.getRoomList().get(0));
@@ -133,54 +134,60 @@ public class MeetingSchedulingScoreConstraintTest {
 
         scoreVerifier.assertSoftWeight("Room stability", -constraintConfiguration.getRoomStability().getSoftScore(), solution);
 
-        /* Scenario 2: should penalize
-                t0  t1  t2  t3  t4  t5
-               --- --- --- --- --- ---
-           r0 |  m0   |
-           r1              |  m1   |
-        */
+        /*
+         * Scenario 2: should penalize
+         * t0 t1 t2 t3 t4 t5
+         * --- --- --- --- --- ---
+         * r0 | m0 |
+         * r1 | m1 |
+         */
         ma1.setStartingTimeGrain(solution.getTimeGrainList().get(3));
         scoreVerifier.assertSoftWeight("Room stability", -constraintConfiguration.getRoomStability().getSoftScore(), solution);
 
-        /* Scenario 3: should penalize
-                t0  t1  t2  t3  t4  t5
-               --- --- --- --- --- ---
-           r0 |  m0   |
-           r1                 |  m1   |
-        */
+        /*
+         * Scenario 3: should penalize
+         * t0 t1 t2 t3 t4 t5
+         * --- --- --- --- --- ---
+         * r0 | m0 |
+         * r1 | m1 |
+         */
         ma1.setStartingTimeGrain(solution.getTimeGrainList().get(4));
         scoreVerifier.assertSoftWeight("Room stability", -constraintConfiguration.getRoomStability().getSoftScore(), solution);
 
-        /* Scenario 4: shouldn't penalize
-                t0  t1  t2  t3  t4  t5
-               --- --- --- --- --- ---
-           r0 |  m0   |
-           r1                     |  m1   |
-        */
+        /*
+         * Scenario 4: shouldn't penalize
+         * t0 t1 t2 t3 t4 t5
+         * --- --- --- --- --- ---
+         * r0 | m0 |
+         * r1 | m1 |
+         */
         ma1.setStartingTimeGrain(solution.getTimeGrainList().get(5));
         scoreVerifier.assertSoftWeight("Room stability", 0, solution);
 
-        /* Scenario 5: shouldn't penalize
-                t0  t1  t2  t3  t4  t5
-               --- --- --- --- --- ---
-           r0 |  m0   ||  m1   |
-           r1
-        */
+        /*
+         * Scenario 5: shouldn't penalize
+         * t0 t1 t2 t3 t4 t5
+         * --- --- --- --- --- ---
+         * r0 | m0 || m1 |
+         * r1
+         */
         ma1.setStartingTimeGrain(solution.getTimeGrainList().get(2));
         ma1.setRoom(solution.getRoomList().get(0));
         scoreVerifier.assertSoftWeight("Room stability", 0, solution);
 
-        /* Scenario 1: should penalize twice
-                t0  t1  t2  t3  t4  t5
-               --- --- --- --- --- ---
-           r0 |  m0   |       |  m2   |
-           r1         |  m1   |
-        */
+        /*
+         * Scenario 1: should penalize twice
+         * t0 t1 t2 t3 t4 t5
+         * --- --- --- --- --- ---
+         * r0 | m0 | | m2 |
+         * r1 | m1 |
+         */
         ma1.setRoom(solution.getRoomList().get(1));
         MeetingAssignment ma2 = solution.getMeetingAssignmentList().get(2);
         ma2.setStartingTimeGrain(solution.getTimeGrainList().get(4));
         ma2.setRoom(solution.getRoomList().get(0));
-        scoreVerifier.assertSoftWeight("Room stability", -constraintConfiguration.getRoomStability().getSoftScore() * 2, solution);
+        scoreVerifier.assertSoftWeight("Room stability", -constraintConfiguration.getRoomStability().getSoftScore() * 2,
+                solution);
     }
 
 }

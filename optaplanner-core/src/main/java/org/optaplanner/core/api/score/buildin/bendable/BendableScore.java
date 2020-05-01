@@ -32,6 +32,7 @@ import org.optaplanner.core.impl.score.buildin.bendable.BendableScoreDefinition;
  * <p>
  * The {@link #getHardLevelsSize()} and {@link #getSoftLevelsSize()} must be the same as in the
  * {@link BendableScoreDefinition} used.
+ * 
  * @see Score
  */
 public final class BendableScore extends AbstractBendableScore<BendableScore>
@@ -57,6 +58,7 @@ public final class BendableScore extends AbstractBendableScore<BendableScore>
 
     /**
      * Creates a new {@link BendableScore}.
+     * 
      * @param initScore see {@link Score#getInitScore()}
      * @param hardScores never null, never change that array afterwards: it must be immutable
      * @param softScores never null, never change that array afterwards: it must be immutable
@@ -76,6 +78,7 @@ public final class BendableScore extends AbstractBendableScore<BendableScore>
 
     /**
      * Creates a new {@link BendableScore}.
+     * 
      * @param hardScores never null, never change that array afterwards: it must be immutable
      * @param softScores never null, never change that array afterwards: it must be immutable
      * @return never null
@@ -94,6 +97,7 @@ public final class BendableScore extends AbstractBendableScore<BendableScore>
 
     /**
      * Creates a new {@link BendableScore}.
+     * 
      * @param hardLevelsSize at least 0
      * @param softLevelsSize at least 0
      * @return never null
@@ -104,6 +108,7 @@ public final class BendableScore extends AbstractBendableScore<BendableScore>
 
     /**
      * Creates a new {@link BendableScore}.
+     * 
      * @param hardLevelsSize at least 0
      * @param softLevelsSize at least 0
      * @param hardLevel at least 0, less than hardLevelsSize
@@ -118,6 +123,7 @@ public final class BendableScore extends AbstractBendableScore<BendableScore>
 
     /**
      * Creates a new {@link BendableScore}.
+     * 
      * @param hardLevelsSize at least 0
      * @param softLevelsSize at least 0
      * @param softLevel at least 0, less than softLevelsSize
@@ -181,7 +187,7 @@ public final class BendableScore extends AbstractBendableScore<BendableScore>
 
     /**
      * @param hardLevel {@code 0 <= hardLevel <} {@link #getHardLevelsSize()}.
-     * The {@code scoreLevel} is {@code hardLevel} for hard levels and {@code softLevel + hardLevelSize} for soft levels.
+     *        The {@code scoreLevel} is {@code hardLevel} for hard levels and {@code softLevel + hardLevelSize} for soft levels.
      * @return higher is better
      */
     public int getHardScore(int hardLevel) {
@@ -195,7 +201,7 @@ public final class BendableScore extends AbstractBendableScore<BendableScore>
 
     /**
      * @param softLevel {@code 0 <= softLevel <} {@link #getSoftLevelsSize()}.
-     * The {@code scoreLevel} is {@code hardLevel} for hard levels and {@code softLevel + hardLevelSize} for soft levels.
+     *        The {@code scoreLevel} is {@code hardLevel} for hard levels and {@code softLevel + hardLevelSize} for soft levels.
      * @return higher is better
      */
     public int getSoftScore(int softLevel) {
@@ -329,10 +335,10 @@ public final class BendableScore extends AbstractBendableScore<BendableScore>
         int[] newHardScores = new int[hardScores.length];
         int[] newSoftScores = new int[softScores.length];
         for (int i = 0; i < newHardScores.length; i++) {
-            newHardScores[i] = - hardScores[i];
+            newHardScores[i] = -hardScores[i];
         }
         for (int i = 0; i < newSoftScores.length; i++) {
-            newSoftScores[i] = - softScores[i];
+            newSoftScores[i] = -softScores[i];
         }
         return new BendableScore(-initScore, newHardScores, newSoftScores);
     }

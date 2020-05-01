@@ -16,6 +16,11 @@
 
 package org.optaplanner.persistence.jaxb.impl.domain.solution;
 
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotSame;
+import static org.junit.Assert.assertSame;
+import static org.optaplanner.core.impl.testdata.util.PlannerAssert.*;
+
 import java.io.File;
 import java.io.IOException;
 import java.util.Arrays;
@@ -26,11 +31,6 @@ import org.optaplanner.core.api.score.buildin.simple.SimpleScore;
 import org.optaplanner.persistence.jaxb.impl.testdata.domain.JaxbTestdataEntity;
 import org.optaplanner.persistence.jaxb.impl.testdata.domain.JaxbTestdataSolution;
 import org.optaplanner.persistence.jaxb.impl.testdata.domain.JaxbTestdataValue;
-
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotSame;
-import static org.junit.Assert.assertSame;
-import static org.optaplanner.core.impl.testdata.util.PlannerAssert.*;
 
 public class JaxbSolutionFileIOTest {
 

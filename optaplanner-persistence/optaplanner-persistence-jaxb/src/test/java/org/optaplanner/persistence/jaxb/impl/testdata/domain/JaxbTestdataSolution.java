@@ -17,6 +17,7 @@
 package org.optaplanner.persistence.jaxb.impl.testdata.domain;
 
 import java.util.List;
+
 import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlElementWrapper;
 import javax.xml.bind.annotation.XmlRootElement;
@@ -34,7 +35,7 @@ import org.optaplanner.persistence.jaxb.api.score.buildin.simple.SimpleScoreJaxb
 
 @PlanningSolution
 @XmlRootElement
-@XmlType(propOrder = {"valueList", "entityList", "score"})
+@XmlType(propOrder = { "valueList", "entityList", "score" })
 public class JaxbTestdataSolution extends JaxbTestdataObject {
 
     public static SolutionDescriptor<JaxbTestdataSolution> buildSolutionDescriptor() {

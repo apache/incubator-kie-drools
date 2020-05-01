@@ -17,6 +17,7 @@
 package org.optaplanner.examples.tsp.swingui;
 
 import java.awt.BorderLayout;
+
 import javax.swing.JScrollPane;
 import javax.swing.JTabbedPane;
 
@@ -114,18 +115,20 @@ public class TspPanel extends SolutionPanel<TspSolution> {
             scoreDirector.triggerVariableListeners();
         });
     }
+
     public void connectStandstills(Standstill sourceStandstill, Standstill targetStandstill) {
         if (targetStandstill instanceof Domicile) {
             TspSolution tspSolution = getSolution();
             Standstill lastStandstill = tspSolution.getDomicile();
-            for (Visit nextVisit = findNextVisit(tspSolution, lastStandstill); nextVisit != null; nextVisit = findNextVisit(tspSolution, lastStandstill)) {
+            for (Visit nextVisit = findNextVisit(tspSolution, lastStandstill); nextVisit != null; nextVisit = findNextVisit(
+                    tspSolution, lastStandstill)) {
                 lastStandstill = nextVisit;
             }
             targetStandstill = sourceStandstill;
             sourceStandstill = lastStandstill;
         }
         if (targetStandstill instanceof Visit
-                && (sourceStandstill instanceof Domicile ||  ((Visit) sourceStandstill).getPreviousStandstill() != null)) {
+                && (sourceStandstill instanceof Domicile || ((Visit) sourceStandstill).getPreviousStandstill() != null)) {
             solutionBusiness.doChangeMove((Visit) targetStandstill, "previousStandstill", sourceStandstill);
         }
         solverAndPersistenceFrame.resetScreen();

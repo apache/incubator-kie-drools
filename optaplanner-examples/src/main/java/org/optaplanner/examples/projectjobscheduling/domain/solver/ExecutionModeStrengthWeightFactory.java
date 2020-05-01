@@ -16,6 +16,8 @@
 
 package org.optaplanner.examples.projectjobscheduling.domain.solver;
 
+import static java.util.Comparator.*;
+
 import java.util.Comparator;
 import java.util.HashMap;
 import java.util.Map;
@@ -25,8 +27,6 @@ import org.optaplanner.examples.projectjobscheduling.domain.ExecutionMode;
 import org.optaplanner.examples.projectjobscheduling.domain.ResourceRequirement;
 import org.optaplanner.examples.projectjobscheduling.domain.Schedule;
 import org.optaplanner.examples.projectjobscheduling.domain.resource.Resource;
-
-import static java.util.Comparator.*;
 
 public class ExecutionModeStrengthWeightFactory implements SelectionSorterWeightFactory<Schedule, ExecutionMode> {
 
@@ -60,8 +60,8 @@ public class ExecutionModeStrengthWeightFactory implements SelectionSorterWeight
 
     public static class ExecutionModeStrengthWeight implements Comparable<ExecutionModeStrengthWeight> {
 
-        private static final Comparator<ExecutionModeStrengthWeight> COMPARATOR =
-                comparingDouble((ExecutionModeStrengthWeight weight) -> weight.requirementDesirability)
+        private static final Comparator<ExecutionModeStrengthWeight> COMPARATOR = comparingDouble(
+                (ExecutionModeStrengthWeight weight) -> weight.requirementDesirability)
                         .thenComparing(weight -> weight.executionMode, comparingLong(ExecutionMode::getId));
 
         private final ExecutionMode executionMode;

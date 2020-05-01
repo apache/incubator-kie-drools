@@ -26,8 +26,7 @@ import org.optaplanner.persistence.xstream.impl.domain.solution.XStreamSolutionF
 
 public class InvestmentApp extends CommonApp<InvestmentSolution> {
 
-    public static final String SOLVER_CONFIG
-            = "org/optaplanner/examples/investment/solver/investmentSolverConfig.xml";
+    public static final String SOLVER_CONFIG = "org/optaplanner/examples/investment/solver/investmentSolverConfig.xml";
 
     public static final String DATA_DIR_NAME = "investment";
 
@@ -39,7 +38,7 @@ public class InvestmentApp extends CommonApp<InvestmentSolution> {
     public InvestmentApp() {
         super("Investment allocation",
                 "Decide the percentage of the investor's budget to invest in each asset class.\n\n"
-                + "Maximize expected return.",
+                        + "Maximize expected return.",
                 SOLVER_CONFIG, DATA_DIR_NAME,
                 InvestmentPanel.LOGO_PATH);
     }
@@ -56,7 +55,7 @@ public class InvestmentApp extends CommonApp<InvestmentSolution> {
 
     @Override
     protected AbstractSolutionImporter[] createSolutionImporters() {
-        return new AbstractSolutionImporter[]{
+        return new AbstractSolutionImporter[] {
                 new InvestmentImporter()
         };
     }

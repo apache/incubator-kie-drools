@@ -16,14 +16,14 @@
 
 package org.optaplanner.core.api.score.buildin.hardsoftbigdecimal;
 
+import static org.junit.Assert.*;
+
 import java.math.BigDecimal;
 
 import org.junit.jupiter.api.Test;
 import org.kie.api.definition.rule.Rule;
 import org.kie.api.runtime.rule.RuleContext;
 import org.optaplanner.core.api.score.holder.AbstractScoreHolderTest;
-
-import static org.junit.Assert.*;
 
 public class HardSoftBigDecimalScoreHolderTest extends AbstractScoreHolderTest {
 
@@ -73,11 +73,15 @@ public class HardSoftBigDecimalScoreHolderTest extends AbstractScoreHolderTest {
         scoreHolder.addMultiConstraintMatch(multi2Undo, new BigDecimal("-9.99"), new BigDecimal("-9.99"));
         callOnDelete(multi2Undo);
 
-        assertEquals(HardSoftBigDecimalScore.of(new BigDecimal("-503.01"), new BigDecimal("-40.20")), scoreHolder.extractScore(0));
-        assertEquals(HardSoftBigDecimalScore.ofUninitialized(-7, new BigDecimal("-503.01"), new BigDecimal("-40.20")), scoreHolder.extractScore(-7));
+        assertEquals(HardSoftBigDecimalScore.of(new BigDecimal("-503.01"), new BigDecimal("-40.20")),
+                scoreHolder.extractScore(0));
+        assertEquals(HardSoftBigDecimalScore.ofUninitialized(-7, new BigDecimal("-503.01"), new BigDecimal("-40.20")),
+                scoreHolder.extractScore(-7));
         if (constraintMatchEnabled) {
-            assertEquals(HardSoftBigDecimalScore.of(new BigDecimal("-0.01"), BigDecimal.ZERO), findConstraintMatchTotal(scoreHolder, "hard1").getScore());
-            assertEquals(HardSoftBigDecimalScore.of(BigDecimal.ZERO, new BigDecimal("-0.20")), scoreHolder.getIndictmentMap().get(OTHER_JUSTIFICATION).getScore());
+            assertEquals(HardSoftBigDecimalScore.of(new BigDecimal("-0.01"), BigDecimal.ZERO),
+                    findConstraintMatchTotal(scoreHolder, "hard1").getScore());
+            assertEquals(HardSoftBigDecimalScore.of(BigDecimal.ZERO, new BigDecimal("-0.20")),
+                    scoreHolder.getIndictmentMap().get(OTHER_JUSTIFICATION).getScore());
             assertNull(scoreHolder.getIndictmentMap().get(UNDO_JUSTIFICATION));
         }
     }
@@ -113,7 +117,8 @@ public class HardSoftBigDecimalScoreHolderTest extends AbstractScoreHolderTest {
         assertEquals(HardSoftBigDecimalScore.of(new BigDecimal("-210.0"), new BigDecimal("10.0")), scoreHolder.extractScore(0));
 
         scoreHolder.reward(mockRuleContext(soft2), new BigDecimal("3.0"));
-        assertEquals(HardSoftBigDecimalScore.of(new BigDecimal("-210.0"), new BigDecimal("310.0")), scoreHolder.extractScore(0));
+        assertEquals(HardSoftBigDecimalScore.of(new BigDecimal("-210.0"), new BigDecimal("310.0")),
+                scoreHolder.extractScore(0));
     }
 
 }

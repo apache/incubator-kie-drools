@@ -16,6 +16,8 @@
 
 package org.optaplanner.core.impl.score.stream.drools.bi;
 
+import static org.drools.model.DSL.on;
+
 import java.math.BigDecimal;
 import java.util.Arrays;
 import java.util.List;
@@ -53,8 +55,6 @@ import org.optaplanner.core.impl.score.stream.tri.AbstractTriJoiner;
 import org.optaplanner.core.impl.score.stream.tri.FilteringTriJoiner;
 import org.optaplanner.core.impl.score.stream.tri.NoneTriJoiner;
 
-import static org.drools.model.DSL.on;
-
 public final class DroolsBiCondition<A, B, PatternVar>
         extends DroolsCondition<PatternVar, DroolsBiRuleStructure<A, B, PatternVar>> {
 
@@ -72,14 +72,11 @@ public final class DroolsBiCondition<A, B, PatternVar>
 
     public DroolsBiCondition<A, B, PatternVar> andFilter(BiPredicate<A, B> predicate) {
         boolean shouldMergeFilters = (previousFilter != null);
-        BiPredicate<A, B> actualPredicate = shouldMergeFilters ?
-                previousFilter.predicate.and(predicate) :
-                predicate;
+        BiPredicate<A, B> actualPredicate = shouldMergeFilters ? previousFilter.predicate.and(predicate) : predicate;
         Predicate3<PatternVar, A, B> filter = (__, a, b) -> actualPredicate.test(a, b);
         // If we're merging consecutive filters, amend the original rule structure, before the first filter was applied.
-        DroolsBiRuleStructure<A, B, PatternVar> actualStructure = shouldMergeFilters ?
-                previousFilter.ruleStructure :
-                ruleStructure;
+        DroolsBiRuleStructure<A, B, PatternVar> actualStructure = shouldMergeFilters ? previousFilter.ruleStructure
+                : ruleStructure;
         Variable<A> aVariable = actualStructure.getA();
         Variable<B> bVariable = actualStructure.getB();
         DroolsPatternBuilder<PatternVar> newTargetPattern = actualStructure.getPrimaryPatternBuilder()
@@ -87,8 +84,8 @@ public final class DroolsBiCondition<A, B, PatternVar>
         DroolsBiRuleStructure<A, B, PatternVar> newRuleStructure = new DroolsBiRuleStructure<>(aVariable, bVariable,
                 newTargetPattern, actualStructure.getShelvedRuleItems(), actualStructure.getPrerequisites(),
                 actualStructure.getDependents(), actualStructure.getVariableIdSupplier());
-        ImmediatelyPreviousFilter<BiPredicate<A, B>> newPreviousFilter =
-                new ImmediatelyPreviousFilter<BiPredicate<A, B>>(actualStructure, actualPredicate);
+        ImmediatelyPreviousFilter<BiPredicate<A, B>> newPreviousFilter = new ImmediatelyPreviousFilter<BiPredicate<A, B>>(
+                actualStructure, actualPredicate);
         // Carry forward the information for filter merging.
         return new DroolsBiCondition<>(newRuleStructure, newPreviousFilter);
     }
@@ -134,18 +131,14 @@ public final class DroolsBiCondition<A, B, PatternVar>
                     throw new IllegalStateException("Indexing joiner (" + joiner + ") must not follow a filtering joiner ("
                             + joiners[indexOfFirstFilter] + ").");
                 } else { // Merge this Joiner with the existing Joiners.
-                    finalJoiner = finalJoiner == null ?
-                            joiner :
-                            AbstractTriJoiner.merge(finalJoiner, joiner);
+                    finalJoiner = finalJoiner == null ? joiner : AbstractTriJoiner.merge(finalJoiner, joiner);
                 }
             } else {
                 if (!hasAFilter) { // From now on, we only allow filtering joiners.
                     indexOfFirstFilter = i;
                 }
                 // We merge all filters into one, so that we don't pay the penalty for lack of indexing more than once.
-                finalFilter = finalFilter == null ?
-                        joiner.getFilter() :
-                        finalFilter.and(joiner.getFilter());
+                finalFilter = finalFilter == null ? joiner.getFilter() : finalFilter.and(joiner.getFilter());
             }
         }
         return applyJoiners(otherClass, finalJoiner, finalFilter, shouldExist);
@@ -167,9 +160,8 @@ public final class DroolsBiCondition<A, B, PatternVar>
 
     private <C> DroolsBiCondition<A, B, PatternVar> applyFilters(PatternDef<C> existencePattern,
             TriPredicate<A, B, C> predicate, boolean shouldExist) {
-        PatternDef<C> possiblyFilteredExistencePattern = predicate == null ?
-                existencePattern :
-                existencePattern.expr("Filter using " + predicate, ruleStructure.getA(), ruleStructure.getB(),
+        PatternDef<C> possiblyFilteredExistencePattern = predicate == null ? existencePattern
+                : existencePattern.expr("Filter using " + predicate, ruleStructure.getA(), ruleStructure.getB(),
                         (c, a, b) -> predicate.test(a, b, c));
         return new DroolsBiCondition<>(ruleStructure.existsOrNot(possiblyFilteredExistencePattern, shouldExist));
     }
@@ -212,8 +204,8 @@ public final class DroolsBiCondition<A, B, PatternVar>
                 getRuleStructure().getA(), getRuleStructure().getB()));
     }
 
-    public <NewA, NewB, NewC, NewD> DroolsQuadCondition<NewA, NewB, NewC, NewD, QuadTuple<NewA, NewB, NewC, NewD>>
-    andGroupBiWithCollectBi(BiFunction<A, B, NewA> groupKeyAMapping, BiFunction<A, B, NewB> groupKeyBMapping,
+    public <NewA, NewB, NewC, NewD> DroolsQuadCondition<NewA, NewB, NewC, NewD, QuadTuple<NewA, NewB, NewC, NewD>> andGroupBiWithCollectBi(
+            BiFunction<A, B, NewA> groupKeyAMapping, BiFunction<A, B, NewB> groupKeyBMapping,
             BiConstraintCollector<A, B, ?, NewC> collectorC, BiConstraintCollector<A, B, ?, NewD> collectorD) {
         return groupBiWithCollectBi(() -> new DroolsBiToQuadGroupByInvoker<>(groupKeyAMapping, groupKeyBMapping,
                 collectorC, collectorD, getRuleStructure().getA(), getRuleStructure().getB()));
@@ -246,9 +238,8 @@ public final class DroolsBiCondition<A, B, PatternVar>
 
     private <ScoreHolder extends AbstractScoreHolder<?>> List<RuleItemBuilder<?>> completeWithScoring(
             Global<ScoreHolder> scoreHolderGlobal, Block4<Drools, ScoreHolder, A, B> consequenceImpl) {
-        ConsequenceBuilder._3<ScoreHolder, A, B> consequence =
-                on(scoreHolderGlobal, ruleStructure.getA(), ruleStructure.getB())
-                        .execute(consequenceImpl);
+        ConsequenceBuilder._3<ScoreHolder, A, B> consequence = on(scoreHolderGlobal, ruleStructure.getA(), ruleStructure.getB())
+                .execute(consequenceImpl);
         return ruleStructure.finish(consequence);
     }
 }

@@ -15,6 +15,10 @@
  */
 package org.optaplanner.core.impl.score.stream.quad;
 
+import static org.optaplanner.core.impl.score.stream.common.ScoreImpactType.MIXED;
+import static org.optaplanner.core.impl.score.stream.common.ScoreImpactType.PENALTY;
+import static org.optaplanner.core.impl.score.stream.common.ScoreImpactType.REWARD;
+
 import java.math.BigDecimal;
 
 import org.optaplanner.core.api.function.QuadFunction;
@@ -24,10 +28,6 @@ import org.optaplanner.core.api.score.Score;
 import org.optaplanner.core.api.score.stream.Constraint;
 import org.optaplanner.core.api.score.stream.quad.QuadConstraintStream;
 import org.optaplanner.core.impl.score.stream.common.ScoreImpactType;
-
-import static org.optaplanner.core.impl.score.stream.common.ScoreImpactType.MIXED;
-import static org.optaplanner.core.impl.score.stream.common.ScoreImpactType.PENALTY;
-import static org.optaplanner.core.impl.score.stream.common.ScoreImpactType.REWARD;
 
 public interface InnerQuadConstraintStream<A, B, C, D> extends QuadConstraintStream<A, B, C, D> {
 

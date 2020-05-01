@@ -16,14 +16,14 @@
 
 package org.optaplanner.examples.cloudbalancing.optional.domain;
 
+import static java.util.Comparator.comparing;
+import static java.util.Comparator.comparingInt;
+
 import java.io.Serializable;
 import java.util.Collections;
 import java.util.Comparator;
 
 import org.optaplanner.examples.cloudbalancing.domain.CloudComputer;
-
-import static java.util.Comparator.comparing;
-import static java.util.Comparator.comparingInt;
 
 public class CloudComputerStrengthComparator implements Comparator<CloudComputer>,
         Serializable {

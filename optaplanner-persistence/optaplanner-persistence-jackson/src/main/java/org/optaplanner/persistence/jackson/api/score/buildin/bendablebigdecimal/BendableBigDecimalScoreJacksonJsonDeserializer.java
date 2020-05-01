@@ -18,16 +18,18 @@ package org.optaplanner.persistence.jackson.api.score.buildin.bendablebigdecimal
 
 import java.io.IOException;
 
-import com.fasterxml.jackson.core.JsonParser;
-import com.fasterxml.jackson.databind.DeserializationContext;
 import org.optaplanner.core.api.score.buildin.bendablebigdecimal.BendableBigDecimalScore;
 import org.optaplanner.persistence.jackson.api.score.AbstractScoreJacksonJsonDeserializer;
+
+import com.fasterxml.jackson.core.JsonParser;
+import com.fasterxml.jackson.databind.DeserializationContext;
 
 @SuppressWarnings("checkstyle:javadocstyle")
 /**
  * {@inheritDoc}
  */
-public class BendableBigDecimalScoreJacksonJsonDeserializer extends AbstractScoreJacksonJsonDeserializer<BendableBigDecimalScore> {
+public class BendableBigDecimalScoreJacksonJsonDeserializer
+        extends AbstractScoreJacksonJsonDeserializer<BendableBigDecimalScore> {
 
     @Override
     public BendableBigDecimalScore deserialize(JsonParser parser, DeserializationContext context) throws IOException {

@@ -24,7 +24,8 @@ import org.optaplanner.core.impl.score.stream.bavet.BavetConstraintFactory;
 import org.optaplanner.core.impl.score.stream.bavet.common.BavetNodeBuildPolicy;
 import org.optaplanner.core.impl.score.stream.bavet.uni.BavetFromUniConstraintStream;
 
-public final class BavetFilterTriConstraintStream<Solution_, A, B, C> extends BavetAbstractTriConstraintStream<Solution_, A, B, C> {
+public final class BavetFilterTriConstraintStream<Solution_, A, B, C>
+        extends BavetAbstractTriConstraintStream<Solution_, A, B, C> {
 
     private final BavetAbstractTriConstraintStream<Solution_, A, B, C> parent;
     private final TriPredicate<A, B, C> predicate;
@@ -57,7 +58,7 @@ public final class BavetFilterTriConstraintStream<Solution_, A, B, C> extends Ba
 
     @Override
     public String toString() {
-        return "Filter() with " + childStreamList.size()  + " children";
+        return "Filter() with " + childStreamList.size() + " children";
     }
 
     // ************************************************************************

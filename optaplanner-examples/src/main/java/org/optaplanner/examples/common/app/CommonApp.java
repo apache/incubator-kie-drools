@@ -19,6 +19,7 @@ package org.optaplanner.examples.common.app;
 import java.awt.Component;
 import java.io.File;
 import java.util.function.BiConsumer;
+
 import javax.swing.WindowConstants;
 
 import org.optaplanner.core.api.domain.solution.PlanningSolution;
@@ -112,8 +113,10 @@ public abstract class CommonApp<Solution_> extends LoggingMain {
 
     public void init(Component centerForComponent, boolean exitOnClose) {
         solutionBusiness = createSolutionBusiness();
-        solverAndPersistenceFrame = new SolverAndPersistenceFrame<>(solutionBusiness, createSolutionPanel(), createExtraActions());
-        solverAndPersistenceFrame.setDefaultCloseOperation(exitOnClose ? WindowConstants.EXIT_ON_CLOSE : WindowConstants.DISPOSE_ON_CLOSE);
+        solverAndPersistenceFrame = new SolverAndPersistenceFrame<>(solutionBusiness, createSolutionPanel(),
+                createExtraActions());
+        solverAndPersistenceFrame
+                .setDefaultCloseOperation(exitOnClose ? WindowConstants.EXIT_ON_CLOSE : WindowConstants.DISPOSE_ON_CLOSE);
         solverAndPersistenceFrame.init(centerForComponent);
         solverAndPersistenceFrame.setVisible(true);
     }
@@ -144,6 +147,7 @@ public abstract class CommonApp<Solution_> extends LoggingMain {
     /**
      * Used for the unsolved and solved directories,
      * not for the import and output directories, in the data directory.
+     * 
      * @return never null
      */
     public abstract SolutionFileIO<Solution_> createSolutionFileIO();

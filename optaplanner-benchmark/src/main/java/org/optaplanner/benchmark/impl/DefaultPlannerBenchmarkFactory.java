@@ -33,7 +33,8 @@ public class DefaultPlannerBenchmarkFactory extends PlannerBenchmarkFactory {
         this(plannerBenchmarkConfig, new SolverConfigContext());
     }
 
-    public DefaultPlannerBenchmarkFactory(PlannerBenchmarkConfig plannerBenchmarkConfig, SolverConfigContext solverConfigContext) {
+    public DefaultPlannerBenchmarkFactory(PlannerBenchmarkConfig plannerBenchmarkConfig,
+            SolverConfigContext solverConfigContext) {
         if (plannerBenchmarkConfig == null) {
             throw new IllegalStateException("The plannerBenchmarkConfig (" + plannerBenchmarkConfig + ") cannot be null.");
         }

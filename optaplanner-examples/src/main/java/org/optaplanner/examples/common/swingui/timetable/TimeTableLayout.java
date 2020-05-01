@@ -106,11 +106,11 @@ public class TimeTableLayout implements LayoutManager2, Serializable {
         TimeTableLayoutConstraints c = (TimeTableLayoutConstraints) o;
         if (c.getXEnd() > columns.size()) {
             throw new IllegalArgumentException("The xEnd (" + c.getXEnd()
-                    + ") is > columnsSize (" +  columns.size() + ").");
+                    + ") is > columnsSize (" + columns.size() + ").");
         }
         if (c.getYEnd() > rows.size()) {
             throw new IllegalArgumentException("The yEnd (" + c.getYEnd()
-                    + ") is > rowsSize (" +  rows.size() + ").");
+                    + ") is > rowsSize (" + rows.size() + ").");
         }
         stale = true;
         ComponentSpan span = new ComponentSpan(component);
@@ -192,7 +192,6 @@ public class TimeTableLayout implements LayoutManager2, Serializable {
         return 0.5f;
     }
 
-
     @Override
     public void invalidateLayout(Container target) {
         // No effect
@@ -205,11 +204,13 @@ public class TimeTableLayout implements LayoutManager2, Serializable {
             for (ComponentSpan span : spanMap.values()) {
                 int x1 = span.topLeftCell.column.boundX;
                 int collisionIndexStart = (span.collisionIndex == FILL_COLLISIONS_FLAG)
-                        ? 0 : span.collisionIndex;
+                        ? 0
+                        : span.collisionIndex;
                 int y1 = span.topLeftCell.row.boundY + (collisionIndexStart * span.topLeftCell.row.baseHeight);
                 int x2 = span.bottomRightCell.column.boundX + span.bottomRightCell.column.baseWidth;
                 int collisionIndexEnd = (span.collisionIndex == FILL_COLLISIONS_FLAG)
-                        ? span.bottomRightCell.row.collisionCount : span.collisionIndex + 1;
+                        ? span.bottomRightCell.row.collisionCount
+                        : span.collisionIndex + 1;
                 int y2 = span.bottomRightCell.row.boundY + (collisionIndexEnd * span.bottomRightCell.row.baseHeight);
                 span.component.setBounds(x1, y1, x2 - x1, y2 - y1);
             }

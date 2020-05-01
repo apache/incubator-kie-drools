@@ -41,6 +41,7 @@ import org.optaplanner.core.impl.solver.termination.Termination;
 
 /**
  * Default implementation of {@link ExhaustiveSearchPhase}.
+ * 
  * @param <Solution_> the solution type, the class with the {@link PlanningSolution} annotation
  */
 public class DefaultExhaustiveSearchPhase<Solution_> extends AbstractPhase<Solution_>
@@ -254,7 +255,7 @@ public class DefaultExhaustiveSearchPhase<Solution_> extends AbstractPhase<Solut
         decider.phaseEnded(phaseScope);
         phaseScope.endingNow();
         logger.info("{}Exhaustive Search phase ({}) ended: time spent ({}), best score ({}),"
-                        + " score calculation speed ({}/sec), step total ({}).",
+                + " score calculation speed ({}/sec), step total ({}).",
                 logIndentation,
                 phaseIndex,
                 phaseScope.calculateSolverTimeMillisSpentUpToNow(),

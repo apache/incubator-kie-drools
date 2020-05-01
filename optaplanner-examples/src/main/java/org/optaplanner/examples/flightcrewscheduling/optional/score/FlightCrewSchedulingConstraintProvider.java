@@ -15,7 +15,7 @@ public class FlightCrewSchedulingConstraintProvider implements ConstraintProvide
 
     @Override
     public Constraint[] defineConstraints(ConstraintFactory constraintFactory) {
-        return new Constraint[]{
+        return new Constraint[] {
                 requiredSkill(constraintFactory),
                 flightConflict(constraintFactory),
                 transferBetweenTwoFlights(constraintFactory),

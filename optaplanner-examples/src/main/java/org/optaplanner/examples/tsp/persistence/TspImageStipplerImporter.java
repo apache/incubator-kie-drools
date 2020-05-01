@@ -69,7 +69,8 @@ public class TspImageStipplerImporter extends AbstractPngSolutionImporter<TspSol
         }
 
         /**
-         * As described by <a href="https://en.wikipedia.org/wiki/Floyd%E2%80%93Steinberg_dithering">Floyd-Steinberg dithering</a>.
+         * As described by <a href="https://en.wikipedia.org/wiki/Floyd%E2%80%93Steinberg_dithering">Floyd-Steinberg
+         * dithering</a>.
          */
         private void floydSteinbergDithering() {
             tspSolution.setDistanceType(DistanceType.AIR_DISTANCE);
@@ -92,7 +93,7 @@ public class TspImageStipplerImporter extends AbstractPngSolutionImporter<TspSol
                         Location location = new AirLocation();
                         location.setId(id);
                         id++;
-                        location.setLatitude(- y);
+                        location.setLatitude(-y);
                         location.setLongitude(x);
                         locationList.add(location);
                         error = diffusedGray;

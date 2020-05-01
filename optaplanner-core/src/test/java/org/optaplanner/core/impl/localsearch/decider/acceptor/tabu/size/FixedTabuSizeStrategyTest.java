@@ -16,11 +16,11 @@
 
 package org.optaplanner.core.impl.localsearch.decider.acceptor.tabu.size;
 
-import org.junit.jupiter.api.Test;
-import org.optaplanner.core.impl.localsearch.scope.LocalSearchStepScope;
-
 import static org.junit.Assert.*;
 import static org.mockito.Mockito.*;
+
+import org.junit.jupiter.api.Test;
+import org.optaplanner.core.impl.localsearch.scope.LocalSearchStepScope;
 
 public class FixedTabuSizeStrategyTest {
 

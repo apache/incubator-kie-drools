@@ -29,6 +29,7 @@ public interface SingletonInverseVariableSupply extends Supply {
 
     /**
      * If entity1.varA = x then the inverse of x is entity1.
+     * 
      * @param planningValue never null
      * @return sometimes null, an entity for which the planning variable is the planningValue.
      */

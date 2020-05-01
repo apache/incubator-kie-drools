@@ -23,7 +23,8 @@ import org.optaplanner.examples.nurserostering.domain.ShiftAssignment;
 
 public class NurseRosteringMoveHelper {
 
-    public static void moveEmployee(ScoreDirector<NurseRoster> scoreDirector, ShiftAssignment shiftAssignment, Employee toEmployee) {
+    public static void moveEmployee(ScoreDirector<NurseRoster> scoreDirector, ShiftAssignment shiftAssignment,
+            Employee toEmployee) {
         scoreDirector.beforeVariableChanged(shiftAssignment, "employee");
         shiftAssignment.setEmployee(toEmployee);
         scoreDirector.afterVariableChanged(shiftAssignment, "employee");

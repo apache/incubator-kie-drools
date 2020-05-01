@@ -32,6 +32,7 @@ import org.optaplanner.core.impl.localsearch.scope.LocalSearchStepScope;
 
 /**
  * Abstract superclass for all Tabu Acceptors.
+ * 
  * @see Acceptor
  */
 public abstract class AbstractTabuAcceptor extends AbstractAcceptor {
@@ -80,7 +81,8 @@ public abstract class AbstractTabuAcceptor extends AbstractAcceptor {
         LocalSearchStepScope lastCompletedStepScope = phaseScope.getLastCompletedStepScope();
         // Tabu sizes do not change during stepStarted(), because they must be in sync with the tabuSequenceList.size()
         workingTabuSize = tabuSizeStrategy == null ? 0 : tabuSizeStrategy.determineTabuSize(lastCompletedStepScope);
-        workingFadingTabuSize = fadingTabuSizeStrategy == null ? 0 : fadingTabuSizeStrategy.determineTabuSize(lastCompletedStepScope);
+        workingFadingTabuSize = fadingTabuSizeStrategy == null ? 0
+                : fadingTabuSizeStrategy.determineTabuSize(lastCompletedStepScope);
         int totalTabuListSize = workingTabuSize + workingFadingTabuSize; // is at least 1
         tabuToStepIndexMap = new HashMap<>(totalTabuListSize);
         tabuSequenceDeque = new ArrayDeque<>();

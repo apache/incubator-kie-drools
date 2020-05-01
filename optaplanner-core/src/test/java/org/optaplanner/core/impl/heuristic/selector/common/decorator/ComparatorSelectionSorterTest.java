@@ -16,6 +16,8 @@
 
 package org.optaplanner.core.impl.heuristic.selector.common.decorator;
 
+import static org.junit.Assert.*;
+
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
@@ -25,16 +27,15 @@ import org.junit.jupiter.api.Test;
 import org.optaplanner.core.config.heuristic.selector.common.decorator.SelectionSorterOrder;
 import org.optaplanner.core.impl.testdata.domain.TestdataSolution;
 
-import static org.junit.Assert.*;
-
 public class ComparatorSelectionSorterTest {
 
     @Test
     public void sort() {
-        Integer[] baseArray = new Integer[] {3, 4, 3, 5, 1};
+        Integer[] baseArray = new Integer[] { 3, 4, 3, 5, 1 };
         List<Integer> arrayToSort = new ArrayList<>();
         Collections.addAll(arrayToSort, baseArray);
-        ComparatorSelectionSorter<TestdataSolution, Integer> selectionSorter = new ComparatorSelectionSorter<>(new TestComparator(), SelectionSorterOrder.ASCENDING);
+        ComparatorSelectionSorter<TestdataSolution, Integer> selectionSorter = new ComparatorSelectionSorter<>(
+                new TestComparator(), SelectionSorterOrder.ASCENDING);
         selectionSorter.sort(null, arrayToSort);
         assertTrue(ascendingSort(arrayToSort));
 

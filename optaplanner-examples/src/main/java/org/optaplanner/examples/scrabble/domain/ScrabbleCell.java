@@ -19,13 +19,14 @@ package org.optaplanner.examples.scrabble.domain;
 import java.util.Map;
 import java.util.Set;
 
-import com.thoughtworks.xstream.annotations.XStreamAlias;
 import org.optaplanner.core.api.domain.entity.PlanningEntity;
 import org.optaplanner.core.api.domain.solution.cloner.DeepPlanningClone;
 import org.optaplanner.core.api.domain.variable.CustomShadowVariable;
 import org.optaplanner.core.api.domain.variable.PlanningVariableReference;
 import org.optaplanner.examples.common.domain.AbstractPersistable;
 import org.optaplanner.examples.scrabble.domain.solver.CellUpdatingVariableListener;
+
+import com.thoughtworks.xstream.annotations.XStreamAlias;
 
 @PlanningEntity()
 @XStreamAlias("ScrabbleCell")
@@ -34,9 +35,9 @@ public class ScrabbleCell extends AbstractPersistable {
     private int x;
     private int y;
 
-    @CustomShadowVariable(variableListenerClass = CellUpdatingVariableListener.class,
-            sources = {@PlanningVariableReference(entityClass = ScrabbleWordAssignment.class, variableName = "startCell"),
-                    @PlanningVariableReference(entityClass = ScrabbleWordAssignment.class, variableName = "direction")})
+    @CustomShadowVariable(variableListenerClass = CellUpdatingVariableListener.class, sources = {
+            @PlanningVariableReference(entityClass = ScrabbleWordAssignment.class, variableName = "startCell"),
+            @PlanningVariableReference(entityClass = ScrabbleWordAssignment.class, variableName = "direction") })
     @DeepPlanningClone // TODO Why is this needed? This is already a shadow var
     private Set<ScrabbleWordAssignment> wordSet;
 

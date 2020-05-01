@@ -29,9 +29,9 @@ public class TopicConflict implements Serializable,
         Comparable<TopicConflict> {
 
     private static final Comparator<Topic> TOPIC_COMPARATOR = Comparator.comparingLong(Topic::getId);
-    private static final Comparator<TopicConflict> COMPARATOR =
-            Comparator.comparing(TopicConflict::getLeftTopic, TOPIC_COMPARATOR)
-                    .thenComparing(TopicConflict::getRightTopic, TOPIC_COMPARATOR);
+    private static final Comparator<TopicConflict> COMPARATOR = Comparator
+            .comparing(TopicConflict::getLeftTopic, TOPIC_COMPARATOR)
+            .thenComparing(TopicConflict::getRightTopic, TOPIC_COMPARATOR);
     private Topic leftTopic;
     private Topic rightTopic;
     private int studentSize;

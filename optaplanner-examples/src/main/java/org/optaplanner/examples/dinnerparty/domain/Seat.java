@@ -16,8 +16,9 @@
 
 package org.optaplanner.examples.dinnerparty.domain;
 
-import com.thoughtworks.xstream.annotations.XStreamAlias;
 import org.optaplanner.examples.common.domain.AbstractPersistable;
+
+import com.thoughtworks.xstream.annotations.XStreamAlias;
 
 @XStreamAlias("Seat")
 public class Seat extends AbstractPersistable {
@@ -72,6 +73,5 @@ public class Seat extends AbstractPersistable {
     public String toString() {
         return table + "." + seatIndexInTable;
     }
-
 
 }

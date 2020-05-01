@@ -72,8 +72,8 @@ public class TestdataDeepCloningEntity extends TestdataObject {
     }
 
     @DeepPlanningClone
-    @CustomShadowVariable(sources = {@PlanningVariableReference(variableName = "value")},
-            variableListenerClass = DummyVariableListener.class)
+    @CustomShadowVariable(sources = {
+            @PlanningVariableReference(variableName = "value") }, variableListenerClass = DummyVariableListener.class)
     public List<String> getShadowVariableList() {
         return shadowVariableList;
     }
@@ -83,8 +83,8 @@ public class TestdataDeepCloningEntity extends TestdataObject {
     }
 
     @DeepPlanningClone
-    @CustomShadowVariable(sources = {@PlanningVariableReference(variableName = "value")},
-            variableListenerClass = DummyVariableListener.class)
+    @CustomShadowVariable(sources = {
+            @PlanningVariableReference(variableName = "value") }, variableListenerClass = DummyVariableListener.class)
     public Map<String, String> getShadowVariableMap() {
         return shadowVariableMap;
     }

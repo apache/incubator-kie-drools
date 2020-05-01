@@ -16,17 +16,16 @@
 
 package org.optaplanner.core.impl.heuristic.selector.move.generic.chained;
 
+import static org.assertj.core.api.Assertions.assertThatIllegalStateException;
+import static org.junit.Assert.*;
+import static org.mockito.Mockito.*;
+
 import org.junit.jupiter.api.Test;
 import org.optaplanner.core.impl.domain.variable.descriptor.GenuineVariableDescriptor;
 import org.optaplanner.core.impl.heuristic.selector.value.EntityIndependentValueSelector;
 import org.optaplanner.core.impl.heuristic.selector.value.chained.DefaultSubChainSelector;
 import org.optaplanner.core.impl.heuristic.selector.value.chained.SubChainSelector;
 import org.optaplanner.core.impl.testdata.domain.TestdataEntity;
-
-import static org.assertj.core.api.Assertions.assertThatIllegalStateException;
-import static org.junit.Assert.*;
-import static org.mockito.Mockito.*;
-
 
 public class SubChainChangeMoveSelectorTest {
 
@@ -73,8 +72,7 @@ public class SubChainChangeMoveSelectorTest {
         when(subChainSelector.getVariableDescriptor()).thenReturn(descriptor);
         EntityIndependentValueSelector valueSelector = mock(EntityIndependentValueSelector.class);
         when(valueSelector.getVariableDescriptor()).thenReturn(descriptor);
-        SubChainChangeMoveSelector testedSelector =
-                new SubChainChangeMoveSelector(subChainSelector, valueSelector, true, true);
+        SubChainChangeMoveSelector testedSelector = new SubChainChangeMoveSelector(subChainSelector, valueSelector, true, true);
 
         when(subChainSelector.isCountable()).thenReturn(false);
         when(valueSelector.isCountable()).thenReturn(true);
@@ -100,8 +98,7 @@ public class SubChainChangeMoveSelectorTest {
         when(subChainSelector.getVariableDescriptor()).thenReturn(descriptor);
         EntityIndependentValueSelector valueSelector = mock(EntityIndependentValueSelector.class);
         when(valueSelector.getVariableDescriptor()).thenReturn(descriptor);
-        SubChainChangeMoveSelector testedSelector =
-                new SubChainChangeMoveSelector(subChainSelector, valueSelector, true, true);
+        SubChainChangeMoveSelector testedSelector = new SubChainChangeMoveSelector(subChainSelector, valueSelector, true, true);
 
         when(subChainSelector.getSize()).thenReturn(1L);
         when(valueSelector.getSize()).thenReturn(2L);

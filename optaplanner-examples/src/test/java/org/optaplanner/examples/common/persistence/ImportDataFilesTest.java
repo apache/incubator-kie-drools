@@ -16,6 +16,8 @@
 
 package org.optaplanner.examples.common.persistence;
 
+import static org.junit.jupiter.api.DynamicTest.dynamicTest;
+
 import java.io.File;
 import java.io.FileFilter;
 import java.util.ArrayList;
@@ -33,8 +35,6 @@ import org.optaplanner.core.api.domain.solution.PlanningSolution;
 import org.optaplanner.examples.common.app.CommonApp;
 import org.optaplanner.examples.common.app.LoggingTest;
 import org.optaplanner.examples.common.business.ProblemFileComparator;
-
-import static org.junit.jupiter.api.DynamicTest.dynamicTest;
 
 /**
  * @param <Solution_> the solution type, the class with the {@link PlanningSolution} annotation
@@ -59,7 +59,7 @@ public abstract class ImportDataFilesTest<Solution_> extends LoggingTest {
         } else {
             // recursively
             fileList = new ArrayList<>(
-                    FileUtils.listFiles(importDir, new String[]{solutionImporter.getInputFileSuffix()}, true));
+                    FileUtils.listFiles(importDir, new String[] { solutionImporter.getInputFileSuffix() }, true));
         }
         fileList.sort(new ProblemFileComparator());
         return fileList;

@@ -1,16 +1,16 @@
 package org.optaplanner.core.impl.solver.termination;
 
-import java.util.Arrays;
-
-import org.junit.jupiter.api.Test;
-import org.optaplanner.core.impl.phase.scope.AbstractPhaseScope;
-import org.optaplanner.core.impl.solver.scope.DefaultSolverScope;
-
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
+
+import java.util.Arrays;
+
+import org.junit.jupiter.api.Test;
+import org.optaplanner.core.impl.phase.scope.AbstractPhaseScope;
+import org.optaplanner.core.impl.solver.scope.DefaultSolverScope;
 
 public class OrCompositeTerminationTest {
 

@@ -30,12 +30,12 @@ public class HardMediumSoftBigDecimalScoreJsonbAdapterTest extends AbstractScore
     public void serializeAndDeserialize() {
         assertSerializeAndDeserialize(null, new TestHardMediumSoftBigDecimalScoreWrapper(null));
         HardMediumSoftBigDecimalScore score = HardMediumSoftBigDecimalScore.of(new BigDecimal("1200.0021"),
-                                                                               new BigDecimal("-3.1415"),
-                                                                               new BigDecimal("34.4300"));
+                new BigDecimal("-3.1415"),
+                new BigDecimal("34.4300"));
         assertSerializeAndDeserialize(score, new TestHardMediumSoftBigDecimalScoreWrapper(score));
         score = HardMediumSoftBigDecimalScore.ofUninitialized(-7, new BigDecimal("1200.0021"),
-                                                              new BigDecimal("-3.1415"),
-                                                              new BigDecimal("34.4300"));
+                new BigDecimal("-3.1415"),
+                new BigDecimal("34.4300"));
         assertSerializeAndDeserialize(score, new TestHardMediumSoftBigDecimalScoreWrapper(score));
     }
 

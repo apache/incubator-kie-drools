@@ -16,6 +16,9 @@
 
 package org.optaplanner.core.impl.domain.entity.descriptor;
 
+import static org.junit.Assert.*;
+import static org.mockito.Mockito.*;
+
 import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 import org.optaplanner.core.impl.domain.solution.descriptor.SolutionDescriptor;
@@ -24,9 +27,6 @@ import org.optaplanner.core.impl.score.director.ScoreDirector;
 import org.optaplanner.core.impl.testdata.domain.immovable.TestdataImmovableEntity;
 import org.optaplanner.core.impl.testdata.domain.immovable.extended.TestdataExtendedImmovableEntity;
 import org.optaplanner.core.impl.testdata.domain.immovable.extended.TestdataExtendedImmovableSolution;
-
-import static org.junit.Assert.*;
-import static org.mockito.Mockito.*;
 
 public class EntityDescriptorTest {
 
@@ -44,7 +44,8 @@ public class EntityDescriptorTest {
                 new TestdataImmovableEntity("e2", null, true, false)));
     }
 
-    @Test @Disabled // TODO FIXME PLANNER-849
+    @Test
+    @Disabled // TODO FIXME PLANNER-849
     public void extendedMovableEntitySelectionFilterUsedByParentSelector() {
         ScoreDirector scoreDirector = mock(ScoreDirector.class);
         SolutionDescriptor solutionDescriptor = TestdataExtendedImmovableSolution.buildSolutionDescriptor();

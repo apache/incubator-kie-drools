@@ -211,7 +211,8 @@ public abstract class AbstractPhase<Solution_> implements Phase<Solution_> {
                         entity.getClass());
                 if (!entityDescriptor.isEntityInitializedOrImmovable(scoreDirector, entity)) {
                     String variableRef = null;
-                    for (GenuineVariableDescriptor<Solution_> variableDescriptor : entityDescriptor.getGenuineVariableDescriptors()) {
+                    for (GenuineVariableDescriptor<Solution_> variableDescriptor : entityDescriptor
+                            .getGenuineVariableDescriptors()) {
                         if (!variableDescriptor.isInitialized(entity)) {
                             variableRef = variableDescriptor.getSimpleEntityAndVariableName();
                             break;
@@ -219,7 +220,7 @@ public abstract class AbstractPhase<Solution_> implements Phase<Solution_> {
                     }
                     throw new IllegalStateException(getPhaseTypeString() + " phase (" + phaseIndex
                             + ") needs to start from an initialized solution, but the planning variable (" + variableRef
-                            + ") is uninitialized for the entity (" +  entity + ").\n"
+                            + ") is uninitialized for the entity (" + entity + ").\n"
                             + "Maybe there is no Construction Heuristic configured before this phase to initialize the solution.\n"
                             + "Or maybe the getter/setters of your planning variables in your domain classes aren't implemented correctly.");
                 }

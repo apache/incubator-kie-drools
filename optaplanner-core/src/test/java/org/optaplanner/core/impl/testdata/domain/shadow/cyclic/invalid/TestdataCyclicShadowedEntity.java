@@ -68,8 +68,8 @@ public class TestdataCyclicShadowedEntity extends TestdataObject {
         this.value = value;
     }
 
-    @CustomShadowVariable(variableListenerClass = RockShadowUpdatingVariableListener.class,
-            sources = {@PlanningVariableReference(variableName = "scissorsShadow")})
+    @CustomShadowVariable(variableListenerClass = RockShadowUpdatingVariableListener.class, sources = {
+            @PlanningVariableReference(variableName = "scissorsShadow") })
     public String getRockShadow() {
         return rockShadow;
     }
@@ -78,8 +78,8 @@ public class TestdataCyclicShadowedEntity extends TestdataObject {
         this.rockShadow = rockShadow;
     }
 
-    @CustomShadowVariable(variableListenerClass = PaperShadowUpdatingVariableListener.class,
-            sources = {@PlanningVariableReference(variableName = "rockShadow")})
+    @CustomShadowVariable(variableListenerClass = PaperShadowUpdatingVariableListener.class, sources = {
+            @PlanningVariableReference(variableName = "rockShadow") })
     public String getPaperShadow() {
         return paperShadow;
     }
@@ -88,8 +88,8 @@ public class TestdataCyclicShadowedEntity extends TestdataObject {
         this.paperShadow = paperShadow;
     }
 
-    @CustomShadowVariable(variableListenerClass = ScissorsShadowUpdatingVariableListener.class,
-            sources = {@PlanningVariableReference(variableName = "paperShadow")})
+    @CustomShadowVariable(variableListenerClass = ScissorsShadowUpdatingVariableListener.class, sources = {
+            @PlanningVariableReference(variableName = "paperShadow") })
     public String getScissorsShadow() {
         return scissorsShadow;
     }

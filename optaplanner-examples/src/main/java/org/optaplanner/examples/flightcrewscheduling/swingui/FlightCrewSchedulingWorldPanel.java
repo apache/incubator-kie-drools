@@ -25,6 +25,7 @@ import java.awt.event.ComponentEvent;
 import java.awt.image.BufferedImage;
 import java.time.format.DateTimeFormatter;
 import java.util.Locale;
+
 import javax.swing.JPanel;
 
 import org.apache.commons.lang3.StringUtils;
@@ -38,8 +39,7 @@ public class FlightCrewSchedulingWorldPanel extends JPanel {
 
     private static final int TEXT_SIZE = 12;
     private static final int LOCATION_NAME_TEXT_SIZE = 8;
-    protected static final DateTimeFormatter DAY_FORMATTER
-            = DateTimeFormatter.ofPattern("E yyyy-MM-dd", Locale.ENGLISH);
+    protected static final DateTimeFormatter DAY_FORMATTER = DateTimeFormatter.ofPattern("E yyyy-MM-dd", Locale.ENGLISH);
 
     private final FlightCrewSchedulingPanel flightCrewSchedulingPanel;
 

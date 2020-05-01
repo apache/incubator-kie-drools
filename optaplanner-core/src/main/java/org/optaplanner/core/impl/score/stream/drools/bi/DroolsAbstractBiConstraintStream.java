@@ -55,8 +55,8 @@ public abstract class DroolsAbstractBiConstraintStream<Solution_, A, B>
 
     @Override
     public BiConstraintStream<A, B> filter(BiPredicate<A, B> predicate) {
-        DroolsAbstractBiConstraintStream<Solution_, A, B> stream =
-                new DroolsFilterBiConstraintStream<>(constraintFactory, this, predicate);
+        DroolsAbstractBiConstraintStream<Solution_, A, B> stream = new DroolsFilterBiConstraintStream<>(constraintFactory, this,
+                predicate);
         addChildStream(stream);
         return stream;
     }
@@ -67,9 +67,9 @@ public abstract class DroolsAbstractBiConstraintStream<Solution_, A, B>
             return join(otherStream)
                     .filter(((FilteringTriJoiner<A, B, C>) joiner).getFilter());
         }
-        DroolsAbstractTriConstraintStream<Solution_, A, B, C> stream =
-                new DroolsJoinTriConstraintStream<>(constraintFactory, this,
-                        (DroolsAbstractUniConstraintStream<Solution_, C>) otherStream, joiner);
+        DroolsAbstractTriConstraintStream<Solution_, A, B, C> stream = new DroolsJoinTriConstraintStream<>(constraintFactory,
+                this,
+                (DroolsAbstractUniConstraintStream<Solution_, C>) otherStream, joiner);
         addChildStream(stream);
         return stream;
     }
@@ -93,8 +93,8 @@ public abstract class DroolsAbstractBiConstraintStream<Solution_, A, B>
     @SafeVarargs
     private final <C> BiConstraintStream<A, B> ifExistsOrNot(boolean shouldExist, Class<C> otherClass,
             TriJoiner<A, B, C>... joiners) {
-        DroolsExistsBiConstraintStream<Solution_, A, B> stream =
-                new DroolsExistsBiConstraintStream<>(constraintFactory, this, shouldExist, otherClass, joiners);
+        DroolsExistsBiConstraintStream<Solution_, A, B> stream = new DroolsExistsBiConstraintStream<>(constraintFactory, this,
+                shouldExist, otherClass, joiners);
         addChildStream(stream);
         return stream;
     }
@@ -106,16 +106,16 @@ public abstract class DroolsAbstractBiConstraintStream<Solution_, A, B>
     @Override
     public <ResultContainer_, Result_> UniConstraintStream<Result_> groupBy(
             BiConstraintCollector<A, B, ResultContainer_, Result_> collector) {
-        DroolsGroupingUniConstraintStream<Solution_, Result_> stream =
-                new DroolsGroupingUniConstraintStream<>(constraintFactory, this, collector);
+        DroolsGroupingUniConstraintStream<Solution_, Result_> stream = new DroolsGroupingUniConstraintStream<>(
+                constraintFactory, this, collector);
         addChildStream(stream);
         return stream;
     }
 
     @Override
     public <GroupKey_> UniConstraintStream<GroupKey_> groupBy(BiFunction<A, B, GroupKey_> groupKeyMapping) {
-        DroolsGroupingUniConstraintStream<Solution_, GroupKey_> stream =
-                new DroolsGroupingUniConstraintStream<>(constraintFactory, this, groupKeyMapping);
+        DroolsGroupingUniConstraintStream<Solution_, GroupKey_> stream = new DroolsGroupingUniConstraintStream<>(
+                constraintFactory, this, groupKeyMapping);
         addChildStream(stream);
         return stream;
     }
@@ -124,34 +124,40 @@ public abstract class DroolsAbstractBiConstraintStream<Solution_, A, B>
     public <GroupKey_, __, Result_> BiConstraintStream<GroupKey_, Result_> groupBy(
             BiFunction<A, B, GroupKey_> groupKeyMapping,
             BiConstraintCollector<A, B, __, Result_> collector) {
-        DroolsGroupingBiConstraintStream<Solution_, GroupKey_, Result_> stream =
-                new DroolsGroupingBiConstraintStream<>(constraintFactory, this, groupKeyMapping, collector);
+        DroolsGroupingBiConstraintStream<Solution_, GroupKey_, Result_> stream = new DroolsGroupingBiConstraintStream<>(
+                constraintFactory, this, groupKeyMapping, collector);
         addChildStream(stream);
         return stream;
     }
 
     @Override
-    public <GroupKeyA_, GroupKeyB_> BiConstraintStream<GroupKeyA_, GroupKeyB_> groupBy(BiFunction<A, B, GroupKeyA_> groupKeyAMapping, BiFunction<A, B, GroupKeyB_> groupKeyBMapping) {
-        DroolsGroupingBiConstraintStream<Solution_, GroupKeyA_, GroupKeyB_> stream =
-                new DroolsGroupingBiConstraintStream<>(constraintFactory, this, groupKeyAMapping, groupKeyBMapping);
+    public <GroupKeyA_, GroupKeyB_> BiConstraintStream<GroupKeyA_, GroupKeyB_> groupBy(
+            BiFunction<A, B, GroupKeyA_> groupKeyAMapping, BiFunction<A, B, GroupKeyB_> groupKeyBMapping) {
+        DroolsGroupingBiConstraintStream<Solution_, GroupKeyA_, GroupKeyB_> stream = new DroolsGroupingBiConstraintStream<>(
+                constraintFactory, this, groupKeyAMapping, groupKeyBMapping);
         addChildStream(stream);
         return stream;
     }
 
     @Override
-    public <GroupKeyA_, GroupKeyB_, ResultContainer_, Result_> TriConstraintStream<GroupKeyA_, GroupKeyB_, Result_> groupBy(BiFunction<A, B, GroupKeyA_> groupKeyAMapping, BiFunction<A, B, GroupKeyB_> groupKeyBMapping, BiConstraintCollector<A, B, ResultContainer_, Result_> collector) {
-        DroolsGroupingTriConstraintStream<Solution_, GroupKeyA_, GroupKeyB_, Result_> stream =
-                new DroolsGroupingTriConstraintStream<>(constraintFactory, this, groupKeyAMapping,
-                        groupKeyBMapping, collector);
+    public <GroupKeyA_, GroupKeyB_, ResultContainer_, Result_> TriConstraintStream<GroupKeyA_, GroupKeyB_, Result_> groupBy(
+            BiFunction<A, B, GroupKeyA_> groupKeyAMapping, BiFunction<A, B, GroupKeyB_> groupKeyBMapping,
+            BiConstraintCollector<A, B, ResultContainer_, Result_> collector) {
+        DroolsGroupingTriConstraintStream<Solution_, GroupKeyA_, GroupKeyB_, Result_> stream = new DroolsGroupingTriConstraintStream<>(
+                constraintFactory, this, groupKeyAMapping,
+                groupKeyBMapping, collector);
         addChildStream(stream);
         return stream;
     }
 
     @Override
-    public <GroupKeyA_, GroupKeyB_, ResultContainerC_, ResultC_, ResultContainerD_, ResultD_> QuadConstraintStream<GroupKeyA_, GroupKeyB_, ResultC_, ResultD_> groupBy(BiFunction<A, B, GroupKeyA_> groupKeyAMapping, BiFunction<A, B, GroupKeyB_> groupKeyBMapping, BiConstraintCollector<A, B, ResultContainerC_, ResultC_> collectorC, BiConstraintCollector<A, B, ResultContainerD_, ResultD_> collectorD) {
-        DroolsGroupingQuadConstraintStream<Solution_, GroupKeyA_, GroupKeyB_, ResultC_, ResultD_> stream =
-                new DroolsGroupingQuadConstraintStream<>(constraintFactory, this, groupKeyAMapping,
-                        groupKeyBMapping, collectorC, collectorD);
+    public <GroupKeyA_, GroupKeyB_, ResultContainerC_, ResultC_, ResultContainerD_, ResultD_> QuadConstraintStream<GroupKeyA_, GroupKeyB_, ResultC_, ResultD_> groupBy(
+            BiFunction<A, B, GroupKeyA_> groupKeyAMapping, BiFunction<A, B, GroupKeyB_> groupKeyBMapping,
+            BiConstraintCollector<A, B, ResultContainerC_, ResultC_> collectorC,
+            BiConstraintCollector<A, B, ResultContainerD_, ResultD_> collectorD) {
+        DroolsGroupingQuadConstraintStream<Solution_, GroupKeyA_, GroupKeyB_, ResultC_, ResultD_> stream = new DroolsGroupingQuadConstraintStream<>(
+                constraintFactory, this, groupKeyAMapping,
+                groupKeyBMapping, collectorC, collectorD);
         addChildStream(stream);
         return stream;
     }
@@ -163,8 +169,8 @@ public abstract class DroolsAbstractBiConstraintStream<Solution_, A, B>
     @Override
     public final Constraint impactScore(String constraintPackage, String constraintName, Score<?> constraintWeight,
             ScoreImpactType impactType) {
-        DroolsScoringBiConstraintStream<Solution_, A, B> stream =
-                new DroolsScoringBiConstraintStream<>(constraintFactory, this);
+        DroolsScoringBiConstraintStream<Solution_, A, B> stream = new DroolsScoringBiConstraintStream<>(constraintFactory,
+                this);
         addChildStream(stream);
         return buildConstraint(constraintPackage, constraintName, constraintWeight, impactType, stream);
     }
@@ -172,8 +178,8 @@ public abstract class DroolsAbstractBiConstraintStream<Solution_, A, B>
     @Override
     public final Constraint impactScore(String constraintPackage, String constraintName,
             Score<?> constraintWeight, ToIntBiFunction<A, B> matchWeigher, ScoreImpactType impactType) {
-        DroolsScoringBiConstraintStream<Solution_, A, B> stream =
-                new DroolsScoringBiConstraintStream<>(constraintFactory, this, matchWeigher);
+        DroolsScoringBiConstraintStream<Solution_, A, B> stream = new DroolsScoringBiConstraintStream<>(constraintFactory, this,
+                matchWeigher);
         addChildStream(stream);
         return buildConstraint(constraintPackage, constraintName, constraintWeight, impactType, stream);
     }
@@ -181,8 +187,8 @@ public abstract class DroolsAbstractBiConstraintStream<Solution_, A, B>
     @Override
     public final Constraint impactScoreLong(String constraintPackage, String constraintName,
             Score<?> constraintWeight, ToLongBiFunction<A, B> matchWeigher, ScoreImpactType impactType) {
-        DroolsScoringBiConstraintStream<Solution_, A, B> stream =
-                new DroolsScoringBiConstraintStream<>(constraintFactory, this, matchWeigher);
+        DroolsScoringBiConstraintStream<Solution_, A, B> stream = new DroolsScoringBiConstraintStream<>(constraintFactory, this,
+                matchWeigher);
         addChildStream(stream);
         return buildConstraint(constraintPackage, constraintName, constraintWeight, impactType, stream);
     }
@@ -190,8 +196,8 @@ public abstract class DroolsAbstractBiConstraintStream<Solution_, A, B>
     @Override
     public final Constraint impactScoreBigDecimal(String constraintPackage, String constraintName,
             Score<?> constraintWeight, BiFunction<A, B, BigDecimal> matchWeigher, ScoreImpactType impactType) {
-        DroolsScoringBiConstraintStream<Solution_, A, B> stream =
-                new DroolsScoringBiConstraintStream<>(constraintFactory, this, matchWeigher);
+        DroolsScoringBiConstraintStream<Solution_, A, B> stream = new DroolsScoringBiConstraintStream<>(constraintFactory, this,
+                matchWeigher);
         addChildStream(stream);
         return buildConstraint(constraintPackage, constraintName, constraintWeight, impactType, stream);
     }
@@ -199,8 +205,8 @@ public abstract class DroolsAbstractBiConstraintStream<Solution_, A, B>
     @Override
     public final Constraint impactScoreConfigurable(String constraintPackage, String constraintName,
             ScoreImpactType impactType) {
-        DroolsScoringBiConstraintStream<Solution_, A, B> stream =
-                new DroolsScoringBiConstraintStream<>(constraintFactory, this);
+        DroolsScoringBiConstraintStream<Solution_, A, B> stream = new DroolsScoringBiConstraintStream<>(constraintFactory,
+                this);
         addChildStream(stream);
         return buildConstraintConfigurable(constraintPackage, constraintName, impactType, stream);
     }
@@ -208,8 +214,8 @@ public abstract class DroolsAbstractBiConstraintStream<Solution_, A, B>
     @Override
     public final Constraint impactScoreConfigurable(String constraintPackage, String constraintName,
             ToIntBiFunction<A, B> matchWeigher, ScoreImpactType impactType) {
-        DroolsScoringBiConstraintStream<Solution_, A, B> stream =
-                new DroolsScoringBiConstraintStream<>(constraintFactory, this, matchWeigher);
+        DroolsScoringBiConstraintStream<Solution_, A, B> stream = new DroolsScoringBiConstraintStream<>(constraintFactory, this,
+                matchWeigher);
         addChildStream(stream);
         return buildConstraintConfigurable(constraintPackage, constraintName, impactType, stream);
     }
@@ -217,8 +223,8 @@ public abstract class DroolsAbstractBiConstraintStream<Solution_, A, B>
     @Override
     public final Constraint impactScoreConfigurableLong(String constraintPackage, String constraintName,
             ToLongBiFunction<A, B> matchWeigher, ScoreImpactType impactType) {
-        DroolsScoringBiConstraintStream<Solution_, A, B> stream =
-                new DroolsScoringBiConstraintStream<>(constraintFactory, this, matchWeigher);
+        DroolsScoringBiConstraintStream<Solution_, A, B> stream = new DroolsScoringBiConstraintStream<>(constraintFactory, this,
+                matchWeigher);
         addChildStream(stream);
         return buildConstraintConfigurable(constraintPackage, constraintName, impactType, stream);
     }
@@ -226,8 +232,8 @@ public abstract class DroolsAbstractBiConstraintStream<Solution_, A, B>
     @Override
     public final Constraint impactScoreConfigurableBigDecimal(String constraintPackage, String constraintName,
             BiFunction<A, B, BigDecimal> matchWeigher, ScoreImpactType impactType) {
-        DroolsScoringBiConstraintStream<Solution_, A, B> stream =
-                new DroolsScoringBiConstraintStream<>(constraintFactory, this, matchWeigher);
+        DroolsScoringBiConstraintStream<Solution_, A, B> stream = new DroolsScoringBiConstraintStream<>(constraintFactory, this,
+                matchWeigher);
         addChildStream(stream);
         return buildConstraintConfigurable(constraintPackage, constraintName, impactType, stream);
     }
@@ -240,12 +246,11 @@ public abstract class DroolsAbstractBiConstraintStream<Solution_, A, B>
     public List<DroolsFromUniConstraintStream<Solution_, Object>> getFromStreamList() {
         DroolsAbstractConstraintStream<Solution_> parent = getParent();
         if (parent == null) {
-            DroolsJoinBiConstraintStream<Solution_, A, B> joinStream =
-                    (DroolsJoinBiConstraintStream<Solution_, A, B>) this;
-            List<DroolsFromUniConstraintStream<Solution_, Object>> leftParentFromStreamList =
-                    joinStream.getLeftParentStream().getFromStreamList();
-            List<DroolsFromUniConstraintStream<Solution_, Object>> rightParentFromStreamList =
-                    joinStream.getRightParentStream().getFromStreamList();
+            DroolsJoinBiConstraintStream<Solution_, A, B> joinStream = (DroolsJoinBiConstraintStream<Solution_, A, B>) this;
+            List<DroolsFromUniConstraintStream<Solution_, Object>> leftParentFromStreamList = joinStream.getLeftParentStream()
+                    .getFromStreamList();
+            List<DroolsFromUniConstraintStream<Solution_, Object>> rightParentFromStreamList = joinStream.getRightParentStream()
+                    .getFromStreamList();
             return Stream.concat(leftParentFromStreamList.stream(), rightParentFromStreamList.stream())
                     .collect(Collectors.toList()); // TODO Should we distinct?
         } else {

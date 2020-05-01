@@ -37,7 +37,8 @@ import org.optaplanner.core.impl.score.stream.bavet.BavetConstraintFactory;
 import org.optaplanner.core.impl.score.stream.bavet.common.BavetNodeBuildPolicy;
 import org.optaplanner.core.impl.score.stream.bavet.uni.BavetFromUniConstraintStream;
 
-public final class BavetScoringTriConstraintStream<Solution_, A, B, C> extends BavetAbstractTriConstraintStream<Solution_, A, B, C> {
+public final class BavetScoringTriConstraintStream<Solution_, A, B, C>
+        extends BavetAbstractTriConstraintStream<Solution_, A, B, C> {
 
     private final BavetAbstractTriConstraintStream<Solution_, A, B, C> parent;
     private final BavetConstraint<Solution_> constraint;
@@ -82,7 +83,8 @@ public final class BavetScoringTriConstraintStream<Solution_, A, B, C> extends B
     private BavetScoringTriConstraintStream(BavetConstraintFactory<Solution_> constraintFactory,
             BavetAbstractTriConstraintStream<Solution_, A, B, C> parent,
             BavetConstraint<Solution_> constraint, boolean noMatchWeigher,
-            ToIntTriFunction<A, B, C> intMatchWeigher, ToLongTriFunction<A, B, C> longMatchWeigher, TriFunction<A, B, C, BigDecimal> bigDecimalMatchWeigher) {
+            ToIntTriFunction<A, B, C> intMatchWeigher, ToLongTriFunction<A, B, C> longMatchWeigher,
+            TriFunction<A, B, C, BigDecimal> bigDecimalMatchWeigher) {
         super(constraintFactory);
         this.parent = parent;
         this.constraint = constraint;
@@ -116,8 +118,8 @@ public final class BavetScoringTriConstraintStream<Solution_, A, B, C> extends B
                     return castedWeightedScoreImpacter.impactScore(matchWeight, matchScoreConsumer);
                 };
             } else if (noMatchWeigher) {
-                scoreImpacter = (A a, B b, C c, Consumer<Score<?>> matchScoreConsumer) ->
-                        castedWeightedScoreImpacter.impactScore(1, matchScoreConsumer);
+                scoreImpacter = (A a, B b, C c, Consumer<Score<?>> matchScoreConsumer) -> castedWeightedScoreImpacter
+                        .impactScore(1, matchScoreConsumer);
             } else {
                 throw new IllegalStateException("The matchWeigher of " + TriConstraintStream.class.getSimpleName()
                         + ".penalize(matchWeigher) of the constraint (" + constraint.getConstraintId()
@@ -132,8 +134,8 @@ public final class BavetScoringTriConstraintStream<Solution_, A, B, C> extends B
                     return castedWeightedScoreImpacter.impactScore(matchWeight, matchScoreConsumer);
                 };
             } else if (noMatchWeigher) {
-                scoreImpacter = (A a, B b, C c, Consumer<Score<?>> matchScoreConsumer) ->
-                        castedWeightedScoreImpacter.impactScore(1L, matchScoreConsumer);
+                scoreImpacter = (A a, B b, C c, Consumer<Score<?>> matchScoreConsumer) -> castedWeightedScoreImpacter
+                        .impactScore(1L, matchScoreConsumer);
             } else {
                 throw new IllegalStateException("The matchWeigher of " + TriConstraintStream.class.getSimpleName()
                         + ".penalize(matchWeigher) of the constraint (" + constraint.getConstraintId()
@@ -148,8 +150,8 @@ public final class BavetScoringTriConstraintStream<Solution_, A, B, C> extends B
                     return castedWeightedScoreImpacter.impactScore(matchWeight, matchScoreConsumer);
                 };
             } else if (noMatchWeigher) {
-                scoreImpacter = (A a, B b, C c, Consumer<Score<?>> matchScoreConsumer) ->
-                        castedWeightedScoreImpacter.impactScore(BigDecimal.ONE, matchScoreConsumer);
+                scoreImpacter = (A a, B b, C c, Consumer<Score<?>> matchScoreConsumer) -> castedWeightedScoreImpacter
+                        .impactScore(BigDecimal.ONE, matchScoreConsumer);
             } else {
                 throw new IllegalStateException("The matchWeigher of " + TriConstraintStream.class.getSimpleName()
                         + ".penalize(matchWeigher) of the constraint (" + constraint.getConstraintId()
@@ -166,7 +168,8 @@ public final class BavetScoringTriConstraintStream<Solution_, A, B, C> extends B
     }
 
     @Override
-    protected void createChildNodeChains(BavetNodeBuildPolicy<Solution_> buildPolicy, Score<?> constraintWeight, int nodeOrder, BavetAbstractTriNode<A, B, C> node) {
+    protected void createChildNodeChains(BavetNodeBuildPolicy<Solution_> buildPolicy, Score<?> constraintWeight, int nodeOrder,
+            BavetAbstractTriNode<A, B, C> node) {
         if (!childStreamList.isEmpty()) {
             throw new IllegalStateException("Impossible state: the stream (" + this
                     + ") has an non-empty childStreamList (" + childStreamList + ") but it's an endpoint.");

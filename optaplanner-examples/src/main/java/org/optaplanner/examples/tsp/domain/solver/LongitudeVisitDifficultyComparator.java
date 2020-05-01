@@ -24,10 +24,10 @@ import org.optaplanner.examples.tsp.domain.Visit;
 public class LongitudeVisitDifficultyComparator implements Comparator<Visit>, Serializable {
 
     // TODO experiment with (aLongitude - bLongitude) % 10
-    private static final Comparator<Visit> COMPARATOR =
-            Comparator.comparingDouble((Visit visit) -> visit.getLocation().getLongitude())
-                    .thenComparingDouble(visit -> visit.getLocation().getLatitude())
-                    .thenComparingLong(Visit::getId);
+    private static final Comparator<Visit> COMPARATOR = Comparator
+            .comparingDouble((Visit visit) -> visit.getLocation().getLongitude())
+            .thenComparingDouble(visit -> visit.getLocation().getLatitude())
+            .thenComparingLong(Visit::getId);
 
     @Override
     public int compare(Visit a, Visit b) {

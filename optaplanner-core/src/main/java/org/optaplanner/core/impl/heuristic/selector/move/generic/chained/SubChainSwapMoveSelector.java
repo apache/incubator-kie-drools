@@ -123,8 +123,10 @@ public class SubChainSwapMoveSelector extends GenericMoveSelector {
                 protected Move newSwapSelection(SubChain leftSubSelection, SubChain rightSubSelection) {
                     boolean reversing = selectReversingMoveToo && workingRandom.nextBoolean();
                     return reversing
-                            ? new SubChainReversingSwapMove(variableDescriptor, inverseVariableSupply, leftSubSelection, rightSubSelection)
-                            : new SubChainSwapMove(variableDescriptor, inverseVariableSupply, leftSubSelection, rightSubSelection);
+                            ? new SubChainReversingSwapMove(variableDescriptor, inverseVariableSupply, leftSubSelection,
+                                    rightSubSelection)
+                            : new SubChainSwapMove(variableDescriptor, inverseVariableSupply, leftSubSelection,
+                                    rightSubSelection);
                 }
             };
         }

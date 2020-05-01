@@ -1,5 +1,12 @@
 package org.optaplanner.core.config.heuristic.selector.common.nearby;
 
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatIllegalArgumentException;
+import static org.optaplanner.core.config.heuristic.selector.common.SelectionCacheType.JUST_IN_TIME;
+import static org.optaplanner.core.config.heuristic.selector.common.SelectionCacheType.STEP;
+import static org.optaplanner.core.config.heuristic.selector.common.SelectionOrder.ORIGINAL;
+import static org.optaplanner.core.config.heuristic.selector.common.SelectionOrder.SORTED;
+
 import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
@@ -9,13 +16,6 @@ import org.optaplanner.core.impl.heuristic.selector.common.nearby.BlockDistribut
 import org.optaplanner.core.impl.heuristic.selector.common.nearby.LinearDistributionNearbyRandom;
 import org.optaplanner.core.impl.heuristic.selector.common.nearby.NearbyDistanceMeter;
 import org.optaplanner.core.impl.heuristic.selector.common.nearby.ParabolicDistributionNearbyRandom;
-
-import static org.assertj.core.api.Assertions.assertThat;
-import static org.assertj.core.api.Assertions.assertThatIllegalArgumentException;
-import static org.optaplanner.core.config.heuristic.selector.common.SelectionCacheType.JUST_IN_TIME;
-import static org.optaplanner.core.config.heuristic.selector.common.SelectionCacheType.STEP;
-import static org.optaplanner.core.config.heuristic.selector.common.SelectionOrder.ORIGINAL;
-import static org.optaplanner.core.config.heuristic.selector.common.SelectionOrder.SORTED;
 
 public class NearbySelectionConfigTest {
 
@@ -46,9 +46,12 @@ public class NearbySelectionConfigTest {
         entitySelectorConfig.setId(ENTITY_SELECTOR_ID);
 
         NearbySelectionConfig nearbySelectionConfig = new NearbySelectionConfig();
-        nearbySelectionConfig.setOriginEntitySelectorConfig(EntitySelectorConfig.newMimicSelectorConfig(entitySelectorConfig.getId()));
+        nearbySelectionConfig
+                .setOriginEntitySelectorConfig(EntitySelectorConfig.newMimicSelectorConfig(entitySelectorConfig.getId()));
 
-        assertThatIllegalArgumentException().isThrownBy(() -> nearbySelectionConfig.validateNearby(entitySelectorConfig.getCacheType(), entitySelectorConfig.getSelectionOrder()))
+        assertThatIllegalArgumentException()
+                .isThrownBy(() -> nearbySelectionConfig.validateNearby(entitySelectorConfig.getCacheType(),
+                        entitySelectorConfig.getSelectionOrder()))
                 .withMessageContaining("nearbyDistanceMeterClass");
     }
 
@@ -59,10 +62,13 @@ public class NearbySelectionConfigTest {
         entitySelectorConfig.setSelectionOrder(SORTED);
 
         NearbySelectionConfig nearbySelectionConfig = new NearbySelectionConfig();
-        nearbySelectionConfig.setOriginEntitySelectorConfig(EntitySelectorConfig.newMimicSelectorConfig(entitySelectorConfig.getId()));
+        nearbySelectionConfig
+                .setOriginEntitySelectorConfig(EntitySelectorConfig.newMimicSelectorConfig(entitySelectorConfig.getId()));
         nearbySelectionConfig.setNearbyDistanceMeterClass(Mockito.mock(NearbyDistanceMeter.class).getClass());
 
-        assertThatIllegalArgumentException().isThrownBy(() -> nearbySelectionConfig.validateNearby(entitySelectorConfig.getCacheType(), entitySelectorConfig.getSelectionOrder()))
+        assertThatIllegalArgumentException()
+                .isThrownBy(() -> nearbySelectionConfig.validateNearby(entitySelectorConfig.getCacheType(),
+                        entitySelectorConfig.getSelectionOrder()))
                 .withMessageContaining("resolvedSelectionOrder");
     }
 
@@ -74,10 +80,13 @@ public class NearbySelectionConfigTest {
         entitySelectorConfig.setCacheType(STEP);
 
         NearbySelectionConfig nearbySelectionConfig = new NearbySelectionConfig();
-        nearbySelectionConfig.setOriginEntitySelectorConfig(EntitySelectorConfig.newMimicSelectorConfig(entitySelectorConfig.getId()));
+        nearbySelectionConfig
+                .setOriginEntitySelectorConfig(EntitySelectorConfig.newMimicSelectorConfig(entitySelectorConfig.getId()));
         nearbySelectionConfig.setNearbyDistanceMeterClass(Mockito.mock(NearbyDistanceMeter.class).getClass());
 
-        assertThatIllegalArgumentException().isThrownBy(() -> nearbySelectionConfig.validateNearby(entitySelectorConfig.getCacheType(), entitySelectorConfig.getSelectionOrder()))
+        assertThatIllegalArgumentException()
+                .isThrownBy(() -> nearbySelectionConfig.validateNearby(entitySelectorConfig.getCacheType(),
+                        entitySelectorConfig.getSelectionOrder()))
                 .withMessageContaining("cached");
     }
 
@@ -217,9 +226,9 @@ public class NearbySelectionConfigTest {
 
     private NearbySelectionConfig buildNearbySelectionConfig() {
         NearbySelectionConfig nearbySelectionConfig = new NearbySelectionConfig();
-        nearbySelectionConfig.setOriginEntitySelectorConfig(EntitySelectorConfig.newMimicSelectorConfig(new EntitySelectorConfig().getId()));
+        nearbySelectionConfig
+                .setOriginEntitySelectorConfig(EntitySelectorConfig.newMimicSelectorConfig(new EntitySelectorConfig().getId()));
         nearbySelectionConfig.setNearbyDistanceMeterClass(Mockito.mock(NearbyDistanceMeter.class).getClass());
         return nearbySelectionConfig;
     }
 }
-

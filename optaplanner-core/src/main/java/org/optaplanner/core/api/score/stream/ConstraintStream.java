@@ -49,44 +49,45 @@ import org.optaplanner.core.impl.score.director.ScoreDirector;
  * Throughout this documentation, we will be using the following terminology:
  *
  * <dl>
- *     <dt>Constraint Stream</dt>
- *          <dd>A chain of different operations, originated by {@link ConstraintFactory#from(Class)} (or similar
- *          methods) and terminated by a penalization or reward operation.</dd>
- *     <dt>Operation</dt>
- *          <dd>Operations (implementations of {@link ConstraintStream}) are parts of a constraint stream which mutate
- *          it.
- *          They may remove tuples from further evaluation, expand or contract streams. Every constraint stream has
- *          a terminal operation, which is either a penalization or a reward.</dd>
- *     <dt>Fact</dt>
- *          <dd>Object instance entering the constraint stream.</dd>
- *     <dt>Genuine Fact</dt>
- *          <dd>Fact that enters the constraint stream either through a from(...) call or through a join(...) call.
- *          Genuine facts are either planning entities (see {@link PlanningEntity}) or problem facts (see
- *          {@link ProblemFactProperty} or {@link ProblemFactCollectionProperty}).</dd>
- *     <dt>Inferred Fact</dt>
- *          <dd>Fact that enters the constraint stream through a computation.
- *          This would typically happen through an operation such as groupBy(...).</dd>
- *     <dt>Tuple</dt>
- *          <dd>A collection of facts that the constraint stream operates on, propagating them from operation to
- *          operation.
- *          For example, {@link UniConstraintStream} operates on single-fact tuples {A} and {@link BiConstraintStream}
- *          operates on two-fact tuples {A, B}.
- *          Putting facts into a tuple implies a relationship exists between these facts.</dd>
- *     <dt>Match</dt>
- *          <dd>Match is a tuple that reached the terminal operation of a constraint stream and is therefore either
- *          penalized or rewarded.</dd>
- *     <dt>Cardinality</dt>
- *          <dd>The number of facts in a tuple. Uni constraint streams have a cardinality of 1, bi constraint streams
- *          have a cardinality of 2, etc.</dd>
- *     <dt>Conversion</dt>
- *          <dd>An operation that changes the cardinality of a constraint stream.
- *          This typically happens through join(...) or a groupBy(...) operations.</dd>
+ * <dt>Constraint Stream</dt>
+ * <dd>A chain of different operations, originated by {@link ConstraintFactory#from(Class)} (or similar
+ * methods) and terminated by a penalization or reward operation.</dd>
+ * <dt>Operation</dt>
+ * <dd>Operations (implementations of {@link ConstraintStream}) are parts of a constraint stream which mutate
+ * it.
+ * They may remove tuples from further evaluation, expand or contract streams. Every constraint stream has
+ * a terminal operation, which is either a penalization or a reward.</dd>
+ * <dt>Fact</dt>
+ * <dd>Object instance entering the constraint stream.</dd>
+ * <dt>Genuine Fact</dt>
+ * <dd>Fact that enters the constraint stream either through a from(...) call or through a join(...) call.
+ * Genuine facts are either planning entities (see {@link PlanningEntity}) or problem facts (see
+ * {@link ProblemFactProperty} or {@link ProblemFactCollectionProperty}).</dd>
+ * <dt>Inferred Fact</dt>
+ * <dd>Fact that enters the constraint stream through a computation.
+ * This would typically happen through an operation such as groupBy(...).</dd>
+ * <dt>Tuple</dt>
+ * <dd>A collection of facts that the constraint stream operates on, propagating them from operation to
+ * operation.
+ * For example, {@link UniConstraintStream} operates on single-fact tuples {A} and {@link BiConstraintStream}
+ * operates on two-fact tuples {A, B}.
+ * Putting facts into a tuple implies a relationship exists between these facts.</dd>
+ * <dt>Match</dt>
+ * <dd>Match is a tuple that reached the terminal operation of a constraint stream and is therefore either
+ * penalized or rewarded.</dd>
+ * <dt>Cardinality</dt>
+ * <dd>The number of facts in a tuple. Uni constraint streams have a cardinality of 1, bi constraint streams
+ * have a cardinality of 2, etc.</dd>
+ * <dt>Conversion</dt>
+ * <dd>An operation that changes the cardinality of a constraint stream.
+ * This typically happens through join(...) or a groupBy(...) operations.</dd>
  * </dl>
  */
 public interface ConstraintStream {
 
     /**
      * The {@link ConstraintFactory} that build this.
+     * 
      * @return never null
      */
     ConstraintFactory getConstraintFactory();
@@ -102,6 +103,7 @@ public interface ConstraintStream {
      * use {@link #penalizeConfigurable(String)} and a {@link ConstraintConfiguration} instead.
      * <p>
      * The {@link Constraint#getConstraintPackage()} defaults to the package of the {@link PlanningSolution} class.
+     * 
      * @param constraintName never null, shows up in {@link ConstraintMatchTotal} during score justification
      * @param constraintWeight never null
      * @return never null
@@ -112,6 +114,7 @@ public interface ConstraintStream {
 
     /**
      * As defined by {@link #penalize(String, Score)}.
+     * 
      * @param constraintPackage never null
      * @param constraintName never null
      * @param constraintWeight never null
@@ -128,6 +131,7 @@ public interface ConstraintStream {
      * If there is no {@link ConstraintConfiguration}, use {@link #penalize(String, Score)} instead.
      * <p>
      * The {@link Constraint#getConstraintPackage()} defaults to {@link ConstraintConfiguration#constraintPackage()}.
+     * 
      * @param constraintName never null, shows up in {@link ConstraintMatchTotal} during score justification
      * @return never null
      */
@@ -137,6 +141,7 @@ public interface ConstraintStream {
 
     /**
      * As defined by {@link #penalizeConfigurable(String)}.
+     * 
      * @param constraintPackage never null
      * @param constraintName never null
      * @return never null
@@ -150,6 +155,7 @@ public interface ConstraintStream {
      * use {@link #penalizeConfigurable(String)} and a {@link ConstraintConfiguration} instead.
      * <p>
      * The {@link Constraint#getConstraintPackage()} defaults to the package of the {@link PlanningSolution} class.
+     * 
      * @param constraintName never null, shows up in {@link ConstraintMatchTotal} during score justification
      * @param constraintWeight never null
      * @return never null
@@ -160,6 +166,7 @@ public interface ConstraintStream {
 
     /**
      * As defined by {@link #reward(String, Score)}.
+     * 
      * @param constraintPackage never null
      * @param constraintName never null
      * @param constraintWeight never null
@@ -176,6 +183,7 @@ public interface ConstraintStream {
      * If there is no {@link ConstraintConfiguration}, use {@link #reward(String, Score)} instead.
      * <p>
      * The {@link Constraint#getConstraintPackage()} defaults to {@link ConstraintConfiguration#constraintPackage()}.
+     * 
      * @param constraintName never null, shows up in {@link ConstraintMatchTotal} during score justification
      * @return never null
      */
@@ -185,6 +193,7 @@ public interface ConstraintStream {
 
     /**
      * As defined by {@link #rewardConfigurable(String)}.
+     * 
      * @param constraintPackage never null
      * @param constraintName never null
      * @return never null
@@ -198,6 +207,7 @@ public interface ConstraintStream {
      * negative weights.
      * <p>
      * The {@link Constraint#getConstraintPackage()} defaults to the package of the {@link PlanningSolution} class.
+     * 
      * @param constraintName never null, shows up in {@link ConstraintMatchTotal} during score justification
      * @param constraintWeight never null
      * @return never null
@@ -208,6 +218,7 @@ public interface ConstraintStream {
 
     /**
      * As defined by {@link #impact(String, Score)}.
+     * 
      * @param constraintPackage never null
      * @param constraintName never null
      * @param constraintWeight never null

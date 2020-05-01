@@ -16,13 +16,13 @@
 
 package org.optaplanner.core.api.score.buildin.hardsoft;
 
+import static org.assertj.core.api.Assertions.assertThatIllegalArgumentException;
+import static org.junit.Assert.*;
+
 import org.junit.jupiter.api.Test;
 import org.optaplanner.core.api.score.buildin.AbstractScoreTest;
 import org.optaplanner.core.impl.testdata.util.PlannerAssert;
 import org.optaplanner.core.impl.testdata.util.PlannerTestUtils;
-
-import static org.assertj.core.api.Assertions.assertThatIllegalArgumentException;
-import static org.junit.Assert.*;
 
 public class HardSoftScoreTest extends AbstractScoreTest {
 
@@ -83,13 +83,11 @@ public class HardSoftScoreTest extends AbstractScoreTest {
         assertScoreNotFeasible(
                 HardSoftScore.of(-5, -300),
                 HardSoftScore.ofUninitialized(-7, -5, -300),
-                HardSoftScore.ofUninitialized(-7, 0, -300)
-        );
+                HardSoftScore.ofUninitialized(-7, 0, -300));
         assertScoreFeasible(
                 HardSoftScore.of(0, -300),
                 HardSoftScore.of(2, -300),
-                HardSoftScore.ofUninitialized(0, 0, -300)
-        );
+                HardSoftScore.ofUninitialized(0, 0, -300));
     }
 
     @Test
@@ -159,18 +157,15 @@ public class HardSoftScoreTest extends AbstractScoreTest {
         PlannerAssert.assertObjectsAreEqual(
                 HardSoftScore.of(-10, -200),
                 HardSoftScore.of(-10, -200),
-                HardSoftScore.ofUninitialized(0, -10, -200)
-        );
+                HardSoftScore.ofUninitialized(0, -10, -200));
         PlannerAssert.assertObjectsAreEqual(
                 HardSoftScore.ofUninitialized(-7, -10, -200),
-                HardSoftScore.ofUninitialized(-7, -10, -200)
-        );
+                HardSoftScore.ofUninitialized(-7, -10, -200));
         PlannerAssert.assertObjectsAreNotEqual(
                 HardSoftScore.of(-10, -200),
                 HardSoftScore.of(-30, -200),
                 HardSoftScore.of(-10, -400),
-                HardSoftScore.ofUninitialized(-7, -10, -200)
-        );
+                HardSoftScore.ofUninitialized(-7, -10, -200));
     }
 
     @Test
@@ -187,8 +182,7 @@ public class HardSoftScoreTest extends AbstractScoreTest {
                 HardSoftScore.of(-1, 4000),
                 HardSoftScore.of(0, -1),
                 HardSoftScore.of(0, 0),
-                HardSoftScore.of(0, 1)
-        );
+                HardSoftScore.of(0, 1));
     }
 
     @Test
@@ -199,16 +193,14 @@ public class HardSoftScoreTest extends AbstractScoreTest {
                     assertEquals(0, output.getInitScore());
                     assertEquals(-12, output.getHardScore());
                     assertEquals(3400, output.getSoftScore());
-                }
-        );
+                });
         PlannerTestUtils.serializeAndDeserializeWithAll(
                 HardSoftScore.ofUninitialized(-7, -12, 3400),
                 output -> {
                     assertEquals(-7, output.getInitScore());
                     assertEquals(-12, output.getHardScore());
                     assertEquals(3400, output.getSoftScore());
-                }
-        );
+                });
     }
 
 }

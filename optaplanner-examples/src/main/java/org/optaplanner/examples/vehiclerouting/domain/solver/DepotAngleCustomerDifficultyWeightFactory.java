@@ -16,14 +16,14 @@
 
 package org.optaplanner.examples.vehiclerouting.domain.solver;
 
+import static java.util.Comparator.*;
+
 import java.util.Comparator;
 
 import org.optaplanner.core.impl.heuristic.selector.common.decorator.SelectionSorterWeightFactory;
 import org.optaplanner.examples.vehiclerouting.domain.Customer;
 import org.optaplanner.examples.vehiclerouting.domain.Depot;
 import org.optaplanner.examples.vehiclerouting.domain.VehicleRoutingSolution;
-
-import static java.util.Comparator.*;
 
 /**
  * On large datasets, the constructed solution looks like pizza slices.
@@ -32,7 +32,8 @@ public class DepotAngleCustomerDifficultyWeightFactory
         implements SelectionSorterWeightFactory<VehicleRoutingSolution, Customer> {
 
     @Override
-    public DepotAngleCustomerDifficultyWeight createSorterWeight(VehicleRoutingSolution vehicleRoutingSolution, Customer customer) {
+    public DepotAngleCustomerDifficultyWeight createSorterWeight(VehicleRoutingSolution vehicleRoutingSolution,
+            Customer customer) {
         Depot depot = vehicleRoutingSolution.getDepotList().get(0);
         return new DepotAngleCustomerDifficultyWeight(customer,
                 customer.getLocation().getAngle(depot.getLocation()),
@@ -43,8 +44,8 @@ public class DepotAngleCustomerDifficultyWeightFactory
     public static class DepotAngleCustomerDifficultyWeight
             implements Comparable<DepotAngleCustomerDifficultyWeight> {
 
-        private static final Comparator<DepotAngleCustomerDifficultyWeight> COMPARATOR =
-                comparingDouble((DepotAngleCustomerDifficultyWeight weight) -> weight.depotAngle)
+        private static final Comparator<DepotAngleCustomerDifficultyWeight> COMPARATOR = comparingDouble(
+                (DepotAngleCustomerDifficultyWeight weight) -> weight.depotAngle)
                         .thenComparingLong(weight -> weight.depotRoundTripDistance) // Ascending (further from the depot are more difficult)
                         .thenComparing(weight -> weight.customer, comparingLong(Customer::getId));
 

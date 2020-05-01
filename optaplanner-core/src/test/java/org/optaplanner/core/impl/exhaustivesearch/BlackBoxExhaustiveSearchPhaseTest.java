@@ -1,5 +1,7 @@
 package org.optaplanner.core.impl.exhaustivesearch;
 
+import static org.assertj.core.api.Assertions.assertThat;
+
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
@@ -39,8 +41,6 @@ import org.optaplanner.core.impl.testdata.domain.comparable.TestdataDifficultyCo
 import org.optaplanner.core.impl.testdata.domain.comparable.TestdataDifficultyComparingSolution;
 import org.optaplanner.core.impl.testdata.util.PlannerTestUtils;
 
-import static org.assertj.core.api.Assertions.assertThat;
-
 /**
  * The test runs through all available configuration combinations related to ExhaustiveSearch and compares the results
  * with manually calculated data. It tries to find the best solution for 3 values and 4 entities. When the same value
@@ -64,10 +64,10 @@ public class BlackBoxExhaustiveSearchPhaseTest {
 
     private static Stream<Object[]> getBranchAndBoundConfigs() {
         return Stream.of(getBranchAndBoundDepthFirstConfigs(),
-                         getBranchAndBoundBreadthFirstConfigs(),
-                         getBranchAndBoundScoreFirstConfigs(),
-                         getBranchAndBoundOptimisticBoundFirstConfigs(),
-                         getBranchAndBoundOriginalOrderConfigs())
+                getBranchAndBoundBreadthFirstConfigs(),
+                getBranchAndBoundScoreFirstConfigs(),
+                getBranchAndBoundOptimisticBoundFirstConfigs(),
+                getBranchAndBoundOriginalOrderConfigs())
                 .flatMap(i -> i);
     }
 
@@ -108,8 +108,7 @@ public class BlackBoxExhaustiveSearchPhaseTest {
                         NodeExplorationType.DEPTH_FIRST,
                         EntitySorterManner.DECREASING_DIFFICULTY,
                         ValueSorterManner.INCREASING_STRENGTH,
-                        Arrays.asList("----", "1---", "1-2-", "132-", "1-23", "1-3-", "123-", "1-32", "12--", "123-", "1321"))
-        );
+                        Arrays.asList("----", "1---", "1-2-", "132-", "1-23", "1-3-", "123-", "1-32", "12--", "123-", "1321")));
     }
 
     private static Stream<Object[]> getBranchAndBoundBreadthFirstConfigs() {
@@ -149,8 +148,7 @@ public class BlackBoxExhaustiveSearchPhaseTest {
                         NodeExplorationType.BREADTH_FIRST,
                         EntitySorterManner.DECREASING_DIFFICULTY,
                         ValueSorterManner.INCREASING_STRENGTH,
-                        Arrays.asList("----", "1---", "2---", "3---", "--1-", "--2-", "--3-", "-1--", "-2--", "-3--", "----"))
-        );
+                        Arrays.asList("----", "1---", "2---", "3---", "--1-", "--2-", "--3-", "-1--", "-2--", "-3--", "----")));
     }
 
     private static Stream<Object[]> getBranchAndBoundScoreFirstConfigs() {
@@ -190,8 +188,7 @@ public class BlackBoxExhaustiveSearchPhaseTest {
                         NodeExplorationType.SCORE_FIRST,
                         EntitySorterManner.DECREASING_DIFFICULTY,
                         ValueSorterManner.INCREASING_STRENGTH,
-                        Arrays.asList("----", "1---", "1-2-", "132-", "1-23", "1-3-", "123-", "1-32", "12--", "123-", "1321"))
-        );
+                        Arrays.asList("----", "1---", "1-2-", "132-", "1-23", "1-3-", "123-", "1-32", "12--", "123-", "1321")));
     }
 
     private static Stream<Object[]> getBranchAndBoundOptimisticBoundFirstConfigs() {
@@ -271,8 +268,7 @@ public class BlackBoxExhaustiveSearchPhaseTest {
                         NodeExplorationType.ORIGINAL_ORDER,
                         EntitySorterManner.DECREASING_DIFFICULTY,
                         ValueSorterManner.INCREASING_STRENGTH,
-                        Arrays.asList("----", "1---", "1-1-", "111-", "121-", "1-2-", "132-", "1-23", "1-3-", "123-", "1213"))
-        );
+                        Arrays.asList("----", "1---", "1-1-", "111-", "121-", "1-2-", "132-", "1-23", "1-3-", "123-", "1213")));
     }
 
     private static Stream<Object[]> getBruteForceConfigs() {
@@ -316,8 +312,7 @@ public class BlackBoxExhaustiveSearchPhaseTest {
                         null,
                         EntitySorterManner.DECREASING_DIFFICULTY,
                         ValueSorterManner.INCREASING_STRENGTH,
-                        Arrays.asList("----", "1---", "1-1-", "111-", "121-", "131-", "1-11", "1-12", "1-13", "1-2-", "1213"))
-        );
+                        Arrays.asList("----", "1---", "1-1-", "111-", "121-", "131-", "1-11", "1-12", "1-13", "1-2-", "1213")));
     }
 
     private static Stream<Object[]> getBruteForceIllegalConfigs() {
@@ -345,8 +340,7 @@ public class BlackBoxExhaustiveSearchPhaseTest {
                         NodeExplorationType.OPTIMISTIC_BOUND_FIRST,
                         EntitySorterManner.DECREASING_DIFFICULTY,
                         ValueSorterManner.DECREASING_STRENGTH,
-                        null)
-        );
+                        null));
     }
 
     private static Object[] toObjectArray(Object... parameters) {
@@ -383,8 +377,8 @@ public class BlackBoxExhaustiveSearchPhaseTest {
 
         solverConfig.setPhaseConfigList(Collections.singletonList(exhaustiveSearchPhaseConfig));
         solverConfig.setScoreDirectorFactoryConfig(new ScoreDirectorFactoryConfig()
-                                                           .withEasyScoreCalculatorClass(TestdataComparableDifferentValuesCalculator.class)
-                                                           .withInitializingScoreTrend("ONLY_DOWN"));
+                .withEasyScoreCalculatorClass(TestdataComparableDifferentValuesCalculator.class)
+                .withInitializingScoreTrend("ONLY_DOWN"));
 
         return solverConfig;
     }
@@ -393,12 +387,12 @@ public class BlackBoxExhaustiveSearchPhaseTest {
         TestdataDifficultyComparingSolution solution = new TestdataDifficultyComparingSolution("solution");
         // Intentionally not sorted, the string is used for sorting in cases it applies.
         solution.setEntityList(Arrays.asList(new TestdataDifficultyComparingEntity("entity4"),
-                                             new TestdataDifficultyComparingEntity("entity2"),
-                                             new TestdataDifficultyComparingEntity("entity3"),
-                                             new TestdataDifficultyComparingEntity("entity1")));
+                new TestdataDifficultyComparingEntity("entity2"),
+                new TestdataDifficultyComparingEntity("entity3"),
+                new TestdataDifficultyComparingEntity("entity1")));
         solution.setValueList(Arrays.asList(new TestdataValue("1"),
-                                            new TestdataValue("3"),
-                                            new TestdataValue("2")));
+                new TestdataValue("3"),
+                new TestdataValue("2")));
         return solution;
     }
 
@@ -421,8 +415,8 @@ public class BlackBoxExhaustiveSearchPhaseTest {
             Assertions.assertThatIllegalArgumentException()
                     .isThrownBy(solverFactory::buildSolver)
                     .withMessage("The phaseConfig (ExhaustiveSearchPhaseConfig) has an "
-                                         + "nodeExplorationType (" + nodeExplorationType.name()
-                                         + ") which is not compatible with its exhaustiveSearchType (BRUTE_FORCE).");
+                            + "nodeExplorationType (" + nodeExplorationType.name()
+                            + ") which is not compatible with its exhaustiveSearchType (BRUTE_FORCE).");
         } else {
             Solver<TestdataDifficultyComparingSolution> solver = solverFactory.buildSolver();
 
@@ -438,7 +432,8 @@ public class BlackBoxExhaustiveSearchPhaseTest {
     /**
      * This class calculates the score of a solution by penalizing repeated value occurrences held by entities.
      */
-    public static class TestdataComparableDifferentValuesCalculator implements EasyScoreCalculator<TestdataDifficultyComparingSolution> {
+    public static class TestdataComparableDifferentValuesCalculator
+            implements EasyScoreCalculator<TestdataDifficultyComparingSolution> {
 
         @Override
         public SimpleScore calculateScore(TestdataDifficultyComparingSolution solution) {
@@ -460,7 +455,8 @@ public class BlackBoxExhaustiveSearchPhaseTest {
         }
     }
 
-    public static class TestdataSolutionStateRecorder extends PhaseLifecycleListenerAdapter<TestdataDifficultyComparingSolution> {
+    public static class TestdataSolutionStateRecorder
+            extends PhaseLifecycleListenerAdapter<TestdataDifficultyComparingSolution> {
 
         private final List<String> workingSolutions = new ArrayList<>();
 
@@ -476,9 +472,9 @@ public class BlackBoxExhaustiveSearchPhaseTest {
 
         private void addWorkingSolution(TestdataDifficultyComparingSolution solution) {
             workingSolutions.add(solution.getEntityList().stream()
-                                         .map(TestdataDifficultyComparingEntity::getValue)
-                                         .map(value -> value == null ? "-" : value.getCode())
-                                         .collect(Collectors.joining()));
+                    .map(TestdataDifficultyComparingEntity::getValue)
+                    .map(value -> value == null ? "-" : value.getCode())
+                    .collect(Collectors.joining()));
         }
 
         public List<String> getWorkingSolutions() {

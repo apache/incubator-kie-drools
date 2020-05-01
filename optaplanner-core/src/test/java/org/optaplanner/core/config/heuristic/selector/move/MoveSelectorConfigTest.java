@@ -16,6 +16,11 @@
 
 package org.optaplanner.core.config.heuristic.selector.move;
 
+import static org.assertj.core.api.Assertions.assertThatIllegalArgumentException;
+import static org.junit.Assert.*;
+import static org.optaplanner.core.impl.testdata.util.PlannerAssert.*;
+import static org.optaplanner.core.impl.testdata.util.PlannerAssert.assertSame;
+
 import org.junit.jupiter.api.Test;
 import org.optaplanner.core.config.AbstractConfig;
 import org.optaplanner.core.config.heuristic.policy.HeuristicConfigPolicy;
@@ -27,11 +32,6 @@ import org.optaplanner.core.impl.heuristic.selector.SelectorTestUtils;
 import org.optaplanner.core.impl.heuristic.selector.move.MoveSelector;
 import org.optaplanner.core.impl.heuristic.selector.move.decorator.CachingMoveSelector;
 import org.optaplanner.core.impl.heuristic.selector.move.decorator.ShufflingMoveSelector;
-
-import static org.assertj.core.api.Assertions.assertThatIllegalArgumentException;
-import static org.junit.Assert.*;
-import static org.optaplanner.core.impl.testdata.util.PlannerAssert.assertSame;
-import static org.optaplanner.core.impl.testdata.util.PlannerAssert.*;
 
 public class MoveSelectorConfigTest extends AbstractSelectorConfigTest {
 
@@ -195,6 +195,7 @@ public class MoveSelectorConfigTest extends AbstractSelectorConfigTest {
                     SelectionCacheType minimumCacheType, boolean randomSelection) {
                 return baseMoveSelector;
             }
+
             @Override
             public AbstractConfig inherit(AbstractConfig inheritedConfig) {
                 throw new UnsupportedOperationException();

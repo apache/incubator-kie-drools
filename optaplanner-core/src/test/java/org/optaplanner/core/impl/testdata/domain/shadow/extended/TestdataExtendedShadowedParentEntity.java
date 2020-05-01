@@ -38,7 +38,8 @@ public class TestdataExtendedShadowedParentEntity extends TestdataObject {
 
     public static GenuineVariableDescriptor buildVariableDescriptorForValue() {
         SolutionDescriptor solutionDescriptor = TestdataExtendedShadowedSolution.buildSolutionDescriptor();
-        EntityDescriptor entityDescriptor = solutionDescriptor.findEntityDescriptorOrFail(TestdataExtendedShadowedParentEntity.class);
+        EntityDescriptor entityDescriptor = solutionDescriptor
+                .findEntityDescriptorOrFail(TestdataExtendedShadowedParentEntity.class);
         return entityDescriptor.getGenuineVariableDescriptor("value");
     }
 
@@ -67,8 +68,8 @@ public class TestdataExtendedShadowedParentEntity extends TestdataObject {
         this.value = value;
     }
 
-    @CustomShadowVariable(variableListenerClass = FirstShadowUpdatingVariableListener.class,
-            sources = {@PlanningVariableReference(variableName = "value")})
+    @CustomShadowVariable(variableListenerClass = FirstShadowUpdatingVariableListener.class, sources = {
+            @PlanningVariableReference(variableName = "value") })
     public String getFirstShadow() {
         return firstShadow;
     }
@@ -77,9 +78,8 @@ public class TestdataExtendedShadowedParentEntity extends TestdataObject {
         this.firstShadow = firstShadow;
     }
 
-    @CustomShadowVariable(variableListenerClass = ThirdShadowUpdatingVariableListener.class,
-            sources = {@PlanningVariableReference(
-                    entityClass = TestdataExtendedShadowedChildEntity.class, variableName = "secondShadow")})
+    @CustomShadowVariable(variableListenerClass = ThirdShadowUpdatingVariableListener.class, sources = {
+            @PlanningVariableReference(entityClass = TestdataExtendedShadowedChildEntity.class, variableName = "secondShadow") })
     public String getThirdShadow() {
         return thirdShadow;
     }
@@ -96,7 +96,8 @@ public class TestdataExtendedShadowedParentEntity extends TestdataObject {
     // Static inner classes
     // ************************************************************************
 
-    public static class FirstShadowUpdatingVariableListener extends VariableListenerAdapter<TestdataExtendedShadowedParentEntity> {
+    public static class FirstShadowUpdatingVariableListener
+            extends VariableListenerAdapter<TestdataExtendedShadowedParentEntity> {
 
         @Override
         public void afterEntityAdded(ScoreDirector scoreDirector, TestdataExtendedShadowedParentEntity entity) {
@@ -117,7 +118,8 @@ public class TestdataExtendedShadowedParentEntity extends TestdataObject {
 
     }
 
-    public static class ThirdShadowUpdatingVariableListener extends VariableListenerAdapter<TestdataExtendedShadowedChildEntity> {
+    public static class ThirdShadowUpdatingVariableListener
+            extends VariableListenerAdapter<TestdataExtendedShadowedChildEntity> {
 
         @Override
         public void afterEntityAdded(ScoreDirector scoreDirector, TestdataExtendedShadowedChildEntity entity) {

@@ -93,7 +93,6 @@ public final class DroolsGroupingUniConstraintStream<Solution_, NewA>
         this.condition = parent.getCondition().andCollect(collector);
     }
 
-
     public <A, B, C, D> DroolsGroupingUniConstraintStream(DroolsConstraintFactory<Solution_> constraintFactory,
             DroolsAbstractQuadConstraintStream<Solution_, A, B, C, D> parent,
             QuadFunction<A, B, C, D, NewA> groupKeyMapping) {

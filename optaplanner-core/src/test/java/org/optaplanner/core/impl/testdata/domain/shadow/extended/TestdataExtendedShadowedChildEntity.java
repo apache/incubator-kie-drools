@@ -46,8 +46,8 @@ public class TestdataExtendedShadowedChildEntity extends TestdataExtendedShadowe
         super(code, value);
     }
 
-    @CustomShadowVariable(variableListenerClass = SecondShadowUpdatingVariableListener.class,
-            sources = {@PlanningVariableReference(variableName = "firstShadow")})
+    @CustomShadowVariable(variableListenerClass = SecondShadowUpdatingVariableListener.class, sources = {
+            @PlanningVariableReference(variableName = "firstShadow") })
     public String getSecondShadow() {
         return secondShadow;
     }
@@ -64,7 +64,8 @@ public class TestdataExtendedShadowedChildEntity extends TestdataExtendedShadowe
     // Static inner classes
     // ************************************************************************
 
-    public static class SecondShadowUpdatingVariableListener extends VariableListenerAdapter<TestdataExtendedShadowedParentEntity> {
+    public static class SecondShadowUpdatingVariableListener
+            extends VariableListenerAdapter<TestdataExtendedShadowedParentEntity> {
 
         @Override
         public void afterEntityAdded(ScoreDirector scoreDirector, TestdataExtendedShadowedParentEntity entity) {

@@ -49,7 +49,7 @@ public final class DroolsFilterUniConstraintStream<Solution_, A> extends DroolsA
 
     @Override
     public String toString() {
-        return "Filter() with " + getChildStreams().size()  + " children";
+        return "Filter() with " + getChildStreams().size() + " children";
     }
 
 }

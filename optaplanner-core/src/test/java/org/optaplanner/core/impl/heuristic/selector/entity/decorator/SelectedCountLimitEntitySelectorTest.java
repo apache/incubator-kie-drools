@@ -16,6 +16,9 @@
 
 package org.optaplanner.core.impl.heuristic.selector.entity.decorator;
 
+import static org.mockito.Mockito.*;
+import static org.optaplanner.core.impl.testdata.util.PlannerAssert.*;
+
 import org.junit.jupiter.api.Test;
 import org.optaplanner.core.impl.heuristic.selector.SelectorTestUtils;
 import org.optaplanner.core.impl.heuristic.selector.entity.EntitySelector;
@@ -24,15 +27,13 @@ import org.optaplanner.core.impl.phase.scope.AbstractStepScope;
 import org.optaplanner.core.impl.solver.scope.DefaultSolverScope;
 import org.optaplanner.core.impl.testdata.domain.TestdataEntity;
 
-import static org.mockito.Mockito.*;
-import static org.optaplanner.core.impl.testdata.util.PlannerAssert.*;
-
 public class SelectedCountLimitEntitySelectorTest {
 
     @Test
     public void selectSizeLimitLowerThanSelectorSize() {
         EntitySelector childEntitySelector = SelectorTestUtils.mockEntitySelector(TestdataEntity.class,
-                new TestdataEntity("e1"), new TestdataEntity("e2"), new TestdataEntity("e3"), new TestdataEntity("e4"), new TestdataEntity("e5"));
+                new TestdataEntity("e1"), new TestdataEntity("e2"), new TestdataEntity("e3"), new TestdataEntity("e4"),
+                new TestdataEntity("e5"));
         EntitySelector entitySelector = new SelectedCountLimitEntitySelector(childEntitySelector, true, 3L);
 
         DefaultSolverScope solverScope = mock(DefaultSolverScope.class);
@@ -86,7 +87,6 @@ public class SelectedCountLimitEntitySelectorTest {
         verify(childEntitySelector, times(5)).iterator();
         verify(childEntitySelector, times(5)).getSize();
     }
-
 
     @Test
     public void selectSizeLimitHigherThanSelectorSize() {

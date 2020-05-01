@@ -229,7 +229,8 @@ public class Talk extends AbstractPersistable {
     }
 
     public int overlappingMutuallyExclusiveTalksTagCount(Talk other) {
-        return (int) mutuallyExclusiveTalksTagSet.stream().filter(tag -> other.mutuallyExclusiveTalksTagSet.contains(tag)).count();
+        return (int) mutuallyExclusiveTalksTagSet.stream().filter(tag -> other.mutuallyExclusiveTalksTagSet.contains(tag))
+                .count();
     }
 
     public int missingPrerequisiteCount() {

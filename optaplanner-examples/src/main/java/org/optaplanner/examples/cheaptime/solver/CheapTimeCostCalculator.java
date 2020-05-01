@@ -53,6 +53,7 @@ public class CheapTimeCostCalculator {
         return Math.round(result * MICROS_PER_ONE_AS_DOUBLE);
     }
 
-    private CheapTimeCostCalculator() {}
+    private CheapTimeCostCalculator() {
+    }
 
 }

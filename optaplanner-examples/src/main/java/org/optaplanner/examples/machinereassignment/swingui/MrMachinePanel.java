@@ -56,7 +56,6 @@ public class MrMachinePanel extends JPanel {
     private JLabel numberOfProcessesLabel;
     private JButton detailsButton;
 
-
     public MrMachinePanel(MachineReassignmentPanel machineReassignmentPanel, List<MrResource> resourceList,
             MrMachine machine) {
         super(new BorderLayout());
@@ -170,8 +169,8 @@ public class MrMachinePanel extends JPanel {
                 usedTotal += processAssignment.getProcess().getProcessRequirement(resource).getUsage();
             }
             resourceField.setText(usedTotal + " / " + maximumCapacity);
-            resourceField.setForeground(usedTotal > maximumCapacity ? TangoColorFactory.SCARLET_3 :
-                    (usedTotal > safetyCapacity ? TangoColorFactory.ORANGE_3 : Color.BLACK));
+            resourceField.setForeground(usedTotal > maximumCapacity ? TangoColorFactory.SCARLET_3
+                    : (usedTotal > safetyCapacity ? TangoColorFactory.ORANGE_3 : Color.BLACK));
             resourceField.setEnabled(used);
         }
         numberOfProcessesLabel.setText(processAssignmentList.size() + " processes ");

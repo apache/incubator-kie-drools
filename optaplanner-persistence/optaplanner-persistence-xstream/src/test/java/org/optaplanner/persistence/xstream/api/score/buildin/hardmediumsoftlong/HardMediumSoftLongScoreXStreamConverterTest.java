@@ -16,10 +16,11 @@
 
 package org.optaplanner.persistence.xstream.api.score.buildin.hardmediumsoftlong;
 
-import com.thoughtworks.xstream.annotations.XStreamConverter;
 import org.junit.jupiter.api.Test;
 import org.optaplanner.core.api.score.buildin.hardmediumsoftlong.HardMediumSoftLongScore;
 import org.optaplanner.persistence.xstream.api.score.AbstractScoreXStreamConverterTest;
+
+import com.thoughtworks.xstream.annotations.XStreamConverter;
 
 public class HardMediumSoftLongScoreXStreamConverterTest extends AbstractScoreXStreamConverterTest {
 

@@ -17,6 +17,8 @@
 
 package org.optaplanner.core.impl.testdata.util;
 
+import static org.mockito.Mockito.*;
+
 import java.util.Collection;
 import java.util.Comparator;
 import java.util.Iterator;
@@ -49,8 +51,6 @@ import org.optaplanner.core.impl.phase.scope.AbstractStepScope;
 import org.optaplanner.core.impl.solver.scope.DefaultSolverScope;
 import org.optaplanner.core.impl.testdata.domain.TestdataEntity;
 import org.optaplanner.core.impl.testdata.domain.TestdataSolution;
-
-import static org.mockito.Mockito.*;
 
 /**
  * @see PlannerTestUtils
@@ -446,7 +446,7 @@ public class PlannerAssert extends Assert {
     }
 
     public static void assertAllCodesOfValueSelectorForEntity(ValueSelector valueSelector, Object entity,
-            long size,  String... codes) {
+            long size, String... codes) {
         assertAllCodesOfIterator(valueSelector.iterator(entity), codes);
         assertEquals(true, valueSelector.isCountable());
         assertEquals(false, valueSelector.isNeverEnding());

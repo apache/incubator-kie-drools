@@ -48,7 +48,7 @@ public class SimpleDoubleScoreHibernateTypeTest extends AbstractScoreHibernateTy
         }
 
         @Override
-        @Columns(columns = {@Column(name = "initScore"), @Column(name = "score")})
+        @Columns(columns = { @Column(name = "initScore"), @Column(name = "score") })
         public SimpleDoubleScore getScore() {
             return score;
         }

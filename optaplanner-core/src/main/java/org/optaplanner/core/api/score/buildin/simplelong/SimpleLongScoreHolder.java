@@ -52,10 +52,11 @@ public class SimpleLongScoreHolder extends AbstractScoreHolder<SimpleLongScore> 
         super.configureConstraintWeight(rule, constraintWeight);
         BiConsumer<RuleContext, Long> matchExecutor;
         if (constraintWeight.equals(SimpleLongScore.ZERO)) {
-            matchExecutor = (RuleContext kcontext, Long matchWeight) -> {};
+            matchExecutor = (RuleContext kcontext, Long matchWeight) -> {
+            };
         } else {
-            matchExecutor = (RuleContext kcontext, Long matchWeight)
-                    -> addConstraintMatch(kcontext, constraintWeight.getScore() * matchWeight);
+            matchExecutor = (RuleContext kcontext, Long matchWeight) -> addConstraintMatch(kcontext,
+                    constraintWeight.getScore() * matchWeight);
         }
         matchExecutorByNumberMap.put(rule, matchExecutor);
     }
@@ -66,6 +67,7 @@ public class SimpleLongScoreHolder extends AbstractScoreHolder<SimpleLongScore> 
 
     /**
      * Penalize a match by the {@link ConstraintWeight} negated.
+     * 
      * @param kcontext never null, the magic variable in DRL
      */
     public void penalize(RuleContext kcontext) {
@@ -74,6 +76,7 @@ public class SimpleLongScoreHolder extends AbstractScoreHolder<SimpleLongScore> 
 
     /**
      * Penalize a match by the {@link ConstraintWeight} negated and multiplied with the weightMultiplier for all score levels.
+     * 
      * @param kcontext never null, the magic variable in DRL
      * @param weightMultiplier at least 0
      */
@@ -83,6 +86,7 @@ public class SimpleLongScoreHolder extends AbstractScoreHolder<SimpleLongScore> 
 
     /**
      * Reward a match by the {@link ConstraintWeight}.
+     * 
      * @param kcontext never null, the magic variable in DRL
      */
     public void reward(RuleContext kcontext) {
@@ -91,6 +95,7 @@ public class SimpleLongScoreHolder extends AbstractScoreHolder<SimpleLongScore> 
 
     /**
      * Reward a match by the {@link ConstraintWeight} multiplied with the weightMultiplier for all score levels.
+     * 
      * @param kcontext never null, the magic variable in DRL
      * @param weightMultiplier at least 0
      */

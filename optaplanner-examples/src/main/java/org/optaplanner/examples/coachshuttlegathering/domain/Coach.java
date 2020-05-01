@@ -16,8 +16,9 @@
 
 package org.optaplanner.examples.coachshuttlegathering.domain;
 
-import com.thoughtworks.xstream.annotations.XStreamAlias;
 import org.optaplanner.examples.coachshuttlegathering.domain.location.RoadLocation;
+
+import com.thoughtworks.xstream.annotations.XStreamAlias;
 
 @XStreamAlias("CsgCoach")
 public class Coach extends Bus {

@@ -18,8 +18,9 @@ package org.optaplanner.examples.coachshuttlegathering.domain.location;
 
 import java.util.Map;
 
-import com.thoughtworks.xstream.annotations.XStreamAlias;
 import org.optaplanner.examples.common.domain.AbstractPersistable;
+
+import com.thoughtworks.xstream.annotations.XStreamAlias;
 
 @XStreamAlias("CsgRoadLocation")
 public class RoadLocation extends AbstractPersistable {
@@ -98,6 +99,7 @@ public class RoadLocation extends AbstractPersistable {
 
     /**
      * The angle relative to the direction EAST.
+     * 
      * @param location never null
      * @return in Cartesian coordinates
      */

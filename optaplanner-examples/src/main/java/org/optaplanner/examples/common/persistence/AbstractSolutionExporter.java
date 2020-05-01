@@ -17,11 +17,9 @@
 package org.optaplanner.examples.common.persistence;
 
 import java.io.File;
-import java.util.Arrays;
 
 import org.optaplanner.core.api.domain.solution.PlanningSolution;
 import org.optaplanner.examples.common.app.LoggingMain;
-import org.optaplanner.examples.common.business.ProblemFileComparator;
 
 /**
  * @param <Solution_> the solution type, the class with the {@link PlanningSolution} annotation

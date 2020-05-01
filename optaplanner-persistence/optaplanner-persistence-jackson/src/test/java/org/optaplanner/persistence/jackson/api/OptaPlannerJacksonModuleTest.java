@@ -16,14 +16,15 @@
 
 package org.optaplanner.persistence.jackson.api;
 
-import com.fasterxml.jackson.databind.MapperFeature;
-import com.fasterxml.jackson.databind.ObjectMapper;
+import static org.junit.Assert.*;
+
 import org.junit.jupiter.api.Test;
 import org.optaplanner.core.api.score.Score;
 import org.optaplanner.core.api.score.buildin.bendable.BendableScore;
 import org.optaplanner.core.api.score.buildin.hardsoft.HardSoftScore;
 
-import static org.junit.Assert.*;
+import com.fasterxml.jackson.databind.MapperFeature;
+import com.fasterxml.jackson.databind.ObjectMapper;
 
 public class OptaPlannerJacksonModuleTest extends AbstractJacksonJsonSerializerAndDeserializerTest {
 
@@ -39,19 +40,19 @@ public class OptaPlannerJacksonModuleTest extends AbstractJacksonJsonSerializerA
         objectMapper.registerModule(OptaPlannerJacksonModule.createModule());
 
         TestOptaPlannerJacksonModuleWrapper input = new TestOptaPlannerJacksonModuleWrapper();
-        input.setBendableScore(BendableScore.of(new int[]{1000, 200}, new int[]{34}));
+        input.setBendableScore(BendableScore.of(new int[] { 1000, 200 }, new int[] { 34 }));
         input.setHardSoftScore(HardSoftScore.of(-1, -20));
         input.setPolymorphicScore(HardSoftScore.of(-20, -300));
         TestOptaPlannerJacksonModuleWrapper output = serializeAndDeserialize(objectMapper, input);
-        assertEquals(BendableScore.of(new int[]{1000, 200}, new int[]{34}), output.getBendableScore());
+        assertEquals(BendableScore.of(new int[] { 1000, 200 }, new int[] { 34 }), output.getBendableScore());
         assertEquals(HardSoftScore.of(-1, -20), output.getHardSoftScore());
         assertEquals(HardSoftScore.of(-20, -300), output.getPolymorphicScore());
 
-        input.setPolymorphicScore(BendableScore.of(new int[] {-1, -20}, new int[] {-300, -4000, -50000}));
+        input.setPolymorphicScore(BendableScore.of(new int[] { -1, -20 }, new int[] { -300, -4000, -50000 }));
         output = serializeAndDeserialize(objectMapper, input);
-        assertEquals(BendableScore.of(new int[]{1000, 200}, new int[]{34}), output.getBendableScore());
+        assertEquals(BendableScore.of(new int[] { 1000, 200 }, new int[] { 34 }), output.getBendableScore());
         assertEquals(HardSoftScore.of(-1, -20), output.getHardSoftScore());
-        assertEquals(BendableScore.of(new int[] {-1, -20}, new int[] {-300, -4000, -50000}), output.getPolymorphicScore());
+        assertEquals(BendableScore.of(new int[] { -1, -20 }, new int[] { -300, -4000, -50000 }), output.getPolymorphicScore());
     }
 
     public static class TestOptaPlannerJacksonModuleWrapper {

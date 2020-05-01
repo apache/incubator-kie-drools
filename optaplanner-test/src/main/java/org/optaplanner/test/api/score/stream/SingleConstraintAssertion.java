@@ -32,7 +32,7 @@ public interface SingleConstraintAssertion {
      * <p>
      * An {@code int matchWeightTotal} automatically casts to {@code long} for {@link HardSoftLongScore long scores}.
      *
-     * @param matchWeightTotal at least 0, expected sum of match weights of matches of the constraint. 
+     * @param matchWeightTotal at least 0, expected sum of match weights of matches of the constraint.
      * @throws AssertionError when the expected penalty is not observed
      */
     default void penalizesBy(int matchWeightTotal) {
@@ -42,7 +42,7 @@ public interface SingleConstraintAssertion {
     /**
      * As defined by {@link #penalizesBy(int)}.
      *
-     * @param matchWeightTotal at least 0, expected sum of match weights of matches of the constraint. 
+     * @param matchWeightTotal at least 0, expected sum of match weights of matches of the constraint.
      * @param message sometimes null, description of the scenario being asserted
      * @throws AssertionError when the expected penalty is not observed
      */
@@ -51,7 +51,7 @@ public interface SingleConstraintAssertion {
     /**
      * As defined by {@link #penalizesBy(int)}.
      *
-     * @param matchWeightTotal at least 0, expected sum of match weights of matches of the constraint. 
+     * @param matchWeightTotal at least 0, expected sum of match weights of matches of the constraint.
      * @throws AssertionError when the expected penalty is not observed
      */
     default void penalizesBy(long matchWeightTotal) {
@@ -61,7 +61,7 @@ public interface SingleConstraintAssertion {
     /**
      * As defined by {@link #penalizesBy(int)}.
      * 
-     * @param matchWeightTotal at least 0, expected sum of match weights of matches of the constraint. 
+     * @param matchWeightTotal at least 0, expected sum of match weights of matches of the constraint.
      * @param message sometimes null, description of the scenario being asserted
      * @throws AssertionError when the expected penalty is not observed
      */
@@ -70,7 +70,7 @@ public interface SingleConstraintAssertion {
     /**
      * As defined by {@link #penalizesBy(int)}.
      * 
-     * @param matchWeightTotal at least 0, expected sum of match weights of matches of the constraint. 
+     * @param matchWeightTotal at least 0, expected sum of match weights of matches of the constraint.
      * @throws AssertionError when the expected penalty is not observed
      */
     default void penalizesBy(BigDecimal matchWeightTotal) {
@@ -80,7 +80,7 @@ public interface SingleConstraintAssertion {
     /**
      * As defined by {@link #penalizesBy(int)}.
      * 
-     * @param matchWeightTotal at least 0, expected sum of match weights of matches of the constraint. 
+     * @param matchWeightTotal at least 0, expected sum of match weights of matches of the constraint.
      * @param message sometimes null, description of the scenario being asserted
      * @throws AssertionError when the expected penalty is not observed
      */

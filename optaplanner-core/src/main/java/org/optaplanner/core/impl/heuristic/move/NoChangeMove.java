@@ -24,6 +24,7 @@ import org.optaplanner.core.impl.score.director.ScoreDirector;
 
 /**
  * Makes no changes.
+ * 
  * @param <Solution_> the solution type, the class with the {@link PlanningSolution} annotation
  */
 public class NoChangeMove<Solution_> extends AbstractMove<Solution_> {
@@ -54,12 +55,12 @@ public class NoChangeMove<Solution_> extends AbstractMove<Solution_> {
 
     @Override
     public Collection<? extends Object> getPlanningEntities() {
-        return Collections.<Object>emptyList();
+        return Collections.<Object> emptyList();
     }
 
     @Override
     public Collection<? extends Object> getPlanningValues() {
-        return Collections.<Object>emptyList();
+        return Collections.<Object> emptyList();
     }
 
     @Override

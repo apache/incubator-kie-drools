@@ -16,6 +16,9 @@
 
 package org.optaplanner.core.impl.domain.variable.inverserelation;
 
+import static org.mockito.Mockito.*;
+import static org.optaplanner.core.impl.testdata.util.PlannerAssert.*;
+
 import java.util.Arrays;
 
 import org.junit.jupiter.api.Test;
@@ -27,9 +30,6 @@ import org.optaplanner.core.impl.testdata.domain.shadow.inverserelation.Testdata
 import org.optaplanner.core.impl.testdata.domain.shadow.inverserelation.TestdataInverseRelationSolution;
 import org.optaplanner.core.impl.testdata.domain.shadow.inverserelation.TestdataInverseRelationValue;
 
-import static org.mockito.Mockito.*;
-import static org.optaplanner.core.impl.testdata.util.PlannerAssert.*;
-
 public class CollectionInverseVariableListenerTest {
 
     @Test
@@ -37,7 +37,8 @@ public class CollectionInverseVariableListenerTest {
         ScoreDirector scoreDirector = mock(ScoreDirector.class);
         SolutionDescriptor solutionDescriptor = TestdataInverseRelationSolution.buildSolutionDescriptor();
         EntityDescriptor entityDescriptor = solutionDescriptor.findEntityDescriptorOrFail(TestdataInverseRelationEntity.class);
-        EntityDescriptor shadowEntityDescriptor = solutionDescriptor.findEntityDescriptorOrFail(TestdataInverseRelationValue.class);
+        EntityDescriptor shadowEntityDescriptor = solutionDescriptor
+                .findEntityDescriptorOrFail(TestdataInverseRelationValue.class);
         ShadowVariableDescriptor entitiesVariableDescriptor = shadowEntityDescriptor.getShadowVariableDescriptor("entities");
         CollectionInverseVariableListener variableListener = new CollectionInverseVariableListener(
                 (InverseRelationShadowVariableDescriptor) entitiesVariableDescriptor,

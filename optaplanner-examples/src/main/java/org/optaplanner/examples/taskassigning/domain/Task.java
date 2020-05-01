@@ -16,7 +16,6 @@
 
 package org.optaplanner.examples.taskassigning.domain;
 
-import com.thoughtworks.xstream.annotations.XStreamAlias;
 import org.optaplanner.core.api.domain.entity.PlanningEntity;
 import org.optaplanner.core.api.domain.entity.PlanningPin;
 import org.optaplanner.core.api.domain.variable.AnchorShadowVariable;
@@ -27,6 +26,8 @@ import org.optaplanner.core.api.domain.variable.PlanningVariableReference;
 import org.optaplanner.examples.common.swingui.components.Labeled;
 import org.optaplanner.examples.taskassigning.domain.solver.StartTimeUpdatingVariableListener;
 import org.optaplanner.examples.taskassigning.domain.solver.TaskDifficultyComparator;
+
+import com.thoughtworks.xstream.annotations.XStreamAlias;
 
 @PlanningEntity(difficultyComparatorClass = TaskDifficultyComparator.class)
 @XStreamAlias("TaTask")
@@ -41,8 +42,7 @@ public class Task extends TaskOrEmployee implements Labeled {
     private boolean pinned;
 
     // Planning variables: changes during planning, between score calculations.
-    @PlanningVariable(valueRangeProviderRefs = {"employeeRange", "taskRange"},
-            graphType = PlanningVariableGraphType.CHAINED)
+    @PlanningVariable(valueRangeProviderRefs = { "employeeRange", "taskRange" }, graphType = PlanningVariableGraphType.CHAINED)
     private TaskOrEmployee previousTaskOrEmployee;
 
     // Shadow variables
@@ -52,7 +52,7 @@ public class Task extends TaskOrEmployee implements Labeled {
     @CustomShadowVariable(variableListenerClass = StartTimeUpdatingVariableListener.class,
             // Arguable, to adhere to API specs (although this works), nextTask and employee should also be a source,
             // because this shadow must be triggered after nextTask and employee (but there is no need to be triggered by those)
-            sources = {@PlanningVariableReference(variableName = "previousTaskOrEmployee")})
+            sources = { @PlanningVariableReference(variableName = "previousTaskOrEmployee") })
     private Integer startTime; // In minutes
 
     public Task() {
@@ -160,6 +160,7 @@ public class Task extends TaskOrEmployee implements Labeled {
 
     /**
      * In minutes
+     * 
      * @return at least 1 minute
      */
     public int getDuration() {

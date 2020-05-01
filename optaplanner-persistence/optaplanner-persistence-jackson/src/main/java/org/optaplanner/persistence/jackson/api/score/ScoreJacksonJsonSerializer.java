@@ -18,6 +18,9 @@ package org.optaplanner.persistence.jackson.api.score;
 
 import java.io.IOException;
 
+import org.optaplanner.core.api.score.Score;
+import org.optaplanner.persistence.jackson.api.score.buildin.hardsoft.HardSoftScoreJacksonJsonSerializer;
+
 import com.fasterxml.jackson.core.JsonGenerator;
 import com.fasterxml.jackson.databind.BeanProperty;
 import com.fasterxml.jackson.databind.JavaType;
@@ -25,11 +28,10 @@ import com.fasterxml.jackson.databind.JsonMappingException;
 import com.fasterxml.jackson.databind.JsonSerializer;
 import com.fasterxml.jackson.databind.SerializerProvider;
 import com.fasterxml.jackson.databind.ser.ContextualSerializer;
-import org.optaplanner.core.api.score.Score;
-import org.optaplanner.persistence.jackson.api.score.buildin.hardsoft.HardSoftScoreJacksonJsonSerializer;
 
 /**
  * This class will be removed in 8.0.
+ * 
  * @deprecated in favor of {@link HardSoftScoreJacksonJsonSerializer} and variants.
  */
 @Deprecated

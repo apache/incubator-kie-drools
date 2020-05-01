@@ -25,8 +25,8 @@ import org.optaplanner.core.impl.score.stream.quad.AbstractQuadJoiner;
 import org.optaplanner.core.impl.score.stream.quad.FilteringQuadJoiner;
 
 public final class TriConstraintStreamHelper<A, B, C, D>
-        extends AbstractConstraintStreamHelper<D, QuadConstraintStream<A, B, C, D>, QuadJoiner<A, B, C, D>,
-                QuadPredicate<A, B, C, D>> {
+        extends
+        AbstractConstraintStreamHelper<D, QuadConstraintStream<A, B, C, D>, QuadJoiner<A, B, C, D>, QuadPredicate<A, B, C, D>> {
 
     private final TriConstraintStream<A, B, C> stream;
 
@@ -67,7 +67,7 @@ public final class TriConstraintStreamHelper<A, B, C, D>
 
     @Override
     protected QuadPredicate<A, B, C, D> extractPredicate(QuadJoiner<A, B, C, D> joiner) {
-        return ((FilteringQuadJoiner<A, B, C, D>)joiner).getFilter();
+        return ((FilteringQuadJoiner<A, B, C, D>) joiner).getFilter();
     }
 
     @Override

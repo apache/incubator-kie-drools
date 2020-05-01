@@ -56,7 +56,7 @@ public class DroolsJoinBiConstraintStream<Solution_, A, B> extends DroolsAbstrac
 
     @Override
     public String toString() {
-        return "BiJoin() with " + getChildStreams().size()  + " children";
+        return "BiJoin() with " + getChildStreams().size() + " children";
     }
 
 }

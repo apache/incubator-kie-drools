@@ -16,6 +16,8 @@
 
 package org.optaplanner.benchmark.config;
 
+import static org.apache.commons.lang3.ObjectUtils.*;
+
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
@@ -39,14 +41,6 @@ import java.util.concurrent.Executors;
 import java.util.concurrent.ThreadFactory;
 import java.util.regex.Pattern;
 
-import com.thoughtworks.xstream.XStream;
-import com.thoughtworks.xstream.annotations.XStreamAlias;
-import com.thoughtworks.xstream.annotations.XStreamImplicit;
-import com.thoughtworks.xstream.annotations.XStreamOmitField;
-import com.thoughtworks.xstream.converters.ConversionException;
-import freemarker.template.Configuration;
-import freemarker.template.Template;
-import freemarker.template.TemplateException;
 import org.optaplanner.benchmark.api.PlannerBenchmark;
 import org.optaplanner.benchmark.api.PlannerBenchmarkFactory;
 import org.optaplanner.benchmark.config.blueprint.SolverBenchmarkBluePrintConfig;
@@ -62,7 +56,15 @@ import org.optaplanner.core.impl.solver.thread.DefaultSolverThreadFactory;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import static org.apache.commons.lang3.ObjectUtils.*;
+import com.thoughtworks.xstream.XStream;
+import com.thoughtworks.xstream.annotations.XStreamAlias;
+import com.thoughtworks.xstream.annotations.XStreamImplicit;
+import com.thoughtworks.xstream.annotations.XStreamOmitField;
+import com.thoughtworks.xstream.converters.ConversionException;
+
+import freemarker.template.Configuration;
+import freemarker.template.Template;
+import freemarker.template.TemplateException;
 
 /**
  * To read it from XML, use {@link #createFromXmlResource(String)}.
@@ -104,8 +106,9 @@ public class PlannerBenchmarkConfig {
 
     /**
      * Reads an XML benchmark configuration from the classpath.
+     * 
      * @param benchmarkConfigResource never null, a classpath resource
-     * as defined by {@link ClassLoader#getResource(String)}
+     *        as defined by {@link ClassLoader#getResource(String)}
      * @return never null
      */
     public static PlannerBenchmarkConfig createFromXmlResource(String benchmarkConfigResource) {
@@ -114,10 +117,11 @@ public class PlannerBenchmarkConfig {
 
     /**
      * As defined by {@link #createFromXmlResource(String)}.
+     * 
      * @param benchmarkConfigResource never null, a classpath resource
-     * as defined by {@link ClassLoader#getResource(String)}
+     *        as defined by {@link ClassLoader#getResource(String)}
      * @param classLoader sometimes null, the {@link ClassLoader} to use for loading all resources and {@link Class}es,
-     * null to use the default {@link ClassLoader}
+     *        null to use the default {@link ClassLoader}
      * @return never null
      */
     public static PlannerBenchmarkConfig createFromXmlResource(String benchmarkConfigResource, ClassLoader classLoader) {
@@ -139,10 +143,13 @@ public class PlannerBenchmarkConfig {
             throw new IllegalArgumentException("Unmarshalling of benchmarkConfigResource (" + benchmarkConfigResource
                     + ") fails on line number (" + lineNumber + ")."
                     + (Objects.equals(e.get("required-type"), "java.lang.Class")
-                    ? "\n  Maybe the classname on line number (" + lineNumber + ") is surrounded by whitespace, which is invalid."
-                    : ""), e);
+                            ? "\n  Maybe the classname on line number (" + lineNumber
+                                    + ") is surrounded by whitespace, which is invalid."
+                            : ""),
+                    e);
         } catch (IOException e) {
-            throw new IllegalArgumentException("Reading the benchmarkConfigResource (" + benchmarkConfigResource + ") failed.", e);
+            throw new IllegalArgumentException("Reading the benchmarkConfigResource (" + benchmarkConfigResource + ") failed.",
+                    e);
         }
     }
 
@@ -151,6 +158,7 @@ public class PlannerBenchmarkConfig {
      * <p>
      * Warning: this leads to platform dependent code,
      * it's recommend to use {@link #createFromXmlResource(String)} instead.
+     * 
      * @param benchmarkConfigFile never null
      * @return never null
      */
@@ -160,9 +168,10 @@ public class PlannerBenchmarkConfig {
 
     /**
      * As defined by {@link #createFromXmlFile(File)}.
+     * 
      * @param benchmarkConfigFile never null
      * @param classLoader sometimes null, the {@link ClassLoader} to use for loading all resources and {@link Class}es,
-     * null to use the default {@link ClassLoader}
+     *        null to use the default {@link ClassLoader}
      * @return never null
      */
     public static PlannerBenchmarkConfig createFromXmlFile(File benchmarkConfigFile, ClassLoader classLoader) {
@@ -187,7 +196,7 @@ public class PlannerBenchmarkConfig {
     /**
      * @param in never null, gets closed
      * @param classLoader sometimes null, the {@link ClassLoader} to use for loading all resources and {@link Class}es,
-     * null to use the default {@link ClassLoader}
+     *        null to use the default {@link ClassLoader}
      * @return never null
      */
     public static PlannerBenchmarkConfig createFromXmlInputStream(InputStream in, ClassLoader classLoader) {
@@ -211,7 +220,7 @@ public class PlannerBenchmarkConfig {
     /**
      * @param reader never null, gets closed
      * @param classLoader sometimes null, the {@link ClassLoader} to use for loading all resources and {@link Class}es,
-     * null to use the default {@link ClassLoader}
+     *        null to use the default {@link ClassLoader}
      * @return never null
      */
     public static PlannerBenchmarkConfig createFromXmlReader(Reader reader, ClassLoader classLoader) {
@@ -221,9 +230,10 @@ public class PlannerBenchmarkConfig {
             throw new IllegalArgumentException("The " + PlannerBenchmarkConfig.class.getSimpleName()
                     + "'s XML root element resolves to a different type ("
                     + (benchmarkConfigObject == null ? null : benchmarkConfigObject.getClass().getSimpleName()) + ")."
-                    + (benchmarkConfigObject instanceof SolverConfig ?
-                    "\nMaybe use " + PlannerBenchmarkFactory.class.getSimpleName()
-                    + ".createFromSolverConfigXmlResource() instead." : ""));
+                    + (benchmarkConfigObject instanceof SolverConfig
+                            ? "\nMaybe use " + PlannerBenchmarkFactory.class.getSimpleName()
+                                    + ".createFromSolverConfigXmlResource() instead."
+                            : ""));
         }
         PlannerBenchmarkConfig benchmarkConfig = (PlannerBenchmarkConfig) benchmarkConfigObject;
         benchmarkConfig.setClassLoader(classLoader);
@@ -236,6 +246,7 @@ public class PlannerBenchmarkConfig {
 
     /**
      * Reads a Freemarker XML benchmark configuration from the classpath.
+     * 
      * @param templateResource never null, a classpath resource as defined by {@link ClassLoader#getResource(String)}
      * @return never null
      */
@@ -245,9 +256,10 @@ public class PlannerBenchmarkConfig {
 
     /**
      * As defined by {@link #createFromFreemarkerXmlResource(String)}.
+     * 
      * @param templateResource never null, a classpath resource as defined by {@link ClassLoader#getResource(String)}
      * @param classLoader sometimes null, the {@link ClassLoader} to use for loading all resources and {@link Class}es,
-     * null to use the default {@link ClassLoader}
+     *        null to use the default {@link ClassLoader}
      * @return never null
      */
     public static PlannerBenchmarkConfig createFromFreemarkerXmlResource(String templateResource, ClassLoader classLoader) {
@@ -256,6 +268,7 @@ public class PlannerBenchmarkConfig {
 
     /**
      * As defined by {@link #createFromFreemarkerXmlResource(String)}.
+     * 
      * @param templateResource never null, a classpath resource as defined by {@link ClassLoader#getResource(String)}
      * @param model sometimes null
      * @return never null
@@ -266,13 +279,15 @@ public class PlannerBenchmarkConfig {
 
     /**
      * As defined by {@link #createFromFreemarkerXmlResource(String)}.
+     * 
      * @param templateResource never null, a classpath resource as defined by {@link ClassLoader#getResource(String)}
      * @param model sometimes null
      * @param classLoader sometimes null, the {@link ClassLoader} to use for loading all resources and {@link Class}es,
-     * null to use the default {@link ClassLoader}
+     *        null to use the default {@link ClassLoader}
      * @return never null
      */
-    public static PlannerBenchmarkConfig createFromFreemarkerXmlResource(String templateResource, Object model, ClassLoader classLoader) {
+    public static PlannerBenchmarkConfig createFromFreemarkerXmlResource(String templateResource, Object model,
+            ClassLoader classLoader) {
         ClassLoader actualClassLoader = classLoader != null ? classLoader : PlannerBenchmarkConfig.class.getClassLoader();
         try (InputStream templateIn = actualClassLoader.getResourceAsStream(templateResource)) {
             if (templateIn == null) {
@@ -296,6 +311,7 @@ public class PlannerBenchmarkConfig {
      * <p>
      * Warning: this leads to platform dependent code,
      * it's recommend to use {@link #createFromFreemarkerXmlResource(String)} instead.
+     * 
      * @param templateFile never null
      * @return never null
      */
@@ -305,9 +321,10 @@ public class PlannerBenchmarkConfig {
 
     /**
      * As defined by {@link #createFromFreemarkerXmlFile(File)}.
+     * 
      * @param templateFile never null
      * @param classLoader sometimes null, the {@link ClassLoader} to use for loading all resources and {@link Class}es,
-     * null to use the default {@link ClassLoader}
+     *        null to use the default {@link ClassLoader}
      * @return never null
      */
     public static PlannerBenchmarkConfig createFromFreemarkerXmlFile(File templateFile, ClassLoader classLoader) {
@@ -316,6 +333,7 @@ public class PlannerBenchmarkConfig {
 
     /**
      * As defined by {@link #createFromFreemarkerXmlFile(File)}.
+     * 
      * @param templateFile never null
      * @param model sometimes null
      * @return never null
@@ -326,10 +344,11 @@ public class PlannerBenchmarkConfig {
 
     /**
      * As defined by {@link #createFromFreemarkerXmlFile(File)}.
+     * 
      * @param templateFile never null
      * @param model sometimes null
      * @param classLoader sometimes null, the {@link ClassLoader} to use for loading all resources and {@link Class}es,
-     * null to use the default {@link ClassLoader}
+     *        null to use the default {@link ClassLoader}
      * @return never null
      */
     public static PlannerBenchmarkConfig createFromFreemarkerXmlFile(File templateFile, Object model, ClassLoader classLoader) {
@@ -352,9 +371,10 @@ public class PlannerBenchmarkConfig {
 
     /**
      * As defined by {@link #createFromFreemarkerXmlInputStream(InputStream)}.
+     * 
      * @param templateIn never null, gets closed
      * @param classLoader sometimes null, the {@link ClassLoader} to use for loading all resources and {@link Class}es,
-     * null to use the default {@link ClassLoader}
+     *        null to use the default {@link ClassLoader}
      * @return never null
      */
     public static PlannerBenchmarkConfig createFromFreemarkerXmlInputStream(InputStream templateIn, ClassLoader classLoader) {
@@ -363,6 +383,7 @@ public class PlannerBenchmarkConfig {
 
     /**
      * As defined by {@link #createFromFreemarkerXmlInputStream(InputStream)}.
+     * 
      * @param templateIn never null, gets closed
      * @param model sometimes null
      * @return never null
@@ -373,13 +394,15 @@ public class PlannerBenchmarkConfig {
 
     /**
      * As defined by {@link #createFromFreemarkerXmlInputStream(InputStream)}.
+     * 
      * @param templateIn never null, gets closed
      * @param model sometimes null
      * @param classLoader sometimes null, the {@link ClassLoader} to use for loading all resources and {@link Class}es,
-     * null to use the default {@link ClassLoader}
+     *        null to use the default {@link ClassLoader}
      * @return never null
      */
-    public static PlannerBenchmarkConfig createFromFreemarkerXmlInputStream(InputStream templateIn, Object model, ClassLoader classLoader) {
+    public static PlannerBenchmarkConfig createFromFreemarkerXmlInputStream(InputStream templateIn, Object model,
+            ClassLoader classLoader) {
         try (Reader reader = new InputStreamReader(templateIn, StandardCharsets.UTF_8)) {
             return createFromFreemarkerXmlReader(reader, model, classLoader);
         } catch (UnsupportedEncodingException e) {
@@ -399,9 +422,10 @@ public class PlannerBenchmarkConfig {
 
     /**
      * As defined by {@link #createFromFreemarkerXmlReader(Reader)}.
+     * 
      * @param templateReader never null, gets closed
      * @param classLoader sometimes null, the {@link ClassLoader} to use for loading all resources and {@link Class}es,
-     * null to use the default {@link ClassLoader}
+     *        null to use the default {@link ClassLoader}
      * @return never null
      */
     public static PlannerBenchmarkConfig createFromFreemarkerXmlReader(Reader templateReader, ClassLoader classLoader) {
@@ -410,6 +434,7 @@ public class PlannerBenchmarkConfig {
 
     /**
      * As defined by {@link #createFromFreemarkerXmlReader(Reader)}.
+     * 
      * @param templateReader never null, gets closed
      * @param model sometimes null
      * @return never null
@@ -420,13 +445,15 @@ public class PlannerBenchmarkConfig {
 
     /**
      * As defined by {@link #createFromFreemarkerXmlReader(Reader)}.
+     * 
      * @param templateReader never null, gets closed
      * @param model sometimes null
      * @param classLoader sometimes null, the {@link ClassLoader} to use for loading all resources and {@link Class}es,
-     * null to use the default {@link ClassLoader}
+     *        null to use the default {@link ClassLoader}
      * @return never null
      */
-    public static PlannerBenchmarkConfig createFromFreemarkerXmlReader(Reader templateReader, Object model, ClassLoader classLoader) {
+    public static PlannerBenchmarkConfig createFromFreemarkerXmlReader(Reader templateReader, Object model,
+            ClassLoader classLoader) {
         Configuration freemarkerConfiguration = new Configuration();
         freemarkerConfiguration.setDefaultEncoding("UTF-8");
         // Write each number according to Java language spec (as expected by XStream), so not formatted by locale
@@ -542,8 +569,9 @@ public class PlannerBenchmarkConfig {
      * Using multiple parallel benchmarks can decrease the reliability of the results.
      * <p>
      * If there aren't enough processors available, it will be decreased.
+     * 
      * @return null, a number, {@value #PARALLEL_BENCHMARK_COUNT_AUTO} or a JavaScript calculation using
-     * {@value org.optaplanner.core.config.util.ConfigUtils#AVAILABLE_PROCESSOR_COUNT}.
+     *         {@value org.optaplanner.core.config.util.ConfigUtils#AVAILABLE_PROCESSOR_COUNT}.
      */
     public String getParallelBenchmarkCount() {
         return parallelBenchmarkCount;
@@ -634,6 +662,7 @@ public class PlannerBenchmarkConfig {
      * Use {@link PlannerBenchmarkFactory#buildPlannerBenchmark()} instead.
      * <p>
      * Will be removed in 8.0.
+     * 
      * @param solverConfigContext never null
      * @return never null
      */
@@ -646,6 +675,7 @@ public class PlannerBenchmarkConfig {
      * Use {@link PlannerBenchmarkFactory#buildPlannerBenchmark(Object[])} instead.
      * <p>
      * Will be removed in 8.0.
+     * 
      * @param solverConfigContext never null
      * @param extraProblems never null
      * @return never null
@@ -705,7 +735,7 @@ public class PlannerBenchmarkConfig {
                 && ConfigUtils.isEmptyCollection(solverBenchmarkConfigList)) {
             throw new IllegalArgumentException(
                     "Configure at least 1 <solverBenchmark> (or 1 <solverBenchmarkBluePrint>)"
-                    + " in the <plannerBenchmark> configuration.");
+                            + " in the <plannerBenchmark> configuration.");
         }
     }
 

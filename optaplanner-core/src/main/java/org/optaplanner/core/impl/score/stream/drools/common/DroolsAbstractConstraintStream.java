@@ -108,6 +108,7 @@ public abstract class DroolsAbstractConstraintStream<Solution_> extends Abstract
     /**
      * As defined by {@link DroolsRuleStructure#getExpectedJustificationTypes()}.
      * May only be called on scoring streams.
+     * 
      * @return never null, never empty
      */
     public Class[] getExpectedJustificationTypes() {

@@ -52,8 +52,7 @@ public class ConnectionFollowRedirects {
             // because getHeaderField() et al swallow IOExceptions.
             in = connection.getInputStream();
             followRedirects();
-        }
-        while (isRedirect);
+        } while (isRedirect);
         return in;
     }
 

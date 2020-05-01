@@ -22,7 +22,7 @@ public abstract class BavetAbstractTriTuple<A, B, C> extends BavetAbstractTuple 
 
     @Override
     public Object[] getFacts() {
-        return new Object[] {getFactA(), getFactB(), getFactC()};
+        return new Object[] { getFactA(), getFactB(), getFactC() };
     }
 
     // ************************************************************************
@@ -30,7 +30,9 @@ public abstract class BavetAbstractTriTuple<A, B, C> extends BavetAbstractTuple 
     // ************************************************************************
 
     public abstract A getFactA();
+
     public abstract B getFactB();
+
     public abstract C getFactC();
 
 }

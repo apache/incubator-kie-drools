@@ -76,7 +76,7 @@ public final class BavetJoinTriConstraintStream<Solution_, A, B, C> extends Bave
 
     @Override
     public String toString() {
-        return "Join() with " + childStreamList.size()  + " children";
+        return "Join() with " + childStreamList.size() + " children";
     }
 
     // ************************************************************************

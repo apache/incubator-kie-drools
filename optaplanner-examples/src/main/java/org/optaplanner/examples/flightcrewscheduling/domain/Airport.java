@@ -48,14 +48,14 @@ public class Airport extends AbstractPersistable implements Comparable<Airport> 
         final int EARTH_RADIUS_IN_KM = 6371;
         final int TWICE_EARTH_RADIUS_IN_KM = 2 * EARTH_RADIUS_IN_KM;
 
-        double latitudeInRads  = Math.toRadians(latitude);
+        double latitudeInRads = Math.toRadians(latitude);
         double longitudeInRads = Math.toRadians(longitude);
         // Cartesian coordinates, normalized for a sphere of diameter 1.0
         double cartesianX = 0.5 * Math.cos(latitudeInRads) * Math.sin(longitudeInRads);
         double cartesianY = 0.5 * Math.cos(latitudeInRads) * Math.cos(longitudeInRads);
         double cartesianZ = 0.5 * Math.sin(latitudeInRads);
 
-        double otherLatitudeInRads  = Math.toRadians(other.latitude);
+        double otherLatitudeInRads = Math.toRadians(other.latitude);
         double otherLongitudeInRads = Math.toRadians(other.longitude);
         // Cartesian coordinates, normalized for a sphere of diameter 1.0
         double otherCartesianX = 0.5 * Math.cos(otherLatitudeInRads) * Math.sin(otherLongitudeInRads);

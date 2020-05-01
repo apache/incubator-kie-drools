@@ -20,9 +20,6 @@ import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
 
-import com.thoughtworks.xstream.annotations.XStreamAlias;
-import com.thoughtworks.xstream.annotations.XStreamAsAttribute;
-import com.thoughtworks.xstream.annotations.XStreamImplicit;
 import org.optaplanner.core.api.domain.entity.PlanningEntity;
 import org.optaplanner.core.api.domain.solution.PlanningSolution;
 import org.optaplanner.core.config.heuristic.policy.HeuristicConfigPolicy;
@@ -51,6 +48,10 @@ import org.optaplanner.core.impl.heuristic.selector.entity.decorator.SortingEnti
 import org.optaplanner.core.impl.heuristic.selector.entity.mimic.EntityMimicRecorder;
 import org.optaplanner.core.impl.heuristic.selector.entity.mimic.MimicRecordingEntitySelector;
 import org.optaplanner.core.impl.heuristic.selector.entity.mimic.MimicReplayingEntitySelector;
+
+import com.thoughtworks.xstream.annotations.XStreamAlias;
+import com.thoughtworks.xstream.annotations.XStreamAsAttribute;
+import com.thoughtworks.xstream.annotations.XStreamImplicit;
 
 @XStreamAlias("entitySelector")
 public class EntitySelectorConfig extends SelectorConfig<EntitySelectorConfig> {
@@ -200,7 +201,8 @@ public class EntitySelectorConfig extends SelectorConfig<EntitySelectorConfig> {
         return probabilityWeightFactoryClass;
     }
 
-    public void setProbabilityWeightFactoryClass(Class<? extends SelectionProbabilityWeightFactory> probabilityWeightFactoryClass) {
+    public void setProbabilityWeightFactoryClass(
+            Class<? extends SelectionProbabilityWeightFactory> probabilityWeightFactoryClass) {
         this.probabilityWeightFactoryClass = probabilityWeightFactoryClass;
     }
 
@@ -239,8 +241,8 @@ public class EntitySelectorConfig extends SelectorConfig<EntitySelectorConfig> {
     /**
      * @param configPolicy never null
      * @param minimumCacheType never null, If caching is used (different from {@link SelectionCacheType#JUST_IN_TIME}),
-     * then it should be at least this {@link SelectionCacheType} because an ancestor already uses such caching
-     * and less would be pointless.
+     *        then it should be at least this {@link SelectionCacheType} because an ancestor already uses such caching
+     *        and less would be pointless.
      * @param inheritedSelectionOrder never null
      * @return never null
      */
@@ -296,13 +298,13 @@ public class EntitySelectorConfig extends SelectorConfig<EntitySelectorConfig> {
                 || probabilityWeightFactoryClass != null
                 || selectedCountLimit != null) {
             throw new IllegalArgumentException("The entitySelectorConfig (" + this
-                    + ") with mimicSelectorRef ("  + mimicSelectorRef
+                    + ") with mimicSelectorRef (" + mimicSelectorRef
                     + ") has another property that is not null.");
         }
         EntityMimicRecorder entityMimicRecorder = configPolicy.getEntityMimicRecorder(mimicSelectorRef);
         if (entityMimicRecorder == null) {
             throw new IllegalArgumentException("The entitySelectorConfig (" + this
-                    + ") has a mimicSelectorRef ("  + mimicSelectorRef
+                    + ") has a mimicSelectorRef (" + mimicSelectorRef
                     + ") for which no entitySelector with that id exists (in its solver phase).");
         }
         return new MimicReplayingEntitySelector(entityMimicRecorder);
@@ -378,11 +380,11 @@ public class EntitySelectorConfig extends SelectorConfig<EntitySelectorConfig> {
                 || sorterOrder != null || sorterClass != null)
                 && resolvedSelectionOrder != SelectionOrder.SORTED) {
             throw new IllegalArgumentException("The entitySelectorConfig (" + this
-                    + ") with sorterManner ("  + sorterManner
-                    + ") and sorterComparatorClass ("  + sorterComparatorClass
-                    + ") and sorterWeightFactoryClass ("  + sorterWeightFactoryClass
-                    + ") and sorterOrder ("  + sorterOrder
-                    + ") and sorterClass ("  + sorterClass
+                    + ") with sorterManner (" + sorterManner
+                    + ") and sorterComparatorClass (" + sorterComparatorClass
+                    + ") and sorterWeightFactoryClass (" + sorterWeightFactoryClass
+                    + ") and sorterOrder (" + sorterOrder
+                    + ") and sorterClass (" + sorterClass
                     + ") has a resolvedSelectionOrder (" + resolvedSelectionOrder
                     + ") that is not " + SelectionOrder.SORTED + ".");
         }
@@ -452,7 +454,7 @@ public class EntitySelectorConfig extends SelectorConfig<EntitySelectorConfig> {
                 sorter = ConfigUtils.newInstance(this, "sorterClass", sorterClass);
             } else {
                 throw new IllegalArgumentException("The entitySelectorConfig (" + this
-                        + ") with resolvedSelectionOrder ("  + resolvedSelectionOrder
+                        + ") with resolvedSelectionOrder (" + resolvedSelectionOrder
                         + ") needs a sorterManner (" + sorterManner
                         + ") or a sorterComparatorClass (" + sorterComparatorClass
                         + ") or a sorterWeightFactoryClass (" + sorterWeightFactoryClass
@@ -533,8 +535,7 @@ public class EntitySelectorConfig extends SelectorConfig<EntitySelectorConfig> {
                 throw new IllegalArgumentException("The entitySelectorConfig (" + this
                         + ") has an empty id (" + id + ").");
             }
-            MimicRecordingEntitySelector mimicRecordingEntitySelector
-                    = new MimicRecordingEntitySelector(entitySelector);
+            MimicRecordingEntitySelector mimicRecordingEntitySelector = new MimicRecordingEntitySelector(entitySelector);
             configPolicy.addEntityMimicRecorder(id, mimicRecordingEntitySelector);
             entitySelector = mimicRecordingEntitySelector;
         }

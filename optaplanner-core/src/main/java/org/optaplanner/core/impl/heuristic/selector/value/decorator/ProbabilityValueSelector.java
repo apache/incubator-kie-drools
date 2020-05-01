@@ -33,7 +33,7 @@ import org.optaplanner.core.impl.solver.random.RandomUtils;
 import org.optaplanner.core.impl.solver.scope.DefaultSolverScope;
 
 public class ProbabilityValueSelector extends AbstractValueSelector
-        implements EntityIndependentValueSelector, SelectionCacheLifecycleListener  {
+        implements EntityIndependentValueSelector, SelectionCacheLifecycleListener {
 
     protected final EntityIndependentValueSelector childValueSelector;
     protected final SelectionCacheType cacheType;

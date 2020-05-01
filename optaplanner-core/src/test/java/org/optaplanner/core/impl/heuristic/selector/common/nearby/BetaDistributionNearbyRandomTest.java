@@ -16,13 +16,13 @@
 
 package org.optaplanner.core.impl.heuristic.selector.common.nearby;
 
-import java.util.Random;
-
-import org.junit.jupiter.api.Test;
-
 import static org.assertj.core.api.Assertions.assertThatIllegalArgumentException;
 import static org.junit.Assert.*;
 import static org.mockito.Mockito.*;
+
+import java.util.Random;
+
+import org.junit.jupiter.api.Test;
 
 public class BetaDistributionNearbyRandomTest {
 

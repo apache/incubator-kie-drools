@@ -16,6 +16,9 @@
 
 package org.optaplanner.examples.machinereassignment.solver.drools;
 
+import static java.util.Comparator.comparing;
+import static java.util.Comparator.comparingLong;
+
 import java.io.Serializable;
 import java.util.Comparator;
 import java.util.Objects;
@@ -24,13 +27,10 @@ import org.optaplanner.examples.machinereassignment.domain.MrMachine;
 import org.optaplanner.examples.machinereassignment.domain.MrMachineCapacity;
 import org.optaplanner.examples.machinereassignment.domain.MrResource;
 
-import static java.util.Comparator.comparing;
-import static java.util.Comparator.comparingLong;
-
 public class MrMachineUsage implements Serializable, Comparable<MrMachineUsage> {
 
-    private static final Comparator<MrMachineUsage> COMPARATOR =
-            comparing((MrMachineUsage machineUsage) -> machineUsage.getClass().getName())
+    private static final Comparator<MrMachineUsage> COMPARATOR = comparing(
+            (MrMachineUsage machineUsage) -> machineUsage.getClass().getName())
                     .thenComparing(machineUsage -> machineUsage.machineCapacity, comparingLong(MrMachineCapacity::getId))
                     .thenComparingLong(machineUsage -> machineUsage.usage);
 

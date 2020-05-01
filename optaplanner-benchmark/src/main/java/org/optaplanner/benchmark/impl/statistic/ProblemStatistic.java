@@ -20,8 +20,6 @@ import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
 
-import com.thoughtworks.xstream.annotations.XStreamInclude;
-import com.thoughtworks.xstream.annotations.XStreamOmitField;
 import org.jfree.chart.JFreeChart;
 import org.optaplanner.benchmark.config.statistic.ProblemStatisticType;
 import org.optaplanner.benchmark.impl.report.BenchmarkReport;
@@ -38,6 +36,9 @@ import org.optaplanner.benchmark.impl.statistic.scorecalculationspeed.ScoreCalcu
 import org.optaplanner.benchmark.impl.statistic.stepscore.StepScoreProblemStatistic;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+import com.thoughtworks.xstream.annotations.XStreamInclude;
+import com.thoughtworks.xstream.annotations.XStreamOmitField;
 
 /**
  * 1 statistic of {@link ProblemBenchmarkResult}.
@@ -98,7 +99,8 @@ public abstract class ProblemStatistic {
                 continue;
             }
             // All subSingles have the same sub single statistics
-            subSingleStatisticList.add(singleBenchmarkResult.getSubSingleBenchmarkResultList().get(0).getEffectiveSubSingleStatisticMap().get(problemStatisticType));
+            subSingleStatisticList.add(singleBenchmarkResult.getSubSingleBenchmarkResultList().get(0)
+                    .getEffectiveSubSingleStatisticMap().get(problemStatisticType));
         }
         return subSingleStatisticList;
     }

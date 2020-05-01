@@ -16,13 +16,13 @@
 
 package org.optaplanner.core.impl.heuristic.move;
 
-import org.junit.jupiter.api.Test;
-import org.optaplanner.core.impl.score.director.ScoreDirector;
-import org.optaplanner.core.impl.testdata.domain.TestdataSolution;
-
 import static org.junit.Assert.assertEquals;
 import static org.optaplanner.core.impl.testdata.util.PlannerAssert.*;
 import static org.optaplanner.core.impl.testdata.util.PlannerTestUtils.*;
+
+import org.junit.jupiter.api.Test;
+import org.optaplanner.core.impl.score.director.ScoreDirector;
+import org.optaplanner.core.impl.testdata.domain.TestdataSolution;
 
 public class NoChangeMoveTest {
 
@@ -49,7 +49,7 @@ public class NoChangeMoveTest {
     @Test
     public void rebase() {
         ScoreDirector<TestdataSolution> destinationScoreDirector = mockRebasingScoreDirector(
-                TestdataSolution.buildSolutionDescriptor(), new Object[][]{});
+                TestdataSolution.buildSolutionDescriptor(), new Object[][] {});
         NoChangeMove<TestdataSolution> move = new NoChangeMove<>();
         move.rebase(destinationScoreDirector);
     }

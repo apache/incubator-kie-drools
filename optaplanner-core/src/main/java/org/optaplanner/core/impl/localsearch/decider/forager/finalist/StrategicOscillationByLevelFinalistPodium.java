@@ -23,6 +23,7 @@ import org.optaplanner.core.impl.localsearch.scope.LocalSearchStepScope;
 
 /**
  * Strategic oscillation, works well with Tabu search.
+ * 
  * @see FinalistPodium
  */
 public class StrategicOscillationByLevelFinalistPodium extends AbstractFinalistPodium {

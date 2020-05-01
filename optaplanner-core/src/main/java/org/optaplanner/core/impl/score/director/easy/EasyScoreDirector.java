@@ -32,6 +32,7 @@ import org.optaplanner.core.impl.score.director.ScoreDirector;
  * of the {@link PlanningSolution working solution} every time. This is non-incremental calculation, which is slow.
  * This score director implementation does not support {@link ScoreDirector#getConstraintMatchTotals()},
  * {@link ScoreDirector#getConstraintMatchTotalMap()} and {@link ScoreDirector#getIndictmentMap()}.
+ * 
  * @param <Solution_> the solution type, the class with the {@link PlanningSolution} annotation
  * @see ScoreDirector
  */
@@ -72,6 +73,7 @@ public class EasyScoreDirector<Solution_>
 
     /**
      * Always false, {@link ConstraintMatchTotal}s are not supported by this {@link ScoreDirector} implementation.
+     * 
      * @return false
      */
     @Override
@@ -81,6 +83,7 @@ public class EasyScoreDirector<Solution_>
 
     /**
      * {@link ConstraintMatch}s are not supported by this {@link ScoreDirector} implementation.
+     * 
      * @throws IllegalStateException always
      * @return throws {@link IllegalStateException}
      */
@@ -92,6 +95,7 @@ public class EasyScoreDirector<Solution_>
 
     /**
      * {@link ConstraintMatch}s are not supported by this {@link ScoreDirector} implementation.
+     * 
      * @throws IllegalStateException always
      * @return throws {@link IllegalStateException}
      */
@@ -103,6 +107,7 @@ public class EasyScoreDirector<Solution_>
 
     /**
      * {@link ConstraintMatch}s are not supported by this {@link ScoreDirector} implementation.
+     * 
      * @throws IllegalStateException always
      * @return throws {@link IllegalStateException}
      */

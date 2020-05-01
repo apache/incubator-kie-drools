@@ -26,7 +26,7 @@ import org.optaplanner.core.impl.score.stream.drools.common.DroolsAbstractGroupB
 import org.optaplanner.core.impl.score.stream.drools.common.TriTuple;
 
 public class DroolsTriToQuadGroupByInvoker<A, B, C, NewA, NewB, NewC, NewD>
-    extends DroolsAbstractGroupByInvoker<TriTuple<A, B, C>> {
+        extends DroolsAbstractGroupByInvoker<TriTuple<A, B, C>> {
 
     private final TriFunction<A, B, C, NewA> groupKeyAMapping;
     private final TriFunction<A, B, C, NewB> groupKeyBMapping;

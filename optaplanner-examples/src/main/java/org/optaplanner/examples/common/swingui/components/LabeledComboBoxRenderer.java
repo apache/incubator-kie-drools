@@ -17,6 +17,7 @@
 package org.optaplanner.examples.common.swingui.components;
 
 import java.awt.Component;
+
 import javax.swing.JComboBox;
 import javax.swing.JList;
 import javax.swing.ListCellRenderer;

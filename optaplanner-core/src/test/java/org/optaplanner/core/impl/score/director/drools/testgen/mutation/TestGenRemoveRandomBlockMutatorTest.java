@@ -15,13 +15,13 @@
  */
 package org.optaplanner.core.impl.score.director.drools.testgen.mutation;
 
+import static org.junit.Assert.*;
+
 import java.util.ArrayList;
 import java.util.List;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-
-import static org.junit.Assert.*;
 
 public class TestGenRemoveRandomBlockMutatorTest {
 

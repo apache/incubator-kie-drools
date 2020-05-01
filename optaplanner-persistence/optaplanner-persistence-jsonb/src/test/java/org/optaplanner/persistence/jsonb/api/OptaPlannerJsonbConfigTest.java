@@ -16,16 +16,15 @@
 
 package org.optaplanner.persistence.jsonb.api;
 
+import static org.junit.Assert.assertEquals;
+
 import javax.json.bind.Jsonb;
 import javax.json.bind.JsonbBuilder;
 import javax.json.bind.JsonbConfig;
 
 import org.junit.jupiter.api.Test;
-
 import org.optaplanner.core.api.score.buildin.bendable.BendableScore;
 import org.optaplanner.core.api.score.buildin.hardsoft.HardSoftScore;
-
-import static org.junit.Assert.assertEquals;
 
 public class OptaPlannerJsonbConfigTest extends AbstractJsonbJsonAdapterTest {
 
@@ -35,10 +34,10 @@ public class OptaPlannerJsonbConfigTest extends AbstractJsonbJsonAdapterTest {
         Jsonb jsonb = JsonbBuilder.create(config);
 
         TestOptaPlannerJsonbConfigWrapper input = new TestOptaPlannerJsonbConfigWrapper();
-        input.setBendableScore(BendableScore.of(new int[]{1000, 200}, new int[]{34}));
+        input.setBendableScore(BendableScore.of(new int[] { 1000, 200 }, new int[] { 34 }));
         input.setHardSoftScore(HardSoftScore.of(-1, -20));
         TestOptaPlannerJsonbConfigWrapper output = serializeAndDeserialize(jsonb, input);
-        assertEquals(BendableScore.of(new int[]{1000, 200}, new int[]{34}), output.getBendableScore());
+        assertEquals(BendableScore.of(new int[] { 1000, 200 }, new int[] { 34 }), output.getBendableScore());
         assertEquals(HardSoftScore.of(-1, -20), output.getHardSoftScore());
     }
 

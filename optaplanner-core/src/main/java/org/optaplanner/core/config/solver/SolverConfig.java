@@ -16,6 +16,8 @@
 
 package org.optaplanner.core.config.solver;
 
+import static org.apache.commons.lang3.ObjectUtils.defaultIfNull;
+
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
@@ -31,11 +33,6 @@ import java.util.List;
 import java.util.Objects;
 import java.util.concurrent.ThreadFactory;
 
-import com.thoughtworks.xstream.XStream;
-import com.thoughtworks.xstream.annotations.XStreamAlias;
-import com.thoughtworks.xstream.annotations.XStreamImplicit;
-import com.thoughtworks.xstream.annotations.XStreamOmitField;
-import com.thoughtworks.xstream.converters.ConversionException;
 import org.optaplanner.core.api.domain.solution.PlanningSolution;
 import org.optaplanner.core.api.solver.Solver;
 import org.optaplanner.core.api.solver.SolverFactory;
@@ -66,7 +63,11 @@ import org.optaplanner.core.impl.solver.termination.Termination;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import static org.apache.commons.lang3.ObjectUtils.defaultIfNull;
+import com.thoughtworks.xstream.XStream;
+import com.thoughtworks.xstream.annotations.XStreamAlias;
+import com.thoughtworks.xstream.annotations.XStreamImplicit;
+import com.thoughtworks.xstream.annotations.XStreamOmitField;
+import com.thoughtworks.xstream.converters.ConversionException;
 
 /**
  * To read it from XML, use {@link #createFromXmlResource(String)}.
@@ -77,8 +78,9 @@ public class SolverConfig extends AbstractConfig<SolverConfig> {
 
     /**
      * Reads an XML solver configuration from the classpath.
+     * 
      * @param solverConfigResource never null, a classpath resource
-     * as defined by {@link ClassLoader#getResource(String)}
+     *        as defined by {@link ClassLoader#getResource(String)}
      * @return never null
      */
     public static SolverConfig createFromXmlResource(String solverConfigResource) {
@@ -87,10 +89,11 @@ public class SolverConfig extends AbstractConfig<SolverConfig> {
 
     /**
      * As defined by {@link #createFromXmlResource(String)}.
+     * 
      * @param solverConfigResource never null, a classpath resource
-     * as defined by {@link ClassLoader#getResource(String)}
+     *        as defined by {@link ClassLoader#getResource(String)}
      * @param classLoader sometimes null, the {@link ClassLoader} to use for loading all resources and {@link Class}es,
-     *      null to use the default {@link ClassLoader}
+     *        null to use the default {@link ClassLoader}
      * @return never null
      */
     public static SolverConfig createFromXmlResource(String solverConfigResource, ClassLoader classLoader) {
@@ -112,8 +115,10 @@ public class SolverConfig extends AbstractConfig<SolverConfig> {
             throw new IllegalArgumentException("Unmarshalling of solverConfigResource (" + solverConfigResource
                     + ") fails on line number (" + lineNumber + ")."
                     + (Objects.equals(e.get("required-type"), "java.lang.Class")
-                    ? "\n  Maybe the classname on line number (" + lineNumber + ") is surrounded by whitespace, which is invalid."
-                    : ""), e);
+                            ? "\n  Maybe the classname on line number (" + lineNumber
+                                    + ") is surrounded by whitespace, which is invalid."
+                            : ""),
+                    e);
         } catch (IOException e) {
             throw new IllegalArgumentException("Reading the solverConfigResource (" + solverConfigResource + ") failed.", e);
         }
@@ -124,6 +129,7 @@ public class SolverConfig extends AbstractConfig<SolverConfig> {
      * <p>
      * Warning: this leads to platform dependent code,
      * it's recommend to use {@link #createFromXmlResource(String)} instead.
+     * 
      * @param solverConfigFile never null
      * @return never null
      */
@@ -133,9 +139,10 @@ public class SolverConfig extends AbstractConfig<SolverConfig> {
 
     /**
      * As defined by {@link #createFromXmlFile(File)}.
+     * 
      * @param solverConfigFile never null
      * @param classLoader sometimes null, the {@link ClassLoader} to use for loading all resources and {@link Class}es,
-     *      null to use the default {@link ClassLoader}
+     *        null to use the default {@link ClassLoader}
      * @return never null
      */
     public static SolverConfig createFromXmlFile(File solverConfigFile, ClassLoader classLoader) {
@@ -158,9 +165,10 @@ public class SolverConfig extends AbstractConfig<SolverConfig> {
 
     /**
      * As defined by {@link #createFromXmlInputStream(InputStream)}.
+     * 
      * @param in never null, gets closed
      * @param classLoader sometimes null, the {@link ClassLoader} to use for loading all resources and {@link Class}es,
-     *      null to use the default {@link ClassLoader}
+     *        null to use the default {@link ClassLoader}
      * @return never null
      */
     public static SolverConfig createFromXmlInputStream(InputStream in, ClassLoader classLoader) {
@@ -183,9 +191,10 @@ public class SolverConfig extends AbstractConfig<SolverConfig> {
 
     /**
      * As defined by {@link #createFromXmlReader(Reader)}.
+     * 
      * @param reader never null, gets closed
      * @param classLoader sometimes null, the {@link ClassLoader} to use for loading all resources and {@link Class}es,
-     *      null to use the default {@link ClassLoader}
+     *        null to use the default {@link ClassLoader}
      * @return never null
      */
     public static SolverConfig createFromXmlReader(Reader reader, ClassLoader classLoader) {
@@ -263,6 +272,7 @@ public class SolverConfig extends AbstractConfig<SolverConfig> {
      * based on a template solver config,
      * by building a separate {@link SolverFactory} with {@link SolverFactory#create(SolverConfig)}
      * and a separate {@link Solver} per request to avoid race conditions.
+     * 
      * @param inheritedConfig never null
      */
     public SolverConfig(SolverConfig inheritedConfig) {
@@ -500,6 +510,7 @@ public class SolverConfig extends AbstractConfig<SolverConfig> {
      * Use {@link SolverFactory#buildSolver()} instead.
      * <p>
      * Will be removed in 8.0 (by putting it in an InnerSolverConfig).
+     * 
      * @param configContext never null
      * @param <Solution_> the solution type, the class with the {@link PlanningSolution} annotation
      * @return never null
@@ -592,6 +603,7 @@ public class SolverConfig extends AbstractConfig<SolverConfig> {
      * Use {@link SolverFactory#getScoreDirectorFactory()} instead.
      * <p>
      * Will be removed in 8.0 (by putting it in an InnerSolverConfig).
+     * 
      * @param configContext never null
      * @param environmentMode never null
      * @param <Solution_> the solution type, the class with the {@link PlanningSolution} annotation
@@ -600,8 +612,8 @@ public class SolverConfig extends AbstractConfig<SolverConfig> {
     public <Solution_> InnerScoreDirectorFactory<Solution_> buildScoreDirectorFactory(SolverConfigContext configContext,
             EnvironmentMode environmentMode) {
         SolutionDescriptor<Solution_> solutionDescriptor = buildSolutionDescriptor(configContext);
-        ScoreDirectorFactoryConfig scoreDirectorFactoryConfig_
-                = scoreDirectorFactoryConfig == null ? new ScoreDirectorFactoryConfig()
+        ScoreDirectorFactoryConfig scoreDirectorFactoryConfig_ = scoreDirectorFactoryConfig == null
+                ? new ScoreDirectorFactoryConfig()
                 : scoreDirectorFactoryConfig;
         return scoreDirectorFactoryConfig_.buildScoreDirectorFactory(
                 configContext, classLoader, environmentMode, solutionDescriptor);
@@ -612,6 +624,7 @@ public class SolverConfig extends AbstractConfig<SolverConfig> {
      * Do not use this method, it is an internal method.
      * <p>
      * Will be removed in 8.0 (by putting it in an InnerSolverConfig).
+     * 
      * @param <Solution_> the solution type, the class with the {@link PlanningSolution} annotation
      * @return never null
      */
@@ -634,9 +647,10 @@ public class SolverConfig extends AbstractConfig<SolverConfig> {
             if (ConfigUtils.isEmptyCollection(entityClassList)) {
                 throw new IllegalArgumentException(
                         "The solver configuration must have at least 1 entityClass (" + entityClassList
-                        + "), if it has no scanAnnotatedClasses (" + scanAnnotatedClassesConfig + ").");
+                                + "), if it has no scanAnnotatedClasses (" + scanAnnotatedClassesConfig + ").");
             }
-            return SolutionDescriptor.buildSolutionDescriptor((Class<Solution_>) solutionClass, entityClassList, deprecatedScoreDefinition);
+            return SolutionDescriptor.buildSolutionDescriptor((Class<Solution_>) solutionClass, entityClassList,
+                    deprecatedScoreDefinition);
         }
     }
 
@@ -662,6 +676,7 @@ public class SolverConfig extends AbstractConfig<SolverConfig> {
     /**
      * Do not use this method, it is an internal method.
      * Use {@link #SolverConfig(SolverConfig)} instead.
+     * 
      * @param inheritedConfig never null
      */
     @Override
@@ -679,11 +694,13 @@ public class SolverConfig extends AbstractConfig<SolverConfig> {
                 inheritedConfig.getMoveThreadBufferSize());
         threadFactoryClass = ConfigUtils.inheritOverwritableProperty(threadFactoryClass,
                 inheritedConfig.getThreadFactoryClass());
-        scanAnnotatedClassesConfig = ConfigUtils.inheritConfig(scanAnnotatedClassesConfig, inheritedConfig.getScanAnnotatedClassesConfig());
+        scanAnnotatedClassesConfig = ConfigUtils.inheritConfig(scanAnnotatedClassesConfig,
+                inheritedConfig.getScanAnnotatedClassesConfig());
         solutionClass = ConfigUtils.inheritOverwritableProperty(solutionClass, inheritedConfig.getSolutionClass());
         entityClassList = ConfigUtils.inheritMergeableListProperty(
                 entityClassList, inheritedConfig.getEntityClassList());
-        scoreDirectorFactoryConfig = ConfigUtils.inheritConfig(scoreDirectorFactoryConfig, inheritedConfig.getScoreDirectorFactoryConfig());
+        scoreDirectorFactoryConfig = ConfigUtils.inheritConfig(scoreDirectorFactoryConfig,
+                inheritedConfig.getScoreDirectorFactoryConfig());
         terminationConfig = ConfigUtils.inheritConfig(terminationConfig, inheritedConfig.getTerminationConfig());
         phaseConfigList = ConfigUtils.inheritMergeableListConfig(
                 phaseConfigList, inheritedConfig.getPhaseConfigList());

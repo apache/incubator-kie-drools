@@ -35,7 +35,6 @@ public class RockTourPerformanceTest extends SolverPerformanceTest<RockTourSolut
     protected Stream<TestData> testData() {
         return Stream.of(
                 testData(UNSOLVED_DATA_FILE, "0hard/72725670medium/-6208480soft", EnvironmentMode.REPRODUCIBLE),
-                testData(UNSOLVED_DATA_FILE, "0hard/72725039medium/-5186309soft", EnvironmentMode.FAST_ASSERT)
-        );
+                testData(UNSOLVED_DATA_FILE, "0hard/72725039medium/-5186309soft", EnvironmentMode.FAST_ASSERT));
     }
 }

@@ -27,6 +27,7 @@ import org.optaplanner.core.api.domain.solution.PlanningSolution;
  * Planning cloning is hard: avoid doing it yourself.
  * <p>
  * An implementing class must be thread-safe after initialization.
+ * 
  * @param <Solution_> the solution type, the class with the {@link PlanningSolution} annotation
  */
 public interface SolutionCloner<Solution_> {
@@ -47,9 +48,10 @@ public interface SolutionCloner<Solution_> {
      * Note that a class might support more than 1 clone method: planning clone is just one of them.
      * <p>
      * This method is thread-safe.
+     * 
      * @param original never null, the original {@link PlanningSolution}
      * @return never null, the cloned {@link PlanningSolution}
      */
-     Solution_ cloneSolution(Solution_ original);
+    Solution_ cloneSolution(Solution_ original);
 
 }

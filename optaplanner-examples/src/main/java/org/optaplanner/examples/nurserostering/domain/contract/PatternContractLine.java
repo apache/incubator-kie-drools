@@ -16,9 +16,10 @@
 
 package org.optaplanner.examples.nurserostering.domain.contract;
 
-import com.thoughtworks.xstream.annotations.XStreamAlias;
 import org.optaplanner.examples.common.domain.AbstractPersistable;
 import org.optaplanner.examples.nurserostering.domain.pattern.Pattern;
+
+import com.thoughtworks.xstream.annotations.XStreamAlias;
 
 @XStreamAlias("PatternContractLine")
 public class PatternContractLine extends AbstractPersistable {

@@ -183,7 +183,8 @@ public class DefaultSubChainSelector extends AbstractSelector
         long anchorTrailingChainSize = (long) anchorTrailingChain.getSize();
         long n = anchorTrailingChainSize - (long) minimumSubChainSize + 1L;
         long m = (maximumSubChainSize >= anchorTrailingChainSize)
-                ? 0L : anchorTrailingChainSize - (long) maximumSubChainSize;
+                ? 0L
+                : anchorTrailingChainSize - (long) maximumSubChainSize;
         return (n * (n + 1L) / 2L) - (m * (m + 1L) / 2L);
     }
 

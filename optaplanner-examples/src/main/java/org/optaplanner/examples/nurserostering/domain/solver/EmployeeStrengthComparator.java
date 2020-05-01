@@ -16,18 +16,17 @@
 
 package org.optaplanner.examples.nurserostering.domain.solver;
 
+import static java.util.Comparator.*;
+
 import java.io.Serializable;
 import java.util.Comparator;
 
 import org.optaplanner.examples.nurserostering.domain.Employee;
 
-import static java.util.Comparator.*;
-
 public class EmployeeStrengthComparator implements Comparator<Employee>, Serializable {
 
-    private static final Comparator<Employee> COMPARATOR =
-            comparingInt((Employee employee) -> -employee.getWeekendLength()) // Descending
-                .thenComparingLong(Employee::getId);
+    private static final Comparator<Employee> COMPARATOR = comparingInt((Employee employee) -> -employee.getWeekendLength()) // Descending
+            .thenComparingLong(Employee::getId);
 
     @Override
     public int compare(Employee a, Employee b) {

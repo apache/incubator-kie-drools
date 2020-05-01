@@ -28,8 +28,7 @@ import org.optaplanner.persistence.xstream.impl.domain.solution.XStreamSolutionF
 
 public class NurseRosteringApp extends CommonApp<NurseRoster> {
 
-    public static final String SOLVER_CONFIG
-            = "org/optaplanner/examples/nurserostering/solver/nurseRosteringSolverConfig.xml";
+    public static final String SOLVER_CONFIG = "org/optaplanner/examples/nurserostering/solver/nurseRosteringSolverConfig.xml";
 
     public static final String DATA_DIR_NAME = "nurserostering";
 
@@ -58,7 +57,7 @@ public class NurseRosteringApp extends CommonApp<NurseRoster> {
 
     @Override
     protected AbstractSolutionImporter[] createSolutionImporters() {
-        return new AbstractSolutionImporter[]{
+        return new AbstractSolutionImporter[] {
                 new NurseRosteringImporter()
         };
     }

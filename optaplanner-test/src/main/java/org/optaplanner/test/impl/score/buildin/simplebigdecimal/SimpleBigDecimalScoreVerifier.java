@@ -29,6 +29,7 @@ import org.optaplanner.test.impl.score.AbstractScoreVerifier;
  * To assert the constraints of a {@link SolverFactory}
  * that uses a {@link SimpleBigDecimalScore}.
  * If you're using {@link ConstraintStream}s, use {@link ConstraintVerifier} instead.
+ * 
  * @param <Solution_> the solution type, the class with the {@link PlanningSolution} annotation
  */
 public class SimpleBigDecimalScoreVerifier<Solution_> extends AbstractScoreVerifier<Solution_> {
@@ -43,6 +44,7 @@ public class SimpleBigDecimalScoreVerifier<Solution_> extends AbstractScoreVerif
     /**
      * Assert that the constraint of {@link PlanningSolution}
      * has the expected weight for that score level.
+     * 
      * @param constraintName never null, the name of the constraint
      * @param expectedWeight never null, the total weight for all matches of that 1 constraint
      * @param solution never null, the actual {@link PlanningSolution}
@@ -54,8 +56,9 @@ public class SimpleBigDecimalScoreVerifier<Solution_> extends AbstractScoreVerif
     /**
      * Assert that the constraint of {@link PlanningSolution}
      * has the expected weight for that score level.
+     * 
      * @param constraintPackage sometimes null.
-     * When null, {@code constraintName} for the {@code scoreLevel} must be unique.
+     *        When null, {@code constraintName} for the {@code scoreLevel} must be unique.
      * @param constraintName never null, the name of the constraint
      * @param expectedWeight never null, the total weight for all matches of that 1 constraint
      * @param solution never null, the actual {@link PlanningSolution}

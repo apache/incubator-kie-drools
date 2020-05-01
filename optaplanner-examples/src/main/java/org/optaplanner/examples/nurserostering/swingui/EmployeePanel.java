@@ -25,6 +25,7 @@ import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
+
 import javax.swing.AbstractAction;
 import javax.swing.BorderFactory;
 import javax.swing.BoxLayout;
@@ -128,7 +129,8 @@ public class EmployeePanel extends JPanel {
         for (ShiftDate shiftDate : shiftDateList) {
             JPanel shiftDatePanel = new JPanel(new GridLayout(1, 0));
             Color backgroundColor = weekendDefinition.isWeekend(shiftDate.getDayOfWeek())
-                    ? TangoColorFactory.ALUMINIUM_2 : shiftDatePanel.getBackground();
+                    ? TangoColorFactory.ALUMINIUM_2
+                    : shiftDatePanel.getBackground();
             if (employee != null) {
                 if (employee.getDayOffRequestMap().containsKey(shiftDate)) {
                     backgroundColor = TangoColorFactory.ALUMINIUM_4;
@@ -141,7 +143,8 @@ public class EmployeePanel extends JPanel {
                     .isInPlanningWindow(shiftDate);
             shiftDatePanel.setEnabled(inPlanningWindow);
             shiftDatePanel.setBorder(BorderFactory.createCompoundBorder(
-                    BorderFactory.createLineBorder(inPlanningWindow ? TangoColorFactory.ALUMINIUM_6 : TangoColorFactory.ALUMINIUM_3),
+                    BorderFactory
+                            .createLineBorder(inPlanningWindow ? TangoColorFactory.ALUMINIUM_6 : TangoColorFactory.ALUMINIUM_3),
                     BorderFactory.createEmptyBorder(2, 2, 2, 2)));
             shiftDatePanelMap.put(shiftDate, shiftDatePanel);
             if (employee == null) {

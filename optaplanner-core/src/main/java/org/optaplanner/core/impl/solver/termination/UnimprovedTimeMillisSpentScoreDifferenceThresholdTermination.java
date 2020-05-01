@@ -25,8 +25,8 @@ import org.apache.commons.lang3.tuple.Pair;
 import org.optaplanner.core.api.score.Score;
 import org.optaplanner.core.impl.phase.scope.AbstractPhaseScope;
 import org.optaplanner.core.impl.phase.scope.AbstractStepScope;
-import org.optaplanner.core.impl.solver.thread.ChildThreadType;
 import org.optaplanner.core.impl.solver.scope.DefaultSolverScope;
+import org.optaplanner.core.impl.solver.thread.ChildThreadType;
 
 public class UnimprovedTimeMillisSpentScoreDifferenceThresholdTermination extends AbstractTermination {
 
@@ -53,7 +53,7 @@ public class UnimprovedTimeMillisSpentScoreDifferenceThresholdTermination extend
         this.unimprovedScoreDifferenceThreshold = unimprovedScoreDifferenceThreshold;
         if (unimprovedTimeMillisSpentLimit < 0L) {
             throw new IllegalArgumentException("The unimprovedTimeMillisSpentLimit (" + unimprovedTimeMillisSpentLimit
-                                                       + ") cannot be negative.");
+                    + ") cannot be negative.");
         }
         this.clock = clock;
     }
@@ -94,11 +94,11 @@ public class UnimprovedTimeMillisSpentScoreDifferenceThresholdTermination extend
             DefaultSolverScope solverScope = stepScope.getPhaseScope().getSolverScope();
             long bestSolutionTimeMillis = solverScope.getBestSolutionTimeMillis();
             Score bestScore = solverScope.getBestScore();
-            for (Iterator<Pair<Long, Score>> it = bestScoreImprovementHistoryQueue.iterator(); it.hasNext(); ) {
+            for (Iterator<Pair<Long, Score>> it = bestScoreImprovementHistoryQueue.iterator(); it.hasNext();) {
                 Pair<Long, Score> bestScoreImprovement = it.next();
                 Score scoreDifference = bestScore.subtract(bestScoreImprovement.getValue());
-                boolean timeLimitNotYetReached =
-                        bestScoreImprovement.getKey() + unimprovedTimeMillisSpentLimit >= bestSolutionTimeMillis;
+                boolean timeLimitNotYetReached = bestScoreImprovement.getKey()
+                        + unimprovedTimeMillisSpentLimit >= bestSolutionTimeMillis;
                 boolean scoreImprovedOverThreshold = scoreDifference.compareTo(unimprovedScoreDifferenceThreshold) >= 0;
                 if (scoreImprovedOverThreshold && timeLimitNotYetReached) {
                     it.remove();

@@ -62,7 +62,7 @@ public final class DroolsJoinTriConstraintStream<Solution_, A, B, C>
 
     @Override
     public String toString() {
-        return "TriJoin() with " + getChildStreams().size()  + " children";
+        return "TriJoin() with " + getChildStreams().size() + " children";
     }
 
 }

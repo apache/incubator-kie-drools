@@ -16,6 +16,8 @@
 
 package org.optaplanner.examples.pas.solver.move.factory;
 
+import static java.util.Comparator.*;
+
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
@@ -36,15 +38,13 @@ import org.optaplanner.examples.pas.domain.Night;
 import org.optaplanner.examples.pas.domain.PatientAdmissionSchedule;
 import org.optaplanner.examples.pas.solver.move.BedChangeMove;
 
-import static java.util.Comparator.*;
-
 public class BedDesignationPillarPartSwapMoveFactory implements MoveListFactory<PatientAdmissionSchedule> {
 
     private static final Comparator<Night> NIGHT_COMPARATOR = comparingLong(Night::getId);
     // This comparison is sameBedInSameNight safe.
-    private static final Comparator<BedDesignation> COMPARATOR =
-            comparing((BedDesignation bedDesignation) -> bedDesignation.getAdmissionPart().getFirstNight(),
-                    NIGHT_COMPARATOR)
+    private static final Comparator<BedDesignation> COMPARATOR = comparing(
+            (BedDesignation bedDesignation) -> bedDesignation.getAdmissionPart().getFirstNight(),
+            NIGHT_COMPARATOR)
                     .thenComparing(bedDesignation -> bedDesignation.getAdmissionPart().getLastNight(), NIGHT_COMPARATOR)
                     .thenComparing(BedDesignation::getAdmissionPart, comparingLong(AdmissionPart::getId));
 
@@ -67,10 +67,9 @@ public class BedDesignationPillarPartSwapMoveFactory implements MoveListFactory<
         List<Move<PatientAdmissionSchedule>> moveList = new ArrayList<>();
 
         // For every 2 distinct beds
-        for (ListIterator<Bed> leftBedIt = bedList.listIterator(); leftBedIt.hasNext(); ) {
+        for (ListIterator<Bed> leftBedIt = bedList.listIterator(); leftBedIt.hasNext();) {
             Bed leftBed = leftBedIt.next();
-            for (ListIterator<Bed> rightBedIt = bedList.listIterator(leftBedIt.nextIndex());
-                    rightBedIt.hasNext(); ) {
+            for (ListIterator<Bed> rightBedIt = bedList.listIterator(leftBedIt.nextIndex()); rightBedIt.hasNext();) {
                 Bed rightBed = rightBedIt.next();
                 List<BedDesignation> leftBedDesignationList = bedToBedDesignationList.get(leftBed);
                 if (leftBedDesignationList == null) {

@@ -16,7 +16,8 @@
 
 package org.optaplanner.core.config.heuristic.selector.common.nearby;
 
-import com.thoughtworks.xstream.annotations.XStreamAlias;
+import static org.apache.commons.lang3.ObjectUtils.defaultIfNull;
+
 import org.optaplanner.core.config.heuristic.policy.HeuristicConfigPolicy;
 import org.optaplanner.core.config.heuristic.selector.SelectorConfig;
 import org.optaplanner.core.config.heuristic.selector.common.SelectionCacheType;
@@ -34,7 +35,7 @@ import org.optaplanner.core.impl.heuristic.selector.entity.nearby.NearEntityNear
 import org.optaplanner.core.impl.heuristic.selector.value.ValueSelector;
 import org.optaplanner.core.impl.heuristic.selector.value.nearby.NearEntityNearbyValueSelector;
 
-import static org.apache.commons.lang3.ObjectUtils.defaultIfNull;
+import com.thoughtworks.xstream.annotations.XStreamAlias;
 
 @XStreamAlias("nearbySelection")
 public class NearbySelectionConfig extends SelectorConfig<NearbySelectionConfig> {
@@ -164,23 +165,23 @@ public class NearbySelectionConfig extends SelectorConfig<NearbySelectionConfig>
         }
         if (resolvedSelectionOrder != SelectionOrder.ORIGINAL && resolvedSelectionOrder != SelectionOrder.RANDOM) {
             throw new IllegalArgumentException("The nearbySelectorConfig (" + this
-                    + ") with nearbyOriginEntitySelector ("  + originEntitySelectorConfig
-                    + ") and nearbyDistanceMeterClass ("  + nearbyDistanceMeterClass
+                    + ") with nearbyOriginEntitySelector (" + originEntitySelectorConfig
+                    + ") and nearbyDistanceMeterClass (" + nearbyDistanceMeterClass
                     + ") has a resolvedSelectionOrder (" + resolvedSelectionOrder
                     + ") that is not " + SelectionOrder.ORIGINAL + " or " + SelectionOrder.RANDOM + ".");
         }
         if (resolvedCacheType.isCached()) {
             throw new IllegalArgumentException("The nearbySelectorConfig (" + this
-                    + ") with nearbyOriginEntitySelector ("  + originEntitySelectorConfig
-                    + ") and nearbyDistanceMeterClass ("  + nearbyDistanceMeterClass
+                    + ") with nearbyOriginEntitySelector (" + originEntitySelectorConfig
+                    + ") and nearbyDistanceMeterClass (" + nearbyDistanceMeterClass
                     + ") has a resolvedCacheType (" + resolvedCacheType
                     + ") that is cached.");
         }
     }
 
     public EntitySelector applyNearbyEntitySelector(HeuristicConfigPolicy configPolicy,
-        SelectionCacheType minimumCacheType, SelectionCacheType resolvedCacheType,
-        SelectionOrder resolvedSelectionOrder, EntitySelector entitySelector) {
+            SelectionCacheType minimumCacheType, SelectionCacheType resolvedCacheType,
+            SelectionOrder resolvedSelectionOrder, EntitySelector entitySelector) {
         boolean randomSelection = resolvedSelectionOrder.toRandomSelectionBoolean();
         EntitySelector originEntitySelector = originEntitySelectorConfig.buildEntitySelector(
                 configPolicy,
@@ -276,7 +277,8 @@ public class NearbySelectionConfig extends SelectorConfig<NearbySelectionConfig>
 
     @Override
     public NearbySelectionConfig inherit(NearbySelectionConfig inheritedConfig) {
-        originEntitySelectorConfig = ConfigUtils.inheritConfig(originEntitySelectorConfig, inheritedConfig.getOriginEntitySelectorConfig());
+        originEntitySelectorConfig = ConfigUtils.inheritConfig(originEntitySelectorConfig,
+                inheritedConfig.getOriginEntitySelectorConfig());
         nearbyDistanceMeterClass = ConfigUtils.inheritOverwritableProperty(nearbyDistanceMeterClass,
                 inheritedConfig.getNearbyDistanceMeterClass());
         nearbySelectionDistributionType = ConfigUtils.inheritOverwritableProperty(nearbySelectionDistributionType,
@@ -287,7 +289,8 @@ public class NearbySelectionConfig extends SelectorConfig<NearbySelectionConfig>
                 inheritedConfig.getBlockDistributionSizeMaximum());
         blockDistributionSizeRatio = ConfigUtils.inheritOverwritableProperty(blockDistributionSizeRatio,
                 inheritedConfig.getBlockDistributionSizeRatio());
-        blockDistributionUniformDistributionProbability = ConfigUtils.inheritOverwritableProperty(blockDistributionUniformDistributionProbability,
+        blockDistributionUniformDistributionProbability = ConfigUtils.inheritOverwritableProperty(
+                blockDistributionUniformDistributionProbability,
                 inheritedConfig.getBlockDistributionUniformDistributionProbability());
         linearDistributionSizeMaximum = ConfigUtils.inheritOverwritableProperty(linearDistributionSizeMaximum,
                 inheritedConfig.getLinearDistributionSizeMaximum());

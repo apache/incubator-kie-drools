@@ -35,6 +35,7 @@ import org.optaplanner.core.impl.score.buildin.bendable.BendableScoreDefinition;
  * <p>
  * The {@link #getHardLevelsSize()} and {@link #getSoftLevelsSize()} must be the same as in the
  * {@link BendableScoreDefinition} used.
+ * 
  * @see Score
  */
 public final class BendableBigDecimalScore extends AbstractBendableScore<BendableBigDecimalScore>
@@ -60,6 +61,7 @@ public final class BendableBigDecimalScore extends AbstractBendableScore<Bendabl
 
     /**
      * Creates a new {@link BendableBigDecimalScore}.
+     * 
      * @param initScore see {@link Score#getInitScore()}
      * @param hardScores never null, never change that array afterwards: it must be immutable
      * @param softScores never null, never change that array afterwards: it must be immutable
@@ -73,12 +75,14 @@ public final class BendableBigDecimalScore extends AbstractBendableScore<Bendabl
      * @deprecated in favor of {@link #ofUninitialized(int, BigDecimal[], BigDecimal[])}
      */
     @Deprecated
-    public static BendableBigDecimalScore valueOfUninitialized(int initScore, BigDecimal[] hardScores, BigDecimal[] softScores) {
+    public static BendableBigDecimalScore valueOfUninitialized(int initScore, BigDecimal[] hardScores,
+            BigDecimal[] softScores) {
         return new BendableBigDecimalScore(initScore, hardScores, softScores);
     }
 
     /**
      * Creates a new {@link BendableBigDecimalScore}.
+     * 
      * @param hardScores never null, never change that array afterwards: it must be immutable
      * @param softScores never null, never change that array afterwards: it must be immutable
      * @return never null
@@ -97,6 +101,7 @@ public final class BendableBigDecimalScore extends AbstractBendableScore<Bendabl
 
     /**
      * Creates a new {@link BendableBigDecimalScore}.
+     * 
      * @param hardLevelsSize at least 0
      * @param softLevelsSize at least 0
      * @return never null
@@ -111,6 +116,7 @@ public final class BendableBigDecimalScore extends AbstractBendableScore<Bendabl
 
     /**
      * Creates a new {@link BendableBigDecimalScore}.
+     * 
      * @param hardLevelsSize at least 0
      * @param softLevelsSize at least 0
      * @param hardLevel at least 0, less than hardLevelsSize
@@ -128,6 +134,7 @@ public final class BendableBigDecimalScore extends AbstractBendableScore<Bendabl
 
     /**
      * Creates a new {@link BendableBigDecimalScore}.
+     * 
      * @param hardLevelsSize at least 0
      * @param softLevelsSize at least 0
      * @param softLevel at least 0, less than softLevelsSize
@@ -297,11 +304,13 @@ public final class BendableBigDecimalScore extends AbstractBendableScore<Bendabl
         BigDecimal bigDecimalMultiplicand = BigDecimal.valueOf(multiplicand);
         for (int i = 0; i < newHardScores.length; i++) {
             // The (unspecified) scale/precision of the multiplicand should have no impact on the returned scale/precision
-            newHardScores[i] = hardScores[i].multiply(bigDecimalMultiplicand).setScale(hardScores[i].scale(), RoundingMode.FLOOR);
+            newHardScores[i] = hardScores[i].multiply(bigDecimalMultiplicand).setScale(hardScores[i].scale(),
+                    RoundingMode.FLOOR);
         }
         for (int i = 0; i < newSoftScores.length; i++) {
             // The (unspecified) scale/precision of the multiplicand should have no impact on the returned scale/precision
-            newSoftScores[i] = softScores[i].multiply(bigDecimalMultiplicand).setScale(softScores[i].scale(), RoundingMode.FLOOR);
+            newSoftScores[i] = softScores[i].multiply(bigDecimalMultiplicand).setScale(softScores[i].scale(),
+                    RoundingMode.FLOOR);
         }
         return new BendableBigDecimalScore(
                 (int) Math.floor(initScore * multiplicand),

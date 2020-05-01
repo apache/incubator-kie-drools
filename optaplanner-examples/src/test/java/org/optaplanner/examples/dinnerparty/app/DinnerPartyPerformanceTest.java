@@ -35,7 +35,6 @@ public class DinnerPartyPerformanceTest extends SolverPerformanceTest<DinnerPart
     protected Stream<TestData> testData() {
         return Stream.of(
                 testData(UNSOLVED_DATA_FILE, "-90", EnvironmentMode.REPRODUCIBLE),
-                testData(UNSOLVED_DATA_FILE, "-390", EnvironmentMode.FAST_ASSERT)
-        );
+                testData(UNSOLVED_DATA_FILE, "-390", EnvironmentMode.FAST_ASSERT));
     }
 }

@@ -22,9 +22,6 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import com.thoughtworks.xstream.annotations.XStreamAlias;
-import com.thoughtworks.xstream.annotations.XStreamImplicit;
-import com.thoughtworks.xstream.annotations.XStreamOmitField;
 import org.optaplanner.benchmark.impl.report.BenchmarkReport;
 import org.optaplanner.benchmark.impl.statistic.ProblemStatistic;
 import org.optaplanner.benchmark.impl.statistic.PureSubSingleStatistic;
@@ -35,6 +32,10 @@ import org.optaplanner.core.api.score.Score;
 import org.optaplanner.core.api.solver.Solver;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+import com.thoughtworks.xstream.annotations.XStreamAlias;
+import com.thoughtworks.xstream.annotations.XStreamImplicit;
+import com.thoughtworks.xstream.annotations.XStreamOmitField;
 
 /**
  * Represents 1 benchmark run for 1 Single Benchmark configuration for 1 {@link Solver} configuration for 1 problem
@@ -87,7 +88,8 @@ public class SubSingleBenchmarkResult implements BenchmarkResult {
     }
 
     public void initSubSingleStatisticMap() {
-        List<ProblemStatistic> problemStatisticList = singleBenchmarkResult.getProblemBenchmarkResult().getProblemStatisticList();
+        List<ProblemStatistic> problemStatisticList = singleBenchmarkResult.getProblemBenchmarkResult()
+                .getProblemStatisticList();
         effectiveSubSingleStatisticMap = new HashMap<>(
                 problemStatisticList.size() + pureSubSingleStatisticList.size());
         for (ProblemStatistic problemStatistic : problemStatisticList) {
@@ -261,7 +263,8 @@ public class SubSingleBenchmarkResult implements BenchmarkResult {
 
         newResult.initSubSingleStatisticMap();
         for (SubSingleStatistic newSubSingleStatistic : newResult.effectiveSubSingleStatisticMap.values()) {
-            SubSingleStatistic oldSubSingleStatistic = oldResult.getSubSingleStatistic(newSubSingleStatistic.getStatisticType());
+            SubSingleStatistic oldSubSingleStatistic = oldResult
+                    .getSubSingleStatistic(newSubSingleStatistic.getStatisticType());
             if (!oldSubSingleStatistic.getCsvFile().exists()) {
                 if (oldResult.hasAnyFailure()) {
                     newSubSingleStatistic.initPointList();

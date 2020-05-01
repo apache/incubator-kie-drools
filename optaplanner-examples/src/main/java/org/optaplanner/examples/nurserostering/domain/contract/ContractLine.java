@@ -16,9 +16,10 @@
 
 package org.optaplanner.examples.nurserostering.domain.contract;
 
+import org.optaplanner.examples.common.domain.AbstractPersistable;
+
 import com.thoughtworks.xstream.annotations.XStreamAlias;
 import com.thoughtworks.xstream.annotations.XStreamInclude;
-import org.optaplanner.examples.common.domain.AbstractPersistable;
 
 @XStreamAlias("ContractLine")
 @XStreamInclude({

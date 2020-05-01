@@ -16,15 +16,16 @@
 
 package org.optaplanner.core.config.util;
 
+import static org.junit.Assert.*;
+
 import java.util.Map;
+
+import org.junit.jupiter.api.Test;
+import org.optaplanner.core.impl.solver.io.XStreamConfigReader;
 
 import com.thoughtworks.xstream.XStream;
 import com.thoughtworks.xstream.annotations.XStreamAlias;
 import com.thoughtworks.xstream.annotations.XStreamConverter;
-import org.junit.jupiter.api.Test;
-import org.optaplanner.core.impl.solver.io.XStreamConfigReader;
-
-import static org.junit.Assert.*;
 
 public class KeyAsElementMapConverterTest {
 
@@ -38,7 +39,7 @@ public class KeyAsElementMapConverterTest {
                 + "</keyAsElementMapConverterTestBean>";
         XStream xStream = XStreamConfigReader.buildXStream();
         xStream.processAnnotations(KeyAsElementMapConverterTestBean.class);
-        xStream.allowTypes(new Class[]{KeyAsElementMapConverterTestBean.class});
+        xStream.allowTypes(new Class[] { KeyAsElementMapConverterTestBean.class });
         KeyAsElementMapConverterTestBean bean = (KeyAsElementMapConverterTestBean) xStream.fromXML(xml);
         assertEquals("value1", bean.customProperties.get("alpha"));
         assertEquals("7", bean.customProperties.get("beta"));

@@ -25,8 +25,7 @@ import org.optaplanner.core.impl.score.stream.tri.AbstractTriJoiner;
 import org.optaplanner.core.impl.score.stream.tri.FilteringTriJoiner;
 
 public final class BiConstraintStreamHelper<A, B, C>
-        extends AbstractConstraintStreamHelper<C, TriConstraintStream<A, B, C>, TriJoiner<A, B, C>,
-                TriPredicate<A, B, C>> {
+        extends AbstractConstraintStreamHelper<C, TriConstraintStream<A, B, C>, TriJoiner<A, B, C>, TriPredicate<A, B, C>> {
 
     private final BiConstraintStream<A, B> stream;
 
@@ -67,7 +66,7 @@ public final class BiConstraintStreamHelper<A, B, C>
 
     @Override
     protected TriPredicate<A, B, C> extractPredicate(TriJoiner<A, B, C> joiner) {
-        return ((FilteringTriJoiner<A, B, C>)joiner).getFilter();
+        return ((FilteringTriJoiner<A, B, C>) joiner).getFilter();
     }
 
     @Override

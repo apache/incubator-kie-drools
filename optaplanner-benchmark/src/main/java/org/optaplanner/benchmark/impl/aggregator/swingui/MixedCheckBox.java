@@ -17,8 +17,8 @@ package org.optaplanner.benchmark.impl.aggregator.swingui;
 
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
-import javax.swing.JCheckBox;
 
+import javax.swing.JCheckBox;
 
 public class MixedCheckBox extends JCheckBox {
 
@@ -81,7 +81,8 @@ public class MixedCheckBox extends JCheckBox {
     private static class MixedCheckBoxModel extends ToggleButtonModel {
 
         private MixedCheckBoxStatus getStatus() {
-            return isSelected() ? (isArmed() ? MixedCheckBoxStatus.MIXED : MixedCheckBoxStatus.CHECKED) : MixedCheckBoxStatus.UNCHECKED;
+            return isSelected() ? (isArmed() ? MixedCheckBoxStatus.MIXED : MixedCheckBoxStatus.CHECKED)
+                    : MixedCheckBoxStatus.UNCHECKED;
         }
 
         private void setStatus(MixedCheckBoxStatus status) {
@@ -121,7 +122,9 @@ public class MixedCheckBox extends JCheckBox {
     }
 
     public enum MixedCheckBoxStatus {
-        CHECKED, UNCHECKED, MIXED
+        CHECKED,
+        UNCHECKED,
+        MIXED
     }
 
 }

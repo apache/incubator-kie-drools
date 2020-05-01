@@ -19,7 +19,6 @@ package org.optaplanner.benchmark.impl.statistic;
 import java.io.File;
 import java.util.List;
 
-import com.thoughtworks.xstream.annotations.XStreamInclude;
 import org.jfree.chart.JFreeChart;
 import org.optaplanner.benchmark.config.statistic.SingleStatisticType;
 import org.optaplanner.benchmark.impl.report.BenchmarkReport;
@@ -29,6 +28,8 @@ import org.optaplanner.benchmark.impl.statistic.subsingle.constraintmatchtotalbe
 import org.optaplanner.benchmark.impl.statistic.subsingle.constraintmatchtotalstepscore.ConstraintMatchTotalStepScoreSubSingleStatistic;
 import org.optaplanner.benchmark.impl.statistic.subsingle.pickedmovetypebestscore.PickedMoveTypeBestScoreDiffSubSingleStatistic;
 import org.optaplanner.benchmark.impl.statistic.subsingle.pickedmovetypestepscore.PickedMoveTypeStepScoreDiffSubSingleStatistic;
+
+import com.thoughtworks.xstream.annotations.XStreamInclude;
 
 /**
  * 1 statistic of {@link SubSingleBenchmarkResult}.
@@ -44,7 +45,8 @@ public abstract class PureSubSingleStatistic<Solution_, StatisticPoint_ extends 
 
     protected final SingleStatisticType singleStatisticType;
 
-    protected PureSubSingleStatistic(SubSingleBenchmarkResult subSingleBenchmarkResult, SingleStatisticType singleStatisticType) {
+    protected PureSubSingleStatistic(SubSingleBenchmarkResult subSingleBenchmarkResult,
+            SingleStatisticType singleStatisticType) {
         super(subSingleBenchmarkResult);
         this.singleStatisticType = singleStatisticType;
     }

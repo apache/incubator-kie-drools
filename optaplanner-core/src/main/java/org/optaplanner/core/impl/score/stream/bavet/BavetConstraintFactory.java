@@ -36,8 +36,8 @@ public final class BavetConstraintFactory<Solution_> implements InnerConstraintF
 
     public BavetConstraintFactory(SolutionDescriptor<Solution_> solutionDescriptor) {
         this.solutionDescriptor = solutionDescriptor;
-        ConstraintConfigurationDescriptor<Solution_> configurationDescriptor
-                = solutionDescriptor.getConstraintConfigurationDescriptor();
+        ConstraintConfigurationDescriptor<Solution_> configurationDescriptor = solutionDescriptor
+                .getConstraintConfigurationDescriptor();
         if (configurationDescriptor == null) {
             defaultConstraintPackage = solutionDescriptor.getSolutionClass().getPackage().getName();
         } else {
@@ -71,7 +71,7 @@ public final class BavetConstraintFactory<Solution_> implements InnerConstraintF
             if (!added) {
                 throw new IllegalStateException(
                         "There are 2 constraints with the same constraintName (" + constraint.getConstraintName()
-                        + ") in the same constraintPackage (" + constraint.getConstraintPackage() + ").");
+                                + ") in the same constraintPackage (" + constraint.getConstraintPackage() + ").");
             }
             BavetConstraint<Solution_> bavetConstraint = (BavetConstraint) constraint;
             bavetConstraintList.add(bavetConstraint);

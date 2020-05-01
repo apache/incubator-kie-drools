@@ -27,6 +27,7 @@ import org.optaplanner.persistence.jsonb.api.OptaPlannerJsonbConfig;
  * For example: use {@code @JsonbTypeAdapter(HardSoftScoreJsonbAdapter.class)}
  * on a {@code HardSoftScore score} field and it will be serialized to JSON as {@code "score":"-999hard/-999soft"}.
  * Or better yet, use {@link OptaPlannerJsonbConfig} instead.
+ * 
  * @see Score
  * @param <Score_> the actual score type
  */

@@ -75,7 +75,7 @@ public final class BavetJoinBiConstraintStream<Solution_, A, B> extends BavetAbs
 
     @Override
     public String toString() {
-        return "Join() with " + childStreamList.size()  + " children";
+        return "Join() with " + childStreamList.size() + " children";
     }
 
     // ************************************************************************

@@ -36,6 +36,7 @@ import org.optaplanner.core.impl.score.director.ScoreDirector;
  * Incremental java implementation of {@link ScoreDirector}, which only recalculates the {@link Score}
  * of the part of the {@link PlanningSolution working solution} that changed,
  * instead of the going through the entire {@link PlanningSolution}. This is incremental calculation, which is fast.
+ * 
  * @param <Solution_> the solution type, the class with the {@link PlanningSolution} annotation
  * @see ScoreDirector
  */
@@ -114,8 +115,7 @@ public class IncrementalScoreDirector<Solution_>
             throw new IllegalStateException("When constraintMatchEnabled (" + isConstraintMatchEnabled()
                     + ") is disabled in the constructor, this method should not be called.");
         }
-        Map<Object, Indictment> incrementalIndictmentMap
-                = ((ConstraintMatchAwareIncrementalScoreCalculator<Solution_>) incrementalScoreCalculator)
+        Map<Object, Indictment> incrementalIndictmentMap = ((ConstraintMatchAwareIncrementalScoreCalculator<Solution_>) incrementalScoreCalculator)
                 .getIndictmentMap();
         if (incrementalIndictmentMap != null) {
             return incrementalIndictmentMap;

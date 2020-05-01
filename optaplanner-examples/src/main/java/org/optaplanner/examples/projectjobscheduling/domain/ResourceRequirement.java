@@ -16,9 +16,10 @@
 
 package org.optaplanner.examples.projectjobscheduling.domain;
 
-import com.thoughtworks.xstream.annotations.XStreamAlias;
 import org.optaplanner.examples.common.domain.AbstractPersistable;
 import org.optaplanner.examples.projectjobscheduling.domain.resource.Resource;
+
+import com.thoughtworks.xstream.annotations.XStreamAlias;
 
 @XStreamAlias("PjsResourceRequirement")
 public class ResourceRequirement extends AbstractPersistable {

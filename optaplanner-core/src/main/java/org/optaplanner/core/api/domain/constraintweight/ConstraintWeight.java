@@ -16,13 +16,13 @@
 
 package org.optaplanner.core.api.domain.constraintweight;
 
+import static java.lang.annotation.ElementType.*;
+import static java.lang.annotation.RetentionPolicy.*;
+
 import java.lang.annotation.Retention;
 import java.lang.annotation.Target;
 
 import org.optaplanner.core.api.score.Score;
-
-import static java.lang.annotation.ElementType.*;
-import static java.lang.annotation.RetentionPolicy.*;
 
 /**
  * Specifies that a bean property (or a field) set the constraint weight and score level of a constraint.
@@ -32,7 +32,7 @@ import static java.lang.annotation.RetentionPolicy.*;
  * <p>
  * It is specified on a getter of a java bean property (or directly on a field) of a {@link ConstraintConfiguration} class.
  */
-@Target({FIELD, METHOD})
+@Target({ FIELD, METHOD })
 @Retention(RUNTIME)
 public @interface ConstraintWeight {
 
@@ -41,6 +41,7 @@ public @interface ConstraintWeight {
      * <p>
      * The constraint id is this constraint package
      * concatenated with "/" and {@link #value() the constraint name}.
+     * 
      * @return defaults to {@link ConstraintConfiguration#constraintPackage()}
      */
     String constraintPackage() default "";
@@ -50,6 +51,7 @@ public @interface ConstraintWeight {
      * <p>
      * The constraint id is {@link #constraintPackage() the constraint package}
      * concatenated with "/" and this constraint name.
+     * 
      * @return never null, often a constant that is used by the constraints too, because they need to match.
      */
     String value();

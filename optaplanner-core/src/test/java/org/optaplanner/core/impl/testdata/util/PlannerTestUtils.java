@@ -16,6 +16,9 @@
 
 package org.optaplanner.core.impl.testdata.util;
 
+import static java.util.Arrays.stream;
+import static org.mockito.Mockito.*;
+
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -33,8 +36,6 @@ import java.util.function.Consumer;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 
-import com.thoughtworks.xstream.XStream;
-import com.thoughtworks.xstream.security.AnyTypePermission;
 import org.apache.commons.lang3.SerializationUtils;
 import org.mockito.AdditionalAnswers;
 import org.optaplanner.core.api.score.buildin.simple.SimpleScore;
@@ -56,8 +57,8 @@ import org.optaplanner.core.impl.testdata.domain.TestdataEntity;
 import org.optaplanner.core.impl.testdata.domain.TestdataSolution;
 import org.optaplanner.core.impl.testdata.domain.TestdataValue;
 
-import static java.util.Arrays.stream;
-import static org.mockito.Mockito.*;
+import com.thoughtworks.xstream.XStream;
+import com.thoughtworks.xstream.security.AnyTypePermission;
 
 /**
  * @see PlannerAssert
@@ -131,12 +132,14 @@ public class PlannerTestUtils {
     // ScoreDirector methods
     // ************************************************************************
 
-    public static <Solution_> InnerScoreDirector<Solution_> mockScoreDirector(SolutionDescriptor<Solution_> solutionDescriptor) {
-        EasyScoreDirectorFactory<Solution_> scoreDirectorFactory =
-                new EasyScoreDirectorFactory<>(solutionDescriptor, (EasyScoreCalculator<Solution_>) (solution_) -> SimpleScore.of(0));
+    public static <Solution_> InnerScoreDirector<Solution_> mockScoreDirector(
+            SolutionDescriptor<Solution_> solutionDescriptor) {
+        EasyScoreDirectorFactory<Solution_> scoreDirectorFactory = new EasyScoreDirectorFactory<>(solutionDescriptor,
+                (EasyScoreCalculator<Solution_>) (solution_) -> SimpleScore.of(0));
         scoreDirectorFactory.setInitializingScoreTrend(
                 InitializingScoreTrend.buildUniformTrend(InitializingScoreTrendLevel.ONLY_DOWN, 1));
-        return mock(InnerScoreDirector.class, AdditionalAnswers.delegatesTo(scoreDirectorFactory.buildScoreDirector(false, false)));
+        return mock(InnerScoreDirector.class,
+                AdditionalAnswers.delegatesTo(scoreDirectorFactory.buildScoreDirector(false, false)));
     }
 
     public static <Solution_> InnerScoreDirector<Solution_> mockRebasingScoreDirector(

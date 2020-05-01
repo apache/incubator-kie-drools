@@ -16,19 +16,20 @@
 
 package org.optaplanner.persistence.xstream.api.score.buildin.bendable;
 
-import com.thoughtworks.xstream.annotations.XStreamConverter;
 import org.junit.jupiter.api.Test;
 import org.optaplanner.core.api.score.buildin.bendable.BendableScore;
 import org.optaplanner.persistence.xstream.api.score.AbstractScoreXStreamConverterTest;
+
+import com.thoughtworks.xstream.annotations.XStreamConverter;
 
 public class BendableScoreXStreamConverterTest extends AbstractScoreXStreamConverterTest {
 
     @Test
     public void serializeAndDeserialize() {
         assertSerializeAndDeserialize(null, new TestBendableScoreWrapper(null));
-        BendableScore score = BendableScore.of(new int[]{1000, 200}, new int[]{34});
+        BendableScore score = BendableScore.of(new int[] { 1000, 200 }, new int[] { 34 });
         assertSerializeAndDeserialize(score, new TestBendableScoreWrapper(score));
-        score = BendableScore.ofUninitialized(-7, new int[]{1000, 200}, new int[]{34});
+        score = BendableScore.ofUninitialized(-7, new int[] { 1000, 200 }, new int[] { 34 });
         assertSerializeAndDeserialize(score, new TestBendableScoreWrapper(score));
     }
 

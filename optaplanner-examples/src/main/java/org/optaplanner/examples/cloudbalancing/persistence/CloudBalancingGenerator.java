@@ -96,22 +96,22 @@ public class CloudBalancingGenerator extends LoggingMain {
         generator.writeCloudBalance(2, 6);
         generator.writeCloudBalance(3, 9);
         generator.writeCloudBalance(4, 12);
-//        generator.writeCloudBalance(5, 15);
-//        generator.writeCloudBalance(6, 18);
-//        generator.writeCloudBalance(7, 21);
-//        generator.writeCloudBalance(8, 24);
-//        generator.writeCloudBalance(9, 27);
-//        generator.writeCloudBalance(10, 30);
-//        generator.writeCloudBalance(11, 33);
-//        generator.writeCloudBalance(12, 36);
-//        generator.writeCloudBalance(13, 39);
-//        generator.writeCloudBalance(14, 42);
-//        generator.writeCloudBalance(15, 45);
-//        generator.writeCloudBalance(16, 48);
-//        generator.writeCloudBalance(17, 51);
-//        generator.writeCloudBalance(18, 54);
-//        generator.writeCloudBalance(19, 57);
-//        generator.writeCloudBalance(20, 60);
+        //        generator.writeCloudBalance(5, 15);
+        //        generator.writeCloudBalance(6, 18);
+        //        generator.writeCloudBalance(7, 21);
+        //        generator.writeCloudBalance(8, 24);
+        //        generator.writeCloudBalance(9, 27);
+        //        generator.writeCloudBalance(10, 30);
+        //        generator.writeCloudBalance(11, 33);
+        //        generator.writeCloudBalance(12, 36);
+        //        generator.writeCloudBalance(13, 39);
+        //        generator.writeCloudBalance(14, 42);
+        //        generator.writeCloudBalance(15, 45);
+        //        generator.writeCloudBalance(16, 48);
+        //        generator.writeCloudBalance(17, 51);
+        //        generator.writeCloudBalance(18, 54);
+        //        generator.writeCloudBalance(19, 57);
+        //        generator.writeCloudBalance(20, 60);
         generator.writeCloudBalance(100, 300);
         generator.writeCloudBalance(200, 600);
         generator.writeCloudBalance(400, 1200);
@@ -302,7 +302,7 @@ public class CloudBalancingGenerator extends LoggingMain {
     }
 
     private int determineUpgrade(int lacking) {
-        for (int upgrade : new int[] {8, 4, 2, 1}) {
+        for (int upgrade : new int[] { 8, 4, 2, 1 }) {
             if (lacking >= upgrade) {
                 return upgrade;
             }

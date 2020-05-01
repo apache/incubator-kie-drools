@@ -16,6 +16,8 @@
 
 package org.optaplanner.core.impl.score.buildin.hardmediumsoft;
 
+import static org.junit.Assert.*;
+
 import java.util.function.Consumer;
 
 import org.junit.jupiter.api.Test;
@@ -23,8 +25,6 @@ import org.optaplanner.core.api.score.Score;
 import org.optaplanner.core.api.score.buildin.hardmediumsoft.HardMediumSoftScore;
 import org.optaplanner.core.impl.score.inliner.IntWeightedScoreImpacter;
 import org.optaplanner.core.impl.score.inliner.UndoScoreImpacter;
-
-import static org.junit.Assert.*;
 
 public class HardMediumSoftScoreInlinerTest {
 
@@ -57,8 +57,9 @@ public class HardMediumSoftScoreInlinerTest {
         assertEquals(HardMediumSoftScore.of(-800, 0, -13), scoreInliner.extractScore(0));
         softUndo.undoScoreImpact();
         assertEquals(HardMediumSoftScore.of(-800, 0, -10), scoreInliner.extractScore(0));
-        
-        IntWeightedScoreImpacter allLevelsImpacter = scoreInliner.buildWeightedScoreImpacter(HardMediumSoftScore.of(-1000, -2000, -3000));
+
+        IntWeightedScoreImpacter allLevelsImpacter = scoreInliner
+                .buildWeightedScoreImpacter(HardMediumSoftScore.of(-1000, -2000, -3000));
         UndoScoreImpacter allLevelsUndo = allLevelsImpacter.impactScore(1, scoreConsumer);
         assertEquals(HardMediumSoftScore.of(-1800, -2000, -3010), scoreInliner.extractScore(0));
         allLevelsUndo.undoScoreImpact();

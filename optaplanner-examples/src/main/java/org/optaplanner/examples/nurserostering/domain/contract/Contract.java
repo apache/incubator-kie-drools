@@ -18,9 +18,10 @@ package org.optaplanner.examples.nurserostering.domain.contract;
 
 import java.util.List;
 
-import com.thoughtworks.xstream.annotations.XStreamAlias;
 import org.optaplanner.examples.common.domain.AbstractPersistable;
 import org.optaplanner.examples.nurserostering.domain.WeekendDefinition;
+
+import com.thoughtworks.xstream.annotations.XStreamAlias;
 
 @XStreamAlias("Contract")
 public class Contract extends AbstractPersistable {

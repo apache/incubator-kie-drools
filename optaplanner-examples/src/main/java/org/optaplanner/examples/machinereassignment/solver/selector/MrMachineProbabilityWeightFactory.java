@@ -24,10 +24,12 @@ import org.optaplanner.examples.machinereassignment.domain.MrProcess;
 import org.optaplanner.examples.machinereassignment.domain.MrProcessAssignment;
 import org.optaplanner.examples.machinereassignment.domain.MrResource;
 
-public class MrMachineProbabilityWeightFactory implements SelectionProbabilityWeightFactory<MachineReassignment, MrProcessAssignment> {
+public class MrMachineProbabilityWeightFactory
+        implements SelectionProbabilityWeightFactory<MachineReassignment, MrProcessAssignment> {
 
     @Override
-    public double createProbabilityWeight(ScoreDirector<MachineReassignment> scoreDirector, MrProcessAssignment processAssignment) {
+    public double createProbabilityWeight(ScoreDirector<MachineReassignment> scoreDirector,
+            MrProcessAssignment processAssignment) {
         MachineReassignment machineReassignment = scoreDirector.getWorkingSolution();
         MrMachine machine = processAssignment.getMachine();
         // TODO reuse usage calculated by of the ScoreCalculator which is a delta
@@ -42,8 +44,7 @@ public class MrMachineProbabilityWeightFactory implements SelectionProbabilityWe
         }
         double sum = 0.0;
         for (MrResource resource : machineReassignment.getResourceList()) {
-            double available = (double)
-                    (machine.getMachineCapacity(resource).getSafetyCapacity() - usage[resource.getIndex()]);
+            double available = (double) (machine.getMachineCapacity(resource).getSafetyCapacity() - usage[resource.getIndex()]);
             sum += (available * available);
         }
         return sum + 1.0;

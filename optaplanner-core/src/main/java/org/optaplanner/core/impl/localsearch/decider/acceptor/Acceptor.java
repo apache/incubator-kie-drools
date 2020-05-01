@@ -24,6 +24,7 @@ import org.optaplanner.core.impl.localsearch.scope.LocalSearchMoveScope;
 /**
  * An Acceptor accepts or rejects a selected {@link Move}.
  * Note that the {@link LocalSearchForager} can still ignore the advice of the {@link Acceptor}.
+ * 
  * @see AbstractAcceptor
  */
 public interface Acceptor extends LocalSearchPhaseLifecycleListener {

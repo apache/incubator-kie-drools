@@ -16,6 +16,9 @@
 
 package org.optaplanner.benchmark.api;
 
+import static org.assertj.core.api.Assertions.assertThatIllegalArgumentException;
+import static org.junit.Assert.*;
+
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
@@ -41,9 +44,6 @@ import org.optaplanner.core.impl.testdata.domain.TestdataSolution;
 import org.optaplanner.core.impl.testdata.domain.TestdataValue;
 import org.optaplanner.core.impl.testdata.util.KieContainerHelper;
 import org.optaplanner.core.impl.testdata.util.PlannerTestUtils;
-
-import static org.assertj.core.api.Assertions.assertThatIllegalArgumentException;
-import static org.junit.Assert.*;
 
 public class PlannerBenchmarkFactoryTest {
 
@@ -72,7 +72,6 @@ public class PlannerBenchmarkFactoryTest {
         solution.setValueList(Arrays.asList(new TestdataValue("v1"), new TestdataValue("v2")));
         assertNotNull(benchmarkFactory.buildPlannerBenchmark(solution));
 
-
         benchmarkFactory = PlannerBenchmarkFactory.createFromSolverConfigXmlResource(
                 "org/optaplanner/core/config/solver/testdataSolverConfig.xml", benchmarkOutputTestDir);
         assertNotNull(benchmarkFactory.buildPlannerBenchmark(solution));
@@ -89,9 +88,9 @@ public class PlannerBenchmarkFactoryTest {
         solution.setValueList(Arrays.asList(new TestdataValue("v1"), new TestdataValue("v2")));
         assertNotNull(benchmarkFactory.buildPlannerBenchmark(solution));
 
-
         benchmarkFactory = PlannerBenchmarkFactory.createFromSolverConfigXmlResource(
-                "divertThroughClassLoader/org/optaplanner/core/api/solver/classloaderTestdataSolverConfig.xml", benchmarkOutputTestDir, classLoader);
+                "divertThroughClassLoader/org/optaplanner/core/api/solver/classloaderTestdataSolverConfig.xml",
+                benchmarkOutputTestDir, classLoader);
         assertNotNull(benchmarkFactory.buildPlannerBenchmark(solution));
     }
 
@@ -232,7 +231,8 @@ public class PlannerBenchmarkFactoryTest {
         // Mocking loadClass doesn't work well enough, because the className still differs from class.getName()
         ClassLoader classLoader = new DivertingClassLoader(getClass().getClassLoader());
         PlannerBenchmarkFactory plannerBenchmarkFactory = PlannerBenchmarkFactory.createFromFreemarkerXmlResource(
-                "divertThroughClassLoader/org/optaplanner/benchmark/api/classloaderTestdataBenchmarkConfigTemplate.xml.ftl", classLoader);
+                "divertThroughClassLoader/org/optaplanner/benchmark/api/classloaderTestdataBenchmarkConfigTemplate.xml.ftl",
+                classLoader);
         PlannerBenchmark plannerBenchmark = plannerBenchmarkFactory.buildPlannerBenchmark();
         assertNotNull(plannerBenchmark);
         plannerBenchmark.benchmark();
@@ -266,7 +266,8 @@ public class PlannerBenchmarkFactoryTest {
                 "org/optaplanner/benchmark/api/classloaderTestdataBenchmarkConfigTemplate.xml.ftl")) {
             Files.copy(in, file.toPath(), StandardCopyOption.REPLACE_EXISTING);
         }
-        PlannerBenchmarkFactory plannerBenchmarkFactory = PlannerBenchmarkFactory.createFromFreemarkerXmlFile(file, classLoader);
+        PlannerBenchmarkFactory plannerBenchmarkFactory = PlannerBenchmarkFactory.createFromFreemarkerXmlFile(file,
+                classLoader);
         PlannerBenchmark plannerBenchmark = plannerBenchmarkFactory.buildPlannerBenchmark();
         assertNotNull(plannerBenchmark);
         plannerBenchmark.benchmark();

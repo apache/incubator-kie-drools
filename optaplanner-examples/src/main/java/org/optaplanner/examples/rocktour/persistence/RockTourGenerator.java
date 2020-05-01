@@ -16,6 +16,9 @@
 
 package org.optaplanner.examples.rocktour.persistence;
 
+import static org.optaplanner.examples.common.persistence.generator.ProbabilisticDataGenerator.extractRandomElement;
+import static org.optaplanner.examples.common.persistence.generator.ProbabilisticDataGenerator.generateRandomIntFromThresholds;
+
 import java.io.File;
 import java.math.BigInteger;
 import java.time.DayOfWeek;
@@ -40,9 +43,6 @@ import org.optaplanner.examples.rocktour.domain.RockShow;
 import org.optaplanner.examples.rocktour.domain.RockTourConstraintConfiguration;
 import org.optaplanner.examples.rocktour.domain.RockTourSolution;
 import org.optaplanner.persistence.common.api.domain.solution.SolutionFileIO;
-
-import static org.optaplanner.examples.common.persistence.generator.ProbabilisticDataGenerator.extractRandomElement;
-import static org.optaplanner.examples.common.persistence.generator.ProbabilisticDataGenerator.generateRandomIntFromThresholds;
 
 public class RockTourGenerator extends LoggingMain {
 
@@ -103,7 +103,8 @@ public class RockTourGenerator extends LoggingMain {
         List<RockLocation> locationList = new ArrayList<>(locationDataListSize);
         for (int i = 0; i < locationDataListSize; i++) {
             LocationDataGenerator.LocationData locationData = locationDataList.get(i);
-            RockLocation location = new RockLocation(locationData.getName(), locationData.getLatitude(), locationData.getLongitude());
+            RockLocation location = new RockLocation(locationData.getName(), locationData.getLatitude(),
+                    locationData.getLongitude());
             locationList.add(location);
             if (i == 0) {
                 RockBus bus = new RockBus();

@@ -16,6 +16,9 @@
 
 package org.optaplanner.core.impl.domain.variable.anchor;
 
+import static org.junit.Assert.*;
+import static org.mockito.Mockito.*;
+
 import java.util.Arrays;
 
 import org.junit.jupiter.api.Test;
@@ -26,16 +29,14 @@ import org.optaplanner.core.impl.testdata.domain.chained.TestdataChainedAnchor;
 import org.optaplanner.core.impl.testdata.domain.chained.TestdataChainedEntity;
 import org.optaplanner.core.impl.testdata.domain.chained.TestdataChainedSolution;
 
-import static org.junit.Assert.*;
-import static org.mockito.Mockito.*;
-
 public class ExternalizedAnchorVariableSupplyTest {
 
     @Test
     public void chainedEntity() {
         GenuineVariableDescriptor variableDescriptor = TestdataChainedEntity.buildVariableDescriptorForChainedObject();
         ScoreDirector scoreDirector = mock(ScoreDirector.class);
-        ExternalizedSingletonInverseVariableSupply nextVariableSupply = new ExternalizedSingletonInverseVariableSupply(variableDescriptor);
+        ExternalizedSingletonInverseVariableSupply nextVariableSupply = new ExternalizedSingletonInverseVariableSupply(
+                variableDescriptor);
         ExternalizedAnchorVariableSupply supply = new ExternalizedAnchorVariableSupply(variableDescriptor, nextVariableSupply);
 
         TestdataChainedAnchor a0 = new TestdataChainedAnchor("a0");

@@ -16,6 +16,9 @@
 
 package org.optaplanner.persistence.jsonb.api.score;
 
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.fail;
+
 import java.io.Serializable;
 
 import javax.json.bind.Jsonb;
@@ -23,9 +26,6 @@ import javax.json.bind.JsonbBuilder;
 import javax.json.bind.JsonbException;
 
 import org.optaplanner.core.api.score.Score;
-
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.fail;
 
 public class AbstractScoreJsonbAdapterTest {
 
@@ -56,7 +56,7 @@ public class AbstractScoreJsonbAdapterTest {
         }
         if (!jsonString.matches(regex)) {
             fail("Regular expression match failed." + newLine + "Expected regular expression: " + regex + newLine +
-                         "Actual string: " + jsonString);
+                    "Actual string: " + jsonString);
         }
     }
 

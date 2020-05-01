@@ -16,6 +16,10 @@
 
 package org.optaplanner.core.impl.domain.entity.descriptor;
 
+import static org.optaplanner.core.impl.domain.common.accessor.MemberAccessorFactory.MemberAccessorType.FIELD_OR_GETTER_METHOD;
+import static org.optaplanner.core.impl.domain.common.accessor.MemberAccessorFactory.MemberAccessorType.FIELD_OR_GETTER_METHOD_WITH_SETTER;
+import static org.optaplanner.core.impl.domain.common.accessor.MemberAccessorFactory.MemberAccessorType.FIELD_OR_READ_METHOD;
+
 import java.lang.annotation.Annotation;
 import java.lang.reflect.AnnotatedElement;
 import java.lang.reflect.Member;
@@ -57,10 +61,6 @@ import org.optaplanner.core.impl.heuristic.selector.common.decorator.WeightFacto
 import org.optaplanner.core.impl.heuristic.selector.entity.decorator.PinEntityFilter;
 import org.optaplanner.core.impl.score.director.ScoreDirector;
 
-import static org.optaplanner.core.impl.domain.common.accessor.MemberAccessorFactory.MemberAccessorType.FIELD_OR_GETTER_METHOD;
-import static org.optaplanner.core.impl.domain.common.accessor.MemberAccessorFactory.MemberAccessorType.FIELD_OR_GETTER_METHOD_WITH_SETTER;
-import static org.optaplanner.core.impl.domain.common.accessor.MemberAccessorFactory.MemberAccessorType.FIELD_OR_READ_METHOD;
-
 /**
  * @param <Solution_> the solution type, the class with the {@link PlanningSolution} annotation
  */
@@ -69,7 +69,7 @@ public class EntityDescriptor<Solution_> {
     private static final Class[] VARIABLE_ANNOTATION_CLASSES = {
             PlanningVariable.class,
             InverseRelationShadowVariable.class, AnchorShadowVariable.class,
-            CustomShadowVariable.class};
+            CustomShadowVariable.class };
 
     private final SolutionDescriptor<Solution_> solutionDescriptor;
 
@@ -108,6 +108,7 @@ public class EntityDescriptor<Solution_> {
     /**
      * Using entityDescriptor::isInitialized directly breaks node sharing
      * because it creates multiple instances of this {@link Predicate}.
+     * 
      * @return never null, always the same {@link Predicate} instance to {@link #isInitialized(Object)}
      */
     public Predicate<Object> getIsInitializedPredicate() {
@@ -165,8 +166,8 @@ public class EntityDescriptor<Solution_> {
         if (difficultyComparatorClass == PlanningEntity.NullDifficultyComparator.class) {
             difficultyComparatorClass = null;
         }
-        Class<? extends SelectionSorterWeightFactory> difficultyWeightFactoryClass
-                = entityAnnotation.difficultyWeightFactoryClass();
+        Class<? extends SelectionSorterWeightFactory> difficultyWeightFactoryClass = entityAnnotation
+                .difficultyWeightFactoryClass();
         if (difficultyWeightFactoryClass == PlanningEntity.NullDifficultyWeightFactory.class) {
             difficultyWeightFactoryClass = null;
         }
@@ -481,7 +482,9 @@ public class EntityDescriptor<Solution_> {
                 + ") for entityClass (" + entityClass
                 + ") exists as a getter or field on that class,"
                 + " but isn't in the planning variables (" + effectiveVariableDescriptorMap.keySet() + ").\n"
-                + (Character.isUpperCase(variableName.charAt(0)) ? "Maybe the variableName (" + variableName + ") should start with a lowercase.\n" : "")
+                + (Character.isUpperCase(variableName.charAt(0))
+                        ? "Maybe the variableName (" + variableName + ") should start with a lowercase.\n"
+                        : "")
                 + "Maybe your planning entity's getter or field lacks a " + PlanningVariable.class.getSimpleName()
                 + " annotation or a shadow variable annotation.";
     }
@@ -558,7 +561,8 @@ public class EntityDescriptor<Solution_> {
     }
 
     public boolean isMovable(ScoreDirector<Solution_> scoreDirector, Object entity) {
-        return effectiveMovableEntitySelectionFilter == null || effectiveMovableEntitySelectionFilter.accept(scoreDirector, entity);
+        return effectiveMovableEntitySelectionFilter == null
+                || effectiveMovableEntitySelectionFilter.accept(scoreDirector, entity);
     }
 
     /**

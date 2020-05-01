@@ -16,6 +16,10 @@
 
 package org.optaplanner.core.impl.score.stream.penta;
 
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.SoftAssertions.assertSoftly;
+import static org.optaplanner.core.impl.score.stream.penta.AbstractPentaJoiner.merge;
+
 import java.math.BigDecimal;
 import java.math.BigInteger;
 
@@ -23,10 +27,6 @@ import org.junit.jupiter.api.Test;
 import org.optaplanner.core.api.score.stream.Joiners;
 import org.optaplanner.core.api.score.stream.penta.PentaJoiner;
 import org.optaplanner.core.impl.score.stream.common.JoinerType;
-
-import static org.assertj.core.api.Assertions.assertThat;
-import static org.assertj.core.api.SoftAssertions.assertSoftly;
-import static org.optaplanner.core.impl.score.stream.penta.AbstractPentaJoiner.merge;
 
 public class AbstractPentaJoinerTest {
 
@@ -47,12 +47,11 @@ public class AbstractPentaJoinerTest {
 
     @Test
     public void merge2Joiners() {
-        PentaJoiner<BigDecimal, BigDecimal, BigDecimal, BigDecimal, BigInteger> joiner1 =
-                Joiners.equal((a, b, c, d) -> a.add(b).add(c).add(d).longValue(), BigInteger::longValue);
-        PentaJoiner<BigDecimal, BigDecimal, BigDecimal, BigDecimal, BigInteger> joiner2 =
-                Joiners.lessThan((a, b, c, d) -> a.add(b).add(c).add(d).longValue(), BigInteger::longValue);
-        AbstractPentaJoiner<BigDecimal, BigDecimal, BigDecimal, BigDecimal, BigInteger> mergedJoiner =
-                merge(joiner1, joiner2);
+        PentaJoiner<BigDecimal, BigDecimal, BigDecimal, BigDecimal, BigInteger> joiner1 = Joiners
+                .equal((a, b, c, d) -> a.add(b).add(c).add(d).longValue(), BigInteger::longValue);
+        PentaJoiner<BigDecimal, BigDecimal, BigDecimal, BigDecimal, BigInteger> joiner2 = Joiners
+                .lessThan((a, b, c, d) -> a.add(b).add(c).add(d).longValue(), BigInteger::longValue);
+        AbstractPentaJoiner<BigDecimal, BigDecimal, BigDecimal, BigDecimal, BigInteger> mergedJoiner = merge(joiner1, joiner2);
         assertSoftly(softly -> {
             softly.assertThat(mergedJoiner).isInstanceOf(CompositePentaJoiner.class);
             softly.assertThat(mergedJoiner.getJoinerTypes()).containsExactly(JoinerType.EQUAL, JoinerType.LESS_THAN);
@@ -63,16 +62,15 @@ public class AbstractPentaJoinerTest {
 
     @Test
     public void merge2Joiners1Composite() {
-        PentaJoiner<BigDecimal, BigDecimal, BigDecimal, BigDecimal, BigInteger> joiner1 =
-                Joiners.equal((a, b, c, d) -> a.add(b).add(c).add(d).longValue(), BigInteger::longValue);
-        PentaJoiner<BigDecimal, BigDecimal, BigDecimal, BigDecimal, BigInteger> joiner2 =
-                Joiners.lessThan((a, b, c, d) -> a.add(b).add(c).add(d).longValue(), BigInteger::longValue);
-        AbstractPentaJoiner<BigDecimal, BigDecimal, BigDecimal, BigDecimal, BigInteger> mergedJoiner =
-                merge(joiner1, joiner2);
-        PentaJoiner<BigDecimal, BigDecimal, BigDecimal, BigDecimal, BigInteger> joiner3 =
-                Joiners.greaterThan((a, b, c, d) -> a.add(b).add(c).add(d).longValue(), BigInteger::longValue);
-        AbstractPentaJoiner<BigDecimal, BigDecimal, BigDecimal, BigDecimal, BigInteger> reMergedJoiner =
-                merge(mergedJoiner, joiner3);
+        PentaJoiner<BigDecimal, BigDecimal, BigDecimal, BigDecimal, BigInteger> joiner1 = Joiners
+                .equal((a, b, c, d) -> a.add(b).add(c).add(d).longValue(), BigInteger::longValue);
+        PentaJoiner<BigDecimal, BigDecimal, BigDecimal, BigDecimal, BigInteger> joiner2 = Joiners
+                .lessThan((a, b, c, d) -> a.add(b).add(c).add(d).longValue(), BigInteger::longValue);
+        AbstractPentaJoiner<BigDecimal, BigDecimal, BigDecimal, BigDecimal, BigInteger> mergedJoiner = merge(joiner1, joiner2);
+        PentaJoiner<BigDecimal, BigDecimal, BigDecimal, BigDecimal, BigInteger> joiner3 = Joiners
+                .greaterThan((a, b, c, d) -> a.add(b).add(c).add(d).longValue(), BigInteger::longValue);
+        AbstractPentaJoiner<BigDecimal, BigDecimal, BigDecimal, BigDecimal, BigInteger> reMergedJoiner = merge(mergedJoiner,
+                joiner3);
         assertSoftly(softly -> {
             softly.assertThat(reMergedJoiner).isInstanceOf(CompositePentaJoiner.class);
             softly.assertThat(reMergedJoiner.getJoinerTypes())

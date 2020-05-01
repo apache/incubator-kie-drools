@@ -16,15 +16,15 @@
 
 package org.optaplanner.swing.impl;
 
+import static java.util.Arrays.asList;
+import static java.util.Collections.unmodifiableList;
+
 import java.awt.BasicStroke;
 import java.awt.Color;
 import java.awt.Stroke;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-
-import static java.util.Arrays.asList;
-import static java.util.Collections.unmodifiableList;
 
 public class TangoColorFactory {
 
@@ -74,13 +74,13 @@ public class TangoColorFactory {
     public static final Stroke NORMAL_STROKE = new BasicStroke();
 
     public static final Stroke FAT_DASHED_STROKE = new BasicStroke(
-            1.0f, BasicStroke.CAP_ROUND, BasicStroke.JOIN_ROUND, 1.0f, new float[] {7.0f, 3.0f}, 0.0f);
+            1.0f, BasicStroke.CAP_ROUND, BasicStroke.JOIN_ROUND, 1.0f, new float[] { 7.0f, 3.0f }, 0.0f);
 
     public static final Stroke DASHED_STROKE = new BasicStroke(
-            1.0f, BasicStroke.CAP_ROUND, BasicStroke.JOIN_ROUND, 1.0f, new float[] {4.0f, 4.0f}, 0.0f);
+            1.0f, BasicStroke.CAP_ROUND, BasicStroke.JOIN_ROUND, 1.0f, new float[] { 4.0f, 4.0f }, 0.0f);
 
     public static final Stroke LIGHT_DASHED_STROKE = new BasicStroke(
-            1.0f, BasicStroke.CAP_ROUND, BasicStroke.JOIN_ROUND, 1.0f, new float[] {3.0f, 7.0f}, 0.0f);
+            1.0f, BasicStroke.CAP_ROUND, BasicStroke.JOIN_ROUND, 1.0f, new float[] { 3.0f, 7.0f }, 0.0f);
 
     public static Color buildPercentageColor(Color floorColor, Color ceilColor, double shadePercentage) {
         return new Color(

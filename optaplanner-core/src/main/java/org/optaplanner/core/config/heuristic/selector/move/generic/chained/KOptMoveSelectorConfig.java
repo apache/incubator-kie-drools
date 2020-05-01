@@ -16,7 +16,6 @@
 
 package org.optaplanner.core.config.heuristic.selector.move.generic.chained;
 
-import com.thoughtworks.xstream.annotations.XStreamAlias;
 import org.optaplanner.core.config.heuristic.policy.HeuristicConfigPolicy;
 import org.optaplanner.core.config.heuristic.selector.common.SelectionCacheType;
 import org.optaplanner.core.config.heuristic.selector.common.SelectionOrder;
@@ -29,10 +28,13 @@ import org.optaplanner.core.impl.heuristic.selector.move.MoveSelector;
 import org.optaplanner.core.impl.heuristic.selector.move.generic.chained.KOptMoveSelector;
 import org.optaplanner.core.impl.heuristic.selector.value.ValueSelector;
 
+import com.thoughtworks.xstream.annotations.XStreamAlias;
+
 /**
  * THIS IS VERY EXPERIMENTAL. It's NOT DOCUMENTED because we'll only document it when it actually works in more than 1 use case.
  * It's riddled with TODOs.
  * Do not use.
+ * 
  * @see TailChainSwapMoveSelectorConfig
  */
 @XStreamAlias("kOptMoveSelector")

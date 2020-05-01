@@ -23,11 +23,12 @@ import java.util.Objects;
 import org.optaplanner.examples.nurserostering.domain.Employee;
 import org.optaplanner.examples.nurserostering.domain.contract.Contract;
 
-public class EmployeeConsecutiveWeekendAssignmentEnd implements Comparable<EmployeeConsecutiveWeekendAssignmentEnd>, Serializable {
+public class EmployeeConsecutiveWeekendAssignmentEnd
+        implements Comparable<EmployeeConsecutiveWeekendAssignmentEnd>, Serializable {
 
-    private static final Comparator<EmployeeConsecutiveWeekendAssignmentEnd> COMPARATOR =
-            Comparator.comparing(EmployeeConsecutiveWeekendAssignmentEnd::getEmployee)
-                    .thenComparingInt(EmployeeConsecutiveWeekendAssignmentEnd::getSundayIndex);
+    private static final Comparator<EmployeeConsecutiveWeekendAssignmentEnd> COMPARATOR = Comparator
+            .comparing(EmployeeConsecutiveWeekendAssignmentEnd::getEmployee)
+            .thenComparingInt(EmployeeConsecutiveWeekendAssignmentEnd::getSundayIndex);
 
     private Employee employee;
     private int sundayIndex;

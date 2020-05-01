@@ -16,6 +16,8 @@
 
 package org.optaplanner.core.impl.score.stream.drools;
 
+import static org.drools.model.DSL.globalOf;
+
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
@@ -35,8 +37,6 @@ import org.optaplanner.core.impl.score.stream.ConstraintSessionFactory;
 import org.optaplanner.core.impl.score.stream.InnerConstraintFactory;
 import org.optaplanner.core.impl.score.stream.drools.uni.DroolsFromUniConstraintStream;
 
-import static org.drools.model.DSL.globalOf;
-
 public final class DroolsConstraintFactory<Solution_> implements InnerConstraintFactory<Solution_> {
 
     private final SolutionDescriptor<Solution_> solutionDescriptor;
@@ -45,8 +45,8 @@ public final class DroolsConstraintFactory<Solution_> implements InnerConstraint
 
     public DroolsConstraintFactory(SolutionDescriptor<Solution_> solutionDescriptor) {
         this.solutionDescriptor = solutionDescriptor;
-        ConstraintConfigurationDescriptor<Solution_> configurationDescriptor
-                = solutionDescriptor.getConstraintConfigurationDescriptor();
+        ConstraintConfigurationDescriptor<Solution_> configurationDescriptor = solutionDescriptor
+                .getConstraintConfigurationDescriptor();
         if (configurationDescriptor == null) {
             defaultConstraintPackage = solutionDescriptor.getSolutionClass().getPackage().getName();
         } else {
@@ -69,8 +69,8 @@ public final class DroolsConstraintFactory<Solution_> implements InnerConstraint
 
         AbstractScoreHolder<?> scoreHolder = (AbstractScoreHolder<?>) solutionDescriptor.getScoreDefinition()
                 .buildScoreHolder(false);
-        Class<? extends AbstractScoreHolder<?>> scoreHolderClass =
-                (Class<? extends AbstractScoreHolder<?>>) scoreHolder.getClass();
+        Class<? extends AbstractScoreHolder<?>> scoreHolderClass = (Class<? extends AbstractScoreHolder<?>>) scoreHolder
+                .getClass();
         Global<? extends AbstractScoreHolder<?>> scoreHolderGlobal = globalOf(scoreHolderClass,
                 solutionDescriptor.getSolutionClass().getPackage().getName(),
                 DroolsScoreDirector.GLOBAL_SCORE_HOLDER_KEY);

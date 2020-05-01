@@ -16,6 +16,15 @@
 
 package org.optaplanner.examples.flightcrewscheduling.persistence;
 
+import static java.util.stream.Collectors.groupingBy;
+import static java.util.stream.Collectors.joining;
+import static java.util.stream.Collectors.toList;
+import static org.optaplanner.examples.flightcrewscheduling.domain.FlightCrewParametrization.EMPLOYEE_UNAVAILABILITY;
+import static org.optaplanner.examples.flightcrewscheduling.domain.FlightCrewParametrization.FLIGHT_CONFLICT;
+import static org.optaplanner.examples.flightcrewscheduling.domain.FlightCrewParametrization.LOAD_BALANCE_FLIGHT_DURATION_TOTAL_PER_EMPLOYEE;
+import static org.optaplanner.examples.flightcrewscheduling.domain.FlightCrewParametrization.REQUIRED_SKILL;
+import static org.optaplanner.examples.flightcrewscheduling.domain.FlightCrewParametrization.TRANSFER_BETWEEN_TWO_FLIGHTS;
+
 import java.io.BufferedInputStream;
 import java.io.File;
 import java.io.FileInputStream;
@@ -52,19 +61,9 @@ import org.optaplanner.examples.flightcrewscheduling.domain.FlightCrewParametriz
 import org.optaplanner.examples.flightcrewscheduling.domain.FlightCrewSolution;
 import org.optaplanner.examples.flightcrewscheduling.domain.Skill;
 
-import static java.util.stream.Collectors.groupingBy;
-import static java.util.stream.Collectors.joining;
-import static java.util.stream.Collectors.toList;
-import static org.optaplanner.examples.flightcrewscheduling.domain.FlightCrewParametrization.EMPLOYEE_UNAVAILABILITY;
-import static org.optaplanner.examples.flightcrewscheduling.domain.FlightCrewParametrization.FLIGHT_CONFLICT;
-import static org.optaplanner.examples.flightcrewscheduling.domain.FlightCrewParametrization.LOAD_BALANCE_FLIGHT_DURATION_TOTAL_PER_EMPLOYEE;
-import static org.optaplanner.examples.flightcrewscheduling.domain.FlightCrewParametrization.REQUIRED_SKILL;
-import static org.optaplanner.examples.flightcrewscheduling.domain.FlightCrewParametrization.TRANSFER_BETWEEN_TWO_FLIGHTS;
-
 public class FlightCrewSchedulingXlsxFileIO extends AbstractXlsxSolutionFileIO<FlightCrewSolution> {
 
-    public static final DateTimeFormatter MILITARY_TIME_FORMATTER
-            = DateTimeFormatter.ofPattern("HHmm", Locale.ENGLISH);
+    public static final DateTimeFormatter MILITARY_TIME_FORMATTER = DateTimeFormatter.ofPattern("HHmm", Locale.ENGLISH);
 
     @Override
     public FlightCrewSolution read(File inputSolutionFile) {
@@ -182,7 +181,8 @@ public class FlightCrewSchedulingXlsxFileIO extends AbstractXlsxSolutionFileIO<F
         private void readTaxiTimeMaps() {
             nextSheet("Taxi time");
             nextRow();
-            readHeaderCell("Driving time in minutes by taxi between two nearby airports to allow employees to start from a different airport.");
+            readHeaderCell(
+                    "Driving time in minutes by taxi between two nearby airports to allow employees to start from a different airport.");
             List<Airport> airportList = solution.getAirportList();
             nextRow();
             readHeaderCell("Airport code");
@@ -350,10 +350,10 @@ public class FlightCrewSchedulingXlsxFileIO extends AbstractXlsxSolutionFileIO<F
 
     private static class FlightCrewSchedulingXlsxWriter extends AbstractXlsxWriter<FlightCrewSolution> {
 
-        private static final Comparator<FlightAssignment> COMPARATOR =
-                Comparator.<FlightAssignment, LocalDateTime>comparing(a -> a.getFlight().getDepartureUTCDateTime())
-                        .thenComparing(a -> a.getFlight().getArrivalUTCDateTime())
-                        .thenComparingLong(FlightAssignment::getId);
+        private static final Comparator<FlightAssignment> COMPARATOR = Comparator
+                .<FlightAssignment, LocalDateTime> comparing(a -> a.getFlight().getDepartureUTCDateTime())
+                .thenComparing(a -> a.getFlight().getArrivalUTCDateTime())
+                .thenComparingLong(FlightAssignment::getId);
 
         public FlightCrewSchedulingXlsxWriter(FlightCrewSolution solution) {
             super(solution, FlightCrewSchedulingApp.SOLVER_CONFIG);
@@ -436,7 +436,8 @@ public class FlightCrewSchedulingXlsxFileIO extends AbstractXlsxSolutionFileIO<F
         private void writeTaxiTimeMaps() {
             nextSheet("Taxi time", 1, 1, false);
             nextRow();
-            nextHeaderCell("Driving time in minutes by taxi between two nearby airports to allow employees to start from a different airport.");
+            nextHeaderCell(
+                    "Driving time in minutes by taxi between two nearby airports to allow employees to start from a different airport.");
             currentSheet.addMergedRegion(new CellRangeAddress(currentRowNumber, currentRowNumber,
                     currentColumnNumber, currentColumnNumber + 20));
             List<Airport> airportList = solution.getAirportList();
@@ -480,7 +481,8 @@ public class FlightCrewSchedulingXlsxFileIO extends AbstractXlsxSolutionFileIO<F
                 nextRow();
                 nextCell().setCellValue(employee.getName());
                 nextCell().setCellValue(employee.getHomeAirport().getCode());
-                nextCell().setCellValue(String.join(", ", employee.getSkillSet().stream().map(Skill::getName).collect(toList())));
+                nextCell()
+                        .setCellValue(String.join(", ", employee.getSkillSet().stream().map(Skill::getName).collect(toList())));
                 for (LocalDate date = firstDate; date.compareTo(lastDate) <= 0; date = date.plusDays(1)) {
                     nextCell(employee.getUnavailableDaySet().contains(date) ? unavailableStyle : defaultStyle)
                             .setCellValue("");
@@ -559,19 +561,22 @@ public class FlightCrewSchedulingXlsxFileIO extends AbstractXlsxSolutionFileIO<F
                     employeeAssignmentList.sort(COMPARATOR);
                     for (LocalDate date = firstDate; date.compareTo(lastDate) <= 0; date = date.plusDays(1)) {
                         boolean unavailable = employee.getUnavailableDaySet().contains(date);
-                        Map<Integer, List<FlightAssignment>> hourToAssignmentListMap = extractHourToAssignmentListMap(employeeAssignmentList, date);
+                        Map<Integer, List<FlightAssignment>> hourToAssignmentListMap = extractHourToAssignmentListMap(
+                                employeeAssignmentList, date);
                         for (int departureHour = minimumHour; departureHour <= maximumHour; departureHour++) {
                             List<FlightAssignment> flightAssignmentList = hourToAssignmentListMap.get(departureHour);
                             if (flightAssignmentList != null && !flightAssignmentList.isEmpty()) {
-                                nextCell(unavailable ? unavailableStyle : defaultStyle).setCellValue(flightAssignmentList.stream()
-                                        .map(FlightAssignment::getFlight)
-                                        .map(flight -> flight.getDepartureAirport().getCode()
-                                                + MILITARY_TIME_FORMATTER.format(flight.getDepartureUTCTime())
-                                                + "→"
-                                                + flight.getArrivalAirport().getCode()
-                                                + MILITARY_TIME_FORMATTER.format(flight.getArrivalUTCTime()))
-                                        .collect(joining(", ")));
-                                int maxArrivalHour = flightAssignmentList.stream().map(a -> a.getFlight().getArrivalUTCTime().getHour())
+                                nextCell(unavailable ? unavailableStyle : defaultStyle)
+                                        .setCellValue(flightAssignmentList.stream()
+                                                .map(FlightAssignment::getFlight)
+                                                .map(flight -> flight.getDepartureAirport().getCode()
+                                                        + MILITARY_TIME_FORMATTER.format(flight.getDepartureUTCTime())
+                                                        + "→"
+                                                        + flight.getArrivalAirport().getCode()
+                                                        + MILITARY_TIME_FORMATTER.format(flight.getArrivalUTCTime()))
+                                                .collect(joining(", ")));
+                                int maxArrivalHour = flightAssignmentList.stream()
+                                        .map(a -> a.getFlight().getArrivalUTCTime().getHour())
                                         .max(Comparator.naturalOrder()).get();
                                 int stretch = maxArrivalHour - departureHour;
                                 currentSheet.addMergedRegion(new CellRangeAddress(currentRowNumber, currentRowNumber,

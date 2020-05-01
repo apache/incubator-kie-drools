@@ -19,8 +19,8 @@ package org.optaplanner.core.impl.solver.termination;
 import java.util.List;
 
 import org.optaplanner.core.impl.phase.scope.AbstractPhaseScope;
-import org.optaplanner.core.impl.solver.thread.ChildThreadType;
 import org.optaplanner.core.impl.solver.scope.DefaultSolverScope;
+import org.optaplanner.core.impl.solver.thread.ChildThreadType;
 
 public class OrCompositeTermination extends AbstractCompositeTermination {
 
@@ -71,6 +71,7 @@ public class OrCompositeTermination extends AbstractCompositeTermination {
     /**
      * Calculates the maximum timeGradient of all Terminations.
      * Not supported timeGradients (-1.0) are ignored.
+     * 
      * @param solverScope never null
      * @return the maximum timeGradient of the Terminations.
      */
@@ -89,6 +90,7 @@ public class OrCompositeTermination extends AbstractCompositeTermination {
     /**
      * Calculates the maximum timeGradient of all Terminations.
      * Not supported timeGradients (-1.0) are ignored.
+     * 
      * @param phaseScope never null
      * @return the maximum timeGradient of the Terminations.
      */

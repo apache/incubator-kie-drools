@@ -31,8 +31,6 @@ import java.util.List;
 import java.util.ListIterator;
 import java.util.Map;
 
-import com.thoughtworks.xstream.annotations.XStreamInclude;
-import com.thoughtworks.xstream.annotations.XStreamOmitField;
 import org.optaplanner.benchmark.impl.report.ReportHelper;
 import org.optaplanner.benchmark.impl.result.PlannerBenchmarkResult;
 import org.optaplanner.benchmark.impl.result.SingleBenchmarkResult;
@@ -41,6 +39,9 @@ import org.optaplanner.core.api.solver.Solver;
 import org.optaplanner.core.impl.score.definition.ScoreDefinition;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+import com.thoughtworks.xstream.annotations.XStreamInclude;
+import com.thoughtworks.xstream.annotations.XStreamOmitField;
 
 /**
  * 1 statistic of {@link SubSingleBenchmarkResult}.
@@ -75,6 +76,7 @@ public abstract class SubSingleStatistic<Solution_, StatisticPoint_ extends Stat
     public List<StatisticPoint_> getPointList() {
         return pointList;
     }
+
     public void setPointList(List<StatisticPoint_> pointList) {
         this.pointList = pointList;
     }
@@ -167,8 +169,8 @@ public abstract class SubSingleStatistic<Solution_, StatisticPoint_ extends Stat
                 // Some statistics (such as CONSTRAINT_MATCH_TOTAL_STEP_SCORE) contain the same String many times
                 // During generation those are all the same instance to save memory.
                 // During aggregation this code assures they are the same instance too
-                for (ListIterator<String> it = csvLine.listIterator(); it.hasNext(); ) {
-                    String token =  it.next();
+                for (ListIterator<String> it = csvLine.listIterator(); it.hasNext();) {
+                    String token = it.next();
                     if (token == null) {
                         continue;
                     }

@@ -49,7 +49,8 @@ public class TestdataVisibilityModifierSolution extends TestdataObject {
 
     private SimpleScore score;
 
-    private TestdataVisibilityModifierSolution() {}
+    private TestdataVisibilityModifierSolution() {
+    }
 
     public TestdataVisibilityModifierSolution(String code) {
         super(code);

@@ -19,10 +19,12 @@ package org.optaplanner.core.impl.testdata.domain.immovable.extended;
 import org.optaplanner.core.impl.heuristic.selector.common.decorator.SelectionFilter;
 import org.optaplanner.core.impl.score.director.ScoreDirector;
 
-public class TestdataExtendedImmovableEntityFilter implements SelectionFilter<TestdataExtendedImmovableSolution, TestdataExtendedImmovableEntity> {
+public class TestdataExtendedImmovableEntityFilter
+        implements SelectionFilter<TestdataExtendedImmovableSolution, TestdataExtendedImmovableEntity> {
 
     @Override
-    public boolean accept(ScoreDirector<TestdataExtendedImmovableSolution> scoreDirector, TestdataExtendedImmovableEntity entity) {
+    public boolean accept(ScoreDirector<TestdataExtendedImmovableSolution> scoreDirector,
+            TestdataExtendedImmovableEntity entity) {
         return !entity.isClosed();
     }
 

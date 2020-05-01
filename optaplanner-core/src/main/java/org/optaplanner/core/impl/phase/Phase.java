@@ -27,6 +27,7 @@ import org.optaplanner.core.impl.solver.scope.DefaultSolverScope;
 
 /**
  * A phase of a {@link Solver}.
+ * 
  * @param <Solution_> the solution type, the class with the {@link PlanningSolution} annotation
  * @see AbstractPhase
  */
@@ -34,6 +35,7 @@ public interface Phase<Solution_> extends PhaseLifecycleListener<Solution_> {
 
     /**
      * Used to make {@link DefaultSolver#addPhaseLifecycleListener(PhaseLifecycleListener)} work.
+     * 
      * @param solverPhaseLifecycleSupport never null
      */
     void setSolverPhaseLifecycleSupport(PhaseLifecycleSupport<Solution_> solverPhaseLifecycleSupport);
@@ -45,6 +47,7 @@ public interface Phase<Solution_> extends PhaseLifecycleListener<Solution_> {
      * (and the {@link PhaseLifecycleListener#solvingStarted(DefaultSolverScope)} solving} events too of course).
      * <p>
      * To get notified for all phases, use {@link DefaultSolver#addPhaseLifecycleListener(PhaseLifecycleListener)} instead.
+     * 
      * @param phaseLifecycleListener never null
      */
     void addPhaseLifecycleListener(PhaseLifecycleListener<Solution_> phaseLifecycleListener);

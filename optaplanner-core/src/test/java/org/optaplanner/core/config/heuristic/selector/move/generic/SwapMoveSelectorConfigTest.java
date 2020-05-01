@@ -16,6 +16,10 @@
 
 package org.optaplanner.core.config.heuristic.selector.move.generic;
 
+import static org.assertj.core.api.Assertions.assertThatIllegalArgumentException;
+import static org.junit.Assert.assertEquals;
+import static org.optaplanner.core.impl.testdata.util.PlannerAssert.*;
+
 import java.util.Arrays;
 
 import org.junit.jupiter.api.Test;
@@ -32,10 +36,6 @@ import org.optaplanner.core.impl.testdata.domain.multientity.TestdataHerdEntity;
 import org.optaplanner.core.impl.testdata.domain.multientity.TestdataLeadEntity;
 import org.optaplanner.core.impl.testdata.domain.multientity.TestdataMultiEntitySolution;
 import org.optaplanner.core.impl.testdata.domain.multivar.TestdataMultiVarSolution;
-
-import static org.assertj.core.api.Assertions.assertThatIllegalArgumentException;
-import static org.junit.Assert.assertEquals;
-import static org.optaplanner.core.impl.testdata.util.PlannerAssert.*;
 
 public class SwapMoveSelectorConfigTest extends AbstractSelectorConfigTest {
 

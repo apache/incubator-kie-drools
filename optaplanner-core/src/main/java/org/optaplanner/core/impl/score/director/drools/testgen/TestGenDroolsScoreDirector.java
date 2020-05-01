@@ -106,8 +106,8 @@ public class TestGenDroolsScoreDirector<Solution_> extends DroolsScoreDirector<S
         } catch (IllegalStateException e) {
             // catch corrupted VariableListener exception and create a minimal reproducing test
             if (e.getMessage().startsWith("Impossible")) {
-                TestGenCorruptedVariableListenerReproducer reproducer
-                        = new TestGenCorruptedVariableListenerReproducer(e.getMessage(), this);
+                TestGenCorruptedVariableListenerReproducer reproducer = new TestGenCorruptedVariableListenerReproducer(
+                        e.getMessage(), this);
                 // FIXME this is currently broken. The pruning needs to be smarter and not remove genuine variable
                 // updates that directly affect shadow variables in the last (corrupted) variable listeners update.
                 // If the genuine update is removed the shadow update obviously becomes inconsistent, which leads

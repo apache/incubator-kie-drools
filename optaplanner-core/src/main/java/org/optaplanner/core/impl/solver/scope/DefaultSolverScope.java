@@ -27,8 +27,8 @@ import org.optaplanner.core.impl.domain.solution.descriptor.SolutionDescriptor;
 import org.optaplanner.core.impl.phase.scope.AbstractPhaseScope;
 import org.optaplanner.core.impl.score.definition.ScoreDefinition;
 import org.optaplanner.core.impl.score.director.InnerScoreDirector;
-import org.optaplanner.core.impl.solver.thread.ChildThreadType;
 import org.optaplanner.core.impl.solver.termination.Termination;
+import org.optaplanner.core.impl.solver.thread.ChildThreadType;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -152,6 +152,7 @@ public class DefaultSolverScope<Solution_> {
     /**
      * The {@link PlanningSolution best solution} must never be the same instance
      * as the {@link PlanningSolution working solution}, it should be a (un)changed clone.
+     * 
      * @param bestSolution never null
      */
     public void setBestSolution(Solution_ bestSolution) {

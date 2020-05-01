@@ -45,8 +45,7 @@ import org.optaplanner.persistence.xstream.impl.domain.solution.XStreamSolutionF
  */
 public class NQueensApp extends CommonApp<NQueens> {
 
-    public static final String SOLVER_CONFIG
-            = "org/optaplanner/examples/nqueens/solver/nqueensSolverConfig.xml";
+    public static final String SOLVER_CONFIG = "org/optaplanner/examples/nqueens/solver/nqueensSolverConfig.xml";
 
     public static final String DATA_DIR_NAME = "nqueens";
 
@@ -70,6 +69,7 @@ public class NQueensApp extends CommonApp<NQueens> {
 
     /**
      * Normal way to create a {@link Solver}.
+     * 
      * @return never null
      */
     protected SolverFactory<NQueens> createSolverFactoryByXml() {
@@ -80,13 +80,14 @@ public class NQueensApp extends CommonApp<NQueens> {
      * Unused alternative. A way to create a {@link Solver} without using XML.
      * <p>
      * It is recommended to use {@link #createSolverFactoryByXml()} instead.
+     * 
      * @return never null
      */
     protected SolverFactory<NQueens> createSolverFactoryByApi() {
         SolverConfig solverConfig = new SolverConfig();
 
         solverConfig.setSolutionClass(NQueens.class);
-        solverConfig.setEntityClassList(Collections.<Class<?>>singletonList(Queen.class));
+        solverConfig.setEntityClassList(Collections.<Class<?>> singletonList(Queen.class));
 
         ScoreDirectorFactoryConfig scoreDirectorFactoryConfig = new ScoreDirectorFactoryConfig();
         scoreDirectorFactoryConfig.setScoreDrlList(

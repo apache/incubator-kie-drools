@@ -25,6 +25,7 @@ import org.slf4j.LoggerFactory;
 
 /**
  * Abstract superclass for {@link EntityPlacer}.
+ * 
  * @see EntityPlacer
  */
 public abstract class AbstractEntityPlacer {

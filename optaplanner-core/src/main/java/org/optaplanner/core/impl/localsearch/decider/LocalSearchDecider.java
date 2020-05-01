@@ -130,11 +130,11 @@ public class LocalSearchDecider<Solution_> {
     protected void doMove(LocalSearchMoveScope<Solution_> moveScope) {
         InnerScoreDirector<Solution_> scoreDirector = moveScope.getScoreDirector();
         scoreDirector.doAndProcessMove(moveScope.getMove(), assertMoveScoreFromScratch, score -> {
-                    moveScope.setScore(score);
-                    boolean accepted = acceptor.isAccepted(moveScope);
-                    moveScope.setAccepted(accepted);
-                    forager.addMove(moveScope);
-                });
+            moveScope.setScore(score);
+            boolean accepted = acceptor.isAccepted(moveScope);
+            moveScope.setAccepted(accepted);
+            forager.addMove(moveScope);
+        });
         if (assertExpectedUndoMoveScore) {
             scoreDirector.assertExpectedUndoMoveScore(moveScope.getMove(),
                     moveScope.getStepScope().getPhaseScope().getLastCompletedStepScope().getScore());

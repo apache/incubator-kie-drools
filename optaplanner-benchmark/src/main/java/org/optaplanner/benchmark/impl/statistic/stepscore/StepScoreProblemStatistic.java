@@ -23,7 +23,6 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
 
-import com.thoughtworks.xstream.annotations.XStreamAlias;
 import org.jfree.chart.JFreeChart;
 import org.jfree.chart.axis.NumberAxis;
 import org.jfree.chart.plot.PlotOrientation;
@@ -42,6 +41,8 @@ import org.optaplanner.benchmark.impl.statistic.ProblemStatistic;
 import org.optaplanner.benchmark.impl.statistic.SubSingleStatistic;
 import org.optaplanner.benchmark.impl.statistic.common.MillisecondsSpentNumberFormat;
 import org.optaplanner.core.impl.score.ScoreUtils;
+
+import com.thoughtworks.xstream.annotations.XStreamAlias;
 
 @XStreamAlias("stepScoreProblemStatistic")
 public class StepScoreProblemStatistic extends ProblemStatistic {
@@ -78,8 +79,8 @@ public class StepScoreProblemStatistic extends ProblemStatistic {
             // No direct ascending lines between 2 points, but a stepping line instead
             XYItemRenderer renderer = new XYStepRenderer();
             if (singleBenchmarkResult.hasAllSuccess()) {
-                StepScoreSubSingleStatistic subSingleStatistic = (StepScoreSubSingleStatistic)
-                        singleBenchmarkResult.getSubSingleStatistic(problemStatisticType);
+                StepScoreSubSingleStatistic subSingleStatistic = (StepScoreSubSingleStatistic) singleBenchmarkResult
+                        .getSubSingleStatistic(problemStatisticType);
                 List<StepScoreStatisticPoint> points = subSingleStatistic.getPointList();
                 for (StepScoreStatisticPoint point : points) {
                     if (!point.getScore().isSolutionInitialized()) {

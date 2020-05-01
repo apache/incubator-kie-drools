@@ -94,7 +94,7 @@ public final class BavetFromUniNode<A> extends BavetAbstractUniNode<A> {
 
     @Override
     public String toString() {
-        return "From(" + fromClass.getSimpleName() + ") with " + childNodeList.size()  + " children";
+        return "From(" + fromClass.getSimpleName() + ") with " + childNodeList.size() + " children";
     }
 
     // ************************************************************************

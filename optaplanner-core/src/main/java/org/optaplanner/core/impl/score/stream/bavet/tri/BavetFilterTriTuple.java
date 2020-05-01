@@ -39,7 +39,7 @@ public final class BavetFilterTriTuple<A, B, C> extends BavetAbstractTriTuple<A,
 
     @Override
     public String toString() {
-        return "Filter(" + getFactsString() + ") with " + childTupleList.size()  + " children";
+        return "Filter(" + getFactsString() + ") with " + childTupleList.size() + " children";
     }
 
     // ************************************************************************

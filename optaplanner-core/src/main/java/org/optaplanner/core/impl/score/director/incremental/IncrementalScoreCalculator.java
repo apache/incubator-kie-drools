@@ -28,6 +28,7 @@ import org.optaplanner.core.impl.score.director.easy.EasyScoreCalculator;
  * This is much faster than {@link EasyScoreCalculator} but requires much more code to implement too.
  * <p>
  * Any implementation is naturally stateful.
+ * 
  * @param <Solution_> the solution type, the class with the {@link PlanningSolution} annotation
  * @see IncrementalScoreDirector
  */
@@ -36,6 +37,7 @@ public interface IncrementalScoreCalculator<Solution_> {
     /**
      * There are no {@link #beforeEntityAdded(Object)} and {@link #afterEntityAdded(Object)} calls
      * for entities that are already present in the workingSolution.
+     * 
      * @param workingSolution never null
      */
     void resetWorkingSolution(Solution_ workingSolution);
@@ -66,6 +68,7 @@ public interface IncrementalScoreCalculator<Solution_> {
      * @param entity never null, an instance of a {@link PlanningEntity} class
      */
     void beforeEntityRemoved(Object entity);
+
     /**
      * @param entity never null, an instance of a {@link PlanningEntity} class
      */
@@ -74,6 +77,7 @@ public interface IncrementalScoreCalculator<Solution_> {
     /**
      * This method is only called if the {@link Score} cannot be predicted.
      * The {@link Score} can be predicted for example after an undo {@link Move}.
+     * 
      * @return never null
      */
     Score calculateScore();

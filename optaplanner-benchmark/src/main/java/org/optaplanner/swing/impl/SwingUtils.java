@@ -16,9 +16,12 @@
 
 package org.optaplanner.swing.impl;
 
+import static org.optaplanner.swing.impl.TangoColorFactory.*;
+
 import java.awt.Color;
 import java.awt.Insets;
 import java.util.Enumeration;
+
 import javax.swing.JButton;
 import javax.swing.UIDefaults;
 import javax.swing.UIManager;
@@ -27,8 +30,6 @@ import javax.swing.plaf.FontUIResource;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-
-import static org.optaplanner.swing.impl.TangoColorFactory.*;
 
 public class SwingUtils {
 
@@ -44,7 +45,7 @@ public class SwingUtils {
     public static void fixateLookAndFeel() {
         configureNimbusToTangoColors();
         configureLookAndFeel("Nimbus");
-//        increaseDefaultFont(1.5F);
+        //        increaseDefaultFont(1.5F);
     }
 
     protected static void configureNimbusToTangoColors() {

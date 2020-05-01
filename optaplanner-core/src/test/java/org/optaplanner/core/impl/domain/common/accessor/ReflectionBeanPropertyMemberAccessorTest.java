@@ -16,12 +16,12 @@
 
 package org.optaplanner.core.impl.domain.common.accessor;
 
+import static org.junit.Assert.*;
+
 import org.junit.jupiter.api.Test;
 import org.optaplanner.core.api.domain.variable.PlanningVariable;
 import org.optaplanner.core.impl.testdata.domain.TestdataEntity;
 import org.optaplanner.core.impl.testdata.domain.TestdataValue;
-
-import static org.junit.Assert.*;
 
 public class ReflectionBeanPropertyMemberAccessorTest {
 

@@ -24,7 +24,7 @@ import org.optaplanner.core.impl.score.stream.drools.common.DroolsAbstractGroupB
 import org.optaplanner.core.impl.score.stream.drools.common.DroolsAbstractGroupByInvoker;
 
 public class DroolsUniToTriGroupByInvoker<A, NewA, NewB, NewC>
-    extends DroolsAbstractGroupByInvoker<A> {
+        extends DroolsAbstractGroupByInvoker<A> {
 
     private final UniConstraintCollector<A, ?, NewC> collector;
     private final Function<A, NewA> groupKeyAMapping;

@@ -47,28 +47,29 @@ public class OptaPlannerJsonbConfig {
     public static JsonbConfig createConfig() {
         JsonbConfig config = new JsonbConfig()
                 .withAdapters(new BendableScoreJsonbAdapter(),
-                              new BendableBigDecimalScoreJsonbAdapter(),
-                              new BendableLongScoreJsonbAdapter(),
-                              new HardMediumSoftScoreJsonbAdapter(),
-                              new HardMediumSoftBigDecimalScoreJsonbAdapter(),
-                              new HardMediumSoftLongScoreJsonbAdapter(),
-                              new HardSoftScoreJsonbAdapter(),
-                              new HardSoftBigDecimalScoreJsonbAdapter(),
-                              new HardSoftDoubleScoreJsonbAdapter(),
-                              new HardSoftLongScoreJsonbAdapter(),
-                              new SimpleScoreJsonbAdapter(),
-                              new SimpleBigDecimalScoreJsonbAdapter(),
-                              new SimpleDoubleScoreJsonbAdapter(),
-                              new SimpleLongScoreJsonbAdapter());
+                        new BendableBigDecimalScoreJsonbAdapter(),
+                        new BendableLongScoreJsonbAdapter(),
+                        new HardMediumSoftScoreJsonbAdapter(),
+                        new HardMediumSoftBigDecimalScoreJsonbAdapter(),
+                        new HardMediumSoftLongScoreJsonbAdapter(),
+                        new HardSoftScoreJsonbAdapter(),
+                        new HardSoftBigDecimalScoreJsonbAdapter(),
+                        new HardSoftDoubleScoreJsonbAdapter(),
+                        new HardSoftLongScoreJsonbAdapter(),
+                        new SimpleScoreJsonbAdapter(),
+                        new SimpleBigDecimalScoreJsonbAdapter(),
+                        new SimpleDoubleScoreJsonbAdapter(),
+                        new SimpleLongScoreJsonbAdapter());
 
         return config;
     }
 
     /**
-     * @return never null, use it to customize a {@link JsonbConfig} instance with {@link JsonbConfig#withAdapters(JsonbAdapter[])}.
+     * @return never null, use it to customize a {@link JsonbConfig} instance with
+     *         {@link JsonbConfig#withAdapters(JsonbAdapter[])}.
      */
     public static JsonbAdapter[] getScoreJsonbAdapters() {
-        return new JsonbAdapter[]{
+        return new JsonbAdapter[] {
                 new BendableScoreJsonbAdapter(),
                 new BendableBigDecimalScoreJsonbAdapter(),
                 new BendableLongScoreJsonbAdapter(),
@@ -82,6 +83,6 @@ public class OptaPlannerJsonbConfig {
                 new SimpleScoreJsonbAdapter(),
                 new SimpleBigDecimalScoreJsonbAdapter(),
                 new SimpleDoubleScoreJsonbAdapter(),
-                new SimpleLongScoreJsonbAdapter()};
+                new SimpleLongScoreJsonbAdapter() };
     }
 }

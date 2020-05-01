@@ -71,9 +71,9 @@ public class TestdataManyToManyShadowedEntity extends TestdataObject {
         this.secondaryValue = secondaryValue;
     }
 
-    @CustomShadowVariable(variableListenerClass = ComposedValuesUpdatingVariableListener.class,
-            sources = {@PlanningVariableReference(variableName = "primaryValue"),
-                    @PlanningVariableReference(variableName = "secondaryValue")})
+    @CustomShadowVariable(variableListenerClass = ComposedValuesUpdatingVariableListener.class, sources = {
+            @PlanningVariableReference(variableName = "primaryValue"),
+            @PlanningVariableReference(variableName = "secondaryValue") })
     public String getComposedCode() {
         return composedCode;
     }
@@ -99,7 +99,8 @@ public class TestdataManyToManyShadowedEntity extends TestdataObject {
     // Static inner classes
     // ************************************************************************
 
-    public static class ComposedValuesUpdatingVariableListener extends VariableListenerAdapter<TestdataManyToManyShadowedEntity> {
+    public static class ComposedValuesUpdatingVariableListener
+            extends VariableListenerAdapter<TestdataManyToManyShadowedEntity> {
 
         @Override
         public void afterEntityAdded(ScoreDirector scoreDirector, TestdataManyToManyShadowedEntity entity) {

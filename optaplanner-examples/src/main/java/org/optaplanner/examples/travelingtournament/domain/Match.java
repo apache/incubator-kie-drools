@@ -16,10 +16,11 @@
 
 package org.optaplanner.examples.travelingtournament.domain;
 
-import com.thoughtworks.xstream.annotations.XStreamAlias;
 import org.optaplanner.core.api.domain.entity.PlanningEntity;
 import org.optaplanner.core.api.domain.variable.PlanningVariable;
 import org.optaplanner.examples.common.domain.AbstractPersistable;
+
+import com.thoughtworks.xstream.annotations.XStreamAlias;
 
 @PlanningEntity
 @XStreamAlias("TtpMatch")
@@ -46,7 +47,7 @@ public class Match extends AbstractPersistable {
         this.awayTeam = awayTeam;
     }
 
-    @PlanningVariable(valueRangeProviderRefs = {"dayRange"})
+    @PlanningVariable(valueRangeProviderRefs = { "dayRange" })
     public Day getDay() {
         return day;
     }

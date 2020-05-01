@@ -24,7 +24,7 @@ import java.util.function.Function;
  *
  * @param <K> the parameter of the calculation
  * @param <V> the result of the calculation
- * */
+ */
 public final class ConcurrentMemoization<K, V> extends ConcurrentHashMap<K, V> {
 
     /**

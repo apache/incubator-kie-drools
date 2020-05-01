@@ -16,17 +16,17 @@
 
 package org.optaplanner.examples.curriculumcourse.domain.solver;
 
+import static com.google.common.base.Functions.identity;
+import static java.util.Collections.reverseOrder;
+import static java.util.Comparator.comparing;
+import static java.util.Comparator.comparingInt;
+
 import java.util.Comparator;
 
 import org.optaplanner.core.impl.heuristic.selector.common.decorator.SelectionSorterWeightFactory;
 import org.optaplanner.examples.curriculumcourse.domain.CourseSchedule;
 import org.optaplanner.examples.curriculumcourse.domain.Period;
 import org.optaplanner.examples.curriculumcourse.domain.UnavailablePeriodPenalty;
-
-import static com.google.common.base.Functions.identity;
-import static java.util.Collections.reverseOrder;
-import static java.util.Comparator.comparing;
-import static java.util.Comparator.comparingInt;
 
 public class PeriodStrengthWeightFactory implements SelectionSorterWeightFactory<CourseSchedule, Period> {
 
@@ -44,8 +44,8 @@ public class PeriodStrengthWeightFactory implements SelectionSorterWeightFactory
     public static class PeriodStrengthWeight implements Comparable<PeriodStrengthWeight> {
 
         // The higher unavailablePeriodPenaltyCount, the weaker
-        private static final Comparator<PeriodStrengthWeight> BASE_COMPARATOR =
-                reverseOrder(comparingInt((PeriodStrengthWeight w) -> w.unavailablePeriodPenaltyCount));
+        private static final Comparator<PeriodStrengthWeight> BASE_COMPARATOR = reverseOrder(
+                comparingInt((PeriodStrengthWeight w) -> w.unavailablePeriodPenaltyCount));
         private static final Comparator<Period> PERIOD_COMPARATOR = comparingInt((Period p) -> p.getDay().getDayIndex())
                 .thenComparingInt(p -> p.getTimeslot().getTimeslotIndex())
                 .thenComparingLong(Period::getId);

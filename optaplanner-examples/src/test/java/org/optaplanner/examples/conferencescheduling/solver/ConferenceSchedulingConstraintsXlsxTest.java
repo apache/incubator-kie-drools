@@ -16,6 +16,9 @@
 
 package org.optaplanner.examples.conferencescheduling.solver;
 
+import static org.optaplanner.examples.common.persistence.AbstractXlsxSolutionFileIO.DAY_FORMATTER;
+import static org.optaplanner.examples.common.persistence.AbstractXlsxSolutionFileIO.TIME_FORMATTER;
+
 import java.io.BufferedInputStream;
 import java.io.File;
 import java.io.FileInputStream;
@@ -53,9 +56,6 @@ import org.optaplanner.examples.conferencescheduling.domain.Timeslot;
 import org.optaplanner.examples.conferencescheduling.persistence.ConferenceSchedulingXlsxFileIO;
 import org.optaplanner.test.impl.score.buildin.hardmediumsoft.HardMediumSoftScoreVerifier;
 
-import static org.optaplanner.examples.common.persistence.AbstractXlsxSolutionFileIO.DAY_FORMATTER;
-import static org.optaplanner.examples.common.persistence.AbstractXlsxSolutionFileIO.TIME_FORMATTER;
-
 public class ConferenceSchedulingConstraintsXlsxTest {
 
     public static Collection<Object[]> testSheetParameters() {
@@ -63,12 +63,12 @@ public class ConferenceSchedulingConstraintsXlsxTest {
         try (InputStream in = new BufferedInputStream(new FileInputStream(testFile))) {
             XSSFWorkbook workbook = new XSSFWorkbook(in);
             ConferenceSolution initialSolution = new ConferenceSchedulingXlsxFileIO(false).read(testFile);
-            TestConferenceSchedulingConstraintsReader reader = new TestConferenceSchedulingConstraintsReader(workbook, initialSolution);
+            TestConferenceSchedulingConstraintsReader reader = new TestConferenceSchedulingConstraintsReader(workbook,
+                    initialSolution);
 
             List<Object[]> parametersList = new ArrayList<>();
-            for (Object[] parameters = reader.nextTestSheetParameters();
-                    parameters != null;
-                    parameters = reader.nextTestSheetParameters()) {
+            for (Object[] parameters = reader.nextTestSheetParameters(); parameters != null; parameters = reader
+                    .nextTestSheetParameters()) {
                 parametersList.add(parameters);
             }
             return parametersList;
@@ -92,11 +92,12 @@ public class ConferenceSchedulingConstraintsXlsxTest {
         scoreVerifier.assertSoftWeight(constraintPackage, constraintName, expectedScore.getSoftScore(), solution);
     }
 
-    private static class TestConferenceSchedulingConstraintsReader extends AbstractXlsxSolutionFileIO.AbstractXlsxReader<ConferenceSolution> {
+    private static class TestConferenceSchedulingConstraintsReader
+            extends AbstractXlsxSolutionFileIO.AbstractXlsxReader<ConferenceSolution> {
 
         // TODO Abstract out, mention ConferenceSchedulingApp.SOLVER_CONFIG once and get the solutionDescriptor from there
-        private final SolutionDescriptor<ConferenceSolution> solutionDescriptor
-                = SolutionDescriptor.buildSolutionDescriptor(ConferenceSolution.class, Talk.class);
+        private final SolutionDescriptor<ConferenceSolution> solutionDescriptor = SolutionDescriptor
+                .buildSolutionDescriptor(ConferenceSolution.class, Talk.class);
         private final ConferenceSolution initialSolution;
 
         private int numberOfSheets, currentTestSheetIndex;
@@ -140,8 +141,8 @@ public class ConferenceSchedulingConstraintsXlsxTest {
             nextRow(false);
             readHeaderCell("Constraint name");
             String constraintName = nextStringCell().getStringCellValue();
-            ConstraintWeightDescriptor<ConferenceSolution> constraintWeightDescriptor
-                    = solutionDescriptor.getConstraintConfigurationDescriptor()
+            ConstraintWeightDescriptor<ConferenceSolution> constraintWeightDescriptor = solutionDescriptor
+                    .getConstraintConfigurationDescriptor()
                     .findConstraintWeightDescriptor(constraintPackage, constraintName);
             if (constraintWeightDescriptor == null) {
                 throw new IllegalStateException(currentPosition() + ": There is no @"
@@ -161,7 +162,8 @@ public class ConferenceSchedulingConstraintsXlsxTest {
             int weightMultiplier = (int) weightMultiplierDouble;
 
             ConferenceSolution solution = solutionDescriptor.getSolutionCloner().cloneSolution(initialSolution);
-            HardMediumSoftScore constraintScore = (HardMediumSoftScore) constraintWeightDescriptor.createExtractor().apply(solution);
+            HardMediumSoftScore constraintScore = (HardMediumSoftScore) constraintWeightDescriptor.createExtractor()
+                    .apply(solution);
             if (constraintScore.equals(HardMediumSoftScore.ZERO)) {
                 throw new IllegalStateException(currentPosition() + ": The constraintScore (" + constraintScore
                         + ") of the @" + ConstraintWeight.class.getSimpleName()
@@ -220,7 +222,7 @@ public class ConferenceSchedulingConstraintsXlsxTest {
                 }
             }
 
-            return new Object[]{constraintPackage, constraintName, expectedScore, solution, testSheetName};
+            return new Object[] { constraintPackage, constraintName, expectedScore, solution, testSheetName };
         }
 
         private void readTimeslotDays() {
@@ -252,12 +254,15 @@ public class ConferenceSchedulingConstraintsXlsxTest {
                             try {
                                 columnIndexToStartTimeMap.put(cell.getColumnIndex(),
                                         LocalTime.parse(startAndEndTimeStringArray[0], TIME_FORMATTER));
-                                columnIndexToEndTimeMap.put(cell.getColumnIndex(), LocalTime.parse(startAndEndTimeStringArray[1],
-                                        TIME_FORMATTER));
+                                columnIndexToEndTimeMap.put(cell.getColumnIndex(),
+                                        LocalTime.parse(startAndEndTimeStringArray[1],
+                                                TIME_FORMATTER));
                             } catch (DateTimeParseException e) {
-                                throw new IllegalStateException(currentPosition() + ": The startTime (" + startAndEndTimeStringArray[0]
-                                        + ") or endTime (" + startAndEndTimeStringArray[1]
-                                        + ") doesn't parse as a time.", e);
+                                throw new IllegalStateException(
+                                        currentPosition() + ": The startTime (" + startAndEndTimeStringArray[0]
+                                                + ") or endTime (" + startAndEndTimeStringArray[1]
+                                                + ") doesn't parse as a time.",
+                                        e);
                             }
                         }
                     });

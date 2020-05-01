@@ -81,7 +81,8 @@ public class KOptMove<Solution_> extends AbstractMove<Solution_> {
         Object formerValue = firstValue;
         for (Object value : values) {
             Object anchor = variableDescriptor.isValuePotentialAnchor(value)
-                    ? value : anchorVariableSupply.getAnchor(value);
+                    ? value
+                    : anchorVariableSupply.getAnchor(value);
             if (anchor == formerAnchor && compareValuesInSameChain(formerValue, value) >= 0) {
                 return false;
             }
@@ -138,9 +139,9 @@ public class KOptMove<Solution_> extends AbstractMove<Solution_> {
     @Override
     public KOptMove<Solution_> rebase(ScoreDirector<Solution_> destinationScoreDirector) {
         throw new UnsupportedOperationException("https://issues.redhat.com/browse/PLANNER-1250"); // TODO test also disabled
-//        return new KOptMove<>(variableDescriptor, inverseVariableSupply, anchorVariableSupply,
-//                destinationScoreDirector.lookUpWorkingObject(entity),
-//                rebaseArray(values, destinationScoreDirector));
+        //        return new KOptMove<>(variableDescriptor, inverseVariableSupply, anchorVariableSupply,
+        //                destinationScoreDirector.lookUpWorkingObject(entity),
+        //                rebaseArray(values, destinationScoreDirector));
     }
 
     // ************************************************************************

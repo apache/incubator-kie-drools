@@ -26,11 +26,11 @@ import java.util.Deque;
 import java.util.List;
 
 import org.drools.compiler.compiler.io.File;
-import org.drools.compiler.compiler.io.Folder;
 import org.drools.compiler.compiler.io.FileSystemItem;
+import org.drools.compiler.compiler.io.Folder;
 import org.drools.compiler.compiler.io.memory.MemoryFileSystem;
-import org.drools.core.impl.InternalKieContainer;
 import org.drools.compiler.kie.builder.impl.MemoryKieModule;
+import org.drools.core.impl.InternalKieContainer;
 import org.kie.api.builder.KieModule;
 import org.kie.api.runtime.KieContainer;
 import org.reflections.vfs.Vfs;

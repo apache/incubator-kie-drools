@@ -25,6 +25,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+
 import javax.swing.AbstractAction;
 import javax.swing.BorderFactory;
 import javax.swing.BoxLayout;
@@ -89,8 +90,8 @@ public class DinnerPartyPanel extends SolutionPanel<DinnerParty> {
         maleImageIconList = new ArrayList<>(MALE_FEMALE_ICON_VARIATION);
         femaleImageIconList = new ArrayList<>(MALE_FEMALE_ICON_VARIATION);
         for (int i = 0; i < MALE_FEMALE_ICON_VARIATION; i++) {
-             maleImageIconList.add(new ImageIcon(getClass().getResource("guestMale" + i + ".png")));
-             femaleImageIconList.add(new ImageIcon(getClass().getResource("guestFemale" + i + ".png")));
+            maleImageIconList.add(new ImageIcon(getClass().getResource("guestMale" + i + ".png")));
+            femaleImageIconList.add(new ImageIcon(getClass().getResource("guestFemale" + i + ".png")));
         }
     }
 
@@ -108,8 +109,7 @@ public class DinnerPartyPanel extends SolutionPanel<DinnerParty> {
             JPanel tablePanel = new JPanel(new GridLayout(0, edgeLength));
             tablePanel.setBorder(BorderFactory.createCompoundBorder(
                     BorderFactory.createEmptyBorder(5, 5, 5, 5),
-                    BorderFactory.createTitledBorder("Table " + table.getTableIndex())
-            ));
+                    BorderFactory.createTitledBorder("Table " + table.getTableIndex())));
             add(tablePanel);
             for (int y = 0; y < edgeLength; y++) {
                 for (int x = 0; x < edgeLength; x++) {

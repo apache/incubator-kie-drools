@@ -23,9 +23,6 @@ import java.util.Comparator;
 import java.util.Iterator;
 import java.util.List;
 
-import com.thoughtworks.xstream.annotations.XStreamAlias;
-import com.thoughtworks.xstream.annotations.XStreamImplicit;
-import com.thoughtworks.xstream.annotations.XStreamOmitField;
 import org.optaplanner.benchmark.config.statistic.ProblemStatisticType;
 import org.optaplanner.benchmark.impl.measurement.ScoreDifferencePercentage;
 import org.optaplanner.benchmark.impl.ranking.ScoreSubSingleBenchmarkRankingComparator;
@@ -39,6 +36,10 @@ import org.optaplanner.core.api.solver.Solver;
 import org.optaplanner.core.config.util.ConfigUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+import com.thoughtworks.xstream.annotations.XStreamAlias;
+import com.thoughtworks.xstream.annotations.XStreamImplicit;
+import com.thoughtworks.xstream.annotations.XStreamOmitField;
 
 /**
  * Represents 1 benchmark for 1 {@link Solver} configuration for 1 problem instance (data set).
@@ -323,13 +324,15 @@ public class SingleBenchmarkResult implements BenchmarkResult {
             subSingleBenchmarkResult.accumulateResults(benchmarkReport);
         }
         determineTotalsAndAveragesAndRanking();
-        standardDeviationDoubles = StatisticUtils.determineStandardDeviationDoubles(subSingleBenchmarkResultList, averageScore, getSuccessCount());
+        standardDeviationDoubles = StatisticUtils.determineStandardDeviationDoubles(subSingleBenchmarkResultList, averageScore,
+                getSuccessCount());
         determineRepresentativeSubSingleBenchmarkResult();
     }
 
     private void determineRepresentativeSubSingleBenchmarkResult() {
         if (subSingleBenchmarkResultList == null || subSingleBenchmarkResultList.isEmpty()) {
-            throw new IllegalStateException("Cannot get representative subSingleBenchmarkResult from empty subSingleBenchmarkResultList.");
+            throw new IllegalStateException(
+                    "Cannot get representative subSingleBenchmarkResult from empty subSingleBenchmarkResultList.");
         }
         List<SubSingleBenchmarkResult> subSingleBenchmarkResultListCopy = new ArrayList<>(subSingleBenchmarkResultList);
         // sort (according to ranking) so that the best subSingle is at index 0
@@ -350,7 +353,7 @@ public class SingleBenchmarkResult implements BenchmarkResult {
         infeasibleScoreCount = 0;
         List<SubSingleBenchmarkResult> successResultList = new ArrayList<>(subSingleBenchmarkResultList);
         // Do not rank a SubSingleBenchmarkResult that has a failure
-        for (Iterator<SubSingleBenchmarkResult> it = successResultList.iterator(); it.hasNext(); ) {
+        for (Iterator<SubSingleBenchmarkResult> it = successResultList.iterator(); it.hasNext();) {
             SubSingleBenchmarkResult subSingleBenchmarkResult = it.next();
             if (subSingleBenchmarkResult.hasAnyFailure()) {
                 failureCount++;
@@ -383,7 +386,8 @@ public class SingleBenchmarkResult implements BenchmarkResult {
         int previousSameRankingCount = 0;
         for (SubSingleBenchmarkResult subSingleBenchmarkResult : rankedSubSingleBenchmarkResultList) {
             if (previousSubSingleBenchmarkResult != null
-                    && subSingleBenchmarkRankingComparator.compare(previousSubSingleBenchmarkResult, subSingleBenchmarkResult) != 0) {
+                    && subSingleBenchmarkRankingComparator.compare(previousSubSingleBenchmarkResult,
+                            subSingleBenchmarkResult) != 0) {
                 ranking += previousSameRankingCount;
                 previousSameRankingCount = 0;
             }

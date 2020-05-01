@@ -18,13 +18,14 @@ package org.optaplanner.examples.curriculumcourse.domain;
 
 import java.util.List;
 
-import com.thoughtworks.xstream.annotations.XStreamAlias;
 import org.optaplanner.examples.common.domain.AbstractPersistable;
+
+import com.thoughtworks.xstream.annotations.XStreamAlias;
 
 @XStreamAlias("Day")
 public class Day extends AbstractPersistable {
 
-    private static final String[] WEEKDAYS = {"Mo", "Tu", "We", "Th", "Fr", "Sat", "Sun"};
+    private static final String[] WEEKDAYS = { "Mo", "Tu", "We", "Th", "Fr", "Sat", "Sun" };
 
     private int dayIndex;
 

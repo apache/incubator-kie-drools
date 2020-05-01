@@ -15,6 +15,12 @@
  */
 package org.optaplanner.core.impl.domain.valuerange.buildin.temporal;
 
+import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
+import static org.assertj.core.api.Assertions.assertThatIllegalArgumentException;
+import static org.junit.Assert.*;
+import static org.mockito.Mockito.*;
+import static org.optaplanner.core.impl.testdata.util.PlannerAssert.*;
+
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
@@ -26,12 +32,6 @@ import java.util.Iterator;
 import java.util.Random;
 
 import org.junit.jupiter.api.Test;
-
-import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
-import static org.assertj.core.api.Assertions.assertThatIllegalArgumentException;
-import static org.junit.Assert.*;
-import static org.mockito.Mockito.*;
-import static org.optaplanner.core.impl.testdata.util.PlannerAssert.*;
 
 public class TemporalValueRangeTest {
 
@@ -140,33 +140,48 @@ public class TemporalValueRangeTest {
     public void getForLocalDateTime() {
         LocalDateTime fromTime = LocalDateTime.of(2016, 1, 1, 1, 1, 1);
         LocalDateTime toTime = LocalDateTime.of(2016, 7, 7, 7, 7, 7);
-        assertEquals(LocalDateTime.of(2016, 1, 1, 1, 1, 1), new TemporalValueRange<>(fromTime, toTime, 1, ChronoUnit.SECONDS).get(0));
-        assertEquals(LocalDateTime.of(2016, 1, 1, 1, 1, 2), new TemporalValueRange<>(fromTime, toTime, 1, ChronoUnit.SECONDS).get(1));
-        assertEquals(LocalDateTime.of(2016, 7, 7, 7, 7, 6), new TemporalValueRange<>(fromTime, toTime, 1, ChronoUnit.SECONDS).get(16265165));
+        assertEquals(LocalDateTime.of(2016, 1, 1, 1, 1, 1),
+                new TemporalValueRange<>(fromTime, toTime, 1, ChronoUnit.SECONDS).get(0));
+        assertEquals(LocalDateTime.of(2016, 1, 1, 1, 1, 2),
+                new TemporalValueRange<>(fromTime, toTime, 1, ChronoUnit.SECONDS).get(1));
+        assertEquals(LocalDateTime.of(2016, 7, 7, 7, 7, 6),
+                new TemporalValueRange<>(fromTime, toTime, 1, ChronoUnit.SECONDS).get(16265165));
 
         fromTime = LocalDateTime.of(2016, 1, 1, 1, 1, 1);
         toTime = LocalDateTime.of(2016, 7, 7, 7, 7, 1);
-        assertEquals(LocalDateTime.of(2016, 1, 1, 1, 1, 1), new TemporalValueRange<>(fromTime, toTime, 1, ChronoUnit.MINUTES).get(0));
-        assertEquals(LocalDateTime.of(2016, 1, 1, 1, 2, 1), new TemporalValueRange<>(fromTime, toTime, 1, ChronoUnit.MINUTES).get(1));
-        assertEquals(LocalDateTime.of(2016, 7, 7, 7, 6, 1), new TemporalValueRange<>(fromTime, toTime, 1, ChronoUnit.MINUTES).get(271085));
+        assertEquals(LocalDateTime.of(2016, 1, 1, 1, 1, 1),
+                new TemporalValueRange<>(fromTime, toTime, 1, ChronoUnit.MINUTES).get(0));
+        assertEquals(LocalDateTime.of(2016, 1, 1, 1, 2, 1),
+                new TemporalValueRange<>(fromTime, toTime, 1, ChronoUnit.MINUTES).get(1));
+        assertEquals(LocalDateTime.of(2016, 7, 7, 7, 6, 1),
+                new TemporalValueRange<>(fromTime, toTime, 1, ChronoUnit.MINUTES).get(271085));
 
         fromTime = LocalDateTime.of(2016, 1, 1, 1, 1, 1);
         toTime = LocalDateTime.of(2016, 7, 7, 7, 1, 1);
-        assertEquals(LocalDateTime.of(2016, 1, 1, 1, 1, 1), new TemporalValueRange<>(fromTime, toTime, 1, ChronoUnit.HOURS).get(0));
-        assertEquals(LocalDateTime.of(2016, 1, 1, 2, 1, 1), new TemporalValueRange<>(fromTime, toTime, 1, ChronoUnit.HOURS).get(1));
-        assertEquals(LocalDateTime.of(2016, 7, 7, 6, 1, 1), new TemporalValueRange<>(fromTime, toTime, 1, ChronoUnit.HOURS).get(4517));
+        assertEquals(LocalDateTime.of(2016, 1, 1, 1, 1, 1),
+                new TemporalValueRange<>(fromTime, toTime, 1, ChronoUnit.HOURS).get(0));
+        assertEquals(LocalDateTime.of(2016, 1, 1, 2, 1, 1),
+                new TemporalValueRange<>(fromTime, toTime, 1, ChronoUnit.HOURS).get(1));
+        assertEquals(LocalDateTime.of(2016, 7, 7, 6, 1, 1),
+                new TemporalValueRange<>(fromTime, toTime, 1, ChronoUnit.HOURS).get(4517));
 
         fromTime = LocalDateTime.of(2016, 1, 1, 1, 1, 1);
         toTime = LocalDateTime.of(2016, 7, 7, 1, 1, 1);
-        assertEquals(LocalDateTime.of(2016, 1, 1, 1, 1, 1), new TemporalValueRange<>(fromTime, toTime, 1, ChronoUnit.DAYS).get(0));
-        assertEquals(LocalDateTime.of(2016, 1, 2, 1, 1, 1), new TemporalValueRange<>(fromTime, toTime, 1, ChronoUnit.DAYS).get(1));
-        assertEquals(LocalDateTime.of(2016, 7, 6, 1, 1, 1), new TemporalValueRange<>(fromTime, toTime, 1, ChronoUnit.DAYS).get(187));
+        assertEquals(LocalDateTime.of(2016, 1, 1, 1, 1, 1),
+                new TemporalValueRange<>(fromTime, toTime, 1, ChronoUnit.DAYS).get(0));
+        assertEquals(LocalDateTime.of(2016, 1, 2, 1, 1, 1),
+                new TemporalValueRange<>(fromTime, toTime, 1, ChronoUnit.DAYS).get(1));
+        assertEquals(LocalDateTime.of(2016, 7, 6, 1, 1, 1),
+                new TemporalValueRange<>(fromTime, toTime, 1, ChronoUnit.DAYS).get(187));
 
         fromTime = LocalDateTime.of(2016, 1, 1, 1, 1, 1);
         toTime = LocalDateTime.of(2016, 7, 1, 1, 1, 1);
-        assertEquals(LocalDateTime.of(2016, 1, 1, 1, 1, 1), new TemporalValueRange<>(fromTime, toTime, 1, ChronoUnit.MONTHS).get(0));
-        assertEquals(LocalDateTime.of(2016, 2, 1, 1, 1, 1), new TemporalValueRange<>(fromTime, toTime, 1, ChronoUnit.MONTHS).get(1));
-        assertEquals(LocalDateTime.of(2016, 6, 1, 1, 1, 1), new TemporalValueRange<>(fromTime, toTime, 1, ChronoUnit.MONTHS).get(5));
+        assertEquals(LocalDateTime.of(2016, 1, 1, 1, 1, 1),
+                new TemporalValueRange<>(fromTime, toTime, 1, ChronoUnit.MONTHS).get(0));
+        assertEquals(LocalDateTime.of(2016, 2, 1, 1, 1, 1),
+                new TemporalValueRange<>(fromTime, toTime, 1, ChronoUnit.MONTHS).get(1));
+        assertEquals(LocalDateTime.of(2016, 6, 1, 1, 1, 1),
+                new TemporalValueRange<>(fromTime, toTime, 1, ChronoUnit.MONTHS).get(5));
     }
 
     @Test
@@ -226,24 +241,36 @@ public class TemporalValueRangeTest {
     public void containsForLocalDateTime() {
         LocalDateTime fromTime = LocalDateTime.of(2016, 7, 7, 1, 1, 1);
         LocalDateTime toTime = LocalDateTime.of(2016, 7, 7, 7, 1, 1);
-        assertEquals(false, new TemporalValueRange<>(fromTime, toTime, 1, ChronoUnit.HOURS).contains(LocalDateTime.of(2016, 7, 6, 23, 59, 59)));
-        assertEquals(true, new TemporalValueRange<>(fromTime, toTime, 1, ChronoUnit.HOURS).contains(LocalDateTime.of(2016, 7, 7, 1, 1, 1)));
-        assertEquals(true, new TemporalValueRange<>(fromTime, toTime, 1, ChronoUnit.HOURS).contains(LocalDateTime.of(2016, 7, 7, 6, 1, 1)));
-        assertEquals(false, new TemporalValueRange<>(fromTime, toTime, 1, ChronoUnit.HOURS).contains(LocalDateTime.of(2016, 7, 7, 7, 7, 7)));
+        assertEquals(false, new TemporalValueRange<>(fromTime, toTime, 1, ChronoUnit.HOURS)
+                .contains(LocalDateTime.of(2016, 7, 6, 23, 59, 59)));
+        assertEquals(true, new TemporalValueRange<>(fromTime, toTime, 1, ChronoUnit.HOURS)
+                .contains(LocalDateTime.of(2016, 7, 7, 1, 1, 1)));
+        assertEquals(true, new TemporalValueRange<>(fromTime, toTime, 1, ChronoUnit.HOURS)
+                .contains(LocalDateTime.of(2016, 7, 7, 6, 1, 1)));
+        assertEquals(false, new TemporalValueRange<>(fromTime, toTime, 1, ChronoUnit.HOURS)
+                .contains(LocalDateTime.of(2016, 7, 7, 7, 7, 7)));
 
         fromTime = LocalDateTime.of(2016, 7, 7, 1, 1, 1);
         toTime = LocalDateTime.of(2016, 7, 7, 7, 7, 1);
-        assertEquals(false, new TemporalValueRange<>(fromTime, toTime, 1, ChronoUnit.MINUTES).contains(LocalDateTime.of(2016, 7, 7, 0, 59, 59)));
-        assertEquals(true, new TemporalValueRange<>(fromTime, toTime, 1, ChronoUnit.MINUTES).contains(LocalDateTime.of(2016, 7, 7, 1, 1, 1)));
-        assertEquals(true, new TemporalValueRange<>(fromTime, toTime, 1, ChronoUnit.MINUTES).contains(LocalDateTime.of(2016, 7, 7, 7, 6, 1)));
-        assertEquals(false, new TemporalValueRange<>(fromTime, toTime, 1, ChronoUnit.MINUTES).contains(LocalDateTime.of(2016, 7, 7, 7, 7, 1)));
+        assertEquals(false, new TemporalValueRange<>(fromTime, toTime, 1, ChronoUnit.MINUTES)
+                .contains(LocalDateTime.of(2016, 7, 7, 0, 59, 59)));
+        assertEquals(true, new TemporalValueRange<>(fromTime, toTime, 1, ChronoUnit.MINUTES)
+                .contains(LocalDateTime.of(2016, 7, 7, 1, 1, 1)));
+        assertEquals(true, new TemporalValueRange<>(fromTime, toTime, 1, ChronoUnit.MINUTES)
+                .contains(LocalDateTime.of(2016, 7, 7, 7, 6, 1)));
+        assertEquals(false, new TemporalValueRange<>(fromTime, toTime, 1, ChronoUnit.MINUTES)
+                .contains(LocalDateTime.of(2016, 7, 7, 7, 7, 1)));
 
         fromTime = LocalDateTime.of(2016, 7, 7, 1, 1, 1);
         toTime = LocalDateTime.of(2016, 7, 7, 7, 7, 7);
-        assertEquals(false, new TemporalValueRange<>(fromTime, toTime, 1, ChronoUnit.SECONDS).contains(LocalDateTime.of(2016, 7, 7, 1, 0, 59)));
-        assertEquals(true, new TemporalValueRange<>(fromTime, toTime, 1, ChronoUnit.SECONDS).contains(LocalDateTime.of(2016, 7, 7, 1, 1, 1)));
-        assertEquals(true, new TemporalValueRange<>(fromTime, toTime, 1, ChronoUnit.SECONDS).contains(LocalDateTime.of(2016, 7, 7, 7, 7, 6)));
-        assertEquals(false, new TemporalValueRange<>(fromTime, toTime, 1, ChronoUnit.SECONDS).contains(LocalDateTime.of(2016, 7, 7, 7, 7, 7)));
+        assertEquals(false, new TemporalValueRange<>(fromTime, toTime, 1, ChronoUnit.SECONDS)
+                .contains(LocalDateTime.of(2016, 7, 7, 1, 0, 59)));
+        assertEquals(true, new TemporalValueRange<>(fromTime, toTime, 1, ChronoUnit.SECONDS)
+                .contains(LocalDateTime.of(2016, 7, 7, 1, 1, 1)));
+        assertEquals(true, new TemporalValueRange<>(fromTime, toTime, 1, ChronoUnit.SECONDS)
+                .contains(LocalDateTime.of(2016, 7, 7, 7, 7, 6)));
+        assertEquals(false, new TemporalValueRange<>(fromTime, toTime, 1, ChronoUnit.SECONDS)
+                .contains(LocalDateTime.of(2016, 7, 7, 7, 7, 7)));
     }
 
     @Test
@@ -327,7 +354,8 @@ public class TemporalValueRangeTest {
         LocalDateTime fromTime = LocalDateTime.of(2016, 7, 1, 4, 5, 12);
         LocalDateTime toTime = LocalDateTime.of(2016, 7, 3, 12, 15, 12);
         when(workingRandom.nextInt(anyInt())).thenReturn(3, 0);
-        assertElementsOfIterator(new TemporalValueRange<>(fromTime, toTime, 10, ChronoUnit.MINUTES).createRandomIterator(workingRandom),
+        assertElementsOfIterator(
+                new TemporalValueRange<>(fromTime, toTime, 10, ChronoUnit.MINUTES).createRandomIterator(workingRandom),
                 LocalDateTime.of(2016, 7, 1, 4, 35, 12));
     }
 

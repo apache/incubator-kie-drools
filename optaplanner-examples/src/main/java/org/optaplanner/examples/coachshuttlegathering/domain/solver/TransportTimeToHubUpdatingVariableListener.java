@@ -151,7 +151,8 @@ public class TransportTimeToHubUpdatingVariableListener implements VariableListe
         updateTransportTimeToHubOfShuttle(scoreDirector, destination, destinationTransportTimeToHub, shuttle);
     }
 
-    private void updateTransportTimeToHubOfShuttle(ScoreDirector scoreDirector, StopOrHub parentStop, Integer parentTransportTimeToHub, Shuttle shuttle) {
+    private void updateTransportTimeToHubOfShuttle(ScoreDirector scoreDirector, StopOrHub parentStop,
+            Integer parentTransportTimeToHub, Shuttle shuttle) {
         if (shuttle.getNextStop() == null) {
             return;
         }

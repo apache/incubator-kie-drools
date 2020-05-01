@@ -16,12 +16,12 @@
 
 package org.optaplanner.core.api.score.buildin.hardsoftdouble;
 
+import static org.junit.Assert.*;
+
 import org.junit.jupiter.api.Test;
 import org.kie.api.definition.rule.Rule;
 import org.kie.api.runtime.rule.RuleContext;
 import org.optaplanner.core.api.score.holder.AbstractScoreHolderTest;
-
-import static org.junit.Assert.*;
 
 public class HardSoftDoubleScoreHolderTest extends AbstractScoreHolderTest {
 
@@ -75,7 +75,8 @@ public class HardSoftDoubleScoreHolderTest extends AbstractScoreHolderTest {
         assertEquals(HardSoftDoubleScore.ofUninitialized(-7, -503.01, -40.20), scoreHolder.extractScore(-7));
         if (constraintMatchEnabled) {
             assertEquals(HardSoftDoubleScore.of(-0.01, 0), findConstraintMatchTotal(scoreHolder, "hard1").getScore());
-            assertEquals(HardSoftDoubleScore.of(0.0, -0.20), scoreHolder.getIndictmentMap().get(OTHER_JUSTIFICATION).getScore());
+            assertEquals(HardSoftDoubleScore.of(0.0, -0.20),
+                    scoreHolder.getIndictmentMap().get(OTHER_JUSTIFICATION).getScore());
             assertNull(scoreHolder.getIndictmentMap().get(UNDO_JUSTIFICATION));
         }
     }

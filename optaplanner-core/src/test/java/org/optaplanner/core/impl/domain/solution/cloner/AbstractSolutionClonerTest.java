@@ -16,6 +16,13 @@
 
 package org.optaplanner.core.impl.domain.solution.cloner;
 
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotSame;
+import static org.junit.Assert.assertSame;
+import static org.junit.Assert.assertTrue;
+import static org.optaplanner.core.impl.testdata.util.PlannerAssert.*;
+import static org.optaplanner.core.impl.testdata.util.PlannerAssert.assertNull;
+
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.Comparator;
@@ -38,16 +45,16 @@ import org.optaplanner.core.impl.testdata.domain.chained.TestdataChainedAnchor;
 import org.optaplanner.core.impl.testdata.domain.chained.TestdataChainedEntity;
 import org.optaplanner.core.impl.testdata.domain.chained.TestdataChainedObject;
 import org.optaplanner.core.impl.testdata.domain.chained.TestdataChainedSolution;
+import org.optaplanner.core.impl.testdata.domain.clone.deepcloning.TestdataDeepCloningEntity;
+import org.optaplanner.core.impl.testdata.domain.clone.deepcloning.TestdataDeepCloningSolution;
+import org.optaplanner.core.impl.testdata.domain.clone.deepcloning.field.TestdataFieldAnnotatedDeepCloningEntity;
+import org.optaplanner.core.impl.testdata.domain.clone.deepcloning.field.TestdataFieldAnnotatedDeepCloningSolution;
 import org.optaplanner.core.impl.testdata.domain.collection.TestdataArrayBasedEntity;
 import org.optaplanner.core.impl.testdata.domain.collection.TestdataArrayBasedSolution;
 import org.optaplanner.core.impl.testdata.domain.collection.TestdataEntityCollectionPropertyEntity;
 import org.optaplanner.core.impl.testdata.domain.collection.TestdataEntityCollectionPropertySolution;
 import org.optaplanner.core.impl.testdata.domain.collection.TestdataSetBasedEntity;
 import org.optaplanner.core.impl.testdata.domain.collection.TestdataSetBasedSolution;
-import org.optaplanner.core.impl.testdata.domain.clone.deepcloning.TestdataDeepCloningEntity;
-import org.optaplanner.core.impl.testdata.domain.clone.deepcloning.TestdataDeepCloningSolution;
-import org.optaplanner.core.impl.testdata.domain.clone.deepcloning.field.TestdataFieldAnnotatedDeepCloningEntity;
-import org.optaplanner.core.impl.testdata.domain.clone.deepcloning.field.TestdataFieldAnnotatedDeepCloningSolution;
 import org.optaplanner.core.impl.testdata.domain.extended.TestdataUnannotatedExtendedEntity;
 import org.optaplanner.core.impl.testdata.domain.extended.TestdataUnannotatedExtendedSolution;
 import org.optaplanner.core.impl.testdata.domain.extended.thirdparty.TestdataExtendedThirdPartyEntity;
@@ -56,13 +63,6 @@ import org.optaplanner.core.impl.testdata.domain.extended.thirdparty.TestdataThi
 import org.optaplanner.core.impl.testdata.domain.reflect.accessmodifier.TestdataAccessModifierSolution;
 import org.optaplanner.core.impl.testdata.domain.reflect.field.TestdataFieldAnnotatedEntity;
 import org.optaplanner.core.impl.testdata.domain.reflect.field.TestdataFieldAnnotatedSolution;
-
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotSame;
-import static org.junit.Assert.assertSame;
-import static org.junit.Assert.assertTrue;
-import static org.optaplanner.core.impl.testdata.util.PlannerAssert.*;
-import static org.optaplanner.core.impl.testdata.util.PlannerAssert.assertNull;
 
 public abstract class AbstractSolutionClonerTest {
 
@@ -113,7 +113,6 @@ public abstract class AbstractSolutionClonerTest {
         // Clone remains unchanged
         assertCode("1", cloneB.getValue());
     }
-
 
     @Test
     public void cloneFieldAnnotatedSolution() {
@@ -223,10 +222,11 @@ public abstract class AbstractSolutionClonerTest {
         TestdataUnannotatedExtendedEntity d = new TestdataUnannotatedExtendedEntity("d", val3, c);
         c.setExtraObject(d);
 
-        TestdataUnannotatedExtendedSolution original = new TestdataUnannotatedExtendedSolution("solution", "extraObjectOnSolution");
+        TestdataUnannotatedExtendedSolution original = new TestdataUnannotatedExtendedSolution("solution",
+                "extraObjectOnSolution");
         List<TestdataValue> valueList = Arrays.asList(val1, val2, val3);
         original.setValueList(valueList);
-        List<TestdataEntity> originalEntityList = Arrays.<TestdataEntity>asList(a, b, c, d);
+        List<TestdataEntity> originalEntityList = Arrays.<TestdataEntity> asList(a, b, c, d);
         original.setEntityList(originalEntityList);
 
         TestdataUnannotatedExtendedSolution clone = (TestdataUnannotatedExtendedSolution) cloner.cloneSolution(original);
@@ -274,10 +274,11 @@ public abstract class AbstractSolutionClonerTest {
         TestdataExtendedThirdPartyEntity d = new TestdataExtendedThirdPartyEntity("d", val3, c);
         c.setExtraObject(d);
 
-        TestdataExtendedThirdPartySolution original = new TestdataExtendedThirdPartySolution("solution", "extraObjectOnSolution");
+        TestdataExtendedThirdPartySolution original = new TestdataExtendedThirdPartySolution("solution",
+                "extraObjectOnSolution");
         List<TestdataValue> valueList = Arrays.asList(val1, val2, val3);
         original.setValueList(valueList);
-        List<TestdataThirdPartyEntityPojo> originalEntityList = Arrays.<TestdataThirdPartyEntityPojo>asList(a, b, c, d);
+        List<TestdataThirdPartyEntityPojo> originalEntityList = Arrays.<TestdataThirdPartyEntityPojo> asList(a, b, c, d);
         original.setEntityList(originalEntityList);
 
         TestdataExtendedThirdPartySolution clone = (TestdataExtendedThirdPartySolution) cloner.cloneSolution(original);
@@ -565,16 +566,16 @@ public abstract class AbstractSolutionClonerTest {
         TestdataArrayBasedEntity a = new TestdataArrayBasedEntity("a", val1);
         TestdataArrayBasedEntity b = new TestdataArrayBasedEntity("b", val1);
         TestdataArrayBasedEntity c = new TestdataArrayBasedEntity("c", val3);
-        a.setEntities(new TestdataArrayBasedEntity[] {b, c});
+        a.setEntities(new TestdataArrayBasedEntity[] { b, c });
 
         b.setEntities(new TestdataArrayBasedEntity[] {});
 
-        c.setEntities(new TestdataArrayBasedEntity[] {a, c});
+        c.setEntities(new TestdataArrayBasedEntity[] { a, c });
 
         TestdataArrayBasedSolution original = new TestdataArrayBasedSolution("solution");
-        TestdataValue[] values = new TestdataValue[]{val1, val2, val3};
+        TestdataValue[] values = new TestdataValue[] { val1, val2, val3 };
         original.setValues(values);
-        TestdataArrayBasedEntity[] originalEntities = new TestdataArrayBasedEntity[]{a, b, c};
+        TestdataArrayBasedEntity[] originalEntities = new TestdataArrayBasedEntity[] { a, b, c };
         original.setEntities(originalEntities);
 
         TestdataArrayBasedSolution clone = cloner.cloneSolution(original);
@@ -776,7 +777,8 @@ public abstract class AbstractSolutionClonerTest {
         assertEquals("shadow value b1", cloneB.getShadowVariableMap().get("shadow key b1"));
     }
 
-    private void assertDeepCloningEntityClone(TestdataFieldAnnotatedDeepCloningEntity originalEntity, TestdataFieldAnnotatedDeepCloningEntity cloneEntity,
+    private void assertDeepCloningEntityClone(TestdataFieldAnnotatedDeepCloningEntity originalEntity,
+            TestdataFieldAnnotatedDeepCloningEntity cloneEntity,
             String entityCode) {
         assertNotSame(originalEntity, cloneEntity);
         assertCode(entityCode, originalEntity);

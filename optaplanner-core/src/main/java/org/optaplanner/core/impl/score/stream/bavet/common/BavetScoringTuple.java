@@ -22,9 +22,11 @@ import org.optaplanner.core.impl.score.inliner.UndoScoreImpacter;
 public interface BavetScoringTuple {
 
     UndoScoreImpacter getUndoScoreImpacter();
+
     void setUndoScoreImpacter(UndoScoreImpacter undoScoreImpacter);
 
     Score<?> getMatchScore();
+
     void setMatchScore(Score<?> matchScore);
 
 }

@@ -37,7 +37,6 @@ public final class BavetGroupBridgeUniTuple<A, NewA, ResultContainer_, NewB> ext
         node.refresh(this);
     }
 
-
     @Override
     public String toString() {
         return "GroupBridge(" + getFactsString() + ") with " + (childTuple == null ? 0 : 1) + " children";

@@ -29,6 +29,7 @@ import org.optaplanner.core.impl.solver.termination.Termination;
 
 /**
  * Default implementation of {@link CustomPhase}.
+ * 
  * @param <Solution_> the solution type, the class with the {@link PlanningSolution} annotation
  */
 public class DefaultCustomPhase<Solution_> extends AbstractPhase<Solution_> implements CustomPhase<Solution_> {
@@ -115,7 +116,7 @@ public class DefaultCustomPhase<Solution_> extends AbstractPhase<Solution_> impl
         super.phaseEnded(phaseScope);
         phaseScope.endingNow();
         logger.info("{}Custom phase ({}) ended: time spent ({}), best score ({}),"
-                        + " score calculation speed ({}/sec), step total ({}).",
+                + " score calculation speed ({}/sec), step total ({}).",
                 logIndentation,
                 phaseIndex,
                 phaseScope.calculateSolverTimeMillisSpentUpToNow(),

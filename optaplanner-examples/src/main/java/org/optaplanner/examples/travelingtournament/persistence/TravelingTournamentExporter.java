@@ -61,7 +61,8 @@ public class TravelingTournamentExporter extends AbstractTxtSolutionExporter<Tra
             }
             bufferedWriter.write("\n");
             for (Team team : solution.getTeamList()) {
-                bufferedWriter.write(String.format("%-" + (maximumTeamNameLength + 3) + "s", team.getName().replaceAll("[\\w\\d]", "-")));
+                bufferedWriter.write(
+                        String.format("%-" + (maximumTeamNameLength + 3) + "s", team.getName().replaceAll("[\\w\\d]", "-")));
             }
             bufferedWriter.write("\n");
             for (Day day : solution.getDayList()) {

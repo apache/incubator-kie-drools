@@ -21,12 +21,13 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Random;
 
-import com.google.common.collect.Iterators;
 import org.optaplanner.core.api.domain.valuerange.CountableValueRange;
 import org.optaplanner.core.api.domain.valuerange.ValueRange;
 import org.optaplanner.core.impl.domain.valuerange.AbstractCountableValueRange;
 import org.optaplanner.core.impl.domain.valuerange.util.ValueRangeIterator;
 import org.optaplanner.core.impl.solver.random.RandomUtils;
+
+import com.google.common.collect.Iterators;
 
 public class CompositeCountableValueRange<T> extends AbstractCountableValueRange<T> {
 
@@ -37,7 +38,7 @@ public class CompositeCountableValueRange<T> extends AbstractCountableValueRange
         this.childValueRangeList = childValueRangeList;
         long size = 0L;
         for (CountableValueRange<T> childValueRange : childValueRangeList) {
-            size +=  childValueRange.getSize();
+            size += childValueRange.getSize();
         }
         this.size = size;
     }

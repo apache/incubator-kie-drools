@@ -40,8 +40,7 @@ public abstract class AbstractTxtSolutionExporter<Solution_> extends AbstractSol
 
     @Override
     public void writeSolution(Solution_ solution, File outputFile) {
-        try (BufferedWriter writer =
-                     new BufferedWriter(new OutputStreamWriter(new FileOutputStream(outputFile), "UTF-8"))) {
+        try (BufferedWriter writer = new BufferedWriter(new OutputStreamWriter(new FileOutputStream(outputFile), "UTF-8"))) {
             TxtOutputBuilder<Solution_> txtOutputBuilder = createTxtOutputBuilder();
             txtOutputBuilder.setBufferedWriter(writer);
             txtOutputBuilder.setSolution(solution);

@@ -142,7 +142,8 @@ public class CloudComputerPanel extends JPanel {
         memoryBar = new CloudBar(getComputerMemory(), cloudBalancingPanel.getMaximumComputerMemory());
         memoryBar.setEnabled(false);
         add(memoryBar);
-        networkBandwidthBar = new CloudBar(getComputerNetworkBandwidth(), cloudBalancingPanel.getMaximumComputerNetworkBandwidth());
+        networkBandwidthBar = new CloudBar(getComputerNetworkBandwidth(),
+                cloudBalancingPanel.getMaximumComputerNetworkBandwidth());
         networkBandwidthBar.setEnabled(false);
         add(networkBandwidthBar);
         detailsButton = new JButton(new AbstractAction("Details") {
@@ -199,7 +200,8 @@ public class CloudComputerPanel extends JPanel {
         memoryField.setEnabled(used);
         networkBandwidthField.setText(usedNetworkBandwidth + " GB / " + getComputerNetworkBandwidth() + " GB");
         networkBandwidthField.setForeground(usedNetworkBandwidth > getComputerNetworkBandwidth()
-                ? TangoColorFactory.SCARLET_3 : Color.BLACK);
+                ? TangoColorFactory.SCARLET_3
+                : Color.BLACK);
         networkBandwidthField.setEnabled(used);
         costField.setEnabled(used);
     }

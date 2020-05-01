@@ -109,7 +109,8 @@ public enum ConstructionHeuristicType {
     }
 
     /**
-     * @return {@link ConstructionHeuristicType#values()} without duplicates (abstract types that end up behaving as one of the other types).
+     * @return {@link ConstructionHeuristicType#values()} without duplicates (abstract types that end up behaving as one of the
+     *         other types).
      */
     public static ConstructionHeuristicType[] getBluePrintTypes() {
         return new ConstructionHeuristicType[] {

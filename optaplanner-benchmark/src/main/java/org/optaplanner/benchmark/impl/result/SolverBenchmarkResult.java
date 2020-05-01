@@ -22,10 +22,6 @@ import java.util.IdentityHashMap;
 import java.util.List;
 import java.util.Map;
 
-import com.thoughtworks.xstream.XStream;
-import com.thoughtworks.xstream.annotations.XStreamAlias;
-import com.thoughtworks.xstream.annotations.XStreamImplicit;
-import com.thoughtworks.xstream.annotations.XStreamOmitField;
 import org.apache.commons.lang3.StringEscapeUtils;
 import org.optaplanner.benchmark.impl.measurement.ScoreDifferencePercentage;
 import org.optaplanner.benchmark.impl.report.BenchmarkReport;
@@ -37,6 +33,11 @@ import org.optaplanner.core.config.solver.EnvironmentMode;
 import org.optaplanner.core.config.solver.SolverConfig;
 import org.optaplanner.core.impl.score.definition.ScoreDefinition;
 import org.optaplanner.core.impl.solver.io.XStreamConfigReader;
+
+import com.thoughtworks.xstream.XStream;
+import com.thoughtworks.xstream.annotations.XStreamAlias;
+import com.thoughtworks.xstream.annotations.XStreamImplicit;
+import com.thoughtworks.xstream.annotations.XStreamOmitField;
 
 /**
  * Represents 1 {@link Solver} configuration benchmarked on multiple problem instances (data sets).
@@ -279,11 +280,13 @@ public class SolverBenchmarkResult {
      * Does not call {@link SingleBenchmarkResult#accumulateResults(BenchmarkReport)},
      * because {@link PlannerBenchmarkResult#accumulateResults(BenchmarkReport)} does that already on
      * {@link PlannerBenchmarkResult#getUnifiedProblemBenchmarkResultList()}.
+     * 
      * @param benchmarkReport never null
      */
     public void accumulateResults(BenchmarkReport benchmarkReport) {
         determineTotalsAndAverages();
-        standardDeviationDoubles = StatisticUtils.determineStandardDeviationDoubles(singleBenchmarkResultList, averageScore, getSuccessCount());
+        standardDeviationDoubles = StatisticUtils.determineStandardDeviationDoubles(singleBenchmarkResultList, averageScore,
+                getSuccessCount());
     }
 
     protected void determineTotalsAndAverages() {
@@ -312,7 +315,8 @@ public class SolverBenchmarkResult {
                     totalWorstScoreDifferencePercentage = singleBenchmarkResult.getWorstScoreDifferencePercentage();
                     totalScoreCalculationSpeed = singleBenchmarkResult.getScoreCalculationSpeed();
                     totalTimeMillisSpent = singleBenchmarkResult.getTimeMillisSpent();
-                    totalWorstScoreCalculationSpeedDifferencePercentage = singleBenchmarkResult.getWorstScoreCalculationSpeedDifferencePercentage();
+                    totalWorstScoreCalculationSpeedDifferencePercentage = singleBenchmarkResult
+                            .getWorstScoreCalculationSpeedDifferencePercentage();
                     firstNonFailure = false;
                 } else {
                     totalScore = totalScore.add(singleBenchmarkResult.getAverageScore());
@@ -322,7 +326,8 @@ public class SolverBenchmarkResult {
                             singleBenchmarkResult.getWorstScoreDifferencePercentage());
                     totalScoreCalculationSpeed += singleBenchmarkResult.getScoreCalculationSpeed();
                     totalTimeMillisSpent += singleBenchmarkResult.getTimeMillisSpent();
-                    totalWorstScoreCalculationSpeedDifferencePercentage += singleBenchmarkResult.getWorstScoreCalculationSpeedDifferencePercentage();
+                    totalWorstScoreCalculationSpeedDifferencePercentage += singleBenchmarkResult
+                            .getWorstScoreCalculationSpeedDifferencePercentage();
                 }
             }
         }
@@ -332,7 +337,8 @@ public class SolverBenchmarkResult {
             averageWorstScoreDifferencePercentage = totalWorstScoreDifferencePercentage.divide((double) successCount);
             averageScoreCalculationSpeed = totalScoreCalculationSpeed / (long) successCount;
             averageTimeMillisSpent = totalTimeMillisSpent / (long) successCount;
-            averageWorstScoreCalculationSpeedDifferencePercentage = totalWorstScoreCalculationSpeedDifferencePercentage / ((double) successCount);
+            averageWorstScoreCalculationSpeedDifferencePercentage = totalWorstScoreCalculationSpeedDifferencePercentage
+                    / ((double) successCount);
         }
     }
 
@@ -343,8 +349,7 @@ public class SolverBenchmarkResult {
     protected static Map<SolverBenchmarkResult, SolverBenchmarkResult> createMergeMap(
             PlannerBenchmarkResult newPlannerBenchmarkResult, List<SingleBenchmarkResult> singleBenchmarkResultList) {
         // IdentityHashMap because different SolverBenchmarkResult instances are never merged
-        Map<SolverBenchmarkResult, SolverBenchmarkResult> mergeMap
-                = new IdentityHashMap<>();
+        Map<SolverBenchmarkResult, SolverBenchmarkResult> mergeMap = new IdentityHashMap<>();
         Map<String, Integer> nameCountMap = new HashMap<>();
         for (SingleBenchmarkResult singleBenchmarkResult : singleBenchmarkResultList) {
             SolverBenchmarkResult oldResult = singleBenchmarkResult.getSolverBenchmarkResult();

@@ -46,6 +46,7 @@ public class DroolsTriRuleStructure<A, B, C, PatternVar> extends DroolsRuleStruc
     /**
      * Builds a final version of the AB pattern as it will no longer be mutated, and turns the C pattern into the new
      * primary pattern.
+     * 
      * @param abRuleStructure
      * @param cRuleStructure
      * @param variableIdSupplier

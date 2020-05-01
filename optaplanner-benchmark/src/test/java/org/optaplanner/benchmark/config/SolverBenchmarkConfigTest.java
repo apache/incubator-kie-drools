@@ -16,9 +16,9 @@
 
 package org.optaplanner.benchmark.config;
 
-import org.junit.jupiter.api.Test;
-
 import static org.assertj.core.api.Assertions.assertThatIllegalStateException;
+
+import org.junit.jupiter.api.Test;
 
 public class SolverBenchmarkConfigTest {
 

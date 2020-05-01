@@ -26,6 +26,7 @@ import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+
 import javax.swing.AbstractAction;
 import javax.swing.BoxLayout;
 import javax.swing.GroupLayout;
@@ -106,7 +107,7 @@ public class NurseRosteringPanel extends SolutionPanel<NurseRoster> {
     private void createEmployeeListPanel() {
         employeeListPanel = new JPanel();
         employeeListPanel.setLayout(new BoxLayout(employeeListPanel, BoxLayout.Y_AXIS));
-        unassignedPanel = new EmployeePanel(this, Collections.<ShiftDate>emptyList(), Collections.<Shift>emptyList(),
+        unassignedPanel = new EmployeePanel(this, Collections.<ShiftDate> emptyList(), Collections.<Shift> emptyList(),
                 null);
         employeeListPanel.add(unassignedPanel);
         employeeToPanelMap = new LinkedHashMap<>();
@@ -174,7 +175,7 @@ public class NurseRosteringPanel extends SolutionPanel<NurseRoster> {
         if (solutionBusiness.isSolving()) {
             JOptionPane.showMessageDialog(this.getTopLevelAncestor(),
                     "The GUI does not support this action yet during solving.\nOptaPlanner itself does support it.\n"
-                    + "\nTerminate solving first and try again.",
+                            + "\nTerminate solving first and try again.",
                     "Unsupported in GUI", JOptionPane.INFORMATION_MESSAGE);
             return;
         }

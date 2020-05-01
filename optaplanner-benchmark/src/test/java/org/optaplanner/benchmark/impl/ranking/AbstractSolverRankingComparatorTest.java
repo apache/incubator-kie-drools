@@ -25,7 +25,6 @@ import org.optaplanner.core.api.score.Score;
 import org.optaplanner.core.api.score.buildin.hardsoftlong.HardSoftLongScore;
 import org.optaplanner.core.api.score.buildin.simple.SimpleScore;
 
-
 public abstract class AbstractSolverRankingComparatorTest {
 
     protected ProblemBenchmarkResult addProblemBenchmark(List<SingleBenchmarkResult> singleBenchmarkResultList) {
@@ -45,7 +44,8 @@ public abstract class AbstractSolverRankingComparatorTest {
                 SimpleScore.of(worstScore));
     }
 
-    protected SingleBenchmarkResult addSingleBenchmarkWithHardSoftLongScore(List<SingleBenchmarkResult> singleBenchmarkResultList,
+    protected SingleBenchmarkResult addSingleBenchmarkWithHardSoftLongScore(
+            List<SingleBenchmarkResult> singleBenchmarkResultList,
             long hardScore, long softScore, long hardBestScore, long softBestScore, long hardWorstScore, long softWorstScore) {
         return addSingleBenchmark(singleBenchmarkResultList,
                 HardSoftLongScore.of(hardScore, softScore),
@@ -53,7 +53,8 @@ public abstract class AbstractSolverRankingComparatorTest {
                 HardSoftLongScore.of(hardWorstScore, softWorstScore));
     }
 
-    protected <S extends Score<S>> SingleBenchmarkResult addSingleBenchmark(List<SingleBenchmarkResult> singleBenchmarkResultList,
+    protected <S extends Score<S>> SingleBenchmarkResult addSingleBenchmark(
+            List<SingleBenchmarkResult> singleBenchmarkResultList,
             S score, S bestScore, S worstScore) {
         SingleBenchmarkResult singleBenchmarkResult = new SingleBenchmarkResult(null, null);
         singleBenchmarkResult.setFailureCount(0);

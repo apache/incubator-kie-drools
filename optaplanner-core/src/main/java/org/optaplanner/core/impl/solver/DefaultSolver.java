@@ -32,11 +32,10 @@ import org.optaplanner.core.impl.solver.recaller.BestSolutionRecaller;
 import org.optaplanner.core.impl.solver.scope.DefaultSolverScope;
 import org.optaplanner.core.impl.solver.termination.BasicPlumbingTermination;
 import org.optaplanner.core.impl.solver.termination.Termination;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 /**
  * Default implementation for {@link Solver}.
+ * 
  * @param <Solution_> the solution type, the class with the {@link PlanningSolution} annotation
  * @see Solver
  * @see AbstractSolver
@@ -57,7 +56,8 @@ public class DefaultSolver<Solution_> extends AbstractSolver<Solution_> {
     // ************************************************************************
 
     public DefaultSolver(EnvironmentMode environmentMode, RandomFactory randomFactory,
-            BestSolutionRecaller<Solution_> bestSolutionRecaller, BasicPlumbingTermination basicPlumbingTermination, Termination termination,
+            BestSolutionRecaller<Solution_> bestSolutionRecaller, BasicPlumbingTermination basicPlumbingTermination,
+            Termination termination,
             List<Phase<Solution_>> phaseList,
             DefaultSolverScope<Solution_> solverScope) {
         super(bestSolutionRecaller, termination, phaseList);
@@ -226,7 +226,7 @@ public class DefaultSolver<Solution_> extends AbstractSolver<Solution_> {
         // Must be kept open for doProblemFactChange
         solverScope.getScoreDirector().close();
         logger.info("Solving ended: time spent ({}), best score ({}), score calculation speed ({}/sec),"
-                        + " phase total ({}), environment mode ({}).",
+                + " phase total ({}), environment mode ({}).",
                 solverScope.getTimeMillisSpent(),
                 solverScope.getBestScore(),
                 solverScope.getScoreCalculationSpeed(),
@@ -240,8 +240,8 @@ public class DefaultSolver<Solution_> extends AbstractSolver<Solution_> {
         if (!restartSolver) {
             return false;
         } else {
-            BlockingQueue<ProblemFactChange> problemFactChangeQueue
-                    = basicPlumbingTermination.startProblemFactChangesProcessing();
+            BlockingQueue<ProblemFactChange> problemFactChangeQueue = basicPlumbingTermination
+                    .startProblemFactChangesProcessing();
             solverScope.setWorkingSolutionFromBestSolution();
             Score score = null;
             int stepIndex = 0;

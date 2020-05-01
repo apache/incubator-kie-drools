@@ -17,6 +17,7 @@
 package org.optaplanner.persistence.jpa.impl.score.buildin.bendablebigdecimal;
 
 import java.math.BigDecimal;
+
 import javax.persistence.Column;
 import javax.persistence.Entity;
 
@@ -33,16 +34,18 @@ public class BendableBigDecimalScoreHibernateTypeTest extends AbstractScoreHiber
     public void persistAndMerge() {
         persistAndMerge(new TestJpaEntity(BendableBigDecimalScore.zero(3, 2)),
                 BendableBigDecimalScore.of(
-                        new BigDecimal[]{new BigDecimal("10000.00001"), new BigDecimal("2000.00020"), new BigDecimal("300.00300")},
-                        new BigDecimal[]{new BigDecimal("40.04000"), new BigDecimal("5.50000")}),
+                        new BigDecimal[] { new BigDecimal("10000.00001"), new BigDecimal("2000.00020"),
+                                new BigDecimal("300.00300") },
+                        new BigDecimal[] { new BigDecimal("40.04000"), new BigDecimal("5.50000") }),
                 BendableBigDecimalScore.ofUninitialized(-7,
-                        new BigDecimal[]{new BigDecimal("10000.00001"), new BigDecimal("2000.00020"), new BigDecimal("300.00300")},
-                        new BigDecimal[]{new BigDecimal("40.04000"), new BigDecimal("5.50000")}));
+                        new BigDecimal[] { new BigDecimal("10000.00001"), new BigDecimal("2000.00020"),
+                                new BigDecimal("300.00300") },
+                        new BigDecimal[] { new BigDecimal("40.04000"), new BigDecimal("5.50000") }));
     }
 
     @Entity
-    @TypeDef(defaultForType = BendableBigDecimalScore.class, typeClass = BendableBigDecimalScoreHibernateType.class,
-            parameters = {@Parameter(name = "hardLevelsSize", value = "3"), @Parameter(name = "softLevelsSize", value = "2")})
+    @TypeDef(defaultForType = BendableBigDecimalScore.class, typeClass = BendableBigDecimalScoreHibernateType.class, parameters = {
+            @Parameter(name = "hardLevelsSize", value = "3"), @Parameter(name = "softLevelsSize", value = "2") })
     public static class TestJpaEntity extends AbstractScoreHibernateTypeTest.AbstractTestJpaEntity<BendableBigDecimalScore> {
 
         protected BendableBigDecimalScore score;
@@ -61,7 +64,7 @@ public class BendableBigDecimalScoreHibernateTypeTest extends AbstractScoreHiber
                 @Column(name = "hard1Score", precision = 10, scale = 5),
                 @Column(name = "hard2Score", precision = 10, scale = 5),
                 @Column(name = "soft0Score", precision = 10, scale = 5),
-                @Column(name = "soft1Score", precision = 10, scale = 5)})
+                @Column(name = "soft1Score", precision = 10, scale = 5) })
         public BendableBigDecimalScore getScore() {
             return score;
         }

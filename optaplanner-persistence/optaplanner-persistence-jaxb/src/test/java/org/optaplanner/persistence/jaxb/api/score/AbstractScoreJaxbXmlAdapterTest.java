@@ -16,6 +16,8 @@
 
 package org.optaplanner.persistence.jaxb.api.score;
 
+import static org.junit.Assert.*;
+
 import java.io.Serializable;
 import java.io.StringReader;
 import java.io.StringWriter;
@@ -28,8 +30,6 @@ import javax.xml.bind.Unmarshaller;
 import org.eclipse.persistence.jaxb.MarshallerProperties;
 import org.eclipse.persistence.jaxb.UnmarshallerProperties;
 import org.optaplanner.core.api.score.Score;
-
-import static org.junit.Assert.*;
 
 public abstract class AbstractScoreJaxbXmlAdapterTest {
 
@@ -72,11 +72,12 @@ public abstract class AbstractScoreJaxbXmlAdapterTest {
         }
         if (!xmlString.matches(regex)) {
             fail(String.format("Regular expression match failed.%nExpected regular expression: %s%n" +
-                                       "Actual string: %s", regex, xmlString));
+                    "Actual string: %s", regex, xmlString));
         }
     }
 
-    protected <S extends Score, W extends TestScoreWrapper<S>> void assertSerializeAndDeserializeJson(S expectedScore, W input) {
+    protected <S extends Score, W extends TestScoreWrapper<S>> void assertSerializeAndDeserializeJson(S expectedScore,
+            W input) {
         System.setProperty("javax.xml.bind.context.factory", "org.eclipse.persistence.jaxb.JAXBContextFactory");
 
         String jsonString;
@@ -120,7 +121,7 @@ public abstract class AbstractScoreJaxbXmlAdapterTest {
         }
         if (!jsonString.matches(regex)) {
             fail(String.format("Regular expression match failed.%nExpected regular expression: %s%n" +
-                                       "Actual string: %s", regex, jsonString));
+                    "Actual string: %s", regex, jsonString));
         }
     }
 

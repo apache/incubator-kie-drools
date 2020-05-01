@@ -86,8 +86,8 @@ public final class DroolsScoringQuadConstraintStream<Solution_, A, B, C, D>
     @Override
     public List<RuleItemBuilder<?>> createRuleItemBuilders(DroolsConstraint<?> constraint,
             Global<? extends AbstractScoreHolder<?>> scoreHolderGlobal) {
-        DroolsQuadCondition<A, B, C, D, ?> condition =
-                ((DroolsAbstractQuadConstraintStream<Solution_, A, B, C, D>) parent).getCondition();
+        DroolsQuadCondition<A, B, C, D, ?> condition = ((DroolsAbstractQuadConstraintStream<Solution_, A, B, C, D>) parent)
+                .getCondition();
         if (intMatchWeigher != null) {
             return condition.completeWithScoring(constraint, scoreHolderGlobal, intMatchWeigher);
         } else if (longMatchWeigher != null) {
@@ -116,6 +116,5 @@ public final class DroolsScoringQuadConstraintStream<Solution_, A, B, C, D>
     public String toString() {
         return "QuadScoring()";
     }
-
 
 }

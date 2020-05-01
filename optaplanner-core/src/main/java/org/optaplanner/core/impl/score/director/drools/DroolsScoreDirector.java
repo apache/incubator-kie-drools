@@ -37,6 +37,7 @@ import org.optaplanner.core.impl.score.director.ScoreDirector;
 /**
  * Drools implementation of {@link ScoreDirector}, which directs the Rule Engine to calculate the {@link Score}
  * of the {@link PlanningSolution working solution}.
+ * 
  * @param <Solution_> the solution type, the class with the {@link PlanningSolution} annotation
  * @see ScoreDirector
  */
@@ -85,10 +86,10 @@ public class DroolsScoreDirector<Solution_>
         scoreHolder = getScoreDefinition().buildScoreHolder(constraintMatchEnabledPreference);
         scoreDirectorFactory.getRuleToConstraintWeightExtractorMap().forEach(
                 (Rule rule, Function<Solution_, Score<?>> extractor) -> {
-            Score<?> constraintWeight = extractor.apply(workingSolution);
-            getSolutionDescriptor().validateConstraintWeight(rule.getPackageName(), rule.getName(), constraintWeight);
-            scoreHolder.configureConstraintWeight(rule, constraintWeight);
-        });
+                    Score<?> constraintWeight = extractor.apply(workingSolution);
+                    getSolutionDescriptor().validateConstraintWeight(rule.getPackageName(), rule.getName(), constraintWeight);
+                    scoreHolder.configureConstraintWeight(rule, constraintWeight);
+                });
         kieSession.setGlobal(GLOBAL_SCORE_HOLDER_KEY, scoreHolder);
     }
 

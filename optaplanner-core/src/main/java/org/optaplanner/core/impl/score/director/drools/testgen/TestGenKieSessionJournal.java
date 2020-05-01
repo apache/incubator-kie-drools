@@ -51,7 +51,8 @@ public class TestGenKieSessionJournal {
         updateJournal = new ArrayList<>();
     }
 
-    public TestGenKieSessionJournal(List<TestGenFact> facts, List<TestGenKieSessionInsert> initialInsertJournal, List<TestGenKieSessionOperation> updateJournal) {
+    public TestGenKieSessionJournal(List<TestGenFact> facts, List<TestGenKieSessionInsert> initialInsertJournal,
+            List<TestGenKieSessionOperation> updateJournal) {
         this.facts = facts;
         this.initialInsertJournal = initialInsertJournal;
         this.updateJournal = updateJournal;

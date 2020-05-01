@@ -25,6 +25,7 @@ import org.optaplanner.core.config.score.trend.InitializingScoreTrendLevel;
 /**
  * Bounds the possible {@link Score}s for a {@link PlanningSolution} as more and more variables are initialized
  * (while the already initialized variables don't change).
+ * 
  * @see InitializingScoreTrendLevel
  */
 public class InitializingScoreTrend implements Serializable {

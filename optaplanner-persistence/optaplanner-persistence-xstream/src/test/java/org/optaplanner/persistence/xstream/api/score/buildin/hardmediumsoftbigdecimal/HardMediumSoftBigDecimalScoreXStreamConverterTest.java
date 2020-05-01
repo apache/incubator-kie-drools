@@ -17,19 +17,22 @@ package org.optaplanner.persistence.xstream.api.score.buildin.hardmediumsoftbigd
 
 import java.math.BigDecimal;
 
-import com.thoughtworks.xstream.annotations.XStreamConverter;
 import org.junit.jupiter.api.Test;
 import org.optaplanner.core.api.score.buildin.hardmediumsoftbigdecimal.HardMediumSoftBigDecimalScore;
 import org.optaplanner.persistence.xstream.api.score.AbstractScoreXStreamConverterTest;
+
+import com.thoughtworks.xstream.annotations.XStreamConverter;
 
 public class HardMediumSoftBigDecimalScoreXStreamConverterTest extends AbstractScoreXStreamConverterTest {
 
     @Test
     public void serializeAndDeserialize() {
         assertSerializeAndDeserialize(null, new TestHardMediumSoftBigDecimalScoreWrapper(null));
-        HardMediumSoftBigDecimalScore score = HardMediumSoftBigDecimalScore.of(new BigDecimal("1200.0021"), new BigDecimal("-3.1415"), new BigDecimal("34.4300"));
+        HardMediumSoftBigDecimalScore score = HardMediumSoftBigDecimalScore.of(new BigDecimal("1200.0021"),
+                new BigDecimal("-3.1415"), new BigDecimal("34.4300"));
         assertSerializeAndDeserialize(score, new TestHardMediumSoftBigDecimalScoreWrapper(score));
-        score = HardMediumSoftBigDecimalScore.ofUninitialized(-7, new BigDecimal("1200.0021"), new BigDecimal("-3.1415"), new BigDecimal("34.4300"));
+        score = HardMediumSoftBigDecimalScore.ofUninitialized(-7, new BigDecimal("1200.0021"), new BigDecimal("-3.1415"),
+                new BigDecimal("34.4300"));
         assertSerializeAndDeserialize(score, new TestHardMediumSoftBigDecimalScoreWrapper(score));
     }
 

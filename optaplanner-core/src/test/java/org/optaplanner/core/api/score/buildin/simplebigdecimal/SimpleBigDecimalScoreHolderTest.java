@@ -16,14 +16,14 @@
 
 package org.optaplanner.core.api.score.buildin.simplebigdecimal;
 
+import static org.junit.Assert.*;
+
 import java.math.BigDecimal;
 
 import org.junit.jupiter.api.Test;
 import org.kie.api.definition.rule.Rule;
 import org.kie.api.runtime.rule.RuleContext;
 import org.optaplanner.core.api.score.holder.AbstractScoreHolderTest;
-
-import static org.junit.Assert.*;
 
 public class SimpleBigDecimalScoreHolderTest extends AbstractScoreHolderTest {
 
@@ -55,7 +55,8 @@ public class SimpleBigDecimalScoreHolderTest extends AbstractScoreHolderTest {
         assertEquals(SimpleBigDecimalScore.ofUninitialized(0, new BigDecimal("-10.03")), scoreHolder.extractScore(0));
         assertEquals(SimpleBigDecimalScore.ofUninitialized(-7, new BigDecimal("-10.03")), scoreHolder.extractScore(-7));
         if (constraintMatchEnabled) {
-            assertEquals(SimpleBigDecimalScore.of(new BigDecimal("-10.00")), findConstraintMatchTotal(scoreHolder, "scoreRule1").getScore());
+            assertEquals(SimpleBigDecimalScore.of(new BigDecimal("-10.00")),
+                    findConstraintMatchTotal(scoreHolder, "scoreRule1").getScore());
         }
     }
 

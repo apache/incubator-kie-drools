@@ -72,7 +72,7 @@ public class InvestmentImporter extends AbstractXlsxSolutionImporter<InvestmentS
             BigInteger possibleSolutionSize = BigInteger.valueOf(solution.getAssetClassList().size()).multiply(
                     BigInteger.valueOf(InvestmentNumericUtil.MAXIMUM_QUANTITY_MILLIS));
             logger.info("InvestmentAllocation {} has {} regions, {} sectors and {} asset classes"
-                            + " with a search space of {}.",
+                    + " with a search space of {}.",
                     getInputId(),
                     solution.getRegionList().size(),
                     solution.getSectorList().size(),
@@ -208,7 +208,8 @@ public class InvestmentImporter extends AbstractXlsxSolutionImporter<InvestmentS
                 Map<AssetClass, Long> correlationMillisMap = new LinkedHashMap<>(assetClassListSize);
                 for (int i = 0; i < assetClassListSize; i++) {
                     AssetClass other = assetClassList.get(i);
-                    long correlationMillis = parsePercentageMillis(readDoubleCell(row.getCell(ASSET_CLASS_PROPERTIES_COUNT + i)));
+                    long correlationMillis = parsePercentageMillis(
+                            readDoubleCell(row.getCell(ASSET_CLASS_PROPERTIES_COUNT + i)));
                     correlationMillisMap.put(other, correlationMillis);
                 }
                 assetClass.setCorrelationMillisMap(correlationMillisMap);

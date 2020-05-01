@@ -42,9 +42,9 @@ public class RowStrengthWeightFactory implements SelectionSorterWeightFactory<NQ
     public static class RowStrengthWeight implements Comparable<RowStrengthWeight> {
 
         // The stronger rows are on the side, so they have a higher distance to the middle
-        private static final Comparator<RowStrengthWeight> COMPARATOR =
-                Comparator.comparingInt((RowStrengthWeight weight) -> weight.distanceFromMiddle)
-                        .thenComparingInt(weight -> weight.row.getIndex());
+        private static final Comparator<RowStrengthWeight> COMPARATOR = Comparator
+                .comparingInt((RowStrengthWeight weight) -> weight.distanceFromMiddle)
+                .thenComparingInt(weight -> weight.row.getIndex());
 
         private final Row row;
         private final int distanceFromMiddle;

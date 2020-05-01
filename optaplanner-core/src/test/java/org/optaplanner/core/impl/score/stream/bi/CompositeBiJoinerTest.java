@@ -16,6 +16,9 @@
 
 package org.optaplanner.core.impl.score.stream.bi;
 
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.optaplanner.core.impl.score.stream.bi.AbstractBiJoiner.merge;
+
 import java.math.BigDecimal;
 import java.math.BigInteger;
 import java.util.function.Function;
@@ -23,9 +26,6 @@ import java.util.function.Function;
 import org.junit.jupiter.api.Test;
 import org.optaplanner.core.api.score.stream.Joiners;
 import org.optaplanner.core.api.score.stream.bi.BiJoiner;
-
-import static org.assertj.core.api.Assertions.assertThat;
-import static org.optaplanner.core.impl.score.stream.bi.AbstractBiJoiner.merge;
 
 public class CompositeBiJoinerTest {
 

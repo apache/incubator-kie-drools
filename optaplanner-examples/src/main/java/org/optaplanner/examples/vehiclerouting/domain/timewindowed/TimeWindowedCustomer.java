@@ -16,13 +16,14 @@
 
 package org.optaplanner.examples.vehiclerouting.domain.timewindowed;
 
-import com.thoughtworks.xstream.annotations.XStreamAlias;
 import org.optaplanner.core.api.domain.entity.PlanningEntity;
 import org.optaplanner.core.api.domain.variable.CustomShadowVariable;
 import org.optaplanner.core.api.domain.variable.PlanningVariableReference;
 import org.optaplanner.examples.vehiclerouting.domain.Customer;
 import org.optaplanner.examples.vehiclerouting.domain.location.Location;
 import org.optaplanner.examples.vehiclerouting.domain.timewindowed.solver.ArrivalTimeUpdatingVariableListener;
+
+import com.thoughtworks.xstream.annotations.XStreamAlias;
 
 @PlanningEntity
 @XStreamAlias("VrpTimeWindowedCustomer")
@@ -85,7 +86,7 @@ public class TimeWindowedCustomer extends Customer {
     @CustomShadowVariable(variableListenerClass = ArrivalTimeUpdatingVariableListener.class,
             // Arguable, to adhere to API specs (although this works), nextCustomer should also be a source,
             // because this shadow must be triggered after nextCustomer (but there is no need to be triggered by nextCustomer)
-            sources = {@PlanningVariableReference(variableName = "previousStandstill")})
+            sources = { @PlanningVariableReference(variableName = "previousStandstill") })
     public Long getArrivalTime() {
         return arrivalTime;
     }

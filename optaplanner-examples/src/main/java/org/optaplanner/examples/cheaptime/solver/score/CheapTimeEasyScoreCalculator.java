@@ -42,8 +42,7 @@ public class CheapTimeEasyScoreCalculator implements EasyScoreCalculator<CheapTi
         int resourceListSize = solution.getResourceList().size();
         int globalPeriodRangeTo = solution.getGlobalPeriodRangeTo();
         List<Machine> machineList = solution.getMachineList();
-        Map<Machine, List<MachinePeriodPart>> machinePeriodListMap
-                = new LinkedHashMap<>(machineList.size());
+        Map<Machine, List<MachinePeriodPart>> machinePeriodListMap = new LinkedHashMap<>(machineList.size());
         for (Machine machine : machineList) {
             List<MachinePeriodPart> machinePeriodList = new ArrayList<>(globalPeriodRangeTo);
             for (int period = 0; period < globalPeriodRangeTo; period++) {
@@ -64,7 +63,8 @@ public class CheapTimeEasyScoreCalculator implements EasyScoreCalculator<CheapTi
                     MachinePeriodPart machinePeriodPart = machinePeriodList.get(period);
                     machinePeriodPart.addTaskAssignment(taskAssignment);
                     PeriodPowerPrice periodPowerPrice = periodPowerPriceList.get(period);
-                    mediumScore -= CheapTimeCostCalculator.multiplyTwoMicros(taskAssignment.getTask().getPowerConsumptionMicros(),
+                    mediumScore -= CheapTimeCostCalculator.multiplyTwoMicros(
+                            taskAssignment.getTask().getPowerConsumptionMicros(),
                             periodPowerPrice.getPowerPriceMicros());
                 }
                 softScore -= startPeriod;

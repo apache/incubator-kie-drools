@@ -51,7 +51,8 @@ public final class BavetGroupBiConstraintStream<Solution_, GroupKey_, ResultCont
     @Override
     public BavetGroupBiNode<GroupKey_, ResultContainer_, Result_> createNodeChain(BavetNodeBuildPolicy<Solution_> buildPolicy,
             Score<?> constraintWeight, int nodeOrder, BavetAbstractBiNode<GroupKey_, Result_> parentNode) {
-        return (BavetGroupBiNode<GroupKey_, ResultContainer_, Result_>) super.createNodeChain(buildPolicy, constraintWeight, nodeOrder, parentNode);
+        return (BavetGroupBiNode<GroupKey_, ResultContainer_, Result_>) super.createNodeChain(buildPolicy, constraintWeight,
+                nodeOrder, parentNode);
     }
 
     @Override
@@ -66,7 +67,7 @@ public final class BavetGroupBiConstraintStream<Solution_, GroupKey_, ResultCont
 
     @Override
     public String toString() {
-        return "Group() with " + childStreamList.size()  + " children";
+        return "Group() with " + childStreamList.size() + " children";
     }
 
     // ************************************************************************

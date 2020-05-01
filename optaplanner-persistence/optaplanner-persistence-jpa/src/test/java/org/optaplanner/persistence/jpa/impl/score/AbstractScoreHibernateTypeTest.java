@@ -16,7 +16,10 @@
 
 package org.optaplanner.persistence.jpa.impl.score;
 
+import static org.junit.Assert.*;
+
 import java.util.Map;
+
 import javax.naming.InitialContext;
 import javax.persistence.EntityManager;
 import javax.persistence.EntityManagerFactory;
@@ -36,8 +39,6 @@ import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.kie.test.util.db.PersistenceUtil;
 import org.optaplanner.core.api.score.Score;
-
-import static org.junit.Assert.*;
 
 public abstract class AbstractScoreHibernateTypeTest {
 
@@ -63,7 +64,8 @@ public abstract class AbstractScoreHibernateTypeTest {
             EntityManager em = entityManagerFactory.createEntityManager();
             em.persist(jpaEntity);
             transactionManager.commit();
-        } catch (NotSupportedException | SystemException | RollbackException | HeuristicRollbackException | HeuristicMixedException e) {
+        } catch (NotSupportedException | SystemException | RollbackException | HeuristicRollbackException
+                | HeuristicMixedException e) {
             throw new RuntimeException("Transaction failed.", e);
         }
         Long id = jpaEntity.getId();
@@ -95,7 +97,8 @@ public abstract class AbstractScoreHibernateTypeTest {
             jpaEntity.setScore(newScore);
             jpaEntity = em.merge(jpaEntity);
             transactionManager.commit();
-        } catch (NotSupportedException | SystemException | RollbackException | HeuristicRollbackException | HeuristicMixedException e) {
+        } catch (NotSupportedException | SystemException | RollbackException | HeuristicRollbackException
+                | HeuristicMixedException e) {
             throw new RuntimeException("Transaction failed.", e);
         }
     }
@@ -108,7 +111,8 @@ public abstract class AbstractScoreHibernateTypeTest {
             E jpaEntity = em.find(jpaEntityClass, id);
             assertEquals(score, jpaEntity.getScore());
             transactionManager.commit();
-        } catch (NotSupportedException | SystemException | RollbackException | HeuristicMixedException | HeuristicRollbackException e) {
+        } catch (NotSupportedException | SystemException | RollbackException | HeuristicMixedException
+                | HeuristicRollbackException e) {
             throw new RuntimeException("Transaction failed.", e);
         }
     }

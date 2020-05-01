@@ -228,9 +228,11 @@ public class TspWorldPanel extends JPanel {
                 ((int) width - g.getFontMetrics().stringWidth(locationsSizeString)) / 2, (int) height - 5);
         if (tspSolution.getDistanceType() == DistanceType.AIR_DISTANCE) {
             String leftClickString = "Left click and drag between 2 locations to connect them.";
-            g.drawString(leftClickString, (int) width - 5 - g.getFontMetrics().stringWidth(leftClickString), (int) height - 10 - TEXT_SIZE);
+            g.drawString(leftClickString, (int) width - 5 - g.getFontMetrics().stringWidth(leftClickString),
+                    (int) height - 10 - TEXT_SIZE);
             String rightClickString = "Right click anywhere on the map to add a visit.";
-            g.drawString(rightClickString, (int) width - 5 - g.getFontMetrics().stringWidth(rightClickString), (int) height - 5);
+            g.drawString(rightClickString, (int) width - 5 - g.getFontMetrics().stringWidth(rightClickString),
+                    (int) height - 5);
         }
         // Show soft score
         g.setColor(TangoColorFactory.ORANGE_3);

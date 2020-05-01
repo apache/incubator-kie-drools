@@ -16,6 +16,8 @@
 
 package org.optaplanner.core.impl.domain.solution.descriptor;
 
+import static org.optaplanner.core.impl.domain.common.accessor.MemberAccessorFactory.MemberAccessorType.*;
+
 import java.lang.annotation.Annotation;
 import java.lang.reflect.AnnotatedElement;
 import java.lang.reflect.Field;
@@ -35,10 +37,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.concurrent.ConcurrentMap;
-import java.util.function.Function;
 import java.util.stream.Stream;
 
-import com.google.common.collect.Iterators;
 import org.apache.commons.lang3.tuple.MutablePair;
 import org.apache.commons.lang3.tuple.Pair;
 import org.optaplanner.core.api.domain.autodiscover.AutoDiscoverMemberType;
@@ -103,7 +103,7 @@ import org.optaplanner.core.impl.score.director.ScoreDirector;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import static org.optaplanner.core.impl.domain.common.accessor.MemberAccessorFactory.MemberAccessorType.*;
+import com.google.common.collect.Iterators;
 
 /**
  * @param <Solution_> the solution type, the class with the {@link PlanningSolution} annotation
@@ -201,7 +201,8 @@ public class SolutionDescriptor<Solution_> {
         lowestEntityDescriptorMemoization.put(entityClass, entityDescriptor);
     }
 
-    public void processAnnotations(DescriptorPolicy descriptorPolicy, ScoreDefinition deprecatedScoreDefinition, List<Class<?>> entityClassList) {
+    public void processAnnotations(DescriptorPolicy descriptorPolicy, ScoreDefinition deprecatedScoreDefinition,
+            List<Class<?>> entityClassList) {
         processSolutionAnnotations(descriptorPolicy);
         ArrayList<Method> potentiallyOverwritingMethodList = new ArrayList<>();
         // Iterate inherited members too (unlike for EntityDescriptor where each one is declared)
@@ -508,7 +509,8 @@ public class SolutionDescriptor<Solution_> {
         MemberAccessor duplicate;
         Class<? extends Annotation> otherAnnotationClass;
         String memberName = memberAccessor.getName();
-        if (constraintConfigurationMemberAccessor != null && constraintConfigurationMemberAccessor.getName().equals(memberName)) {
+        if (constraintConfigurationMemberAccessor != null
+                && constraintConfigurationMemberAccessor.getName().equals(memberName)) {
             duplicate = constraintConfigurationMemberAccessor;
             otherAnnotationClass = ConstraintConfigurationProvider.class;
         } else if (problemFactMemberAccessorMap.containsKey(memberName)) {
@@ -532,8 +534,8 @@ public class SolutionDescriptor<Solution_> {
                 + ") that is duplicated by a " + otherAnnotationClass.getSimpleName()
                 + " annotated member (" + duplicate + ").\n"
                 + (annotationClass.equals(otherAnnotationClass)
-                ? "Maybe the annotation is defined on both the field and its getter."
-                : "Maybe 2 mutually exclusive annotations are configured."));
+                        ? "Maybe the annotation is defined on both the field and its getter."
+                        : "Maybe 2 mutually exclusive annotations are configured."));
     }
 
     private void processScoreAnnotation(DescriptorPolicy descriptorPolicy, Member member,
@@ -571,7 +573,8 @@ public class SolutionDescriptor<Solution_> {
         if (annotation == null) {
             // The member was autodiscovered
             try {
-                annotation = AutoDiscoverAnnotationDefaults.class.getDeclaredField("PLANNING_SCORE").getAnnotation(PlanningScore.class);
+                annotation = AutoDiscoverAnnotationDefaults.class.getDeclaredField("PLANNING_SCORE")
+                        .getAnnotation(PlanningScore.class);
             } catch (NoSuchFieldException e) {
                 throw new IllegalStateException("Impossible situation: the field (PLANNING_SCORE) must exist.", e);
             }
@@ -580,7 +583,8 @@ public class SolutionDescriptor<Solution_> {
     }
 
     private static class AutoDiscoverAnnotationDefaults {
-        @PlanningScore private static final Object PLANNING_SCORE = new Object();
+        @PlanningScore
+        private static final Object PLANNING_SCORE = new Object();
     }
 
     public ScoreDefinition buildScoreDefinition(Class<? extends Score> scoreType, PlanningScore annotation) {
@@ -610,7 +614,7 @@ public class SolutionDescriptor<Solution_> {
                 if (solutionClass == AbstractSolution.class) {
                     throw new IllegalArgumentException(
                             "The solutionClass (" + solutionClass + ") cannot be directly a "
-                            + AbstractSolution.class.getSimpleName() + ", but a subclass would be ok.");
+                                    + AbstractSolution.class.getSimpleName() + ", but a subclass would be ok.");
                 }
                 Class<?> baseClass = solutionClass;
                 while (baseClass.getSuperclass() != AbstractSolution.class) {
@@ -618,7 +622,7 @@ public class SolutionDescriptor<Solution_> {
                     if (baseClass == null) {
                         throw new IllegalStateException(
                                 "Impossible situation because the solutionClass (" + solutionClass
-                                + ") is assignable from " + AbstractSolution.class.getSimpleName() + ".");
+                                        + ") is assignable from " + AbstractSolution.class.getSimpleName() + ".");
                     }
                 }
                 Type genericAbstractSolution = solutionClass.getGenericSuperclass();
@@ -639,7 +643,7 @@ public class SolutionDescriptor<Solution_> {
                 if (!(typeArgument instanceof Class)) {
                     throw new IllegalStateException(
                             "Impossible situation because a (" + AbstractSolution.class.getSimpleName()
-                            + "'s typeArgument (" + typeArgument + ") must be a " + Score.class.getSimpleName() + ".");
+                                    + "'s typeArgument (" + typeArgument + ") must be a " + Score.class.getSimpleName() + ".");
                 }
                 scoreType = (Class<? extends Score>) typeArgument;
             }
@@ -740,8 +744,7 @@ public class SolutionDescriptor<Solution_> {
     private void determineGlobalShadowOrder() {
         // Topological sorting with Kahn's algorithm
         List<Pair<ShadowVariableDescriptor<Solution_>, Integer>> pairList = new ArrayList<>();
-        Map<ShadowVariableDescriptor<Solution_>, Pair<ShadowVariableDescriptor<Solution_>, Integer>> shadowToPairMap
-                = new HashMap<>();
+        Map<ShadowVariableDescriptor<Solution_>, Pair<ShadowVariableDescriptor<Solution_>, Integer>> shadowToPairMap = new HashMap<>();
         for (EntityDescriptor<Solution_> entityDescriptor : entityDescriptorMap.values()) {
             for (ShadowVariableDescriptor<Solution_> shadow : entityDescriptor.getDeclaredShadowVariableDescriptors()) {
                 int sourceSize = shadow.getSourceVariableDescriptorList().size();
@@ -948,9 +951,9 @@ public class SolutionDescriptor<Solution_> {
                     + ") and constraintName (" + constraintName
                     + ") must not be null.\n"
                     + (constraintConfigurationDescriptor == null ? "Maybe check your constraint implementation."
-                    : "Maybe validate the data input of your constraintConfigurationClass ("
-                    + constraintConfigurationDescriptor.getConstraintConfigurationClass()
-                    + ") for that constraint (" + constraintName + ")."));
+                            : "Maybe validate the data input of your constraintConfigurationClass ("
+                                    + constraintConfigurationDescriptor.getConstraintConfigurationClass()
+                                    + ") for that constraint (" + constraintName + ")."));
         }
         if (!scoreDefinition.getScoreClass().isAssignableFrom(constraintWeight.getClass())) {
             throw new IllegalArgumentException("The constraintWeight (" + constraintWeight
@@ -958,9 +961,9 @@ public class SolutionDescriptor<Solution_> {
                     + ") for constraintPackage (" + constraintPackage + ") and constraintName (" + constraintName
                     + ") must be of the scoreClass (" + scoreDefinition.getScoreClass() + ").\n"
                     + (constraintConfigurationDescriptor == null ? "Maybe check your constraint implementation."
-                    : "Maybe validate the data input of your constraintConfigurationClass ("
-                    + constraintConfigurationDescriptor.getConstraintConfigurationClass()
-                    + ") for that constraint (" + constraintName + ")."));
+                            : "Maybe validate the data input of your constraintConfigurationClass ("
+                                    + constraintConfigurationDescriptor.getConstraintConfigurationClass()
+                                    + ") for that constraint (" + constraintName + ")."));
         }
         if (constraintWeight.getInitScore() != 0) {
             throw new IllegalArgumentException("The constraintWeight (" + constraintWeight
@@ -968,9 +971,9 @@ public class SolutionDescriptor<Solution_> {
                     + ") and constraintName (" + constraintName
                     + ") must have an initScore (" + constraintWeight.getInitScore() + ") equal to 0.\n"
                     + (constraintConfigurationDescriptor == null ? "Maybe check your constraint implementation."
-                    : "Maybe validate the data input of your constraintConfigurationClass ("
-                    + constraintConfigurationDescriptor.getConstraintConfigurationClass()
-                    + ") for that constraint (" + constraintName + ")."));
+                            : "Maybe validate the data input of your constraintConfigurationClass ("
+                                    + constraintConfigurationDescriptor.getConstraintConfigurationClass()
+                                    + ") for that constraint (" + constraintName + ")."));
         }
         if (!scoreDefinition.isPositiveOrZero(constraintWeight)) {
             throw new IllegalArgumentException("The constraintWeight (" + constraintWeight
@@ -978,9 +981,9 @@ public class SolutionDescriptor<Solution_> {
                     + ") and constraintName (" + constraintName
                     + ") must have a positive or zero constraintWeight (" + constraintWeight + ").\n"
                     + (constraintConfigurationDescriptor == null ? "Maybe check your constraint implementation."
-                    : "Maybe validate the data input of your constraintConfigurationClass ("
-                    + constraintConfigurationDescriptor.getConstraintConfigurationClass()
-                    + ") for that constraint (" + constraintName + ")."));
+                            : "Maybe validate the data input of your constraintConfigurationClass ("
+                                    + constraintConfigurationDescriptor.getConstraintConfigurationClass()
+                                    + ") for that constraint (" + constraintName + ")."));
         }
         if (constraintWeight instanceof AbstractBendableScore) {
             AbstractBendableScore bendableConstraintWeight = (AbstractBendableScore) constraintWeight;
@@ -996,9 +999,9 @@ public class SolutionDescriptor<Solution_> {
                         + bendableScoreDefinition.getHardLevelsSize()
                         + ") or softLevelsSize (" + bendableScoreDefinition.getSoftLevelsSize() + ").\n"
                         + (constraintConfigurationDescriptor == null ? "Maybe check your constraint implementation."
-                        : "Maybe validate the data input of your constraintConfigurationClass ("
-                        + constraintConfigurationDescriptor.getConstraintConfigurationClass()
-                        + ") for that constraint (" + constraintName + ")."));
+                                : "Maybe validate the data input of your constraintConfigurationClass ("
+                                        + constraintConfigurationDescriptor.getConstraintConfigurationClass()
+                                        + ") for that constraint (" + constraintName + ")."));
             }
         }
     }
@@ -1012,11 +1015,11 @@ public class SolutionDescriptor<Solution_> {
         // Adds both entities and facts
         Arrays.asList(entityMemberAccessorMap, problemFactMemberAccessorMap)
                 .forEach(map -> map.forEach((key, memberAccessor) -> {
-            Object object = extractMemberObject(memberAccessor, solution);
-            if (object != null) {
-                facts.add(object);
-            }
-        }));
+                    Object object = extractMemberObject(memberAccessor, solution);
+                    if (object != null) {
+                        facts.add(object);
+                    }
+                }));
         entityCollectionMemberAccessorMap.forEach(
                 (key, memberAccessor) -> facts.addAll(extractMemberCollectionOrArray(memberAccessor, solution, false)));
         problemFactCollectionMemberAccessorMap.forEach(
@@ -1037,7 +1040,8 @@ public class SolutionDescriptor<Solution_> {
             }
         }
         for (MemberAccessor entityCollectionMemberAccessor : entityCollectionMemberAccessorMap.values()) {
-            Collection<Object> entityCollection = extractMemberCollectionOrArray(entityCollectionMemberAccessor, solution, false);
+            Collection<Object> entityCollection = extractMemberCollectionOrArray(entityCollectionMemberAccessor, solution,
+                    false);
             entityCount += entityCollection.size();
         }
         return entityCount;
@@ -1052,7 +1056,8 @@ public class SolutionDescriptor<Solution_> {
             }
         }
         for (MemberAccessor entityCollectionMemberAccessor : entityCollectionMemberAccessorMap.values()) {
-            Collection<Object> entityCollection = extractMemberCollectionOrArray(entityCollectionMemberAccessor, solution, false);
+            Collection<Object> entityCollection = extractMemberCollectionOrArray(entityCollectionMemberAccessor, solution,
+                    false);
             entityList.addAll(entityCollection);
         }
         return entityList;
@@ -1070,7 +1075,8 @@ public class SolutionDescriptor<Solution_> {
         }
         for (MemberAccessor entityCollectionMemberAccessor : entityCollectionMemberAccessorMap.values()) {
             // TODO if (entityCollectionPropertyAccessor.getPropertyType().getElementType().isAssignableFrom(entityClass)) {
-            Collection<Object> entityCollection = extractMemberCollectionOrArray(entityCollectionMemberAccessor, solution, false);
+            Collection<Object> entityCollection = extractMemberCollectionOrArray(entityCollectionMemberAccessor, solution,
+                    false);
             for (Object entity : entityCollection) {
                 if (entityClass.isInstance(entity)) {
                     entityList.add(entity);
@@ -1087,7 +1093,8 @@ public class SolutionDescriptor<Solution_> {
     public int getMovableEntityCount(ScoreDirector<Solution_> scoreDirector) {
         return extractAllEntitiesStream(scoreDirector.getWorkingSolution())
                 .mapToInt(entity -> findEntityDescriptorOrFail(entity.getClass()).isMovable(scoreDirector, entity)
-                        ? 1 : 0)
+                        ? 1
+                        : 0)
                 .sum();
     }
 
@@ -1122,6 +1129,7 @@ public class SolutionDescriptor<Solution_> {
     /**
      * Calculates an indication on how big this problem instance is.
      * This is intentionally very loosely defined for now.
+     * 
      * @param solution never null
      * @return {@code >= 0}
      */
@@ -1188,7 +1196,7 @@ public class SolutionDescriptor<Solution_> {
                     + ")'s " + (isFact ? "factCollectionProperty" : "entityCollectionProperty") + " ("
                     + memberAccessor + ") should never return null.\n"
                     + (memberAccessor instanceof ReflectionFieldMemberAccessor ? ""
-                    : "Maybe the getter/method always returns null instead of the actual data.\n")
+                            : "Maybe the getter/method always returns null instead of the actual data.\n")
                     + "Maybe that property (" + memberAccessor.getName()
                     + ") was set with null instead of an empty collection/array when the class ("
                     + solutionClass.getSimpleName() + ") instance was created.");
@@ -1206,9 +1214,10 @@ public class SolutionDescriptor<Solution_> {
 
     /**
      * Called when the {@link Score} has been calculated or predicted.
+     * 
      * @param solution never null
      * @param score sometimes null, in rare occasions to indicate that the old {@link Score} is stale,
-     * but no new ones has been calculated
+     *        but no new ones has been calculated
      */
     public void setScore(Solution_ solution, Score score) {
         scoreMemberAccessor.executeSetter(solution, score);

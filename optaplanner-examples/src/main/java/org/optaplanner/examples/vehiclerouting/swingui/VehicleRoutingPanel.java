@@ -18,6 +18,7 @@ package org.optaplanner.examples.vehiclerouting.swingui;
 
 import java.awt.BorderLayout;
 import java.util.Random;
+
 import javax.swing.JTabbedPane;
 
 import org.optaplanner.core.impl.solver.random.RandomUtils;

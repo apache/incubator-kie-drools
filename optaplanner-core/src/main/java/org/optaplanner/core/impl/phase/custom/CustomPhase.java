@@ -22,6 +22,7 @@ import org.optaplanner.core.impl.phase.Phase;
 
 /**
  * A {@link CustomPhase} is a {@link Phase} which uses {@link CustomPhaseCommand}s.
+ * 
  * @param <Solution_> the solution type, the class with the {@link PlanningSolution} annotation
  * @see Phase
  * @see AbstractPhase

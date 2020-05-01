@@ -16,14 +16,14 @@
 
 package org.optaplanner.core.impl.domain.valuerange.buildin.primboolean;
 
-import java.util.Random;
-
-import org.junit.jupiter.api.Test;
-
 import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
 import static org.junit.Assert.assertEquals;
 import static org.mockito.Mockito.*;
 import static org.optaplanner.core.impl.testdata.util.PlannerAssert.*;
+
+import java.util.Random;
+
+import org.junit.jupiter.api.Test;
 
 public class BooleanValueRangeTest {
 

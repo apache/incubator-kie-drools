@@ -28,8 +28,7 @@ import org.optaplanner.persistence.xstream.impl.domain.solution.XStreamSolutionF
 
 public class CheapTimeApp extends CommonApp<CheapTimeSolution> {
 
-    public static final String SOLVER_CONFIG
-            = "org/optaplanner/examples/cheaptime/solver/cheapTimeSolverConfig.xml";
+    public static final String SOLVER_CONFIG = "org/optaplanner/examples/cheaptime/solver/cheapTimeSolverConfig.xml";
 
     public static final String DATA_DIR_NAME = "cheaptime";
 
@@ -41,10 +40,10 @@ public class CheapTimeApp extends CommonApp<CheapTimeSolution> {
     public CheapTimeApp() {
         super("Cheap time scheduling",
                 "Official competition name: ICON Challenge on Forecasting and Scheduling\n\n" +
-                "Assign tasks to machines and time.\n\n" +
-                "Each machine must have enough hardware to run all of its tasks.\n" +
-                "Each task and machine consumes power. The power price differs over time.\n" +
-                "Minimize the power cost.",
+                        "Assign tasks to machines and time.\n\n" +
+                        "Each machine must have enough hardware to run all of its tasks.\n" +
+                        "Each task and machine consumes power. The power price differs over time.\n" +
+                        "Minimize the power cost.",
                 SOLVER_CONFIG, DATA_DIR_NAME,
                 CheapTimePanel.LOGO_PATH);
     }
@@ -61,7 +60,7 @@ public class CheapTimeApp extends CommonApp<CheapTimeSolution> {
 
     @Override
     protected AbstractSolutionImporter[] createSolutionImporters() {
-        return new AbstractSolutionImporter[]{
+        return new AbstractSolutionImporter[] {
                 new CheapTimeImporter()
         };
     }

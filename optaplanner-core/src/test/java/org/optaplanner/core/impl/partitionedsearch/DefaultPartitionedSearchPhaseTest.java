@@ -15,6 +15,10 @@
  */
 package org.optaplanner.core.impl.partitionedsearch;
 
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.junit.Assert.*;
+import static org.junit.Assert.fail;
+
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Map;
@@ -46,10 +50,6 @@ import org.optaplanner.core.impl.testdata.domain.TestdataSolution;
 import org.optaplanner.core.impl.testdata.domain.TestdataValue;
 import org.optaplanner.core.impl.testdata.util.PlannerTestUtils;
 
-import static org.assertj.core.api.Assertions.assertThat;
-import static org.junit.Assert.fail;
-import static org.junit.Assert.*;
-
 public class DefaultPartitionedSearchPhaseTest {
 
     @Test
@@ -69,8 +69,8 @@ public class DefaultPartitionedSearchPhaseTest {
         final int partCount = 7;
         SolverFactory<TestdataSolution> solverFactory = createSolverFactory(false, moveThreadCount, partSize);
         DefaultSolver<TestdataSolution> solver = (DefaultSolver<TestdataSolution>) solverFactory.buildSolver();
-        PartitionedSearchPhase<TestdataSolution> phase
-                = (PartitionedSearchPhase<TestdataSolution>) solver.getPhaseList().get(0);
+        PartitionedSearchPhase<TestdataSolution> phase = (PartitionedSearchPhase<TestdataSolution>) solver.getPhaseList()
+                .get(0);
         phase.addPhaseLifecycleListener(new PhaseLifecycleListenerAdapter<TestdataSolution>() {
             @Override
             public void phaseStarted(AbstractPhaseScope<TestdataSolution> phaseScope) {
@@ -104,12 +104,10 @@ public class DefaultPartitionedSearchPhaseTest {
         TestdataSolution solution = new TestdataSolution();
         solution.setEntityList(IntStream.range(0, entities)
                 .mapToObj(i -> new TestdataEntity(Character.toString((char) (65 + i))))
-                .collect(Collectors.toList())
-        );
+                .collect(Collectors.toList()));
         solution.setValueList(IntStream.range(0, values)
                 .mapToObj(i -> new TestdataValue(Integer.toString(i)))
-                .collect(Collectors.toList())
-        );
+                .collect(Collectors.toList()));
         return solution;
     }
 
@@ -123,7 +121,8 @@ public class DefaultPartitionedSearchPhaseTest {
         solution.getEntityList().add(new TestdataFaultyEntity("XYZ"));
         assertEquals(partSize * partCount, solution.getEntityList().size());
 
-        SolverFactory<TestdataSolution> solverFactory = createSolverFactory(false, SolverConfig.MOVE_THREAD_COUNT_NONE, partSize);
+        SolverFactory<TestdataSolution> solverFactory = createSolverFactory(false, SolverConfig.MOVE_THREAD_COUNT_NONE,
+                partSize);
         Solver<TestdataSolution> solver = solverFactory.buildSolver();
         try {
             solver.solve(solution);
@@ -142,16 +141,17 @@ public class DefaultPartitionedSearchPhaseTest {
 
         TestdataSolution solution = createSolution(partCount * partSize, 10);
 
-        SolverFactory<TestdataSolution> solverFactory = createSolverFactory(true, SolverConfig.MOVE_THREAD_COUNT_NONE, partSize);
+        SolverFactory<TestdataSolution> solverFactory = createSolverFactory(true, SolverConfig.MOVE_THREAD_COUNT_NONE,
+                partSize);
         Solver<TestdataSolution> solver = solverFactory.buildSolver();
         CountDownLatch solvingStarted = new CountDownLatch(1);
         ((DefaultSolver<TestdataSolution>) solver).addPhaseLifecycleListener(
                 new PhaseLifecycleListenerAdapter<TestdataSolution>() {
-            @Override
-            public void solvingStarted(DefaultSolverScope<TestdataSolution> solverScope) {
-                solvingStarted.countDown();
-            }
-        });
+                    @Override
+                    public void solvingStarted(DefaultSolverScope<TestdataSolution> solverScope) {
+                        solvingStarted.countDown();
+                    }
+                });
 
         ExecutorService executor = Executors.newSingleThreadExecutor();
         Future<TestdataSolution> solutionFuture = executor.submit(() -> {
@@ -178,7 +178,8 @@ public class DefaultPartitionedSearchPhaseTest {
         CountDownLatch sleepAnnouncement = new CountDownLatch(1);
         solution.getEntityList().add(new TestdataSleepingEntity("XYZ", sleepAnnouncement));
 
-        SolverFactory<TestdataSolution> solverFactory = createSolverFactory(true, SolverConfig.MOVE_THREAD_COUNT_NONE, partSize);
+        SolverFactory<TestdataSolution> solverFactory = createSolverFactory(true, SolverConfig.MOVE_THREAD_COUNT_NONE,
+                partSize);
         Solver<TestdataSolution> solver = solverFactory.buildSolver();
 
         ExecutorService executor = Executors.newSingleThreadExecutor();

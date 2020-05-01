@@ -15,6 +15,8 @@
  */
 package org.optaplanner.core.impl.score.director.drools.testgen.fact;
 
+import static org.junit.Assert.*;
+
 import java.lang.reflect.Field;
 import java.lang.reflect.Method;
 import java.util.ArrayList;
@@ -28,8 +30,6 @@ import org.optaplanner.core.impl.testdata.domain.TestdataEntity;
 import org.optaplanner.core.impl.testdata.domain.TestdataValue;
 import org.optaplanner.core.impl.testdata.domain.collection.TestdataEntityCollectionPropertyEntity;
 import org.optaplanner.core.impl.testdata.domain.testgen.TestdataGetterSetterTypeMismatch;
-
-import static org.junit.Assert.*;
 
 public class TestGenValueFactTest {
 

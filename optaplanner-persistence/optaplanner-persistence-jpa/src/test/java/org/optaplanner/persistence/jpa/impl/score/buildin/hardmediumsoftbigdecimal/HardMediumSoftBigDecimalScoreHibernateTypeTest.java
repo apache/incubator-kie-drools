@@ -17,6 +17,7 @@
 package org.optaplanner.persistence.jpa.impl.score.buildin.hardmediumsoftbigdecimal;
 
 import java.math.BigDecimal;
+
 import javax.persistence.Column;
 import javax.persistence.Entity;
 
@@ -31,8 +32,10 @@ public class HardMediumSoftBigDecimalScoreHibernateTypeTest extends AbstractScor
     @Test
     public void persistAndMerge() {
         persistAndMerge(new TestJpaEntity(HardMediumSoftBigDecimalScore.ZERO),
-                HardMediumSoftBigDecimalScore.of(new BigDecimal("-10.01000"), new BigDecimal("-4.32100"), new BigDecimal("-2.20000")),
-                HardMediumSoftBigDecimalScore.ofUninitialized(-7, new BigDecimal("-10.01000"), new BigDecimal("-4.32100"), new BigDecimal("-2.20000")));
+                HardMediumSoftBigDecimalScore.of(new BigDecimal("-10.01000"), new BigDecimal("-4.32100"),
+                        new BigDecimal("-2.20000")),
+                HardMediumSoftBigDecimalScore.ofUninitialized(-7, new BigDecimal("-10.01000"), new BigDecimal("-4.32100"),
+                        new BigDecimal("-2.20000")));
     }
 
     @Entity
@@ -53,7 +56,7 @@ public class HardMediumSoftBigDecimalScoreHibernateTypeTest extends AbstractScor
                 @Column(name = "initScore"),
                 @Column(name = "hardScore", precision = 10, scale = 5),
                 @Column(name = "mediumScore", precision = 10, scale = 5),
-                @Column(name = "softScore", precision = 10, scale = 5)})
+                @Column(name = "softScore", precision = 10, scale = 5) })
         public HardMediumSoftBigDecimalScore getScore() {
             return score;
         }

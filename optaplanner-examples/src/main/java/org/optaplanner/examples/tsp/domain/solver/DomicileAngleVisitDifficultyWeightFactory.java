@@ -16,14 +16,14 @@
 
 package org.optaplanner.examples.tsp.domain.solver;
 
+import static java.util.Comparator.*;
+
 import java.util.Comparator;
 
 import org.optaplanner.core.impl.heuristic.selector.common.decorator.SelectionSorterWeightFactory;
 import org.optaplanner.examples.tsp.domain.Domicile;
 import org.optaplanner.examples.tsp.domain.TspSolution;
 import org.optaplanner.examples.tsp.domain.Visit;
-
-import static java.util.Comparator.*;
 
 /**
  * On large datasets, the constructed solution looks like pizza slices.
@@ -43,8 +43,8 @@ public class DomicileAngleVisitDifficultyWeightFactory
     public static class DomicileAngleVisitDifficultyWeight
             implements Comparable<DomicileAngleVisitDifficultyWeight> {
 
-        private static final Comparator<DomicileAngleVisitDifficultyWeight> COMPARATOR =
-                comparingDouble((DomicileAngleVisitDifficultyWeight weight) -> weight.domicileAngle)
+        private static final Comparator<DomicileAngleVisitDifficultyWeight> COMPARATOR = comparingDouble(
+                (DomicileAngleVisitDifficultyWeight weight) -> weight.domicileAngle)
                         .thenComparingLong(weight -> weight.domicileRoundTripDistance) // Ascending (further from the depot are more difficult)
                         .thenComparing(weight -> weight.visit, comparingLong(Visit::getId));
 

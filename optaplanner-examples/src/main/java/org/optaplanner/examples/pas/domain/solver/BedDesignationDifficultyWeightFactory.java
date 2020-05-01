@@ -16,15 +16,15 @@
 
 package org.optaplanner.examples.pas.domain.solver;
 
+import static java.util.Comparator.comparing;
+import static java.util.Comparator.comparingInt;
+
 import java.util.Comparator;
 
 import org.optaplanner.core.impl.heuristic.selector.common.decorator.SelectionSorterWeightFactory;
 import org.optaplanner.examples.pas.domain.BedDesignation;
 import org.optaplanner.examples.pas.domain.PatientAdmissionSchedule;
 import org.optaplanner.examples.pas.domain.Room;
-
-import static java.util.Comparator.comparing;
-import static java.util.Comparator.comparingInt;
 
 public class BedDesignationDifficultyWeightFactory
         implements SelectionSorterWeightFactory<PatientAdmissionSchedule, BedDesignation> {
@@ -44,8 +44,8 @@ public class BedDesignationDifficultyWeightFactory
 
     public static class BedDesignationDifficultyWeight implements Comparable<BedDesignationDifficultyWeight> {
 
-        private static final Comparator<BedDesignationDifficultyWeight> COMPARATOR =
-                comparingInt((BedDesignationDifficultyWeight weight) -> weight.requiredEquipmentCount * weight.nightCount)
+        private static final Comparator<BedDesignationDifficultyWeight> COMPARATOR = comparingInt(
+                (BedDesignationDifficultyWeight weight) -> weight.requiredEquipmentCount * weight.nightCount)
                         .thenComparingInt(weight -> weight.hardDisallowedCount * weight.nightCount)
                         .thenComparingInt(weight -> weight.nightCount)
                         .thenComparingInt(weight -> weight.softDisallowedCount * weight.nightCount)

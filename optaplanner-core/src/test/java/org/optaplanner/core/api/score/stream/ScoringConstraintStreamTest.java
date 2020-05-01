@@ -16,6 +16,10 @@
 
 package org.optaplanner.core.api.score.stream;
 
+import static java.util.function.Function.identity;
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.optaplanner.core.api.score.stream.Joiners.equal;
+
 import java.math.BigDecimal;
 
 import org.junit.jupiter.api.TestTemplate;
@@ -31,10 +35,6 @@ import org.optaplanner.core.impl.testdata.domain.score.lavish.TestdataLavishEnti
 import org.optaplanner.core.impl.testdata.domain.score.lavish.TestdataLavishSolution;
 import org.optaplanner.core.impl.testdata.domain.score.lavish.TestdataLavishValue;
 
-import static java.util.function.Function.identity;
-import static org.assertj.core.api.Assertions.assertThat;
-import static org.optaplanner.core.api.score.stream.Joiners.equal;
-
 public class ScoringConstraintStreamTest extends AbstractConstraintStreamTest {
 
     public ScoringConstraintStreamTest(boolean constraintMatchEnabled, ConstraintStreamImplType constraintStreamImplType) {
@@ -45,8 +45,8 @@ public class ScoringConstraintStreamTest extends AbstractConstraintStreamTest {
     public void penalizeUniUnweighed() {
         TestdataLavishSolution solution = TestdataLavishSolution.generateSolution();
 
-        InnerScoreDirector<TestdataLavishSolution> scoreDirector =
-                buildScoreDirector(factory -> factory.from(TestdataLavishEntity.class)
+        InnerScoreDirector<TestdataLavishSolution> scoreDirector = buildScoreDirector(
+                factory -> factory.from(TestdataLavishEntity.class)
                         .penalize(TEST_CONSTRAINT_NAME, SimpleScore.ONE));
 
         scoreDirector.setWorkingSolution(solution);
@@ -58,8 +58,8 @@ public class ScoringConstraintStreamTest extends AbstractConstraintStreamTest {
     public void penalizeUni() {
         TestdataLavishSolution solution = TestdataLavishSolution.generateSolution();
 
-        InnerScoreDirector<TestdataLavishSolution> scoreDirector =
-                buildScoreDirector(factory -> factory.from(TestdataLavishEntity.class)
+        InnerScoreDirector<TestdataLavishSolution> scoreDirector = buildScoreDirector(
+                factory -> factory.from(TestdataLavishEntity.class)
                         .penalize(TEST_CONSTRAINT_NAME, SimpleScore.ONE, entity -> 2));
 
         scoreDirector.setWorkingSolution(solution);
@@ -99,8 +99,8 @@ public class ScoringConstraintStreamTest extends AbstractConstraintStreamTest {
     public void rewardUniUnweighed() {
         TestdataLavishSolution solution = TestdataLavishSolution.generateSolution();
 
-        InnerScoreDirector<TestdataLavishSolution> scoreDirector =
-                buildScoreDirector(factory -> factory.from(TestdataLavishEntity.class)
+        InnerScoreDirector<TestdataLavishSolution> scoreDirector = buildScoreDirector(
+                factory -> factory.from(TestdataLavishEntity.class)
                         .reward(TEST_CONSTRAINT_NAME, SimpleScore.ONE));
 
         scoreDirector.setWorkingSolution(solution);
@@ -112,8 +112,8 @@ public class ScoringConstraintStreamTest extends AbstractConstraintStreamTest {
     public void rewardUni() {
         TestdataLavishSolution solution = TestdataLavishSolution.generateSolution();
 
-        InnerScoreDirector<TestdataLavishSolution> scoreDirector =
-                buildScoreDirector(factory -> factory.from(TestdataLavishEntity.class)
+        InnerScoreDirector<TestdataLavishSolution> scoreDirector = buildScoreDirector(
+                factory -> factory.from(TestdataLavishEntity.class)
                         .reward(TEST_CONSTRAINT_NAME, SimpleScore.ONE, entity -> 2));
 
         scoreDirector.setWorkingSolution(solution);
@@ -153,8 +153,8 @@ public class ScoringConstraintStreamTest extends AbstractConstraintStreamTest {
     public void impactPositiveUniUnweighed() {
         TestdataLavishSolution solution = TestdataLavishSolution.generateSolution();
 
-        InnerScoreDirector<TestdataLavishSolution> scoreDirector =
-                buildScoreDirector(factory -> factory.from(TestdataLavishEntity.class)
+        InnerScoreDirector<TestdataLavishSolution> scoreDirector = buildScoreDirector(
+                factory -> factory.from(TestdataLavishEntity.class)
                         .impact(TEST_CONSTRAINT_NAME, SimpleScore.ONE));
 
         scoreDirector.setWorkingSolution(solution);
@@ -166,8 +166,8 @@ public class ScoringConstraintStreamTest extends AbstractConstraintStreamTest {
     public void impactPositiveUni() {
         TestdataLavishSolution solution = TestdataLavishSolution.generateSolution();
 
-        InnerScoreDirector<TestdataLavishSolution> scoreDirector =
-                buildScoreDirector(factory -> factory.from(TestdataLavishEntity.class)
+        InnerScoreDirector<TestdataLavishSolution> scoreDirector = buildScoreDirector(
+                factory -> factory.from(TestdataLavishEntity.class)
                         .impact(TEST_CONSTRAINT_NAME, SimpleScore.ONE, entity -> 2));
 
         scoreDirector.setWorkingSolution(solution);
@@ -207,8 +207,8 @@ public class ScoringConstraintStreamTest extends AbstractConstraintStreamTest {
     public void impactNegativeUni() {
         TestdataLavishSolution solution = TestdataLavishSolution.generateSolution();
 
-        InnerScoreDirector<TestdataLavishSolution> scoreDirector =
-                buildScoreDirector(factory -> factory.from(TestdataLavishEntity.class)
+        InnerScoreDirector<TestdataLavishSolution> scoreDirector = buildScoreDirector(
+                factory -> factory.from(TestdataLavishEntity.class)
                         .impact(TEST_CONSTRAINT_NAME, SimpleScore.ONE, entity -> -2));
 
         scoreDirector.setWorkingSolution(solution);

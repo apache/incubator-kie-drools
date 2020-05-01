@@ -16,13 +16,15 @@
 
 package org.optaplanner.persistence.jackson.api.score.buildin.simplelong;
 
-import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
-import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 import org.junit.jupiter.api.Test;
 import org.optaplanner.core.api.score.buildin.simplelong.SimpleLongScore;
 import org.optaplanner.persistence.jackson.api.score.AbstractScoreJacksonJsonSerializerAndDeserializerTest;
 
-public class SimpleLongScoreJacksonJsonSerializerAndDeserializerTest extends AbstractScoreJacksonJsonSerializerAndDeserializerTest {
+import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
+import com.fasterxml.jackson.databind.annotation.JsonSerialize;
+
+public class SimpleLongScoreJacksonJsonSerializerAndDeserializerTest
+        extends AbstractScoreJacksonJsonSerializerAndDeserializerTest {
 
     @Test
     public void serializeAndDeserialize() {
@@ -33,7 +35,8 @@ public class SimpleLongScoreJacksonJsonSerializerAndDeserializerTest extends Abs
         assertSerializeAndDeserialize(score, new TestSimpleLongScoreWrapper(score));
     }
 
-    public static class TestSimpleLongScoreWrapper extends AbstractScoreJacksonJsonSerializerAndDeserializerTest.TestScoreWrapper<SimpleLongScore> {
+    public static class TestSimpleLongScoreWrapper
+            extends AbstractScoreJacksonJsonSerializerAndDeserializerTest.TestScoreWrapper<SimpleLongScore> {
 
         @JsonSerialize(using = SimpleLongScoreJacksonJsonSerializer.class)
         @JsonDeserialize(using = SimpleLongScoreJacksonJsonDeserializer.class)

@@ -16,6 +16,10 @@
 
 package org.optaplanner.core.impl.score.stream.drools.uni;
 
+import static org.drools.model.DSL.on;
+import static org.drools.model.PatternDSL.alphaIndexedBy;
+import static org.drools.model.PatternDSL.betaIndexedBy;
+
 import java.math.BigDecimal;
 import java.util.Arrays;
 import java.util.List;
@@ -58,10 +62,6 @@ import org.optaplanner.core.impl.score.stream.drools.common.TriTuple;
 import org.optaplanner.core.impl.score.stream.drools.quad.DroolsQuadCondition;
 import org.optaplanner.core.impl.score.stream.drools.tri.DroolsTriCondition;
 
-import static org.drools.model.DSL.on;
-import static org.drools.model.PatternDSL.alphaIndexedBy;
-import static org.drools.model.PatternDSL.betaIndexedBy;
-
 public final class DroolsUniCondition<A, PatternVar>
         extends DroolsCondition<PatternVar, DroolsUniRuleStructure<A, PatternVar>> {
 
@@ -100,21 +100,17 @@ public final class DroolsUniCondition<A, PatternVar>
 
     public DroolsUniCondition<A, PatternVar> andFilter(Predicate<A> predicate) {
         boolean shouldMergeFilters = (previousFilter != null);
-        Predicate<A> actualPredicate = shouldMergeFilters ?
-                previousFilter.predicate.and(predicate) :
-                predicate;
+        Predicate<A> actualPredicate = shouldMergeFilters ? previousFilter.predicate.and(predicate) : predicate;
         Predicate1<PatternVar> filter = a -> actualPredicate.test((A) a);
         AlphaIndex<PatternVar, Boolean> index = alphaIndexedBy(Boolean.class, Index.ConstraintType.EQUAL, -1,
                 a -> actualPredicate.test((A) a), true);
-        UnaryOperator<PatternDef<PatternVar>> patternWithFilter =
-                p -> p.expr("Filter using " + actualPredicate, filter, index);
+        UnaryOperator<PatternDef<PatternVar>> patternWithFilter = p -> p.expr("Filter using " + actualPredicate, filter, index);
         // If we're merging consecutive filters, amend the original rule structure, before the first filter was applied.
-        DroolsUniRuleStructure<A, PatternVar> actualStructure = shouldMergeFilters ?
-                previousFilter.ruleStructure :
-                ruleStructure;
+        DroolsUniRuleStructure<A, PatternVar> actualStructure = shouldMergeFilters ? previousFilter.ruleStructure
+                : ruleStructure;
         DroolsUniRuleStructure<A, PatternVar> newStructure = actualStructure.amend(patternWithFilter);
-        ImmediatelyPreviousFilter<Predicate<A>> newPreviousFilter =
-                new ImmediatelyPreviousFilter<Predicate<A>>(actualStructure, actualPredicate);
+        ImmediatelyPreviousFilter<Predicate<A>> newPreviousFilter = new ImmediatelyPreviousFilter<Predicate<A>>(actualStructure,
+                actualPredicate);
         // Carry forward the information for filter merging.
         return new DroolsUniCondition<>(newStructure, newPreviousFilter);
     }
@@ -156,8 +152,8 @@ public final class DroolsUniCondition<A, PatternVar>
                 collector, getRuleStructure().getA()));
     }
 
-    public <NewA, NewB, NewC, NewD> DroolsQuadCondition<NewA, NewB, NewC, NewD, QuadTuple<NewA, NewB, NewC, NewD>>
-    andGroupBiWithCollectBi(Function<A, NewA> groupKeyAMapping, Function<A, NewB> groupKeyBMapping,
+    public <NewA, NewB, NewC, NewD> DroolsQuadCondition<NewA, NewB, NewC, NewD, QuadTuple<NewA, NewB, NewC, NewD>> andGroupBiWithCollectBi(
+            Function<A, NewA> groupKeyAMapping, Function<A, NewB> groupKeyBMapping,
             UniConstraintCollector<A, ?, NewC> collectorC, UniConstraintCollector<A, ?, NewD> collectorD) {
         return groupBiWithCollectBi(() -> new DroolsUniToQuadGroupByInvoker<>(groupKeyAMapping, groupKeyBMapping,
                 collectorC, collectorD, getRuleStructure().getA()));
@@ -191,11 +187,11 @@ public final class DroolsUniCondition<A, PatternVar>
                 return joinerType.matches(a, rightExtractor.apply(b));
             };
             bJoiner = bJoiner.andThen(p -> {
-                        BetaIndex<BPatternVar, A, Object> index = betaIndexedBy(Object.class, getConstraintType(joinerType),
-                                currentMappingIndex, rightExtractor, leftMapping::apply);
-                        return p.expr("Join using joiner #" + currentMappingIndex + " in " + biJoiner,
-                                joinVars[currentMappingIndex], predicate, index);
-                    });
+                BetaIndex<BPatternVar, A, Object> index = betaIndexedBy(Object.class, getConstraintType(joinerType),
+                        currentMappingIndex, rightExtractor, leftMapping::apply);
+                return p.expr("Join using joiner #" + currentMappingIndex + " in " + biJoiner,
+                        joinVars[currentMappingIndex], predicate, index);
+            });
         }
         DroolsUniRuleStructure<B, BPatternVar> newBRuleStructure = bCondition.ruleStructure.amend(bJoiner::apply);
         // And finally we return the new condition that is based on the new A and B patterns.
@@ -232,18 +228,14 @@ public final class DroolsUniCondition<A, PatternVar>
                     throw new IllegalStateException("Indexing joiner (" + biJoiner + ") must not follow a filtering joiner ("
                             + biJoiners[indexOfFirstFilter] + ").");
                 } else { // Merge this Joiner with the existing Joiners.
-                    finalJoiner = finalJoiner == null ?
-                            biJoiner :
-                            AbstractBiJoiner.merge(finalJoiner, biJoiner);
+                    finalJoiner = finalJoiner == null ? biJoiner : AbstractBiJoiner.merge(finalJoiner, biJoiner);
                 }
             } else {
                 if (!hasAFilter) { // From now on, we only allow filtering joiners.
                     indexOfFirstFilter = i;
                 }
                 // We merge all filters into one, so that we don't pay the penalty for lack of indexing more than once.
-                finalFilter = finalFilter == null ?
-                        biJoiner.getFilter() :
-                        finalFilter.and(biJoiner.getFilter());
+                finalFilter = finalFilter == null ? biJoiner.getFilter() : finalFilter.and(biJoiner.getFilter());
             }
         }
         return applyJoiners(otherClass, finalJoiner, finalFilter, shouldExist);
@@ -291,9 +283,8 @@ public final class DroolsUniCondition<A, PatternVar>
     private <B> DroolsUniCondition<A, PatternVar> applyFilters(
             DroolsUniRuleStructure<A, PatternVar> targetRuleStructure, PatternDef<B> existencePattern,
             BiPredicate<A, B> biPredicate, boolean shouldExist) {
-        PatternDef<B> possiblyFilteredExistencePattern = biPredicate == null ?
-                existencePattern :
-                existencePattern.expr("Filter using " + biPredicate, ruleStructure.getA(),
+        PatternDef<B> possiblyFilteredExistencePattern = biPredicate == null ? existencePattern
+                : existencePattern.expr("Filter using " + biPredicate, ruleStructure.getA(),
                         (b, a) -> biPredicate.test(a, b));
         return new DroolsUniCondition<>(targetRuleStructure.existsOrNot(possiblyFilteredExistencePattern, shouldExist));
     }

@@ -33,8 +33,8 @@ public class CloudBalancingBenchmarkApp extends CommonBenchmarkApp {
                 new ArgOption("scoreDirector",
                         "org/optaplanner/examples/cloudbalancing/optional/benchmark/cloudBalancingScoreDirectorBenchmarkConfig.xml"),
                 new ArgOption("template",
-                        "org/optaplanner/examples/cloudbalancing/optional/benchmark/cloudBalancingBenchmarkConfigTemplate.xml.ftl", true)
-        );
+                        "org/optaplanner/examples/cloudbalancing/optional/benchmark/cloudBalancingBenchmarkConfigTemplate.xml.ftl",
+                        true));
     }
 
 }

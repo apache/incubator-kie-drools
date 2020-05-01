@@ -30,7 +30,7 @@ import java.io.File;
 import java.util.List;
 import java.util.concurrent.ExecutionException;
 import java.util.function.BiConsumer;
-import java.util.function.Consumer;
+
 import javax.swing.AbstractAction;
 import javax.swing.Action;
 import javax.swing.BorderFactory;
@@ -103,7 +103,6 @@ public class SolverAndPersistenceFrame<Solution_> extends JFrame {
     private JTextField scoreField;
     private ShowConstraintMatchesDialogAction showConstraintMatchesDialogAction;
 
-
     public SolverAndPersistenceFrame(SolutionBusiness<Solution_> solutionBusiness,
             SolutionPanel<Solution_> solutionPanel, CommonApp.ExtraAction<Solution_>[] extraActions) {
         super(solutionBusiness.getAppName() + " OptaPlanner example");
@@ -114,8 +113,7 @@ public class SolverAndPersistenceFrame<Solution_> extends JFrame {
         solutionPanel.setSolverAndPersistenceFrame(this);
         this.extraActions = new Action[extraActions.length];
         for (int i = 0; i < extraActions.length; i++) {
-            BiConsumer<SolutionBusiness<Solution_>, SolutionPanel<Solution_>> consumer
-                    = extraActions[i].getConsumer();
+            BiConsumer<SolutionBusiness<Solution_>, SolutionPanel<Solution_>> consumer = extraActions[i].getConsumer();
             this.extraActions[i] = new AbstractAction(extraActions[i].getName()) {
                 @Override
                 public void actionPerformed(ActionEvent e) {
@@ -320,8 +318,9 @@ public class SolverAndPersistenceFrame<Solution_> extends JFrame {
             horizontalGroup.addComponent(extraButton);
         }
         horizontalGroup.addPreferredGap(LayoutStyle.ComponentPlacement.UNRELATED,
-                    GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE);
-        horizontalGroup.addComponent(solvePanel, GroupLayout.PREFERRED_SIZE, GroupLayout.PREFERRED_SIZE, GroupLayout.PREFERRED_SIZE);
+                GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE);
+        horizontalGroup.addComponent(solvePanel, GroupLayout.PREFERRED_SIZE, GroupLayout.PREFERRED_SIZE,
+                GroupLayout.PREFERRED_SIZE);
         horizontalGroup.addComponent(progressBar, 20, GroupLayout.PREFERRED_SIZE, GroupLayout.PREFERRED_SIZE);
         toolBarLayout.setHorizontalGroup(horizontalGroup);
         GroupLayout.ParallelGroup verticalGroup = toolBarLayout.createParallelGroup(GroupLayout.Alignment.CENTER);
@@ -585,8 +584,7 @@ public class SolverAndPersistenceFrame<Solution_> extends JFrame {
         public void actionPerformed(ActionEvent e) {
             fileChooser.setSelectedFile(new File(solutionBusiness.getExportDataDir(),
                     FilenameUtils.getBaseName(solutionBusiness.getSolutionFileName())
-                            + "." + solutionBusiness.getExportFileSuffix()
-            ));
+                            + "." + solutionBusiness.getExportFileSuffix()));
             int approved = fileChooser.showSaveDialog(SolverAndPersistenceFrame.this);
             if (approved == JFileChooser.APPROVE_OPTION) {
                 setCursor(Cursor.getPredefinedCursor(Cursor.WAIT_CURSOR));
@@ -641,8 +639,7 @@ public class SolverAndPersistenceFrame<Solution_> extends JFrame {
         indictmentHeatMapToggleButton.setToolTipText("Show indictment heat map");
         indictmentHeatMapToggleButton.addActionListener(e -> {
             boolean selected = indictmentHeatMapToggleButton.isSelected();
-            indictmentHeatMapToggleButton.setIcon(selected ?
-                    indictmentHeatMapTrueIcon : indictmentHeatMapFalseIcon);
+            indictmentHeatMapToggleButton.setIcon(selected ? indictmentHeatMapTrueIcon : indictmentHeatMapFalseIcon);
             solutionPanel.setUseIndictmentColor(selected);
             resetScreen();
         });
@@ -656,8 +653,9 @@ public class SolverAndPersistenceFrame<Solution_> extends JFrame {
         refreshScreenDuringSolvingToggleButton = new JToggleButton(refreshScreenDuringSolvingTrueIcon, true);
         refreshScreenDuringSolvingToggleButton.setToolTipText("Refresh screen during solving");
         refreshScreenDuringSolvingToggleButton.addActionListener(e -> {
-            refreshScreenDuringSolvingToggleButton.setIcon(refreshScreenDuringSolvingToggleButton.isSelected() ?
-                    refreshScreenDuringSolvingTrueIcon : refreshScreenDuringSolvingFalseIcon);
+            refreshScreenDuringSolvingToggleButton
+                    .setIcon(refreshScreenDuringSolvingToggleButton.isSelected() ? refreshScreenDuringSolvingTrueIcon
+                            : refreshScreenDuringSolvingFalseIcon);
         });
         scorePanel.add(refreshScreenDuringSolvingToggleButton, BorderLayout.EAST);
         return scorePanel;
@@ -666,7 +664,8 @@ public class SolverAndPersistenceFrame<Solution_> extends JFrame {
     private class ShowConstraintMatchesDialogAction extends AbstractAction {
 
         public ShowConstraintMatchesDialogAction() {
-            super("Constraint matches", new ImageIcon(SolverAndPersistenceFrame.class.getResource("showConstraintMatchesDialogAction.png")));
+            super("Constraint matches",
+                    new ImageIcon(SolverAndPersistenceFrame.class.getResource("showConstraintMatchesDialogAction.png")));
         }
 
         @Override

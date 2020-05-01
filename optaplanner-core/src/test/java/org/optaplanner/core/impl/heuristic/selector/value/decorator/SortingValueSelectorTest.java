@@ -16,6 +16,9 @@
 
 package org.optaplanner.core.impl.heuristic.selector.value.decorator;
 
+import static org.mockito.Mockito.*;
+import static org.optaplanner.core.impl.testdata.util.PlannerAssert.*;
+
 import java.util.Comparator;
 
 import org.junit.jupiter.api.Test;
@@ -30,9 +33,6 @@ import org.optaplanner.core.impl.testdata.domain.TestdataEntity;
 import org.optaplanner.core.impl.testdata.domain.TestdataObject;
 import org.optaplanner.core.impl.testdata.domain.TestdataSolution;
 import org.optaplanner.core.impl.testdata.domain.TestdataValue;
-
-import static org.mockito.Mockito.*;
-import static org.optaplanner.core.impl.testdata.util.PlannerAssert.*;
 
 public class SortingValueSelectorTest {
 
@@ -57,9 +57,8 @@ public class SortingValueSelectorTest {
                 new TestdataValue("jan"), new TestdataValue("feb"), new TestdataValue("mar"),
                 new TestdataValue("apr"), new TestdataValue("may"), new TestdataValue("jun"));
 
-
-        SelectionSorter<TestdataSolution, TestdataValue> sorter = (scoreDirector, selectionList)
-                -> selectionList.sort(Comparator.comparing(TestdataObject::getCode));
+        SelectionSorter<TestdataSolution, TestdataValue> sorter = (scoreDirector, selectionList) -> selectionList
+                .sort(Comparator.comparing(TestdataObject::getCode));
         EntityIndependentValueSelector valueSelector = new SortingValueSelector(childValueSelector, cacheType, sorter);
 
         DefaultSolverScope solverScope = mock(DefaultSolverScope.class);

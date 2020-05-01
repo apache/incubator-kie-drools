@@ -33,8 +33,8 @@ public class BedDesignationSwapMoveFactory implements MoveListFactory<PatientAdm
         List<BedDesignationSwapMove> moveList = new ArrayList<>();
         for (ListIterator<BedDesignation> leftIt = bedDesignationList.listIterator(); leftIt.hasNext();) {
             BedDesignation leftBedDesignation = leftIt.next();
-            for (ListIterator<BedDesignation> rightIt = bedDesignationList.listIterator(leftIt.nextIndex());
-                    rightIt.hasNext();) {
+            for (ListIterator<BedDesignation> rightIt = bedDesignationList.listIterator(leftIt.nextIndex()); rightIt
+                    .hasNext();) {
                 BedDesignation rightBedDesignation = rightIt.next();
                 if (leftBedDesignation.getAdmissionPart().calculateSameNightCount(rightBedDesignation.getAdmissionPart()) > 0) {
                     moveList.add(new BedDesignationSwapMove(leftBedDesignation, rightBedDesignation));

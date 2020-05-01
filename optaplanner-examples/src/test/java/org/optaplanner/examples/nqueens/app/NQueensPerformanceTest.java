@@ -34,7 +34,6 @@ public class NQueensPerformanceTest extends SolverPerformanceTest<NQueens> {
         return Stream.of(
                 testData("data/nqueens/unsolved/16queens.xml", "0", EnvironmentMode.REPRODUCIBLE),
                 testData("data/nqueens/unsolved/8queens.xml", "0", EnvironmentMode.FAST_ASSERT),
-                testData("data/nqueens/unsolved/4queens.xml", "0", EnvironmentMode.FULL_ASSERT)
-        );
+                testData("data/nqueens/unsolved/4queens.xml", "0", EnvironmentMode.FULL_ASSERT));
     }
 }

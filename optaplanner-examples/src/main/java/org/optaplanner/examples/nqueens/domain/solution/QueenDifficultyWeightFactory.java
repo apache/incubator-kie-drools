@@ -42,9 +42,9 @@ public class QueenDifficultyWeightFactory implements SelectionSorterWeightFactor
     public static class QueenDifficultyWeight implements Comparable<QueenDifficultyWeight> {
 
         // The more difficult queens have a lower distance to the middle
-        private static final Comparator<QueenDifficultyWeight> COMPARATOR =
-                Comparator.comparingInt((QueenDifficultyWeight weight) -> -weight.distanceFromMiddle) // Decreasing.
-                        .thenComparingInt(weight -> weight.queen.getColumnIndex()); // Tie-breaker.
+        private static final Comparator<QueenDifficultyWeight> COMPARATOR = Comparator
+                .comparingInt((QueenDifficultyWeight weight) -> -weight.distanceFromMiddle) // Decreasing.
+                .thenComparingInt(weight -> weight.queen.getColumnIndex()); // Tie-breaker.
 
         private final Queen queen;
         private final int distanceFromMiddle;

@@ -16,11 +16,12 @@
 
 package org.optaplanner.examples.scrabble.domain;
 
-import com.thoughtworks.xstream.annotations.XStreamAlias;
 import org.optaplanner.core.api.domain.entity.PlanningEntity;
 import org.optaplanner.core.api.domain.variable.PlanningVariable;
 import org.optaplanner.examples.common.domain.AbstractPersistable;
 import org.optaplanner.examples.scrabble.domain.solver.ScrabbleWordAssignmentDifficultyComparator;
+
+import com.thoughtworks.xstream.annotations.XStreamAlias;
 
 @PlanningEntity(difficultyComparatorClass = ScrabbleWordAssignmentDifficultyComparator.class)
 @XStreamAlias("ScrabbleWord")
@@ -29,9 +30,9 @@ public class ScrabbleWordAssignment extends AbstractPersistable {
     private ScrabbleSolution solution;
     private String word;
 
-    @PlanningVariable(valueRangeProviderRefs = {"startCellRange"})
+    @PlanningVariable(valueRangeProviderRefs = { "startCellRange" })
     private ScrabbleCell startCell;
-    @PlanningVariable(valueRangeProviderRefs = {"directionRange"})
+    @PlanningVariable(valueRangeProviderRefs = { "directionRange" })
     private ScrabbleWordDirection direction;
 
     public ScrabbleSolution getSolution() {

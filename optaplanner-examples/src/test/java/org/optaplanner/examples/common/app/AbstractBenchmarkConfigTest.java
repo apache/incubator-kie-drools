@@ -16,6 +16,8 @@
 
 package org.optaplanner.examples.common.app;
 
+import static org.junit.jupiter.api.DynamicTest.dynamicTest;
+
 import java.util.stream.Stream;
 
 import org.junit.jupiter.api.DynamicTest;
@@ -27,8 +29,6 @@ import org.optaplanner.benchmark.impl.result.PlannerBenchmarkResult;
 import org.optaplanner.benchmark.impl.result.SolverBenchmarkResult;
 import org.optaplanner.core.config.SolverConfigContext;
 import org.optaplanner.core.config.solver.SolverConfig;
-
-import static org.junit.jupiter.api.DynamicTest.dynamicTest;
 
 public abstract class AbstractBenchmarkConfigTest {
 
@@ -54,7 +54,8 @@ public abstract class AbstractBenchmarkConfigTest {
 
     private static void buildEverySolver(PlannerBenchmark plannerBenchmark) {
         SolverConfigContext configContext = new SolverConfigContext();
-        PlannerBenchmarkResult plannerBenchmarkResult = ((DefaultPlannerBenchmark) plannerBenchmark).getPlannerBenchmarkResult();
+        PlannerBenchmarkResult plannerBenchmarkResult = ((DefaultPlannerBenchmark) plannerBenchmark)
+                .getPlannerBenchmarkResult();
         for (SolverBenchmarkResult solverBenchmarkResult : plannerBenchmarkResult.getSolverBenchmarkResultList()) {
             SolverConfig solverConfig = solverBenchmarkResult.getSolverConfig();
             solverConfig.buildSolver(configContext);

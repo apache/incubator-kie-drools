@@ -16,12 +16,13 @@
 
 package org.optaplanner.examples.examination.domain;
 
-import com.thoughtworks.xstream.annotations.XStreamInclude;
 import org.optaplanner.core.api.domain.entity.PlanningEntity;
 import org.optaplanner.core.api.domain.variable.PlanningVariable;
 import org.optaplanner.examples.common.domain.AbstractPersistable;
 import org.optaplanner.examples.examination.domain.solver.ExamDifficultyWeightFactory;
 import org.optaplanner.examples.examination.domain.solver.RoomStrengthWeightFactory;
+
+import com.thoughtworks.xstream.annotations.XStreamInclude;
 
 @PlanningEntity(difficultyWeightFactoryClass = ExamDifficultyWeightFactory.class)
 @XStreamInclude({
@@ -43,8 +44,7 @@ public abstract class Exam extends AbstractPersistable {
         this.topic = topic;
     }
 
-    @PlanningVariable(valueRangeProviderRefs = {"roomRange"},
-            strengthWeightFactoryClass = RoomStrengthWeightFactory.class)
+    @PlanningVariable(valueRangeProviderRefs = { "roomRange" }, strengthWeightFactoryClass = RoomStrengthWeightFactory.class)
     public Room getRoom() {
         return room;
     }

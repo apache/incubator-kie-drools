@@ -16,13 +16,13 @@
 
 package org.optaplanner.core.api.score.buildin.simplelong;
 
+import static org.assertj.core.api.Assertions.assertThatIllegalArgumentException;
+import static org.junit.Assert.*;
+
 import org.junit.jupiter.api.Test;
 import org.optaplanner.core.api.score.buildin.AbstractScoreTest;
 import org.optaplanner.core.impl.testdata.util.PlannerAssert;
 import org.optaplanner.core.impl.testdata.util.PlannerTestUtils;
-
-import static org.assertj.core.api.Assertions.assertThatIllegalArgumentException;
-import static org.junit.Assert.*;
 
 public class SimpleLongScoreTest extends AbstractScoreTest {
 
@@ -137,17 +137,14 @@ public class SimpleLongScoreTest extends AbstractScoreTest {
         PlannerAssert.assertObjectsAreEqual(
                 SimpleLongScore.of(-10L),
                 SimpleLongScore.of(-10L),
-                SimpleLongScore.ofUninitialized(0, -10L)
-        );
+                SimpleLongScore.ofUninitialized(0, -10L));
         PlannerAssert.assertObjectsAreEqual(
                 SimpleLongScore.ofUninitialized(-7, -10L),
-                SimpleLongScore.ofUninitialized(-7, -10L)
-        );
+                SimpleLongScore.ofUninitialized(-7, -10L));
         PlannerAssert.assertObjectsAreNotEqual(
                 SimpleLongScore.of(-10L),
                 SimpleLongScore.of(-30L),
-                SimpleLongScore.ofUninitialized(-7, -10L)
-        );
+                SimpleLongScore.ofUninitialized(-7, -10L));
     }
 
     @Test
@@ -164,8 +161,7 @@ public class SimpleLongScoreTest extends AbstractScoreTest {
                 SimpleLongScore.of(-1L),
                 SimpleLongScore.of(0L),
                 SimpleLongScore.of(1L),
-                SimpleLongScore.of(((long) Integer.MAX_VALUE) + 4000L)
-        );
+                SimpleLongScore.of(((long) Integer.MAX_VALUE) + 4000L));
     }
 
     @Test
@@ -175,15 +171,13 @@ public class SimpleLongScoreTest extends AbstractScoreTest {
                 output -> {
                     assertEquals(0, output.getInitScore());
                     assertEquals(123L, output.getScore());
-                }
-        );
+                });
         PlannerTestUtils.serializeAndDeserializeWithAll(
                 SimpleLongScore.ofUninitialized(-7, 123L),
                 output -> {
                     assertEquals(-7, output.getInitScore());
                     assertEquals(123L, output.getScore());
-                }
-        );
+                });
     }
 
 }

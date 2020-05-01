@@ -18,10 +18,11 @@ package org.optaplanner.core.impl.solver.io;
 
 import java.io.File;
 
-import com.thoughtworks.xstream.XStream;
-import com.thoughtworks.xstream.converters.extended.FileConverter;
 import org.optaplanner.core.api.domain.solution.PlanningSolution;
 import org.optaplanner.core.config.solver.SolverConfig;
+
+import com.thoughtworks.xstream.XStream;
+import com.thoughtworks.xstream.converters.extended.FileConverter;
 
 public final class XStreamConfigReader {
 
@@ -29,6 +30,7 @@ public final class XStreamConfigReader {
      * Builds the {@link XStream} setup which is used to read/write {@link SolverConfig solver configs} and benchmark configs.
      * It should never be used to read/write {@link PlanningSolution solutions}.
      * Use XStreamSolutionFileIO for that instead.
+     * 
      * @return never null.
      */
     public static XStream buildXStream() {
@@ -38,12 +40,13 @@ public final class XStreamConfigReader {
         xStream.aliasSystemAttribute("xStreamRef", "reference");
         xStream.processAnnotations(SolverConfig.class);
         XStream.setupDefaultSecurity(xStream);
-        xStream.allowTypesByRegExp(new String[]{"org\\.optaplanner\\.\\w+\\.config\\..*"});
+        xStream.allowTypesByRegExp(new String[] { "org\\.optaplanner\\.\\w+\\.config\\..*" });
         return xStream;
     }
 
     /**
      * As defined by {@link #buildXStream()}.
+     * 
      * @param classLoader sometimes null, ignored if null
      * @return never null
      */
@@ -81,6 +84,7 @@ public final class XStreamConfigReader {
     // Private constructor
     // ************************************************************************
 
-    private XStreamConfigReader() {}
+    private XStreamConfigReader() {
+    }
 
 }

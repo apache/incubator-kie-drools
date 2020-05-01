@@ -22,7 +22,6 @@ import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
 
-import com.fasterxml.jackson.databind.Module;
 import org.optaplanner.core.api.domain.entity.PlanningEntity;
 import org.optaplanner.core.api.domain.solution.PlanningSolution;
 import org.optaplanner.core.api.score.Score;
@@ -51,10 +50,12 @@ import org.springframework.core.type.filter.AssignableTypeFilter;
 import org.springframework.http.converter.json.Jackson2ObjectMapperBuilder;
 import org.springframework.util.ClassUtils;
 
+import com.fasterxml.jackson.databind.Module;
+
 @Configuration
-@ConditionalOnClass({SolverConfig.class, SolverFactory.class, ScoreManager.class, SolverManager.class})
-@ConditionalOnMissingBean({SolverConfig.class, SolverFactory.class, ScoreManager.class, SolverManager.class})
-@EnableConfigurationProperties({OptaPlannerProperties.class})
+@ConditionalOnClass({ SolverConfig.class, SolverFactory.class, ScoreManager.class, SolverManager.class })
+@ConditionalOnMissingBean({ SolverConfig.class, SolverFactory.class, ScoreManager.class, SolverManager.class })
+@EnableConfigurationProperties({ OptaPlannerProperties.class })
 public class OptaPlannerAutoConfiguration implements BeanClassLoaderAware {
 
     private final ApplicationContext context;
@@ -137,7 +138,8 @@ public class OptaPlannerAutoConfiguration implements BeanClassLoaderAware {
             ScoreDirectorFactoryConfig scoreDirectorFactoryConfig = new ScoreDirectorFactoryConfig();
             scoreDirectorFactoryConfig.setEasyScoreCalculatorClass(findImplementingClass(EasyScoreCalculator.class));
             scoreDirectorFactoryConfig.setConstraintProviderClass(findImplementingClass(ConstraintProvider.class));
-            scoreDirectorFactoryConfig.setIncrementalScoreCalculatorClass(findImplementingClass(IncrementalScoreCalculator.class));
+            scoreDirectorFactoryConfig
+                    .setIncrementalScoreCalculatorClass(findImplementingClass(IncrementalScoreCalculator.class));
             if (beanClassLoader.getResource(SolverProperties.DEFAULT_SCORE_DRL_URL) != null) {
                 scoreDirectorFactoryConfig.setScoreDrlList(Collections.singletonList(
                         SolverProperties.DEFAULT_SCORE_DRL_URL));
@@ -197,8 +199,7 @@ public class OptaPlannerAutoConfiguration implements BeanClassLoaderAware {
         if (!AutoConfigurationPackages.has(context)) {
             return null;
         }
-        ClassPathScanningCandidateComponentProvider scanner
-                = new ClassPathScanningCandidateComponentProvider(false);
+        ClassPathScanningCandidateComponentProvider scanner = new ClassPathScanningCandidateComponentProvider(false);
         scanner.setEnvironment(context.getEnvironment());
         scanner.setResourceLoader(context);
         scanner.addIncludeFilter(new AssignableTypeFilter(targetClass));
@@ -258,6 +259,5 @@ public class OptaPlannerAutoConfiguration implements BeanClassLoaderAware {
         }
 
     }
-
 
 }

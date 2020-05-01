@@ -99,7 +99,7 @@ public class CloudProcessSwapMove extends AbstractMove<CloudBalance> {
 
     @Override
     public String toString() {
-        return leftCloudProcess + " {" + leftCloudProcess.getComputer() +  "} <-> "
+        return leftCloudProcess + " {" + leftCloudProcess.getComputer() + "} <-> "
                 + rightCloudProcess + " {" + rightCloudProcess.getComputer() + "}";
     }
 

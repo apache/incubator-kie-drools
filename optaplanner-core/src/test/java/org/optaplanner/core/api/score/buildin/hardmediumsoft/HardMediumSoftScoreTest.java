@@ -16,13 +16,13 @@
 
 package org.optaplanner.core.api.score.buildin.hardmediumsoft;
 
+import static org.assertj.core.api.Assertions.assertThatIllegalArgumentException;
+import static org.junit.Assert.*;
+
 import org.junit.jupiter.api.Test;
 import org.optaplanner.core.api.score.buildin.AbstractScoreTest;
 import org.optaplanner.core.impl.testdata.util.PlannerAssert;
 import org.optaplanner.core.impl.testdata.util.PlannerTestUtils;
-
-import static org.assertj.core.api.Assertions.assertThatIllegalArgumentException;
-import static org.junit.Assert.*;
 
 public class HardMediumSoftScoreTest extends AbstractScoreTest {
 
@@ -100,13 +100,11 @@ public class HardMediumSoftScoreTest extends AbstractScoreTest {
         assertScoreNotFeasible(
                 HardMediumSoftScore.of(-5, -300, -4000),
                 HardMediumSoftScore.ofUninitialized(-7, -5, -300, -4000),
-                HardMediumSoftScore.ofUninitialized(-7, 0, -300, -4000)
-        );
+                HardMediumSoftScore.ofUninitialized(-7, 0, -300, -4000));
         assertScoreFeasible(
                 HardMediumSoftScore.of(0, -300, -4000),
                 HardMediumSoftScore.of(2, -300, -4000),
-                HardMediumSoftScore.ofUninitialized(0, 0, -300, -4000)
-        );
+                HardMediumSoftScore.ofUninitialized(0, 0, -300, -4000));
     }
 
     @Test
@@ -176,19 +174,16 @@ public class HardMediumSoftScoreTest extends AbstractScoreTest {
         PlannerAssert.assertObjectsAreEqual(
                 HardMediumSoftScore.of(-10, -200, -3000),
                 HardMediumSoftScore.of(-10, -200, -3000),
-                HardMediumSoftScore.ofUninitialized(0, -10, -200, -3000)
-        );
+                HardMediumSoftScore.ofUninitialized(0, -10, -200, -3000));
         PlannerAssert.assertObjectsAreEqual(
                 HardMediumSoftScore.ofUninitialized(-7, -10, -200, -3000),
-                HardMediumSoftScore.ofUninitialized(-7, -10, -200, -3000)
-        );
+                HardMediumSoftScore.ofUninitialized(-7, -10, -200, -3000));
         PlannerAssert.assertObjectsAreNotEqual(
                 HardMediumSoftScore.of(-10, -200, -3000),
                 HardMediumSoftScore.of(-30, -200, -3000),
                 HardMediumSoftScore.of(-10, -400, -3000),
                 HardMediumSoftScore.of(-10, -400, -5000),
-                HardMediumSoftScore.ofUninitialized(-7, -10, -200, -3000)
-        );
+                HardMediumSoftScore.ofUninitialized(-7, -10, -200, -3000));
     }
 
     @Test
@@ -214,8 +209,7 @@ public class HardMediumSoftScoreTest extends AbstractScoreTest {
                 HardMediumSoftScore.of(-1, -300, -20),
                 HardMediumSoftScore.of(-1, -20, -300),
                 HardMediumSoftScore.of(1, Integer.MIN_VALUE, -20),
-                HardMediumSoftScore.of(1, -20, Integer.MIN_VALUE)
-        );
+                HardMediumSoftScore.of(1, -20, Integer.MIN_VALUE));
     }
 
     @Test
@@ -227,8 +221,7 @@ public class HardMediumSoftScoreTest extends AbstractScoreTest {
                     assertEquals(-12, output.getHardScore());
                     assertEquals(3400, output.getMediumScore());
                     assertEquals(-56, output.getSoftScore());
-                }
-        );
+                });
         PlannerTestUtils.serializeAndDeserializeWithAll(
                 HardMediumSoftScore.ofUninitialized(-7, -12, 3400, -56),
                 output -> {
@@ -236,8 +229,7 @@ public class HardMediumSoftScoreTest extends AbstractScoreTest {
                     assertEquals(-12, output.getHardScore());
                     assertEquals(3400, output.getMediumScore());
                     assertEquals(-56, output.getSoftScore());
-                }
-        );
+                });
     }
 
 }

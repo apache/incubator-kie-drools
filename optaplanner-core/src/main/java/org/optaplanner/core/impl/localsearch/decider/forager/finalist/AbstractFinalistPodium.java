@@ -28,6 +28,7 @@ import org.slf4j.LoggerFactory;
 
 /**
  * Abstract superclass for {@link FinalistPodium}.
+ * 
  * @see FinalistPodium
  */
 public abstract class AbstractFinalistPodium extends LocalSearchPhaseLifecycleListenerAdapter implements FinalistPodium {

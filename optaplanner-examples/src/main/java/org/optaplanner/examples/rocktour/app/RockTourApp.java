@@ -24,8 +24,7 @@ import org.optaplanner.persistence.common.api.domain.solution.SolutionFileIO;
 
 public class RockTourApp extends CommonApp<RockTourSolution> {
 
-    public static final String SOLVER_CONFIG
-            = "org/optaplanner/examples/rocktour/solver/rockTourSolverConfig.xml";
+    public static final String SOLVER_CONFIG = "org/optaplanner/examples/rocktour/solver/rockTourSolverConfig.xml";
 
     public static final String DATA_DIR_NAME = "rocktour";
 

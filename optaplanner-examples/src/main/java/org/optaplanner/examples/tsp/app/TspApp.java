@@ -29,8 +29,7 @@ import org.optaplanner.persistence.xstream.impl.domain.solution.XStreamSolutionF
 
 public class TspApp extends CommonApp<TspSolution> {
 
-    public static final String SOLVER_CONFIG
-            = "org/optaplanner/examples/tsp/solver/tspSolverConfig.xml";
+    public static final String SOLVER_CONFIG = "org/optaplanner/examples/tsp/solver/tspSolverConfig.xml";
 
     public static final String DATA_DIR_NAME = "tsp";
 
@@ -60,7 +59,7 @@ public class TspApp extends CommonApp<TspSolution> {
 
     @Override
     protected AbstractSolutionImporter[] createSolutionImporters() {
-        return new AbstractSolutionImporter[]{
+        return new AbstractSolutionImporter[] {
                 new TspImporter(),
                 new TspImageStipplerImporter()
         };

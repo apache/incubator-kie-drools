@@ -21,8 +21,6 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
 
-import com.thoughtworks.xstream.annotations.XStreamAlias;
-import com.thoughtworks.xstream.annotations.XStreamImplicit;
 import org.apache.commons.lang3.StringUtils;
 import org.optaplanner.core.api.domain.entity.PlanningEntity;
 import org.optaplanner.core.api.domain.solution.PlanningSolution;
@@ -35,6 +33,9 @@ import org.optaplanner.core.impl.score.definition.ScoreDefinition;
 import org.reflections.Reflections;
 import org.reflections.util.ConfigurationBuilder;
 import org.reflections.util.FilterBuilder;
+
+import com.thoughtworks.xstream.annotations.XStreamAlias;
+import com.thoughtworks.xstream.annotations.XStreamImplicit;
 
 @XStreamAlias("scanAnnotatedClasses")
 public class ScanAnnotatedClassesConfig extends AbstractConfig<ScanAnnotatedClassesConfig> {
@@ -56,7 +57,7 @@ public class ScanAnnotatedClassesConfig extends AbstractConfig<ScanAnnotatedClas
 
     public SolutionDescriptor buildSolutionDescriptor(SolverConfigContext configContext,
             ClassLoader classLoader, ScoreDefinition deprecatedScoreDefinition) {
-        ClassLoader[] classLoaders = (classLoader != null) ? new ClassLoader[]{classLoader} : new ClassLoader[0];
+        ClassLoader[] classLoaders = (classLoader != null) ? new ClassLoader[] { classLoader } : new ClassLoader[0];
         if (configContext.getKieContainer() != null) {
             ReflectionsKieVfsUrlType.register(configContext.getKieContainer());
         }
@@ -99,7 +100,7 @@ public class ScanAnnotatedClassesConfig extends AbstractConfig<ScanAnnotatedClas
                     + "Maybe you forgot to annotate a class with a " + PlanningSolution.class.getSimpleName()
                     + " annotation.\n"
                     + (ConfigUtils.isEmptyCollection(packageIncludeList) ? ""
-                    : "Maybe the annotated class does match the packageIncludeList (" + packageIncludeList + ").\n")
+                            : "Maybe the annotated class does match the packageIncludeList (" + packageIncludeList + ").\n")
                     + "Maybe you're using special classloading mechanisms (OSGi, ...) and this is a bug."
                     + " If you can confirm that, report it to our issue tracker"
                     + " and workaround it by defining the classes explicitly in the solver configuration.");

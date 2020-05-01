@@ -25,8 +25,6 @@ import java.util.List;
 import java.util.Locale;
 import java.util.Map;
 
-import com.thoughtworks.xstream.annotations.XStreamAlias;
-import com.thoughtworks.xstream.annotations.XStreamOmitField;
 import org.jfree.chart.JFreeChart;
 import org.jfree.chart.axis.NumberAxis;
 import org.jfree.chart.plot.PlotOrientation;
@@ -50,6 +48,9 @@ import org.optaplanner.core.impl.score.ScoreUtils;
 import org.optaplanner.core.impl.score.definition.ScoreDefinition;
 import org.optaplanner.core.impl.score.director.InnerScoreDirector;
 import org.optaplanner.core.impl.solver.DefaultSolver;
+
+import com.thoughtworks.xstream.annotations.XStreamAlias;
+import com.thoughtworks.xstream.annotations.XStreamOmitField;
 
 @XStreamAlias("constraintMatchTotalStepScoreSubSingleStatistic")
 public class ConstraintMatchTotalStepScoreSubSingleStatistic<Solution_>
@@ -152,8 +153,8 @@ public class ConstraintMatchTotalStepScoreSubSingleStatistic<Solution_>
 
     @Override
     public void writeGraphFiles(BenchmarkReport benchmarkReport) {
-        List<Map<String, XYSeries>> constraintIdToWeightSeriesMapList
-                = new ArrayList<>(BenchmarkReport.CHARTED_SCORE_LEVEL_SIZE);
+        List<Map<String, XYSeries>> constraintIdToWeightSeriesMapList = new ArrayList<>(
+                BenchmarkReport.CHARTED_SCORE_LEVEL_SIZE);
         for (ConstraintMatchTotalStepScoreStatisticPoint point : getPointList()) {
             long timeMillisSpent = point.getTimeMillisSpent();
             double[] levelValues = ScoreUtils.extractLevelDoubles(point.getScoreTotal());
@@ -173,7 +174,8 @@ public class ConstraintMatchTotalStepScoreSubSingleStatistic<Solution_>
         }
         long timeMillisSpent = subSingleBenchmarkResult.getTimeMillisSpent();
         for (Map<String, XYSeries> constraintIdToWeightSeriesMap : constraintIdToWeightSeriesMapList) {
-            for (Iterator<Map.Entry<String, XYSeries>> it = constraintIdToWeightSeriesMap.entrySet().iterator(); it.hasNext(); ) {
+            for (Iterator<Map.Entry<String, XYSeries>> it = constraintIdToWeightSeriesMap.entrySet().iterator(); it
+                    .hasNext();) {
                 XYSeries weightSeries = it.next().getValue();
                 if (weightSeries.getItemCount() == 0) {
                     // Only show the constraint type on the score levels that it affects

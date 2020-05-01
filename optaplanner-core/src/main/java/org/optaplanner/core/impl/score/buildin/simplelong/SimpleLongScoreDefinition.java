@@ -27,7 +27,7 @@ import org.optaplanner.core.impl.score.trend.InitializingScoreTrend;
 public class SimpleLongScoreDefinition extends AbstractScoreDefinition<SimpleLongScore> {
 
     public SimpleLongScoreDefinition() {
-        super(new String[]{"score"});
+        super(new String[] { "score" });
     }
 
     // ************************************************************************

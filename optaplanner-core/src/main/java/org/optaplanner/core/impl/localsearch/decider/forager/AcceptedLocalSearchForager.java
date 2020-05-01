@@ -29,6 +29,7 @@ import org.optaplanner.core.impl.solver.scope.DefaultSolverScope;
 
 /**
  * A {@link LocalSearchForager} which forages accepted moves and ignores unaccepted moves.
+ * 
  * @see LocalSearchForager
  * @see Acceptor
  */

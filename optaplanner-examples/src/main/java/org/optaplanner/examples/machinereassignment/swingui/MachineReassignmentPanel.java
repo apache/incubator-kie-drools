@@ -25,6 +25,7 @@ import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+
 import javax.swing.AbstractAction;
 import javax.swing.GroupLayout;
 import javax.swing.JComboBox;
@@ -41,8 +42,7 @@ import org.optaplanner.examples.machinereassignment.domain.MrResource;
 
 public class MachineReassignmentPanel extends SolutionPanel<MachineReassignment> {
 
-    public static final String LOGO_PATH
-            = "/org/optaplanner/examples/machinereassignment/swingui/machineReassignmentLogo.png";
+    public static final String LOGO_PATH = "/org/optaplanner/examples/machinereassignment/swingui/machineReassignmentLogo.png";
 
     private JPanel machineListPanel;
 
@@ -66,7 +66,7 @@ public class MachineReassignmentPanel extends SolutionPanel<MachineReassignment>
 
     private void createMachineListPanel() {
         machineListPanel = new JPanel(new GridLayout(0, 1));
-        unassignedPanel = new MrMachinePanel(this, Collections.<MrResource>emptyList(), null);
+        unassignedPanel = new MrMachinePanel(this, Collections.<MrResource> emptyList(), null);
         machineListPanel.add(unassignedPanel);
         machineToPanelMap = new LinkedHashMap<>();
         machineToPanelMap.put(null, unassignedPanel);

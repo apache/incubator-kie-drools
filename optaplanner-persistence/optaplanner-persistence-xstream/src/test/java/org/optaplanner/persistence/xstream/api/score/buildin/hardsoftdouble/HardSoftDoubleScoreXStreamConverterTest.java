@@ -16,10 +16,11 @@
 
 package org.optaplanner.persistence.xstream.api.score.buildin.hardsoftdouble;
 
-import com.thoughtworks.xstream.annotations.XStreamConverter;
 import org.junit.jupiter.api.Test;
 import org.optaplanner.core.api.score.buildin.hardsoftdouble.HardSoftDoubleScore;
 import org.optaplanner.persistence.xstream.api.score.AbstractScoreXStreamConverterTest;
+
+import com.thoughtworks.xstream.annotations.XStreamConverter;
 
 public class HardSoftDoubleScoreXStreamConverterTest extends AbstractScoreXStreamConverterTest {
 

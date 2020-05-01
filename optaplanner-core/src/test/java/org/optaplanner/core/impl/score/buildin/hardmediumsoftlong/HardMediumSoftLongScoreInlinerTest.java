@@ -16,6 +16,8 @@
 
 package org.optaplanner.core.impl.score.buildin.hardmediumsoftlong;
 
+import static org.junit.Assert.*;
+
 import java.util.function.Consumer;
 
 import org.junit.jupiter.api.Test;
@@ -23,8 +25,6 @@ import org.optaplanner.core.api.score.Score;
 import org.optaplanner.core.api.score.buildin.hardmediumsoftlong.HardMediumSoftLongScore;
 import org.optaplanner.core.impl.score.inliner.LongWeightedScoreImpacter;
 import org.optaplanner.core.impl.score.inliner.UndoScoreImpacter;
-
-import static org.junit.Assert.*;
 
 public class HardMediumSoftLongScoreInlinerTest {
 
@@ -44,7 +44,8 @@ public class HardMediumSoftLongScoreInlinerTest {
         hardUndo.undoScoreImpact();
         assertEquals(HardMediumSoftLongScore.of(-800L, 0L, 0L), scoreInliner.extractScore(0));
 
-        LongWeightedScoreImpacter mediumImpacter = scoreInliner.buildWeightedScoreImpacter(HardMediumSoftLongScore.ofMedium(-7L));
+        LongWeightedScoreImpacter mediumImpacter = scoreInliner
+                .buildWeightedScoreImpacter(HardMediumSoftLongScore.ofMedium(-7L));
         UndoScoreImpacter mediumUndo = mediumImpacter.impactScore(1L, scoreConsumer);
         assertEquals(HardMediumSoftLongScore.of(-800L, -7L, 0L), scoreInliner.extractScore(0));
         mediumUndo.undoScoreImpact();
@@ -58,7 +59,8 @@ public class HardMediumSoftLongScoreInlinerTest {
         softUndo.undoScoreImpact();
         assertEquals(HardMediumSoftLongScore.of(-800L, 0L, -10L), scoreInliner.extractScore(0));
 
-        LongWeightedScoreImpacter allLevelsImpacter = scoreInliner.buildWeightedScoreImpacter(HardMediumSoftLongScore.of(-1000L, -2000L, -3000L));
+        LongWeightedScoreImpacter allLevelsImpacter = scoreInliner
+                .buildWeightedScoreImpacter(HardMediumSoftLongScore.of(-1000L, -2000L, -3000L));
         UndoScoreImpacter allLevelsUndo = allLevelsImpacter.impactScore(1L, scoreConsumer);
         assertEquals(HardMediumSoftLongScore.of(-1800L, -2000L, -3010L), scoreInliner.extractScore(0));
         allLevelsUndo.undoScoreImpact();

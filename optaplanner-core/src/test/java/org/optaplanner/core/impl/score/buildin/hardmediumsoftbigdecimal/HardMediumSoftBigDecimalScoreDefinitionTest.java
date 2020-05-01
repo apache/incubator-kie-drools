@@ -16,14 +16,14 @@
 
 package org.optaplanner.core.impl.score.buildin.hardmediumsoftbigdecimal;
 
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.junit.Assert.assertArrayEquals;
+import static org.junit.Assert.assertEquals;
+
 import java.math.BigDecimal;
 
 import org.junit.jupiter.api.Test;
 import org.optaplanner.core.api.score.buildin.hardmediumsoftbigdecimal.HardMediumSoftBigDecimalScore;
-
-import static org.assertj.core.api.Assertions.assertThat;
-import static org.junit.Assert.assertArrayEquals;
-import static org.junit.Assert.assertEquals;
 
 public class HardMediumSoftBigDecimalScoreDefinitionTest {
 
@@ -46,7 +46,8 @@ public class HardMediumSoftBigDecimalScoreDefinitionTest {
 
     @Test
     public void getLevelLabels() {
-        assertArrayEquals(new String[]{"hard score", "medium score", "soft score"}, new HardMediumSoftBigDecimalScoreDefinition().getLevelLabels());
+        assertArrayEquals(new String[] { "hard score", "medium score", "soft score" },
+                new HardMediumSoftBigDecimalScoreDefinition().getLevelLabels());
     }
 
     @Test
@@ -60,7 +61,7 @@ public class HardMediumSoftBigDecimalScoreDefinitionTest {
     public void divideBySanitizedDivisor() {
         HardMediumSoftBigDecimalScoreDefinition scoreDefinition = new HardMediumSoftBigDecimalScoreDefinition();
         HardMediumSoftBigDecimalScore dividend = scoreDefinition.fromLevelNumbers(2,
-                new Number[] {BigDecimal.ZERO, BigDecimal.ONE, BigDecimal.TEN});
+                new Number[] { BigDecimal.ZERO, BigDecimal.ONE, BigDecimal.TEN });
         HardMediumSoftBigDecimalScore zeroDivisor = scoreDefinition.getZeroScore();
         assertThat(scoreDefinition.divideBySanitizedDivisor(dividend, zeroDivisor))
                 .isEqualTo(dividend);
@@ -68,10 +69,10 @@ public class HardMediumSoftBigDecimalScoreDefinitionTest {
         assertThat(scoreDefinition.divideBySanitizedDivisor(dividend, oneDivisor))
                 .isEqualTo(dividend);
         HardMediumSoftBigDecimalScore tenDivisor = scoreDefinition.fromLevelNumbers(10,
-                new Number[] {BigDecimal.TEN, BigDecimal.TEN, BigDecimal.TEN});
+                new Number[] { BigDecimal.TEN, BigDecimal.TEN, BigDecimal.TEN });
         assertThat(scoreDefinition.divideBySanitizedDivisor(dividend, tenDivisor))
                 .isEqualTo(scoreDefinition.fromLevelNumbers(0,
-                        new Number[] {BigDecimal.ZERO, BigDecimal.ZERO, BigDecimal.ONE}));
+                        new Number[] { BigDecimal.ZERO, BigDecimal.ZERO, BigDecimal.ONE }));
     }
 
 }

@@ -16,13 +16,11 @@
 
 package org.optaplanner.persistence.jackson.api;
 
+import static org.junit.Assert.*;
+
 import java.io.IOException;
-import java.io.Serializable;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import org.optaplanner.core.api.score.Score;
-
-import static org.junit.Assert.*;
 
 public abstract class AbstractJacksonJsonSerializerAndDeserializerTest {
 

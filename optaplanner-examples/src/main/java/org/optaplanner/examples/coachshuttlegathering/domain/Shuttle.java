@@ -16,11 +16,12 @@
 
 package org.optaplanner.examples.coachshuttlegathering.domain;
 
-import com.thoughtworks.xstream.annotations.XStreamAlias;
 import org.optaplanner.core.api.domain.entity.PlanningEntity;
 import org.optaplanner.core.api.domain.variable.PlanningVariable;
 import org.optaplanner.examples.coachshuttlegathering.domain.location.RoadLocation;
 import org.optaplanner.examples.coachshuttlegathering.domain.solver.DepotAngleBusStopDifficultyWeightFactory;
+
+import com.thoughtworks.xstream.annotations.XStreamAlias;
 
 @PlanningEntity(difficultyWeightFactoryClass = DepotAngleBusStopDifficultyWeightFactory.class)
 @XStreamAlias("CsgShuttle")
@@ -41,7 +42,7 @@ public class Shuttle extends Bus {
     }
 
     @Override
-    @PlanningVariable(valueRangeProviderRefs = {"stopRange", "hubRange"})
+    @PlanningVariable(valueRangeProviderRefs = { "stopRange", "hubRange" })
     public StopOrHub getDestination() {
         return destination;
     }

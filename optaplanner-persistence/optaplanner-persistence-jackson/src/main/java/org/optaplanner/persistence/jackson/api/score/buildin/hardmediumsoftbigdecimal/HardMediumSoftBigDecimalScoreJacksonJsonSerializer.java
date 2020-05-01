@@ -23,6 +23,7 @@ import org.optaplanner.persistence.jackson.api.score.AbstractScoreJacksonJsonSer
 /**
  * {@inheritDoc}
  */
-public class HardMediumSoftBigDecimalScoreJacksonJsonSerializer extends AbstractScoreJacksonJsonSerializer<HardMediumSoftBigDecimalScore> {
+public class HardMediumSoftBigDecimalScoreJacksonJsonSerializer
+        extends AbstractScoreJacksonJsonSerializer<HardMediumSoftBigDecimalScore> {
 
 }

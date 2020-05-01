@@ -16,6 +16,9 @@
 
 package org.optaplanner.core.config.heuristic.selector.entity;
 
+import static org.assertj.core.api.Assertions.assertThatIllegalArgumentException;
+import static org.optaplanner.core.impl.testdata.util.PlannerAssert.*;
+
 import org.junit.jupiter.api.Test;
 import org.optaplanner.core.config.heuristic.selector.AbstractSelectorConfigTest;
 import org.optaplanner.core.config.heuristic.selector.common.SelectionCacheType;
@@ -23,9 +26,6 @@ import org.optaplanner.core.config.heuristic.selector.common.SelectionOrder;
 import org.optaplanner.core.impl.heuristic.selector.entity.EntitySelector;
 import org.optaplanner.core.impl.heuristic.selector.entity.FromSolutionEntitySelector;
 import org.optaplanner.core.impl.heuristic.selector.entity.decorator.ShufflingEntitySelector;
-
-import static org.assertj.core.api.Assertions.assertThatIllegalArgumentException;
-import static org.optaplanner.core.impl.testdata.util.PlannerAssert.*;
 
 public class EntitySelectorConfigTest extends AbstractSelectorConfigTest {
 

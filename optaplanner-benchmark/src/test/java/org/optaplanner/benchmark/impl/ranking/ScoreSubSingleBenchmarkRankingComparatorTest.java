@@ -16,6 +16,9 @@
 
 package org.optaplanner.benchmark.impl.ranking;
 
+import static org.mockito.Mockito.*;
+import static org.optaplanner.core.impl.testdata.util.PlannerAssert.*;
+
 import org.junit.jupiter.api.Test;
 import org.optaplanner.benchmark.impl.result.ProblemBenchmarkResult;
 import org.optaplanner.benchmark.impl.result.SingleBenchmarkResult;
@@ -23,15 +26,13 @@ import org.optaplanner.benchmark.impl.result.SolverBenchmarkResult;
 import org.optaplanner.benchmark.impl.result.SubSingleBenchmarkResult;
 import org.optaplanner.core.api.score.buildin.simple.SimpleScore;
 
-import static org.mockito.Mockito.*;
-import static org.optaplanner.core.impl.testdata.util.PlannerAssert.*;
-
 public class ScoreSubSingleBenchmarkRankingComparatorTest {
 
     @Test
     public void compareTo() {
         ScoreSubSingleBenchmarkRankingComparator comparator = new ScoreSubSingleBenchmarkRankingComparator();
-        SingleBenchmarkResult singleBenchmarkResult = new SingleBenchmarkResult(mock(SolverBenchmarkResult.class), mock(ProblemBenchmarkResult.class));
+        SingleBenchmarkResult singleBenchmarkResult = new SingleBenchmarkResult(mock(SolverBenchmarkResult.class),
+                mock(ProblemBenchmarkResult.class));
         SubSingleBenchmarkResult a = new SubSingleBenchmarkResult(singleBenchmarkResult, 0);
         a.setSucceeded(false);
         a.setScore(null);

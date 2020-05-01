@@ -21,12 +21,10 @@ import org.optaplanner.examples.meetingscheduling.domain.MeetingSchedule;
 import org.optaplanner.examples.meetingscheduling.persistence.MeetingSchedulingXlsxFileIO;
 import org.optaplanner.examples.meetingscheduling.swingui.MeetingSchedulingPanel;
 import org.optaplanner.persistence.common.api.domain.solution.SolutionFileIO;
-import org.optaplanner.persistence.xstream.impl.domain.solution.XStreamSolutionFileIO;
 
 public class MeetingSchedulingApp extends CommonApp<MeetingSchedule> {
 
-    public static final String SOLVER_CONFIG
-            = "org/optaplanner/examples/meetingscheduling/solver/meetingSchedulingSolverConfig.xml";
+    public static final String SOLVER_CONFIG = "org/optaplanner/examples/meetingscheduling/solver/meetingSchedulingSolverConfig.xml";
 
     public static final String DATA_DIR_NAME = "meetingscheduling";
 
