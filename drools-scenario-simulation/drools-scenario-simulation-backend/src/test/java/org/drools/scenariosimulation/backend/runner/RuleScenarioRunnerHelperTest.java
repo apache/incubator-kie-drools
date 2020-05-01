@@ -240,6 +240,14 @@ public class RuleScenarioRunnerHelperTest extends AbstractRuleCoverageTest {
         List<ScenarioExpect> scenario2Outputs = runnerHelper.extractExpectedValues(scenario2.getUnmodifiableFactMappingValues());
         assertEquals(3, scenario2Outputs.size());
         assertEquals(1, scenario2Outputs.stream().filter(ScenarioExpect::isNewFact).count());
+
+        /* A Given "TEST" fact with null rawValue should works as the previous case, i.e. to not consider the GIVEN fact with empty data */
+        scenario2.addOrUpdateMappingValue(FactIdentifier.create("TEST", String.class.getCanonicalName()),
+                                          ExpressionIdentifier.create("TEST", FactMappingType.GIVEN),
+                                          null);
+        List<ScenarioExpect> scenario2aOutputs = runnerHelper.extractExpectedValues(scenario2.getUnmodifiableFactMappingValues());
+        assertEquals(3, scenario2aOutputs.size());
+        assertEquals(1, scenario2aOutputs.stream().filter(ScenarioExpect::isNewFact).count());
     }
 
     @Test
