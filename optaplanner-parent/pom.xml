@@ -297,6 +297,7 @@
           <version>2.11.0</version>
           <configuration>
             <configFile>${format.directory}/eclipse-format.xml</configFile>
+            <lineEnding>LF</lineEnding>
             <skip>${formatter.skip}</skip>
           </configuration>
           <executions>
