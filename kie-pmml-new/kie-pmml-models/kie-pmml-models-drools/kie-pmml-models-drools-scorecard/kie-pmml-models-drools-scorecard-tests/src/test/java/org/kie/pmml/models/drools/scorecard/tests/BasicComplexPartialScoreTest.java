@@ -32,10 +32,10 @@ import java.util.HashMap;
 import java.util.Map;
 
 @RunWith(Parameterized.class)
-public class CompoundNestedPredicateScorecardTest extends AbstractPMMLScorecardTest {
+public class BasicComplexPartialScoreTest extends AbstractPMMLScorecardTest {
 
-    private static final String MODEL_NAME = "CompoundNestedPredicateScorecard";
-    private static final String PMML_SOURCE = "CompoundNestedPredicateScorecard.pmml";
+    private static final String MODEL_NAME = "BasicPartialScoreScorecard";
+    private static final String PMML_SOURCE = "BasicComplexPartialScore.pmml";
     private static final String TARGET_FIELD = "Score";
     private static final String REASON_CODE1_FIELD = "Reason Code 1";
     private static final String REASON_CODE2_FIELD = "Reason Code 2";
@@ -43,13 +43,13 @@ public class CompoundNestedPredicateScorecardTest extends AbstractPMMLScorecardT
     private static KiePMMLModel pmmlModel;
 
     private double input1;
-    private String input2;
+    private double input2;
     private double score;
     private String reasonCode1;
     private String reasonCode2;
 
-    public CompoundNestedPredicateScorecardTest(double input1, String input2, double score,
-                                                String reasonCode1, String reasonCode2) {
+    public BasicComplexPartialScoreTest(double input1, double input2, double score,
+                                        String reasonCode1, String reasonCode2) {
         this.input1 = input1;
         this.input2 = input2;
         this.score = score;
@@ -65,21 +65,16 @@ public class CompoundNestedPredicateScorecardTest extends AbstractPMMLScorecardT
     @Parameterized.Parameters
     public static Collection<Object[]> data() {
         return Arrays.asList(new Object[][]{
-                { -50, "classB", -8, "characteristic2ReasonCode", null },
-                { -50, "classD", -8, "characteristic2ReasonCode", null },
-                { -9, "classB", 75, "characteristic1ReasonCode", null },
-                { 25.4, "classB", 75, "characteristic1ReasonCode", null },
-                { -7, "classA", -8, "characteristic2ReasonCode", null },
-                { -7, "classC", -15.5, "characteristic1ReasonCode", "characteristic2ReasonCode" },
-                { 5, "classB", -15.5, "characteristic1ReasonCode", "characteristic2ReasonCode" },
-                { 7.4, "classB", -15.5, "characteristic1ReasonCode", "characteristic2ReasonCode" },
-                { 12, "classB", 75, "characteristic1ReasonCode", null },
-                { 12, "classD", 75, "characteristic1ReasonCode", null },
+                { -1005.5, 10200, -15, "characteristic2ReasonCode", null },
+                { -1001, 4, -3969, "characteristic2ReasonCode", null },
+                { 2, 1002, 964, "characteristic2ReasonCode", null },
+                { 10, 20, 240, null, null },
+                { -2, 3, 5, "characteristic1ReasonCode", "characteristic2ReasonCode" },
         });
     }
 
     @Test
-    public void testCompoundNestedPredicateScorecard() {
+    public void testBasicPartialScore() {
         final Map<String, Object> inputData = new HashMap<>();
         inputData.put("input1", input1);
         inputData.put("input2", input2);
@@ -92,6 +87,7 @@ public class CompoundNestedPredicateScorecardTest extends AbstractPMMLScorecardT
         /* TODO: Uncomment when reason codes are implemented
         Assertions.assertThat(pmml4Result.getResultVariables().get(REASON_CODE1_FIELD)).isEqualTo(reasonCode1);
         Assertions.assertThat(pmml4Result.getResultVariables().get(REASON_CODE2_FIELD)).isEqualTo(reasonCode2);
+        Assertions.assertThat(pmml4Result.getResultVariables().get(REASON_CODE3_FIELD)).isEqualTo(reasonCode3);
          */
     }
 }
