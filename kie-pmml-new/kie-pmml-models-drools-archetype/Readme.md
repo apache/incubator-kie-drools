@@ -15,7 +15,7 @@ N.B.
 
 For model name do follow names as defined inside PMML specs, e.g RegressionModel -> Regression, TreeModel -> Tree
 
-    mvn archetype:generate -B -DarchetypeGroupId=org.kie -DarchetypeArtifactId=kie-pmml-models-drools-archetype -DarchetypeVersion=7.37.0-SNAPSHOT -DmodelName=NaiveBayes
+    mvn archetype:generate -B -DarchetypeGroupId=org.kie -DarchetypeArtifactId=kie-pmml-models-drools-archetype -DarchetypeVersion=7.38.0-SNAPSHOT -DmodelName=NaiveBayes
 
 Test:
 
