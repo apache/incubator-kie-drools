@@ -32,36 +32,29 @@ import java.util.HashMap;
 import java.util.Map;
 
 @RunWith(Parameterized.class)
-public class CompoundPredicateScorecardTest extends AbstractPMMLScorecardTest {
+public class CompoundNestedPredicateScorecardTest extends AbstractPMMLScorecardTest {
 
-    private static final String MODEL_NAME = "CompundPredicateScorecard";
-    private static final String PMML_SOURCE = "CompoundPredicateScorecard.pmml";
+    private static final String MODEL_NAME = "CompoundNestedPredicateScorecard";
+    private static final String PMML_SOURCE = "CompoundNestedPredicateScorecard.pmml";
     private static final String TARGET_FIELD = "Score";
     private static final String REASON_CODE1_FIELD = "Reason Code 1";
     private static final String REASON_CODE2_FIELD = "Reason Code 2";
-    private static final String REASON_CODE3_FIELD = "Reason Code 3";
 
     private static KiePMMLModel pmmlModel;
 
     private double input1;
-    private double input2;
-    private String input3;
-    private String input4;
+    private String input2;
     private double score;
     private String reasonCode1;
     private String reasonCode2;
-    private String reasonCode3;
 
-    public CompoundPredicateScorecardTest(double input1, double input2, String input3, String input4, double score,
-                                          String reasonCode1, String reasonCode2, String reasonCode3) {
+    public CompoundNestedPredicateScorecardTest(double input1, String input2, double score,
+                                                String reasonCode1, String reasonCode2) {
         this.input1 = input1;
         this.input2 = input2;
-        this.input3 = input3;
-        this.input4 = input4;
         this.score = score;
         this.reasonCode1 = reasonCode1;
         this.reasonCode2 = reasonCode2;
-        this.reasonCode3 = reasonCode3;
     }
 
     @BeforeClass
@@ -72,16 +65,16 @@ public class CompoundPredicateScorecardTest extends AbstractPMMLScorecardTest {
     @Parameterized.Parameters
     public static Collection<Object[]> data() {
         return Arrays.asList(new Object[][]{
-                { -21.5, -7, "classA", "classB", -93, null, null, null },
-                { -7, -7, "classA", "classB", -93, null, null, null },
-                { 2, 3.5, "classA", "classB", -68, "characteristic1ReasonCode", null, null },
-                { -8, 3, "classA", "classB", -58, "characteristic1ReasonCode", null, null },
-                { -8, -12.5, "classB", "classB", 135, "characteristic3ReasonCode", null, null },
-                { -8, 3, "classB", "classB", 170, "characteristic3ReasonCode", "characteristic1ReasonCode", null },
-                { 5, 3, "classB", "classB", 160, "characteristic3ReasonCode", "characteristic1ReasonCode", null },
-                { -8, -50, "classC", "classC", 230.5, "characteristic3ReasonCode", "characteristic2ReasonCode", null },
-                { -8, 3, "classC", "classC", 265.5, "characteristic3ReasonCode", "characteristic2ReasonCode", "characteristic1ReasonCode" },
-                { 5, 3, "classC", "classC", 255.5, "characteristic3ReasonCode", "characteristic2ReasonCode", "characteristic1ReasonCode" },
+                { -50, "classB", -8, "characteristic2ReasonCode", null },
+                { -50, "classD", -8, "characteristic2ReasonCode", null },
+                { -9, "classB", 75, "characteristic1ReasonCode", null },
+                { 25.4, "classB", 75, "characteristic1ReasonCode", null },
+                { -7, "classA", -8, "characteristic2ReasonCode", null },
+                { -7, "classC", -15.5, "characteristic1ReasonCode", "characteristic2ReasonCode" },
+                { 5, "classB", -15.5, "characteristic1ReasonCode", "characteristic2ReasonCode" },
+                { 7.4, "classB", -15.5, "characteristic1ReasonCode", "characteristic2ReasonCode" },
+                { 12, "classB", 75, "characteristic1ReasonCode", null },
+                { 12, "classD", 75, "characteristic1ReasonCode", null },
         });
     }
 
@@ -90,8 +83,6 @@ public class CompoundPredicateScorecardTest extends AbstractPMMLScorecardTest {
         final Map<String, Object> inputData = new HashMap<>();
         inputData.put("input1", input1);
         inputData.put("input2", input2);
-        inputData.put("input3", input3);
-        inputData.put("input4", input4);
 
         final PMMLRequestData pmmlRequestData = getPMMLRequestData(MODEL_NAME, inputData);
         PMML4Result pmml4Result = EXECUTOR.evaluate(pmmlModel, new PMMLContextImpl(pmmlRequestData), RELEASE_ID);
@@ -101,7 +92,6 @@ public class CompoundPredicateScorecardTest extends AbstractPMMLScorecardTest {
         /* TODO: Uncomment when reason codes are implemented
         Assertions.assertThat(pmml4Result.getResultVariables().get(REASON_CODE1_FIELD)).isEqualTo(reasonCode1);
         Assertions.assertThat(pmml4Result.getResultVariables().get(REASON_CODE2_FIELD)).isEqualTo(reasonCode2);
-        Assertions.assertThat(pmml4Result.getResultVariables().get(REASON_CODE3_FIELD)).isEqualTo(reasonCode3);
          */
     }
 }
