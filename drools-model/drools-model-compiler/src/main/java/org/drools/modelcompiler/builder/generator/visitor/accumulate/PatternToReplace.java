@@ -4,6 +4,7 @@ import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Stream;
 
 import com.github.javaparser.ast.expr.Expression;
 import com.github.javaparser.ast.expr.MethodCallExpr;
@@ -15,18 +16,21 @@ import static org.drools.modelcompiler.builder.generator.expression.PatternExpre
 import static org.drools.modelcompiler.util.StreamUtils.optionalToStream;
 
 public class PatternToReplace {
+
     final RuleContext context;
     final Collection<String> patternBindings;
-    final List<Expression> expressions;
 
     public PatternToReplace(RuleContext context, Collection<String> patternBindings) {
         this.context = context;
         this.patternBindings = patternBindings;
-        expressions = context.getExpressions();
+    }
+
+    private Stream<MethodCallExpr> allMethodCallExpressions() {
+        return context.getExpressions().stream().flatMap(e -> e.findAll(MethodCallExpr.class).stream());
     }
 
     public Optional<MethodCallExpr> findFromPattern() {
-        return expressions.stream().flatMap(e -> e.findAll(MethodCallExpr.class).stream())
+        return allMethodCallExpressions()
                 .filter(expr -> expr.getName().asString().equals(PATTERN_CALL))
                 .filter(this::hasBindingExprVar)
                 .map(Expression::asMethodCallExpr)
@@ -34,7 +38,7 @@ public class PatternToReplace {
     }
 
     public Optional<MethodCallExpr> findFromBinding() {
-        return expressions.stream().flatMap(e -> e.findAll(MethodCallExpr.class).stream())
+        return allMethodCallExpressions()
                 .filter(expr -> expr.getName().asString().equals(BIND_CALL))
                 .filter(this::hasBindingExprVar)
                 .flatMap(methodCallExpr -> optionalToStream(methodCallExpr.getScope()))
