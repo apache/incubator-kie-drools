@@ -14,6 +14,7 @@ import org.drools.modelcompiler.builder.generator.RuleContext;
 import static java.util.stream.Collectors.toList;
 import static org.drools.modelcompiler.builder.generator.DslMethodNames.PATTERN_CALL;
 import static org.drools.modelcompiler.builder.generator.expression.PatternExpressionBuilder.BIND_CALL;
+import static org.drools.modelcompiler.util.StreamUtils.optionalToStream;
 
 public class PatternToReplace {
     final RuleContext context;
@@ -39,17 +40,26 @@ public class PatternToReplace {
     }
 
     public Optional<MethodCallExpr> findFromBinding() {
-        return expressions.stream().flatMap((Expression e) -> {
+        Optional<MethodCallExpr> first = expressions.stream().flatMap((Expression e) -> {
             final Optional<MethodCallExpr> bind = e.findFirst(MethodCallExpr.class, expr -> {
-                boolean isBindCall = expr.getName().asString().equals(BIND_CALL);
-                List<Expression> bindingExprsVars = patternBindings.stream().map(context::getVarExpr).collect(toList());
-                boolean hasBindingHasArgument = !Collections.disjoint(bindingExprsVars, expr.getArguments());
+                boolean isBindCall = isBindCall(expr);
+                boolean hasBindingHasArgument = hasBindingExprVar(expr);
                 return isBindCall && hasBindingHasArgument;
             });
-            return bind
-                    .flatMap( b -> b.getScope().map(Expression::asMethodCallExpr))
-                    .map(Stream::of).orElse(Stream.empty());
+
+            return optionalToStream(bind
+                    .flatMap(b -> b.getScope().map(Expression::asMethodCallExpr)));
+
         }).findFirst();
+        return first;
     }
 
+    private boolean hasBindingExprVar(MethodCallExpr expr) {
+        List<Expression> bindingExprsVars = patternBindings.stream().map(context::getVarExpr).collect(toList());
+        return !Collections.disjoint(bindingExprsVars, expr.getArguments());
+    }
+
+    private boolean isBindCall(MethodCallExpr expr) {
+        return expr.getName().asString().equals(BIND_CALL);
+    }
 }
