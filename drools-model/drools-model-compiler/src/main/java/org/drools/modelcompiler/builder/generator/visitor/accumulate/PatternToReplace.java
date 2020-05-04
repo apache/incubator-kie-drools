@@ -4,8 +4,6 @@ import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
-import java.util.stream.Collectors;
-import java.util.stream.Stream;
 
 import com.github.javaparser.ast.expr.Expression;
 import com.github.javaparser.ast.expr.MethodCallExpr;
@@ -28,15 +26,11 @@ public class PatternToReplace {
     }
 
     public Optional<MethodCallExpr> findFromPattern() {
-        return expressions.stream().flatMap((Expression e) -> {
-            final Optional<MethodCallExpr> pattern = e.findFirst(MethodCallExpr.class, expr -> {
-                boolean isPatternExpr = expr.getName().asString().equals(PATTERN_CALL);
-                List<Expression> bindingExprsVars = patternBindings.stream().map(context::getVarExpr).collect(Collectors.toList());
-                boolean hasBindingHasArgument = !Collections.disjoint(bindingExprsVars, expr.getArguments());
-                return isPatternExpr && hasBindingHasArgument;
-            });
-            return pattern.map(Stream::of).orElse(Stream.empty());
-        }).findFirst();
+        return expressions.stream().flatMap(e -> e.findAll(MethodCallExpr.class).stream())
+                .filter(expr -> expr.getName().asString().equals(PATTERN_CALL))
+                .filter(this::hasBindingExprVar)
+                .map(Expression::asMethodCallExpr)
+                .findFirst();
     }
 
     public Optional<MethodCallExpr> findFromBinding() {
