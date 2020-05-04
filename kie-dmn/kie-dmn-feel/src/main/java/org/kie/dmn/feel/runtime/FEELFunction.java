@@ -22,6 +22,7 @@ import org.kie.dmn.feel.lang.EvaluationContext;
 import org.kie.dmn.feel.lang.Symbol;
 import org.kie.dmn.feel.lang.Type;
 
+
 /**
  * An interface for all FEEL functions, custom or built-in
  */

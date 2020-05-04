@@ -180,7 +180,7 @@ public class FEELDateTimeDurationTest extends BaseFEELTest {
                 { "duration( \"P2DT20H14M\" ) / 2", Duration.parse( "P1DT10H7M" ) , null},
                 { "2 / duration( \"P2DT20H14M\" )", Duration.parse( "PT0S" ) , null},
                 { "duration( \"P2DT20H14M\" ) / duration( \"P2DT20H14M\" )", BigDecimal.valueOf(1) , null},
-                
+
                 {"time(\"10:30:00\") instance of time", Boolean.TRUE, null},
                 {"time(\"10:30:00\") instance of date", Boolean.FALSE, null},
                 {"time(\"10:30:00@Europe/Rome\") instance of time", Boolean.TRUE, null},
@@ -227,7 +227,7 @@ public class FEELDateTimeDurationTest extends BaseFEELTest {
                 { "duration(\"P1Y\") instance of days and time duration", Boolean.FALSE , null },
                 { "duration(\"P1D\") instance of years and months duration", Boolean.FALSE , null },
                 { "duration(\"P1D\") instance of days and time duration", Boolean.TRUE , null },
-                
+
                 { "date and time(\"2017-11-10T11:00@Europe/Paris\") < date and time(\"2017-11-10T10:00Z\")", Boolean.FALSE , null},
                 { "date and time(\"2017-11-10T11:00@Europe/Paris\") > date and time(\"2017-11-10T10:00Z\")", Boolean.FALSE , null},
                 { "date and time(\"2017-11-10T11:00@Europe/Paris\") = date and time(\"2017-11-10T10:00Z\")", Boolean.TRUE , null},
@@ -240,7 +240,7 @@ public class FEELDateTimeDurationTest extends BaseFEELTest {
                 { "time(\"23:00:50z\") = time(\"23:00:50\")", Boolean.TRUE , null},
                 { "time(\"23:00:50z\") = time(\"23:00:50@Etc/UTC\")", Boolean.TRUE , null},
                 { "time(\"23:00:50\")  = time(\"23:00:50@Etc/UTC\")", Boolean.TRUE , null},
-                
+
                 {"time(\"10:30:00\").time offset", null, null},
                 {"date and time(\"2018-12-10T10:30:00\").time offset", null, null},
                 {"date( 2020, 2, 31 )", null, FEELEvent.Severity.ERROR},

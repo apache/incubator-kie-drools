@@ -70,11 +70,11 @@ public final class Msg {
     public static String createMessage( Message4 message, Object p1, Object p2, Object p3, Object p4) {
         return Msg.buildMessage(message, p1, p2, p3, p4);
     }
-    
+
     private static String buildMessage( Message message, Object... params ) {
         return String.format( message.getMask(), params );
     }
-    
+
     public static interface Message {
         String getMask();
     }

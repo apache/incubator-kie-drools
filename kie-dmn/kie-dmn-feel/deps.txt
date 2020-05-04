@@ -1,0 +1,79 @@
+[INFO] Scanning for projects...
+[INFO] 
+[INFO] ------------------------< org.kie:kie-dmn-feel >------------------------
+[INFO] Building KIE :: Decision Model Notation :: FEEL 7.44.0-SNAPSHOT
+[INFO] -------------------------------[ bundle ]-------------------------------
+[INFO] 
+[INFO] --- maven-dependency-plugin:3.1.1:tree (default-cli) @ kie-dmn-feel ---
+[INFO] org.kie:kie-dmn-feel:bundle:7.44.0-SNAPSHOT
+[INFO] +- org.kie:kie-dmn-model:jar:7.44.0-SNAPSHOT:compile
+[INFO] +- org.kie:kie-dmn-api:jar:7.44.0-SNAPSHOT:compile
+[INFO] |  +- org.kie:kie-api:jar:7.44.0-SNAPSHOT:compile
+[INFO] |  \- org.kie:kie-internal:jar:7.44.0-SNAPSHOT:compile
+[INFO] +- org.antlr:antlr4-runtime:jar:4.8:compile
+[INFO] +- org.antlr:antlr4:jar:4.8:test
+[INFO] |  +- org.antlr:antlr-runtime:jar:3.5.2:compile
+[INFO] |  +- org.antlr:ST4:jar:4.0.7:test
+[INFO] |  +- org.abego.treelayout:org.abego.treelayout.core:jar:1.0.3:test
+[INFO] |  \- com.ibm.icu:icu4j:jar:61.1:test
+[INFO] +- org.drools:drools-compiler:jar:7.44.0-SNAPSHOT:compile
+[INFO] |  +- org.drools:drools-core-reflective:jar:7.44.0-SNAPSHOT:compile
+[INFO] |  +- org.drools:drools-core:jar:7.44.0-SNAPSHOT:compile
+[INFO] |  |  +- org.kie.soup:kie-soup-xstream:jar:7.44.0-SNAPSHOT:compile
+[INFO] |  |  +- org.drools:drools-core-dynamic:jar:7.44.0-SNAPSHOT:compile
+[INFO] |  |  +- org.kie.soup:kie-soup-project-datamodel-commons:jar:7.44.0-SNAPSHOT:compile
+[INFO] |  |  |  \- org.kie.soup:kie-soup-project-datamodel-api:jar:7.44.0-SNAPSHOT:compile
+[INFO] |  |  \- commons-codec:commons-codec:jar:1.11:compile
+[INFO] |  +- org.kie.soup:kie-soup-maven-support:jar:7.44.0-SNAPSHOT:compile
+[INFO] |  +- org.kie.soup:kie-soup-commons:jar:7.44.0-SNAPSHOT:compile
+[INFO] |  +- org.mvel:mvel2:jar:2.4.10.Final:compile
+[INFO] |  +- com.thoughtworks.xstream:xstream:jar:1.4.11.1:compile
+[INFO] |  |  +- xmlpull:xmlpull:jar:1.2.0:compile
+[INFO] |  |  \- xpp3:xpp3_min:jar:1.2.0:compile
+[INFO] |  \- com.google.protobuf:protobuf-java:jar:3.6.1:compile
+[INFO] +- com.github.javaparser:javaparser-core:jar:3.13.10:compile
+[INFO] +- org.drools:drools-mvel-parser:jar:7.44.0-SNAPSHOT:compile
+[INFO] +- ch.obermuhlner:big-math:jar:2.0.1:compile
+[INFO] +- org.slf4j:slf4j-api:jar:1.7.26:compile
+[INFO] +- ch.qos.logback:logback-classic:jar:1.2.3:test
+[INFO] |  \- ch.qos.logback:logback-core:jar:1.2.3:test
+[INFO] +- junit:junit:jar:4.12:test
+[INFO] |  \- org.hamcrest:hamcrest-core:jar:1.3:test
+[INFO] +- org.mockito:mockito-core:jar:1.10.19:test
+[INFO] |  \- org.objenesis:objenesis:jar:2.1:test
+[INFO] +- org.hamcrest:hamcrest-library:jar:1.3:test
+[INFO] +- org.assertj:assertj-core:jar:3.14.0:test
+[INFO] +- org.jboss:jandex:jar:2.1.1.Final:test
+[INFO] +- org.eclipse:yasson:jar:1.0.6:test
+[INFO] |  +- jakarta.json.bind:jakarta.json.bind-api:jar:1.0.2:test
+[INFO] |  +- jakarta.json:jakarta.json-api:jar:1.1.6:test
+[INFO] |  \- org.glassfish:jakarta.json:jar:module:1.1.6:test
+[INFO] \- org.asciidoctor:asciidoctorj:jar:2.2.0:test
+[INFO]    +- org.asciidoctor:asciidoctorj-api:jar:2.2.0:test
+[INFO]    +- org.jruby:jruby:jar:9.2.9.0:test
+[INFO]    |  +- org.jruby:jruby-core:jar:9.2.9.0:test
+[INFO]    |  |  +- com.github.jnr:jnr-netdb:jar:1.1.6:test
+[INFO]    |  |  +- com.github.jnr:jnr-enxio:jar:0.23:test
+[INFO]    |  |  +- com.github.jnr:jnr-unixsocket:jar:0.24:test
+[INFO]    |  |  +- com.github.jnr:jnr-posix:jar:3.0.51:test
+[INFO]    |  |  +- com.github.jnr:jnr-constants:jar:0.9.14:test
+[INFO]    |  |  +- com.github.jnr:jffi:jar:1.2.22:test
+[INFO]    |  |  +- com.github.jnr:jffi:jar:native:1.2.22:test
+[INFO]    |  |  +- org.jruby.joni:joni:jar:2.1.30:test
+[INFO]    |  |  +- org.jruby.jcodings:jcodings:jar:1.0.45:test
+[INFO]    |  |  +- org.jruby:dirgra:jar:0.3:test
+[INFO]    |  |  +- com.headius:invokebinder:jar:1.11:test
+[INFO]    |  |  +- com.headius:options:jar:1.4:test
+[INFO]    |  |  +- com.jcraft:jzlib:jar:1.1.3:test
+[INFO]    |  |  +- com.martiansoftware:nailgun-server:jar:0.9.1:test
+[INFO]    |  |  +- joda-time:joda-time:jar:2.9.7:test
+[INFO]    |  |  +- com.headius:backport9:jar:1.3:test
+[INFO]    |  |  \- javax.annotation:javax.annotation-api:jar:1.3.2:test
+[INFO]    |  \- org.jruby:jruby-stdlib:jar:9.2.9.0:test
+[INFO]    \- com.beust:jcommander:jar:1.72:test
+[INFO] ------------------------------------------------------------------------
+[INFO] BUILD SUCCESS
+[INFO] ------------------------------------------------------------------------
+[INFO] Total time:  2.145 s
+[INFO] Finished at: 2020-09-10T14:29:03+03:00
+[INFO] ------------------------------------------------------------------------

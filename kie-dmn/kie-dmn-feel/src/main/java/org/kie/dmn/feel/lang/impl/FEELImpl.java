@@ -41,10 +41,12 @@ import org.kie.dmn.feel.parser.feel11.profiles.DoCompileFEELProfile;
 import org.kie.dmn.feel.runtime.FEELFunction;
 import org.kie.dmn.feel.runtime.UnaryTest;
 import org.kie.dmn.feel.util.ClassLoaderUtil;
+import org.kie.dmn.model.api.GwtIncompatible;
 
 /**
  * Language runtime entry point
  */
+@GwtIncompatible
 public class FEELImpl
         implements FEEL {
 
@@ -63,6 +65,7 @@ public class FEELImpl
         this(ClassLoaderUtil.findDefaultClassLoader(), Collections.emptyList());
     }
 
+    @GwtIncompatible
     public FEELImpl(ClassLoader cl) {
         this(cl, Collections.emptyList());
     }
@@ -71,6 +74,7 @@ public class FEELImpl
         this(ClassLoaderUtil.findDefaultClassLoader(), profiles);
     }
 
+    @GwtIncompatible
     public FEELImpl(ClassLoader cl, List<FEELProfile> profiles) {
         this.classLoader = cl;
         this.profiles = Collections.unmodifiableList(profiles);
