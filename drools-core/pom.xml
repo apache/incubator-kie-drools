@@ -58,7 +58,7 @@
     </dependency>
     <dependency>
       <groupId>org.kie.soup</groupId>
-      <artifactId>kie-soup-commons</artifactId>
+      <artifactId>kie-soup-xstream</artifactId>
     </dependency>
     <dependency>
       <groupId>org.drools</groupId>

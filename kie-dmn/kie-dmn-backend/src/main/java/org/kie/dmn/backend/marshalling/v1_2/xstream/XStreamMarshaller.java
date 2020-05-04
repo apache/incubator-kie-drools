@@ -94,7 +94,7 @@ import org.kie.dmn.model.v1_2.dmndi.Point;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import static org.kie.soup.commons.xstream.XStreamUtils.createTrustingXStream;
+import static org.kie.soup.xstream.XStreamUtils.createTrustingXStream;
 
 public class XStreamMarshaller
         implements DMNMarshaller {
