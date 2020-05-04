@@ -4,6 +4,9 @@ pipeline {
     agent {
         label 'kie-rhel7 && kie-mem16g'
     }
+    environment {
+        KOGITO_CI_EMAIL_TO = credentials('KOGITO_CI_EMAIL_TO')
+    }
     tools {
         maven 'kie-maven-3.6.2'
         jdk 'kie-jdk11'
@@ -50,23 +53,17 @@ pipeline {
         }
     }
     post {
-        failure{
-            emailext body: 'kogito deploy #${BUILD_NUMBER} was: ' + "${currentBuild.currentResult}" +  '\\n' +
-                    'Please look here: ${BUILD_URL} \\n' +
-                    ' \\n' +
-                    '${BUILD_LOG, maxLines=750}', subject: 'kogito deploy #${BUILD_NUMBER}: ' + "${currentBuild.currentResult}", to: 'cnicolai@redhat.com, mbiarnes@redhat.com'
+        failure {
+            emailext body: 'Kogito daily snapshot deploy #${BUILD_NUMBER} was: ' + "${currentBuild.currentResult}" +  '\n' +
+                    'Please look here: ${BUILD_URL} ',
+                     subject: 'Kogito daily snapshot deploy #${BRANCH_NAME}',
+                     to: env.KOGITO_CI_EMAIL_TO
         }
-        unstable{
-            emailext body: 'kogito-deploy #${BUILD_NUMBER} was: ' + "${currentBuild.currentResult}" +  '\\n' +
-                    'Please look here: ${BUILD_URL} \\n' +
-                    ' \\n' +
-                    'Failed tests: ${BUILD_URL}/testReport \\n' +
-                    ' \\n' +
-                    '${BUILD_LOG, maxLines=750}', subject: 'kogito deploy #${BUILD_NUMBER}: ' + "${currentBuild.currentResult}", to: 'cnicolai@redhat.com, mbiarnes@redhat.com'
-        }
-        success{
-            emailext body: 'kogito-deploy #${BUILD_NUMBER} was:' + "${currentBuild.currentResult}" +  '\\n' +
-                    'Please look here: ${BUILD_URL}', subject: 'kogito deploy #${BUILD_NUMBER}: ' + "${currentBuild.currentResult}", to: 'cnicolai@redhat.com, mbiarnes@redhat.com'
+        unstable {
+            emailext body: 'Kogito daily snapshot deploy #${BUILD_NUMBER} was: ' + "${currentBuild.currentResult}" +  '\n' +
+                     'Please look here: ${BUILD_URL} ',
+                     subject: 'Kogito daily snapshot deploy #${BRANCH_NAME}',
+                     to: env.KOGITO_CI_EMAIL_TO
         }
         always {
             junit '**/target/surefire-reports/**/*.xml'
