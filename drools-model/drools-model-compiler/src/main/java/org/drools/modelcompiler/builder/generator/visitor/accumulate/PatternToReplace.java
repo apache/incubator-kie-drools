@@ -40,26 +40,16 @@ public class PatternToReplace {
     }
 
     public Optional<MethodCallExpr> findFromBinding() {
-        Optional<MethodCallExpr> first = expressions.stream().flatMap((Expression e) -> {
-            final Optional<MethodCallExpr> bind = e.findFirst(MethodCallExpr.class, expr -> {
-                boolean isBindCall = isBindCall(expr);
-                boolean hasBindingHasArgument = hasBindingExprVar(expr);
-                return isBindCall && hasBindingHasArgument;
-            });
-
-            return optionalToStream(bind
-                    .flatMap(b -> b.getScope().map(Expression::asMethodCallExpr)));
-
-        }).findFirst();
-        return first;
+        return expressions.stream().flatMap(e -> e.findAll(MethodCallExpr.class).stream())
+                .filter(expr -> expr.getName().asString().equals(BIND_CALL))
+                .filter(this::hasBindingExprVar)
+                .flatMap(methodCallExpr -> optionalToStream(methodCallExpr.getScope()))
+                .map(Expression::asMethodCallExpr)
+                .findFirst();
     }
 
     private boolean hasBindingExprVar(MethodCallExpr expr) {
         List<Expression> bindingExprsVars = patternBindings.stream().map(context::getVarExpr).collect(toList());
         return !Collections.disjoint(bindingExprsVars, expr.getArguments());
-    }
-
-    private boolean isBindCall(MethodCallExpr expr) {
-        return expr.getName().asString().equals(BIND_CALL);
     }
 }
