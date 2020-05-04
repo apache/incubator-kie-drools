@@ -31,7 +31,6 @@ import org.optaplanner.core.config.constructionheuristic.ConstructionHeuristicPh
 import org.optaplanner.core.config.constructionheuristic.ConstructionHeuristicType;
 import org.optaplanner.core.config.heuristic.selector.entity.EntitySorterManner;
 import org.optaplanner.core.config.heuristic.selector.value.ValueSorterManner;
-import org.optaplanner.core.config.phase.PhaseConfig;
 import org.optaplanner.core.config.solver.SolverConfig;
 import org.optaplanner.core.impl.solver.DefaultSolver;
 import org.optaplanner.examples.nqueens.app.NQueensApp;
@@ -51,7 +50,7 @@ public class NQueensConstructionHeuristicTrackingTest extends NQueensAbstractTra
         chConfig.setValueSorterManner(valueSorterManner);
         chConfig.setEntitySorterManner(entitySorterManner);
         chConfig.setConstructionHeuristicType(constructionHeuristicType);
-        solverConfig.setPhaseConfigList(Collections.<PhaseConfig> singletonList(chConfig));
+        solverConfig.setPhaseConfigList(Collections.singletonList(chConfig));
 
         NQueensGenerator generator = new NQueensGenerator();
         NQueens problem = generator.createNQueens(8);

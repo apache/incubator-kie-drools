@@ -107,7 +107,7 @@ public class NurseRosteringPanel extends SolutionPanel<NurseRoster> {
     private void createEmployeeListPanel() {
         employeeListPanel = new JPanel();
         employeeListPanel.setLayout(new BoxLayout(employeeListPanel, BoxLayout.Y_AXIS));
-        unassignedPanel = new EmployeePanel(this, Collections.<ShiftDate> emptyList(), Collections.<Shift> emptyList(),
+        unassignedPanel = new EmployeePanel(this, Collections.emptyList(), Collections.emptyList(),
                 null);
         employeeListPanel.add(unassignedPanel);
         employeeToPanelMap = new LinkedHashMap<>();

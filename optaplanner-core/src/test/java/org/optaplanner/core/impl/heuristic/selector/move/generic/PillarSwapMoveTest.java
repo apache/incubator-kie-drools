@@ -56,7 +56,7 @@ public class PillarSwapMoveTest {
                 .buildEntityDescriptor().getGenuineVariableDescriptorList();
 
         PillarSwapMove<TestdataEntityProvidingSolution> abMove = new PillarSwapMove<>(variableDescriptorList,
-                Arrays.<Object> asList(a), Arrays.<Object> asList(b));
+                Arrays.asList(a), Arrays.asList(b));
         a.setValue(v1);
         b.setValue(v2);
         assertEquals(false, abMove.isMoveDoable(scoreDirector));
@@ -77,7 +77,7 @@ public class PillarSwapMoveTest {
         assertEquals(false, abMove.isMoveDoable(scoreDirector));
 
         PillarSwapMove<TestdataEntityProvidingSolution> acMove = new PillarSwapMove<>(variableDescriptorList,
-                Arrays.<Object> asList(a), Arrays.<Object> asList(c));
+                Arrays.asList(a), Arrays.asList(c));
         a.setValue(v1);
         c.setValue(v4);
         assertEquals(false, acMove.isMoveDoable(scoreDirector));
@@ -86,7 +86,7 @@ public class PillarSwapMoveTest {
         assertEquals(false, acMove.isMoveDoable(scoreDirector));
 
         PillarSwapMove<TestdataEntityProvidingSolution> bcMove = new PillarSwapMove<>(variableDescriptorList,
-                Arrays.<Object> asList(b), Arrays.<Object> asList(c));
+                Arrays.asList(b), Arrays.asList(c));
         b.setValue(v2);
         c.setValue(v4);
         assertEquals(false, bcMove.isMoveDoable(scoreDirector));
@@ -101,7 +101,7 @@ public class PillarSwapMoveTest {
         assertEquals(false, bcMove.isMoveDoable(scoreDirector));
 
         PillarSwapMove<TestdataEntityProvidingSolution> abzMove = new PillarSwapMove<>(variableDescriptorList,
-                Arrays.<Object> asList(a, b), Arrays.<Object> asList(z));
+                Arrays.asList(a, b), Arrays.asList(z));
         a.setValue(v2);
         b.setValue(v2);
         z.setValue(v4);
@@ -142,7 +142,7 @@ public class PillarSwapMoveTest {
                 .buildEntityDescriptor().getGenuineVariableDescriptorList();
 
         PillarSwapMove<TestdataEntityProvidingSolution> abMove = new PillarSwapMove<>(variableDescriptorList,
-                Arrays.<Object> asList(a), Arrays.<Object> asList(b));
+                Arrays.asList(a), Arrays.asList(b));
 
         a.setValue(v1);
         b.setValue(v1);
@@ -166,7 +166,7 @@ public class PillarSwapMoveTest {
         assertEquals(v2, b.getValue());
 
         PillarSwapMove<TestdataEntityProvidingSolution> abzMove = new PillarSwapMove<>(variableDescriptorList,
-                Arrays.asList(a, b), Arrays.<Object> asList(z));
+                Arrays.asList(a, b), Arrays.asList(z));
 
         a.setValue(v3);
         b.setValue(v3);
@@ -193,7 +193,7 @@ public class PillarSwapMoveTest {
         assertEquals(v4, z.getValue());
 
         PillarSwapMove<TestdataEntityProvidingSolution> abczMove = new PillarSwapMove<>(variableDescriptorList,
-                Arrays.asList(a), Arrays.<Object> asList(b, c, z));
+                Arrays.asList(a), Arrays.asList(b, c, z));
 
         a.setValue(v2);
         b.setValue(v3);
@@ -211,7 +211,7 @@ public class PillarSwapMoveTest {
         assertEquals(v3, z.getValue());
 
         PillarSwapMove<TestdataEntityProvidingSolution> abczMove2 = new PillarSwapMove<>(variableDescriptorList,
-                Arrays.<Object> asList(a, b), Arrays.<Object> asList(c, z));
+                Arrays.asList(a, b), Arrays.asList(c, z));
 
         a.setValue(v4);
         b.setValue(v4);
@@ -282,15 +282,15 @@ public class PillarSwapMoveTest {
         GenuineVariableDescriptor<TestdataMultiVarSolution> secondaryDescriptor = TestdataMultiVarEntity
                 .buildVariableDescriptorForSecondaryValue();
         PillarSwapMove<TestdataMultiVarSolution> move = new PillarSwapMove<>(Arrays.asList(primaryDescriptor),
-                Arrays.<Object> asList(new TestdataMultiVarEntity("a"), new TestdataMultiVarEntity("b")),
-                Arrays.<Object> asList(new TestdataMultiVarEntity("c"), new TestdataMultiVarEntity("d")));
+                Arrays.asList(new TestdataMultiVarEntity("a"), new TestdataMultiVarEntity("b")),
+                Arrays.asList(new TestdataMultiVarEntity("c"), new TestdataMultiVarEntity("d")));
         assertCollectionContainsExactly(move.getVariableNameList(), "primaryValue");
         assertAllCodesOfCollection(move.getLeftPillar(), "a", "b");
         assertAllCodesOfCollection(move.getRightPillar(), "c", "d");
 
         move = new PillarSwapMove<>(Arrays.asList(primaryDescriptor, secondaryDescriptor),
-                Arrays.<Object> asList(new TestdataMultiVarEntity("e"), new TestdataMultiVarEntity("f")),
-                Arrays.<Object> asList(new TestdataMultiVarEntity("g"), new TestdataMultiVarEntity("h")));
+                Arrays.asList(new TestdataMultiVarEntity("e"), new TestdataMultiVarEntity("f")),
+                Arrays.asList(new TestdataMultiVarEntity("g"), new TestdataMultiVarEntity("h")));
         assertCollectionContainsExactly(move.getVariableNameList(), "primaryValue", "secondaryValue");
         assertAllCodesOfCollection(move.getLeftPillar(), "e", "f");
         assertAllCodesOfCollection(move.getRightPillar(), "g", "h");
@@ -311,11 +311,11 @@ public class PillarSwapMoveTest {
                 .getGenuineVariableDescriptorList();
 
         assertEquals("[a, b] {null} <-> [c, d, e] {v1}", new PillarSwapMove<>(variableDescriptorList,
-                Arrays.<Object> asList(a, b), Arrays.<Object> asList(c, d, e)).toString());
+                Arrays.asList(a, b), Arrays.asList(c, d, e)).toString());
         assertEquals("[b] {null} <-> [c] {v1}", new PillarSwapMove<>(variableDescriptorList,
-                Arrays.<Object> asList(b), Arrays.<Object> asList(c)).toString());
+                Arrays.asList(b), Arrays.asList(c)).toString());
         assertEquals("[f, g] {v2} <-> [c, d, e] {v1}", new PillarSwapMove<>(variableDescriptorList,
-                Arrays.<Object> asList(f, g), Arrays.<Object> asList(c, d, e)).toString());
+                Arrays.asList(f, g), Arrays.asList(c, d, e)).toString());
     }
 
 }

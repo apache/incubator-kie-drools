@@ -46,7 +46,7 @@ public class VariableListenerSupportTest {
         InnerScoreDirector<TestdataSolution> scoreDirector = mock(InnerScoreDirector.class);
         when(scoreDirector.getSolutionDescriptor()).thenReturn(solutionDescriptor);
         TestdataSolution solution = new TestdataSolution();
-        solution.setEntityList(Collections.<TestdataEntity> emptyList());
+        solution.setEntityList(Collections.emptyList());
         when(scoreDirector.getWorkingSolution()).thenReturn(solution);
         when(scoreDirector.getSupplyManager()).thenReturn(mock(SupplyManager.class));
         VariableListenerSupport<TestdataSolution> variableListenerSupport = new VariableListenerSupport<>(scoreDirector);
@@ -68,7 +68,7 @@ public class VariableListenerSupportTest {
         InnerScoreDirector<TestdataChainedSolution> scoreDirector = mock(InnerScoreDirector.class);
         when(scoreDirector.getSolutionDescriptor()).thenReturn(solutionDescriptor);
         TestdataChainedSolution solution = new TestdataChainedSolution();
-        solution.setChainedEntityList(Collections.<TestdataChainedEntity> emptyList());
+        solution.setChainedEntityList(Collections.emptyList());
         when(scoreDirector.getWorkingSolution()).thenReturn(solution);
         when(scoreDirector.getSupplyManager()).thenReturn(mock(SupplyManager.class));
         VariableListenerSupport<TestdataChainedSolution> variableListenerSupport = new VariableListenerSupport<>(scoreDirector);
@@ -92,7 +92,7 @@ public class VariableListenerSupportTest {
         InnerScoreDirector<TestdataShadowingChainedSolution> scoreDirector = mock(InnerScoreDirector.class);
         when(scoreDirector.getSolutionDescriptor()).thenReturn(solutionDescriptor);
         TestdataShadowingChainedSolution solution = new TestdataShadowingChainedSolution();
-        solution.setChainedEntityList(Collections.<TestdataShadowingChainedEntity> emptyList());
+        solution.setChainedEntityList(Collections.emptyList());
         when(scoreDirector.getWorkingSolution()).thenReturn(solution);
         when(scoreDirector.getSupplyManager()).thenReturn(mock(SupplyManager.class));
         VariableListenerSupport<TestdataShadowingChainedSolution> variableListenerSupport = new VariableListenerSupport<>(

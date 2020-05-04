@@ -32,7 +32,7 @@ public class NearbyDistanceMatrixTest {
         final MatrixTestdataObject b = new MatrixTestdataObject("b", 1, new double[] { 4.0, 0.0, 5.0, 10.0 });
         final MatrixTestdataObject c = new MatrixTestdataObject("c", 2, new double[] { 2.0, 5.0, 0.0, 7.0 });
         final MatrixTestdataObject d = new MatrixTestdataObject("d", 3, new double[] { 6.0, 10.0, 7.0, 0.0 });
-        List<Object> entityList = Arrays.<Object> asList(a, b, c, d);
+        List<Object> entityList = Arrays.asList(a, b, c, d);
         NearbyDistanceMeter<MatrixTestdataObject, MatrixTestdataObject> meter = (origin,
                 destination) -> origin.distances[destination.index];
 
@@ -66,7 +66,7 @@ public class NearbyDistanceMatrixTest {
         final MatrixTestdataObject b = new MatrixTestdataObject("b", 1, new double[] { 1.0, 0.0, 2.0, 1.0 });
         final MatrixTestdataObject c = new MatrixTestdataObject("c", 2, new double[] { 1.0, 2.0, 0.0, 3.0 });
         final MatrixTestdataObject d = new MatrixTestdataObject("d", 3, new double[] { 1.0, 1.0, 3.0, 0.0 });
-        List<Object> entityList = Arrays.<Object> asList(a, b, c, d);
+        List<Object> entityList = Arrays.asList(a, b, c, d);
         NearbyDistanceMeter<MatrixTestdataObject, MatrixTestdataObject> meter = (origin,
                 destination) -> origin.distances[destination.index];
 

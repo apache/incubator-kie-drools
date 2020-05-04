@@ -203,7 +203,7 @@ public abstract class ReflectionsWorkaroundClasspathHelper {
                 if (classLoader instanceof URLClassLoader) {
                     URL[] urls = ((URLClassLoader) classLoader).getURLs();
                     if (urls != null) {
-                        result.addAll(Sets.<URL> newHashSet(urls));
+                        result.addAll(Sets.newHashSet(urls));
                     }
                 }
                 classLoader = classLoader.getParent();

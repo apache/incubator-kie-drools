@@ -226,7 +226,7 @@ public abstract class AbstractSolutionClonerTest {
                 "extraObjectOnSolution");
         List<TestdataValue> valueList = Arrays.asList(val1, val2, val3);
         original.setValueList(valueList);
-        List<TestdataEntity> originalEntityList = Arrays.<TestdataEntity> asList(a, b, c, d);
+        List<TestdataEntity> originalEntityList = Arrays.asList(a, b, c, d);
         original.setEntityList(originalEntityList);
 
         TestdataUnannotatedExtendedSolution clone = (TestdataUnannotatedExtendedSolution) cloner.cloneSolution(original);
@@ -278,7 +278,7 @@ public abstract class AbstractSolutionClonerTest {
                 "extraObjectOnSolution");
         List<TestdataValue> valueList = Arrays.asList(val1, val2, val3);
         original.setValueList(valueList);
-        List<TestdataThirdPartyEntityPojo> originalEntityList = Arrays.<TestdataThirdPartyEntityPojo> asList(a, b, c, d);
+        List<TestdataThirdPartyEntityPojo> originalEntityList = Arrays.asList(a, b, c, d);
         original.setEntityList(originalEntityList);
 
         TestdataExtendedThirdPartySolution clone = (TestdataExtendedThirdPartySolution) cloner.cloneSolution(original);

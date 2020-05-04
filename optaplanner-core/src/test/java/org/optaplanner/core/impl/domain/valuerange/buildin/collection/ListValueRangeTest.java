@@ -34,7 +34,7 @@ public class ListValueRangeTest {
         assertEquals(5L, new ListValueRange<>(Arrays.asList(100, 120, 5, 7, 8)).getSize());
         assertEquals(3L, new ListValueRange<>(Arrays.asList(-15, 25, 0)).getSize());
         assertEquals(3L, new ListValueRange<>(Arrays.asList("b", "z", "a")).getSize());
-        assertEquals(0L, new ListValueRange<>(Collections.<String> emptyList()).getSize());
+        assertEquals(0L, new ListValueRange<>(Collections.emptyList()).getSize());
     }
 
     @Test
@@ -64,7 +64,7 @@ public class ListValueRangeTest {
                 5, 7, 8);
         assertAllElementsOfIterator(new ListValueRange<>(Arrays.asList(-15, 25, 0)).createOriginalIterator(), -15, 25, 0);
         assertAllElementsOfIterator(new ListValueRange<>(Arrays.asList("b", "z", "a")).createOriginalIterator(), "b", "z", "a");
-        assertAllElementsOfIterator(new ListValueRange<>(Collections.<String> emptyList()).createOriginalIterator());
+        assertAllElementsOfIterator(new ListValueRange<>(Collections.emptyList()).createOriginalIterator());
     }
 
     @Test
@@ -80,7 +80,7 @@ public class ListValueRangeTest {
         when(workingRandom.nextInt(anyInt())).thenReturn(2, 0);
         assertElementsOfIterator(new ListValueRange<>(Arrays.asList("b", "z", "a")).createRandomIterator(workingRandom), "a",
                 "b");
-        assertAllElementsOfIterator(new ListValueRange<>(Collections.<String> emptyList()).createRandomIterator(workingRandom));
+        assertAllElementsOfIterator(new ListValueRange<>(Collections.emptyList()).createRandomIterator(workingRandom));
     }
 
 }

@@ -278,9 +278,9 @@ public abstract class AbstractScoreDirector<Solution_, Factory_ extends Abstract
         scoreExplanation.append("Explanation of score (").append(workingScore).append("):\n");
         scoreExplanation.append("    Constraint match totals:\n");
         Comparator<ConstraintMatchTotal> constraintMatchTotalComparator = Comparator
-                .<ConstraintMatchTotal, Score> comparing(ConstraintMatchTotal::getScore);
+                .comparing(ConstraintMatchTotal::getScore);
         Comparator<ConstraintMatch> constraintMatchComparator = Comparator
-                .<ConstraintMatch, Score> comparing(ConstraintMatch::getScore);
+                .comparing(ConstraintMatch::getScore);
         constraintMatchTotals.stream()
                 .sorted(constraintMatchTotalComparator)
                 .forEach(constraintMatchTotal -> {
@@ -304,7 +304,7 @@ public abstract class AbstractScoreDirector<Solution_, Factory_ extends Abstract
         Collection<Indictment> indictments = getIndictmentMap().values();
         scoreExplanation.append("    Indictments (top ").append(INDICTMENT_LIMIT)
                 .append(" of ").append(indictments.size()).append("):\n");
-        Comparator<Indictment> indictmentComparator = Comparator.<Indictment, Score> comparing(Indictment::getScore);
+        Comparator<Indictment> indictmentComparator = Comparator.comparing(Indictment::getScore);
         indictments.stream()
                 .sorted(indictmentComparator)
                 .limit(INDICTMENT_LIMIT)

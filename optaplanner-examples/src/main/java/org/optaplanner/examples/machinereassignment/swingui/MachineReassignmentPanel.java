@@ -66,7 +66,7 @@ public class MachineReassignmentPanel extends SolutionPanel<MachineReassignment>
 
     private void createMachineListPanel() {
         machineListPanel = new JPanel(new GridLayout(0, 1));
-        unassignedPanel = new MrMachinePanel(this, Collections.<MrResource> emptyList(), null);
+        unassignedPanel = new MrMachinePanel(this, Collections.emptyList(), null);
         machineListPanel.add(unassignedPanel);
         machineToPanelMap = new LinkedHashMap<>();
         machineToPanelMap.put(null, unassignedPanel);

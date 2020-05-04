@@ -209,14 +209,14 @@ public class SubChainChangeMoveTest {
                 new TestdataChainedEntity[] { a1, a2, a3, a4, a5, b1, b2, b3 });
 
         assertEquals("[a2..a4] {a1 -> b0}", new SubChainChangeMove<>(
-                new SubChain(Arrays.<Object> asList(a2, a3, a4)), variableDescriptor, inverseVariableSupply, b0).toString());
+                new SubChain(Arrays.asList(a2, a3, a4)), variableDescriptor, inverseVariableSupply, b0).toString());
         assertEquals("[a1..a5] {a0 -> b3}", new SubChainChangeMove<>(
-                new SubChain(Arrays.<Object> asList(a1, a2, a3, a4, a5)), variableDescriptor, inverseVariableSupply, b3)
+                new SubChain(Arrays.asList(a1, a2, a3, a4, a5)), variableDescriptor, inverseVariableSupply, b3)
                         .toString());
         assertEquals("[a1..a3] {a0 -> a5}", new SubChainChangeMove<>(
-                new SubChain(Arrays.<Object> asList(a1, a2, a3)), variableDescriptor, inverseVariableSupply, a5).toString());
+                new SubChain(Arrays.asList(a1, a2, a3)), variableDescriptor, inverseVariableSupply, a5).toString());
         assertEquals("[a3..a3] {a2 -> b2}", new SubChainChangeMove<>(
-                new SubChain(Arrays.<Object> asList(a3)), variableDescriptor, inverseVariableSupply, b2).toString());
+                new SubChain(Arrays.asList(a3)), variableDescriptor, inverseVariableSupply, b2).toString());
     }
 
 }

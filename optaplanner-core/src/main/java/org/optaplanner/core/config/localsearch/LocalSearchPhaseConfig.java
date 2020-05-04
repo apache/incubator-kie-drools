@@ -286,7 +286,7 @@ public class LocalSearchPhaseConfig extends PhaseConfig<LocalSearchPhaseConfig> 
         if (ConfigUtils.isEmptyCollection(moveSelectorConfigList)) {
             // Default to changeMoveSelector and swapMoveSelector
             UnionMoveSelectorConfig unionMoveSelectorConfig = new UnionMoveSelectorConfig();
-            unionMoveSelectorConfig.setMoveSelectorConfigList(Arrays.<MoveSelectorConfig> asList(
+            unionMoveSelectorConfig.setMoveSelectorConfigList(Arrays.asList(
                     new ChangeMoveSelectorConfig(), new SwapMoveSelectorConfig()));
             moveSelector = unionMoveSelectorConfig.buildMoveSelector(configPolicy,
                     defaultCacheType, defaultSelectionOrder);

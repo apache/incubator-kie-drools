@@ -53,8 +53,8 @@ public class FromSolutionEntitySelectorTest {
 
     public void runOriginalWithoutEntityListDirtyAndMinimumCacheType(SelectionCacheType cacheType) {
         TestdataSolution workingSolution = new TestdataSolution();
-        final List<Object> entityList = Arrays.<Object> asList(
-                new TestdataEntity("e1"), new TestdataEntity("e2"), new TestdataEntity("e3"));
+        final List<Object> entityList = Arrays.asList(new TestdataEntity("e1"), new TestdataEntity("e2"),
+                new TestdataEntity("e3"));
         EntityDescriptor entityDescriptor = mock(EntityDescriptor.class);
         when(entityDescriptor.extractEntities(workingSolution)).thenReturn(entityList);
         InnerScoreDirector scoreDirector = mock(InnerScoreDirector.class);
@@ -124,8 +124,8 @@ public class FromSolutionEntitySelectorTest {
     public void originalWithEntityListDirty() {
         TestdataSolution workingSolution = new TestdataSolution();
         EntityDescriptor entityDescriptor = mock(EntityDescriptor.class);
-        when(entityDescriptor.extractEntities(workingSolution)).thenReturn(Arrays.<Object> asList(
-                new TestdataEntity("e1"), new TestdataEntity("e2"), new TestdataEntity("e3")));
+        when(entityDescriptor.extractEntities(workingSolution))
+                .thenReturn(Arrays.asList(new TestdataEntity("e1"), new TestdataEntity("e2"), new TestdataEntity("e3")));
         InnerScoreDirector scoreDirector = mock(InnerScoreDirector.class);
         when(scoreDirector.getWorkingSolution()).thenReturn(workingSolution);
         when(scoreDirector.getWorkingEntityListRevision()).thenReturn(7L);
@@ -148,8 +148,8 @@ public class FromSolutionEntitySelectorTest {
         assertAllCodesOfEntitySelector(entitySelector, "e1", "e2", "e3");
         entitySelector.stepEnded(stepScopeA1);
 
-        when(entityDescriptor.extractEntities(workingSolution)).thenReturn(Arrays.<Object> asList(
-                new TestdataEntity("f1"), new TestdataEntity("f2"), new TestdataEntity("f3")));
+        when(entityDescriptor.extractEntities(workingSolution))
+                .thenReturn(Arrays.asList(new TestdataEntity("f1"), new TestdataEntity("f2"), new TestdataEntity("f3")));
         when(scoreDirector.getWorkingEntityListRevision()).thenReturn(8L);
         when(scoreDirector.isWorkingEntityListDirty(7L)).thenReturn(true);
         when(scoreDirector.isWorkingEntityListDirty(8L)).thenReturn(false);
@@ -182,8 +182,8 @@ public class FromSolutionEntitySelectorTest {
         assertAllCodesOfEntitySelector(entitySelector, "f1", "f2", "f3");
         entitySelector.stepEnded(stepScopeB2);
 
-        when(entityDescriptor.extractEntities(workingSolution)).thenReturn(Arrays.<Object> asList(
-                new TestdataEntity("e1"), new TestdataEntity("e2"), new TestdataEntity("e3")));
+        when(entityDescriptor.extractEntities(workingSolution))
+                .thenReturn(Arrays.asList(new TestdataEntity("e1"), new TestdataEntity("e2"), new TestdataEntity("e3")));
         when(scoreDirector.getWorkingEntityListRevision()).thenReturn(9L);
         when(scoreDirector.isWorkingEntityListDirty(8L)).thenReturn(true);
         when(scoreDirector.isWorkingEntityListDirty(9L)).thenReturn(false);
@@ -219,8 +219,8 @@ public class FromSolutionEntitySelectorTest {
 
     public void runRandomWithoutEntityListDirtyAndMinimumCacheType(SelectionCacheType cacheType) {
         TestdataSolution workingSolution = new TestdataSolution();
-        final List<Object> entityList = Arrays.<Object> asList(
-                new TestdataEntity("e1"), new TestdataEntity("e2"), new TestdataEntity("e3"));
+        final List<Object> entityList = Arrays.asList(new TestdataEntity("e1"), new TestdataEntity("e2"),
+                new TestdataEntity("e3"));
         EntityDescriptor entityDescriptor = mock(EntityDescriptor.class);
         when(entityDescriptor.extractEntities(workingSolution)).thenReturn(entityList);
         InnerScoreDirector scoreDirector = mock(InnerScoreDirector.class);
@@ -294,8 +294,8 @@ public class FromSolutionEntitySelectorTest {
     public void randomWithEntityListDirty() {
         TestdataSolution workingSolution = new TestdataSolution();
         EntityDescriptor entityDescriptor = mock(EntityDescriptor.class);
-        when(entityDescriptor.extractEntities(workingSolution)).thenReturn(Arrays.<Object> asList(
-                new TestdataEntity("e1"), new TestdataEntity("e2"), new TestdataEntity("e3")));
+        when(entityDescriptor.extractEntities(workingSolution))
+                .thenReturn(Arrays.asList(new TestdataEntity("e1"), new TestdataEntity("e2"), new TestdataEntity("e3")));
         InnerScoreDirector scoreDirector = mock(InnerScoreDirector.class);
         when(scoreDirector.getWorkingSolution()).thenReturn(workingSolution);
         when(scoreDirector.getWorkingEntityListRevision()).thenReturn(7L);
@@ -322,8 +322,8 @@ public class FromSolutionEntitySelectorTest {
         assertCodesOfNeverEndingOfEntitySelector(entitySelector, 3L, "e2", "e1", "e1", "e3");
         entitySelector.stepEnded(stepScopeA1);
 
-        when(entityDescriptor.extractEntities(workingSolution)).thenReturn(Arrays.<Object> asList(
-                new TestdataEntity("f1"), new TestdataEntity("f2"), new TestdataEntity("f3")));
+        when(entityDescriptor.extractEntities(workingSolution))
+                .thenReturn(Arrays.asList(new TestdataEntity("f1"), new TestdataEntity("f2"), new TestdataEntity("f3")));
         when(scoreDirector.getWorkingEntityListRevision()).thenReturn(8L);
         when(scoreDirector.isWorkingEntityListDirty(7L)).thenReturn(true);
         when(scoreDirector.isWorkingEntityListDirty(8L)).thenReturn(false);
@@ -356,8 +356,8 @@ public class FromSolutionEntitySelectorTest {
         assertCodesOfNeverEndingOfEntitySelector(entitySelector, 3L, "f2");
         entitySelector.stepEnded(stepScopeB2);
 
-        when(entityDescriptor.extractEntities(workingSolution)).thenReturn(Arrays.<Object> asList(
-                new TestdataEntity("e1"), new TestdataEntity("e2"), new TestdataEntity("e3")));
+        when(entityDescriptor.extractEntities(workingSolution))
+                .thenReturn(Arrays.asList(new TestdataEntity("e1"), new TestdataEntity("e2"), new TestdataEntity("e3")));
         when(scoreDirector.getWorkingEntityListRevision()).thenReturn(9L);
         when(scoreDirector.isWorkingEntityListDirty(8L)).thenReturn(true);
         when(scoreDirector.isWorkingEntityListDirty(9L)).thenReturn(false);

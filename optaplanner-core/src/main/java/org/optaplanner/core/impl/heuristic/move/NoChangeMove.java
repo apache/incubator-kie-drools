@@ -55,12 +55,12 @@ public class NoChangeMove<Solution_> extends AbstractMove<Solution_> {
 
     @Override
     public Collection<? extends Object> getPlanningEntities() {
-        return Collections.<Object> emptyList();
+        return Collections.emptyList();
     }
 
     @Override
     public Collection<? extends Object> getPlanningValues() {
-        return Collections.<Object> emptyList();
+        return Collections.emptyList();
     }
 
     @Override

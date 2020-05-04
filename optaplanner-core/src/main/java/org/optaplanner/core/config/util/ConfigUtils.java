@@ -323,7 +323,7 @@ public class ConfigUtils {
                 // Example: "Score getScore()" that duplicates "HardSoftScore getScore()"
                 .filter(method -> !method.isBridge())
                 .sorted(alphabeticMemberComparator);
-        return Stream.<Member> concat(fieldStream, methodStream)
+        return Stream.concat(fieldStream, methodStream)
                 .collect(Collectors.toList());
     }
 

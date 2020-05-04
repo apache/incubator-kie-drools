@@ -35,7 +35,7 @@ public class NullableCountableValueRangeTest {
         assertEquals(6L, new NullableCountableValueRange<>(new ListValueRange<>(Arrays.asList(100, 120, 5, 7, 8))).getSize());
         assertEquals(4L, new NullableCountableValueRange<>(new ListValueRange<>(Arrays.asList(-15, 25, 0))).getSize());
         assertEquals(4L, new NullableCountableValueRange<>(new ListValueRange<>(Arrays.asList("b", "z", "a"))).getSize());
-        assertEquals(1L, new NullableCountableValueRange<>(new ListValueRange<>(Collections.<String> emptyList())).getSize());
+        assertEquals(1L, new NullableCountableValueRange<>(new ListValueRange<>(Collections.emptyList())).getSize());
     }
 
     @Test
@@ -73,7 +73,7 @@ public class NullableCountableValueRangeTest {
         assertAllElementsOfIterator(
                 new NullableCountableValueRange<>(new ListValueRange<>(Arrays.asList("b", "z", "a"))).createOriginalIterator(),
                 null, "b", "z", "a");
-        assertAllElementsOfIterator(new NullableCountableValueRange<>(new ListValueRange<>(Collections.<String> emptyList()))
+        assertAllElementsOfIterator(new NullableCountableValueRange<>(new ListValueRange<>(Collections.emptyList()))
                 .createOriginalIterator(), new String[] { null });
     }
 
@@ -94,7 +94,7 @@ public class NullableCountableValueRangeTest {
         assertElementsOfIterator(new NullableCountableValueRange<>(new ListValueRange<>(Arrays.asList("b", "z", "a")))
                 .createRandomIterator(workingRandom), null, "b");
         when(workingRandom.nextInt(anyInt())).thenReturn(0);
-        assertElementsOfIterator(new NullableCountableValueRange<>(new ListValueRange<>(Collections.<String> emptyList()))
+        assertElementsOfIterator(new NullableCountableValueRange<>(new ListValueRange<>(Collections.emptyList()))
                 .createRandomIterator(workingRandom), new String[] { null });
     }
 

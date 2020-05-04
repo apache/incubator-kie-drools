@@ -77,7 +77,7 @@ public class SelectorTestUtils {
             Object... entities) {
         EntitySelector entitySelector = mock(EntitySelector.class);
         when(entitySelector.getEntityDescriptor()).thenReturn(entityDescriptor);
-        final List<Object> entityList = Arrays.<Object> asList(entities);
+        final List<Object> entityList = Arrays.asList(entities);
         when(entitySelector.iterator()).thenAnswer(invocation -> entityList.iterator());
         when(entitySelector.listIterator()).thenAnswer(invocation -> entityList.listIterator());
         when(entitySelector.spliterator()).thenAnswer(invocation -> entityList.spliterator());
@@ -106,7 +106,7 @@ public class SelectorTestUtils {
     public static ValueSelector mockValueSelector(GenuineVariableDescriptor variableDescriptor, Object... values) {
         ValueSelector valueSelector = mock(ValueSelector.class);
         when(valueSelector.getVariableDescriptor()).thenReturn(variableDescriptor);
-        final List<Object> valueList = Arrays.<Object> asList(values);
+        final List<Object> valueList = Arrays.asList(values);
         when(valueSelector.iterator(any())).thenAnswer(invocation -> valueList.iterator());
         when(valueSelector.isCountable()).thenReturn(true);
         when(valueSelector.isNeverEnding()).thenReturn(false);
@@ -153,7 +153,7 @@ public class SelectorTestUtils {
             GenuineVariableDescriptor variableDescriptor, Object... values) {
         EntityIndependentValueSelector valueSelector = mock(EntityIndependentValueSelector.class);
         when(valueSelector.getVariableDescriptor()).thenReturn(variableDescriptor);
-        final List<Object> valueList = Arrays.<Object> asList(values);
+        final List<Object> valueList = Arrays.asList(values);
         when(valueSelector.iterator(any())).thenAnswer(invocation -> valueList.iterator());
         when(valueSelector.endingIterator(any())).thenAnswer(invocation -> valueList.iterator());
         when(valueSelector.iterator()).thenAnswer(invocation -> valueList.iterator());
@@ -167,7 +167,7 @@ public class SelectorTestUtils {
     public static MoveSelector mockMoveSelector(Class<?> moveClass,
             Move... moves) {
         MoveSelector moveSelector = mock(MoveSelector.class);
-        final List<Move> moveList = Arrays.<Move> asList(moves);
+        final List<Move> moveList = Arrays.asList(moves);
         when(moveSelector.iterator()).thenAnswer(invocation -> moveList.iterator());
         when(moveSelector.isCountable()).thenReturn(true);
         when(moveSelector.isNeverEnding()).thenReturn(false);

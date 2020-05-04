@@ -60,12 +60,12 @@ public class DummyMove extends AbstractMove<TestdataSolution> implements CodeAss
 
     @Override
     public Collection<? extends TestdataSolution> getPlanningEntities() {
-        return Collections.<TestdataSolution> emptyList();
+        return Collections.emptyList();
     }
 
     @Override
     public Collection<? extends TestdataSolution> getPlanningValues() {
-        return Collections.<TestdataSolution> emptyList();
+        return Collections.emptyList();
     }
 
     @Override

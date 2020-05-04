@@ -509,12 +509,12 @@ public abstract class AbstractXlsxSolutionFileIO<Solution_> implements SolutionF
             nextRow();
 
             Comparator<ConstraintMatchTotal> constraintMatchTotalComparator = Comparator
-                    .<ConstraintMatchTotal, Score> comparing(ConstraintMatchTotal::getScore);
+                    .comparing(ConstraintMatchTotal::getScore);
             constraintMatchTotalComparator = constraintMatchTotalComparator
                     .thenComparing(ConstraintMatchTotal::getConstraintPackage)
                     .thenComparing(ConstraintMatchTotal::getConstraintName);
             Comparator<ConstraintMatch> constraintMatchComparator = Comparator
-                    .<ConstraintMatch, Score> comparing(ConstraintMatch::getScore);
+                    .comparing(ConstraintMatch::getScore);
             constraintMatchTotals.stream()
                     .sorted(constraintMatchTotalComparator)
                     .forEach(constraintMatchTotal -> {

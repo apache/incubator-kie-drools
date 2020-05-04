@@ -21,7 +21,6 @@ import java.util.ArrayList;
 import java.util.Arrays;
 
 import org.junit.jupiter.api.Test;
-import org.mockito.Mockito;
 import org.optaplanner.core.api.solver.Solver;
 import org.optaplanner.core.api.solver.SolverFactory;
 import org.optaplanner.core.config.solver.SolverConfig;
@@ -64,7 +63,7 @@ public class PhaseLifecycleTest {
         PlannerAssert.verifyPhaseLifecycle(listener, 1, phaseCount, stepCount);
 
         // forget previous invocations
-        Mockito.<PhaseLifecycleListener<?>> reset(listener);
+        reset(listener);
 
         // uninitialize 1 entity and solve again
         solvedSolution.getEntityList().get(0).setValue(null);
@@ -72,7 +71,7 @@ public class PhaseLifecycleTest {
         PlannerAssert.verifyPhaseLifecycle(listener, 1, phaseCount, 1 + PlannerTestUtils.TERMINATION_STEP_COUNT_LIMIT);
 
         // forget previous invocations
-        Mockito.<PhaseLifecycleListener<?>> reset(listener);
+        reset(listener);
 
         // remove listener and solve again
         ((DefaultSolver<TestdataSolution>) solver).removePhaseLifecycleListener(listener);

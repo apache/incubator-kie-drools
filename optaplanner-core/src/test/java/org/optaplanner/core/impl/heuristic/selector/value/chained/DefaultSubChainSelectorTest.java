@@ -137,7 +137,7 @@ public class DefaultSubChainSelectorTest {
         DefaultSubChainSelector selector = new DefaultSubChainSelector(
                 valueSelector, false, minimumSubChainSize, maximumSubChainSize);
         assertEquals(expected, selector.calculateSubChainSelectionSize(
-                new SubChain(Arrays.<Object> asList(a1, a2, a3, a4))));
+                new SubChain(Arrays.asList(a1, a2, a3, a4))));
     }
 
     @Test
@@ -241,7 +241,7 @@ public class DefaultSubChainSelectorTest {
 
         TestdataChainedSolution solution = new TestdataChainedSolution("solution");
         solution.setChainedAnchorList(Arrays.asList(a0, b0));
-        solution.setChainedEntityList(Collections.<TestdataChainedEntity> emptyList());
+        solution.setChainedEntityList(Collections.emptyList());
         scoreDirector.setWorkingSolution(solution);
 
         EntityIndependentValueSelector valueSelector = SelectorTestUtils.mockEntityIndependentValueSelector(
@@ -441,16 +441,16 @@ public class DefaultSubChainSelectorTest {
         subChainSelector.stepStarted(stepScopeA1);
 
         assertContainsCodesOfNeverEndingSubChainSelector(subChainSelector,
-                new SubChain(Arrays.<Object> asList(a1)),
-                new SubChain(Arrays.<Object> asList(a2)),
-                new SubChain(Arrays.<Object> asList(a3)),
-                new SubChain(Arrays.<Object> asList(a4)),
-                new SubChain(Arrays.<Object> asList(a1, a2)),
-                new SubChain(Arrays.<Object> asList(a2, a3)),
-                new SubChain(Arrays.<Object> asList(a3, a4)),
-                new SubChain(Arrays.<Object> asList(a1, a2, a3)),
-                new SubChain(Arrays.<Object> asList(a2, a3, a4)),
-                new SubChain(Arrays.<Object> asList(a1, a2, a3, a4)));
+                new SubChain(Arrays.asList(a1)),
+                new SubChain(Arrays.asList(a2)),
+                new SubChain(Arrays.asList(a3)),
+                new SubChain(Arrays.asList(a4)),
+                new SubChain(Arrays.asList(a1, a2)),
+                new SubChain(Arrays.asList(a2, a3)),
+                new SubChain(Arrays.asList(a3, a4)),
+                new SubChain(Arrays.asList(a1, a2, a3)),
+                new SubChain(Arrays.asList(a2, a3, a4)),
+                new SubChain(Arrays.asList(a1, a2, a3, a4)));
 
         subChainSelector.stepEnded(stepScopeA1);
 
@@ -499,11 +499,11 @@ public class DefaultSubChainSelectorTest {
         subChainSelector.stepStarted(stepScopeA1);
 
         assertContainsCodesOfNeverEndingSubChainSelector(subChainSelector,
-                new SubChain(Arrays.<Object> asList(a1, a2)),
-                new SubChain(Arrays.<Object> asList(a2, a3)),
-                new SubChain(Arrays.<Object> asList(a3, a4)),
-                new SubChain(Arrays.<Object> asList(a1, a2, a3)),
-                new SubChain(Arrays.<Object> asList(a2, a3, a4)));
+                new SubChain(Arrays.asList(a1, a2)),
+                new SubChain(Arrays.asList(a2, a3)),
+                new SubChain(Arrays.asList(a3, a4)),
+                new SubChain(Arrays.asList(a1, a2, a3)),
+                new SubChain(Arrays.asList(a2, a3, a4)));
 
         subChainSelector.stepEnded(stepScopeA1);
 
@@ -552,8 +552,8 @@ public class DefaultSubChainSelectorTest {
         subChainSelector.stepStarted(stepScopeA1);
 
         assertContainsCodesOfNeverEndingSubChainSelector(subChainSelector,
-                new SubChain(Arrays.<Object> asList(a1, a2, a3)),
-                new SubChain(Arrays.<Object> asList(a2, a3, a4)));
+                new SubChain(Arrays.asList(a1, a2, a3)),
+                new SubChain(Arrays.asList(a2, a3, a4)));
 
         subChainSelector.stepEnded(stepScopeA1);
 
