@@ -40,8 +40,9 @@ The [Kogito Examples repository](https://github.com/kiegroup/kogito-examples) mo
  Please take a look at the readme of each individual example for more details on how the example works and how to run it yourself (either locally or on Kubernetes):
 - Process + Quarkus: [README.md](https://github.com/kiegroup/kogito-examples/tree/master/process-quarkus-example/README.md)
 - Process + Spring Boot: [README.md](https://github.com/kiegroup/kogito-examples/tree/master/process-springboot-example/README.md)
-- Process + Rules + Quarkus: [README.md](https://github.com/kiegroup/kogito-examples/tree/master/onboarding-example/README.md) - Onboarding example combining one process and two decision services
+- Process + Decision + Rules + Quarkus: [README.md](https://github.com/kiegroup/kogito-examples/tree/master/onboarding-example/README.md) - Onboarding example combining one process and two decision services
 - Rules + Quarkus: [README.md](https://github.com/kiegroup/kogito-examples/tree/master/rules-quarkus-helloworld/README.md)
+- DMN + Quarkus: [README.md](https://github.com/kiegroup/kogito-examples/tree/master/dmn-quarkus-example/README.md)
 - Rule Unit + Quarkus: [README.md](https://github.com/kiegroup/kogito-examples/tree/master/ruleunit-quarkus-example/README.md)
 
 Building from source
