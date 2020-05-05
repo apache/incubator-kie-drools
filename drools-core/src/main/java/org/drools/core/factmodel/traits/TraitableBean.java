@@ -25,7 +25,7 @@ public interface TraitableBean<K, X extends TraitableBean> {
     void _setFieldTMS( TraitFieldTMS traitFieldTMS );
 
 
-    default void addTrait(String type, Thing proxy) throws LogicalTypeInconsistencyException {
+    default void addTrait(String type, Thing proxy) {
         ((ITraitTypeMap) _getTraitMap()).putSafe(type, proxy);
     }
 

@@ -57,7 +57,6 @@ import org.drools.core.rule.TypeDeclaration;
 import org.drools.core.spi.Activation;
 import org.drools.core.spi.PropagationContext;
 import org.drools.core.util.HierarchyEncoder;
-import org.drools.core.util.HierarchyEncoderImpl;
 import org.drools.core.util.bitmask.BitMask;
 import org.kie.api.internal.runtime.beliefs.Mode;
 import org.kie.api.runtime.rule.EntryPoint;

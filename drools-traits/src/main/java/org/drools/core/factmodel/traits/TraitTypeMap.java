@@ -93,7 +93,7 @@ public class TraitTypeMap<T extends String, K extends Thing<C>, C>
     }
 
     @Override
-    public K putSafe( String key, K value ) throws LogicalTypeInconsistencyException {
+    public K putSafe( String key, K value ) {
         BitSet code = ((TraitType) value)._getTypeCode();
 
         addMember( value, code );

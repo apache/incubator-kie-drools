@@ -5,7 +5,7 @@ import java.util.Collection;
 
 public interface ITraitTypeMap<T extends String, K extends Thing<C>, C> {
 
-    K putSafe(String key, K value) throws LogicalTypeInconsistencyException;
+    K putSafe(String key, K value);
 
     Collection<K> removeCascade(String traitName);
 

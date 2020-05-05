@@ -29,7 +29,6 @@ import org.drools.core.factmodel.traits.VirtualPropertyMode;
 import org.drools.core.impl.InternalKnowledgeBase;
 import org.drools.core.impl.KnowledgeBaseFactory;
 import org.drools.core.util.StandaloneTraitFactory;
-import org.drools.reflective.classloader.ProjectClassLoader;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.Parameterized;
