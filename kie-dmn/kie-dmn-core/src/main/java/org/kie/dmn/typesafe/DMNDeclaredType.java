@@ -29,7 +29,6 @@ import org.drools.modelcompiler.builder.generator.declaredtype.api.MethodDefinit
 import org.drools.modelcompiler.builder.generator.declaredtype.api.TypeDefinition;
 import org.kie.dmn.api.core.DMNType;
 import org.kie.dmn.api.core.FEELPropertyAccessible;
-import org.kie.dmn.core.impl.DMNModelImpl;
 import org.kie.dmn.feel.codegen.feel11.CodegenStringUtil;
 
 class DMNDeclaredType implements TypeDefinition {
@@ -106,16 +105,8 @@ class DMNDeclaredType implements TypeDefinition {
         return Collections.emptyList();
     }
 
-    public void initJavadoc(DMNModelImpl dmnModel, String disclaimerMarker) {
-        StringBuilder sb = new StringBuilder("A representation of the DMN defined ItemDefinition type '").append(dmnType.getName()).append("'.").append("<br/>\n");
-        sb.append("<br/>\n");
-        sb.append("This has been automatically generated from the following DMN asset.").append("<br/>\n");
-        sb.append("DMN Type name: ").append(dmnType.getName()).append("<br/>\n");
-        sb.append("DMN Model namespace: ").append(dmnModel.getNamespace()).append("<br/>\n");
-        sb.append("DMN Model name: ").append(dmnModel.getName()).append("<br/>\n");
-        sb.append("\n");
-        sb.append("@implNote ").append(disclaimerMarker).append("<br/>\n");
-        this.javadoc = sb.toString();
+    public void setJavadoc(String javadoc) {
+        this.javadoc = javadoc;
     }
 
     @Override

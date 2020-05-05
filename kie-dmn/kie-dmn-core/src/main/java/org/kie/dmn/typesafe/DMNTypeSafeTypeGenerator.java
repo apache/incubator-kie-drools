@@ -30,12 +30,8 @@ import org.kie.dmn.api.core.DMNModel;
 import org.kie.dmn.api.core.DMNType;
 import org.kie.dmn.api.core.ast.InputDataNode;
 import org.kie.dmn.core.impl.DMNModelImpl;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 public class DMNTypeSafeTypeGenerator {
-
-    private static final Logger LOG = LoggerFactory.getLogger(DMNTypeSafeTypeGenerator.class);
 
     private final DMNTypeSafePackageName.Factory packageName;
     private DMNAllTypesIndex index;
@@ -43,6 +39,8 @@ public class DMNTypeSafeTypeGenerator {
     private final String disclaimerMarker;
 
     private Map<String, TypeDefinition> types = new HashMap<>();
+
+    private static final String JAVADOC_BRNL = "<br/>\n";
 
     public DMNTypeSafeTypeGenerator(DMNModel dmnModel, DMNAllTypesIndex index, DMNTypeSafePackageName.Factory packageName) {
         this.dmnModel = (DMNModelImpl) dmnModel;
@@ -62,6 +60,17 @@ public class DMNTypeSafeTypeGenerator {
         return sb.toString();
     }
 
+    private String postfixToJavadoc(String prefix, DMNModelImpl dmnModel) {
+        StringBuilder sb = new StringBuilder(prefix).append(JAVADOC_BRNL);
+        sb.append(JAVADOC_BRNL);
+        sb.append("This has been automatically generated from the following DMN asset.").append(JAVADOC_BRNL);
+        sb.append("DMN namespace: ").append(dmnModel.getNamespace()).append(JAVADOC_BRNL);
+        sb.append("DMN name: ").append(dmnModel.getName()).append(JAVADOC_BRNL);
+        sb.append("\n");
+        sb.append("@implNote ").append(disclaimerMarker).append(JAVADOC_BRNL);
+        return sb.toString();
+    }
+
     private void processTypes() {
         Set<InputDataNode> inputs = dmnModel.getInputs();
         DMNInputSetType inputSetType = new DMNInputSetType(index);
@@ -69,13 +78,13 @@ public class DMNTypeSafeTypeGenerator {
             inputSetType.addField(i.getName(), i.getType());
         }
         inputSetType.initFields();
-        inputSetType.initJavadoc(dmnModel, this.disclaimerMarker);
+        inputSetType.setJavadoc(postfixToJavadoc(new StringBuilder("A representation of all the InputData and other DRG Requirement of the whole DMN '").append(dmnModel.getName()).append("' inputs.").toString(), dmnModel));
 
         types.put(inputSetType.getTypeName(), inputSetType);
 
         for (DMNType type : index.allTypesToGenerate()) {
             DMNDeclaredType dmnDeclaredType = new DMNDeclaredType(index, type);
-            dmnDeclaredType.initJavadoc(dmnModel, this.disclaimerMarker);
+            dmnDeclaredType.setJavadoc(postfixToJavadoc(new StringBuilder("A representation of the DMN defined ItemDefinition type '").append(type.getName()).append("'.").toString(), dmnModel));
             types.put(dmnDeclaredType.getTypeName(), dmnDeclaredType);
         }
     }
