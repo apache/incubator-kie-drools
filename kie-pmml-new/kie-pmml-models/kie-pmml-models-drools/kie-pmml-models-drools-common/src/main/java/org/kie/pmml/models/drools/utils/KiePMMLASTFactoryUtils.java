@@ -67,20 +67,26 @@ public class KiePMMLASTFactoryUtils {
             default:
                 throw new IllegalStateException(String.format("CompoundPredicate.booleanOperator should never be %s at this point", compoundPredicate.getBooleanOperator()));
         }
-        final List<KiePMMLFieldOperatorValue> nestedPredicates = new LinkedList<>();
+        final List<KiePMMLFieldOperatorValue> nestedAndPredicates = new LinkedList<>();
+        final List<KiePMMLFieldOperatorValue> nestedOrPredicates = new LinkedList<>();
         final List<Predicate> compoundPredicates = compoundPredicate.getPredicates().stream().filter(predicate -> predicate instanceof CompoundPredicate).collect(Collectors.toList());
         compoundPredicates.forEach(nestedCompoundPredicate -> {
             switch (((CompoundPredicate) nestedCompoundPredicate).getBooleanOperator()) {
                 case OR:
+                    nestedOrPredicates.addAll(getConstraintEntriesFromAndOrCompoundPredicate((CompoundPredicate) nestedCompoundPredicate, fieldTypeMap));
+                    break;
                 case AND:
-                    nestedPredicates.addAll(getConstraintEntriesFromAndOrCompoundPredicate((CompoundPredicate) nestedCompoundPredicate, fieldTypeMap));
+                    nestedAndPredicates.addAll(getConstraintEntriesFromAndOrCompoundPredicate((CompoundPredicate) nestedCompoundPredicate, fieldTypeMap));
                     break;
                 default:
                     throw new IllegalStateException(String.format("CompoundPredicate.booleanOperator should never be %s at this point", compoundPredicate.getBooleanOperator()));
             }
         });
-        if (!nestedPredicates.isEmpty()) {
-            toReturn.add(new KiePMMLFieldOperatorValue(null, BOOLEAN_OPERATOR.byName(compoundPredicate.getBooleanOperator().value()).getCustomOperator(), Collections.emptyList(), nestedPredicates));
+        if (!nestedAndPredicates.isEmpty()) {
+            toReturn.add(new KiePMMLFieldOperatorValue(null, "&&", Collections.emptyList(), nestedAndPredicates));
+        }
+        if (!nestedOrPredicates.isEmpty()) {
+            toReturn.add(new KiePMMLFieldOperatorValue(null, "||", Collections.emptyList(), nestedOrPredicates));
         }
         return toReturn;
     }

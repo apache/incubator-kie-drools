@@ -92,7 +92,16 @@ public class KiePMMLDescrLhsFactory {
                 commonDeclarePatternWithConstraint(andBuilder, kiePMMLOperatorValue.getName(), kiePMMLOperatorValue.getConstraintsAsString());
             }
             if (kiePMMLOperatorValue.getNestedKiePMMLFieldOperatorValues() != null) {
-                declareConstraintsAnd(kiePMMLOperatorValue.getNestedKiePMMLFieldOperatorValues(), andBuilder.and());
+                switch (kiePMMLOperatorValue.getOperator()) {
+                    case "||":
+                        declareConstraintsOr(kiePMMLOperatorValue.getNestedKiePMMLFieldOperatorValues(), andBuilder.or());
+                        break;
+                    case "&&":
+                        declareConstraintsAnd(kiePMMLOperatorValue.getNestedKiePMMLFieldOperatorValues(), andBuilder.and());
+                        break;
+                    default:
+                        throw new KiePMMLException(String.format("Operator %s not managed inside declareConstraintsAnd, yet", kiePMMLOperatorValue.getOperator()));
+                }
             }
         });
     }
@@ -103,7 +112,16 @@ public class KiePMMLDescrLhsFactory {
                 commonDeclarePatternWithConstraint(orBuilder, kiePMMLOperatorValue.getName(), kiePMMLOperatorValue.getConstraintsAsString());
             }
             if (kiePMMLOperatorValue.getNestedKiePMMLFieldOperatorValues() != null) {
-                declareConstraintsOr(kiePMMLOperatorValue.getNestedKiePMMLFieldOperatorValues(), orBuilder.or());
+                switch (kiePMMLOperatorValue.getOperator()) {
+                    case "||":
+                        declareConstraintsOr(kiePMMLOperatorValue.getNestedKiePMMLFieldOperatorValues(), orBuilder.or());
+                        break;
+                    case "&&":
+                        declareConstraintsAnd(kiePMMLOperatorValue.getNestedKiePMMLFieldOperatorValues(), orBuilder.and());
+                        break;
+                    default:
+                        throw new KiePMMLException(String.format("Operator %s not managed inside declareConstraintsOr, yet", kiePMMLOperatorValue.getOperator()));
+                }
             }
         }
     }
