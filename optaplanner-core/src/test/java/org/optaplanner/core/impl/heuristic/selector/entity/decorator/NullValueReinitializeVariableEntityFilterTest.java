@@ -16,7 +16,7 @@
 
 package org.optaplanner.core.impl.heuristic.selector.entity.decorator;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
 
 import org.junit.jupiter.api.Test;
 import org.optaplanner.core.impl.domain.entity.descriptor.EntityDescriptor;

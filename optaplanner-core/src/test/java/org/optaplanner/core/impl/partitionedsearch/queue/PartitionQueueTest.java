@@ -16,7 +16,8 @@
 
 package org.optaplanner.core.impl.partitionedsearch.queue;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertSame;
+import static org.junit.Assert.fail;
 
 import java.util.Iterator;
 import java.util.concurrent.ExecutionException;

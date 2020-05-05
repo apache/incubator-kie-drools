@@ -16,7 +16,7 @@
 
 package org.optaplanner.examples.common.business;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
 
 import java.util.Comparator;
 

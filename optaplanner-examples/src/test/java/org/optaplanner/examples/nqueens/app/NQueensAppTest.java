@@ -16,7 +16,7 @@
 
 package org.optaplanner.examples.nqueens.app;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertNotNull;
 
 import org.junit.jupiter.api.Test;
 import org.optaplanner.core.api.solver.Solver;

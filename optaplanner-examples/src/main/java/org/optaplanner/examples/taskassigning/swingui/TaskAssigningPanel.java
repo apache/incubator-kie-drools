@@ -16,7 +16,7 @@
 
 package org.optaplanner.examples.taskassigning.swingui;
 
-import static org.optaplanner.examples.taskassigning.persistence.TaskAssigningGenerator.*;
+import static org.optaplanner.examples.taskassigning.persistence.TaskAssigningGenerator.BASE_DURATION_AVERAGE;
 
 import java.awt.BorderLayout;
 import java.awt.FlowLayout;

@@ -16,8 +16,9 @@
 
 package org.optaplanner.examples.curriculumcourse.optional.score;
 
-import static org.optaplanner.core.api.score.stream.ConstraintCollectors.*;
-import static org.optaplanner.core.api.score.stream.Joiners.*;
+import static org.optaplanner.core.api.score.stream.ConstraintCollectors.countDistinct;
+import static org.optaplanner.core.api.score.stream.Joiners.equal;
+import static org.optaplanner.core.api.score.stream.Joiners.lessThan;
 
 import org.optaplanner.core.api.score.buildin.hardsoft.HardSoftScore;
 import org.optaplanner.core.api.score.stream.Constraint;

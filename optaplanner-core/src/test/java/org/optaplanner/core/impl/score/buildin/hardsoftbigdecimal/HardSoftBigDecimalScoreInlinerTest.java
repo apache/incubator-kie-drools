@@ -16,7 +16,7 @@
 
 package org.optaplanner.core.impl.score.buildin.hardsoftbigdecimal;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
 
 import java.math.BigDecimal;
 import java.util.function.Consumer;

@@ -16,7 +16,7 @@
 
 package org.optaplanner.examples.common.solver.drools.functions;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
 
 import org.junit.jupiter.api.Test;
 

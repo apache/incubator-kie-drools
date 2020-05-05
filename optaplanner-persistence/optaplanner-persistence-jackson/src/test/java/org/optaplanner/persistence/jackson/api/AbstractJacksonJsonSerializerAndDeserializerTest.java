@@ -16,8 +16,6 @@
 
 package org.optaplanner.persistence.jackson.api;
 
-import static org.junit.Assert.*;
-
 import java.io.IOException;
 
 import com.fasterxml.jackson.databind.ObjectMapper;

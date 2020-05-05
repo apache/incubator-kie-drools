@@ -16,7 +16,8 @@
 
 package org.optaplanner.core.api.score.buildin.hardsoftlong;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNull;
 
 import org.junit.jupiter.api.Test;
 import org.kie.api.definition.rule.Rule;

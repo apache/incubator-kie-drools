@@ -16,7 +16,7 @@
 
 package org.optaplanner.benchmark.impl.result;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
 
 import java.io.File;
 import java.util.ArrayList;

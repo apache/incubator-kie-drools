@@ -16,7 +16,7 @@
 
 package org.optaplanner.examples.examination.domain.solver;
 
-import static java.util.Comparator.*;
+import static java.util.Comparator.comparingInt;
 
 import java.util.Comparator;
 

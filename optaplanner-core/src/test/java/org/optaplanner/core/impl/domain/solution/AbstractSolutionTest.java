@@ -17,7 +17,7 @@
 package org.optaplanner.core.impl.domain.solution;
 
 import static org.junit.Assert.assertEquals;
-import static org.optaplanner.core.impl.testdata.util.PlannerAssert.*;
+import static org.optaplanner.core.impl.testdata.util.PlannerAssert.assertCollectionContainsExactly;
 
 import java.util.Arrays;
 import java.util.List;

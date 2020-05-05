@@ -16,7 +16,8 @@
 
 package org.optaplanner.examples.tsp.domain.solver;
 
-import static java.util.Comparator.*;
+import static java.util.Comparator.comparingDouble;
+import static java.util.Comparator.comparingLong;
 
 import java.util.Comparator;
 

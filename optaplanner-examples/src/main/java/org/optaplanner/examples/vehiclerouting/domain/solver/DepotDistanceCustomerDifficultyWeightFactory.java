@@ -16,7 +16,7 @@
 
 package org.optaplanner.examples.vehiclerouting.domain.solver;
 
-import static java.util.Comparator.*;
+import static java.util.Comparator.comparingLong;
 
 import java.util.Comparator;
 

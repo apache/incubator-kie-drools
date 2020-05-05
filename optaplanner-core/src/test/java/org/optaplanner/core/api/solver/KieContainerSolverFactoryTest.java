@@ -16,7 +16,7 @@
 
 package org.optaplanner.core.api.solver;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertNotNull;
 
 import java.io.IOException;
 import java.util.Collections;

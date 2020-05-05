@@ -17,7 +17,9 @@ package org.optaplanner.core.impl.domain.solution.descriptor;
 
 import static org.assertj.core.api.Assertions.assertThatIllegalArgumentException;
 import static org.assertj.core.api.Assertions.assertThatIllegalStateException;
-import static org.optaplanner.core.impl.testdata.util.PlannerAssert.*;
+import static org.optaplanner.core.impl.testdata.util.PlannerAssert.assertAllCodesOfCollection;
+import static org.optaplanner.core.impl.testdata.util.PlannerAssert.assertEquals;
+import static org.optaplanner.core.impl.testdata.util.PlannerAssert.assertMapContainsKeysExactly;
 
 import java.util.Arrays;
 import java.util.List;

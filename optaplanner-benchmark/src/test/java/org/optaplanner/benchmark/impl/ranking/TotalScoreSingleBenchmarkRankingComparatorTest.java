@@ -16,8 +16,8 @@
 
 package org.optaplanner.benchmark.impl.ranking;
 
-import static org.mockito.Mockito.*;
-import static org.optaplanner.core.impl.testdata.util.PlannerAssert.*;
+import static org.mockito.Mockito.mock;
+import static org.optaplanner.core.impl.testdata.util.PlannerAssert.assertCompareToOrder;
 
 import org.junit.jupiter.api.Test;
 import org.optaplanner.benchmark.impl.result.ProblemBenchmarkResult;

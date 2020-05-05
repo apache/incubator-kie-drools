@@ -16,7 +16,7 @@
 
 package org.optaplanner.examples.rocktour.domain;
 
-import static java.time.temporal.ChronoUnit.*;
+import static java.time.temporal.ChronoUnit.DAYS;
 
 import java.time.LocalDate;
 import java.util.NavigableSet;

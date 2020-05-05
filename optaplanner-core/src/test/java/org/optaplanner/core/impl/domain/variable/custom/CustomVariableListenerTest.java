@@ -17,7 +17,7 @@
 package org.optaplanner.core.impl.domain.variable.custom;
 
 import static org.assertj.core.api.Assertions.assertThatIllegalStateException;
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
 
 import java.util.Arrays;
 

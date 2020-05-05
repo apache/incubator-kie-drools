@@ -18,11 +18,13 @@ package org.optaplanner.core.api.solver;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.fail;
 import static org.optaplanner.core.api.solver.SolverStatus.NOT_SOLVING;
 import static org.optaplanner.core.api.solver.SolverStatus.SOLVING_ACTIVE;
 import static org.optaplanner.core.api.solver.SolverStatus.SOLVING_SCHEDULED;
-import static org.optaplanner.core.impl.testdata.util.PlannerAssert.*;
+import static org.optaplanner.core.impl.testdata.util.PlannerAssert.assertSolutionInitialized;
 
 import java.util.ArrayList;
 import java.util.Collections;

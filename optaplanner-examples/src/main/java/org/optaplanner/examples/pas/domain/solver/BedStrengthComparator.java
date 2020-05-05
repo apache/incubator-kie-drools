@@ -16,8 +16,9 @@
 
 package org.optaplanner.examples.pas.domain.solver;
 
-import static java.util.Comparator.*;
 import static java.util.Comparator.comparing;
+import static java.util.Comparator.comparingInt;
+import static java.util.Comparator.nullsFirst;
 
 import java.io.Serializable;
 import java.util.Collections;

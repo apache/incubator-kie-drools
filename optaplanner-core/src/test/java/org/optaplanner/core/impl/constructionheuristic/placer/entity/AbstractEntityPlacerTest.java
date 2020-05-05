@@ -19,7 +19,7 @@ package org.optaplanner.core.impl.constructionheuristic.placer.entity;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
-import static org.optaplanner.core.impl.testdata.util.PlannerAssert.*;
+import static org.optaplanner.core.impl.testdata.util.PlannerAssert.assertCode;
 
 import java.util.Iterator;
 

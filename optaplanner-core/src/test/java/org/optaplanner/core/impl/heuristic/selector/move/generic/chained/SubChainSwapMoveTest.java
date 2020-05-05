@@ -17,9 +17,10 @@
 package org.optaplanner.core.impl.heuristic.selector.move.generic.chained;
 
 import static org.junit.Assert.assertEquals;
-import static org.mockito.Mockito.*;
-import static org.optaplanner.core.impl.testdata.util.PlannerAssert.*;
-import static org.optaplanner.core.impl.testdata.util.PlannerTestUtils.*;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.verify;
+import static org.optaplanner.core.impl.testdata.util.PlannerAssert.assertListElementsSameExactly;
+import static org.optaplanner.core.impl.testdata.util.PlannerTestUtils.mockRebasingScoreDirector;
 
 import java.util.Arrays;
 import java.util.List;

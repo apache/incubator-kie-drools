@@ -16,8 +16,9 @@
 
 package org.optaplanner.benchmark.impl.ranking;
 
-import static org.mockito.Mockito.*;
-import static org.optaplanner.core.impl.testdata.util.PlannerAssert.*;
+import static org.mockito.Mockito.mock;
+import static org.optaplanner.core.impl.testdata.util.PlannerAssert.assertCompareToEquals;
+import static org.optaplanner.core.impl.testdata.util.PlannerAssert.assertCompareToOrder;
 
 import java.util.ArrayList;
 import java.util.Arrays;

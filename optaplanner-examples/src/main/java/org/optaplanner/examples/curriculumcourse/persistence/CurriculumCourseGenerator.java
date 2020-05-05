@@ -16,7 +16,7 @@
 
 package org.optaplanner.examples.curriculumcourse.persistence;
 
-import static org.optaplanner.examples.common.persistence.AbstractSolutionImporter.*;
+import static org.optaplanner.examples.common.persistence.AbstractSolutionImporter.getFlooredPossibleSolutionSize;
 
 import java.io.File;
 import java.math.BigInteger;

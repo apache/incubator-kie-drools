@@ -16,8 +16,9 @@
 
 package org.optaplanner.core.impl.domain.variable.inverserelation;
 
-import static org.junit.Assert.*;
-import static org.mockito.Mockito.*;
+import static org.junit.Assert.assertEquals;
+import static org.mockito.Mockito.inOrder;
+import static org.mockito.Mockito.mock;
 
 import java.util.Arrays;
 

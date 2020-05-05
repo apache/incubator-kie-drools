@@ -16,8 +16,9 @@
 
 package org.optaplanner.core.impl.domain.variable.inverserelation;
 
-import static org.mockito.Mockito.*;
-import static org.optaplanner.core.impl.testdata.util.PlannerAssert.*;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.when;
+import static org.optaplanner.core.impl.testdata.util.PlannerAssert.assertCollectionContainsExactly;
 
 import java.util.Arrays;
 import java.util.Collection;

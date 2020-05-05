@@ -18,7 +18,7 @@ package org.optaplanner.core.config.heuristic.selector.move.generic;
 
 import static org.assertj.core.api.Assertions.assertThatIllegalArgumentException;
 import static org.junit.Assert.assertEquals;
-import static org.optaplanner.core.impl.testdata.util.PlannerAssert.*;
+import static org.optaplanner.core.impl.testdata.util.PlannerAssert.assertInstanceOf;
 
 import java.util.Arrays;
 

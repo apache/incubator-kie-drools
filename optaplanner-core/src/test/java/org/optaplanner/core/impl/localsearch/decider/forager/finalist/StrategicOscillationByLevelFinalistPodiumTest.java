@@ -16,9 +16,9 @@
 
 package org.optaplanner.core.impl.localsearch.decider.forager.finalist;
 
-import static org.junit.Assert.*;
-import static org.mockito.Mockito.*;
-import static org.optaplanner.core.impl.testdata.util.PlannerAssert.*;
+import static org.junit.Assert.assertSame;
+import static org.mockito.Mockito.mock;
+import static org.optaplanner.core.impl.testdata.util.PlannerAssert.extractSingleton;
 
 import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.Test;

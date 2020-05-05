@@ -1,7 +1,21 @@
 package org.optaplanner.examples.meetingscheduling.persistence;
 
-import static java.util.stream.Collectors.*;
-import static org.optaplanner.examples.meetingscheduling.domain.MeetingConstraintConfiguration.*;
+import static java.util.stream.Collectors.groupingBy;
+import static java.util.stream.Collectors.joining;
+import static java.util.stream.Collectors.toList;
+import static java.util.stream.Collectors.toMap;
+import static org.optaplanner.examples.meetingscheduling.domain.MeetingConstraintConfiguration.ASSIGN_LARGER_ROOMS_FIRST;
+import static org.optaplanner.examples.meetingscheduling.domain.MeetingConstraintConfiguration.DONT_GO_IN_OVERTIME;
+import static org.optaplanner.examples.meetingscheduling.domain.MeetingConstraintConfiguration.DO_ALL_MEETINGS_AS_SOON_AS_POSSIBLE;
+import static org.optaplanner.examples.meetingscheduling.domain.MeetingConstraintConfiguration.ONE_TIME_GRAIN_BREAK_BETWEEN_TWO_CONSECUTIVE_MEETINGS;
+import static org.optaplanner.examples.meetingscheduling.domain.MeetingConstraintConfiguration.OVERLAPPING_MEETINGS;
+import static org.optaplanner.examples.meetingscheduling.domain.MeetingConstraintConfiguration.PREFERRED_ATTENDANCE_CONFLICT;
+import static org.optaplanner.examples.meetingscheduling.domain.MeetingConstraintConfiguration.REQUIRED_AND_PREFERRED_ATTENDANCE_CONFLICT;
+import static org.optaplanner.examples.meetingscheduling.domain.MeetingConstraintConfiguration.REQUIRED_ATTENDANCE_CONFLICT;
+import static org.optaplanner.examples.meetingscheduling.domain.MeetingConstraintConfiguration.REQUIRED_ROOM_CAPACITY;
+import static org.optaplanner.examples.meetingscheduling.domain.MeetingConstraintConfiguration.ROOM_CONFLICT;
+import static org.optaplanner.examples.meetingscheduling.domain.MeetingConstraintConfiguration.ROOM_STABILITY;
+import static org.optaplanner.examples.meetingscheduling.domain.MeetingConstraintConfiguration.START_AND_END_ON_SAME_DAY;
 
 import java.io.BufferedInputStream;
 import java.io.File;

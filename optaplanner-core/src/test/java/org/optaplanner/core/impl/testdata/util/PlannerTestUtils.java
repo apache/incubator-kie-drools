@@ -17,7 +17,9 @@
 package org.optaplanner.core.impl.testdata.util;
 
 import static java.util.Arrays.stream;
-import static org.mockito.Mockito.*;
+import static org.mockito.Mockito.any;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.when;
 
 import java.io.Serializable;
 import java.util.ArrayList;

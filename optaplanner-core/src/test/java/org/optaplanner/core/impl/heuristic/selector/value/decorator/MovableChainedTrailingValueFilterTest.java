@@ -16,7 +16,8 @@
 
 package org.optaplanner.core.impl.heuristic.selector.value.decorator;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
 
 import java.util.Arrays;
 

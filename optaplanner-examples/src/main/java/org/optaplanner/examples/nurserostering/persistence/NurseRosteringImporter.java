@@ -16,7 +16,7 @@
 
 package org.optaplanner.examples.nurserostering.persistence;
 
-import static java.time.temporal.ChronoUnit.*;
+import static java.time.temporal.ChronoUnit.DAYS;
 
 import java.io.IOException;
 import java.math.BigInteger;

@@ -16,7 +16,8 @@
 
 package org.optaplanner.examples.curriculumcourse.domain.solver;
 
-import static java.util.Comparator.*;
+import static java.util.Comparator.comparingInt;
+import static java.util.Comparator.comparingLong;
 
 import java.util.Comparator;
 

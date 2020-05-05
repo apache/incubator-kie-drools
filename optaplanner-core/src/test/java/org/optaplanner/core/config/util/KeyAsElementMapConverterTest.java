@@ -16,7 +16,7 @@
 
 package org.optaplanner.core.config.util;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
 
 import java.util.Map;
 

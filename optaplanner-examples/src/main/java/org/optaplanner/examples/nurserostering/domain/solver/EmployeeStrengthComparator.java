@@ -16,7 +16,7 @@
 
 package org.optaplanner.examples.nurserostering.domain.solver;
 
-import static java.util.Comparator.*;
+import static java.util.Comparator.comparingInt;
 
 import java.io.Serializable;
 import java.util.Comparator;

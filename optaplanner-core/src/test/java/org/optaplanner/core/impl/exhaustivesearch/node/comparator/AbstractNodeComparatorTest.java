@@ -16,8 +16,9 @@
 
 package org.optaplanner.core.impl.exhaustivesearch.node.comparator;
 
-import static org.junit.Assert.*;
-import static org.mockito.Mockito.*;
+import static org.junit.Assert.assertTrue;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.when;
 
 import java.util.Comparator;
 

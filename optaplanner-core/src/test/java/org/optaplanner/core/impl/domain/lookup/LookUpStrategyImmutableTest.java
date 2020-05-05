@@ -15,7 +15,7 @@
  */
 package org.optaplanner.core.impl.domain.lookup;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
 import static org.junit.jupiter.params.provider.Arguments.arguments;
 
 import java.math.BigDecimal;

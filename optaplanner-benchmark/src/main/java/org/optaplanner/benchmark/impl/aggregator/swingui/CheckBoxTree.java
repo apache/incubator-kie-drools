@@ -15,7 +15,9 @@
  */
 package org.optaplanner.benchmark.impl.aggregator.swingui;
 
-import static org.optaplanner.benchmark.impl.aggregator.swingui.MixedCheckBox.MixedCheckBoxStatus.*;
+import static org.optaplanner.benchmark.impl.aggregator.swingui.MixedCheckBox.MixedCheckBoxStatus.CHECKED;
+import static org.optaplanner.benchmark.impl.aggregator.swingui.MixedCheckBox.MixedCheckBoxStatus.MIXED;
+import static org.optaplanner.benchmark.impl.aggregator.swingui.MixedCheckBox.MixedCheckBoxStatus.UNCHECKED;
 
 import java.awt.Color;
 import java.awt.Component;

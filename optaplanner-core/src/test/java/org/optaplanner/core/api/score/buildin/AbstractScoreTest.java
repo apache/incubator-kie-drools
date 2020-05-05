@@ -16,7 +16,7 @@
 
 package org.optaplanner.core.api.score.buildin;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
 
 import org.optaplanner.core.api.score.FeasibilityScore;
 

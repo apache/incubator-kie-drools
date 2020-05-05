@@ -16,7 +16,7 @@
 
 package org.optaplanner.core.api.domain.valuerange;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertNotNull;
 
 import java.util.Arrays;
 

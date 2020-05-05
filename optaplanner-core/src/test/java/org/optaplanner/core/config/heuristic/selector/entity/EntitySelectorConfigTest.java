@@ -17,7 +17,9 @@
 package org.optaplanner.core.config.heuristic.selector.entity;
 
 import static org.assertj.core.api.Assertions.assertThatIllegalArgumentException;
-import static org.optaplanner.core.impl.testdata.util.PlannerAssert.*;
+import static org.optaplanner.core.impl.testdata.util.PlannerAssert.assertEquals;
+import static org.optaplanner.core.impl.testdata.util.PlannerAssert.assertInstanceOf;
+import static org.optaplanner.core.impl.testdata.util.PlannerAssert.assertNotInstanceOf;
 
 import org.junit.jupiter.api.Test;
 import org.optaplanner.core.config.heuristic.selector.AbstractSelectorConfigTest;

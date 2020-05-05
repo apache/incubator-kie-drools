@@ -16,7 +16,7 @@
 
 package org.optaplanner.core.api.score.buildin.simplelong;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
 
 import org.junit.jupiter.api.Test;
 import org.kie.api.definition.rule.Rule;

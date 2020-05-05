@@ -16,8 +16,21 @@
 
 package org.optaplanner.examples.rocktour.persistence;
 
-import static java.util.stream.Collectors.*;
-import static org.optaplanner.examples.rocktour.domain.RockTourConstraintConfiguration.*;
+import static java.util.stream.Collectors.groupingBy;
+import static java.util.stream.Collectors.joining;
+import static java.util.stream.Collectors.toList;
+import static org.optaplanner.examples.rocktour.domain.RockTourConstraintConfiguration.DELAY_SHOW_COST_PER_DAY;
+import static org.optaplanner.examples.rocktour.domain.RockTourConstraintConfiguration.DRIVING_TIME_TO_BUS_ARRIVAL_PER_SECOND;
+import static org.optaplanner.examples.rocktour.domain.RockTourConstraintConfiguration.DRIVING_TIME_TO_SHOW_PER_SECOND;
+import static org.optaplanner.examples.rocktour.domain.RockTourConstraintConfiguration.EARLY_LATE_BREAK_DRIVING_SECONDS;
+import static org.optaplanner.examples.rocktour.domain.RockTourConstraintConfiguration.HOS_WEEK_CONSECUTIVE_DRIVING_DAYS_BUDGET;
+import static org.optaplanner.examples.rocktour.domain.RockTourConstraintConfiguration.HOS_WEEK_DRIVING_SECONDS_BUDGET;
+import static org.optaplanner.examples.rocktour.domain.RockTourConstraintConfiguration.HOS_WEEK_REST_DAYS;
+import static org.optaplanner.examples.rocktour.domain.RockTourConstraintConfiguration.NIGHT_DRIVING_SECONDS;
+import static org.optaplanner.examples.rocktour.domain.RockTourConstraintConfiguration.REQUIRED_SHOW;
+import static org.optaplanner.examples.rocktour.domain.RockTourConstraintConfiguration.REVENUE_OPPORTUNITY;
+import static org.optaplanner.examples.rocktour.domain.RockTourConstraintConfiguration.SHORTEN_DRIVING_TIME_PER_MILLISECOND_SQUARED;
+import static org.optaplanner.examples.rocktour.domain.RockTourConstraintConfiguration.UNASSIGNED_SHOW;
 
 import java.io.BufferedInputStream;
 import java.io.File;

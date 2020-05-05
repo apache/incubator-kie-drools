@@ -16,7 +16,8 @@
 
 package org.optaplanner.core.config.heuristic.selector;
 
-import static org.mockito.Mockito.*;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.when;
 
 import org.optaplanner.core.config.heuristic.policy.HeuristicConfigPolicy;
 import org.optaplanner.core.config.solver.EnvironmentMode;

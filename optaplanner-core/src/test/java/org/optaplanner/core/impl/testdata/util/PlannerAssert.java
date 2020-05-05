@@ -17,7 +17,9 @@
 
 package org.optaplanner.core.impl.testdata.util;
 
-import static org.mockito.Mockito.*;
+import static org.mockito.Mockito.any;
+import static org.mockito.Mockito.times;
+import static org.mockito.Mockito.verify;
 
 import java.util.Collection;
 import java.util.Comparator;

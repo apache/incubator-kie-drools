@@ -17,7 +17,7 @@
 package org.optaplanner.core.impl.solver.thread;
 
 import static org.junit.Assert.assertEquals;
-import static org.optaplanner.core.impl.testdata.util.PlannerAssert.*;
+import static org.optaplanner.core.impl.testdata.util.PlannerAssert.assertCode;
 import static org.optaplanner.core.impl.testdata.util.PlannerAssert.assertSame;
 import static org.optaplanner.core.impl.testdata.util.PlannerAssert.fail;
 
