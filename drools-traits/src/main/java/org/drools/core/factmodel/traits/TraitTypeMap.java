@@ -24,7 +24,7 @@ import java.util.*;
 
 public class TraitTypeMap<T extends String, K extends Thing<C>, C>
         extends TypeHierarchy<K, BitMaskKey<K>>
-        implements Map<String, K>, Externalizable {
+        implements Map<String, K>, Externalizable, ITraitTypeMap<T, K, C> {
 
     private Map<String,K> innerMap;
 
@@ -79,6 +79,7 @@ public class TraitTypeMap<T extends String, K extends Thing<C>, C>
         return value;
     }
 
+    @Override
     public void setBottomCode( BitSet code ) {
         if ( ! hasKey(code) ) {
             super.setBottomCode(code);
@@ -91,7 +92,7 @@ public class TraitTypeMap<T extends String, K extends Thing<C>, C>
         return new BitMaskKey<K>( System.identityHashCode( value ), value );
     }
 
-
+    @Override
     public K putSafe( String key, K value ) throws LogicalTypeInconsistencyException {
         BitSet code = ((TraitType) value)._getTypeCode();
 
@@ -117,6 +118,7 @@ public class TraitTypeMap<T extends String, K extends Thing<C>, C>
         return t;
     }
 
+    @Override
     public Collection<K> removeCascade( String traitName ) {
         if ( ! innerMap.containsKey( traitName ) ) {
             if ( staticTypes != null ) {
@@ -131,6 +133,7 @@ public class TraitTypeMap<T extends String, K extends Thing<C>, C>
         return removeCascade( ( (TraitType) thing )._getTypeCode() );
     }
 
+    @Override
     public Collection<K> removeCascade( BitSet code ) {
         Collection<K> subs = this.lowerDescendants( code );
         List<K> ret = new ArrayList<K>( subs.size() );
@@ -257,7 +260,7 @@ public class TraitTypeMap<T extends String, K extends Thing<C>, C>
         }
     }
 
-
+    @Override
     public BitSet getCurrentTypeCode() {
         return currentTypeCode;
     }
@@ -281,5 +284,4 @@ public class TraitTypeMap<T extends String, K extends Thing<C>, C>
         }
         staticTypes.put( name, code );
     }
-
 }
