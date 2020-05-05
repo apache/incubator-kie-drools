@@ -18,6 +18,7 @@ package org.kie.pmml.models.drools.scorecard.tests;
 
 import org.assertj.core.api.Assertions;
 import org.junit.BeforeClass;
+import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.Parameterized;
@@ -73,6 +74,7 @@ public class BasicComplexPartialScoreTest extends AbstractPMMLScorecardTest {
         });
     }
 
+    @Ignore
     @Test
     public void testBasicPartialScore() {
         final Map<String, Object> inputData = new HashMap<>();

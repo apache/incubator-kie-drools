@@ -145,10 +145,11 @@ public class KiePMMLScorecardModelCharacteristicASTFactory {
             throw new KiePMMLException("Missing reasonCode needed for useReasonCodes == true");
         }
         double baseLineScoreToUse = characteristicBaselineScore != null ? characteristicBaselineScore.doubleValue() : baselineScore.doubleValue();
+        double partialScoreToUse = attribute.getPartialScore() != null ? attribute.getPartialScore().doubleValue() : 0.0;
         if (REASONCODE_ALGORITHM.POINTS_BELOW.equals(reasonCodeAlgorithm)) {
-            baseLineScoreToUse = baseLineScoreToUse - attribute.getPartialScore().doubleValue();
+            baseLineScoreToUse = baseLineScoreToUse - partialScoreToUse;
         } else {
-            baseLineScoreToUse = attribute.getPartialScore().doubleValue() - baseLineScoreToUse;
+            baseLineScoreToUse = partialScoreToUse - baseLineScoreToUse;
         }
         return new KiePMMLReasonCodeAndValue(reasonCode, baseLineScoreToUse);
     }

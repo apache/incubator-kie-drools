@@ -478,7 +478,7 @@ public class KiePMMLDroolsRule {
          * @return
          */
         public Builder withAccumulation(Number toAccumulate) {
-            this.toBuild.toAccumulate = toAccumulate.doubleValue();
+            this.toBuild.toAccumulate =  toAccumulate != null ? toAccumulate.doubleValue() : 0;
             return this;
         }
 
