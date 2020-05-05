@@ -201,12 +201,12 @@ public class TraitMapProxyClassBuilderImpl extends AbstractProxyClassBuilderImpl
             Label l2 = new Label();
             mv.visitJumpInsn( IFNONNULL, l2 );
             mv.visitVarInsn( ALOAD, 1 );
-            mv.visitTypeInsn( NEW, Type.getInternalName( TraitTypeMap.class ) );
+            mv.visitTypeInsn( NEW, Type.getInternalName( TraitTypeMapImpl.class ) );
             mv.visitInsn( DUP );
             mv.visitTypeInsn( NEW, Type.getInternalName( ExternalizableLinkedHashMap.class ) );
             mv.visitInsn( DUP );
             mv.visitMethodInsn( INVOKESPECIAL, Type.getInternalName( ExternalizableLinkedHashMap.class ), "<init>", "()V", false );
-            mv.visitMethodInsn( INVOKESPECIAL, Type.getInternalName( TraitTypeMap.class ), "<init>", "(" + Type.getDescriptor( Map.class ) + ")V", false );
+            mv.visitMethodInsn(INVOKESPECIAL, Type.getInternalName( TraitTypeMapImpl.class ), "<init>", "(" + Type.getDescriptor(Map.class ) + ")V", false );
             mv.visitMethodInsn( INVOKEVIRTUAL, internalCore, "_setTraitMap", "(" + Type.getDescriptor( Map.class ) + ")V", false );
             mv.visitLabel( l2 );
 

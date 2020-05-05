@@ -350,7 +350,7 @@ public class TraitTripleProxyClassBuilderImpl extends AbstractProxyClassBuilderI
         mv.visitJumpInsn( IFNONNULL, l1 );
 
         mv.visitVarInsn( ALOAD, 1 );
-        mv.visitTypeInsn( NEW, Type.getInternalName( TraitTypeMap.class ) );
+        mv.visitTypeInsn( NEW, Type.getInternalName( TraitTypeMapImpl.class ) );
         mv.visitInsn( DUP );
         mv.visitTypeInsn( NEW, Type.getInternalName( TripleBasedTypes.class ) );
         mv.visitInsn( DUP );
@@ -359,7 +359,7 @@ public class TraitTripleProxyClassBuilderImpl extends AbstractProxyClassBuilderI
         mv.visitVarInsn( ALOAD, 3 );
         mv.visitMethodInsn( INVOKESPECIAL, Type.getInternalName( TripleBasedTypes.class ), "<init>",
                             "(" + Type.getDescriptor( Object.class ) + Type.getDescriptor( TripleStore.class ) + Type.getDescriptor( TripleFactory.class ) + ")V", false );
-        mv.visitMethodInsn( INVOKESPECIAL, Type.getInternalName( TraitTypeMap.class ), "<init>", "(" + Type.getDescriptor( Map.class )+ ")V", false );
+        mv.visitMethodInsn(INVOKESPECIAL, Type.getInternalName( TraitTypeMapImpl.class ), "<init>", "(" + Type.getDescriptor(Map.class )+ ")V", false );
         mv.visitMethodInsn( INVOKEVIRTUAL, internalCore, "_setTraitMap", "(" + Type.getDescriptor( Map.class ) + ")V", false );
 
         mv.visitLabel( l1 );

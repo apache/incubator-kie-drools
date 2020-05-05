@@ -18,5 +18,5 @@ package org.drools.core.factmodel.traits;
 
 public interface TraitTypeMapConstants {
 
-    String TYPE_NAME = "org/drools/core/factmodel/traits/TraitTypeMap";
+    String TYPE_NAME = "org/drools/core/factmodel/traits/TraitTypeMapImpl";
 }

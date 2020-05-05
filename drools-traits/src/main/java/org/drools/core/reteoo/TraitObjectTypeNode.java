@@ -28,11 +28,10 @@ import org.drools.core.common.InternalWorkingMemory;
 import org.drools.core.factmodel.traits.Thing;
 import org.drools.core.factmodel.traits.TraitProxyImpl;
 import org.drools.core.factmodel.traits.TraitType;
-import org.drools.core.factmodel.traits.TraitTypeMap;
+import org.drools.core.factmodel.traits.TraitTypeMapImpl;
 import org.drools.core.reteoo.builder.BuildContext;
 import org.drools.core.spi.ObjectType;
 import org.drools.core.spi.PropagationContext;
-import org.drools.core.util.HierarchyEncoderImpl;
 import org.drools.core.util.bitmask.BitMask;
 
 import static org.drools.core.factmodel.traits.TraitUtils.supersetOrEqualset;
@@ -100,7 +99,7 @@ public class TraitObjectTypeNode extends ObjectTypeNode {
     private boolean sameAndNotCoveredByDescendants(TraitProxyImpl proxy, BitSet typeMask ) {
         boolean isSameType = typeMask.equals( proxy._getTypeCode() );
         if ( isSameType ) {
-            TraitTypeMap<String,Thing<?>,?> ttm = (TraitTypeMap<String,Thing<?>,?>) proxy.getObject()._getTraitMap();
+            TraitTypeMapImpl<String,Thing<?>,?> ttm = (TraitTypeMapImpl<String,Thing<?>,?>) proxy.getObject()._getTraitMap();
             Collection<Thing<?>> descs = ttm.lowerDescendants( typeMask );
             // we have to exclude the "mock" bottom proxy
             if ( descs == null || descs.isEmpty() ) {

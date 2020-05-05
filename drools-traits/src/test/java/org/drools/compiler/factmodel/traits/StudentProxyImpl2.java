@@ -17,7 +17,7 @@
 package org.drools.compiler.factmodel.traits;
 
 import org.drools.core.factmodel.traits.TraitProxyImpl;
-import org.drools.core.factmodel.traits.TraitTypeMap;
+import org.drools.core.factmodel.traits.TraitTypeMapImpl;
 import org.drools.core.factmodel.traits.TraitableBean;
 import org.drools.core.spi.InternalReadAccessor;
 import org.drools.core.spi.WriteAccessor;
@@ -56,7 +56,7 @@ public class StudentProxyImpl2 extends TraitProxyImpl implements IStudent {
         }
 
         if ( obj._getTraitMap() == null ) {
-            obj._setTraitMap( new TraitTypeMap( new ExternalizableLinkedHashMap() ) );
+            obj._setTraitMap( new TraitTypeMapImpl(new ExternalizableLinkedHashMap() ) );
         }
     }
 

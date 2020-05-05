@@ -17,7 +17,7 @@
 package org.drools.compiler.factmodel.traits;
 
 import org.drools.core.factmodel.traits.TraitProxyImpl;
-import org.drools.core.factmodel.traits.TraitTypeMap;
+import org.drools.core.factmodel.traits.TraitTypeMapImpl;
 import org.drools.core.factmodel.traits.TraitableBean;
 import org.drools.core.factmodel.traits.TripleBasedBean;
 import org.drools.core.factmodel.traits.TripleBasedStruct;
@@ -68,7 +68,7 @@ public class StudentProxyImpl3 extends TraitProxyImpl implements IStudent {
         }
 
         if ( obj._getTraitMap() == null ) {
-            obj._setTraitMap( new TraitTypeMap( new TripleBasedTypes(obj,m,factory) ) );
+            obj._setTraitMap( new TraitTypeMapImpl(new TripleBasedTypes(obj, m, factory) ) );
         }
 
     }

@@ -50,7 +50,7 @@ import org.drools.core.factmodel.traits.Trait;
 import org.drools.core.factmodel.traits.TraitFactoryImpl;
 import org.drools.core.factmodel.traits.TraitProxyImpl;
 import org.drools.core.factmodel.traits.TraitRegistryImpl;
-import org.drools.core.factmodel.traits.TraitTypeMap;
+import org.drools.core.factmodel.traits.TraitTypeMapImpl;
 import org.drools.core.factmodel.traits.Traitable;
 import org.drools.core.factmodel.traits.TraitableBean;
 import org.drools.core.factmodel.traits.TripleBasedBean;
@@ -831,13 +831,13 @@ public class TraitTest extends CommonTraitTest {
 
             if ( mode == VirtualPropertyMode.MAP ) {
                 assertTrue( proxyFields instanceof MapWrapper );
-                assertTrue( coreTraits instanceof TraitTypeMap );
+                assertTrue( coreTraits instanceof TraitTypeMapImpl);
                 assertTrue( coreProperties instanceof HashMap );
             } else {
                 assertEquals( "org.drools.compiler.trait.test.Student.org.drools.compiler.trait.test.Imp_ProxyWrapper", proxyFields.getClass().getName() );
 
                 assertTrue(proxyFields instanceof TripleBasedStruct );
-                assertTrue( coreTraits instanceof TraitTypeMap);
+                assertTrue( coreTraits instanceof TraitTypeMapImpl);
                 assertTrue( coreProperties instanceof TripleBasedBean );
             }
 

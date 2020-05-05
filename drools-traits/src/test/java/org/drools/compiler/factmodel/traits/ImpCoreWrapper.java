@@ -19,7 +19,7 @@ package org.drools.compiler.factmodel.traits;
 import org.drools.core.factmodel.traits.CoreWrapper;
 import org.drools.core.factmodel.traits.Thing;
 import org.drools.core.factmodel.traits.TraitFieldTMS;
-import org.drools.core.factmodel.traits.TraitTypeMap;
+import org.drools.core.factmodel.traits.TraitTypeMapImpl;
 import org.drools.core.factmodel.traits.TraitableBean;
 
 import java.util.BitSet;
@@ -34,19 +34,19 @@ public class ImpCoreWrapper extends Imp implements CoreWrapper<Imp>, TraitableBe
 
     public Map<String, Object> _getDynamicProperties() {
         if ( __$$dynamic_properties_map$$ == null ) {
-             __$$dynamic_properties_map$$ = new TraitTypeMap( new HashMap<String, Thing>() );
+             __$$dynamic_properties_map$$ = new TraitTypeMapImpl(new HashMap<String, Thing>() );
         }
         return __$$dynamic_properties_map$$;
     }
 
     public void _setDynamicProperties(Map<String, Object> map) {
-        __$$dynamic_properties_map$$ = new TraitTypeMap( map );
+        __$$dynamic_properties_map$$ = new TraitTypeMapImpl(map );
     }
 
 
     public Map<String,Thing<Imp>> _getTraitMap() {
         if ( __$$dynamic_traits_map$$ == null ) {
-            __$$dynamic_traits_map$$ = new TraitTypeMap( new HashMap<String, Thing<Imp>>() );
+            __$$dynamic_traits_map$$ = new TraitTypeMapImpl(new HashMap<String, Thing<Imp>>() );
         }
         return __$$dynamic_traits_map$$;
     }
@@ -62,7 +62,7 @@ public class ImpCoreWrapper extends Imp implements CoreWrapper<Imp>, TraitableBe
     public void _setFieldTMS( TraitFieldTMS tms ) {}
 
     public BitSet getBottomTypeCode() {
-        return ((TraitTypeMap) __$$dynamic_traits_map$$).getBottomCode();
+        return ((TraitTypeMapImpl) __$$dynamic_traits_map$$).getBottomCode();
     }
 
 //    public Map getTraits() {

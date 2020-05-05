@@ -26,7 +26,7 @@ public interface TraitableBean<K, X extends TraitableBean> {
 
 
     default void addTrait(String type, Thing proxy) {
-        ((ITraitTypeMap) _getTraitMap()).putSafe(type, proxy);
+        ((TraitTypeMap) _getTraitMap()).putSafe(type, proxy);
     }
 
     default Thing<K> getTrait(String type) {
@@ -43,7 +43,7 @@ public interface TraitableBean<K, X extends TraitableBean> {
 
     default Collection<Thing<K>> removeTrait( String type ) {
         if ( isTraitMapInitialized() ) {
-            return ((ITraitTypeMap)_getTraitMap()).removeCascade(type);
+            return ((TraitTypeMap)_getTraitMap()).removeCascade(type);
         } else {
             return null;
         }
@@ -51,7 +51,7 @@ public interface TraitableBean<K, X extends TraitableBean> {
 
     default Collection<Thing<K>> removeTrait( BitSet typeCode ) {
         if ( isTraitMapInitialized() ) {
-            return ((ITraitTypeMap)_getTraitMap()).removeCascade( typeCode );
+            return ((TraitTypeMap)_getTraitMap()).removeCascade(typeCode );
         } else {
             return null;
         }
@@ -69,14 +69,14 @@ public interface TraitableBean<K, X extends TraitableBean> {
         if ( _getTraitMap() == null ) {
             return Collections.emptyList();
         }
-        return ((ITraitTypeMap) _getTraitMap()).getMostSpecificTraits();
+        return ((TraitTypeMap) _getTraitMap()).getMostSpecificTraits();
     }
 
     default BitSet getCurrentTypeCode() {
         if ( _getTraitMap() == null ) {
             return null;
         }
-        return ((ITraitTypeMap) _getTraitMap()).getCurrentTypeCode();
+        return ((TraitTypeMap) _getTraitMap()).getCurrentTypeCode();
     }
 
     default boolean isTraitMapInitialized() {
@@ -85,7 +85,7 @@ public interface TraitableBean<K, X extends TraitableBean> {
 
 
     default void _setBottomTypeCode( BitSet bottomTypeCode ) {
-        ((ITraitTypeMap) _getTraitMap()).setBottomCode( bottomTypeCode );
+        ((TraitTypeMap) _getTraitMap()).setBottomCode(bottomTypeCode );
     }
 
 }

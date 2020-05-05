@@ -22,9 +22,10 @@ import java.io.ObjectOutput;
 import java.util.*;
 
 
-public class TraitTypeMap<T extends String, K extends Thing<C>, C>
+public class TraitTypeMapImpl<T extends String, K extends Thing<C>, C>
         extends TypeHierarchy<K, BitMaskKey<K>>
-        implements Map<String, K>, Externalizable, ITraitTypeMap<T, K, C> {
+        implements Map<String, K>, Externalizable,
+                   TraitTypeMap<T, K, C> {
 
     private Map<String,K> innerMap;
 
@@ -36,10 +37,10 @@ public class TraitTypeMap<T extends String, K extends Thing<C>, C>
     private BitSet staticTypeCode;
     private Map<String,BitSet> staticTypes;
 
-    public TraitTypeMap() {
+    public TraitTypeMapImpl() {
     }
 
-    public TraitTypeMap(Map map) {
+    public TraitTypeMapImpl(Map map) {
         innerMap = map;
 
         // create "top" element placeholder. will be replaced by a Thing proxy later, should the core object don it

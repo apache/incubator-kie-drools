@@ -46,7 +46,7 @@ import org.drools.core.factmodel.traits.TraitFieldTMS;
 import org.drools.core.factmodel.traits.TraitProxyImpl;
 import org.drools.core.factmodel.traits.TraitRegistryImpl;
 import org.drools.core.factmodel.traits.TraitType;
-import org.drools.core.factmodel.traits.TraitTypeMap;
+import org.drools.core.factmodel.traits.TraitTypeMapImpl;
 import org.drools.core.factmodel.traits.TraitableBean;
 import org.drools.core.impl.StatefulKnowledgeSessionImpl;
 import org.drools.core.metadata.Metadatable;
@@ -242,7 +242,7 @@ public class TraitHelperImpl implements Externalizable, TraitHelper {
 
     private void checkStaticTypeCode( TraitableBean inner ) {
         if ( ! inner.hasTraits() ) {
-            TraitTypeMap ttm = (TraitTypeMap) inner._getTraitMap();
+            TraitTypeMapImpl ttm = (TraitTypeMapImpl) inner._getTraitMap();
             if ( ttm != null && ttm.getStaticTypeCode() == null ) {
                 TraitRegistryImpl registry = (TraitRegistryImpl) this.workingMemory.getKnowledgeBase().getConfiguration().getComponentFactory().getTraitRegistry();
                 // code that summarizes ALL the static types
@@ -379,7 +379,7 @@ public class TraitHelperImpl implements Externalizable, TraitHelper {
         if ( ! core.hasTraits() ) {
             return;
         }
-        Collection<Thing<K>> mst = ( (TraitTypeMap) core._getTraitMap() ).getMostSpecificTraits();
+        Collection<Thing<K>> mst = ( (TraitTypeMapImpl) core._getTraitMap() ).getMostSpecificTraits();
         for ( Thing<K> shedded : removedTraits ) {
             for ( BitSet bs : ( (TraitProxyImpl) shedded ).listAssignedOtnTypeCodes() ) {
                 boolean found = false;

@@ -18,7 +18,7 @@ package org.drools.compiler.factmodel.traits;
 
 import org.drools.core.factmodel.traits.Thing;
 import org.drools.core.factmodel.traits.TraitFieldTMS;
-import org.drools.core.factmodel.traits.TraitTypeMap;
+import org.drools.core.factmodel.traits.TraitTypeMapImpl;
 import org.drools.core.factmodel.traits.Traitable;
 import org.drools.core.factmodel.traits.TraitableBean;
 
@@ -35,7 +35,7 @@ public class StudentImpl implements IStudent<StudentImpl>, TraitableBean<Student
     private int age;
 
 
-    private Map<String,Thing<StudentImpl>> traitMap = new TraitTypeMap<String, Thing<StudentImpl>, StudentImpl>( new HashMap() );;
+    private Map<String,Thing<StudentImpl>> traitMap = new TraitTypeMapImpl<String, Thing<StudentImpl>, StudentImpl>(new HashMap() );;
 
     public StudentImpl() {
     }
