@@ -29,6 +29,7 @@ import org.drools.modelcompiler.builder.generator.declaredtype.api.MethodDefinit
 import org.drools.modelcompiler.builder.generator.declaredtype.api.TypeDefinition;
 import org.kie.dmn.api.core.DMNType;
 import org.kie.dmn.api.core.FEELPropertyAccessible;
+import org.kie.dmn.core.impl.DMNModelImpl;
 
 class DMNInputSetType implements TypeDefinition {
 
@@ -38,6 +39,7 @@ class DMNInputSetType implements TypeDefinition {
 
     List<AnnotationDefinition> annotations = new ArrayList<>();
     private DMNAllTypesIndex index;
+    private String javadoc;
 
     DMNInputSetType(DMNAllTypesIndex index) {
         this.index = index;
@@ -92,5 +94,21 @@ class DMNInputSetType implements TypeDefinition {
     @Override
     public List<FieldDefinition> findInheritedDeclaredFields() {
         return Collections.emptyList();
+    }
+
+    public void initJavadoc(DMNModelImpl dmnModel, String disclaimerMarker) {
+        StringBuilder sb = new StringBuilder("A representation of all the InputData and other DRG Requirement of the whole DMN '").append(dmnModel.getName()).append("' inputs.").append("<br/>\n");
+        sb.append("<br/>\n");
+        sb.append("This has been automatically generated from the following DMN asset.").append("<br/>\n");
+        sb.append("DMN namespace: ").append(dmnModel.getNamespace()).append("<br/>\n");
+        sb.append("DMN name: ").append(dmnModel.getName()).append("<br/>\n");
+        sb.append("\n");
+        sb.append("@implNote ").append(disclaimerMarker).append("<br/>\n");
+        this.javadoc = sb.toString();
+    }
+
+    @Override
+    public Optional<String> getJavadoc() {
+        return Optional.of(this.javadoc);
     }
 }

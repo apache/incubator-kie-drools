@@ -31,7 +31,6 @@ import com.github.javaparser.ast.body.MethodDeclaration;
 import com.github.javaparser.ast.expr.FieldAccessExpr;
 import com.github.javaparser.ast.expr.NameExpr;
 import com.github.javaparser.ast.expr.NormalAnnotationExpr;
-import com.github.javaparser.ast.expr.SingleMemberAnnotationExpr;
 import com.github.javaparser.ast.nodeTypes.NodeWithAnnotations;
 import com.github.javaparser.ast.stmt.Statement;
 import com.github.javaparser.ast.type.Type;
@@ -74,6 +73,7 @@ public class GeneratedClassDeclaration {
         String generatedClassName = typeDefinition.getTypeName();
         generatedClass = createBasicDeclaredClass(generatedClassName);
         addAnnotations(generatedClass, typeDefinition.getAnnotationsToBeAdded());
+        typeDefinition.getJavadoc().ifPresent(generatedClass::setJavadocComment);
 
         generateInheritanceDefinition();
 
@@ -86,7 +86,7 @@ public class GeneratedClassDeclaration {
         }
 
         if (LOG.isDebugEnabled()) {
-            LOG.info(String.format("Generated class:%n%s", JavaParserCompiler.getPrettyPrinter().print(generatedClass)));
+            LOG.debug(String.format("Generated class:%n%s", JavaParserCompiler.getPrettyPrinter().print(generatedClass)));
         }
 
         return generatedClass;
