@@ -105,13 +105,13 @@ public class DMNCompilerTest extends BaseVariantTest {
 
         final DMNResult evaluateAll = evaluateModel(runtime, dmnModel, context);
         LOG.debug("{}", evaluateAll);
-        assertThat(evaluateAll.hasErrors(), is(false));
+        assertThat(DMNRuntimeUtil.formatMessages(evaluateAll.getMessages()), evaluateAll.hasErrors(), is(false));
     }
 
     @Test
     public void testJavadocInnerComposite() {
         final DMNRuntime runtime = createRuntime("javadocInnerComposite.dmn", this.getClass());
-        final DMNModel dmnModel = runtime.getModel("https://kiegroup.org/dmn/_7EC096B1-878B-4E85-8334-58B440BB6AD9", "new-file");
+        final DMNModel dmnModel = runtime.getModel("https://kiegroup.org/dmn/_7EC096B1-878B-4E85-8334-58B440BB6AD9bis", "new-file");
         assertThat(dmnModel, notNullValue());
 
         final DMNType tPerson = dmnModel.getItemDefinitionByName("tPerson").getType();
@@ -129,7 +129,7 @@ public class DMNCompilerTest extends BaseVariantTest {
 
         final DMNResult evaluateAll = evaluateModel(runtime, dmnModel, context);
         LOG.debug("{}", evaluateAll);
-        assertThat(evaluateAll.hasErrors(), is(false));
+        assertThat(DMNRuntimeUtil.formatMessages(evaluateAll.getMessages()), evaluateAll.hasErrors(), is(false));
     }
 
     @Test
