@@ -5184,7 +5184,7 @@ public class TraitTest extends CommonTraitTest {
 
     @Test
     public void testIsALegacyTrait() {
-        final String s1 = "package org.drools.compiler.factmodel.traits;\n" +
+        final String s1 = "package org.drools.traits.compiler.factmodel.traits;\n" +
                           "import " + TraitTest.class.getName() + ".SomeTrait; \n" +
                           "import " + StudentImpl.class.getCanonicalName() + ";\n" +
                           "import " + Entity.class.getCanonicalName() + ";\n" +
@@ -5284,11 +5284,11 @@ public class TraitTest extends CommonTraitTest {
     @Test
     public void testIsASwappedArg() {
 
-        String drl = "package org.drools.test; " +
-                     "import org.drools.core.factmodel.traits.*; " +
-                     "import org.drools.compiler.factmodel.traits.*; " +
+        String drl = "package org.drools.traits.compiler.factmodel.traits;\n" +
+                    "import " + TraitTest.class.getName() + ".SomeTrait; \n" +
                     "import " + StudentImpl.class.getCanonicalName() + ";\n" +
-                    "import " + Traitable.class.getCanonicalName() + ";\n" +
+                    "import " + Entity.class.getCanonicalName() + ";\n" +
+                    "import org.drools.core.factmodel.traits.*; \n" +
                     "global java.util.List list; " +
 
                      "declare Foo " +
