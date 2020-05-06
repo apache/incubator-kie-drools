@@ -54,7 +54,7 @@ const ServerErrorsComponent = props => {
             </EmptyStateBody>
           )}
           <Button variant="primary" onClick={() => props.history.goBack()}>
-            Go back               {' '}
+            Go back
           </Button>
         </EmptyState>
       </Bullseye>

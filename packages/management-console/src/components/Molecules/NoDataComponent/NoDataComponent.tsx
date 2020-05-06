@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import {
   PageSection,
   Bullseye,
@@ -27,9 +27,26 @@ const NoDataComponent = props => {
   const redirectHandler = () => {
     setIsredirect(true);
   };
+
+  useEffect(() => {
+    window.onpopstate = () => {
+      props.history.push({ state: { ...props.location.state.rememberedData } });
+    };
+  });
+
+  let finalPath = '';
+  prevPath.map(item => (finalPath = finalPath + `/${item}`));
+
   return (
     <>
-      {isRedirect && <Redirect to={`/${prevPath[0]}`} />}
+      {isRedirect && (
+        <Redirect
+          to={{
+            pathname: finalPath,
+            state: { ...props.location.state.rememberedData }
+          }}
+        />
+      )}
       <PageSection isFilled={true}>
         <Bullseye>
           <EmptyState variant={EmptyStateVariant.full}>

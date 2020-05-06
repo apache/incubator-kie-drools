@@ -14,7 +14,7 @@ import {
   OverflowMenuContent,
   OverflowMenuGroup
 } from '@patternfly/react-core';
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Link, Redirect } from 'react-router-dom';
 import ProcessDetails from '../../Organisms/ProcessDetails/ProcessDetails';
 import ProcessDetailsProcessVariables from '../../Organisms/ProcessDetailsProcessVariables/ProcessDetailsProcessVariables';
@@ -36,13 +36,13 @@ import {
   modalToggle
 } from '../../../utils/Utils';
 
-const ProcessDetailsPage = ({ match }) => {
+const ProcessDetailsPage = props => {
+  const id = props.match.params.instanceID;
   const [isSkipModalOpen, setIsSkipModalOpen] = useState<boolean>(false);
   const [isRetryModalOpen, setIsRetryModalOpen] = useState<boolean>(false);
   const [modalTitle, setModalTitle] = useState<string>('');
   const [titleType, setTitleType] = useState<string>('');
   const [modalContent, setModalContent] = useState<string>('');
-  const id = match.params.instanceID;
   const [isAbortModalOpen, setIsAbortModalOpen] = useState<boolean>(false);
   const currentPage = JSON.parse(window.localStorage.getItem('state'));
 
@@ -61,6 +61,12 @@ const ProcessDetailsPage = ({ match }) => {
   const handleRetryModalToggle = () => {
     setIsRetryModalOpen(!isRetryModalOpen);
   };
+
+  useEffect(() => {
+    window.onpopstate = () => {
+      props.history.push({ state: { ...props.location.state } });
+    };
+  });
 
   const abortButton = () => {
     if (
@@ -121,7 +127,8 @@ const ProcessDetailsPage = ({ match }) => {
                     .replace(/([A-Z])/g, ' $1')
                     .trim()
                     .toLowerCase()}`
-                : 'Go to process instances'
+                : 'Go to process instances',
+              rememberedData: { ...props.location.state }
             }
           }}
         />
@@ -172,14 +179,30 @@ const ProcessDetailsPage = ({ match }) => {
                       <Link to={'/'}>Home</Link>
                     </BreadcrumbItem>
                     {BreadCrumb.map((item, index) => {
-                      return (
-                        <BreadcrumbItem key={index}>
-                          <Link to={BreadCrumbRoute[index]}>
-                            {item.replace(/([A-Z])/g, ' $1').trim()}
-                          </Link>
-                        </BreadcrumbItem>
-                      );
-                      // }
+                      if (index === 1) {
+                        return (
+                          <BreadcrumbItem key={index}>
+                            <Link
+                              to={
+                                props.location.state && {
+                                  pathname: BreadCrumbRoute[index],
+                                  state: { ...props.location.state }
+                                }
+                              }
+                            >
+                              {item.replace(/([A-Z])/g, ' $1').trim()}
+                            </Link>
+                          </BreadcrumbItem>
+                        );
+                      } else {
+                        return (
+                          <BreadcrumbItem key={index}>
+                            <Link to={BreadCrumbRoute[index]}>
+                              {item.replace(/([A-Z])/g, ' $1').trim()}
+                            </Link>
+                          </BreadcrumbItem>
+                        );
+                      }
                     })}
                     <BreadcrumbItem isActive>
                       {data.ProcessInstances[0].processName}

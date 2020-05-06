@@ -34,7 +34,9 @@ const DomainExplorerTable = ({
   columnFilters,
   tableLoading,
   displayTable,
-  displayEmptyState
+  displayEmptyState,
+  parameters,
+  selected
 }) => {
   // tslint:disable: forin
   const [columns, setColumns] = useState([]);
@@ -152,7 +154,12 @@ const DomainExplorerTable = ({
                 const ele = {
                   title: (
                     <>
-                      <Link to={'/Process/' + tempObj.id}>
+                      <Link
+                        to={{
+                          pathname: '/Process/' + tempObj.id,
+                          state: { parameters, selected }
+                        }}
+                      >
                         <strong>
                           <ProcessDescriptor processInstanceData={tempObj} />
                         </strong>

@@ -23,7 +23,6 @@ import ServerErrorsComponent from '../../Molecules/ServerErrorsComponent/ServerE
 import {
   useGetQueryTypesQuery,
   useGetQueryFieldsQuery,
-  useGetInputFieldsFromQueryQuery,
   useGetColumnPickerAttributesQuery
 } from '../../../graphql/types';
 
@@ -32,6 +31,10 @@ export interface IOwnProps {
 }
 
 const DomainExplorerDashboard = props => {
+  const rememberedParams =
+    (props.location.state && props.location.state.parameters) || [];
+  const rememberedSelections =
+    (props.location.state && props.location.state.selected) || [];
   const domainName = props.match.params.domainName;
   let BreadCrumb = props.location.pathname.split('/');
   BreadCrumb = BreadCrumb.filter(item => {
@@ -40,7 +43,6 @@ const DomainExplorerDashboard = props => {
     }
   });
   const [pathName] = BreadCrumb.slice(-1);
-  const [currentQuery, setCurrentQuery] = useState('');
   const [columnPickerType, setColumnPickerType] = useState('');
   const [columnFilters, setColumnFilters] = useState({});
   const [tableLoading, setTableLoading] = useState(true);
@@ -48,6 +50,7 @@ const DomainExplorerDashboard = props => {
   const [displayEmptyState, setDisplayEmptyState] = useState(false);
   const [selected, setSelected] = useState([]);
   const [error, setError] = useState();
+  const [enableCache, setEnableCache] = useState(false);
   const [parameters, setParameters] = useState([
     {
       metadata: [
@@ -65,26 +68,17 @@ const DomainExplorerDashboard = props => {
     }
   ]);
 
+  useEffect(() => {
+    if (domainName) {
+      setColumnPickerType(domainName);
+    }
+  }, []);
+
   const getQuery = useGetQueryFieldsQuery();
   const getQueryTypes = useGetQueryTypesQuery();
   const getPicker = useGetColumnPickerAttributesQuery({
-    variables: { columnPickerType }
+    variables: { columnPickerType: domainName }
   });
-
-  useEffect(() => {
-    setColumnPickerType(domainName);
-    if (getQuery.data) {
-      const _a =
-        !getQuery.loading &&
-        getQuery.data.__type.fields.find(item => {
-          if (item.name === domainName) {
-            return item;
-          }
-        });
-
-      setCurrentQuery(_a.args[0].type.name);
-    }
-  }, []);
 
   let data = [];
   const tempArray = [];
@@ -127,28 +121,15 @@ const DomainExplorerDashboard = props => {
   defaultParams = defaultParams.slice(0, 5);
 
   useEffect(() => {
-    setParameters(prev => [...defaultParams, ...prev]);
-    setSelected(selections);
-  }, [columnPickerType, selections.length > 0]);
-
-  useEffect(() => {
-    setColumnPickerType(domainName);
-    if (getQuery.data) {
-      const _a =
-        !getQuery.loading &&
-        getQuery.data.__type.fields.find(item => {
-          if (item.name === domainName) {
-            return item;
-          }
-        });
-
-      setCurrentQuery(_a.args[0].type.name);
+    if (rememberedParams.length > 0) {
+      setEnableCache(true);
+      setParameters(rememberedParams);
+      setSelected(rememberedSelections);
+    } else {
+      setParameters(prev => [...defaultParams, ...prev]);
+      setSelected(selections);
     }
-  }, []);
-
-  const getSchema: any = useGetInputFieldsFromQueryQuery({
-    variables: { currentQuery }
-  });
+  }, [columnPickerType, selections.length > 0]);
 
   const renderToolbar = () => {
     return (
@@ -160,7 +141,7 @@ const DomainExplorerDashboard = props => {
         <DataToolbarContent>
           <DataToolbarToggleGroup toggleIcon={<FilterIcon />} breakpoint="md">
             <DataToolbarGroup>
-              {!getSchema.loading && (
+              {!getPicker.loading && (
                 <DomainExplorerColumnPicker
                   columnPickerType={columnPickerType}
                   setColumnFilters={setColumnFilters}
@@ -175,6 +156,9 @@ const DomainExplorerDashboard = props => {
                   getPicker={getPicker}
                   setError={setError}
                   setDisplayEmptyState={setDisplayEmptyState}
+                  rememberedParams={rememberedParams}
+                  enableCache={enableCache}
+                  setEnableCache={setEnableCache}
                 />
               )}
             </DataToolbarGroup>
@@ -248,6 +232,8 @@ const DomainExplorerDashboard = props => {
                 tableLoading={tableLoading}
                 displayTable={displayTable}
                 displayEmptyState={displayEmptyState}
+                parameters={parameters}
+                selected={selected}
               />
             </div>
           ) : (

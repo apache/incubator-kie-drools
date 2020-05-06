@@ -26,6 +26,9 @@ export interface IOwnProps {
   getPicker: any;
   setError: any;
   setDisplayEmptyState: any;
+  rememberedParams: any;
+  enableCache: boolean;
+  setEnableCache: any;
 }
 
 const DomainExplorerColumnPicker: React.FC<IOwnProps> = ({
@@ -41,7 +44,10 @@ const DomainExplorerColumnPicker: React.FC<IOwnProps> = ({
   data,
   getPicker,
   setError,
-  setDisplayEmptyState
+  setDisplayEmptyState,
+  rememberedParams,
+  enableCache,
+  setEnableCache
 }) => {
   // tslint:disable: forin
   // tslint:disable: no-floating-promises
@@ -97,7 +103,12 @@ const DomainExplorerColumnPicker: React.FC<IOwnProps> = ({
   };
 
   useEffect(() => {
-    parameters.length !== 1 && generateQuery();
+    if (
+      (rememberedParams.length === 0 && parameters.length !== 1) ||
+      rememberedParams.length > 0
+    ) {
+      generateQuery(parameters);
+    }
   }, [parameters.length > 1]);
 
   const nestedCheck = (ele, valueObj) => {
@@ -152,13 +163,13 @@ const DomainExplorerColumnPicker: React.FC<IOwnProps> = ({
     }
   };
 
-  const validateResponse = obj => {
+  const validateResponse = (obj, paramFields) => {
     let contentObj = {};
     for (const prop in obj) {
       const arr = [];
       if (obj[prop] === null) {
         const parentObj = {};
-        parameters.map(params => {
+        paramFields.map(params => {
           if (params.hasOwnProperty(prop)) {
             arr.push(params);
           }
@@ -178,13 +189,13 @@ const DomainExplorerColumnPicker: React.FC<IOwnProps> = ({
     return contentObj;
   };
 
-  async function generateQuery() {
+  async function generateQuery(paramFields) {
     setTableLoading(true);
     setEnableRefresh(true);
-    if (columnPickerType && parameters.length > 1) {
+    if (columnPickerType && paramFields.length > 1) {
       const Query = query({
         operation: columnPickerType,
-        fields: parameters
+        fields: paramFields
       });
 
       try {
@@ -193,7 +204,7 @@ const DomainExplorerColumnPicker: React.FC<IOwnProps> = ({
             query: gql`
               ${Query.query}
             `,
-            fetchPolicy: 'no-cache'
+            fetchPolicy: enableCache ? 'cache-first' : 'network-only'
           })
           .then(response => {
             setTableLoading(false);
@@ -204,19 +215,22 @@ const DomainExplorerColumnPicker: React.FC<IOwnProps> = ({
               const tableContent = resp[respKeys];
               const finalResp = [];
               tableContent.map(content => {
-                const finalObject = validateResponse(content);
+                const finalObject = validateResponse(content, paramFields);
                 finalResp.push(finalObject);
               });
               setColumnFilters(finalResp);
               setDisplayTable(true);
+              setEnableCache(false);
             } else {
               setDisplayEmptyState(true);
+              setEnableCache(false);
             }
           });
       } catch (error) {
         setError(error);
       }
     } else {
+      setTableLoading(false);
       setDisplayEmptyState(false);
       setDisplayTable(false);
     }
@@ -343,7 +357,7 @@ const DomainExplorerColumnPicker: React.FC<IOwnProps> = ({
 
   const onRefresh = () => {
     if (enableRefresh && parameters.length > 1) {
-      generateQuery();
+      generateQuery(parameters);
     }
   };
 
@@ -365,12 +379,19 @@ const DomainExplorerColumnPicker: React.FC<IOwnProps> = ({
           >
             {getAllChilds(finalResult, 'props')}
           </Select>
-          <Button variant="primary" onClick={generateQuery}>
+          <Button
+            variant="primary"
+            onClick={() => {
+              generateQuery(parameters);
+            }}
+          >
             Apply columns
           </Button>
           <Button
             variant="plain"
-            onClick={onRefresh}
+            onClick={() => {
+              onRefresh();
+            }}
             className="pf-u-m-md"
             aria-label={'Refresh list'}
           >
