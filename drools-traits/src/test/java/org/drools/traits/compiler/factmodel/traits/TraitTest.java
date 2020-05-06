@@ -2026,7 +2026,7 @@ public class TraitTest extends CommonTraitTest {
 
     @Test
     public void testTraitRedundancy() {
-        String str = "package org.drools.compiler.factmodel.traits; \n" +
+        String str = "package org.drools.traits.compiler.factmodel.traits; \n" +
                      "global java.util.List list; \n" +
                      "" +
                      "declare trait IStudent end \n" +
