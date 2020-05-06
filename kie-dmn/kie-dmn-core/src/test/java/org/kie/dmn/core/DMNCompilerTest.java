@@ -16,6 +16,8 @@
 
 package org.kie.dmn.core;
 
+import java.util.Arrays;
+
 import org.hamcrest.Matchers;
 import org.junit.Test;
 import org.kie.dmn.api.core.DMNContext;
@@ -54,6 +56,80 @@ public class DMNCompilerTest extends BaseVariantTest {
 
     public DMNCompilerTest(VariantTestConf testConfig) {
         super(testConfig);
+    }
+
+    @Test
+    public void testJavadocSimple() {
+        final DMNRuntime runtime = createRuntime("javadocSimple.dmn", this.getClass());
+        final DMNModel dmnModel = runtime.getModel("https://kiegroup.org/dmn/_55F8F74F-3E9F-4FAA-BBF4-E6F9534B6B19", "new-file");
+        assertThat(dmnModel, notNullValue());
+
+        final DMNType tVowel = dmnModel.getItemDefinitionByName("tVowel").getType();
+        assertThat(tVowel, is(notNullValue()));
+        assertThat(tVowel.isComposite(), is(false));
+        assertThat(tVowel, is(instanceOf(SimpleTypeImpl.class)));
+        assertThat(tVowel.getBaseType(), notNullValue());
+        assertThat(tVowel.getFields().size(), is(0));
+
+        final DMNType tNumbers = dmnModel.getItemDefinitionByName("tNumbers").getType();
+        assertThat(tNumbers, is(notNullValue()));
+        assertThat(tNumbers.isComposite(), is(false));
+        assertThat(tNumbers, is(instanceOf(SimpleTypeImpl.class)));
+        assertThat(tNumbers.getBaseType(), notNullValue());
+        assertThat(tNumbers.getFields().size(), is(0));
+
+        final DMNContext context = runtime.newContext();
+        context.set("a vowel", "a");
+        context.set("a list", Arrays.asList(1, 2, 3));
+
+        final DMNResult evaluateAll = evaluateModel(runtime, dmnModel, context);
+        LOG.debug("{}", evaluateAll);
+        assertThat(evaluateAll.hasErrors(), is(false));
+    }
+
+    @Test
+    public void testJavadocComposite() {
+        final DMNRuntime runtime = createRuntime("javadocComposite.dmn", this.getClass());
+        final DMNModel dmnModel = runtime.getModel("https://kiegroup.org/dmn/_7EC096B1-878B-4E85-8334-58B440BB6AD9", "new-file");
+        assertThat(dmnModel, notNullValue());
+
+        final DMNType tPerson = dmnModel.getItemDefinitionByName("tPerson").getType();
+        assertThat(tPerson, is(notNullValue()));
+        assertThat(tPerson.isComposite(), is(true));
+        assertThat(tPerson, is(instanceOf(CompositeTypeImpl.class)));
+        assertThat(tPerson.getBaseType(), nullValue());
+        assertThat(tPerson.getFields().size(), is(2));
+
+        final DMNContext context = runtime.newContext();
+        context.set("a person", mapOf(entry("full name", "John Doe"), entry("age", 47)));
+
+        final DMNResult evaluateAll = evaluateModel(runtime, dmnModel, context);
+        LOG.debug("{}", evaluateAll);
+        assertThat(evaluateAll.hasErrors(), is(false));
+    }
+
+    @Test
+    public void testJavadocInnerComposite() {
+        final DMNRuntime runtime = createRuntime("javadocInnerComposite.dmn", this.getClass());
+        final DMNModel dmnModel = runtime.getModel("https://kiegroup.org/dmn/_7EC096B1-878B-4E85-8334-58B440BB6AD9", "new-file");
+        assertThat(dmnModel, notNullValue());
+
+        final DMNType tPerson = dmnModel.getItemDefinitionByName("tPerson").getType();
+        assertThat(tPerson, is(notNullValue()));
+        assertThat(tPerson.isComposite(), is(true));
+        assertThat(tPerson, is(instanceOf(CompositeTypeImpl.class)));
+        assertThat(tPerson.getBaseType(), nullValue());
+        assertThat(tPerson.getFields().size(), is(2));
+        assertThat(tPerson.getFields().get("address"), is(instanceOf(CompositeTypeImpl.class)));
+        assertThat(tPerson.getFields().get("address").getName(), is("address"));
+        assertThat(tPerson.getFields().get("address").getFields().size(), is(2));
+
+        final DMNContext context = runtime.newContext();
+        context.set("a person", mapOf(entry("full name", "John Doe"), entry("address", mapOf(entry("country", "IT"), entry("zip", "abcde")))));
+
+        final DMNResult evaluateAll = evaluateModel(runtime, dmnModel, context);
+        LOG.debug("{}", evaluateAll);
+        assertThat(evaluateAll.hasErrors(), is(false));
     }
 
     @Test
