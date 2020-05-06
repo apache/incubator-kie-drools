@@ -60,6 +60,13 @@ public class DMNTypeUtils {
         return belonging != null && dmnType.isComposite();
     }
 
+    public static DMNType genericOfCollection(DMNType dmnType) {
+        if (!dmnType.isCollection()) {
+            throw new IllegalArgumentException();
+        }
+        return dmnType.getBaseType() != null ? dmnType.getBaseType() : dmnType; // handling of anonymous inner composite collection
+    }
+
     public static DMNType getBelongingType(DMNType dmnType) {
         return ((BaseDMNTypeImpl) dmnType).getBelongingType();
     }
