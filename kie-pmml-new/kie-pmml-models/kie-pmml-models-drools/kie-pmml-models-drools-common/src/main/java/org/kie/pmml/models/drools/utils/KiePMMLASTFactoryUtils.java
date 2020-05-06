@@ -25,7 +25,6 @@ import org.dmg.pmml.CompoundPredicate;
 import org.dmg.pmml.Predicate;
 import org.dmg.pmml.SimplePredicate;
 import org.kie.pmml.commons.exceptions.KiePMMLException;
-import org.kie.pmml.commons.model.enums.BOOLEAN_OPERATOR;
 import org.kie.pmml.commons.model.enums.DATA_TYPE;
 import org.kie.pmml.commons.model.enums.OPERATOR;
 import org.kie.pmml.models.drools.ast.KiePMMLFieldOperatorValue;
@@ -57,37 +56,12 @@ public class KiePMMLASTFactoryUtils {
                 .map(child -> (SimplePredicate) child)
                 .collect(groupingBy(child -> fieldTypeMap.get(child.getField().getValue()).getGeneratedType()));
         final List<KiePMMLFieldOperatorValue> toReturn = new LinkedList<>();
-        switch (compoundPredicate.getBooleanOperator()) {
-            case AND:
-                predicatesByField.forEach((fieldName, predicates) -> toReturn.add(getConstraintEntryFromSimplePredicates(fieldName, "&&", predicates, fieldTypeMap)));
-                break;
-            case OR:
-                predicatesByField.forEach((fieldName, predicates) -> toReturn.add(getConstraintEntryFromSimplePredicates(fieldName, "||", predicates, fieldTypeMap)));
-                break;
-            default:
-                throw new IllegalStateException(String.format("CompoundPredicate.booleanOperator should never be %s at this point", compoundPredicate.getBooleanOperator()));
-        }
-        final List<KiePMMLFieldOperatorValue> nestedAndPredicates = new LinkedList<>();
-        final List<KiePMMLFieldOperatorValue> nestedOrPredicates = new LinkedList<>();
-        final List<Predicate> compoundPredicates = compoundPredicate.getPredicates().stream().filter(predicate -> predicate instanceof CompoundPredicate).collect(Collectors.toList());
-        compoundPredicates.forEach(nestedCompoundPredicate -> {
-            switch (((CompoundPredicate) nestedCompoundPredicate).getBooleanOperator()) {
-                case OR:
-                    nestedOrPredicates.addAll(getConstraintEntriesFromAndOrCompoundPredicate((CompoundPredicate) nestedCompoundPredicate, fieldTypeMap));
-                    break;
-                case AND:
-                    nestedAndPredicates.addAll(getConstraintEntriesFromAndOrCompoundPredicate((CompoundPredicate) nestedCompoundPredicate, fieldTypeMap));
-                    break;
-                default:
-                    throw new IllegalStateException(String.format("CompoundPredicate.booleanOperator should never be %s at this point", compoundPredicate.getBooleanOperator()));
-            }
-        });
-        if (!nestedAndPredicates.isEmpty()) {
-            toReturn.add(new KiePMMLFieldOperatorValue(null, "&&", Collections.emptyList(), nestedAndPredicates));
-        }
-        if (!nestedOrPredicates.isEmpty()) {
-            toReturn.add(new KiePMMLFieldOperatorValue(null, "||", Collections.emptyList(), nestedOrPredicates));
-        }
+        populateKiePMMLFieldOperatorValueListWithSimplePredicates(toReturn, compoundPredicate.getBooleanOperator(), predicatesByField, fieldTypeMap);
+        final List<CompoundPredicate> compoundPredicates = compoundPredicate.getPredicates().stream()
+                .filter(predicate -> predicate instanceof CompoundPredicate)
+                .map(predicate -> (CompoundPredicate) predicate)
+                .collect(Collectors.toList());
+        populateKiePMMLFieldOperatorValueListWithCompoundPredicates(toReturn, compoundPredicates, fieldTypeMap);
         return toReturn;
     }
 
@@ -145,5 +119,54 @@ public class KiePMMLASTFactoryUtils {
     public static Object getCorrectlyFormattedObject(final SimplePredicate simplePredicate, final Map<String, KiePMMLOriginalTypeGeneratedType> fieldTypeMap) {
         DATA_TYPE dataType = DATA_TYPE.byName(fieldTypeMap.get(simplePredicate.getField().getValue()).getOriginalType());
         return getCorrectlyFormattedResult(simplePredicate.getValue(), dataType);
+    }
+
+    /**
+     * Populate the given <code>List&lt;KiePMMLFieldOperatorValue&gt;</code> with <code>KiePMMLFieldOperatorValue</code>s generated from the given <b>predicatesByField</b>
+     * @param toPopulate
+     * @param booleanOperator
+     * @param predicatesByField
+     * @param fieldTypeMap
+     */
+    static void populateKiePMMLFieldOperatorValueListWithSimplePredicates(final List<KiePMMLFieldOperatorValue> toPopulate, final CompoundPredicate.BooleanOperator booleanOperator, final Map<String, List<SimplePredicate>> predicatesByField, final Map<String, KiePMMLOriginalTypeGeneratedType> fieldTypeMap) {
+        switch (booleanOperator) {
+            case AND:
+                predicatesByField.forEach((fieldName, predicates) -> toPopulate.add(getConstraintEntryFromSimplePredicates(fieldName, "&&", predicates, fieldTypeMap)));
+                break;
+            case OR:
+                predicatesByField.forEach((fieldName, predicates) -> toPopulate.add(getConstraintEntryFromSimplePredicates(fieldName, "||", predicates, fieldTypeMap)));
+                break;
+            default:
+                throw new IllegalStateException(String.format("CompoundPredicate.booleanOperator should never be %s at this point", booleanOperator));
+        }
+    }
+
+    /**
+     * Populate the given <code>List&lt;KiePMMLFieldOperatorValue&gt;</code> with <code>KiePMMLFieldOperatorValue</code>s generated from the given <b>compoundPredicates</b>
+     * @param toPopulate
+     * @param compoundPredicates
+     * @param fieldTypeMap
+     */
+    static void populateKiePMMLFieldOperatorValueListWithCompoundPredicates(final List<KiePMMLFieldOperatorValue> toPopulate, final List<CompoundPredicate> compoundPredicates, final Map<String, KiePMMLOriginalTypeGeneratedType> fieldTypeMap) {
+        final List<KiePMMLFieldOperatorValue> nestedAndPredicates = new LinkedList<>();
+        final List<KiePMMLFieldOperatorValue> nestedOrPredicates = new LinkedList<>();
+        compoundPredicates.forEach(nestedCompoundPredicate -> {
+            switch ((nestedCompoundPredicate).getBooleanOperator()) {
+                case OR:
+                    nestedOrPredicates.addAll(getConstraintEntriesFromAndOrCompoundPredicate(nestedCompoundPredicate, fieldTypeMap));
+                    break;
+                case AND:
+                    nestedAndPredicates.addAll(getConstraintEntriesFromAndOrCompoundPredicate(nestedCompoundPredicate, fieldTypeMap));
+                    break;
+                default:
+                    throw new IllegalStateException(String.format("Unmanaged CompoundPredicate.booleanOperator %s at populateKiePMMLFieldOperatorValueListWithCompoundPredicates", nestedCompoundPredicate.getBooleanOperator()));
+            }
+        });
+        if (!nestedAndPredicates.isEmpty()) {
+            toPopulate.add(new KiePMMLFieldOperatorValue(null, "&&", Collections.emptyList(), nestedAndPredicates));
+        }
+        if (!nestedOrPredicates.isEmpty()) {
+            toPopulate.add(new KiePMMLFieldOperatorValue(null, "||", Collections.emptyList(), nestedOrPredicates));
+        }
     }
 }

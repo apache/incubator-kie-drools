@@ -64,10 +64,10 @@ public class KiePMMLDescrLhsFactory {
             patternDescrBuilder.constraint(rule.getStatusConstraint());
         }
         if (rule.getAndConstraints() != null) {
-            declareConstraintsAnd(rule.getAndConstraints(), builder.and());
+            declareConstraintsAndOr(rule.getAndConstraints(), builder.and());
         }
         if (rule.getOrConstraints() != null) {
-            declareConstraintsOr(rule.getOrConstraints(), builder.or());
+            declareConstraintsAndOr(rule.getOrConstraints(), builder.or());
         }
         if (rule.getXorConstraints() != null) {
             declareConstraintsXor(rule.getXorConstraints());
@@ -86,41 +86,21 @@ public class KiePMMLDescrLhsFactory {
         }
     }
 
-    protected void declareConstraintsAnd(final List<KiePMMLFieldOperatorValue> andConstraints, final CEDescrBuilder<?, AndDescr> andBuilder) {
-        andConstraints.forEach(kiePMMLOperatorValue -> {
-            if (kiePMMLOperatorValue.getName() != null) {
-                commonDeclarePatternWithConstraint(andBuilder, kiePMMLOperatorValue.getName(), kiePMMLOperatorValue.getConstraintsAsString());
-            }
-            if (kiePMMLOperatorValue.getNestedKiePMMLFieldOperatorValues() != null) {
-                switch (kiePMMLOperatorValue.getOperator()) {
-                    case "||":
-                        declareConstraintsOr(kiePMMLOperatorValue.getNestedKiePMMLFieldOperatorValues(), andBuilder.or());
-                        break;
-                    case "&&":
-                        declareConstraintsAnd(kiePMMLOperatorValue.getNestedKiePMMLFieldOperatorValues(), andBuilder.and());
-                        break;
-                    default:
-                        throw new KiePMMLException(String.format("Operator %s not managed inside declareConstraintsAnd, yet", kiePMMLOperatorValue.getOperator()));
-                }
-            }
-        });
-    }
-
-    protected void declareConstraintsOr(final List<KiePMMLFieldOperatorValue> orConstraints, final CEDescrBuilder<?, OrDescr> orBuilder) {
+    protected void declareConstraintsAndOr(final List<KiePMMLFieldOperatorValue> orConstraints, final CEDescrBuilder<?, ?> andOrBuilder) {
         for (KiePMMLFieldOperatorValue kiePMMLOperatorValue : orConstraints) {
             if (kiePMMLOperatorValue.getName() != null) {
-                commonDeclarePatternWithConstraint(orBuilder, kiePMMLOperatorValue.getName(), kiePMMLOperatorValue.getConstraintsAsString());
+                commonDeclarePatternWithConstraint(andOrBuilder, kiePMMLOperatorValue.getName(), kiePMMLOperatorValue.getConstraintsAsString());
             }
             if (kiePMMLOperatorValue.getNestedKiePMMLFieldOperatorValues() != null) {
                 switch (kiePMMLOperatorValue.getOperator()) {
                     case "||":
-                        declareConstraintsOr(kiePMMLOperatorValue.getNestedKiePMMLFieldOperatorValues(), orBuilder.or());
+                        declareConstraintsAndOr(kiePMMLOperatorValue.getNestedKiePMMLFieldOperatorValues(), andOrBuilder.or());
                         break;
                     case "&&":
-                        declareConstraintsAnd(kiePMMLOperatorValue.getNestedKiePMMLFieldOperatorValues(), orBuilder.and());
+                        declareConstraintsAndOr(kiePMMLOperatorValue.getNestedKiePMMLFieldOperatorValues(), andOrBuilder.and());
                         break;
                     default:
-                        throw new KiePMMLException(String.format("Operator %s not managed inside declareConstraintsOr, yet", kiePMMLOperatorValue.getOperator()));
+                        throw new KiePMMLException(String.format("Operator %s not managed inside declareConstraintsAndOr, yet", kiePMMLOperatorValue.getOperator()));
                 }
             }
         }
@@ -136,7 +116,6 @@ public class KiePMMLDescrLhsFactory {
             keys[i] = xorConstraints.get(i).getName();
             values[i] = xorConstraints.get(i).getConstraintsAsString();
         }
-        // The builder to put in "and" the not and the exists constraints
         final CEDescrBuilder<CEDescrBuilder<RuleDescrBuilder, AndDescr>, AndDescr> andBuilder = builder.and();
         final CEDescrBuilder<CEDescrBuilder<CEDescrBuilder<CEDescrBuilder<RuleDescrBuilder, AndDescr>, AndDescr>, NotDescr>, AndDescr> notBuilder = andBuilder.not().and();
         commonDeclarePatternWithConstraint(notBuilder, keys[0], values[0]);

@@ -87,7 +87,7 @@ public class KiePMMLDescrLhsFactoryTest {
         String humidityField = "HUMIDITY";
         List<KiePMMLFieldOperatorValue> kiePMMLOperatorValues = Arrays.asList(new KiePMMLFieldOperatorValue(temperatureField, "&&", Collections.singletonList(new KiePMMLOperatorValue("<", 35)), null),
                                                                               new KiePMMLFieldOperatorValue(humidityField, "or", Collections.singletonList(new KiePMMLOperatorValue(">", 85)), null));
-        KiePMMLDescrLhsFactory.factory(lhsBuilder).declareConstraintsAnd(kiePMMLOperatorValues, lhsBuilder.and());
+        KiePMMLDescrLhsFactory.factory(lhsBuilder).declareConstraintsAndOr(kiePMMLOperatorValues, lhsBuilder.and());
         assertNotNull(lhsBuilder.getDescr());
         assertEquals(1, lhsBuilder.getDescr().getDescrs().size());
         assertTrue(lhsBuilder.getDescr().getDescrs().get(0) instanceof AndDescr);
@@ -133,7 +133,7 @@ public class KiePMMLDescrLhsFactoryTest {
                 .asList(new KiePMMLFieldOperatorValue(humidityField, "or", Collections.singletonList(new KiePMMLOperatorValue("<", 56)), null),
                         new KiePMMLFieldOperatorValue(humidityField, "or", Collections.singletonList(new KiePMMLOperatorValue(">", 91)), null));
         List<KiePMMLFieldOperatorValue> kiePMMLOperatorValues = Collections.singletonList(new KiePMMLFieldOperatorValue(temperatureField, "&&", Collections.singletonList(new KiePMMLOperatorValue("<", 35)), nestedKiePMMLFieldOperatorValues));
-        KiePMMLDescrLhsFactory.factory(lhsBuilder).declareConstraintsAnd(kiePMMLOperatorValues, lhsBuilder.and());
+        KiePMMLDescrLhsFactory.factory(lhsBuilder).declareConstraintsAndOr(kiePMMLOperatorValues, lhsBuilder.and());
         assertNotNull(lhsBuilder.getDescr());
         assertEquals(1, lhsBuilder.getDescr().getDescrs().size());
         assertTrue(lhsBuilder.getDescr().getDescrs().get(0) instanceof AndDescr);
@@ -196,7 +196,7 @@ public class KiePMMLDescrLhsFactoryTest {
         String humidityField = "HUMIDITY";
         List<KiePMMLFieldOperatorValue> kiePMMLOperatorValues = Arrays.asList(new KiePMMLFieldOperatorValue(temperatureField, "&&", Collections.singletonList(new KiePMMLOperatorValue("<", 35)), null),
                                                                               new KiePMMLFieldOperatorValue(humidityField, "or", Collections.singletonList(new KiePMMLOperatorValue(">", 85)), null));
-        KiePMMLDescrLhsFactory.factory(lhsBuilder).declareConstraintsOr(kiePMMLOperatorValues, lhsBuilder.or());
+        KiePMMLDescrLhsFactory.factory(lhsBuilder).declareConstraintsAndOr(kiePMMLOperatorValues, lhsBuilder.or());
         assertNotNull(lhsBuilder.getDescr());
         assertEquals(1, lhsBuilder.getDescr().getDescrs().size());
         assertTrue(lhsBuilder.getDescr().getDescrs().get(0) instanceof OrDescr);
