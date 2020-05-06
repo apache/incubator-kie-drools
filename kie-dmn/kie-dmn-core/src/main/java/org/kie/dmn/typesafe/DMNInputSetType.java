@@ -31,13 +31,13 @@ import org.kie.dmn.api.core.DMNType;
 import org.kie.dmn.api.core.FEELPropertyAccessible;
 
 class DMNInputSetType implements TypeDefinition {
-
     List<DMNDeclaredField> fields = new ArrayList<>();
 
     Map<String, DMNType> fieldsKey = new HashMap<>();
 
     List<AnnotationDefinition> annotations = new ArrayList<>();
     private DMNAllTypesIndex index;
+    private String javadoc;
 
     DMNInputSetType(DMNAllTypesIndex index) {
         this.index = index;
@@ -92,5 +92,14 @@ class DMNInputSetType implements TypeDefinition {
     @Override
     public List<FieldDefinition> findInheritedDeclaredFields() {
         return Collections.emptyList();
+    }
+
+    public void setJavadoc(String javadoc) {
+        this.javadoc = javadoc;
+    }
+
+    @Override
+    public Optional<String> getJavadoc() {
+        return Optional.of(this.javadoc);
     }
 }

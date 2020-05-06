@@ -37,6 +37,7 @@ class DMNDeclaredType implements TypeDefinition {
     private final DMNType dmnType;
     List<DMNDeclaredField> fields = new ArrayList<>();
     List<AnnotationDefinition> annotations = new ArrayList<>();
+    private String javadoc;
 
     DMNDeclaredType(DMNAllTypesIndex index, DMNType dmnType) {
         this.index = index;
@@ -102,5 +103,14 @@ class DMNDeclaredType implements TypeDefinition {
     @Override
     public List<FieldDefinition> findInheritedDeclaredFields() {
         return Collections.emptyList();
+    }
+
+    public void setJavadoc(String javadoc) {
+        this.javadoc = javadoc;
+    }
+
+    @Override
+    public Optional<String> getJavadoc() {
+        return Optional.of(this.javadoc);
     }
 }

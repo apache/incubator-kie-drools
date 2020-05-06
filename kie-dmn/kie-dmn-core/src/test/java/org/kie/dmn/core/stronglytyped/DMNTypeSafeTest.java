@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package org.kie.dmn.core.typesafe;
+package org.kie.dmn.core.stronglytyped;
 
 import java.math.BigDecimal;
 import java.util.HashMap;
