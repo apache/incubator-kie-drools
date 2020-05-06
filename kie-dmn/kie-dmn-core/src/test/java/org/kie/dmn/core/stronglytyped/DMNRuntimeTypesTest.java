@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package org.kie.dmn.core.types;
+package org.kie.dmn.core.stronglytyped;
 
 import java.math.BigDecimal;
 import java.time.Duration;

@@ -58,9 +58,9 @@ import static org.kie.dmn.core.util.DynamicTypeUtils.entry;
 import static org.kie.dmn.core.util.DynamicTypeUtils.prototype;
 
 /* These are duplicated test that are run against the Typesafe DMN, see https://issues.redhat.com/browse/DROOLS-5061 */
-public class DMNTypesafeSupportTest extends BaseVariantTest {
+public class DMNStronglyTypedSupportTest extends BaseVariantTest {
 
-    public DMNTypesafeSupportTest(VariantTestConf testConfig) {
+    public DMNStronglyTypedSupportTest(VariantTestConf testConfig) {
         super(testConfig);
     }
 
