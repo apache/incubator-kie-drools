@@ -17,12 +17,12 @@ package org.drools.compiler.trait.test;
 
 
 // Entity is an empty traitable, based solely on a property map.
-import org.drools.core.factmodel.traits.Entity;
+import org.drools.traits.core.factmodel.traits.Entity;
 
 
-import org.drools.compiler.factmodel.traits.IStudent;
-import org.drools.compiler.factmodel.traits.IPerson;
-import org.drools.compiler.factmodel.traits.IRole
+import org.drools.traits.compiler.factmodel.traits.IStudent;
+import org.drools.traits.compiler.factmodel.traits.IPerson;
+import org.drools.traits.compiler.factmodel.traits.IRole
 
 
 global java.util.List list;

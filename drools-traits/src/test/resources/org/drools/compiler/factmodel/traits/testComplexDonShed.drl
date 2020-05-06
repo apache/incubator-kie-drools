@@ -15,6 +15,7 @@
 
 package test;
 import org.drools.core.factmodel.traits.*;
+import org.drools.traits.core.factmodel.traits.*;
 
 declare trait A id : int end
 declare trait B extends A end

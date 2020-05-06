@@ -16,8 +16,9 @@
 package org.drools.compiler.test;
 
 import org.drools.core.factmodel.traits.*;
+import org.drools.traits.core.factmodel.traits.*;
 
-import org.drools.compiler.factmodel.traits.ISomethingWithBehaviour;
+import org.drools.traits.compiler.factmodel.traits.ISomethingWithBehaviour;
 
 global java.util.List list;
 

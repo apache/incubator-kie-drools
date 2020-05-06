@@ -15,9 +15,10 @@
 
 package org.drools.compiler.test;
 
-import org.drools.core.factmodel.traits.Entity;
+import org.drools.traits.core.factmodel.traits.Entity;
 import org.drools.core.factmodel.traits.Thing;
 import org.drools.core.factmodel.traits.*;
+import org.drools.traits.core.factmodel.traits.*;
 
 global java.util.List list;
 
