@@ -215,7 +215,7 @@ public class KiePMMLSimplePredicateASTFactory extends KiePMMLAbstractPredicateAS
         logger.trace("getBuilderForSimplePredicate {}", statusToSet);
         String statusConstraint = StringUtils.isEmpty(predicateASTFactoryData.getParentPath()) ? KiePMMLAbstractModelASTFactory.STATUS_NULL : String.format(STATUS_PATTERN, predicateASTFactoryData.getParentPath());
         String key = predicateASTFactoryData.getFieldTypeMap().get(((SimplePredicate) predicateASTFactoryData.getPredicate()).getField().getValue()).getGeneratedType();
-        String operator = OPERATOR.byName(((SimplePredicate) predicateASTFactoryData.getPredicate()).getOperator().value()).getOperator();
+        OPERATOR operator = OPERATOR.byName(((SimplePredicate) predicateASTFactoryData.getPredicate()).getOperator().value());
         Object value = KiePMMLASTFactoryUtils.getCorrectlyFormattedObject(((SimplePredicate) predicateASTFactoryData.getPredicate()), predicateASTFactoryData.getFieldTypeMap());
         List<KiePMMLFieldOperatorValue> andConstraints = Collections.singletonList(new KiePMMLFieldOperatorValue(key, "and", Collections.singletonList(new KiePMMLOperatorValue(operator, value)), null));
         return KiePMMLDroolsRule.builder(predicateASTFactoryData.getCurrentRule(), statusToSet, predicateASTFactoryData.getOutputFields())

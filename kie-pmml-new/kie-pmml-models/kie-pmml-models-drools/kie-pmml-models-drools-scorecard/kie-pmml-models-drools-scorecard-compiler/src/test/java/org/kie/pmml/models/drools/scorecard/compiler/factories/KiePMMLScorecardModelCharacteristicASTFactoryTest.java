@@ -361,7 +361,7 @@ public class KiePMMLScorecardModelCharacteristicASTFactoryTest {
 
     private void commonValidateKiePMMLOperatorValue(KiePMMLOperatorValue toValidate, SimplePredicate simplePredicate) {
         OPERATOR expectedOperator = OPERATOR.byName(simplePredicate.getOperator().value());
-        assertEquals(expectedOperator.getOperator(), toValidate.getOperator());
+        assertEquals(expectedOperator, toValidate.getOperator());
         Object expectedValue = getExpectedValue(simplePredicate);
         assertEquals(expectedValue, toValidate.getValue());
     }

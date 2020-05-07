@@ -21,7 +21,7 @@ import java.util.Collections;
 import java.util.List;
 
 import org.junit.Test;
-import org.kie.pmml.models.drools.ast.KiePMMLFieldOperatorValue;
+import org.kie.pmml.commons.model.enums.OPERATOR;
 import org.kie.pmml.models.drools.tuples.KiePMMLOperatorValue;
 
 import static org.junit.Assert.assertEquals;
@@ -29,7 +29,7 @@ import static org.junit.Assert.assertEquals;
 public class KiePMMLFieldOperatorValueTest {
 
     private static final String NAME = "NAME";
-    private static final String OPERATOR = "OPERATOR";
+    private static final String OPERATOR_STRING = "OPERATOR";
 
     @Test
     public void getConstraintsAsString() {
@@ -56,19 +56,19 @@ public class KiePMMLFieldOperatorValueTest {
     }
 
     private KiePMMLFieldOperatorValue getKiePMMLFieldOperatorValueWithName() {
-        List<KiePMMLOperatorValue> kiePMMLOperatorValues = Arrays.asList(new KiePMMLOperatorValue("<", 35),
-                                                                         new KiePMMLOperatorValue(">", 85));
-        return new KiePMMLFieldOperatorValue(NAME, OPERATOR, kiePMMLOperatorValues, Collections.emptyList());
+        List<KiePMMLOperatorValue> kiePMMLOperatorValues = Arrays.asList(new KiePMMLOperatorValue(OPERATOR.LESS_THAN, 35),
+                                                                         new KiePMMLOperatorValue(OPERATOR.GREATER_THAN, 85));
+        return new KiePMMLFieldOperatorValue(NAME, OPERATOR_STRING, kiePMMLOperatorValues, Collections.emptyList());
     }
 
     private KiePMMLFieldOperatorValue getKiePMMLFieldOperatorValueWithoutName() {
         String humidityField = "HUMIDITY";
         final List<KiePMMLFieldOperatorValue> nestedKiePMMLFieldOperatorValues = Arrays
-                .asList(new KiePMMLFieldOperatorValue(humidityField, "or", Collections.singletonList(new KiePMMLOperatorValue("<", 56)), null),
-                        new KiePMMLFieldOperatorValue(humidityField, "or", Collections.singletonList(new KiePMMLOperatorValue(">", 91)), null));
-        List<KiePMMLOperatorValue> kiePMMLOperatorValues = Arrays.asList(new KiePMMLOperatorValue("<", 35),
-                                                                         new KiePMMLOperatorValue(">", 85));
+                .asList(new KiePMMLFieldOperatorValue(humidityField, "or", Collections.singletonList(new KiePMMLOperatorValue(OPERATOR.LESS_THAN, 56)), null),
+                        new KiePMMLFieldOperatorValue(humidityField, "or", Collections.singletonList(new KiePMMLOperatorValue(OPERATOR.GREATER_THAN, 91)), null));
+        List<KiePMMLOperatorValue> kiePMMLOperatorValues = Arrays.asList(new KiePMMLOperatorValue(OPERATOR.LESS_THAN, 35),
+                                                                         new KiePMMLOperatorValue(OPERATOR.GREATER_THAN, 85));
 
-        return new KiePMMLFieldOperatorValue(null, OPERATOR, kiePMMLOperatorValues, nestedKiePMMLFieldOperatorValues);
+        return new KiePMMLFieldOperatorValue(null, OPERATOR_STRING, kiePMMLOperatorValues, nestedKiePMMLFieldOperatorValues);
     }
 }

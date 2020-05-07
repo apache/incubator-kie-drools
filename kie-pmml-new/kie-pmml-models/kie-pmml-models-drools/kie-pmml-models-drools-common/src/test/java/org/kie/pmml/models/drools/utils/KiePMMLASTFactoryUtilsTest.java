@@ -260,7 +260,7 @@ public class KiePMMLASTFactoryUtilsTest {
     }
 
     private void commonVerifyKiePMMLOperatorValue(final KiePMMLOperatorValue toVerify, final SimplePredicate simplePredicate) {
-        assertFalse(toVerify.getOperator().isEmpty());
+        assertNotNull(toVerify.getOperator());
         Object expectedValue = simplePredicate.getValue();
         if (expectedValue instanceof String) {
             expectedValue = String.format("\"%s\"", expectedValue);

@@ -101,7 +101,7 @@ public class KiePMMLASTFactoryUtils {
                                                                                    final Map<String, KiePMMLOriginalTypeGeneratedType> fieldTypeMap) {
         List<KiePMMLOperatorValue> kiePMMLOperatorValues = simplePredicates
                 .stream()
-                .map(simplePredicate -> new KiePMMLOperatorValue(OPERATOR.byName(simplePredicate.getOperator().value()).getOperator(),
+                .map(simplePredicate -> new KiePMMLOperatorValue(OPERATOR.byName(simplePredicate.getOperator().value()),
                                                                  getCorrectlyFormattedObject(simplePredicate, fieldTypeMap)))
                 .collect(Collectors.toList());
         return new KiePMMLFieldOperatorValue(fieldName, containerOperator, kiePMMLOperatorValues, null);
@@ -113,7 +113,7 @@ public class KiePMMLASTFactoryUtils {
                 .map(predicate -> {
                     SimplePredicate simplePredicate = (SimplePredicate) predicate;
                     String fieldName = fieldTypeMap.get(simplePredicate.getField().getValue()).getGeneratedType();
-                    String operator = OPERATOR.byName(simplePredicate.getOperator().value()).getOperator();
+                    OPERATOR operator = OPERATOR.byName(simplePredicate.getOperator().value());
                     Object value = getCorrectlyFormattedObject(simplePredicate, fieldTypeMap);
                     return new KiePMMLFieldOperatorValue(fieldName, null, Collections.singletonList(new KiePMMLOperatorValue(operator, value)), null);
                 }).collect(Collectors.toList());
