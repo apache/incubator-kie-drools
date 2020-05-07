@@ -93,10 +93,10 @@ public class KiePMMLDescrLhsFactory {
             }
             if (kiePMMLFieldOperatorValue.getNestedKiePMMLFieldOperatorValues() != null) {
                 switch (kiePMMLFieldOperatorValue.getOperator()) {
-                    case "||":
+                    case OR:
                         declareConstraintsAndOr(kiePMMLFieldOperatorValue.getNestedKiePMMLFieldOperatorValues(), andOrBuilder.or());
                         break;
-                    case "&&":
+                    case AND:
                         declareConstraintsAndOr(kiePMMLFieldOperatorValue.getNestedKiePMMLFieldOperatorValues(), andOrBuilder.and());
                         break;
                     default:

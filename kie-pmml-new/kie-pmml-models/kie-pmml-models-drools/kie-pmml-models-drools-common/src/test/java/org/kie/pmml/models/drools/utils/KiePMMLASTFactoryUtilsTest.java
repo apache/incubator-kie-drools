@@ -126,7 +126,7 @@ public class KiePMMLASTFactoryUtilsTest {
                 .getConstraintEntriesFromXOrCompoundPredicate(compoundPredicate, fieldTypeMap);
         assertNotNull(retrieved);
         assertEquals(predicates.size(), retrieved.size());
-        commonVerifyKiePMMLFieldOperatorValueList(retrieved, "");
+        commonVerifyKiePMMLFieldOperatorValueList(retrieved, null);
     }
 
     @Test(expected = KiePMMLException.class)
@@ -152,10 +152,10 @@ public class KiePMMLASTFactoryUtilsTest {
                 .mapToObj(index -> KiePMMLASTTestUtils
                         .getSimplePredicate(fieldName, DataType.STRING, "VALUE-" + index, SimplePredicate.Operator.LESS_THAN, fieldTypeMap)).collect(Collectors.toList());
         final KiePMMLFieldOperatorValue retrieved = KiePMMLASTFactoryUtils
-                .getConstraintEntryFromSimplePredicates(fieldName, "or", simplePredicates, fieldTypeMap);
+                .getConstraintEntryFromSimplePredicates(fieldName, BOOLEAN_OPERATOR.OR, simplePredicates, fieldTypeMap);
         assertEquals(fieldName, retrieved.getName());
         assertNotNull(retrieved.getConstraintsAsString());
-        String expected = "value < \"VALUE-0\" or value < \"VALUE-1\"";
+        String expected = "value < \"VALUE-0\" || value < \"VALUE-1\"";
         assertEquals(expected, retrieved.getConstraintsAsString());
     }
 
@@ -166,7 +166,7 @@ public class KiePMMLASTFactoryUtilsTest {
                 .getXORConstraintEntryFromSimplePredicates(predicates, fieldTypeMap);
         assertNotNull(retrieved);
         assertEquals(simplePredicates.size(), retrieved.size());
-        commonVerifyKiePMMLFieldOperatorValueList(retrieved, "");
+        commonVerifyKiePMMLFieldOperatorValueList(retrieved, null);
     }
 
     @Test
@@ -183,12 +183,12 @@ public class KiePMMLASTFactoryUtilsTest {
 
     @Test
     public void populateKiePMMLFieldOperatorValueListWithSimplePredicatesWithAnd() {
-        commonPopulateKiePMMLFieldOperatorValueListWithSimplePredicates(CompoundPredicate.BooleanOperator.AND, "&&");
+        commonPopulateKiePMMLFieldOperatorValueListWithSimplePredicates(CompoundPredicate.BooleanOperator.AND, BOOLEAN_OPERATOR.AND);
     }
 
     @Test
     public void populateKiePMMLFieldOperatorValueListWithSimplePredicatesWithOr() {
-        commonPopulateKiePMMLFieldOperatorValueListWithSimplePredicates(CompoundPredicate.BooleanOperator.OR, "||");
+        commonPopulateKiePMMLFieldOperatorValueListWithSimplePredicates(CompoundPredicate.BooleanOperator.OR, BOOLEAN_OPERATOR.OR);
     }
 
     @Test
@@ -201,7 +201,7 @@ public class KiePMMLASTFactoryUtilsTest {
                 .collect(Collectors.groupingBy(CompoundPredicate::getBooleanOperator));
         partitionedCompoundPredicates.forEach((booleanOperator, compoundPredicates) -> {
             final KiePMMLFieldOperatorValue operatorValue = toPopulate.stream()
-                    .filter(kiePMMLFieldOperatorValue -> kiePMMLFieldOperatorValue.getOperator().equals(BOOLEAN_OPERATOR.byName(booleanOperator.value()).getCustomOperator()))
+                    .filter(kiePMMLFieldOperatorValue -> kiePMMLFieldOperatorValue.getOperator().equals(BOOLEAN_OPERATOR.byName(booleanOperator.value())))
                     .findFirst()
                     .orElseThrow(() -> new RuntimeException("Failed toRetrieve KiePMMLFieldOperatorValue for BooleanOperator " + booleanOperator));
             final List<KiePMMLFieldOperatorValue> nestedKiePMMLFieldOperatorValues = operatorValue.getNestedKiePMMLFieldOperatorValues();
@@ -225,18 +225,18 @@ public class KiePMMLASTFactoryUtilsTest {
         });
     }
 
-    private void commonPopulateKiePMMLFieldOperatorValueListWithSimplePredicates(CompoundPredicate.BooleanOperator booleanOperator, String booleanOperatorString) {
+    private void commonPopulateKiePMMLFieldOperatorValueListWithSimplePredicates(CompoundPredicate.BooleanOperator compoundBooleanOperator, BOOLEAN_OPERATOR booleanOperator) {
         final Map<String, List<SimplePredicate>> predicatesByField = simplePredicates.stream()
                 .collect(groupingBy(child -> fieldTypeMap.get(child.getField().getValue()).getGeneratedType()));
         final List<KiePMMLFieldOperatorValue> toPopulate = new ArrayList<>();
-        KiePMMLASTFactoryUtils.populateKiePMMLFieldOperatorValueListWithSimplePredicates(toPopulate, booleanOperator, predicatesByField, fieldTypeMap);
+        KiePMMLASTFactoryUtils.populateKiePMMLFieldOperatorValueListWithSimplePredicates(toPopulate, compoundBooleanOperator, predicatesByField, fieldTypeMap);
         assertEquals(simplePredicates.size(), toPopulate.size());
-        commonVerifyKiePMMLFieldOperatorValueList(toPopulate, booleanOperatorString);
+        commonVerifyKiePMMLFieldOperatorValueList(toPopulate, booleanOperator);
     }
 
-    private void commonVerifyKiePMMLFieldOperatorValueList(List<KiePMMLFieldOperatorValue> toVerify, String booleanOperatorString) {
+    private void commonVerifyKiePMMLFieldOperatorValueList(List<KiePMMLFieldOperatorValue> toVerify, BOOLEAN_OPERATOR booleanOperator) {
         toVerify.forEach(kiePMMLFieldOperatorValue -> {
-            assertEquals(booleanOperatorString, kiePMMLFieldOperatorValue.getOperator());
+            assertEquals(booleanOperator, kiePMMLFieldOperatorValue.getOperator());
             commonVerifyKiePMMLFieldOperatorValue(kiePMMLFieldOperatorValue);
         });
     }

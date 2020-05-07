@@ -25,6 +25,7 @@ import org.dmg.pmml.CompoundPredicate;
 import org.dmg.pmml.Predicate;
 import org.dmg.pmml.SimplePredicate;
 import org.kie.pmml.commons.exceptions.KiePMMLException;
+import org.kie.pmml.commons.model.enums.BOOLEAN_OPERATOR;
 import org.kie.pmml.commons.model.enums.DATA_TYPE;
 import org.kie.pmml.commons.model.enums.OPERATOR;
 import org.kie.pmml.models.drools.ast.KiePMMLFieldOperatorValue;
@@ -96,7 +97,7 @@ public class KiePMMLASTFactoryUtils {
      * @return
      */
     public static KiePMMLFieldOperatorValue getConstraintEntryFromSimplePredicates(final String fieldName,
-                                                                                   final String containerOperator,
+                                                                                   final BOOLEAN_OPERATOR containerOperator,
                                                                                    final List<SimplePredicate> simplePredicates,
                                                                                    final Map<String, KiePMMLOriginalTypeGeneratedType> fieldTypeMap) {
         List<KiePMMLOperatorValue> kiePMMLOperatorValues = simplePredicates
@@ -137,10 +138,10 @@ public class KiePMMLASTFactoryUtils {
                                                                           final Map<String, KiePMMLOriginalTypeGeneratedType> fieldTypeMap) {
         switch (booleanOperator) {
             case AND:
-                predicatesByField.forEach((fieldName, predicates) -> toPopulate.add(getConstraintEntryFromSimplePredicates(fieldName, "&&", predicates, fieldTypeMap)));
+                predicatesByField.forEach((fieldName, predicates) -> toPopulate.add(getConstraintEntryFromSimplePredicates(fieldName, BOOLEAN_OPERATOR.AND, predicates, fieldTypeMap)));
                 break;
             case OR:
-                predicatesByField.forEach((fieldName, predicates) -> toPopulate.add(getConstraintEntryFromSimplePredicates(fieldName, "||", predicates, fieldTypeMap)));
+                predicatesByField.forEach((fieldName, predicates) -> toPopulate.add(getConstraintEntryFromSimplePredicates(fieldName, BOOLEAN_OPERATOR.OR, predicates, fieldTypeMap)));
                 break;
             default:
                 throw new IllegalStateException(String.format("CompoundPredicate.booleanOperator should never be %s at this point", booleanOperator));
@@ -171,10 +172,10 @@ public class KiePMMLASTFactoryUtils {
             }
         });
         if (!nestedAndPredicates.isEmpty()) {
-            toPopulate.add(new KiePMMLFieldOperatorValue(null, "&&", Collections.emptyList(), nestedAndPredicates));
+            toPopulate.add(new KiePMMLFieldOperatorValue(null, BOOLEAN_OPERATOR.AND, Collections.emptyList(), nestedAndPredicates));
         }
         if (!nestedOrPredicates.isEmpty()) {
-            toPopulate.add(new KiePMMLFieldOperatorValue(null, "||", Collections.emptyList(), nestedOrPredicates));
+            toPopulate.add(new KiePMMLFieldOperatorValue(null, BOOLEAN_OPERATOR.OR, Collections.emptyList(), nestedOrPredicates));
         }
     }
 }

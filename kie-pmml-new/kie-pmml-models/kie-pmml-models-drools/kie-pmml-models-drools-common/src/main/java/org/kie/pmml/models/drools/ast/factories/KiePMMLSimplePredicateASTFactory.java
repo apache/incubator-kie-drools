@@ -20,6 +20,7 @@ import java.util.List;
 
 import org.dmg.pmml.SimplePredicate;
 import org.drools.core.util.StringUtils;
+import org.kie.pmml.commons.model.enums.BOOLEAN_OPERATOR;
 import org.kie.pmml.commons.model.enums.OPERATOR;
 import org.kie.pmml.models.drools.ast.KiePMMLDroolsRule;
 import org.kie.pmml.models.drools.ast.KiePMMLFieldOperatorValue;
@@ -56,7 +57,7 @@ public class KiePMMLSimplePredicateASTFactory extends KiePMMLAbstractPredicateAS
         logger.trace("declareRuleFromSimplePredicateSurrogate {} {} {} {}", agendaActivationGroup, toAccumulate, statusToSet, isLastCharacteristic);
         String fieldName = predicateASTFactoryData.getFieldTypeMap().get(((SimplePredicate) predicateASTFactoryData.getPredicate()).getField().getValue()).getGeneratedType();
         String surrogateCurrentRule = String.format(KiePMMLAbstractModelASTFactory.SURROGATE_RULENAME_PATTERN, predicateASTFactoryData.getCurrentRule(), fieldName);
-        final List<KiePMMLFieldOperatorValue> constraints = Collections.singletonList(KiePMMLASTFactoryUtils.getConstraintEntryFromSimplePredicates(fieldName, "surrogate", Collections.singletonList((SimplePredicate) predicateASTFactoryData.getPredicate()), predicateASTFactoryData.getFieldTypeMap()));
+        final List<KiePMMLFieldOperatorValue> constraints = Collections.singletonList(KiePMMLASTFactoryUtils.getConstraintEntryFromSimplePredicates(fieldName, BOOLEAN_OPERATOR.SURROGATE, Collections.singletonList((SimplePredicate) predicateASTFactoryData.getPredicate()), predicateASTFactoryData.getFieldTypeMap()));
         // Create "TRUE" matcher
         KiePMMLDroolsRule.Builder builder = getBuilderForSimplePredicateSurrogateTrueMatcher(agendaActivationGroup, surrogateCurrentRule, constraints, statusToSet)
                 .withAccumulation(toAccumulate);
@@ -80,7 +81,7 @@ public class KiePMMLSimplePredicateASTFactory extends KiePMMLAbstractPredicateAS
         logger.trace("declareRuleFromSimplePredicateSurrogate {} {} {}", agendaActivationGroup, result, isFinalLeaf);
         String fieldName = predicateASTFactoryData.getFieldTypeMap().get(((SimplePredicate) predicateASTFactoryData.getPredicate()).getField().getValue()).getGeneratedType();
         String surrogateCurrentRule = String.format(KiePMMLAbstractModelASTFactory.SURROGATE_RULENAME_PATTERN, predicateASTFactoryData.getCurrentRule(), fieldName);
-        final List<KiePMMLFieldOperatorValue> constraints = Collections.singletonList(KiePMMLASTFactoryUtils.getConstraintEntryFromSimplePredicates(fieldName, "surrogate", Collections.singletonList((SimplePredicate) predicateASTFactoryData.getPredicate()), predicateASTFactoryData.getFieldTypeMap()));
+        final List<KiePMMLFieldOperatorValue> constraints = Collections.singletonList(KiePMMLASTFactoryUtils.getConstraintEntryFromSimplePredicates(fieldName, BOOLEAN_OPERATOR.SURROGATE, Collections.singletonList((SimplePredicate) predicateASTFactoryData.getPredicate()), predicateASTFactoryData.getFieldTypeMap()));
         String statusToSet = isFinalLeaf ? DONE : predicateASTFactoryData.getCurrentRule();
         // Create "TRUE" matcher
         KiePMMLDroolsRule.Builder builder = getBuilderForSimplePredicateSurrogateTrueMatcher(agendaActivationGroup, surrogateCurrentRule, constraints, statusToSet);
@@ -217,7 +218,7 @@ public class KiePMMLSimplePredicateASTFactory extends KiePMMLAbstractPredicateAS
         String key = predicateASTFactoryData.getFieldTypeMap().get(((SimplePredicate) predicateASTFactoryData.getPredicate()).getField().getValue()).getGeneratedType();
         OPERATOR operator = OPERATOR.byName(((SimplePredicate) predicateASTFactoryData.getPredicate()).getOperator().value());
         Object value = KiePMMLASTFactoryUtils.getCorrectlyFormattedObject(((SimplePredicate) predicateASTFactoryData.getPredicate()), predicateASTFactoryData.getFieldTypeMap());
-        List<KiePMMLFieldOperatorValue> andConstraints = Collections.singletonList(new KiePMMLFieldOperatorValue(key, "and", Collections.singletonList(new KiePMMLOperatorValue(operator, value)), null));
+        List<KiePMMLFieldOperatorValue> andConstraints = Collections.singletonList(new KiePMMLFieldOperatorValue(key, BOOLEAN_OPERATOR.AND, Collections.singletonList(new KiePMMLOperatorValue(operator, value)), null));
         return KiePMMLDroolsRule.builder(predicateASTFactoryData.getCurrentRule(), statusToSet, predicateASTFactoryData.getOutputFields())
                 .withStatusConstraint(statusConstraint)
                 .withAndConstraints(andConstraints);

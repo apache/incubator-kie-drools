@@ -9,7 +9,7 @@
 
   <artifactId>kie-pmml-models-drools-scorecard-model</artifactId>
 
-  <name>KIE :: PMML :: Models ::  Drools :: Scorecard :: Model</name>
+  <name>KIE :: PMML :: Models :: Drools :: Scorecard :: Model</name>
   <description>KiePMML Model for Scorecard implementation</description>
 
   <dependencies>

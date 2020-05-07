@@ -36,6 +36,7 @@ import org.dmg.pmml.scorecard.Characteristic;
 import org.dmg.pmml.scorecard.Characteristics;
 import org.dmg.pmml.scorecard.Scorecard;
 import org.junit.Before;
+import org.junit.Ignore;
 import org.junit.Test;
 import org.kie.pmml.commons.enums.ResultCode;
 import org.kie.pmml.commons.exceptions.KiePMMLException;
@@ -100,14 +101,13 @@ public class KiePMMLScorecardModelCharacteristicASTFactoryTest {
                 int expectedOperatorValuesSize = 1;
                 Integer expectedAndConstraints = null;
                 Integer expectedInConstraints = null;
-                String expectedOperator = "and";
+                BOOLEAN_OPERATOR expectedOperator = BOOLEAN_OPERATOR.AND;
                 if (attribute.getPredicate() instanceof SimplePredicate) {
                     expectedAndConstraints = 1;
                 }
                 if (attribute.getPredicate() instanceof CompoundPredicate) {
                     expectedOperatorValuesSize = ((CompoundPredicate) attribute.getPredicate()).getPredicates().size();
                     expectedAndConstraints = 1;
-                    expectedOperator = "&&";
                 }
                 if (attribute.getPredicate() instanceof SimpleSetPredicate) {
                     expectedInConstraints = 1;
@@ -137,7 +137,6 @@ public class KiePMMLScorecardModelCharacteristicASTFactoryTest {
         final List<KiePMMLDroolsRule> rules = new ArrayList<>();
         final String statusToSet = "status_to_set";
         final boolean isLastCharacteristic = false;
-        String[] expectedOperators = {"and", "&&"};
         String[] expectedConstraints = {"value <= 5.0", "value >= 5.0 && value < 12.0"};
         int[] expectedOperatorValuesSizes = {1, 2};
         getKiePMMLScorecardModelCharacteristicASTFactory()
@@ -156,7 +155,7 @@ public class KiePMMLScorecardModelCharacteristicASTFactoryTest {
                                isLastCharacteristic,
                                1,
                                null,
-                               expectedOperators[i],
+                               BOOLEAN_OPERATOR.AND,
                                expectedConstraints[i],
                                expectedOperatorValuesSizes[i]
             );
@@ -184,7 +183,7 @@ public class KiePMMLScorecardModelCharacteristicASTFactoryTest {
                            isLastCharacteristic,
                            1,
                            null,
-                           BOOLEAN_OPERATOR.AND.getName(),
+                           BOOLEAN_OPERATOR.AND,
                            "value <= 5.0",
                            1);
     }
@@ -212,7 +211,7 @@ public class KiePMMLScorecardModelCharacteristicASTFactoryTest {
                            isLastCharacteristic,
                            1,
                            null,
-                           BOOLEAN_OPERATOR.AND.getName(),
+                           BOOLEAN_OPERATOR.AND,
                            "value <= 5.0",
                            1);
         KiePMMLReasonCodeAndValue retrieved = toValidate.getReasonCodeAndValue();
@@ -243,7 +242,7 @@ public class KiePMMLScorecardModelCharacteristicASTFactoryTest {
                            isLastCharacteristic,
                            1,
                            null,
-                           BOOLEAN_OPERATOR.AND.getName(),
+                           BOOLEAN_OPERATOR.AND,
                            "value <= 5.0",
                            1);
     }
@@ -269,7 +268,7 @@ public class KiePMMLScorecardModelCharacteristicASTFactoryTest {
                            isLastCharacteristic,
                            1,
                            null,
-                           BOOLEAN_OPERATOR.AND.getCustomOperator(),
+                           BOOLEAN_OPERATOR.AND,
                            "value >= 5.0 && value < 12.0",
                            2);
     }
@@ -308,7 +307,7 @@ public class KiePMMLScorecardModelCharacteristicASTFactoryTest {
                                     boolean isLastCharacteristic,
                                     Integer expectedAndConstraints,
                                     Integer expectedInConstraints,
-                                    String expectedOperator,
+                                    BOOLEAN_OPERATOR expectedOperator,
                                     String expectedConstraints,
                                     Integer expectedOperatorValuesSize) {
         assertEquals(String.format(PATH_PATTERN, parentPath, attributeIndex), toValidate.getName());
@@ -335,7 +334,7 @@ public class KiePMMLScorecardModelCharacteristicASTFactoryTest {
 
     private void commonValidateAndConstraint(KiePMMLFieldOperatorValue toValidate,
                                              Attribute attribute,
-                                             String expectedOperator,
+                                             BOOLEAN_OPERATOR expectedOperator,
                                              String expectedConstraints,
                                              int expectedOperatorValuesSize) {
         assertEquals(expectedOperator, toValidate.getOperator());

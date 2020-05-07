@@ -28,6 +28,7 @@ import org.drools.compiler.lang.descr.PackageDescr;
 import org.drools.compiler.lang.descr.RuleDescr;
 import org.junit.Test;
 import org.kie.api.pmml.PMML4Result;
+import org.kie.pmml.commons.model.enums.BOOLEAN_OPERATOR;
 import org.kie.pmml.commons.model.enums.OPERATOR;
 import org.kie.pmml.models.drools.ast.KiePMMLDroolsAST;
 import org.kie.pmml.models.drools.ast.KiePMMLDroolsRule;
@@ -55,8 +56,8 @@ public class KiePMMLDescrFactoryTest {
         List<KiePMMLDroolsType> types = new ArrayList<>();
         types.add(KiePMMLDescrTestUtils.getDroolsType());
         types.add(KiePMMLDescrTestUtils.getDottedDroolsType());
-        List<KiePMMLFieldOperatorValue> orConstraints = Arrays.asList(new KiePMMLFieldOperatorValue(PATTERN_TYPE, "or", Collections.singletonList(new KiePMMLOperatorValue(OPERATOR.LESS_THAN, 35)), null),
-                                                                      new KiePMMLFieldOperatorValue(PATTERN_TYPE, "and", Collections.singletonList(new KiePMMLOperatorValue(OPERATOR.GREATER_THAN, 85)), null));
+        List<KiePMMLFieldOperatorValue> orConstraints = Arrays.asList(new KiePMMLFieldOperatorValue(PATTERN_TYPE, BOOLEAN_OPERATOR.OR, Collections.singletonList(new KiePMMLOperatorValue(OPERATOR.LESS_THAN, 35)), null),
+                                                                      new KiePMMLFieldOperatorValue(PATTERN_TYPE, BOOLEAN_OPERATOR.AND, Collections.singletonList(new KiePMMLOperatorValue(OPERATOR.GREATER_THAN, 85)), null));
         KiePMMLDroolsRule rule = KiePMMLDroolsRule.builder(RULE_NAME, STATUS_TO_SET, Collections.emptyList())
                 .withOrConstraints(orConstraints)
                 .build();

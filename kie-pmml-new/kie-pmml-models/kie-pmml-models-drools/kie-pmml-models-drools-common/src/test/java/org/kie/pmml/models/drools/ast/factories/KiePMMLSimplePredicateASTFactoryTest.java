@@ -26,6 +26,7 @@ import org.dmg.pmml.DataType;
 import org.dmg.pmml.SimplePredicate;
 import org.junit.Test;
 import org.kie.pmml.commons.enums.ResultCode;
+import org.kie.pmml.commons.model.enums.BOOLEAN_OPERATOR;
 import org.kie.pmml.models.drools.ast.KiePMMLDroolsRule;
 import org.kie.pmml.models.drools.ast.KiePMMLFieldOperatorValue;
 import org.kie.pmml.models.drools.tuples.KiePMMLOriginalTypeGeneratedType;
@@ -81,7 +82,7 @@ public class KiePMMLSimplePredicateASTFactoryTest {
         assertEquals(1, retrieved.getAndConstraints().size());
         KiePMMLFieldOperatorValue kiePMMLFieldOperatorValue = retrieved.getAndConstraints().get(0);
         assertEquals("OUTLOOK", kiePMMLFieldOperatorValue.getName());
-        assertEquals("surrogate", kiePMMLFieldOperatorValue.getOperator());
+        assertEquals(BOOLEAN_OPERATOR.SURROGATE, kiePMMLFieldOperatorValue.getOperator());
         assertEquals("value < \"VALUE\"", kiePMMLFieldOperatorValue.getConstraintsAsString());
         assertEquals(result, retrieved.getResult());
         assertEquals(ResultCode.OK, retrieved.getResultCode());
@@ -102,7 +103,7 @@ public class KiePMMLSimplePredicateASTFactoryTest {
         assertEquals(1, retrieved.getNotConstraints().size());
         kiePMMLFieldOperatorValue = retrieved.getNotConstraints().get(0);
         assertEquals("OUTLOOK", kiePMMLFieldOperatorValue.getName());
-        assertEquals("surrogate", kiePMMLFieldOperatorValue.getOperator());
+        assertEquals(BOOLEAN_OPERATOR.SURROGATE, kiePMMLFieldOperatorValue.getOperator());
         assertEquals("value < \"VALUE\"", kiePMMLFieldOperatorValue.getConstraintsAsString());
         assertNull(retrieved.getResult());
         assertNull(retrieved.getResultCode());
@@ -149,7 +150,7 @@ public class KiePMMLSimplePredicateASTFactoryTest {
         assertEquals(1, retrieved.getAndConstraints().size());
         KiePMMLFieldOperatorValue kiePMMLFieldOperatorValue = retrieved.getAndConstraints().get(0);
         assertEquals("OUTLOOK", kiePMMLFieldOperatorValue.getName());
-        assertEquals("surrogate", kiePMMLFieldOperatorValue.getOperator());
+        assertEquals(BOOLEAN_OPERATOR.SURROGATE, kiePMMLFieldOperatorValue.getOperator());
         assertEquals("value < \"VALUE\"", kiePMMLFieldOperatorValue.getConstraintsAsString());
         assertNull(retrieved.getResult());
         assertNull(retrieved.getResultCode());
@@ -170,7 +171,7 @@ public class KiePMMLSimplePredicateASTFactoryTest {
         assertEquals(1, retrieved.getNotConstraints().size());
         kiePMMLFieldOperatorValue = retrieved.getNotConstraints().get(0);
         assertEquals("OUTLOOK", kiePMMLFieldOperatorValue.getName());
-        assertEquals("surrogate", kiePMMLFieldOperatorValue.getOperator());
+        assertEquals(BOOLEAN_OPERATOR.SURROGATE, kiePMMLFieldOperatorValue.getOperator());
         assertEquals("value < \"VALUE\"", kiePMMLFieldOperatorValue.getConstraintsAsString());
         assertNull(retrieved.getResult());
         assertNull(retrieved.getResultCode());
@@ -208,7 +209,7 @@ public class KiePMMLSimplePredicateASTFactoryTest {
         assertEquals(1, andConstraints.size());
         KiePMMLFieldOperatorValue kiePMMLFieldOperatorValue = retrieved.getAndConstraints().get(0);
         assertEquals(declaredType, kiePMMLFieldOperatorValue.getName());
-        assertEquals("and", kiePMMLFieldOperatorValue.getOperator());
+        assertEquals(BOOLEAN_OPERATOR.AND, kiePMMLFieldOperatorValue.getOperator());
         String expectedValue = "value < \"" + simplePredicate.getValue() + "\"";
         assertEquals(expectedValue, kiePMMLFieldOperatorValue.getConstraintsAsString());
     }
@@ -245,7 +246,7 @@ public class KiePMMLSimplePredicateASTFactoryTest {
         assertEquals(1, andConstraints.size());
         KiePMMLFieldOperatorValue kiePMMLFieldOperatorValue = retrieved.getAndConstraints().get(0);
         assertEquals(declaredType, kiePMMLFieldOperatorValue.getName());
-        assertEquals("and", kiePMMLFieldOperatorValue.getOperator());
+        assertEquals(BOOLEAN_OPERATOR.AND, kiePMMLFieldOperatorValue.getOperator());
         String expectedValue = "value < \"" + simplePredicate.getValue() + "\"";
         assertEquals(expectedValue, kiePMMLFieldOperatorValue.getConstraintsAsString());
     }
