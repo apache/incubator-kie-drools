@@ -25,19 +25,21 @@ import org.dmg.pmml.scorecard.Attribute;
 import org.dmg.pmml.scorecard.Characteristic;
 import org.dmg.pmml.scorecard.Characteristics;
 import org.drools.core.util.StringUtils;
+import org.kie.pmml.commons.exceptions.KiePMMLException;
 import org.kie.pmml.commons.model.KiePMMLOutputField;
 import org.kie.pmml.commons.model.enums.DATA_TYPE;
+import org.kie.pmml.models.drools.scorecard.model.enums.REASONCODE_ALGORITHM;
 import org.kie.pmml.models.drools.ast.KiePMMLDroolsRule;
 import org.kie.pmml.models.drools.ast.factories.KiePMMLAbstractModelASTFactory;
 import org.kie.pmml.models.drools.ast.factories.KiePMMLPredicateASTFactory;
 import org.kie.pmml.models.drools.ast.factories.PredicateASTFactoryData;
 import org.kie.pmml.models.drools.tuples.KiePMMLOriginalTypeGeneratedType;
+import org.kie.pmml.models.drools.tuples.KiePMMLReasonCodeAndValue;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import static org.kie.pmml.commons.Constants.DONE;
 import static org.kie.pmml.models.drools.ast.factories.KiePMMLAbstractModelASTFactory.PATH_PATTERN;
-import static org.kie.pmml.models.drools.commons.utils.KiePMMLDroolsModelUtils.getCorrectlyFormattedResult;
 
 /**
  * Class used to generate <code>KiePMMLDroolsRule</code>s out of a <code>Characteristic</code>
@@ -49,6 +51,9 @@ public class KiePMMLScorecardModelCharacteristicASTFactory {
     private final Map<String, KiePMMLOriginalTypeGeneratedType> fieldTypeMap;
     private final List<KiePMMLOutputField> outputFields;
     private final DATA_TYPE targetType;
+    private boolean useReasonCodes = false;
+    private Number baselineScore;
+    private REASONCODE_ALGORITHM reasonCodeAlgorithm;
 
     private KiePMMLScorecardModelCharacteristicASTFactory(final Map<String, KiePMMLOriginalTypeGeneratedType> fieldTypeMap, final List<KiePMMLOutputField> outputFields, final DATA_TYPE targetType) {
         this.fieldTypeMap = fieldTypeMap;
@@ -58,6 +63,13 @@ public class KiePMMLScorecardModelCharacteristicASTFactory {
 
     public static KiePMMLScorecardModelCharacteristicASTFactory factory(final Map<String, KiePMMLOriginalTypeGeneratedType> fieldTypeMap, final List<KiePMMLOutputField> outputFields, final DATA_TYPE targetType) {
         return new KiePMMLScorecardModelCharacteristicASTFactory(fieldTypeMap, outputFields, targetType);
+    }
+
+    public KiePMMLScorecardModelCharacteristicASTFactory withReasonCodes(Number baselineScore, REASONCODE_ALGORITHM reasonCodeAlgorithm) {
+        this.useReasonCodes = true;
+        this.baselineScore = baselineScore;
+        this.reasonCodeAlgorithm = reasonCodeAlgorithm;
+        return this;
     }
 
     public List<KiePMMLDroolsRule> declareRulesFromCharacteristics(final Characteristics characteristics, final String parentPath, Number initialScore) {
@@ -91,7 +103,7 @@ public class KiePMMLScorecardModelCharacteristicASTFactory {
         String currentRule = String.format(PATH_PATTERN, parentPath, characteristic.getName());
         final List<Attribute> attributes = characteristic.getAttributes();
         for (int i = 0; i < attributes.size(); i++) {
-            declareRuleFromAttribute(attributes.get(i), currentRule, i, rules, statusToSet, isLastCharacteristic);
+            declareRuleFromAttribute(attributes.get(i), currentRule, i, rules, statusToSet, characteristic.getReasonCode(), characteristic.getBaselineScore(), isLastCharacteristic);
         }
     }
 
@@ -99,6 +111,8 @@ public class KiePMMLScorecardModelCharacteristicASTFactory {
                                             final int attributeIndex,
                                             final List<KiePMMLDroolsRule> rules,
                                             final String statusToSet,
+                                            final String characteristicReasonCode,
+                                            final Number characteristicBaselineScore,
                                             final boolean isLastCharacteristic) {
         logger.trace("declareRuleFromAttribute {} {}", attribute, parentPath);
         final Predicate predicate = attribute.getPredicate();
@@ -109,7 +123,34 @@ public class KiePMMLScorecardModelCharacteristicASTFactory {
             return;
         }
         String currentRule = String.format(PATH_PATTERN, parentPath, attributeIndex);
+        KiePMMLReasonCodeAndValue reasonCodeAndValue = getKiePMMLReasonCodeAndValue(attribute, characteristicReasonCode, characteristicBaselineScore);
         PredicateASTFactoryData predicateASTFactoryData = new PredicateASTFactoryData(predicate, outputFields, rules, parentPath, currentRule, fieldTypeMap);
-        KiePMMLPredicateASTFactory.factory(predicateASTFactoryData).declareRuleFromPredicate((Number) getCorrectlyFormattedResult(attribute.getPartialScore(), targetType), statusToSet, isLastCharacteristic);
+        KiePMMLPredicateASTFactory.factory(predicateASTFactoryData).declareRuleFromPredicate(attribute.getPartialScore(), statusToSet, reasonCodeAndValue, isLastCharacteristic);
+    }
+
+    protected KiePMMLReasonCodeAndValue getKiePMMLReasonCodeAndValue(final Attribute attribute,
+                                                                     final String characteristicReasonCode,
+                                                                     final Number characteristicBaselineScore) {
+        if (!useReasonCodes) {
+            return null;
+        }
+        if (characteristicBaselineScore == null && baselineScore == null) {
+            throw new KiePMMLException("Missing default and characteristic defined baselineScore needed for useReasonCodes == true");
+        }
+        if (reasonCodeAlgorithm == null) {
+            throw new KiePMMLException("Missing reasonCodeAlgorithm needed for useReasonCodes == true");
+        }
+        String reasonCode = attribute.getReasonCode() != null && !(attribute.getReasonCode().isEmpty()) ? attribute.getReasonCode() : characteristicReasonCode;
+        if (reasonCode == null || reasonCode.isEmpty()) {
+            throw new KiePMMLException("Missing reasonCode needed for useReasonCodes == true");
+        }
+        double baseLineScoreToUse = characteristicBaselineScore != null ? characteristicBaselineScore.doubleValue() : baselineScore.doubleValue();
+        double partialScoreToUse = attribute.getPartialScore() != null ? attribute.getPartialScore().doubleValue() : 0.0;
+        if (REASONCODE_ALGORITHM.POINTS_BELOW.equals(reasonCodeAlgorithm)) {
+            baseLineScoreToUse = baseLineScoreToUse - partialScoreToUse;
+        } else {
+            baseLineScoreToUse = partialScoreToUse - baseLineScoreToUse;
+        }
+        return new KiePMMLReasonCodeAndValue(reasonCode, baseLineScoreToUse);
     }
 }

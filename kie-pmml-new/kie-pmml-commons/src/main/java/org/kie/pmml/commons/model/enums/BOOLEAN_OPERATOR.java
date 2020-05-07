@@ -41,7 +41,7 @@ public enum BOOLEAN_OPERATOR {
         return Arrays.stream(BOOLEAN_OPERATOR.values())
                 .filter(value -> name.equals(value.name))
                 .findFirst()
-                .orElseThrow(() -> new KieEnumException("Failed to find MODEL_TYPE with name: " + name));
+                .orElseThrow(() -> new KieEnumException("Failed to find BOOLEAN_OPERATOR with name: " + name));
     }
 
     public String getName() {

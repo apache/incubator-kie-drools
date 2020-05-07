@@ -24,6 +24,7 @@ import java.util.stream.Collectors;
 import org.dmg.pmml.SimpleSetPredicate;
 import org.drools.core.util.StringUtils;
 import org.kie.pmml.models.drools.ast.KiePMMLDroolsRule;
+import org.kie.pmml.models.drools.tuples.KiePMMLReasonCodeAndValue;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -48,10 +49,14 @@ public class KiePMMLSimpleSetPredicateASTFactory extends KiePMMLAbstractPredicat
 
     public void declareRuleFromSimpleSetPredicate(final Number toAccumulate,
                                                   final String statusToSet,
+                                                  final KiePMMLReasonCodeAndValue reasonCodeAndValue,
                                                   final boolean isLastCharacteristic) {
         logger.trace("declareRuleFromSimpleSetPredicate {} {} {}", toAccumulate, statusToSet, isLastCharacteristic);
         KiePMMLDroolsRule.Builder builder = getBuilderForSimpleSetPredicate(statusToSet)
                 .withAccumulation(toAccumulate);
+        if (reasonCodeAndValue != null) {
+            builder = builder.withReasonCodeAndValue(reasonCodeAndValue);
+        }
         KiePMMLSimpleSetPredicateWithAccumulationASTFactory.declareRuleFromSimpleSetPredicate(builder, predicateASTFactoryData.getRules(), isLastCharacteristic);
     }
 

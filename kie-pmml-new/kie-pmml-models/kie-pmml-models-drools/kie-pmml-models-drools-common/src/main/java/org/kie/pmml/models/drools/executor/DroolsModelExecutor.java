@@ -23,9 +23,9 @@ public abstract class DroolsModelExecutor implements PMMLModelExecutor {
         if (!(model instanceof KiePMMLDroolsModel)) {
             throw new KiePMMLModelException("Expected a KiePMMLDroolsModel, received a " + model.getClass().getName());
         }
-        final KiePMMLDroolsModel drooledModel = (KiePMMLDroolsModel) model;
+        final KiePMMLDroolsModel droolsModel = (KiePMMLDroolsModel) model;
         final Map<String, Object> requestData = getUnwrappedParametersMap(pmmlContext.getRequestData().getMappedRequestParams());
-        return (PMML4Result) drooledModel.evaluate(requestData);
+        return (PMML4Result) droolsModel.evaluate(requestData);
     }
 
 }

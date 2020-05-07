@@ -32,6 +32,9 @@
     </MiningSchema>
     <Output>
       <OutputField name="calculatedScore" displayName="Final Score" dataType="double" feature="predictedValue" targetField="overallScore"/>
+      <OutputField name="Reason Code 1" rank="1" feature="reasonCode" dataType="string" optype="categorical"/>
+      <OutputField name="Reason Code 2" rank="2" feature="reasonCode" dataType="string" optype="categorical"/>
+      <OutputField name="Reason Code 3" rank="3" feature="reasonCode" dataType="string" optype="categorical"/>
     </Output>
     <Characteristics>
       <Characteristic name="AgeScore" baselineScore="0.0" reasonCode="ABZ">

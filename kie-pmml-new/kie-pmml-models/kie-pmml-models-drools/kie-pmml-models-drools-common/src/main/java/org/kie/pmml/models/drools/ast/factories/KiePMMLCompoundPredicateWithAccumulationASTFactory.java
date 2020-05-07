@@ -23,6 +23,7 @@ import org.dmg.pmml.Predicate;
 import org.dmg.pmml.SimplePredicate;
 import org.kie.pmml.commons.enums.ResultCode;
 import org.kie.pmml.models.drools.ast.KiePMMLDroolsRule;
+import org.kie.pmml.models.drools.tuples.KiePMMLReasonCodeAndValue;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -40,12 +41,14 @@ public class KiePMMLCompoundPredicateWithAccumulationASTFactory {
      * @param agendaActivationGroup
      * @param toAccumulate
      * @param statusToSet
+     * @param reasonCodeAndValue
      * @param isLastCharacteristic
      */
     public static void declareRuleFromCompoundPredicateSurrogate(final PredicateASTFactoryData predicateASTFactoryData,
                                                                  final String agendaActivationGroup,
                                                                  final Number toAccumulate,
                                                                  final String statusToSet,
+                                                                 final KiePMMLReasonCodeAndValue reasonCodeAndValue,
                                                                  final boolean isLastCharacteristic) {
         logger.trace("declareRuleFromCompoundPredicateSurrogate {} {} {} {} {}", predicateASTFactoryData, agendaActivationGroup, toAccumulate, statusToSet, isLastCharacteristic);
         // Managing only SimplePredicates for the moment being
@@ -54,7 +57,7 @@ public class KiePMMLCompoundPredicateWithAccumulationASTFactory {
         simplePredicates.forEach(predicate -> {
             SimplePredicate simplePredicate = (SimplePredicate) predicate;
             PredicateASTFactoryData newPredicateASTFactoryData = predicateASTFactoryData.cloneWithPredicate(simplePredicate);
-            KiePMMLSimplePredicateASTFactory.factory(newPredicateASTFactoryData).declareRuleFromSimplePredicateSurrogate(agendaActivationGroup, toAccumulate, statusToSet, isLastCharacteristic);
+            KiePMMLSimplePredicateASTFactory.factory(newPredicateASTFactoryData).declareRuleFromSimplePredicateSurrogate(agendaActivationGroup, toAccumulate, statusToSet, reasonCodeAndValue, isLastCharacteristic);
         });
     }
 
@@ -63,15 +66,20 @@ public class KiePMMLCompoundPredicateWithAccumulationASTFactory {
      * <XOR>XOR</XOR>. Throws exception otherwise
      * @param builder
      * @param rules
+     * @param reasonCodeAndValue
      * @param isLastCharacteristic
      */
     public static void declareRuleFromCompoundPredicateAndOrXor(KiePMMLDroolsRule.Builder builder,
                                                                 final List<KiePMMLDroolsRule> rules,
+                                                                final KiePMMLReasonCodeAndValue reasonCodeAndValue,
                                                                 boolean isLastCharacteristic) {
         logger.trace("declareRuleFromCompoundPredicateAndOrXor {} {} {}", builder, rules, isLastCharacteristic);
         if (isLastCharacteristic) {
             builder = builder.withAccumulationResult(true)
                     .withResultCode(ResultCode.OK);
+        }
+        if (reasonCodeAndValue != null) {
+            builder = builder.withReasonCodeAndValue(reasonCodeAndValue);
         }
         rules.add(builder.build());
     }
