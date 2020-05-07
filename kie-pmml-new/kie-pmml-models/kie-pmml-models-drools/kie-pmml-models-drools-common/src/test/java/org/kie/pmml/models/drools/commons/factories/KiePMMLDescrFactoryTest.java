@@ -28,6 +28,8 @@ import org.drools.compiler.lang.descr.PackageDescr;
 import org.drools.compiler.lang.descr.RuleDescr;
 import org.junit.Test;
 import org.kie.api.pmml.PMML4Result;
+import org.kie.pmml.commons.model.enums.BOOLEAN_OPERATOR;
+import org.kie.pmml.commons.model.enums.OPERATOR;
 import org.kie.pmml.models.drools.ast.KiePMMLDroolsAST;
 import org.kie.pmml.models.drools.ast.KiePMMLDroolsRule;
 import org.kie.pmml.models.drools.ast.KiePMMLDroolsType;
@@ -37,6 +39,8 @@ import org.kie.pmml.models.drools.tuples.KiePMMLOperatorValue;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
+import static org.kie.pmml.models.drools.commons.factories.KiePMMLDescrFactory.OUTPUTFIELDS_MAP;
+import static org.kie.pmml.models.drools.commons.factories.KiePMMLDescrFactory.OUTPUTFIELDS_MAP_IDENTIFIER;
 import static org.kie.pmml.models.drools.commons.factories.KiePMMLDescrFactory.PMML4_RESULT;
 import static org.kie.pmml.models.drools.commons.factories.KiePMMLDescrFactory.PMML4_RESULT_IDENTIFIER;
 
@@ -52,8 +56,8 @@ public class KiePMMLDescrFactoryTest {
         List<KiePMMLDroolsType> types = new ArrayList<>();
         types.add(KiePMMLDescrTestUtils.getDroolsType());
         types.add(KiePMMLDescrTestUtils.getDottedDroolsType());
-        List<KiePMMLFieldOperatorValue> orConstraints = Arrays.asList(new KiePMMLFieldOperatorValue(PATTERN_TYPE, "or", Collections.singletonList(new KiePMMLOperatorValue("<", 35)), null),
-                                                                      new KiePMMLFieldOperatorValue(PATTERN_TYPE, "and", Collections.singletonList(new KiePMMLOperatorValue(">", 85)), null));
+        List<KiePMMLFieldOperatorValue> orConstraints = Arrays.asList(new KiePMMLFieldOperatorValue(PATTERN_TYPE, BOOLEAN_OPERATOR.OR, Collections.singletonList(new KiePMMLOperatorValue(OPERATOR.LESS_THAN, 35)), null),
+                                                                      new KiePMMLFieldOperatorValue(PATTERN_TYPE, BOOLEAN_OPERATOR.AND, Collections.singletonList(new KiePMMLOperatorValue(OPERATOR.GREATER_THAN, 85)), null));
         KiePMMLDroolsRule rule = KiePMMLDroolsRule.builder(RULE_NAME, STATUS_TO_SET, Collections.emptyList())
                 .withOrConstraints(orConstraints)
                 .build();
@@ -68,7 +72,7 @@ public class KiePMMLDescrFactoryTest {
     }
 
     private void checkImports(List<ImportDescr> toCheck) {
-        assertEquals(3, toCheck.size());
+        assertEquals(4, toCheck.size());
         List<String> expectedImports = Arrays.asList(KiePMMLStatusHolder.class.getName(),
                                                      SimplePredicate.class.getName(),
                                                      PMML4Result.class.getName());
@@ -78,10 +82,13 @@ public class KiePMMLDescrFactoryTest {
     }
 
     private void checkGlobals(List<GlobalDescr> toCheck) {
-        assertEquals(1, toCheck.size());
+        assertEquals(2, toCheck.size());
         GlobalDescr retrieved = toCheck.get(0);
         assertEquals(PMML4_RESULT_IDENTIFIER, retrieved.getIdentifier());
         assertEquals(PMML4_RESULT, retrieved.getType());
+        retrieved = toCheck.get(1);
+        assertEquals(OUTPUTFIELDS_MAP_IDENTIFIER, retrieved.getIdentifier());
+        assertEquals(OUTPUTFIELDS_MAP, retrieved.getType());
     }
 
     private void checkRules(List<RuleDescr> toCheck) {

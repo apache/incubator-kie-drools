@@ -45,7 +45,7 @@ public enum OPERATOR {
         return Arrays.stream(OPERATOR.values())
                 .filter(value -> name.equals(value.name))
                 .findFirst()
-                .orElseThrow(() -> new KieEnumException("Failed to find MODEL_TYPE with name: " + name));
+                .orElseThrow(() -> new KieEnumException("Failed to find OPERATOR with name: " + name));
     }
 
     public String getName() {

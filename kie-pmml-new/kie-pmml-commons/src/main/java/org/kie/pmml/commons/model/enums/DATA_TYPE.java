@@ -25,6 +25,8 @@ import java.util.Objects;
 import org.kie.pmml.commons.exceptions.KieDataFieldException;
 import org.kie.pmml.commons.exceptions.KieEnumException;
 
+import static org.kie.pmml.commons.utils.PrimitiveBoxedUtils.areSameWithBoxing;
+
 /**
  * @see <a href=http://dmg.org/pmml/v4-4/DataDictionary.html#xsdType_DATATYPE>DATATYPE</a>
  */
@@ -71,6 +73,14 @@ public enum DATA_TYPE {
         return mappedClass;
     }
 
+    /**
+     * This method convert a <b>raw</b> object value to the correct type as defined
+     * in the original <code>DataDictionary</code>.
+     * Needed for example when an <b>unmarshalled</b> <code>Predicate</code> expose a field' value as <code>String</code>
+     * while the value' type is defined as <code>double</code> in the <code>DataField</code>definition.
+     * @param rawValue
+     * @return
+     */
     public Object getActualValue(Object rawValue) {
         if (mappedClass.isAssignableFrom(rawValue.getClass())) {
             // No cast/transformation needed
@@ -111,15 +121,9 @@ public enum DATA_TYPE {
                 throw new KieDataFieldException("Fail to convert " + rawValue + "[" + rawValue.getClass().getName() + "] to expected class " + mappedClass.getName(), e);
             }
         }
-        if (!rawValue.getClass().isPrimitive()) {
-            try {
-                if (mappedClass.equals(rawValue.getClass().getField("TYPE").get(null))) {
-                    // No cast/transformation needed
-                    return rawValue;
-                }
-            } catch (Exception e) {
-                throw new KieDataFieldException("Unexpected " + rawValue + "[" + rawValue.getClass().getName() + "] to convert");
-            }
+        if (areSameWithBoxing(mappedClass, rawValue.getClass())) {
+            // No cast/transformation needed
+            return rawValue;
         }
         throw new KieDataFieldException("Unexpected " + rawValue + "[" + rawValue.getClass().getName() + "] to convert");
     }

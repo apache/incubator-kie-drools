@@ -27,8 +27,6 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
 
-//import org.kie.pmml.models.regression.model.KiePMMLRegressionTable;
-
 public class RegressionModelImplementationProviderTest {
 
     private final static RegressionModelImplementationProvider PROVIDER = new RegressionModelImplementationProvider();
@@ -48,7 +46,8 @@ public class RegressionModelImplementationProviderTest {
         assertNotNull(pmml);
         assertEquals(1, pmml.getModels().size());
         assertTrue(pmml.getModels().get(0) instanceof RegressionModel);
-        commonVerifyKiePMMLRegressionModel(PROVIDER.getKiePMMLModel(pmml.getDataDictionary(), (RegressionModel) pmml.getModels().get(0), RELEASE_ID));
+        final KiePMMLRegressionModel kiePMMLModel = PROVIDER.getKiePMMLModel(pmml.getDataDictionary(), (RegressionModel) pmml.getModels().get(0), RELEASE_ID);
+        assertNotNull(kiePMMLModel);
     }
 
     @Test
@@ -68,65 +67,4 @@ public class RegressionModelImplementationProviderTest {
         assertTrue(pmml.getModels().get(0) instanceof RegressionModel);
         PROVIDER.validate(pmml.getDataDictionary(), (RegressionModel) pmml.getModels().get(0));
     }
-
-    private void commonVerifyKiePMMLRegressionModel(KiePMMLRegressionModel retrieved) {
-//        assertNotNull(retrieved);
-//        assertEquals(MINING_FUNCTION.REGRESSION, retrieved.getMiningFunction());
-//        assertTrue(retrieved.getAlgorithmName().isPresent());
-//        assertEquals("linearRegression", retrieved.getAlgorithmName().get());
-//        assertFalse(retrieved.getModelType().isPresent());
-//        assertEquals("number_of_claims", retrieved.getTargetField());
-//        assertEquals(OP_TYPE.CONTINUOUS, retrieved.getTargetOpType());
-//        assertEquals(REGRESSION_NORMALIZATION_METHOD.NONE, retrieved.getRegressionNormalizationMethod());
-//        assertTrue(retrieved.isScorable());
-//        assertTrue(retrieved.isRegression());
-//        assertEquals(1, retrieved.getRegressionTables().size());
-//        commonVerifyKiePMMLRegressionTable(retrieved.getRegressionTables().get(0));
-    }
-
-//    private void commonVerifyKiePMMLRegressionTable(KiePMMLRegressionTable retrieved) {
-//        assertNotNull(retrieved);
-//        assertEquals(132.37, retrieved.getIntercept());
-//        assertFalse(retrieved.getTargetCategory().isPresent());
-//        assertTrue(retrieved.getNumericPredictors().isPresent());
-//        assertEquals(2, retrieved.getNumericPredictors().get().size());
-//        assertTrue(retrieved.getCategoricalPredictors().isPresent());
-//        assertEquals(2, retrieved.getCategoricalPredictors().get().size());
-//        commonVerifyNumericPredictors(retrieved, "age", 1, 7.1);
-//        commonVerifyNumericPredictors(retrieved, "salary", 1, 0.01);
-//        commonVerifyCategoricalPredictors(retrieved, "car_location");
-//    }
-
-//    private void commonVerifyNumericPredictors(KiePMMLRegressionTable retrieved, String name, int exponent, double coefficient) {
-//        final Optional<KiePMMLNumericPredictor> optionalPredictor = retrieved.getKiePMMLNumericPredictorByName(name);
-//        assertTrue(optionalPredictor.isPresent());
-//        commonVerifyNumericPredictor(optionalPredictor.get(), name, exponent, coefficient);
-//    }
-
-//    private void commonVerifyNumericPredictor(KiePMMLNumericPredictor retrieved, String name, int exponent, double coefficient) {
-//        assertEquals(name, retrieved.getName());
-//        assertEquals(exponent, retrieved.getExponent());
-//        assertEquals(coefficient, retrieved.getCoefficient());
-//    }
-
-//    private void commonVerifyCategoricalPredictors(KiePMMLRegressionTable retrieved, String name) {
-//        List<KiePMMLCategoricalPredictor> predictors = new ArrayList<>();
-//        retrieved.getKiePMMLCategoricalPredictorByNameAndValue(name, "carpark").ifPresent(predictors::add);
-//        retrieved.getKiePMMLCategoricalPredictorByNameAndValue(name, "street").ifPresent(predictors::add);
-//        assertEquals(2, predictors.size());
-//        commonVerifyCategoricalPredictors(predictors, name, "carpark", 41.1);
-//        commonVerifyCategoricalPredictors(predictors, name, "street", 325.03);
-//    }
-
-//    private void commonVerifyCategoricalPredictors(List<KiePMMLCategoricalPredictor> predictors, String name, Object value, double coefficient) {
-//        final Optional<KiePMMLCategoricalPredictor> retrieved = predictors.stream().filter(predictor -> value.equals(predictor.getValue())).findFirst();
-//        assertTrue(retrieved.isPresent());
-//        commonVerifyCategoricalPredictor(retrieved.get(), name, value, coefficient);
-//    }
-//
-//    private void commonVerifyCategoricalPredictor(KiePMMLCategoricalPredictor retrieved, String name, Object value, double coefficient) {
-//        assertEquals(name, retrieved.getName());
-//        assertEquals(value, retrieved.getValue());
-//        assertEquals(coefficient, retrieved.getCoefficient());
-//    }
 }

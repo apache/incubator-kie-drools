@@ -20,6 +20,7 @@ import java.util.List;
 import java.util.Objects;
 import java.util.stream.Collectors;
 
+import org.kie.pmml.commons.model.enums.BOOLEAN_OPERATOR;
 import org.kie.pmml.models.drools.tuples.KiePMMLOperatorValue;
 
 /**
@@ -30,7 +31,7 @@ public class KiePMMLFieldOperatorValue {
     public static final String NO_FIELD_CONSTRAINT_PATTERN = "(%s)";
     public static final String FIELD_CONSTRAINT_PATTERN = " %s " + NO_FIELD_CONSTRAINT_PATTERN;
     private final String name;
-    private final String operator;
+    private final BOOLEAN_OPERATOR operator;
     private final List<KiePMMLOperatorValue> kiePMMLOperatorValues;
     private final List<KiePMMLFieldOperatorValue> nestedKiePMMLFieldOperatorValues;
     private final String constraintsString;
@@ -41,9 +42,9 @@ public class KiePMMLFieldOperatorValue {
      * @param kiePMMLOperatorValues the inner <code>List&lt;KiePMMLOperatorValue&gt;</code>
      * @param nestedKiePMMLFieldOperatorValues the nested <code>List&lt;KiePMMLFieldOperatorValue&gt;</code>s
      */
-    public KiePMMLFieldOperatorValue(final String name, final String operator, final List<KiePMMLOperatorValue> kiePMMLOperatorValues, final List<KiePMMLFieldOperatorValue> nestedKiePMMLFieldOperatorValues) {
+    public KiePMMLFieldOperatorValue(final String name, final BOOLEAN_OPERATOR operator, final List<KiePMMLOperatorValue> kiePMMLOperatorValues, final List<KiePMMLFieldOperatorValue> nestedKiePMMLFieldOperatorValues) {
         this.name = name;
-        this.operator = operator != null ? operator : "";
+        this.operator = operator;
         this.kiePMMLOperatorValues = kiePMMLOperatorValues;
         this.nestedKiePMMLFieldOperatorValues = nestedKiePMMLFieldOperatorValues;
         constraintsString = buildConstraintsString();
@@ -53,7 +54,7 @@ public class KiePMMLFieldOperatorValue {
         return name;
     }
 
-    public String getOperator() {
+    public BOOLEAN_OPERATOR getOperator() {
         return operator;
     }
 
@@ -63,6 +64,10 @@ public class KiePMMLFieldOperatorValue {
 
     public List<KiePMMLFieldOperatorValue> getNestedKiePMMLFieldOperatorValues() {
         return nestedKiePMMLFieldOperatorValues != null ? Collections.unmodifiableList(nestedKiePMMLFieldOperatorValues) : null;
+    }
+
+    public List<KiePMMLOperatorValue> getKiePMMLOperatorValues() {
+        return kiePMMLOperatorValues;
     }
 
     @Override
@@ -96,6 +101,7 @@ public class KiePMMLFieldOperatorValue {
     }
 
     protected String buildConstraintsString() {
-        return kiePMMLOperatorValues.stream().map(KiePMMLOperatorValue::getConstraintsAsString).collect(Collectors.joining(" " + operator + " "));
+        String operatorString = operator != null ? operator.getCustomOperator() : "";
+        return kiePMMLOperatorValues.stream().map(KiePMMLOperatorValue::getConstraintsAsString).collect(Collectors.joining(" " + operatorString + " "));
     }
 }

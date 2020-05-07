@@ -19,6 +19,7 @@ import org.dmg.pmml.CompoundPredicate;
 import org.dmg.pmml.SimplePredicate;
 import org.dmg.pmml.SimpleSetPredicate;
 import org.dmg.pmml.True;
+import org.kie.pmml.models.drools.tuples.KiePMMLReasonCodeAndValue;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -49,23 +50,26 @@ public class KiePMMLPredicateASTFactory extends KiePMMLAbstractPredicateASTFacto
      * <p>3) @see <a href="http://dmg.org/pmml/v4-4/TreeModel.html#xsdElement_CompoundPredicate">CompoundPredicate</a><p>
      * <p>4) @see <a href="http://dmg.org/pmml/v4-4/TreeModel.html#xsdElement_SimpleSetPredicate">SimpleSetPredicate</a><p>
      * @param toAccumulate
+     * @param statusToSet
+     * @param reasonCodeAndValue
      * @param isLastCharacteristic
      */
     public void declareRuleFromPredicate(final Number toAccumulate,
                                          final String statusToSet,
+                                         final KiePMMLReasonCodeAndValue reasonCodeAndValue,
                                          final boolean isLastCharacteristic) {
         logger.trace("declareRuleFromPredicate {} {} {} {} {}", predicateASTFactoryData.getPredicate(), predicateASTFactoryData.getParentPath(), predicateASTFactoryData.getCurrentRule(), toAccumulate, isLastCharacteristic);
         if (predicateASTFactoryData.getPredicate() instanceof True) {
             KiePMMLTruePredicateASTFactory.factory(predicateASTFactoryData)
-                    .declareRuleFromTruePredicateWithAccumulation(statusToSet, isLastCharacteristic);
+                    .declareRuleFromTruePredicateWithAccumulation(toAccumulate, statusToSet, reasonCodeAndValue, isLastCharacteristic);
         } else if (predicateASTFactoryData.getPredicate() instanceof SimplePredicate) {
             KiePMMLSimplePredicateASTFactory.factory(predicateASTFactoryData)
-                    .declareRuleFromSimplePredicate(toAccumulate, statusToSet, isLastCharacteristic);
+                    .declareRuleFromSimplePredicate(toAccumulate, statusToSet, reasonCodeAndValue, isLastCharacteristic);
         } else if (predicateASTFactoryData.getPredicate() instanceof SimpleSetPredicate) {
             KiePMMLSimpleSetPredicateASTFactory.factory(predicateASTFactoryData)
-                    .declareRuleFromSimpleSetPredicate(toAccumulate, statusToSet, isLastCharacteristic);
+                    .declareRuleFromSimpleSetPredicate(toAccumulate, statusToSet, reasonCodeAndValue, isLastCharacteristic);
         } else if (predicateASTFactoryData.getPredicate() instanceof CompoundPredicate) {
-            KiePMMLCompoundPredicateASTFactory.factory(predicateASTFactoryData).declareRuleFromCompoundPredicate(toAccumulate, statusToSet, isLastCharacteristic);
+            KiePMMLCompoundPredicateASTFactory.factory(predicateASTFactoryData).declareRuleFromCompoundPredicate(toAccumulate, statusToSet, reasonCodeAndValue, isLastCharacteristic);
         }
     }
 

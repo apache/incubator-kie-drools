@@ -22,6 +22,7 @@ import org.drools.core.util.StringUtils;
 import org.kie.pmml.commons.exceptions.KiePMMLException;
 import org.kie.pmml.models.drools.ast.KiePMMLDroolsRule;
 import org.kie.pmml.models.drools.ast.KiePMMLFieldOperatorValue;
+import org.kie.pmml.models.drools.tuples.KiePMMLReasonCodeAndValue;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -46,13 +47,14 @@ public class KiePMMLCompoundPredicateASTFactory extends KiePMMLAbstractPredicate
     }
 
     /**
-     *
      * @param toAccumulate
      * @param statusToSet
+     * @param reasonCodeAndValue
      * @param isLastCharacteristic
      */
     public void declareRuleFromCompoundPredicate(final Number toAccumulate,
                                                  final String statusToSet,
+                                                 final KiePMMLReasonCodeAndValue reasonCodeAndValue,
                                                  boolean isLastCharacteristic) {
         logger.trace("declareRuleFromCompoundPredicate {} {} {}", toAccumulate, statusToSet, isLastCharacteristic);
         CompoundPredicate compoundPredicate = (CompoundPredicate) predicateASTFactoryData.getPredicate();
@@ -60,16 +62,16 @@ public class KiePMMLCompoundPredicateASTFactory extends KiePMMLAbstractPredicate
             case SURROGATE:
                 final String agendaActivationGroup = String.format(KiePMMLAbstractModelASTFactory.SURROGATE_GROUP_PATTERN, predicateASTFactoryData.getCurrentRule());
                 declareRuleFromCompoundPredicateSurrogate(agendaActivationGroup, statusToSet);
-                KiePMMLCompoundPredicateWithAccumulationASTFactory.declareRuleFromCompoundPredicateSurrogate(predicateASTFactoryData, agendaActivationGroup, toAccumulate, statusToSet, isLastCharacteristic);
+                KiePMMLCompoundPredicateWithAccumulationASTFactory.declareRuleFromCompoundPredicateSurrogate(predicateASTFactoryData, agendaActivationGroup, toAccumulate, statusToSet, reasonCodeAndValue, isLastCharacteristic);
                 break;
             case AND:
-                declareRuleFromCompoundPredicateAndOrXor(toAccumulate, statusToSet, isLastCharacteristic);
+                declareRuleFromCompoundPredicateAndOrXor(toAccumulate, statusToSet, reasonCodeAndValue, isLastCharacteristic);
                 break;
             case OR:
-                declareRuleFromCompoundPredicateAndOrXor(toAccumulate, statusToSet, isLastCharacteristic);
+                declareRuleFromCompoundPredicateAndOrXor(toAccumulate, statusToSet, reasonCodeAndValue, isLastCharacteristic);
                 break;
             case XOR:
-                declareRuleFromCompoundPredicateAndOrXor(toAccumulate, statusToSet, isLastCharacteristic);
+                declareRuleFromCompoundPredicateAndOrXor(toAccumulate, statusToSet, reasonCodeAndValue, isLastCharacteristic);
                 break;
             default:
                 throw new IllegalStateException(String.format("Unknown CompoundPredicate.booleanOperator %st", compoundPredicate.getBooleanOperator()));
@@ -77,7 +79,6 @@ public class KiePMMLCompoundPredicateASTFactory extends KiePMMLAbstractPredicate
     }
 
     /**
-     *
      * @param result
      * @param isFinalLeaf
      */
@@ -110,21 +111,22 @@ public class KiePMMLCompoundPredicateASTFactory extends KiePMMLAbstractPredicate
      * <XOR>XOR</XOR>. Throws exception otherwise
      * @param toAccumulate
      * @param statusToSet
+     * @param reasonCodeAndValue
      * @param isLastCharacteristic
      */
     private void declareRuleFromCompoundPredicateAndOrXor(final Number toAccumulate,
                                                           final String statusToSet,
+                                                          final KiePMMLReasonCodeAndValue reasonCodeAndValue,
                                                           final boolean isLastCharacteristic) {
         logger.trace("declareRuleFromCompoundPredicateAndOrXor {} {} {}", toAccumulate, statusToSet, isLastCharacteristic);
         KiePMMLDroolsRule.Builder builder = getBuilderForCompoundPredicateAndOrXor(statusToSet)
                 .withAccumulation(toAccumulate);
-        KiePMMLCompoundPredicateWithAccumulationASTFactory.declareRuleFromCompoundPredicateAndOrXor(builder, predicateASTFactoryData.getRules(), isLastCharacteristic);
+        KiePMMLCompoundPredicateWithAccumulationASTFactory.declareRuleFromCompoundPredicateAndOrXor(builder, predicateASTFactoryData.getRules(), reasonCodeAndValue, isLastCharacteristic);
     }
 
     /**
      * Method to be invoked when <b>compoundPredicate.getBooleanOperator()</b> is <code>AND</code>, <code>OR</code> or
      * <XOR>XOR</XOR>. Throws exception otherwise
-     *
      * @param result
      * @param isFinalLeaf
      */
@@ -190,5 +192,4 @@ public class KiePMMLCompoundPredicateASTFactory extends KiePMMLAbstractPredicate
                 .withFocusedAgendaGroup(agendaActivationGroup);
         predicateASTFactoryData.getRules().add(builder.build());
     }
-
 }
