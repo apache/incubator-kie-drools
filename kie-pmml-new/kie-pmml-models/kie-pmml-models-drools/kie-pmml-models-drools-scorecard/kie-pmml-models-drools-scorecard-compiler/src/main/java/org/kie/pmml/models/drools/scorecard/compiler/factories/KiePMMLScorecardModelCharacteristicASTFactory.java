@@ -28,7 +28,7 @@ import org.drools.core.util.StringUtils;
 import org.kie.pmml.commons.exceptions.KiePMMLException;
 import org.kie.pmml.commons.model.KiePMMLOutputField;
 import org.kie.pmml.commons.model.enums.DATA_TYPE;
-import org.kie.pmml.commons.model.enums.REASONCODE_ALGORITHM;
+import org.kie.pmml.models.drools.scorecard.model.enums.REASONCODE_ALGORITHM;
 import org.kie.pmml.models.drools.ast.KiePMMLDroolsRule;
 import org.kie.pmml.models.drools.ast.factories.KiePMMLAbstractModelASTFactory;
 import org.kie.pmml.models.drools.ast.factories.KiePMMLPredicateASTFactory;

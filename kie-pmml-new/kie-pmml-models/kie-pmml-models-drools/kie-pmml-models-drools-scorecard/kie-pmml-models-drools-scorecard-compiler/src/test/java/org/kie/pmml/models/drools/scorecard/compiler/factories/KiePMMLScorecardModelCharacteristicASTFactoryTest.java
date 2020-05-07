@@ -42,7 +42,7 @@ import org.kie.pmml.commons.exceptions.KiePMMLException;
 import org.kie.pmml.commons.model.enums.BOOLEAN_OPERATOR;
 import org.kie.pmml.commons.model.enums.DATA_TYPE;
 import org.kie.pmml.commons.model.enums.OPERATOR;
-import org.kie.pmml.commons.model.enums.REASONCODE_ALGORITHM;
+import org.kie.pmml.models.drools.scorecard.model.enums.REASONCODE_ALGORITHM;
 import org.kie.pmml.compiler.testutils.TestUtils;
 import org.kie.pmml.models.drools.ast.KiePMMLDroolsRule;
 import org.kie.pmml.models.drools.ast.KiePMMLFieldOperatorValue;

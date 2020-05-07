@@ -26,6 +26,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import static org.kie.pmml.commons.Constants.DONE;
+import static org.kie.pmml.commons.model.enums.RESULT_FEATURE.PREDICTED_VALUE;
 
 /**
  * Class used to generate the <b>rhs</b> of a rule (descr) out of a <b>KiePMMLDroolsRule</b>
@@ -117,12 +118,8 @@ public class KiePMMLDescrRhsFactory {
 
     protected void commonDeclareOutputFields(final List<KiePMMLOutputField> outputFields, final Object result, final StringJoiner joiner) {
         outputFields.forEach(kiePMMLOutputField -> {
-            switch (kiePMMLOutputField.getResultFeature()) {
-                case PREDICTED_VALUE:
-                    joiner.add(String.format(ADD_PMML4_OUTPUT_FIELD, kiePMMLOutputField.getName(), result));
-                    break;
-                default:
-                    // Not managed, yet
+            if (PREDICTED_VALUE.equals(kiePMMLOutputField.getResultFeature())) {
+                joiner.add(String.format(ADD_PMML4_OUTPUT_FIELD, kiePMMLOutputField.getName(), result));
             }
         });
     }

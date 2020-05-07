@@ -122,7 +122,8 @@ public class KiePMMLASTFactoryUtilsTest {
         compoundPredicate.setBooleanOperator(CompoundPredicate.BooleanOperator.XOR);
         List<Predicate> predicates = IntStream.range(0, 2).mapToObj(index -> simplePredicates.get(index)).collect(Collectors.toList());
         compoundPredicate.getPredicates().addAll(predicates);
-        List<KiePMMLFieldOperatorValue> retrieved = KiePMMLASTFactoryUtils.getConstraintEntriesFromXOrCompoundPredicate(compoundPredicate, fieldTypeMap);
+        List<KiePMMLFieldOperatorValue> retrieved = KiePMMLASTFactoryUtils
+                .getConstraintEntriesFromXOrCompoundPredicate(compoundPredicate, fieldTypeMap);
         assertNotNull(retrieved);
         assertEquals(predicates.size(), retrieved.size());
         commonVerifyKiePMMLFieldOperatorValueList(retrieved, "");
@@ -148,8 +149,10 @@ public class KiePMMLASTFactoryUtilsTest {
         final Map<String, KiePMMLOriginalTypeGeneratedType> fieldTypeMap = new HashMap<>();
         String fieldName = "FIELD_NAME";
         List<SimplePredicate> simplePredicates = IntStream.range(0, 2)
-                .mapToObj(index -> KiePMMLASTTestUtils.getSimplePredicate(fieldName, DataType.STRING, "VALUE-" + index, SimplePredicate.Operator.LESS_THAN, fieldTypeMap)).collect(Collectors.toList());
-        final KiePMMLFieldOperatorValue retrieved = KiePMMLASTFactoryUtils.getConstraintEntryFromSimplePredicates(fieldName, "or", simplePredicates, fieldTypeMap);
+                .mapToObj(index -> KiePMMLASTTestUtils
+                        .getSimplePredicate(fieldName, DataType.STRING, "VALUE-" + index, SimplePredicate.Operator.LESS_THAN, fieldTypeMap)).collect(Collectors.toList());
+        final KiePMMLFieldOperatorValue retrieved = KiePMMLASTFactoryUtils
+                .getConstraintEntryFromSimplePredicates(fieldName, "or", simplePredicates, fieldTypeMap);
         assertEquals(fieldName, retrieved.getName());
         assertNotNull(retrieved.getConstraintsAsString());
         String expected = "value < \"VALUE-0\" or value < \"VALUE-1\"";
@@ -159,7 +162,8 @@ public class KiePMMLASTFactoryUtilsTest {
     @Test
     public void getXORConstraintEntryFromSimplePredicates() {
         List<Predicate> predicates = new ArrayList<>(simplePredicates);
-        List<KiePMMLFieldOperatorValue> retrieved = KiePMMLASTFactoryUtils.getXORConstraintEntryFromSimplePredicates(predicates, fieldTypeMap);
+        List<KiePMMLFieldOperatorValue> retrieved = KiePMMLASTFactoryUtils
+                .getXORConstraintEntryFromSimplePredicates(predicates, fieldTypeMap);
         assertNotNull(retrieved);
         assertEquals(simplePredicates.size(), retrieved.size());
         commonVerifyKiePMMLFieldOperatorValueList(retrieved, "");

@@ -22,7 +22,7 @@ import org.dmg.pmml.DataDictionary;
 import org.dmg.pmml.scorecard.Scorecard;
 import org.kie.pmml.commons.model.KiePMMLOutputField;
 import org.kie.pmml.commons.model.enums.DATA_TYPE;
-import org.kie.pmml.commons.model.enums.REASONCODE_ALGORITHM;
+import org.kie.pmml.models.drools.scorecard.model.enums.REASONCODE_ALGORITHM;
 import org.kie.pmml.models.drools.ast.KiePMMLDroolsAST;
 import org.kie.pmml.models.drools.ast.KiePMMLDroolsRule;
 import org.kie.pmml.models.drools.ast.KiePMMLDroolsType;
@@ -36,7 +36,8 @@ import static org.kie.pmml.compiler.commons.factories.KiePMMLOutputFieldFactory.
 import static org.kie.pmml.compiler.commons.utils.ModelUtils.getTargetFieldType;
 
 /**
- * Class used to generate a <code>KiePMMLDroolsAST</code> out of a <code>DataDictionary</code> and a <code>Scorecard</code>
+ * Class used to generate a <code>KiePMMLDroolsAST</code> out of a
+ * <code>DataDictionary</code> and a <code>Scorecard</code>
  */
 public class KiePMMLScorecardModelASTFactory extends KiePMMLAbstractModelASTFactory {
 
@@ -48,7 +49,9 @@ public class KiePMMLScorecardModelASTFactory extends KiePMMLAbstractModelASTFact
 
     /**
      * Returns the <code>KiePMMLDroolsAST</code> built out of the given parameters.
-     * It also <b>populate</b> the <b>fieldNameTypeNameMap</b> with mapping between original field' name and <b>original type/generated type</b> tupla
+     * It also <b>populate</b> the <b>fieldNameTypeNameMap</b> with mapping between
+     * original field' name and <b>original type/generated type</b> tupla
+     *
      * @param dataDictionary
      * @param model
      * @param fieldTypeMap

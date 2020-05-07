@@ -42,7 +42,7 @@ import static org.kie.pmml.models.drools.utils.KiePMMLAgendaListenerUtils.getAge
  */
 public abstract class KiePMMLDroolsModel extends KiePMMLModel {
 
-    private static final Logger logger = LoggerFactory.getLogger(KiePMMLDroolsModel.class.getName());
+    private static final Logger logger = LoggerFactory.getLogger(KiePMMLDroolsModel.class);
 
     private static final AgendaEventListener agendaEventListener = getAgendaEventListener(logger);
 
@@ -70,11 +70,13 @@ public abstract class KiePMMLDroolsModel extends KiePMMLModel {
     @Override
     public Object evaluate(Map<String, Object> requestData) {
         final PMML4Result toReturn = getPMML4Result(targetField);
-        final KiePMMLSessionUtils kiePMMLSessionUtils = KiePMMLSessionUtils.builder(packageDescr, toReturn)
-                .withAgendaEventListener(agendaEventListener)
+        KiePMMLSessionUtils.Builder builder = KiePMMLSessionUtils.builder(packageDescr, toReturn)
                 .withObjectsInSession(requestData, fieldTypeMap)
-                .withOutputFieldsMap(outputFieldsMap)
-                .build();
+                .withOutputFieldsMap(outputFieldsMap);
+        if (logger.isDebugEnabled()) {
+            builder = builder.withAgendaEventListener(agendaEventListener);
+        }
+        final KiePMMLSessionUtils kiePMMLSessionUtils = builder.build();
         kiePMMLSessionUtils.fireAllRules();
         return toReturn;
     }

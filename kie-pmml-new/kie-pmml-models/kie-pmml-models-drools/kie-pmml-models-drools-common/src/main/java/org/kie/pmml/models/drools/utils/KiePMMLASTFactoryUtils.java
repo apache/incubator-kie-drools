@@ -95,7 +95,10 @@ public class KiePMMLASTFactoryUtils {
      * @param fieldTypeMap
      * @return
      */
-    public static KiePMMLFieldOperatorValue getConstraintEntryFromSimplePredicates(final String fieldName, final String containerOperator, final List<SimplePredicate> simplePredicates, final Map<String, KiePMMLOriginalTypeGeneratedType> fieldTypeMap) {
+    public static KiePMMLFieldOperatorValue getConstraintEntryFromSimplePredicates(final String fieldName,
+                                                                                   final String containerOperator,
+                                                                                   final List<SimplePredicate> simplePredicates,
+                                                                                   final Map<String, KiePMMLOriginalTypeGeneratedType> fieldTypeMap) {
         List<KiePMMLOperatorValue> kiePMMLOperatorValues = simplePredicates
                 .stream()
                 .map(simplePredicate -> new KiePMMLOperatorValue(OPERATOR.byName(simplePredicate.getOperator().value()).getOperator(),
@@ -128,7 +131,10 @@ public class KiePMMLASTFactoryUtils {
      * @param predicatesByField
      * @param fieldTypeMap
      */
-    static void populateKiePMMLFieldOperatorValueListWithSimplePredicates(final List<KiePMMLFieldOperatorValue> toPopulate, final CompoundPredicate.BooleanOperator booleanOperator, final Map<String, List<SimplePredicate>> predicatesByField, final Map<String, KiePMMLOriginalTypeGeneratedType> fieldTypeMap) {
+    static void populateKiePMMLFieldOperatorValueListWithSimplePredicates(final List<KiePMMLFieldOperatorValue> toPopulate,
+                                                                          final CompoundPredicate.BooleanOperator booleanOperator,
+                                                                          final Map<String, List<SimplePredicate>> predicatesByField,
+                                                                          final Map<String, KiePMMLOriginalTypeGeneratedType> fieldTypeMap) {
         switch (booleanOperator) {
             case AND:
                 predicatesByField.forEach((fieldName, predicates) -> toPopulate.add(getConstraintEntryFromSimplePredicates(fieldName, "&&", predicates, fieldTypeMap)));
@@ -147,7 +153,9 @@ public class KiePMMLASTFactoryUtils {
      * @param compoundPredicates
      * @param fieldTypeMap
      */
-    static void populateKiePMMLFieldOperatorValueListWithCompoundPredicates(final List<KiePMMLFieldOperatorValue> toPopulate, final List<CompoundPredicate> compoundPredicates, final Map<String, KiePMMLOriginalTypeGeneratedType> fieldTypeMap) {
+    static void populateKiePMMLFieldOperatorValueListWithCompoundPredicates(final List<KiePMMLFieldOperatorValue> toPopulate,
+                                                                            final List<CompoundPredicate> compoundPredicates,
+                                                                            final Map<String, KiePMMLOriginalTypeGeneratedType> fieldTypeMap) {
         final List<KiePMMLFieldOperatorValue> nestedAndPredicates = new LinkedList<>();
         final List<KiePMMLFieldOperatorValue> nestedOrPredicates = new LinkedList<>();
         compoundPredicates.forEach(nestedCompoundPredicate -> {
