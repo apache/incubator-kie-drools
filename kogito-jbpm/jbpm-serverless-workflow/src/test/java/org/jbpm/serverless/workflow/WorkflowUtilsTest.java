@@ -138,10 +138,17 @@ public class WorkflowUtilsTest extends BaseServerlessTest {
     }
 
     @Test
-    public void testConditionScript() {
+    public void testConditionScriptDefaultVar() {
         assertThat(ServerlessWorkflowUtils.conditionScript("$.name", DefaultChoice.Operator.EQUALS, "john")).isNotNull();
         assertThat(ServerlessWorkflowUtils.conditionScript("$.name", DefaultChoice.Operator.EQUALS, "john"))
                 .isEqualTo("return workflowdata.get(\"name\").textValue().equals(\"john\");");
+    }
+
+    @Test
+    public void testConditionScriptCustomVar() {
+        assertThat(ServerlessWorkflowUtils.conditionScript("person.name", DefaultChoice.Operator.EQUALS, "john")).isNotNull();
+        assertThat(ServerlessWorkflowUtils.conditionScript("person.name", DefaultChoice.Operator.EQUALS, "john"))
+                .isEqualTo("return person.get(\"name\").textValue().equals(\"john\");");
     }
 
     @Test

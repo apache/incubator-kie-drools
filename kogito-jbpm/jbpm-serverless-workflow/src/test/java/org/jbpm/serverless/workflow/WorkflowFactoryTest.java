@@ -15,6 +15,7 @@
 
 package org.jbpm.serverless.workflow;
 
+import com.fasterxml.jackson.databind.JsonNode;
 import org.jbpm.process.core.Work;
 import org.jbpm.ruleflow.core.RuleFlowProcess;
 import org.jbpm.serverless.workflow.api.end.End;
@@ -27,6 +28,7 @@ import org.jbpm.workflow.core.node.*;
 import org.junit.jupiter.api.Test;
 
 import java.util.HashMap;
+import java.util.Map;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
@@ -69,6 +71,9 @@ public class WorkflowFactoryTest extends BaseServerlessTest {
         assertThat(startNode.getMetaData().get("TriggerType")).isEqualTo("ConsumeMessage");
         assertThat(startNode.getMetaData().get("TriggerRef")).isEqualTo(eventDefinition.getSource());
         assertThat(startNode.getMetaData().get("MessageType")).isEqualTo("com.fasterxml.jackson.databind.JsonNode");
+
+        assertThat(startNode.getTriggers()).isNotNull();
+        assertThat(startNode.getTriggers().size()).isEqualTo(1);
     }
 
     @Test
@@ -94,7 +99,10 @@ public class WorkflowFactoryTest extends BaseServerlessTest {
         assertThat(endNode.getMetaData().get("TriggerRef")).isEqualTo("sampleSource");
         assertThat(endNode.getMetaData().get("TriggerType")).isEqualTo("ProduceMessage");
         assertThat(endNode.getMetaData().get("MessageType")).isEqualTo("com.fasterxml.jackson.databind.JsonNode");
-        assertThat(endNode.getMetaData().get("MappingVariable")).isEqualTo("sampleData");
+        assertThat(endNode.getMetaData().get("MappingVariable")).isEqualTo("workflowdata");
+
+        assertThat(endNode.getActions(ExtendedNodeImpl.EVENT_NODE_ENTER)).isNotNull();
+        assertThat(endNode.getActions(ExtendedNodeImpl.EVENT_NODE_ENTER).size()).isEqualTo(1);
     }
 
     @Test
@@ -190,7 +198,6 @@ public class WorkflowFactoryTest extends BaseServerlessTest {
     @Test
     public void testSubProcessNode() {
         TestNodeContainer nodeContainer = new TestNodeContainer();
-
         CompositeContextNode compositeContextNode = testFactory.subProcessNode(1L, "subprocess", nodeContainer);
         assertThat(compositeContextNode).isNotNull();
         assertThat(compositeContextNode.getName()).isEqualTo("subprocess");
@@ -231,5 +238,113 @@ public class WorkflowFactoryTest extends BaseServerlessTest {
         assertThat(join.getName()).isEqualTo("testJoin");
         assertThat(join.getType()).isEqualTo(Join.TYPE_XOR);
         assertThat(join.getMetaData().get("UniqueId")).isEqualTo("1");
+    }
+
+    @Test
+    public void testProcessVar() {
+        RuleFlowProcess process = new RuleFlowProcess();
+        testFactory.processVar("testVar", JsonNode.class, process);
+
+        assertThat(process.getVariableScope()).isNotNull();
+        assertThat(process.getVariableScope().getVariables()).isNotNull();
+        assertThat(process.getVariableScope().getVariables().size()).isEqualTo(1);
+    }
+
+    @Test
+    public void testHumanTaskNode() {
+        TestNodeContainer nodeContainer = new TestNodeContainer();
+        RuleFlowProcess process = new RuleFlowProcess();
+
+        Map<String, String> metaMap = new HashMap<>();
+        metaMap.put("taskname", "testTaskName");
+        metaMap.put("skippable", "false");
+        metaMap.put("groupid", "testGroupId");
+        metaMap.put("actorid", "testActorId");
+        Function function = new Function().withName("testfunction1").withMetadata(metaMap);
+
+        HumanTaskNode humanTaskNode = testFactory.humanTaskNode(1L, "test name", function, process, nodeContainer);
+
+        assertThat(humanTaskNode).isNotNull();
+        assertThat(humanTaskNode.getWork().getParameter("TaskName")).isEqualTo("testTaskName");
+        assertThat(humanTaskNode.getWork().getParameter("Skippable")).isEqualTo("false");
+        assertThat(humanTaskNode.getWork().getParameter("GroupId")).isEqualTo("testGroupId");
+        assertThat(humanTaskNode.getWork().getParameter("ActorId")).isEqualTo("testActorId");
+        assertThat(humanTaskNode.getWork().getParameter("NodeName")).isEqualTo("test name");
+
+        assertThat(humanTaskNode.getInMappings()).isNotNull();
+        assertThat(humanTaskNode.getInMappings().size()).isEqualTo(1);
+        assertThat(humanTaskNode.getOutMappings()).isNotNull();
+        assertThat(humanTaskNode.getOutMappings().size()).isEqualTo(1);
+
+        assertThat(process.getVariableScope().getVariables()).isNotNull();
+        assertThat(process.getVariableScope().getVariables().size()).isEqualTo(1);
+
+    }
+
+    @Test
+    public void testHumanTaskNodeDefaultValues() {
+        TestNodeContainer nodeContainer = new TestNodeContainer();
+        RuleFlowProcess process = new RuleFlowProcess();
+
+        Function function = new Function().withName("testfunction1");
+
+        HumanTaskNode humanTaskNode = testFactory.humanTaskNode(1L, "test name", function, process, nodeContainer);
+
+        assertThat(humanTaskNode).isNotNull();
+        assertThat(humanTaskNode.getWork().getParameter("TaskName")).isEqualTo("workflowhtask");
+        assertThat(humanTaskNode.getWork().getParameter("Skippable")).isEqualTo("true");
+        assertThat(humanTaskNode.getWork().getParameter("GroupId")).isNull();
+        assertThat(humanTaskNode.getWork().getParameter("ActorId")).isNull();
+        assertThat(humanTaskNode.getWork().getParameter("NodeName")).isEqualTo("test name");
+
+        assertThat(humanTaskNode.getInMappings()).isNotNull();
+        assertThat(humanTaskNode.getInMappings().size()).isEqualTo(1);
+        assertThat(humanTaskNode.getOutMappings()).isNotNull();
+        assertThat(humanTaskNode.getOutMappings().size()).isEqualTo(1);
+
+        assertThat(process.getVariableScope().getVariables()).isNotNull();
+        assertThat(process.getVariableScope().getVariables().size()).isEqualTo(1);
+    }
+
+    @Test
+    public void testRuleSetNode() {
+        TestNodeContainer nodeContainer = new TestNodeContainer();
+
+        Map<String, String> metaMap = new HashMap<>();
+        metaMap.put("ruleflowgroup", "testruleflowgroup");
+        Function function = new Function().withName("testfunction3").withMetadata(metaMap);
+
+        RuleSetNode ruleSetNode = testFactory.ruleSetNode(1L, "test name", function, nodeContainer);
+        assertThat(ruleSetNode).isNotNull();
+        assertThat(ruleSetNode.getName()).isEqualTo("test name");
+        assertThat(ruleSetNode.getLanguage()).isEqualTo(RuleSetNode.DRL_LANG);
+        assertThat(ruleSetNode.getRuleType().getName()).isEqualTo("testruleflowgroup");
+        assertThat(ruleSetNode.getRuleType().isRuleUnit()).isFalse();
+        assertThat(ruleSetNode.getRuleType().isDecision()).isFalse();
+        assertThat(ruleSetNode.getRuleType().isRuleFlowGroup()).isTrue();
+        assertThat(ruleSetNode.getInMappings()).isNotNull();
+        assertThat(ruleSetNode.getInMappings().size()).isEqualTo(1);
+        assertThat(ruleSetNode.getOutMappings()).isNotNull();
+        assertThat(ruleSetNode.getOutMappings().size()).isEqualTo(1);
+    }
+
+    @Test
+    public void testRuleSetNodeDefaultValues() {
+        TestNodeContainer nodeContainer = new TestNodeContainer();
+
+        Function function = new Function().withName("testfunction3");
+
+        RuleSetNode ruleSetNode = testFactory.ruleSetNode(1L, "test name", function, nodeContainer);
+        assertThat(ruleSetNode).isNotNull();
+        assertThat(ruleSetNode.getName()).isEqualTo("test name");
+        assertThat(ruleSetNode.getLanguage()).isEqualTo(RuleSetNode.DRL_LANG);
+        assertThat(ruleSetNode.getRuleType().getName()).isEqualTo("testruleflowgroup");
+        assertThat(ruleSetNode.getRuleType().isRuleUnit()).isFalse();
+        assertThat(ruleSetNode.getRuleType().isDecision()).isFalse();
+        assertThat(ruleSetNode.getRuleType().isRuleFlowGroup()).isTrue();
+        assertThat(ruleSetNode.getInMappings()).isNotNull();
+        assertThat(ruleSetNode.getInMappings().size()).isEqualTo(1);
+        assertThat(ruleSetNode.getOutMappings()).isNotNull();
+        assertThat(ruleSetNode.getOutMappings().size()).isEqualTo(1);
     }
 }

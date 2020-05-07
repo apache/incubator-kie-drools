@@ -16,9 +16,9 @@
 package org.kie.kogito.codegen.tests;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
-import java.util.HashMap;
-import java.util.Map;
+import java.util.*;
 
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -26,12 +26,18 @@ import org.jbpm.test.util.NodeLeftCountDownProcessEventListener;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.ValueSource;
+import org.kie.api.event.process.DefaultProcessEventListener;
+import org.kie.api.event.process.ProcessWorkItemTransitionEvent;
 import org.kie.kogito.Application;
 import org.kie.kogito.Model;
+import org.kie.kogito.auth.SecurityPolicy;
 import org.kie.kogito.codegen.AbstractCodegenTest;
 import org.kie.kogito.process.Process;
 import org.kie.kogito.process.ProcessInstance;
+import org.kie.kogito.process.WorkItem;
 import org.kie.kogito.process.impl.DefaultProcessEventListenerConfig;
+import org.kie.kogito.process.workitem.Policy;
+import org.kie.kogito.services.identity.StaticIdentityProvider;
 
 public class ServerlessWorkflowTest extends AbstractCodegenTest {
 
@@ -62,7 +68,7 @@ public class ServerlessWorkflowTest extends AbstractCodegenTest {
         assertThat(app).isNotNull();
 
         NodeLeftCountDownProcessEventListener listener = new NodeLeftCountDownProcessEventListener("SmallDelay", 1);
-        ((DefaultProcessEventListenerConfig)app.config().process().processEventListeners()).register(listener);
+        ((DefaultProcessEventListenerConfig) app.config().process().processEventListeners()).register(listener);
 
 
         Process<? extends Model> p = app.processes().processById("function");
@@ -100,7 +106,7 @@ public class ServerlessWorkflowTest extends AbstractCodegenTest {
     }
 
     @ParameterizedTest
-    @ValueSource(strings = {"serverless/multiple-operations.sw.json", "serverless/multiple-operations.sw.yaml"})
+    @ValueSource(strings = {"serverless/multiple-operations.sw.json", "serverless/multiple-operations.sw.yml"})
     public void testMultipleOperationsWorkflow(String processLocation) throws Exception {
 
         Application app = generateCodeProcessesOnly(processLocation);
@@ -135,7 +141,7 @@ public class ServerlessWorkflowTest extends AbstractCodegenTest {
                 "}";
 
         ObjectMapper mapper = new ObjectMapper();
-        JsonNode jsonParamObj =  mapper.readTree(jsonParamStr);
+        JsonNode jsonParamObj = mapper.readTree(jsonParamStr);
 
 
         parameters.put("workflowdata", jsonParamObj);
@@ -145,9 +151,9 @@ public class ServerlessWorkflowTest extends AbstractCodegenTest {
         processInstance.start();
 
         assertThat(processInstance.status()).isEqualTo(ProcessInstance.STATE_COMPLETED);
-        Model result = (Model)processInstance.variables();
+        Model result = (Model) processInstance.variables();
         assertThat(result.toMap()).hasSize(1).containsKeys("workflowdata");
-        
+
         assertThat(result.toMap().get("workflowdata")).isInstanceOf(JsonNode.class);
 
         JsonNode dataOut = (JsonNode) result.toMap().get("workflowdata");
@@ -170,7 +176,7 @@ public class ServerlessWorkflowTest extends AbstractCodegenTest {
         String jsonParamStr = "{}";
 
         ObjectMapper mapper = new ObjectMapper();
-        JsonNode jsonParamObj =  mapper.readTree(jsonParamStr);
+        JsonNode jsonParamObj = mapper.readTree(jsonParamStr);
 
 
         parameters.put("workflowdata", jsonParamObj);
@@ -180,7 +186,7 @@ public class ServerlessWorkflowTest extends AbstractCodegenTest {
         processInstance.start();
 
         assertThat(processInstance.status()).isEqualTo(ProcessInstance.STATE_COMPLETED);
-        Model result = (Model)processInstance.variables();
+        Model result = (Model) processInstance.variables();
         assertThat(result.toMap()).hasSize(1).containsKeys("workflowdata");
 
         assertThat(result.toMap().get("workflowdata")).isInstanceOf(JsonNode.class);
@@ -205,7 +211,7 @@ public class ServerlessWorkflowTest extends AbstractCodegenTest {
         String jsonParamStr = "{}";
 
         ObjectMapper mapper = new ObjectMapper();
-        JsonNode jsonParamObj =  mapper.readTree(jsonParamStr);
+        JsonNode jsonParamObj = mapper.readTree(jsonParamStr);
 
 
         parameters.put("workflowdata", jsonParamObj);
@@ -215,7 +221,7 @@ public class ServerlessWorkflowTest extends AbstractCodegenTest {
         processInstance.start();
 
         assertThat(processInstance.status()).isEqualTo(ProcessInstance.STATE_COMPLETED);
-        Model result = (Model)processInstance.variables();
+        Model result = (Model) processInstance.variables();
         assertThat(result.toMap()).hasSize(1).containsKeys("workflowdata");
 
         assertThat(result.toMap().get("workflowdata")).isInstanceOf(JsonNode.class);
@@ -240,7 +246,7 @@ public class ServerlessWorkflowTest extends AbstractCodegenTest {
         String jsonParamStr = "{}";
 
         ObjectMapper mapper = new ObjectMapper();
-        JsonNode jsonParamObj =  mapper.readTree(jsonParamStr);
+        JsonNode jsonParamObj = mapper.readTree(jsonParamStr);
 
 
         parameters.put("workflowdata", jsonParamObj);
@@ -250,7 +256,7 @@ public class ServerlessWorkflowTest extends AbstractCodegenTest {
         processInstance.start();
 
         assertThat(processInstance.status()).isEqualTo(ProcessInstance.STATE_COMPLETED);
-        Model result = (Model)processInstance.variables();
+        Model result = (Model) processInstance.variables();
         assertThat(result.toMap()).hasSize(1).containsKeys("workflowdata");
 
         assertThat(result.toMap().get("workflowdata")).isInstanceOf(JsonNode.class);
@@ -274,7 +280,7 @@ public class ServerlessWorkflowTest extends AbstractCodegenTest {
         String jsonParamStr = "{}";
 
         ObjectMapper mapper = new ObjectMapper();
-        JsonNode jsonParamObj =  mapper.readTree(jsonParamStr);
+        JsonNode jsonParamObj = mapper.readTree(jsonParamStr);
 
 
         parameters.put("workflowdata", jsonParamObj);
@@ -285,7 +291,7 @@ public class ServerlessWorkflowTest extends AbstractCodegenTest {
 
         assertThat(processInstance.status()).isEqualTo(ProcessInstance.STATE_COMPLETED);
 
-        Model result = (Model)processInstance.variables();
+        Model result = (Model) processInstance.variables();
         assertThat(result.toMap()).hasSize(1).containsKeys("workflowdata");
 
         assertThat(result.toMap().get("workflowdata")).isInstanceOf(JsonNode.class);
@@ -331,8 +337,196 @@ public class ServerlessWorkflowTest extends AbstractCodegenTest {
 
             assertThat(dataOut.get("branch1data").textValue()).isEqualTo("testBranch1Data");
             assertThat(dataOut.get("branch2data").textValue()).isEqualTo("testBranch2Data");
-        } catch(Exception e) {
+        } catch (Exception e) {
             e.printStackTrace();
         }
+    }
+
+    @ParameterizedTest
+    @ValueSource(strings = {"serverless/decision-workflow.sw.json", "serverless/decision-workflow.sw.yml"})
+    public void testSingleDecisionWorkflow(String processLocation) throws Exception {
+
+        Policy<?> securityPolicy = SecurityPolicy.of(new StaticIdentityProvider("workflow"));
+
+        Application app = generateCodeProcessesOnly(processLocation);
+        assertThat(app).isNotNull();
+        final List<String> workItemTransitionEvents = new ArrayList<>();
+        app.config().process().processEventListeners().listeners().add(new DefaultProcessEventListener() {
+
+            @Override
+            public void beforeWorkItemTransition(ProcessWorkItemTransitionEvent event) {
+                workItemTransitionEvents.add("BEFORE:: " + event);
+            }
+
+            @Override
+            public void afterWorkItemTransition(ProcessWorkItemTransitionEvent event) {
+                workItemTransitionEvents.add("AFTER:: " + event);
+            }
+        });
+
+        Process<? extends Model> p = app.processes().processById("decisionworkflow");
+
+        Model m = p.createModel();
+        Map<String, Object> parameters = new HashMap<>();
+
+        String jsonParamStr = "{}";
+
+        ObjectMapper mapper = new ObjectMapper();
+        JsonNode jsonParamObj = mapper.readTree(jsonParamStr);
+
+
+        parameters.put("workflowdata", jsonParamObj);
+        parameters.put("approvaldecision", jsonParamObj);
+        m.fromMap(parameters);
+
+        ProcessInstance<?> processInstance = p.createInstance(m);
+        processInstance.start();
+
+        assertThat(processInstance.status()).isEqualTo(ProcessInstance.STATE_ACTIVE);
+
+        List<WorkItem> workItems = processInstance.workItems(securityPolicy);
+        assertEquals(1, workItems.size());
+        assertEquals("approval", workItems.get(0).getName());
+
+        String decisionParamStr = "{\"result\": \"approved\"}";
+        JsonNode decisionParamObj = mapper.readTree(decisionParamStr);
+
+        Map<String, Object> completionMap = new HashMap<>();
+        completionMap.put("decision", decisionParamObj);
+
+        processInstance.completeWorkItem(workItems.get(0).getId(), completionMap, securityPolicy);
+        assertThat(processInstance.status()).isEqualTo(ProcessInstance.STATE_COMPLETED);
+
+        assertThat(workItemTransitionEvents).hasSize(4);
+
+        Model result = (Model) processInstance.variables();
+        assertThat(result.toMap()).hasSize(2).containsKeys("workflowdata", "approvaldecision");
+
+        assertThat(result.toMap().get("workflowdata")).isInstanceOf(JsonNode.class);
+        assertThat(result.toMap().get("approvaldecision")).isInstanceOf(JsonNode.class);
+
+        JsonNode workflowdataOut = (JsonNode) result.toMap().get("workflowdata");
+        JsonNode approvalDecisionOut = (JsonNode) result.toMap().get("approvaldecision");
+
+        assertThat(workflowdataOut.get("decision").textValue()).isEqualTo("Approved");
+        assertThat(approvalDecisionOut.get("result").textValue()).isEqualTo("approved");
+    }
+
+    @ParameterizedTest
+    @ValueSource(strings = {"serverless/multi-decision-workflow.sw.json", "serverless/multi-decision-workflow.sw.yml"})
+    public void testMultiDecisionWorkflow(String processLocation) throws Exception {
+
+        Policy<?> securityPolicy = SecurityPolicy.of(new StaticIdentityProvider("workflow"));
+
+        Application app = generateCodeProcessesOnly(processLocation);
+        assertThat(app).isNotNull();
+        final List<String> workItemTransitionEvents = new ArrayList<>();
+        app.config().process().processEventListeners().listeners().add(new DefaultProcessEventListener() {
+
+            @Override
+            public void beforeWorkItemTransition(ProcessWorkItemTransitionEvent event) {
+                workItemTransitionEvents.add("BEFORE:: " + event);
+            }
+
+            @Override
+            public void afterWorkItemTransition(ProcessWorkItemTransitionEvent event) {
+                workItemTransitionEvents.add("AFTER:: " + event);
+            }
+        });
+
+        Process<? extends Model> p = app.processes().processById("multidecisionworkflow");
+
+        Model m = p.createModel();
+        Map<String, Object> parameters = new HashMap<>();
+
+        String jsonParamStr = "{}";
+
+        ObjectMapper mapper = new ObjectMapper();
+        JsonNode jsonParamObj = mapper.readTree(jsonParamStr);
+
+
+        parameters.put("workflowdata", jsonParamObj);
+        parameters.put("approvaldecision", jsonParamObj);
+        m.fromMap(parameters);
+
+        ProcessInstance<?> processInstance = p.createInstance(m);
+        processInstance.start();
+
+        assertThat(processInstance.status()).isEqualTo(ProcessInstance.STATE_ACTIVE);
+
+        List<WorkItem> workItems = processInstance.workItems(securityPolicy);
+        assertEquals(1, workItems.size());
+        assertEquals("firstfunction", workItems.get(0).getName());
+
+        String decisionParamStr = "{\"result\": \"approved\"}";
+        JsonNode decisionParamObj = mapper.readTree(decisionParamStr);
+
+        Map<String, Object> decisionMap = new HashMap<>();
+        decisionMap.put("decision", decisionParamObj);
+
+        processInstance.completeWorkItem(workItems.get(0).getId(), decisionMap, securityPolicy);
+
+        assertThat(processInstance.status()).isEqualTo(ProcessInstance.STATE_ACTIVE);
+
+
+        workItems = processInstance.workItems(securityPolicy);
+        assertEquals(1, workItems.size());
+        assertEquals("secondfunction", workItems.get(0).getName());
+
+        processInstance.completeWorkItem(workItems.get(0).getId(), decisionMap, securityPolicy);
+
+        assertThat(processInstance.status()).isEqualTo(ProcessInstance.STATE_COMPLETED);
+
+        assertThat(workItemTransitionEvents).hasSize(8);
+
+        Model result = (Model) processInstance.variables();
+        assertThat(result.toMap()).hasSize(3).containsKeys("workflowdata", "firstfunctiondecision", "secondfunctiondecision");
+
+        assertThat(result.toMap().get("workflowdata")).isInstanceOf(JsonNode.class);
+        assertThat(result.toMap().get("firstfunctiondecision")).isInstanceOf(JsonNode.class);
+        assertThat(result.toMap().get("secondfunctiondecision")).isInstanceOf(JsonNode.class);
+
+        JsonNode firstDecisionOut = (JsonNode) result.toMap().get("firstfunctiondecision");
+        JsonNode secondDecisionOut = (JsonNode) result.toMap().get("secondfunctiondecision");
+        assertThat(firstDecisionOut.get("result").textValue()).isEqualTo("approved");
+        assertThat(secondDecisionOut.get("result").textValue()).isEqualTo("approved");
+    }
+
+    @ParameterizedTest
+    @ValueSource(strings = {"serverless/rule-workflow.sw.json", "serverless/rule-workflow.sw.yml"})
+    public void testRuleWorkflow(String processLocation) throws Exception {
+
+        Application app = generateCode(Collections.singletonList(processLocation), Collections.singletonList("serverless/workflowrule.drl"));
+        assertThat(app).isNotNull();
+
+        Process<? extends Model> p = app.processes().processById("ruleworkflow");
+
+        Model m = p.createModel();
+        Map<String, Object> parameters = new HashMap<>();
+
+        String jsonParamStr = "{ \"person\": { \"age\": \"21\" } }";
+
+        ObjectMapper mapper = new ObjectMapper();
+        JsonNode jsonParamObj = mapper.readTree(jsonParamStr);
+
+
+        parameters.put("workflowdata", jsonParamObj);
+        m.fromMap(parameters);
+
+        ProcessInstance<?> processInstance = p.createInstance(m);
+        processInstance.start();
+
+        assertThat(processInstance.status()).isEqualTo(ProcessInstance.STATE_COMPLETED);
+
+        Model result = (Model) processInstance.variables();
+        assertThat(result.toMap()).hasSize(1).containsKeys("workflowdata");
+
+        assertThat(result.toMap().get("workflowdata")).isInstanceOf(JsonNode.class);
+
+        JsonNode workflowdataOut = (JsonNode) result.toMap().get("workflowdata");
+
+        assertThat(workflowdataOut.get("person").get("age").textValue()).isEqualTo("21");
+        assertThat(workflowdataOut.get("person").get("adult").textValue()).isEqualTo("true");
+
     }
 }

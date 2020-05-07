@@ -1,0 +1,26 @@
+---
+id: multidecisionworkflow
+name: Multi Decision Workflow
+version: '1.0'
+functions:
+  - name: firstdecision
+    type: decision
+    metadata:
+      taskname: firstDecisionFunction
+  - name: seconddecision
+    type: decision
+    metadata:
+      taskname: secondDecisionFunction
+states:
+  - name: DecisionState
+    type: OPERATION
+    start:
+      kind: DEFAULT
+    actionMode: SEQUENTIAL
+    actions:
+      - functionRef:
+          refName: firstdecision
+      - functionRef:
+          refName: seconddecision
+    end:
+      kind: TERMINATE

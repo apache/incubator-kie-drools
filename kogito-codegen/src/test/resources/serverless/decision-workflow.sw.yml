@@ -1,0 +1,48 @@
+---
+id: decisionworkflow
+name: Decision Workflow
+version: '1.0'
+functions:
+  - name: doapproval
+    type: decision
+    metadata:
+      actorid: workflow
+      taskname: approval
+states:
+  - name: MakeDecision
+    type: OPERATION
+    start:
+      kind: DEFAULT
+    actionMode: SEQUENTIAL
+    actions:
+      - functionRef:
+          refName: doapproval
+    transition:
+      nextState: EvalDecision
+  - name: EvalDecision
+    type: SWITCH
+    choices:
+      - path: approvaldecision.result
+        value: approved
+        operator: Equals
+        transition:
+          nextState: Approve
+      - path: approvaldecision.result
+        value: denied
+        operator: Equals
+        transition:
+          nextState: Deny
+    default:
+      nextState: Approve
+  - name: Approve
+    type: RELAY
+    inject:
+      decision: Approved
+    end:
+      kind: DEFAULT
+  - name: Deny
+    type: RELAY
+    inject:
+      decision: Denied
+    end:
+      kind: DEFAULT

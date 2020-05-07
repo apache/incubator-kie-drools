@@ -1,0 +1,20 @@
+---
+id: singledecisionworkflow
+name: Single Decision Workflow
+version: '1.0'
+functions:
+  - name: simpledecision
+    type: decision
+    metadata:
+      taskname: simpleDecisionTask
+states:
+  - name: DecisionState
+    type: OPERATION
+    start:
+      kind: DEFAULT
+    actionMode: SEQUENTIAL
+    actions:
+      - functionRef:
+          refName: simpledecision
+    end:
+      kind: TERMINATE

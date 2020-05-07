@@ -142,7 +142,7 @@ public class ProcessToExecModelGenerator {
                 if (nodeVariableScope == null) {
                     nodeVariableScope = variableScope;
                 }
-                usertaskModels.add(new UserTaskModelMetaData(packageName, nodeVariableScope, humanTaskNode, process.getId()));
+                usertaskModels.add(new UserTaskModelMetaData(packageName, variableScope, nodeVariableScope, humanTaskNode, process.getId()));
             }
         }
 

@@ -71,6 +71,7 @@ public abstract class BaseServerlessTest {
         properties.put("kogito.sw.functions.testfunction1.testprop2", "testprop2val");
         properties.put("kogito.sw.functions.testfunction2.testprop1", "testprop1val");
         properties.put("kogito.sw.functions.testfunction2.testprop2", "testprop2val");
+        properties.put("kogito.sw.functions.testfunction3.ruleflowgroup", "testruleflowgroup");
 
         return properties;
     }

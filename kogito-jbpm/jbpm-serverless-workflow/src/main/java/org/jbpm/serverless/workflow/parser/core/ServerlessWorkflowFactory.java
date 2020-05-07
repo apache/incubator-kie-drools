@@ -48,20 +48,27 @@ import java.util.*;
 public class ServerlessWorkflowFactory {
     private static final Logger LOGGER = LoggerFactory.getLogger(ServerlessWorkflowFactory.class);
 
-    private static final String EOL = System.getProperty("line.separator");
-    private static final String DEFAULT_WORKFLOW_ID = "serverless";
-    private static final String DEFAULT_WORKFLOW_NAME = "workflow";
-    private static final String DEFAULT_WORKFLOW_VERSION = "1.0";
-    private static final String DEFAULT_PACKAGE_NAME = "org.kie.kogito.serverless";
-    private static final String DEFAULT_VISIBILITY = "Public";
-    private static final String DEFAULT_VAR = "Var";
-    private static final String JSON_NODE = "com.fasterxml.jackson.databind.JsonNode";
-    private static final String DEFAULT_WORKFLOW_VAR = "workflowdata";
-    private static final String UNIQUE_ID_PARAM = "UniqueId";
-    private static final String DEFAULT_SERVICE_IMPL = "Java";
-    private static final String SERVICE_INTERFACE_KEY = "interface";
-    private static final String SERVICE_OPERATION_KEY = "operation";
-    private static final String SERVICE_IMPL_KEY = "implementation";
+    public static final String EOL = System.getProperty("line.separator");
+    public static final String DEFAULT_WORKFLOW_ID = "serverless";
+    public static final String DEFAULT_WORKFLOW_NAME = "workflow";
+    public static final String DEFAULT_WORKFLOW_VERSION = "1.0";
+    public static final String DEFAULT_PACKAGE_NAME = "org.kie.kogito.serverless";
+    public static final String DEFAULT_VISIBILITY = "Public";
+    public static final String DEFAULT_DECISION = "decision";
+    public static final String JSON_NODE = "com.fasterxml.jackson.databind.JsonNode";
+    public static final String DEFAULT_WORKFLOW_VAR = "workflowdata";
+    public static final String UNIQUE_ID_PARAM = "UniqueId";
+    public static final String DEFAULT_SERVICE_IMPL = "Java";
+    public static final String SERVICE_INTERFACE_KEY = "interface";
+    public static final String SERVICE_OPERATION_KEY = "operation";
+    public static final String SERVICE_IMPL_KEY = "implementation";
+    public static final String DEFAULT_HT_TASKNAME = "workflowhtask";
+    public static final String DEFAULT_HT_SKIPPABLE = "true";
+    public static final String HT_TASKNAME = "taskname";
+    public static final String HT_SKIPPABLE = "skippable";
+    public static final String HTP_GROUPID = "groupid";
+    public static final String HT_ACTORID = "actorid";
+    public static final String RF_GROUP = "ruleflowgroup";
 
     private WorkflowAppContext workflowAppContext;
 
@@ -123,7 +130,7 @@ public class ServerlessWorkflowFactory {
         StartNode startNode = new StartNode();
         startNode.setId(id);
         startNode.setName(eventDefinition.getName());
-        startNode.setMetaData("TriggerMapping", eventDefinition.getSource() + DEFAULT_VAR);
+        startNode.setMetaData("TriggerMapping", DEFAULT_WORKFLOW_VAR);
         startNode.setMetaData("TriggerType", "ConsumeMessage");
         startNode.setMetaData("TriggerRef", eventDefinition.getSource());
         startNode.setMetaData("MessageType", JSON_NODE);
@@ -156,8 +163,8 @@ public class ServerlessWorkflowFactory {
         endNode.setMetaData("TriggerRef", eventDef.getSource());
         endNode.setMetaData("TriggerType", "ProduceMessage");
         endNode.setMetaData("MessageType", JSON_NODE);
-        endNode.setMetaData("MappingVariable", stateEnd.getProduceEvent().getData());
-        addMessageEndNodeAction(endNode, stateEnd.getProduceEvent().getData(), JSON_NODE);
+        endNode.setMetaData("MappingVariable", DEFAULT_WORKFLOW_VAR);
+        addMessageEndNodeAction(endNode, DEFAULT_WORKFLOW_VAR, JSON_NODE);
 
         nodeContainer.addNode(endNode);
 
@@ -291,9 +298,6 @@ public class ServerlessWorkflowFactory {
         CompositeContextNode subProcessNode = new CompositeContextNode();
         subProcessNode.setId(id);
         subProcessNode.setName(name);
-        VariableScope variableScope = new VariableScope();
-        subProcessNode.addContext(variableScope);
-        subProcessNode.setDefaultContext(variableScope);
         subProcessNode.setAutoComplete(true);
         nodeContainer.addNode(subProcessNode);
 
@@ -333,6 +337,57 @@ public class ServerlessWorkflowFactory {
         constraintImpl.setDefault(isDefault);
 
         return constraintImpl;
+    }
+
+    public HumanTaskNode humanTaskNode(long id, String name, Function function, RuleFlowProcess process, NodeContainer nodeContainer) {
+        // first add the node "decision" variable
+        processVar(ServerlessWorkflowUtils.resolveFunctionMetadata(function, HT_TASKNAME, workflowAppContext)
+                + DEFAULT_DECISION, JsonNode.class, process);
+        // then the ht node
+        HumanTaskNode humanTaskNode = new HumanTaskNode();
+        humanTaskNode.setId(id);
+        humanTaskNode.setName(name);
+        Work work = new WorkImpl();
+        work.setName("Human Task");
+        humanTaskNode.setWork(work);
+
+        work.setParameter("TaskName", ServerlessWorkflowUtils.resolveFunctionMetadata(function, HT_TASKNAME, workflowAppContext).length() > 0 ?
+                ServerlessWorkflowUtils.resolveFunctionMetadata(function, HT_TASKNAME, workflowAppContext) : DEFAULT_HT_TASKNAME);
+        work.setParameter("Skippable", ServerlessWorkflowUtils.resolveFunctionMetadata(function, HT_SKIPPABLE, workflowAppContext).length() > 0 ?
+                ServerlessWorkflowUtils.resolveFunctionMetadata(function, HT_SKIPPABLE, workflowAppContext) : DEFAULT_HT_SKIPPABLE);
+
+        if (ServerlessWorkflowUtils.resolveFunctionMetadata(function, HTP_GROUPID, workflowAppContext).length() > 0) {
+            work.setParameter("GroupId", ServerlessWorkflowUtils.resolveFunctionMetadata(function, HTP_GROUPID, workflowAppContext));
+        }
+
+        if (ServerlessWorkflowUtils.resolveFunctionMetadata(function, HT_ACTORID, workflowAppContext).length() > 0) {
+            work.setParameter("ActorId", ServerlessWorkflowUtils.resolveFunctionMetadata(function, HT_ACTORID, workflowAppContext));
+        }
+        work.setParameter("NodeName", name);
+
+        humanTaskNode.addInMapping(DEFAULT_WORKFLOW_VAR, DEFAULT_WORKFLOW_VAR);
+        humanTaskNode.addOutMapping(DEFAULT_DECISION, ServerlessWorkflowUtils.resolveFunctionMetadata(function, HT_TASKNAME,
+                workflowAppContext) + DEFAULT_DECISION);
+
+        nodeContainer.addNode(humanTaskNode);
+
+        return humanTaskNode;
+    }
+
+    public RuleSetNode ruleSetNode(long id, String name, Function function, NodeContainer nodeContainer) {
+        RuleSetNode ruleSetNode = new RuleSetNode();
+        ruleSetNode.setId(id);
+        ruleSetNode.setName(name);
+
+        ruleSetNode.setRuleType(RuleSetNode.RuleType.ruleFlowGroup(ServerlessWorkflowUtils.resolveFunctionMetadata(function, RF_GROUP, workflowAppContext)));
+        ruleSetNode.setLanguage(RuleSetNode.DRL_LANG);
+
+        ruleSetNode.addInMapping(DEFAULT_WORKFLOW_VAR, DEFAULT_WORKFLOW_VAR);
+        ruleSetNode.addOutMapping(DEFAULT_WORKFLOW_VAR, DEFAULT_WORKFLOW_VAR);
+
+        nodeContainer.addNode(ruleSetNode);
+
+        return ruleSetNode;
     }
 
     public void connect(long fromId, long toId, String uniqueId, NodeContainer nodeContainer) {

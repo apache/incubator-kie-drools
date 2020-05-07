@@ -60,6 +60,7 @@ public class CompositeContextNodeVisitor extends AbstractCompositeNodeVisitor {
 
     @Override
     public void visitNode(String factoryField, Node node, BlockStmt body, VariableScope variableScope, ProcessMetaData metadata) {
+
         CompositeContextNode compositeContextNode = (CompositeContextNode) node;
 
         body.addStatement(getAssignedFactoryMethod(factoryField, factoryClass(), getNodeId(node), factoryMethod(), new LongLiteralExpr(compositeContextNode.getId())))
@@ -71,8 +72,15 @@ public class CompositeContextNodeVisitor extends AbstractCompositeNodeVisitor {
             visitVariableScope(getNodeId(node), variableScopeNode, body, new HashSet<>());
         }
 
-        // visit nodes
-        visitNodes(getNodeId(node), compositeContextNode.getNodes(), body, ((VariableScope) compositeContextNode.getDefaultContext(VariableScope.VARIABLE_SCOPE)), metadata);
+        // composite context node might not have variable scope
+        // in that case inherit it from parent
+        if (compositeContextNode.getDefaultContext(VariableScope.VARIABLE_SCOPE) == null) {
+            visitNodes(getNodeId(node), compositeContextNode.getNodes(), body, variableScope, metadata);
+        } else {
+            visitNodes(getNodeId(node), compositeContextNode.getNodes(), body, ((VariableScope) compositeContextNode.getDefaultContext(VariableScope.VARIABLE_SCOPE)), metadata);
+
+        }
+
         visitConnections(getNodeId(node), compositeContextNode.getNodes(), body);
         body.addStatement(getDoneMethod(getNodeId(node)));
     }

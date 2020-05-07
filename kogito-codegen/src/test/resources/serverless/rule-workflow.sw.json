@@ -1,0 +1,34 @@
+{
+  "id": "ruleworkflow",
+  "name": "Rule Workflow",
+  "version": "1.0",
+  "functions": [
+    {
+      "name": "simpleruleunit",
+      "type": "rule",
+      "metadata": {
+        "ruleflowgroup": "testworkflowgroup"
+      }
+    }
+  ],
+  "states":[
+    {
+      "name":"RuleUnitStateState",
+      "type":"OPERATION",
+      "start": {
+        "kind": "DEFAULT"
+      },
+      "actionMode":"SEQUENTIAL",
+      "actions":[
+        {
+          "functionRef": {
+            "refName": "simpleruleunit"
+          }
+        }
+      ],
+      "end": {
+        "kind": "TERMINATE"
+      }
+    }
+  ]
+}

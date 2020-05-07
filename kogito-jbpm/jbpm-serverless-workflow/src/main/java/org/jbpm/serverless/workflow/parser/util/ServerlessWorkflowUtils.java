@@ -30,6 +30,7 @@ import org.jbpm.serverless.workflow.api.mapper.YamlObjectMapper;
 import org.jbpm.serverless.workflow.api.states.DefaultState;
 import org.jbpm.serverless.workflow.api.states.ParallelState;
 import org.jbpm.serverless.workflow.api.states.SubflowState;
+import org.jbpm.serverless.workflow.parser.core.ServerlessWorkflowFactory;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -155,16 +156,20 @@ public class ServerlessWorkflowUtils {
     }
 
     public static String conditionScript(String path, DefaultChoice.Operator operator, String value) {
+        String workflowVar = ServerlessWorkflowFactory.DEFAULT_WORKFLOW_VAR;
 
         if (path.startsWith("$.")) {
             path = path.substring(2);
+        } else if (path.indexOf(".") >= 0) {
+            workflowVar = path.split("\\.")[0];
+            path = path.substring(workflowVar.length() + 1);
         }
 
-        String workflowDataToInteger = "return java.lang.Integer.parseInt(workflowdata.get(\"";
+        String workflowDataToInteger = "return java.lang.Integer.parseInt(" + workflowVar + ".get(\"";
 
         String retStr = "";
         if (operator == DefaultChoice.Operator.EQUALS) {
-            retStr += "return workflowdata.get(\"" + path + "\").textValue().equals(\"" + value + "\");";
+            retStr += "return " + workflowVar + ".get(\"" + path + "\").textValue().equals(\"" + value + "\");";
         } else if (operator == DefaultChoice.Operator.GREATER_THAN) {
             retStr += workflowDataToInteger + path + "\").textValue()) > " + value + ";";
         } else if (operator == DefaultChoice.Operator.GREATER_THAN_EQUALS) {
