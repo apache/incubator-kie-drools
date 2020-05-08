@@ -64,6 +64,11 @@ import org.kie.dmn.model.api.ItemDefinition;
   &lt;dmn:typeRef&gt;number&lt;/dmn:typeRef&gt;
 &lt;/dmn:itemDefinition&gt;
 </pre>
+ * Another example of DMN Simple type, making reference to another <code>ItemDefinition</code> specified in the model, modeling a list of just vowels:<br/>
+ * <br/>
+<pre>&lt;dmn:itemDefinition name=&quot;tListOfVowels&quot; isCollection=&quot;true&quot;&gt;
+  &lt;dmn:typeRef&gt;tVowel&lt;/dmn:typeRef&gt;
+&lt;/dmn:itemDefinition&gt;</pre>
  * When instead specified <i>by composition</i>:
  * <ul>
  * <li>the {@link #isComposite()} will be <code>true</code>

@@ -81,6 +81,7 @@ public class DMNCompilerTest extends BaseVariantTest {
         final DMNContext context = runtime.newContext();
         context.set("a vowel", "a");
         context.set("a list", Arrays.asList(1, 2, 3));
+        context.set("vowels", Arrays.asList("a", "a", "e"));
 
         final DMNResult evaluateAll = evaluateModel(runtime, dmnModel, context);
         LOG.debug("{}", evaluateAll);
