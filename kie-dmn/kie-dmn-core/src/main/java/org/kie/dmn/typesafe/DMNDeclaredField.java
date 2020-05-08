@@ -60,13 +60,17 @@ public class DMNDeclaredField implements FieldDefinition {
 
     @Override
     public String getObjectType() {
-        return index.asJava(fieldDMNType);
+        String asJava = index.asJava(fieldDMNType);
+        if (fieldDMNType.isCollection() && fieldDMNType.isComposite() && fieldDMNType.getBaseType() == null) {
+            return DMNAllTypesIndex.juCollection(asJava); // Anonymous inner composite collection, need to render as a FIELD of Java type Collection<GeneratedType>
+        }
+        return asJava;
     }
 
     // This returns the generic type i.e. when Collection<String> then String
     private String fieldTypeUnwrapped() {
         if (fieldDMNType.isCollection()) {
-            return index.asJava(fieldDMNType.getBaseType());
+            return index.asJava(DMNTypeUtils.genericOfCollection(fieldDMNType));
         }
         throw new IllegalArgumentException();
     }

@@ -79,9 +79,13 @@ public class DMNAllTypesIndex {
         }
         String baseConverted = asJava(dmnType.getBaseType());
         if (dmnType.isCollection()) {
-            return String.format("java.util.Collection<%s>", baseConverted);
+            return juCollection(baseConverted);
         }
         return baseConverted;
+    }
+
+    public static String juCollection(String base) {
+        return String.format("java.util.Collection<%s>", base);
     }
 
     private String convertBuiltin(DMNType expectedFEELType) {
