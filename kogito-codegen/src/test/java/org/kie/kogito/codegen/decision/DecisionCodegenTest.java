@@ -20,6 +20,7 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 import com.github.javaparser.ast.body.ClassOrInterfaceDeclaration;
+import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.kie.kogito.codegen.GeneratedFile;
 import org.kie.kogito.grafana.JGrafana;
@@ -64,5 +65,14 @@ public class DecisionCodegenTest {
 
         ClassOrInterfaceDeclaration classDeclaration = codeGenerator.moduleGenerator().classDeclaration();
         assertNotNull(classDeclaration);
+    }
+
+    @Test
+    public void emptyName() throws Exception {
+        DecisionCodegen codeGenerator = DecisionCodegen.ofPath(Paths.get("src/test/resources/decision-empty-name").toAbsolutePath());
+        RuntimeException re = Assertions.assertThrows(RuntimeException.class, () -> {
+            codeGenerator.generate();
+        });
+        assertEquals("Model name should not be empty", re.getMessage());
     }
 }

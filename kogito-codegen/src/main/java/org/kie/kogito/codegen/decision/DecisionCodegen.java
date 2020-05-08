@@ -150,6 +150,9 @@ public class DecisionCodegen extends AbstractGenerator {
         List<DMNRestResourceGenerator> rgs = new ArrayList<>(); // REST resources
 
         for (DMNModel model : models) {
+            if (model.getName() == null || model.getName().isEmpty()) {
+                throw new RuntimeException("Model name should not be empty");
+            }
             DMNRestResourceGenerator resourceGenerator = new DMNRestResourceGenerator(model, applicationCanonicalName).withDependencyInjection(annotator).withMonitoring(useMonitoring);
             rgs.add(resourceGenerator);
         }
