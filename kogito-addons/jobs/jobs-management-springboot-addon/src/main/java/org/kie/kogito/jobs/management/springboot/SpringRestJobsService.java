@@ -16,12 +16,15 @@
 
 package org.kie.kogito.jobs.management.springboot;
 
+import java.time.ZonedDateTime;
+
 import javax.annotation.PostConstruct;
 
 import org.kie.kogito.jobs.ProcessInstanceJobDescription;
 import org.kie.kogito.jobs.ProcessJobDescription;
 import org.kie.kogito.jobs.api.Job;
 import org.kie.kogito.jobs.api.JobBuilder;
+import org.kie.kogito.jobs.api.JobNotFoundException;
 import org.kie.kogito.jobs.management.RestJobsService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -29,6 +32,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Component;
+import org.springframework.web.client.HttpClientErrorException.NotFound;
 import org.springframework.web.client.RestClientException;
 import org.springframework.web.client.RestTemplate;
 
@@ -100,8 +104,19 @@ public class SpringRestJobsService extends RestJobsService {
             
             return true;
         } catch (RestClientException e) {
-            LOGGER.debug("Exceltion thrown during canceling of job {}", id, e);
+            LOGGER.debug("Exception thrown during canceling of job {}", id, e);
             return false;
+        }
+    }
+
+    @Override
+    public ZonedDateTime getScheduledTime(String id) {
+        try {
+            return restTemplate.getForObject(getJobsServiceUri() + "/{id}", Job.class, id).getExpirationTime();
+        } catch (NotFound e) {
+            throw new JobNotFoundException(id);
+        } catch (RestClientException e) {
+            throw new RuntimeException(e);
         }
     }
 }

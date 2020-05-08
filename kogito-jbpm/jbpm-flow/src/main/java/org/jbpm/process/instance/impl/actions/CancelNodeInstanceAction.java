@@ -13,11 +13,12 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.jbpm.process.instance.impl;
+package org.jbpm.process.instance.impl.actions;
 
 import java.io.Serializable;
 import java.util.Collection;
 
+import org.jbpm.process.instance.impl.Action;
 import org.jbpm.workflow.instance.node.CompositeNodeInstance;
 import org.kie.api.runtime.process.NodeInstance;
 import org.kie.api.runtime.process.ProcessContext;

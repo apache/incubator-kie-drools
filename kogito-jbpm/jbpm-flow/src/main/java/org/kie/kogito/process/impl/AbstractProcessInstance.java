@@ -60,21 +60,21 @@ import org.kie.kogito.services.uow.ProcessInstanceWorkUnit;
 
 public abstract class AbstractProcessInstance<T extends Model> implements ProcessInstance<T> {
 
-    private final T variables;
-    private final AbstractProcess<T> process;
-    private final ProcessRuntime rt;
-    private org.kie.api.runtime.process.ProcessInstance legacyProcessInstance;
-    
-    private Integer status;
-    private String id;
-    private String businessKey;
-    private String description;
-    
-    private ProcessError processError;
-    
-    private Supplier<org.kie.api.runtime.process.ProcessInstance> reloadSupplier;
-    
-    private CompletionEventListener completionEventListener = new CompletionEventListener();
+    protected final T variables;
+    protected final AbstractProcess<T> process;
+    protected final ProcessRuntime rt;
+    protected org.kie.api.runtime.process.ProcessInstance legacyProcessInstance;
+
+    protected Integer status;
+    protected String id;
+    protected String businessKey;
+    protected String description;
+
+    protected ProcessError processError;
+
+    protected Supplier<org.kie.api.runtime.process.ProcessInstance> reloadSupplier;
+
+    protected CompletionEventListener completionEventListener = new CompletionEventListener();
 
     public AbstractProcessInstance(AbstractProcess<T> process, T variables, ProcessRuntime rt) {
         this(process, variables, null, rt);

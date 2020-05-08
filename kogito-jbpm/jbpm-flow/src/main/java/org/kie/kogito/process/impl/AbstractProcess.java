@@ -19,7 +19,6 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
-import org.drools.core.time.TimeUtils;
 import org.jbpm.process.core.timer.DateTimeUtils;
 import org.jbpm.process.core.timer.Timer;
 import org.jbpm.process.instance.LightProcessRuntime;
@@ -43,6 +42,7 @@ import org.kie.kogito.process.ProcessInstances;
 import org.kie.kogito.process.ProcessInstancesFactory;
 import org.kie.kogito.process.Signal;
 
+@SuppressWarnings("unchecked")
 public abstract class AbstractProcess<T extends Model> implements Process<T> {
 
     protected final ProcessRuntimeServiceProvider services;
@@ -70,6 +70,10 @@ public abstract class AbstractProcess<T extends Model> implements Process<T> {
     @Override
     public String id() {
         return legacyProcess().getId();
+    }
+    
+    public String name() {
+        return legacyProcess().getName();
     }
 
     @Override
@@ -115,6 +119,10 @@ public abstract class AbstractProcess<T extends Model> implements Process<T> {
 
     @Override
     public void activate() {
+        if (this.activated) {
+            return;
+        }
+
         configure();
         WorkflowProcessImpl p = (WorkflowProcessImpl) legacyProcess();
         List<StartNode> startNodes = p.getTimerStart();
@@ -146,20 +154,14 @@ public abstract class AbstractProcess<T extends Model> implements Process<T> {
                 long[] repeatValues = DateTimeUtils.parseRepeatableDateTime(timer.getDelay());
                 if (repeatValues.length == 3) {
                     int parsedReapedCount = (int) repeatValues[0];
-                    if (parsedReapedCount > -1) {
+                    if (parsedReapedCount <= -1) {
                         parsedReapedCount = Integer.MAX_VALUE;
                     }
-                    return DurationExpirationTime.repeat(repeatValues[1], repeatValues[2]);
+                    return DurationExpirationTime.repeat(repeatValues[1], repeatValues[2], parsedReapedCount);
+                } else if (repeatValues.length == 2) {
+                    return DurationExpirationTime.repeat(repeatValues[0], repeatValues[1], Integer.MAX_VALUE);
                 } else {
-                    long delay = repeatValues[0];
-                    long period = -1;
-                    try {
-                        period = TimeUtils.parseTimeString(timer.getPeriod());
-                    } catch (RuntimeException e) {
-                        period = repeatValues[0];
-                    }
-
-                    return DurationExpirationTime.repeat(delay, period);
+                    return DurationExpirationTime.repeat(repeatValues[0], repeatValues[0], Integer.MAX_VALUE);
                 }
 
             case Timer.TIME_DURATION:
@@ -191,10 +193,17 @@ public abstract class AbstractProcess<T extends Model> implements Process<T> {
     public void setProcessInstancesFactory(ProcessInstancesFactory processInstancesFactory) {
         this.processInstancesFactory = processInstancesFactory;
     }
+    
+    public EventListener eventListener() {
+    	return completionEventListener;
+    }
+    
+    protected class CompletionEventListener implements EventListener {
+        
+        public CompletionEventListener() {
+		}
 
-    private class CompletionEventListener implements EventListener {
-
-        @Override
+		@Override
         public void signalEvent(String type, Object event) {
             if (type.startsWith("processInstanceCompleted:")) {
                 org.kie.api.runtime.process.ProcessInstance pi = (org.kie.api.runtime.process.ProcessInstance) event;

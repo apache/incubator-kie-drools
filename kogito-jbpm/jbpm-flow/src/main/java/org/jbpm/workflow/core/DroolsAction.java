@@ -39,7 +39,11 @@ public class DroolsAction implements Externalizable, Wireable {
     }
     
     public void setMetaData(String name, Object value) {
-        this.metaData.put(name, value);
+        if ("Action".equals(name)) {
+            this.metaData.putIfAbsent(name, value);
+        } else {
+            this.metaData.put(name, value);
+        }
     }
     
     public Object getMetaData(String name) {

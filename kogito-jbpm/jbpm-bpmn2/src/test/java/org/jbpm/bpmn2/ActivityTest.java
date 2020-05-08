@@ -1396,7 +1396,7 @@ public class ActivityTest extends JbpmBpmn2TestCase {
     @Test
     @Timeout(10)
     public void testInvalidServiceTask() {
-        assertThrows(IllegalArgumentException.class, () -> createKnowledgeBase("BPMN2-InvalidServiceProcess.bpmn2"));
+        assertThrows(RuntimeException.class, () -> createKnowledgeBase("BPMN2-InvalidServiceProcess.bpmn2"));
     }
 
     @Test // JBPM-3951

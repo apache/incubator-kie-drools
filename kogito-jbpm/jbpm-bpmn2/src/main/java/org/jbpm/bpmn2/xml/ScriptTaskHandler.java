@@ -38,7 +38,20 @@ import org.xml.sax.Attributes;
 import org.xml.sax.SAXException;
 
 public class ScriptTaskHandler extends AbstractNodeHandler {
-	
+
+    private static Map<String, String> SUPPORTED_SCRIPT_FORMATS = new HashMap<>();
+
+    static {
+        SUPPORTED_SCRIPT_FORMATS.put(XmlBPMNProcessDumper.JAVA_LANGUAGE, JavaDialect.ID);
+        SUPPORTED_SCRIPT_FORMATS.put(XmlBPMNProcessDumper.JAVASCRIPT_LANGUAGE, "JavaScript");
+        SUPPORTED_SCRIPT_FORMATS.put(XmlBPMNProcessDumper.FEEL_LANGUAGE, "FEEL");
+        SUPPORTED_SCRIPT_FORMATS.put(XmlBPMNProcessDumper.FEEL_LANGUAGE_SHORT, "FEEL");
+    }
+
+    public static void registerSupportedScriptFormat(String language, String dialect) {
+        SUPPORTED_SCRIPT_FORMATS.put(language, dialect);
+    }
+
 	private DataTransformerRegistry transformerRegistry = DataTransformerRegistry.get();
     
     protected Node createNode(Attributes attrs) {
@@ -62,15 +75,9 @@ public class ScriptTaskHandler extends AbstractNodeHandler {
         	action = new DroolsConsequenceAction();
         	actionNode.setAction(action);
         }
-		String language = element.getAttribute("scriptFormat");
-		if (XmlBPMNProcessDumper.JAVA_LANGUAGE.equals(language)) {
-			action.setDialect(JavaDialect.ID);
-		} else if (XmlBPMNProcessDumper.JAVASCRIPT_LANGUAGE.equals(language)) {
-		    action.setDialect("JavaScript");
-		} else if (XmlBPMNProcessDumper.FEEL_LANGUAGE.equals(language) || XmlBPMNProcessDumper.FEEL_LANGUAGE_SHORT.equals(language)) {
-		    action.setDialect("FEEL");
-		}
-		action.setConsequence("");
+        String language = element.getAttribute("scriptFormat");
+        action.setDialect(SUPPORTED_SCRIPT_FORMATS.getOrDefault(language, "mvel"));
+        action.setConsequence("");
 	    
         dataInputs.clear();
         dataOutputs.clear();

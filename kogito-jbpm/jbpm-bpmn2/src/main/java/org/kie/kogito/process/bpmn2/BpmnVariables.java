@@ -15,21 +15,37 @@
 
 package org.kie.kogito.process.bpmn2;
 
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
+import java.util.function.Predicate;
+import java.util.stream.Collectors;
 
+import org.jbpm.process.core.context.variable.Variable;
 import org.kie.kogito.Model;
 
 public class BpmnVariables implements Model {
 
+    public static final Predicate<Variable> OUTPUTS_ONLY = v -> v.hasTag(Variable.OUTPUT_TAG);
+    public static final Predicate<Variable> INPUTS_ONLY = v -> v.hasTag(Variable.INPUT_TAG);
+    public static final Predicate<Variable> INTERNAL_ONLY = v -> v.hasTag(Variable.INTERNAL_TAG);    
+    
     private final Map<String, Object> variables = new HashMap<>();
 
-    private BpmnVariables(){
+    private List<Variable> definitions = new ArrayList<>();
+
+    protected BpmnVariables() {
         
     }
     
-    private BpmnVariables(Map<String, Object> variables){
+    protected BpmnVariables(Map<String, Object> variables) {
+        this.variables.putAll(variables);
+    }
+
+    protected BpmnVariables(List<Variable> definitions, Map<String, Object> variables) {
+        this.definitions = definitions;
         this.variables.putAll(variables);
     }
 
@@ -54,8 +70,20 @@ public class BpmnVariables implements Model {
         variables.putAll(vs);
     }
 
+    public List<Variable> definitions() {
+        return definitions;
+    }
+
     @Override
     public Map<String, Object> toMap() {
         return Collections.unmodifiableMap(variables);
+    }
+    
+    public Map<String, Object> toMap(Predicate<Variable> filter) {
+        
+        return definitions.stream()
+            .filter(filter)
+            .filter(v -> variables.containsKey(v.getName()))
+            .collect(Collectors.toMap(v -> v.getName(), v -> v.getName()));               
     }
 }

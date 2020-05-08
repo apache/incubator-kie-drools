@@ -19,8 +19,10 @@ package org.jbpm.workflow.core;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.function.BiFunction;
 
 import org.jbpm.process.core.Process;
+import org.jbpm.process.instance.ProcessInstance;
 import org.kie.api.definition.process.Node;
 
 /**
@@ -98,4 +100,8 @@ public interface WorkflowProcess extends org.kie.api.definition.process.Workflow
     
     List<Node> getNodesRecursively();
     
+    void setExpressionEvaluator(BiFunction<String, ProcessInstance, String> expressionEvaluator);
+
+    String evaluateExpression(String metaData, ProcessInstance processInstance);
+
 }

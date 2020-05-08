@@ -129,13 +129,10 @@ public class EndEventTest extends JbpmBpmn2TestCase {
         
         nodeInstanceId = ((org.drools.core.process.instance.WorkItem) workItem).getNodeInstanceId();
         nodeId = ((org.drools.core.process.instance.WorkItem) workItem).getNodeId();
-        deploymentId = ((org.drools.core.process.instance.WorkItem) workItem).getDeploymentId();
         
         assertNotNull(nodeId);
         assertTrue(nodeId > 0);
         assertNotNull(nodeInstanceId);
-        assertNotNull(deploymentId);
-        assertEquals("testDeploymentId", deploymentId);
     }
 
     @Test

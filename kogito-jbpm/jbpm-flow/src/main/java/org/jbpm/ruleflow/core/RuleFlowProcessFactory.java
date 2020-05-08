@@ -26,7 +26,7 @@ import org.jbpm.process.core.event.EventTypeFilter;
 import org.jbpm.process.core.timer.Timer;
 import org.jbpm.process.core.validation.ProcessValidationError;
 import org.jbpm.process.instance.impl.Action;
-import org.jbpm.process.instance.impl.CancelNodeInstanceAction;
+import org.jbpm.process.instance.impl.actions.CancelNodeInstanceAction;
 import org.jbpm.ruleflow.core.validation.RuleFlowProcessValidator;
 import org.jbpm.workflow.core.DroolsAction;
 import org.jbpm.workflow.core.impl.DroolsConsequenceAction;

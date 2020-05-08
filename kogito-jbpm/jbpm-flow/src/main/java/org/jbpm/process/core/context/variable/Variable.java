@@ -164,4 +164,8 @@ public class Variable implements TypeObject, ValueObject, Serializable {
     public boolean hasTag(String tagName) {
         return getTags().contains(tagName);
     }
+    
+    public boolean matchByIdOrName(String nameOrId) {
+        return (id.equals(nameOrId) || name.equals(nameOrId));        
+    }
 }

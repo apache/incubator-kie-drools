@@ -1,38 +1,73 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!-- origin at X=0.0 Y=0.0 -->
-<bpmn2:definitions xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:bpmn2="http://www.omg.org/spec/BPMN/20100524/MODEL" xmlns:bpmndi="http://www.omg.org/spec/BPMN/20100524/DI" xmlns:dc="http://www.omg.org/spec/DD/20100524/DC" xmlns:di="http://www.omg.org/spec/DD/20100524/DI" xmlns:java="http://www.java.com/javaTypes" xmlns:tns="http://www.jboss.org/drools" xmlns="http://www.jboss.org/drools" xsi:schemaLocation="http://www.omg.org/spec/BPMN/20100524/MODEL BPMN20.xsd http://www.jboss.org/drools drools.xsd http://www.bpsim.org/schemas/1.0 bpsim.xsd" id="Definition" exporter="org.eclipse.bpmn2.modeler.core" exporterVersion="1.1.3.201505112032" expressionLanguage="http://www.mvel.org/2.0" targetNamespace="http://www.example.org/MinimalExample" typeLanguage="http://www.java.com/javaTypes">
+<bpmn2:definitions xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:bpmn2="http://www.omg.org/spec/BPMN/20100524/MODEL" xmlns:bpmndi="http://www.omg.org/spec/BPMN/20100524/DI" xmlns:dc="http://www.omg.org/spec/DD/20100524/DC" xmlns:di="http://www.omg.org/spec/DD/20100524/DI" xmlns:java="http://www.java.com/javaTypes" xmlns:tns="http://www.jboss.org/drools" xmlns="http://www.jboss.org/drools" xsi:schemaLocation="http://www.omg.org/spec/BPMN/20100524/MODEL BPMN20.xsd http://www.jboss.org/drools drools.xsd http://www.bpsim.org/schemas/1.0 bpsim.xsd" id="Definition" exporter="org.eclipse.bpmn2.modeler.core" exporterVersion="1.5.1.Final-v20190425-2005-B1" expressionLanguage="http://www.mvel.org/2.0" targetNamespace="http://www.example.org/MinimalExample" typeLanguage="http://www.java.com/javaTypes">
   <bpmn2:itemDefinition id="_xItem" isCollection="false" structureRef="String"/>
   <bpmn2:process id="CompensateIntermediateThrowEvent" name="Compensate Intermediate Throw Event Process" isExecutable="true" processType="Private">
     <bpmn2:property id="x" itemSubjectRef="_xItem" name="x"/>
     <bpmn2:startEvent id="_1" name="StartProcess">
+      <bpmn2:extensionElements>
+        <tns:metaData name="elementname">
+          <tns:metaValue><![CDATA[StartProcess]]></tns:metaValue>
+        </tns:metaData>
+      </bpmn2:extensionElements>
       <bpmn2:outgoing>_1-_2</bpmn2:outgoing>
     </bpmn2:startEvent>
     <bpmn2:sequenceFlow id="_1-_2" sourceRef="_1" targetRef="_2"/>
     <bpmn2:userTask id="_2" name="User Task">
+      <bpmn2:extensionElements>
+        <tns:metaData name="elementname">
+          <tns:metaValue><![CDATA[User Task]]></tns:metaValue>
+        </tns:metaData>
+      </bpmn2:extensionElements>
       <bpmn2:incoming>_1-_2</bpmn2:incoming>
       <bpmn2:outgoing>_2-_3</bpmn2:outgoing>
     </bpmn2:userTask>
     <bpmn2:sequenceFlow id="_2-_3" sourceRef="_2" targetRef="_3"/>
     <bpmn2:scriptTask id="_3" name="Task">
+      <bpmn2:extensionElements>
+        <tns:metaData name="elementname">
+          <tns:metaValue><![CDATA[Task]]></tns:metaValue>
+        </tns:metaData>
+      </bpmn2:extensionElements>
       <bpmn2:incoming>_2-_3</bpmn2:incoming>
       <bpmn2:outgoing>_3-_4</bpmn2:outgoing>
-      <bpmn2:script>System.out.println("Executing task");</bpmn2:script>
+      <bpmn2:script>System.out.println(&quot;Executing task&quot;);</bpmn2:script>
     </bpmn2:scriptTask>
     <bpmn2:sequenceFlow id="_3-_4" sourceRef="_3" targetRef="_4"/>
     <bpmn2:intermediateThrowEvent id="_4" name="CompensateEvent">
+      <bpmn2:extensionElements>
+        <tns:metaData name="elementname">
+          <tns:metaValue><![CDATA[CompensateEvent]]></tns:metaValue>
+        </tns:metaData>
+      </bpmn2:extensionElements>
       <bpmn2:incoming>_3-_4</bpmn2:incoming>
       <bpmn2:outgoing>_4-_5</bpmn2:outgoing>
-      <bpmn2:compensateEventDefinition id="_4-x" activityRef="_2" waitForCompletion="true"/>
+      <bpmn2:compensateEventDefinition id="_4-x" activityRef="_3" waitForCompletion="true"/>
     </bpmn2:intermediateThrowEvent>
     <bpmn2:sequenceFlow id="_4-_5" sourceRef="_4" targetRef="_5"/>
     <bpmn2:endEvent id="_5" name="EndEvent">
+      <bpmn2:extensionElements>
+        <tns:metaData name="elementname">
+          <tns:metaValue><![CDATA[EndEvent]]></tns:metaValue>
+        </tns:metaData>
+      </bpmn2:extensionElements>
       <bpmn2:incoming>_4-_5</bpmn2:incoming>
     </bpmn2:endEvent>
     <bpmn2:boundaryEvent id="_10" name="CompensateEvent" attachedToRef="_3">
+      <bpmn2:extensionElements>
+        <tns:metaData name="elementname">
+          <tns:metaValue><![CDATA[CompensateEvent]]></tns:metaValue>
+        </tns:metaData>
+      </bpmn2:extensionElements>
       <bpmn2:compensateEventDefinition id="CompensateEventDefinition_2" waitForCompletion="true"/>
     </bpmn2:boundaryEvent>
     <bpmn2:scriptTask id="_11" name="Compensate" isForCompensation="true">
-      <bpmn2:script>kcontext.setVariable("x", Integer.toString(Integer.parseInt(kcontext.getVariable("x").toString()) + 1));</bpmn2:script>
+      <bpmn2:extensionElements>
+        <tns:metaData name="elementname">
+          <tns:metaValue><![CDATA[Compensate]]></tns:metaValue>
+        </tns:metaData>
+      </bpmn2:extensionElements>
+      <bpmn2:script>kcontext.setVariable(&quot;x&quot;, Integer.toString(Integer.parseInt(kcontext.getVariable(&quot;x&quot;).toString()) + 1));</bpmn2:script>
     </bpmn2:scriptTask>
     <bpmn2:association id="_10-_11" sourceRef="_10" targetRef="_11"/>
   </bpmn2:process>
@@ -40,43 +75,43 @@
     <bpmndi:BPMNPlane id="BPMNPlane_Process_1" bpmnElement="CompensateIntermediateThrowEvent">
       <bpmndi:BPMNShape id="BPMNShape_StartEvent_1" bpmnElement="_1">
         <dc:Bounds height="36.0" width="36.0" x="50.0" y="57.0"/>
-        <bpmndi:BPMNLabel>
+        <bpmndi:BPMNLabel id="BPMNLabel_1">
           <dc:Bounds height="14.0" width="71.0" x="33.0" y="93.0"/>
         </bpmndi:BPMNLabel>
       </bpmndi:BPMNShape>
       <bpmndi:BPMNShape id="BPMNShape_UserTask_1" bpmnElement="_2">
         <dc:Bounds height="50.0" width="110.0" x="140.0" y="68.0"/>
-        <bpmndi:BPMNLabel>
+        <bpmndi:BPMNLabel id="BPMNLabel_2">
           <dc:Bounds height="14.0" width="57.0" x="166.0" y="86.0"/>
         </bpmndi:BPMNLabel>
       </bpmndi:BPMNShape>
       <bpmndi:BPMNShape id="BPMNShape_ScriptTask_1" bpmnElement="_3">
         <dc:Bounds height="50.0" width="110.0" x="296.0" y="50.0"/>
-        <bpmndi:BPMNLabel>
+        <bpmndi:BPMNLabel id="BPMNLabel_3">
           <dc:Bounds height="14.0" width="27.0" x="337.0" y="68.0"/>
         </bpmndi:BPMNLabel>
       </bpmndi:BPMNShape>
       <bpmndi:BPMNShape id="BPMNShape_IntermediateThrowEvent_1" bpmnElement="_4">
         <dc:Bounds height="36.0" width="36.0" x="456.0" y="57.0"/>
-        <bpmndi:BPMNLabel>
+        <bpmndi:BPMNLabel id="BPMNLabel_4">
           <dc:Bounds height="28.0" width="75.0" x="437.0" y="93.0"/>
         </bpmndi:BPMNLabel>
       </bpmndi:BPMNShape>
       <bpmndi:BPMNShape id="BPMNShape_EndEvent_1" bpmnElement="_5">
         <dc:Bounds height="36.0" width="36.0" x="542.0" y="57.0"/>
-        <bpmndi:BPMNLabel>
+        <bpmndi:BPMNLabel id="BPMNLabel_5">
           <dc:Bounds height="14.0" width="52.0" x="534.0" y="93.0"/>
         </bpmndi:BPMNLabel>
       </bpmndi:BPMNShape>
       <bpmndi:BPMNShape id="BPMNShape_ScriptTask_2" bpmnElement="_11">
         <dc:Bounds height="50.0" width="110.0" x="320.0" y="160.0"/>
-        <bpmndi:BPMNLabel>
+        <bpmndi:BPMNLabel id="BPMNLabel_6">
           <dc:Bounds height="14.0" width="72.0" x="339.0" y="178.0"/>
         </bpmndi:BPMNLabel>
       </bpmndi:BPMNShape>
       <bpmndi:BPMNShape id="BPMNShape_BoundaryEvent_1" bpmnElement="_10">
         <dc:Bounds height="36.0" width="36.0" x="332.0" y="82.0"/>
-        <bpmndi:BPMNLabel>
+        <bpmndi:BPMNLabel id="BPMNLabel_7">
           <dc:Bounds height="28.0" width="75.0" x="313.0" y="118.0"/>
         </bpmndi:BPMNLabel>
       </bpmndi:BPMNShape>
@@ -85,26 +120,26 @@
         <di:waypoint xsi:type="dc:Point" x="68.0" y="47.0"/>
         <di:waypoint xsi:type="dc:Point" x="195.0" y="47.0"/>
         <di:waypoint xsi:type="dc:Point" x="195.0" y="68.0"/>
-        <bpmndi:BPMNLabel/>
+        <bpmndi:BPMNLabel id="BPMNLabel_8"/>
       </bpmndi:BPMNEdge>
       <bpmndi:BPMNEdge id="BPMNEdge_SequenceFlow_2" bpmnElement="_2-_3" sourceElement="BPMNShape_UserTask_1" targetElement="BPMNShape_ScriptTask_1">
         <di:waypoint xsi:type="dc:Point" x="250.0" y="93.0"/>
         <di:waypoint xsi:type="dc:Point" x="273.0" y="93.0"/>
         <di:waypoint xsi:type="dc:Point" x="273.0" y="75.0"/>
         <di:waypoint xsi:type="dc:Point" x="296.0" y="75.0"/>
-        <bpmndi:BPMNLabel/>
+        <bpmndi:BPMNLabel id="BPMNLabel_9"/>
       </bpmndi:BPMNEdge>
       <bpmndi:BPMNEdge id="BPMNEdge_SequenceFlow_3" bpmnElement="_3-_4" sourceElement="BPMNShape_ScriptTask_1" targetElement="BPMNShape_IntermediateThrowEvent_1">
         <di:waypoint xsi:type="dc:Point" x="406.0" y="75.0"/>
         <di:waypoint xsi:type="dc:Point" x="431.0" y="75.0"/>
         <di:waypoint xsi:type="dc:Point" x="456.0" y="75.0"/>
-        <bpmndi:BPMNLabel/>
+        <bpmndi:BPMNLabel id="BPMNLabel_10"/>
       </bpmndi:BPMNEdge>
       <bpmndi:BPMNEdge id="BPMNEdge_SequenceFlow_4" bpmnElement="_4-_5" sourceElement="BPMNShape_IntermediateThrowEvent_1" targetElement="BPMNShape_EndEvent_1">
         <di:waypoint xsi:type="dc:Point" x="492.0" y="75.0"/>
         <di:waypoint xsi:type="dc:Point" x="517.0" y="75.0"/>
         <di:waypoint xsi:type="dc:Point" x="542.0" y="75.0"/>
-        <bpmndi:BPMNLabel/>
+        <bpmndi:BPMNLabel id="BPMNLabel_11"/>
       </bpmndi:BPMNEdge>
       <bpmndi:BPMNEdge id="BPMNEdge_Association_1" bpmnElement="_10-_11" sourceElement="BPMNShape_BoundaryEvent_1" targetElement="BPMNShape_ScriptTask_2">
         <di:waypoint xsi:type="dc:Point" x="368.0" y="100.0"/>

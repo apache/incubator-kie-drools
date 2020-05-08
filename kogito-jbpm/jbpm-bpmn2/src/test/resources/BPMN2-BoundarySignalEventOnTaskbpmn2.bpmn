@@ -25,6 +25,7 @@
         <dataInput id="_DataInput_5" name="GroupId"/>
         <dataInput id="_DataInput_6" name="Skippable"/>
         <dataInput id="_DataInput_7" name="Content"/>
+        <dataOutput id="_DataOutput_1" name="Output"/>
         <inputSet id="_InputSet_2" name="  Input Set 2">
           <dataInputRefs>_DataInput_2</dataInputRefs>
           <dataInputRefs>_DataInput_3</dataInputRefs>
@@ -33,7 +34,9 @@
           <dataInputRefs>_DataInput_6</dataInputRefs>
           <dataInputRefs>_DataInput_7</dataInputRefs>
         </inputSet>
-        <outputSet/>
+        <outputSet>
+          <dataOutputRefs>_DataOutput_1</dataOutputRefs>
+        </outputSet>
       </ioSpecification>
       <dataInputAssociation id="_DataInputAssociation_2">
         <targetRef>_DataInput_2</targetRef>
@@ -53,6 +56,10 @@
       <dataInputAssociation id="_DataInputAssociation_7">
         <targetRef>_DataInput_7</targetRef>
       </dataInputAssociation>
+      <dataOutputAssociation id="_DataOutputAssociation_7">
+        <sourceRef>_DataOutput_1</sourceRef>
+        <targetRef>x</targetRef>
+      </dataOutputAssociation>
       <potentialOwner id="PotentialOwner_1" name="john">
         <resourceAssignmentExpression id="ResourceAssignmentExpression_1">
           <formalExpression id="FormalExpression_1">john</formalExpression>

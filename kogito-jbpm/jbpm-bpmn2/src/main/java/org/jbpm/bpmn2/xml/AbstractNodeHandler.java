@@ -27,12 +27,6 @@ import java.util.concurrent.atomic.AtomicInteger;
 
 import org.drools.compiler.compiler.xml.XmlDumper;
 import org.drools.compiler.rule.builder.dialect.java.JavaDialect;
-import org.jbpm.process.core.datatype.DataType;
-import org.jbpm.process.core.datatype.impl.type.BooleanDataType;
-import org.jbpm.process.core.datatype.impl.type.FloatDataType;
-import org.jbpm.process.core.datatype.impl.type.IntegerDataType;
-import org.jbpm.process.core.datatype.impl.type.ObjectDataType;
-import org.jbpm.process.core.datatype.impl.type.StringDataType;
 import org.drools.core.xml.BaseAbstractHandler;
 import org.drools.core.xml.ExtensibleXmlParser;
 import org.drools.core.xml.Handler;
@@ -44,7 +38,15 @@ import org.jbpm.bpmn2.core.Lane;
 import org.jbpm.bpmn2.core.SequenceFlow;
 import org.jbpm.bpmn2.core.Signal;
 import org.jbpm.compiler.xml.ProcessBuildData;
+import org.jbpm.process.core.ContextContainer;
 import org.jbpm.process.core.context.variable.Variable;
+import org.jbpm.process.core.context.variable.VariableScope;
+import org.jbpm.process.core.datatype.DataType;
+import org.jbpm.process.core.datatype.impl.type.BooleanDataType;
+import org.jbpm.process.core.datatype.impl.type.FloatDataType;
+import org.jbpm.process.core.datatype.impl.type.IntegerDataType;
+import org.jbpm.process.core.datatype.impl.type.ObjectDataType;
+import org.jbpm.process.core.datatype.impl.type.StringDataType;
 import org.jbpm.ruleflow.core.RuleFlowProcess;
 import org.jbpm.workflow.core.DroolsAction;
 import org.jbpm.workflow.core.Node;
@@ -587,33 +589,6 @@ public abstract class AbstractNodeHandler extends BaseAbstractHandler implements
 		}
 	}
 
-    protected String getSignalExpression(NodeImpl node, String signalName, String variable) {
-        String signalExpression = RUNTIME_SIGNAL_EVENT;
-        String scope = (String) node.getMetaData("customScope");
-        if ("processInstance".equalsIgnoreCase(scope)) {
-            signalExpression = PROCESS_INSTANCE_SIGNAL_EVENT +  "org.jbpm.process.instance.impl.util.VariableUtil.resolveVariable(\""+ signalName + "\", kcontext.getNodeInstance()), " + (variable == null ? "null" : variable) + ");";
-        } else if ("runtimeManager".equalsIgnoreCase(scope) || "project".equalsIgnoreCase(scope)) {
-            signalExpression = RUNTIME_MANAGER_SIGNAL_EVENT + "org.jbpm.process.instance.impl.util.VariableUtil.resolveVariable(\""+ signalName + "\", kcontext.getNodeInstance()), " + (variable == null ? "null" : variable) + ");";
-        } else if ("external".equalsIgnoreCase(scope)) {
-            signalExpression = "org.drools.core.process.instance.impl.WorkItemImpl workItem = new org.drools.core.process.instance.impl.WorkItemImpl();" + EOL +
-            "workItem.setName(\"External Send Task\");" + EOL +
-            "workItem.setNodeInstanceId(kcontext.getNodeInstance().getId());" + EOL +
-            "workItem.setProcessInstanceId(kcontext.getProcessInstance().getId());" + EOL +
-            "workItem.setNodeId(kcontext.getNodeInstance().getNodeId());" + EOL +
-            "workItem.setDeploymentId((String) kcontext.getKnowledgeRuntime().getEnvironment().get(\"deploymentId\"));" + EOL +
-            "workItem.setParameter(\"Signal\", org.jbpm.process.instance.impl.util.VariableUtil.resolveVariable(\""+ signalName + "\", kcontext.getNodeInstance()));" + EOL +
-            "workItem.setParameter(\"SignalProcessInstanceId\", kcontext.getVariable(\"SignalProcessInstanceId\"));" + EOL +
-            "workItem.setParameter(\"SignalWorkItemId\", kcontext.getVariable(\"SignalWorkItemId\"));" + EOL +
-            "workItem.setParameter(\"SignalDeploymentId\", kcontext.getVariable(\"SignalDeploymentId\"));" + EOL +
-            (variable == null ? "" : "workItem.setParameter(\"Data\", " + variable + ");" + EOL) +
-            "((org.drools.core.process.instance.WorkItemManager) kcontext.getKnowledgeRuntime().getWorkItemManager()).internalExecuteWorkItem(workItem);";
-        } else {
-            signalExpression = signalExpression +  "org.jbpm.process.instance.impl.util.VariableUtil.resolveVariable(\""+ signalName + "\", kcontext.getNodeInstance()), " + (variable == null ? "null" : variable) + ");";
-        }
-
-        return signalExpression;
-    }
-
     private static final String SIGNAL_NAMES = "signalNames";
 
     protected String checkSignalAndConvertToRealSignalNam(ExtensibleXmlParser parser, String signalName) {
@@ -661,4 +636,29 @@ public abstract class AbstractNodeHandler extends BaseAbstractHandler implements
         
         return null;
     }
+    
+    
+    /**
+     * Finds the right variable by its name to make sure that when given as id it will be also matched
+     * @param variableName name or id of the variable
+     * @param parser parser instance
+     * @return returns found variable name or given 'variableName' otherwise
+     */
+    protected String findVariable(String variableName, final ExtensibleXmlParser parser) {
+        if (variableName == null) {
+            return null;
+        }
+        List<?> parents = parser.getParents();
+        
+        for (Object parent : parents) {
+            if (parent instanceof ContextContainer) {
+                ContextContainer contextContainer = (ContextContainer) parent;
+                VariableScope variableScope = (VariableScope) contextContainer.getDefaultContext(VariableScope.VARIABLE_SCOPE);
+                return variableScope.getVariables().stream().filter(v -> v.matchByIdOrName(variableName)).map(v -> v.getName()).findFirst().orElse(variableName);
+            }
+        }
+        
+        return variableName;
+    }
+
 }

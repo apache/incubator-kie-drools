@@ -17,13 +17,24 @@
 package org.jbpm.workflow.core.impl;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
+import java.util.function.BiFunction;
+import java.util.regex.Matcher;
 
+import org.drools.core.util.MVELSafeHelper;
 import org.jbpm.process.core.impl.ProcessImpl;
+import org.jbpm.process.instance.ProcessInstance;
+import org.jbpm.util.PatternConstants;
 import org.jbpm.workflow.core.WorkflowProcess;
 import org.jbpm.workflow.core.node.StartNode;
+import org.jbpm.workflow.instance.WorkflowProcessInstance;
+import org.jbpm.workflow.instance.impl.ProcessInstanceResolverFactory;
 import org.kie.api.definition.process.Node;
 import org.kie.api.definition.process.NodeContainer;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * Default implementation of a RuleFlow process.
@@ -32,10 +43,37 @@ import org.kie.api.definition.process.NodeContainer;
 public class WorkflowProcessImpl extends ProcessImpl implements WorkflowProcess, org.jbpm.workflow.core.NodeContainer {
 
     private static final long serialVersionUID = 510l;
+    private static final Logger logger = LoggerFactory.getLogger(WorkflowProcessImpl.class);
 
     private boolean autoComplete = false;
     private boolean dynamic = false;
     private org.jbpm.workflow.core.NodeContainer nodeContainer;
+    
+    
+    private transient BiFunction<String, ProcessInstance, String> expressionEvaluator = (expression, p) -> {
+        
+        String evaluatedValue = expression;
+        Map<String, String> replacements = new HashMap<String, String>();
+        Matcher matcher = PatternConstants.PARAMETER_MATCHER.matcher(evaluatedValue);
+        while (matcher.find()) {
+            String paramName = matcher.group(1);
+            if (replacements.get(paramName) == null) {
+                try {
+                    String value = (String) MVELSafeHelper.getEvaluator()
+                            .eval(paramName,new ProcessInstanceResolverFactory(((WorkflowProcessInstance) p)));
+                    replacements.put(paramName, value);
+                } catch (Throwable t) {
+                    logger.error("Could not resolve, parameter {} while evaluating expression {}",paramName, expression, t);                    
+                }
+            }
+        }
+        for (Map.Entry<String, String> replacement : replacements.entrySet()) {
+            evaluatedValue = evaluatedValue.replace("#{" + replacement.getKey() + "}", replacement.getValue());
+        }
+        
+        return evaluatedValue;
+        
+    };
 
     public WorkflowProcessImpl() {
         nodeContainer = (org.jbpm.workflow.core.NodeContainer) createNodeContainer();
@@ -145,5 +183,14 @@ public class WorkflowProcessImpl extends ProcessImpl implements WorkflowProcess,
         }
 
         return timerStartNodes;
+    }
+    
+    
+    public void setExpressionEvaluator(BiFunction<String, ProcessInstance, String> expressionEvaluator) {
+        this.expressionEvaluator = expressionEvaluator;
+    }
+    
+    public String evaluateExpression(String metaData, ProcessInstance processInstance) {
+        return this.expressionEvaluator.apply(metaData, processInstance);
     }
 }

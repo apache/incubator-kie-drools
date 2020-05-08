@@ -16,14 +16,20 @@
 
 package org.jbpm.bpmn2;
 
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.kie.api.runtime.process.ProcessInstance.STATE_ABORTED;
+import static org.kie.api.runtime.process.ProcessInstance.STATE_ACTIVE;
 
 import java.util.Collections;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
+import org.drools.core.io.impl.ClassPathResource;
 import org.jbpm.bpmn2.objects.TestWorkItemHandler;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.Test;
@@ -34,6 +40,8 @@ import org.kie.api.runtime.KieSession;
 import org.kie.api.runtime.process.ProcessInstance;
 import org.kie.api.runtime.process.WorkItem;
 import org.kie.kogito.process.VariableViolationException;
+import org.kie.kogito.process.bpmn2.BpmnProcess;
+import org.kie.kogito.process.bpmn2.BpmnVariables;
 
 public class VariableTagsTest extends JbpmBpmn2TestCase {
 
@@ -132,5 +140,28 @@ public class VariableTagsTest extends JbpmBpmn2TestCase {
         assertThrows(VariableViolationException.class, () -> ksession.startProcess("approvals", parameters));
         
         ksession.dispose();
+    }
+    
+    @Test
+    public void testRequiredVariableFiltering() {
+        List<BpmnProcess> processes = BpmnProcess.from(new ClassPathResource("variable-tags/approval-with-custom-variable-tags.bpmn2"));
+        BpmnProcess process = processes.get(0);        
+        Map<String, Object> params = new HashMap<String, Object>();
+        params.put("approver", "john");
+
+        org.kie.kogito.process.ProcessInstance<BpmnVariables> instance = process.createInstance(BpmnVariables.create(params));
+        instance.start();
+        
+        assertEquals(STATE_ACTIVE, instance.status());
+        
+        assertThat(instance.variables().toMap()).hasSize(1);
+        assertThat(instance.variables().toMap(BpmnVariables.OUTPUTS_ONLY)).hasSize(0);
+        assertThat(instance.variables().toMap(BpmnVariables.INPUTS_ONLY)).hasSize(0);
+        assertThat(instance.variables().toMap(BpmnVariables.INTERNAL_ONLY)).hasSize(0);
+        assertThat(instance.variables().toMap(v -> v.hasTag("onlyAdmin"))).hasSize(1);
+        
+        instance.abort();
+        
+        assertEquals(STATE_ABORTED, instance.status());
     }
 }

@@ -18,6 +18,8 @@ package org.jbpm.process.core.event;
 
 import java.io.Serializable;
 import java.util.Collections;
+import java.util.Map;
+import java.util.Optional;
 
 import org.jbpm.process.core.impl.DataTransformerRegistry;
 import org.jbpm.workflow.core.node.Transformation;
@@ -41,15 +43,20 @@ public class EventTransformerImpl implements EventTransformer, Serializable {
 		}
 	}
 
-	@Override
+	@SuppressWarnings({"unchecked"})
+    @Override
 	public Object transformEvent(Object event) {
 		if (event == null || transformation == null) {
 			return event;
 		}
 		DataTransformer transformer = DataTransformerRegistry.get().find(transformation.getLanguage());
     	if (transformer != null) {
-    		Object parameterValue = transformer.transform(transformation.getCompiledExpression(), Collections.singletonMap(name, event));
-    		return parameterValue;
+
+    		return transformer.transform(transformation.getCompiledExpression(),
+                                  Optional.ofNullable(event)
+                                          .filter(Map.class::isInstance)
+                                          .map(Map.class::cast)
+                                          .orElseGet(() -> Collections.singletonMap(name, event)));
     	}
 		return event;
 	}

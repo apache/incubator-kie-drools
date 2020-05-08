@@ -140,7 +140,7 @@ public class BoundaryEventHandler extends AbstractNodeHandler {
                 String outputName = ((Element) xmlNode).getAttribute("name");
                 dataOutputs.put(id, outputName);
             } else if ("dataOutputAssociation".equals(nodeName)) {
-                readDataOutputAssociation(xmlNode, eventNode);
+                readDataOutputAssociation(xmlNode, eventNode, parser);
             } else if ("escalationEventDefinition".equals(nodeName)) {
                 String escalationRef = ((Element) xmlNode).getAttribute("escalationRef");
                 if (escalationRef != null && escalationRef.trim().length() > 0) {
@@ -184,7 +184,7 @@ public class BoundaryEventHandler extends AbstractNodeHandler {
                 String outputName = ((Element) xmlNode).getAttribute("name");
                 dataOutputs.put(id, outputName);
             } else if ("dataOutputAssociation".equals(nodeName)) {
-                readDataOutputAssociation(xmlNode, eventNode);
+                readDataOutputAssociation(xmlNode, eventNode, parser);
             } else if ("errorEventDefinition".equals(nodeName)) {
                 String errorRef = ((Element) xmlNode).getAttribute("errorRef");
                 if (errorRef != null && errorRef.trim().length() > 0) {
@@ -345,7 +345,7 @@ public class BoundaryEventHandler extends AbstractNodeHandler {
                 String outputName = ((Element) xmlNode).getAttribute("name");
                 dataOutputs.put(id, outputName);
             } if ("dataOutputAssociation".equals(nodeName)) {
-                readDataOutputAssociation(xmlNode, eventNode);
+                readDataOutputAssociation(xmlNode, eventNode, parser);
             } else if ("signalEventDefinition".equals(nodeName)) {
                 String type = ((Element) xmlNode).getAttribute("signalRef");
                 if (type != null && type.trim().length() > 0) {
@@ -382,7 +382,7 @@ public class BoundaryEventHandler extends AbstractNodeHandler {
                 String outputName = ((Element) xmlNode).getAttribute("name");
                 dataOutputs.put(id, outputName);
             } else if ("dataOutputAssociation".equals(nodeName)) {
-                readDataOutputAssociation(xmlNode, eventNode);
+                readDataOutputAssociation(xmlNode, eventNode, parser);
             } else if ("conditionalEventDefinition".equals(nodeName)) {
                 org.w3c.dom.Node subNode = xmlNode.getFirstChild();
                 while (subNode != null) {
@@ -421,7 +421,7 @@ public class BoundaryEventHandler extends AbstractNodeHandler {
                 String outputName = ((Element) xmlNode).getAttribute("name");
                 dataOutputs.put(id, outputName);
             } else if ("dataOutputAssociation".equals(nodeName)) {
-                readDataOutputAssociation(xmlNode, eventNode);
+                readDataOutputAssociation(xmlNode, eventNode, parser);
             } else if ("messageEventDefinition".equals(nodeName)) {
                 String messageRef = ((Element) xmlNode).getAttribute("messageRef");
                 Map<String, Message> messages = (Map<String, Message>) ((ProcessBuildData) parser
@@ -447,7 +447,7 @@ public class BoundaryEventHandler extends AbstractNodeHandler {
         }
     }
 
-    protected void readDataOutputAssociation(org.w3c.dom.Node xmlNode,  EventNode eventNode) {
+    protected void readDataOutputAssociation(org.w3c.dom.Node xmlNode,  EventNode eventNode, final ExtensibleXmlParser parser) {
         // sourceRef
         org.w3c.dom.Node subNode = xmlNode.getFirstChild();
         String from = subNode.getTextContent();
@@ -470,7 +470,7 @@ public class BoundaryEventHandler extends AbstractNodeHandler {
  			eventNode.setEventTransformer(new EventTransformerImpl(transformation));
  		}
 
-        eventNode.setVariableName(to);
+        eventNode.setVariableName(findVariable(to, parser));
 
     }
 

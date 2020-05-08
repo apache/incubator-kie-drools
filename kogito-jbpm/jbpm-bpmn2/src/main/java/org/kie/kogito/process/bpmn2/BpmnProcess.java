@@ -19,6 +19,8 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Objects;
 
+import org.jbpm.process.core.context.variable.VariableScope;
+import org.jbpm.workflow.core.WorkflowProcess;
 import org.kie.api.definition.process.Process;
 import org.kie.api.io.Resource;
 import org.kie.kogito.Model;
@@ -43,16 +45,20 @@ public class BpmnProcess extends AbstractProcess<BpmnVariables> {
 
     @Override
     public ProcessInstance<BpmnVariables> createInstance(Model m) {
-        return new BpmnProcessInstance(this, BpmnVariables.create(m.toMap()), this.createLegacyProcessRuntime());
+        BpmnVariables variables = createModel();
+        variables.fromMap(m.toMap());
+        return new BpmnProcessInstance(this, variables, this.createLegacyProcessRuntime());
     }
 
     public ProcessInstance<BpmnVariables> createInstance() {
-        return new BpmnProcessInstance(this, BpmnVariables.create(), this.createLegacyProcessRuntime());
+        return new BpmnProcessInstance(this, createModel(), this.createLegacyProcessRuntime());
     }
 
     @Override
     public ProcessInstance<BpmnVariables> createInstance(BpmnVariables variables) {
-        return new BpmnProcessInstance(this, variables, this.createLegacyProcessRuntime());
+        BpmnVariables variablesModel = createModel();
+        variablesModel.fromMap(variables.toMap());
+        return new BpmnProcessInstance(this, variablesModel, this.createLegacyProcessRuntime());
     }
 
     @Override
@@ -62,7 +68,8 @@ public class BpmnProcess extends AbstractProcess<BpmnVariables> {
 
     @Override
     public BpmnVariables createModel() {
-        return BpmnVariables.create(new HashMap<String, Object>());
+        VariableScope variableScope = (VariableScope) ((WorkflowProcess) legacyProcess()).getDefaultContext(VariableScope.VARIABLE_SCOPE);
+        return new BpmnVariables(variableScope.getVariables(), new HashMap<String, Object>());
     }
 
     /**

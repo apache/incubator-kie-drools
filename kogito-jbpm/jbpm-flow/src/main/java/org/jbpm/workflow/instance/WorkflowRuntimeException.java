@@ -162,7 +162,7 @@ public class WorkflowRuntimeException extends RuntimeException {
                 getProcessId(),
                 (getNodeName() == null ? "?" : getNodeName()), 
                 (getNodeId() == 0 ? "?" : getNodeId()), 
-                (getCause() == null ? getMessage() : getCause().getMessage()), 
+                (getCause() == null ? "WorkflowRuntimeException" : getCause().getMessage()), 
                 getProcessInstanceId());
     }
 

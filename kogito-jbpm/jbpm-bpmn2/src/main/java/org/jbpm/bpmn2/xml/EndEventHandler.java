@@ -16,6 +16,8 @@
 
 package org.jbpm.bpmn2.xml;
 
+import static org.jbpm.bpmn2.xml.ProcessHandler.createJavaAction;
+
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -24,14 +26,16 @@ import org.drools.core.xml.ExtensibleXmlParser;
 import org.jbpm.bpmn2.core.Error;
 import org.jbpm.bpmn2.core.Escalation;
 import org.jbpm.bpmn2.core.Message;
-import org.jbpm.bpmn2.core.Signal;
 import org.jbpm.compiler.xml.ProcessBuildData;
+import org.jbpm.process.instance.impl.actions.HandleMessageAction;
+import org.jbpm.process.instance.impl.actions.SignalProcessInstanceAction;
 import org.jbpm.workflow.core.DroolsAction;
 import org.jbpm.workflow.core.Node;
 import org.jbpm.workflow.core.NodeContainer;
 import org.jbpm.workflow.core.impl.DroolsConsequenceAction;
 import org.jbpm.workflow.core.node.EndNode;
 import org.jbpm.workflow.core.node.FaultNode;
+import org.jbpm.workflow.core.node.Transformation;
 import org.w3c.dom.Element;
 import org.w3c.dom.NodeList;
 import org.w3c.dom.Text;
@@ -150,11 +154,11 @@ public class EndEventHandler extends AbstractNodeHandler {
                 if (dataInputs.containsValue("async")) {
                     signalName = "ASYNC-" + signalName;
                 }
-
-                String signalExpression = getSignalExpression(endNode, signalName, variable);
-
+                
+                DroolsConsequenceAction action = createJavaAction(new SignalProcessInstanceAction(signalName, variable, (String) endNode.getMetaData("customScope"), (Transformation)endNode.getMetaData().get("Transformation")));
+                
                 List<DroolsAction> actions = new ArrayList<DroolsAction>();
-                actions.add(new DroolsConsequenceAction("mvel",signalExpression));
+                actions.add(action);
                 endNode.setActions(EndNode.EVENT_NODE_ENTER, actions);
             }
             xmlNode = xmlNode.getNextSibling();
@@ -186,17 +190,10 @@ public class EndEventHandler extends AbstractNodeHandler {
                 endNode.setMetaData("TriggerType", "ProduceMessage");
                 endNode.setMetaData("TriggerRef", message.getName());
                 List<DroolsAction> actions = new ArrayList<DroolsAction>();
-
-                actions.add(new DroolsConsequenceAction("java",
-                    "org.drools.core.process.instance.impl.WorkItemImpl workItem = new org.drools.core.process.instance.impl.WorkItemImpl();" + EOL +
-                    "workItem.setName(\"Send Task\");" + EOL +
-                    "workItem.setNodeInstanceId(kcontext.getNodeInstance().getId());" + EOL +
-                    "workItem.setProcessInstanceId(kcontext.getProcessInstance().getId());" + EOL +
-                    "workItem.setNodeId(kcontext.getNodeInstance().getNodeId());" + EOL +
-                    "workItem.setParameter(\"MessageType\", \"" + message.getType() + "\");" + EOL +
-                    (variable == null ? "" : "workItem.setParameter(\"Message\", " + variable + ");" + EOL) +
-					"workItem.setDeploymentId((String) kcontext.getKnowledgeRuntime().getEnvironment().get(\"deploymentId\"));" + EOL +
-                    "((org.drools.core.process.instance.WorkItemManager) kcontext.getKnowledgeRuntime().getWorkItemManager()).internalExecuteWorkItem(workItem);"));
+                
+                DroolsConsequenceAction action = createJavaAction(new HandleMessageAction(message.getType(), variable));
+                
+                actions.add(action);
                 endNode.setActions(EndNode.EVENT_NODE_ENTER, actions);
             }
             xmlNode = xmlNode.getNextSibling();
