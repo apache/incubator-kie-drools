@@ -89,11 +89,14 @@ public class KieModuleModelMethod {
                 "\n" +
                 "    @Override\n" +
                 "    public KieSession newKieSession(String sessionName, org.kie.kogito.rules.RuleConfig ruleConfig) {\n" +
-                "        return java.util.Optional.ofNullable(getKieBaseForSession(sessionName).newKieSession(getConfForSession(sessionName), null)).map(k -> {\n" +
-                "            ruleConfig.ruleEventListeners().agendaListeners().forEach( k::addEventListener );\n" +
-                "            ruleConfig.ruleEventListeners().ruleRuntimeListeners().forEach( k::addEventListener );\n" +
-                "            return k;\n" +
-                "        }).get();\n" +
+                "        KieBase kbase = getKieBaseForSession(sessionName);\n" +
+                "        if (kbase == null) {\n" +
+                "            throw new RuntimeException(\"Unknown KieSession with name '\" + sessionName + \"'\");\n" +
+                "        }\n" +
+                "        KieSession ksession = kbase.newKieSession(getConfForSession(sessionName), null);\n" +
+                "        ruleConfig.ruleEventListeners().agendaListeners().forEach( ksession::addEventListener );\n" +
+                "        ruleConfig.ruleEventListeners().ruleRuntimeListeners().forEach( ksession::addEventListener );\n" +
+                "        return ksession;\n" +
                 "    }\n";
     }
 

@@ -71,6 +71,7 @@ import org.kie.kogito.conf.EventProcessingType;
 import org.kie.kogito.grafana.GrafanaConfigurationWriter;
 import org.kie.kogito.rules.RuleUnitConfig;
 import org.kie.kogito.rules.units.AssignableChecker;
+import org.kie.kogito.rules.units.ReflectiveRuleUnitDescription;
 
 import static java.util.stream.Collectors.toList;
 
@@ -232,8 +233,6 @@ public class IncrementalRuleCodegen extends AbstractGenerator {
         KnowledgeBuilderConfigurationImpl configuration =
                 new KnowledgeBuilderConfigurationImpl(contextClassLoader);
 
-        AssignableChecker assignableChecker = AssignableChecker.create(contextClassLoader, hotReloadMode);
-
         ModelBuilderImpl<KogitoPackageSources> modelBuilder = new ModelBuilderImpl<>( KogitoPackageSources::dumpSources, configuration, dummyReleaseId, true, hotReloadMode );
 
         CompositeKnowledgeBuilder batch = modelBuilder.batch();
@@ -256,13 +255,36 @@ public class IncrementalRuleCodegen extends AbstractGenerator {
             throw new RuleCodegenError(modelBuilder.getErrors().getErrors());
         }
 
-        List<DroolsError> errors = new ArrayList<>();
-        boolean hasRuleUnits = false;
         Map<String, String> unitsMap = new HashMap<>();
-
         List<org.drools.modelcompiler.builder.GeneratedFile> modelFiles = new ArrayList<>();
         Map<String, String> modelsByUnit = new HashMap<>();
 
+        boolean hasRuleUnits = generateModels( modelBuilder, unitsMap, modelFiles, modelsByUnit );
+
+        List<org.kie.kogito.codegen.GeneratedFile> generatedFiles =
+                modelFiles.stream().map(f -> new org.kie.kogito.codegen.GeneratedFile(
+                        org.kie.kogito.codegen.GeneratedFile.Type.RULE,
+                        f.getPath(), f.getData())).collect(toList());
+
+        List<DroolsError> errors = new ArrayList<>();
+
+        if (hasRuleUnits) {
+            generateRuleUnits( errors, generatedFiles );
+        } else if (annotator != null && !hotReloadMode) {
+            generateSessionUnits( generatedFiles );
+        }
+
+        generateProject( dummyReleaseId, modelsByUnit, generatedFiles );
+
+        if (!errors.isEmpty()) {
+            throw new RuleCodegenError(errors);
+        }
+
+        return generatedFiles;
+    }
+
+    private boolean generateModels( ModelBuilderImpl<KogitoPackageSources> modelBuilder, Map<String, String> unitsMap, List<GeneratedFile> modelFiles, Map<String, String> modelsByUnit ) {
+        boolean hasRuleUnits = false;
         for (KogitoPackageSources pkgSources : modelBuilder.getPackageSources()) {
             pkgSources.getModelsByUnit().forEach( (unit, model) -> modelsByUnit.put( ruleUnit2KieBaseName( unit ), model ) );
 
@@ -289,89 +311,98 @@ public class IncrementalRuleCodegen extends AbstractGenerator {
                 }
             }
         }
+        return hasRuleUnits;
+    }
 
-        List<org.kie.kogito.codegen.GeneratedFile> generatedFiles =
-                modelFiles.stream().map(f -> new org.kie.kogito.codegen.GeneratedFile(
-                        org.kie.kogito.codegen.GeneratedFile.Type.RULE,
-                        f.getPath(), f.getData())).collect(toList());
+    private void generateProject( ReleaseIdImpl dummyReleaseId, Map<String, String> modelsByUnit, List<org.kie.kogito.codegen.GeneratedFile> generatedFiles ) {
+        KieModuleModelMethod modelMethod = new KieModuleModelMethod( kieModuleModel.getKieBaseModels() );
+        ModelSourceClass modelSourceClass = new ModelSourceClass( dummyReleaseId, modelMethod, modelsByUnit );
 
-        if (hasRuleUnits) {
+        generatedFiles.add(new org.kie.kogito.codegen.GeneratedFile(
+                org.kie.kogito.codegen.GeneratedFile.Type.RULE,
+                modelSourceClass.getName(),
+                modelSourceClass.generate()));
 
-            for (RuleUnitGenerator ruleUnit : moduleGenerator.getRuleUnits()) {
-                // add the label id of the rule unit with value set to `rules` as resource type
-                this.addLabel(ruleUnit.label(), "rules");
-                ruleUnit.setApplicationPackageName(packageName);
+        ProjectSourceClass projectSourceClass = new ProjectSourceClass(modelMethod);
+        if (annotator != null) {
+            projectSourceClass.withDependencyInjection("@" + annotator.applicationComponentType());
+        }
 
-                generatedFiles.add( ruleUnit.generateFile(org.kie.kogito.codegen.GeneratedFile.Type.RULE) );
+        generatedFiles.add(new org.kie.kogito.codegen.GeneratedFile(
+                org.kie.kogito.codegen.GeneratedFile.Type.RULE,
+                projectSourceClass.getName(),
+                projectSourceClass.generate()));
+    }
 
-                RuleUnitInstanceGenerator ruleUnitInstance = ruleUnit.instance();
-                generatedFiles.add( ruleUnitInstance.generateFile(org.kie.kogito.codegen.GeneratedFile.Type.RULE) );
+    private void generateRuleUnits( List<DroolsError> errors, List<org.kie.kogito.codegen.GeneratedFile> generatedFiles ) {
+        AssignableChecker contextChecker = null;
 
-                ruleUnit.pojo().ifPresent(p -> generatedFiles.add(p.generateFile(org.kie.kogito.codegen.GeneratedFile.Type.RULE)));
+        for (RuleUnitGenerator ruleUnit : moduleGenerator.getRuleUnits()) {
+            // add the label id of the rule unit with value set to `rules` as resource type
+            this.addLabel(ruleUnit.label(), "rules");
+            ruleUnit.setApplicationPackageName(packageName);
 
-                List<QueryEndpointGenerator> queries = ruleUnit.queries();
-                if (!queries.isEmpty()) {
-                    generatedFiles.add( new RuleUnitDTOSourceClass( ruleUnit.getRuleUnitDescription(), assignableChecker ).generateFile(org.kie.kogito.codegen.GeneratedFile.Type.RULE) );
-                    for (QueryEndpointGenerator query : queries) {
-                        if (useMonitoring){
-                            String dashboard = GrafanaConfigurationWriter.generateDashboardForEndpoint(grafanaTemplatePath, query.getEndpointName());
-                            generatedFiles.add(new org.kie.kogito.codegen.GeneratedFile(org.kie.kogito.codegen.GeneratedFile.Type.RESOURCE,
-                                                                                        "dashboards/dashboard-endpoint-" + query.getEndpointName() + ".json",
-                                                                                        dashboard));
-                        }
+            generatedFiles.add( ruleUnit.generateFile( org.kie.kogito.codegen.GeneratedFile.Type.RULE) );
 
-                        if (query.validate()) {
-                            generatedFiles.add( query.generateFile( org.kie.kogito.codegen.GeneratedFile.Type.QUERY ) );
-                        } else {
-                            errors.add( query.getError() );
-                        }
+            RuleUnitInstanceGenerator ruleUnitInstance = ruleUnit.instance();
+            generatedFiles.add( ruleUnitInstance.generateFile( org.kie.kogito.codegen.GeneratedFile.Type.RULE) );
+
+            ruleUnit.pojo().ifPresent(p -> generatedFiles.add(p.generateFile( org.kie.kogito.codegen.GeneratedFile.Type.RULE)));
+
+            List<QueryEndpointGenerator> queries = ruleUnit.queries();
+            if (!queries.isEmpty()) {
+                RuleUnitDescription ruleUnitDesc = ruleUnit.getRuleUnitDescription();
+                AssignableChecker checker;
+                if (ruleUnitDesc instanceof ReflectiveRuleUnitDescription ) {
+                    checker = (( ReflectiveRuleUnitDescription ) ruleUnitDesc).getAssignableChecker();
+                } else {
+                    if (contextChecker == null) {
+                        contextChecker = AssignableChecker.create(contextClassLoader, hotReloadMode);
                     }
+                    checker = contextChecker;
                 }
-            }
-        } else if (annotator != null && !hotReloadMode) {
-            for (KieBaseModel kBaseModel : kieModuleModel.getKieBaseModels().values()) {
-                for (String sessionName : kBaseModel.getKieSessionModels().keySet()) {
-                    CompilationUnit cu = parse( getClass().getResourceAsStream( "/class-templates/SessionRuleUnitTemplate.java" ) );
-                    ClassOrInterfaceDeclaration template = cu.findFirst( ClassOrInterfaceDeclaration.class ).get();
-                    annotator.withNamedSingletonComponent(template, "$SessionName$");
-                    template.setName( "SessionRuleUnit_" + sessionName );
 
-                    template.findAll(FieldDeclaration.class).stream().filter(fd -> fd.getVariable(0).getNameAsString().equals("runtimeBuilder")).forEach(fd -> annotator.withInjection(fd));
+                generatedFiles.add( new RuleUnitDTOSourceClass( ruleUnitDesc, checker ).generateFile( org.kie.kogito.codegen.GeneratedFile.Type.RULE) );
 
-                    template.findAll( StringLiteralExpr.class ).forEach( s -> s.setString( s.getValue().replace( "$SessionName$", sessionName ) ) );
-                    generatedFiles.add(new org.kie.kogito.codegen.GeneratedFile(
-                            org.kie.kogito.codegen.GeneratedFile.Type.RULE,
-                            "org/drools/project/model/SessionRuleUnit_" + sessionName + ".java",
-                            log( cu.toString() ) ));
+                for (QueryEndpointGenerator query : queries) {
+                    generateQueryEndpoint( errors, generatedFiles, query );
                 }
             }
         }
+    }
 
-        if (!hotReloadMode) {
-            KieModuleModelMethod modelMethod = new KieModuleModelMethod( kieModuleModel.getKieBaseModels() );
-            ModelSourceClass modelSourceClass = new ModelSourceClass( dummyReleaseId, modelMethod, modelsByUnit );
+    private void generateQueryEndpoint( List<DroolsError> errors, List<org.kie.kogito.codegen.GeneratedFile> generatedFiles, QueryEndpointGenerator query ) {
+        if (useMonitoring){
+            String dashboard = GrafanaConfigurationWriter.generateDashboardForEndpoint(grafanaTemplatePath, query.getEndpointName());
+            generatedFiles.add(new org.kie.kogito.codegen.GeneratedFile( org.kie.kogito.codegen.GeneratedFile.Type.RESOURCE,
+                                                                        "dashboards/dashboard-endpoint-" + query.getEndpointName() + ".json",
+                                                                        dashboard));
+        }
 
-            generatedFiles.add(new org.kie.kogito.codegen.GeneratedFile(
-                    org.kie.kogito.codegen.GeneratedFile.Type.RULE,
-                    modelSourceClass.getName(),
-                    modelSourceClass.generate()));
+        if (query.validate()) {
+            generatedFiles.add( query.generateFile( org.kie.kogito.codegen.GeneratedFile.Type.QUERY ) );
+        } else {
+            errors.add( query.getError() );
+        }
+    }
 
-            ProjectSourceClass projectSourceClass = new ProjectSourceClass(modelMethod);
-            if (annotator != null) {
-                projectSourceClass.withDependencyInjection("@" + annotator.applicationComponentType());
+    private void generateSessionUnits( List<org.kie.kogito.codegen.GeneratedFile> generatedFiles ) {
+        for (KieBaseModel kBaseModel : kieModuleModel.getKieBaseModels().values()) {
+            for (String sessionName : kBaseModel.getKieSessionModels().keySet()) {
+                CompilationUnit cu = parse( getClass().getResourceAsStream( "/class-templates/SessionRuleUnitTemplate.java" ) );
+                ClassOrInterfaceDeclaration template = cu.findFirst( ClassOrInterfaceDeclaration.class ).get();
+                annotator.withNamedSingletonComponent(template, "$SessionName$");
+                template.setName( "SessionRuleUnit_" + sessionName );
+
+                template.findAll( FieldDeclaration.class).stream().filter( fd -> fd.getVariable(0).getNameAsString().equals("runtimeBuilder")).forEach( fd -> annotator.withInjection(fd));
+
+                template.findAll( StringLiteralExpr.class ).forEach( s -> s.setString( s.getValue().replace( "$SessionName$", sessionName ) ) );
+                generatedFiles.add(new org.kie.kogito.codegen.GeneratedFile(
+                        org.kie.kogito.codegen.GeneratedFile.Type.RULE,
+                        "org/drools/project/model/SessionRuleUnit_" + sessionName + ".java",
+                        log( cu.toString() ) ));
             }
-
-            generatedFiles.add(new org.kie.kogito.codegen.GeneratedFile(
-                    org.kie.kogito.codegen.GeneratedFile.Type.RULE,
-                    projectSourceClass.getName(),
-                    projectSourceClass.generate()));
         }
-
-        if (!errors.isEmpty()) {
-            throw new RuleCodegenError(errors);
-        }
-
-        return generatedFiles;
     }
 
     private void addUnitConfToKieModule(RuleUnitDescription ruleUnitDescription) {

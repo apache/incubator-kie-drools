@@ -174,14 +174,14 @@ public class IncrementalRuleCodegenTest {
 
     private static void assertRules(int expectedRules, int expectedPackages, int expectedUnits, int actualGeneratedFiles) {
         assertEquals(expectedRules +
-                             expectedPackages * 2 + /* package descriptor for rules + package metadata */
-                             expectedUnits * 3, /* ruleUnit + ruleUnit instance + unit model */
-                             actualGeneratedFiles);
+                             expectedPackages * 2 + // package descriptor for rules + package metadata 
+                             expectedUnits * 3, // ruleUnit + ruleUnit instance + unit model
+                             actualGeneratedFiles - 2); // ignore ProjectModel and ProjectRuntime classes
     }
 
     private static void assertRules(int expectedRules, int expectedPackages, int actualGeneratedFiles) {
         assertEquals(expectedRules +
-                             expectedPackages * 2, /* package descriptor for rules + package metadata */
-                             actualGeneratedFiles);
+                             expectedPackages * 2, // package descriptor for rules + package metadata
+                             actualGeneratedFiles - 2); // ignore ProjectModel and ProjectRuntime classes
     }
 }

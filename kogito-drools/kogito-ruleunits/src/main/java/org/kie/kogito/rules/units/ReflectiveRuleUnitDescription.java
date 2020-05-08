@@ -104,7 +104,11 @@ public class ReflectiveRuleUnitDescription extends AbstractRuleUnitDescription {
         return null;
     }
 
-    private Class<?> getParametricType(Method m) {
+    public AssignableChecker getAssignableChecker() {
+        return assignableChecker;
+    }
+
+    private Class<?> getParametricType( Method m) {
         Type returnType = m.getGenericReturnType();
         return returnType instanceof ParameterizedType ?
                 (Class<?>) ((ParameterizedType) returnType).getActualTypeArguments()[0] :
