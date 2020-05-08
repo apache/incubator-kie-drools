@@ -25,11 +25,12 @@ import org.kie.dmn.model.api.ItemDefinition;
 /**
  * Represent a DMN type; in the vast majority of cases, this representation exists as a result of a DMN model specifying an {@link ItemDefinition}.<br/>
  * <br/>
- * To be noted FEEL built-in {@link org.kie.dmn.feel.lang.Type}(s) find an equivalent representation as a DMN type when the {@link DMNModel} is compiled.
- * This is by design, since the DMN layer of the Drools DMN open source engine is based <i>on top</i> of the FEEL layer.<br/>
- * <br/>
+ * <h1>Design document</h1>
  * A DMN type has a <code>namespace</code>; when a DMN type is a representation of an {@link ItemDefinition} defined in a DMN model, the namespace correspond to the model's namespace as per {@link DMNModel#getNamespace()}.
  * When the namespace is a FEEL reserved namespace such as <code>https://www.omg.org/spec/DMN/20191111/FEEL/</code> then the DMN type stands for an equivalent representation of a built-in FEEL type.<br/>
+ * <br/>
+ * To be noted FEEL built-in {@link org.kie.dmn.feel.lang.Type}(s) find an equivalent representation as a DMN type when the {@link DMNModel} is compiled.
+ * This is by design, since the DMN layer of the Drools DMN open source engine is based <i>on top</i> of the FEEL layer.<br/>
  * <br/>
  * A DMN type has a <code>name</code>; this usually corresponds to the  {@link ItemDefinition}'s name (see: {@link ItemDefinition#getName()}).<br/>
  * <h1>Simple and Composite types</h1>
@@ -150,6 +151,12 @@ import org.kie.dmn.model.api.ItemDefinition;
  * <li>field key <i>country</i>, value the FEEL built-in type <code>string</code>
  * <li>field key <i>zip</i>, value the FEEL built-in type <code>string</code>
  * </ul>
+ * <h1>Implementation notes</h1>
+ * To be noted that the convention of representing FEEL built-in types also as {@link DMNType}, is merely for internal mechanisms adopted by the engine
+ * and does not correspond to any requirement from the DMN specification;
+ * the current valorization of the attributes of this {@link DMNType} follows internal implementation choices and can change any time the convention might need update.
+ * It is strongly advised to discern these representations from normal <code>ItemDefinition</code> defined in the DMN model,
+ * by making use of the namespace attribute as described above.<br/>
  */
 public interface DMNType
         extends Cloneable {
