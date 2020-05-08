@@ -54,4 +54,15 @@ public class DecisionCodegenTest {
 
         assertEquals(7, vacationDashboard.getDashboard().panels.size());
     }
+
+    @Test
+    public void resilientToDuplicateDMNIDs() throws Exception {
+        DecisionCodegen codeGenerator = DecisionCodegen.ofPath(Paths.get("src/test/resources/decision-test20200507").toAbsolutePath());
+
+        List<GeneratedFile> generatedFiles = codeGenerator.generate();
+        assertEquals(2, generatedFiles.size());
+
+        ClassOrInterfaceDeclaration classDeclaration = codeGenerator.moduleGenerator().classDeclaration();
+        assertNotNull(classDeclaration);
+    }
 }

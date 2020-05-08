@@ -25,9 +25,7 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.Enumeration;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 import java.util.zip.ZipEntry;
@@ -114,16 +112,13 @@ public class DecisionCodegen extends AbstractGenerator {
     private DecisionContainerGenerator moduleGenerator;
 
     private Path basePath;
-    private final Map<String, DMNModel> models;
+    private final List<DMNModel> models;
     private final List<GeneratedFile> generatedFiles = new ArrayList<>();
     private boolean useMonitoring = false;
 
     public DecisionCodegen(Path basePath, Collection<DMNModel> models) {
         this.basePath = basePath;
-        this.models = new HashMap<>();
-        for (DMNModel model : models) {
-            this.models.put(model.getDefinitions().getId(), model);
-        }
+        this.models = new ArrayList<>(models);
 
         // set default package name
         setPackageName(ApplicationGenerator.DEFAULT_PACKAGE_NAME);
@@ -154,7 +149,7 @@ public class DecisionCodegen extends AbstractGenerator {
 
         List<DMNRestResourceGenerator> rgs = new ArrayList<>(); // REST resources
 
-        for (DMNModel model : models.values()) {
+        for (DMNModel model : models) {
             DMNRestResourceGenerator resourceGenerator = new DMNRestResourceGenerator(model, applicationCanonicalName).withDependencyInjection(annotator).withMonitoring(useMonitoring);
             rgs.add(resourceGenerator);
         }
