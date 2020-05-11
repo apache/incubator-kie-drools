@@ -18,15 +18,13 @@ package org.kie.kogito.index.graphql;
 
 import graphql.schema.DataFetchingEnvironment;
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.extension.ExtendWith;
 import org.kie.kogito.index.model.ProcessInstance;
-import org.mockito.junit.jupiter.MockitoExtension;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
-@ExtendWith(MockitoExtension.class)
+
 public class GraphQLSchemaManagerTest {
 
     GraphQLSchemaManager schemaManager = new GraphQLSchemaManager();

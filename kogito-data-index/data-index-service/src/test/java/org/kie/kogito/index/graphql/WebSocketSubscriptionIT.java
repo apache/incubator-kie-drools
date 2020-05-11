@@ -57,7 +57,7 @@ import static org.kie.kogito.index.TestUtils.getUserTaskCloudEvent;
 
 @QuarkusTest
 @QuarkusTestResource(InfinispanServerTestResource.class)
-public class WebSocketSubscriptionTest {
+public class WebSocketSubscriptionIT {
 
     @Inject
     ReactiveMessagingEventConsumer consumer;

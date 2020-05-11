@@ -45,7 +45,7 @@ import static org.junit.jupiter.api.Assertions.assertNotNull;
 @QuarkusTestResource(KeycloakServerTestResource.class)
 @QuarkusTestResource(InfinispanServerTestResource.class)
 @TestInstance(TestInstance.Lifecycle.PER_CLASS)
-public class KeycloakJobServiceTest {
+public class KeycloakJobServiceIT {
 
     private static final String KEYCLOAK_SERVER_URL = System.getProperty("keycloak.url", "http://localhost:8281/auth");
     private static final String KEYCLOAK_REALM = "kogito";

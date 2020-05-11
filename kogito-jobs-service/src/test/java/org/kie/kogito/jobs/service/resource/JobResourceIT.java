@@ -46,7 +46,7 @@ import static org.junit.jupiter.api.Assertions.assertNotNull;
 @QuarkusTest
 @QuarkusTestResource(InfinispanServerTestResource.class)
 @TestInstance(TestInstance.Lifecycle.PER_CLASS)
-public class JobResourceTest {
+public class JobResourceIT {
 
     @Inject
     private ObjectMapper objectMapper;

@@ -17,8 +17,6 @@
 package org.kie.kogito.jobs.service.scheduler.impl;
 
 import java.time.Duration;
-import java.util.UUID;
-import java.util.concurrent.CompletionStage;
 import java.util.function.Consumer;
 
 import io.reactivex.Flowable;
@@ -27,14 +25,9 @@ import org.eclipse.microprofile.reactive.streams.operators.PublisherBuilder;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
-import org.kie.kogito.jobs.api.Job;
-import org.kie.kogito.jobs.api.JobBuilder;
-import org.kie.kogito.jobs.service.executor.JobExecutor;
 import org.kie.kogito.jobs.service.model.ScheduledJob;
-import org.kie.kogito.jobs.service.repository.ReactiveJobRepository;
 import org.kie.kogito.jobs.service.scheduler.BaseTimerJobScheduler;
 import org.kie.kogito.jobs.service.scheduler.BaseTimerJobSchedulerTest;
-import org.kie.kogito.jobs.service.utils.DateUtil;
 import org.mockito.ArgumentCaptor;
 import org.mockito.Captor;
 import org.mockito.InjectMocks;
@@ -49,7 +42,6 @@ import static org.mockito.ArgumentMatchers.anyLong;
 import static org.mockito.Mockito.lenient;
 import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.when;
 
 @ExtendWith(MockitoExtension.class)
 class VertxJobSchedulerTest extends BaseTimerJobSchedulerTest {

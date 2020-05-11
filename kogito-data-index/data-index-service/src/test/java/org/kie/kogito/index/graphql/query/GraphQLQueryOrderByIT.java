@@ -30,9 +30,12 @@ import graphql.schema.GraphQLInputObjectField;
 import graphql.schema.GraphQLInputObjectType;
 import graphql.schema.GraphQLObjectType;
 import graphql.schema.GraphQLType;
+import io.quarkus.test.common.QuarkusTestResource;
 import io.quarkus.test.junit.QuarkusTest;
 import io.restassured.http.ContentType;
+
 import org.junit.jupiter.api.Test;
+import org.kie.kogito.index.InfinispanServerTestResource;
 import org.kie.kogito.index.graphql.GraphQLSchemaManager;
 import org.kie.kogito.index.infinispan.protostream.ProtobufService;
 
@@ -42,7 +45,8 @@ import static org.hamcrest.CoreMatchers.isA;
 import static org.kie.kogito.index.TestUtils.getTravelsProtoBufferFile;
 
 @QuarkusTest
-public class GraphQLQueryOrderByTest {
+@QuarkusTestResource(InfinispanServerTestResource.class)
+public class GraphQLQueryOrderByIT {
 
     @Inject
     GraphQLSchemaManager manager;

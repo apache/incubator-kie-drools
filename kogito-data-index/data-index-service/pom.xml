@@ -134,51 +134,58 @@
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-failsafe-plugin</artifactId>
+        <configuration>
+          <excludes>
+            <exclude>**/Native*IT.java</exclude>
+          </excludes>
+          <systemProperties>
+            <java.util.logging.manager>org.jboss.logmanager.LogManager</java.util.logging.manager>
+            <container.image.infinispan>${container.image.infinispan}</container.image.infinispan>
+            <container.image.keycloak>${container.image.keycloak}</container.image.keycloak>
+          </systemProperties>
+        </configuration>
         <executions>
           <execution>
+            <id>default</id>
             <goals>
               <goal>integration-test</goal>
-              <goal>verify</goal>
             </goals>
             <configuration>
-              <excludes>
-                <exclude>**/Native*IT.java</exclude>
+              <excludes combine.children="append"> <!-- Add the exclude to existing ones -->
+                <exclude>**/Keycloak*IT.java</exclude> <!-- Separate execution for this one -->
               </excludes>
+            </configuration>
+          </execution>
+          <execution>
+            <id>testWithKeycloak</id>
+            <goals>
+              <goal>integration-test</goal>
+            </goals>
+            <configuration>
+              <includes>
+                <include>**/Keycloak*IT.java</include>
+              </includes>
               <systemProperties>
-                <java.util.logging.manager>org.jboss.logmanager.LogManager</java.util.logging.manager>
-                <infinispan.version>${version.org.infinispan.image}</infinispan.version>
-                <keycloak.version>${version.org.keycloak.image}</keycloak.version>
+                <quarkus.test.profile>keycloak</quarkus.test.profile>
+                <quarkus.http.auth.policy.role-policy1.roles-allowed>confidential</quarkus.http.auth.policy.role-policy1.roles-allowed>
+                <quarkus.http.auth.permission.roles1.paths>/graphql</quarkus.http.auth.permission.roles1.paths>
+                <quarkus.http.auth.permission.roles1.policy>role-policy1</quarkus.http.auth.permission.roles1.policy>
               </systemProperties>
             </configuration>
+          </execution>
+          <execution>
+            <id>verify</id>
+            <goals>
+              <goal>verify</goal>
+            </goals>
           </execution>
         </executions>
       </plugin>
       <plugin>
         <artifactId>maven-surefire-plugin</artifactId>
-        <executions>
-          <execution>
-            <id>testWithKeycloak</id>
-            <goals>
-              <goal>test</goal>
-            </goals>
-            <configuration>
-              <argLine>
-                -Dquarkus.http.auth.policy.role-policy1.roles-allowed=confidential
-                -Dquarkus.http.auth.permission.roles1.paths=/graphql
-                -Dquarkus.http.auth.permission.roles1.policy=role-policy1
-              </argLine>
-              <test>org.kie.kogito.index.service.KeycloakIntegrationIndexingServiceTest.java</test>
-            </configuration>
-          </execution>
-        </executions>
         <configuration>
-          <excludes>
-            <exclude>**/KeycloakIntegrationIndexingServiceTest.java</exclude>
-          </excludes>
           <systemPropertyVariables>
             <java.util.logging.manager>org.jboss.logmanager.LogManager</java.util.logging.manager>
-            <infinispan.version>${version.org.infinispan.image}</infinispan.version>
-            <keycloak.version>${version.org.keycloak.image}</keycloak.version>
           </systemPropertyVariables>
         </configuration>
       </plugin>
@@ -212,6 +219,7 @@
             <artifactId>maven-failsafe-plugin</artifactId>
             <executions>
               <execution>
+                <id>native-tests</id>
                 <goals>
                   <goal>integration-test</goal>
                   <goal>verify</goal>

@@ -31,18 +31,19 @@ import org.testcontainers.containers.wait.strategy.Wait;
 public class KeycloakServerTestResource implements QuarkusTestResourceLifecycleManager {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(KeycloakServerTestResource.class);
-    private static final String KEYCLOAK_VERSION = System.getProperty("keycloak.version");
+    private static final String KEYCLOAK_IMAGE = System.getProperty("container.image.keycloak");
 
     private GenericContainer keycloak;
 
     @Override
     public Map<String, String> start() {
-        if (KEYCLOAK_VERSION == null) {
-            throw new RuntimeException("Please define a valid Keycloak image version in system property keycloak.version");
+        if (KEYCLOAK_IMAGE == null) {
+            throw new RuntimeException("Please define a valid Keycloak image in system property container.image.keycloak");
         }
-        LOGGER.info("Using Keycloak image version: {}", KEYCLOAK_VERSION);
-        keycloak = new FixedHostPortGenericContainer("quay.io/keycloak/keycloak:" + KEYCLOAK_VERSION)
+        LOGGER.info("Using Keycloak image: {}", KEYCLOAK_IMAGE);
+        keycloak = new FixedHostPortGenericContainer(KEYCLOAK_IMAGE)
                 .withFixedExposedPort(8281, 8080)
+                .withReuse(false)
                 .withEnv("KEYCLOAK_USER", "admin")
                 .withEnv("KEYCLOAK_PASSWORD", "admin")
                 .withEnv("KEYCLOAK_IMPORT", "/tmp/realm.json")

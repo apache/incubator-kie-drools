@@ -22,8 +22,10 @@ import java.util.concurrent.TimeUnit;
 
 import javax.inject.Inject;
 
+import io.quarkus.test.common.QuarkusTestResource;
 import io.quarkus.test.junit.QuarkusTest;
 import org.junit.jupiter.api.Test;
+import org.kie.kogito.index.InfinispanServerTestResource;
 import org.kie.kogito.index.model.ProcessInstance;
 import org.kie.kogito.index.model.ProcessInstanceState;
 
@@ -31,7 +33,8 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.kie.kogito.index.TestUtils.getProcessInstance;
 
 @QuarkusTest
-public class CacheTest {
+@QuarkusTestResource(InfinispanServerTestResource.class)
+public class CacheIT {
 
     @Inject
     CacheService cacheService;

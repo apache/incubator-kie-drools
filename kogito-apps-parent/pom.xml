@@ -20,7 +20,10 @@
     <version.node>v11.6.0</version.node>
     <version.npm>6.10.3</version.npm>
     <version.yarn>v1.19.1</version.yarn>
-    <maven.compiler.release>11</maven.compiler.release> 
+    <maven.compiler.release>11</maven.compiler.release>
+    <!-- containers used for testing -->
+    <container.image.infinispan>quay.io/infinispan/server:${version.org.infinispan.image}</container.image.infinispan>
+    <container.image.keycloak>quay.io/keycloak/keycloak:${version.org.keycloak.image}</container.image.keycloak>
   </properties>
 
   <build>

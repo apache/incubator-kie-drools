@@ -23,20 +23,17 @@ import io.quarkus.test.junit.QuarkusTest;
 import org.infinispan.client.hotrod.RemoteCacheManager;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.TestInstance;
-import org.junit.jupiter.api.extension.ExtendWith;
 import org.kie.kogito.jobs.service.repository.ReactiveJobRepository;
 import org.kie.kogito.jobs.service.repository.impl.BaseJobRepositoryTest;
 import org.kie.kogito.jobs.service.resource.InfinispanServerTestResource;
 import org.kie.kogito.jobs.service.stream.JobStreams;
-import org.mockito.junit.jupiter.MockitoExtension;
 
 import static org.mockito.Mockito.mock;
 
 @QuarkusTest
 @QuarkusTestResource(InfinispanServerTestResource.class)
 @TestInstance(TestInstance.Lifecycle.PER_CLASS)
-@ExtendWith(MockitoExtension.class)
-class InfinispanJobRepositoryTest extends BaseJobRepositoryTest {
+class InfinispanJobRepositoryIT extends BaseJobRepositoryTest {
 
     private InfinispanJobRepository tested;
 

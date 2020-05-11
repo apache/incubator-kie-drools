@@ -66,9 +66,9 @@ import static org.kie.kogito.index.model.ProcessInstanceState.ERROR;
 
 @QuarkusTest
 @QuarkusTestResource(InfinispanServerTestResource.class)
-public class IndexingServiceTest {
+public class IndexingServiceIT {
 
-    private static final Logger LOGGER = LoggerFactory.getLogger(IndexingServiceTest.class);
+    private static final Logger LOGGER = LoggerFactory.getLogger(IndexingServiceIT.class);
 
     @Inject
     ReactiveMessagingEventConsumer consumer;

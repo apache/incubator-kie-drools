@@ -19,7 +19,7 @@ package org.kie.kogito.index.service;
 import io.quarkus.test.junit.NativeImageTest;
 
 @NativeImageTest
-public class NativeIndexingServiceIT extends IndexingServiceTest {
+public class NativeIndexingServiceIT extends IndexingServiceIT {
 
     // Execute the same tests but in native mode.
 }

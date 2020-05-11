@@ -20,11 +20,20 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import io.quarkus.test.junit.QuarkusTest;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
+import org.kie.kogito.index.cache.CacheService;
+import org.kie.kogito.index.graphql.GraphQLScalarTypeProducer;
+import org.kie.kogito.index.graphql.GraphQLSchemaManager;
 import org.kie.kogito.index.query.AttributeFilter;
 import org.kie.kogito.index.query.FilterCondition;
+import org.mockito.InjectMocks;
+import org.mockito.Mock;
+import org.mockito.Spy;
+import org.mockito.junit.jupiter.MockitoExtension;
+
+import graphql.schema.GraphQLScalarType;
 
 import static java.util.Arrays.asList;
 import static java.util.Collections.singletonMap;
@@ -40,8 +49,17 @@ import static org.kie.kogito.index.query.QueryFilterFactory.in;
 import static org.kie.kogito.index.query.QueryFilterFactory.isNull;
 import static org.kie.kogito.index.query.QueryFilterFactory.notNull;
 
-@QuarkusTest
+@ExtendWith(MockitoExtension.class)
 public class GraphQLQueryMapperTest {
+
+    @InjectMocks
+    GraphQLSchemaManager manager;
+
+    @Mock
+    CacheService cacheService;
+
+    @Spy
+    GraphQLScalarType qlDateTimeScalarType = new GraphQLScalarTypeProducer().dateTimeScalar();
 
     GraphQLQueryParser processInstanceParser;
 
@@ -57,6 +75,7 @@ public class GraphQLQueryMapperTest {
 
     @BeforeEach
     public void setup() {
+        manager.setup();
         processInstanceParser = GraphQLQueryParserRegistry.get().getParser("ProcessInstanceArgument");
     }
 

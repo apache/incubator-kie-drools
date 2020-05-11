@@ -20,7 +20,6 @@ import java.util.Map;
 import java.util.UUID;
 import java.util.concurrent.CompletableFuture;
 
-import io.smallrye.reactive.messaging.annotations.Emitter;
 import io.vertx.axle.core.MultiMap;
 import io.vertx.axle.core.Vertx;
 import io.vertx.axle.core.buffer.Buffer;
@@ -44,7 +43,6 @@ import org.mockito.junit.jupiter.MockitoExtension;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
-import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;

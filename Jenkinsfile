@@ -74,7 +74,7 @@ pipeline {
         always {
             archiveArtifacts artifacts: 'management-console/target/*-runner.jar, data-index/data-index-service/target/*-runner.jar, jobs-service/target/*-runner.jar', fingerprint: true
             junit '**/**/junit.xml'
-            junit '**/target/surefire-reports/**/*.xml'
+            junit '**/target/surefire-reports/**/*.xml, **/target/failsafe-reports/**/*.xml'
             cleanWs()
         }
     }

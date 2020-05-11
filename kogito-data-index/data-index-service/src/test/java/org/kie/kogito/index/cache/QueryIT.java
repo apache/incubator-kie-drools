@@ -22,9 +22,11 @@ import java.util.UUID;
 
 import javax.inject.Inject;
 
+import io.quarkus.test.common.QuarkusTestResource;
 import io.quarkus.test.junit.QuarkusTest;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.kie.kogito.index.InfinispanServerTestResource;
 import org.kie.kogito.index.model.ProcessInstance;
 import org.kie.kogito.index.query.AttributeFilter;
 
@@ -37,7 +39,8 @@ import static org.kie.kogito.index.model.ProcessInstanceState.COMPLETED;
 import static org.kie.kogito.index.query.QueryFilterFactory.*;
 
 @QuarkusTest
-public class QueryTest {
+@QuarkusTestResource(InfinispanServerTestResource.class)
+public class QueryIT {
 
     @Inject
     CacheService cacheService;

@@ -21,21 +21,23 @@ import java.time.ZonedDateTime;
 import java.time.format.DateTimeFormatter;
 import java.time.temporal.ChronoUnit;
 
-import javax.inject.Inject;
 
 import graphql.schema.CoercingSerializeException;
 import graphql.schema.GraphQLScalarType;
-import io.quarkus.test.junit.QuarkusTest;
+
 import org.junit.jupiter.api.Test;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.fail;
 
-@QuarkusTest
-public class DateTimeScalarTypeTest {
+public class DateTimeScalarTypeProducerTest {
 
-    @Inject
     GraphQLScalarType dateTimeScalar;
+
+    public DateTimeScalarTypeProducerTest() {
+        GraphQLScalarTypeProducer producer = new GraphQLScalarTypeProducer();
+        dateTimeScalar = producer.dateTimeScalar();
+    }
 
     @Test
     public void testParseValue() {

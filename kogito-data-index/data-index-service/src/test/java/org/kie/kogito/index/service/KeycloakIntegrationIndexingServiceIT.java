@@ -20,18 +20,17 @@ import io.quarkus.test.common.QuarkusTestResource;
 import io.quarkus.test.junit.QuarkusTest;
 
 import io.restassured.http.ContentType;
-import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 import org.keycloak.representations.AccessTokenResponse;
-import org.kie.kogito.index.InfinispanServerTestResource;
 import org.kie.kogito.index.KeycloakServerTestResource;
+import org.kie.kogito.index.InfinispanServerTestResource;
 
 import static io.restassured.RestAssured.given;
 
 @QuarkusTest
 @QuarkusTestResource(KeycloakServerTestResource.class)
 @QuarkusTestResource(InfinispanServerTestResource.class)
-public class KeycloakIntegrationIndexingServiceTest {
+public class KeycloakIntegrationIndexingServiceIT {
 
     private static final String KEYCLOAK_SERVER_URL = System.getProperty("keycloak.url", "http://localhost:8281/auth");
     private static final String KEYCLOAK_REALM = "kogito";

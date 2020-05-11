@@ -17,6 +17,7 @@
 package org.kie.kogito.index.messaging;
 
 import java.util.Collection;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.concurrent.CompletableFuture;
@@ -40,8 +41,8 @@ import org.kie.kogito.index.infinispan.protostream.ProtobufService;
 import static io.restassured.RestAssured.given;
 import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.Matchers.containsString;
+import static org.hamcrest.Matchers.hasItem;
 import static org.hamcrest.Matchers.isA;
-import static org.kie.kogito.index.GraphQLUtils.getProcessInstanceById;
 import static org.kie.kogito.index.TestUtils.getTravelsProtoBufferFile;
 import static org.kie.kogito.index.TestUtils.readFileContent;
 
@@ -77,17 +78,7 @@ public class ReactiveMessagingEventConsumerKafkaIT {
     public void testProcessInstanceEvent() throws Exception {
         sendProcessInstanceEvent().get(1, TimeUnit.MINUTES);
 
-        given().contentType(ContentType.JSON).body("{ \"query\" : \"{Travels{ id } }\" }")
-                .when().post("/graphql")
-                .then().log().ifValidationFails().statusCode(200)
-                .body("errors[0].message", is("Validation error of type FieldUndefined: Field 'Travels' in type 'Query' is undefined @ 'Travels'"));
-
         String processInstanceId = "c2fa5c5e-3002-44c7-aef7-bce82297e3fe";
-
-        given().contentType(ContentType.JSON).body(getProcessInstanceById(processInstanceId))
-                .when().post("/graphql")
-                .then().log().ifValidationFails().statusCode(200)
-                .body("data.ProcessInstances[0].id", is(processInstanceId));
 
         protobufService.registerProtoBufferType(getTravelsProtoBufferFile());
 
