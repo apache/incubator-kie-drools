@@ -32,6 +32,7 @@ import org.drools.scenariosimulation.backend.runner.RuleScenarioRunnerHelperTest
 import org.drools.scenariosimulation.backend.runner.ScenarioException;
 import org.junit.Test;
 
+import static java.util.Collections.emptyList;
 import static java.util.Collections.singletonList;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.drools.scenariosimulation.backend.runner.model.ValueWrapper.errorEmptyMessage;
@@ -119,6 +120,14 @@ public class ScenarioBeanUtilTest {
         paramsToSet.put(singletonList("description"), new ArrayList<>());
 
         ScenarioBeanUtil.fillBean(errorEmptyMessage(), Dispute.class.getCanonicalName(), paramsToSet, classLoader);
+    }
+
+    @Test
+    public void fillBeanEmptyValueTest() {
+        Map<List<String>, Object> paramsToSet = new HashMap<>();
+        paramsToSet.put(emptyList(), null);
+
+        ScenarioBeanUtil.fillBean(of(null), String.class.getCanonicalName(), paramsToSet, classLoader);
     }
 
     @Test

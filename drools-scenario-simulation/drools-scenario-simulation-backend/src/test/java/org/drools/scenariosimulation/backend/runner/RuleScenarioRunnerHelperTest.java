@@ -489,6 +489,21 @@ public class RuleScenarioRunnerHelperTest extends AbstractRuleCoverageTest {
         assertEquals(directMappingSimpleTypeValue, objectRaw);
     }
 
+    @Test
+    public void createObjectDirectMappingSimpleTypeNull() {
+        Map<List<String>, Object> params = new HashMap<>();
+        params.put(emptyList(), null);
+
+        ValueWrapper<Object> initialInstance = runnerHelper.getDirectMapping(params);
+        Object objectRaw = runnerHelper.createObject(
+                initialInstance,
+                String.class.getCanonicalName(),
+                params,
+                this.getClass().getClassLoader());
+
+        assertNull(objectRaw);
+    }
+
     @SuppressWarnings("unchecked")
     @Test
     public void createObjectDirectMappingComplexType() {
