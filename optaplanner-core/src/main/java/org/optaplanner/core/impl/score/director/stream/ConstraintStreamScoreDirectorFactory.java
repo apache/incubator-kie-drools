@@ -16,6 +16,9 @@
 
 package org.optaplanner.core.impl.score.director.stream;
 
+import java.util.Arrays;
+import java.util.Objects;
+
 import org.optaplanner.core.api.domain.solution.PlanningSolution;
 import org.optaplanner.core.api.score.stream.Constraint;
 import org.optaplanner.core.api.score.stream.ConstraintProvider;
@@ -57,6 +60,16 @@ public class ConstraintStreamScoreDirectorFactory<Solution_> extends AbstractSco
                         "The constraintStreamImplType (" + constraintStreamImplType + ") is not implemented.");
         }
         this.constraints = constraintProvider.defineConstraints(constraintFactory);
+        if (constraints == null) {
+            throw new IllegalStateException("The constraintProvider class (" + constraintProvider.getClass()
+                + ")'s defineConstraints() must not return null.\n"
+                + "Maybe return an empty array instead if there are no constraints.");
+        }
+        if (Arrays.stream(constraints).anyMatch(Objects::isNull)) {
+            throw new IllegalStateException("The constraintProvider class (" + constraintProvider.getClass()
+                    + ")'s defineConstraints() must not contain an element that is null.\n"
+                    + "Maybe don't include any null elements in the " + Constraint.class.getSimpleName() + " array.");
+        }
         constraintSessionFactory = constraintFactory.buildSessionFactory(constraints);
     }
 
