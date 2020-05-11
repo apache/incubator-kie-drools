@@ -21,27 +21,27 @@ import java.util.function.Function;
 import org.drools.scenariosimulation.api.model.ExpressionIdentifier;
 import org.drools.scenariosimulation.api.model.FactIdentifier;
 import org.drools.scenariosimulation.api.model.FactMappingValue;
-import org.drools.scenariosimulation.backend.runner.model.ResultWrapper;
 import org.drools.scenariosimulation.backend.runner.model.ScenarioResult;
+import org.drools.scenariosimulation.backend.runner.model.ValueWrapper;
 import org.junit.Assert;
 import org.junit.Test;
 
-import static java.util.Arrays.asList;
+import static java.util.Collections.singletonList;
 
 public class ConditionFilterTest {
 
     @Test
     public void acceptTest() {
-        Function<Object, ResultWrapper> alwaysMatchFunction = ResultWrapper::createResult;
+        Function<Object, ValueWrapper> alwaysMatchFunction = ValueWrapper::of;
         FactMappingValue factMappingValue = new FactMappingValue(FactIdentifier.DESCRIPTION, ExpressionIdentifier.DESCRIPTION, "Test");
         ScenarioResult scenarioResult = new ScenarioResult(factMappingValue);
-        ConditionFilter conditionFilter = new ConditionFilter(asList(new FactCheckerHandle(String.class, alwaysMatchFunction, scenarioResult)));
+        ConditionFilter conditionFilter = new ConditionFilter(singletonList(new FactCheckerHandle(String.class, alwaysMatchFunction, scenarioResult)));
 
         Assert.assertFalse(conditionFilter.accept(1));
         Assert.assertTrue(conditionFilter.accept("String"));
 
-        Function<Object, ResultWrapper> alwaysNotMatchFunction = object -> ResultWrapper.createErrorResult(null, null);
-        ConditionFilter conditionFilterFail = new ConditionFilter(asList(new FactCheckerHandle(String.class, alwaysNotMatchFunction, scenarioResult)));
+        Function<Object, ValueWrapper> alwaysNotMatchFunction = object -> ValueWrapper.errorWithValidValue(null, null);
+        ConditionFilter conditionFilterFail = new ConditionFilter(singletonList(new FactCheckerHandle(String.class, alwaysNotMatchFunction, scenarioResult)));
         Assert.assertFalse(conditionFilterFail.accept("String"));
     }
 }

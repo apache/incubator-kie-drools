@@ -23,8 +23,8 @@ import java.util.Map;
 import java.util.function.Function;
 
 import org.drools.scenariosimulation.api.model.FactIdentifier;
-import org.drools.scenariosimulation.backend.runner.model.ResultWrapper;
 import org.drools.scenariosimulation.backend.runner.model.ScenarioResult;
+import org.drools.scenariosimulation.backend.runner.model.ValueWrapper;
 import org.kie.api.KieServices;
 import org.kie.api.command.Command;
 import org.kie.api.command.KieCommands;
@@ -49,7 +49,7 @@ public class RuleStatelessScenarioExecutableBuilder implements RuleScenarioExecu
 
     @Override
     public void addInternalCondition(Class<?> clazz,
-                                     Function<Object, ResultWrapper> checkFunction,
+                                     Function<Object, ValueWrapper> checkFunction,
                                      ScenarioResult scenarioResult) {
         internalConditions.computeIfAbsent(scenarioResult.getFactIdentifier(), key -> new ArrayList<>())
                 .add(new FactCheckerHandle(clazz, checkFunction, scenarioResult));

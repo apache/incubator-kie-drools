@@ -21,7 +21,6 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
-import java.util.Optional;
 import java.util.Set;
 import java.util.function.Supplier;
 import java.util.stream.Collectors;
@@ -41,20 +40,20 @@ import org.drools.scenariosimulation.api.model.Settings;
 import org.drools.scenariosimulation.backend.expression.ExpressionEvaluator;
 import org.drools.scenariosimulation.backend.expression.ExpressionEvaluatorFactory;
 import org.drools.scenariosimulation.backend.runner.model.InstanceGiven;
-import org.drools.scenariosimulation.backend.runner.model.ResultWrapper;
 import org.drools.scenariosimulation.backend.runner.model.ScenarioExpect;
 import org.drools.scenariosimulation.backend.runner.model.ScenarioResult;
 import org.drools.scenariosimulation.backend.runner.model.ScenarioResultMetadata;
 import org.drools.scenariosimulation.backend.runner.model.ScenarioRunnerData;
+import org.drools.scenariosimulation.backend.runner.model.ValueWrapper;
 import org.kie.api.runtime.KieContainer;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import static java.util.stream.Collectors.toList;
 import static org.drools.scenariosimulation.api.utils.ScenarioSimulationSharedUtils.isCollection;
-import static org.drools.scenariosimulation.backend.runner.model.ResultWrapper.createErrorResult;
-import static org.drools.scenariosimulation.backend.runner.model.ResultWrapper.createErrorResultWithErrorMessage;
-import static org.drools.scenariosimulation.backend.runner.model.ResultWrapper.createResult;
+import static org.drools.scenariosimulation.backend.runner.model.ValueWrapper.errorWithValidValue;
+import static org.drools.scenariosimulation.backend.runner.model.ValueWrapper.errorWithMessage;
+import static org.drools.scenariosimulation.backend.runner.model.ValueWrapper.of;
 
 public abstract class AbstractRunnerHelper {
 
@@ -145,7 +144,7 @@ public abstract class AbstractRunnerHelper {
                                                                            entry.getValue(),
                                                                            expressionEvaluatorFactory);
 
-                Object bean = createObject(getDirectMapping(paramsForBean).getOptional(), factIdentifier.getClassName(), paramsForBean, classLoader);
+                Object bean = createObject(getDirectMapping(paramsForBean), factIdentifier.getClassName(), paramsForBean, classLoader);
 
                 instanceGiven.add(new InstanceGiven(factIdentifier, bean));
             } catch (Exception e) {
@@ -162,14 +161,14 @@ public abstract class AbstractRunnerHelper {
         return instanceGiven;
     }
 
-    protected ResultWrapper<Object> getDirectMapping(Map<List<String>, Object> params) {
+    protected ValueWrapper<Object> getDirectMapping(Map<List<String>, Object> params) {
         // if a direct mapping exists (no steps to reach the field) the value itself is the object (just converted)
         for (Map.Entry<List<String>, Object> entry : params.entrySet()) {
             if (entry.getKey().isEmpty()) {
-                return ResultWrapper.createResult(entry.getValue());
+                return of(entry.getValue());
             }
         }
-        return ResultWrapper.createErrorResultWithErrorMessage("No direct mapping available");
+        return errorWithMessage("No direct mapping available");
     }
 
     protected List<ScenarioExpect> extractExpectedValues(List<FactMappingValue> factMappingValues) {
@@ -275,11 +274,11 @@ public abstract class AbstractRunnerHelper {
     }
 
     protected ScenarioResult fillResult(FactMappingValue expectedResult,
-                                        Supplier<ResultWrapper<?>> resultSupplier,
+                                        Supplier<ValueWrapper<?>> resultSupplier,
                                         ExpressionEvaluator expressionEvaluator) {
-        ResultWrapper<?> resultValue = resultSupplier.get();
+        ValueWrapper<?> resultValue = resultSupplier.get();
 
-        if (resultValue.isSatisfied()) {
+        if (resultValue.isValid()) {
             // result is satisfied so clean up previous error state
             expectedResult.resetStatus();
         } else if (resultValue.getErrorMessage().isPresent()) {
@@ -288,35 +287,35 @@ public abstract class AbstractRunnerHelper {
         } else {
             try {
                 // set actual as proposed value
-                expectedResult.setErrorValue(expressionEvaluator.fromObjectToExpression(resultValue.getResult()));
+                expectedResult.setErrorValue(expressionEvaluator.fromObjectToExpression(resultValue.getValue()));
             } catch (Exception e) {
                 // otherwise generic error message
                 expectedResult.setExceptionMessage(e.getMessage());
             }
         }
 
-        return new ScenarioResult(expectedResult, resultValue.getResult()).setResult(resultValue.isSatisfied());
+        return new ScenarioResult(expectedResult, resultValue.getValue()).setResult(resultValue.isValid());
     }
 
-    protected ResultWrapper getResultWrapper(String className,
-                                             FactMappingValue expectedResult,
-                                             ExpressionEvaluator expressionEvaluator,
-                                             Object expectedResultRaw,
-                                             Object resultRaw,
-                                             Class<?> resultClass) {
+    protected ValueWrapper getResultWrapper(String className,
+                                            FactMappingValue expectedResult,
+                                            ExpressionEvaluator expressionEvaluator,
+                                            Object expectedResultRaw,
+                                            Object resultRaw,
+                                            Class<?> resultClass) {
         try {
             boolean evaluationSucceed = expressionEvaluator.evaluateUnaryExpression((String) expectedResultRaw, resultRaw, resultClass);
             if (evaluationSucceed) {
-                return createResult(resultRaw);
+                return of(resultRaw);
             } else if (isCollection(className)) {
                 // no suggestions for collection yet
-                return createErrorResultWithErrorMessage("Impossible to find elements in the collection to satisfy the conditions");
+                return errorWithMessage("Impossible to find elements in the collection to satisfy the conditions");
             } else {
-                return createErrorResult(resultRaw, expectedResultRaw);
+                return errorWithValidValue(resultRaw, expectedResultRaw);
             }
         } catch (Exception e) {
             expectedResult.setExceptionMessage(e.getMessage());
-            return createErrorResultWithErrorMessage(e.getMessage());
+            return errorWithMessage(e.getMessage());
         }
     }
 
@@ -343,7 +342,7 @@ public abstract class AbstractRunnerHelper {
      * @param classLoader
      * @return
      */
-    protected abstract Object createObject(Optional<Object> initialInstance,
+    protected abstract Object createObject(ValueWrapper<Object> initialInstance,
                                            String className,
                                            Map<List<String>, Object> params,
                                            ClassLoader classLoader);

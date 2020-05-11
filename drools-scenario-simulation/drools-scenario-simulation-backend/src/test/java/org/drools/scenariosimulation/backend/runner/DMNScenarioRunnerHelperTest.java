@@ -22,7 +22,6 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
-import java.util.Optional;
 import java.util.Set;
 import java.util.stream.IntStream;
 
@@ -45,10 +44,10 @@ import org.drools.scenariosimulation.backend.fluent.DMNScenarioExecutableBuilder
 import org.drools.scenariosimulation.backend.model.Dispute;
 import org.drools.scenariosimulation.backend.model.Person;
 import org.drools.scenariosimulation.backend.runner.model.InstanceGiven;
-import org.drools.scenariosimulation.backend.runner.model.ResultWrapper;
 import org.drools.scenariosimulation.backend.runner.model.ScenarioExpect;
 import org.drools.scenariosimulation.backend.runner.model.ScenarioResultMetadata;
 import org.drools.scenariosimulation.backend.runner.model.ScenarioRunnerData;
+import org.drools.scenariosimulation.backend.runner.model.ValueWrapper;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -72,6 +71,7 @@ import static org.drools.scenariosimulation.backend.TestUtils.getRandomlyGenerat
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
 import static org.kie.dmn.api.core.DMNDecisionResult.DecisionEvaluationStatus;
 import static org.mockito.Matchers.any;
@@ -242,7 +242,7 @@ public class DMNScenarioRunnerHelperTest {
         params.put(asList("creator", "surname"), "TestSurname");
         params.put(singletonList("age"), BigDecimal.valueOf(10));
 
-        Optional<Object> initialInstance = runnerHelper.getDirectMapping(params).getOptional();
+        ValueWrapper<Object> initialInstance = runnerHelper.getDirectMapping(params);
         Object objectRaw = runnerHelper.createObject(
                 initialInstance,
                 String.class.getCanonicalName(),
@@ -265,7 +265,7 @@ public class DMNScenarioRunnerHelperTest {
         String directMappingSimpleTypeValue = "TestName";
         params.put(emptyList(), directMappingSimpleTypeValue);
 
-        Optional<Object> initialInstance = runnerHelper.getDirectMapping(params).getOptional();
+        ValueWrapper<Object> initialInstance = runnerHelper.getDirectMapping(params);
         Object objectRaw = runnerHelper.createObject(
                 initialInstance,
                 String.class.getCanonicalName(),
@@ -277,6 +277,21 @@ public class DMNScenarioRunnerHelperTest {
         assertEquals(directMappingSimpleTypeValue, objectRaw);
     }
 
+    @Test
+    public void createObjectDirectMappingSimpleTypeNull() {
+        Map<List<String>, Object> params = new HashMap<>();
+        params.put(emptyList(), null);
+
+        ValueWrapper<Object> initialInstance = runnerHelper.getDirectMapping(params);
+        Object objectRaw = runnerHelper.createObject(
+                initialInstance,
+                String.class.getCanonicalName(),
+                params,
+                this.getClass().getClassLoader());
+
+        assertNull(objectRaw);
+    }
+
     @SuppressWarnings("unchecked")
     @Test
     public void createObjectDirectMappingComplexType() {
@@ -286,7 +301,7 @@ public class DMNScenarioRunnerHelperTest {
         params.put(emptyList(), directMappingComplexTypeValue);
         params.put(singletonList("key2"), "value2");
 
-        Optional<Object> initialInstance = runnerHelper.getDirectMapping(params).getOptional();
+        ValueWrapper<Object> initialInstance = runnerHelper.getDirectMapping(params);
         Object objectRaw = runnerHelper.createObject(
                 initialInstance,
                 Map.class.getCanonicalName(),
@@ -315,11 +330,11 @@ public class DMNScenarioRunnerHelperTest {
     @Test
     public void getSingleFactValueResultFailDecision() {
         DMNDecisionResult failedDecision = createDecisionResultMock("Test", false, new ArrayList<>());
-        ResultWrapper<?> failedResult = runnerHelper.getSingleFactValueResult(null,
+        ValueWrapper<?> failedResult = runnerHelper.getSingleFactValueResult(null,
                                                                               null,
                                                                               failedDecision,
                                                                               expressionEvaluator);
-        assertFalse(failedResult.isSatisfied());
+        assertFalse(failedResult.isValid());
         assertEquals("The decision " +
                              failedDecision.getDecisionName() +
                              " has not been successfully evaluated: " +
