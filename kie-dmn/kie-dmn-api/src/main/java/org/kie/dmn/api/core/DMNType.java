@@ -116,10 +116,10 @@ import org.kie.dmn.model.api.ItemDefinition;
  * <li>field key <i>full name</i>, value the FEEL built-in type <code>string</code>
  * <li>field key <i>age</i>, value the FEEL built-in type <code>number</code>
  * </ul>
- * <h1>Anonymous inner Composite type and TypeRegistry</h1>
+ * <h1>Anonymous inner types and TypeRegistry</h1>
  * When the DMN model specifies an {@link ItemDefinition} this gets compiled as a DMN type and it is registered in the model's {@link org.kie.dmn.core.impl.DMNModelImpl#getTypeRegistry()}.<br/>
  * <br/>
- * There is a special case where {@link ItemDefinition} defines an anonymous inner composite type, which naturally cannot be registered in the type registry since it does not have a globally valid and unique name.<br/>
+ * There is a special case where {@link ItemDefinition} defines an anonymous inner type, which naturally cannot be registered in the type registry since it does not have a globally valid and unique name.<br/>
  * This use-case be thought, in some respects, of being similar to Java's inner classes.<br/>
  * <br/>
  * For example in the following DMN Composite type:<br/>
@@ -151,6 +151,30 @@ import org.kie.dmn.model.api.ItemDefinition;
  * <li>field key <i>country</i>, value the FEEL built-in type <code>string</code>
  * <li>field key <i>zip</i>, value the FEEL built-in type <code>string</code>
  * </ul>
+ * <br/>
+ * Another example of a DMN Composite type defining an anonymous inner type:<br/>
+ * <br/>
+<pre>&lt;dmn:itemDefinition name=&quot;tPart&quot;&gt;
+  &lt;dmn:itemComponent name=&quot;name&quot;&gt;
+    &lt;dmn:typeRef&gt;string&lt;/dmn:typeRef&gt;
+  &lt;/dmn:itemComponent&gt;
+  &lt;dmn:itemComponent name=&quot;grade&quot;&gt;
+    &lt;dmn:typeRef&gt;string&lt;/dmn:typeRef&gt;
+    &lt;dmn:allowedValues&gt;
+      &lt;dmn:text&gt;&quot;A&quot;, &quot;B&quot;, &quot;C&quot;&lt;/dmn:text&gt;
+    &lt;/dmn:allowedValues&gt;
+  &lt;/dmn:itemComponent&gt;
+&lt;/dmn:itemDefinition&gt;
+</pre>
+ * a call to {@link #getFields()} returns a collection of two entries:
+ * <ul>
+ * <li>field key <i>name</i>, value the FEEL built-in type <code>string</code>
+ * <li>field key <i>grade</i>, value an anonymous inner Simple type.
+ * </ul>
+ * <br/>
+ * This latter inner Simple type is not registered in the model's type registry, as explained.<br/>
+ * By convention, it is given the name of the corresponding field: therefore, a call to {@link #getName()} returns <i>grade</i>.<br/>
+ * In itself, it is a Simple type; therefore everything said about Simple type is applicable.
  * <h1>Implementation notes</h1>
  * To be noted that the convention of representing FEEL built-in types also as {@link DMNType}, is merely for internal mechanisms adopted by the engine
  * and does not correspond to any requirement from the DMN specification;

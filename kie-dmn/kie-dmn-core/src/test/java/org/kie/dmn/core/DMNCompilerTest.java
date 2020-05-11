@@ -28,7 +28,9 @@ import org.kie.dmn.api.core.DMNRuntime;
 import org.kie.dmn.api.core.DMNType;
 import org.kie.dmn.api.core.ast.ItemDefNode;
 import org.kie.dmn.core.api.DMNFactory;
+import org.kie.dmn.core.compiler.DMNTypeRegistry;
 import org.kie.dmn.core.impl.CompositeTypeImpl;
+import org.kie.dmn.core.impl.DMNModelImpl;
 import org.kie.dmn.core.impl.SimpleTypeImpl;
 import org.kie.dmn.core.util.DMNRuntimeUtil;
 import org.kie.dmn.feel.lang.EvaluationContext;
@@ -114,6 +116,8 @@ public class DMNCompilerTest extends BaseVariantTest {
         final DMNRuntime runtime = createRuntime("javadocInnerComposite.dmn", this.getClass());
         final DMNModel dmnModel = runtime.getModel("https://kiegroup.org/dmn/_7EC096B1-878B-4E85-8334-58B440BB6AD9bis", "new-file");
         assertThat(dmnModel, notNullValue());
+        
+        DMNTypeRegistry typeRegistry = ((DMNModelImpl) dmnModel).getTypeRegistry();
 
         final DMNType tPerson = dmnModel.getItemDefinitionByName("tPerson").getType();
         assertThat(tPerson, is(notNullValue()));
@@ -121,13 +125,27 @@ public class DMNCompilerTest extends BaseVariantTest {
         assertThat(tPerson, is(instanceOf(CompositeTypeImpl.class)));
         assertThat(tPerson.getBaseType(), nullValue());
         assertThat(tPerson.getFields().size(), is(2));
-        assertThat(tPerson.getFields().get("address"), is(instanceOf(CompositeTypeImpl.class)));
-        assertThat(tPerson.getFields().get("address").getName(), is("address"));
-        assertThat(tPerson.getFields().get("address").getFields().size(), is(2));
+        assertThat(typeRegistry.resolveType(tPerson.getNamespace(), tPerson.getName()), notNullValue());
+        final DMNType addressType = tPerson.getFields().get("address");
+        assertThat(addressType, is(instanceOf(CompositeTypeImpl.class)));
+        assertThat(addressType.getName(), is("address"));
+        assertThat(addressType.getFields().size(), is(2));
+        assertThat(typeRegistry.resolveType(addressType.getNamespace(), addressType.getName()), nullValue());
+
+        final DMNType tPart = dmnModel.getItemDefinitionByName("tPart").getType();
+        assertThat(tPart, is(notNullValue()));
+        assertThat(tPart.isComposite(), is(true));
+        assertThat(tPart, is(instanceOf(CompositeTypeImpl.class)));
+        assertThat(typeRegistry.resolveType(tPart.getNamespace(), tPart.getName()), notNullValue());
+        final DMNType gradeType = tPart.getFields().get("grade");
+        assertThat(gradeType, is(instanceOf(SimpleTypeImpl.class)));
+        assertThat(gradeType.getName(), is("grade"));
+        assertThat(typeRegistry.resolveType(gradeType.getNamespace(), gradeType.getName()), nullValue());
 
         final DMNContext context = runtime.newContext();
         context.set("a person", mapOf(entry("full name", "John Doe"), entry("address", mapOf(entry("country", "IT"), entry("zip", "abcde")))));
-
+        context.set("a part", mapOf(entry("name", "Part 1"), entry("grade", "B")));
+        
         final DMNResult evaluateAll = evaluateModel(runtime, dmnModel, context);
         LOG.debug("{}", evaluateAll);
         assertThat(DMNRuntimeUtil.formatMessages(evaluateAll.getMessages()), evaluateAll.hasErrors(), is(false));
