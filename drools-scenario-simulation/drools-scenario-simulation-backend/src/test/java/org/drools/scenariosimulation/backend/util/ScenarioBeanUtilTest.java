@@ -127,7 +127,7 @@ public class ScenarioBeanUtilTest {
         Map<List<String>, Object> paramsToSet = new HashMap<>();
         paramsToSet.put(emptyList(), null);
 
-        ScenarioBeanUtil.fillBean(of(null), String.class.getCanonicalName(), paramsToSet, classLoader);
+        assertNull(ScenarioBeanUtil.fillBean(of(null), String.class.getCanonicalName(), paramsToSet, classLoader));
     }
 
     @Test
