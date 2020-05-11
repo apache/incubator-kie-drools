@@ -347,7 +347,7 @@ public class TaskHandler extends AbstractNodeHandler {
 		    milestoneNode.setMatchVariable((String)((WorkItemNode)node).getWork().getParameter("MatchVariable"));
 		    milestoneNode.setMetaData(workItemNode.getMetaData());
 		    milestoneNode.setName(workItemNode.getName());
-		    milestoneNode.setNodeContainer(workItemNode.getNodeContainer());
+		    milestoneNode.setParentContainer(workItemNode.getParentContainer());
 		    
 		    node = milestoneNode;
 		}

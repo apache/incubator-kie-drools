@@ -22,27 +22,23 @@ import com.github.javaparser.ast.stmt.BlockStmt;
 import org.jbpm.process.core.context.variable.VariableScope;
 import org.jbpm.ruleflow.core.factory.JoinFactory;
 import org.jbpm.workflow.core.node.Join;
-import org.kie.api.definition.process.Node;
 
 import static org.jbpm.ruleflow.core.factory.JoinFactory.METHOD_TYPE;
 
-public class JoinNodeVisitor extends AbstractNodeVisitor {
-
-    private static final String NODE_KEY = "joinNode";
+public class JoinNodeVisitor extends AbstractNodeVisitor<Join> {
 
     @Override
     protected String getNodeKey() {
-        return NODE_KEY;
+        return "joinNode";
     }
 
     @Override
-    public void visitNode(String factoryField, Node node, BlockStmt body, VariableScope variableScope, ProcessMetaData metadata) {
-        Join joinNode = (Join) node;
-        body.addStatement(getAssignedFactoryMethod(factoryField, JoinFactory.class, getNodeId(node), NODE_KEY, new LongLiteralExpr(joinNode.getId())));
+    public void visitNode(String factoryField, Join node, BlockStmt body, VariableScope variableScope, ProcessMetaData metadata) {
+        body.addStatement(getAssignedFactoryMethod(factoryField, JoinFactory.class, getNodeId(node), getNodeKey(), new LongLiteralExpr(node.getId())));
         body.addStatement(getNameMethod(node, "Join"));
-        body.addStatement(getFactoryMethod(getNodeId(node), METHOD_TYPE, new IntegerLiteralExpr(joinNode.getType())));
+        body.addStatement(getFactoryMethod(getNodeId(node), METHOD_TYPE, new IntegerLiteralExpr(node.getType())));
 
-        visitMetaData(joinNode.getMetaData(), body, getNodeId(node));
+        visitMetaData(node.getMetaData(), body, getNodeId(node));
         body.addStatement(getDoneMethod(getNodeId(node)));
     }
 }

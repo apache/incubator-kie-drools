@@ -27,6 +27,8 @@ import org.jbpm.workflow.core.node.EndNode;
 import java.util.ArrayList;
 import java.util.List;
 
+import static org.jbpm.ruleflow.core.Metadata.ACTION;
+
 public class EndNodeFactory extends ExtendedNodeFactory {
 
     public static final String METHOD_TERMINATE = "terminate";
@@ -57,7 +59,7 @@ public class EndNodeFactory extends ExtendedNodeFactory {
 
     public EndNodeFactory action(Action action) {
         DroolsAction droolsAction = new DroolsAction();
-        droolsAction.setMetaData(METADATA_ACTION, action);
+        droolsAction.setMetaData(ACTION, action);
         List<DroolsAction> enterActions = getEndNode().getActions(ExtendedNodeImpl.EVENT_NODE_ENTER);
         if (enterActions == null) {
             enterActions = new ArrayList<>();

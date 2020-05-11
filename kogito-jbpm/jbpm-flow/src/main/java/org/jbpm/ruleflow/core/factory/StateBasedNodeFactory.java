@@ -24,6 +24,8 @@ import org.jbpm.workflow.core.node.StateBasedNode;
 
 public abstract class StateBasedNodeFactory extends ExtendedNodeFactory {
 
+    public static final String METHOD_TIMER = "timer";
+
     protected StateBasedNodeFactory(RuleFlowNodeContainerFactory nodeContainerFactory, NodeContainer nodeContainer, long id) {
         super(nodeContainerFactory, nodeContainer, id);
     }

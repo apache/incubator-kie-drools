@@ -401,7 +401,7 @@ public class ProcessBuilderImpl implements org.drools.compiler.compiler.ProcessB
                 if ( triggers != null ) {
                     for ( Trigger trigger : triggers ) {
                         if ( trigger instanceof ConstraintTrigger ) {
-                            builder.append( createStartConstraintRule( process, startNode.getNodeContainer(),
+                            builder.append( createStartConstraintRule( process, startNode.getParentContainer(),
                                                                        (ConstraintTrigger) trigger ) );
                         }
                     }

@@ -1,3 +1,6 @@
+cases/ScriptRoleAssignmentCase.bpmn2
+cases/UserTaskWithStageCase.bpmn2
+cases/UserTaskWithStageCaseAutoStart.bpmn2
 invalid/invalid-process-id.bpmn2
 messageevent/EventNodeMalformed.bpmn2
 ruletask/BusinessRuleTaskMalformed.bpmn2

@@ -64,8 +64,11 @@ import java.util.function.BiConsumer;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
-import static org.jbpm.ruleflow.core.RuleFlowProcessFactory.METADATA_ACTION;
+import static org.jbpm.ruleflow.core.Metadata.ACTION;
+import static org.jbpm.ruleflow.core.Metadata.TRIGGER_REF;
 import static org.jbpm.workflow.core.Node.CONNECTION_DEFAULT_TYPE;
+import static org.jbpm.workflow.core.impl.ExtendedNodeImpl.EVENT_NODE_ENTER;
+import static org.jbpm.workflow.core.impl.ExtendedNodeImpl.EVENT_NODE_EXIT;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertNull;
@@ -184,7 +187,7 @@ public class ProcessGenerationTest extends AbstractCodegenTest {
     private static void assertActions(Node eNode, ExtendedNodeImpl expected, ExtendedNodeImpl current) {
         for (String actionType : expected.getActionTypes()) {
             List<DroolsAction> expectedActions = expected.getActions(actionType);
-            if (eNode instanceof EndNode && expected.getMetaData("TriggerRef") != null) {
+            if (eNode instanceof EndNode && expected.getMetaData(TRIGGER_REF) != null) {
                 // Generated lambda to publish event for the given variable
                 if (expectedActions == null) {
                     expectedActions = new ArrayList<>();
@@ -194,7 +197,7 @@ public class ProcessGenerationTest extends AbstractCodegenTest {
             try {
                 if (expected.getActions(actionType) == null) {
                     assertNull(current.getActions(actionType));
-                } else {
+                } else if (!EVENT_NODE_ENTER.equals(actionType) && !EVENT_NODE_EXIT.equals(actionType)) {
                     assertNotNull(current.getActions(actionType));
                     // onEntry and onExit actions are not yet supported
 //                    assertEquals(expected.getActions(actionType).size(), current.getActions(actionType).size());
@@ -296,7 +299,7 @@ public class ProcessGenerationTest extends AbstractCodegenTest {
         ActionNode current = (ActionNode) cNode;
         if (expected.getAction() != null) {
             assertNotNull(current.getAction());
-            assertEquals(expected.getAction().getName(), current.getAction().getName(), METADATA_ACTION);
+            assertEquals(expected.getAction().getName(), current.getAction().getName(), ACTION);
         }
     };
 
@@ -457,10 +460,10 @@ public class ProcessGenerationTest extends AbstractCodegenTest {
             }
             assertNotNull(currentAction);
             assertEquals(expectedAction.getName(), currentAction.getName(), "DroolsAction name");
-            if (expectedAction.getMetaData(METADATA_ACTION) == null) {
-                assertNull(currentAction.getMetaData(METADATA_ACTION));
+            if (expectedAction.getMetaData(ACTION) == null) {
+                assertNull(currentAction.getMetaData(ACTION));
             } else {
-                assertNotNull(currentAction.getMetaData(METADATA_ACTION));
+                assertNotNull(currentAction.getMetaData(ACTION));
             }
         });
     }
@@ -479,7 +482,8 @@ public class ProcessGenerationTest extends AbstractCodegenTest {
         expected.forEach((conn, constraint) -> {
             Optional<Map.Entry<ConnectionRef, Constraint>> currentEntry = current.entrySet()
                     .stream()
-                    .filter(e -> e.getKey().getConnectionId().equals(conn.getConnectionId()))
+                    .filter(e -> e.getKey().getConnectionId() == null && conn.getConnectionId() == null ||
+                            e.getKey().getConnectionId().equals(conn.getConnectionId()))
                     .findFirst();
             assertTrue(currentEntry.isPresent());
             ConnectionRef currentConn = currentEntry.get().getKey();

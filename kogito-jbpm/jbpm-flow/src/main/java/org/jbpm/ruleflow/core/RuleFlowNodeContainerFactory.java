@@ -31,6 +31,7 @@ import org.jbpm.ruleflow.core.factory.MilestoneNodeFactory;
 import org.jbpm.ruleflow.core.factory.RuleSetNodeFactory;
 import org.jbpm.ruleflow.core.factory.SplitFactory;
 import org.jbpm.ruleflow.core.factory.StartNodeFactory;
+import org.jbpm.ruleflow.core.factory.StateNodeFactory;
 import org.jbpm.ruleflow.core.factory.SubProcessNodeFactory;
 import org.jbpm.ruleflow.core.factory.TimerNodeFactory;
 import org.jbpm.ruleflow.core.factory.WorkItemNodeFactory;
@@ -104,7 +105,7 @@ public abstract class RuleFlowNodeContainerFactory {
         return new BoundaryEventNodeFactory(this, nodeContainer, id);
     }
 
-    public CompositeContextNodeFactory compositeNode(long id) {
+    public CompositeContextNodeFactory compositeContextNode(long id) {
         return new CompositeContextNodeFactory(this, nodeContainer, id);
     }
 
@@ -122,6 +123,10 @@ public abstract class RuleFlowNodeContainerFactory {
 
     public EventSubProcessNodeFactory eventSubProcessNode(long id) {
         return new EventSubProcessNodeFactory(this, nodeContainer, id);
+    }
+
+    public StateNodeFactory stateNode(long id) {
+        return new StateNodeFactory(this, nodeContainer, id);
     }
 
     public RuleFlowNodeContainerFactory connection(long fromId, long toId) {

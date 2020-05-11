@@ -28,7 +28,7 @@ import org.jbpm.process.core.Contextable;
  */
 public interface Node extends org.kie.api.definition.process.Node, Contextable, Serializable {
 
-    static final String CONNECTION_DEFAULT_TYPE = "DROOLS_DEFAULT";
+    String CONNECTION_DEFAULT_TYPE = "DROOLS_DEFAULT";
     
     /**
      * Method for setting the id of the node
@@ -54,7 +54,7 @@ public interface Node extends org.kie.api.definition.process.Node, Contextable, 
     
     void removeOutgoingConnection(String type, Connection connection);
     
-    void setNodeContainer(NodeContainer nodeContainer);
+    void setParentContainer(NodeContainer nodeContainer);
     
     void setMetaData(String name, Object value);
     

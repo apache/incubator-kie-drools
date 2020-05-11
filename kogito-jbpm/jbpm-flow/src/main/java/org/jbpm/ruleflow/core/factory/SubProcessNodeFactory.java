@@ -103,7 +103,7 @@ public class SubProcessNodeFactory extends StateBasedNodeFactory implements Mapp
         return this;
     }
 
-    public <T> SubProcessNodeFactory subProcessFactory(SubProcessFactory<T> factory) {
+    public <T> SubProcessNodeFactory subProcessNode(SubProcessFactory<T> factory) {
         getSubProcessNode().setSubProcessFactory(factory);
         return this;
     }

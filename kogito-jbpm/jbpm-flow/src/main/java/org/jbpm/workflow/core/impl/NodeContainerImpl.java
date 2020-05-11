@@ -16,18 +16,17 @@
 
 package org.jbpm.workflow.core.impl;
 
-import java.io.Serializable;
-import java.util.HashMap;
-import java.util.Map;
-
-import org.kie.api.definition.process.Node;
 import org.jbpm.process.core.Context;
 import org.jbpm.workflow.core.NodeContainer;
+import org.kie.api.definition.process.Node;
+
+import java.util.HashMap;
+import java.util.Map;
 
 /**
  * 
  */
-public class NodeContainerImpl implements Serializable, NodeContainer {
+public class NodeContainerImpl implements NodeContainer {
 
     private static final long serialVersionUID = 510l;
 

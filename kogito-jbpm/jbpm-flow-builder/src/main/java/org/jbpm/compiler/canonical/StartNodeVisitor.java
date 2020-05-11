@@ -26,50 +26,49 @@ import org.jbpm.process.core.context.variable.VariableScope;
 import org.jbpm.process.core.timer.Timer;
 import org.jbpm.ruleflow.core.factory.StartNodeFactory;
 import org.jbpm.workflow.core.node.StartNode;
-import org.kie.api.definition.process.Node;
 
 import java.util.Map;
 import java.util.Map.Entry;
 
+import static org.jbpm.ruleflow.core.Metadata.MESSAGE_TYPE;
+import static org.jbpm.ruleflow.core.Metadata.TRIGGER_MAPPING;
+import static org.jbpm.ruleflow.core.Metadata.TRIGGER_REF;
+import static org.jbpm.ruleflow.core.Metadata.TRIGGER_TYPE;
 import static org.jbpm.ruleflow.core.factory.StartNodeFactory.METHOD_INTERRUPTING;
 import static org.jbpm.ruleflow.core.factory.StartNodeFactory.METHOD_TIMER;
 import static org.jbpm.ruleflow.core.factory.StartNodeFactory.METHOD_TRIGGER;
 
-public class StartNodeVisitor extends AbstractNodeVisitor {
-
-    private static final String NODE_KEY = "startNode";
+public class StartNodeVisitor extends AbstractNodeVisitor<StartNode> {
 
     @Override
     protected String getNodeKey() {
-        return NODE_KEY;
+        return "startNode";
     }
 
     @Override
-    public void visitNode(String factoryField, Node node, BlockStmt body, VariableScope variableScope, ProcessMetaData metadata) {
-        StartNode startNode = (StartNode) node;
-
-        body.addStatement(getAssignedFactoryMethod(factoryField, StartNodeFactory.class, getNodeId(node), NODE_KEY, new LongLiteralExpr(startNode.getId())))
+    public void visitNode(String factoryField, StartNode node, BlockStmt body, VariableScope variableScope, ProcessMetaData metadata) {
+        body.addStatement(getAssignedFactoryMethod(factoryField, StartNodeFactory.class, getNodeId(node), getNodeKey(), new LongLiteralExpr(node.getId())))
                 .addStatement(getNameMethod(node, "Start"))
-                .addStatement(getFactoryMethod(getNodeId(node), METHOD_INTERRUPTING, new BooleanLiteralExpr(startNode.isInterrupting())));
+                .addStatement(getFactoryMethod(getNodeId(node), METHOD_INTERRUPTING, new BooleanLiteralExpr(node.isInterrupting())));
 
-        visitMetaData(startNode.getMetaData(), body, getNodeId(node));
+        visitMetaData(node.getMetaData(), body, getNodeId(node));
         body.addStatement(getDoneMethod(getNodeId(node)));
-        if (startNode.getTimer() != null) {
-            Timer timer = startNode.getTimer();
-            body.addStatement(getFactoryMethod(getNodeId(startNode), METHOD_TIMER, getOrNullExpr(timer.getDelay()),
+        if (node.getTimer() != null) {
+            Timer timer = node.getTimer();
+            body.addStatement(getFactoryMethod(getNodeId(node), METHOD_TIMER, getOrNullExpr(timer.getDelay()),
                     getOrNullExpr(timer.getPeriod()),
                     getOrNullExpr(timer.getDate()),
-                    new IntegerLiteralExpr(startNode.getTimer().getTimeType())));
+                    new IntegerLiteralExpr(node.getTimer().getTimeType())));
 
-        } else if (startNode.getTriggers() != null && !startNode.getTriggers().isEmpty()) {
-            Map<String, Object> nodeMetaData = startNode.getMetaData();
-            metadata.getTriggers().add(new TriggerMetaData((String) nodeMetaData.get(METADATA_TRIGGER_REF),
-                    (String) nodeMetaData.get(METADATA_TRIGGER_TYPE),
-                    (String) nodeMetaData.get(METADATA_MESSAGE_TYPE),
-                    (String) nodeMetaData.get(METADATA_TRIGGER_MAPPING),
+        } else if (node.getTriggers() != null && !node.getTriggers().isEmpty()) {
+            Map<String, Object> nodeMetaData = node.getMetaData();
+            metadata.getTriggers().add(new TriggerMetaData((String) nodeMetaData.get(TRIGGER_REF),
+                    (String) nodeMetaData.get(TRIGGER_TYPE),
+                    (String) nodeMetaData.get(MESSAGE_TYPE),
+                    (String) nodeMetaData.get(TRIGGER_MAPPING),
                     String.valueOf(node.getId())).validate());
 
-            handleSignal(startNode, nodeMetaData, body, variableScope, metadata);
+            handleSignal(node, nodeMetaData, body, variableScope, metadata);
         } else {
             // since there is start node without trigger then make sure it is startable
             metadata.setStartable(true);
@@ -78,14 +77,14 @@ public class StartNodeVisitor extends AbstractNodeVisitor {
     }
 
     protected void handleSignal(StartNode startNode, Map<String, Object> nodeMetaData, BlockStmt body, VariableScope variableScope, ProcessMetaData metadata) {
-        if (EVENT_TYPE_SIGNAL.equalsIgnoreCase((String) startNode.getMetaData(METADATA_TRIGGER_TYPE))) {
+        if (EVENT_TYPE_SIGNAL.equalsIgnoreCase((String) startNode.getMetaData(TRIGGER_TYPE))) {
             Variable variable = null;
             Map<String, String> variableMapping = startNode.getOutMappings();
             if (variableMapping != null && !variableMapping.isEmpty()) {
                 Entry<String, String> varInfo = variableMapping.entrySet().iterator().next();
 
                 body.addStatement(getFactoryMethod(getNodeId(startNode), METHOD_TRIGGER,
-                        new StringLiteralExpr((String) nodeMetaData.get(METADATA_MESSAGE_TYPE)),
+                        new StringLiteralExpr((String) nodeMetaData.get(MESSAGE_TYPE)),
                         getOrNullExpr(varInfo.getKey()),
                         getOrNullExpr(varInfo.getValue())));
                 variable = variableScope.findVariable(varInfo.getKey());
@@ -97,15 +96,15 @@ public class StartNodeVisitor extends AbstractNodeVisitor {
                 }
             } else {
                 body.addStatement(getFactoryMethod(getNodeId(startNode), METHOD_TRIGGER,
-                        new StringLiteralExpr((String) nodeMetaData.get(METADATA_MESSAGE_TYPE)),
-                        new StringLiteralExpr(getOrDefault((String) nodeMetaData.get(METADATA_TRIGGER_MAPPING), ""))));
+                        new StringLiteralExpr((String) nodeMetaData.get(MESSAGE_TYPE)),
+                        new StringLiteralExpr(getOrDefault((String) nodeMetaData.get(TRIGGER_MAPPING), ""))));
             }
-            metadata.getSignals().put((String) nodeMetaData.get(METADATA_MESSAGE_TYPE), variable != null ? variable.getType().getStringType() : null);
+            metadata.getSignals().put((String) nodeMetaData.get(MESSAGE_TYPE), variable != null ? variable.getType().getStringType() : null);
         } else {
-            String triggerMapping = (String) nodeMetaData.get(METADATA_TRIGGER_MAPPING);
+            String triggerMapping = (String) nodeMetaData.get(TRIGGER_MAPPING);
             body.addStatement(getFactoryMethod(getNodeId(startNode), METHOD_TRIGGER,
-                    new StringLiteralExpr((String) nodeMetaData.get(METADATA_TRIGGER_REF)),
-                    new StringLiteralExpr(getOrDefault((String) nodeMetaData.get(METADATA_TRIGGER_MAPPING), "")),
+                    new StringLiteralExpr((String) nodeMetaData.get(TRIGGER_REF)),
+                    new StringLiteralExpr(getOrDefault((String) nodeMetaData.get(TRIGGER_MAPPING), "")),
                     new StringLiteralExpr(getOrDefault(startNode.getOutMapping(triggerMapping), ""))));
         }
     }

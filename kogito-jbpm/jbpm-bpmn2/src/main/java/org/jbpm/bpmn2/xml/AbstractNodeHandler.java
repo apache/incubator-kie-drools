@@ -514,9 +514,9 @@ public abstract class AbstractNodeHandler extends BaseAbstractHandler implements
     }
 
     protected String getErrorIdForErrorCode(String errorCode, Node node) {
-        org.kie.api.definition.process.NodeContainer parent = node.getNodeContainer();
+        org.kie.api.definition.process.NodeContainer parent = node.getParentContainer();
         while( ! (parent instanceof RuleFlowProcess) && parent instanceof Node ) {
-            parent = ((Node) parent).getNodeContainer();
+            parent = ((Node) parent).getParentContainer();
         }
         if( ! (parent instanceof RuleFlowProcess) ) {
            throw new RuntimeException( "This should never happen: !(parent instanceof RuleFlowProcess): parent is " + parent.getClass().getSimpleName() );

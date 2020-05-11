@@ -17,6 +17,7 @@ package org.jbpm.compiler.canonical;
 
 import com.github.javaparser.ast.NodeList;
 import com.github.javaparser.ast.expr.LongLiteralExpr;
+import com.github.javaparser.ast.expr.MethodCallExpr;
 import com.github.javaparser.ast.expr.NullLiteralExpr;
 import com.github.javaparser.ast.expr.ObjectCreationExpr;
 import com.github.javaparser.ast.expr.StringLiteralExpr;
@@ -32,22 +33,19 @@ import org.kie.api.definition.process.Node;
 import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
+import java.util.stream.Stream;
 
 import static org.jbpm.ruleflow.core.factory.CompositeContextNodeFactory.METHOD_VARIABLE;
 
-public class CompositeContextNodeVisitor extends AbstractCompositeNodeVisitor {
+public class CompositeContextNodeVisitor<T extends CompositeContextNode> extends AbstractCompositeNodeVisitor<T> {
 
-    private static final String NODE_KEY = "compositeContextNode";
-    private static final String FACTORY_METHOD_NAME = "compositeNode";
-    private static final String DEFAULT_NAME = "Composite";
+    public CompositeContextNodeVisitor(Map<Class<?>, AbstractNodeVisitor<? extends Node>> nodesVisitors) {
+        super(nodesVisitors);
+    }
 
     @Override
     protected String getNodeKey() {
-        return NODE_KEY;
-    }
-
-    public CompositeContextNodeVisitor(Map<Class<?>, AbstractNodeVisitor> nodesVisitors) {
-        super(nodesVisitors);
+        return "compositeContextNode";
     }
 
     protected Class<? extends CompositeContextNodeFactory> factoryClass() {
@@ -55,38 +53,40 @@ public class CompositeContextNodeVisitor extends AbstractCompositeNodeVisitor {
     }
 
     protected String factoryMethod() {
-        return FACTORY_METHOD_NAME;
+        return getNodeKey();
+    }
+
+    protected String getDefaultName() {
+        return "Composite";
     }
 
     @Override
-    public void visitNode(String factoryField, Node node, BlockStmt body, VariableScope variableScope, ProcessMetaData metadata) {
-
-        CompositeContextNode compositeContextNode = (CompositeContextNode) node;
-
-        body.addStatement(getAssignedFactoryMethod(factoryField, factoryClass(), getNodeId(node), factoryMethod(), new LongLiteralExpr(compositeContextNode.getId())))
+    public void visitNode(String factoryField, T node, BlockStmt body, VariableScope variableScope, ProcessMetaData metadata) {
+        body.addStatement(getAssignedFactoryMethod(factoryField, factoryClass(), getNodeId(node), factoryMethod(), new LongLiteralExpr(node.getId())))
                 .addStatement(getNameMethod(node, getDefaultName()));
-        visitMetaData(compositeContextNode.getMetaData(), body, getNodeId(node));
-        VariableScope variableScopeNode = (VariableScope) compositeContextNode.getDefaultContext(VariableScope.VARIABLE_SCOPE);
+        visitMetaData(node.getMetaData(), body, getNodeId(node));
+        VariableScope variableScopeNode = (VariableScope) node.getDefaultContext(VariableScope.VARIABLE_SCOPE);
 
         if (variableScope != null) {
             visitVariableScope(getNodeId(node), variableScopeNode, body, new HashSet<>());
         }
 
+        visitCustomFields(node).forEach(body::addStatement);
+
         // composite context node might not have variable scope
         // in that case inherit it from parent
-        if (compositeContextNode.getDefaultContext(VariableScope.VARIABLE_SCOPE) == null) {
-            visitNodes(getNodeId(node), compositeContextNode.getNodes(), body, variableScope, metadata);
+        if (node.getDefaultContext(VariableScope.VARIABLE_SCOPE) == null) {
+            visitNodes(getNodeId(node), node.getNodes(), body, variableScope, metadata);
         } else {
-            visitNodes(getNodeId(node), compositeContextNode.getNodes(), body, ((VariableScope) compositeContextNode.getDefaultContext(VariableScope.VARIABLE_SCOPE)), metadata);
-
+            visitNodes(getNodeId(node), node.getNodes(), body, ((VariableScope) node.getDefaultContext(VariableScope.VARIABLE_SCOPE)), metadata);
         }
 
-        visitConnections(getNodeId(node), compositeContextNode.getNodes(), body);
+        visitConnections(getNodeId(node), node.getNodes(), body);
         body.addStatement(getDoneMethod(getNodeId(node)));
     }
 
-    protected String getDefaultName() {
-        return DEFAULT_NAME;
+    protected Stream<MethodCallExpr> visitCustomFields(T compositeContextNode) {
+        return Stream.empty();
     }
 
     protected void visitVariableScope(String contextNode, VariableScope variableScope, BlockStmt body, Set<String> visitedVariables) {

@@ -42,6 +42,7 @@ import org.jbpm.workflow.core.impl.ConnectionImpl;
 import org.jbpm.workflow.core.node.ActionNode;
 import org.jbpm.workflow.core.node.BoundaryEventNode;
 import org.jbpm.workflow.core.node.CompositeContextNode;
+import org.jbpm.workflow.core.node.DynamicNode;
 import org.jbpm.workflow.core.node.EndNode;
 import org.jbpm.workflow.core.node.EventNode;
 import org.jbpm.workflow.core.node.EventSubProcessNode;
@@ -49,9 +50,11 @@ import org.jbpm.workflow.core.node.FaultNode;
 import org.jbpm.workflow.core.node.ForEachNode;
 import org.jbpm.workflow.core.node.HumanTaskNode;
 import org.jbpm.workflow.core.node.Join;
+import org.jbpm.workflow.core.node.MilestoneNode;
 import org.jbpm.workflow.core.node.RuleSetNode;
 import org.jbpm.workflow.core.node.Split;
 import org.jbpm.workflow.core.node.StartNode;
+import org.jbpm.workflow.core.node.StateNode;
 import org.jbpm.workflow.core.node.SubProcessNode;
 import org.jbpm.workflow.core.node.TimerNode;
 import org.jbpm.workflow.core.node.WorkItemNode;
@@ -65,6 +68,9 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
+import static org.jbpm.ruleflow.core.Metadata.HIDDEN;
+import static org.jbpm.ruleflow.core.Metadata.LINK_NODE_HIDDEN;
+import static org.jbpm.ruleflow.core.Metadata.UNIQUE_ID;
 import static org.jbpm.ruleflow.core.RuleFlowNodeContainerFactory.METHOD_CONNECTION;
 import static org.jbpm.ruleflow.core.RuleFlowProcessFactory.METHOD_DYNAMIC;
 import static org.jbpm.ruleflow.core.RuleFlowProcessFactory.METHOD_GLOBAL;
@@ -80,18 +86,14 @@ public class ProcessVisitor extends AbstractVisitor {
 
     public static final String DEFAULT_VERSION = "1.0";
 
-    private static final String METADATA_HIDDEN = "hidden";
-    private static final String METADATA_UNIQUE_ID = "UniqueId";
-    private static final String METADATA_LINK_NODE_HIDDEN = "linkNodeHidden";
-
-    private Map<Class<?>, AbstractNodeVisitor> nodesVisitors = new HashMap<>();
+    private Map<Class<?>, AbstractNodeVisitor<? extends org.kie.api.definition.process.Node>> nodesVisitors = new HashMap<>();
 
     public ProcessVisitor(ClassLoader contextClassLoader) {
         this.nodesVisitors.put(StartNode.class, new StartNodeVisitor());
         this.nodesVisitors.put(ActionNode.class, new ActionNodeVisitor());
         this.nodesVisitors.put(EndNode.class, new EndNodeVisitor());
         this.nodesVisitors.put(HumanTaskNode.class, new HumanTaskNodeVisitor());
-        this.nodesVisitors.put(WorkItemNode.class, new WorkItemNodeVisitor(contextClassLoader));
+        this.nodesVisitors.put(WorkItemNode.class, new WorkItemNodeVisitor<>(contextClassLoader));
         this.nodesVisitors.put(SubProcessNode.class, new LambdaSubProcessNodeVisitor());
         this.nodesVisitors.put(Split.class, new SplitNodeVisitor());
         this.nodesVisitors.put(Join.class, new JoinNodeVisitor());
@@ -100,9 +102,12 @@ public class ProcessVisitor extends AbstractVisitor {
         this.nodesVisitors.put(BoundaryEventNode.class, new BoundaryEventNodeVisitor());
         this.nodesVisitors.put(EventNode.class, new EventNodeVisitor());
         this.nodesVisitors.put(ForEachNode.class, new ForEachNodeVisitor(nodesVisitors));
-        this.nodesVisitors.put(CompositeContextNode.class, new CompositeContextNodeVisitor(nodesVisitors));
-        this.nodesVisitors.put(EventSubProcessNode.class, new EventSubprocessNodeVisitor(nodesVisitors));
+        this.nodesVisitors.put(CompositeContextNode.class, new CompositeContextNodeVisitor<>(nodesVisitors));
+        this.nodesVisitors.put(EventSubProcessNode.class, new EventSubProcessNodeVisitor(nodesVisitors));
         this.nodesVisitors.put(TimerNode.class, new TimerNodeVisitor());
+        this.nodesVisitors.put(MilestoneNode.class, new MilestoneNodeVisitor());
+        this.nodesVisitors.put(DynamicNode.class, new DynamicNodeVisitor(nodesVisitors));
+        this.nodesVisitors.put(StateNode.class, new StateNodeVisitor(nodesVisitors));
     }
 
     public void visitProcess(WorkflowProcess process, MethodDeclaration processMethod, ProcessMetaData metadata) {
@@ -210,10 +215,9 @@ public class ProcessVisitor extends AbstractVisitor {
         return metaData;
     }
 
-    private void visitNodes(List<org.jbpm.workflow.core.Node> nodes, BlockStmt body, VariableScope variableScope, ProcessMetaData metadata) {
-
-        for (org.kie.api.definition.process.Node node : nodes) {
-            AbstractNodeVisitor visitor = nodesVisitors.get(node.getClass());
+    private <U extends org.kie.api.definition.process.Node> void visitNodes(List<U> nodes, BlockStmt body, VariableScope variableScope, ProcessMetaData metadata) {
+        for (U node : nodes) {
+            AbstractNodeVisitor<U> visitor = (AbstractNodeVisitor<U>) nodesVisitors.get(node.getClass());
             if (visitor == null) {
                 throw new IllegalStateException("No visitor found for node " + node.getClass().getName());
             }
@@ -252,17 +256,17 @@ public class ProcessVisitor extends AbstractVisitor {
             return;
         }
         // if the connection is a hidden one (compensations), don't dump
-        Object hidden = ((ConnectionImpl) connection).getMetaData(METADATA_HIDDEN);
+        Object hidden = ((ConnectionImpl) connection).getMetaData(HIDDEN);
         if (hidden != null && ((Boolean) hidden)) {
             return;
         }
 
         body.addStatement(getFactoryMethod(FACTORY_FIELD_NAME, METHOD_CONNECTION, new LongLiteralExpr(connection.getFrom().getId()),
                 new LongLiteralExpr(connection.getTo().getId()),
-                new StringLiteralExpr(getOrDefault((String) connection.getMetaData().get(METADATA_UNIQUE_ID), ""))));
+                new StringLiteralExpr(getOrDefault((String) connection.getMetaData().get(UNIQUE_ID), ""))));
     }
 
     private boolean isConnectionRepresentingLinkEvent(Connection connection) {
-        return connection.getMetaData().get(METADATA_LINK_NODE_HIDDEN) != null;
+        return connection.getMetaData().get(LINK_NODE_HIDDEN) != null;
     }
 }

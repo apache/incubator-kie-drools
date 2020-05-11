@@ -22,7 +22,6 @@ import java.util.Stack;
 
 import org.drools.core.common.InternalKnowledgeRuntime;
 import org.jbpm.ruleflow.core.RuleFlowProcess;
-import org.jbpm.ruleflow.instance.RuleFlowProcessInstance;
 import org.jbpm.workflow.core.impl.NodeImpl;
 import org.jbpm.workflow.instance.impl.NodeInstanceImpl;
 import org.jbpm.workflow.instance.impl.WorkflowProcessInstanceImpl;
@@ -145,9 +144,9 @@ public class WorkflowProcessInstanceUpgrader {
         String id = "";
 
         if (unique) {
-            while (!(match.getNodeContainer() instanceof Process)) {
+            while (!(match.getParentContainer() instanceof Process)) {
                 id = ":" + match.getId() + id;
-                match = (Node) match.getNodeContainer();
+                match = (Node) match.getParentContainer();
             }
         }
 

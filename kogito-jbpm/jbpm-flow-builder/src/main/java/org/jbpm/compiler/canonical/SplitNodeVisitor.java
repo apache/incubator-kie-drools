@@ -29,33 +29,29 @@ import org.jbpm.ruleflow.core.factory.SplitFactory;
 import org.jbpm.workflow.core.Constraint;
 import org.jbpm.workflow.core.impl.ConnectionRef;
 import org.jbpm.workflow.core.node.Split;
-import org.kie.api.definition.process.Node;
 
 import java.util.Map.Entry;
 
 import static org.jbpm.ruleflow.core.factory.SplitFactory.METHOD_CONSTRAINT;
 import static org.jbpm.ruleflow.core.factory.SplitFactory.METHOD_TYPE;
 
-public class SplitNodeVisitor extends AbstractNodeVisitor {
-
-    private static final String NODE_KEY = "splitNode";
+public class SplitNodeVisitor extends AbstractNodeVisitor<Split> {
 
     @Override
     protected String getNodeKey() {
-        return NODE_KEY;
+        return "splitNode";
     }
 
     @Override
-    public void visitNode(String factoryField, Node node, BlockStmt body, VariableScope variableScope, ProcessMetaData metadata) {
-        Split splitNode = (Split) node;
-        body.addStatement(getAssignedFactoryMethod(factoryField, SplitFactory.class, getNodeId(node), NODE_KEY, new LongLiteralExpr(splitNode.getId())))
+    public void visitNode(String factoryField, Split node, BlockStmt body, VariableScope variableScope, ProcessMetaData metadata) {
+        body.addStatement(getAssignedFactoryMethod(factoryField, SplitFactory.class, getNodeId(node), getNodeKey(), new LongLiteralExpr(node.getId())))
                 .addStatement(getNameMethod(node, "Split"))
-                .addStatement(getFactoryMethod(getNodeId(node), METHOD_TYPE, new IntegerLiteralExpr(splitNode.getType())));
+                .addStatement(getFactoryMethod(getNodeId(node), METHOD_TYPE, new IntegerLiteralExpr(node.getType())));
 
-        visitMetaData(splitNode.getMetaData(), body, getNodeId(node));
+        visitMetaData(node.getMetaData(), body, getNodeId(node));
 
-        if (splitNode.getType() == Split.TYPE_OR || splitNode.getType() == Split.TYPE_XOR) {
-            for (Entry<ConnectionRef, Constraint> entry : splitNode.getConstraints().entrySet()) {
+        if (node.getType() == Split.TYPE_OR || node.getType() == Split.TYPE_XOR) {
+            for (Entry<ConnectionRef, Constraint> entry : node.getConstraints().entrySet()) {
                 if (entry.getValue() != null) {
                     BlockStmt actionBody = new BlockStmt();
                     LambdaExpr lambda = new LambdaExpr(

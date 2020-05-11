@@ -20,14 +20,11 @@ package org.kie.api.definition.process;
  * A WorkflowProcess is a type of Process that uses a flow chart (as a collection of Nodes and Connections)
  * to model the business logic.
  */
-public interface WorkflowProcess
-    extends
-    Process,
-    NodeContainer {
+public interface WorkflowProcess extends Process, NodeContainer {
 
-    public static final String PUBLIC_VISIBILITY = "Public";
-    public static final String PRIVATE_VISIBILITY = "Private";
-    public static final String NONE_VISIBILITY = "None";
-    
+    String PUBLIC_VISIBILITY = "Public";
+    String PRIVATE_VISIBILITY = "Private";
+    String NONE_VISIBILITY = "None";
+
     String getVisibility();
 }

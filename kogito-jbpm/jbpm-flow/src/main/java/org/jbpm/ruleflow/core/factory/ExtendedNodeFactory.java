@@ -27,8 +27,6 @@ import java.util.List;
 
 public abstract class ExtendedNodeFactory extends NodeFactory {
 
-    protected static final String METADATA_ACTION = "Action";
-
     protected ExtendedNodeFactory(RuleFlowNodeContainerFactory nodeContainerFactory, NodeContainer nodeContainer, long id) {
         super(nodeContainerFactory, nodeContainer, id);
     }

@@ -28,14 +28,11 @@ import com.github.javaparser.ast.stmt.BlockStmt;
 import com.github.javaparser.ast.stmt.ExpressionStmt;
 import com.github.javaparser.ast.stmt.Statement;
 import com.github.javaparser.ast.type.ClassOrInterfaceType;
-import com.github.javaparser.utils.StringEscapeUtils;
 import org.drools.core.util.StringUtils;
 import org.jbpm.process.core.context.variable.Mappable;
 import org.jbpm.process.core.context.variable.Variable;
 import org.jbpm.process.core.context.variable.VariableScope;
 import org.jbpm.workflow.core.impl.ConnectionImpl;
-import org.jbpm.workflow.core.impl.DroolsConsequenceAction;
-import org.jbpm.workflow.core.node.StateBasedNode;
 import org.kie.api.definition.process.Connection;
 import org.kie.api.definition.process.Node;
 
@@ -44,37 +41,31 @@ import java.util.List;
 import java.util.Map.Entry;
 
 import static com.github.javaparser.StaticJavaParser.parseClassOrInterfaceType;
+import static org.jbpm.ruleflow.core.Metadata.HIDDEN;
 import static org.jbpm.ruleflow.core.factory.MappableNodeFactory.METHOD_IN_MAPPING;
 import static org.jbpm.ruleflow.core.factory.MappableNodeFactory.METHOD_OUT_MAPPING;
 import static org.jbpm.ruleflow.core.factory.NodeFactory.METHOD_DONE;
 import static org.jbpm.ruleflow.core.factory.NodeFactory.METHOD_NAME;
 
-public abstract class AbstractNodeVisitor extends AbstractVisitor {
-
-    protected static final String METADATA_TRIGGER_REF = "TriggerRef";
-    protected static final String METADATA_MESSAGE_TYPE = "MessageType";
-    protected static final String METADATA_TRIGGER_TYPE = "TriggerType";
-    protected static final String METADATA_TRIGGER_MAPPING = "TriggerMapping";
-    protected static final String METADATA_MAPPING_VARIABLE = "MappingVariable";
-    protected static final String METADATA_EVENT_TYPE = "EventType";
+public abstract class AbstractNodeVisitor<T extends Node> extends AbstractVisitor {
 
     protected static final String EVENT_TYPE_SIGNAL = "signal";
     protected static final String EVENT_TYPE_MESSAGE = "message";
 
     protected abstract String getNodeKey();
 
-    public void visitNode(Node node, BlockStmt body, VariableScope variableScope, ProcessMetaData metadata) {
+    public void visitNode(T node, BlockStmt body, VariableScope variableScope, ProcessMetaData metadata) {
         visitNode(FACTORY_FIELD_NAME, node, body, variableScope, metadata);
     }
 
-    protected String getNodeId(Node node) {
+    protected String getNodeId(T node) {
         return getNodeKey() + node.getId();
     }
 
-    public void visitNode(String factoryField, Node node, BlockStmt body, VariableScope variableScope, ProcessMetaData metadata) {
+    public void visitNode(String factoryField, T node, BlockStmt body, VariableScope variableScope, ProcessMetaData metadata) {
     }
 
-    protected MethodCallExpr getNameMethod(Node node, String defaultName) {
+    protected MethodCallExpr getNameMethod(T node, String defaultName) {
         return getFactoryMethod(getNodeId(node), METHOD_NAME, new StringLiteralExpr(getOrDefault(node.getName(), defaultName)));
     }
 
@@ -91,12 +82,10 @@ public abstract class AbstractNodeVisitor extends AbstractVisitor {
             variableMethod.addArgument(arg);
         }
 
-        AssignExpr assignExpr = new AssignExpr(
+        return new AssignExpr(
                 new VariableDeclarationExpr(type, variableName),
                 variableMethod,
                 AssignExpr.Operator.ASSIGN);
-
-        return assignExpr;
     }
 
     public static Statement makeAssignment(Variable v) {
@@ -149,7 +138,7 @@ public abstract class AbstractNodeVisitor extends AbstractVisitor {
 
     protected String extractVariableFromExpression(String variableExpression) {
         if (variableExpression.startsWith("#{")) {
-            return variableExpression.substring(2, variableExpression.indexOf("."));
+            return variableExpression.substring(2, variableExpression.indexOf('.'));
         }
         return variableExpression;
     }
@@ -168,7 +157,7 @@ public abstract class AbstractNodeVisitor extends AbstractVisitor {
 
     protected void visitConnection(String factoryField, Connection connection, BlockStmt body) {
         // if the connection is a hidden one (compensations), don't dump
-        Object hidden = ((ConnectionImpl) connection).getMetaData("hidden");
+        Object hidden = ((ConnectionImpl) connection).getMetaData(HIDDEN);
         if (hidden != null && ((Boolean) hidden)) {
             return;
         }
@@ -176,18 +165,5 @@ public abstract class AbstractNodeVisitor extends AbstractVisitor {
         body.addStatement(getFactoryMethod(factoryField, "connection", new LongLiteralExpr(connection.getFrom().getId()),
                 new LongLiteralExpr(connection.getTo().getId()),
                 new StringLiteralExpr(getOrDefault((String) connection.getMetaData().get("UniqueId"), ""))));
-    }
-
-    protected void addTimers(BlockStmt body, StateBasedNode node) {
-        if (node.getTimers() != null) {
-            node.getTimers().forEach((timer, action) -> {
-                DroolsConsequenceAction droolsAction = (DroolsConsequenceAction) action;
-                body.addStatement(getFactoryMethod(getNodeId(node), "timer",
-                        new StringLiteralExpr(timer.getDelay()),
-                        getOrNullExpr(timer.getPeriod()),
-                        new StringLiteralExpr(droolsAction.getDialect()),
-                        new StringLiteralExpr(StringEscapeUtils.escapeJava(droolsAction.getConsequence()))));
-            });
-        }
     }
 }

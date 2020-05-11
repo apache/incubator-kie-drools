@@ -19,9 +19,6 @@ package org.jbpm.workflow.core;
 import org.kie.api.definition.process.Node;
 import org.jbpm.process.core.Context;
 
-/**
- * 
- */
 public interface NodeContainer extends org.kie.api.definition.process.NodeContainer {
 
     /**

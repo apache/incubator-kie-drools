@@ -72,9 +72,9 @@ public interface Node {
     /**
      * The NodeContainer this Node lives in.
      *
-     * @return the NodeContainer
+     * @return the parent NodeContainer
      */
-    NodeContainer getNodeContainer();
+    NodeContainer getParentContainer();
 
     /**
      * Meta data associated with this Node.

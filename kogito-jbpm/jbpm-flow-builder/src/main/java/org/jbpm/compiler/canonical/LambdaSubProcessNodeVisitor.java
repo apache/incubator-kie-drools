@@ -34,7 +34,6 @@ import org.jbpm.process.core.datatype.impl.type.ObjectDataType;
 import org.jbpm.ruleflow.core.factory.SubProcessNodeFactory;
 import org.jbpm.util.PatternConstants;
 import org.jbpm.workflow.core.node.SubProcessNode;
-import org.kie.api.definition.process.Node;
 import org.kie.api.definition.process.WorkflowProcess;
 
 import java.io.InputStream;
@@ -48,38 +47,33 @@ import static org.jbpm.ruleflow.core.factory.SubProcessNodeFactory.METHOD_PROCES
 import static org.jbpm.ruleflow.core.factory.SubProcessNodeFactory.METHOD_PROCESS_NAME;
 import static org.jbpm.ruleflow.core.factory.SubProcessNodeFactory.METHOD_WAIT_FOR_COMPLETION;
 
-public class LambdaSubProcessNodeVisitor extends AbstractNodeVisitor {
-
-    private static final String NODE_KEY = "subProcessNode";
-    private static final String FACTORY_NAME = "subProcessFactory";
+public class LambdaSubProcessNodeVisitor extends AbstractNodeVisitor<SubProcessNode> {
 
     @Override
     protected String getNodeKey() {
-        return NODE_KEY;
+        return "subProcessNode";
     }
 
     @Override
-    public void visitNode(String factoryField, Node node, BlockStmt body, VariableScope variableScope, ProcessMetaData metadata) {
-
+    public void visitNode(String factoryField, SubProcessNode node, BlockStmt body, VariableScope variableScope, ProcessMetaData metadata) {
         InputStream resourceAsStream = this.getClass().getResourceAsStream("/class-templates/SubProcessFactoryTemplate.java");
         Optional<Expression> retValue = parse(resourceAsStream).findFirst(Expression.class);
-        SubProcessNode subProcessNode = (SubProcessNode) node;
-        String name = subProcessNode.getName();
-        String subProcessId = subProcessNode.getProcessId();
+        String name = node.getName();
+        String subProcessId = node.getProcessId();
 
-        NodeValidator.of(NODE_KEY, name)
+        NodeValidator.of(getNodeKey(), name)
                 .notEmpty("subProcessId", subProcessId)
                 .validate();
 
 
-        body.addStatement(getAssignedFactoryMethod(factoryField, SubProcessNodeFactory.class, getNodeId(node), NODE_KEY, new LongLiteralExpr(subProcessNode.getId())))
+        body.addStatement(getAssignedFactoryMethod(factoryField, SubProcessNodeFactory.class, getNodeId(node), getNodeKey(), new LongLiteralExpr(node.getId())))
                 .addStatement(getNameMethod(node, "Call Activity"))
                 .addStatement(getFactoryMethod(getNodeId(node), METHOD_PROCESS_ID, new StringLiteralExpr(subProcessId)))
-                .addStatement(getFactoryMethod(getNodeId(node), METHOD_PROCESS_NAME, new StringLiteralExpr(getOrDefault(subProcessNode.getProcessName(), ""))))
-                .addStatement(getFactoryMethod(getNodeId(node), METHOD_WAIT_FOR_COMPLETION, new BooleanLiteralExpr(subProcessNode.isWaitForCompletion())))
-                .addStatement(getFactoryMethod(getNodeId(node), METHOD_INDEPENDENT, new BooleanLiteralExpr(subProcessNode.isIndependent())));
+                .addStatement(getFactoryMethod(getNodeId(node), METHOD_PROCESS_NAME, new StringLiteralExpr(getOrDefault(node.getProcessName(), ""))))
+                .addStatement(getFactoryMethod(getNodeId(node), METHOD_WAIT_FOR_COMPLETION, new BooleanLiteralExpr(node.isWaitForCompletion())))
+                .addStatement(getFactoryMethod(getNodeId(node), METHOD_INDEPENDENT, new BooleanLiteralExpr(node.isIndependent())));
 
-        Map<String, String> inputTypes = (Map<String, String>) subProcessNode.getMetaData("BPMN.InputTypes");
+        Map<String, String> inputTypes = (Map<String, String>) node.getMetaData("BPMN.InputTypes");
 
         String subProcessModelClassName = ProcessToExecModelGenerator.extractModelClassName(subProcessId);
         ModelMetaData subProcessModel = new ModelMetaData(subProcessId,
@@ -96,20 +90,20 @@ public class LambdaSubProcessNodeVisitor extends AbstractNodeVisitor {
                     .forEach(t -> t.setName(subProcessModelClassName));
 
             retValueExpression.findFirst(MethodDeclaration.class, m -> m.getNameAsString().equals("bind"))
-                    .ifPresent(m -> m.setBody(bind(variableScope, subProcessNode, subProcessModel)));
+                    .ifPresent(m -> m.setBody(bind(variableScope, node, subProcessModel)));
             retValueExpression.findFirst(MethodDeclaration.class, m -> m.getNameAsString().equals("createInstance"))
-                    .ifPresent(m -> m.setBody(createInstance(subProcessNode, metadata)));
+                    .ifPresent(m -> m.setBody(createInstance(node, metadata)));
             retValueExpression.findFirst(MethodDeclaration.class, m -> m.getNameAsString().equals("unbind"))
-                    .ifPresent(m -> m.setBody(unbind(variableScope, subProcessNode)));
+                    .ifPresent(m -> m.setBody(unbind(variableScope, node)));
         });
 
         if (retValue.isPresent()) {
-            body.addStatement(getFactoryMethod(getNodeId(node), FACTORY_NAME, retValue.get()));
+            body.addStatement(getFactoryMethod(getNodeId(node), getNodeKey(), retValue.get()));
         } else {
-            body.addStatement(getFactoryMethod(getNodeId(node), FACTORY_NAME));
+            body.addStatement(getFactoryMethod(getNodeId(node), getNodeKey()));
         }
 
-        visitMetaData(subProcessNode.getMetaData(), body, getNodeId(node));
+        visitMetaData(node.getMetaData(), body, getNodeId(node));
         body.addStatement(getDoneMethod(getNodeId(node)));
     }
 
@@ -199,27 +193,21 @@ public class LambdaSubProcessNodeVisitor extends AbstractNodeVisitor {
         String[] elements = dotNotation.split("\\.");
         Expression scope = new NameExpr(elements[0]);
         if (elements.length == 1) {
-            AssignExpr assignExpr = new AssignExpr(
+            return new AssignExpr(
                     scope,
                     new NameExpr(value),
                     AssignExpr.Operator.ASSIGN);
-
-            return assignExpr;
         }
         for (int i = 1; i < elements.length - 1; i++) {
-            MethodCallExpr get = new MethodCallExpr()
+            scope = new MethodCallExpr()
                     .setScope(scope)
                     .setName("get" + StringUtils.capitalize(elements[i]));
-
-            scope = get;
         }
 
-        MethodCallExpr set = new MethodCallExpr()
+        return new MethodCallExpr()
                 .setScope(scope)
                 .setName("set" + StringUtils.capitalize(elements[elements.length - 1]))
                 .addArgument(value);
-
-        return set;
     }
 
     protected Expression dotNotationToGetExpression(String dotNotation) {
@@ -231,11 +219,9 @@ public class LambdaSubProcessNodeVisitor extends AbstractNodeVisitor {
         }
 
         for (int i = 1; i < elements.length; i++) {
-            MethodCallExpr get = new MethodCallExpr()
+            scope = new MethodCallExpr()
                     .setScope(scope)
                     .setName("get" + StringUtils.capitalize(elements[i]));
-
-            scope = get;
         }
 
         return scope;

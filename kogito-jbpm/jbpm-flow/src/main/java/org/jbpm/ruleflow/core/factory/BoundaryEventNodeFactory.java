@@ -24,16 +24,11 @@ import org.jbpm.workflow.core.Node;
 import org.jbpm.workflow.core.NodeContainer;
 import org.jbpm.workflow.core.node.BoundaryEventNode;
 
+import static org.jbpm.ruleflow.core.Metadata.ATTACHED_TO;
+
 public class BoundaryEventNodeFactory extends EventNodeFactory {
 
     public static final String METHOD_ATTACHED_TO = "attachedTo";
-
-    public static final String EVENT_TYPE_TIMER = "Timer";
-    public static final String METADATA_ATTACHED_TO = "AttachedTo";
-    public static final String METADATA_TIME_CYCLE = "TimeCycle";
-    public static final String METADATA_LANGUAGE = "Language";
-    public static final String METADATA_TIME_DURATION = "TimeDuration";
-    public static final String METADATA_CANCEL_ACTIVITY = "CancelActivity";
 
     private NodeContainer nodeContainer;
 
@@ -90,16 +85,13 @@ public class BoundaryEventNodeFactory extends EventNodeFactory {
     }
 
     public BoundaryEventNodeFactory attachedTo(long attachedToId) {
-        attachedToUniqueId = (String) nodeContainer.getNode(attachedToId).getMetaData().get("UniqueId");
-        getBoundaryEventNode().setAttachedToNodeId(attachedToUniqueId);
-        getBoundaryEventNode().setMetaData(BoundaryEventNodeFactory.METADATA_ATTACHED_TO, attachedToUniqueId);
-        return this;
+        return attachedTo((String) nodeContainer.getNode(attachedToId).getMetaData().get("UniqueId"));
     }
 
     public BoundaryEventNodeFactory attachedTo(String attachedToId) {
         attachedToUniqueId = attachedToId;
         getBoundaryEventNode().setAttachedToNodeId(attachedToUniqueId);
-        getBoundaryEventNode().setMetaData(METADATA_ATTACHED_TO, attachedToUniqueId);
+        getBoundaryEventNode().setMetaData(ATTACHED_TO, attachedToUniqueId);
         return this;
     }
 
@@ -117,25 +109,5 @@ public class BoundaryEventNodeFactory extends EventNodeFactory {
         filter.setType(eventTypePrefix + "-" + attachedToUniqueId + "-" + eventTypeSurffix);
         super.eventFilter(filter);
         return this;
-    }
-
-    public BoundaryEventNodeFactory timeCycle(String timeCycle) {
-        eventType(EVENT_TYPE_TIMER, timeCycle);
-        return metaData(METADATA_TIME_CYCLE, timeCycle);
-    }
-
-    public BoundaryEventNodeFactory timeCycle(String timeCycle, String language) {
-        eventType(EVENT_TYPE_TIMER, timeCycle);
-        metaData(METADATA_TIME_CYCLE, timeCycle);
-        return metaData(METADATA_LANGUAGE, language);
-    }
-
-    public BoundaryEventNodeFactory timeDuration(String timeDuration) {
-        eventType(EVENT_TYPE_TIMER, timeDuration);
-        return metaData(METADATA_TIME_DURATION, timeDuration);
-    }
-
-    public BoundaryEventNodeFactory cancelActivity(boolean cancelActivity) {
-        return metaData(METADATA_CANCEL_ACTIVITY, cancelActivity);
     }
 }

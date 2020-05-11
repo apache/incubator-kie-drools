@@ -50,7 +50,7 @@ public class SplitHandler extends AbstractNodeHandler {
 					if (entry.getValue() != null && entry.getValue().isDefault()) {
 						xmlDump.append("default=\"" +
 							XmlBPMNProcessDumper.getUniqueNodeId(split) + "-" +
-							XmlBPMNProcessDumper.getUniqueNodeId(node.getNodeContainer().getNode(entry.getKey().getNodeId())) + 
+							XmlBPMNProcessDumper.getUniqueNodeId(node.getParentContainer().getNode(entry.getKey().getNodeId())) +
 							"\" ");
 						break;
 					}
@@ -63,7 +63,7 @@ public class SplitHandler extends AbstractNodeHandler {
 					if (entry.getValue() != null && entry.getValue().isDefault()) {
 						xmlDump.append("default=\"" +
 							XmlBPMNProcessDumper.getUniqueNodeId(split) + "-" +
-							XmlBPMNProcessDumper.getUniqueNodeId(node.getNodeContainer().getNode(entry.getKey().getNodeId())) + 
+							XmlBPMNProcessDumper.getUniqueNodeId(node.getParentContainer().getNode(entry.getKey().getNodeId())) +
 							"\" ");
 						break;
 					}

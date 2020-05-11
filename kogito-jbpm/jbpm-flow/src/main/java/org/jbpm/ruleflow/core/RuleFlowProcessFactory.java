@@ -30,6 +30,7 @@ import org.jbpm.process.instance.impl.actions.CancelNodeInstanceAction;
 import org.jbpm.ruleflow.core.validation.RuleFlowProcessValidator;
 import org.jbpm.workflow.core.DroolsAction;
 import org.jbpm.workflow.core.impl.DroolsConsequenceAction;
+import org.jbpm.workflow.core.node.CompositeNode;
 import org.jbpm.workflow.core.node.EndNode;
 import org.jbpm.workflow.core.node.EventNode;
 import org.jbpm.workflow.core.node.EventSubProcessNode;
@@ -48,6 +49,8 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import static org.jbpm.ruleflow.core.Metadata.ACTION;
+
 public class RuleFlowProcessFactory extends RuleFlowNodeContainerFactory {
 
     public static final String METHOD_NAME = "name";
@@ -60,7 +63,6 @@ public class RuleFlowProcessFactory extends RuleFlowNodeContainerFactory {
     public static final String METHOD_GLOBAL = "global";
     public static final String METHOD_VARIABLE = "variable";
 
-    public static final String METADATA_ACTION = "Action";
 
     private static final Logger logger = LoggerFactory.getLogger(RuleFlowProcessFactory.class);
 
@@ -209,10 +211,12 @@ public class RuleFlowProcessFactory extends RuleFlowNodeContainerFactory {
 
     protected void linkBoundaryEvents(NodeContainer nodeContainer) {
         for (Node node : nodeContainer.getNodes()) {
+            if (node instanceof CompositeNode) {
+                CompositeNode compositeNode = (CompositeNode) node;
+                linkBoundaryEvents(compositeNode.getNodeContainer());
+            }
             if (node instanceof EventNode) {
-
                 final String attachedTo = (String) node.getMetaData().get("AttachedTo");
-
                 if (attachedTo != null) {
                     Node attachedNode = findNodeByIdOrUniqueIdInMetadata(nodeContainer, attachedTo, "Could not find node to attach to: " + attachedTo);
                     for (EventFilter filter : ((EventNode) node).getEventFilters()) {
@@ -261,7 +265,7 @@ public class RuleFlowProcessFactory extends RuleFlowNodeContainerFactory {
                 actions = new ArrayList<>();
             }
             DroolsConsequenceAction cancelAction = new DroolsConsequenceAction("java", null);
-            cancelAction.setMetaData(METADATA_ACTION, new CancelNodeInstanceAction(attachedTo));
+            cancelAction.setMetaData(ACTION, new CancelNodeInstanceAction(attachedTo));
             actions.add(cancelAction);
             ((EventNode) node).setActions(EndNode.EVENT_NODE_EXIT, actions);
         }
@@ -275,7 +279,7 @@ public class RuleFlowProcessFactory extends RuleFlowNodeContainerFactory {
                 actions = new ArrayList<>();
             }
             DroolsConsequenceAction action = new DroolsConsequenceAction("java", null);
-            action.setMetaData(METADATA_ACTION, new CancelNodeInstanceAction(attachedTo));
+            action.setMetaData(ACTION, new CancelNodeInstanceAction(attachedTo));
             actions.add(action);
             ((EventNode) node).setActions(EndNode.EVENT_NODE_EXIT, actions);
         }

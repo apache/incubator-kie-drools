@@ -105,7 +105,7 @@ public class DynamicNode extends CompositeContextNode {
         if (activationExpression == null || activationExpression.isEmpty()) {
             return null;
         }
-        String activationSignalName = "RuleFlow-AdHocActivate-" + ((WorkflowProcess)getNodeContainer()).getId() + "-" + getUniqueId();
+        String activationSignalName = "RuleFlow-AdHocActivate-" + ((WorkflowProcess) getParentContainer()).getId() + "-" + getUniqueId();
         
         return activationSignalName;
     }

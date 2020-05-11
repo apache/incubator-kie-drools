@@ -16,11 +16,13 @@
 
 package org.kie.api.definition.process;
 
+import java.io.Serializable;
+
 /**
  * A NodeContainer contains a set of Nodes
  * There are different types of NodeContainers and NodeContainers may be nested.
  */
-public interface NodeContainer {
+public interface NodeContainer extends Serializable {
 
     /**
      * The Nodes of this NodeContainer.

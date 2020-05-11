@@ -105,12 +105,12 @@ public class WorkflowProcessImpl extends ProcessImpl implements WorkflowProcess,
 
     public void removeNode(final Node node) {
         nodeContainer.removeNode(node);
-        ((org.jbpm.workflow.core.Node) node).setNodeContainer(null);
+        ((org.jbpm.workflow.core.Node) node).setParentContainer(null);
     }
 
     public void addNode(final Node node) {
         nodeContainer.addNode(node);
-        ((org.jbpm.workflow.core.Node) node).setNodeContainer(this);
+        ((org.jbpm.workflow.core.Node) node).setParentContainer(this);
     }
 
     public boolean isAutoComplete() {

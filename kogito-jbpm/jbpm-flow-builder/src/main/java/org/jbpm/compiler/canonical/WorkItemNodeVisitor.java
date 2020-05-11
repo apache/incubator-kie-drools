@@ -39,7 +39,6 @@ import org.jbpm.process.core.context.variable.VariableScope;
 import org.jbpm.ruleflow.core.factory.WorkItemNodeFactory;
 import org.jbpm.workflow.core.node.DataAssociation;
 import org.jbpm.workflow.core.node.WorkItemNode;
-import org.kie.api.definition.process.Node;
 import org.kie.api.runtime.process.WorkItem;
 import org.kie.api.runtime.process.WorkItemHandler;
 import org.kie.api.runtime.process.WorkItemManager;
@@ -55,9 +54,7 @@ import java.util.Map.Entry;
 import static org.jbpm.ruleflow.core.factory.WorkItemNodeFactory.METHOD_WORK_NAME;
 import static org.jbpm.ruleflow.core.factory.WorkItemNodeFactory.METHOD_WORK_PARAMETER;
 
-public class WorkItemNodeVisitor extends AbstractNodeVisitor {
-
-    private static final String NODE_KEY = "workItemNode";
+public class WorkItemNodeVisitor<T extends WorkItemNode> extends AbstractNodeVisitor<T> {
 
     private final ClassLoader contextClassLoader;
 
@@ -67,24 +64,23 @@ public class WorkItemNodeVisitor extends AbstractNodeVisitor {
 
     @Override
     protected String getNodeKey() {
-        return NODE_KEY;
+        return "workItemNode";
     }
 
     @Override
-    public void visitNode(String factoryField, Node node, BlockStmt body, VariableScope variableScope, ProcessMetaData metadata) {
-        WorkItemNode workItemNode = (WorkItemNode) node;
-        Work work = workItemNode.getWork();
-        String workName = workItemName(workItemNode, metadata);
-        body.addStatement(getAssignedFactoryMethod(factoryField, WorkItemNodeFactory.class, getNodeId(node), NODE_KEY, new LongLiteralExpr(workItemNode.getId())))
+    public void visitNode(String factoryField, T node, BlockStmt body, VariableScope variableScope, ProcessMetaData metadata) {
+        Work work = node.getWork();
+        String workName = workItemName(node, metadata);
+        body.addStatement(getAssignedFactoryMethod(factoryField, WorkItemNodeFactory.class, getNodeId(node), getNodeKey(), new LongLiteralExpr(node.getId())))
         .addStatement(getNameMethod(node, work.getName()))
         .addStatement(getFactoryMethod(getNodeId(node), METHOD_WORK_NAME, new StringLiteralExpr(workName)));
 
         addWorkItemParameters(work, body, getNodeId(node));
-        addNodeMappings(workItemNode, body, getNodeId(node));
+        addNodeMappings(node, body, getNodeId(node));
 
         body.addStatement(getDoneMethod(getNodeId(node)));
 
-        visitMetaData(workItemNode.getMetaData(), body, getNodeId(node));
+        visitMetaData(node.getMetaData(), body, getNodeId(node));
 
         metadata.getWorkItems().add(workName);
     }
@@ -106,7 +102,7 @@ public class WorkItemNodeVisitor extends AbstractNodeVisitor {
             String operationName = (String) workItemNode.getWork().getParameter("Operation");
             String type = (String) workItemNode.getWork().getParameter("ParameterType");
 
-            NodeValidator.of(NODE_KEY, workItemNode.getName())
+            NodeValidator.of(getNodeKey(), workItemNode.getName())
                     .notEmpty("interfaceName", interfaceName)
                     .notEmpty("operationName", operationName)
                     .validate();

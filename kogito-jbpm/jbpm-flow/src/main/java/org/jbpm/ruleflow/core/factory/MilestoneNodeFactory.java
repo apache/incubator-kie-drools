@@ -23,6 +23,9 @@ import org.jbpm.workflow.core.node.MilestoneNode;
 
 public class MilestoneNodeFactory extends StateBasedNodeFactory {
 
+    public static final String METHOD_CONSTRAINT = "constraint";
+    public static final String METHOD_MATCH_VARIABLE = "matchVariable";
+
     public MilestoneNodeFactory(RuleFlowNodeContainerFactory nodeContainerFactory, NodeContainer nodeContainer, long id) {
         super(nodeContainerFactory, nodeContainer, id);
     }
@@ -56,6 +59,11 @@ public class MilestoneNodeFactory extends StateBasedNodeFactory {
     @Override
     public MilestoneNodeFactory timer(String delay, String period, String dialect, String action) {
         super.timer(delay, period, dialect, action);
+        return this;
+    }
+
+    public MilestoneNodeFactory matchVariable(String matchVariable) {
+        getMilestoneNode().setMatchVariable(matchVariable);
         return this;
     }
 

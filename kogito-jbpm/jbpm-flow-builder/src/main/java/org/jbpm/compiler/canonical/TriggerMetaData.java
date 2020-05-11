@@ -15,7 +15,25 @@
 
 package org.jbpm.compiler.canonical;
 
+import com.github.javaparser.ast.body.Parameter;
+import com.github.javaparser.ast.expr.CastExpr;
+import com.github.javaparser.ast.expr.LambdaExpr;
+import com.github.javaparser.ast.expr.MethodCallExpr;
+import com.github.javaparser.ast.expr.NameExpr;
+import com.github.javaparser.ast.expr.StringLiteralExpr;
+import com.github.javaparser.ast.stmt.BlockStmt;
+import com.github.javaparser.ast.type.ClassOrInterfaceType;
+import com.github.javaparser.ast.type.UnknownType;
 import org.drools.core.util.StringUtils;
+import org.kie.api.definition.process.Node;
+
+import java.util.Map;
+
+import static org.jbpm.compiler.canonical.AbstractVisitor.KCONTEXT_VAR;
+import static org.jbpm.ruleflow.core.Metadata.MAPPING_VARIABLE;
+import static org.jbpm.ruleflow.core.Metadata.MESSAGE_TYPE;
+import static org.jbpm.ruleflow.core.Metadata.TRIGGER_REF;
+import static org.jbpm.ruleflow.core.Metadata.TRIGGER_TYPE;
 
 public class TriggerMetaData {
 
@@ -102,6 +120,31 @@ public class TriggerMetaData {
     @Override
     public String toString() {
         return "TriggerMetaData [name=" + name + ", type=" + type + ", dataType=" + dataType + ", modelRef=" + modelRef + "]";
+    }
+
+    public static LambdaExpr buildLambdaExpr(Node node, ProcessMetaData metadata) {
+        Map<String, Object> nodeMetaData = node.getMetaData();
+        TriggerMetaData triggerMetaData = new TriggerMetaData(
+                (String) nodeMetaData.get(TRIGGER_REF),
+                (String) nodeMetaData.get(TRIGGER_TYPE),
+                (String) nodeMetaData.get(MESSAGE_TYPE),
+                (String) nodeMetaData.get(MAPPING_VARIABLE),
+                String.valueOf(node.getId()))
+                .validate();
+        metadata.getTriggers().add(triggerMetaData);
+
+        // and add trigger action
+        BlockStmt actionBody = new BlockStmt();
+        CastExpr variable = new CastExpr(
+                new ClassOrInterfaceType(null, triggerMetaData.getDataType()),
+                new MethodCallExpr(new NameExpr(KCONTEXT_VAR), "getVariable")
+                        .addArgument(new StringLiteralExpr(triggerMetaData.getModelRef())));
+        MethodCallExpr producerMethodCall = new MethodCallExpr(new NameExpr("producer_" + node.getId()), "produce").addArgument(new MethodCallExpr(new NameExpr("kcontext"), "getProcessInstance")).addArgument(variable);
+        actionBody.addStatement(producerMethodCall);
+        return new LambdaExpr(
+                new Parameter(new UnknownType(), KCONTEXT_VAR), // (kcontext) ->
+                actionBody
+        );
     }
     
 }

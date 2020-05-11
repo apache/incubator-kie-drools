@@ -685,7 +685,7 @@ public class XmlBPMNProcessDumper implements XmlProcessDumper {
     		}
     		int parentOffsetX = 0;
     		int parentOffsetY = 0;
-    		NodeContainer nodeContainer = node.getNodeContainer();
+    		NodeContainer nodeContainer = node.getParentContainer();
     		while (nodeContainer instanceof CompositeNode) {
     			CompositeNode parent = (CompositeNode) nodeContainer;
     			Integer parentX = (Integer) parent.getMetaData().get("x");
@@ -696,7 +696,7 @@ public class XmlBPMNProcessDumper implements XmlProcessDumper {
     			if (parentY != null) {
     				parentOffsetY += (Integer) parent.getMetaData().get("y");
     			}
-    			nodeContainer = parent.getNodeContainer();
+    			nodeContainer = parent.getParentContainer();
     		}
     		x += parentOffsetX;
     		y += parentOffsetY;
@@ -872,11 +872,11 @@ public class XmlBPMNProcessDumper implements XmlProcessDumper {
     		return result;
     	}
     	result = node.getId() + "";
-    	NodeContainer nodeContainer = node.getNodeContainer();
+    	NodeContainer nodeContainer = node.getParentContainer();
     	while (nodeContainer instanceof CompositeNode) {
     		CompositeNode composite = (CompositeNode) nodeContainer;
     		result = composite.getId() + "-" + result;
-    		nodeContainer = composite.getNodeContainer();
+    		nodeContainer = composite.getParentContainer();
     	}
     	return "_" + result;
     }

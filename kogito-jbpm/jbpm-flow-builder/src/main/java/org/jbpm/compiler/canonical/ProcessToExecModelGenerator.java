@@ -138,7 +138,7 @@ public class ProcessToExecModelGenerator {
         for (Node node : ((WorkflowProcessImpl) process).getNodesRecursively()) {
             if (node instanceof HumanTaskNode) {
                 HumanTaskNode humanTaskNode = (HumanTaskNode) node;
-                VariableScope nodeVariableScope = (VariableScope) ((ContextContainer) humanTaskNode.getNodeContainer()).getDefaultContext(VariableScope.VARIABLE_SCOPE);
+                VariableScope nodeVariableScope = (VariableScope) ((ContextContainer) humanTaskNode.getParentContainer()).getDefaultContext(VariableScope.VARIABLE_SCOPE);
                 if (nodeVariableScope == null) {
                     nodeVariableScope = variableScope;
                 }

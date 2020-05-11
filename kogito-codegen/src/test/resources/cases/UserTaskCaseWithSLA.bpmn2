@@ -1,0 +1,120 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- origin at X=0.0 Y=0.0 -->
+<bpmn2:definitions xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:bpmn2="http://www.omg.org/spec/BPMN/20100524/MODEL" xmlns:bpmndi="http://www.omg.org/spec/BPMN/20100524/DI" xmlns:dc="http://www.omg.org/spec/DD/20100524/DC" xmlns:di="http://www.omg.org/spec/DD/20100524/DI" xmlns:java="http://www.java.com/javaTypes" xmlns:tns="http://www.jboss.org/drools" xmlns="http://www.jboss.org/drools" xsi:schemaLocation="http://www.omg.org/spec/BPMN/20100524/MODEL BPMN20.xsd http://www.jboss.org/drools drools.xsd http://www.bpsim.org/schemas/1.0 bpsim.xsd" id="Definition" exporter="org.eclipse.bpmn2.modeler.core" exporterVersion="1.2.1.Final" expressionLanguage="http://www.mvel.org/2.0" targetNamespace="http://www.example.org/MinimalExample" typeLanguage="http://www.java.com/javaTypes">
+  <bpmn2:itemDefinition id="_sItem" isCollection="false" structureRef="String"/>
+  <bpmn2:process id="UserTaskCaseSLA" tns:adHoc="true" name="Simple Case with User Tasks" isExecutable="true" processType="Private" tns:version="1.0" >
+    <bpmn2:extensionElements>
+      <tns:metaData name="customDescription">
+        <tns:metaValue>Case #{s}</tns:metaValue>
+      </tns:metaData>
+      <tns:metaData name="customCaseRoles">
+        <tns:metaValue>owner:1,admin:1</tns:metaValue>
+      </tns:metaData>
+      <tns:metaData name="customCaseIdPrefix">
+        <tns:metaValue>HR</tns:metaValue>
+      </tns:metaData>    
+      <tns:metaData name="customSLADueDate">
+        <tns:metaValue>3s</tns:metaValue>
+      </tns:metaData>
+    </bpmn2:extensionElements>
+    <bpmn2:property id="s" itemSubjectRef="_sItem" name="s"/>
+    <bpmn2:startEvent id="_1" name="StartProcess">
+      <bpmn2:outgoing>_1-_2</bpmn2:outgoing>
+    </bpmn2:startEvent>
+    <bpmn2:userTask id="_2" name="Hello1">
+      <bpmn2:incoming>_1-_2</bpmn2:incoming>
+      <bpmn2:outgoing>_2-_3</bpmn2:outgoing>
+      <bpmn2:ioSpecification id="InputOutputSpecification_1">
+        <bpmn2:inputSet id="InputSet_1"/>
+        <bpmn2:outputSet id="OutputSet_1"/>
+      </bpmn2:ioSpecification>
+      <bpmn2:potentialOwner id="PotentialOwner_1">
+        <bpmn2:resourceAssignmentExpression id="ResourceAssignmentExpression_1">
+          <bpmn2:formalExpression id="FormalExpression_1">owner</bpmn2:formalExpression>
+        </bpmn2:resourceAssignmentExpression>
+      </bpmn2:potentialOwner>
+    </bpmn2:userTask>
+    <bpmn2:endEvent id="_3" name="EndProcess">
+      <bpmn2:incoming>_2-_3</bpmn2:incoming>
+      <bpmn2:terminateEventDefinition id="TerminateEventDefinition_1"/>
+    </bpmn2:endEvent>
+    <bpmn2:task id="_SomeID4" tns:taskName="Milestone" name="Milestone1"/>
+    <bpmn2:task id="_5" tns:taskName="Milestone" name="Milestone2">
+        <bpmn2:ioSpecification id="_ju_kA1AKEeafR5ATvnlHeA">
+          <bpmn2:dataInput id="_D0BEE540-1820-47EB-A88C-D7374BB1562F_ConditionInputX" name="Condition"/>
+          <bpmn2:inputSet id="_ju_kBFAKEeafR5ATvnlHeA">
+            <bpmn2:dataInputRefs>_D0BEE540-1820-47EB-A88C-D7374BB1562F_ConditionInputX</bpmn2:dataInputRefs>
+          </bpmn2:inputSet>
+        </bpmn2:ioSpecification>
+        <bpmn2:dataInputAssociation id="_ju_kBVAKEeafR5ATvnlHeA">
+          <bpmn2:targetRef>_D0BEE540-1820-47EB-A88C-D7374BB1562F_ConditionInputX</bpmn2:targetRef>
+          <bpmn2:assignment id="_ju_kBlAKEeafR5ATvnlHeA">
+            <bpmn2:from xsi:type="bpmn2:tFormalExpression" id="_ju_kB1AKEeafR5ATvnlHeA"><![CDATA[CaseData(data.get("dataComplete") == true)]]></bpmn2:from>
+            <bpmn2:to xsi:type="bpmn2:tFormalExpression" id="_ju_kCFAKEeafR5ATvnlHeA">_D0BEE540-1820-47EB-A88C-D7374BB1562F_ConditionInputX</bpmn2:to>
+          </bpmn2:assignment>
+        </bpmn2:dataInputAssociation>
+    </bpmn2:task>
+    <bpmn2:userTask id="_6" name="Hello2">
+      <bpmn2:potentialOwner id="PotentialOwner_2">
+        <bpmn2:resourceAssignmentExpression id="ResourceAssignmentExpression_2">
+          <bpmn2:formalExpression id="FormalExpression_2">john</bpmn2:formalExpression>
+        </bpmn2:resourceAssignmentExpression>
+      </bpmn2:potentialOwner>
+    </bpmn2:userTask>
+    <bpmn2:sequenceFlow id="_1-_2" sourceRef="_1" targetRef="_2"/>
+    <bpmn2:sequenceFlow id="_2-_3" sourceRef="_2" targetRef="_3"/>
+  </bpmn2:process>
+  <bpmndi:BPMNDiagram id="BPMNDiagram_1">
+    <bpmndi:BPMNPlane id="BPMNPlane_1" bpmnElement="UserTaskCaseSLA">
+      <bpmndi:BPMNShape id="BPMNShape_StartEvent_1" bpmnElement="_1">
+        <dc:Bounds height="48.0" width="48.0" x="50.0" y="50.0"/>
+        <bpmndi:BPMNLabel>
+          <dc:Bounds height="11.0" width="54.0" x="47.0" y="98.0"/>
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="BPMNShape_UserTask_1" bpmnElement="_2">
+        <dc:Bounds height="48.0" width="100.0" x="202.0" y="50.0"/>
+        <bpmndi:BPMNLabel>
+          <dc:Bounds height="11.0" width="25.0" x="239.0" y="68.0"/>
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="BPMNShape_EndEvent_1" bpmnElement="_3">
+        <dc:Bounds height="48.0" width="48.0" x="390.0" y="50.0"/>
+        <bpmndi:BPMNLabel>
+          <dc:Bounds height="11.0" width="50.0" x="389.0" y="98.0"/>
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="BPMNShape_Task_1" bpmnElement="_SomeID4">
+        <dc:Bounds height="50.0" width="110.0" x="50.0" y="250.0"/>
+        <bpmndi:BPMNLabel>
+          <dc:Bounds height="11.0" width="44.0" x="83.0" y="269.0"/>
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="BPMNShape_Task_2" bpmnElement="_5">
+        <dc:Bounds height="50.0" width="110.0" x="50.0" y="150.0"/>
+        <bpmndi:BPMNLabel>
+          <dc:Bounds height="11.0" width="44.0" x="83.0" y="169.0"/>
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="BPMNShape_UserTask_2" bpmnElement="_6">
+        <dc:Bounds height="50.0" width="110.0" x="50.0" y="340.0"/>
+        <bpmndi:BPMNLabel>
+          <dc:Bounds height="11.0" width="25.0" x="92.0" y="359.0"/>
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNEdge id="BPMNEdge_SequenceFlow_1" bpmnElement="_1-_2" sourceElement="BPMNShape_StartEvent_1" targetElement="BPMNShape_UserTask_1">
+        <di:waypoint xsi:type="dc:Point" x="98.0" y="74.0"/>
+        <di:waypoint xsi:type="dc:Point" x="169.0" y="74.0"/>
+        <di:waypoint xsi:type="dc:Point" x="202.0" y="74.0"/>
+        <bpmndi:BPMNLabel/>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="BPMNEdge_SequenceFlow_2" bpmnElement="_2-_3" sourceElement="BPMNShape_UserTask_1" targetElement="BPMNShape_EndEvent_1">
+        <di:waypoint xsi:type="dc:Point" x="302.0" y="74.0"/>
+        <di:waypoint xsi:type="dc:Point" x="350.0" y="74.0"/>
+        <di:waypoint xsi:type="dc:Point" x="350.0" y="74.0"/>
+        <di:waypoint xsi:type="dc:Point" x="390.0" y="74.0"/>
+        <bpmndi:BPMNLabel/>
+      </bpmndi:BPMNEdge>
+    </bpmndi:BPMNPlane>
+  </bpmndi:BPMNDiagram>
+</bpmn2:definitions>

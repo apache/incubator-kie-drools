@@ -107,9 +107,9 @@ public class CompensationScopeInstance extends ExceptionScopeInstance  {
                 } else if (handlerNode instanceof EventSubProcessNode ) {
                     // Check that subprocess parent has completed. 
                     List<String> completedIds = processInstance.getCompletedNodeIds();
-                    if( completedIds.contains(((NodeImpl) handlerNode.getNodeContainer()).getMetaData("UniqueId")) ) { 
+                    if( completedIds.contains(((NodeImpl) handlerNode.getParentContainer()).getMetaData("UniqueId")) ) {
                         NodeInstance subProcessNodeInstance 
-                            = ((NodeInstanceContainer) nodeInstanceContainer).getNodeInstance((Node) handlerNode.getNodeContainer());
+                            = ((NodeInstanceContainer) nodeInstanceContainer).getNodeInstance((Node) handlerNode.getParentContainer());
                         compensationInstances.add(subProcessNodeInstance);
                         NodeInstance compensationHandlerNodeInstance 
                             = ((NodeInstanceContainer) subProcessNodeInstance).getNodeInstance(handlerNode);

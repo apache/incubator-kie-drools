@@ -591,8 +591,8 @@ public class ProcessHandler extends BaseAbstractHandler implements Handler {
                    }    
                    
                    // put Compensation Handler in CompensationHandlerNode
-                   NodeContainer sourceParent = sourceNode.getNodeContainer();
-                   NodeContainer targetParent = targetNode.getNodeContainer();
+                   NodeContainer sourceParent = sourceNode.getParentContainer();
+                   NodeContainer targetParent = targetNode.getParentContainer();
                    if( ! sourceParent.equals(targetParent) ) { 
                        throw new IllegalArgumentException("Compensation Associations may not cross (sub-)process boundaries,");
                    }
@@ -671,7 +671,7 @@ public class ProcessHandler extends BaseAbstractHandler implements Handler {
          */
         String attachedToId = eventNode.getAttachedToNodeId();
         Node attachedToNode = null;
-        for( Node node : eventNode.getNodeContainer().getNodes() ) { 
+        for( Node node : eventNode.getParentContainer().getNodes() ) {
             if( attachedToId.equals(node.getMetaData().get("UniqueId")) ) { 
                 attachedToNode = node;
                 break;
@@ -797,11 +797,11 @@ public class ProcessHandler extends BaseAbstractHandler implements Handler {
                                             String replaceRegExp = "Error-|Escalation-";
                                             final String signalType = type;
 
-                                            ExceptionScope exceptionScope = (ExceptionScope) ((ContextContainer) eventSubProcessNode.getNodeContainer()).getDefaultContext(ExceptionScope.EXCEPTION_SCOPE);
+                                            ExceptionScope exceptionScope = (ExceptionScope) ((ContextContainer) eventSubProcessNode.getParentContainer()).getDefaultContext(ExceptionScope.EXCEPTION_SCOPE);
                                             if (exceptionScope == null) {
                                                 exceptionScope = new ExceptionScope();
-                                                ((ContextContainer) eventSubProcessNode.getNodeContainer()).addContext(exceptionScope);
-                                                ((ContextContainer) eventSubProcessNode.getNodeContainer()).setDefaultContext(exceptionScope);
+                                                ((ContextContainer) eventSubProcessNode.getParentContainer()).addContext(exceptionScope);
+                                                ((ContextContainer) eventSubProcessNode.getParentContainer()).setDefaultContext(exceptionScope);
                                             }
                                             String faultVariable = null;
                                             if (trigger.getInAssociations() != null && !trigger.getInAssociations().isEmpty()) {
@@ -823,7 +823,7 @@ public class ProcessHandler extends BaseAbstractHandler implements Handler {
                                         } else if( type.equals("Compensation") ) { 
                                             // 1. Find the parent sub-process to this event sub-process
                                             NodeContainer parentSubProcess;  
-                                            NodeContainer subProcess = eventSubProcessNode.getNodeContainer();
+                                            NodeContainer subProcess = eventSubProcessNode.getParentContainer();
                                             Object isForCompensationObj = eventSubProcessNode.getMetaData("isForCompensation");
                                             if( isForCompensationObj == null ) { 
                                                 eventSubProcessNode.setMetaData("isForCompensation", true );
@@ -835,7 +835,7 @@ public class ProcessHandler extends BaseAbstractHandler implements Handler {
                                                 // ..how do you expect to signal compensation on the completed process (instance)?!?
                                                 throw new IllegalArgumentException("Compensation Event Sub-Processes at the process level are not supported.");
                                             }
-                                            parentSubProcess = ((Node) subProcess).getNodeContainer();
+                                            parentSubProcess = ((Node) subProcess).getParentContainer();
 
                                             // 2. The event filter (never fires, purely for dumping purposes) has already been added
 
@@ -973,7 +973,7 @@ public class ProcessHandler extends BaseAbstractHandler implements Handler {
         if( throwEventNode.getMetaData("compensation-activityRef") != null ) { 
             String activityRef = (String) throwEventNode.getMetaData().remove("compensation-activityRef");
 
-            NodeContainer nodeParent = (NodeContainer) throwEventNode.getNodeContainer();
+            NodeContainer nodeParent = (NodeContainer) throwEventNode.getParentContainer();
             if( nodeParent instanceof EventSubProcessNode ) { 
                 boolean compensationEventSubProcess = false;
                 List<Trigger> startTriggers = ((EventSubProcessNode) nodeParent).findStartNode().getTriggers();
@@ -989,7 +989,7 @@ public class ProcessHandler extends BaseAbstractHandler implements Handler {
                 }
                 if( compensationEventSubProcess ) { 
                     // BPMN2 spec, p. 252, p. 248: intermediate and end compensation event visibility scope
-                    nodeParent = (NodeContainer) ((NodeImpl) nodeParent).getNodeContainer(); 
+                    nodeParent = (NodeContainer) ((NodeImpl) nodeParent).getParentContainer();
                 }
             }
             String parentId;

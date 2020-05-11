@@ -32,7 +32,6 @@ import org.jbpm.process.core.context.variable.Variable;
 import org.jbpm.process.core.context.variable.VariableScope;
 import org.jbpm.ruleflow.core.factory.RuleSetNodeFactory;
 import org.jbpm.workflow.core.node.RuleSetNode;
-import org.kie.api.definition.process.Node;
 import org.kie.internal.ruleunit.RuleUnitComponentFactory;
 import org.kie.internal.ruleunit.RuleUnitDescription;
 import org.kie.kogito.rules.RuleUnitData;
@@ -48,11 +47,9 @@ import java.text.MessageFormat;
 
 import static org.jbpm.ruleflow.core.factory.RuleSetNodeFactory.METHOD_DECISION;
 
-public class RuleSetNodeVisitor extends AbstractNodeVisitor {
+public class RuleSetNodeVisitor extends AbstractNodeVisitor<RuleSetNode> {
 
     public static final Logger logger = LoggerFactory.getLogger(ProcessToExecModelGenerator.class);
-
-    private static final String NODE_KEY = "ruleSetNode";
 
     private final ClassLoader contextClassLoader;
     private final AssignableChecker assignableChecker;
@@ -64,41 +61,40 @@ public class RuleSetNodeVisitor extends AbstractNodeVisitor {
 
     @Override
     protected String getNodeKey() {
-        return NODE_KEY;
+        return "ruleSetNode";
     }
 
     @Override
-    public void visitNode(String factoryField, Node node, BlockStmt body, VariableScope variableScope, ProcessMetaData metadata) {
-        RuleSetNode ruleSetNode = (RuleSetNode) node;
-        String nodeName = ruleSetNode.getName();
+    public void visitNode(String factoryField, RuleSetNode node, BlockStmt body, VariableScope variableScope, ProcessMetaData metadata) {
+        String nodeName = node.getName();
 
-        body.addStatement(getAssignedFactoryMethod(factoryField, RuleSetNodeFactory.class, getNodeId(node), NODE_KEY, new LongLiteralExpr(ruleSetNode.getId())))
+        body.addStatement(getAssignedFactoryMethod(factoryField, RuleSetNodeFactory.class, getNodeId(node), getNodeKey(), new LongLiteralExpr(node.getId())))
                 .addStatement(getNameMethod(node, "Rule"));
 
-        RuleSetNode.RuleType ruleType = ruleSetNode.getRuleType();
+        RuleSetNode.RuleType ruleType = node.getRuleType();
         if (ruleType.getName().isEmpty()) {
             throw new IllegalArgumentException(
                     MessageFormat.format(
                             "Rule task \"{0}\" is invalid: you did not set a unit name, a rule flow group or a decision model.", nodeName));
         }
 
-        addNodeMappings(ruleSetNode, body, getNodeId(node));
+        addNodeMappings(node, body, getNodeId(node));
 
         NameExpr methodScope = new NameExpr(getNodeId(node));
         MethodCallExpr m;
         if (ruleType.isRuleFlowGroup()) {
             m = handleRuleFlowGroup(ruleType);
         } else if (ruleType.isRuleUnit()) {
-            m = handleRuleUnit(variableScope, metadata, ruleSetNode, nodeName, ruleType);
+            m = handleRuleUnit(variableScope, metadata, node, nodeName, ruleType);
         } else if (ruleType.isDecision()) {
             m = handleDecision((RuleSetNode.RuleType.Decision) ruleType);
         } else {
-            throw new IllegalArgumentException("Rule task " + nodeName + "is invalid: unsupported rule language " + ruleSetNode.getLanguage());
+            throw new IllegalArgumentException("Rule task " + nodeName + "is invalid: unsupported rule language " + node.getLanguage());
         }
         m.setScope(methodScope);
         body.addStatement(m);
 
-        visitMetaData(ruleSetNode.getMetaData(), body, getNodeId(node));
+        visitMetaData(node.getMetaData(), body, getNodeId(node));
         body.addStatement(getDoneMethod(getNodeId(node)));
     }
 

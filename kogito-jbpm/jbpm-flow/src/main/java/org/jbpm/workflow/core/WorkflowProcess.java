@@ -31,8 +31,8 @@ import org.kie.api.definition.process.Node;
  */
 public interface WorkflowProcess extends org.kie.api.definition.process.WorkflowProcess, Process, NodeContainer {
 
-    public static final int PROCESS_TYPE = 1;
-    public static final int CASE_TYPE = 2;
+    int PROCESS_TYPE = 1;
+    int CASE_TYPE = 2;
     
     /**
      * Returns the imports of this RuleFlow process.

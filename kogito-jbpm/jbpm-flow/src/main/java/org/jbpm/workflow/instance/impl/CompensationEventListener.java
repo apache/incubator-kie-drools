@@ -152,10 +152,10 @@ class CompensationEventListener implements EventListener {
        Stack<NodeContainer> nestedNodes = new Stack<NodeContainer>();
        Stack<NodeInstance> generatedInstances = new Stack<NodeInstance>();
        
-       NodeContainer parentContainer = toCompensateNode.getNodeContainer();
+       NodeContainer parentContainer = toCompensateNode.getParentContainer();
        while( !(parentContainer instanceof RuleFlowProcess) ) { 
            nestedNodes.add(parentContainer);
-           parentContainer = ((Node) parentContainer).getNodeContainer();
+           parentContainer = ((Node) parentContainer).getParentContainer();
        }
        
        NodeInstanceContainer parentInstance;

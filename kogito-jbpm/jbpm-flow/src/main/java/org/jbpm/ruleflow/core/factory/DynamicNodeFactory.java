@@ -25,6 +25,10 @@ import org.jbpm.workflow.core.node.DynamicNode;
 
 public class DynamicNodeFactory extends CompositeContextNodeFactory {
 
+	public static final String METHOD_LANGUAGE = "language";
+	public static final String METHOD_ACTIVATION_EXPRESSION = "activationExpression";
+	public static final String METHOD_COMPLETION_EXPRESSION = "completionExpression";
+
     public DynamicNodeFactory(RuleFlowNodeContainerFactory nodeContainerFactory, NodeContainer nodeContainer, long id) {
         super(nodeContainerFactory, nodeContainer, id);
     }

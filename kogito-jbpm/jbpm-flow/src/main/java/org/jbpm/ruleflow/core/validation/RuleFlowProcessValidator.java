@@ -832,7 +832,7 @@ public class RuleFlowProcessValidator implements ProcessValidator {
     }
 
     private boolean acceptsNoOutgoingConnections(Node node) {
-        NodeContainer nodeContainer = node.getNodeContainer();
+        NodeContainer nodeContainer = node.getParentContainer();
         return nodeContainer instanceof DynamicNode ||
                 (nodeContainer instanceof WorkflowProcess && ((WorkflowProcess) nodeContainer).isDynamic());
     }

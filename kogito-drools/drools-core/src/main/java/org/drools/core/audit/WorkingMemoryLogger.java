@@ -493,11 +493,11 @@ public abstract class WorkingMemoryLogger
         } else { 
             nodeId = (String) uniqueIdObj;
         }
-        NodeContainer nodeContainer = node.getNodeContainer();
+        NodeContainer nodeContainer = node.getParentContainer();
         while (nodeContainer != null) {
             if (nodeContainer instanceof Node) {
                 node = (Node) nodeContainer;
-                nodeContainer = node.getNodeContainer();
+                nodeContainer = node.getParentContainer();
                 // TODO fix this filter out hidden compositeNode inside ForEach node
                 if (!(nodeContainer.getClass().getName().endsWith("ForEachNode"))) {
                     nodeId = node.getId() + ":" + nodeId;
