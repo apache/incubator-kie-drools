@@ -16,6 +16,7 @@
   <description>Kogito Apps</description>
 
   <properties>
+    <version.io.quarkus>1.4.1.Final</version.io.quarkus>
     <version.frontend.plugin>1.9.1</version.frontend.plugin>
     <version.node>v11.6.0</version.node>
     <version.npm>6.10.3</version.npm>
