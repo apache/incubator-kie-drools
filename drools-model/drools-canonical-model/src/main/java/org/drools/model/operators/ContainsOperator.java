@@ -25,11 +25,11 @@ public enum ContainsOperator implements Operator.SingleValue<Object, Object> {
     INSTANCE;
 
     @Override
-    public boolean eval( Object a, Object b ) {
-        if ( a instanceof Collection ) {
-            return (( Collection ) a).contains( b );
+    public boolean eval( Object container, Object value ) {
+        if ( container instanceof Collection ) {
+            return (( Collection ) container).contains( value );
         }
-        if ( a.getClass().isArray() && evalArray( a, b ) ) {
+        if ( container != null && container.getClass().isArray() && evalArray( container, value ) ) {
             return true;
         }
         return false;
