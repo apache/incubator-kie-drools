@@ -57,7 +57,8 @@ public class ConstraintWeightDescriptor<Solution_> {
             }
             constraintPackage = constraintConfigurationAnnotation.constraintPackage();
             if (constraintPackage.isEmpty()) {
-                constraintPackage = memberAccessor.getDeclaringClass().getPackage().getName();
+                Package pack = memberAccessor.getDeclaringClass().getPackage();
+                constraintPackage = (pack == null) ? "" : pack.getName();
             }
         }
         this.constraintPackage = constraintPackage;

@@ -60,6 +60,8 @@ import org.optaplanner.core.impl.heuristic.selector.common.decorator.SelectionSo
 import org.optaplanner.core.impl.heuristic.selector.common.decorator.WeightFactorySelectionSorter;
 import org.optaplanner.core.impl.heuristic.selector.entity.decorator.PinEntityFilter;
 import org.optaplanner.core.impl.score.director.ScoreDirector;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * @param <Solution_> the solution type, the class with the {@link PlanningSolution} annotation
@@ -70,6 +72,8 @@ public class EntityDescriptor<Solution_> {
             PlanningVariable.class,
             InverseRelationShadowVariable.class, AnchorShadowVariable.class,
             CustomShadowVariable.class };
+
+    protected final transient Logger logger = LoggerFactory.getLogger(getClass());
 
     private final SolutionDescriptor<Solution_> solutionDescriptor;
 
@@ -103,6 +107,9 @@ public class EntityDescriptor<Solution_> {
         this.solutionDescriptor = solutionDescriptor;
         this.entityClass = entityClass;
         isInitializedPredicate = this::isInitialized;
+        if (entityClass.getPackage() == null) {
+            logger.warn("The entityClass ({}) should be in a proper java package.", entityClass);
+        }
     }
 
     /**

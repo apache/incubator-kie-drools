@@ -48,7 +48,8 @@ public final class DroolsConstraintFactory<Solution_> implements InnerConstraint
         ConstraintConfigurationDescriptor<Solution_> configurationDescriptor = solutionDescriptor
                 .getConstraintConfigurationDescriptor();
         if (configurationDescriptor == null) {
-            defaultConstraintPackage = solutionDescriptor.getSolutionClass().getPackage().getName();
+            Package pack = solutionDescriptor.getSolutionClass().getPackage();
+            defaultConstraintPackage = (pack == null) ? "" : pack.getName();
         } else {
             defaultConstraintPackage = configurationDescriptor.getConstraintPackage();
         }
@@ -71,8 +72,9 @@ public final class DroolsConstraintFactory<Solution_> implements InnerConstraint
                 .buildScoreHolder(false);
         Class<? extends AbstractScoreHolder<?>> scoreHolderClass = (Class<? extends AbstractScoreHolder<?>>) scoreHolder
                 .getClass();
+        Package pack = solutionDescriptor.getSolutionClass().getPackage();
         Global<? extends AbstractScoreHolder<?>> scoreHolderGlobal = globalOf(scoreHolderClass,
-                solutionDescriptor.getSolutionClass().getPackage().getName(),
+                (pack == null) ? "" : pack.getName(),
                 DroolsScoreDirector.GLOBAL_SCORE_HOLDER_KEY);
         model.addGlobal(scoreHolderGlobal);
 

@@ -39,7 +39,8 @@ public final class BavetConstraintFactory<Solution_> implements InnerConstraintF
         ConstraintConfigurationDescriptor<Solution_> configurationDescriptor = solutionDescriptor
                 .getConstraintConfigurationDescriptor();
         if (configurationDescriptor == null) {
-            defaultConstraintPackage = solutionDescriptor.getSolutionClass().getPackage().getName();
+            Package pack = solutionDescriptor.getSolutionClass().getPackage();
+            defaultConstraintPackage = (pack == null) ? "" : pack.getName();
         } else {
             defaultConstraintPackage = configurationDescriptor.getConstraintPackage();
         }

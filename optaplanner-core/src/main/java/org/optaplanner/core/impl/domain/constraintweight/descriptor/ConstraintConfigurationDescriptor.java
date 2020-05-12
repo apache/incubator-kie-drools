@@ -118,7 +118,8 @@ public class ConstraintConfigurationDescriptor<Solution_> {
         // So the ConstraintWeightDescriptors parse packAnnotation.constraintPackage() themselves.
         constraintPackage = packAnnotation.constraintPackage();
         if (constraintPackage.isEmpty()) {
-            constraintPackage = constraintConfigurationClass.getPackage().getName();
+            Package pack = constraintConfigurationClass.getPackage();
+            constraintPackage = (pack == null) ? "" : pack.getName();
         }
     }
 

@@ -187,6 +187,9 @@ public class SolutionDescriptor<Solution_> {
         entityCollectionMemberAccessorMap = new LinkedHashMap<>();
         entityDescriptorMap = new LinkedHashMap<>();
         reversedEntityClassList = new ArrayList<>();
+        if (solutionClass.getPackage() == null) {
+            logger.warn("The solutionClass ({}) should be in a proper java package.", solutionClass);
+        }
     }
 
     public void addEntityDescriptor(EntityDescriptor<Solution_> entityDescriptor) {
