@@ -52,8 +52,9 @@ public class CoercedExpression {
 
     private static final List<Class<?>> LITERAL_NUMBER_CLASSES = Arrays.asList(int.class, long.class, double.class, Integer.class, Long.class, Double.class);
 
-    private TypedExpression left;
-    private TypedExpression right;
+    private final TypedExpression left;
+    private final TypedExpression right;
+    private final boolean equalityExpr;
 
     private static Map<Class, List<Class<?>>> narrowingTypes = new HashMap<>();
 
@@ -67,9 +68,10 @@ public class CoercedExpression {
         narrowingTypes.put(double.class, Arrays.asList(Byte.class, Short.class, Character.class, Integer.class, Long.class, Float.class));
     }
 
-    public CoercedExpression(TypedExpression left, TypedExpression right) {
+    public CoercedExpression(TypedExpression left, TypedExpression right, boolean equalityExpr) {
         this.left = left;
         this.right = right;
+        this.equalityExpr = equalityExpr;
     }
 
     public CoercedExpressionResult coerce() {
@@ -85,7 +87,7 @@ public class CoercedExpression {
             return new CoercedExpressionResult(left, right);
         }
 
-        if (cannotCoerce()) {
+        if (!canCoerce()) {
             throw new CoercedExpressionException(new InvalidExpressionErrorResult("Comparison operation requires compatible types. Found " + leftClass + " and " + rightClass));
         }
 
@@ -131,20 +133,22 @@ public class CoercedExpression {
         return isNotBinaryExpression(right) && Map.class.isAssignableFrom(right.getRawClass());
     }
 
-    private boolean cannotCoerce() {
+    private boolean canCoerce() {
         final Class<?> leftClass = left.getRawClass();
-        final Class<?> rightClass = right.getRawClass();
+        if (!leftClass.isPrimitive() || !canCoerceLiteralNumberExpr(leftClass)) {
+            return true;
+        }
 
         final boolean leftIsPrimitive = leftClass.isPrimitive();
         final boolean canCoerceLiteralNumberExpr = canCoerceLiteralNumberExpr(leftClass);
 
-        return leftIsPrimitive
-                && canCoerceLiteralNumberExpr
-                && !rightClass.isPrimitive()
-                && !Number.class.isAssignableFrom(rightClass)
-                && !Boolean.class.isAssignableFrom(rightClass)
-                && !String.class.isAssignableFrom(rightClass)
-                && !(Map.class.isAssignableFrom(leftClass) || Map.class.isAssignableFrom(rightClass));
+        final Class<?> rightClass = right.getRawClass();
+        return rightClass.isPrimitive()
+                || Number.class.isAssignableFrom(rightClass)
+                || Boolean.class == rightClass
+                || String.class == rightClass
+                || (Object.class == rightClass && equalityExpr)
+                || (Map.class.isAssignableFrom(leftClass) || Map.class.isAssignableFrom(rightClass));
     }
 
     private TypedExpression castToClass(Class<?> clazz) {
