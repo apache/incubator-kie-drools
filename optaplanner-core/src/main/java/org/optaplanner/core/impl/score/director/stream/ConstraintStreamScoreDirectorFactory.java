@@ -62,8 +62,8 @@ public class ConstraintStreamScoreDirectorFactory<Solution_> extends AbstractSco
         this.constraints = constraintProvider.defineConstraints(constraintFactory);
         if (constraints == null) {
             throw new IllegalStateException("The constraintProvider class (" + constraintProvider.getClass()
-                + ")'s defineConstraints() must not return null.\n"
-                + "Maybe return an empty array instead if there are no constraints.");
+                    + ")'s defineConstraints() must not return null.\n"
+                    + "Maybe return an empty array instead if there are no constraints.");
         }
         if (Arrays.stream(constraints).anyMatch(Objects::isNull)) {
             throw new IllegalStateException("The constraintProvider class (" + constraintProvider.getClass()
