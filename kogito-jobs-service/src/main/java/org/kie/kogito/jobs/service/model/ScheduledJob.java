@@ -22,6 +22,7 @@ import java.util.Optional;
 import java.util.StringJoiner;
 
 import org.kie.kogito.jobs.api.Job;
+import org.kie.kogito.jobs.api.JobBuilder;
 import org.kie.kogito.jobs.service.utils.DateUtil;
 
 public class ScheduledJob extends Job {
@@ -137,6 +138,22 @@ public class ScheduledJob extends Job {
             return this;
         }
 
+        private ScheduledJobBuilder mergeJob(Job mergeJob) {
+            final Optional<Job> j = Optional.ofNullable(mergeJob);
+            return job(JobBuilder.builder()
+                               .id(j.map(Job::getId).orElse(job.getId()))
+                               .repeatInterval(j.map(Job::getRepeatInterval).orElse(job.getRepeatInterval()))
+                               .repeatLimit(j.map(Job::getRepeatLimit).orElse(job.getRepeatLimit()))
+                               .priority(j.map(Job::getPriority).orElse(job.getPriority()))
+                               .callbackEndpoint(j.map(Job::getCallbackEndpoint).orElse(job.getCallbackEndpoint()))
+                               .rootProcessId(j.map(Job::getRootProcessId).orElse(job.getRootProcessId()))
+                               .processId(j.map(Job::getProcessId).orElse(job.getProcessId()))
+                               .rootProcessInstanceId(j.map(Job::getRootProcessInstanceId).orElse(job.getRootProcessInstanceId()))
+                               .processInstanceId(j.map(Job::getProcessInstanceId).orElse(job.getProcessInstanceId()))
+                               .expirationTime(j.map(Job::getExpirationTime).orElse(job.getExpirationTime()))
+                               .build());
+        }
+
         public ScheduledJobBuilder scheduledId(String scheduledId) {
             this.scheduledId = scheduledId;
             return this;
@@ -171,6 +188,16 @@ public class ScheduledJob extends Job {
                     .executionCounter(scheduledJob.getExecutionCounter());
         }
 
+        public ScheduledJobBuilder merge(ScheduledJob scheduledJob) {
+            final Optional<ScheduledJob> j = Optional.ofNullable(scheduledJob);
+            return mergeJob(scheduledJob)
+                    .scheduledId(j.map(ScheduledJob::getScheduledId).orElse(scheduledId))
+                    .retries(j.map(ScheduledJob::getRetries).orElse(retries))
+                    .status(j.map(ScheduledJob::getStatus).orElse(status))
+                    .executionResponse(j.map(ScheduledJob::getExecutionResponse).orElse(executionResponse))
+                    .executionCounter(j.map(ScheduledJob::getExecutionCounter).orElse(executionCounter));
+        }
+
         public ScheduledJobBuilder status(JobStatus status) {
             this.status = status;
             return this;
@@ -189,6 +216,10 @@ public class ScheduledJob extends Job {
         public ScheduledJobBuilder executionCounter(Integer executionCounter) {
             this.executionCounter = executionCounter;
             return this;
+        }
+
+        public static ScheduledJob from(Job job) {
+            return builder().job(job).build();
         }
 
         public ScheduledJob build() {

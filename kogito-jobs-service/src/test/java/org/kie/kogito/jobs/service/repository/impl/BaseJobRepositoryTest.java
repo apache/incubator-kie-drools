@@ -26,9 +26,11 @@ import io.vertx.core.Handler;
 import io.vertx.core.Vertx;
 import org.junit.jupiter.api.Test;
 import org.kie.kogito.jobs.api.JobBuilder;
+import org.kie.kogito.jobs.service.model.JobExecutionResponse;
 import org.kie.kogito.jobs.service.model.JobStatus;
 import org.kie.kogito.jobs.service.model.ScheduledJob;
 import org.kie.kogito.jobs.service.repository.ReactiveJobRepository;
+import org.kie.kogito.jobs.service.stream.JobStreams;
 import org.kie.kogito.jobs.service.utils.DateUtil;
 
 import static org.assertj.core.api.Assertions.assertThat;
@@ -54,6 +56,14 @@ public abstract class BaseJobRepositoryTest {
                            }
         ).when(vertx).executeBlocking(any(), any());
         return vertx;
+    }
+
+    public JobStreams mockJobStreams() {
+        final JobStreams mock = mock(JobStreams.class);
+        lenient().when(mock.publishJobStatusChange(any(ScheduledJob.class))).thenAnswer(a -> a.getArgument(0));
+        lenient().when(mock.publishJobSuccess(any(JobExecutionResponse.class))).thenAnswer(a -> a.getArgument(0));
+        lenient().when(mock.publishJobError(any(JobExecutionResponse.class))).thenAnswer(a -> a.getArgument(0));
+        return mock;
     }
 
     public abstract ReactiveJobRepository tested();
@@ -149,5 +159,30 @@ public abstract class BaseJobRepositoryTest {
                 .get();
 
         assertThat(fetchedNotFound.size()).isEqualTo(0);
+    }
+
+    @Test
+    void testMergeCallbackEndpoint() throws Exception {
+        String id = UUID.randomUUID().toString();
+        createAndSaveJob(id);
+        final String newCallbackEndpoint = "http://localhost/newcallback";
+        final ScheduledJob toMerge = ScheduledJob.builder()
+                .job(JobBuilder.builder()
+                             .id(id)
+                             .callbackEndpoint(newCallbackEndpoint)
+                             .build())
+                .build();
+
+        ScheduledJob merged = tested().merge(id, toMerge).toCompletableFuture().get();
+        assertThat(merged.getCallbackEndpoint()).isEqualTo(newCallbackEndpoint);
+        assertThat(merged.getId()).isEqualTo(job.getId());
+        assertThat(merged.getExpirationTime()).isEqualTo(job.getExpirationTime());
+        assertThat(merged.getPriority()).isEqualTo(job.getPriority());
+        assertThat(merged.getRepeatLimit()).isEqualTo(job.getRepeatLimit());
+        assertThat(merged.getRepeatInterval()).isEqualTo(job.getRepeatInterval());
+        assertThat(merged.getProcessId()).isEqualTo(job.getProcessId());
+        assertThat(merged.getRootProcessInstanceId()).isEqualTo(job.getRootProcessInstanceId());
+        assertThat(merged.getRootProcessId()).isEqualTo(job.getRootProcessId());
+        assertThat(merged.getProcessInstanceId()).isEqualTo(job.getRootProcessInstanceId());
     }
 }

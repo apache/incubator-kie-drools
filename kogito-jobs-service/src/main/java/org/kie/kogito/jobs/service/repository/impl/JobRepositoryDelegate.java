@@ -94,4 +94,9 @@ public class JobRepositoryDelegate implements ReactiveJobRepository {
     public PublisherBuilder<ScheduledJob> findByStatusBetweenDatesOrderByPriority(ZonedDateTime from, ZonedDateTime to, JobStatus... status) {
         return delegate.findByStatusBetweenDatesOrderByPriority(from, to, status);
     }
+
+    @Override
+    public CompletionStage<ScheduledJob> merge(String id, ScheduledJob job) {
+        return delegate.merge(id, job);
+    }
 }

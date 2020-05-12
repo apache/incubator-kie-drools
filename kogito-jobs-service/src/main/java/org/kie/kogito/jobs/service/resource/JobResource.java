@@ -25,15 +25,18 @@ import javax.ws.rs.Consumes;
 import javax.ws.rs.DELETE;
 import javax.ws.rs.GET;
 import javax.ws.rs.NotFoundException;
+import javax.ws.rs.PATCH;
 import javax.ws.rs.POST;
 import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
 import javax.ws.rs.core.MediaType;
 
+import org.eclipse.microprofile.openapi.annotations.parameters.RequestBody;
 import org.eclipse.microprofile.reactive.streams.operators.ReactiveStreams;
 import org.kie.kogito.jobs.api.Job;
 import org.kie.kogito.jobs.service.model.ScheduledJob;
+import org.kie.kogito.jobs.service.model.ScheduledJob.ScheduledJobBuilder;
 import org.kie.kogito.jobs.service.repository.ReactiveJobRepository;
 import org.kie.kogito.jobs.service.scheduler.impl.VertxJobScheduler;
 import org.slf4j.Logger;
@@ -62,6 +65,18 @@ public class JobResource {
                 .findFirst()
                 .run()
                 .thenApply(j -> j.orElseThrow(() -> new RuntimeException("Failed to schedule job " + job)));
+    }
+
+    @PATCH
+    @Path("/{id}")
+    @Produces(MediaType.APPLICATION_JSON)
+    @Consumes(MediaType.APPLICATION_JSON)
+    public CompletionStage<ScheduledJob> patch(@PathParam("id") String id, @RequestBody Job job) {
+        LOGGER.debug("REST patch update {}", job);
+        return jobRepository.merge(id, ScheduledJobBuilder.from(job))
+                .thenApply(result -> Optional
+                        .ofNullable(result)
+                        .orElseThrow(() -> new NotFoundException("Job not found " + job)));
     }
 
     @DELETE

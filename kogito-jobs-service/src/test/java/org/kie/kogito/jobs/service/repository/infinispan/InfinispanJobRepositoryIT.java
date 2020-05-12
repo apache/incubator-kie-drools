@@ -46,7 +46,7 @@ class InfinispanJobRepositoryIT extends BaseJobRepositoryTest {
                 .administration()
                 .getOrCreateCache(InfinispanConfiguration.Caches.SCHEDULED_JOBS, (String) null)
                 .clear();
-        tested = new InfinispanJobRepository(mockVertx(), mock(JobStreams.class), remoteCacheManager);
+        tested = new InfinispanJobRepository(mockVertx(), mockJobStreams(), remoteCacheManager);
         super.setUp();
     }
 

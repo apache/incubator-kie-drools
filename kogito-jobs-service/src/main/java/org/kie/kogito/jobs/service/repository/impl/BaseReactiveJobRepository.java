@@ -18,11 +18,13 @@ package org.kie.kogito.jobs.service.repository.impl;
 
 import java.util.Arrays;
 import java.util.Objects;
+import java.util.Optional;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.CompletionStage;
 import java.util.function.Supplier;
 
 import io.vertx.core.Vertx;
+import org.apache.commons.lang3.StringUtils;
 import org.eclipse.microprofile.reactive.streams.operators.PublisherBuilder;
 import org.kie.kogito.jobs.service.model.JobStatus;
 import org.kie.kogito.jobs.service.model.ScheduledJob;
@@ -42,7 +44,8 @@ public abstract class BaseReactiveJobRepository implements ReactiveJobRepository
 
     public <T> CompletionStage<T> runAsync(Supplier<T> function) {
         final CompletableFuture<T> future = new CompletableFuture<>();
-        vertx.executeBlocking(v -> future.complete(function.get()), r ->{});
+        vertx.executeBlocking(v -> future.complete(function.get()), r -> {
+        });
         return future;
     }
 
@@ -65,5 +68,26 @@ public abstract class BaseReactiveJobRepository implements ReactiveJobRepository
     public CompletionStage<ScheduledJob> delete(ScheduledJob job) {
         return delete(job.getId())
                 .thenApply(j -> jobStreams.publishJobStatusChange(job));
+    }
+
+    @Override
+    public CompletionStage<ScheduledJob> merge(String id, ScheduledJob jobToMerge) {
+        return Optional.ofNullable(id)
+                //do validations
+                .filter(StringUtils::isNotBlank)
+                .filter(s -> StringUtils.isBlank(jobToMerge.getId()) || s.equals(jobToMerge.getId()))
+                //perform merge
+                .map(jobId -> this.get(jobId)
+                        .thenApply(Optional::ofNullable)
+                        .thenApply(j -> j.map(currentJob -> doMerge(jobToMerge, currentJob)))
+                        .thenCompose(j -> j.map(this::save).orElse(CompletableFuture.completedFuture(null))))//save it
+                .orElseThrow(() -> new IllegalArgumentException("Id is empty or not equals to Job.id : " + id));
+    }
+
+    private ScheduledJob doMerge(ScheduledJob toMerge, ScheduledJob current) {
+        return ScheduledJob.builder()
+                .of(current)
+                .merge(toMerge)
+                .build();
     }
 }
