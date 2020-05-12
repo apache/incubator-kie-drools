@@ -26,6 +26,7 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.math.BigDecimal;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
@@ -733,6 +734,9 @@ public class ActivityTest extends JbpmBpmn2TestCase {
                 .startProcess("AdHocSubProcess");
         assertTrue(processInstance.getState() == ProcessInstance.STATE_ACTIVE);
         assertEquals("Entry", ((WorkflowProcessInstance) processInstance).getVariable("x"));
+        
+        Collection<NodeInstance> nodeInstances = ((WorkflowProcessInstance) processInstance).getNodeInstances();
+        assertThat(nodeInstances).hasSize(1).hasOnlyElementsOfTypes(DynamicNodeInstance.class).extracting("triggerTime").doesNotContainNull();
         WorkItem workItem = workItemHandler.getWorkItem();
         assertNull(workItem);
         ksession = restoreSession(ksession, true);
