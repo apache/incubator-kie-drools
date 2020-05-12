@@ -16,6 +16,8 @@
 
 package org.kie.dmn.feel.codegen.feel11;
 
+import javax.lang.model.SourceVersion;
+
 public class CodegenStringUtil {
 
     /**
@@ -24,8 +26,16 @@ public class CodegenStringUtil {
      * Similar to drools-model's StringUtil
      */
     public static String escapeIdentifier(String partOfIdentifier) {
+        String id = partOfIdentifier;
+        if (!Character.isJavaIdentifierStart(id.charAt(0))) {
+            id = "_" + id;
+        }
+        id = id.replaceAll("_", "__");
+        if (SourceVersion.isKeyword(id)) {
+            id = "_" + id;
+        }
         StringBuilder result = new StringBuilder();
-        char[] cs = partOfIdentifier.toCharArray();
+        char[] cs = id.toCharArray();
         for (char c : cs) {
             if (Character.isJavaIdentifierPart(c)) {
                 result.append(c);
