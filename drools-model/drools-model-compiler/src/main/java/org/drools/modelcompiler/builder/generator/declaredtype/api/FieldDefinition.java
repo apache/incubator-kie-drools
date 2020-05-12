@@ -42,11 +42,11 @@ public interface FieldDefinition {
 
     boolean isFinal();
 
-    default Optional<String> ovverrideGetterName() {
+    default Optional<String> overriddenGetterName() {
         return Optional.empty();
     }
 
-    default Optional<String> ovverrideSetterName() {
+    default Optional<String> overriddenSetterName() {
         return Optional.empty();
     }
 }

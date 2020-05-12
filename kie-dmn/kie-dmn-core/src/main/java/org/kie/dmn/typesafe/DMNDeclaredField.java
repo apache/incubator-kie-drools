@@ -168,7 +168,7 @@ public class DMNDeclaredField implements FieldDefinition {
     }
 
     @Override
-    public Optional<String> ovverrideGetterName() {
+    public Optional<String> overriddenGetterName() {
         String value = "get" + CodegenStringUtil.escapeIdentifier(ucFirst(originalMapKey));
         if (value.equals("getClass")) { // see Object#getClass() exists
             value = "get_class";
@@ -177,7 +177,7 @@ public class DMNDeclaredField implements FieldDefinition {
     }
 
     @Override
-    public Optional<String> ovverrideSetterName() {
+    public Optional<String> overriddenSetterName() {
         return Optional.of("set" + CodegenStringUtil.escapeIdentifier(ucFirst(originalMapKey)));
     }
 
