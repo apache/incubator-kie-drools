@@ -1012,7 +1012,7 @@ exports[`DataList component tests Snapshot tests 1 1`] = `
         },
       },
       "typeDefs": undefined,
-      "version": "2.6.8",
+      "version": "local",
       "watchQuery": [Function],
     }
   }

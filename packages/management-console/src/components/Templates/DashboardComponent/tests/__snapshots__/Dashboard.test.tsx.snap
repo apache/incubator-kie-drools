@@ -214,7 +214,7 @@ exports[`Dashboard component tests snapshot testing 1`] = `
         },
       },
       "typeDefs": undefined,
-      "version": "2.6.8",
+      "version": "local",
       "watchQuery": [Function],
     }
   }
