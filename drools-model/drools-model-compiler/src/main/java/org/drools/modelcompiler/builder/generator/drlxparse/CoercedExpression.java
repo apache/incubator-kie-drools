@@ -142,8 +142,9 @@ public class CoercedExpression {
                 && canCoerceLiteralNumberExpr
                 && !rightClass.isPrimitive()
                 && !Number.class.isAssignableFrom(rightClass)
-                && !Boolean.class.isAssignableFrom(rightClass)
-                && !String.class.isAssignableFrom(rightClass)
+                && Boolean.class != rightClass
+                && String.class != rightClass
+                && Object.class != rightClass
                 && !(Map.class.isAssignableFrom(leftClass) || Map.class.isAssignableFrom(rightClass));
     }
 
