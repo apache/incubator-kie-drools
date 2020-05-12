@@ -25,25 +25,41 @@ import java.util.List;
 
 import org.drools.core.io.impl.ClassPathResource;
 import org.infinispan.client.hotrod.RemoteCacheManager;
+import org.infinispan.client.hotrod.configuration.ClientIntelligence;
 import org.infinispan.client.hotrod.configuration.ConfigurationBuilder;
 import org.infinispan.client.hotrod.impl.ConfigurationProperties;
-import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
+import org.kie.kogito.auth.SecurityPolicy;
 import org.kie.kogito.persistence.KogitoProcessInstancesFactory;
 import org.kie.kogito.process.ProcessInstance;
 import org.kie.kogito.process.WorkItem;
 import org.kie.kogito.process.bpmn2.BpmnProcess;
 import org.kie.kogito.process.bpmn2.BpmnVariables;
+import org.kie.kogito.services.identity.StaticIdentityProvider;
+import org.testcontainers.junit.jupiter.Container;
+import org.testcontainers.junit.jupiter.Testcontainers;
 
-@Disabled("Requires running Infinispan instance")
-public class CacheProcessInstancesTest {
+@Testcontainers
+public class CacheProcessInstancesIT {
+
+    @Container
+    public InfinispanServerContainer container = new InfinispanServerContainer();
 
     @Test
     public void testBasicFlow() {
         ConfigurationBuilder builder = new ConfigurationBuilder();
-        builder.addServer()
+        builder
+            .addServer()
                 .host("127.0.0.1")
-                .port(ConfigurationProperties.DEFAULT_HOTROD_PORT);
+                .port(ConfigurationProperties.DEFAULT_HOTROD_PORT)
+            .security()
+                .authentication()
+                .username("admin")
+                .password("admin")
+                .realm("default")
+                .serverName("infinispan")
+                .saslMechanism("DIGEST-MD5")
+                .clientIntelligence(ClientIntelligence.BASIC);
         
         RemoteCacheManager cacheManager = new RemoteCacheManager(builder.build());
         
@@ -58,10 +74,11 @@ public class CacheProcessInstancesTest {
         assertEquals(STATE_ACTIVE, processInstance.status());
         
 
-        WorkItem workItem = processInstance.workItems().get(0);
+        SecurityPolicy asJohn = SecurityPolicy.of(new StaticIdentityProvider("john"));
+        WorkItem workItem = processInstance.workItems(asJohn).get(0);
         assertNotNull(workItem);
         assertEquals("john", workItem.getParameters().get("ActorId"));
-        processInstance.completeWorkItem(workItem.getId(), null);
+        processInstance.completeWorkItem(workItem.getId(), null, asJohn);
         assertEquals(STATE_COMPLETED, processInstance.status());
     }
     

@@ -16,10 +16,8 @@
 
 package org.kie.kogito.infinispan;
 
-import java.util.Collections;
-import java.util.Map;
+import java.util.Optional;
 
-import io.quarkus.test.common.QuarkusTestResourceLifecycleManager;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.testcontainers.containers.FixedHostPortGenericContainer;
@@ -27,27 +25,28 @@ import org.testcontainers.containers.GenericContainer;
 import org.testcontainers.containers.output.Slf4jLogConsumer;
 import org.testcontainers.containers.wait.strategy.Wait;
 
-public class InfinispanServerTestResource implements QuarkusTestResourceLifecycleManager {
+import org.testcontainers.lifecycle.Startable;
+
+public class InfinispanServerContainer implements Startable {
 
     private static final String INFINISPAN_IMAGE = System.getProperty("container.image.infinispan");
-    private static final Logger LOGGER = LoggerFactory.getLogger(InfinispanServerTestResource.class);
+    private static final Logger LOGGER = LoggerFactory.getLogger(InfinispanServerContainer.class);
     private GenericContainer infinispan;
 
     @Override
-    public Map<String, String> start() {
+    public void start() {
         if (INFINISPAN_IMAGE == null) {
             throw new RuntimeException("Please define a valid Infinispan image in system property container.image.infinispan");
         }
         LOGGER.info("Using Infinispan image: {}", INFINISPAN_IMAGE);
         infinispan = new FixedHostPortGenericContainer(INFINISPAN_IMAGE)
-                .withFixedExposedPort(11232, 11222)
+                .withFixedExposedPort(11222, 11222)
                 //wait for the server to be  fully started
                 .waitingFor(Wait.forLogMessage(".*\\bstarted\\b.*", 1))
                 .withEnv("USER", "admin")
                 .withEnv("PASS", "admin")
                 .withLogConsumer(new Slf4jLogConsumer(LOGGER));
         infinispan.start();
-        return Collections.emptyMap();
     }
 
     @Override

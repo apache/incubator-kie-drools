@@ -73,7 +73,7 @@ pipeline {
     post {
         always {
             sh '$WORKSPACE/trace.sh'
-            junit '**/target/surefire-reports/**/*.xml'
+            junit '**/target/surefire-reports/**/*.xml, **/target/failsafe-reports/**/*.xml'
         }
         failure {
             script {

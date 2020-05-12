@@ -23,12 +23,11 @@ import io.quarkus.test.junit.QuarkusTest;
 import org.assertj.core.api.Assertions;
 import org.eclipse.microprofile.health.HealthCheckResponse;
 import org.infinispan.client.hotrod.RemoteCacheManager;
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.kie.kogito.infinispan.InfinispanServerTestResource;
 
 @QuarkusTest
-public class InfinispanHealthCheckTest {
+public class InfinispanHealthCheckIT {
 
     private InfinispanHealthCheck healthCheck;
 
@@ -36,7 +35,7 @@ public class InfinispanHealthCheckTest {
     Instance<RemoteCacheManager> instance;
 
     @Test
-    void testCall() throws Exception{
+    void testCall() throws Exception {
         InfinispanServerTestResource resource = new InfinispanServerTestResource();
         resource.start();
 

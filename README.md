@@ -32,6 +32,7 @@ Requirements
 
 - [Maven](https://maven.apache.org/) 3.6.2 or later
 - [Java](https://openjdk.java.net/install/) 11 or later (devel package)
+- optional: Docker installation for running integration tests
 
 Getting Started
 ---------------
@@ -49,11 +50,13 @@ Building from source
 --------------------
 
 1. Check out the source:
+
 ```
 git clone git@github.com:kiegroup/kogito-runtimes.git
 ```
 
 If you don't have a GitHub account use this command instead:
+
 ```
 git clone https://github.com/kiegroup/kogito-runtimes.git
 ```
@@ -61,8 +64,18 @@ git clone https://github.com/kiegroup/kogito-runtimes.git
 2. Build with Maven:
 ```
 cd kogito-runtimes
-mvn clean install -DskipTests
+mvn clean install -DskipITs
 ```
+
+3. Run integration tests
+The integrations tests are skipped in the command above. To run the tests you need to have docker installed on your machine. To run the tests during the build, just remove the `-DskipITs` argument.
+Possible issues - the tests are running docker containers using [testcontainers](https://github.com/testcontainers/testcontainers-java). That by default requires access to the docker.sock file which might result in a security alert on your system and be blocked. In such case you'll see log message similar to 'Can not connect to Ryuk'. In this case do run the tests with following ENV variable set:
+
+```
+TESTCONTAINERS_RYUK_DISABLED=true mvn clean verify
+```
+When the test run is interrupted though, you might end up with docker containers still running, check those using `docker ps` and stop when neccessary.
+
 
 Contributing to Kogito
 --------------------

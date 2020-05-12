@@ -71,7 +71,7 @@ pipeline {
                      to: env.KOGITO_CI_EMAIL_TO
         }
         always {
-            junit '**/target/surefire-reports/**/*.xml'
+            junit '**/target/surefire-reports/**/*.xml, **/target/failsafe-reports/**/*.xml'
             cleanWs()
         }
     }

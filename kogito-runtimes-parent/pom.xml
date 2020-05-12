@@ -41,6 +41,8 @@
     <jacoco.exec.file>${project.root.dir}/target/jacoco.exec</jacoco.exec.file>
     <!--suppress UnresolvedMavenProperty -->
     <project.root.dir>${maven.multiModuleProjectDirectory}</project.root.dir>
+    <tests.surefire.include>**/*Test.java</tests.surefire.include>
+    <tests.failsafe.include>**/*IT.java</tests.failsafe.include>
 
     <!-- plugin versions -->
     <version.antapacheregexp>1.8.2</version.antapacheregexp>
@@ -141,6 +143,9 @@
     <version.spring.framework>5.2.4.RELEASE</version.spring.framework>
     <version.xmlunit>2.2.1</version.xmlunit>
     <version.jsonschema2pojo-maven-plugin>1.0.1</version.jsonschema2pojo-maven-plugin>
+
+    <!-- container images for testing -->
+    <container.image.infinispan>quay.io/infinispan/server:${version.org.infinispan.image}</container.image.infinispan>
   </properties>
 
   <!-- distributionManagement section -->
@@ -1023,6 +1028,14 @@
         <plugin>
           <artifactId>maven-failsafe-plugin</artifactId>
           <version>${version.surefire.plugin}</version>
+          <configuration>
+            <includes>
+              <include>${tests.failsafe.include}</include>
+            </includes>
+            <excludes>
+              <exclude>${tests.surefire.include}</exclude>
+            </excludes>
+          </configuration>
         </plugin>
         <plugin>
           <groupId>org.apache.maven.plugins</groupId>
@@ -1030,10 +1043,10 @@
           <version>${version.surefire.plugin}</version>
           <configuration>
             <includes>
-              <include>**/*Test.java</include>
+              <include>${tests.surefire.include}</include>
             </includes>
             <excludes>
-              <exclude>**/*IntegrationTest.java</exclude>
+              <exclude>${tests.failsafe.include}</exclude>
             </excludes>
             <argLine>-Xmx1024m -Dfile.encoding=UTF-8</argLine>
             <systemPropertyVariables>
