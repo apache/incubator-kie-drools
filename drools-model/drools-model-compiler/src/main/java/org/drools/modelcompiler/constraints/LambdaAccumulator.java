@@ -17,6 +17,10 @@
 
 package org.drools.modelcompiler.constraints;
 
+import java.io.Externalizable;
+import java.io.IOException;
+import java.io.ObjectInput;
+import java.io.ObjectOutput;
 import java.io.Serializable;
 import java.util.HashMap;
 import java.util.List;
@@ -52,8 +56,6 @@ public abstract class LambdaAccumulator implements Accumulator {
     }
 
     private final AccumulateFunction accumulateFunction;
-    private Map<Long, Object> reverseSupport;
-
 
     protected LambdaAccumulator(AccumulateFunction accumulateFunction) {
         this.accumulateFunction = accumulateFunction;
@@ -68,7 +70,7 @@ public abstract class LambdaAccumulator implements Accumulator {
     @Override
     public Serializable createContext() {
         try {
-            return accumulateFunction.createContext();
+            return new LambdaAccContext(accumulateFunction.createContext(), supportsReverse());
         } catch (Exception e) {
             throw new RuntimeException(e);
         }
@@ -76,19 +78,16 @@ public abstract class LambdaAccumulator implements Accumulator {
 
     @Override
     public void init(Object workingMemoryContext, Object context, Tuple leftTuple, Declaration[] declarations, WorkingMemory workingMemory) throws Exception {
-        accumulateFunction.init((Serializable) context);
-        if(supportsReverse()) {
-            reverseSupport = new HashMap<>();
-        }
+        accumulateFunction.init( (( LambdaAccContext ) context).context );
     }
 
     @Override
     public void accumulate(Object workingMemoryContext, Object context, Tuple leftTuple, InternalFactHandle handle, Declaration[] declarations, Declaration[] innerDeclarations, WorkingMemory workingMemory) throws Exception {
         final Object accumulatedObject = getAccumulatedObject(declarations, innerDeclarations, handle, leftTuple, (InternalWorkingMemory) workingMemory);
         if (supportsReverse()) {
-            reverseSupport.put(handle.getId(), accumulatedObject);
+            (( LambdaAccContext ) context).reverseSupport.put(handle.getId(), accumulatedObject);
         }
-        accumulateFunction.accumulate((Serializable) context, accumulatedObject);
+        accumulateFunction.accumulate( (( LambdaAccContext ) context).context, accumulatedObject);
     }
 
     protected abstract Object getAccumulatedObject( Declaration[] declarations, Declaration[] innerDeclarations, InternalFactHandle handle, Tuple tuple, InternalWorkingMemory wm );
@@ -100,18 +99,12 @@ public abstract class LambdaAccumulator implements Accumulator {
 
     @Override
     public void reverse(Object workingMemoryContext, Object context, Tuple leftTuple, InternalFactHandle handle, Declaration[] declarations, Declaration[] innerDeclarations, WorkingMemory workingMemory) throws Exception {
-        final Object accumulatedObject = reverseSupport.remove(handle.getId());
-        if(accumulatedObject == null) {
-            final Object accumulatedObject2 = getAccumulatedObject(declarations, innerDeclarations, handle, leftTuple, (InternalWorkingMemory) workingMemory);
-            accumulateFunction.reverse((Serializable) context, accumulatedObject2);
-        } else {
-            accumulateFunction.reverse((Serializable) context, accumulatedObject);
-        }
+        accumulateFunction.reverse( (( LambdaAccContext ) context).context, (( LambdaAccContext ) context).reverseSupport.remove(handle.getId()));
     }
 
     @Override
     public Object getResult(Object workingMemoryContext, Object context, Tuple leftTuple, Declaration[] declarations, WorkingMemory workingMemory) throws Exception {
-        return accumulateFunction.getResult((Serializable) context);
+        return accumulateFunction.getResult( (( LambdaAccContext ) context).context );
     }
 
     public static class BindingAcc extends LambdaAccumulator {
@@ -204,6 +197,35 @@ public abstract class LambdaAccumulator implements Accumulator {
         @Override
         protected Object getAccumulatedObject( Declaration[] declarations, Declaration[] innerDeclarations, InternalFactHandle handle, Tuple tuple, InternalWorkingMemory wm ) {
             return value;
+        }
+    }
+
+    private static class LambdaAccContext implements Externalizable {
+        private Serializable context;
+        private Map<Long, Object> reverseSupport;
+
+        public LambdaAccContext() { }
+
+        public LambdaAccContext( Serializable context, boolean supportReverse) {
+            this.context = context;
+            if (supportReverse) {
+                reverseSupport = new HashMap<>();
+            }
+        }
+
+        public void readExternal( ObjectInput in) throws IOException, ClassNotFoundException {
+            context = (Externalizable) in.readObject();
+            reverseSupport = (Map<Long, Object>) in.readObject();
+        }
+
+        public void writeExternal( ObjectOutput out) throws IOException {
+            out.writeObject( context );
+            out.writeObject( reverseSupport );
+        }
+
+        @Override
+        public String toString() {
+            return context.toString();
         }
     }
 }
