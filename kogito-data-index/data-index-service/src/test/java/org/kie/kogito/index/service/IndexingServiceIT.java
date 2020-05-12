@@ -198,6 +198,7 @@ public class IndexingServiceIT {
                 .body("data.Travels[0].metadata.processInstances[0].end", is(nullValue()))
                 .body("data.Travels[0].metadata.processInstances[0].lastUpdate", is(formatZonedDateTime(startEvent.getData().getLastUpdate().withZoneSameInstant(ZoneOffset.UTC))))
                 .body("data.Travels[0].metadata.processInstances[0].endpoint", is(startEvent.getSource().toString()))
+                .body("data.Travels[0].metadata.processInstances[0].serviceUrl", is("http://localhost:8080"))
                 .body("data.Travels[0].traveller.firstName", is("Maciej"))
                 .body("data.Travels[0].hotel.name", is("Meriton"))
                 .body("data.Travels[0].flight.flightNumber", is("MX555"));
@@ -228,6 +229,7 @@ public class IndexingServiceIT {
                 .body("data.Travels[0].metadata.processInstances[0].end", is(nullValue()))
                 .body("data.Travels[0].metadata.processInstances[0].lastUpdate", is(formatZonedDateTime(startEvent.getData().getLastUpdate().withZoneSameInstant(ZoneOffset.UTC))))
                 .body("data.Travels[0].metadata.processInstances[0].endpoint", is(startEvent.getSource().toString()))
+                .body("data.Travels[0].metadata.processInstances[0].serviceUrl", is("http://localhost:8080"))
                 .body("data.Travels[0].metadata.processInstances[1].id", is(subProcessInstanceId))
                 .body("data.Travels[0].metadata.processInstances[1].processId", is(subProcessId))
                 .body("data.Travels[0].metadata.processInstances[1].processName", is(subProcessStartEvent.getData().getProcessName()))
@@ -289,6 +291,7 @@ public class IndexingServiceIT {
                 .body("data.Travels[0].metadata.processInstances[1].start", is(formatZonedDateTime(subProcessStartEvent.getData().getStart().withZoneSameInstant(ZoneOffset.UTC))))
                 .body("data.Travels[0].metadata.processInstances[1].end", is(nullValue()))
                 .body("data.Travels[0].metadata.processInstances[1].endpoint", is(subProcessStartEvent.getSource().toString()))
+                .body("data.Travels[0].metadata.processInstances[1].serviceUrl", is(nullValue()))
                 .body("data.Travels[0].metadata.processInstances[1].lastUpdate", is(formatZonedDateTime(subProcessStartEvent.getData().getLastUpdate().withZoneSameInstant(ZoneOffset.UTC))))
                 .body("data.Travels[0].traveller.firstName", is("Maciej"))
                 .body("data.Travels[0].hotel.name", is("Meriton"))
@@ -334,6 +337,8 @@ public class IndexingServiceIT {
                 .body("data.Travels[0].metadata.processInstances[0].start", is(formatZonedDateTime(endEvent.getData().getStart().withZoneSameInstant(ZoneOffset.UTC))))
                 .body("data.Travels[0].metadata.processInstances[0].end", is(formatZonedDateTime(endEvent.getData().getEnd().withZoneSameInstant(ZoneOffset.UTC))))
                 .body("data.Travels[0].metadata.processInstances[0].lastUpdate", is(formatZonedDateTime(endEvent.getData().getLastUpdate().withZoneSameInstant(ZoneOffset.UTC))))
+                .body("data.Travels[0].metadata.processInstances[0].endpoint", is(endEvent.getSource().toString()))
+                .body("data.Travels[0].metadata.processInstances[0].serviceUrl", is("http://localhost:8080"))
                 .body("data.Travels[0].metadata.processInstances[1].id", is(subProcessInstanceId))
                 .body("data.Travels[0].metadata.processInstances[1].processId", is(subProcessId))
                 .body("data.Travels[0].metadata.processInstances[1].processName", is(subProcessStartEvent.getData().getProcessName()))
@@ -343,6 +348,8 @@ public class IndexingServiceIT {
                 .body("data.Travels[0].metadata.processInstances[1].start", is(formatZonedDateTime(subProcessStartEvent.getData().getStart().withZoneSameInstant(ZoneOffset.UTC))))
                 .body("data.Travels[0].metadata.processInstances[1].lastUpdate", is(formatZonedDateTime(subProcessStartEvent.getData().getLastUpdate().withZoneSameInstant(ZoneOffset.UTC))))
                 .body("data.Travels[0].metadata.processInstances[1].end", is(nullValue()))
+                .body("data.Travels[0].metadata.processInstances[1].endpoint", is(subProcessStartEvent.getSource().toString()))
+                .body("data.Travels[0].metadata.processInstances[1].serviceUrl", is(nullValue()))
                 .body("data.Travels[0].traveller.firstName", is("Maciej"))
                 .body("data.Travels[0].hotel.name", is("Meriton"))
                 .body("data.Travels[0].flight.flightNumber", is("MX555"))
@@ -457,7 +464,9 @@ public class IndexingServiceIT {
                 .body("data.Travels[0].metadata.processInstances[0].rootProcessId", is(nullValue()))
                 .body("data.Travels[0].metadata.processInstances[0].rootProcessInstanceId", is(nullValue()))
                 .body("data.Travels[0].metadata.processInstances[0].parentProcessInstanceId", is(nullValue()))
-                .body("data.Travels[0].metadata.processInstances[0].lastUpdate", is(formatZonedDateTime(processEvent.getTime().withZoneSameInstant(ZoneOffset.UTC))));
+                .body("data.Travels[0].metadata.processInstances[0].lastUpdate", is(formatZonedDateTime(processEvent.getTime().withZoneSameInstant(ZoneOffset.UTC))))
+                .body("data.Travels[0].metadata.processInstances[0].endpoint", is(processEvent.getSource().toString()))
+                .body("data.Travels[0].metadata.processInstances[0].serviceUrl", is("http://localhost:8080"));
     }
 
     @Test
@@ -493,8 +502,9 @@ public class IndexingServiceIT {
                 .body("data.Travels[0].metadata.processInstances[0].rootProcessId", is(nullValue()))
                 .body("data.Travels[0].metadata.processInstances[0].rootProcessInstanceId", is(nullValue()))
                 .body("data.Travels[0].metadata.processInstances[0].parentProcessInstanceId", is(nullValue()))
-                .body("data.Travels[0].metadata.processInstances[0].lastUpdate", is(formatZonedDateTime(processEvent.getTime().withZoneSameInstant(ZoneOffset.UTC))));
-
+                .body("data.Travels[0].metadata.processInstances[0].lastUpdate", is(formatZonedDateTime(processEvent.getTime().withZoneSameInstant(ZoneOffset.UTC))))
+                .body("data.Travels[0].metadata.processInstances[0].endpoint", is(processEvent.getSource().toString()))
+                .body("data.Travels[0].metadata.processInstances[0].serviceUrl", is("http://localhost:8080"));
 
         KogitoUserTaskCloudEvent userTaskEvent = getUserTaskCloudEvent(taskId, processId, processInstanceId, null, null, state);
         consumer.onUserTaskInstanceDomainEvent(() -> userTaskEvent).toCompletableFuture().get();
@@ -523,7 +533,9 @@ public class IndexingServiceIT {
                 .body("data.Travels[0].metadata.processInstances[0].rootProcessId", is(nullValue()))
                 .body("data.Travels[0].metadata.processInstances[0].rootProcessInstanceId", is(nullValue()))
                 .body("data.Travels[0].metadata.processInstances[0].parentProcessInstanceId", is(nullValue()))
-                .body("data.Travels[0].metadata.processInstances[0].lastUpdate", is(formatZonedDateTime(processEvent.getTime().withZoneSameInstant(ZoneOffset.UTC))));
+                .body("data.Travels[0].metadata.processInstances[0].lastUpdate", is(formatZonedDateTime(processEvent.getTime().withZoneSameInstant(ZoneOffset.UTC))))
+                .body("data.Travels[0].metadata.processInstances[0].endpoint", is(processEvent.getSource().toString()))
+                .body("data.Travels[0].metadata.processInstances[0].serviceUrl", is("http://localhost:8080"));
     }
 
     @Test
@@ -571,7 +583,9 @@ public class IndexingServiceIT {
                 .body("data.Travels[0].metadata.processInstances[0].rootProcessId", is(nullValue()))
                 .body("data.Travels[0].metadata.processInstances[0].rootProcessInstanceId", is(nullValue()))
                 .body("data.Travels[0].metadata.processInstances[0].parentProcessInstanceId", is(nullValue()))
-                .body("data.Travels[0].metadata.processInstances[0].lastUpdate", is(formatZonedDateTime(processEvent.getTime().withZoneSameInstant(ZoneOffset.UTC))));
+                .body("data.Travels[0].metadata.processInstances[0].lastUpdate", is(formatZonedDateTime(processEvent.getTime().withZoneSameInstant(ZoneOffset.UTC))))
+                .body("data.Travels[0].metadata.processInstances[0].endpoint", is(processEvent.getSource().toString()))
+                .body("data.Travels[0].metadata.processInstances[0].serviceUrl", is("http://localhost:8080"));
     }
 
     @Test
@@ -613,6 +627,8 @@ public class IndexingServiceIT {
                 .body("data.Travels[0].metadata.processInstances[0].start", is(formatZonedDateTime(startEvent.getData().getStart().withZoneSameInstant(ZoneOffset.UTC))))
                 .body("data.Travels[0].metadata.processInstances[0].lastUpdate", is(formatZonedDateTime(startEvent.getData().getLastUpdate().withZoneSameInstant(ZoneOffset.UTC))))
                 .body("data.Travels[0].metadata.processInstances[0].end", is(nullValue()))
+                .body("data.Travels[0].metadata.processInstances[0].endpoint", is(startEvent.getSource().toString()))
+                .body("data.Travels[0].metadata.processInstances[0].serviceUrl", is("http://localhost:8080"))
                 .body("data.Travels[0].flight.flightNumber", is("MX555"))
                 .body("data.Travels[0].hotel.name", is("Meriton"))
                 .body("data.Travels[0].traveller.firstName", is("Maciej"));
@@ -640,6 +656,8 @@ public class IndexingServiceIT {
                 .body("data.Travels[0].metadata.processInstances[0].state", is(COMPLETED.name()))
                 .body("data.Travels[0].metadata.processInstances[0].start", is(formatZonedDateTime(endEvent.getData().getStart().withZoneSameInstant(ZoneOffset.UTC))))
                 .body("data.Travels[0].metadata.processInstances[0].end", is(formatZonedDateTime(endEvent.getData().getEnd().withZoneSameInstant(ZoneOffset.UTC))))
+                .body("data.Travels[0].metadata.processInstances[0].endpoint", is(endEvent.getSource().toString()))
+                .body("data.Travels[0].metadata.processInstances[0].serviceUrl", is("http://localhost:8080"))
                 .body("data.Travels[0].flight.flightNumber", is("QF444"))
                 .body("data.Travels[0].hotel.name", is("Ibis"))
                 .body("data.Travels[0].traveller.firstName", is("Maciej"));

@@ -17,27 +17,23 @@
 package org.kie.kogito.index.graphql;
 
 import com.fasterxml.jackson.databind.JsonNode;
+import graphql.schema.DataFetcher;
 import graphql.schema.DataFetchingEnvironment;
-import graphql.schema.PropertyDataFetcher;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-public class JsonPropertyDataFetcher extends PropertyDataFetcher {
+public class JsonPropertyDataFetcher implements DataFetcher {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(JsonPropertyDataFetcher.class);
 
-    public JsonPropertyDataFetcher(String propertyName) {
-        super(propertyName);
-    }
-
     @Override
     public Object get(DataFetchingEnvironment environment) {
+        String property = environment.getField().getName();
         Object source = environment.getSource();
         if (source instanceof JsonNode) {
             JsonNode jsonObject = (JsonNode) source;
-            String jsonPointer = getPropertyName();
             try {
-                JsonNode value = jsonObject.findValue(jsonPointer);
+                JsonNode value = jsonObject.findValue(property);
                 if (value == null) {
                     return null;
                 }
@@ -62,6 +58,6 @@ public class JsonPropertyDataFetcher extends PropertyDataFetcher {
                 return null;
             }
         }
-        return super.get(environment);
+        return null;
     }
 }

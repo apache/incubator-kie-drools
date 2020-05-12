@@ -1,5 +1,5 @@
 /*
- * Copyright 2020 Red Hat, Inc. and/or its affiliates. 
+ * Copyright 2020 Red Hat, Inc. and/or its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -16,6 +16,9 @@
 
 package org.kie.kogito.index.graphql;
 
+import com.fasterxml.jackson.databind.JsonNode;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.node.ObjectNode;
 import graphql.schema.DataFetchingEnvironment;
 import org.junit.jupiter.api.Test;
 import org.kie.kogito.index.model.ProcessInstance;
@@ -28,6 +31,7 @@ import static org.mockito.Mockito.when;
 public class GraphQLSchemaManagerTest {
 
     GraphQLSchemaManager schemaManager = new GraphQLSchemaManager();
+    ObjectMapper objectMapper = new ObjectMapper();
 
     @Test
     public void testNullServiceUrl() {
@@ -38,10 +42,25 @@ public class GraphQLSchemaManagerTest {
     }
 
     @Test
+    public void testJsonNullServiceUrl() {
+        assertThat(schemaManager.getProcessInstanceJsonServiceUrl(geJsonEnv(null, null))).isNull();
+        assertThat(schemaManager.getProcessInstanceJsonServiceUrl(geJsonEnv("travels", null))).isNull();
+        assertThat(schemaManager.getProcessInstanceJsonServiceUrl(geJsonEnv("demo.orders", null))).isNull();
+        assertThat(schemaManager.getProcessInstanceJsonServiceUrl(geJsonEnv("demo.orderItems", null))).isNull();
+    }
+
+    @Test
     public void testNullProcessIdServiceUrl() {
         assertThat(schemaManager.getProcessInstanceServiceUrl(getEnv("travels", "/travels"))).isNull();
         assertThat(schemaManager.getProcessInstanceServiceUrl(getEnv("demo.orders", "/orders"))).isNull();
         assertThat(schemaManager.getProcessInstanceServiceUrl(getEnv("demo.orderItems", "/orderItems"))).isNull();
+    }
+
+    @Test
+    public void testJsonNullProcessIdServiceUrl() {
+        assertThat(schemaManager.getProcessInstanceJsonServiceUrl(geJsonEnv("travels", "/travels"))).isNull();
+        assertThat(schemaManager.getProcessInstanceJsonServiceUrl(geJsonEnv("demo.orders", "/orders"))).isNull();
+        assertThat(schemaManager.getProcessInstanceJsonServiceUrl(geJsonEnv("demo.orderItems", "/orderItems"))).isNull();
     }
 
     @Test
@@ -51,10 +70,30 @@ public class GraphQLSchemaManagerTest {
         assertThat(schemaManager.getProcessInstanceServiceUrl(getEnv("demo.orderItems", "http://localhost:8080/orderItems"))).isEqualTo("http://localhost:8080");
     }
 
+    @Test
+    public void testJsonUrlProcessIdServiceUrl() {
+        assertThat(schemaManager.getProcessInstanceJsonServiceUrl(geJsonEnv("travels", "http://localhost:8080/travels"))).isEqualTo("http://localhost:8080");
+        assertThat(schemaManager.getProcessInstanceJsonServiceUrl(geJsonEnv("demo.orders", "http://localhost:8080/orders"))).isEqualTo("http://localhost:8080");
+        assertThat(schemaManager.getProcessInstanceJsonServiceUrl(geJsonEnv("demo.orderItems", "http://localhost:8080/orderItems"))).isEqualTo("http://localhost:8080");
+    }
+
+    private DataFetchingEnvironment geJsonEnv(String processId, String endpoint) {
+        DataFetchingEnvironment env = mock(DataFetchingEnvironment.class);
+        when(env.getSource()).thenReturn(getProcessInstanceJson(processId, endpoint));
+        return env;
+    }
+
     private DataFetchingEnvironment getEnv(String processId, String endpoint) {
         DataFetchingEnvironment env = mock(DataFetchingEnvironment.class);
         when(env.getSource()).thenReturn(getProcessInstance(processId, endpoint));
         return env;
+    }
+
+    private JsonNode getProcessInstanceJson(String processId, String endpoint) {
+        ObjectNode objectNode = objectMapper.createObjectNode();
+        objectNode.put("processId", processId);
+        objectNode.put("endpoint", endpoint);
+        return objectNode;
     }
 
     private ProcessInstance getProcessInstance(String processId, String endpoint) {

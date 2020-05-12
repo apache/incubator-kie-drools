@@ -60,6 +60,7 @@ type ProcessInstanceMeta {
     roles: [String!]
     state: ProcessInstanceState!
     endpoint: String!
+    serviceUrl: String
     start: DateTime!
     end: DateTime
     lastUpdate: DateTime!

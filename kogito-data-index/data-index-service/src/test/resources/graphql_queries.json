@@ -128,19 +128,19 @@
     }
   },
   "TravelsByUserTaskId": {
-    "query": "query ( $taskId: String ) { Travels ( where: { metadata: { userTasks: { id : { equal : $taskId } } } } ){ id, __typename, flight { flightNumber, arrival, departure }, hotel { name }, traveller { firstName }, metadata { lastUpdate, processInstances { id, processId, processName, rootProcessId, rootProcessInstanceId, parentProcessInstanceId, start, end, lastUpdate, endpoint }, userTasks { id, description, name, priority, processInstanceId, actualOwner, lastUpdate } } } }",
+    "query": "query ( $taskId: String ) { Travels ( where: { metadata: { userTasks: { id : { equal : $taskId } } } } ){ id, __typename, flight { flightNumber, arrival, departure }, hotel { name }, traveller { firstName }, metadata { lastUpdate, processInstances { id, processId, processName, rootProcessId, rootProcessInstanceId, parentProcessInstanceId, start, end, lastUpdate, endpoint, serviceUrl }, userTasks { id, description, name, priority, processInstanceId, actualOwner, lastUpdate } } } }",
     "variables": {
       "taskId": "%s"
     }
   },
   "TravelsByProcessInstanceId": {
-    "query": "query ( $id: String ) { Travels ( where: { metadata: { processInstances : {  id : { equal : $id } } } }){ id, __typename, flight { flightNumber, arrival, departure }, hotel { name }, traveller { firstName, email, nationality }, metadata { lastUpdate, processInstances { id, processId, processName, rootProcessId, rootProcessInstanceId, parentProcessInstanceId, state, start, end, endpoint, lastUpdate }, userTasks { id, description, name, priority, processInstanceId, actualOwner, lastUpdate } } } }",
+    "query": "query ( $id: String ) { Travels ( where: { metadata: { processInstances : {  id : { equal : $id } } } }){ id, __typename, flight { flightNumber, arrival, departure }, hotel { name }, traveller { firstName, email, nationality }, metadata { lastUpdate, processInstances { id, processId, processName, rootProcessId, rootProcessInstanceId, parentProcessInstanceId, state, start, end, endpoint, serviceUrl, lastUpdate }, userTasks { id, description, name, priority, processInstanceId, actualOwner, lastUpdate } } } }",
     "variables": {
       "id": "%s"
     }
   },
   "TravelsByProcessInstanceIdAndTravellerFirstName": {
-    "query": "query ( $id: String, $name: String ) { Travels ( where: { metadata : { processInstances : {  id : { equal : $id } } }, traveller : { firstName : { like : $name } } }){ id, flight { flightNumber, arrival, departure }, hotel { name }, traveller { firstName, email, nationality }, metadata { lastUpdate, processInstances { id, processId, processName, rootProcessId, rootProcessInstanceId, parentProcessInstanceId, start, end, endpoint, lastUpdate } } } }",
+    "query": "query ( $id: String, $name: String ) { Travels ( where: { metadata : { processInstances : {  id : { equal : $id } } }, traveller : { firstName : { like : $name } } }){ id, flight { flightNumber, arrival, departure }, hotel { name }, traveller { firstName, email, nationality }, metadata { lastUpdate, processInstances { id, processId, processName, rootProcessId, rootProcessInstanceId, parentProcessInstanceId, start, end, endpoint, serviceUrl, lastUpdate } } } }",
     "variables": {
       "id": "%s",
       "name": "%s"

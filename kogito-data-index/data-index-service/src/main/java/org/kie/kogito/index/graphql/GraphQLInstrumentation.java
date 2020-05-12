@@ -25,19 +25,18 @@ import graphql.execution.instrumentation.parameters.InstrumentationExecutionPara
 import graphql.execution.instrumentation.parameters.InstrumentationFieldFetchParameters;
 import graphql.schema.DataFetcher;
 import graphql.schema.GraphQLSchema;
+import graphql.schema.PropertyDataFetcher;
 
 @ApplicationScoped
 public class GraphQLInstrumentation extends SimpleInstrumentation {
-
-    private static final String TYPENAME = "__typename";
 
     @Inject
     GraphQLSchemaManager manager;
 
     @Override
     public DataFetcher<?> instrumentDataFetcher(DataFetcher<?> dataFetcher, InstrumentationFieldFetchParameters parameters) {
-        if (!TYPENAME.equals(parameters.getEnvironment().getField().getName()) && parameters.getEnvironment().getSource() instanceof JsonNode) {
-            return new JsonPropertyDataFetcher(parameters.getEnvironment().getField().getName());
+        if (parameters.getEnvironment().getSource() instanceof JsonNode && dataFetcher instanceof PropertyDataFetcher) {
+            return new JsonPropertyDataFetcher();
         } else {
             return dataFetcher;
         }

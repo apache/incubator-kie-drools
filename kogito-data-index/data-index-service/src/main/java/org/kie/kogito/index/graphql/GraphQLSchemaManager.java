@@ -31,6 +31,7 @@ import javax.annotation.PreDestroy;
 import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
 
+import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 import graphql.schema.DataFetcher;
 import graphql.schema.DataFetchingEnvironment;
@@ -120,6 +121,10 @@ public class GraphQLSchemaManager {
                     builder.dataFetcher("serviceUrl", this::getProcessInstanceServiceUrl);
                     return builder;
                 })
+                .type("ProcessInstanceMeta", builder -> {
+                    builder.dataFetcher("serviceUrl", this::getProcessInstanceJsonServiceUrl);
+                    return builder;
+                })
                 .type("ProcessInstanceState", builder -> {
                     builder.enumValues(name -> ProcessInstanceState.valueOf(name).ordinal());
                     return builder;
@@ -145,23 +150,36 @@ public class GraphQLSchemaManager {
         if (source == null || source.getEndpoint() == null || source.getProcessId() == null) {
             return null;
         }
-        String endpoint = source.getEndpoint();
+        return getServiceUrl(source.getEndpoint(), source.getProcessId());
+    }
+
+    protected String getProcessInstanceJsonServiceUrl(DataFetchingEnvironment env) {
+        Object source = env.getSource();
+        if (source != null && source instanceof JsonNode) {
+            String endpoint = ((JsonNode) source).get("endpoint").asText();
+            String processId = ((JsonNode) source).get("processId").asText();
+            return getServiceUrl(endpoint, processId);
+        }
+        return null;
+    }
+
+    private String getServiceUrl(String endpoint, String processId) {
         LOGGER.debug("Process endpoint {}", endpoint);
         if (endpoint.startsWith("/")) {
             LOGGER.warn("Process '{}' endpoint '{}', does not contain full URL, please review the kogito.service.url system property to point the public URL for this runtime.",
-                        source.getProcessId(), endpoint);
+                        processId, endpoint);
         }
-        String context = getContext(source);
+        String context = getContext(processId);
         LOGGER.debug("Process context {}", context);
-        if(context.equals(endpoint) || endpoint.equals("/" + context)){
+        if (context.equals(endpoint) || endpoint.equals("/" + context)) {
             return null;
         } else {
             return endpoint.contains("/" + context) ? endpoint.substring(0, endpoint.indexOf("/" + context)) : null;
         }
     }
 
-    private String getContext(ProcessInstance source) {
-        return source.getProcessId().contains(".") ? source.getProcessId().substring(source.getProcessId().lastIndexOf('.') + 1) : source.getProcessId();
+    private String getContext(String processId) {
+        return processId.contains(".") ? processId.substring(processId.lastIndexOf('.') + 1) : processId;
     }
 
     private Collection<ProcessInstance> getChildProcessInstancesValues(DataFetchingEnvironment env) {

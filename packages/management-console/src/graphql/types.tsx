@@ -234,6 +234,7 @@ export type ProcessInstanceMeta = {
   roles?: Maybe<Array<Scalars['String']>>;
   state: ProcessInstanceState;
   endpoint: Scalars['String'];
+  serviceUrl?: Maybe<Scalars['String']>;
   start: Scalars['DateTime'];
   end?: Maybe<Scalars['DateTime']>;
   lastUpdate: Scalars['DateTime'];
@@ -625,7 +626,7 @@ export type GetProcessInstancesQueryVariables = {
 };
 
 export type GetProcessInstancesQuery = { __typename?: 'Query' } & {
-  ProcessInstances?: Maybe<
+  ProcessInstances: Maybe<
     Array<
       Maybe<
         { __typename?: 'ProcessInstance' } & Pick<
@@ -643,7 +644,7 @@ export type GetProcessInstancesQuery = { __typename?: 'Query' } & {
           | 'businessKey'
           | 'serviceUrl'
         > & {
-            error?: Maybe<
+            error: Maybe<
               { __typename?: 'ProcessInstanceError' } & Pick<
                 ProcessInstanceError,
                 'nodeDefinitionId' | 'message'
@@ -665,7 +666,7 @@ export type GetProcessInstancesWithBusinessKeyQueryVariables = {
 export type GetProcessInstancesWithBusinessKeyQuery = {
   __typename?: 'Query';
 } & {
-  ProcessInstances?: Maybe<
+  ProcessInstances: Maybe<
     Array<
       Maybe<
         { __typename?: 'ProcessInstance' } & Pick<
@@ -683,7 +684,7 @@ export type GetProcessInstancesWithBusinessKeyQuery = {
           | 'businessKey'
           | 'serviceUrl'
         > & {
-            error?: Maybe<
+            error: Maybe<
               { __typename?: 'ProcessInstanceError' } & Pick<
                 ProcessInstanceError,
                 'nodeDefinitionId' | 'message'
@@ -700,7 +701,7 @@ export type GetChildInstancesQueryVariables = {
 };
 
 export type GetChildInstancesQuery = { __typename?: 'Query' } & {
-  ProcessInstances?: Maybe<
+  ProcessInstances: Maybe<
     Array<
       Maybe<
         { __typename?: 'ProcessInstance' } & Pick<
@@ -718,7 +719,7 @@ export type GetChildInstancesQuery = { __typename?: 'Query' } & {
           | 'addons'
           | 'businessKey'
         > & {
-            error?: Maybe<
+            error: Maybe<
               { __typename?: 'ProcessInstanceError' } & Pick<
                 ProcessInstanceError,
                 'nodeDefinitionId' | 'message'
@@ -735,7 +736,7 @@ export type GetProcessInstanceByIdQueryVariables = {
 };
 
 export type GetProcessInstanceByIdQuery = { __typename?: 'Query' } & {
-  ProcessInstances?: Maybe<
+  ProcessInstances: Maybe<
     Array<
       Maybe<
         { __typename?: 'ProcessInstance' } & Pick<
@@ -753,22 +754,21 @@ export type GetProcessInstanceByIdQuery = { __typename?: 'Query' } & {
           | 'end'
           | 'addons'
           | 'endpoint'
-          | 'addons'
           | 'serviceUrl'
         > & {
-            parentProcessInstance?: Maybe<
+            parentProcessInstance: Maybe<
               { __typename?: 'ProcessInstance' } & Pick<
                 ProcessInstance,
                 'id' | 'processName' | 'businessKey'
               >
             >;
-            error?: Maybe<
+            error: Maybe<
               { __typename?: 'ProcessInstanceError' } & Pick<
                 ProcessInstanceError,
                 'nodeDefinitionId' | 'message'
               >
             >;
-            childProcessInstances?: Maybe<
+            childProcessInstances: Maybe<
               Array<
                 { __typename?: 'ProcessInstance' } & Pick<
                   ProcessInstance,
@@ -799,16 +799,16 @@ export type GetColumnPickerAttributesQueryVariables = {
 };
 
 export type GetColumnPickerAttributesQuery = { __typename?: 'Query' } & {
-  __type?: Maybe<
+  __type: Maybe<
     { __typename?: '__Type' } & Pick<__Type, 'name'> & {
-        fields?: Maybe<
+        fields: Maybe<
           Array<
             { __typename?: '__Field' } & Pick<__Field, 'name'> & {
                 type: { __typename?: '__Type' } & Pick<
                   __Type,
                   'name' | 'kind'
                 > & {
-                    fields?: Maybe<
+                    fields: Maybe<
                       Array<
                         { __typename?: '__Field' } & Pick<__Field, 'name'> & {
                             type: { __typename?: '__Type' } & Pick<
@@ -832,7 +832,7 @@ export type GetQueryTypesQuery = { __typename?: 'Query' } & {
   __schema: { __typename?: '__Schema' } & {
     queryType: Array<
       { __typename?: '__Type' } & Pick<__Type, 'name' | 'kind'> & {
-          fields?: Maybe<
+          fields: Maybe<
             Array<
               { __typename?: '__Field' } & Pick<__Field, 'name'> & {
                   type: { __typename?: '__Type' } & Pick<
@@ -842,7 +842,7 @@ export type GetQueryTypesQuery = { __typename?: 'Query' } & {
                 }
             >
           >;
-          inputFields?: Maybe<
+          inputFields: Maybe<
             Array<
               { __typename?: '__InputValue' } & Pick<__InputValue, 'name'> & {
                   type: { __typename?: '__Type' } & Pick<
@@ -860,9 +860,9 @@ export type GetQueryTypesQuery = { __typename?: 'Query' } & {
 export type GetQueryFieldsQueryVariables = {};
 
 export type GetQueryFieldsQuery = { __typename?: 'Query' } & {
-  __type?: Maybe<
+  __type: Maybe<
     { __typename?: '__Type' } & Pick<__Type, 'name'> & {
-        fields?: Maybe<
+        fields: Maybe<
           Array<
             { __typename?: '__Field' } & Pick<__Field, 'name'> & {
                 args: Array<
@@ -877,7 +877,7 @@ export type GetQueryFieldsQuery = { __typename?: 'Query' } & {
                     }
                 >;
                 type: { __typename?: '__Type' } & {
-                  ofType?: Maybe<
+                  ofType: Maybe<
                     { __typename?: '__Type' } & Pick<__Type, 'name'>
                   >;
                 };
@@ -893,16 +893,16 @@ export type GetInputFieldsFromQueryQueryVariables = {
 };
 
 export type GetInputFieldsFromQueryQuery = { __typename?: 'Query' } & {
-  __type?: Maybe<
+  __type: Maybe<
     { __typename?: '__Type' } & Pick<__Type, 'name'> & {
-        inputFields?: Maybe<
+        inputFields: Maybe<
           Array<
             { __typename?: '__InputValue' } & Pick<__InputValue, 'name'> & {
                 type: { __typename?: '__Type' } & Pick<
                   __Type,
                   'name' | 'kind'
                 > & {
-                    inputFields?: Maybe<
+                    inputFields: Maybe<
                       Array<
                         { __typename?: '__InputValue' } & Pick<
                           __InputValue,
@@ -928,9 +928,9 @@ export type GetInputFieldsFromTypeQueryVariables = {
 };
 
 export type GetInputFieldsFromTypeQuery = { __typename?: 'Query' } & {
-  __type?: Maybe<
+  __type: Maybe<
     { __typename?: '__Type' } & Pick<__Type, 'name'> & {
-        inputFields?: Maybe<
+        inputFields: Maybe<
           Array<
             { __typename?: '__InputValue' } & Pick<__InputValue, 'name'> & {
                 type: { __typename?: '__Type' } & Pick<__Type, 'name' | 'kind'>;
