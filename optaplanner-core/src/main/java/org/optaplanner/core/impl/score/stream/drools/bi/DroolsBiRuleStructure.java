@@ -30,6 +30,7 @@ import org.drools.model.view.ExprViewItem;
 import org.drools.model.view.ViewItemBuilder;
 import org.optaplanner.core.impl.score.stream.drools.common.DroolsPatternBuilder;
 import org.optaplanner.core.impl.score.stream.drools.common.DroolsRuleStructure;
+import org.optaplanner.core.impl.score.stream.drools.tri.DroolsTriRuleStructure;
 import org.optaplanner.core.impl.score.stream.drools.uni.DroolsUniRuleStructure;
 
 public final class DroolsBiRuleStructure<A, B, PatternVar> extends DroolsRuleStructure<PatternVar> {
@@ -56,6 +57,16 @@ public final class DroolsBiRuleStructure<A, B, PatternVar> extends DroolsRuleStr
         newPrerequisites.addAll(bRuleStructure.getPrerequisites());
         this.prerequisites = Collections.unmodifiableList(newPrerequisites);
         this.dependents = Collections.unmodifiableList(bRuleStructure.getDependents());
+    }
+
+    public DroolsBiRuleStructure(DroolsTriRuleStructure<A, B, ?, PatternVar> biRuleStructure) {
+        super(biRuleStructure.getVariableIdSupplier());
+        this.a = biRuleStructure.getA();
+        this.b = biRuleStructure.getB();
+        this.primaryPattern = biRuleStructure.getPrimaryPatternBuilder();
+        this.shelved = biRuleStructure.getShelvedRuleItems();
+        this.prerequisites = biRuleStructure.getPrerequisites();
+        this.dependents = biRuleStructure.getDependents();
     }
 
     public DroolsBiRuleStructure(Variable<A> aVariable, Variable<B> bVariable,

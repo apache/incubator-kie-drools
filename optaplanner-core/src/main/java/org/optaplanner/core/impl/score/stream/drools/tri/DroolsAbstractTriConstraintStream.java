@@ -62,6 +62,11 @@ public abstract class DroolsAbstractTriConstraintStream<Solution_, A, B, C>
     }
 
     @Override
+    public int getCardinality() {
+        return 3;
+    }
+
+    @Override
     public TriConstraintStream<A, B, C> filter(TriPredicate<A, B, C> predicate) {
         DroolsAbstractTriConstraintStream<Solution_, A, B, C> stream = new DroolsFilterTriConstraintStream<>(constraintFactory,
                 this, predicate);

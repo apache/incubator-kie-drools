@@ -54,6 +54,11 @@ public abstract class DroolsAbstractBiConstraintStream<Solution_, A, B>
     }
 
     @Override
+    public int getCardinality() {
+        return 2;
+    }
+
+    @Override
     public BiConstraintStream<A, B> filter(BiPredicate<A, B> predicate) {
         DroolsAbstractBiConstraintStream<Solution_, A, B> stream = new DroolsFilterBiConstraintStream<>(constraintFactory, this,
                 predicate);

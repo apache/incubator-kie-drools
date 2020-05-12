@@ -20,7 +20,7 @@ import org.optaplanner.core.api.function.QuadFunction;
 import org.optaplanner.core.api.score.stream.quad.QuadConstraintCollector;
 import org.optaplanner.core.impl.score.stream.drools.common.BiTuple;
 import org.optaplanner.core.impl.score.stream.drools.common.DroolsAbstractGroupBy;
-import org.optaplanner.core.impl.score.stream.drools.common.GroupByAccumulator;
+import org.optaplanner.core.impl.score.stream.drools.common.GroupByCollectorProcessor;
 import org.optaplanner.core.impl.score.stream.drools.common.QuadTuple;
 
 final class DroolsQuadToBiGroupBy<A, B, C, D, NewA, NewB>
@@ -36,8 +36,8 @@ final class DroolsQuadToBiGroupBy<A, B, C, D, NewA, NewB>
     }
 
     @Override
-    protected GroupByAccumulator<QuadTuple<A, B, C, D>, BiTuple<NewA, NewB>> newAccumulator() {
-        return new DroolsQuadToBiGroupByAccumulator<>(groupKeyMapping, collector);
+    protected GroupByCollectorProcessor<QuadTuple<A, B, C, D>, BiTuple<NewA, NewB>> newAccumulator() {
+        return new DroolsQuadToBiGroupByCollectorProcessor<>(groupKeyMapping, collector);
     }
 
 }

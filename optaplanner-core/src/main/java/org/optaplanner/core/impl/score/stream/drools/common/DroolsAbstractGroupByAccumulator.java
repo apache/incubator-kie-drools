@@ -16,66 +16,118 @@
 
 package org.optaplanner.core.impl.score.stream.drools.common;
 
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.LinkedHashSet;
+import java.io.Serializable;
+import java.util.Arrays;
 import java.util.Map;
-import java.util.Set;
+import java.util.Objects;
+import java.util.function.Function;
+import java.util.stream.Collectors;
 
-abstract class DroolsAbstractGroupByAccumulator<InTuple, KeyTuple, OutTuple>
-        implements GroupByAccumulator<InTuple, OutTuple> {
+import org.drools.core.WorkingMemory;
+import org.drools.core.common.InternalFactHandle;
+import org.drools.core.common.InternalWorkingMemory;
+import org.drools.core.reteoo.SubnetworkTuple;
+import org.drools.core.rule.Declaration;
+import org.drools.core.spi.Accumulator;
+import org.drools.core.spi.Tuple;
+import org.drools.model.Variable;
 
-    private final Map<KeyTuple, Long> tuplesInUseMap = new HashMap<>(0);
-    private Set<KeyTuple> dirtyTupleSet;
+public abstract class DroolsAbstractGroupByAccumulator<InTuple> implements Accumulator {
 
-    private static Long increment(Long count) {
-        return count == null ? 1L : count + 1L;
+    /**
+     * This will memoize the map based on the input array of declarations. For each accumulate, there should only be
+     * one, but this code is being called so often that the memoization has a meaningful impact.
+     */
+    private final Function<Declaration[], Map<String, Declaration>> memoizingDeclarationMapper = Memoizer
+            .memoize(DroolsAbstractGroupByAccumulator::getDeclarationMap);
+
+    private static Map<String, Declaration> getDeclarationMap(Declaration... declarations) {
+        return Arrays.stream(declarations)
+                .collect(Collectors.toMap(Declaration::getIdentifier, Function.identity()));
     }
 
-    private static Long decrement(Long count) {
-        return count == 1L ? null : count - 1L;
+    private static boolean isCorrectType(Object object, Variable var) {
+        return Objects.equals(object.getClass(), var.getType());
     }
 
-    protected void addTuple(KeyTuple tuple) {
-        tuplesInUseMap.compute(tuple, (__, count) -> increment(count));
-        markDirty(tuple);
+    protected static <X, X2> X materialize(Variable<X> var, Function<Variable<X2>, X2> valueFinder) {
+        return (X) valueFinder.apply((Variable<X2>) var);
     }
 
-    protected long removeTuple(KeyTuple tuple) {
-        Long useCount = tuplesInUseMap.compute(tuple, (__, count) -> decrement(count));
-        if (useCount == null) {
-            unmarkDirty(tuple);
-            return 0L;
+    private Declaration getVariableDeclaration(Variable variable, Declaration... declarations) {
+        if (declarations.length == 1) {
+            return declarations[0];
         } else {
-            markDirty(tuple);
-            return useCount;
+            Map<String, Declaration> declarationMap = memoizingDeclarationMapper.apply(declarations);
+            return declarationMap.get(variable.getName());
         }
     }
 
-    private void markDirty(KeyTuple tuple) {
-        if (dirtyTupleSet == null) {
-            dirtyTupleSet = new LinkedHashSet<>(1); // When trying a move, there will often only be 1 change.
+    protected <X> X getValue(Variable<X> var, InternalWorkingMemory internalWorkingMemory, Object handleObject,
+            Declaration... declarations) {
+        if (isCorrectType(handleObject, var)) {
+            return (X) handleObject;
         }
-        dirtyTupleSet.add(tuple);
-    }
-
-    private void unmarkDirty(KeyTuple tuple) {
-        if (dirtyTupleSet != null) {
-            dirtyTupleSet.remove(tuple);
-            if (dirtyTupleSet.isEmpty()) {
-                clearDirtyTupleSet();
+        Declaration varDeclaration = getVariableDeclaration(var, declarations);
+        Object actualHandleObject = handleObject;
+        if (handleObject instanceof SubnetworkTuple) {
+            actualHandleObject = ((SubnetworkTuple) handleObject).getObject(varDeclaration);
+            if (isCorrectType(actualHandleObject, var)) {
+                return (X) actualHandleObject;
             }
         }
+        // The variable is likely a result of applying a lambda on a FactTuple.
+        return (X) varDeclaration.getValue(internalWorkingMemory, actualHandleObject);
     }
 
-    protected Set<KeyTuple> clearDirtyTupleSet() {
-        if (dirtyTupleSet == null) {
-            return Collections.emptySet();
-        } else {
-            Set<KeyTuple> currentDirtyTupleSet = dirtyTupleSet;
-            dirtyTupleSet = null; // Faster than calling clear().
-            return currentDirtyTupleSet;
-        }
+    @Override
+    public Serializable createContext() {
+        return newContext();
     }
+
+    @Override
+    public void init(Object workingMemoryContext, Object context, Tuple tuple, Declaration[] declarations,
+            WorkingMemory workingMemory) {
+        castContext(context).init();
+    }
+
+    @Override
+    public void accumulate(Object workingMemoryContext, Object context, Tuple tuple, InternalFactHandle handle,
+            Declaration[] declarations, Declaration[] innerDeclarations, final WorkingMemory workingMemory) {
+        InternalWorkingMemory internalWorkingMemory = (InternalWorkingMemory) workingMemory;
+        Object handleObject = handle.getObject();
+        InTuple input = createInput(var -> getValue(var, internalWorkingMemory, handleObject, innerDeclarations));
+        castContext(context).accumulate(handle, input);
+    }
+
+    private DroolsAbstractGroupBy<InTuple, ?> castContext(Object context) {
+        return (DroolsAbstractGroupBy<InTuple, ?>) context;
+    }
+
+    @Override
+    public void reverse(Object workingMemoryContext, Object context, Tuple tuple, InternalFactHandle handle,
+            Declaration[] declarations, Declaration[] innerDeclarations, WorkingMemory workingMemory) {
+        castContext(context).reverse(handle);
+    }
+
+    @Override
+    public Object getResult(Object workingMemoryContext, Object context, Tuple tuple, Declaration[] declarations,
+            WorkingMemory workingMemory) {
+        return castContext(context).getResult();
+    }
+
+    @Override
+    public boolean supportsReverse() {
+        return true;
+    }
+
+    @Override
+    public Object createWorkingMemoryContext() {
+        return null;
+    }
+
+    protected abstract DroolsAbstractGroupBy<InTuple, ?> newContext();
+
+    protected abstract <X> InTuple createInput(Function<Variable<X>, X> valueFinder);
 
 }

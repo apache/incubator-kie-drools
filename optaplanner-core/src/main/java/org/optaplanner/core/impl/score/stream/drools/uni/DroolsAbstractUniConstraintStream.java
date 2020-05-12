@@ -48,6 +48,11 @@ public abstract class DroolsAbstractUniConstraintStream<Solution_, A> extends Dr
         super(constraintFactory);
     }
 
+    @Override
+    public int getCardinality() {
+        return 1;
+    }
+
     // ************************************************************************
     // Filter
     // ************************************************************************

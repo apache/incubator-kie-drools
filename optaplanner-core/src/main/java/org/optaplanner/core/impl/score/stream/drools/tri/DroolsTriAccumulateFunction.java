@@ -21,23 +21,23 @@ import java.util.function.Supplier;
 
 import org.optaplanner.core.api.function.QuadFunction;
 import org.optaplanner.core.api.score.stream.tri.TriConstraintCollector;
-import org.optaplanner.core.impl.score.stream.drools.common.DroolsAbstractAccumulateFunctionBridge;
+import org.optaplanner.core.impl.score.stream.drools.common.DroolsAbstractAccumulateFunction;
 import org.optaplanner.core.impl.score.stream.drools.common.TriTuple;
 
-final class DroolsTriAccumulateFunctionBridge<A, B, C, ResultContainer_, NewA>
-        extends DroolsAbstractAccumulateFunctionBridge<ResultContainer_, TriTuple<A, B, C>, NewA> {
+final class DroolsTriAccumulateFunction<A, B, C, ResultContainer_, NewA>
+        extends DroolsAbstractAccumulateFunction<ResultContainer_, TriTuple<A, B, C>, NewA> {
 
     private final Supplier<ResultContainer_> supplier;
     private final QuadFunction<ResultContainer_, A, B, C, Runnable> accumulator;
     private final Function<ResultContainer_, NewA> finisher;
 
-    public DroolsTriAccumulateFunctionBridge(TriConstraintCollector<A, B, C, ResultContainer_, NewA> collector) {
+    public DroolsTriAccumulateFunction(TriConstraintCollector<A, B, C, ResultContainer_, NewA> collector) {
         this.supplier = collector.supplier();
         this.accumulator = collector.accumulator();
         this.finisher = collector.finisher();
     }
 
-    public DroolsTriAccumulateFunctionBridge() {
+    public DroolsTriAccumulateFunction() {
         throw new UnsupportedOperationException("Serialization is not supported.");
     }
 
@@ -52,7 +52,7 @@ final class DroolsTriAccumulateFunctionBridge<A, B, C, ResultContainer_, NewA>
     }
 
     @Override
-    protected NewA getResult(ResultContainer_ container_) {
-        return finisher.apply(container_);
+    protected NewA getResult(ResultContainer_ container) {
+        return finisher.apply(container);
     }
 }

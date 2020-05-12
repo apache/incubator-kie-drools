@@ -16,72 +16,55 @@
 
 package org.optaplanner.core.impl.score.stream.drools.quad;
 
-import java.util.function.Function;
-import java.util.function.Supplier;
+import static java.util.Objects.requireNonNull;
 
-import org.optaplanner.core.api.function.PentaFunction;
+import java.util.function.Function;
+
+import org.drools.model.Variable;
 import org.optaplanner.core.api.function.QuadFunction;
 import org.optaplanner.core.api.score.stream.quad.QuadConstraintCollector;
-import org.optaplanner.core.impl.score.stream.drools.common.BiTuple;
-import org.optaplanner.core.impl.score.stream.drools.common.DroolsAbstractBiCollectingGroupByAccumulator;
+import org.optaplanner.core.impl.score.stream.drools.common.DroolsAbstractGroupBy;
+import org.optaplanner.core.impl.score.stream.drools.common.DroolsAbstractGroupByAccumulator;
 import org.optaplanner.core.impl.score.stream.drools.common.QuadTuple;
 
-final class DroolsQuadGroupByAccumulator<A, B, C, D, NewA, NewB, NewC, NewD, ResultContainerC, ResultContainerD>
-        extends
-        DroolsAbstractBiCollectingGroupByAccumulator<ResultContainerC, ResultContainerD, QuadTuple<A, B, C, D>, BiTuple<NewA, NewB>, QuadTuple<NewA, NewB, NewC, NewD>> {
+public class DroolsQuadGroupByAccumulator<A, B, C, D, NewA, NewB, NewC, NewD>
+        extends DroolsAbstractGroupByAccumulator<QuadTuple<A, B, C, D>> {
 
     private final QuadFunction<A, B, C, D, NewA> groupKeyAMapping;
     private final QuadFunction<A, B, C, D, NewB> groupKeyBMapping;
-    private final Supplier<ResultContainerC> supplierC;
-    private final PentaFunction<ResultContainerC, A, B, C, D, Runnable> accumulatorC;
-    private final Function<ResultContainerC, NewC> finisherC;
-    private final Supplier<ResultContainerD> supplierD;
-    private final PentaFunction<ResultContainerD, A, B, C, D, Runnable> accumulatorD;
-    private final Function<ResultContainerD, NewD> finisherD;
+    private final QuadConstraintCollector<A, B, C, D, ?, NewC> collectorC;
+    private final QuadConstraintCollector<A, B, C, D, ?, NewD> collectorD;
+    private final Variable<A> aVariable;
+    private final Variable<B> bVariable;
+    private final Variable<C> cVariable;
+    private final Variable<D> dVariable;
 
     public DroolsQuadGroupByAccumulator(QuadFunction<A, B, C, D, NewA> groupKeyAMapping,
-            QuadFunction<A, B, C, D, NewB> groupKeyBMapping,
-            QuadConstraintCollector<A, B, C, D, ResultContainerC, NewC> collectorC,
-            QuadConstraintCollector<A, B, C, D, ResultContainerD, NewD> collectorD) {
-        this.groupKeyAMapping = groupKeyAMapping;
-        this.groupKeyBMapping = groupKeyBMapping;
-        this.supplierC = collectorC.supplier();
-        this.accumulatorC = collectorC.accumulator();
-        this.finisherC = collectorC.finisher();
-        this.supplierD = collectorD.supplier();
-        this.accumulatorD = collectorD.accumulator();
-        this.finisherD = collectorD.finisher();
+            QuadFunction<A, B, C, D, NewB> groupKeyBMapping, QuadConstraintCollector<A, B, C, D, ?, NewC> collectorC,
+            QuadConstraintCollector<A, B, C, D, ?, NewD> collectorD, Variable<A> aVariable, Variable<B> bVariable,
+            Variable<C> cVariable, Variable<D> dVariable) {
+        this.groupKeyAMapping = requireNonNull(groupKeyAMapping);
+        this.groupKeyBMapping = requireNonNull(groupKeyBMapping);
+        this.collectorC = requireNonNull(collectorC);
+        this.collectorD = requireNonNull(collectorD);
+        this.aVariable = requireNonNull(aVariable);
+        this.bVariable = requireNonNull(bVariable);
+        this.cVariable = requireNonNull(cVariable);
+        this.dVariable = requireNonNull(dVariable);
     }
 
     @Override
-    protected BiTuple<NewA, NewB> toKey(QuadTuple<A, B, C, D> tuple) {
-        return new BiTuple<>(groupKeyAMapping.apply(tuple.a, tuple.b, tuple.c, tuple.d),
-                groupKeyBMapping.apply(tuple.a, tuple.b, tuple.c, tuple.d));
+    protected DroolsAbstractGroupBy<QuadTuple<A, B, C, D>, ?> newContext() {
+        return new DroolsQuadGroupBy<>(groupKeyAMapping, groupKeyBMapping, collectorC, collectorD);
     }
 
     @Override
-    protected ResultContainerC newFirstContainer() {
-        return supplierC.get();
+    protected <X> QuadTuple<A, B, C, D> createInput(Function<Variable<X>, X> valueFinder) {
+        A a = materialize(aVariable, valueFinder);
+        B b = materialize(bVariable, valueFinder);
+        C c = materialize(cVariable, valueFinder);
+        D d = materialize(dVariable, valueFinder);
+        return new QuadTuple<>(a, b, c, d);
     }
 
-    @Override
-    protected ResultContainerD newSecondContainer() {
-        return supplierD.get();
-    }
-
-    @Override
-    protected Runnable processFirst(QuadTuple<A, B, C, D> tuple, ResultContainerC container) {
-        return accumulatorC.apply(container, tuple.a, tuple.b, tuple.c, tuple.d);
-    }
-
-    @Override
-    protected Runnable processSecond(QuadTuple<A, B, C, D> tuple, ResultContainerD container) {
-        return accumulatorD.apply(container, tuple.a, tuple.b, tuple.c, tuple.d);
-    }
-
-    @Override
-    protected QuadTuple<NewA, NewB, NewC, NewD> toResult(BiTuple<NewA, NewB> key, ResultContainerC containerC,
-            ResultContainerD containerD) {
-        return new QuadTuple<>(key.a, key.b, finisherC.apply(containerC), finisherD.apply(containerD));
-    }
 }

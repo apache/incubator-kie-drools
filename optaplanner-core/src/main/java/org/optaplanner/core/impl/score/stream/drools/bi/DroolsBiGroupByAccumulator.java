@@ -16,49 +16,45 @@
 
 package org.optaplanner.core.impl.score.stream.drools.bi;
 
+import static java.util.Objects.requireNonNull;
+
 import java.util.function.BiFunction;
 import java.util.function.Function;
-import java.util.function.Supplier;
 
-import org.optaplanner.core.api.function.TriFunction;
+import org.drools.model.Variable;
 import org.optaplanner.core.api.score.stream.bi.BiConstraintCollector;
+import org.optaplanner.core.impl.score.stream.bi.DefaultBiConstraintCollector;
 import org.optaplanner.core.impl.score.stream.drools.common.BiTuple;
-import org.optaplanner.core.impl.score.stream.drools.common.DroolsAbstractUniCollectingGroupByAccumulator;
+import org.optaplanner.core.impl.score.stream.drools.common.DroolsAbstractGroupBy;
+import org.optaplanner.core.impl.score.stream.drools.common.DroolsAbstractGroupByAccumulator;
 
-final class DroolsBiGroupByAccumulator<A, B, ResultContainer, NewA, NewB>
-        extends DroolsAbstractUniCollectingGroupByAccumulator<ResultContainer, BiTuple<A, B>, NewA, BiTuple<NewA, NewB>> {
+public class DroolsBiGroupByAccumulator<A, B, NewA, NewB>
+        extends DroolsAbstractGroupByAccumulator<BiTuple<A, B>> {
 
     private final BiFunction<A, B, NewA> groupKeyMapping;
-    private final Supplier<ResultContainer> supplier;
-    private final TriFunction<ResultContainer, A, B, Runnable> accumulator;
-    private final Function<ResultContainer, NewB> finisher;
+    private final BiConstraintCollector<A, B, ?, NewB> collector;
+    private final Variable<A> aVariable;
+    private final Variable<B> bVariable;
 
     public DroolsBiGroupByAccumulator(BiFunction<A, B, NewA> groupKeyMapping,
-            BiConstraintCollector<A, B, ResultContainer, NewB> collector) {
-        this.groupKeyMapping = groupKeyMapping;
-        this.supplier = collector.supplier();
-        this.accumulator = collector.accumulator();
-        this.finisher = collector.finisher();
+            BiConstraintCollector<A, B, ?, NewB> collector, Variable<A> aVariable, Variable<B> bVariable) {
+        this.groupKeyMapping = requireNonNull(groupKeyMapping);
+        // Null collector means we're only re-grouping without using a collector.
+        this.collector = collector != null ? collector : DefaultBiConstraintCollector.noop();
+        this.aVariable = requireNonNull(aVariable);
+        this.bVariable = requireNonNull(bVariable);
     }
 
     @Override
-    protected NewA toKey(BiTuple<A, B> tuple) {
-        return groupKeyMapping.apply(tuple.a, tuple.b);
+    protected DroolsAbstractGroupBy<BiTuple<A, B>, ?> newContext() {
+        return new DroolsBiGroupBy<>(groupKeyMapping, collector);
     }
 
     @Override
-    protected ResultContainer newContainer() {
-        return supplier.get();
-    }
-
-    @Override
-    protected Runnable process(BiTuple<A, B> tuple, ResultContainer container) {
-        return accumulator.apply(container, tuple.a, tuple.b);
-    }
-
-    @Override
-    protected BiTuple<NewA, NewB> toResult(NewA key, ResultContainer container) {
-        return new BiTuple<>(key, finisher.apply(container));
+    protected <X> BiTuple<A, B> createInput(Function<Variable<X>, X> valueFinder) {
+        final A a = materialize(aVariable, valueFinder);
+        final B b = materialize(bVariable, valueFinder);
+        return new BiTuple<>(a, b);
     }
 
 }

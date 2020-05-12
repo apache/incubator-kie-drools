@@ -16,13 +16,17 @@
 
 package org.optaplanner.core.impl.score.stream.drools.uni;
 
+import static org.drools.model.DSL.accFunction;
 import static org.drools.model.DSL.on;
 import static org.drools.model.PatternDSL.alphaIndexedBy;
 import static org.drools.model.PatternDSL.betaIndexedBy;
+import static org.drools.model.PatternDSL.pattern;
 
 import java.math.BigDecimal;
 import java.util.Arrays;
+import java.util.Collection;
 import java.util.List;
+import java.util.function.BiFunction;
 import java.util.function.BiPredicate;
 import java.util.function.Function;
 import java.util.function.LongSupplier;
@@ -31,8 +35,9 @@ import java.util.function.ToIntFunction;
 import java.util.function.ToLongFunction;
 import java.util.function.UnaryOperator;
 
-import org.drools.model.AlphaIndex;
+import org.drools.core.base.accumulators.CollectSetAccumulateFunction;
 import org.drools.model.BetaIndex;
+import org.drools.model.DSL;
 import org.drools.model.Drools;
 import org.drools.model.Global;
 import org.drools.model.Index;
@@ -45,6 +50,8 @@ import org.drools.model.functions.Block3;
 import org.drools.model.functions.Function1;
 import org.drools.model.functions.Predicate1;
 import org.drools.model.functions.Predicate2;
+import org.drools.model.view.ExprViewItem;
+import org.drools.model.view.ViewItem;
 import org.optaplanner.core.api.score.holder.AbstractScoreHolder;
 import org.optaplanner.core.api.score.stream.bi.BiJoiner;
 import org.optaplanner.core.api.score.stream.uni.UniConstraintCollector;
@@ -57,6 +64,7 @@ import org.optaplanner.core.impl.score.stream.drools.bi.DroolsBiCondition;
 import org.optaplanner.core.impl.score.stream.drools.bi.DroolsBiRuleStructure;
 import org.optaplanner.core.impl.score.stream.drools.common.BiTuple;
 import org.optaplanner.core.impl.score.stream.drools.common.DroolsCondition;
+import org.optaplanner.core.impl.score.stream.drools.common.DroolsRuleStructure;
 import org.optaplanner.core.impl.score.stream.drools.common.QuadTuple;
 import org.optaplanner.core.impl.score.stream.drools.common.TriTuple;
 import org.optaplanner.core.impl.score.stream.drools.quad.DroolsQuadCondition;
@@ -101,10 +109,9 @@ public final class DroolsUniCondition<A, PatternVar>
     public DroolsUniCondition<A, PatternVar> andFilter(Predicate<A> predicate) {
         boolean shouldMergeFilters = (previousFilter != null);
         Predicate<A> actualPredicate = shouldMergeFilters ? previousFilter.predicate.and(predicate) : predicate;
-        Predicate1<PatternVar> filter = a -> actualPredicate.test((A) a);
-        AlphaIndex<PatternVar, Boolean> index = alphaIndexedBy(Boolean.class, Index.ConstraintType.EQUAL, -1,
-                a -> actualPredicate.test((A) a), true);
-        UnaryOperator<PatternDef<PatternVar>> patternWithFilter = p -> p.expr("Filter using " + actualPredicate, filter, index);
+        Predicate1<A> filter = actualPredicate::test;
+        UnaryOperator<PatternDef<PatternVar>> patternWithFilter = p -> p.expr("Filter using " + actualPredicate,
+                ruleStructure.getA(), (patternVar, a) -> filter.test(a));
         // If we're merging consecutive filters, amend the original rule structure, before the first filter was applied.
         DroolsUniRuleStructure<A, PatternVar> actualStructure = shouldMergeFilters ? previousFilter.ruleStructure
                 : ruleStructure;
@@ -122,40 +129,69 @@ public final class DroolsUniCondition<A, PatternVar>
     }
 
     public <NewA, __> DroolsUniCondition<NewA, NewA> andCollect(UniConstraintCollector<A, __, NewA> collector) {
-        DroolsUniAccumulateFunctionBridge<A, __, NewA> bridge = new DroolsUniAccumulateFunctionBridge<>(collector);
+        DroolsUniAccumulateFunction<A, __, NewA> bridge = new DroolsUniAccumulateFunction<>(collector);
         return collect(bridge);
     }
 
     public <NewA> DroolsUniCondition<NewA, NewA> andGroup(Function<A, NewA> groupKeyMapping) {
-        return group((pattern, tuple) -> pattern.bind(tuple, a -> groupKeyMapping.apply((A) a)));
+        BiFunction<PatternDef<PatternVar>, Variable<NewA>, PatternDef<PatternVar>> binder = (pattern,
+                tuple) -> pattern.bind(tuple, a -> groupKeyMapping.apply((A) a));
+        return universalGroup(binder, (var, pattern, accumulate) -> {
+            DroolsUniRuleStructure<NewA, NewA> newRuleStructure = ruleStructure.regroup(var, pattern, accumulate);
+            return new DroolsUniCondition<>(newRuleStructure);
+        });
     }
 
     public <NewA, NewB> DroolsBiCondition<NewA, NewB, BiTuple<NewA, NewB>> andGroupWithCollect(
             Function<A, NewA> groupKeyMapping, UniConstraintCollector<A, ?, NewB> collector) {
-        return groupWithCollect(() -> new DroolsUniToBiGroupByInvoker<>(groupKeyMapping, collector,
+        return groupWithCollect(() -> new DroolsUniToBiGroupByAccumulator<>(groupKeyMapping, collector,
                 getRuleStructure().getA()));
     }
 
     public <NewA, NewB> DroolsBiCondition<NewA, NewB, BiTuple<NewA, NewB>> andGroupBi(Function<A, NewA> groupKeyAMapping,
             Function<A, NewB> groupKeyBMapping) {
-        return groupBi((pattern, tuple) -> pattern.bind(tuple, a -> {
-            final NewA newA = groupKeyAMapping.apply((A) a);
-            final NewB newB = groupKeyBMapping.apply((A) a);
-            return new BiTuple<>(newA, newB);
-        }));
+        BiFunction<PatternDef<PatternVar>, Variable<BiTuple<NewA, NewB>>, PatternDef<PatternVar>> binder = (pattern,
+                tuple) -> pattern.bind(tuple, a -> {
+                    final NewA newA = groupKeyAMapping.apply((A) a);
+                    final NewB newB = groupKeyBMapping.apply((A) a);
+                    return new BiTuple<>(newA, newB);
+                });
+        return universalGroup(binder, (var, pattern, accumulate) -> {
+            DroolsBiRuleStructure<NewA, NewB, BiTuple<NewA, NewB>> newRuleStructure = ruleStructure.regroupBi(var,
+                    pattern, accumulate);
+            return new DroolsBiCondition<>(newRuleStructure);
+        });
     }
 
     public <NewA, NewB, NewC> DroolsTriCondition<NewA, NewB, NewC, TriTuple<NewA, NewB, NewC>> andGroupBiWithCollect(
             Function<A, NewA> groupKeyAMapping, Function<A, NewB> groupKeyBMapping,
             UniConstraintCollector<A, ?, NewC> collector) {
-        return groupBiWithCollect(() -> new DroolsUniToTriGroupByInvoker<>(groupKeyAMapping, groupKeyBMapping,
+        return groupBiWithCollect(() -> new DroolsUniToTriGroupByAccumulator<>(groupKeyAMapping, groupKeyBMapping,
                 collector, getRuleStructure().getA()));
+    }
+
+    private <InTuple, OutPatternVar, R extends DroolsRuleStructure<OutPatternVar>, C extends DroolsCondition<OutPatternVar, R>> C universalGroup(
+            BiFunction<PatternDef<PatternVar>, Variable<InTuple>, PatternDef<PatternVar>> bindFunction,
+            Mutator<InTuple, OutPatternVar, R, C> mutator) {
+        Variable<InTuple> mappedVariable = ruleStructure.createVariable("biMapped");
+        PatternDSL.PatternDef<PatternVar> mainAccumulatePattern = ruleStructure.getPrimaryPatternBuilder()
+                .expand(p -> bindFunction.apply(p, mappedVariable))
+                .build();
+        ViewItem<?> innerAccumulatePattern = getInnerAccumulatePattern(mainAccumulatePattern);
+        Variable<Collection<InTuple>> tupleCollection = (Variable<Collection<InTuple>>) ruleStructure
+                .createVariable(Collection.class, "tupleCollection");
+        PatternDSL.PatternDef<Collection<InTuple>> pattern = pattern(tupleCollection)
+                .expr("Non-empty", collection -> !collection.isEmpty(),
+                        alphaIndexedBy(Integer.class, Index.ConstraintType.GREATER_THAN, -1, Collection::size, 0));
+        ExprViewItem<Object> accumulate = DSL.accumulate(innerAccumulatePattern,
+                accFunction(CollectSetAccumulateFunction.class, mappedVariable).as(tupleCollection));
+        return mutator.apply(tupleCollection, pattern, accumulate);
     }
 
     public <NewA, NewB, NewC, NewD> DroolsQuadCondition<NewA, NewB, NewC, NewD, QuadTuple<NewA, NewB, NewC, NewD>> andGroupBiWithCollectBi(
             Function<A, NewA> groupKeyAMapping, Function<A, NewB> groupKeyBMapping,
             UniConstraintCollector<A, ?, NewC> collectorC, UniConstraintCollector<A, ?, NewD> collectorD) {
-        return groupBiWithCollectBi(() -> new DroolsUniToQuadGroupByInvoker<>(groupKeyAMapping, groupKeyBMapping,
+        return groupBiWithCollectBi(() -> new DroolsUniToQuadGroupByAccumulator<>(groupKeyAMapping, groupKeyBMapping,
                 collectorC, collectorD, getRuleStructure().getA()));
     }
 

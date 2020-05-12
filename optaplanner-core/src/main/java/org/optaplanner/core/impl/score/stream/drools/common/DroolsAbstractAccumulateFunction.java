@@ -22,7 +22,7 @@ import java.util.Map;
 
 import org.kie.api.runtime.rule.AccumulateFunction;
 
-public abstract class DroolsAbstractAccumulateFunctionBridge<ResultContainer_, InTuple, OutTuple>
+public abstract class DroolsAbstractAccumulateFunction<ResultContainer_, InTuple, OutTuple>
         implements AccumulateFunction<DroolsAccumulateContext<ResultContainer_>> {
 
     @Override

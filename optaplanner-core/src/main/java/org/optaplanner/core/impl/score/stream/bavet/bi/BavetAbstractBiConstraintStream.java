@@ -62,6 +62,11 @@ public abstract class BavetAbstractBiConstraintStream<Solution_, A, B> extends B
         childStreamList.add(childStream);
     }
 
+    @Override
+    public int getCardinality() {
+        return 2;
+    }
+
     // ************************************************************************
     // Filter
     // ************************************************************************

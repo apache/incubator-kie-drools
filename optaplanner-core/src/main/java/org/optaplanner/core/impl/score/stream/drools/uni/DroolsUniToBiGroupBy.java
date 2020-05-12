@@ -21,7 +21,7 @@ import java.util.function.Function;
 import org.optaplanner.core.api.score.stream.uni.UniConstraintCollector;
 import org.optaplanner.core.impl.score.stream.drools.common.BiTuple;
 import org.optaplanner.core.impl.score.stream.drools.common.DroolsAbstractGroupBy;
-import org.optaplanner.core.impl.score.stream.drools.common.GroupByAccumulator;
+import org.optaplanner.core.impl.score.stream.drools.common.GroupByCollectorProcessor;
 
 final class DroolsUniToBiGroupBy<A, NewA, NewB>
         extends DroolsAbstractGroupBy<A, BiTuple<NewA, NewB>> {
@@ -35,8 +35,8 @@ final class DroolsUniToBiGroupBy<A, NewA, NewB>
     }
 
     @Override
-    protected GroupByAccumulator<A, BiTuple<NewA, NewB>> newAccumulator() {
-        return new DroolsUniToBiGroupByAccumulator<>(groupKeyMapping, collector);
+    protected GroupByCollectorProcessor<A, BiTuple<NewA, NewB>> newAccumulator() {
+        return new DroolsUniToBiGroupByCollectorProcessor<>(groupKeyMapping, collector);
     }
 
 }

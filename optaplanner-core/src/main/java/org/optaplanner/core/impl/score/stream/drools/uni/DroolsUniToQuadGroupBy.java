@@ -20,7 +20,7 @@ import java.util.function.Function;
 
 import org.optaplanner.core.api.score.stream.uni.UniConstraintCollector;
 import org.optaplanner.core.impl.score.stream.drools.common.DroolsAbstractGroupBy;
-import org.optaplanner.core.impl.score.stream.drools.common.GroupByAccumulator;
+import org.optaplanner.core.impl.score.stream.drools.common.GroupByCollectorProcessor;
 import org.optaplanner.core.impl.score.stream.drools.common.QuadTuple;
 
 final class DroolsUniToQuadGroupBy<A, NewA, NewB, NewC, NewD>
@@ -40,8 +40,8 @@ final class DroolsUniToQuadGroupBy<A, NewA, NewB, NewC, NewD>
     }
 
     @Override
-    protected GroupByAccumulator<A, QuadTuple<NewA, NewB, NewC, NewD>> newAccumulator() {
-        return new DroolsUniToQuadGroupByAccumulator<>(groupKeyAMapping, groupKeyBMapping, collectorC, collectorD);
+    protected GroupByCollectorProcessor<A, QuadTuple<NewA, NewB, NewC, NewD>> newAccumulator() {
+        return new DroolsUniToQuadGroupByCollectorProcessor<>(groupKeyAMapping, groupKeyBMapping, collectorC, collectorD);
     }
 
 }

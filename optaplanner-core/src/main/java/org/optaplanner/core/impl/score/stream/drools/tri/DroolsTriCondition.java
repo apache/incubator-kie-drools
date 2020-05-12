@@ -42,6 +42,7 @@ import org.optaplanner.core.api.score.stream.quad.QuadJoiner;
 import org.optaplanner.core.api.score.stream.tri.TriConstraintCollector;
 import org.optaplanner.core.impl.score.stream.drools.DroolsConstraint;
 import org.optaplanner.core.impl.score.stream.drools.bi.DroolsBiCondition;
+import org.optaplanner.core.impl.score.stream.drools.bi.DroolsBiRuleStructure;
 import org.optaplanner.core.impl.score.stream.drools.common.BiTuple;
 import org.optaplanner.core.impl.score.stream.drools.common.DroolsCondition;
 import org.optaplanner.core.impl.score.stream.drools.common.DroolsPatternBuilder;
@@ -178,42 +179,49 @@ public final class DroolsTriCondition<A, B, C, PatternVar>
     }
 
     public <NewA, __> DroolsUniCondition<NewA, NewA> andCollect(TriConstraintCollector<A, B, C, __, NewA> collector) {
-        DroolsTriAccumulateFunctionBridge<A, B, C, __, NewA> bridge = new DroolsTriAccumulateFunctionBridge<>(collector);
+        DroolsTriAccumulateFunction<A, B, C, __, NewA> bridge = new DroolsTriAccumulateFunction<>(collector);
         return collect(bridge);
     }
 
-    public <NewA> DroolsUniCondition<NewA, NewA> andGroup(TriFunction<A, B, C, NewA> groupKeyMapping) {
-        return super.group((pattern, tuple) -> pattern.bind(tuple, ruleStructure.getA(), ruleStructure.getB(),
-                (c, a, b) -> groupKeyMapping.apply(a, b, (C) c)));
+    public <NewA> DroolsUniCondition<NewA, ?> andGroup(TriFunction<A, B, C, NewA> groupKeyMapping) {
+        DroolsBiCondition<NewA, ?, ? extends BiTuple<NewA, ?>> biCondition = andGroupWithCollect(groupKeyMapping, null);
+        DroolsBiRuleStructure<NewA, ?, ? extends BiTuple<NewA, ?>> biRuleStructure = biCondition.getRuleStructure();
+        // Downgrade the bi-stream to a uni-stream by ignoring the dummy no-op collector variable.
+        DroolsUniRuleStructure<NewA, ? extends BiTuple<NewA, ?>> uniRuleStructure = new DroolsUniRuleStructure<>(
+                biRuleStructure);
+        return new DroolsUniCondition<>(uniRuleStructure);
     }
 
     public <NewA, NewB> DroolsBiCondition<NewA, NewB, BiTuple<NewA, NewB>> andGroupWithCollect(
             TriFunction<A, B, C, NewA> groupKeyMapping, TriConstraintCollector<A, B, C, ?, NewB> collector) {
-        return groupWithCollect(() -> new DroolsTriToBiGroupByInvoker<>(groupKeyMapping, collector, getRuleStructure().getA(),
-                getRuleStructure().getB(), getRuleStructure().getC()));
+        return groupWithCollect(
+                () -> new DroolsTriToBiGroupByAccumulator<>(groupKeyMapping, collector, getRuleStructure().getA(),
+                        getRuleStructure().getB(), getRuleStructure().getC()));
     }
 
-    public <NewA, NewB> DroolsBiCondition<NewA, NewB, BiTuple<NewA, NewB>> andGroupBi(
-            TriFunction<A, B, C, NewA> groupKeyAMapping, TriFunction<A, B, C, NewB> groupKeyBMapping) {
-        return groupBi((pattern, tuple) -> pattern.bind(tuple, ruleStructure.getA(), ruleStructure.getB(),
-                (c, a, b) -> {
-                    final NewA newA = groupKeyAMapping.apply(a, b, (C) c);
-                    final NewB newB = groupKeyBMapping.apply(a, b, (C) c);
-                    return new BiTuple<>(newA, newB);
-                }));
+    public <NewA, NewB> DroolsBiCondition<NewA, NewB, ?> andGroupBi(TriFunction<A, B, C, NewA> groupKeyAMapping,
+            TriFunction<A, B, C, NewB> groupKeyBMapping) {
+        DroolsTriCondition<NewA, NewB, ?, ? extends TriTuple<NewA, NewB, ?>> triCondition = andGroupBiWithCollect(
+                groupKeyAMapping, groupKeyBMapping, null);
+        DroolsTriRuleStructure<NewA, NewB, ?, ? extends TriTuple<NewA, NewB, ?>> triRuleStructure = triCondition
+                .getRuleStructure();
+        // Downgrade the tri-stream to a bi-stream by ignoring the dummy no-op collector variable.
+        DroolsBiRuleStructure<NewA, NewB, ? extends TriTuple<NewA, NewB, ?>> biRuleStructure = new DroolsBiRuleStructure<>(
+                triRuleStructure);
+        return new DroolsBiCondition<>(biRuleStructure);
     }
 
     public <NewA, NewB, NewC> DroolsTriCondition<NewA, NewB, NewC, TriTuple<NewA, NewB, NewC>> andGroupBiWithCollect(
             TriFunction<A, B, C, NewA> groupKeyAMapping, TriFunction<A, B, C, NewB> groupKeyBMapping,
             TriConstraintCollector<A, B, C, ?, NewC> collector) {
-        return groupBiWithCollect(() -> new DroolsTriGroupByInvoker<>(groupKeyAMapping, groupKeyBMapping, collector,
+        return groupBiWithCollect(() -> new DroolsTriGroupByAccumulator<>(groupKeyAMapping, groupKeyBMapping, collector,
                 getRuleStructure().getA(), getRuleStructure().getB(), getRuleStructure().getC()));
     }
 
     public <NewA, NewB, NewC, NewD> DroolsQuadCondition<NewA, NewB, NewC, NewD, QuadTuple<NewA, NewB, NewC, NewD>> andGroupBiWithCollectBi(
             TriFunction<A, B, C, NewA> groupKeyAMapping, TriFunction<A, B, C, NewB> groupKeyBMapping,
             TriConstraintCollector<A, B, C, ?, NewC> collectorC, TriConstraintCollector<A, B, C, ?, NewD> collectorD) {
-        return groupBiWithCollectBi(() -> new DroolsTriToQuadGroupByInvoker<>(groupKeyAMapping, groupKeyBMapping,
+        return groupBiWithCollectBi(() -> new DroolsTriToQuadGroupByAccumulator<>(groupKeyAMapping, groupKeyBMapping,
                 collectorC, collectorD, getRuleStructure().getA(), getRuleStructure().getB(),
                 getRuleStructure().getC()));
     }

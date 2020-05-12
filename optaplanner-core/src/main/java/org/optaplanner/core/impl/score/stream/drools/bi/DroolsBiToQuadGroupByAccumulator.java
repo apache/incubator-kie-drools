@@ -16,70 +16,48 @@
 
 package org.optaplanner.core.impl.score.stream.drools.bi;
 
+import static java.util.Objects.requireNonNull;
+
 import java.util.function.BiFunction;
 import java.util.function.Function;
-import java.util.function.Supplier;
 
-import org.optaplanner.core.api.function.TriFunction;
+import org.drools.model.Variable;
 import org.optaplanner.core.api.score.stream.bi.BiConstraintCollector;
 import org.optaplanner.core.impl.score.stream.drools.common.BiTuple;
-import org.optaplanner.core.impl.score.stream.drools.common.DroolsAbstractBiCollectingGroupByAccumulator;
-import org.optaplanner.core.impl.score.stream.drools.common.QuadTuple;
+import org.optaplanner.core.impl.score.stream.drools.common.DroolsAbstractGroupBy;
+import org.optaplanner.core.impl.score.stream.drools.common.DroolsAbstractGroupByAccumulator;
 
-final class DroolsBiToQuadGroupByAccumulator<A, B, NewA, NewB, NewC, NewD, ResultContainerC, ResultContainerD>
-        extends
-        DroolsAbstractBiCollectingGroupByAccumulator<ResultContainerC, ResultContainerD, BiTuple<A, B>, BiTuple<NewA, NewB>, QuadTuple<NewA, NewB, NewC, NewD>> {
+public class DroolsBiToQuadGroupByAccumulator<A, B, NewA, NewB, NewC, NewD>
+        extends DroolsAbstractGroupByAccumulator<BiTuple<A, B>> {
 
     private final BiFunction<A, B, NewA> groupKeyAMapping;
     private final BiFunction<A, B, NewB> groupKeyBMapping;
-    private final Supplier<ResultContainerC> supplierC;
-    private final TriFunction<ResultContainerC, A, B, Runnable> accumulatorC;
-    private final Function<ResultContainerC, NewC> finisherC;
-    private final Supplier<ResultContainerD> supplierD;
-    private final TriFunction<ResultContainerD, A, B, Runnable> accumulatorD;
-    private final Function<ResultContainerD, NewD> finisherD;
+    private final BiConstraintCollector<A, B, ?, NewC> collectorC;
+    private final BiConstraintCollector<A, B, ?, NewD> collectorD;
+    private final Variable<A> aVariable;
+    private final Variable<B> bVariable;
 
     public DroolsBiToQuadGroupByAccumulator(BiFunction<A, B, NewA> groupKeyAMapping,
-            BiFunction<A, B, NewB> groupKeyBMapping, BiConstraintCollector<A, B, ResultContainerC, NewC> collectorC,
-            BiConstraintCollector<A, B, ResultContainerD, NewD> collectorD) {
-        this.groupKeyAMapping = groupKeyAMapping;
-        this.groupKeyBMapping = groupKeyBMapping;
-        this.supplierC = collectorC.supplier();
-        this.accumulatorC = collectorC.accumulator();
-        this.finisherC = collectorC.finisher();
-        this.supplierD = collectorD.supplier();
-        this.accumulatorD = collectorD.accumulator();
-        this.finisherD = collectorD.finisher();
+            BiFunction<A, B, NewB> groupKeyBMapping, BiConstraintCollector<A, B, ?, NewC> collectorC,
+            BiConstraintCollector<A, B, ?, NewD> collectorD, Variable<A> aVariable, Variable<B> bVariable) {
+        this.groupKeyAMapping = requireNonNull(groupKeyAMapping);
+        this.groupKeyBMapping = requireNonNull(groupKeyBMapping);
+        this.collectorC = requireNonNull(collectorC);
+        this.collectorD = requireNonNull(collectorD);
+        this.aVariable = requireNonNull(aVariable);
+        this.bVariable = requireNonNull(bVariable);
     }
 
     @Override
-    protected BiTuple<NewA, NewB> toKey(BiTuple<A, B> tuple) {
-        return new BiTuple<>(groupKeyAMapping.apply(tuple.a, tuple.b), groupKeyBMapping.apply(tuple.a, tuple.b));
+    protected DroolsAbstractGroupBy<BiTuple<A, B>, ?> newContext() {
+        return new DroolsBiToQuadGroupBy<>(groupKeyAMapping, groupKeyBMapping, collectorC, collectorD);
     }
 
     @Override
-    protected ResultContainerC newFirstContainer() {
-        return supplierC.get();
+    protected <X> BiTuple<A, B> createInput(Function<Variable<X>, X> valueFinder) {
+        A a = materialize(aVariable, valueFinder);
+        B b = materialize(bVariable, valueFinder);
+        return new BiTuple<>(a, b);
     }
 
-    @Override
-    protected ResultContainerD newSecondContainer() {
-        return supplierD.get();
-    }
-
-    @Override
-    protected Runnable processFirst(BiTuple<A, B> tuple, ResultContainerC container) {
-        return accumulatorC.apply(container, tuple.a, tuple.b);
-    }
-
-    @Override
-    protected Runnable processSecond(BiTuple<A, B> tuple, ResultContainerD container) {
-        return accumulatorD.apply(container, tuple.a, tuple.b);
-    }
-
-    @Override
-    protected QuadTuple<NewA, NewB, NewC, NewD> toResult(BiTuple<NewA, NewB> key, ResultContainerC containerC,
-            ResultContainerD containerD) {
-        return new QuadTuple<>(key.a, key.b, finisherC.apply(containerC), finisherD.apply(containerD));
-    }
 }

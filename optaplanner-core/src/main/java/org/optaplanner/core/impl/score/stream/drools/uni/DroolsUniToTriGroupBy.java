@@ -20,7 +20,7 @@ import java.util.function.Function;
 
 import org.optaplanner.core.api.score.stream.uni.UniConstraintCollector;
 import org.optaplanner.core.impl.score.stream.drools.common.DroolsAbstractGroupBy;
-import org.optaplanner.core.impl.score.stream.drools.common.GroupByAccumulator;
+import org.optaplanner.core.impl.score.stream.drools.common.GroupByCollectorProcessor;
 import org.optaplanner.core.impl.score.stream.drools.common.TriTuple;
 
 final class DroolsUniToTriGroupBy<A, NewA, NewB, NewC>
@@ -38,8 +38,8 @@ final class DroolsUniToTriGroupBy<A, NewA, NewB, NewC>
     }
 
     @Override
-    protected GroupByAccumulator<A, TriTuple<NewA, NewB, NewC>> newAccumulator() {
-        return new DroolsUniToTriGroupByAccumulator<>(groupKeyAMapping, groupKeyBMapping, collector);
+    protected GroupByCollectorProcessor<A, TriTuple<NewA, NewB, NewC>> newAccumulator() {
+        return new DroolsUniToTriGroupByCollectorProcessor<>(groupKeyAMapping, groupKeyBMapping, collector);
     }
 
 }

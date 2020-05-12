@@ -27,7 +27,7 @@ public abstract class DroolsAbstractGroupBy<InTuple, OutTuple> implements Serial
 
     private static final long serialVersionUID = 510l;
     private final Map<Long, Runnable> undoMap = new HashMap<>(0);
-    private GroupByAccumulator<InTuple, OutTuple> acc;
+    private GroupByCollectorProcessor<InTuple, OutTuple> acc;
 
     public void init() {
         acc = newAccumulator();
@@ -54,6 +54,6 @@ public abstract class DroolsAbstractGroupBy<InTuple, OutTuple> implements Serial
         return acc.finish();
     }
 
-    protected abstract GroupByAccumulator<InTuple, OutTuple> newAccumulator();
+    protected abstract GroupByCollectorProcessor<InTuple, OutTuple> newAccumulator();
 
 }

@@ -58,6 +58,11 @@ public abstract class DroolsAbstractQuadConstraintStream<Solution_, A, B, C, D>
     }
 
     @Override
+    public int getCardinality() {
+        return 4;
+    }
+
+    @Override
     public QuadConstraintStream<A, B, C, D> filter(QuadPredicate<A, B, C, D> predicate) {
         DroolsAbstractQuadConstraintStream<Solution_, A, B, C, D> stream = new DroolsFilterQuadConstraintStream<>(
                 constraintFactory, this, predicate);

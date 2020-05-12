@@ -16,6 +16,7 @@
 
 package org.optaplanner.core.impl.score.stream.quad;
 
+import java.util.Collections;
 import java.util.function.Function;
 import java.util.function.Supplier;
 
@@ -35,6 +36,13 @@ public final class DefaultQuadConstraintCollector<A, B, C, D, ResultContainer_, 
         this.supplier = supplier;
         this.accumulator = accumulator;
         this.finisher = finisher;
+    }
+
+    public static <A, B, C, D, Result_> QuadConstraintCollector<A, B, C, D, ?, Result_> noop() {
+        return new DefaultQuadConstraintCollector<>(Collections::emptyList,
+                (a, b, c, d, container) -> () -> {
+                },
+                container -> null);
     }
 
     @Override

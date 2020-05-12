@@ -14,30 +14,29 @@
  * limitations under the License.
  */
 
-package org.optaplanner.core.impl.score.stream.drools.quad;
+package org.optaplanner.core.impl.score.stream.drools.uni;
 
+import java.util.function.BiFunction;
 import java.util.function.Function;
 import java.util.function.Supplier;
 
-import org.optaplanner.core.api.function.PentaFunction;
-import org.optaplanner.core.api.score.stream.quad.QuadConstraintCollector;
-import org.optaplanner.core.impl.score.stream.drools.common.DroolsAbstractAccumulateFunctionBridge;
-import org.optaplanner.core.impl.score.stream.drools.common.QuadTuple;
+import org.optaplanner.core.api.score.stream.uni.UniConstraintCollector;
+import org.optaplanner.core.impl.score.stream.drools.common.DroolsAbstractAccumulateFunction;
 
-final class DroolsQuadAccumulateFunctionBridge<A, B, C, D, ResultContainer_, NewA>
-        extends DroolsAbstractAccumulateFunctionBridge<ResultContainer_, QuadTuple<A, B, C, D>, NewA> {
+final class DroolsUniAccumulateFunction<A, ResultContainer_, NewA>
+        extends DroolsAbstractAccumulateFunction<ResultContainer_, A, NewA> {
 
     private final Supplier<ResultContainer_> supplier;
-    private final PentaFunction<ResultContainer_, A, B, C, D, Runnable> accumulator;
+    private final BiFunction<ResultContainer_, A, Runnable> accumulator;
     private final Function<ResultContainer_, NewA> finisher;
 
-    public DroolsQuadAccumulateFunctionBridge(QuadConstraintCollector<A, B, C, D, ResultContainer_, NewA> collector) {
+    public DroolsUniAccumulateFunction(UniConstraintCollector<A, ResultContainer_, NewA> collector) {
         this.supplier = collector.supplier();
         this.accumulator = collector.accumulator();
         this.finisher = collector.finisher();
     }
 
-    public DroolsQuadAccumulateFunctionBridge() {
+    public DroolsUniAccumulateFunction() {
         throw new UnsupportedOperationException("Serialization is not supported.");
     }
 
@@ -47,12 +46,12 @@ final class DroolsQuadAccumulateFunctionBridge<A, B, C, D, ResultContainer_, New
     }
 
     @Override
-    protected Runnable accumulate(ResultContainer_ container, QuadTuple<A, B, C, D> tuple) {
-        return accumulator.apply(container, tuple.a, tuple.b, tuple.c, tuple.d);
+    protected Runnable accumulate(ResultContainer_ container, A tuple) {
+        return accumulator.apply(container, tuple);
     }
 
     @Override
-    protected NewA getResult(ResultContainer_ container_) {
-        return finisher.apply(container_);
+    protected NewA getResult(ResultContainer_ container) {
+        return finisher.apply(container);
     }
 }

@@ -23,19 +23,16 @@ import static org.drools.model.PatternDSL.pattern;
 import java.math.BigDecimal;
 import java.util.Arrays;
 import java.util.Collection;
-import java.util.function.BiFunction;
 import java.util.function.Predicate;
 import java.util.function.Supplier;
 import java.util.stream.Stream;
 
-import org.drools.core.base.accumulators.CollectSetAccumulateFunction;
 import org.drools.model.DSL;
 import org.drools.model.Drools;
 import org.drools.model.Index;
 import org.drools.model.PatternDSL;
 import org.drools.model.PatternDSL.PatternDef;
 import org.drools.model.Variable;
-import org.drools.model.view.ExprViewItem;
 import org.drools.model.view.ViewItem;
 import org.drools.model.view.ViewItemBuilder;
 import org.kie.api.runtime.rule.RuleContext;
@@ -70,7 +67,7 @@ public abstract class DroolsCondition<PatternVar, T extends DroolsRuleStructure<
             Variable<InTuple> tupleVariable);
 
     protected <NewA, InTuple, OutTuple, __> DroolsUniCondition<NewA, NewA> collect(
-            DroolsAbstractAccumulateFunctionBridge<__, InTuple, OutTuple> accumulateFunctionBridge) {
+            DroolsAbstractAccumulateFunction<__, InTuple, OutTuple> accumulateFunctionBridge) {
         PatternDef<PatternVar> mainAccumulatePattern = ruleStructure.getPrimaryPatternBuilder().build();
         Variable<PatternVar> baseVariable = ruleStructure.getPrimaryPatternBuilder().getBaseVariable();
         boolean isRegrouping = FactTuple.class.isAssignableFrom(baseVariable.getType());
@@ -90,43 +87,8 @@ public abstract class DroolsCondition<PatternVar, T extends DroolsRuleStructure<
         return new DroolsUniCondition<>(newRuleStructure);
     }
 
-    protected <NewA> DroolsUniCondition<NewA, NewA> group(
-            BiFunction<PatternDef<PatternVar>, Variable<NewA>, PatternDef<PatternVar>> bindFunction) {
-        return universalGroup(bindFunction, (var, pattern, accumulate) -> {
-            DroolsUniRuleStructure<NewA, NewA> newRuleStructure = ruleStructure.regroup(var, pattern, accumulate);
-            return new DroolsUniCondition<>(newRuleStructure);
-        });
-    }
-
-    public <NewA, NewB> DroolsBiCondition<NewA, NewB, BiTuple<NewA, NewB>> groupBi(
-            BiFunction<PatternDef<PatternVar>, Variable<BiTuple<NewA, NewB>>, PatternDef<PatternVar>> bindFunction) {
-        return universalGroup(bindFunction, (var, pattern, accumulate) -> {
-            DroolsBiRuleStructure<NewA, NewB, BiTuple<NewA, NewB>> newRuleStructure = ruleStructure.regroupBi(var, pattern,
-                    accumulate);
-            return new DroolsBiCondition<>(newRuleStructure);
-        });
-    }
-
-    private <InTuple, OutPatternVar, R extends DroolsRuleStructure<OutPatternVar>, C extends DroolsCondition<OutPatternVar, R>> C universalGroup(
-            BiFunction<PatternDef<PatternVar>, Variable<InTuple>, PatternDef<PatternVar>> bindFunction,
-            Mutator<InTuple, OutPatternVar, R, C> mutator) {
-        Variable<InTuple> mappedVariable = ruleStructure.createVariable("biMapped");
-        PatternDSL.PatternDef<PatternVar> mainAccumulatePattern = ruleStructure.getPrimaryPatternBuilder()
-                .expand(p -> bindFunction.apply(p, mappedVariable))
-                .build();
-        ViewItem<?> innerAccumulatePattern = getInnerAccumulatePattern(mainAccumulatePattern);
-        Variable<Collection<InTuple>> tupleCollection = (Variable<Collection<InTuple>>) ruleStructure
-                .createVariable(Collection.class, "tupleCollection");
-        PatternDSL.PatternDef<Collection<InTuple>> pattern = pattern(tupleCollection)
-                .expr("Non-empty", collection -> !collection.isEmpty(),
-                        alphaIndexedBy(Integer.class, Index.ConstraintType.GREATER_THAN, -1, Collection::size, 0));
-        ExprViewItem<Object> accumulate = DSL.accumulate(innerAccumulatePattern,
-                accFunction(CollectSetAccumulateFunction.class, mappedVariable).as(tupleCollection));
-        return mutator.apply(tupleCollection, pattern, accumulate);
-    }
-
     protected <NewA, NewB, InTuple, OutPatternVar> DroolsBiCondition<NewA, NewB, OutPatternVar> groupWithCollect(
-            Supplier<? extends DroolsAbstractGroupByInvoker<InTuple>> invokerSupplier) {
+            Supplier<? extends DroolsAbstractGroupByAccumulator<InTuple>> invokerSupplier) {
         return universalGroupWithCollect(invokerSupplier, (var, pattern, accumulate) -> {
             DroolsBiRuleStructure<NewA, NewB, OutPatternVar> newRuleStructure = ruleStructure.regroupBi((Variable) var,
                     (PatternDef) pattern, accumulate);
@@ -135,7 +97,7 @@ public abstract class DroolsCondition<PatternVar, T extends DroolsRuleStructure<
     }
 
     protected <NewA, NewB, NewC, InTuple, OutPatternVar> DroolsTriCondition<NewA, NewB, NewC, OutPatternVar> groupBiWithCollect(
-            Supplier<? extends DroolsAbstractGroupByInvoker<InTuple>> invokerSupplier) {
+            Supplier<? extends DroolsAbstractGroupByAccumulator<InTuple>> invokerSupplier) {
         return universalGroupWithCollect(invokerSupplier, (var, pattern, accumulate) -> {
             DroolsTriRuleStructure<NewA, NewB, NewC, OutPatternVar> newRuleStructure = ruleStructure
                     .regroupBiToTri((Variable) var, (PatternDef) pattern, accumulate);
@@ -144,7 +106,7 @@ public abstract class DroolsCondition<PatternVar, T extends DroolsRuleStructure<
     }
 
     protected <NewA, NewB, NewC, NewD, InTuple, OutPatternVar> DroolsQuadCondition<NewA, NewB, NewC, NewD, OutPatternVar> groupBiWithCollectBi(
-            Supplier<? extends DroolsAbstractGroupByInvoker<InTuple>> invokerSupplier) {
+            Supplier<? extends DroolsAbstractGroupByAccumulator<InTuple>> invokerSupplier) {
         return universalGroupWithCollect(invokerSupplier, (var, pattern, accumulate) -> {
             DroolsQuadRuleStructure<NewA, NewB, NewC, NewD, OutPatternVar> newRuleStructure = ruleStructure
                     .regroupBiToQuad((Variable) var, (PatternDef) pattern, accumulate);
@@ -153,7 +115,7 @@ public abstract class DroolsCondition<PatternVar, T extends DroolsRuleStructure<
     }
 
     private <InTuple, OutPatternVar, R extends DroolsRuleStructure<OutPatternVar>, C extends DroolsCondition<OutPatternVar, R>> C universalGroupWithCollect(
-            Supplier<? extends DroolsAbstractGroupByInvoker<InTuple>> invokerSupplier,
+            Supplier<? extends DroolsAbstractGroupByAccumulator<InTuple>> invokerSupplier,
             Mutator<InTuple, OutPatternVar, R, C> mutator) {
         Variable<Collection<InTuple>> tupleCollection = (Variable<Collection<InTuple>>) ruleStructure
                 .createVariable(Collection.class, "tupleCollection");
@@ -209,7 +171,7 @@ public abstract class DroolsCondition<PatternVar, T extends DroolsRuleStructure<
     }
 
     @FunctionalInterface
-    private interface Mutator<InTuple, OutPatternVar, R extends DroolsRuleStructure<OutPatternVar>, C extends DroolsCondition<OutPatternVar, R>>
+    protected interface Mutator<InTuple, OutPatternVar, R extends DroolsRuleStructure<OutPatternVar>, C extends DroolsCondition<OutPatternVar, R>>
             extends
             TriFunction<Variable<Collection<InTuple>>, PatternDef<Collection<InTuple>>, ViewItem<?>, C> {
 

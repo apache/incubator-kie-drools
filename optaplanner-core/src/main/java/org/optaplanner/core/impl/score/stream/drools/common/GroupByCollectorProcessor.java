@@ -19,7 +19,7 @@ package org.optaplanner.core.impl.score.stream.drools.common;
 import java.io.Serializable;
 import java.util.Collection;
 
-public interface GroupByAccumulator<InTuple, OutTuple> extends Serializable {
+public interface GroupByCollectorProcessor<InTuple, OutTuple> extends Serializable {
 
     Runnable accumulate(InTuple input);
 

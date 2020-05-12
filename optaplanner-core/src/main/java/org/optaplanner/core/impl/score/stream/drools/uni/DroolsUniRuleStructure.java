@@ -26,6 +26,7 @@ import org.drools.model.PatternDSL.PatternDef;
 import org.drools.model.Variable;
 import org.drools.model.view.ExprViewItem;
 import org.drools.model.view.ViewItemBuilder;
+import org.optaplanner.core.impl.score.stream.drools.bi.DroolsBiRuleStructure;
 import org.optaplanner.core.impl.score.stream.drools.common.DroolsPatternBuilder;
 import org.optaplanner.core.impl.score.stream.drools.common.DroolsRuleStructure;
 
@@ -48,6 +49,15 @@ public final class DroolsUniRuleStructure<A, PatternVar> extends DroolsRuleStruc
         this.dependents = Collections.unmodifiableList(dependents);
     }
 
+    public DroolsUniRuleStructure(DroolsBiRuleStructure<A, ?, PatternVar> biRuleStructure) {
+        super(biRuleStructure.getVariableIdSupplier());
+        this.a = biRuleStructure.getA();
+        this.aPattern = biRuleStructure.getPrimaryPatternBuilder();
+        this.shelved = biRuleStructure.getShelvedRuleItems();
+        this.prerequisites = biRuleStructure.getPrerequisites();
+        this.dependents = biRuleStructure.getDependents();
+    }
+
     public DroolsUniRuleStructure(Class<A> aClass, LongSupplier varialeIdSupplier) {
         super(varialeIdSupplier);
         this.a = (Variable<A>) createVariable(aClass, "base");
@@ -67,7 +77,7 @@ public final class DroolsUniRuleStructure<A, PatternVar> extends DroolsRuleStruc
     }
 
     public DroolsUniRuleStructure<A, PatternVar> amend(UnaryOperator<PatternDef<PatternVar>> expander) {
-        return new DroolsUniRuleStructure<>(a, getPrimaryPatternBuilder().expand(expander), prerequisites, shelved,
+        return new DroolsUniRuleStructure<>(a, getPrimaryPatternBuilder().expand(expander), shelved, prerequisites,
                 dependents, getVariableIdSupplier());
     }
 

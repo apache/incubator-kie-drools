@@ -16,6 +16,7 @@
 
 package org.optaplanner.core.impl.score.stream.tri;
 
+import java.util.Collections;
 import java.util.function.Function;
 import java.util.function.Supplier;
 
@@ -35,6 +36,13 @@ public final class DefaultTriConstraintCollector<A, B, C, ResultContainer_, Resu
         this.supplier = supplier;
         this.accumulator = accumulator;
         this.finisher = finisher;
+    }
+
+    public static <A, B, C, Result_> TriConstraintCollector<A, B, C, ?, Result_> noop() {
+        return new DefaultTriConstraintCollector<>(Collections::emptyList,
+                (a, b, c, container) -> () -> {
+                },
+                container -> null);
     }
 
     @Override

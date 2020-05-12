@@ -33,6 +33,7 @@ import java.util.Set;
 import java.util.function.Function;
 import java.util.stream.Stream;
 
+import org.apache.commons.lang3.tuple.ImmutablePair;
 import org.junit.jupiter.api.TestTemplate;
 import org.optaplanner.core.api.score.buildin.simple.SimpleScore;
 import org.optaplanner.core.impl.score.director.InnerScoreDirector;
@@ -47,6 +48,32 @@ public class AdvancedGroupByConstraintStreamTest extends AbstractConstraintStrea
     public AdvancedGroupByConstraintStreamTest(boolean constraintMatchEnabled,
             ConstraintStreamImplType constraintStreamImplType) {
         super(constraintMatchEnabled, constraintStreamImplType);
+    }
+
+    @TestTemplate
+    public void collectedDowngradedAndFiltered() {
+        assumeDrools();
+        TestdataLavishSolution solution = TestdataLavishSolution.generateSolution(2, 5, 1, 7);
+        TestdataLavishEntity entity = new TestdataLavishEntity("MyEntity 1", solution.getFirstEntityGroup(),
+                solution.getFirstValue());
+        solution.getEntityList().add(entity);
+
+        InnerScoreDirector<TestdataLavishSolution> scoreDirector = buildScoreDirector(
+                (factory) -> factory.from(TestdataLavishEntity.class)
+                        .groupBy(e -> e.getCode().substring(0, 1), count())
+                        .groupBy(ImmutablePair::new)
+                        .filter(pair -> !pair.left.equals("G"))
+                        .penalize(TEST_CONSTRAINT_NAME, SimpleScore.ONE, ImmutablePair::getRight));
+
+        // From scratch
+        scoreDirector.setWorkingSolution(solution);
+        assertScore(scoreDirector, assertMatch(ImmutablePair.of("M", 1)));
+
+        // Incremental
+        scoreDirector.beforeEntityRemoved(entity);
+        solution.getEntityList().remove(entity);
+        scoreDirector.afterEntityRemoved(entity);
+        assertScore(scoreDirector);
     }
 
     @TestTemplate

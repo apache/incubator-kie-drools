@@ -16,51 +16,52 @@
 
 package org.optaplanner.core.impl.score.stream.drools.quad;
 
-import java.util.function.Function;
-import java.util.function.Supplier;
+import static java.util.Objects.requireNonNull;
 
-import org.optaplanner.core.api.function.PentaFunction;
+import java.util.function.Function;
+
+import org.drools.model.Variable;
 import org.optaplanner.core.api.function.QuadFunction;
 import org.optaplanner.core.api.score.stream.quad.QuadConstraintCollector;
-import org.optaplanner.core.impl.score.stream.drools.common.BiTuple;
-import org.optaplanner.core.impl.score.stream.drools.common.DroolsAbstractUniCollectingGroupByAccumulator;
+import org.optaplanner.core.impl.score.stream.drools.common.DroolsAbstractGroupBy;
+import org.optaplanner.core.impl.score.stream.drools.common.DroolsAbstractGroupByAccumulator;
 import org.optaplanner.core.impl.score.stream.drools.common.QuadTuple;
+import org.optaplanner.core.impl.score.stream.quad.DefaultQuadConstraintCollector;
 
-final class DroolsQuadToBiGroupByAccumulator<A, B, C, D, ResultContainer, NewA, NewB>
-        extends
-        DroolsAbstractUniCollectingGroupByAccumulator<ResultContainer, QuadTuple<A, B, C, D>, NewA, BiTuple<NewA, NewB>> {
+public class DroolsQuadToBiGroupByAccumulator<A, B, C, D, NewA, NewB>
+        extends DroolsAbstractGroupByAccumulator<QuadTuple<A, B, C, D>> {
 
     private final QuadFunction<A, B, C, D, NewA> groupKeyMapping;
-    private final Supplier<ResultContainer> supplier;
-    private final PentaFunction<ResultContainer, A, B, C, D, Runnable> accumulator;
-    private final Function<ResultContainer, NewB> finisher;
+    private final QuadConstraintCollector<A, B, C, D, ?, NewB> collector;
+    private final Variable<A> aVariable;
+    private final Variable<B> bVariable;
+    private final Variable<C> cVariable;
+    private final Variable<D> dVariable;
 
     public DroolsQuadToBiGroupByAccumulator(QuadFunction<A, B, C, D, NewA> groupKeyMapping,
-            QuadConstraintCollector<A, B, C, D, ResultContainer, NewB> collector) {
-        this.groupKeyMapping = groupKeyMapping;
-        this.supplier = collector.supplier();
-        this.accumulator = collector.accumulator();
-        this.finisher = collector.finisher();
+            QuadConstraintCollector<A, B, C, D, ?, NewB> collector, Variable<A> aVariable, Variable<B> bVariable,
+            Variable<C> cVariable, Variable<D> dVariable) {
+        this.groupKeyMapping = requireNonNull(groupKeyMapping);
+        // Null collector means we're only re-grouping without using a collector.
+        this.collector = collector != null ? collector : DefaultQuadConstraintCollector.noop();
+        this.aVariable = requireNonNull(aVariable);
+        this.bVariable = requireNonNull(bVariable);
+        this.cVariable = requireNonNull(cVariable);
+        this.dVariable = requireNonNull(dVariable);
     }
 
     @Override
-    protected NewA toKey(QuadTuple<A, B, C, D> abcdQuadTuple) {
-        return groupKeyMapping.apply(abcdQuadTuple.a, abcdQuadTuple.b, abcdQuadTuple.c, abcdQuadTuple.d);
+    protected DroolsAbstractGroupBy<QuadTuple<A, B, C, D>, ?> newContext() {
+        return new DroolsQuadToBiGroupBy<>(groupKeyMapping, collector);
     }
 
     @Override
-    protected ResultContainer newContainer() {
-        return supplier.get();
-    }
-
-    @Override
-    protected Runnable process(QuadTuple<A, B, C, D> abcdQuadTuple, ResultContainer container) {
-        return accumulator.apply(container, abcdQuadTuple.a, abcdQuadTuple.b, abcdQuadTuple.c, abcdQuadTuple.d);
-    }
-
-    @Override
-    protected BiTuple<NewA, NewB> toResult(NewA key, ResultContainer container) {
-        return new BiTuple<>(key, finisher.apply(container));
+    protected <X> QuadTuple<A, B, C, D> createInput(Function<Variable<X>, X> valueFinder) {
+        final A a = materialize(aVariable, valueFinder);
+        final B b = materialize(bVariable, valueFinder);
+        final C c = materialize(cVariable, valueFinder);
+        final D d = materialize(dVariable, valueFinder);
+        return new QuadTuple<>(a, b, c, d);
     }
 
 }

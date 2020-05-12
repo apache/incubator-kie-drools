@@ -71,6 +71,10 @@ public class DroolsConstraint<Solution_> extends AbstractConstraint<Solution_, D
         return scoringStream.getExpectedJustificationTypes();
     }
 
+    public int getExpectedJustificationCount() {
+        return scoringStream.getCardinality();
+    }
+
     @Override
     public String toString() {
         return "DroolsConstraint(" + getConstraintId() + ") in " + fromStreamList.size() + " from() stream(s)";

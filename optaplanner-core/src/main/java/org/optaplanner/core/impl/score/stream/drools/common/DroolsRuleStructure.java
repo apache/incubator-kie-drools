@@ -16,11 +16,12 @@
 
 package org.optaplanner.core.impl.score.stream.drools.common;
 
+import static java.util.Collections.emptyList;
+import static java.util.Collections.singletonList;
 import static org.drools.model.DSL.from;
 
 import java.util.ArrayList;
 import java.util.Collection;
-import java.util.Collections;
 import java.util.List;
 import java.util.Set;
 import java.util.function.LongSupplier;
@@ -224,7 +225,7 @@ public abstract class DroolsRuleStructure<PatternVar> {
     public <NewA> DroolsUniRuleStructure<NewA, NewA> recollect(Variable<NewA> newA, ViewItem<?> accumulatePattern) {
         DroolsPatternBuilder<NewA> newPrimaryPattern = new DroolsPatternBuilder<>(newA);
         return new DroolsUniRuleStructure<>(newA, newPrimaryPattern, mergeShelved(accumulatePattern),
-                Collections.emptyList(), getDependents(), getVariableIdSupplier());
+                emptyList(), getDependents(), getVariableIdSupplier());
     }
 
     public <NewA> DroolsUniRuleStructure<NewA, NewA> regroup(Variable<Collection<NewA>> newASource,
@@ -232,7 +233,7 @@ public abstract class DroolsRuleStructure<PatternVar> {
         Variable<NewA> newA = createVariable("groupKey", from(newASource));
         DroolsPatternBuilder<NewA> newPrimaryPattern = new DroolsPatternBuilder<>(newA);
         return new DroolsUniRuleStructure<>(newA, newPrimaryPattern, mergeShelved(accumulatePattern),
-                Collections.singletonList(collectPattern), Collections.emptyList(), getVariableIdSupplier());
+                singletonList(collectPattern), emptyList(), getVariableIdSupplier());
     }
 
     public <NewA, NewB> DroolsBiRuleStructure<NewA, NewB, BiTuple<NewA, NewB>> regroupBi(
@@ -246,7 +247,7 @@ public abstract class DroolsRuleStructure<PatternVar> {
                 .expand(p -> p.bind(newA, tuple -> tuple.a))
                 .expand(p -> p.bind(newB, tuple -> tuple.b));
         return new DroolsBiRuleStructure<>(newA, newB, newPrimaryPattern, mergeShelved(accumulatePattern),
-                Collections.singletonList(collectPattern), Collections.emptyList(), getVariableIdSupplier());
+                singletonList(collectPattern), emptyList(), getVariableIdSupplier());
     }
 
     public <NewA, NewB, NewC> DroolsTriRuleStructure<NewA, NewB, NewC, TriTuple<NewA, NewB, NewC>> regroupBiToTri(
@@ -262,7 +263,7 @@ public abstract class DroolsRuleStructure<PatternVar> {
                 .expand(p -> p.bind(newB, tuple -> tuple.b))
                 .expand(p -> p.bind(newC, tuple -> tuple.c));
         return new DroolsTriRuleStructure<>(newA, newB, newC, newPrimaryPattern, mergeShelved(accumulatePattern),
-                Collections.singletonList(collectPattern), Collections.emptyList(), getVariableIdSupplier());
+                singletonList(collectPattern), emptyList(), getVariableIdSupplier());
     }
 
     public <NewA, NewB, NewC, NewD> DroolsQuadRuleStructure<NewA, NewB, NewC, NewD, QuadTuple<NewA, NewB, NewC, NewD>> regroupBiToQuad(
@@ -280,7 +281,7 @@ public abstract class DroolsRuleStructure<PatternVar> {
                 .expand(p -> p.bind(newC, tuple -> tuple.c))
                 .expand(p -> p.bind(newD, tuple -> tuple.d));
         return new DroolsQuadRuleStructure<>(newA, newB, newC, newD, newPrimaryPattern, mergeShelved(accumulatePattern),
-                Collections.singletonList(collectPattern), Collections.emptyList(), getVariableIdSupplier());
+                singletonList(collectPattern), emptyList(), getVariableIdSupplier());
     }
 
     /**

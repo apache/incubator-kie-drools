@@ -16,73 +16,52 @@
 
 package org.optaplanner.core.impl.score.stream.drools.tri;
 
-import java.util.function.Function;
-import java.util.function.Supplier;
+import static java.util.Objects.requireNonNull;
 
-import org.optaplanner.core.api.function.QuadFunction;
+import java.util.function.Function;
+
+import org.drools.model.Variable;
 import org.optaplanner.core.api.function.TriFunction;
 import org.optaplanner.core.api.score.stream.tri.TriConstraintCollector;
-import org.optaplanner.core.impl.score.stream.drools.common.BiTuple;
-import org.optaplanner.core.impl.score.stream.drools.common.DroolsAbstractBiCollectingGroupByAccumulator;
-import org.optaplanner.core.impl.score.stream.drools.common.QuadTuple;
+import org.optaplanner.core.impl.score.stream.drools.common.DroolsAbstractGroupBy;
+import org.optaplanner.core.impl.score.stream.drools.common.DroolsAbstractGroupByAccumulator;
 import org.optaplanner.core.impl.score.stream.drools.common.TriTuple;
 
-final class DroolsTriToQuadGroupByAccumulator<A, B, C, NewA, NewB, NewC, NewD, ResultContainerC, ResultContainerD>
-        extends
-        DroolsAbstractBiCollectingGroupByAccumulator<ResultContainerC, ResultContainerD, TriTuple<A, B, C>, BiTuple<NewA, NewB>, QuadTuple<NewA, NewB, NewC, NewD>> {
+public class DroolsTriToQuadGroupByAccumulator<A, B, C, NewA, NewB, NewC, NewD>
+        extends DroolsAbstractGroupByAccumulator<TriTuple<A, B, C>> {
 
     private final TriFunction<A, B, C, NewA> groupKeyAMapping;
     private final TriFunction<A, B, C, NewB> groupKeyBMapping;
-    private final Supplier<ResultContainerC> supplierC;
-    private final QuadFunction<ResultContainerC, A, B, C, Runnable> accumulatorC;
-    private final Function<ResultContainerC, NewC> finisherC;
-    private final Supplier<ResultContainerD> supplierD;
-    private final QuadFunction<ResultContainerD, A, B, C, Runnable> accumulatorD;
-    private final Function<ResultContainerD, NewD> finisherD;
+    private final TriConstraintCollector<A, B, C, ?, NewC> collectorC;
+    private final TriConstraintCollector<A, B, C, ?, NewD> collectorD;
+    private final Variable<A> aVariable;
+    private final Variable<B> bVariable;
+    private final Variable<C> cVariable;
 
     public DroolsTriToQuadGroupByAccumulator(TriFunction<A, B, C, NewA> groupKeyAMapping,
-            TriFunction<A, B, C, NewB> groupKeyBMapping,
-            TriConstraintCollector<A, B, C, ResultContainerC, NewC> collectorC,
-            TriConstraintCollector<A, B, C, ResultContainerD, NewD> collectorD) {
-        this.groupKeyAMapping = groupKeyAMapping;
-        this.groupKeyBMapping = groupKeyBMapping;
-        this.supplierC = collectorC.supplier();
-        this.accumulatorC = collectorC.accumulator();
-        this.finisherC = collectorC.finisher();
-        this.supplierD = collectorD.supplier();
-        this.accumulatorD = collectorD.accumulator();
-        this.finisherD = collectorD.finisher();
+            TriFunction<A, B, C, NewB> groupKeyBMapping, TriConstraintCollector<A, B, C, ?, NewC> collectorC,
+            TriConstraintCollector<A, B, C, ?, NewD> collectorD, Variable<A> aVariable, Variable<B> bVariable,
+            Variable<C> cVariable) {
+        this.groupKeyAMapping = requireNonNull(groupKeyAMapping);
+        this.groupKeyBMapping = requireNonNull(groupKeyBMapping);
+        this.collectorC = requireNonNull(collectorC);
+        this.collectorD = requireNonNull(collectorD);
+        this.aVariable = requireNonNull(aVariable);
+        this.bVariable = requireNonNull(bVariable);
+        this.cVariable = requireNonNull(cVariable);
     }
 
     @Override
-    protected BiTuple<NewA, NewB> toKey(TriTuple<A, B, C> tuple) {
-        return new BiTuple<>(groupKeyAMapping.apply(tuple.a, tuple.b, tuple.c),
-                groupKeyBMapping.apply(tuple.a, tuple.b, tuple.c));
+    protected DroolsAbstractGroupBy<TriTuple<A, B, C>, ?> newContext() {
+        return new DroolsTriToQuadGroupBy<>(groupKeyAMapping, groupKeyBMapping, collectorC, collectorD);
     }
 
     @Override
-    protected ResultContainerC newFirstContainer() {
-        return supplierC.get();
+    protected <X> TriTuple<A, B, C> createInput(Function<Variable<X>, X> valueFinder) {
+        A a = materialize(aVariable, valueFinder);
+        B b = materialize(bVariable, valueFinder);
+        C c = materialize(cVariable, valueFinder);
+        return new TriTuple<>(a, b, c);
     }
 
-    @Override
-    protected ResultContainerD newSecondContainer() {
-        return supplierD.get();
-    }
-
-    @Override
-    protected Runnable processFirst(TriTuple<A, B, C> tuple, ResultContainerC container) {
-        return accumulatorC.apply(container, tuple.a, tuple.b, tuple.c);
-    }
-
-    @Override
-    protected Runnable processSecond(TriTuple<A, B, C> tuple, ResultContainerD container) {
-        return accumulatorD.apply(container, tuple.a, tuple.b, tuple.c);
-    }
-
-    @Override
-    protected QuadTuple<NewA, NewB, NewC, NewD> toResult(BiTuple<NewA, NewB> key, ResultContainerC containerC,
-            ResultContainerD containerD) {
-        return new QuadTuple<>(key.a, key.b, finisherC.apply(containerC), finisherD.apply(containerD));
-    }
 }

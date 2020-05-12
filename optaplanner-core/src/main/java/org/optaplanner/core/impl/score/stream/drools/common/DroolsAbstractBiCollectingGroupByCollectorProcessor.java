@@ -22,24 +22,29 @@ import java.util.LinkedHashMap;
 import java.util.Map;
 import java.util.Set;
 
-public abstract class DroolsAbstractUniCollectingGroupByAccumulator<ResultContainer, InTuple, KeyTuple, OutTuple>
-        extends DroolsAbstractGroupByAccumulator<InTuple, KeyTuple, OutTuple> {
+public abstract class DroolsAbstractBiCollectingGroupByCollectorProcessor<ResultContainer1, ResultContainer2, InTuple, KeyTuple, OutTuple>
+        extends DroolsAbstractGroupByCollectorProcessor<InTuple, KeyTuple, OutTuple> {
 
-    private final Map<KeyTuple, ResultContainer> containersMap = new HashMap<>(0);
+    private final Map<KeyTuple, ResultContainer1> containersMap1 = new HashMap<>(0);
+    private final Map<KeyTuple, ResultContainer2> containersMap2 = new HashMap<>(0);
     // LinkedHashMap to maintain a consistent iteration order of resulting pairs.
     private final Map<KeyTuple, OutTuple> resultMap = new LinkedHashMap<>(0);
 
     @Override
     public Runnable accumulate(InTuple input) {
         KeyTuple key = toKey(input);
-        ResultContainer container = containersMap.computeIfAbsent(key, __ -> newContainer());
-        Runnable undo = process(input, container);
+        ResultContainer1 container1 = containersMap1.computeIfAbsent(key, __ -> newFirstContainer());
+        ResultContainer2 container2 = containersMap2.computeIfAbsent(key, __ -> newSecondContainer());
+        Runnable undo1 = processFirst(input, container1);
+        Runnable undo2 = processSecond(input, container2);
         addTuple(key);
         return () -> {
-            undo.run();
+            undo1.run();
+            undo2.run();
             long currentCount = removeTuple(key);
             if (currentCount == 0L) {
-                containersMap.remove(key);
+                containersMap1.remove(key);
+                containersMap2.remove(key);
                 resultMap.remove(key);
             }
         };
@@ -50,7 +55,7 @@ public abstract class DroolsAbstractUniCollectingGroupByAccumulator<ResultContai
         Set<KeyTuple> dirtyTupleSet = clearDirtyTupleSet();
         if (!dirtyTupleSet.isEmpty()) {
             for (KeyTuple tuple : dirtyTupleSet) {
-                resultMap.put(tuple, toResult(tuple, containersMap.get(tuple)));
+                resultMap.put(tuple, toResult(tuple, containersMap1.get(tuple), containersMap2.get(tuple)));
             }
         }
         return resultMap.values();
@@ -58,10 +63,14 @@ public abstract class DroolsAbstractUniCollectingGroupByAccumulator<ResultContai
 
     protected abstract KeyTuple toKey(InTuple tuple);
 
-    protected abstract ResultContainer newContainer();
+    protected abstract ResultContainer1 newFirstContainer();
 
-    protected abstract Runnable process(InTuple tuple, ResultContainer container);
+    protected abstract ResultContainer2 newSecondContainer();
 
-    protected abstract OutTuple toResult(KeyTuple key, ResultContainer container);
+    protected abstract Runnable processFirst(InTuple tuple, ResultContainer1 container);
+
+    protected abstract Runnable processSecond(InTuple tuple, ResultContainer2 container);
+
+    protected abstract OutTuple toResult(KeyTuple key, ResultContainer1 container, ResultContainer2 container2);
 
 }

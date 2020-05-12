@@ -31,6 +31,8 @@ import org.optaplanner.core.impl.score.stream.InnerConstraintFactory;
 
 public abstract class AbstractConstraintStream<Solution_> implements ConstraintStream {
 
+    public abstract int getCardinality();
+
     // ************************************************************************
     // Penalize/reward
     // ************************************************************************

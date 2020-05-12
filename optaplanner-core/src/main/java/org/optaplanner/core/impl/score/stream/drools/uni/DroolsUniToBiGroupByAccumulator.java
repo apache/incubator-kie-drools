@@ -16,48 +16,37 @@
 
 package org.optaplanner.core.impl.score.stream.drools.uni;
 
-import java.util.function.BiFunction;
+import static java.util.Objects.requireNonNull;
+
 import java.util.function.Function;
-import java.util.function.Supplier;
 
+import org.drools.model.Variable;
 import org.optaplanner.core.api.score.stream.uni.UniConstraintCollector;
-import org.optaplanner.core.impl.score.stream.drools.common.BiTuple;
-import org.optaplanner.core.impl.score.stream.drools.common.DroolsAbstractUniCollectingGroupByAccumulator;
+import org.optaplanner.core.impl.score.stream.drools.common.DroolsAbstractGroupBy;
+import org.optaplanner.core.impl.score.stream.drools.common.DroolsAbstractGroupByAccumulator;
 
-final class DroolsUniToBiGroupByAccumulator<A, ResultContainer, NewA, NewB>
-        extends DroolsAbstractUniCollectingGroupByAccumulator<ResultContainer, A, NewA, BiTuple<NewA, NewB>> {
+public class DroolsUniToBiGroupByAccumulator<A, NewA, NewB>
+        extends DroolsAbstractGroupByAccumulator<A> {
 
     private final Function<A, NewA> groupKeyMapping;
-    private final Supplier<ResultContainer> supplier;
-    private final BiFunction<ResultContainer, A, Runnable> accumulator;
-    private final Function<ResultContainer, NewB> finisher;
+    private final UniConstraintCollector<A, ?, NewB> collector;
+    private final Variable<A> aVariable;
 
-    public DroolsUniToBiGroupByAccumulator(Function<A, NewA> groupKeyMapping,
-            UniConstraintCollector<A, ResultContainer, NewB> collector) {
-        this.groupKeyMapping = groupKeyMapping;
-        this.supplier = collector.supplier();
-        this.accumulator = collector.accumulator();
-        this.finisher = collector.finisher();
+    public DroolsUniToBiGroupByAccumulator(Function<A, NewA> groupKeyMapping, UniConstraintCollector<A, ?, NewB> collector,
+            Variable<A> aVariable) {
+        this.groupKeyMapping = requireNonNull(groupKeyMapping);
+        this.collector = requireNonNull(collector);
+        this.aVariable = requireNonNull(aVariable);
     }
 
     @Override
-    protected NewA toKey(A a) {
-        return groupKeyMapping.apply(a);
+    protected DroolsAbstractGroupBy<A, ?> newContext() {
+        return new DroolsUniToBiGroupBy<>(groupKeyMapping, collector);
     }
 
     @Override
-    protected ResultContainer newContainer() {
-        return supplier.get();
-    }
-
-    @Override
-    protected Runnable process(A a, ResultContainer container) {
-        return accumulator.apply(container, a);
-    }
-
-    @Override
-    protected BiTuple<NewA, NewB> toResult(NewA key, ResultContainer container) {
-        return new BiTuple<>(key, finisher.apply(container));
+    protected <X> A createInput(Function<Variable<X>, X> valueFinder) {
+        return materialize(aVariable, valueFinder);
     }
 
 }

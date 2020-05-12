@@ -19,7 +19,7 @@ package org.optaplanner.core.impl.score.stream.drools.tri;
 import org.optaplanner.core.api.function.TriFunction;
 import org.optaplanner.core.api.score.stream.tri.TriConstraintCollector;
 import org.optaplanner.core.impl.score.stream.drools.common.DroolsAbstractGroupBy;
-import org.optaplanner.core.impl.score.stream.drools.common.GroupByAccumulator;
+import org.optaplanner.core.impl.score.stream.drools.common.GroupByCollectorProcessor;
 import org.optaplanner.core.impl.score.stream.drools.common.TriTuple;
 
 final class DroolsTriGroupBy<A, B, C, NewA, NewB, NewC>
@@ -37,8 +37,8 @@ final class DroolsTriGroupBy<A, B, C, NewA, NewB, NewC>
     }
 
     @Override
-    protected GroupByAccumulator<TriTuple<A, B, C>, TriTuple<NewA, NewB, NewC>> newAccumulator() {
-        return new DroolsTriGroupByAccumulator<>(groupKeyAMapping, groupKeyBMapping, collector);
+    protected GroupByCollectorProcessor<TriTuple<A, B, C>, TriTuple<NewA, NewB, NewC>> newAccumulator() {
+        return new DroolsTriGroupByCollectorProcessor<>(groupKeyAMapping, groupKeyBMapping, collector);
     }
 
 }

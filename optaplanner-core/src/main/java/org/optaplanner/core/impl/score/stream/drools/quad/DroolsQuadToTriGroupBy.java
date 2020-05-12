@@ -19,7 +19,7 @@ package org.optaplanner.core.impl.score.stream.drools.quad;
 import org.optaplanner.core.api.function.QuadFunction;
 import org.optaplanner.core.api.score.stream.quad.QuadConstraintCollector;
 import org.optaplanner.core.impl.score.stream.drools.common.DroolsAbstractGroupBy;
-import org.optaplanner.core.impl.score.stream.drools.common.GroupByAccumulator;
+import org.optaplanner.core.impl.score.stream.drools.common.GroupByCollectorProcessor;
 import org.optaplanner.core.impl.score.stream.drools.common.QuadTuple;
 import org.optaplanner.core.impl.score.stream.drools.common.TriTuple;
 
@@ -38,8 +38,8 @@ final class DroolsQuadToTriGroupBy<A, B, C, D, NewA, NewB, NewC>
     }
 
     @Override
-    protected GroupByAccumulator<QuadTuple<A, B, C, D>, TriTuple<NewA, NewB, NewC>> newAccumulator() {
-        return new DroolsQuadToTriGroupByAccumulator<>(groupKeyAMapping, groupKeyBMapping, collector);
+    protected GroupByCollectorProcessor<QuadTuple<A, B, C, D>, TriTuple<NewA, NewB, NewC>> newAccumulator() {
+        return new DroolsQuadToTriGroupByCollectorProcessor<>(groupKeyAMapping, groupKeyBMapping, collector);
     }
 
 }

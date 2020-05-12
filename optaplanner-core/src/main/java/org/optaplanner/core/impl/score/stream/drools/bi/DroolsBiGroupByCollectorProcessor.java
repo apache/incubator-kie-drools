@@ -16,43 +16,50 @@
 
 package org.optaplanner.core.impl.score.stream.drools.bi;
 
+import java.util.function.BiFunction;
 import java.util.function.Function;
 import java.util.function.Supplier;
 
 import org.optaplanner.core.api.function.TriFunction;
 import org.optaplanner.core.api.score.stream.bi.BiConstraintCollector;
 import org.optaplanner.core.impl.score.stream.drools.common.BiTuple;
-import org.optaplanner.core.impl.score.stream.drools.common.DroolsAbstractAccumulateFunctionBridge;
+import org.optaplanner.core.impl.score.stream.drools.common.DroolsAbstractUniCollectingGroupByCollectorProcessor;
 
-final class DroolsBiAccumulateFunctionBridge<A, B, ResultContainer_, NewA>
-        extends DroolsAbstractAccumulateFunctionBridge<ResultContainer_, BiTuple<A, B>, NewA> {
+final class DroolsBiGroupByCollectorProcessor<A, B, ResultContainer, NewA, NewB>
+        extends
+        DroolsAbstractUniCollectingGroupByCollectorProcessor<ResultContainer, BiTuple<A, B>, NewA, BiTuple<NewA, NewB>> {
 
-    private final Supplier<ResultContainer_> supplier;
-    private final TriFunction<ResultContainer_, A, B, Runnable> accumulator;
-    private final Function<ResultContainer_, NewA> finisher;
+    private final BiFunction<A, B, NewA> groupKeyMapping;
+    private final Supplier<ResultContainer> supplier;
+    private final TriFunction<ResultContainer, A, B, Runnable> accumulator;
+    private final Function<ResultContainer, NewB> finisher;
 
-    public DroolsBiAccumulateFunctionBridge(BiConstraintCollector<A, B, ResultContainer_, NewA> collector) {
+    public DroolsBiGroupByCollectorProcessor(BiFunction<A, B, NewA> groupKeyMapping,
+            BiConstraintCollector<A, B, ResultContainer, NewB> collector) {
+        this.groupKeyMapping = groupKeyMapping;
         this.supplier = collector.supplier();
         this.accumulator = collector.accumulator();
         this.finisher = collector.finisher();
     }
 
-    public DroolsBiAccumulateFunctionBridge() {
-        throw new UnsupportedOperationException("Serialization is not supported.");
+    @Override
+    protected NewA toKey(BiTuple<A, B> tuple) {
+        return groupKeyMapping.apply(tuple.a, tuple.b);
     }
 
     @Override
-    protected ResultContainer_ newContainer() {
+    protected ResultContainer newContainer() {
         return supplier.get();
     }
 
     @Override
-    protected Runnable accumulate(ResultContainer_ container, BiTuple<A, B> tuple) {
+    protected Runnable process(BiTuple<A, B> tuple, ResultContainer container) {
         return accumulator.apply(container, tuple.a, tuple.b);
     }
 
     @Override
-    protected NewA getResult(ResultContainer_ container_) {
-        return finisher.apply(container_);
+    protected BiTuple<NewA, NewB> toResult(NewA key, ResultContainer container) {
+        return new BiTuple<>(key, finisher.apply(container));
     }
+
 }
