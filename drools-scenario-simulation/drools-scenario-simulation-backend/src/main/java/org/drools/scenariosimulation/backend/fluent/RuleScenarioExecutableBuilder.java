@@ -22,8 +22,8 @@ import java.util.Objects;
 import java.util.Set;
 import java.util.function.Function;
 
-import org.drools.scenariosimulation.backend.runner.model.ResultWrapper;
 import org.drools.scenariosimulation.backend.runner.model.ScenarioResult;
+import org.drools.scenariosimulation.backend.runner.model.ValueWrapper;
 import org.kie.api.KieBase;
 import org.kie.api.definition.KiePackage;
 import org.kie.api.definition.rule.Rule;
@@ -48,7 +48,7 @@ public interface RuleScenarioExecutableBuilder {
     }
 
     void addInternalCondition(Class<?> clazz,
-                              Function<Object, ResultWrapper> checkFunction,
+                              Function<Object, ValueWrapper> checkFunction,
                               ScenarioResult scenarioResult);
 
     void setActiveAgendaGroup(String agendaGroup);

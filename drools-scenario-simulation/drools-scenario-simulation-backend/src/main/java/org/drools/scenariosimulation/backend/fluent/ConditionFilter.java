@@ -33,6 +33,6 @@ public class ConditionFilter implements ObjectFilter {
         return factToCheck.stream()
                 .allMatch(factCheckerHandle ->
                                   factCheckerHandle.getClazz().isAssignableFrom(object.getClass()) &&
-                                          factCheckerHandle.getCheckFuction().apply(object).isSatisfied());
+                                          factCheckerHandle.getCheckFuction().apply(object).isValid());
     }
 }

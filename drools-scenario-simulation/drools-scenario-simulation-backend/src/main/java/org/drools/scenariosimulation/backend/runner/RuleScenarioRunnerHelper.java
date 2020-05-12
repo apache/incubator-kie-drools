@@ -20,7 +20,6 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
-import java.util.Optional;
 import java.util.Set;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.function.Function;
@@ -37,12 +36,12 @@ import org.drools.scenariosimulation.backend.expression.ExpressionEvaluator;
 import org.drools.scenariosimulation.backend.expression.ExpressionEvaluatorFactory;
 import org.drools.scenariosimulation.backend.fluent.CoverageAgendaListener;
 import org.drools.scenariosimulation.backend.fluent.RuleScenarioExecutableBuilder;
-import org.drools.scenariosimulation.backend.runner.model.ResultWrapper;
 import org.drools.scenariosimulation.backend.runner.model.ScenarioExpect;
 import org.drools.scenariosimulation.backend.runner.model.InstanceGiven;
 import org.drools.scenariosimulation.backend.runner.model.ScenarioResult;
 import org.drools.scenariosimulation.backend.runner.model.ScenarioResultMetadata;
 import org.drools.scenariosimulation.backend.runner.model.ScenarioRunnerData;
+import org.drools.scenariosimulation.backend.runner.model.ValueWrapper;
 import org.drools.scenariosimulation.backend.util.ScenarioBeanUtil;
 import org.drools.scenariosimulation.backend.util.ScenarioBeanWrapper;
 import org.kie.api.runtime.KieContainer;
@@ -152,9 +151,9 @@ public class RuleScenarioRunnerHelper extends AbstractRunnerHelper {
         return scenarioResults;
     }
 
-    protected Function<Object, ResultWrapper> createExtractorFunction(ExpressionEvaluator expressionEvaluator,
-                                                                      FactMappingValue expectedResult,
-                                                                      ScesimModelDescriptor scesimModelDescriptor) {
+    protected Function<Object, ValueWrapper> createExtractorFunction(ExpressionEvaluator expressionEvaluator,
+                                                                     FactMappingValue expectedResult,
+                                                                     ScesimModelDescriptor scesimModelDescriptor) {
         return objectToCheck -> {
 
             ExpressionIdentifier expressionIdentifier = expectedResult.getExpressionIdentifier();
@@ -183,7 +182,7 @@ public class RuleScenarioRunnerHelper extends AbstractRunnerHelper {
     }
 
     @Override
-    protected Object createObject(Optional<Object> initialInstance, String className, Map<List<String>, Object> params, ClassLoader classLoader) {
+    protected Object createObject(ValueWrapper<Object> initialInstance, String className, Map<List<String>, Object> params, ClassLoader classLoader) {
         return fillBean(initialInstance, className, params, classLoader);
     }
 
