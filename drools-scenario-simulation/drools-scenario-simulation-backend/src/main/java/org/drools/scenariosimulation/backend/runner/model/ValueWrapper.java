@@ -21,7 +21,7 @@ import java.util.function.Supplier;
 
 /**
  * Utility class to wrap a value with the possibility to specify error message or propose valid value.
- * Note: null can be used a value.
+ * Note: null can be used as value.
  * @param <T>
  */
 public class ValueWrapper<T> {
