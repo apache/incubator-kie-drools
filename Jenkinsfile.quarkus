@@ -19,11 +19,6 @@ pipeline {
         timeout(time: 90, unit: 'MINUTES')
     }
     stages {
-        stage('Initialize') {
-            steps {
-                sh 'printenv'
-            }
-        }
         stage('Build quarkus') {
             steps {
                 checkout([$class: 'GitSCM', branches: [[name: 'master']], browser: [$class: 'GithubWeb', repoUrl: 'git@github.com:quarkusio/quarkus.git'], doGenerateSubmoduleConfigurations: false, extensions: [[$class: 'RelativeTargetDirectory', relativeTargetDir: 'quarkus']], submoduleCfg: [], userRemoteConfigs: [[credentialsId: 'kie-ci-user-key', url: 'git@github.com:quarkusio/quarkus.git']]])
@@ -46,7 +41,7 @@ pipeline {
                 checkout([$class: 'GitSCM', branches: [[name: env.BRANCH_NAME]], browser: [$class: 'GithubWeb', repoUrl: 'git@github.com:kiegroup/kogito-apps.git'], doGenerateSubmoduleConfigurations: false, extensions: [[$class: 'RelativeTargetDirectory', relativeTargetDir: 'kogito-apps']], submoduleCfg: [], userRemoteConfigs: [[credentialsId: 'kie-ci-user-key', url: 'git@github.com:kiegroup/kogito-apps.git']]])
                 dir("kogito-apps") {
                     script {
-                      maven.runMavenWithSubmarineSettings('clean install -Dversion.io.quarkus=999-SNAPSHOT', false)
+                      maven.runMavenWithSubmarineSettings('clean install', false)
                     }
                 }
             }
