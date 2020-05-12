@@ -21,8 +21,9 @@ import org.optaplanner.persistence.jsonb.api.score.AbstractScoreJsonbAdapter;
 
 @SuppressWarnings("checkstyle:javadocstyle")
 /**
- * {@inheritDoc}
+ * @deprecated Double-based scores are deprecated as floating point numbers can't represent a decimal number correctly.
  */
+@Deprecated(/* forRemoval = true */)
 public class HardSoftDoubleScoreJsonbAdapter extends AbstractScoreJsonbAdapter<HardSoftDoubleScore> {
 
     @Override

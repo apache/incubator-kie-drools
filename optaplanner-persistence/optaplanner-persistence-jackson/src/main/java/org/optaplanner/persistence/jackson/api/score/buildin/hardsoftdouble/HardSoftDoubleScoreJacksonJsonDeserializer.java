@@ -1,5 +1,5 @@
 /*
- * Copyright 2016 Red Hat, Inc. and/or its affiliates.
+ * Copyright 2020 Red Hat, Inc. and/or its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -26,8 +26,9 @@ import com.fasterxml.jackson.databind.DeserializationContext;
 
 @SuppressWarnings("checkstyle:javadocstyle")
 /**
- * {@inheritDoc}
+ * @deprecated Double-based scores are deprecated as floating point numbers can't represent a decimal number correctly.
  */
+@Deprecated(/* forRemoval = true */)
 public class HardSoftDoubleScoreJacksonJsonDeserializer extends AbstractScoreJacksonJsonDeserializer<HardSoftDoubleScore> {
 
     @Override

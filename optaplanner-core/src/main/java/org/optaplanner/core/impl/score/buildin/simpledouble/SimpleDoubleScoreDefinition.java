@@ -25,6 +25,10 @@ import org.optaplanner.core.impl.score.definition.AbstractScoreDefinition;
 import org.optaplanner.core.impl.score.inliner.ScoreInliner;
 import org.optaplanner.core.impl.score.trend.InitializingScoreTrend;
 
+/**
+ * @deprecated Double-based scores are deprecated as floating point numbers can't represent a decimal number correctly.
+ */
+@Deprecated(/* forRemoval = true */)
 public class SimpleDoubleScoreDefinition extends AbstractScoreDefinition<SimpleDoubleScore> {
 
     public SimpleDoubleScoreDefinition() {

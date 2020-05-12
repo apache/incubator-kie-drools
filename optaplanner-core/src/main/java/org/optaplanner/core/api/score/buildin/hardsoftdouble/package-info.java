@@ -1,5 +1,5 @@
 /*
- * Copyright 2015 Red Hat, Inc. and/or its affiliates.
+ * Copyright 2020 Red Hat, Inc. and/or its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -17,4 +17,5 @@
 /**
  * Support for a {@link org.optaplanner.core.api.score.Score} with 2 score levels and {@code double} score weights.
  */
+@Deprecated
 package org.optaplanner.core.api.score.buildin.hardsoftdouble;

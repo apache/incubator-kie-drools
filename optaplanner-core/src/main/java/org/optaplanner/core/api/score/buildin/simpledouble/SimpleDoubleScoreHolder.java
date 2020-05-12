@@ -1,5 +1,5 @@
 /*
- * Copyright 2011 Red Hat, Inc. and/or its affiliates.
+ * Copyright 2020 Red Hat, Inc. and/or its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -24,14 +24,19 @@ import org.kie.api.definition.rule.Rule;
 import org.kie.api.runtime.rule.RuleContext;
 import org.optaplanner.core.api.domain.constraintweight.ConstraintConfiguration;
 import org.optaplanner.core.api.domain.constraintweight.ConstraintWeight;
+import org.optaplanner.core.api.score.buildin.simplebigdecimal.SimpleBigDecimalScoreHolder;
+import org.optaplanner.core.api.score.buildin.simplelong.SimpleLongScoreHolder;
 import org.optaplanner.core.api.score.holder.AbstractScoreHolder;
 
 /**
  * WARNING: NOT RECOMMENDED TO USE DUE TO ROUNDING ERRORS THAT CAUSE SCORE CORRUPTION.
- * Use {@link SimpleDoubleScoreHolder} instead.
+ * Use {@link SimpleBigDecimalScoreHolder} instead.
  *
  * @see SimpleDoubleScore
+ * @deprecated Double-based scores are deprecated as floating point numbers can't represent a decimal number correctly.
+ *             Use {@link SimpleBigDecimalScoreHolder} or a scaled {@link SimpleLongScoreHolder} instead.
  */
+@Deprecated(/* forRemoval = true */)
 public class SimpleDoubleScoreHolder extends AbstractScoreHolder<SimpleDoubleScore> {
 
     protected final Map<Rule, BiConsumer<RuleContext, Double>> matchExecutorByNumberMap = new LinkedHashMap<>();

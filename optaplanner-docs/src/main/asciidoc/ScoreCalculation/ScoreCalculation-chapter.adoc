@@ -223,7 +223,7 @@ Most use cases tend to use the built-in ``HardSoftScore``.
 
 image::ScoreCalculation/scoreClassDiagram.png[align="center"]
 
-All Score implementations also have an `initScore` (which is an ``int``). It is mostly intended for internal use in OptaPlanner: it is the negative number of uninitialized planning variables.
+All Score implementations also have an `initScore` (which is an ``int``).It is mostly intended for internal use in OptaPlanner: it is the negative number of uninitialized planning variables.
 From a user's perspective this is ``0``, unless a Construction Heuristic is terminated before it could initialize all planning variables (in which case `Score.isSolutionInitialized()` returns ``false``).
 
 The `Score` implementation (for example ``HardSoftScore``) must be the same throughout a `Solver` runtime.
@@ -240,7 +240,6 @@ public class CloudBalance {
 
 }
 ----
-
 
 [[avoidFloatingPointNumbersInScoreCalculation]]
 === Avoid floating point numbers in score calculation
@@ -304,7 +303,6 @@ It has a single score level.
 Variants of this `Score` type:
 
 * `SimpleLongScore` uses a `long` value instead of an `int` value.
-* `SimpleDoubleScore` uses a `double` value instead of an `int` value. <<avoidFloatingPointNumbersInScoreCalculation,Not recommended to use.>>
 * `SimpleBigDecimalScore` uses a `BigDecimal` value instead of an `int` value.
 
 
@@ -323,7 +321,6 @@ It has two score levels (hard and soft).
 Variants of this `Score` type:
 
 * `HardSoftLongScore` uses `long` values instead of `int` values.
-* `HardSoftDoubleScore` uses `double` values instead of `int` values. <<avoidFloatingPointNumbersInScoreCalculation,Not recommended to use.>>
 * `HardSoftBigDecimalScore` uses `BigDecimal` values instead of `int` values.
 
 
