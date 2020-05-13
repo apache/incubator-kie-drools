@@ -30,8 +30,12 @@ import org.kie.dmn.api.core.DMNModel;
 import org.kie.dmn.api.core.DMNType;
 import org.kie.dmn.api.core.ast.InputDataNode;
 import org.kie.dmn.core.impl.DMNModelImpl;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 public class DMNTypeSafeTypeGenerator {
+
+    private static final Logger LOG = LoggerFactory.getLogger(DMNTypeSafeTypeGenerator.class);
 
     private final DMNTypeSafePackageName.Factory packageName;
     private DMNAllTypesIndex index;
@@ -99,6 +103,7 @@ public class DMNTypeSafeTypeGenerator {
             CompilationUnit cu = new CompilationUnit(packageDeclaration.packageName());
             cu.getPackageDeclaration().ifPresent(pd -> pd.setBlockComment(this.disclaimerMarker));
             cu.addType(generatedClass);
+            LOG.debug("\n{}", cu.toString());
 
             allSources.put(packageDeclaration.appendPackage(kv.getKey()), cu.toString());
         }

@@ -265,5 +265,29 @@ public class DMNRuntimeTypesTest extends BaseVariantTest {
         assertThat(dmnResult.getDecisionResultByName("DecisionJustA").getEvaluationStatus(), not(DecisionEvaluationStatus.SUCCEEDED));
         assertThat(dmnResult.getDecisionResultByName("DecisionListOfA").getEvaluationStatus(), not(DecisionEvaluationStatus.SUCCEEDED));
     }
+
+    @Test
+    public void testSameTypeNameMultiple() {
+        final DMNRuntime runtime = createRuntimeWithAdditionalResources("class_imported.dmn", this.getClass(), "class_importing.dmn");
+        final DMNModel dmnModel0 = runtime.getModel("http://www.trisotech.com/definitions/_b3deed2b-245f-4cc4-a4bf-1e95cd240664", "imported");
+        assertThat(dmnModel0, notNullValue());
+        assertThat(DMNRuntimeUtil.formatMessages(dmnModel0.getMessages()), dmnModel0.hasErrors(), is(false));
+
+        final DMNModel dmnModel = runtime.getModel("http://www.trisotech.com/definitions/_17540606-3d41-40f4-85f6-ad9e8faa8a87", "importing");
+        assertThat(dmnModel, notNullValue());
+        assertThat(DMNRuntimeUtil.formatMessages(dmnModel.getMessages()), dmnModel.hasErrors(), is(false));
+
+        final DMNContext context = DMNFactory.newContext();
+        Map<String, Object> importedClass = mapOf(entry("L1name", "L1name"),
+                                                  entry("class", mapOf(entry("L2name", "L2name"))));
+        context.set("imported class", importedClass);
+        Map<String, Object> class_ = mapOf(entry("name", "name"));
+        context.set("class", class_);
+
+        final DMNResult dmnResult = evaluateModel(runtime, dmnModel, context);
+        LOG.debug("{}", dmnResult);
+        assertThat(DMNRuntimeUtil.formatMessages(dmnResult.getMessages()), dmnResult.hasErrors(), is(false));
+        assertThat(dmnResult.getDecisionResultByName("decision1").getResult(), is("L1nameL2namename"));
+    }
 }
 
