@@ -1,5 +1,5 @@
 /*
- * Copyright 2017 Red Hat, Inc. and/or its affiliates.
+ * Copyright 2020 Red Hat, Inc. and/or its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -168,13 +168,7 @@ public final class HardMediumSoftBigDecimalScore extends AbstractScore<HardMediu
     // ************************************************************************
 
     @Override
-    public HardMediumSoftBigDecimalScore toInitializedScore() {
-        return initScore == 0 ? this : new HardMediumSoftBigDecimalScore(0, hardScore, mediumScore, softScore);
-    }
-
-    @Override
     public HardMediumSoftBigDecimalScore withInitScore(int newInitScore) {
-        assertNoInitScore();
         return new HardMediumSoftBigDecimalScore(newInitScore, hardScore, mediumScore, softScore);
     }
 

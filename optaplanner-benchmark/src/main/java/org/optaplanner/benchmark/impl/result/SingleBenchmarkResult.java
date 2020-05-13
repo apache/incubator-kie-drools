@@ -1,5 +1,5 @@
 /*
- * Copyright 2010 Red Hat, Inc. and/or its affiliates.
+ * Copyright 2020 Red Hat, Inc. and/or its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -30,7 +30,6 @@ import org.optaplanner.benchmark.impl.ranking.SubSingleBenchmarkRankBasedCompara
 import org.optaplanner.benchmark.impl.report.BenchmarkReport;
 import org.optaplanner.benchmark.impl.statistic.StatisticUtils;
 import org.optaplanner.benchmark.impl.statistic.SubSingleStatistic;
-import org.optaplanner.core.api.score.FeasibilityScore;
 import org.optaplanner.core.api.score.Score;
 import org.optaplanner.core.api.solver.Solver;
 import org.optaplanner.core.config.util.ConfigUtils;
@@ -261,11 +260,7 @@ public class SingleBenchmarkResult implements BenchmarkResult {
     }
 
     public boolean isScoreFeasible() {
-        if (averageScore instanceof FeasibilityScore) {
-            return ((FeasibilityScore) averageScore).isFeasible();
-        } else {
-            return true;
-        }
+        return averageScore.isFeasible();
     }
 
     public Long getScoreCalculationSpeed() {

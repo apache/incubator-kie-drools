@@ -21,10 +21,10 @@ import java.util.Arrays;
 import org.optaplanner.core.api.score.buildin.hardsoftlong.HardSoftLongScore;
 import org.optaplanner.core.api.score.buildin.hardsoftlong.HardSoftLongScoreHolder;
 import org.optaplanner.core.config.score.trend.InitializingScoreTrendLevel;
-import org.optaplanner.core.impl.score.definition.AbstractFeasibilityScoreDefinition;
+import org.optaplanner.core.impl.score.definition.AbstractScoreDefinition;
 import org.optaplanner.core.impl.score.trend.InitializingScoreTrend;
 
-public class HardSoftLongScoreDefinition extends AbstractFeasibilityScoreDefinition<HardSoftLongScore> {
+public class HardSoftLongScoreDefinition extends AbstractScoreDefinition<HardSoftLongScore> {
 
     public HardSoftLongScoreDefinition() {
         super(new String[] { "hard score", "soft score" });

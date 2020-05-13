@@ -1,5 +1,5 @@
 /*
- * Copyright 2015 Red Hat, Inc. and/or its affiliates.
+ * Copyright 2020 Red Hat, Inc. and/or its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -87,7 +87,7 @@ public class BuoyVehicleRoutingSolutionInitializer extends AbstractCustomPhaseCo
                     customer.setPreviousStandstill(null);
                     scoreDirector.afterVariableChanged(customer, "previousStandstill");
                     scoreDirector.triggerVariableListeners();
-                    if (stepScore == null || score.toInitializedScore().compareTo(stepScore.toInitializedScore()) > 0) {
+                    if (stepScore == null || score.withInitScore(0).compareTo(stepScore.withInitScore(0)) > 0) {
                         stepScore = score;
                         stepBuoyIndex = i;
                         stepEntity = customer;

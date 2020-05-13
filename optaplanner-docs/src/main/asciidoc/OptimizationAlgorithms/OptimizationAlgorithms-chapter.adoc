@@ -537,7 +537,6 @@ In this instance, `Termination` once a feasible solution has been reached is not
 === `BestScoreFeasibleTermination`
 
 Terminates as soon as a feasible solution has been discovered.
-Requires that `Score` implements `FeasibilityScore`.
 
 [source,xml,options="nowrap"]
 ----

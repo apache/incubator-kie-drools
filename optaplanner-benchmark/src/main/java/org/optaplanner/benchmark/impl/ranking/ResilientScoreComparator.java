@@ -1,5 +1,5 @@
 /*
- * Copyright 2014 Red Hat, Inc. and/or its affiliates.
+ * Copyright 2020 Red Hat, Inc. and/or its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -20,10 +20,9 @@ import java.io.Serializable;
 import java.util.Comparator;
 
 import org.optaplanner.core.api.score.Score;
-import org.optaplanner.core.api.score.comparator.NaturalScoreComparator;
 
 /**
- * Like {@link NaturalScoreComparator}, but is able to compare {@link Score}s of different types or nulls.
+ * Able to compare {@link Score}s of different types or nulls.
  */
 public class ResilientScoreComparator implements Comparator<Score>, Serializable {
 

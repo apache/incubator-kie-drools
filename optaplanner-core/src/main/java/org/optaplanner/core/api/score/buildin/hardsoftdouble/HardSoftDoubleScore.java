@@ -143,13 +143,7 @@ public final class HardSoftDoubleScore extends AbstractScore<HardSoftDoubleScore
     // ************************************************************************
 
     @Override
-    public HardSoftDoubleScore toInitializedScore() {
-        return initScore == 0 ? this : new HardSoftDoubleScore(0, hardScore, softScore);
-    }
-
-    @Override
     public HardSoftDoubleScore withInitScore(int newInitScore) {
-        assertNoInitScore();
         return new HardSoftDoubleScore(newInitScore, hardScore, softScore);
     }
 

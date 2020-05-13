@@ -111,13 +111,7 @@ public final class SimpleDoubleScore extends AbstractScore<SimpleDoubleScore> {
     // ************************************************************************
 
     @Override
-    public SimpleDoubleScore toInitializedScore() {
-        return initScore == 0 ? this : new SimpleDoubleScore(0, score);
-    }
-
-    @Override
     public SimpleDoubleScore withInitScore(int newInitScore) {
-        assertNoInitScore();
         return new SimpleDoubleScore(newInitScore, score);
     }
 
@@ -159,6 +153,11 @@ public final class SimpleDoubleScore extends AbstractScore<SimpleDoubleScore> {
     @Override
     public SimpleDoubleScore negate() {
         return new SimpleDoubleScore(-initScore, -score);
+    }
+
+    @Override
+    public boolean isFeasible() {
+        return initScore >= 0;
     }
 
     @Override

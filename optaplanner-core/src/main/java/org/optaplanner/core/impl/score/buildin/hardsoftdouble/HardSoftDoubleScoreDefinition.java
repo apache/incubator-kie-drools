@@ -21,15 +21,11 @@ import java.util.Arrays;
 import org.optaplanner.core.api.score.buildin.hardsoftdouble.HardSoftDoubleScore;
 import org.optaplanner.core.api.score.buildin.hardsoftdouble.HardSoftDoubleScoreHolder;
 import org.optaplanner.core.config.score.trend.InitializingScoreTrendLevel;
-import org.optaplanner.core.impl.score.definition.AbstractFeasibilityScoreDefinition;
+import org.optaplanner.core.impl.score.definition.AbstractScoreDefinition;
 import org.optaplanner.core.impl.score.inliner.ScoreInliner;
 import org.optaplanner.core.impl.score.trend.InitializingScoreTrend;
 
-/**
- * @deprecated Double-based scores are deprecated as floating point numbers can't represent a decimal number correctly.
- */
-@Deprecated(/* forRemoval = true */)
-public class HardSoftDoubleScoreDefinition extends AbstractFeasibilityScoreDefinition<HardSoftDoubleScore> {
+public class HardSoftDoubleScoreDefinition extends AbstractScoreDefinition<HardSoftDoubleScore> {
 
     public HardSoftDoubleScoreDefinition() {
         super(new String[] { "hard score", "soft score" });

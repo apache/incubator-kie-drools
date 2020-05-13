@@ -52,6 +52,14 @@ public interface ScoreDefinition<S extends Score<S>> {
     int getLevelsSize();
 
     /**
+     * Returns the number of levels of {@link Score#toLevelNumbers()}.
+     * that are used to determine {@link Score#isFeasible()}.
+     *
+     * @return at least 0, at most {@link #getLevelsSize()}
+     */
+    int getFeasibleLevelsSize();
+
+    /**
      * Returns a label for each score level. Each label includes the suffix "score" and must start in lower case.
      * For example: returns {@code {"hard score", "soft score "}} on {@link HardSoftScoreDefinition}.
      * <p>

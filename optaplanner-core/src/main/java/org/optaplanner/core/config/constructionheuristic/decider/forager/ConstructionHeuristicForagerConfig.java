@@ -1,5 +1,5 @@
 /*
- * Copyright 2013 Red Hat, Inc. and/or its affiliates.
+ * Copyright 2020 Red Hat, Inc. and/or its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -21,7 +21,6 @@ import org.optaplanner.core.config.heuristic.policy.HeuristicConfigPolicy;
 import org.optaplanner.core.config.util.ConfigUtils;
 import org.optaplanner.core.impl.constructionheuristic.decider.forager.ConstructionHeuristicForager;
 import org.optaplanner.core.impl.constructionheuristic.decider.forager.DefaultConstructionHeuristicForager;
-import org.optaplanner.core.impl.score.definition.FeasibilityScoreDefinition;
 
 import com.thoughtworks.xstream.annotations.XStreamAlias;
 
@@ -49,13 +48,6 @@ public class ConstructionHeuristicForagerConfig extends AbstractConfig<Construct
                     ? ConstructionHeuristicPickEarlyType.FIRST_NON_DETERIORATING_SCORE
                     : ConstructionHeuristicPickEarlyType.NEVER;
         } else {
-            if ((pickEarlyType == ConstructionHeuristicPickEarlyType.FIRST_FEASIBLE_SCORE
-                    || pickEarlyType == ConstructionHeuristicPickEarlyType.FIRST_FEASIBLE_SCORE_OR_NON_DETERIORATING_HARD)
-                    && !(configPolicy.getScoreDefinition() instanceof FeasibilityScoreDefinition)) {
-                throw new IllegalArgumentException("The pickEarlyType (" + pickEarlyType
-                        + ") is not compatible with the scoreDefinition (" + configPolicy.getScoreDefinition() + ").");
-
-            }
             pickEarlyType_ = pickEarlyType;
         }
         return new DefaultConstructionHeuristicForager(pickEarlyType_);

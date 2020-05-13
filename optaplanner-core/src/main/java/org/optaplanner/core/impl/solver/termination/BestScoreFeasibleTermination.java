@@ -1,5 +1,5 @@
 /*
- * Copyright 2014 Red Hat, Inc. and/or its affiliates.
+ * Copyright 2020 Red Hat, Inc. and/or its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -17,11 +17,10 @@ package org.optaplanner.core.impl.solver.termination;
 
 import java.util.Arrays;
 
-import org.optaplanner.core.api.score.FeasibilityScore;
 import org.optaplanner.core.api.score.Score;
 import org.optaplanner.core.impl.phase.scope.AbstractPhaseScope;
 import org.optaplanner.core.impl.score.ScoreUtils;
-import org.optaplanner.core.impl.score.definition.FeasibilityScoreDefinition;
+import org.optaplanner.core.impl.score.definition.ScoreDefinition;
 import org.optaplanner.core.impl.solver.scope.DefaultSolverScope;
 import org.optaplanner.core.impl.solver.thread.ChildThreadType;
 
@@ -30,8 +29,7 @@ public class BestScoreFeasibleTermination extends AbstractTermination {
     private final int feasibleLevelsSize;
     private final double[] timeGradientWeightFeasibleNumbers;
 
-    public BestScoreFeasibleTermination(FeasibilityScoreDefinition scoreDefinition,
-            double[] timeGradientWeightFeasibleNumbers) {
+    public BestScoreFeasibleTermination(ScoreDefinition scoreDefinition, double[] timeGradientWeightFeasibleNumbers) {
         feasibleLevelsSize = scoreDefinition.getFeasibleLevelsSize();
         this.timeGradientWeightFeasibleNumbers = timeGradientWeightFeasibleNumbers;
         if (timeGradientWeightFeasibleNumbers.length != feasibleLevelsSize - 1) {
@@ -54,22 +52,22 @@ public class BestScoreFeasibleTermination extends AbstractTermination {
     }
 
     protected boolean isTerminated(Score bestScore) {
-        return ((FeasibilityScore) bestScore).isFeasible();
+        return bestScore.isFeasible();
     }
 
     @Override
     public double calculateSolverTimeGradient(DefaultSolverScope solverScope) {
         return calculateFeasibilityTimeGradient(
-                (FeasibilityScore) solverScope.getStartingInitializedScore(), (FeasibilityScore) solverScope.getBestScore());
+                solverScope.getStartingInitializedScore(), solverScope.getBestScore());
     }
 
     @Override
     public double calculatePhaseTimeGradient(AbstractPhaseScope phaseScope) {
         return calculateFeasibilityTimeGradient(
-                (FeasibilityScore) phaseScope.getStartingScore(), (FeasibilityScore) phaseScope.getBestScore());
+                phaseScope.getStartingScore(), phaseScope.getBestScore());
     }
 
-    protected double calculateFeasibilityTimeGradient(FeasibilityScore startScore, FeasibilityScore score) {
+    protected double calculateFeasibilityTimeGradient(Score startScore, Score score) {
         if (startScore == null || !startScore.isSolutionInitialized()) {
             return 0.0;
         }

@@ -1,5 +1,5 @@
 /*
- * Copyright 2012 Red Hat, Inc. and/or its affiliates.
+ * Copyright 2020 Red Hat, Inc. and/or its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -63,6 +63,11 @@ public class EasyScoreDirector<Solution_>
         if (score == null) {
             throw new IllegalStateException("The easyScoreCalculator (" + easyScoreCalculator.getClass()
                     + ") must return a non-null score (" + score + ") in the method calculateScore().");
+        } else if (!score.isSolutionInitialized()) {
+            throw new IllegalStateException("The score (" + this + ")'s initScore (" + score.getInitScore()
+                    + ") should be 0.\n"
+                    + "Maybe the score calculator (" + easyScoreCalculator.getClass() + ") is calculating "
+                    + "the initScore too, although it's the score director's responsibility.");
         }
         if (workingInitScore != 0) {
             score = score.withInitScore(workingInitScore);

@@ -1,5 +1,5 @@
 /*
- * Copyright 2010 Red Hat, Inc. and/or its affiliates.
+ * Copyright 2020 Red Hat, Inc. and/or its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -56,7 +56,7 @@ public class DinnerPartySolutionInitializer extends AbstractCustomPhaseCommand<D
                     scoreDirector.afterVariableChanged(seatDesignation, "seat");
                     scoreDirector.triggerVariableListeners();
                     Score score = scoreDirector.calculateScore();
-                    if (score.toInitializedScore().compareTo(bestScore.toInitializedScore()) > 0) {
+                    if (score.withInitScore(0).compareTo(bestScore.withInitScore(0)) > 0) {
                         bestScore = score;
                         bestSeat = seat;
                     }

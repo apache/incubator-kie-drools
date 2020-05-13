@@ -1,5 +1,5 @@
 /*
- * Copyright 2013 Red Hat, Inc. and/or its affiliates.
+ * Copyright 2020 Red Hat, Inc. and/or its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -18,9 +18,7 @@ package org.optaplanner.core.impl.constructionheuristic.decider.forager;
 
 import java.util.Comparator;
 
-import org.optaplanner.core.api.score.FeasibilityScore;
 import org.optaplanner.core.api.score.Score;
-import org.optaplanner.core.api.score.comparator.NaturalScoreComparator;
 import org.optaplanner.core.config.constructionheuristic.decider.forager.ConstructionHeuristicPickEarlyType;
 import org.optaplanner.core.impl.constructionheuristic.scope.ConstructionHeuristicMoveScope;
 import org.optaplanner.core.impl.constructionheuristic.scope.ConstructionHeuristicStepScope;
@@ -29,7 +27,7 @@ public class DefaultConstructionHeuristicForager extends AbstractConstructionHeu
 
     protected final ConstructionHeuristicPickEarlyType pickEarlyType;
 
-    protected Comparator<Score> scoreComparator;
+    protected final Comparator<Score> scoreComparator = Comparable::compareTo;
 
     protected long selectedMoveCount;
     protected ConstructionHeuristicMoveScope earlyPickedMoveScope;
@@ -37,7 +35,6 @@ public class DefaultConstructionHeuristicForager extends AbstractConstructionHeu
 
     public DefaultConstructionHeuristicForager(ConstructionHeuristicPickEarlyType pickEarlyType) {
         this.pickEarlyType = pickEarlyType;
-        scoreComparator = new NaturalScoreComparator();
     }
 
     // ************************************************************************
@@ -76,21 +73,21 @@ public class DefaultConstructionHeuristicForager extends AbstractConstructionHeu
             case FIRST_NON_DETERIORATING_SCORE:
                 Score lastStepScore = moveScope.getStepScope().getPhaseScope()
                         .getLastCompletedStepScope().getScore();
-                if (moveScope.getScore().toInitializedScore().compareTo(lastStepScore.toInitializedScore()) >= 0) {
+                if (moveScope.getScore().withInitScore(0).compareTo(lastStepScore.withInitScore(0)) >= 0) {
                     earlyPickedMoveScope = moveScope;
                 }
                 break;
             case FIRST_FEASIBLE_SCORE:
-                if (((FeasibilityScore) moveScope.getScore().toInitializedScore()).isFeasible()) {
+                if (moveScope.getScore().withInitScore(0).isFeasible()) {
                     earlyPickedMoveScope = moveScope;
                 }
                 break;
             case FIRST_FEASIBLE_SCORE_OR_NON_DETERIORATING_HARD:
                 Score lastStepScore2 = moveScope.getStepScope().getPhaseScope()
                         .getLastCompletedStepScope().getScore();
-                Score lastStepScoreDifference = moveScope.getScore().toInitializedScore()
-                        .subtract(lastStepScore2.toInitializedScore());
-                if (((FeasibilityScore) lastStepScoreDifference).isFeasible()) {
+                Score lastStepScoreDifference = moveScope.getScore().withInitScore(0)
+                        .subtract(lastStepScore2.withInitScore(0));
+                if (lastStepScoreDifference.isFeasible()) {
                     earlyPickedMoveScope = moveScope;
                 }
                 break;

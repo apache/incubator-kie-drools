@@ -1,5 +1,5 @@
 /*
- * Copyright 2014 Red Hat, Inc. and/or its affiliates.
+ * Copyright 2020 Red Hat, Inc. and/or its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -43,7 +43,7 @@ public class DepthFirstNodeComparator implements Comparator<ExhaustiveSearchNode
             return 1;
         }
         // Investigate better score first (ignore initScore as that's already done by investigate deeper first)
-        int scoreComparison = a.getScore().toInitializedScore().compareTo(b.getScore().toInitializedScore());
+        int scoreComparison = a.getScore().withInitScore(0).compareTo(b.getScore().withInitScore(0));
         if (scoreComparison < 0) {
             return -1;
         } else if (scoreComparison > 0) {

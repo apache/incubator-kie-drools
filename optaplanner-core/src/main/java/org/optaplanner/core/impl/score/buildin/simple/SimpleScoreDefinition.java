@@ -40,6 +40,11 @@ public class SimpleScoreDefinition extends AbstractScoreDefinition<SimpleScore> 
     }
 
     @Override
+    public int getFeasibleLevelsSize() {
+        return 0;
+    }
+
+    @Override
     public Class<SimpleScore> getScoreClass() {
         return SimpleScore.class;
     }

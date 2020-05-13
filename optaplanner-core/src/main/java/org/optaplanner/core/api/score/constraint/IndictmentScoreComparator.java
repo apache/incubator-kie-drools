@@ -1,5 +1,5 @@
 /*
- * Copyright 2018 Red Hat, Inc. and/or its affiliates.
+ * Copyright 2020 Red Hat, Inc. and/or its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -18,10 +18,14 @@ package org.optaplanner.core.api.score.constraint;
 
 import java.io.Serializable;
 import java.util.Comparator;
+import java.util.function.Function;
 
 /**
  * Compares by {@link Indictment}s based on {@link Indictment#getScore()}.
+ *
+ * @deprecated If you need this, it is trivial to implement via {@link Comparator#comparing(Function)}.
  */
+@Deprecated
 public class IndictmentScoreComparator implements Comparator<Indictment>, Serializable {
 
     @Override

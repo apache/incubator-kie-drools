@@ -45,6 +45,11 @@ public class SimpleDoubleScoreDefinition extends AbstractScoreDefinition<SimpleD
     }
 
     @Override
+    public int getFeasibleLevelsSize() {
+        return 0;
+    }
+
+    @Override
     public Class<SimpleDoubleScore> getScoreClass() {
         return SimpleDoubleScore.class;
     }

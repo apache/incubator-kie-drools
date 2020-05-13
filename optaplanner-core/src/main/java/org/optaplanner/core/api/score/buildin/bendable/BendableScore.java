@@ -1,5 +1,5 @@
 /*
- * Copyright 2013 Red Hat, Inc. and/or its affiliates.
+ * Copyright 2020 Red Hat, Inc. and/or its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -213,13 +213,7 @@ public final class BendableScore extends AbstractBendableScore<BendableScore>
     // ************************************************************************
 
     @Override
-    public BendableScore toInitializedScore() {
-        return initScore == 0 ? this : new BendableScore(0, hardScores, softScores);
-    }
-
-    @Override
     public BendableScore withInitScore(int newInitScore) {
-        assertNoInitScore();
         return new BendableScore(newInitScore, hardScores, softScores);
     }
 

@@ -269,6 +269,15 @@
           "methodName": "divideBySanitizedDivisor",
           "elementKind": "method",
           "justification": "Introduced a method for score division."
+        },
+        {
+          "code": "java.method.addedToInterface",
+          "new": "method int org.optaplanner.core.impl.score.definition.ScoreDefinition<S extends org.optaplanner.core.api.score.Score<S extends org.optaplanner.core.api.score.Score<S>>>::getFeasibleLevelsSize() @ org.optaplanner.core.api.domain.solution.PlanningScore.NullScoreDefinition",
+          "package": "org.optaplanner.core.api.domain.solution",
+          "classSimpleName": "NullScoreDefinition",
+          "methodName": "getFeasibleLevelsSize",
+          "elementKind": "method",
+          "justification": "FeasibilityScoreDefinition is gone in a backwards-compatible manner. This is a red herring."
         }
       ]
     }

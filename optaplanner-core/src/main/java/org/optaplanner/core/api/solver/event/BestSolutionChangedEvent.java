@@ -1,5 +1,5 @@
 /*
- * Copyright 2010 Red Hat, Inc. and/or its affiliates.
+ * Copyright 2020 Red Hat, Inc. and/or its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -19,7 +19,6 @@ package org.optaplanner.core.api.solver.event;
 import java.util.EventObject;
 
 import org.optaplanner.core.api.domain.solution.PlanningSolution;
-import org.optaplanner.core.api.score.FeasibilityScore;
 import org.optaplanner.core.api.score.Score;
 import org.optaplanner.core.api.solver.Solver;
 import org.optaplanner.core.impl.solver.ProblemFactChange;
@@ -65,7 +64,7 @@ public class BestSolutionChangedEvent<Solution_> extends EventObject {
      * <li>In real-time planning, not all {@link ProblemFactChange}s might be processed:
      * check {@link #isEveryProblemFactChangeProcessed()}.</li>
      * <li>this {@link PlanningSolution} might be uninitialized: check {@link Score#isSolutionInitialized()}.</li>
-     * <li>this {@link PlanningSolution} might be infeasible: check {@link FeasibilityScore#isFeasible()}.</li>
+     * <li>this {@link PlanningSolution} might be infeasible: check {@link Score#isFeasible()}.</li>
      * </ul>
      *
      * @return never null

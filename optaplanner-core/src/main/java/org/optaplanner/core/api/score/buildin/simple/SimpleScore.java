@@ -1,5 +1,5 @@
 /*
- * Copyright 2010 Red Hat, Inc. and/or its affiliates.
+ * Copyright 2020 Red Hat, Inc. and/or its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -102,13 +102,7 @@ public final class SimpleScore extends AbstractScore<SimpleScore> {
     // ************************************************************************
 
     @Override
-    public SimpleScore toInitializedScore() {
-        return initScore == 0 ? this : new SimpleScore(0, score);
-    }
-
-    @Override
     public SimpleScore withInitScore(int newInitScore) {
-        assertNoInitScore();
         return new SimpleScore(newInitScore, score);
     }
 
@@ -150,6 +144,11 @@ public final class SimpleScore extends AbstractScore<SimpleScore> {
     @Override
     public SimpleScore negate() {
         return new SimpleScore(-initScore, -score);
+    }
+
+    @Override
+    public boolean isFeasible() {
+        return initScore >= 0;
     }
 
     @Override

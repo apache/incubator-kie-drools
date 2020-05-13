@@ -1,5 +1,5 @@
 /*
- * Copyright 2013 Red Hat, Inc. and/or its affiliates.
+ * Copyright 2020 Red Hat, Inc. and/or its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -23,10 +23,12 @@ import org.optaplanner.core.api.score.buildin.simple.SimpleScore;
 /**
  * A {@link Score} that supports {@link #isFeasible()}.
  * Most {@link Score} implementations implement this interface (including {@link HardSoftScore}),
- * except for {@link SimpleScore} variants.
+ * except for {@link SimpleScore} variants, which are always feasible.
  *
  * @see Score
+ * @deprecated Moved {@link #isFeasible()} up to {@link Score}.
  */
+@Deprecated(/* forRemoval = true */)
 public interface FeasibilityScore<S extends FeasibilityScore> extends Score<S> {
 
     /**
@@ -35,6 +37,7 @@ public interface FeasibilityScore<S extends FeasibilityScore> extends Score<S> {
      *
      * @return true if the hard score is 0 or higher and the {@link #getInitScore()} is 0.
      */
+    @Override
     boolean isFeasible();
 
 }

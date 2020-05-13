@@ -35,7 +35,6 @@ import java.util.function.Consumer;
 import org.optaplanner.core.api.domain.solution.cloner.SolutionCloner;
 import org.optaplanner.core.api.score.Score;
 import org.optaplanner.core.api.score.constraint.ConstraintMatch;
-import org.optaplanner.core.api.score.constraint.ConstraintMatchScoreComparator;
 import org.optaplanner.core.api.score.constraint.ConstraintMatchTotal;
 import org.optaplanner.core.api.score.constraint.Indictment;
 import org.optaplanner.core.config.solver.EnvironmentMode;
@@ -273,7 +272,6 @@ public abstract class AbstractScoreDirector<Solution_, Factory_ extends Abstract
         final int CONSTRAINT_MATCH_LIMIT = 2;
         Score workingScore = calculateScore();
         Collection<ConstraintMatchTotal> constraintMatchTotals = getConstraintMatchTotals();
-        ConstraintMatchScoreComparator constraintMatchScoreComparator = new ConstraintMatchScoreComparator();
         StringBuilder scoreExplanation = new StringBuilder((constraintMatchTotals.size() + 4 + 2 * INDICTMENT_LIMIT) * 80);
         scoreExplanation.append("Explanation of score (").append(workingScore).append("):\n");
         scoreExplanation.append("    Constraint match totals:\n");
@@ -305,6 +303,7 @@ public abstract class AbstractScoreDirector<Solution_, Factory_ extends Abstract
         scoreExplanation.append("    Indictments (top ").append(INDICTMENT_LIMIT)
                 .append(" of ").append(indictments.size()).append("):\n");
         Comparator<Indictment> indictmentComparator = Comparator.comparing(Indictment::getScore);
+        Comparator<ConstraintMatch> constraintMatchScoreComparator = Comparator.comparing(ConstraintMatch::getScore);
         indictments.stream()
                 .sorted(indictmentComparator)
                 .limit(INDICTMENT_LIMIT)

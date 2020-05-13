@@ -1,5 +1,5 @@
 /*
- * Copyright 2014 Red Hat, Inc. and/or its affiliates.
+ * Copyright 2020 Red Hat, Inc. and/or its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -24,14 +24,14 @@ import org.optaplanner.core.api.score.buildin.bendable.BendableScore;
 import org.optaplanner.core.api.score.buildin.hardsoft.HardSoftScore;
 import org.optaplanner.core.impl.phase.scope.AbstractPhaseScope;
 import org.optaplanner.core.impl.score.buildin.hardsoft.HardSoftScoreDefinition;
-import org.optaplanner.core.impl.score.definition.FeasibilityScoreDefinition;
+import org.optaplanner.core.impl.score.definition.ScoreDefinition;
 import org.optaplanner.core.impl.solver.scope.DefaultSolverScope;
 
 public class BestScoreFeasibleTerminationTest {
 
     @Test
     public void solveTermination() {
-        FeasibilityScoreDefinition scoreDefinition = mock(FeasibilityScoreDefinition.class);
+        ScoreDefinition scoreDefinition = mock(ScoreDefinition.class);
         when(scoreDefinition.getFeasibleLevelsSize()).thenReturn(1);
         Termination termination = new BestScoreFeasibleTermination(scoreDefinition, new double[] {});
         DefaultSolverScope solverScope = mock(DefaultSolverScope.class);
@@ -61,7 +61,7 @@ public class BestScoreFeasibleTerminationTest {
 
     @Test
     public void phaseTermination() {
-        FeasibilityScoreDefinition scoreDefinition = mock(FeasibilityScoreDefinition.class);
+        ScoreDefinition scoreDefinition = mock(ScoreDefinition.class);
         when(scoreDefinition.getFeasibleLevelsSize()).thenReturn(1);
         Termination termination = new BestScoreFeasibleTermination(scoreDefinition, new double[] {});
         AbstractPhaseScope phaseScope = mock(AbstractPhaseScope.class);
@@ -91,7 +91,7 @@ public class BestScoreFeasibleTerminationTest {
 
     @Test
     public void calculateTimeGradientBendableScoreHHSSS() {
-        FeasibilityScoreDefinition scoreDefinition = mock(FeasibilityScoreDefinition.class);
+        ScoreDefinition scoreDefinition = mock(ScoreDefinition.class);
         when(scoreDefinition.getFeasibleLevelsSize()).thenReturn(2);
         BestScoreFeasibleTermination termination = new BestScoreFeasibleTermination(scoreDefinition,
                 new double[] { 0.75 });

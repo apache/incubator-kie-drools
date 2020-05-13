@@ -1,5 +1,5 @@
 /*
- * Copyright 2010 Red Hat, Inc. and/or its affiliates.
+ * Copyright 2020 Red Hat, Inc. and/or its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -57,7 +57,6 @@ import javax.swing.filechooser.FileFilter;
 
 import org.apache.commons.io.FilenameUtils;
 import org.optaplanner.core.api.domain.solution.PlanningSolution;
-import org.optaplanner.core.api.score.FeasibilityScore;
 import org.optaplanner.core.api.score.Score;
 import org.optaplanner.examples.common.app.CommonApp;
 import org.optaplanner.examples.common.business.SolutionBusiness;
@@ -733,11 +732,8 @@ public class SolverAndPersistenceFrame<Solution_> extends JFrame {
     private Color determineScoreFieldForeground(Score<?> score) {
         if (!score.isSolutionInitialized()) {
             return TangoColorFactory.SCARLET_3;
-        } else if (!(score instanceof FeasibilityScore)) {
-            return Color.BLACK;
         } else {
-            FeasibilityScore<?> feasibilityScore = (FeasibilityScore<?>) score;
-            return feasibilityScore.isFeasible() ? TangoColorFactory.CHAMELEON_3 : TangoColorFactory.ORANGE_3;
+            return score.isFeasible() ? TangoColorFactory.CHAMELEON_3 : TangoColorFactory.ORANGE_3;
         }
     }
 

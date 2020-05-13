@@ -40,6 +40,11 @@ public class SimpleBigDecimalScoreDefinition extends AbstractScoreDefinition<Sim
     }
 
     @Override
+    public int getFeasibleLevelsSize() {
+        return 0;
+    }
+
+    @Override
     public Class<SimpleBigDecimalScore> getScoreClass() {
         return SimpleBigDecimalScore.class;
     }

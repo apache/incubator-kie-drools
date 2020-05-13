@@ -35,6 +35,11 @@ public class SimpleLongScoreDefinition extends AbstractScoreDefinition<SimpleLon
     // ************************************************************************
 
     @Override
+    public int getFeasibleLevelsSize() {
+        return 0;
+    }
+
+    @Override
     public Class<SimpleLongScore> getScoreClass() {
         return SimpleLongScore.class;
     }
