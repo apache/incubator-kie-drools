@@ -105,7 +105,7 @@ public class DMNTypeSafeTypeGenerator {
             CompilationUnit cu = new CompilationUnit(packageDeclaration.packageName());
             cu.getPackageDeclaration().ifPresent(pd -> pd.setBlockComment(this.disclaimerMarker));
             cu.addType(generatedClass);
-            LOG.debug("\n{}", cu.toString());
+            LOG.debug("\n{}", cu);
 
             allSources.put(packageDeclaration.appendPackage(typeDefinition.getTypeName()), cu.toString());
         }
