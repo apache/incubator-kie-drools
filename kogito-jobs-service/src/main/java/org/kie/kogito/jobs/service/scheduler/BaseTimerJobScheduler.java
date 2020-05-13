@@ -56,6 +56,13 @@ public abstract class BaseTimerJobScheduler implements ReactiveJobScheduler<Sche
     long maxIntervalLimitToRetryMillis;
 
     /**
+     * Flag to allow and force a job with expirationTime in the past to be executed immediately. If false an
+     * exception will be thrown.
+     */
+    @ConfigProperty(name = "kogito.jobs-service.forceExecuteExpiredJobs")
+    Optional<Boolean> forceExecuteExpiredJobs;
+
+    /**
      * The current chunk size  in minutes the scheduler handles, it is used to keep a limit number of jobs scheduled
      * in the in-memory scheduler.
      */
@@ -118,7 +125,8 @@ public abstract class BaseTimerJobScheduler implements ReactiveJobScheduler<Sche
                 .peek(delay -> Optional
                         .of(delay.isNegative())
                         .filter(Boolean.FALSE::equals)
-                        .orElseThrow(() -> new RuntimeException("Delay should be positive")))
+                        .orElseThrow(() -> new RuntimeException("The expirationTime should be greater than current " +
+                                                                        "time")))
                 //schedule the job on the scheduler
                 .map(delay -> schedule(delay, job))
                 .flatMap(p -> p)
@@ -167,7 +175,13 @@ public abstract class BaseTimerJobScheduler implements ReactiveJobScheduler<Sche
     }
 
     private Duration calculateDelay(ZonedDateTime expirationTime) {
-        return Duration.between(DateUtil.now(), expirationTime);
+        //in case forceExecuteExpiredJobs is true, execute the job immediately (1ms)
+        return Optional.of(Duration.between(DateUtil.now(), expirationTime))
+                .filter(d -> !d.isNegative())
+                .orElse(forceExecuteExpiredJobs
+                                .filter(Boolean.TRUE::equals)
+                                .map(f -> Duration.ofSeconds(1))
+                                .orElse(Duration.ofSeconds(-1)));
     }
 
     private boolean validLimit(ScheduledJob job) {
@@ -358,5 +372,9 @@ public abstract class BaseTimerJobScheduler implements ReactiveJobScheduler<Sche
     @Override
     public Optional<ZonedDateTime> scheduled(String jobId) {
         return Optional.ofNullable(schedulerControl.get(jobId));
+    }
+
+    public void setForceExecuteExpiredJobs(boolean forceExecuteExpiredJobs) {
+        this.forceExecuteExpiredJobs = Optional.of(forceExecuteExpiredJobs);
     }
 }

@@ -29,7 +29,6 @@ import io.reactivex.disposables.Disposable;
 import io.reactivex.functions.Consumer;
 import org.eclipse.microprofile.reactive.streams.operators.PublisherBuilder;
 import org.eclipse.microprofile.reactive.streams.operators.ReactiveStreams;
-import org.jetbrains.annotations.NotNull;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.kie.kogito.jobs.api.Job;
@@ -90,6 +89,7 @@ public abstract class BaseTimerJobSchedulerTest {
     @BeforeEach
     public void setUp() {
         tested().schedulerChunkInMinutes = 5;
+        tested().forceExecuteExpiredJobs = Optional.of(Boolean.FALSE);
         //expiration on the current scheduler chunk
         expirationTime = DateUtil.now().plusMinutes(tested().schedulerChunkInMinutes - 1);
 
@@ -277,7 +277,7 @@ public abstract class BaseTimerJobSchedulerTest {
         verify(tested(), never()).doSchedule(delayCaptor.capture(), eq(scheduledJob));
     }
 
-    protected  <T> Consumer<T> dummyCallback() {
+    protected <T> Consumer<T> dummyCallback() {
         return t -> {
         };
     }
@@ -358,8 +358,28 @@ public abstract class BaseTimerJobSchedulerTest {
         assertThat(scheduled.isPresent()).isTrue();
     }
 
-    @NotNull
     private Disposable subscribeOn(Publisher<ScheduledJob> schedule) {
         return Flowable.fromPublisher(schedule).subscribe(dummyCallback(), dummyCallback());
+    }
+
+    @Test
+    void testForceExpiredJobToBeExecuted() {
+        when(jobRepository.exists(any())).thenReturn(CompletableFuture.completedFuture(Boolean.FALSE));
+
+        job = JobBuilder.builder()
+                .id(JOB_ID)
+                .expirationTime(DateUtil.now().minusHours(1))
+                .repeatLimit(1)
+                .repeatInterval(1l)
+                .build();
+
+        //testing with forcing disabled
+        subscribeOn(tested().schedule(job));
+        verify(tested(), never()).doSchedule(any(Duration.class), eq(job));
+
+        //testing with forcing enabled
+        tested().forceExecuteExpiredJobs = Optional.of(Boolean.TRUE);
+        subscribeOn(tested().schedule(job));
+        verify(tested(), times(1)).doSchedule(any(Duration.class), eq(job));
     }
 }

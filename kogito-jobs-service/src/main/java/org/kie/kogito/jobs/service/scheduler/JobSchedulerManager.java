@@ -54,6 +54,13 @@ public class JobSchedulerManager {
     @ConfigProperty(name = "kogito.jobs-service.loadJobIntervalInMinutes")
     long loadJobIntervalInMinutes;
 
+    /**
+     * The interval based on the current time the job loading method uses to fetch jobs "FROM (now -
+     * {@link #loadJobFromCurrentTimeIntervalInMinutes}) TO {@link #schedulerChunkInMinutes}"
+     */
+    @ConfigProperty(name = "kogito.jobs-service.loadJobFromCurrentTimeIntervalInMinutes")
+    long loadJobFromCurrentTimeIntervalInMinutes;
+
     @Inject
     VertxJobScheduler scheduler;
 
@@ -99,7 +106,8 @@ public class JobSchedulerManager {
     }
 
     private PublisherBuilder<ScheduledJob> loadJobsInCurrentChunk() {
-        return repository.findByStatusBetweenDatesOrderByPriority(DateUtil.now(), DateUtil.now().plusMinutes(schedulerChunkInMinutes),
+        return repository.findByStatusBetweenDatesOrderByPriority(DateUtil.now().minusMinutes(loadJobFromCurrentTimeIntervalInMinutes),
+                                                                  DateUtil.now().plusMinutes(schedulerChunkInMinutes),
                                                                   JobStatus.SCHEDULED, JobStatus.RETRY);
     }
 }
