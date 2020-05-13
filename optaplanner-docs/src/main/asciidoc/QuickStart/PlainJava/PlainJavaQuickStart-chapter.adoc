@@ -1,0 +1,20 @@
+[[plainJavaQuickStart]]
+= Java quick start
+:doctype: book
+:imagesdir: ../..
+:sectnums:
+:toc: left
+:icons: font
+:experimental:
+
+include::CloudBalancingTutorial/CloudBalancingTutorial-section.adoc[leveloffset=+1]
+
+include::CloudBalancingDomainModel/CloudBalancingDomainModel-section.adoc[leveloffset=+1]
+
+include::CloudBalancingMainMethod/CloudBalancingMainMethod-section.adoc[leveloffset=+1]
+
+include::CloudBalancingSolverConfiguration/CloudBalancingSolverConfiguration-section.adoc[leveloffset=+1]
+
+include::CloudBalancingScoreConfiguration/CloudBalancingScoreConfiguration-section.adoc[leveloffset=+1]
+
+include::CloudBalancingBeyondThisTutorial/CloudBalancingBeyondThisTutorial-section.adoc[leveloffset=+1]

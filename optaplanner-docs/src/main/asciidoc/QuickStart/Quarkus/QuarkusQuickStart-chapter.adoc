@@ -1,0 +1,10 @@
+[[quarkusJavaQuickStart]]
+= Quarkus Java quick start
+:doctype: book
+:imagesdir: ../..
+:sectnums:
+:toc: left
+:icons: font
+:experimental:
+
+*https://quarkus.io/guides/optaplanner[Read the OptaPlanner on Quarkus guide.]*

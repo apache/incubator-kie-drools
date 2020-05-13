@@ -1,11 +1,11 @@
 [[cloudBalancingScoreConfiguration]]
 = Score configuration
-:imagesdir: ../..
+:imagesdir: ../../..
 
 OptaPlanner searches for the solution with the highest ``Score``.
 This example uses a ``HardSoftScore``, which means OptaPlanner looks for the solution with no hard constraints broken (fulfill hardware requirements) and as little as possible soft constraints broken (minimize maintenance cost).
 
-image::QuickStart/CloudBalancingScoreConfiguration/scoreComparisonCloudBalancing.png[align="center"]
+image::QuickStart/PlainJava/CloudBalancingScoreConfiguration/scoreComparisonCloudBalancing.png[align="center"]
 
 Of course, OptaPlanner needs to be told about these domain-specific score constraints.
 There are several ways to implement such a score function:

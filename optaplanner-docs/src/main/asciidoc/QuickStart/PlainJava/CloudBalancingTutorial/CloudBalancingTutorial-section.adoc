@@ -1,6 +1,6 @@
 [[cloudBalancingTutorial]]
 = Cloud balancing tutorial
-:imagesdir: ../..
+:imagesdir: ../../..
 
 
 [[cloudBalancingProblemDescription]]
@@ -24,7 +24,7 @@ The following soft constraints should be optimized:
 This problem is a form of __bin packing__.
 The following is a simplified example, in which we assign four processes to two computers with two constraints (CPU and RAM) with a simple algorithm:
 
-image::QuickStart/CloudBalancingTutorial/cloudBalanceUseCase.png[align="center"]
+image::QuickStart/PlainJava/CloudBalancingTutorial/cloudBalanceUseCase.png[align="center"]
 
 The simple algorithm used here is the _First Fit Decreasing_ algorithm, which assigns the bigger processes first and assigns the smaller processes to the remaining space.
 As you can see, it is not optimal, as it does not leave enough room to assign the yellow process ``D``.
@@ -35,7 +35,7 @@ So let's see how OptaPlanner can be used in this scenario.
 
 Here's an executive summary of this example and <<machineReassignment,an advanced implementation with more constraints>>:
 
-image::QuickStart/CloudBalancingTutorial/cloudOptimizationValueProposition.png[align="center"]
+image::QuickStart/PlainJava/CloudBalancingTutorial/cloudOptimizationValueProposition.png[align="center"]
 
 [[cloudBalancingProblemSize]]
 == Problem size

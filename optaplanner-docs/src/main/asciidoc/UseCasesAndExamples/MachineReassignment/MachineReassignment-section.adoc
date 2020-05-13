@@ -33,7 +33,7 @@ image::UseCasesAndExamples/MachineReassignment/cloudOptimizationIsLikeTetris.png
 [[machineReassignmentValueProposition]]
 == Value proposition
 
-image::QuickStart/CloudBalancingTutorial/cloudOptimizationValueProposition.png[align="center"]
+image::QuickStart/PlainJava/CloudBalancingTutorial/cloudOptimizationValueProposition.png[align="center"]
 
 [[machineReassignmentProblemSize]]
 == Problem size

@@ -1,5 +1,5 @@
 [[quickStart]]
-= Getting started: a cloud balancing demonstration
+= Quick start
 :doctype: book
 :imagesdir: ..
 :sectnums:
@@ -7,15 +7,10 @@
 :icons: font
 :experimental:
 
+include::Overview/OverviewQuickStarts-chapter.adoc[leveloffset=+1]
 
-include::CloudBalancingTutorial/CloudBalancingTutorial-section.adoc[leveloffset=+1]
+include::Quarkus/QuarkusQuickStart-chapter.adoc[leveloffset=+1]
 
-include::CloudBalancingDomainModel/CloudBalancingDomainModel-section.adoc[leveloffset=+1]
+include::SpringBoot/SpringBootQuickStart-chapter.adoc[leveloffset=+1]
 
-include::CloudBalancingMainMethod/CloudBalancingMainMethod-section.adoc[leveloffset=+1]
-
-include::CloudBalancingSolverConfiguration/CloudBalancingSolverConfiguration-section.adoc[leveloffset=+1]
-
-include::CloudBalancingScoreConfiguration/CloudBalancingScoreConfiguration-section.adoc[leveloffset=+1]
-
-include::CloudBalancingBeyondThisTutorial/CloudBalancingBeyondThisTutorial-section.adoc[leveloffset=+1]
+include::PlainJava/PlainJavaQuickStart-chapter.adoc[leveloffset=+1]
