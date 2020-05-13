@@ -33,33 +33,10 @@
 
       <dependency>
         <groupId>org.kie</groupId>
-        <artifactId>kie-dmn-api</artifactId>
+        <artifactId>kie-dmn-bom</artifactId>
         <version>${version.org.kie}</version>
-      </dependency>
-      <dependency>
-        <groupId>org.kie</groupId>
-        <artifactId>kie-dmn-model</artifactId>
-        <version>${version.org.kie}</version>
-      </dependency>
-      <dependency>
-        <groupId>org.kie</groupId>
-        <artifactId>kie-dmn-feel</artifactId>
-        <version>${version.org.kie}</version>
-      </dependency>
-      <dependency>
-        <groupId>org.kie</groupId>
-        <artifactId>kie-dmn-backend</artifactId>
-        <version>${version.org.kie}</version>
-      </dependency>
-      <dependency>
-        <groupId>org.kie</groupId>
-        <artifactId>kie-dmn-core</artifactId>   
-        <version>${version.org.kie}</version>
-      </dependency>
-      <dependency>
-        <groupId>org.xmlunit</groupId>
-        <artifactId>xmlunit-core</artifactId>
-        <version>2.2.1</version>
+        <type>pom</type>
+        <scope>import</scope>
       </dependency>
     </dependencies>
   </dependencyManagement>
