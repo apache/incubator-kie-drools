@@ -16,6 +16,9 @@
   <description>Kogito based on Quarkus runtime Archetype</description>
 
   <build>
+    <!-- default directory (test-classes) confuses @QuarkusTest -->
+    <!-- see https://github.com/quarkusio/quarkus/issues/9162   -->
+    <testOutputDirectory>${project.build.directory}/test-compile</testOutputDirectory>
     <resources>
       <resource>
         <directory>src/main/resources</directory>

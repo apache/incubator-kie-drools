@@ -33,6 +33,10 @@ under the License.
     <fileSet filtered="true" packaged="true">
       <directory>src/main/java</directory>
     </fileSet>
+    <fileSet filtered="true" packaged="true">
+      <directory>src/test/java</directory>
+    </fileSet>
+
     <fileSet filtered="true" packaged="false" encoding="UTF-8">
       <directory>src/main/resources</directory>
       <includes>
@@ -42,5 +46,15 @@ under the License.
         <include>**/*.xml</include>
       </includes>
     </fileSet>
+    <fileSet filtered="true" packaged="false" encoding="UTF-8">
+      <directory>src/test/resources</directory>
+      <includes>
+        <include>**/*.bpmn2</include>
+        <include>**/*.properties</include>
+        <include>**/*.md</include>
+        <include>**/*.xml</include>
+      </includes>
+    </fileSet>
+
   </fileSets>
 </archetype-descriptor>
