@@ -172,7 +172,8 @@ public class SolutionDescriptor<Solution_> {
     private final Map<Class<?>, EntityDescriptor<Solution_>> entityDescriptorMap;
     private final List<Class<?>> reversedEntityClassList;
 
-    private final ConcurrentMap<Class<?>, EntityDescriptor<Solution_>> lowestEntityDescriptorMemoization = new ConcurrentMemoization<>();
+    private final ConcurrentMap<Class<?>, EntityDescriptor<Solution_>> lowestEntityDescriptorMemoization =
+            new ConcurrentMemoization<>();
     private LookUpStrategyResolver lookUpStrategyResolver = null;
 
     // ************************************************************************
@@ -749,7 +750,8 @@ public class SolutionDescriptor<Solution_> {
     private void determineGlobalShadowOrder() {
         // Topological sorting with Kahn's algorithm
         List<Pair<ShadowVariableDescriptor<Solution_>, Integer>> pairList = new ArrayList<>();
-        Map<ShadowVariableDescriptor<Solution_>, Pair<ShadowVariableDescriptor<Solution_>, Integer>> shadowToPairMap = new HashMap<>();
+        Map<ShadowVariableDescriptor<Solution_>, Pair<ShadowVariableDescriptor<Solution_>, Integer>> shadowToPairMap =
+                new HashMap<>();
         for (EntityDescriptor<Solution_> entityDescriptor : entityDescriptorMap.values()) {
             for (ShadowVariableDescriptor<Solution_> shadow : entityDescriptor.getDeclaredShadowVariableDescriptors()) {
                 int sourceSize = shadow.getSourceVariableDescriptorList().size();

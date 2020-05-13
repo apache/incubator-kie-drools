@@ -342,8 +342,9 @@ public abstract class AbstractScoreDirector<Solution_, Factory_ extends Abstract
     @Override
     public InnerScoreDirector<Solution_> createChildThreadScoreDirector(ChildThreadType childThreadType) {
         if (childThreadType == ChildThreadType.PART_THREAD) {
-            AbstractScoreDirector<Solution_, Factory_> childThreadScoreDirector = (AbstractScoreDirector<Solution_, Factory_>) scoreDirectorFactory
-                    .buildScoreDirector(isLookUpEnabled(), constraintMatchEnabledPreference);
+            AbstractScoreDirector<Solution_, Factory_> childThreadScoreDirector =
+                    (AbstractScoreDirector<Solution_, Factory_>) scoreDirectorFactory
+                            .buildScoreDirector(isLookUpEnabled(), constraintMatchEnabledPreference);
             // ScoreCalculationCountTermination takes into account previous phases
             // but the calculationCount of partitions is maxed, not summed.
             childThreadScoreDirector.calculationCount = calculationCount;
@@ -351,8 +352,9 @@ public abstract class AbstractScoreDirector<Solution_, Factory_ extends Abstract
         } else if (childThreadType == ChildThreadType.MOVE_THREAD) {
             // TODO The move thread must use constraintMatchEnabledPreference in FULL_ASSERT,
             // but it doesn't have to for Indictment Local Search, in which case it is a performance loss
-            AbstractScoreDirector<Solution_, Factory_> childThreadScoreDirector = (AbstractScoreDirector<Solution_, Factory_>) scoreDirectorFactory
-                    .buildScoreDirector(true, constraintMatchEnabledPreference);
+            AbstractScoreDirector<Solution_, Factory_> childThreadScoreDirector =
+                    (AbstractScoreDirector<Solution_, Factory_>) scoreDirectorFactory
+                            .buildScoreDirector(true, constraintMatchEnabledPreference);
             childThreadScoreDirector.setWorkingSolution(cloneWorkingSolution());
             return childThreadScoreDirector;
         } else {

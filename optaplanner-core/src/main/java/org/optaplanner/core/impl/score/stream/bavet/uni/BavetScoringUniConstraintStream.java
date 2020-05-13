@@ -140,7 +140,8 @@ public final class BavetScoringUniConstraintStream<Solution_, A> extends BavetAb
                         + ") must return a long.");
             }
         } else if (weightedScoreImpacter instanceof BigDecimalWeightedScoreImpacter) {
-            BigDecimalWeightedScoreImpacter castedWeightedScoreImpacter = (BigDecimalWeightedScoreImpacter) weightedScoreImpacter;
+            BigDecimalWeightedScoreImpacter castedWeightedScoreImpacter =
+                    (BigDecimalWeightedScoreImpacter) weightedScoreImpacter;
             if (bigDecimalMatchWeigher != null) {
                 scoreImpacter = (A a, Consumer<Score<?>> matchScoreConsumer) -> {
                     BigDecimal matchWeight = bigDecimalMatchWeigher.apply(a);

@@ -170,9 +170,9 @@ public final class DroolsUniCondition<A, PatternVar>
                 collector, getRuleStructure().getA()));
     }
 
-    private <InTuple, OutPatternVar, R extends DroolsRuleStructure<OutPatternVar>, C extends DroolsCondition<OutPatternVar, R>> C universalGroup(
-            BiFunction<PatternDef<PatternVar>, Variable<InTuple>, PatternDef<PatternVar>> bindFunction,
-            Mutator<InTuple, OutPatternVar, R, C> mutator) {
+    private <InTuple, OutPatternVar, R extends DroolsRuleStructure<OutPatternVar>, C extends DroolsCondition<OutPatternVar, R>>
+            C universalGroup(BiFunction<PatternDef<PatternVar>, Variable<InTuple>, PatternDef<PatternVar>> bindFunction,
+                    Mutator<InTuple, OutPatternVar, R, C> mutator) {
         Variable<InTuple> mappedVariable = ruleStructure.createVariable("biMapped");
         PatternDSL.PatternDef<PatternVar> mainAccumulatePattern = ruleStructure.getPrimaryPatternBuilder()
                 .expand(p -> bindFunction.apply(p, mappedVariable))
@@ -188,9 +188,9 @@ public final class DroolsUniCondition<A, PatternVar>
         return mutator.apply(tupleCollection, pattern, accumulate);
     }
 
-    public <NewA, NewB, NewC, NewD> DroolsQuadCondition<NewA, NewB, NewC, NewD, QuadTuple<NewA, NewB, NewC, NewD>> andGroupBiWithCollectBi(
-            Function<A, NewA> groupKeyAMapping, Function<A, NewB> groupKeyBMapping,
-            UniConstraintCollector<A, ?, NewC> collectorC, UniConstraintCollector<A, ?, NewD> collectorD) {
+    public <NewA, NewB, NewC, NewD> DroolsQuadCondition<NewA, NewB, NewC, NewD, QuadTuple<NewA, NewB, NewC, NewD>>
+            andGroupBiWithCollectBi(Function<A, NewA> groupKeyAMapping, Function<A, NewB> groupKeyBMapping,
+                    UniConstraintCollector<A, ?, NewC> collectorC, UniConstraintCollector<A, ?, NewD> collectorD) {
         return groupBiWithCollectBi(() -> new DroolsUniToQuadGroupByAccumulator<>(groupKeyAMapping, groupKeyBMapping,
                 collectorC, collectorD, getRuleStructure().getA()));
     }

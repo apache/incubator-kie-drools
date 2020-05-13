@@ -665,10 +665,11 @@ public interface UniConstraintStream<A> extends ConstraintStream {
      * @param <ResultD_> the type of the fourth fact in the destination {@link QuadConstraintStream}'s tuple
      * @return never null
      */
-    <GroupKeyA_, GroupKeyB_, ResultContainerC_, ResultC_, ResultContainerD_, ResultD_> QuadConstraintStream<GroupKeyA_, GroupKeyB_, ResultC_, ResultD_> groupBy(
-            Function<A, GroupKeyA_> groupKeyAMapping, Function<A, GroupKeyB_> groupKeyBMapping,
-            UniConstraintCollector<A, ResultContainerC_, ResultC_> collectorC,
-            UniConstraintCollector<A, ResultContainerD_, ResultD_> collectorD);
+    <GroupKeyA_, GroupKeyB_, ResultContainerC_, ResultC_, ResultContainerD_, ResultD_>
+            QuadConstraintStream<GroupKeyA_, GroupKeyB_, ResultC_, ResultD_> groupBy(
+                    Function<A, GroupKeyA_> groupKeyAMapping, Function<A, GroupKeyB_> groupKeyBMapping,
+                    UniConstraintCollector<A, ResultContainerC_, ResultC_> collectorC,
+                    UniConstraintCollector<A, ResultContainerD_, ResultD_> collectorD);
 
     // ************************************************************************
     // Penalize/reward

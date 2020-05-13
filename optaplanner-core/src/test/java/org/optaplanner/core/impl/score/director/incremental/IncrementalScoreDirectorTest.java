@@ -68,13 +68,14 @@ public class IncrementalScoreDirectorTest {
         when(scoreDirectorFactory.getSolutionDescriptor()).thenReturn(solutionDescriptor);
         IncrementalScoreCalculator<TestdataShadowingChainedSolution> incrementalScoreCalculator = mock(
                 IncrementalScoreCalculator.class);
-        IncrementalScoreDirector<TestdataShadowingChainedSolution> scoreDirector = new IncrementalScoreDirector<TestdataShadowingChainedSolution>(
-                scoreDirectorFactory, false, false, incrementalScoreCalculator) {
-            @Override
-            public Score calculateScore() {
-                return SimpleScore.of(-100);
-            }
-        };
+        IncrementalScoreDirector<TestdataShadowingChainedSolution> scoreDirector =
+                new IncrementalScoreDirector<TestdataShadowingChainedSolution>(
+                        scoreDirectorFactory, false, false, incrementalScoreCalculator) {
+                    @Override
+                    public Score calculateScore() {
+                        return SimpleScore.of(-100);
+                    }
+                };
         scoreDirector.setWorkingSolution(solution);
         reset(incrementalScoreCalculator);
 

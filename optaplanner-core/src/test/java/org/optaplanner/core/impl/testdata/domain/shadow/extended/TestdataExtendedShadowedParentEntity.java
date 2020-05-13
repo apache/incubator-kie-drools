@@ -78,8 +78,9 @@ public class TestdataExtendedShadowedParentEntity extends TestdataObject {
         this.firstShadow = firstShadow;
     }
 
-    @CustomShadowVariable(variableListenerClass = ThirdShadowUpdatingVariableListener.class, sources = {
-            @PlanningVariableReference(entityClass = TestdataExtendedShadowedChildEntity.class, variableName = "secondShadow") })
+    @CustomShadowVariable(variableListenerClass = ThirdShadowUpdatingVariableListener.class,
+            sources = { @PlanningVariableReference(entityClass = TestdataExtendedShadowedChildEntity.class,
+                    variableName = "secondShadow") })
     public String getThirdShadow() {
         return thirdShadow;
     }

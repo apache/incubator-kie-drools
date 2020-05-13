@@ -266,9 +266,9 @@ public abstract class DroolsRuleStructure<PatternVar> {
                 singletonList(collectPattern), emptyList(), getVariableIdSupplier());
     }
 
-    public <NewA, NewB, NewC, NewD> DroolsQuadRuleStructure<NewA, NewB, NewC, NewD, QuadTuple<NewA, NewB, NewC, NewD>> regroupBiToQuad(
-            Variable<Set<QuadTuple<NewA, NewB, NewC, NewD>>> newSource,
-            PatternDef<Set<QuadTuple<NewA, NewB, NewC, NewD>>> collectPattern, ViewItem<?> accumulatePattern) {
+    public <NewA, NewB, NewC, NewD> DroolsQuadRuleStructure<NewA, NewB, NewC, NewD, QuadTuple<NewA, NewB, NewC, NewD>>
+            regroupBiToQuad(Variable<Set<QuadTuple<NewA, NewB, NewC, NewD>>> newSource,
+                    PatternDef<Set<QuadTuple<NewA, NewB, NewC, NewD>>> collectPattern, ViewItem<?> accumulatePattern) {
         Variable<QuadTuple<NewA, NewB, NewC, NewD>> newTuple = (Variable<QuadTuple<NewA, NewB, NewC, NewD>>) createVariable(
                 QuadTuple.class, "groupKey", from(newSource));
         Variable<NewA> newA = createVariable("newA");

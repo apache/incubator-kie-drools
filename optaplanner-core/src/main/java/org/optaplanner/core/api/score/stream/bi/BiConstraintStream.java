@@ -486,10 +486,11 @@ public interface BiConstraintStream<A, B> extends ConstraintStream {
      * @param <ResultD_> the type of the fourth fact in the destination {@link QuadConstraintStream}'s tuple
      * @return never null
      */
-    <GroupKeyA_, GroupKeyB_, ResultContainerC_, ResultC_, ResultContainerD_, ResultD_> QuadConstraintStream<GroupKeyA_, GroupKeyB_, ResultC_, ResultD_> groupBy(
-            BiFunction<A, B, GroupKeyA_> groupKeyAMapping, BiFunction<A, B, GroupKeyB_> groupKeyBMapping,
-            BiConstraintCollector<A, B, ResultContainerC_, ResultC_> collectorC,
-            BiConstraintCollector<A, B, ResultContainerD_, ResultD_> collectorD);
+    <GroupKeyA_, GroupKeyB_, ResultContainerC_, ResultC_, ResultContainerD_, ResultD_>
+            QuadConstraintStream<GroupKeyA_, GroupKeyB_, ResultC_, ResultD_> groupBy(
+                    BiFunction<A, B, GroupKeyA_> groupKeyAMapping, BiFunction<A, B, GroupKeyB_> groupKeyBMapping,
+                    BiConstraintCollector<A, B, ResultContainerC_, ResultC_> collectorC,
+                    BiConstraintCollector<A, B, ResultContainerD_, ResultD_> collectorD);
 
     // ************************************************************************
     // Penalize/reward

@@ -142,7 +142,8 @@ public final class BavetScoringTriConstraintStream<Solution_, A, B, C>
                         + ") must return a long.");
             }
         } else if (weightedScoreImpacter instanceof BigDecimalWeightedScoreImpacter) {
-            BigDecimalWeightedScoreImpacter castedWeightedScoreImpacter = (BigDecimalWeightedScoreImpacter) weightedScoreImpacter;
+            BigDecimalWeightedScoreImpacter castedWeightedScoreImpacter =
+                    (BigDecimalWeightedScoreImpacter) weightedScoreImpacter;
             if (bigDecimalMatchWeigher != null) {
                 scoreImpacter = (A a, B b, C c, Consumer<Score<?>> matchScoreConsumer) -> {
                     BigDecimal matchWeight = bigDecimalMatchWeigher.apply(a, b, c);

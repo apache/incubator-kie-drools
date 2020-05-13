@@ -119,8 +119,8 @@ public class ScoreDirectorFactoryConfigTest {
                 .buildScoreDirectorFactory(new SolverConfigContext(), getClass().getClassLoader(),
                         EnvironmentMode.REPRODUCIBLE, TestdataSolution.buildSolutionDescriptor())
                 .buildScoreDirector();
-        TestCustomPropertiesIncrementalScoreCalculator scoreCalculator = (TestCustomPropertiesIncrementalScoreCalculator) scoreDirector
-                .getIncrementalScoreCalculator();
+        TestCustomPropertiesIncrementalScoreCalculator scoreCalculator =
+                (TestCustomPropertiesIncrementalScoreCalculator) scoreDirector.getIncrementalScoreCalculator();
         assertEquals("string 1", scoreCalculator.getStringProperty());
         assertEquals(7, scoreCalculator.getIntProperty());
     }

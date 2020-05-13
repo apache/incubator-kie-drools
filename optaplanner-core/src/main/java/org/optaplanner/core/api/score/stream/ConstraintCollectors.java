@@ -1004,8 +1004,8 @@ public final class ConstraintCollectors {
      * @param <Mapped> type of elements in the resulting set
      * @return never null
      */
-    public static <A, B, C, Mapped extends Comparable<Mapped>> TriConstraintCollector<A, B, C, ?, SortedSet<Mapped>> toSortedSet(
-            TriFunction<A, B, C, Mapped> groupValueMapping) {
+    public static <A, B, C, Mapped extends Comparable<Mapped>> TriConstraintCollector<A, B, C, ?, SortedSet<Mapped>>
+            toSortedSet(TriFunction<A, B, C, Mapped> groupValueMapping) {
         return toCollection(groupValueMapping, i -> new TreeSet<>());
     }
 
@@ -1026,8 +1026,8 @@ public final class ConstraintCollectors {
         return toCollection(groupValueMapping, ArrayList::new);
     }
 
-    public static <A, B, C, D, Mapped, Result extends Collection<Mapped>> QuadConstraintCollector<A, B, C, D, ?, Result> toCollection(
-            QuadFunction<A, B, C, D, Mapped> groupValueMapping, IntFunction<Result> collectionFunction) {
+    public static <A, B, C, D, Mapped, Result extends Collection<Mapped>> QuadConstraintCollector<A, B, C, D, ?, Result>
+            toCollection(QuadFunction<A, B, C, D, Mapped> groupValueMapping, IntFunction<Result> collectionFunction) {
         return new DefaultQuadConstraintCollector<>(
                 (Supplier<List<Mapped>>) ArrayList::new,
                 (resultContainer, a, b, c, d) -> {
@@ -1065,8 +1065,8 @@ public final class ConstraintCollectors {
      * @param <Mapped> type of elements in the resulting set
      * @return never null
      */
-    public static <A, B, C, D, Mapped extends Comparable<Mapped>> QuadConstraintCollector<A, B, C, D, ?, SortedSet<Mapped>> toSortedSet(
-            QuadFunction<A, B, C, D, Mapped> groupValueMapping) {
+    public static <A, B, C, D, Mapped extends Comparable<Mapped>> QuadConstraintCollector<A, B, C, D, ?, SortedSet<Mapped>>
+            toSortedSet(QuadFunction<A, B, C, D, Mapped> groupValueMapping) {
         return toCollection(groupValueMapping, i -> new TreeSet<>());
     }
 
@@ -1312,9 +1312,10 @@ public final class ConstraintCollectors {
      * @param <ValueSet> type of the value set
      * @return never null
      */
-    public static <A, Key extends Comparable<Key>, Value, ValueSet extends Set<Value>> UniConstraintCollector<A, ?, SortedMap<Key, ValueSet>> toSortedMap(
-            Function<? super A, ? extends Key> keyMapper,
-            Function<? super A, ? extends Value> valueMapper, IntFunction<ValueSet> valueSetFunction) {
+    public static <A, Key extends Comparable<Key>, Value, ValueSet extends Set<Value>>
+            UniConstraintCollector<A, ?, SortedMap<Key, ValueSet>> toSortedMap(
+                    Function<? super A, ? extends Key> keyMapper,
+                    Function<? super A, ? extends Value> valueMapper, IntFunction<ValueSet> valueSetFunction) {
         return new DefaultUniConstraintCollector<>(
                 (Supplier<ToMapResultContainer<Key, Value>>) ToMapResultContainer::new,
                 (resultContainer, a) -> toMapAccumulator(keyMapper, valueMapper, resultContainer, a),
@@ -1439,9 +1440,9 @@ public final class ConstraintCollectors {
      * @param <Value> type of map value
      * @return never null
      */
-    public static <A, B, Key extends Comparable<Key>, Value> BiConstraintCollector<A, B, ?, SortedMap<Key, Set<Value>>> toSortedMap(
-            BiFunction<? super A, ? super B, ? extends Key> keyMapper,
-            BiFunction<? super A, ? super B, ? extends Value> valueMapper) {
+    public static <A, B, Key extends Comparable<Key>, Value> BiConstraintCollector<A, B, ?, SortedMap<Key, Set<Value>>>
+            toSortedMap(BiFunction<? super A, ? super B, ? extends Key> keyMapper,
+                    BiFunction<? super A, ? super B, ? extends Value> valueMapper) {
         return toSortedMap(keyMapper, valueMapper, (IntFunction<Set<Value>>) LinkedHashSet::new);
     }
 
@@ -1458,9 +1459,10 @@ public final class ConstraintCollectors {
      * @param <ValueSet> type of the value set
      * @return never null
      */
-    public static <A, B, Key extends Comparable<Key>, Value, ValueSet extends Set<Value>> BiConstraintCollector<A, B, ?, SortedMap<Key, ValueSet>> toSortedMap(
-            BiFunction<? super A, ? super B, ? extends Key> keyMapper,
-            BiFunction<? super A, ? super B, ? extends Value> valueMapper, IntFunction<ValueSet> valueSetFunction) {
+    public static <A, B, Key extends Comparable<Key>, Value, ValueSet extends Set<Value>>
+            BiConstraintCollector<A, B, ?, SortedMap<Key, ValueSet>> toSortedMap(
+                    BiFunction<? super A, ? super B, ? extends Key> keyMapper,
+                    BiFunction<? super A, ? super B, ? extends Value> valueMapper, IntFunction<ValueSet> valueSetFunction) {
         return new DefaultBiConstraintCollector<>(
                 (Supplier<ToMapResultContainer<Key, Value>>) ToMapResultContainer::new,
                 (resultContainer, a, b) -> toMapAccumulator(keyMapper, valueMapper, resultContainer, a, b),
@@ -1526,10 +1528,10 @@ public final class ConstraintCollectors {
      * @param <ValueSet> type of the value set
      * @return never null
      */
-    public static <A, B, C, Key, Value, ValueSet extends Set<Value>> TriConstraintCollector<A, B, C, ?, Map<Key, ValueSet>> toMap(
-            TriFunction<? super A, ? super B, ? super C, ? extends Key> keyMapper,
-            TriFunction<? super A, ? super B, ? super C, ? extends Value> valueMapper,
-            IntFunction<ValueSet> valueSetFunction) {
+    public static <A, B, C, Key, Value, ValueSet extends Set<Value>> TriConstraintCollector<A, B, C, ?, Map<Key, ValueSet>>
+            toMap(TriFunction<? super A, ? super B, ? super C, ? extends Key> keyMapper,
+                    TriFunction<? super A, ? super B, ? super C, ? extends Value> valueMapper,
+                    IntFunction<ValueSet> valueSetFunction) {
         return new DefaultTriConstraintCollector<>(
                 (Supplier<ToMapResultContainer<Key, Value>>) ToMapResultContainer::new,
                 (resultContainer, a, b, c) -> toMapAccumulator(keyMapper, valueMapper, resultContainer, a, b, c),
@@ -1584,9 +1586,9 @@ public final class ConstraintCollectors {
      * @param <Value> type of map value
      * @return never null
      */
-    public static <A, B, C, Key extends Comparable<Key>, Value> TriConstraintCollector<A, B, C, ?, SortedMap<Key, Set<Value>>> toSortedMap(
-            TriFunction<? super A, ? super B, ? super C, ? extends Key> keyMapper,
-            TriFunction<? super A, ? super B, ? super C, ? extends Value> valueMapper) {
+    public static <A, B, C, Key extends Comparable<Key>, Value> TriConstraintCollector<A, B, C, ?, SortedMap<Key, Set<Value>>>
+            toSortedMap(TriFunction<? super A, ? super B, ? super C, ? extends Key> keyMapper,
+                    TriFunction<? super A, ? super B, ? super C, ? extends Value> valueMapper) {
         return toSortedMap(keyMapper, valueMapper, (IntFunction<Set<Value>>) LinkedHashSet::new);
     }
 
@@ -1604,10 +1606,11 @@ public final class ConstraintCollectors {
      * @param <ValueSet> type of the value set
      * @return never null
      */
-    public static <A, B, C, Key extends Comparable<Key>, Value, ValueSet extends Set<Value>> TriConstraintCollector<A, B, C, ?, SortedMap<Key, ValueSet>> toSortedMap(
-            TriFunction<? super A, ? super B, ? super C, ? extends Key> keyMapper,
-            TriFunction<? super A, ? super B, ? super C, ? extends Value> valueMapper,
-            IntFunction<ValueSet> valueSetFunction) {
+    public static <A, B, C, Key extends Comparable<Key>, Value, ValueSet extends Set<Value>>
+            TriConstraintCollector<A, B, C, ?, SortedMap<Key, ValueSet>> toSortedMap(
+                    TriFunction<? super A, ? super B, ? super C, ? extends Key> keyMapper,
+                    TriFunction<? super A, ? super B, ? super C, ? extends Value> valueMapper,
+                    IntFunction<ValueSet> valueSetFunction) {
         return new DefaultTriConstraintCollector<>(
                 (Supplier<ToMapResultContainer<Key, Value>>) ToMapResultContainer::new,
                 (resultContainer, a, b, c) -> toMapAccumulator(keyMapper, valueMapper, resultContainer, a, b, c),
@@ -1630,10 +1633,10 @@ public final class ConstraintCollectors {
      * @param <Value> type of map value
      * @return never null
      */
-    public static <A, B, C, Key extends Comparable<Key>, Value> TriConstraintCollector<A, B, C, ?, SortedMap<Key, Value>> toSortedMap(
-            TriFunction<? super A, ? super B, ? super C, ? extends Key> keyMapper,
-            TriFunction<? super A, ? super B, ? super C, ? extends Value> valueMapper,
-            BinaryOperator<Value> mergeFunction) {
+    public static <A, B, C, Key extends Comparable<Key>, Value> TriConstraintCollector<A, B, C, ?, SortedMap<Key, Value>>
+            toSortedMap(TriFunction<? super A, ? super B, ? super C, ? extends Key> keyMapper,
+                    TriFunction<? super A, ? super B, ? super C, ? extends Value> valueMapper,
+                    BinaryOperator<Value> mergeFunction) {
         return new DefaultTriConstraintCollector<>(
                 (Supplier<ToMapResultContainer<Key, Value>>) ToMapResultContainer::new,
                 (resultContainer, a, b, c) -> toMapAccumulator(keyMapper, valueMapper, resultContainer, a, b, c),
@@ -1677,10 +1680,11 @@ public final class ConstraintCollectors {
      * @param <ValueSet> type of the value set
      * @return never null
      */
-    public static <A, B, C, D, Key, Value, ValueSet extends Set<Value>> QuadConstraintCollector<A, B, C, D, ?, Map<Key, ValueSet>> toMap(
-            QuadFunction<? super A, ? super B, ? super C, ? super D, ? extends Key> keyMapper,
-            QuadFunction<? super A, ? super B, ? super C, ? super D, ? extends Value> valueMapper,
-            IntFunction<ValueSet> valueSetFunction) {
+    public static <A, B, C, D, Key, Value, ValueSet extends Set<Value>>
+            QuadConstraintCollector<A, B, C, D, ?, Map<Key, ValueSet>> toMap(
+                    QuadFunction<? super A, ? super B, ? super C, ? super D, ? extends Key> keyMapper,
+                    QuadFunction<? super A, ? super B, ? super C, ? super D, ? extends Value> valueMapper,
+                    IntFunction<ValueSet> valueSetFunction) {
         return new DefaultQuadConstraintCollector<>(
                 (Supplier<ToMapResultContainer<Key, Value>>) ToMapResultContainer::new,
                 (resultContainer, a, b, c, d) -> toMapAccumulator(keyMapper, valueMapper, resultContainer, a, b, c, d),
@@ -1737,9 +1741,10 @@ public final class ConstraintCollectors {
      * @param <Value> type of map value
      * @return never null
      */
-    public static <A, B, C, D, Key extends Comparable<Key>, Value> QuadConstraintCollector<A, B, C, D, ?, SortedMap<Key, Set<Value>>> toSortedMap(
-            QuadFunction<? super A, ? super B, ? super C, ? super D, ? extends Key> keyMapper,
-            QuadFunction<? super A, ? super B, ? super C, ? super D, ? extends Value> valueMapper) {
+    public static <A, B, C, D, Key extends Comparable<Key>, Value>
+            QuadConstraintCollector<A, B, C, D, ?, SortedMap<Key, Set<Value>>> toSortedMap(
+                    QuadFunction<? super A, ? super B, ? super C, ? super D, ? extends Key> keyMapper,
+                    QuadFunction<? super A, ? super B, ? super C, ? super D, ? extends Value> valueMapper) {
         return toSortedMap(keyMapper, valueMapper, (IntFunction<Set<Value>>) LinkedHashSet::new);
     }
 
@@ -1758,10 +1763,11 @@ public final class ConstraintCollectors {
      * @param <ValueSet> type of the value set
      * @return never null
      */
-    public static <A, B, C, D, Key extends Comparable<Key>, Value, ValueSet extends Set<Value>> QuadConstraintCollector<A, B, C, D, ?, SortedMap<Key, ValueSet>> toSortedMap(
-            QuadFunction<? super A, ? super B, ? super C, ? super D, ? extends Key> keyMapper,
-            QuadFunction<? super A, ? super B, ? super C, ? super D, ? extends Value> valueMapper,
-            IntFunction<ValueSet> valueSetFunction) {
+    public static <A, B, C, D, Key extends Comparable<Key>, Value, ValueSet extends Set<Value>>
+            QuadConstraintCollector<A, B, C, D, ?, SortedMap<Key, ValueSet>> toSortedMap(
+                    QuadFunction<? super A, ? super B, ? super C, ? super D, ? extends Key> keyMapper,
+                    QuadFunction<? super A, ? super B, ? super C, ? super D, ? extends Value> valueMapper,
+                    IntFunction<ValueSet> valueSetFunction) {
         return new DefaultQuadConstraintCollector<>(
                 (Supplier<ToMapResultContainer<Key, Value>>) ToMapResultContainer::new,
                 (resultContainer, a, b, c, d) -> toMapAccumulator(keyMapper, valueMapper, resultContainer, a, b, c, d),
@@ -1785,10 +1791,10 @@ public final class ConstraintCollectors {
      * @param <Value> type of map value
      * @return never null
      */
-    public static <A, B, C, D, Key extends Comparable<Key>, Value> QuadConstraintCollector<A, B, C, D, ?, SortedMap<Key, Value>> toSortedMap(
-            QuadFunction<? super A, ? super B, ? super C, ? super D, ? extends Key> keyMapper,
-            QuadFunction<? super A, ? super B, ? super C, ? super D, ? extends Value> valueMapper,
-            BinaryOperator<Value> mergeFunction) {
+    public static <A, B, C, D, Key extends Comparable<Key>, Value> QuadConstraintCollector<A, B, C, D, ?, SortedMap<Key, Value>>
+            toSortedMap(QuadFunction<? super A, ? super B, ? super C, ? super D, ? extends Key> keyMapper,
+                    QuadFunction<? super A, ? super B, ? super C, ? super D, ? extends Value> valueMapper,
+                    BinaryOperator<Value> mergeFunction) {
         return new DefaultQuadConstraintCollector<>(
                 (Supplier<ToMapResultContainer<Key, Value>>) ToMapResultContainer::new,
                 (resultContainer, a, b, c, d) -> toMapAccumulator(keyMapper, valueMapper, resultContainer, a, b, c, d),

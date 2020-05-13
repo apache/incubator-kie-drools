@@ -83,8 +83,9 @@ public class ScoreCalculationSpeedProblemStatistic extends ProblemStatistic {
             XYSeries series = new XYSeries(singleBenchmarkResult.getSolverBenchmarkResult().getNameWithFavoriteSuffix());
             XYItemRenderer renderer = new XYLineAndShapeRenderer();
             if (singleBenchmarkResult.hasAllSuccess()) {
-                ScoreCalculationSpeedSubSingleStatistic subSingleStatistic = (ScoreCalculationSpeedSubSingleStatistic) singleBenchmarkResult
-                        .getSubSingleStatistic(problemStatisticType);
+                ScoreCalculationSpeedSubSingleStatistic subSingleStatistic =
+                        (ScoreCalculationSpeedSubSingleStatistic) singleBenchmarkResult
+                                .getSubSingleStatistic(problemStatisticType);
                 List<ScoreCalculationSpeedStatisticPoint> points = subSingleStatistic.getPointList();
                 for (ScoreCalculationSpeedStatisticPoint point : points) {
                     long timeMillisSpent = point.getTimeMillisSpent();

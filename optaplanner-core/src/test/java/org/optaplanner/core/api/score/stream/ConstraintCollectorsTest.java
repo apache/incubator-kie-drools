@@ -2236,8 +2236,8 @@ public class ConstraintCollectorsTest {
 
     @Test
     public void toMapQuad() {
-        QuadConstraintCollector<Integer, Integer, Integer, Integer, ?, Map<Integer, Set<Integer>>> collector = ConstraintCollectors
-                .toMap((a, b, c, d) -> a + b + c + d, (a, b, c, d) -> a + b + c + d);
+        QuadConstraintCollector<Integer, Integer, Integer, Integer, ?, Map<Integer, Set<Integer>>> collector =
+                ConstraintCollectors.toMap((a, b, c, d) -> a + b + c + d, (a, b, c, d) -> a + b + c + d);
         Object container = collector.supplier().get();
 
         assertResult(collector, container, emptyMap());
@@ -2468,8 +2468,8 @@ public class ConstraintCollectorsTest {
 
     @Test
     public void toSortedMapQuad() {
-        QuadConstraintCollector<Integer, Integer, Integer, Integer, ?, SortedMap<Integer, Set<Integer>>> collector = ConstraintCollectors
-                .toSortedMap((a, b, c, d) -> a + b + c + d, (a, b, c, d) -> a + b + c + d);
+        QuadConstraintCollector<Integer, Integer, Integer, Integer, ?, SortedMap<Integer, Set<Integer>>> collector =
+                ConstraintCollectors.toSortedMap((a, b, c, d) -> a + b + c + d, (a, b, c, d) -> a + b + c + d);
         Object container = collector.supplier().get();
 
         assertResult(collector, container, emptySortedMap());
@@ -2497,8 +2497,8 @@ public class ConstraintCollectorsTest {
 
     @Test
     public void toSortedMapQuadMerged() {
-        QuadConstraintCollector<Integer, Integer, Integer, Integer, ?, SortedMap<Integer, Integer>> collector = ConstraintCollectors
-                .toSortedMap((a, b, c, d) -> a + b + c + d, (a, b, c, d) -> a + b + c + d, Integer::sum);
+        QuadConstraintCollector<Integer, Integer, Integer, Integer, ?, SortedMap<Integer, Integer>> collector =
+                ConstraintCollectors.toSortedMap((a, b, c, d) -> a + b + c + d, (a, b, c, d) -> a + b + c + d, Integer::sum);
         Object container = collector.supplier().get();
 
         assertResult(collector, container, emptySortedMap());

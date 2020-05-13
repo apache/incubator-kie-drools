@@ -88,8 +88,8 @@ public final class DroolsTriCondition<A, B, C, PatternVar>
                 cVariable, newTargetPattern,
                 actualStructure.getShelvedRuleItems(), actualStructure.getPrerequisites(),
                 actualStructure.getDependents(), actualStructure.getVariableIdSupplier());
-        ImmediatelyPreviousFilter<TriPredicate<A, B, C>> newPreviousFilter = new ImmediatelyPreviousFilter<TriPredicate<A, B, C>>(
-                actualStructure, actualPredicate);
+        ImmediatelyPreviousFilter<TriPredicate<A, B, C>> newPreviousFilter =
+                new ImmediatelyPreviousFilter<TriPredicate<A, B, C>>(actualStructure, actualPredicate);
         // Carry forward the information for filter merging.
         return new DroolsTriCondition<>(newRuleStructure, newPreviousFilter);
     }
@@ -218,9 +218,9 @@ public final class DroolsTriCondition<A, B, C, PatternVar>
                 getRuleStructure().getA(), getRuleStructure().getB(), getRuleStructure().getC()));
     }
 
-    public <NewA, NewB, NewC, NewD> DroolsQuadCondition<NewA, NewB, NewC, NewD, QuadTuple<NewA, NewB, NewC, NewD>> andGroupBiWithCollectBi(
-            TriFunction<A, B, C, NewA> groupKeyAMapping, TriFunction<A, B, C, NewB> groupKeyBMapping,
-            TriConstraintCollector<A, B, C, ?, NewC> collectorC, TriConstraintCollector<A, B, C, ?, NewD> collectorD) {
+    public <NewA, NewB, NewC, NewD> DroolsQuadCondition<NewA, NewB, NewC, NewD, QuadTuple<NewA, NewB, NewC, NewD>>
+            andGroupBiWithCollectBi(TriFunction<A, B, C, NewA> groupKeyAMapping, TriFunction<A, B, C, NewB> groupKeyBMapping,
+                    TriConstraintCollector<A, B, C, ?, NewC> collectorC, TriConstraintCollector<A, B, C, ?, NewD> collectorD) {
         return groupBiWithCollectBi(() -> new DroolsTriToQuadGroupByAccumulator<>(groupKeyAMapping, groupKeyBMapping,
                 collectorC, collectorD, getRuleStructure().getA(), getRuleStructure().getB(),
                 getRuleStructure().getC()));

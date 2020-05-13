@@ -33,7 +33,8 @@ public class HardMediumSoftBigDecimalScoreHolder extends AbstractScoreHolder<Har
 
     protected final Map<Rule, BiConsumer<RuleContext, BigDecimal>> matchExecutorByNumberMap = new LinkedHashMap<>();
     /** Slower than {@link #matchExecutorByNumberMap} */
-    protected final Map<Rule, BiConsumer<RuleContext, HardMediumSoftBigDecimalScore>> matchExecutorByScoreMap = new LinkedHashMap<>();
+    protected final Map<Rule, BiConsumer<RuleContext, HardMediumSoftBigDecimalScore>> matchExecutorByScoreMap =
+            new LinkedHashMap<>();
 
     protected BigDecimal hardScore = BigDecimal.ZERO;
     protected BigDecimal mediumScore = BigDecimal.ZERO;

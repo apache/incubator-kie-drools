@@ -34,7 +34,8 @@ public class MeetingConstraintConfiguration extends AbstractPersistable {
     public static final String PREFERRED_ATTENDANCE_CONFLICT = "Preferred attendance conflict";
 
     public static final String DO_ALL_MEETINGS_AS_SOON_AS_POSSIBLE = "Do all meetings as soon as possible";
-    public static final String ONE_TIME_GRAIN_BREAK_BETWEEN_TWO_CONSECUTIVE_MEETINGS = "One TimeGrain break between two consecutive meetings";
+    public static final String ONE_TIME_GRAIN_BREAK_BETWEEN_TWO_CONSECUTIVE_MEETINGS =
+            "One TimeGrain break between two consecutive meetings";
     public static final String OVERLAPPING_MEETINGS = "Overlapping meetings";
     public static final String ASSIGN_LARGER_ROOMS_FIRST = "Assign larger rooms first";
     public static final String ROOM_STABILITY = "Room stability";

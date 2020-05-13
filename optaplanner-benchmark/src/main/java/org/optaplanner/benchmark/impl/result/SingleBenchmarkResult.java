@@ -374,7 +374,8 @@ public class SingleBenchmarkResult implements BenchmarkResult {
     }
 
     private void determineRanking(List<SubSingleBenchmarkResult> rankedSubSingleBenchmarkResultList) {
-        Comparator<SubSingleBenchmarkResult> subSingleBenchmarkRankingComparator = new ScoreSubSingleBenchmarkRankingComparator();
+        Comparator<SubSingleBenchmarkResult> subSingleBenchmarkRankingComparator =
+                new ScoreSubSingleBenchmarkRankingComparator();
         rankedSubSingleBenchmarkResultList.sort(Collections.reverseOrder(subSingleBenchmarkRankingComparator));
         int ranking = 0;
         SubSingleBenchmarkResult previousSubSingleBenchmarkResult = null;

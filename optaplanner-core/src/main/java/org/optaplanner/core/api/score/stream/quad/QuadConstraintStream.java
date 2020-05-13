@@ -350,10 +350,12 @@ public interface QuadConstraintStream<A, B, C, D> extends ConstraintStream {
      * @param <ResultD_> the type of the fourth fact in the destination {@link QuadConstraintStream}'s tuple
      * @return never null
      */
-    <GroupKeyA_, GroupKeyB_, ResultContainerC_, ResultC_, ResultContainerD_, ResultD_> QuadConstraintStream<GroupKeyA_, GroupKeyB_, ResultC_, ResultD_> groupBy(
-            QuadFunction<A, B, C, D, GroupKeyA_> groupKeyAMapping, QuadFunction<A, B, C, D, GroupKeyB_> groupKeyBMapping,
-            QuadConstraintCollector<A, B, C, D, ResultContainerC_, ResultC_> collectorC,
-            QuadConstraintCollector<A, B, C, D, ResultContainerD_, ResultD_> collectorD);
+    <GroupKeyA_, GroupKeyB_, ResultContainerC_, ResultC_, ResultContainerD_, ResultD_>
+            QuadConstraintStream<GroupKeyA_, GroupKeyB_, ResultC_, ResultD_> groupBy(
+                    QuadFunction<A, B, C, D, GroupKeyA_> groupKeyAMapping,
+                    QuadFunction<A, B, C, D, GroupKeyB_> groupKeyBMapping,
+                    QuadConstraintCollector<A, B, C, D, ResultContainerC_, ResultC_> collectorC,
+                    QuadConstraintCollector<A, B, C, D, ResultContainerD_, ResultD_> collectorD);
 
     // ************************************************************************
     // Penalize/reward

@@ -30,9 +30,9 @@ import org.optaplanner.test.api.score.stream.ConstraintVerifier;
 
 public class VehicleRoutingConstraintProviderTest {
 
-    private final ConstraintVerifier<VehicleRoutingConstraintProvider, VehicleRoutingSolution> constraintVerifier = ConstraintVerifier
-            .build(new VehicleRoutingConstraintProvider(),
-                    VehicleRoutingSolution.class, Standstill.class, Customer.class, TimeWindowedCustomer.class);
+    private final ConstraintVerifier<VehicleRoutingConstraintProvider, VehicleRoutingSolution> constraintVerifier =
+            ConstraintVerifier.build(new VehicleRoutingConstraintProvider(), VehicleRoutingSolution.class, Standstill.class,
+                    Customer.class, TimeWindowedCustomer.class);
 
     private final Location location1 = new AirLocation(1L, 0.0, 0.0);
     private final Location location2 = new AirLocation(2L, 0.0, 4.0);

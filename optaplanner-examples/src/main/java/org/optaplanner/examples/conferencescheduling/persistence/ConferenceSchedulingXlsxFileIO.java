@@ -118,46 +118,82 @@ import org.optaplanner.swing.impl.TangoColorFactory;
 
 public class ConferenceSchedulingXlsxFileIO extends AbstractXlsxSolutionFileIO<ConferenceSolution> {
 
-    private static final String ROOM_UNAVAILABLE_TIMESLOT_DESCRIPTION = "Penalty per talk with an unavailable room in its timeslot, per minute";
-    private static final String ROOM_CONFLICT_DESCRIPTION = "Penalty per 2 talks in the same room and overlapping timeslots, per overlapping minute";
-    private static final String SPEAKER_UNAVAILABLE_TIMESLOT_DESCRIPTION = "Penalty per talk with an unavailable speaker in its timeslot, per minute";
-    private static final String SPEAKER_CONFLICT_DESCRIPTION = "Penalty per 2 talks with the same speaker and overlapping timeslots, per overlapping minute";
-    private static final String TALK_PREREQUISITE_TALKS_DESCRIPTION = "Penalty per prerequisite talk of a talk that doesn't end before the second talk starts, per minute of either talk";
-    private static final String TALK_MUTUALLY_EXCLUSIVE_TALKS_TAGS_DESCRIPTION = "Penalty per common mutually exclusive talks tag of 2 talks with overlapping timeslots, per overlapping minute";
-    private static final String CONSECUTIVE_TALKS_PAUSE_DESCRIPTION = "Penalty per 2 consecutive talks for the same speaker with a pause less than the minimum pause, per minute of either talk";
-    private static final String CROWD_CONTROL_DESCRIPTION = "Penalty per talk with a non-zero crowd control risk that are not in paired with exactly one other such talk, per minute of either talk";
+    private static final String ROOM_UNAVAILABLE_TIMESLOT_DESCRIPTION =
+            "Penalty per talk with an unavailable room in its timeslot, per minute";
+    private static final String ROOM_CONFLICT_DESCRIPTION =
+            "Penalty per 2 talks in the same room and overlapping timeslots, per overlapping minute";
+    private static final String SPEAKER_UNAVAILABLE_TIMESLOT_DESCRIPTION =
+            "Penalty per talk with an unavailable speaker in its timeslot, per minute";
+    private static final String SPEAKER_CONFLICT_DESCRIPTION =
+            "Penalty per 2 talks with the same speaker and overlapping timeslots, per overlapping minute";
+    private static final String TALK_PREREQUISITE_TALKS_DESCRIPTION =
+            "Penalty per prerequisite talk of a talk that doesn't end before the second talk starts, per minute of either talk";
+    private static final String TALK_MUTUALLY_EXCLUSIVE_TALKS_TAGS_DESCRIPTION =
+            "Penalty per common mutually exclusive talks tag of 2 talks with overlapping timeslots, per overlapping minute";
+    private static final String CONSECUTIVE_TALKS_PAUSE_DESCRIPTION =
+            "Penalty per 2 consecutive talks for the same speaker with a pause less than the minimum pause, per minute of either talk";
+    private static final String CROWD_CONTROL_DESCRIPTION =
+            "Penalty per talk with a non-zero crowd control risk that are not in paired with exactly one other such talk, per minute of either talk";
 
-    private static final String SPEAKER_REQUIRED_TIMESLOT_TAGS_DESCRIPTION = "Penalty per missing required tag in a talk's timeslot, per minute";
-    private static final String SPEAKER_PROHIBITED_TIMESLOT_TAGS_DESCRIPTION = "Penalty per prohibited tag in a talk's timeslot, per minute";
-    private static final String TALK_REQUIRED_TIMESLOT_TAGS_DESCRIPTION = "Penalty per missing required tag in a talk's timeslot, per minute";
-    private static final String TALK_PROHIBITED_TIMESLOT_TAGS_DESCRIPTION = "Penalty per prohibited tag in a talk's timeslot, per minute";
-    private static final String SPEAKER_REQUIRED_ROOM_TAGS_DESCRIPTION = "Penalty per missing required tag in a talk's room, per minute";
-    private static final String SPEAKER_PROHIBITED_ROOM_TAGS_DESCRIPTION = "Penalty per prohibited tag in a talk's room, per minute";
-    private static final String TALK_REQUIRED_ROOM_TAGS_DESCRIPTION = "Penalty per missing required tag in a talk's room, per minute";
-    private static final String TALK_PROHIBITED_ROOM_TAGS_DESCRIPTION = "Penalty per prohibited tag in a talk's room, per minute";
+    private static final String SPEAKER_REQUIRED_TIMESLOT_TAGS_DESCRIPTION =
+            "Penalty per missing required tag in a talk's timeslot, per minute";
+    private static final String SPEAKER_PROHIBITED_TIMESLOT_TAGS_DESCRIPTION =
+            "Penalty per prohibited tag in a talk's timeslot, per minute";
+    private static final String TALK_REQUIRED_TIMESLOT_TAGS_DESCRIPTION =
+            "Penalty per missing required tag in a talk's timeslot, per minute";
+    private static final String TALK_PROHIBITED_TIMESLOT_TAGS_DESCRIPTION =
+            "Penalty per prohibited tag in a talk's timeslot, per minute";
+    private static final String SPEAKER_REQUIRED_ROOM_TAGS_DESCRIPTION =
+            "Penalty per missing required tag in a talk's room, per minute";
+    private static final String SPEAKER_PROHIBITED_ROOM_TAGS_DESCRIPTION =
+            "Penalty per prohibited tag in a talk's room, per minute";
+    private static final String TALK_REQUIRED_ROOM_TAGS_DESCRIPTION =
+            "Penalty per missing required tag in a talk's room, per minute";
+    private static final String TALK_PROHIBITED_ROOM_TAGS_DESCRIPTION =
+            "Penalty per prohibited tag in a talk's room, per minute";
 
-    private static final String PUBLISHED_TIMESLOT_DESCRIPTION = "Penalty per published talk with a different timeslot than its published timeslot, per match";
+    private static final String PUBLISHED_TIMESLOT_DESCRIPTION =
+            "Penalty per published talk with a different timeslot than its published timeslot, per match";
 
-    private static final String PUBLISHED_ROOM_DESCRIPTION = "Penalty per published talk with a different room than its published room, per match";
-    private static final String THEME_TRACK_CONFLICT_DESCRIPTION = "Penalty per common theme track of 2 talks with overlapping timeslots, per overlapping minute";
-    private static final String THEME_TRACK_ROOM_STABILITY_DESCRIPTION = "Penalty per common theme track of 2 talks in a different room on the same day, per minute of either talk";
-    private static final String SECTOR_CONFLICT_DESCRIPTION = "Penalty per common sector of 2 talks with overlapping timeslots, per overlapping minute";
-    private static final String AUDIENCE_TYPE_DIVERSITY_DESCRIPTION = "Reward per 2 talks with a different audience type and the same timeslot, per (overlapping) minute";
-    private static final String AUDIENCE_TYPE_THEME_TRACK_CONFLICT_DESCRIPTION = "Penalty per 2 talks with a common audience type, a common theme track and overlapping timeslots, per overlapping minute";
-    private static final String AUDIENCE_LEVEL_DIVERSITY_DESCRIPTION = "Reward per 2 talks with a different audience level and the same timeslot, per (overlapping) minute";
-    private static final String CONTENT_AUDIENCE_LEVEL_FLOW_VIOLATION_DESCRIPTION = "Penalty per common content of 2 talks with a different audience level for which the easier talk isn't scheduled earlier than the other talk, per minute of either talk";
-    private static final String CONTENT_CONFLICT_DESCRIPTION = "Penalty per common content of 2 talks with overlapping timeslots, per overlapping minute";
-    private static final String LANGUAGE_DIVERSITY_DESCRIPTION = "Reward per 2 talks with a different language and the the same timeslot, per (overlapping) minute";
-    private static final String SAME_DAY_TALKS_DESCRIPTION = "Penalty per common content or theme track of 2 talks with a different day, per minute of either talk";
-    private static final String POPULAR_TALKS_DESCRIPTION = "Penalty per 2 talks where the less popular one (has lower favorite count) is assigned a larger room than the more popular talk";
+    private static final String PUBLISHED_ROOM_DESCRIPTION =
+            "Penalty per published talk with a different room than its published room, per match";
+    private static final String THEME_TRACK_CONFLICT_DESCRIPTION =
+            "Penalty per common theme track of 2 talks with overlapping timeslots, per overlapping minute";
+    private static final String THEME_TRACK_ROOM_STABILITY_DESCRIPTION =
+            "Penalty per common theme track of 2 talks in a different room on the same day, per minute of either talk";
+    private static final String SECTOR_CONFLICT_DESCRIPTION =
+            "Penalty per common sector of 2 talks with overlapping timeslots, per overlapping minute";
+    private static final String AUDIENCE_TYPE_DIVERSITY_DESCRIPTION =
+            "Reward per 2 talks with a different audience type and the same timeslot, per (overlapping) minute";
+    private static final String AUDIENCE_TYPE_THEME_TRACK_CONFLICT_DESCRIPTION =
+            "Penalty per 2 talks with a common audience type, a common theme track and overlapping timeslots, per overlapping minute";
+    private static final String AUDIENCE_LEVEL_DIVERSITY_DESCRIPTION =
+            "Reward per 2 talks with a different audience level and the same timeslot, per (overlapping) minute";
+    private static final String CONTENT_AUDIENCE_LEVEL_FLOW_VIOLATION_DESCRIPTION =
+            "Penalty per common content of 2 talks with a different audience level for which the easier talk isn't scheduled earlier than the other talk, per minute of either talk";
+    private static final String CONTENT_CONFLICT_DESCRIPTION =
+            "Penalty per common content of 2 talks with overlapping timeslots, per overlapping minute";
+    private static final String LANGUAGE_DIVERSITY_DESCRIPTION =
+            "Reward per 2 talks with a different language and the the same timeslot, per (overlapping) minute";
+    private static final String SAME_DAY_TALKS_DESCRIPTION =
+            "Penalty per common content or theme track of 2 talks with a different day, per minute of either talk";
+    private static final String POPULAR_TALKS_DESCRIPTION =
+            "Penalty per 2 talks where the less popular one (has lower favorite count) is assigned a larger room than the more popular talk";
 
-    private static final String SPEAKER_PREFERRED_TIMESLOT_TAGS_DESCRIPTION = "Penalty per missing preferred tag in a talk's timeslot, per minute";
-    private static final String SPEAKER_UNDESIRED_TIMESLOT_TAGS_DESCRIPTION = "Penalty per undesired tag in a talk's timeslot, per minute";
-    private static final String TALK_PREFERRED_TIMESLOT_TAGS_DESCRIPTION = "Penalty per missing preferred tag in a talk's timeslot, per minute";
-    private static final String TALK_UNDESIRED_TIMESLOT_TAGS_DESCRIPTION = "Penalty per undesired tag in a talk's timeslot, per minute";
-    private static final String SPEAKER_PREFERRED_ROOM_TAGS_DESCRIPTION = "Penalty per missing preferred tag in a talk's room, per minute";
-    private static final String SPEAKER_UNDESIRED_ROOM_TAGS_DESCRIPTION = "Penalty per undesired tag in a talk's room, per minute";
-    private static final String TALK_PREFERRED_ROOM_TAGS_DESCRIPTION = "Penalty per missing preferred tag in a talk's room, per minute";
+    private static final String SPEAKER_PREFERRED_TIMESLOT_TAGS_DESCRIPTION =
+            "Penalty per missing preferred tag in a talk's timeslot, per minute";
+    private static final String SPEAKER_UNDESIRED_TIMESLOT_TAGS_DESCRIPTION =
+            "Penalty per undesired tag in a talk's timeslot, per minute";
+    private static final String TALK_PREFERRED_TIMESLOT_TAGS_DESCRIPTION =
+            "Penalty per missing preferred tag in a talk's timeslot, per minute";
+    private static final String TALK_UNDESIRED_TIMESLOT_TAGS_DESCRIPTION =
+            "Penalty per undesired tag in a talk's timeslot, per minute";
+    private static final String SPEAKER_PREFERRED_ROOM_TAGS_DESCRIPTION =
+            "Penalty per missing preferred tag in a talk's room, per minute";
+    private static final String SPEAKER_UNDESIRED_ROOM_TAGS_DESCRIPTION =
+            "Penalty per undesired tag in a talk's room, per minute";
+    private static final String TALK_PREFERRED_ROOM_TAGS_DESCRIPTION =
+            "Penalty per missing preferred tag in a talk's room, per minute";
     private static final String TALK_UNDESIRED_ROOM_TAGS_DESCRIPTION = "Penalty per undesired tag in a talk's room, per minute";
 
     private static final Comparator<Timeslot> COMPARATOR = comparing(Timeslot::getStartDateTime)

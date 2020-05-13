@@ -171,11 +171,11 @@ public abstract class BavetAbstractUniConstraintStream<Solution_, A> extends Bav
     public <GroupKey_, ResultContainer_, Result_> BiConstraintStream<GroupKey_, Result_> groupBy(
             Function<A, GroupKey_> groupKeyMapping,
             UniConstraintCollector<A, ResultContainer_, Result_> collector) {
-        BavetGroupBridgeUniConstraintStream<Solution_, A, GroupKey_, ResultContainer_, Result_> bridge = new BavetGroupBridgeUniConstraintStream<>(
-                constraintFactory, this, groupKeyMapping, collector);
+        BavetGroupBridgeUniConstraintStream<Solution_, A, GroupKey_, ResultContainer_, Result_> bridge =
+                new BavetGroupBridgeUniConstraintStream<>(constraintFactory, this, groupKeyMapping, collector);
         childStreamList.add(bridge);
-        BavetGroupBiConstraintStream<Solution_, GroupKey_, ResultContainer_, Result_> groupStream = new BavetGroupBiConstraintStream<>(
-                constraintFactory, bridge, collector.finisher());
+        BavetGroupBiConstraintStream<Solution_, GroupKey_, ResultContainer_, Result_> groupStream =
+                new BavetGroupBiConstraintStream<>(constraintFactory, bridge, collector.finisher());
         bridge.setGroupStream(groupStream);
         return groupStream;
     }
@@ -188,10 +188,11 @@ public abstract class BavetAbstractUniConstraintStream<Solution_, A> extends Bav
     }
 
     @Override
-    public <GroupKeyA_, GroupKeyB_, ResultContainerC_, ResultC_, ResultContainerD_, ResultD_> QuadConstraintStream<GroupKeyA_, GroupKeyB_, ResultC_, ResultD_> groupBy(
-            Function<A, GroupKeyA_> groupKeyAMapping,
-            Function<A, GroupKeyB_> groupKeyBMapping, UniConstraintCollector<A, ResultContainerC_, ResultC_> collectorC,
-            UniConstraintCollector<A, ResultContainerD_, ResultD_> collectorD) {
+    public <GroupKeyA_, GroupKeyB_, ResultContainerC_, ResultC_, ResultContainerD_, ResultD_>
+            QuadConstraintStream<GroupKeyA_, GroupKeyB_, ResultC_, ResultD_> groupBy(
+                    Function<A, GroupKeyA_> groupKeyAMapping,
+                    Function<A, GroupKeyB_> groupKeyBMapping, UniConstraintCollector<A, ResultContainerC_, ResultC_> collectorC,
+                    UniConstraintCollector<A, ResultContainerD_, ResultD_> collectorD) {
         throw new UnsupportedOperationException(); // TODO
     }
 

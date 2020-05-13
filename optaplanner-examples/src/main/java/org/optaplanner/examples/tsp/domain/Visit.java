@@ -44,8 +44,9 @@ public class Visit extends AbstractPersistable implements Standstill {
         this.location = location;
     }
 
-    @PlanningVariable(valueRangeProviderRefs = { "domicileRange",
-            "visitRange" }, graphType = PlanningVariableGraphType.CHAINED, strengthWeightFactoryClass = DomicileDistanceStandstillStrengthWeightFactory.class)
+    @PlanningVariable(valueRangeProviderRefs = { "domicileRange", "visitRange" },
+            graphType = PlanningVariableGraphType.CHAINED,
+            strengthWeightFactoryClass = DomicileDistanceStandstillStrengthWeightFactory.class)
     public Standstill getPreviousStandstill() {
         return previousStandstill;
     }

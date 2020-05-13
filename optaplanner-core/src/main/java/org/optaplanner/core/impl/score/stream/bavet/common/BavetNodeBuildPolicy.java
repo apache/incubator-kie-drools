@@ -28,7 +28,8 @@ public class BavetNodeBuildPolicy<Solution_> {
 
     private int nodeOrderMaximum = 0;
     private Map<String, BavetScoringNode> constraintIdToScoringNodeMap;
-    private Map<BavetJoinConstraintStream<Solution_>, BavetJoinBridgeNode> joinConstraintStreamToJoinBridgeNodeMap = new HashMap<>();
+    private Map<BavetJoinConstraintStream<Solution_>, BavetJoinBridgeNode> joinConstraintStreamToJoinBridgeNodeMap =
+            new HashMap<>();
     private Map<BavetAbstractNode, BavetAbstractNode> sharableNodeMap = new HashMap<>();
 
     public BavetNodeBuildPolicy(BavetConstraintSession session, int constraintCount) {

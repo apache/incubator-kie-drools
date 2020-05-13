@@ -33,17 +33,17 @@ public class ConstraintWeightDescriptorTest {
     public void extractionFunction() {
         SolutionDescriptor<TestdataConstraintConfigurationSolution> solutionDescriptor = TestdataConstraintConfigurationSolution
                 .buildSolutionDescriptor();
-        ConstraintConfigurationDescriptor<TestdataConstraintConfigurationSolution> constraintConfigurationDescriptor = solutionDescriptor
-                .getConstraintConfigurationDescriptor();
+        ConstraintConfigurationDescriptor<TestdataConstraintConfigurationSolution> constraintConfigurationDescriptor =
+                solutionDescriptor.getConstraintConfigurationDescriptor();
 
-        ConstraintWeightDescriptor<TestdataConstraintConfigurationSolution> firstWeightDescriptor = constraintConfigurationDescriptor
-                .getConstraintWeightDescriptor("firstWeight");
+        ConstraintWeightDescriptor<TestdataConstraintConfigurationSolution> firstWeightDescriptor =
+                constraintConfigurationDescriptor.getConstraintWeightDescriptor("firstWeight");
         assertEquals(TestdataConstraintConfigurationSolution.class.getPackage().getName(),
                 firstWeightDescriptor.getConstraintPackage());
         assertEquals("First weight", firstWeightDescriptor.getConstraintName());
 
-        ConstraintWeightDescriptor<TestdataConstraintConfigurationSolution> secondWeightDescriptor = constraintConfigurationDescriptor
-                .getConstraintWeightDescriptor("secondWeight");
+        ConstraintWeightDescriptor<TestdataConstraintConfigurationSolution> secondWeightDescriptor =
+                constraintConfigurationDescriptor.getConstraintWeightDescriptor("secondWeight");
         assertEquals("packageOverwrittenOnField",
                 secondWeightDescriptor.getConstraintPackage());
         assertEquals("Second weight", secondWeightDescriptor.getConstraintName());
@@ -63,25 +63,25 @@ public class ConstraintWeightDescriptorTest {
 
     @Test
     public void extractionFunctionExtended() {
-        SolutionDescriptor<TestdataExtendedConstraintConfigurationSolution> solutionDescriptor = TestdataExtendedConstraintConfigurationSolution
-                .buildExtendedSolutionDescriptor();
-        ConstraintConfigurationDescriptor<TestdataExtendedConstraintConfigurationSolution> constraintConfigurationDescriptor = solutionDescriptor
-                .getConstraintConfigurationDescriptor();
+        SolutionDescriptor<TestdataExtendedConstraintConfigurationSolution> solutionDescriptor =
+                TestdataExtendedConstraintConfigurationSolution.buildExtendedSolutionDescriptor();
+        ConstraintConfigurationDescriptor<TestdataExtendedConstraintConfigurationSolution> constraintConfigurationDescriptor =
+                solutionDescriptor.getConstraintConfigurationDescriptor();
 
-        ConstraintWeightDescriptor<TestdataExtendedConstraintConfigurationSolution> firstWeightDescriptor = constraintConfigurationDescriptor
-                .getConstraintWeightDescriptor("firstWeight");
+        ConstraintWeightDescriptor<TestdataExtendedConstraintConfigurationSolution> firstWeightDescriptor =
+                constraintConfigurationDescriptor.getConstraintWeightDescriptor("firstWeight");
         assertEquals(TestdataConstraintConfigurationSolution.class.getPackage().getName(),
                 firstWeightDescriptor.getConstraintPackage());
         assertEquals("First weight", firstWeightDescriptor.getConstraintName());
 
-        ConstraintWeightDescriptor<TestdataExtendedConstraintConfigurationSolution> secondWeightDescriptor = constraintConfigurationDescriptor
-                .getConstraintWeightDescriptor("secondWeight");
+        ConstraintWeightDescriptor<TestdataExtendedConstraintConfigurationSolution> secondWeightDescriptor =
+                constraintConfigurationDescriptor.getConstraintWeightDescriptor("secondWeight");
         assertEquals("packageOverwrittenOnField",
                 secondWeightDescriptor.getConstraintPackage());
         assertEquals("Second weight", secondWeightDescriptor.getConstraintName());
 
-        ConstraintWeightDescriptor<TestdataExtendedConstraintConfigurationSolution> thirdWeightDescriptor = constraintConfigurationDescriptor
-                .getConstraintWeightDescriptor("thirdWeight");
+        ConstraintWeightDescriptor<TestdataExtendedConstraintConfigurationSolution> thirdWeightDescriptor =
+                constraintConfigurationDescriptor.getConstraintWeightDescriptor("thirdWeight");
         assertEquals(TestdataExtendedConstraintConfigurationSolution.class.getPackage().getName(),
                 thirdWeightDescriptor.getConstraintPackage());
         assertEquals("Third weight", thirdWeightDescriptor.getConstraintName());

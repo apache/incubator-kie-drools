@@ -214,10 +214,12 @@ public class NearbySelectionConfig extends SelectorConfig<NearbySelectionConfig>
                 || blockDistributionSizeMaximum != null
                 || blockDistributionSizeRatio != null
                 || blockDistributionUniformDistributionProbability != null;
-        boolean linearDistributionEnabled = nearbySelectionDistributionType == NearbySelectionDistributionType.LINEAR_DISTRIBUTION
-                || linearDistributionSizeMaximum != null;
-        boolean parabolicDistributionEnabled = nearbySelectionDistributionType == NearbySelectionDistributionType.PARABOLIC_DISTRIBUTION
-                || parabolicDistributionSizeMaximum != null;
+        boolean linearDistributionEnabled =
+                nearbySelectionDistributionType == NearbySelectionDistributionType.LINEAR_DISTRIBUTION
+                        || linearDistributionSizeMaximum != null;
+        boolean parabolicDistributionEnabled =
+                nearbySelectionDistributionType == NearbySelectionDistributionType.PARABOLIC_DISTRIBUTION
+                        || parabolicDistributionSizeMaximum != null;
         boolean betaDistributionEnabled = nearbySelectionDistributionType == NearbySelectionDistributionType.BETA_DISTRIBUTION
                 || betaDistributionAlpha != null
                 || betaDistributionBeta != null;

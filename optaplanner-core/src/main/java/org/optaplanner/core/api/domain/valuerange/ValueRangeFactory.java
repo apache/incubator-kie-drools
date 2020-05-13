@@ -209,8 +209,8 @@ public class ValueRangeFactory {
      * @param incrementUnitType never null, must be {@link Temporal#isSupported(TemporalUnit) supported} by {@code from} and
      *        {@code to}
      */
-    public static <Temporal_ extends Temporal & Comparable<? super Temporal_>> CountableValueRange<Temporal_> createTemporalValueRange(
-            Temporal_ from, Temporal_ to, long incrementUnitAmount, TemporalUnit incrementUnitType) {
+    public static <Temporal_ extends Temporal & Comparable<? super Temporal_>> CountableValueRange<Temporal_>
+            createTemporalValueRange(Temporal_ from, Temporal_ to, long incrementUnitAmount, TemporalUnit incrementUnitType) {
         return new TemporalValueRange<>(from, to, incrementUnitAmount, incrementUnitType);
     }
 

@@ -37,7 +37,8 @@ import org.optaplanner.core.api.score.Score;
  */
 public class TotalRankSolverRankingWeightFactory implements SolverRankingWeightFactory {
 
-    private final Comparator<SingleBenchmarkResult> singleBenchmarkRankingComparator = new TotalScoreSingleBenchmarkRankingComparator();
+    private final Comparator<SingleBenchmarkResult> singleBenchmarkRankingComparator =
+            new TotalScoreSingleBenchmarkRankingComparator();
 
     @Override
     public Comparable createRankingWeight(List<SolverBenchmarkResult> solverBenchmarkResultList,
@@ -67,7 +68,8 @@ public class TotalRankSolverRankingWeightFactory implements SolverRankingWeightF
 
     public static class TotalRankSolverRankingWeight implements Comparable<TotalRankSolverRankingWeight> {
 
-        private final Comparator<SolverBenchmarkResult> totalScoreSolverRankingComparator = new TotalScoreSolverRankingComparator();
+        private final Comparator<SolverBenchmarkResult> totalScoreSolverRankingComparator =
+                new TotalScoreSolverRankingComparator();
 
         private SolverBenchmarkResult solverBenchmarkResult;
         private int betterCount;

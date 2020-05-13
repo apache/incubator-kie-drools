@@ -51,7 +51,8 @@ public class TestdataReinitializeEntity extends TestdataObject {
         this.initialized = initialized;
     }
 
-    @PlanningVariable(valueRangeProviderRefs = "valueRange", reinitializeVariableEntityFilter = TestdataReinitializeEntityFilter.class)
+    @PlanningVariable(valueRangeProviderRefs = "valueRange",
+            reinitializeVariableEntityFilter = TestdataReinitializeEntityFilter.class)
     public TestdataValue getValue() {
         return value;
     }

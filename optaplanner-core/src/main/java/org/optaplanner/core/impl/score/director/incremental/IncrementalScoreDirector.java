@@ -120,8 +120,8 @@ public class IncrementalScoreDirector<Solution_>
             throw new IllegalStateException("When constraintMatchEnabled (" + isConstraintMatchEnabled()
                     + ") is disabled in the constructor, this method should not be called.");
         }
-        Map<Object, Indictment> incrementalIndictmentMap = ((ConstraintMatchAwareIncrementalScoreCalculator<Solution_>) incrementalScoreCalculator)
-                .getIndictmentMap();
+        Map<Object, Indictment> incrementalIndictmentMap =
+                ((ConstraintMatchAwareIncrementalScoreCalculator<Solution_>) incrementalScoreCalculator).getIndictmentMap();
         if (incrementalIndictmentMap != null) {
             return incrementalIndictmentMap;
         }

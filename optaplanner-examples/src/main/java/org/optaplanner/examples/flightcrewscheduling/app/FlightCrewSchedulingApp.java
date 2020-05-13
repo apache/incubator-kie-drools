@@ -24,7 +24,8 @@ import org.optaplanner.persistence.common.api.domain.solution.SolutionFileIO;
 
 public class FlightCrewSchedulingApp extends CommonApp<FlightCrewSolution> {
 
-    public static final String SOLVER_CONFIG = "org/optaplanner/examples/flightcrewscheduling/solver/flightCrewSchedulingSolverConfig.xml";
+    public static final String SOLVER_CONFIG =
+            "org/optaplanner/examples/flightcrewscheduling/solver/flightCrewSchedulingSolverConfig.xml";
 
     public static final String DATA_DIR_NAME = "flightcrewscheduling";
 

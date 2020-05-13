@@ -484,8 +484,8 @@ public class ScoreDirectorFactoryConfig extends AbstractConfig<ScoreDirectorFact
             SolverConfigContext configContext, ClassLoader classLoader, EnvironmentMode environmentMode,
             SolutionDescriptor<Solution_> solutionDescriptor) {
         AbstractScoreDirectorFactory<Solution_> easyScoreDirectorFactory = buildEasyScoreDirectorFactory(solutionDescriptor);
-        AbstractScoreDirectorFactory<Solution_> constraintStreamScoreDirectorFactory = buildConstraintStreamScoreDirectorFactory(
-                solutionDescriptor);
+        AbstractScoreDirectorFactory<Solution_> constraintStreamScoreDirectorFactory =
+                buildConstraintStreamScoreDirectorFactory(solutionDescriptor);
         AbstractScoreDirectorFactory<Solution_> incrementalScoreDirectorFactory = buildIncrementalScoreDirectorFactory(
                 solutionDescriptor);
         AbstractScoreDirectorFactory<Solution_> droolsScoreDirectorFactory = buildDroolsScoreDirectorFactory(configContext,

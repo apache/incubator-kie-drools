@@ -26,7 +26,8 @@ import org.optaplanner.persistence.xstream.impl.domain.solution.XStreamSolutionF
 
 public class ProjectJobSchedulingApp extends CommonApp<Schedule> {
 
-    public static final String SOLVER_CONFIG = "org/optaplanner/examples/projectjobscheduling/solver/projectJobSchedulingSolverConfig.xml";
+    public static final String SOLVER_CONFIG =
+            "org/optaplanner/examples/projectjobscheduling/solver/projectJobSchedulingSolverConfig.xml";
 
     public static final String DATA_DIR_NAME = "projectjobscheduling";
 

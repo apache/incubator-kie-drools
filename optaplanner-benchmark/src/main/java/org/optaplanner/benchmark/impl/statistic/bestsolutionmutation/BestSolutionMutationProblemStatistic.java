@@ -77,8 +77,9 @@ public class BestSolutionMutationProblemStatistic extends ProblemStatistic {
                     singleBenchmarkResult.getSolverBenchmarkResult().getNameWithFavoriteSuffix());
             XYItemRenderer renderer = new YIntervalRenderer();
             if (singleBenchmarkResult.hasAllSuccess()) {
-                BestSolutionMutationSubSingleStatistic subSingleStatistic = (BestSolutionMutationSubSingleStatistic) singleBenchmarkResult
-                        .getSubSingleStatistic(problemStatisticType);
+                BestSolutionMutationSubSingleStatistic subSingleStatistic =
+                        (BestSolutionMutationSubSingleStatistic) singleBenchmarkResult
+                                .getSubSingleStatistic(problemStatisticType);
                 List<BestSolutionMutationStatisticPoint> points = subSingleStatistic.getPointList();
                 for (BestSolutionMutationStatisticPoint point : points) {
                     long timeMillisSpent = point.getTimeMillisSpent();

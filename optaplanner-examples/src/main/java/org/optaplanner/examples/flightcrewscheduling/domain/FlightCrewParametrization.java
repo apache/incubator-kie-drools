@@ -25,7 +25,8 @@ public class FlightCrewParametrization extends AbstractPersistable {
     public static final String TRANSFER_BETWEEN_TWO_FLIGHTS = "Transfer between two flights";
     public static final String EMPLOYEE_UNAVAILABILITY = "Employee unavailability";
 
-    public static final String LOAD_BALANCE_FLIGHT_DURATION_TOTAL_PER_EMPLOYEE = "Load balance flight duration total per employee";
+    public static final String LOAD_BALANCE_FLIGHT_DURATION_TOTAL_PER_EMPLOYEE =
+            "Load balance flight duration total per employee";
 
     private long loadBalanceFlightDurationTotalPerEmployee = 1;
 

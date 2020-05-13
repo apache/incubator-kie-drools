@@ -166,10 +166,11 @@ public abstract class BavetAbstractBiConstraintStream<Solution_, A, B> extends B
     }
 
     @Override
-    public <GroupKeyA_, GroupKeyB_, ResultContainerC_, ResultC_, ResultContainerD_, ResultD_> QuadConstraintStream<GroupKeyA_, GroupKeyB_, ResultC_, ResultD_> groupBy(
-            BiFunction<A, B, GroupKeyA_> groupKeyAMapping, BiFunction<A, B, GroupKeyB_> groupKeyBMapping,
-            BiConstraintCollector<A, B, ResultContainerC_, ResultC_> collectorC,
-            BiConstraintCollector<A, B, ResultContainerD_, ResultD_> collectorD) {
+    public <GroupKeyA_, GroupKeyB_, ResultContainerC_, ResultC_, ResultContainerD_, ResultD_>
+            QuadConstraintStream<GroupKeyA_, GroupKeyB_, ResultC_, ResultD_> groupBy(
+                    BiFunction<A, B, GroupKeyA_> groupKeyAMapping, BiFunction<A, B, GroupKeyB_> groupKeyBMapping,
+                    BiConstraintCollector<A, B, ResultContainerC_, ResultC_> collectorC,
+                    BiConstraintCollector<A, B, ResultContainerD_, ResultD_> collectorD) {
         throw new UnsupportedOperationException();
     }
 

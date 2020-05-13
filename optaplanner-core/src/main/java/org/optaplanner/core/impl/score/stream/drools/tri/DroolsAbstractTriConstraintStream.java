@@ -158,22 +158,22 @@ public abstract class DroolsAbstractTriConstraintStream<Solution_, A, B, C>
     public <GroupKeyA_, GroupKeyB_, ResultContainer_, Result_> TriConstraintStream<GroupKeyA_, GroupKeyB_, Result_> groupBy(
             TriFunction<A, B, C, GroupKeyA_> groupKeyAMapping, TriFunction<A, B, C, GroupKeyB_> groupKeyBMapping,
             TriConstraintCollector<A, B, C, ResultContainer_, Result_> collector) {
-        DroolsGroupingTriConstraintStream<Solution_, GroupKeyA_, GroupKeyB_, Result_> stream = new DroolsGroupingTriConstraintStream<>(
-                constraintFactory, this, groupKeyAMapping,
-                groupKeyBMapping, collector);
+        DroolsGroupingTriConstraintStream<Solution_, GroupKeyA_, GroupKeyB_, Result_> stream =
+                new DroolsGroupingTriConstraintStream<>(constraintFactory, this, groupKeyAMapping, groupKeyBMapping, collector);
         addChildStream(stream);
         return stream;
     }
 
     @Override
-    public <GroupKeyA_, GroupKeyB_, ResultContainerC_, ResultC_, ResultContainerD_, ResultD_> QuadConstraintStream<GroupKeyA_, GroupKeyB_, ResultC_, ResultD_> groupBy(
-            TriFunction<A, B, C, GroupKeyA_> groupKeyAMapping,
-            TriFunction<A, B, C, GroupKeyB_> groupKeyBMapping,
-            TriConstraintCollector<A, B, C, ResultContainerC_, ResultC_> collectorC,
-            TriConstraintCollector<A, B, C, ResultContainerD_, ResultD_> collectorD) {
-        DroolsGroupingQuadConstraintStream<Solution_, GroupKeyA_, GroupKeyB_, ResultC_, ResultD_> stream = new DroolsGroupingQuadConstraintStream<>(
-                constraintFactory, this, groupKeyAMapping,
-                groupKeyBMapping, collectorC, collectorD);
+    public <GroupKeyA_, GroupKeyB_, ResultContainerC_, ResultC_, ResultContainerD_, ResultD_>
+            QuadConstraintStream<GroupKeyA_, GroupKeyB_, ResultC_, ResultD_> groupBy(
+                    TriFunction<A, B, C, GroupKeyA_> groupKeyAMapping,
+                    TriFunction<A, B, C, GroupKeyB_> groupKeyBMapping,
+                    TriConstraintCollector<A, B, C, ResultContainerC_, ResultC_> collectorC,
+                    TriConstraintCollector<A, B, C, ResultContainerD_, ResultD_> collectorD) {
+        DroolsGroupingQuadConstraintStream<Solution_, GroupKeyA_, GroupKeyB_, ResultC_, ResultD_> stream =
+                new DroolsGroupingQuadConstraintStream<>(constraintFactory, this, groupKeyAMapping, groupKeyBMapping,
+                        collectorC, collectorD);
         addChildStream(stream);
         return stream;
     }
@@ -261,7 +261,8 @@ public abstract class DroolsAbstractTriConstraintStream<Solution_, A, B, C>
     @Override
     public List<DroolsFromUniConstraintStream<Solution_, Object>> getFromStreamList() {
         if (parent == null) {
-            DroolsJoinTriConstraintStream<Solution_, A, B, C> joinStream = (DroolsJoinTriConstraintStream<Solution_, A, B, C>) this;
+            DroolsJoinTriConstraintStream<Solution_, A, B, C> joinStream =
+                    (DroolsJoinTriConstraintStream<Solution_, A, B, C>) this;
             List<DroolsFromUniConstraintStream<Solution_, Object>> leftParentFromStreamList = joinStream.getLeftParentStream()
                     .getFromStreamList();
             List<DroolsFromUniConstraintStream<Solution_, Object>> rightParentFromStreamList = joinStream.getRightParentStream()

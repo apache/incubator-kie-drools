@@ -29,7 +29,8 @@ import org.optaplanner.examples.nurserostering.domain.solver.ShiftAssignmentDiff
 
 import com.thoughtworks.xstream.annotations.XStreamAlias;
 
-@PlanningEntity(movableEntitySelectionFilter = MovableShiftAssignmentSelectionFilter.class, difficultyComparatorClass = ShiftAssignmentDifficultyComparator.class)
+@PlanningEntity(movableEntitySelectionFilter = MovableShiftAssignmentSelectionFilter.class,
+        difficultyComparatorClass = ShiftAssignmentDifficultyComparator.class)
 @XStreamAlias("ShiftAssignment")
 public class ShiftAssignment extends AbstractPersistable implements Comparable<ShiftAssignment> {
 

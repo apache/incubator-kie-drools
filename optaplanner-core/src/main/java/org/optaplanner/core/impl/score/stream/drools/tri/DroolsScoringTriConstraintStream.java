@@ -84,7 +84,8 @@ public final class DroolsScoringTriConstraintStream<Solution_, A, B, C>
     @Override
     public List<RuleItemBuilder<?>> createRuleItemBuilders(DroolsConstraint<?> constraint,
             Global<? extends AbstractScoreHolder<?>> scoreHolderGlobal) {
-        DroolsAbstractTriConstraintStream<Solution_, A, B, C> actualParent = (DroolsAbstractTriConstraintStream<Solution_, A, B, C>) parent;
+        DroolsAbstractTriConstraintStream<Solution_, A, B, C> actualParent =
+                (DroolsAbstractTriConstraintStream<Solution_, A, B, C>) parent;
         DroolsTriCondition<A, B, C, ?> condition = actualParent.getCondition();
         if (intMatchWeigher != null) {
             return condition.completeWithScoring(constraint, scoreHolderGlobal, intMatchWeigher);

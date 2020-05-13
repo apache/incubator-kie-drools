@@ -42,8 +42,9 @@ import org.optaplanner.test.api.score.stream.ConstraintVerifier;
 
 public class MachineReassignmentConstraintProviderTest {
 
-    private final ConstraintVerifier<MachineReassignmentConstraintProvider, MachineReassignment> constraintVerifier = ConstraintVerifier
-            .build(new MachineReassignmentConstraintProvider(), MachineReassignment.class, MrProcessAssignment.class);
+    private final ConstraintVerifier<MachineReassignmentConstraintProvider, MachineReassignment> constraintVerifier =
+            ConstraintVerifier
+                    .build(new MachineReassignmentConstraintProvider(), MachineReassignment.class, MrProcessAssignment.class);
 
     @Test
     public void maximumCapacity() {

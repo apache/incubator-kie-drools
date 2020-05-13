@@ -89,8 +89,8 @@ public final class DroolsQuadCondition<A, B, C, D, PatternVar> extends
                 bVariable, cVariable, dVariable, newTargetPattern, actualStructure.getShelvedRuleItems(),
                 actualStructure.getPrerequisites(), actualStructure.getDependents(),
                 actualStructure.getVariableIdSupplier());
-        ImmediatelyPreviousFilter<QuadPredicate<A, B, C, D>> newPreviousFilter = new ImmediatelyPreviousFilter<QuadPredicate<A, B, C, D>>(
-                actualStructure, actualPredicate);
+        ImmediatelyPreviousFilter<QuadPredicate<A, B, C, D>> newPreviousFilter =
+                new ImmediatelyPreviousFilter<QuadPredicate<A, B, C, D>>(actualStructure, actualPredicate);
         // Carry forward the information for filter merging.
         return new DroolsQuadCondition<>(newRuleStructure, newPreviousFilter);
     }
@@ -209,10 +209,10 @@ public final class DroolsQuadCondition<A, B, C, D, PatternVar> extends
                 getRuleStructure().getD()));
     }
 
-    public <NewA, NewB, NewC, NewD> DroolsQuadCondition<NewA, NewB, NewC, NewD, QuadTuple<NewA, NewB, NewC, NewD>> andGroupBiWithCollectBi(
-            QuadFunction<A, B, C, D, NewA> groupKeyAMapping,
-            QuadFunction<A, B, C, D, NewB> groupKeyBMapping, QuadConstraintCollector<A, B, C, D, ?, NewC> collectorC,
-            QuadConstraintCollector<A, B, C, D, ?, NewD> collectorD) {
+    public <NewA, NewB, NewC, NewD> DroolsQuadCondition<NewA, NewB, NewC, NewD, QuadTuple<NewA, NewB, NewC, NewD>>
+            andGroupBiWithCollectBi(QuadFunction<A, B, C, D, NewA> groupKeyAMapping,
+                    QuadFunction<A, B, C, D, NewB> groupKeyBMapping, QuadConstraintCollector<A, B, C, D, ?, NewC> collectorC,
+                    QuadConstraintCollector<A, B, C, D, ?, NewD> collectorD) {
         return groupBiWithCollectBi(() -> new DroolsQuadGroupByAccumulator<>(groupKeyAMapping, groupKeyBMapping,
                 collectorC, collectorD, getRuleStructure().getA(), getRuleStructure().getB(), getRuleStructure().getC(),
                 getRuleStructure().getD()));
