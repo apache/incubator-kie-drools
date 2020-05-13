@@ -119,7 +119,7 @@ public class FEELPropertyAccessibleImplementation {
     private SwitchEntry toGetPropertySwitchEntry(DMNDeclaredField fieldDefinition) {
         ReturnStmt returnStmt = new ReturnStmt();
         MethodCallExpr mc = StaticJavaParser.parseExpression(EvalHelper.PropertyValueResult.class.getCanonicalName() + ".ofValue()");
-        String accessorName = getAccessorName(fieldDefinition, "get");
+        String accessorName = fieldDefinition.overriddenGetterName().orElse(getAccessorName(fieldDefinition, "get"));
         mc.addArgument(new MethodCallExpr(new ThisExpr(), accessorName));
         returnStmt.setExpression(mc);
         return new SwitchEntry(nodeList(new StringLiteralExpr(fieldDefinition.getOriginalMapKey())), SwitchEntry.Type.STATEMENT_GROUP, nodeList(returnStmt));
@@ -151,7 +151,7 @@ public class FEELPropertyAccessibleImplementation {
 
     private SwitchEntry toSetPropertySwitchEntry(DMNDeclaredField fieldDefinition) {
 
-        String accessorName = getAccessorName(fieldDefinition, "set");
+        String accessorName = fieldDefinition.overriddenSetterName().orElse(getAccessorName(fieldDefinition, "set"));
         MethodCallExpr setMethod = new MethodCallExpr(new ThisExpr(), accessorName);
         setMethod.addArgument(new CastExpr(StaticJavaParser.parseType(fieldDefinition.getObjectType()), new NameExpr("value")));
 
@@ -226,7 +226,7 @@ public class FEELPropertyAccessibleImplementation {
 
         String fieldName = fieldDefinition.getOriginalMapKey();
 
-        String accessorName = getAccessorName(fieldDefinition, "get");
+        String accessorName = fieldDefinition.overriddenGetterName().orElse(getAccessorName(fieldDefinition, "get"));
 
         clone.findAll(StringLiteralExpr.class, se -> se.asString().equals("<PROPERTY_NAME>"))
                 .forEach(s -> s.replace(new StringLiteralExpr(fieldName)));

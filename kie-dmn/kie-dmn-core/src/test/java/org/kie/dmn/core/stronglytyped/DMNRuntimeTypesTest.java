@@ -85,6 +85,25 @@ public class DMNRuntimeTypesTest extends BaseVariantTest {
     }
 
     @Test
+    public void testJavaKeywords() {
+        final DMNRuntime runtime = createRuntime("javaKeywords.dmn", this.getClass());
+        final DMNModel dmnModel = runtime.getModel("https://kiegroup.org/dmn/_C41C1676-0DA9-47EA-90AD-F9BAA257129F", "A1B1A8AD-B0DC-453D-86A7-C9475450C982");
+        assertThat(dmnModel, notNullValue());
+        assertThat(DMNRuntimeUtil.formatMessages(dmnModel.getMessages()), dmnModel.hasErrors(), is(false));
+
+        final DMNContext context = DMNFactory.newContext();
+        Map<String, Object> aThing = mapOf(entry("name", "name"),
+                                           entry("const", "const"),
+                                           entry("class", "class"));
+        context.set("a thing", aThing);
+
+        final DMNResult dmnResult = evaluateModel(runtime, dmnModel, context);
+        LOG.debug("{}", dmnResult);
+        assertThat(DMNRuntimeUtil.formatMessages(dmnResult.getMessages()), dmnResult.hasErrors(), is(false));
+        assertThat(dmnResult.getDecisionResultByName("Decision-1").getResult(), is("nameconstclass"));
+    }
+
+    @Test
     public void testInnerComposite() {
         final DMNRuntime runtime = createRuntime("innerComposite.dmn", this.getClass());
         final DMNModel dmnModel = runtime.getModel("https://kiegroup.org/dmn/_641BCEBF-8D10-4E08-B47F-A9181C737A82", "new-file");

@@ -18,6 +18,7 @@ package org.drools.modelcompiler.builder.generator.declaredtype.api;
 
 import java.util.Collections;
 import java.util.List;
+import java.util.Optional;
 
 public interface FieldDefinition {
 
@@ -40,4 +41,12 @@ public interface FieldDefinition {
     boolean isStatic();
 
     boolean isFinal();
+
+    default Optional<String> overriddenGetterName() {
+        return Optional.empty();
+    }
+
+    default Optional<String> overriddenSetterName() {
+        return Optional.empty();
+    }
 }

@@ -179,9 +179,11 @@ public class GeneratedClassDeclaration {
 
         if (fieldDefinition.createAccessors()) {
             MethodDeclaration setter = field.createSetter();
+            fieldDefinition.overriddenSetterName().ifPresent(setter::setName);
             fieldDefinition.setterAnnotations().forEach(a -> addAnnotationToMethodDeclaration(setter, a));
 
             MethodDeclaration getter = field.createGetter();
+            fieldDefinition.overriddenGetterName().ifPresent(getter::setName);
             fieldDefinition.getterAnnotations().forEach(a -> addAnnotationToMethodDeclaration(getter, a));
 
             if (fieldDefinition.isKeyField()) {
