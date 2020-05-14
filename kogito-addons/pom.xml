@@ -18,6 +18,7 @@
     <module>jobs</module>
     <module>predictions</module>
     <module>process-management</module>
+    <module>tracing</module>
   </modules>
 
   <dependencyManagement>

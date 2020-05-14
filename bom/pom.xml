@@ -619,6 +619,30 @@
         <version>${project.version}</version>
         <classifier>sources</classifier>
       </dependency>
+
+      <!-- Tracing -->
+      <dependency>
+        <groupId>org.kie.kogito</groupId>
+        <artifactId>kogito-tracing-decision-common</artifactId>
+        <version>${project.version}</version>
+      </dependency>
+      <dependency>
+        <groupId>org.kie.kogito</groupId>
+        <artifactId>kogito-tracing-decision-common</artifactId>
+        <version>${project.version}</version>
+        <classifier>sources</classifier>
+      </dependency>
+      <dependency>
+        <groupId>org.kie.kogito</groupId>
+        <artifactId>kogito-tracing-decision-quarkus-addon</artifactId>
+        <version>${project.version}</version>
+      </dependency>
+      <dependency>
+        <groupId>org.kie.kogito</groupId>
+        <artifactId>kogito-tracing-decision-quarkus-addon</artifactId>
+        <version>${project.version}</version>
+        <classifier>sources</classifier>
+      </dependency>
     </dependencies>
 
   </dependencyManagement>

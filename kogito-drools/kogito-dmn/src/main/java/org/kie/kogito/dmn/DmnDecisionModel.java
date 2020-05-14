@@ -36,15 +36,15 @@ public class DmnDecisionModel implements DecisionModel {
 
     @Override
     public DMNResult evaluateAll(DMNContext context) {
-        return dmnRuntime.evaluateAll(dmnModel, context);
+        return dmnRuntime.evaluateAll(dmnModel, injectExecutionId(context));
     }
 
     @Override
     public DMNResult evaluateDecisionService(DMNContext context, String decisionServiceName) {
-        return dmnRuntime.evaluateDecisionService(dmnModel, inject(context), decisionServiceName);
+        return dmnRuntime.evaluateDecisionService(dmnModel, injectExecutionId(context), decisionServiceName);
     }
 
-    private DMNContext inject(DMNContext context) {
+    private DMNContext injectExecutionId(DMNContext context) {
         return execIdSupplier != null
                 ? DecisionExecutionIdUtils.inject(context, execIdSupplier)
                 : context;

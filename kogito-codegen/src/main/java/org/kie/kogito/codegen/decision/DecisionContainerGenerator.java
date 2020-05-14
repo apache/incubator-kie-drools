@@ -28,6 +28,7 @@ import com.github.javaparser.ast.CompilationUnit;
 import com.github.javaparser.ast.NodeList;
 import com.github.javaparser.ast.body.ClassOrInterfaceDeclaration;
 import com.github.javaparser.ast.body.FieldDeclaration;
+import com.github.javaparser.ast.body.VariableDeclarator;
 import com.github.javaparser.ast.expr.BinaryExpr;
 import com.github.javaparser.ast.expr.Expression;
 import com.github.javaparser.ast.expr.FieldAccessExpr;
@@ -45,6 +46,9 @@ import com.github.javaparser.ast.type.ClassOrInterfaceType;
 import org.kie.dmn.api.core.DMNModel;
 import org.kie.kogito.codegen.AbstractApplicationSection;
 import org.kie.kogito.decision.DecisionModels;
+import org.kie.kogito.dmn.DmnExecutionIdSupplier;
+
+import static org.kie.kogito.codegen.CodegenUtils.newObject;
 
 public class DecisionContainerGenerator extends AbstractApplicationSection {
 
@@ -53,12 +57,18 @@ public class DecisionContainerGenerator extends AbstractApplicationSection {
     private String applicationCanonicalName;
     private final Path basePath;
     private final Collection<DMNModel> models;
+    private boolean useTracing = false;
 
     public DecisionContainerGenerator(String applicationCanonicalName, Path basePath, Collection<DMNModel> models) {
         super("DecisionModels", "decisionModels", DecisionModels.class);
         this.applicationCanonicalName = applicationCanonicalName;
         this.basePath = basePath;
         this.models = models;
+    }
+
+    public DecisionContainerGenerator withTracing(boolean useTracing) {
+        this.useTracing = useTracing;
+        return this;
     }
 
     @Override
@@ -94,6 +104,12 @@ public class DecisionContainerGenerator extends AbstractApplicationSection {
             } else {
                 throw new RuntimeException("The template " + TEMPLATE_JAVA + " has been modified.");
             }
+        }
+        if (useTracing) {
+            VariableDeclarator execIdSupplierVariable = typeDeclaration.getFieldByName("execIdSupplier")
+                    .map(x -> x.getVariable(0))
+                    .orElseThrow(() -> new RuntimeException("Can't find \"execIdSupplier\" field in " + TEMPLATE_JAVA));
+            execIdSupplierVariable.setInitializer(newObject(DmnExecutionIdSupplier.class));
         }
         return typeDeclaration;
     }

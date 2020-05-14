@@ -20,7 +20,6 @@ import io.quarkus.bootstrap.BootstrapDependencyProcessingException;
 import io.quarkus.bootstrap.model.AppDependency;
 import io.quarkus.bootstrap.model.AppModel;
 import io.quarkus.builder.item.BuildItem;
-import io.quarkus.deployment.Capabilities;
 import io.quarkus.deployment.annotations.BuildProducer;
 import io.quarkus.deployment.annotations.BuildStep;
 import io.quarkus.deployment.builditem.ArchiveRootBuildItem;
@@ -75,7 +74,7 @@ public class KogitoAssetsProcessor {
     private final transient String appPackageName = "org.kie.kogito.app";
     private final transient String persistenceFactoryClass = "org.kie.kogito.persistence.KogitoProcessInstancesFactory";
     private final transient String metricsClass = "org.kie.kogito.monitoring.rest.MetricsResource";
-
+    private final transient String tracingClass = "org.kie.kogito.tracing.decision.KogitoDecisionTracingListener";
 
     @BuildStep
     CapabilityBuildItem capability() {
@@ -349,6 +348,8 @@ public class KogitoAssetsProcessor {
                 .getClassByName(createDotName(persistenceFactoryClass)) != null;
         boolean useMonitoring = combinedIndexBuildItem.getIndex()
                 .getClassByName(createDotName(metricsClass)) != null;
+        boolean useTracing = combinedIndexBuildItem.getIndex()
+                .getClassByName(createDotName(tracingClass)) != null;
 
         GeneratorContext context = buildContext(projectPath, combinedIndexBuildItem.getIndex());
 
@@ -359,9 +360,9 @@ public class KogitoAssetsProcessor {
                 .withGeneratorContext(context);
 
         boolean isDirectory = projectPath.toFile().isDirectory();
-        addProcessGenerator( projectPath, usePersistence, appGen, isDirectory);
-        addRuleGenerator( projectPath, appGen, isDirectory, useMonitoring );
-        addDecisionGenerator( projectPath, appGen, isDirectory, useMonitoring );
+        addProcessGenerator(projectPath, usePersistence, appGen, isDirectory);
+        addRuleGenerator(projectPath, appGen, isDirectory, useMonitoring);
+        addDecisionGenerator(projectPath, appGen, isDirectory, useMonitoring, useTracing);
 
         return appGen;
     }
@@ -398,12 +399,12 @@ public class KogitoAssetsProcessor {
                 .withClassLoader(Thread.currentThread().getContextClassLoader());
     }
 
-    private void addDecisionGenerator( Path projectPath, ApplicationGenerator appGen, boolean isDirectory, boolean useMonitoring ) throws IOException {
+    private void addDecisionGenerator(Path projectPath, ApplicationGenerator appGen, boolean isDirectory, boolean useMonitoring, boolean useTracing) throws IOException {
         DecisionCodegen generator = isDirectory ?
                 DecisionCodegen.ofPath(projectPath.resolve("src/main/resources")) :
                 DecisionCodegen.ofJar(projectPath);
 
-        appGen.withGenerator( generator )
+        appGen.withGenerator(generator.withTracing(useTracing))
                 .withMonitoring(useMonitoring);
     }
 

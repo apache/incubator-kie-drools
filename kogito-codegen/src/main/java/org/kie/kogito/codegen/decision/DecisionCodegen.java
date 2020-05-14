@@ -205,4 +205,9 @@ public class DecisionCodegen extends AbstractGenerator {
         return this;
     }
 
+    public DecisionCodegen withTracing(boolean useTracing) {
+        this.moduleGenerator.withTracing(useTracing);
+        return this;
+    }
+
 }

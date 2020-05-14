@@ -111,6 +111,7 @@
 
     <version.net.java.dev.glazedlists>1.8.0</version.net.java.dev.glazedlists>
 
+    <version.io.cloudevents>1.3.0</version.io.cloudevents>
     <version.io.fabric8.kubernetes-client>4.8.0</version.io.fabric8.kubernetes-client>
     <version.io.prometheus>0.5.0</version.io.prometheus>
     <version.io.quarkus>1.4.1.Final</version.io.quarkus>
@@ -762,6 +763,13 @@
         <artifactId>kubernetes-server-mock</artifactId>
         <version>${version.io.fabric8.kubernetes-client}</version>
         <scope>test</scope>
+      </dependency>
+
+      <!-- CloudEvents -->
+      <dependency>
+        <groupId>io.cloudevents</groupId>
+        <artifactId>cloudevents-api</artifactId>
+        <version>${version.io.cloudevents}</version>
       </dependency>
     </dependencies>
   </dependencyManagement>
