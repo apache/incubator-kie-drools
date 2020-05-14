@@ -17,8 +17,10 @@
 package org.kie.dmn.typesafe;
 
 import java.time.ZonedDateTime;
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
@@ -30,15 +32,19 @@ import org.kie.dmn.api.core.DMNModel;
 import org.kie.dmn.api.core.DMNType;
 import org.kie.dmn.api.core.ast.InputDataNode;
 import org.kie.dmn.core.impl.DMNModelImpl;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 public class DMNTypeSafeTypeGenerator {
+
+    private static final Logger LOG = LoggerFactory.getLogger(DMNTypeSafeTypeGenerator.class);
 
     private final DMNTypeSafePackageName.Factory packageName;
     private DMNAllTypesIndex index;
     private DMNModelImpl dmnModel;
     private final String disclaimerMarker;
 
-    private Map<String, TypeDefinition> types = new HashMap<>();
+    private List<TypeDefinition> types = new ArrayList<>();
 
     private static final String JAVADOC_BRNL = "<br/>\n";
 
@@ -80,27 +86,28 @@ public class DMNTypeSafeTypeGenerator {
         inputSetType.initFields();
         inputSetType.setJavadoc(postfixToJavadoc(new StringBuilder("A representation of all the InputData and other DRG Requirement of the whole DMN '").append(dmnModel.getName()).append("' inputs.").toString(), dmnModel));
 
-        types.put(inputSetType.getTypeName(), inputSetType);
+        types.add(inputSetType);
 
-        for (DMNType type : index.allTypesToGenerate()) {
+        for (DMNType type : index.typesToGenerateByNS(dmnModel.getNamespace())) { // this generator shall only be concerned with the types belonging to this generator dmnModel.
             DMNDeclaredType dmnDeclaredType = new DMNDeclaredType(index, type);
             dmnDeclaredType.setJavadoc(postfixToJavadoc(new StringBuilder("A representation of the DMN defined ItemDefinition type '").append(type.getName()).append("'.").toString(), dmnModel));
-            types.put(dmnDeclaredType.getTypeName(), dmnDeclaredType);
+            types.add(dmnDeclaredType);
         }
     }
 
     public Map<String, String> generateSourceCodeOfAllTypes() {
         Map<String, String> allSources = new HashMap<>();
         DMNTypeSafePackageName packageDeclaration = this.packageName.create(dmnModel);
-        for (Map.Entry<String, TypeDefinition> kv : types.entrySet()) {
-            ClassOrInterfaceDeclaration generatedClass = new GeneratedClassDeclaration(kv.getValue(),
+        for (TypeDefinition typeDefinition : types) {
+            ClassOrInterfaceDeclaration generatedClass = new GeneratedClassDeclaration(typeDefinition,
                                                                                        Collections.emptyList()).toClassDeclaration();
 
             CompilationUnit cu = new CompilationUnit(packageDeclaration.packageName());
             cu.getPackageDeclaration().ifPresent(pd -> pd.setBlockComment(this.disclaimerMarker));
             cu.addType(generatedClass);
+            LOG.debug("\n{}", cu);
 
-            allSources.put(packageDeclaration.appendPackage(kv.getKey()), cu.toString());
+            allSources.put(packageDeclaration.appendPackage(typeDefinition.getTypeName()), cu.toString());
         }
         return allSources;
     }
