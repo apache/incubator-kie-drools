@@ -27,6 +27,7 @@ public class GeneratedFile {
         PROCESS_INSTANCE,
         REST,
         RULE,
+        DECLARED_TYPE,
         QUERY,
         MODEL,
         CLASS,
