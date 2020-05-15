@@ -79,9 +79,11 @@ public class DMNDecisionServiceEvaluator implements DMNExpressionEvaluator {
                 errors = true;
             }
         }
-        if (((DMNRuntimeImpl) eventManager.getRuntime()).performRuntimeTypeCheck(result.getModel())) {
+        boolean typeCheck = ((DMNRuntimeImpl) eventManager.getRuntime()).performRuntimeTypeCheck(result.getModel());
+        if (typeCheck) {
             Object c = DMNRuntimeImpl.coerceUsingType(ctx,
                                                       dsNode.getResultType(),
+                                                      typeCheck,
                                                       (rx, tx) -> MsgUtil.reportMessage(LOG,
                                                                                         DMNMessage.Severity.WARN,
                                                                                         dsNode.getDecisionService(),

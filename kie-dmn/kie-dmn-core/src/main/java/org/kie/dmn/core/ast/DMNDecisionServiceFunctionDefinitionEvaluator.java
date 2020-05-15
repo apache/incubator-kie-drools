@@ -152,24 +152,21 @@ public class DMNDecisionServiceFunctionDefinitionEvaluator implements DMNExpress
         }
 
         private Object performTypeCheckIfNeeded(Object param, int paramIndex) {
-            if (typeCheck) {
-                DSFormalParameter dsFormalParameter = parameters.get(paramIndex);
-                Object result = DMNRuntimeImpl.coerceUsingType(param, 
-                                                               dsFormalParameter.type, 
-                                                               (rx, tx) -> MsgUtil.reportMessage(LOG,
-                                                                                                 DMNMessage.Severity.WARN,
-                                                                                                 null,
-                                                                                                 resultContext,
-                                                                                                 null,
-                                                                                                 null,
-                                                                                                 Msg.PARAMETER_TYPE_MISMATCH_DS,
-                                                                                                 dsFormalParameter.name,
-                                                                                                 tx,
-                                                                                                 MsgUtil.clipString(rx.toString(), 50)));
-                return result;
-            } else {
-                return param;
-            }
+            DSFormalParameter dsFormalParameter = parameters.get(paramIndex);
+            Object result = DMNRuntimeImpl.coerceUsingType(param,
+                                                           dsFormalParameter.type,
+                                                           typeCheck,
+                                                           (rx, tx) -> MsgUtil.reportMessage(LOG,
+                                                                                             DMNMessage.Severity.WARN,
+                                                                                             null,
+                                                                                             resultContext,
+                                                                                             null,
+                                                                                             null,
+                                                                                             Msg.PARAMETER_TYPE_MISMATCH_DS,
+                                                                                             dsFormalParameter.name,
+                                                                                             tx,
+                                                                                             MsgUtil.clipString(rx.toString(), 50)));
+            return result;
         }
 
         @Override
