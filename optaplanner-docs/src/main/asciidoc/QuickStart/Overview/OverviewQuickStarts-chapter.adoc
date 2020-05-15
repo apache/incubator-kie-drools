@@ -9,7 +9,7 @@ Pick the quick start that best aligns with your requirements:
 ** Build a REST application that uses OptaPlanner to optimize a school timetable for students and teachers.
 ** https://quarkus.io[Quarkus] is an extremely fast platform in the Java ecosystem.
 It is ideal for rapid incremental development, as well as deployment into the cloud. It also supports native compilation.
-* <<springBootJavaQuickStart, *Spring Boot Java*>>:
+* <<springBootJavaQuickStart, *Spring Boot Java*>>
 ** Build a REST application that uses OptaPlanner to optimize a school timetable for students and teachers.
 ** Spring Boot is a popular platform in the Java ecosystem.
 * <<plainJavaQuickStart,*Java*>> (plain Java SE)
