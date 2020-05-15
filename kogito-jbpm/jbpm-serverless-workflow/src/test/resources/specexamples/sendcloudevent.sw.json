@@ -54,7 +54,7 @@
       "end": {
         "kind": "EVENT",
         "produceEvent": {
-          "nameRef": "provisioningCompleteEvent",
+          "eventRef": "provisioningCompleteEvent",
           "data": "$.provisionedOrders"
         }
       }

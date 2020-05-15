@@ -386,12 +386,11 @@ public class RuleFlowProcessValidator implements ProcessValidator {
                                         "Action has no outgoing connection.");
                     }
                 }
-                if (actionNode.getAction() == null) {
-                    addErrorMessage(process,
-                                    node,
-                                    errors,
-                                    "Action has no action.");
-                } else if (actionNode.getAction() instanceof DroolsConsequenceAction) {
+                // don't add message if action node action is null
+                // with codegen the ActionNodeVisitor will add the action
+                // so when testing outside codegen having no action
+                // does not mean the action node has an error (this was true before with jBPM but not in Kogito)
+                if (actionNode.getAction() instanceof DroolsConsequenceAction) {
                     DroolsConsequenceAction droolsAction = (DroolsConsequenceAction) actionNode.getAction();
                     String actionString = droolsAction.getConsequence();
                     if (actionString == null) {

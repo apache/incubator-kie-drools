@@ -2,7 +2,7 @@
   "type": "object",
   "javaType": "org.jbpm.serverless.workflow.api.produce.ProduceEvent",
   "properties": {
-    "nameRef": {
+    "eventRef": {
       "type": "string",
       "description": "References a name of a defined event",
       "minLength": 1
@@ -13,6 +13,6 @@
     }
   },
   "required": [
-    "nameRef"
+    "eventRef"
   ]
 }

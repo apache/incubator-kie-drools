@@ -11,6 +11,10 @@
       "description": "References a reusable function definition to be invoked",
       "$ref": "../functions/functionref.json"
     },
+    "timeout": {
+      "type": "string",
+      "description": "Time period to wait for function execution to complete"
+    },
     "actionDataFilter": {
       "$ref": "../filters/actiondatafilter.json"
     }

@@ -24,6 +24,7 @@ import org.jbpm.process.core.event.EventTypeFilter;
 import org.jbpm.process.core.impl.WorkImpl;
 import org.jbpm.process.core.timer.Timer;
 import org.jbpm.process.core.validation.ProcessValidationError;
+import org.jbpm.ruleflow.core.Metadata;
 import org.jbpm.ruleflow.core.RuleFlowProcess;
 import org.jbpm.ruleflow.core.validation.RuleFlowProcessValidator;
 import org.jbpm.serverless.workflow.api.Workflow;
@@ -130,10 +131,10 @@ public class ServerlessWorkflowFactory {
         StartNode startNode = new StartNode();
         startNode.setId(id);
         startNode.setName(eventDefinition.getName());
-        startNode.setMetaData("TriggerMapping", DEFAULT_WORKFLOW_VAR);
-        startNode.setMetaData("TriggerType", "ConsumeMessage");
-        startNode.setMetaData("TriggerRef", eventDefinition.getSource());
-        startNode.setMetaData("MessageType", JSON_NODE);
+        startNode.setMetaData(Metadata.TRIGGER_MAPPING, DEFAULT_WORKFLOW_VAR);
+        startNode.setMetaData(Metadata.TRIGGER_TYPE, "ConsumeMessage");
+        startNode.setMetaData(Metadata.TRIGGER_REF, eventDefinition.getSource());
+        startNode.setMetaData(Metadata.MESSAGE_TYPE, JSON_NODE);
         addTriggerToStartNode(startNode, JSON_NODE);
 
         nodeContainer.addNode(startNode);
@@ -158,12 +159,12 @@ public class ServerlessWorkflowFactory {
         endNode.setId(id);
         endNode.setName(name);
 
-        EventDefinition eventDef = ServerlessWorkflowUtils.getWorkflowEventFor(workflow, stateEnd.getProduceEvent().getNameRef());
+        EventDefinition eventDef = ServerlessWorkflowUtils.getWorkflowEventFor(workflow, stateEnd.getProduceEvent().getEventRef());
 
-        endNode.setMetaData("TriggerRef", eventDef.getSource());
-        endNode.setMetaData("TriggerType", "ProduceMessage");
-        endNode.setMetaData("MessageType", JSON_NODE);
-        endNode.setMetaData("MappingVariable", DEFAULT_WORKFLOW_VAR);
+        endNode.setMetaData(Metadata.TRIGGER_REF, eventDef.getSource());
+        endNode.setMetaData(Metadata.TRIGGER_TYPE, "ProduceMessage");
+        endNode.setMetaData(Metadata.MESSAGE_TYPE, JSON_NODE);
+        endNode.setMetaData(Metadata.MAPPING_VARIABLE, DEFAULT_WORKFLOW_VAR);
         addMessageEndNodeAction(endNode, DEFAULT_WORKFLOW_VAR, JSON_NODE);
 
         nodeContainer.addNode(endNode);
@@ -175,7 +176,7 @@ public class ServerlessWorkflowFactory {
         TimerNode timerNode = new TimerNode();
         timerNode.setId(id);
         timerNode.setName(name);
-        timerNode.setMetaData("EventType", "timer");
+        timerNode.setMetaData(Metadata.EVENT_TYPE, "timer");
 
         Timer timer = new Timer();
         timer.setTimeType(Timer.TIME_DURATION);
@@ -235,12 +236,26 @@ public class ServerlessWorkflowFactory {
         eventFilter.setType(triggerEventType);
         trigger.addEventFilter(eventFilter);
 
-        String mapping = (String) startNode.getMetaData("TriggerMapping");
+        String mapping = (String) startNode.getMetaData(Metadata.TRIGGER_MAPPING);
         if (mapping != null) {
             trigger.addInMapping(mapping, startNode.getOutMapping(mapping));
         }
 
         startNode.addTrigger(trigger);
+    }
+
+    public ActionNode sendEventNode(long id, EventDefinition eventDefinition, NodeContainer nodeContainer) {
+        ActionNode sendEventNode = new ActionNode();
+        sendEventNode.setId(id);
+        sendEventNode.setName(eventDefinition.getName());
+        sendEventNode.setMetaData(Metadata.TRIGGER_TYPE, "ProduceMessage");
+        sendEventNode.setMetaData(Metadata.MAPPING_VARIABLE, DEFAULT_WORKFLOW_VAR);
+        sendEventNode.setMetaData(Metadata.TRIGGER_REF, eventDefinition.getSource());
+        sendEventNode.setMetaData(Metadata.MESSAGE_TYPE, JSON_NODE);
+
+        nodeContainer.addNode(sendEventNode);
+
+        return sendEventNode;
     }
 
     public ActionNode scriptNode(long id, String name, String script, NodeContainer nodeContainer) {

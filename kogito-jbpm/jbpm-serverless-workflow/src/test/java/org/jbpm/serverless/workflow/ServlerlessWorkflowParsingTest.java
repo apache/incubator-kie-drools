@@ -477,6 +477,37 @@ public class ServlerlessWorkflowParsingTest extends BaseServerlessTest {
     }
 
     @ParameterizedTest
+    @ValueSource(strings = {"/exec/transition-produce-event.sw.json", "/exec/transition-produce-event.sw.yml"})
+    public void testProduceEventOnTransition(String workflowLocation) throws Exception {
+        RuleFlowProcess process = (RuleFlowProcess) getWorkflowParser(workflowLocation).parseWorkFlow(classpathResourceReader(workflowLocation));
+        assertEquals("produceeventontransition", process.getId());
+        assertEquals("Produce Event On Transition", process.getName());
+        assertEquals("1.0", process.getVersion());
+        assertEquals("org.kie.kogito.serverless", process.getPackageName());
+        assertEquals(RuleFlowProcess.PUBLIC_VISIBILITY, process.getVisibility());
+
+        assertEquals(5, process.getNodes().length);
+        Node node = process.getNodes()[0];
+        assertTrue(node instanceof StartNode);
+        node = process.getNodes()[2];
+        assertTrue(node instanceof CompositeContextNode);
+        node = process.getNodes()[3];
+        assertTrue(node instanceof CompositeContextNode);
+        node = process.getNodes()[4];
+        assertTrue(node instanceof ActionNode);
+        node = process.getNodes()[1];
+        assertTrue(node instanceof EndNode);
+
+        ActionNode actionNode = (ActionNode) process.getNodes()[4];
+        assertEquals("TestKafkaEvent", actionNode.getName());
+        assertEquals("ProduceMessage", actionNode.getMetaData("TriggerType"));
+        assertEquals("workflowdata", actionNode.getMetaData("MappingVariable"));
+        assertEquals("testtopic", actionNode.getMetaData("TriggerRef"));
+        assertEquals("com.fasterxml.jackson.databind.JsonNode", actionNode.getMetaData("MessageType"));
+
+    }
+
+    @ParameterizedTest
     @ValueSource(strings = {"/specexamples/helloworld.sw.json", "/specexamples/helloworld.sw.yml",
             "/specexamples/greeting.sw.json", "/specexamples/greeting.sw.yml",
             "/specexamples/eventbasedgreeting.sw.json", "/specexamples/eventbasedgreeting.sw.yml",
