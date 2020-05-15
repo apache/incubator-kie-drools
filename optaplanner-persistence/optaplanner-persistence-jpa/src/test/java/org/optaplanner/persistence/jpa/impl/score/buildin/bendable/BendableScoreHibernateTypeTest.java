@@ -1,5 +1,5 @@
 /*
- * Copyright 2015 Red Hat, Inc. and/or its affiliates.
+ * Copyright 2020 Red Hat, Inc. and/or its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -24,9 +24,9 @@ import org.hibernate.annotations.Parameter;
 import org.hibernate.annotations.TypeDef;
 import org.junit.jupiter.api.Test;
 import org.optaplanner.core.api.score.buildin.bendable.BendableScore;
-import org.optaplanner.persistence.jpa.impl.score.AbstractScoreHibernateTypeTest;
+import org.optaplanner.persistence.jpa.AbstractScoreJpaTest;
 
-public class BendableScoreHibernateTypeTest extends AbstractScoreHibernateTypeTest {
+public class BendableScoreHibernateTypeTest extends AbstractScoreJpaTest {
 
     @Test
     public void persistAndMerge() {
@@ -40,6 +40,9 @@ public class BendableScoreHibernateTypeTest extends AbstractScoreHibernateTypeTe
             @Parameter(name = "hardLevelsSize", value = "3"), @Parameter(name = "softLevelsSize", value = "2") })
     public static class TestJpaEntity extends AbstractTestJpaEntity<BendableScore> {
 
+        @Columns(columns = { @Column(name = "initScore"),
+                @Column(name = "hard0Score"), @Column(name = "hard1Score"), @Column(name = "hard2Score"),
+                @Column(name = "soft0Score"), @Column(name = "soft1Score") })
         protected BendableScore score;
 
         private TestJpaEntity() {
@@ -50,9 +53,6 @@ public class BendableScoreHibernateTypeTest extends AbstractScoreHibernateTypeTe
         }
 
         @Override
-        @Columns(columns = { @Column(name = "initScore"),
-                @Column(name = "hard0Score"), @Column(name = "hard1Score"), @Column(name = "hard2Score"),
-                @Column(name = "soft0Score"), @Column(name = "soft1Score") })
         public BendableScore getScore() {
             return score;
         }

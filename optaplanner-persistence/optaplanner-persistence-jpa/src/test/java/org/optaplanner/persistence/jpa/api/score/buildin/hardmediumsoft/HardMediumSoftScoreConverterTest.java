@@ -14,50 +14,45 @@
  * limitations under the License.
  */
 
-package org.optaplanner.persistence.jpa.impl.score.buildin.simpledouble;
+package org.optaplanner.persistence.jpa.api.score.buildin.hardmediumsoft;
 
-import javax.persistence.Column;
+import javax.persistence.Convert;
 import javax.persistence.Entity;
 
-import org.hibernate.annotations.Columns;
-import org.hibernate.annotations.TypeDef;
 import org.junit.jupiter.api.Test;
-import org.optaplanner.core.api.score.buildin.simpledouble.SimpleDoubleScore;
+import org.optaplanner.core.api.score.buildin.hardmediumsoft.HardMediumSoftScore;
 import org.optaplanner.persistence.jpa.AbstractScoreJpaTest;
 
-public class SimpleDoubleScoreHibernateTypeTest extends AbstractScoreJpaTest {
+public class HardMediumSoftScoreConverterTest extends AbstractScoreJpaTest {
 
     @Test
     public void persistAndMerge() {
-        persistAndMerge(new TestJpaEntity(SimpleDoubleScore.ZERO),
-                SimpleDoubleScore.of(-10.01),
-                SimpleDoubleScore.ofUninitialized(-7, -10.01));
+        persistAndMerge(new TestJpaEntity(HardMediumSoftScore.ZERO), null,
+                HardMediumSoftScore.of(-100, -20, -3),
+                HardMediumSoftScore.ofUninitialized(-7, -100, -20, -3));
     }
 
     @Entity
-    @TypeDef(defaultForType = SimpleDoubleScore.class, typeClass = SimpleDoubleScoreHibernateType.class)
-    public static class TestJpaEntity extends AbstractTestJpaEntity<SimpleDoubleScore> {
+    public static class TestJpaEntity extends AbstractTestJpaEntity<HardMediumSoftScore> {
 
-        @Columns(columns = { @Column(name = "initScore"), @Column(name = "score") })
-        protected SimpleDoubleScore score;
+        @Convert(converter = HardMediumSoftScoreConverter.class)
+        protected HardMediumSoftScore score;
 
         private TestJpaEntity() {
         }
 
-        public TestJpaEntity(SimpleDoubleScore score) {
+        public TestJpaEntity(HardMediumSoftScore score) {
             this.score = score;
         }
 
         @Override
-        public SimpleDoubleScore getScore() {
+        public HardMediumSoftScore getScore() {
             return score;
         }
 
         @Override
-        public void setScore(SimpleDoubleScore score) {
+        public void setScore(HardMediumSoftScore score) {
             this.score = score;
         }
-
     }
-
 }

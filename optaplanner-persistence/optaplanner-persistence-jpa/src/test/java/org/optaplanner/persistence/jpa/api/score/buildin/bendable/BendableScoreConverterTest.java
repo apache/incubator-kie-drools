@@ -14,50 +14,45 @@
  * limitations under the License.
  */
 
-package org.optaplanner.persistence.jpa.impl.score.buildin.simpledouble;
+package org.optaplanner.persistence.jpa.api.score.buildin.bendable;
 
-import javax.persistence.Column;
+import javax.persistence.Convert;
 import javax.persistence.Entity;
 
-import org.hibernate.annotations.Columns;
-import org.hibernate.annotations.TypeDef;
 import org.junit.jupiter.api.Test;
-import org.optaplanner.core.api.score.buildin.simpledouble.SimpleDoubleScore;
+import org.optaplanner.core.api.score.buildin.bendable.BendableScore;
 import org.optaplanner.persistence.jpa.AbstractScoreJpaTest;
 
-public class SimpleDoubleScoreHibernateTypeTest extends AbstractScoreJpaTest {
+public class BendableScoreConverterTest extends AbstractScoreJpaTest {
 
     @Test
     public void persistAndMerge() {
-        persistAndMerge(new TestJpaEntity(SimpleDoubleScore.ZERO),
-                SimpleDoubleScore.of(-10.01),
-                SimpleDoubleScore.ofUninitialized(-7, -10.01));
+        persistAndMerge(new TestJpaEntity(BendableScore.zero(3, 2)), null,
+                BendableScore.of(new int[] { 10000, 2000, 300 }, new int[] { 40, 5 }),
+                BendableScore.ofUninitialized(-7, new int[] { 10000, 2000, 300 }, new int[] { 40, 5 }));
     }
 
     @Entity
-    @TypeDef(defaultForType = SimpleDoubleScore.class, typeClass = SimpleDoubleScoreHibernateType.class)
-    public static class TestJpaEntity extends AbstractTestJpaEntity<SimpleDoubleScore> {
+    public static class TestJpaEntity extends AbstractTestJpaEntity<BendableScore> {
 
-        @Columns(columns = { @Column(name = "initScore"), @Column(name = "score") })
-        protected SimpleDoubleScore score;
+        @Convert(converter = BendableScoreConverter.class)
+        protected BendableScore score;
 
         private TestJpaEntity() {
         }
 
-        public TestJpaEntity(SimpleDoubleScore score) {
+        public TestJpaEntity(BendableScore score) {
             this.score = score;
         }
 
         @Override
-        public SimpleDoubleScore getScore() {
+        public BendableScore getScore() {
             return score;
         }
 
         @Override
-        public void setScore(SimpleDoubleScore score) {
+        public void setScore(BendableScore score) {
             this.score = score;
         }
-
     }
-
 }

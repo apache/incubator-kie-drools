@@ -14,24 +14,22 @@
  * limitations under the License.
  */
 
-package org.optaplanner.persistence.jpa.impl.score.buildin.hardmediumsoftbigdecimal;
+package org.optaplanner.persistence.jpa.api.score.buildin.hardmediumsoftbigdecimal;
 
 import java.math.BigDecimal;
 
-import javax.persistence.Column;
+import javax.persistence.Convert;
 import javax.persistence.Entity;
 
-import org.hibernate.annotations.Columns;
-import org.hibernate.annotations.TypeDef;
 import org.junit.jupiter.api.Test;
 import org.optaplanner.core.api.score.buildin.hardmediumsoftbigdecimal.HardMediumSoftBigDecimalScore;
 import org.optaplanner.persistence.jpa.AbstractScoreJpaTest;
 
-public class HardMediumSoftBigDecimalScoreHibernateTypeTest extends AbstractScoreJpaTest {
+public class HardMediumSoftBigDecimalScoreConverterTest extends AbstractScoreJpaTest {
 
     @Test
     public void persistAndMerge() {
-        persistAndMerge(new TestJpaEntity(HardMediumSoftBigDecimalScore.ZERO),
+        persistAndMerge(new TestJpaEntity(HardMediumSoftBigDecimalScore.ZERO), null,
                 HardMediumSoftBigDecimalScore.of(new BigDecimal("-10.01000"), new BigDecimal("-4.32100"),
                         new BigDecimal("-2.20000")),
                 HardMediumSoftBigDecimalScore.ofUninitialized(-7, new BigDecimal("-10.01000"), new BigDecimal("-4.32100"),
@@ -39,14 +37,9 @@ public class HardMediumSoftBigDecimalScoreHibernateTypeTest extends AbstractScor
     }
 
     @Entity
-    @TypeDef(defaultForType = HardMediumSoftBigDecimalScore.class, typeClass = HardMediumSoftBigDecimalScoreHibernateType.class)
     public static class TestJpaEntity extends AbstractTestJpaEntity<HardMediumSoftBigDecimalScore> {
 
-        @Columns(columns = {
-                @Column(name = "initScore"),
-                @Column(name = "hardScore", precision = 10, scale = 5),
-                @Column(name = "mediumScore", precision = 10, scale = 5),
-                @Column(name = "softScore", precision = 10, scale = 5) })
+        @Convert(converter = HardMediumSoftBigDecimalScoreConverter.class)
         protected HardMediumSoftBigDecimalScore score;
 
         private TestJpaEntity() {
@@ -65,7 +58,5 @@ public class HardMediumSoftBigDecimalScoreHibernateTypeTest extends AbstractScor
         public void setScore(HardMediumSoftBigDecimalScore score) {
             this.score = score;
         }
-
     }
-
 }

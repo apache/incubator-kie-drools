@@ -1,5 +1,5 @@
 /*
- * Copyright 2015 Red Hat, Inc. and/or its affiliates.
+ * Copyright 2020 Red Hat, Inc. and/or its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package org.optaplanner.persistence.jpa.impl.score;
+package org.optaplanner.persistence.jpa;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
@@ -28,7 +28,6 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.MappedSuperclass;
-import javax.persistence.Transient;
 import javax.transaction.HeuristicMixedException;
 import javax.transaction.HeuristicRollbackException;
 import javax.transaction.NotSupportedException;
@@ -41,7 +40,7 @@ import org.junit.jupiter.api.BeforeEach;
 import org.kie.test.util.db.PersistenceUtil;
 import org.optaplanner.core.api.score.Score;
 
-public abstract class AbstractScoreHibernateTypeTest {
+public abstract class AbstractScoreJpaTest {
 
     protected Map<String, Object> context;
     protected EntityManagerFactory entityManagerFactory;
@@ -51,11 +50,11 @@ public abstract class AbstractScoreHibernateTypeTest {
     public void setUp() throws Exception {
         context = PersistenceUtil.setupWithPoolingDataSource("org.optaplanner.persistence.jpa.test");
         entityManagerFactory = (EntityManagerFactory) context.get(PersistenceUtil.ENTITY_MANAGER_FACTORY);
-        transactionManager = (TransactionManager) InitialContext.doLookup("java:comp/TransactionManager");
+        transactionManager = InitialContext.doLookup("java:comp/TransactionManager");
     }
 
     @AfterEach
-    public void tearDown() throws Exception {
+    public void tearDown() {
         PersistenceUtil.cleanUp(context);
     }
 
@@ -121,10 +120,10 @@ public abstract class AbstractScoreHibernateTypeTest {
     @MappedSuperclass
     protected static abstract class AbstractTestJpaEntity<S extends Score> {
 
-        protected Long id;
-
         @Id
         @GeneratedValue(strategy = GenerationType.AUTO)
+        protected Long id;
+
         public Long getId() {
             return id;
         }
@@ -133,7 +132,6 @@ public abstract class AbstractScoreHibernateTypeTest {
             this.id = id;
         }
 
-        @Transient
         public abstract S getScore();
 
         public abstract void setScore(S score);

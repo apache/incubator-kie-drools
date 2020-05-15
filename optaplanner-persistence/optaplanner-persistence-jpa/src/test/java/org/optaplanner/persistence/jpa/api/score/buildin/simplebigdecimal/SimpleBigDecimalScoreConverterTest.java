@@ -14,50 +14,47 @@
  * limitations under the License.
  */
 
-package org.optaplanner.persistence.jpa.impl.score.buildin.simpledouble;
+package org.optaplanner.persistence.jpa.api.score.buildin.simplebigdecimal;
 
-import javax.persistence.Column;
+import java.math.BigDecimal;
+
+import javax.persistence.Convert;
 import javax.persistence.Entity;
 
-import org.hibernate.annotations.Columns;
-import org.hibernate.annotations.TypeDef;
 import org.junit.jupiter.api.Test;
-import org.optaplanner.core.api.score.buildin.simpledouble.SimpleDoubleScore;
+import org.optaplanner.core.api.score.buildin.simplebigdecimal.SimpleBigDecimalScore;
 import org.optaplanner.persistence.jpa.AbstractScoreJpaTest;
 
-public class SimpleDoubleScoreHibernateTypeTest extends AbstractScoreJpaTest {
+public class SimpleBigDecimalScoreConverterTest extends AbstractScoreJpaTest {
 
     @Test
     public void persistAndMerge() {
-        persistAndMerge(new TestJpaEntity(SimpleDoubleScore.ZERO),
-                SimpleDoubleScore.of(-10.01),
-                SimpleDoubleScore.ofUninitialized(-7, -10.01));
+        persistAndMerge(new TestJpaEntity(SimpleBigDecimalScore.ZERO), null,
+                SimpleBigDecimalScore.of(new BigDecimal("-10.01000")),
+                SimpleBigDecimalScore.ofUninitialized(-7, new BigDecimal("-10.01000")));
     }
 
     @Entity
-    @TypeDef(defaultForType = SimpleDoubleScore.class, typeClass = SimpleDoubleScoreHibernateType.class)
-    public static class TestJpaEntity extends AbstractTestJpaEntity<SimpleDoubleScore> {
+    public static class TestJpaEntity extends AbstractTestJpaEntity<SimpleBigDecimalScore> {
 
-        @Columns(columns = { @Column(name = "initScore"), @Column(name = "score") })
-        protected SimpleDoubleScore score;
+        @Convert(converter = SimpleBigDecimalScoreConverter.class)
+        protected SimpleBigDecimalScore score;
 
         private TestJpaEntity() {
         }
 
-        public TestJpaEntity(SimpleDoubleScore score) {
+        public TestJpaEntity(SimpleBigDecimalScore score) {
             this.score = score;
         }
 
         @Override
-        public SimpleDoubleScore getScore() {
+        public SimpleBigDecimalScore getScore() {
             return score;
         }
 
         @Override
-        public void setScore(SimpleDoubleScore score) {
+        public void setScore(SimpleBigDecimalScore score) {
             this.score = score;
         }
-
     }
-
 }

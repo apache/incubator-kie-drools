@@ -1,0 +1,23 @@
+{
+  "filters": {
+    "revapi": {
+      "java": {
+        "filter": {
+          "packages": {
+            "comment": "We don't want to check transitive classes, since we already check them in their own module.",
+            "regex": true,
+            "include": [
+              "org\\.optaplanner\\.persistence\\.jpa\\.api.*"
+            ]
+          }
+        }
+      }
+    }
+  },
+  "ignores": {
+    "revapi": {
+      "_comment": "Changes between 7.33.0.Final and the current branch. These changes are desired and thus ignored.",
+      "ignore": []
+    }
+  }
+}

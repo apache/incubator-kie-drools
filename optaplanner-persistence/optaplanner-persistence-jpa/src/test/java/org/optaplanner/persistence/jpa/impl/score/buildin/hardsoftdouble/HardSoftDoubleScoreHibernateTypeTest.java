@@ -1,5 +1,5 @@
 /*
- * Copyright 2015 Red Hat, Inc. and/or its affiliates.
+ * Copyright 2020 Red Hat, Inc. and/or its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -23,9 +23,9 @@ import org.hibernate.annotations.Columns;
 import org.hibernate.annotations.TypeDef;
 import org.junit.jupiter.api.Test;
 import org.optaplanner.core.api.score.buildin.hardsoftdouble.HardSoftDoubleScore;
-import org.optaplanner.persistence.jpa.impl.score.AbstractScoreHibernateTypeTest;
+import org.optaplanner.persistence.jpa.AbstractScoreJpaTest;
 
-public class HardSoftDoubleScoreHibernateTypeTest extends AbstractScoreHibernateTypeTest {
+public class HardSoftDoubleScoreHibernateTypeTest extends AbstractScoreJpaTest {
 
     @Test
     public void persistAndMerge() {
@@ -38,6 +38,7 @@ public class HardSoftDoubleScoreHibernateTypeTest extends AbstractScoreHibernate
     @TypeDef(defaultForType = HardSoftDoubleScore.class, typeClass = HardSoftDoubleScoreHibernateType.class)
     public static class TestJpaEntity extends AbstractTestJpaEntity<HardSoftDoubleScore> {
 
+        @Columns(columns = { @Column(name = "initScore"), @Column(name = "hardScore"), @Column(name = "softScore") })
         protected HardSoftDoubleScore score;
 
         private TestJpaEntity() {
@@ -48,7 +49,6 @@ public class HardSoftDoubleScoreHibernateTypeTest extends AbstractScoreHibernate
         }
 
         @Override
-        @Columns(columns = { @Column(name = "initScore"), @Column(name = "hardScore"), @Column(name = "softScore") })
         public HardSoftDoubleScore getScore() {
             return score;
         }

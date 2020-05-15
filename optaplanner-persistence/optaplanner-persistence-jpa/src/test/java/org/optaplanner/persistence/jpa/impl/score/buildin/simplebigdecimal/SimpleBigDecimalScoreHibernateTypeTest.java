@@ -1,5 +1,5 @@
 /*
- * Copyright 2015 Red Hat, Inc. and/or its affiliates.
+ * Copyright 2020 Red Hat, Inc. and/or its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -25,9 +25,9 @@ import org.hibernate.annotations.Columns;
 import org.hibernate.annotations.TypeDef;
 import org.junit.jupiter.api.Test;
 import org.optaplanner.core.api.score.buildin.simplebigdecimal.SimpleBigDecimalScore;
-import org.optaplanner.persistence.jpa.impl.score.AbstractScoreHibernateTypeTest;
+import org.optaplanner.persistence.jpa.AbstractScoreJpaTest;
 
-public class SimpleBigDecimalScoreHibernateTypeTest extends AbstractScoreHibernateTypeTest {
+public class SimpleBigDecimalScoreHibernateTypeTest extends AbstractScoreJpaTest {
 
     @Test
     public void persistAndMerge() {
@@ -40,6 +40,7 @@ public class SimpleBigDecimalScoreHibernateTypeTest extends AbstractScoreHiberna
     @TypeDef(defaultForType = SimpleBigDecimalScore.class, typeClass = SimpleBigDecimalScoreHibernateType.class)
     public static class TestJpaEntity extends AbstractTestJpaEntity<SimpleBigDecimalScore> {
 
+        @Columns(columns = { @Column(name = "initScore"), @Column(name = "score", precision = 10, scale = 5) })
         protected SimpleBigDecimalScore score;
 
         private TestJpaEntity() {
@@ -50,7 +51,6 @@ public class SimpleBigDecimalScoreHibernateTypeTest extends AbstractScoreHiberna
         }
 
         @Override
-        @Columns(columns = { @Column(name = "initScore"), @Column(name = "score", precision = 10, scale = 5) })
         public SimpleBigDecimalScore getScore() {
             return score;
         }

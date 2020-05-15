@@ -5,6 +5,19 @@
     <provider>org.hibernate.jpa.HibernatePersistenceProvider</provider>
     <jta-data-source>jdbc/testDS1</jta-data-source>
 
+    <class>org.optaplanner.persistence.jpa.api.score.buildin.bendable.BendableScoreConverterTest$TestJpaEntity</class>
+    <class>org.optaplanner.persistence.jpa.api.score.buildin.bendablebigdecimal.BendableBigDecimalScoreConverterTest$TestJpaEntity</class>
+    <class>org.optaplanner.persistence.jpa.api.score.buildin.bendablelong.BendableLongScoreConverterTest$TestJpaEntity</class>
+    <class>org.optaplanner.persistence.jpa.api.score.buildin.hardmediumsoft.HardMediumSoftScoreConverterTest$TestJpaEntity</class>
+    <class>org.optaplanner.persistence.jpa.api.score.buildin.hardmediumsoftbigdecimal.HardMediumSoftBigDecimalScoreConverterTest$TestJpaEntity</class>
+    <class>org.optaplanner.persistence.jpa.api.score.buildin.hardmediumsoftlong.HardMediumSoftLongScoreConverterTest$TestJpaEntity</class>
+    <class>org.optaplanner.persistence.jpa.api.score.buildin.hardsoft.HardSoftScoreConverterTest$TestJpaEntity</class>
+    <class>org.optaplanner.persistence.jpa.api.score.buildin.hardsoftbigdecimal.HardSoftBigDecimalScoreConverterTest$TestJpaEntity</class>
+    <class>org.optaplanner.persistence.jpa.api.score.buildin.hardsoftlong.HardSoftLongScoreConverterTest$TestJpaEntity</class>
+    <class>org.optaplanner.persistence.jpa.api.score.buildin.simple.SimpleScoreConverterTest$TestJpaEntity</class>
+    <class>org.optaplanner.persistence.jpa.api.score.buildin.simplebigdecimal.SimpleBigDecimalScoreConverterTest$TestJpaEntity</class>
+    <class>org.optaplanner.persistence.jpa.api.score.buildin.simplelong.SimpleLongScoreConverterTest$TestJpaEntity</class>
+
     <class>org.optaplanner.persistence.jpa.impl.score.AbstractScoreHibernateTypeTest$AbstractTestJpaEntity</class>
     <class>org.optaplanner.persistence.jpa.impl.score.buildin.simple.SimpleScoreHibernateTypeTest$TestJpaEntity</class>
     <class>org.optaplanner.persistence.jpa.impl.score.buildin.simplelong.SimpleLongScoreHibernateTypeTest$TestJpaEntity</class>

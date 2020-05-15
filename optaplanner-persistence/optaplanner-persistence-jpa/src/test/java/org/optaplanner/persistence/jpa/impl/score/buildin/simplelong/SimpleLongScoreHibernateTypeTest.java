@@ -1,5 +1,5 @@
 /*
- * Copyright 2015 Red Hat, Inc. and/or its affiliates.
+ * Copyright 2020 Red Hat, Inc. and/or its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -23,9 +23,9 @@ import org.hibernate.annotations.Columns;
 import org.hibernate.annotations.TypeDef;
 import org.junit.jupiter.api.Test;
 import org.optaplanner.core.api.score.buildin.simplelong.SimpleLongScore;
-import org.optaplanner.persistence.jpa.impl.score.AbstractScoreHibernateTypeTest;
+import org.optaplanner.persistence.jpa.AbstractScoreJpaTest;
 
-public class SimpleLongScoreHibernateTypeTest extends AbstractScoreHibernateTypeTest {
+public class SimpleLongScoreHibernateTypeTest extends AbstractScoreJpaTest {
 
     @Test
     public void persistAndMerge() {
@@ -38,6 +38,7 @@ public class SimpleLongScoreHibernateTypeTest extends AbstractScoreHibernateType
     @TypeDef(defaultForType = SimpleLongScore.class, typeClass = SimpleLongScoreHibernateType.class)
     public static class TestJpaEntity extends AbstractTestJpaEntity<SimpleLongScore> {
 
+        @Columns(columns = { @Column(name = "initScore"), @Column(name = "score") })
         protected SimpleLongScore score;
 
         private TestJpaEntity() {
@@ -48,7 +49,6 @@ public class SimpleLongScoreHibernateTypeTest extends AbstractScoreHibernateType
         }
 
         @Override
-        @Columns(columns = { @Column(name = "initScore"), @Column(name = "score") })
         public SimpleLongScore getScore() {
             return score;
         }
