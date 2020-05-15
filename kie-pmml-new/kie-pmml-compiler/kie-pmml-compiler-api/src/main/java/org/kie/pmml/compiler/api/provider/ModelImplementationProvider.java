@@ -36,4 +36,14 @@ public interface ModelImplementationProvider<T extends Model, E extends KiePMMLM
      * @throws KiePMMLInternalException
      */
     E getKiePMMLModel(DataDictionary dataDictionary, T model, Object kBuilder);
+
+    /**
+     * Method to be called following a <b>kie-maven-plugin</b> invocation
+     * @param dataDictionary
+     * @param model
+     * @param kBuilder Using <code>Object</code> to avoid coupling with drools
+     * @return
+     * @throws KiePMMLInternalException
+     */
+    E getKiePMMLModelFromPlugin(DataDictionary dataDictionary, T model, Object kBuilder);
 }

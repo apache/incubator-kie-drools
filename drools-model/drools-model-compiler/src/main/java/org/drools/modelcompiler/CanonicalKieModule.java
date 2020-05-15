@@ -195,7 +195,7 @@ public class CanonicalKieModule implements InternalKieModule {
     }
 
     private boolean hasNonModelResources( KieBaseModelImpl kBaseModel, KieProject kieProject ) {
-        return kieProject.getKieModuleForKBase(kBaseModel.getName()).getFileNames().stream().anyMatch( s -> s.endsWith( ".dmn" ) );
+        return kieProject.getKieModuleForKBase(kBaseModel.getName()).getFileNames().stream().anyMatch( s -> s.endsWith( ".dmn" ) || s.endsWith(".pmml") );
     }
 
     private CanonicalKiePackages createKiePackages( KieProject kieProject, KieBaseModelImpl kBaseModel, ResultsImpl messages, KieBaseConfiguration conf ) {

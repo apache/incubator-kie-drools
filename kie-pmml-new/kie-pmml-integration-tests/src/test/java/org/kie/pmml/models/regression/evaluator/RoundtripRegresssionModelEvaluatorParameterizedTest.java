@@ -107,7 +107,7 @@ public class RoundtripRegresssionModelEvaluatorParameterizedTest {
         assertEquals(PMML_MODEL.REGRESSION_MODEL, model.getPmmlMODEL());
         assertTrue(model instanceof KiePMMLRegressionModel);
         assertEquals("fld4", model.getTargetField());
-        PMML4Result retrieved = pmmlRuntime.evaluate(model, pmmlContext, releaseId);
+        PMML4Result retrieved = pmmlRuntime.evaluate(model.getName(), pmmlContext, releaseId);
         assertNotNull(retrieved);
         assertEquals("OK", retrieved.getResultCode());
 

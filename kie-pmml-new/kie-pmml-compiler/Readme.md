@@ -8,7 +8,7 @@ Notes on compilation/runtime phases relationship
     1. the PMMLCompiler should be invocable by  both the PMMLAssembler (at runtime) and the kie maven plugin (during kjar creation)
     2. for drools-related models, the PMMLCompiler should generate the java classes (currently, it stop at PackageDescr creation)
     3. for internal use, model' unique identifier (name) will be the full path of the pmml file
-    4. for drools-related models, a kie module xml descriptor will be provided to identify kie-bases with specific model (one kie-base for each pmml file); name of such kie-bases will be the above unique identifier
+    4. for drools-related models, a "kmodule.xml" descriptor will be provided to identify kie-bases with specific model (one kie-base for each pmml file); name of such kie-bases will be the above unique identifier
     5. for drools-unrelated models, the PMMLCompiler should generate a Factory class to instantiate (at runtime) the other generated classes
 3. Runtime
     1. Start time

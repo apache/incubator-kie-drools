@@ -27,6 +27,7 @@ import org.kie.api.io.ResourceType;
 import org.kie.api.pmml.PMML4Result;
 import org.kie.api.pmml.PMMLRequestData;
 import org.kie.api.pmml.ParameterInfo;
+import org.kie.pmml.commons.exceptions.KiePMMLException;
 import org.kie.pmml.commons.model.KiePMMLModel;
 import org.kie.pmml.commons.model.enums.PMML_MODEL;
 import org.kie.pmml.evaluator.api.container.PMMLPackage;
@@ -53,6 +54,7 @@ public class PMMLRuntimeImpl implements PMMLRuntime {
     public List<KiePMMLModel> getModels() {
         logger.trace("getModels");
         List<KiePMMLModel> models = new ArrayList<>();
+        // If PMMAssemblerService is skipped - i.e. skipping kieSession, here I have my packages coming from kjar/kmodule.xml, but they are not marked as PMML type
         knowledgeBase.getKiePackages().forEach(kpkg -> {
             PMMLPackage pmmlPackage = (PMMLPackage) ((InternalKnowledgePackage) kpkg).getResourceTypePackages().get(ResourceType.PMML);
             if (pmmlPackage != null) {
@@ -72,8 +74,14 @@ public class PMMLRuntimeImpl implements PMMLRuntime {
     }
 
     @Override
-    public PMML4Result evaluate(KiePMMLModel model, PMMLContext context, String releaseId) {
-        logger.debug("evaluate {} {}", model, context);
+    public PMML4Result evaluate(String modelName, PMMLContext context, String releaseId) {
+        logger.debug("evaluate {} {} {}", modelName, context, releaseId);
+        KiePMMLModel toEvaluate = getModel(modelName).orElseThrow(() -> new KiePMMLException("Failed to retrieve model with name " + modelName));
+        return evaluate(toEvaluate, context, releaseId);
+    }
+
+    protected PMML4Result evaluate(KiePMMLModel model, PMMLContext context, String releaseId) {
+        logger.debug("evaluate {} {} {}", model, context, releaseId);
         addMissingValuesReplacements(model, context);
         Optional<PMMLModelExecutor> pmmlModelExecutor = getFromPMMLModelType(model.getPmmlMODEL());
         return pmmlModelExecutor.isPresent() ? pmmlModelExecutor.get().evaluate(model, context, releaseId) : new PMML4Result();
@@ -115,5 +123,4 @@ public class PMMLRuntimeImpl implements PMMLRuntime {
                 .filter(implementation -> pmmlMODEL.equals(implementation.getPMMLModelType()))
                 .findFirst();
     }
-
 }

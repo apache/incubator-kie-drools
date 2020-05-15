@@ -17,17 +17,19 @@ package org.kie.pmml.models.drools.utils;
 
 import java.util.Map;
 
-import org.drools.compiler.lang.descr.PackageDescr;
-import org.drools.modelcompiler.ExecutableModelProject;
+import org.kie.api.KieServices;
+import org.kie.api.builder.ReleaseId;
 import org.kie.api.definition.type.FactType;
 import org.kie.api.event.rule.AgendaEventListener;
 import org.kie.api.pmml.PMML4Result;
+import org.kie.api.runtime.KieContainer;
 import org.kie.api.runtime.KieSession;
-import org.kie.internal.utils.KieHelper;
+import org.kie.pmml.commons.exceptions.KiePMMLException;
 import org.kie.pmml.evaluator.api.exceptions.KiePMMLModelException;
 import org.kie.pmml.models.drools.executor.KiePMMLStatusHolder;
 import org.kie.pmml.models.drools.tuples.KiePMMLOriginalTypeGeneratedType;
 
+import static org.kie.pmml.compiler.commons.utils.KiePMMLUtil.getPackageName;
 import static org.kie.pmml.models.drools.commons.factories.KiePMMLDescrFactory.OUTPUTFIELDS_MAP_IDENTIFIER;
 import static org.kie.pmml.models.drools.commons.factories.KiePMMLDescrFactory.PMML4_RESULT_IDENTIFIER;
 
@@ -36,22 +38,42 @@ import static org.kie.pmml.models.drools.commons.factories.KiePMMLDescrFactory.P
  */
 public class KiePMMLSessionUtils {
 
-    private final PackageDescr packageDescr;
     private final KieSession kieSession;
+    private final String modelName;
+    private final String packageName;
 
-    private KiePMMLSessionUtils(final PackageDescr packageDescr, final PMML4Result pmml4Result) {
-        this.packageDescr = packageDescr;
-        kieSession = new KieHelper()
-                .addContent(packageDescr)
-                .build(ExecutableModelProject.class)
-                .newKieSession();
+    private KiePMMLSessionUtils(final String modelName, final String releaseId, final PMML4Result pmml4Result) {
+        this.modelName = modelName;
+        packageName = getPackageName(modelName);
+        kieSession = getKieSession(releaseId);
         kieSession.insert(new KiePMMLStatusHolder());
         kieSession.insert(pmml4Result);
         kieSession.setGlobal(PMML4_RESULT_IDENTIFIER, pmml4Result);
     }
 
-    public static Builder builder(final PackageDescr packageDescr, final PMML4Result pmml4Result) {
-        return new Builder(packageDescr, pmml4Result);
+    public static Builder builder(final String modelName, final String releaseId, final PMML4Result pmml4Result) {
+        return new Builder(modelName, releaseId, pmml4Result);
+    }
+
+    private KieSession getKieSession(final String releaseIdString) {
+        KieSession toReturn;
+        final KieServices kieServices = KieServices.get();
+        try {
+            KieContainer kieContainer = kieServices.newKieClasspathContainer();
+            toReturn = kieContainer.newKieSession(modelName + "Session");
+            if (toReturn == null) {
+                String[] gav = releaseIdString.split(":");
+                final ReleaseId releaseId = kieServices.newReleaseId(gav[0], gav[1], gav[2]);
+                kieContainer = kieServices.newKieContainer(releaseId);
+                toReturn = kieContainer.newKieSession();
+            }
+            if (toReturn == null) {
+                throw new KiePMMLException("Failed to create KieSession for model " + modelName + " and releaseId " + releaseIdString);
+            }
+            return toReturn;
+        } catch (Throwable t) {
+            throw new KiePMMLException("Failed to create KieSession for model " + modelName, t);
+        }
     }
 
     /**
@@ -74,7 +96,7 @@ public class KiePMMLSessionUtils {
             }
             try {
                 String generatedTypeName = fieldTypeMap.get(entry.getKey()).getGeneratedType();
-                FactType factType = kieSession.getKieBase().getFactType(packageDescr.getName(), generatedTypeName);
+                FactType factType = kieSession.getKieBase().getFactType(/*modelName*/packageName, generatedTypeName);
                 Object toAdd = factType.newInstance();
                 factType.set(toAdd, "value", entry.getValue());
                 kieSession.insert(toAdd);
@@ -98,8 +120,8 @@ public class KiePMMLSessionUtils {
 
         private KiePMMLSessionUtils toBuild;
 
-        private Builder(final PackageDescr packageDescr, final PMML4Result pmml4Result) {
-            this.toBuild = new KiePMMLSessionUtils(packageDescr, pmml4Result);
+        private Builder(/*final PackageDescr packageDescr, */final String modelName, final String releaseId, final PMML4Result pmml4Result) {
+            this.toBuild = new KiePMMLSessionUtils(/*packageDescr, */modelName, releaseId, pmml4Result);
         }
 
         /**

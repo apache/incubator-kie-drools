@@ -52,7 +52,7 @@ public class PMMLRegressionModelExecutor implements PMMLModelExecutor {
         PMML4Result toReturn = new PMML4Result();
         String targetField = model.getTargetField();
         final Map<String, Object> requestData = getUnwrappedParametersMap(pmmlContext.getRequestData().getMappedRequestParams());
-        Object result = model.evaluate(requestData);
+        Object result = model.evaluate(requestData, releaseId);
         toReturn.addResultVariable(targetField, result);
         toReturn.setResultObjectName(targetField);
         toReturn.setResultCode(OK.getName());

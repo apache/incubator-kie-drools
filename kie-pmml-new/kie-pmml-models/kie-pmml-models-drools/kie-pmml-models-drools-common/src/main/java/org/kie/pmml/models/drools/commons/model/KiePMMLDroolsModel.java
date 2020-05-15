@@ -21,7 +21,6 @@ import java.util.Objects;
 import java.util.StringJoiner;
 import java.util.function.Supplier;
 
-import org.drools.compiler.lang.descr.PackageDescr;
 import org.kie.api.event.rule.AgendaEventListener;
 import org.kie.api.pmml.PMML4Result;
 import org.kie.pmml.commons.enums.ResultCode;
@@ -46,8 +45,6 @@ public abstract class KiePMMLDroolsModel extends KiePMMLModel {
 
     private static final AgendaEventListener agendaEventListener = getAgendaEventListener(logger);
 
-    protected PackageDescr packageDescr;
-
     protected List<KiePMMLOutputField> outputFields;
 
     /**
@@ -59,18 +56,19 @@ public abstract class KiePMMLDroolsModel extends KiePMMLModel {
         super(name, extensions);
     }
 
-    public PackageDescr getPackageDescr() {
-        return packageDescr;
-    }
-
     public Map<String, KiePMMLOriginalTypeGeneratedType> getFieldTypeMap() {
         return fieldTypeMap;
     }
 
     @Override
-    public Object evaluate(Map<String, Object> requestData) {
+    public String getKModulePackageName() {
+        return name.toLowerCase();
+    }
+
+    @Override
+    public Object evaluate(Map<String, Object> requestData, String releaseId) {
         final PMML4Result toReturn = getPMML4Result(targetField);
-        KiePMMLSessionUtils.Builder builder = KiePMMLSessionUtils.builder(packageDescr, toReturn)
+        KiePMMLSessionUtils.Builder builder = KiePMMLSessionUtils.builder(name, releaseId, toReturn)
                 .withObjectsInSession(requestData, fieldTypeMap)
                 .withOutputFieldsMap(outputFieldsMap);
         if (logger.isDebugEnabled()) {
@@ -91,7 +89,6 @@ public abstract class KiePMMLDroolsModel extends KiePMMLModel {
     @Override
     public String toString() {
         return new StringJoiner(", ", KiePMMLDroolsModel.class.getSimpleName() + "[", "]")
-                .add("packageDescr=" + packageDescr)
                 .add("outputFields=" + outputFields)
                 .add("fieldTypeMap=" + fieldTypeMap)
                 .add("pmmlMODEL=" + pmmlMODEL)
@@ -114,16 +111,14 @@ public abstract class KiePMMLDroolsModel extends KiePMMLModel {
         if (o == null || getClass() != o.getClass()) {
             return false;
         }
-        if (!super.equals(o)) {
-            return false;
-        }
         KiePMMLDroolsModel that = (KiePMMLDroolsModel) o;
-        return Objects.equals(packageDescr, that.packageDescr);
+        return Objects.equals(outputFields, that.outputFields) &&
+                Objects.equals(fieldTypeMap, that.fieldTypeMap);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(super.hashCode(), packageDescr);
+        return Objects.hash(outputFields, fieldTypeMap);
     }
 
     public abstract static class Builder<T extends KiePMMLDroolsModel> extends KiePMMLModel.Builder<T> {
@@ -132,10 +127,10 @@ public abstract class KiePMMLDroolsModel extends KiePMMLModel {
             super(prefix, pmmlMODEL, miningFunction, supplier);
         }
 
-        public Builder<T> withPackageDescr(PackageDescr packageDescr) {
-            toBuild.packageDescr = packageDescr;
-            return this;
-        }
+//        public Builder<T> withPackageDescr(PackageDescr packageDescr) {
+//            toBuild.packageDescr = packageDescr;
+//            return this;
+//        }
 
         public Builder<T> withFieldTypeMap(Map<String, KiePMMLOriginalTypeGeneratedType> fieldTypeMap) {
             toBuild.fieldTypeMap = fieldTypeMap;

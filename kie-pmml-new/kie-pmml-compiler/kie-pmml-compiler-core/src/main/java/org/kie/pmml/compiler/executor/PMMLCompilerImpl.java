@@ -31,6 +31,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import static org.kie.pmml.compiler.commons.implementations.KiePMMLModelRetriever.getFromDataDictionaryAndModel;
+import static org.kie.pmml.compiler.commons.implementations.KiePMMLModelRetriever.getFromDataDictionaryAndModelFromPlugin;
 
 /**
  * <code>PMMLCompiler</code> default implementation
@@ -41,10 +42,25 @@ public class PMMLCompilerImpl implements PMMLCompiler {
 
     @Override
     public List<KiePMMLModel> getModels(InputStream inputStream, Object kbuilder) {
-        logger.trace("getModels {}", inputStream);
+        logger.trace("getModels {} {}", inputStream, kbuilder);
         try {
             PMML commonPMMLModel = KiePMMLUtil.load(inputStream);
             return getModels(commonPMMLModel, kbuilder);
+        } catch (KiePMMLInternalException e) {
+            throw new KiePMMLException("KiePMMLInternalException", e);
+        } catch (KiePMMLException e) {
+            throw e;
+        } catch (Exception e) {
+            throw new ExternalException("ExternalException", e);
+        }
+    }
+
+    @Override
+    public List<KiePMMLModel> getModelsFromPlugin(InputStream inputStream, Object kbuilder) {
+        logger.trace("getModels {} {}", inputStream, kbuilder);
+        try {
+            PMML commonPMMLModel = KiePMMLUtil.load(inputStream);
+            return getModelsFromPlugin(commonPMMLModel, kbuilder);
         } catch (KiePMMLInternalException e) {
             throw new KiePMMLException("KiePMMLInternalException", e);
         } catch (KiePMMLException e) {
@@ -68,6 +84,25 @@ public class PMMLCompilerImpl implements PMMLCompiler {
                 .getModels()
                 .stream()
                 .map(model -> getFromDataDictionaryAndModel(dataDictionary, model, kbuilder))
+                .filter(Optional::isPresent)
+                .map(Optional::get)
+                .collect(Collectors.toList());
+    }
+
+    /**
+     * Read the given <code>PMML</code> to returns a <code>List&lt;KiePMMLModel&gt;</code>
+     * @param pmml
+     * @param kbuilder Using <code>Object</code> to avoid coupling with drools
+     * @return
+     * @throws KiePMMLException if any <code>KiePMMLInternalException</code> has been thrown during execution
+     */
+    private List<KiePMMLModel> getModelsFromPlugin(PMML pmml, Object kbuilder) {
+        logger.trace("getModels {}", pmml);
+        DataDictionary dataDictionary = pmml.getDataDictionary();
+        return pmml
+                .getModels()
+                .stream()
+                .map(model -> getFromDataDictionaryAndModelFromPlugin(dataDictionary, model, kbuilder))
                 .filter(Optional::isPresent)
                 .map(Optional::get)
                 .collect(Collectors.toList());

@@ -18,30 +18,33 @@ package org.kie.pmml.models.regression.model;
 import java.util.Collections;
 import java.util.Map;
 
-import org.kie.pmml.commons.model.KiePMMLModel;
+import org.kie.pmml.commons.exceptions.KiePMMLException;
+import org.kie.pmml.commons.model.HasSourcesMap;
 
 /**
  * @see <a href=http://dmg.org/pmml/v4-4/Regression.html>Regression</a>
  */
-public abstract class KiePMMLRegressionModel extends KiePMMLModel {
+public class KiePMMLRegressionModelWithSources extends KiePMMLRegressionModel implements HasSourcesMap {
 
-    protected KiePMMLRegressionTable regressionTable;
+    protected Map<String, String> sourcesMap;
 
-    public KiePMMLRegressionModel(String modelName) {
-        super(modelName, Collections.emptyList());
+    public KiePMMLRegressionModelWithSources(String modelName, Map<String, String> sourcesMap) {
+        super(modelName);
+        this.sourcesMap = Collections.unmodifiableMap(sourcesMap);
     }
 
     @Override
     public Object evaluate(Map<String, Object> requestData, String releaseId) {
-        return regressionTable.evaluateRegression(requestData);
+        throw new KiePMMLException("KiePMMLRegressionModelWithSources. is not meant to be used for actual evaluation");
     }
 
     @Override
     public Map<String, Object> getOutputFieldsMap() {
-        return regressionTable.getOutputFieldsMap();
+        throw new KiePMMLException("KiePMMLRegressionModelWithSources. is not meant to be used for actual usage");
     }
 
-    public KiePMMLRegressionTable getRegressionTable() {
-        return regressionTable;
+    @Override
+    public Map<String, String> getSourcesMap() {
+        return sourcesMap;
     }
 }

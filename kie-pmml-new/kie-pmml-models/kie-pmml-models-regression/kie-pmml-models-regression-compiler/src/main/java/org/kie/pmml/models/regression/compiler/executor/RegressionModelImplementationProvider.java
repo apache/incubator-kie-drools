@@ -17,6 +17,7 @@ package org.kie.pmml.models.regression.compiler.executor;
 
 import java.io.IOException;
 import java.util.List;
+import java.util.Map;
 import java.util.Objects;
 import java.util.stream.Collectors;
 
@@ -31,9 +32,11 @@ import org.kie.pmml.commons.model.tuples.KiePMMLNameOpType;
 import org.kie.pmml.compiler.api.provider.ModelImplementationProvider;
 import org.kie.pmml.models.regression.compiler.factories.KiePMMLRegressionModelFactory;
 import org.kie.pmml.models.regression.model.KiePMMLRegressionModel;
+import org.kie.pmml.models.regression.model.KiePMMLRegressionModelWithSources;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import static org.kie.pmml.compiler.commons.utils.KiePMMLUtil.getPackageName;
 import static org.kie.pmml.compiler.commons.utils.ModelUtils.getOpType;
 import static org.kie.pmml.compiler.commons.utils.ModelUtils.getTargetFields;
 
@@ -53,11 +56,23 @@ public class RegressionModelImplementationProvider implements ModelImplementatio
 
     @Override
     public KiePMMLRegressionModel getKiePMMLModel(DataDictionary dataDictionary, RegressionModel model, Object kBuilder) {
-        logger.trace("getKiePMMLModel {} {}", dataDictionary, model);
+        logger.trace("getKiePMMLModel {} {} {}", dataDictionary, model, kBuilder);
         validate(dataDictionary, model);
         try {
-            return KiePMMLRegressionModelFactory.getKiePMMLRegressionModel(dataDictionary, model);
+            return KiePMMLRegressionModelFactory.getKiePMMLRegressionModelClasses(dataDictionary, model);
         } catch (IOException | IllegalAccessException | InstantiationException e) {
+            throw new KiePMMLException(e.getMessage(), e);
+        }
+    }
+
+    @Override
+    public KiePMMLRegressionModel getKiePMMLModelFromPlugin(DataDictionary dataDictionary, RegressionModel model, Object kBuilder) {
+        logger.trace("getKiePMMLModelFromPlugin {} {} {}", dataDictionary, model, kBuilder);
+        try {
+            String packageName = getPackageName(model.getModelName());
+            final Map<String, String> kiePMMLRegressionModelSourcesMap = KiePMMLRegressionModelFactory.getKiePMMLRegressionModelSourcesMap(dataDictionary, model, null, packageName);
+            return new KiePMMLRegressionModelWithSources(model.getModelName(), kiePMMLRegressionModelSourcesMap);
+        } catch (IOException e) {
             throw new RuntimeException(e);
         }
     }

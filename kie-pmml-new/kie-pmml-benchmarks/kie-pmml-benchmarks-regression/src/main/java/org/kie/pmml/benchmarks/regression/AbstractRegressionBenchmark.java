@@ -67,6 +67,6 @@ public abstract class AbstractRegressionBenchmark {
     }
 
     protected PMML4Result evaluate() {
-        return pmmlRuntime.evaluate(model, pmmlContext, releaseId);
+        return pmmlRuntime.evaluate(model.getName(), pmmlContext, releaseId);
     }
 }

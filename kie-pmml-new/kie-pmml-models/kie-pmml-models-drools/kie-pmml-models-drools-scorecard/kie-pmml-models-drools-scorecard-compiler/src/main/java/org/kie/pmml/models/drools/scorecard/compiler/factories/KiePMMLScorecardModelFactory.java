@@ -16,14 +16,12 @@
 package org.kie.pmml.models.drools.scorecard.compiler.factories;
 
 import java.util.Collections;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 
 import org.dmg.pmml.DataDictionary;
 import org.dmg.pmml.scorecard.Scorecard;
-import org.drools.compiler.lang.descr.PackageDescr;
 import org.kie.pmml.commons.model.KiePMMLOutputField;
 import org.kie.pmml.commons.model.enums.MINING_FUNCTION;
 import org.kie.pmml.models.drools.ast.KiePMMLDroolsAST;
@@ -34,13 +32,13 @@ import org.slf4j.LoggerFactory;
 
 import static org.kie.pmml.compiler.commons.factories.KiePMMLOutputFieldFactory.getOutputFields;
 import static org.kie.pmml.compiler.commons.utils.ModelUtils.getTargetFieldName;
-import static org.kie.pmml.models.drools.commons.factories.KiePMMLDescrFactory.getBaseDescr;
-import static org.kie.pmml.models.drools.scorecard.compiler.factories.KiePMMLScorecardModelASTFactory.getKiePMMLDroolsAST;
 
 /**
  * Class used to generate <code>KiePMMLScorecard</code> out of a <code>DataDictionary</code> and a <code>ScorecardModel</code>
  */
 public class KiePMMLScorecardModelFactory {
+
+    public static final String BASE_PACKAGE = "org.kie.pmml.models.drools.scorecard.model.";
 
     private static final Logger logger = LoggerFactory.getLogger(KiePMMLScorecardModelFactory.class.getName());
 
@@ -48,20 +46,28 @@ public class KiePMMLScorecardModelFactory {
         // Avoid instantiation
     }
 
-    public static KiePMMLScorecardModel getKiePMMLScorecardModel(DataDictionary dataDictionary, Scorecard model) {
+    public static KiePMMLScorecardModel getKiePMMLScorecardModel(DataDictionary dataDictionary, Scorecard model, final Map<String, KiePMMLOriginalTypeGeneratedType> fieldTypeMap) {
         logger.trace("getKiePMMLScorecardModel {}", model);
         String name = model.getModelName();
         Optional<String> targetFieldName = getTargetFieldName(dataDictionary, model);
-        final Map<String, KiePMMLOriginalTypeGeneratedType> fieldTypeMap = new HashMap<>();
-        final KiePMMLDroolsAST kiePMMLDroolsAST = getKiePMMLDroolsAST(dataDictionary, model, fieldTypeMap);
-        String packageName = name.replace(" ", "_").toLowerCase();
-        final PackageDescr baseDescr = getBaseDescr(kiePMMLDroolsAST, packageName);
         final List<KiePMMLOutputField> outputFields = getOutputFields(model);
         return KiePMMLScorecardModel.builder(name, Collections.emptyList(), MINING_FUNCTION.byName(model.getMiningFunction().value()))
                 .withOutputFields(outputFields)
-                .withPackageDescr(baseDescr)
                 .withFieldTypeMap(fieldTypeMap)
                 .withTargetField(targetFieldName.orElse(null))
                 .build();
+    }
+
+    /**
+     * This method returns a <code>KiePMMLDroolsAST</code> out of the given <code>DataDictionary</code> and <code>Scorecard</code>.
+     * <b>It also populate the given <code>Map</code> that has to be used for final <code>KiePMMLScorecardModel</code></b>
+     * @param dataDictionary
+     * @param model
+     * @param fieldTypeMap
+     * @return
+     */
+    public static KiePMMLDroolsAST getKiePMMLDroolsAST(DataDictionary dataDictionary, Scorecard model, final Map<String, KiePMMLOriginalTypeGeneratedType> fieldTypeMap) {
+        logger.trace("getKiePMMLDroolsAST {}", model);
+        return KiePMMLScorecardModelASTFactory.getKiePMMLDroolsAST(dataDictionary, model, fieldTypeMap);
     }
 }

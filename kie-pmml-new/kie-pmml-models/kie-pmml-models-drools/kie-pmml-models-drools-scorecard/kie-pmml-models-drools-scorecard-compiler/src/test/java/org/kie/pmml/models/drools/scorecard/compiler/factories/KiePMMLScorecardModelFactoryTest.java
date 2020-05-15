@@ -16,6 +16,7 @@
 
 package org.kie.pmml.models.drools.scorecard.compiler.factories;
 
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -23,12 +24,11 @@ import org.dmg.pmml.DataDictionary;
 import org.dmg.pmml.DataField;
 import org.dmg.pmml.PMML;
 import org.dmg.pmml.scorecard.Scorecard;
-import org.drools.compiler.lang.DrlDumper;
-import org.drools.compiler.lang.descr.PackageDescr;
 import org.junit.Before;
 import org.junit.Test;
 import org.kie.pmml.commons.model.enums.MINING_FUNCTION;
 import org.kie.pmml.compiler.testutils.TestUtils;
+import org.kie.pmml.models.drools.ast.KiePMMLDroolsAST;
 import org.kie.pmml.models.drools.scorecard.model.KiePMMLScorecardModel;
 import org.kie.pmml.models.drools.tuples.KiePMMLOriginalTypeGeneratedType;
 import org.slf4j.Logger;
@@ -59,22 +59,21 @@ public class KiePMMLScorecardModelFactoryTest {
     @Test
     public void getKiePMMLScorecardModel() {
         final DataDictionary dataDictionary = pmml.getDataDictionary();
-        KiePMMLScorecardModel retrieved = KiePMMLScorecardModelFactory.getKiePMMLScorecardModel(dataDictionary, scorecardModel);
+        final Map<String, KiePMMLOriginalTypeGeneratedType> fieldTypeMap = new HashMap<>();
+        KiePMMLScorecardModel retrieved = KiePMMLScorecardModelFactory.getKiePMMLScorecardModel(dataDictionary, scorecardModel, fieldTypeMap);
         assertNotNull(retrieved);
         assertEquals(scorecardModel.getModelName(), retrieved.getName());
-        assertNotNull(retrieved.getPackageDescr());
         assertEquals(TARGET_FIELD, retrieved.getTargetField());
-        final Map<String, KiePMMLOriginalTypeGeneratedType> fieldTypeMap = retrieved.getFieldTypeMap();
+    }
+
+    @Test
+    public void getKiePMMLDroolsAST() {
+        final DataDictionary dataDictionary = pmml.getDataDictionary();
+        final Map<String, KiePMMLOriginalTypeGeneratedType> fieldTypeMap = new HashMap<>();
+        KiePMMLDroolsAST retrieved = KiePMMLScorecardModelFactory.getKiePMMLDroolsAST(dataDictionary, scorecardModel, fieldTypeMap);
+        assertNotNull(retrieved);
         List<DataField> dataFields = dataDictionary.getDataFields();
         assertEquals(dataFields.size(), fieldTypeMap.size());
         dataFields.forEach(dataField -> assertTrue(fieldTypeMap.containsKey(dataField.getName().getValue())));
-        // TODO REMOVE - developing only purpose
-        dump(retrieved.getPackageDescr());
-    }
-
-    private void dump(PackageDescr packageDescr) {
-        final DrlDumper drlDumper = new DrlDumper();
-        final String drlResult = drlDumper.dump(packageDescr);
-        logger.info(drlResult);
     }
 }

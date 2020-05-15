@@ -33,7 +33,7 @@ public class KiePMMLRegressionTableRegressionFactoryTest extends AbstractKiePMML
     public void getRegressionTableTest() throws Exception {
         regressionTable = getRegressionTable(3.5, "professional");
         List<RegressionTable> regressionTables = Collections.singletonList(regressionTable);
-        Map<String, KiePMMLTableSourceCategory> retrieved = KiePMMLRegressionTableRegressionFactory.getRegressionTables(regressionTables, RegressionModel.NormalizationMethod.CAUCHIT, "targetField");
+        Map<String, KiePMMLTableSourceCategory> retrieved = KiePMMLRegressionTableRegressionFactory.getRegressionTables(regressionTables, RegressionModel.NormalizationMethod.CAUCHIT, "targetField", "packageName");
         assertNotNull(retrieved);
         retrieved.values().forEach(kiePMMLTableSourceCategory -> commonValidateKiePMMLRegressionTable(kiePMMLTableSourceCategory.getSource()));
     }

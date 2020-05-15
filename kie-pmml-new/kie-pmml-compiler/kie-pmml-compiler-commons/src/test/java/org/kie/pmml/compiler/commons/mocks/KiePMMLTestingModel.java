@@ -34,7 +34,7 @@ public class KiePMMLTestingModel extends KiePMMLModel {
     }
 
     @Override
-    public Object evaluate(Map<String, Object> requestData) {
+    public Object evaluate(Map<String, Object> requestData, String releaseId) {
         return null;
     }
 }

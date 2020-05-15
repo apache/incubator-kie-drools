@@ -23,7 +23,6 @@ import java.util.Objects;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.stream.Collectors;
 
-import com.github.javaparser.StaticJavaParser;
 import com.github.javaparser.ast.CompilationUnit;
 import com.github.javaparser.ast.body.ClassOrInterfaceDeclaration;
 import com.github.javaparser.ast.expr.AssignExpr;
@@ -46,7 +45,9 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import static org.kie.pmml.compiler.commons.factories.KiePMMLOutputFieldFactory.getOutputFields;
+import static org.kie.pmml.compiler.commons.utils.KiePMMLUtil.getPackageName;
 import static org.kie.pmml.compiler.commons.utils.ModelUtils.getTargetFieldName;
+import static org.kie.pmml.models.regression.compiler.utils.JavaParserUtils.getFromFileName;
 
 public class KiePMMLRegressionModelFactory {
 
@@ -54,47 +55,55 @@ public class KiePMMLRegressionModelFactory {
     private static final String KIE_PMML_REGRESSION_MODEL_TEMPLATE_JAVA = "KiePMMLRegressionModelTemplate.tmpl";
     private static final String KIE_PMML_REGRESSION_MODEL_TEMPLATE = "KiePMMLRegressionModelTemplate";
     private static final String MAIN_CLASS_NOT_FOUND = "Main class not found";
-    private static final String BASE_PACKAGE = "org.kie.pmml.models.regression.evaluator.";
-
     private static AtomicInteger classArity = new AtomicInteger(0);
 
     private KiePMMLRegressionModelFactory() {
     }
 
-    public static KiePMMLRegressionModel getKiePMMLRegressionModel(DataDictionary dataDictionary, RegressionModel model) throws IOException, IllegalAccessException, InstantiationException {
-        logger.trace("getKiePMMLRegressionModel {}", model);
+    public static KiePMMLRegressionModel getKiePMMLRegressionModelClasses(DataDictionary dataDictionary, RegressionModel model) throws IOException, IllegalAccessException, InstantiationException {
+        logger.trace("getKiePMMLRegressionModelClasses {} {}", dataDictionary, model);
+        String className = "KiePMMLRegressionModel" + classArity.addAndGet(1);
+        String packageName = getPackageName(model.getModelName());
+        Map<String, String> sourcesMap = getKiePMMLRegressionModelSourcesMap(dataDictionary, model, className, packageName);
+        String fullClassName = packageName + "." + className;
+        final Map<String, Class<?>> compiledClasses = KieMemoryCompiler.compile(sourcesMap, Thread.currentThread().getContextClassLoader());
+        return (KiePMMLRegressionModel) compiledClasses.get(fullClassName).newInstance();
+    }
+
+    public static Map<String, String> getKiePMMLRegressionModelSourcesMap(DataDictionary dataDictionary, RegressionModel model, String classNameParam, String packageName) throws IOException {
+        logger.trace("getKiePMMLRegressionModelSourcesMap {} {} {}", dataDictionary, model, classNameParam);
         String name = model.getModelName();
         String targetFieldName = getTargetFieldName(dataDictionary, model).orElse(null);
         List<KiePMMLOutputField> outputFields = getOutputFields(model);
-        Map<String, KiePMMLTableSourceCategory> tablesSourceMap = getRegressionTablesMap(dataDictionary, model, targetFieldName, outputFields);
-        CompilationUnit templateCU = StaticJavaParser.parseResource(KIE_PMML_REGRESSION_MODEL_TEMPLATE_JAVA);
+        Map<String, KiePMMLTableSourceCategory> tablesSourceMap = getRegressionTablesMap(dataDictionary, model, targetFieldName, outputFields, packageName);
+        CompilationUnit templateCU = getFromFileName(KIE_PMML_REGRESSION_MODEL_TEMPLATE_JAVA);
         CompilationUnit cloneCU = templateCU.clone();
+        cloneCU.setPackageDeclaration(packageName);
         ClassOrInterfaceDeclaration modelTemplate = cloneCU.getClassByName(KIE_PMML_REGRESSION_MODEL_TEMPLATE)
                 .orElseThrow(() -> new RuntimeException(MAIN_CLASS_NOT_FOUND));
-        String className = "KiePMMLRegressionModel" + classArity.addAndGet(1);
+        String className = classNameParam != null ? classNameParam : "KiePMMLRegressionModel" + classArity.addAndGet(1);
         modelTemplate.setName(className);
         setModelName(name, modelTemplate);
         String nestedTable = tablesSourceMap.size() == 1 ? tablesSourceMap.keySet().iterator().next() :
                 tablesSourceMap.keySet().stream().filter(tableName -> tableName.startsWith("KiePMMLRegressionTableClassification"))
                         .findFirst().orElseThrow(() -> new RuntimeException("Failed to find expected KiePMMLRegressionTableClassification"));
         setConstructor(className, nestedTable, modelTemplate, targetFieldName, MINING_FUNCTION.byName(model.getMiningFunction().value()), PMML_MODEL.REGRESSION_MODEL);
-        Map<String, String> sourcesMap = tablesSourceMap.entrySet().stream().collect(Collectors.toMap(entry -> BASE_PACKAGE + entry.getKey(), entry -> entry.getValue().getSource()));
-        String fullClassName = BASE_PACKAGE + className;
-        sourcesMap.put(fullClassName, cloneCU.toString());
-        final Map<String, Class<?>> compiledClasses = KieMemoryCompiler.compile(sourcesMap, Thread.currentThread().getContextClassLoader());
-        return (KiePMMLRegressionModel) compiledClasses.get(fullClassName).newInstance();
+        Map<String, String> toReturn = tablesSourceMap.entrySet().stream().collect(Collectors.toMap(entry -> packageName + "." + entry.getKey(), entry -> entry.getValue().getSource()));
+        String fullClassName = packageName + "." + className;
+        toReturn.put(fullClassName, cloneCU.toString());
+        return toReturn;
     }
 
-    private static Map<String, KiePMMLTableSourceCategory> getRegressionTablesMap(DataDictionary dataDictionary, RegressionModel model, String targetFieldName, List<KiePMMLOutputField> outputFields) throws IOException {
+    private static Map<String, KiePMMLTableSourceCategory> getRegressionTablesMap(DataDictionary dataDictionary, RegressionModel model, String targetFieldName, List<KiePMMLOutputField> outputFields, String packageName) throws IOException {
         final DataField targetDataField = dataDictionary.getDataFields().stream()
                 .filter(field -> Objects.equals(targetFieldName, field.getName().getValue()))
                 .findFirst().orElse(null);
         final OpType opType = targetDataField != null ? targetDataField.getOpType() : null;
         Map<String, KiePMMLTableSourceCategory> toReturn;
         if (isRegression(model.getMiningFunction(), targetFieldName, opType)) {
-            toReturn = KiePMMLRegressionTableRegressionFactory.getRegressionTables(Collections.singletonList(model.getRegressionTables().get(0)), model.getNormalizationMethod(), targetFieldName);
+            toReturn = KiePMMLRegressionTableRegressionFactory.getRegressionTables(Collections.singletonList(model.getRegressionTables().get(0)), model.getNormalizationMethod(), targetFieldName, packageName);
         } else {
-            toReturn = KiePMMLRegressionTableClassificationFactory.getRegressionTables(model.getRegressionTables(), model.getNormalizationMethod(), opType, outputFields, targetFieldName);
+            toReturn = KiePMMLRegressionTableClassificationFactory.getRegressionTables(model.getRegressionTables(), model.getNormalizationMethod(), opType, outputFields, targetFieldName, packageName);
         }
         return toReturn;
     }

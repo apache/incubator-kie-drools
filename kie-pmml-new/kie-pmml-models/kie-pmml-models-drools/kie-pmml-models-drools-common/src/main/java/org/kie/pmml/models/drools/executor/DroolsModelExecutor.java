@@ -25,7 +25,7 @@ public abstract class DroolsModelExecutor implements PMMLModelExecutor {
         }
         final KiePMMLDroolsModel droolsModel = (KiePMMLDroolsModel) model;
         final Map<String, Object> requestData = getUnwrappedParametersMap(pmmlContext.getRequestData().getMappedRequestParams());
-        return (PMML4Result) droolsModel.evaluate(requestData);
+        return (PMML4Result) droolsModel.evaluate(requestData, releaseId);
     }
 
 }
