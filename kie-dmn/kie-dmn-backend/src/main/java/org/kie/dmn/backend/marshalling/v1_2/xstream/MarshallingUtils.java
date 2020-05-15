@@ -31,6 +31,8 @@ import org.kie.dmn.model.api.Invocation;
 import org.kie.dmn.model.api.List;
 import org.kie.dmn.model.api.LiteralExpression;
 import org.kie.dmn.model.api.Relation;
+import org.kie.dmn.model.api.dmndi.DMNEdge;
+import org.kie.dmn.model.api.dmndi.DMNShape;
 
 public final class MarshallingUtils {
 
@@ -58,6 +60,8 @@ public final class MarshallingUtils {
             String nsForPrefix = parent.getNamespaceURI(qname.getPrefix());
             if (parent.getURIFEEL().equals(nsForPrefix)) {
                 return qname.getLocalPart(); // DMN v1.2 feel comes without a prefix.
+            } else if (parent instanceof DMNShape || parent instanceof DMNEdge) {
+                return qname.getPrefix() + ":" + qname.getLocalPart();
             } else {
                 return qname.getPrefix() + "." + qname.getLocalPart(); // DMN v1.2 namespace typeRef lookup is done with dot.
             }
