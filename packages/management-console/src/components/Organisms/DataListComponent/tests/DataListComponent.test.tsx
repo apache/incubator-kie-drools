@@ -296,6 +296,6 @@ describe('DataList component tests', () => {
         <DataListComponent {...props1} />
       </MockedProvider>
     );
-    expect(wrapper).toMatchSnapshot();
+    expect(wrapper.find(DataListComponent)).toMatchSnapshot();
   });
 });

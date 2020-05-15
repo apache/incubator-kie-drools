@@ -18,6 +18,6 @@ describe('Dashboard component tests', () => {
         <Dashboard {...props} />
       </MockedProvider>
     );
-    expect(wrapper).toMatchSnapshot();
+    expect(wrapper.find(Dashboard)).toMatchSnapshot();
   });
 });

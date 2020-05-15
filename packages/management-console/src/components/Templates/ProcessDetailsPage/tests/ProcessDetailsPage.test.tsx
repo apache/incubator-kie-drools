@@ -94,6 +94,6 @@ describe('Process Details Page component', () => {
     await wait(0);
     const p = wrapper.find('p');
     expect(p.length).toEqual(0);
-    expect(wrapper).toMatchSnapshot();
+    expect(wrapper.find(ProcessDetailsPage)).toMatchSnapshot();
   });
 });
