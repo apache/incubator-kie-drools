@@ -1,0 +1,71 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`LoadMore component tests with isLoading false snapshot testing 1`] = `
+<DataList
+  aria-label="Simple data list example"
+>
+  <DataListItem
+    aria-labelledby="kie-datalist-item"
+  >
+    <DataListCell
+      className="kogito-management-console__load-more"
+    >
+      <Component
+        id="load10"
+        onClick={[Function]}
+        variant="secondary"
+      >
+        Load 10 more
+      </Component>
+       
+      <Component
+        id="load20"
+        onClick={[Function]}
+        variant="secondary"
+      >
+        Load 20 more
+      </Component>
+       
+      <Component
+        id="load50"
+        onClick={[Function]}
+        variant="secondary"
+      >
+        Load 50 more
+      </Component>
+       
+      <Component
+        id="load100"
+        onClick={[Function]}
+        variant="secondary"
+      >
+        Load 100 more
+      </Component>
+    </DataListCell>
+  </DataListItem>
+</DataList>
+`;
+
+exports[`LoadMore component tests with isLoading true snapshot testing 1`] = `
+<DataList
+  aria-label="Simple data list example"
+>
+  <DataListItem
+    aria-labelledby="kie-datalist-item"
+  >
+    <DataListCell
+      className="kogito-management-console__load-more"
+    >
+      <Component
+        id="loading"
+        variant="secondary"
+      >
+        Loading... 
+        <Spinner
+          size="md"
+        />
+      </Component>
+    </DataListCell>
+  </DataListItem>
+</DataList>
+`;

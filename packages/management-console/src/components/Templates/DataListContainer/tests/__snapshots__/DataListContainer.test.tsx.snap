@@ -67,7 +67,6 @@ exports[`DataListContainer component tests Snapshot tests 1`] = `
             handleAbortAll={[Function]}
             initData={Object {}}
             isAllChecked={false}
-            pageSize={10}
             searchWord=""
             selectedNumber={0}
             setAbortedObj={[Function]}
@@ -76,8 +75,6 @@ exports[`DataListContainer component tests Snapshot tests 1`] = `
             setInitData={[Function]}
             setIsAllChecked={[Function]}
             setIsStatusSelected={[Function]}
-            setLimit={[Function]}
-            setOffset={[Function]}
             setSearchWord={[Function]}
             setSelectedNumber={[Function]}
           />
@@ -99,15 +96,20 @@ exports[`DataListContainer component tests Snapshot tests 1`] = `
             initData={Object {}}
             isFilterClicked={false}
             isLoading={false}
-            isLoadingMore={false}
             pageSize={10}
             selectedNumber={0}
             setAbortedObj={[Function]}
             setInitData={[Function]}
             setIsAllChecked={[Function]}
             setIsError={[Function]}
-            setIsLoading={[Function]}
             setSelectedNumber={[Function]}
+          />
+          <LoadMoreComponent
+            getMoreItems={[Function]}
+            isLoadingMore={false}
+            offset={10}
+            pageSize={10}
+            setOffset={[Function]}
           />
         </Card>
       </GridItem>

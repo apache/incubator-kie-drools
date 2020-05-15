@@ -36,11 +36,14 @@ const DomainExplorerTable = ({
   displayTable,
   displayEmptyState,
   parameters,
-  selected
+  selected,
+  offset,
+  setRows,
+  rows,
+  isLoadingMore
 }) => {
   // tslint:disable: forin
   const [columns, setColumns] = useState([]);
-  const [rows, setRows] = useState([]);
   const currentPage = { prev: location.pathname };
   window.localStorage.setItem('state', JSON.stringify(currentPage));
 
@@ -204,7 +207,7 @@ const DomainExplorerTable = ({
 
   const parentkeys = [];
   let values = [];
-  let parentIndex = 0;
+  let parentIndex;
 
   const initLoad = () => {
     if (columnFilters.length > 0) {
@@ -255,7 +258,7 @@ const DomainExplorerTable = ({
         parentIndex = parentIndex + 2;
       });
       const rowObject: any = {};
-      if (tableLoading) {
+      if (tableLoading && !isLoadingMore) {
         rowObject.cells = [
           {
             props: { colSpan: 8 },
@@ -271,10 +274,20 @@ const DomainExplorerTable = ({
     }
     const finalKeys = parentkeys[0];
     finalKeys && setColumns([...finalKeys]);
-    setRows([...values]);
+    if (offset > 0) {
+      setRows(prev => [...prev, ...values]);
+    } else {
+      setRows([...values]);
+    }
   };
 
   useEffect(() => {
+    if (offset === 0) {
+      parentIndex = 0;
+    } else {
+      const lastObj = rows[rows.length - 1];
+      parentIndex = lastObj.parent + 2;
+    }
     initLoad();
   }, [tableContent]);
 
@@ -285,7 +298,7 @@ const DomainExplorerTable = ({
 
   return (
     <React.Fragment>
-      {displayTable && !displayEmptyState && (
+      {displayTable && !displayEmptyState && columns.length && (
         <Table
           cells={columns}
           rows={rows}

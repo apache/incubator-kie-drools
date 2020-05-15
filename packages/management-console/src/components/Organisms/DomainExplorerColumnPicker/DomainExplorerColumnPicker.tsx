@@ -29,6 +29,12 @@ export interface IOwnProps {
   rememberedParams: any;
   enableCache: boolean;
   setEnableCache: any;
+  offsetVal: number;
+  pageSize: number;
+  setOffsetVal: (offsetVal: number) => void;
+  setPageSize: (pageSize: number) => void;
+  setIsLoadingMore: (isLoadingMoreVal: boolean) => void;
+  isLoadingMore: boolean;
 }
 
 const DomainExplorerColumnPicker: React.FC<IOwnProps> = ({
@@ -47,7 +53,13 @@ const DomainExplorerColumnPicker: React.FC<IOwnProps> = ({
   setDisplayEmptyState,
   rememberedParams,
   enableCache,
-  setEnableCache
+  setEnableCache,
+  pageSize,
+  offsetVal,
+  setOffsetVal,
+  setPageSize,
+  setIsLoadingMore,
+  isLoadingMore
 }) => {
   // tslint:disable: forin
   // tslint:disable: no-floating-promises
@@ -101,6 +113,12 @@ const DomainExplorerColumnPicker: React.FC<IOwnProps> = ({
   const onToggle = _isExpanded => {
     setIsExpanded(_isExpanded);
   };
+
+  useEffect(() => {
+    if (isLoadingMore) {
+      generateQuery(parameters);
+    }
+  }, [isLoadingMore]);
 
   useEffect(() => {
     if (
@@ -195,7 +213,13 @@ const DomainExplorerColumnPicker: React.FC<IOwnProps> = ({
     if (columnPickerType && paramFields.length > 1) {
       const Query = query({
         operation: columnPickerType,
-        fields: paramFields
+        fields: paramFields,
+        variables: {
+          pagination: {
+            value: { offset: offsetVal, limit: pageSize },
+            type: 'Pagination'
+          }
+        }
       });
 
       try {
@@ -204,10 +228,10 @@ const DomainExplorerColumnPicker: React.FC<IOwnProps> = ({
             query: gql`
               ${Query.query}
             `,
+            variables: Query.variables,
             fetchPolicy: enableCache ? 'cache-first' : 'network-only'
           })
           .then(response => {
-            setTableLoading(false);
             const firstKey = Object.keys(response.data)[0];
             if (response.data[firstKey].length > 0) {
               const resp = response.data;
@@ -219,9 +243,12 @@ const DomainExplorerColumnPicker: React.FC<IOwnProps> = ({
                 finalResp.push(finalObject);
               });
               setColumnFilters(finalResp);
+              setTableLoading(false);
               setDisplayTable(true);
               setEnableCache(false);
+              setIsLoadingMore(false);
             } else {
+              setTableLoading(false);
               setDisplayEmptyState(true);
               setEnableCache(false);
             }
@@ -355,9 +382,18 @@ const DomainExplorerColumnPicker: React.FC<IOwnProps> = ({
     return unique;
   }
 
+  const onResetQuery = _parameters => {
+    setOffsetVal(0);
+    offsetVal = 0;
+    setPageSize(10);
+    pageSize = 10;
+    generateQuery(_parameters);
+    setIsLoadingMore(false);
+  };
+
   const onRefresh = () => {
     if (enableRefresh && parameters.length > 1) {
-      generateQuery(parameters);
+      onResetQuery(parameters);
     }
   };
 
@@ -382,7 +418,7 @@ const DomainExplorerColumnPicker: React.FC<IOwnProps> = ({
           <Button
             variant="primary"
             onClick={() => {
-              generateQuery(parameters);
+              onResetQuery(parameters);
             }}
           >
             Apply columns

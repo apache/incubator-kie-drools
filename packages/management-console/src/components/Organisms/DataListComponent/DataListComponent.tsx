@@ -1,11 +1,5 @@
 import React, { useEffect } from 'react';
-import {
-  DataList,
-  DataListCell,
-  Bullseye,
-  Button,
-  Spinner
-} from '@patternfly/react-core';
+import { DataList, Bullseye } from '@patternfly/react-core';
 import '../../Templates/DataListContainer/DataList.css';
 import DataListItemComponent from '../../Molecules/DataListItemComponent/DataListItemComponent';
 import ServerErrorsComponent from '../../Molecules/ServerErrorsComponent/ServerErrorsComponent';
@@ -23,12 +17,10 @@ interface IOwnProps {
   initData: any;
   isLoading: boolean;
   setIsError: any;
-  setIsLoading: any;
   checkedArray: any;
   abortedObj: any;
   setAbortedObj: any;
   pageSize: number;
-  isLoadingMore: boolean;
   isFilterClicked: boolean;
   filters: any;
   setIsAllChecked: any;
@@ -41,12 +33,10 @@ const DataListComponent: React.FC<IOwnProps> = ({
   setInitData,
   isLoading,
   setIsError,
-  setIsLoading,
   checkedArray,
   abortedObj,
   setAbortedObj,
   pageSize,
-  isLoadingMore,
   isFilterClicked,
   filters,
   setIsAllChecked,
@@ -133,13 +123,6 @@ const DataListComponent: React.FC<IOwnProps> = ({
             body="Try using different filters"
           />
         )}
-      {isLoadingMore && (
-        <DataListCell className="kogito-management-console-load-more">
-          <Button variant="secondary">
-            Loading... <Spinner size="md" />
-          </Button>
-        </DataListCell>
-      )}
     </DataList>
   );
 };

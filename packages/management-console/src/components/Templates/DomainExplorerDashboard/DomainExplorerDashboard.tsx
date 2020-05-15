@@ -19,6 +19,7 @@ import DomainExplorerTable from '../../Organisms/DomainExplorerTable/DomainExplo
 import PageTitleComponent from '../../Molecules/PageTitleComponent/PageTitleComponent';
 import SpinnerComponent from '../../Atoms/SpinnerComponent/SpinnerComponent';
 import ServerErrorsComponent from '../../Molecules/ServerErrorsComponent/ServerErrorsComponent';
+import LoadMoreComponent from '../../Atoms/LoadMoreComponent/LoadMoreComponent';
 
 import {
   useGetQueryTypesQuery,
@@ -35,6 +36,7 @@ const DomainExplorerDashboard = props => {
     (props.location.state && props.location.state.parameters) || [];
   const rememberedSelections =
     (props.location.state && props.location.state.selected) || [];
+  const [defaultPageSize] = useState(10);
   const domainName = props.match.params.domainName;
   let BreadCrumb = props.location.pathname.split('/');
   BreadCrumb = BreadCrumb.filter(item => {
@@ -49,6 +51,11 @@ const DomainExplorerDashboard = props => {
   const [displayTable, setDisplayTable] = useState(false);
   const [displayEmptyState, setDisplayEmptyState] = useState(false);
   const [selected, setSelected] = useState([]);
+  const [limit, setLimit] = useState(defaultPageSize);
+  const [offset, setOffset] = useState(0);
+  const [pageSize, setPageSize] = useState(defaultPageSize);
+  const [isLoadingMore, setIsLoadingMore] = useState(false);
+  const [rows, setRows] = useState([]);
   const [error, setError] = useState();
   const [enableCache, setEnableCache] = useState(false);
   const [parameters, setParameters] = useState([
@@ -79,6 +86,11 @@ const DomainExplorerDashboard = props => {
   const getPicker = useGetColumnPickerAttributesQuery({
     variables: { columnPickerType: domainName }
   });
+
+  const onAddColumnFilters = _columnFilter => {
+    setColumnFilters(_columnFilter);
+    setLimit(_columnFilter.length);
+  };
 
   let data = [];
   const tempArray = [];
@@ -144,7 +156,7 @@ const DomainExplorerDashboard = props => {
               {!getPicker.loading && (
                 <DomainExplorerColumnPicker
                   columnPickerType={columnPickerType}
-                  setColumnFilters={setColumnFilters}
+                  setColumnFilters={onAddColumnFilters}
                   setTableLoading={setTableLoading}
                   getQueryTypes={getQueryTypes}
                   setDisplayTable={setDisplayTable}
@@ -159,6 +171,12 @@ const DomainExplorerDashboard = props => {
                   rememberedParams={rememberedParams}
                   enableCache={enableCache}
                   setEnableCache={setEnableCache}
+                  pageSize={pageSize}
+                  offsetVal={offset}
+                  setOffsetVal={setOffset}
+                  setPageSize={setPageSize}
+                  setIsLoadingMore={setIsLoadingMore}
+                  isLoadingMore={isLoadingMore}
                 />
               )}
             </DataToolbarGroup>
@@ -179,6 +197,13 @@ const DomainExplorerDashboard = props => {
   if (!getPicker.loading && getPicker.error) {
     return <ServerErrorsComponent message={getPicker.error} />;
   }
+
+  const onGetMoreInstances = (initVal, _pageSize) => {
+    setOffset(initVal);
+    setPageSize(_pageSize);
+    setIsLoadingMore(true);
+  };
+
   return (
     <>
       {!getQuery.loading &&
@@ -225,7 +250,7 @@ const DomainExplorerDashboard = props => {
         <PageSection>
           {renderToolbar()}
 
-          {!tableLoading ? (
+          {!tableLoading || isLoadingMore ? (
             <div className="kogito-management-console--domain-explorer__table-OverFlow">
               <DomainExplorerTable
                 columnFilters={columnFilters}
@@ -234,7 +259,20 @@ const DomainExplorerDashboard = props => {
                 displayEmptyState={displayEmptyState}
                 parameters={parameters}
                 selected={selected}
+                offset={offset}
+                setRows={setRows}
+                rows={rows}
+                isLoadingMore={isLoadingMore}
               />
+              {!displayEmptyState && (limit === pageSize || isLoadingMore) && (
+                <LoadMoreComponent
+                  offset={offset}
+                  setOffset={setOffset}
+                  getMoreItems={onGetMoreInstances}
+                  pageSize={pageSize}
+                  isLoadingMore={isLoadingMore}
+                />
+              )}
             </div>
           ) : (
             <Card>

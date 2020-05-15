@@ -35,10 +35,7 @@ interface IOwnProps {
   abortedObj: any;
   setAbortedObj: any;
   handleAbortAll: any;
-  setOffset: (offset: number) => void;
   getProcessInstances: (options: any) => void;
-  setLimit: (limit: number) => void;
-  pageSize: number;
   setSearchWord: (searchWord: string) => void;
   searchWord: string;
   isAllChecked: boolean;
@@ -55,10 +52,7 @@ const DataToolbarComponent: React.FC<IOwnProps> = ({
   setIsStatusSelected,
   abortedObj,
   handleAbortAll,
-  setOffset,
   getProcessInstances,
-  setLimit,
-  pageSize,
   setSearchWord,
   searchWord,
   isAllChecked,
@@ -154,8 +148,6 @@ const DataToolbarComponent: React.FC<IOwnProps> = ({
   }, [checkedArray]);
 
   const clearAll = () => {
-    setOffset(0);
-    setLimit(pageSize);
     setSearchWord('');
     setCheckedArray(['ACTIVE']);
     setFilters({ ...filters, status: ['ACTIVE'], businessKey: [] });
@@ -165,7 +157,7 @@ const DataToolbarComponent: React.FC<IOwnProps> = ({
       variables: {
         state: ProcessInstanceState.Active,
         offset: 0,
-        limit: pageSize
+        limit: 10
       }
     });
     setShouldRefresh(true);
