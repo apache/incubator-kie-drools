@@ -49,6 +49,15 @@ public interface ProcessRuntime {
                                  Map<String, Object> parameters);
 
     /**
+     * Starts a new process instances starting from the nodes given
+     * @param processId the id of the process that should be started
+     * @param params the process variables that should be set when starting the process instance
+     * @param nodeIds the node id list that should be triggered
+     * @return the <code>ProcessInstance</code> that represents the instance of the process that was started
+     */
+    ProcessInstance startProcessFromNodeIds(String processId, Map<String, Object> params, String... nodeId);
+
+    /**
      * Creates a new process instance (but does not yet start it).  The process
      * (definition) that should be used is referenced by the given process id.
      * Parameters can be passed to the process instance (as name-value pairs),

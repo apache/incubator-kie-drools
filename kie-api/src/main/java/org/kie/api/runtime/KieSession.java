@@ -148,4 +148,5 @@ public interface KieSession
     interface AtomicAction {
         void execute(KieSession kieSession);
     }
+
 }

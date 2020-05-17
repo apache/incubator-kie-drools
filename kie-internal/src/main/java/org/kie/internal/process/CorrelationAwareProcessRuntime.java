@@ -57,6 +57,20 @@ public interface CorrelationAwareProcessRuntime {
                                           Map<String, Object> parameters);
 
     /**
+     * Starts a process with the values supplied from the current nodes
+     * 
+     * @param processId The process's identifier
+     * @param correlationKey correlation key to be assigned to process instance - must be unique 
+     * @param params process variables
+     * @param nodeIds list of unique node ids that would be triggered once the process is created
+     * @return process instance identifier
+     * @throws RuntimeException in case of encountered errors
+     * @throws DeploymentNotFoundException in case deployment with given deployment id does not exist
+     * @throws DeploymentNotActiveException in case deployment with given deployment id is not active
+     */
+    ProcessInstance startProcessFromNodeIds(String processId, CorrelationKey key, Map<String, Object> params, String... nodeIds);
+
+    /**
      * Returns the process instance with the given correlationKey.  Note that only active process instances
      * will be returned.  If a process instance has been completed already, this method will return
      * <code>null</code>.

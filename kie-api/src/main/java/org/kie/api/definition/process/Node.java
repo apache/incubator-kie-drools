@@ -32,6 +32,12 @@ public interface Node {
     long getId();
 
     /**
+     * the node id in the bpmn
+     * @return
+     */
+    String getNodeUniqueId();
+
+    /**
      * The name of the node
      * @return the name of the node
      */
