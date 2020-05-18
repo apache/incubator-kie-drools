@@ -32,9 +32,13 @@ import java.util.stream.Collectors;
 
 import org.assertj.core.api.Assertions;
 import org.drools.core.definitions.rule.impl.RuleImpl;
+import org.drools.core.rule.Declaration;
+import org.drools.core.rule.Pattern;
 import org.drools.core.spi.Consequence;
+import org.drools.model.functions.Function1;
 import org.drools.model.functions.IntrospectableLambda;
 import org.drools.modelcompiler.consequence.LambdaConsequence;
+import org.drools.modelcompiler.constraints.LambdaReadAccessor;
 import org.drools.modelcompiler.domain.Address;
 import org.drools.modelcompiler.domain.Adult;
 import org.drools.modelcompiler.domain.Child;
@@ -2304,5 +2308,43 @@ public class CompilerTest extends BaseModelTest {
         ksession.fireAllRules();
 
         Assertions.assertThat(list).containsExactlyInAnyOrder(40, 38, 41, 38, 41, 43);
+    }
+
+    @Test
+    public void testExternalizeBindingVariableLambda() throws Exception {
+        String str =
+                "package defaultpkg;\n" +
+                "import " + Person.class.getCanonicalName() + ";" +
+                "global java.util.List list;\n" +
+                "rule R when\n" +
+                "  $p : Person($n : name == \"Mario\")\n" +
+                "then\n" +
+                "  list.add($n);\n" +
+                "end";
+
+        KieModuleModel kieModuleModel = KieServices.get().newKieModuleModel();
+        kieModuleModel.setConfigurationProperty("drools.externaliseCanonicalModelLambda", Boolean.TRUE.toString());
+
+        KieSession ksession = getKieSession(kieModuleModel, str );
+        final List<String> list = new ArrayList<>();
+        ksession.setGlobal("list", list);
+
+        if (testRunType == RUN_TYPE.FLOW_DSL || testRunType == RUN_TYPE.PATTERN_DSL) {
+            RuleImpl rule = (RuleImpl)ksession.getKieBase().getRule("defaultpkg", "R");
+            Pattern pattern = (Pattern)rule.getLhs().getChildren().get(0);
+            Declaration declaration = pattern.getDeclarations().get("$n");
+            LambdaReadAccessor lambdaReadAccessor = (LambdaReadAccessor)declaration.getExtractor();
+            Field field = LambdaReadAccessor.class.getDeclaredField("lambda");
+            field.setAccessible(true);
+            Function1.Impl function1 = (Function1.Impl)field.get(lambdaReadAccessor);
+            Object lambda = function1.getLambda();
+            assertThat(lambda.getClass().getName(), containsString("LambdaExtractor")); // materialized Lambda
+        }
+
+        Person me = new Person( "Mario", 40 );
+        ksession.insert( me );
+        ksession.fireAllRules();
+
+        Assertions.assertThat(list).containsExactlyInAnyOrder("Mario");
     }
 }
