@@ -42,7 +42,7 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
-import static org.kie.pmml.compiler.commons.utils.KiePMMLUtil.getPackageName;
+import static org.kie.pmml.commons.utils.KiePMMLModelUtils.getSanitizedPackageName;
 import static org.kie.test.util.filesystem.FileUtils.getFile;
 
 public class PMMLAssemblerServiceTest {
@@ -50,14 +50,14 @@ public class PMMLAssemblerServiceTest {
     private static final PMMLAssemblerService pmmlAssemblerService = new PMMLAssemblerService();
     private static final String FIRST_SOURCE = "FirstLinearRegressionSample.pmml";
     private static final String FIRST_MODEL_FIRST_SAMPLE_NAME = "First sample for first linear regression";
-    private static final String FIRST_PACKAGE_FIRST_SAMPLE_NAME = getPackageName(FIRST_MODEL_FIRST_SAMPLE_NAME);
+    private static final String FIRST_PACKAGE_FIRST_SAMPLE_NAME = getSanitizedPackageName(FIRST_MODEL_FIRST_SAMPLE_NAME);
     private static final String FIRST_MODEL_SECOND_SAMPLE_NAME = "Second sample for first linear regression";
-    private static final String FIRST_PACKAGE_SECOND_SAMPLE_NAME = getPackageName(FIRST_MODEL_SECOND_SAMPLE_NAME);
+    private static final String FIRST_PACKAGE_SECOND_SAMPLE_NAME = getSanitizedPackageName(FIRST_MODEL_SECOND_SAMPLE_NAME);
     private static final String SECOND_SOURCE = "SecondLinearRegressionSample.pmml";
     private static final String SECOND_MODEL_FIRST_SAMPLE_NAME = "First sample for second linear regression";
-    private static final String SECOND_PACKAGE_FIRST_SAMPLE_NAME = getPackageName(SECOND_MODEL_FIRST_SAMPLE_NAME);
+    private static final String SECOND_PACKAGE_FIRST_SAMPLE_NAME = getSanitizedPackageName(SECOND_MODEL_FIRST_SAMPLE_NAME);
     private static final String SECOND_MODEL_SECOND_SAMPLE_NAME = "Second sample for second linear regression";
-    private static final String SECOND_PACKAGE_SECOND_SAMPLE_NAME = getPackageName(SECOND_MODEL_SECOND_SAMPLE_NAME);
+    private static final String SECOND_PACKAGE_SECOND_SAMPLE_NAME = getSanitizedPackageName(SECOND_MODEL_SECOND_SAMPLE_NAME);
     private KnowledgeBuilderImpl knowledgeBuilder = new KnowledgeBuilderImpl();
     private Resource firstSampleResource;
 

@@ -25,6 +25,8 @@ import org.kie.pmml.commons.model.abstracts.AbstractKiePMMLBase;
 import org.kie.pmml.commons.model.enums.MINING_FUNCTION;
 import org.kie.pmml.commons.model.enums.PMML_MODEL;
 
+import static org.kie.pmml.commons.utils.KiePMMLModelUtils.getSanitizedPackageName;
+
 /**
  * KIE representation of PMML model
  */
@@ -68,8 +70,7 @@ public abstract class KiePMMLModel extends AbstractKiePMMLBase {
      * @return
      */
     public String getKModulePackageName() {
-        String fullClassName = this.getClass().getName();
-        return fullClassName.substring(0, fullClassName.lastIndexOf('.'));
+        return getSanitizedPackageName(name);
     }
 
     public abstract Object evaluate(Map<String, Object> requestData, String releaseId);

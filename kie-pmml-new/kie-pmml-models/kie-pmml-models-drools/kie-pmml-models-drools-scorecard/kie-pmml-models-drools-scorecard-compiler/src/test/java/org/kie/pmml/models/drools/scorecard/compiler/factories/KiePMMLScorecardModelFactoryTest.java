@@ -19,6 +19,9 @@ package org.kie.pmml.models.drools.scorecard.compiler.factories;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.function.Function;
+import java.util.stream.Collectors;
+import java.util.stream.IntStream;
 
 import org.dmg.pmml.DataDictionary;
 import org.dmg.pmml.DataField;
@@ -57,9 +60,12 @@ public class KiePMMLScorecardModelFactoryTest {
     }
 
     @Test
-    public void getKiePMMLScorecardModel() {
+    public void getKiePMMLScorecardModel() throws Exception {
         final DataDictionary dataDictionary = pmml.getDataDictionary();
         final Map<String, KiePMMLOriginalTypeGeneratedType> fieldTypeMap = new HashMap<>();
+        IntStream.range(0,3).forEach(index -> {
+            fieldTypeMap.put("TYPE-"+ index, new KiePMMLOriginalTypeGeneratedType("Original-"+ index, "Generated-"+ index));
+        });
         KiePMMLScorecardModel retrieved = KiePMMLScorecardModelFactory.getKiePMMLScorecardModel(dataDictionary, scorecardModel, fieldTypeMap);
         assertNotNull(retrieved);
         assertEquals(scorecardModel.getModelName(), retrieved.getName());

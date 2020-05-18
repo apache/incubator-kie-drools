@@ -53,14 +53,4 @@ public class KiePMMLUtil {
     public static PMML load(InputStream is) throws SAXException, JAXBException {
         return org.jpmml.model.PMMLUtil.unmarshal(is);
     }
-
-    /**
-     * Method to be used by <b>every</b> KiePMML implementation to retrieve the <b>package</b> name
-     * out of the model name
-     * @param modelName
-     * @return
-     */
-    public static String getPackageName(String modelName) {
-        return modelName.replace(" ", "_").toLowerCase();
-    }
 }

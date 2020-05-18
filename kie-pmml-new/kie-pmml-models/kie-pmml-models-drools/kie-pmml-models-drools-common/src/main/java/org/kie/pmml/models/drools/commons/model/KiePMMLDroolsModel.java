@@ -15,6 +15,8 @@
  */
 package org.kie.pmml.models.drools.commons.model;
 
+import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
@@ -45,12 +47,12 @@ public abstract class KiePMMLDroolsModel extends KiePMMLModel {
 
     private static final AgendaEventListener agendaEventListener = getAgendaEventListener(logger);
 
-    protected List<KiePMMLOutputField> outputFields;
+    protected List<KiePMMLOutputField> outputFields = new ArrayList<>();
 
     /**
      * Map between the original field name and the generated type.
      */
-    protected Map<String, KiePMMLOriginalTypeGeneratedType> fieldTypeMap;
+    protected Map<String, KiePMMLOriginalTypeGeneratedType> fieldTypeMap = new HashMap<>();
 
     protected KiePMMLDroolsModel(String name, List<KiePMMLExtension> extensions) {
         super(name, extensions);
@@ -58,11 +60,6 @@ public abstract class KiePMMLDroolsModel extends KiePMMLModel {
 
     public Map<String, KiePMMLOriginalTypeGeneratedType> getFieldTypeMap() {
         return fieldTypeMap;
-    }
-
-    @Override
-    public String getKModulePackageName() {
-        return name.toLowerCase();
     }
 
     @Override
@@ -126,11 +123,6 @@ public abstract class KiePMMLDroolsModel extends KiePMMLModel {
         protected Builder(String prefix, PMML_MODEL pmmlMODEL, MINING_FUNCTION miningFunction, Supplier<T> supplier) {
             super(prefix, pmmlMODEL, miningFunction, supplier);
         }
-
-//        public Builder<T> withPackageDescr(PackageDescr packageDescr) {
-//            toBuild.packageDescr = packageDescr;
-//            return this;
-//        }
 
         public Builder<T> withFieldTypeMap(Map<String, KiePMMLOriginalTypeGeneratedType> fieldTypeMap) {
             toBuild.fieldTypeMap = fieldTypeMap;

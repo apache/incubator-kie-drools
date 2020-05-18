@@ -32,7 +32,7 @@ import org.kie.pmml.models.drools.ast.KiePMMLDroolsRule;
 import org.kie.pmml.models.drools.ast.factories.PredicateASTFactoryData;
 import org.kie.pmml.models.drools.tuples.KiePMMLOriginalTypeGeneratedType;
 
-import static org.kie.pmml.models.drools.commons.utils.KiePMMLDroolsModelUtils.getSanitizedClassName;
+import static org.kie.pmml.commons.utils.KiePMMLModelUtils.getSanitizedClassName;
 
 /**
  * Utility methods for other <b>Test</b> classes

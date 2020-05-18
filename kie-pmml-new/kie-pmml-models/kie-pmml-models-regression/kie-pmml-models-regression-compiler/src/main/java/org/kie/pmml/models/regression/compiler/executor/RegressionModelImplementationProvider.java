@@ -36,7 +36,7 @@ import org.kie.pmml.models.regression.model.KiePMMLRegressionModelWithSources;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import static org.kie.pmml.compiler.commons.utils.KiePMMLUtil.getPackageName;
+import static org.kie.pmml.commons.utils.KiePMMLModelUtils.getSanitizedPackageName;
 import static org.kie.pmml.compiler.commons.utils.ModelUtils.getOpType;
 import static org.kie.pmml.compiler.commons.utils.ModelUtils.getTargetFields;
 
@@ -69,7 +69,7 @@ public class RegressionModelImplementationProvider implements ModelImplementatio
     public KiePMMLRegressionModel getKiePMMLModelFromPlugin(DataDictionary dataDictionary, RegressionModel model, Object kBuilder) {
         logger.trace("getKiePMMLModelFromPlugin {} {} {}", dataDictionary, model, kBuilder);
         try {
-            String packageName = getPackageName(model.getModelName());
+            String packageName = getSanitizedPackageName(model.getModelName());
             final Map<String, String> kiePMMLRegressionModelSourcesMap = KiePMMLRegressionModelFactory.getKiePMMLRegressionModelSourcesMap(dataDictionary, model, null, packageName);
             return new KiePMMLRegressionModelWithSources(model.getModelName(), kiePMMLRegressionModelSourcesMap);
         } catch (IOException e) {

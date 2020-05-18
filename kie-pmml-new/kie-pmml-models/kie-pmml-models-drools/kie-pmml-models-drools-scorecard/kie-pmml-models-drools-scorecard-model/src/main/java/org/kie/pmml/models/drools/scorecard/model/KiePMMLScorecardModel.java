@@ -34,7 +34,7 @@ public class KiePMMLScorecardModel extends KiePMMLDroolsModel {
 
     public static final PMML_MODEL PMML_MODEL_TYPE = PMML_MODEL.SCORECARD_MODEL;
 
-    private KiePMMLScorecardModel(String modelName, List<KiePMMLExtension> extensions) {
+    protected KiePMMLScorecardModel(String modelName, List<KiePMMLExtension> extensions) {
         super(modelName, extensions);
     }
 

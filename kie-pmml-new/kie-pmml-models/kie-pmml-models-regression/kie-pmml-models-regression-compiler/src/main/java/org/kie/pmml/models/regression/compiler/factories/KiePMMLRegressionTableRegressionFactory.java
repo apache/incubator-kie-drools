@@ -53,7 +53,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import static java.util.stream.Collectors.groupingBy;
-import static org.kie.pmml.models.regression.compiler.utils.JavaParserUtils.getFromFileName;
+import static org.kie.pmml.compiler.commons.utils.JavaParserUtils.getFromFileName;
 
 public class KiePMMLRegressionTableRegressionFactory {
 

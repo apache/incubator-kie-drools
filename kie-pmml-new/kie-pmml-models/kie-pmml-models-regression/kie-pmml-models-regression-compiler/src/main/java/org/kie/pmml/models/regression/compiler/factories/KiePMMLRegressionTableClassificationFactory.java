@@ -51,7 +51,7 @@ import org.slf4j.LoggerFactory;
 import static org.kie.pmml.models.regression.compiler.factories.KiePMMLRegressionTableRegressionFactory.MISSING_BODY_TEMPLATE;
 import static org.kie.pmml.models.regression.compiler.factories.KiePMMLRegressionTableRegressionFactory.addMethod;
 import static org.kie.pmml.models.regression.compiler.factories.KiePMMLRegressionTableRegressionFactory.populateGetTargetCategory;
-import static org.kie.pmml.models.regression.compiler.utils.JavaParserUtils.getFromFileName;
+import static org.kie.pmml.compiler.commons.utils.JavaParserUtils.getFromFileName;
 
 public class KiePMMLRegressionTableClassificationFactory {
 
@@ -193,7 +193,6 @@ public class KiePMMLRegressionTableClassificationFactory {
     private static void populateGetProbabilityMapMethod(final RegressionModel.NormalizationMethod normalizationMethod, final ClassOrInterfaceDeclaration tableTemplate) {
         try {
             String methodName = String.format("get%sProbabilityMap", normalizationMethod.name());
-//            templateEvaluate = StaticJavaParser.parseResource(KIE_PMML_GET_PROBABILITY_MAP_METHOD_TEMPLATE_JAVA);
             templateEvaluate = getFromFileName(KIE_PMML_GET_PROBABILITY_MAP_METHOD_TEMPLATE_JAVA);
             cloneEvaluate = templateEvaluate.clone();
             ClassOrInterfaceDeclaration evaluateTemplateClass = cloneEvaluate.getClassByName(KIE_PMML_GET_PROBABILITY_MAP_METHOD_TEMPLATE)

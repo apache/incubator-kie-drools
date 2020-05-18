@@ -29,7 +29,7 @@ import org.kie.pmml.evaluator.api.exceptions.KiePMMLModelException;
 import org.kie.pmml.models.drools.executor.KiePMMLStatusHolder;
 import org.kie.pmml.models.drools.tuples.KiePMMLOriginalTypeGeneratedType;
 
-import static org.kie.pmml.compiler.commons.utils.KiePMMLUtil.getPackageName;
+import static org.kie.pmml.commons.utils.KiePMMLModelUtils.getSanitizedPackageName;
 import static org.kie.pmml.models.drools.commons.factories.KiePMMLDescrFactory.OUTPUTFIELDS_MAP_IDENTIFIER;
 import static org.kie.pmml.models.drools.commons.factories.KiePMMLDescrFactory.PMML4_RESULT_IDENTIFIER;
 
@@ -44,7 +44,7 @@ public class KiePMMLSessionUtils {
 
     private KiePMMLSessionUtils(final String modelName, final String releaseId, final PMML4Result pmml4Result) {
         this.modelName = modelName;
-        packageName = getPackageName(modelName);
+        packageName = getSanitizedPackageName(modelName);
         kieSession = getKieSession(releaseId);
         kieSession.insert(new KiePMMLStatusHolder());
         kieSession.insert(pmml4Result);

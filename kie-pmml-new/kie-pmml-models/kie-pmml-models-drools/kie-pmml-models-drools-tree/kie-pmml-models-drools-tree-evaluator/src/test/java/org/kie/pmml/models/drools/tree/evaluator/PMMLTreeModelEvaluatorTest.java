@@ -44,7 +44,6 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
-import static org.kie.pmml.compiler.commons.utils.KiePMMLUtil.getPackageName;
 
 public class PMMLTreeModelEvaluatorTest {
 
@@ -79,11 +78,12 @@ public class PMMLTreeModelEvaluatorTest {
         assertTrue(pmml.getModels().get(0) instanceof TreeModel);
         KnowledgeBuilderImpl knowledgeBuilder = new KnowledgeBuilderImpl();
         kiePMMLModel = provider.getKiePMMLModel(pmml.getDataDictionary(), (TreeModel) pmml.getModels().get(0), knowledgeBuilder);
-        String packageName = getPackageName(kiePMMLModel.getName());
+//        String packageName = getPackageName(kiePMMLModel.getName());
         final KieBase build = new KieHelper()
-                .addContent(knowledgeBuilder.getPackageDescrs(packageName).get(0))
+                .addContent(knowledgeBuilder.getPackageDescrs(kiePMMLModel.getKModulePackageName()).get(0))
                 .setReleaseId(RELEASE_ID)
                 .build();
+        assertNotNull(build);
     }
 
     @Test

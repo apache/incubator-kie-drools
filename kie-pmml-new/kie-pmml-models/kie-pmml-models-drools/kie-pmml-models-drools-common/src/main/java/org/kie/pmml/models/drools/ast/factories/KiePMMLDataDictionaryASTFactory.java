@@ -25,7 +25,7 @@ import org.kie.pmml.commons.model.enums.DATA_TYPE;
 import org.kie.pmml.models.drools.ast.KiePMMLDroolsType;
 import org.kie.pmml.models.drools.tuples.KiePMMLOriginalTypeGeneratedType;
 
-import static org.kie.pmml.models.drools.commons.utils.KiePMMLDroolsModelUtils.getSanitizedClassName;
+import static org.kie.pmml.commons.utils.KiePMMLModelUtils.getSanitizedClassName;
 
 /**
  * Class used to generate <code>KiePMMLDroolsType</code>s out of a <code>DataDictionary</code>

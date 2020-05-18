@@ -48,7 +48,6 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
-import static org.kie.pmml.compiler.commons.utils.KiePMMLUtil.getPackageName;
 
 @RunWith(Parameterized.class)
 public class PMMLScorecardModelEvaluatorTest {
@@ -90,11 +89,11 @@ public class PMMLScorecardModelEvaluatorTest {
         assertTrue(pmml.getModels().get(0) instanceof Scorecard);
         KnowledgeBuilderImpl knowledgeBuilder = new KnowledgeBuilderImpl();
         kiePMMLModel = provider.getKiePMMLModel(pmml.getDataDictionary(), (Scorecard) pmml.getModels().get(0), knowledgeBuilder);
-        String packageName = getPackageName(kiePMMLModel.getName());
         final KieBase build = new KieHelper()
-                .addContent(knowledgeBuilder.getPackageDescrs(packageName).get(0))
+                .addContent(knowledgeBuilder.getPackageDescrs(kiePMMLModel.getKModulePackageName()).get(0))
                 .setReleaseId(RELEASE_ID)
                 .build();
+        assertNotNull(build);
     }
 
     @Parameterized.Parameters

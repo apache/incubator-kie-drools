@@ -15,10 +15,12 @@
  */
 package org.kie.pmml.models.drools.scorecard.compiler.executor;
 
+import java.io.IOException;
 import java.util.Map;
 
 import org.dmg.pmml.DataDictionary;
 import org.dmg.pmml.scorecard.Scorecard;
+import org.kie.pmml.commons.exceptions.KiePMMLException;
 import org.kie.pmml.commons.model.enums.PMML_MODEL;
 import org.kie.pmml.models.drools.ast.KiePMMLDroolsAST;
 import org.kie.pmml.models.drools.provider.DroolsModelProvider;
@@ -40,7 +42,11 @@ public class ScorecardModelImplementationProvider extends DroolsModelProvider<Sc
 
     @Override
     public KiePMMLScorecardModel getKiePMMLDroolsModel(DataDictionary dataDictionary, Scorecard model, Map<String, KiePMMLOriginalTypeGeneratedType> fieldTypeMap) {
-        return KiePMMLScorecardModelFactory.getKiePMMLScorecardModel(dataDictionary, model, fieldTypeMap);
+        try {
+            return KiePMMLScorecardModelFactory.getKiePMMLScorecardModel(dataDictionary, model, fieldTypeMap);
+        } catch (IOException | IllegalAccessException | InstantiationException e) {
+            throw new KiePMMLException(e.getMessage(), e);
+        }
     }
 
     @Override

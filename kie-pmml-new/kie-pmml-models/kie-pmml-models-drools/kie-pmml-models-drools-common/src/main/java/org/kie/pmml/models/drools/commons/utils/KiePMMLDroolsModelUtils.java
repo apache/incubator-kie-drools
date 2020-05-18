@@ -27,18 +27,9 @@ public class KiePMMLDroolsModelUtils {
     }
 
     /**
-     * Convert the given <code>String</code> in a valid class name
-     * @param input
-     * @return
-     */
-    public static String getSanitizedClassName(String input) {
-        return input.replace(".", "_");
-    }
-
-    /**
      * Return an <code>Object</code> correctly formatted to be put in drl (e.g. if the <b>targetType</b>
      * is <code>DATA_TYPE.STRING</code> returns the <b>quoted</b> rawValue.
-     *
+     * <p>
      * If <b>rawValue</b> is <code>null</code>, returns <code>null</code>
      * @param rawValue
      * @param targetType

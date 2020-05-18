@@ -31,7 +31,6 @@ import org.kie.pmml.models.drools.tuples.KiePMMLOriginalTypeGeneratedType;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import static org.kie.pmml.compiler.commons.utils.KiePMMLUtil.getPackageName;
 import static org.kie.pmml.models.drools.commons.factories.KiePMMLDescrFactory.getBaseDescr;
 
 /**
@@ -49,9 +48,10 @@ public abstract class DroolsModelProvider<T extends Model, E extends KiePMMLDroo
         }
         final Map<String, KiePMMLOriginalTypeGeneratedType> fieldTypeMap = new HashMap<>();
         KiePMMLDroolsAST kiePMMLDroolsAST = getKiePMMLDroolsAST(dataDictionary, model, fieldTypeMap);
-        PackageDescr packageDescr = getPackageDescr(kiePMMLDroolsAST, model);
+        E toReturn = getKiePMMLDroolsModel(dataDictionary, model, fieldTypeMap);
+        PackageDescr packageDescr = getPackageDescr(kiePMMLDroolsAST, toReturn);
         ((KnowledgeBuilderImpl) kBuilder).addPackage(packageDescr);
-        return getKiePMMLDroolsModel(dataDictionary, model, fieldTypeMap);
+        return toReturn;
     }
 
     @Override
@@ -63,8 +63,7 @@ public abstract class DroolsModelProvider<T extends Model, E extends KiePMMLDroo
 
     public abstract KiePMMLDroolsAST getKiePMMLDroolsAST(DataDictionary dataDictionary, T model, final Map<String, KiePMMLOriginalTypeGeneratedType> fieldTypeMap);
 
-    public PackageDescr getPackageDescr(KiePMMLDroolsAST kiePMMLDroolsAST, T model) {
-        String packageName = getPackageName(model.getModelName());
-        return getBaseDescr(kiePMMLDroolsAST, packageName);
+    public PackageDescr getPackageDescr(KiePMMLDroolsAST kiePMMLDroolsAST, E model) {
+        return getBaseDescr(kiePMMLDroolsAST, model.getKModulePackageName());
     }
 }
