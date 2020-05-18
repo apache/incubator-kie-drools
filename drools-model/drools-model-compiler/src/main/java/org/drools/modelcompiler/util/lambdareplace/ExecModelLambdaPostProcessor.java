@@ -42,15 +42,18 @@ import com.github.javaparser.printer.PrettyPrinter;
 import com.github.javaparser.printer.PrettyPrinterConfiguration;
 import org.drools.model.BitMask;
 import org.drools.modelcompiler.builder.RuleWriter;
+import org.drools.modelcompiler.builder.generator.expression.FlowExpressionBuilder;
+import org.drools.modelcompiler.builder.generator.expression.PatternExpressionBuilder;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import static org.drools.modelcompiler.util.StreamUtils.optionalToStream;
 import static org.drools.modelcompiler.builder.generator.DslMethodNames.ALPHA_INDEXED_BY_CALL;
 import static org.drools.modelcompiler.builder.generator.DslMethodNames.BETA_INDEXED_BY_CALL;
+import static org.drools.modelcompiler.builder.generator.DslMethodNames.BIND_AS_CALL;
 import static org.drools.modelcompiler.builder.generator.DslMethodNames.EXECUTE_CALL;
 import static org.drools.modelcompiler.builder.generator.DslMethodNames.INDEXED_BY_CALL;
 import static org.drools.modelcompiler.builder.generator.expression.PatternExpressionBuilder.EXPR_CALL;
+import static org.drools.modelcompiler.util.StreamUtils.optionalToStream;
 
 public class ExecModelLambdaPostProcessor {
 
@@ -98,6 +101,12 @@ public class ExecModelLambdaPostProcessor {
             clone.findAll(MethodCallExpr.class, mc -> BETA_INDEXED_BY_CALL.contains(mc.getName().asString()))
                     .forEach(this::convertIndexedByCall);
 
+            clone.findAll(MethodCallExpr.class, mc -> PatternExpressionBuilder.BIND_CALL.equals(mc.getNameAsString()))
+                    .forEach(this::convertBindCall);
+
+            clone.findAll(MethodCallExpr.class, mc -> FlowExpressionBuilder.BIND_CALL.equals(mc.getNameAsString()))
+                    .forEach(this::convertBindCallForFlowDSL);
+
             clone.findAll(MethodCallExpr.class, this::isExecuteNonNestedCall)
                     .forEach(methodCallExpr -> {
                         List<MaterializedLambda.BitMaskVariable> bitMaskVariables = findBitMaskFields(methodCallExpr);
@@ -121,6 +130,53 @@ public class ExecModelLambdaPostProcessor {
 
         String returnType = getType(argument).asString();
         extractLambdaFromMethodCall(methodCallExpr, () -> new MaterializedLambdaExtractor(packageName, ruleClassName, returnType));
+    }
+
+    private void convertBindCall(MethodCallExpr methodCallExpr) {
+        Expression argument = methodCallExpr.getArgument(0);
+
+        if (!argument.isNameExpr()) {
+            throw new RuntimeException("Argument is not NameExpr : argument = " + argument);
+        }
+
+        String returnType = findVariableType((NameExpr) argument).asString();
+
+        extractLambdaFromMethodCall(methodCallExpr, () -> new MaterializedLambdaExtractor(packageName, ruleClassName, returnType));
+    }
+
+    private void convertBindCallForFlowDSL(MethodCallExpr methodCallExpr) {
+        Expression argument = methodCallExpr.getArgument(0);
+
+        if (!argument.isNameExpr()) {
+            throw new RuntimeException("Argument is not NameExpr : argument = " + argument);
+        }
+
+        String returnType = findVariableType((NameExpr) argument).asString();
+
+        Optional<MethodCallExpr> bindAsMethodOpt = optionalToStream(methodCallExpr.getParentNode())
+            .map(node -> (MethodCallExpr) node)
+            .filter(parentMethod -> parentMethod.getNameAsString().equals(BIND_AS_CALL))
+            .findFirst();
+
+        if (!bindAsMethodOpt.isPresent()) {
+            logger.warn("Method 'as' is not found for {}", methodCallExpr);
+            return; // not externalize
+        }
+
+        extractLambdaFromMethodCall(bindAsMethodOpt.get(), () -> new MaterializedLambdaExtractor(packageName, ruleClassName, returnType));
+    }
+
+    private Type findVariableType(NameExpr nameExpr) {
+        return optionalToStream(nameExpr.findAncestor(MethodDeclaration.class))
+            .flatMap(node -> node.findAll(VariableDeclarator.class).stream())
+            .filter(node -> node.getName().equals(nameExpr.getName()))
+            .map(VariableDeclarator::getType)
+            .map(type -> (ClassOrInterfaceType)type)
+            .flatMap(classOrInterfaceType -> optionalToStream(classOrInterfaceType.getTypeArguments()))
+            .filter(typeArgList -> typeArgList.size() == 1)
+            .map(typeArgList -> typeArgList.get(0))
+            .findFirst()
+            .orElseThrow(() -> new RuntimeException("VariableDeclarator type was not found for " + nameExpr.getNameAsString()));
     }
 
     protected Type getType(Expression argument) {
