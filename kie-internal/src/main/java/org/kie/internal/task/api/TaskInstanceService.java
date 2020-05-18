@@ -26,6 +26,7 @@ import org.kie.api.task.model.OrganizationalEntity;
 import org.kie.api.task.model.Task;
 import org.kie.internal.task.api.model.ContentData;
 import org.kie.internal.task.api.model.FaultData;
+import org.kie.internal.task.api.model.Operation;
 import org.kie.internal.task.api.model.SubTasksStrategy;
 
 /**
@@ -39,6 +40,8 @@ public interface TaskInstanceService extends CommandExecutor {
     /*
      * LIFECYCLE METHODS
      */
+
+    default void fireEvent(Operation operation, long taskId) {}
 
     long addTask(Task task, Map<String, Object> params);
 
