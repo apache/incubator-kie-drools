@@ -6,5 +6,6 @@
         "src/**/*.jsx",
         "src/**/*.js",
         "../../config/declare.d.ts"
-    ]
+    ],
+    "preserveSymlinks": true
 }

@@ -10,6 +10,7 @@ import {
   Card,
   Bullseye
 } from '@patternfly/react-core';
+import { ServerErrors } from '@kogito-apps/common/src/components';
 import { FilterIcon } from '@patternfly/react-icons';
 import { Link } from 'react-router-dom';
 import { Redirect } from 'react-router';
@@ -18,7 +19,6 @@ import DomainExplorerColumnPicker from '../../Organisms/DomainExplorerColumnPick
 import DomainExplorerTable from '../../Organisms/DomainExplorerTable/DomainExplorerTable';
 import PageTitleComponent from '../../Molecules/PageTitleComponent/PageTitleComponent';
 import SpinnerComponent from '../../Atoms/SpinnerComponent/SpinnerComponent';
-import ServerErrorsComponent from '../../Molecules/ServerErrorsComponent/ServerErrorsComponent';
 import LoadMoreComponent from '../../Atoms/LoadMoreComponent/LoadMoreComponent';
 
 import {
@@ -187,15 +187,15 @@ const DomainExplorerDashboard = props => {
   };
 
   if (!getQuery.loading && getQuery.error) {
-    return <ServerErrorsComponent message={getQuery.error} />;
+    return <ServerErrors error={getQuery.error} />;
   }
 
   if (!getQueryTypes.loading && getQueryTypes.error) {
-    return <ServerErrorsComponent message={getQueryTypes.error} />;
+    return <ServerErrors error={getQueryTypes.error} />;
   }
 
   if (!getPicker.loading && getPicker.error) {
-    return <ServerErrorsComponent message={getPicker.error} />;
+    return <ServerErrors error={getPicker.error} />;
   }
 
   const onGetMoreInstances = (initVal, _pageSize) => {
@@ -283,7 +283,7 @@ const DomainExplorerDashboard = props => {
           )}
         </PageSection>
       ) : (
-        <ServerErrorsComponent message={error} />
+        <ServerErrors error={error} />
       )}
     </>
   );

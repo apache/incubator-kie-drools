@@ -14,24 +14,29 @@ module.exports = {
       favicon: 'src/favicon.ico'
     }),
     new webpack.EnvironmentPlugin({
-        KOGITO_AUTH_ENABLED: false,
-        KOGITO_KEYCLOAK_REALM: "kogito",
-        KOGITO_KEYCLOAK_URL: "http://localhost:8280",
-        KOGITO_KEYCLOAK_CLIENT_ID: "kogito-management-console",
-        KOGITO_DATAINDEX_HTTP_URL: "http://localhost:4000/graphql",
-        KOGITO_MANAGEMENTCONSOLE_VERSION: "DEV"
+      KOGITO_AUTH_ENABLED: false,
+      KOGITO_KEYCLOAK_REALM: 'kogito',
+      KOGITO_KEYCLOAK_URL: 'http://localhost:8280',
+      KOGITO_KEYCLOAK_CLIENT_ID: 'kogito-management-console',
+      KOGITO_DATAINDEX_HTTP_URL: 'http://localhost:4000/graphql',
+      KOGITO_APP_VERSION: 'DEV',
+      KOGITO_APP_NAME: 'Management Console'
     })
   ],
   module: {
     rules: [
       {
         test: /\.(tsx|ts)?$/,
-        include: path.resolve(__dirname, 'src'),
+        include: [
+          path.resolve(__dirname, 'src'),
+          path.resolve('../../node_modules/@kogito-apps/common/src/components')
+        ],
         use: [
           {
             loader: 'ts-loader',
             options: {
-              configFile: path.resolve('./tsconfig.json')
+              configFile: path.resolve('./tsconfig.json'),
+              allowTsInNodeModules: true
             }
           }
         ]
@@ -52,7 +57,8 @@ module.exports = {
           path.resolve(
             '../../node_modules/@patternfly/patternfly/assets/pficon'
           ),
-          path.resolve('./src/static')
+          path.resolve('./src/static'),
+          path.resolve('../../node_modules/@kogito-apps/common/src/static')
         ],
         use: {
           loader: 'file-loader',
@@ -105,7 +111,8 @@ module.exports = {
           ),
           path.resolve(
             '../../node_modules/@patternfly/react-table/node_modules/@patternfly/react-styles/css/assets/images'
-          )
+          ),
+          path.resolve('../../node_modules/@kogito-apps/common/src/static')
         ],
         use: [
           {

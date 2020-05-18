@@ -15,6 +15,7 @@ import {
   Bullseye,
   KebabToggle
 } from '@patternfly/react-core';
+import { ServerErrors } from '@kogito-apps/common/src/components';
 import { Link } from 'react-router-dom';
 import SpinnerComponent from '../../Atoms/SpinnerComponent/SpinnerComponent';
 import {
@@ -25,9 +26,8 @@ import EmptyStateComponent from '../../Atoms/EmptyStateComponent/EmptyStateCompo
 import { HistoryIcon } from '@patternfly/react-icons';
 import ErrorPopover from '../../Atoms/ErrorPopoverComponent/ErrorPopoverComponent';
 import ProcessBulkModalComponent from '../../Atoms/ProcessBulkModalComponent/ProcessBulkModalComponent';
-import ServerErrorsComponents from '../../Molecules/ServerErrorsComponent/ServerErrorsComponent';
 import ProcessDescriptor from '../ProcessDescriptor/ProcessDescriptor';
-import DisablePopup from '../DiablePopup/DisablePopup';
+import DisablePopup from '../DisablePopup/DisablePopup';
 import {
   stateIconCreator,
   setTitle,
@@ -497,7 +497,7 @@ const DataListItemComponent: React.FC<IOwnProps> = ({
               <SpinnerComponent spinnerText="Loading process instances..." />
             </Bullseye>
           )}
-          {error && <ServerErrorsComponents message={error} />}
+          {error && <ServerErrors error={error} />}
         </DataListContent>
       </DataListItem>
     </React.Fragment>

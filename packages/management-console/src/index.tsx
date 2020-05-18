@@ -5,22 +5,33 @@ import { ApolloClient } from 'apollo-client';
 import { ApolloProvider } from 'react-apollo';
 import Keycloak from 'keycloak-js';
 import axios from 'axios';
+import { Nav, NavList, NavItem } from '@patternfly/react-core';
+import { ServerUnavailable } from '@kogito-apps/common/src/components';
 import BaseComponent from './components/Templates/BaseComponent/BaseComponent';
 import { HttpLink } from 'apollo-link-http';
 import { onError } from 'apollo-link-error';
 import { InMemoryCache, NormalizedCacheObject } from 'apollo-cache-inmemory';
-import NoServerComponent from './components/Molecules/NoServerComponent/NoServerComponent';
+import managementConsoleLogo from './static/managementConsoleLogo.svg';
 
 const httpLink = new HttpLink({
   // @ts-ignore
   uri: window.DATA_INDEX_ENDPOINT || process.env.KOGITO_DATAINDEX_HTTP_URL
 });
 
+const PageNav = (
+  <Nav aria-label="Nav" theme="dark">
+    <NavList>
+      <NavItem>Process Instances</NavItem>
+      <NavItem>Domain Explorer</NavItem>
+    </NavList>
+  </Nav>
+);
+
 const fallbackUI = onError(({ networkError }: any) => {
   if (networkError && networkError.stack === 'TypeError: Failed to fetch') {
     return ReactDOM.render(
       <ApolloProvider client={client}>
-        <NoServerComponent />
+        <ServerUnavailable PageNav={PageNav} src={managementConsoleLogo} />
       </ApolloProvider>,
       document.getElementById('root')
     );

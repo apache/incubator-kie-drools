@@ -1,6 +1,6 @@
 import React from 'react';
 import { shallow } from 'enzyme';
-import Dashboard from '../Dashboard';
+import PageLayoutComponent from '../PageLayoutComponent';
 import { MockedProvider } from '@apollo/react-testing';
 
 const props: any = {
@@ -11,13 +11,13 @@ const props: any = {
 
 const mocks = [];
 
-describe('Dashboard component tests', () => {
+describe('PageLayoutComponent component tests', () => {
   it('snapshot testing', () => {
     const wrapper = shallow(
       <MockedProvider mocks={mocks}>
-        <Dashboard {...props} />
+        <PageLayoutComponent {...props} />
       </MockedProvider>
     );
-    expect(wrapper.find(Dashboard)).toMatchSnapshot();
+    expect(wrapper.find(PageLayoutComponent)).toMatchSnapshot();
   });
 });

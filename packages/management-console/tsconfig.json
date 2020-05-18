@@ -10,5 +10,6 @@
     "exclude": [
         "src/graphql/queries.tsx",
         "node_modules"
-    ]
+    ],
+    "preserveSymlinks": true
 }

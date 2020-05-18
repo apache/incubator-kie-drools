@@ -1,7 +1,7 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
-exports[`Dashboard component tests snapshot testing 1`] = `
-<Dashboard
+exports[`PageLayoutComponent component tests snapshot testing 1`] = `
+<PageLayoutComponent
   location={
     Object {
       "pathname": "/ProcessInstances",

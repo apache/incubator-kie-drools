@@ -14,6 +14,7 @@ import {
   OverflowMenuContent,
   OverflowMenuGroup
 } from '@patternfly/react-core';
+import { ServerErrors } from '@kogito-apps/common/src/components';
 import React, { useState, useEffect } from 'react';
 import { Link, Redirect } from 'react-router-dom';
 import ProcessDetails from '../../Organisms/ProcessDetails/ProcessDetails';
@@ -26,7 +27,6 @@ import {
 } from '../../../graphql/types';
 import ProcessDescriptor from '../../Molecules/ProcessDescriptor/ProcessDescriptor';
 import SpinnerComponent from '../../Atoms/SpinnerComponent/SpinnerComponent';
-import ServerErrorsComponent from '../../Molecules/ServerErrorsComponent/ServerErrorsComponent';
 import PageTitleComponent from '../../Molecules/PageTitleComponent/PageTitleComponent';
 import ProcessBulkModalComponent from '../../Atoms/ProcessBulkModalComponent/ProcessBulkModalComponent';
 import {
@@ -274,7 +274,7 @@ const ProcessDetailsPage = props => {
           </PageSection>
         </>
       ) : (
-        <ServerErrorsComponent message={error} />
+        <ServerErrors error={error} />
       )}
     </>
   );

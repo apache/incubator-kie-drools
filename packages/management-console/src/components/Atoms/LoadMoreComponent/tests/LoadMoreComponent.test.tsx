@@ -1,5 +1,5 @@
 import React from 'react';
-import {shallow} from 'enzyme';
+import { shallow } from 'enzyme';
 import LoadMoreComponent from '../LoadMoreComponent';
 
 describe('LoadMore component tests with isLoading false', () => {
@@ -8,7 +8,7 @@ describe('LoadMore component tests with isLoading false', () => {
     setOffset: jest.fn(),
     getMoreItems: jest.fn(),
     pageSize: 10,
-    isLoadingMore:false
+    isLoadingMore: false
   };
   it('snapshot testing', () => {
     const wrapper = shallow(<LoadMoreComponent {...props} />);
@@ -40,7 +40,7 @@ describe('LoadMore component tests with isLoading true', () => {
     setOffset: jest.fn(),
     getMoreItems: jest.fn(),
     pageSize: 10,
-    isLoadingMore:true
+    isLoadingMore: true
   };
   it('snapshot testing', () => {
     const wrapper = shallow(<LoadMoreComponent {...props} />);

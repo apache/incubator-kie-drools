@@ -1,4 +1,5 @@
 const path = require('path');
+const webpack = require('webpack');
 const HtmlWebpackPlugin = require('html-webpack-plugin');
 const TsconfigPathsPlugin = require('tsconfig-paths-webpack-plugin');
 
@@ -11,13 +12,17 @@ module.exports = {
   module: {
     rules: [
       {
-        include: path.resolve(__dirname, 'src'),
+        include: [
+          path.resolve(__dirname, 'src'),
+          path.resolve('../../node_modules/@kogito-apps/common/src/components')
+        ],
         test: /\.(tsx|ts)?$/,
         use: [
           {
             loader: 'ts-loader',
             options: {
-              configFile: path.resolve('./tsconfig.json')
+              configFile: path.resolve('./tsconfig.json'),
+              allowTsInNodeModules: true
             }
           }
         ]
@@ -38,7 +43,9 @@ module.exports = {
           ),
           path.resolve(
             '../../node_modules/@patternfly/patternfly/assets/pficon'
-          )
+          ),
+          path.resolve('./src/static'),
+          path.resolve('../../node_modules/@kogito-apps/common/src/static')
         ],
         test: /\.(svg|ttf|eot|woff|woff2)$/,
         use: {
@@ -76,18 +83,6 @@ module.exports = {
         }
       },
       {
-        include: input =>
-          input.indexOf(BG_IMAGES_DIRNAME) === -1 &&
-          input.indexOf('fonts') === -1 &&
-          input.indexOf('background-filter') === -1 &&
-          input.indexOf('pficon') === -1,
-        test: /\.svg$/,
-        use: {
-          loader: 'raw-loader',
-          options: {}
-        }
-      },
-      {
         include: [
           path.resolve(__dirname, 'src'),
           path.resolve('../../node_modules/patternfly'),
@@ -105,6 +100,10 @@ module.exports = {
           ),
           path.resolve(
             '../../node_modules/@patternfly/react-table/node_modules/@patternfly/react-styles/css/assets/images'
+          ),
+          path.resolve(
+            __dirname,
+            '../../node_modules/@kogito-apps/common/src/static'
           )
         ],
         test: /\.(jpg|jpeg|png|gif)$/i,
@@ -129,6 +128,15 @@ module.exports = {
     new HtmlWebpackPlugin({
       favicon: 'src/favicon.ico',
       template: path.resolve(__dirname, 'src', 'index.html')
+    }),
+    new webpack.EnvironmentPlugin({
+      KOGITO_AUTH_ENABLED: false,
+      KOGITO_KEYCLOAK_REALM: 'kogito',
+      KOGITO_KEYCLOAK_URL: 'http://localhost:8280',
+      KOGITO_KEYCLOAK_CLIENT_ID: 'kogito-task-console',
+      KOGITO_DATAINDEX_HTTP_URL: 'http://localhost:4000/graphql',
+      KOGITO_APP_VERSION: 'DEV',
+      KOGITO_APP_NAME: 'Task Console'
     })
   ],
   resolve: {

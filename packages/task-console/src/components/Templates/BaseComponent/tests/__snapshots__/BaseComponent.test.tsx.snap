@@ -1,0 +1,12 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`Base component test cases Snapshot testing 1`] = `
+<BrowserRouter>
+  <Switch>
+    <Route
+      component={[Function]}
+      path="/"
+    />
+  </Switch>
+</BrowserRouter>
+`;

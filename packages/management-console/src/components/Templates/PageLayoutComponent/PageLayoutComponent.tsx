@@ -1,45 +1,22 @@
-import {
-  Page,
-  PageSidebar,
-  PageHeader,
-  Nav,
-  NavList,
-  NavItem
-} from '@patternfly/react-core';
-import React, { useState } from 'react';
+import { Nav, NavList, NavItem } from '@patternfly/react-core';
+import React from 'react';
 import { Redirect, Route, Link, Switch } from 'react-router-dom';
+import {
+  PageLayout,
+  PageNotFound,
+  NoData
+} from '@kogito-apps/common/src/components';
 import DataListContainer from '../DataListContainer/DataListContainer';
 import ProcessDetailsPage from '../ProcessDetailsPage/ProcessDetailsPage';
 import DomainExplorerDashboard from '../DomainExplorerDashboard/DomainExplorerDashboard';
 import DomainExplorerLandingPage from '../DomainExplorerLandingPage/DomainExplorerLandingPage';
-import Avatar from '../../Atoms/AvatarComponent/AvatarComponent';
-import PageToolbarComponent from '../../Organisms/PageToolbarComponent/PageToolbarComponent';
-import BrandComponent from '../../Atoms/BrandComponent/BrandComponent';
-import ErrorComponent from '../../Molecules/ErrorComponent/ErrorComponent';
-import NoDataComponent from '../../Molecules/NoDataComponent/NoDataComponent';
-import './Dashboard.css';
+import './PageLayoutComponent.css';
+import managementConsoleLogo from '../../../static/managementConsoleLogo.svg';
 
 import { useGetQueryFieldsQuery } from '../../../graphql/types';
 
-const Dashboard: React.FC<{}> = (props: any) => {
-  const pageId = 'main-content-page-layout-default-nav';
-  const [isNavOpen, setIsNavOpen] = useState(true);
+const PageLayoutComponent: React.FC<{}> = (props: any) => {
   const { pathname } = props.location;
-
-  const onNavToggle = () => {
-    setIsNavOpen(!isNavOpen);
-  };
-
-  const Header = (
-    <PageHeader
-      logo={<BrandComponent />}
-      toolbar={<PageToolbarComponent />}
-      avatar={<Avatar />}
-      showNavToggle
-      isNavOpen={isNavOpen}
-      onNavToggle={onNavToggle}
-    />
-  );
 
   const PageNav = (
     <Nav aria-label="Nav" theme="dark">
@@ -53,9 +30,10 @@ const Dashboard: React.FC<{}> = (props: any) => {
       </NavList>
     </Nav>
   );
-  const Sidebar = (
-    <PageSidebar nav={PageNav} isNavOpen={isNavOpen} theme="dark" />
-  );
+
+  const BrandClick = () => {
+    props.history.push('/ProcessInstances');
+  };
 
   const getQuery = useGetQueryFieldsQuery();
   const availableDomains =
@@ -64,11 +42,11 @@ const Dashboard: React.FC<{}> = (props: any) => {
   availableDomains && availableDomains.map(item => domains.push(item.name));
   return (
     <React.Fragment>
-      <Page
-        header={Header}
-        mainContainerId={pageId}
-        sidebar={Sidebar}
-        className="kogito-management-console--dashboard-page"
+      <PageLayout
+        PageNav={PageNav}
+        BrandSrc={managementConsoleLogo}
+        BrandAltText="Management Console Logo"
+        BrandClick={BrandClick}
       >
         <Switch>
           <Route
@@ -94,12 +72,30 @@ const Dashboard: React.FC<{}> = (props: any) => {
               <DomainExplorerDashboard {..._props} domains={domains} />
             )}
           />
-          <Route path="/NoData" component={NoDataComponent} />
-          <Route path="*" component={ErrorComponent} />
+          <Route
+            path="/NoData"
+            render={_props => (
+              <NoData
+                {..._props}
+                defaultPath="/ProcessInstances"
+                defaultButton="Go to process instances"
+              />
+            )}
+          />
+          <Route
+            path="*"
+            render={_props => (
+              <PageNotFound
+                {..._props}
+                defaultPath="/ProcessInstances"
+                defaultButton="Go to process instances"
+              />
+            )}
+          />
         </Switch>
-      </Page>
+      </PageLayout>
     </React.Fragment>
   );
 };
 
-export default Dashboard;
+export default PageLayoutComponent;
