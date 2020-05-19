@@ -14,14 +14,15 @@
  * limitations under the License.
  */
 
-
 package org.kie.dmn.core.compiler;
 
+import java.io.Reader;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.function.Function;
 
 import org.kie.api.conf.Option;
 import org.kie.dmn.api.core.AfterGeneratingSourcesListener;
@@ -39,6 +40,7 @@ public class DMNCompilerConfigurationImpl implements DMNCompilerConfiguration {
     private ClassLoader rootClassLoader = ClassLoaderUtil.findDefaultClassLoader();
     private List<AfterGeneratingSourcesListener> listeners = new ArrayList<>();
     private Boolean deferredCompilation = false;
+    private Function<String, Reader> relativeResolver;
 
     public void addExtensions(List<DMNExtensionRegister> extensionRegisters) {
         this.registeredExtensions.addAll(extensionRegisters);
@@ -119,5 +121,13 @@ public class DMNCompilerConfigurationImpl implements DMNCompilerConfiguration {
 
     public void setDeferredCompilation(Boolean deferredCompilation) {
         this.deferredCompilation = deferredCompilation;
+    }
+
+    public Function<String, Reader> getRelativeResolver() {
+        return relativeResolver;
+    }
+
+    public void setRelativeResolver(Function<String, Reader> relativeResolver) {
+        this.relativeResolver = relativeResolver;
     }
 }

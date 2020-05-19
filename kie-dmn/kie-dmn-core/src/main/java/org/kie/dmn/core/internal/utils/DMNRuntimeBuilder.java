@@ -17,6 +17,7 @@
 package org.kie.dmn.core.internal.utils;
 
 import java.io.IOException;
+import java.io.Reader;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
@@ -66,6 +67,7 @@ public class DMNRuntimeBuilder {
     private static class DMNRuntimeBuilderCtx {
 
         public final DMNCompilerConfigurationImpl cc;
+
         public final List<DMNProfile> dmnProfiles = new ArrayList<>();
 
         public DMNRuntimeBuilderCtx() {
@@ -101,6 +103,11 @@ public class DMNRuntimeBuilder {
         return this;
     }
 
+    public DMNRuntimeBuilder setRelativeResolver(Function<String, Reader> relativeResolver) {
+        ctx.cc.setRelativeResolver(relativeResolver);
+        return this;
+    }
+
     /**
      * Internal Utility class.
      */
@@ -124,6 +131,7 @@ public class DMNRuntimeBuilder {
         private static final Logger LOG = LoggerFactory.getLogger(DMNRuntimeBuilderConfigured.class);
 
         private final DMNRuntimeBuilderCtx ctx;
+
         private final DMNCompiler dmnCompiler;
 
         private DMNRuntimeBuilderConfigured(DMNRuntimeBuilderCtx ctx, DMNCompiler dmnCompiler) {
@@ -185,10 +193,10 @@ public class DMNRuntimeBuilder {
         }
     }
 
-
     private static class DMNRuntimeKBStatic implements DMNRuntimeKB {
 
         private final List<DMNProfile> dmnProfiles;
+
         private final List<DMNModel> models;
 
         private DMNRuntimeKBStatic(Collection<DMNModel> models, Collection<DMNProfile> dmnProfiles) {
