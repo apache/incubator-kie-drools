@@ -41,11 +41,12 @@ public interface PMMLCompiler {
     /**
      * Read the given <code>InputStream</code> to return a <code>List&lt;KiePMMLModel&gt;</code> following a
      * <b>kie-maven-plugin</b> invocation
+     * @param fileName the name of the file containing the models
      * @param inputStream
      * @param kbuilder Using <code>Object</code> to avoid coupling with drools
      * @return
      * @throws KiePMMLException if any <code>KiePMMLInternalException</code> has been thrown during execution
      * @throws ExternalException if any other kind of <code>Exception</code> has been thrown during execution
      */
-    List<KiePMMLModel> getModelsFromPlugin(InputStream inputStream, Object kbuilder);
+    List<KiePMMLModel> getModelsFromPlugin(String fileName, InputStream inputStream, Object kbuilder);
 }

@@ -80,20 +80,7 @@ public class KiePMMLScorecardModelFactory {
         return (KiePMMLScorecardModel) compiledClasses.get(fullClassName).newInstance();
     }
 
-    /**
-     * This method returns a <code>KiePMMLDroolsAST</code> out of the given <code>DataDictionary</code> and <code>Scorecard</code>.
-     * <b>It also populate the given <code>Map</code> that has to be used for final <code>KiePMMLScorecardModel</code></b>
-     * @param dataDictionary
-     * @param model
-     * @param fieldTypeMap
-     * @return
-     */
-    public static KiePMMLDroolsAST getKiePMMLDroolsAST(DataDictionary dataDictionary, Scorecard model, final Map<String, KiePMMLOriginalTypeGeneratedType> fieldTypeMap) {
-        logger.trace("getKiePMMLDroolsAST {}", model);
-        return KiePMMLScorecardModelASTFactory.getKiePMMLDroolsAST(dataDictionary, model, fieldTypeMap);
-    }
-
-    private static Map<String, String> getKiePMMLScorecardModelSourcesMap(final DataDictionary dataDictionary, final Scorecard model, final Map<String, KiePMMLOriginalTypeGeneratedType> fieldTypeMap, final String classNameParam, final String packageName) throws IOException {
+    public static Map<String, String> getKiePMMLScorecardModelSourcesMap(final DataDictionary dataDictionary, final Scorecard model, final Map<String, KiePMMLOriginalTypeGeneratedType> fieldTypeMap, final String classNameParam, final String packageName) throws IOException {
         logger.trace("getKiePMMLScorecardModelSourcesMap {} {} {}", dataDictionary, model, classNameParam);
         String targetField = getTargetFieldName(dataDictionary, model).orElse(null);
         List<KiePMMLOutputField> outputFields = getOutputFields(model);
@@ -113,6 +100,19 @@ public class KiePMMLScorecardModelFactory {
         String fullClassName = packageName + "." + classNameParam;
         toReturn.put(fullClassName, cloneCU.toString());
         return toReturn;
+    }
+
+    /**
+     * This method returns a <code>KiePMMLDroolsAST</code> out of the given <code>DataDictionary</code> and <code>Scorecard</code>.
+     * <b>It also populate the given <code>Map</code> that has to be used for final <code>KiePMMLScorecardModel</code></b>
+     * @param dataDictionary
+     * @param model
+     * @param fieldTypeMap
+     * @return
+     */
+    public static KiePMMLDroolsAST getKiePMMLDroolsAST(DataDictionary dataDictionary, Scorecard model, final Map<String, KiePMMLOriginalTypeGeneratedType> fieldTypeMap) {
+        logger.trace("getKiePMMLDroolsAST {}", model);
+        return KiePMMLScorecardModelASTFactory.getKiePMMLDroolsAST(dataDictionary, model, fieldTypeMap);
     }
 
     private static void addFieldTypeMapPopulation(BlockStmt body, Map<String, KiePMMLOriginalTypeGeneratedType> fieldTypeMap) {

@@ -28,6 +28,8 @@ import org.kie.pmml.models.drools.scorecard.compiler.factories.KiePMMLScorecardM
 import org.kie.pmml.models.drools.scorecard.model.KiePMMLScorecardModel;
 import org.kie.pmml.models.drools.tuples.KiePMMLOriginalTypeGeneratedType;
 
+import static org.kie.pmml.commons.utils.KiePMMLModelUtils.getSanitizedClassName;
+import static org.kie.pmml.commons.utils.KiePMMLModelUtils.getSanitizedPackageName;
 import static org.kie.pmml.models.drools.scorecard.model.KiePMMLScorecardModel.PMML_MODEL_TYPE;
 
 /**
@@ -52,5 +54,11 @@ public class ScorecardModelImplementationProvider extends DroolsModelProvider<Sc
     @Override
     public KiePMMLDroolsAST getKiePMMLDroolsAST(DataDictionary dataDictionary, Scorecard model, final Map<String, KiePMMLOriginalTypeGeneratedType> fieldTypeMap) {
         return KiePMMLScorecardModelFactory.getKiePMMLDroolsAST(dataDictionary, model, fieldTypeMap);
+    }
+
+    @Override
+    public Map<String, String> getKiePMMLDroolsModelSourcesMap(DataDictionary dataDictionary, Scorecard model, Map<String, KiePMMLOriginalTypeGeneratedType> fieldTypeMap, String classNameParam, String packageName) throws IOException {
+        String className = getSanitizedClassName(model.getModelName());
+        return KiePMMLScorecardModelFactory.getKiePMMLScorecardModelSourcesMap(dataDictionary, model, fieldTypeMap, className, packageName);
     }
 }

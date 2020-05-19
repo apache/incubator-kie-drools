@@ -54,4 +54,9 @@ public class TreeModelImplementationProvider extends DroolsModelProvider<TreeMod
         logger.trace("getKiePMMLDroolsAST {} {} {}", dataDictionary, model, fieldTypeMap);
         return KiePMMLTreeModelFactory.getKiePMMLDroolsAST(dataDictionary, model, fieldTypeMap);
     }
+
+    @Override
+    public Map<String, String> getKiePMMLDroolsModelSourcesMap(DataDictionary dataDictionary, TreeModel model, Map<String, KiePMMLOriginalTypeGeneratedType> fieldTypeMap, String classNameParam, String packageName) {
+        return null;
+    }
 }

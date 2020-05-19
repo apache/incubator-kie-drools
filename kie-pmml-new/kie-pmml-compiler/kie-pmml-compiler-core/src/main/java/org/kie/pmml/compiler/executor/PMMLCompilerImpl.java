@@ -56,11 +56,11 @@ public class PMMLCompilerImpl implements PMMLCompiler {
     }
 
     @Override
-    public List<KiePMMLModel> getModelsFromPlugin(InputStream inputStream, Object kbuilder) {
+    public List<KiePMMLModel> getModelsFromPlugin(String fileName, InputStream inputStream, Object kbuilder) {
         logger.trace("getModels {} {}", inputStream, kbuilder);
         try {
             PMML commonPMMLModel = KiePMMLUtil.load(inputStream);
-            return getModelsFromPlugin(commonPMMLModel, kbuilder);
+            return getModelsFromPlugin(fileName, commonPMMLModel, kbuilder);
         } catch (KiePMMLInternalException e) {
             throw new KiePMMLException("KiePMMLInternalException", e);
         } catch (KiePMMLException e) {
@@ -91,18 +91,19 @@ public class PMMLCompilerImpl implements PMMLCompiler {
 
     /**
      * Read the given <code>PMML</code> to returns a <code>List&lt;KiePMMLModel&gt;</code>
+     * @param fileName the name of the file containing the models; it will be used to generate the specific <b>Factory</b>
      * @param pmml
      * @param kbuilder Using <code>Object</code> to avoid coupling with drools
      * @return
      * @throws KiePMMLException if any <code>KiePMMLInternalException</code> has been thrown during execution
      */
-    private List<KiePMMLModel> getModelsFromPlugin(PMML pmml, Object kbuilder) {
+    private List<KiePMMLModel> getModelsFromPlugin(String fileName, PMML pmml, Object kbuilder) {
         logger.trace("getModels {}", pmml);
         DataDictionary dataDictionary = pmml.getDataDictionary();
         return pmml
                 .getModels()
                 .stream()
-                .map(model -> getFromDataDictionaryAndModelFromPlugin(dataDictionary, model, kbuilder))
+                .map(model -> getFromDataDictionaryAndModelFromPlugin(fileName, dataDictionary, model, kbuilder))
                 .filter(Optional::isPresent)
                 .map(Optional::get)
                 .collect(Collectors.toList());

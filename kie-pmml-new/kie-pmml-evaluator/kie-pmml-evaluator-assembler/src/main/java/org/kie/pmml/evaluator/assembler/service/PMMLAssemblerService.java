@@ -26,7 +26,6 @@ import org.drools.compiler.compiler.PackageRegistry;
 import org.drools.compiler.lang.descr.PackageDescr;
 import org.drools.core.definitions.InternalKnowledgePackage;
 import org.drools.core.definitions.ResourceTypePackageRegistry;
-import org.drools.dynamic.DynamicProjectClassLoader;
 import org.kie.api.internal.assembler.KieAssemblerService;
 import org.kie.api.io.Resource;
 import org.kie.api.io.ResourceConfiguration;
@@ -35,12 +34,15 @@ import org.kie.api.io.ResourceWithConfiguration;
 import org.kie.pmml.commons.exceptions.ExternalException;
 import org.kie.pmml.commons.exceptions.KiePMMLException;
 import org.kie.pmml.commons.model.KiePMMLModel;
+import org.kie.pmml.compiler.commons.factories.KiePMMLModelFactory;
 import org.kie.pmml.compiler.executor.PMMLCompiler;
 import org.kie.pmml.compiler.executor.PMMLCompilerImpl;
 import org.kie.pmml.evaluator.api.container.PMMLPackage;
 import org.kie.pmml.evaluator.assembler.container.PMMLPackageImpl;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+import static org.kie.pmml.commons.utils.KiePMMLModelUtils.getSanitizedClassName;
 
 public class PMMLAssemblerService implements KieAssemblerService {
 
@@ -80,7 +82,7 @@ public class PMMLAssemblerService implements KieAssemblerService {
 
     protected void addModels(KnowledgeBuilderImpl kbuilderImpl, List<KiePMMLModel> toAdd) {
         // TODO {gcardosi} verify correct creation/adding of PMMLPackage
-        for (KiePMMLModel kiePMMLModel: toAdd) {
+        for (KiePMMLModel kiePMMLModel : toAdd) {
             PackageDescr pkgDescr = new PackageDescr(kiePMMLModel.getKModulePackageName());
             PackageRegistry pkgReg = kbuilderImpl.getOrCreatePackageRegistry(pkgDescr);
             InternalKnowledgePackage kpkgs = pkgReg.getPackage();
@@ -88,13 +90,6 @@ public class PMMLAssemblerService implements KieAssemblerService {
             PMMLPackage pmmlPkg = rpkg.computeIfAbsent(ResourceType.PMML, rtp -> new PMMLPackageImpl());
             pmmlPkg.addAll(Collections.singletonList(kiePMMLModel));
         }
-//
-//
-//        PackageRegistry pkgReg = kbuilderImpl.getOrCreatePackageRegistry(new PackageDescr());
-//        InternalKnowledgePackage kpkgs = pkgReg.getPackage();
-//        ResourceTypePackageRegistry rpkg = kpkgs.getResourceTypePackages();
-//        PMMLPackage pmmlPkg = rpkg.computeIfAbsent(ResourceType.PMML, rtp -> new PMMLPackageImpl());
-//        pmmlPkg.addAll(toAdd);
     }
 
     /**
@@ -134,11 +129,19 @@ public class PMMLAssemblerService implements KieAssemblerService {
      */
     protected List<KiePMMLModel> getKiePMMLModelsFromResource(KnowledgeBuilderImpl kbuilderImpl, Resource resource) {
         String sourcePath = resource.getSourcePath();
-        String fileName = sourcePath.substring(sourcePath.lastIndexOf('/')+1);
+        String fileName = sourcePath.substring(sourcePath.lastIndexOf('/') + 1);
         fileName = fileName.replace(".pmml", "");
         String packageName = fileName.toLowerCase();
-        if (kbuilderImpl.getRootClassLoader().getResource(packageName) != null) {
-           return Collections.emptyList();
+        try {
+            // TODO {gcardosi} try to avoid "newInstance" invocation - if possible
+            String className = getSanitizedClassName(fileName + "Factory");
+            final Class<? extends KiePMMLModelFactory> aClass = (Class<? extends KiePMMLModelFactory>) Class.forName(packageName + "." + className);
+            final List<KiePMMLModel> toReturn = aClass.newInstance().getKiePMMLModels();
+            return toReturn;
+        } catch (ClassNotFoundException e) {
+            logger.info(fileName + " not found in kjar, going to compile model");
+        } catch (Exception e) {
+            throw new KiePMMLException("Exception while instantiating " + fileName, e);
         }
         PMMLCompiler pmmlCompiler = kbuilderImpl.getCachedOrCreate(PMML_COMPILER_CACHE_KEY, () -> getCompiler(kbuilderImpl));
         try {
@@ -155,8 +158,11 @@ public class PMMLAssemblerService implements KieAssemblerService {
      */
     protected List<KiePMMLModel> getKiePMMLModelsFromResourceFromPlugin(KnowledgeBuilderImpl kbuilderImpl, Resource resource) {
         PMMLCompiler pmmlCompiler = kbuilderImpl.getCachedOrCreate(PMML_COMPILER_CACHE_KEY, () -> getCompiler(kbuilderImpl));
+        String sourcePath = resource.getSourcePath();
+        String fileName = sourcePath.substring(sourcePath.lastIndexOf('/') + 1);
+        fileName = fileName.replace(".pmml", "");
         try {
-            return pmmlCompiler.getModelsFromPlugin(resource.getInputStream(), kbuilderImpl);
+            return pmmlCompiler.getModelsFromPlugin(fileName, resource.getInputStream(), kbuilderImpl);
         } catch (IOException e) {
             throw new ExternalException("ExternalException", e);
         }

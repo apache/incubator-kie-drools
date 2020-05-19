@@ -31,11 +31,12 @@ public class KiePMMLModelUtils {
     }
 
     /**
-     * Convert the given <code>String</code> in a valid class name
+     * Convert the given <code>String</code> in a valid class name (i.e. no dots, no spaces, first letter upper case)
      * @param input
      * @return
      */
     public static String getSanitizedClassName(String input) {
-        return input.replace(".", "_").replace(" ", "");
+        String upperCasedInput = input.substring(0, 1).toUpperCase() + input.substring(1);
+        return upperCasedInput.replace(".", "_").replace(" ", "");
     }
 }

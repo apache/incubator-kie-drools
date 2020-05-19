@@ -55,18 +55,20 @@ public class KiePMMLModelRetriever {
 
     /**
      * Read the given <code>DataDictionary</code> and <code>Model</code>> to return an <code>Optional&lt;KiePMMLModel&gt;</code>
+     *
+     * @param fileName the name of the file containing the models; it will be used to generate the specific <b>Factory</b>
      * @param dataDictionary
      * @param model
      * @param kBuilder Using <code>Object</code> to avoid coupling with drools
      * @return
      * @throws KiePMMLException if any <code>KiePMMLInternalException</code> has been thrown during execution
      */
-    public static Optional<KiePMMLModel> getFromDataDictionaryAndModelFromPlugin(DataDictionary dataDictionary, Model model, Object kBuilder) {
+    public static Optional<KiePMMLModel> getFromDataDictionaryAndModelFromPlugin(String fileName, DataDictionary dataDictionary, Model model, Object kBuilder) {
         logger.trace("getFromDataDictionaryAndModel {}", model);
         final PMML_MODEL pmmlMODEL = PMML_MODEL.byName(model.getClass().getSimpleName());
         logger.debug("pmmlModelType {}", pmmlMODEL);
         return getModelImplementationProviderStream(model)
-                .map(implementation -> implementation.getKiePMMLModelFromPlugin(dataDictionary, model, kBuilder))
+                .map(implementation -> implementation.getKiePMMLModelFromPlugin(fileName, dataDictionary, model, kBuilder))
                 .findFirst();
     }
 
