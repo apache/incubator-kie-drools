@@ -27,7 +27,7 @@ pipeline {
         stage('Build kogito-runtimes') {
             steps {
                 script {
-                    maven.runMavenWithSubmarineSettings('clean deploy', false)
+                    maven.runMavenWithSubmarineSettings('clean install', false)
                 }
             }
         }
@@ -36,7 +36,7 @@ pipeline {
                 checkout([$class: 'GitSCM', branches: [[name: env.BRANCH_NAME]], browser: [$class: 'GithubWeb', repoUrl: 'git@github.com:kiegroup/kogito-apps.git'], doGenerateSubmoduleConfigurations: false, extensions: [[$class: 'RelativeTargetDirectory', relativeTargetDir: 'kogito-apps']], submoduleCfg: [], userRemoteConfigs: [[credentialsId: 'kie-ci-user-key', url: 'git@github.com:kiegroup/kogito-apps.git']]])
                 dir("kogito-apps") {
                     script {
-                      maven.runMavenWithSubmarineSettings('clean deploy', false)
+                      maven.runMavenWithSubmarineSettings('clean install', false)
                     }
                 }
             }
@@ -46,7 +46,35 @@ pipeline {
                 checkout([$class: 'GitSCM', branches: [[name: env.BRANCH_NAME]], browser: [$class: 'GithubWeb', repoUrl: 'git@github.com:kiegroup/kogito-examples.git'], doGenerateSubmoduleConfigurations: false, extensions: [[$class: 'RelativeTargetDirectory', relativeTargetDir: 'kogito-examples']], submoduleCfg: [], userRemoteConfigs: [[credentialsId: 'kie-ci-user-key', url: 'git@github.com:kiegroup/kogito-examples.git']]])
                 dir("kogito-examples") {
                     script {
-                         maven.runMavenWithSubmarineSettings('clean deploy', false)
+                         maven.runMavenWithSubmarineSettings('clean install', false)
+                    }
+                }
+            }
+        }
+        stage('Build kogito-examples with persistence') {
+            steps {
+                // Use a separate dir for persistence to not overwrite the test results
+                checkout([$class: 'GitSCM', branches: [[name: env.BRANCH_NAME]], browser: [$class: 'GithubWeb', repoUrl: 'git@github.com:kiegroup/kogito-examples.git'], doGenerateSubmoduleConfigurations: false, extensions: [[$class: 'RelativeTargetDirectory', relativeTargetDir: 'kogito-examples-persistence']], submoduleCfg: [], userRemoteConfigs: [[credentialsId: 'kie-ci-user-key', url: 'git@github.com:kiegroup/kogito-examples.git']]])
+                dir("kogito-examples-persistence") {
+                    script {
+                        // Don't run with tests so far, see: https://github.com/quarkusio/quarkus/issues/6885
+                        maven.runMavenWithSubmarineSettings('clean install -Ppersistence', true)
+                    }
+                }
+            }
+        }
+        stage('Deploy kogito-runtimes') {
+            steps {
+                script {
+                    maven.runMavenWithSubmarineSettings('clean deploy', true)
+                }
+            }
+        }
+        stage('Deploy kogito-apps') {
+            steps {
+                dir("kogito-apps") {
+                    script {
+                      maven.runMavenWithSubmarineSettings('clean deploy', true)
                     }
                 }
             }
