@@ -40,12 +40,16 @@ import org.kie.soup.project.datamodel.packages.HasPackageName;
 public class GuidedDecisionTable52 implements HasImports,
                                               HasPackageName {
 
-    private static final long serialVersionUID = 510l;
+    public static final long serialVersionUID = 739l;
 
     /**
      * Number of internal elements before ( used for offsets in serialization )
      */
     public static final int INTERNAL_ELEMENTS = 2;
+
+    public static final int RULE_NUMBER_INDEX = 0;
+    public static final int RULE_NAME_COLUMN_INDEX = 1;
+    public static final int RULE_DESCRIPTION_INDEX = 2;
 
     private String tableName;
 
@@ -54,6 +58,8 @@ public class GuidedDecisionTable52 implements HasImports,
     private RowNumberCol52 rowNumberCol = new RowNumberCol52();
 
     private DescriptionCol52 descriptionCol = new DescriptionCol52();
+
+    private RuleNameColumn ruleNameColumn = new RuleNameColumn();
 
     private List<MetadataCol52> metadataCols = new ArrayList<MetadataCol52>();
 
@@ -68,6 +74,8 @@ public class GuidedDecisionTable52 implements HasImports,
     private Imports imports = new Imports();
 
     private String packageName;
+
+    private long version = 0;
 
     public enum TableFormat {
         EXTENDED_ENTRY,
@@ -126,8 +134,17 @@ public class GuidedDecisionTable52 implements HasImports,
         return attributeCols;
     }
 
+    public long getVersion() {
+        return version;
+    }
+
+    public void setVersion(final long version) {
+        this.version = version;
+    }
+
     /**
      * Return an immutable list of Pattern columns
+     *
      * @return
      */
     public List<Pattern52> getPatterns() {
@@ -257,11 +274,13 @@ public class GuidedDecisionTable52 implements HasImports,
      * knowledge of individual columns is necessary; for example separate
      * columns in the user-interface or where individual columns need to be
      * analysed.
+     *
      * @return A List of individual columns
      */
     public List<BaseColumn> getExpandedColumns() {
         final List<BaseColumn> columns = new ArrayList<BaseColumn>();
         columns.add(rowNumberCol);
+        columns.add(ruleNameColumn);
         columns.add(descriptionCol);
         columns.addAll(metadataCols);
         columns.addAll(attributeCols);
@@ -300,6 +319,13 @@ public class GuidedDecisionTable52 implements HasImports,
         return this.descriptionCol;
     }
 
+    public RuleNameColumn getRuleNameColumn() {
+        if (null == ruleNameColumn) {
+            ruleNameColumn = new RuleNameColumn();
+        }
+        return ruleNameColumn;
+    }
+
     public List<MetadataCol52> getMetadataCols() {
         if (null == metadataCols) {
             metadataCols = new ArrayList<MetadataCol52>();
@@ -333,6 +359,10 @@ public class GuidedDecisionTable52 implements HasImports,
 
     public void setDescriptionCol(final DescriptionCol52 descriptionCol) {
         this.descriptionCol = descriptionCol;
+    }
+
+    public void setRuleNameColumn(final RuleNameColumn ruleNameColumn) {
+        this.ruleNameColumn = ruleNameColumn;
     }
 
     public void setMetadataCols(final List<MetadataCol52> metadataCols) {
@@ -378,6 +408,7 @@ public class GuidedDecisionTable52 implements HasImports,
 
     /**
      * Retrieve, or lazily instantiate a new, AuditLog.
+     *
      * @return
      */
     public AuditLog getAuditLog() {
@@ -430,6 +461,9 @@ public class GuidedDecisionTable52 implements HasImports,
         if (descriptionCol != null ? !descriptionCol.equals(that.descriptionCol) : that.descriptionCol != null) {
             return false;
         }
+        if (ruleNameColumn != null ? !ruleNameColumn.equals(that.ruleNameColumn) : that.ruleNameColumn != null) {
+            return false;
+        }
         if (metadataCols != null ? !metadataCols.equals(that.metadataCols) : that.metadataCols != null) {
             return false;
         }
@@ -469,6 +503,8 @@ public class GuidedDecisionTable52 implements HasImports,
         result = 31 * result + (rowNumberCol != null ? rowNumberCol.hashCode() : 0);
         result = ~~result;
         result = 31 * result + (descriptionCol != null ? descriptionCol.hashCode() : 0);
+        result = ~~result;
+        result = 31 * result + (ruleNameColumn != null ? ruleNameColumn.hashCode() : 0);
         result = ~~result;
         result = 31 * result + (metadataCols != null ? metadataCols.hashCode() : 0);
         result = ~~result;

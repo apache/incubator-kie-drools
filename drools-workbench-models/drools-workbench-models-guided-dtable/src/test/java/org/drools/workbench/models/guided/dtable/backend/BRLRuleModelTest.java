@@ -766,7 +766,7 @@ public class BRLRuleModelTest {
         dt.getActionCols().add(brlAction2);
 
         dt.setData(DataUtilities.makeDataLists(new String[][]{
-                new String[]{"1", "desc", "x", "55", "Fred"}
+                new String[]{"1", "", "desc", "x", "55", "Fred"}
         }));
         String drl = GuidedDTDRLPersistence.getInstance().marshal(dt);
         final String expected1 = "//from row number: 1\n" +
@@ -786,7 +786,7 @@ public class BRLRuleModelTest {
                                      drl);
 
         dt.setData(DataUtilities.makeDataLists(new String[][]{
-                new String[]{"1", "desc", "x", "", "Fred"}
+                new String[]{"1", "", "desc", "x", "", "Fred"}
         }));
         drl = GuidedDTDRLPersistence.getInstance().marshal(dt);
         final String expected2 = "//from row number: 1\n" +
@@ -805,7 +805,7 @@ public class BRLRuleModelTest {
                                      drl);
 
         dt.setData(DataUtilities.makeDataLists(new String[][]{
-                new String[]{"1", "desc", "x", "55", ""}
+                new String[]{"1", "", "desc", "x", "55", ""}
         }));
         drl = GuidedDTDRLPersistence.getInstance().marshal(dt);
         final String expected3 = "//from row number: 1\n" +
@@ -876,7 +876,7 @@ public class BRLRuleModelTest {
         dt.getActionCols().add(brlAction1);
 
         dt.setData(DataUtilities.makeDataLists(new String[][]{
-                new String[]{"1", "desc", "x", "v1", "v2", "v3"}
+                new String[]{"1", "", "desc", "x", "v1", "v2", "v3"}
         }));
         String drl = GuidedDTDRLPersistence.getInstance().marshal(dt);
         final String expected = "//from row number: 1\n" +
@@ -949,7 +949,7 @@ public class BRLRuleModelTest {
         dt.getActionCols().add(brlAction1);
 
         dt.setData(DataUtilities.makeDataLists(new String[][]{
-                new String[]{"1", "desc", "x", null, "v2", "v3"}
+                new String[]{"1", "", "desc", "x", null, "v2", "v3"}
         }));
         String drl = GuidedDTDRLPersistence.getInstance().marshal(dt);
         final String expected = "//from row number: 1\n" +
@@ -1021,7 +1021,7 @@ public class BRLRuleModelTest {
         dt.getActionCols().add(brlAction1);
 
         dt.setData(DataUtilities.makeDataLists(new String[][]{
-                new String[]{"1", "desc", "x", null, null, "v3"}
+                new String[]{"1", "", "desc", "x", null, null, "v3"}
         }));
         String drl = GuidedDTDRLPersistence.getInstance().marshal(dt);
         final String expected = "//from row number: 1\n" +
@@ -1092,7 +1092,7 @@ public class BRLRuleModelTest {
         dt.getActionCols().add(brlAction1);
 
         dt.setData(DataUtilities.makeDataLists(new String[][]{
-                new String[]{"1", "desc", "x", "v1", null, "v3"}
+                new String[]{"1", "", "desc", "x", "v1", null, "v3"}
         }));
         String drl = GuidedDTDRLPersistence.getInstance().marshal(dt);
         final String expected = "//from row number: 1\n" +
@@ -1148,13 +1148,13 @@ public class BRLRuleModelTest {
         dt.getActionCols().add(set);
 
         dt.setData(DataUtilities.makeDataLists(new String[][]{
-                new String[]{"1", "desc", "x", "v1", "v2"},
-                new String[]{"2", "desc", "x", "v1", null}
+                new String[]{"1", "First Rule", "desc", "x", "v1", "v2"},
+                new String[]{"2", "Second Rule", "desc", "x", "v1", null}
         }));
         String drl = GuidedDTDRLPersistence.getInstance().marshal(dt);
         final String expected = "//from row number: 1\n" +
                 "//desc\n" +
-                "rule \"Row 1 null\"\n" +
+                "rule \"First Rule\"\n" +
                 "dialect \"mvel\"\n" +
                 "when\n" +
                 "  x : Context( )\n" +
@@ -1167,7 +1167,7 @@ public class BRLRuleModelTest {
                 "\n"+
                 "//from row number: 2\n" +
                 "//desc\n" +
-                "rule \"Row 2 null\"\n" +
+                "rule \"Second Rule\"\n" +
                 "dialect \"mvel\"\n" +
                 "when\n" +
                 "  x : Context( )\n" +
@@ -1210,7 +1210,7 @@ public class BRLRuleModelTest {
         dt.getActionCols().add(brlAction1);
 
         dt.setData(DataUtilities.makeDataLists(new Object[][]{
-                new Object[]{"1", "desc", "x", true}
+                new Object[]{"1", "", "desc", "x", true}
         }));
         String drl = GuidedDTDRLPersistence.getInstance().marshal(dt);
         final String expected = "//from row number: 1\n" +
@@ -1272,7 +1272,7 @@ public class BRLRuleModelTest {
 
         //Test 1
         dt.setData(DataUtilities.makeDataLists(new Object[][]{
-                new Object[]{1l, "desc-row1", "Pupa", null},
+                new Object[]{1l, "", "desc-row1", "Pupa", null},
         }));
 
         String drl1 = p.marshal(dt);
@@ -1290,7 +1290,7 @@ public class BRLRuleModelTest {
 
         //Test 2
         dt.setData(DataUtilities.makeDataLists(new Object[][]{
-                new Object[]{2l, "desc-row2", null, 35l},
+                new Object[]{2l, "", "desc-row2", null, 35l},
         }));
 
         String drl2 = p.marshal(dt);
@@ -1308,7 +1308,7 @@ public class BRLRuleModelTest {
 
         //Test 3
         dt.setData(DataUtilities.makeDataLists(new Object[][]{
-                new Object[]{3l, "desc-row3", "Pupa", 35l},
+                new Object[]{3l, "", "desc-row3", "Pupa", 35l},
         }));
 
         String drl3 = p.marshal(dt);
@@ -1326,7 +1326,7 @@ public class BRLRuleModelTest {
 
         //Test 4
         dt.setData(DataUtilities.makeDataLists(new Object[][]{
-                new Object[]{4l, "desc-row4", null, null},
+                new Object[]{4l, "", "desc-row4", null, null},
         }));
 
         String drl4 = p.marshal(dt);
@@ -1387,7 +1387,7 @@ public class BRLRuleModelTest {
 
         //Test 1
         dt.setData(DataUtilities.makeDataLists(new Object[][]{
-                new Object[]{1l, "desc-row1", null, null},
+                new Object[]{1l, "", "desc-row1", null, null},
         }));
 
         String drl1 = p.marshal(dt);
@@ -1404,7 +1404,7 @@ public class BRLRuleModelTest {
 
         //Test 2
         dt.setData(DataUtilities.makeDataLists(new Object[][]{
-                new Object[]{2l, "desc-row2", "\"   \"", 35l},
+                new Object[]{2l, "", "desc-row2", "\"   \"", 35l},
         }));
 
         String drl2 = p.marshal(dt);
@@ -1422,7 +1422,7 @@ public class BRLRuleModelTest {
 
         //Test 3
         dt.setData(DataUtilities.makeDataLists(new Object[][]{
-                new Object[]{3l, "desc-row3", "\"\"", null},
+                new Object[]{3l, "", "desc-row3", "\"\"", null},
         }));
 
         String drl3 = p.marshal(dt);
@@ -1440,7 +1440,7 @@ public class BRLRuleModelTest {
 
         //Test 4
         dt.setData(DataUtilities.makeDataLists(new Object[][]{
-                new Object[]{4l, "desc-row4", "\"\"", 35l},
+                new Object[]{4l, "", "desc-row4", "\"\"", 35l},
         }));
 
         String drl4 = p.marshal(dt);
@@ -1483,7 +1483,7 @@ public class BRLRuleModelTest {
 
         //Test 1
         dt.setData(DataUtilities.makeDataLists(new Object[][]{
-                new Object[]{1l, "desc-row1", "Pupa", null},
+                new Object[]{1l, "", "desc-row1", "Pupa", null},
         }));
 
         String drl1 = p.marshal(dt);
@@ -1500,7 +1500,7 @@ public class BRLRuleModelTest {
 
         //Test 2
         dt.setData(DataUtilities.makeDataLists(new Object[][]{
-                new Object[]{2l, "desc-row2", null, 35l},
+                new Object[]{2l, "", "desc-row2", null, 35l},
         }));
 
         String drl2 = p.marshal(dt);
@@ -1517,7 +1517,7 @@ public class BRLRuleModelTest {
 
         //Test 3
         dt.setData(DataUtilities.makeDataLists(new Object[][]{
-                new Object[]{3l, "desc-row3", "Pupa", 35l},
+                new Object[]{3l, "", "desc-row3", "Pupa", 35l},
         }));
 
         String drl3 = p.marshal(dt);
@@ -1535,7 +1535,7 @@ public class BRLRuleModelTest {
 
         //Test 4
         dt.setData(DataUtilities.makeDataLists(new Object[][]{
-                new Object[]{4l, "desc-row4", null, null},
+                new Object[]{4l, "", "desc-row4", null, null},
         }));
 
         String drl4 = p.marshal(dt);
@@ -1590,7 +1590,7 @@ public class BRLRuleModelTest {
 
         //Test 1
         dt.setData(DataUtilities.makeDataLists(new Object[][]{
-                new Object[]{1l, "desc-row1", null, null},
+                new Object[]{1l, "", "desc-row1", null, null},
         }));
 
         String drl1 = GuidedDTDRLPersistence.getInstance().marshal(dt);
@@ -1607,7 +1607,7 @@ public class BRLRuleModelTest {
 
         //Test 2
         dt.setData(DataUtilities.makeDataLists(new Object[][]{
-                new Object[]{2l, "desc-row2", "   ", 35l},
+                new Object[]{2l, "", "desc-row2", "   ", 35l},
         }));
 
         String drl2 = GuidedDTDRLPersistence.getInstance().marshal(dt);
@@ -1627,7 +1627,7 @@ public class BRLRuleModelTest {
 
         //Test 3
         dt.setData(DataUtilities.makeDataLists(new Object[][]{
-                new Object[]{3l, "desc-row3", "", null},
+                new Object[]{3l, "", "desc-row3", "", null},
         }));
 
         String drl3 = GuidedDTDRLPersistence.getInstance().marshal(dt);
@@ -1644,7 +1644,7 @@ public class BRLRuleModelTest {
 
         //Test 4
         dt.setData(DataUtilities.makeDataLists(new Object[][]{
-                new Object[]{4l, "desc-row4", "", 35l},
+                new Object[]{4l, "", "desc-row4", "", 35l},
         }));
 
         String drl4 = GuidedDTDRLPersistence.getInstance().marshal(dt);
@@ -1702,7 +1702,7 @@ public class BRLRuleModelTest {
 
         //Test 1
         dt.setData(DataUtilities.makeDataLists(new Object[][]{
-                new Object[]{1l, "desc-row1", null, null},
+                new Object[]{1l, "", "desc-row1", null, null},
         }));
 
         String drl1 = GuidedDTDRLPersistence.getInstance().marshal(dt);
@@ -1719,7 +1719,7 @@ public class BRLRuleModelTest {
 
         //Test 2
         dt.setData(DataUtilities.makeDataLists(new Object[][]{
-                new Object[]{2l, "desc-row2", "\"   \"", 35l},
+                new Object[]{2l, "", "desc-row2", "\"   \"", 35l},
         }));
 
         String drl2 = GuidedDTDRLPersistence.getInstance().marshal(dt);
@@ -1740,7 +1740,7 @@ public class BRLRuleModelTest {
 
         //Test 3
         dt.setData(DataUtilities.makeDataLists(new Object[][]{
-                new Object[]{3l, "desc-row3", "\"\"", null},
+                new Object[]{3l, "", "desc-row3", "\"\"", null},
         }));
 
         String drl3 = GuidedDTDRLPersistence.getInstance().marshal(dt);
@@ -1760,7 +1760,7 @@ public class BRLRuleModelTest {
 
         //Test 4
         dt.setData(DataUtilities.makeDataLists(new Object[][]{
-                new Object[]{4l, "desc-row4", "\"\"", 35l},
+                new Object[]{4l, "", "desc-row4", "\"\"", 35l},
         }));
 
         String drl4 = GuidedDTDRLPersistence.getInstance().marshal(dt);
@@ -1840,6 +1840,7 @@ public class BRLRuleModelTest {
         dt.getActionCols().add(del);
 
         dt.getData().add(Arrays.asList(new DTCellValue52(1),
+                                       new DTCellValue52(""),
                                        new DTCellValue52("description"),
                                        new DTCellValue52("$d")));
 
