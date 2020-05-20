@@ -67,13 +67,23 @@ public class DMNRuntimeBuilder {
     private static class DMNRuntimeBuilderCtx {
 
         public final DMNCompilerConfigurationImpl cc;
-
         public final List<DMNProfile> dmnProfiles = new ArrayList<>();
+        private RelativeImportResolver relativeResolver;
 
         public DMNRuntimeBuilderCtx() {
             this.cc = new DMNCompilerConfigurationImpl();
         }
 
+        public void setRelativeResolver(RelativeImportResolver relativeResolver) {
+            this.relativeResolver = relativeResolver;
+        }
+
+    }
+
+    @FunctionalInterface
+    public static interface RelativeImportResolver {
+
+        Reader resolve(String modelNamespace, String modelName, String locationURI);
     }
 
     /**
@@ -103,8 +113,8 @@ public class DMNRuntimeBuilder {
         return this;
     }
 
-    public DMNRuntimeBuilder setRelativeResolver(Function<String, Reader> relativeResolver) {
-        ctx.cc.setRelativeResolver(relativeResolver);
+    public DMNRuntimeBuilder setRelativeImportResolver(RelativeImportResolver relativeResolver) {
+        ctx.setRelativeResolver(relativeResolver);
         return this;
     }
 
@@ -131,7 +141,6 @@ public class DMNRuntimeBuilder {
         private static final Logger LOG = LoggerFactory.getLogger(DMNRuntimeBuilderConfigured.class);
 
         private final DMNRuntimeBuilderCtx ctx;
-
         private final DMNCompiler dmnCompiler;
 
         private DMNRuntimeBuilderConfigured(DMNRuntimeBuilderCtx ctx, DMNCompiler dmnCompiler) {
@@ -173,7 +182,21 @@ public class DMNRuntimeBuilder {
 
             List<DMNModel> dmnModels = new ArrayList<>();
             for (DMNResource dmnRes : sortedDmnResources) {
-                DMNModel dmnModel = dmnCompiler.compile(dmnRes.getDefinitions(), dmnRes.getResAndConfig().getResource(), dmnModels);
+                DMNModel dmnModel = null;
+                if (ctx.relativeResolver != null) {
+                    if (dmnCompiler instanceof DMNCompilerImpl) {
+                        dmnModel = ((DMNCompilerImpl) dmnCompiler).compile(dmnRes.getDefinitions(),
+                                                                           dmnModels,
+                                                                           dmnRes.getResAndConfig().getResource(),
+                                                                           relativeURI -> ctx.relativeResolver.resolve(dmnRes.getDefinitions().getNamespace(),
+                                                                                                                       dmnRes.getDefinitions().getName(),
+                                                                                                                       relativeURI));
+                    } else {
+                        LOG.error("specified a RelativeImportResolver but the compiler is not org.kie.dmn.core.compiler.DMNCompilerImpl");
+                    }
+                } else {
+                    dmnModel = dmnCompiler.compile(dmnRes.getDefinitions(), dmnRes.getResAndConfig().getResource(), dmnModels);
+                }
                 if (dmnModel != null) {
                     dmnModels.add(dmnModel);
                 } else {
@@ -193,10 +216,10 @@ public class DMNRuntimeBuilder {
         }
     }
 
+
     private static class DMNRuntimeKBStatic implements DMNRuntimeKB {
 
         private final List<DMNProfile> dmnProfiles;
-
         private final List<DMNModel> models;
 
         private DMNRuntimeKBStatic(Collection<DMNModel> models, Collection<DMNProfile> dmnProfiles) {
