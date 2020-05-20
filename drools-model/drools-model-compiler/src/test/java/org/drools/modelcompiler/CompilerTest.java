@@ -35,9 +35,13 @@ import org.drools.core.definitions.rule.impl.RuleImpl;
 import org.drools.core.rule.Declaration;
 import org.drools.core.rule.Pattern;
 import org.drools.core.spi.Consequence;
+import org.drools.model.SingleConstraint;
 import org.drools.model.functions.Function1;
 import org.drools.model.functions.IntrospectableLambda;
+import org.drools.model.functions.Predicate1;
 import org.drools.modelcompiler.consequence.LambdaConsequence;
+import org.drools.modelcompiler.constraints.ConstraintEvaluator;
+import org.drools.modelcompiler.constraints.LambdaConstraint;
 import org.drools.modelcompiler.constraints.LambdaReadAccessor;
 import org.drools.modelcompiler.domain.Address;
 import org.drools.modelcompiler.domain.Adult;
@@ -2339,6 +2343,49 @@ public class CompilerTest extends BaseModelTest {
             Function1.Impl function1 = (Function1.Impl)field.get(lambdaReadAccessor);
             Object lambda = function1.getLambda();
             assertThat(lambda.getClass().getName(), containsString("LambdaExtractor")); // materialized Lambda
+        }
+
+        Person me = new Person( "Mario", 40 );
+        ksession.insert( me );
+        ksession.fireAllRules();
+
+        Assertions.assertThat(list).containsExactlyInAnyOrder("Mario");
+    }
+
+    @Test
+    public void testExternalizeLambdaPredicate() throws Exception {
+        String str =
+                "package defaultpkg;\n" +
+                "import " + Person.class.getCanonicalName() + ";" +
+                "global java.util.List list;\n" +
+                "rule R when\n" +
+                "  $p : Person(name == \"Mario\")\n" +
+                "then\n" +
+                "  list.add($p.getName());\n" +
+                "end";
+
+        KieModuleModel kieModuleModel = KieServices.get().newKieModuleModel();
+        kieModuleModel.setConfigurationProperty("drools.externaliseCanonicalModelLambda", Boolean.TRUE.toString());
+
+        KieSession ksession = getKieSession(kieModuleModel, str );
+        final List<String> list = new ArrayList<>();
+        ksession.setGlobal("list", list);
+
+        if (testRunType == RUN_TYPE.FLOW_DSL || testRunType == RUN_TYPE.PATTERN_DSL) {
+            RuleImpl rule = (RuleImpl) ksession.getKieBase().getRule("defaultpkg", "R");
+            Pattern pattern = (Pattern) rule.getLhs().getChildren().get(0);
+            LambdaConstraint lambdaConstraint = (LambdaConstraint) pattern.getConstraints().get(0);
+
+            Field field = LambdaConstraint.class.getDeclaredField("evaluator");
+            field.setAccessible(true);
+            ConstraintEvaluator evaluator = (ConstraintEvaluator) field.get(lambdaConstraint);
+            Field field2 = ConstraintEvaluator.class.getDeclaredField("constraint");
+            field2.setAccessible(true);
+            SingleConstraint constraint = (SingleConstraint) field2.get(evaluator);
+            Predicate1.Impl predicate = (Predicate1.Impl)constraint.getPredicate1();
+
+            Object lambda = predicate.getLambda();
+            assertThat(lambda.getClass().getName(), containsString("LambdaPredicate")); // materialized Lambda
         }
 
         Person me = new Person( "Mario", 40 );
