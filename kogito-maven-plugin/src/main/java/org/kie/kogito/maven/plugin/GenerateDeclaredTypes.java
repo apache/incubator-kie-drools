@@ -74,9 +74,6 @@ public class GenerateDeclaredTypes extends AbstractKieMojo {
     @Parameter(property = "kogito.sources.keep", defaultValue = "false")
     private boolean keepSources;
 
-    @Parameter(property = "kogito.di.enabled", defaultValue = "true")
-    private boolean dependencyInjection;
-    
     @Parameter(property = "kogito.persistence.enabled", defaultValue = "false")
     private boolean persistence;
 
@@ -141,7 +138,7 @@ public class GenerateDeclaredTypes extends AbstractKieMojo {
 
         ApplicationGenerator appGen =
                 new ApplicationGenerator(appPackageName, targetDirectory)
-                        .withDependencyInjection(discoverDependencyInjectionAnnotator(dependencyInjection, project))
+                        .withDependencyInjection(discoverDependencyInjectionAnnotator(project))
                         .withClassLoader(projectClassLoader)
                         .withGeneratorContext(context);
 

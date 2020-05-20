@@ -71,9 +71,6 @@ public class ProcessClassesMojo extends AbstractKieMojo {
     @Parameter(required = true, defaultValue = "${project.basedir}/src/main/resources")
     private File kieSourcesDirectory;
     
-    @Parameter(property = "kogito.di.enabled", defaultValue = "true")
-    private boolean dependencyInjection;
-
     @Override
     public void execute() throws MojoExecutionException, MojoFailureException {        
         try {
@@ -117,7 +114,7 @@ public class ProcessClassesMojo extends AbstractKieMojo {
 
                 PersistenceGenerator persistenceGenerator = new PersistenceGenerator(targetDirectory, modelClasses, !classes.isEmpty(), new ReflectionProtoGenerator(), cl, parameters);
                 persistenceGenerator.setPackageName(appPackageName);
-                persistenceGenerator.setDependencyInjection(discoverDependencyInjectionAnnotator(dependencyInjection, project));
+                persistenceGenerator.setDependencyInjection(discoverDependencyInjectionAnnotator(project));
                 persistenceGenerator.setContext(context);
                 Collection<GeneratedFile> generatedFiles = persistenceGenerator.generate();
 

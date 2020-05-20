@@ -161,7 +161,7 @@ public class DeclaredTypeCodegen extends AbstractGenerator {
         return modelFiles.stream()
                 .filter(Objects::nonNull)
                 .map(f -> new org.kie.kogito.codegen.GeneratedFile(
-                        org.kie.kogito.codegen.GeneratedFile.Type.RULE,
+                        org.kie.kogito.codegen.GeneratedFile.Type.DECLARED_TYPE,
                         f.getPath(), f.getData())).collect(toList());
     }
 

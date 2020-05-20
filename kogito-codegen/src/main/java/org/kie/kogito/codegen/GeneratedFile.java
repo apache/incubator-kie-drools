@@ -20,19 +20,31 @@ import java.nio.charset.StandardCharsets;
 public class GeneratedFile {
 
     public enum Type {
-        APPLICATION,
-        APPLICATION_SECTION,
-        APPLICATION_CONFIG,
-        PROCESS,
-        PROCESS_INSTANCE,
-        REST,
-        RULE,
-        QUERY,
-        MODEL,
-        CLASS,
-        MESSAGE_CONSUMER,
-        MESSAGE_PRODUCER,
-        RESOURCE;
+        APPLICATION( false ),
+        APPLICATION_SECTION( false ),
+        APPLICATION_CONFIG( false ),
+        PROCESS( false ),
+        PROCESS_INSTANCE( false ),
+        REST( false ),
+        RULE( false ),
+        DECLARED_TYPE( true ),
+        DTO( true ),
+        QUERY( true ),
+        MODEL( false ),
+        CLASS( false ),
+        MESSAGE_CONSUMER( false ),
+        MESSAGE_PRODUCER( false ),
+        RESOURCE( false );
+
+        private final boolean customizable;
+
+        Type( boolean customizable ) {
+            this.customizable = customizable;
+        }
+
+        public boolean isCustomizable() {
+            return customizable;
+        }
     }
 
     private final String relativePath;

@@ -44,37 +44,40 @@ public abstract class AbstractKieMojo extends AbstractMojo {
         }
     }
 
-    protected DependencyInjectionAnnotator discoverDependencyInjectionAnnotator(boolean dependencyInjection, MavenProject project) {
-        if (!dependencyInjection) {
-            return null;
+    protected DependencyInjectionAnnotator discoverDependencyInjectionAnnotator(MavenProject project) {
+        switch (discoverFramework(project)) {
+            case QUARKUS: return new CDIDependencyInjectionAnnotator();
+            case SPRING: return new SpringDependencyInjectionAnnotator();
+            default: return null;
         }
-
-        boolean hasSpring = project.getDependencies().stream().anyMatch(d -> d.getArtifactId().contains("spring"));
-        if (hasSpring) {
-            return new SpringDependencyInjectionAnnotator();
-        }
-
-        boolean hasQuarkus = project.getDependencies().stream().anyMatch(d -> d.getArtifactId().contains("quarkus"));
-        if (hasQuarkus) {
-            return new CDIDependencyInjectionAnnotator();
-        }
-
-        throw new IllegalStateException("Unable to find dependency injection annotator");
     }
 
     protected KogitoBuildContext discoverKogitoRuntimeContext(MavenProject project)  {
-        boolean hasSpring = project.getDependencies().stream().anyMatch(d -> d.getArtifactId().contains("spring"));
-        if (hasSpring) {
-            return new SpringBootKogitoBuildContext(fqcn -> hasClassOnClasspath(project, fqcn));
+        switch (discoverFramework(project)) {
+            case QUARKUS: return new QuarkusKogitoBuildContext(fqcn -> hasClassOnClasspath(project, fqcn));
+            case SPRING: return new SpringBootKogitoBuildContext(fqcn -> hasClassOnClasspath(project, fqcn));
+            default: return null;
+        }
+    }
+
+    private enum Framework { QUARKUS, SPRING, NONE }
+
+    private Framework discoverFramework(MavenProject project) {
+        if ( hasDependency( project, "quarkus" ) ) {
+            return Framework.QUARKUS;
         }
 
-        boolean hasQuarkus = project.getDependencies().stream().anyMatch(d -> d.getArtifactId().contains("quarkus"));
-        if (hasQuarkus) {
-            return new QuarkusKogitoBuildContext(fqcn -> hasClassOnClasspath(project, fqcn));
+        if ( hasDependency( project, "spring" ) ) {
+            return Framework.SPRING;
         }
-        throw new IllegalStateException("Unable to determine Kogito runtime.");
+
+        return Framework.NONE;
     }
-    
+
+    private boolean hasDependency( MavenProject project, String dependency ) {
+        return project.getDependencies().stream().anyMatch( d -> d.getArtifactId().contains( dependency ) );
+    }
+
     protected boolean hasClassOnClasspath(MavenProject project, String className) {
         try {
             Set<Artifact> elements = project.getArtifacts();

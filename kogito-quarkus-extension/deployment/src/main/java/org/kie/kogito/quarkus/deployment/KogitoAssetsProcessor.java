@@ -68,7 +68,9 @@ import org.slf4j.LoggerFactory;
 
 public class KogitoAssetsProcessor {
 
-    private static final String generatedDashboardsDir = "/target/resources/";
+    private static final String generatedResourcesDir = System.getProperty("kogito.codegen.sources.directory", "target/generated-resources/kogito");
+    private static final String generatedSourcesDir = System.getProperty("kogito.codegen.resources.directory", "target/generated-sources/kogito/");
+    private static final String generatedRestSourcesDir = System.getProperty("kogito.codegen.rest.directory", "target/generated-sources/kogito/");
     private static final Logger logger = LoggerFactory.getLogger(KogitoAssetsProcessor.class);
     private final transient String generatedClassesDir = System.getProperty("quarkus.debug.generated-classes-dir");
     private final transient String appPackageName = "org.kie.kogito.app";
@@ -125,9 +127,7 @@ public class KogitoAssetsProcessor {
 
         if (!generatedFiles.isEmpty()) {
             MemoryFileSystem trgMfs = new MemoryFileSystem();
-            CompilationResult result = compile(root, trgMfs, curateOutcomeBuildItem.getEffectiveModel(), generatedFiles,
-                    launchMode.getLaunchMode(),
-                    root.getArchiveLocation());
+            CompilationResult result = compile(root, trgMfs, curateOutcomeBuildItem.getEffectiveModel(), generatedFiles, launchMode.getLaunchMode(), root.getArchiveLocation());
             register(trgMfs, generatedBeans, (className, data) -> new GeneratedBeanBuildItem(className, data),
                     launchMode.getLaunchMode(), result, root.getArchiveLocation());
         }
@@ -179,10 +179,7 @@ public class KogitoAssetsProcessor {
         Collection<GeneratedFile> generatedFiles = appGen.generate();
 
         Collection<GeneratedFile> javaFiles = generatedFiles.stream().filter( f -> f.relativePath().endsWith( ".java" ) ).collect( Collectors.toCollection( ArrayList::new ));
-        Collection<GeneratedFile> resourceFiles = generatedFiles.stream().filter( f -> f.getType() == GeneratedFile.Type.RESOURCE ).collect( Collectors.toCollection( ArrayList::new ));
-
-        String resourcePath = Paths.get(projectPath.toString()).toString() + generatedDashboardsDir;
-        writeResourceFiles(resourcePath, resourceFiles);
+        writeGeneratedFiles(projectPath, generatedFiles);
 
         if (!javaFiles.isEmpty()) {
 
@@ -190,9 +187,7 @@ public class KogitoAssetsProcessor {
             Set<DotName> kogitoIndex = new HashSet<>();
 
             MemoryFileSystem trgMfs = new MemoryFileSystem();
-            CompilationResult result = compile(root, trgMfs, curateOutcomeBuildItem.getEffectiveModel(), javaFiles,
-                    launchMode.getLaunchMode(),
-                    targetClassesPath);
+            CompilationResult result = compile(root, trgMfs, curateOutcomeBuildItem.getEffectiveModel(), javaFiles, launchMode.getLaunchMode(), targetClassesPath);
             register(trgMfs, generatedBeans, (className, data) -> {
 
                 IndexingUtil.indexClass(className, kogitoIndexer, combinedIndexBuildItem.getIndex(), kogitoIndex,
@@ -238,31 +233,39 @@ public class KogitoAssetsProcessor {
 
     }
 
-    private void writeResourceFiles(String projectPath, Collection<GeneratedFile> resourceFiles){
-        resourceFiles.forEach(f -> {
+    private void writeGeneratedFiles(Path projectPath, Collection<GeneratedFile> resourceFiles) {
+        String restResourcePath = projectPath.resolve(generatedRestSourcesDir).toString();
+        String resourcePath = projectPath.resolve(generatedResourcesDir).toString();
+        String sourcePath = projectPath.resolve(generatedSourcesDir).toString();
+
+        for (GeneratedFile f : resourceFiles) {
             try {
-                writeGeneratedFile(f, projectPath);
+                if (f.getType() == GeneratedFile.Type.RESOURCE) {
+                    writeGeneratedFile(f, resourcePath);
+                } else if (f.getType().isCustomizable()) {
+                    writeGeneratedFile(f, restResourcePath);
+                } else {
+                    writeGeneratedFile(f, sourcePath);
+                }
             } catch (IOException e) {
-                logger.warn(String.format("Could not write resource file %s", f.toString()), e);
+                logger.warn(String.format("Could not write file '%s'", f.toString()), e);
             }
-        });
+        }
     }
 
     private Path getProjectPath(Path archiveLocation) {
         //TODO: revisit this, we should not be depending on a project, it breaks the upgrade use case
-        String path = archiveLocation.toString();
-        if (path.endsWith("target" + File.separator + "classes")) {
+        if (archiveLocation.endsWith(Paths.get("target", "classes"))) {
             return archiveLocation.getParent().getParent();
-        } else if (path.endsWith(".jar") && archiveLocation.getParent().getFileName().toString().equals("target")) {
+        } else if (Files.isRegularFile(archiveLocation) && archiveLocation.getParent().endsWith("target")) {
             return archiveLocation.getParent().getParent();
         }
         return archiveLocation;
     }
 
     private CompilationResult compile(ArchiveRootBuildItem root, MemoryFileSystem trgMfs,
-            AppModel appModel,
-            Collection<GeneratedFile> generatedFiles,
-            LaunchMode launchMode, Path projectPath)
+                                      AppModel appModel, Collection<GeneratedFile> generatedFiles,
+                                      LaunchMode launchMode, Path projectPath)
             throws IOException, BootstrapDependencyProcessingException {
 
         JavaCompiler javaCompiler = JavaParserCompiler.getCompiler();
@@ -292,7 +295,6 @@ public class KogitoAssetsProcessor {
             }
 
             writeGeneratedFile(entry, location);
-
         }
 
         return javaCompiler.compile(sources, srcMfs, trgMfs,
