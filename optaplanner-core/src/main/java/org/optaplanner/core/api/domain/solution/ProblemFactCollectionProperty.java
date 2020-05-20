@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package org.optaplanner.core.api.domain.solution.drools;
+package org.optaplanner.core.api.domain.solution;
 
 import static java.lang.annotation.ElementType.FIELD;
 import static java.lang.annotation.ElementType.METHOD;
@@ -25,7 +25,6 @@ import java.lang.annotation.Target;
 import java.util.Collection;
 
 import org.optaplanner.core.api.domain.entity.PlanningEntity;
-import org.optaplanner.core.api.domain.solution.PlanningSolution;
 import org.optaplanner.core.api.score.stream.ConstraintFactory;
 import org.optaplanner.core.api.score.stream.ConstraintProvider;
 import org.optaplanner.core.impl.solver.ProblemFactChange;
@@ -40,11 +39,10 @@ import org.optaplanner.core.impl.solver.ProblemFactChange;
  * Do not annotate {@link PlanningEntity planning entities} as problem facts:
  * they are automatically available as facts for {@link ConstraintFactory#from(Class)} or DRL.
  *
- * @deprecated In favor of {@link org.optaplanner.core.api.domain.solution.ProblemFactCollectionProperty}.
+ * @see ProblemFactProperty
  */
 @Target({ METHOD, FIELD })
 @Retention(RUNTIME)
-@Deprecated(/* forRemoval = true */)
 public @interface ProblemFactCollectionProperty {
 
 }

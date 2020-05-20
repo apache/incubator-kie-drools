@@ -1,5 +1,5 @@
 /*
- * Copyright 2011 Red Hat, Inc. and/or its affiliates.
+ * Copyright 2020 Red Hat, Inc. and/or its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -108,7 +108,7 @@ public class DefaultSolver<Solution_> extends AbstractSolver<Solution_> {
 
     @Override
     public String explainBestScore() {
-        Solution_ bestSolution = getBestSolution();
+        Solution_ bestSolution = solverScope.getBestSolution();
         if (bestSolution == null) {
             return null;
         }

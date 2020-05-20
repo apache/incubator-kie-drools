@@ -2,7 +2,8 @@
 = Solver configuration
 :imagesdir: ../../..
 
-The solver configuration file determines how the solving process works; it is considered a part of the code. The file is named `cloudBalancingSolverConfig.xml`.
+The solver configuration file determines how the solving process works; it is considered a part of the code.
+The file is named `cloudBalancingSolverConfig.xml`.
 
 .cloudBalancingSolverConfig.xml
 ====
@@ -11,7 +12,8 @@ The solver configuration file determines how the solving process works; it is co
 <?xml version="1.0" encoding="UTF-8"?>
 <solver>
   <!-- Domain model configuration -->
-  <scanAnnotatedClasses/>
+  <solutionClass>org.optaplanner.examples.cloudbalancing.domain.CloudBalance</solutionClass>
+  <entityClass>org.optaplanner.examples.cloudbalancing.domain.CloudProcess</entityClass>
 
   <!-- Score configuration -->
   <scoreDirectorFactory>
@@ -31,16 +33,20 @@ This solver configuration consists of three parts:
 
 . *Domain model configuration*: _What can OptaPlanner change?_
 +
-We need to make OptaPlanner aware of our domain classes. In this configuration, it will automatically scan all classes in your classpath (for a `@PlanningEntity` or `@PlanningSolution` annotation):
+We need to make OptaPlanner aware of our domain classes, annotated with `@PlanningEntity` and `@PlanningSolution` annotations:
 +
 [source,xml,options="nowrap"]
 ----
-  <scanAnnotatedClasses/>
+  <solutionClass>org.optaplanner.examples.cloudbalancing.domain.CloudBalance</solutionClass>
+  <entityClass>org.optaplanner.examples.cloudbalancing.domain.CloudProcess</entityClass>
 ----
 
-. *Score configuration*: _How should OptaPlanner optimize the planning variables? What is our goal?_
+. *Score configuration*: _How should OptaPlanner optimize the planning variables?
+What is our goal?_
 +
-Since we have hard and soft constraints, we use a ``HardSoftScore``. But we need to tell OptaPlanner how to calculate the score, depending on our business requirements. Further down, we will look into two alternatives to calculate the score: using an easy Java implementation, or using Drools DRL.
+Since we have hard and soft constraints, we use a ``HardSoftScore``.
+But we need to tell OptaPlanner how to calculate the score, depending on our business requirements.
+Further down, we will look into two alternatives to calculate the score: using an easy Java implementation, or using Drools DRL.
 +
 [source,xml,options="nowrap"]
 ----
@@ -61,7 +67,9 @@ In this case, we use the default <<optimizationAlgorithms,optimization algorithm
   </termination>
 ----
 +
-OptaPlanner should get a good result in seconds (and even in less than 15 milliseconds with <<realTimePlanning,real-time planning>>), but the more time it has, the better the result will be. Advanced use cases might use different <<termination,termination criteria>> than a hard time limit.
+OptaPlanner should get a good result in seconds (and even in less than 15 milliseconds with
+<<realTimePlanning,real-time planning>>), but the more time it has, the better the result will be.
+Advanced use cases might use different <<termination,termination criteria>> than a hard time limit.
 +
 The default algorithms will already easily surpass human planners and most in-house implementations.
 Use the <<benchmarker,Benchmarker>> to <<powerTweaking,power tweak>> to get even better results.

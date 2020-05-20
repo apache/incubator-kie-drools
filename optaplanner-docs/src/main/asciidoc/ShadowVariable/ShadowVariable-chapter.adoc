@@ -26,8 +26,7 @@ From an optimization perspective, OptaPlanner effectively only optimizes the gen
 [IMPORTANT]
 ====
 **Any class that has at least one shadow variable, is a planning entity class (even if it has no genuine planning variables).
-That class must be defined in the solver configuration** (unless classes are <<automaticScanningForAnnotations,automatically scanned>>)
-**and have a `@PlanningEntity` annotation.**
+That class must be defined in the solver configuration and have a `@PlanningEntity` annotation.**
 
 A genuine planning entity class has at least one genuine planning variable, but can have shadow variables too.
 A shadow planning entity class has no genuine planning variables and at least one shadow planning variable.

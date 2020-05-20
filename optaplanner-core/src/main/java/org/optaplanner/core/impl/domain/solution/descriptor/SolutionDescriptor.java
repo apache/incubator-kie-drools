@@ -1,11 +1,11 @@
 /*
- * Copyright 2016 Red Hat, Inc. and/or its affiliates.
+ * Copyright 2020 Red Hat, Inc. and/or its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
  *
- * http://www.apache.org/licenses/LICENSE-2.0
+ *      http://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
@@ -50,10 +50,10 @@ import org.optaplanner.core.api.domain.solution.PlanningEntityCollectionProperty
 import org.optaplanner.core.api.domain.solution.PlanningEntityProperty;
 import org.optaplanner.core.api.domain.solution.PlanningScore;
 import org.optaplanner.core.api.domain.solution.PlanningSolution;
+import org.optaplanner.core.api.domain.solution.ProblemFactCollectionProperty;
+import org.optaplanner.core.api.domain.solution.ProblemFactProperty;
 import org.optaplanner.core.api.domain.solution.Solution;
 import org.optaplanner.core.api.domain.solution.cloner.SolutionCloner;
-import org.optaplanner.core.api.domain.solution.drools.ProblemFactCollectionProperty;
-import org.optaplanner.core.api.domain.solution.drools.ProblemFactProperty;
 import org.optaplanner.core.api.domain.valuerange.ValueRangeProvider;
 import org.optaplanner.core.api.score.AbstractBendableScore;
 import org.optaplanner.core.api.score.Score;
@@ -361,7 +361,10 @@ public class SolutionDescriptor<Solution_> {
         } else if (annotationClass.equals(ConstraintConfigurationProvider.class)) {
             processConstraintConfigurationProviderAnnotation(descriptorPolicy, member, annotationClass);
         } else if (annotationClass.equals(ProblemFactProperty.class)
-                || annotationClass.equals(ProblemFactCollectionProperty.class)) {
+                || annotationClass.equals(org.optaplanner.core.api.domain.solution.drools.ProblemFactProperty.class)
+                || annotationClass.equals(ProblemFactCollectionProperty.class)
+                || annotationClass
+                        .equals(org.optaplanner.core.api.domain.solution.drools.ProblemFactCollectionProperty.class)) {
             processProblemFactPropertyAnnotation(descriptorPolicy, member, annotationClass);
         } else if (annotationClass.equals(PlanningEntityProperty.class)
                 || annotationClass.equals(PlanningEntityCollectionProperty.class)) {
@@ -375,7 +378,10 @@ public class SolutionDescriptor<Solution_> {
             Member member, List<Class<?>> entityClassList) {
         Class<? extends Annotation> annotationClass = ConfigUtils.extractAnnotationClass(member,
                 ConstraintConfigurationProvider.class,
-                ProblemFactProperty.class, ProblemFactCollectionProperty.class,
+                ProblemFactProperty.class,
+                org.optaplanner.core.api.domain.solution.drools.ProblemFactProperty.class,
+                ProblemFactCollectionProperty.class,
+                org.optaplanner.core.api.domain.solution.drools.ProblemFactCollectionProperty.class,
                 PlanningEntityProperty.class, PlanningEntityCollectionProperty.class,
                 PlanningScore.class);
         if (annotationClass == null) {
@@ -473,9 +479,11 @@ public class SolutionDescriptor<Solution_> {
         MemberAccessor memberAccessor = MemberAccessorFactory.buildMemberAccessor(
                 member, FIELD_OR_READ_METHOD, annotationClass);
         assertNoFieldAndGetterDuplicationOrConflict(memberAccessor, annotationClass);
-        if (annotationClass == ProblemFactProperty.class) {
+        if (annotationClass == ProblemFactProperty.class ||
+                annotationClass == org.optaplanner.core.api.domain.solution.drools.ProblemFactProperty.class) {
             problemFactMemberAccessorMap.put(memberAccessor.getName(), memberAccessor);
-        } else if (annotationClass == ProblemFactCollectionProperty.class) {
+        } else if (annotationClass == ProblemFactCollectionProperty.class ||
+                annotationClass == org.optaplanner.core.api.domain.solution.drools.ProblemFactCollectionProperty.class) {
             Class<?> type = memberAccessor.getType();
             if (!(Collection.class.isAssignableFrom(type) || type.isArray())) {
                 throw new IllegalStateException("The solutionClass (" + solutionClass

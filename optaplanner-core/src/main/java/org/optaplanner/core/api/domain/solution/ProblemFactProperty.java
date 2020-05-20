@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package org.optaplanner.core.api.domain.solution.drools;
+package org.optaplanner.core.api.domain.solution;
 
 import static java.lang.annotation.ElementType.FIELD;
 import static java.lang.annotation.ElementType.METHOD;
@@ -22,29 +22,27 @@ import static java.lang.annotation.RetentionPolicy.RUNTIME;
 
 import java.lang.annotation.Retention;
 import java.lang.annotation.Target;
-import java.util.Collection;
 
+import org.optaplanner.core.api.domain.constraintweight.ConstraintConfiguration;
 import org.optaplanner.core.api.domain.entity.PlanningEntity;
-import org.optaplanner.core.api.domain.solution.PlanningSolution;
 import org.optaplanner.core.api.score.stream.ConstraintFactory;
 import org.optaplanner.core.api.score.stream.ConstraintProvider;
 import org.optaplanner.core.impl.solver.ProblemFactChange;
 
 /**
- * Specifies that a property (or a field) on a {@link PlanningSolution} class is a {@link Collection} of problem facts.
+ * Specifies that a property (or a field) on a {@link PlanningSolution} class is a problem fact.
  * A problem fact must not change during solving (except through a {@link ProblemFactChange} event).
  * <p>
  * The constraints in a {@link ConstraintProvider} rely on problem facts for {@link ConstraintFactory#from(Class)}.
  * Alternatively, scoreDRL relies on problem facts too.
  * <p>
- * Do not annotate {@link PlanningEntity planning entities} as problem facts:
- * they are automatically available as facts for {@link ConstraintFactory#from(Class)} or DRL.
+ * Do not annotate a {@link PlanningEntity planning entity} or a {@link ConstraintConfiguration planning paramerization}
+ * as a problem fact: they are automatically available as facts for {@link ConstraintFactory#from(Class)} or DRL.
  *
- * @deprecated In favor of {@link org.optaplanner.core.api.domain.solution.ProblemFactCollectionProperty}.
+ * @see ProblemFactCollectionProperty
  */
 @Target({ METHOD, FIELD })
 @Retention(RUNTIME)
-@Deprecated(/* forRemoval = true */)
-public @interface ProblemFactCollectionProperty {
+public @interface ProblemFactProperty {
 
 }

@@ -1,5 +1,5 @@
 /*
- * Copyright 2014 Red Hat, Inc. and/or its affiliates.
+ * Copyright 2020 Red Hat, Inc. and/or its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -27,6 +27,7 @@ import org.junit.jupiter.api.DynamicContainer;
 import org.junit.jupiter.api.TestFactory;
 import org.junit.jupiter.api.Timeout;
 import org.optaplanner.core.api.domain.solution.PlanningSolution;
+import org.optaplanner.core.api.score.ScoreManager;
 import org.optaplanner.core.api.solver.Solver;
 import org.optaplanner.core.api.solver.SolverFactory;
 import org.optaplanner.persistence.common.api.domain.solution.SolutionFileIO;
@@ -76,7 +77,8 @@ public abstract class AbstractPhaseTest<Solution_, T> extends LoggingTest {
 
         Solution_ bestSolution = solver.solve(problem);
         assertSolution(bestSolution);
-        assertNotNull(solver.getBestScore());
+        ScoreManager<Solution_> scoreManager = ScoreManager.create(solverFactory);
+        assertNotNull(scoreManager.updateScore(bestSolution));
     }
 
     private static File buildFile(File unsolvedDataDir, String unsolvedFileName) {

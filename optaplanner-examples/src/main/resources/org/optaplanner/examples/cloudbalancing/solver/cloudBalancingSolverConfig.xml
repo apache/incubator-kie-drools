@@ -4,9 +4,8 @@
   <!--<moveThreadCount>AUTO</moveThreadCount>--><!-- To solve faster by saturating multiple CPU cores -->
 
   <!-- Domain model configuration -->
-  <scanAnnotatedClasses>
-    <packageInclude>org.optaplanner.examples.cloudbalancing</packageInclude>
-  </scanAnnotatedClasses>
+  <solutionClass>org.optaplanner.examples.cloudbalancing.domain.CloudBalance</solutionClass>
+  <entityClass>org.optaplanner.examples.cloudbalancing.domain.CloudProcess</entityClass>
 
   <!-- Score configuration -->
   <scoreDirectorFactory>

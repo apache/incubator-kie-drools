@@ -1,5 +1,5 @@
 /*
- * Copyright 2014 Red Hat, Inc. and/or its affiliates.
+ * Copyright 2020 Red Hat, Inc. and/or its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -22,6 +22,10 @@ public enum AcceptorType {
     VALUE_TABU,
     MOVE_TABU,
     UNDO_MOVE_TABU,
+    /**
+     * @deprecated for removal.
+     */
+    @Deprecated
     SOLUTION_TABU,
     SIMULATED_ANNEALING,
     LATE_ACCEPTANCE,

@@ -55,22 +55,6 @@ In those cases, provide the `ClassLoader` of your classes as a parameter:
 ----
 ====
 
-[NOTE]
-====
-When using Workbench or Execution Server or to take advantage of Drools's `KieContainer` features, provide the `KieContainer` as a parameter:
-
-[source,java,options="nowrap"]
-----
-       KieServices kieServices = KieServices.Factory.get();
-       KieContainer kieContainer = kieServices.newKieContainer(
-               kieServices.newReleaseId("org.nqueens", "nqueens", "1.0.0"));
-       SolverFactory<NQueens> solverFactory = SolverFactory.createFromKieContainerXmlResource(
-               kieContainer, ".../nqueensSolverConfig.xml");
-----
-
-Also use <<droolsScoreCalculationKsessionName,a ksessionName in the solver configuration>>.
-====
-
 Both a `Solver` and a `SolverFactory` have a generic type called ``Solution_``, which is the class representing a <<planningProblemAndPlanningSolution,planning problem and solution>>.
 
 A solver configuration XML file looks like this:
@@ -163,81 +147,21 @@ and copy it with the copy constructor for each user request:
 ----
 ====
 
-
-[[annotationsConfiguration]]
-=== Annotations configuration
-
-
-[[automaticScanningForAnnotations]]
-==== Automatic scanning for annotations
-
-Instead of declaring classes that have a `@PlanningSolution` or `@PlanningEntity` manually:
-
-[source,xml,options="nowrap"]
-----
-<solver>
-  <!-- Define the model -->
-  <solutionClass>org.optaplanner.examples.nqueens.domain.NQueens</solutionClass>
-  <entityClass>org.optaplanner.examples.nqueens.domain.Queen</entityClass>
-
-  ...
-</solver>
-----
-
-OptaPlanner can find scan the classpath and find them automatically:
-
-[source,xml,options="nowrap"]
-----
-<solver>
-  <!-- Define the model -->
-  <scanAnnotatedClasses/>
-
-  ...
-</solver>
-----
-
-[NOTE]
-====
-On environments such as OSGi and Android, which use a non-standard `ClassLoader`,
-automated scanning might not find the `@PlanningSolution` or `@PlanningEntity` classes.
-====
-
-Automated scanning inflicts a performance cost during bootstrap.
-To speed up scanning or if there are multiple models in your classpath,
-specify the packages to scan:
-
-[source,xml,options="nowrap"]
-----
-<solver>
-  <!-- Define the model -->
-  <scanAnnotatedClasses>
-    <packageInclude>org.optaplanner.examples.cloudbalancing</packageInclude>
-  </scanAnnotatedClasses>
-
-  ...
-</solver>
-----
-
-This finds all solution and entity classes in that package or its subpackages.
-
-[NOTE]
-====
-If `scanAnnotatedClasses` is not specified, the `org.reflections` transitive maven dependency can be excluded.
-====
-
-
 [[annotationAlternatives]]
-==== Annotation alternatives
+=== Annotation alternatives
 
 OptaPlanner needs to be told which classes in your domain model are planning entities, which properties are planning variables, etc.
 There are several ways to deliver this information:
 
-* Add class annotations and JavaBean property annotations on the domain model (recommended). The property annotations must be on the getter method, not on the setter method. Such a getter does not need to be public.
-* Add class annotations and field annotations on the domain model. Such a field does not need to be public.
-* No annotations: externalize the domain configuration in an XML file. This is https://issues.redhat.com/browse/PLANNER-151[not yet supported].
+* Add class annotations and JavaBean property annotations on the domain model (recommended).
+The property annotations must be on the getter method, not on the setter method.
+Such a getter does not need to be public.
+* Add class annotations and field annotations on the domain model.
+Such a field does not need to be public.
+* No annotations: externalize the domain configuration in an XML file.
+This is https://issues.redhat.com/browse/PLANNER-151[not yet supported].
 
 This manual focuses on the first manner, but every feature supports all three manners, even if it's not explicitly mentioned.
-
 
 [[customPropertiesConfiguration]]
 === Custom properties configuration
@@ -416,7 +340,7 @@ public class Lecture {
 }
 ----
 
-Without <<automaticScanningForAnnotations,automated scanning>>, the solver configuration also needs to declare each planning entity class:
+The solver configuration needs to declare each planning entity class:
 
 [source,java,options="nowrap"]
 ----
@@ -1046,7 +970,7 @@ public class NQueens {
 }
 ----
 
-Without <<automaticScanningForAnnotations,automated scanning>>, the solver configuration also needs to declare the planning solution class:
+The solver configuration needs to declare the planning solution class:
 
 [source,java,options="nowrap"]
 ----
@@ -1056,7 +980,6 @@ Without <<automaticScanningForAnnotations,automated scanning>>, the solver confi
   ...
 </solver>
 ----
-
 
 [[planningEntitiesOfASolution]]
 ==== Planning entities of a solution (`@PlanningEntityCollectionProperty`)

@@ -1,5 +1,5 @@
 /*
- * Copyright 2014 Red Hat, Inc. and/or its affiliates.
+ * Copyright 2020 Red Hat, Inc. and/or its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -31,6 +31,7 @@ import org.optaplanner.core.impl.testdata.domain.TestdataObject;
 import org.optaplanner.core.impl.testdata.domain.TestdataValue;
 import org.optaplanner.core.impl.testdata.domain.collection.TestdataArrayBasedSolution;
 import org.optaplanner.core.impl.testdata.domain.collection.TestdataSetBasedSolution;
+import org.optaplanner.core.impl.testdata.domain.deprecated.TestdataAnnotatedWithDeprecatedAnnotationsSolution;
 import org.optaplanner.core.impl.testdata.domain.extended.TestdataAnnotatedExtendedSolution;
 import org.optaplanner.core.impl.testdata.domain.extended.TestdataUnannotatedExtendedEntity;
 import org.optaplanner.core.impl.testdata.domain.extended.abstractsolution.TestdataExtendedAbstractSolution;
@@ -132,6 +133,18 @@ public class SolutionDescriptorTest {
         SolutionDescriptor<TestdataAnnotatedExtendedSolution> solutionDescriptor = TestdataAnnotatedExtendedSolution
                 .buildExtendedSolutionDescriptor();
         assertMapContainsKeysExactly(solutionDescriptor.getProblemFactMemberAccessorMap());
+        assertMapContainsKeysExactly(solutionDescriptor.getProblemFactCollectionMemberAccessorMap(),
+                "valueList", "subValueList");
+        assertMapContainsKeysExactly(solutionDescriptor.getEntityMemberAccessorMap());
+        assertMapContainsKeysExactly(solutionDescriptor.getEntityCollectionMemberAccessorMap(),
+                "entityList", "subEntityList");
+    }
+
+    @Test
+    public void deprecated() {
+        SolutionDescriptor<TestdataAnnotatedWithDeprecatedAnnotationsSolution> solutionDescriptor =
+                TestdataAnnotatedWithDeprecatedAnnotationsSolution.buildExtendedSolutionDescriptor();
+        assertMapContainsKeysExactly(solutionDescriptor.getProblemFactMemberAccessorMap(), "value");
         assertMapContainsKeysExactly(solutionDescriptor.getProblemFactCollectionMemberAccessorMap(),
                 "valueList", "subValueList");
         assertMapContainsKeysExactly(solutionDescriptor.getEntityMemberAccessorMap());

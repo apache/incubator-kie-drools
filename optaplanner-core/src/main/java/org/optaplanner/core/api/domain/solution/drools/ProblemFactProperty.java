@@ -1,5 +1,5 @@
 /*
- * Copyright 2016 Red Hat, Inc. and/or its affiliates.
+ * Copyright 2020 Red Hat, Inc. and/or its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -40,10 +40,11 @@ import org.optaplanner.core.impl.solver.ProblemFactChange;
  * Do not annotate a {@link PlanningEntity planning entity} or a {@link ConstraintConfiguration planning paramerization}
  * as a problem fact: they are automatically available as facts for {@link ConstraintFactory#from(Class)} or DRL.
  *
- * @see ProblemFactCollectionProperty
+ * @deprecated In favor of {@link org.optaplanner.core.api.domain.solution.ProblemFactProperty}.
  */
 @Target({ METHOD, FIELD })
 @Retention(RUNTIME)
+@Deprecated(/* forRemoval = true */)
 public @interface ProblemFactProperty {
 
 }

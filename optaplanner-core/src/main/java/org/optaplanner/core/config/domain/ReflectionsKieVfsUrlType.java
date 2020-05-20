@@ -1,5 +1,5 @@
 /*
- * Copyright 2016 Red Hat, Inc. and/or its affiliates.
+ * Copyright 2020 Red Hat, Inc. and/or its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -35,6 +35,10 @@ import org.kie.api.builder.KieModule;
 import org.kie.api.runtime.KieContainer;
 import org.reflections.vfs.Vfs;
 
+/**
+ * @deprecated for removal
+ */
+@Deprecated(/* forRemoval = true */)
 public class ReflectionsKieVfsUrlType implements Vfs.UrlType {
 
     public static void register(KieContainer kieContainer) {

@@ -1,5 +1,5 @@
 /*
- * Copyright 2019 Red Hat, Inc. and/or its affiliates.
+ * Copyright 2020 Red Hat, Inc. and/or its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -16,6 +16,7 @@
 
 package org.optaplanner.core.api.solver;
 
+import java.time.Duration;
 import java.util.UUID;
 import java.util.concurrent.ExecutionException;
 import java.util.function.Consumer;
@@ -71,5 +72,15 @@ public interface SolverJob<Solution_, ProblemId_> {
      * @throws ExecutionException if the computation threw an exception
      */
     Solution_ getFinalBestSolution() throws InterruptedException, ExecutionException;
+
+    /**
+     * Returns the {@link Duration} spent solving since the last start.
+     * If it hasn't started it yet, it returns {@link Duration#ZERO}.
+     * If it hasn't ended yet, it returns the time between the last start and now.
+     * If it has ended already, it returns the time between the last start and the ending.
+     *
+     * @return the {@link Duration} spent solving since the last (re)start, at least 0
+     */
+    Duration getSolvingDuration();
 
 }

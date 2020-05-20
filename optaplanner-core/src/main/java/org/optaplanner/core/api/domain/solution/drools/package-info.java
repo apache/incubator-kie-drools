@@ -1,5 +1,5 @@
 /*
- * Copyright 2016 Red Hat, Inc. and/or its affiliates.
+ * Copyright 2020 Red Hat, Inc. and/or its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -17,4 +17,5 @@
 /**
  * Domain annotations and support classes for a planning solution that is used with Drools score calculation.
  */
+@Deprecated(/* forRemoval = true */)
 package org.optaplanner.core.api.domain.solution.drools;

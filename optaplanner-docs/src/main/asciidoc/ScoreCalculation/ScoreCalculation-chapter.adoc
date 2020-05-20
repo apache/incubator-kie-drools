@@ -1005,27 +1005,27 @@ image::ScoreCalculation/fairnessScoreConstraintPitfall.png[align="center"]
 
 [NOTE]
 ====
-Instead of the __squared workload__, it is also possible to use the https://en.wikipedia.org/wiki/Variance[variance] (squared difference to the average) or the http://en.wikipedia.org/wiki/Standard_deviation[standard deviation] (square root of the variance). This has no effect on the score comparison, because the average will not change during planning.
+Instead of the __squared workload__, it is also possible to use the https://en.wikipedia.org/wiki/Variance[variance]
+(squared difference to the average) or the http://en.wikipedia.org/wiki/Standard_deviation[standard deviation]
+(square root of the variance).
+This has no effect on the score comparison, because the average will not change during planning.
 It is just more work to implement (because the average needs to be known) and trivially slower (because the calculation is a bit longer).
 ====
 
-When the workload is perfectly balanced, the user often likes to see a `0` score, instead of the distracting `-34soft` in the image above (for the last solution which is almost perfectly balanced). To nullify this, either add the average multiplied by the number of entities to the score or instead show the variance or standard deviation in the UI.
-
+When the workload is perfectly balanced, the user often likes to see a `0` score, instead of the distracting `-34soft` in the image above (for the last solution which is almost perfectly balanced).
+To nullify this, either add the average multiplied by the number of entities to the score or instead show the variance or standard deviation in the UI.
 
 [[constraintConfiguration]]
 == Constraint configuration: adjust constraint weights dynamically
 
-Deciding the correct <<scoreConstraintWeight,weight>> and <<scoreLevel,level>> for each constraint
-is not easy. It often involves negotiating with different stakeholders and their priorities.
-Furthermore, quantifying the impact of soft constraints is often a new experience for business managers,
-so they 'll need a number of iterations to get it right.
+Deciding the correct <<scoreConstraintWeight,weight>> and <<scoreLevel,level>> for each constraint is not easy.
+It often involves negotiating with different stakeholders and their priorities.
+Furthermore, quantifying the impact of soft constraints is often a new experience for business managers, so they 'll need a number of iterations to get it right.
 
 Don't get stuck between a rock and a hard place.
-Provide a UI to adjust the constraint weights and visualize the resulting solution,
-so the business managers can tweak the constraint weights themselves:
+Provide a UI to adjust the constraint weights and visualize the resulting solution, so the business managers can tweak the constraint weights themselves:
 
 image::ScoreCalculation/parameterizeTheScoreWeights.png[align="center"]
-
 
 [[createAConstraintConfiguration]]
 === Create a constraint configuration
@@ -1180,20 +1180,17 @@ end
 So when 2 overlapping talks share only 1 content tag, the score is impacted by `-100soft`.
 But when 2 overlapping talks share 3 content tags, the match weight is `3`, so the score is impacted by `-300soft`.
 
-
 [[explainingTheScore]]
 == Explaining the score: which constraints are broken?
 
-The easiest way to explain the score during development is to print the return value of `explainBestScore()`,
-but only use that method for diagnostic purposes:
+The easiest way to explain the score during development is to print the return value of `explainScore()`, but only use that method for diagnostic purposes:
 
 [source,java,options="nowrap"]
 ----
-System.out.println(solver.explainBestScore());
+System.out.println(scoreManager.explainScore(solution));
 ----
 
-For example in conference scheduling, this prints that talk `S51` is responsible
-for breaking the hard constraint `Speaker required room tag`:
+For example in conference scheduling, this prints that talk `S51` is responsible for breaking the hard constraint `Speaker required room tag`:
 
 ----
 Explanation of score (-1hard/-806soft):

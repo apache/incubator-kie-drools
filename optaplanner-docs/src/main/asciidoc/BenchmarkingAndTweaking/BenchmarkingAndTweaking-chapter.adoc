@@ -320,7 +320,8 @@ To quickly configure and run a benchmark for typical solver configs, use a `solv
       <inputSolutionFile>data/nqueens/unsolved/64queens.xml</inputSolutionFile>
     </problemBenchmarks>
     <solver>
-      <scanAnnotatedClasses/>
+      <solutionClass>org.optaplanner.examples.nqueens.domain.NQueens</solutionClass>
+      <entityClass>org.optaplanner.examples.nqueens.domain.Queen</entityClass>
       <scoreDirectorFactory>
         <scoreDrl>org/optaplanner/examples/nqueens/solver/nQueensConstraints.drl</scoreDrl>
         <initializingScoreTrend>ONLY_DOWN</initializingScoreTrend>

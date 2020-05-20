@@ -1,5 +1,5 @@
 /*
- * Copyright 2019 Red Hat, Inc. and/or its affiliates.
+ * Copyright 2020 Red Hat, Inc. and/or its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -16,6 +16,7 @@
 
 package org.optaplanner.core.impl.solver;
 
+import java.time.Duration;
 import java.util.UUID;
 import java.util.concurrent.Callable;
 import java.util.concurrent.CountDownLatch;
@@ -30,6 +31,7 @@ import org.optaplanner.core.api.domain.solution.PlanningSolution;
 import org.optaplanner.core.api.solver.Solver;
 import org.optaplanner.core.api.solver.SolverJob;
 import org.optaplanner.core.api.solver.SolverStatus;
+import org.optaplanner.core.impl.solver.scope.DefaultSolverScope;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -42,7 +44,7 @@ public final class DefaultSolverJob<Solution_, ProblemId_> implements SolverJob<
     protected final transient Logger logger = LoggerFactory.getLogger(getClass());
 
     private final DefaultSolverManager<Solution_, ProblemId_> solverManager;
-    private final Solver<Solution_> solver;
+    private final DefaultSolver<Solution_> solver;
     private final ProblemId_ problemId;
     private final Function<? super ProblemId_, ? extends Solution_> problemFinder;
     private final Consumer<? super Solution_> finalBestSolutionConsumer;
@@ -61,7 +63,11 @@ public final class DefaultSolverJob<Solution_, ProblemId_> implements SolverJob<
             BiConsumer<? super ProblemId_, ? super Throwable> exceptionHandler) {
         this.solverManager = solverManager;
         this.problemId = problemId;
-        this.solver = solver;
+        if (!(solver instanceof DefaultSolver)) {
+            throw new IllegalStateException("Impossible state: solver is not instance of " +
+                    DefaultSolver.class.getSimpleName() + ".");
+        }
+        this.solver = (DefaultSolver<Solution_>) solver;
         this.problemFinder = problemFinder;
         this.finalBestSolutionConsumer = finalBestSolutionConsumer;
         this.exceptionHandler = exceptionHandler;
@@ -156,4 +162,19 @@ public final class DefaultSolverJob<Solution_, ProblemId_> implements SolverJob<
         return future.get();
     }
 
+    @Override
+    public Duration getSolvingDuration() {
+        DefaultSolverScope<Solution_> solverScope = solver.getSolverScope();
+        Long startingSystemTimeMillis = solverScope.getStartingSystemTimeMillis();
+        if (startingSystemTimeMillis == null) {
+            // The solver hasn't started yet
+            return Duration.ZERO;
+        }
+        Long endingSystemTimeMillis = solverScope.getEndingSystemTimeMillis();
+        if (endingSystemTimeMillis == null) {
+            // The solver hasn't ended yet
+            endingSystemTimeMillis = System.currentTimeMillis();
+        }
+        return Duration.ofMillis(endingSystemTimeMillis - startingSystemTimeMillis);
+    }
 }

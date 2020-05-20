@@ -1,5 +1,5 @@
 /*
- * Copyright 2014 Red Hat, Inc. and/or its affiliates.
+ * Copyright 2020 Red Hat, Inc. and/or its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -36,13 +36,6 @@ import org.optaplanner.core.impl.domain.variable.listener.VariableListener;
 public @interface CustomShadowVariable {
 
     /**
-     * Use this when this shadow variable is updated by the {@link VariableListener} of another {@link CustomShadowVariable}.
-     *
-     * @return null if (and only if) any of the other fields is non null.
-     */
-    PlanningVariableReference variableListenerRef() default @PlanningVariableReference(variableName = "");
-
-    /**
      * A {@link VariableListener} gets notified after a source planning variable has changed.
      * That listener changes the shadow variable (often recursively on multiple planning entities) accordingly,
      * Those shadow variables should make the score calculation more natural to write.
@@ -64,5 +57,12 @@ public @interface CustomShadowVariable {
      * @return never null (unless {@link #variableListenerRef()} is not null), at least 1
      */
     PlanningVariableReference[] sources() default {};
+
+    /**
+     * Use this when this shadow variable is updated by the {@link VariableListener} of another {@link CustomShadowVariable}.
+     *
+     * @return null if (and only if) any of the other fields is non null.
+     */
+    PlanningVariableReference variableListenerRef() default @PlanningVariableReference(variableName = "");
 
 }

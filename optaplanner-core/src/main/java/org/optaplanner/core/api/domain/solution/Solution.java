@@ -1,5 +1,5 @@
 /*
- * Copyright 2010 Red Hat, Inc. and/or its affiliates.
+ * Copyright 2020 Red Hat, Inc. and/or its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -19,8 +19,6 @@ package org.optaplanner.core.api.domain.solution;
 import java.util.Collection;
 
 import org.kie.api.runtime.KieSession;
-import org.optaplanner.core.api.domain.solution.drools.ProblemFactCollectionProperty;
-import org.optaplanner.core.api.domain.solution.drools.ProblemFactProperty;
 import org.optaplanner.core.api.score.Score;
 import org.optaplanner.core.api.solver.Solver;
 import org.optaplanner.core.impl.score.director.drools.DroolsScoreDirector;

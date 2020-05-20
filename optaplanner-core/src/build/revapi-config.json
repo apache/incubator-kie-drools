@@ -278,6 +278,36 @@
           "methodName": "getFeasibleLevelsSize",
           "elementKind": "method",
           "justification": "FeasibilityScoreDefinition is gone in a backwards-compatible manner. This is a red herring."
+        },
+        {
+          "code": "java.method.addedToInterface",
+          "new": "method java.lang.String org.optaplanner.core.api.score.ScoreManager<Solution_>::explainScore(Solution_)",
+          "package": "org.optaplanner.core.api.score",
+          "classSimpleName": "ScoreManager",
+          "methodName": "explainScore",
+          "elementKind": "method",
+          "justification": "New ScoreManager functionality replaces some Solver functionality."
+        },
+        {
+          "code": "java.method.returnTypeChanged",
+          "old": "method void org.optaplanner.core.api.score.ScoreManager<Solution_>::updateScore(Solution_)",
+          "new": "method org.optaplanner.core.api.score.Score org.optaplanner.core.api.score.ScoreManager<Solution_>::updateScore(Solution_)",
+          "oldType": "void",
+          "newType": "org.optaplanner.core.api.score.Score",
+          "package": "org.optaplanner.core.api.score",
+          "classSimpleName": "ScoreManager",
+          "methodName": "updateScore",
+          "elementKind": "method",
+          "justification": "New ScoreManager functionality replaces some Solver functionality."
+        },
+        {
+          "code": "java.method.addedToInterface",
+          "new": "method java.time.Duration org.optaplanner.core.api.solver.SolverJob<Solution_, ProblemId_>::getSolvingDuration()",
+          "package": "org.optaplanner.core.api.solver",
+          "classSimpleName": "SolverJob",
+          "methodName": "getSolvingDuration",
+          "elementKind": "method",
+          "justification": "New ScoreManager functionality replaces some Solver functionality."
         }
       ]
     }

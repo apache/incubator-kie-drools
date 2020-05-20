@@ -1,5 +1,5 @@
 /*
- * Copyright 2019 Red Hat, Inc. and/or its affiliates.
+ * Copyright 2020 Red Hat, Inc. and/or its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -17,6 +17,7 @@
 package org.optaplanner.core.impl.score;
 
 import org.optaplanner.core.api.domain.solution.PlanningSolution;
+import org.optaplanner.core.api.score.Score;
 import org.optaplanner.core.api.score.ScoreManager;
 import org.optaplanner.core.impl.score.director.ScoreDirector;
 import org.optaplanner.core.impl.score.director.ScoreDirectorFactory;
@@ -37,11 +38,18 @@ public class DefaultScoreManager<Solution_> implements ScoreManager<Solution_> {
     }
 
     @Override
-    public void updateScore(Solution_ solution) {
+    public Score updateScore(Solution_ solution) {
         try (ScoreDirector<Solution_> scoreDirector = scoreDirectorFactory.buildScoreDirector()) {
             scoreDirector.setWorkingSolution(solution);
-            scoreDirector.calculateScore();
+            return scoreDirector.calculateScore();
         }
     }
 
+    @Override
+    public String explainScore(Solution_ solution) {
+        try (ScoreDirector<Solution_> scoreDirector = scoreDirectorFactory.buildScoreDirector()) {
+            scoreDirector.setWorkingSolution(solution);
+            return scoreDirector.explainScore();
+        }
+    }
 }

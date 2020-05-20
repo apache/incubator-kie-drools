@@ -14,36 +14,53 @@
  * limitations under the License.
  */
 
-package org.optaplanner.core.impl.testdata.domain.extended;
+package org.optaplanner.core.impl.testdata.domain.deprecated;
 
 import java.util.List;
 
 import org.optaplanner.core.api.domain.solution.PlanningEntityCollectionProperty;
 import org.optaplanner.core.api.domain.solution.PlanningSolution;
-import org.optaplanner.core.api.domain.solution.ProblemFactCollectionProperty;
+import org.optaplanner.core.api.domain.solution.drools.ProblemFactCollectionProperty;
+import org.optaplanner.core.api.domain.solution.drools.ProblemFactProperty;
 import org.optaplanner.core.api.domain.valuerange.ValueRangeProvider;
 import org.optaplanner.core.impl.domain.solution.descriptor.SolutionDescriptor;
 import org.optaplanner.core.impl.testdata.domain.TestdataEntity;
 import org.optaplanner.core.impl.testdata.domain.TestdataSolution;
 import org.optaplanner.core.impl.testdata.domain.TestdataValue;
+import org.optaplanner.core.impl.testdata.domain.extended.TestdataAnnotatedExtendedEntity;
 
+/**
+ * @deprecated for removal with the deprecated annotations
+ */
+@Deprecated(/* forRemoval = true */)
 @PlanningSolution
-public class TestdataAnnotatedExtendedSolution extends TestdataSolution {
+public class TestdataAnnotatedWithDeprecatedAnnotationsSolution extends TestdataSolution {
 
-    public static SolutionDescriptor<TestdataAnnotatedExtendedSolution> buildExtendedSolutionDescriptor() {
-        return SolutionDescriptor.buildSolutionDescriptor(TestdataAnnotatedExtendedSolution.class,
+    public static SolutionDescriptor<TestdataAnnotatedWithDeprecatedAnnotationsSolution> buildExtendedSolutionDescriptor() {
+        return SolutionDescriptor.buildSolutionDescriptor(TestdataAnnotatedWithDeprecatedAnnotationsSolution.class,
                 TestdataEntity.class, TestdataAnnotatedExtendedEntity.class);
     }
+
+    private TestdataValue value;
 
     private List<TestdataValue> subValueList;
 
     private List<TestdataAnnotatedExtendedEntity> subEntityList;
 
-    public TestdataAnnotatedExtendedSolution() {
+    public TestdataAnnotatedWithDeprecatedAnnotationsSolution() {
     }
 
-    public TestdataAnnotatedExtendedSolution(String code) {
+    public TestdataAnnotatedWithDeprecatedAnnotationsSolution(String code) {
         super(code);
+    }
+
+    @ProblemFactProperty
+    public TestdataValue getValue() {
+        return value;
+    }
+
+    public void setValue(final TestdataValue value) {
+        this.value = value;
     }
 
     @ValueRangeProvider(id = "subValueRange")

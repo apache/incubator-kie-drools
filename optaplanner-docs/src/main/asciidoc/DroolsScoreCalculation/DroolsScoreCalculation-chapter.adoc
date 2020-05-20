@@ -102,51 +102,6 @@ Worse, if they use a different Operating System, it is hard to choose a portable
 Add multiple `<scoreDrlFile>` elements if the score rules are split across multiple DRL files.
 
 
-[[droolsScoreCalculationKsessionName]]
-=== A `ksessionName` in a KJAR from a Maven repository
-
-This way allows you to use score rules defined by the Workbench or build a kjar and deploy it to the Execution Server.
-Both the score rules and the solver configuration are resources in a kjar.
-Clients can obtain that kjar either from the local classpath, from a local Maven repository or even from a remote Maven repository.
-
-The score rules still live in a DRL file, but the `KieContainer` finds that DRL file through the `META-INF/kmodule.xml` file:
-
-[source,xml,options="nowrap"]
-----
-<kmodule xmlns="http://www.drools.org/xsd/kmodule">
-  <configuration>
-    <!-- Don't enable propertyReactive unless there is a @PropertyReactive annotation on the domain classes -->
-    <property key="drools.propertySpecific" value="ALLOWED"/>
-  </configuration>
-  <kbase name="nQueensKbase" packages="org.optaplanner.examples.nqueens.solver">
-    <ksession name="nQueensKsession"/>
-  </kbase>
-</kmodule>
-----
-
-The kmodule above will pick up all the DRL files in the package ``org.optaplanner.examples.nqueens.solver``.
-A kbase can even extend another kbase.
-
-[NOTE]
-====
-Starting from version 7.0, Drools enables property reactive by default for all classes.
-This means if you have a non-simple getter and forget to apply `@Modifies` correctly, corruption occurs.
-To avoid this, simply set `drools.propertySpecific` to `ALLOWED` as shown above.
-====
-
-Add the ksession name in the solver configuration as a `<ksessionName>` element:
-
-[source,xml,options="nowrap"]
-----
-  <scoreDirectorFactory>
-    <ksessionName>nQueensKsession</ksessionName>
-  </scoreDirectorFactory>
-----
-
-In this approach, it's required to use a `SolverFactory.createFromKieContainerXmlResource(...)` method to <<solverConfigurationByXML,build the `SolverFactory`>>.
-If no `<ksessionName>` element is specified, the default ksession of the `kmodule.xml` is used.
-
-
 [[implementingAScoreRule]]
 == Implementing a score rule
 
