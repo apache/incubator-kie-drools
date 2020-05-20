@@ -2,20 +2,26 @@ import React from 'react';
 import {
   Nav,
   NavList,
-  NavItem,
-  PageSection,
-  Title
+  NavItem
 } from '@patternfly/react-core';
 import { PageLayout } from '@kogito-apps/common/src/components';
-import { withRouter } from 'react-router-dom';
+import { Redirect, Route, Link, Switch } from 'react-router-dom';
 import taskConsoleLogo from '../../../static/taskConsoleLogo.svg';
+import DataListContainerExpandable from "../DataListContainerExpandable/DataListContainerExpandable";
+import DataListContainer from "../DataListContainer/DataListContainer";
 
 const PageLayoutComponent = props => {
+  const { pathname } = props.location;
+
   const PageNav = (
     <Nav aria-label="Nav" theme="dark" css="">
       <NavList>
-        <NavItem>TestOption-1</NavItem>
-        <NavItem isActive>TestOption-2</NavItem>
+        <NavItem isActive={pathname === '/UserTasks'}>
+          <Link to="/UserTasks">User Tasks</Link>
+        </NavItem>
+        <NavItem isActive={pathname === '/UserTasksFilters'}>
+          <Link to="/UserTasksFilters">User tasks with filters</Link>
+        </NavItem>
       </NavList>
     </Nav>
   );
@@ -31,14 +37,18 @@ const PageLayoutComponent = props => {
       BrandAltText="Task Console Logo"
       BrandClick={BrandClick}
     >
-      <PageSection variant="light">
-        <Title headingLevel="h1" size="4xl">
-          Task List
-        </Title>
-      </PageSection>{' '}
-      {''}
+
+      <Switch>
+        <Route
+          exact
+          path="/"
+          render={() => <Redirect to="/UserTasks" />}
+        />
+        <Route exact path="/UserTasks" component={DataListContainerExpandable} />
+        <Route exact path="/UserTasksFilters" component={DataListContainer} />
+      </Switch>
     </PageLayout>
   );
 };
 
-export default withRouter(PageLayoutComponent);
+export default PageLayoutComponent;

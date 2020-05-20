@@ -7,5 +7,9 @@
         "src/**/*.js",
         "../../config/declare.d.ts"
     ],
-    "preserveSymlinks": true
+    "preserveSymlinks": true,
+    "exclude": [
+        "src/graphql/queries.tsx",
+        "node_modules"
+    ]
 }
