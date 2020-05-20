@@ -30,9 +30,6 @@ import org.kie.dmn.feel.lang.types.GenListType;
 import org.kie.dmn.feel.util.EvalHelper;
 import org.kie.dmn.feel.util.EvalHelper.PropertyValueResult;
 
-/**
- * @see DMNType
- */
 public class CompositeTypeImpl
         extends BaseDMNTypeImpl {
 
