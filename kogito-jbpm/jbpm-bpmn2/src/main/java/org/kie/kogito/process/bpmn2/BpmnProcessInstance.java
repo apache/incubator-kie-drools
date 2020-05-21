@@ -26,6 +26,10 @@ public class BpmnProcessInstance extends AbstractProcessInstance<BpmnVariables> 
     public BpmnProcessInstance(AbstractProcess<BpmnVariables> process, BpmnVariables variables, ProcessRuntime rt) {
         super(process, variables, rt);
     }
+    
+    public BpmnProcessInstance(AbstractProcess<BpmnVariables> process, BpmnVariables variables, String businessKey, ProcessRuntime rt) {
+        super(process, variables, businessKey, rt);
+    }
 
     @Override
     protected Map<String, Object> bind(BpmnVariables variables) {

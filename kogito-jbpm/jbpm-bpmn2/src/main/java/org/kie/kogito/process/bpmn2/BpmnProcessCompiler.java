@@ -60,12 +60,13 @@ public class BpmnProcessCompiler {
             XmlProcessReader xmlReader = new XmlProcessReader(
                                                               getSemanticModules(),
                                                               Thread.currentThread().getContextClassLoader());
+            configureProcessReader(xmlReader, config);
 
             for (Resource resource : resources) {
                 processes.addAll(xmlReader.read(resource.getReader()));
             }
             List<BpmnProcess> bpmnProcesses = processes.stream()
-                                                       .map(p -> (config == null ? new BpmnProcess(p) : new BpmnProcess(p, config)))
+                                                       .map(p -> create(p, config))
                                                        .collect(Collectors.toList());
 
             bpmnProcesses.forEach(p -> {
@@ -80,6 +81,14 @@ public class BpmnProcessCompiler {
         } catch (Exception e) {
             throw new BpmnProcessReaderException(e);
         }
+    }
+    
+    protected void configureProcessReader(XmlProcessReader xmlReader, ProcessConfig config) {
+        
+    }
+    
+    protected BpmnProcess create(Process process, ProcessConfig config) {
+        return config == null ? new BpmnProcess(process) : new BpmnProcess(process, config);
     }
 
     protected void processNode(Node node, List<BpmnProcess> bpmnProcesses) {

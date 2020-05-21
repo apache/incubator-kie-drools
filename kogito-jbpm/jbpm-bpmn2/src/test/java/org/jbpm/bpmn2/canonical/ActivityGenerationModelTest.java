@@ -16,6 +16,15 @@
 
 package org.jbpm.bpmn2.canonical;
 
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.kie.api.runtime.process.ProcessInstance.STATE_ABORTED;
+import static org.kie.api.runtime.process.ProcessInstance.STATE_ACTIVE;
+import static org.kie.api.runtime.process.ProcessInstance.STATE_COMPLETED;
+import static org.kie.api.runtime.process.ProcessInstance.STATE_ERROR;
+
 import java.lang.reflect.Method;
 import java.net.URL;
 import java.net.URLClassLoader;
@@ -56,14 +65,6 @@ import org.kie.kogito.process.impl.marshalling.ProcessInstanceMarshaller;
 import org.kie.kogito.services.identity.StaticIdentityProvider;
 import org.kie.kogito.services.uow.CollectingUnitOfWorkFactory;
 import org.kie.kogito.services.uow.DefaultUnitOfWorkManager;
-
-import static org.assertj.core.api.Assertions.assertThat;
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertNotNull;
-import static org.junit.jupiter.api.Assertions.assertThrows;
-import static org.kie.api.runtime.process.ProcessInstance.STATE_ACTIVE;
-import static org.kie.api.runtime.process.ProcessInstance.STATE_COMPLETED;
-import static org.kie.api.runtime.process.ProcessInstance.STATE_ERROR;
 
 public class ActivityGenerationModelTest extends JbpmBpmn2TestCase {
 
@@ -357,6 +358,37 @@ public class ActivityGenerationModelTest extends JbpmBpmn2TestCase {
             processInstance.completeWorkItem(wi.getId(), null);
         }
         assertEquals(STATE_COMPLETED, processInstance.status());
+
+    }
+    
+    @Test
+    public void testInclusiveSplitAndJoinNestedWithBusinessKey() throws Exception {
+        BpmnProcess process = BpmnProcess.from(new ClassPathResource("BPMN2-InclusiveSplitAndJoinNested.bpmn2")).get(0);
+        ProcessMetaData metaData = ProcessToExecModelGenerator.INSTANCE.generate((WorkflowProcess) process.legacyProcess());
+        String content = metaData.getGeneratedClassModel().toString();
+        assertThat(content).isNotNull();
+        log(content);
+
+        Map<String, String> classData = new HashMap<>();
+        classData.put("org.drools.bpmn2.TestProcess", content);
+
+        String customId = "custom";
+        
+        TestWorkItemHandler workItemHandler = new TestWorkItemHandler();
+        Map<String, Object> params = new HashMap<String, Object>();
+        params.put("x", 15);
+        Map<String, BpmnProcess> processes = createProcesses(classData, Collections.singletonMap("Human Task", workItemHandler));
+        ProcessInstance<BpmnVariables> processInstance = processes.get("com.sample.test").createInstance(customId, BpmnVariables.create(params));
+
+        processInstance.start();
+        assertEquals(STATE_ACTIVE, processInstance.status());
+
+        ProcessInstance<BpmnVariables> loadedProcessInstance = processes.get("com.sample.test").instances().findById(customId).orElse(null);
+        assertThat(loadedProcessInstance).isNotNull();
+        
+        loadedProcessInstance.abort();
+        
+        assertEquals(STATE_ABORTED, processInstance.status());
 
     }
 
