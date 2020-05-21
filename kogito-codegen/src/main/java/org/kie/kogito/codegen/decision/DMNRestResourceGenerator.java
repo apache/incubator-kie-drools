@@ -24,10 +24,8 @@ import com.github.javaparser.ast.NodeList;
 import com.github.javaparser.ast.body.ClassOrInterfaceDeclaration;
 import com.github.javaparser.ast.body.FieldDeclaration;
 import com.github.javaparser.ast.body.MethodDeclaration;
-import com.github.javaparser.ast.expr.IntegerLiteralExpr;
 import com.github.javaparser.ast.expr.MethodCallExpr;
 import com.github.javaparser.ast.expr.Name;
-import com.github.javaparser.ast.expr.NameExpr;
 import com.github.javaparser.ast.expr.ObjectCreationExpr;
 import com.github.javaparser.ast.expr.SimpleName;
 import com.github.javaparser.ast.expr.SingleMemberAnnotationExpr;
@@ -107,8 +105,10 @@ public class DMNRestResourceGenerator {
             clonedMethod.addAnnotation(new SingleMemberAnnotationExpr(new Name("javax.ws.rs.Path"), new StringLiteralExpr("/" + ds.getName())));
             ReturnStmt returnStmt = clonedMethod.findFirst(ReturnStmt.class).orElseThrow(() -> new RuntimeException("Template was modified!"));
             if (ds.getOutputDecision().size() == 1) {
-                MethodCallExpr rewrittenReturnExpr = new MethodCallExpr(new MethodCallExpr(new MethodCallExpr(new NameExpr("result"), "getDecisionResults"), "get").addArgument(new IntegerLiteralExpr(0)), "getResult");
-                returnStmt.setExpression(rewrittenReturnExpr);
+                MethodCallExpr rewrittenReturnExpr = returnStmt.findFirst(MethodCallExpr.class,
+                                                                          mce -> mce.getNameAsString().equals("extractContextIfSucceded"))
+                                                               .orElseThrow(() -> new RuntimeException("Template was modified!"));
+                rewrittenReturnExpr.setName("extractSingletonDSIfSucceded");
             }
 
             if (useMonitoring) {

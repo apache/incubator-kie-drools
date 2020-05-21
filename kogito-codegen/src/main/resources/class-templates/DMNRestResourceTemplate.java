@@ -1,11 +1,18 @@
 package org.kie.dmn.kogito.quarkus.example;
 
+import java.time.Period;
+
 import javax.ws.rs.Consumes;
 import javax.ws.rs.POST;
 import javax.ws.rs.Path;
 import javax.ws.rs.Produces;
 import javax.ws.rs.core.MediaType;
 
+import com.fasterxml.jackson.databind.module.SimpleModule;
+import org.drools.core.beliefsystem.simple.SimpleMode;
+import org.kie.dmn.api.core.DMNContext;
+import org.kie.dmn.core.impl.DMNContextImpl;
+import org.kie.dmn.feel.lang.types.impl.ComparablePeriod;
 import org.kie.kogito.Application;
 import org.kie.kogito.dmn.rest.DMNEvaluationErrorException;
 import org.kie.kogito.dmn.rest.DMNResult;
@@ -33,7 +40,31 @@ public class DMNRestResourceTemplate {
 
     private Object extractContextIfSucceded(DMNResult result){
         if (!result.hasErrors()) {
-            return result.getDmnContext();
+            try {
+                return objectMapper.writeValueAsString(result.getDmnContext());
+            } catch (com.fasterxml.jackson.core.JsonProcessingException e) {
+                throw new RuntimeException(e);
+            }
+        } else {
+            throw new DMNEvaluationErrorException(result);
+        }
+    }
+    
+    private static final com.fasterxml.jackson.databind.ObjectMapper objectMapper = new com.fasterxml.jackson.databind.ObjectMapper()
+            .registerModule(new com.fasterxml.jackson.datatype.jsr310.JavaTimeModule())
+            .registerModule(new com.fasterxml.jackson.databind.module.SimpleModule()
+                            .addSerializer(org.kie.dmn.feel.lang.types.impl.ComparablePeriod.class,
+                                           new org.kie.kogito.dmn.rest.DMNFEELComparablePeriodSerializer()))
+            .disable(com.fasterxml.jackson.databind.SerializationFeature.WRITE_DATES_AS_TIMESTAMPS)
+            .disable(com.fasterxml.jackson.databind.SerializationFeature.WRITE_DURATIONS_AS_TIMESTAMPS);
+
+    private Object extractSingletonDSIfSucceded(DMNResult result) {
+        if (!result.hasErrors()) {
+            try {
+                return objectMapper.writeValueAsString(result.getDecisionResults().get(0).getResult());
+            } catch (com.fasterxml.jackson.core.JsonProcessingException e) {
+                throw new RuntimeException(e);
+            }
         } else {
             throw new DMNEvaluationErrorException(result);
         }

@@ -116,6 +116,7 @@
     <version.io.prometheus>0.5.0</version.io.prometheus>
     <version.io.quarkus>1.4.1.Final</version.io.quarkus>
     <version.io.restassured>4.2.0</version.io.restassured>
+    <version.io.restassured.springboot>3.3.0</version.io.restassured.springboot>    <!-- Manually override to 3.3.0 because Spring boot uses rest-assured-common@3.3.0, otherwise error: The type io.restassured.common.mapper.TypeRef cannot be resolved. It is indirectly referenced from required .class files -->
     <version.io.smallrye.reactive>2.0.2</version.io.smallrye.reactive>
 
     <version.org.antlr>3.5.2</version.org.antlr>
@@ -237,6 +238,7 @@
     <module>kogito-quarkus-extension</module>
     <module>archetypes</module>
     <module>grafana-api</module>
+    <module>integration-tests</module>
   </modules>
 
   <dependencyManagement>

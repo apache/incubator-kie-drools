@@ -1,5 +1,6 @@
 package org.kie.kogito.dmn;
 
+import java.util.Collections;
 import java.util.Map;
 
 import org.kie.dmn.api.core.DMNContext;
@@ -31,7 +32,7 @@ public class DmnDecisionModel implements DecisionModel {
 
     @Override
     public DMNContext newContext(Map<String, Object> variables) {
-        return new org.kie.dmn.core.impl.DMNContextImpl(variables);
+        return new org.kie.dmn.core.impl.DMNContextImpl(variables != null ? variables : Collections.emptyMap());
     }
 
     @Override
