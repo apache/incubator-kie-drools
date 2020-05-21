@@ -192,7 +192,7 @@ public class DMNRuntimeBuilder {
                                                                                                                        dmnRes.getDefinitions().getName(),
                                                                                                                        relativeURI));
                     } else {
-                        LOG.error("specified a RelativeImportResolver but the compiler is not org.kie.dmn.core.compiler.DMNCompilerImpl");
+                        throw new IllegalStateException("specified a RelativeImportResolver but the compiler is not org.kie.dmn.core.compiler.DMNCompilerImpl");
                     }
                 } else {
                     dmnModel = dmnCompiler.compile(dmnRes.getDefinitions(), dmnRes.getResAndConfig().getResource(), dmnModels);
