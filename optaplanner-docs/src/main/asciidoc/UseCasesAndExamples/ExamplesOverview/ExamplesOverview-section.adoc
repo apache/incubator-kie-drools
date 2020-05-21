@@ -183,7 +183,7 @@ and also in git under [path]_optaplanner/optaplanner-examples_.
 * Value <= `50`
 * Search space <= `10^1277`
 |* Realistic
-* http://www.kuleuven-kortrijk.be/nrpcompetition[INRC 2010]
+* https://www.kuleuven-kulak.be/~u0041139/nrpcompetition/nrpcompetition_description.pdf[INRC 2010]
 |* <<continuousPlanning,Continuous planning>>
 * <<realTimePlanning,Real-time planning>>
 
