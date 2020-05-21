@@ -15,6 +15,28 @@
 
 package org.kie.kogito.codegen.process;
 
+import java.io.File;
+import java.io.IOException;
+import java.io.UncheckedIOException;
+import java.nio.charset.StandardCharsets;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collection;
+import java.util.Collections;
+import java.util.Enumeration;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
+import java.util.zip.ZipEntry;
+import java.util.zip.ZipFile;
+
 import com.github.javaparser.ast.body.ClassOrInterfaceDeclaration;
 import org.drools.core.io.impl.ByteArrayResource;
 import org.drools.core.io.impl.FileSystemResource;
@@ -49,28 +71,6 @@ import org.kie.kogito.rules.units.UndefinedGeneratedRuleUnitVariable;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.xml.sax.SAXException;
-
-import java.io.File;
-import java.io.IOException;
-import java.io.UncheckedIOException;
-import java.nio.charset.StandardCharsets;
-import java.nio.file.Files;
-import java.nio.file.Path;
-import java.nio.file.Paths;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collection;
-import java.util.Collections;
-import java.util.Enumeration;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
-import java.util.stream.Collectors;
-import java.util.stream.Stream;
-import java.util.zip.ZipEntry;
-import java.util.zip.ZipFile;
 
 import static org.drools.core.util.IoUtils.readBytesFromInputStream;
 import static org.kie.api.io.ResourceType.determineResourceType;
@@ -126,16 +126,20 @@ public class ProcessCodegen extends AbstractGenerator {
         return ofProcesses(processes);
     }
 
-    public static ProcessCodegen ofPath(Path path) throws IOException {
-        Path srcPath = Paths.get(path.toString());
-        try (Stream<Path> filesStream = Files.walk(srcPath)) {
-            List<File> files = filesStream
-                    .filter(p -> SUPPORTED_BPMN_EXTENSIONS.stream().anyMatch(p.toString()::endsWith) ||
-                            SUPPORTED_SW_EXTENSIONS.keySet().stream().anyMatch(p.toString()::endsWith))
-                    .map(Path::toFile)
-                    .collect(Collectors.toList());
-            return ofFiles(files);
+    public static ProcessCodegen ofPath(Path... paths) throws IOException {
+        List<Process> allProcesses = new ArrayList<>();
+        for (Path path : paths) {
+            Path srcPath = Paths.get( path.toString() );
+            try (Stream<Path> filesStream = Files.walk( srcPath )) {
+                List<File> files = filesStream
+                        .filter( p -> SUPPORTED_BPMN_EXTENSIONS.stream().anyMatch( p.toString()::endsWith ) ||
+                                SUPPORTED_SW_EXTENSIONS.keySet().stream().anyMatch( p.toString()::endsWith ) )
+                        .map( Path::toFile )
+                        .collect( Collectors.toList() );
+                allProcesses.addAll( parseProcesses(files) );
+            }
         }
+        return ofProcesses(allProcesses);
     }
 
     public static ProcessCodegen ofFiles(Collection<File> processFiles) {

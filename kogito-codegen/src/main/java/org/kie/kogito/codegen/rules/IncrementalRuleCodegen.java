@@ -25,6 +25,7 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Enumeration;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.OptionalInt;
@@ -106,13 +107,16 @@ public class IncrementalRuleCodegen extends AbstractGenerator {
         return new IncrementalRuleCodegen(resources);
     }
 
-    public static IncrementalRuleCodegen ofPath(Path basePath) {
-        try (Stream<File> files = Files.walk(basePath).map(Path::toFile)) {
-            Set<Resource> resources = toResources(files);
-            return new IncrementalRuleCodegen(resources);
-        } catch (IOException e) {
-            throw new UncheckedIOException(e);
+    public static IncrementalRuleCodegen ofPath(Path... paths) {
+        Set<Resource> resources = new HashSet<>();
+        for (Path path : paths) {
+            try (Stream<File> files = Files.walk( path ).map( Path::toFile )) {
+                resources.addAll( toResources( files ) );
+            } catch (IOException e) {
+                throw new UncheckedIOException( e );
+            }
         }
+        return new IncrementalRuleCodegen(resources);
     }
 
     public static IncrementalRuleCodegen ofPath(Path basePath, ResourceType resourceType) {

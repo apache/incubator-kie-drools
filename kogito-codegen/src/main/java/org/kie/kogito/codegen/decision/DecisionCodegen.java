@@ -22,7 +22,6 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.Collections;
 import java.util.Enumeration;
 import java.util.List;
@@ -50,6 +49,8 @@ import org.kie.kogito.codegen.decision.config.DecisionConfigGenerator;
 import org.kie.kogito.codegen.di.DependencyInjectionAnnotator;
 import org.kie.kogito.grafana.GrafanaConfigurationWriter;
 
+import static java.util.stream.Collectors.toList;
+
 import static org.drools.core.util.IoUtils.readBytesFromInputStream;
 import static org.kie.api.io.ResourceType.determineResourceType;
 import static org.kie.kogito.codegen.ApplicationGenerator.log;
@@ -73,35 +74,43 @@ public class DecisionCodegen extends AbstractGenerator {
             }
         }
 
-        return ofDecisions(jarPath, parseDecisions(resources));
+        return ofDecisions(parseDecisions(jarPath, resources));
     }
 
-    public static DecisionCodegen ofPath(Path path) throws IOException {
-        Path srcPath = Paths.get(path.toString());
-        try (Stream<Path> filesStream = Files.walk(srcPath)) {
-            List<File> files = filesStream.filter(p -> p.toString().endsWith(".dmn"))
-                    .map(Path::toFile)
-                    .collect(Collectors.toList());
-            return ofFiles(srcPath, files);
+    public static DecisionCodegen ofPath(Path... paths) throws IOException {
+        List<DMNResource> resources = new ArrayList<>();
+        for (Path path : paths) {
+            Path srcPath = Paths.get( path.toString() );
+            try (Stream<Path> filesStream = Files.walk( srcPath )) {
+                List<File> files = filesStream.filter( p -> p.toString().endsWith( ".dmn" ) )
+                        .map( Path::toFile )
+                        .collect( Collectors.toList() );
+                resources.addAll( parseFiles( srcPath, files ) );
+            }
         }
+
+        return ofDecisions(resources);
     }
 
-    public static DecisionCodegen ofFiles(Path basePath, Collection<File> files) throws IOException {
-        List<DMNModel> result = parseDecisions(files.stream().map(FileSystemResource::new).collect(Collectors.toList()));
-        return ofDecisions(basePath, result);
+    public static DecisionCodegen ofFiles(Path basePath, List<File> files) throws IOException {
+        return ofDecisions( parseFiles(basePath, files) );
     }
 
-    private static DecisionCodegen ofDecisions(Path basePath, List<DMNModel> result) {
-        return new DecisionCodegen(basePath, result);
+    private static DecisionCodegen ofDecisions(List<DMNResource> resources) {
+        return new DecisionCodegen(resources);
     }
 
-    private static List<DMNModel> parseDecisions(Collection<Resource> resources) throws IOException {
+    private static List<DMNResource> parseFiles(Path path, List<File> files) throws IOException {
+        return parseDecisions(path, files.stream().map(FileSystemResource::new).collect( toList() ));
+    }
+
+    private static List<DMNResource> parseDecisions(Path path, List<Resource> resources) throws IOException {
         DMNRuntime dmnRuntime = DMNRuntimeBuilder.fromDefaults()
                                                  .setRootClassLoader(null)
                                                  .buildConfiguration()
                                                  .fromResources(resources)
                                                  .getOrElseThrow(e -> new RuntimeException("Error compiling DMN model(s)", e));
-        return dmnRuntime.getModels();
+        return dmnRuntime.getModels().stream().map( model -> new DMNResource( model, path )).collect( toList() );
     }
 
     private static final String grafanaTemplatePath = "/grafana-dashboard-template/dashboard-template.json";
@@ -111,27 +120,21 @@ public class DecisionCodegen extends AbstractGenerator {
 
     private DecisionContainerGenerator moduleGenerator;
 
-    private Path basePath;
-    private final List<DMNModel> models;
+    private final List<DMNResource> resources;
     private final List<GeneratedFile> generatedFiles = new ArrayList<>();
     private boolean useMonitoring = false;
 
-    public DecisionCodegen(Path basePath, Collection<DMNModel> models) {
-        this.basePath = basePath;
-        this.models = new ArrayList<>(models);
+    public DecisionCodegen(List<DMNResource> resources) {
+        this.resources = resources;
 
         // set default package name
         setPackageName(ApplicationGenerator.DEFAULT_PACKAGE_NAME);
-        this.moduleGenerator = new DecisionContainerGenerator(applicationCanonicalName, basePath, models);
+        this.moduleGenerator = new DecisionContainerGenerator(applicationCanonicalName, resources);
     }
 
     public void setPackageName(String packageName) {
         this.packageName = packageName;
         this.applicationCanonicalName = packageName + ".Application";
-    }
-
-    public Path getBasePath() {
-        return this.basePath;
     }
 
     public void setDependencyInjection(DependencyInjectionAnnotator annotator) {
@@ -143,13 +146,14 @@ public class DecisionCodegen extends AbstractGenerator {
     }
 
     public List<GeneratedFile> generate() {
-        if (models.isEmpty()) {
+        if (resources.isEmpty()) {
             return Collections.emptyList();
         }
 
         List<DMNRestResourceGenerator> rgs = new ArrayList<>(); // REST resources
 
-        for (DMNModel model : models) {
+        for (DMNResource resource : resources) {
+            DMNModel model = resource.getDmnModel();
             if (model.getName() == null || model.getName().isEmpty()) {
                 throw new RuntimeException("Model name should not be empty");
             }
@@ -170,7 +174,7 @@ public class DecisionCodegen extends AbstractGenerator {
 
     private void generateAndStoreGrafanaDashboard(DMNRestResourceGenerator resourceGenerator) {
         Definitions definitions = resourceGenerator.getDmnModel().getDefinitions();
-        List<Decision> decisions = definitions.getDrgElement().stream().filter(x -> x.getParentDRDElement() instanceof Decision).map(x -> (Decision) x).collect(Collectors.toList());
+        List<Decision> decisions = definitions.getDrgElement().stream().filter(x -> x.getParentDRDElement() instanceof Decision).map(x -> (Decision) x).collect( toList());
 
         String dashboard = GrafanaConfigurationWriter.generateDashboardForDMNEndpoint(grafanaTemplatePath, resourceGenerator.getNameURL(), decisions);
         generatedFiles.add(
@@ -182,7 +186,7 @@ public class DecisionCodegen extends AbstractGenerator {
 
     @Override
     public void updateConfig(ConfigGenerator cfg) {
-        if (!models.isEmpty()) {
+        if (!resources.isEmpty()) {
             cfg.withDecisionConfig(new DecisionConfigGenerator());
         }
     }

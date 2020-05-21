@@ -32,14 +32,17 @@ public class GeneratorContext {
 
     private static final String APPLICATION_PROPERTIES_FILE_NAME = "application.properties";
 
-    public static GeneratorContext ofResourcePath(File resourcePath) {
+    public static GeneratorContext ofResourcePath(File... resourcePaths) {
         Properties applicationProperties = new Properties();
 
-        try (FileReader fileReader = new FileReader(new File(resourcePath, APPLICATION_PROPERTIES_FILE_NAME))) {
-            applicationProperties.load(fileReader);
-        } catch (IOException ioe) {
-            LOGGER.debug("Unable to load '" + APPLICATION_PROPERTIES_FILE_NAME + "'.");
+        for (File resourcePath : resourcePaths) {
+            try (FileReader fileReader = new FileReader( new File( resourcePath, APPLICATION_PROPERTIES_FILE_NAME ) )) {
+                applicationProperties.load( fileReader );
+            } catch (IOException ioe) {
+                LOGGER.debug( "Unable to load '" + APPLICATION_PROPERTIES_FILE_NAME + "'." );
+            }
         }
+
         return new GeneratorContext(applicationProperties);
     }
 

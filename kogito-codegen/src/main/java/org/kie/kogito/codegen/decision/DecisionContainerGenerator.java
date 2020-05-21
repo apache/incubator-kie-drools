@@ -18,7 +18,6 @@ package org.kie.kogito.codegen.decision;
 import java.io.File;
 import java.nio.file.Path;
 import java.nio.file.Paths;
-import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
@@ -43,7 +42,6 @@ import com.github.javaparser.ast.stmt.ExpressionStmt;
 import com.github.javaparser.ast.stmt.IfStmt;
 import com.github.javaparser.ast.stmt.Statement;
 import com.github.javaparser.ast.type.ClassOrInterfaceType;
-import org.kie.dmn.api.core.DMNModel;
 import org.kie.kogito.codegen.AbstractApplicationSection;
 import org.kie.kogito.decision.DecisionModels;
 import org.kie.kogito.dmn.DmnExecutionIdSupplier;
@@ -55,15 +53,13 @@ public class DecisionContainerGenerator extends AbstractApplicationSection {
     private static final String TEMPLATE_JAVA = "/class-templates/DMNApplicationClassDeclTemplate.java";
 
     private String applicationCanonicalName;
-    private final Path basePath;
-    private final Collection<DMNModel> models;
+    private final List<DMNResource> resources;
     private boolean useTracing = false;
 
-    public DecisionContainerGenerator(String applicationCanonicalName, Path basePath, Collection<DMNModel> models) {
+    public DecisionContainerGenerator(String applicationCanonicalName, List<DMNResource> resources) {
         super("DecisionModels", "decisionModels", DecisionModels.class);
         this.applicationCanonicalName = applicationCanonicalName;
-        this.basePath = basePath;
-        this.models = models;
+        this.resources = resources;
     }
 
     public DecisionContainerGenerator withTracing(boolean useTracing) {
@@ -91,9 +87,9 @@ public class DecisionContainerGenerator extends AbstractApplicationSection {
         ClassOrInterfaceDeclaration typeDeclaration = (ClassOrInterfaceDeclaration) clazz.getTypes().get(0);
         ClassOrInterfaceType applicationClass = StaticJavaParser.parseClassOrInterfaceType(applicationCanonicalName);
         ClassOrInterfaceType inputStreamReaderClass = StaticJavaParser.parseClassOrInterfaceType(java.io.InputStreamReader.class.getCanonicalName());
-        for (DMNModel model : models) {
-            Path sourcePath = Paths.get(model.getResource().getSourcePath());
-            Path relativizedPath = basePath.relativize(sourcePath);
+        for (DMNResource resource : resources) {
+            Path sourcePath = Paths.get(resource.getDmnModel().getResource().getSourcePath());
+            Path relativizedPath = resource.getPath().relativize(sourcePath);
             String resourcePath = "/" + relativizedPath.toString().replace(File.separatorChar, '/');
             MethodCallExpr getResAsStream = new MethodCallExpr(new FieldAccessExpr(applicationClass.getNameAsExpression(), "class"), "getResourceAsStream").addArgument(new StringLiteralExpr(resourcePath));
             ObjectCreationExpr isr = new ObjectCreationExpr().setType(inputStreamReaderClass).addArgument(getResAsStream);

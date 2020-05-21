@@ -23,7 +23,7 @@ public class RuntimeTest {
                     .addAsResource("META-INF" + File.separator + "kmodule.xml", "src/main/resources/META-INF/kmodule.xml")
                     .addAsResource(
                             "org" + File.separator + "drools" + File.separator + "simple" + File.separator + "candrink"
-                                    + File.separator + "CanDrink.drl",
+                                    + File.separator + "CanDrink.txt",
                             "src/main/resources/org/drools/simple/candrink/CanDrink.drl")
                     .addAsManifestResource(EmptyAsset.INSTANCE, "beans.xml"));
 
