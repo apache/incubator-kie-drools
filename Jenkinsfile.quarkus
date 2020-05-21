@@ -6,6 +6,7 @@ pipeline {
     }
     environment {
         KOGITO_CI_EMAIL_TO = credentials('KOGITO_CI_EMAIL_TO')
+        MAVEN_OPTS = '-Xms1024m -Xmx4g'
     }
     tools {
         maven 'kie-maven-3.6.2'

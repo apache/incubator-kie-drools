@@ -791,7 +791,7 @@
             <artifactId>maven-surefire-plugin</artifactId>
             <configuration>
               <!-- Append jacoco.agent.argLine property populated by JaCoCo's prepare-agent goal. -->
-              <argLine>@{jacoco.agent.argLine} -Xmx1024m -Dfile.encoding=UTF-8</argLine>
+              <argLine>@{jacoco.agent.argLine} -Xms1024m -Xmx4g -Dfile.encoding=UTF-8</argLine>
             </configuration>
           </plugin>
           <plugin>

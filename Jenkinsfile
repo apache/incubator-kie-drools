@@ -10,18 +10,13 @@ pipeline {
     }
     options {
         buildDiscarder logRotator(artifactDaysToKeepStr: '', artifactNumToKeepStr: '', daysToKeepStr: '', numToKeepStr: '10')
-        timeout(time: 90, unit: 'MINUTES')
+        timeout(time: 120, unit: 'MINUTES')
     }
     environment {
         SONARCLOUD_TOKEN = credentials('SONARCLOUD_TOKEN')
-        MAVEN_OPTS = '-Xms512m -Xmx3g'
+        MAVEN_OPTS = '-Xms1024m -Xmx4g'
     }
     stages {
-        stage('Initialize') {
-            steps {
-                sh 'printenv'
-            }
-        }
         stage('build sh script') {
             steps {
                 script {

@@ -6,6 +6,7 @@ pipeline {
     }
     environment {
         KOGITO_CI_EMAIL_TO = credentials('KOGITO_CI_EMAIL_TO')
+        MAVEN_OPTS = '-Xms1024m -Xmx4g'
     }
     tools {
         maven 'kie-maven-3.6.2'
@@ -16,14 +17,9 @@ pipeline {
     }
     options {
         buildDiscarder logRotator(artifactDaysToKeepStr: '', artifactNumToKeepStr: '', daysToKeepStr: '', numToKeepStr: '5')
-        timeout(time: 90, unit: 'MINUTES')
+        timeout(time: 120, unit: 'MINUTES')
     }
     stages {
-        stage('Initialize') {
-            steps {
-                sh 'printenv'
-            }
-        }
         stage('Build kogito-runtimes') {
             steps {
                 script {

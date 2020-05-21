@@ -13,7 +13,7 @@ pipeline {
     }
     options {
         buildDiscarder logRotator(artifactDaysToKeepStr: '', artifactNumToKeepStr: '', daysToKeepStr: '', numToKeepStr: '5')
-        timeout(time: 90, unit: 'MINUTES')
+        timeout(time: 120, unit: 'MINUTES')
     }
     environment {
         KOGITO_CI_EMAIL_TO = credentials('KOGITO_CI_EMAIL_TO')
@@ -22,6 +22,7 @@ pipeline {
             script: '$(mvn versions:display-property-updates -DincludeProperties=version.org.kie7 -DallowSnapshots -N  | grep version.org.kie7| cut -d" " -f8))'
             returnStdout: true).trim()}"""
         MAVEN_EXTRA_ARGS="-Dversion.org.kie7=${DROOLS_VERSION}"
+        MAVEN_OPTS = '-Xms1024m -Xmx4g'
     }
     stages {
         stage('Build kogito-runtimes') {
