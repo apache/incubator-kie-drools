@@ -37,10 +37,5 @@ public interface Type {
      */
     boolean isAssignableValue(Object value);
 
-    /**
-     * Check if this type does Conform to specified type <code>t</code> accordingly to FEEL DMN specification 10.3.2.9.2 Type Conformance
-     * @param t
-     * @return if this type does conform to specified type.
-     */
     boolean conformsTo(Type t);
 }

@@ -28,9 +28,6 @@ import org.kie.dmn.feel.lang.Type;
 import org.kie.dmn.feel.runtime.UnaryTest;
 import org.kie.dmn.feel.util.EvalHelper;
 
-/**
- * @see DMNType
- */
 public abstract class BaseDMNTypeImpl
         implements DMNType {
 

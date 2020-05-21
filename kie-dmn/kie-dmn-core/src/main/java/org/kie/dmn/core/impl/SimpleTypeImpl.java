@@ -22,9 +22,6 @@ import org.kie.dmn.api.core.DMNType;
 import org.kie.dmn.feel.lang.Type;
 import org.kie.dmn.feel.runtime.UnaryTest;
 
-/**
- * @see DMNType
- */
 public class SimpleTypeImpl
         extends BaseDMNTypeImpl {
 
