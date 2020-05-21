@@ -25,6 +25,8 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Enumeration;
 import java.util.List;
+import java.util.Map;
+import java.util.Optional;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 import java.util.zip.ZipEntry;
@@ -40,6 +42,9 @@ import org.kie.dmn.api.core.DMNRuntime;
 import org.kie.dmn.core.internal.utils.DMNRuntimeBuilder;
 import org.kie.dmn.model.api.Decision;
 import org.kie.dmn.model.api.Definitions;
+import org.kie.dmn.typesafe.DMNAllTypesIndex;
+import org.kie.dmn.typesafe.DMNTypeSafePackageName;
+import org.kie.dmn.typesafe.DMNTypeSafeTypeGenerator;
 import org.kie.kogito.codegen.AbstractGenerator;
 import org.kie.kogito.codegen.ApplicationGenerator;
 import org.kie.kogito.codegen.ApplicationSection;
@@ -54,8 +59,11 @@ import static java.util.stream.Collectors.toList;
 import static org.drools.core.util.IoUtils.readBytesFromInputStream;
 import static org.kie.api.io.ResourceType.determineResourceType;
 import static org.kie.kogito.codegen.ApplicationGenerator.log;
+import static org.kie.kogito.codegen.ApplicationGenerator.logger;
 
 public class DecisionCodegen extends AbstractGenerator {
+
+    public static String STRONGLY_TYPED_CONFIGURATION_KEY = "kogito.decisions.stronglytyped";
 
     public static DecisionCodegen ofJar(Path jarPath) throws IOException {
         List<Resource> resources = new ArrayList<>();
@@ -157,7 +165,19 @@ public class DecisionCodegen extends AbstractGenerator {
             if (model.getName() == null || model.getName().isEmpty()) {
                 throw new RuntimeException("Model name should not be empty");
             }
-            DMNRestResourceGenerator resourceGenerator = new DMNRestResourceGenerator(model, applicationCanonicalName).withDependencyInjection(annotator).withMonitoring(useMonitoring);
+
+            boolean stronglyTypedEnabled = Optional.ofNullable(context())
+                    .flatMap(c -> c.getApplicationProperty(STRONGLY_TYPED_CONFIGURATION_KEY))
+                    .map(Boolean::parseBoolean)
+                    .orElse(false);
+
+            if(stronglyTypedEnabled) {
+                tryGenerateStronglyTypedInput(model);
+            }
+            DMNRestResourceGenerator resourceGenerator = new DMNRestResourceGenerator(model, applicationCanonicalName)
+                    .withDependencyInjection(annotator)
+                    .withMonitoring(useMonitoring)
+                    .withStronglyTyped(stronglyTypedEnabled);
             rgs.add(resourceGenerator);
         }
 
@@ -170,6 +190,28 @@ public class DecisionCodegen extends AbstractGenerator {
         }
 
         return generatedFiles;
+    }
+
+    private void tryGenerateStronglyTypedInput(DMNModel model) {
+        try {
+            DMNTypeSafePackageName.Factory factory = m -> new DMNTypeSafePackageName("", m.getNamespace(), "");
+            DMNAllTypesIndex index = new DMNAllTypesIndex(factory, model);
+
+            Map<String, String> allTypesSourceCode = new DMNTypeSafeTypeGenerator(
+                    model,
+                    index, factory )
+                    .generateSourceCodeOfAllTypes();
+
+            allTypesSourceCode.entrySet().stream()
+                    .map(kv -> {
+                        String key = kv.getKey().replace(".", "/") + ".java";
+                        return new GeneratedFile(GeneratedFile.Type.CLASS, key, kv.getValue());
+                    })
+                    .forEach(generatedFiles::add);
+        } catch(Exception e) {
+            logger.error("Unable to generate Strongly Typed Input for: {} {}", model.getNamespace(), model.getName());
+            throw e;
+        }
     }
 
     private void generateAndStoreGrafanaDashboard(DMNRestResourceGenerator resourceGenerator) {

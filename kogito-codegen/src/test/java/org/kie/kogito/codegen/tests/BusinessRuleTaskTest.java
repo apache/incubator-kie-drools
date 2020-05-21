@@ -135,9 +135,9 @@ public class BusinessRuleTaskTest extends AbstractCodegenTest {
     @Test
     public void testDecision() throws Exception {
         Application app = generateCode(
-                Collections.singletonList("decision/dmnprocess.bpmn2"),
+                Collections.singletonList("decision/models/dmnprocess.bpmn2"),
                 Collections.emptyList(),
-                Collections.singletonList("decision/vacationDaysAlt.dmn"),
+                Collections.singletonList("decision/models/vacationDaysAlt/vacationDaysAlt.dmn"),
                 Collections.emptyList(),
                 false);
 

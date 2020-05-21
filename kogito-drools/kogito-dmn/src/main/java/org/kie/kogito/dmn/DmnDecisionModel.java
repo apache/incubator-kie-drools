@@ -7,6 +7,7 @@ import org.kie.dmn.api.core.DMNContext;
 import org.kie.dmn.api.core.DMNModel;
 import org.kie.dmn.api.core.DMNResult;
 import org.kie.dmn.api.core.DMNRuntime;
+import org.kie.dmn.api.core.FEELPropertyAccessible;
 import org.kie.kogito.ExecutionIdSupplier;
 import org.kie.kogito.decision.DecisionExecutionIdUtils;
 import org.kie.kogito.decision.DecisionModel;
@@ -33,6 +34,11 @@ public class DmnDecisionModel implements DecisionModel {
     @Override
     public DMNContext newContext(Map<String, Object> variables) {
         return new org.kie.dmn.core.impl.DMNContextImpl(variables != null ? variables : Collections.emptyMap());
+    }
+
+    @Override
+    public DMNContext newContext(FEELPropertyAccessible inputSet) {
+        return new org.kie.dmn.core.impl.DMNContextFPAImpl(inputSet);
     }
 
     @Override

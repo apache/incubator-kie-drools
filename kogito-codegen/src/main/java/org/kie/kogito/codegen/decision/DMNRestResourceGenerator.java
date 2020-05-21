@@ -33,6 +33,7 @@ import com.github.javaparser.ast.expr.StringLiteralExpr;
 import com.github.javaparser.ast.stmt.BlockStmt;
 import com.github.javaparser.ast.stmt.ReturnStmt;
 import com.github.javaparser.ast.stmt.Statement;
+import com.github.javaparser.ast.type.ClassOrInterfaceType;
 import org.drools.core.util.StringUtils;
 import org.kie.dmn.api.core.DMNModel;
 import org.kie.dmn.feel.codegen.feel11.CodegenStringUtil;
@@ -56,6 +57,7 @@ public class DMNRestResourceGenerator {
     private final String appCanonicalName;
     private DependencyInjectionAnnotator annotator;
     private boolean useMonitoring;
+    private boolean isStronglyTyped = false;
 
     public DMNRestResourceGenerator(DMNModel model, String appCanonicalName) {
         this.dmnModel = model;
@@ -81,6 +83,8 @@ public class DMNRestResourceGenerator {
 
         template.findAll(StringLiteralExpr.class).forEach(this::interpolateStrings);
         template.findAll(MethodDeclaration.class).forEach(this::interpolateMethods);
+
+        interpolateInputType(template);
 
         if (useInjection()) {
             template.findAll(FieldDeclaration.class,
@@ -128,6 +132,12 @@ public class DMNRestResourceGenerator {
 
         template.getMembers().sort(new BodyDeclarationComparator());
         return clazz.toString();
+    }
+
+    private void interpolateInputType(ClassOrInterfaceDeclaration template) {
+        String inputType = isStronglyTyped ? "InputSet" : "java.util.Map<String, Object>";
+        template.findAll(ClassOrInterfaceType.class, t -> t.asString().equals("$inputType$"))
+                .forEach(type -> type.setName(inputType));
     }
 
     public String getNameURL() {
@@ -207,5 +217,10 @@ public class DMNRestResourceGenerator {
 
     protected boolean useInjection() {
         return this.annotator != null;
+    }
+
+    public DMNRestResourceGenerator withStronglyTyped(boolean stronglyTyped) {
+        this.isStronglyTyped = stronglyTyped;
+        return this;
     }
 }
