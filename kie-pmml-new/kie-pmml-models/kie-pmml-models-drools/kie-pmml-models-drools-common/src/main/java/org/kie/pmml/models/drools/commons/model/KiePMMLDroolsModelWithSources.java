@@ -38,7 +38,7 @@ public class KiePMMLDroolsModelWithSources extends KiePMMLDroolsModel implements
     }
 
     @Override
-    public Object evaluate(final Object knowledgeBase, Map<String, Object> requestData, String releaseId) {
+    public Object evaluate(final Object knowledgeBase, Map<String, Object> requestData) {
         throw new KiePMMLException("KiePMMLRegressionModelWithSources. is not meant to be used for actual evaluation");
     }
 

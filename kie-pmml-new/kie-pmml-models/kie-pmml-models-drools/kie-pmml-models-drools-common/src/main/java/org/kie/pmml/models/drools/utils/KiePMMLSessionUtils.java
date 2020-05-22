@@ -58,10 +58,10 @@ public class KiePMMLSessionUtils {
     private final String packageName;
     private final List<Command> commands;
 
-    private KiePMMLSessionUtils(final InternalKnowledgeBase knowledgeBase, final String modelName, final String releaseId, final PMML4Result pmml4Result) {
+    private KiePMMLSessionUtils(final InternalKnowledgeBase knowledgeBase, final String modelName, final PMML4Result pmml4Result) {
         this.modelName = modelName;
         packageName = getSanitizedPackageName(modelName);
-        kieSession = getKieSession(knowledgeBase, releaseId);
+        kieSession = getKieSession(knowledgeBase);
         kieSession.addEventListener(new RuleRuntimeEventListener() {
             private final Logger logger = LoggerFactory.getLogger(RuleRuntimeEventListener.class);
 
@@ -86,34 +86,16 @@ public class KiePMMLSessionUtils {
         commands.add(COMMAND_FACTORY_SERVICE.newSetGlobal(PMML4_RESULT_IDENTIFIER, pmml4Result));
     }
 
-    public static Builder builder(final InternalKnowledgeBase knowledgeBase, final String modelName, final String releaseId, final PMML4Result pmml4Result) {
-        return new Builder(knowledgeBase, modelName, releaseId, pmml4Result);
+    public static Builder builder(final InternalKnowledgeBase knowledgeBase, final String modelName, final PMML4Result pmml4Result) {
+        return new Builder(knowledgeBase, modelName, pmml4Result);
     }
 
-    private StatelessKieSession getKieSession(final InternalKnowledgeBase knowledgeBase, final String releaseIdString) {
+    private StatelessKieSession getKieSession(final InternalKnowledgeBase knowledgeBase) {
         StatelessKieSession toReturn;
-//        KieServices kieServices = null;
-//        KieContainer kieContainer = null;
         try {
-//            String sessionName = modelName + "Session";
             toReturn = knowledgeBase.newStatelessKieSession();
-//            if (toReturn == null) {
-//                logger.trace("Failed to create default StatelessKieSession from InternalKnowledgeBase {}", knowledgeBase);
-//                kieServices = KieServices.get();
-//                kieContainer = kieServices.newKieClasspathContainer();
-//                logger.trace("Create {} StatelessKieSession from KieContainer {}", sessionName, kieContainer);
-//                toReturn = kieContainer.newStatelessKieSession(modelName + "Session");
-//            }
-//            if (toReturn == null) {
-//                logger.trace("Failed to create {} StatelessKieSession from KieContainer {}", sessionName, kieContainer);
-//                String[] gav = releaseIdString.split(":");
-//                final ReleaseId releaseId = kieServices.newReleaseId(gav[0], gav[1], gav[2]);
-//                kieContainer = kieServices.newKieContainer(releaseId);
-//                logger.trace("Create default StatelessKieSession from KieContainer {}", kieContainer);
-//                toReturn = kieContainer.newStatelessKieSession();
-//            }
             if (toReturn == null) {
-                throw new KiePMMLException("Failed to create KieSession for model " + modelName/* + " and releaseId " + releaseIdString*/);
+                throw new KiePMMLException("Failed to create KieSession for model " + modelName);
             }
             return toReturn;
         } catch (Throwable t) {
@@ -166,8 +148,8 @@ public class KiePMMLSessionUtils {
 
         private KiePMMLSessionUtils toBuild;
 
-        private Builder(final InternalKnowledgeBase knowledgeBase, final String modelName, final String releaseId, final PMML4Result pmml4Result) {
-            this.toBuild = new KiePMMLSessionUtils(knowledgeBase, modelName, releaseId, pmml4Result);
+        private Builder(final InternalKnowledgeBase knowledgeBase, final String modelName, final PMML4Result pmml4Result) {
+            this.toBuild = new KiePMMLSessionUtils(knowledgeBase, modelName, pmml4Result);
         }
 
         /**

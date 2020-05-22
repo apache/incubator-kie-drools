@@ -85,7 +85,7 @@ public class PMMLRuntimeImpl implements PMMLRuntime {
         logger.debug("evaluate {} {} {}", model, context, releaseId);
         addMissingValuesReplacements(model, context);
         Optional<PMMLModelExecutor> pmmlModelExecutor = getFromPMMLModelType(model.getPmmlMODEL());
-        return pmmlModelExecutor.isPresent() ? pmmlModelExecutor.get().evaluate(knowledgeBase, model, context, releaseId) : new PMML4Result();
+        return pmmlModelExecutor.isPresent() ? pmmlModelExecutor.get().evaluate(knowledgeBase, model, context) : new PMML4Result();
     }
 
     /**

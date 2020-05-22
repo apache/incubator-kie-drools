@@ -48,12 +48,12 @@ public class PMMLRegressionModelExecutor implements PMMLModelExecutor {
     }
 
     @Override
-    public PMML4Result evaluate(final KieBase knowledgeBase, KiePMMLModel model, PMMLContext pmmlContext, String releaseId) {
+    public PMML4Result evaluate(final KieBase knowledgeBase, KiePMMLModel model, PMMLContext pmmlContext) {
         validate(model);
         PMML4Result toReturn = new PMML4Result();
         String targetField = model.getTargetField();
         final Map<String, Object> requestData = getUnwrappedParametersMap(pmmlContext.getRequestData().getMappedRequestParams());
-        Object result = model.evaluate(knowledgeBase, requestData, releaseId);
+        Object result = model.evaluate(knowledgeBase, requestData);
         toReturn.addResultVariable(targetField, result);
         toReturn.setResultObjectName(targetField);
         toReturn.setResultCode(OK.getName());

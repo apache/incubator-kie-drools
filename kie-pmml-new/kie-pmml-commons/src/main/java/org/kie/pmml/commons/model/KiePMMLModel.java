@@ -75,10 +75,9 @@ public abstract class KiePMMLModel extends AbstractKiePMMLBase {
      * @param knowledgeBase the knowledgeBase we are working on. Add as <code>Object</code> to avoid direct dependency. It is needed only by <b>Drools-dependent</b>
      * models, so it may be <b>ignored</b> by others
      * @param requestData
-     * @param releaseId
      * @return
      */
-    public abstract Object evaluate(final Object knowledgeBase, Map<String, Object> requestData, String releaseId);
+    public abstract Object evaluate(final Object knowledgeBase, Map<String, Object> requestData);
 
     public abstract static class Builder<T extends KiePMMLModel> extends AbstractKiePMMLBase.Builder<T> {
 

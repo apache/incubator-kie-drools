@@ -32,7 +32,7 @@ public abstract class KiePMMLRegressionModel extends KiePMMLModel {
     }
 
     @Override
-    public Object evaluate(final Object knowledgeBase, Map<String, Object> requestData, String releaseId) {
+    public Object evaluate(final Object knowledgeBase, Map<String, Object> requestData) {
         return regressionTable.evaluateRegression(requestData);
     }
 

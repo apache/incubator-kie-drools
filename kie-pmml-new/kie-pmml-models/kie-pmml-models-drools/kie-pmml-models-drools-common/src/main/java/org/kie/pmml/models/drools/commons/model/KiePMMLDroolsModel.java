@@ -68,13 +68,13 @@ public abstract class KiePMMLDroolsModel extends KiePMMLModel {
     }
 
     @Override
-    public Object evaluate(final Object knowledgeBase, Map<String, Object> requestData, String releaseId) {
-        logger.trace("evaluate {} {} {}", knowledgeBase, requestData, releaseId);
+    public Object evaluate(final Object knowledgeBase, Map<String, Object> requestData) {
+        logger.trace("evaluate {} {}", knowledgeBase, requestData);
         if (!(knowledgeBase instanceof KieBase)) {
             throw new KiePMMLException(String.format("Expecting KieBase, received %s", knowledgeBase.getClass().getName()));
         }
         final PMML4Result toReturn = getPMML4Result(targetField);
-        KiePMMLSessionUtils.Builder builder = KiePMMLSessionUtils.builder((InternalKnowledgeBase)knowledgeBase, name, releaseId, toReturn)
+        KiePMMLSessionUtils.Builder builder = KiePMMLSessionUtils.builder((InternalKnowledgeBase)knowledgeBase, name, toReturn)
                 .withObjectsInSession(requestData, fieldTypeMap)
                 .withOutputFieldsMap(outputFieldsMap);
         if (logger.isDebugEnabled()) {

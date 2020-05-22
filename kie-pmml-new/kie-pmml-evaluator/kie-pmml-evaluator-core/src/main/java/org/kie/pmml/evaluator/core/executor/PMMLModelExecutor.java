@@ -36,9 +36,8 @@ public interface PMMLModelExecutor {
      * It may be <code>null</code> for testing purpose for <b>not drools-related</b> models
      * @param model the model to evaluate
      * @param context the context with all the input variables
-     * @param releaseId Used to indirectly retrieve same instance of kiecontainer
      * @return the result of the evaluation
      * @throws KiePMMLInternalException
      */
-    PMML4Result evaluate(final KieBase knowledgeBase, KiePMMLModel model, PMMLContext context, String releaseId);
+    PMML4Result evaluate(final KieBase knowledgeBase, KiePMMLModel model, PMMLContext context);
 }

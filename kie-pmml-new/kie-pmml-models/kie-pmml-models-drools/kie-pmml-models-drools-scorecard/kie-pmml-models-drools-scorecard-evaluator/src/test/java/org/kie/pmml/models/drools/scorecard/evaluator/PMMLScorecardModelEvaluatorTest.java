@@ -56,7 +56,6 @@ public class PMMLScorecardModelEvaluatorTest {
     private static final Logger logger = LoggerFactory.getLogger(PMMLScorecardModelEvaluatorTest.class);
     private static final String modelName = "Sample Score";
     private static final ReleaseId RELEASE_ID = new ReleaseIdImpl("org", "test", "1.0.0");
-    private static final String GAV = String.join(":", RELEASE_ID.getGroupId(), RELEASE_ID.getArtifactId(), RELEASE_ID.getVersion());
     private static final ScorecardModelImplementationProvider provider = new ScorecardModelImplementationProvider();
     private static KieBase kieBase;
     private static KiePMMLScorecardModel kiePMMLModel;
@@ -305,7 +304,7 @@ public class PMMLScorecardModelEvaluatorTest {
     }
 
     private void commonEvaluate(PMMLContext pmmlContext) {
-        PMML4Result retrieved = evaluator.evaluate(kieBase, kiePMMLModel, pmmlContext, GAV);
+        PMML4Result retrieved = evaluator.evaluate(kieBase, kiePMMLModel, pmmlContext);
         assertNotNull(retrieved);
         logger.trace(retrieved.toString());
         assertEquals(TARGET_FIELD, retrieved.getResultObjectName());

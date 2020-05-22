@@ -51,7 +51,6 @@ public class PMMLTreeModelEvaluatorTest {
     private static final Logger logger = LoggerFactory.getLogger(PMMLTreeModelEvaluatorTest.class);
     private static final String modelName = "golfing";
     private static final ReleaseId RELEASE_ID = new ReleaseIdImpl("org", "test", "1.0.0");
-    private static final String GAV = String.join(":", RELEASE_ID.getGroupId(), RELEASE_ID.getArtifactId(), RELEASE_ID.getVersion());
     private static final TreeModelImplementationProvider provider = new TreeModelImplementationProvider();
     private static KiePMMLTreeModel kiePMMLModel;
     private static PMMLTreeModelEvaluator evaluator;
@@ -178,7 +177,7 @@ public class PMMLTreeModelEvaluatorTest {
     }
 
     private void commonEvaluate(PMMLContext pmmlContext, String expectedScore) {
-        PMML4Result retrieved = evaluator.evaluate(kieBase, kiePMMLModel, pmmlContext, GAV);
+        PMML4Result retrieved = evaluator.evaluate(kieBase, kiePMMLModel, pmmlContext);
         assertNotNull(retrieved);
         logger.trace(retrieved.toString());
         assertEquals(TARGET_FIELD, retrieved.getResultObjectName());

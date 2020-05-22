@@ -42,7 +42,6 @@ public class AbstractPMMLScorecardTest {
     protected static final ScorecardModelImplementationProvider PROVIDER = new ScorecardModelImplementationProvider();
     protected static final PMMLModelExecutor EXECUTOR = new PMMLScorecardModelEvaluator();
     private static final ReleaseId RELEASE_ID = new ReleaseIdImpl("org.drools", "kie-pmml-models-testing", "1.0");
-    protected static final String GAV = String.join(":", RELEASE_ID.getGroupId(), RELEASE_ID.getArtifactId(), RELEASE_ID.getVersion());
     protected static KieBase kieBase;
     protected static PMMLRequestData getPMMLRequestData(String modelName, Map<String, Object> parameters) {
         String correlationId = "CORRELATION_ID";

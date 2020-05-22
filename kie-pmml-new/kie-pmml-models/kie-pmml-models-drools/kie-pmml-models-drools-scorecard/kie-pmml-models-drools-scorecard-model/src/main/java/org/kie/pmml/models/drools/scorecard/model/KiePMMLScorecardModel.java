@@ -47,8 +47,8 @@ public class KiePMMLScorecardModel extends KiePMMLDroolsModel {
     }
 
     @Override
-    public Object evaluate(final Object knowledgeBase, Map<String, Object> requestData, String releaseId) {
-        final PMML4Result toReturn = (PMML4Result) super.evaluate(knowledgeBase, requestData, releaseId);
+    public Object evaluate(final Object knowledgeBase, Map<String, Object> requestData) {
+        final PMML4Result toReturn = (PMML4Result) super.evaluate(knowledgeBase, requestData);
         populateWithOutputFields(toReturn);
         return toReturn;
     }
