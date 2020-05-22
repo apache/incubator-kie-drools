@@ -4,9 +4,14 @@ import {
   Card,
   Grid,
   GridItem,
-  PageSection
+  PageSection,
+  InjectedOuiaProps,
+  withOuiaContext
 } from '@patternfly/react-core';
-import { ServerErrors } from '@kogito-apps/common';
+import {
+  ServerErrors,
+  ouiaPageTypeAndObjectId
+} from '@kogito-apps/common';
 import React, { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import PageTitleComponent from '../../Molecules/PageTitleComponent/PageTitleComponent';
@@ -24,7 +29,9 @@ import {
 import axios from 'axios';
 import { InfoCircleIcon } from '@patternfly/react-icons';
 
-const DataListContainer: React.FC<{}> = () => {
+const DataListContainer: React.FC<InjectedOuiaProps> = ({
+  ouiaContext
+}) => {
   const [defaultPageSize] = useState(10);
   const [initData, setInitData] = useState<any>({});
   const [checkedArray, setCheckedArray] = useState<any>(['ACTIVE']);
@@ -74,6 +81,8 @@ const DataListContainer: React.FC<{}> = () => {
   const handleAbortModalToggle = () => {
     setIsAbortModalOpen(!isAbortModalOpen);
   };
+
+  useEffect(() => { return ouiaPageTypeAndObjectId(ouiaContext, "process-instances") })
 
   const onFilterClick = async (arr = checkedArray) => {
     resetPagination();
@@ -380,4 +389,4 @@ const DataListContainer: React.FC<{}> = () => {
   );
 };
 
-export default DataListContainer;
+export default withOuiaContext(DataListContainer);

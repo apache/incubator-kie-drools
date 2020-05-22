@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import {
   TextContent,
   Text,
@@ -14,15 +14,20 @@ import {
   EmptyStateBody,
   EmptyStateSecondaryActions,
   Card,
-  CardBody
+  CardBody,
+  InjectedOuiaProps,
+  withOuiaContext
 } from '@patternfly/react-core';
 import { Link } from 'react-router-dom';
 import { CubesIcon } from '@patternfly/react-icons';
 import PageTitleComponent from '../../Molecules/PageTitleComponent/PageTitleComponent';
 
 import { useGetQueryFieldsQuery } from '../../../graphql/types';
+import { ouiaPageTypeAndObjectId } from '@kogito-apps/common';
 
-const DomainExplorerLandingPage = () => {
+const DomainExplorerLandingPage: React.FC<InjectedOuiaProps> = ({
+  ouiaContext
+}) => {
   const getQuery = useGetQueryFieldsQuery();
 
   let availableDomains =
@@ -35,6 +40,8 @@ const DomainExplorerLandingPage = () => {
         return item;
       }
     });
+
+  useEffect(() => { return ouiaPageTypeAndObjectId(ouiaContext, "domain-explorer") })
 
   return (
     <>
@@ -83,4 +90,4 @@ const DomainExplorerLandingPage = () => {
   );
 };
 
-export default DomainExplorerLandingPage;
+export default withOuiaContext(DomainExplorerLandingPage);

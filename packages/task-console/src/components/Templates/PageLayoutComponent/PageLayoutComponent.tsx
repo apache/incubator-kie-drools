@@ -2,25 +2,38 @@ import React from 'react';
 import {
   Nav,
   NavList,
-  NavItem
+  NavItem,
+  InjectedOuiaProps,
+  withOuiaContext
 } from '@patternfly/react-core';
-import { PageLayout } from '@kogito-apps/common';
+import { PageLayout, ouiaAttribute } from '@kogito-apps/common';
 import { Redirect, Route, Link, Switch } from 'react-router-dom';
 import taskConsoleLogo from '../../../static/taskConsoleLogo.svg';
 import DataListContainerExpandable from "../DataListContainerExpandable/DataListContainerExpandable";
 import DataListContainer from "../DataListContainer/DataListContainer";
+import {Location, History} from 'history'
 
-const PageLayoutComponent = props => {
+interface IOwnProps {
+  location: Location,
+  history: History
+}
+const PageLayoutComponent: React.FC<IOwnProps & InjectedOuiaProps> = ({
+  ouiaContext,
+  ...props
+}) => {
   const { pathname } = props.location;
 
   const PageNav = (
     <Nav aria-label="Nav" theme="dark" css="">
       <NavList>
         <NavItem isActive={pathname === '/UserTasks'}>
-          <Link to="/UserTasks">User Tasks</Link>
+          <Link to="/UserTasks"
+            {...ouiaAttribute(ouiaContext, "data-ouia-navigation-name", "user-tasks")}
+          >User Tasks</Link>
         </NavItem>
         <NavItem isActive={pathname === '/UserTasksFilters'}>
-          <Link to="/UserTasksFilters">User tasks with filters</Link>
+          <Link to="/UserTasksFilters"
+            {...ouiaAttribute(ouiaContext, "data-ouia-navigation-name", "user-tasks-filters")}>User tasks with filters</Link>
         </NavItem>
       </NavList>
     </Nav>
@@ -51,4 +64,4 @@ const PageLayoutComponent = props => {
   );
 };
 
-export default PageLayoutComponent;
+export default withOuiaContext(PageLayoutComponent);

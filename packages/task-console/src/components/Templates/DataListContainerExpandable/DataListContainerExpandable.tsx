@@ -5,20 +5,27 @@ import {
   Grid,
   GridItem,
   PageSection,
-  Expandable
+  Expandable,
+  InjectedOuiaProps,
+  withOuiaContext
 } from '@patternfly/react-core';
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import PageTitleComponent from '../../Molecules/PageTitleComponent/PageTitleComponent';
 import './DataListExpandable.css';
 import DataListComponentByState from '../../Organisms/DataListComponentByState/DataListComponentByState';
+import { ouiaPageTypeAndObjectId } from '@kogito-apps/common';
 
-const DataListContainerExpandable: React.FC<{}> = () => {
+const DataListContainerExpandable: React.FC<InjectedOuiaProps> = ({
+  ouiaContext
+}) => {
   const [isExpanded, setIsExpanded] = useState(false);
 
   const onToggle = () => {
     setIsExpanded(!isExpanded);
   };
+
+  useEffect(() => { return ouiaPageTypeAndObjectId(ouiaContext, "user-tasks") })
 
   return (
     <React.Fragment>
@@ -48,4 +55,4 @@ const DataListContainerExpandable: React.FC<{}> = () => {
   );
 };
 
-export default DataListContainerExpandable;
+export default withOuiaContext(DataListContainerExpandable);

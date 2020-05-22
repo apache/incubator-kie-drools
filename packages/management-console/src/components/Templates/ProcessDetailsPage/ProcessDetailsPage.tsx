@@ -12,11 +12,13 @@ import {
   SplitItem,
   OverflowMenu,
   OverflowMenuContent,
-  OverflowMenuGroup
+  OverflowMenuGroup,
+  InjectedOuiaProps,
+  withOuiaContext
 } from '@patternfly/react-core';
-import { ServerErrors } from '@kogito-apps/common';
+import { ServerErrors, ouiaPageTypeAndObjectId } from '@kogito-apps/common';
 import React, { useState, useEffect } from 'react';
-import { Link, Redirect } from 'react-router-dom';
+import { Link, Redirect, RouteComponentProps } from 'react-router-dom';
 import ProcessDetails from '../../Organisms/ProcessDetails/ProcessDetails';
 import ProcessDetailsProcessVariables from '../../Organisms/ProcessDetailsProcessVariables/ProcessDetailsProcessVariables';
 import ProcessDetailsTimeline from '../../Organisms/ProcessDetailsTimeline/ProcessDetailsTimeline';
@@ -36,7 +38,14 @@ import {
   modalToggle
 } from '../../../utils/Utils';
 
-const ProcessDetailsPage = props => {
+interface MatchProps {
+  instanceID: string
+}
+
+const ProcessDetailsPage: React.FC<RouteComponentProps<MatchProps, {}, {}> & InjectedOuiaProps> = ({
+  ouiaContext,
+  ...props
+}) => {
   const id = props.match.params.instanceID;
   const [isSkipModalOpen, setIsSkipModalOpen] = useState<boolean>(false);
   const [isRetryModalOpen, setIsRetryModalOpen] = useState<boolean>(false);
@@ -67,6 +76,8 @@ const ProcessDetailsPage = props => {
       props.history.push({ state: { ...props.location.state } });
     };
   });
+
+  useEffect(() => { return ouiaPageTypeAndObjectId(ouiaContext, "process-instances", id) })
 
   const abortButton = () => {
     if (
@@ -280,4 +291,4 @@ const ProcessDetailsPage = props => {
   );
 };
 
-export default ProcessDetailsPage;
+export default withOuiaContext(ProcessDetailsPage);

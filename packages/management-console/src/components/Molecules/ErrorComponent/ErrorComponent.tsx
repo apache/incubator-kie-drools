@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import {
   PageSection,
   Bullseye,
@@ -7,12 +7,22 @@ import {
   EmptyStateVariant,
   Button,
   EmptyStateBody,
-  Title
+  Title,
+  InjectedOuiaProps,
+  withOuiaContext
 } from '@patternfly/react-core';
 import { ExclamationCircleIcon } from '@patternfly/react-icons';
-import { Redirect } from 'react-router';
+import { Redirect, RouteComponentProps } from 'react-router';
+import { ouiaPageTypeAndObjectId } from '@kogito-apps/common';
 
-const ErrorComponent = props => {
+interface LocationProps {
+  prev?: any,
+}
+
+const ErrorComponent: React.FC<RouteComponentProps<{}, {}, LocationProps> & InjectedOuiaProps> = ({
+  ouiaContext,
+  ...props
+}) => {
   let prevPath;
   if (props.location.state !== undefined) {
     prevPath = props.location.state.prev;
@@ -24,6 +34,9 @@ const ErrorComponent = props => {
   prevPath = tempPath.filter(item => item);
 
   const [isRedirect, setIsredirect] = useState(false);
+
+  useEffect(() => { return ouiaPageTypeAndObjectId(ouiaContext, "error") })
+
   const redirectHandler = () => {
     setIsredirect(true);
   };
@@ -52,4 +65,4 @@ const ErrorComponent = props => {
   );
 };
 
-export default ErrorComponent;
+export default withOuiaContext(ErrorComponent);

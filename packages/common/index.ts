@@ -10,3 +10,4 @@ export {
 } from './src/components/Molecules/ServerUnavailable/ServerUnavailable';
 export { default as NoData } from './src/components/Molecules/NoData/NoData';
 export { default as ServerErrors } from './src/components/Molecules/ServerErrors/ServerErrors';
+export * from './src/utils/OuiaUtils'

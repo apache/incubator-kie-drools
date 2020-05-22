@@ -4,7 +4,9 @@ import {
   Card,
   Grid,
   GridItem,
-  PageSection
+  PageSection,
+  InjectedOuiaProps,
+  withOuiaContext
 } from '@patternfly/react-core';
 import _ from 'lodash';
 import React, { useState, useEffect } from 'react';
@@ -15,8 +17,11 @@ import './DataList.css';
 import DataListComponent from '../../Organisms/DataListComponent/DataListComponent';
 import EmptyStateComponent from '../../Atoms/EmptyStateComponent/EmptyStateComponent';
 import { useGetUserTasksByStatesLazyQuery } from '../../../graphql/types';
+import { ouiaPageTypeAndObjectId } from '@kogito-apps/common';
 
-const DataListContainer: React.FC<{}> = () => {
+const DataListContainer: React.FC<InjectedOuiaProps> = ({
+  ouiaContext
+}) => {
   const [initData, setInitData] = useState<any>([]);
   const [checkedArray, setCheckedArray] = useState<any>(['Ready']);
   const [isLoading, setIsLoading] = useState(false);
@@ -40,6 +45,8 @@ const DataListContainer: React.FC<{}> = () => {
     setIsLoading(loading);
     setInitData(data);
   }, [data]);
+
+  useEffect(() => { return ouiaPageTypeAndObjectId(ouiaContext, "user-tasks") })
 
   return (
     <React.Fragment>
@@ -92,4 +99,4 @@ const DataListContainer: React.FC<{}> = () => {
   );
 };
 
-export default DataListContainer;
+export default withOuiaContext(DataListContainer);

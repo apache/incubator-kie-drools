@@ -1,14 +1,20 @@
 import React from 'react';
-import { shallow } from 'enzyme';
 import ProcessDetailsPage from '../ProcessDetailsPage';
 import { MockedProvider } from '@apollo/react-testing';
 import gql from 'graphql-tag';
-import wait from 'waait';
+import { MemoryRouter } from 'react-router-dom';
+import { getWrapper } from '@kogito-apps/common';
+import * as H from 'history';
 
 const props = {
   match: {
-    params: '1232131'
-  }
+    params: { instanceID: '1232131' },
+    url: '',
+    isExact: false,
+    path: ''
+  },
+  location: H.createLocation(''),
+  history: H.createBrowserHistory()
 };
 
 const GET_PROCESS_INSTANCE = gql`
@@ -85,15 +91,14 @@ const mocks = [
 ];
 
 describe('Process Details Page component', () => {
-  it('Sample test case', async () => {
-    const wrapper = shallow(
-      <MockedProvider mocks={mocks} addTypename={false}>
-        <ProcessDetailsPage {...props} />
-      </MockedProvider>
-    );
-    await wait(0);
-    const p = wrapper.find('p');
-    expect(p.length).toEqual(0);
-    expect(wrapper.find(ProcessDetailsPage)).toMatchSnapshot();
+  it('Sample test case', () => {
+    const wrapper = getWrapper(
+      <MemoryRouter>
+        <MockedProvider mocks={mocks} addTypename={false}>
+          <ProcessDetailsPage {...props} />
+        </MockedProvider>
+      </MemoryRouter>
+    , 'ProcessDetailsPage');
+    expect(wrapper).toMatchSnapshot();
   });
 });

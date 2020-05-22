@@ -1,7 +1,9 @@
 import React from 'react';
-import { shallow } from 'enzyme';
 import PageLayoutComponent from '../PageLayoutComponent';
 import { MockedProvider } from '@apollo/react-testing';
+import { getWrapper } from '@kogito-apps/common'
+import { MemoryRouter as Router } from 'react-router-dom';
+
 
 const props: any = {
   location: {
@@ -11,13 +13,18 @@ const props: any = {
 
 const mocks = [];
 
+jest.mock('../../DataListContainer/DataListContainer.tsx');
+ 
 describe('PageLayoutComponent component tests', () => {
   it('snapshot testing', () => {
-    const wrapper = shallow(
-      <MockedProvider mocks={mocks}>
-        <PageLayoutComponent {...props} />
-      </MockedProvider>
-    );
-    expect(wrapper.find(PageLayoutComponent)).toMatchSnapshot();
+    const wrapper = getWrapper(
+      // keyLength set to zero to have stable snapshots
+      <Router keyLength={0}>
+        <MockedProvider mocks={mocks}>
+          <PageLayoutComponent {...props} />
+        </MockedProvider>
+      </Router>
+      , 'PageLayoutComponent');
+      expect(wrapper).toMatchSnapshot();
+    });
   });
-});

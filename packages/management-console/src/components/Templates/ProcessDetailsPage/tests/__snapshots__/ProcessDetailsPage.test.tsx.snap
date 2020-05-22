@@ -2,10 +2,321 @@
 
 exports[`Process Details Page component Sample test case 1`] = `
 <ProcessDetailsPage
-  match={
+  history={
     Object {
-      "params": "1232131",
+      "action": "POP",
+      "block": [Function],
+      "createHref": [Function],
+      "go": [Function],
+      "goBack": [Function],
+      "goForward": [Function],
+      "length": 1,
+      "listen": [Function],
+      "location": Object {
+        "hash": "",
+        "pathname": "/",
+        "search": "",
+        "state": undefined,
+      },
+      "push": [Function],
+      "replace": [Function],
     }
   }
-/>
+  location={
+    Object {
+      "hash": "",
+      "pathname": "/",
+      "search": "",
+      "state": undefined,
+    }
+  }
+  match={
+    Object {
+      "isExact": false,
+      "params": Object {
+        "instanceID": "1232131",
+      },
+      "path": "",
+      "url": "",
+    }
+  }
+  ouiaContext={
+    Object {
+      "isOuia": false,
+      "ouiaId": null,
+    }
+  }
+>
+  <PageSection
+    variant="light"
+  >
+    <section
+      className="pf-c-page__main-section pf-m-light"
+    >
+      <Modalbox
+        completedMessageObj={Object {}}
+        handleModalToggle={[Function]}
+        isAbortModalOpen={false}
+        isModalOpen={false}
+        isSingleAbort={true}
+        modalTitle={
+          <React.Fragment>
+            <InfoCircleIcon
+              className="pf-u-mr-sm"
+              color="var(--pf-global--info-color--100)"
+              noVerticalAlign={false}
+              size="sm"
+              title={null}
+            />
+             
+            Abort operation
+             
+          </React.Fragment>
+        }
+      >
+        <Modal
+          actions={
+            Array [
+              <Unknown
+                onClick={[Function]}
+                variant="primary"
+              >
+                OK
+              </Unknown>,
+            ]
+          }
+          appendTo={
+            <body>
+              <div />
+              <div />
+            </body>
+          }
+          ariaDescribedById=""
+          className=""
+          header={
+            <Title
+              headingLevel="h1"
+              size="2xl"
+            >
+              <React.Fragment>
+                <InfoCircleIcon
+                  className="pf-u-mr-sm"
+                  color="var(--pf-global--info-color--100)"
+                  noVerticalAlign={false}
+                  size="sm"
+                  title={null}
+                />
+                 
+                Abort operation
+                 
+              </React.Fragment>
+            </Title>
+          }
+          hideTitle={false}
+          isFooterLeftAligned={false}
+          isLarge={false}
+          isOpen={false}
+          isSmall={true}
+          onClose={[Function]}
+          showClose={true}
+          title=""
+        >
+          <Portal
+            containerInfo={<div />}
+          >
+            <ModalContent
+              actions={
+                Array [
+                  <Unknown
+                    onClick={[Function]}
+                    variant="primary"
+                  >
+                    OK
+                  </Unknown>,
+                ]
+              }
+              ariaDescribedById=""
+              className=""
+              header={
+                <Title
+                  headingLevel="h1"
+                  size="2xl"
+                >
+                  <React.Fragment>
+                    <InfoCircleIcon
+                      className="pf-u-mr-sm"
+                      color="var(--pf-global--info-color--100)"
+                      noVerticalAlign={false}
+                      size="sm"
+                      title={null}
+                    />
+                     
+                    Abort operation
+                     
+                  </React.Fragment>
+                </Title>
+              }
+              hideTitle={false}
+              id="pf-modal-0"
+              isFooterLeftAligned={false}
+              isLarge={false}
+              isOpen={false}
+              isSmall={true}
+              onClose={[Function]}
+              showClose={true}
+              title=""
+            />
+          </Portal>
+        </Modal>
+      </Modalbox>
+      <Modalbox
+        modalContent=""
+      >
+        <Modal
+          actions={
+            Array [
+              <Unknown
+                variant="primary"
+              >
+                OK
+              </Unknown>,
+            ]
+          }
+          appendTo={
+            <body>
+              <div />
+              <div />
+            </body>
+          }
+          ariaDescribedById=""
+          className=""
+          header={
+            <Title
+              headingLevel="h1"
+              size="2xl"
+            />
+          }
+          hideTitle={false}
+          isFooterLeftAligned={false}
+          isLarge={false}
+          isOpen={false}
+          isSmall={true}
+          onClose={[Function]}
+          showClose={true}
+          title=""
+        >
+          <Portal
+            containerInfo={<div />}
+          >
+            <ModalContent
+              actions={
+                Array [
+                  <Unknown
+                    variant="primary"
+                  >
+                    OK
+                  </Unknown>,
+                ]
+              }
+              ariaDescribedById=""
+              className=""
+              header={
+                <Title
+                  headingLevel="h1"
+                  size="2xl"
+                />
+              }
+              hideTitle={false}
+              id="pf-modal-1"
+              isFooterLeftAligned={false}
+              isLarge={false}
+              isOpen={false}
+              isSmall={true}
+              onClose={[Function]}
+              showClose={true}
+              title=""
+            />
+          </Portal>
+        </Modal>
+      </Modalbox>
+      <PageTitleComponent
+        title="Process Details"
+      >
+        <Title
+          headingLevel="h1"
+          size="4xl"
+        >
+          <h1
+            className="pf-c-title pf-m-4xl"
+          >
+            Process Details
+          </h1>
+        </Title>
+      </PageTitleComponent>
+    </section>
+  </PageSection>
+  <PageSection>
+    <section
+      className="pf-c-page__main-section"
+    >
+      <Card>
+        <article
+          className="pf-c-card"
+        >
+          <Bullseye>
+            <div
+              className="pf-l-bullseye"
+            >
+              <EmptyStateSpinner
+                spinnerText="Loading process details..."
+              >
+                <EmptyState>
+                  <div
+                    className="pf-c-empty-state pf-m-lg"
+                  >
+                    <EmptyStateIcon
+                      component={[Function]}
+                      variant="container"
+                    >
+                      <div
+                        className="pf-c-empty-state__icon"
+                      >
+                        <Spinner>
+                          <span
+                            aria-valuetext="Loading..."
+                            className="pf-c-spinner pf-m-xl"
+                            role="progressbar"
+                          >
+                            <span
+                              className="pf-c-spinner__clipper"
+                            />
+                            <span
+                              className="pf-c-spinner__lead-ball"
+                            />
+                            <span
+                              className="pf-c-spinner__tail-ball"
+                            />
+                          </span>
+                        </Spinner>
+                      </div>
+                    </EmptyStateIcon>
+                    <Title
+                      size="lg"
+                    >
+                      <h1
+                        className="pf-c-title pf-m-lg"
+                      >
+                        Loading process details...
+                      </h1>
+                    </Title>
+                  </div>
+                </EmptyState>
+              </EmptyStateSpinner>
+            </div>
+          </Bullseye>
+        </article>
+      </Card>
+    </section>
+  </PageSection>
+</ProcessDetailsPage>
 `;

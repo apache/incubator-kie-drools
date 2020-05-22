@@ -7,12 +7,26 @@ import {
   EmptyStateVariant,
   Button,
   EmptyStateBody,
-  Title
+  Title,
+  InjectedOuiaProps,
+  withOuiaContext
 } from '@patternfly/react-core';
 import { SearchIcon } from '@patternfly/react-icons';
-import { Redirect } from 'react-router';
+import { Redirect, RouteComponentProps } from 'react-router';
+import { ouiaPageTypeAndObjectId } from '@kogito-apps/common';
 
-const NoDataComponent = props => {
+interface LocationProps {
+  prev: any,
+  rememberedData: any,
+  title: string,
+  description: string,
+  buttonText: string
+}
+
+const NoDataComponent: React.FC<RouteComponentProps<{}, {}, LocationProps> &InjectedOuiaProps> = ({
+  ouiaContext,
+  ...props
+}) => {
   let prevPath;
   if (props.location.state !== undefined) {
     prevPath = props.location.state.prev;
@@ -33,6 +47,8 @@ const NoDataComponent = props => {
       props.history.push({ state: { ...props.location.state.rememberedData } });
     };
   });
+
+  useEffect(() => { return ouiaPageTypeAndObjectId(ouiaContext, "no-data") })
 
   let finalPath = '';
   prevPath.map(item => (finalPath = finalPath + `/${item}`));
@@ -72,4 +88,4 @@ const NoDataComponent = props => {
   );
 };
 
-export default NoDataComponent;
+export default withOuiaContext(NoDataComponent);

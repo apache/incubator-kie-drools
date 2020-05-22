@@ -8,12 +8,17 @@ import {
   Breadcrumb,
   BreadcrumbItem,
   Card,
-  Bullseye
+  Bullseye,
+  InjectedOuiaProps,
+  withOuiaContext
 } from '@patternfly/react-core';
-import { ServerErrors } from '@kogito-apps/common';
+import {
+  ServerErrors,
+  ouiaPageTypeAndObjectId
+} from '@kogito-apps/common';
 import { FilterIcon } from '@patternfly/react-icons';
 import { Link } from 'react-router-dom';
-import { Redirect } from 'react-router';
+import { Redirect, RouteComponentProps } from 'react-router';
 import './DomainExplorerDashboard.css';
 import DomainExplorerColumnPicker from '../../Organisms/DomainExplorerColumnPicker/DomainExplorerColumnPicker';
 import DomainExplorerTable from '../../Organisms/DomainExplorerTable/DomainExplorerTable';
@@ -27,11 +32,23 @@ import {
   useGetColumnPickerAttributesQuery
 } from '../../../graphql/types';
 
-export interface IOwnProps {
-  domains: any;
+interface IOwnProps {
+  domains: any
 }
 
-const DomainExplorerDashboard = props => {
+interface MatchProps {
+  domainName: string
+}
+
+interface LocationProps {
+  parameters?: any[],
+  selected?: any[]
+}
+
+const DomainExplorerDashboard: React.FC<IOwnProps & RouteComponentProps<MatchProps, {}, LocationProps> & InjectedOuiaProps> = ({
+  ouiaContext,
+  ...props
+}) => {
   const rememberedParams =
     (props.location.state && props.location.state.parameters) || [];
   const rememberedSelections =
@@ -80,6 +97,8 @@ const DomainExplorerDashboard = props => {
       setColumnPickerType(domainName);
     }
   }, []);
+
+  useEffect(() => { return ouiaPageTypeAndObjectId(ouiaContext, "domain-explorer", domainName) })
 
   const getQuery = useGetQueryFieldsQuery();
   const getQueryTypes = useGetQueryTypesQuery();
@@ -289,4 +308,4 @@ const DomainExplorerDashboard = props => {
   );
 };
 
-export default React.memo(DomainExplorerDashboard);
+export default React.memo(withOuiaContext(DomainExplorerDashboard));

@@ -14,7 +14,7 @@ module.exports = {
       {
         include: [
           path.resolve(__dirname, 'src'),
-          path.resolve('../../node_modules/@kogito-apps/common/src/components')
+          path.resolve('../../node_modules/@kogito-apps/common/src')
         ],
         test: /\.(tsx|ts)?$/,
         use: [

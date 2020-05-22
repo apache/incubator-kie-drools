@@ -1,11 +1,12 @@
-import { Page, PageSidebar, PageHeader, Avatar } from '@patternfly/react-core';
-import React, { useState } from 'react';
+import { Page, PageSidebar, PageHeader, Avatar, InjectedOuiaProps, withOuiaContext } from '@patternfly/react-core';
+import React, { useState, useEffect } from 'react';
 import PageToolbar from '../../Molecules/PageToolbar/PageToolbar';
 import BrandLogo from '../../Atoms/BrandLogo/BrandLogo';
 import { aboutLogoContext } from '../../contexts';
 import './PageLayout.css';
 
 import userImage from '../../../static/avatar.svg';
+import { ouiaAttribute } from '../../../utils/OuiaUtils';
 
 interface IOwnProps {
   children: React.ReactNode;
@@ -15,12 +16,20 @@ interface IOwnProps {
   BrandClick: () => void;
 }
 
-const PageLayout: React.FC<IOwnProps> = (props: any) => {
+const PageLayout: React.FC<IOwnProps & InjectedOuiaProps> = ({
+  ouiaContext,
+  ...props
+}) => {
   const pageId = 'main-content-page-layout-default-nav';
   const [isNavOpen, setIsNavOpen] = useState(true);
   const onNavToggle = () => {
     setIsNavOpen(!isNavOpen);
   };
+
+  useEffect(() => {
+    // set OUIA:Page attribute
+    ouiaContext.isOuia && document.getElementById(pageId).setAttribute('data-ouia-main', 'true')
+  })
 
   const Header = (
     <PageHeader
@@ -40,11 +49,13 @@ const PageLayout: React.FC<IOwnProps> = (props: any) => {
       showNavToggle
       isNavOpen={isNavOpen}
       onNavToggle={onNavToggle}
+      {...ouiaAttribute(ouiaContext, "data-ouia-header","true")}
     />
   );
 
   const Sidebar = (
-    <PageSidebar nav={props.PageNav} isNavOpen={isNavOpen} theme="dark" />
+    <PageSidebar nav={props.PageNav} isNavOpen={isNavOpen} theme="dark"
+      {...ouiaAttribute(ouiaContext, "data-ouia-navigation", "true")}/>
   );
 
   return (
@@ -61,4 +72,4 @@ const PageLayout: React.FC<IOwnProps> = (props: any) => {
   );
 };
 
-export default PageLayout;
+export default withOuiaContext(PageLayout);
