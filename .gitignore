@@ -16,6 +16,7 @@ package-lock.json
 /.*
 !.github
 !.gitignore
+!.mvn
 /nbproject
 /*.ipr
 /*.iws
