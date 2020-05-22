@@ -36,9 +36,6 @@ import org.kie.pmml.models.regression.model.KiePMMLRegressionModelWithSources;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import static org.kie.pmml.commons.utils.KiePMMLModelUtils.getSanitizedClassName;
-import static org.kie.pmml.commons.utils.KiePMMLModelUtils.getSanitizedPackageName;
-import static org.kie.pmml.compiler.commons.factories.KiePMMLFactoryFactory.getFactorySourceCode;
 import static org.kie.pmml.compiler.commons.utils.ModelUtils.getOpType;
 import static org.kie.pmml.compiler.commons.utils.ModelUtils.getTargetFields;
 
@@ -68,15 +65,11 @@ public class RegressionModelImplementationProvider implements ModelImplementatio
     }
 
     @Override
-    public KiePMMLRegressionModel getKiePMMLModelFromPlugin(String fileName, DataDictionary dataDictionary, RegressionModel model, Object kBuilder) {
+    public KiePMMLRegressionModel getKiePMMLModelFromPlugin(String packageName, DataDictionary dataDictionary, RegressionModel model, Object kBuilder) {
         logger.trace("getKiePMMLModelFromPlugin {} {} {}", dataDictionary, model, kBuilder);
         try {
-            String className = getSanitizedClassName(model.getModelName());
-            String packageName = getSanitizedPackageName(model.getModelName());
-            final Map<String, String> sourcesMap = KiePMMLRegressionModelFactory.getKiePMMLRegressionModelSourcesMap(dataDictionary, model, className, packageName);
-            Map<String, String> factorySourceMap = getFactorySourceCode(fileName, packageName, className);
-            sourcesMap.putAll(factorySourceMap);
-            return new KiePMMLRegressionModelWithSources(model.getModelName(), sourcesMap);
+            final Map<String, String> sourcesMap = KiePMMLRegressionModelFactory.getKiePMMLRegressionModelSourcesMap(dataDictionary, model, packageName);
+            return new KiePMMLRegressionModelWithSources(model.getModelName(), packageName, sourcesMap);
         } catch (IOException e) {
             throw new RuntimeException(e);
         }

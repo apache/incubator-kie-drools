@@ -23,7 +23,7 @@ import java.util.Map;
 import org.kie.pmml.commons.model.KiePMMLModel;
 import org.kie.pmml.compiler.commons.factories.KiePMMLModelFactory;
 
-public class KiePMMLModelFactoryTemplate extends KiePMMLModelFactory {
+public class KiePMMLModelFactoryTemplate implements KiePMMLModelFactory {
 
     private static final List<KiePMMLModel> KIE_PMML_MODELS = Arrays.asList(new KiePMMLModel() {
         @Override
@@ -32,6 +32,7 @@ public class KiePMMLModelFactoryTemplate extends KiePMMLModelFactory {
         }
     });
 
+    @Override
     public List<KiePMMLModel> getKiePMMLModels() {
         return Collections.unmodifiableList(KIE_PMML_MODELS);
     }

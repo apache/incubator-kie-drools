@@ -56,7 +56,8 @@ public class TreeModelImplementationProvider extends DroolsModelProvider<TreeMod
     }
 
     @Override
-    public Map<String, String> getKiePMMLDroolsModelSourcesMap(DataDictionary dataDictionary, TreeModel model, Map<String, KiePMMLOriginalTypeGeneratedType> fieldTypeMap, String classNameParam, String packageName) {
-        return null;
+    public Map<String, String> getKiePMMLDroolsModelSourcesMap(DataDictionary dataDictionary, TreeModel model, Map<String, KiePMMLOriginalTypeGeneratedType> fieldTypeMap, String packageName) {
+        // TODO {gcardosi} to implement
+        throw new RuntimeException("Not implemented, yet");
     }
 }

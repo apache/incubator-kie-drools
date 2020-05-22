@@ -23,15 +23,11 @@ import org.kie.pmml.models.drools.scorecard.model.KiePMMLScorecardModel;
 
 public class KiePMMLScorecardModelTemplate extends KiePMMLScorecardModel {
 
-    public static final PMML_MODEL PMML_MODEL_TYPE = PMML_MODEL.SCORECARD_MODEL;
 
     public KiePMMLScorecardModelTemplate() {
         super(modelName, Collections.emptyList());
         targetField = targetField;
-    }
-
-    public static PMML_MODEL getPmmlModelType() {
-        return PMML_MODEL_TYPE;
+        pmmlMODEL = null;
     }
 
 }

@@ -26,15 +26,17 @@ import org.kie.pmml.commons.model.HasSourcesMap;
  */
 public class KiePMMLRegressionModelWithSources extends KiePMMLRegressionModel implements HasSourcesMap {
 
+    private final String kmodulePackageName;
     protected Map<String, String> sourcesMap;
 
-    public KiePMMLRegressionModelWithSources(String modelName, Map<String, String> sourcesMap) {
+    public KiePMMLRegressionModelWithSources(String modelName, String kmodulePackageName, Map<String, String> sourcesMap) {
         super(modelName);
         this.sourcesMap = Collections.unmodifiableMap(sourcesMap);
+        this.kmodulePackageName = kmodulePackageName;
     }
 
     @Override
-    public Object evaluate(Map<String, Object> requestData, String releaseId) {
+    public Object evaluate(final Object knowledgeBase, Map<String, Object> requestData, String releaseId) {
         throw new KiePMMLException("KiePMMLRegressionModelWithSources. is not meant to be used for actual evaluation");
     }
 
@@ -46,5 +48,10 @@ public class KiePMMLRegressionModelWithSources extends KiePMMLRegressionModel im
     @Override
     public Map<String, String> getSourcesMap() {
         return sourcesMap;
+    }
+
+    @Override
+    public String getKModulePackageName() {
+        return kmodulePackageName;
     }
 }

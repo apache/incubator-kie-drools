@@ -74,14 +74,15 @@ public class KiePMMLScorecardModelFactory {
         logger.trace("getKiePMMLScorecardModel {}", model);
         String className = getSanitizedClassName(model.getModelName());
         String packageName = getSanitizedPackageName(className);
-        Map<String, String> sourcesMap = getKiePMMLScorecardModelSourcesMap(dataDictionary, model, fieldTypeMap, className, packageName);
+        Map<String, String> sourcesMap = getKiePMMLScorecardModelSourcesMap(dataDictionary, model, fieldTypeMap, packageName);
         String fullClassName = packageName + "." + className;
         final Map<String, Class<?>> compiledClasses = KieMemoryCompiler.compile(sourcesMap, Thread.currentThread().getContextClassLoader());
         return (KiePMMLScorecardModel) compiledClasses.get(fullClassName).newInstance();
     }
 
-    public static Map<String, String> getKiePMMLScorecardModelSourcesMap(final DataDictionary dataDictionary, final Scorecard model, final Map<String, KiePMMLOriginalTypeGeneratedType> fieldTypeMap, final String classNameParam, final String packageName) throws IOException {
-        logger.trace("getKiePMMLScorecardModelSourcesMap {} {} {}", dataDictionary, model, classNameParam);
+    public static Map<String, String> getKiePMMLScorecardModelSourcesMap(final DataDictionary dataDictionary, final Scorecard model, final Map<String, KiePMMLOriginalTypeGeneratedType> fieldTypeMap, final String packageName) throws IOException {
+        logger.trace("getKiePMMLScorecardModelSourcesMap {} {} {}", dataDictionary, model, packageName);
+        String className = getSanitizedClassName(model.getModelName());
         String targetField = getTargetFieldName(dataDictionary, model).orElse(null);
         List<KiePMMLOutputField> outputFields = getOutputFields(model);
         CompilationUnit templateCU = getFromFileName(KIE_PMML_SCORECARD_MODEL_TEMPLATE_JAVA);
@@ -89,15 +90,15 @@ public class KiePMMLScorecardModelFactory {
         cloneCU.setPackageDeclaration(packageName);
         ClassOrInterfaceDeclaration modelTemplate = cloneCU.getClassByName(KIE_PMML_SCORECARD_MODEL_TEMPLATE)
                 .orElseThrow(() -> new RuntimeException(MAIN_CLASS_NOT_FOUND));
-        modelTemplate.setName(classNameParam);
-        setModelName(classNameParam, modelTemplate);
+        modelTemplate.setName(className);
+        setModelName(className, modelTemplate);
         MINING_FUNCTION miningFunction = MINING_FUNCTION.byName(model.getMiningFunction().value());
         final ConstructorDeclaration constructorDeclaration = modelTemplate.getDefaultConstructor().orElseThrow(() -> new KiePMMLInternalException(String.format("Missing default constructor in ClassOrInterfaceDeclaration %s ", modelTemplate.getName())));
         setConstructor(model, constructorDeclaration, modelTemplate.getName(), targetField, miningFunction);
         addOutputFieldsPopulation(constructorDeclaration.getBody(), outputFields);
         addFieldTypeMapPopulation(constructorDeclaration.getBody(), fieldTypeMap);
         Map<String, String> toReturn = new HashMap<>();
-        String fullClassName = packageName + "." + classNameParam;
+        String fullClassName = packageName + "." + className;
         toReturn.put(fullClassName, cloneCU.toString());
         return toReturn;
     }
@@ -129,7 +130,7 @@ public class KiePMMLScorecardModelFactory {
 
     private static void addOutputFieldsPopulation(final BlockStmt body, final List<KiePMMLOutputField> outputFields) {
         for (KiePMMLOutputField outputField : outputFields) {
-            NodeList<Expression> expressions = NodeList.nodeList(new StringLiteralExpr(outputField.getId()), new NameExpr("Collections.emptyList()"));
+            NodeList<Expression> expressions = NodeList.nodeList(new StringLiteralExpr(outputField.getName()), new NameExpr("Collections.emptyList()"));
             MethodCallExpr builder = new MethodCallExpr(new NameExpr("KiePMMLOutputField"), "builder", expressions);
             if (outputField.getRank() != null) {
                 expressions = NodeList.nodeList(new IntegerLiteralExpr(outputField.getRank()));

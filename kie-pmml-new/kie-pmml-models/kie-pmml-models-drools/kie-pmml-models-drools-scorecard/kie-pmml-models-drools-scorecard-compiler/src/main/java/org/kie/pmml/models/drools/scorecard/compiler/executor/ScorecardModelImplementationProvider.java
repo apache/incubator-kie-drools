@@ -57,8 +57,7 @@ public class ScorecardModelImplementationProvider extends DroolsModelProvider<Sc
     }
 
     @Override
-    public Map<String, String> getKiePMMLDroolsModelSourcesMap(DataDictionary dataDictionary, Scorecard model, Map<String, KiePMMLOriginalTypeGeneratedType> fieldTypeMap, String classNameParam, String packageName) throws IOException {
-        String className = getSanitizedClassName(model.getModelName());
-        return KiePMMLScorecardModelFactory.getKiePMMLScorecardModelSourcesMap(dataDictionary, model, fieldTypeMap, className, packageName);
+    public Map<String, String> getKiePMMLDroolsModelSourcesMap(DataDictionary dataDictionary, Scorecard model, Map<String, KiePMMLOriginalTypeGeneratedType> fieldTypeMap, String packageName) throws IOException {
+        return KiePMMLScorecardModelFactory.getKiePMMLScorecardModelSourcesMap(dataDictionary, model, fieldTypeMap, packageName);
     }
 }

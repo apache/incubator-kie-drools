@@ -22,6 +22,7 @@ import java.util.Objects;
 import java.util.Optional;
 
 import org.drools.core.definitions.InternalKnowledgePackage;
+import org.drools.core.impl.InternalKnowledgeBase;
 import org.kie.api.KieBase;
 import org.kie.api.io.ResourceType;
 import org.kie.api.pmml.PMML4Result;
@@ -42,10 +43,10 @@ public class PMMLRuntimeImpl implements PMMLRuntime {
 
     private static final Logger logger = LoggerFactory.getLogger(PMMLRuntimeImpl.class);
 
-    private final KieBase knowledgeBase;
+    private final InternalKnowledgeBase knowledgeBase;
     private final PMMLModelExecutorFinderImpl pmmlModelExecutorFinder;
 
-    public PMMLRuntimeImpl(KieBase knowledgeBase, PMMLModelExecutorFinderImpl pmmlModelExecutorFinder) {
+    public PMMLRuntimeImpl(InternalKnowledgeBase knowledgeBase, PMMLModelExecutorFinderImpl pmmlModelExecutorFinder) {
         this.knowledgeBase = knowledgeBase;
         this.pmmlModelExecutorFinder = pmmlModelExecutorFinder;
     }
@@ -84,7 +85,7 @@ public class PMMLRuntimeImpl implements PMMLRuntime {
         logger.debug("evaluate {} {} {}", model, context, releaseId);
         addMissingValuesReplacements(model, context);
         Optional<PMMLModelExecutor> pmmlModelExecutor = getFromPMMLModelType(model.getPmmlMODEL());
-        return pmmlModelExecutor.isPresent() ? pmmlModelExecutor.get().evaluate(model, context, releaseId) : new PMML4Result();
+        return pmmlModelExecutor.isPresent() ? pmmlModelExecutor.get().evaluate(knowledgeBase, model, context, releaseId) : new PMML4Result();
     }
 
     /**

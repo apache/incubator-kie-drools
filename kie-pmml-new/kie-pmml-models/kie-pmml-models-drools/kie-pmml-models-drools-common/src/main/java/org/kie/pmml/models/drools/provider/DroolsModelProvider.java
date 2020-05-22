@@ -22,6 +22,7 @@ import java.util.Map;
 import org.dmg.pmml.DataDictionary;
 import org.dmg.pmml.Model;
 import org.drools.compiler.builder.impl.KnowledgeBuilderImpl;
+import org.drools.compiler.lang.DrlDumper;
 import org.drools.compiler.lang.descr.PackageDescr;
 import org.kie.internal.builder.KnowledgeBuilder;
 import org.kie.pmml.commons.exceptions.KiePMMLException;
@@ -33,9 +34,6 @@ import org.kie.pmml.models.drools.tuples.KiePMMLOriginalTypeGeneratedType;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import static org.kie.pmml.commons.utils.KiePMMLModelUtils.getSanitizedClassName;
-import static org.kie.pmml.commons.utils.KiePMMLModelUtils.getSanitizedPackageName;
-import static org.kie.pmml.compiler.commons.factories.KiePMMLFactoryFactory.getFactorySourceCode;
 import static org.kie.pmml.models.drools.commons.factories.KiePMMLDescrFactory.getBaseDescr;
 
 /**
@@ -54,23 +52,25 @@ public abstract class DroolsModelProvider<T extends Model, E extends KiePMMLDroo
         final Map<String, KiePMMLOriginalTypeGeneratedType> fieldTypeMap = new HashMap<>();
         KiePMMLDroolsAST kiePMMLDroolsAST = getKiePMMLDroolsAST(dataDictionary, model, fieldTypeMap);
         E toReturn = getKiePMMLDroolsModel(dataDictionary, model, fieldTypeMap);
-        PackageDescr packageDescr = getPackageDescr(kiePMMLDroolsAST, toReturn);
+        PackageDescr packageDescr = getPackageDescr(kiePMMLDroolsAST, toReturn.getKModulePackageName());
         ((KnowledgeBuilderImpl) kBuilder).addPackage(packageDescr);
         return toReturn;
     }
 
     @Override
-    public E getKiePMMLModelFromPlugin(String fileName, DataDictionary dataDictionary, T model, Object kBuilder) {
+    public E getKiePMMLModelFromPlugin(String packageName, DataDictionary dataDictionary, T model, Object kBuilder) {
         logger.trace("getKiePMMLModelFromPlugin {} {} {}", dataDictionary, model, kBuilder);
+        if (!(kBuilder instanceof KnowledgeBuilder)) {
+            throw new KiePMMLException(String.format("Expecting KnowledgeBuilder, received %s", kBuilder.getClass().getName()));
+        }
         try {
             final Map<String, KiePMMLOriginalTypeGeneratedType> fieldTypeMap = new HashMap<>();
-            getKiePMMLDroolsAST(dataDictionary, model, fieldTypeMap);
-            String className = getSanitizedClassName(model.getModelName());
-            String packageName = getSanitizedPackageName(className);
-            Map<String, String> sourcesMap = getKiePMMLDroolsModelSourcesMap(dataDictionary, model, fieldTypeMap, className, packageName);
-            Map<String, String> factorySourceMap = getFactorySourceCode(fileName, packageName, className);
-            sourcesMap.putAll(factorySourceMap);
-            return (E) new KiePMMLDroolsModelWithSources(model.getModelName(), sourcesMap);
+            KiePMMLDroolsAST kiePMMLDroolsAST =  getKiePMMLDroolsAST(dataDictionary, model, fieldTypeMap);
+            Map<String, String> sourcesMap = getKiePMMLDroolsModelSourcesMap(dataDictionary, model, fieldTypeMap, packageName);
+            E toReturn = (E) new KiePMMLDroolsModelWithSources(model.getModelName(), packageName, sourcesMap);
+            PackageDescr packageDescr = getPackageDescr(kiePMMLDroolsAST, packageName);
+            ((KnowledgeBuilderImpl) kBuilder).addPackage(packageDescr);
+            return toReturn;
         } catch (Exception e) {
             throw new RuntimeException(e);
         }
@@ -80,9 +80,9 @@ public abstract class DroolsModelProvider<T extends Model, E extends KiePMMLDroo
 
     public abstract KiePMMLDroolsAST getKiePMMLDroolsAST(DataDictionary dataDictionary, T model, final Map<String, KiePMMLOriginalTypeGeneratedType> fieldTypeMap);
 
-    public abstract Map<String, String> getKiePMMLDroolsModelSourcesMap(final DataDictionary dataDictionary, final T model, final Map<String, KiePMMLOriginalTypeGeneratedType> fieldTypeMap, final String classNameParam, final String packageName) throws IOException;
+    public abstract Map<String, String> getKiePMMLDroolsModelSourcesMap(final DataDictionary dataDictionary, final T model, final Map<String, KiePMMLOriginalTypeGeneratedType> fieldTypeMap, final String packageName) throws IOException;
 
-    public PackageDescr getPackageDescr(KiePMMLDroolsAST kiePMMLDroolsAST, E model) {
-        return getBaseDescr(kiePMMLDroolsAST, model.getKModulePackageName());
+    public PackageDescr getPackageDescr(KiePMMLDroolsAST kiePMMLDroolsAST, String packageName) {
+        return getBaseDescr(kiePMMLDroolsAST, packageName);
     }
 }

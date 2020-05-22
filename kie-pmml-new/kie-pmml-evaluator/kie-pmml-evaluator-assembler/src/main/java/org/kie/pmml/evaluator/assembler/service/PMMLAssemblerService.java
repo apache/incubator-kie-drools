@@ -81,7 +81,6 @@ public class PMMLAssemblerService implements KieAssemblerService {
     }
 
     protected void addModels(KnowledgeBuilderImpl kbuilderImpl, List<KiePMMLModel> toAdd) {
-        // TODO {gcardosi} verify correct creation/adding of PMMLPackage
         for (KiePMMLModel kiePMMLModel : toAdd) {
             PackageDescr pkgDescr = new PackageDescr(kiePMMLModel.getKModulePackageName());
             PackageRegistry pkgReg = kbuilderImpl.getOrCreatePackageRegistry(pkgDescr);
@@ -128,20 +127,16 @@ public class PMMLAssemblerService implements KieAssemblerService {
      * @throws ExternalException if any other kind of <code>Exception</code> has been thrown during execution
      */
     protected List<KiePMMLModel> getKiePMMLModelsFromResource(KnowledgeBuilderImpl kbuilderImpl, Resource resource) {
-        String sourcePath = resource.getSourcePath();
-        String fileName = sourcePath.substring(sourcePath.lastIndexOf('/') + 1);
-        fileName = fileName.replace(".pmml", "");
-        String packageName = fileName.toLowerCase();
+        String[] classNamePackageName = getFactoryClassNamePackageName(resource);
+        String factoryClassName = classNamePackageName[0];
+        String packageName = classNamePackageName[1];
         try {
-            // TODO {gcardosi} try to avoid "newInstance" invocation - if possible
-            String className = getSanitizedClassName(fileName + "Factory");
-            final Class<? extends KiePMMLModelFactory> aClass = (Class<? extends KiePMMLModelFactory>) Class.forName(packageName + "." + className);
-            final List<KiePMMLModel> toReturn = aClass.newInstance().getKiePMMLModels();
-            return toReturn;
+            final Class<? extends KiePMMLModelFactory> aClass = (Class<? extends KiePMMLModelFactory>) Class.forName(packageName + "." + factoryClassName);
+            return aClass.newInstance().getKiePMMLModels();
         } catch (ClassNotFoundException e) {
-            logger.info(fileName + " not found in kjar, going to compile model");
+            logger.info(String.format("%s not found in kjar, going to compile model", factoryClassName));
         } catch (Exception e) {
-            throw new KiePMMLException("Exception while instantiating " + fileName, e);
+            throw new KiePMMLException("Exception while instantiating " + factoryClassName, e);
         }
         PMMLCompiler pmmlCompiler = kbuilderImpl.getCachedOrCreate(PMML_COMPILER_CACHE_KEY, () -> getCompiler(kbuilderImpl));
         try {
@@ -158,14 +153,29 @@ public class PMMLAssemblerService implements KieAssemblerService {
      */
     protected List<KiePMMLModel> getKiePMMLModelsFromResourceFromPlugin(KnowledgeBuilderImpl kbuilderImpl, Resource resource) {
         PMMLCompiler pmmlCompiler = kbuilderImpl.getCachedOrCreate(PMML_COMPILER_CACHE_KEY, () -> getCompiler(kbuilderImpl));
-        String sourcePath = resource.getSourcePath();
-        String fileName = sourcePath.substring(sourcePath.lastIndexOf('/') + 1);
-        fileName = fileName.replace(".pmml", "");
+        String[] classNamePackageName = getFactoryClassNamePackageName(resource);
+        String factoryClassName = classNamePackageName[0];
+        String packageName = classNamePackageName[1];
         try {
-            return pmmlCompiler.getModelsFromPlugin(fileName, resource.getInputStream(), kbuilderImpl);
+            return pmmlCompiler.getModelsFromPlugin(factoryClassName, packageName, resource.getInputStream(), kbuilderImpl);
         } catch (IOException e) {
             throw new ExternalException("ExternalException", e);
         }
+    }
+
+    /**
+     * Returns an array where the first item is the <b>factory class</b> name and the second item is the <b>package</b> name,
+     * built starting from the given <code>Resource</code>
+     * @param resource
+     * @return
+     */
+    private String[] getFactoryClassNamePackageName(Resource resource) {
+        String sourcePath = resource.getSourcePath();
+        String fileName = sourcePath.substring(sourcePath.lastIndexOf('/') + 1);
+        fileName = fileName.replace(".pmml", "");
+        String packageName = fileName.toLowerCase();
+        String factoryClassName = getSanitizedClassName(fileName + "Factory");
+        return new String[]{factoryClassName, packageName};
     }
 
     private PMMLCompiler getCompiler(KnowledgeBuilderImpl kbuilderImpl) {

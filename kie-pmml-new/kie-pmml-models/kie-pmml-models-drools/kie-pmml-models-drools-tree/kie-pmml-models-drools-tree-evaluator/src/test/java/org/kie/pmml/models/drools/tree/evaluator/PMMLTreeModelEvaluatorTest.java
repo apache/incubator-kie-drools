@@ -55,6 +55,7 @@ public class PMMLTreeModelEvaluatorTest {
     private static final TreeModelImplementationProvider provider = new TreeModelImplementationProvider();
     private static KiePMMLTreeModel kiePMMLModel;
     private static PMMLTreeModelEvaluator evaluator;
+    private static KieBase kieBase;
     private final String SCORE = "SCORE";
     private final String WILL_PLAY = "will play";
     private final String NO_PLAY = "no play";
@@ -78,12 +79,11 @@ public class PMMLTreeModelEvaluatorTest {
         assertTrue(pmml.getModels().get(0) instanceof TreeModel);
         KnowledgeBuilderImpl knowledgeBuilder = new KnowledgeBuilderImpl();
         kiePMMLModel = provider.getKiePMMLModel(pmml.getDataDictionary(), (TreeModel) pmml.getModels().get(0), knowledgeBuilder);
-//        String packageName = getPackageName(kiePMMLModel.getName());
-        final KieBase build = new KieHelper()
+        kieBase = new KieHelper()
                 .addContent(knowledgeBuilder.getPackageDescrs(kiePMMLModel.getKModulePackageName()).get(0))
                 .setReleaseId(RELEASE_ID)
                 .build();
-        assertNotNull(build);
+        assertNotNull(kieBase);
     }
 
     @Test
@@ -178,7 +178,7 @@ public class PMMLTreeModelEvaluatorTest {
     }
 
     private void commonEvaluate(PMMLContext pmmlContext, String expectedScore) {
-        PMML4Result retrieved = evaluator.evaluate(kiePMMLModel, pmmlContext, GAV);
+        PMML4Result retrieved = evaluator.evaluate(kieBase, kiePMMLModel, pmmlContext, GAV);
         assertNotNull(retrieved);
         logger.trace(retrieved.toString());
         assertEquals(TARGET_FIELD, retrieved.getResultObjectName());

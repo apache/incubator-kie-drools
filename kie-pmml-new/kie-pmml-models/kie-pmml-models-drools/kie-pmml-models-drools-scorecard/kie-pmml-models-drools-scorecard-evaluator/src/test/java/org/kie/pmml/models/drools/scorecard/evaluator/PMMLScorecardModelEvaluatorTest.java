@@ -58,6 +58,7 @@ public class PMMLScorecardModelEvaluatorTest {
     private static final ReleaseId RELEASE_ID = new ReleaseIdImpl("org", "test", "1.0.0");
     private static final String GAV = String.join(":", RELEASE_ID.getGroupId(), RELEASE_ID.getArtifactId(), RELEASE_ID.getVersion());
     private static final ScorecardModelImplementationProvider provider = new ScorecardModelImplementationProvider();
+    private static KieBase kieBase;
     private static KiePMMLScorecardModel kiePMMLModel;
     private static PMMLScorecardModelEvaluator evaluator;
     private final String AGE = "age";
@@ -89,11 +90,11 @@ public class PMMLScorecardModelEvaluatorTest {
         assertTrue(pmml.getModels().get(0) instanceof Scorecard);
         KnowledgeBuilderImpl knowledgeBuilder = new KnowledgeBuilderImpl();
         kiePMMLModel = provider.getKiePMMLModel(pmml.getDataDictionary(), (Scorecard) pmml.getModels().get(0), knowledgeBuilder);
-        final KieBase build = new KieHelper()
+        kieBase = new KieHelper()
                 .addContent(knowledgeBuilder.getPackageDescrs(kiePMMLModel.getKModulePackageName()).get(0))
                 .setReleaseId(RELEASE_ID)
                 .build();
-        assertNotNull(build);
+        assertNotNull(kieBase);
     }
 
     @Parameterized.Parameters
@@ -304,7 +305,7 @@ public class PMMLScorecardModelEvaluatorTest {
     }
 
     private void commonEvaluate(PMMLContext pmmlContext) {
-        PMML4Result retrieved = evaluator.evaluate(kiePMMLModel, pmmlContext, GAV);
+        PMML4Result retrieved = evaluator.evaluate(kieBase, kiePMMLModel, pmmlContext, GAV);
         assertNotNull(retrieved);
         logger.trace(retrieved.toString());
         assertEquals(TARGET_FIELD, retrieved.getResultObjectName());

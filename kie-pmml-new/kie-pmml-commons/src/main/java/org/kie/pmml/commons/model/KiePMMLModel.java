@@ -25,8 +25,6 @@ import org.kie.pmml.commons.model.abstracts.AbstractKiePMMLBase;
 import org.kie.pmml.commons.model.enums.MINING_FUNCTION;
 import org.kie.pmml.commons.model.enums.PMML_MODEL;
 
-import static org.kie.pmml.commons.utils.KiePMMLModelUtils.getSanitizedPackageName;
-
 /**
  * KIE representation of PMML model
  */
@@ -70,10 +68,17 @@ public abstract class KiePMMLModel extends AbstractKiePMMLBase {
      * @return
      */
     public String getKModulePackageName() {
-        return getSanitizedPackageName(name);
+        return this.getClass().getPackage().getName();
     }
 
-    public abstract Object evaluate(Map<String, Object> requestData, String releaseId);
+    /**
+     * @param knowledgeBase the knowledgeBase we are working on. Add as <code>Object</code> to avoid direct dependency. It is needed only by <b>Drools-dependent</b>
+     * models, so it may be <b>ignored</b> by others
+     * @param requestData
+     * @param releaseId
+     * @return
+     */
+    public abstract Object evaluate(final Object knowledgeBase, Map<String, Object> requestData, String releaseId);
 
     public abstract static class Builder<T extends KiePMMLModel> extends AbstractKiePMMLBase.Builder<T> {
 

@@ -17,12 +17,9 @@ package org.kie.pmml.compiler.commons.factories;
 
 import java.util.List;
 
-import org.kie.pmml.commons.exceptions.KiePMMLException;
 import org.kie.pmml.commons.model.KiePMMLModel;
 
-public class KiePMMLModelFactory {
+public interface KiePMMLModelFactory {
 
-    public List<KiePMMLModel> getKiePMMLModels() {
-        throw new KiePMMLException("Expecting actual implementation method to be invoked");
-    }
+    List<KiePMMLModel> getKiePMMLModels();
 }

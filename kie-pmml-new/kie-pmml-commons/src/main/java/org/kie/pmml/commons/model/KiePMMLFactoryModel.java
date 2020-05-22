@@ -13,25 +13,22 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.kie.pmml.models.drools.commons.model;
+package org.kie.pmml.commons.model;
 
 import java.util.Collections;
 import java.util.Map;
 
 import org.kie.pmml.commons.exceptions.KiePMMLException;
-import org.kie.pmml.commons.model.HasSourcesMap;
-
-import static org.kie.pmml.commons.utils.KiePMMLModelUtils.getSanitizedPackageName;
 
 /**
- * KIE representation of PMML model that use <b>drool</b> for implementation
+ * KIE representation of PMML model
  */
-public class KiePMMLDroolsModelWithSources extends KiePMMLDroolsModel implements HasSourcesMap {
+public class KiePMMLFactoryModel extends KiePMMLModel implements HasSourcesMap {
 
-    protected Map<String, String> sourcesMap;
     private final String kmodulePackageName;
+    protected Map<String, String> sourcesMap;
 
-    public KiePMMLDroolsModelWithSources(String name, String kmodulePackageName, Map<String, String> sourcesMap) {
+    public KiePMMLFactoryModel(String name, String kmodulePackageName, Map<String, String> sourcesMap) {
         super(name, Collections.emptyList());
         this.sourcesMap = Collections.unmodifiableMap(sourcesMap);
         this.kmodulePackageName = kmodulePackageName;
@@ -39,12 +36,12 @@ public class KiePMMLDroolsModelWithSources extends KiePMMLDroolsModel implements
 
     @Override
     public Object evaluate(final Object knowledgeBase, Map<String, Object> requestData, String releaseId) {
-        throw new KiePMMLException("KiePMMLRegressionModelWithSources. is not meant to be used for actual evaluation");
+        throw new KiePMMLException("KiePMMLFactoryModel is not meant to be used for actual evaluation");
     }
 
     @Override
     public Map<String, Object> getOutputFieldsMap() {
-        throw new KiePMMLException("KiePMMLRegressionModelWithSources. is not meant to be used for actual usage");
+        throw new KiePMMLException("KiePMMLFactoryModel is not meant to be used for actual usage");
     }
 
     @Override

@@ -43,7 +43,7 @@ public class AbstractPMMLScorecardTest {
     protected static final PMMLModelExecutor EXECUTOR = new PMMLScorecardModelEvaluator();
     private static final ReleaseId RELEASE_ID = new ReleaseIdImpl("org.drools", "kie-pmml-models-testing", "1.0");
     protected static final String GAV = String.join(":", RELEASE_ID.getGroupId(), RELEASE_ID.getArtifactId(), RELEASE_ID.getVersion());
-
+    protected static KieBase kieBase;
     protected static PMMLRequestData getPMMLRequestData(String modelName, Map<String, Object> parameters) {
         String correlationId = "CORRELATION_ID";
         PMMLRequestDataBuilder pmmlRequestDataBuilder = new PMMLRequestDataBuilder(correlationId, modelName);
@@ -71,11 +71,11 @@ public class AbstractPMMLScorecardTest {
         final KiePMMLModel pmmlModel = PROVIDER.getKiePMMLModel(pmml.getDataDictionary(),
                                                                 (Scorecard) pmml.getModels().get(0), knowledgeBuilder);
         Assertions.assertThat(pmmlModel).isNotNull();
-        final KieBase build = new KieHelper()
+        kieBase = new KieHelper()
                 .addContent(knowledgeBuilder.getPackageDescrs(pmmlModel.getName().toLowerCase()).get(0))
                 .setReleaseId(RELEASE_ID)
                 .build();
-        Assertions.assertThat(build).isNotNull();
+        Assertions.assertThat(kieBase).isNotNull();
         return pmmlModel;
     }
 }

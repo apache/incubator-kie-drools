@@ -17,6 +17,8 @@ package org.kie.pmml.compiler.commons.factories;
 
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Set;
+import java.util.stream.Collectors;
 
 import com.github.javaparser.ast.CompilationUnit;
 import com.github.javaparser.ast.NodeList;
@@ -30,7 +32,6 @@ import org.kie.pmml.commons.exceptions.KiePMMLException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import static org.kie.pmml.commons.utils.KiePMMLModelUtils.getSanitizedClassName;
 import static org.kie.pmml.compiler.commons.utils.JavaParserUtils.MAIN_CLASS_NOT_FOUND;
 import static org.kie.pmml.compiler.commons.utils.JavaParserUtils.getFromFileName;
 
@@ -49,27 +50,27 @@ public class KiePMMLFactoryFactory {
         // Avoid instantiation
     }
 
-    public static Map<String, String> getFactorySourceCode(String fileName, String packageName, String generatedClass) {
-        logger.trace("getFactorySourceCode {} {} {}", fileName, packageName, generatedClass);
-        String className = getSanitizedClassName(fileName) + "Factory";
-        String fullClassName = packageName + "." + className;
+    public static Map<String, String> getFactorySourceCode(String factoryClassName, String packageName, Set<String> generatedClasses) {
+        logger.trace("getFactorySourceCode {} {} {}", factoryClassName, packageName, generatedClasses);
+        String fullClassName = packageName + "." + factoryClassName;
         Map<String, String> toReturn = new HashMap<>();
         CompilationUnit templateCU = getFromFileName(KIE_PMML_MODEL_FACTORY_TEMPLATE_JAVA);
         CompilationUnit cloneCU = templateCU.clone();
         cloneCU.setPackageDeclaration(packageName);
         ClassOrInterfaceDeclaration modelTemplate = cloneCU.getClassByName(KIE_PMML_MODEL_FACTORY_TEMPLATE)
                 .orElseThrow(() -> new RuntimeException(MAIN_CLASS_NOT_FOUND));
-        modelTemplate.setName(className);
+        modelTemplate.setName(factoryClassName);
         final FieldDeclaration fieldByName = modelTemplate.getFieldByName(KIE_PMML_MODELS_FIELD)
                 .orElseThrow(() -> new KiePMMLException(String.format("Failed to find FieldDeclaration %s in template %s", KIE_PMML_MODELS_FIELD, KIE_PMML_MODEL_FACTORY_TEMPLATE_JAVA)));
-        populateKiePmmlFields(fieldByName, generatedClass);
+        populateKiePmmlFields(fieldByName, generatedClasses);
         toReturn.put(fullClassName, cloneCU.toString());
         return toReturn;
     }
 
-    private static void populateKiePmmlFields(final FieldDeclaration toPopulate, String generatedClass) {
+    private static void populateKiePmmlFields(final FieldDeclaration toPopulate, Set<String> generatedClasses) {
         final VariableDeclarator variable = toPopulate.getVariable(0);
-        NodeList<Expression> expressions = NodeList.nodeList(new MethodCallExpr(String.format("new %s", generatedClass)));
+        Set<Expression> methodCallExpressions = generatedClasses.stream().map(generatedClass -> new MethodCallExpr(String.format("new %s", generatedClass))).collect(Collectors.toSet());
+        NodeList<Expression> expressions = NodeList.nodeList(methodCallExpressions);
         MethodCallExpr initializer = new MethodCallExpr(new NameExpr("Arrays"), "asList", expressions);
         variable.setInitializer(initializer);
     }

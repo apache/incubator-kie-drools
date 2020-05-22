@@ -23,9 +23,13 @@ import java.util.Objects;
 import java.util.StringJoiner;
 import java.util.function.Supplier;
 
+import org.drools.core.impl.InternalKnowledgeBase;
+import org.kie.api.KieBase;
 import org.kie.api.event.rule.AgendaEventListener;
 import org.kie.api.pmml.PMML4Result;
+import org.kie.internal.builder.KnowledgeBuilder;
 import org.kie.pmml.commons.enums.ResultCode;
+import org.kie.pmml.commons.exceptions.KiePMMLException;
 import org.kie.pmml.commons.model.KiePMMLExtension;
 import org.kie.pmml.commons.model.KiePMMLModel;
 import org.kie.pmml.commons.model.KiePMMLOutputField;
@@ -36,6 +40,7 @@ import org.kie.pmml.models.drools.utils.KiePMMLSessionUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import static org.kie.pmml.commons.utils.KiePMMLModelUtils.getSanitizedPackageName;
 import static org.kie.pmml.models.drools.utils.KiePMMLAgendaListenerUtils.getAgendaEventListener;
 
 /**
@@ -63,9 +68,13 @@ public abstract class KiePMMLDroolsModel extends KiePMMLModel {
     }
 
     @Override
-    public Object evaluate(Map<String, Object> requestData, String releaseId) {
+    public Object evaluate(final Object knowledgeBase, Map<String, Object> requestData, String releaseId) {
+        logger.trace("evaluate {} {} {}", knowledgeBase, requestData, releaseId);
+        if (!(knowledgeBase instanceof KieBase)) {
+            throw new KiePMMLException(String.format("Expecting KieBase, received %s", knowledgeBase.getClass().getName()));
+        }
         final PMML4Result toReturn = getPMML4Result(targetField);
-        KiePMMLSessionUtils.Builder builder = KiePMMLSessionUtils.builder(name, releaseId, toReturn)
+        KiePMMLSessionUtils.Builder builder = KiePMMLSessionUtils.builder((InternalKnowledgeBase)knowledgeBase, name, releaseId, toReturn)
                 .withObjectsInSession(requestData, fieldTypeMap)
                 .withOutputFieldsMap(outputFieldsMap);
         if (logger.isDebugEnabled()) {
@@ -76,11 +85,9 @@ public abstract class KiePMMLDroolsModel extends KiePMMLModel {
         return toReturn;
     }
 
-    private PMML4Result getPMML4Result(final String targetField) {
-        PMML4Result toReturn = new PMML4Result();
-        toReturn.setResultCode(ResultCode.FAIL.getName());
-        toReturn.setResultObjectName(targetField);
-        return toReturn;
+    @Override
+    public String getKModulePackageName() {
+        return getSanitizedPackageName(name);
     }
 
     @Override
@@ -116,6 +123,13 @@ public abstract class KiePMMLDroolsModel extends KiePMMLModel {
     @Override
     public int hashCode() {
         return Objects.hash(outputFields, fieldTypeMap);
+    }
+
+    private PMML4Result getPMML4Result(final String targetField) {
+        PMML4Result toReturn = new PMML4Result();
+        toReturn.setResultCode(ResultCode.FAIL.getName());
+        toReturn.setResultObjectName(targetField);
+        return toReturn;
     }
 
     public abstract static class Builder<T extends KiePMMLDroolsModel> extends KiePMMLModel.Builder<T> {
