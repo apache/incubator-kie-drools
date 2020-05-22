@@ -13,7 +13,7 @@ image::dmn/dmn-gs-traffic-violation-test-scenarios.png[]
 . On the *traffic-violation* project's home screen, click *Add Asset* to open the *Add Asset* screen.
 . Click *Test Scenario* to open the *Create new Test Scenario* dialog.
 .. Enter `Violation Scenarios` in the *Test Scenario* field.
-.. From the *Package* list, select `org.kie.example.traffic.traffic_violation`.
+.. From the *Package* list, select `com.myspace.traffic_violation`.
 .. Select `DMN` as the *Source type*.
 .. Click the *Choose DMN asset* text field and select the path to the DMN asset.
 .. Click *Ok* to open the *Violation Scenarios* test scenario in the *Test Scenarios* designer.
