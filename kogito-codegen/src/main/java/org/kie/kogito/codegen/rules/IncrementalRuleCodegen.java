@@ -168,7 +168,7 @@ public class IncrementalRuleCodegen extends AbstractGenerator {
             ResourceType.DRL,
             ResourceType.DTABLE
     };
-    private static final String grafanaTemplatePath = "/grafana-dashboard-template/dashboard-template.json";
+    private static final String operationalDashboardDmnTemplate = "/grafana-dashboard-template/operational-dashboard-template.json";
     private final Collection<Resource> resources;
     private RuleUnitContainerGenerator moduleGenerator;
 
@@ -385,9 +385,10 @@ public class IncrementalRuleCodegen extends AbstractGenerator {
 
     private void generateQueryEndpoint( List<DroolsError> errors, List<org.kie.kogito.codegen.GeneratedFile> generatedFiles, QueryEndpointGenerator query ) {
         if (useMonitoring){
-            String dashboard = GrafanaConfigurationWriter.generateDashboardForEndpoint(grafanaTemplatePath, query.getEndpointName());
+            String dashboard = GrafanaConfigurationWriter.generateOperationalDashboard(operationalDashboardDmnTemplate, query.getEndpointName());
+
             generatedFiles.add(new org.kie.kogito.codegen.GeneratedFile( org.kie.kogito.codegen.GeneratedFile.Type.RESOURCE,
-                                                                        "dashboards/dashboard-endpoint-" + query.getEndpointName() + ".json",
+                                                                        "dashboards/operational-dashboard-" + query.getEndpointName() + ".json",
                                                                         dashboard));
         }
 

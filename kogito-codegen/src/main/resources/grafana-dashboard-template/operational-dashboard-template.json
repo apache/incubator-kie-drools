@@ -481,7 +481,7 @@
     ]
   },
   "timezone": "",
-  "title": "$handlerName$ endpoint metrics",
+  "title": "",
   "uid": "$uid$",
   "version": 14
 }

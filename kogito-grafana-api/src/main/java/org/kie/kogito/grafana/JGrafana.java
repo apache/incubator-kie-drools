@@ -151,6 +151,17 @@ public class JGrafana {
     }
 
     /**
+     * Sets the dashboard title.
+     *
+     * @param title: The title of the dashboard.
+     * @return: The updated object.
+     */
+    public JGrafana setTitle(String title) {
+        this.dashboard.title = title;
+        return this;
+    }
+
+    /**
      * Writes the dashboard to a file.
      *
      * @param file: The file to be written.

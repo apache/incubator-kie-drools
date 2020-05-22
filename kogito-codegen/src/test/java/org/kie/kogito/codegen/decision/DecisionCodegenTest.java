@@ -98,11 +98,15 @@ public class DecisionCodegenTest {
 
         List<GeneratedFile> dashboards = generatedFiles.stream().filter(x -> x.getType() == GeneratedFile.Type.RESOURCE).collect(Collectors.toList());
 
-        assertEquals(1, dashboards.size());
+        assertEquals(2, dashboards.size());
 
-        JGrafana vacationDashboard = JGrafana.parse(new String(dashboards.stream().filter(x -> x.relativePath().contains("Vacations.json")).findFirst().get().contents()));
+        JGrafana vacationOperationalDashboard = JGrafana.parse(new String(dashboards.stream().filter(x -> x.relativePath().contains("operational-dashboard-Vacations.json")).findFirst().get().contents()));
 
-        assertEquals(7, vacationDashboard.getDashboard().panels.size());
+        assertEquals(6, vacationOperationalDashboard.getDashboard().panels.size());
+
+        JGrafana vacationDomainDashboard = JGrafana.parse(new String(dashboards.stream().filter(x -> x.relativePath().contains("domain-dashboard-Vacations.json")).findFirst().get().contents()));
+
+        assertEquals(1, vacationDomainDashboard.getDashboard().panels.size());
     }
 
     @Test
