@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 https://maven.apache.org/xsd/maven-4.0.0.xsd">
 
   <modelVersion>4.0.0</modelVersion>
   <parent>
@@ -115,6 +115,19 @@
       <modules>
         <module>optaplanner-docs</module>
         <module>optaplanner-distribution</module>
+      </modules>
+    </profile>
+    <profile>
+      <id>notReleasedProfile</id>
+      <activation>
+        <property>
+          <!-- Build the quickstarts by default during development to see failures early -->
+          <!-- But don't release the quickstart artifacts in a Maven repo such as Maven Central -->
+          <name>!release</name>
+        </property>
+      </activation>
+      <modules>
+        <module>optaplanner-quickstarts</module>
       </modules>
     </profile>
 
