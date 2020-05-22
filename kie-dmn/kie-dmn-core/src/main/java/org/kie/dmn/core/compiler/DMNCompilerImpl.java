@@ -287,12 +287,12 @@ public class DMNCompilerImpl implements DMNCompiler {
     }
 
     protected static Resource resolveRelativeResource(ClassLoader classLoader, DMNModelImpl model, Import i, DMNModelInstrumentedBase node, Function<String, Reader> relativeResolver) {
-        if (model.getResource() != null) {
-            URL pmmlURL = pmmlImportURL(classLoader, model, i, node);
-            return ResourceFactory.newUrlResource(pmmlURL);
-        } else if (relativeResolver != null) {
+        if (relativeResolver != null) {
             Reader reader = relativeResolver.apply(i.getLocationURI());
             return ResourceFactory.newReaderResource(reader);
+        } else if (model.getResource() != null) {
+            URL pmmlURL = pmmlImportURL(classLoader, model, i, node);
+            return ResourceFactory.newUrlResource(pmmlURL);
         }
         throw new UnsupportedOperationException("Unable to determine relative Resource for import named: " + i.getName());
     }
