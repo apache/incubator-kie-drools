@@ -1,0 +1,54 @@
+@Library('jenkins-pipeline-shared-libraries')_
+
+pipeline {
+    agent {
+        label 'kie-rhel7 && kie-mem16g'
+    }
+    triggers {
+        cron('H 20 * * 1-5')
+    }
+    tools {
+        maven 'kie-maven-3.6.2'
+        jdk 'kie-jdk11'
+    }
+    options {
+        buildDiscarder logRotator(artifactDaysToKeepStr: '', artifactNumToKeepStr: '', daysToKeepStr: '', numToKeepStr: '10')
+        timeout(time: 120, unit: 'MINUTES')
+    }
+    environment {
+        KOGITO_CI_EMAIL_TO = credentials('KOGITO_CI_EMAIL_TO')
+        SONARCLOUD_TOKEN = credentials('SONARCLOUD_TOKEN')
+        MAVEN_OPTS = '-Xms1024m -Xmx4g'
+    }
+    stages {
+        stage('Build kogito-apps') {
+            steps {
+                script {
+                    maven.runMavenWithSubmarineSettings('clean install -Prun-code-coverage', false)
+                }
+            }
+        }
+        stage('Analyze kogito-apps') {
+            steps {
+                script {
+                    maven.runMavenWithSubmarineSettings('-e -nsu validate -Psonarcloud-analysis', false)
+                }
+            }
+        }
+    }
+    post {
+        failure {
+            emailext body: 'Kogito Apps daily Sonar #${BUILD_NUMBER} was: ' + "${currentBuild.currentResult}" +  '\n' +
+                            'Please look here: ${BUILD_URL} ',
+                     subject: 'Kogito Apps daily Sonar #${BRANCH_NAME}',
+                     to: env.KOGITO_CI_EMAIL_TO
+            script {
+                mailer.sendEmailFailure()
+            }         
+        }
+        always {
+            junit '**/target/surefire-reports/**/*.xml, **/target/failsafe-reports/**/*.xml'
+            cleanWs()
+        }
+    }
+}
