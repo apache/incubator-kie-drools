@@ -68,7 +68,8 @@ public abstract class KiePMMLModel extends AbstractKiePMMLBase {
      * @return
      */
     public String getKModulePackageName() {
-        return this.getClass().getPackage().getName();
+        String className  = this.getClass().getCanonicalName();
+        return className.substring(0, className.lastIndexOf('.'));
     }
 
     /**
