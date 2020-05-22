@@ -6,7 +6,7 @@ import { ApolloProvider } from 'react-apollo';
 import Keycloak from 'keycloak-js';
 import axios from 'axios';
 import { Nav, NavList, NavItem } from '@patternfly/react-core';
-import { ServerUnavailable } from '@kogito-apps/common/src/components';
+import { ServerUnavailable } from '@kogito-apps/common';
 import BaseComponent from './components/Templates/BaseComponent/BaseComponent';
 import { HttpLink } from 'apollo-link-http';
 import { onError } from 'apollo-link-error';

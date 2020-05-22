@@ -5,7 +5,7 @@ import {
   PageLayout,
   PageNotFound,
   NoData
-} from '@kogito-apps/common/src/components';
+} from '@kogito-apps/common';
 import DataListContainer from '../DataListContainer/DataListContainer';
 import ProcessDetailsPage from '../ProcessDetailsPage/ProcessDetailsPage';
 import DomainExplorerDashboard from '../DomainExplorerDashboard/DomainExplorerDashboard';

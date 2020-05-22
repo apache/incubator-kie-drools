@@ -6,7 +6,7 @@ import {
   GridItem,
   PageSection
 } from '@patternfly/react-core';
-import { ServerErrors } from '@kogito-apps/common/src/components';
+import { ServerErrors } from '@kogito-apps/common';
 import React, { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import PageTitleComponent from '../../Molecules/PageTitleComponent/PageTitleComponent';

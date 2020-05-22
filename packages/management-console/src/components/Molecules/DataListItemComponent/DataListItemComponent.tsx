@@ -15,7 +15,7 @@ import {
   Bullseye,
   KebabToggle
 } from '@patternfly/react-core';
-import { ServerErrors } from '@kogito-apps/common/src/components';
+import { ServerErrors } from '@kogito-apps/common';
 import { Link } from 'react-router-dom';
 import SpinnerComponent from '../../Atoms/SpinnerComponent/SpinnerComponent';
 import {

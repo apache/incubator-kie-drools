@@ -4,7 +4,7 @@ import {
   NavList,
   NavItem
 } from '@patternfly/react-core';
-import { PageLayout } from '@kogito-apps/common/src/components';
+import { PageLayout } from '@kogito-apps/common';
 import { Redirect, Route, Link, Switch } from 'react-router-dom';
 import taskConsoleLogo from '../../../static/taskConsoleLogo.svg';
 import DataListContainerExpandable from "../DataListContainerExpandable/DataListContainerExpandable";

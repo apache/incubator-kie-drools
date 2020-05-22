@@ -10,7 +10,7 @@ import {
   Card,
   Bullseye
 } from '@patternfly/react-core';
-import { ServerErrors } from '@kogito-apps/common/src/components';
+import { ServerErrors } from '@kogito-apps/common';
 import { FilterIcon } from '@patternfly/react-icons';
 import { Link } from 'react-router-dom';
 import { Redirect } from 'react-router';
