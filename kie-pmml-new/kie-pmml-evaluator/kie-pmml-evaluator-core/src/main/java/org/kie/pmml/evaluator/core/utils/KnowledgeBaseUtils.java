@@ -32,6 +32,10 @@ public class KnowledgeBaseUtils {
 
     private static final Logger logger = LoggerFactory.getLogger(KnowledgeBaseUtils.class);
 
+    private KnowledgeBaseUtils() {
+        // Avoid instantiation
+    }
+
     public static List<KiePMMLModel> getModels(final KieBase knowledgeBase) {
         logger.trace("getModels {}", knowledgeBase);
         List<KiePMMLModel> models = new ArrayList<>();
