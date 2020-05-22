@@ -44,8 +44,7 @@ public interface PMMLRuntime {
      * Evaluate the model, given the context
      * @param modelName the name of the model to evaluate
      * @param context the context with all the input variables
-     * @param releaseId Used to indirectly retrieve same instance of kiecontainer
      * @return the result of the evaluation
      */
-    PMML4Result evaluate(String modelName, PMMLContext context, String releaseId);
+    PMML4Result evaluate(String modelName, PMMLContext context);
 }
