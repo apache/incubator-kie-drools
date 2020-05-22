@@ -30,11 +30,9 @@ import java.util.Arrays;
 import java.util.Iterator;
 import java.util.List;
 import java.util.PriorityQueue;
-import java.util.Properties;
 
 import org.drools.core.common.DefaultFactHandle;
 import org.drools.core.common.EventFactHandle;
-import org.drools.ruleunit.DataSource;
 import org.kie.api.KieBase;
 import org.kie.api.KieServices;
 import org.kie.api.builder.KieBuilder;
@@ -58,6 +56,7 @@ import org.kie.api.runtime.rule.FactHandle;
 import org.kie.api.runtime.rule.QueryResults;
 import org.kie.api.runtime.rule.Variable;
 import org.kie.internal.io.ResourceFactory;
+import org.drools.ruleunit.DataSource;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
@@ -73,47 +72,12 @@ public abstract class DroolsAbstractPMMLTest {
     protected DataSource<PMMLRequestData> data;
     protected DataSource<PMML4Result> resultData;
     protected DataSource<PMML4Data> pmmlData;
-    protected KieBase kbase;
+
     private KieSession kSession;
+    protected KieBase kbase;
 
     public DroolsAbstractPMMLTest() {
         super();
-        Properties props = System.getProperties();
-        props.setProperty("drools.dump.dir", "/home/gcardosi/NotBackedUp/old_pmml_dump_dir");
-    }
-
-    private static KieBase readKnowledgeBase(InputStream theory) {
-        return readKnowledgeBase(Arrays.asList(theory));
-    }
-
-    private static KieBase readKnowledgeBase(List<InputStream> theory) {
-        KieServices ks = KieServices.Factory.get();
-        KieRepository kr = ks.getRepository();
-        KieFileSystem kfs = ks.newKieFileSystem();
-
-        for (int j = 0; j < theory.size(); j++) {
-            Resource res = ks.getResources().newInputStreamResource(theory.get(j));
-            kfs.write(RESOURCE_PATH + "source_" + j + ".drl", res);
-        }
-
-        KieModuleModel model = ks.newKieModuleModel();
-        KieBaseModel kbModel = model.newKieBaseModel(DEFAULT_KIEBASE)
-                .setDefault(true)
-                .addPackage(BASE_PACK)
-                .setEventProcessingMode(EventProcessingOption.STREAM);
-
-        kfs.writeKModuleXML(model.toXML());
-
-        KieBuilder kb = ks.newKieBuilder(kfs);
-
-        kb.buildAll();
-        if (kb.getResults().hasMessages(Message.Level.ERROR)) {
-            throw new RuntimeException("Build Errors:\n" + kb.getResults().toString());
-        }
-
-        KieContainer kContainer = ks.newKieContainer(kr.getDefaultReleaseId());
-
-        return kContainer.getKieBase();
     }
 
     protected KieSession getModelSession(String pmmlSource) {
@@ -191,6 +155,40 @@ public abstract class DroolsAbstractPMMLTest {
             getKSession().dispose();
         }
         setKSession(getKbase().newKieSession());
+    }
+
+    private static KieBase readKnowledgeBase(InputStream theory) {
+        return readKnowledgeBase(Arrays.asList(theory));
+    }
+
+    private static KieBase readKnowledgeBase(List<InputStream> theory) {
+        KieServices ks = KieServices.Factory.get();
+        KieRepository kr = ks.getRepository();
+        KieFileSystem kfs = ks.newKieFileSystem();
+
+        for (int j = 0; j < theory.size(); j++) {
+            Resource res = ks.getResources().newInputStreamResource(theory.get(j));
+            kfs.write(RESOURCE_PATH + "source_" + j + ".drl", res);
+        }
+
+        KieModuleModel model = ks.newKieModuleModel();
+        KieBaseModel kbModel = model.newKieBaseModel(DEFAULT_KIEBASE)
+                .setDefault(true)
+                .addPackage(BASE_PACK)
+                .setEventProcessingMode(EventProcessingOption.STREAM);
+
+        kfs.writeKModuleXML(model.toXML());
+
+        KieBuilder kb = ks.newKieBuilder(kfs);
+
+        kb.buildAll();
+        if (kb.getResults().hasMessages(Message.Level.ERROR)) {
+            throw new RuntimeException("Build Errors:\n" + kb.getResults().toString());
+        }
+
+        KieContainer kContainer = ks.newKieContainer(kr.getDefaultReleaseId());
+
+        return kContainer.getKieBase();
     }
 
     public String reportWMObjects(KieSession session) {
@@ -382,4 +380,5 @@ public abstract class DroolsAbstractPMMLTest {
         }
         return value;
     }
+
 }
