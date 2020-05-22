@@ -15,14 +15,10 @@ image::getting-started/spaces-teams.png[]
 
 . Click *Add Project*.
 . Enter `traffic-violation` in the *Name* field.
-. Click *Configure Advanced Options* to expand the GAV fields and enter the following values:
-* *Group ID*: `org.kie.example.traffic`
-* *Artifact ID*: `traffic-violation`
-* *Version*: `1.0.0`
 . Click *Add*.
 +
 
-.Add Project window with expanded Advanced Options
+.Add Project window
 image::dmn/dmn-new-project-gs.png[]
 +
 The *Assets* view of the project opens.
