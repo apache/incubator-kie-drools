@@ -92,28 +92,28 @@ public class KiePMMLSessionUtils {
 
     private StatelessKieSession getKieSession(final InternalKnowledgeBase knowledgeBase, final String releaseIdString) {
         StatelessKieSession toReturn;
-        KieServices kieServices = null;
-        KieContainer kieContainer = null;
+//        KieServices kieServices = null;
+//        KieContainer kieContainer = null;
         try {
-            String sessionName = modelName + "Session";
+//            String sessionName = modelName + "Session";
             toReturn = knowledgeBase.newStatelessKieSession();
+//            if (toReturn == null) {
+//                logger.trace("Failed to create default StatelessKieSession from InternalKnowledgeBase {}", knowledgeBase);
+//                kieServices = KieServices.get();
+//                kieContainer = kieServices.newKieClasspathContainer();
+//                logger.trace("Create {} StatelessKieSession from KieContainer {}", sessionName, kieContainer);
+//                toReturn = kieContainer.newStatelessKieSession(modelName + "Session");
+//            }
+//            if (toReturn == null) {
+//                logger.trace("Failed to create {} StatelessKieSession from KieContainer {}", sessionName, kieContainer);
+//                String[] gav = releaseIdString.split(":");
+//                final ReleaseId releaseId = kieServices.newReleaseId(gav[0], gav[1], gav[2]);
+//                kieContainer = kieServices.newKieContainer(releaseId);
+//                logger.trace("Create default StatelessKieSession from KieContainer {}", kieContainer);
+//                toReturn = kieContainer.newStatelessKieSession();
+//            }
             if (toReturn == null) {
-                logger.trace("Failed to create default StatelessKieSession from InternalKnowledgeBase {}", knowledgeBase);
-                kieServices = KieServices.get();
-                kieContainer = kieServices.newKieClasspathContainer();
-                logger.trace("Create {} StatelessKieSession from KieContainer {}", sessionName, kieContainer);
-                toReturn = kieContainer.newStatelessKieSession(modelName + "Session");
-            }
-            if (toReturn == null) {
-                logger.trace("Failed to create {} StatelessKieSession from KieContainer {}", sessionName, kieContainer);
-                String[] gav = releaseIdString.split(":");
-                final ReleaseId releaseId = kieServices.newReleaseId(gav[0], gav[1], gav[2]);
-                kieContainer = kieServices.newKieContainer(releaseId);
-                logger.trace("Create default StatelessKieSession from KieContainer {}", kieContainer);
-                toReturn = kieContainer.newStatelessKieSession();
-            }
-            if (toReturn == null) {
-                throw new KiePMMLException("Failed to create KieSession for model " + modelName + " and releaseId " + releaseIdString);
+                throw new KiePMMLException("Failed to create KieSession for model " + modelName/* + " and releaseId " + releaseIdString*/);
             }
             return toReturn;
         } catch (Throwable t) {
