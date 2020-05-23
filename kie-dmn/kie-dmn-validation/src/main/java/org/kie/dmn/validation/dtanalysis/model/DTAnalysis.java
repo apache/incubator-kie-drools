@@ -323,6 +323,10 @@ public class DTAnalysis {
                         }
                     }
                     break;
+                case PRIORITY:
+                case FIRST:
+                    LOG.debug("In case of HitPolicy P and F, no overalps is reported, DROOLS-5363: {}", overlap);
+                    break;
                 default:
                     results.add(overlapToStandardDMNMessage(overlap));
                     break;

@@ -75,15 +75,26 @@ public class OverlapHitPolicyTest extends AbstractDTAnalysisTest {
             case ANY:
                 msg = DMNMessageType.DECISION_TABLE_OVERLAP_HITPOLICY_ANY;
                 break;
+            case PRIORITY:
+            case FIRST:
+                msg = null;
+                break;
             default:
                 msg = DMNMessageType.DECISION_TABLE_OVERLAP;
                 break;
         }
         final DMNMessageType whichMsg = msg;
 
-        LOG.debug("Testing for {} I am expecting a DMNMessage of type {}", hp, whichMsg);
-        assertTrue("It should contain at least 1 DMNMessage for the type " + whichMsg,
-                   validate.stream().anyMatch(p -> p.getMessageType().equals(whichMsg)));
+        if (whichMsg != null) {
+            LOG.debug("Testing for {} I am expecting a DMNMessage of type {}", hp, whichMsg);
+            assertTrue("It should contain at least 1 DMNMessage for the type " + whichMsg,
+                       validate.stream().anyMatch(p -> p.getMessageType().equals(whichMsg)));
+        } else {
+            LOG.debug("Testing for {} I am expecting there is NOT DMNMessage pertaining to Overlaps", hp);
+            assertTrue(validate.stream().noneMatch(p -> p.getMessageType().equals(DMNMessageType.DECISION_TABLE_OVERLAP_HITPOLICY_UNIQUE)) &&
+                       validate.stream().noneMatch(p -> p.getMessageType().equals(DMNMessageType.DECISION_TABLE_OVERLAP_HITPOLICY_ANY)) &&
+                       validate.stream().noneMatch(p -> p.getMessageType().equals(DMNMessageType.DECISION_TABLE_OVERLAP)));
+        }
     }
 
     private void checkAnalysis(List<DMNMessage> validate) {
