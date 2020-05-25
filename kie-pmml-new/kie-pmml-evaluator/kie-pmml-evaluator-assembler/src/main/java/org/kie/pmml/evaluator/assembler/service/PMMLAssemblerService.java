@@ -130,13 +130,14 @@ public class PMMLAssemblerService implements KieAssemblerService {
         String[] classNamePackageName = getFactoryClassNamePackageName(resource);
         String factoryClassName = classNamePackageName[0];
         String packageName = classNamePackageName[1];
+        String fullFactoryClassName = packageName + "." + factoryClassName;
         try {
-            final Class<? extends KiePMMLModelFactory> aClass = (Class<? extends KiePMMLModelFactory>) Class.forName(packageName + "." + factoryClassName);
+            final Class<? extends KiePMMLModelFactory> aClass = (Class<? extends KiePMMLModelFactory>) kbuilderImpl.getRootClassLoader().loadClass(fullFactoryClassName);
             return aClass.newInstance().getKiePMMLModels();
         } catch (ClassNotFoundException e) {
-            logger.info(String.format("%s not found in kjar, going to compile model", factoryClassName));
+            logger.info(String.format("%s class not found in rootClassLoader, going to compile model", fullFactoryClassName));
         } catch (Exception e) {
-            throw new KiePMMLException("Exception while instantiating " + factoryClassName, e);
+            throw new KiePMMLException("Exception while instantiating " + fullFactoryClassName, e);
         }
         PMMLCompiler pmmlCompiler = kbuilderImpl.getCachedOrCreate(PMML_COMPILER_CACHE_KEY, () -> getCompiler(kbuilderImpl));
         try {
