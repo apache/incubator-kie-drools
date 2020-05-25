@@ -50,7 +50,7 @@ class DummyKnowledgeRuntime implements InternalKnowledgeRuntime {
 
     @Override
     public InternalAgenda getAgenda() {
-        throw new UnsupportedOperationException();
+        return null;
     }
 
     @Override

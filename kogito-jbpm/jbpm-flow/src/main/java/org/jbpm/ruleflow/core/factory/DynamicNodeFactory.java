@@ -48,6 +48,12 @@ public class DynamicNodeFactory extends CompositeContextNodeFactory {
     }
 
     @Override
+    public DynamicNodeFactory name(String name) {
+        super.name(name);
+        return this;
+    }
+
+    @Override
     public DynamicNodeFactory variable(String name, DataType type) {
         super.variable(name, type);
         return this;

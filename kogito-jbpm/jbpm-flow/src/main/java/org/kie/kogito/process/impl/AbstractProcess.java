@@ -71,7 +71,7 @@ public abstract class AbstractProcess<T extends Model> implements Process<T> {
     public String id() {
         return legacyProcess().getId();
     }
-    
+
     public String name() {
         return legacyProcess().getName();
     }
@@ -79,11 +79,6 @@ public abstract class AbstractProcess<T extends Model> implements Process<T> {
     @Override
     public T createModel() {
         return null;
-    }
-
-    @Override
-    public ProcessInstance<T> createInstance(Model m) {
-        return createInstance((T) m);
     }
 
     @Override
@@ -147,7 +142,6 @@ public abstract class AbstractProcess<T extends Model> implements Process<T> {
     }
 
     protected ExpirationTime configureTimerInstance(Timer timer) {
-        long duration = -1;
         switch (timer.getTimeType()) {
             case Timer.TIME_CYCLE:
                 // when using ISO date/time period is not set
@@ -165,8 +159,7 @@ public abstract class AbstractProcess<T extends Model> implements Process<T> {
                 }
 
             case Timer.TIME_DURATION:
-
-                duration = DateTimeUtils.parseDuration(timer.getDelay());
+                long duration = DateTimeUtils.parseDuration(timer.getDelay());
                 return DurationExpirationTime.repeat(duration);
 
             case Timer.TIME_DATE:
@@ -193,14 +186,15 @@ public abstract class AbstractProcess<T extends Model> implements Process<T> {
     public void setProcessInstancesFactory(ProcessInstancesFactory processInstancesFactory) {
         this.processInstancesFactory = processInstancesFactory;
     }
-    
+
     public EventListener eventListener() {
     	return completionEventListener;
     }
-    
+
     protected class CompletionEventListener implements EventListener {
-        
+
         public CompletionEventListener() {
+            //Do nothing
 		}
 
 		@Override

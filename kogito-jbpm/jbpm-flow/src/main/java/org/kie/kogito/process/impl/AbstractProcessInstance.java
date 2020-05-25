@@ -16,6 +16,7 @@
 package org.kie.kogito.process.impl;
 
 import java.lang.reflect.Field;
+import java.util.Collection;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
@@ -26,9 +27,12 @@ import java.util.Set;
 import java.util.function.Consumer;
 import java.util.function.Supplier;
 import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 import org.jbpm.process.instance.InternalProcessRuntime;
 import org.jbpm.ruleflow.core.RuleFlowProcess;
+import org.jbpm.ruleflow.instance.RuleFlowProcessInstance;
+import org.jbpm.workflow.core.node.MilestoneNode;
 import org.jbpm.workflow.instance.NodeInstance;
 import org.jbpm.workflow.instance.NodeInstanceContainer;
 import org.jbpm.workflow.instance.WorkflowProcessInstance;
@@ -54,9 +58,16 @@ import org.kie.kogito.process.ProcessInstanceDuplicatedException;
 import org.kie.kogito.process.ProcessInstanceNotFoundException;
 import org.kie.kogito.process.Signal;
 import org.kie.kogito.process.WorkItem;
+import org.kie.kogito.process.casemgmt.ItemDescription.Status;
+import org.kie.kogito.process.casemgmt.Milestone;
 import org.kie.kogito.process.workitem.Policy;
 import org.kie.kogito.process.workitem.Transition;
 import org.kie.kogito.services.uow.ProcessInstanceWorkUnit;
+
+import static org.jbpm.ruleflow.core.Metadata.UNIQUE_ID;
+import static org.kie.kogito.process.casemgmt.ItemDescription.Status.ACTIVE;
+import static org.kie.kogito.process.casemgmt.ItemDescription.Status.AVAILABLE;
+import static org.kie.kogito.process.casemgmt.ItemDescription.Status.COMPLETED;
 
 public abstract class AbstractProcessInstance<T extends Model> implements ProcessInstance<T> {
 
@@ -163,14 +174,13 @@ public abstract class AbstractProcessInstance<T extends Model> implements Proces
             this.status = legacyProcessInstance.getState();
         }
     }
-    
+
     @SuppressWarnings({"unchecked", "rawtypes"})
     protected void addToUnitOfWork(Consumer<ProcessInstance<T>> action) {
         ((InternalProcessRuntime) rt).getUnitOfWorkManager().currentUnitOfWork().intercept(new ProcessInstanceWorkUnit(this, action));
     }
 
     public void abort() {
-
         String pid = legacyProcessInstance().getId();
         unbind(variables, legacyProcessInstance().getVariables());        
         this.rt.abortProcessInstance(pid);
@@ -299,7 +309,7 @@ public abstract class AbstractProcessInstance<T extends Model> implements Proces
         removeOnFinish();
     }
 
-    private org.kie.api.runtime.process.ProcessInstance legacyProcessInstance() {
+    protected org.kie.api.runtime.process.ProcessInstance legacyProcessInstance() {
         if (this.legacyProcessInstance == null) {
             this.legacyProcessInstance = reloadSupplier.get();
             if (this.legacyProcessInstance == null) {
@@ -368,6 +378,35 @@ public abstract class AbstractProcessInstance<T extends Model> implements Proces
         return legacyProcessInstance().getEventDescriptions();
     }
 
+    @Override
+    public Collection<Milestone> milestones() {
+        return getNodes(MilestoneNode.class)
+                .map(n -> {
+                    String uid = (String) n.getMetaData().get(UNIQUE_ID);
+                    return new Milestone(uid, n.getName(), getStatus(uid));
+                })
+                .collect(Collectors.toList());
+    }
+
+    private Stream<Node> getNodes(Class<? extends Node> nodeClass) {
+        if (!(legacyProcessInstance instanceof RuleFlowProcessInstance)) {
+            return Stream.empty();
+        }
+        RuleFlowProcessInstance processInstance = ((RuleFlowProcessInstance) legacyProcessInstance);
+        return Stream.of(processInstance.getNodeContainer().getNodes())
+                .filter(nodeClass::isInstance);
+    }
+
+    private Status getStatus(String uid) {
+        RuleFlowProcessInstance processInstance = ((RuleFlowProcessInstance) legacyProcessInstance);
+        if (processInstance.getCompletedNodeIds().contains(uid)) {
+            return COMPLETED;
+        }
+        if (processInstance.getActiveNodeIds().contains(uid)) {
+            return ACTIVE;
+        }
+        return AVAILABLE;
+    }
 
     protected void removeOnFinish() {
 

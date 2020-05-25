@@ -70,6 +70,8 @@ import org.kie.api.runtime.Environment;
 import org.kie.api.runtime.process.NodeInstance;
 import org.kie.api.runtime.process.NodeInstanceContainer;
 
+import static org.jbpm.ruleflow.core.Metadata.UNIQUE_ID;
+
 public class NodeInstanceFactoryRegistry {
 
     private static final NodeInstanceFactoryRegistry INSTANCE = new NodeInstanceFactoryRegistry();
@@ -200,11 +202,11 @@ public class NodeInstanceFactoryRegistry {
         nodeInstance.setNodeId(node.getId());
         nodeInstance.setNodeInstanceContainer(nodeInstanceContainer);
         nodeInstance.setProcessInstance(processInstance);
-        String uniqueId = (String) node.getMetaData().get("UniqueId");
+        String uniqueId = (String) node.getMetaData().get(UNIQUE_ID);
         if (uniqueId == null) {
             uniqueId = node.getId() + "";
         }
-        nodeInstance.setMetaData("UniqueId", uniqueId);
+        nodeInstance.setMetaData(UNIQUE_ID, uniqueId);
         int level = ((org.jbpm.workflow.instance.NodeInstanceContainer) nodeInstanceContainer).getLevelForNode(uniqueId);
         nodeInstance.setLevel(level);
         return nodeInstance;

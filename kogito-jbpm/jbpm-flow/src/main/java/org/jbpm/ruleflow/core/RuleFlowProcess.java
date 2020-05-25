@@ -145,8 +145,6 @@ public class RuleFlowProcess extends WorkflowProcessImpl {
         return null;
     }
 
-
-
     public List<Node> getAutoStartNodes() {
         if (!isDynamic()) {
             return Collections.emptyList();

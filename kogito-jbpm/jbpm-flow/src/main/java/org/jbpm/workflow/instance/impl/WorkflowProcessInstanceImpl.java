@@ -16,17 +16,15 @@
 
 package org.jbpm.workflow.instance.impl;
 
-import static org.jbpm.workflow.instance.impl.DummyEventListener.EMPTY_EVENT_LISTENER;
-
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.Date;
 import java.util.HashMap;
-import java.util.Iterator;
 import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 import java.util.Set;
 import java.util.UUID;
 import java.util.concurrent.CopyOnWriteArrayList;
@@ -86,6 +84,17 @@ import org.mvel2.integration.VariableResolverFactory;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import static org.jbpm.ruleflow.core.Metadata.COMPENSATION;
+import static org.jbpm.ruleflow.core.Metadata.CONDITION;
+import static org.jbpm.ruleflow.core.Metadata.CORRELATION_KEY;
+import static org.jbpm.ruleflow.core.Metadata.CUSTOM_ASYNC;
+import static org.jbpm.ruleflow.core.Metadata.CUSTOM_SLA_DUE_DATE;
+import static org.jbpm.ruleflow.core.Metadata.EVENT_TYPE;
+import static org.jbpm.ruleflow.core.Metadata.EVENT_TYPE_SIGNAL;
+import static org.jbpm.ruleflow.core.Metadata.IS_FOR_COMPENSATION;
+import static org.jbpm.ruleflow.core.Metadata.UNIQUE_ID;
+import static org.jbpm.workflow.instance.impl.DummyEventListener.EMPTY_EVENT_LISTENER;
+
 /**
  * Default implementation of a RuleFlow process instance.
  */
@@ -142,7 +151,7 @@ public abstract class WorkflowProcessInstanceImpl extends ProcessInstanceImpl
 
     @Override
     public int getLevelForNode(String uniqueID) {
-        if ("true".equalsIgnoreCase(System.getProperty("jbpm.loop.level.disabled"))) {
+        if (Boolean.parseBoolean(System.getProperty("jbpm.loop.level.disabled"))) {
             return 1;
         }
 
@@ -178,13 +187,11 @@ public abstract class WorkflowProcessInstanceImpl extends ProcessInstanceImpl
         Collection<NodeInstance> result = nodeInstances;
         if (recursive) {
             result = new ArrayList<>(result);
-            for (Iterator<NodeInstance> iterator = nodeInstances.iterator(); iterator
-                    .hasNext(); ) {
-                NodeInstance nodeInstance = iterator.next();
+            for (NodeInstance nodeInstance : nodeInstances) {
                 if (nodeInstance instanceof NodeInstanceContainer) {
                     result
                             .addAll(((org.jbpm.workflow.instance.NodeInstanceContainer) nodeInstance)
-                                            .getNodeInstances(true));
+                                    .getNodeInstances(true));
                 }
             }
         }
@@ -193,22 +200,15 @@ public abstract class WorkflowProcessInstanceImpl extends ProcessInstanceImpl
 
     @Override
     public NodeInstance getNodeInstance(String nodeInstanceId) {
-        for (NodeInstance nodeInstance : nodeInstances) {
-            if (nodeInstance.getId().equals(nodeInstanceId)) {
-                return nodeInstance;
-            }
-        }
-        return null;
+        return getNodeInstance(nodeInstanceId, false);
     }
 
     @Override
     public NodeInstance getNodeInstance(String nodeInstanceId, boolean recursive) {
-        for (NodeInstance nodeInstance : getNodeInstances(recursive)) {
-            if (nodeInstance.getId().equals(nodeInstanceId)) {
-                return nodeInstance;
-            }
-        }
-        return null;
+        return getNodeInstances(recursive).stream()
+                .filter(nodeInstance -> Objects.equals(nodeInstance.getId(), nodeInstanceId))
+                .findFirst()
+                .orElse(null);
     }
 
     public List<String> getActiveNodeIds() {
@@ -228,9 +228,7 @@ public abstract class WorkflowProcessInstanceImpl extends ProcessInstanceImpl
 
     @Override
     public NodeInstance getFirstNodeInstance(final long nodeId) {
-        for (final Iterator<NodeInstance> iterator = this.nodeInstances
-                .iterator(); iterator.hasNext(); ) {
-            final NodeInstance nodeInstance = iterator.next();
+        for (final NodeInstance nodeInstance : this.nodeInstances) {
             if (nodeInstance.getNodeId() == nodeId && nodeInstance.getLevel() == getCurrentLevel()) {
                 return nodeInstance;
             }
@@ -240,9 +238,7 @@ public abstract class WorkflowProcessInstanceImpl extends ProcessInstanceImpl
 
     public List<NodeInstance> getNodeInstances(final long nodeId) {
         List<NodeInstance> result = new ArrayList<>();
-        for (final Iterator<NodeInstance> iterator = this.nodeInstances
-                .iterator(); iterator.hasNext(); ) {
-            final NodeInstance nodeInstance = iterator.next();
+        for (final NodeInstance nodeInstance : this.nodeInstances) {
             if (nodeInstance.getNodeId() == nodeId) {
                 result.add(nodeInstance);
             }
@@ -252,8 +248,7 @@ public abstract class WorkflowProcessInstanceImpl extends ProcessInstanceImpl
 
     public List<NodeInstance> getNodeInstances(final long nodeId, final List<NodeInstance> currentView) {
         List<NodeInstance> result = new ArrayList<>();
-        for (final Iterator<NodeInstance> iterator = currentView.iterator(); iterator.hasNext(); ) {
-            final NodeInstance nodeInstance = iterator.next();
+        for (final NodeInstance nodeInstance : currentView) {
             if (nodeInstance.getNodeId() == nodeId) {
                 result.add(nodeInstance);
             }
@@ -265,7 +260,7 @@ public abstract class WorkflowProcessInstanceImpl extends ProcessInstanceImpl
 
         for (Node node : nodeContainer.getNodes()) {
 
-            if (nodeDefinitionId.equals(node.getMetaData().get("UniqueId"))) {
+            if (nodeDefinitionId.equals(node.getMetaData().get(UNIQUE_ID))) {
                 return getNodeInstance(node);
             }
 
@@ -283,14 +278,12 @@ public abstract class WorkflowProcessInstanceImpl extends ProcessInstanceImpl
 
     @Override
     public NodeInstance getNodeInstance(final Node node) {
-        Node actualNode = node;
-
-        NodeInstanceFactory conf = NodeInstanceFactoryRegistry.getInstance(getKnowledgeRuntime().getEnvironment()).getProcessNodeInstanceFactory(actualNode);
+        NodeInstanceFactory conf = NodeInstanceFactoryRegistry.getInstance(getKnowledgeRuntime().getEnvironment()).getProcessNodeInstanceFactory(node);
         if (conf == null) {
             throw new IllegalArgumentException("Illegal node type: "
                                                        + node.getClass());
         }
-        NodeInstanceImpl nodeInstance = (NodeInstanceImpl) conf.getNodeInstance(actualNode, this, this);
+        NodeInstanceImpl nodeInstance = (NodeInstanceImpl) conf.getNodeInstance(node, this, this);
 
         if (nodeInstance == null) {
             throw new IllegalArgumentException("Illegal node type: "
@@ -463,14 +456,14 @@ public abstract class WorkflowProcessInstanceImpl extends ProcessInstanceImpl
 
     @Override
     public String toString() {
-        final StringBuilder sb = new StringBuilder("WorkflowProcessInstance");
-        sb.append(getId());
-        sb.append(" [processId=");
-        sb.append(getProcessId());
-        sb.append(",state=");
-        sb.append(getState());
-        sb.append("]");
-        return sb.toString();
+        return new StringBuilder("WorkflowProcessInstance")
+                .append(getId())
+                .append(" [processId=")
+                .append(getProcessId())
+                .append(",state=")
+                .append(getState())
+                .append("]")
+                .toString();
     }
 
     @Override
@@ -500,7 +493,7 @@ public abstract class WorkflowProcessInstanceImpl extends ProcessInstanceImpl
 
     @Override
     public void configureSLA() {
-        String slaDueDateExpression = (String) getProcess().getMetaData().get("customSLADueDate");
+        String slaDueDateExpression = (String) getProcess().getMetaData().get(CUSTOM_SLA_DUE_DATE);
         if (slaDueDateExpression != null) {
             TimerInstance timer = configureSLATimer(slaDueDateExpression);
             if (timer != null) {
@@ -521,10 +514,9 @@ public abstract class WorkflowProcessInstanceImpl extends ProcessInstanceImpl
         }
         logger.debug("SLA due date is set to {}", slaDueDateExpression);
         InternalKnowledgeRuntime kruntime = getKnowledgeRuntime();
-        long duration = -1;
+        long duration;
         if (kruntime.getEnvironment().get("jbpm.business.calendar") != null) {
             BusinessCalendar businessCalendar = (BusinessCalendar) kruntime.getEnvironment().get("jbpm.business.calendar");
-
             duration = businessCalendar.calculateBusinessTimeAsDuration(slaDueDateExpression);
         } else {
             duration = DateTimeUtils.parseDuration(slaDueDateExpression);
@@ -536,7 +528,7 @@ public abstract class WorkflowProcessInstanceImpl extends ProcessInstanceImpl
         timerInstance.setPeriod(0);
         if (useTimerSLATracking()) {
             ProcessInstanceJobDescription description = ProcessInstanceJobDescription.of(-1L, DurationExpirationTime.after(duration), getId(), getProcessId());
-            timerInstance.setId(((InternalProcessRuntime) kruntime.getProcessRuntime()).getJobsService().scheduleProcessInstanceJob(description));
+            timerInstance.setId(kruntime.getProcessRuntime().getJobsService().scheduleProcessInstanceJob(description));
         }
         return timerInstance;
     }
@@ -557,7 +549,7 @@ public abstract class WorkflowProcessInstanceImpl extends ProcessInstanceImpl
                 addEventListener(((DynamicNode) node).getActivationEventName(), EMPTY_EVENT_LISTENER, true);
             }
         }
-        if (getWorkflowProcess().getMetaData().containsKey("Compensation")) {
+        if (getWorkflowProcess().getMetaData().containsKey(COMPENSATION)) {
             addEventListener("Compensation", new CompensationEventListener(this), true);
         }
     }
@@ -805,12 +797,12 @@ public abstract class WorkflowProcessInstanceImpl extends ProcessInstanceImpl
             }
             if (n instanceof BoundaryEventNode) {
                 BoundaryEventNode boundaryEventNode = (BoundaryEventNode) n;
-                StateBasedNodeInstance attachedToNodeInstance = (StateBasedNodeInstance) getNodeInstances(true).stream().filter( ni -> ni.getNode().getMetaData().get("UniqueId").equals(boundaryEventNode.getAttachedToNodeId())).findFirst().orElse(null);
+                StateBasedNodeInstance attachedToNodeInstance = (StateBasedNodeInstance) getNodeInstances(true).stream().filter( ni -> ni.getNode().getMetaData().get(UNIQUE_ID).equals(boundaryEventNode.getAttachedToNodeId())).findFirst().orElse(null);
                 if (attachedToNodeInstance != null) {
                     Map<String, String> properties = new HashMap<>();
                     properties.put("AttachedToID", attachedToNodeInstance.getNodeDefinitionId());
                     properties.put("AttachedToName", attachedToNodeInstance.getNodeName());
-                    String eventType = "signal";
+                    String eventType = EVENT_TYPE_SIGNAL;
                     String eventName = boundaryEventNode.getType();
                     Map<String, String> timerProperties = attachedToNodeInstance.extractTimerEventInformation();
                     if (timerProperties != null) {
@@ -819,7 +811,7 @@ public abstract class WorkflowProcessInstanceImpl extends ProcessInstanceImpl
                         eventName = "timerTriggered";
                     } 
                 
-                    eventDesciptions.add(new BaseEventDescription(eventName, (String)n.getMetaData().get("UniqueId"), n.getName(), eventType, null, getId(), dataType, properties));
+                    eventDesciptions.add(new BaseEventDescription(eventName, (String)n.getMetaData().get(UNIQUE_ID), n.getName(), eventType, null, getId(), dataType, properties));
                     
                 }
                 
@@ -847,16 +839,25 @@ public abstract class WorkflowProcessInstanceImpl extends ProcessInstanceImpl
                 }
             } else if (n instanceof EventNode) {
                 NamedDataType finalDataType = dataType;
-                getNodeInstances(n.getId()).forEach(ni -> {
-                    eventDesciptions.add(new BaseEventDescription(((EventNode) n).getType(), (String) n.getMetaData().get("UniqueId"), n.getName(), (String) n.getMetaData().getOrDefault("EventType", "signal"), ni.getId(),
-                                                              getId(), finalDataType));
-                });
+                getNodeInstances(n.getId()).forEach(ni -> eventDesciptions.add(
+                        new BaseEventDescription(
+                                ((EventNode) n).getType(),
+                                (String) n.getMetaData().get(UNIQUE_ID),
+                                n.getName(),
+                                (String) n.getMetaData().getOrDefault(EVENT_TYPE, EVENT_TYPE_SIGNAL),
+                                ni.getId(),
+                                getId(),
+                                finalDataType)));
             } else if (n instanceof StateNode) {
-                
-                getNodeInstances(n.getId()).forEach(ni -> {
-                    eventDesciptions.add(new BaseEventDescription((String) n.getMetaData().get("Condition"), (String) n.getMetaData().get("UniqueId"), n.getName(), (String) 
-                                                                  n.getMetaData().getOrDefault("EventType", "signal"), ni.getId(), getId(), null));
-                });
+                getNodeInstances(n.getId()).forEach(ni -> eventDesciptions.add(
+                        new BaseEventDescription(
+                                (String) n.getMetaData().get(CONDITION),
+                                (String) n.getMetaData().get(UNIQUE_ID),
+                                n.getName(),
+                                (String) n.getMetaData().getOrDefault(EVENT_TYPE, EVENT_TYPE_SIGNAL),
+                                ni.getId(),
+                                getId(),
+                                null)));
             }
             
         });
@@ -869,7 +870,7 @@ public abstract class WorkflowProcessInstanceImpl extends ProcessInstanceImpl
     public void nodeInstanceCompleted(NodeInstance nodeInstance, String outType) {
         Node nodeInstanceNode = nodeInstance.getNode();
         if (nodeInstanceNode != null) {
-            Object compensationBoolObj = nodeInstanceNode.getMetaData().get("isForCompensation");
+            Object compensationBoolObj = nodeInstanceNode.getMetaData().get(IS_FOR_COMPENSATION);
             boolean isForCompensation = compensationBoolObj != null && (Boolean) compensationBoolObj;
             if (isForCompensation) {
                 return;
@@ -968,8 +969,8 @@ public abstract class WorkflowProcessInstanceImpl extends ProcessInstanceImpl
     }
 
     public String getCorrelationKey() {
-        if (correlationKey == null && getMetaData().get("CorrelationKey") != null) {
-            this.correlationKey = ((CorrelationKey) getMetaData().get("CorrelationKey")).toExternalForm();
+        if (correlationKey == null && getMetaData().get(CORRELATION_KEY) != null) {
+            this.correlationKey = ((CorrelationKey) getMetaData().get(CORRELATION_KEY)).toExternalForm();
         }
         return correlationKey;
     }
@@ -1000,9 +1001,9 @@ public abstract class WorkflowProcessInstanceImpl extends ProcessInstanceImpl
 
     protected boolean useAsync(final Node node) {
         if (!(node instanceof EventSubProcessNode) && (node instanceof ActionNode || node instanceof StateBasedNode || node instanceof EndNode)) {
-            boolean asyncMode = Boolean.parseBoolean((String) node.getMetaData().get("customAsync"));
+            boolean asyncMode = Boolean.parseBoolean((String) node.getMetaData().get(CUSTOM_ASYNC));
             if (asyncMode) {
-                return asyncMode;
+                return true;
             }
 
             return Boolean.parseBoolean((String) getKnowledgeRuntime().getEnvironment().get("AsyncMode"));

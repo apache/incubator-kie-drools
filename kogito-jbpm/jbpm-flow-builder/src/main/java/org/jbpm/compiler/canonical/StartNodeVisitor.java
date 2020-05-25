@@ -30,6 +30,7 @@ import org.jbpm.workflow.core.node.StartNode;
 import java.util.Map;
 import java.util.Map.Entry;
 
+import static org.jbpm.ruleflow.core.Metadata.EVENT_TYPE_SIGNAL;
 import static org.jbpm.ruleflow.core.Metadata.MESSAGE_TYPE;
 import static org.jbpm.ruleflow.core.Metadata.TRIGGER_MAPPING;
 import static org.jbpm.ruleflow.core.Metadata.TRIGGER_REF;

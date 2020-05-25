@@ -16,6 +16,12 @@
 
 package org.jbpm.ruleflow.core;
 
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
 import org.jbpm.process.core.context.exception.ActionExceptionHandler;
 import org.jbpm.process.core.context.exception.ExceptionHandler;
 import org.jbpm.process.core.context.swimlane.Swimlane;
@@ -31,7 +37,6 @@ import org.jbpm.ruleflow.core.validation.RuleFlowProcessValidator;
 import org.jbpm.workflow.core.DroolsAction;
 import org.jbpm.workflow.core.impl.DroolsConsequenceAction;
 import org.jbpm.workflow.core.node.CompositeNode;
-import org.jbpm.workflow.core.node.EndNode;
 import org.jbpm.workflow.core.node.EventNode;
 import org.jbpm.workflow.core.node.EventSubProcessNode;
 import org.jbpm.workflow.core.node.EventTrigger;
@@ -43,13 +48,15 @@ import org.kie.api.definition.process.NodeContainer;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-
 import static org.jbpm.ruleflow.core.Metadata.ACTION;
+import static org.jbpm.ruleflow.core.Metadata.ATTACHED_TO;
+import static org.jbpm.ruleflow.core.Metadata.CANCEL_ACTIVITY;
+import static org.jbpm.ruleflow.core.Metadata.SIGNAL_NAME;
+import static org.jbpm.ruleflow.core.Metadata.TIME_CYCLE;
+import static org.jbpm.ruleflow.core.Metadata.TIME_DATE;
+import static org.jbpm.ruleflow.core.Metadata.TIME_DURATION;
+import static org.jbpm.ruleflow.core.Metadata.UNIQUE_ID;
+import static org.jbpm.workflow.core.impl.ExtendedNodeImpl.EVENT_NODE_EXIT;
 
 public class RuleFlowProcessFactory extends RuleFlowNodeContainerFactory {
 
@@ -62,7 +69,6 @@ public class RuleFlowProcessFactory extends RuleFlowNodeContainerFactory {
     public static final String METHOD_IMPORTS = "imports";
     public static final String METHOD_GLOBAL = "global";
     public static final String METHOD_VARIABLE = "variable";
-
 
     private static final Logger logger = LoggerFactory.getLogger(RuleFlowProcessFactory.class);
 
@@ -201,12 +207,24 @@ public class RuleFlowProcessFactory extends RuleFlowNodeContainerFactory {
         return this;
     }
 
-    public RuleFlowNodeContainerFactory done() {
+    public RuleFlowProcessFactory done() {
         throw new IllegalArgumentException("Already on the top-level.");
     }
 
     public RuleFlowProcess getProcess() {
         return getRuleFlowProcess();
+    }
+
+    @Override
+    public RuleFlowProcessFactory connection(long fromId, long toId) {
+        super.connection(fromId, toId);
+        return this;
+    }
+
+    @Override
+    public RuleFlowProcessFactory connection(long fromId, long toId, String uniqueId) {
+        super.connection(fromId, toId, uniqueId);
+        return this;
     }
 
     protected void linkBoundaryEvents(NodeContainer nodeContainer) {
@@ -216,14 +234,14 @@ public class RuleFlowProcessFactory extends RuleFlowNodeContainerFactory {
                 linkBoundaryEvents(compositeNode.getNodeContainer());
             }
             if (node instanceof EventNode) {
-                final String attachedTo = (String) node.getMetaData().get("AttachedTo");
+                final String attachedTo = (String) node.getMetaData().get(ATTACHED_TO);
                 if (attachedTo != null) {
                     Node attachedNode = findNodeByIdOrUniqueIdInMetadata(nodeContainer, attachedTo, "Could not find node to attach to: " + attachedTo);
                     for (EventFilter filter : ((EventNode) node).getEventFilters()) {
                         String type = ((EventTypeFilter) filter).getType();
                         if (type.startsWith("Timer-")) {
                             linkBoundaryTimerEvent(node, attachedTo, attachedNode);
-                        } else if (node.getMetaData().get("SignalName") != null || type.startsWith("Message-")) {
+                        } else if (node.getMetaData().get(SIGNAL_NAME) != null || type.startsWith("Message-")) {
                             linkBoundarySignalEvent(node, attachedTo);
                         }
                     }
@@ -233,11 +251,11 @@ public class RuleFlowProcessFactory extends RuleFlowNodeContainerFactory {
     }
 
     protected void linkBoundaryTimerEvent(Node node, String attachedTo, Node attachedNode) {
-        boolean cancelActivity = (Boolean) node.getMetaData().get("CancelActivity");
+        boolean cancelActivity = (Boolean) node.getMetaData().get(CANCEL_ACTIVITY);
         StateBasedNode compositeNode = (StateBasedNode) attachedNode;
-        String timeDuration = (String) node.getMetaData().get("TimeDuration");
-        String timeCycle = (String) node.getMetaData().get("TimeCycle");
-        String timeDate = (String) node.getMetaData().get("TimeDate");
+        String timeDuration = (String) node.getMetaData().get(TIME_DURATION);
+        String timeCycle = (String) node.getMetaData().get(TIME_CYCLE);
+        String timeDate = (String) node.getMetaData().get(TIME_DATE);
         Timer timer = new Timer();
         if (timeDuration != null) {
             timer.setDelay(timeDuration);
@@ -260,28 +278,28 @@ public class RuleFlowProcessFactory extends RuleFlowNodeContainerFactory {
         }
 
         if (cancelActivity) {
-            List<DroolsAction> actions = ((EventNode) node).getActions(EndNode.EVENT_NODE_EXIT);
+            List<DroolsAction> actions = ((EventNode) node).getActions(EVENT_NODE_EXIT);
             if (actions == null) {
                 actions = new ArrayList<>();
             }
             DroolsConsequenceAction cancelAction = new DroolsConsequenceAction("java", null);
             cancelAction.setMetaData(ACTION, new CancelNodeInstanceAction(attachedTo));
             actions.add(cancelAction);
-            ((EventNode) node).setActions(EndNode.EVENT_NODE_EXIT, actions);
+            ((EventNode) node).setActions(EVENT_NODE_EXIT, actions);
         }
     }
 
     protected void linkBoundarySignalEvent(Node node, String attachedTo) {
-        boolean cancelActivity = (Boolean) node.getMetaData().get("CancelActivity");
+        boolean cancelActivity = (Boolean) node.getMetaData().get(CANCEL_ACTIVITY);
         if (cancelActivity) {
-            List<DroolsAction> actions = ((EventNode) node).getActions(EndNode.EVENT_NODE_EXIT);
+            List<DroolsAction> actions = ((EventNode) node).getActions(EVENT_NODE_EXIT);
             if (actions == null) {
                 actions = new ArrayList<>();
             }
             DroolsConsequenceAction action = new DroolsConsequenceAction("java", null);
             action.setMetaData(ACTION, new CancelNodeInstanceAction(attachedTo));
             actions.add(action);
-            ((EventNode) node).setActions(EndNode.EVENT_NODE_EXIT, actions);
+            ((EventNode) node).setActions(EVENT_NODE_EXIT, actions);
         }
     }
 
@@ -298,7 +316,7 @@ public class RuleFlowProcessFactory extends RuleFlowNodeContainerFactory {
         Node node = null;
         // try looking for a node with same "UniqueId" (in metadata)
         for (Node containerNode : nodeContainer.getNodes()) {
-            if (nodeRef.equals(containerNode.getMetaData().get("UniqueId"))) {
+            if (nodeRef.equals(containerNode.getMetaData().get(UNIQUE_ID))) {
                 node = containerNode;
                 break;
             }

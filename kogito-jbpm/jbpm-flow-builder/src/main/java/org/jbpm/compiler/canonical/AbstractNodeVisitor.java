@@ -49,9 +49,6 @@ import static org.jbpm.ruleflow.core.factory.NodeFactory.METHOD_NAME;
 
 public abstract class AbstractNodeVisitor<T extends Node> extends AbstractVisitor {
 
-    protected static final String EVENT_TYPE_SIGNAL = "signal";
-    protected static final String EVENT_TYPE_MESSAGE = "message";
-
     protected abstract String getNodeKey();
 
     public void visitNode(T node, BlockStmt body, VariableScope variableScope, ProcessMetaData metadata) {
