@@ -333,14 +333,6 @@ public class DTAnalysis {
         return results;
     }
 
-    private DMNDTAnalysisMessage overlapToStandardDMNMessage(Overlap overlap) {
-        return new DMNDTAnalysisMessage(this,
-                                        Severity.INFO,
-                                        MsgUtil.createMessage(Msg.DTANALYSIS_OVERLAP,
-                                                              overlap.asHumanFriendly(ddtaTable)),
-                                        Msg.DTANALYSIS_OVERLAP.getType(), overlap.getRules());
-    }
-
     private Collection gapsAsMessages() {
         List<DMNDTAnalysisMessage> results = new ArrayList<>();
         if (!ddtaTable.getColIDsStringWithoutEnum().isEmpty()) {
