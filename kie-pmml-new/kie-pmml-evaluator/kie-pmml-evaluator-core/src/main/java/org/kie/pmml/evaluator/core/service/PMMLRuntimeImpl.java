@@ -48,25 +48,27 @@ public class PMMLRuntimeImpl implements PMMLRuntime {
 
     @Override
     public List<KiePMMLModel> getModels() {
-        logger.trace("getModels");
         return KnowledgeBaseUtils.getModels(knowledgeBase);
     }
 
     @Override
     public Optional<KiePMMLModel> getModel(String modelName) {
-        logger.trace("getModel {}", modelName);
         return KnowledgeBaseUtils.getModel(knowledgeBase, modelName);
     }
 
     @Override
     public PMML4Result evaluate(String modelName, PMMLContext context) {
-        logger.debug("evaluate {} {}", modelName, context);
+        if (logger.isDebugEnabled()) {
+            logger.debug("evaluate {} {}", modelName, context);
+        }
         KiePMMLModel toEvaluate = getModel(modelName).orElseThrow(() -> new KiePMMLException("Failed to retrieve model with name " + modelName));
         return evaluate(toEvaluate, context);
     }
 
     protected PMML4Result evaluate(KiePMMLModel model, PMMLContext context) {
-        logger.debug("evaluate {} {}", model, context);
+        if (logger.isDebugEnabled()) {
+            logger.debug("evaluate {} {}", model, context);
+        }
         addMissingValuesReplacements(model, context);
         Optional<PMMLModelExecutor> pmmlModelExecutor = getFromPMMLModelType(model.getPmmlMODEL());
         return pmmlModelExecutor.isPresent() ? pmmlModelExecutor.get().evaluate(knowledgeBase, model, context) : new PMML4Result();

@@ -36,7 +36,9 @@ public class PMMLModelExecutorFinderImpl implements PMMLModelExecutorFinder {
         Iterator<PMMLModelExecutor> providers = getProviders(refresh);
         providers.forEachRemaining(toReturn::add);
         logger.debug("toReturn {} {}", toReturn, toReturn.size());
-        toReturn.forEach(provider -> logger.trace("{} : {}", provider.getPMMLModelType(), provider));
+        if (logger.isTraceEnabled()) {
+            toReturn.forEach(provider -> logger.trace("{} : {}", provider.getPMMLModelType(), provider));
+        }
         return toReturn;
     }
 

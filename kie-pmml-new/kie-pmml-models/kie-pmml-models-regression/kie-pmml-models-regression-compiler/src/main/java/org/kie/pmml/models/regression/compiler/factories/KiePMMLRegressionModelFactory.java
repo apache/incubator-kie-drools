@@ -20,7 +20,6 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
-import java.util.concurrent.atomic.AtomicInteger;
 import java.util.stream.Collectors;
 
 import com.github.javaparser.ast.CompilationUnit;
@@ -30,6 +29,7 @@ import com.github.javaparser.ast.expr.NameExpr;
 import com.github.javaparser.ast.expr.ObjectCreationExpr;
 import com.github.javaparser.ast.expr.StringLiteralExpr;
 import com.github.javaparser.ast.stmt.BlockStmt;
+import com.github.javaparser.ast.stmt.ExplicitConstructorInvocationStmt;
 import org.dmg.pmml.DataDictionary;
 import org.dmg.pmml.DataField;
 import org.dmg.pmml.MiningFunction;
@@ -49,7 +49,6 @@ import static org.kie.pmml.commons.utils.KiePMMLModelUtils.getSanitizedPackageNa
 import static org.kie.pmml.compiler.commons.factories.KiePMMLOutputFieldFactory.getOutputFields;
 import static org.kie.pmml.compiler.commons.utils.JavaParserUtils.MAIN_CLASS_NOT_FOUND;
 import static org.kie.pmml.compiler.commons.utils.JavaParserUtils.getFromFileName;
-import static org.kie.pmml.compiler.commons.utils.JavaParserUtils.setModelName;
 import static org.kie.pmml.compiler.commons.utils.ModelUtils.getTargetFieldName;
 
 public class KiePMMLRegressionModelFactory {
@@ -57,7 +56,6 @@ public class KiePMMLRegressionModelFactory {
     private static final Logger logger = LoggerFactory.getLogger(KiePMMLRegressionModelFactory.class.getName());
     private static final String KIE_PMML_REGRESSION_MODEL_TEMPLATE_JAVA = "KiePMMLRegressionModelTemplate.tmpl";
     private static final String KIE_PMML_REGRESSION_MODEL_TEMPLATE = "KiePMMLRegressionModelTemplate";
-    private static AtomicInteger classArity = new AtomicInteger(0);
 
     private KiePMMLRegressionModelFactory() {
     }
@@ -75,7 +73,7 @@ public class KiePMMLRegressionModelFactory {
     public static Map<String, String> getKiePMMLRegressionModelSourcesMap(DataDictionary dataDictionary, RegressionModel model, String packageName) throws IOException {
         logger.trace("getKiePMMLRegressionModelSourcesMap {} {} {}", dataDictionary, model, packageName);
         String className = getSanitizedClassName(model.getModelName());
-        String name = model.getModelName();
+        String modelName = model.getModelName();
         String targetFieldName = getTargetFieldName(dataDictionary, model).orElse(null);
         List<KiePMMLOutputField> outputFields = getOutputFields(model);
         Map<String, KiePMMLTableSourceCategory> tablesSourceMap = getRegressionTablesMap(dataDictionary, model, targetFieldName, outputFields, packageName);
@@ -85,11 +83,10 @@ public class KiePMMLRegressionModelFactory {
         ClassOrInterfaceDeclaration modelTemplate = cloneCU.getClassByName(KIE_PMML_REGRESSION_MODEL_TEMPLATE)
                 .orElseThrow(() -> new RuntimeException(MAIN_CLASS_NOT_FOUND));
         modelTemplate.setName(className);
-        setModelName(name, modelTemplate);
         String nestedTable = tablesSourceMap.size() == 1 ? tablesSourceMap.keySet().iterator().next() :
                 tablesSourceMap.keySet().stream().filter(tableName -> tableName.startsWith("KiePMMLRegressionTableClassification"))
                         .findFirst().orElseThrow(() -> new RuntimeException("Failed to find expected KiePMMLRegressionTableClassification"));
-        setConstructor(className, nestedTable, modelTemplate, targetFieldName, MINING_FUNCTION.byName(model.getMiningFunction().value()));
+        setConstructor(className, nestedTable, modelTemplate, targetFieldName, MINING_FUNCTION.byName(model.getMiningFunction().value()), modelName);
         Map<String, String> toReturn = tablesSourceMap.entrySet().stream().collect(Collectors.toMap(entry -> packageName + "." + entry.getKey(), entry -> entry.getValue().getSource()));
         String fullClassName = packageName + "." + className;
         toReturn.put(fullClassName, cloneCU.toString());
@@ -110,12 +107,19 @@ public class KiePMMLRegressionModelFactory {
         return toReturn;
     }
 
-    private static void setConstructor(String generatedClassName, String nestedTable, ClassOrInterfaceDeclaration modelTemplate, String targetField, MINING_FUNCTION miningFunction/*, PMML_MODEL pmmlMODEL*/) {
+    private static void setConstructor(String generatedClassName, String nestedTable, ClassOrInterfaceDeclaration modelTemplate, String targetField, MINING_FUNCTION miningFunction, String modelName) {
         ObjectCreationExpr objectCreationExpr = new ObjectCreationExpr();
         objectCreationExpr.setType(nestedTable);
         modelTemplate.getDefaultConstructor().ifPresent(constructor -> {
             constructor.setName(generatedClassName);
             final BlockStmt body = constructor.getBody();
+            body.getStatements().iterator().forEachRemaining(statement -> {
+                if (statement instanceof ExplicitConstructorInvocationStmt) {
+                    ExplicitConstructorInvocationStmt superStatement = (ExplicitConstructorInvocationStmt) statement;
+                    NameExpr modelNameExpr = (NameExpr) superStatement.getArgument(0);
+                    modelNameExpr.setName(String.format("\"%s\"", modelName));
+                }
+            });
             final List<AssignExpr> assignExprs = body.findAll(AssignExpr.class);
             assignExprs.forEach(assignExpr -> {
                 if (assignExpr.getTarget().asNameExpr().getNameAsString().equals("regressionTable")) {

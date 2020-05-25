@@ -53,7 +53,6 @@ import static org.kie.pmml.commons.utils.KiePMMLModelUtils.getSanitizedPackageNa
 import static org.kie.pmml.compiler.commons.factories.KiePMMLOutputFieldFactory.getOutputFields;
 import static org.kie.pmml.compiler.commons.utils.JavaParserUtils.MAIN_CLASS_NOT_FOUND;
 import static org.kie.pmml.compiler.commons.utils.JavaParserUtils.getFromFileName;
-import static org.kie.pmml.compiler.commons.utils.JavaParserUtils.setModelName;
 import static org.kie.pmml.compiler.commons.utils.ModelUtils.getTargetFieldName;
 
 /**
@@ -91,7 +90,6 @@ public class KiePMMLScorecardModelFactory {
         ClassOrInterfaceDeclaration modelTemplate = cloneCU.getClassByName(KIE_PMML_SCORECARD_MODEL_TEMPLATE)
                 .orElseThrow(() -> new RuntimeException(MAIN_CLASS_NOT_FOUND));
         modelTemplate.setName(className);
-        setModelName(className, modelTemplate);
         MINING_FUNCTION miningFunction = MINING_FUNCTION.byName(model.getMiningFunction().value());
         final ConstructorDeclaration constructorDeclaration = modelTemplate.getDefaultConstructor().orElseThrow(() -> new KiePMMLInternalException(String.format("Missing default constructor in ClassOrInterfaceDeclaration %s ", modelTemplate.getName())));
         setConstructor(model, constructorDeclaration, modelTemplate.getName(), targetField, miningFunction);

@@ -37,7 +37,6 @@ public class KnowledgeBaseUtils {
     }
 
     public static List<KiePMMLModel> getModels(final KieBase knowledgeBase) {
-        logger.trace("getModels {}", knowledgeBase);
         List<KiePMMLModel> models = new ArrayList<>();
         knowledgeBase.getKiePackages().forEach(kpkg -> {
             PMMLPackage pmmlPackage = (PMMLPackage) ((InternalKnowledgePackage) kpkg).getResourceTypePackages().get(ResourceType.PMML);

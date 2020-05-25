@@ -77,7 +77,7 @@ public class PMMLCompilerImpl implements PMMLCompiler {
                 if (kiePMMLModel instanceof HasSourcesMap) {
                     generatedClasses.addAll(((HasSourcesMap) kiePMMLModel).getSourcesMap().keySet());
                 } else {
-                    generatedClasses.add(kiePMMLModel.getClass().getName());
+                    throw new KiePMMLException(String.format("Expecting %s at this phase", HasSourcesMap.class.getCanonicalName()));
                 }
             });
             if (!generatedClasses.containsAll(expectedClasses)) {

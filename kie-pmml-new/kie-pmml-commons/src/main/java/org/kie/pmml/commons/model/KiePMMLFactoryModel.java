@@ -21,7 +21,9 @@ import java.util.Map;
 import org.kie.pmml.commons.exceptions.KiePMMLException;
 
 /**
- * KIE representation of PMML model
+ * This is the model used to store sources for <code>KiePMMLModelFactory</code> classes;
+ * <code>KiePMMLModelFactory</code>, in turns, are used to retrieve <code>List&lt;KiePMMLModel&gt;</code>s
+ * from kjar inside <code>PMMLAssemblerService</code>
  */
 public class KiePMMLFactoryModel extends KiePMMLModel implements HasSourcesMap {
 
