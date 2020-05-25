@@ -302,7 +302,7 @@ public class ConstraintCollectorsTest {
 
     @Test
     public void countDistinct() {
-        UniConstraintCollector<Integer, ?, Integer> collector = ConstraintCollectors.countDistinct(Function.identity());
+        UniConstraintCollector<Integer, ?, Integer> collector = ConstraintCollectors.countDistinct();
         Object container = collector.supplier().get();
         // Add first value, we have one now.
         int firstValue = 2;
