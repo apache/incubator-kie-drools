@@ -13,7 +13,7 @@
     <artifactId>kogito-quarkus-integration-test-hot-reload</artifactId>
     <name>Kogito - Quarkus - Integration Tests (Hot Reload)</name>
 
-     <dependencies>
+    <dependencies>
         <dependency>
             <groupId>org.kie.kogito</groupId>
             <artifactId>kogito-quarkus</artifactId>
@@ -22,6 +22,14 @@
             <groupId>org.kie.kogito</groupId>
             <artifactId>drools-decisiontables</artifactId>
         </dependency>
+
+        <!-- this is used implicitly by hot reload tests so let's make Maven aware of it -->
+        <dependency>
+            <groupId>org.kie.kogito</groupId>
+            <artifactId>kogito-quarkus-deployment</artifactId>
+            <version>${project.version}</version>
+        </dependency>
+
 
         <dependency>
             <groupId>io.quarkus</groupId>
@@ -90,7 +98,9 @@
                                 </goals>
                                 <configuration>
                                     <systemProperties>
-                                        <native.image.path>${project.build.directory}/${project.build.finalName}-runner</native.image.path>
+                                        <native.image.path>
+                                            ${project.build.directory}/${project.build.finalName}-runner
+                                        </native.image.path>
                                     </systemProperties>
                                 </configuration>
                             </execution>
