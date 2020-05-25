@@ -118,12 +118,12 @@
       </modules>
     </profile>
     <profile>
-      <id>notReleasedProfile</id>
+      <id>quickstartsProfile</id>
       <activation>
         <property>
-          <!-- Build the quickstarts by default during development to see failures early -->
-          <!-- But don't release the quickstart artifacts in a Maven repo such as Maven Central -->
-          <name>!release</name>
+          <!-- TODO Temporarily(?) exclude quickstarts from nightly/release community/product builds -->
+          <!-- Don't release the quickstart artifacts in a Maven repo such as Maven Central -->
+          <name>quickstarts</name>
         </property>
       </activation>
       <modules>
