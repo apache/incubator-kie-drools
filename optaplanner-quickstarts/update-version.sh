@@ -32,8 +32,8 @@ newVersion=$1
 
 for file in */pom.xml ; do
   echo Updating $file to $newVersion...
-  sed -i "s/<optaplanner\.version>.*<\/optaplanner\.version>/<optaplanner.version>$newVersion<\/optaplanner.version>/g" $file
-  if [ `grep "<optaplanner.version>$newVersion</optaplanner.version>" $file | wc -l` != 1 ]; then
+  sed -i "s/<version\.org\.optaplanner>.*<\/version\.org\.optaplanner>/<version.org.optaplanner>$newVersion<\/version.org.optaplanner>/g" $file
+  if [ `grep "<version.org.optaplanner>$newVersion</version.org.optaplanner>" $file | wc -l` != 1 ]; then
     echo "ERROR updating $file"
     exit 1
   fi

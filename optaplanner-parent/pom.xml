@@ -66,9 +66,9 @@
   <modules>
     <module>optaplanner-core</module>
     <module>optaplanner-persistence</module>
-    <module>optaplanner-integration</module>
     <module>optaplanner-benchmark</module>
     <module>optaplanner-test</module>
+    <module>optaplanner-integration</module><!-- TODO rename to optaplanner-spring-integration-->
     <module>optaplanner-examples</module>
   </modules>
 
@@ -115,6 +115,18 @@
       <modules>
         <module>optaplanner-docs</module>
         <module>optaplanner-distribution</module>
+      </modules>
+    </profile>
+    <profile>
+      <id>notProductizedProfile</id>
+      <activation>
+        <property>
+          <name>!productized</name>
+        </property>
+      </activation>
+      <modules>
+        <!-- Until Kogito is productized, neither can optaplanner-quarkus be productized. -->
+        <module>optaplanner-quarkus-integration</module>
       </modules>
     </profile>
     <profile>

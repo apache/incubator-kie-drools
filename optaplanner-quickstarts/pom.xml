@@ -23,8 +23,22 @@
   <url>https://www.optaplanner.org</url>
 
   <modules>
-    <module>quarkus-school-timetabling</module>
     <module>spring-boot-school-timetabling</module>
   </modules>
+
+  <profiles>
+    <profile>
+      <id>notProductizedProfile</id>
+      <activation>
+        <property>
+          <name>!productized</name>
+        </property>
+      </activation>
+      <modules>
+        <!-- Until Kogito is productized, neither can optaplanner-quarkus be productized. -->
+        <module>quarkus-school-timetabling</module>
+      </modules>
+    </profile>
+  </profiles>
 
 </project>

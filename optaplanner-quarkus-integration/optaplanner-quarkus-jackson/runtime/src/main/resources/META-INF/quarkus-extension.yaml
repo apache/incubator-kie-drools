@@ -1,0 +1,12 @@
+---
+name: "OptaPlanner Jackson"
+metadata:
+  keywords:
+    - "optaplanner"
+    - "kogito"
+    - "jackson"
+    - "json"
+  categories:
+    - "business-automation"
+    - "serialization"
+  status: "stable"

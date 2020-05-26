@@ -5,11 +5,11 @@
 
   <groupId>org.acme</groupId>
   <artifactId>optaplanner-quarkus-school-timetabling-quickstart</artifactId>
-  <version>1.0-SNAPSHOT</version>
+  <version>0.1.0-SNAPSHOT</version>
 
   <properties>
-    <optaplanner.version>7.39.0-SNAPSHOT</optaplanner.version>
-    <quarkus.version>1.4.2.Final</quarkus.version>
+    <version.org.optaplanner>7.39.0-SNAPSHOT</version.org.optaplanner>
+    <version.io.quarkus>1.4.2.Final</version.io.quarkus>
 
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
     <compiler-plugin.version>3.8.1</compiler-plugin.version>
@@ -23,8 +23,17 @@
     <dependencies>
       <dependency>
         <groupId>io.quarkus</groupId>
+        <!-- Alternatively, use <artifactId>quarkus-universe-bom</artifactId>
+         which includes both quarkus-bom and optaplanner-bom. -->
         <artifactId>quarkus-bom</artifactId>
-        <version>${quarkus.version}</version>
+        <version>${version.io.quarkus}</version>
+        <type>pom</type>
+        <scope>import</scope>
+      </dependency>
+      <dependency>
+        <groupId>org.optaplanner</groupId>
+        <artifactId>optaplanner-bom</artifactId>
+        <version>${version.org.optaplanner}</version>
         <type>pom</type>
         <scope>import</scope>
       </dependency>
@@ -32,14 +41,6 @@
   </dependencyManagement>
 
   <dependencies>
-    <dependency>
-      <groupId>io.quarkus</groupId>
-      <artifactId>quarkus-optaplanner</artifactId>
-    </dependency>
-    <dependency>
-      <groupId>io.quarkus</groupId>
-      <artifactId>quarkus-optaplanner-jackson</artifactId>
-    </dependency>
     <dependency>
       <groupId>io.quarkus</groupId>
       <artifactId>quarkus-resteasy</artifactId>
@@ -55,6 +56,14 @@
     <dependency>
       <groupId>io.quarkus</groupId>
       <artifactId>quarkus-jdbc-h2</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>org.optaplanner</groupId>
+      <artifactId>optaplanner-quarkus</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>org.optaplanner</groupId>
+      <artifactId>optaplanner-quarkus-jackson</artifactId>
     </dependency>
 
     <dependency>
@@ -104,7 +113,7 @@
       <plugin>
         <groupId>io.quarkus</groupId>
         <artifactId>quarkus-maven-plugin</artifactId>
-        <version>${quarkus.version}</version>
+        <version>${version.io.quarkus}</version>
         <executions>
           <execution>
             <goals>

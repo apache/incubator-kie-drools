@@ -8,8 +8,8 @@
     <version>0.1.0-SNAPSHOT</version>
 
     <properties>
-        <optaplanner.version>7.39.0-SNAPSHOT</optaplanner.version>
-        <spring-boot.version>2.2.6.RELEASE</spring-boot.version>
+        <version.org.optaplanner>7.39.0-SNAPSHOT</version.org.optaplanner>
+        <version.org.springframework.boot>2.2.6.RELEASE</version.org.springframework.boot>
 
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <compiler-plugin.version>3.8.1</compiler-plugin.version>
@@ -23,14 +23,14 @@
             <dependency>
                 <groupId>org.springframework.boot</groupId>
                 <artifactId>spring-boot-dependencies</artifactId>
-                <version>${spring-boot.version}</version>
+                <version>${version.org.springframework.boot}</version>
                 <type>pom</type>
                 <scope>import</scope>
             </dependency>
             <dependency>
                 <groupId>org.optaplanner</groupId>
                 <artifactId>optaplanner-bom</artifactId>
-                <version>${optaplanner.version}</version>
+                <version>${version.org.optaplanner}</version>
                 <type>pom</type>
                 <scope>import</scope>
             </dependency>
@@ -126,7 +126,7 @@
             <plugin>
                 <groupId>org.springframework.boot</groupId>
                 <artifactId>spring-boot-maven-plugin</artifactId>
-                <version>${spring-boot.version}</version>
+                <version>${version.org.springframework.boot}</version>
             </plugin>
             <plugin>
                 <artifactId>maven-surefire-plugin</artifactId>
