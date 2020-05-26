@@ -166,7 +166,6 @@ public class DTAnalysis {
         results.addAll(passThruMessages());
         results.addAll(gapsAsMessages());
         results.addAll(overlapsAsMessages());
-        warnAboutHitPolicyFirst(results);
         results.addAll(maskedAndMisleadingRulesAsMessagesIfPriority());
         results.addAll(subsumptionsAsMessages());
         results.addAll(contractionsAsMessages());
@@ -279,16 +278,6 @@ public class DTAnalysis {
                                                  Msg.DTANALYSIS_2NDNFVIOLATION.getType(), c.impactedRules()));
         }
         return results;
-    }
-
-    private void warnAboutHitPolicyFirst(final List<DMNMessage> results) {
-        if (sourceDT.getHitPolicy() == HitPolicy.FIRST) {
-            results.add(new DMNDTAnalysisMessage(this,
-                                                 Severity.WARN,
-                                                 MsgUtil.createMessage(Msg.DTANALYSIS_HITPOLICY_FIRST,
-                                                                       nameOrIDOfTable()),
-                                                 Msg.DTANALYSIS_HITPOLICY_FIRST.getType()));
-        }
     }
 
     private Collection passThruMessages() {
