@@ -117,7 +117,6 @@ public class KiePMMLRegressionModelFactoryTest {
 
     @Test
     public void getKiePMMLRegressionModelTest() throws IOException, IllegalAccessException, InstantiationException {
-//        assertNotNull(getKiePMMLRegressionModelClasses(dataDictionary, regressionModel));
         KiePMMLRegressionModel retrieved = getKiePMMLRegressionModelClasses(dataDictionary, regressionModel);
         assertNotNull(retrieved);
         assertEquals(regressionModel.getModelName(), retrieved.getName());

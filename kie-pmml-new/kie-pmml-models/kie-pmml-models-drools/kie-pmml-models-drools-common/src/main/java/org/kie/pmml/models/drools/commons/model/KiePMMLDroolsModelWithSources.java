@@ -24,7 +24,7 @@ import org.kie.pmml.commons.model.HasSourcesMap;
 import static org.kie.pmml.commons.utils.KiePMMLModelUtils.getSanitizedPackageName;
 
 /**
- * KIE representation of PMML model that use <b>drool</b> for implementation
+ * KIE representation of PMML model that use <b>Drools</b> for implementation
  */
 public class KiePMMLDroolsModelWithSources extends KiePMMLDroolsModel implements HasSourcesMap {
 

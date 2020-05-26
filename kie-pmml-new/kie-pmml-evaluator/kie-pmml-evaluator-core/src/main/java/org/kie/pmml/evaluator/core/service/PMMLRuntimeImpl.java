@@ -19,7 +19,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 
-import org.drools.core.impl.InternalKnowledgeBase;
+import org.kie.api.KieBase;
 import org.kie.api.pmml.PMML4Result;
 import org.kie.api.pmml.PMMLRequestData;
 import org.kie.api.pmml.ParameterInfo;
@@ -38,10 +38,10 @@ public class PMMLRuntimeImpl implements PMMLRuntime {
 
     private static final Logger logger = LoggerFactory.getLogger(PMMLRuntimeImpl.class);
 
-    private final InternalKnowledgeBase knowledgeBase;
+    private final KieBase knowledgeBase;
     private final PMMLModelExecutorFinderImpl pmmlModelExecutorFinder;
 
-    public PMMLRuntimeImpl(InternalKnowledgeBase knowledgeBase, PMMLModelExecutorFinderImpl pmmlModelExecutorFinder) {
+    public PMMLRuntimeImpl(KieBase knowledgeBase, PMMLModelExecutorFinderImpl pmmlModelExecutorFinder) {
         this.knowledgeBase = knowledgeBase;
         this.pmmlModelExecutorFinder = pmmlModelExecutorFinder;
     }
@@ -70,8 +70,9 @@ public class PMMLRuntimeImpl implements PMMLRuntime {
             logger.debug("evaluate {} {}", model, context);
         }
         addMissingValuesReplacements(model, context);
-        Optional<PMMLModelExecutor> pmmlModelExecutor = getFromPMMLModelType(model.getPmmlMODEL());
-        return pmmlModelExecutor.isPresent() ? pmmlModelExecutor.get().evaluate(knowledgeBase, model, context) : new PMML4Result();
+        PMMLModelExecutor executor = getFromPMMLModelType(model.getPmmlMODEL())
+                .orElseThrow(() -> new KiePMMLException(String.format("PMMLModelExecutor not found for model %s", model.getPmmlMODEL())));
+        return executor.evaluate(knowledgeBase, model, context);
     }
 
     /**

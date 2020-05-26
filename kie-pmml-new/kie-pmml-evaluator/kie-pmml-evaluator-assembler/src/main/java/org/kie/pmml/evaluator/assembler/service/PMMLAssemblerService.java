@@ -43,6 +43,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import static org.kie.pmml.commons.utils.KiePMMLModelUtils.getSanitizedClassName;
+import static org.kie.pmml.commons.utils.KiePMMLModelUtils.getSanitizedPackageName;
 
 public class PMMLAssemblerService implements KieAssemblerService {
 
@@ -174,7 +175,7 @@ public class PMMLAssemblerService implements KieAssemblerService {
         String sourcePath = resource.getSourcePath();
         String fileName = sourcePath.substring(sourcePath.lastIndexOf('/') + 1);
         fileName = fileName.replace(".pmml", "");
-        String packageName = fileName.toLowerCase();
+        String packageName = getSanitizedPackageName(fileName);
         String factoryClassName = getSanitizedClassName(fileName + "Factory");
         return new String[]{factoryClassName, packageName};
     }

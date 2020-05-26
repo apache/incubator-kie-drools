@@ -21,18 +21,12 @@ import java.util.Map;
 
 import org.drools.core.command.impl.CommandFactoryServiceImpl;
 import org.drools.core.impl.InternalKnowledgeBase;
-import org.kie.api.KieServices;
-import org.kie.api.builder.ReleaseId;
+import org.kie.api.KieBase;
 import org.kie.api.command.BatchExecutionCommand;
 import org.kie.api.command.Command;
 import org.kie.api.definition.type.FactType;
 import org.kie.api.event.rule.AgendaEventListener;
-import org.kie.api.event.rule.ObjectDeletedEvent;
-import org.kie.api.event.rule.ObjectInsertedEvent;
-import org.kie.api.event.rule.ObjectUpdatedEvent;
-import org.kie.api.event.rule.RuleRuntimeEventListener;
 import org.kie.api.pmml.PMML4Result;
-import org.kie.api.runtime.KieContainer;
 import org.kie.api.runtime.StatelessKieSession;
 import org.kie.pmml.commons.exceptions.KiePMMLException;
 import org.kie.pmml.evaluator.api.exceptions.KiePMMLModelException;
@@ -58,28 +52,10 @@ public class KiePMMLSessionUtils {
     private final String packageName;
     private final List<Command> commands;
 
-    private KiePMMLSessionUtils(final InternalKnowledgeBase knowledgeBase, final String modelName, final PMML4Result pmml4Result) {
+    private KiePMMLSessionUtils(final KieBase knowledgeBase, final String modelName, final PMML4Result pmml4Result) {
         this.modelName = modelName;
         packageName = getSanitizedPackageName(modelName);
         kieSession = getKieSession(knowledgeBase);
-        kieSession.addEventListener(new RuleRuntimeEventListener() {
-            private final Logger logger = LoggerFactory.getLogger(RuleRuntimeEventListener.class);
-
-            @Override
-            public void objectInserted(ObjectInsertedEvent event) {
-                logger.info(event.toString());
-            }
-
-            @Override
-            public void objectUpdated(ObjectUpdatedEvent event) {
-                logger.info(event.toString());
-            }
-
-            @Override
-            public void objectDeleted(ObjectDeletedEvent event) {
-                logger.info(event.toString());
-            }
-        });
         commands = new ArrayList<>();
         commands.add(COMMAND_FACTORY_SERVICE.newInsert(new KiePMMLStatusHolder()));
         commands.add(COMMAND_FACTORY_SERVICE.newInsert(pmml4Result));
@@ -90,7 +66,7 @@ public class KiePMMLSessionUtils {
         return new Builder(knowledgeBase, modelName, pmml4Result);
     }
 
-    private StatelessKieSession getKieSession(final InternalKnowledgeBase knowledgeBase) {
+    private StatelessKieSession getKieSession(final KieBase knowledgeBase) {
         StatelessKieSession toReturn;
         try {
             toReturn = knowledgeBase.newStatelessKieSession();
