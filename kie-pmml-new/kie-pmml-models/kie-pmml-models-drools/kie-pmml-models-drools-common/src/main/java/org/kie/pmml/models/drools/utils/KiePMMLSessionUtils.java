@@ -20,7 +20,6 @@ import java.util.List;
 import java.util.Map;
 
 import org.drools.core.command.impl.CommandFactoryServiceImpl;
-import org.drools.core.impl.InternalKnowledgeBase;
 import org.kie.api.KieBase;
 import org.kie.api.command.BatchExecutionCommand;
 import org.kie.api.command.Command;
@@ -62,7 +61,7 @@ public class KiePMMLSessionUtils {
         commands.add(COMMAND_FACTORY_SERVICE.newSetGlobal(PMML4_RESULT_IDENTIFIER, pmml4Result));
     }
 
-    public static Builder builder(final InternalKnowledgeBase knowledgeBase, final String modelName, final PMML4Result pmml4Result) {
+    public static Builder builder(final KieBase knowledgeBase, final String modelName, final PMML4Result pmml4Result) {
         return new Builder(knowledgeBase, modelName, pmml4Result);
     }
 
@@ -124,7 +123,7 @@ public class KiePMMLSessionUtils {
 
         private KiePMMLSessionUtils toBuild;
 
-        private Builder(final InternalKnowledgeBase knowledgeBase, final String modelName, final PMML4Result pmml4Result) {
+        private Builder(final KieBase knowledgeBase, final String modelName, final PMML4Result pmml4Result) {
             this.toBuild = new KiePMMLSessionUtils(knowledgeBase, modelName, pmml4Result);
         }
 

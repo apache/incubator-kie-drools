@@ -23,11 +23,9 @@ import java.util.Objects;
 import java.util.StringJoiner;
 import java.util.function.Supplier;
 
-import org.drools.core.impl.InternalKnowledgeBase;
 import org.kie.api.KieBase;
 import org.kie.api.event.rule.AgendaEventListener;
 import org.kie.api.pmml.PMML4Result;
-import org.kie.internal.builder.KnowledgeBuilder;
 import org.kie.pmml.commons.enums.ResultCode;
 import org.kie.pmml.commons.exceptions.KiePMMLException;
 import org.kie.pmml.commons.model.KiePMMLExtension;
@@ -74,7 +72,7 @@ public abstract class KiePMMLDroolsModel extends KiePMMLModel {
             throw new KiePMMLException(String.format("Expecting KieBase, received %s", knowledgeBase.getClass().getName()));
         }
         final PMML4Result toReturn = getPMML4Result(targetField);
-        KiePMMLSessionUtils.Builder builder = KiePMMLSessionUtils.builder((InternalKnowledgeBase)knowledgeBase, name, toReturn)
+        KiePMMLSessionUtils.Builder builder = KiePMMLSessionUtils.builder((KieBase)knowledgeBase, name, toReturn)
                 .withObjectsInSession(requestData, fieldTypeMap)
                 .withOutputFieldsMap(outputFieldsMap);
         if (logger.isDebugEnabled()) {
