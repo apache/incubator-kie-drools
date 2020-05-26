@@ -323,20 +323,14 @@ public class DTAnalysis {
                         }
                     }
                     break;
+                case PRIORITY:
+                case FIRST:
                 default:
-                    results.add(overlapToStandardDMNMessage(overlap));
+                    LOG.debug("In case of any other HitPolicy no overalps is reported, DROOLS-5363: {}", overlap);
                     break;
             }
         }
         return results;
-    }
-
-    private DMNDTAnalysisMessage overlapToStandardDMNMessage(Overlap overlap) {
-        return new DMNDTAnalysisMessage(this,
-                                        Severity.INFO,
-                                        MsgUtil.createMessage(Msg.DTANALYSIS_OVERLAP,
-                                                              overlap.asHumanFriendly(ddtaTable)),
-                                        Msg.DTANALYSIS_OVERLAP.getType(), overlap.getRules());
     }
 
     private Collection gapsAsMessages() {
