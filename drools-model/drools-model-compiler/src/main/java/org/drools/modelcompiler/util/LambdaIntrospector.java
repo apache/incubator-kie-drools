@@ -41,6 +41,10 @@ public class LambdaIntrospector implements LambdaPrinter {
 
     private static final Map<ClassLoader, Map<String, Map<String, String>>> methodFingerprintsMapPerClassLoader = new WeakHashMap<>();
 
+    static Map<ClassLoader, Map<String, Map<String, String>>> getMethodFingerprintsMapPerClassLoader() {
+        return methodFingerprintsMapPerClassLoader;
+    }
+
     @Override
     public String getLambdaFingerprint(Object lambda) {
         if(lambda.toString().equals("INSTANCE")) { // Materialized lambda

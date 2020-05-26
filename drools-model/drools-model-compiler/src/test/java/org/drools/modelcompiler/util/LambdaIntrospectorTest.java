@@ -49,13 +49,10 @@ public class LambdaIntrospectorTest {
         // (mvn test -Dtest=LambdaIntrospectorTest#testMethodFingerprintsMapCacheSize)
         // System.setProperty(LambdaIntrospector.LAMBDA_INTROSPECTOR_CACHE_SIZE, "0");
 
-        LambdaIntrospector lambdaIntrospector = new LambdaIntrospector();
-
-        Field field = LambdaIntrospector.class.getDeclaredField("methodFingerprintsMapPerClassLoader");
-        field.setAccessible(true);
-        // LambdaIntrospector.ClassIdentifier is not visible so the Map is not parameterized
-        Map<ClassLoader, Map<String, Map<String, String>>> methodFingerprintsMapPerClassLoader = (Map<ClassLoader, Map<String, Map<String, String>>>) field.get(lambdaIntrospector);
+        Map<ClassLoader, Map<String, Map<String, String>>> methodFingerprintsMapPerClassLoader = LambdaIntrospector.getMethodFingerprintsMapPerClassLoader();
         methodFingerprintsMapPerClassLoader.clear();
+
+        LambdaIntrospector lambdaIntrospector = new LambdaIntrospector();
 
         Predicate1<Person> predicate1 = p -> p.getAge() > 35;
         lambdaIntrospector.getLambdaFingerprint(predicate1);
