@@ -199,12 +199,17 @@ public class DTAnalysis {
                                                  Msg.DTANALYSIS_HITPOLICY_PRIORITY_MASKED_RULE.getType(), Collections.singletonList(masked.maskedRule)));
         }
         for (MisleadingRule misleading : misleadingRules) {
-            results.add(new DMNDTAnalysisMessage(this,
-                                                 Severity.WARN,
-                                                 MsgUtil.createMessage(Msg.DTANALYSIS_HITPOLICY_PRIORITY_MISLEADING_RULE,
-                                                                       misleading.misleadingRule,
-                                                                       misleading.misleadRule),
-                                                 Msg.DTANALYSIS_HITPOLICY_PRIORITY_MISLEADING_RULE.getType(), Collections.singletonList(misleading.misleadingRule)));
+            boolean duplicatesAMasked = maskedRules.stream().anyMatch(masked -> masked.maskedBy == misleading.misleadingRule && masked.maskedRule == misleading.misleadRule);
+            if (!duplicatesAMasked) {
+                results.add(new DMNDTAnalysisMessage(this,
+                                                     Severity.WARN,
+                                                     MsgUtil.createMessage(Msg.DTANALYSIS_HITPOLICY_PRIORITY_MISLEADING_RULE,
+                                                                           misleading.misleadingRule,
+                                                                           misleading.misleadRule),
+                                                     Msg.DTANALYSIS_HITPOLICY_PRIORITY_MISLEADING_RULE.getType(), Collections.singletonList(misleading.misleadingRule)));
+            } else {
+                LOG.debug("Misleading record is not displayed as message because it is redundant to a Masked rule message: {}", misleading);
+            }
         }
         return results;
     }

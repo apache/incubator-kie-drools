@@ -45,7 +45,7 @@ public class StringWithoutEnumNoGapTest extends AbstractDTAnalysisTest {
     @Test
     public void test() {
         List<DMNMessage> validate = validator.validate(getReader("stringWithoutEnumNoGap.dmn"), VALIDATE_COMPILATION, VALIDATE_MODEL, ANALYZE_DECISION_TABLE);
-        assertThat(validate, hasSize(5)); // no gap, (skip 2 overlaps), 2 masked, 2 misleading.
+        assertThat(validate, hasSize(3)); // no gap but no enum "skip Gap analysis" message, (omit 2 overlaps DROOLS-5363), 2 masked, (omit 2 misleading as redundant with Masked).
         debugValidatorMsg(validate);
         
         DTAnalysis analysis = getAnalysis(validate, "_8b48d1c9-265c-47aa-9378-7f11d55dfe55");
@@ -101,13 +101,13 @@ public class StringWithoutEnumNoGapTest extends AbstractDTAnalysisTest {
         assertTrue("It should contain DMNMessage for the MaskedRule",
                    validate.stream().anyMatch(p -> p.getMessageType().equals(DMNMessageType.DECISION_TABLE_MASKED_RULE)));
 
-        // MisleadingRules count.
+        // MisleadingRules are duplicate of Masked, so are no longer displayed.
         assertThat(analysis.getMisleadingRules(), hasSize(2));
         List<MisleadingRule> misleadingRules = Arrays.asList(new MisleadingRule(3, 1),
                                                              new MisleadingRule(3, 2));
         assertThat(misleadingRules, hasSize(2));
         assertThat(analysis.getMisleadingRules(), contains(misleadingRules.toArray()));
-        assertTrue("It should contain DMNMessage for the MisleadingRule",
-                   validate.stream().anyMatch(p -> p.getMessageType().equals(DMNMessageType.DECISION_TABLE_MISLEADING_RULE)));
+        assertTrue("It should NOT contain DMNMessage for the MisleadingRule",
+                   validate.stream().noneMatch(p -> p.getMessageType().equals(DMNMessageType.DECISION_TABLE_MISLEADING_RULE)));
     }
 }
