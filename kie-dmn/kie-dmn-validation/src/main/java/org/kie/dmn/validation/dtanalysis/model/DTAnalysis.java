@@ -212,14 +212,21 @@ public class DTAnalysis {
     private Collection<? extends DMNMessage> subsumptionsAsMessages() {
         List<DMNDTAnalysisMessage> results = new ArrayList<>();
         for (Subsumption s : subsumptions) {
-            results.add(new DMNDTAnalysisMessage(this,
-                                                 Severity.WARN,
-                                                 MsgUtil.createMessage(Msg.DTANALYSIS_SUBSUMPTION_RULE,
-                                                                       s.rule,
-                                                                       s.includedRule,
-                                                                       s.rule,
-                                                                       s.includedRule),
-                                                 Msg.DTANALYSIS_SUBSUMPTION_RULE.getType(), Collections.singletonList(s.rule)));
+            List<Integer> inNaturalOrder = Arrays.asList(s.rule, s.includedRule);
+            List<Integer> inReversedOrder = Arrays.asList(s.includedRule, s.rule);
+            boolean subsumptionIsA1NFdup = getDuplicateRulesTuples().stream().anyMatch(tuple -> tuple.equals(inNaturalOrder) || tuple.equals(inReversedOrder));
+            if (!subsumptionIsA1NFdup) {
+                results.add(new DMNDTAnalysisMessage(this,
+                                                     Severity.WARN,
+                                                     MsgUtil.createMessage(Msg.DTANALYSIS_SUBSUMPTION_RULE,
+                                                                           s.rule,
+                                                                           s.includedRule,
+                                                                           s.rule,
+                                                                           s.includedRule),
+                                                     Msg.DTANALYSIS_SUBSUMPTION_RULE.getType(), Collections.singletonList(s.rule)));
+            } else {
+                LOG.debug("skipping Subsumption message because it is actually redundant to the 1st NF duplicate rule ERROR: {}", s);
+            }
         }
         return results;
     }
@@ -256,7 +263,7 @@ public class DTAnalysis {
         }
         for (Collection<Integer> duplicateRulesTuple : getDuplicateRulesTuples()) {
             results.add(new DMNDTAnalysisMessage(this,
-                                                 Severity.WARN,
+                                                 Severity.ERROR,
                                                  MsgUtil.createMessage(Msg.DTANALYSIS_1STNFVIOLATION_DUPLICATE_RULES,
                                                                        duplicateRulesTuple),
                                                  Msg.DTANALYSIS_1STNFVIOLATION_DUPLICATE_RULES.getType(), duplicateRulesTuple));
