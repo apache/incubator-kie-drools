@@ -80,7 +80,10 @@ public abstract class DroolsModelProvider<T extends Model, E extends KiePMMLDroo
 
     public abstract KiePMMLDroolsAST getKiePMMLDroolsAST(DataDictionary dataDictionary, T model, final Map<String, KiePMMLOriginalTypeGeneratedType> fieldTypeMap);
 
-    public abstract Map<String, String> getKiePMMLDroolsModelSourcesMap(final DataDictionary dataDictionary, final T model, final Map<String, KiePMMLOriginalTypeGeneratedType> fieldTypeMap, final String packageName) throws IOException;
+    public abstract Map<String, String> getKiePMMLDroolsModelSourcesMap(final DataDictionary dataDictionary,
+                                                                        final T model,
+                                                                        final Map<String, KiePMMLOriginalTypeGeneratedType> fieldTypeMap,
+                                                                        final String packageName) throws IOException;
 
     public PackageDescr getPackageDescr(KiePMMLDroolsAST kiePMMLDroolsAST, String packageName) {
         return getBaseDescr(kiePMMLDroolsAST, packageName);
