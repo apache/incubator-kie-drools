@@ -8,7 +8,7 @@
   <version>1.0-SNAPSHOT</version>
 
   <properties>
-    <optaplanner.version>7.38.0-SNAPSHOT</optaplanner.version>
+    <optaplanner.version>7.39.0-SNAPSHOT</optaplanner.version>
     <quarkus.version>1.4.2.Final</quarkus.version>
 
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
