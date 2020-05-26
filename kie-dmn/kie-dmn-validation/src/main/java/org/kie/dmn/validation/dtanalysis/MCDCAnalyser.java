@@ -3,10 +3,9 @@ package org.kie.dmn.validation.dtanalysis;
 import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Collection;
 import java.util.Collections;
+import java.util.Comparator;
 import java.util.HashMap;
-import java.util.Iterator;
 import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Map;
@@ -519,46 +518,55 @@ public class MCDCAnalyser {
             allEnumValues.add(enumValues);
         }
 
-        if (elseRuleIdx.isPresent()) {
-            for (int idx = 0; idx < allEnumValues.size(); idx++) {
-                List<Interval> idxIntervals = new ArrayList<>();
-                for (DDTARule rule : ddtaTable.getRule()) {
-                    for (Interval interval : rule.getInputEntry().get(idx).getIntervals()) {
-                        boolean isAllDomain = ddtaTable.getInputs().get(idx).getDomainMinMax().equals(interval);
-                        if (!isAllDomain) {
-                            idxIntervals.add(interval);
-                        }
-                    }
-                }
-                List<Interval> flatten = Interval.flatten(idxIntervals);
-                List<?> redCandidates = new ArrayList<>();
-                redCandidates.addAll((Collection) allEnumValues.get(idx));
-                for (Iterator iterator = redCandidates.iterator(); iterator.hasNext();) {
-                    Object object = (Object) iterator.next();
-                    if (flatten.stream().anyMatch(interval -> interval.asRangeIncludes(object))) {
-                        iterator.remove();
-                    }
-                }
-                if (redCandidates.size() == 1) {
-                    Object object = redCandidates.get(0);
-                    if (allEnumValues.get(idx).indexOf(object) == allEnumValues.get(idx).size() - 1) {
-                        // last, do nothing.
-                    } else if (allEnumValues.get(idx).indexOf(object) == 0) {
-                        List<?> enumIdx = new ArrayList<>(allEnumValues.get(idx));
-                        Collections.reverse(enumIdx);
-                        allEnumValues.set(idx, enumIdx);
-                    } else {
-                        throw new UnsupportedOperationException("TODO"); 
-                    }
-                } else if (redCandidates.size() == 0) {
-                    // do nothing.
-                } else {
-                    throw new UnsupportedOperationException("TODO");
-                }
-            }
+        for (int in=0; in<allEnumValues.size(); in++) {
+            final int inIdx = in;
+            final List<?> inX = allEnumValues.get(in);
+            List<Pair> sorted = inX.stream().map(v -> new Pair((Comparable<?>) v, matchingRulesForInput(inIdx, v).size()))
+                                   .sorted()
+                                   .collect(Collectors.toList());
+            LOG.debug("Input {} sorted by number of matching rules: {}", inIdx + 1, sorted);
+            List<?> sortedByMatchingRules = sorted.stream()
+                                                  .map(Pair::getKey)
+                                                  .collect(Collectors.toList());
+            allEnumValues.set(inIdx, sortedByMatchingRules);
         }
 
         debugAllEnumValues();
+    }
+    
+    public static class Pair implements Comparable<Pair> {
+
+        private final Comparable key;
+        private final int occurences;
+        private final Comparator<Pair> c1 = Comparator.comparing(Pair::getOccurences).reversed();
+        
+        public Pair(Comparable<?> key, int occurences) {
+            this.key = key;
+            this.occurences = occurences;
+        }
+
+        public Comparable<?> getKey() {
+            return key;
+        }
+
+        public int getOccurences() {
+            return occurences;
+        }
+
+        @Override
+        public int compareTo(Pair o) {
+            if (c1.compare(this, o) != 0) {
+                return c1.compare(this, o);
+            } else {
+                return -1 * this.key.compareTo(o.key);
+            }
+        }
+
+        @Override
+        public String toString() {
+            return "{" + key + "=" + occurences + "}";
+        }
+
     }
 
     private void debugAllEnumValues() {
