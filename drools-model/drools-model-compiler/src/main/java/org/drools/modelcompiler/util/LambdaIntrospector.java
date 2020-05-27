@@ -24,6 +24,7 @@ import java.lang.reflect.Method;
 import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.Map;
+import java.util.WeakHashMap;
 
 import org.drools.core.util.asm.DumpMethodVisitor;
 import org.drools.model.functions.IntrospectableLambda;
@@ -36,15 +37,13 @@ import org.mvel2.asm.Opcodes;
 public class LambdaIntrospector implements LambdaPrinter {
 
     public static final String LAMBDA_INTROSPECTOR_CACHE_SIZE = "drools.lambda.introspector.cache.size";
-
     private static final int CACHE_SIZE = Integer.parseInt(System.getProperty(LAMBDA_INTROSPECTOR_CACHE_SIZE, "32"));
 
-    private static final Map<ClassIdentifier, Map<String, String>> methodFingerprintsMap = new LinkedHashMap() {
-        @Override
-        protected boolean removeEldestEntry( Map.Entry eldest) {
-            return (size() > CACHE_SIZE);
-        }
-    };
+    private static final Map<ClassLoader, Map<String, Map<String, String>>> methodFingerprintsMapPerClassLoader = new WeakHashMap<>();
+
+    static Map<ClassLoader, Map<String, Map<String, String>>> getMethodFingerprintsMapPerClassLoader() {
+        return methodFingerprintsMapPerClassLoader;
+    }
 
     @Override
     public String getLambdaFingerprint(Object lambda) {
@@ -88,49 +87,33 @@ public class LambdaIntrospector implements LambdaPrinter {
         }
     }
 
-    private static Map<String, String> getFingerprintsForClass( Object lambda, SerializedLambda extracted) {
+    private static Map<String, String> getFingerprintsForClass(Object lambda, SerializedLambda extracted) {
         ClassLoader lambdaClassLoader = lambda.getClass().getClassLoader();
         String className = extracted.getCapturingClass();
-        ClassIdentifier id = new ClassIdentifier( lambdaClassLoader, className );
-        Map<String, String> fingerprints = methodFingerprintsMap.get( id );
-
-        if (fingerprints == null) {
-            LambdaIntrospector.LambdaClassVisitor visitor = new LambdaIntrospector.LambdaClassVisitor();
-            try (InputStream classStream = lambdaClassLoader.getResourceAsStream( className.replace( '.', '/' ) + ".class" )) {
-                ClassReader reader = new ClassReader( classStream);
-                reader.accept(visitor, ClassReader.SKIP_DEBUG | ClassReader.SKIP_FRAMES);
-            } catch (Exception e) {
-                throw new RuntimeException( e );
-            }
-            fingerprints = visitor.getMethodsMap();
-            methodFingerprintsMap.put( id, fingerprints );
+        if (CACHE_SIZE <= 0) {
+            return getFingerPrints(lambdaClassLoader, className); // don't even create an entry
         }
-        return fingerprints;
+        Map<String, Map<String, String>> methodFingerprintsMap = methodFingerprintsMapPerClassLoader.computeIfAbsent(lambdaClassLoader, k -> new LinkedHashMap<String, Map<String, String>>() {
+
+            @Override
+            protected boolean removeEldestEntry(Map.Entry<String, Map<String, String>> eldest) {
+                return (size() > CACHE_SIZE);
+            }
+        });
+        return methodFingerprintsMap.computeIfAbsent(className, k -> getFingerPrints(lambdaClassLoader, className));
     }
 
-    private static class ClassIdentifier {
-        private final ClassLoader classLoader;
-        private final String className;
-
-        private ClassIdentifier( ClassLoader classLoader, String className ) {
-            this.classLoader = classLoader;
-            this.className = className;
+    private static Map<String, String> getFingerPrints(ClassLoader lambdaClassLoader, String className) {
+        Map<String, String> fingerprints;
+        LambdaIntrospector.LambdaClassVisitor visitor = new LambdaIntrospector.LambdaClassVisitor();
+        try (InputStream classStream = lambdaClassLoader.getResourceAsStream( className.replace( '.', '/' ) + ".class" )) {
+            ClassReader reader = new ClassReader( classStream);
+            reader.accept(visitor, ClassReader.SKIP_DEBUG | ClassReader.SKIP_FRAMES);
+        } catch (Exception e) {
+            throw new RuntimeException( e );
         }
-
-        @Override
-        public boolean equals( Object o ) {
-            if (o instanceof ClassIdentifier) {
-                ClassIdentifier that = ( ClassIdentifier ) o;
-                return className.equals( that.className ) && classLoader == that.classLoader;
-            } else {
-                return false;
-            }
-        }
-
-        @Override
-        public int hashCode() {
-            return 31 * className.hashCode() + classLoader.hashCode();
-        }
+        fingerprints = visitor.getMethodsMap();
+        return fingerprints;
     }
 
     private static class LambdaClassVisitor extends ClassVisitor {
