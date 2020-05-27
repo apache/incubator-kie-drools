@@ -10,6 +10,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.HashSet;
+import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Set;
 import java.util.function.BiFunction;
@@ -491,30 +492,49 @@ public class KogitoAssetsProcessor {
 
     private static class AppPaths {
 
-        private final List<Path> projectPaths = new ArrayList<>();
+        private final Set<Path> projectPaths = new LinkedHashSet<>();
         private final List<Path> classesPaths = new ArrayList<>();
 
         private boolean isJar = false;
 
         private AppPaths( PathsCollection paths ) {
             for (Path path : paths) {
-                Path projectPath = getProjectPath( path );
-                if ( projectPath.toFile().isDirectory() ) {
-                    classesPaths.add( path );
-                    projectPaths.add( projectPath );
-                } else {
-                    isJar = true;
-                    classesPaths.clear();
-                    classesPaths.add( path );
-                    projectPaths.clear();
-                    projectPaths.add( projectPath );
+                PathType pathType = getPathType( path );
+                switch (pathType) {
+                    case CLASSES: {
+                        classesPaths.add( path );
+                        projectPaths.add( path.getParent().getParent() );
+                        break;
+                    }
+                    case TEST_CLASSES: {
+                        projectPaths.add( path.getParent().getParent() );
+                        break;
+                    }
+                    case JAR: {
+                        Path projectPath = path.getParent().getParent();
+                        isJar = !projectPath.toFile().isDirectory();
+                        if (isJar) {
+                            classesPaths.clear();
+                            projectPaths.clear();
+                        }
+                        classesPaths.add( path );
+                        projectPaths.add( path.getParent().getParent() );
+                        break;
+                    }
+                    case UNKNOWN: {
+                        classesPaths.add( path );
+                        projectPaths.add( path );
+                        break;
+                    }
+                }
+                if ( isJar ) {
                     break;
                 }
             }
         }
 
         public Path getFirstProjectPath() {
-            return projectPaths.get( 0 );
+            return projectPaths.iterator().next();
         }
 
         public Path getFirstClassesPath() {
@@ -525,7 +545,7 @@ public class KogitoAssetsProcessor {
             if (!isJar) {
                 throw new IllegalStateException("Not a jar");
             }
-            return projectPaths.get(0);
+            return projectPaths.iterator().next();
         }
 
         public File[] getResourceFiles() {
@@ -544,18 +564,26 @@ public class KogitoAssetsProcessor {
             return transformPaths( projectPaths, Function.identity() );
         }
 
-        private Path[] transformPaths( List<Path> paths, Function<Path, Path> f ) {
+        private Path[] transformPaths( Collection<Path> paths, Function<Path, Path> f ) {
             return paths.stream().map( f ).toArray( Path[]::new );
         }
 
-        private Path getProjectPath(Path archiveLocation) {
+        private PathType getPathType(Path archiveLocation) {
             String path = archiveLocation.toString();
             if (path.endsWith("target" + File.separator + "classes")) {
-                return archiveLocation.getParent().getParent();
-            } else if (path.endsWith(".jar") && archiveLocation.getParent().getFileName().toString().equals("target")) {
-                return archiveLocation.getParent().getParent();
+                return PathType.CLASSES;
             }
-            return archiveLocation;
+            if (path.endsWith("target" + File.separator + "test-classes")) {
+                return PathType.TEST_CLASSES;
+            }
+            if (path.endsWith(".jar") && archiveLocation.getParent().getFileName().toString().equals("target")) {
+                return PathType.JAR;
+            }
+            return PathType.UNKNOWN;
+        }
+
+        private enum PathType {
+            CLASSES, TEST_CLASSES, JAR, UNKNOWN
         }
     }
 }

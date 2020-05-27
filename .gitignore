@@ -4,7 +4,6 @@ target/
 **/.idea
 
 # Eclipse, Netbeans and IntelliJ files
-/.*
 !.gitignore
 !.github
 /nbproject
