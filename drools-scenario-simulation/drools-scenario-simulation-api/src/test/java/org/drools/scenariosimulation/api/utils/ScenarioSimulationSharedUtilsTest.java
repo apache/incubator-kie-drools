@@ -52,4 +52,9 @@ public class ScenarioSimulationSharedUtilsTest {
     public void isMap() {
         assertTrue(mapValues.stream().allMatch(ScenarioSimulationSharedUtils::isMap));
     }
+
+    @Test
+    public void isEnum() {
+        assertTrue(ScenarioSimulationSharedUtils.isEnum(Enum.class.getCanonicalName()));
+    }
 }
