@@ -31,9 +31,9 @@ public class OptaPlannerProcessorIllegalXMLTest {
     @RegisterExtension
     static final QuarkusUnitTest config = new QuarkusUnitTest()
             .overrideConfigKey("quarkus.optaplanner.solver-config-xml",
-                    "io/quarkus/optaplanner/illegalScanAnnotatedSolverConfig.xml")
+                    "org/optaplanner/quarkus/illegalScanAnnotatedSolverConfig.xml")
             .setArchiveProducer(() -> ShrinkWrap.create(JavaArchive.class)
-                    .addAsResource("io/quarkus/optaplanner/illegalScanAnnotatedSolverConfig.xml"))
+                    .addAsResource("org/optaplanner/quarkus/illegalScanAnnotatedSolverConfig.xml"))
             .assertException(throwable -> {
                 assertTrue(throwable instanceof IllegalArgumentException);
                 assertTrue(throwable.getMessage().contains("scanAnnotatedClasses"));

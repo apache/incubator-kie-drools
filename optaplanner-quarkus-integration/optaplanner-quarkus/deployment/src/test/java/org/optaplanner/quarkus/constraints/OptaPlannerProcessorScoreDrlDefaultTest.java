@@ -41,7 +41,7 @@ public class OptaPlannerProcessorScoreDrlDefaultTest {
             .setArchiveProducer(() -> ShrinkWrap.create(JavaArchive.class)
                     .addClasses(TestdataPlanningEntity.class,
                             TestdataPlanningSolution.class)
-                    .addAsResource("io/quarkus/optaplanner/constraints/defaultConstraints.drl", "constraints.drl"));
+                    .addAsResource("org/optaplanner/quarkus/constraints/defaultConstraints.drl", "constraints.drl"));
 
     @Inject
     SolverConfig solverConfig;

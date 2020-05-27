@@ -3,7 +3,7 @@ package org.optaplanner.quarkus.constraints;
 
 import org.optaplanner.core.api.score.buildin.simple.SimpleScoreHolder;
 
-import io.quarkus.optaplanner.domain.TestdataPlanningEntity;
+import org.optaplanner.quarkus.domain.TestdataPlanningEntity;
 
 global SimpleScoreHolder scoreHolder;
 

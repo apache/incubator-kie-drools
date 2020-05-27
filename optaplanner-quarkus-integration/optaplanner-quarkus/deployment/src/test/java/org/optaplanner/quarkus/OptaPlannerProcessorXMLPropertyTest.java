@@ -39,11 +39,11 @@ public class OptaPlannerProcessorXMLPropertyTest {
 
     @RegisterExtension
     static final QuarkusUnitTest config = new QuarkusUnitTest()
-            .overrideConfigKey("quarkus.optaplanner.solver-config-xml", "io/quarkus/optaplanner/customSolverConfig.xml")
+            .overrideConfigKey("quarkus.optaplanner.solver-config-xml", "org/optaplanner/quarkus/customSolverConfig.xml")
             .setArchiveProducer(() -> ShrinkWrap.create(JavaArchive.class)
                     .addClasses(TestdataPlanningEntity.class,
                             TestdataPlanningSolution.class, TestdataPlanningConstraintProvider.class)
-                    .addAsResource("io/quarkus/optaplanner/customSolverConfig.xml"));
+                    .addAsResource("org/optaplanner/quarkus/customSolverConfig.xml"));
 
     @Inject
     SolverConfig solverConfig;
