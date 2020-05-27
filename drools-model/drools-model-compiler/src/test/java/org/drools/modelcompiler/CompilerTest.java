@@ -2001,7 +2001,6 @@ public class CompilerTest extends BaseModelTest {
                 "end";
 
         KieModuleModel kieModuleModel = KieServices.get().newKieModuleModel();
-        kieModuleModel.setConfigurationProperty("drools.externaliseCanonicalModelLambda", Boolean.TRUE.toString());
 
         KieSession ksession = getKieSession(kieModuleModel, str );
 
@@ -2327,7 +2326,6 @@ public class CompilerTest extends BaseModelTest {
                 "end";
 
         KieModuleModel kieModuleModel = KieServices.get().newKieModuleModel();
-        kieModuleModel.setConfigurationProperty("drools.externaliseCanonicalModelLambda", Boolean.TRUE.toString());
 
         KieSession ksession = getKieSession(kieModuleModel, str );
         final List<String> list = new ArrayList<>();
@@ -2365,7 +2363,6 @@ public class CompilerTest extends BaseModelTest {
                 "end";
 
         KieModuleModel kieModuleModel = KieServices.get().newKieModuleModel();
-        kieModuleModel.setConfigurationProperty("drools.externaliseCanonicalModelLambda", Boolean.TRUE.toString());
 
         KieSession ksession = getKieSession(kieModuleModel, str );
         final List<String> list = new ArrayList<>();
