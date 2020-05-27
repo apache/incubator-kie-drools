@@ -309,7 +309,7 @@ public class ScenarioBeanUtilTest {
     public void convertValueFailUnsupportedTest() {
         assertThatThrownBy(() -> convertValue(RuleScenarioRunnerHelperTest.class.getCanonicalName(), "Test", classLoader))
                 .isInstanceOf(IllegalArgumentException.class)
-                .hasMessageEndingWith(" is not supported");
+                .hasMessageEndingWith("Please use an MVEL expression to use it.");
     }
 
     @Test
