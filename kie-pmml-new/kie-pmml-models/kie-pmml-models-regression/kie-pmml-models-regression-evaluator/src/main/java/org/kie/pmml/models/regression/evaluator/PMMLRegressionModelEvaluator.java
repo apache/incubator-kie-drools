@@ -25,7 +25,7 @@ import org.kie.pmml.commons.model.KiePMMLModel;
 import org.kie.pmml.commons.model.enums.PMML_MODEL;
 import org.kie.pmml.evaluator.api.exceptions.KiePMMLModelException;
 import org.kie.pmml.evaluator.api.executor.PMMLContext;
-import org.kie.pmml.evaluator.core.executor.PMMLModelExecutor;
+import org.kie.pmml.evaluator.core.executor.PMMLModelEvaluator;
 import org.kie.pmml.models.regression.model.KiePMMLRegressionClassificationTable;
 import org.kie.pmml.models.regression.model.KiePMMLRegressionModel;
 import org.kie.pmml.models.regression.model.KiePMMLRegressionTable;
@@ -33,7 +33,7 @@ import org.kie.pmml.models.regression.model.KiePMMLRegressionTable;
 import static org.kie.pmml.commons.enums.ResultCode.OK;
 import static org.kie.pmml.evaluator.core.utils.Converter.getUnwrappedParametersMap;
 
-public class PMMLRegressionModelExecutor implements PMMLModelExecutor {
+public class PMMLRegressionModelEvaluator implements PMMLModelEvaluator {
 
     private static final String INVALID_NORMALIZATION_METHOD = "Invalid Normalization Method %s";
     private static final String EXPECTED_AT_LEAST_TWO_REGRESSION_TABLES_RETRIEVED = "Expected at least two RegressionTables, retrieved %s";

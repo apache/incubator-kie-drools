@@ -23,17 +23,17 @@ import java.util.ServiceLoader;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-public class PMMLModelExecutorFinderImpl implements PMMLModelExecutorFinder {
+public class PMMLModelEvaluatorFinderImpl implements PMMLModelEvaluatorFinder {
 
-    private static final Logger logger = LoggerFactory.getLogger(PMMLModelExecutorFinderImpl.class.getName());
+    private static final Logger logger = LoggerFactory.getLogger(PMMLModelEvaluatorFinderImpl.class.getName());
 
-    private ServiceLoader<PMMLModelExecutor> loader = ServiceLoader.load(PMMLModelExecutor.class);
+    private ServiceLoader<PMMLModelEvaluator> loader = ServiceLoader.load(PMMLModelEvaluator.class);
 
     @Override
-    public List<PMMLModelExecutor> getImplementations(boolean refresh) {
+    public List<PMMLModelEvaluator> getImplementations(boolean refresh) {
         logger.debug("getImplementations {}", refresh);
-        List<PMMLModelExecutor> toReturn = new ArrayList<>();
-        Iterator<PMMLModelExecutor> providers = getProviders(refresh);
+        List<PMMLModelEvaluator> toReturn = new ArrayList<>();
+        Iterator<PMMLModelEvaluator> providers = getProviders(refresh);
         providers.forEachRemaining(toReturn::add);
         logger.debug("toReturn {} {}", toReturn, toReturn.size());
         if (logger.isTraceEnabled()) {
@@ -42,7 +42,7 @@ public class PMMLModelExecutorFinderImpl implements PMMLModelExecutorFinder {
         return toReturn;
     }
 
-    private Iterator<PMMLModelExecutor> getProviders(boolean refresh) {
+    private Iterator<PMMLModelEvaluator> getProviders(boolean refresh) {
         if (refresh) {
             loader.reload();
         }

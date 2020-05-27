@@ -24,10 +24,10 @@ import org.dmg.pmml.regression.RegressionModel;
 import org.kie.api.pmml.PMMLRequestData;
 import org.kie.pmml.commons.model.KiePMMLModel;
 import org.kie.pmml.compiler.testutils.TestUtils;
-import org.kie.pmml.evaluator.core.executor.PMMLModelExecutor;
+import org.kie.pmml.evaluator.core.executor.PMMLModelEvaluator;
 import org.kie.pmml.evaluator.core.utils.PMMLRequestDataBuilder;
 import org.kie.pmml.models.regression.compiler.executor.RegressionModelImplementationProvider;
-import org.kie.pmml.models.regression.evaluator.PMMLRegressionModelExecutor;
+import org.kie.pmml.models.regression.evaluator.PMMLRegressionModelEvaluator;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
@@ -35,7 +35,7 @@ import static org.junit.Assert.assertTrue;
 public abstract class AbstractPMMLRegressionTest {
 
     protected static final RegressionModelImplementationProvider PROVIDER = new RegressionModelImplementationProvider();
-    protected static final PMMLModelExecutor EXECUTOR = new PMMLRegressionModelExecutor();
+    protected static final PMMLModelEvaluator EVALUATOR = new PMMLRegressionModelEvaluator();
 
     protected static PMMLRequestData getPMMLRequestData(String modelName, Map<String, Object> parameters) {
         String correlationId = "CORRELATION_ID";

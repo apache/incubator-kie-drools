@@ -22,7 +22,7 @@ import org.kie.pmml.commons.model.KiePMMLModel;
 import org.kie.pmml.commons.model.enums.PMML_MODEL;
 import org.kie.pmml.evaluator.api.executor.PMMLContext;
 
-public interface PMMLModelExecutor {
+public interface PMMLModelEvaluator {
 
     /**
      * @return the <code>PMMLModelType</code> this <code>PMMLModelExecutor</code>

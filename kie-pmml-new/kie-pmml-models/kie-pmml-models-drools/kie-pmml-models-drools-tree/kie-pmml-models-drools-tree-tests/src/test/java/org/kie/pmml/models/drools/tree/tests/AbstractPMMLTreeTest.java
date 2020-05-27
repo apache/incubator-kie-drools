@@ -29,7 +29,7 @@ import org.kie.api.pmml.PMMLRequestData;
 import org.kie.internal.utils.KieHelper;
 import org.kie.pmml.commons.model.KiePMMLModel;
 import org.kie.pmml.compiler.testutils.TestUtils;
-import org.kie.pmml.evaluator.core.executor.PMMLModelExecutor;
+import org.kie.pmml.evaluator.core.executor.PMMLModelEvaluator;
 import org.kie.pmml.evaluator.core.utils.PMMLRequestDataBuilder;
 import org.kie.pmml.models.drools.tree.compiler.executor.TreeModelImplementationProvider;
 import org.kie.pmml.models.drools.tree.evaluator.PMMLTreeModelEvaluator;
@@ -40,7 +40,7 @@ import static org.junit.Assert.assertTrue;
 public abstract class AbstractPMMLTreeTest {
 
     protected static final TreeModelImplementationProvider PROVIDER = new TreeModelImplementationProvider();
-    protected static final PMMLModelExecutor EXECUTOR = new PMMLTreeModelEvaluator();
+    protected static final PMMLModelEvaluator EVALUATOR = new PMMLTreeModelEvaluator();
     private static final ReleaseId RELEASE_ID = new ReleaseIdImpl("org.drools", "kie-pmml-models-testing", "1.0");
     protected static KieBase kieBase;
 

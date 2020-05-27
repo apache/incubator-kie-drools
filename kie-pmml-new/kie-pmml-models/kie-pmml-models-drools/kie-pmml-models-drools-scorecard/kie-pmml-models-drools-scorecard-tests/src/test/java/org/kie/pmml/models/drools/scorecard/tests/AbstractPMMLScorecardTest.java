@@ -29,7 +29,7 @@ import org.kie.api.pmml.PMMLRequestData;
 import org.kie.internal.utils.KieHelper;
 import org.kie.pmml.commons.model.KiePMMLModel;
 import org.kie.pmml.compiler.testutils.TestUtils;
-import org.kie.pmml.evaluator.core.executor.PMMLModelExecutor;
+import org.kie.pmml.evaluator.core.executor.PMMLModelEvaluator;
 import org.kie.pmml.evaluator.core.utils.PMMLRequestDataBuilder;
 import org.kie.pmml.models.drools.scorecard.compiler.executor.ScorecardModelImplementationProvider;
 import org.kie.pmml.models.drools.scorecard.evaluator.PMMLScorecardModelEvaluator;
@@ -40,7 +40,7 @@ import static org.junit.Assert.assertTrue;
 public class AbstractPMMLScorecardTest {
 
     protected static final ScorecardModelImplementationProvider PROVIDER = new ScorecardModelImplementationProvider();
-    protected static final PMMLModelExecutor EXECUTOR = new PMMLScorecardModelEvaluator();
+    protected static final PMMLModelEvaluator EVALUATOR = new PMMLScorecardModelEvaluator();
     private static final ReleaseId RELEASE_ID = new ReleaseIdImpl("org.drools", "kie-pmml-models-testing", "1.0");
     protected static KieBase kieBase;
     protected static PMMLRequestData getPMMLRequestData(String modelName, Map<String, Object> parameters) {

@@ -66,7 +66,7 @@ public class NumericVariablesPolynomialRegressionTest extends AbstractPMMLRegres
         inputData.put("y", y);
 
         final PMMLRequestData pmmlRequestData = getPMMLRequestData(MODEL_NAME, inputData);
-        PMML4Result pmml4Result = EXECUTOR.evaluate(null, pmmlModel, new PMMLContextImpl(pmmlRequestData));
+        PMML4Result pmml4Result = EVALUATOR.evaluate(null, pmmlModel, new PMMLContextImpl(pmmlRequestData));
 
         Assertions.assertThat(pmml4Result).isNotNull();
         Assertions.assertThat(pmml4Result.getResultVariables()).containsKey(TARGET_FIELD);
