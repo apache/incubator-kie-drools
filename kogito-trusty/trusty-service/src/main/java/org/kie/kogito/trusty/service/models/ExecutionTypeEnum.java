@@ -14,8 +14,26 @@
  * limitations under the License.
  */
 
-package org.kie.kogito.trusty.service.api;
+package org.kie.kogito.trusty.service.models;
 
-public class TrustyApi {
+/**
+ * The execution enum type.
+ */
+public enum ExecutionTypeEnum {
 
+    /**
+     * An execution of a decision.
+     */
+    DECISION("DECISION"),
+
+    /**
+     * An execution of a process.
+     */
+    PROCESS("PROCESS");
+
+    private String type;
+
+    ExecutionTypeEnum(String type) {
+        this.type = type;
+    }
 }

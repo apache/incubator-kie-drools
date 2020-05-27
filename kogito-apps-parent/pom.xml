@@ -62,15 +62,7 @@
     <module>jobs-service</module>
     <module>data-index</module>
     <module>management-console</module>
+    <module>explainability-service</module>
+    <module>trusty</module>
   </modules>
-
-  <profiles>
-    <profile>
-      <id>experimental</id>
-      <modules>
-        <module>explainability-service</module>
-        <module>trusty</module>
-      </modules>
-    </profile>
-  </profiles>
 </project>
