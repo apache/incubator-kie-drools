@@ -17,6 +17,7 @@ package org.kie.pmml.models.regression.compiler.executor;
 
 import java.io.IOException;
 import java.util.List;
+import java.util.Map;
 import java.util.Objects;
 import java.util.stream.Collectors;
 
@@ -31,6 +32,7 @@ import org.kie.pmml.commons.model.tuples.KiePMMLNameOpType;
 import org.kie.pmml.compiler.api.provider.ModelImplementationProvider;
 import org.kie.pmml.models.regression.compiler.factories.KiePMMLRegressionModelFactory;
 import org.kie.pmml.models.regression.model.KiePMMLRegressionModel;
+import org.kie.pmml.models.regression.model.KiePMMLRegressionModelWithSources;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -53,11 +55,22 @@ public class RegressionModelImplementationProvider implements ModelImplementatio
 
     @Override
     public KiePMMLRegressionModel getKiePMMLModel(DataDictionary dataDictionary, RegressionModel model, Object kBuilder) {
-        logger.trace("getKiePMMLModel {} {}", dataDictionary, model);
+        logger.trace("getKiePMMLModel {} {} {}", dataDictionary, model, kBuilder);
         validate(dataDictionary, model);
         try {
-            return KiePMMLRegressionModelFactory.getKiePMMLRegressionModel(dataDictionary, model);
+            return KiePMMLRegressionModelFactory.getKiePMMLRegressionModelClasses(dataDictionary, model);
         } catch (IOException | IllegalAccessException | InstantiationException e) {
+            throw new KiePMMLException(e.getMessage(), e);
+        }
+    }
+
+    @Override
+    public KiePMMLRegressionModel getKiePMMLModelFromPlugin(String packageName, DataDictionary dataDictionary, RegressionModel model, Object kBuilder) {
+        logger.trace("getKiePMMLModelFromPlugin {} {} {}", dataDictionary, model, kBuilder);
+        try {
+            final Map<String, String> sourcesMap = KiePMMLRegressionModelFactory.getKiePMMLRegressionModelSourcesMap(dataDictionary, model, packageName);
+            return new KiePMMLRegressionModelWithSources(model.getModelName(), packageName, sourcesMap);
+        } catch (IOException e) {
             throw new RuntimeException(e);
         }
     }

@@ -39,170 +39,17 @@
     <module>kie-pmml-models-archetype</module>
     <module>kie-pmml-models-drools-archetype</module>
     <module>kie-pmml-models</module>
-    <module>kie-pmml-integration-tests</module>
     <module>kie-pmml-benchmarks</module>
   </modules>
 
   <dependencyManagement>
     <dependencies>
-      <!-- PMML -->
       <dependency>
         <groupId>org.kie</groupId>
-        <artifactId>kie-pmml-commons</artifactId>
+        <artifactId>kie-pmml-bom</artifactId>
         <version>${version.org.kie}</version>
-      </dependency>
-      <!-- Compiler -->
-      <dependency>
-        <groupId>org.kie</groupId>
-        <artifactId>kie-pmml-compiler-api</artifactId>
-        <version>${version.org.kie}</version>
-      </dependency>
-      <dependency>
-        <groupId>org.kie</groupId>
-        <artifactId>kie-pmml-compiler-core</artifactId>
-        <version>${version.org.kie}</version>
-      </dependency>
-      <dependency>
-        <groupId>org.kie</groupId>
-        <artifactId>kie-pmml-compiler-commons</artifactId>
-        <version>${version.org.kie}</version>
-      </dependency>
-      <!-- Evaluator -->
-      <dependency>
-        <groupId>org.kie</groupId>
-        <artifactId>kie-pmml-evaluator-api</artifactId>
-        <version>${version.org.kie}</version>
-      </dependency>
-      <dependency>
-        <groupId>org.kie</groupId>
-        <artifactId>kie-pmml-evaluator-core</artifactId>
-        <version>${version.org.kie}</version>
-      </dependency>
-      <dependency>
-        <groupId>org.kie</groupId>
-        <artifactId>kie-pmml-evaluator-assembler</artifactId>
-        <version>${version.org.kie}</version>
-      </dependency>
-      <!-- Drools -->
-      <dependency>
-        <groupId>org.kie</groupId>
-        <artifactId>kie-pmml-models-drools-common</artifactId>
-        <version>${version.org.kie}</version>
-      </dependency>
-      <!-- Regression -->
-      <dependency>
-        <groupId>org.kie</groupId>
-        <artifactId>kie-pmml-models-regression-model</artifactId>
-        <version>${version.org.kie}</version>
-      </dependency>
-      <dependency>
-        <groupId>org.kie</groupId>
-        <artifactId>kie-pmml-models-regression-compiler</artifactId>
-        <version>${version.org.kie}</version>
-      </dependency>
-      <dependency>
-        <groupId>org.kie</groupId>
-        <artifactId>kie-pmml-models-regression-evaluator</artifactId>
-        <version>${version.org.kie}</version>
-      </dependency>
-      <!-- Tree -->
-      <dependency>
-        <groupId>org.kie</groupId>
-        <artifactId>kie-pmml-models-drools-tree-model</artifactId>
-        <version>${version.org.kie}</version>
-      </dependency>
-      <dependency>
-        <groupId>org.kie</groupId>
-        <artifactId>kie-pmml-models-drools-tree-compiler</artifactId>
-        <version>${version.org.kie}</version>
-      </dependency>
-      <dependency>
-        <groupId>org.kie</groupId>
-        <artifactId>kie-pmml-models-drools-tree-evaluator</artifactId>
-        <version>${version.org.kie}</version>
-      </dependency>
-      <!-- Scorecard -->
-      <dependency>
-        <groupId>org.kie</groupId>
-        <artifactId>kie-pmml-models-drools-scorecard-model</artifactId>
-        <version>${version.org.kie}</version>
-      </dependency>
-      <dependency>
-        <groupId>org.kie</groupId>
-        <artifactId>kie-pmml-models-drools-scorecard-compiler</artifactId>
-        <version>${version.org.kie}</version>
-      </dependency>
-      <dependency>
-        <groupId>org.kie</groupId>
-        <artifactId>kie-pmml-models-drools-scorecard-evaluator</artifactId>
-        <version>${version.org.kie}</version>
-      </dependency>
-      <!-- EXTERNAL -->
-      <!-- TEST -->
-      <dependency>
-        <groupId>org.kie</groupId>
-        <artifactId>kie-pmml-commons</artifactId>
-        <classifier>tests</classifier>
-        <version>${version.org.kie}</version>
-      </dependency>
-      <!-- Compiler -->
-      <dependency>
-        <groupId>org.kie</groupId>
-        <artifactId>kie-pmml-compiler-api</artifactId>
-        <classifier>tests</classifier>
-        <version>${version.org.kie}</version>
-      </dependency>
-      <dependency>
-        <groupId>org.kie</groupId>
-        <artifactId>kie-pmml-compiler-commons</artifactId>
-        <classifier>tests</classifier>
-        <version>${version.org.kie}</version>
-      </dependency>
-      <!-- Regression -->
-      <dependency>
-        <groupId>org.kie</groupId>
-        <artifactId>kie-pmml-models-regression-compiler</artifactId>
-        <classifier>tests</classifier>
-        <version>${version.org.kie}</version>
-      </dependency>
-      <dependency>
-        <groupId>org.kie</groupId>
-        <artifactId>kie-pmml-models-regression-evaluator</artifactId>
-        <classifier>tests</classifier>
-        <version>${version.org.kie}</version>
-      </dependency>
-      <!-- Drools -->
-      <dependency>
-        <groupId>org.kie</groupId>
-        <artifactId>kie-pmml-models-drools-common</artifactId>
-        <classifier>tests</classifier>
-        <version>${version.org.kie}</version>
-      </dependency>
-      <!-- Tree -->
-      <dependency>
-        <groupId>org.kie</groupId>
-        <artifactId>kie-pmml-models-drools-tree-compiler</artifactId>
-        <classifier>tests</classifier>
-        <version>${version.org.kie}</version>
-      </dependency>
-      <!-- Scorecard -->
-      <dependency>
-        <groupId>org.kie</groupId>
-        <artifactId>kie-pmml-models-drools-scorecard-compiler</artifactId>
-        <scope>test</scope>
-        <version>${version.org.kie}</version>
-      </dependency>
-      <!-- EXTERNAL -->
-      <dependency>
-        <groupId>org.kie</groupId>
-        <artifactId>kie-test-util</artifactId>
-        <version>${version.org.kie}</version>
-      </dependency>
-      <dependency>
-        <groupId>org.kie</groupId>
-        <artifactId>kie-test-util</artifactId>
-        <classifier>tests</classifier>
-        <version>${version.org.kie}</version>
+        <type>pom</type>
+        <scope>import</scope>
       </dependency>
     </dependencies>
   </dependencyManagement>

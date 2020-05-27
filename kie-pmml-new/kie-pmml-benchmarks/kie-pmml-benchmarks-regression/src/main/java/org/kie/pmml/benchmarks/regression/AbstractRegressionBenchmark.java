@@ -49,7 +49,6 @@ public abstract class AbstractRegressionBenchmark {
     protected String fileName;
     protected PMMLContext pmmlContext;
     private PMMLRuntime pmmlRuntime;
-    private String releaseId;
     private KiePMMLModel model;
 
     protected void setupModel() throws Exception {
@@ -58,7 +57,6 @@ public abstract class AbstractRegressionBenchmark {
         kfs.write(KieServices.get().getResources().newClassPathResource(fileName).setResourceType(ResourceType.PMML));
         final KieBuilder kieBuilder = ks.newKieBuilder(kfs).buildAll();
         final ReleaseId relId = kieBuilder.getKieModule().getReleaseId();
-        releaseId = relId.toExternalForm();
         Results res = kieBuilder.getResults();
         KieBase kbase = ks.newKieContainer(relId).getKieBase();
         KieSession session = kbase.newKieSession();
@@ -67,6 +65,6 @@ public abstract class AbstractRegressionBenchmark {
     }
 
     protected PMML4Result evaluate() {
-        return pmmlRuntime.evaluate(model, pmmlContext, releaseId);
+        return pmmlRuntime.evaluate(model.getName(), pmmlContext);
     }
 }

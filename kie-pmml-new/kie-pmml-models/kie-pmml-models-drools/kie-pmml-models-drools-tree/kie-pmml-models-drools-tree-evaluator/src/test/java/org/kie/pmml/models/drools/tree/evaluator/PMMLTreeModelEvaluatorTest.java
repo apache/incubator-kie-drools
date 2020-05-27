@@ -20,17 +20,22 @@ import java.util.Map;
 
 import org.dmg.pmml.PMML;
 import org.dmg.pmml.tree.TreeModel;
-import org.junit.Before;
+import org.drools.compiler.builder.impl.KnowledgeBuilderImpl;
+import org.drools.compiler.kproject.ReleaseIdImpl;
+import org.junit.BeforeClass;
 import org.junit.Test;
+import org.kie.api.KieBase;
+import org.kie.api.builder.ReleaseId;
 import org.kie.api.pmml.PMML4Result;
 import org.kie.api.pmml.PMMLRequestData;
+import org.kie.internal.utils.KieHelper;
 import org.kie.pmml.commons.enums.ResultCode;
 import org.kie.pmml.commons.model.enums.PMML_MODEL;
 import org.kie.pmml.compiler.testutils.TestUtils;
 import org.kie.pmml.evaluator.api.executor.PMMLContext;
 import org.kie.pmml.evaluator.core.PMMLContextImpl;
 import org.kie.pmml.evaluator.core.utils.PMMLRequestDataBuilder;
-import org.kie.pmml.models.drools.tree.compiler.factories.KiePMMLTreeModelFactory;
+import org.kie.pmml.models.drools.tree.compiler.executor.TreeModelImplementationProvider;
 import org.kie.pmml.models.drools.tree.model.KiePMMLTreeModel;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -45,6 +50,11 @@ public class PMMLTreeModelEvaluatorTest {
     private static final String SOURCE_1 = "TreeSample.pmml";
     private static final Logger logger = LoggerFactory.getLogger(PMMLTreeModelEvaluatorTest.class);
     private static final String modelName = "golfing";
+    private static final ReleaseId RELEASE_ID = new ReleaseIdImpl("org", "test", "1.0.0");
+    private static final TreeModelImplementationProvider provider = new TreeModelImplementationProvider();
+    private static KiePMMLTreeModel kiePMMLModel;
+    private static PMMLTreeModelEvaluator evaluator;
+    private static KieBase kieBase;
     private final String SCORE = "SCORE";
     private final String WILL_PLAY = "will play";
     private final String NO_PLAY = "no play";
@@ -59,17 +69,20 @@ public class PMMLTreeModelEvaluatorTest {
     private final String RAIN = "rain";
     private final String TARGET_FIELD = "whatIdo";
 
-    private KiePMMLTreeModel kiePMMLModel;
-    private PMMLTreeModelEvaluator evaluator;
-
-    @Before
-    public void setUp() throws Exception {
+    @BeforeClass
+    public static void setUp() throws Exception {
         evaluator = new PMMLTreeModelEvaluator();
         final PMML pmml = TestUtils.loadFromFile(SOURCE_1);
         assertNotNull(pmml);
         assertEquals(1, pmml.getModels().size());
         assertTrue(pmml.getModels().get(0) instanceof TreeModel);
-        kiePMMLModel = KiePMMLTreeModelFactory.getKiePMMLTreeModel(pmml.getDataDictionary(), (TreeModel) pmml.getModels().get(0));
+        KnowledgeBuilderImpl knowledgeBuilder = new KnowledgeBuilderImpl();
+        kiePMMLModel = provider.getKiePMMLModel(pmml.getDataDictionary(), (TreeModel) pmml.getModels().get(0), knowledgeBuilder);
+        kieBase = new KieHelper()
+                .addContent(knowledgeBuilder.getPackageDescrs(kiePMMLModel.getKModulePackageName()).get(0))
+                .setReleaseId(RELEASE_ID)
+                .build();
+        assertNotNull(kieBase);
     }
 
     @Test
@@ -164,7 +177,7 @@ public class PMMLTreeModelEvaluatorTest {
     }
 
     private void commonEvaluate(PMMLContext pmmlContext, String expectedScore) {
-        PMML4Result retrieved = evaluator.evaluate(kiePMMLModel, pmmlContext, "org:test:releaseid");
+        PMML4Result retrieved = evaluator.evaluate(kieBase, kiePMMLModel, pmmlContext);
         assertNotNull(retrieved);
         logger.trace(retrieved.toString());
         assertEquals(TARGET_FIELD, retrieved.getResultObjectName());

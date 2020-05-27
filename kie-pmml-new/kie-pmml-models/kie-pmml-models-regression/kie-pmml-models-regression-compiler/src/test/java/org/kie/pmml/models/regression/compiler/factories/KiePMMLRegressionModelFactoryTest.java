@@ -62,7 +62,7 @@ import static org.kie.pmml.compiler.commons.testutils.PMMLModelTestUtils.getNume
 import static org.kie.pmml.compiler.commons.testutils.PMMLModelTestUtils.getPredictorTerm;
 import static org.kie.pmml.compiler.commons.testutils.PMMLModelTestUtils.getRegressionModel;
 import static org.kie.pmml.compiler.commons.testutils.PMMLModelTestUtils.getRegressionTable;
-import static org.kie.pmml.models.regression.compiler.factories.KiePMMLRegressionModelFactory.getKiePMMLRegressionModel;
+import static org.kie.pmml.models.regression.compiler.factories.KiePMMLRegressionModelFactory.getKiePMMLRegressionModelClasses;
 
 @RunWith(Parameterized.class)
 public class KiePMMLRegressionModelFactoryTest {
@@ -117,7 +117,7 @@ public class KiePMMLRegressionModelFactoryTest {
 
     @Test
     public void getKiePMMLRegressionModelTest() throws IOException, IllegalAccessException, InstantiationException {
-        KiePMMLRegressionModel retrieved = getKiePMMLRegressionModel(dataDictionary, regressionModel);
+        KiePMMLRegressionModel retrieved = getKiePMMLRegressionModelClasses(dataDictionary, regressionModel);
         assertNotNull(retrieved);
         assertEquals(regressionModel.getModelName(), retrieved.getName());
         assertEquals(MINING_FUNCTION.byName(regressionModel.getMiningFunction().value()), retrieved.getMiningFunction());

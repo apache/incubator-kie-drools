@@ -15,25 +15,22 @@
  */
 package org.kie.pmml.evaluator.core.service;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
-import java.util.Objects;
 import java.util.Optional;
 
-import org.drools.core.definitions.InternalKnowledgePackage;
 import org.kie.api.KieBase;
-import org.kie.api.io.ResourceType;
 import org.kie.api.pmml.PMML4Result;
 import org.kie.api.pmml.PMMLRequestData;
 import org.kie.api.pmml.ParameterInfo;
+import org.kie.pmml.commons.exceptions.KiePMMLException;
 import org.kie.pmml.commons.model.KiePMMLModel;
 import org.kie.pmml.commons.model.enums.PMML_MODEL;
-import org.kie.pmml.evaluator.api.container.PMMLPackage;
 import org.kie.pmml.evaluator.api.executor.PMMLContext;
 import org.kie.pmml.evaluator.api.executor.PMMLRuntime;
 import org.kie.pmml.evaluator.core.executor.PMMLModelExecutor;
 import org.kie.pmml.evaluator.core.executor.PMMLModelExecutorFinderImpl;
+import org.kie.pmml.evaluator.core.utils.KnowledgeBaseUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -51,32 +48,31 @@ public class PMMLRuntimeImpl implements PMMLRuntime {
 
     @Override
     public List<KiePMMLModel> getModels() {
-        logger.trace("getModels");
-        List<KiePMMLModel> models = new ArrayList<>();
-        knowledgeBase.getKiePackages().forEach(kpkg -> {
-            PMMLPackage pmmlPackage = (PMMLPackage) ((InternalKnowledgePackage) kpkg).getResourceTypePackages().get(ResourceType.PMML);
-            if (pmmlPackage != null) {
-                models.addAll(pmmlPackage.getAllModels().values());
-            }
-        });
-        return models;
+        return KnowledgeBaseUtils.getModels(knowledgeBase);
     }
 
     @Override
     public Optional<KiePMMLModel> getModel(String modelName) {
-        logger.trace("getModels {}", modelName);
-        return getModels()
-                .stream()
-                .filter(model -> Objects.equals(modelName, model.getName()))
-                .findFirst();
+        return KnowledgeBaseUtils.getModel(knowledgeBase, modelName);
     }
 
     @Override
-    public PMML4Result evaluate(KiePMMLModel model, PMMLContext context, String releaseId) {
-        logger.debug("evaluate {} {}", model, context);
+    public PMML4Result evaluate(String modelName, PMMLContext context) {
+        if (logger.isDebugEnabled()) {
+            logger.debug("evaluate {} {}", modelName, context);
+        }
+        KiePMMLModel toEvaluate = getModel(modelName).orElseThrow(() -> new KiePMMLException("Failed to retrieve model with name " + modelName));
+        return evaluate(toEvaluate, context);
+    }
+
+    protected PMML4Result evaluate(KiePMMLModel model, PMMLContext context) {
+        if (logger.isDebugEnabled()) {
+            logger.debug("evaluate {} {}", model, context);
+        }
         addMissingValuesReplacements(model, context);
-        Optional<PMMLModelExecutor> pmmlModelExecutor = getFromPMMLModelType(model.getPmmlMODEL());
-        return pmmlModelExecutor.isPresent() ? pmmlModelExecutor.get().evaluate(model, context, releaseId) : new PMML4Result();
+        PMMLModelExecutor executor = getFromPMMLModelType(model.getPmmlMODEL())
+                .orElseThrow(() -> new KiePMMLException(String.format("PMMLModelExecutor not found for model %s", model.getPmmlMODEL())));
+        return executor.evaluate(knowledgeBase, model, context);
     }
 
     /**
@@ -115,5 +111,4 @@ public class PMMLRuntimeImpl implements PMMLRuntime {
                 .filter(implementation -> pmmlMODEL.equals(implementation.getPMMLModelType()))
                 .findFirst();
     }
-
 }

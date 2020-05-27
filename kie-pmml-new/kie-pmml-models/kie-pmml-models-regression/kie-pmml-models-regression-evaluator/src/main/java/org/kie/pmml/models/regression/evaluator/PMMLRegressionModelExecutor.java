@@ -18,6 +18,7 @@ package org.kie.pmml.models.regression.evaluator;
 import java.util.Map;
 
 import org.drools.core.util.StringUtils;
+import org.kie.api.KieBase;
 import org.kie.api.pmml.PMML4Result;
 import org.kie.pmml.commons.exceptions.KiePMMLInternalException;
 import org.kie.pmml.commons.model.KiePMMLModel;
@@ -47,12 +48,12 @@ public class PMMLRegressionModelExecutor implements PMMLModelExecutor {
     }
 
     @Override
-    public PMML4Result evaluate(KiePMMLModel model, PMMLContext pmmlContext, String releaseId) {
+    public PMML4Result evaluate(final KieBase knowledgeBase, KiePMMLModel model, PMMLContext pmmlContext) {
         validate(model);
         PMML4Result toReturn = new PMML4Result();
         String targetField = model.getTargetField();
         final Map<String, Object> requestData = getUnwrappedParametersMap(pmmlContext.getRequestData().getMappedRequestParams());
-        Object result = model.evaluate(requestData);
+        Object result = model.evaluate(knowledgeBase, requestData);
         toReturn.addResultVariable(targetField, result);
         toReturn.setResultObjectName(targetField);
         toReturn.setResultCode(OK.getName());

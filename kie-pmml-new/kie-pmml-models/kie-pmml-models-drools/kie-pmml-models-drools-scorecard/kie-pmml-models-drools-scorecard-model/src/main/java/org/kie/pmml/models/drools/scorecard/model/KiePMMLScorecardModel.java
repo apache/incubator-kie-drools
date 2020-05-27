@@ -34,7 +34,7 @@ public class KiePMMLScorecardModel extends KiePMMLDroolsModel {
 
     public static final PMML_MODEL PMML_MODEL_TYPE = PMML_MODEL.SCORECARD_MODEL;
 
-    private KiePMMLScorecardModel(String modelName, List<KiePMMLExtension> extensions) {
+    protected KiePMMLScorecardModel(String modelName, List<KiePMMLExtension> extensions) {
         super(modelName, extensions);
     }
 
@@ -47,8 +47,8 @@ public class KiePMMLScorecardModel extends KiePMMLDroolsModel {
     }
 
     @Override
-    public Object evaluate(Map<String, Object> requestData) {
-        final PMML4Result toReturn = (PMML4Result) super.evaluate(requestData);
+    public Object evaluate(final Object knowledgeBase, Map<String, Object> requestData) {
+        final PMML4Result toReturn = (PMML4Result) super.evaluate(knowledgeBase, requestData);
         populateWithOutputFields(toReturn);
         return toReturn;
     }

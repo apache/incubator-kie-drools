@@ -15,19 +15,26 @@
  */
 package org.kie.pmml.models.drools.utils;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Map;
 
-import org.drools.compiler.lang.descr.PackageDescr;
-import org.drools.modelcompiler.ExecutableModelProject;
+import org.drools.core.command.impl.CommandFactoryServiceImpl;
+import org.kie.api.KieBase;
+import org.kie.api.command.BatchExecutionCommand;
+import org.kie.api.command.Command;
 import org.kie.api.definition.type.FactType;
 import org.kie.api.event.rule.AgendaEventListener;
 import org.kie.api.pmml.PMML4Result;
-import org.kie.api.runtime.KieSession;
-import org.kie.internal.utils.KieHelper;
+import org.kie.api.runtime.StatelessKieSession;
+import org.kie.pmml.commons.exceptions.KiePMMLException;
 import org.kie.pmml.evaluator.api.exceptions.KiePMMLModelException;
 import org.kie.pmml.models.drools.executor.KiePMMLStatusHolder;
 import org.kie.pmml.models.drools.tuples.KiePMMLOriginalTypeGeneratedType;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
+import static org.kie.pmml.commons.utils.KiePMMLModelUtils.getSanitizedPackageName;
 import static org.kie.pmml.models.drools.commons.factories.KiePMMLDescrFactory.OUTPUTFIELDS_MAP_IDENTIFIER;
 import static org.kie.pmml.models.drools.commons.factories.KiePMMLDescrFactory.PMML4_RESULT_IDENTIFIER;
 
@@ -36,29 +43,47 @@ import static org.kie.pmml.models.drools.commons.factories.KiePMMLDescrFactory.P
  */
 public class KiePMMLSessionUtils {
 
-    private final PackageDescr packageDescr;
-    private final KieSession kieSession;
+    private static final Logger logger = LoggerFactory.getLogger(KiePMMLSessionUtils.class.getName());
 
-    private KiePMMLSessionUtils(final PackageDescr packageDescr, final PMML4Result pmml4Result) {
-        this.packageDescr = packageDescr;
-        kieSession = new KieHelper()
-                .addContent(packageDescr)
-                .build(ExecutableModelProject.class)
-                .newKieSession();
-        kieSession.insert(new KiePMMLStatusHolder());
-        kieSession.insert(pmml4Result);
-        kieSession.setGlobal(PMML4_RESULT_IDENTIFIER, pmml4Result);
+    private static final CommandFactoryServiceImpl COMMAND_FACTORY_SERVICE = new CommandFactoryServiceImpl();
+    private final StatelessKieSession kieSession;
+    private final String modelName;
+    private final String packageName;
+    private final List<Command> commands;
+
+    private KiePMMLSessionUtils(final KieBase knowledgeBase, final String modelName, final PMML4Result pmml4Result) {
+        this.modelName = modelName;
+        packageName = getSanitizedPackageName(modelName);
+        kieSession = getKieSession(knowledgeBase);
+        commands = new ArrayList<>();
+        commands.add(COMMAND_FACTORY_SERVICE.newInsert(new KiePMMLStatusHolder()));
+        commands.add(COMMAND_FACTORY_SERVICE.newInsert(pmml4Result));
+        commands.add(COMMAND_FACTORY_SERVICE.newSetGlobal(PMML4_RESULT_IDENTIFIER, pmml4Result));
     }
 
-    public static Builder builder(final PackageDescr packageDescr, final PMML4Result pmml4Result) {
-        return new Builder(packageDescr, pmml4Result);
+    public static Builder builder(final KieBase knowledgeBase, final String modelName, final PMML4Result pmml4Result) {
+        return new Builder(knowledgeBase, modelName, pmml4Result);
+    }
+
+    private StatelessKieSession getKieSession(final KieBase knowledgeBase) {
+        StatelessKieSession toReturn;
+        try {
+            toReturn = knowledgeBase.newStatelessKieSession();
+            if (toReturn == null) {
+                throw new KiePMMLException("Failed to create KieSession for model " + modelName);
+            }
+            return toReturn;
+        } catch (Throwable t) {
+            throw new KiePMMLException("Failed to create KieSession for model " + modelName, t);
+        }
     }
 
     /**
      * Invoke <code>KieSession.fireAllRules()</code>
      */
     public void fireAllRules() {
-        kieSession.fireAllRules();
+        BatchExecutionCommand batchExecutionCommand = COMMAND_FACTORY_SERVICE.newBatchExecution(commands);
+        kieSession.execute(batchExecutionCommand);
     }
 
     /**
@@ -74,10 +99,10 @@ public class KiePMMLSessionUtils {
             }
             try {
                 String generatedTypeName = fieldTypeMap.get(entry.getKey()).getGeneratedType();
-                FactType factType = kieSession.getKieBase().getFactType(packageDescr.getName(), generatedTypeName);
+                FactType factType = kieSession.getKieBase().getFactType(packageName, generatedTypeName);
                 Object toAdd = factType.newInstance();
                 factType.set(toAdd, "value", entry.getValue());
-                kieSession.insert(toAdd);
+                commands.add(COMMAND_FACTORY_SERVICE.newInsert(toAdd));
             } catch (Exception e) {
                 throw new KiePMMLModelException(e.getMessage(), e);
             }
@@ -90,16 +115,16 @@ public class KiePMMLSessionUtils {
      * @param globalName its global name
      */
     private void insertObjectInSession(final Object toInsert, final String globalName) {
-        kieSession.insert(toInsert);
-        kieSession.setGlobal(globalName, toInsert);
+        commands.add(COMMAND_FACTORY_SERVICE.newInsert(toInsert));
+        commands.add(COMMAND_FACTORY_SERVICE.newSetGlobal(globalName, toInsert));
     }
 
     public static class Builder {
 
         private KiePMMLSessionUtils toBuild;
 
-        private Builder(final PackageDescr packageDescr, final PMML4Result pmml4Result) {
-            this.toBuild = new KiePMMLSessionUtils(packageDescr, pmml4Result);
+        private Builder(final KieBase knowledgeBase, final String modelName, final PMML4Result pmml4Result) {
+            this.toBuild = new KiePMMLSessionUtils(knowledgeBase, modelName, pmml4Result);
         }
 
         /**

@@ -34,7 +34,7 @@ public class KiePMMLDescrFactory {
 
     public static final String PMML4_RESULT = "PMML4Result";
     public static final String PMML4_RESULT_IDENTIFIER = "$pmml4Result";
-    public static final String OUTPUTFIELDS_MAP = "Map<String, Object>";
+    public static final String OUTPUTFIELDS_MAP = "Map";
     public static final String OUTPUTFIELDS_MAP_IDENTIFIER = "$outputFieldsMap";
 
     private static final Logger logger = LoggerFactory.getLogger(KiePMMLDescrFactory.class.getName());

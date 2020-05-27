@@ -15,6 +15,7 @@
  */
 package org.kie.pmml.evaluator.core.executor;
 
+import org.kie.api.KieBase;
 import org.kie.api.pmml.PMML4Result;
 import org.kie.pmml.commons.exceptions.KiePMMLInternalException;
 import org.kie.pmml.commons.model.KiePMMLModel;
@@ -31,11 +32,12 @@ public interface PMMLModelExecutor {
 
     /**
      * Evaluate the model, given the context
+     * @param knowledgeBase The <code>KieBase</code> we are currently working on.
+     * It may be <code>null</code> for testing purpose for <b>not drools-related</b> models
      * @param model the model to evaluate
      * @param context the context with all the input variables
-     * @param releaseId Used to indirectly retrieve same instance of kiecontainer
      * @return the result of the evaluation
      * @throws KiePMMLInternalException
      */
-    PMML4Result evaluate(KiePMMLModel model, PMMLContext context, String releaseId);
+    PMML4Result evaluate(final KieBase knowledgeBase, final KiePMMLModel model, final PMMLContext context);
 }

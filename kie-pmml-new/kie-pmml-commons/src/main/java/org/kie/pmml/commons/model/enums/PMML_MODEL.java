@@ -40,7 +40,7 @@ public enum PMML_MODEL {
     REGRESSION_MODEL("RegressionModel"),
     RULESET_MODEL("RulesetModel"),
     SEQUENCE_MODEL("SequenceModel"),
-    SCORECARD_MODEL("ScorecardModel"),
+    SCORECARD_MODEL("Scorecard"),
     SUPPORT_VECTOR_MACHINE_MODEL("SupportVectorMachineModel"),
     TEXT_MODEL("TextModel"),
     TIME_SERIES_MODEL("TimeSeriesModel"),

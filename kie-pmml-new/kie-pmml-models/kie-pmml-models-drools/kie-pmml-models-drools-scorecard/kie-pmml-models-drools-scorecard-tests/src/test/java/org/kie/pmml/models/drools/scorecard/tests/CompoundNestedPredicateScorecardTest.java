@@ -16,6 +16,11 @@
 
 package org.kie.pmml.models.drools.scorecard.tests;
 
+import java.util.Arrays;
+import java.util.Collection;
+import java.util.HashMap;
+import java.util.Map;
+
 import org.assertj.core.api.Assertions;
 import org.junit.BeforeClass;
 import org.junit.Test;
@@ -25,11 +30,6 @@ import org.kie.api.pmml.PMML4Result;
 import org.kie.api.pmml.PMMLRequestData;
 import org.kie.pmml.commons.model.KiePMMLModel;
 import org.kie.pmml.evaluator.core.PMMLContextImpl;
-
-import java.util.Arrays;
-import java.util.Collection;
-import java.util.HashMap;
-import java.util.Map;
 
 @RunWith(Parameterized.class)
 public class CompoundNestedPredicateScorecardTest extends AbstractPMMLScorecardTest {
@@ -66,15 +66,15 @@ public class CompoundNestedPredicateScorecardTest extends AbstractPMMLScorecardT
     public static Collection<Object[]> data() {
         return Arrays.asList(new Object[][]{
                 { -50, "classB", -8, "characteristic2ReasonCode", null },
-                { -50, "classD", -8, "characteristic2ReasonCode", null },
-                { -9, "classB", 75, "characteristic1ReasonCode", null },
-                { 25.4, "classB", 75, "characteristic1ReasonCode", null },
-                { -7, "classA", -8, "characteristic2ReasonCode", null },
-                { -7, "classC", -15.5, "characteristic1ReasonCode", "characteristic2ReasonCode" },
-                { 5, "classB", -15.5, "characteristic1ReasonCode", "characteristic2ReasonCode" },
-                { 7.4, "classB", -15.5, "characteristic1ReasonCode", "characteristic2ReasonCode" },
-                { 12, "classB", 75, "characteristic1ReasonCode", null },
-                { 12, "classD", 75, "characteristic1ReasonCode", null },
+                {-50, "classD", -8, "characteristic2ReasonCode", null},
+                {-9, "classB", 75, "characteristic1ReasonCode", null},
+                {25.4, "classB", 75, "characteristic1ReasonCode", null},
+                {-7, "classA", -8, "characteristic2ReasonCode", null},
+                {-7, "classC", -15.5, "characteristic1ReasonCode", "characteristic2ReasonCode"},
+                {5, "classB", -15.5, "characteristic1ReasonCode", "characteristic2ReasonCode"},
+                {7.4, "classB", -15.5, "characteristic1ReasonCode", "characteristic2ReasonCode"},
+                {12, "classB", 75, "characteristic1ReasonCode", null},
+                {12, "classD", 75, "characteristic1ReasonCode", null},
         });
     }
 
@@ -85,13 +85,12 @@ public class CompoundNestedPredicateScorecardTest extends AbstractPMMLScorecardT
         inputData.put("input2", input2);
 
         final PMMLRequestData pmmlRequestData = getPMMLRequestData(MODEL_NAME, inputData);
-        PMML4Result pmml4Result = EXECUTOR.evaluate(pmmlModel, new PMMLContextImpl(pmmlRequestData), RELEASE_ID);
+        PMML4Result pmml4Result = EXECUTOR.evaluate(kieBase, pmmlModel, new PMMLContextImpl(pmmlRequestData));
 
         Assertions.assertThat(pmml4Result.getResultVariables().get(TARGET_FIELD)).isNotNull();
         Assertions.assertThat(pmml4Result.getResultVariables().get(TARGET_FIELD)).isEqualTo(score);
-        /* TODO: Uncomment when reason codes are implemented
+//         TODO: Uncomment when reason codes are implemented
         Assertions.assertThat(pmml4Result.getResultVariables().get(REASON_CODE1_FIELD)).isEqualTo(reasonCode1);
         Assertions.assertThat(pmml4Result.getResultVariables().get(REASON_CODE2_FIELD)).isEqualTo(reasonCode2);
-         */
     }
 }

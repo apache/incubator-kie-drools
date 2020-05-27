@@ -80,7 +80,7 @@ public class LogisticRegressionIrisDataTest extends AbstractPMMLRegressionTest {
         inputData.put("Petal.Width", petalWidth);
 
         final PMMLRequestData pmmlRequestData = getPMMLRequestData(MODEL_NAME, inputData);
-        PMML4Result pmml4Result = EXECUTOR.evaluate(pmmlModel, new PMMLContextImpl(pmmlRequestData), RELEASE_ID);
+        PMML4Result pmml4Result = EXECUTOR.evaluate(null, pmmlModel, new PMMLContextImpl(pmmlRequestData));
         Assertions.assertThat(pmml4Result.getResultVariables().get(TARGET_FIELD)).isNotNull();
         Assertions.assertThat(pmml4Result.getResultVariables().get(TARGET_FIELD)).isEqualTo(expectedResult);
 

@@ -16,18 +16,23 @@
 
 package org.kie.pmml.models.drools.scorecard.tests;
 
+import java.util.Map;
+
 import org.assertj.core.api.Assertions;
 import org.dmg.pmml.PMML;
 import org.dmg.pmml.scorecard.Scorecard;
+import org.drools.compiler.builder.impl.KnowledgeBuilderImpl;
+import org.drools.compiler.kproject.ReleaseIdImpl;
+import org.kie.api.KieBase;
+import org.kie.api.builder.ReleaseId;
 import org.kie.api.pmml.PMMLRequestData;
+import org.kie.internal.utils.KieHelper;
 import org.kie.pmml.commons.model.KiePMMLModel;
 import org.kie.pmml.compiler.testutils.TestUtils;
 import org.kie.pmml.evaluator.core.executor.PMMLModelExecutor;
 import org.kie.pmml.evaluator.core.utils.PMMLRequestDataBuilder;
 import org.kie.pmml.models.drools.scorecard.compiler.executor.ScorecardModelImplementationProvider;
 import org.kie.pmml.models.drools.scorecard.evaluator.PMMLScorecardModelEvaluator;
-
-import java.util.Map;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
@@ -36,8 +41,8 @@ public class AbstractPMMLScorecardTest {
 
     protected static final ScorecardModelImplementationProvider PROVIDER = new ScorecardModelImplementationProvider();
     protected static final PMMLModelExecutor EXECUTOR = new PMMLScorecardModelEvaluator();
-    protected static final String RELEASE_ID = "org.drools:kie-pmml-models-testing:1.0";
-
+    private static final ReleaseId RELEASE_ID = new ReleaseIdImpl("org.drools", "kie-pmml-models-testing", "1.0");
+    protected static KieBase kieBase;
     protected static PMMLRequestData getPMMLRequestData(String modelName, Map<String, Object> parameters) {
         String correlationId = "CORRELATION_ID";
         PMMLRequestDataBuilder pmmlRequestDataBuilder = new PMMLRequestDataBuilder(correlationId, modelName);
@@ -61,11 +66,15 @@ public class AbstractPMMLScorecardTest {
         Assertions.assertThat(pmml).isNotNull();
         assertEquals(1, pmml.getModels().size());
         assertTrue(pmml.getModels().get(0) instanceof Scorecard);
-
-        final KiePMMLModel pmmlModel = PROVIDER.getKiePMMLDroolsModel(pmml.getDataDictionary(),
-                (Scorecard) pmml.getModels().get(0));
+        KnowledgeBuilderImpl knowledgeBuilder = new KnowledgeBuilderImpl();
+        final KiePMMLModel pmmlModel = PROVIDER.getKiePMMLModel(pmml.getDataDictionary(),
+                                                                (Scorecard) pmml.getModels().get(0), knowledgeBuilder);
         Assertions.assertThat(pmmlModel).isNotNull();
-
+        kieBase = new KieHelper()
+                .addContent(knowledgeBuilder.getPackageDescrs(pmmlModel.getName().toLowerCase()).get(0))
+                .setReleaseId(RELEASE_ID)
+                .build();
+        Assertions.assertThat(kieBase).isNotNull();
         return pmmlModel;
     }
 }
