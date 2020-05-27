@@ -73,5 +73,7 @@ public class MisleadingRulesTest extends AbstractDTAnalysisTest {
         assertThat(analysis.getMisleadingRules(), contains(misleadingRules.toArray()));
         assertTrue("It should contain at least 1 DMNMessage for the MisleadingRule",
                    validate.stream().anyMatch(p -> p.getMessageType().equals(DMNMessageType.DECISION_TABLE_MISLEADING_RULE)));
+        assertTrue("This test case is not a Masked rule example",
+                   validate.stream().noneMatch(p -> p.getMessageType().equals(DMNMessageType.DECISION_TABLE_MASKED_RULE)));
     }
 }

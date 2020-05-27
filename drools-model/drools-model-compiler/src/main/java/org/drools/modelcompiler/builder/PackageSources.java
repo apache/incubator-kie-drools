@@ -42,7 +42,7 @@ public class PackageSources {
 
         PackageModelWriter packageModelWriter = new PackageModelWriter(pkgModel);
         for (DeclaredTypeWriter declaredType : packageModelWriter.getDeclaredTypes()) {
-            sources.pojoSources.add(new GeneratedFile(declaredType.getName(), logSource( declaredType.getSource() )));
+            sources.pojoSources.add(new GeneratedFile( GeneratedFile.Type.DECLARED_TYPE, declaredType.getName(), logSource( declaredType.getSource() )));
         }
 
         RuleWriter rules = writeRules( pkgModel, sources, packageModelWriter );

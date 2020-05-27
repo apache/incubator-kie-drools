@@ -27,6 +27,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 import org.kie.dmn.api.core.DMNModel;
 import org.kie.dmn.api.core.DMNType;
@@ -43,12 +44,12 @@ public class DMNAllTypesIndex {
         for (DMNModel m : allModels) {
             DMNModelTypesIndex indexFromModel = new DMNModelTypesIndex(m, packageName);
             mapNamespaceIndex.putAll(indexFromModel.getIndex());
-            allTypesToGenerate().addAll(indexFromModel.getTypesToGenerate());
+            indexedTypes.addAll(indexFromModel.getTypesToGenerate());
         }
     }
 
-    public List<DMNType> allTypesToGenerate() {
-        return indexedTypes;
+    public List<DMNType> typesToGenerateByNS(String namespace) {
+        return indexedTypes.stream().filter(t -> namespace.equals(t.getNamespace())).collect(Collectors.toList());
     }
 
     @Deprecated
@@ -79,9 +80,13 @@ public class DMNAllTypesIndex {
         }
         String baseConverted = asJava(dmnType.getBaseType());
         if (dmnType.isCollection()) {
-            return String.format("java.util.Collection<%s>", baseConverted);
+            return juCollection(baseConverted);
         }
         return baseConverted;
+    }
+
+    public static String juCollection(String base) {
+        return String.format("java.util.Collection<%s>", base);
     }
 
     private String convertBuiltin(DMNType expectedFEELType) {

@@ -16,7 +16,9 @@
 
 package org.kie.dmn.core.pmml;
 
+import java.io.InputStreamReader;
 import java.math.BigDecimal;
+import java.util.Arrays;
 import java.util.Map;
 
 import org.drools.compiler.kie.builder.impl.DrlProject;
@@ -39,10 +41,12 @@ import org.kie.dmn.core.assembler.DMNAssemblerService;
 import org.kie.dmn.core.impl.CompositeTypeImpl;
 import org.kie.dmn.core.impl.DMNModelImpl;
 import org.kie.dmn.core.impl.SimpleTypeImpl;
+import org.kie.dmn.core.internal.utils.DMNRuntimeBuilder;
 import org.kie.dmn.core.util.DMNRuntimeUtil;
 import org.kie.dmn.feel.lang.types.BuiltInType;
 import org.kie.internal.builder.IncrementalResults;
 import org.kie.internal.builder.InternalKieBuilder;
+import org.kie.internal.io.ResourceFactory;
 import org.kie.internal.services.KieAssemblersImpl;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -80,6 +84,16 @@ public class DMNRuntimePMMLTest {
                                                                                        DMNRuntimePMMLTest.class,
                                                                                        "test_scorecard.pmml");
         runDMNModelInvokingPMML(runtime);
+    }
+
+    @Test
+    public void testBasicNoKieAssembler() {
+        DMNRuntime dmnRuntime = DMNRuntimeBuilder.fromDefaults()
+                                                 .setRelativeImportResolver((ns, n, uri) -> new InputStreamReader(DMNRuntimePMMLTest.class.getResourceAsStream(uri)))
+                                                 .buildConfiguration()
+                                                 .fromResources(Arrays.asList(ResourceFactory.newClassPathResource("KiePMMLScoreCard.dmn", DMNRuntimePMMLTest.class)))
+                                                 .getOrElseThrow(e -> new RuntimeException("Error compiling DMN model(s)", e));
+        runDMNModelInvokingPMML(dmnRuntime);
     }
 
     static void runDMNModelInvokingPMML(final DMNRuntime runtime) {

@@ -17,6 +17,7 @@
 package org.kie.dmn.core.internal.utils;
 
 import java.io.IOException;
+import java.io.Reader;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
@@ -67,11 +68,22 @@ public class DMNRuntimeBuilder {
 
         public final DMNCompilerConfigurationImpl cc;
         public final List<DMNProfile> dmnProfiles = new ArrayList<>();
+        private RelativeImportResolver relativeResolver;
 
         public DMNRuntimeBuilderCtx() {
             this.cc = new DMNCompilerConfigurationImpl();
         }
 
+        public void setRelativeResolver(RelativeImportResolver relativeResolver) {
+            this.relativeResolver = relativeResolver;
+        }
+
+    }
+
+    @FunctionalInterface
+    public static interface RelativeImportResolver {
+
+        Reader resolve(String modelNamespace, String modelName, String locationURI);
     }
 
     /**
@@ -98,6 +110,11 @@ public class DMNRuntimeBuilder {
 
     public DMNRuntimeBuilder setRootClassLoader(ClassLoader classLoader) {
         ctx.cc.setRootClassLoader(classLoader);
+        return this;
+    }
+
+    public DMNRuntimeBuilder setRelativeImportResolver(RelativeImportResolver relativeResolver) {
+        ctx.setRelativeResolver(relativeResolver);
         return this;
     }
 
@@ -165,7 +182,21 @@ public class DMNRuntimeBuilder {
 
             List<DMNModel> dmnModels = new ArrayList<>();
             for (DMNResource dmnRes : sortedDmnResources) {
-                DMNModel dmnModel = dmnCompiler.compile(dmnRes.getDefinitions(), dmnRes.getResAndConfig().getResource(), dmnModels);
+                DMNModel dmnModel = null;
+                if (ctx.relativeResolver != null) {
+                    if (dmnCompiler instanceof DMNCompilerImpl) {
+                        dmnModel = ((DMNCompilerImpl) dmnCompiler).compile(dmnRes.getDefinitions(),
+                                                                           dmnModels,
+                                                                           dmnRes.getResAndConfig().getResource(),
+                                                                           relativeURI -> ctx.relativeResolver.resolve(dmnRes.getDefinitions().getNamespace(),
+                                                                                                                       dmnRes.getDefinitions().getName(),
+                                                                                                                       relativeURI));
+                    } else {
+                        throw new IllegalStateException("specified a RelativeImportResolver but the compiler is not org.kie.dmn.core.compiler.DMNCompilerImpl");
+                    }
+                } else {
+                    dmnModel = dmnCompiler.compile(dmnRes.getDefinitions(), dmnRes.getResAndConfig().getResource(), dmnModels);
+                }
                 if (dmnModel != null) {
                     dmnModels.add(dmnModel);
                 } else {

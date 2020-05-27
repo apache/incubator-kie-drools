@@ -51,11 +51,11 @@ import org.drools.scenariosimulation.backend.fluent.RuleScenarioExecutableBuilde
 import org.drools.scenariosimulation.backend.model.Dispute;
 import org.drools.scenariosimulation.backend.model.Person;
 import org.drools.scenariosimulation.backend.runner.model.InstanceGiven;
-import org.drools.scenariosimulation.backend.runner.model.ResultWrapper;
 import org.drools.scenariosimulation.backend.runner.model.ScenarioExpect;
 import org.drools.scenariosimulation.backend.runner.model.ScenarioResult;
 import org.drools.scenariosimulation.backend.runner.model.ScenarioResultMetadata;
 import org.drools.scenariosimulation.backend.runner.model.ScenarioRunnerData;
+import org.drools.scenariosimulation.backend.runner.model.ValueWrapper;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -387,23 +387,23 @@ public class RuleScenarioRunnerHelperTest extends AbstractRuleCoverageTest {
     public void createExtractorFunctionTest() {
         String personName = "Test";
         FactMappingValue factMappingValue = new FactMappingValue(personFactIdentifier, firstNameGivenExpressionIdentifier, personName);
-        Function<Object, ResultWrapper> extractorFunction = runnerHelper.createExtractorFunction(expressionEvaluator, factMappingValue, simulation.getScesimModelDescriptor());
+        Function<Object, ValueWrapper> extractorFunction = runnerHelper.createExtractorFunction(expressionEvaluator, factMappingValue, simulation.getScesimModelDescriptor());
         Person person = new Person();
 
         person.setFirstName(personName);
-        assertTrue(extractorFunction.apply(person).isSatisfied());
+        assertTrue(extractorFunction.apply(person).isValid());
 
         person.setFirstName("OtherString");
-        assertFalse(extractorFunction.apply(person).isSatisfied());
+        assertFalse(extractorFunction.apply(person).isValid());
 
-        Function<Object, ResultWrapper> extractorFunction1 = runnerHelper.createExtractorFunction(expressionEvaluator,
+        Function<Object, ValueWrapper> extractorFunction1 = runnerHelper.createExtractorFunction(expressionEvaluator,
                                                                                                   new FactMappingValue(personFactIdentifier,
                                                                                                                        firstNameGivenExpressionIdentifier,
                                                                                                                        null),
                                                                                                   simulation.getScesimModelDescriptor());
-        ResultWrapper nullValue = extractorFunction1.apply(new Person());
-        assertTrue(nullValue.isSatisfied());
-        assertNull(nullValue.getResult());
+        ValueWrapper nullValue = extractorFunction1.apply(new Person());
+        assertTrue(nullValue.isValid());
+        assertNull(nullValue.getValue());
     }
 
     @SuppressWarnings("ResultOfMethodCallIgnored")
@@ -433,22 +433,22 @@ public class RuleScenarioRunnerHelperTest extends AbstractRuleCoverageTest {
         Map<List<String>, Object> paramsToSet = new HashMap<>();
         paramsToSet.put(emptyList(), "Test");
 
-        assertEquals("Test", runnerHelper.getDirectMapping(paramsToSet).getResult());
+        assertEquals("Test", runnerHelper.getDirectMapping(paramsToSet).getValue());
 
         paramsToSet.clear();
         paramsToSet.put(emptyList(), 1);
 
-        assertEquals(1, runnerHelper.getDirectMapping(paramsToSet).getResult());
+        assertEquals(1, runnerHelper.getDirectMapping(paramsToSet).getValue());
 
         paramsToSet.clear();
         paramsToSet.put(emptyList(), null);
 
-        assertNull(runnerHelper.getDirectMapping(paramsToSet).getResult());
+        assertNull(runnerHelper.getDirectMapping(paramsToSet).getValue());
 
         paramsToSet.clear();
 
-        ResultWrapper<Object> directMapping = runnerHelper.getDirectMapping(paramsToSet);
-        assertFalse(directMapping.isSatisfied());
+        ValueWrapper<Object> directMapping = runnerHelper.getDirectMapping(paramsToSet);
+        assertFalse(directMapping.isValid());
         assertEquals("No direct mapping available", directMapping.getErrorMessage().get());
     }
 
@@ -458,7 +458,7 @@ public class RuleScenarioRunnerHelperTest extends AbstractRuleCoverageTest {
         params.put(singletonList("firstName"), "TestName");
         params.put(singletonList("age"), 10);
 
-        Optional<Object> initialInstance = runnerHelper.getDirectMapping(params).getOptional();
+        ValueWrapper<Object> initialInstance = runnerHelper.getDirectMapping(params);
         Object objectRaw = runnerHelper.createObject(
                 initialInstance,
                 Person.class.getCanonicalName(),
@@ -477,7 +477,7 @@ public class RuleScenarioRunnerHelperTest extends AbstractRuleCoverageTest {
         String directMappingSimpleTypeValue = "TestName";
         params.put(Collections.emptyList(), directMappingSimpleTypeValue);
 
-        Optional<Object> initialInstance = runnerHelper.getDirectMapping(params).getOptional();
+        ValueWrapper<Object> initialInstance = runnerHelper.getDirectMapping(params);
         Object objectRaw = runnerHelper.createObject(
                 initialInstance,
                 String.class.getCanonicalName(),
@@ -489,6 +489,21 @@ public class RuleScenarioRunnerHelperTest extends AbstractRuleCoverageTest {
         assertEquals(directMappingSimpleTypeValue, objectRaw);
     }
 
+    @Test
+    public void createObjectDirectMappingSimpleTypeNull() {
+        Map<List<String>, Object> params = new HashMap<>();
+        params.put(emptyList(), null);
+
+        ValueWrapper<Object> initialInstance = runnerHelper.getDirectMapping(params);
+        Object objectRaw = runnerHelper.createObject(
+                initialInstance,
+                String.class.getCanonicalName(),
+                params,
+                this.getClass().getClassLoader());
+
+        assertNull(objectRaw);
+    }
+
     @SuppressWarnings("unchecked")
     @Test
     public void createObjectDirectMappingComplexType() {
@@ -498,7 +513,7 @@ public class RuleScenarioRunnerHelperTest extends AbstractRuleCoverageTest {
         params.put(emptyList(), directMappingComplexTypeValue);
         params.put(singletonList("age"), 10);
 
-        Optional<Object> initialInstance = runnerHelper.getDirectMapping(params).getOptional();
+        ValueWrapper<Object> initialInstance = runnerHelper.getDirectMapping(params);
         Object objectRaw = runnerHelper.createObject(
                 initialInstance,
                 Map.class.getCanonicalName(),

@@ -19,6 +19,7 @@ package org.kie.dmn.typesafe;
 import java.util.Collections;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 
 import com.github.javaparser.ast.expr.NameExpr;
 import com.github.javaparser.ast.expr.StringLiteralExpr;
@@ -32,6 +33,7 @@ import org.kie.dmn.api.core.DMNType;
 import org.kie.dmn.feel.codegen.feel11.CodegenStringUtil;
 
 import static com.github.javaparser.StaticJavaParser.parseClassOrInterfaceType;
+import static org.drools.core.util.StringUtils.ucFirst;
 
 public class DMNDeclaredField implements FieldDefinition {
 
@@ -60,13 +62,17 @@ public class DMNDeclaredField implements FieldDefinition {
 
     @Override
     public String getObjectType() {
-        return index.asJava(fieldDMNType);
+        String asJava = index.asJava(fieldDMNType);
+        if (fieldDMNType.isCollection() && fieldDMNType.isComposite() && fieldDMNType.getBaseType() == null) {
+            return DMNAllTypesIndex.juCollection(asJava); // Anonymous inner composite collection, need to render as a FIELD of Java type Collection<GeneratedType>
+        }
+        return asJava;
     }
 
     // This returns the generic type i.e. when Collection<String> then String
     private String fieldTypeUnwrapped() {
         if (fieldDMNType.isCollection()) {
-            return index.asJava(fieldDMNType.getBaseType());
+            return index.asJava(DMNTypeUtils.genericOfCollection(fieldDMNType));
         }
         throw new IllegalArgumentException();
     }
@@ -160,4 +166,19 @@ public class DMNDeclaredField implements FieldDefinition {
     private boolean propertyTypePlaceHolder(Object n) {
         return n.toString().equals("PropertyType");
     }
+
+    @Override
+    public Optional<String> overriddenGetterName() {
+        String value = "get" + CodegenStringUtil.escapeIdentifier(ucFirst(originalMapKey));
+        if (value.equals("getClass")) { // see Object#getClass() exists
+            value = "get_class";
+        }
+        return Optional.of(value);
+    }
+
+    @Override
+    public Optional<String> overriddenSetterName() {
+        return Optional.of("set" + CodegenStringUtil.escapeIdentifier(ucFirst(originalMapKey)));
+    }
+
 }

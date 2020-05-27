@@ -1,0 +1,63 @@
+<dmn:definitions xmlns:dmn="http://www.omg.org/spec/DMN/20180521/MODEL/" xmlns="https://kiegroup.org/dmn/_D8AE5AF4-1F9E-4423-873A-B8F3C3BE5FE5" xmlns:di="http://www.omg.org/spec/DMN/20180521/DI/" xmlns:kie="http://www.drools.org/kie/dmn/1.2" xmlns:dmndi="http://www.omg.org/spec/DMN/20180521/DMNDI/" xmlns:dc="http://www.omg.org/spec/DMN/20180521/DC/" xmlns:feel="http://www.omg.org/spec/DMN/20180521/FEEL/" id="_9C5A4984-348C-4D5B-90E7-FC42D0FA2F92" name="new-file" typeLanguage="http://www.omg.org/spec/DMN/20180521/FEEL/" namespace="https://kiegroup.org/dmn/_D8AE5AF4-1F9E-4423-873A-B8F3C3BE5FE5">
+  <dmn:extensionElements/>
+  <dmn:itemDefinition id="_330FC633-B530-471C-B6A5-20A276A05664" name="tPerson" isCollection="false">
+    <dmn:itemComponent id="_8457F60A-FE86-4E3D-BA15-ADB8D9863067" name="full name" isCollection="false">
+      <dmn:typeRef>string</dmn:typeRef>
+    </dmn:itemComponent>
+    <dmn:itemComponent id="_646DD1B5-6757-4C02-9C18-C92C9E641F24" name="pairs" isCollection="true">
+      <dmn:itemComponent id="_DE6CEADF-4CBE-478E-B5CD-B78C9967A7C3" name="letter" isCollection="false">
+        <dmn:typeRef>string</dmn:typeRef>
+      </dmn:itemComponent>
+      <dmn:itemComponent id="_C6337454-9069-4A6C-9D4F-543120A5AFB0" name="num" isCollection="false">
+        <dmn:typeRef>number</dmn:typeRef>
+      </dmn:itemComponent>
+    </dmn:itemComponent>
+  </dmn:itemDefinition>
+  <dmn:inputData id="_DBE761A6-0481-4EBF-9EF6-0147729AEC31" name="person">
+    <dmn:extensionElements/>
+    <dmn:variable id="_0077880E-BA72-4288-80D1-1C8A0331339A" name="person" typeRef="tPerson"/>
+  </dmn:inputData>
+  <dmn:decision id="_B4BCF37D-8C55-4F5B-97BC-F6ECD193A24A" name="Decision-1">
+    <dmn:extensionElements/>
+    <dmn:variable id="_C51DB0F5-E9C7-4569-8FB0-4A4137E7D2E3" name="Decision-1" typeRef="string"/>
+    <dmn:informationRequirement id="_DE3B8896-C375-422E-BBF5-B2F63DC62D9B">
+      <dmn:requiredInput href="#_DBE761A6-0481-4EBF-9EF6-0147729AEC31"/>
+    </dmn:informationRequirement>
+    <dmn:literalExpression id="_5B82B57D-F9C7-4608-A4FA-69CA99AD9CBC">
+      <dmn:text>person.full name + " has " + string(count(person.pairs)) + " pairs."</dmn:text>
+    </dmn:literalExpression>
+  </dmn:decision>
+  <dmndi:DMNDI>
+    <dmndi:DMNDiagram>
+      <di:extension>
+        <kie:ComponentsWidthsExtension>
+          <kie:ComponentWidths dmnElementRef="_5B82B57D-F9C7-4608-A4FA-69CA99AD9CBC">
+            <kie:width>465</kie:width>
+          </kie:ComponentWidths>
+        </kie:ComponentsWidthsExtension>
+      </di:extension>
+      <dmndi:DMNShape id="dmnshape-_DBE761A6-0481-4EBF-9EF6-0147729AEC31" dmnElementRef="_DBE761A6-0481-4EBF-9EF6-0147729AEC31" isCollapsed="false">
+        <dmndi:DMNStyle>
+          <dmndi:FillColor red="255" green="255" blue="255"/>
+          <dmndi:StrokeColor red="0" green="0" blue="0"/>
+          <dmndi:FontColor red="0" green="0" blue="0"/>
+        </dmndi:DMNStyle>
+        <dc:Bounds x="468" y="274" width="100" height="50"/>
+        <dmndi:DMNLabel/>
+      </dmndi:DMNShape>
+      <dmndi:DMNShape id="dmnshape-_B4BCF37D-8C55-4F5B-97BC-F6ECD193A24A" dmnElementRef="_B4BCF37D-8C55-4F5B-97BC-F6ECD193A24A" isCollapsed="false">
+        <dmndi:DMNStyle>
+          <dmndi:FillColor red="255" green="255" blue="255"/>
+          <dmndi:StrokeColor red="0" green="0" blue="0"/>
+          <dmndi:FontColor red="0" green="0" blue="0"/>
+        </dmndi:DMNStyle>
+        <dc:Bounds x="648" y="274" width="100" height="50"/>
+        <dmndi:DMNLabel/>
+      </dmndi:DMNShape>
+      <dmndi:DMNEdge id="dmnedge-_DE3B8896-C375-422E-BBF5-B2F63DC62D9B" dmnElementRef="_DE3B8896-C375-422E-BBF5-B2F63DC62D9B">
+        <di:waypoint x="568" y="299"/>
+        <di:waypoint x="648" y="299"/>
+      </dmndi:DMNEdge>
+    </dmndi:DMNDiagram>
+  </dmndi:DMNDI>
+</dmn:definitions>

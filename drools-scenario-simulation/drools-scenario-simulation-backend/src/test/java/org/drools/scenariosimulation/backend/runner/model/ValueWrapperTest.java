@@ -21,19 +21,19 @@ import org.junit.Test;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNull;
 
-public class ResultWrapperTest {
+public class ValueWrapperTest {
 
     @Test
     public void orElse() {
-        assertEquals((Integer) 1, ResultWrapper.createResult(1).orElse(3));
-        assertEquals(3, ResultWrapper.createErrorResult(null, null).orElse(3));
-        assertNull(ResultWrapper.createResult(null).orElse(3));
+        assertEquals((Integer) 1, ValueWrapper.of(1).orElse(3));
+        assertEquals(3, ValueWrapper.errorWithValidValue(null, null).orElse(3));
+        assertNull(ValueWrapper.of(null).orElse(3));
     }
 
     @Test
     public void orElseGet() {
-        assertEquals((Integer) 1, ResultWrapper.createResult(1).orElseGet(() -> 3));
-        assertEquals(3, ResultWrapper.createErrorResult(null, null).orElseGet(() -> 3));
-        assertNull(ResultWrapper.createResult(null).orElseGet(() -> 3));
+        assertEquals((Integer) 1, ValueWrapper.of(1).orElseGet(() -> 3));
+        assertEquals(3, ValueWrapper.errorWithValidValue(null, null).orElseGet(() -> 3));
+        assertNull(ValueWrapper.of(null).orElseGet(() -> 3));
     }
 }

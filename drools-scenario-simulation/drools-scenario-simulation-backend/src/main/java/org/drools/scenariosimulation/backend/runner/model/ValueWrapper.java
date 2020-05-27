@@ -20,42 +20,47 @@ import java.util.Optional;
 import java.util.function.Supplier;
 
 /**
- * java.util.Optional clone to have the null result
+ * Utility class to wrap a value with the possibility to specify error message or propose valid value.
+ * Note: null can be used as value.
  * @param <T>
  */
-public class ResultWrapper<T> {
+public class ValueWrapper<T> {
 
-    private final boolean satisfied;
+    private final boolean valid;
 
-    private final T result;
+    private final T value;
     private final T expected;
     private final String errorMessage;
 
-    private ResultWrapper(T result, T expected, boolean satisfied, String errorMessage) {
-        this.satisfied = satisfied;
-        this.result = result;
+    private ValueWrapper(T value, T expected, boolean valid, String errorMessage) {
+        this.valid = valid;
+        this.value = value;
         this.expected = expected;
         this.errorMessage = errorMessage;
     }
 
-    public static <T> ResultWrapper<T> createResult(T result) {
-        return new ResultWrapper<>(result, null, true, null);
+    public static <T> ValueWrapper<T> of(T value) {
+        return new ValueWrapper<>(value, null, true, null);
     }
 
-    public static <T> ResultWrapper<T> createErrorResult(T result, T expected) {
-        return new ResultWrapper<>(result, expected, false, null);
+    public static <T> ValueWrapper<T> errorWithValidValue(T value, T expected) {
+        return new ValueWrapper<>(value, expected, false, null);
     }
 
-    public static <T> ResultWrapper<T> createErrorResultWithErrorMessage(String errorMessage) {
-        return new ResultWrapper<>(null, null, false, errorMessage);
+    public static <T> ValueWrapper<T> errorWithMessage(String message) {
+        return new ValueWrapper<>(null, null, false, message);
     }
 
-    public boolean isSatisfied() {
-        return satisfied;
+    public static <T> ValueWrapper<T> errorEmptyMessage() {
+        return new ValueWrapper<>(null, null, false, null);
     }
 
-    public T getResult() {
-        return result;
+    public boolean isValid() {
+        return valid;
+    }
+
+    public T getValue() {
+        return value;
     }
 
     public T getExpected() {
@@ -67,14 +72,10 @@ public class ResultWrapper<T> {
     }
 
     public T orElse(T defaultValue) {
-        return satisfied ? result : defaultValue;
+        return valid ? value : defaultValue;
     }
 
     public T orElseGet(Supplier<T> defaultSupplier) {
-        return satisfied ? result : defaultSupplier.get();
-    }
-
-    public Optional<T> getOptional() {
-        return Optional.ofNullable( orElse(null));
+        return valid ? value : defaultSupplier.get();
     }
 }

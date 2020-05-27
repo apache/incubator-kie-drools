@@ -35,7 +35,9 @@ import org.mvel2.asm.Opcodes;
 
 public class LambdaIntrospector implements LambdaPrinter {
 
-    private static final int CACHE_SIZE = 32;
+    public static final String LAMBDA_INTROSPECTOR_CACHE_SIZE = "drools.lambda.introspector.cache.size";
+
+    private static final int CACHE_SIZE = Integer.parseInt(System.getProperty(LAMBDA_INTROSPECTOR_CACHE_SIZE, "32"));
 
     private static final Map<ClassIdentifier, Map<String, String>> methodFingerprintsMap = new LinkedHashMap() {
         @Override

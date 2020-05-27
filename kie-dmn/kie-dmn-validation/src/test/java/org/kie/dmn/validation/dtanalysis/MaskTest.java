@@ -68,6 +68,8 @@ public class MaskTest extends AbstractDTAnalysisTest {
         assertThat(analysis.getMaskedRules(), contains(maskedRules.toArray()));
         assertTrue("It should contain at least 1 DMNMessage for the MaskedRule",
                    validate.stream().anyMatch(p -> p.getMessageType().equals(DMNMessageType.DECISION_TABLE_MASKED_RULE)));
+        assertTrue("It should not contain DMNMessage for the MisleadingRule",
+                   validate.stream().noneMatch(p -> p.getMessageType().equals(DMNMessageType.DECISION_TABLE_MISLEADING_RULE)));
     }
 
     @Test
@@ -110,6 +112,8 @@ public class MaskTest extends AbstractDTAnalysisTest {
         assertThat(analysis.getMaskedRules(), contains(maskedRules.toArray()));
         assertTrue("It should contain at least 1 DMNMessage for the MaskedRule",
                    validate.stream().anyMatch(p -> p.getMessageType().equals(DMNMessageType.DECISION_TABLE_MASKED_RULE)));
+        assertTrue("It should not contain DMNMessage for the MisleadingRule",
+                   validate.stream().noneMatch(p -> p.getMessageType().equals(DMNMessageType.DECISION_TABLE_MISLEADING_RULE)));
     }
 
 }

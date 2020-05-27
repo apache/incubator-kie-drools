@@ -277,4 +277,20 @@ public class TypeCoercionTest extends BaseModelTest {
         assertEquals( 1, results.size() );
         Assertions.assertThat(results.stream().map(Result::getValue)).containsExactlyInAnyOrder(luca);
     }
+
+    @Test
+    public void testIntToObjectCoercion() {
+        // DROOLS-5320
+        String str =
+                "rule R when\n" +
+                "    Integer($i: intValue)" +
+                "    Object($i == this)" +
+                "then\n" +
+                "end ";
+
+        KieSession ksession = getKieSession(str);
+
+        ksession.insert( 3 );
+        assertEquals(1, ksession.fireAllRules());
+    }
 }

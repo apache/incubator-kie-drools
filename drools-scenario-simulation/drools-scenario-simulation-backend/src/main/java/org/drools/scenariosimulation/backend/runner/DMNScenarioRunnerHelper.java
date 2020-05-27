@@ -19,7 +19,6 @@ package org.drools.scenariosimulation.backend.runner;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.Optional;
 import java.util.concurrent.atomic.AtomicInteger;
 
 import org.drools.scenariosimulation.api.model.ExpressionElement;
@@ -35,18 +34,18 @@ import org.drools.scenariosimulation.backend.expression.ExpressionEvaluator;
 import org.drools.scenariosimulation.backend.expression.ExpressionEvaluatorFactory;
 import org.drools.scenariosimulation.backend.fluent.DMNScenarioExecutableBuilder;
 import org.drools.scenariosimulation.backend.runner.model.InstanceGiven;
-import org.drools.scenariosimulation.backend.runner.model.ResultWrapper;
 import org.drools.scenariosimulation.backend.runner.model.ScenarioExpect;
 import org.drools.scenariosimulation.backend.runner.model.ScenarioResult;
 import org.drools.scenariosimulation.backend.runner.model.ScenarioResultMetadata;
 import org.drools.scenariosimulation.backend.runner.model.ScenarioRunnerData;
+import org.drools.scenariosimulation.backend.runner.model.ValueWrapper;
 import org.kie.api.runtime.KieContainer;
 import org.kie.dmn.api.core.DMNDecisionResult;
 import org.kie.dmn.api.core.DMNModel;
 import org.kie.dmn.api.core.DMNResult;
 import org.kie.dmn.api.core.ast.DecisionNode;
 
-import static org.drools.scenariosimulation.backend.runner.model.ResultWrapper.createErrorResultWithErrorMessage;
+import static org.drools.scenariosimulation.backend.runner.model.ValueWrapper.errorWithMessage;
 import static org.kie.dmn.api.core.DMNDecisionResult.DecisionEvaluationStatus.SUCCEEDED;
 
 public class DMNScenarioRunnerHelper extends AbstractRunnerHelper {
@@ -132,14 +131,14 @@ public class DMNScenarioRunnerHelper extends AbstractRunnerHelper {
     }
 
     @SuppressWarnings("unchecked")
-    protected ResultWrapper getSingleFactValueResult(FactMapping factMapping,
-                                                     FactMappingValue expectedResult,
-                                                     DMNDecisionResult decisionResult,
-                                                     ExpressionEvaluator expressionEvaluator) {
+    protected ValueWrapper getSingleFactValueResult(FactMapping factMapping,
+                                                    FactMappingValue expectedResult,
+                                                    DMNDecisionResult decisionResult,
+                                                    ExpressionEvaluator expressionEvaluator) {
         Object resultRaw = decisionResult.getResult();
         final DMNDecisionResult.DecisionEvaluationStatus evaluationStatus = decisionResult.getEvaluationStatus();
         if (!SUCCEEDED.equals(evaluationStatus)) {
-            return createErrorResultWithErrorMessage("The decision " +
+            return errorWithMessage("The decision " +
                                                              decisionResult.getDecisionName() +
                                                              " has not been successfully evaluated: " +
                                                              evaluationStatus);
@@ -171,10 +170,10 @@ public class DMNScenarioRunnerHelper extends AbstractRunnerHelper {
 
     @SuppressWarnings("unchecked")
     @Override
-    protected Object createObject(Optional<Object> initialInstance, String className, Map<List<String>, Object> params, ClassLoader classLoader) {
+    protected Object createObject(ValueWrapper<Object> initialInstance, String className, Map<List<String>, Object> params, ClassLoader classLoader) {
         // simple types
-        if (initialInstance.isPresent() && !(initialInstance.get() instanceof Map)) {
-            return initialInstance.get();
+        if (initialInstance.isValid() && !(initialInstance.getValue() instanceof Map)) {
+            return initialInstance.getValue();
         }
         Map<String, Object> toReturn = (Map<String, Object>) initialInstance.orElseGet(HashMap::new);
         for (Map.Entry<List<String>, Object> listObjectEntry : params.entrySet()) {

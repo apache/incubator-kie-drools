@@ -16,15 +16,17 @@
 
 package org.drools.scenariosimulation.backend.util;
 
+import org.drools.scenariosimulation.backend.runner.ScenarioException;
+import org.drools.scenariosimulation.backend.runner.model.ValueWrapper;
+
 import java.lang.reflect.Field;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.Optional;
 
-import org.drools.scenariosimulation.backend.runner.ScenarioException;
+import static org.drools.scenariosimulation.backend.runner.model.ValueWrapper.errorEmptyMessage;
 
 public class ScenarioBeanUtil {
 
@@ -45,11 +47,11 @@ public class ScenarioBeanUtil {
     }
 
     public static <T> T fillBean(String className, Map<List<String>, Object> params, ClassLoader classLoader) {
-        return fillBean(Optional.empty(), className, params, classLoader);
+        return fillBean(errorEmptyMessage(), className, params, classLoader);
     }
 
     @SuppressWarnings("unchecked")
-    public static <T> T fillBean(Optional<Object> initialInstance, String className, Map<List<String>, Object> params, ClassLoader classLoader) {
+    public static <T> T fillBean(ValueWrapper<Object> initialInstance, String className, Map<List<String>, Object> params, ClassLoader classLoader) {
 
         T beanToFill = (T) initialInstance.orElseGet(() -> newInstance(loadClass(className, classLoader)));
 

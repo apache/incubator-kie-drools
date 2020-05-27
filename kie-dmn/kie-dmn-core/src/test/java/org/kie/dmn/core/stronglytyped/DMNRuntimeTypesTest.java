@@ -23,6 +23,7 @@ import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.time.Period;
 import java.util.Arrays;
+import java.util.List;
 import java.util.Map;
 
 import org.junit.Test;
@@ -84,6 +85,25 @@ public class DMNRuntimeTypesTest extends BaseVariantTest {
     }
 
     @Test
+    public void testJavaKeywords() {
+        final DMNRuntime runtime = createRuntime("javaKeywords.dmn", this.getClass());
+        final DMNModel dmnModel = runtime.getModel("https://kiegroup.org/dmn/_C41C1676-0DA9-47EA-90AD-F9BAA257129F", "A1B1A8AD-B0DC-453D-86A7-C9475450C982");
+        assertThat(dmnModel, notNullValue());
+        assertThat(DMNRuntimeUtil.formatMessages(dmnModel.getMessages()), dmnModel.hasErrors(), is(false));
+
+        final DMNContext context = DMNFactory.newContext();
+        Map<String, Object> aThing = mapOf(entry("name", "name"),
+                                           entry("const", "const"),
+                                           entry("class", "class"));
+        context.set("a thing", aThing);
+
+        final DMNResult dmnResult = evaluateModel(runtime, dmnModel, context);
+        LOG.debug("{}", dmnResult);
+        assertThat(DMNRuntimeUtil.formatMessages(dmnResult.getMessages()), dmnResult.hasErrors(), is(false));
+        assertThat(dmnResult.getDecisionResultByName("Decision-1").getResult(), is("nameconstclass"));
+    }
+
+    @Test
     public void testInnerComposite() {
         final DMNRuntime runtime = createRuntime("innerComposite.dmn", this.getClass());
         final DMNModel dmnModel = runtime.getModel("https://kiegroup.org/dmn/_641BCEBF-8D10-4E08-B47F-A9181C737A82", "new-file");
@@ -125,6 +145,27 @@ public class DMNRuntimeTypesTest extends BaseVariantTest {
         LOG.debug("{}", dmnResult);
         assertThat(DMNRuntimeUtil.formatMessages(dmnResult.getMessages()), dmnResult.hasErrors(), is(false));
         assertThat(dmnResult.getDecisionResultByName("Decision-1").getResult(), is("John Doe is S"));
+    }
+
+    @Test
+    public void testInnerCompositeCollection() {
+        final DMNRuntime runtime = createRuntime("innerCompositeCollection.dmn", this.getClass());
+        final DMNModel dmnModel = runtime.getModel("https://kiegroup.org/dmn/_D8AE5AF4-1F9E-4423-873A-B8F3C3BE5FE5", "new-file");
+        assertThat(dmnModel, notNullValue());
+        assertThat(DMNRuntimeUtil.formatMessages(dmnModel.getMessages()), dmnModel.hasErrors(), is(false));
+
+        final DMNContext context = DMNFactory.newContext();
+        List<?> pairs = Arrays.asList(mapOf(entry("letter", "A"), entry("num", new BigDecimal(1))),
+                                      mapOf(entry("letter", "B"), entry("num", new BigDecimal(2))),
+                                      mapOf(entry("letter", "C"), entry("num", new BigDecimal(3))));
+        Map<String, Object> person = mapOf(entry("full name", "John Doe"),
+                                           entry("pairs", pairs));
+        context.set("person", person);
+
+        final DMNResult dmnResult = evaluateModel(runtime, dmnModel, context);
+        LOG.debug("{}", dmnResult);
+        assertThat(DMNRuntimeUtil.formatMessages(dmnResult.getMessages()), dmnResult.hasErrors(), is(false));
+        assertThat(dmnResult.getDecisionResultByName("Decision-1").getResult(), is("John Doe has 3 pairs."));
     }
 
     @Test
@@ -223,6 +264,30 @@ public class DMNRuntimeTypesTest extends BaseVariantTest {
         assertThat(dmnResult.getDecisionResultByName("DecisionListVowel").getEvaluationStatus(), not(DecisionEvaluationStatus.SUCCEEDED));
         assertThat(dmnResult.getDecisionResultByName("DecisionJustA").getEvaluationStatus(), not(DecisionEvaluationStatus.SUCCEEDED));
         assertThat(dmnResult.getDecisionResultByName("DecisionListOfA").getEvaluationStatus(), not(DecisionEvaluationStatus.SUCCEEDED));
+    }
+
+    @Test
+    public void testSameTypeNameMultiple() {
+        final DMNRuntime runtime = createRuntimeWithAdditionalResources("class_imported.dmn", this.getClass(), "class_importing.dmn");
+        final DMNModel dmnModel0 = runtime.getModel("http://www.trisotech.com/definitions/_b3deed2b-245f-4cc4-a4bf-1e95cd240664", "imported");
+        assertThat(dmnModel0, notNullValue());
+        assertThat(DMNRuntimeUtil.formatMessages(dmnModel0.getMessages()), dmnModel0.hasErrors(), is(false));
+
+        final DMNModel dmnModel = runtime.getModel("http://www.trisotech.com/definitions/_17540606-3d41-40f4-85f6-ad9e8faa8a87", "importing");
+        assertThat(dmnModel, notNullValue());
+        assertThat(DMNRuntimeUtil.formatMessages(dmnModel.getMessages()), dmnModel.hasErrors(), is(false));
+
+        final DMNContext context = DMNFactory.newContext();
+        Map<String, Object> importedClass = mapOf(entry("L1name", "L1name"),
+                                                  entry("class", mapOf(entry("L2name", "L2name"))));
+        context.set("imported class", importedClass);
+        Map<String, Object> class_ = mapOf(entry("name", "name"));
+        context.set("class", class_);
+
+        final DMNResult dmnResult = evaluateModel(runtime, dmnModel, context);
+        LOG.debug("{}", dmnResult);
+        assertThat(DMNRuntimeUtil.formatMessages(dmnResult.getMessages()), dmnResult.hasErrors(), is(false));
+        assertThat(dmnResult.getDecisionResultByName("decision1").getResult(), is("L1nameL2namename"));
     }
 }
 

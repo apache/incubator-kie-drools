@@ -54,7 +54,7 @@ class DMNModelTypesIndex {
 
     private Stream<DMNType> innerTypes(DMNType type) {
         if (type.isComposite()) {
-            return type.getFields().values().stream().filter(DMNTypeUtils::isInnerComposite).map(t -> t.isCollection() ? t.getBaseType() : t);
+            return type.getFields().values().stream().filter(DMNTypeUtils::isInnerComposite).map(t -> t.isCollection() ? DMNTypeUtils.genericOfCollection(t) : t);
         } else {
             return Stream.empty();
         }
