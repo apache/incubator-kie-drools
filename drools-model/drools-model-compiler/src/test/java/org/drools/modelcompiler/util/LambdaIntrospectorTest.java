@@ -45,21 +45,20 @@ public class LambdaIntrospectorTest {
 
     @Test
     public void testMethodFingerprintsMapCacheSize() throws Exception {
-        // Because methodFingerprintsMap is static, this property can be testable when you run this test method only
+        // To test system property, you need to run this test method only.
         // (mvn test -Dtest=LambdaIntrospectorTest#testMethodFingerprintsMapCacheSize)
         // System.setProperty(LambdaIntrospector.LAMBDA_INTROSPECTOR_CACHE_SIZE, "0");
 
-        LambdaIntrospector lambdaIntrospector = new LambdaIntrospector();
+        Map<ClassLoader, Map<String, Map<String, String>>> methodFingerprintsMapPerClassLoader = LambdaIntrospector.getMethodFingerprintsMapPerClassLoader();
+        methodFingerprintsMapPerClassLoader.clear();
 
-        Field field = LambdaIntrospector.class.getDeclaredField("methodFingerprintsMap");
-        field.setAccessible(true);
-        // LambdaIntrospector.ClassIdentifier is not visible so the Map is not parameterized
-        Map methodFingerprintsMap = (Map) field.get(lambdaIntrospector);
-        methodFingerprintsMap.clear();
+        LambdaIntrospector lambdaIntrospector = new LambdaIntrospector();
 
         Predicate1<Person> predicate1 = p -> p.getAge() > 35;
         lambdaIntrospector.getLambdaFingerprint(predicate1);
 
-        assertEquals(1, methodFingerprintsMap.size()); // 0 if you set the property to 0
+        Map<String, Map<String, String>> methodFingerprintsMap = methodFingerprintsMapPerClassLoader.get(predicate1.getClass().getClassLoader());
+
+        assertEquals(1, methodFingerprintsMap.size()); // methodFingerprintsMap is null if cache size is 0.
     }
 }
