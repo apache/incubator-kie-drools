@@ -35,9 +35,7 @@ import org.kie.pmml.evaluator.core.PMMLContextImpl;
 public class CompoundPredicateTreeTest extends AbstractPMMLTreeTest {
 
     private static final String MODEL_NAME = "CompoundPredicatesTreeModel";
-    private static final String PMML_SOURCE = "CompoundPredicatesTree.pmml";
     private static final String TARGET_FIELD = "Predicted_result";
-    private static KiePMMLModel pmmlModel;
     private double input1;
     private double input2;
     private double input3;
@@ -52,7 +50,7 @@ public class CompoundPredicateTreeTest extends AbstractPMMLTreeTest {
 
     @BeforeClass
     public static void setupClass() {
-        pmmlModel = loadPMMLModel(PMML_SOURCE);
+        setPMMLRuntime(MODEL_NAME);
     }
 
     @Parameterized.Parameters
@@ -76,9 +74,8 @@ public class CompoundPredicateTreeTest extends AbstractPMMLTreeTest {
         inputData.put("input1", input1);
         inputData.put("input2", input2);
         inputData.put("input3", input3);
+        PMML4Result pmml4Result = evaluate(inputData, MODEL_NAME);
 
-        final PMMLRequestData pmmlRequestData = getPMMLRequestData(MODEL_NAME, inputData);
-        PMML4Result pmml4Result = EVALUATOR.evaluate(kieBase, pmmlModel, new PMMLContextImpl(pmmlRequestData));
         Assertions.assertThat(pmml4Result.getResultVariables().get(TARGET_FIELD)).isNotNull();
         Assertions.assertThat(pmml4Result.getResultVariables().get(TARGET_FIELD)).isEqualTo(expectedResult);
     }

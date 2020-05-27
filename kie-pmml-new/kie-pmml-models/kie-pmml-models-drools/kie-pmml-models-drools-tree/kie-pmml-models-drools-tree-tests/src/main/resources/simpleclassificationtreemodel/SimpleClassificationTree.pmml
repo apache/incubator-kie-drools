@@ -10,7 +10,7 @@
     <DataField name="input2" optype="continuous" dataType="double"/>
     <DataField name="input3" optype="continuous" dataType="double"/>
   </DataDictionary>
-  <TreeModel modelName="SimpleTreeModel" functionName="classification">
+  <TreeModel modelName="SimpleClassificationTreeModel" functionName="classification">
     <MiningSchema>
       <MiningField name="result" usageType="predicted" invalidValueTreatment="returnInvalid"/>
       <MiningField name="input1" usageType="active" invalidValueTreatment="returnInvalid"/>

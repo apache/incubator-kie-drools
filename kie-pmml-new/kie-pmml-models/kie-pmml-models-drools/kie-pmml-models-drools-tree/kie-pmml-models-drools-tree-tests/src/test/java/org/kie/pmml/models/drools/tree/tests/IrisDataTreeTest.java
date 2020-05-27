@@ -19,9 +19,7 @@ import org.kie.pmml.evaluator.core.PMMLContextImpl;
 public class IrisDataTreeTest extends AbstractPMMLTreeTest {
 
     private static final String MODEL_NAME = "IrisTreeModel";
-    private static final String PMML_SOURCE = "irisTree.pmml";
     private static final String TARGET_FIELD = "Predicted_Species";
-    private static KiePMMLModel pmmlModel;
     private double sepalLength;
     private double sepalWidth;
     private double petalLength;
@@ -39,7 +37,7 @@ public class IrisDataTreeTest extends AbstractPMMLTreeTest {
 
     @BeforeClass
     public static void setupClass() {
-        pmmlModel = loadPMMLModel(PMML_SOURCE);
+        setPMMLRuntime(MODEL_NAME);
     }
 
     @Parameterized.Parameters
@@ -60,9 +58,8 @@ public class IrisDataTreeTest extends AbstractPMMLTreeTest {
         inputData.put("Sepal.Width", sepalWidth);
         inputData.put("Petal.Length", petalLength);
         inputData.put("Petal.Width", petalWidth);
+        PMML4Result pmml4Result = evaluate(inputData, MODEL_NAME);
 
-        final PMMLRequestData pmmlRequestData = getPMMLRequestData(MODEL_NAME, inputData);
-        PMML4Result pmml4Result = EVALUATOR.evaluate(kieBase, pmmlModel, new PMMLContextImpl(pmmlRequestData));
         Assertions.assertThat(pmml4Result.getResultVariables().get(TARGET_FIELD)).isNotNull();
         Assertions.assertThat(pmml4Result.getResultVariables().get(TARGET_FIELD)).isEqualTo(expectedResult);
     }
