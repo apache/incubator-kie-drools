@@ -17,10 +17,8 @@ package org.kie.pmml.models.drools.scorecard.tests;
 
 import java.util.Map;
 
-import org.drools.compiler.kproject.ReleaseIdImpl;
 import org.kie.api.KieBase;
 import org.kie.api.KieServices;
-import org.kie.api.builder.ReleaseId;
 import org.kie.api.pmml.PMML4Result;
 import org.kie.api.pmml.PMMLRequestData;
 import org.kie.api.runtime.KieContainer;
@@ -28,24 +26,20 @@ import org.kie.api.runtime.KieRuntimeFactory;
 import org.kie.pmml.evaluator.api.executor.PMMLRuntime;
 import org.kie.pmml.evaluator.core.PMMLContextImpl;
 import org.kie.pmml.evaluator.core.utils.PMMLRequestDataBuilder;
-import org.kie.pmml.models.drools.scorecard.compiler.executor.ScorecardModelImplementationProvider;
 
 public class AbstractPMMLScorecardTest {
 
-    protected static final ScorecardModelImplementationProvider PROVIDER = new ScorecardModelImplementationProvider();
-    private static final ReleaseId RELEASE_ID = new ReleaseIdImpl("org.drools", "kie-pmml-models-testing", "1.0");
     public static KieContainer kieContainer;
-    private static PMMLRuntime pmmlRuntime;
 
     static {
         final KieServices kieServices = KieServices.get();
         kieContainer = kieServices.newKieClasspathContainer();
     }
 
-    protected static void setPMMLRuntime(String kbaseName) {
+    protected static PMMLRuntime getPMMLRuntime(String kbaseName) {
         KieBase kieBase = kieContainer.getKieBase(kbaseName);
         final KieRuntimeFactory kieRuntimeFactory = KieRuntimeFactory.of(kieBase);
-        pmmlRuntime = kieRuntimeFactory.get(PMMLRuntime.class);
+        return kieRuntimeFactory.get(PMMLRuntime.class);
     }
 
     protected static PMMLRequestData getPMMLRequestData(String modelName, Map<String, Object> parameters) {
@@ -59,7 +53,7 @@ public class AbstractPMMLScorecardTest {
         return pmmlRequestDataBuilder.build();
     }
 
-    protected PMML4Result evaluate(final Map<String, Object> inputData, String modelName) {
+    protected PMML4Result evaluate(PMMLRuntime pmmlRuntime, final Map<String, Object> inputData, String modelName) {
         final PMMLRequestData pmmlRequestData = getPMMLRequestData(modelName, inputData);
         return pmmlRuntime.evaluate(modelName, new PMMLContextImpl(pmmlRequestData));
     }

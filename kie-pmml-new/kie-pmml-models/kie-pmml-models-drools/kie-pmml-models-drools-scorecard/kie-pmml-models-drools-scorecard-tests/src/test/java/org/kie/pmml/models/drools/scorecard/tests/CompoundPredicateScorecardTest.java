@@ -27,6 +27,7 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.Parameterized;
 import org.kie.api.pmml.PMML4Result;
+import org.kie.pmml.evaluator.api.executor.PMMLRuntime;
 
 @RunWith(Parameterized.class)
 public class CompoundPredicateScorecardTest extends AbstractPMMLScorecardTest {
@@ -36,6 +37,7 @@ public class CompoundPredicateScorecardTest extends AbstractPMMLScorecardTest {
     private static final String REASON_CODE1_FIELD = "Reason Code 1";
     private static final String REASON_CODE2_FIELD = "Reason Code 2";
     private static final String REASON_CODE3_FIELD = "Reason Code 3";
+    private static PMMLRuntime pmmlRuntime;
 
     private double input1;
     private double input2;
@@ -60,7 +62,7 @@ public class CompoundPredicateScorecardTest extends AbstractPMMLScorecardTest {
 
     @BeforeClass
     public static void setupClass() {
-        setPMMLRuntime(MODEL_NAME);
+        pmmlRuntime = getPMMLRuntime(MODEL_NAME);
     }
 
     @Parameterized.Parameters
@@ -86,7 +88,7 @@ public class CompoundPredicateScorecardTest extends AbstractPMMLScorecardTest {
         inputData.put("input2", input2);
         inputData.put("input3", input3);
         inputData.put("input4", input4);
-        PMML4Result pmml4Result = evaluate(inputData, MODEL_NAME);
+        PMML4Result pmml4Result = evaluate(pmmlRuntime, inputData, MODEL_NAME);
 
         Assertions.assertThat(pmml4Result.getResultVariables().get(TARGET_FIELD)).isNotNull();
         Assertions.assertThat(pmml4Result.getResultVariables().get(TARGET_FIELD)).isEqualTo(score);

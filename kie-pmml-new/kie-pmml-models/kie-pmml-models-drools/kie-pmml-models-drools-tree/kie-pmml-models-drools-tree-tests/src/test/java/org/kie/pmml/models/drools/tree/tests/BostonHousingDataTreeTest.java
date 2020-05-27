@@ -27,12 +27,15 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.Parameterized;
 import org.kie.api.pmml.PMML4Result;
+import org.kie.pmml.evaluator.api.executor.PMMLRuntime;
 
 @RunWith(Parameterized.class)
 public class BostonHousingDataTreeTest extends AbstractPMMLTreeTest {
 
     private static final String MODEL_NAME = "BostonHousingTreeModel";
     private static final String TARGET_FIELD = "Predicted_medv";
+    private static PMMLRuntime pmmlRuntime;
+
     private double crim;
     private double zn;
     private double indus;
@@ -69,7 +72,7 @@ public class BostonHousingDataTreeTest extends AbstractPMMLTreeTest {
 
     @BeforeClass
     public static void setupClass() {
-        setPMMLRuntime(MODEL_NAME);
+        pmmlRuntime = getPMMLRuntime(MODEL_NAME);
     }
 
     @Parameterized.Parameters
@@ -104,7 +107,7 @@ public class BostonHousingDataTreeTest extends AbstractPMMLTreeTest {
         inputData.put("ptratio", ptratio);
         inputData.put("b", b);
         inputData.put("lstat", lstat);
-        PMML4Result pmml4Result = evaluate(inputData, MODEL_NAME);
+        PMML4Result pmml4Result = evaluate(pmmlRuntime, inputData, MODEL_NAME);
 
         Assertions.assertThat(pmml4Result.getResultVariables().get(TARGET_FIELD)).isNotNull();
         Assertions.assertThat(pmml4Result.getResultVariables().get(TARGET_FIELD)).isEqualTo(expectedResult);

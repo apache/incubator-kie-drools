@@ -31,9 +31,9 @@ import org.kie.api.pmml.PMML4Result;
 import org.kie.pmml.evaluator.api.executor.PMMLRuntime;
 
 @RunWith(Parameterized.class)
-public class LogisticRegressionIrisDataTest extends AbstractPMMLRegressionTest {
+public class LogisticRegressionSoftmaxNormalizationTest extends AbstractPMMLRegressionTest {
 
-    private static final String MODEL_NAME = "LogisticRegressionIrisData";
+    private static final String MODEL_NAME = "LogisticRegressionSoftmaxNormalization";
     private static final String TARGET_FIELD = "Species";
     private static final String PROBABILITY_SETOSA_FIELD = "Probability_setosa";
     private static final String PROBABILITY_VERSICOLOR_FIELD = "Probability_versicolor";
@@ -47,14 +47,22 @@ public class LogisticRegressionIrisDataTest extends AbstractPMMLRegressionTest {
     private double petalLength;
     private double petalWidth;
     private String expectedResult;
+    private double expectedSetosaProbability;
+    private double expectedVersicolorProbability;
+    private double expectedVirginicaProbability;
 
-    public LogisticRegressionIrisDataTest(double sepalLength, double sepalWidth, double petalLength,
-                                          double petalWidth, String expectedResult) {
+    public LogisticRegressionSoftmaxNormalizationTest(double sepalLength, double sepalWidth, double petalLength,
+                                                      double petalWidth, String expectedResult, double expectedSetosaProbability,
+                                                      double expectedVersicolorProbability,
+                                                      double expectedVirginicaProbability) {
         this.sepalLength = sepalLength;
         this.sepalWidth = sepalWidth;
         this.petalLength = petalLength;
         this.petalWidth = petalWidth;
         this.expectedResult = expectedResult;
+        this.expectedSetosaProbability = expectedSetosaProbability;
+        this.expectedVersicolorProbability = expectedVersicolorProbability;
+        this.expectedVirginicaProbability = expectedVirginicaProbability;
     }
 
     @BeforeClass
@@ -65,16 +73,14 @@ public class LogisticRegressionIrisDataTest extends AbstractPMMLRegressionTest {
     @Parameterized.Parameters
     public static Collection<Object[]> data() {
         return Arrays.asList(new Object[][]{
-                {6.9, 3.1, 5.1, 2.3, "virginica"},
-                {5.8, 2.6, 4.0, 1.2, "versicolor"},
-                {5.7, 3.0, 4.2, 1.2, "versicolor"},
-                {5.0, 3.3, 1.4, 0.2, "setosa"},
-                {5.4, 3.9, 1.3, 0.4, "setosa"}
+                {6.9, 3.1, 5.1, 2.3, "virginica", 0.22969661966054, 0.228866116406123, 0.541437263933338},
+                {5.8, 2.6, 4.0, 1.2, "versicolor", 0.276752056446685, 0.423770468651362, 0.299477474901954},
+                {5.4, 3.9, 1.3, 0.4, "setosa", 0.612792897443624, 0.169127526544678, 0.218079576011698},
         });
     }
 
     @Test
-    public void testLogisticRegressionIrisData() {
+    public void testLogisticRegressionWithNormalization() throws Exception {
         final Map<String, Object> inputData = new HashMap<>();
         inputData.put("Sepal.Length", sepalLength);
         inputData.put("Sepal.Width", sepalWidth);
@@ -86,25 +92,10 @@ public class LogisticRegressionIrisDataTest extends AbstractPMMLRegressionTest {
         Assertions.assertThat(pmml4Result.getResultVariables().get(TARGET_FIELD)).isEqualTo(expectedResult);
 
         Assertions.assertThat((double) pmml4Result.getResultVariables().get(PROBABILITY_SETOSA_FIELD))
-                .isCloseTo(setosaProbability(), TOLERANCE_PERCENTAGE);
+                .isCloseTo(expectedSetosaProbability, TOLERANCE_PERCENTAGE);
         Assertions.assertThat((double) pmml4Result.getResultVariables().get(PROBABILITY_VERSICOLOR_FIELD))
-                .isCloseTo(versicolorProbability(), TOLERANCE_PERCENTAGE);
+                .isCloseTo(expectedVersicolorProbability, TOLERANCE_PERCENTAGE);
         Assertions.assertThat((double) pmml4Result.getResultVariables().get(PROBABILITY_VIRGINICA_FIELD))
-                .isCloseTo(virginicaProbability(), TOLERANCE_PERCENTAGE);
-    }
-
-    private double setosaProbability() {
-        return 0.0660297693761902 * sepalLength + 0.242847872054487 * sepalWidth
-                + -0.224657116235727 * petalLength + -0.0574727291860025 * petalWidth + 0.11822288946815;
-    }
-
-    private double versicolorProbability() {
-        return -0.0201536848255179 * sepalLength + -0.44561625761404 * sepalWidth
-                + 0.22066920522933 * petalLength + -0.494306595747785 * petalWidth + 1.57705897385745;
-    }
-
-    private double virginicaProbability() {
-        return -0.0458760845506725 * sepalLength + 0.202768385559553 * sepalWidth
-                + 0.00398791100639665 * petalLength + 0.551779324933787 * petalWidth - 0.695281863325603;
+                .isCloseTo(expectedVirginicaProbability, TOLERANCE_PERCENTAGE);
     }
 }

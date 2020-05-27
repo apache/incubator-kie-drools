@@ -5,7 +5,7 @@
     <DataField name="x" optype="continuous" dataType="double"/>
     <DataField name="y" optype="continuous" dataType="double"/>
   </DataDictionary>
-  <RegressionModel modelName="polynomial_Model" functionName="regression">
+  <RegressionModel modelName="RegressionNormalizationExp" functionName="regression" normalizationMethod="exp">
     <MiningSchema>
       <MiningField name="result" usageType="predicted" invalidValueTreatment="returnInvalid"/>
       <MiningField name="x" usageType="active" invalidValueTreatment="returnInvalid"/>
@@ -15,8 +15,8 @@
       <OutputField name="Predicted_result" optype="continuous" dataType="double" feature="predictedValue"/>
     </Output>
     <RegressionTable intercept="5">
-      <NumericPredictor name="x" exponent="5" coefficient="3"/>
-      <NumericPredictor name="y" exponent="2" coefficient="2"/>
+      <NumericPredictor name="x" exponent="1" coefficient="2"/>
+      <NumericPredictor name="y" exponent="1" coefficient="1"/>
     </RegressionTable>
   </RegressionModel>
 </PMML>

@@ -16,20 +16,18 @@
 
 package org.kie.pmml.models.drools.scorecard.tests;
 
+import java.util.Arrays;
+import java.util.Collection;
+import java.util.HashMap;
+import java.util.Map;
+
 import org.assertj.core.api.Assertions;
 import org.junit.BeforeClass;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.Parameterized;
 import org.kie.api.pmml.PMML4Result;
-import org.kie.api.pmml.PMMLRequestData;
-import org.kie.pmml.commons.model.KiePMMLModel;
-import org.kie.pmml.evaluator.core.PMMLContextImpl;
-
-import java.util.Arrays;
-import java.util.Collection;
-import java.util.HashMap;
-import java.util.Map;
+import org.kie.pmml.evaluator.api.executor.PMMLRuntime;
 
 @RunWith(Parameterized.class)
 public class SimpleScorecardTest extends AbstractPMMLScorecardTest {
@@ -38,7 +36,7 @@ public class SimpleScorecardTest extends AbstractPMMLScorecardTest {
     private static final String TARGET_FIELD = "Score";
     private static final String REASON_CODE1_FIELD = "Reason Code 1";
     private static final String REASON_CODE2_FIELD = "Reason Code 2";
-
+    private static PMMLRuntime pmmlRuntime;
 
     private double input1;
     private double input2;
@@ -56,17 +54,17 @@ public class SimpleScorecardTest extends AbstractPMMLScorecardTest {
 
     @BeforeClass
     public static void setupClass() {
-        setPMMLRuntime(MODEL_NAME);
+        pmmlRuntime = getPMMLRuntime(MODEL_NAME);
     }
 
     @Parameterized.Parameters
     public static Collection<Object[]> data() {
         return Arrays.asList(new Object[][]{
-                { 5, 5, 25, "Input1ReasonCode", null },
-                { 5, -10, -15, "Input1ReasonCode", "Input2ReasonCode" },
-                { 20.5, 4, 87, null, null },
-                { 23.5, -12, 47, "Input2ReasonCode", null },
-                { 10, -5, -15, "Input1ReasonCode", "Input2ReasonCode" },
+                {5, 5, 25, "Input1ReasonCode", null},
+                {5, -10, -15, "Input1ReasonCode", "Input2ReasonCode"},
+                {20.5, 4, 87, null, null},
+                {23.5, -12, 47, "Input2ReasonCode", null},
+                {10, -5, -15, "Input1ReasonCode", "Input2ReasonCode"},
         });
     }
 
@@ -75,7 +73,7 @@ public class SimpleScorecardTest extends AbstractPMMLScorecardTest {
         final Map<String, Object> inputData = new HashMap<>();
         inputData.put("input1", input1);
         inputData.put("input2", input2);
-        PMML4Result pmml4Result = evaluate(inputData, MODEL_NAME);
+        PMML4Result pmml4Result = evaluate(pmmlRuntime, inputData, MODEL_NAME);
 
         Assertions.assertThat(pmml4Result.getResultVariables().get(TARGET_FIELD)).isNotNull();
         Assertions.assertThat(pmml4Result.getResultVariables().get(TARGET_FIELD)).isEqualTo(score);

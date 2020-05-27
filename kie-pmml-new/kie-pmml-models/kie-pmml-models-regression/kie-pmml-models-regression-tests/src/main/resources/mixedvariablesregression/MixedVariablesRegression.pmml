@@ -2,20 +2,14 @@
   <Header/>
   <DataDictionary numberOfFields="3">
     <DataField name="result" optype="continuous" dataType="double"/>
-    <DataField name="x" optype="categorical" dataType="string">
-      <Value value="red"/>
-      <Value value="green"/>
-      <Value value="blue"/>
-      <Value value="orange"/>
-      <Value value="yellow"/>
-    </DataField>
+    <DataField name="x" optype="continuous" dataType="double"/>
     <DataField name="y" optype="categorical" dataType="string">
       <Value value="classA"/>
       <Value value="classB"/>
       <Value value="classC"/>
     </DataField>
   </DataDictionary>
-  <RegressionModel modelName="categoricalVariables_Model" functionName="regression">
+  <RegressionModel modelName="MixedVariablesRegression" functionName="regression" algorithmName="least squares">
     <MiningSchema>
       <MiningField name="result" usageType="predicted" invalidValueTreatment="returnInvalid"/>
       <MiningField name="x" usageType="active" invalidValueTreatment="returnInvalid"/>
@@ -24,12 +18,8 @@
     <Output>
       <OutputField name="Predicted_result" optype="continuous" dataType="double" feature="predictedValue"/>
     </Output>
-    <RegressionTable intercept="-22.1">
-      <CategoricalPredictor name="x" value="red" coefficient="5.5"/>
-      <CategoricalPredictor name="x" value="green" coefficient="15"/>
-      <CategoricalPredictor name="x" value="blue" coefficient="12"/>
-      <CategoricalPredictor name="x" value="orange" coefficient="5.5"/>
-      <CategoricalPredictor name="x" value="yellow" coefficient="-100.25"/>
+    <RegressionTable intercept="22">
+      <NumericPredictor name="x" exponent="1" coefficient="2"/>
       <CategoricalPredictor name="y" value="classA" coefficient="0"/>
       <CategoricalPredictor name="y" value="classB" coefficient="20"/>
       <CategoricalPredictor name="y" value="classC" coefficient="40"/>

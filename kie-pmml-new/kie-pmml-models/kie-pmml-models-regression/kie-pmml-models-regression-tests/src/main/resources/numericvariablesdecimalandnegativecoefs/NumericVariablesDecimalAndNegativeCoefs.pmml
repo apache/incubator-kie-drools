@@ -5,7 +5,7 @@
     <DataField name="x" optype="continuous" dataType="double"/>
     <DataField name="y" optype="continuous" dataType="double"/>
   </DataDictionary>
-  <RegressionModel modelName="lm_Model" functionName="regression" algorithmName="least squares">
+  <RegressionModel modelName="NumericVariablesDecimalAndNegativeCoefs" functionName="regression">
     <MiningSchema>
       <MiningField name="result" usageType="predicted" invalidValueTreatment="returnInvalid"/>
       <MiningField name="x" usageType="active" invalidValueTreatment="returnInvalid"/>
@@ -14,9 +14,9 @@
     <Output>
       <OutputField name="Predicted_result" optype="continuous" dataType="double" feature="predictedValue"/>
     </Output>
-    <RegressionTable intercept="5">
-      <NumericPredictor name="x" exponent="1" coefficient="2"/>
-      <NumericPredictor name="y" exponent="1" coefficient="1"/>
+    <RegressionTable intercept="-15.5">
+      <NumericPredictor name="x" exponent="-2" coefficient="3.5"/>
+      <NumericPredictor name="y" exponent="3" coefficient="-5"/>
     </RegressionTable>
   </RegressionModel>
 </PMML>

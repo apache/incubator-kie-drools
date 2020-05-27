@@ -27,26 +27,21 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.Parameterized;
 import org.kie.api.pmml.PMML4Result;
-import org.kie.api.pmml.PMMLRequestData;
-import org.kie.pmml.commons.model.KiePMMLModel;
 import org.kie.pmml.evaluator.api.executor.PMMLRuntime;
-import org.kie.pmml.evaluator.core.PMMLContextImpl;
 
 @RunWith(Parameterized.class)
-public class PredictorTermRegressionTest extends AbstractPMMLRegressionTest {
+public class RegressionNormalizationExpTest extends AbstractPMMLRegressionTest {
 
-    private static final String MODEL_NAME = "PredictorTermRegression";
+    private static final String MODEL_NAME = "RegressionNormalizationExp";
     private static final String TARGET_FIELD = "result";
     private static PMMLRuntime pmmlRuntime;
 
     private double x;
     private double y;
-    private double z;
 
-    public PredictorTermRegressionTest(double x, double y, double z) {
+    public RegressionNormalizationExpTest(double x, double y) {
         this.x = x;
         this.y = y;
-        this.z = z;
     }
 
     @BeforeClass
@@ -57,26 +52,26 @@ public class PredictorTermRegressionTest extends AbstractPMMLRegressionTest {
     @Parameterized.Parameters
     public static Collection<Object[]> data() {
         return Arrays.asList(new Object[][]{
-                {0, 0, 0}, {-1, 2, 3}, {0.5, -2.5, 4}, {3, 1, 2}, {25, 50, 15},
-                {-100, 250, -10}, {-100.1, 800, 105}, {-8, 12.5, 230}, {-1001, -500, 8}, {-1701, 508, 9}
+                {0, 0}, {-1, 2}, {0.5, -2.5}, {3, 1}, {25, 50},
+                {-100, 250}, {-100.1, 800}, {-8, 12.5}, {-1001.1, -500.2}, {-1701, 508},
         });
     }
 
-    private static double regressionFunction(double x, double y, double z) {
-        return 2 * x + y + 5 * z * z + 4 * y * z - 2.5 * x * y * z + 5;
+    private static double normalizedRegressionFunction(double x, double y) {
+        final double regressionValue = 2 * x + y + 5;
+        return Math.exp(regressionValue);
     }
 
     @Test
-    public void testPredictorTermRegression() {
+    public void testNormalizationMethodsRegression() throws Exception {
         final Map<String, Object> inputData = new HashMap<>();
         inputData.put("x", x);
         inputData.put("y", y);
-        inputData.put("z", z);
         PMML4Result pmml4Result = evaluate(pmmlRuntime, inputData, MODEL_NAME);
 
         Assertions.assertThat(pmml4Result).isNotNull();
         Assertions.assertThat(pmml4Result.getResultVariables()).containsKey(TARGET_FIELD);
         Assertions.assertThat((Double) pmml4Result.getResultVariables().get(TARGET_FIELD))
-                .isEqualTo(regressionFunction(x, y, z));
+                .isEqualTo(normalizedRegressionFunction(x, y));
     }
 }

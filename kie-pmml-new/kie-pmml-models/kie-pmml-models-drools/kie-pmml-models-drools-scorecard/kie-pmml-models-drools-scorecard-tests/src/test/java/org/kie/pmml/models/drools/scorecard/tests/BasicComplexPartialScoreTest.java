@@ -28,14 +28,16 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.Parameterized;
 import org.kie.api.pmml.PMML4Result;
+import org.kie.pmml.evaluator.api.executor.PMMLRuntime;
 
 @RunWith(Parameterized.class)
 public class BasicComplexPartialScoreTest extends AbstractPMMLScorecardTest {
 
-    private static final String MODEL_NAME = "BasicPartialScoreScorecard";
+    private static final String MODEL_NAME = "BasicComplexPartialScore";
     private static final String TARGET_FIELD = "Score";
     private static final String REASON_CODE1_FIELD = "Reason Code 1";
     private static final String REASON_CODE2_FIELD = "Reason Code 2";
+    private static PMMLRuntime pmmlRuntime;
 
     private double input1;
     private double input2;
@@ -54,7 +56,7 @@ public class BasicComplexPartialScoreTest extends AbstractPMMLScorecardTest {
 
     @BeforeClass
     public static void setupClass() {
-        setPMMLRuntime(MODEL_NAME);
+        pmmlRuntime = getPMMLRuntime(MODEL_NAME);
     }
 
     @Parameterized.Parameters
@@ -74,7 +76,7 @@ public class BasicComplexPartialScoreTest extends AbstractPMMLScorecardTest {
         final Map<String, Object> inputData = new HashMap<>();
         inputData.put("input1", input1);
         inputData.put("input2", input2);
-        PMML4Result pmml4Result = evaluate(inputData, MODEL_NAME);
+        PMML4Result pmml4Result = evaluate(pmmlRuntime, inputData, MODEL_NAME);
 
         Assertions.assertThat(pmml4Result.getResultVariables().get(TARGET_FIELD)).isNotNull();
         Assertions.assertThat(pmml4Result.getResultVariables().get(TARGET_FIELD)).isEqualTo(score);

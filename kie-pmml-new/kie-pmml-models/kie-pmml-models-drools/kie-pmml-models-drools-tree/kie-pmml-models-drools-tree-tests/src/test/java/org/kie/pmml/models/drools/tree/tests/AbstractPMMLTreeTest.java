@@ -33,20 +33,17 @@ import org.kie.pmml.models.drools.tree.compiler.executor.TreeModelImplementation
 
 public abstract class AbstractPMMLTreeTest {
 
-    protected static final TreeModelImplementationProvider PROVIDER = new TreeModelImplementationProvider();
-    private static final ReleaseId RELEASE_ID = new ReleaseIdImpl("org.drools", "kie-pmml-models-testing", "1.0");
-    public static KieContainer kieContainer;
-    private static PMMLRuntime pmmlRuntime;
+    private static KieContainer kieContainer;
 
     static {
         final KieServices kieServices = KieServices.get();
         kieContainer = kieServices.newKieClasspathContainer();
     }
 
-    protected static void setPMMLRuntime(String kbaseName) {
+    protected static PMMLRuntime getPMMLRuntime(String kbaseName) {
         KieBase kieBase = kieContainer.getKieBase(kbaseName);
         final KieRuntimeFactory kieRuntimeFactory = KieRuntimeFactory.of(kieBase);
-        pmmlRuntime = kieRuntimeFactory.get(PMMLRuntime.class);
+        return kieRuntimeFactory.get(PMMLRuntime.class);
     }
 
     protected static PMMLRequestData getPMMLRequestData(String modelName, Map<String, Object> parameters) {
@@ -60,7 +57,7 @@ public abstract class AbstractPMMLTreeTest {
         return pmmlRequestDataBuilder.build();
     }
 
-    protected PMML4Result evaluate(final Map<String, Object> inputData, String modelName) {
+    protected PMML4Result evaluate(PMMLRuntime pmmlRuntime, final Map<String, Object> inputData, String modelName) {
         final PMMLRequestData pmmlRequestData = getPMMLRequestData(modelName, inputData);
         return pmmlRuntime.evaluate(modelName, new PMMLContextImpl(pmmlRequestData));
     }

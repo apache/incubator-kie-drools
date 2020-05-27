@@ -27,12 +27,15 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.Parameterized;
 import org.kie.api.pmml.PMML4Result;
+import org.kie.pmml.evaluator.api.executor.PMMLRuntime;
 
 @RunWith(Parameterized.class)
 public class SimpleClassificationTreeTest extends AbstractPMMLTreeTest {
 
     private static final String MODEL_NAME = "SimpleClassificationTreeModel";
     private static final String TARGET_FIELD = "Predicted_result";
+    private static PMMLRuntime pmmlRuntime;
+
     private double input1;
     private double input2;
     private double input3;
@@ -47,7 +50,7 @@ public class SimpleClassificationTreeTest extends AbstractPMMLTreeTest {
 
     @BeforeClass
     public static void setupClass() {
-        setPMMLRuntime(MODEL_NAME);
+        pmmlRuntime = getPMMLRuntime(MODEL_NAME);
     }
 
     @Parameterized.Parameters
@@ -67,7 +70,7 @@ public class SimpleClassificationTreeTest extends AbstractPMMLTreeTest {
         inputData.put("input1", input1);
         inputData.put("input2", input2);
         inputData.put("input3", input3);
-        PMML4Result pmml4Result = evaluate(inputData, MODEL_NAME);
+        PMML4Result pmml4Result = evaluate(pmmlRuntime, inputData, MODEL_NAME);
 
         Assertions.assertThat(pmml4Result.getResultVariables().get(TARGET_FIELD)).isNotNull();
         Assertions.assertThat(pmml4Result.getResultVariables().get(TARGET_FIELD)).isEqualTo(expectedResult);

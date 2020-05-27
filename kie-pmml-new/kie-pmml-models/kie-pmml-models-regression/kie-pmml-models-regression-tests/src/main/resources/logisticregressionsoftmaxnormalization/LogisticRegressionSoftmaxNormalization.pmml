@@ -12,7 +12,7 @@
       <Value value="versicolor"/>
     </DataField>
   </DataDictionary>
-  <RegressionModel functionName="classification" modelName="LogisticRegressionWithNormalization" targetFieldName="Species" normalizationMethod="NORMALIZATION_METHOD_PLACEHOLDER">
+  <RegressionModel functionName="classification" modelName="LogisticRegressionSoftmaxNormalization" targetFieldName="Species" normalizationMethod="softmax">
     <MiningSchema>
       <MiningField name="Sepal.Length"/>
       <MiningField name="Sepal.Width"/>
