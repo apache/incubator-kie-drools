@@ -78,7 +78,7 @@ public class KogitoAssetsProcessor {
     private final transient String appPackageName = "org.kie.kogito.app";
     private final transient String persistenceFactoryClass = "org.kie.kogito.persistence.KogitoProcessInstancesFactory";
     private final transient String metricsClass = "org.kie.kogito.monitoring.rest.MetricsResource";
-    private final transient String tracingClass = "org.kie.kogito.tracing.decision.KogitoDecisionTracingListener";
+    private final transient String tracingClass = "org.kie.kogito.tracing.decision.DecisionTracingListener";
 
     @BuildStep
     CapabilityBuildItem capability() {
@@ -352,8 +352,8 @@ public class KogitoAssetsProcessor {
                 .getClassByName(createDotName(persistenceFactoryClass)) != null;
         boolean useMonitoring = combinedIndexBuildItem.getIndex()
                 .getClassByName(createDotName(metricsClass)) != null;
-        boolean useTracing = combinedIndexBuildItem.getIndex()
-                .getClassByName(createDotName(tracingClass)) != null;
+        boolean useTracing = !combinedIndexBuildItem.getIndex()
+                .getAllKnownSubclasses(createDotName(tracingClass)).isEmpty();
 
         GeneratorContext context = buildContext(appPaths, combinedIndexBuildItem.getIndex());
 

@@ -22,13 +22,14 @@ import javax.inject.Inject;
 import io.vertx.core.eventbus.EventBus;
 
 /**
- * This class must always have exact FQCN as <code>org.kie.kogito.tracing.decision.KogitoDecisionTracingListener</code>
+ * This class must always extend <code>org.kie.kogito.tracing.decision.DecisionTracingListener</code>
+ * for code generation plugins to correctly detect if this addon is enabled.
  */
 @ApplicationScoped
-public final class KogitoDecisionTracingListener extends DecisionTracingListener {
+public final class QuarkusDecisionTracingListener extends DecisionTracingListener {
 
     @Inject
-    public KogitoDecisionTracingListener(EventBus bus) {
+    public QuarkusDecisionTracingListener(EventBus bus) {
         setEventConsumer(event ->
                 bus.send(String.format("kogito-tracing-decision_%s", event.getClass().getSimpleName()), event)
         );

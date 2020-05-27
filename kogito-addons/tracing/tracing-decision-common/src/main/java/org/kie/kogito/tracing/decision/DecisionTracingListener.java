@@ -25,6 +25,10 @@ import org.kie.kogito.tracing.decision.event.AfterEvaluateAllEvent;
 import org.kie.kogito.tracing.decision.event.BeforeEvaluateAllEvent;
 import org.kie.kogito.tracing.decision.event.EvaluateEvent;
 
+/**
+ * This class must always have exact FQCN as <code>org.kie.kogito.tracing.decision.DecisionTracingListener</code>
+ * for code generation plugins to correctly detect if this addon is enabled.
+ */
 public class DecisionTracingListener implements DMNRuntimeEventListener {
 
     private Consumer<EvaluateEvent> eventConsumer;

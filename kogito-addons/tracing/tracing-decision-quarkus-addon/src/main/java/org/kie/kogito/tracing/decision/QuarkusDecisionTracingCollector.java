@@ -27,12 +27,12 @@ import org.kie.kogito.tracing.decision.event.BeforeEvaluateAllEvent;
 import org.reactivestreams.Publisher;
 
 @Singleton
-public class KogitoDecisionTracingCollector {
+public class QuarkusDecisionTracingCollector {
 
     private final PublishSubject<String> eventSubject;
     private final DecisionTracingCollector collector;
 
-    public KogitoDecisionTracingCollector() {
+    public QuarkusDecisionTracingCollector() {
         eventSubject = PublishSubject.create();
         collector = new DecisionTracingCollector(eventSubject::onNext);
     }

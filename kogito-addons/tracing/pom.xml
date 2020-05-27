@@ -15,6 +15,7 @@
   <modules>
     <module>tracing-decision-common</module>
     <module>tracing-decision-quarkus-addon</module>
+    <module>tracing-decision-springboot-addon</module>
   </modules>
 
 </project>

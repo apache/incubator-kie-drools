@@ -178,7 +178,7 @@ public class GenerateModelMojo extends AbstractKieMojo {
 
         boolean usePersistence = persistence || hasClassOnClasspath(project, "org.kie.kogito.persistence.KogitoProcessInstancesFactory");
         boolean useMonitoring = hasClassOnClasspath(project, "org.kie.kogito.monitoring.rest.MetricsResource");
-        boolean useTracing = hasClassOnClasspath(project, "org.kie.kogito.tracing.decision.KogitoDecisionTracingListener");
+        boolean useTracing = hasClassOnClasspath(project, "org.kie.kogito.tracing.decision.DecisionTracingListener");
 
         ClassLoader projectClassLoader = MojoUtil.createProjectClassLoader(this.getClass().getClassLoader(),
                                                                            project,

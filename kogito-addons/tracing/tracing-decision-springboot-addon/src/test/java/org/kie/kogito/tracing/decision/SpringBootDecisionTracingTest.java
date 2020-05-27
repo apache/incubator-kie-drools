@@ -22,8 +22,6 @@ import java.util.Map;
 import com.fasterxml.jackson.databind.JsonNode;
 import io.cloudevents.json.Json;
 import io.cloudevents.v1.CloudEventImpl;
-import io.reactivex.subscribers.TestSubscriber;
-import io.vertx.core.eventbus.EventBus;
 import org.junit.jupiter.api.Test;
 import org.kie.dmn.api.core.DMNContext;
 import org.kie.dmn.api.core.DMNRuntime;
@@ -32,21 +30,21 @@ import org.kie.kogito.dmn.DMNKogito;
 import org.kie.kogito.dmn.DmnDecisionModel;
 import org.kie.kogito.tracing.decision.event.AfterEvaluateAllEvent;
 import org.kie.kogito.tracing.decision.event.BeforeEvaluateAllEvent;
+import org.kie.kogito.tracing.decision.event.EvaluateEvent;
 import org.mockito.ArgumentCaptor;
-import org.mockito.InOrder;
+import org.springframework.context.ApplicationEventPublisher;
+import org.springframework.kafka.core.KafkaTemplate;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.ArgumentMatchers.anyString;
-import static org.mockito.ArgumentMatchers.eq;
-import static org.mockito.Mockito.inOrder;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 
-public class KogitoDecisionTracingTest {
+public class SpringBootDecisionTracingTest {
 
     private static final String TEST_EXECUTION_ID = "7c50581e-6e5b-407b-91d6-2ffb1d47ebc0";
+    private static final String TEST_TOPIC = "test-topic";
 
     @Test
     public void test_ListenerAndCollector_UseRealEvents_Working() {
@@ -55,12 +53,12 @@ public class KogitoDecisionTracingTest {
         final String modelName = "Traffic Violation";
 
         final DMNRuntime runtime = DMNKogito.createGenericDMNRuntime(new java.io.InputStreamReader(
-                KogitoDecisionTracingTest.class.getResourceAsStream(modelResource)
+                SpringBootDecisionTracingTest.class.getResourceAsStream(modelResource)
         ));
 
-        EventBus eventBus = mock(EventBus.class);
+        ApplicationEventPublisher eventPublisher = mock(ApplicationEventPublisher.class);
 
-        KogitoDecisionTracingListener listener = new KogitoDecisionTracingListener(eventBus);
+        SpringBootDecisionTracingListener listener = new SpringBootDecisionTracingListener(eventPublisher);
         runtime.addListener(listener);
 
         final Map<String, Object> driver = new HashMap<>();
@@ -77,28 +75,27 @@ public class KogitoDecisionTracingTest {
         final DMNContext context = model.newContext(contextVariables);
         model.evaluateAll(context);
 
-        verify(eventBus, times(2)).send(anyString(), any());
+        ArgumentCaptor<EvaluateEvent> eventCaptor = ArgumentCaptor.forClass(EvaluateEvent.class);
+        verify(eventPublisher, times(2)).publishEvent(eventCaptor.capture());
 
-        ArgumentCaptor<BeforeEvaluateAllEvent> beforeCaptor = ArgumentCaptor.forClass(BeforeEvaluateAllEvent.class);
-        ArgumentCaptor<AfterEvaluateAllEvent> afterCaptor = ArgumentCaptor.forClass(AfterEvaluateAllEvent.class);
+        assertTrue(eventCaptor.getAllValues().get(0) instanceof BeforeEvaluateAllEvent);
+        assertTrue(eventCaptor.getAllValues().get(1) instanceof AfterEvaluateAllEvent);
 
-        InOrder inOrder = inOrder(eventBus);
-        inOrder.verify(eventBus).send(eq("kogito-tracing-decision_BeforeEvaluateAllEvent"), beforeCaptor.capture());
-        inOrder.verify(eventBus).send(eq("kogito-tracing-decision_AfterEvaluateAllEvent"), afterCaptor.capture());
+        BeforeEvaluateAllEvent beforeEvent = (BeforeEvaluateAllEvent) eventCaptor.getAllValues().get(0);
+        AfterEvaluateAllEvent afterEvent = (AfterEvaluateAllEvent) eventCaptor.getAllValues().get(1);
 
-        BeforeEvaluateAllEvent beforeEvent = beforeCaptor.getValue();
-        AfterEvaluateAllEvent afterEvent = afterCaptor.getValue();
+        KafkaTemplate<String, String> template = mock(KafkaTemplate.class);
+        SpringBootDecisionTracingCollector collector = new SpringBootDecisionTracingCollector(template, TEST_TOPIC);
+        collector.onApplicationEvent(beforeEvent);
+        collector.onApplicationEvent(afterEvent);
 
-        TestSubscriber<String> subscriber = new TestSubscriber<>();
+        ArgumentCaptor<String> topicCaptor = ArgumentCaptor.forClass(String.class);
+        ArgumentCaptor<String> payloadCaptor = ArgumentCaptor.forClass(String.class);
+        verify(template).send(topicCaptor.capture(), payloadCaptor.capture());
 
-        KogitoDecisionTracingCollector collector = new KogitoDecisionTracingCollector();
-        collector.getEventPublisher().subscribe(subscriber);
-        collector.onEvent(beforeEvent);
-        collector.onEvent(afterEvent);
+        assertEquals(TEST_TOPIC, topicCaptor.getValue());
 
-        subscriber.assertValueCount(1);
-
-        CloudEventImpl<JsonNode> cloudEvent = Json.decodeValue(subscriber.values().get(0), CloudEventImpl.class, JsonNode.class);
+        CloudEventImpl<JsonNode> cloudEvent = Json.decodeValue(payloadCaptor.getValue(), CloudEventImpl.class, JsonNode.class);
         assertEquals(TEST_EXECUTION_ID, cloudEvent.getAttributes().getId());
     }
 
