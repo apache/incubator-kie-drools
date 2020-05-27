@@ -111,7 +111,7 @@ public class BostonHousingDataTreeTest extends AbstractPMMLTreeTest {
         inputData.put("lstat", lstat);
 
         final PMMLRequestData pmmlRequestData = getPMMLRequestData(MODEL_NAME, inputData);
-        PMML4Result pmml4Result = EXECUTOR.evaluate(kieBase, pmmlModel, new PMMLContextImpl(pmmlRequestData));
+        PMML4Result pmml4Result = EVALUATOR.evaluate(kieBase, pmmlModel, new PMMLContextImpl(pmmlRequestData));
         Assertions.assertThat(pmml4Result.getResultVariables().get(TARGET_FIELD)).isNotNull();
         Assertions.assertThat(pmml4Result.getResultVariables().get(TARGET_FIELD)).isEqualTo(expectedResult);
     }
