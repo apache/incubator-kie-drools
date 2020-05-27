@@ -1,6 +1,7 @@
 package org.kie.dmn.validation.dtanalysis;
 
 import java.math.BigDecimal;
+import java.util.AbstractMap.SimpleEntry;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
@@ -54,12 +55,11 @@ public class MCDCAnalyser {
         calculateAllEnumValues();
 
         // Step2
-        int i = 1;
-        while (areInputsYetToBeVisited()) {
-            LOG.debug("=== Step2, iteration {}", i);
-            step2();
-            i++;
-        }
+
+        step23();
+        step23();
+        step23();
+        step23();
 
         LOG.info("the final results are as follows.\nLeft Hand Side for Positive:");
         Set<Record> mcdcRecords = new LinkedHashSet<>();
@@ -93,7 +93,8 @@ public class MCDCAnalyser {
         return idx.size() > 0;
     }
 
-    private void step2() {
+    private void step23() {
+        LOG.debug("step23() ------------------------------");
         List<Integer> visitedIndexes = getAllColumnVisited();
         LOG.debug("Visited Inputs: {}", debugListPlusOne(visitedIndexes));
         List<List<Comparable<?>>> visitedPositiveOutput = getVisitedPositiveOutput();
@@ -105,76 +106,87 @@ public class MCDCAnalyser {
         LOG.debug("Inputs yet to be analysed: {}", debugListPlusOne(allIndexes));
 
         List<Integer> idxMoreEnums = whichIndexHasMoreEnums(allIndexes);
-        LOG.debug("Which Input with greatest number of enum between {} ? it's: {}",
+        LOG.debug("2.a Pick the input with greatest number of enum values {} ? it's: {}",
                   debugListPlusOne(allIndexes),
                   debugListPlusOne(idxMoreEnums));
 
-        List<Entry<Integer, List<PosNegBlock>>> idxFewestRulesMatching = whichIndexHasFewestNumberOfRulesMatchingTheFirstInputValue(idxMoreEnums);
-        LOG.debug("Which Input has fewest number of rules matching the first input enum value, between Inputs {} ? it's: {}",
-                  debugListPlusOne(idxMoreEnums),
-                  debugListPlusOne(idxFewestRulesMatching.stream().map(Entry::getKey).collect(Collectors.toList())));
-        if (idxFewestRulesMatching.size() == 1) {
-            Entry<Integer, List<PosNegBlock>> idx0blocks = idxFewestRulesMatching.get(0);
-            Integer index = idx0blocks.getKey();
-            StringBuilder sb = new StringBuilder("\n");
-            for (PosNegBlock b : idx0blocks.getValue()) {
-                sb.append(b);
+        Integer idxMostMatchingRules = idxMoreEnums.stream()
+                                                   .map(i -> new SimpleEntry<Integer, Integer>(i, matchingRulesForInput(i, allEnumValues.get(i).get(0)).size()))
+                                                   .max(Comparator.comparing(Entry::getValue))
+                                                   .map(Entry::getKey)
+                                                   .orElseThrow(() -> new RuntimeException());
+
+        LOG.debug("2.b Choose the input with the greatest number of rules matching that enum {} ? it's: {}",
+                  idxMoreEnums.stream()
+                              .map(i -> new SimpleEntry<Integer, Integer>(i, matchingRulesForInput(i, allEnumValues.get(i).get(0)).size()))
+                              .collect(Collectors.toList()),
+                  idxMostMatchingRules + 1);
+
+        List<PosNegBlock> candidateBlocks = new ArrayList<>();
+        Object value = allEnumValues.get(idxMostMatchingRules).get(0);
+        List<Integer> matchingRulesForInput = matchingRulesForInput(idxMostMatchingRules, value);
+        for (int ruleIdx : matchingRulesForInput) {
+            Object[] knownValues = new Object[ddtaTable.getInputs().size()];
+            knownValues[idxMostMatchingRules] = value;
+            Object[] posCandidate = findValuesForRule(ruleIdx, knownValues, Collections.unmodifiableList(allEnumValues));
+            if (Stream.of(posCandidate).anyMatch(x -> x == null)) {
+                continue;
             }
-            LOG.debug("Only a single Input has fewest rule matching: In{}, and with these blocks {}", index + 1, sb.toString());
-
-            List<PosNegBlock> filtered = new ArrayList<>(idx0blocks.getValue());
-            filtered.removeIf(block -> selectedBlocks.stream().anyMatch(sbb -> sbb.posRecord.output.equals(block.posRecord.output)));
-            LOG.debug("For step2 I am considering only {} of those {} blocks, as others are matching for positive case output which is already visited.", filtered.size(), idx0blocks.getValue().size());
-            LOG.trace("{}", filtered);
-
-            Optional<PosNegBlock> check2bi = check2bi(filtered);
-            if (check2bi.isPresent()) {
-                PosNegBlock b = check2bi.get();
-                // When 2bi is satisfied and all the negative cases has output values different from the prior positive cases, ...
-                boolean allNegOutputDiff = !b.negRecords.stream()
-                                                        .map(nr -> nr.output)
-                                                        .anyMatch(nro -> selectedBlocks.stream()
-                                                                                       .map(pr -> pr.posRecord.output)
-                                                                                       .anyMatch(pro -> pro.equals(nro)));
-                List<PosNegBlock> appended = new ArrayList<>();
-                if (allNegOutputDiff) {
-                    LOG.debug("Acting on 2bi is satisfied and all the negative cases has output values different from the prior positive cases, ...");
-                    for (Record negRecord : b.negRecords) {
-                        Optional<PosNegBlock> negIntoPositive = calculatePosNegBlock(b.cMarker, negRecord.enums[b.cMarker], negRecord, allEnumValues);
-                        if (negIntoPositive.isPresent()) {
-                            LOG.debug("negative into positive block: \n{}", negIntoPositive.get());
-                            appended.add(negIntoPositive.get());
-                        } else {
-                            throw new UnsupportedOperationException("I was unable to transform a negative into a positive");
-                        }
-                    }
-                }
-                selectBlock(b);
-                selectedBlocks.addAll(appended); // appended last to avoid cutting the enumValue.
-                return;
+            Record posCandidateRecord = new Record(ruleIdx, posCandidate, ddtaTable.getRule().get(ruleIdx).getOutputEntry());
+            Optional<PosNegBlock> calculatePosNegBlock = calculatePosNegBlock(idxMostMatchingRules, value, posCandidateRecord, Collections.unmodifiableList(allEnumValues));
+            if (calculatePosNegBlock.isPresent()) {
+                candidateBlocks.add(calculatePosNegBlock.get());
             }
-
-            Optional<PosNegBlock> check2bii = check2bii(filtered);
-            if (check2bii.isPresent()) {
-                PosNegBlock b = check2bii.get();
-                selectBlock(b);
-                return;
-            }
-
-            Optional<Check2biii_iv> check2biii_iv = check2biii_iv(filtered);
-            if (check2biii_iv.isPresent()) {
-                PosNegBlock selected = check2biii_iv.get().block;
-                selectBlock(selected);
-                return;
-            }
-
-            PosNegBlock arbitrarySelectFirst = filtered.get(0);
-            LOG.warn("I have reached the end of step2 without having selected a block, will select the first one \n{}", arbitrarySelectFirst);
-            selectBlock(arbitrarySelectFirst);
-            return;
-        } else {
-            throw new UnsupportedOperationException("TODO");
         }
+        LOG.trace("3. Input {}, initial candidate blocks \n{}", idxMostMatchingRules + 1, candidateBlocks);
+
+        List<PosNegBlock> filter1 = candidateBlocks.stream().filter(b -> !getVisitedPositiveOutput().contains(b.posRecord.output)).collect(Collectors.toList());
+        LOG.trace("3.FILTER-1 blocks with output which was not already visited {}, the filtered blocks are: \n{}", getVisitedPositiveOutput(), filter1);
+        
+        Set<List<Comparable<?>>> filter1outs = filter1.stream().map(b -> b.posRecord.output).collect(Collectors.toSet());
+        LOG.trace("filter1outs {}", filter1outs);
+
+        if (filter1outs.size() > 1 && elseRuleIdx.isPresent() && filter1outs.contains(ddtaTable.getRule().get(elseRuleIdx.get()).getOutputEntry())) {
+            LOG.trace("filter1outs will be filtered of the Else rule's output {}.", ddtaTable.getRule().get(elseRuleIdx.get()).getOutputEntry());
+            filter1outs.remove(ddtaTable.getRule().get(elseRuleIdx.get()).getOutputEntry());
+            LOG.trace("filter1outs {}", filter1outs);
+        }
+
+        List<SimpleEntry<List<Comparable<?>>, Integer>> filter1outsMatchingRules = filter1outs.stream()
+                                                                                              .map(out -> new SimpleEntry<>(out, (int) ddtaTable.getRule().stream().filter(r -> r.getOutputEntry().equals(out)).count()))
+                                                                                              .sorted(Comparator.comparing(Entry::getValue))
+                                                                                              .collect(Collectors.toList());
+        LOG.trace("3. of those blocks positive outputs, how many rule do they match? {}", filter1outsMatchingRules);
+        
+        List<Comparable<?>> filter1outWithLessMatchingRules = filter1outsMatchingRules.get(0).getKey();
+        LOG.trace("3. positive output of those block with the less matching rules? {}", filter1outWithLessMatchingRules);
+
+        List<PosNegBlock> filter2 = filter1.stream().filter(b -> b.posRecord.output.equals(filter1outWithLessMatchingRules)).collect(Collectors.toList());
+        LOG.trace("3.FILTER-2 blocks with output corresponding to the less matching rules {}, the blocks are: \n{}", filter1outWithLessMatchingRules, filter2);
+
+        List<SimpleEntry<PosNegBlock, Integer>> blockWeighted = filter2.stream()
+                                                                       .map(b -> new SimpleEntry<>(b, computeAdditionalWeightIntroBlock(b)))
+                                                                       .sorted(Comparator.comparing(Entry::getValue))
+                                                                       .collect(Collectors.toList());
+        LOG.trace("3. blocks sorted by fewest new cases (natural weight order): \n{}", blockWeighted);
+
+        PosNegBlock selectedBlock = blockWeighted.get(0).getKey();
+        LOG.trace("3. I select the first, chosen block to be select: \n{}", selectedBlock);
+        selectBlock(selectedBlock);
+    }
+
+    private int computeAdditionalWeightIntroBlock(PosNegBlock newBlock) {
+        int score = 0;
+        Record posRecord = newBlock.posRecord;
+        if (selectedBlocks.stream().noneMatch(vb -> vb.posRecord.equals(posRecord))) {
+            score++;
+        }
+        for (Record negRecord : newBlock.negRecords) {
+            if (selectedBlocks.stream().flatMap(vb -> vb.negRecords.stream()).noneMatch(nr -> nr.equals(negRecord))) {
+                score++;
+            }
+        }
+        return score;
     }
 
     private void selectBlock(PosNegBlock selected) {
