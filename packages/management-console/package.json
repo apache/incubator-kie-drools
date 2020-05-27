@@ -41,11 +41,15 @@
     "react-json-view": "1.19.1",
     "react-moment": "0.9.7"
   },
+  "devDependencies": {
+    "core-js": "3.6.5"
+  },
   "jest": {
     "preset": "ts-jest/presets/js-with-ts",
     "setupFiles": [
       "../../config/Jest-config/test-shim.js",
-      "../../config/Jest-config/test-setup.js"
+      "../../config/Jest-config/test-setup.js",
+      "core-js"
     ],
     "moduleFileExtensions": [
       "ts",

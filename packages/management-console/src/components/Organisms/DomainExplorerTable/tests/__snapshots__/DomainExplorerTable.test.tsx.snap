@@ -1,0 +1,2024 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`Domain Explorer Table Component Boolean assertions-false 1`] = `
+<Fragment>
+  0
+</Fragment>
+`;
+
+exports[`Domain Explorer Table Component Boolean assertions-true 1`] = `
+<Fragment>
+  0
+</Fragment>
+`;
+
+exports[`Domain Explorer Table Component Snapshot test 1`] = `
+<Fragment>
+  0
+</Fragment>
+`;
+
+exports[`Domain Explorer Table Component check false value of isLoadingMore 1`] = `
+<DomainExplorerTable
+  columnFilters={
+    Array [
+      Object {
+        "flight": Object {
+          "__typename": "Flight",
+          "arrival": "Hello World",
+          "departure": "Hello World",
+          "flightNumber": "Hello World",
+          "gate": "Hello World",
+          "seat": "Hello World",
+        },
+        "metadata": Object {
+          "processInstances": Array [
+            Object {
+              "businessKey": "Hello World",
+              "id": "Hello World",
+              "lastUpdate": "Tue, 12 May 2020 12:33:58 GMT",
+              "processName": "Hello World",
+              "start": "Tue, 12 May 2020 12:33:58 GMT",
+              "state": "ERROR",
+            },
+            Object {
+              "businessKey": "Hello World",
+              "id": "Hello World",
+              "lastUpdate": "Tue, 12 May 2020 12:33:58 GMT",
+              "processName": "Hello World",
+              "start": "Tue, 12 May 2020 12:33:58 GMT",
+              "state": "ABORTED",
+            },
+          ],
+        },
+      },
+      Object {
+        "flight": Object {
+          "__typename": "Flight",
+          "arrival": "Hello World",
+          "departure": "Hello World",
+          "flightNumber": "Hello World",
+          "gate": "Hello World",
+          "seat": "Hello World",
+        },
+        "metadata": Object {
+          "processInstances": Array [
+            Object {
+              "businessKey": "Hello World",
+              "id": "Hello World",
+              "lastUpdate": "Tue, 12 May 2020 12:33:58 GMT",
+              "processName": "Hello World",
+              "start": "Tue, 12 May 2020 12:33:58 GMT",
+              "state": "ERROR",
+            },
+            Object {
+              "businessKey": "Hello World",
+              "id": "Hello World",
+              "lastUpdate": "Tue, 12 May 2020 12:33:58 GMT",
+              "processName": "Hello World",
+              "start": "Tue, 12 May 2020 12:33:58 GMT",
+              "state": "ERROR",
+            },
+          ],
+        },
+      },
+    ]
+  }
+  displayEmptyState={true}
+  displayTable={true}
+  isLoadingMore={false}
+  offset={0}
+  parameters={Array []}
+  rows={
+    Array [
+      Object {
+        "cells": Array [
+          "Hello World",
+          "Hello World",
+          "Hello World",
+          "Hello World",
+          "Hello World",
+        ],
+        "isOpen": false,
+        "rowKey": "0.008857835601127073",
+      },
+      Object {
+        "cells": Array [
+          Object {
+            "title": Object {},
+          },
+        ],
+        "parent": 0,
+        "rowKey": "0.6632979792309541",
+      },
+    ]
+  }
+  selected={Array []}
+  setRows={
+    [MockFunction] {
+      "calls": Array [
+        Array [
+          Array [
+            Object {
+              "cells": Array [
+                "Hello World",
+                "Hello World",
+                "Hello World",
+                "Hello World",
+                "Hello World",
+              ],
+              "isOpen": false,
+              "rowKey": "0.7218415351930461",
+            },
+            Object {
+              "cells": Array [
+                Object {
+                  "title": <Unknown
+                    aria-label="Process Instances"
+                    cells={
+                      Array [
+                        "Process name",
+                        "State",
+                        "Start",
+                        "Last update",
+                      ]
+                    }
+                    className="kogito-management-console__embedded-table"
+                    rows={
+                      Array [
+                        Object {
+                          "cells": Array [
+                            Object {
+                              "title": <React.Fragment>
+                                <HistoryIcon
+                                  className="pf-u-mr-sm"
+                                  color="currentColor"
+                                  noVerticalAlign={false}
+                                  size="sm"
+                                  title={null}
+                                />
+                                 Updated
+                                 
+                                <t
+                                  ago={false}
+                                  calendar={false}
+                                  decimal={false}
+                                  element={null}
+                                  filter={[Function]}
+                                  fromNow={true}
+                                  interval={60000}
+                                  local={false}
+                                  onChange={[Function]}
+                                  titleFormat=""
+                                  toNow={false}
+                                  unit={null}
+                                  unix={false}
+                                  utc={false}
+                                  withTitle={false}
+                                >
+                                  Tue, 12 May 2020 12:33:58 GMT
+                                </t>
+                              </React.Fragment>,
+                            },
+                            Object {
+                              "title": <React.Fragment>
+                                <Link
+                                  to={
+                                    Object {
+                                      "pathname": "/Process/Hello World",
+                                      "state": Object {
+                                        "parameters": Array [],
+                                        "selected": Array [],
+                                      },
+                                    }
+                                  }
+                                >
+                                  <strong>
+                                    <ProcessDescriptor
+                                      processInstanceData={
+                                        Object {
+                                          "businessKey": "Hello World",
+                                          "id": "Hello World",
+                                          "processName": "Hello World",
+                                        }
+                                      }
+                                    />
+                                  </strong>
+                                </Link>
+                              </React.Fragment>,
+                            },
+                            Object {
+                              "title": <t
+                                ago={false}
+                                calendar={false}
+                                decimal={false}
+                                element={null}
+                                filter={[Function]}
+                                fromNow={true}
+                                interval={60000}
+                                local={false}
+                                onChange={[Function]}
+                                titleFormat=""
+                                toNow={false}
+                                unit={null}
+                                unix={false}
+                                utc={false}
+                                withTitle={false}
+                              >
+                                Tue, 12 May 2020 12:33:58 GMT
+                              </t>,
+                            },
+                            Object {
+                              "title": <React.Fragment>
+                                <ErrorCircleOIcon
+                                  className="pf-u-mr-sm"
+                                  color="var(--pf-global--danger-color--100)"
+                                  noVerticalAlign={false}
+                                  size="sm"
+                                  title={null}
+                                />
+                                Error
+                              </React.Fragment>,
+                            },
+                          ],
+                          "rowKey": "0.7218415351930461",
+                        },
+                        Object {
+                          "cells": Array [
+                            Object {
+                              "title": <React.Fragment>
+                                <HistoryIcon
+                                  className="pf-u-mr-sm"
+                                  color="currentColor"
+                                  noVerticalAlign={false}
+                                  size="sm"
+                                  title={null}
+                                />
+                                 Updated
+                                 
+                                <t
+                                  ago={false}
+                                  calendar={false}
+                                  decimal={false}
+                                  element={null}
+                                  filter={[Function]}
+                                  fromNow={true}
+                                  interval={60000}
+                                  local={false}
+                                  onChange={[Function]}
+                                  titleFormat=""
+                                  toNow={false}
+                                  unit={null}
+                                  unix={false}
+                                  utc={false}
+                                  withTitle={false}
+                                >
+                                  Tue, 12 May 2020 12:33:58 GMT
+                                </t>
+                              </React.Fragment>,
+                            },
+                            Object {
+                              "title": <React.Fragment>
+                                <Link
+                                  to={
+                                    Object {
+                                      "pathname": "/Process/Hello World",
+                                      "state": Object {
+                                        "parameters": Array [],
+                                        "selected": Array [],
+                                      },
+                                    }
+                                  }
+                                >
+                                  <strong>
+                                    <ProcessDescriptor
+                                      processInstanceData={
+                                        Object {
+                                          "businessKey": "Hello World",
+                                          "id": "Hello World",
+                                          "processName": "Hello World",
+                                        }
+                                      }
+                                    />
+                                  </strong>
+                                </Link>
+                              </React.Fragment>,
+                            },
+                            Object {
+                              "title": <t
+                                ago={false}
+                                calendar={false}
+                                decimal={false}
+                                element={null}
+                                filter={[Function]}
+                                fromNow={true}
+                                interval={60000}
+                                local={false}
+                                onChange={[Function]}
+                                titleFormat=""
+                                toNow={false}
+                                unit={null}
+                                unix={false}
+                                utc={false}
+                                withTitle={false}
+                              >
+                                Tue, 12 May 2020 12:33:58 GMT
+                              </t>,
+                            },
+                            Object {
+                              "title": <React.Fragment>
+                                <BanIcon
+                                  className="pf-u-mr-sm"
+                                  color="currentColor"
+                                  noVerticalAlign={false}
+                                  size="sm"
+                                  title={null}
+                                />
+                                Aborted
+                              </React.Fragment>,
+                            },
+                          ],
+                          "rowKey": "0.7218415351930461",
+                        },
+                      ]
+                    }
+                    variant="compact"
+                  >
+                    <TableHeader />
+                    <TableBody />
+                  </Unknown>,
+                },
+              ],
+              "parent": 0,
+              "rowKey": "0.7218415351930461",
+            },
+            Object {
+              "cells": Array [
+                "Hello World",
+                "Hello World",
+                "Hello World",
+                "Hello World",
+                "Hello World",
+              ],
+              "isOpen": false,
+              "rowKey": "0.7218415351930461",
+            },
+            Object {
+              "cells": Array [
+                Object {
+                  "title": <Unknown
+                    aria-label="Process Instances"
+                    cells={
+                      Array [
+                        "Process name",
+                        "State",
+                        "Start",
+                        "Last update",
+                      ]
+                    }
+                    className="kogito-management-console__embedded-table"
+                    rows={
+                      Array [
+                        Object {
+                          "cells": Array [
+                            Object {
+                              "title": <React.Fragment>
+                                <HistoryIcon
+                                  className="pf-u-mr-sm"
+                                  color="currentColor"
+                                  noVerticalAlign={false}
+                                  size="sm"
+                                  title={null}
+                                />
+                                 Updated
+                                 
+                                <t
+                                  ago={false}
+                                  calendar={false}
+                                  decimal={false}
+                                  element={null}
+                                  filter={[Function]}
+                                  fromNow={true}
+                                  interval={60000}
+                                  local={false}
+                                  onChange={[Function]}
+                                  titleFormat=""
+                                  toNow={false}
+                                  unit={null}
+                                  unix={false}
+                                  utc={false}
+                                  withTitle={false}
+                                >
+                                  Tue, 12 May 2020 12:33:58 GMT
+                                </t>
+                              </React.Fragment>,
+                            },
+                            Object {
+                              "title": <React.Fragment>
+                                <Link
+                                  to={
+                                    Object {
+                                      "pathname": "/Process/Hello World",
+                                      "state": Object {
+                                        "parameters": Array [],
+                                        "selected": Array [],
+                                      },
+                                    }
+                                  }
+                                >
+                                  <strong>
+                                    <ProcessDescriptor
+                                      processInstanceData={
+                                        Object {
+                                          "businessKey": "Hello World",
+                                          "id": "Hello World",
+                                          "processName": "Hello World",
+                                        }
+                                      }
+                                    />
+                                  </strong>
+                                </Link>
+                              </React.Fragment>,
+                            },
+                            Object {
+                              "title": <t
+                                ago={false}
+                                calendar={false}
+                                decimal={false}
+                                element={null}
+                                filter={[Function]}
+                                fromNow={true}
+                                interval={60000}
+                                local={false}
+                                onChange={[Function]}
+                                titleFormat=""
+                                toNow={false}
+                                unit={null}
+                                unix={false}
+                                utc={false}
+                                withTitle={false}
+                              >
+                                Tue, 12 May 2020 12:33:58 GMT
+                              </t>,
+                            },
+                            Object {
+                              "title": <React.Fragment>
+                                <ErrorCircleOIcon
+                                  className="pf-u-mr-sm"
+                                  color="var(--pf-global--danger-color--100)"
+                                  noVerticalAlign={false}
+                                  size="sm"
+                                  title={null}
+                                />
+                                Error
+                              </React.Fragment>,
+                            },
+                          ],
+                          "rowKey": "0.7218415351930461",
+                        },
+                        Object {
+                          "cells": Array [
+                            Object {
+                              "title": <React.Fragment>
+                                <HistoryIcon
+                                  className="pf-u-mr-sm"
+                                  color="currentColor"
+                                  noVerticalAlign={false}
+                                  size="sm"
+                                  title={null}
+                                />
+                                 Updated
+                                 
+                                <t
+                                  ago={false}
+                                  calendar={false}
+                                  decimal={false}
+                                  element={null}
+                                  filter={[Function]}
+                                  fromNow={true}
+                                  interval={60000}
+                                  local={false}
+                                  onChange={[Function]}
+                                  titleFormat=""
+                                  toNow={false}
+                                  unit={null}
+                                  unix={false}
+                                  utc={false}
+                                  withTitle={false}
+                                >
+                                  Tue, 12 May 2020 12:33:58 GMT
+                                </t>
+                              </React.Fragment>,
+                            },
+                            Object {
+                              "title": <React.Fragment>
+                                <Link
+                                  to={
+                                    Object {
+                                      "pathname": "/Process/Hello World",
+                                      "state": Object {
+                                        "parameters": Array [],
+                                        "selected": Array [],
+                                      },
+                                    }
+                                  }
+                                >
+                                  <strong>
+                                    <ProcessDescriptor
+                                      processInstanceData={
+                                        Object {
+                                          "businessKey": "Hello World",
+                                          "id": "Hello World",
+                                          "processName": "Hello World",
+                                        }
+                                      }
+                                    />
+                                  </strong>
+                                </Link>
+                              </React.Fragment>,
+                            },
+                            Object {
+                              "title": <t
+                                ago={false}
+                                calendar={false}
+                                decimal={false}
+                                element={null}
+                                filter={[Function]}
+                                fromNow={true}
+                                interval={60000}
+                                local={false}
+                                onChange={[Function]}
+                                titleFormat=""
+                                toNow={false}
+                                unit={null}
+                                unix={false}
+                                utc={false}
+                                withTitle={false}
+                              >
+                                Tue, 12 May 2020 12:33:58 GMT
+                              </t>,
+                            },
+                            Object {
+                              "title": <React.Fragment>
+                                <ErrorCircleOIcon
+                                  className="pf-u-mr-sm"
+                                  color="var(--pf-global--danger-color--100)"
+                                  noVerticalAlign={false}
+                                  size="sm"
+                                  title={null}
+                                />
+                                Error
+                              </React.Fragment>,
+                            },
+                          ],
+                          "rowKey": "0.7218415351930461",
+                        },
+                      ]
+                    }
+                    variant="compact"
+                  >
+                    <TableHeader />
+                    <TableBody />
+                  </Unknown>,
+                },
+              ],
+              "parent": 2,
+              "rowKey": "0.7218415351930461",
+            },
+            Object {
+              "cells": Array [
+                Object {
+                  "props": Object {
+                    "colSpan": 8,
+                  },
+                  "title": <Bullseye>
+                    <EmptyStateSpinner
+                      spinnerText="Loading domain explorer"
+                    />
+                  </Bullseye>,
+                },
+              ],
+            },
+          ],
+        ],
+      ],
+      "results": Array [
+        Object {
+          "type": "return",
+          "value": undefined,
+        },
+      ],
+    }
+  }
+  tableLoading={true}
+>
+  <Card
+    component="div"
+  >
+    <div
+      className="pf-c-card"
+    >
+      <CardBody>
+        <div
+          className="pf-c-card__body"
+        >
+          <Bullseye>
+            <div
+              className="pf-l-bullseye"
+            >
+              <EmptyState>
+                <div
+                  className="pf-c-empty-state pf-m-lg"
+                >
+                  <EmptyStateIcon
+                    icon={[Function]}
+                  >
+                    <SearchIcon
+                      aria-hidden="true"
+                      className="pf-c-empty-state__icon"
+                      color="currentColor"
+                      noVerticalAlign={false}
+                      size="sm"
+                      title={null}
+                    >
+                      <svg
+                        aria-hidden="true"
+                        aria-labelledby={null}
+                        className="pf-c-empty-state__icon"
+                        fill="currentColor"
+                        height="1em"
+                        role="img"
+                        style={
+                          Object {
+                            "verticalAlign": "-0.125em",
+                          }
+                        }
+                        viewBox="0 0 512 512"
+                        width="1em"
+                      >
+                        <path
+                          d="M505 442.7L405.3 343c-4.5-4.5-10.6-7-17-7H372c27.6-35.3 44-79.7 44-128C416 93.1 322.9 0 208 0S0 93.1 0 208s93.1 208 208 208c48.3 0 92.7-16.4 128-44v16.3c0 6.4 2.5 12.5 7 17l99.7 99.7c9.4 9.4 24.6 9.4 33.9 0l28.3-28.3c9.4-9.4 9.4-24.6.1-34zM208 336c-70.7 0-128-57.2-128-128 0-70.7 57.2-128 128-128 70.7 0 128 57.2 128 128 0 70.7-57.2 128-128 128z"
+                          transform=""
+                        />
+                      </svg>
+                    </SearchIcon>
+                  </EmptyStateIcon>
+                  <Title
+                    headingLevel="h5"
+                    size="lg"
+                  >
+                    <h5
+                      className="pf-c-title pf-m-lg"
+                    >
+                      No data available
+                    </h5>
+                  </Title>
+                  <EmptyStateBody>
+                    <div
+                      className="pf-c-empty-state__body"
+                    >
+                      Selected domain has no data to display. Check other domains.
+                    </div>
+                  </EmptyStateBody>
+                </div>
+              </EmptyState>
+            </div>
+          </Bullseye>
+        </div>
+      </CardBody>
+    </div>
+  </Card>
+</DomainExplorerTable>
+`;
+
+exports[`Domain Explorer Table Component check null value for process instance attributes 1`] = `
+<DomainExplorerTable
+  columnFilters={
+    Array [
+      Object {
+        "flight": Object {
+          "__typename": "Flight",
+          "arrival": "Hello World",
+          "departure": "Hello World",
+          "flightNumber": "Hello World",
+          "gate": "Hello World",
+          "seat": "Hello World",
+        },
+        "metadata": Object {
+          "processInstances": Array [
+            Object {
+              "businessKey": "Hello World",
+              "id": "Hello World",
+              "lastUpdate": "Tue, 12 May 2020 12:33:58 GMT",
+              "processName": "Hello World",
+              "start": "Tue, 12 May 2020 12:33:58 GMT",
+              "state": "ERROR",
+            },
+            Object {
+              "businessKey": "Hello World",
+              "id": "Hello World",
+              "lastUpdate": "Tue, 12 May 2020 12:33:58 GMT",
+              "processName": "Hello World",
+              "start": "Tue, 12 May 2020 12:33:58 GMT",
+              "state": "ABORTED",
+            },
+          ],
+        },
+      },
+      Object {
+        "flight": Object {
+          "__typename": "Flight",
+          "arrival": null,
+          "departure": "Hello World",
+          "flightNumber": "Hello World",
+          "gate": "Hello World",
+          "seat": "Hello World",
+        },
+        "metadata": Object {
+          "processInstances": Array [
+            Object {
+              "businessKey": null,
+              "id": "Hello World",
+              "lastUpdate": "Tue, 12 May 2020 12:33:58 GMT",
+              "processName": "Hello World",
+              "start": "Tue, 12 May 2020 12:33:58 GMT",
+              "state": "ERROR",
+            },
+            Object {
+              "businessKey": "Hello World",
+              "id": "Hello World",
+              "lastUpdate": "Tue, 12 May 2020 12:33:58 GMT",
+              "processName": "Hello World",
+              "start": "Tue, 12 May 2020 12:33:58 GMT",
+              "state": "ERROR",
+            },
+          ],
+        },
+      },
+    ]
+  }
+  displayEmptyState={true}
+  displayTable={true}
+  isLoadingMore={false}
+  offset={0}
+  parameters={Array []}
+  rows={
+    Array [
+      Object {
+        "cells": Array [
+          "Hello World",
+          "Hello World",
+          "Hello World",
+          "Hello World",
+          "Hello World",
+        ],
+        "isOpen": false,
+        "rowKey": "0.008857835601127073",
+      },
+      Object {
+        "cells": Array [
+          Object {
+            "title": Object {},
+          },
+        ],
+        "parent": 0,
+        "rowKey": "0.6632979792309541",
+      },
+    ]
+  }
+  selected={Array []}
+  setRows={
+    [MockFunction] {
+      "calls": Array [
+        Array [
+          Array [
+            Object {
+              "cells": Array [
+                "Hello World",
+                "Hello World",
+                "Hello World",
+                "Hello World",
+                "Hello World",
+              ],
+              "isOpen": false,
+              "rowKey": "0.7218415351930461",
+            },
+            Object {
+              "cells": Array [
+                Object {
+                  "title": <Unknown
+                    aria-label="Process Instances"
+                    cells={
+                      Array [
+                        "Process name",
+                        "State",
+                        "Start",
+                        "Last update",
+                      ]
+                    }
+                    className="kogito-management-console__embedded-table"
+                    rows={
+                      Array [
+                        Object {
+                          "cells": Array [
+                            Object {
+                              "title": <React.Fragment>
+                                <HistoryIcon
+                                  className="pf-u-mr-sm"
+                                  color="currentColor"
+                                  noVerticalAlign={false}
+                                  size="sm"
+                                  title={null}
+                                />
+                                 Updated
+                                 
+                                <t
+                                  ago={false}
+                                  calendar={false}
+                                  decimal={false}
+                                  element={null}
+                                  filter={[Function]}
+                                  fromNow={true}
+                                  interval={60000}
+                                  local={false}
+                                  onChange={[Function]}
+                                  titleFormat=""
+                                  toNow={false}
+                                  unit={null}
+                                  unix={false}
+                                  utc={false}
+                                  withTitle={false}
+                                >
+                                  Tue, 12 May 2020 12:33:58 GMT
+                                </t>
+                              </React.Fragment>,
+                            },
+                            Object {
+                              "title": <React.Fragment>
+                                <Link
+                                  to={
+                                    Object {
+                                      "pathname": "/Process/Hello World",
+                                      "state": Object {
+                                        "parameters": Array [],
+                                        "selected": Array [],
+                                      },
+                                    }
+                                  }
+                                >
+                                  <strong>
+                                    <ProcessDescriptor
+                                      processInstanceData={
+                                        Object {
+                                          "businessKey": "Hello World",
+                                          "id": "Hello World",
+                                          "processName": "Hello World",
+                                        }
+                                      }
+                                    />
+                                  </strong>
+                                </Link>
+                              </React.Fragment>,
+                            },
+                            Object {
+                              "title": <t
+                                ago={false}
+                                calendar={false}
+                                decimal={false}
+                                element={null}
+                                filter={[Function]}
+                                fromNow={true}
+                                interval={60000}
+                                local={false}
+                                onChange={[Function]}
+                                titleFormat=""
+                                toNow={false}
+                                unit={null}
+                                unix={false}
+                                utc={false}
+                                withTitle={false}
+                              >
+                                Tue, 12 May 2020 12:33:58 GMT
+                              </t>,
+                            },
+                            Object {
+                              "title": <React.Fragment>
+                                <ErrorCircleOIcon
+                                  className="pf-u-mr-sm"
+                                  color="var(--pf-global--danger-color--100)"
+                                  noVerticalAlign={false}
+                                  size="sm"
+                                  title={null}
+                                />
+                                Error
+                              </React.Fragment>,
+                            },
+                          ],
+                          "rowKey": "0.7218415351930461",
+                        },
+                        Object {
+                          "cells": Array [
+                            Object {
+                              "title": <React.Fragment>
+                                <HistoryIcon
+                                  className="pf-u-mr-sm"
+                                  color="currentColor"
+                                  noVerticalAlign={false}
+                                  size="sm"
+                                  title={null}
+                                />
+                                 Updated
+                                 
+                                <t
+                                  ago={false}
+                                  calendar={false}
+                                  decimal={false}
+                                  element={null}
+                                  filter={[Function]}
+                                  fromNow={true}
+                                  interval={60000}
+                                  local={false}
+                                  onChange={[Function]}
+                                  titleFormat=""
+                                  toNow={false}
+                                  unit={null}
+                                  unix={false}
+                                  utc={false}
+                                  withTitle={false}
+                                >
+                                  Tue, 12 May 2020 12:33:58 GMT
+                                </t>
+                              </React.Fragment>,
+                            },
+                            Object {
+                              "title": <React.Fragment>
+                                <Link
+                                  to={
+                                    Object {
+                                      "pathname": "/Process/Hello World",
+                                      "state": Object {
+                                        "parameters": Array [],
+                                        "selected": Array [],
+                                      },
+                                    }
+                                  }
+                                >
+                                  <strong>
+                                    <ProcessDescriptor
+                                      processInstanceData={
+                                        Object {
+                                          "businessKey": "Hello World",
+                                          "id": "Hello World",
+                                          "processName": "Hello World",
+                                        }
+                                      }
+                                    />
+                                  </strong>
+                                </Link>
+                              </React.Fragment>,
+                            },
+                            Object {
+                              "title": <t
+                                ago={false}
+                                calendar={false}
+                                decimal={false}
+                                element={null}
+                                filter={[Function]}
+                                fromNow={true}
+                                interval={60000}
+                                local={false}
+                                onChange={[Function]}
+                                titleFormat=""
+                                toNow={false}
+                                unit={null}
+                                unix={false}
+                                utc={false}
+                                withTitle={false}
+                              >
+                                Tue, 12 May 2020 12:33:58 GMT
+                              </t>,
+                            },
+                            Object {
+                              "title": <React.Fragment>
+                                <BanIcon
+                                  className="pf-u-mr-sm"
+                                  color="currentColor"
+                                  noVerticalAlign={false}
+                                  size="sm"
+                                  title={null}
+                                />
+                                Aborted
+                              </React.Fragment>,
+                            },
+                          ],
+                          "rowKey": "0.7218415351930461",
+                        },
+                      ]
+                    }
+                    variant="compact"
+                  >
+                    <TableHeader />
+                    <TableBody />
+                  </Unknown>,
+                },
+              ],
+              "parent": 0,
+              "rowKey": "0.7218415351930461",
+            },
+            Object {
+              "cells": Array [
+                null,
+                "Hello World",
+                "Hello World",
+                "Hello World",
+                "Hello World",
+              ],
+              "isOpen": false,
+              "rowKey": "0.7218415351930461",
+            },
+            Object {
+              "cells": Array [
+                Object {
+                  "title": <Unknown
+                    aria-label="Process Instances"
+                    cells={
+                      Array [
+                        "Process name",
+                        "State",
+                        "Start",
+                        "Last update",
+                      ]
+                    }
+                    className="kogito-management-console__embedded-table"
+                    rows={
+                      Array [
+                        Object {
+                          "cells": Array [
+                            Object {
+                              "title": <React.Fragment>
+                                <HistoryIcon
+                                  className="pf-u-mr-sm"
+                                  color="currentColor"
+                                  noVerticalAlign={false}
+                                  size="sm"
+                                  title={null}
+                                />
+                                 Updated
+                                 
+                                <t
+                                  ago={false}
+                                  calendar={false}
+                                  decimal={false}
+                                  element={null}
+                                  filter={[Function]}
+                                  fromNow={true}
+                                  interval={60000}
+                                  local={false}
+                                  onChange={[Function]}
+                                  titleFormat=""
+                                  toNow={false}
+                                  unit={null}
+                                  unix={false}
+                                  utc={false}
+                                  withTitle={false}
+                                >
+                                  Tue, 12 May 2020 12:33:58 GMT
+                                </t>
+                              </React.Fragment>,
+                            },
+                            Object {
+                              "title": <React.Fragment>
+                                <Link
+                                  to={
+                                    Object {
+                                      "pathname": "/Process/Hello World",
+                                      "state": Object {
+                                        "parameters": Array [],
+                                        "selected": Array [],
+                                      },
+                                    }
+                                  }
+                                >
+                                  <strong>
+                                    <ProcessDescriptor
+                                      processInstanceData={
+                                        Object {
+                                          "businessKey": null,
+                                          "id": "Hello World",
+                                          "processName": "Hello World",
+                                        }
+                                      }
+                                    />
+                                  </strong>
+                                </Link>
+                              </React.Fragment>,
+                            },
+                            Object {
+                              "title": <t
+                                ago={false}
+                                calendar={false}
+                                decimal={false}
+                                element={null}
+                                filter={[Function]}
+                                fromNow={true}
+                                interval={60000}
+                                local={false}
+                                onChange={[Function]}
+                                titleFormat=""
+                                toNow={false}
+                                unit={null}
+                                unix={false}
+                                utc={false}
+                                withTitle={false}
+                              >
+                                Tue, 12 May 2020 12:33:58 GMT
+                              </t>,
+                            },
+                            Object {
+                              "title": <React.Fragment>
+                                <ErrorCircleOIcon
+                                  className="pf-u-mr-sm"
+                                  color="var(--pf-global--danger-color--100)"
+                                  noVerticalAlign={false}
+                                  size="sm"
+                                  title={null}
+                                />
+                                Error
+                              </React.Fragment>,
+                            },
+                          ],
+                          "rowKey": "0.7218415351930461",
+                        },
+                        Object {
+                          "cells": Array [
+                            Object {
+                              "title": <React.Fragment>
+                                <HistoryIcon
+                                  className="pf-u-mr-sm"
+                                  color="currentColor"
+                                  noVerticalAlign={false}
+                                  size="sm"
+                                  title={null}
+                                />
+                                 Updated
+                                 
+                                <t
+                                  ago={false}
+                                  calendar={false}
+                                  decimal={false}
+                                  element={null}
+                                  filter={[Function]}
+                                  fromNow={true}
+                                  interval={60000}
+                                  local={false}
+                                  onChange={[Function]}
+                                  titleFormat=""
+                                  toNow={false}
+                                  unit={null}
+                                  unix={false}
+                                  utc={false}
+                                  withTitle={false}
+                                >
+                                  Tue, 12 May 2020 12:33:58 GMT
+                                </t>
+                              </React.Fragment>,
+                            },
+                            Object {
+                              "title": <React.Fragment>
+                                <Link
+                                  to={
+                                    Object {
+                                      "pathname": "/Process/Hello World",
+                                      "state": Object {
+                                        "parameters": Array [],
+                                        "selected": Array [],
+                                      },
+                                    }
+                                  }
+                                >
+                                  <strong>
+                                    <ProcessDescriptor
+                                      processInstanceData={
+                                        Object {
+                                          "businessKey": "Hello World",
+                                          "id": "Hello World",
+                                          "processName": "Hello World",
+                                        }
+                                      }
+                                    />
+                                  </strong>
+                                </Link>
+                              </React.Fragment>,
+                            },
+                            Object {
+                              "title": <t
+                                ago={false}
+                                calendar={false}
+                                decimal={false}
+                                element={null}
+                                filter={[Function]}
+                                fromNow={true}
+                                interval={60000}
+                                local={false}
+                                onChange={[Function]}
+                                titleFormat=""
+                                toNow={false}
+                                unit={null}
+                                unix={false}
+                                utc={false}
+                                withTitle={false}
+                              >
+                                Tue, 12 May 2020 12:33:58 GMT
+                              </t>,
+                            },
+                            Object {
+                              "title": <React.Fragment>
+                                <ErrorCircleOIcon
+                                  className="pf-u-mr-sm"
+                                  color="var(--pf-global--danger-color--100)"
+                                  noVerticalAlign={false}
+                                  size="sm"
+                                  title={null}
+                                />
+                                Error
+                              </React.Fragment>,
+                            },
+                          ],
+                          "rowKey": "0.7218415351930461",
+                        },
+                      ]
+                    }
+                    variant="compact"
+                  >
+                    <TableHeader />
+                    <TableBody />
+                  </Unknown>,
+                },
+              ],
+              "parent": 2,
+              "rowKey": "0.7218415351930461",
+            },
+            Object {
+              "cells": Array [
+                Object {
+                  "props": Object {
+                    "colSpan": 8,
+                  },
+                  "title": <Bullseye>
+                    <EmptyStateSpinner
+                      spinnerText="Loading domain explorer"
+                    />
+                  </Bullseye>,
+                },
+              ],
+            },
+          ],
+        ],
+      ],
+      "results": Array [
+        Object {
+          "type": "return",
+          "value": undefined,
+        },
+      ],
+    }
+  }
+  tableLoading={true}
+>
+  <Card
+    component="div"
+  >
+    <div
+      className="pf-c-card"
+    >
+      <CardBody>
+        <div
+          className="pf-c-card__body"
+        >
+          <Bullseye>
+            <div
+              className="pf-l-bullseye"
+            >
+              <EmptyState>
+                <div
+                  className="pf-c-empty-state pf-m-lg"
+                >
+                  <EmptyStateIcon
+                    icon={[Function]}
+                  >
+                    <SearchIcon
+                      aria-hidden="true"
+                      className="pf-c-empty-state__icon"
+                      color="currentColor"
+                      noVerticalAlign={false}
+                      size="sm"
+                      title={null}
+                    >
+                      <svg
+                        aria-hidden="true"
+                        aria-labelledby={null}
+                        className="pf-c-empty-state__icon"
+                        fill="currentColor"
+                        height="1em"
+                        role="img"
+                        style={
+                          Object {
+                            "verticalAlign": "-0.125em",
+                          }
+                        }
+                        viewBox="0 0 512 512"
+                        width="1em"
+                      >
+                        <path
+                          d="M505 442.7L405.3 343c-4.5-4.5-10.6-7-17-7H372c27.6-35.3 44-79.7 44-128C416 93.1 322.9 0 208 0S0 93.1 0 208s93.1 208 208 208c48.3 0 92.7-16.4 128-44v16.3c0 6.4 2.5 12.5 7 17l99.7 99.7c9.4 9.4 24.6 9.4 33.9 0l28.3-28.3c9.4-9.4 9.4-24.6.1-34zM208 336c-70.7 0-128-57.2-128-128 0-70.7 57.2-128 128-128 70.7 0 128 57.2 128 128 0 70.7-57.2 128-128 128z"
+                          transform=""
+                        />
+                      </svg>
+                    </SearchIcon>
+                  </EmptyStateIcon>
+                  <Title
+                    headingLevel="h5"
+                    size="lg"
+                  >
+                    <h5
+                      className="pf-c-title pf-m-lg"
+                    >
+                      No data available
+                    </h5>
+                  </Title>
+                  <EmptyStateBody>
+                    <div
+                      className="pf-c-empty-state__body"
+                    >
+                      Selected domain has no data to display. Check other domains.
+                    </div>
+                  </EmptyStateBody>
+                </div>
+              </EmptyState>
+            </div>
+          </Bullseye>
+        </div>
+      </CardBody>
+    </div>
+  </Card>
+</DomainExplorerTable>
+`;
+
+exports[`Domain Explorer Table Component check zero offset 1`] = `
+<DomainExplorerTable
+  columnFilters={
+    Array [
+      Object {
+        "flight": Object {
+          "__typename": "Flight",
+          "arrival": "Hello World",
+          "departure": "Hello World",
+          "flightNumber": "Hello World",
+          "gate": "Hello World",
+          "seat": "Hello World",
+        },
+        "metadata": Object {
+          "processInstances": Array [
+            Object {
+              "businessKey": "Hello World",
+              "id": "Hello World",
+              "lastUpdate": "Tue, 12 May 2020 12:33:58 GMT",
+              "processName": "Hello World",
+              "start": "Tue, 12 May 2020 12:33:58 GMT",
+              "state": "ACTIVE",
+            },
+            Object {
+              "businessKey": "Hello World",
+              "id": "Hello World",
+              "lastUpdate": "Tue, 12 May 2020 12:33:58 GMT",
+              "processName": "Hello World",
+              "start": "Tue, 12 May 2020 12:33:58 GMT",
+              "state": "COMPLETED",
+            },
+          ],
+        },
+      },
+      Object {
+        "flight": Object {
+          "__typename": "Flight",
+          "arrival": "Hello World",
+          "departure": "Hello World",
+          "flightNumber": "Hello World",
+          "gate": "Hello World",
+          "seat": "Hello World",
+        },
+        "metadata": Object {
+          "processInstances": Array [
+            Object {
+              "businessKey": "Hello World",
+              "id": "Hello World",
+              "lastUpdate": "Tue, 12 May 2020 12:33:58 GMT",
+              "processName": "Hello World",
+              "start": "Tue, 12 May 2020 12:33:58 GMT",
+              "state": "PENDING",
+            },
+            Object {
+              "businessKey": "Hello World",
+              "id": "Hello World",
+              "lastUpdate": "Tue, 12 May 2020 12:33:58 GMT",
+              "processName": "Hello World",
+              "start": "Tue, 12 May 2020 12:33:58 GMT",
+              "state": "SUSPENDED",
+            },
+          ],
+        },
+      },
+    ]
+  }
+  displayEmptyState={true}
+  displayTable={true}
+  isLoadingMore={true}
+  offset={0}
+  parameters={Array []}
+  rows={
+    Array [
+      Object {
+        "cells": Array [
+          "Hello World",
+          "Hello World",
+          "Hello World",
+          "Hello World",
+          "Hello World",
+        ],
+        "isOpen": false,
+        "rowKey": "0.008857835601127073",
+      },
+      Object {
+        "cells": Array [
+          Object {
+            "title": Object {},
+          },
+        ],
+        "parent": 0,
+        "rowKey": "0.6632979792309541",
+      },
+    ]
+  }
+  selected={Array []}
+  setRows={
+    [MockFunction] {
+      "calls": Array [
+        Array [
+          Array [
+            Object {
+              "cells": Array [
+                "Hello World",
+                "Hello World",
+                "Hello World",
+                "Hello World",
+                "Hello World",
+              ],
+              "isOpen": false,
+              "rowKey": "0.7218415351930461",
+            },
+            Object {
+              "cells": Array [
+                Object {
+                  "title": <Unknown
+                    aria-label="Process Instances"
+                    cells={
+                      Array [
+                        "Process name",
+                        "State",
+                        "Start",
+                        "Last update",
+                      ]
+                    }
+                    className="kogito-management-console__embedded-table"
+                    rows={
+                      Array [
+                        Object {
+                          "cells": Array [
+                            Object {
+                              "title": <React.Fragment>
+                                <HistoryIcon
+                                  className="pf-u-mr-sm"
+                                  color="currentColor"
+                                  noVerticalAlign={false}
+                                  size="sm"
+                                  title={null}
+                                />
+                                 Updated
+                                 
+                                <t
+                                  ago={false}
+                                  calendar={false}
+                                  decimal={false}
+                                  element={null}
+                                  filter={[Function]}
+                                  fromNow={true}
+                                  interval={60000}
+                                  local={false}
+                                  onChange={[Function]}
+                                  titleFormat=""
+                                  toNow={false}
+                                  unit={null}
+                                  unix={false}
+                                  utc={false}
+                                  withTitle={false}
+                                >
+                                  Tue, 12 May 2020 12:33:58 GMT
+                                </t>
+                              </React.Fragment>,
+                            },
+                            Object {
+                              "title": <React.Fragment>
+                                <Link
+                                  to={
+                                    Object {
+                                      "pathname": "/Process/Hello World",
+                                      "state": Object {
+                                        "parameters": Array [],
+                                        "selected": Array [],
+                                      },
+                                    }
+                                  }
+                                >
+                                  <strong>
+                                    <ProcessDescriptor
+                                      processInstanceData={
+                                        Object {
+                                          "businessKey": "Hello World",
+                                          "id": "Hello World",
+                                          "processName": "Hello World",
+                                        }
+                                      }
+                                    />
+                                  </strong>
+                                </Link>
+                              </React.Fragment>,
+                            },
+                            Object {
+                              "title": <t
+                                ago={false}
+                                calendar={false}
+                                decimal={false}
+                                element={null}
+                                filter={[Function]}
+                                fromNow={true}
+                                interval={60000}
+                                local={false}
+                                onChange={[Function]}
+                                titleFormat=""
+                                toNow={false}
+                                unit={null}
+                                unix={false}
+                                utc={false}
+                                withTitle={false}
+                              >
+                                Tue, 12 May 2020 12:33:58 GMT
+                              </t>,
+                            },
+                            Object {
+                              "title": <React.Fragment>
+                                <OnRunningIcon
+                                  className="pf-u-mr-sm"
+                                  color="currentColor"
+                                  noVerticalAlign={false}
+                                  size="sm"
+                                  title={null}
+                                />
+                                Active
+                              </React.Fragment>,
+                            },
+                          ],
+                          "rowKey": "0.7218415351930461",
+                        },
+                        Object {
+                          "cells": Array [
+                            Object {
+                              "title": <React.Fragment>
+                                <HistoryIcon
+                                  className="pf-u-mr-sm"
+                                  color="currentColor"
+                                  noVerticalAlign={false}
+                                  size="sm"
+                                  title={null}
+                                />
+                                 Updated
+                                 
+                                <t
+                                  ago={false}
+                                  calendar={false}
+                                  decimal={false}
+                                  element={null}
+                                  filter={[Function]}
+                                  fromNow={true}
+                                  interval={60000}
+                                  local={false}
+                                  onChange={[Function]}
+                                  titleFormat=""
+                                  toNow={false}
+                                  unit={null}
+                                  unix={false}
+                                  utc={false}
+                                  withTitle={false}
+                                >
+                                  Tue, 12 May 2020 12:33:58 GMT
+                                </t>
+                              </React.Fragment>,
+                            },
+                            Object {
+                              "title": <React.Fragment>
+                                <Link
+                                  to={
+                                    Object {
+                                      "pathname": "/Process/Hello World",
+                                      "state": Object {
+                                        "parameters": Array [],
+                                        "selected": Array [],
+                                      },
+                                    }
+                                  }
+                                >
+                                  <strong>
+                                    <ProcessDescriptor
+                                      processInstanceData={
+                                        Object {
+                                          "businessKey": "Hello World",
+                                          "id": "Hello World",
+                                          "processName": "Hello World",
+                                        }
+                                      }
+                                    />
+                                  </strong>
+                                </Link>
+                              </React.Fragment>,
+                            },
+                            Object {
+                              "title": <t
+                                ago={false}
+                                calendar={false}
+                                decimal={false}
+                                element={null}
+                                filter={[Function]}
+                                fromNow={true}
+                                interval={60000}
+                                local={false}
+                                onChange={[Function]}
+                                titleFormat=""
+                                toNow={false}
+                                unit={null}
+                                unix={false}
+                                utc={false}
+                                withTitle={false}
+                              >
+                                Tue, 12 May 2020 12:33:58 GMT
+                              </t>,
+                            },
+                            Object {
+                              "title": <React.Fragment>
+                                <CheckCircleIcon
+                                  className="pf-u-mr-sm"
+                                  color="var(--pf-global--success-color--100)"
+                                  noVerticalAlign={false}
+                                  size="sm"
+                                  title={null}
+                                />
+                                Completed
+                              </React.Fragment>,
+                            },
+                          ],
+                          "rowKey": "0.7218415351930461",
+                        },
+                      ]
+                    }
+                    variant="compact"
+                  >
+                    <TableHeader />
+                    <TableBody />
+                  </Unknown>,
+                },
+              ],
+              "parent": 0,
+              "rowKey": "0.7218415351930461",
+            },
+            Object {
+              "cells": Array [
+                "Hello World",
+                "Hello World",
+                "Hello World",
+                "Hello World",
+                "Hello World",
+              ],
+              "isOpen": false,
+              "rowKey": "0.7218415351930461",
+            },
+            Object {
+              "cells": Array [
+                Object {
+                  "title": <Unknown
+                    aria-label="Process Instances"
+                    cells={
+                      Array [
+                        "Process name",
+                        "State",
+                        "Start",
+                        "Last update",
+                      ]
+                    }
+                    className="kogito-management-console__embedded-table"
+                    rows={
+                      Array [
+                        Object {
+                          "cells": Array [
+                            Object {
+                              "title": <React.Fragment>
+                                <HistoryIcon
+                                  className="pf-u-mr-sm"
+                                  color="currentColor"
+                                  noVerticalAlign={false}
+                                  size="sm"
+                                  title={null}
+                                />
+                                 Updated
+                                 
+                                <t
+                                  ago={false}
+                                  calendar={false}
+                                  decimal={false}
+                                  element={null}
+                                  filter={[Function]}
+                                  fromNow={true}
+                                  interval={60000}
+                                  local={false}
+                                  onChange={[Function]}
+                                  titleFormat=""
+                                  toNow={false}
+                                  unit={null}
+                                  unix={false}
+                                  utc={false}
+                                  withTitle={false}
+                                >
+                                  Tue, 12 May 2020 12:33:58 GMT
+                                </t>
+                              </React.Fragment>,
+                            },
+                            Object {
+                              "title": <React.Fragment>
+                                <Link
+                                  to={
+                                    Object {
+                                      "pathname": "/Process/Hello World",
+                                      "state": Object {
+                                        "parameters": Array [],
+                                        "selected": Array [],
+                                      },
+                                    }
+                                  }
+                                >
+                                  <strong>
+                                    <ProcessDescriptor
+                                      processInstanceData={
+                                        Object {
+                                          "businessKey": "Hello World",
+                                          "id": "Hello World",
+                                          "processName": "Hello World",
+                                        }
+                                      }
+                                    />
+                                  </strong>
+                                </Link>
+                              </React.Fragment>,
+                            },
+                            Object {
+                              "title": <t
+                                ago={false}
+                                calendar={false}
+                                decimal={false}
+                                element={null}
+                                filter={[Function]}
+                                fromNow={true}
+                                interval={60000}
+                                local={false}
+                                onChange={[Function]}
+                                titleFormat=""
+                                toNow={false}
+                                unit={null}
+                                unix={false}
+                                utc={false}
+                                withTitle={false}
+                              >
+                                Tue, 12 May 2020 12:33:58 GMT
+                              </t>,
+                            },
+                            Object {
+                              "title": <React.Fragment>
+                                <PausedIcon
+                                  className="pf-u-mr-sm"
+                                  color="currentColor"
+                                  noVerticalAlign={false}
+                                  size="sm"
+                                  title={null}
+                                />
+                                Pending
+                              </React.Fragment>,
+                            },
+                          ],
+                          "rowKey": "0.7218415351930461",
+                        },
+                        Object {
+                          "cells": Array [
+                            Object {
+                              "title": <React.Fragment>
+                                <HistoryIcon
+                                  className="pf-u-mr-sm"
+                                  color="currentColor"
+                                  noVerticalAlign={false}
+                                  size="sm"
+                                  title={null}
+                                />
+                                 Updated
+                                 
+                                <t
+                                  ago={false}
+                                  calendar={false}
+                                  decimal={false}
+                                  element={null}
+                                  filter={[Function]}
+                                  fromNow={true}
+                                  interval={60000}
+                                  local={false}
+                                  onChange={[Function]}
+                                  titleFormat=""
+                                  toNow={false}
+                                  unit={null}
+                                  unix={false}
+                                  utc={false}
+                                  withTitle={false}
+                                >
+                                  Tue, 12 May 2020 12:33:58 GMT
+                                </t>
+                              </React.Fragment>,
+                            },
+                            Object {
+                              "title": <React.Fragment>
+                                <Link
+                                  to={
+                                    Object {
+                                      "pathname": "/Process/Hello World",
+                                      "state": Object {
+                                        "parameters": Array [],
+                                        "selected": Array [],
+                                      },
+                                    }
+                                  }
+                                >
+                                  <strong>
+                                    <ProcessDescriptor
+                                      processInstanceData={
+                                        Object {
+                                          "businessKey": "Hello World",
+                                          "id": "Hello World",
+                                          "processName": "Hello World",
+                                        }
+                                      }
+                                    />
+                                  </strong>
+                                </Link>
+                              </React.Fragment>,
+                            },
+                            Object {
+                              "title": <t
+                                ago={false}
+                                calendar={false}
+                                decimal={false}
+                                element={null}
+                                filter={[Function]}
+                                fromNow={true}
+                                interval={60000}
+                                local={false}
+                                onChange={[Function]}
+                                titleFormat=""
+                                toNow={false}
+                                unit={null}
+                                unix={false}
+                                utc={false}
+                                withTitle={false}
+                              >
+                                Tue, 12 May 2020 12:33:58 GMT
+                              </t>,
+                            },
+                            Object {
+                              "title": <React.Fragment>
+                                <PausedIcon
+                                  className="pf-u-mr-sm"
+                                  color="currentColor"
+                                  noVerticalAlign={false}
+                                  size="sm"
+                                  title={null}
+                                />
+                                Suspended
+                              </React.Fragment>,
+                            },
+                          ],
+                          "rowKey": "0.7218415351930461",
+                        },
+                      ]
+                    }
+                    variant="compact"
+                  >
+                    <TableHeader />
+                    <TableBody />
+                  </Unknown>,
+                },
+              ],
+              "parent": 2,
+              "rowKey": "0.7218415351930461",
+            },
+          ],
+        ],
+      ],
+      "results": Array [
+        Object {
+          "type": "return",
+          "value": undefined,
+        },
+      ],
+    }
+  }
+  tableLoading={false}
+>
+  <Card
+    component="div"
+  >
+    <div
+      className="pf-c-card"
+    >
+      <CardBody>
+        <div
+          className="pf-c-card__body"
+        >
+          <Bullseye>
+            <div
+              className="pf-l-bullseye"
+            >
+              <EmptyState>
+                <div
+                  className="pf-c-empty-state pf-m-lg"
+                >
+                  <EmptyStateIcon
+                    icon={[Function]}
+                  >
+                    <SearchIcon
+                      aria-hidden="true"
+                      className="pf-c-empty-state__icon"
+                      color="currentColor"
+                      noVerticalAlign={false}
+                      size="sm"
+                      title={null}
+                    >
+                      <svg
+                        aria-hidden="true"
+                        aria-labelledby={null}
+                        className="pf-c-empty-state__icon"
+                        fill="currentColor"
+                        height="1em"
+                        role="img"
+                        style={
+                          Object {
+                            "verticalAlign": "-0.125em",
+                          }
+                        }
+                        viewBox="0 0 512 512"
+                        width="1em"
+                      >
+                        <path
+                          d="M505 442.7L405.3 343c-4.5-4.5-10.6-7-17-7H372c27.6-35.3 44-79.7 44-128C416 93.1 322.9 0 208 0S0 93.1 0 208s93.1 208 208 208c48.3 0 92.7-16.4 128-44v16.3c0 6.4 2.5 12.5 7 17l99.7 99.7c9.4 9.4 24.6 9.4 33.9 0l28.3-28.3c9.4-9.4 9.4-24.6.1-34zM208 336c-70.7 0-128-57.2-128-128 0-70.7 57.2-128 128-128 70.7 0 128 57.2 128 128 0 70.7-57.2 128-128 128z"
+                          transform=""
+                        />
+                      </svg>
+                    </SearchIcon>
+                  </EmptyStateIcon>
+                  <Title
+                    headingLevel="h5"
+                    size="lg"
+                  >
+                    <h5
+                      className="pf-c-title pf-m-lg"
+                    >
+                      No data available
+                    </h5>
+                  </Title>
+                  <EmptyStateBody>
+                    <div
+                      className="pf-c-empty-state__body"
+                    >
+                      Selected domain has no data to display. Check other domains.
+                    </div>
+                  </EmptyStateBody>
+                </div>
+              </EmptyState>
+            </div>
+          </Bullseye>
+        </div>
+      </CardBody>
+    </div>
+  </Card>
+</DomainExplorerTable>
+`;

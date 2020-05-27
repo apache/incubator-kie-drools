@@ -116,6 +116,7 @@ const DomainExplorerDashboard: React.FC<IOwnProps & RouteComponentProps<MatchPro
   let selections = [];
   let defaultParams = [];
   !getPicker.loading &&
+    getPicker.data &&
     getPicker.data.__type &&
     getPicker.data.__type.fields.filter(i => {
       if (i.type.kind === 'SCALAR') {
@@ -133,7 +134,6 @@ const DomainExplorerDashboard: React.FC<IOwnProps & RouteComponentProps<MatchPro
       fields.push(obj);
     }
   });
-
   fields.map(obj => {
     let value: any = Object.values(obj);
     const key = Object.keys(obj);

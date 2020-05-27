@@ -29,13 +29,13 @@ const DomainExplorerLandingPage: React.FC<InjectedOuiaProps> = ({
   ouiaContext
 }) => {
   const getQuery = useGetQueryFieldsQuery();
-
   let availableDomains =
     !getQuery.loading && getQuery.data.__type.fields.slice(2);
 
   availableDomains =
     availableDomains &&
     availableDomains.filter(item => {
+      /* istanbul ignore else */
       if (item.name !== 'Jobs') {
         return item;
       }

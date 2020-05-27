@@ -69,7 +69,8 @@ const DomainExplorerColumnPicker: React.FC<IOwnProps> = ({
   const nullTypes = [null, 'String', 'Boolean', 'Int', 'DateTime'];
   const client = useApolloClient();
 
-  const onSelect = (event, selection) => {
+  const onSelect = (event) => {
+    const selection = event.target.id;
     setEnableRefresh(false);
     if (selected.includes(selection)) {
       setSelected(prevState => prevState.filter(item => item !== selection));
@@ -91,12 +92,12 @@ const DomainExplorerColumnPicker: React.FC<IOwnProps> = ({
   };
 
   const filterColumnSelection = (event, selection) => {
+    
     const parent = event.nativeEvent.target.parentElement.parentElement.getAttribute(
       'aria-labelledby'
     );
     let res = {};
     const tempParents = parent.split('---');
-
     for (let i = tempParents.length - 1; i >= 0; i--) {
       if (i === tempParents.length - 1) {
         if (tempParents[i] === '-') {
@@ -121,6 +122,7 @@ const DomainExplorerColumnPicker: React.FC<IOwnProps> = ({
   }, [isLoadingMore]);
 
   useEffect(() => {
+    /* istanbul ignore else */
     if (
       (rememberedParams.length === 0 && parameters.length !== 1) ||
       rememberedParams.length > 0
@@ -221,9 +223,8 @@ const DomainExplorerColumnPicker: React.FC<IOwnProps> = ({
           }
         }
       });
-
       try {
-        await client
+        const response = await client
           .query({
             query: gql`
               ${Query.query}
@@ -231,7 +232,6 @@ const DomainExplorerColumnPicker: React.FC<IOwnProps> = ({
             variables: Query.variables,
             fetchPolicy: enableCache ? 'cache-first' : 'network-only'
           })
-          .then(response => {
             const firstKey = Object.keys(response.data)[0];
             if (response.data[firstKey].length > 0) {
               const resp = response.data;
@@ -252,7 +252,6 @@ const DomainExplorerColumnPicker: React.FC<IOwnProps> = ({
               setDisplayEmptyState(true);
               setEnableCache(false);
             }
-          });
       } catch (error) {
         setError(error);
       }
@@ -410,6 +409,7 @@ const DomainExplorerColumnPicker: React.FC<IOwnProps> = ({
             isExpanded={isExpanded}
             placeholderText="Select Columns"
             ariaLabelledBy="Column Picker dropdown"
+            id="columnPicker-dropdown"
             isGrouped
             maxHeight="60vh"
           >
@@ -420,15 +420,15 @@ const DomainExplorerColumnPicker: React.FC<IOwnProps> = ({
             onClick={() => {
               onResetQuery(parameters);
             }}
+            id="apply-columns"
           >
             Apply columns
           </Button>
           <Button
             variant="plain"
-            onClick={() => {
-              onRefresh();
-            }}
+            onClick={onRefresh}
             className="pf-u-m-md"
+            id="refresh-button"
             aria-label={'Refresh list'}
           >
             <SyncIcon />
