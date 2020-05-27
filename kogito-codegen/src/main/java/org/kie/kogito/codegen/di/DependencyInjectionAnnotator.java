@@ -227,5 +227,6 @@ public interface DependencyInjectionAnnotator {
      * @return fully qualified class name 
      */
     String emitterType(String dataType);
-        
+
+    String objectMapperInjectorSource(String packageName);
 }

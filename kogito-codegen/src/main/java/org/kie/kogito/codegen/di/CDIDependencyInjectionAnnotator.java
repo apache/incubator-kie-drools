@@ -16,6 +16,7 @@
 
 package org.kie.kogito.codegen.di;
 
+import com.github.javaparser.ast.CompilationUnit;
 import com.github.javaparser.ast.Modifier.Keyword;
 import com.github.javaparser.ast.NodeList;
 import com.github.javaparser.ast.body.MethodDeclaration;
@@ -31,6 +32,8 @@ import com.github.javaparser.ast.expr.SingleMemberAnnotationExpr;
 import com.github.javaparser.ast.expr.StringLiteralExpr;
 import com.github.javaparser.ast.nodeTypes.NodeWithAnnotations;
 import com.github.javaparser.ast.stmt.BlockStmt;
+
+import static com.github.javaparser.StaticJavaParser.parse;
 
 
 public class CDIDependencyInjectionAnnotator implements DependencyInjectionAnnotator {
@@ -177,4 +180,11 @@ public class CDIDependencyInjectionAnnotator implements DependencyInjectionAnnot
         return node;
     }
 
+    @Override
+    public String objectMapperInjectorSource(String packageName) {
+        CompilationUnit clazz = parse(
+                this.getClass().getResourceAsStream("/class-templates/rules/KogitoQuarkusObjectMapper.java"));
+        clazz.setPackageDeclaration( packageName );
+        return clazz.toString();
+    }
 }

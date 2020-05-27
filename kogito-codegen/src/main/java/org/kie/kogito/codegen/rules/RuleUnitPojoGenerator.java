@@ -34,9 +34,11 @@ import org.kie.kogito.rules.units.GeneratedRuleUnitDescription;
 public class RuleUnitPojoGenerator implements FileGenerator {
 
     private final GeneratedRuleUnitDescription ruleUnitDescription;
+    private final RuleUnitHelper ruleUnitHelper;
 
-    public RuleUnitPojoGenerator(GeneratedRuleUnitDescription ruleUnitDescription) {
+    public RuleUnitPojoGenerator(GeneratedRuleUnitDescription ruleUnitDescription, RuleUnitHelper ruleUnitHelper) {
         this.ruleUnitDescription = ruleUnitDescription;
+        this.ruleUnitHelper = ruleUnitHelper;
     }
 
     public String generate() {
@@ -61,10 +63,8 @@ public class RuleUnitPojoGenerator implements FileGenerator {
             VariableDeclarator vd = new VariableDeclarator(t, v.getName());
             f.getVariables().add(vd);
             if (v.isDataSource()) {
-                t.setTypeArguments(
-                        StaticJavaParser.parseType(
-                                v.getDataSourceParameterType().getCanonicalName()));
-                if (DataStore.class.isAssignableFrom(v.getType())) {
+                t.setTypeArguments( StaticJavaParser.parseType( v.getDataSourceParameterType().getCanonicalName() ) );
+                if (ruleUnitHelper.isAssignableFrom(DataStore.class, v.getType())) {
                     vd.setInitializer("org.kie.kogito.rules.DataSource.createStore()");
                 } else {
                     vd.setInitializer("org.kie.kogito.rules.DataSource.createSingleton()");
@@ -72,6 +72,9 @@ public class RuleUnitPojoGenerator implements FileGenerator {
             }
             c.addMember(f);
             f.createGetter();
+            if (v.setter() != null) {
+                f.createSetter();
+            }
         }
 
         return c;

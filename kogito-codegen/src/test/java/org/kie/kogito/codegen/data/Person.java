@@ -31,6 +31,8 @@ public class Person {
 
     private transient List<Address> addresses = new ArrayList<>();
 
+    public Person() { }
+
     public Person(String name, int age) {
         this.name = name;
         this.age = age;

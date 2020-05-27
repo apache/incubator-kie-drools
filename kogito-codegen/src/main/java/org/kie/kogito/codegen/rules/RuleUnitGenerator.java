@@ -69,8 +69,8 @@ public class RuleUnitGenerator implements FileGenerator {
         this.applicationPackageName = ApplicationGenerator.DEFAULT_PACKAGE_NAME;
     }
 
-    public RuleUnitInstanceGenerator instance() {
-        return new RuleUnitInstanceGenerator(ruleUnit);
+    public RuleUnitInstanceGenerator instance(RuleUnitHelper ruleUnitHelper) {
+        return new RuleUnitInstanceGenerator(ruleUnit, ruleUnitHelper);
     }
 
     public List<QueryEndpointGenerator> queries() {
@@ -106,9 +106,9 @@ public class RuleUnitGenerator implements FileGenerator {
         return compilationUnit().toString();
     }
 
-    public Optional<RuleUnitPojoGenerator> pojo() {
+    public Optional<RuleUnitPojoGenerator> pojo(RuleUnitHelper ruleUnitHelper) {
         if (ruleUnit instanceof GeneratedRuleUnitDescription) {
-            return Optional.of(new RuleUnitPojoGenerator((GeneratedRuleUnitDescription) ruleUnit));
+            return Optional.of(new RuleUnitPojoGenerator((GeneratedRuleUnitDescription) ruleUnit, ruleUnitHelper));
         } else {
             return Optional.empty();
         }

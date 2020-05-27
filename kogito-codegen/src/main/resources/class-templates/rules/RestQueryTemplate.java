@@ -29,7 +29,7 @@ public class $unit$Query$name$Endpoint {
     @Produces(MediaType.APPLICATION_JSON)
     @Consumes(MediaType.APPLICATION_JSON)
     public List<$ReturnType$> executeQuery($UnitTypeDTO$ unitDTO) {
-        RuleUnitInstance<$UnitType$> instance = ruleUnit.createInstance(unitDTO.get());
+        RuleUnitInstance<$UnitType$> instance = ruleUnit.createInstance();
         List<$ReturnType$> response = instance.executeQuery( "$queryName$" ).stream().map( this::toResult ).collect( toList() );
         return response;
     }

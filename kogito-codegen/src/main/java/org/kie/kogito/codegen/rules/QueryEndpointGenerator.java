@@ -163,8 +163,9 @@ public class QueryEndpointGenerator implements FileGenerator {
     }
 
     private void generateQueryMethods(CompilationUnit cu, ClassOrInterfaceDeclaration clazz, String returnType) {
+        boolean hasDI = annotator != null;
         MethodDeclaration queryMethod = clazz.getMethodsByName("executeQuery").get(0);
-        queryMethod.getParameter(0).setType(ruleUnit.getCanonicalName() + "DTO");
+        queryMethod.getParameter(0).setType(ruleUnit.getCanonicalName() + (hasDI ? "" : "DTO"));
         setGeneric(queryMethod.getType(), returnType);
 
         Statement statement = queryMethod
@@ -172,6 +173,7 @@ public class QueryEndpointGenerator implements FileGenerator {
                 .orElseThrow(() -> new NoSuchElementException("A method declaration doesn't contain a body!"))
                 .getStatement(0);
         statement.findAll(VariableDeclarator.class).forEach(decl -> setUnitGeneric(decl.getType()));
+        statement.findAll( MethodCallExpr.class ).forEach( m -> m.addArgument( hasDI ? "unitDTO" : "unitDTO.get()" ) );
 
         Statement returnStatement = queryMethod
                 .getBody()
@@ -180,7 +182,7 @@ public class QueryEndpointGenerator implements FileGenerator {
         returnStatement.findAll(VariableDeclarator.class).forEach(decl -> setGeneric(decl.getType(), returnType));
 
         MethodDeclaration queryMethodSingle = clazz.getMethodsByName("executeQueryFirst").get(0);
-        queryMethodSingle.getParameter(0).setType(ruleUnit.getCanonicalName() + "DTO");
+        queryMethodSingle.getParameter(0).setType(ruleUnit.getCanonicalName() + (hasDI ? "" : "DTO"));
         queryMethodSingle.setType(toNonPrimitiveType(returnType));
 
         Statement statementSingle = queryMethodSingle

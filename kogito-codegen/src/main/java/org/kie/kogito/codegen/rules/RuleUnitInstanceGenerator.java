@@ -23,12 +23,15 @@ import com.github.javaparser.ast.Modifier;
 import com.github.javaparser.ast.NodeList;
 import com.github.javaparser.ast.body.ClassOrInterfaceDeclaration;
 import com.github.javaparser.ast.body.MethodDeclaration;
+import com.github.javaparser.ast.expr.BinaryExpr;
 import com.github.javaparser.ast.expr.Expression;
 import com.github.javaparser.ast.expr.MethodCallExpr;
 import com.github.javaparser.ast.expr.NameExpr;
+import com.github.javaparser.ast.expr.NullLiteralExpr;
 import com.github.javaparser.ast.expr.ObjectCreationExpr;
 import com.github.javaparser.ast.expr.StringLiteralExpr;
 import com.github.javaparser.ast.stmt.BlockStmt;
+import com.github.javaparser.ast.stmt.IfStmt;
 import com.github.javaparser.ast.type.ClassOrInterfaceType;
 import org.kie.api.runtime.KieSession;
 import org.kie.internal.ruleunit.RuleUnitDescription;
@@ -37,6 +40,7 @@ import org.kie.kogito.codegen.BodyDeclarationComparator;
 import org.kie.kogito.codegen.FileGenerator;
 import org.kie.kogito.conf.DefaultEntryPoint;
 import org.kie.kogito.conf.EntryPoint;
+import org.kie.kogito.rules.DataSource;
 import org.kie.kogito.rules.units.AbstractRuleUnitInstance;
 import org.kie.kogito.rules.units.EntryPointDataProcessor;
 
@@ -46,16 +50,18 @@ public class RuleUnitInstanceGenerator implements FileGenerator {
     private final String targetCanonicalName;
     private final String generatedFilePath;
     private final RuleUnitDescription ruleUnitDescription;
+    private final RuleUnitHelper ruleUnitHelper;
 
     public static String qualifiedName(String packageName, String typeName) {
         return packageName + "." + typeName + "RuleUnitInstance";
     }
 
-    public RuleUnitInstanceGenerator(RuleUnitDescription ruleUnitDescription) {
+    public RuleUnitInstanceGenerator(RuleUnitDescription ruleUnitDescription, RuleUnitHelper ruleUnitHelper) {
         this.ruleUnitDescription = ruleUnitDescription;
         this.targetTypeName = ruleUnitDescription.getSimpleName() + "RuleUnitInstance";
         this.targetCanonicalName = ruleUnitDescription.getPackageName() + "." + targetTypeName;
         this.generatedFilePath = targetCanonicalName.replace('.', '/') + ".java";
+        this.ruleUnitHelper = ruleUnitHelper;
     }
 
     @Override
@@ -95,6 +101,13 @@ public class RuleUnitInstanceGenerator implements FileGenerator {
 
                 if ( m.isDataSource() ) {
 
+                    if (m.setter() != null) { // if writable and DataSource is null create and set a new one
+                        Expression nullCheck = new BinaryExpr(new MethodCallExpr(new NameExpr("value"), methodName), new NullLiteralExpr(), BinaryExpr.Operator.EQUALS);
+                        Expression createDataSourceExpr = new MethodCallExpr(new NameExpr(DataSource.class.getCanonicalName()), ruleUnitHelper.createDataSourceMethodName(m.getBoxedVarType()));
+                        Expression dataSourceSetter = new MethodCallExpr(new NameExpr("value"), m.setter(), new NodeList<>(createDataSourceExpr));
+                        methodBlock.addStatement( new IfStmt( nullCheck, new BlockStmt().addStatement( dataSourceSetter ), null ) );
+                    }
+
                     //  value.$method())
                     Expression fieldAccessor =
                             new MethodCallExpr(new NameExpr("value"), methodName);
@@ -107,7 +120,6 @@ public class RuleUnitInstanceGenerator implements FileGenerator {
                                     new MethodCallExpr(
                                             new NameExpr("runtime"), "getEntryPoint",
                                             NodeList.nodeList(new StringLiteralExpr( entryPointName ))))));
-//                            new MethodReferenceExpr().setScope(new NameExpr("runtime")).setIdentifier("insert"));
 
                     methodBlock.addStatement(drainInto);
                 }
