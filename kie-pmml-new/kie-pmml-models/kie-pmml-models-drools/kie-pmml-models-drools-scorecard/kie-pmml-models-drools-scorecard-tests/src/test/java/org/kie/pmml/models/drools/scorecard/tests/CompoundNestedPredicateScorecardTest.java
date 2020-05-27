@@ -27,20 +27,14 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.Parameterized;
 import org.kie.api.pmml.PMML4Result;
-import org.kie.api.pmml.PMMLRequestData;
-import org.kie.pmml.commons.model.KiePMMLModel;
-import org.kie.pmml.evaluator.core.PMMLContextImpl;
 
 @RunWith(Parameterized.class)
 public class CompoundNestedPredicateScorecardTest extends AbstractPMMLScorecardTest {
 
     private static final String MODEL_NAME = "CompoundNestedPredicateScorecard";
-    private static final String PMML_SOURCE = "CompoundNestedPredicateScorecard.pmml";
     private static final String TARGET_FIELD = "Score";
     private static final String REASON_CODE1_FIELD = "Reason Code 1";
     private static final String REASON_CODE2_FIELD = "Reason Code 2";
-
-    private static KiePMMLModel pmmlModel;
 
     private double input1;
     private String input2;
@@ -59,13 +53,13 @@ public class CompoundNestedPredicateScorecardTest extends AbstractPMMLScorecardT
 
     @BeforeClass
     public static void setupClass() {
-        pmmlModel = loadPMMLModel(PMML_SOURCE);
+        setPMMLRuntime(MODEL_NAME);
     }
 
     @Parameterized.Parameters
     public static Collection<Object[]> data() {
         return Arrays.asList(new Object[][]{
-                { -50, "classB", -8, "characteristic2ReasonCode", null },
+                {-50, "classB", -8, "characteristic2ReasonCode", null},
                 {-50, "classD", -8, "characteristic2ReasonCode", null},
                 {-9, "classB", 75, "characteristic1ReasonCode", null},
                 {25.4, "classB", 75, "characteristic1ReasonCode", null},
@@ -83,9 +77,7 @@ public class CompoundNestedPredicateScorecardTest extends AbstractPMMLScorecardT
         final Map<String, Object> inputData = new HashMap<>();
         inputData.put("input1", input1);
         inputData.put("input2", input2);
-
-        final PMMLRequestData pmmlRequestData = getPMMLRequestData(MODEL_NAME, inputData);
-        PMML4Result pmml4Result = EVALUATOR.evaluate(kieBase, pmmlModel, new PMMLContextImpl(pmmlRequestData));
+        PMML4Result pmml4Result = evaluate(inputData, MODEL_NAME);
 
         Assertions.assertThat(pmml4Result.getResultVariables().get(TARGET_FIELD)).isNotNull();
         Assertions.assertThat(pmml4Result.getResultVariables().get(TARGET_FIELD)).isEqualTo(score);

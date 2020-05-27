@@ -16,31 +16,25 @@
 
 package org.kie.pmml.models.drools.scorecard.tests;
 
+import java.util.Arrays;
+import java.util.Collection;
+import java.util.HashMap;
+import java.util.Map;
+
 import org.assertj.core.api.Assertions;
 import org.junit.BeforeClass;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.Parameterized;
 import org.kie.api.pmml.PMML4Result;
-import org.kie.api.pmml.PMMLRequestData;
-import org.kie.pmml.commons.model.KiePMMLModel;
-import org.kie.pmml.evaluator.core.PMMLContextImpl;
-
-import java.util.Arrays;
-import java.util.Collection;
-import java.util.HashMap;
-import java.util.Map;
 
 @RunWith(Parameterized.class)
 public class SimpleScorecardCategoricalTest extends AbstractPMMLScorecardTest {
 
     private static final String MODEL_NAME = "SimpleScorecardCategorical";
-    private static final String PMML_SOURCE = "SimpleScorecardCategorical.pmml";
     private static final String TARGET_FIELD = "Score";
     private static final String REASON_CODE1_FIELD = "Reason Code 1";
     private static final String REASON_CODE2_FIELD = "Reason Code 2";
-
-    private static KiePMMLModel pmmlModel;
 
     private String input1;
     private String input2;
@@ -58,16 +52,16 @@ public class SimpleScorecardCategoricalTest extends AbstractPMMLScorecardTest {
 
     @BeforeClass
     public static void setupClass() {
-        pmmlModel = loadPMMLModel(PMML_SOURCE);
+        setPMMLRuntime(MODEL_NAME);
     }
 
     @Parameterized.Parameters
     public static Collection<Object[]> data() {
         return Arrays.asList(new Object[][]{
-                { "classA", "classB", 25, "Input1ReasonCode", null },
-                { "classA", "classA", -15, "Input1ReasonCode", "Input2ReasonCode" },
-                { "classB", "classB", 87, null, null },
-                { "classB", "classA", 47, "Input2ReasonCode", null },
+                {"classA", "classB", 25, "Input1ReasonCode", null},
+                {"classA", "classA", -15, "Input1ReasonCode", "Input2ReasonCode"},
+                {"classB", "classB", 87, null, null},
+                {"classB", "classA", 47, "Input2ReasonCode", null},
         });
     }
 
@@ -76,9 +70,7 @@ public class SimpleScorecardCategoricalTest extends AbstractPMMLScorecardTest {
         final Map<String, Object> inputData = new HashMap<>();
         inputData.put("input1", input1);
         inputData.put("input2", input2);
-
-        final PMMLRequestData pmmlRequestData = getPMMLRequestData(MODEL_NAME, inputData);
-        PMML4Result pmml4Result = EVALUATOR.evaluate(kieBase, pmmlModel, new PMMLContextImpl(pmmlRequestData));
+        PMML4Result pmml4Result = evaluate(inputData, MODEL_NAME);
 
         Assertions.assertThat(pmml4Result.getResultVariables().get(TARGET_FIELD)).isNotNull();
         Assertions.assertThat(pmml4Result.getResultVariables().get(TARGET_FIELD)).isEqualTo(score);

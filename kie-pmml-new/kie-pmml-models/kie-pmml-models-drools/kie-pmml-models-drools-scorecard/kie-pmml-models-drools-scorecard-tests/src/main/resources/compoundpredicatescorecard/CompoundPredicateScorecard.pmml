@@ -7,7 +7,7 @@
     <DataField name="input4" optype="categorical" dataType="string"/>
     <DataField name="score" optype="continuous" dataType="double"/>
   </DataDictionary>
-  <Scorecard modelName="CompundPredicateScorecard" functionName="regression" useReasonCodes="true" reasonCodeAlgorithm="pointsAbove" initialScore="-15" baselineMethod="other">
+  <Scorecard modelName="CompoundPredicateScorecard" functionName="regression" useReasonCodes="true" reasonCodeAlgorithm="pointsAbove" initialScore="-15" baselineMethod="other">
     <MiningSchema>
       <MiningField name="input1" usageType="active" invalidValueTreatment="asMissing"/>
       <MiningField name="input2" usageType="active" invalidValueTreatment="asMissing"/>

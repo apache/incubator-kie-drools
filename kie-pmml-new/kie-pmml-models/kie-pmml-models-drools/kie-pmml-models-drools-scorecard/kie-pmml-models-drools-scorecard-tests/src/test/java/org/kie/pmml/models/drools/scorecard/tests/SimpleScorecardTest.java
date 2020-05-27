@@ -35,12 +35,10 @@ import java.util.Map;
 public class SimpleScorecardTest extends AbstractPMMLScorecardTest {
 
     private static final String MODEL_NAME = "SimpleScorecard";
-    private static final String PMML_SOURCE = "SimpleScorecard.pmml";
     private static final String TARGET_FIELD = "Score";
     private static final String REASON_CODE1_FIELD = "Reason Code 1";
     private static final String REASON_CODE2_FIELD = "Reason Code 2";
 
-    private static KiePMMLModel pmmlModel;
 
     private double input1;
     private double input2;
@@ -58,7 +56,7 @@ public class SimpleScorecardTest extends AbstractPMMLScorecardTest {
 
     @BeforeClass
     public static void setupClass() {
-        pmmlModel = loadPMMLModel(PMML_SOURCE);
+        setPMMLRuntime(MODEL_NAME);
     }
 
     @Parameterized.Parameters
@@ -77,9 +75,7 @@ public class SimpleScorecardTest extends AbstractPMMLScorecardTest {
         final Map<String, Object> inputData = new HashMap<>();
         inputData.put("input1", input1);
         inputData.put("input2", input2);
-
-        final PMMLRequestData pmmlRequestData = getPMMLRequestData(MODEL_NAME, inputData);
-        PMML4Result pmml4Result = EVALUATOR.evaluate(kieBase, pmmlModel, new PMMLContextImpl(pmmlRequestData));
+        PMML4Result pmml4Result = evaluate(inputData, MODEL_NAME);
 
         Assertions.assertThat(pmml4Result.getResultVariables().get(TARGET_FIELD)).isNotNull();
         Assertions.assertThat(pmml4Result.getResultVariables().get(TARGET_FIELD)).isEqualTo(score);
