@@ -775,9 +775,19 @@ public final class WrappedStatefulKnowledgeSessionForRHS
         return delegate.getSessionClock();
     }
 
-    @Override
-    public ProcessInstance startProcessFromNodeIds(String processId, Map<String, Object> params, String... nodeIds) {
-        return delegate.startProcessFromNodeIds(processId, params, nodeIds);
-    }
-
+//    public void switchToRuleUnit(RuleUnit ruleUnit, Activation activation) {
+//        delegate.getRuleUnitExecutor().switchToRuleUnit(ruleUnit, activation);
+//    }
+//
+//    public void switchToRuleUnit(Class<? extends RuleUnit> ruleUnitClass, Activation activation) {
+//        delegate.getRuleUnitExecutor().switchToRuleUnit(ruleUnitClass, activation);
+//    }
+//
+//    public void guardRuleUnit(RuleUnit ruleUnit, Activation activation) {
+//        delegate.getRuleUnitExecutor().guardRuleUnit(ruleUnit, activation);
+//    }
+//
+//    public void guardRuleUnit(Class<? extends RuleUnit> ruleUnitClass, Activation activation) {
+//        delegate.getRuleUnitExecutor().guardRuleUnit(ruleUnitClass, activation);
+//    }
 }

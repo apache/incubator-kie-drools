@@ -153,6 +153,7 @@ import org.kie.internal.process.CorrelationKey;
 import org.kie.internal.runtime.StatefulKnowledgeSession;
 
 import static java.util.stream.Collectors.toList;
+
 import static org.drools.core.base.ClassObjectType.InitialFact_ObjectType;
 import static org.drools.core.common.PhreakPropagationContextFactory.createPropagationContextForFact;
 import static org.drools.core.reteoo.PropertySpecificUtil.allSetButTraitBitMask;
@@ -2221,16 +2222,6 @@ public class StatefulKnowledgeSessionImpl extends AbstractRuntime
         public WorkItemManager getWorkItemManager() {
             throw new UnsupportedOperationException( );
         }
-
-        @Override
-        public ProcessInstance startProcessFromNodeIds(String processId, Map<String, Object> params, String... nodeInstancesIds) {
-            throw new UnsupportedOperationException();
-        }
-
-        @Override
-        public ProcessInstance startProcessFromNodeIds(String processId, CorrelationKey key, Map<String, Object> params, String... nodeIds) {
-            throw new UnsupportedOperationException();
-        }
     }
 
     ///////////////////////////////////////////////////////////////////////////
@@ -2309,16 +2300,6 @@ public class StatefulKnowledgeSessionImpl extends AbstractRuntime
             }
         }
         return result;
-    }
-
-    @Override
-    public ProcessInstance startProcessFromNodeIds(String processId, Map<String, Object> params, String... nodeInstancesIds) {
-        return getProcessRuntime().startProcessFromNodeIds(processId, params, nodeInstancesIds);
-    }
-
-    @Override
-    public ProcessInstance startProcessFromNodeIds(String processId, CorrelationKey key, Map<String, Object> params, String... nodeIds) {
-        return getProcessRuntime().startProcessFromNodeIds(processId, key, params, nodeIds);
     }
 
     ///////////////////////////////////////////////////////////////////////////
