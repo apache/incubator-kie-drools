@@ -55,11 +55,16 @@ public class MCDCAnalyser {
         calculateAllEnumValues();
 
         // Step2
+        int i = 1;
+        while (areInputsYetToBeVisited()) {
+            LOG.debug("=== Step23, iteration {}", i);
+            step23();
+            i++;
+        }
 
-        step23();
-        step23();
-        step23();
-        step23();
+        debugAllEnumValues();
+        step4();
+        step4();
 
         LOG.info("the final results are as follows.\nLeft Hand Side for Positive:");
         Set<Record> mcdcRecords = new LinkedHashSet<>();
@@ -69,7 +74,8 @@ public class MCDCAnalyser {
             if (add) {
                 LOG.info("+ {}", b.posRecord);
             } else {
-                throw new UnsupportedOperationException("A positive record was not added to the mcdc");
+                LOG.info("? {}", b.posRecord);
+                throw new IllegalStateException("A positive record was not added to the mcdc");
             }
         }
         // cycle negative side
@@ -85,6 +91,70 @@ public class MCDCAnalyser {
             }
             LOG.info("");
         }
+    }
+
+    private void step4() {
+        Set<List<Comparable<?>>> outYetToVisit = step4whichOutputYetToVisit();
+        List<Comparable<?>> pickOutToVisit = outYetToVisit.stream().findFirst().get();
+        List<Integer> rules = new ArrayList<>();
+        for (int ruleIdx = 0; ruleIdx < ddtaTable.getRule().size(); ruleIdx++) {
+            if (ddtaTable.getRule().get(ruleIdx).getOutputEntry().equals(pickOutToVisit)) {
+                rules.add(ruleIdx);
+            }
+        }
+        LOG.trace("rules {}", rules);
+        List<Entry<PosNegBlock, Integer>> blocks = new ArrayList<>();
+        for (int ruleIdx : rules) {
+            List<Object[]> valuesForRule = negBlockValuesForRule(ruleIdx);
+            if (valuesForRule.isEmpty()) {
+                LOG.debug("step4, while looking for candidate values for rule {} I could NOT re-use from a negative case, computing new set.", ruleIdx);
+                Object[] posCandidate = findValuesForRule(ruleIdx, Collections.unmodifiableList(allEnumValues));
+                if (Stream.of(posCandidate).anyMatch(x -> x == null)) {
+                    throw new IllegalStateException();
+                }
+                valuesForRule.add(posCandidate);
+            }
+            for (Object[] posCandidate : valuesForRule) {
+                LOG.trace("ruleIdx {} values {}", ruleIdx + 1, posCandidate);
+                Record posCandidateRecord = new Record(ruleIdx, posCandidate, ddtaTable.getRule().get(ruleIdx).getOutputEntry());
+                for (int chgInput = 0; chgInput < ddtaTable.getInputs().size(); chgInput++) {
+                    Optional<PosNegBlock> calculatePosNegBlock = calculatePosNegBlock(chgInput, posCandidate[chgInput], posCandidateRecord, Collections.unmodifiableList(allEnumValues));
+                    if (calculatePosNegBlock.isPresent()) {
+                        PosNegBlock posNegBlock = calculatePosNegBlock.get();
+                        int w = computeAdditionalWeightIntroBlock(posNegBlock);
+                        LOG.trace("{} weight: {}", posNegBlock, w);
+                        blocks.add(new SimpleEntry<>(posNegBlock, w));
+                    }
+                }
+            }
+        }
+        PosNegBlock posNegBlock = blocks.stream().sorted(Comparator.comparing(Entry::getValue)).map(Entry::getKey).findFirst().get();
+        LOG.trace("step4 selecting block: \n{}", posNegBlock);
+        selectBlock(posNegBlock);
+    }
+
+    private Set<List<Comparable<?>>> step4whichOutputYetToVisit() {
+        Set<List<Comparable<?>>> outYetToVisit = ddtaTable.getRule().stream().map(r -> r.getOutputEntry()).collect(Collectors.toSet());
+        outYetToVisit.removeAll(getVisitedPositiveOutput());
+        LOG.trace("outYetToVisit {}", outYetToVisit);
+        if (outYetToVisit.size() > 1 && elseRuleIdx.isPresent() && outYetToVisit.contains(ddtaTable.getRule().get(elseRuleIdx.get()).getOutputEntry())) {
+            LOG.trace("outYetToVisit will be filtered of the Else rule's output {}.", ddtaTable.getRule().get(elseRuleIdx.get()).getOutputEntry());
+            outYetToVisit.remove(ddtaTable.getRule().get(elseRuleIdx.get()).getOutputEntry());
+            LOG.trace("outYetToVisit {}", outYetToVisit);
+        }
+        return outYetToVisit;
+    }
+
+    private List<Object[]> negBlockValuesForRule(int ruleIdx) {
+        List<Object[]> result = new ArrayList<>();
+        for (PosNegBlock b : selectedBlocks) {
+            for (Record nr : b.negRecords) {
+                if (nr.ruleIdx == ruleIdx) {
+                    result.add(nr.enums);
+                }
+            }
+        }
+        return result;
     }
 
     private boolean areInputsYetToBeVisited() {
@@ -439,6 +509,26 @@ public class MCDCAnalyser {
                         }
                     }
                 }
+            }
+        }
+        return result;
+    }
+
+    private Object[] findValuesForRule(int ruleIdx, List<List<?>> allEnumValues) {
+        Object[] result = new Object[ddtaTable.getInputs().size()];
+        List<DDTAInputEntry> inputEntry = ddtaTable.getRule().get(ruleIdx).getInputEntry();
+        for (int i = 0; i < inputEntry.size(); i++) {
+            if (result[i] == null) {
+                DDTAInputEntry ddtaInputEntry = inputEntry.get(i);
+                List<?> enumValues = allEnumValues.get(i);
+
+                for (Object object : enumValues) {
+                    if (ddtaInputEntry.getIntervals().stream().anyMatch(interval -> interval.asRangeIncludes(object))) {
+                        result[i] = object;
+                        break;
+                    }
+                }
+
             }
         }
         return result;
