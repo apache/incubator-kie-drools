@@ -30,6 +30,7 @@ import org.drools.scenariosimulation.backend.model.Person;
 import org.drools.scenariosimulation.backend.model.SubPerson;
 import org.drools.scenariosimulation.backend.runner.RuleScenarioRunnerHelperTest;
 import org.drools.scenariosimulation.backend.runner.ScenarioException;
+import org.drools.scenariosimulation.backend.util.model.EnumTest;
 import org.junit.Test;
 
 import static java.util.Collections.emptyList;
@@ -169,7 +170,7 @@ public class ScenarioBeanUtilTest {
     }
 
     @Test
-    public void convertValueTest() {
+    public void convertValueTest() throws ClassNotFoundException {
         assertEquals("Test", convertValue(String.class.getCanonicalName(), "Test", classLoader));
         assertEquals(false, convertValue(boolean.class.getCanonicalName(), "false", classLoader));
         assertEquals(true, convertValue(Boolean.class.getCanonicalName(), "true", classLoader));
@@ -200,6 +201,7 @@ public class ScenarioBeanUtilTest {
         assertEquals("0".getBytes()[0], convertValue(byte.class.getCanonicalName(), Byte.toString("0".getBytes()[0]), classLoader));
         assertEquals("0".getBytes()[0], convertValue(Byte.class.getCanonicalName(), Byte.toString("0".getBytes()[0]), classLoader));
         assertEquals(LocalDate.of(2018, 5, 20), convertValue(LocalDate.class.getCanonicalName(), "2018-05-20", classLoader));
+        assertEquals(EnumTest.FIRST, convertValue(EnumTest.class.getCanonicalName(), "FIRST", classLoader));
         assertNull(convertValue(Float.class.getCanonicalName(), null, classLoader));
     }
 
@@ -220,6 +222,7 @@ public class ScenarioBeanUtilTest {
         assertEquals(String.valueOf("0".getBytes()[0]), revertValue("0".getBytes()[0]));
         assertEquals("null", revertValue(null));
         assertEquals("2018-10-20", revertValue(LocalDate.of(2018, 10, 20)));
+        assertEquals("FIRST", revertValue(EnumTest.FIRST));
     }
 
     @Test
@@ -260,6 +263,7 @@ public class ScenarioBeanUtilTest {
         assertEquals(Byte.toString("0".getBytes()[0]), revertValue(convertValue(byte.class.getCanonicalName(), Byte.toString("0".getBytes()[0]), classLoader)));
         assertEquals(Byte.toString("0".getBytes()[0]), revertValue(convertValue(Byte.class.getCanonicalName(), Byte.toString("0".getBytes()[0]), classLoader)));
         assertEquals("2018-05-20", revertValue(convertValue(LocalDate.class.getCanonicalName(), "2018-05-20", classLoader)));
+        assertEquals("FIRST", revertValue(convertValue(EnumTest.class.getCanonicalName(), "FIRST", classLoader)));
         assertEquals("null", revertValue(convertValue(Float.class.getCanonicalName(), null, classLoader)));
     }
 
@@ -295,6 +299,7 @@ public class ScenarioBeanUtilTest {
         assertEquals("0".getBytes()[0], convertValue(byte.class.getCanonicalName(), revertValue("0".getBytes()[0]), classLoader));
         assertEquals("0".getBytes()[0], convertValue(Byte.class.getCanonicalName(), revertValue("0".getBytes()[0]), classLoader));
         assertEquals(LocalDate.of(2018, 10, 20), convertValue(LocalDate.class.getCanonicalName(), revertValue(LocalDate.of(2018, 10, 20)), classLoader));
+        assertEquals(EnumTest.FIRST, convertValue(EnumTest.class.getCanonicalName(), revertValue(EnumTest.FIRST), classLoader));
         assertNull(convertValue(String.class.getCanonicalName(), revertValue(null), classLoader));
     }
 
@@ -335,9 +340,19 @@ public class ScenarioBeanUtilTest {
     }
 
     @Test
+    public void convertValueEnumWrongValue() {
+        String enumTestCanonicalName = EnumTest.class.getCanonicalName();
+        assertThatThrownBy(() -> convertValue(EnumTest.class.getCanonicalName(), "FIRS", classLoader))
+                .isInstanceOf(IllegalArgumentException.class)
+                .hasMessageStartingWith("Impossible to parse 'FIRS' as " + enumTestCanonicalName);
+    }
+
+    @Test
     public void loadClassTest() {
         assertEquals(String.class, loadClass(String.class.getCanonicalName(), classLoader));
         assertEquals(int.class, loadClass(int.class.getCanonicalName(), classLoader));
+        assertEquals(RuleScenarioRunnerHelperTest.class, loadClass(RuleScenarioRunnerHelperTest.class.getCanonicalName(), classLoader));
+        assertEquals(EnumTest.class, loadClass(EnumTest.class.getCanonicalName(), classLoader));
 
         assertThatThrownBy(() -> loadClass(null, classLoader))
                 .isInstanceOf(ScenarioException.class)
