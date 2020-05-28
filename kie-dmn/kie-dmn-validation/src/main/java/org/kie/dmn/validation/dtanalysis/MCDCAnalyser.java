@@ -62,9 +62,9 @@ public class MCDCAnalyser {
             i++;
         }
 
-        debugAllEnumValues();
-        step4();
-        step4();
+        while (!step4whichOutputYetToVisit().isEmpty()) {
+            step4();
+        }
 
         LOG.info("the final results are as follows.\nLeft Hand Side for Positive:");
         Set<Record> mcdcRecords = new LinkedHashSet<>();
