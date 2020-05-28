@@ -220,7 +220,7 @@ public class ScenarioBeanUtil {
         } else if (clazz.isAssignableFrom(LocalDate.class)) {
             LocalDate localDate = (LocalDate) cleanValue;
             return String.format("%04d-%02d-%02d", localDate.getYear(), localDate.getMonthValue(), localDate.getDayOfMonth());
-        } else if (clazz.isAssignableFrom(Enum.class)) {
+        } else if (Enum.class.isAssignableFrom(clazz)) {
             return String.valueOf(cleanValue);
         } else {
             return String.valueOf(cleanValue);
