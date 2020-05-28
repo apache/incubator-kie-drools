@@ -170,7 +170,7 @@ public class ScenarioBeanUtilTest {
     }
 
     @Test
-    public void convertValueTest() throws ClassNotFoundException {
+    public void convertValueTest() {
         assertEquals("Test", convertValue(String.class.getCanonicalName(), "Test", classLoader));
         assertEquals(false, convertValue(boolean.class.getCanonicalName(), "false", classLoader));
         assertEquals(true, convertValue(Boolean.class.getCanonicalName(), "true", classLoader));
