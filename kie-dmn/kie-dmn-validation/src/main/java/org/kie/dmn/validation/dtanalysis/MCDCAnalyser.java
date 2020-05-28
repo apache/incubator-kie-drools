@@ -13,6 +13,7 @@ import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Optional;
 import java.util.Set;
+import java.util.function.Predicate;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 import java.util.stream.Stream;
@@ -210,12 +211,18 @@ public class MCDCAnalyser {
         }
         LOG.trace("3. Input {}, initial candidate blocks \n{}", idxMostMatchingRules + 1, candidateBlocks);
 
-        List<PosNegBlock> filter1 = candidateBlocks.stream().filter(b -> !getVisitedPositiveOutput().contains(b.posRecord.output)).collect(Collectors.toList());
-        LOG.trace("3.FILTER-1 blocks with output which was not already visited {}, the filtered blocks are: \n{}", getVisitedPositiveOutput(), filter1);
+        List<PosNegBlock> filter1 = candidateBlocks.stream()
+                                                   //.filter(b -> !getVisitedPositiveOutput().contains(b.posRecord.output))
+                                                   .collect(Collectors.toList());
+        LOG.trace("DISABLED 3.FILTER-1 blocks with output which was not already visited {}, the filtered blocks are: \n{}", getVisitedPositiveOutput(), filter1);
         
         Set<List<Comparable<?>>> filter1outs = filter1.stream().map(b -> b.posRecord.output).collect(Collectors.toSet());
         LOG.trace("filter1outs {}", filter1outs);
 
+        if (filter1outs.stream().filter(not(getVisitedPositiveOutput()::contains)).count() > 0) {
+            filter1outs.removeAll(getVisitedPositiveOutput());
+            LOG.trace("I recomputed filter1outs to prioritize non-yet visited outputs {}", filter1outs);
+        }
         if (filter1outs.size() > 1 && elseRuleIdx.isPresent() && filter1outs.contains(ddtaTable.getRule().get(elseRuleIdx.get()).getOutputEntry())) {
             LOG.trace("filter1outs will be filtered of the Else rule's output {}.", ddtaTable.getRule().get(elseRuleIdx.get()).getOutputEntry());
             filter1outs.remove(ddtaTable.getRule().get(elseRuleIdx.get()).getOutputEntry());
@@ -243,6 +250,13 @@ public class MCDCAnalyser {
         PosNegBlock selectedBlock = blockWeighted.get(0).getKey();
         LOG.trace("3. I select the first, chosen block to be select: \n{}", selectedBlock);
         selectBlock(selectedBlock);
+    }
+
+    /**
+     * JDK-11 polyfill 
+     */
+    public static <T> Predicate<T> not(Predicate<T> t) {
+        return t.negate();
     }
 
     private int computeAdditionalWeightIntroBlock(PosNegBlock newBlock) {
