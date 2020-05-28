@@ -289,5 +289,35 @@ public class DMNRuntimeTypesTest extends BaseVariantTest {
         assertThat(DMNRuntimeUtil.formatMessages(dmnResult.getMessages()), dmnResult.hasErrors(), is(false));
         assertThat(dmnResult.getDecisionResultByName("decision1").getResult(), is("L1nameL2namename"));
     }
+
+    @Test
+    public void testFieldCapitalization() {
+        final DMNRuntime runtime = createRuntimeWithAdditionalResources("Traffic Violation.dmn", this.getClass());
+        final DMNModel dmnModel = runtime.getModel("https://github.com/kiegroup/drools/kie-dmn/_A4BCA8B8-CF08-433F-93B2-A2598F19ECFF", "Traffic Violation");
+        assertThat(dmnModel, notNullValue());
+        assertThat(DMNRuntimeUtil.formatMessages(dmnModel.getMessages()), dmnModel.hasErrors(), is(false));
+
+        final DMNContext context = DMNFactory.newContext();
+        context.set("Driver",
+                    mapOf(
+                            entry("Name", "Luca"),
+                            entry("Age", 35),
+                            entry("State", "Italy"),
+                            entry("City", "Milan"),
+                            entry("Points", 2000)
+                          )
+        );
+        context.set("Violation", mapOf(
+                entry("Code", "s"),
+                entry("Date", LocalDate.of(1984, 11, 6)),
+                entry("Type", "speed"),
+                entry("Actual Speed", 120),
+                entry("Speed Limit", 100)));
+
+        final DMNResult dmnResult = evaluateModel(runtime, dmnModel, context);
+        LOG.debug("{}", dmnResult);
+        assertThat(DMNRuntimeUtil.formatMessages(dmnResult.getMessages()), dmnResult.hasErrors(), is(false));
+        assertThat(dmnResult.getDecisionResultByName("Should the driver be suspended?").getResult(), is("Yes"));
+    }
 }
 
