@@ -49,6 +49,7 @@ import org.kie.internal.builder.ResultSeverity;
 
 import static java.util.Collections.emptyList;
 
+import static com.github.javaparser.StaticJavaParser.parseImport;
 import static org.drools.compiler.builder.impl.ClassDefinitionFactory.createClassDefinition;
 import static org.drools.modelcompiler.builder.generator.ModelGenerator.generateModel;
 import static org.drools.modelcompiler.builder.generator.declaredtype.POJOGenerator.compileType;
@@ -248,17 +249,8 @@ public class ModelBuilderImpl<T extends PackageSources> extends KnowledgeBuilder
     }
 
     private boolean hasImport( ImportDeclaration imp, GeneratedClassWithPackage pojo ) {
-        String target = imp.getTarget();
-        if (target.endsWith( ".*" )) {
-            if (target.substring( 0, target.length()-2 ).equals( pojo.getPackageName() )) {
-                return true;
-            }
-        } else {
-            if (target.equals( pojo.getFullyQualifiedName() )) {
-                return true;
-            }
-        }
-        return false;
+        com.github.javaparser.ast.ImportDeclaration impDec = parseImport("import " + imp.getTarget() + ";");
+        return impDec.getNameAsString().equals( impDec.isAsterisk() ? pojo.getPackageName() : pojo.getFullyQualifiedName() );
     }
 
     public static void registerType( TypeResolver typeResolver, Class<?> clazz) {
