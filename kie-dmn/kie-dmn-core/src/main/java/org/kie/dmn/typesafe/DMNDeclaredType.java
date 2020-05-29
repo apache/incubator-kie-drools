@@ -38,10 +38,12 @@ class DMNDeclaredType implements TypeDefinition {
     List<DMNDeclaredField> fields = new ArrayList<>();
     List<AnnotationDefinition> annotations = new ArrayList<>();
     private String javadoc;
+    private boolean withJacksonAnnotation;
 
-    DMNDeclaredType(DMNAllTypesIndex index, DMNType dmnType) {
+    DMNDeclaredType(DMNAllTypesIndex index, DMNType dmnType, boolean withJacksonAnnotation) {
         this.index = index;
         this.dmnType = dmnType;
+        this.withJacksonAnnotation = withJacksonAnnotation;
         initFields();
     }
 
@@ -67,7 +69,7 @@ class DMNDeclaredType implements TypeDefinition {
     private void initFields() {
         Map<String, DMNType> dmnFields = dmnType.getFields();
         for (Map.Entry<String, DMNType> field : dmnFields.entrySet()) {
-            DMNDeclaredField dmnDeclaredField = new DMNDeclaredField(index, field);
+            DMNDeclaredField dmnDeclaredField = new DMNDeclaredField(index, field, withJacksonAnnotation);
             fields.add(dmnDeclaredField);
         }
     }

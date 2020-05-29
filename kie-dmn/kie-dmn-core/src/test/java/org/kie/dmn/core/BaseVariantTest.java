@@ -192,6 +192,7 @@ public abstract class BaseVariantTest {
 
         for (DMNModel m : runtime.getModels()) {
             Map<String, String> allTypesSourceCode = new DMNTypeSafeTypeGenerator(m, index, factory)
+                    .processTypes()
                     .generateSourceCodeOfAllTypes();
             allSources.putAll(allTypesSourceCode);
         }
