@@ -1,11 +1,11 @@
 /*
- * Copyright 2011 Red Hat, Inc. and/or its affiliates.
+ * Copyright 2020 Red Hat, Inc. and/or its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
  *
- * http://www.apache.org/licenses/LICENSE-2.0
+ *      http://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
@@ -41,21 +41,42 @@ import org.optaplanner.core.impl.score.director.ScoreDirector;
 public @interface PlanningEntity {
 
     /**
-     * An immovable planning entity is never changed during planning,
+     * A pinned planning entity is never changed during planning,
      * this is useful in repeated planning use cases (such as continuous planning and real-time planning).
      * <p>
      * This applies to all the planning variables of this planning entity.
-     * To make individual variables immovable, see https://issues.redhat.com/browse/PLANNER-124
+     * To pin individual variables, see https://issues.redhat.com/browse/PLANNER-124
      * <p>
      * The method {@link SelectionFilter#accept(ScoreDirector, Object)} returns false
-     * if the selection entity is immovable and it returns true if the selection entity is movable
+     * if the selection entity is pinned and it returns true if the selection entity is movable
      *
      * @return {@link NullMovableEntitySelectionFilter} when it is null (workaround for annotation limitation)
+     * @deprecated in favor of {@link #pinningFilter()}.
      */
+    @Deprecated(/* forRemoval = true */)
     Class<? extends SelectionFilter> movableEntitySelectionFilter() default NullMovableEntitySelectionFilter.class;
 
     /** Workaround for annotation limitation in {@link #movableEntitySelectionFilter()}. */
+    @Deprecated(/* forRemoval = true */)
     interface NullMovableEntitySelectionFilter extends SelectionFilter {
+    }
+
+    /**
+     * A pinned planning entity is never changed during planning,
+     * this is useful in repeated planning use cases (such as continuous planning and real-time planning).
+     * <p>
+     * This applies to all the planning variables of this planning entity.
+     * To pin individual variables, see https://issues.redhat.com/browse/PLANNER-124
+     * <p>
+     * The method {@link PinningFilter#accept(Object, Object)} returns false if the selection entity is pinned
+     * and it returns true if the selection entity is movable
+     *
+     * @return {@link NullPinningFilter} when it is null (workaround for annotation limitation)
+     */
+    Class<? extends PinningFilter> pinningFilter() default NullPinningFilter.class;
+
+    /** Workaround for annotation limitation in {@link #pinningFilter()} ()}. */
+    interface NullPinningFilter extends PinningFilter {
     }
 
     /**

@@ -1,5 +1,5 @@
 /*
- * Copyright 2012 Red Hat, Inc. and/or its affiliates.
+ * Copyright 2020 Red Hat, Inc. and/or its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -30,6 +30,7 @@ import org.optaplanner.benchmark.impl.report.BenchmarkReport;
 import org.optaplanner.benchmark.impl.result.SingleBenchmarkResult;
 import org.optaplanner.benchmark.impl.result.SolverBenchmarkResult;
 import org.optaplanner.core.api.score.buildin.simple.SimpleScore;
+import org.optaplanner.core.impl.score.buildin.simple.SimpleScoreDefinition;
 
 public class TotalRankSolverRankingWeightFactoryTest extends AbstractSolverRankingComparatorTest {
 
@@ -47,22 +48,24 @@ public class TotalRankSolverRankingWeightFactoryTest extends AbstractSolverRanki
         factory = new TotalRankSolverRankingWeightFactory();
         solverBenchmarkResultList = new ArrayList<>();
         a = new SolverBenchmarkResult(null);
+        a.setScoreDefinition(new SimpleScoreDefinition());
         b = new SolverBenchmarkResult(null);
+        b.setScoreDefinition(new SimpleScoreDefinition());
         aSingleBenchmarkResultList = new ArrayList<>();
         bSingleBenchmarkResultList = new ArrayList<>();
     }
 
     @Test
     public void normal() {
-        addSingleBenchmark(aSingleBenchmarkResultList, -1000, -40, -1000);
-        addSingleBenchmark(aSingleBenchmarkResultList, -300, -40, -1000);
-        addSingleBenchmark(aSingleBenchmarkResultList, -40, -40, -1000);
+        addSingleBenchmark(a, aSingleBenchmarkResultList, -1000, -40, -1000);
+        addSingleBenchmark(a, aSingleBenchmarkResultList, -300, -40, -1000);
+        addSingleBenchmark(a, aSingleBenchmarkResultList, -40, -40, -1000);
         a.setSingleBenchmarkResultList(aSingleBenchmarkResultList);
         a.accumulateResults(benchmarkReport);
         solverBenchmarkResultList.add(a);
-        addSingleBenchmark(bSingleBenchmarkResultList, -2000, -30, -2000); // Loses vs a
-        addSingleBenchmark(bSingleBenchmarkResultList, -200, -30, -2000); // Wins vs a
-        addSingleBenchmark(bSingleBenchmarkResultList, -30, -30, -2000); // Wins vs a
+        addSingleBenchmark(b, bSingleBenchmarkResultList, -2000, -30, -2000); // Loses vs a
+        addSingleBenchmark(b, bSingleBenchmarkResultList, -200, -30, -2000); // Wins vs a
+        addSingleBenchmark(b, bSingleBenchmarkResultList, -30, -30, -2000); // Wins vs a
         b.setSingleBenchmarkResultList(bSingleBenchmarkResultList);
         b.accumulateResults(benchmarkReport);
         solverBenchmarkResultList.add(b);
@@ -77,23 +80,24 @@ public class TotalRankSolverRankingWeightFactoryTest extends AbstractSolverRanki
 
     @Test
     public void equalCount() {
-        addSingleBenchmark(aSingleBenchmarkResultList, -5000, -90, -5000);
-        addSingleBenchmark(aSingleBenchmarkResultList, -900, -90, -5000);
-        addSingleBenchmark(aSingleBenchmarkResultList, -90, -90, -5000);
+        addSingleBenchmark(a, aSingleBenchmarkResultList, -5000, -90, -5000);
+        addSingleBenchmark(a, aSingleBenchmarkResultList, -900, -90, -5000);
+        addSingleBenchmark(a, aSingleBenchmarkResultList, -90, -90, -5000);
         a.setSingleBenchmarkResultList(aSingleBenchmarkResultList); // 0 wins - 1 equals - 5 losses
         a.accumulateResults(benchmarkReport);
         solverBenchmarkResultList.add(a);
-        addSingleBenchmark(bSingleBenchmarkResultList, -1000, -20, -1000); // Wins vs a - wins vs c
-        addSingleBenchmark(bSingleBenchmarkResultList, -200, -20, -1000); // Wins vs a - loses vs c
-        addSingleBenchmark(bSingleBenchmarkResultList, -20, -20, -1000); // Wins vs a - loses vs c
+        addSingleBenchmark(b, bSingleBenchmarkResultList, -1000, -20, -1000); // Wins vs a - wins vs c
+        addSingleBenchmark(b, bSingleBenchmarkResultList, -200, -20, -1000); // Wins vs a - loses vs c
+        addSingleBenchmark(b, bSingleBenchmarkResultList, -20, -20, -1000); // Wins vs a - loses vs c
         b.setSingleBenchmarkResultList(bSingleBenchmarkResultList); // 4 wins - 0 equals - 2 losses
         b.accumulateResults(benchmarkReport);
         solverBenchmarkResultList.add(b);
         SolverBenchmarkResult c = new SolverBenchmarkResult(null);
+        c.setScoreDefinition(new SimpleScoreDefinition());
         List<SingleBenchmarkResult> cSingleBenchmarkResultList = new ArrayList<>();
-        addSingleBenchmark(cSingleBenchmarkResultList, -5000, -10, -5000); // Loses vs b, Equals vs a
-        addSingleBenchmark(cSingleBenchmarkResultList, -100, -10, -5000); // Wins vs a - wins vs b
-        addSingleBenchmark(cSingleBenchmarkResultList, -10, -10, -5000); // Wins vs a - wins vs b
+        addSingleBenchmark(c, cSingleBenchmarkResultList, -5000, -10, -5000); // Loses vs b, Equals vs a
+        addSingleBenchmark(c, cSingleBenchmarkResultList, -100, -10, -5000); // Wins vs a - wins vs b
+        addSingleBenchmark(c, cSingleBenchmarkResultList, -10, -10, -5000); // Wins vs a - wins vs b
         c.setSingleBenchmarkResultList(cSingleBenchmarkResultList); // 4 wins - 1 equals - 1 losses
         c.accumulateResults(benchmarkReport);
         solverBenchmarkResultList.add(c);
@@ -111,15 +115,15 @@ public class TotalRankSolverRankingWeightFactoryTest extends AbstractSolverRanki
 
     @Test
     public void uninitializedSingleBenchmarks() {
-        SingleBenchmarkResult a0 = addSingleBenchmark(aSingleBenchmarkResultList, -1000, -30, -1000);
-        addSingleBenchmark(aSingleBenchmarkResultList, -400, -30, -1000);
-        addSingleBenchmark(aSingleBenchmarkResultList, -30, -30, -1000);
+        SingleBenchmarkResult a0 = addSingleBenchmark(a, aSingleBenchmarkResultList, -1000, -30, -1000);
+        addSingleBenchmark(a, aSingleBenchmarkResultList, -400, -30, -1000);
+        addSingleBenchmark(a, aSingleBenchmarkResultList, -30, -30, -1000);
         a.setSingleBenchmarkResultList(aSingleBenchmarkResultList);
         a.accumulateResults(benchmarkReport);
         solverBenchmarkResultList.add(a);
-        SingleBenchmarkResult b0 = addSingleBenchmark(bSingleBenchmarkResultList, -1000, -30, -1000);
-        SingleBenchmarkResult b1 = addSingleBenchmark(bSingleBenchmarkResultList, -400, -30, -1000);
-        addSingleBenchmark(bSingleBenchmarkResultList, -30, -30, -1000);
+        SingleBenchmarkResult b0 = addSingleBenchmark(b, bSingleBenchmarkResultList, -1000, -30, -1000);
+        SingleBenchmarkResult b1 = addSingleBenchmark(b, bSingleBenchmarkResultList, -400, -30, -1000);
+        addSingleBenchmark(b, bSingleBenchmarkResultList, -30, -30, -1000);
         b.setSingleBenchmarkResultList(bSingleBenchmarkResultList);
         b.accumulateResults(benchmarkReport);
         solverBenchmarkResultList.add(b);
@@ -152,14 +156,14 @@ public class TotalRankSolverRankingWeightFactoryTest extends AbstractSolverRanki
 
     @Test
     public void differentNumberOfSingleBenchmarks() {
-        addSingleBenchmark(aSingleBenchmarkResultList, -1000, -30, -1000);
-        addSingleBenchmark(aSingleBenchmarkResultList, -400, -30, -1000);
+        addSingleBenchmark(a, aSingleBenchmarkResultList, -1000, -30, -1000);
+        addSingleBenchmark(a, aSingleBenchmarkResultList, -400, -30, -1000);
         a.setSingleBenchmarkResultList(aSingleBenchmarkResultList);
         a.accumulateResults(benchmarkReport);
         solverBenchmarkResultList.add(a);
-        addSingleBenchmark(bSingleBenchmarkResultList, -1000, -30, -1000);
-        addSingleBenchmark(bSingleBenchmarkResultList, -400, -30, -1000);
-        addSingleBenchmark(bSingleBenchmarkResultList, -30, -30, -1000);
+        addSingleBenchmark(b, bSingleBenchmarkResultList, -1000, -30, -1000);
+        addSingleBenchmark(b, bSingleBenchmarkResultList, -400, -30, -1000);
+        addSingleBenchmark(b, bSingleBenchmarkResultList, -30, -30, -1000);
         b.setSingleBenchmarkResultList(bSingleBenchmarkResultList);
         b.accumulateResults(benchmarkReport);
         solverBenchmarkResultList.add(b);
@@ -174,16 +178,16 @@ public class TotalRankSolverRankingWeightFactoryTest extends AbstractSolverRanki
 
     @Test
     public void differentScoreTypeOfSingleBenchmarks() {
-        addSingleBenchmark(aSingleBenchmarkResultList, -1000, -30, -1000);
-        addSingleBenchmark(aSingleBenchmarkResultList, -400, -30, -1000);
-        addSingleBenchmark(aSingleBenchmarkResultList, -30, -30, -1000);
+        addSingleBenchmark(a, aSingleBenchmarkResultList, -1000, -30, -1000);
+        addSingleBenchmark(a, aSingleBenchmarkResultList, -400, -30, -1000);
+        addSingleBenchmark(a, aSingleBenchmarkResultList, -30, -30, -1000);
         a.setSingleBenchmarkResultList(aSingleBenchmarkResultList);
         a.accumulateResults(benchmarkReport);
         solverBenchmarkResultList.add(a);
         // Scores with different number of levels are compared from the highest level, see ResilientScoreComparator.compare
-        addSingleBenchmarkWithHardSoftLongScore(bSingleBenchmarkResultList, -1000, 0, -30, 0, -1000, -1000);
-        addSingleBenchmarkWithHardSoftLongScore(bSingleBenchmarkResultList, -400, 0, -30, 0, -1000, -1000);
-        addSingleBenchmarkWithHardSoftLongScore(bSingleBenchmarkResultList, -30, 0, -30, 0, -1000, -1000);
+        addSingleBenchmarkWithHardSoftLongScore(b, bSingleBenchmarkResultList, -1000, 0, -30, 0, -1000, -1000);
+        addSingleBenchmarkWithHardSoftLongScore(b, bSingleBenchmarkResultList, -400, 0, -30, 0, -1000, -1000);
+        addSingleBenchmarkWithHardSoftLongScore(b, bSingleBenchmarkResultList, -30, 0, -30, 0, -1000, -1000);
         b.setSingleBenchmarkResultList(bSingleBenchmarkResultList);
         b.accumulateResults(benchmarkReport);
         solverBenchmarkResultList.add(b);
@@ -198,15 +202,15 @@ public class TotalRankSolverRankingWeightFactoryTest extends AbstractSolverRanki
 
     @Test
     public void disjunctPlannnerBenchmarks() {
-        addSingleBenchmark(aSingleBenchmarkResultList, -1000, -30, -1000);
-        addSingleBenchmark(aSingleBenchmarkResultList, -400, -30, -1000);
-        addSingleBenchmark(aSingleBenchmarkResultList, -30, -30, -1000);
+        addSingleBenchmark(a, aSingleBenchmarkResultList, -1000, -30, -1000);
+        addSingleBenchmark(a, aSingleBenchmarkResultList, -400, -30, -1000);
+        addSingleBenchmark(a, aSingleBenchmarkResultList, -30, -30, -1000);
         a.setSingleBenchmarkResultList(aSingleBenchmarkResultList);
         a.accumulateResults(benchmarkReport);
         solverBenchmarkResultList.add(a);
-        addSingleBenchmark(bSingleBenchmarkResultList, -2000, -30, -2000);
-        addSingleBenchmark(bSingleBenchmarkResultList, -200, -30, -2000);
-        addSingleBenchmark(bSingleBenchmarkResultList, -30, -30, -2000);
+        addSingleBenchmark(b, bSingleBenchmarkResultList, -2000, -30, -2000);
+        addSingleBenchmark(b, bSingleBenchmarkResultList, -200, -30, -2000);
+        addSingleBenchmark(b, bSingleBenchmarkResultList, -30, -30, -2000);
         b.setSingleBenchmarkResultList(bSingleBenchmarkResultList);
         b.accumulateResults(benchmarkReport);
         solverBenchmarkResultList.add(b);
@@ -225,15 +229,15 @@ public class TotalRankSolverRankingWeightFactoryTest extends AbstractSolverRanki
 
     @Test
     public void disjunctEqualPlannerBenchmarks() {
-        addSingleBenchmark(aSingleBenchmarkResultList, -1000, -30, -1000);
-        addSingleBenchmark(aSingleBenchmarkResultList, -400, -30, -1000);
-        addSingleBenchmark(aSingleBenchmarkResultList, -30, -30, -1000);
+        addSingleBenchmark(a, aSingleBenchmarkResultList, -1000, -30, -1000);
+        addSingleBenchmark(a, aSingleBenchmarkResultList, -400, -30, -1000);
+        addSingleBenchmark(a, aSingleBenchmarkResultList, -30, -30, -1000);
         a.setSingleBenchmarkResultList(aSingleBenchmarkResultList);
         a.accumulateResults(benchmarkReport);
         solverBenchmarkResultList.add(a);
-        addSingleBenchmark(bSingleBenchmarkResultList, -1000, -30, -1000);
-        addSingleBenchmark(bSingleBenchmarkResultList, -400, -30, -1000);
-        addSingleBenchmark(bSingleBenchmarkResultList, -30, -30, -1000);
+        addSingleBenchmark(b, bSingleBenchmarkResultList, -1000, -30, -1000);
+        addSingleBenchmark(b, bSingleBenchmarkResultList, -400, -30, -1000);
+        addSingleBenchmark(b, bSingleBenchmarkResultList, -30, -30, -1000);
         b.setSingleBenchmarkResultList(bSingleBenchmarkResultList);
         b.accumulateResults(benchmarkReport);
         solverBenchmarkResultList.add(b);
@@ -252,15 +256,15 @@ public class TotalRankSolverRankingWeightFactoryTest extends AbstractSolverRanki
 
     @Test
     public void overlappingPlannerBenchmarks() {
-        SingleBenchmarkResult a0 = addSingleBenchmark(aSingleBenchmarkResultList, -1000, -30, -1000);
-        SingleBenchmarkResult a1 = addSingleBenchmark(aSingleBenchmarkResultList, -400, -30, -1000);
-        SingleBenchmarkResult a2 = addSingleBenchmark(aSingleBenchmarkResultList, -30, -30, -1000);
+        SingleBenchmarkResult a0 = addSingleBenchmark(a, aSingleBenchmarkResultList, -1000, -30, -1000);
+        SingleBenchmarkResult a1 = addSingleBenchmark(a, aSingleBenchmarkResultList, -400, -30, -1000);
+        SingleBenchmarkResult a2 = addSingleBenchmark(a, aSingleBenchmarkResultList, -30, -30, -1000);
         a.setSingleBenchmarkResultList(aSingleBenchmarkResultList);
         a.accumulateResults(benchmarkReport);
         solverBenchmarkResultList.add(a);
-        SingleBenchmarkResult b0 = addSingleBenchmark(bSingleBenchmarkResultList, -1000, -30, -1000);
-        SingleBenchmarkResult b1 = addSingleBenchmark(bSingleBenchmarkResultList, -400, -30, -1000);
-        SingleBenchmarkResult b2 = addSingleBenchmark(bSingleBenchmarkResultList, -30, -30, -1000);
+        SingleBenchmarkResult b0 = addSingleBenchmark(b, bSingleBenchmarkResultList, -1000, -30, -1000);
+        SingleBenchmarkResult b1 = addSingleBenchmark(b, bSingleBenchmarkResultList, -400, -30, -1000);
+        SingleBenchmarkResult b2 = addSingleBenchmark(b, bSingleBenchmarkResultList, -30, -30, -1000);
         b.setSingleBenchmarkResultList(bSingleBenchmarkResultList);
         b.accumulateResults(benchmarkReport);
         solverBenchmarkResultList.add(b);

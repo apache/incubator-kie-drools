@@ -1,5 +1,5 @@
 /*
- * Copyright 2010 Red Hat, Inc. and/or its affiliates.
+ * Copyright 2020 Red Hat, Inc. and/or its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -22,6 +22,7 @@ import java.util.Comparator;
 import org.optaplanner.benchmark.impl.result.SolverBenchmarkResult;
 import org.optaplanner.core.api.domain.solution.PlanningSolution;
 import org.optaplanner.core.api.score.Score;
+import org.optaplanner.core.impl.score.definition.ScoreDefinition;
 
 /**
  * This ranking {@link Comparator} orders a {@link SolverBenchmarkResult} by its total {@link Score}.
@@ -34,14 +35,15 @@ import org.optaplanner.core.api.score.Score;
  */
 public class TotalScoreSolverRankingComparator implements Comparator<SolverBenchmarkResult>, Serializable {
 
-    private final Comparator<Score> resilientScoreComparator = new ResilientScoreComparator();
     private final Comparator<SolverBenchmarkResult> worstScoreSolverRankingComparator = new WorstScoreSolverRankingComparator();
 
     @Override
     public int compare(SolverBenchmarkResult a, SolverBenchmarkResult b) {
+        ScoreDefinition aScoreDefinition = a.getScoreDefinition();
         return Comparator
                 .comparing(SolverBenchmarkResult::getFailureCount, Comparator.reverseOrder())
-                .thenComparing(SolverBenchmarkResult::getTotalScore, resilientScoreComparator)
+                .thenComparing(SolverBenchmarkResult::getTotalScore,
+                        new ResilientScoreComparator(aScoreDefinition))
                 .thenComparing(worstScoreSolverRankingComparator)
                 .compare(a, b);
 

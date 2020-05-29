@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package org.optaplanner.core.impl.testdata.domain.immovable.chained;
+package org.optaplanner.core.impl.testdata.domain.pinned.chained;
 
 import org.optaplanner.core.api.domain.entity.PlanningEntity;
 import org.optaplanner.core.api.domain.variable.PlanningVariable;
@@ -25,36 +25,38 @@ import org.optaplanner.core.impl.domain.variable.descriptor.GenuineVariableDescr
 import org.optaplanner.core.impl.testdata.domain.TestdataObject;
 import org.optaplanner.core.impl.testdata.domain.chained.TestdataChainedObject;
 
+@Deprecated(/* forRemoval = true */)
 @PlanningEntity(movableEntitySelectionFilter = TestdataImmovableChainedEntityFilter.class)
-public class TestdataImmovableChainedEntity extends TestdataObject implements TestdataChainedObject {
+public class TestdataLegacyPinnedChainedEntity extends TestdataObject implements TestdataChainedObject {
 
     public static EntityDescriptor buildEntityDescriptor() {
-        SolutionDescriptor solutionDescriptor = TestdataImmovableChainedSolution.buildSolutionDescriptor();
-        return solutionDescriptor.findEntityDescriptorOrFail(TestdataImmovableChainedEntity.class);
+        SolutionDescriptor solutionDescriptor = TestdataLegacyPinnedChainedSolution.buildSolutionDescriptor();
+        return solutionDescriptor.findEntityDescriptorOrFail(TestdataLegacyPinnedChainedEntity.class);
     }
 
     public static GenuineVariableDescriptor buildVariableDescriptorForChainedObject() {
-        SolutionDescriptor solutionDescriptor = TestdataImmovableChainedSolution.buildSolutionDescriptor();
-        EntityDescriptor entityDescriptor = solutionDescriptor.findEntityDescriptorOrFail(TestdataImmovableChainedEntity.class);
+        SolutionDescriptor solutionDescriptor = TestdataLegacyPinnedChainedSolution.buildSolutionDescriptor();
+        EntityDescriptor entityDescriptor =
+                solutionDescriptor.findEntityDescriptorOrFail(TestdataLegacyPinnedChainedEntity.class);
         return entityDescriptor.getGenuineVariableDescriptor("chainedObject");
     }
 
     private TestdataChainedObject chainedObject;
     private boolean pinned;
 
-    public TestdataImmovableChainedEntity() {
+    public TestdataLegacyPinnedChainedEntity() {
     }
 
-    public TestdataImmovableChainedEntity(String code) {
+    public TestdataLegacyPinnedChainedEntity(String code) {
         super(code);
     }
 
-    public TestdataImmovableChainedEntity(String code, TestdataChainedObject chainedObject) {
+    public TestdataLegacyPinnedChainedEntity(String code, TestdataChainedObject chainedObject) {
         this(code);
         this.chainedObject = chainedObject;
     }
 
-    public TestdataImmovableChainedEntity(String code, TestdataChainedObject chainedObject, boolean pinned) {
+    public TestdataLegacyPinnedChainedEntity(String code, TestdataChainedObject chainedObject, boolean pinned) {
         this(code, chainedObject);
         this.pinned = pinned;
     }

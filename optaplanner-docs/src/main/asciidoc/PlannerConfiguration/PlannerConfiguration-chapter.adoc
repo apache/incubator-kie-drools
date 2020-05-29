@@ -523,24 +523,35 @@ Currently <<chainedPlanningVariable, chained>> planning variables are not compat
 ====
 
 <<repeatedPlanning,Repeated planning>> (especially <<realTimePlanning,real-time planning>>) does not mix well with a nullable planning variable.
-Every time the Solver starts or a problem fact change is made,
-the <<constructionHeuristics,Construction Heuristics>> will try to initialize all the `null` variables again, which can be a huge waste of time.
-One way to deal with this, is to change when a planning entity should be reinitialized with an ``reinitializeVariableEntityFilter``:
+Every time the Solver starts or a problem fact change is made, the <<constructionHeuristics,Construction Heuristics>>
+will try to initialize all the `null` variables again, which can be a huge waste of time.
+One way to deal with this is to filter the entity selector of the placer in the construction heuristic.
 
-[source,java,options="nowrap"]
+[source,xml,options="nowrap"]
 ----
-    @PlanningVariable(..., nullable = true, reinitializeVariableEntityFilter = ReinitializeTaskFilter.class)
-    public Worker getWorker() {
-        return worker;
-    }
+<solverConfig>
+  ...
+  <constructionHeuristics>
+    <queuedEntityPlacer>
+      <entitySelector id="entitySelector1">
+        <filterClass>...</filterClass>
+      </entitySelector>
+    </queuedEntityPlacer>
+    ...
+    <changeMoveselector>
+      <entitySelector mimicRef="entitySelector1" />
+    </changeMoveselector>
+    ...
+  </constructionHeuristics>
+ ...
+</solverConfig>
 ----
-
 
 [[whenIsAPlanningVariableInitialized]]
 ==== When is a planning variable considered initialized?
 
 A planning variable is considered initialized if its value is not `null` or if the variable is ``nullable``.
-So a nullable variable is always considered initialized, even when a custom `reinitializeVariableEntityFilter` triggers a reinitialization during construction heuristics.
+So a nullable variable is always considered initialized.
 
 A planning entity is initialized if all of its planning variables are initialized.
 

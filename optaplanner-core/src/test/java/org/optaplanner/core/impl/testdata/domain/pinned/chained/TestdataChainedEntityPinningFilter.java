@@ -14,19 +14,16 @@
  * limitations under the License.
  */
 
-package org.optaplanner.examples.projectjobscheduling.domain.solver;
+package org.optaplanner.core.impl.testdata.domain.pinned.chained;
 
 import org.optaplanner.core.api.domain.entity.PinningFilter;
-import org.optaplanner.examples.projectjobscheduling.domain.Allocation;
-import org.optaplanner.examples.projectjobscheduling.domain.JobType;
-import org.optaplanner.examples.projectjobscheduling.domain.Schedule;
 
-public class NotSourceOrSinkAllocationFilter implements PinningFilter<Schedule, Allocation> {
+public class TestdataChainedEntityPinningFilter
+        implements PinningFilter<TestdataPinnedChainedSolution, TestdataPinnedChainedEntity> {
 
     @Override
-    public boolean accept(Schedule schedule, Allocation allocation) {
-        JobType jobType = allocation.getJob().getJobType();
-        return jobType == JobType.SOURCE || jobType == JobType.SINK;
+    public boolean accept(TestdataPinnedChainedSolution scoreDirector, TestdataPinnedChainedEntity entity) {
+        return entity.isPinned();
     }
 
 }

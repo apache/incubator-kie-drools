@@ -9759,17 +9759,20 @@
      id="layer5"
      inkscape:label="Note">
     <flowRoot
-       style="font-size:16px;font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;text-align:center;line-height:125%;writing-mode:lr-tb;text-anchor:middle;fill:#000000;fill-opacity:1;stroke:none;display:inline;font-family:'Liberation Sans';-inkscape-font-specification:'Liberation Sans, Normal'"
-       id="flowRoot8489"
-       xml:space="preserve"
-       transform="translate(-20,389.99946)"><flowRegion
+        style="font-size:16px;font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;text-align:center;line-height:125%;writing-mode:lr-tb;text-anchor:middle;fill:#000000;fill-opacity:1;stroke:none;display:inline;font-family:'Liberation Sans';-inkscape-font-specification:'Liberation Sans, Normal'"
+        id="flowRoot8489"
+        xml:space="preserve"
+        transform="translate(-20,389.99946)"><flowRegion
          id="flowRegion8491"><rect
            style="font-size:16px;text-align:center;text-anchor:middle"
            y="140.00014"
            x="40"
            height="39.999992"
            width="760"
-           id="rect8493" /></flowRegion><flowPara
-         id="flowPara8495">Note</flowPara><flowPara
-         id="flowPara8497">Immovable (pinned) entities can sometimes offer a temporary workaround for an end-user.</flowPara></flowRoot>  </g>
+           id="rect8493" /></flowRegion>
+      <flowPara
+          id="flowPara8495">Note</flowPara>
+      <flowPara
+          id="flowPara8497">Pinned entities can sometimes offer a temporary workaround for an end-user.</flowPara></flowRoot>
+  </g>
 </svg>

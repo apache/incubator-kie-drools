@@ -1,5 +1,5 @@
 /*
- * Copyright 2016 Red Hat, Inc. and/or its affiliates.
+ * Copyright 2020 Red Hat, Inc. and/or its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -14,16 +14,19 @@
  * limitations under the License.
  */
 
-package org.optaplanner.core.impl.testdata.domain.immovable;
+package org.optaplanner.core.impl.testdata.domain.pinned.extended;
 
 import org.optaplanner.core.impl.heuristic.selector.common.decorator.SelectionFilter;
 import org.optaplanner.core.impl.score.director.ScoreDirector;
 
-public class TestdataImmovableEntityFilter implements SelectionFilter<TestdataImmovableSolution, TestdataImmovableEntity> {
+@Deprecated(/* forRemoval = true */)
+public class TestdataLegacyExtendedImmovableEntityFilter
+        implements SelectionFilter<TestdataLegacyExtendedPinnedSolution, TestdataLegacyExtendedPinnedEntity> {
 
     @Override
-    public boolean accept(ScoreDirector<TestdataImmovableSolution> scoreDirector, TestdataImmovableEntity entity) {
-        return !entity.isLocked();
+    public boolean accept(ScoreDirector<TestdataLegacyExtendedPinnedSolution> scoreDirector,
+            TestdataLegacyExtendedPinnedEntity entity) {
+        return !entity.isClosed();
     }
 
 }

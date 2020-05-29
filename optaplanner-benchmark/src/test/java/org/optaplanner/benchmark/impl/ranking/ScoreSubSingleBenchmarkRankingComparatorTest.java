@@ -1,5 +1,5 @@
 /*
- * Copyright 2016 Red Hat, Inc. and/or its affiliates.
+ * Copyright 2020 Red Hat, Inc. and/or its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -17,6 +17,7 @@
 package org.optaplanner.benchmark.impl.ranking;
 
 import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.when;
 import static org.optaplanner.core.impl.testdata.util.PlannerAssert.assertCompareToOrder;
 
 import org.junit.jupiter.api.Test;
@@ -25,13 +26,16 @@ import org.optaplanner.benchmark.impl.result.SingleBenchmarkResult;
 import org.optaplanner.benchmark.impl.result.SolverBenchmarkResult;
 import org.optaplanner.benchmark.impl.result.SubSingleBenchmarkResult;
 import org.optaplanner.core.api.score.buildin.simple.SimpleScore;
+import org.optaplanner.core.impl.score.buildin.simple.SimpleScoreDefinition;
 
 public class ScoreSubSingleBenchmarkRankingComparatorTest {
 
     @Test
     public void compareTo() {
         ScoreSubSingleBenchmarkRankingComparator comparator = new ScoreSubSingleBenchmarkRankingComparator();
-        SingleBenchmarkResult singleBenchmarkResult = new SingleBenchmarkResult(mock(SolverBenchmarkResult.class),
+        SolverBenchmarkResult solverBenchmarkResult = mock(SolverBenchmarkResult.class);
+        when(solverBenchmarkResult.getScoreDefinition()).thenReturn(new SimpleScoreDefinition());
+        SingleBenchmarkResult singleBenchmarkResult = new SingleBenchmarkResult(solverBenchmarkResult,
                 mock(ProblemBenchmarkResult.class));
         SubSingleBenchmarkResult a = new SubSingleBenchmarkResult(singleBenchmarkResult, 0);
         a.setSucceeded(false);

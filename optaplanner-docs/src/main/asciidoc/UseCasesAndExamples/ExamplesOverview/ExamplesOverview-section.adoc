@@ -1,9 +1,14 @@
 [[examplesOverview]]
 = Examples overview
 
-OptaPlanner has several examples. In this manual we explain mainly using the _n_ queens example and cloud balancing example. So it is advisable to read at least those sections.
+OptaPlanner has several examples.
+In this manual we explain mainly using the _n_ queens example and cloud balancing example.
+So it is advisable to read at least those sections.
 
-Some of the examples solve problems that are presented in academic contests. The `Contest` column in the following table lists the contests. It also identifies an example as being either _realistic_ or _unrealistic_ for the purpose of a contest. A _realistic contest_ is _an official, independent contest_:
+Some of the examples solve problems that are presented in academic contests.
+The `Contest` column in the following table lists the contests.
+It also identifies an example as being either _realistic_ or _unrealistic_ for the purpose of a contest.
+A _realistic contest_ is _an official, independent contest_:
 
 * that clearly defines a real-world use case.
 * with real-world constraints.
@@ -17,7 +22,7 @@ The source code of all these examples is available in the distribution zip under
 and also in git under [path]_optaplanner/optaplanner-examples_.
 
 .Examples overview
-[cols="1,1a,1a,1a,1a", options="header"]
+[cols="1,1a,1a,1a,1a",options="header"]
 |===
 |Example |Domain |Size |Contest |Special features used
 
@@ -68,7 +73,7 @@ and also in git under [path]_optaplanner/optaplanner-examples_.
 |* No
 * Defined by us
 |* <<fairnessScoreConstraints,Fairness score constraints>>
-* <<immovablePlanningEntities,Immovable entities>>
+* <<pinnedPlanningEntities,Pinned entities>>
 
 |<<meetingScheduling,Meeting scheduling>>
 |* 1 entity class
@@ -88,7 +93,7 @@ and also in git under [path]_optaplanner/optaplanner-examples_.
 * Search space <= `10^1171`
 |* Realistic
 * http://www.cs.qub.ac.uk/itc2007/curriculmcourse/course_curriculm_index.htm[ITC 2007 track 3]
-|* <<immovablePlanningEntities,Immovable entities>>
+|* <<pinnedPlanningEntities,Pinned entities>>
 
 |<<machineReassignment,Machine reassignment>>
 |* 1 entity class

@@ -1,5 +1,5 @@
 /*
- * Copyright 2010 Red Hat, Inc. and/or its affiliates.
+ * Copyright 2020 Red Hat, Inc. and/or its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -24,12 +24,12 @@ import org.optaplanner.core.api.domain.variable.PlanningVariable;
 import org.optaplanner.examples.common.domain.AbstractPersistable;
 import org.optaplanner.examples.nurserostering.domain.contract.Contract;
 import org.optaplanner.examples.nurserostering.domain.solver.EmployeeStrengthComparator;
-import org.optaplanner.examples.nurserostering.domain.solver.MovableShiftAssignmentSelectionFilter;
 import org.optaplanner.examples.nurserostering.domain.solver.ShiftAssignmentDifficultyComparator;
+import org.optaplanner.examples.nurserostering.domain.solver.ShiftAssignmentPinningFilter;
 
 import com.thoughtworks.xstream.annotations.XStreamAlias;
 
-@PlanningEntity(movableEntitySelectionFilter = MovableShiftAssignmentSelectionFilter.class,
+@PlanningEntity(pinningFilter = ShiftAssignmentPinningFilter.class,
         difficultyComparatorClass = ShiftAssignmentDifficultyComparator.class)
 @XStreamAlias("ShiftAssignment")
 public class ShiftAssignment extends AbstractPersistable implements Comparable<ShiftAssignment> {

@@ -653,7 +653,7 @@ Advanced configuration:
 ----
 
 The `ignoreEmptyChildIterators` property (true by default) will ignore every empty `childMoveSelector` to avoid returning no moves.
-For example: a cartesian product of `changeMoveSelector` A and B, for which B is empty (because all it's entities are immovable) returns no move if `ignoreEmptyChildIterators` is `false` and the moves of A if `ignoreEmptyChildIterators` is ``true``.
+For example: a cartesian product of `changeMoveSelector` A and B, for which B is empty (because all it's entities are pinned) returns no move if `ignoreEmptyChildIterators` is `false` and the moves of A if `ignoreEmptyChildIterators` is ``true``.
 
 To enforce that two child selectors use the same entity or value efficiently, use <<mimicSelection,mimic selection>>, not move filtering.
 
@@ -927,7 +927,9 @@ public interface SelectionFilter<Solution_, T> {
 }
 ----
 
-Implement the `accept` method to return `false` on a discarded `selection` (see below). Filtered selection can happen on any Selector in the selector tree, including any ``MoveSelector``, `EntitySelector` or ``ValueSelector``.
+Implement the `accept` method to return `false` on a discarded `selection` (see below).
+Filtered selection can happen on any Selector in the selector tree, including any ``MoveSelector``, `EntitySelector`
+or ``ValueSelector``.
 It works with any `cacheType` and ``selectionOrder``.
 
 [NOTE]
@@ -935,7 +937,6 @@ It works with any `cacheType` and ``selectionOrder``.
 Apply the filter on the lowest level possible.
 In most cases, you'll need to know both the entity and the value involved so you'll have to apply it on the move selector.
 ====
-
 
 [[filteredMoveSelection]]
 ==== Filtered move selection
@@ -996,10 +997,9 @@ Configure the `filterClass` on every targeted `entitySelector` (potentially both
     </changeMoveSelector>
 ----
 
-If that filter should apply on all entities, configure it as a <<immovablePlanningEntities,global movableEntitySelectionFilter>> instead.
+If that filter should apply on all entities, configure it as a <<pinnedPlanningEntities,global pinningFilter>> instead.
 
 You can configure multiple `filterClass` elements on a single entity selector.
-
 
 [[filteredValueSelection]]
 ==== Filtered value selection
@@ -1655,12 +1655,11 @@ Notice that it checks if the other move is an instance of the same move type.
 This `instanceof` check is important because a move are compared to a move of another move type.
 For example a `ChangeMove` and `SwapMove` are compared.
 
-
 [[generatingCustomMoves]]
 === Generating custom moves
 
-Now, let's generate instances of this custom ``Move`` class. There are 2 ways:
-
+Now, let's generate instances of this custom ``Move`` class.
+There are 2 ways:
 
 [[moveListFactory]]
 ==== `MoveListFactory`: the easy way to generate custom moves
@@ -1729,8 +1728,7 @@ add the `moveListFactoryCustomProperties` element and use <<customPropertiesConf
 
 [WARNING]
 ====
-A custom `MoveListFactory` implementation must ensure
-that it does not move <<immovablePlanningEntities, immovable entities>>.
+A custom `MoveListFactory` implementation must ensure that it does not move <<pinnedPlanningEntities, pinned entities>>.
 ====
 
 
@@ -1793,6 +1791,5 @@ add the `moveIteratorFactoryCustomProperties` element and use <<customProperties
 
 [WARNING]
 ====
-A custom `MoveIteratorFactory` implementation must ensure
-that it does not move <<immovablePlanningEntities, immovable entities>>.
+A custom `MoveIteratorFactory` implementation must ensure that it does not move <<pinnedPlanningEntities, pinned entities>>.
 ====

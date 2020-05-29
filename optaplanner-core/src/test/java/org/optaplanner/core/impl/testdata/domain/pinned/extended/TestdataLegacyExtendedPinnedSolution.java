@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package org.optaplanner.core.impl.testdata.domain.immovable.chained;
+package org.optaplanner.core.impl.testdata.domain.pinned.extended;
 
 import java.util.List;
 
@@ -26,46 +26,58 @@ import org.optaplanner.core.api.domain.valuerange.ValueRangeProvider;
 import org.optaplanner.core.api.score.buildin.simple.SimpleScore;
 import org.optaplanner.core.impl.domain.solution.descriptor.SolutionDescriptor;
 import org.optaplanner.core.impl.testdata.domain.TestdataObject;
-import org.optaplanner.core.impl.testdata.domain.chained.TestdataChainedAnchor;
+import org.optaplanner.core.impl.testdata.domain.TestdataValue;
+import org.optaplanner.core.impl.testdata.domain.pinned.TestdataLegacyPinnedEntity;
 
+@Deprecated(/* forRemoval = true */)
 @PlanningSolution
-public class TestdataImmovableChainedSolution extends TestdataObject {
+public class TestdataLegacyExtendedPinnedSolution extends TestdataObject {
 
-    public static SolutionDescriptor<TestdataImmovableChainedSolution> buildSolutionDescriptor() {
-        return SolutionDescriptor.buildSolutionDescriptor(TestdataImmovableChainedSolution.class,
-                TestdataImmovableChainedEntity.class);
+    public static SolutionDescriptor buildSolutionDescriptor() {
+        return SolutionDescriptor.buildSolutionDescriptor(TestdataLegacyExtendedPinnedSolution.class,
+                TestdataLegacyPinnedEntity.class, TestdataLegacyExtendedPinnedEntity.class);
     }
 
-    private List<TestdataChainedAnchor> chainedAnchorList;
-    private List<TestdataImmovableChainedEntity> chainedEntityList;
+    private List<TestdataValue> valueList;
+    private List<TestdataValue> subValueList;
+    private List<TestdataLegacyPinnedEntity> entityList;
 
     private SimpleScore score;
 
-    public TestdataImmovableChainedSolution() {
+    public TestdataLegacyExtendedPinnedSolution() {
     }
 
-    public TestdataImmovableChainedSolution(String code) {
+    public TestdataLegacyExtendedPinnedSolution(String code) {
         super(code);
     }
 
-    @ValueRangeProvider(id = "chainedAnchorRange")
+    @ValueRangeProvider(id = "valueRange")
     @ProblemFactCollectionProperty
-    public List<TestdataChainedAnchor> getChainedAnchorList() {
-        return chainedAnchorList;
+    public List<TestdataValue> getValueList() {
+        return valueList;
     }
 
-    public void setChainedAnchorList(List<TestdataChainedAnchor> chainedAnchorList) {
-        this.chainedAnchorList = chainedAnchorList;
+    public void setValueList(List<TestdataValue> valueList) {
+        this.valueList = valueList;
+    }
+
+    @ValueRangeProvider(id = "subValueRange")
+    @ProblemFactCollectionProperty
+    public List<TestdataValue> getSubValueList() {
+        return subValueList;
+    }
+
+    public void setSubValueList(List<TestdataValue> subValueList) {
+        this.subValueList = subValueList;
     }
 
     @PlanningEntityCollectionProperty
-    @ValueRangeProvider(id = "chainedEntityRange")
-    public List<TestdataImmovableChainedEntity> getChainedEntityList() {
-        return chainedEntityList;
+    public List<TestdataLegacyPinnedEntity> getEntityList() {
+        return entityList;
     }
 
-    public void setChainedEntityList(List<TestdataImmovableChainedEntity> chainedEntityList) {
-        this.chainedEntityList = chainedEntityList;
+    public void setEntityList(List<TestdataLegacyPinnedEntity> entityList) {
+        this.entityList = entityList;
     }
 
     @PlanningScore

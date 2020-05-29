@@ -1,5 +1,5 @@
 /*
- * Copyright 2010 Red Hat, Inc. and/or its affiliates.
+ * Copyright 2020 Red Hat, Inc. and/or its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -209,7 +209,7 @@ public abstract class AbstractPhase<Solution_> implements Phase<Solution_> {
                 Object entity = it.next();
                 EntityDescriptor<Solution_> entityDescriptor = solutionDescriptor.findEntityDescriptorOrFail(
                         entity.getClass());
-                if (!entityDescriptor.isEntityInitializedOrImmovable(scoreDirector, entity)) {
+                if (!entityDescriptor.isEntityInitializedOrPinned(scoreDirector, entity)) {
                     String variableRef = null;
                     for (GenuineVariableDescriptor<Solution_> variableDescriptor : entityDescriptor
                             .getGenuineVariableDescriptors()) {

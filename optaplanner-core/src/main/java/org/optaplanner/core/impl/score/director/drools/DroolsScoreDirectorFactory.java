@@ -1,5 +1,5 @@
 /*
- * Copyright 2012 Red Hat, Inc. and/or its affiliates.
+ * Copyright 2020 Red Hat, Inc. and/or its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -46,20 +46,25 @@ import org.optaplanner.core.impl.score.director.ScoreDirectorFactory;
  */
 public class DroolsScoreDirectorFactory<Solution_> extends AbstractScoreDirectorFactory<Solution_> {
 
-    protected final KieContainer kieContainer;
-    protected final String ksessionName;
+    private final KieBase kieBase;
+    private final KieContainer kieContainer;
+    private final String ksessionName;
 
     protected Map<Rule, Function<Solution_, Score<?>>> ruleToConstraintWeightExtractorMap;
 
     /**
      * @param solutionDescriptor never null
-     *        For {@link LegacyDroolsScoreDirectorFactory} only. Do not use.
      * @param kieBase never null
+     * @deprecated for removal, legacy code.
      */
-    protected DroolsScoreDirectorFactory(SolutionDescriptor<Solution_> solutionDescriptor, KieBase kieBase) {
+    @Deprecated(/* forRemoval = "true" */)
+    public DroolsScoreDirectorFactory(SolutionDescriptor<Solution_> solutionDescriptor, KieBase kieBase) {
         super(solutionDescriptor);
+        this.kieBase = kieBase;
         kieContainer = null;
         ksessionName = null;
+        checkIfGlobalScoreHolderExists(kieBase);
+        createRuleToConstraintWeightExtractorMap(kieBase);
         solutionDescriptor.checkIfProblemFactsExist();
     }
 
@@ -71,6 +76,7 @@ public class DroolsScoreDirectorFactory<Solution_> extends AbstractScoreDirector
     public DroolsScoreDirectorFactory(SolutionDescriptor<Solution_> solutionDescriptor,
             KieContainer kieContainer, String ksessionName) {
         super(solutionDescriptor);
+        this.kieBase = null;
         this.kieContainer = kieContainer;
         this.ksessionName = ksessionName;
         solutionDescriptor.checkIfProblemFactsExist();
@@ -180,7 +186,11 @@ public class DroolsScoreDirectorFactory<Solution_> extends AbstractScoreDirector
     }
 
     public KieSession newKieSession() {
-        return kieContainer.newKieSession(ksessionName);
+        if (kieBase == null) {
+            return kieContainer.newKieSession(ksessionName);
+        } else {
+            return kieBase.newKieSession();
+        }
     }
 
 }

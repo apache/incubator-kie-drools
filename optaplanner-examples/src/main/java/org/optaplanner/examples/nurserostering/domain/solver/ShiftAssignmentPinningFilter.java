@@ -14,19 +14,19 @@
  * limitations under the License.
  */
 
-package org.optaplanner.examples.projectjobscheduling.domain.solver;
+package org.optaplanner.examples.nurserostering.domain.solver;
 
 import org.optaplanner.core.api.domain.entity.PinningFilter;
-import org.optaplanner.examples.projectjobscheduling.domain.Allocation;
-import org.optaplanner.examples.projectjobscheduling.domain.JobType;
-import org.optaplanner.examples.projectjobscheduling.domain.Schedule;
+import org.optaplanner.examples.nurserostering.domain.NurseRoster;
+import org.optaplanner.examples.nurserostering.domain.ShiftAssignment;
+import org.optaplanner.examples.nurserostering.domain.ShiftDate;
 
-public class NotSourceOrSinkAllocationFilter implements PinningFilter<Schedule, Allocation> {
+public class ShiftAssignmentPinningFilter implements PinningFilter<NurseRoster, ShiftAssignment> {
 
     @Override
-    public boolean accept(Schedule schedule, Allocation allocation) {
-        JobType jobType = allocation.getJob().getJobType();
-        return jobType == JobType.SOURCE || jobType == JobType.SINK;
+    public boolean accept(NurseRoster nurseRoster, ShiftAssignment shiftAssignment) {
+        ShiftDate shiftDate = shiftAssignment.getShift().getShiftDate();
+        return !nurseRoster.getNurseRosterParametrization().isInPlanningWindow(shiftDate);
     }
 
 }

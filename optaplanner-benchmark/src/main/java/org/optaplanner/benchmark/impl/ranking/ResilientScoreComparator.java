@@ -20,11 +20,18 @@ import java.io.Serializable;
 import java.util.Comparator;
 
 import org.optaplanner.core.api.score.Score;
+import org.optaplanner.core.impl.score.definition.ScoreDefinition;
 
 /**
  * Able to compare {@link Score}s of different types or nulls.
  */
-public class ResilientScoreComparator implements Comparator<Score>, Serializable {
+final class ResilientScoreComparator implements Comparator<Score>, Serializable {
+
+    private final ScoreDefinition aScoreDefinition;
+
+    public ResilientScoreComparator(ScoreDefinition aScoreDefinition) {
+        this.aScoreDefinition = aScoreDefinition;
+    }
 
     @Override
     public int compare(Score a, Score b) {
@@ -33,7 +40,8 @@ public class ResilientScoreComparator implements Comparator<Score>, Serializable
         } else if (b == null) {
             return 1;
         }
-        if (!a.isCompatibleArithmeticArgument(b)) {
+        if (!aScoreDefinition.isCompatibleArithmeticArgument(a) ||
+                !aScoreDefinition.isCompatibleArithmeticArgument(b)) {
             Number[] aNumbers = a.toLevelNumbers();
             Number[] bNumbers = b.toLevelNumbers();
             for (int i = 0; i < aNumbers.length || i < bNumbers.length; i++) {

@@ -16,7 +16,9 @@
 
 package org.optaplanner.core.impl.score.definition;
 
+import org.optaplanner.core.api.score.AbstractBendableScore;
 import org.optaplanner.core.api.score.FeasibilityScore;
+import org.optaplanner.core.api.score.Score;
 
 public abstract class AbstractBendableScoreDefinition<S extends FeasibilityScore<S>> extends AbstractScoreDefinition<S>
         implements ScoreDefinition<S> {
@@ -70,4 +72,14 @@ public abstract class AbstractBendableScoreDefinition<S extends FeasibilityScore
         return hardLevelsSize;
     }
 
+    @Override
+    public boolean isCompatibleArithmeticArgument(Score score) {
+        if (super.isCompatibleArithmeticArgument(score)) {
+            AbstractBendableScore bendableScore = (AbstractBendableScore) score;
+            return getLevelsSize() == bendableScore.getLevelsSize()
+                    && getHardLevelsSize() == bendableScore.getHardLevelsSize()
+                    && getSoftLevelsSize() == bendableScore.getSoftLevelsSize();
+        }
+        return false;
+    }
 }

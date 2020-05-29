@@ -1,5 +1,5 @@
 /*
- * Copyright 2013 Red Hat, Inc. and/or its affiliates.
+ * Copyright 2020 Red Hat, Inc. and/or its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -265,7 +265,7 @@ public class TennisPanel extends SolutionPanel<TennisSolution> {
             teamListField.setSelectedItem(teamAssignment.getTeam());
             listFieldsPanel.add(teamListField);
             listFieldsPanel.add(new JLabel("Pinned:"));
-            JCheckBox pinnedField = new JCheckBox("immovable during solving");
+            JCheckBox pinnedField = new JCheckBox("can not move during solving");
             pinnedField.setSelected(teamAssignment.isPinned());
             listFieldsPanel.add(pinnedField);
             int result = JOptionPane.showConfirmDialog(TennisPanel.this.getRootPane(), listFieldsPanel,

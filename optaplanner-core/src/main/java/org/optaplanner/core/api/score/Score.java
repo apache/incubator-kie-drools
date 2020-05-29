@@ -162,7 +162,9 @@ public interface Score<Score_ extends Score> extends Comparable<Score_> {
      * @param otherScore never null
      * @return true if the otherScore is accepted as a parameter of {@link #add(Score)}, {@link #subtract(Score)}
      *         and {@link #compareTo(Object)}.
+     * @deprecated in favor of {@link ScoreDefinition#isCompatibleArithmeticArgument(Score)}
      */
+    @Deprecated(/* forRemoval = true */)
     boolean isCompatibleArithmeticArgument(Score otherScore);
 
     /**

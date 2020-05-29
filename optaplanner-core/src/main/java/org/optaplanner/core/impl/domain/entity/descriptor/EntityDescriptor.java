@@ -31,6 +31,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.function.Predicate;
 
+import org.optaplanner.core.api.domain.entity.PinningFilter;
 import org.optaplanner.core.api.domain.entity.PlanningEntity;
 import org.optaplanner.core.api.domain.entity.PlanningPin;
 import org.optaplanner.core.api.domain.solution.PlanningSolution;
@@ -159,10 +160,27 @@ public class EntityDescriptor<Solution_> {
 
     private void processMovable(DescriptorPolicy descriptorPolicy, PlanningEntity entityAnnotation) {
         Class<? extends SelectionFilter> movableEntitySelectionFilterClass = entityAnnotation.movableEntitySelectionFilter();
-        if (movableEntitySelectionFilterClass == PlanningEntity.NullMovableEntitySelectionFilter.class) {
-            movableEntitySelectionFilterClass = null;
+        boolean hasSelectionFilter = movableEntitySelectionFilterClass != PlanningEntity.NullMovableEntitySelectionFilter.class;
+        Class<? extends PinningFilter> pinningFilterClass = entityAnnotation.pinningFilter();
+        boolean hasPinningFilter = pinningFilterClass != PlanningEntity.NullPinningFilter.class;
+        if (hasPinningFilter && hasSelectionFilter) {
+            throw new IllegalStateException("The entityClass (" + entityClass
+                    + ") uses both movableEntitySelectionFilter (" + movableEntitySelectionFilterClass +
+                    ") and pinningFilter (" + pinningFilterClass + ").\n" +
+                    "Maybe use only pinningFilterClass on your @" + PlanningEntity.class.getSimpleName() + " annotation.");
         }
-        if (movableEntitySelectionFilterClass != null) {
+        if (hasPinningFilter) {
+            declaredMovableEntitySelectionFilter = new SelectionFilter() {
+
+                private final PinningFilter pinningFilter =
+                        ConfigUtils.newInstance(this, "pinningFilterClass", pinningFilterClass);
+
+                @Override
+                public boolean accept(ScoreDirector scoreDirector, Object selection) {
+                    return !pinningFilter.accept(scoreDirector.getWorkingSolution(), selection);
+                }
+            };
+        } else if (hasSelectionFilter) {
             declaredMovableEntitySelectionFilter = ConfigUtils.newInstance(this,
                     "movableEntitySelectionFilterClass", movableEntitySelectionFilterClass);
         }
@@ -575,9 +593,9 @@ public class EntityDescriptor<Solution_> {
     /**
      * @param scoreDirector never null
      * @param entity never null
-     * @return true if the entity is initialized or immovable
+     * @return true if the entity is initialized or pinned
      */
-    public boolean isEntityInitializedOrImmovable(ScoreDirector<Solution_> scoreDirector, Object entity) {
+    public boolean isEntityInitializedOrPinned(ScoreDirector<Solution_> scoreDirector, Object entity) {
         return isInitialized(entity) || !isMovable(scoreDirector, entity);
     }
 

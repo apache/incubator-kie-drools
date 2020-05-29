@@ -31,8 +31,8 @@ import org.optaplanner.core.config.solver.termination.TerminationConfig;
 import org.optaplanner.core.impl.testdata.domain.TestdataEntity;
 import org.optaplanner.core.impl.testdata.domain.TestdataSolution;
 import org.optaplanner.core.impl.testdata.domain.TestdataValue;
-import org.optaplanner.core.impl.testdata.domain.immovable.TestdataImmovableEntity;
-import org.optaplanner.core.impl.testdata.domain.immovable.TestdataImmovableSolution;
+import org.optaplanner.core.impl.testdata.domain.pinned.TestdataPinnedEntity;
+import org.optaplanner.core.impl.testdata.domain.pinned.TestdataPinnedSolution;
 import org.optaplanner.core.impl.testdata.util.PlannerTestUtils;
 
 public class DefaultLocalSearchPhaseTest {
@@ -70,33 +70,33 @@ public class DefaultLocalSearchPhaseTest {
     }
 
     @Test
-    public void solveWithImmovableEntities() {
+    public void solveWithPinnedEntities() {
         SolverConfig solverConfig = PlannerTestUtils.buildSolverConfig(
-                TestdataImmovableSolution.class, TestdataImmovableEntity.class);
+                TestdataPinnedSolution.class, TestdataPinnedEntity.class);
         LocalSearchPhaseConfig phaseConfig = new LocalSearchPhaseConfig();
         phaseConfig.setTerminationConfig(new TerminationConfig().withScoreCalculationCountLimit(10L));
         solverConfig.setPhaseConfigList(Collections.singletonList(
                 phaseConfig));
 
-        TestdataImmovableSolution solution = new TestdataImmovableSolution("s1");
+        TestdataPinnedSolution solution = new TestdataPinnedSolution("s1");
         TestdataValue v1 = new TestdataValue("v1");
         TestdataValue v2 = new TestdataValue("v2");
         TestdataValue v3 = new TestdataValue("v3");
         solution.setValueList(Arrays.asList(v1, v2, v3));
         solution.setEntityList(Arrays.asList(
-                new TestdataImmovableEntity("e1", v1, false, false),
-                new TestdataImmovableEntity("e2", v2, true, false),
-                new TestdataImmovableEntity("e3", null, false, true)));
+                new TestdataPinnedEntity("e1", v1, false, false),
+                new TestdataPinnedEntity("e2", v2, true, false),
+                new TestdataPinnedEntity("e3", null, false, true)));
 
         solution = PlannerTestUtils.solve(solverConfig, solution);
         assertNotNull(solution);
-        TestdataImmovableEntity solvedE1 = solution.getEntityList().get(0);
+        TestdataPinnedEntity solvedE1 = solution.getEntityList().get(0);
         assertCode("e1", solvedE1);
         assertNotNull(solvedE1.getValue());
-        TestdataImmovableEntity solvedE2 = solution.getEntityList().get(1);
+        TestdataPinnedEntity solvedE2 = solution.getEntityList().get(1);
         assertCode("e2", solvedE2);
         assertEquals(v2, solvedE2.getValue());
-        TestdataImmovableEntity solvedE3 = solution.getEntityList().get(2);
+        TestdataPinnedEntity solvedE3 = solution.getEntityList().get(2);
         assertCode("e3", solvedE3);
         assertEquals(null, solvedE3.getValue());
     }
@@ -156,34 +156,34 @@ public class DefaultLocalSearchPhaseTest {
     }
 
     @Test
-    public void solveTabuSearchWithImmovableEntities() {
+    public void solveTabuSearchWithPinnedEntities() {
         SolverConfig solverConfig = PlannerTestUtils.buildSolverConfig(
-                TestdataImmovableSolution.class, TestdataImmovableEntity.class);
+                TestdataPinnedSolution.class, TestdataPinnedEntity.class);
         LocalSearchPhaseConfig phaseConfig = new LocalSearchPhaseConfig();
         phaseConfig.setLocalSearchType(LocalSearchType.TABU_SEARCH);
         phaseConfig.setTerminationConfig(new TerminationConfig().withScoreCalculationCountLimit(10L));
         solverConfig.setPhaseConfigList(Collections.singletonList(
                 phaseConfig));
 
-        TestdataImmovableSolution solution = new TestdataImmovableSolution("s1");
+        TestdataPinnedSolution solution = new TestdataPinnedSolution("s1");
         TestdataValue v1 = new TestdataValue("v1");
         TestdataValue v2 = new TestdataValue("v2");
         TestdataValue v3 = new TestdataValue("v3");
         solution.setValueList(Arrays.asList(v1, v2, v3));
         solution.setEntityList(Arrays.asList(
-                new TestdataImmovableEntity("e1", v1, false, false),
-                new TestdataImmovableEntity("e2", v2, true, false),
-                new TestdataImmovableEntity("e3", null, false, true)));
+                new TestdataPinnedEntity("e1", v1, false, false),
+                new TestdataPinnedEntity("e2", v2, true, false),
+                new TestdataPinnedEntity("e3", null, false, true)));
 
         solution = PlannerTestUtils.solve(solverConfig, solution);
         assertNotNull(solution);
-        TestdataImmovableEntity solvedE1 = solution.getEntityList().get(0);
+        TestdataPinnedEntity solvedE1 = solution.getEntityList().get(0);
         assertCode("e1", solvedE1);
         assertNotNull(solvedE1.getValue());
-        TestdataImmovableEntity solvedE2 = solution.getEntityList().get(1);
+        TestdataPinnedEntity solvedE2 = solution.getEntityList().get(1);
         assertCode("e2", solvedE2);
         assertEquals(v2, solvedE2.getValue());
-        TestdataImmovableEntity solvedE3 = solution.getEntityList().get(2);
+        TestdataPinnedEntity solvedE3 = solution.getEntityList().get(2);
         assertCode("e3", solvedE3);
         assertEquals(null, solvedE3.getValue());
     }

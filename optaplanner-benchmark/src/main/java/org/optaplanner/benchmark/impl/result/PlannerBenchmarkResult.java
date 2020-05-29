@@ -1,5 +1,5 @@
 /*
- * Copyright 2010 Red Hat, Inc. and/or its affiliates.
+ * Copyright 2020 Red Hat, Inc. and/or its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -37,6 +37,7 @@ import org.optaplanner.core.api.solver.Solver;
 import org.optaplanner.core.api.solver.SolverFactory;
 import org.optaplanner.core.config.solver.EnvironmentMode;
 import org.optaplanner.core.config.util.ConfigUtils;
+import org.optaplanner.core.impl.score.definition.ScoreDefinition;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -362,7 +363,8 @@ public class PlannerBenchmarkResult {
 
             Score score = solverBenchmarkResult.getAverageScore();
             if (score != null) {
-                if (totalScore != null && !totalScore.isCompatibleArithmeticArgument(score)) {
+                ScoreDefinition scoreDefinition = solverBenchmarkResult.getScoreDefinition();
+                if (totalScore != null && !scoreDefinition.isCompatibleArithmeticArgument(totalScore)) {
                     // Mixing different use cases with different score definitions.
                     totalScore = null;
                     break;

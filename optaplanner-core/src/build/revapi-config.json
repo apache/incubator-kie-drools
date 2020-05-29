@@ -308,6 +308,15 @@
           "methodName": "getSolvingDuration",
           "elementKind": "method",
           "justification": "New ScoreManager functionality replaces some Solver functionality."
+        },
+        {
+          "code": "java.method.addedToInterface",
+          "new": "method boolean org.optaplanner.core.impl.score.definition.ScoreDefinition<S extends org.optaplanner.core.api.score.Score<S extends org.optaplanner.core.api.score.Score<S>>>::isCompatibleArithmeticArgument(org.optaplanner.core.api.score.Score) @ org.optaplanner.core.api.domain.solution.PlanningScore.NullScoreDefinition",
+          "package": "org.optaplanner.core.api.domain.solution",
+          "classSimpleName": "NullScoreDefinition",
+          "methodName": "isCompatibleArithmeticArgument",
+          "elementKind": "method",
+          "justification": "ScoreDefinition is not public API, even though it leaks."
         }
       ]
     }

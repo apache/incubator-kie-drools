@@ -1,5 +1,5 @@
 /*
- * Copyright 2012 Red Hat, Inc. and/or its affiliates.
+ * Copyright 2020 Red Hat, Inc. and/or its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -364,7 +364,7 @@ public class EntitySelectorConfig extends SelectorConfig<EntitySelectorConfig> {
                     filterList.add(ConfigUtils.newInstance(this, "filterClass", filterClass));
                 }
             }
-            // Filter out immovable entities
+            // Filter out pinned entities
             if (entityDescriptor.hasEffectiveMovableEntitySelectionFilter()) {
                 filterList.add(entityDescriptor.getEffectiveMovableEntitySelectionFilter());
             }

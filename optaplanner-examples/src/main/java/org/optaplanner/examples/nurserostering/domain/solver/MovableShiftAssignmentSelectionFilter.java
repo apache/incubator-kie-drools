@@ -1,5 +1,5 @@
 /*
- * Copyright 2012 Red Hat, Inc. and/or its affiliates.
+ * Copyright 2020 Red Hat, Inc. and/or its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -16,22 +16,20 @@
 
 package org.optaplanner.examples.nurserostering.domain.solver;
 
+import org.optaplanner.core.api.domain.entity.PinningFilter;
 import org.optaplanner.core.impl.heuristic.selector.common.decorator.SelectionFilter;
 import org.optaplanner.core.impl.score.director.ScoreDirector;
 import org.optaplanner.examples.nurserostering.domain.NurseRoster;
 import org.optaplanner.examples.nurserostering.domain.ShiftAssignment;
-import org.optaplanner.examples.nurserostering.domain.ShiftDate;
 
 public class MovableShiftAssignmentSelectionFilter implements SelectionFilter<NurseRoster, ShiftAssignment> {
 
-    @Override
-    public boolean accept(ScoreDirector<NurseRoster> scoreDirector, ShiftAssignment shiftAssignment) {
-        return accept(scoreDirector.getWorkingSolution(), shiftAssignment);
-    }
+    private final PinningFilter<NurseRoster, ShiftAssignment> pinningFilter =
+            new ShiftAssignmentPinningFilter();
 
-    public boolean accept(NurseRoster nurseRoster, ShiftAssignment shiftAssignment) {
-        ShiftDate shiftDate = shiftAssignment.getShift().getShiftDate();
-        return nurseRoster.getNurseRosterParametrization().isInPlanningWindow(shiftDate);
+    @Override
+    public boolean accept(ScoreDirector<NurseRoster> scoreDirector, ShiftAssignment selection) {
+        return !pinningFilter.accept(scoreDirector.getWorkingSolution(), selection);
     }
 
 }

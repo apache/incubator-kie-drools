@@ -1,5 +1,5 @@
 /*
- * Copyright 2015 Red Hat, Inc. and/or its affiliates.
+ * Copyright 2020 Red Hat, Inc. and/or its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -45,6 +45,10 @@ public class HeuristicConfigPolicy {
 
     private EntitySorterManner entitySorterManner = EntitySorterManner.NONE;
     private ValueSorterManner valueSorterManner = ValueSorterManner.NONE;
+    /**
+     * @deprecated for removal.
+     */
+    @Deprecated(/* forRemoval = true */)
     private boolean reinitializeVariableFilterEnabled = false;
     private boolean initializedChainedValueFilterEnabled = false;
 
@@ -116,10 +120,18 @@ public class HeuristicConfigPolicy {
         this.valueSorterManner = valueSorterManner;
     }
 
+    /**
+     * @deprecated for removal.
+     */
+    @Deprecated(/* forRemoval = true */)
     public boolean isReinitializeVariableFilterEnabled() {
         return reinitializeVariableFilterEnabled;
     }
 
+    /**
+     * @deprecated for removal.
+     */
+    @Deprecated(/* forRemoval = true */)
     public void setReinitializeVariableFilterEnabled(boolean reinitializeVariableFilterEnabled) {
         this.reinitializeVariableFilterEnabled = reinitializeVariableFilterEnabled;
     }

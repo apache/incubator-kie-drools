@@ -125,52 +125,43 @@ which is stable enough to share with the employees, so they can plan their socia
 
 image::RepeatedPlanning/continuousPlanningPatientAdmissionSchedule.png[align="center"]
 
-In the hospital bed planning example above, notice the difference
-between the original planning of November 1st and the new planning of November 5th:
+In the hospital bed planning example above, notice the difference between the original planning of November 1st and the new planning of November 5th:
 some problem facts (F, H, I, J, K) changed in the meantime, which results in unrelated planning entities (G) changing too.
 
 The planning window can be split up in several stages:
 
 * _History_
 +
-Immutable past time periods. It contains only immovable entities.
+Immutable past time periods.
+It contains only pinned entities.
 +
 ** Recent historic entities can also affect score constraints that apply to movable entities.
-For example, in nurse rostering, a nurse that has worked the last three historic weekends in a row
-should not be assigned to three more weekends in a row,
-because she requires a one free weekend per month.
+For example, in nurse rostering, a nurse that has worked the last three historic weekends in a row should not be assigned to three more weekends in a row, because she requires a one free weekend per month.
 ** Do not load all historic entities in memory:
-even though immovable entities do not affect solving performance,
-they can cause out of memory problems when the data grows to years.
+even though pinned entities do not affect solving performance, they can cause out of memory problems when the data grows to years.
 Only load those that might still affect the current constraints with a good safety margin.
 
 * _Published_
 +
 Upcoming time periods that have been published.
-They contain only <<immovablePlanningEntities,Immovable>> and/or <<nonvolatileReplanning,semi-immovable>> planning entities.
+They contain only <<pinnedPlanningEntities,pinned>> and/or <<nonvolatileReplanning,semi-movable>> planning entities.
 +
 ** The published schedule has been shared with the business.
-For example, in nurse rostering, the nurses will use this schedule to plan their personal lives,
-so they require a publish notice of for example 3 weeks in advance.
+For example, in nurse rostering, the nurses will use this schedule to plan their personal lives, so they require a publish notice of for example 3 weeks in advance.
 Normal planning will not change that part of schedule.
 +
-Changing that schedule later is disruptive, but were exceptions force us to do them anyway
-(for example someone calls in sick), do change this part of the planning
-while minimizing disruption with <<nonvolatileReplanning,non-disruptive replanning>>.
+Changing that schedule later is disruptive, but were exceptions force us to do them anyway (for example someone calls in sick), do change this part of the planning while minimizing disruption with <<nonvolatileReplanning,non-disruptive replanning>>.
 
 * _Draft_
 +
 Upcoming time periods after the published time periods that can change freely.
-They contain movable planning entities, except for any that are immovable for other reasons
-(such as being <<pinDownPlanningEntities,pinned by a user>>).
+They contain movable planning entities, except for any that are pinned for other reasons (such as being <<pinDownPlanningEntities,pinned by a user>>).
 +
 ** The first part of the draft, called _the final draft_, will be published, so these planning entities can change one last time.
 The publishing frequency, for example once per week, determines the number of time periods that change from _draft_ to _published_.
-** The latter time periods of the _draft_ are likely change again in later planning efforts,
-especially if some of the problem facts change by then (for example nurse Ann doesn't want to work on one of those days).
+** The latter time periods of the _draft_ are likely change again in later planning efforts, especially if some of the problem facts change by then (for example nurse Ann doesn't want to work on one of those days).
 +
-Despite that these latter planning entities might still change a lot,
-we can't leave them out for later, because we would risk _painting ourselves into a corner_.
+Despite that these latter planning entities might still change a lot, we can't leave them out for later, because we would risk _painting ourselves into a corner_.
 For example, in employee rostering we could have all our rare skilled employees working the last 5 days of the week that gets published,
 which won't reduce the score of that week, but will make it impossible for us to deliver a feasible schedule the next week.
 So the draft length needs to be longer than the part that will be published first.
@@ -187,20 +178,17 @@ in which case the _unplanned_ stage is not applicable.
 
 image::RepeatedPlanning/continuousPublishingWithRotation.png[align="center"]
 
+[[pinnedPlanningEntities]]
+=== Pinned planning entities
 
-[[immovablePlanningEntities]]
-=== Immovable planning entities
-
-An immovable planning entity doesn't change during solving.
-This is commonly used by users to pin down one or more specific assignments
-and force OptaPlanner to schedule around those fixed assignments.
+A pinned planning entity doesn't change during solving.
+This is commonly used by users to pin down one or more specific assignments and force OptaPlanner to schedule around those fixed assignments.
 
 [[pinDownPlanningEntities]]
 ==== Pin down planning entities with `@PlanningPin`
 
-To make some planning entities immovable, add an `@PlanningPin` annotation
-on a boolean getter or field of the planning entity class.
-That boolean is `true` if the entity is immovable (pinned down to its current planning values) and `false` otherwise.
+To pin some planning entities down, add an `@PlanningPin` annotation on a boolean getter or field of the planning entity class.
+That boolean is `true` if the entity is pinned down to its current planning values and `false` otherwise.
 
 . Add the `@PlanningPin` annotation on a `boolean`:
 +
@@ -221,27 +209,24 @@ public class Lecture {
 }
 ----
 
-In the example above, if `pinned` is `true`, the lecture will not be assigned to another period or room
-(even if the current period and rooms fields are `null`).
+In the example above, if `pinned` is `true`, the lecture will not be assigned to another period or room (even if the current period and rooms fields are `null`).
 
-[[configureAMovableEntitySelectionFilter]]
-==== Configure a movable `EntitySelectionFilter`
+[[configureAPinningFilter]]
+==== Configure a `PinningFilter`
 
-Alternatively, to make some planning entities immovable, add an entity `SelectionFilter`
-that returns `true` if an entity is movable, and `false` if it is immovable.
+Alternatively, to pin some planning entities down, add a `PinningFilter` that returns `true` if an entity is movable, and `false` if it is pinned.
 This is more flexible and more verbose than the `@PlanningPin` approach.
 
 For example on the nurse rostering example:
 
-. Add the `SelectionFilter`:
+. Add the `PinningFilter`:
 +
 [source,java,options="nowrap"]
 ----
-public class MovableShiftAssignmentSelectionFilter implements SelectionFilter<NurseRoster, ShiftAssignment> {
+public class ShiftAssignmentPinningFilter implements PinningFilter<NurseRoster, ShiftAssignment> {
 
     @Override
-    public boolean accept(ScoreDirector<NurseRoster> scoreDirector, ShiftAssignment shiftAssignment) {
-        NurseRoster nurseRoster = scoreDirector.getWorkingSolution();
+    public boolean accept(NurseRoster nurseRoster, ShiftAssignment shiftAssignment) {
         ShiftDate shiftDate = shiftAssignment.getShift().getShiftDate();
         return nurseRoster.getNurseRosterInfo().isInPlanningWindow(shiftDate);
     }
@@ -249,21 +234,23 @@ public class MovableShiftAssignmentSelectionFilter implements SelectionFilter<Nu
 }
 ----
 
-. Configure the `SelectionFilter`:
+. Configure the `PinningFilter`:
 +
 [source,java,options="nowrap"]
 ----
-@PlanningEntity(movableEntitySelectionFilter = MovableShiftAssignmentSelectionFilter.class)
+@PlanningEntity(pinningFilter = ShiftAssignmentPinningFilter.class)
 public class ShiftAssignment {
     ...
 }
 ----
 
-
 [[nonvolatileReplanning]]
 === Nonvolatile replanning to minimize disruption (semi-movable planning entities)
 
-Replanning an existing plan can be very disruptive. If the plan affects humans (such as employees, drivers, ...), very disruptive changes are often undesirable. In such cases, nonvolatile replanning helps by restricting planning freedom: the gain of changing a plan must be higher than the disruption it causes. This is usually implemented by taxing all planning entities that change.
+Replanning an existing plan can be very disruptive.
+If the plan affects humans (such as employees, drivers, ...), very disruptive changes are often undesirable.
+In such cases, nonvolatile replanning helps by restricting planning freedom: the gain of changing a plan must be higher than the disruption it causes.
+This is usually implemented by taxing all planning entities that change.
 
 image::RepeatedPlanning/nonDisruptiveReplanning.png[align="center"]
 
@@ -318,26 +305,28 @@ To do real-time planning, combine the following planning techniques:
 +
 This lowers the burden of real-time planning.
 
-As time passes, the problem itself changes. Consider the vehicle routing use case:
+As time passes, the problem itself changes.
+Consider the vehicle routing use case:
 
 image::RepeatedPlanning/realTimePlanningVehicleRouting.png[align="center"]
 
 In the example above, three customers are added at different times (``07:56``, `08:02` and ``08:45``), after the original customer set finished solving at `07:55`, and in some cases, after the vehicles have already left.
 
-OptaPlanner can handle such scenarios with `ProblemFactChange` (in combination with <<immovablePlanningEntities,immovable planning entities>>).
-
+OptaPlanner can handle such scenarios with `ProblemFactChange` (in combination with <<pinnedPlanningEntities,pinned planning entities>>).
 
 [[problemFactChange]]
 === `ProblemFactChange`
 
-While the `Solver` is solving, one of the problem facts may be changed by an outside event. For example, an airplane is delayed and needs the runway at a later time.
+While the `Solver` is solving, one of the problem facts may be changed by an outside event.
+For example, an airplane is delayed and needs the runway at a later time.
 
 [IMPORTANT]
 ====
 Do not change the problem fact instances used by the `Solver` while it is solving (from another thread or even in the same thread), as that will corrupt it.
 ====
 
-Add a `ProblemFactChange` to the `Solver`, which it executes in the solver thread as soon as possible. For example:
+Add a `ProblemFactChange` to the `Solver`, which it executes in the solver thread as soon as possible.
+For example:
 
 [source,java,options="nowrap"]
 ----
@@ -363,21 +352,20 @@ public interface ProblemFactChange<Solution_> {
 }
 ----
 
-
 [WARNING]
 ====
 The `ScoreDirector` must be updated with any change on the problem facts of planning entities in a `ProblemFactChange`.
 ====
 
-
 To write a `ProblemFactChange` correctly, it is important to understand the behavior of <<cloningASolution,a planning clone>>.
 
 A planning clone of a solution must fulfill these requirements:
 
-* The clone must represent the same planning problem. Usually it reuses the same instances of the problem facts and problem fact collections as the original.
+* The clone must represent the same planning problem.
+Usually it reuses the same instances of the problem facts and problem fact collections as the original.
 
-* The clone must use different, cloned instances of the entities and entity collections. Changes to an original Solution entity’s variables must not affect its clone.
-
+* The clone must use different, cloned instances of the entities and entity collections.
+Changes to an original Solution entity’s variables must not affect its clone.
 
 [[problemFactChangeExample]]
 ==== Cloud balancing `ProblemFactChange` example

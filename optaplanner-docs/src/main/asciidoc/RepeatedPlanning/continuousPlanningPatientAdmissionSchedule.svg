@@ -2,32 +2,31 @@
 <!-- Created with Inkscape (http://www.inkscape.org/) -->
 
 <svg
-   xmlns:dc="http://purl.org/dc/elements/1.1/"
-   xmlns:cc="http://creativecommons.org/ns#"
-   xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
-   xmlns:svg="http://www.w3.org/2000/svg"
-   xmlns="http://www.w3.org/2000/svg"
-   xmlns:xlink="http://www.w3.org/1999/xlink"
-   xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd"
-   xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape"
-   width="800"
-   height="600"
-   id="svg2"
-   version="1.1"
-   inkscape:version="0.92.4 (unknown)"
-   sodipodi:docname="continuousPlanningPatientAdmissionSchedule.svg"
-   inkscape:export-filename="continuousPlanningPatientAdmissionSchedule.png"
-   inkscape:export-xdpi="90"
-   inkscape:export-ydpi="90">
+    xmlns:dc="http://purl.org/dc/elements/1.1/"
+    xmlns:cc="http://creativecommons.org/ns#"
+    xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
+    xmlns="http://www.w3.org/2000/svg"
+    xmlns:xlink="http://www.w3.org/1999/xlink"
+    xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd"
+    xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape"
+    width="800"
+    height="600"
+    id="svg2"
+    version="1.1"
+    inkscape:version="0.92.4 (unknown)"
+    sodipodi:docname="continuousPlanningPatientAdmissionSchedule.svg"
+    inkscape:export-filename="continuousPlanningPatientAdmissionSchedule.png"
+    inkscape:export-xdpi="90"
+    inkscape:export-ydpi="90">
   <defs
-     id="defs4">
+      id="defs4">
     <inkscape:perspective
-       sodipodi:type="inkscape:persp3d"
-       inkscape:vp_x="0 : 526.18109 : 1"
-       inkscape:vp_y="0 : 1000 : 0"
-       inkscape:vp_z="744.09448 : 526.18109 : 1"
-       inkscape:persp3d-origin="372.04724 : 350.78739 : 1"
-       id="perspective10" />
+        sodipodi:type="inkscape:persp3d"
+        inkscape:vp_x="0 : 526.18109 : 1"
+        inkscape:vp_y="0 : 1000 : 0"
+        inkscape:vp_z="744.09448 : 526.18109 : 1"
+        inkscape:persp3d-origin="372.04724 : 350.78739 : 1"
+        id="perspective10"/>
     <inkscape:perspective
        id="perspective3633"
        inkscape:persp3d-origin="0.5 : 0.33333333 : 1"
@@ -2776,23 +2775,25 @@
            id="flowPara4506"
            style="font-size:12px;line-height:1.25">5-9</flowPara></flowRoot>    </g>
     <flowRoot
-       xml:space="preserve"
-       id="flowRoot4566"
-       style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;line-height:0.01%;font-family:'Liberation Sans';-inkscape-font-specification:'Liberation Sans, Normal';text-align:start;writing-mode:lr-tb;text-anchor:start;fill:#8f5902;fill-opacity:1;stroke:none"
-       transform="translate(176.15625,224.09984)"><flowRegion
+        xml:space="preserve"
+        id="flowRoot4566"
+        style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;line-height:0.01%;font-family:'Liberation Sans';-inkscape-font-specification:'Liberation Sans, Normal';text-align:start;writing-mode:lr-tb;text-anchor:start;fill:#8f5902;fill-opacity:1;stroke:none"
+        transform="translate(176.15625,224.09984)"><flowRegion
          id="flowRegion4568"><rect
            style="font-size:14px;text-align:start;text-anchor:start;fill:#8f5902"
            id="rect4570"
            width="80"
            height="24.999891"
            x="83.84375"
-           y="340.90027" /></flowRegion><flowPara
-         id="flowPara4572"
-         style="font-size:14px;line-height:1.25;text-align:start;text-anchor:start;fill:#8f5902">immovable</flowPara></flowRoot>    <flowRoot
-       transform="translate(376.15625,15.316367)"
-       style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;line-height:0.01%;font-family:'Liberation Sans';-inkscape-font-specification:'Liberation Sans, Normal';text-align:start;writing-mode:lr-tb;text-anchor:start;opacity:0.8;fill:#ef2929;fill-opacity:1;stroke:none"
-       id="flowRoot4621"
-       xml:space="preserve"><flowRegion
+           y="340.90027" /></flowRegion>
+      <flowPara
+          id="flowPara4572"
+          style="font-size:14px;line-height:1.25;text-align:start;text-anchor:start;fill:#8f5902">pinned</flowPara></flowRoot>
+    <flowRoot
+        transform="translate(376.15625,15.316367)"
+        style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;line-height:0.01%;font-family:'Liberation Sans';-inkscape-font-specification:'Liberation Sans, Normal';text-align:start;writing-mode:lr-tb;text-anchor:start;opacity:0.8;fill:#ef2929;fill-opacity:1;stroke:none"
+        id="flowRoot4621"
+        xml:space="preserve"><flowRegion
          id="flowRegion4623"><rect
            y="324.68332"
            x="43.84375"

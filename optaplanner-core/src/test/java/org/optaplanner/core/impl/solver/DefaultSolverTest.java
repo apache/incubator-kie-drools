@@ -41,8 +41,8 @@ import org.optaplanner.core.impl.testdata.domain.chained.TestdataChainedAnchor;
 import org.optaplanner.core.impl.testdata.domain.chained.TestdataChainedEntity;
 import org.optaplanner.core.impl.testdata.domain.chained.TestdataChainedSolution;
 import org.optaplanner.core.impl.testdata.domain.extended.legacysolution.TestdataLegacySolution;
-import org.optaplanner.core.impl.testdata.domain.immovable.TestdataImmovableEntity;
-import org.optaplanner.core.impl.testdata.domain.immovable.TestdataImmovableSolution;
+import org.optaplanner.core.impl.testdata.domain.pinned.TestdataPinnedEntity;
+import org.optaplanner.core.impl.testdata.domain.pinned.TestdataPinnedSolution;
 import org.optaplanner.core.impl.testdata.util.PlannerTestUtils;
 
 public class DefaultSolverTest {
@@ -174,18 +174,18 @@ public class DefaultSolverTest {
     }
 
     @Test
-    public void solveImmovableEntityList() {
+    public void solvePinnedEntityList() {
         SolverConfig solverConfig = PlannerTestUtils
-                .buildSolverConfig(TestdataImmovableSolution.class, TestdataImmovableEntity.class)
+                .buildSolverConfig(TestdataPinnedSolution.class, TestdataPinnedEntity.class)
                 .withPhases(new CustomPhaseConfig().withCustomPhaseCommands(
                         scoreDirector -> fail("All phases should be skipped because there are no movable entities.")));
-        SolverFactory<TestdataImmovableSolution> solverFactory = SolverFactory.create(solverConfig);
-        Solver<TestdataImmovableSolution> solver = solverFactory.buildSolver();
+        SolverFactory<TestdataPinnedSolution> solverFactory = SolverFactory.create(solverConfig);
+        Solver<TestdataPinnedSolution> solver = solverFactory.buildSolver();
 
-        TestdataImmovableSolution solution = new TestdataImmovableSolution("s1");
+        TestdataPinnedSolution solution = new TestdataPinnedSolution("s1");
         solution.setValueList(Arrays.asList(new TestdataValue("v1"), new TestdataValue("v2")));
-        solution.setEntityList(Arrays.asList(new TestdataImmovableEntity("e1", true, false),
-                new TestdataImmovableEntity("e2", false, true)));
+        solution.setEntityList(Arrays.asList(new TestdataPinnedEntity("e1", true, false),
+                new TestdataPinnedEntity("e2", false, true)));
 
         solution = solver.solve(solution);
         assertNotNull(solution);

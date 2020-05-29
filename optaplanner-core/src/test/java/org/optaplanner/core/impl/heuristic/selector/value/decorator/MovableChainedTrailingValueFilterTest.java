@@ -29,32 +29,78 @@ import org.optaplanner.core.impl.domain.variable.inverserelation.SingletonInvers
 import org.optaplanner.core.impl.domain.variable.inverserelation.SingletonInverseVariableSupply;
 import org.optaplanner.core.impl.score.director.InnerScoreDirector;
 import org.optaplanner.core.impl.testdata.domain.chained.TestdataChainedAnchor;
-import org.optaplanner.core.impl.testdata.domain.immovable.chained.TestdataImmovableChainedEntity;
-import org.optaplanner.core.impl.testdata.domain.immovable.chained.TestdataImmovableChainedSolution;
+import org.optaplanner.core.impl.testdata.domain.pinned.chained.TestdataLegacyPinnedChainedEntity;
+import org.optaplanner.core.impl.testdata.domain.pinned.chained.TestdataLegacyPinnedChainedSolution;
+import org.optaplanner.core.impl.testdata.domain.pinned.chained.TestdataPinnedChainedEntity;
+import org.optaplanner.core.impl.testdata.domain.pinned.chained.TestdataPinnedChainedSolution;
 import org.optaplanner.core.impl.testdata.util.PlannerTestUtils;
 
 public class MovableChainedTrailingValueFilterTest {
 
     @Test
-    public void immovableChained() {
-        GenuineVariableDescriptor variableDescriptor = TestdataImmovableChainedEntity.buildVariableDescriptorForChainedObject();
+    public void legacyPinnedChained() {
+        GenuineVariableDescriptor variableDescriptor =
+                TestdataLegacyPinnedChainedEntity.buildVariableDescriptorForChainedObject();
         SolutionDescriptor solutionDescriptor = variableDescriptor.getEntityDescriptor().getSolutionDescriptor();
         InnerScoreDirector scoreDirector = PlannerTestUtils.mockScoreDirector(solutionDescriptor);
 
         TestdataChainedAnchor a0 = new TestdataChainedAnchor("a0");
-        TestdataImmovableChainedEntity a1 = new TestdataImmovableChainedEntity("a1", a0, true);
-        TestdataImmovableChainedEntity a2 = new TestdataImmovableChainedEntity("a2", a1, false);
-        TestdataImmovableChainedEntity a3 = new TestdataImmovableChainedEntity("a3", a2, false);
+        TestdataLegacyPinnedChainedEntity a1 = new TestdataLegacyPinnedChainedEntity("a1", a0, true);
+        TestdataLegacyPinnedChainedEntity a2 = new TestdataLegacyPinnedChainedEntity("a2", a1, false);
+        TestdataLegacyPinnedChainedEntity a3 = new TestdataLegacyPinnedChainedEntity("a3", a2, false);
 
         TestdataChainedAnchor b0 = new TestdataChainedAnchor("b0");
-        TestdataImmovableChainedEntity b1 = new TestdataImmovableChainedEntity("b1", b0, false);
-        TestdataImmovableChainedEntity b2 = new TestdataImmovableChainedEntity("b2", b1, false);
+        TestdataLegacyPinnedChainedEntity b1 = new TestdataLegacyPinnedChainedEntity("b1", b0, false);
+        TestdataLegacyPinnedChainedEntity b2 = new TestdataLegacyPinnedChainedEntity("b2", b1, false);
 
         TestdataChainedAnchor c0 = new TestdataChainedAnchor("c0");
-        TestdataImmovableChainedEntity c1 = new TestdataImmovableChainedEntity("c1", c0, true);
-        TestdataImmovableChainedEntity c2 = new TestdataImmovableChainedEntity("c2", c1, true);
+        TestdataLegacyPinnedChainedEntity c1 = new TestdataLegacyPinnedChainedEntity("c1", c0, true);
+        TestdataLegacyPinnedChainedEntity c2 = new TestdataLegacyPinnedChainedEntity("c2", c1, true);
 
-        TestdataImmovableChainedSolution solution = new TestdataImmovableChainedSolution("solution");
+        TestdataLegacyPinnedChainedSolution solution = new TestdataLegacyPinnedChainedSolution("solution");
+        solution.setChainedAnchorList(Arrays.asList(a0, b0, c0));
+        solution.setChainedEntityList(Arrays.asList(a1, a2, a3, b1, b2, c1, c2));
+
+        scoreDirector.setWorkingSolution(solution);
+        SingletonInverseVariableSupply inverseVariableSupply = scoreDirector.getSupplyManager()
+                .demand(new SingletonInverseVariableDemand(variableDescriptor));
+
+        MovableChainedTrailingValueFilter filter = new MovableChainedTrailingValueFilter(variableDescriptor);
+
+        assertEquals(false, filter.accept(scoreDirector, a0));
+        assertEquals(true, filter.accept(scoreDirector, a1));
+        assertEquals(true, filter.accept(scoreDirector, a2));
+        assertEquals(true, filter.accept(scoreDirector, a3));
+
+        assertEquals(true, filter.accept(scoreDirector, b0));
+        assertEquals(true, filter.accept(scoreDirector, b1));
+        assertEquals(true, filter.accept(scoreDirector, b2));
+
+        assertEquals(false, filter.accept(scoreDirector, c0));
+        assertEquals(false, filter.accept(scoreDirector, c1));
+        assertEquals(true, filter.accept(scoreDirector, c2));
+    }
+
+    @Test
+    public void pinnedChained() {
+        GenuineVariableDescriptor variableDescriptor = TestdataPinnedChainedEntity.buildVariableDescriptorForChainedObject();
+        SolutionDescriptor solutionDescriptor = variableDescriptor.getEntityDescriptor().getSolutionDescriptor();
+        InnerScoreDirector scoreDirector = PlannerTestUtils.mockScoreDirector(solutionDescriptor);
+
+        TestdataChainedAnchor a0 = new TestdataChainedAnchor("a0");
+        TestdataPinnedChainedEntity a1 = new TestdataPinnedChainedEntity("a1", a0, true);
+        TestdataPinnedChainedEntity a2 = new TestdataPinnedChainedEntity("a2", a1, false);
+        TestdataPinnedChainedEntity a3 = new TestdataPinnedChainedEntity("a3", a2, false);
+
+        TestdataChainedAnchor b0 = new TestdataChainedAnchor("b0");
+        TestdataPinnedChainedEntity b1 = new TestdataPinnedChainedEntity("b1", b0, false);
+        TestdataPinnedChainedEntity b2 = new TestdataPinnedChainedEntity("b2", b1, false);
+
+        TestdataChainedAnchor c0 = new TestdataChainedAnchor("c0");
+        TestdataPinnedChainedEntity c1 = new TestdataPinnedChainedEntity("c1", c0, true);
+        TestdataPinnedChainedEntity c2 = new TestdataPinnedChainedEntity("c2", c1, true);
+
+        TestdataPinnedChainedSolution solution = new TestdataPinnedChainedSolution("solution");
         solution.setChainedAnchorList(Arrays.asList(a0, b0, c0));
         solution.setChainedEntityList(Arrays.asList(a1, a2, a3, b1, b2, c1, c2));
 
@@ -80,7 +126,7 @@ public class MovableChainedTrailingValueFilterTest {
 
     @Test
     public void getMovableChainedTrailingValueFilter() {
-        VariableDescriptor variableDescriptor = TestdataImmovableChainedEntity.buildEntityDescriptor()
+        VariableDescriptor variableDescriptor = TestdataPinnedChainedEntity.buildEntityDescriptor()
                 .getVariableDescriptor("chainedObject");
         assertNotNull(((GenuineVariableDescriptor) variableDescriptor).getMovableChainedTrailingValueFilter());
     }

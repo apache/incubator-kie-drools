@@ -185,4 +185,11 @@ public interface ScoreDefinition<S extends Score<S>> {
      */
     S divideBySanitizedDivisor(S dividend, S divisor);
 
+    /**
+     * @param score never null
+     * @return true if the otherScore is accepted as a parameter of {@link Score#add(Score)},
+     *         {@link Score#subtract(Score)} and {@link Score#compareTo(Object)} for scores of this score definition.
+     */
+    boolean isCompatibleArithmeticArgument(Score score);
+
 }

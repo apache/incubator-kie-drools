@@ -731,23 +731,19 @@ Many human planners fail to accept this, often because they feel threatened by a
 But despite that, both can benefit if the human planner becomes the supervisor of OptaPlanner:
 
 * *The human planner defines, validates and tweaks the score function.*
-** The human planner tweaks the constraint weights of the <<constraintConfiguration, constraint configuration>> in a UI,
-as the business priorities change over time.
+** The human planner tweaks the constraint weights of the <<constraintConfiguration, constraint configuration>> in a UI, as the business priorities change over time.
 ** When the business changes, the score function often needs to change too.
 The human planner can notify the developers to add, change or remove score constraints.
 * *The human planner is always in control of OptaPlanner.*
 ** As shown in the course scheduling example, the human planner can pin down one or more planning variables to a specific planning value.
-Because they are <<immovablePlanningEntities,immovable>>, OptaPlanner does not change them: it optimizes the planning around the enforcements made by the human.
+Because they are <<pinnedPlanningEntities,pinned>>, OptaPlanner does not change them: it optimizes the planning around the enforcements made by the human.
 If the human planner pins down all planning variables, he/she sidelines OptaPlanner completely.
-** In a prototype implementation, the human planner occasionally uses pinning to intervene,
-but as the implementation matures, this should become obsolete.
-The feature should be kept available as a reassurance for the humans,
-and in the event that the business changes dramatically before the score constraints are adjusted accordingly.
+** In a prototype implementation, the human planner occasionally uses pinning to intervene, but as the implementation matures, this should become obsolete.
+The feature should be kept available as a reassurance for the humans, and in the event that the business changes dramatically before the score constraints are adjusted accordingly.
 
 For this reason, it is recommended that the human planner is actively involved in your project.
 
 image::Integration/keepTheUserInControl.png[align="center"]
-
 
 [[sizingHardwareAndSoftware]]
 == Sizing hardware and software

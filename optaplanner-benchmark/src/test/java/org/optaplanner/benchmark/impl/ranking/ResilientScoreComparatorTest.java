@@ -1,5 +1,5 @@
 /*
- * Copyright 2016 Red Hat, Inc. and/or its affiliates.
+ * Copyright 2020 Red Hat, Inc. and/or its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -18,15 +18,19 @@ package org.optaplanner.benchmark.impl.ranking;
 
 import static org.optaplanner.core.impl.testdata.util.PlannerAssert.assertCompareToOrder;
 
+import java.util.Comparator;
+
 import org.junit.jupiter.api.Test;
+import org.optaplanner.core.api.score.Score;
 import org.optaplanner.core.api.score.buildin.hardsoft.HardSoftScore;
 import org.optaplanner.core.api.score.buildin.simple.SimpleScore;
+import org.optaplanner.core.impl.score.buildin.simple.SimpleScoreDefinition;
 
 public class ResilientScoreComparatorTest {
 
     @Test
     public void compareTo() {
-        ResilientScoreComparator comparator = new ResilientScoreComparator();
+        Comparator<Score> comparator = new ResilientScoreComparator(new SimpleScoreDefinition());
 
         assertCompareToOrder(comparator,
                 SimpleScore.of(-20),

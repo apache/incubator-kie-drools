@@ -1,11 +1,11 @@
 /*
- * Copyright 2011 Red Hat, Inc. and/or its affiliates.
+ * Copyright 2020 Red Hat, Inc. and/or its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
  *
- * http://www.apache.org/licenses/LICENSE-2.0
+ *      http://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
@@ -79,10 +79,13 @@ public @interface PlanningVariable {
      * and it returns true if the selection entity should not be reinitialized for this variable
      *
      * @return {@link NullReinitializeVariableEntityFilter} when it is null (workaround for annotation limitation)
+     * @deprecated for removal. Instead, filter the entity selector of the placer in the construction heuristic.
      */
+    @Deprecated(/* forRemoval = true */)
     Class<? extends SelectionFilter> reinitializeVariableEntityFilter() default NullReinitializeVariableEntityFilter.class;
 
     /** Workaround for annotation limitation in {@link #reinitializeVariableEntityFilter()}. */
+    @Deprecated(/* forRemoval = true */)
     interface NullReinitializeVariableEntityFilter extends SelectionFilter {
     }
 

@@ -1,5 +1,5 @@
 /*
- * Copyright 2018 Red Hat, Inc. and/or its affiliates.
+ * Copyright 2020 Red Hat, Inc. and/or its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -24,19 +24,18 @@ import java.lang.annotation.Retention;
 import java.lang.annotation.Target;
 
 /**
- * Specifies that a boolean property (or field) of a {@link PlanningEntity} determines if the planning entity is immovable.
- * An immovable planning entity is never changed during planning.
+ * Specifies that a boolean property (or field) of a {@link PlanningEntity} determines if the planning entity is pinned.
+ * A pinned planning entity is never changed during planning.
  * For example, it allows the user to pin a shift to a specific employee before solving
  * and the solver will not undo that, regardless of the constraints.
  * <p>
- * The boolean is false if the planning entity is movable
- * and true if the planning entity is immovable (AKA pinned).
+ * The boolean is false if the planning entity is movable and true if the planning entity is pinned.
  * <p>
  * It applies to all the planning variables of that planning entity.
- * To make individual variables immovable, see https://issues.redhat.com/browse/PLANNER-124
+ * To make individual variables pinned, see https://issues.redhat.com/browse/PLANNER-124
  * <p>
- * This is syntactic sugar for {@link PlanningEntity#movableEntitySelectionFilter()},
- * which is a more flexible and verbose way to make a planning entity immovable.
+ * This is syntactic sugar for {@link PlanningEntity#pinningFilter()},
+ * which is a more flexible and verbose way to pin a planning entity.
  */
 @Target({ METHOD, FIELD })
 @Retention(RUNTIME)

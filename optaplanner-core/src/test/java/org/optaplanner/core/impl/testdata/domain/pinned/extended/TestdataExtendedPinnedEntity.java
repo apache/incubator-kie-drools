@@ -1,5 +1,5 @@
 /*
- * Copyright 2017 Red Hat, Inc. and/or its affiliates.
+ * Copyright 2020 Red Hat, Inc. and/or its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package org.optaplanner.core.impl.testdata.domain.immovable.extended;
+package org.optaplanner.core.impl.testdata.domain.pinned.extended;
 
 import org.optaplanner.core.api.domain.entity.PlanningEntity;
 import org.optaplanner.core.api.domain.entity.PlanningPin;
@@ -22,33 +22,33 @@ import org.optaplanner.core.api.domain.variable.PlanningVariable;
 import org.optaplanner.core.impl.domain.entity.descriptor.EntityDescriptor;
 import org.optaplanner.core.impl.domain.solution.descriptor.SolutionDescriptor;
 import org.optaplanner.core.impl.testdata.domain.TestdataValue;
-import org.optaplanner.core.impl.testdata.domain.immovable.TestdataImmovableEntity;
+import org.optaplanner.core.impl.testdata.domain.pinned.TestdataPinnedEntity;
 
-@PlanningEntity(movableEntitySelectionFilter = TestdataExtendedImmovableEntityFilter.class)
-public class TestdataExtendedImmovableEntity extends TestdataImmovableEntity {
+@PlanningEntity(pinningFilter = TestdataExtendedPinningFilter.class)
+public class TestdataExtendedPinnedEntity extends TestdataPinnedEntity {
 
     public static EntityDescriptor buildEntityDescriptor() {
-        SolutionDescriptor solutionDescriptor = TestdataExtendedImmovableSolution.buildSolutionDescriptor();
-        return solutionDescriptor.findEntityDescriptorOrFail(TestdataExtendedImmovableEntity.class);
+        SolutionDescriptor solutionDescriptor = TestdataExtendedPinnedSolution.buildSolutionDescriptor();
+        return solutionDescriptor.findEntityDescriptorOrFail(TestdataExtendedPinnedEntity.class);
     }
 
     private TestdataValue subValue;
     private boolean closed;
     private boolean pinnedByBoss;
 
-    public TestdataExtendedImmovableEntity() {
+    public TestdataExtendedPinnedEntity() {
     }
 
-    public TestdataExtendedImmovableEntity(String code) {
+    public TestdataExtendedPinnedEntity(String code) {
         super(code);
     }
 
-    public TestdataExtendedImmovableEntity(String code, TestdataValue value, TestdataValue subValue) {
+    public TestdataExtendedPinnedEntity(String code, TestdataValue value, TestdataValue subValue) {
         super(code, value);
         this.subValue = subValue;
     }
 
-    public TestdataExtendedImmovableEntity(String code, TestdataValue value, boolean locked, boolean pinned,
+    public TestdataExtendedPinnedEntity(String code, TestdataValue value, boolean locked, boolean pinned,
             TestdataValue subValue, boolean closed, boolean pinnedByBoss) {
         super(code, value, locked, pinned);
         this.subValue = subValue;
