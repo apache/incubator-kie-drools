@@ -79,10 +79,8 @@ public class DecisionCodegenTest {
         List<GeneratedFile> generatedFiles = codeGenerator.generate();
         assertEquals(2, generatedFiles.size());
 
-        assertIterableEquals(Arrays.asList(
-                "http_58_47_47www_46trisotech_46com_47definitions_47_4f5608e9_454d74_454c22_45a47e_45ab657257fc9c/InputSet.java",
-                "http_58_47_47www_46trisotech_46com_47definitions_47_4f5608e9_454d74_454c22_45a47e_45ab657257fc9c/OneOfEachTypeResource.java"
-                             ),
+        assertIterableEquals(Arrays.asList("http_58_47_47www_46trisotech_46com_47definitions_47__4f5608e9_454d74_454c22_45a47e_45ab657257fc9c/InputSet.java",
+                                           "http_58_47_47www_46trisotech_46com_47definitions_47__4f5608e9_454d74_454c22_45a47e_45ab657257fc9c/OneOfEachTypeResource.java"),
                              fileNames(generatedFiles)
         );
 
