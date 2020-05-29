@@ -16,9 +16,11 @@
 
 package org.drools.core.time;
 
-import org.drools.core.common.InternalWorkingMemory;
-
 import java.io.Serializable;
+import java.util.Optional;
+
+import org.drools.core.common.InternalKnowledgeRuntime;
+import org.drools.core.common.InternalWorkingMemory;
 
 public interface JobContext extends Serializable {
     /**
@@ -29,4 +31,8 @@ public interface JobContext extends Serializable {
     JobHandle getJobHandle();
 
     InternalWorkingMemory getWorkingMemory();
+
+    default Optional<InternalKnowledgeRuntime> getInternalKnowledgeRuntime() {
+        return getWorkingMemory() != null ? Optional.ofNullable(getWorkingMemory().getKnowledgeRuntime()) : Optional.empty();
+    }
 }
