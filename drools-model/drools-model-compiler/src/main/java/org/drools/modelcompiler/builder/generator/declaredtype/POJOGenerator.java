@@ -73,13 +73,6 @@ public class POJOGenerator {
         return compileAll(kbuilder, packageClassLoader, classesWithPackage);
     }
 
-    public static void registerType(TypeResolver typeResolver, Map<String, Class<?>> classMap) {
-        for (Map.Entry<String, Class<?>> entry : classMap.entrySet()) {
-            typeResolver.registerClass(entry.getKey(), entry.getValue());
-            typeResolver.registerClass(entry.getValue().getSimpleName(), entry.getValue());
-        }
-    }
-
     public void findPOJOorGenerate() {
         TypeResolver typeResolver = pkg.getTypeResolver();
         for (TypeDeclarationDescr typeDescr : packageDescr.getTypeDeclarations()) {

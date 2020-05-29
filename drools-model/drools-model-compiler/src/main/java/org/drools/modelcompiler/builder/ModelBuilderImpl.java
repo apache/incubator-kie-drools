@@ -36,7 +36,9 @@ import org.drools.compiler.lang.descr.GlobalDescr;
 import org.drools.compiler.lang.descr.ImportDescr;
 import org.drools.compiler.lang.descr.PackageDescr;
 import org.drools.compiler.lang.descr.TypeDeclarationDescr;
+import org.drools.core.addon.TypeResolver;
 import org.drools.core.definitions.InternalKnowledgePackage;
+import org.drools.core.rule.ImportDeclaration;
 import org.drools.core.rule.TypeDeclaration;
 import org.drools.core.util.StringUtils;
 import org.drools.modelcompiler.builder.generator.DRLIdGenerator;
@@ -46,10 +48,11 @@ import org.kie.api.builder.ReleaseId;
 import org.kie.internal.builder.ResultSeverity;
 
 import static java.util.Collections.emptyList;
+
+import static com.github.javaparser.StaticJavaParser.parseImport;
 import static org.drools.compiler.builder.impl.ClassDefinitionFactory.createClassDefinition;
 import static org.drools.modelcompiler.builder.generator.ModelGenerator.generateModel;
 import static org.drools.modelcompiler.builder.generator.declaredtype.POJOGenerator.compileType;
-import static org.drools.modelcompiler.builder.generator.declaredtype.POJOGenerator.registerType;
 
 public class ModelBuilderImpl<T extends PackageSources> extends KnowledgeBuilderImpl {
 
@@ -235,8 +238,24 @@ public class ModelBuilderImpl<T extends PackageSources> extends KnowledgeBuilder
 
         for (CompositePackageDescr packageDescr : packages) {
             InternalKnowledgePackage pkg = getPackageRegistry(packageDescr.getNamespace()).getPackage();
-            allGeneratedPojos.forEach(c -> registerType(pkg.getTypeResolver(), allCompiledClasses));
+            allGeneratedPojos.stream()
+                    .filter( pojo -> isInPackage(pkg, pojo) )
+                    .forEach( pojo -> registerType(pkg.getTypeResolver(), allCompiledClasses.get(pojo.getFullyQualifiedName())) );
         }
+    }
+
+    private boolean isInPackage(InternalKnowledgePackage pkg, GeneratedClassWithPackage pojo) {
+        return pkg.getName().equals( pojo.getPackageName() ) || pkg.getImports().values().stream().anyMatch( i -> hasImport( i, pojo ) );
+    }
+
+    private boolean hasImport( ImportDeclaration imp, GeneratedClassWithPackage pojo ) {
+        com.github.javaparser.ast.ImportDeclaration impDec = parseImport("import " + imp.getTarget() + ";");
+        return impDec.getNameAsString().equals( impDec.isAsterisk() ? pojo.getPackageName() : pojo.getFullyQualifiedName() );
+    }
+
+    public static void registerType( TypeResolver typeResolver, Class<?> clazz) {
+        typeResolver.registerClass(clazz.getCanonicalName(), clazz);
+        typeResolver.registerClass(clazz.getSimpleName(), clazz);
     }
 
     protected void generatePOJOs(PackageDescr packageDescr, PackageRegistry pkgRegistry) {
