@@ -65,6 +65,10 @@ public class DMNClassloaderTest extends BaseInterpretedVsCompiledTest {
                                   "        }\n" +
                                   "        return new BigDecimal( stats.getStandardDeviation() );\n" +
                                   "    }\n" +
+                                  "\n" +
+                                  "    public static BigDecimal ignoring( DescriptiveStatistics ds ) {\n" +
+                                  "         return std(java.util.Arrays.asList(new BigDecimal(2), new BigDecimal(3), new BigDecimal(4)));" +
+                                  "    }\n" +
                                   "}";
 
         final KieServices ks = KieServices.Factory.get();
