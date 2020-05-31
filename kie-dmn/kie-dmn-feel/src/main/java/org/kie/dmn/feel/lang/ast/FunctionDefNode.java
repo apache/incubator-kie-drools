@@ -163,7 +163,7 @@ public class FunctionDefNode
         return ps.toArray( new String[ps.size()] );
     }
 
-    public static Class<?> convertPrimitiveNameToType(String typeName) {
+    private static Class<?> convertPrimitiveNameToType(String typeName) {
         if (typeName.equals( "int" )) {
             return int.class;
         }
