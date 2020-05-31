@@ -19,8 +19,6 @@ package org.kie.dmn.feel.lang;
 import java.util.ArrayList;
 import java.util.List;
 
-import com.github.javaparser.JavaParser;
-import com.github.javaparser.StaticJavaParser;
 import com.github.javaparser.ast.NodeList;
 import com.github.javaparser.ast.expr.CastExpr;
 import com.github.javaparser.ast.expr.ClassExpr;
@@ -55,7 +53,7 @@ public class FunctionDefs {
                     String paramTypeName = paramTypeNames[i];
                     Type paramTypeCanonicalName =
                             parseType(
-                                    FunctionDefNode.getType(paramTypeName).getCanonicalName());
+                                      FunctionDefNode.getType(paramTypeName, null).getCanonicalName());
 
                     Expression param =
                         new CastExpr(paramTypeCanonicalName,
