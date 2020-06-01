@@ -82,6 +82,9 @@
                 <plugins>
                     <plugin>
                         <artifactId>maven-failsafe-plugin</artifactId>
+                        <configuration>
+                            <skip>false</skip>
+                        </configuration>
                         <executions>
                             <execution>
                                 <goals>
