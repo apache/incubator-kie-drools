@@ -7,6 +7,7 @@ import java.util.Arrays;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Map;
@@ -220,8 +221,15 @@ public class MCDCAnalyser {
         LOG.trace("filter1outs {}", filter1outs);
 
         if (filter1outs.stream().filter(not(getVisitedPositiveOutput()::contains)).count() > 0) {
-            filter1outs.removeAll(getVisitedPositiveOutput());
-            LOG.trace("I recomputed filter1outs to prioritize non-yet visited outputs {}", filter1outs);
+            LOG.trace("Trying to prioritize non-yet visited outputs...");
+            Set<List<Comparable<?>>> hypo = new HashSet<>(filter1outs);
+            hypo.removeAll(getVisitedPositiveOutput());
+            if (elseRuleIdx.isPresent() && hypo.size() == 1 && hypo.iterator().next().equals(ddtaTable.getRule().get(elseRuleIdx.get()).getOutputEntry())) {
+                LOG.trace("...won't be prioritizing non-yet visited outputs, otherwise I would prioritize the Else rules.");
+            } else {
+                filter1outs.removeAll(getVisitedPositiveOutput());
+                LOG.trace("I recomputed filter1outs to prioritize non-yet visited outputs {}", filter1outs);
+            }
         }
         if (filter1outs.size() > 1 && elseRuleIdx.isPresent() && filter1outs.contains(ddtaTable.getRule().get(elseRuleIdx.get()).getOutputEntry())) {
             LOG.trace("filter1outs will be filtered of the Else rule's output {}.", ddtaTable.getRule().get(elseRuleIdx.get()).getOutputEntry());
