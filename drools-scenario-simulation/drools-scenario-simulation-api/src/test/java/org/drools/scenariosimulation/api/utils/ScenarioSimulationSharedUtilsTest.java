@@ -25,6 +25,7 @@ import java.util.Map;
 
 import org.junit.Test;
 
+import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 
 public class ScenarioSimulationSharedUtilsTest {
@@ -56,5 +57,6 @@ public class ScenarioSimulationSharedUtilsTest {
     @Test
     public void isEnumCanonicalName() {
         assertTrue(ScenarioSimulationSharedUtils.isEnumCanonicalName(Enum.class.getCanonicalName()));
+        assertFalse(ScenarioSimulationSharedUtils.isEnumCanonicalName(Enum.class.getSimpleName()));
     }
 }
