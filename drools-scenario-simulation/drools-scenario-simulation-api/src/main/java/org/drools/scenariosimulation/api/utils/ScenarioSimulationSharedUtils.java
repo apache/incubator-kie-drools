@@ -66,7 +66,7 @@ public class ScenarioSimulationSharedUtils {
      * @param className
      * @return
      */
-    public static boolean isEnum(String className) {
+    public static boolean isEnumCanonicalName(String className) {
         return Enum.class.getCanonicalName().equals(className);
     }
 }

@@ -54,7 +54,7 @@ public class ScenarioSimulationSharedUtilsTest {
     }
 
     @Test
-    public void isEnum() {
-        assertTrue(ScenarioSimulationSharedUtils.isEnum(Enum.class.getCanonicalName()));
+    public void isEnumCanonicalName() {
+        assertTrue(ScenarioSimulationSharedUtils.isEnumCanonicalName(Enum.class.getCanonicalName()));
     }
 }
