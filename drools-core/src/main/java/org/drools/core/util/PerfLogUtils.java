@@ -16,8 +16,6 @@
 
 package org.drools.core.util;
 
-import java.util.concurrent.atomic.AtomicInteger;
-
 import org.drools.core.common.BaseNode;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -32,10 +30,7 @@ public class PerfLogUtils {
     public static final String PERF_LOGGER_THRESHOLD = "drools.performance.logger.threshold";
     private static int threshold = Integer.parseInt(System.getProperty(PERF_LOGGER_THRESHOLD, "500")); // microseconds
 
-    private static final ThreadLocal<Boolean> started = new ThreadLocal<>();
-    private static final ThreadLocal<AtomicInteger> evalCount = new ThreadLocal<>();
-    private static final ThreadLocal<Long> startTime = new ThreadLocal<>();
-    private static final ThreadLocal<BaseNode> node = new ThreadLocal<>();
+    private static final ThreadLocal<NodeStats> nodeStats = new ThreadLocal<>();
 
     public static int getThreshold() {
         return threshold;
@@ -55,33 +50,29 @@ public class PerfLogUtils {
 
     public static void startMetrics(BaseNode baseNode) {
         if (enabled) {
-            started.set(true);
-            node.set(baseNode);
-            evalCount.set(new AtomicInteger(0));
-            startTime.set(System.nanoTime());
-        }
-    }
-
-    public static void endMetrics() {
-        if (enabled) {
-            started.set(false);
+            nodeStats.set(new NodeStats(baseNode));
         }
     }
 
     public static void incrementEvalCount() {
-        if (enabled && started.get().booleanValue()) {
-            evalCount.get().getAndIncrement();
+        if (enabled) {
+            NodeStats stats = nodeStats.get();
+            if (stats != null && stats.isStarted()) {
+                stats.incrementEvalCount();
+            }
         }
     }
 
     public static void logAndEndMetrics() {
-        if (enabled && started.get().booleanValue()) {
-            long elapsedTime = (System.nanoTime() - startTime.get());
-            int count = evalCount.get().intValue();
-            if (count > 0 && (elapsedTime / 1000) > threshold) {
-                logger.trace("{}, evalCount:{}, elapsed:{}", node.get(), count, elapsedTime / 1000); // microseconds
+        if (enabled) {
+            NodeStats stats = nodeStats.get();
+            if (stats != null && stats.isStarted()) {
+                long elapsedTime = (System.nanoTime() - stats.getStartTime());
+                if (stats.getEvalCount() > 0 && (elapsedTime / 1000) > threshold) {
+                    logger.trace("{}, evalCount:{}, elapsed:{}", stats.getNode(), stats.getEvalCount(), elapsedTime / 1000); // microseconds
+                }
             }
-            started.set(false);
+            nodeStats.remove();
         }
     }
 
