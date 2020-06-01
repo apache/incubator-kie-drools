@@ -61,8 +61,6 @@ public abstract class AbstractKieProject implements KieProject {
 
     private static final Predicate<String> BUILD_ALL = s -> true;
 
-    private Predicate<String> buildFilter = BUILD_ALL;
-
     public ResultsImpl verify() {
         ResultsImpl messages = new ResultsImpl();
         verify(messages);
@@ -212,8 +210,11 @@ public abstract class AbstractKieProject implements KieProject {
         }
     }
 
-    public KnowledgeBuilder buildKnowledgePackages( KieBaseModelImpl kBaseModel,
-                                                    ResultsImpl messages ) {
+    public KnowledgeBuilder buildKnowledgePackages( KieBaseModelImpl kBaseModel, ResultsImpl messages ) {
+        return buildKnowledgePackages( kBaseModel, messages, BUILD_ALL );
+    }
+
+    public KnowledgeBuilder buildKnowledgePackages( KieBaseModelImpl kBaseModel, ResultsImpl messages, Predicate<String> buildFilter ) {
         InternalKieModule kModule = getKieModuleForKBase(kBaseModel.getName());
         KnowledgeBuilderImpl kbuilder = ( KnowledgeBuilderImpl ) createKnowledgeBuilder( kBaseModel, kModule );
         if (kbuilder == null) {
@@ -239,7 +240,7 @@ public abstract class AbstractKieProject implements KieProject {
                 continue;
             }
             if (compileIncludedKieBases()) {
-                addFiles( assets, getKieBaseModel( include ), includeModule, useFolders );
+                addFiles( buildFilter, assets, getKieBaseModel( include ), includeModule, useFolders );
             }
         }
 
@@ -247,14 +248,16 @@ public abstract class AbstractKieProject implements KieProject {
             return null;
         }
 
-        addFiles( assets, kBaseModel, kModule, useFolders );
+        addFiles( buildFilter, assets, kBaseModel, kModule, useFolders );
 
         CompositeKnowledgeBuilder ckbuilder = kbuilder.batch();
 
         // cache KnowledgeBuilder and results
-        kModule.cacheKnowledgeBuilderForKieBase(kBaseModel.getName(), kbuilder);
-        kModule.cacheResultsForKieBase(kBaseModel.getName(), messages);
-
+        if (buildFilter == BUILD_ALL) {
+            kModule.cacheKnowledgeBuilderForKieBase( kBaseModel.getName(), kbuilder );
+            kModule.cacheResultsForKieBase( kBaseModel.getName(), messages );
+        }
+        
         if (assets.isEmpty()) {
             if (buildFilter == BUILD_ALL) {
                 log.warn( "No files found for KieBase " + kBaseModel.getName() +
@@ -292,11 +295,7 @@ public abstract class AbstractKieProject implements KieProject {
         return KnowledgeBuilderFactory.newKnowledgeBuilder( getBuilderConfiguration( kBaseModel, kModule ) );
     }
 
-    public void setBuildFilter( Predicate<String> buildFilter ) {
-        this.buildFilter = buildFilter;
-    }
-
-    private void addFiles( Set<Asset> assets, KieBaseModel kieBaseModel,
+    private void addFiles( Predicate<String> buildFilter, Set<Asset> assets, KieBaseModel kieBaseModel,
                            InternalKieModule kieModule, boolean useFolders) {
         for (String fileName : kieModule.getFileNames()) {
             if (buildFilter.test( fileName ) && !fileName.startsWith(".") && !fileName.endsWith(".properties") &&

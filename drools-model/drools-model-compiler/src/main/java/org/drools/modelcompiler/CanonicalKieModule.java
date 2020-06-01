@@ -36,7 +36,6 @@ import org.appformer.maven.support.DependencyFilter;
 import org.appformer.maven.support.PomModel;
 import org.drools.compiler.builder.impl.KnowledgeBuilderImpl;
 import org.drools.compiler.compiler.io.memory.MemoryFileSystem;
-import org.drools.compiler.kie.builder.impl.AbstractKieProject;
 import org.drools.compiler.kie.builder.impl.FileKieModule;
 import org.drools.compiler.kie.builder.impl.InternalKieModule;
 import org.drools.compiler.kie.builder.impl.KieBaseUpdateContext;
@@ -97,9 +96,9 @@ public class CanonicalKieModule implements InternalKieModule {
 
     private static final String PROJECT_MODEL_RESOURCE_CLASS = PROJECT_MODEL_CLASS.replace('.', '/') + ".class";
 
-    private static final Predicate<String> BUILD_NON_NATIVE = res -> {
+    private static final Predicate<String> NON_MODEL_RESOURCES = res -> {
             ResourceType type = determineResourceType(res);
-            return type != null && !type.isNative();
+            return type != null && !type.isFullyCoveredByExecModel();
     };
 
     private final InternalKieModule internalKieModule;
@@ -218,8 +217,7 @@ public class CanonicalKieModule implements InternalKieModule {
     }
 
     private void buildNonNativeResources( KieBaseModelImpl kBaseModel, KieProject kieProject, ResultsImpl messages, InternalKnowledgeBase kieBase ) {
-        (( AbstractKieProject ) kieProject).setBuildFilter( BUILD_NON_NATIVE );
-        KnowledgeBuilder kbuilder = kieProject.buildKnowledgePackages(kBaseModel, messages);
+        KnowledgeBuilder kbuilder = kieProject.buildKnowledgePackages(kBaseModel, messages, NON_MODEL_RESOURCES);
         if ( !kbuilder.hasErrors() ) {
             for (KiePackage pk : kbuilder.getKnowledgePackages()) {
                 // Workaround to "mark" already compiled packages (as found inside the kjar and retrieved by createKiePackages(kieProject, kBaseModel, messages, kBaseConf))
