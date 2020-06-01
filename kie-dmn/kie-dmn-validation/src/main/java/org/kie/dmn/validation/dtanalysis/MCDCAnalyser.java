@@ -68,20 +68,20 @@ public class MCDCAnalyser {
             step4();
         }
 
-        LOG.info("the final results are as follows.\nLeft Hand Side for Positive:");
+        LOG.info("the final results are as follows. (marked with R the 'red color' records which are duplicates, changing input is maked with * sign)");
+        LOG.info("Left Hand Side for Positive:");
         Set<Record> mcdcRecords = new LinkedHashSet<>();
         // cycle positive side first
         for (PosNegBlock b : selectedBlocks) {
             boolean add = mcdcRecords.add(b.posRecord);
             if (add) {
-                LOG.info("+ {}", b.posRecord);
+                LOG.info("+ {}", b.posRecord.toString(b.cMarker));
             } else {
-                LOG.info("? {}", b.posRecord);
-                throw new IllegalStateException("A positive record was not added to the mcdc");
+                LOG.info("R {}", b.posRecord.toString(b.cMarker));
             }
         }
         // cycle negative side
-        LOG.info("Right Hand Side for Negative: (marked with R the 'red color' records which are duplicates)");
+        LOG.info("Right Hand Side for Negative:");
         for (PosNegBlock b : selectedBlocks) {
             for (Record negRecord : b.negRecords) {
                 boolean add = mcdcRecords.add(negRecord);
@@ -91,8 +91,9 @@ public class MCDCAnalyser {
                     LOG.info("R {}", negRecord);
                 }
             }
-            LOG.info("");
+            LOG.info(" ");
         }
+        LOG.info("total of cases: {}", mcdcRecords.size());
     }
 
     private void step4() {
@@ -206,10 +207,10 @@ public class MCDCAnalyser {
                 if (Stream.of(posCandidate).anyMatch(x -> x == null)) {
                     continue;
                 }
-                if (selectedBlocks.stream().map(sb -> sb.posRecord.enums).anyMatch(x -> Arrays.equals(x, posCandidate))) {
-                    LOG.debug("Skipping posCandidate {} as already part of a postive record {}", posCandidate);
-                    continue;
-                }
+                //                if (selectedBlocks.stream().map(sb -> sb.posRecord.enums).anyMatch(x -> Arrays.equals(x, posCandidate))) {
+                //                    LOG.debug("Skipping posCandidate {} as already part of a postive record {}", posCandidate);
+                //                    continue;
+                //                }
                 Record posCandidateRecord = new Record(ruleIdx, posCandidate, ddtaTable.getRule().get(ruleIdx).getOutputEntry());
                 Optional<PosNegBlock> calculatePosNegBlock = calculatePosNegBlock(idxMostMatchingRules, value, posCandidateRecord, Collections.unmodifiableList(allEnumValues));
                 if (calculatePosNegBlock.isPresent()) {
@@ -484,6 +485,22 @@ public class MCDCAnalyser {
         @Override
         public String toString() {
             return String.format("%2s", ruleIdx + 1) + " [" + Arrays.stream(enums).map(Object::toString).collect(Collectors.joining("; ")) + "] -> " + output;
+        }
+
+        public String toString(int cMarker) {
+            StringBuilder ts = new StringBuilder(String.format("%2s", ruleIdx + 1));
+            ts.append(" [");
+            for (int i = 0; i < enums.length; i++) {
+                if (i == cMarker) {
+                    ts.append("*");
+                }
+                ts.append(enums[i]);
+                if (i + 1 < enums.length) {
+                    ts.append("; ");
+                }
+            }
+            ts.append("] -> ").append(output);
+            return ts.toString();
         }
 
         @Override
