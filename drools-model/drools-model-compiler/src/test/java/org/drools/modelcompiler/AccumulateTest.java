@@ -2036,4 +2036,35 @@ public class AccumulateTest extends BaseModelTest {
         ksession.insert(new Person("Matteo", 38));
         ksession.fireAllRules();
     }
+
+    @Test
+    public void testAccumulateStaticMethodWithPatternBindVar() {
+        String str = "import " + Person.class.getCanonicalName() + ";\n" +
+                "import " + MyUtil.class.getCanonicalName() + ";\n" +
+                "rule R when\n" +
+                "  accumulate (\n" +
+                "       $p : Person(), $result : sum( MyUtil.add($p.getAge(), 10) ) "+
+                "         )" +
+                "then\n" +
+                "  insert($result);\n" +
+                "end";
+
+        KieSession ksession = getKieSession(str);
+
+        ksession.insert("x");
+        ksession.insert(new Person("Mark", 37));
+        ksession.insert(new Person("Edson", 35));
+        ksession.insert(new Person("Mario", 40));
+        ksession.fireAllRules();
+
+        List<Number> results = getObjectsIntoList(ksession, Number.class);
+        assertEquals(1, results.size());
+        assertEquals(142, results.get(0).intValue());
+    }
+
+    public static class MyUtil {
+        public static int add(int a, int b) {
+            return a + b;
+        }
+    }
 }
