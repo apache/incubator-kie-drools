@@ -62,7 +62,6 @@ public class ExternalisedLambdaTest extends BaseModelTest {
                      "end";
 
         KieModuleModel kieModuleModel = KieServices.get().newKieModuleModel();
-        kieModuleModel.setConfigurationProperty("drools.externaliseCanonicalModelLambda", Boolean.TRUE.toString());
         KieSession ksession = null;
         try {
             ksession = getKieSession(kieModuleModel, str);
@@ -89,7 +88,6 @@ public class ExternalisedLambdaTest extends BaseModelTest {
                      "end";
 
         KieModuleModel kieModuleModel = KieServices.get().newKieModuleModel();
-        kieModuleModel.setConfigurationProperty("drools.externaliseCanonicalModelLambda", Boolean.TRUE.toString());
         KieSession ksession = null;
         try {
             ksession = getKieSession(kieModuleModel, str);
@@ -120,7 +118,6 @@ public class ExternalisedLambdaTest extends BaseModelTest {
                      "end";
 
         KieModuleModel kieModuleModel = KieServices.get().newKieModuleModel();
-        kieModuleModel.setConfigurationProperty("drools.externaliseCanonicalModelLambda", Boolean.TRUE.toString());
         KieSession ksession = null;
         try {
             ksession = getKieSession(kieModuleModel, str);
@@ -152,7 +149,6 @@ public class ExternalisedLambdaTest extends BaseModelTest {
                      "end";
 
         KieModuleModel kieModuleModel = KieServices.get().newKieModuleModel();
-        kieModuleModel.setConfigurationProperty("drools.externaliseCanonicalModelLambda", Boolean.TRUE.toString());
         KieSession ksession = null;
         try {
             ksession = getKieSession(kieModuleModel, str);
