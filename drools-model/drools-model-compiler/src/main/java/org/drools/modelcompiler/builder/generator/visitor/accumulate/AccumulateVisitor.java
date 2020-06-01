@@ -271,8 +271,20 @@ public abstract class AccumulateVisitor {
         final Class accumulateFunctionResultType = accumulateFunction.getResultType();
         final String bindExpressionVariable = context.getExprId(accumulateFunctionResultType, typedExpression.toString());
 
+        String paramExprBindingId = rootNodeName;
+        Class<?> patternType = clazz;
+        if (input instanceof PatternDescr) {
+            String inputId = ((PatternDescr)input).getIdentifier();
+            Optional<DeclarationSpec> accumulateClassDeclOpt = context.getDeclarationById(inputId);
+            if (!decl.isPresent() && accumulateClassDeclOpt.isPresent()) {
+                // when static method is used in accumulate function, "_this" is a pattern input
+                paramExprBindingId = inputId;
+                patternType = accumulateClassDeclOpt.get().getDeclarationClass();
+            }
+        }
+
         SingleDrlxParseSuccess drlxParseResult = (SingleDrlxParseSuccess) new ConstraintParser(context, context.getPackageModel())
-                .drlxParse(clazz, decl.isPresent() ? rootNodeName : null, printConstraint(parameterConverted));
+                .drlxParse(patternType, paramExprBindingId, printConstraint(parameterConverted));
 
         if (!decl.isPresent() && input instanceof PatternDescr) {
             drlxParseResult.setAccumulateBinding( ((PatternDescr)input).getIdentifier() );
@@ -320,8 +332,6 @@ public abstract class AccumulateVisitor {
             }
             return Optional.of(new NewBinding(ids, binding));
         }
-
-
 
         @Override
         public Optional<NewBinding> onFail(DrlxParseFail failure) {
