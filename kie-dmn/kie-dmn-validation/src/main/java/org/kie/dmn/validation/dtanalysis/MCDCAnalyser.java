@@ -200,14 +200,21 @@ public class MCDCAnalyser {
         for (int ruleIdx : matchingRulesForInput) {
             Object[] knownValues = new Object[ddtaTable.getInputs().size()];
             knownValues[idxMostMatchingRules] = value;
-            Object[] posCandidate = findValuesForRule(ruleIdx, knownValues, Collections.unmodifiableList(allEnumValues));
-            if (Stream.of(posCandidate).anyMatch(x -> x == null)) {
-                continue;
-            }
-            Record posCandidateRecord = new Record(ruleIdx, posCandidate, ddtaTable.getRule().get(ruleIdx).getOutputEntry());
-            Optional<PosNegBlock> calculatePosNegBlock = calculatePosNegBlock(idxMostMatchingRules, value, posCandidateRecord, Collections.unmodifiableList(allEnumValues));
-            if (calculatePosNegBlock.isPresent()) {
-                candidateBlocks.add(calculatePosNegBlock.get());
+            List<Object[]> valuesForRule = combinatorialValuesForRule(ruleIdx, knownValues, Collections.unmodifiableList(allEnumValues));
+            for (Object[] posCandidate : valuesForRule) {
+                LOG.trace("ruleIdx {} values {}", ruleIdx + 1, posCandidate);
+                if (Stream.of(posCandidate).anyMatch(x -> x == null)) {
+                    continue;
+                }
+                if (selectedBlocks.stream().map(sb -> sb.posRecord.enums).anyMatch(x -> Arrays.equals(x, posCandidate))) {
+                    LOG.debug("Skipping posCandidate {} as already part of a postive record {}", posCandidate);
+                    continue;
+                }
+                Record posCandidateRecord = new Record(ruleIdx, posCandidate, ddtaTable.getRule().get(ruleIdx).getOutputEntry());
+                Optional<PosNegBlock> calculatePosNegBlock = calculatePosNegBlock(idxMostMatchingRules, value, posCandidateRecord, Collections.unmodifiableList(allEnumValues));
+                if (calculatePosNegBlock.isPresent()) {
+                    candidateBlocks.add(calculatePosNegBlock.get());
+                }
             }
         }
         LOG.trace("3. Input {}, initial candidate blocks \n{}", idxMostMatchingRules + 1, candidateBlocks);
@@ -501,6 +508,42 @@ public class MCDCAnalyser {
             return true;
         }
 
+    }
+
+    private List<Object[]> combinatorialValuesForRule(int ruleIdx, Object[] knownValues, List<List<?>> allEnumValues) {
+        List<Object[]> result = new ArrayList<>();
+        List<DDTAInputEntry> inputEntry = ddtaTable.getRule().get(ruleIdx).getInputEntry();
+        List<List<?>> validEnumValues = new ArrayList<>();
+        for (int i = 0; i < inputEntry.size(); i++) {
+            List<Object> enumForI = new ArrayList<>();
+            if (knownValues[i] == null) {
+                DDTAInputEntry ddtaInputEntry = inputEntry.get(i);
+                List<?> enumValues = allEnumValues.get(i);
+                for (Object object : enumValues) {
+                    if (ddtaInputEntry.getIntervals().stream().anyMatch(interval -> interval.asRangeIncludes(object))) {
+                        enumForI.add(object);
+                    }
+                }
+            } else {
+                enumForI.add(knownValues[i]);
+            }
+            validEnumValues.add(enumForI);
+        }
+
+        List<List<Object>> combinatorial = new ArrayList<>();
+        combinatorial.add(new ArrayList<>());
+        for (int i = 0; i < inputEntry.size(); i++) {
+            List<List<Object>> combining = new ArrayList<>();
+            for (List<Object> existing : combinatorial) {
+                for (Object enumForI : validEnumValues.get(i)) {
+                    List<Object> building = new ArrayList<>(existing);
+                    building.add(enumForI);
+                    combining.add(building);
+                }
+            }
+            combinatorial = combining;
+        }
+        return combinatorial.stream().map(List::toArray).collect(Collectors.toList());
     }
 
     private Object[] findValuesForRule(int ruleIdx, Object[] knownValues, List<List<?>> allEnumValues) {
