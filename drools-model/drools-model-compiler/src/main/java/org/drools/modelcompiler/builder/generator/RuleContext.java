@@ -546,5 +546,10 @@ public class RuleContext {
     public void increaseLegacyAccumulateCounter() {
         legacyAccumulateCounter++;
     }
+
+    @Override
+    public String toString() {
+        return "RuleContext for " + descr.getNamespace() + "." + descr.getName();
+    }
 }
 
