@@ -68,7 +68,7 @@ public class MCDCAnalyser {
             step4();
         }
 
-        LOG.info("the final results are as follows. (marked with R the 'red color' records which are duplicates, changing input is maked with * sign)");
+        LOG.info("the final results are as follows. (marked with R the 'red color' records which are duplicates, changing input is marked with * sign)");
         LOG.info("Left Hand Side for Positive:");
         Set<Record> mcdcRecords = new LinkedHashSet<>();
         // cycle positive side first
