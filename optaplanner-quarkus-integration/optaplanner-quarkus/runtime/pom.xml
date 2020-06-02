@@ -11,7 +11,7 @@
 
   <artifactId>optaplanner-quarkus</artifactId>
   <name>OptaPlanner Quarkus - Runtime</name>
-  <description>Constraint solving AI for employee rostering, vehicle routing, maintenance scheduling, school timetabling, etc</description>
+  <description>Optimize planning of vehicle routes, employee rosters, maintenance schedules, task assignments, school timetables, conference schedules, etc.</description>
 
   <dependencies>
     <dependency>

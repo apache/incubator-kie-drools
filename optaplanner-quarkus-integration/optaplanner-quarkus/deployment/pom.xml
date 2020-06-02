@@ -11,6 +11,7 @@
 
   <artifactId>optaplanner-quarkus-deployment</artifactId>
   <name>OptaPlanner Quarkus - Deployment</name>
+  <description>Quarkus deployment module for optaplanner-quarkus.</description>
 
   <dependencies>
     <dependency>

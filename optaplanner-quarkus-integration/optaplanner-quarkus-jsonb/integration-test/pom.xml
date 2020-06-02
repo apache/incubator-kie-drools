@@ -11,7 +11,7 @@
 
   <artifactId>optaplanner-quarkus-jsonb-integration-test</artifactId>
   <name>OptaPlanner Quarkus JSON-B - Integration tests</name>
-  <description>Module that contains OptaPlanner related integration tests with JSON-B</description>
+  <description>Quarkus integration tests for OptaPlanner with JSON-B</description>
 
   <dependencies>
     <dependency>

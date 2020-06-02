@@ -11,7 +11,7 @@
 
   <artifactId>optaplanner-quarkus-jackson</artifactId>
   <name>OptaPlanner Quarkus Jackson - Runtime</name>
-  <description>Activate JSON bindings for OptaPlanner's Score classes</description>
+  <description>Activate Jackson bindings for OptaPlanner's Score classes</description>
 
   <dependencies>
     <dependency>

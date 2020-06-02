@@ -11,7 +11,7 @@
 
   <artifactId>optaplanner-quarkus-jackson-integration-test</artifactId>
   <name>OptaPlanner Quarkus Jackson - Integration tests</name>
-  <description>Module that contains OptaPlanner related integration tests with Jackson</description>
+  <description>Quarkus integration tests for OptaPlanner with Jackson</description>
 
   <dependencies>
     <dependency>
