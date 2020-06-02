@@ -75,6 +75,15 @@ pipeline {
                 }
             }
         }
+        stage('Deploy kogito-examples') {
+            steps {
+                dir("kogito-examples") {
+                    script {
+                      maven.runMavenWithSubmarineSettings('clean deploy', true)
+                    }
+                }
+            }
+        }
     }
     post {
         failure {
