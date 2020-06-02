@@ -21,7 +21,7 @@ interface IOwnProps {
   setCheckedArray?: any;
   refetch?: any;
 }
-const EmptyStateComponent: React.FC<IOwnProps> = ({
+const KogitoEmptyState: React.FC<IOwnProps> = ({
   iconType,
   title,
   body,
@@ -72,4 +72,4 @@ const EmptyStateComponent: React.FC<IOwnProps> = ({
   );
 };
 
-export default EmptyStateComponent;
+export default KogitoEmptyState;

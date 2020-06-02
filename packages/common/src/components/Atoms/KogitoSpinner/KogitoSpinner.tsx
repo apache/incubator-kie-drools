@@ -5,7 +5,7 @@ import { Spinner } from '@patternfly/react-core/dist/esm/experimental';
 interface IOwnProps {
   spinnerText: string;
 }
-const EmptyStateSpinner: React.FC<IOwnProps> = ({ spinnerText }) => {
+const KogitoSpinner: React.FC<IOwnProps> = ({ spinnerText }) => {
   return (
     <EmptyState>
       <EmptyStateIcon variant="container" component={Spinner} />
@@ -14,4 +14,4 @@ const EmptyStateSpinner: React.FC<IOwnProps> = ({ spinnerText }) => {
   );
 };
 
-export default EmptyStateSpinner;
+export default KogitoSpinner;
