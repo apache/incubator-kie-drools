@@ -1,0 +1,42 @@
+# Runs optaplanner-persistence-jpa module tests in a PostgreSQL container
+
+name: OptaPlanner Persistence JPA CI
+
+on:
+  push:
+    branches:
+      - master
+  pull_request:
+    branches:
+      - master
+
+jobs:
+  jpa-postgresql-container:
+    runs-on: ubuntu-latest
+    services:
+      postgres:
+        image: postgres
+        env:
+          POSTGRES_PASSWORD: postgres
+        # Set health checks to wait until postgres has started
+        options: >-
+          --health-cmd pg_isready
+          --health-interval 10s
+          --health-timeout 5s
+          --health-retries 5
+        ports:
+          # Maps tcp port 5432 on service container to the host
+          - 5432:5432
+
+    steps:
+      - name: Check out repository code
+        uses: actions/checkout@v2
+
+      - name: Set up JDK
+        uses: actions/setup-java@v1
+        with:
+          java-version: 11
+
+      # Builds the JPA module and runs tests in a PostgreSQL container
+      - name: Build with Maven
+        run: cd optaplanner-persistence/optaplanner-persistence-jpa && mvn -B verify -Ppostgresql
