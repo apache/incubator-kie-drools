@@ -211,6 +211,14 @@ public class MCDCAnalyser {
                 //                    LOG.debug("Skipping posCandidate {} as already part of a postive record {}", posCandidate);
                 //                    continue;
                 //                }
+                List<Integer> ruleIndexesMatchingValues = ruleIndexesMatchingValues(posCandidate);
+                if (!ruleIndexesMatchingValues.remove((Integer) ruleIdx)) {
+                    continue; // the posCandidate is actually matching another rule (in priorities)
+                }
+                if (ruleIndexesMatchingValues.size() > 0) {
+                    LOG.debug("Skipping posCandidate {} as it could also match rules {}, besides the one currently under calculus {}", posCandidate, ruleIndexesMatchingValues, ruleIdx);
+                    continue;
+                }
                 Record posCandidateRecord = new Record(ruleIdx, posCandidate, ddtaTable.getRule().get(ruleIdx).getOutputEntry());
                 Optional<PosNegBlock> calculatePosNegBlock = calculatePosNegBlock(idxMostMatchingRules, value, posCandidateRecord, Collections.unmodifiableList(allEnumValues));
                 if (calculatePosNegBlock.isPresent()) {
@@ -445,6 +453,46 @@ public class MCDCAnalyser {
             ruleMatches &= rule.getInputEntry().get(c).getIntervals().stream().anyMatch(interval -> interval.asRangeIncludes(cValue));
         }
         return ruleMatches;
+    }
+
+    private List<Integer> ruleIndexesMatchingValues(Object[] values) {
+        List<Integer> ruleIndexes = new ArrayList<>();
+        for (int i = 0; i < ddtaTable.getRule().size(); i++) {
+            DDTARule rule = ddtaTable.getRule().get(i);
+            if (ruleMatches(rule, values)) {
+                ruleIndexes.add(i);
+            }
+        }
+        if (dt.getHitPolicy() == HitPolicy.PRIORITY) {
+            List<List<Comparable<?>>> outputs = new ArrayList<>();
+            for (Integer ruleIdx : ruleIndexes) {
+                DDTARule rule = ddtaTable.getRule().get(ruleIdx);
+                List<Comparable<?>> ruleOutput = rule.getOutputEntry();
+                outputs.add(ruleOutput);
+            }
+            List<Comparable<?>> computedOutput = new ArrayList<>();
+            for (int i = 0; i < ddtaTable.getOutputs().size(); i++) {
+                List outputOrder = ddtaTable.getOutputs().get(i).getOutputOrder();
+                int outputCursor = Integer.MAX_VALUE;
+                for (List<Comparable<?>> outs : outputs) {
+                    Comparable<?> out = outs.get(i);
+                    if (outputOrder.indexOf(out) < outputCursor) {
+                        outputCursor = outputOrder.indexOf(out);
+                    }
+                }
+                computedOutput.add((Comparable<?>) outputOrder.get(outputCursor));
+            }
+            List<Integer> pIndexes = new ArrayList<>();
+            for (Integer ruleIdx : ruleIndexes) {
+                DDTARule rule = ddtaTable.getRule().get(ruleIdx);
+                List<Comparable<?>> ruleOutput = rule.getOutputEntry();
+                if (ruleOutput.equals(computedOutput)) {
+                    pIndexes.add(ruleIdx);
+                }
+            }
+            return pIndexes;
+        }
+        return ruleIndexes;
     }
 
     public static class PosNegBlock {
