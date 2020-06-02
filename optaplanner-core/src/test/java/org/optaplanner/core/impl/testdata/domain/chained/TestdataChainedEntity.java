@@ -1,5 +1,5 @@
 /*
- * Copyright 2015 Red Hat, Inc. and/or its affiliates.
+ * Copyright 2020 Red Hat, Inc. and/or its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -23,6 +23,7 @@ import org.optaplanner.core.impl.domain.entity.descriptor.EntityDescriptor;
 import org.optaplanner.core.impl.domain.solution.descriptor.SolutionDescriptor;
 import org.optaplanner.core.impl.domain.variable.descriptor.GenuineVariableDescriptor;
 import org.optaplanner.core.impl.testdata.domain.TestdataObject;
+import org.optaplanner.core.impl.testdata.domain.TestdataValue;
 
 @PlanningEntity
 public class TestdataChainedEntity extends TestdataObject implements TestdataChainedObject {
@@ -39,7 +40,15 @@ public class TestdataChainedEntity extends TestdataObject implements TestdataCha
         return entityDescriptor.getGenuineVariableDescriptor("chainedObject");
     }
 
+    public static GenuineVariableDescriptor<TestdataChainedSolution> buildVariableDescriptorForUnchainedValue() {
+        SolutionDescriptor<TestdataChainedSolution> solutionDescriptor = TestdataChainedSolution.buildSolutionDescriptor();
+        EntityDescriptor<TestdataChainedSolution> entityDescriptor = solutionDescriptor
+                .findEntityDescriptorOrFail(TestdataChainedEntity.class);
+        return entityDescriptor.getGenuineVariableDescriptor("unchainedValue");
+    }
+
     private TestdataChainedObject chainedObject;
+    private TestdataValue unchainedValue;
 
     public TestdataChainedEntity() {
     }
@@ -60,6 +69,19 @@ public class TestdataChainedEntity extends TestdataObject implements TestdataCha
     }
 
     public void setChainedObject(TestdataChainedObject chainedObject) {
+        this.chainedObject = chainedObject;
+    }
+
+    @PlanningVariable(valueRangeProviderRefs = { "unchainedRange" })
+    public TestdataValue getUnchainedValue() {
+        return unchainedValue;
+    }
+
+    public void setUnchainedValue(TestdataValue unchainedValue) {
+        this.unchainedValue = unchainedValue;
+    }
+
+    public void getUnchainedObject(TestdataChainedObject chainedObject) {
         this.chainedObject = chainedObject;
     }
 
