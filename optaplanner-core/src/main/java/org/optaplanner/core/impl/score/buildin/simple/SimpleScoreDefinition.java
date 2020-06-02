@@ -20,6 +20,7 @@ import java.util.Arrays;
 
 import org.optaplanner.core.api.score.buildin.simple.SimpleScore;
 import org.optaplanner.core.api.score.buildin.simple.SimpleScoreHolder;
+import org.optaplanner.core.api.score.holder.ScoreHolder;
 import org.optaplanner.core.config.score.trend.InitializingScoreTrendLevel;
 import org.optaplanner.core.impl.score.definition.AbstractScoreDefinition;
 import org.optaplanner.core.impl.score.trend.InitializingScoreTrend;
@@ -79,7 +80,7 @@ public class SimpleScoreDefinition extends AbstractScoreDefinition<SimpleScore> 
     }
 
     @Override
-    public SimpleScoreHolder buildScoreHolder(boolean constraintMatchEnabled) {
+    public ScoreHolder buildScoreHolder(boolean constraintMatchEnabled) {
         return new SimpleScoreHolder(constraintMatchEnabled);
     }
 

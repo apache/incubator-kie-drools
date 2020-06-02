@@ -21,6 +21,7 @@ import java.util.Arrays;
 
 import org.optaplanner.core.api.score.buildin.simplebigdecimal.SimpleBigDecimalScore;
 import org.optaplanner.core.api.score.buildin.simplebigdecimal.SimpleBigDecimalScoreHolder;
+import org.optaplanner.core.api.score.holder.ScoreHolder;
 import org.optaplanner.core.impl.score.definition.AbstractScoreDefinition;
 import org.optaplanner.core.impl.score.trend.InitializingScoreTrend;
 
@@ -79,7 +80,7 @@ public class SimpleBigDecimalScoreDefinition extends AbstractScoreDefinition<Sim
     }
 
     @Override
-    public SimpleBigDecimalScoreHolder buildScoreHolder(boolean constraintMatchEnabled) {
+    public ScoreHolder buildScoreHolder(boolean constraintMatchEnabled) {
         return new SimpleBigDecimalScoreHolder(constraintMatchEnabled);
     }
 

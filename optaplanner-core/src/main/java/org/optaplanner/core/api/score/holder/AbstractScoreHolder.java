@@ -1,5 +1,5 @@
 /*
- * Copyright 2010 Red Hat, Inc. and/or its affiliates.
+ * Copyright 2020 Red Hat, Inc. and/or its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -42,7 +42,9 @@ import org.optaplanner.core.impl.score.director.drools.OptaPlannerRuleEventListe
  * Abstract superclass for {@link ScoreHolder}.
  *
  * @param <Score_> the {@link Score} type
+ * @deprecated for removal from public API
  */
+@Deprecated(/* forRemoval = true */)
 public abstract class AbstractScoreHolder<Score_ extends Score<Score_>>
         implements ScoreHolder<Score_>, Serializable {
 
@@ -212,6 +214,10 @@ public abstract class AbstractScoreHolder<Score_ extends Score<Score_>>
         }
     }
 
+    /**
+     * @deprecated for removal from public API
+     */
+    @Deprecated(/* forRemoval = true */)
     public class ConstraintActivationUnMatchListener implements Runnable {
 
         private final Runnable constraintUndoListener;
@@ -240,6 +246,10 @@ public abstract class AbstractScoreHolder<Score_ extends Score<Score_>>
         }
     }
 
+    /**
+     * @deprecated for removal from public API
+     */
+    @Deprecated(/* forRemoval = true */)
     public void setJustificationListConverter(BiFunction<List<Object>, Rule, List<Object>> converter) {
         this.justificationListConverter = converter;
     }

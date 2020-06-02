@@ -1,5 +1,5 @@
 /*
- * Copyright 2016 Red Hat, Inc. and/or its affiliates.
+ * Copyright 2020 Red Hat, Inc. and/or its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -43,6 +43,10 @@ public class TestGenCorruptedScoreReproducer implements TestGenOriginalProblemRe
         this.scoreDirector = scoreDirector;
     }
 
+    // TODO remove in 8.0
+    // The scoreHolder method is not actually deprecated for removal.
+    // It will only be moved to a different type at a time when we can make that change in public API.
+    @SuppressWarnings("deprecation")
     private static Score<?> extractScore(KieSession kieSession) {
         ScoreHolder sh = (ScoreHolder) kieSession.getGlobal(DroolsScoreDirector.GLOBAL_SCORE_HOLDER_KEY);
         return sh.extractScore(0);

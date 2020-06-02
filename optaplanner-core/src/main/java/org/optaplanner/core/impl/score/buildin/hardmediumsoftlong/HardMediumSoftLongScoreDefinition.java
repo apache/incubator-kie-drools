@@ -20,6 +20,7 @@ import java.util.Arrays;
 
 import org.optaplanner.core.api.score.buildin.hardmediumsoftlong.HardMediumSoftLongScore;
 import org.optaplanner.core.api.score.buildin.hardmediumsoftlong.HardMediumSoftLongScoreHolder;
+import org.optaplanner.core.api.score.holder.ScoreHolder;
 import org.optaplanner.core.config.score.trend.InitializingScoreTrendLevel;
 import org.optaplanner.core.impl.score.definition.AbstractScoreDefinition;
 import org.optaplanner.core.impl.score.inliner.ScoreInliner;
@@ -81,7 +82,7 @@ public class HardMediumSoftLongScoreDefinition extends AbstractScoreDefinition<H
     }
 
     @Override
-    public HardMediumSoftLongScoreHolder buildScoreHolder(boolean constraintMatchEnabled) {
+    public ScoreHolder buildScoreHolder(boolean constraintMatchEnabled) {
         return new HardMediumSoftLongScoreHolder(constraintMatchEnabled);
     }
 

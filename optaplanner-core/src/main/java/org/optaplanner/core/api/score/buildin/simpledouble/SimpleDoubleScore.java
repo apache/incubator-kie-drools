@@ -33,7 +33,8 @@ import org.optaplanner.core.api.score.buildin.simplelong.SimpleLongScore;
  * This class is immutable.
  *
  * @see Score
- * @deprecated Double-based scores are deprecated as floating point numbers can't represent a decimal number correctly.
+ * @deprecated Double-based scores are deprecated as floating point numbers are not associative (A + B + C == C + B + A)
+ *             and therefore they are not compatible with incremental score calculation.
  *             Use {@link SimpleBigDecimalScore} or a scaled {@link SimpleLongScore} instead.
  */
 @Deprecated(/* forRemoval = true */)

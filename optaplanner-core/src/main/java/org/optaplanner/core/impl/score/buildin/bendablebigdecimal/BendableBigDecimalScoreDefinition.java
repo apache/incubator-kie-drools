@@ -22,6 +22,7 @@ import java.util.stream.Stream;
 
 import org.optaplanner.core.api.score.buildin.bendablebigdecimal.BendableBigDecimalScore;
 import org.optaplanner.core.api.score.buildin.bendablebigdecimal.BendableBigDecimalScoreHolder;
+import org.optaplanner.core.api.score.holder.ScoreHolder;
 import org.optaplanner.core.impl.score.definition.AbstractBendableScoreDefinition;
 import org.optaplanner.core.impl.score.trend.InitializingScoreTrend;
 
@@ -109,7 +110,7 @@ public class BendableBigDecimalScoreDefinition extends AbstractBendableScoreDefi
     }
 
     @Override
-    public BendableBigDecimalScoreHolder buildScoreHolder(boolean constraintMatchEnabled) {
+    public ScoreHolder buildScoreHolder(boolean constraintMatchEnabled) {
         return new BendableBigDecimalScoreHolder(constraintMatchEnabled, hardLevelsSize, softLevelsSize);
     }
 

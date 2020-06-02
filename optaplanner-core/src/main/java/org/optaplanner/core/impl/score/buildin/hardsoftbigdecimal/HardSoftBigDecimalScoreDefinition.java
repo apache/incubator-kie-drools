@@ -21,6 +21,7 @@ import java.util.Arrays;
 
 import org.optaplanner.core.api.score.buildin.hardsoftbigdecimal.HardSoftBigDecimalScore;
 import org.optaplanner.core.api.score.buildin.hardsoftbigdecimal.HardSoftBigDecimalScoreHolder;
+import org.optaplanner.core.api.score.holder.ScoreHolder;
 import org.optaplanner.core.impl.score.definition.AbstractScoreDefinition;
 import org.optaplanner.core.impl.score.trend.InitializingScoreTrend;
 
@@ -79,7 +80,7 @@ public class HardSoftBigDecimalScoreDefinition extends AbstractScoreDefinition<H
     }
 
     @Override
-    public HardSoftBigDecimalScoreHolder buildScoreHolder(boolean constraintMatchEnabled) {
+    public ScoreHolder buildScoreHolder(boolean constraintMatchEnabled) {
         return new HardSoftBigDecimalScoreHolder(constraintMatchEnabled);
     }
 

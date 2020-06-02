@@ -64,6 +64,10 @@ public final class DroolsConstraintFactory<Solution_> implements InnerConstraint
     // SessionFactory creation
     // ************************************************************************
 
+    // TODO remove in 8.0
+    // The AbstractScoreHolder and its methods are not actually deprecated for removal.
+    // They will only be moved to a different place at a time when we can make that change in public API.
+    @SuppressWarnings("deprecation")
     @Override
     public ConstraintSessionFactory<Solution_> buildSessionFactory(Constraint[] constraints) {
         ModelImpl model = new ModelImpl();

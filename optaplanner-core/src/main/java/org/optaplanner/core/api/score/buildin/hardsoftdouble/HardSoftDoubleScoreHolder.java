@@ -33,7 +33,8 @@ import org.optaplanner.core.api.score.holder.AbstractScoreHolder;
  * Use {@link HardSoftBigDecimalScoreHolder} instead.
  *
  * @see HardSoftDoubleScore
- * @deprecated Double-based scores are deprecated as floating point numbers can't represent a decimal number correctly.
+ * @deprecated Double-based scores are deprecated as floating point numbers are not associative (A + B + C == C + B + A)
+ *             and therefore they are not compatible with incremental score calculation.
  *             Use {@link HardSoftBigDecimalScoreHolder} or a scaled {@link HardSoftLongScoreHolder} instead.
  */
 @Deprecated(/* forRemoval = true */)

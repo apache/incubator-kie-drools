@@ -20,11 +20,17 @@ import java.util.Arrays;
 
 import org.optaplanner.core.api.score.buildin.hardsoftdouble.HardSoftDoubleScore;
 import org.optaplanner.core.api.score.buildin.hardsoftdouble.HardSoftDoubleScoreHolder;
+import org.optaplanner.core.api.score.holder.ScoreHolder;
 import org.optaplanner.core.config.score.trend.InitializingScoreTrendLevel;
 import org.optaplanner.core.impl.score.definition.AbstractScoreDefinition;
 import org.optaplanner.core.impl.score.inliner.ScoreInliner;
 import org.optaplanner.core.impl.score.trend.InitializingScoreTrend;
 
+/**
+ * @deprecated Double-based scores are deprecated as floating point numbers are not associative (A + B + C == C + B + A)
+ *             and therefore they are not compatible with incremental score calculation.
+ */
+@Deprecated(/* forRemoval = true */)
 public class HardSoftDoubleScoreDefinition extends AbstractScoreDefinition<HardSoftDoubleScore> {
 
     public HardSoftDoubleScoreDefinition() {
@@ -81,7 +87,7 @@ public class HardSoftDoubleScoreDefinition extends AbstractScoreDefinition<HardS
     }
 
     @Override
-    public HardSoftDoubleScoreHolder buildScoreHolder(boolean constraintMatchEnabled) {
+    public ScoreHolder buildScoreHolder(boolean constraintMatchEnabled) {
         return new HardSoftDoubleScoreHolder(constraintMatchEnabled);
     }
 

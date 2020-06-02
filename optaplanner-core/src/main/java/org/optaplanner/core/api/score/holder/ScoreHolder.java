@@ -1,5 +1,5 @@
 /*
- * Copyright 2010 Red Hat, Inc. and/or its affiliates.
+ * Copyright 2020 Red Hat, Inc. and/or its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -25,6 +25,7 @@ import org.optaplanner.core.api.domain.constraintweight.ConstraintConfiguration;
 import org.optaplanner.core.api.domain.constraintweight.ConstraintWeight;
 import org.optaplanner.core.api.domain.solution.PlanningSolution;
 import org.optaplanner.core.api.score.Score;
+import org.optaplanner.core.api.score.ScoreManager;
 import org.optaplanner.core.api.score.constraint.ConstraintMatch;
 import org.optaplanner.core.api.score.constraint.ConstraintMatchTotal;
 import org.optaplanner.core.api.score.constraint.Indictment;
@@ -50,7 +51,9 @@ public interface ScoreHolder<Score_ extends Score<Score_>> {
      * @param initScore {@code <= 0}, managed by OptaPlanner, needed as a parameter in the {@link Score}'s creation
      *        method, see {@link Score#getInitScore()}
      * @return never null, the {@link Score} of the working {@link PlanningSolution}
+     * @deprecated for removal from public API, see {@link ScoreManager}.
      */
+    @Deprecated(/* forRemoval = true */)
     Score_ extractScore(int initScore);
 
     /**
@@ -58,7 +61,9 @@ public interface ScoreHolder<Score_ extends Score<Score_>> {
      *
      * @param rule never null
      * @param constraintWeight never null, with {@link Score#getInitScore()} equal to 0.
+     * @deprecated for removal from public API
      */
+    @Deprecated(/* forRemoval = true */)
     void configureConstraintWeight(Rule rule, Score_ constraintWeight);
 
     /**
@@ -70,7 +75,9 @@ public interface ScoreHolder<Score_ extends Score<Score_>> {
      * @return false if the {@link ConstraintMatch}s and {@link ConstraintMatchTotal}s do not need to be collected
      *         which is a performance boost
      * @see #getConstraintMatchTotals()
+     * @deprecated for removal from public API
      */
+    @Deprecated(/* forRemoval = true */)
     boolean isConstraintMatchEnabled();
 
     /**
@@ -81,7 +88,9 @@ public interface ScoreHolder<Score_ extends Score<Score_>> {
      * @return never null
      * @throws IllegalStateException if {@link #isConstraintMatchEnabled()} is false
      * @see ScoreDirector#getConstraintMatchTotals()
+     * @deprecated for removal from public API, see {@link ScoreManager}
      */
+    @Deprecated(/* forRemoval = true */)
     Collection<ConstraintMatchTotal> getConstraintMatchTotals();
 
     /**
@@ -92,7 +101,9 @@ public interface ScoreHolder<Score_ extends Score<Score_>> {
      * @return never null
      * @throws IllegalStateException if {@link #isConstraintMatchEnabled()} is false
      * @see ScoreDirector#getConstraintMatchTotalMap()
+     * @deprecated for removal from public API, see {@link ScoreManager}
      */
+    @Deprecated(/* forRemoval = true */)
     Map<String, ConstraintMatchTotal> getConstraintMatchTotalMap();
 
     /**
@@ -103,7 +114,9 @@ public interface ScoreHolder<Score_ extends Score<Score_>> {
      * @return never null
      * @throws IllegalStateException if {@link #isConstraintMatchEnabled()} returns false
      * @see ScoreDirector#getIndictmentMap()
+     * @deprecated for removal from public API, see {@link ScoreManager}
      */
+    @Deprecated(/* forRemoval = true */)
     Map<Object, Indictment> getIndictmentMap();
 
 }
