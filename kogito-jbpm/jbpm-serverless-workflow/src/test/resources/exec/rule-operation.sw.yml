@@ -9,12 +9,12 @@ functions:
       ruleflowgroup: testRuleflowGroup
 states:
   - name: RuleUnitStateState
-    type: OPERATION
+    type: operation
     start:
-      kind: DEFAULT
-    actionMode: SEQUENTIAL
+      kind: default
+    actionMode: sequential
     actions:
       - functionRef:
           refName: simpleruleunit
     end:
-      kind: TERMINATE
+      kind: terminate

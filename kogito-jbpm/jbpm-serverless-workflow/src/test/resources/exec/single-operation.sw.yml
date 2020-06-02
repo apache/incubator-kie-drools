@@ -7,14 +7,14 @@ functions:
     type: script
 states:
   - name: HelloWorld
-    type: OPERATION
+    type: operation
     start:
-      kind: DEFAULT
-    actionMode: SEQUENTIAL
+      kind: default
+    actionMode: sequential
     actions:
       - functionRef:
           refName: helloWorld
           parameters:
             script: System.out.println("Hello Serverless Workflow World");
     end:
-      kind: TERMINATE
+      kind: terminate

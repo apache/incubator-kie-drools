@@ -32,9 +32,9 @@
   "states": [
     {
       "name": "FinalizeApplication",
-      "type": "EVENT",
+      "type": "event",
       "start": {
-        "kind": "DEFAULT"
+        "kind": "default"
       },
       "exclusive": false,
       "eventsActions": [
@@ -57,7 +57,7 @@
         }
       ],
       "end": {
-        "kind": "TERMINATE"
+        "kind": "terminate"
       }
     }
   ]

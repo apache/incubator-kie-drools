@@ -5,11 +5,11 @@
   "states":[
     {
       "name":"AddInfo",
-      "type":"RELAY",
+      "type":"inject",
       "start": {
-        "kind": "DEFAULT"
+        "kind": "default"
       },
-      "inject": {
+      "data": {
         "name": "john",
         "age": "20"
       },
@@ -19,12 +19,12 @@
     },
     {
       "name": "ChooseOnAge",
-      "type": "SWITCH",
-      "choices": [
+      "type": "switch",
+      "dataConditions": [
         {
           "path": "$.age",
           "value": "18",
-          "operator": "GreaterThanEquals",
+          "operator": "greaterthanorequals",
           "transition": {
             "nextState": "Approve"
           }
@@ -32,7 +32,7 @@
         {
           "path": "$.age",
           "value": "18",
-          "operator": "LessThan",
+          "operator": "lessthan",
           "transition": {
             "nextState": "Deny"
           }
@@ -44,22 +44,22 @@
     },
     {
       "name":"Approve",
-      "type":"RELAY",
-      "inject": {
+      "type":"inject",
+      "data": {
         "decision": "Approve"
       },
       "end": {
-        "kind": "DEFAULT"
+        "kind": "default"
       }
     },
     {
       "name":"Deny",
-      "type":"RELAY",
-      "inject": {
+      "type":"inject",
+      "data": {
         "decision": "Denied"
       },
       "end": {
-        "kind": "DEFAULT"
+        "kind": "default"
       }
     }
   ]

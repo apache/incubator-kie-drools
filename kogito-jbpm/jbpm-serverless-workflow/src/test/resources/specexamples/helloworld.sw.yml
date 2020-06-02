@@ -5,18 +5,18 @@ name: Hello World Workflow
 description: Static Hello World
 states:
   - name: Hello
-    type: RELAY
+    type: inject
     start:
-      kind: DEFAULT
-    inject:
+      kind: default
+    data:
       result: Hello
     transition:
       nextState: World
   - name: World
-    type: RELAY
-    inject:
+    type: inject
+    data:
       result: " World!"
     stateDataFilter:
       dataOutputPath: "$.result"
     end:
-      kind: DEFAULT
+      kind: default

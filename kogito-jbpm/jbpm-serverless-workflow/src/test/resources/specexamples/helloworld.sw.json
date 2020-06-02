@@ -6,11 +6,11 @@
   "states":[
     {
       "name":"Hello",
-      "type":"RELAY",
+      "type":"inject",
       "start": {
-        "kind": "DEFAULT"
+        "kind": "default"
       },
-      "inject": {
+      "data": {
         "result": "Hello"
       },
       "transition": {
@@ -19,15 +19,15 @@
     },
     {
       "name":"World",
-      "type":"RELAY",
-      "inject": {
+      "type":"inject",
+      "data": {
         "result": " World!"
       },
       "stateDataFilter": {
         "dataOutputPath": "$.result"
       },
       "end": {
-        "kind": "DEFAULT"
+        "kind": "default"
       }
     }
   ]

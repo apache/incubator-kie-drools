@@ -10,39 +10,39 @@ functions:
       taskname: approval
 states:
   - name: MakeDecision
-    type: OPERATION
+    type: operation
     start:
-      kind: DEFAULT
-    actionMode: SEQUENTIAL
+      kind: default
+    actionMode: sequential
     actions:
       - functionRef:
           refName: doapproval
     transition:
       nextState: EvalDecision
   - name: EvalDecision
-    type: SWITCH
-    choices:
+    type: switch
+    dataConditions:
       - path: approvaldecision.result
         value: approved
-        operator: Equals
+        operator: equals
         transition:
           nextState: Approve
       - path: approvaldecision.result
         value: denied
-        operator: Equals
+        operator: equals
         transition:
           nextState: Deny
     default:
       nextState: Approve
   - name: Approve
-    type: RELAY
-    inject:
+    type: inject
+    data:
       decision: Approved
     end:
-      kind: DEFAULT
+      kind: default
   - name: Deny
-    type: RELAY
-    inject:
+    type: inject
+    data:
       decision: Denied
     end:
-      kind: DEFAULT
+      kind: default

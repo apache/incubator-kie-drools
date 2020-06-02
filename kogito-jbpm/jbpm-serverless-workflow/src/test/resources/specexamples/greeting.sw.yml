@@ -8,10 +8,10 @@ functions:
     resource: functionResourse
 states:
   - name: Greet
-    type: OPERATION
+    type: operation
     start:
-      kind: DEFAULT
-    actionMode: SEQUENTIAL
+      kind: default
+    actionMode: sequential
     actions:
       - functionRef:
           refName: greetingFunction
@@ -22,4 +22,4 @@ states:
     stateDataFilter:
       dataOutputPath: "$.greeting"
     end:
-      kind: DEFAULT
+      kind: default

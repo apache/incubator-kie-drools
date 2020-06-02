@@ -1,19 +1,19 @@
 {
-  "id": "singlerelay",
+  "id": "function",
   "name": "test-wf",
   "version": "1.0",
   "states":[
     {
-      "name":"SimpleRelay",
-      "type":"RELAY",
+      "name":"SimpleInject",
+      "type":"inject",
       "start": {
-        "kind": "DEFAULT"
+        "kind": "default"
       },
-      "inject": {
+      "data": {
         "name": "john"
       },
       "end": {
-        "kind": "TERMINATE"
+        "kind": "terminate"
       }
     }
   ]

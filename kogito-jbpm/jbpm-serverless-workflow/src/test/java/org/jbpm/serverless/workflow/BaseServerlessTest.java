@@ -24,7 +24,7 @@ import org.jbpm.serverless.workflow.api.end.End;
 import org.jbpm.serverless.workflow.api.events.EventDefinition;
 import org.jbpm.serverless.workflow.api.start.Start;
 import org.jbpm.serverless.workflow.api.states.DefaultState;
-import org.jbpm.serverless.workflow.api.states.RelayState;
+import org.jbpm.serverless.workflow.api.states.InjectState;
 import org.jbpm.serverless.workflow.parser.ServerlessWorkflowParser;
 import org.jbpm.serverless.workflow.parser.core.ServerlessWorkflowFactory;
 import org.jbpm.serverless.workflow.parser.util.WorkflowAppContext;
@@ -36,15 +36,15 @@ public abstract class BaseServerlessTest {
 
     protected static ServerlessWorkflowFactory testFactory = new ServerlessWorkflowFactory(WorkflowAppContext.ofProperties(testWorkflowProperties()));
 
-    protected static final Workflow singleRelayStateWorkflow = new Workflow().withStates(singletonList(
-            new RelayState().withName("relayState").withType(DefaultState.Type.RELAY).withStart(new Start().withKind(Start.Kind.DEFAULT))
+    protected static final Workflow singleInjectStateWorkflow = new Workflow().withStates(singletonList(
+            new InjectState().withName("relayState").withType(DefaultState.Type.INJECT).withStart(new Start().withKind(Start.Kind.DEFAULT))
                     .withEnd(new End(End.Kind.DEFAULT))
     ));
 
-    protected static final Workflow multiRelayStateWorkflow = new Workflow().withStates(asList(
-            new RelayState().withName("relayState").withType(DefaultState.Type.RELAY).withStart(new Start().withKind(Start.Kind.DEFAULT))
+    protected static final Workflow multiInjectStateWorkflow = new Workflow().withStates(asList(
+            new InjectState().withName("relayState").withType(DefaultState.Type.INJECT).withStart(new Start().withKind(Start.Kind.DEFAULT))
                     .withEnd(new End(End.Kind.DEFAULT)),
-            new RelayState().withName("relayState2").withType(DefaultState.Type.RELAY).withEnd(new End(End.Kind.DEFAULT))
+            new InjectState().withName("relayState2").withType(DefaultState.Type.INJECT).withEnd(new End(End.Kind.DEFAULT))
     ));
 
     protected static final Workflow eventDefOnlyWorkflow = new Workflow().withEvents(singletonList(

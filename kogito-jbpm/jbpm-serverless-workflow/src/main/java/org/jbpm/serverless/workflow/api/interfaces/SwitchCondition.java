@@ -17,5 +17,5 @@
  */
 package org.jbpm.serverless.workflow.api.interfaces;
 
-public interface Choice {
+public interface SwitchCondition {
 }

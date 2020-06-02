@@ -4,19 +4,19 @@ name: parallel-wf
 version: '1.0'
 states:
   - name: ExecInParallel
-    type: PARALLEL
+    type: parallel
     start:
-      kind: DEFAULT
+      kind: default
     branches:
       - name: branch1
         states:
           - name: Branch1SubFlow
-            type: SUBFLOW
+            type: subflow
             workflowId: branch1abc
       - name: branch2
         states:
           - name: Branch2SubFlow
-            type: SUBFLOW
+            type: subflow
             workflowId: branch2abc
     end:
-      kind: DEFAULT
+      kind: default

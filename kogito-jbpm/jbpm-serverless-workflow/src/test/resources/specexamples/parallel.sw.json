@@ -6,9 +6,9 @@
   "states":[
     {
       "name":"ParallelExec",
-      "type":"PARALLEL",
+      "type":"parallel",
       "start": {
-        "kind": "DEFAULT"
+        "kind": "default"
       },
       "branches": [
         {
@@ -16,13 +16,13 @@
           "states": [
             {
               "name":"ShortDelay",
-              "type":"DELAY",
+              "type":"delay",
               "start": {
-                "kind": "DEFAULT"
+                "kind": "default"
               },
               "timeDelay": "PT15S",
               "end": {
-                "kind": "DEFAULT"
+                "kind": "default"
               }
             }
           ],
@@ -33,13 +33,13 @@
           "states": [
             {
               "name":"LongDelay",
-              "type":"DELAY",
+              "type":"delay",
               "start": {
-                "kind": "DEFAULT"
+                "kind": "default"
               },
               "timeDelay": "PT2M",
               "end": {
-                "kind": "DEFAULT"
+                "kind": "default"
               }
             }
           ],
@@ -47,7 +47,7 @@
         }
       ],
       "end": {
-        "kind": "DEFAULT"
+        "kind": "default"
       }
     }
   ]

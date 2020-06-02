@@ -5,11 +5,11 @@
   "states":[
     {
       "name":"InjectTestData",
-      "type":"RELAY",
+      "type":"inject",
       "start": {
-        "kind": "DEFAULT"
+        "kind": "default"
       },
-      "inject": {
+      "data": {
         "parentData" : "parentTestData"
       },
       "transition": {
@@ -18,11 +18,11 @@
     },
     {
       "name":"SimpleSubFlow",
-      "type":"SUBFLOW",
+      "type":"subflow",
       "workflowId": "calledsubflow",
       "waitForCompletion":true,
       "end": {
-        "kind": "TERMINATE"
+        "kind": "terminate"
       }
     }
   ]

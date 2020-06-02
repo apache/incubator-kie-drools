@@ -285,8 +285,8 @@ public class ServlerlessWorkflowParsingTest extends BaseServerlessTest {
     }
 
     @ParameterizedTest
-    @ValueSource(strings = {"/exec/single-relay-state.sw.json", "/exec/single-relay-state.sw.yml"})
-    public void testSingleRelayWorkflow(String workflowLocation) throws Exception {
+    @ValueSource(strings = {"/exec/single-inject-state.sw.json", "/exec/single-inject-state.sw.yml"})
+    public void testSingleInjectWorkflow(String workflowLocation) throws Exception {
         RuleFlowProcess process = (RuleFlowProcess) getWorkflowParser(workflowLocation).parseWorkFlow(classpathResourceReader(workflowLocation));
         assertEquals("function", process.getId());
         assertEquals("test-wf", process.getName());
@@ -304,7 +304,7 @@ public class ServlerlessWorkflowParsingTest extends BaseServerlessTest {
         assertTrue(node instanceof EndNode);
 
         ActionNode actionNode = (ActionNode) process.getNodes()[2];
-        assertEquals("SimpleRelay", actionNode.getName());
+        assertEquals("SimpleInject", actionNode.getName());
     }
 
     @ParameterizedTest
@@ -504,6 +504,54 @@ public class ServlerlessWorkflowParsingTest extends BaseServerlessTest {
         assertEquals("workflowdata", actionNode.getMetaData("MappingVariable"));
         assertEquals("testtopic", actionNode.getMetaData("TriggerRef"));
         assertEquals("com.fasterxml.jackson.databind.JsonNode", actionNode.getMetaData("MessageType"));
+
+    }
+
+    @ParameterizedTest
+    @ValueSource(strings = {"/exec/eventbased-switch-state.sw.json", "/exec/eventbased-switch-state.sw.yml"})
+    public void testEventBasedSwitchWorkflow(String workflowLocation) throws Exception {
+        RuleFlowProcess process = (RuleFlowProcess) getWorkflowParser(workflowLocation).parseWorkFlow(classpathResourceReader(workflowLocation));
+        assertEquals("eventswitchworkflow", process.getId());
+        assertEquals("event-switch-wf", process.getName());
+        assertEquals("1.0", process.getVersion());
+        assertEquals("org.kie.kogito.serverless", process.getPackageName());
+        assertEquals(RuleFlowProcess.PUBLIC_VISIBILITY, process.getVisibility());
+
+        assertEquals(10, process.getNodes().length);
+
+        Node node = process.getNodes()[0];
+        assertTrue(node instanceof StartNode);
+        node = process.getNodes()[1];
+        assertTrue(node instanceof EndNode);
+        node = process.getNodes()[2];
+        assertTrue(node instanceof EndNode);
+        node = process.getNodes()[3];
+        assertTrue(node instanceof ActionNode);
+        node = process.getNodes()[4];
+        assertTrue(node instanceof Split);
+        node = process.getNodes()[5];
+        assertTrue(node instanceof ActionNode);
+        node = process.getNodes()[6];
+        assertTrue(node instanceof ActionNode);
+        node = process.getNodes()[7];
+        assertTrue(node instanceof ActionNode);
+        node = process.getNodes()[8];
+        assertTrue(node instanceof EventNode);
+        node = process.getNodes()[9];
+        assertTrue(node instanceof EventNode);
+
+        Split split = (Split) process.getNodes()[4];
+        assertEquals("ChooseOnEvent", split.getName());
+        assertEquals(Split.TYPE_XAND, split.getType());
+
+        EventNode firstEventNode = (EventNode) process.getNodes()[8];
+        assertEquals("visaApprovedEvent", firstEventNode.getName());
+        assertEquals("workflowdata", firstEventNode.getVariableName());
+
+
+        EventNode secondEventNode = (EventNode) process.getNodes()[9];
+        assertEquals("visaDeniedEvent", secondEventNode.getName());
+        assertEquals("workflowdata", secondEventNode.getVariableName());
 
     }
 

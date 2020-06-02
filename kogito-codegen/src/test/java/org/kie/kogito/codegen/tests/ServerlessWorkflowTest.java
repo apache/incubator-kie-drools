@@ -162,13 +162,13 @@ public class ServerlessWorkflowTest extends AbstractCodegenTest {
     }
 
     @ParameterizedTest
-    @ValueSource(strings = {"serverless/single-relay-state.sw.json", "serverless/single-relay-state.sw.yml"})
-    public void testSingleRelayWorkflow(String processLocation) throws Exception {
+    @ValueSource(strings = {"serverless/single-inject-state.sw.json", "serverless/single-inject-state.sw.yml"})
+    public void testSingleInjectWorkflow(String processLocation) throws Exception {
 
         Application app = generateCodeProcessesOnly(processLocation);
         assertThat(app).isNotNull();
 
-        Process<? extends Model> p = app.processes().processById("singlerelay");
+        Process<? extends Model> p = app.processes().processById("singleinject");
 
         Model m = p.createModel();
         Map<String, Object> parameters = new HashMap<>();

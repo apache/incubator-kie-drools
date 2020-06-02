@@ -12,9 +12,9 @@
   "states":[
     {
       "name":"Solve",
-      "type":"FOREACH",
+      "type":"foreach",
       "start": {
-        "kind": "DEFAULT"
+        "kind": "default"
       },
       "inputCollection": "$.expressions",
       "inputParameter": "$.singleexpression",
@@ -22,11 +22,11 @@
       "states": [
         {
           "name":"GetResults",
-          "type":"OPERATION",
+          "type":"operation",
           "start": {
-            "kind": "DEFAULT"
+            "kind": "default"
           },
-          "actionMode":"SEQUENTIAL",
+          "actionMode":"sequential",
           "actions":[
             {
               "functionRef": {
@@ -38,7 +38,7 @@
             }
           ],
           "end": {
-            "kind": "DEFAULT"
+            "kind": "default"
           }
         }
       ],
@@ -46,7 +46,7 @@
         "dataOutputPath": "$.results"
       },
       "end": {
-        "kind": "DEFAULT"
+        "kind": "default"
       }
     }
   ]

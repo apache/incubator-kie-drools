@@ -22,35 +22,35 @@ import java.io.IOException;
 
 import com.fasterxml.jackson.core.JsonParser;
 import com.fasterxml.jackson.databind.DeserializationContext;
-import com.fasterxml.jackson.databind.deser.std.StdDeserializer;
 
+import com.fasterxml.jackson.databind.deser.std.StdDeserializer;
 import org.jbpm.serverless.workflow.api.WorkflowPropertySource;
-import org.jbpm.serverless.workflow.api.choices.DefaultChoice;
+import org.jbpm.serverless.workflow.api.switchconditions.DataCondition;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-public class DefaultChoiceOperatorDeserializer extends StdDeserializer<DefaultChoice.Operator> {
+public class DataConditionOperatorDeserializer extends StdDeserializer<DataCondition.Operator> {
 
     private static final long serialVersionUID = 510l;
-    private static Logger logger = LoggerFactory.getLogger(DefaultChoiceOperatorDeserializer.class);
+    private static Logger logger = LoggerFactory.getLogger(DataConditionOperatorDeserializer.class);
 
     private WorkflowPropertySource context;
 
-    public DefaultChoiceOperatorDeserializer() {
-        this(DefaultChoice.Operator.class);
+    public DataConditionOperatorDeserializer() {
+        this(DataCondition.Operator.class);
     }
 
-    public DefaultChoiceOperatorDeserializer(WorkflowPropertySource context) {
-        this(DefaultChoice.Operator.class);
+    public DataConditionOperatorDeserializer(WorkflowPropertySource context) {
+        this(DataCondition.Operator.class);
         this.context = context;
     }
 
-    public DefaultChoiceOperatorDeserializer(Class<?> vc) {
+    public DataConditionOperatorDeserializer(Class<?> vc) {
         super(vc);
     }
 
     @Override
-    public DefaultChoice.Operator deserialize(JsonParser jp,
+    public DataCondition.Operator deserialize(JsonParser jp,
                                               DeserializationContext ctxt) throws IOException {
 
         String value = jp.getText();
@@ -59,16 +59,16 @@ public class DefaultChoiceOperatorDeserializer extends StdDeserializer<DefaultCh
                 String result = context.getPropertySource().getProperty(value);
 
                 if (result != null) {
-                    return DefaultChoice.Operator.fromValue(result);
+                    return DataCondition.Operator.fromValue(result);
                 } else {
-                    return DefaultChoice.Operator.fromValue(jp.getText());
+                    return DataCondition.Operator.fromValue(jp.getText());
                 }
             } catch (Exception e) {
                 logger.info("Exception trying to evaluate property: {}", e.getMessage());
-                return DefaultChoice.Operator.fromValue(jp.getText());
+                return DataCondition.Operator.fromValue(jp.getText());
             }
         } else {
-            return DefaultChoice.Operator.fromValue(jp.getText());
+            return DataCondition    .Operator.fromValue(jp.getText());
         }
     }
 }

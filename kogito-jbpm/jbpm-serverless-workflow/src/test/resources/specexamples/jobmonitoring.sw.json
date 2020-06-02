@@ -24,11 +24,11 @@
   "states":[
     {
       "name":"SubmitJob",
-      "type":"OPERATION",
+      "type":"operation",
       "start": {
-        "kind": "DEFAULT"
+        "kind": "default"
       },
-      "actionMode":"SEQUENTIAL",
+      "actionMode":"sequential",
       "actions":[
         {
           "functionRef": {
@@ -51,7 +51,7 @@
     },
     {
       "name": "WaitForCompletion",
-      "type": "DELAY",
+      "type": "delay",
       "timeDelay": "PT5S",
       "transition": {
         "nextState":"GetJobStatus"
@@ -59,8 +59,8 @@
     },
     {
       "name":"GetJobStatus",
-      "type":"OPERATION",
-      "actionMode":"SEQUENTIAL",
+      "type":"operation",
+      "actionMode":"sequential",
       "actions":[
         {
           "functionRef": {
@@ -83,12 +83,12 @@
     },
     {
       "name":"DetermineCompletion",
-      "type":"SWITCH",
-      "choices": [
+      "type":"switch",
+      "dataConditions": [
         {
           "path": "$.jobstatus",
           "value": "SUCCEEDED",
-          "operator": "Equals",
+          "operator": "equals",
           "transition": {
             "nextState": "JobSucceeded"
           }
@@ -96,7 +96,7 @@
         {
           "path": "$.jobstatus",
           "value": "FAILED",
-          "operator": "Equals",
+          "operator": "equals",
           "transition": {
             "nextState": "JobFailed"
           }
@@ -108,8 +108,8 @@
     },
     {
       "name":"JobSucceeded",
-      "type":"OPERATION",
-      "actionMode":"SEQUENTIAL",
+      "type":"operation",
+      "actionMode":"sequential",
       "actions":[
         {
           "functionRef": {
@@ -121,13 +121,13 @@
         }
       ],
       "end": {
-        "kind": "DEFAULT"
+        "kind": "default"
       }
     },
     {
       "name":"JobFailed",
-      "type":"OPERATION",
-      "actionMode":"SEQUENTIAL",
+      "type":"operation",
+      "actionMode":"sequential",
       "actions":[
         {
           "functionRef": {
@@ -139,7 +139,7 @@
         }
       ],
       "end": {
-        "kind": "DEFAULT"
+        "kind": "default"
       }
     }
   ]

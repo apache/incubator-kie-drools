@@ -3,11 +3,11 @@ id: function
 name: test-wf
 version: '1.0'
 states:
-  - name: SimpleSubFlow
-    type: subflow
+  - name: SimpleInject
+    type: inject
     start:
       kind: default
-    workflowId: abc
-    waitForCompletion: true
+    data:
+      name: john
     end:
       kind: terminate

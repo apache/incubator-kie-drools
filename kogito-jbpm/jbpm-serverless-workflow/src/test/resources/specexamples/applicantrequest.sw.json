@@ -12,15 +12,15 @@
   "states":[
     {
       "name":"CheckApplication",
-      "type":"SWITCH",
+      "type":"switch",
       "start": {
-        "kind": "DEFAULT"
+        "kind": "default"
       },
-      "choices": [
+      "dataConditions": [
         {
           "path": "$.applicant.age",
           "value": "18",
-          "operator": "GreaterThanEquals",
+          "operator": "greaterthanorequals",
           "transition": {
             "nextState": "StartApplication"
           }
@@ -28,7 +28,7 @@
         {
           "path": "$.applicant.age",
           "value": "18",
-          "operator": "LessThan",
+          "operator": "lessthan",
           "transition": {
             "nextState": "RejectApplication"
           }
@@ -40,16 +40,16 @@
     },
     {
       "name": "StartApplication",
-      "type": "SUBFLOW",
+      "type": "subflow",
       "workflowId": "startApplicationWorkflowId",
       "end": {
-        "kind": "DEFAULT"
+        "kind": "default"
       }
     },
     {
       "name":"RejectApplication",
-      "type":"OPERATION",
-      "actionMode":"SEQUENTIAL",
+      "type":"operation",
+      "actionMode":"sequential",
       "actions":[
         {
           "functionRef": {
@@ -61,7 +61,7 @@
         }
       ],
       "end": {
-        "kind": "DEFAULT"
+        "kind": "default"
       }
     }
   ]

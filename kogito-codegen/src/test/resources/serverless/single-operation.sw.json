@@ -11,11 +11,11 @@
   "states":[
     {
       "name":"HelloWorld",
-      "type":"OPERATION",
+      "type":"operation",
       "start": {
-        "kind": "DEFAULT"
+        "kind": "default"
       },
-      "actionMode":"SEQUENTIAL",
+      "actionMode":"sequential",
       "actions":[
         {
           "functionRef": {
@@ -27,7 +27,7 @@
         }
       ],
       "end": {
-        "kind": "TERMINATE"
+        "kind": "terminate"
       }
     }
   ]

@@ -19,9 +19,9 @@
   "states":[
     {
       "name":"Greet",
-      "type":"EVENT",
+      "type":"event",
       "start": {
-        "kind": "DEFAULT"
+        "kind": "default"
       },
       "eventsActions": [{
         "eventRefs": ["GreetingEvent"],
@@ -43,7 +43,7 @@
         "dataOutputPath": "$.payload.greeting"
       },
       "end": {
-        "kind": "DEFAULT"
+        "kind": "default"
       }
     }
   ]

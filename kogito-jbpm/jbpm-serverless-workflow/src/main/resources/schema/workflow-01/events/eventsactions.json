@@ -14,11 +14,11 @@
     "actionMode": {
       "type": "string",
       "enum": [
-        "SEQUENTIAL",
-        "PARALLEL"
+        "sequential",
+        "parallel"
       ],
       "description": "Specifies how actions are to be performed (in sequence of parallel)",
-      "default": "SEQUENTIAL"
+      "default": "sequential"
     },
     "actions": {
       "type": "array",

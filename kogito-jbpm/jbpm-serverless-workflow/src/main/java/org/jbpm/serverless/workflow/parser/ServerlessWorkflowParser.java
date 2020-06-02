@@ -24,13 +24,14 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JsonNode;
 import org.jbpm.ruleflow.core.RuleFlowProcess;
 import org.jbpm.serverless.workflow.api.branches.Branch;
-import org.jbpm.serverless.workflow.api.choices.DefaultChoice;
 import org.jbpm.serverless.workflow.api.end.End;
+import org.jbpm.serverless.workflow.api.events.EventDefinition;
 import org.jbpm.serverless.workflow.api.functions.Function;
-import org.jbpm.serverless.workflow.api.interfaces.Choice;
 import org.jbpm.serverless.workflow.api.interfaces.State;
 import org.jbpm.serverless.workflow.api.mapper.BaseObjectMapper;
 import org.jbpm.serverless.workflow.api.states.*;
+import org.jbpm.serverless.workflow.api.switchconditions.DataCondition;
+import org.jbpm.serverless.workflow.api.switchconditions.EventCondition;
 import org.jbpm.serverless.workflow.api.transitions.Transition;
 import org.jbpm.serverless.workflow.parser.core.ServerlessWorkflowFactory;
 import org.jbpm.serverless.workflow.parser.util.ServerlessWorkflowUtils;
@@ -178,18 +179,18 @@ public class ServerlessWorkflowParser {
 
             }
 
-            if (state.getType().equals(Type.RELAY)) {
-                RelayState relayState = (RelayState) state;
+            if (state.getType().equals(Type.INJECT)) {
+                InjectState injectState = (InjectState) state;
 
                 ActionNode actionNode;
 
-                JsonNode toInjectNode = relayState.getInject();
+                JsonNode toInjectNode = injectState.getData();
 
                 if (toInjectNode != null) {
-                    actionNode = factory.scriptNode(idCounter.getAndIncrement(), relayState.getName(), ServerlessWorkflowUtils.getInjectScript(toInjectNode), process);
+                    actionNode = factory.scriptNode(idCounter.getAndIncrement(), injectState.getName(), ServerlessWorkflowUtils.getInjectScript(toInjectNode), process);
                 } else {
                     //no-op script
-                    actionNode = factory.scriptNode(idCounter.getAndIncrement(), relayState.getName(), "", process);
+                    actionNode = factory.scriptNode(idCounter.getAndIncrement(), injectState.getName(), "", process);
                 }
 
                 if (state.getStart() != null) {
@@ -228,17 +229,35 @@ public class ServerlessWorkflowParser {
             if (state.getType().equals(Type.SWITCH)) {
                 SwitchState switchState = (SwitchState) state;
 
-                Split splitNode = factory.splitNode(idCounter.getAndIncrement(), switchState.getName(), Split.TYPE_XOR, process);
+                // check if data-based or event-based switch state
+                if (switchState.getDataConditions() != null && !switchState.getDataConditions().isEmpty()) {
+                    // data-based switch state
+                    Split splitNode = factory.splitNode(idCounter.getAndIncrement(), switchState.getName(), Split.TYPE_XOR, process);
 
-                if (state.getStart() != null) {
-                    factory.connect(workflowStartNode.getId(), splitNode.getId(), workflowStartNode.getId() + "_" + splitNode.getId(), process);
+                    if (state.getStart() != null) {
+                        factory.connect(workflowStartNode.getId(), splitNode.getId(), workflowStartNode.getId() + "_" + splitNode.getId(), process);
+                    }
+                    // switch states cannot be end states
+
+                    Map<String, Long> startEndMap = new HashMap<>();
+                    startEndMap.put(NODETOID_START, splitNode.getId());
+                    startEndMap.put(NODETOID_END, splitNode.getId());
+                    nameToNodeId.put(state.getName(), startEndMap);
+                } else if (switchState.getEventConditions() != null && !switchState.getEventConditions().isEmpty()) {
+                    // event-based switch state
+                    Split splitNode = factory.eventBasedSplit(idCounter.getAndIncrement(), switchState.getName(), process);
+                    if (state.getStart() != null) {
+                        factory.connect(workflowStartNode.getId(), splitNode.getId(), workflowStartNode.getId() + "_" + splitNode.getId(), process);
+                    }
+                    // switch states cannot be end states
+
+                    Map<String, Long> startEndMap = new HashMap<>();
+                    startEndMap.put(NODETOID_START, splitNode.getId());
+                    startEndMap.put(NODETOID_END, splitNode.getId());
+                    nameToNodeId.put(state.getName(), startEndMap);
+                } else {
+                    LOGGER.warn("unable to determine switch state type (data or event based): {}", switchState.getName());
                 }
-                // switch states cannot be end states
-
-                Map<String, Long> startEndMap = new HashMap<>();
-                startEndMap.put(NODETOID_START, splitNode.getId());
-                startEndMap.put(NODETOID_END, splitNode.getId());
-                nameToNodeId.put(state.getName(), startEndMap);
             }
 
             if (state.getType().equals(Type.PARALLEL)) {
@@ -289,56 +308,88 @@ public class ServerlessWorkflowParser {
             }
         });
 
-        // after all nodes initialized add constraints and connect switch nodes
+        // after all nodes initialized add constraints, finish switch nodes
         List<State> switchStates = ServerlessWorkflowUtils.getStatesByType(workflow, Type.SWITCH);
         if (switchStates != null && switchStates.size() > 0) {
             for (State state : switchStates) {
                 SwitchState switchState = (SwitchState) state;
-                long splitNodeId = nameToNodeId.get(switchState.getName()).get(NODETOID_START);
-                Split xorSplit = (Split) process.getNode(splitNodeId);
 
-                if (xorSplit != null) {
-                    // set default connection
-                    if (switchState.getDefault() != null && switchState.getDefault().getNextState() != null) {
-                        long targetId = nameToNodeId.get(switchState.getDefault().getNextState()).get(NODETOID_START);
-                        xorSplit.getMetaData().put("Default", xorSplit.getId() + "_" + targetId);
-                    }
-
-                    List<Choice> choices = switchState.getChoices();
-
-                    if (choices != null && choices.size() > 0) {
-                        for (Choice choice : choices) {
-                            if (choice instanceof DefaultChoice) {
-                                DefaultChoice defaultChoice = (DefaultChoice) choice;
-
-                                // connect
-                                long targetId = nameToNodeId.get(defaultChoice.getTransition().getNextState()).get(NODETOID_START);
-                                factory.connect(xorSplit.getId(), targetId, xorSplit.getId() + "_" + targetId, process);
-
-                                // set constraint
-                                boolean isDefaultConstraint = false;
-                                if (switchState.getDefault().getNextState() != null && defaultChoice.getTransition().getNextState().equals(switchState.getDefault().getNextState())) {
-                                    isDefaultConstraint = true;
-                                }
-
-                                ConstraintImpl constraintImpl = factory.splitConstraint(xorSplit.getId() + "_" + targetId,
-                                        "DROOLS_DEFAULT", "java", ServerlessWorkflowUtils.conditionScript(defaultChoice.getPath(), defaultChoice.getOperator(), defaultChoice.getValue()), 0, isDefaultConstraint);
-                                xorSplit.addConstraint(new ConnectionRef(xorSplit.getId() + "_" + targetId, targetId, org.jbpm.workflow.core.Node.CONNECTION_DEFAULT_TYPE), constraintImpl);
-                            } else {
-                                LOGGER.warn("currently support default(single) choices only");
-                            }
-                        }
-                    } else {
-                        LOGGER.warn("switch state has no choices: {}", switchState.getName());
-                    }
+                if (switchState.getDataConditions() != null && !switchState.getDataConditions().isEmpty()) {
+                    finalizeDataBasedSwitchState(switchState, nameToNodeId, process);
                 } else {
-                    LOGGER.warn("unable to get split node for switch state: {}", switchState.getName());
+                    finalizeEventBasedSwitchState(switchState, nameToNodeId, process, workflow);
                 }
             }
         }
 
         factory.validate(process);
         return process;
+    }
+
+    protected void finalizeEventBasedSwitchState(SwitchState switchState, Map<String, Map<String, Long>> nameToNodeId, RuleFlowProcess process, Workflow workflow) {
+        long eventSplitNodeId = nameToNodeId.get(switchState.getName()).get(NODETOID_START);
+        Split eventSplit = (Split) process.getNode(eventSplitNodeId);
+
+        if (eventSplit != null) {
+
+            List<EventCondition> conditions = switchState.getEventConditions();
+
+            if (conditions != null && !conditions.isEmpty()) {
+                for (EventCondition eventCondition : conditions) {
+                    EventDefinition eventDefinition = ServerlessWorkflowUtils.getWorkflowEventFor(workflow, eventCondition.getEventRef());
+                    long targetId = nameToNodeId.get(eventCondition.getTransition().getNextState()).get(NODETOID_START);
+
+                    EventNode eventNode = factory.consumeEventNode(idCounter.getAndIncrement(), eventDefinition, process);
+
+                    factory.connect(eventSplit.getId(), eventNode.getId(), eventSplit.getId() + "_" + eventNode, process);
+                    factory.connect(eventNode.getId(), targetId, eventNode.getId() + "_" + targetId, process);
+
+                }
+            } else {
+                LOGGER.warn("switch state has no event conditions: {}", switchState.getName());
+            }
+
+        } else {
+            LOGGER.error("unable to get event split node for switch state: {}", switchState.getName());
+        }
+    }
+
+    protected void finalizeDataBasedSwitchState(SwitchState switchState, Map<String, Map<String, Long>> nameToNodeId, RuleFlowProcess process) {
+        long splitNodeId = nameToNodeId.get(switchState.getName()).get(NODETOID_START);
+        Split xorSplit = (Split) process.getNode(splitNodeId);
+
+        if (xorSplit != null) {
+            // set default connection
+            if (switchState.getDefault() != null && switchState.getDefault().getNextState() != null) {
+                long targetId = nameToNodeId.get(switchState.getDefault().getNextState()).get(NODETOID_START);
+                xorSplit.getMetaData().put("Default", xorSplit.getId() + "_" + targetId);
+            }
+
+            List<DataCondition> conditions = switchState.getDataConditions();
+
+            if (conditions != null && !conditions.isEmpty()) {
+                for (DataCondition condition : conditions) {
+                    // connect
+                    long targetId = nameToNodeId.get(condition.getTransition().getNextState()).get(NODETOID_START);
+                    factory.connect(xorSplit.getId(), targetId, xorSplit.getId() + "_" + targetId, process);
+
+                    // set constraint
+                    boolean isDefaultConstraint = false;
+                    if (switchState.getDefault().getNextState() != null && condition.getTransition().getNextState().equals(switchState.getDefault().getNextState())) {
+                        isDefaultConstraint = true;
+                    }
+
+                    ConstraintImpl constraintImpl = factory.splitConstraint(xorSplit.getId() + "_" + targetId,
+                            "DROOLS_DEFAULT", "java", ServerlessWorkflowUtils.conditionScript(condition.getPath(), condition.getOperator(), condition.getValue()), 0, isDefaultConstraint);
+                    xorSplit.addConstraint(new ConnectionRef(xorSplit.getId() + "_" + targetId, targetId, org.jbpm.workflow.core.Node.CONNECTION_DEFAULT_TYPE), constraintImpl);
+
+                }
+            } else {
+                LOGGER.warn("switch state has no conditions: {}", switchState.getName());
+            }
+        } else {
+            LOGGER.error("unable to get split node for switch state: {}", switchState.getName());
+        }
     }
 
     protected void handleActions(List<Function> workflowFunctions, List<Action> actions, RuleFlowProcess process, CompositeContextNode embeddedSubProcess) {

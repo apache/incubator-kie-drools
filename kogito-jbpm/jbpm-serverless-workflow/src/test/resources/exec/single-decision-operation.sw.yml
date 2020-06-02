@@ -9,12 +9,12 @@ functions:
       taskname: simpleDecisionTask
 states:
   - name: DecisionState
-    type: OPERATION
+    type: operation
     start:
-      kind: DEFAULT
-    actionMode: SEQUENTIAL
+      kind: default
+    actionMode: sequential
     actions:
       - functionRef:
           refName: simpledecision
     end:
-      kind: TERMINATE
+      kind: terminate

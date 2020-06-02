@@ -21,22 +21,14 @@ package org.jbpm.serverless.workflow.api.mapper;
 import com.fasterxml.jackson.databind.module.SimpleModule;
 
 import org.jbpm.serverless.workflow.api.WorkflowPropertySource;
-import org.jbpm.serverless.workflow.api.deserializers.ChoiceDeserializer;
-import org.jbpm.serverless.workflow.api.deserializers.DefaultChoiceOperatorDeserializer;
-import org.jbpm.serverless.workflow.api.deserializers.DefaultStateTypeDeserializer;
-import org.jbpm.serverless.workflow.api.deserializers.EventsActionsActionModeDeserializer;
-import org.jbpm.serverless.workflow.api.deserializers.ExtensionDeserializer;
-import org.jbpm.serverless.workflow.api.deserializers.OperationStateActionModeDeserializer;
-import org.jbpm.serverless.workflow.api.deserializers.StateDeserializer;
-import org.jbpm.serverless.workflow.api.deserializers.StringValueDeserializer;
+import org.jbpm.serverless.workflow.api.deserializers.*;
 import org.jbpm.serverless.workflow.api.events.EventsActions;
-import org.jbpm.serverless.workflow.api.interfaces.Choice;
 import org.jbpm.serverless.workflow.api.interfaces.Extension;
 import org.jbpm.serverless.workflow.api.interfaces.State;
 import org.jbpm.serverless.workflow.api.serializers.*;
-import org.jbpm.serverless.workflow.api.choices.DefaultChoice;
 import org.jbpm.serverless.workflow.api.states.DefaultState;
 import org.jbpm.serverless.workflow.api.states.OperationState;
+import org.jbpm.serverless.workflow.api.switchconditions.DataCondition;
 
 public class WorkflowModule extends SimpleModule {
 
@@ -67,7 +59,7 @@ public class WorkflowModule extends SimpleModule {
         addSerializer(new ParallelStateSerializer());
         addSerializer(new SwitchStateSerializer());
         addSerializer(new SubflowStateSerializer());
-        addSerializer(new RelayStateSerializer());
+        addSerializer(new InjectStateSerializer());
         addSerializer(new ForEachStateSerializer());
         addSerializer(new CallbackStateSerializer());
         addSerializer(extensionSerializer);
@@ -75,19 +67,17 @@ public class WorkflowModule extends SimpleModule {
 
     private void addDefaultDeserializers() {
         addDeserializer(State.class,
-                        new StateDeserializer(workflowPropertySource));
-        addDeserializer(Choice.class,
-                        new ChoiceDeserializer());
+                new StateDeserializer(workflowPropertySource));
         addDeserializer(String.class,
-                        new StringValueDeserializer(workflowPropertySource));
+                new StringValueDeserializer(workflowPropertySource));
         addDeserializer(EventsActions.ActionMode.class,
-                        new EventsActionsActionModeDeserializer(workflowPropertySource));
+                new EventsActionsActionModeDeserializer(workflowPropertySource));
         addDeserializer(OperationState.ActionMode.class,
-                        new OperationStateActionModeDeserializer(workflowPropertySource));
+                new OperationStateActionModeDeserializer(workflowPropertySource));
         addDeserializer(DefaultState.Type.class,
-                        new DefaultStateTypeDeserializer(workflowPropertySource));
-        addDeserializer(DefaultChoice.Operator.class,
-                        new DefaultChoiceOperatorDeserializer(workflowPropertySource));
+                new DefaultStateTypeDeserializer(workflowPropertySource));
+        addDeserializer(DataCondition.Operator.class,
+                new DataConditionOperatorDeserializer(workflowPropertySource));
         addDeserializer(Extension.class, extensionDeserializer);
     }
 

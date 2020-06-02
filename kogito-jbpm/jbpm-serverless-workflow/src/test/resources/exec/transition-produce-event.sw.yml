@@ -12,10 +12,10 @@ functions:
     type: script
 states:
   - name: HelloWorld
-    type: OPERATION
+    type: operation
     start:
-      kind: DEFAULT
-    actionMode: SEQUENTIAL
+      kind: default
+    actionMode: sequential
     actions:
       - functionRef:
           refName: helloOne
@@ -26,12 +26,12 @@ states:
       produceEvent:
         eventRef: TestKafkaEvent
   - name: HelloWorld2
-    type: OPERATION
-    actionMode: SEQUENTIAL
+    type: operation
+    actionMode: sequential
     actions:
       - functionRef:
           refName: helloTwo
           parameters:
             script: $.hello2
     end:
-      kind: TERMINATE
+      kind: terminate

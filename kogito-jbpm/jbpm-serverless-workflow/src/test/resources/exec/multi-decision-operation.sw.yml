@@ -13,14 +13,14 @@ functions:
       taskname: secondDecisionFunction
 states:
   - name: DecisionState
-    type: OPERATION
+    type: operation
     start:
-      kind: DEFAULT
-    actionMode: SEQUENTIAL
+      kind: default
+    actionMode: sequential
     actions:
       - functionRef:
           refName: firstdecision
       - functionRef:
           refName: seconddecision
     end:
-      kind: TERMINATE
+      kind: terminate

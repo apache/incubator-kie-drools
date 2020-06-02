@@ -6,15 +6,15 @@
     "kind": {
       "type": "string",
       "enum": [
-        "DEFAULT",
-        "TERMINATE",
-        "EVENT"
+        "default",
+        "terminate",
+        "event"
       ],
-      "default": "DEFAULT",
+      "default": "default",
       "description": "Kind of End definition"
     },
     "produceEvent": {
-      "description": "If end type is EVENT, select one of the defined events by name and set its data",
+      "description": "If end type is event, select one of the defined events by name and set its data",
       "$ref": "../produce/produceevent.json"
     }
   },

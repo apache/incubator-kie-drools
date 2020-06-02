@@ -19,15 +19,15 @@
     "type": {
       "type": "string",
       "enum": [
-        "EVENT",
-        "OPERATION",
-        "SWITCH",
-        "DELAY",
-        "PARALLEL",
-        "SUBFLOW",
-        "RELAY",
-        "FOREACH",
-        "CALLBACK"
+        "event",
+        "operation",
+        "switch",
+        "delay",
+        "parallel",
+        "subflow",
+        "inject",
+        "foreach",
+        "callback"
       ],
       "description": "State type"
     },

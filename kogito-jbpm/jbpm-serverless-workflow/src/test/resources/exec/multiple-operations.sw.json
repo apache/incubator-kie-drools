@@ -18,11 +18,11 @@
   "states":[
     {
       "name":"HelloWorld",
-      "type":"OPERATION",
+      "type":"operation",
       "start": {
-        "kind": "DEFAULT"
+        "kind": "default"
       },
-      "actionMode":"SEQUENTIAL",
+      "actionMode":"sequential",
       "actions":[
         {
           "functionRef": {
@@ -39,8 +39,8 @@
     },
     {
       "name":"UpdateArg",
-      "type":"OPERATION",
-      "actionMode":"SEQUENTIAL",
+      "type":"operation",
+      "actionMode":"sequential",
       "stateDataFilter": {
         "dataInputPath": "$.trace",
         "dataOutputPath": "$.trace"
@@ -61,8 +61,8 @@
     },
     {
       "name":"SaveResult",
-      "type":"OPERATION",
-      "actionMode":"SEQUENTIAL",
+      "type":"operation",
+      "actionMode":"sequential",
       "actions":[
         {
           "functionRef": {
@@ -74,7 +74,7 @@
         }
       ],
       "end": {
-        "kind": "TERMINATE"
+        "kind": "terminate"
       }
     }
   ]

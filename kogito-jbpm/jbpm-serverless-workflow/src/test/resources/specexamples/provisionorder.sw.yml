@@ -8,10 +8,10 @@ functions:
     resource: functionResourse
 states:
   - name: ProvisionOrder
-    type: OPERATION
+    type: operation
     start:
-      kind: DEFAULT
-    actionMode: SEQUENTIAL
+      kind: default
+    actionMode: sequential
     actions:
       - functionRef:
           refName: provisionOrderFunction
@@ -38,22 +38,22 @@ states:
     transition:
       nextState: ApplyOrder
   - name: MissingId
-    type: SUBFLOW
+    type: subflow
     workflowId: handleMissingIdExceptionWorkflow
     end:
-      kind: DEFAULT
+      kind: default
   - name: MissingItem
-    type: SUBFLOW
+    type: subflow
     workflowId: handleMissingItemExceptionWorkflow
     end:
-      kind: DEFAULT
+      kind: default
   - name: MissingQuantity
-    type: SUBFLOW
+    type: subflow
     workflowId: handleMissingQuantityExceptionWorkflow
     end:
-      kind: DEFAULT
+      kind: default
   - name: ApplyOrder
-    type: SUBFLOW
+    type: subflow
     workflowId: applyOrderWorkflowId
     end:
-      kind: DEFAULT
+      kind: default

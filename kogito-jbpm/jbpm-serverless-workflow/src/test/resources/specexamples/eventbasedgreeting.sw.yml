@@ -12,9 +12,9 @@ functions:
     resource: functionResourse
 states:
   - name: Greet
-    type: EVENT
+    type: event
     start:
-      kind: DEFAULT
+      kind: default
     eventsActions:
       - eventRefs:
           - GreetingEvent
@@ -28,4 +28,4 @@ states:
     stateDataFilter:
       dataOutputPath: "$.payload.greeting"
     end:
-      kind: DEFAULT
+      kind: default

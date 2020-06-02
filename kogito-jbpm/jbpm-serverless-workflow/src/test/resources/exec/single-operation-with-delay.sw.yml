@@ -7,10 +7,10 @@ functions:
     type: script
 states:
   - name: HelloWorld
-    type: OPERATION
+    type: operation
     start:
-      kind: DEFAULT
-    actionMode: SEQUENTIAL
+      kind: default
+    actionMode: sequential
     actions:
       - functionRef:
           refName: helloWorld
@@ -19,7 +19,7 @@ states:
     transition:
       nextState: SmallDelay
   - name: SmallDelay
-    type: DELAY
+    type: delay
     timeDelay: PT1S
     end:
-      kind: TERMINATE
+      kind: terminate

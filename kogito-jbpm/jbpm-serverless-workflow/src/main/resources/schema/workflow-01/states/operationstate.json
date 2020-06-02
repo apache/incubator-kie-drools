@@ -12,8 +12,8 @@
     "actionMode": {
       "type": "string",
       "enum": [
-        "SEQUENTIAL",
-        "PARALLEL"
+        "sequential",
+        "parallel"
       ],
       "description": "Specifies whether functions are executed in sequence or in parallel."
     },

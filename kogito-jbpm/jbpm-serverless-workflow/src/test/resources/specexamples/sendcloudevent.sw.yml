@@ -11,29 +11,29 @@ functions:
     resource: functionResourse
 states:
   - name: ProvisionOrdersState
-    type: FOREACH
+    type: foreach
     start:
-      kind: DEFAULT
+      kind: default
     inputCollection: "$.orders"
     inputParameter: "$.singleorder"
     outputCollection: "$.results"
     states:
       - name: DoProvision
-        type: OPERATION
+        type: operation
         start:
-          kind: DEFAULT
-        actionMode: SEQUENTIAL
+          kind: default
+        actionMode: sequential
         actions:
           - functionRef:
               refName: provisionOrderFunction
               parameters:
                 order: "$.order"
         end:
-          kind: DEFAULT
+          kind: default
     stateDataFilter:
       dataOutputPath: "$.provisionedOrders"
     end:
-      kind: EVENT
+      kind: event
       produceEvent:
         eventRef: provisioningCompleteEvent
         data: "$.provisionedOrders"

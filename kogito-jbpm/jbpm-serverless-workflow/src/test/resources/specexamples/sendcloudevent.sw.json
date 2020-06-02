@@ -18,9 +18,9 @@
   "states": [
     {
       "name": "ProvisionOrdersState",
-      "type": "FOREACH",
+      "type": "foreach",
       "start": {
-        "kind": "DEFAULT"
+        "kind": "default"
       },
       "inputCollection": "$.orders",
       "inputParameter": "$.singleorder",
@@ -28,11 +28,11 @@
       "states": [
         {
           "name": "DoProvision",
-          "type": "OPERATION",
+          "type": "operation",
           "start": {
-            "kind": "DEFAULT"
+            "kind": "default"
           },
-          "actionMode": "SEQUENTIAL",
+          "actionMode": "sequential",
           "actions": [
             {
               "functionRef": {
@@ -44,7 +44,7 @@
             }
           ],
           "end": {
-            "kind": "DEFAULT"
+            "kind": "default"
           }
         }
       ],
@@ -52,7 +52,7 @@
         "dataOutputPath": "$.provisionedOrders"
       },
       "end": {
-        "kind": "EVENT",
+        "kind": "event",
         "produceEvent": {
           "eventRef": "provisioningCompleteEvent",
           "data": "$.provisionedOrders"

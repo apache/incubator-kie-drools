@@ -59,6 +59,7 @@ public class ServerlessWorkflowFactory {
     public static final String JSON_NODE = "com.fasterxml.jackson.databind.JsonNode";
     public static final String DEFAULT_WORKFLOW_VAR = "workflowdata";
     public static final String UNIQUE_ID_PARAM = "UniqueId";
+    public static final String EVENTBASED_PARAM = "EventBased";
     public static final String DEFAULT_SERVICE_IMPL = "Java";
     public static final String SERVICE_INTERFACE_KEY = "interface";
     public static final String SERVICE_OPERATION_KEY = "operation";
@@ -258,6 +259,25 @@ public class ServerlessWorkflowFactory {
         return sendEventNode;
     }
 
+    public EventNode consumeEventNode(long id, EventDefinition eventDefinition, NodeContainer nodeContainer) {
+        EventNode eventNode = new EventNode();
+        eventNode.setId(id);
+        eventNode.setName(eventDefinition.getName());
+
+        EventTypeFilter eventFilter = new EventTypeFilter();
+        eventFilter.setType("Message-" + eventDefinition.getSource());
+        eventNode.addEventFilter(eventFilter);
+        eventNode.setVariableName(DEFAULT_WORKFLOW_VAR);
+        eventNode.setMetaData(Metadata.TRIGGER_TYPE, "ConsumeMessage");
+        eventNode.setMetaData(Metadata.EVENT_TYPE, "message");
+        eventNode.setMetaData(Metadata.TRIGGER_REF, eventDefinition.getSource());
+        eventNode.setMetaData(Metadata.MESSAGE_TYPE, JSON_NODE);
+
+        nodeContainer.addNode(eventNode);
+
+        return eventNode;
+    }
+
     public ActionNode scriptNode(long id, String name, String script, NodeContainer nodeContainer) {
         ActionNode scriptNode = new ActionNode();
         scriptNode.setId(id);
@@ -326,6 +346,18 @@ public class ServerlessWorkflowFactory {
         split.setName(name);
         split.setType(type);
         split.setMetaData(UNIQUE_ID_PARAM, Long.toString(id));
+
+        nodeContainer.addNode(split);
+        return split;
+    }
+
+    public Split eventBasedSplit(long id, String name, NodeContainer nodeContainer) {
+        Split split = new Split();
+        split.setId(id);
+        split.setName(name);
+        split.setType(Split.TYPE_XAND);
+        split.setMetaData(UNIQUE_ID_PARAM, Long.toString(id));
+        split.setMetaData(EVENTBASED_PARAM, "true");
 
         nodeContainer.addNode(split);
         return split;

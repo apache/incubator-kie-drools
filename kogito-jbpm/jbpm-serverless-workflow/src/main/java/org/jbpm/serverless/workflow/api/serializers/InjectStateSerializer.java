@@ -25,30 +25,30 @@ import com.fasterxml.jackson.databind.SerializerProvider;
 import com.fasterxml.jackson.databind.ser.BeanSerializerFactory;
 import com.fasterxml.jackson.databind.ser.std.StdSerializer;
 import com.fasterxml.jackson.databind.type.TypeFactory;
-import org.jbpm.serverless.workflow.api.states.RelayState;
+import org.jbpm.serverless.workflow.api.states.InjectState;
 import org.jbpm.serverless.workflow.api.states.DefaultState;
 
-public class RelayStateSerializer extends StdSerializer<RelayState> {
+public class InjectStateSerializer extends StdSerializer<InjectState> {
 
-    public RelayStateSerializer() {
-        this(RelayState.class);
+    public InjectStateSerializer() {
+        this(InjectState.class);
     }
 
-    protected RelayStateSerializer(Class<RelayState> t) {
+    protected InjectStateSerializer(Class<InjectState> t) {
         super(t);
     }
 
     @Override
-    public void serialize(RelayState relayState,
+    public void serialize(InjectState relayState,
                           JsonGenerator gen,
                           SerializerProvider provider) throws IOException {
 
         // set defaults for relay state
-        relayState.setType(DefaultState.Type.RELAY);
+        relayState.setType(DefaultState.Type.INJECT);
 
         // serialize after setting default bean values...
         BeanSerializerFactory.instance.createSerializer(provider,
-                TypeFactory.defaultInstance().constructType(RelayState.class)).serialize(relayState,
+                TypeFactory.defaultInstance().constructType(InjectState.class)).serialize(relayState,
                 gen,
                 provider);
     }

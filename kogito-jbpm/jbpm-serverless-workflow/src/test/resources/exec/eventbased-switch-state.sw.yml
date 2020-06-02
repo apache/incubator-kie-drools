@@ -1,0 +1,47 @@
+---
+id: eventswitchworkflow
+name: event-switch-wf
+version: '1.0'
+events:
+  - name: visaApprovedEvent
+    source: visaapproved
+    type: kafka
+  - name: visaDeniedEvent
+    source: visadenied
+    type: kafka
+  - name: sendVisaApplicationEvent
+    source: visaapplication
+    type: kafka
+states:
+  - name: AddRandomInfo
+    type: inject
+    start:
+      kind: default
+    data:
+      name: john
+      age: '20'
+    transition:
+      nextState: ChooseOnEvent
+      produceEvent:
+        eventRef: sendVisaApplicationEvent
+  - name: ChooseOnEvent
+    type: switch
+    eventConditions:
+      - eventRef: visaApprovedEvent
+        transition:
+          nextState: ApprovedVisa
+      - eventRef: visaDeniedEvent
+        transition:
+          nextState: DeniedVisa
+  - name: ApprovedVisa
+    type: inject
+    data:
+      decision: Approved
+    end:
+      kind: default
+  - name: DeniedVisa
+    type: inject
+    data:
+      decision: Denied
+    end:
+      kind: default

@@ -10,12 +10,12 @@ functions:
       operation: get
 states:
   - name: HelloWorld
-    type: OPERATION
+    type: operation
     start:
-      kind: DEFAULT
-    actionMode: SEQUENTIAL
+      kind: default
+    actionMode: sequential
     actions:
       - functionRef:
           refName: helloWorld
     end:
-      kind: TERMINATE
+      kind: terminate

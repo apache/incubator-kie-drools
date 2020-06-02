@@ -8,26 +8,26 @@ functions:
     resource: functionResourse
 states:
   - name: Solve
-    type: FOREACH
+    type: foreach
     start:
-      kind: DEFAULT
+      kind: default
     inputCollection: "$.expressions"
     inputParameter: "$.singleexpression"
     outputCollection: "$.results"
     states:
       - name: GetResults
-        type: OPERATION
+        type: operation
         start:
-          kind: DEFAULT
-        actionMode: SEQUENTIAL
+          kind: default
+        actionMode: sequential
         actions:
           - functionRef:
               refName: solveMathExpressionFunction
               parameters:
                 expression: "$.singleexpression"
         end:
-          kind: DEFAULT
+          kind: default
     stateDataFilter:
       dataOutputPath: "$.results"
     end:
-      kind: DEFAULT
+      kind: default

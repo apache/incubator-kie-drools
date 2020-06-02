@@ -16,9 +16,9 @@ events:
     correlationToken: customerId
 states:
   - name: CheckCredit
-    type: CALLBACK
+    type: callback
     start:
-      kind: DEFAULT
+      kind: default
     action:
       functionRef:
         refName: callCreditCheckMicroservice
@@ -29,32 +29,32 @@ states:
     transition:
       nextState: EvaluateDecision
   - name: EvaluateDecision
-    type: SWITCH
-    choices:
+    type: switch
+    dataConditions:
       - path: "$.creditCheck.decision"
         value: Approved
-        operator: Equals
+        operator: equals
         transition:
           nextState: StartApplication
       - path: "$.creditCheck.decision"
         value: Denied
-        operator: Equals
+        operator: equals
         transition:
           nextState: RejectApplication
     default:
       nextState: RejectApplication
   - name: StartApplication
-    type: SUBFLOW
+    type: subflow
     workflowId: startApplicationWorkflowId
     end:
-      kind: DEFAULT
+      kind: default
   - name: RejectApplication
-    type: OPERATION
-    actionMode: SEQUENTIAL
+    type: operation
+    actionMode: sequential
     actions:
       - functionRef:
           refName: sendRejectionEmailFunction
           parameters:
             applicant: "$.customer"
     end:
-      kind: DEFAULT
+      kind: default

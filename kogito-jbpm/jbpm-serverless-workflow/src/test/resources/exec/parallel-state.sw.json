@@ -5,9 +5,9 @@
   "states":[
     {
       "name":"ExecInParallel",
-      "type":"PARALLEL",
+      "type":"parallel",
       "start": {
-        "kind": "DEFAULT"
+        "kind": "default"
       },
       "branches": [
         {
@@ -15,7 +15,7 @@
           "states": [
             {
               "name":"Branch1SubFlow",
-              "type":"SUBFLOW",
+              "type":"subflow",
               "workflowId": "branch1abc"
             }
           ]
@@ -25,14 +25,14 @@
           "states": [
             {
               "name":"Branch2SubFlow",
-              "type":"SUBFLOW",
+              "type":"subflow",
               "workflowId": "branch2abc"
             }
           ]
         }
       ],
       "end": {
-        "kind": "DEFAULT"
+        "kind": "default"
       }
     }
   ]

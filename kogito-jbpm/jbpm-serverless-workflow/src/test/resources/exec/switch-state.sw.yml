@@ -4,38 +4,38 @@ name: switch-wf
 version: '1.0'
 states:
   - name: AddInfo
-    type: RELAY
+    type: inject
     start:
-      kind: DEFAULT
-    inject:
+      kind: default
+    data:
       name: john
       age: '20'
     transition:
       nextState: ChooseOnAge
   - name: ChooseOnAge
-    type: SWITCH
-    choices:
+    type: switch
+    dataConditions:
       - path: "age"
         value: '18'
-        operator: GreaterThanEquals
+        operator: greaterthanorequals
         transition:
           nextState: Approve
       - path: "age"
         value: '18'
-        operator: LessThan
+        operator: lessthan
         transition:
           nextState: Deny
     default:
       nextState: Approve
   - name: Approve
-    type: RELAY
-    inject:
+    type: inject
+    data:
       decision: Approve
     end:
-      kind: DEFAULT
+      kind: default
   - name: Deny
-    type: RELAY
-    inject:
+    type: inject
+    data:
       decision: Denied
     end:
-      kind: DEFAULT
+      kind: default

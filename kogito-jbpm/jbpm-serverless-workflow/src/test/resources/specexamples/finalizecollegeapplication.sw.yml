@@ -21,9 +21,9 @@ functions:
     resource: finalizeApplicationResource
 states:
   - name: FinalizeApplication
-    type: EVENT
+    type: event
     start:
-      kind: DEFAULT
+      kind: default
     exclusive: false
     eventsActions:
       - eventRefs:
@@ -36,4 +36,4 @@ states:
               parameters:
                 student: "$.applicantId"
     end:
-      kind: TERMINATE
+      kind: terminate

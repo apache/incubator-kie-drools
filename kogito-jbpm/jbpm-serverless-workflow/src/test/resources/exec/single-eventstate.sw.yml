@@ -11,9 +11,9 @@ functions:
     type: script
 states:
   - name: WaitForGreeting
-    type: EVENT
+    type: event
     start:
-      kind: DEFAULT
+      kind: default
     eventsActions:
       - eventRefs:
           - TestKafkaEvent
@@ -25,4 +25,4 @@ states:
               parameters:
                 script: System.out.println("Hello:" + ((com.fasterxml.jackson.databind.JsonNode)kcontext.getVariable("testtopicVar")).get("firstName"));
     end:
-      kind: TERMINATE
+      kind: terminate

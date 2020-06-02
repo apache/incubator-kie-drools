@@ -5,14 +5,14 @@
   "states":[
     {
       "name":"SimpleSubFlow",
-      "type":"SUBFLOW",
+      "type":"subflow",
       "start": {
-        "kind": "DEFAULT"
+        "kind": "default"
       },
       "workflowId": "abc",
       "waitForCompletion":true,
       "end": {
-        "kind": "TERMINATE"
+        "kind": "terminate"
       }
     }
   ]

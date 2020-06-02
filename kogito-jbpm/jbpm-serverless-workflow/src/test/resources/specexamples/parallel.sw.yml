@@ -5,29 +5,29 @@ name: Parallel Execution Workflow
 description: Executes two branches in parallel
 states:
   - name: ParallelExec
-    type: PARALLEL
+    type: parallel
     start:
-      kind: DEFAULT
+      kind: default
     branches:
       - name: Branch1
         states:
           - name: ShortDelay
-            type: DELAY
+            type: delay
             start:
-              kind: DEFAULT
+              kind: default
             timeDelay: PT15S
             end:
-              kind: DEFAULT
+              kind: default
         waitForCompletion: false
       - name: Branch2
         states:
           - name: LongDelay
-            type: DELAY
+            type: delay
             start:
-              kind: DEFAULT
+              kind: default
             timeDelay: PT2M
             end:
-              kind: DEFAULT
+              kind: default
         waitForCompletion: false
     end:
-      kind: DEFAULT
+      kind: default

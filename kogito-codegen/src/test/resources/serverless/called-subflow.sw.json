@@ -5,15 +5,15 @@
   "states":[
     {
       "name":"InjectTestData",
-      "type":"RELAY",
+      "type":"inject",
       "start": {
-        "kind": "DEFAULT"
+        "kind": "default"
       },
-      "inject": {
+      "data": {
         "childData" : "childTestData"
       },
       "end": {
-        "kind": "TERMINATE"
+        "kind": "terminate"
       }
     }
   ]

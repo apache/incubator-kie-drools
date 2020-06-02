@@ -37,7 +37,7 @@ public class WorkflowFactoryTest extends BaseServerlessTest {
 
     @Test
     public void testCreateProcess() {
-        RuleFlowProcess process = testFactory.createProcess(singleRelayStateWorkflow);
+        RuleFlowProcess process = testFactory.createProcess(singleInjectStateWorkflow);
         assertThat(process).isNotNull();
         assertThat(process.getId()).isEqualTo("serverless");
         assertThat(process.getName()).isEqualTo("workflow");
@@ -230,6 +230,19 @@ public class WorkflowFactoryTest extends BaseServerlessTest {
     }
 
     @Test
+    public void testEventBasedSplitNode() {
+        TestNodeContainer nodeContainer = new TestNodeContainer();
+
+        Split split = testFactory.eventBasedSplit(1L, "testSplit", nodeContainer);
+        assertThat(split).isNotNull();
+        assertThat(split.getId()).isEqualTo(1L);
+        assertThat(split.getName()).isEqualTo("testSplit");
+        assertThat(split.getType()).isEqualTo(Split.TYPE_XAND);
+        assertThat(split.getMetaData().get("UniqueId")).isEqualTo("1");
+        assertThat(split.getMetaData().get("EventBased")).isEqualTo("true");
+    }
+
+    @Test
     public void testJoinNode() {
         TestNodeContainer nodeContainer = new TestNodeContainer();
 
@@ -364,6 +377,24 @@ public class WorkflowFactoryTest extends BaseServerlessTest {
         assertThat(actionNode.getMetaData(Metadata.TRIGGER_REF)).isEqualTo("testSource");
         assertThat(actionNode.getMetaData(Metadata.MESSAGE_TYPE)).isEqualTo("com.fasterxml.jackson.databind.JsonNode");
 
+    }
+
+    @Test
+    public void testConsumeEventNode() {
+        TestNodeContainer nodeContainer = new TestNodeContainer();
+
+        EventDefinition eventDefinition = new EventDefinition().withName("testEvent")
+                .withSource("testSource").withType("testType");
+
+        EventNode eventNode = testFactory.consumeEventNode(1L, eventDefinition, nodeContainer);
+        assertThat(eventNode).isNotNull();
+        assertThat(eventNode.getName()).isEqualTo("testEvent");
+        assertThat(eventNode.getVariableName()).isEqualTo("workflowdata");
+        assertThat(eventNode.getType()).isEqualTo("Message-" + eventDefinition.getSource());
+        assertThat(eventNode.getMetaData(Metadata.TRIGGER_TYPE)).isEqualTo("ConsumeMessage");
+        assertThat(eventNode.getMetaData(Metadata.EVENT_TYPE)).isEqualTo("message");
+        assertThat(eventNode.getMetaData(Metadata.TRIGGER_REF)).isEqualTo(eventDefinition.getSource());
+        assertThat(eventNode.getMetaData(Metadata.MESSAGE_TYPE)).isEqualTo("com.fasterxml.jackson.databind.JsonNode");
     }
 
 }

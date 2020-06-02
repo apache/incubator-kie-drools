@@ -9,34 +9,31 @@
     "$ref": "defaultstate.json"
   },
   "properties": {
-    "choices": {
+    "eventConditions": {
       "type": "array",
-      "description": "Defines an ordered set of Match Rules against the input data to this state",
+      "description": "Defines conditions evaluated against events",
       "items": {
         "type": "object",
-        "existingJavaType": "org.jbpm.serverless.workflow.api.interfaces.Choice",
-        "anyOf": [
-          {
-            "$ref": "../choices/singlechoice.json"
-          },
-          {
-            "$ref": "../choices/andchoice.json"
-          },
-          {
-            "$ref": "../choices/notchoice.json"
-          },
-          {
-            "$ref": "../choices/orchoice.json"
-          }
-        ]
+        "$ref": "../switchconditions/eventcondition.json"
       }
+    },
+    "dataConditions": {
+      "type": "array",
+      "description": "Defines conditions evaluated against state data",
+      "items": {
+        "type": "object",
+        "$ref": "../switchconditions/datacondition.json"
+      }
+    },
+    "eventTimeout": {
+      "type": "string",
+      "description": "If eventConditions is used, defines the time period to wait for events (ISO 8601 format)"
     },
     "default": {
       "$ref": "../transitions/transition.json"
     }
   },
   "required": [
-    "choices",
     "default"
   ]
 }

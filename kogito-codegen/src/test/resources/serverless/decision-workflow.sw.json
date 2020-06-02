@@ -15,11 +15,11 @@
   "states":[
     {
       "name":"MakeDecision",
-      "type":"OPERATION",
+      "type":"operation",
       "start": {
-        "kind": "DEFAULT"
+        "kind": "default"
       },
-      "actionMode":"SEQUENTIAL",
+      "actionMode":"sequential",
       "actions":[
         {
           "functionRef": {
@@ -33,12 +33,12 @@
     },
     {
       "name": "EvalDecision",
-      "type": "SWITCH",
-      "choices": [
+      "type": "switch",
+      "dataConditions": [
         {
           "path": "approvaldecision.result",
           "value": "approved",
-          "operator": "Equals",
+          "operator": "equals",
           "transition": {
             "nextState": "Approve"
           }
@@ -46,7 +46,7 @@
         {
           "path": "approvaldecision.result",
           "value": "denied",
-          "operator": "Equals",
+          "operator": "equals",
           "transition": {
             "nextState": "Deny"
           }
@@ -58,22 +58,22 @@
     },
     {
       "name":"Approve",
-      "type":"RELAY",
-      "inject": {
+      "type":"inject",
+      "data": {
         "decision": "Approved"
       },
       "end": {
-        "kind": "DEFAULT"
+        "kind": "default"
       }
     },
     {
       "name":"Deny",
-      "type":"RELAY",
-      "inject": {
+      "type":"inject",
+      "data": {
         "decision": "Denied"
       },
       "end": {
-        "kind": "DEFAULT"
+        "kind": "default"
       }
     }
   ]

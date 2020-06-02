@@ -12,11 +12,11 @@
   "states":[
     {
       "name":"Greet",
-      "type":"OPERATION",
+      "type":"operation",
       "start": {
-        "kind": "DEFAULT"
+        "kind": "default"
       },
-      "actionMode":"SEQUENTIAL",
+      "actionMode":"sequential",
       "actions":[
         {
           "functionRef": {
@@ -34,7 +34,7 @@
         "dataOutputPath": "$.greeting"
       },
       "end": {
-        "kind": "DEFAULT"
+        "kind": "default"
       }
     }
   ]

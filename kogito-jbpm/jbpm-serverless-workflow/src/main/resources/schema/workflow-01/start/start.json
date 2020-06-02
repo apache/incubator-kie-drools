@@ -6,10 +6,10 @@
     "kind": {
       "type": "string",
       "enum": [
-        "DEFAULT",
-        "SCHEDULED"
+        "default",
+        "scheduled"
       ],
-      "default": "DEFAULT",
+      "default": "default",
       "description": "Kind of Start definition"
     },
     "schedule": {

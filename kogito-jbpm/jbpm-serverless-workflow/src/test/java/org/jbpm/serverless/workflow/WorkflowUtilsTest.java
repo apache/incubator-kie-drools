@@ -18,7 +18,6 @@ package org.jbpm.serverless.workflow;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.jbpm.serverless.workflow.api.Workflow;
-import org.jbpm.serverless.workflow.api.choices.DefaultChoice;
 import org.jbpm.serverless.workflow.api.events.EventDefinition;
 import org.jbpm.serverless.workflow.api.functions.Function;
 import org.jbpm.serverless.workflow.api.interfaces.State;
@@ -26,7 +25,8 @@ import org.jbpm.serverless.workflow.api.mapper.BaseObjectMapper;
 import org.jbpm.serverless.workflow.api.mapper.JsonObjectMapper;
 import org.jbpm.serverless.workflow.api.mapper.YamlObjectMapper;
 import org.jbpm.serverless.workflow.api.states.DefaultState;
-import org.jbpm.serverless.workflow.api.states.RelayState;
+import org.jbpm.serverless.workflow.api.states.InjectState;
+import org.jbpm.serverless.workflow.api.switchconditions.DataCondition;
 import org.jbpm.serverless.workflow.parser.util.ServerlessWorkflowUtils;
 import org.jbpm.serverless.workflow.parser.util.WorkflowAppContext;
 import org.junit.jupiter.api.Test;
@@ -61,50 +61,50 @@ public class WorkflowUtilsTest extends BaseServerlessTest {
 
     @Test
     public void testGetWorkflowStartState() {
-        assertThat(ServerlessWorkflowUtils.getWorkflowStartState(singleRelayStateWorkflow)).isNotNull();
-        assertThat(ServerlessWorkflowUtils.getWorkflowStartState(singleRelayStateWorkflow)).isInstanceOf(RelayState.class);
+        assertThat(ServerlessWorkflowUtils.getWorkflowStartState(singleInjectStateWorkflow)).isNotNull();
+        assertThat(ServerlessWorkflowUtils.getWorkflowStartState(singleInjectStateWorkflow)).isInstanceOf(InjectState.class);
 
     }
 
     @Test
     public void testGetWorkflowEndStatesSingle() {
-        List<State> endStates = ServerlessWorkflowUtils.getWorkflowEndStates(singleRelayStateWorkflow);
+        List<State> endStates = ServerlessWorkflowUtils.getWorkflowEndStates(singleInjectStateWorkflow);
         assertThat(endStates).isNotNull();
         assertThat(endStates).hasSize(1);
         State endState = endStates.get(0);
         assertThat(endState).isNotNull();
-        assertThat(endState).isInstanceOf(RelayState.class);
+        assertThat(endState).isInstanceOf(InjectState.class);
     }
 
     @Test
     public void testGetWorkflowEndStatesMulti() {
-        List<State> endStates = ServerlessWorkflowUtils.getWorkflowEndStates(multiRelayStateWorkflow);
+        List<State> endStates = ServerlessWorkflowUtils.getWorkflowEndStates(multiInjectStateWorkflow);
         assertThat(endStates).isNotNull();
         assertThat(endStates).hasSize(2);
         State endState1 = endStates.get(0);
         assertThat(endState1).isNotNull();
-        assertThat(endState1).isInstanceOf(RelayState.class);
+        assertThat(endState1).isInstanceOf(InjectState.class);
         State endState2 = endStates.get(1);
         assertThat(endState2).isNotNull();
-        assertThat(endState2).isInstanceOf(RelayState.class);
+        assertThat(endState2).isInstanceOf(InjectState.class);
     }
 
     @Test
     public void testGetStatesByType() {
-        List<State> relayStates = ServerlessWorkflowUtils.getStatesByType(multiRelayStateWorkflow, DefaultState.Type.RELAY);
+        List<State> relayStates = ServerlessWorkflowUtils.getStatesByType(multiInjectStateWorkflow, DefaultState.Type.INJECT);
         assertThat(relayStates).isNotNull();
         assertThat(relayStates).hasSize(2);
-        assertThat(relayStates.get(0)).isInstanceOf(RelayState.class);
-        assertThat(relayStates.get(1)).isInstanceOf(RelayState.class);
+        assertThat(relayStates.get(0)).isInstanceOf(InjectState.class);
+        assertThat(relayStates.get(1)).isInstanceOf(InjectState.class);
 
-        List<State> noOperationStates = ServerlessWorkflowUtils.getStatesByType(multiRelayStateWorkflow, DefaultState.Type.OPERATION);
+        List<State> noOperationStates = ServerlessWorkflowUtils.getStatesByType(multiInjectStateWorkflow, DefaultState.Type.OPERATION);
         assertThat(noOperationStates).isNotNull();
         assertThat(noOperationStates).hasSize(0);
     }
 
     @Test
     public void testIncludesSupportedStates() {
-        assertThat(ServerlessWorkflowUtils.includesSupportedStates(singleRelayStateWorkflow)).isTrue();
+        assertThat(ServerlessWorkflowUtils.includesSupportedStates(singleInjectStateWorkflow)).isTrue();
     }
 
     @Test
@@ -138,16 +138,16 @@ public class WorkflowUtilsTest extends BaseServerlessTest {
     }
 
     @Test
-    public void testConditionScriptDefaultVar() {
-        assertThat(ServerlessWorkflowUtils.conditionScript("$.name", DefaultChoice.Operator.EQUALS, "john")).isNotNull();
-        assertThat(ServerlessWorkflowUtils.conditionScript("$.name", DefaultChoice.Operator.EQUALS, "john"))
+    public void testDataConditionScriptDefaultVar() {
+        assertThat(ServerlessWorkflowUtils.conditionScript("$.name", DataCondition.Operator.EQUALS, "john")).isNotNull();
+        assertThat(ServerlessWorkflowUtils.conditionScript("$.name", DataCondition.Operator.EQUALS, "john"))
                 .isEqualTo("return workflowdata.get(\"name\").textValue().equals(\"john\");");
     }
 
     @Test
     public void testConditionScriptCustomVar() {
-        assertThat(ServerlessWorkflowUtils.conditionScript("person.name", DefaultChoice.Operator.EQUALS, "john")).isNotNull();
-        assertThat(ServerlessWorkflowUtils.conditionScript("person.name", DefaultChoice.Operator.EQUALS, "john"))
+        assertThat(ServerlessWorkflowUtils.conditionScript("person.name", DataCondition.Operator.EQUALS, "john")).isNotNull();
+        assertThat(ServerlessWorkflowUtils.conditionScript("person.name", DataCondition.Operator.EQUALS, "john"))
                 .isEqualTo("return person.get(\"name\").textValue().equals(\"john\");");
     }
 

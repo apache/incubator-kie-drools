@@ -20,7 +20,6 @@ import com.fasterxml.jackson.databind.JsonNode;
 import org.drools.core.util.StringUtils;
 import org.jbpm.serverless.workflow.api.Workflow;
 import org.jbpm.serverless.workflow.api.branches.Branch;
-import org.jbpm.serverless.workflow.api.choices.DefaultChoice;
 import org.jbpm.serverless.workflow.api.events.EventDefinition;
 import org.jbpm.serverless.workflow.api.functions.Function;
 import org.jbpm.serverless.workflow.api.interfaces.State;
@@ -30,6 +29,7 @@ import org.jbpm.serverless.workflow.api.mapper.YamlObjectMapper;
 import org.jbpm.serverless.workflow.api.states.DefaultState;
 import org.jbpm.serverless.workflow.api.states.ParallelState;
 import org.jbpm.serverless.workflow.api.states.SubflowState;
+import org.jbpm.serverless.workflow.api.switchconditions.DataCondition;
 import org.jbpm.serverless.workflow.parser.core.ServerlessWorkflowFactory;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -99,7 +99,7 @@ public class ServerlessWorkflowUtils {
                     && !state.getType().equals(DefaultState.Type.OPERATION)
                     && !state.getType().equals(DefaultState.Type.DELAY)
                     && !state.getType().equals(DefaultState.Type.SUBFLOW)
-                    && !state.getType().equals(DefaultState.Type.RELAY)
+                    && !state.getType().equals(DefaultState.Type.INJECT)
                     && !state.getType().equals(DefaultState.Type.SWITCH)
                     && !state.getType().equals(DefaultState.Type.PARALLEL)) {
                 return false;
@@ -155,7 +155,7 @@ public class ServerlessWorkflowUtils {
         return retStr;
     }
 
-    public static String conditionScript(String path, DefaultChoice.Operator operator, String value) {
+    public static String conditionScript(String path, DataCondition.Operator operator, String value) {
         String workflowVar = ServerlessWorkflowFactory.DEFAULT_WORKFLOW_VAR;
 
         if (path.startsWith("$.")) {
@@ -168,15 +168,15 @@ public class ServerlessWorkflowUtils {
         String workflowDataToInteger = "return java.lang.Integer.parseInt(" + workflowVar + ".get(\"";
 
         String retStr = "";
-        if (operator == DefaultChoice.Operator.EQUALS) {
+        if (operator == DataCondition.Operator.EQUALS) {
             retStr += "return " + workflowVar + ".get(\"" + path + "\").textValue().equals(\"" + value + "\");";
-        } else if (operator == DefaultChoice.Operator.GREATER_THAN) {
+        } else if (operator == DataCondition.Operator.GREATERTHAN) {
             retStr += workflowDataToInteger + path + "\").textValue()) > " + value + ";";
-        } else if (operator == DefaultChoice.Operator.GREATER_THAN_EQUALS) {
+        } else if (operator == DataCondition.Operator.GREATERTHANOREQUALS) {
             retStr += workflowDataToInteger + path + "\").textValue()) >= " + value + ";";
-        } else if (operator == DefaultChoice.Operator.LESS_THAN) {
+        } else if (operator == DataCondition.Operator.LESSTHAN) {
             retStr += workflowDataToInteger + path + "\").textValue()) < " + value + ";";
-        } else if (operator == DefaultChoice.Operator.LESS_THAN_EQUALS) {
+        } else if (operator == DataCondition.Operator.LESSTHANOREQUALS) {
             retStr += workflowDataToInteger + path + "\").textValue()) <= " + value + ";";
         }
 

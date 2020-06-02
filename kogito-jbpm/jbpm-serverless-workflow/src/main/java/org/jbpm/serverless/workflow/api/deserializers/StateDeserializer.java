@@ -95,9 +95,9 @@ public class StateDeserializer extends StdDeserializer<State> {
                 return mapper.treeToValue(node,
                                           SubflowState.class);
 
-            case RELAY:
+            case INJECT:
                 return mapper.treeToValue(node,
-                        RelayState.class);
+                        InjectState.class);
 
             case FOREACH:
                 return mapper.treeToValue(node,

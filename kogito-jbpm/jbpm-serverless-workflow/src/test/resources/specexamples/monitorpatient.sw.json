@@ -42,9 +42,9 @@
   "states": [
     {
       "name": "MonitorVitals",
-      "type": "EVENT",
+      "type": "event",
       "start": {
-        "kind": "DEFAULT"
+        "kind": "default"
       },
       "exclusive": true,
       "eventsActions": [{
@@ -82,7 +82,7 @@
         }
       ],
       "end": {
-        "kind": "TERMINATE"
+        "kind": "terminate"
       }
     }]
 }

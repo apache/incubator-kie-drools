@@ -94,7 +94,7 @@
           },
           {
             "title": "Relay State",
-            "$ref": "states/relaystate.json"
+            "$ref": "states/injectstate.json"
           },
           {
             "title": "ForEach State",

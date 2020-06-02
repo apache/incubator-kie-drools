@@ -12,11 +12,11 @@
   "states":[
     {
       "name":"ProvisionOrder",
-      "type":"OPERATION",
+      "type":"operation",
       "start": {
-        "kind": "DEFAULT"
+        "kind": "default"
       },
-      "actionMode":"SEQUENTIAL",
+      "actionMode":"sequential",
       "actions":[
         {
           "functionRef": {
@@ -65,34 +65,34 @@
     },
     {
       "name": "MissingId",
-      "type": "SUBFLOW",
+      "type": "subflow",
       "workflowId": "handleMissingIdExceptionWorkflow",
       "end": {
-        "kind": "DEFAULT"
+        "kind": "default"
       }
     },
     {
       "name": "MissingItem",
-      "type": "SUBFLOW",
+      "type": "subflow",
       "workflowId": "handleMissingItemExceptionWorkflow",
       "end": {
-        "kind": "DEFAULT"
+        "kind": "default"
       }
     },
     {
       "name": "MissingQuantity",
-      "type": "SUBFLOW",
+      "type": "subflow",
       "workflowId": "handleMissingQuantityExceptionWorkflow",
       "end": {
-        "kind": "DEFAULT"
+        "kind": "default"
       }
     },
     {
       "name": "ApplyOrder",
-      "type": "SUBFLOW",
+      "type": "subflow",
       "workflowId": "applyOrderWorkflowId",
       "end": {
-        "kind": "DEFAULT"
+        "kind": "default"
       }
     }
   ]

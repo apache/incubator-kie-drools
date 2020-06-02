@@ -10,10 +10,10 @@ functions:
     type: script
 states:
   - name: HelloWorld
-    type: OPERATION
+    type: operation
     start:
-      kind: DEFAULT
-    actionMode: SEQUENTIAL
+      kind: default
+    actionMode: sequential
     actions:
       - functionRef:
           refName: helloOne
@@ -22,8 +22,8 @@ states:
     transition:
       nextState: UpdateArg
   - name: UpdateArg
-    type: OPERATION
-    actionMode: SEQUENTIAL
+    type: operation
+    actionMode: sequential
     stateDataFilter:
       dataInputPath: "$.trace"
       dataOutputPath: "$.trace"
@@ -35,12 +35,12 @@ states:
     transition:
       nextState: SaveResult
   - name: SaveResult
-    type: OPERATION
-    actionMode: SEQUENTIAL
+    type: operation
+    actionMode: sequential
     actions:
       - functionRef:
           refName: helloThree
           parameters:
             script: System.out.println("Third Serverless Workflow World");
     end:
-      kind: TERMINATE
+      kind: terminate

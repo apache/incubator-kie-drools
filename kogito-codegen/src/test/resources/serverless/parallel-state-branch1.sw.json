@@ -5,15 +5,15 @@
   "states":[
     {
       "name":"InjectTestData1",
-      "type":"RELAY",
+      "type":"inject",
       "start": {
-        "kind": "DEFAULT"
+        "kind": "default"
       },
-      "inject": {
+      "data": {
         "branch1data" : "testBranch1Data"
       },
       "end": {
-        "kind": "TERMINATE"
+        "kind": "terminate"
       }
     }
   ]

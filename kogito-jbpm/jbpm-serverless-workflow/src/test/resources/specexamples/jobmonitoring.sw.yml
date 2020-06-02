@@ -14,10 +14,10 @@ functions:
     resource: reportJobFailedResource
 states:
   - name: SubmitJob
-    type: OPERATION
+    type: operation
     start:
-      kind: DEFAULT
-    actionMode: SEQUENTIAL
+      kind: default
+    actionMode: sequential
     actions:
       - functionRef:
           refName: submitJob
@@ -30,13 +30,13 @@ states:
     transition:
       nextState: WaitForCompletion
   - name: WaitForCompletion
-    type: DELAY
+    type: delay
     timeDelay: PT5S
     transition:
       nextState: GetJobStatus
   - name: GetJobStatus
-    type: OPERATION
-    actionMode: SEQUENTIAL
+    type: operation
+    actionMode: sequential
     actions:
       - functionRef:
           refName: checkJobStatus
@@ -49,37 +49,37 @@ states:
     transition:
       nextState: DetermineCompletion
   - name: DetermineCompletion
-    type: SWITCH
-    choices:
+    type: switch
+    dataConditions:
       - path: "$.jobstatus"
         value: SUCCEEDED
-        operator: Equals
+        operator: equals
         transition:
           nextState: JobSucceeded
       - path: "$.jobstatus"
         value: FAILED
-        operator: Equals
+        operator: equals
         transition:
           nextState: JobFailed
     default:
       nextState: WaitForCompletion
   - name: JobSucceeded
-    type: OPERATION
-    actionMode: SEQUENTIAL
+    type: operation
+    actionMode: sequential
     actions:
       - functionRef:
           refName: reportJobSuceeded
           parameters:
             name: "$.jobuid"
     end:
-      kind: DEFAULT
+      kind: default
   - name: JobFailed
-    type: OPERATION
-    actionMode: SEQUENTIAL
+    type: operation
+    actionMode: sequential
     actions:
       - functionRef:
           refName: reportJobFailed
           parameters:
             name: "$.jobuid"
     end:
-      kind: DEFAULT
+      kind: default
