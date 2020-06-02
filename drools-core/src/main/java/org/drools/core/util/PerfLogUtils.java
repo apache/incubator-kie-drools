@@ -59,7 +59,7 @@ public class PerfLogUtils {
             NodeStats stats = nodeStats.get();
             if (stats != null && stats.isStarted()) {
                 stats.incrementEvalCount();
-            }
+            } // don't log warn for stats == null because an evaluation may be executed under metrics or not.
         }
     }
 
@@ -67,10 +67,12 @@ public class PerfLogUtils {
         if (enabled) {
             NodeStats stats = nodeStats.get();
             if (stats != null && stats.isStarted()) {
-                long elapsedTime = (System.nanoTime() - stats.getStartTime());
-                if (stats.getEvalCount() > 0 && (elapsedTime / 1000) > threshold) {
-                    logger.trace("{}, evalCount:{}, elapsed:{}", stats.getNode(), stats.getEvalCount(), elapsedTime / 1000); // microseconds
+                long elapsedTimeInMicro = (System.nanoTime() - stats.getStartTime()) / 1000;
+                if (stats.getEvalCount() > 0 && elapsedTimeInMicro > threshold) {
+                    logger.trace("{}, evalCount:{}, elapsedMicro:{}", stats.getNode(), stats.getEvalCount(), elapsedTimeInMicro);
                 }
+            } else {
+                logger.warn("nodeStats has to be initialized. Call startMetrics() beforehand : stats = {}", stats);
             }
             nodeStats.remove();
         }

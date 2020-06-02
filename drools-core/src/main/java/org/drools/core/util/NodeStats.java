@@ -38,16 +38,8 @@ public class NodeStats {
         return started;
     }
 
-    public void setStarted(boolean started) {
-        this.started = started;
-    }
-
     public long getEvalCount() {
         return evalCount;
-    }
-
-    public void setEvalCount(long evalCount) {
-        this.evalCount = evalCount;
     }
 
     public void incrementEvalCount() {
@@ -58,15 +50,12 @@ public class NodeStats {
         return startTime;
     }
 
-    public void setStartTime(long startTime) {
-        this.startTime = startTime;
-    }
-
     public BaseNode getNode() {
         return nodeRef.get();
     }
 
-    public void setNode(BaseNode node) {
-        this.nodeRef = new WeakReference<>(node);
+    @Override
+    public String toString() {
+        return "NodeStats [started=" + started + ", evalCount=" + evalCount + ", startTime=" + startTime + ", node=" + (nodeRef == null ? "null" : nodeRef.get()) + "]";
     }
 }

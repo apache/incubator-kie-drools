@@ -56,7 +56,7 @@ public class PerfLogUtilsTest extends CommonTestMethodBase {
 
                 long start = System.nanoTime();
                 ksession.fireAllRules();
-                System.out.println("  total elapsed : " + (System.nanoTime() - start) / 1000);
+                System.out.println("  total elapsedMicro : " + (System.nanoTime() - start) / 1000);
                 ksession.dispose();
 //            }
         } finally {
